@@ -2,250 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B03A04431DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:37:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 327554431DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234489AbhKBPjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:39:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:38230 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231833AbhKBPjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:39:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6AA39D6E;
-        Tue,  2 Nov 2021 08:37:13 -0700 (PDT)
-Received: from [10.32.33.50] (e121896.warwick.arm.com [10.32.33.50])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ABFC43F7B4;
-        Tue,  2 Nov 2021 08:37:11 -0700 (PDT)
-Subject: Re: [PATCH 5/5] perf arm-spe: Snapshot mode test
-From:   James Clark <james.clark@arm.com>
-To:     Leo Yan <leo.yan@linaro.org>, German Gomez <german.gomez@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-References: <20210916154635.1525-1-german.gomez@arm.com>
- <20210916154635.1525-5-german.gomez@arm.com>
- <20211020131339.GG49614@leoy-ThinkPad-X240s>
- <fd65eb63-d4ca-2105-74cb-c717ad2eb7d3@arm.com>
-Message-ID: <ef1d4b66-1743-529f-7c5b-fbc4ada7113b@arm.com>
-Date:   Tue, 2 Nov 2021 15:37:10 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234192AbhKBPkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:40:08 -0400
+Received: from mail-mw2nam12on2086.outbound.protection.outlook.com ([40.107.244.86]:8049
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230370AbhKBPkH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 11:40:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=k4mUuTxW3YzwZi8sd932+D/1izbiqLvnyFuevZ0FsWh+mE4oK7eZZ4FtLvXw6X9GC60mgroAd2BN81oRi9o5wUVzXG2aEFVXqN1yjckeR8kW6V5nNbE8C/O4+F/0CxPMuOZykduh3j/h1Cjv1J6L2xW29TIwoXJ0GFQorrY2V9qKWwFQLA60pQmXCm5KP2ltkAifx+lgB0iPzLpcvgtxy99MuT98UsGjK21U5i8kfE1N5qCE8aw/IEcFnx30meMXa9npvsp7JbVi8ecXoMOsFBYzy+ePTgeojDqJhjq08B+K4QLo9f9bQfqxfZg72U3MUBuKgMGg8Z0dmBH+SWBVsw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RUDuLUE4H+QQWw2X9EwNHCaw3ywN4x7joYDEHF9Yx3w=;
+ b=S9QlVW47xYS4K+y6BPwpYKLmyzXUvb6CDz3AYXAxLXZCyuxX5UdhqZ6AoRNI5uL2nmdcXc5UHOqLycCK300lBtY+w/sdaE5LickfEvAj2pxn96+BJrt/D1wgba5+t0Ud5wIhjVDDXWoI8u+4b1U0kS6JYBNmrh5bEuXnjQCOYj9J9XzJXOs/VIMh4gD9cArHPldeQ9Zy6dhrbhG5YkU2iK1xzArbpmJGP1WynwBb8oZSmtJ50fnvYvMSlTfVxFZQDB47673vZNc/bsxHjj5s72CXMNq0IkrzNilB4Q1SzwDDf5cVKzb5s5IBBIanoQ24KS8ABA7gp5APmAeuIWMTFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RUDuLUE4H+QQWw2X9EwNHCaw3ywN4x7joYDEHF9Yx3w=;
+ b=qi2F5MkYLjoC6yTgFGmSH1wNT8SqxasqyhEZUMCW6wsCpE4fCcujT9sTq3sKMXR5GXDJG1Gr21v3UZBksTFcuW/jcQuf3EIKsuIzoGOH+IPi2I5ysEXMeAeT460ew+judnmAl5Gd+l6gfqL82reVdbO9CjK18Yze1S37lz4TCPjZrmhpgnzzu4lbVx9ZkQrNgFZcKtVvrNfvr/85QafjbV2PMxTptYercFVUKKrhoRf3dHrbrXSRIiY8px4RhGZl5ySb7extt+rcnOuoZjRDJcy3n43BrAxiFQfbDOGDudNMK3D0MA4mCcShEjMxRYwZhRWSASgfKG3w6YZTixdBuA==
+Authentication-Results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5269.namprd12.prod.outlook.com (2603:10b6:208:30b::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Tue, 2 Nov
+ 2021 15:37:30 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4649.020; Tue, 2 Nov 2021
+ 15:37:30 +0000
+Date:   Tue, 2 Nov 2021 12:37:28 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        intel-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/29] drm/i915/gvt: rename intel_vgpu_ops to
+ intel_vgpu_mdev_ops
+Message-ID: <20211102153728.GJ2744544@nvidia.com>
+References: <20211102070601.155501-1-hch@lst.de>
+ <20211102070601.155501-6-hch@lst.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211102070601.155501-6-hch@lst.de>
+X-ClientProxiedBy: MN2PR01CA0008.prod.exchangelabs.com (2603:10b6:208:10c::21)
+ To BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <fd65eb63-d4ca-2105-74cb-c717ad2eb7d3@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR01CA0008.prod.exchangelabs.com (2603:10b6:208:10c::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.17 via Frontend Transport; Tue, 2 Nov 2021 15:37:30 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mhvqq-0059p4-TK; Tue, 02 Nov 2021 12:37:28 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c7a4e57b-b5aa-4b7f-8825-08d99e16ae5b
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5269:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5269F6010AEC62E25326FE21C28B9@BL1PR12MB5269.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1201;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8KJLFNb79dRkR797HHAH6SxFg8JHkpenJw5mErHsqNIPmPmgJraYupzuxYxudwghch5lTZ7APV6Rq6yc1LOTJ3jFHvbF6gqIP3Urc1EfX+Bx+UiyXCEDQBnz/1bO4iBn+hCQxylzQg5d1fAqVzckRarOKNEKMRkZW08aPf5PMp8gn32S2/WKwXUSX2Tx6RvJEJyerbAoz5IkNfweH5IxPGPOMVjPpVwtFc0xkIB4XcGrKGPaocpv0twhld6rs3s3mBmvx4wVHrcq8L5aOjmVgQx2rLiNJ4DzikEGhnyZ9k8iVoSejoFEtajRMgQ/xTOo+AJQ4Ndun6hckXHrDwMzG+hagkCeTBo1TEFfnTdTlkavJv3BEfi5sBttxufh4PwYTWh3/qr33IPeD6sJ/AZv0/8OKeJREG3pNJ8EwJugJuZr78h9f1tFuRQGMXhzgJLe+BoWGGG2yozSFdfxJXO62qto5oAU/0aeaZZnI4B/o3f3AwMqmm2CS3oY0tApS9Amh3TAlLtJEDDflyrWTazaqdJ4Zh1hZYbBc9oQ8XuvWbLHI82Y4EJLGODYrG6h5C8cjceIQqH3qUoGtlZUtlxYFF3DiMUzlQEgMa5aD+fzCaOV43A6BIIhMIgM9k4hlRlJQrsKS0NmCDo83qUO0NrW0g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(66556008)(2616005)(426003)(83380400001)(5660300002)(26005)(36756003)(66946007)(8936002)(7416002)(4326008)(316002)(54906003)(2906002)(1076003)(8676002)(508600001)(186003)(9746002)(38100700002)(86362001)(6916009)(4744005)(9786002)(33656002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1hpnknMa/Cbj/W05mbwkliyDCcidxJB1Y6JSMyKo9Uo3AcahY8caRSlos+K2?=
+ =?us-ascii?Q?tH4BrlkhojeB0KqNj2Lrtau1KX57L9r6tfMr+BKAmRDBZO4g5dtfw3COevRu?=
+ =?us-ascii?Q?uHI5HeX3A6NLS2PaD9rGB1Q3ZMn86J5khbeNVviQl7kPdwsFPy7ZR8O4bNp5?=
+ =?us-ascii?Q?snkfVFCXRViJJWrqPA53d7EBGvta/ErgxI+c8qBhbE9Vzchcy0oFD9Pg6fUi?=
+ =?us-ascii?Q?HySihKo63Mq8IXGdXiqP72JdQamraC4KnGkSrpb0sNXRGePAkf7xv3VoiZTe?=
+ =?us-ascii?Q?kGycG6ihX2qMXJ0EvzaFE/Glcv/N1CzjeFVIEIAMTI+7tQTWYjLL+0Abx6rt?=
+ =?us-ascii?Q?TDe8n3S41gr88+8+zqHbI3AVGBd9qbJfv3yWzHzoI3xRY+4pii4KVN4lNIwE?=
+ =?us-ascii?Q?uDVgdcOUk1Ae6dby4vHzkmWxP0WfAY0lFsuhybioWQ6YytqLWaRZVkQcIKF2?=
+ =?us-ascii?Q?Gev9HyuyeqQBW+zIVtjFNSVSy1AKvPsqaxzw1/yIF28/VJVbIRvWzpMgRjsi?=
+ =?us-ascii?Q?QBPgm49Bwfe0uRo/I45urMTeviIuCgjlbpv7jUCfQ2S+p4+6XeQzSbL5ao7A?=
+ =?us-ascii?Q?lhbQVhoDCdo6ETB2D0Jm8ojatPuOgTjWqP8VAJL54qA0LwYtq/cwuj/IF/CK?=
+ =?us-ascii?Q?QTmHcCaZpLpdZGmJTASKFCIYNG3r79lqg5T7yPwq2X8pbeR72UrSa/LFNl8G?=
+ =?us-ascii?Q?mL7o3WMlR4RV7CGiULzwIHlDPQFUgI2qKzazBfP3IGRqQHMfg5VXmSRmPXaz?=
+ =?us-ascii?Q?BrFunayW9zfbvB2w08lgKH044TaivJS8tWBrHlfBNzqbnsYnMNdWsOYNqgGX?=
+ =?us-ascii?Q?MiCAg1DGgQSfXnsoLye4eXp8dc6cpd3zCePWE8IFhX0x5OXo4+tMujqOoev8?=
+ =?us-ascii?Q?KmQ37s0BbbGDkDu6pBB+iYYvyGxVJtutpmxy/nBd//J4klFSacnCUkLeSTjq?=
+ =?us-ascii?Q?7oA/XJUvVI1Ii+hGovJUAWVMIGDWCBLIF8y1WDyQAzI7z89D3xuIDeif1nau?=
+ =?us-ascii?Q?+uFvctd4a1d56IgxO5BDUCLGhYh+IuXGRoSBkYoWQ8t8umx8eBfhOOcKoRkA?=
+ =?us-ascii?Q?j9/C0DBrKdKXRrfZF6HlIx/tze4k/FpxV/L41K9Tx2xvYQat1OHPPLV4Pg7d?=
+ =?us-ascii?Q?RMiFrfUFWDHSynFdbQPqO4m1JPGVCjBYCZ4nl/AoxcAnhK92GtewwRk9pRyD?=
+ =?us-ascii?Q?Nm50rLrGSrXb3sw2Au93TlK8GUYF9Cdn24BqFa0rr4dJIwZNGNmiWykSwb7E?=
+ =?us-ascii?Q?nQxcGUCna5ckKs9YFcD0kbCP1mJq6A0be7a05EczJh9AsCa36YnQWbwfbN7k?=
+ =?us-ascii?Q?aFHsXNd+X50xKB3ycwkEP15Bj34tCva6UcFANgbLOjiv+YS5h6dKOCZArbbO?=
+ =?us-ascii?Q?fR5Yae9DVMjOT70QNEHrHJ1mxplbbS+sPMCekNRIrXXEhBq2NU8lMbgq0k+y?=
+ =?us-ascii?Q?UJsglwA+zyVhJPCkjMUUO2CM1+E1NsO2fT+tT9jtJFpRSyZsmk+FmC7U0uNH?=
+ =?us-ascii?Q?dJabh9fedJMWsAlumCYRejAon2N7DhkOIRHSVTle+H4Y8HDdiVhs4Q1RJwbz?=
+ =?us-ascii?Q?eXsP5aNmqaMT2Ll3IMk=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7a4e57b-b5aa-4b7f-8825-08d99e16ae5b
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 15:37:30.2762
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cRyg3jGHzTC26KKhqP9RBMfFlq4LG/NCm1dr8Z4oIOGRZREb4EBye81rUko2fYNq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5269
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 02/11/2021 14:07, James Clark wrote:
+On Tue, Nov 02, 2021 at 08:05:37AM +0100, Christoph Hellwig wrote:
+> Free the intel_vgpu_ops symbol name for something that fits better.
 > 
-> 
-> On 20/10/2021 14:13, Leo Yan wrote:
->> On Thu, Sep 16, 2021 at 04:46:35PM +0100, German Gomez wrote:
->>> Shell script test_arm_spe.sh has been added to test the recording of SPE
->>> tracing events in snapshot mode.
->>>
->>> Reviewed-by: James Clark <james.clark@arm.com>
->>> Signed-off-by: German Gomez <german.gomez@arm.com>
->>> ---
->>>  tools/perf/tests/shell/test_arm_spe.sh | 91 ++++++++++++++++++++++++++
->>>  1 file changed, 91 insertions(+)
->>>  create mode 100755 tools/perf/tests/shell/test_arm_spe.sh
->>>
->>> diff --git a/tools/perf/tests/shell/test_arm_spe.sh b/tools/perf/tests/shell/test_arm_spe.sh
->>> new file mode 100755
->>> index 000000000000..9ed817e76f95
->>> --- /dev/null
->>> +++ b/tools/perf/tests/shell/test_arm_spe.sh
->>> @@ -0,0 +1,91 @@
->>> +#!/bin/sh
->>> +# Check Arm SPE trace data recording and synthesized samples
->>> +
->>> +# Uses the 'perf record' to record trace data of Arm SPE events;
->>> +# then verify if any SPE event samples are generated by SPE with
->>> +# 'perf script' and 'perf report' commands.
->>> +
->>> +# SPDX-License-Identifier: GPL-2.0
->>> +# German Gomez <german.gomez@arm.com>, 2021
->>> +
->>> +skip_if_no_arm_spe_event() {
->>> +	perf list | egrep -q 'arm_spe_[0-9]+//' && return 0
->>> +
->>> +	# arm_spe event doesn't exist
->>> +	return 2
->>> +}
->>> +
->>> +skip_if_no_arm_spe_event || exit 2
->>> +
->>> +perfdata=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
->>> +glb_err=0
->>> +
->>> +cleanup_files()
->>> +{
->>> +	rm -f ${perfdata}
->>> +	trap - exit term int
->>> +	kill -2 $$ # Forward sigint to parent
->>
->> I understand you copy this code from Arm cs-etm testing, but I found
->> the sentence 'kill -2 $$' will cause a failure at my side with the
->> command:
->>
->> root@ubuntu:/home/leoy/linux/tools/perf# ./perf test 85 -v
->> 85: Check Arm SPE trace data recording and synthesized samples      :
->> --- start ---
->> test child forked, pid 29053
->> Recording trace with snapshot mode /tmp/__perf_test.perf.data.uughb
->> Looking at perf.data file for dumping samples:
->> Looking at perf.data file for reporting samples:
->> SPE snapshot testing: PASS
->> test child finished with -1
->> ---- end ----
->> Check Arm SPE trace data recording and synthesized samples: FAILED!
->>
->> I changed to use below code and looks it works for me:
->>
->>         if [[ "$1" == "int" ]]; then
->>                 kill -SIGINT $$
->>         fi
->>         if [[ "$1" == "term" ]]; then
->>                 kill -SIGTERM $$
->>         fi
->>
->> Thanks,
->> Leo
-> 
-> This is quite interesting. It looks like the issue is caused by the update from dash 0.5.8
-> on Ubuntu 18 to dash 0.5.10 on Ubuntu 20. Specifically the commit that causes the issue is:
-> 
->    commit 9e5cd41d9605e4caaac3aacdc0482f6ee220a298
->    Author: Herbert Xu <herbert@gondor.apana.org.au>
->    Date:   Mon May 7 00:40:34 2018 +0800
-> 
->     jobs - Do not block when waiting on SIGCHLD
->     
->     Because of the nature of SIGCHLD, the process may have already been
->     waited on and therefore we must be prepared for the case that wait
->     may block.  So ensure that it doesn't by using WNOHANG.
->     
->     Furthermore, multiple jobs may have exited when gotsigchld is set.
->     Therefore we need to wait until there are no zombies left.
->     
->     Lastly, waitforjob needs to be called with interrupts off and
->     the original patch broke that.
->     
->     Fixes: 03876c0743a5 ("eval: Reap zombies after built-in...")
->     Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> 
-> 
-> This also means that the Coresight shell test will not be working anymore because I added
-> the same trap to it so that it could be run in a loop. I'm going to compare the bahaviour
-> to bash to see which one is doing the right thing and what the correct change to make to 
-> fix it is. Or a bug needs to be reported.
-> 
-> Thanks
-> James
-> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/gpu/drm/i915/gvt/kvmgt.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-Ok, it seems like I was relying on buggy dash behaviour for my original change. Even with this:
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-        if [[ "$1" == "int" ]]; then
-                kill -SIGINT $$
-        fi
-        if [[ "$1" == "term" ]]; then
-                kill -SIGTERM $$
-        fi
-
-it still doesn't allow you to break out of running it in a while loop. This is only because of
-the exit code, rather than any kind of signal propagation. Actually it's possible to stop it
-with Ctrl-\ rather than Ctrl-C, and that doesn't require any extra handling in the script.
-
-For that reason I'm happy to go with Leo's original suggestion when I first added this which was
-to not have any extra kill at all.
-
-Another fix could be this, but I'm not too keen on it because I don't think any other tests behave
-like this:
-
-        [ "$1" = "int" ] || exit 1
-        [ "$1" = "term" ] || exit 1
-
->>
->>> +	exit $glb_err
->>> +}
->>> +
->>> +trap cleanup_files exit term int
->>> +
->>> +arm_spe_report() {
->>> +	if [ $2 != 0 ]; then
->>> +		echo "$1: FAIL"
->>> +		glb_err=$2
->>> +	else
->>> +		echo "$1: PASS"
->>> +	fi
->>> +}
->>> +
->>> +perf_script_samples() {
->>> +	echo "Looking at perf.data file for dumping samples:"
->>> +
->>> +	# from arm-spe.c/arm_spe_synth_events()
->>> +	events="(ld1-miss|ld1-access|llc-miss|lld-access|tlb-miss|tlb-access|branch-miss|remote-access|memory)"
->>> +
->>> +	# Below is an example of the samples dumping:
->>> +	#	dd  3048 [002]          1    l1d-access:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
->>> +	#	dd  3048 [002]          1    tlb-access:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
->>> +	#	dd  3048 [002]          1        memory:      ffffaa64999c __GI___libc_write+0x3c (/lib/aarch64-linux-gnu/libc-2.27.so)
->>> +	perf script -F,-time -i ${perfdata} 2>&1 | \
->>> +		egrep " +$1 +[0-9]+ .* +${events}:(.*:)? +" > /dev/null 2>&1
->>> +}
->>> +
->>> +perf_report_samples() {
->>> +	echo "Looking at perf.data file for reporting samples:"
->>> +
->>> +	# Below is an example of the samples reporting:
->>> +	#   73.04%    73.04%  dd    libc-2.27.so      [.] _dl_addr
->>> +	#    7.71%     7.71%  dd    libc-2.27.so      [.] getenv
->>> +	#    2.59%     2.59%  dd    ld-2.27.so        [.] strcmp
->>> +	perf report --stdio -i ${perfdata} 2>&1 | \
->>> +		egrep " +[0-9]+\.[0-9]+% +[0-9]+\.[0-9]+% +$1 " > /dev/null 2>&1
->>> +}
->>> +
->>> +arm_spe_snapshot_test() {
->>> +	echo "Recording trace with snapshot mode $perfdata"
->>> +	perf record -o ${perfdata} -e arm_spe// -S \
->>> +		-- dd if=/dev/zero of=/dev/null > /dev/null 2>&1 &
->>> +	PERFPID=$!
->>> +
->>> +	# Wait for perf program
->>> +	sleep 1
->>> +
->>> +	# Send signal to snapshot trace data
->>> +	kill -USR2 $PERFPID
->>> +
->>> +	# Stop perf program
->>> +	kill $PERFPID
->>> +	wait $PERFPID
->>> +
->>> +	perf_script_samples dd &&
->>> +	perf_report_samples dd
->>> +
->>> +	err=$?
->>> +	arm_spe_report "SPE snapshot testing" $err
->>> +}
->>> +
->>> +arm_spe_snapshot_test
->>> +exit $glb_err
->>> \ No newline at end of file
->>> -- 
->>> 2.17.1
->>>
+Jason
