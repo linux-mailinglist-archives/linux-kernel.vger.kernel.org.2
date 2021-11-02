@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEEE4424EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 01:51:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23FD74424F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 01:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232438AbhKBAxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 20:53:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48982 "EHLO mail.kernel.org"
+        id S232161AbhKBAxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 20:53:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232095AbhKBAxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 20:53:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id EA03F61051;
-        Tue,  2 Nov 2021 00:51:08 +0000 (UTC)
+        id S232110AbhKBAxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 20:53:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3419D610A2;
+        Tue,  2 Nov 2021 00:51:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1635814269;
-        bh=vhX98WSQ/IOnpdalkg4Kpxb1ipbVPzRGNdRVl5Erprc=;
+        bh=iyikkkz2A2r7CSvjVAiKuF/JkR9kzyfN9m+fGUf6/kI=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=SvIvND1zZwDBQ5h0ZvmEM8vlAVqb7hmVZl221bO9pGq5OwzkDIKoq5fUMIsaPz6w+
-         e4QrCXboyqUbky0crLJymPPgJ9QBZGNT5krSPglvmtXnj++W2/2Ze5pQ4tirsGghEm
-         mORHeZ4msHkvPVRMRjyP31txp1RGsQyyh0O5avKWwVksN61S5fN4wmxJbcGhrQPAFI
-         e3Y8xapu+aPVDbTWX/HRCZ7T28BzY8PpkihtsOGLzbIbnFbUUrBukGcc/c2OJkASrn
-         H5z2YkV/ohbPmhr6CimCaRoQQ/J0pZbiQj/SHD3+5Tng0qGbuRtWpicAv2VA7ajBB7
-         DqwMw/by3LjHQ==
+        b=V3gqdICELSTQkC4Xvd2y2svQkNkp1+IKZ0lVutzG6fU1JQCRXW/eiHrEBvx/iuyT5
+         l/yEcNeJKTr8s14sT943arOlY3AoOV52dhRgLvpYxIDppNjPqnY3rWG5zfTsyJHPNP
+         t8GZ43Lz5Mpv3j1WF6GF4CUqVoZoDTbCi2beh28jvRwxqANMgQbM9mPCxqPDikup37
+         wHAJ8PTpuiVz6DYFTnzSqWxz3JvNNyhdhhPPh/GFFJY7cXMGpLvRU0ycB2hD7YSA4c
+         h6vPwSllr57An4ef/iCcndtuNhDxOtMeUVy/xYkv4wMrPyoo57Ati8JeGgUXpaHTB8
+         gpH1fKN7arprw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E34A860A94;
-        Tue,  2 Nov 2021 00:51:08 +0000 (UTC)
-Subject: Re: [GIT PULL] cpu-to-thread_info update for v5.16-rc1
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2CCDB60A0F;
+        Tue,  2 Nov 2021 00:51:09 +0000 (UTC)
+Subject: Re: [GIT PULL] Smack patches for v5.16
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <202111010908.CA1B15CFDA@keescook>
-References: <202111010908.CA1B15CFDA@keescook>
+In-Reply-To: <b3e4f10f-b065-68fc-957d-92c65a5c7193@schaufler-ca.com>
+References: <f34e40a9-e4ba-ce9f-fdf8-1faaf73c69d2.ref@schaufler-ca.com> <b3e4f10f-b065-68fc-957d-92c65a5c7193@schaufler-ca.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <202111010908.CA1B15CFDA@keescook>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/cpu-to-thread_info-v5.16-rc1
-X-PR-Tracked-Commit-Id: d9f2a53f64a6fcae994457e64a7124d2a3efd323
+X-PR-Tracked-Message-Id: <b3e4f10f-b065-68fc-957d-92c65a5c7193@schaufler-ca.com>
+X-PR-Tracked-Remote: https://github.com/cschaufler/smack-next tags/Smack-for-5.16
+X-PR-Tracked-Commit-Id: 0934ad42bb2c5df90a1b9de690f93de735b622fe
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 01463374c50e4fe75abec927fa231f8f5d701852
-Message-Id: <163581426892.14115.2083506299229931333.pr-tracker-bot@kernel.org>
-Date:   Tue, 02 Nov 2021 00:51:08 +0000
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
+X-PR-Merge-Commit-Id: 6f2b76a4a384e05ac8d3349831f29dff5de1e1e2
+Message-Id: <163581426917.14115.5005306427550289866.pr-tracker-bot@kernel.org>
+Date:   Tue, 02 Nov 2021 00:51:09 +0000
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     torvalds@linux-foundation.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Florian Westphal <fw@strlen.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        casey@schaufler-ca.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 1 Nov 2021 09:12:01 -0700:
+The pull request you sent on Mon, 1 Nov 2021 15:46:54 -0700:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/cpu-to-thread_info-v5.16-rc1
+> https://github.com/cschaufler/smack-next tags/Smack-for-5.16
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/01463374c50e4fe75abec927fa231f8f5d701852
+https://git.kernel.org/torvalds/c/6f2b76a4a384e05ac8d3349831f29dff5de1e1e2
 
 Thank you!
 
