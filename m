@@ -2,162 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77CB44316E
+	by mail.lfdr.de (Postfix) with ESMTP id 7120544316D
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234329AbhKBPU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:20:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45471 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234301AbhKBPUx (ORCPT
+        id S234315AbhKBPU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:20:56 -0400
+Received: from mail-oo1-f53.google.com ([209.85.161.53]:44601 "EHLO
+        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232269AbhKBPUr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:20:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635866298;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6dODq+TaBd9o3SXxOkqAmjs0L7/fBuFRIhrp2FL47OI=;
-        b=F9VS9tmcgCat/hgki00bgMT6zDvGWBADK8fLmTCEbv/Jm3uImiaIcaZk8dOKNZBCjKiavv
-        lfGgWObkh4av7RwE+rIeZFjxuERjuS4egLD6lXWaCALYCTYiRa31zqCE8TkV+vFTqN7+Co
-        gMTLWWcFSJaC15TDOAN8g8FCnIU6L+A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-339-AklUD-MXNQ26qIBOPeLekg-1; Tue, 02 Nov 2021 11:18:15 -0400
-X-MC-Unique: AklUD-MXNQ26qIBOPeLekg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7AE5A362FC;
-        Tue,  2 Nov 2021 15:18:11 +0000 (UTC)
-Received: from T590 (ovpn-8-19.pek2.redhat.com [10.72.8.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D981F60C82;
-        Tue,  2 Nov 2021 15:17:44 +0000 (UTC)
-Date:   Tue, 2 Nov 2021 23:17:39 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Miroslav Benes <mbenes@suse.cz>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, tj@kernel.org,
-        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
-        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
-        bvanassche@acm.org, dan.j.williams@intel.com, joe@perches.com,
-        tglx@linutronix.de, keescook@chromium.org, rostedt@goodmis.org,
-        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org, ming.lei@redhat.com
-Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
-Message-ID: <YYFWkwHSK1Px9cEo@T590>
-References: <alpine.LSU.2.21.2110190820590.15009@pobox.suse.cz>
- <YW6OptglA6UykZg/@T590>
- <alpine.LSU.2.21.2110200835490.26817@pobox.suse.cz>
- <YW/KEsfWJMIPnz76@T590>
- <alpine.LSU.2.21.2110201014400.26817@pobox.suse.cz>
- <YW/q70dLyF+YudyF@T590>
- <YXfA0jfazCPDTEBw@alley>
- <YXgguuAY5iEUIV0u@T590>
- <YYFH85CmVOYIMdYh@alley>
- <YYFQdWvpXOV4foyS@alley>
+        Tue, 2 Nov 2021 11:20:47 -0400
+Received: by mail-oo1-f53.google.com with SMTP id w23-20020a4a9d17000000b002bb72fd39f3so5940756ooj.11;
+        Tue, 02 Nov 2021 08:18:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2EIwvka6HY0tt1mWfUfg0OA139r7CHLfgZe4bS2xaN8=;
+        b=Gv24YAWs7aLoDGqLU+wNSi765fZtzJVnY9bHzEB6qL1s0p84ZB6Wz43O2YCzQ9UE8g
+         2QigRhI1Wbz1jLLMr4yzku8nDOJFqfgJP6Ym6eTnWZRzDrkTddIpnlLFiCU6U5GKLIi5
+         aQWqJ/PzP6wZl8bm5iDkN0ZLgOGSBuAPRjJtEx+gZjbE7IwnVY0ghCHiHNjEfxlmVnl4
+         yVjojSFEDzRcHSRg0R28xq8ueqjcks3v9d3JKbB/GC/FJBU+dyXhWeJ+dOUAbpCKF55P
+         1+XS2TVhhTpNOb++FLC/dtLCv8EC4ilAEQHHCSSR17lBTmekFf5S0kRBfKX0GZnONAsq
+         vv4A==
+X-Gm-Message-State: AOAM530u/iaRgRD/btQkA4lvl/Sk3wniVG7U+jafU0nkgc136eJW/2O5
+        iJJ0QwklzWnfHJZchucr7Q==
+X-Google-Smtp-Source: ABdhPJz0/37WePS8h7rPOcKD03943wRIiB/hsuVsiy+jnaSiOa93DnFJu1gnimNb3NyeLukbT6gIbA==
+X-Received: by 2002:a4a:c304:: with SMTP id c4mr24984263ooq.34.1635866292338;
+        Tue, 02 Nov 2021 08:18:12 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id t141sm331675oie.25.2021.11.02.08.18.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 08:18:11 -0700 (PDT)
+Received: (nullmailer pid 2901202 invoked by uid 1000);
+        Tue, 02 Nov 2021 15:18:09 -0000
+Date:   Tue, 2 Nov 2021 10:18:09 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Saenz Julienne <nsaenzjulienne@suse.de>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 2/9] dt-bindings: PCI: Add bindings for Brcmstb EP
+ voltage regulators
+Message-ID: <YYFWsenSLJ4yzgp3@robh.at.kernel.org>
+References: <20211029200319.23475-1-jim2101024@gmail.com>
+ <20211029200319.23475-3-jim2101024@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YYFQdWvpXOV4foyS@alley>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20211029200319.23475-3-jim2101024@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 03:51:33PM +0100, Petr Mladek wrote:
-> On Tue 2021-11-02 15:15:19, Petr Mladek wrote:
-> > On Tue 2021-10-26 23:37:30, Ming Lei wrote:
-> > > On Tue, Oct 26, 2021 at 10:48:18AM +0200, Petr Mladek wrote:
-> > > > Below are more details about the livepatch code. I hope that it will
-> > > > help you to see if zram has similar problems or not.
-> > > > 
-> > > > We have kobject in three structures: klp_func, klp_object, and
-> > > > klp_patch, see include/linux/livepatch.h.
-> > > > 
-> > > > These structures have to be statically defined in the module sources
-> > > > because they define what is livepatched, see
-> > > > samples/livepatch/livepatch-sample.c
-> > > > 
-> > > > The kobject is used there to show information about the patch, patched
-> > > > objects, and patched functions, in sysfs. And most importantly,
-> > > > the sysfs interface can be used to disable the livepatch.
-> > > > 
-> > > > The problem with static structures is that the module must stay
-> > > > in the memory as long as the sysfs interface exists. It can be
-> > > > solved in module_exit() callback. It could wait until the sysfs
-> > > > interface is destroyed.
-> > > > 
-> > > > kobject API does not support this scenario. The relase() callbacks
-> > > 
-> > > kobject_delete() is for supporting this scenario, that is why we don't
-> > > need to grab module refcnt before calling show()/store() of the
-> > > kobject's attributes.
-> > > 
-> > > kobject_delete() can be called in module_exit(), then any show()/store()
-> > > will be done after kobject_delete() returns.
-> > 
-> > I am a bit confused. I do not see kobject_delete() anywhere in kernel
-> > sources.
-> > 
-> > I see only kobject_del() and kobject_put(). AFAIK, they do _not_
-> > guarantee that either the sysfs interface was destroyed or
-> > the release callbacks were called. For example, see
-> > schedule_delayed_work(&kobj->release, delay) in kobject_release().
+On Fri, Oct 29, 2021 at 04:03:10PM -0400, Jim Quinlan wrote:
+> Similar to the regulator bindings found in "rockchip-pcie-host.txt", this
+> allows optional regulators to be attached and controlled by the PCIe RC
+> driver.  That being said, this driver searches in the DT subnode (the EP
+> node, eg pci-ep@0,0) for the regulator property.
 > 
-> Grr, I always get confused by the code. kobject_del() actually waits
-> until the sysfs interface gets destroyed. This is why there is
-> the deadlock.
+> The use of a regulator property in the pcie EP subnode such as
+> "vpcie12v-supply" depends on a pending pullreq to the pci-bus.yaml
+> file at
+> 
+> https://github.com/devicetree-org/dt-schema/pull/63
+> 
+> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> ---
+>  .../bindings/pci/brcm,stb-pcie.yaml           | 27 +++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+> index 508e5dce1282..d90d867deb5c 100644
+> --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+> +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+> @@ -62,6 +62,10 @@ properties:
+>  
+>    aspm-no-l0s: true
+>  
+> +  vpcie12v-supply: true
+> +  vpcie3v3-supply: true
+> +  vpcie3v3aux-supply: true
+> +
 
-Right.
+You've put these in the host bridge node and in *any* bridge node for 
+pci-bus.yaml, but that's not where you have them in the example.
 
-> 
-> But kobject_put() is _not_ synchronous. And the comment above
-> kobject_add() repeat 3 times that kobject_put() must be called
-> on success:
-> 
->  * Return: If this function returns an error, kobject_put() must be
->  *         called to properly clean up the memory associated with the
->  *         object.  Under no instance should the kobject that is passed
->  *         to this function be directly freed with a call to kfree(),
->  *         that can leak memory.
->  *
->  *         If this function returns success, kobject_put() must also be called
->  *         in order to properly clean up the memory associated with the object.
->  *
->  *         In short, once this function is called, kobject_put() MUST be called
->  *         when the use of the object is finished in order to properly free
->  *         everything.
-> 
-> and similar text in Documentation/core-api/kobject.rst
-> 
->   After a kobject has been registered with the kobject core successfully, it
->   must be cleaned up when the code is finished with it.  To do that, call
->   kobject_put().
-> 
-> 
-> If I read the code correctly then kobject_put() calls kref_put()
-> that might call kobject_delayed_cleanup(). This function does a lot
-> of things and need to access struct kobject.
+The question is where is the right place. Normally, I'd say that's in 
+the node consuming or connected to the resource. That would be as you 
+have the example. However, as we're talking about standard slots (or at 
+least standard slot rails), we likely don't have node for the device in 
+the slot and can't add one since it is likely unknown what the device 
+is. In other cases, we'd define a connector or slot node, but there's 
+not really a way to do that given the PCI bus topology is already 
+defined. So I think the right place is the bridge node on the upstream 
+side of the slot/connector. So the 'pci@0,0' node in your case.
 
-Yes, then what is the problem here wrt. kobject_put() which may not be
-synchronous?
+Rob
 
+>    brcm,scb-sizes:
+>      description: u64 giving the 64bit PCIe memory
+>        viewport size of a memory controller.  There may be up to
+> @@ -158,5 +162,28 @@ examples:
+>                                   <0x42000000 0x1 0x80000000 0x3 0x00000000 0x0 0x80000000>;
+>                      brcm,enable-ssc;
+>                      brcm,scb-sizes =  <0x0000000080000000 0x0000000080000000>;
+> +
+> +                    /* PCIe bridge */
+> +                    pci@0,0 {
+> +                            #address-cells = <3>;
+> +                            #size-cells = <2>;
+> +                            reg = <0x0 0x0 0x0 0x0 0x0>;
+> +                            compatible = "pciclass,0604";
+> +                            device_type = "pci";
+> +                            ranges;
+> +
+> +                            /* PCIe endpoint */
+> +                            pci-ep@0,0 {
+> +                                    assigned-addresses =
+> +                                        <0x82010000 0x0 0xf8000000 0x6 0x00000000 0x0 0x2000>;
+> +                                    reg = <0x0 0x0 0x0 0x0 0x0>;
+> +                                    compatible = "pci14e4,1688";
+> +                                    vpcie3v3-supply = <&vreg7>;
+> +                                    #address-cells = <3>;
+> +                                    #size-cells = <2>;
+> +
+> +                                    ranges;
+> +                            };
+> +                    };
+>              };
+>      };
+> -- 
+> 2.17.1
 > 
-> > IMHO, kobject API does not support static structures and module
-> > removal.
 > 
-> If kobject_put() has to be called also for static structures then
-> module_exit() must explicitly wait until the clean up is finished.
-
-Right, that is exactly how klp_patch kobject is implemented. klp_patch
-kobject has to be disabled first, then module refcnt can be dropped after
-the klp_patch kobject is released. Then module_exit() is possible.
-
-Thanks,
-Ming
-
