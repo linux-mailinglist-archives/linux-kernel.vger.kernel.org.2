@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA26442F03
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 14:21:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F15B7442F05
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 14:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbhKBNXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 09:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231239AbhKBNXa (ORCPT
+        id S231247AbhKBNXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 09:23:51 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:44834 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229712AbhKBNXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 09:23:30 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D35C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 06:20:55 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id d21so3367573lfg.7
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 06:20:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dczPTm8CRjx864gDRFl5nDvDcvUiz4NUX5XbHa7J7F8=;
-        b=FnOFGHiBYqf/NDURwonj7/pC9oiLvv8KGyNv2yNwfP5oNaEoAXJU+erU4/kyUgP6Kx
-         o0QLj+xXSbbIst6XD0CcRqIQ8JVkc4OmYc1DQn/8iiS8OlqKpCOy3H9aWv/ilu1zjUn9
-         IPOLik9lPCovbFI6AHdjC/nXMx/YvHJ84O9tA=
+        Tue, 2 Nov 2021 09:23:50 -0400
+Received: by mail-ot1-f50.google.com with SMTP id o10-20020a9d718a000000b00554a0fe7ba0so24116084otj.11;
+        Tue, 02 Nov 2021 06:21:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dczPTm8CRjx864gDRFl5nDvDcvUiz4NUX5XbHa7J7F8=;
-        b=owiOIvC8zGvv0A605g8cmThOpQX9ziUFEe8NJXPwy/Vg26aLEHzNT93uujk5rv2Qqi
-         4aqPdvLA3W98W9zKVcYlCgvGW7NBs5ooqjuCSVUP8JZiJ6pWUx5tmeRZmZoz+eME0mvf
-         KM9H6NdVg/UsKoZYPpaoIVlldgyrb0fXr2SxZdt7/dZRwhRWci0Iuv53WvbkRT6pyoxv
-         WJyTihn5jN9w73oM58FSPagalQwfuoHi5Ty9yet+ePLyUmGl6DWMow0TigiTAUZjHZmc
-         0OyYFEbA8OxYuIDRMNMEmbd0HsfwFTJ/hKPwuTHPssGaO5tYSS/RTh2+Gv0GxDZIp57o
-         AUig==
-X-Gm-Message-State: AOAM53215R3RLxOL/ZU+VGH2bd8+Nb8fHCsFoNRgiS5KKLjDgtbe5kN7
-        08ZAdM0hLq4D4SPVADhFETqcJP8h1TVa+nei
-X-Google-Smtp-Source: ABdhPJysRBCDMrP9geNJldUkpS2ZdHF3R+hV1FlJYzeiE33NCFzrN0Qj3xzWMWsUAB+9n/eIjwH+7Q==
-X-Received: by 2002:a05:6512:150e:: with SMTP id bq14mr35354152lfb.444.1635859253707;
-        Tue, 02 Nov 2021 06:20:53 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id a17sm1311823lfb.179.2021.11.02.06.20.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 06:20:52 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id bu18so25761355lfb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 06:20:51 -0700 (PDT)
-X-Received: by 2002:ac2:4e15:: with SMTP id e21mr35940936lfr.655.1635859251039;
- Tue, 02 Nov 2021 06:20:51 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8DD3rCF6jBxu4k+OYCUU4GMceJRCBHyNxQokvIcdkO4=;
+        b=lZC6dW+r0ykbpIFmBuVLXcuPRhyoKzOO7wIyiECOl1LCzz57KLM7iSo/BaMMVsZ0ol
+         Q8Ne93DizisG0jzsRBufwzjKY/ib5viSPEvzRI9UNcEPDe01wovGpfWidWuTsqgcE0Sk
+         4ujRcoWI5SDUeHulqLufqYTBkC1qtUsUWL6p7DYHnfp09eo3EXvbKaGZIGxXKJW0XpNY
+         Ft4XennP3oxUU0ex3m0lDCcmfBRMfHGsmIkQOoKVRi7lWpqia3s5jNb042v/GOaZAtOe
+         M6tUnKp45WAJfls0qj2feTyvOQT4uMF/EdwC8dKYC9J3jIU17+ojbe8IGBTYtaIJUMIV
+         Kqsw==
+X-Gm-Message-State: AOAM533Tef2eRhJr51otMSGJtXJDq2zbkLo7tdHc333cHXV6Bx6STHtN
+        MczGTVZFhyCh6Uun9+/9dQ==
+X-Google-Smtp-Source: ABdhPJyHOy9mKMNd012qXkVOWSu+GYz663s1Yp7e611ut1ZGm5A+ouAXTHU3DSQKL0pFSujy0eXx+w==
+X-Received: by 2002:a05:6830:4033:: with SMTP id i19mr26131739ots.320.1635859275084;
+        Tue, 02 Nov 2021 06:21:15 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id 8sm5057177oix.29.2021.11.02.06.21.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 06:21:14 -0700 (PDT)
+Received: (nullmailer pid 2714011 invoked by uid 1000);
+        Tue, 02 Nov 2021 13:21:13 -0000
+Date:   Tue, 2 Nov 2021 08:21:13 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Etienne Carriere <etienne.carriere@linaro.org>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v8 1/2] dt-bindings: arm: Add OP-TEE transport for SCMI
+Message-ID: <YYE7SV886ihwD31f@robh.at.kernel.org>
+References: <20211028140009.23331-1-etienne.carriere@linaro.org>
 MIME-Version: 1.0
-References: <20211102054237.3307077-1-kuba@kernel.org>
-In-Reply-To: <20211102054237.3307077-1-kuba@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 2 Nov 2021 06:20:35 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgdE6=ob5nF60GvRYAG24MKaJBGJf3jPufMe1k_UPBQTA@mail.gmail.com>
-Message-ID: <CAHk-=wgdE6=ob5nF60GvRYAG24MKaJBGJf3jPufMe1k_UPBQTA@mail.gmail.com>
-Subject: Re: [GIT PULL] Networking for 5.16
-To:     Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        keescook@chromium.org, kvalo@codeaurora.org,
-        miriam.rachel.korenblit@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211028140009.23331-1-etienne.carriere@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 10:43 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-for-5.16
+On Thu, 28 Oct 2021 16:00:08 +0200, Etienne Carriere wrote:
+> Introduce compatible "linaro,scmi-optee" for SCMI transport channel
+> based on an OP-TEE service invocation. The compatible mandates a
+> channel ID defined with property "linaro,optee-channel-id".
+> 
+> Cc: devicetree@vger.kernel.org
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
+> ---
+> Changes since v6:
+>  - Remove maxItems from linaro,optee-channel-id description
+> 
+> No change since v5
+> 
+> Changes since v4:
+>  - Fix sram node name in DTS example: s/-shm-/-sram-/
+> 
+> Changes since v3:
+>  - Add description for linaro,optee-channel-id in patternProperties
+>    specifying protocol can optionaly define a dedicated channel id.
+>  - Fix DTS example (duplicated phandles issue, subnodes ordering)
+>  - Fix typo in DTS example and description comments.
+> 
+> Changes since v2:
+>  - Define mandatory property linaro,optee-channel-id
+>  - Rebased on yaml description file
+> 
+> Changes since v1:
+>  - Removed modification regarding mboxes property description.
+> ---
+>  .../bindings/firmware/arm,scmi.yaml           | 65 +++++++++++++++++++
+>  1 file changed, 65 insertions(+)
+> 
 
-I get quite a lot of
-
-    ./scripts/pahole-flags.sh: line 7: return: can only `return' from
-a function or sourced script
-
-with this. Why didn't anybopdy else notice? It seems entirely bogus
-and presumably happens everywhere else too.
-
-It's shell script. You don't "return" from it. You "exit" from it.
-
-Grr.
-
-                 Linus
+Reviewed-by: Rob Herring <robh@kernel.org>
