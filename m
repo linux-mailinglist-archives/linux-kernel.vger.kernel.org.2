@@ -2,124 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D6C4428F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7614428F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbhKBH54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:57:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhKBH5z (ORCPT
+        id S231168AbhKBH6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:58:11 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:41682
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229878AbhKBH6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:57:55 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1C5C061714;
-        Tue,  2 Nov 2021 00:55:20 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id d204so50961190ybb.4;
-        Tue, 02 Nov 2021 00:55:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IYt4XdhIV9mCaGivgxKhV13JsWC7QyPYPD/Uf0f0VIs=;
-        b=hi+WlcUukqlLODfpjwW2VnRDHE+wHoBCu0sK/EMuhpL+IaT1POHTsscxNKlv74QBwj
-         tNLpz/ca1nZ/tivSKZGvUUtk22P4h61lKWrGLhjjevFOf7qfOdHUbpSeSgkOw7YSLxFg
-         hzdDcpHnvUVDY62fxsF7w+DzhZSgxmA0V8qx7PQIo2X+1o0kiyi8jq2PPuHSAWQVnQZt
-         bLfXJmkiWh3sg6fZbxvSTnNNs3LQ484HCKq3N2QQ4Zxtc/3d4tSd7U6IJbb3YUVQbCCa
-         MMe16MR2nUVK9xkT5V+qQg2bKNTCdfN0HMqXYFpEO5oWHLsa9zmeRSxNjNSeljAlkQh4
-         gMfg==
+        Tue, 2 Nov 2021 03:58:09 -0400
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 674083F1A9
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 07:55:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635839734;
+        bh=TL9ujWaRC5QrK/omsBGAzgL+mAn1UaLwIFZhjmwNN9I=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=ExQCg3V+trrItHD3VZ6u7EPN285MG1j7302uaICCX+DirvLS8Qcnxusodz+LCKh/3
+         euVrH+Scp5HK1zKc7hwRgOYoaID9vpyA0zW6poT8k5pNuoSDS8FFJj0WM5BMUAFVHq
+         vlL90A6KAd9wKzQlyccLkbCtN0efyGwuPWhK+4zIeEVvMpNx/B+MenjIWetoBoMFyp
+         Y3SdVfmM4ANZyz4K1+6aNJQMzbqX4ad+n/9XzRaC2mgpfjpOL4Iil+BOcsj81dh69h
+         wNs//havHbZeS3ODg5DDVvdy8BcYzIJsrudZD3WCpKpwV0rmr/rZ3IMWlTKUiPuMsk
+         qDgA4Lz+KYjkA==
+Received: by mail-lf1-f70.google.com with SMTP id i1-20020a056512340100b003fdd5b951e0so6701028lfr.22
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 00:55:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IYt4XdhIV9mCaGivgxKhV13JsWC7QyPYPD/Uf0f0VIs=;
-        b=DvvRJ4NwoOUJKt2jhrjI2HIfjYHQJK3kAfg04gTI2Q0dYuvzBRwkMlWZrpu/LGyK3c
-         fL5M/hzFJSEY7b7JGybD8ikcenL8qlJXYxOIJdHiKEkg4WRydudIoaz6u+19v9ZhWYEC
-         PsLCg3ThWQNuihwoeopKS0joYgpQ+bqJOoljvtq59iVz1UZI+KWgq5BBjZ9UEu5gihIW
-         fRriYtPhuCDaSMV/q8uhe9wZCAIxwyHqpv5+JUCsdiDJPSg8LznM2KbcdiBHiOSL4OJP
-         mDYB6H4QlfiVsUz99F0Rg9NmxAeJCAunRxqrm7lP1JsXAQE6n3BpzFQZsIHAtMsbPu+F
-         UdQQ==
-X-Gm-Message-State: AOAM531PW0yoHQjPt6q864uRtDWUVcU5t/Rh43iBh0AFkqAXnNwuNwuL
-        l/Z45NDrZ9Jbn4Bqosf5MTdMWwjjMEY7Pp8aHnk=
-X-Google-Smtp-Source: ABdhPJzK6cSMn+HDFhuBPyz0xbsXJXCQ7kZL8KTzlfKBDhHdacY3bQgOuecjIM+xrmFVCFk7Ozss13UuugxdEB6hZ8w=
-X-Received: by 2002:a25:a268:: with SMTP id b95mr36582994ybi.35.1635839719820;
- Tue, 02 Nov 2021 00:55:19 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=TL9ujWaRC5QrK/omsBGAzgL+mAn1UaLwIFZhjmwNN9I=;
+        b=x/K8HedaYTRuUyFy7tuQuqgBD4Enss8xPq8lrAQ78NYAj4i2V7ymZ7yHCEA1cAisMU
+         nZeOd+tIMoUkfqC3ZIxJG6FlaCZZcoYB8vAIXMoIMXOuyqCTN/0NG1ERnJnG4aTb+88R
+         6YoYsDbLHDiuaGYtj0sSEuZ5m9SG++nUfMkodoaszhaDgi0LynQDozl7SXsIA4li7WF8
+         AerX03H1YDyP2cbx7soHsBhw/xFat6fLccFmtXKG6tLqyIv/aLGZCeyyzFGh+/i+hR9Y
+         YnYehsKyePCzalElUr0iOorXKpt6jLTV8qeYgaBBUXCDeNp2tPEUPZwOTFH6o0Ow5hrR
+         13JQ==
+X-Gm-Message-State: AOAM532YACDnfnUCB7j77dyi5Pc6ATZHTItGLyhMiLuXdpUa9tlGXGdU
+        vNbz1NHwEWv4I3DTF1wVhOu5TGLBahi7jt7sjlGjvV3v3jEpEzEACFL+3ArUiX1iR+wMf9NkL60
+        pMuo1NFzv1fKN3ufAoIvTFjGoSs5ePlg271QgTGl27Q==
+X-Received: by 2002:a05:6512:b83:: with SMTP id b3mr32712047lfv.654.1635839733925;
+        Tue, 02 Nov 2021 00:55:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyWfHYARD0cMK/UpHT4OBoPI1WgrZQDQUCrOlg/dE4Y6zJh9PI9MVX5Aw/N+Qh4RKsTqWkJwA==
+X-Received: by 2002:a05:6512:b83:: with SMTP id b3mr32712035lfv.654.1635839733798;
+        Tue, 02 Nov 2021 00:55:33 -0700 (PDT)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id s1sm111943lfi.124.2021.11.02.00.55.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 00:55:33 -0700 (PDT)
+Message-ID: <a7697cc9-1872-d466-0fb7-683df9c46af9@canonical.com>
+Date:   Tue, 2 Nov 2021 08:55:32 +0100
 MIME-Version: 1.0
-References: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
- <20211028141938.3530-4-lukas.bulwahn@gmail.com> <CAK8P3a3+-J6XbUmzWs7ATN7z53GomZSj6vq3n5R709=iL45RrA@mail.gmail.com>
-In-Reply-To: <CAK8P3a3+-J6XbUmzWs7ATN7z53GomZSj6vq3n5R709=iL45RrA@mail.gmail.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Tue, 2 Nov 2021 08:55:09 +0100
-Message-ID: <CAKXUXMwBsDY_onmEztvrfS6Q3k_0YH8gQGLm9zcM2Ge--kcG6A@mail.gmail.com>
-Subject: Re: [PATCH 03/13] arm: Kconfig.debug: drop reference to removed ARCH_MSM
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linusw@kernel.org>,
-        Imre Kaloz <kaloz@openwrt.org>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH v2 1/2] dt-bindings: pinctrl: samsung: Document Exynos7885
+Content-Language: en-US
+To:     David Virag <virag.david003@gmail.com>
+Cc:     Tomasz Figa <tomasz.figa@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211031231511.46856-1-virag.david003@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211031231511.46856-1-virag.david003@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 4:42 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Thu, Oct 28, 2021 at 4:19 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-> >
-> > Commit c0c89fafa289 ("ARM: Remove mach-msm and associated ARM architecture
-> > code") removes the definition of the config ARCH_MSM. Since then, the
-> > reference to ARCH_MSM in the dependencies of UNCOMPRESS_INCLUDE in
-> > Kconfig.debug is dead.
-> >
-> > Fortunately, ./scripts/checkkconfigsymbols.py warns:
-> >
-> > ARCH_MSM
-> > Referencing files: arch/arm/Kconfig.debug
-> >
-> > Drop the dependency on this removed config.
-> >
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > ---
-> >  arch/arm/Kconfig.debug | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/arch/arm/Kconfig.debug b/arch/arm/Kconfig.debug
-> > index 83484564b1d9..87aa6e92ee6e 100644
-> > --- a/arch/arm/Kconfig.debug
-> > +++ b/arch/arm/Kconfig.debug
-> > @@ -1886,7 +1886,7 @@ config DEBUG_UNCOMPRESS
-> >
-> >  config UNCOMPRESS_INCLUDE
-> >         string
-> > -       default "debug/uncompress.h" if ARCH_MULTIPLATFORM || ARCH_MSM || \
-> > +       default "debug/uncompress.h" if ARCH_MULTIPLATFORM || \
-> >                                         PLAT_SAMSUNG || ARM_SINGLE_ARMV7M
->
-> The PLAT_SAMSUNG reference is also misplaced here, I think you just want
-> ARCH_S3C24XX instead, since the other samsung ones already require
-> ARCH_MULTIPLATFORM.
->
+On 01/11/2021 00:15, David Virag wrote:
+> Document compatible string for Exynos7885 SoC.
+> 
+> Signed-off-by: David Virag <virag.david003@gmail.com>
+> ---
+> Changes in v2:
+>   - (none)
+> 
 
-Agree. I can clean up (or better stated: optimize) the dependencies
-further in such a way. But that config dependency optimization goes
-beyond just removing dead symbols and deserves to be its own patch.
-Patch will follow later this week.
+Both patches look good, I'll take them after the merge window.
 
-Lukas
+
+Best regards,
+Krzysztof
