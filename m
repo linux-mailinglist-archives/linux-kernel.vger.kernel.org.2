@@ -2,277 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003BB4430DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:53:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D124430E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234159AbhKBOzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:55:44 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:47414 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234136AbhKBOzm (ORCPT
+        id S234369AbhKBO4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:56:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233581AbhKBO4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:55:42 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A2CdoCn027700;
-        Tue, 2 Nov 2021 15:52:57 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=eqvDdd0ahR8WFYpXCJbJgfrk+LtLUkWSTird/QHRFCA=;
- b=0mpz1fqwlOx5hgWloXUXxbwxWISXqNoqiMewf04rZRXuE4Htlst4Jp8D9WtPgpiZOgAP
- ne00m6j7wPwFJmqIvEwsgmrfjsco6RF7t/+viJBYGo4RsIQOmYEgggyFPfjX5QOpMYzY
- BXAzbOQ+9QH29vApoCKUIQCy/NkNN7H9fcAeUMgSij6k2+QALc7U3c1kgDTNICi0aeVn
- e3UTDdpRYZ2huhc7YS2gSqLjsj4sTDTsgkaCDMH8Dl8rSyHjwzsZNW/HfuAxf+4NZV5L
- uwDKN+Bz9iVkpsBNniLmo/PcrR/YgnJBV9ApCDHeiL4jdrzslCIH54fYsC5EuT6Q2H73 /A== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c30uvk2hc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Nov 2021 15:52:57 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1CEEE10002A;
-        Tue,  2 Nov 2021 15:52:56 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0CE3E24165D;
-        Tue,  2 Nov 2021 15:52:56 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.48) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 2 Nov
- 2021 15:52:55 +0100
-Subject: Re: [PATCH v6 01/10] rpmsg: char: Export eptdev create an destroy
- functions
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>, <julien.massot@iot.bzh>
-References: <20211022125426.2579-1-arnaud.pouliquen@foss.st.com>
- <20211022125426.2579-2-arnaud.pouliquen@foss.st.com>
- <YYAb8P1Exqf4emQ3@builder.lan>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <c7a7d901-8472-d641-1e14-4c8339d124fc@foss.st.com>
-Date:   Tue, 2 Nov 2021 15:52:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 2 Nov 2021 10:56:46 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E84AC061714;
+        Tue,  2 Nov 2021 07:54:11 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id ee33so6009269edb.8;
+        Tue, 02 Nov 2021 07:54:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sQPZ+A7u6P6I2+Cdu40NEs7KpcMqwcX/VdKifLOtVBA=;
+        b=fubu4QoEJPYCuuJ0ncleAFSlDr0F0tbl53GJLEAAQU+rkCY72q0c5+YfNOgT8wNkPV
+         RHkIFwhIWGcFjwRWWHBTMB+p6yJs+Spext1PyaemoqWxeYB2X2PoxJCRfEBL+klYgU9W
+         CJHLpZOnq26UmNwHj3RZzRr+ybg4vtBe9WBwvE0316FN8z8mOVeW0OT7nXVEE9vvb5Q/
+         tbjfHndUoJoZsQ3LH3n382tEeNcfwaQjVpadFI5oUncWBMFtypddmHV4C0y+sX/ikQ3b
+         Hlwt/X7kHhvFLOS/9YGnyxDWfXCH25c7NJ0ZLKCX48EqvUQTw6Jvk5w+F2M9djS2SH3S
+         sGwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sQPZ+A7u6P6I2+Cdu40NEs7KpcMqwcX/VdKifLOtVBA=;
+        b=Hfi5tPTwn5CRqHE3RnttSYdI2IL2chpl955TUv/OcFPsZB7X6u4UezYmD7psLxG+H5
+         z7QalJQpCUPBJaLbIkJkGgPFv2Z9o4uIyAinjp7cCGVshAndsU91r8YdydfbYIVolR1h
+         JpG8uTkzQzHkusoHwIdeUdkKembSXRYD185O6y7i/PvAnJqM2SOGfSRXxy2rMPvoNlQy
+         GI5msCz9Tc78Sr0ekEVA7srYakQlHXTHxnMkg+To8ZJoWC4RmJusLwyGIl92jPvW+CNI
+         1+X4kRGMpk5UIjuSAM9bZaHdbNNlqyC/VFNhe4XitmDYjAdTV3mM5cMO0R+4D+/Z7hXQ
+         RwCg==
+X-Gm-Message-State: AOAM531cOQeDeh5BaYf3BZOUsqeGBMqFAFDMFnM4DA4r80lGsH8N9ZXW
+        yZ3CXWg1+8Cq1marZRKSsRrhjs6mzvZ7m7065nI=
+X-Google-Smtp-Source: ABdhPJwH9JY+GKdKAr6hsTkOlZ1H9hgagZ+Ewpzzk8wko78etTrjOnl/8nTxh/sPW4I2WJtIWWceZ+n5D9ceJdNym2s=
+X-Received: by 2002:a50:e145:: with SMTP id i5mr51315860edl.16.1635864849792;
+ Tue, 02 Nov 2021 07:54:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YYAb8P1Exqf4emQ3@builder.lan>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-02_08,2021-11-02_01,2020-04-07_01
+References: <20211101103158.3725704-1-jun.miao@windriver.com> <96f9d669-b9da-f387-199e-e6bf36081fbd@windriver.com>
+In-Reply-To: <96f9d669-b9da-f387-199e-e6bf36081fbd@windriver.com>
+From:   Uladzislau Rezki <urezki@gmail.com>
+Date:   Tue, 2 Nov 2021 15:53:58 +0100
+Message-ID: <CA+KHdyU98uHkf1VKbvFs0wcXz7SaizENRXn4BEpKJhe+KmXZuw@mail.gmail.com>
+Subject: Re: [PATCH] rcu: avoid alloc_pages() when recording stack
+To:     Jun Miao <jun.miao@windriver.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Dmitry Vyukov <dvyukov@google.com>, qiang.zhang1211@gmail.com,
+        RCU <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        miaojun0823@163.com, ryabinin.a.a@gmail.com,
+        Alexander Potapenko <glider@google.com>,
+        jianwei.hu@windriver.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+>
+> Add KASAN maintainers
+>
+> On 11/1/21 6:31 PM, Jun Miao wrote:
+> > The default kasan_record_aux_stack() calls stack_depot_save() with GFP_NOWAIT,
+> > which in turn can then call alloc_pages(GFP_NOWAIT, ...).  In general, however,
+> > it is not even possible to use either GFP_ATOMIC nor GFP_NOWAIT in certain
+> > non-preemptive contexts/RT kernel including raw_spin_locks (see gfp.h and ab00db216c9c7).
+> >
+> > Fix it by instructing stackdepot to not expand stack storage via alloc_pages()
+> > in case it runs out by using kasan_record_aux_stack_noalloc().
+> >
+> > Jianwei Hu reported:
+> >   BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:969
+> >   in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 15319, name: python3
+> >   INFO: lockdep is turned off.
+> >   irq event stamp: 0
+> >   hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> >   hardirqs last disabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
+> >   softirqs last  enabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
+> >   softirqs last disabled at (0): [<0000000000000000>] 0x0
+> >   CPU: 6 PID: 15319 Comm: python3 Tainted: G        W  O 5.15-rc7-preempt-rt #1
+> >   Hardware name: Supermicro SYS-E300-9A-8C/A2SDi-8C-HLN4F, BIOS 1.1b 12/17/2018
+> >   Call Trace:
+> >    show_stack+0x52/0x58
+> >    dump_stack+0xa1/0xd6
+> >    ___might_sleep.cold+0x11c/0x12d
+> >    rt_spin_lock+0x3f/0xc0
+> >    rmqueue+0x100/0x1460
+> >    rmqueue+0x100/0x1460
+> >    mark_usage+0x1a0/0x1a0
+> >    ftrace_graph_ret_addr+0x2a/0xb0
+> >    rmqueue_pcplist.constprop.0+0x6a0/0x6a0
+> >     __kasan_check_read+0x11/0x20
+> >     __zone_watermark_ok+0x114/0x270
+> >     get_page_from_freelist+0x148/0x630
+> >     is_module_text_address+0x32/0xa0
+> >     __alloc_pages_nodemask+0x2f6/0x790
+> >     __alloc_pages_slowpath.constprop.0+0x12d0/0x12d0
+> >     create_prof_cpu_mask+0x30/0x30
+> >     alloc_pages_current+0xb1/0x150
+> >     stack_depot_save+0x39f/0x490
+> >     kasan_save_stack+0x42/0x50
+> >     kasan_save_stack+0x23/0x50
+> >     kasan_record_aux_stack+0xa9/0xc0
+> >     __call_rcu+0xff/0x9c0
+> >     call_rcu+0xe/0x10
+> >     put_object+0x53/0x70
+> >     __delete_object+0x7b/0x90
+> >     kmemleak_free+0x46/0x70
+> >     slab_free_freelist_hook+0xb4/0x160
+> >     kfree+0xe5/0x420
+> >     kfree_const+0x17/0x30
+> >     kobject_cleanup+0xaa/0x230
+> >     kobject_put+0x76/0x90
+> >     netdev_queue_update_kobjects+0x17d/0x1f0
+> >     ... ...
+> >     ksys_write+0xd9/0x180
+> >     __x64_sys_write+0x42/0x50
+> >     do_syscall_64+0x38/0x50
+> >     entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> >
+> > Fixes: 84109ab58590 ("rcu: Record kvfree_call_rcu() call stack for KASAN")
+> > Fixes: 26e760c9a7c8 ("rcu: kasan: record and print call_rcu() call stack")
+> > Reported-by: Jianwei Hu <jianwei.hu@windriver.com>
+> > Signed-off-by: Jun Miao <jun.miao@windriver.com>
+> > ---
+> >   kernel/rcu/tree.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 8270e58cd0f3..2c1034580f15 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3026,7 +3026,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
+> >       head->func = func;
+> >       head->next = NULL;
+> >       local_irq_save(flags);
+> > -     kasan_record_aux_stack(head);
+> > +     kasan_record_aux_stack_noalloc(head);
+> >       rdp = this_cpu_ptr(&rcu_data);
+> >
+> >       /* Add the callback to our list. */
+> > @@ -3591,7 +3591,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> >               return;
+> >       }
+> >
+> > -     kasan_record_aux_stack(ptr);
+> > +     kasan_record_aux_stack_noalloc(ptr);
+> >       success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
+> >       if (!success) {
+> >               run_page_cache_worker(krcp);
+>
+Yep an allocation is tricky here. This change looks correct to me at
+least from the point that it does not allocate.
 
-On 11/1/21 5:55 PM, Bjorn Andersson wrote:
-> On Fri 22 Oct 07:54 CDT 2021, Arnaud Pouliquen wrote:
-> 
->> To prepare the split of the code related to the control (ctrldev)
->> and the endpoint (eptdev) devices in 2 separate files:
->>
->> - Rename and export the functions in rpmsg_char.h.
->>
->> - Suppress the dependency with the rpmsg_ctrldev struct in the
->>   rpmsg_eptdev_create function.
->>
->> Suggested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->> ---
->>  update vs previous revision:
->>   - add comment to explain the IS_REACHABLE usage
->>   - remove Mathieu Poirier reviewed-by as patch updated
->> ---
->>  drivers/rpmsg/rpmsg_char.c | 18 +++++++-----
->>  drivers/rpmsg/rpmsg_char.h | 57 ++++++++++++++++++++++++++++++++++++++
->>  2 files changed, 68 insertions(+), 7 deletions(-)
->>  create mode 100644 drivers/rpmsg/rpmsg_char.h
->>
->> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
->> index b5907b80727c..941c5c54dd72 100644
->> --- a/drivers/rpmsg/rpmsg_char.c
->> +++ b/drivers/rpmsg/rpmsg_char.c
->> @@ -1,5 +1,6 @@
->>  // SPDX-License-Identifier: GPL-2.0
->>  /*
->> + * Copyright (C) 2021, STMicroelectronics
->>   * Copyright (c) 2016, Linaro Ltd.
->>   * Copyright (c) 2012, Michal Simek <monstr@monstr.eu>
->>   * Copyright (c) 2012, PetaLogix
->> @@ -22,6 +23,8 @@
->>  #include <linux/uaccess.h>
->>  #include <uapi/linux/rpmsg.h>
->>  
->> +#include "rpmsg_char.h"
->> +
->>  #define RPMSG_DEV_MAX	(MINORMASK + 1)
->>  
->>  static dev_t rpmsg_major;
->> @@ -76,7 +79,7 @@ struct rpmsg_eptdev {
->>  	wait_queue_head_t readq;
->>  };
->>  
->> -static int rpmsg_eptdev_destroy(struct device *dev, void *data)
->> +int rpmsg_chrdev_eptdev_destroy(struct device *dev, void *data)
->>  {
->>  	struct rpmsg_eptdev *eptdev = dev_to_eptdev(dev);
->>  
->> @@ -95,6 +98,7 @@ static int rpmsg_eptdev_destroy(struct device *dev, void *data)
->>  
->>  	return 0;
->>  }
->> +EXPORT_SYMBOL(rpmsg_chrdev_eptdev_destroy);
->>  
->>  static int rpmsg_ept_cb(struct rpmsg_device *rpdev, void *buf, int len,
->>  			void *priv, u32 addr)
->> @@ -278,7 +282,7 @@ static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
->>  	if (cmd != RPMSG_DESTROY_EPT_IOCTL)
->>  		return -EINVAL;
->>  
->> -	return rpmsg_eptdev_destroy(&eptdev->dev, NULL);
->> +	return rpmsg_chrdev_eptdev_destroy(&eptdev->dev, NULL);
->>  }
->>  
->>  static const struct file_operations rpmsg_eptdev_fops = {
->> @@ -337,10 +341,9 @@ static void rpmsg_eptdev_release_device(struct device *dev)
->>  	kfree(eptdev);
->>  }
->>  
->> -static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
->> +int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent,
->>  			       struct rpmsg_channel_info chinfo)
->>  {
->> -	struct rpmsg_device *rpdev = ctrldev->rpdev;
->>  	struct rpmsg_eptdev *eptdev;
->>  	struct device *dev;
->>  	int ret;
->> @@ -360,7 +363,7 @@ static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
->>  
->>  	device_initialize(dev);
->>  	dev->class = rpmsg_class;
->> -	dev->parent = &ctrldev->dev;
->> +	dev->parent = parent;
->>  	dev->groups = rpmsg_eptdev_groups;
->>  	dev_set_drvdata(dev, eptdev);
->>  
->> @@ -403,6 +406,7 @@ static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
->>  
->>  	return ret;
->>  }
->> +EXPORT_SYMBOL(rpmsg_chrdev_eptdev_create);
->>  
->>  static int rpmsg_ctrldev_open(struct inode *inode, struct file *filp)
->>  {
->> @@ -442,7 +446,7 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
->>  	chinfo.src = eptinfo.src;
->>  	chinfo.dst = eptinfo.dst;
->>  
->> -	return rpmsg_eptdev_create(ctrldev, chinfo);
->> +	return rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
->>  };
->>  
->>  static const struct file_operations rpmsg_ctrldev_fops = {
->> @@ -528,7 +532,7 @@ static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
->>  	int ret;
->>  
->>  	/* Destroy all endpoints */
->> -	ret = device_for_each_child(&ctrldev->dev, NULL, rpmsg_eptdev_destroy);
->> +	ret = device_for_each_child(&ctrldev->dev, NULL, rpmsg_chrdev_eptdev_destroy);
->>  	if (ret)
->>  		dev_warn(&rpdev->dev, "failed to nuke endpoints: %d\n", ret);
->>  
->> diff --git a/drivers/rpmsg/rpmsg_char.h b/drivers/rpmsg/rpmsg_char.h
->> new file mode 100644
->> index 000000000000..109c2c43005f
->> --- /dev/null
->> +++ b/drivers/rpmsg/rpmsg_char.h
->> @@ -0,0 +1,57 @@
->> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
->> +/*
->> + * Copyright (C) STMicroelectronics 2021.
->> + */
->> +
->> +#ifndef __RPMSG_CHRDEV_H__
->> +#define __RPMSG_CHRDEV_H__
->> +
->> +/*
->> + * The IS_REACHABLE macro is used here to prevent unresolved symbol error during link,
->> + * building with RPMSG_CHAR=m and RPMSG_CTRL=y configuration.
->> + * In such case a kernel warning is printed to help develloper to fix the issue.
->> + */
-> 
-> I think we concluded that RPMSG_CHAR=n, RPMSG_CTRL=y is a valid
-> combination. If so I presume you don't want the user to get the kernel
-> log spammed by the WARN_ON()?
-> 
-> Afaict this should only ever be invoked by rpmsg_ctrl and with
-> RPMSG_CHAR disabled the related ioctls should just fail nicely.
-> 
-> 
-> As such. I think this should be #if IS_ENABLED() and we should put:
-> 
-> 	depends on RPMSG_CHAR || RPMSG_CHAR=n
-> 
-> in the RPMSG_CTRL Kconfig.
-
-Need to make more tests but that seems to me a very good way to solve the
-dependency.
-
-Thanks,
-Arnaud
-
-> 
-> Regards,
-> Bjorn
-> 
->> +
->> +#if IS_REACHABLE(CONFIG_RPMSG_CHAR)
->> +/**
->> + * rpmsg_chrdev_eptdev_create() - register char device based on an endpoint
->> + * @rpdev:  prepared rpdev to be used for creating endpoints
->> + * @parent: parent device
->> + * @chinfo: associated endpoint channel information.
->> + *
->> + * This function create a new rpmsg char endpoint device to instantiate a new
->> + * endpoint based on chinfo information.
->> + */
->> +int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent,
->> +			       struct rpmsg_channel_info chinfo);
->> +
->> +/**
->> + * rpmsg_chrdev_eptdev_destroy() - destroy created char device endpoint.
->> + * @data: private data associated to the endpoint device
->> + *
->> + * This function destroys a rpmsg char endpoint device created by the RPMSG_DESTROY_EPT_IOCTL
->> + * control.
->> + */
->> +int rpmsg_chrdev_eptdev_destroy(struct device *dev, void *data);
->> +
->> +#else  /*IS_REACHABLE(CONFIG_RPMSG_CHAR) */
->> +
->> +static inline int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent,
->> +					     struct rpmsg_channel_info chinfo)
->> +{
->> +	/* This shouldn't be possible */
->> +	WARN_ON(1);
->> +	return -EINVAL;
->> +}
->> +
->> +static inline int rpmsg_chrdev_eptdev_destroy(struct device *dev, void *data)
->> +{
->> +	/* This shouldn't be possible */
->> +	WARN_ON(1);
->> +
->> +	return 0;
->> +}
->> +
->> +#endif /*IS_REACHABLE(CONFIG_RPMSG_CHAR) */
->> +
->> +#endif /*__RPMSG_CHRDEV_H__ */
->> -- 
->> 2.17.1
->>
+-- 
+Uladzislau Rezki
