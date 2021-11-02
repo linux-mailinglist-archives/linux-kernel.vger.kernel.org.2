@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE77442B7C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBF0442B83
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbhKBKST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 06:18:19 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:47270
+        id S230321AbhKBKTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 06:19:40 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:47426
         "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229800AbhKBKSS (ORCPT
+        by vger.kernel.org with ESMTP id S229720AbhKBKTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 06:18:18 -0400
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
+        Tue, 2 Nov 2021 06:19:37 -0400
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C43963F1B8
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 10:15:42 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 68F5B3F1B7
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 10:17:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635848142;
-        bh=DQUpFUGZ13OCH5xFHghe2q73BFVerQ09LvF/JJEZVyI=;
+        s=20210705; t=1635848222;
+        bh=ZnYrLeHuEgfuM05nu3pyL3JiHzUr3XDV8sCLOsuYLD4=;
         h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
          In-Reply-To:Content-Type;
-        b=Xp/QWP2bnD1hWBlIlP3z2V4+ZFMjIsH98Ps6eWDUWTSTUegLlEiEDe+ywZQ5Rt/J9
-         229QWYG5e0+bXFdN3m+6s+OmISfWxI8fXYieETJFD8ZrhyDF+X0Gaxvpwa7HeQyEyD
-         R1Y3pyBgeiI74wYumIG3HFL0ZVdSG9c34mYlcuz2qV1DZtTmeFWKKtQqwx8g6VERoG
-         pJZ1iki0GhqlxuJPvL2DsN235HpOy32hU6qZB82i7FqYLa5P7lyuPl/m4PAXI821jx
-         bOB9wGj2ppf34UuxefCTjfSTKJpzdg3wSWttM+bCHxqMJMaSKqcn7/CovvkVn1uXxA
-         Ju3/gIFVhbB5w==
-Received: by mail-lj1-f198.google.com with SMTP id k24-20020a2ea278000000b002173427a735so426081ljm.20
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 03:15:42 -0700 (PDT)
+        b=hLB/bCAhzMR6TIiPREiBvv1yIeGe4AV3fipvh4gdbAu4BAKSrcxBxPy4y6ZpTDS95
+         IeaxGzVGygAsHfpqikn8IS5zLChTPNnWdBnNfP7/GZW+kp35ujp638T0706f/ft0fG
+         /AQbt8w6dvFf8kYmQ7CUmAINC4z4RxVLYuUP3TMNU1/UHz90VQeZysf11tUvVIAiZR
+         T92KV4c/1GEM3Ky/I+5z143Ic8axt6UGzNnXugognE4UdqVUaXG4CNI4tYRNSeCA9J
+         qjfy1ju4l3JH7wfISP42e2pfSUmisEPzAMK0eRSvBqnOrMSzoOBGzUSj0IrxjTSf6E
+         gBvrzdlyu6V4g==
+Received: by mail-lf1-f69.google.com with SMTP id y40-20020a0565123f2800b003fded085638so6875186lfa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 03:17:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=DQUpFUGZ13OCH5xFHghe2q73BFVerQ09LvF/JJEZVyI=;
-        b=T7dNUmZT+jYTrfmjwtKK3qYEslGiu5aAeJPXM5W+6iZsdNP6Mtwt78EmF3DFiuoKG9
-         1ibyFglancb7fTGeal3opzPiIZyeKQokcmRm0cfbANNi2R+FWbdQuhEoWnth8E44kQ/f
-         W5e1JzWbqUSLULJCCx9vlIuPLwP1lYgdcXLk4cNuFPgB9rP7WA8VXj7ZGr1ap6EJJssB
-         XDwP+L14gZ3h7iqpbTtbR7T6E64+SFIvWVVUecTgwiiDm+So0Wh6B7IdwdNI1MM6Hn7k
-         RNvetmbT/5jdtEiAH+Ln8QlCrPizytGMmFWZyh32PPjRiyJl6j4VZWxuomlvmfMhVcOe
-         eT4A==
-X-Gm-Message-State: AOAM531K9CEgSVSzBtomTfhNSf+4AVQB87ysRK5fAV2p44EuBhJsjxTU
-        qDbPhEwjQpAr5ZU3154/jPbKjAFY0rePXCAO3JuIMfknyeXPUF2v5qfjK5tox+GF9KCVLzkZnvr
-        OmmZ8l6sUwcq1FqXIANMEgUstnyOmg13BVrkueRnYBQ==
-X-Received: by 2002:a2e:bd88:: with SMTP id o8mr27745365ljq.197.1635848141980;
-        Tue, 02 Nov 2021 03:15:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw19yBZU62Ix4yX551lPGweiYYrsBhZngk9OZDYsebEsKVhmI7gih9ogLJHPeQH/3HIlK/ycQ==
-X-Received: by 2002:a2e:bd88:: with SMTP id o8mr27745341ljq.197.1635848141759;
-        Tue, 02 Nov 2021 03:15:41 -0700 (PDT)
+        bh=ZnYrLeHuEgfuM05nu3pyL3JiHzUr3XDV8sCLOsuYLD4=;
+        b=dDmMMoqdpa8onzoqiLvmzu0F0PVVzI3EepaeyzMhCYmwH5HbIIs90/0BVBfOLs1YUH
+         MTUgkFlfxXINNXcaU3wH9ngHfyX6wXtruT+Yc9GDwLn3TFCIiNJzRHMuQltbq4UkyxZO
+         YHHxmF2dXe6j2/HS9Tcfw2AtS8gxFQjCmx6LsM0ybOGMCJ23YCBu27jEQ+uWcozHcrbk
+         jRy1Tdc/byBrrr9QgXAy+uETyRgGN9+pgld84AMvO7xqU24EGUNMqsLXtnoTEnaOj78+
+         8cRvWOejFLoHeybwhhWxxnjm5S2YFmiVKoeeEjj0Ml1O5AMyHGg/2NWJJ7MzsZJNLRlu
+         BPYQ==
+X-Gm-Message-State: AOAM531leYuMf8W1FfrKfi78KqLyboApYbVZwlXxz8uNSEoyb//UYTua
+        +tctenOBJu03tIwEMxCWLPypllhtkQSINgegXWgw+MY8c1mzoT6mfzDvDX576SgQIWw5VOjKVlO
+        gLB60yAz9n6Q4EKKFpC1kUwX8Jb+zEHy3OQW2BdVncw==
+X-Received: by 2002:ac2:5965:: with SMTP id h5mr1767558lfp.436.1635848221850;
+        Tue, 02 Nov 2021 03:17:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxw4CLm4v8vZx2M+lvaxwy0bY7pA4e/hJAEXJ8SsRUMw7zK5v0ms6nBbPJ5Yl+B9eg/oQapIg==
+X-Received: by 2002:ac2:5965:: with SMTP id h5mr1767539lfp.436.1635848221691;
+        Tue, 02 Nov 2021 03:17:01 -0700 (PDT)
 Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id y7sm709265ljy.88.2021.11.02.03.15.40
+        by smtp.gmail.com with ESMTPSA id u19sm941645lfr.154.2021.11.02.03.17.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 03:15:41 -0700 (PDT)
-Message-ID: <a63f37a9-ea04-2606-e4f5-1170c4e59db2@canonical.com>
-Date:   Tue, 2 Nov 2021 11:15:40 +0100
+        Tue, 02 Nov 2021 03:17:01 -0700 (PDT)
+Message-ID: <645dbbca-eddb-52e6-5f7a-9eeb819e85a6@canonical.com>
+Date:   Tue, 2 Nov 2021 11:17:00 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.1.2
-Subject: Re: [PATCH v2 10/12] watchdog: s3c2410: Support separate source clock
+Subject: Re: [PATCH v2 11/12] watchdog: s3c2410: Remove superfluous err label
 Content-Language: en-US
 To:     Sam Protsenko <semen.protsenko@linaro.org>,
         Wim Van Sebroeck <wim@linux-watchdog.org>,
@@ -70,9 +70,9 @@ Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org
 References: <20211031122216.30212-1-semen.protsenko@linaro.org>
- <20211031122216.30212-11-semen.protsenko@linaro.org>
+ <20211031122216.30212-12-semen.protsenko@linaro.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211031122216.30212-11-semen.protsenko@linaro.org>
+In-Reply-To: <20211031122216.30212-12-semen.protsenko@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -80,45 +80,24 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 31/10/2021 13:22, Sam Protsenko wrote:
-> Right now all devices supported in the driver have the single clock: it
-> acts simultaneously as a bus clock (providing register interface
-> clocking) and source clock (driving watchdog counter). Some newer Exynos
-> chips, like Exynos850, have two separate clocks for that. In that case
-> two clocks will be passed to the driver from the resource provider, e.g.
-> Device Tree. Provide necessary infrastructure to support that case:
->   - use source clock's rate for all timer related calculations
->   - use bus clock to gate/ungate the register interface
+> 'err' label in probe function is not really need, it just returns.
+> Remove it and replace all 'goto' statements with actual returns in
+> place.
 > 
-> All devices that use the single clock are kept intact: if only one clock
-> is passed from Device Tree, it will be used for both purposes as before.
+> No functional change here, just a cleanup patch.
 > 
 > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
 > ---
 > Changes in v2:
->   - Reworded commit message to be more formal
->   - Used separate "has_src_clk" trait to tell if source clock is present
->   - Renamed clock variables to match their purpose
->   - Removed caching source clock rate, obtaining it in place each time instead
->   - Renamed err labels for more consistency
+>   - (none): it's a new patch
 > 
->  drivers/watchdog/s3c2410_wdt.c | 52 +++++++++++++++++++++++++---------
->  1 file changed, 39 insertions(+), 13 deletions(-)
+>  drivers/watchdog/s3c2410_wdt.c | 13 ++++---------
+>  1 file changed, 4 insertions(+), 9 deletions(-)
 > 
-> diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-> index fdb1a1e9bd04..c733917c5470 100644
-> --- a/drivers/watchdog/s3c2410_wdt.c
-> +++ b/drivers/watchdog/s3c2410_wdt.c
-> @@ -118,7 +118,9 @@ struct s3c2410_wdt_variant {
->  
->  struct s3c2410_wdt {
->  	struct device		*dev;
-> -	struct clk		*clock;
-> +	struct clk		*bus_clk; /* for register interface (PCLK) */
-> +	struct clk		*src_clk; /* for WDT counter */
-> +	bool			has_src_clk;
 
-Why do you need the has_src_clk value? If clk_get() fails, just store
-there NULL and clk API will handle it.
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+
 
 Best regards,
 Krzysztof
