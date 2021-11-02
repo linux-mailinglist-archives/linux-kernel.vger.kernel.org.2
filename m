@@ -2,115 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D82442CC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:37:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 760D8442CCC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:38:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbhKBLk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 07:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
+        id S231265AbhKBLkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 07:40:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhKBLk0 (ORCPT
+        with ESMTP id S231194AbhKBLkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 07:40:26 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A01F5C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 04:37:51 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id y1so15624231plk.10
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 04:37:51 -0700 (PDT)
+        Tue, 2 Nov 2021 07:40:41 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01687C061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 04:38:07 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id p204so13461538iod.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 04:38:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=+LcalwcS+7iwU2Z06DjsWxGkhOqaOpX2CeRBZg6uNxI=;
-        b=u1T+gyQ5y9utIQAL69osfNb3bY8W18tAEGHKXB/yOTt4z6DVkjo0Tm9BVQLQYlQvmi
-         +RyAD+cAN0ZnryDgfEwhDomhWP5aHyg5Ddw+FwF0gZJTl/XAP/yxFxTYru4YWi1yyGvJ
-         Nyj3SvEFcTOcvzmYNQ0CoFLHMwyXenD/+RlY68vQyVJLDAzJrMq+x/p9kEwcpaxEik6P
-         WbrrqPpjnKVAB9bhIp9NOjCOgDYCVxAD9qfdxmvVHjjyUpYw53WETAy8gUPku20d08EZ
-         Mjm5PXINnW3OWZm3X+mTRbx7nnM77l1Hnq9RZ5CYtf9EDulCgVA5ot0Bz2ITNNcoxFE0
-         B+Gw==
+        bh=2R+yXj293966xAWPKmIcAFTeSjlx41a47gGv/u4xHXI=;
+        b=lwQpy5YxbAyQ3Zur1kQw9Xod0FrG6ggiBvmHmDdOzlSvZMhVfuhlNKWegUaSMQHm/E
+         HVPmuxHjSm4ZZaFp7WrEaOL74CkXmdwkOf39mW5PetdddzDeIe5SPL5sOrOXl9UyNBLZ
+         Fn5xtSo8mkTH0O4Jar7UWHCVuhrgM0svbuvPxHFbSSpWcTTpzI4RdO+ekYSjs0/ztxsr
+         JsID5YTyb3/ctUsjK27+hZGvcqRY94kvW4JRSc54v8fAszSyo6sMRRw+xcIROnEpQn6F
+         qYmpLOUaaNTsahRxsCDGqCrIQOtLQll6UrNyl6kqwPfeX5e2N+XVB2nwHMKuBZuHuP+0
+         /F4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+LcalwcS+7iwU2Z06DjsWxGkhOqaOpX2CeRBZg6uNxI=;
-        b=7VlnRQsUij1bektWnNVJd+b58m+NwhWI7EtyWSibHD/IycOcZTxYRWqZaTHfWRDsgI
-         rIVUYWxlZHP6PhqglY9pgNh1Wr4Z0ePhXEWJQsZ0o407XML4RmMt4/Z7PHMrSwhPP7U+
-         gd1ZHEgNi6FySaVkVbRcA9wefTCBPm8vLjJowxMbjQvNyT67IyTA/VNPkKmdSldS8cQ+
-         XAVK9sswU6Hqeo4y4oBmmYZuDl3wo9wJeD4BVtbxVMy9Bg//w00nr0p050V1XtP7OALf
-         LeWGTvuXoP+CabVDL67Cpqbd3zwvAX+npWj1ZuAFp/vIaknAP+tx5TMw2PJYlzEYr+ji
-         gKOg==
-X-Gm-Message-State: AOAM532xiPQ7sypK8Vofr9ZxNmTCtOCEnr/4UPprc3m8wIVSkAEuRX6G
-        2VR1jsqNxVQ8xunrOubt0HzdUXlzod/DxPiopn77MA==
-X-Google-Smtp-Source: ABdhPJxlukTujJboXT4S57TaNSXOyAMkRW6XndNn4eisc8fX7Oczi13MU70tOQlUfeLfplvXUQ5IVMFqLcPTtBJr/Uo=
-X-Received: by 2002:a17:90b:3149:: with SMTP id ip9mr1957728pjb.232.1635853071054;
- Tue, 02 Nov 2021 04:37:51 -0700 (PDT)
+        bh=2R+yXj293966xAWPKmIcAFTeSjlx41a47gGv/u4xHXI=;
+        b=NnLRNAHAYB4WjW57fKDbKBqFW6UosSlRJrm1poVmIWDwVm/bp5uIK2XNXTBQN8l5/E
+         nZKCx3NDY9H2Me/EoU9OlZgoYMDGNVysBGnp4kHcEX9LA4vqLBeHygXNhl0ywTcXXDnq
+         T8wN/W76k+RKuObl3WDWxUn29SyEm7lvoE/YWTCXl4n/p8N6fNSkk8ObhgQewuKFk4Hc
+         dszXGOheqXzt55/2CIOoTEvhxUPjZCkwFAM1ZJRvETesTSFzWjRuIxiXe5dmzUVi5M6f
+         VD95pGPjUoO4uWjwfcBVMcuejAh3c18L/7XhQm6P9t5UQISNGbeiyJv8FJu/T6r+EY7v
+         zcyg==
+X-Gm-Message-State: AOAM530Z2KpKAX7M6ibsRMJQDuPQXW6DVfP+TjgUV5zwj4I0oiUVBLR+
+        d5yqRTmSE4mO5uG1M+cS6Y6DsXy71BpC+7koFkbnYff9vpZSOA==
+X-Google-Smtp-Source: ABdhPJw7w2LfWs1y8fgqzomLc9Wq1+oOq2ZgUGb4kKmeOSIcoMlu7MCDLq4ZznzPTdlPyQNNtF4tkeYmP7D620UmNCo=
+X-Received: by 2002:a5d:994f:: with SMTP id v15mr26631778ios.88.1635853086482;
+ Tue, 02 Nov 2021 04:38:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211025170925.3096444-1-bjorn.andersson@linaro.org>
- <65243a98-61b9-3311-f41d-fa4782448baa@kali.org> <CAG3jFytmcFcA5W3vmcpWTWrc36-YFMPZ1wAB8gAJfiHHLWmaCA@mail.gmail.com>
- <20211030092736.eam4ahzimiew7erg@pengutronix.de>
-In-Reply-To: <20211030092736.eam4ahzimiew7erg@pengutronix.de>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 2 Nov 2021 12:37:39 +0100
-Message-ID: <CAG3jFyuYE_=73LfkQ7KLL+6ZvrGAORT8z1Cw1kmssgn7ewTENQ@mail.gmail.com>
-Subject: Re: [PATCH v7 1/3] pwm: Introduce single-PWM of_xlate function
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Steev Klimaszewski <steev@kali.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20211102100420.112215-1-robert.marko@sartura.hr>
+ <YYEeS8gz8TBW63X8@google.com> <CA+HBbNHWV=+qDpOaD-ePz2yPpSjBOFEgdkuWBiqobBP9VN7W4g@mail.gmail.com>
+ <YYEiijBp3dK92ep4@google.com>
+In-Reply-To: <YYEiijBp3dK92ep4@google.com>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Tue, 2 Nov 2021 12:37:55 +0100
+Message-ID: <CA+HBbNGGpSXtTqvXb=cGGadT38LkrOGdcjQ5XwojvnA8yTUuTg@mail.gmail.com>
+Subject: Re: [PATCH] mfd: simple-mfd-i2c: Select MFD_CORE to fix build error
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Michael Walle <michael@walle.cc>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Uwe
-
-On Sat, 30 Oct 2021 at 11:27, Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
+On Tue, Nov 2, 2021 at 12:35 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> Hello,
+> On Tue, 02 Nov 2021, Robert Marko wrote:
 >
-> On Wed, Oct 27, 2021 at 05:06:02PM +0200, Robert Foss wrote:
-> > On Tue, 26 Oct 2021 at 19:21, Steev Klimaszewski <steev@kali.org> wrote=
-:
+> > On Tue, Nov 2, 2021 at 12:17 PM Lee Jones <lee.jones@linaro.org> wrote:
 > > >
+> > > On Tue, 02 Nov 2021, Robert Marko wrote:
 > > >
-> > > On 10/25/21 12:09 PM, Bjorn Andersson wrote:
-> > > > The existing pxa driver and the upcoming addition of PWM support in=
- the
-> > > > TI sn565dsi86 DSI/eDP bridge driver both has a single PWM channel a=
-nd
-> > > > thereby a need for a of_xlate function with the period as its singl=
-e
-> > > > argument.
+> > > > MFD_SIMPLE_MFD_I2C should select the MFD_CORE to a prevent build er=
+ror:
 > > > >
-> > > > Introduce a common helper function in the core that can be used as
-> > > > of_xlate by such drivers and migrate the pxa driver to use this.
-> > > >
-> > > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > > Acked-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> > > > Tested-by: Steev Klimaszewski <steev@kali.org>
-> > > > ---
-> > > >
-> > [...]
+> > > > aarch64-linux-ld: drivers/mfd/simple-mfd-i2c.o: in function `simple=
+_mfd_i2c_probe':
+> > > > drivers/mfd/simple-mfd-i2c.c:55: undefined reference to `devm_mfd_a=
+dd_devices'
+> > >
+> > > What is your use-case?
+> > >
+> > > How are you enabling this symbol?
 > >
-> > Applied to drm-misc-next.
+> > Hi Lee,
+> > I am adding a symbol like MFD_SL28CPLD does that you can depend on and
+> > that simply
+> > selects the MFD_SIMPLE_MFD_I2C and I have hit this issue since the
+> > MFD_CORE is not selected.
 >
-> This is now 3ab7b6ac5d829e60c3b89d415811ff1c9f358c8e in next, the Link:
-> added in the commit trailer looks as follows:
+> That's interesting.
 >
->         Link: https://patchwork.freedesktop.org/patch/msgid/2021102517092=
-5.3096444-1-bjorn.andersson@linaro.org
->
-> but this link doesn't work, for me at least. I wonder what's wrong with
-> it. If you want to fix it and rewrite the commit, you can also drop the
-> duplicated "Tested-by: Steev Klimaszewski <steev@kali.org>".
+> I wonder how MFD_SL28CPLD selects it?
 
-Weirdly patchwork.fd.o[1] doesn't seem to have the series, but does
-have previous versions.
+It doesn't, it just selects MFD_SIMPLE_MFD_I2C
 
-[1] https://patchwork.freedesktop.org/project/dri-devel/patches/?submitter=
-=3D&state=3D*&q=3D_xlate&archive=3Dboth&delegate=3D
+MFD_CORE is probably selected by something else masking this issue.
+
+Regards,
+Robert
+>
+> > > > Fixes: 3abee4579484 ("mfd: Add simple regmap based I2C driver")
+> > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> > > > ---
+> > > >  drivers/mfd/Kconfig | 1 +
+> > > >  1 file changed, 1 insertion(+)
+> > > >
+> > > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> > > > index 61992edf6a4d..2de69892b631 100644
+> > > > --- a/drivers/mfd/Kconfig
+> > > > +++ b/drivers/mfd/Kconfig
+> > > > @@ -1204,6 +1204,7 @@ config MFD_SI476X_CORE
+> > > >  config MFD_SIMPLE_MFD_I2C
+> > > >       tristate
+> > > >       depends on I2C
+> > > > +     select MFD_CORE
+> > > >       select REGMAP_I2C
+> > > >       help
+> > > >         This driver creates a single register map with the intentio=
+n for it
+> > >
+> >
+> >
+> >
+>
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> Senior Technical Lead - Developer Services
+> Linaro.org =E2=94=82 Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
+
+
+
+--=20
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
