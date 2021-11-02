@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E80442BEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:54:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9287442BEB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:57:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbhKBK53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 06:57:29 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:57116 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229577AbhKBK53 (ORCPT
+        id S230058AbhKBK7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 06:59:36 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:59024 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229577AbhKBK7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 06:57:29 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A27KWag027459;
-        Tue, 2 Nov 2021 11:54:41 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=F3zslvwLhHMv15l+DDp1BP8HK4d2H8Odbk6ORCpvSWM=;
- b=4+RNds1W1D6p9AXQqCyxrSLALcHZ+vLrsPJBZ6WVQvxYuznQMcqnGuUfK0jJJ4il4Rly
- xbUyNvUWI3JyFe05zy6gkdA0lmP9g7m6o83G+kCa/07678UqBsjgQSo5g3b7b5CS/NaZ
- APLE+CEwYIj3DpVyxlYJ4mWiDmx4WHjtMtW5rvXn4RCHPpYm3KxkBkJ7YrQ3D9y6quIq
- CV994KH5lLOUKVamJtmocmLDT/ialwaRUM3SY2ncGC7O1N7ivEVZ5xJ28JYfP53kwLyv
- BuHiPDQ1KUS4fnMjWadXsieARNUDGVXJKetTj91+T0Ew0zrVI8IApapnALXthhN8wEdL rA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c30uvhbwa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Nov 2021 11:54:41 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5DC1210002A;
-        Tue,  2 Nov 2021 11:54:40 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D729921667C;
-        Tue,  2 Nov 2021 11:54:38 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.47) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 2 Nov
- 2021 11:54:38 +0100
-Subject: Re: [PATCH v10 0/2] Add rpmsg tty driver
-To:     Jiri Slaby <jirislaby@kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Suman Anna <s-anna@ti.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>
-References: <20211015094701.5732-1-arnaud.pouliquen@foss.st.com>
- <0b42eede-d909-1afb-f3fc-c4ee1e2fc0f4@kernel.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <dae498c3-3460-e493-564e-bc903e4aa5b8@foss.st.com>
-Date:   Tue, 2 Nov 2021 11:54:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 2 Nov 2021 06:59:35 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id B2F501FD4C;
+        Tue,  2 Nov 2021 10:56:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635850619; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=bI4B7yr35oWTj1TPj4CUZtyH2uZJxpOlkaEg3shV8go=;
+        b=tkdjiWzGaVOVMeD8NPncbMQ/rWKXYb/Al0YhUgrEd0VTigvN49MFrBAndAjpt0WGIOpKKC
+        BFO8ZWLF8GGHL8yCq3pVsJeWio7N0VEiZ6GnFz7u2xtIwlv6sKzTY/a6p9Dd+by2/M618E
+        QhP9lOEvAQkBUcZWBoGG0N3T64+vzQQ=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 50C16A3B87;
+        Tue,  2 Nov 2021 10:56:59 +0000 (UTC)
+Date:   Tue, 2 Nov 2021 11:56:56 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] printk for 5.16
+Message-ID: <YYEZeIVxrp8MJ/yb@alley>
 MIME-Version: 1.0
-In-Reply-To: <0b42eede-d909-1afb-f3fc-c4ee1e2fc0f4@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-02_06,2021-11-02_01,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+Linus,
 
-On 11/1/21 8:27 AM, Jiri Slaby wrote:
-> On 15. 10. 21, 11:46, Arnaud Pouliquen wrote:
-> ...
->>   drivers/rpmsg/rpmsg_core.c       |  21 +++
->>   drivers/rpmsg/rpmsg_internal.h   |   2 +
->>   drivers/rpmsg/virtio_rpmsg_bus.c |  10 ++
->>   drivers/tty/Kconfig              |  12 ++
->>   drivers/tty/Makefile             |   1 +
->>   drivers/tty/rpmsg_tty.c          | 274 +++++++++++++++++++++++++++++++
->>   include/linux/rpmsg.h            |  10 ++
-> 
-> Hi,
-> 
-> care to add an entry to MAINTAINERS too?
+please pull the latest printk changes from
 
-That's a good point. I will send a patch to propose myself as maintainer.
+  git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-5.16
 
-Thanks,
-Arnaud
+=========================================
 
-> 
-> thanks,
+- Extend %pGp print format to print hex value of the page flags.
+
+- Use kvmalloc instead of kmalloc to allocate devkmsg buffers.
+
+- Misc cleanup and warning fixes.
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      lib/vsprintf.c: Amend static asserts for format specifier flags
+
+Arnd Bergmann (1):
+      printk: avoid -Wsometimes-uninitialized warning
+
+John Ogness (1):
+      printk: use gnu_printf format attribute for printk_sprint()
+
+Matthew Wilcox (Oracle) (5):
+      test_printf: Make pft array const
+      test_printf: Remove separate page_flags variable
+      test_printf: Remove custom appending of '|'
+      test_printf: Append strings more efficiently
+      vsprintf: Make %pGp print the hex value
+
+Petr Mladek (2):
+      vsprintf: Update %pGp documentation about that it prints hex value
+      Merge branch 'for-5.16-vsprintf-pgp' into for-linus
+
+Randy Dunlap (1):
+      ia64: don't do IA64_CMPXCHG_DEBUG without CONFIG_PRINTK
+
+Yong-Taek Lee (1):
+      printk: use kvmalloc instead of kmalloc for devkmsg_user
+
+ Documentation/core-api/printk-formats.rst |  2 +-
+ arch/ia64/Kconfig.debug                   |  2 +-
+ kernel/printk/index.c                     |  5 +--
+ kernel/printk/printk.c                    |  5 ++-
+ lib/test_printf.c                         | 61 +++++++++++++------------------
+ lib/vsprintf.c                            | 11 +++++-
+ mm/debug.c                                |  2 +-
+ mm/memory-failure.c                       |  8 ++--
+ mm/page_owner.c                           |  4 +-
+ mm/slub.c                                 |  4 +-
+ 10 files changed, 51 insertions(+), 53 deletions(-)
