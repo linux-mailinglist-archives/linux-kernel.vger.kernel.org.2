@@ -2,70 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9640D4434C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:46:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7B74434CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234801AbhKBRsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 13:48:33 -0400
-Received: from mail-oo1-f53.google.com ([209.85.161.53]:41922 "EHLO
-        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234282AbhKBRsc (ORCPT
+        id S234818AbhKBRtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 13:49:41 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:45757 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231506AbhKBRtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 13:48:32 -0400
-Received: by mail-oo1-f53.google.com with SMTP id t201-20020a4a3ed2000000b002b8c98da3edso7662993oot.8;
-        Tue, 02 Nov 2021 10:45:57 -0700 (PDT)
+        Tue, 2 Nov 2021 13:49:39 -0400
+Received: by mail-oi1-f177.google.com with SMTP id u2so11940981oiu.12;
+        Tue, 02 Nov 2021 10:47:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=CKYzsICswV19mFk3bA4uM8xafXZBR+kPBIPsP0pIGHE=;
-        b=yODZDOWb6VB2UCKtWcte99sWr1Hc1oQjMxKKiauv5LsW0DHcG/bFSZBjfjoNOlY/01
-         rdf58ZqIaA1b2lqkfdRp47SZVxLHtRhXRHIDR12Ej6JAhJsUZ7mj5HEqE1lybEqLRpdK
-         ZUp8OmtsRQUVDjvlms7wWzCiD2vwKVXEMzd1dWgkjFit6CUTooxZVcG4LiFOKm9Lj3Wv
-         RLrRiBkuccVMzkmtb3Kc8trWAd+L+ld5VgV1ueI17F4rXwGeo4upKHWUt02SuACCUKN3
-         8WZYm9MUoojwU6HUlB6casAZLnU6wT4ANuOW1uH82WJ/xkl4af8Xn9AbrqY+NfCGR+jl
-         zSDA==
-X-Gm-Message-State: AOAM531ShTAywwuM5DgFz4CUIR6LCYgK2K1Hc0TBuHYNVt8Oq+oPujio
-        X1EyowEoIhqq1JIFnoTx2g==
-X-Google-Smtp-Source: ABdhPJxFwD+eSnmtSAUlQdMT3bUxYTxWRKlvKp8eIjLNIwETQKMo6jomT5joBByWdDQ2Z00NVXHygw==
-X-Received: by 2002:a4a:c91a:: with SMTP id v26mr25953826ooq.77.1635875156734;
-        Tue, 02 Nov 2021 10:45:56 -0700 (PDT)
+        bh=uW9s2FSdm9CorVCeI1XNZOx+Rhacrk0vCMIgqByVKQ0=;
+        b=B+wzAZahNvPvBhq9WOlbjmK/pkHeVgQdPd8wFyisZeD7VhFoqGk5bPfFcYFZPFIqLx
+         spb+5wH0ENDFx1+Fy9s6qqmJszmkqTVZruBStLURXwOG6pR6sDF1oD1jWMma/keJUvEt
+         6CamV5JYrcrvMn1YG0JuaADgnK7GIoMUIe7/0Qf6T1Xm8aQaA5J801Mz//evvNizgKIH
+         bWZd+C7hBTX49apbJSp0c48Bk+h5Rk7bKqEV0d44CDUoZJHqFbOW1s6+qq7g0fd6jgz3
+         F1odTiA79TVHCoctEgUOHutzMtbvtnoshCoZbQz3QHDGDzR+Z4Z0MIE6wtYogbveeWtR
+         NLOA==
+X-Gm-Message-State: AOAM531tkXh6x/NDyZEmMdSLyxAAfY75aeTqSWN5FYfvFKSpy6wVTjgo
+        CMdrfVStR4sN5JvIK5xPFCNm/qxbFg==
+X-Google-Smtp-Source: ABdhPJwCznAlRoiYCLgrvFkfFfkWOGPtCK1+qcFeceWeh1S10J0DgEb9lt9cj9AHwEeGJkqHs/ztHA==
+X-Received: by 2002:a05:6808:2097:: with SMTP id s23mr6210784oiw.43.1635875224449;
+        Tue, 02 Nov 2021 10:47:04 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id q63sm2519782oia.55.2021.11.02.10.45.54
+        by smtp.gmail.com with ESMTPSA id a20sm4592639oie.58.2021.11.02.10.47.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 10:45:55 -0700 (PDT)
-Received: (nullmailer pid 3145622 invoked by uid 1000);
-        Tue, 02 Nov 2021 17:45:54 -0000
-Date:   Tue, 2 Nov 2021 12:45:54 -0500
+        Tue, 02 Nov 2021 10:47:03 -0700 (PDT)
+Received: (nullmailer pid 3147705 invoked by uid 1000);
+        Tue, 02 Nov 2021 17:47:03 -0000
+Date:   Tue, 2 Nov 2021 12:47:03 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Qin Jian <qinjian@cqplus1.com>
-Cc:     robh+dt@kernel.org, broonie@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, p.zabel@pengutronix.de,
-        linux-clk@vger.kernel.org, wells.lu@sunplus.com,
-        mturquette@baylibre.com, sboyd@kernel.org, maz@kernel.org
-Subject: Re: [PATCH v3 7/8] dt-bindings: interrupt-controller: Add bindings
- for SP7021 interrupt controller
-Message-ID: <YYF5UsvoIBeoUCeE@robh.at.kernel.org>
-References: <cover.1635737544.git.qinjian@cqplus1.com>
- <c2f6c4c150a53cf73e942ee7da234a8976909382.1635737544.git.qinjian@cqplus1.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org,
+        nicolas.ferre@microchip.com, kavyasree.kotagiri@microchip.com,
+        eugen.hristev@microchip.com, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v3 2/4] dt-bindings: clock: lan966x: Extend for clock
+ gate support
+Message-ID: <YYF5l0bFw+P/rsDx@robh.at.kernel.org>
+References: <20211101080845.3343836-1-horatiu.vultur@microchip.com>
+ <20211101080845.3343836-3-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c2f6c4c150a53cf73e942ee7da234a8976909382.1635737544.git.qinjian@cqplus1.com>
+In-Reply-To: <20211101080845.3343836-3-horatiu.vultur@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 01 Nov 2021 13:01:57 +0800, Qin Jian wrote:
-> Add documentation to describe Sunplus SP7021 interrupt controller bindings.
+On Mon, Nov 01, 2021 at 09:08:43AM +0100, Horatiu Vultur wrote:
+> Allow to add an optional resource to be able to access the clock gate
+> registers.
 > 
-> Signed-off-by: Qin Jian <qinjian@cqplus1.com>
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 > ---
->  .../sunplus,sp7021-intc.yaml                  | 62 +++++++++++++++++++
->  MAINTAINERS                                   |  1 +
->  2 files changed, 63 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/sunplus,sp7021-intc.yaml
+>  .../devicetree/bindings/clock/microchip,lan966x-gck.yaml       | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
+> diff --git a/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml b/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
+> index fca83bd68e26..a53c889629da 100644
+> --- a/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
+> +++ b/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
+> @@ -19,7 +19,8 @@ properties:
+>      const: microchip,lan966x-gck
+>  
+>    reg:
+> -    maxItems: 1
+> +    minItems: 1
+> +    maxItems: 2
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+When there is more than 1 entry, you need to describe each entry:
+
+minItems: 1
+items:
+  - description: ...
+  - description: ...
+
+>  
+>    clocks:
+>      items:
+> -- 
+> 2.33.0
+> 
+> 
