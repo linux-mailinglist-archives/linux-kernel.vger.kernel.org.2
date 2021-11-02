@@ -2,209 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D20442C20
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7C0442C22
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhKBLIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 07:08:05 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:35566
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230100AbhKBLIE (ORCPT
+        id S231145AbhKBLIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 07:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230345AbhKBLIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 07:08:04 -0400
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id D5C3A3F1B2
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 11:05:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635851128;
-        bh=eCXkhtzwAkxmBwcMzvoTZ9XLgb1F/fHJXMlrCrHh7Fg=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=MtbC5KbQDitQZKSYyONOYPcpqSOzvE/W13XCpeDYLifKwdg3Tj3D3FrxbqjcFfIx3
-         LYQOfx+n2o4VJuFxCpZUkZH6/jhIOD2nMIgIzysG6BktkGJBIXBd+IOxQUB0QZblvd
-         hXhNc62Qon5pgnkrUkeWXnup/2bshK5qp0W+f/J6E3AtDqp0MwhK3wJc+Olygptn1X
-         jFFud3u4PqxTC7mFaKGD0UKZyFUnaDnOpRskCB5sbZxq1Qy89XsDRSIlCaFOMG5EhL
-         ChRfxuexRgOFl14KqthiaiCzmSP1ibh+4Xho1vh4Gypq/gk++J0PGH7iFrxFxcGDUL
-         EAv2s4Vakuz3A==
-Received: by mail-lf1-f69.google.com with SMTP id p19-20020a056512139300b003ff6dfea137so6880331lfa.9
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 04:05:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eCXkhtzwAkxmBwcMzvoTZ9XLgb1F/fHJXMlrCrHh7Fg=;
-        b=nBOnNpnEbpe1ffqS79kIQM/p8VonklRJnnuDLnhCZLS+fAZHeCUqEqDzJXXZgIf+Rx
-         RXlAu+oMTn+wUO2GkySqTkd4EJbnnUo2WTF02JznOo12p49CgigMk6mtidl2yZRJPWUK
-         nfuXaGjDyGoMqdSKczi1TMvTAJP1E6O/6m9U6TUcJcdY7ScdLfOq4E8huVBHc8X2W1Ah
-         HoLxnoN+jcUyktLHIpsOHVFPHrM172S2Lvjgyl9hWklisTHarED4qQ8Nrqge9qH/wAA+
-         UVYNpXzJLPUSTQrVsoCFFHuY5sKgsohrdoy317jgHcml9mQsZGjnb1h+MIPWm9IOzRv/
-         CmdA==
-X-Gm-Message-State: AOAM533vldAQ3fTGkndqaco95bvlPQiJPfLxCzMGp9ITVpym3waGL0bI
-        w1WIskLDGV7trfjC2z3YRjiCp0Y6/wO23Pkd+a7XxvqClrozsoXaQxPmAA7pOXXhi/Z8EAszT9E
-        CI+P6NzQxZHouiV2M6pv876pkxz9t4610u8D3c2x7qw==
-X-Received: by 2002:a05:6512:e83:: with SMTP id bi3mr13362214lfb.479.1635851128161;
-        Tue, 02 Nov 2021 04:05:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwseu9XzPZO5lqX9ofSsGGrNhP59zvsk8fmBNAtBvWsuKP4dwmjgVWVIem8UF2IObzhslAmzA==
-X-Received: by 2002:a05:6512:e83:: with SMTP id bi3mr13362181lfb.479.1635851127903;
-        Tue, 02 Nov 2021 04:05:27 -0700 (PDT)
-Received: from krzk-bin.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id j26sm1655127lfb.84.2021.11.02.04.05.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 04:05:27 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, Olof Johansson <olof@lixom.net>,
-        Kukjin Kim <kgene@kernel.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Inki Dae <inki.dae@samsung.com>, Cedric Roux <sed@free.fr>,
-        Sam Van Den Berge <sam.van.den.berge@telenet.be>,
-        Lihua Yao <ylhuajnu@outlook.com>,
-        Heiko Stuebner <heiko@sntech.de>
-Subject: [RFC PATCH] ARM: s3c: mark as deprecated and schedule removal after 2022
-Date:   Tue,  2 Nov 2021 12:05:19 +0100
-Message-Id: <20211102110519.142434-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Tue, 2 Nov 2021 07:08:19 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C37EC061714;
+        Tue,  2 Nov 2021 04:05:44 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 12:05:40 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1635851141;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=To3nz0xcUd50FKbbqoFTcW6AhSctmxd2++k9ZUnoGis=;
+        b=hlh08CIkwgQI9F1qgxRB3RTUJDeca52GEoBjV3d50N4E1gHKpjfSc9+6xxU9KlFxk5IN8V
+        CqV33zC10CUpuPH97oyADfBkE6V+G0ZgxnmsTAOJQE7qYLUFarJizzIK0NK71YfvcqhVP8
+        6vs1ipm2odxfcdhuOvQuPHi/KR7Fol6NdJDFSRsaTlbJw4ryxSPTQbxxjvduPEtmxFc8co
+        WRNEQwxT0M09Pa7eUpuPJAUFoNUtQ8BZPxeNj3z10VXlViBjps5XZby81ysz1naBTgEMG0
+        ba5YoU3+SP0cRNG9dTi25WMw20KTx3hKEzMHCESBaKkJ7QY8Fk//s7oRwRxJAw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1635851141;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=To3nz0xcUd50FKbbqoFTcW6AhSctmxd2++k9ZUnoGis=;
+        b=nS7FWYkYUvCHdKBg9nLL/XwqA1BLOhi16l9rzYO2v+yv331Hcd+UFhKjSWABWgJZFCZUb8
+        dkxdOYCIDuFT4VDg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v5.15-rt17
+Message-ID: <20211102110540.ms7grrieizwnzsop@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Samsung S3C24xx and S3C64xx platforms are very old designs. S3C2416
-was introduced in 2008 and S3C6410 in 2009/2010.  They are not widely
-available anymore - out-of-stock on FriendlyArm (one of manufacturers of
-boards) and only few specialist stores still offer them for quite a high
-price.
+Dear RT folks!
 
-The community around these platforms was not very active, so I suspect
-no one really uses them anymore. Maintenance takes precious time so
-there is little sense in keeping them alive if there are no real users.
+I'm pleased to announce the v5.15-rt17 patch set. 
 
-Let's mark all S3C24xx and S3C64xx platforms as deprecated and mention
-possible removal in one year (after 2022).  The deprecation message will
-be as text in Kconfig, build message (not a warning though) and runtime
-print error.
+Changes since v5.15-rt16:
 
-If there are any users, they might respond and postpone the removal.
+  - Remove put_cpu_var() in fscache which removal was overseen in the
+    last release.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- arch/arm/Kconfig                  | 7 ++++++-
- arch/arm/mach-s3c/Kconfig.s3c64xx | 7 ++++++-
- arch/arm/mach-s3c/cpu.c           | 1 +
- arch/arm/mach-s3c/init.c          | 2 ++
- arch/arm/mach-s3c/s3c24xx.c       | 5 +++++
- arch/arm/mach-s3c/s3c64xx.c       | 5 +++++
- 6 files changed, 25 insertions(+), 2 deletions(-)
+  - Redo the fs/dcache/start_dir_add() related patch and its
+    description.
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index f0f9e8bec83a..bd8237c7e7f1 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -473,7 +473,7 @@ config ARCH_SA1100
- 	  Support for StrongARM 11x0 based boards.
+  - Drop preempt_disable_rt(), no more users.
+
+Known issues
+     - netconsole triggers WARN.
+
+     - The "Memory controller" (CONFIG_MEMCG) has been disabled.
+
+     - Valentin Schneider reported a few splats on ARM64, see
+          https://lkml.kernel.org/r/20210810134127.1394269-1-valentin.schneider@arm.com
+
+The delta patch against v5.15-rt16 is appended below and can be found here:
  
- config ARCH_S3C24XX
--	bool "Samsung S3C24XX SoCs"
-+	bool "Samsung S3C24XX SoCs (deprecated, see help)"
- 	select ATAGS
- 	select CLKSRC_SAMSUNG_PWM
- 	select GPIO_SAMSUNG
-@@ -491,6 +491,11 @@ config ARCH_S3C24XX
- 	  (<http://www.simtec.co.uk/products/EB110ITX/>), the IPAQ 1940 or the
- 	  Samsung SMDK2410 development board (and derivatives).
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/incr/patch-5.15-rt16-rt17.patch.xz
+
+You can get this release via the git tree at:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.15-rt17
+
+The RT patch against v5.15 can be found here:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/older/patch-5.15-rt17.patch.xz
+
+The split quilt queue is available at:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/older/patches-5.15-rt17.tar.xz
+
+Sebastian
+
+diff --git a/fs/dcache.c b/fs/dcache.c
+index f34344ceece70..02db80f2817fc 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -2537,11 +2537,16 @@ EXPORT_SYMBOL(d_rehash);
  
-+	  The platform is deprecated and scheduled in removal. Please reach to
-+	  the maintainers of the platform and linux-samsung-soc@vger.kernel.org if
-+	  you still use it.
-+	  Without such feedback, the platform will be removed after 2022.
-+
- config ARCH_OMAP1
- 	bool "TI OMAP1"
- 	depends on MMU
-diff --git a/arch/arm/mach-s3c/Kconfig.s3c64xx b/arch/arm/mach-s3c/Kconfig.s3c64xx
-index f3fcb570edf5..3b090ae72bbd 100644
---- a/arch/arm/mach-s3c/Kconfig.s3c64xx
-+++ b/arch/arm/mach-s3c/Kconfig.s3c64xx
-@@ -4,7 +4,7 @@
- #	Simtec Electronics, Ben Dooks <ben@simtec.co.uk>
+ static inline unsigned start_dir_add(struct inode *dir)
+ {
+-
+-	preempt_disable_rt();
++	/*
++	 * The caller has a spinlock_t (dentry::d_lock) acquired which disables
++	 * preemption on !PREEMPT_RT. On PREEMPT_RT the lock does not disable
++	 * preemption and it has be done explicitly.
++	 */
++	if (IS_ENABLED(CONFIG_PREEMPT_RT))
++		preempt_disable();
+ 	for (;;) {
+-		unsigned n = dir->__i_dir_seq;
+-		if (!(n & 1) && cmpxchg(&dir->__i_dir_seq, n, n + 1) == n)
++		unsigned n = dir->i_dir_seq;
++		if (!(n & 1) && cmpxchg(&dir->i_dir_seq, n, n + 1) == n)
+ 			return n;
+ 		cpu_relax();
+ 	}
+@@ -2549,8 +2554,9 @@ static inline unsigned start_dir_add(struct inode *dir)
  
- menuconfig ARCH_S3C64XX
--	bool "Samsung S3C64XX"
-+	bool "Samsung S3C64XX (deprecated, see help)"
- 	depends on ARCH_MULTI_V6
- 	select ARM_AMBA
- 	select ARM_VIC
-@@ -25,6 +25,11 @@ menuconfig ARCH_S3C64XX
- 	help
- 	  Samsung S3C64XX series based systems
+ static inline void end_dir_add(struct inode *dir, unsigned n)
+ {
+-	smp_store_release(&dir->__i_dir_seq, n + 2);
+-	preempt_enable_rt();
++	smp_store_release(&dir->i_dir_seq, n + 2);
++	if (IS_ENABLED(CONFIG_PREEMPT_RT))
++		preempt_enable();
+ }
  
-+	  The platform is deprecated and scheduled in removal. Please reach to
-+	  the maintainers of the platform and linux-samsung-soc@vger.kernel.org if
-+	  you still use it.
-+	  Without such feedback, the platform will be removed after 2022.
-+
- if ARCH_S3C64XX
+ static void d_wait_lookup(struct dentry *dentry)
+@@ -2586,7 +2592,7 @@ struct dentry *d_alloc_parallel(struct dentry *parent,
  
- # Configuration options for the S3C6410 CPU
-diff --git a/arch/arm/mach-s3c/cpu.c b/arch/arm/mach-s3c/cpu.c
-index 6e9772555f0d..3b16cf42910f 100644
---- a/arch/arm/mach-s3c/cpu.c
-+++ b/arch/arm/mach-s3c/cpu.c
-@@ -28,4 +28,5 @@ void __init s3c64xx_init_cpu(void)
+ retry:
+ 	rcu_read_lock();
+-	seq = smp_load_acquire(&parent->d_inode->__i_dir_seq);
++	seq = smp_load_acquire(&parent->d_inode->i_dir_seq);
+ 	r_seq = read_seqbegin(&rename_lock);
+ 	dentry = __d_lookup_rcu(parent, name, &d_seq);
+ 	if (unlikely(dentry)) {
+@@ -2614,7 +2620,7 @@ struct dentry *d_alloc_parallel(struct dentry *parent,
  	}
  
- 	pr_info("Samsung CPU ID: 0x%08lx\n", samsung_cpu_id);
-+	pr_err("The platform is deprecated and scheduled in removal. Please reach to the maintainers of the platform and linux-samsung-soc@vger.kernel.org if you still use it.  Without such feedback, the platform will be removed after 2022.\n");
+ 	hlist_bl_lock(b);
+-	if (unlikely(READ_ONCE(parent->d_inode->__i_dir_seq) != seq)) {
++	if (unlikely(READ_ONCE(parent->d_inode->i_dir_seq) != seq)) {
+ 		hlist_bl_unlock(b);
+ 		rcu_read_unlock();
+ 		goto retry;
+diff --git a/fs/fscache/object.c b/fs/fscache/object.c
+index 78f332f2e98c8..7a972d144b546 100644
+--- a/fs/fscache/object.c
++++ b/fs/fscache/object.c
+@@ -814,8 +814,6 @@ void fscache_enqueue_object(struct fscache_object *object)
+ 				wake_up(&fscache_object_cong_wait);
+ 		} else
+ 			fscache_put_object(object, fscache_obj_put_queue);
+-
+-		put_cpu_var(fscache_object_cong_wait);
+ 	}
  }
-diff --git a/arch/arm/mach-s3c/init.c b/arch/arm/mach-s3c/init.c
-index 9d92f03e9bc1..5db7dc54340c 100644
---- a/arch/arm/mach-s3c/init.c
-+++ b/arch/arm/mach-s3c/init.c
-@@ -59,6 +59,8 @@ void __init s3c_init_cpu(unsigned long idcode,
  
- 	if (cpu->map_io)
- 		cpu->map_io();
-+
-+	pr_err("The platform is deprecated and scheduled in removal. Please reach to the maintainers of the platform and linux-samsung-soc@vger.kernel.org if you still use it.  Without such feedback, the platform will be removed after 2022.\n");
- }
+diff --git a/fs/inode.c b/fs/inode.c
+index 0c46c1a98c2ac..ed0cab8a32db1 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -157,7 +157,7 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
+ 	inode->i_pipe = NULL;
+ 	inode->i_cdev = NULL;
+ 	inode->i_link = NULL;
+-	inode->__i_dir_seq = 0;
++	inode->i_dir_seq = 0;
+ 	inode->i_rdev = 0;
+ 	inode->dirtied_when = 0;
  
- /* s3c24xx_init_clocks
-diff --git a/arch/arm/mach-s3c/s3c24xx.c b/arch/arm/mach-s3c/s3c24xx.c
-index ccfed48c98aa..2ea1cb21dfbc 100644
---- a/arch/arm/mach-s3c/s3c24xx.c
-+++ b/arch/arm/mach-s3c/s3c24xx.c
-@@ -678,3 +678,8 @@ struct platform_device s3c2410_device_dclk = {
- 	},
- };
- #endif
-+
-+#pragma message "The platform is deprecated and scheduled in removal (see platform help). " \
-+		"Please reach to the maintainers of the platform " \
-+		"and linux-samsung-soc@vger.kernel.org if you still use it." \
-+		"Without such feedback, the platform will be removed after 2022."
-diff --git a/arch/arm/mach-s3c/s3c64xx.c b/arch/arm/mach-s3c/s3c64xx.c
-index 4dfb648142f2..3e248f0e96a2 100644
---- a/arch/arm/mach-s3c/s3c64xx.c
-+++ b/arch/arm/mach-s3c/s3c64xx.c
-@@ -425,3 +425,8 @@ static int __init s3c64xx_init_irq_eint(void)
- 	return 0;
- }
- arch_initcall(s3c64xx_init_irq_eint);
-+
-+#pragma message "The platform is deprecated and scheduled in removal (see platform help). " \
-+		"Please reach to the maintainers of the platform " \
-+		"and linux-samsung-soc@vger.kernel.org if you still use it." \
-+		"Without such feedback, the platform will be removed after 2022."
--- 
-2.32.0
-
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 5ff6117d59f54..e7a633353fd20 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -711,7 +711,7 @@ struct inode {
+ 		struct pipe_inode_info	*i_pipe;
+ 		struct cdev		*i_cdev;
+ 		char			*i_link;
+-		unsigned		__i_dir_seq;
++		unsigned		i_dir_seq;
+ 	};
+ 
+ 	__u32			i_generation;
+diff --git a/include/linux/preempt.h b/include/linux/preempt.h
+index dc8158a459859..3da73c9682119 100644
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -331,14 +331,6 @@ do { \
+ 		set_preempt_need_resched(); \
+ } while (0)
+ 
+-#ifdef CONFIG_PREEMPT_RT
+-# define preempt_disable_rt()		preempt_disable()
+-# define preempt_enable_rt()		preempt_enable()
+-#else
+-# define preempt_disable_rt()		barrier()
+-# define preempt_enable_rt()		barrier()
+-#endif
+-
+ #ifdef CONFIG_PREEMPT_NOTIFIERS
+ 
+ struct preempt_notifier;
+diff --git a/localversion-rt b/localversion-rt
+index 1199ebade17b4..1e584b47c987e 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt16
++-rt17
