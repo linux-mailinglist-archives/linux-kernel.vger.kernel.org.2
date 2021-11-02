@@ -2,75 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4D944370E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 21:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2844443717
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 21:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232217AbhKBUP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 16:15:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231898AbhKBUOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 16:14:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89BDD61053;
-        Tue,  2 Nov 2021 20:12:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635883935;
-        bh=PbeKWGBDAChMLC+Nu9bVzhinu6LEbxlXwqNnu7DoCz4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=qnOJxHBMHOyaSST/GpmLdrZ4+t5G4dZjMTmPCIcBCjcVlkUnPZN9vQ4zK3oBPx6fY
-         RJtoVvH7KBNZ3tDEX4Ld6xYs3ps0y1+GZXvkHcWPQAXWwXnAcQMt+6pYl1slPJNoiY
-         sITiR6F6mEeFuqO4KPuKfkPRQpwJNRiMsOC2yhbVmdlbJ82guZTZNOMfL/zFKMHS0S
-         5H/cpp1WDITvX1VxBRbM6YW2Qbq89U6eGAtQSTDzk8ybAGyES8SK7c1PwLILE4uP1U
-         w6dqWV8vDCgxD5wZjeSuXoM3jZxANswq9aEtJajP4p/zr5RFrMYsDKM5FrRbl8y7cJ
-         9F43jON2KKJwQ==
-Message-ID: <c70af622b09439d2c168654e4bfab081eedaa489.camel@kernel.org>
-Subject: Re: [PATCH v10 2/2] x86/sgx: Add an attribute for the amount of SGX
- memory in a NUMA node
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, reinette.chatre@intel.com,
-        tony.luck@intel.com, nathaniel@profian.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
-Date:   Tue, 02 Nov 2021 22:12:12 +0200
-In-Reply-To: <YYFvdy0cH6HXeuX+@kroah.com>
-References: <20211102164820.593385-1-jarkko@kernel.org>
-         <20211102164820.593385-2-jarkko@kernel.org> <YYFvdy0cH6HXeuX+@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.40.4-1 
+        id S231194AbhKBURL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 16:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229813AbhKBURJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 16:17:09 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 790BEC061714;
+        Tue,  2 Nov 2021 13:14:34 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 5so1596334edw.7;
+        Tue, 02 Nov 2021 13:14:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DJFLiSk1bohG9mZsoNQbF3XHvwqAij8WqFoJj28EDDg=;
+        b=iw12nbBwkXxBlIs9kJ77ChJtoTgBhLkikKNBw3ydVms2/+zd4Rpc52iHmLdyamERzo
+         mbXMcNtz6C5TdJ31/yl+gsPUEkLWbNC4pXy3I4EE6NDc1Rc/8EDg1uqzxyWGiVCeJXs5
+         IbTqvxDb4B1i3gnMMB3swodD7uXYz1YQsXMT2OBct0RMtcaikrhbeSbgR54o1eDNU2kX
+         TdQlDpUbA7N2Efiqtwg2fOqZCZcCE/h3MIBzhuF7FN9wAH4UDXijEqmIPpM4HOs3A9XI
+         iXkqdoACQpq+rM9mg9wIKuJ/bZQkTW9DJxMLWDEt/i2JoSRWEmF/aO6wt5n4oGz6ALpn
+         3RLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DJFLiSk1bohG9mZsoNQbF3XHvwqAij8WqFoJj28EDDg=;
+        b=ahzhmVbA6AtsN0lhnswWBeufPij2503199iyAF0a1gTDzYSSd5FKlUghXuLDvmm245
+         9k8JDTnOc/nP+laF1qNtTaNkoNdmTpz2TE5iAdap+HpMVwRyOC33zU+N7RS6spzFmpC4
+         8SoGCQ9LOcfue/XksMKw6irK8uzCLCJGYHC+SgErSddrEccZOvM/ogVuE8Xy5NS6ptgZ
+         8iC+bLiRJPatQMJKeLn9IGKHtXNVuqhKmNXwT1XpFjxr15A57KFZiQamyKOcm670TlpR
+         TIGS18CloTBRJRFTleZ9am3PfCwM5gvfC37h4rqbsCUmgt9Yfb0FoSApuFbJqHIcSLns
+         b2Dw==
+X-Gm-Message-State: AOAM531ieDR17WkASAY+izyzwjbesH3V1YmNe2QBXyib49tmBdYgIdhr
+        //xeppHbcuD5M518yxwv/kiy52drM5YhgPiFtB8=
+X-Google-Smtp-Source: ABdhPJzCiSq8SUDEahY4JFXuCz6004Aep8GBG6mt9apB6pPfKprIfm9TWaTyyDtYdSgHzOyPQ2onwZ5CPNZ7cVRpjJc=
+X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr48190395ejc.69.1635884072980;
+ Tue, 02 Nov 2021 13:14:32 -0700 (PDT)
 MIME-Version: 1.0
+References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-10-kernel@esmil.dk>
+ <CAHp75Ve-P8DR00mtRP_NkrXgB4nsZ+qBkgBen94iTcPqxQYUOg@mail.gmail.com> <CANBLGcyb=TAP0h2WuxBAjRvpN9n7Dt1Hvh5yE8NMOwm3ixZWuA@mail.gmail.com>
+In-Reply-To: <CANBLGcyb=TAP0h2WuxBAjRvpN9n7Dt1Hvh5yE8NMOwm3ixZWuA@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 2 Nov 2021 22:13:44 +0200
+Message-ID: <CAHp75Vcg3En=xH+kz0GgAMGUoo5FABo2HwGoHd=7QgGVrYkYXg@mail.gmail.com>
+Subject: Re: [PATCH v3 09/16] reset: starfive-jh7100: Add StarFive JH7100
+ reset driver
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-02 at 18:03 +0100, Greg Kroah-Hartman wrote:
-> On Tue, Nov 02, 2021 at 06:48:19PM +0200, Jarkko Sakkinen wrote:
-> > * Change the attribute name as sgx_total_bytes, and attribute group
-> > =C2=A0 name as "x86" (Dave).
->=20
-> <snip>
->=20
-> > --- a/Documentation/ABI/stable/sysfs-devices-node
-> > +++ b/Documentation/ABI/stable/sysfs-devices-node
-> > @@ -176,3 +176,10 @@ Contact:=C2=A0=C2=A0=C2=A0Keith Busch <keith.busch=
-@intel.com>
-> > =C2=A0Description:
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0The cache write policy: 0 for write-back, 1 for =
-write-through,
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0other or unknown.
-> > +
-> > +What:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/sys/=
-devices/system/node/nodeX/sgx/size
->=20
-> Looks like the attribute group name is still "sgx" :(
+On Tue, Nov 2, 2021 at 9:59 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> On Tue, 2 Nov 2021 at 20:43, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > On Tue, Nov 2, 2021 at 6:50 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
 
-Ugh, also commit message needs an update. Thanks, I'll do
-fix this, apologies.
+...
 
-/Jarkko
+> > > +/*
+> > > + * the registers work like a 32bit bitmap, so writing a 1 to the m'th bit of
+> > > + * the n'th ASSERT register asserts line 32n + m, and writing a 0 deasserts the
+> > > + * same line.
+> > > + * most reset lines have their status inverted so a 0 in the STATUS register
+> > > + * means the line is asserted and a 1 means it's deasserted. a few lines don't
+> > > + * though, so store the expected value of the status registers when all lines
+> > > + * are asserted.
+> > > + */
+> >
+> > Besides missing capitalization,
+>
+> I'm confused. it was you who wanted all comments to capitalized the same..
+
+Yes and there are two types of the comments, one-liners and
+multi-line. In multi-line you usually use proper English grammar,
+where capitalization means what it means. For the one-liners just
+choose either small letters or capital letters to start them with.
+
+> 64bi
+
+Something is missing here.
+
+> if it sounds like bitmap, use bitmap.
+> > I have checked DT definitions and it seems you don't even need the
+> > BIT_MASK() macro,
+> >
+> > > +static const u32 jh7100_reset_asserted[4] = {
+> > > +       /* STATUS0 register */
+> > > +       BIT_MASK32(JH7100_RST_U74) |
+> > > +       BIT_MASK32(JH7100_RST_VP6_DRESET) |
+> > > +       BIT_MASK32(JH7100_RST_VP6_BRESET),
+> > > +       /* STATUS1 register */
+> > > +       BIT_MASK32(JH7100_RST_HIFI4_DRESET) |
+> > > +       BIT_MASK32(JH7100_RST_HIFI4_BRESET),
+> > > +       /* STATUS2 register */
+> > > +       BIT_MASK32(JH7100_RST_E24),
+> > > +       /* STATUS3 register */
+> > > +       0,
+> > > +};
+> >
+> > Yury, do we have any clever (clean) way to initialize a bitmap with
+> > particular bits so that it will be a constant from the beginning? If
+> > no, any suggestion what we can provide to such users?
+>
+> The problem is, that even if we could initialize this without the
+> monstrosity in our last conversation a 64bit bitmap would still
+> produce worse code. As it is now it's simply a 32bit load and mask
+> with index and mask already calculated for the registers. In the
+> status callback the mask can even be folded into the register read
+> mask. With a 64bit bitmap you'd need to calculate new 64bit index and
+> masks, and then conditionally shift the bits into position.
+
+Why? You may use 8 byte IO (writeq() / readq() or their relaxed versions), no?
+
+...
+
+> If this reflection of the 32bit registers bothers you that much
+
+What bothers me is hidden endianess issues (yeah, here it might be
+theoretical, but consider that somebody will look at your code and use
+it as the best example ever).
+
+-- 
+With Best Regards,
+Andy Shevchenko
