@@ -2,153 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB20443306
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D308544330E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234979AbhKBQjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:39:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40406 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235042AbhKBQir (ORCPT
+        id S234747AbhKBQjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:39:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234452AbhKBQjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:38:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635870936;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Zq/1+DwBXNQ+10dXmUih1iaLiLYP5xeOcEC+C1MZoN8=;
-        b=JD/p/8OhjQMWQrlfBz3aSYilpNVjCACmG6nFGvBbqhFcScrKKPC5H3Tquk0daUofsQxSq+
-        C9kQYufueHZIjsk1p0esI3hTfFEGpEJLXfsQ1SHAxQCvLA+K8oPxPEJnYCrwUB9amcyXDm
-        CN5o9VEOhlxH1eU0YEDYwrLk4SPeI50=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-204-Di8Fk7nEN6GLmZpBfeA4Jw-1; Tue, 02 Nov 2021 12:35:35 -0400
-X-MC-Unique: Di8Fk7nEN6GLmZpBfeA4Jw-1
-Received: by mail-ed1-f70.google.com with SMTP id o22-20020a056402439600b003dd4f228451so19361618edc.16
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:35:35 -0700 (PDT)
+        Tue, 2 Nov 2021 12:39:00 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E86C0432F0
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:35:56 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id q33-20020a056830442100b0055abeab1e9aso1739118otv.7
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:35:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kali.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=n/RntJXNAkrW0uv0IpMzSuir/PcBl5SVKIKgV75XIB8=;
+        b=isBEGC41Hvc8wUmUEuyLHkbMd1h6iLODoNVxaIvZIk01gTWS0aXT2Kzl+JbOAagdxd
+         G9H7NtcyejQEScT2h8UhijezCAkUeGSIn3I9vddL9vYfDuI+BKXk7VFbnEJiSrCnrsow
+         0oxazuFTD4knb37vMucpKXj75uXjX6x425BdhuMS0YvIqXhP3dBURljIZNIRzWZVeLgH
+         GoTVkudz3uWc+lLnkX/c9IaBzorcZCWCucXgnatepOCBGnfSnJvBRRbof/XGa0CNK4mO
+         dpyHiGSzTn3BD/DTsp8RgSLaOAv4bIMtn6ecIHCxPP8qbaXsncRUcVCNYQmLttqPnSG3
+         eAoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=Zq/1+DwBXNQ+10dXmUih1iaLiLYP5xeOcEC+C1MZoN8=;
-        b=Wjd0IxMEQN/JUdJlXCvPAJrHwKgn3Jh5PFyItvT0YF6K+IZrRoEmJcAeh3MvZtXy9i
-         CpdTNhKGBwadW1GBXTOQU3sg93/4WoOaSNGQ1tsXHV3RIMJ6hPpj8EiLM0e28C6XZshy
-         pdjQDYQ6NiiQ/3Bl9Z4O9beED6ITrfLO0TKOIfshtRll5NubbuJmAqQJyYKKeR4jDKgZ
-         sKHT+8VO7b65QC1yICM6Q67BBv6oeOMxe+ct/fyQ6dAm4ApLMyG56Dyy2oEEcjVQ1Jcf
-         u0tIwSdFFowXAxP4A7xuA0PP6KMVJW1k53IkyXz52Li2T+Qe17EMto+t/rmfYGdZUm2c
-         nUlg==
-X-Gm-Message-State: AOAM530GlnyNcbdaflh0+EspwC35/doiZGh6HNcD7rn7x+G7jOMwUidZ
-        n7RrZiUsJokxGKYNJYXrtvz2+z137YJe37BALMfxKpgIJubIaBgPiXr6x08QwDNq06fNXcXHtSI
-        9QakuyikvZgNbtmsvVCM5Dvpl
-X-Received: by 2002:a05:6402:42ce:: with SMTP id i14mr51371777edc.276.1635870934128;
-        Tue, 02 Nov 2021 09:35:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzZ3/uj2tKBojwj8TODwyc/o2fUAP67S0ubiS8nI4mwEt6KxH9DG1zYZPSLje6xVryW/hO80w==
-X-Received: by 2002:a05:6402:42ce:: with SMTP id i14mr51371745edc.276.1635870933972;
-        Tue, 02 Nov 2021 09:35:33 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id r18sm29563eje.90.2021.11.02.09.35.33
+        bh=n/RntJXNAkrW0uv0IpMzSuir/PcBl5SVKIKgV75XIB8=;
+        b=qWK9x7Uwzkem9Dsx0Tt6a2F1d6ycA6d93/KQOjwDli6PQfarAZiLoWgXY4Yl+qh2am
+         kfm+lWPx9G1lH06ADeH5lx4lms43FZv15C7CQEuyFuaiy1oqjEaXIe5YIGZOJKWAglf3
+         W1YOS8SH7tTqjGHXUeDc4kXT/oKm3S7SAF0LJ6cKke28KLo0Y8SwJeK2NKwPxWV4GEIc
+         2PCI9Zf9tGvr+wzHn9EVWDl3bnyvbZSR2Oyln0RQ2JZTRaqoG0cdns2LE56FYLXwbR1r
+         tvJ+mUMS/nygyhAcKrCVsu90MUgAFpHgwTIG1upsJwYqnrXanrx1XJZz6dVD+XBMPUQA
+         PzDQ==
+X-Gm-Message-State: AOAM533J0us4CPK0b9xTtuKSFX0DurnwxubC7lxBrqdxx+wnCUdz5uWl
+        mD2Io2ZjMSUb1wQiV/vKOyTiKg==
+X-Google-Smtp-Source: ABdhPJw+6Xw8t85A50e6lXfI/V58EwMHlfsy2yrC6cuYlesP4xDvDfU30ACuyCZ0j1dGgO6YdJzlug==
+X-Received: by 2002:a9d:6315:: with SMTP id q21mr23370259otk.169.1635870956247;
+        Tue, 02 Nov 2021 09:35:56 -0700 (PDT)
+Received: from [192.168.11.48] (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
+        by smtp.gmail.com with ESMTPSA id q5sm5209853otg.1.2021.11.02.09.35.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 09:35:33 -0700 (PDT)
-Message-ID: <8d0821c9-b9d2-66de-ca2b-25525e26c67a@redhat.com>
-Date:   Tue, 2 Nov 2021 17:35:32 +0100
+        Tue, 02 Nov 2021 09:35:55 -0700 (PDT)
+Message-ID: <2197a192-446b-e5cd-afd5-28bba65d89f0@kali.org>
+Date:   Tue, 2 Nov 2021 11:35:52 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v5 10/11] platform/x86: int3472: Pass
- tps68470_regulator_platform_data to the tps68470-regulator MFD-cell
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH] pinctrl: qcom: sdm845: Enable dual edge errata
 Content-Language: en-US
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Kate Hsuan <hpa@redhat.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-References: <20211102094907.31271-1-hdegoede@redhat.com>
- <20211102094907.31271-11-hdegoede@redhat.com>
- <CAHp75Vd-xY43H8jPOUqJp55Rq3Wuhsdzctfhqq300S0vAKTzpw@mail.gmail.com>
- <1f4377bb-2902-05e9-95c7-ad924477b543@redhat.com>
- <YYFkqlGkd7Jftcdk@paasikivi.fi.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <YYFkqlGkd7Jftcdk@paasikivi.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211102034115.1946036-1-bjorn.andersson@linaro.org>
+From:   Steev Klimaszewski <steev@kali.org>
+In-Reply-To: <20211102034115.1946036-1-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 11/2/21 17:17, Sakari Ailus wrote:
-> On Tue, Nov 02, 2021 at 03:59:41PM +0100, Hans de Goede wrote:
->> Hi,
->>
->> On 11/2/21 15:34, Andy Shevchenko wrote:
->>> On Tue, Nov 2, 2021 at 11:50 AM Hans de Goede <hdegoede@redhat.com> wrote:
->>>>
->>>> Pass tps68470_regulator_platform_data to the tps68470-regulator
->>>> MFD-cell, specifying the voltages of the various regulators and
->>>> tying the regulators to the sensor supplies so that sensors which use
->>>> the TPS68470 can find their regulators.
->>>>
->>>> Since the voltages and supply connections are board-specific, this
->>>> introduces a DMI matches int3472_tps68470_board_data struct which
->>>> contains the necessary per-board info.
->>>>
->>>> This per-board info also includes GPIO lookup information for the
->>>> sensor IO lines which may be connected to the tps68470 GPIOs.
->>>
->>> ...
->>>
->>>> +               board_data = int3472_tps68470_get_board_data(dev_name(&client->dev));
->>>> +               if (!board_data) {
->>>> +                       dev_err(&client->dev, "No board-data found for this laptop/tablet model\n");
->>>> +                       return -ENODEV;
->>>
->>> It's fine to use dev_err_probe() for known error codes.
->>>
->>>> +               }
->>>
->>> ...
->>>
->>>> +               cells[1].platform_data = (void *)board_data->tps68470_regulator_pdata;
->>>
->>> Do we need casting?
->>
->> Yes, the cast casts away a "const", the const is correct
->> since the data only ever gets read by the regulator driver,
->> but platform_data pointers are normally not const, so it
->> is either the cast, or loose the const on the definition
->> of the struct to which board_data->tps68470_regulator_pdata
->> points...
->>
->> So not good choice here really, only chosing between bad
->> options and I picked the lets do the cast "least worse"
->> option (at least to me). I'm open to changing this.
-> 
-> Maybe a comment explaining this briefly?
+On 11/1/21 10:41 PM, Bjorn Andersson wrote:
+> It has been observed that dual edge triggered wakeirq GPIOs on SDM845
+> doesn't trigger interrupts on the falling edge.
+>
+> Enabling wakeirq_dual_edge_errata for SDM845 indicates that the PDC in
+> SDM845 suffers from the same problem described, and worked around, by
+> Doug in 'c3c0c2e18d94 ("pinctrl: qcom: Handle broken/missing PDC dual
+> edge IRQs on sc7180")', so enable the workaround for SDM845 as well.
+>
+> The specific problem seen without this is that gpio-keys does not detect
+> the falling edge of the LID gpio on the Lenovo Yoga C630 and as such
+> consistently reports the LID as closed.
+>
+> Fixes: e35a6ae0eb3a ("pinctrl/msm: Setup GPIO chip in hierarchy")
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>   drivers/pinctrl/qcom/pinctrl-sdm845.c | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/pinctrl/qcom/pinctrl-sdm845.c b/drivers/pinctrl/qcom/pinctrl-sdm845.c
+> index c51793f6546f..fdfd7b8f3a76 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-sdm845.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-sdm845.c
+> @@ -1310,6 +1310,7 @@ static const struct msm_pinctrl_soc_data sdm845_pinctrl = {
+>   	.ngpios = 151,
+>   	.wakeirq_map = sdm845_pdc_map,
+>   	.nwakeirq_map = ARRAY_SIZE(sdm845_pdc_map),
+> +	.wakeirq_dual_edge_errata = true,
+>   };
+>   
+>   static const struct msm_pinctrl_soc_data sdm845_acpi_pinctrl = {
 
-Yes, I was thinking the same myself, I'll add this for the
-next version (which I expect to be the final version).
+Tested here with a number of suspend cycles, works as expected now.  
+Thank you so much!
 
-Regards,
-
-Hans
+Tested-By: Steev Klimaszewski <steev@kali.org>
 
