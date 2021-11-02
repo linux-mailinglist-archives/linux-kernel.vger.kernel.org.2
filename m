@@ -2,66 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF7E44319B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 158904431A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:26:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234517AbhKBP2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:28:09 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:33087 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S234502AbhKBP2E (ORCPT
+        id S234602AbhKBP2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:28:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31957 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234589AbhKBP2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:28:04 -0400
-Received: (qmail 1490824 invoked by uid 1000); 2 Nov 2021 11:25:27 -0400
-Date:   Tue, 2 Nov 2021 11:25:27 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Haimin Zhang <tcs.kernel@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Haimin Zhang <tcs_kernel@tencent.com>,
-        TCS Robot <tcs_robot@tencent.com>
-Subject: Re: [PATCH] USB:  array-index-out-of-bounds in ehci_brcm_hub_control
-Message-ID: <20211102152527.GC1490038@rowland.harvard.edu>
-References: <20211102074446.87107-1-tcs_kernel@tencent.com>
+        Tue, 2 Nov 2021 11:28:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635866776;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=89OwjSHhRUc5TKARB/wwFNGb4/vNxlAmpJoF8OrxBjs=;
+        b=iUs7dkynbei0t21toAV4SyTJXeDHA8rtZi5ufGAeD6lXkB9z2XQi+HQXStNRn3Jj4FkgL8
+        xNrtUMG3Wp8+n9uIpo/xWKdKVysLpIRQovc9HWEC9iPTDCtxxn/2xdZOE2HJaA9lKs43ue
+        qFO1srindj+1DtTqT3clePit/EYthMg=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-102--QbmSpL7MG2I9360hVm7yA-1; Tue, 02 Nov 2021 11:26:15 -0400
+X-MC-Unique: -QbmSpL7MG2I9360hVm7yA-1
+Received: by mail-ed1-f72.google.com with SMTP id y12-20020a056402270c00b003e28de6e995so5707965edd.11
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 08:26:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=89OwjSHhRUc5TKARB/wwFNGb4/vNxlAmpJoF8OrxBjs=;
+        b=yXLRmAreYZ6RaQ+BVUHmCpXVAwxvqJ9LBaAHKj6aTM1lLjf92hcuSjtbrrFYJ6tLBI
+         CUjnLbC09ZOcHKvEE8a+DJvzvLLW5DKx1vztNvwUN8gFJ96NQ/ji7KLfJ+iRVeC9/GyO
+         /APKDf3tQnsRYLBt/lGGXsp87P+wZ/11aO3i3mLSjguruuPQ5EmjbC9irkq32SmhMCSy
+         1gwFohWDFXYx21c1IZEMpEi76trO76eqd+X/RBbyiH9/gGhMq/+VdKAfVFYvadnCZxNI
+         ggOGspGdHEWJa9Y/SagHPpueJQfJEQoTAfF17skZyqHHD3S63z3kShXPvUKqNgJqd0n2
+         wUmA==
+X-Gm-Message-State: AOAM532mcReWcPrd6dIc5OLSUMnTy+YjVcDDAtqqpLSQZlCMchHtYnTx
+        WNQ57D8Jcmh3pMJQ6a8Hle0h6fnfGk5cbdq6YLcMbHgbODUYquAUmBw0JXQbq1YAMvHxJl9Qx3t
+        54BkYED4dVQgKcVea5W8YY6I6
+X-Received: by 2002:a05:6402:4401:: with SMTP id y1mr12668618eda.225.1635866774250;
+        Tue, 02 Nov 2021 08:26:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwAn2UDGcrFsyIYOLDeKibrEe02o7BrQtwnWNva9u6fGpKkXaOt/FpdFXQqm48SR6QpVZTb3A==
+X-Received: by 2002:a05:6402:4401:: with SMTP id y1mr12668583eda.225.1635866774054;
+        Tue, 02 Nov 2021 08:26:14 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id sg17sm3526921ejc.72.2021.11.02.08.26.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 08:26:13 -0700 (PDT)
+Message-ID: <0bd6303e-1f93-1fc0-1dcc-329092ac9963@redhat.com>
+Date:   Tue, 2 Nov 2021 16:26:13 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102074446.87107-1-tcs_kernel@tencent.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: linux-next: Tree for Nov 2 (drivers/platform/x86/amd-pmc.o)
+Content-Language: en-US
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+References: <20211102191553.7467166d@canb.auug.org.au>
+ <caa259b7-0560-647d-80d0-6dd25a6f09d2@infradead.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <caa259b7-0560-647d-80d0-6dd25a6f09d2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 03:44:46PM +0800, Haimin Zhang wrote:
-> There isn't enough check parameter `wIndex` in the function 
-> `ehci_brcm_hub_control`;due to the size of array `port_status`
-> is 15, so it may lead to out of bounds.
+Hi,
+
+On 11/2/21 16:14, Randy Dunlap wrote:
+> On 11/2/21 1:15 AM, Stephen Rothwell wrote:
+>> Hi all,
+>>
+>> Please do not add any v5.17 related material to your linux-next included
+>> trees until the merge window has closed.
+>>
+>> Changes since 20211101:
+>>
 > 
-> Signed-off-by: Haimin Zhang <tcs_kernel@tencent.com>
-> Reported-by: TCS Robot <tcs_robot@tencent.com>
-> ---
->  drivers/usb/host/ehci-brcm.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/usb/host/ehci-brcm.c b/drivers/usb/host/ehci-brcm.c
-> index d3626bfa966b..4ca3eb9fcda9 100644
-> --- a/drivers/usb/host/ehci-brcm.c
-> +++ b/drivers/usb/host/ehci-brcm.c
-> @@ -63,7 +63,8 @@ static int ehci_brcm_hub_control(
->  	unsigned long flags;
->  	int retval, irq_disabled = 0;
->  
-> -	status_reg = &ehci->regs->port_status[(wIndex & 0xff) - 1];
-> +	if (wIndex && wIndex <= ports)
-> +		status_reg = &ehci->regs->port_status[(wIndex & 0xff) - 1];
+> on i386:
+> 
+> ld: drivers/platform/x86/amd-pmc.o: in function `amd_pmc_suspend':
+> amd-pmc.c:(.text+0x5db): undefined reference to `rtc_class_open'
+> ld: amd-pmc.c:(.text+0x5ea): undefined reference to `rtc_read_alarm'
+> ld: amd-pmc.c:(.text+0x604): undefined reference to `rtc_read_time'
+> ld: amd-pmc.c:(.text+0x660): undefined reference to `rtc_alarm_irq_enable'
+> 
+> 
+> Also "depends on RTC_CLASS" ?
 
-This isn't quite right because it won't work properly if the upper byte 
-of wIndex is nonzero.  You should do something like:
+Yes, thank you for reporting this. I've just send out my main PR
+to Linus for 5.16, which includes the amd-pmc changes here.
 
-	u32 temp;
+I'll prepare a patch and include that in my first fixes PR to Linus
+once 5.16-rc1 is out.
 
-	temp = (wIndex & 0xff) - 1;
-	if (temp < ports)
-		status_reg = &ehci->regs->port_status[temp];
+Regards,
 
-Alan Stern
+Hans
+
