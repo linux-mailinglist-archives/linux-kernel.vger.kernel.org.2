@@ -2,112 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B749644387F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:33:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 043F9443882
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:34:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhKBWgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:36:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbhKBWgR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 18:36:17 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 300F9C061205
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 15:33:42 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id s14so595520ilv.10
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 15:33:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XScYOlOeUciU4dBSUquEeTulM7j610reAXR2BVP/Na8=;
-        b=tZwhFYjzuf+Soya8upKb4a0hV8W5rHBj5kxsRmtqEvDwWKhowXAPRSThRGbjAa6LIP
-         R7Ur8ZOzURdaLzRwXP0HIa4lJGGLnoy/EuOjVRNZo1Wzh6t+ZLfqb4MWxj42iLz+QKCJ
-         mEyOtl2CgdfK/zgAUW/Y2fHfoK6rjmKpELGcv2ASM02UJ5wE1WViclLT+mlawVkIy3XK
-         YQ3gXZwRONJeH1hu1sdz4jmf+kIT45+d810NVdo09WCh8ca9ALQho33MszSuQkhlImwi
-         uP5IweaAEZ8d8lIP7EjRTzlM9ndLYmJ+KcllkSJ2xYA5xy5v7yPKdsWQt+4ltBTAqcQf
-         6vYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XScYOlOeUciU4dBSUquEeTulM7j610reAXR2BVP/Na8=;
-        b=S+17iSyo7R4zinIrY/tG3oYA4q2tBVyzHte0fwJYOtMGIwQTTj827yVDEuhJnChZ61
-         nMyJSlv/4EYe0GxiTW2913y5Ns7nYBarFNFRDxk/8awWmafHe8qEYETaZzjz3WSCWW3n
-         F6saVAumY6Vhu/kaqQgWPzYz/QIJkDwCZKDcoMwqLUF3YXGROPqmMP2MeI7lTfNuwCgR
-         gJpzL6OOb1QQehC69QN77e+6gQmX7LR8NxSdrRSxzJTS2eTcxoj67qcvNux1l/BeYesu
-         cLL1gy+akixEWqAMeroQ6MepKZvE3r7Uy/E8XIbWQMZbXh2XHodjDFYps5znbouLLGtZ
-         VY8g==
-X-Gm-Message-State: AOAM533Mlp5HvADMzd0tY+wp34EEaT/8pH4Q9BpxJ+4SQfIdpGpcbvUk
-        HbVHh+IUKGTEG720kcE8o0aotjhyDNyowg==
-X-Google-Smtp-Source: ABdhPJwmdmn7BUut9FocXY4DaKEL3oAyH/YYP9V0Rug8aghpEKVPHOz+mngGvUeoBGNY/RJtAmFk8g==
-X-Received: by 2002:a05:6e02:1c2a:: with SMTP id m10mr6275229ilh.275.1635892421594;
-        Tue, 02 Nov 2021 15:33:41 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id t14sm245628ilu.63.2021.11.02.15.33.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 15:33:41 -0700 (PDT)
-Subject: Re: [PATCH 03/21] block: Add bio_for_each_folio_all()
-To:     "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org
-References: <20211101203929.954622-1-willy@infradead.org>
- <20211101203929.954622-4-willy@infradead.org>
- <YYDlEmcpkTrph5HI@infradead.org> <YYGebqvswvJBdxuc@casper.infradead.org>
- <20211102222455.GI24307@magnolia>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <4ce6fb05-fe8d-6e4c-364a-0e2c9e8ee4ed@kernel.dk>
-Date:   Tue, 2 Nov 2021 16:33:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231254AbhKBWgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:36:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229835AbhKBWgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 18:36:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C69561053;
+        Tue,  2 Nov 2021 22:34:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635892443;
+        bh=xdhIBZKPp6GOknBcvDS3bNXUcF7QFXzPUbqIM4rpfMc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=HaWtAZisLGv+tlpNXhDA1RgThrW/BaKiZzztkr+PCC7vjblqaCu+PL7HBHC4FT8pG
+         up6ahRHmLot5hKXorarKcBKuFKog1VKLj3szc+RQUlP4BJaOHEpyVfFb4IVdF0sHQp
+         rnZ+PDzM2CoR/DVTb6oaB8NZTJDgrYPhhYaIsGtVVPlzcExFvTjeEg/PbE54HtVe6a
+         7BF5avIilsBnypcNY/q7Z3UEdPBq7CHpe5sx8f0SPbuXs5vGPbMFE6WM8gawaKv4fP
+         Zf4g1OIAlUSh1M46/26+3TomQpXcqvvH8fUXgzvJHk1aE12sSW2qltfjJtFfGLZEcS
+         4gpgaSJUmMkuA==
+Date:   Tue, 2 Nov 2021 17:34:01 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Bao, Joseph" <joseph.bao@intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stuart Hayes <stuart.w.hayes@gmail.com>,
+        Lukas Wunner <lukas@wunner.de>
+Subject: Re: HW power fault defect cause system hang on kernel 5.4.y
+Message-ID: <20211102223401.GA651784@bhelgaas>
 MIME-Version: 1.0
-In-Reply-To: <20211102222455.GI24307@magnolia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM8PR11MB5702255A6A92F735D90A4446868B9@DM8PR11MB5702.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/21 4:24 PM, Darrick J. Wong wrote:
-> On Tue, Nov 02, 2021 at 08:24:14PM +0000, Matthew Wilcox wrote:
->> On Tue, Nov 02, 2021 at 12:13:22AM -0700, Christoph Hellwig wrote:
->>> On Mon, Nov 01, 2021 at 08:39:11PM +0000, Matthew Wilcox (Oracle) wrote:
->>>> +static inline
->>>> +void bio_first_folio(struct folio_iter *fi, struct bio *bio, int i)
->>>
->>> Please fix the weird prototype formatting here.
->>
->> I dunno, it looks weirder this way:
->>
->> -static inline
->> -void bio_first_folio(struct folio_iter *fi, struct bio *bio, int i)
->> +static inline void bio_first_folio(struct folio_iter *fi, struct bio *bio,
->> +               int i)
->>
->> Anyway, I've made that change, but I still prefer it the way I had it.
+[+cc Stuart, author of 8edf5332c393 ("PCI: pciehp: Fix MSI interrupt race"),
+Lukas, pciehp expert]
+
+On Tue, Nov 02, 2021 at 03:45:00AM +0000, Bao, Joseph wrote:
+> Hi, dear kernel developer,
 > 
-> I /think/ Christoph meant:
+> Recently we encounter system hang (dead spinlock) when move to
+> kernel linux-5.4.y. 
 > 
-> static inline void
-> bio_first_folio(...)
-> 
-> Though the form that you've changed it to is also fine.
+> Finally, we use bisect to locate the suspicious commit
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-5.4.y&id=4667358dab9cc07da044d5bc087065545b1000df.
 
-I won't speak for Christoph, but basically everything else in block
-follows the:
+4667358dab9c backported upstream commit 8edf5332c393 ("PCI: pciehp:
+Fix MSI interrupt race") to v5.4.69 just over a year ago.
 
-static inline void bio_first_folio(struct folio_iter *fi, struct bio *bio,
-                                   int i)
-{
-}
+> Our system has some HW defect, which will wrongly set
+> PCI_EXP_SLTSTA_PFD high, and this commit will lead to infinite loop
+> jumping to read_status (no chance to clear status PCI_EXP_SLTSTA_PFD
+> bit since ctrl is not updated), I know this is our HW defect, but
+> this commit makes kernel trapped in this isr function and leads to
+> kernel hang (then the user could not get useful information to show
+> what's wrong), which I think is not expected behavior, so I would
+> like to report to you for discussion.
 
-format, and this one should as well.
+I guess this happens because the first time we handle PFD,
+pciehp_ist() sets "ctrl->power_fault_detected = 1", and when
+power_fault_detected is set, pciehp_isr() won't clear PFD from
+PCI_EXP_SLTSTA?
 
--- 
-Jens Axboe
+It looks like the only place we clear power_fault_detected is in
+pciehp_power_on_slot(), and I don't think we call that unless we have
+a presence detect or link status change.
 
+It would definitely be nice if we could arrange so this hardware
+defect didn't cause a kernel hang.
+
+I think the diff below is the backport of 8edf5332c393 ("PCI: pciehp:
+Fix MSI interrupt race").
+
+> diff --git a/drivers/pci/hotplug/pciehp_hpc.c b/drivers/pci/hotplug/pciehp_hpc.c
+> index 356786a3b7f4b..88b996764ff95 100644
+> --- a/https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/pci/hotplug/pciehp_hpc.c?h=linux-5.4.y&id=ca767cf0152d18fc299cde85b18d1f46ac21e1ba
+> +++ b/https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/pci/hotplug/pciehp_hpc.c?h=linux-5.4.y&id=4667358dab9cc07da044d5bc087065545b1000df
+> @@ -529,7 +529,7 @@ static irqreturn_t pciehp_isr(int irq, void *dev_id)
+>  	struct controller *ctrl = (struct controller *)dev_id;
+>  	struct pci_dev *pdev = ctrl_dev(ctrl);
+>  	struct device *parent = pdev->dev.parent;
+> -	u16 status, events;
+> +	u16 status, events = 0;
+>  
+>  	/*
+>  	 * Interrupts only occur in D3hot or shallower and only if enabled
+> @@ -554,6 +554,7 @@ static irqreturn_t pciehp_isr(int irq, void *dev_id)
+>  		}
+>  	}
+>  
+> +read_status:
+>  	pcie_capability_read_word(pdev, PCI_EXP_SLTSTA, &status);
+>  	if (status == (u16) ~0) {
+>  		ctrl_info(ctrl, "%s: no response from device\n", __func__);
+> @@ -566,24 +567,37 @@ static irqreturn_t pciehp_isr(int irq, void *dev_id)
+>  	 * Slot Status contains plain status bits as well as event
+>  	 * notification bits; right now we only want the event bits.
+>  	 */
+> -	events = status & (PCI_EXP_SLTSTA_ABP | PCI_EXP_SLTSTA_PFD |
+> -			   PCI_EXP_SLTSTA_PDC | PCI_EXP_SLTSTA_CC |
+> -			   PCI_EXP_SLTSTA_DLLSC);
+> +	status &= PCI_EXP_SLTSTA_ABP | PCI_EXP_SLTSTA_PFD |
+> +		  PCI_EXP_SLTSTA_PDC | PCI_EXP_SLTSTA_CC |
+> +		  PCI_EXP_SLTSTA_DLLSC;
+>  
+>  	/*
+>  	 * If we've already reported a power fault, don't report it again
+>  	 * until we've done something to handle it.
+>  	 */
+>  	if (ctrl->power_fault_detected)
+> -		events &= ~PCI_EXP_SLTSTA_PFD;
+> +		status &= ~PCI_EXP_SLTSTA_PFD;
+>  
+> +	events |= status;
+>  	if (!events) {
+>  		if (parent)
+>  			pm_runtime_put(parent);
+>  		return IRQ_NONE;
+>  	}
+>  
+> -	pcie_capability_write_word(pdev, PCI_EXP_SLTSTA, events);
+> +	if (status) {
+> +		pcie_capability_write_word(pdev, PCI_EXP_SLTSTA, events);
+> +
+> +		/*
+> +		 * In MSI mode, all event bits must be zero before the port
+> +		 * will send a new interrupt (PCIe Base Spec r5.0 sec 6.7.3.4).
+> +		 * So re-read the Slot Status register in case a bit was set
+> +		 * between read and write.
+> +		 */
+> +		if (pci_dev_msi_enabled(pdev) && !pciehp_poll_mode)
+> +			goto read_status;
+> +	}
+> +
+>  	ctrl_dbg(ctrl, "pending interrupts %#06x from Slot Status\n", events);
+>  	if (parent)
+>  		pm_runtime_put(parent);
