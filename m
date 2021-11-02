@@ -2,110 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158904431A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:26:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A7D4431AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:27:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234602AbhKBP2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:28:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31957 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234589AbhKBP2v (ORCPT
+        id S234554AbhKBP30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234230AbhKBP3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:28:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635866776;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=89OwjSHhRUc5TKARB/wwFNGb4/vNxlAmpJoF8OrxBjs=;
-        b=iUs7dkynbei0t21toAV4SyTJXeDHA8rtZi5ufGAeD6lXkB9z2XQi+HQXStNRn3Jj4FkgL8
-        xNrtUMG3Wp8+n9uIpo/xWKdKVysLpIRQovc9HWEC9iPTDCtxxn/2xdZOE2HJaA9lKs43ue
-        qFO1srindj+1DtTqT3clePit/EYthMg=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-102--QbmSpL7MG2I9360hVm7yA-1; Tue, 02 Nov 2021 11:26:15 -0400
-X-MC-Unique: -QbmSpL7MG2I9360hVm7yA-1
-Received: by mail-ed1-f72.google.com with SMTP id y12-20020a056402270c00b003e28de6e995so5707965edd.11
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 08:26:15 -0700 (PDT)
+        Tue, 2 Nov 2021 11:29:24 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADBCC0613F5
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 08:26:49 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id g3so4424798ljm.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 08:26:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fxVnPZH6b6L2I7aYk+0v0By0qTM5ney7UTSCmiLQK+A=;
+        b=x5JmB/0OUUm0n3pUNm0d3bDFVZ9zoYTwmC68+WhMKiYCDd8J6meh19KGHZHjteCmGj
+         Gb+poFRw+Q5O4+zzJh7M1JgxVnp1aEyWS9A6EwcLLgY1LpLfVZUgGn2Yl2smq1KttslG
+         jPUkrYMvywbQCMzI5XmPp3b7So9dWZKEff10PaYosjnRDQLTQFGGPrDw8wBORG8lCbKW
+         055tT1pMfjVah6HOGuwIlD2rt3+wAoJcH5D10pnUSYQaFdjeh/fCItdq489Cn5qMhSnu
+         pXYuysYzaAZvTPJAXCBoDBvy2nCrHmK0DLmb5ukSGYKQGQKHUnB+TYuHVt5IerDWDAHS
+         SkwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=89OwjSHhRUc5TKARB/wwFNGb4/vNxlAmpJoF8OrxBjs=;
-        b=yXLRmAreYZ6RaQ+BVUHmCpXVAwxvqJ9LBaAHKj6aTM1lLjf92hcuSjtbrrFYJ6tLBI
-         CUjnLbC09ZOcHKvEE8a+DJvzvLLW5DKx1vztNvwUN8gFJ96NQ/ji7KLfJ+iRVeC9/GyO
-         /APKDf3tQnsRYLBt/lGGXsp87P+wZ/11aO3i3mLSjguruuPQ5EmjbC9irkq32SmhMCSy
-         1gwFohWDFXYx21c1IZEMpEi76trO76eqd+X/RBbyiH9/gGhMq/+VdKAfVFYvadnCZxNI
-         ggOGspGdHEWJa9Y/SagHPpueJQfJEQoTAfF17skZyqHHD3S63z3kShXPvUKqNgJqd0n2
-         wUmA==
-X-Gm-Message-State: AOAM532mcReWcPrd6dIc5OLSUMnTy+YjVcDDAtqqpLSQZlCMchHtYnTx
-        WNQ57D8Jcmh3pMJQ6a8Hle0h6fnfGk5cbdq6YLcMbHgbODUYquAUmBw0JXQbq1YAMvHxJl9Qx3t
-        54BkYED4dVQgKcVea5W8YY6I6
-X-Received: by 2002:a05:6402:4401:: with SMTP id y1mr12668618eda.225.1635866774250;
-        Tue, 02 Nov 2021 08:26:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwAn2UDGcrFsyIYOLDeKibrEe02o7BrQtwnWNva9u6fGpKkXaOt/FpdFXQqm48SR6QpVZTb3A==
-X-Received: by 2002:a05:6402:4401:: with SMTP id y1mr12668583eda.225.1635866774054;
-        Tue, 02 Nov 2021 08:26:14 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id sg17sm3526921ejc.72.2021.11.02.08.26.13
+        bh=fxVnPZH6b6L2I7aYk+0v0By0qTM5ney7UTSCmiLQK+A=;
+        b=mNFUR+zvpBwgnxhB+mAaicicdzB3+ZmtQkLm/DqckY2KAyaJUlrTRMYm/253kCQUku
+         nW6WNFxUJwYPVPFvK7Lziyo7XOLrzidy4xDizUn2nTdn4CH/IxGTW7EJ1DGqMT9cD+Qa
+         X8LlvigbhdlbmrnOvaT27IJRy81n/toUqLN8CMHbny9g6p/KyC/VK2pTU8G27DwVPjPo
+         Fh0E8io4q9rkwyRveUFsnstDsvQAw9mqYP0ivzskg92kwKgwrsJv48LzEEEqsZ6mbuxB
+         0tvEkKN7Sguk5SXcz1AbrUqBzunDc3BXE+Y++yZsNq2HHxJcTL3lu9drvDII7bov8qjJ
+         +J0w==
+X-Gm-Message-State: AOAM532EIapi/f1NEhX1iUlfvg5sXfzGy+iHqNQLY8idqwbrqTLfETXf
+        ejj+FRWhyui6ufXRF87wEZfJbQ==
+X-Google-Smtp-Source: ABdhPJywD1fXGsmUvzlGsbwzhNq/8e0eLaGhh844IKPxeN7lhccCNTjpZy9biEo0Bug7ay78GS+QVg==
+X-Received: by 2002:a2e:7210:: with SMTP id n16mr29186843ljc.155.1635866807510;
+        Tue, 02 Nov 2021 08:26:47 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id c1sm1844823ljr.111.2021.11.02.08.26.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 08:26:13 -0700 (PDT)
-Message-ID: <0bd6303e-1f93-1fc0-1dcc-329092ac9963@redhat.com>
-Date:   Tue, 2 Nov 2021 16:26:13 +0100
+        Tue, 02 Nov 2021 08:26:46 -0700 (PDT)
+Subject: Re: [PATCH v1 01/15] dt-bindings: add pwrseq device tree bindings
+To:     Rob Herring <robh@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:BLUETOOTH DRIVERS" <linux-bluetooth@vger.kernel.org>,
+        ath10k@lists.infradead.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+References: <20211006035407.1147909-1-dmitry.baryshkov@linaro.org>
+ <20211006035407.1147909-2-dmitry.baryshkov@linaro.org>
+ <YXf6TbV2IpPbB/0Y@robh.at.kernel.org>
+ <37b26090-945f-1e17-f6ab-52552a4b6d89@linaro.org>
+ <CAL_JsqLAnJqZ95_bf6_fFmPJFMjuy43UfP2UxzEmFMNnG_t-Ug@mail.gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <31792ef1-20b0-b801-23b7-29f303b91def@linaro.org>
+Date:   Tue, 2 Nov 2021 18:26:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: linux-next: Tree for Nov 2 (drivers/platform/x86/amd-pmc.o)
-Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-References: <20211102191553.7467166d@canb.auug.org.au>
- <caa259b7-0560-647d-80d0-6dd25a6f09d2@infradead.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <caa259b7-0560-647d-80d0-6dd25a6f09d2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CAL_JsqLAnJqZ95_bf6_fFmPJFMjuy43UfP2UxzEmFMNnG_t-Ug@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 11/2/21 16:14, Randy Dunlap wrote:
-> On 11/2/21 1:15 AM, Stephen Rothwell wrote:
->> Hi all,
+On 28/10/2021 00:53, Rob Herring wrote:
+> On Tue, Oct 26, 2021 at 9:42 AM Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
 >>
->> Please do not add any v5.17 related material to your linux-next included
->> trees until the merge window has closed.
+>> On 26/10/2021 15:53, Rob Herring wrote:
+>>> On Wed, Oct 06, 2021 at 06:53:53AM +0300, Dmitry Baryshkov wrote:
+>>>> Add device tree bindings for the new power sequencer subsystem.
+>>>> Consumers would reference pwrseq nodes using "foo-pwrseq" properties.
+>>>> Providers would use '#pwrseq-cells' property to declare the amount of
+>>>> cells in the pwrseq specifier.
+>>>
+>>> Please use get_maintainers.pl.
+>>>
+>>> This is not a pattern I want to encourage, so NAK on a common binding.
 >>
->> Changes since 20211101:
 >>
+>> Could you please spend a few more words, describing what is not
+>> encouraged? The whole foo-subsys/#subsys-cells structure?
 > 
+> No, that's generally how common provider/consumer style bindings work.
 > 
-> on i386:
+>> Or just specifying the common binding?
 > 
-> ld: drivers/platform/x86/amd-pmc.o: in function `amd_pmc_suspend':
-> amd-pmc.c:(.text+0x5db): undefined reference to `rtc_class_open'
-> ld: amd-pmc.c:(.text+0x5ea): undefined reference to `rtc_read_alarm'
-> ld: amd-pmc.c:(.text+0x604): undefined reference to `rtc_read_time'
-> ld: amd-pmc.c:(.text+0x660): undefined reference to `rtc_alarm_irq_enable'
+> If we could do it again, I would not have mmc pwrseq binding. The
+> properties belong in the device's node. So don't generalize the mmc
+> pwrseq binding.
 > 
-> 
-> Also "depends on RTC_CLASS" ?
+> It's a kernel problem if the firmware says there's a device on a
+> 'discoverable' bus and the kernel can't discover it. I know you have
+> the added complication of a device with 2 interfaces, but please,
+> let's solve one problem at a time.
 
-Yes, thank you for reporting this. I've just send out my main PR
-to Linus for 5.16, which includes the amd-pmc changes here.
+The PCI bus handling is a separate topic for now (as you have seen from 
+the clearly WIP patches targeting just testing of qca6390's wifi part).
 
-I'll prepare a patch and include that in my first fixes PR to Linus
-once 5.16-rc1 is out.
+For me there are three parts of the device:
+- power regulator / device embedded power domain.
+- WiFi
+- Bluetooth
 
-Regards,
+With the power regulator being a complex and a bit nasty beast. It has 
+several regulators beneath, which have to be powered up in a proper way.
+Next platforms might bring additional requirements common to both WiFi 
+and BT parts (like having additional clocks, etc). It is externally 
+controlled (after providing power to it you have to tell, which part of 
+the chip is required by pulling up the WiFi and/or BT enable GPIOs.
 
-Hans
+Having to duplicate this information in BT and WiFi cases results in 
+non-aligned bindings (with WiFi and BT parts using different set of 
+properties and different property names) and non-algined drivers (so the 
+result of the powerup would depend on the order of drivers probing).
 
+So far I still suppose that having a single separate entity controlling 
+the powerup of such chips is the right thing to do.
+
+I'd prefer to use the power-domain bindings (as the idea seems to be 
+aligned here), but as the power-domain is used for the in-chip power 
+domains, we had to invent the pwrseq name.
+
+-- 
+With best wishes
+Dmitry
