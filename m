@@ -2,188 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CF0442A4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:22:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1CDF442A52
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhKBJZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 05:25:13 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59196 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhKBJZL (ORCPT
+        id S229612AbhKBJ1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 05:27:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:55307 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229505AbhKBJ1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 05:25:11 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E11D221639;
-        Tue,  2 Nov 2021 09:22:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635844955; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=wjUVlYSScgX+OmSU5aFm2lY0ZdVm0SHe4hr+4+EhpKA=;
-        b=Fq6gsuUWwTEs4RqfwQozDhHZplDrV2RJIwElae0+AgPb6Yul0eRSO/tR+pfvpt8ayvJPJM
-        ouZzVufSVYz/WBm+RWlOHcRxaj0mIqA4xXfpYAtix+dvJwKhdOBHXMdLAGr65bb+gjYUv1
-        kR+LUkAZP0xrkHq26uLJL+TO54wRrE0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B76F013BAA;
-        Tue,  2 Nov 2021 09:22:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id D2KPK1sDgWHZfwAAMHmgww
-        (envelope-from <jgross@suse.com>); Tue, 02 Nov 2021 09:22:35 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Subject: [PATCH v2] xen/balloon: rename alloc/free_xenballooned_pages
-Date:   Tue,  2 Nov 2021 10:22:34 +0100
-Message-Id: <20211102092234.17852-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 2 Nov 2021 05:27:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635845087;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Is5x4qunizskcubykNuexE0rm+el3szUQ1h1UP1TOd8=;
+        b=f5Uk3s2BxgM5tPLSusZcmpc7Z5UO5MYRWbmvj3z85wcvRRu2SVPl3+w+AHNktSu9pjVd6m
+        gnwXPi0rmLjBnwgN6yc7yntDP0ybkPkIB9adeRVMOdA9ZtaTTWx9GOXZYpNa4ZLFn6odRU
+        7LLxaTFcLneEBBV5MY+ZCVeWIcBxH7Q=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-135-QqnZ5n2MOX-nuPKykdSExg-1; Tue, 02 Nov 2021 05:24:46 -0400
+X-MC-Unique: QqnZ5n2MOX-nuPKykdSExg-1
+Received: by mail-wr1-f72.google.com with SMTP id j12-20020adf910c000000b0015e4260febdso7243409wrj.20
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 02:24:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=Is5x4qunizskcubykNuexE0rm+el3szUQ1h1UP1TOd8=;
+        b=Gs+zb0iUL7gfbnWxy+9eI7cAOcTr4IwtBMffg06I9VcSx77EPH9Oe6WFkobaeuylnl
+         mrgmY4AwfnO/zGCOcy1tTZPXVtWa4MWuN8FkHko0/DU5an++L6/fIzd1eJV9DPnNr8rz
+         6sh0QXX8GbB2+7J/62gIiFlpdDAzH8nEk8ZPusFL96O4qv9bm6RaThPh8w7Vq+YaSNPx
+         kvKAK2ZUQ1qIqxDdvXDo+Av6qESU5NmAqehJbB+h1+xKSNvQmqnfM4/0YM+I0Ed30zQo
+         za20l8fC6wnYLGuU47W+MpAI5wv8F2PaD7EV06HfTPmxTuY6GnXdrA9+Os/xZMn3Jl/O
+         byXg==
+X-Gm-Message-State: AOAM532AR5Q4c60btHgteBEZ/q83A0NKGwhvie5RkHFL0h1l4HctmwZc
+        j4G5/GCvC768jP8erThwtFxHUO2duZ1gqjBdxmixKKb4W7FbIvkMzF2zTQA0IDZS2IMnaS/w99r
+        86xXd8wmB/qUJDF8LAwV1vIZY
+X-Received: by 2002:adf:c604:: with SMTP id n4mr44318063wrg.202.1635845085001;
+        Tue, 02 Nov 2021 02:24:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw0fGQ3DEwyi8rkMHH3dWnFdffOx2xdXnyQCeUm6PEHTWPpSxAA5u0XtJ73kJCG3Hgbf97vUQ==
+X-Received: by 2002:adf:c604:: with SMTP id n4mr44318038wrg.202.1635845084800;
+        Tue, 02 Nov 2021 02:24:44 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6810.dip0.t-ipconnect.de. [91.12.104.16])
+        by smtp.gmail.com with ESMTPSA id p13sm2193869wmi.0.2021.11.02.02.24.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 02:24:44 -0700 (PDT)
+Message-ID: <b2e4a611-45a6-732a-a6d3-6042afd2af6e@redhat.com>
+Date:   Tue, 2 Nov 2021 10:24:43 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-US
+To:     Michal Hocko <mhocko@suse.com>,
+        Alexey Makhalov <amakhalov@vmware.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Oscar Salvador <OSalvador@suse.com>
+References: <20211101201312.11589-1-amakhalov@vmware.com>
+ <YYDtDkGNylpAgPIS@dhcp22.suse.cz>
+ <7136c959-63ff-b866-b8e4-f311e0454492@redhat.com>
+ <C69EF2FE-DFF6-492E-AD40-97A53739C3EC@vmware.com>
+ <YYD/FkpAk5IvmOux@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH] mm: fix panic in __alloc_pages
+In-Reply-To: <YYD/FkpAk5IvmOux@dhcp22.suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-alloc_xenballooned_pages() and free_xenballooned_pages() are used as
-direct replacements of xen_alloc_unpopulated_pages() and
-xen_free_unpopulated_pages() in case CONFIG_XEN_UNPOPULATED_ALLOC isn't
-defined.
+>>> In add_memory_resource() we hotplug the new node if required and set it
+>>> online. Memory might get onlined later, via online_pages().
+>>
+>> You are correct. In case of memory hot add, it is true. But in case of adding
+>> CPU with memoryless node, try_node_online() will be called only during CPU
+>> onlining, see cpu_up().
+>>
+>> Is there any reason why try_online_node() resides in cpu_up() and not in add_cpu()?
+>> I think it would be correct to online node during the CPU hot add to align with
+>> memory hot add.
+> 
+> I am not familiar with cpu hotplug, but this doesn't seem to be anything
+> new so how come this became problem only now?
 
-Guard both functions with !CONFIG_XEN_UNPOPULATED_ALLOC and rename them
-to the xen_*() variants they are replacing. This allows to remove some
-ifdeffery from the xen.h header file. Adapt the prototype of the
-functions to match.
+So IIUC, the issue is that we have a node
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
----
-V2:
-- adapt prototypes (kernel test robot)
----
- drivers/xen/balloon.c | 24 +++++++++++++-----------
- include/xen/balloon.h |  3 ---
- include/xen/xen.h     |  6 ------
- 3 files changed, 13 insertions(+), 20 deletions(-)
+a) That has no memory
+b) That is offline
 
-diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
-index 3a661b7697d4..7b692636fad6 100644
---- a/drivers/xen/balloon.c
-+++ b/drivers/xen/balloon.c
-@@ -580,7 +580,8 @@ void balloon_set_new_target(unsigned long target)
- }
- EXPORT_SYMBOL_GPL(balloon_set_new_target);
- 
--static int add_ballooned_pages(int nr_pages)
-+#ifndef CONFIG_XEN_UNPOPULATED_ALLOC
-+static int add_ballooned_pages(unsigned int nr_pages)
- {
- 	enum bp_state st;
- 
-@@ -608,14 +609,14 @@ static int add_ballooned_pages(int nr_pages)
- }
- 
- /**
-- * alloc_xenballooned_pages - get pages that have been ballooned out
-+ * xen_alloc_unpopulated_pages - get pages that have been ballooned out
-  * @nr_pages: Number of pages to get
-  * @pages: pages returned
-  * @return 0 on success, error otherwise
-  */
--int alloc_xenballooned_pages(int nr_pages, struct page **pages)
-+int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages)
- {
--	int pgno = 0;
-+	unsigned int pgno = 0;
- 	struct page *page;
- 	int ret;
- 
-@@ -650,7 +651,7 @@ int alloc_xenballooned_pages(int nr_pages, struct page **pages)
- 	return 0;
-  out_undo:
- 	mutex_unlock(&balloon_mutex);
--	free_xenballooned_pages(pgno, pages);
-+	xen_free_unpopulated_pages(pgno, pages);
- 	/*
- 	 * NB: free_xenballooned_pages will only subtract pgno pages, but since
- 	 * target_unpopulated is incremented with nr_pages at the start we need
-@@ -659,16 +660,16 @@ int alloc_xenballooned_pages(int nr_pages, struct page **pages)
- 	balloon_stats.target_unpopulated -= nr_pages - pgno;
- 	return ret;
- }
--EXPORT_SYMBOL(alloc_xenballooned_pages);
-+EXPORT_SYMBOL(xen_alloc_unpopulated_pages);
- 
- /**
-- * free_xenballooned_pages - return pages retrieved with get_ballooned_pages
-+ * xen_free_unpopulated_pages - return pages retrieved with get_ballooned_pages
-  * @nr_pages: Number of pages
-  * @pages: pages to return
-  */
--void free_xenballooned_pages(int nr_pages, struct page **pages)
-+void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages)
- {
--	int i;
-+	unsigned int i;
- 
- 	mutex_lock(&balloon_mutex);
- 
-@@ -685,9 +686,9 @@ void free_xenballooned_pages(int nr_pages, struct page **pages)
- 
- 	mutex_unlock(&balloon_mutex);
- }
--EXPORT_SYMBOL(free_xenballooned_pages);
-+EXPORT_SYMBOL(xen_free_unpopulated_pages);
- 
--#if defined(CONFIG_XEN_PV) && !defined(CONFIG_XEN_UNPOPULATED_ALLOC)
-+#if defined(CONFIG_XEN_PV)
- static void __init balloon_add_region(unsigned long start_pfn,
- 				      unsigned long pages)
- {
-@@ -710,6 +711,7 @@ static void __init balloon_add_region(unsigned long start_pfn,
- 	balloon_stats.total_pages += extra_pfn_end - start_pfn;
- }
- #endif
-+#endif
- 
- static int __init balloon_init(void)
- {
-diff --git a/include/xen/balloon.h b/include/xen/balloon.h
-index 6dbdb0b3fd03..e93d4f0088c5 100644
---- a/include/xen/balloon.h
-+++ b/include/xen/balloon.h
-@@ -26,9 +26,6 @@ extern struct balloon_stats balloon_stats;
- 
- void balloon_set_new_target(unsigned long target);
- 
--int alloc_xenballooned_pages(int nr_pages, struct page **pages);
--void free_xenballooned_pages(int nr_pages, struct page **pages);
--
- #ifdef CONFIG_XEN_BALLOON
- void xen_balloon_init(void);
- #else
-diff --git a/include/xen/xen.h b/include/xen/xen.h
-index 43efba045acc..9f031b5faa54 100644
---- a/include/xen/xen.h
-+++ b/include/xen/xen.h
-@@ -52,13 +52,7 @@ bool xen_biovec_phys_mergeable(const struct bio_vec *vec1,
- extern u64 xen_saved_max_mem_size;
- #endif
- 
--#ifdef CONFIG_XEN_UNPOPULATED_ALLOC
- int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages);
- void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages);
--#else
--#define xen_alloc_unpopulated_pages alloc_xenballooned_pages
--#define xen_free_unpopulated_pages free_xenballooned_pages
--#include <xen/balloon.h>
--#endif
- 
- #endif	/* _XEN_XEN_H */
+This node will get onlined when onlining the CPU as Alexey says. Yet we
+have some code that stumbles over the node and goes ahead trying to use
+the pgdat -- that code is broken.
+
+
+If we take a look at build_zonelists() we indeed skip any
+!node_online(node). Any other code should do the same. If the node is
+not online, it shall be ignored because we might not even have a pgdat
+yet -- see hotadd_new_pgdat(). Without node_online(), the pgdat might be
+stale or non-existant.
+
+
+The node onlining logic when onlining a CPU sounds bogus as well: Let's
+take a look at try_offline_node(). It checks that:
+1) That no memory is *present*
+2) That no CPU is *present*
+
+We should online the node when adding the CPU ("present"), not when
+onlining the CPU.
+
 -- 
-2.26.2
+Thanks,
+
+David / dhildenb
 
