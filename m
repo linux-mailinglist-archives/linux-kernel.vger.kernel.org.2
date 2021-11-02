@@ -2,41 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B3C443830
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B656443831
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231971AbhKBWFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231272AbhKBWE4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231812AbhKBWFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:05:15 -0400
+Received: from ms.lwn.net ([45.79.88.28]:53374 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231435AbhKBWE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Nov 2021 18:04:56 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474A5C061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 15:02:21 -0700 (PDT)
 Received: from meer.lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
-        by ms.lwn.net (Postfix) with ESMTPA id CF1A05ECB;
-        Tue,  2 Nov 2021 22:02:20 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net CF1A05ECB
+        by ms.lwn.net (Postfix) with ESMTPA id 4349A5ED5;
+        Tue,  2 Nov 2021 22:02:21 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 4349A5ED5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1635890541; bh=2wGyJfIQVSZrWD9oS01T9AMKg1Ln7sYga/NfPQ5b2q4=;
+        t=1635890541; bh=sOvuzkedV2G+rjKxMbKHFtNpi+hURuSCtmrA/GWze3A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V0v2SUwE1xSYVsir6Gf9BgziqmX5AtLuppGiOZnNkprEI+AqSro0tDvA/NdYC3m7+
-         7J76N/++ONgO19Rd+qqAqFlbyWeZIAD42ljq+IDr1YUR3pYmDDyMlNhINlFBz+dnWe
-         qACaPXf76VU4Wz0b1JkO+aSjzG0WeV6/FKy/1U1Vop0e1f9VKgWtTEVBzjBDtHBT51
-         EllFuw4zdHuPSIl8HTOU5N6hWuD6dEGERGaRAaNnSCoOcOpPOINf0DVxmA5IwswGkn
-         tvoKeOxm6QCxrC78FhvuNvdK+P8Wdu4CydOr/GMzEWRJOJxAWqoEt9c+qHoWyLuUAZ
-         YMl2AAwqwwu6Q==
+        b=EhLhQ3kSwz+nPj9l9U8CZkxYEltLWloHnoPepCpl67dWam1/lKdAZrAj+20mFz1LR
+         9yJ/gpvxqFrkOXvhOlEL5ymx69t7eKVriPbWwShnN5iR7eBuK2qYNJAV0IOlQikc7x
+         Br3zkDV8ES+hMwdxsLACp6Z3LA2T/V0hcIZid9EDe7jd6Y/sIq1i6X+3VgDmh4uk2X
+         DQtI6yc8/AEcIbaDrYi8Cm5QRELGoJTLZFSwkzvq6C4uTq+SKgNMV+b/4WaTY+YI+a
+         hXPIqOi3QyvSpddEBu6rlTEn8ox+bev3rDhV+x1RmYW97LLg8wVuHhJfwmb3wKCpCl
+         70fMhH2k5KDeA==
 From:   Jonathan Corbet <corbet@lwn.net>
 To:     linux-kernel@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        "Signed-off-by : Arnd Bergmann" <arnd@arndb.de>,
-        "Signed-off-by : Mark Brown" <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 8/9] spi: remove unused header file <linux/platform_data/spi-clps711x.h>
-Date:   Tue,  2 Nov 2021 16:02:02 -0600
-Message-Id: <20211102220203.940290-9-corbet@lwn.net>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Marek Vasut <marex@denx.de>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH 9/9] net: remove unused header file <linux/ks8851_mll.h>
+Date:   Tue,  2 Nov 2021 16:02:03 -0600
+Message-Id: <20211102220203.940290-10-corbet@lwn.net>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211102220203.940290-1-corbet@lwn.net>
 References: <20211102220203.940290-1-corbet@lwn.net>
@@ -46,39 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 6acaadc852f1 ("spi: clps711x: Driver refactor") removed the only use
-of <linux/platform_data/spi-clps711x.h>, but left the header file behind.
-This file is unused, delete it.
+Commit 72628da6d634 ("net: ks8851: Remove ks8851_mll.c") removed the only
+use of <linux/ks8851_mll.h>, but left the header file in place.  Nothing
+uses that file, delete it now.
 
-Cc: Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
+Cc: Marek Vasut <marex@denx.de>
+Cc: David S. Miller <davem@davemloft.net>
 Signed-off-by: Jonathan Corbet <corbet@lwn.net>
 ---
- include/linux/platform_data/spi-clps711x.h | 17 -----------------
- 1 file changed, 17 deletions(-)
- delete mode 100644 include/linux/platform_data/spi-clps711x.h
+ include/linux/ks8851_mll.h | 21 ---------------------
+ 1 file changed, 21 deletions(-)
+ delete mode 100644 include/linux/ks8851_mll.h
 
-diff --git a/include/linux/platform_data/spi-clps711x.h b/include/linux/platform_data/spi-clps711x.h
+diff --git a/include/linux/ks8851_mll.h b/include/linux/ks8851_mll.h
 deleted file mode 100644
-index efaa596848c9..000000000000
---- a/include/linux/platform_data/spi-clps711x.h
+index 57c0a39ed796..000000000000
+--- a/include/linux/ks8851_mll.h
 +++ /dev/null
-@@ -1,17 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-or-later */
+@@ -1,21 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
 -/*
-- *  CLPS711X SPI bus driver definitions
-- *
-- *  Copyright (C) 2012 Alexander Shiyan <shc_work@mail.ru>
+- * ks8861_mll platform data struct definition
+- * Copyright (c) 2012 BTicino S.p.A.
 - */
 -
--#ifndef ____LINUX_PLATFORM_DATA_SPI_CLPS711X_H
--#define ____LINUX_PLATFORM_DATA_SPI_CLPS711X_H
+-#ifndef _LINUX_KS8851_MLL_H
+-#define _LINUX_KS8851_MLL_H
 -
--/* Board specific platform_data */
--struct spi_clps711x_pdata {
--	int *chipselect;	/* Array of GPIO-numbers */
--	int num_chipselect;	/* Total count of GPIOs */
+-#include <linux/if_ether.h>
+-
+-/**
+- * struct ks8851_mll_platform_data - Platform data of the KS8851_MLL network driver
+- * @macaddr:	The MAC address of the device, set to all 0:s to use the on in
+- *		the chip.
+- */
+-struct ks8851_mll_platform_data {
+-	u8 mac_addr[ETH_ALEN];
 -};
 -
 -#endif
