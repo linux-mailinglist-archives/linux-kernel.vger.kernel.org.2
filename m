@@ -2,175 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB33442924
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:12:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 461D8442927
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:13:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhKBIOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 04:14:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58001 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229770AbhKBIOm (ORCPT
+        id S230465AbhKBIPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 04:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhKBIPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 04:14:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635840726;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=np1qThQAeJX33GQTcesiUPc23jDJuGnAxWws7e0zgcE=;
-        b=afIblKYIn+Ynykef8kCFNtWOzJqDG8u/LhwPyl27WLQwIVDAmHtHVPJXzj7tozIFP+36AQ
-        GDjyy/4qTCOFrdx6Dx2rMpa1d0H2j4dzL+NcFJtKOgO6evjIlMBWGP7lR4h//I0KIzj9/B
-        0p7wo5aZq/rJ7n5AmOeZ8/Zq74ou/E0=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-qtV3llqlPxGGagemguba1g-1; Tue, 02 Nov 2021 04:12:05 -0400
-X-MC-Unique: qtV3llqlPxGGagemguba1g-1
-Received: by mail-wm1-f70.google.com with SMTP id v10-20020a1cf70a000000b00318203a6bd1so541399wmh.6
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 01:12:05 -0700 (PDT)
+        Tue, 2 Nov 2021 04:15:51 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0CCC061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 01:13:15 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id g11so7428608pfv.7
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 01:13:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:from:to:cc:subject:date:mime-version
+         :content-transfer-encoding;
+        bh=6BWDcbdqy5JG3JwyFHsYETyMufKhQtLqc84w/fEE4Y4=;
+        b=GwV1jui6Nkkqsy06UF83v23ARLTHNbSyfAFmH/gOcYu29UO1Y7B+qMHEwEPnU1PbX/
+         zqcPq+L1TxCu6oUSwIQ+nftz5Snj0xXO+E/zIiPMIiz2Yo60N+kZ5NS8peaa3RhAyyr5
+         W2rF9k/ymjfAc2XbL+dE2zXM7ZGGZWzq9oJnxlCFlqwOljnwNSG7XwYCENmSANYja62v
+         TXWP+pfOIuB5JkvB6+IRY3fAF0JDWUJ+HFSSX+TOu1ovpeqFIn1UV46uhqRnmGvE7UPT
+         O5nj7ARix335JIZaO3yqbXHOMlZi7a2syEvH7icJounOtfOTazMsAclv83hOMlgmAAG8
+         crrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=np1qThQAeJX33GQTcesiUPc23jDJuGnAxWws7e0zgcE=;
-        b=6gi58b/zGjSYFV6l9ITm2N1ZUYB4J/DS06RWehuLQk3Jznk1GYiMaL5zyU1sN5D54p
-         A63fcElUwWCSyD+YENciMqPH72Mh0SRTderRFrOHAb8PH7ufF1gmON6MTJEiM/a1Wuir
-         o2SJInV+IUSccVj7dmvZHu3hmJTKBTKTpcFkmEp6Gv9j91GHYqB16kWfCFUHKo0Q3KVV
-         sfm6TTIpa6sd5meHei3E7i75+dvWdbGlQOK3QgbVj3Qf7MDRpm6FZiX+Fevvb3l8RHfE
-         GESKA7i+G+D26o5N+GUxVbuwPqzC0IHmXpEcO2e0/Oea2y2hrZi0LQmlBsHd7uxFB601
-         7WkA==
-X-Gm-Message-State: AOAM531Azky6EW9rRrdgZL8E4JySVszVjl4bKLtPcQa3l/YDvjZQCZ2F
-        0ExALWb14W0FO5d2BtHuFYjlsV+S5+ki04k2gw5v2dt6tmKNzZZONIT90M1FgZ9zTd30xR+ZeUz
-        cp7HN3VxjKeShuYNGxUQgIa+H
-X-Received: by 2002:a05:600c:202:: with SMTP id 2mr4991425wmi.167.1635840724604;
-        Tue, 02 Nov 2021 01:12:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzVsG7mgH2x69dUZcIdMg+BCcAEU4bmITDKbMyxAlIVSIddBG70EtJqHxXUxhsMataQ3vdK9A==
-X-Received: by 2002:a05:600c:202:: with SMTP id 2mr4991403wmi.167.1635840724380;
-        Tue, 02 Nov 2021 01:12:04 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6810.dip0.t-ipconnect.de. [91.12.104.16])
-        by smtp.gmail.com with ESMTPSA id f6sm1663245wmj.40.2021.11.02.01.12.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 01:12:03 -0700 (PDT)
-Message-ID: <7136c959-63ff-b866-b8e4-f311e0454492@redhat.com>
-Date:   Tue, 2 Nov 2021 09:12:03 +0100
+        h=x-gm-message-state:message-id:from:to:cc:subject:date:mime-version
+         :content-transfer-encoding;
+        bh=6BWDcbdqy5JG3JwyFHsYETyMufKhQtLqc84w/fEE4Y4=;
+        b=j7uvcCH1fYh5qBzzXTjBrnko7m2vbsVVaEfBedW78DBjgStLa7LRiYM9RgFS6ZEkIA
+         G9hKRomTl6jlrI3iz+N1Zm9ff0ndmVTd29i7/RCbjsNX3EHZTw9eokJNnX9caFSopGxN
+         Z2/6UL69g4bwvwCAbRPyug72kfiSEpIQdW+MyV9Caxcq4fF4ebcbUHKw77ghQA1awKUD
+         bIrkkuNuW1cYp8ASwZOhkBXRSny7hnTKacwlELvEkg8OeUWxJwoJ2WDGRRUe2YInQGoK
+         ZsL7h1gysTetk8j+ASvL3CaQkb2LjjaMcL1213zje5lDeOoIGGGGvrgNXG0qGEzmbcjl
+         XcEw==
+X-Gm-Message-State: AOAM5336M1jWXXWd3Zu/tLZW9lC8FW7uNALl74P1ov3ZY7zeQ91rANr0
+        SrinQEPQ2YqR8cUZayUsbu0=
+X-Google-Smtp-Source: ABdhPJwYCo0cMv9SqRxKPalxKe8bMUf5UMYhaqsKJSCxxkXC7SRQIRjcC7tf2/BMObIqn5jyZjpizA==
+X-Received: by 2002:a63:b002:: with SMTP id h2mr26316295pgf.464.1635840794991;
+        Tue, 02 Nov 2021 01:13:14 -0700 (PDT)
+Received: from surfacebook2-fedora.ncku.edu.tw ([140.116.1.141])
+        by smtp.gmail.com with ESMTPSA id b13sm1762097pjl.15.2021.11.02.01.13.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 01:13:14 -0700 (PDT)
+Message-ID: <6180f31a.1c69fb81.7f7e.541c@mx.google.com>
+X-Google-Original-Message-ID: <20211102081259.55598-1-Hoshinomori-Owari>
+From:   hoshinomorimorimo@gmail.com
+X-Google-Original-From: Hoshinomori-Owari
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Hoshinomori-Owari <hoshinomorimorimo@gmail.com>
+Subject: [PATCH] staging: rtl8723bs: Remove redundant indentation
+Date:   Tue,  2 Nov 2021 16:12:59 +0800
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     Michal Hocko <mhocko@suse.com>,
-        Alexey Makhalov <amakhalov@vmware.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Oscar Salvador <OSalvador@suse.com>
-References: <20211101201312.11589-1-amakhalov@vmware.com>
- <YYDtDkGNylpAgPIS@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH] mm: fix panic in __alloc_pages
-In-Reply-To: <YYDtDkGNylpAgPIS@dhcp22.suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.11.21 08:47, Michal Hocko wrote:
-> [CC Oscar and David]
-> 
-> On Mon 01-11-21 13:13:12, Alexey Makhalov wrote:
->> There is a kernel panic caused by __alloc_pages() accessing
->> uninitialized NODE_DATA(nid). Uninitialized node data exists
->> during the time when CPU with memoryless node was added but
->> not onlined yet. Panic can be easy reproduced by disabling
->> udev rule for automatic onlining hot added CPU followed by
->> CPU with memoryless node hot add.
->>
->> This is a panic caused by percpu code doing allocations for
->> all possible CPUs and hitting this issue:
->>
->>  CPU2 has been hot-added
->>  BUG: unable to handle page fault for address: 0000000000001608
->>  #PF: supervisor read access in kernel mode
->>  #PF: error_code(0x0000) - not-present page
->>  PGD 0 P4D 0
->>  Oops: 0000 [#1] SMP PTI
->>  CPU: 0 PID: 1 Comm: systemd Tainted: G            E     5.15.0-rc7+ #11
->>  Hardware name: VMware, Inc. VMware7,1/440BX Desktop Reference Platform, BIOS VMW
->>
->>  RIP: 0010:__alloc_pages+0x127/0x290
-> 
-> Could you resolve this into a specific line of the source code please?
-> 
->>  Code: 4c 89 f0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 44 89 e0 48 8b 55 b8 c1 e8 0c 83 e0 01 88 45 d0 4c 89 c8 48 85 d2 0f 85 1a 01 00 00 <45> 3b 41 08 0f 82 10 01 00 00 48 89 45 c0 48 8b 00 44 89 e2 81 e2
->>  RSP: 0018:ffffc900006f3bc8 EFLAGS: 00010246
->>  RAX: 0000000000001600 RBX: 0000000000000000 RCX: 0000000000000000
->>  RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000cc2
->>  RBP: ffffc900006f3c18 R08: 0000000000000001 R09: 0000000000001600
->>  R10: ffffc900006f3a40 R11: ffff88813c9fffe8 R12: 0000000000000cc2
->>  R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000cc2
->>  FS:  00007f27ead70500(0000) GS:ffff88807ce00000(0000) knlGS:0000000000000000
->>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>  CR2: 0000000000001608 CR3: 000000000582c003 CR4: 00000000001706b0
->>  Call Trace:
->>   pcpu_alloc_pages.constprop.0+0xe4/0x1c0
->>   pcpu_populate_chunk+0x33/0xb0
->>   pcpu_alloc+0x4d3/0x6f0
->>   __alloc_percpu_gfp+0xd/0x10
->>   alloc_mem_cgroup_per_node_info+0x54/0xb0
->>   mem_cgroup_alloc+0xed/0x2f0
->>   mem_cgroup_css_alloc+0x33/0x2f0
->>   css_create+0x3a/0x1f0
->>   cgroup_apply_control_enable+0x12b/0x150
->>   cgroup_mkdir+0xdd/0x110
->>   kernfs_iop_mkdir+0x4f/0x80
->>   vfs_mkdir+0x178/0x230
->>   do_mkdirat+0xfd/0x120
->>   __x64_sys_mkdir+0x47/0x70
->>   ? syscall_exit_to_user_mode+0x21/0x50
->>   do_syscall_64+0x43/0x90
->>   entry_SYSCALL_64_after_hwframe+0x44/0xae
->>
->> Node can be in one of the following states:
->> 1. not present (nid == NUMA_NO_NODE)
->> 2. present, but offline (nid > NUMA_NO_NODE, node_online(nid) == 0,
->> 				NODE_DATA(nid) == NULL)
->> 3. present and online (nid > NUMA_NO_NODE, node_online(nid) > 0,
->> 				NODE_DATA(nid) != NULL)
->>
->> alloc_page_{bulk_array}node() functions verify for nid validity only
->> and do not check if nid is online. Enhanced verification check allows
->> to handle page allocation when node is in 2nd state.
-> 
-> I do not think this is a correct approach. We should make sure that the
-> proper fallback node is used instead. This means that the zone list is
-> initialized properly. IIRC this has been a problem in the past and it
-> has been fixed. The initialization code is quite subtle though so it is
-> possible that this got broken again.
+From: Hoshinomori-Owari <hoshinomorimorimo@gmail.com>
 
-I'm a little confused:
+Remove redundant indentation in
+drivers/staging/rtl8723bs/core/rtw_ap.c:1139.
+Issue found by checkpatch.pl
 
-In add_memory_resource() we hotplug the new node if required and set it
-online. Memory might get onlined later, via online_pages().
+Signed-off-by: Hoshinomori-Owari <hoshinomorimorimo@gmail.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_ap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-So after add_memory_resource()->__try_online_node() succeeded, we have
-an online pgdat -- essentially 3.
-
-This patch detects if we're past 3. but says that it reproduced by
-disabling *memory* onlining.
-
-Before we online memory for a hotplugged node, all zones are !populated.
-So once we online memory for a !populated zone in online_pages(), we
-trigger setup_zone_pageset().
-
-
-The confusing part is that this patch checks for 3. but says it can be
-reproduced by not onlining *memory*. There seems to be something missing.
-
-Do we maybe need a proper populated_zone() check before accessing zone data?
-
+diff --git a/drivers/staging/rtl8723bs/core/rtw_ap.c b/drivers/staging/rtl8723bs/core/rtw_ap.c
+index a76e81330756..4345dca1b552 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_ap.c
++++ b/drivers/staging/rtl8723bs/core/rtw_ap.c
+@@ -1137,7 +1137,7 @@ int rtw_check_beacon_data(struct adapter *padapter, u8 *pbuf,  int len)
+ 		}
+ 
+ 		if ((p == NULL) || (ie_len == 0))
+-				break;
++			break;
+ 	}
+ 
+ 	/* wmm */
 -- 
-Thanks,
-
-David / dhildenb
+2.31.1
 
