@@ -2,82 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8505443894
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF87443895
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:38:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbhKBWlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231345AbhKBWlJ (ORCPT
+        id S231359AbhKBWl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:41:26 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:50657 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229835AbhKBWlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 18:41:09 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 300C5C061203;
-        Tue,  2 Nov 2021 15:38:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=HtYCPW7emSKIQO/wcR8gaEJjILxPAOty5YVSR6ISMlg=; b=eXguMIE4zsqJRn3ikfbvL6D2eM
-        SqGSTtTurbAqNiyYCYCM+eN5dDb4DCBXvvuCGJqtFhAUB7LpWrSPANbsm55Ho/EJ0nkHCojBAuVJ6
-        zlfdhSnlxhqnL/LcOmVJ4/v3olWfTXR5DUNLkinvFpKPOuI3ZmxrJJ/Hed7PPzsw7347ZnZogxEal
-        uBmsMY8Uk88X6bVG8lVXW8lVYjsyI9267HZ6ZfK+nfM5KZHzzKPRi8LMa/cYhwqXhumsXaEqj0jFk
-        l/gyzW4D3CFilP3/f0HQ7mjTczP66Uo2avs165kD/zY7zLbSYgBNQoYCWsB203wUAbhWJ60FvGYIu
-        gOYeVvXg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mi2QI-003BH1-5t; Tue, 02 Nov 2021 22:38:30 +0000
-Subject: Re: [PATCH] scripts/config: allow "O=config-dir" option
-To:     Nicolas Schier <nicolas@fjasle.eu>
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kbuild@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
-References: <20211031063322.20486-1-rdunlap@infradead.org>
- <YYFbYac/iU21vYiu@fjasle.eu>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d547ccdd-6d87-504f-ebc3-0802341fe55c@infradead.org>
-Date:   Tue, 2 Nov 2021 15:38:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 2 Nov 2021 18:41:25 -0400
+Received: from mail-wm1-f45.google.com ([209.85.128.45]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MHG0U-1mvBZA0rku-00DGVB for <linux-kernel@vger.kernel.org>; Tue, 02 Nov
+ 2021 23:38:48 +0100
+Received: by mail-wm1-f45.google.com with SMTP id v127so500836wme.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 15:38:48 -0700 (PDT)
+X-Gm-Message-State: AOAM533YY/ajf1BEmtnweqTubbL+MArBQY+olwcdC/X+akSioNK8/k0k
+        stwAj+WR7LTqFj0bOwpEGVdTJP05e8pIgBG+siU=
+X-Google-Smtp-Source: ABdhPJybARp6PDun8/zoaUvWMY0Nc3qQSGjuiDp4tQ9ueLsmRsthCc7D5TCv1oDz25AqqkBPUwMvrFWmK08kymr5S7E=
+X-Received: by 2002:a05:600c:1548:: with SMTP id f8mr10479346wmg.35.1635892727957;
+ Tue, 02 Nov 2021 15:38:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YYFbYac/iU21vYiu@fjasle.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211102220203.940290-1-corbet@lwn.net> <20211102220203.940290-4-corbet@lwn.net>
+In-Reply-To: <20211102220203.940290-4-corbet@lwn.net>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 2 Nov 2021 23:38:32 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2ek7VuB00MBojJrbqJxLj5K4O-ehKvSPeM9mhQcrkv4A@mail.gmail.com>
+Message-ID: <CAK8P3a2ek7VuB00MBojJrbqJxLj5K4O-ehKvSPeM9mhQcrkv4A@mail.gmail.com>
+Subject: Re: [PATCH 3/9] Remove unused header <linux/cnt32_to_63.h>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nicolas Pitre <npitre@baylibre.com>,
+        Mike Rapoport <rppt@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:lnovUi3m7aS/VZpiDV/DveU6dt/LpCbQT8BrFpeXvMDdC8+td7r
+ fXCoW5oOOKIJqIg3a2kpjIL1oqspiRJtH0drXCTplLekQunGKqmOg1/N7mDifhSYxKYsxqs
+ GGdY7Qp1cA0p+kfGcu3M0fPhYJoWyXK2v03FR/MLhatIszchgAzutbQNmnnwGw5fw2guPK9
+ /iIOXXzqQhmjtiw/8IbiQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yiXoR5bBXkk=:fNnROTzoN8kxa3GsSlQ282
+ qgH7W7VVyVqt4O0uc15lvVw1ZlnUb7b6UBGiKmW1ELA1Xi9C2EViiWziTCywYAlz3CK8DPhP/
+ uHRVP+7SrfuZrCrNrG6LYBSLNPtsaGSWbhmVkA8TABuoBmomu98asMY1iiPbhGkxRSdJ3MMme
+ /U3fNS1V72defezQIhTbcJeWUWaOx/rgNSCX7oOcCfsSRSPmN1MbnBfbdEfEhDK5nkU++H1ih
+ LkOXu6q6DS1j0zd9BHJyA1LsWWHdOn8cYBaBctVwiVoP5B2j0xWmAye4qA1ZJVZovPwcjKEzG
+ 5eLsJq7cI8v9lKyWC3gxeSJMBWa0pEOUiFXbyKI1UcY13gIklzuUN2ygecxXJUec6XVws6+aY
+ Y+jKSVdiuy/7hEYS/2QZril1wABLYHs9fAa4jlZTLXDlp5gM5THwVOXGBARTCaJOLuSFlWniU
+ f30kTT5sMOQ/73CYsMcq1HsHRRhboiuzK65OBpBdXw2Jv58Y5wrJh3iqZ6x1PQ23edsty/4FQ
+ IIKO+W13v70bqZ8sevGbzaHOme1LNShGzqXUuImhHRB8eKj6Liuvknj4/CzWDMuuIyzBLz0h8
+ U1hwyjUcYYlly3yEtjrimnA8DGL/sp7PlGnjXOqEzkiQRNZxBxrltnMsiKO/1EVracMR1tGLN
+ ZjpGE55FxHYZNkcQGCtCOko81hhqIGJ8QiBPfmehmCD8Nhc2TLU2WgFlf21QRpK+WUCUOaDke
+ j1BupSIdQjB1EBcpC0fB5FAGjNkkU/BRJSIIwW3zlVmrNB3NsRpRET2TvChOF/BlQegm3w2ey
+ dgiu2HwRTf73yCT/yfvHuaGAIW27pljE99jabYRBDIHmnUQ1ug=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/21 8:38 AM, Nicolas Schier wrote:
-> On Sat, Oct 30, 2021 at 11:33:22PM -0700, Randy Dunlap wrote:
->> Support "O=config-dir" as the location of the .config file
->> like (some) other kernel build (make) tools do.
->>
->> Someone asked for this "feature" a few months ago but I don't
->> recall who it was.
->>
->> Also check for the existence of the config-dir/config-file
->> and report if there is no such file instead of letting grep
->> report that there is no such file.
->>
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: Masahiro Yamada <masahiroy@kernel.org>
->> Cc: Nick Desaulniers <ndesaulniers@google.com>
->> Cc: linux-kbuild@vger.kernel.org
->> Cc: Andi Kleen <ak@linux.intel.com>
->> ---
->>   scripts/config |   44 +++++++++++++++++++++++++++++++++++++++-----
->>   1 file changed, 39 insertions(+), 5 deletions(-)
->>
+On Tue, Nov 2, 2021 at 11:01 PM Jonathan Corbet <corbet@lwn.net> wrote:
+>
+> Commit fb37409a01b0 ("arch: remove unicore32 port) deleted the last file
+> that included <linux/cnt32_to_63.h>, but left that header file behind.
+> Nothing uses it, delete it now.
+>
+> Cc: Nicolas Pitre <npitre@baylibre.com>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Jonathan Corbet <corbet@lwn.net>
 
-> I do like that feature!
-> 
-> With quotes round $FN:
-> Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
-
-Thanks, I'll do those changes and resend it.
-
--- 
-~Randy
+Acked-by: Arnd Bergmann <arnd@arndb.de>
