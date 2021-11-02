@@ -2,229 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2EF442A5B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:26:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0898A442A8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:40:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbhKBJ24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 05:28:56 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:27163 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbhKBJ2t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 05:28:49 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Hk4HJ6mm9zSh45;
-        Tue,  2 Nov 2021 17:24:44 +0800 (CST)
-Received: from kwepeml500002.china.huawei.com (7.221.188.128) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 2 Nov 2021 17:26:08 +0800
-Received: from compute.localdomain (10.175.112.70) by
- kwepeml500002.china.huawei.com (7.221.188.128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 2 Nov 2021 17:26:07 +0800
-From:   Huang Guobin <huangguobin4@huawei.com>
-To:     <j.vosburgh@gmail.com>, <vfalico@gmail.com>, <andy@greyhouse.net>,
-        <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next v2] bonding: Fix a use-after-free problem when bond_sysfs_slave_add() failed
-Date:   Tue, 2 Nov 2021 17:37:33 +0800
-Message-ID: <1635845853-4259-1-git-send-email-huangguobin4@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S229800AbhKBJnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 05:43:14 -0400
+Received: from mail-bn1nam07on2068.outbound.protection.outlook.com ([40.107.212.68]:56009
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229505AbhKBJnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 05:43:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DpzZ6caCBiZJ761rITphmc0mgky5juEHr/EhZUjN4scSa8ZQ76UZY1411fTGXq7JjJM+jwba03ku4Ecua/r4b9RS1fyLRrosBzwHjk0kYHNX3MTkGHFVTRPcB9oaerS9YYdhWMJtW0nGhXtmfQAnetrt61M73DLs02KrK5Ey2LDTlUw25wXrP9pNFO40LywO5ExYzQ6z8PatpIU9xgjGkn+pTePm8zxjivUGxbg0saL8aP9eH9WM3pN9P/xX9Vm5R+2bm1cPpx+466P/JoYI7WrXsS3nwN+SyTtRDTiXsYR9Zqpyr0is2KzwOaseV/82J3yvNJLERMxsLvj+GpjwCw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ai98l+xUgdH9VOYOnSLyGFvuran9JyWLM3D2tOS81gE=;
+ b=g5ca4ocgQgvDgExO6/GNBtZsIs8jrVw75qWRBCwhcmssd+8FtzXvte17hZTK0qOxx3fpCe+jD2E/oXhHuBo0EEdK8VAUhpaPwe/4hYUAFPxKYE2oJjCrSxndH47lerN5rUC7BMMbt7MaAhLtm3bPQuMyHymWEJJCMfqH8/xy41xh+B1x0fn8QM7oNk7SSphWXuQKPlFiHqVMqAHDgqhacMn8eI0guRxj8YXRS1DE6AqE9++SAsgkl644F+VxcCwZwtbqiEZ/fA4YaAYRy/ZW1oUINpp8TODx2Gu4VwUvVDIIZgYL8xFkSnHcRD7pFH5M5z/vqftYAeG1vbJG1qHI+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ai98l+xUgdH9VOYOnSLyGFvuran9JyWLM3D2tOS81gE=;
+ b=EMePXdlwQbr9mVaR1TOEGB/H47FfVezBEuXit5lmsHJCvtl/lsvV7mrQ40igkCnso5E9snH3YBRIKdV0MDlrd9K9fbkQvvv0ZNhyDTaR0R9db3UdTjdx0dca1bJu4+HQr9JROpMCBbr48KhJZUVo/hxKpnSIToaME+KLEJIl8pU=
+Received: from MWHPR05MB3648.namprd05.prod.outlook.com (2603:10b6:301:45::23)
+ by MWHPR0501MB3915.namprd05.prod.outlook.com (2603:10b6:301:7c::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.11; Tue, 2 Nov
+ 2021 09:40:35 +0000
+Received: from MWHPR05MB3648.namprd05.prod.outlook.com
+ ([fe80::d871:f5de:8800:46dc]) by MWHPR05MB3648.namprd05.prod.outlook.com
+ ([fe80::d871:f5de:8800:46dc%4]) with mapi id 15.20.4669.010; Tue, 2 Nov 2021
+ 09:40:34 +0000
+From:   Alexey Makhalov <amakhalov@vmware.com>
+To:     Michal Hocko <mhocko@suse.com>
+CC:     David Hildenbrand <david@redhat.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Oscar Salvador <OSalvador@suse.com>
+Subject: Re: [PATCH] mm: fix panic in __alloc_pages
+Thread-Topic: [PATCH] mm: fix panic in __alloc_pages
+Thread-Index: AQHXz1zvSxS/i+mFgUadpM+6bJvGtavv3QcAgAAG4YD//5TPAIAAec8AgAAKHIA=
+Date:   Tue, 2 Nov 2021 09:40:34 +0000
+Message-ID: <E1D4EDDB-5637-45CD-A1D9-77FA43BC9DBA@vmware.com>
+References: <20211101201312.11589-1-amakhalov@vmware.com>
+ <YYDtDkGNylpAgPIS@dhcp22.suse.cz>
+ <7136c959-63ff-b866-b8e4-f311e0454492@redhat.com>
+ <C69EF2FE-DFF6-492E-AD40-97A53739C3EC@vmware.com>
+ <YYD/FkpAk5IvmOux@dhcp22.suse.cz>
+In-Reply-To: <YYD/FkpAk5IvmOux@dhcp22.suse.cz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.120.0.1.13)
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=vmware.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: bdbd759b-2109-4cb6-3418-08d99de4d1e0
+x-ms-traffictypediagnostic: MWHPR0501MB3915:
+x-microsoft-antispam-prvs: <MWHPR0501MB39150164474048E9E930FB7BD58B9@MWHPR0501MB3915.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ClJsWZIPt+7laGbUT1/8ufxwlnnrTUL/uAXZEIuzc3g10RIicIi540fW8beg9kV3PABQ/BYDgu94ywZQYKWEbdk96FtbUL+rNTEYJzV41rSiJbnZl9WpBV4+OW1UFIgkJtT15qczUno1HgQBQ3N++sZSoM6eJM8aZCnzSgneGluJh7pLmhYrSFMTa4r/fHd22DJ7htTuzvpeyD9rg2fnhPIeD3oPzMBK7VPJcVeSmBFNENf6h+y2QpgqpD0KPNSDulzluJy5fJWOiTsM1VACP6eDdHQPl5AScNKCvF5UtCdEYt/h47CPrey5mmuqt8ckOtwSKPj6l/I8iZRyK/I9fu33EZy1ZrcFJ8PCA08kMSDxdBefKC7/lC1IWJNk9rHJ0kLkjCg3CFk5hhmRuabUeLNQiDNJQnPgSM5hwLPMNyAfRUGSEQ5wwVhi7Rw5rxi65o0C5alLjPo6nk1iJZQoJKtvpHRqlKaEhL20r0uuM8oOE1YY9zwQQF51eXtE+u2rsQsVkPfTqgxRJdXNxQ3aXk+QbyzmKpZtbpTsVM9SaxuOqRJVGBh+C3bHxbGuQqkCn9XDHas6pz8agykyJ6k0hhe0kTht62H6uyzYCApvnr5uWBwj+VlgSK+ck9oNs+mcTPdp2huBUadWB6zhe7078EZbAFMBf+he9SIrqz0RmxFjvTTQM6n0Bzm97OYilCgGBuMxDweXUTmX3X0PxV+nvpsU1j3bpOIZUnJyRSYhGHRLfaRcClFqrCbWM4mbxJAx
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR05MB3648.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(2616005)(6486002)(66946007)(71200400001)(316002)(64756008)(4326008)(66446008)(66476007)(8936002)(6916009)(83380400001)(76116006)(66556008)(6512007)(38070700005)(33656002)(86362001)(36756003)(2906002)(38100700002)(53546011)(122000001)(91956017)(5660300002)(26005)(99936003)(6506007)(508600001)(54906003)(186003)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TVM1NDR5dFBBZmJvM2ZyMUkrSmRORjA5SkMxZVFUd21WOE5IaVg0R2c3dVBV?=
+ =?utf-8?B?cUtjY1k3UUtCMkJXa0U0aHlTNkhXUm81WDVUMDNnZVJvb0F4YXVwNEc1OWg3?=
+ =?utf-8?B?WU0zMDhySU5iSWJXRWU1KzRSZ2VwOTVhTXpucWRMVS9CWEF1eVdleENpd2k0?=
+ =?utf-8?B?K0tjVUJrOW1ZNDEwNmZ0bFB1emJ2Z0l6dCtQMHhxd0o2Z0VZMUJtUHIzVjF3?=
+ =?utf-8?B?NFVvdlhiczFlbUQ5VG1USDRlckx2UTI3RjhSOWRkWlZRdW1MSStCRW9CcHBY?=
+ =?utf-8?B?WEVLb09XT2V6MmdyTXZCdDgwb0dPUEJFTStJRlZWTlhGT00zWGVnTWJ4dVpS?=
+ =?utf-8?B?ZFNzWG43MFZCeDJ0Q3BvM0VoT3gyODh1RTJtazFjaEo2YW1FWHovWXBNZEI3?=
+ =?utf-8?B?cTZ3M3Zoc3BQNWU5QmRyazdCVTVWbXhMTVdtRDhmaTRDVTFHWVFLZkxBRkwz?=
+ =?utf-8?B?ZE9kZ0h5ZHdZWEZrbElydHBjK0xPYjRWblE2emdXN0JsbmxhRGwxRVdMcmF3?=
+ =?utf-8?B?clF6UnNNQ2pqbnMzNEtTY3JUazc4bGY3bmNvdXhJQ1JOdDJyUlhtdTJ6QUt6?=
+ =?utf-8?B?aUdkVmtNRHkxRERzeW01SzRrcHRWeUk0WHViblp0bmZwT1l4aDc5UjlOcXRU?=
+ =?utf-8?B?dmlqQVJaOFhUcEZZSWswd0QvK1pSR1R0cTVOMS81R1hjS3daQVFsY0NaajZN?=
+ =?utf-8?B?S0Q1MzE3ZmRzSEM2aXVWa3p5YVgzQ0tGdWUzdU83SXp0aDFBUmkyQWNNd1Rr?=
+ =?utf-8?B?ejRYUVdLZndjRDhkMldkWFE5VGN0TEZkaXZ4WnJOLzQwaTZqMWxJNkpjUEE3?=
+ =?utf-8?B?d21ua0EzbGk1OGhiajgydmpMQWdIWmNsR1VjVVY0b0tENXI3cWJpVlRMcFlo?=
+ =?utf-8?B?MGNpL2laYmN3QWZ0RjhtS3Fmem01UkF0emxMOVVMR3FPVWZxYlI2ZHRQSGxE?=
+ =?utf-8?B?NXZXdDdvNUl2N2Z6UG9yRXB2M1VzNDYrVjJ3cWQ1OWtFSUpsVDI0MTdPbWhZ?=
+ =?utf-8?B?VkpNN2pxZWd4eis5aVVSN3d6bkpQQzBMeUFVSlB4YjJ3Y2Z5SDVXc3RkRytI?=
+ =?utf-8?B?SXBRY2trTTdVc0pud1JRd0ZXNjVDRnEzMFdGblkzalFXSHQ1MnZOdklBL1BD?=
+ =?utf-8?B?TisxT3FNaWtWbWc5MFpScVcrL21GMFFrOGx1c3d5T1FBblR1dW95Z3VJNHc0?=
+ =?utf-8?B?dzZqZ2hEUWk2UlBzZlVZcDllM05uMDNrajBmNHNVckZ5ekxVaEVzTy9TRnZh?=
+ =?utf-8?B?Y2xNYllUUm4zRDVvUDdVR0MrT2ZSbUY4ZDRYZDVkb05TbXM3Qk12K3BWK0lG?=
+ =?utf-8?B?eTArdExwZzVwRGU1QUpOelhRamVTd25Xc0xrNEZZQ0ovRzhFWnArUlVTVHh5?=
+ =?utf-8?B?Y29NSEg2OHBuZDZGVnNCelhOcDVZQ1RWbUowemdnWGNZR2NLWDZLVFpGMjcy?=
+ =?utf-8?B?bGZxT084UTdDMy8xNnpTdndqVVUvYVBiY0VZNktiVWVxdUxNRERmYzVvWXdR?=
+ =?utf-8?B?WW5hckgwQ1dobFo3eW9UaFd4c1ZzbC8vL2txampYbVliZUlCZTUxMHVWTlI5?=
+ =?utf-8?B?dGhGMGxCdWpJTVdsK3BtRlByOHc5YzZHRndHZzJnWFRENkhsZTRlTFJOVklS?=
+ =?utf-8?B?b3lZdkNrZVZhZ09BamFTUDgrM0x3R09jVGhKYVZubVJOV3l3bUVqK0l2b2RJ?=
+ =?utf-8?B?a2xJNkpLa0hLU0RNWm16T1cvVmNKWlZiVEpIWHVXTy8vWHA0VFk2N09OS0Rj?=
+ =?utf-8?B?OTFISUhUK01IZk9MUFZLbzd3dDJtbWtqZEF4S0pmd2JNd25vOXdtZ2lDTWFB?=
+ =?utf-8?B?N3hZRkxaN21DeWhQaFBPbW9nWjdpekxRV2wvbCtWbGI3YjFvNnZBbnh1dWUy?=
+ =?utf-8?B?U04zRHdlVHZDTFpibmVIajd0R0RZUG9mbjZzUzdlTFo0NFViWkgrZktVSGtI?=
+ =?utf-8?B?MW0vUjJXcVd4cjdCNERYQ3VRQndlR3FuZzR1alBjd2Vpb3lsN1ljVTdYVThL?=
+ =?utf-8?B?cjRXYVkrdHd6eSt6VGtwNC9rVzEwc1QxN2VIMjB3MzVzbTB4MEJYWTBzMUtI?=
+ =?utf-8?B?ZzRBbDhjWU1BSFd5UWpxTVErbWhTanJnUnpub2JUeG03ZE5wUEFhUGJxSEU4?=
+ =?utf-8?B?dzIycFdEZlBJWktrYmEyYStrekF1cGhJVmxia2NUN0pOOERHREVuOGluWi9p?=
+ =?utf-8?Q?zM3pOKkncNhh9xABbI3r1os=3D?=
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_A058B4B4-19B4-44AE-8BE9-284BD44DC727";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepeml500002.china.huawei.com (7.221.188.128)
-X-CFilter-Loop: Reflected
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR05MB3648.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bdbd759b-2109-4cb6-3418-08d99de4d1e0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2021 09:40:34.7712
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Crt2EVJVPbgmtnwQ/7VtYVIz2Hr+1GK6pdFDzK7ENq9j/3+y2SoMAzwveg9s11mJAzWdkyK29yHkQsEvKyF/gw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR0501MB3915
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I do fuzz test for bonding device interface, I got the following
-use-after-free Calltrace:
+--Apple-Mail=_A058B4B4-19B4-44AE-8BE9-284BD44DC727
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
 
-==================================================================
-BUG: KASAN: use-after-free in bond_enslave+0x1521/0x24f0
-Read of size 8 at addr ffff88825bc11c00 by task ifenslave/7365
+>=20
+> It is hard to follow your reply as your email client is not quoting
+> properly. Let me try to reconstruct
+>=20
+> On Tue 02-11-21 08:48:27, Alexey Makhalov wrote:
+>> On 02.11.21 08:47, Michal Hocko wrote:
+> [...]
+>>>>> CPU2 has been hot-added
+>>>>> BUG: unable to handle page fault for address: 0000000000001608
+>>>>> #PF: supervisor read access in kernel mode
+>>>>> #PF: error_code(0x0000) - not-present page
+>>>>> PGD 0 P4D 0
+>>>>> Oops: 0000 [#1] SMP PTI
+>>>>> CPU: 0 PID: 1 Comm: systemd Tainted: G            E     =
+5.15.0-rc7+ #11
+>>>>> Hardware name: VMware, Inc. VMware7,1/440BX Desktop Reference =
+Platform, BIOS VMW
+>>>>>=20
+>>>>> RIP: 0010:__alloc_pages+0x127/0x290
+>>>>=20
+>>>> Could you resolve this into a specific line of the source code =
+please?
+>=20
+> This got probably unnoticed. I would be really curious whether this is
+> a broken zonelist or something else.
 
-CPU: 5 PID: 7365 Comm: ifenslave Tainted: G            E     5.15.0-rc1+ #13
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
-Call Trace:
- dump_stack_lvl+0x6c/0x8b
- print_address_description.constprop.0+0x48/0x70
- kasan_report.cold+0x82/0xdb
- __asan_load8+0x69/0x90
- bond_enslave+0x1521/0x24f0
- bond_do_ioctl+0x3e0/0x450
- dev_ifsioc+0x2ba/0x970
- dev_ioctl+0x112/0x710
- sock_do_ioctl+0x118/0x1b0
- sock_ioctl+0x2e0/0x490
- __x64_sys_ioctl+0x118/0x150
- do_syscall_64+0x35/0xb0
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f19159cf577
-Code: b3 66 90 48 8b 05 11 89 2c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 78
-RSP: 002b:00007ffeb3083c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ffeb3084bca RCX: 00007f19159cf577
-RDX: 00007ffeb3083ce0 RSI: 0000000000008990 RDI: 0000000000000003
-RBP: 00007ffeb3084bc4 R08: 0000000000000040 R09: 0000000000000000
-R10: 00007ffeb3084bc0 R11: 0000000000000246 R12: 00007ffeb3083ce0
-R13: 0000000000000000 R14: 0000000000000000 R15: 00007ffeb3083cb0
+backtrace (including inline functions)
+pcpu_alloc_pages()
+alloc_pages_node()
+  __alloc_pages_node()
+    __alloc_pages()
+      prepare_alloc_pages()
+        node_zonelist()
 
-Allocated by task 7365:
- kasan_save_stack+0x23/0x50
- __kasan_kmalloc+0x83/0xa0
- kmem_cache_alloc_trace+0x22e/0x470
- bond_enslave+0x2e1/0x24f0
- bond_do_ioctl+0x3e0/0x450
- dev_ifsioc+0x2ba/0x970
- dev_ioctl+0x112/0x710
- sock_do_ioctl+0x118/0x1b0
- sock_ioctl+0x2e0/0x490
- __x64_sys_ioctl+0x118/0x150
- do_syscall_64+0x35/0xb0
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+Panic happens in node_zonelist(), dereferencing NULL pointer of =
+NODE_DATA(nid) in
+include/linux/gfp.h:514
+512 static inline struct zonelist *node_zonelist(int nid, gfp_t flags)
+513 {
+514         return NODE_DATA(nid)->node_zonelists + gfp_zonelist(flags);
+515 }
 
-Freed by task 7365:
- kasan_save_stack+0x23/0x50
- kasan_set_track+0x20/0x30
- kasan_set_free_info+0x24/0x40
- __kasan_slab_free+0xf2/0x130
- kfree+0xd1/0x5c0
- slave_kobj_release+0x61/0x90
- kobject_put+0x102/0x180
- bond_sysfs_slave_add+0x7a/0xa0
- bond_enslave+0x11b6/0x24f0
- bond_do_ioctl+0x3e0/0x450
- dev_ifsioc+0x2ba/0x970
- dev_ioctl+0x112/0x710
- sock_do_ioctl+0x118/0x1b0
- sock_ioctl+0x2e0/0x490
- __x64_sys_ioctl+0x118/0x150
- do_syscall_64+0x35/0xb0
- entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Last potentially related work creation:
- kasan_save_stack+0x23/0x50
- kasan_record_aux_stack+0xb7/0xd0
- insert_work+0x43/0x190
- __queue_work+0x2e3/0x970
- delayed_work_timer_fn+0x3e/0x50
- call_timer_fn+0x148/0x470
- run_timer_softirq+0x8a8/0xc50
- __do_softirq+0x107/0x55f
+>=20
+>>>>> Node can be in one of the following states:
+>>>>> 1. not present (nid =3D=3D NUMA_NO_NODE)
+>>>>> 2. present, but offline (nid > NUMA_NO_NODE, node_online(nid) =3D=3D=
+ 0,
+>>>>> 				NODE_DATA(nid) =3D=3D NULL)
+>>>>> 3. present and online (nid > NUMA_NO_NODE, node_online(nid) > 0,
+>>>>> 				NODE_DATA(nid) !=3D NULL)
+>>>>>=20
+>>>>> alloc_page_{bulk_array}node() functions verify for nid validity =
+only
+>>>>> and do not check if nid is online. Enhanced verification check =
+allows
+>>>>> to handle page allocation when node is in 2nd state.
+>>>>=20
+>>>> I do not think this is a correct approach. We should make sure that =
+the
+>>>> proper fallback node is used instead. This means that the zone list =
+is
+>>>> initialized properly. IIRC this has been a problem in the past and =
+it
+>>>> has been fixed. The initialization code is quite subtle though so =
+it is
+>>>> possible that this got broken again.
+>=20
+>> This approach behaves in the same way as CPU was not yet added. =
+(state #1).
+>> So, we can think of state #2 as state #1 when CPU is not present.
+>=20
+>>> I'm a little confused:
+>>>=20
+>>> In add_memory_resource() we hotplug the new node if required and set =
+it
+>>> online. Memory might get onlined later, via online_pages().
+>>=20
+>> You are correct. In case of memory hot add, it is true. But in case =
+of adding
+>> CPU with memoryless node, try_node_online() will be called only =
+during CPU
+>> onlining, see cpu_up().
+>>=20
+>> Is there any reason why try_online_node() resides in cpu_up() and not =
+in add_cpu()?
+>> I think it would be correct to online node during the CPU hot add to =
+align with
+>> memory hot add.
+>=20
+> I am not familiar with cpu hotplug, but this doesn't seem to be =
+anything
+> new so how come this became problem only now?
 
-Second to last potentially related work creation:
- kasan_save_stack+0x23/0x50
- kasan_record_aux_stack+0xb7/0xd0
- insert_work+0x43/0x190
- __queue_work+0x2e3/0x970
- __queue_delayed_work+0x130/0x180
- queue_delayed_work_on+0xa7/0xb0
- bond_enslave+0xe25/0x24f0
- bond_do_ioctl+0x3e0/0x450
- dev_ifsioc+0x2ba/0x970
- dev_ioctl+0x112/0x710
- sock_do_ioctl+0x118/0x1b0
- sock_ioctl+0x2e0/0x490
- __x64_sys_ioctl+0x118/0x150
- do_syscall_64+0x35/0xb0
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+This is not CPU only hotplug, but CPU + NUMA node, and this new node is =
+with no memory.
+We accidentally found it by not unlining the CPU immediately.
+>=20
+>>> So after add_memory_resource()->__try_online_node() succeeded, we =
+have
+>>> an online pgdat -- essentially 3.
+>>>=20
+>> This patch detects if we're past 3. but says that it reproduced by
+>> disabling *memory* onlining.
+>> This is the hot adding of both new CPU and new _memoryless_ node =
+(with CPU only)
+>> And onlining CPU makes its node online. Disabling CPU onlining puts =
+new node
+>> into state #2, which leads to repro.
+>>=20
+>>> Before we online memory for a hotplugged node, all zones are =
+!populated.
+>>> So once we online memory for a !populated zone in online_pages(), we
+>>> trigger setup_zone_pageset().
+>>>=20
+>>>=20
+>>> The confusing part is that this patch checks for 3. but says it can =
+be
+>>> reproduced by not onlining *memory*. There seems to be something =
+missing.
+>>=20
+>> Do we maybe need a proper populated_zone() check before accessing =
+zone data?
+>=20
+> No, we need them initialize properly.
+>=20
 
-The buggy address belongs to the object at ffff88825bc11c00
- which belongs to the cache kmalloc-1k of size 1024
-The buggy address is located 0 bytes inside of
- 1024-byte region [ffff88825bc11c00, ffff88825bc12000)
-The buggy address belongs to the page:
-page:ffffea00096f0400 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x25bc10
-head:ffffea00096f0400 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0x57ff00000010200(slab|head|node=1|zone=2|lastcpupid=0x7ff)
-raw: 057ff00000010200 ffffea0009a71c08 ffff888240001968 ffff88810004dbc0
-raw: 0000000000000000 00000000000a000a 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
+Thanks,
+=E2=80=94Alexey
 
-Memory state around the buggy address:
- ffff88825bc11b00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88825bc11b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff88825bc11c00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff88825bc11c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88825bc11d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
 
-Put new_slave in bond_sysfs_slave_add() will cause use-after-free problems
-when new_slave is accessed in the subsequent error handling process. Since
-new_slave will be put in the subsequent error handling process, remove the
-unnecessary put to fix it.
-In addition, when sysfs_create_file() fails, if some files have been crea-
-ted successfully, we need to call sysfs_remove_file() to remove them.
-Since there are sysfs_create_files() & sysfs_remove_files() can be used,
-use these two functions instead.
+--Apple-Mail=_A058B4B4-19B4-44AE-8BE9-284BD44DC727
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
 
-Fixes: 7afcaec49696 (bonding: use kobject_put instead of _del after kobject_add)
-Signed-off-by: Huang Guobin <huangguobin4@huawei.com>
----
- drivers/net/bonding/bond_sysfs_slave.c | 36 +++++++++++-----------------------
- 1 file changed, 11 insertions(+), 25 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/drivers/net/bonding/bond_sysfs_slave.c b/drivers/net/bonding/bond_sysfs_slave.c
-index fd07561..6a6cdd0 100644
---- a/drivers/net/bonding/bond_sysfs_slave.c
-+++ b/drivers/net/bonding/bond_sysfs_slave.c
-@@ -108,15 +108,15 @@ static ssize_t ad_partner_oper_port_state_show(struct slave *slave, char *buf)
- }
- static SLAVE_ATTR_RO(ad_partner_oper_port_state);
- 
--static const struct slave_attribute *slave_attrs[] = {
--	&slave_attr_state,
--	&slave_attr_mii_status,
--	&slave_attr_link_failure_count,
--	&slave_attr_perm_hwaddr,
--	&slave_attr_queue_id,
--	&slave_attr_ad_aggregator_id,
--	&slave_attr_ad_actor_oper_port_state,
--	&slave_attr_ad_partner_oper_port_state,
-+static const struct attribute *slave_attrs[] = {
-+	&slave_attr_state.attr,
-+	&slave_attr_mii_status.attr,
-+	&slave_attr_link_failure_count.attr,
-+	&slave_attr_perm_hwaddr.attr,
-+	&slave_attr_queue_id.attr,
-+	&slave_attr_ad_aggregator_id.attr,
-+	&slave_attr_ad_actor_oper_port_state.attr,
-+	&slave_attr_ad_partner_oper_port_state.attr,
- 	NULL
- };
- 
-@@ -137,24 +137,10 @@ static ssize_t slave_show(struct kobject *kobj,
- 
- int bond_sysfs_slave_add(struct slave *slave)
- {
--	const struct slave_attribute **a;
--	int err;
--
--	for (a = slave_attrs; *a; ++a) {
--		err = sysfs_create_file(&slave->kobj, &((*a)->attr));
--		if (err) {
--			kobject_put(&slave->kobj);
--			return err;
--		}
--	}
--
--	return 0;
-+	return sysfs_create_files(&slave->kobj, slave_attrs);
- }
- 
- void bond_sysfs_slave_del(struct slave *slave)
- {
--	const struct slave_attribute **a;
--
--	for (a = slave_attrs; *a; ++a)
--		sysfs_remove_file(&slave->kobj, &((*a)->attr));
-+	sysfs_remove_files(&slave->kobj, slave_attrs);
- }
--- 
-1.8.3.1
+iQIzBAEBCAAdFiEEQe6bu7hIFElmsM7CGW4w8WwwaSUFAmGBB5EACgkQGW4w8Www
+aSVECQ//YC51z6/1ImbayvSdje7aLwF7ODxa7r6/PZxIl/0Y+JGEo+NIlQzQhjhK
+SQhH3MmLwCM/kwSFQfiPMQ1pUew5wlHtFYWr5bDI7hnhTgHTXaJTfJR3czo87Wca
+JG5bogFbn0uRYSO2eDdJSSnho+PB/3D4RTU/W/XTG1ZR7dnVZtvL/fv/H5ePLdpL
+eDoistgby9FxxEc/6g8ZFPMfm60G91OL3Kx3tE5nY+z7scYdJ6sqwthBA6ocGr+M
+4S4tmXQnwbhUo9TMGIYTmqvKaNB75rIstIMcTBffvRhCW1TRJi6UFwWsxIOON9PF
+4nNTo9RX6VAGocH13PrhwlrNEW3CPcOkucwYTMdM6aLM9s/r2lkF7nynkJ87/UXM
+iI4VZC9nx65IBAxUtkWm2Q9fKM6c6Ajsr4qNL7kkFBlWWQ7x3e85ShSZjkCELiXv
+lJ/57brqd5wFVR2Wc45jAqbQWDCy+YjUNDMIGSptjMU7JEuziQvP3m0ar7xW3oMb
+9LglYg786YuMxsmDz+SYDWoiJvFvqAqmZDP0WNmgliBpb3FVNqlAPtk6Xa0T0xMZ
+IiGGq73G68VWaLQc+OaHIhkae66TVADX2GwD525E6w6np5uJZb2jsxO1PDDT2vq3
+YR7wRnuJjhKwXcIV7w/IifI3SbW2MUTwxgxir1KEDVyyFjVH0Jk=
+=Vrkn
+-----END PGP SIGNATURE-----
 
+--Apple-Mail=_A058B4B4-19B4-44AE-8BE9-284BD44DC727--
