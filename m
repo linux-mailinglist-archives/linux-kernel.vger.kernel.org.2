@@ -2,141 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4373442E45
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:36:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 055A9442E48
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:37:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhKBMj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 08:39:28 -0400
-Received: from mga17.intel.com ([192.55.52.151]:55667 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229557AbhKBMj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 08:39:26 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10155"; a="212005621"
-X-IronPort-AV: E=Sophos;i="5.87,202,1631602800"; 
-   d="scan'208";a="212005621"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 05:36:23 -0700
-X-IronPort-AV: E=Sophos;i="5.87,202,1631602800"; 
-   d="scan'208";a="489093829"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 05:36:21 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1mht1J-0030RO-DB;
-        Tue, 02 Nov 2021 14:36:05 +0200
-Date:   Tue, 2 Nov 2021 14:36:05 +0200
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Andy Shevchenko <andy@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] string: uninline memcpy_and_pad
-Message-ID: <YYEwtb31IYjbus1U@smile.fi.intel.com>
-References: <20211102043024.449478-1-linux@roeck-us.net>
+        id S230442AbhKBMj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 08:39:59 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:58442 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229557AbhKBMj5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 08:39:57 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1A2Cb9Zt104533;
+        Tue, 2 Nov 2021 07:37:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1635856629;
+        bh=KUzMs8AeEsPu55XE63e87SghtGWjDbtB3TxcE2WTWAQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=i5WpF3GFSga2dnWcdNZiyKtqxbMcWX4HZ6VvRiqwA0EvTfOsKndZSZD2EjcJus4nh
+         YGjQvKStkE1Mv6edRqbW/6vFvszDP22CqczJv/OB6A5BxaAanb+SFsiI9GF4jUW+Fe
+         ZSCSfwSXUf3vYQe7QqKzU/D3eJiLbdcxAN70F//I=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1A2Cb9vh073243
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 2 Nov 2021 07:37:09 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 2
+ Nov 2021 07:37:09 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 2 Nov 2021 07:37:08 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1A2Cb6GP115699;
+        Tue, 2 Nov 2021 07:37:06 -0500
+Subject: Re: [PATCH net-next v2 0/3] net: ethernet: ti: cpsw: enable bc/mc
+ storm prevention support
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>, Andrew Lunn <andrew@lunn.ch>
+References: <20211101170122.19160-1-grygorii.strashko@ti.com>
+ <20211101235327.63ggtuhvplsgpmya@skbuf>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <3fb0e416-ef36-e76f-2ba5-624928f71929@ti.com>
+Date:   Tue, 2 Nov 2021 14:36:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102043024.449478-1-linux@roeck-us.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20211101235327.63ggtuhvplsgpmya@skbuf>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 09:30:24PM -0700, Guenter Roeck wrote:
-> When building m68k:allmodconfig, recent versions of gcc generate the
-> following error if the length of UTS_RELEASE is less than 8 bytes.
-> 
-> In function 'memcpy_and_pad',
->     inlined from 'nvmet_execute_disc_identify' at
->     	drivers/nvme/target/discovery.c:268:2:
-> arch/m68k/include/asm/string.h:72:25: error:
-> 	'__builtin_memcpy' reading 8 bytes from a region of size 7
-> 
-> Discussions around the problem suggest that this only happens if an
-> architecture does not provide strlen(), if -ffreestanding is provided as
-> compiler option, and if CONFIG_FORTIFY_SOURCE=n. All of this is the case
-> for m68k. The exact reasons are unknown, but seem to be related to the
-> ability of the compiler to evaluate the return value of strlen() and
-> the resulting execution flow in memcpy_and_pad(). It would be possible
-> to work around the problem by using sizeof(UTS_RELEASE) instead of
-> strlen(UTS_RELEASE), but that would only postpone the problem until the
-> function is called in a similar way. Uninline memcpy_and_pad() instead
-> to solve the problem for good.
 
-Acked-by: Andy Shevchenko <andriy.shevchenko@intel.com>
 
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
->  include/linux/string.h | 19 ++-----------------
->  lib/string.c           | 19 +++++++++++++++++++
->  2 files changed, 21 insertions(+), 17 deletions(-)
+On 02/11/2021 01:53, Vladimir Oltean wrote:
+> On Mon, Nov 01, 2021 at 07:01:19PM +0200, Grygorii Strashko wrote:
+>> Hi
+>>
+>> This series first adds supports for the ALE feature to rate limit number ingress
+>> broadcast(BC)/multicast(MC) packets per/sec which main purpose is BC/MC storm
+>> prevention.
+>>
+>> And then enables corresponding support for ingress broadcast(BC)/multicast(MC)
+>> packets rate limiting for TI CPSW switchdev and AM65x/J221E CPSW_NUSS drivers by
+>> implementing HW offload for simple tc-flower with policer action with matches
+>> on dst_mac:
+>>   - ff:ff:ff:ff:ff:ff has to be used for BC packets rate limiting
+>>   - 01:00:00:00:00:00 fixed value has to be used for MC packets rate limiting
+>>
+>> Examples:
+>> - BC rate limit to 1000pps:
+>>    tc qdisc add dev eth0 clsact
+>>    tc filter add dev eth0 ingress flower skip_sw dst_mac ff:ff:ff:ff:ff:ff \
+>>    action police pkts_rate 1000 pkts_burst 1
+>>
+>> - MC rate limit to 20000pps:
+>>    tc qdisc add dev eth0 clsact
+>>    tc filter add dev eth0 ingress flower skip_sw dst_mac 01:00:00:00:00:00 \
+>>    action police pkts_rate 10000 pkts_burst 1
+>>
+>>    pkts_burst - not used.
+>>
+>> The solution inspired patch from Vladimir Oltean [1].
+>>
+>> Changes in v2:
+>>   - switch to packet-per-second policing introduced by
+>>     commit 2ffe0395288a ("net/sched: act_police: add support for packet-per-second policing") [2]
+>>
+>> v1: https://patchwork.kernel.org/project/netdevbpf/cover/20201114035654.32658-1-grygorii.strashko@ti.com/
+>>
+>> [1] https://lore.kernel.org/patchwork/patch/1217254/
+>> [2] https://patchwork.kernel.org/project/netdevbpf/cover/20210312140831.23346-1-simon.horman@netronome.com/
+>>
+>> Grygorii Strashko (3):
+>>    drivers: net: cpsw: ale: add broadcast/multicast rate limit support
+>>    net: ethernet: ti: am65-cpsw: enable bc/mc storm prevention support
+>>    net: ethernet: ti: cpsw_new: enable bc/mc storm prevention support
+>>
+>>   drivers/net/ethernet/ti/am65-cpsw-qos.c | 145 ++++++++++++++++++++
+>>   drivers/net/ethernet/ti/am65-cpsw-qos.h |   8 ++
+>>   drivers/net/ethernet/ti/cpsw_ale.c      |  66 +++++++++
+>>   drivers/net/ethernet/ti/cpsw_ale.h      |   2 +
+>>   drivers/net/ethernet/ti/cpsw_new.c      |   4 +-
+>>   drivers/net/ethernet/ti/cpsw_priv.c     | 170 ++++++++++++++++++++++++
+>>   drivers/net/ethernet/ti/cpsw_priv.h     |   8 ++
+>>   7 files changed, 402 insertions(+), 1 deletion(-)
+>>
+>> -- 
+>> 2.17.1
+>>
 > 
-> diff --git a/include/linux/string.h b/include/linux/string.h
-> index 5e96d656be7a..d68097b4f600 100644
-> --- a/include/linux/string.h
-> +++ b/include/linux/string.h
-> @@ -262,23 +262,8 @@ void __write_overflow(void) __compiletime_error("detected write beyond size of o
->  #include <linux/fortify-string.h>
->  #endif
->  
-> -/**
-> - * memcpy_and_pad - Copy one buffer to another with padding
-> - * @dest: Where to copy to
-> - * @dest_len: The destination buffer size
-> - * @src: Where to copy from
-> - * @count: The number of bytes to copy
-> - * @pad: Character to use for padding if space is left in destination.
-> - */
-> -static inline void memcpy_and_pad(void *dest, size_t dest_len,
-> -				  const void *src, size_t count, int pad)
-> -{
-> -	if (dest_len > count) {
-> -		memcpy(dest, src, count);
-> -		memset(dest + count, pad,  dest_len - count);
-> -	} else
-> -		memcpy(dest, src, dest_len);
-> -}
-> +void memcpy_and_pad(void *dest, size_t dest_len, const void *src, size_t count,
-> +		    int pad);
->  
->  /**
->   * str_has_prefix - Test if a string has a given prefix
-> diff --git a/lib/string.c b/lib/string.c
-> index b2de45a581f4..ff13d6d77a05 100644
-> --- a/lib/string.c
-> +++ b/lib/string.c
-> @@ -1165,3 +1165,22 @@ void fortify_panic(const char *name)
->  	BUG();
->  }
->  EXPORT_SYMBOL(fortify_panic);
-> +
-> +/**
-> + * memcpy_and_pad - Copy one buffer to another with padding
-> + * @dest: Where to copy to
-> + * @dest_len: The destination buffer size
-> + * @src: Where to copy from
-> + * @count: The number of bytes to copy
-> + * @pad: Character to use for padding if space is left in destination.
-> + */
-> +void memcpy_and_pad(void *dest, size_t dest_len, const void *src, size_t count,
-> +		    int pad)
-> +{
-> +	if (dest_len > count) {
-> +		memcpy(dest, src, count);
-> +		memset(dest + count, pad,  dest_len - count);
-> +	} else
-> +		memcpy(dest, src, dest_len);
-> +}
-> +EXPORT_SYMBOL(memcpy_and_pad);
-> -- 
-> 2.33.0
+> I don't think I've asked this for v1, but when you say multicast storm
+> control, does the hardware police just unknown multicast frames, or all
+> multicast frames?
 > 
+
+  packets per/sec rate limiting is affects all MC or BC packets once enabled.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Best regards,
+grygorii
