@@ -2,197 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B434425FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:17:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 895824425FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232438AbhKBDTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 23:19:38 -0400
-Received: from smtpbguseast3.qq.com ([54.243.244.52]:52031 "EHLO
-        smtpbguseast3.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231371AbhKBDTf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 23:19:35 -0400
-X-QQ-GoodBg: 1
-X-QQ-SSF: B0400000000000F0
-X-QQ-FEAT: Mx1dxJbW4IVCFiDs2r6X8hwveCch4h5YuD9Bv2ljhhOXnz3aYZS+oqBXrsJO1
-        I/W6GGaXdNIkgMcz9PssabxTQxpiUcM9bUuJHy5b78+RRgAmZLZG19nqfLJuUEL5rkHhQV3
-        MSdCAusCg7uK9JnvTL/tEVo7rNetoBPrSmkCep2J94eJ/QZsNY3v+P+tudgrMa/UmncbNpP
-        2LRhUKRMyI4pdD91VH2W7Vwb2o21rCmr6WJwY4XxOx9I2/Qo42M8Fcy5+wpHlXvxYjJ6fdV
-        xIbnoJBewC+aZRdAhtWN6jca5uowg/QMQQPVVuoU0X+dsJO8wy8QnUImRyGbhzLSHLlL12j
-        pa24rUC16piymXTvSBdp0mx+XTOVw==
-X-QQ-BUSINESS-ORIGIN: 2
-X-Originating-IP: 113.57.13.187
-X-QQ-STYLE: 
-X-QQ-mid: logic531t1635823016t382227
-From:   "=?utf-8?B?5bi45buJ5b+X?=" <changlianzhi@uniontech.com>
-To:     "=?utf-8?B?ZG1pdHJ5LnRvcm9raG92?=" <dmitry.torokhov@gmail.com>,
-        "=?utf-8?B?R3JlZyBLSA==?=" <gregkh@linuxfoundation.org>
-Cc:     "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>,
-        "=?utf-8?B?amlyaXNsYWJ5?=" <jirislaby@kernel.org>,
-        "=?utf-8?B?QW5keSBTaGV2Y2hlbmtv?=" 
-        <andriy.shevchenko@linux.intel.com>,
-        "=?utf-8?B?MjgyODI3OTYx?=" <282827961@qq.com>
-Subject: Re: [PATCH v9] tty: Fix the keyboard led light display problem
-Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: base64
-Date:   Tue, 2 Nov 2021 11:16:56 +0800
-X-Priority: 3
-Message-ID: <tencent_0215A22726EA8F7807FF43A9@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <tencent_10C69A8D3BC51F781F21A754@qq.com>
-        <YX/iGfXdc8UKUFCx@kroah.com>
-        <YYAXVP4v2bCpGA8s@google.com>
-In-Reply-To: <YYAXVP4v2bCpGA8s@google.com>
-X-QQ-ReplyHash: 2375952586
-X-QQ-SENDSIZE: 520
-Received: from qq.com (unknown [127.0.0.1])
-        by smtp.qq.com (ESMTP) with SMTP
-        id ; Tue, 02 Nov 2021 11:16:57 +0800 (CST)
-Feedback-ID: logic:uniontech.com:qybgforeign:qybgforeign5
-X-QQ-Bgrelay: 1
+        id S232481AbhKBDTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 23:19:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231766AbhKBDTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 23:19:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id CE36060E08;
+        Tue,  2 Nov 2021 03:17:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635823034;
+        bh=OlnsVIvSgx2c+psSKp0OnBR0L2FSIQBwDQL8KmFe1sQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Neb5BJzJcrVs2lCajgSo3uGrHwRw1QVNvIiY1Ml2axAkgCNJ5bj5Ug0sckI6jMIKM
+         OG2kwd3nvbIdJzazpgVN49u2QG4UkgjbQlT/lTQoHZKlmm8tGNItVPcrXl4vUWxWeN
+         bBPN8fpkhrtBwEL2AQ7g5WXyYm/D99xZCdhDMkNtjjZmooQhn3zfS6+5wr3jWKCicg
+         vSe+C33Z+NmsySWHWN2Vc4WIkm74lz0Ect9Di+w6FcLwowsjJAhMreQALtExR4PzBj
+         kE+T2/ZLCw5jmLOYghWKM7BEiiUuD8qB2bq8iRbXFW6b5K9D8seps1ZWrbcNH5B+yh
+         R/qMqBN1f70fQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B973860A0C;
+        Tue,  2 Nov 2021 03:17:14 +0000 (UTC)
+Subject: Re: [GIT PULL] tracing: Updates for 5.16
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20211101175544.00fc0d57@gandalf.local.home>
+References: <20211101175544.00fc0d57@gandalf.local.home>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211101175544.00fc0d57@gandalf.local.home>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.16
+X-PR-Tracked-Commit-Id: feea69ec121f067073868cebe0cb9d003e64ad80
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 79ef0c00142519bc34e1341447f3797436cc48bf
+Message-Id: <163582303469.21758.14456547883726968691.pr-tracker-bot@kernel.org>
+Date:   Tue, 02 Nov 2021 03:17:14 +0000
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Carles Pey <carles.pey@gmail.com>,
+        Changbin Du <changbin.du@intel.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Punit Agrawal <punitagrawal@gmail.com>,
+        "Robin H. Johnson" <robbat2@gentoo.org>,
+        Song Liu <songliubraving@fb.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Viktor Rosendahl <Viktor.Rosendahl@bmw.de>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        Weizhao Ouyang <o451686892@gmail.com>,
+        chongjiapeng <jiapeng.chong@linux.alibaba.com>,
+        kernel test robot <lkp@intel.com>,
+        =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCBOb3YgMDEsIDIwMjEgYXQgMDE6NDg6MjVQTSArMDEwMCwgR3JlZyBLSCB3cm90
-ZToNCj4gPiBPbiBNb24sIE5vdiAwMSwgMjAyMSBhdCAwODozNTo0N1BNICswODAwLCDluLjl
-u4nlv5cgd3JvdGU6DQo+ID4gPiA+IFN3aXRjaGluZyBmcm9tIHRoZSBkZXNrdG9wIGVudmly
-b25tZW50IHRvIHRoZSB0dHkgZW52aXJvbm1lbnQsDQo+ID4gPiA+IHRoZSBzdGF0ZSBvZiB0
-aGUga2V5Ym9hcmQgbGVkIGxpZ2h0cyBhbmQgdGhlIHN0YXRlIG9mIHRoZSBrZXlib2FyZA0K
-PiA+ID4gPiBsb2NrIGFyZSBpbmNvbnNpc3RlbnQuIFRoaXMgaXMgYmVjYXVzZSB0aGUgYXR0
-cmlidXRlIGtiLT5rYmRtb2RlDQo+ID4gPiA+IG9mIHRoZSB0dHkgYm91bmQgaW4gdGhlIGRl
-c2t0b3AgZW52aXJvbm1lbnQgKFhvcmcpIGlzIHNldCB0bw0KPiA+ID4gPiBWQ19PRkYsIHdo
-aWNoIGNhdXNlcyB0aGUgbGVkc3RhdGUgYW5kIGtiLT5sZWRmbGFnc3RhdGUNCj4gPiA+ID4g
-dmFsdWVzIG9mIHRoZSBib3VuZCB0dHkgdG8gYWx3YXlzIGJlIDAsIHdoaWNoIGNhdXNlcyB0
-aGUgc3dpdGNoDQo+ID4gPiA+IGZyb20gdGhlIGRlc2t0b3AgV2hlbiB0byB0aGUgdHR5IGVu
-dmlyb25tZW50LCB0aGUgTEVEIGxpZ2h0DQo+ID4gPiA+IHN0YXR1cyBpcyBpbmNvbnNpc3Rl
-bnQgd2l0aCB0aGUga2V5Ym9hcmQgbG9jayBzdGF0dXMuDQo+ID4gPiA+DQo+ID4gPiA+IFNp
-Z25lZC1vZmYtYnk6IGxpYW56aGkgY2hhbmcgPGNoYW5nbGlhbnpoaUB1bmlvbnRlY2guY29t
-Pg0KPiA+ID4gPiAtLS0NCj4gPiA+ID4gIHY3LS0+djg6DQo+ID4gPiA+ICBPcHRpbWl6ZSB0
-aGUgaW1wbGVtZW50YXRpb24gb2Yga2JkX3VwZGF0ZV9sZWRzdGF0ZSBmdW5jdGlvbg0KPiA+
-ID4gID4NCj4gPiA+ID4gIFdoeSBub3QgYWRvcHQgdGhlIG9waW5pb25zIG9mIEdyZWcgS0gg
-YW5kIEFuZHkgU2hldmNoZW5rbzoNCj4gPiA+ID4gICgxKSBJbiB0aGUgc3RydWN0dXJlIHN0
-cnVjdCBpbnB1dF9kZXYsIHRoZSBkZWZpbml0aW9uIG9mIGxlZCBpcw0KPiA+ID4gPiAgbGlr
-ZSB0aGlzOiB1bnNpZ25lZCBsb25nIGxlZFtCSVRTX1RPX0xPTkdTKExFRF9DTlQpXTsgSWYg
-eW91DQo+ID4gPiA+ICBkZWZpbmUgaXQgbGlrZSB0aGlzOiB1bnNpZ25lZCBsb25nIG5ld3N0
-YXRlID0gKmRldi0+bGVkOyBJDQo+ID4gPiA+ICBhbHdheXMgZmVlbCB0aGF0IHRoZXJlIGlz
-IHN0aWxsIGJpZyBlbmQgYW5kIExpdHRsZSBlbmRpYW4gcHJvYmxlbS4NCj4gPiA+ID4gICgy
-KSBUaGUgdGVzdF9iaXQgZnVuY3Rpb24gaXMgdXNlZCB0byBhdm9pZCB0aGUgcHJvYmxlbSBv
-ZiBsYXJnZQ0KPiA+ID4gPiAgYW5kIHNtYWxsIGVuZHMsIGFuZCB0aGUgY3VycmVudCBhbGdv
-cml0aG0gKHY4KSBhbHNvIGV4aXN0cw0KPiA+ID4gPiAgZWxzZXdoZXJlIGluIHRoZSBrZXJu
-ZWw6IHRoZSBhdGtiZF9zZXRfbGVkcyBmdW5jdGlvbiAoZHJpdmVycy8NCj4gPiA+ID4gIGlu
-cHV0L2tleWJvYXJkL2F0a2JkLmMpLg0KPiA+ID4gPiAgKDMpIEluIHRoZSBjdXJyZW50IGtl
-eWJvYXJkLmMgY29kZSwgdGhlIGNvZGUgaXMgYWxyZWFkeSB2ZXJ5IGdvb2QsDQo+ID4gPiA+
-ICBhbmQgaXQgaXMgYWxyZWFkeSByZWxhdGl2ZWx5IGluZGVwZW5kZW50LiBJZiB5b3UgbW9k
-aWZ5IHRoZSB0eXBlDQo+ID4gPiA+ICBvZiBsZWRzdGF0ZSB0byB1NjQgb3IgbW9kaWZ5IHRo
-ZSBtYWNybyBkZWZpbml0aW9ucyBzdWNoIGFzDQo+ID4gPiA+ICBWQ19OVU1MT0NLLCBpdCBm
-ZWVscyB0aGF0IGl0IGlzIG5vdCB2ZXJ5IG1lYW5pbmdmdWwsIGFuZCB0aGlzIEl0DQo+ID4g
-PiA+ICB3aWxsIGFsc28gY2F1c2Ugb3RoZXIgcmVsYXRlZCBtb2RpZmljYXRpb25zLiBPZiBj
-b3Vyc2UsIHRoaXMgaXMNCj4gPiA+ID4gIG9ubHkgbXkgY3VycmVudCBvcGluaW9uLiBJZiBl
-dmVyeW9uZSBzdGlsbCBmZWVscyB0aGF0IGl0IGlzDQo+ID4gPiA+ICBuZWNlc3NhcnkgdG8g
-bW9kaWZ5LCBJIHdpbGwgZG8gaXQgdGhpcyB3YXkuIE9mIGNvdXJzZSwgdGhpcw0KPiA+ID4g
-PiAgcHJvY2VzcyBtYXkgYmUgYSBiaXQgbG9uZ2VyLCBhbmQgSSB0aGluayBpdCBpcyBuZWNl
-c3NhcnkgdG8NCj4gPiA+ID4gIGNvbmR1Y3QgbW9yZSB0ZXN0cy4NCj4gPiA+ID4gDQo+ID4g
-PiA+ICB2OTogQ2hhbmdlIGRlc2NyaXB0aW9uIGluZm9ybWF0aW9uOiB4b3JnLS0+WG9yZw0K
-PiA+ID4gPiDigKbigKYNCj4gPiA+DQo+ID4gPiBIaSwgZnJpZW5kcywgSSB3b3VsZCBsaWtl
-IHRvIGFzayB3aGV0aGVyIHRoaXMgdmVyc2lvbiBvZiBwYXRjaCBpcyBwb3NzaWJsZSwgaWYg
-bm90LA0KPiA+ID4gSSB3aWxsIHRyeSBteSBiZXN0IHRvIGZpbmQgYSB3YXkgdG8gY29tcGxl
-dGUgdGhlIG5leHQgdmVyc2lvbiENCj4gPg0KPiA+IEl0J3MgdGhlIG1lcmdlIHdpbmRvdyBy
-aWdodCBub3csIHdlIGNhbid0IGRvIGFueXRoaW5nIHdpdGggdGhpcyB1bnRpbA0KPiA+IGFm
-dGVyIDUuMTYtcmMxIGlzIG91dC4gIFNvIGdpdmUgdXMgdW50aWwgdGhlbiBhdCB0aGUgbGVh
-c3QgcGxlYXNlLCB0aGVuDQo+ID4gSSB3aWxsIHJldmlldyBpdCBhZ2Fpbi4NCj4gDQo+IEFz
-IEkgbWVudGlvbmVkLCB0aGUgc3RhdGUgb2YgcGh5c2ljYWwgTEVEIG9uIGEga2V5Ym9hcmQg
-ZG9lcyBub3QNCj4gbmVjZXNzYXJpbHkgcmVmbGVjdCBzdGF0ZSBvZiBsb2dpY2FsIExFRCBz
-dGF0ZSBpbiB0dHkvdnQuIE9uZSBjYW4gYXNzaWduDQo+IExFRCBvbiB0aGVpciBrZXlib2Fy
-ZCB0byBiZSBhbiBpbmRpY2F0b3Igb2YgYmVpbmcgY29ubmVjdGVkIHRvIG1haW5zIGJ5DQo+
-IGFzc2lnbmluZyAiQUMtdHJpZ2dlciIgdG8gaXQuIFNvIHRoZSB3YXkgdGhpcyBwYXRjaCB0
-cmllcyB0byBmaXggdGhlDQo+IGlzc3VlIChieSByZWFkaW5nIGludGVybmFsIHN0YXRlIG9m
-IGFuIGluZGl2aWR1YWwgaW5wdXQgZGV2aWNlKSBpcw0KPiB3cm9uZy4NCj4gDQo+IFdlIGtl
-ZXAgc2VwYXJhdGUgbGVkIGFuZCBsb2NrIHN0YXRlcyBmb3IgZWFjaCBWVCBpbnN0YW5jZSwg
-YW5kIHRoZXkNCj4gc2hvdWxkIGJlIGFwcGxpZWQgd2hlbiBzd2l0Y2hpbmcgdG8vZnJvbSBh
-IFZULiBBcmUgeW91IHNheWluZyB0aGF0IGluDQo+IGNlcnRhaW4gc2NlbmFyaW9zIHRoaXMg
-c3dpdGNoIGlzIG5vdCBoYXBwZW5pbmc/IENhbiBzZWUgaWYgdGhhdCBjYW4gYmUNCj4gZml4
-ZWQ/DQo+IA0KDQpIaSBEbWl0cnksIEkgZG9u4oCZdCBrbm93IGlmIEkgZnVsbHkgdW5kZXJz
-dGFuZCB3aGF0IHlvdSBtZWFuLCBidXQgSSB3aWxsIA0KdHJ5IHRvIGZ1bGx5IGV4cGxhaW4g
-dGhlIGludGVudCBvZiB0aGUgY3VycmVudCBwYXRjaC4NCigxKSBXaGF0IGlzIHRoZSBjdXJy
-ZW50IGJ1ZyBwaGVub21lbm9uPyBJIHdpbGwgZGVzY3JpYmUgd2l0aCB0aGUgTnVtIA0KTG9j
-ayBpbmRpY2F0b3IgYXMgdGhlIG9iamVjdCBoZXJlLg0KDQpQaGVub21lbm9uIDE6IFN1cHBv
-c2UgdGhhdCBYb3JnIGlzIGJvdW5kIHRvIHR0eTEgaW4gdGhlIGRlc2t0b3AgZW52aXJvbm1l
-bnQuIA0KQXQgdGhpcyB0aW1lLCB0aGUgTnVtIGxpZ2h0IG9mIHRoZSBrZXlib2FyZCBpcyBv
-biwgYW5kIHRoZSBrZXlwYWQgY2FuIGlucHV0IG51bWJlcnMgDQpub3JtYWxseTsgYXNzdW1l
-IHRoYXQgdGhlIHN0YXRlIG9mIHRoZSBrZXlib2FyZCBsaWdodCBzYXZlZCBieSB0dHkyIGl0
-c2VsZiBpcyB0aGUgDQpvcHBvc2l0ZSAodGhlIE51bSBsaWdodCBpcyBvZmYsIFRoZSBrZXlw
-YWQgY2Fubm90IGVudGVyIG51bWJlcnMpOyBhdCB0aGlzIHRpbWUsIA0KaWYgd2UgdXNlIHRo
-ZSBrZXkgY29tYmluYXRpb24gImN0cmwrYWx0K0YyIiB0byBzd2l0Y2ggdGhlIHN5c3RlbSB0
-byB0dHkyLCB3ZSB3aWxsIGZpbmQgDQp0aGF0IHRoZSBOdW0gbGlnaHQgaXMgc3RpbGwgb24s
-IGJ1dCB0aGUga2V5cGFkIGNhbm5vdCBlbnRlciBudW1iZXJzLg0KDQpQaGVub21lbm9uIDI6
-IEFzc3VtaW5nIHRoYXQgeW91IGFyZSBjdXJyZW50bHkgaW4gdGhlIHR0eTIgZW52aXJvbm1l
-bnQsIHRoZSBOdW0gDQpsaWdodCBvZiB0aGUga2V5Ym9hcmQgaXMgb24sIGFuZCB0aGUga2V5
-cGFkIGNhbiBpbnB1dCBudW1iZXJzIG5vcm1hbGx5OyBhc3N1bWUgdGhhdCANCnRoZSBOdW0g
-c3RhdGUgc2F2ZWQgYnkgWG9yZyBpcyB0aGUgc2FtZSBhcyB0aGF0IG9mIHR0eTIgKHRoZSBO
-dW0gbGlnaHQgaXMgb24sIGFuZCB0aGUgDQprZXlwYWQgY2FuIGlucHV0IG51bWJlcnMgbm9y
-bWFsbHkpOyBBdCB0aGlzIHBvaW50LCBpZiB3ZSB1c2UgdGhlIGtleSBjb21iaW5hdGlvbiAN
-CiJjdHJsK2FsdCtGMSIgdG8gc3dpdGNoIHRoZSBzeXN0ZW0gdG8gdHR5MSAodGhhdCBpcywg
-dG8gc3dpdGNoIHRvIHRoZSBkZXNrdG9wIGVudmlyb25tZW50KQ0KLCB3ZSB3aWxsIGZpbmQg
-dGhhdCB0aGUgTnVtIGxpZ2h0IHdpbGwgbm90IGxpZ2h0IHVwLCBidXQgdGhlIHNtYWxsIGtl
-eWJvYXJkIGNhbiBpbnB1dCBudW1iZXJzIC4NCg0KKDIpIFdoeSBkbyB0aGVzZSB0d28gcGhl
-bm9tZW5hIG9jY3VyPw0KVGhlIHZhcmlhYmxlIHN0YXRpYyB1bnNpZ25lZCBpbnQgbGVkc3Rh
-dGUgaXMgZGVmaW5lZCBpbiBrZXlib2FyZC5jLiBsZWRzdGF0ZSBzaG91bGQgYmUgdXNlZCB0
-byANCnRlbGwgVlQgdGhlIGN1cnJlbnQgc3RhdGUgb2YgdGhlIGtleWJvYXJkIGxpZ2h0LCBi
-ZWNhdXNlIGFmdGVyIGVhY2ggVlQgc2V0cyB0aGUgc3RhdGUgb2YgdGhlIA0Ka2V5Ym9hcmQg
-bGlnaHQsIGl0IHdpbGwgc3luY2hyb25pemUgdGhlIGxhdGVzdCBrZXlib2FyZCBsaWdodCBz
-dGF0ZSB0byBsZWRzdGF0ZSggKEltcGxlbWVudGVkIA0KaW4gdGhlIGtiZF9iaCgpIGZ1bmN0
-aW9uKS4NCg0KVGhlbiB0aGUgcHJvYmxlbSBjb21lcy4gVGhlIHNjb3BlIG9mIGxlZHN0YXRl
-IGlzIG9ubHkgaW4gVlQsIGFuZCBpdCBjYW5ub3QgaW5jbHVkZSBhbGwgdGhlIA0Kc2NlbmVz
-IHdoZXJlIHRoZSBrZXlib2FyZCBsaWdodCBpcyBzZXQuIEFuZCwgaW4gdGhlIGRlc2t0b3Ag
-ZW52aXJvbm1lbnQsICJrYi0+a2JkbW9kZSA9PSANClZDX09GRiIgb2YgdHR5MSwgYXQgdGhp
-cyB0aW1lLCB0aHJvdWdoIHRoZSBOdW1Mb2NrIGJ1dHRvbiwgb25seSBYb3JnJ3Mgb3duIHN0
-YXRlIGNhbiBiZSANCmNoYW5nZWQsIGFuZCB0aGUgbGVkIHN0YXRlIHN0b3JlZCBieSB0dHkx
-IGNhbm5vdCBiZSBjaGFuZ2VkIChpbXBsZW1lbnRlZCBpbiB0aGUga2JkX2tleWNvZGUoKSAN
-CmZ1bmN0aW9uKSwgVGhpcyByZXN1bHRzIGluIHRoYXQgdGhlIGtiLT5sZWRmbGFnc3RhdGUg
-c3RvcmVkIGJ5IHR0eTEgaXRzZWxmIGFuZCB0aGUgbGVkc3RhdGUgaW4gdGhlIHR0eSANCmVu
-dmlyb25tZW50IGFyZSBhbHdheXMgMCBhdCB0aGlzIHRpbWUuDQoNCldoZW4gd2Ugc3dpdGNo
-IHR0eSwgdGhlIFZUIGNvZGUgY29tcGFyZXMgdGhlIGN1cnJlbnQgdHR5J3Mga2ItPmxlZGZs
-YWdzdGF0ZSBhbmQgbGVkc3RhdGUgdmFsdWVzLg0KSWYgdGhleSBhcmUgaW5jb25zaXN0ZW50
-LCBjaGFuZ2UgdGhlIHN0YXRlIG9mIHRoZSBrZXlib2FyZCBsaWdodCAoaW1wbGVtZW50ZWQg
-aW4gdGhlIGtiZF9iaCgpIGZ1bmN0aW9uKS4NCg0KSW4gcGhlbm9tZW5vbiAxLCBpbiB0aGUg
-ZGVza3RvcCBlbnZpcm9ubWVudCwgYWx0aG91Z2ggdGhlIGFjdHVhbCBzdGF0ZSBzYXZlZCBi
-eSB4b3JnIGlzIDEsIHRoZSBzdGF0ZSANCm9mIGxlZHN0YXRlIG9mIHR0eSBpcyBhbHdheXMg
-MC4gSW4gdGhlIGVudmlyb25tZW50IG9mIHR0eTIsIHRoZSBzdGF0ZSBvZiBrYi0+bGVkZmxh
-Z3N0YXRlIG9mIHR0eTIgaXMgYWxzbyAwLiANCkF0IHRoaXMgcG9pbnQsIGluIHRoZSBrYmRf
-YmgoKSBmdW5jdGlvbiwgY29tcGFyaW5nIHRoZXNlIHR3byB2YWx1ZXMg4oCL4oCLaXMgZXF1
-YWwsIHRoZXJlIGlzIG5vIG5lZWQgdG8gc2V0IHRoZSANCmxlZCBsaWdodCBzdGF0ZSB0byB0
-aGUga2V5Ym9hcmQuIFNvIGFmdGVyIHN3aXRjaGluZyB0byB0dHkyLCB0aGUgTnVtIGxpZ2h0
-IGlzIHN0aWxsIG9uLCBidXQgdGhlIHNtYWxsIA0Ka2V5Ym9hcmQgY2Fubm90IGlucHV0IG51
-bWJlcnMuDQoNCkluIHBoZW5vbWVub24gMiwgaW4gdGhlIHR0eTIgZW52aXJvbm1lbnQsIHRo
-ZSBzdGF0ZSBvZiBsZWRzdGF0ZSBpcyBzZXQgdG8gMSwgYnV0IHRoZSBrYi0+bGVkZmxhZ3N0
-YXRlIG9mDQp0dHkxIGlzIDAuIEF0IHRoaXMgdGltZSwgdGhlIHR3byB2YWx1ZXMg4oCL4oCL
-YXJlIG5vdCBlcXVhbCBpbiB0aGUga2JkX2JoKCkgZnVuY3Rpb24sIHNvIHNldCB0aGUgbGVk
-IFRoZSBsaWdodA0Kc3RhdHVzIHRvIHRoZSBrZXlib2FyZC4gWG9yZyBkaWQgbm90IHJlZGlz
-dHJpYnV0ZSB0aGUgY29uZmlndXJhdGlvbiBkdXJpbmcgdGhpcyBwcm9jZXNzIGlzIGFsc28g
-b25lIG9mDQp0aGUgcmVhc29ucy4gQW5kIGV2ZW4gaWYgWG9yZyByZS1pc3N1ZXMgdGhlIGNv
-bmZpZ3VyYXRpb24gYXQgdGhpcyB0aW1lLCBpdCB3aWxsIGNhdXNlIGNvbmZ1c2lvbiBhbmQg
-b25seQ0Kb25lIGNhbiBiZSBzZXQuDQoNCigzKSBIb3cgdG8gc29sdmUgaXQ/DQpUbyBzb2x2
-ZSB0aGUgcHJvYmxlbSBvZiBwaGVub21lbm9uIDEsIHdlIG11c3QgZmlyc3QgZW5hYmxlIGxl
-ZHN0YXRlIHRvIGNvcnJlY3RseSByZWZsZWN0IHRoZSBjdXJyZW50IA0Kc3RhdGUgb2YgdGhl
-IGtleWJvYXJkIGxpZ2h0LiBUaGVyZWZvcmUsIHRoZSBzb2x1dGlvbiB0byBhbGwgdmVyc2lv
-bnMgb2YgcGF0Y2ggaXMgdG8gc3luY2hyb25pemUgdGhlIA0KbGF0ZXN0IGxlZCBzdGF0ZSBv
-ZiB0aGUgaW5wdXQgZGV2aWNlIHRvIGxlZHN0YXRlLg0KQXQgdGhlIHNhbWUgdGltZSwgdG8g
-c29sdmUgdGhlIHByb2JsZW0gb2YgcGhlbm9tZW5vbiAyLCB3aGVuIHN3aXRjaGluZyB0byB0
-dHkxLCBrYmRfYmgoKSBhbHNvIA0KZGV0ZXJtaW5lcyB0aGUgY3VycmVudCB0dHkncyAia2It
-PmtiZG1vZGUgPT0gVkNfT0ZGIi4gSWYgaXQgaXMgdHJ1ZSwgZG9uJ3Qgc2V0IHRoZSBrZXli
-b2FyZCBsaWdodCANCnN0YXRlLiBBdCB0aGUgc2FtZSB0aW1lLCBYb3JnIHNob3VsZCBhbHNv
-IHJlLWlzc3VlIHRoZSBzdGF0dXMgb2YgdGhlIGtleWJvYXJkIGxpZ2h0IHRvIGVuc3VyZSB0
-aGF0IGl0IA0KaXMgY29ycmVjdCAoSSBhbHNvIHN1Ym1pdHRlZCBhIHBhdGNoIGZvciB0aGlz
-LCByZWZlciB0byANCmh0dHBzOi8vZ2l0bGFiLmZyZWVkZXNrdG9wLm9yZy94b3JnL3hzZXJ2
-ZXIvLS9tZXJnZV9yZXF1ZXN0cy83NjQpLg0KDQooNCkgQXQgdGhpcyB0aW1lLCBlYWNoIFZU
-IGluc3RhbmNlIHN0aWxsIG1haW50YWlucyBhIHNlcGFyYXRlIGxlZCBhbmQgbG9jayBzdGF0
-ZSwgd2hpY2ggYXJlIGFwcGxpZWQgDQp3aGVuIHN3aXRjaGluZyB0byBhIFZULiBUaGlzIGlz
-IHVuYWZmZWN0ZWQuDQoNClRoYW5rcy4NCi0tDQpsaWFuemhpIGNoYW5n
+The pull request you sent on Mon, 1 Nov 2021 17:55:44 -0400:
 
+> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.16
 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/79ef0c00142519bc34e1341447f3797436cc48bf
 
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
