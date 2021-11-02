@@ -2,79 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F214C44256D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 03:03:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B295944256F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 03:04:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhKBCGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 22:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhKBCGI (ORCPT
+        id S229933AbhKBCGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 22:06:40 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13997 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229486AbhKBCGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 22:06:08 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F15BC061766
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 19:03:34 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id a129so36159996yba.10
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 19:03:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=+OhYyTKGmAf5Y61RBhMkXMlQv+hOjswu4u5NSWPSjMI=;
-        b=QAYRqexm7ae0TzZC28Cl4ShsUcrd2VpOHB6ajKwv6GLpJ4FaGYEe7QtCLGtAmZlATa
-         PhWq2lcs9ZA9FLnn84S/Cu3RhKsBB8AXsgYJ/lZny0ZkwTz6AcQiGGjAhCsi//0Y5Ff3
-         mWKc0dDs9MScEZjtGAeNRwkPCH8FGTarEBDLJL6S4a7LdL7HL9sRU0c655nhE6dglf2W
-         NRXI0xNCfn9zugKNNOr5ypqdrNGOH34iiVxUKYKZc07ja/Sv4+eNiveQXYzwP8d+zKcl
-         zWhfSdj6N50xMAQsXt4E9A6yiqjK+RoIBvU7nqLVBFEaa6/FYntQXphHr17aAijV92kF
-         E1bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=+OhYyTKGmAf5Y61RBhMkXMlQv+hOjswu4u5NSWPSjMI=;
-        b=CNXKWtXSNBQDteTcHIOMjNVtPfQ/2sg0WGhgbs7aizcDrpDCc33t1GJT09OQ4tayac
-         b/6Own35f+qUTCtgKc1vw9z9wvQE98VHAbnkaDcUiCeWZPCmYinJQ3V1f+ujK7pG2gUB
-         m3qNrSMhlfkwTVQI+dtw6DQsRdTpJVkyctVzdCr6NP3xMKymjP2mpyO0zRDGAzuDHfdQ
-         euBSzVJJ4tyDeC8UoK9q8+qxnQl1XP0SwYIjl5qdd3SPKWNRfHRKOOvpV+HGmuNyI+03
-         qFXJQc244oy9seLU+wfPYVZZYxScjgI3hq7qrgvKfNiCmvWxYZw5W8DA4U0pFeJVKYmj
-         AEZg==
-X-Gm-Message-State: AOAM532OQHlzro2UL0+BOKpcc8I5lVRM3lOG2XZ1Hm5+VkM2qGmsCE7E
-        N6lgy0SSDdB9JAxqXAUH08abWrKxA5clEBnM4cg=
-X-Google-Smtp-Source: ABdhPJyQyBohFaMMZgXXdv9Rq0bRcBNpNtLHZkCqW3GzNpaEXV3R+PrNJzmL0f/2SIollwo7BEM8VcqkH/OS7z0kctI=
-X-Received: by 2002:a25:c3c7:: with SMTP id t190mr22224297ybf.460.1635818613614;
- Mon, 01 Nov 2021 19:03:33 -0700 (PDT)
+        Mon, 1 Nov 2021 22:06:38 -0400
+Received: from dggeme762-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HjtSR4p5dzZch4;
+        Tue,  2 Nov 2021 10:01:59 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.44) by
+ dggeme762-chm.china.huawei.com (10.3.19.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Tue, 2 Nov 2021 10:04:02 +0800
+From:   Gaosheng Cui <cuigaosheng1@huawei.com>
+To:     <ardb@kernel.org>, <cuigaosheng1@huawei.com>
+CC:     <linux-efi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangweiyang2@huawei.com>
+Subject: [PATCH -next,v2] efi/libstub: arm32: Use "align" for the size alignment
+Date:   Tue, 2 Nov 2021 10:05:45 +0800
+Message-ID: <20211102020545.145840-1-cuigaosheng1@huawei.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Sender: mr.azzizsalim@gmail.com
-Received: by 2002:a05:7110:1109:b0:103:9d17:37a0 with HTTP; Mon, 1 Nov 2021
- 19:03:33 -0700 (PDT)
-From:   "Mr. Mustafa Ali." <muafalia@gmail.com>
-Date:   Tue, 2 Nov 2021 03:03:33 +0100
-X-Google-Sender-Auth: QXUHD1UsrX-lu1PX9PA-wL_j1UU
-Message-ID: <CADCzDA06jy4h0GT=voLx7hONgLUDGOrzW-2-eWByjHAwwGZJzg@mail.gmail.com>
-Subject: Greetings Dear Friend.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.44]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme762-chm.china.huawei.com (10.3.19.108)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Friend,
+We are doing page-based allocations, and both the address
+and size must meet alignment constraints, so using "align"
+for the size alignment is a better choice.
 
-This message might meet you in utmost surprise. However, It's just my
-urgent need for a foreign partner that made me contact you for this
-transaction. I assured you of honesty and reliability to champion this
-business opportunity. I am a banker by profession in Turkey, and
-currently holding the post of Auditor in Standard Chartered Bank.
+Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+---
+ drivers/firmware/efi/libstub/randomalloc.c | 2 +-
+ drivers/firmware/efi/libstub/relocate.c    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-I have the opportunity of transferring the leftover funds ($15 Million
-Dollars) of one of my clients who died along with his entire family in
-a crisis in Myanmar Asia. I am inviting you for a business deal where
-this money can be shared between us if you agree to my business
-proposal.
+diff --git a/drivers/firmware/efi/libstub/randomalloc.c b/drivers/firmware/efi/libstub/randomalloc.c
+index 724155b9e10d..7b7159bb035d 100644
+--- a/drivers/firmware/efi/libstub/randomalloc.c
++++ b/drivers/firmware/efi/libstub/randomalloc.c
+@@ -76,7 +76,7 @@ efi_status_t efi_random_alloc(unsigned long size,
+ 	if (align < EFI_ALLOC_ALIGN)
+ 		align = EFI_ALLOC_ALIGN;
+ 
+-	size = round_up(size, EFI_ALLOC_ALIGN);
++	size = round_up(size, align);
+ 
+ 	/* count the suitable slots in each memory map entry */
+ 	for (map_offset = 0; map_offset < map_size; map_offset += desc_size) {
+diff --git a/drivers/firmware/efi/libstub/relocate.c b/drivers/firmware/efi/libstub/relocate.c
+index 8ee9eb2b9039..d6d27e8c23f8 100644
+--- a/drivers/firmware/efi/libstub/relocate.c
++++ b/drivers/firmware/efi/libstub/relocate.c
+@@ -50,7 +50,7 @@ efi_status_t efi_low_alloc_above(unsigned long size, unsigned long align,
+ 	if (align < EFI_ALLOC_ALIGN)
+ 		align = EFI_ALLOC_ALIGN;
+ 
+-	size = round_up(size, EFI_ALLOC_ALIGN);
++	size = round_up(size, align);
+ 	nr_pages = size / EFI_PAGE_SIZE;
+ 	for (i = 0; i < map_size / desc_size; i++) {
+ 		efi_memory_desc_t *desc;
+-- 
+2.30.0
 
-Further details of the transfer will be forwarded to you immediately
-after I receive your return letter.
-
-Best Regards,
-Mr. Mustafa Ali.
-mustafa.ali@rahroco.com
