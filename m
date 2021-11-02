@@ -2,71 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E35A442FED
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:11:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A55E442FF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 15:12:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbhKBONd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 10:13:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231433AbhKBONa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 10:13:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 627D861076;
-        Tue,  2 Nov 2021 14:10:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635862255;
-        bh=2CmondGJVaZHwBo/EQ7aruC3PEID6CW7T6gHHOD3VP8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=V0iRgECp3jK+KMMGzfi5fKDUbaQdzl5BU2W9lVtUtgBmU9055TbVnSCNYhw5wPkhF
-         IldN2Sjztoe+MNG9FpSN1gOr9V4Or/BDOGPneMT0KkRXkE1vQnroLxBUTCQJMWUJVS
-         Q0kBPqqmeXwXxDfJr6mGjWftMZJNjmrDlbDWHMBgT+Y5gygNISWUxQBg1yyuWHNY70
-         dm3nfz7glcX4u81Q2JzbnU+vZ8mmcMP9hw6QF430W+fUr1x6cQ+FOWoDPlnA7kEKvi
-         1yBJnpmOrBPXN4zlxiksRCYfhQYFmmaiYUj+m7vJFw7pYlJkzMPYM4PlqsSWopjQ6t
-         qdk0MdjT5KB8Q==
-Date:   Tue, 2 Nov 2021 07:10:51 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        keescook@chromium.org, kvalo@codeaurora.org,
-        miriam.rachel.korenblit@intel.com
-Subject: Re: [GIT PULL] Networking for 5.16
-Message-ID: <20211102071051.15a89ab6@kicinski-fedora-PC1C0HJN>
-In-Reply-To: <CAHk-=wgdE6=ob5nF60GvRYAG24MKaJBGJf3jPufMe1k_UPBQTA@mail.gmail.com>
-References: <20211102054237.3307077-1-kuba@kernel.org>
-        <CAHk-=wgdE6=ob5nF60GvRYAG24MKaJBGJf3jPufMe1k_UPBQTA@mail.gmail.com>
+        id S230379AbhKBOO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 10:14:58 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51434 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229712AbhKBOOt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 10:14:49 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 9F4BA212C6;
+        Tue,  2 Nov 2021 14:12:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635862333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zOgaJVxEip0PVqxzxEI60xVAoiPrv+jKDeYMfH5bsbQ=;
+        b=Mt+wM1lcqW+lmIkB8/QM0Al6IlU3QQeWdMAh+xI6xaUeL1tTybspmIt8E3Wn2fKrj3dkBT
+        P9w95XAL05OOIBLYzoN2v/hpUEwhjGLzd6jq4m6z0zotLHWP/WWGM8v7O+r82Or35l40E8
+        vQ+EAK7ws6dFmq0M3ydaA+zon15sdm8=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 72B0FA3B83;
+        Tue,  2 Nov 2021 14:12:13 +0000 (UTC)
+Date:   Tue, 2 Nov 2021 15:12:12 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Alexey Makhalov <amakhalov@vmware.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Oscar Salvador <OSalvador@suse.com>
+Subject: Re: [PATCH] mm: fix panic in __alloc_pages
+Message-ID: <YYFHPGq/E9F11F7o@dhcp22.suse.cz>
+References: <YYD/FkpAk5IvmOux@dhcp22.suse.cz>
+ <b2e4a611-45a6-732a-a6d3-6042afd2af6e@redhat.com>
+ <E34422F0-A44A-48FD-AE3B-816744359169@vmware.com>
+ <b3908fce-6b07-8390-b691-56dd2f85c05f@redhat.com>
+ <YYEkqH8l0ASWv/JT@dhcp22.suse.cz>
+ <42abfba6-b27e-ca8b-8cdf-883a9398b506@redhat.com>
+ <YYEun6s/mF9bE+rQ@dhcp22.suse.cz>
+ <e7aed7c0-b7b1-4a94-f323-0bcde2f879d2@redhat.com>
+ <YYE8L4gs8/+HH6bf@dhcp22.suse.cz>
+ <ccf05348-e1b6-58a7-2626-701e60b662e6@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ccf05348-e1b6-58a7-2626-701e60b662e6@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Nov 2021 06:20:35 -0700 Linus Torvalds wrote:
-> On Mon, Nov 1, 2021 at 10:43 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> >
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-for-5.16  
+On Tue 02-11-21 14:41:25, David Hildenbrand wrote:
+> On 02.11.21 14:25, Michal Hocko wrote:
+[...]
+> > Btw. do you plan to send a patch for pcp allocator to use cpu_to_mem?
 > 
-> I get quite a lot of
-> 
->     ./scripts/pahole-flags.sh: line 7: return: can only `return' from
-> a function or sourced script
-> 
-> with this. Why didn't anybopdy else notice? It seems entirely bogus
-> and presumably happens everywhere else too.
-> 
-> It's shell script. You don't "return" from it. You "exit" from it.
-> 
-> Grr.
+> You mean s/cpu_to_node/cpu_to_mem/ or also handling offline nids?
 
-Sorry about that. 
+just cpu_to_mem
 
-Looks like the patch was merged on Friday, presumably nobody tried 
-to build -next without pahole installed on their system since.
+> cpu_to_mem() corresponds to cpu_to_node() unless on ia64+ppc IIUC, so it
+> won't help for this very report.
 
-Let me correct for that by sending the PR on Tue next merge window.
-Hopefully an extra day will be enough for someone to catch silly 
-mistakes like this. I had to do a last minute TCP revert as well,
-so yeah, seems like Monday was a little rushed on my side.
+Weird, x86 allows memory less nodes as well. But you are right
+there is nothing selecting HAVE_MEMORYLESS_NODES neither do I see any
+arch specific implementation. I have to say that I have forgot all those
+nasty details... Sigh
+-- 
+Michal Hocko
+SUSE Labs
