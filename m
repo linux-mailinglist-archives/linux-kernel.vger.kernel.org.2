@@ -2,425 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4089A442C3B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:10:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E4FD442C32
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbhKBLNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 07:13:02 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:13136 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231312AbhKBLMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 07:12:51 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635851416; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=e8j6ALxvJTjSs/uJsjjQm+ckDP3Dk4dyIuqapsZZwdI=; b=Mak19da5tBq3bLzZe+nVyu0QuA9aNnOFeLmqKEuRbGyIXApbJTB4mMODqQQLmFjtdPW7qPws
- ndvr2Oqg/hOgERKdfGbnDGxFvAyp2g+2+1yDLykbEzEg2HEHacSjFXIJMovDURTdGWB8wHF1
- +OMJcHTyWjsVvoCvCld8GdI/+GI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 61811c89fd59e9ce7840b91f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Nov 2021 11:10:01
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DBF47C43619; Tue,  2 Nov 2021 11:10:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S231135AbhKBLMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 07:12:33 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:49432
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230407AbhKBLMb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 07:12:31 -0400
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B6A90C4360C;
-        Tue,  2 Nov 2021 11:09:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B6A90C4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH v5 2/2] ASoC: qcom: SC7280: Add machine driver
-Date:   Tue,  2 Nov 2021 16:39:32 +0530
-Message-Id: <1635851372-19151-3-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1635851372-19151-1-git-send-email-srivasam@codeaurora.org>
-References: <1635851372-19151-1-git-send-email-srivasam@codeaurora.org>
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D2D3B3F1BB
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 11:09:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635851395;
+        bh=LV8zs29Q6RtVe0ovS7PkdLCxTId0vPm+EpRZ40grHT8=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=ZzRgH9Ttp4w899YDPr/iVoTCNB0FuMEJGWHr+kRlYvc27o12jB/Pwf3y8boQh3eNJ
+         d6bmYLvsQrX9JIQpA3AW1+lm87h9SaZuaE+D1vGei6bxzlcSW344F0fVdAijJujWKM
+         70FNTQwRDe9Ht21ALtFj+EvB2Ve54RqfPGMm+7cjjPBfw4TG0j2FeZwHiW8dGLhTGR
+         diZ5MgCwk/GXiI68lTcZDvwtFP+An4Nwb2bfKbFXY1Nf276fC/Xm6qbM3JZZLtK0p0
+         etvMEXSQp/rzfPOWPtmBAblekxwXNM6YJx29T0zgvHv/98sFGnja9/N6eoIpb4vRBO
+         GEZdsJLJ0WpNw==
+Received: by mail-lf1-f71.google.com with SMTP id x27-20020ac2489b000000b004002367bdbbso1181325lfc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 04:09:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=LV8zs29Q6RtVe0ovS7PkdLCxTId0vPm+EpRZ40grHT8=;
+        b=5ipuKqfxL4az793K8wk89lISU1w4aqpNjRfrdvn2FlxhBN7Q3YqLgeAJUr2v+Pg2on
+         glPEOsb2SVe0mBUtC6Tt1PCeMcy8Pfhrl16g+/nWVFnv680nDDi+q0tqddP9M9MbJToY
+         0s++8j6+rbkTbHD76l7/IgKKaFniaRxY+FTC2jwnqEz/Qb6Zo8BjqvZbrhlHtt0vcLB6
+         7F0fcf5/FOyAoUu+zd+weLDE9H04h6+Uzs09JMv7y7oRtnPZvWFrdebPmmoGKwEnMC57
+         xmbUqERVtMRnZr2YanZG7WruoHLUnrZhAnJJBmJ60Ttn0FFqVKEJOt7sKXzPQTVOq42q
+         s0eQ==
+X-Gm-Message-State: AOAM531laARFwSZOS3adDGCvuubDZr46dIHaYnSFSk0vjcsIl8Cf3vJF
+        q7R0L3lmE19JbqDm5dGyO2cEChTjYfAlHd0SnSnn3719BORhbpdptEr+AKoLpt9dYA9DTN0CaSG
+        4qfcFlLA1GoHkiHHFn2z1caXc7hvy28JygojXDQFLQQ==
+X-Received: by 2002:a2e:1613:: with SMTP id w19mr25306073ljd.497.1635851395274;
+        Tue, 02 Nov 2021 04:09:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyJ0HmZ1dkezyX/zCwdDYgsh3fblrYuUykZMqFUiHD0Jz1RxUEVZ6U6g3H6ZXKdyhxk0Wt7Rw==
+X-Received: by 2002:a2e:1613:: with SMTP id w19mr25306035ljd.497.1635851394931;
+        Tue, 02 Nov 2021 04:09:54 -0700 (PDT)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id p3sm459928ljj.4.2021.11.02.04.09.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 04:09:54 -0700 (PDT)
+Message-ID: <52054093-bd8d-ee79-6f32-9ada9b3deb24@canonical.com>
+Date:   Tue, 2 Nov 2021 12:09:53 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [RFC PATCH] ARM: s3c: mark as deprecated and schedule removal
+ after 2022
+Content-Language: en-US
+To:     Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, Olof Johansson <olof@lixom.net>,
+        Kukjin Kim <kgene@kernel.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Inki Dae <inki.dae@samsung.com>, Cedric Roux <sed@free.fr>,
+        Sam Van Den Berge <sam.van.den.berge@telenet.be>,
+        Lihua Yao <ylhuajnu@outlook.com>,
+        Heiko Stuebner <heiko@sntech.de>
+References: <20211102110519.142434-1-krzysztof.kozlowski@canonical.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211102110519.142434-1-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new machine driver to register sound card on sc7280 based targets and
-do the required configuration for lpass cpu dai and external codecs
-connected over MI2S and soundwire interfaces.
-Add support for audio jack detection, soundwire init and MBHC.
+On 02/11/2021 12:05, Krzysztof Kozlowski wrote:
+> The Samsung S3C24xx and S3C64xx platforms are very old designs. S3C2416
+> was introduced in 2008 and S3C6410 in 2009/2010.  They are not widely
+> available anymore - out-of-stock on FriendlyArm (one of manufacturers of
+> boards) and only few specialist stores still offer them for quite a high
+> price.
+> 
+> The community around these platforms was not very active, so I suspect
+> no one really uses them anymore. Maintenance takes precious time so
+> there is little sense in keeping them alive if there are no real users.
+> 
+> Let's mark all S3C24xx and S3C64xx platforms as deprecated and mention
+> possible removal in one year (after 2022).  The deprecation message will
+> be as text in Kconfig, build message (not a warning though) and runtime
+> print error.
+> 
+> If there are any users, they might respond and postpone the removal.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  arch/arm/Kconfig                  | 7 ++++++-
+>  arch/arm/mach-s3c/Kconfig.s3c64xx | 7 ++++++-
+>  arch/arm/mach-s3c/cpu.c           | 1 +
+>  arch/arm/mach-s3c/init.c          | 2 ++
+>  arch/arm/mach-s3c/s3c24xx.c       | 5 +++++
+>  arch/arm/mach-s3c/s3c64xx.c       | 5 +++++
+>  6 files changed, 25 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+> index f0f9e8bec83a..bd8237c7e7f1 100644
+> --- a/arch/arm/Kconfig
+> +++ b/arch/arm/Kconfig
+> @@ -473,7 +473,7 @@ config ARCH_SA1100
+>  	  Support for StrongARM 11x0 based boards.
+>  
+>  config ARCH_S3C24XX
+> -	bool "Samsung S3C24XX SoCs"
+> +	bool "Samsung S3C24XX SoCs (deprecated, see help)"
+>  	select ATAGS
+>  	select CLKSRC_SAMSUNG_PWM
+>  	select GPIO_SAMSUNG
+> @@ -491,6 +491,11 @@ config ARCH_S3C24XX
+>  	  (<http://www.simtec.co.uk/products/EB110ITX/>), the IPAQ 1940 or the
+>  	  Samsung SMDK2410 development board (and derivatives).
+>  
+> +	  The platform is deprecated and scheduled in removal. Please reach to
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
- sound/soc/qcom/Kconfig  |  12 ++
- sound/soc/qcom/Makefile |   2 +
- sound/soc/qcom/sc7280.c | 299 ++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 313 insertions(+)
- create mode 100644 sound/soc/qcom/sc7280.c
+Language typo - "for removal". I'll fix it in v2, if the idea looks
+reasonable.
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index cc7c1de..530d01f 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -152,4 +152,16 @@ config SND_SOC_SC7180
- 	  SC7180 SoC-based systems.
- 	  Say Y if you want to use audio device on this SoCs.
- 
-+config SND_SOC_SC7280
-+	tristate "SoC Machine driver for SC7280 boards"
-+	depends on I2C && SOUNDWIRE || COMPILE_TEST
-+	select SND_SOC_QCOM_COMMON
-+	select SND_SOC_MAX98357A
-+	select SND_SOC_LPASS_RX_MACRO
-+	select SND_SOC_LPASS_TX_MACRO
-+	help
-+	  Add support for audio on Qualcomm Technologies Inc.
-+	  SC7280 SoC-based systems.
-+	  Say Y or M if you want to use audio device on this SoCs.
-+
- endif #SND_SOC_QCOM
-diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
-index 1600ae5..625aec6 100644
---- a/sound/soc/qcom/Makefile
-+++ b/sound/soc/qcom/Makefile
-@@ -19,6 +19,7 @@ snd-soc-storm-objs := storm.o
- snd-soc-apq8016-sbc-objs := apq8016_sbc.o
- snd-soc-apq8096-objs := apq8096.o
- snd-soc-sc7180-objs := sc7180.o
-+snd-soc-sc7280-objs := sc7280.o
- snd-soc-sdm845-objs := sdm845.o
- snd-soc-sm8250-objs := sm8250.o
- snd-soc-qcom-common-objs := common.o
-@@ -27,6 +28,7 @@ obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
- obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
- obj-$(CONFIG_SND_SOC_MSM8996) += snd-soc-apq8096.o
- obj-$(CONFIG_SND_SOC_SC7180) += snd-soc-sc7180.o
-+obj-$(CONFIG_SND_SOC_SC7280) += snd-soc-sc7280.o
- obj-$(CONFIG_SND_SOC_SDM845) += snd-soc-sdm845.o
- obj-$(CONFIG_SND_SOC_SM8250) += snd-soc-sm8250.o
- obj-$(CONFIG_SND_SOC_QCOM_COMMON) += snd-soc-qcom-common.o
-diff --git a/sound/soc/qcom/sc7280.c b/sound/soc/qcom/sc7280.c
-new file mode 100644
-index 0000000..c20d4ab1
---- /dev/null
-+++ b/sound/soc/qcom/sc7280.c
-@@ -0,0 +1,299 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
-+//
-+// ALSA SoC Machine driver for sc7280
-+
-+#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/input.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/jack.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+
-+#include <dt-bindings/sound/sc7180-lpass.h>
-+#include <dt-bindings/sound/qcom,q6afe.h>
-+
-+#include "../codecs/wcd938x.h"
-+#include "common.h"
-+#include "lpass.h"
-+
-+#define LPASS_MAX_PORTS  (LPASS_CDC_DMA_VA_TX8 + 1)
-+
-+struct sc7280_snd_data {
-+	bool stream_prepared[LPASS_MAX_PORTS];
-+	struct snd_soc_card card;
-+	struct sdw_stream_runtime *sruntime[LPASS_MAX_PORTS];
-+	struct snd_soc_jack hs_jack;
-+	struct snd_soc_jack hdmi_jack;
-+	bool jack_setup;
-+};
-+
-+static void sc7280_jack_free(struct snd_jack *jack)
-+{
-+	struct snd_soc_component *component = jack->private_data;
-+
-+	snd_soc_component_set_jack(component, NULL, NULL);
-+}
-+
-+static int sc7280_headset_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_card *card = rtd->card;
-+	struct sc7280_snd_data *pdata = snd_soc_card_get_drvdata(card);
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct snd_jack *jack;
-+	int rval, i;
-+
-+	if (!pdata->jack_setup) {
-+		rval = snd_soc_card_jack_new(card, "Headset Jack",
-+							SND_JACK_HEADSET | SND_JACK_LINEOUT |
-+							SND_JACK_MECHANICAL |
-+							SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+							SND_JACK_BTN_2 | SND_JACK_BTN_3 |
-+							SND_JACK_BTN_4 | SND_JACK_BTN_5,
-+							&pdata->hs_jack, NULL, 0);
-+
-+		if (rval < 0) {
-+			dev_err(card->dev, "Unable to add Headset Jack\n");
-+			return rval;
-+		}
-+
-+		jack = pdata->hs_jack.jack;
-+
-+		snd_jack_set_key(jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-+		snd_jack_set_key(jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-+		snd_jack_set_key(jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-+		snd_jack_set_key(jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-+
-+		jack->private_data = component;
-+		jack->private_free = sc7280_jack_free;
-+		pdata->jack_setup = true;
-+	}
-+	switch (cpu_dai->id) {
-+	case LPASS_CDC_DMA_RX0:
-+	case LPASS_CDC_DMA_TX3:
-+		for_each_rtd_codec_dais(rtd, i, codec_dai) {
-+			rval = snd_soc_component_set_jack(component, &pdata->hs_jack, NULL);
-+			if (rval != 0 && rval != -ENOTSUPP) {
-+				dev_err(card->dev, "Failed to set jack: %d\n", rval);
-+				return rval;
-+			}
-+		}
-+
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int sc7280_hdmi_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_card *card = rtd->card;
-+	struct sc7280_snd_data *pdata = snd_soc_card_get_drvdata(card);
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct snd_jack *jack;
-+	int rval;
-+
-+	rval = snd_soc_card_jack_new(
-+			card, "HDMI Jack",
-+			SND_JACK_LINEOUT,
-+			&pdata->hdmi_jack, NULL, 0);
-+
-+	if (rval < 0) {
-+		dev_err(card->dev, "Unable to add HDMI Jack\n");
-+		return rval;
-+	}
-+
-+	jack = pdata->hdmi_jack.jack;
-+	jack->private_data = component;
-+	jack->private_free = sc7280_jack_free;
-+
-+	return snd_soc_component_set_jack(component, &pdata->hdmi_jack, NULL);
-+}
-+
-+static int sc7280_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+
-+	switch (cpu_dai->id) {
-+	case LPASS_CDC_DMA_TX3:
-+		return sc7280_headset_init(rtd);
-+	case LPASS_CDC_DMA_RX0:
-+	case LPASS_CDC_DMA_VA_TX0:
-+	case MI2S_SECONDARY:
-+		return 0;
-+	case LPASS_DP_RX:
-+		return sc7280_hdmi_init(rtd);
-+	default:
-+		dev_err(rtd->dev, "%s: invalid dai id 0x%x\n", __func__, cpu_dai->id);
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int sc7280_snd_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai;
-+	const struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct sc7280_snd_data *pdata = snd_soc_card_get_drvdata(rtd->card);
-+	struct sdw_stream_runtime *sruntime;
-+	int i;
-+
-+	snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
-+	snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_RATE, 48000, 48000);
-+
-+	switch (cpu_dai->id) {
-+	case LPASS_CDC_DMA_TX3:
-+	case LPASS_CDC_DMA_RX0:
-+		for_each_rtd_codec_dais(rtd, i, codec_dai) {
-+			sruntime = snd_soc_dai_get_sdw_stream(codec_dai, substream->stream);
-+			if (sruntime != ERR_PTR(-ENOTSUPP))
-+				pdata->sruntime[cpu_dai->id] = sruntime;
-+		}
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int sc7280_snd_swr_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	const struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct sc7280_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
-+	struct sdw_stream_runtime *sruntime = data->sruntime[cpu_dai->id];
-+	int ret;
-+
-+	if (!sruntime)
-+		return 0;
-+
-+	if (data->stream_prepared[cpu_dai->id]) {
-+		sdw_disable_stream(sruntime);
-+		sdw_deprepare_stream(sruntime);
-+		data->stream_prepared[cpu_dai->id] = false;
-+	}
-+
-+	ret = sdw_prepare_stream(sruntime);
-+	if (ret)
-+		return ret;
-+
-+	ret = sdw_enable_stream(sruntime);
-+	if (ret) {
-+		sdw_deprepare_stream(sruntime);
-+		return ret;
-+	}
-+	data->stream_prepared[cpu_dai->id] = true;
-+
-+	return ret;
-+}
-+
-+static int sc7280_snd_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	const struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+
-+	switch (cpu_dai->id) {
-+	case LPASS_CDC_DMA_RX0:
-+	case LPASS_CDC_DMA_TX3:
-+		return sc7280_snd_swr_prepare(substream);
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int sc7280_snd_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sc7280_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
-+	const struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct sdw_stream_runtime *sruntime = data->sruntime[cpu_dai->id];
-+
-+	switch (cpu_dai->id) {
-+	case LPASS_CDC_DMA_RX0:
-+	case LPASS_CDC_DMA_TX3:
-+		if (sruntime && data->stream_prepared[cpu_dai->id]) {
-+			sdw_disable_stream(sruntime);
-+			sdw_deprepare_stream(sruntime);
-+			data->stream_prepared[cpu_dai->id] = false;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+
-+static const struct snd_soc_ops sc7280_ops = {
-+	.hw_params = sc7280_snd_hw_params,
-+	.hw_free = sc7280_snd_hw_free,
-+	.prepare = sc7280_snd_prepare,
-+};
-+
-+static const struct snd_soc_dapm_widget sc7280_snd_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+};
-+
-+static int sc7280_snd_platform_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card;
-+	struct sc7280_snd_data *data;
-+	struct device *dev = &pdev->dev;
-+	struct snd_soc_dai_link *link;
-+	int ret, i;
-+
-+	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	card = &data->card;
-+	snd_soc_card_set_drvdata(card, data);
-+
-+	card->owner = THIS_MODULE;
-+	card->driver_name = "SC7280";
-+	card->dev = dev;
-+
-+	ret = qcom_snd_parse_of(card);
-+	if (ret)
-+		return ret;
-+
-+	for_each_card_prelinks(card, i, link) {
-+		link->init = sc7280_init;
-+		link->ops = &sc7280_ops;
-+	}
-+
-+	return devm_snd_soc_register_card(dev, card);
-+}
-+
-+static const struct of_device_id sc7280_snd_device_id[]  = {
-+	{ .compatible = "google,sc7280-herobrine" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, sc7280_snd_device_id);
-+
-+static struct platform_driver sc7280_snd_driver = {
-+	.probe = sc7280_snd_platform_probe,
-+	.driver = {
-+		.name = "msm-snd-sc7280",
-+		.of_match_table = sc7280_snd_device_id,
-+		.pm = &snd_soc_pm_ops,
-+	},
-+};
-+module_platform_driver(sc7280_snd_driver);
-+
-+MODULE_DESCRIPTION("sc7280 ASoC Machine Driver");
-+MODULE_LICENSE("GPL v2");
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Best regards,
+Krzysztof
