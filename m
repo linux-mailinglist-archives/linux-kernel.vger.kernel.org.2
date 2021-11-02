@@ -2,101 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF1D442D9A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD54A442D9C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230522AbhKBMPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 08:15:37 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:25344 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230115AbhKBMPg (ORCPT
+        id S231135AbhKBMPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 08:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231165AbhKBMPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 08:15:36 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hk7vy5LDnzbhKn;
-        Tue,  2 Nov 2021 20:08:14 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 2 Nov 2021 20:12:56 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 2 Nov 2021 20:12:55 +0800
-Subject: Re: [PATCH 5.10 00/77] 5.10.77-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20211101082511.254155853@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <d473ba94-a021-584f-71f8-782d1c2c9e7d@huawei.com>
-Date:   Tue, 2 Nov 2021 20:12:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 2 Nov 2021 08:15:49 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51EEC061764;
+        Tue,  2 Nov 2021 05:13:14 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hk81d5ZR5z4xbs;
+        Tue,  2 Nov 2021 23:13:08 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635855190;
+        bh=NpDEJY5HJpNz4CKwDnMhbilPOiKREP07cOFK93HNPps=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mJAlJJwtHRcO48iRgRhiiGem/2Sx9ZyGzcJ/OIIreJHuNgqLFOda82BSKK1sd97MO
+         FCkdixBfjTVzrjozn29qU/9sHET2Ha/iwIW+l53FGt28+ol/ZWf7t9Hspw/7LKo6MS
+         /Uh1m9voDuBuKBgIp2vIqZNHIV1/yIz8No8iT/lrEYVm24ShGF9XJ8APBu/NJnKj+Z
+         ZN9RAGp/jjBT8Ao0b/OyEW0pOGVfFJKuiHfQZIoe/VQvzG+d2C16vdv0UB5ufpwwrR
+         1dJ0E8TSfKVxG3gOlGGdqD9/KfvTsnSV0qMU9F+mFT6Y7/5p2IkybeOEmhu19SjHkT
+         zuSS1rkAKbLAg==
+Date:   Tue, 2 Nov 2021 23:13:07 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: linux-next: build failure after merge of almost all the trees
+Message-ID: <20211102231307.6ba98df2@canb.auug.org.au>
+In-Reply-To: <CAK8P3a3Fx0UmbxP48RnXHcJYf_tU3_NTkMZrFnM42eAb_F4jRQ@mail.gmail.com>
+References: <20211028212651.57beb05b@canb.auug.org.au>
+        <20211028233844.292e1319@canb.auug.org.au>
+        <20211102174400.1aaee22c@canb.auug.org.au>
+        <CAK8P3a3Fx0UmbxP48RnXHcJYf_tU3_NTkMZrFnM42eAb_F4jRQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211101082511.254155853@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/ad6Ic7P=fhScIZp04Ev76Ff";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/ad6Ic7P=fhScIZp04Ev76Ff
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi Arnd,
 
-On 2021/11/1 17:16, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.77 release.
-> There are 77 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 03 Nov 2021 08:24:20 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.77-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Tue, 2 Nov 2021 08:06:10 +0100 Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Tue, Nov 2, 2021 at 7:44 AM Stephen Rothwell <sfr@canb.auug.org.au> wr=
+ote:
+> >
+> > On Thu, 28 Oct 2021 23:38:44 +1100 Stephen Rothwell <sfr@canb.auug.org.=
+au> wrote: =20
+> > >
+> > > On Thu, 28 Oct 2021 21:26:51 +1100 Stephen Rothwell <sfr@canb.auug.or=
+g.au> wrote: =20
+> > > >
+> > > > Today's linux-next build (powerpc allyesconfig) failed like this:
+> > > >
+> > > > fs/ntfs/aops.c: In function 'ntfs_write_mst_block':
+> > > > fs/ntfs/aops.c:1311:1: error: the frame size of 2304 bytes is large=
+r than 2048 bytes [-Werror=3Dframe-larger-than=3D]
+> > > >  1311 | }
+> > > >       | ^
+> > > > cc1: all warnings being treated as errors
+> > > >
+> > > > I have no idea what has caused this. =20
+> > >
+> > > With a nudge from Arnd, it seems the immediate case was commit
+> > >
+> > >   f22969a66041 ("powerpc/64s: Default to 64K pages for 64 bit book3s")
+> > >
+> > > from the powerpc tree switching the allyesconfig build from 4k pages =
+to
+> > > 64k pages which expanded a few arrays on the stack in that function. =
+=20
+> >
+> > Can we do something about this, please? =20
+>=20
+> I submitted a workaround a while ago. Anton didn't like it, but has not
+> come up with a proper fix in ntfs either:
+>=20
+> https://lore.kernel.org/lkml/20210927141815.1711736-1-arnd@kernel.org/
+>=20
+> It does need to be changed a bit as I realized it depends on a rework of
+> the Kconfig logic that I had in my randconfig build tree to have a common
+> page size symbol across architectures. Without my other patch, it also
+> needs to check for PPC_64K_PAGES.
+>=20
+> Should I send an updated version of the patch?
 
-Tested on arm64 and x86 for 5.10.77-rc1,
+That would be good, thanks.
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.10.y
-Version: 5.10.77-rc1
-Commit: 18363fa5f60b61ec6d80beddfbf38ef05f99f68b
-Compiler: gcc version 7.3.0 (GCC)
+Even better would be to split up the function some how, but having had
+a bit of a look at it, that may be a much longer job.  I am assuming
+that allocations (or their failure) are out of the question in that
+particular function.
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8907
-passed: 8907
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+--=20
+Cheers,
+Stephen Rothwell
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8907
-passed: 8907
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+--Sig_/ad6Ic7P=fhScIZp04Ev76Ff
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGBK1MACgkQAVBC80lX
+0GyH/QgAkAvmgeUUmIMHgVN2m9h4guoICCFaUpOvyw2zyhfDdXEjQ3IslYm3udfz
+L6CfZnDtQzOtJzhAlnXQaaZcBthWupxc0EwZKhwgN3E/grpIoJXdv+eFm++3GFad
+1xnFl7CNuBMd+TjQNQ6Q42L3/SitGbojx5oZBaFJBdFPoJVofsXmWHptC2kJXpvE
+E04k/dznl0GhZisJEv5sVXtXHE6qBDJp4PrzMU+a/9jIjJLX8qG8qzipjLcXhC6c
+tKRm8QEHBLVkI634zjWOA6wFgRAUIRjmFIV9r3rvdaqoWjSdJfub/0aXgZzR3sIZ
+CVV6MjXXqO7NUo6ZTD6/p7fdR3AluA==
+=1Yz5
+-----END PGP SIGNATURE-----
+
+--Sig_/ad6Ic7P=fhScIZp04Ev76Ff--
