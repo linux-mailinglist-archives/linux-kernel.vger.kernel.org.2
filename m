@@ -2,118 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFAE44261A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:37:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B951844261E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232098AbhKBDkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 23:40:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231526AbhKBDkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 23:40:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62C2760F6F;
-        Tue,  2 Nov 2021 03:37:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635824254;
-        bh=W+VhXomHRpnllsGX4zhga7jZFF/Pxk2QVmjmmokRQyo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=TA2wMT44AIu+nh8LQKpHgTUM321wn2zdpSo/mzBm3uXLVGhMbv8X+D6vfXjIeiSt5
-         Gt3b+tv8vHhNPKa+itGu8ofPGzmpbv6QBwNvlnzGGO9hE4MQ1ckdPTYj8zLgeL8MSZ
-         m5h4GZw2MAQf712BXXa2/LAfsi9eh0Bna68JHOXg6KUH37bzKAJSdPpWrKiBUUec5c
-         2KXx5H9QfiFS/8mwFbNmkwfmV9yHSQ2BcGOUSWFeMCimVhz9GxKIQlPJJRVSXM73+Z
-         y311E7PQf9TVfAbxY1ykeGyERb6mvvSRR6+1YBWxnEEM5fy3XZwjdKVzHBBeT3NWHc
-         RNjqvgBsdXaiA==
-Message-ID: <228a7789-4b38-f08c-ecdf-584ef491ea7a@kernel.org>
-Date:   Tue, 2 Nov 2021 11:37:31 +0800
+        id S232420AbhKBDn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 23:43:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231889AbhKBDny (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 23:43:54 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792A4C061766
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 20:41:20 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id g125so28023572oif.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 20:41:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aeZGOfwwnFzjEn/W/1IOfg4SXRk/9i0vOOQaYvl2ndc=;
+        b=UlCdNN5fyuaVmrMcVZwRynpyFuMMAvOz6hBPX7fFsLAGRegSla/Elu0CEijN1t4CrX
+         CAoP+QCZjORGaSrKOTxbRim1oQaIul3RNKQ4AcFnYYEDzJiAXH1EZRmbuKtHeCgU/ptm
+         Yaxas7oF/k0bu4aJsI8FDgljOX80SNLGw++HfP/fZnCevLAx3NukDvKyAXCpF3euBG/f
+         1UKBuU5nWgomT2vM5ERpEj5Or7RwUEklu/WrKHJqrvLiKkxP9xsUAjVAPHbYoLALI1wJ
+         7tRjfTOXcT2b+4ikmV8vo3pFqUG+zVTBPxw6eU1hbL8mkWPmh9aGiyHL3tn1BOhocS97
+         dGPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aeZGOfwwnFzjEn/W/1IOfg4SXRk/9i0vOOQaYvl2ndc=;
+        b=T94kEJjLqpKnhXH1sByML9Z2SLb89EbditUfJFj60p9an9x/IPy+j//32w6c1TQ+hp
+         fkKCFl1Hvrnv9JlJyYK3lSHVntEbyeuJYmisBpT+4IyHajdeo9YZAGhycjYjSB0OZpQV
+         Sa1mWvR9LNYqwbt2TtbZT+6w2IftPUIWCZJn2cBuaAiID/QRxnoPRPQeD685JJHjUPmd
+         GLRtdIj+r0jNcR4peuT5vECX7LcSx3xb3cgxY2JwBhuBlmjfMtLhgrrR8e1F5uCYHca9
+         MlHy2bjM9XBV1l/fl8uWcYmfnb6SN2uqrOwQIV2igJ8z6aLGEltprmyTJGuut/XWY/aq
+         zzdw==
+X-Gm-Message-State: AOAM53344kTYIXy2I+Fdyk5kwH8Qj+F5BT9PqjQ/x/t1rnVIqe6xl0hQ
+        XPmPMxpMpmorU8s61/g1/9JoVg==
+X-Google-Smtp-Source: ABdhPJx+RCmVwj69D0ICqYXKngVu1j5eL6YiF7/5ZN2bAOqo1Fb4oR71luDyk8FVgAYW8XPOS6I8bQ==
+X-Received: by 2002:a54:4499:: with SMTP id v25mr1167313oiv.71.1635824479610;
+        Mon, 01 Nov 2021 20:41:19 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id r21sm3900916otp.55.2021.11.01.20.41.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 20:41:19 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Steev Klimaszewski <steev@kali.org>
+Subject: [PATCH] pinctrl: qcom: sdm845: Enable dual edge errata
+Date:   Mon,  1 Nov 2021 22:41:15 -0500
+Message-Id: <20211102034115.1946036-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v2] F2FS: invalidate META_MAPPING before IPU/DIO write
-Content-Language: en-US
-To:     Hyeong-Jun Kim <hj514.kim@samsung.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, guoweichao@oppo.com
-References: <CGME20211101084637epcas1p3a17850a8a437488649be9b41ffa889e2@epcas1p3.samsung.com>
- <20211101084634.38727-1-hj514.kim@samsung.com>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20211101084634.38727-1-hj514.kim@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/11/1 16:46, Hyeong-Jun Kim wrote:
-> Encrypted pages during GC are read and cached in META_MAPPING.
-> However, due to cached pages in META_MAPPING, there is an issue where
-> newly written pages are lost by IPU or DIO writes.
-> 
-> Thread A - f2fs_gc()            Thread B
-> /* phase 3 */
-> down_write(i_gc_rwsem)
-> ra_data_block()       ---- (a)
-> up_write(i_gc_rwsem)
->                                  f2fs_direct_IO() :
->                                   - down_read(i_gc_rwsem)
->                                   - __blockdev_direct_io()
->                                   - get_data_block_dio_write()
->                                   - f2fs_dio_submit_bio()  ---- (b)
->                                   - up_read(i_gc_rwsem)
-> /* phase 4 */
-> down_write(i_gc_rwsem)
-> move_data_block()     ---- (c)
-> up_write(i_gc_rwsem)
-> 
-> (a) In phase 3 of f2fs_gc(), up-to-date page is read from storage and
->      cached in META_MAPPING.
-> (b) In thread B, writing new data by IPU or DIO write on same blkaddr as
->      read in (a). cached page in META_MAPPING become out-dated.
-> (c) In phase 4 of f2fs_gc(), out-dated page in META_MAPPING is copied to
->      new blkaddr. In conclusion, the newly written data in (b) is lost.
-> 
-> To address this issue, invalidating pages in META_MAPPING before IPU or
-> DIO write.
-> 
-> Fixes: 6aa58d8ad20a ("f2fs: readahead encrypted block during GC")
-> Signed-off-by: Hyeong-Jun Kim <hj514.kim@samsung.com>
-> ---
->   fs/f2fs/data.c    | 2 ++
->   fs/f2fs/segment.c | 3 +++
->   2 files changed, 5 insertions(+)
-> 
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 74e1a350c1d8..9f754aaef558 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -1708,6 +1708,8 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
->   		 */
->   		f2fs_wait_on_block_writeback_range(inode,
->   						map->m_pblk, map->m_len);
-> +		invalidate_mapping_pages(META_MAPPING(sbi),
-> +						map->m_pblk, map->m_pblk);
->   
->   		if (map->m_multidev_dio) {
->   			block_t blk_addr = map->m_pblk;
-> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> index 526423fe84ce..f57c55190f9e 100644
-> --- a/fs/f2fs/segment.c
-> +++ b/fs/f2fs/segment.c
-> @@ -3652,6 +3652,9 @@ int f2fs_inplace_write_data(struct f2fs_io_info *fio)
->   		goto drop_bio;
->   	}
->   
-> +	invalidate_mapping_pages(META_MAPPING(fio->sbi),
+It has been observed that dual edge triggered wakeirq GPIOs on SDM845
+doesn't trigger interrupts on the falling edge.
 
-There is one more comment from Weichao:
+Enabling wakeirq_dual_edge_errata for SDM845 indicates that the PDC in
+SDM845 suffers from the same problem described, and worked around, by
+Doug in 'c3c0c2e18d94 ("pinctrl: qcom: Handle broken/missing PDC dual
+edge IRQs on sc7180")', so enable the workaround for SDM845 as well.
 
-Use sbi instead of fio->sbi?
+The specific problem seen without this is that gpio-keys does not detect
+the falling edge of the LID gpio on the Lenovo Yoga C630 and as such
+consistently reports the LID as closed.
 
-Thanks,
+Fixes: e35a6ae0eb3a ("pinctrl/msm: Setup GPIO chip in hierarchy")
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ drivers/pinctrl/qcom/pinctrl-sdm845.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> +				fio->new_blkaddr, fio->new_blkaddr);
-> +
->   	stat_inc_inplace_blocks(fio->sbi);
->   
->   	if (fio->bio && !(SM_I(sbi)->ipu_policy & (1 << F2FS_IPU_NOCACHE)))
-> 
+diff --git a/drivers/pinctrl/qcom/pinctrl-sdm845.c b/drivers/pinctrl/qcom/pinctrl-sdm845.c
+index c51793f6546f..fdfd7b8f3a76 100644
+--- a/drivers/pinctrl/qcom/pinctrl-sdm845.c
++++ b/drivers/pinctrl/qcom/pinctrl-sdm845.c
+@@ -1310,6 +1310,7 @@ static const struct msm_pinctrl_soc_data sdm845_pinctrl = {
+ 	.ngpios = 151,
+ 	.wakeirq_map = sdm845_pdc_map,
+ 	.nwakeirq_map = ARRAY_SIZE(sdm845_pdc_map),
++	.wakeirq_dual_edge_errata = true,
+ };
+ 
+ static const struct msm_pinctrl_soc_data sdm845_acpi_pinctrl = {
+-- 
+2.32.0
+
