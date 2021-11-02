@@ -2,105 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A30442B1E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:55:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4730442B24
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 10:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbhKBJ6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 05:58:10 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:60886
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229783AbhKBJ6I (ORCPT
+        id S230333AbhKBJ7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 05:59:43 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:37377 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229783AbhKBJ7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 05:58:08 -0400
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Tue, 2 Nov 2021 05:59:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635847027; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=ypwr1C5T8vrdqdnIUZMTfV2NLbUn1Huykf7qeMaq0oM=; b=asmIMZ1w2q2rwzHA92FWs0HQgtjzb1a6vZ8NPEtJid8Ba9M5U4KEpqhsToQL3ZizhrF3mYDD
+ iZlJLDEI1ou5ARxPWptvVoZOZazn/3bikbu96dR+Zg+BZSaHqLhCgPKits3qANWQccl/4rav
+ /nnEt49yZtJ1e4moo/9FbJzEHck=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 61810b732e144ac4d3c41dc3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Nov 2021 09:57:07
+ GMT
+Sender: tdas=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1D447C43460; Tue,  2 Nov 2021 09:57:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 586DD3F1AA
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:55:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635846933;
-        bh=D5VCGyo/EkhIr12Vj9NeHrXDS/X5WmXY/nUH6wa2pHA=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=k3Ky9KO/zSa1FRGTloYoiBLCcEuAbxyeCmykdiTaRclL9sZhwH1x8GJA3nHlba8BQ
-         WIsfGx7d3B2C+Rq1jDM5+apztbJkmCstyzdOEajFwEtW/h4bK/PSWJtE7rWbieHveb
-         tKyxtisR2kU7u9d0IJMQppDKGZiewol/JsPj3V1VBPidHl7c5iU/YZVeAdQfVWF9Y4
-         jdfGRBFRZ3fitzEm8WmlwMD0zDkrBnpN8+e95pwfYzGS1Y1yFX+vPr9zCOr51qS2cD
-         HBl6Ei82QXJUbCWtjylXVbSKTBrku9uIzANTPUnv8FC7Qi6tY4IFg4zEyQRV/MS3xK
-         97TskJ092ukMg==
-Received: by mail-lf1-f69.google.com with SMTP id c13-20020a05651200cd00b004001aab328aso1192314lfp.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 02:55:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=D5VCGyo/EkhIr12Vj9NeHrXDS/X5WmXY/nUH6wa2pHA=;
-        b=Y3ZoeoF/lBYJ8Rn193LVngvpAUohkzXXjF4imWA7Ff76Ara9kysh2ANpG1PWP8Fvi1
-         n7Tly4a8CHG3TDOSvM3xL7HeLOCoEwBQKx+xXX/enYmV6EDyUVUE1ixpfDk/J1HgeGVH
-         oFCmQIZzypMNh4M/KFiumkodNA03nYilv0+OqZwo21cvL8X1lYfsZ80FObcEXAmdOsfH
-         mBYuU468zRKMBNMcllwdVIelixNgIzZxHZ28PGr/n4YZMCV7bmewi2IRJMBV/+U5kjW+
-         7I5UWFpC3lN0gPkYWkKS39K2P36GB8Oin1OyItIozPwwQqHpcJDfqSirHLmZx8kV9ur6
-         yvAg==
-X-Gm-Message-State: AOAM531s2AIrwRQ9V/4Rq7g9y9nW+C4eLR6K/T8gK0IzToKm0tk3puta
-        kWX0YWZG/CQbOcnDBarvrMSkszxuQe0yfpkkSRW+7ptIaGwYd3AcZGcF4fykHv43+X69NGLUvIX
-        XoSFzxYDiF+5yiU9wDx1g6ym9R/x07JxVKjpozh2kKQ==
-X-Received: by 2002:a2e:a789:: with SMTP id c9mr16370086ljf.207.1635846932475;
-        Tue, 02 Nov 2021 02:55:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJykgYTwyNmlD0ClXvAZbn/Fd88xx1Po6qCMFLwUAPRSjJtbrNvKtBER1w8/MasJz6xZqJsHEw==
-X-Received: by 2002:a2e:a789:: with SMTP id c9mr16370065ljf.207.1635846932330;
-        Tue, 02 Nov 2021 02:55:32 -0700 (PDT)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id v138sm1645009lfa.51.2021.11.02.02.55.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 02:55:31 -0700 (PDT)
-Message-ID: <bd4c2afb-ff86-9c18-b64e-1c87a8b6d0e6@canonical.com>
-Date:   Tue, 2 Nov 2021 10:55:31 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH v2 06/12] watchdog: s3c2410: Extract disable and mask code
- into separate functions
-Content-Language: en-US
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20211031122216.30212-1-semen.protsenko@linaro.org>
- <20211031122216.30212-7-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211031122216.30212-7-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        (Authenticated sender: tdas)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E8D07C4338F;
+        Tue,  2 Nov 2021 09:57:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E8D07C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Taniya Das <tdas@codeaurora.org>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        =?UTF-8?q?Michael=20Turquette=20=C2=A0?= <mturquette@baylibre.com>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh@kernel.org, robh+dt@kernel.org,
+        Taniya Das <tdas@codeaurora.org>
+Subject: [PATCH v1 0/4] Add support for LPASS Core and Audio Clock for SC7280
+Date:   Tue,  2 Nov 2021 15:26:49 +0530
+Message-Id: <1635847013-3220-1-git-send-email-tdas@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/10/2021 13:22, Sam Protsenko wrote:
-> The s3c2410wdt_mask_and_disable_reset() function content is bound to be
-> changed further. Prepare it for upcoming changes by splitting into
-> separate "mask reset" and "disable reset" functions. But keep
-> s3c2410wdt_mask_and_disable_reset() function present as a facade.
-> 
-> This commit doesn't bring any functional change to existing devices, but
-> merely provides an infrastructure for upcoming chips support.
-> 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
-> Changes in v2:
->   - (none): it's a new patch
-> 
->  drivers/watchdog/s3c2410_wdt.c | 54 ++++++++++++++++++++++------------
->  1 file changed, 35 insertions(+), 19 deletions(-)
-> 
+This patchset supports the following.
+- Few PLLs might require to a higher time to detect lock, thus increase the
+  polling time.
+- GDSC which require clocks to be explicitly enabled before access.
+- LPASS core and audio clock driver support for SC7280.
 
+Taniya Das (4):
+  clk: qcom: clk-alpha-pll: Increase PLL lock detect poll time
+  clk: qcom: gdsc: Add support for clock voting from GDSC
+  dt-bindings: clock: Add YAML schemas for LPASS clocks on SC7280
+  clk: qcom: lpass: Add support for LPASS clock controller for SC7280
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ .../bindings/clock/qcom,sc7280-lpasscorecc.yaml    | 137 ++++
+ drivers/clk/qcom/Kconfig                           |   9 +
+ drivers/clk/qcom/Makefile                          |   1 +
+ drivers/clk/qcom/clk-alpha-pll.c                   |   2 +-
+ drivers/clk/qcom/gdsc.c                            |  45 +-
+ drivers/clk/qcom/gdsc.h                            |   3 +
+ drivers/clk/qcom/lpassaudiocc-sc7280.c             | 831 +++++++++++++++++++++
+ drivers/clk/qcom/lpasscorecc-sc7280.c              | 491 ++++++++++++
+ .../dt-bindings/clock/qcom,lpassaudiocc-sc7280.h   |  43 ++
+ .../dt-bindings/clock/qcom,lpasscorecc-sc7280.h    |  26 +
+ 10 files changed, 1581 insertions(+), 7 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.yaml
+ create mode 100644 drivers/clk/qcom/lpassaudiocc-sc7280.c
+ create mode 100644 drivers/clk/qcom/lpasscorecc-sc7280.c
+ create mode 100644 include/dt-bindings/clock/qcom,lpassaudiocc-sc7280.h
+ create mode 100644 include/dt-bindings/clock/qcom,lpasscorecc-sc7280.h
 
+--
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+of the Code Aurora Forum, hosted by the  Linux Foundation.
 
-Best regards,
-Krzysztof
