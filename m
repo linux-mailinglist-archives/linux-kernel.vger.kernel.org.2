@@ -2,100 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 306AF442604
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:26:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4F3442608
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbhKBD2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 23:28:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231613AbhKBD2J (ORCPT
+        id S231340AbhKBDa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 23:30:56 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:50428
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229526AbhKBDau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 23:28:09 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C62C061714;
-        Mon,  1 Nov 2021 20:25:34 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Mon, 1 Nov 2021 23:30:50 -0400
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HjwJr4qd9z4xbG;
-        Tue,  2 Nov 2021 14:25:32 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635823533;
-        bh=kQQNzCvwzxdUuDSfmbavyv5NvfpdyD0xurk8gKK4fQU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=HY3DLknuf0ueGGBFXZ1usE/kI2EfQZCxPVOngoS9D+G+sTQn7sns05nhYVPmBt1Qh
-         Ek6rUQoULmCgcsQbmtftl0wE+b6cCu6UJ03nrHz06pG98Sc2il+y+49vPfApzihxWQ
-         jSv3zoMWuFbHCxT8cdAnLKEUVF3zIMJS10RZw6qKJ3huhWZ5mB4VIbjQJmO8GF5Vgh
-         stp8MJ+mUwU8dOTlKQXDLZh19ZeFBCZkWg7RJ4LW0eUvM4su6SPdk94v0pfyk2oz8i
-         Bgv+XVtw1ELKpqg3AWLdQ9/vz8wQmLuA6knmpJH4G9SQWKS4hIMpKPrf2uU15Gyjqb
-         XJFp+W2iFwPZw==
-Date:   Tue, 2 Nov 2021 14:25:31 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Juergen Gross <jgross@suse.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Xen Devel <xen-devel@lists.xenproject.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: linux-next: manual merge of the xen-tip tree with Linus' tree
-Message-ID: <20211102142531.600cd8c9@canb.auug.org.au>
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id A0EA43F1AE
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 03:28:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1635823694;
+        bh=svkrf9ThmGXqx3loLNGudDhbzyCRrGw2gRzWF5i8jOE=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=SjBVwlupuL4Z3Dd9BkNHzmoLkzv6dsftm0vATlA1KHHrAAkZ9SD7g8w7iLUP2He4l
+         PkxQb8TcpoeQoRJCq7wLChn1ZC6EOhhgl4+7Ji5vuNB/JRDUeguCM/KkU2uyABm8pb
+         NJAuNEOGOBsyWKUDf7Zit2sTzQy0YKeCNHaJOWQPfDcGvhBpF/YoQVFXlV1BA/u4PR
+         6Ni6mOdshlmbfd1NpmoaNlL6At0YzKqv8CuITbQwp9dX+23Ae6qXsbYJUpzLTPOXEQ
+         gJJ7JtTOVkB7nUPCttq7ZKAusu18354OgsSvQPglDSB/Xsj5rnmhrKjIIHlmB0wlOo
+         SBJP4dXoBqlqg==
+Received: by mail-oo1-f69.google.com with SMTP id u11-20020a4a85cb000000b002b725ac13d8so9358084ooh.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 20:28:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=svkrf9ThmGXqx3loLNGudDhbzyCRrGw2gRzWF5i8jOE=;
+        b=Lhr+QzjhHQ+hphJMu7WuI1gsuRDlmHtYZ8DwpHKVqFDddJDg+Rkjh30UIyhwMQpxl2
+         6GSuqBju/mvUfKPOOfUjmcwwDSuv5S7Lw7+Fz6FciQBhMt95dnV2AWUyRG00aazSa8P/
+         XNxE4m3TK2926t1CR7DIy7c9mbmKs7uGEZHCHZfQnqSpZR8TyvQqNeEUTuZHB3xl2xO4
+         nRjDpziJE6w9BPWGXAnjeH1+jg8ZbeKKbUACmgw/H3+VH5KKrg2t9gam9IOFWGXLdo7X
+         4LigeQ2lEeuHviQvaMCp4RTUiY1+uGzkEK0pkfGqUqsHrZG/fHX/FzBqUwz7+N6/TV6x
+         MXSg==
+X-Gm-Message-State: AOAM532GHmn92wuTcDYNGfraBqVDISUnQHSJoBmOA3SDnhLElEuHU5Cx
+        GjO5spfsRxJ88pHHCs64KdqVi/i2onvjUkjELv6OZemCab+nLzCpXh8vryflNajDYxmnYjsKucA
+        GxX5doYJv/xAcJMnuOwbmO0mEocKWg8XPIM66MG82/onxYKUH+2lyfYRtxQ==
+X-Received: by 2002:aca:41d5:: with SMTP id o204mr2729104oia.41.1635823693333;
+        Mon, 01 Nov 2021 20:28:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJziLF2fKQbGozE05zq1iPKDXPYLKD4cK+KvuN0uo9RPXL2qhYcbKB2btA8w6xWHmTnAqnkEI7GX5LOYpirAq4I=
+X-Received: by 2002:aca:41d5:: with SMTP id o204mr2729083oia.41.1635823693070;
+ Mon, 01 Nov 2021 20:28:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/to2PmTmvm2+Zd5uiRp+Mb3Z";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20211026065112.1366205-1-kai.heng.feng@canonical.com>
+ <04ed8307-ab1f-59d6-4454-c759ce4a453b@intel.com> <CAAd53p69k-2PVw5RpJOAbe=oBh11U_UqzsyMjxHFbo7xqNBDsQ@mail.gmail.com>
+ <f6a4d53a-3ec8-b5cd-9b6c-b14c69d20248@intel.com>
+In-Reply-To: <f6a4d53a-3ec8-b5cd-9b6c-b14c69d20248@intel.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Tue, 2 Nov 2021 11:27:59 +0800
+Message-ID: <CAAd53p67dehgizx1h0ro40YRmKNsbv3Ve=2987kyMUKs7=LOpA@mail.gmail.com>
+Subject: Re: [PATCH v2] e1000e: Add a delay to let ME unconfigure s0ix when
+ DPG_EXIT_DONE is already flagged
+To:     Sasha Neftin <sasha.neftin@intel.com>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dima Ruinskiy <dima.ruinskiy@intel.com>,
+        "moderated list:INTEL ETHERNET DRIVERS" 
+        <intel-wired-lan@lists.osuosl.org>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Kraus, NechamaX" <nechamax.kraus@linux.intel.com>,
+        "Fuxbrumer, Devora" <devora.fuxbrumer@intel.com>,
+        "Avivi, Amir" <amir.avivi@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/to2PmTmvm2+Zd5uiRp+Mb3Z
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Oct 29, 2021 at 5:14 PM Sasha Neftin <sasha.neftin@intel.com> wrote:
+>
+> On 10/27/2021 01:50, Kai-Heng Feng wrote:
+> > On Tue, Oct 26, 2021 at 4:48 PM Sasha Neftin <sasha.neftin@intel.com> wrote:
+> >>
+> >> On 10/26/2021 09:51, Kai-Heng Feng wrote:
+> >>> On some ADL platforms, DPG_EXIT_DONE is always flagged so e1000e resume
+> >>> polling logic doesn't wait until ME really unconfigures s0ix.
+> >>>
+> >>> So check DPG_EXIT_DONE before issuing EXIT_DPG, and if it's already
+> >>> flagged, wait for 1 second to let ME unconfigure s0ix.
+> >>>
+> >>> Fixes: 3e55d231716e ("e1000e: Add handshake with the CSME to support S0ix")
+> >>> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=214821
+> >>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> >>> ---
+> >>> v2:
+> >>>    Add missing "Fixes:" tag
+> >>>
+> >>>    drivers/net/ethernet/intel/e1000e/netdev.c | 7 +++++++
+> >>>    1 file changed, 7 insertions(+)
+> >>>
+> >>> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+> >>> index 44e2dc8328a22..cd81ba00a6bc9 100644
+> >>> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
+> >>> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+> >>> @@ -6493,14 +6493,21 @@ static void e1000e_s0ix_exit_flow(struct e1000_adapter *adapter)
+> >>>        u32 mac_data;
+> >>>        u16 phy_data;
+> >>>        u32 i = 0;
+> >>> +     bool dpg_exit_done;
+> >>>
+> >>>        if (er32(FWSM) & E1000_ICH_FWSM_FW_VALID) {
+> >>> +             dpg_exit_done = er32(EXFWSM) & E1000_EXFWSM_DPG_EXIT_DONE;
+> >>>                /* Request ME unconfigure the device from S0ix */
+> >>>                mac_data = er32(H2ME);
+> >>>                mac_data &= ~E1000_H2ME_START_DPG;
+> >>>                mac_data |= E1000_H2ME_EXIT_DPG;
+> >>>                ew32(H2ME, mac_data);
+> >>>
+> >>> +             if (dpg_exit_done) {
+> >>> +                     e_warn("DPG_EXIT_DONE is already flagged. This is a firmware bug\n");
+> >>> +                     msleep(1000);
+> >>> +             }
+> >> Thanks for working on the enablement.
+> >> The delay approach is fragile. We need to work with CSME folks to
+> >> understand why _DPG_EXIT_DONE indication is wrong on some ADL platforms.
+> >> Could you provide CSME/BIOS version? dmidecode -t 0 and cat
+> >> /sys/class/mei/mei0/fw_ver
+> >
+> > $ sudo dmidecode -t 0
+> > # dmidecode 3.2
+> > Getting SMBIOS data from sysfs.
+> > SMBIOS 3.4 present.
+> > # SMBIOS implementations newer than version 3.2.0 are not
+> > # fully supported by this version of dmidecode.
+> >
+> > Handle 0x0001, DMI type 0, 26 bytes
+> > BIOS Information
+> >          Vendor: Dell Inc.
+> >          Version: 0.12.68
+> >          Release Date: 10/01/2021
+> >          ROM Size: 48 MB
+> >          Characteristics:
+> >                  PCI is supported
+> >                  PNP is supported
+> >                  BIOS is upgradeable
+> >                  BIOS shadowing is allowed
+> >                  Boot from CD is supported
+> >                  Selectable boot is supported
+> >                  EDD is supported
+> >                  Print screen service is supported (int 5h)
+> >                  8042 keyboard services are supported (int 9h)
+> >                  Serial services are supported (int 14h)
+> >                  Printer services are supported (int 17h)
+> >                  ACPI is supported
+> >                  USB legacy is supported
+> >                  BIOS boot specification is supported
+> >                  Function key-initiated network boot is supported
+> >                  Targeted content distribution is supported
+> >                  UEFI is supported
+> >          BIOS Revision: 0.12
+> >
+> > $ cat /sys/class/mei/mei0/fw_ver
+> > 0:16.0.15.1518
+> > 0:16.0.15.1518
+> > 0:16.0.15.1518
+> >
+> Thank you Kai-Heng. The _DPG_EXIT_DONE bit indication comes from the
+> EXFWSM register controlled by the CSME. We have only read access.  I
+> realized that this indication was set to 1 even before our request to
+> unconfigure the s0ix settings from the CSME. I am wondering. Does after
+> a ~ 1s delay (or less, or more) _DPG_EXIT_DONE indication eventually
+> change by CSME to 0? (is it consistently)
 
-Hi all,
+Never. It's consistently being 1.
 
-Today's linux-next merge of the xen-tip tree got a conflict in:
+Right now we are seeing the same issue on TGL, so I wonder if it's
+better to just revert the CSME series?
 
-  arch/x86/include/asm/xen/hypercall.h
+Kai-Heng
 
-between commits:
-
-  f4afb713e5c3 ("x86/xen: Make get_debugreg() noinstr")
-  7361fac0465b ("x86/xen: Make set_debugreg() noinstr")
-
-from Linus' tree and commit:
-
-  321d124f13fd ("xen: allow pv-only hypercalls only with CONFIG_XEN_PV")
-
-from the xen-tip tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/to2PmTmvm2+Zd5uiRp+Mb3Z
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGAr6sACgkQAVBC80lX
-0GxhEQf/aR2pdzgnAazQxMsNREPH1IeUYV3HVhejE2JQirQl3UfGQay1RxKEuKea
-q75ctvmRgD3+zh1MfW8Z4hsQTW3WOKc4QzasPr/xNgs1zucyzCnxF0Zjd2tj5M6C
-Jl8apkM5tKinLsAeSAZYLml614Jyh6L5e/4KImg2IEyu4dyZ4n5lfV3GrJcixe8L
-kvMCiTB+lWI4sDNxd5lfi/2a/2gTSZNvN8OjCT93MunhBDYq/5SYStJiRT0usDYt
-LbRow1YA2Zd3FWhBLRbFThmMRyVtON1FxJ6rm1wrS9GFVNgPEJkJfxDrP6k76J0v
-uWlQ31YChu/INl8pjJPpSNdb++TKqA==
-=zaTN
------END PGP SIGNATURE-----
-
---Sig_/to2PmTmvm2+Zd5uiRp+Mb3Z--
+> >>>                /* Poll up to 2.5 seconds for ME to unconfigure DPG.
+> >>>                 * If this takes more than 1 second, show a warning indicating a
+> >>>                 * firmware bug
+> >>>
+>
