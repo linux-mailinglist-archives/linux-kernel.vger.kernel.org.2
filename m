@@ -2,121 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DEC442E53
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 978CC442E55
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:39:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbhKBMlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 08:41:37 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:44841 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231239AbhKBMlb (ORCPT
+        id S231312AbhKBMlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 08:41:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26048 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229850AbhKBMlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 08:41:31 -0400
-Received: by mail-oi1-f179.google.com with SMTP id t38so2579099oiw.11;
-        Tue, 02 Nov 2021 05:38:56 -0700 (PDT)
+        Tue, 2 Nov 2021 08:41:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635856749;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jIkHBillbCKCZYFZuYQdXQ8luVuR63mT21wNxhTkVuM=;
+        b=BB++xVUynx8mhTUznoCeZvnNricmBVTo3YWK3RqGBFvaHCZKwymWZXbRTE8pHUAqPgbk+K
+        OvJ2pw4+tqJsCJRHamxK+7EGE6UC9oMnGvaTNHyJ2AIHRBYC2ukXELmwZXAxCnIMbrgEGL
+        2fBHMhMpwkNWf2c0eV9b2+59jlj2ENc=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-271-M0G65OAON1eJ7BjEpy4_Xw-1; Tue, 02 Nov 2021 08:39:08 -0400
+X-MC-Unique: M0G65OAON1eJ7BjEpy4_Xw-1
+Received: by mail-wm1-f69.google.com with SMTP id z137-20020a1c7e8f000000b0030cd1800d86so6905230wmc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 05:39:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=vX7tWdjvUh/n8P+ZM1cqLkwBY2iECa34Sj2X0s5E99w=;
-        b=0dfo5DQBTz1IhwmM1H1IyTFB+Sjcw7bGYK4L9nNz00raH2o8SEA+DqNoFuusnitTGZ
-         yxt2MSPSGBqHY5IGey+uB998TEETOmeRvPDTmwPsAGOQiKYzC0huTmnMBKZF2+c6IalT
-         ZEIqs8gf+PN430uXgTjhD3gxPK+YFX4kTE/0Xpa6kk8P/EveyWRkrt39V1BB8ZZzK4lr
-         ol5tHVq/+6T+OJOxwyGNwu/8OLF62NUuYeq3JVbDko4Xj9WAmEdNinYUNoNxkrQHK10U
-         PGs+xcem9U6MYj4Dv3VH2FpVIu3nIyNGsSz3MnrYE5fZtSXTjpjDWhIw34XA5xlbSZSe
-         Fzug==
-X-Gm-Message-State: AOAM533/E8YByf6LSfykvnocqYkZo4KcMETikd9oS1NGdBH26R5zjzyI
-        8I/A4jQiaKz+Lw7cOb1TiQ==
-X-Google-Smtp-Source: ABdhPJzoVPMiX3nMunzERDDXuZ7mJ4SspBwHfVenvCVSNdkdkQw52/a9hWdrWooA7zpr/PHz0br3Ag==
-X-Received: by 2002:a54:4391:: with SMTP id u17mr4814704oiv.15.1635856735813;
-        Tue, 02 Nov 2021 05:38:55 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id 126sm4826933oih.36.2021.11.02.05.38.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 05:38:55 -0700 (PDT)
-Received: (nullmailer pid 2636027 invoked by uid 1000);
-        Tue, 02 Nov 2021 12:38:52 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Taniya Das <tdas@codeaurora.org>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-soc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        robh+dt@kernel.org
-In-Reply-To: <1635847013-3220-4-git-send-email-tdas@codeaurora.org>
-References: <1635847013-3220-1-git-send-email-tdas@codeaurora.org> <1635847013-3220-4-git-send-email-tdas@codeaurora.org>
-Subject: Re: [PATCH v1 3/4] dt-bindings: clock: Add YAML schemas for LPASS clocks on SC7280
-Date:   Tue, 02 Nov 2021 07:38:52 -0500
-Message-Id: <1635856732.621453.2636026.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=jIkHBillbCKCZYFZuYQdXQ8luVuR63mT21wNxhTkVuM=;
+        b=IpiizpoWuBCLZeUUWcylUniocJp1DB76W3FNNCpsNow3VigUqjctB4xOQzsIP4UNas
+         ohTQfbKBfq0mRabIksUC5oe3tyySFCrEDPa3y3TrAUCY6KIEtKNyWNCdDKXRFAFRQI/U
+         q/lPn1NEVg/QTqzYpN0rFFLIPiT9cY7tDeOJ5AKazeOe9+vVv6xIwhKwJqhzQ625BgYb
+         gq7FoSrgzD5YB6aSQ6WIHNzDAX2MDCz6R6fUOgmUUBOHUWvA2u7NpcMfF3cXNaBfcpQy
+         hQQvVcXodUE6yqmrovJ2ZwvRdI4MzfL6zTQ7LGE2P0OLOZkyVEGT8Ui7kyD7fWjDS6HY
+         mbMw==
+X-Gm-Message-State: AOAM530VgI+nu4oAkjFX3j/DxFm8Ps016ylScGJ1utRhOHAaM7y9C4d9
+        xREjEZ4UtILfPw9u0fFhNEomxEcc1fux/uguZefDvQGGFg5WM/Yez+ck7dzK22d9JQE+LbqDviH
+        lG+5lWZ/xl3YLwLkBJHOCB+gx
+X-Received: by 2002:a5d:648b:: with SMTP id o11mr47850882wri.56.1635856747722;
+        Tue, 02 Nov 2021 05:39:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyPAtManKqas0sqXcvZrMMHN6XCbXPcL93RLbXpskjnJsSOhAZs99TXw5dZs5B4HcxSez/rGg==
+X-Received: by 2002:a5d:648b:: with SMTP id o11mr47850848wri.56.1635856747513;
+        Tue, 02 Nov 2021 05:39:07 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6810.dip0.t-ipconnect.de. [91.12.104.16])
+        by smtp.gmail.com with ESMTPSA id h14sm2656442wmq.34.2021.11.02.05.39.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 05:39:07 -0700 (PDT)
+Message-ID: <e7aed7c0-b7b1-4a94-f323-0bcde2f879d2@redhat.com>
+Date:   Tue, 2 Nov 2021 13:39:06 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] mm: fix panic in __alloc_pages
+Content-Language: en-US
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Alexey Makhalov <amakhalov@vmware.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Oscar Salvador <OSalvador@suse.com>
+References: <20211101201312.11589-1-amakhalov@vmware.com>
+ <YYDtDkGNylpAgPIS@dhcp22.suse.cz>
+ <7136c959-63ff-b866-b8e4-f311e0454492@redhat.com>
+ <C69EF2FE-DFF6-492E-AD40-97A53739C3EC@vmware.com>
+ <YYD/FkpAk5IvmOux@dhcp22.suse.cz>
+ <b2e4a611-45a6-732a-a6d3-6042afd2af6e@redhat.com>
+ <E34422F0-A44A-48FD-AE3B-816744359169@vmware.com>
+ <b3908fce-6b07-8390-b691-56dd2f85c05f@redhat.com>
+ <YYEkqH8l0ASWv/JT@dhcp22.suse.cz>
+ <42abfba6-b27e-ca8b-8cdf-883a9398b506@redhat.com>
+ <YYEun6s/mF9bE+rQ@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <YYEun6s/mF9bE+rQ@dhcp22.suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 02 Nov 2021 15:26:52 +0530, Taniya Das wrote:
-> The LPASS(Low Power Audio Subsystem) clock provider have a bunch of generic
-> properties that are needed in a device tree. Also add clock ids for
-> LPASS core clocks and audio clock IDs for LPASS client to request for
-> the clocks.
+>> Yes, but a zonelist cannot be correct for an offline node, where we might
+>> not even have an allocated pgdat yet. No pgdat, no zonelist. So as soon as
+>> we allocate the pgdat and set the node online (->hotadd_new_pgdat()), the zone lists have to be correct. And I can spot an build_all_zonelists() in hotadd_new_pgdat().
 > 
-> Signed-off-by: Taniya Das <tdas@codeaurora.org>
-> ---
->  .../bindings/clock/qcom,sc7280-lpasscorecc.yaml    | 137 +++++++++++++++++++++
->  .../dt-bindings/clock/qcom,lpassaudiocc-sc7280.h   |  43 +++++++
->  .../dt-bindings/clock/qcom,lpasscorecc-sc7280.h    |  26 ++++
->  3 files changed, 206 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.yaml
->  create mode 100644 include/dt-bindings/clock/qcom,lpassaudiocc-sc7280.h
->  create mode 100644 include/dt-bindings/clock/qcom,lpasscorecc-sc7280.h
+> Yes, that is what I had in mind. We are talking about two things here.
+> Memoryless nodes and offline nodes. The later sounds like a bug to me.
+
+Agreed. memoryless nodes should just have proper zonelists -- which
+seems to be the case.
+
+>> Maybe __alloc_pages_bulk() and alloc_pages_node() should bail out directly
+>> (VM_BUG()) in case we're providing an offline node with eventually no/stale pgdat as
+>> preferred nid.
 > 
+> Historically, those allocation interfaces were not trying to be robust
+> against wrong inputs because that adds cpu cycles for everybody for
+> "what if buggy" code. This has worked (surprisingly) well. Memory less
+> nodes have brought in some confusion but this is still something that we
+> can address on a higher level. Nobody give arbitrary nodes as an input.
+> cpu_to_node might be tricky because it can point to a memory less node
+> which along with __GFP_THISNODE is very likely not something anybody
+> wants. Hence cpu_to_mem should be used for allocations. I hate we have
+> two very similar APIs...
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+To be precise, I'm wondering if we should do:
 
-yamllint warnings/errors:
+diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+index 55b2ec1f965a..8c49b88336ee 100644
+--- a/include/linux/gfp.h
++++ b/include/linux/gfp.h
+@@ -565,7 +565,7 @@ static inline struct page *
+ __alloc_pages_node(int nid, gfp_t gfp_mask, unsigned int order)
+ {
+        VM_BUG_ON(nid < 0 || nid >= MAX_NUMNODES);
+-       VM_WARN_ON((gfp_mask & __GFP_THISNODE) && !node_online(nid));
++       VM_WARN_ON(!node_online(nid));
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.example.dt.yaml: clock-controller@3c00000: clocks: [[4294967295, 169]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.example.dt.yaml: clock-controller@3c00000: clock-names: ['iface'] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.example.dt.yaml: clock-controller@3c00000: clocks: [[4294967295, 169]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.example.dt.yaml: clock-controller@3900000: clocks: [[4294967295, 169], [4294967295, 0]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.example.dt.yaml: clock-controller@3900000: clock-names: ['iface', 'bi_tcxo'] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.example.dt.yaml: clock-controller@3900000: clocks: [[4294967295, 169], [4294967295, 0]] is too long
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.example.dt.yaml: clock-controller@3380000: clocks: [[4294967295, 3], [4294967295, 0]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.example.dt.yaml: clock-controller@3380000: clock-names: ['iface', 'bi_tcxo'] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.example.dt.yaml: clock-controller@3380000: clocks: [[4294967295, 3], [4294967295, 0]] is too long
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.example.dt.yaml: clock-controller@3300000: clocks: [[4294967295, 0], [4294967295, 6]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.example.dt.yaml: clock-controller@3300000: clock-names:0: 'iface' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.example.dt.yaml: clock-controller@3300000: clock-names:1: 'bi_tcxo' was expected
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.example.dt.yaml: clock-controller@3300000: clock-names: ['bi_tcxo', 'lpass_aon_cc_main_rcg'] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.example.dt.yaml: clock-controller@3300000: clocks: [[4294967295, 0], [4294967295, 6]] is too long
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscorecc.yaml
+        return __alloc_pages(gfp_mask, order, nid, NULL);
+ }
 
-doc reference errors (make refcheckdocs):
+(Or maybe VM_BUG_ON)
 
-See https://patchwork.ozlabs.org/patch/1549550
+Because it cannot possibly work and we'll dereference NULL later.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+> 
+> But something seems wrong in this case. cpu_to_node shouldn't return
+> offline nodes. That is just a land mine. It is not clear to me how the
+> cpu has been brought up so that the numa node allocation was left
+> behind. As pointed in other email add_cpu resp. cpu_up is not it.
+> Is it possible that the cpu bring up was only half way?
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+I tried to follow the code (what sets a CPU present, what sets a CPU
+online, when do we update cpu_to_node() mapping) and IMHO it's all a big
+mess. Maybe it's clearer to people familiar with that code, but CPU
+hotplug in general seems to be a confusing piece of (arch-specific) code.
 
-pip3 install dtschema --upgrade
+Also, I have no clue if cpu_to_node() mapping will get invalidated after
+unplugging that CPU, or if the mapping will simply stay around for all
+eternity ...
 
-Please check and re-submit.
+-- 
+Thanks,
+
+David / dhildenb
 
