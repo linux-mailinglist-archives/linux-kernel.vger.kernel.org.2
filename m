@@ -2,194 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C79064425FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 306AF442604
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:26:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbhKBDXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 23:23:55 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:54600 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229526AbhKBDXv (ORCPT
+        id S231461AbhKBD2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 23:28:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231613AbhKBD2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 23:23:51 -0400
-X-UUID: 98af482b8778443ca1aa8da941edd2f1-20211102
-X-UUID: 98af482b8778443ca1aa8da941edd2f1-20211102
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <walter-zh.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 571906133; Tue, 02 Nov 2021 11:21:16 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3;
- Tue, 2 Nov 2021 11:21:16 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkmbs10n1.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
- Transport; Tue, 2 Nov 2021 11:21:16 +0800
-Message-ID: <c9f74d817aa1ae1cceaee9ec226d39bbdf2c5c48.camel@mediatek.com>
-Subject: Re: [PATCH] dma-direct: fix DMA_ATTR_NO_KERNEL_MAPPING
-From:   Walter Wu <walter-zh.wu@mediatek.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-CC:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>
-Date:   Tue, 2 Nov 2021 11:21:16 +0800
-In-Reply-To: <CAMj1kXFrUrThJFDJ0Q9qjDemcEovQVMtO20KbdnLccp7VfyVwA@mail.gmail.com>
-References: <20211101031558.7184-1-walter-zh.wu@mediatek.com>
-         <CAMj1kXGqOzHM+J30TXR3-uZPkjHBCXB4CMkzZjHbbmptyU5W9w@mail.gmail.com>
-         <76840b40fcf26a65467931a73f236982ad39989c.camel@mediatek.com>
-         <CAMj1kXFrUrThJFDJ0Q9qjDemcEovQVMtO20KbdnLccp7VfyVwA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Mon, 1 Nov 2021 23:28:09 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C62C061714;
+        Mon,  1 Nov 2021 20:25:34 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HjwJr4qd9z4xbG;
+        Tue,  2 Nov 2021 14:25:32 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635823533;
+        bh=kQQNzCvwzxdUuDSfmbavyv5NvfpdyD0xurk8gKK4fQU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=HY3DLknuf0ueGGBFXZ1usE/kI2EfQZCxPVOngoS9D+G+sTQn7sns05nhYVPmBt1Qh
+         Ek6rUQoULmCgcsQbmtftl0wE+b6cCu6UJ03nrHz06pG98Sc2il+y+49vPfApzihxWQ
+         jSv3zoMWuFbHCxT8cdAnLKEUVF3zIMJS10RZw6qKJ3huhWZ5mB4VIbjQJmO8GF5Vgh
+         stp8MJ+mUwU8dOTlKQXDLZh19ZeFBCZkWg7RJ4LW0eUvM4su6SPdk94v0pfyk2oz8i
+         Bgv+XVtw1ELKpqg3AWLdQ9/vz8wQmLuA6knmpJH4G9SQWKS4hIMpKPrf2uU15Gyjqb
+         XJFp+W2iFwPZw==
+Date:   Tue, 2 Nov 2021 14:25:31 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Juergen Gross <jgross@suse.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Xen Devel <xen-devel@lists.xenproject.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: linux-next: manual merge of the xen-tip tree with Linus' tree
+Message-ID: <20211102142531.600cd8c9@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+Content-Type: multipart/signed; boundary="Sig_/to2PmTmvm2+Zd5uiRp+Mb3Z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-11-01 at 15:17 +0100, Ard Biesheuvel wrote:
-> On Mon, 1 Nov 2021 at 13:21, Walter Wu <walter-zh.wu@mediatek.com>
-> wrote:
-> > 
-> > Hi Ard,
-> > 
-> > On Mon, 2021-11-01 at 09:34 +0100, Ard Biesheuvel wrote:
-> > > On Mon, 1 Nov 2021 at 04:17, Walter Wu <walter-zh.wu@mediatek.com
-> > > >
-> > > wrote:
-> > > > 
-> > > > DMA_ATTR_NO_KERNEL_MAPPING is to avoid creating a kernel
-> > > > mapping
-> > > > for the allocated buffer, but current implementation is that
-> > > > PTE of allocated buffer in kernel page table is valid. So we
-> > > > should set invalid for PTE of allocate buffer so that there are
-> > > > no kernel mapping for the allocated buffer.
-> > > > 
-> > > > In some cases, we don't hope the allocated buffer to be read
-> > > > by cpu or speculative execution, so we use
-> > > > DMA_ATTR_NO_KERNEL_MAPPING
-> > > > to get no kernel mapping in order to achieve this goal.
-> > > > 
-> > > > Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
-> > > > Cc: Christoph Hellwig <hch@lst.de>
-> > > > Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> > > > Cc: Robin Murphy <robin.murphy@arm.com>
-> > > > Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> > > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > > ---
-> > > >  kernel/dma/direct.c | 8 ++++++++
-> > > >  1 file changed, 8 insertions(+)
-> > > > 
-> > > > diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-> > > > index 4c6c5e0635e3..aa10b4c5d762 100644
-> > > > --- a/kernel/dma/direct.c
-> > > > +++ b/kernel/dma/direct.c
-> > > > @@ -13,6 +13,7 @@
-> > > >  #include <linux/vmalloc.h>
-> > > >  #include <linux/set_memory.h>
-> > > >  #include <linux/slab.h>
-> > > > +#include <asm/cacheflush.h>
-> > > >  #include "direct.h"
-> > > > 
-> > > >  /*
-> > > > @@ -169,6 +170,9 @@ void *dma_direct_alloc(struct device *dev,
-> > > > size_t size,
-> > > >                 if (!PageHighMem(page))
-> > > >                         arch_dma_prep_coherent(page, size);
-> > > >                 *dma_handle = phys_to_dma_direct(dev,
-> > > > page_to_phys(page));
-> > > > +               /* remove kernel mapping for pages */
-> > > > +               set_memory_valid((unsigned
-> > > > long)phys_to_virt(dma_to_phys(dev, *dma_handle)),
-> > > > +                               size >> PAGE_SHIFT, 0);
-> > > 
-> > > This only works if the memory is mapped at page granularity in
-> > > the
-> > > linear region, and you cannot rely on that. Many architectures
-> > > prefer
-> > > block mappings for the linear region, and arm64 will only use
-> > > page
-> > > mappings if rodata=full is set (which is set by default but can
-> > > be
-> > > overridden on the kernel command line)
-> > > 
-> > 
-> > We mainly want to solve arm64 arch.
-> 
-> Solve what?
+--Sig_/to2PmTmvm2+Zd5uiRp+Mb3Z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Our platform is arch64. We need a dynamic allocated buffer from CMA is
-not to read by CPU peculative execution, so we need to remove its
-kernel mapping.
+Hi all,
 
-> > RODATA_FULL_DEFAULT_ENABLED should
-> > be the arm64 config. If we use CONFIG_RODATA_FULL_DEFAULT_ENABLED
-> > to
-> > check whether it call set_memory_valid(). It should avoid other
-> > architectures. Do you think this method is work?
-> > 
-> 
-> No. Try it with rodata=off (or rodata=on for that matter) and see
-> what happens.
-> 
+Today's linux-next merge of the xen-tip tree got a conflict in:
 
-I try with rodata=[off/on] on qemu, it looks like boot pass. see below.
+  arch/x86/include/asm/xen/hypercall.h
 
-[    0.000000] Kernel command line: root=/dev/ram0 rw rootfstype=ext4
-rodata=off console=ttyAMA0 rdinit=qemu/ramdisk.img earlyprintk=serial
+between commits:
 
+  f4afb713e5c3 ("x86/xen: Make get_debugreg() noinstr")
+  7361fac0465b ("x86/xen: Make set_debugreg() noinstr")
 
-I also try with rodata=off on our platform and do stress test, it looks
-like pass.
+from Linus' tree and commit:
 
+  321d124f13fd ("xen: allow pv-only hypercalls only with CONFIG_XEN_PV")
 
-Thanks.
-Walter
+from the xen-tip tree.
 
-> > Thanks for your explaination and suggestion.
-> > 
-> 
-> YW
-> 
-> > 
-> > > 
-> > > >                 /* return the page pointer as the opaque cookie
-> > > > */
-> > > >                 return page;
-> > > >         }
-> > > > @@ -278,6 +282,10 @@ void dma_direct_free(struct device *dev,
-> > > > size_t size,
-> > > > 
-> > > >         if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
-> > > >             !force_dma_unencrypted(dev) &&
-> > > > !is_swiotlb_for_alloc(dev)) {
-> > > > +               size = PAGE_ALIGN(size);
-> > > > +               /* create kernel mapping for pages */
-> > > > +               set_memory_valid((unsigned
-> > > > long)phys_to_virt(dma_to_phys(dev, dma_addr)),
-> > > > +                               size >> PAGE_SHIFT, 1);
-> > > >                 /* cpu_addr is a struct page cookie, not a
-> > > > kernel
-> > > > address */
-> > > >                 dma_free_contiguous(dev, cpu_addr, size);
-> > > >                 return;
-> > > > --
-> > > > 2.18.0
-> > > > 
-> > > > 
-> > > > _______________________________________________
-> > > > linux-arm-kernel mailing list
-> > > > linux-arm-kernel@lists.infradead.org
-> > > > 
-> > 
-> > 
-https://urldefense.com/v3/__http://lists.infradead.org/mailman/listinfo/linux-arm-kernel__;!!CTRNKA9wMg0ARbw!16dLCjnvtRkaRLeCO9AQ7Fund5XL0FicZmeVaU3-WkFymr-0lbITfzwrvoJpiHlqnqIu-g$
-> > > > 
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/to2PmTmvm2+Zd5uiRp+Mb3Z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGAr6sACgkQAVBC80lX
+0GxhEQf/aR2pdzgnAazQxMsNREPH1IeUYV3HVhejE2JQirQl3UfGQay1RxKEuKea
+q75ctvmRgD3+zh1MfW8Z4hsQTW3WOKc4QzasPr/xNgs1zucyzCnxF0Zjd2tj5M6C
+Jl8apkM5tKinLsAeSAZYLml614Jyh6L5e/4KImg2IEyu4dyZ4n5lfV3GrJcixe8L
+kvMCiTB+lWI4sDNxd5lfi/2a/2gTSZNvN8OjCT93MunhBDYq/5SYStJiRT0usDYt
+LbRow1YA2Zd3FWhBLRbFThmMRyVtON1FxJ6rm1wrS9GFVNgPEJkJfxDrP6k76J0v
+uWlQ31YChu/INl8pjJPpSNdb++TKqA==
+=zaTN
+-----END PGP SIGNATURE-----
+
+--Sig_/to2PmTmvm2+Zd5uiRp+Mb3Z--
