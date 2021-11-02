@@ -2,192 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D202C4428BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E25424428C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhKBHn1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Nov 2021 03:43:27 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:53142 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhKBHnX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:43:23 -0400
-Received: from smtpclient.apple (p4fefc15c.dip0.t-ipconnect.de [79.239.193.92])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 971E6CECE9;
-        Tue,  2 Nov 2021 08:40:47 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
-Subject: Re: [PATCH v1 3/3] Bluetooth: hci_qca: Add support for QTI bluetooth
- MAPLE
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <YYDqW6ewycWP1Y7a@kroah.com>
-Date:   Tue, 2 Nov 2021 08:40:47 +0100
-Cc:     Zijun Hu <zijuhu@codeaurora.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
-        c-hbandi@codeaurora.org, Hemantg <hemantg@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>, rjliao@codeaurora.org,
-        Zijun Hu <quic_zijuhu@quicinc.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <E6F26BE9-1C2E-4E38-B5A4-A7F06301CC7A@holtmann.org>
-References: <1635837177-1341-1-git-send-email-zijuhu@codeaurora.org>
- <YYDqW6ewycWP1Y7a@kroah.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-X-Mailer: Apple Mail (2.3693.20.0.1.32)
+        id S230141AbhKBHqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:46:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229526AbhKBHqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 03:46:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82BB4604AC;
+        Tue,  2 Nov 2021 07:43:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635839015;
+        bh=XMiM7tUILn/CdFEk3cemcDSZQDQhzya53qvDkGv3u6o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JYclfm0lVXHBLetU46MAWvUcbPBBl7lXgkoGwISBPdHyRJQg8pVNvb7WyJJB/nzvl
+         TNwYT1hYi02L0fdIBX0YbQo7Ok0Xz83g5XLIMf79FYMAjCthEHTww2oJHltJSaPS0k
+         W/BWs2/rjjYUnQ7c5rhN0Ai9RwYdOaeTNkiO7b78uDuIVOcylT16dwcuL2Z5U5+Klp
+         /iMGXXZFq0RrQb5oaQ3ygFoeacvzK17tlk9x2P27PCrMTXKzTLoorIj0RShOvmCYtK
+         Xe3bsTBsDG6tsvDDhEPeQ2SEInQ3/NsDydI9IX8362TqWRA4jlkrY7oVvMRJJjTkWA
+         tdDRkhXAeRf6w==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mhoSC-004WRy-LT; Tue, 02 Nov 2021 07:43:32 +0000
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kaixu Xia <kaixuxia@tencent.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: [PATCH] media: atomisp: align sizes returned by g_fmt
+Date:   Tue,  2 Nov 2021 07:43:31 +0000
+Message-Id: <5682e37ff93ec19c0fbc5dd6614d6f57281ea663.1635839008.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Repeat the same round logic used inside s_fmt here, for the sake
+of sanity.
 
->> Add support for MAPLE integrated within SOC, it is mounted on
->> a virtual tty port and powered on/off via relevant IOCTL, neither
->> IBS nor RAMPATCH downloading is not required.
->> 
->> Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
->> ---
->> drivers/bluetooth/btqca.c   | 13 ++++++++++++-
->> drivers/bluetooth/btqca.h   | 13 +++++++++++++
->> drivers/bluetooth/hci_qca.c | 47 ++++++++++++++++++++++++++++++++++++++++++++-
->> 3 files changed, 71 insertions(+), 2 deletions(-)
->> 
->> diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
->> index be04d74037d2..b83d2ecefe5d 100644
->> --- a/drivers/bluetooth/btqca.c
->> +++ b/drivers/bluetooth/btqca.c
->> @@ -255,6 +255,8 @@ static void qca_tlv_check_data(struct hci_dev *hdev,
->> 		BT_DBG("TLV Type\t\t : 0x%x", type_len & 0x000000ff);
->> 		BT_DBG("Length\t\t : %d bytes", length);
->> 
->> +		if (qca_is_maple(soc_type))
->> +			break;
->> 		idx = 0;
->> 		data = tlv->data;
->> 		while (idx < length) {
->> @@ -552,6 +554,9 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
->> 	rom_ver = ((soc_ver & 0x00000f00) >> 0x04) | (soc_ver & 0x0000000f);
->> 
->> 	/* Download rampatch file */
->> +	if (qca_is_maple(soc_type))
->> +		goto download_nvm;
->> +
->> 	config.type = TLV_TYPE_PATCH;
->> 	if (qca_is_wcn399x(soc_type)) {
->> 		snprintf(config.fwname, sizeof(config.fwname),
->> @@ -580,6 +585,7 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
->> 	/* Give the controller some time to get ready to receive the NVM */
->> 	msleep(10);
->> 
->> +download_nvm:
->> 	/* Download NVM configuration */
->> 	config.type = TLV_TYPE_NVM;
->> 	if (firmware_name)
->> @@ -597,6 +603,9 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
->> 	else if (soc_type == QCA_QCA6390)
->> 		snprintf(config.fwname, sizeof(config.fwname),
->> 			 "qca/htnv%02x.bin", rom_ver);
->> +	else if (qca_is_maple(soc_type))
->> +		snprintf(config.fwname, sizeof(config.fwname),
->> +			 "qca/mpnv%02x.bin", rom_ver);
->> 	else if (soc_type == QCA_WCN6750)
->> 		snprintf(config.fwname, sizeof(config.fwname),
->> 			 "qca/msnv%02x.bin", rom_ver);
->> @@ -609,6 +618,8 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
->> 		bt_dev_err(hdev, "QCA Failed to download NVM (%d)", err);
->> 		return err;
->> 	}
->> +	if (qca_is_maple(soc_type))
->> +		msleep(MAPLE_NVM_READY_DELAY_MS);
->> 
->> 	if (soc_type >= QCA_WCN3991) {
->> 		err = qca_disable_soc_logging(hdev);
->> @@ -637,7 +648,7 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
->> 		return err;
->> 	}
->> 
->> -	if (soc_type == QCA_WCN3991 || soc_type == QCA_WCN6750) {
->> +	if (soc_type == QCA_WCN3991 || soc_type == QCA_WCN6750 || qca_is_maple(soc_type)) {
->> 		/* get fw build info */
->> 		err = qca_read_fw_build_info(hdev);
->> 		if (err < 0)
->> diff --git a/drivers/bluetooth/btqca.h b/drivers/bluetooth/btqca.h
->> index 30afa7703afd..0a5a7d1daa71 100644
->> --- a/drivers/bluetooth/btqca.h
->> +++ b/drivers/bluetooth/btqca.h
->> @@ -46,6 +46,8 @@
->> 
->> #define QCA_FW_BUILD_VER_LEN		255
->> 
->> +#define MAPLE_NVM_READY_DELAY_MS        1500
->> +#define MAPLE_POWER_CONTROL_DELAY_MS    50
->> 
->> enum qca_baudrate {
->> 	QCA_BAUDRATE_115200 	= 0,
->> @@ -145,6 +147,7 @@ enum qca_btsoc_type {
->> 	QCA_WCN3991,
->> 	QCA_QCA6390,
->> 	QCA_WCN6750,
->> +	QCA_MAPLE,
->> };
->> 
->> #if IS_ENABLED(CONFIG_BT_QCA)
->> @@ -167,6 +170,11 @@ static inline bool qca_is_wcn6750(enum qca_btsoc_type soc_type)
->> 	return soc_type == QCA_WCN6750;
->> }
->> 
->> +static inline bool qca_is_maple(enum qca_btsoc_type soc_type)
->> +{
->> +	return soc_type == QCA_MAPLE;
->> +}
->> +
->> #else
->> 
->> static inline int qca_set_bdaddr_rome(struct hci_dev *hdev, const bdaddr_t *bdaddr)
->> @@ -204,6 +212,11 @@ static inline bool qca_is_wcn6750(enum qca_btsoc_type soc_type)
->> 	return false;
->> }
->> 
->> +static inline bool qca_is_maple(enum qca_btsoc_type soc_type)
->> +{
->> +	return false;
->> +}
->> +
->> static inline int qca_send_pre_shutdown_cmd(struct hci_dev *hdev)
->> {
->> 	return -EOPNOTSUPP;
->> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
->> index dd768a8ed7cb..f1d9670719c4 100644
->> --- a/drivers/bluetooth/hci_qca.c
->> +++ b/drivers/bluetooth/hci_qca.c
->> @@ -70,6 +70,10 @@
->> #define QCA_CRASHBYTE_PACKET_LEN	1096
->> #define QCA_MEMDUMP_BYTE		0xFB
->> 
->> +#ifndef IOCTL_IPC_BOOT
->> +#define IOCTL_IPC_BOOT                  0xBE
->> +#endif
-> 
-> You send this command, but never use it.  Where is the driver code that
-> uses this command?
-> 
-> And why not tabs?
-> 
-> And why is this patch series not properly threaded so tools can pick it
-> up and find them?
-> 
-> And why the odd named ioctl that is different from other ones in this
-> file?
-> 
-> And why not just use normal power management hooks for doing things like
-> turning on and off the hardware like all other drivers?
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/staging/media/atomisp/pci/atomisp_ioctl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I am not merging this. We are not starting an IPC via an external ioctl.
-
-Regards
-
-Marcel
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
+index 936516daec7d..8df052f6190d 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_ioctl.c
+@@ -892,8 +892,8 @@ static int atomisp_g_fmt_cap(struct file *file, void *fh,
+ 	}
+ 
+ 	depth = atomisp_get_pixel_depth(f->fmt.pix.pixelformat);
+-	f->fmt.pix.bytesperline = (f->fmt.pix.width * depth) >> 3;
+-	f->fmt.pix.sizeimage = f->fmt.pix.height * f->fmt.pix.bytesperline;
++	f->fmt.pix.bytesperline = DIV_ROUND_UP(f->fmt.pix.width * depth, 8);
++	f->fmt.pix.sizeimage = PAGE_ALIGN(f->fmt.pix.height * f->fmt.pix.bytesperline);
+ 
+ 	/*
+ 	 * FIXME: do we need to setup this differently, depending on the
+-- 
+2.31.1
 
