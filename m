@@ -2,95 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7F3443488
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:26:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3105A443489
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233643AbhKBR2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 13:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54386 "EHLO
+        id S233739AbhKBR3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 13:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbhKBR2p (ORCPT
+        with ESMTP id S230457AbhKBR3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 13:28:45 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E94FC061714;
-        Tue,  2 Nov 2021 10:26:09 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id j21so107405edt.11;
-        Tue, 02 Nov 2021 10:26:09 -0700 (PDT)
+        Tue, 2 Nov 2021 13:29:06 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E9DC061203
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 10:26:31 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id s136so56444pgs.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 10:26:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1OdaxtB4LssE4g+n1VNEzexPIrO9OAMoPZzNOdCXvKY=;
-        b=D1hjG4k2rBHwrOqHw0wA0eXdXQDI2BQN6griH4YjxUHpAPZa4lOBz1Z8h8MV6iAF91
-         QIt0/fjNJVY4YJs/xgIzw9Ra/yCn9aB9fkEaDmTeR73Xs7YGi7v5KF0veLVLoIva203S
-         EYxZ+/yQXnrko3WCHSbQodZaLqvn4DibqUvrBrydUQYvOIWXz1SZEvtUBu9tFOauIRsr
-         0IeOe43PsOOz7F8z65/f+nsvqYDx8T5BZ4a9SQGlFvmpjxbElqC+QVVCh0y2SoEMmY/H
-         vOpLLVrqnQdodcC/nmDCMluDiLBqrvtOwPqdlyjs+ciQjTtXiGL1lx5SChibTEp1hzq/
-         V1ZQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=myOqWBgPG0dYfqkI8IYrHgAqLHnpCmExkocszUv5gww=;
+        b=TKwPsswmiw8iIlN1erYAlJRZrSd5BMqlzwhXBspryv7/sxW7ziYzUFwoZX6v4eQ/Fd
+         PdZbQv7+JzzhecFEW5a2g9Evt9CAEYO++aysSRwuoeHh/z03VJxQzNSwYEbWAlMuPj+h
+         HRvYBwb9ss0Z7OgrkxA2LuKPm+MCxDPu7MB1I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1OdaxtB4LssE4g+n1VNEzexPIrO9OAMoPZzNOdCXvKY=;
-        b=riRcU+lmji59DzJe9BxrlUxfoHE42QPsXEdE5UJf1NY+mB14wSknpUfmdfqUwQ8ZCT
-         PJUwoYjwwet+sy8Pf7cqOVfzBRfoTHNw0pyNer6qTCdSfh0PFqBRjMYAOVDsrpHVOZfE
-         3y+2AXXwke/5H2dTWBYKw8eaxSkobyjJJCZDNGjtMD0CQyIYGd7W690IKGwb9EirhdRP
-         OZEDseHqvdUIDssxfyIKLbyiMu2m3ZuBl4hPtdiRCfFlE6LfU8qjRmy2e7lDobYT6lQj
-         XRRxrliulGzJVeBdKvQibZacrXM1aDaerH5CwO3Iag2smPlfWzSUdo/LCRWOQtXoh1U+
-         ye3A==
-X-Gm-Message-State: AOAM5314S4P1wR3DPCnArMCZ/HllBgjud1yjqPelFFww8VvjgtsNXxg0
-        sTYYrwISTemgQSMm5MmV3UsQkjDpxTw=
-X-Google-Smtp-Source: ABdhPJxBNZe6+SXory3SW2EaJ0Q55CqSM6F40MCnVFQf5Lm6LwbjSvgWVKf8lR5vxNCMHV6MjEMaJA==
-X-Received: by 2002:aa7:cc96:: with SMTP id p22mr52797018edt.91.1635873967737;
-        Tue, 02 Nov 2021 10:26:07 -0700 (PDT)
-Received: from md2k7s8c.fritz.box ([2a02:810d:9040:4c1f:e0b6:d0e7:64d2:f3a0])
-        by smtp.gmail.com with ESMTPSA id ho17sm2954008ejc.111.2021.11.02.10.26.06
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=myOqWBgPG0dYfqkI8IYrHgAqLHnpCmExkocszUv5gww=;
+        b=j5Q0StESknw45Ig2piXiOJu9PvVKQO67JsyuIAL+6PT3bm8vMx6T8FfO/5VN2E5GNO
+         Lbs7P7CihpefoosIHUwUwVtzN/UpDaPLqrv5577jZEZAbSQr7BrXoAWI8zS8KBZfA2QD
+         5tgMk7atqCI5abQYzuvF8q4uW8mm9mYyxN1D8ro0ksHcIzuRYpJP2rXk8Pe/fi1wAJ0m
+         Ag4c87ylIBazPyEvNNv+MuZ7FgQD2cuJO7KGol3vmpgmsdrBv4ZChQ4GAtGXe+KbGfGm
+         9M+uMddHU5R5u9udRcVG+TpFmI4L/R8yGTuocYEx5XFwfok0ohOOeXPIR2L7UWlK/MkQ
+         nz1Q==
+X-Gm-Message-State: AOAM533iPe9zq3BNub9W+aZDaYYpyJxQLL+ODUUVxV1ueg8BkvBh0kBA
+        ssoAjY0FWZNJYFTgbSzC2vrteA==
+X-Google-Smtp-Source: ABdhPJwLYDZ3ZZw4s7Wt60qq+CXfv1queIcc4LvOeOnn7QGtFFd/es8sKHi4AlS4TSNX7iu1+FPp2Q==
+X-Received: by 2002:a63:4b58:: with SMTP id k24mr21454195pgl.326.1635873991315;
+        Tue, 02 Nov 2021 10:26:31 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c8sm3078586pjr.38.2021.11.02.10.26.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 10:26:07 -0700 (PDT)
-From:   Andreas Oetken <ennoerlangen@gmail.com>
-X-Google-Original-From: Andreas Oetken <andreas.oetken@siemens-energy.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     Andreas Oetken <ennoerlangen@gmail.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Andreas Oetken <andreas.oetken@siemens-energy.com>,
-        stable@vger.kernel.org
-Subject: [PATCH v3] drivers: mtd: Fixed breaking list in __mtd_del_partition.
-Date:   Tue,  2 Nov 2021 18:26:04 +0100
-Message-Id: <20211102172604.2921065-1-andreas.oetken@siemens-energy.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 02 Nov 2021 10:26:30 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 10:26:29 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v5 00/15] x86: Add support for Clang CFI
+Message-ID: <202111021023.0E5188EC60@keescook>
+References: <20211027120515.GC54628@C02TD0UTHF1T.local>
+ <CAMj1kXEx10gC8eH7rV-GbZZj2M3uDue6HYsKb+A5J01zOxm_FA@mail.gmail.com>
+ <20211027124852.GK174703@worktop.programming.kicks-ass.net>
+ <YXlOd1lyKZKAcJfA@hirez.programming.kicks-ass.net>
+ <202110270939.F5C79CC@keescook>
+ <YXnC1jqwR2ZKfMdk@hirez.programming.kicks-ass.net>
+ <202110271430.2A3980217@keescook>
+ <YXqE82jQh4S79uVL@hirez.programming.kicks-ass.net>
+ <202110280958.22E5F74@keescook>
+ <20211028202905.GO174703@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211028202905.GO174703@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not the child partition should be removed from the partition list
-but the partition itself. Otherwise the partition list gets broken
-and any subsequent remove operations leads to a kernel panic.
+On Thu, Oct 28, 2021 at 10:29:05PM +0200, Peter Zijlstra wrote:
+> Now, since code (on x86) is variable length, there are no spare bits in
+> the code address, but since static_call_key is aligned, we have spare
+> bits. It is those bits we use to encode TAIL (Bit0) and INIT (Bit1).
+> 
+> If INIT, the address points to an __init section and we shouldn't try
+> and touch if after those have been freed or bad stuff happens.
+> 
+> If TAIL, it's a tail-call and we get to write a jump instruction instead
+> of a call instruction.
 
-Fixes: 46b5889cc2c5 ("mtd: implement proper partition handling")
-Signed-off-by: Andreas Oetken <andreas.oetken@siemens-energy.com>
-Cc: stable@vger.kernel.org
----
- drivers/mtd/mtdpart.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think this is the part that I was missing: the information is about
+the _address_, but it's stored in the _key_'s low bits (regardless of
+the key's actual/masked key pointer).
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 95d47422bbf20..5725818fa199f 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -313,7 +313,7 @@ static int __mtd_del_partition(struct mtd_info *mtd)
- 	if (err)
- 		return err;
- 
--	list_del(&child->part.node);
-+	list_del(&mtd->part.node);
- 	free_partition(mtd);
- 
- 	return 0;
+> [...]
+> Hope that clarifies things, instead of making it worse :-)
+
+It does help, yes, thanks! I will need to read it again and go follow
+along in the code, but yes, that helps explain it.
+
 -- 
-2.30.2
-
+Kees Cook
