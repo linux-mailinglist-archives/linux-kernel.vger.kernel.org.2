@@ -2,129 +2,442 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08BF4432B9
+	by mail.lfdr.de (Postfix) with ESMTP id 98A264432B8
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235164AbhKBQdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:33:11 -0400
-Received: from mail-dm6nam11on2067.outbound.protection.outlook.com ([40.107.223.67]:64224
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234802AbhKBQKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:10:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d5EAQsyox9yNU+/nudMzwijqxNjuG59edF0xsV0Qs+G8/sCK2ipmaxVm1nB8086T99e17mVU3rogmVWoRxtLBK7iRHXLlQbyh4LfJvle63nl+EcIbsS9IBBgcpR+uVL8qCcJjyGKcavjU221L/8pEPJeufIoIKiLkYUUw8jAlTOzbccvc9p3w5gWfdXd8sTartTsOXVz0gkdlKhfc4H0SYN/gkTW3m3WAKvmSLnxWHYl63+iE2tce+4DPzaupAfArbYsR3lY+ESMxqHdD5YvU3BebgHOooTxvmO0W3DFh28l2wEKCj8tAyw6tdnriET59pCmw2iC2lfGKozi4KrEKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8pgBO4Mk7FBWV+KuPZXQzYVs444QXwAxkB2OsR8ZHAo=;
- b=ejgXQcQTgb1To085n65XHDLrwi3InWILLpruxz3od18/KvMoAgcllmrzCgY8nLfJ0bek1RoF4sce0lM8jOyLscmkqjpuJ/KbRD+kj7pdUH7Eh5apEsJD/224azzPhjwwgS4i9r9x1jX+0Tb4VXzHaKmLEFOjwj+WWNZlrfoDXDlgnnC4YTLEBh/CJO7vDlOzDKekTMdR2aqzc8XwX7htWwVHoWWBq0ZQHAh8d5rFAhJPf7RPhYrYa+14ZC70mZmL8kIFR/JiTCJxZ/7Z7FInTZN5VhAI3H9/VfVi20qf2Ty1l90zLuXtNPU+A8iV6Ikc7dzr4gAEWjjOjal/p71QLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8pgBO4Mk7FBWV+KuPZXQzYVs444QXwAxkB2OsR8ZHAo=;
- b=kfuTHc2/F6en1fp5sIsjrvzOGICufTdMNt0vs4KzYvR9suplzyj/AWH4rBsCaD3KlzPOLWKx4cxMbCxWj/VOgY7r1F1zdbJ6MaZLxkyIgzKAIbRX9DZyZyHfvNKHUZ01GlwATJI6sJEe+edq1vBUGPHDP/SUJePMprvO9DJxT+EJ6Pq15860W5V0jIU9s1LxHlyKOBSr/Eyq8JviiHGvN2GFtxOnzolExcvJmFBBFMpxVD8rJmSceeKNWc4RggBnGb0zWkrz0tjOqu/imB8xL2g+JfPLwXDRRLMPSEm0oFS4K8521R1pWRx/cJsOcU4t6Yfhak24WYVQfnonKTkdGQ==
-Authentication-Results: lst.de; dkim=none (message not signed)
- header.d=none;lst.de; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5554.namprd12.prod.outlook.com (2603:10b6:208:1cd::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Tue, 2 Nov
- 2021 16:06:06 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4649.020; Tue, 2 Nov 2021
- 16:06:06 +0000
-Date:   Tue, 2 Nov 2021 13:06:05 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 11/29] drm/i915/gvt: merge struct kvmgt_guest_info into
- strut intel_vgpu
-Message-ID: <20211102160605.GQ2744544@nvidia.com>
-References: <20211102070601.155501-1-hch@lst.de>
- <20211102070601.155501-12-hch@lst.de>
+        id S235143AbhKBQc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:32:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36694 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234797AbhKBQKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 12:10:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3560E610FC;
+        Tue,  2 Nov 2021 16:06:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635869174;
+        bh=1wTxcWUaSeV3hqH8zQb1UyEQFD4Q+Ysp4JqS8dFrMO0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=pyMs18aBA7td4bSFNHddX1EJOL85vbRGtG7F8cJOEgy7TS3eQR4mFoFkTG1JCVCYj
+         +Rkm7r1eJqz7jRHLLwR6NLfjBR1OYQ0QKuS7C1LoQXfmv1eXVr+AmkFIfZifcIlbcx
+         TsyAQg2xTh+bpciuqrGEetn0PA/5IFJhfgPy5fl2CMStwNQNozrBrlo+btFEuyIutQ
+         eu2kWrH8WaczUR2WsEIALYy/a5J2OQJSWz+WLhNvazhf1Fg5WZnCjXzVNBfWp5NkIH
+         191yNQM0LJVmL9Tr+XPjbej0IiSI3lQDO7rS/KGuQOo3L58OP9ghPFx0ysFPRlwsIy
+         G/2oVWLdZi5HQ==
+Date:   Tue, 2 Nov 2021 11:06:12 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Rob Herring <robh@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: Re: [PATCH v15 04/13] PCI: kirin: Add support for bridge slot DT
+ schema
+Message-ID: <20211102160612.GA612467@bhelgaas>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211102070601.155501-12-hch@lst.de>
-X-ClientProxiedBy: BL1PR13CA0369.namprd13.prod.outlook.com
- (2603:10b6:208:2c0::14) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0369.namprd13.prod.outlook.com (2603:10b6:208:2c0::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.5 via Frontend Transport; Tue, 2 Nov 2021 16:06:06 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mhwIX-005AKU-F6; Tue, 02 Nov 2021 13:06:05 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 68eb9477-601f-43c3-99ef-08d99e1aad3b
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5554:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB5554D4B2A3EE6A040D33F105C28B9@BL0PR12MB5554.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:390;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SU5unFIfSuUxXA4jR/WjaBh5TJRxjUMRmvWD7jZpquxi7jffs9tA4e8P212lkoNIFGRr4xj/3WIEpmTQgDSg2uIyWYirZCfePHPiyr1vaqOF7ryS0vm2jeBnmPt7VwV9Jj9Dqya5/ccmiE4Ye/8xsavmMTr02un1+UQHBHE8nmSIeuKRQhU6Z7xALaIYZdyb1jlbvC+gBYbFEwS2ss6rVYBhlxBcgH4HhRppsYf//Gyd0JJ9Fq/xhFfb8gfhjPgvzMhX30Leb3eFjdQCdp1/2P/pcm7g+rLaK/1YiD8nD7A+dD468xY9ybnGnVpNtRCPW2wWojNXkhtNmwxJ1w9okr7t2rd7AxfWOWg+FVm/BRPTMXVlk4jJArEirZJGZFlfsIQETGiy7rsqrZDE8kfQ/zC3E7IRydfiZMjCHRTYdMYUA2kHa+MEd+sIUJ3bJmk4I+8uWrPojcCc4qA9+1dO/CmoxqDuxDluo+4zHUdO1p1v4dzMFELfIBd/qTJbSDMJnqRncJhG+fgLWIdTWxhKdG2+qU+vX9ANrLHbijhzasCEHomZpQG5ng1600r6siHM6goqlPcAhasdnnYXPQChVhW4Ftaw4g5b1wUExhFO5Doe0sw8fdgAYbTIIfXkoLDChJGzRY6cb6A5hD1PML3vyg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(33656002)(426003)(8676002)(8936002)(86362001)(66556008)(9786002)(66476007)(508600001)(2616005)(38100700002)(26005)(54906003)(83380400001)(2906002)(1076003)(9746002)(6916009)(4326008)(4744005)(7416002)(316002)(186003)(5660300002)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?49H5KzACDXrLLI6X7Bin1hSpbd330nwgEX1b6/4jzrA8iBD1bzsaQFaPnMmY?=
- =?us-ascii?Q?qUTYm9WrgW3cP8YnrIAlzaoPOJYnf4e+N8paZMc7tezzPnStS4RcqPZH2q3T?=
- =?us-ascii?Q?rEOjYzuyBRccE9TV6DlwqHCrEYFeCiD/jiSC1nQqUa6pvPVGT+rcHVtJVSv/?=
- =?us-ascii?Q?fG+tt3dHDjBamnd6RrFjA5xMOev25Tak7n0X4q+sZ5if8kl5UbZDfxDF0Bd3?=
- =?us-ascii?Q?ypZl7+dVeowwE+XsyVUpsU3SjrsAqLfDVObx+V7JRqbz1detZxlaWhPvR0+U?=
- =?us-ascii?Q?iDd/pQ+rNzT8jpTvdKmXE0XjONCvVKs3BRHo5g/2YvzQ6t8N4BQFwk0S4SiU?=
- =?us-ascii?Q?F2glYFVCIT2nWtJOBtdPWCOrVX0VwTQX8VrFKUfRj+/SnPMQ/5H4Yxw8/TaZ?=
- =?us-ascii?Q?bpie9t3DxtcZwUm0JhcjdDLDmArhU/vFCBGrvZI1uOREbuweBzvO7C7XYPwp?=
- =?us-ascii?Q?3/3OFuCx8YJppOpe3stlAkREV/J7HlhO/HoOW9/WBKByu4X2jgPnAaddPwHp?=
- =?us-ascii?Q?AOVtQzoEOFNAidn9ChplWo+OlaHpb9CY3WptePYTVnpwQ3TlYChN7gLLIAGu?=
- =?us-ascii?Q?3VTQqWAxxGvqHe9wn6QRWWz8Avy6qxnMz8tFNPHLrp0ivLtorIc6pTRvaKBl?=
- =?us-ascii?Q?/B7GvFqv56plCqIEPYYkO19OBDyjU6Xsa49DoLhIW81QSGkbX+VifdvzLDZx?=
- =?us-ascii?Q?gWKQ9pHOgw3IWLJaTZOOXtIz7e0GOm5TN9GfYF+HLEIO9c5jSlrq2+jXRCkY?=
- =?us-ascii?Q?kENlolOfgJEHAbxfbyVYr6fttH9Vtj4WgZR04wyMvmD35WAuP0WZcuoGabtn?=
- =?us-ascii?Q?kfwv/X0y3k8yJY7PEWCIFSVNyoCmOBhY2wlzvna1Tj+UFsA2MZ5wb1j8xC9x?=
- =?us-ascii?Q?yF98WOXIJsAv7FyLLJ/o3HTgbHH6+9q6ivp+EA+wSgpkFh/5Fcg72psKYzxq?=
- =?us-ascii?Q?kZG9QQx3mPzaRdZvuoTszgMkQdAqEl2gqh1CrwnJQYgxeIgkRFUaMXlDIpCF?=
- =?us-ascii?Q?zmaZYiCIFWS1aCUC+auvIyMt00nVshmuyUUKjTovFPF+PwiHaQoZ59Y4WM9l?=
- =?us-ascii?Q?o3Hux85iqXtPFEjOULdfsYDyRlPHcAKGiCVHUiGKWE65CgD/gkgS8ARV2o1B?=
- =?us-ascii?Q?a2mWZOT6bLRa42eS5QZbdDigvE2fXygNpXe3NrnSzD3IhkVwQUJ+CduF4Df2?=
- =?us-ascii?Q?TOWvmYZm9eYdp/I4HwtD3LD0abys3E4RDFyjQgsR7Zr/OkGFYG5aU9i8Yowr?=
- =?us-ascii?Q?8zeMRUPWlCDr8xxxrb6P+SWNy08o7GzygO5XaE8bO5fW294IwXf/AYTT0ZNF?=
- =?us-ascii?Q?5nUrFLYlAnC8aA5bdEkIZIonvklH4sUO3iGSB0ySMoQciUUCC/s8QZTAQkHL?=
- =?us-ascii?Q?JLdkqGy8X4TNk9YCrOV9aSunOLIxvgzFANm/7s9rOyx/5GbtBrkTCNoMqrmL?=
- =?us-ascii?Q?fsJ0sDqhbY1GuF6HdHzvHMCNJzMDRs6WKgkCyeb9OhZE2XUfcuotFIhahHmh?=
- =?us-ascii?Q?iKhewfcaGAo4D2ztcu04Sy7IF5Gq65Q3kWxwNxzrzhtxYJS/pJqkWZ4AJwc4?=
- =?us-ascii?Q?iTxgNoCyI+AyyF7rjmk=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68eb9477-601f-43c3-99ef-08d99e1aad3b
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 16:06:06.4200
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /P8kb4GCBfz0aUcavgPcaYhzeGvrtCFQb7ihUF4vGEb97Mcrcm669FUe79LNgv3J
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5554
+In-Reply-To: <bb391a0e0f0863b66e645048315fab1a4f63f277.1634812676.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 08:05:43AM +0100, Christoph Hellwig wrote:
-> Consolidate the per-VGPU structures into a single one.
+On Thu, Oct 21, 2021 at 11:45:11AM +0100, Mauro Carvalho Chehab wrote:
+> On HiKey970, there's a PEX 8606 PCI bridge on its PHY with
+> 6 lanes. Only 4 lanes are connected:
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> 	lane 0 - connected to Kirin 970;
+> 	lane 4 - M.2 slot;
+> 	lane 5 - mini PCIe slot;
+> 	lane 6 - in-board Ethernet controller.
+> 
+> Each lane has its own PERST# gpio pin, and needs a clock
+> request.
+> 
+> Add support to parse a DT schema containing the above data.
+> 
+> Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> Acked-by: Xiaowei Song <songxiaowei@hisilicon.com>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  drivers/gpu/drm/i915/gvt/gvt.h   |   8 +++
->  drivers/gpu/drm/i915/gvt/kvmgt.c | 117 ++++++++++++-------------------
->  2 files changed, 52 insertions(+), 73 deletions(-)
+> 
+> To mailbombing on a large number of people, only mailing lists were C/C on the cover.
+> See [PATCH v15 00/13] at: https://lore.kernel.org/all/cover.1634812676.git.mchehab+huawei@kernel.org/
+> 
+>  drivers/pci/controller/dwc/pcie-kirin.c | 262 +++++++++++++++++++++---
+>  1 file changed, 231 insertions(+), 31 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
+> index 86c13661e02d..de375795a3b8 100644
+> --- a/drivers/pci/controller/dwc/pcie-kirin.c
+> +++ b/drivers/pci/controller/dwc/pcie-kirin.c
+> @@ -52,6 +52,19 @@
+>  #define PCIE_DEBOUNCE_PARAM	0xF0F400
+>  #define PCIE_OE_BYPASS		(0x3 << 28)
+>  
+> +/*
+> + * Max number of connected PCI slots at an external PCI bridge
+> + *
+> + * This is used on HiKey 970, which has a PEX 8606 bridge with has
+> + * 4 connected lanes (lane 0 upstream, and the other tree lanes,
+> + * one connected to an in-board Ethernet adapter and the other two
+> + * connected to M.2 and mini PCI slots.
+> + *
+> + * Each slot has a different clock source and uses a separate PERST#
+> + * pin.
+> + */
+> +#define MAX_PCI_SLOTS		3
+> +
+>  enum pcie_kirin_phy_type {
+>  	PCIE_KIRIN_INTERNAL_PHY,
+>  	PCIE_KIRIN_EXTERNAL_PHY
+> @@ -64,6 +77,19 @@ struct kirin_pcie {
+>  	struct regmap   *apb;
+>  	struct phy	*phy;
+>  	void		*phy_priv;	/* only for PCIE_KIRIN_INTERNAL_PHY */
+> +
+> +	/* DWC PERST# */
+> +	int		gpio_id_dwc_perst;
+> +
+> +	/* Per-slot PERST# */
+> +	int		num_slots;
+> +	int		gpio_id_reset[MAX_PCI_SLOTS];
+> +	const char	*reset_names[MAX_PCI_SLOTS];
+> +
+> +	/* Per-slot clkreq */
+> +	int		n_gpio_clkreq;
+> +	int		gpio_id_clkreq[MAX_PCI_SLOTS];
+> +	const char	*clkreq_names[MAX_PCI_SLOTS];
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+I think there's been previous discussion about this, but I didn't
+follow it, so I'm just double-checking that this is what we want here.
 
-Jason
+IIUC, this (MAX_PCI_SLOTS, "hisilicon,clken-gpios") applies to an
+external PEX 8606 bridge, which seems a little strange to be
+hard-coded into the kirin driver this way.
+
+I see that "hisilicon,clken-gpios" is optional, but what if some
+platform connects all 6 lanes?  What if there's a different bridge
+altogether?
+
+I'll assume this is actually the way we want thing unless I hear
+otherwise.
+
+>  };
+>  
+>  /*
+> @@ -108,7 +134,6 @@ struct hi3660_pcie_phy {
+>  	struct clk	*phy_ref_clk;
+>  	struct clk	*aclk;
+>  	struct clk	*aux_clk;
+> -	int		gpio_id_reset;
+>  };
+>  
+>  /* Registers in PCIePHY */
+> @@ -171,16 +196,6 @@ static int hi3660_pcie_phy_get_resource(struct hi3660_pcie_phy *phy)
+>  	if (IS_ERR(phy->sysctrl))
+>  		return PTR_ERR(phy->sysctrl);
+>  
+> -	/* gpios */
+> -	phy->gpio_id_reset = of_get_named_gpio(dev->of_node,
+> -					       "reset-gpios", 0);
+> -	if (phy->gpio_id_reset == -EPROBE_DEFER) {
+> -		return -EPROBE_DEFER;
+> -	} else if (!gpio_is_valid(phy->gpio_id_reset)) {
+> -		dev_err(phy->dev, "unable to get a valid gpio pin\n");
+> -		return -ENODEV;
+> -	}
+> -
+>  	return 0;
+>  }
+>  
+> @@ -297,15 +312,7 @@ static int hi3660_pcie_phy_power_on(struct kirin_pcie *pcie)
+>  	if (ret)
+>  		goto disable_clks;
+>  
+> -	/* perst assert Endpoint */
+> -	if (!gpio_request(phy->gpio_id_reset, "pcie_perst")) {
+> -		usleep_range(REF_2_PERST_MIN, REF_2_PERST_MAX);
+> -		ret = gpio_direction_output(phy->gpio_id_reset, 1);
+> -		if (ret)
+> -			goto disable_clks;
+> -		usleep_range(PERST_2_ACCESS_MIN, PERST_2_ACCESS_MAX);
+> -		return 0;
+> -	}
+> +	return 0;
+>  
+>  disable_clks:
+>  	hi3660_pcie_phy_clk_ctrl(phy, false);
+> @@ -347,11 +354,98 @@ static const struct regmap_config pcie_kirin_regmap_conf = {
+>  	.reg_stride = 4,
+>  };
+>  
+> +static int kirin_pcie_get_gpio_enable(struct kirin_pcie *pcie,
+> +				      struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *np = dev->of_node;
+> +	char name[32];
+> +	int ret, i;
+> +
+> +	/* This is an optional property */
+> +	ret = of_gpio_named_count(np, "hisilicon,clken-gpios");
+> +	if (ret < 0)
+> +		return 0;
+> +
+> +	if (ret > MAX_PCI_SLOTS) {
+> +		dev_err(dev, "Too many GPIO clock requests!\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	pcie->n_gpio_clkreq = ret;
+> +
+> +	for (i = 0; i < pcie->n_gpio_clkreq; i++) {
+> +		pcie->gpio_id_clkreq[i] = of_get_named_gpio(dev->of_node,
+> +							    "hisilicon,clken-gpios", i);
+> +		if (pcie->gpio_id_clkreq[i] < 0)
+> +			return pcie->gpio_id_clkreq[i];
+> +
+> +		sprintf(name, "pcie_clkreq_%d", i);
+> +		pcie->clkreq_names[i] = devm_kstrdup_const(dev, name,
+> +							    GFP_KERNEL);
+> +		if (!pcie->clkreq_names[i])
+> +			return -ENOMEM;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int kirin_pcie_parse_port(struct kirin_pcie *pcie,
+> +				 struct platform_device *pdev,
+> +				 struct device_node *node)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *parent, *child;
+> +	int ret, slot, i;
+> +	char name[32];
+> +
+> +	for_each_available_child_of_node(node, parent) {
+> +		for_each_available_child_of_node(parent, child) {
+> +			i = pcie->num_slots;
+> +
+> +			pcie->gpio_id_reset[i] = of_get_named_gpio(child,
+> +								"reset-gpios", 0);
+> +			if (pcie->gpio_id_reset[i] < 0)
+> +				continue;
+> +
+> +			pcie->num_slots++;
+> +			if (pcie->num_slots > MAX_PCI_SLOTS) {
+> +				dev_err(dev, "Too many PCI slots!\n");
+> +				return -EINVAL;
+> +			}
+> +
+> +			ret = of_pci_get_devfn(child);
+> +			if (ret < 0) {
+> +				dev_err(dev, "failed to parse devfn: %d\n", ret);
+> +				goto put_node;
+> +			}
+> +
+> +			slot = PCI_SLOT(ret);
+> +
+> +			sprintf(name, "pcie_perst_%d", slot);
+> +			pcie->reset_names[i] = devm_kstrdup_const(dev, name,
+> +								GFP_KERNEL);
+> +			if (!pcie->reset_names[i]) {
+> +				ret = -ENOMEM;
+> +				goto put_node;
+> +			}
+> +		}
+> +	}
+> +
+> +	return 0;
+> +
+> +put_node:
+> +	of_node_put(child);
+> +	return ret;
+> +}
+> +
+>  static long kirin_pcie_get_resource(struct kirin_pcie *kirin_pcie,
+>  				    struct platform_device *pdev)
+>  {
+>  	struct device *dev = &pdev->dev;
+> +	struct device_node *child, *node = dev->of_node;
+>  	void __iomem *apb_base;
+> +	int ret;
+>  
+>  	apb_base = devm_platform_ioremap_resource_byname(pdev, "apb");
+>  	if (IS_ERR(apb_base))
+> @@ -362,7 +456,32 @@ static long kirin_pcie_get_resource(struct kirin_pcie *kirin_pcie,
+>  	if (IS_ERR(kirin_pcie->apb))
+>  		return PTR_ERR(kirin_pcie->apb);
+>  
+> +	/* pcie internal PERST# gpio */
+> +	kirin_pcie->gpio_id_dwc_perst = of_get_named_gpio(dev->of_node,
+> +							  "reset-gpios", 0);
+> +	if (kirin_pcie->gpio_id_dwc_perst == -EPROBE_DEFER) {
+> +		return -EPROBE_DEFER;
+> +	} else if (!gpio_is_valid(kirin_pcie->gpio_id_dwc_perst)) {
+> +		dev_err(dev, "unable to get a valid gpio pin\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	ret = kirin_pcie_get_gpio_enable(kirin_pcie, pdev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Parse OF children */
+> +	for_each_available_child_of_node(node, child) {
+> +		ret = kirin_pcie_parse_port(kirin_pcie, pdev, child);
+> +		if (ret)
+> +			goto put_node;
+> +	}
+> +
+>  	return 0;
+> +
+> +put_node:
+> +	of_node_put(child);
+> +	return ret;
+>  }
+>  
+>  static void kirin_pcie_sideband_dbi_w_mode(struct kirin_pcie *kirin_pcie,
+> @@ -419,9 +538,33 @@ static int kirin_pcie_wr_own_conf(struct pci_bus *bus, unsigned int devfn,
+>  	return PCIBIOS_SUCCESSFUL;
+>  }
+>  
+> +static int kirin_pcie_add_bus(struct pci_bus *bus)
+> +{
+> +	struct dw_pcie *pci = to_dw_pcie_from_pp(bus->sysdata);
+> +	struct kirin_pcie *kirin_pcie = to_kirin_pcie(pci);
+> +	int i, ret;
+> +
+> +	if (!kirin_pcie->num_slots)
+> +		return 0;
+> +
+> +	/* Send PERST# to each slot */
+> +	for (i = 0; i < kirin_pcie->num_slots; i++) {
+> +		ret = gpio_direction_output(kirin_pcie->gpio_id_reset[i], 1);
+> +		if (ret) {
+> +			dev_err(pci->dev, "PERST# %s error: %d\n",
+> +				kirin_pcie->reset_names[i], ret);
+> +		}
+> +	}
+> +	usleep_range(PERST_2_ACCESS_MIN, PERST_2_ACCESS_MAX);
+> +
+> +	return 0;
+> +}
+> +
+> +
+>  static struct pci_ops kirin_pci_ops = {
+>  	.read = kirin_pcie_rd_own_conf,
+>  	.write = kirin_pcie_wr_own_conf,
+> +	.add_bus = kirin_pcie_add_bus,
+>  };
+>  
+>  static u32 kirin_pcie_read_dbi(struct dw_pcie *pci, void __iomem *base,
+> @@ -477,6 +620,44 @@ static int kirin_pcie_host_init(struct pcie_port *pp)
+>  	return 0;
+>  }
+>  
+> +static int kirin_pcie_gpio_request(struct kirin_pcie *kirin_pcie,
+> +				   struct device *dev)
+> +{
+> +	int ret, i;
+> +
+> +	for (i = 0; i < kirin_pcie->num_slots; i++) {
+> +		if (!gpio_is_valid(kirin_pcie->gpio_id_reset[i])) {
+> +			dev_err(dev, "unable to get a valid %s gpio\n",
+> +				kirin_pcie->reset_names[i]);
+> +			return -ENODEV;
+> +		}
+> +
+> +		ret = devm_gpio_request(dev, kirin_pcie->gpio_id_reset[i],
+> +					kirin_pcie->reset_names[i]);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	for (i = 0; i < kirin_pcie->n_gpio_clkreq; i++) {
+> +		if (!gpio_is_valid(kirin_pcie->gpio_id_clkreq[i])) {
+> +			dev_err(dev, "unable to get a valid %s gpio\n",
+> +				kirin_pcie->clkreq_names[i]);
+> +			return -ENODEV;
+> +		}
+> +
+> +		ret = devm_gpio_request(dev, kirin_pcie->gpio_id_clkreq[i],
+> +					kirin_pcie->clkreq_names[i]);
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = gpio_direction_output(kirin_pcie->gpio_id_clkreq[i], 0);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct dw_pcie_ops kirin_dw_pcie_ops = {
+>  	.read_dbi = kirin_pcie_read_dbi,
+>  	.write_dbi = kirin_pcie_write_dbi,
+> @@ -499,24 +680,43 @@ static int kirin_pcie_power_on(struct platform_device *pdev,
+>  		if (ret)
+>  			return ret;
+>  
+> -		return hi3660_pcie_phy_power_on(kirin_pcie);
+> +		ret = hi3660_pcie_phy_power_on(kirin_pcie);
+> +		if (ret)
+> +			return ret;
+> +	} else {
+> +		kirin_pcie->phy = devm_of_phy_get(dev, dev->of_node, NULL);
+> +		if (IS_ERR(kirin_pcie->phy))
+> +			return PTR_ERR(kirin_pcie->phy);
+> +
+> +		ret = kirin_pcie_gpio_request(kirin_pcie, dev);
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = phy_init(kirin_pcie->phy);
+> +		if (ret)
+> +			goto err;
+> +
+> +		ret = phy_power_on(kirin_pcie->phy);
+> +		if (ret)
+> +			goto err;
+>  	}
+>  
+> -	kirin_pcie->phy = devm_of_phy_get(dev, dev->of_node, NULL);
+> -	if (IS_ERR(kirin_pcie->phy))
+> -		return PTR_ERR(kirin_pcie->phy);
+> +	/* perst assert Endpoint */
+> +	usleep_range(REF_2_PERST_MIN, REF_2_PERST_MAX);
+>  
+> -	ret = phy_init(kirin_pcie->phy);
+> -	if (ret)
+> -		goto err;
+> +	if (!gpio_request(kirin_pcie->gpio_id_dwc_perst, "pcie_perst_bridge")) {
+> +		ret = gpio_direction_output(kirin_pcie->gpio_id_dwc_perst, 1);
+> +		if (ret)
+> +			goto err;
+> +	}
+>  
+> -	ret = phy_power_on(kirin_pcie->phy);
+> -	if (ret)
+> -		goto err;
+> +	usleep_range(PERST_2_ACCESS_MIN, PERST_2_ACCESS_MAX);
+>  
+>  	return 0;
+>  err:
+> -	phy_exit(kirin_pcie->phy);
+> +	if (kirin_pcie->type != PCIE_KIRIN_INTERNAL_PHY)
+> +		phy_exit(kirin_pcie->phy);
+> +
+>  	return ret;
+>  }
+>  
+> -- 
+> 2.31.1
+> 
