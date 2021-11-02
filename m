@@ -2,265 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 474A14435F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:47:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9774435FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235512AbhKBStf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 14:49:35 -0400
-Received: from mail-dm6nam11on2077.outbound.protection.outlook.com ([40.107.223.77]:14017
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235948AbhKBStS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 14:49:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RVKwvO0QMzRtW0mToXxnxgLYHOaFZNUR2U61wRCzaXV2e++2BwiNq8UQIB+7ETYaYunY+zD8uWjuwOc/UdNbyfn/R4TKzMex8J8zFYWUiLd3+NWWguvsT6L4Wb28TXTKYxLkMwto9mErt6nnSa+s6Ije1bNPf5G1uTKeBeHlRm/WyQlt8NLvrFp5SMl24CNdD9BKHqLUqYuEAyHNngve9GlZXvK4G1Tc+IXqigqA3jQGMJjCvaKbAhsRZdjN8n08ykm4a5jBpc1cqWYDQhPNWZ4pmRPzjUXPhCbfhAW55EJuOC5uFHW+jB2/gupPFwsCRcBnwYvyw1SZG8IIsv9htw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=s1gb/0+N5dmVahMl9xjI6L/ViDusn5uiM2RLua0idfI=;
- b=cIh5yTE+DCaI7G5wjNR6rvMasi6jSI7ky7HTQjRRE13aOEKtUbMm4SQ8rB/aOnZzsWlrNR4uvusV38rHu9UMOhXA0ya/MFbM4W+LI5Usm383ZRwNiwECB9l3zIWn9EfvSfmCSIjoz4na/I8FZi0AJFn5dKtj2TyHn2kLm+OPFV8aNm5JolloOR43aXInSbEG6eh7oy9G/9IwfAV9s3ekjwZgMVpdyVVxp3/gVV9yS/o3DI0kadZfDyE9Z9t/BRJSpE8IEGHqO9pe/9M1Na0AvaQ6YcolfTOFi2T0klSLGmp0wjkQSxtFGoVdkQs8krQxP0HTyBRKXeJ08SrhbgJxUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s1gb/0+N5dmVahMl9xjI6L/ViDusn5uiM2RLua0idfI=;
- b=asggQnesp87LV0j8GVD5wVTtP88xI9Z0gkNegaCDIi2dpbiWdhefg3Txq/fUUGM9akUyMlnL1PO+JeWLs95bVfr/TEuYJyHuUFlmdmUO1NV+DZBOBz4scBsIG7GMgpWTBgMjwFqbm9vK7uEWlkEI1lIbWNnClRuifREGbhenQxk=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB4720.namprd12.prod.outlook.com (2603:10b6:805:e6::31)
- by SN6PR12MB2752.namprd12.prod.outlook.com (2603:10b6:805:78::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Tue, 2 Nov
- 2021 18:46:40 +0000
-Received: from SN6PR12MB4720.namprd12.prod.outlook.com
- ([fe80::c4b9:b9bb:e863:af39]) by SN6PR12MB4720.namprd12.prod.outlook.com
- ([fe80::c4b9:b9bb:e863:af39%5]) with mapi id 15.20.4649.020; Tue, 2 Nov 2021
- 18:46:40 +0000
-Subject: Re: [PATCH v3 08/21] cpufreq: amd: add acpi cppc function as the
- backend for legacy processors
-To:     Huang Rui <ray.huang@amd.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        linux-pm@vger.kernel.org
-Cc:     Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Steven Noonan <steven@valvesoftware.com>,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        Jinzhou Su <Jinzhou.Su@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-References: <20211029130241.1984459-1-ray.huang@amd.com>
- <20211029130241.1984459-9-ray.huang@amd.com>
-From:   Nathan Fontenot <nafonten@amd.com>
-Message-ID: <33fe4c81-76f7-2de7-6b19-1c6b233b49aa@amd.com>
-Date:   Tue, 2 Nov 2021 13:46:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <20211029130241.1984459-9-ray.huang@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BN6PR16CA0016.namprd16.prod.outlook.com
- (2603:10b6:404:f5::26) To SN6PR12MB4720.namprd12.prod.outlook.com
- (2603:10b6:805:e6::31)
+        id S235548AbhKBSth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 14:49:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236003AbhKBStZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 14:49:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E35061050;
+        Tue,  2 Nov 2021 18:46:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635878810;
+        bh=e4mmZ1E1x7N9yMBlg1C9SEJsxmd3c5tVIwC4zmhhLbo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=dLSz3abrhypxcuNcZWZCcViQ1nr7uhHbvS5+qrksBsADeH/shfomL4X9zcStxAx2I
+         BBsv0y2YdM+wOn3BtGLqrvLigUf0OGHX/nqaYX3fAhRdtFnVs420Zh2OndumDsko7u
+         84CcOnuooFIj17OBlt7rrWTC2DpZMupBwjZm0bSlsBKmcqPpjDtXHypT0Ggrf1vHBN
+         iN3v4xv9U1aUOfxOkIjdpXZBgVaX1kq3dP+1ZeQTrtsytMb+JDw4cpG3AQ/uG78pBB
+         lIZjkz/4ok/e9hdgR6+oVYUwR8Zy1Eh3NnfULxj/jaD2TUc0xu2FNN1/2uDGrp0qmh
+         B411TWGIWMTZA==
+Date:   Tue, 2 Nov 2021 11:46:50 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de
+Subject: [GIT PULL] xfs: new code for 5.16
+Message-ID: <20211102184650.GH24307@magnolia>
 MIME-Version: 1.0
-Received: from [IPv6:2600:1700:271:b60:1e21:1149:b336:3db3] (2600:1700:271:b60:1e21:1149:b336:3db3) by BN6PR16CA0016.namprd16.prod.outlook.com (2603:10b6:404:f5::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15 via Frontend Transport; Tue, 2 Nov 2021 18:46:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 15e9fead-1e2d-4744-8269-08d99e311ba2
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2752:
-X-Microsoft-Antispam-PRVS: <SN6PR12MB2752BF659B332D4B0949097AEC8B9@SN6PR12MB2752.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:568;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JClFhpNfCwSntC78/0ipOjeiMle6CgngPiVY85iYg8ANuHaQfpP5A+9PqWqfjn4jVll/7eQ5AwZNF6wsTkGI+59nO9d/5UMaFg5UWPpU3y33tL6X1MgijpqjzdptLHyvBbLnIFK6gYnkbUh6hOpRGQjpPk4lHnmut/4t8mHiFa2CaDHuV/zRMWdvtkfWmGIxBafcMFq0I1Wu91NhbUlhVHrBypip3Vy+Nh2O3P2IsQ/dm1eDYTISxmmm4lIgmQjdhlb5oVkmMt9CioysFWr1yMnPoHNkSkikv5lsiYKhr6b7YfY9UAuDlCLtrp/CWUnM8G63gmKgmRPyMN75wFDssHgv6AXCs/RoJhsxBH+n8ZzeKS1PLT8MxqnGoUJnE6JWyHCEeqcq4cFSMSQZuIUIyBs803nGVM5sZV6lPx6DAYztYpcIgiRYER949jeB0ZzGaQzKo+hhZxRRuaB8igKeEfSyEPt/Q9DGabT+z8ougUrFN9eIAbhsVf3yMPAggl7eTpHCFfCr7hoittKf7cHQIenKTA4gm/xDBRJTApBrs/b2UeeBm5lD5Exyslhw/VtHpbPvJmKHuuJzy5mK2xmqPFC8307G8iG7hBQQjQwJONIPVHh27Rvv7SicBCK+WZWKG3l3pe2ohOcAZvgZpXuc9Tf7Hcw+suJMuf72eCVZCd5gdFbRtGSCuUrl4tR0wUd2FenreNbv/pyS0wcP1N6xFRqP2hqCthTxUJtxTYzQIoI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB4720.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(36756003)(110136005)(53546011)(83380400001)(8676002)(4326008)(54906003)(66946007)(508600001)(7416002)(2616005)(2906002)(316002)(8936002)(5660300002)(6486002)(38100700002)(31686004)(66556008)(66476007)(186003)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d2pXekNxZWE0d3FPajAvNjd0QkZRMmZrWXMxdVJVWkxsYmdlQ0J2ME1Pd05Y?=
- =?utf-8?B?aDFCbmhUMXlQRS92aU5mbzlTSGdwcE5VWVZGZXFPcjlyNzFadHBXOGhZMkor?=
- =?utf-8?B?UlZSZEhjMUxpajcwYjhDSENvanR2dUszU2V0MlprMjNwNUJweXh5T0hNckxw?=
- =?utf-8?B?eW4rdlY1Zi81T1kvZnNCTjEzdUpBNWZORzE1WnJhclNSZFlLd3k4MmxTQ3BM?=
- =?utf-8?B?NXhwc0E5c2c2TXVaTW03YXJObWpjRlRMR2ZsUWFoaVRJd3dIblVNOUFmblBt?=
- =?utf-8?B?SlFtVnQwRi9oOEhrYkt4VXF2K1FHdjdKbjVTck0wL3hRZERRcnN3cVpPQ0Fo?=
- =?utf-8?B?WlJRWFlQY282QldGbFFZNFZOSmZHTGd3VS9mQVJuTVcyajZtZWpUSHFLYjRh?=
- =?utf-8?B?bm5CVzhhQTZGOGxLTlIwVE5UQWEvQVo2b21RWEQ3eGNBQUswMDZXQmNuUzVO?=
- =?utf-8?B?cTUzZVlyMzlCR1RjaGNMV3FpbUd2TUZucnpLYmgrZjkzVUswUnNMUEp4bm14?=
- =?utf-8?B?Q0xJTkorUkxGM1NUYkdtVmZ5K2xvRCtabWJLelBEM1BqUW5zbGZhYVVid0s2?=
- =?utf-8?B?NFFXZzU5aWFCanp2T2dlWUtYTmJvVG04Q2ZiaWlybjVyV0MwcGRRdEFlZWhx?=
- =?utf-8?B?aGZlTXhlUVlaNnp4SEpQN1pSY3FIN1I1MWFYMERjTHhVazFNM2FNTklrRHBC?=
- =?utf-8?B?TnRka1hjUlJ0Wm1xSDlqU2RhanlxWDZuU2JSV3NmOVhFc01JNmdmUlhXVVNY?=
- =?utf-8?B?cmJSUERMK1p1NGFjU2FzOXcvZmdxQ1N2d2hQbHRreEZta0hDNGlZejhoVkdk?=
- =?utf-8?B?Mkd6RHFiV09EdkVleW9NaWNyY1o0NC9jMEt1K0dHT3J1bzRVc0ZNREdSUURK?=
- =?utf-8?B?aW9SVVJtc0szeFNqL0paakZFeGxzQ05lWi9PZUY2OThTT3lvNVVCN25MKzRP?=
- =?utf-8?B?c0FxOGcwaHJYbm1WSnpZSkk1K2xTK05TYnJxMUdDSHNvR2E5V01ocndZYWNn?=
- =?utf-8?B?MVRvWVVuMVhZS3cxT0ZOaEt4QllScEhiTEZrRTk1a3lMUUlOb2pReHFxK1R0?=
- =?utf-8?B?ZHhXbjBjTE84R3BLVFNrbi8ySjFzNEorMHFaQloyOEN5WGJVRGc5bjlFWWdX?=
- =?utf-8?B?WGo2aHFwc2VJU2FibGN6Vm81ZEtDemtKbnpIeGpwblFZakVSNjFtelVuNENR?=
- =?utf-8?B?ZXlSam1xQStRY2ZEanZNQklxakg4ZzZ1QmRldmNuNHlhTzBpOHZ2eFlPb1o0?=
- =?utf-8?B?VUhpbXNwR3lkbGg0RG5HMUhLeGZjbi9iVGpyZE0wSE4wVEd6UXE1S29sN01D?=
- =?utf-8?B?Umg0UjBZNnJIa1RUTlhvZTZ3ak9kdlcvQ1hPam5xaGtzZS9nUFovOXhubnRM?=
- =?utf-8?B?L0pWMGVERHlVelNFZW1jZGRLMFJua20raHJYcE5SMGlkUnZtTTJjb0diZGRI?=
- =?utf-8?B?QXBxOGlUT0FucVZ1TzFJU1lublNIdHlPUWloVjVvQTVLRTV1SndNUFpJTVQr?=
- =?utf-8?B?WTJKM09mWjdiQmF1S1ZTTzlGaEdZY3I4NHFyVEpJc0tpUnltZ0w5dXJnR2pL?=
- =?utf-8?B?MXMyNEhHSHh0MmVYK2hoV0ppU3pjODZSWUZ5QkVScVpZaE1ZblJNd1BRdjNK?=
- =?utf-8?B?dHIzMWdmNEIydXBtT1BZRUNINldCaisxL0pWd0pXeU5lb1F2bTlGeW5hUURy?=
- =?utf-8?B?bmZRMWt5Si84OWlSanJ4WEpCRjRBb29LRCs5MDIwM0lVVkxDcHFXZk56TkVl?=
- =?utf-8?B?WEtIa0VFYUR1ZEZ0ay9qbzk3cDQ0ZHlPbWF4RU0rbzVlY2NEN1pyaGR2dGRq?=
- =?utf-8?B?WnlmN1VjNHNEbm1LcERadzIwRmhvK0FJclpHK1lEdnVSVXZ5Uzg1NW5hZGJU?=
- =?utf-8?B?U3h0ZFE2Z2o4blhQQzNKT0RxVVB5RW9BcUlDOFcvWE92RXN5Q255cm81OUV6?=
- =?utf-8?B?eTJ1dEJjQmZLd0hOd2RwV2NLT1FqdE1UdTJKZGpvc3hHTHYvc3hya3pJQ1hv?=
- =?utf-8?B?Z1U1M3ZYWUh0OHlCUTJFYWxQSTlIVTduYlZ0NFUrQlpva2NRNmpvSzJpQkdl?=
- =?utf-8?B?ZDFVNXEyRGNJdXkxR3ZtN1c1WTRqeHpCQ0tMNWVyWHJqUmpSOGVEOFZKNXFT?=
- =?utf-8?B?SjFCSVBXendCbzZkNFNVZGNDVnhZZk9wT2tHd0RnWHgrdkVzQzlBaWlXRENl?=
- =?utf-8?B?TUh3Q2pUZmxFWXZYRG9OVWFMQ2RaUldJUmhxYVk3WThNL0dBOWMxT3JTWkJk?=
- =?utf-8?Q?TV50yh4kEsHHiYb19PrCH2oK8F/qSDYvN9K053hAmQ=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15e9fead-1e2d-4744-8269-08d99e311ba2
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB4720.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 18:46:40.5366
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zNHgWDsHK86H/SxoZx9NmZN1QMrO8KXQ8ny5VYr7zP4H6p5XLtMCBGqbMIxHj3AZwUIrusWrUUh9MLGYzlJnFQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2752
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/21 8:02 AM, Huang Rui wrote:
-> In some old Zen based processors, they are using the shared memory that
-> exposed from ACPI SBIOS.
+Hi Linus,
 
-With this you present two different approaches for support in the driver,
-MSRs and shared memory. For processors using shared memory you use the 
-shared memory defined in the ACPI tables but access the MSRs directly.
+Please pull this branch containing new code for 5.16.  This cycle we've
+worked on fixing bugs and improving XFS' memory footprint.
 
-Is there any concern that the MSR registers (defined in patch 2/21) can
-differ from what is defined in the ACPI tables?
+The most notable fixes include: fixing a corruption warning (and
+free space accounting skew) if copy on write fails; fixing slab cache
+misuse if SLOB is enabled, which apparently was broken for years without
+anybody noticing; and fixing a potential race with online shrinkfs.
 
-Should you use the drivers/acpi interfaces for MSRs also?
+Otherwise, the bulk of the changes here involve setting up separate slab
+caches for frequently used items such as btree cursors and log intent
+items, and compacting the structures to reduce memory usage of those
+items substantially.  This also sets us up to support larger btrees in
+future kernels.  We also switch parts of online fsck to allocate scrub
+context information from the heap instead of using stack space.
 
--Nathan
- 
-> 
-> Signed-off-by: Jinzhou Su <Jinzhou.Su@amd.com>
-> Signed-off-by: Huang Rui <ray.huang@amd.com>
-> ---
->  drivers/cpufreq/amd-pstate.c | 58 ++++++++++++++++++++++++++++++++----
->  1 file changed, 53 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-> index 55ff03f85608..d399938d6d85 100644
-> --- a/drivers/cpufreq/amd-pstate.c
-> +++ b/drivers/cpufreq/amd-pstate.c
-> @@ -73,6 +73,19 @@ static inline int pstate_enable(bool enable)
->  	return wrmsrl_safe(MSR_AMD_CPPC_ENABLE, enable ? 1 : 0);
->  }
->  
-> +static int cppc_enable(bool enable)
-> +{
-> +	int cpu, ret = 0;
-> +
-> +	for_each_online_cpu(cpu) {
-> +		ret = cppc_set_enable(cpu, enable ? 1 : 0);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->  DEFINE_STATIC_CALL(amd_pstate_enable, pstate_enable);
->  
->  static inline int amd_pstate_enable(bool enable)
-> @@ -103,6 +116,24 @@ static int pstate_init_perf(struct amd_cpudata *cpudata)
->  	return 0;
->  }
->  
-> +static int cppc_init_perf(struct amd_cpudata *cpudata)
-> +{
-> +	struct cppc_perf_caps cppc_perf;
-> +
-> +	int ret = cppc_get_perf_caps(cpudata->cpu, &cppc_perf);
-> +	if (ret)
-> +		return ret;
-> +
-> +	WRITE_ONCE(cpudata->highest_perf, amd_get_highest_perf());
-> +
-> +	WRITE_ONCE(cpudata->nominal_perf, cppc_perf.nominal_perf);
-> +	WRITE_ONCE(cpudata->lowest_nonlinear_perf,
-> +		   cppc_perf.lowest_nonlinear_perf);
-> +	WRITE_ONCE(cpudata->lowest_perf, cppc_perf.lowest_perf);
-> +
-> +	return 0;
-> +}
-> +
->  DEFINE_STATIC_CALL(amd_pstate_init_perf, pstate_init_perf);
->  
->  static inline int amd_pstate_init_perf(struct amd_cpudata *cpudata)
-> @@ -120,6 +151,19 @@ static void pstate_update_perf(struct amd_cpudata *cpudata, u32 min_perf,
->  			      READ_ONCE(cpudata->cppc_req_cached));
->  }
->  
-> +static void cppc_update_perf(struct amd_cpudata *cpudata,
-> +			     u32 min_perf, u32 des_perf,
-> +			     u32 max_perf, bool fast_switch)
-> +{
-> +	struct cppc_perf_ctrls perf_ctrls;
-> +
-> +	perf_ctrls.max_perf = max_perf;
-> +	perf_ctrls.min_perf = min_perf;
-> +	perf_ctrls.desired_perf = des_perf;
-> +
-> +	cppc_set_perf(cpudata->cpu, &perf_ctrls);
-> +}
-> +
->  DEFINE_STATIC_CALL(amd_pstate_update_perf, pstate_update_perf);
->  
->  static inline void amd_pstate_update_perf(struct amd_cpudata *cpudata,
-> @@ -346,7 +390,8 @@ static int amd_pstate_cpu_init(struct cpufreq_policy *policy)
->  	/* It will be updated by governor */
->  	policy->cur = policy->cpuinfo.min_freq;
->  
-> -	policy->fast_switch_possible = true;
-> +	if (boot_cpu_has(X86_FEATURE_AMD_CPPC))
-> +		policy->fast_switch_possible = true;
->  
->  	ret = freq_qos_add_request(&policy->constraints, &cpudata->req[0],
->  				   FREQ_QOS_MIN, policy->cpuinfo.min_freq);
-> @@ -397,7 +442,6 @@ static struct cpufreq_driver amd_pstate_driver = {
->  	.flags		= CPUFREQ_CONST_LOOPS | CPUFREQ_NEED_UPDATE_LIMITS,
->  	.verify		= amd_pstate_verify,
->  	.target		= amd_pstate_target,
-> -	.adjust_perf    = amd_pstate_adjust_perf,
->  	.init		= amd_pstate_cpu_init,
->  	.exit		= amd_pstate_cpu_exit,
->  	.name		= "amd-pstate",
-> @@ -421,10 +465,14 @@ static int __init amd_pstate_init(void)
->  		return -EEXIST;
->  
->  	/* capability check */
-> -	if (!boot_cpu_has(X86_FEATURE_AMD_CPPC)) {
-> -		pr_debug("%s, AMD CPPC MSR based functionality is not supported\n",
-> +	if (boot_cpu_has(X86_FEATURE_AMD_CPPC)) {
-> +		pr_debug("%s, AMD CPPC MSR based functionality is supported\n",
->  			 __func__);
-> -		return -ENODEV;
-> +		amd_pstate_driver.adjust_perf = amd_pstate_adjust_perf;
-> +	} else {
-> +		static_call_update(amd_pstate_enable, cppc_enable);
-> +		static_call_update(amd_pstate_init_perf, cppc_init_perf);
-> +		static_call_update(amd_pstate_update_perf, cppc_update_perf);
->  	}
->  
->  	/* enable amd pstate feature */
-> 
+The branch merges cleanly against upstream as of a few minutes ago.
+Please let me know if anything else strange happens during the merge
+process.  There will probably be a second pull request next week with
+a few more minor cleanups and bug fixes.
+
+As a side note: the only iomap changes for 5.16 that I know of are
+Andreas' gfs2 mmap pagefault deadlock fixes, which I think he's already
+sent you separately.
+
+--D
+
+The following changes since commit 9e1ff307c779ce1f0f810c7ecce3d95bbae40896:
+
+  Linux 5.15-rc4 (2021-10-03 14:08:47 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.16-merge-4
+
+for you to fetch changes up to 2a09b575074ff3ed23907b6f6f3da87af41f592b:
+
+  xfs: use swap() to make code cleaner (2021-10-30 09:28:55 -0700)
+
+----------------------------------------------------------------
+New code for 5.16:
+ * Bug fixes and cleanups for kernel memory allocation usage, this time
+   without touching the mm code.
+ * Refactor the log recovery mechanism that preserves held resources
+   across a transaction roll so that it uses the exact same mechanism
+   that we use for that during regular runtime.
+ * Fix bugs and tighten checking around btree heights.
+ * Remove more old typedefs.
+ * Fix perag reference leaks when racing with growfs.
+ * Remove unused fields from xfs_btree_cur.
+ * Allocate various scrub structures on the heap to reduce stack usage.
+ * Pack xfs_btree_cur fields and rearrange to support arbitrary heights.
+ * Compute maximum possible heights for each btree height, and use that
+   to set up slab caches for each btree type.
+ * Finally remove kmem_zone_t, since these have always been struct
+   kmem_cache on Linux.
+ * Compact the structures used to coordinate work intent items.
+ * Set up slab caches for each work intent item type.
+ * Rename the "bmap_add_free" function to "free_extent_later", which
+   more accurately describes what it does.
+ * Fix corruption warning on unmount when a CoW preallocation covers a
+   data fork delalloc reservation but then the CoW fails.
+ * Add some more minor code improvements.
+
+----------------------------------------------------------------
+Brian Foster (5):
+      xfs: fold perag loop iteration logic into helper function
+      xfs: rename the next_agno perag iteration variable
+      xfs: terminate perag iteration reliably on agcount
+      xfs: fix perag reference leak on iteration race with growfs
+      xfs: punch out data fork delalloc blocks on COW writeback failure
+
+Changcheng Deng (1):
+      xfs: use swap() to make code cleaner
+
+Christoph Hellwig (3):
+      xfs: remove the xfs_dinode_t typedef
+      xfs: remove the xfs_dsb_t typedef
+      xfs: remove the xfs_dqblk_t typedef
+
+Darrick J. Wong (32):
+      xfs: formalize the process of holding onto resources across a defer roll
+      xfs: port the defer ops capture and continue to resource capture
+      xfs: fix maxlevels comparisons in the btree staging code
+      xfs: remove xfs_btree_cur_t typedef
+      xfs: don't allocate scrub contexts on the stack
+      xfs: stricter btree height checking when looking for errors
+      xfs: stricter btree height checking when scanning for btree roots
+      xfs: check that bc_nlevels never overflows
+      xfs: fix incorrect decoding in xchk_btree_cur_fsbno
+      xfs: remove xfs_btree_cur.bc_blocklog
+      xfs: reduce the size of nr_ops for refcount btree cursors
+      xfs: don't track firstrec/firstkey separately in xchk_btree
+      xfs: dynamically allocate btree scrub context structure
+      xfs: prepare xfs_btree_cur for dynamic cursor heights
+      xfs: rearrange xfs_btree_cur fields for better packing
+      xfs: refactor btree cursor allocation function
+      xfs: encode the max btree height in the cursor
+      xfs: dynamically allocate cursors based on maxlevels
+      xfs: rename m_ag_maxlevels to m_allocbt_maxlevels
+      xfs: compute maximum AG btree height for critical reservation calculation
+      xfs: clean up xfs_btree_{calc_size,compute_maxlevels}
+      xfs: compute the maximum height of the rmap btree when reflink enabled
+      xfs: kill XFS_BTREE_MAXLEVELS
+      xfs: compute absolute maximum nlevels for each btree type
+      xfs: use separate btree cursor cache for each btree type
+      xfs: remove kmem_zone typedef
+      xfs: rename _zone variables to _cache
+      xfs: compact deferred intent item structures
+      xfs: create slab caches for frequently-used deferred items
+      xfs: rename xfs_bmap_add_free to xfs_free_extent_later
+      xfs: reduce the size of struct xfs_extent_free_item
+      xfs: remove unused parameter from refcount code
+
+Gustavo A. R. Silva (1):
+      xfs: Use kvcalloc() instead of kvzalloc()
+
+Qing Wang (1):
+      xfs: replace snprintf in show functions with sysfs_emit
+
+Rustam Kovhaev (1):
+      xfs: use kmem_cache_free() for kmem_cache objects
+
+Wan Jiabing (1):
+      xfs: Remove duplicated include in xfs_super
+
+ fs/xfs/kmem.h                      |   4 -
+ fs/xfs/libxfs/xfs_ag.c             |   2 +-
+ fs/xfs/libxfs/xfs_ag.h             |  36 ++--
+ fs/xfs/libxfs/xfs_ag_resv.c        |   3 +-
+ fs/xfs/libxfs/xfs_alloc.c          | 120 ++++++++++---
+ fs/xfs/libxfs/xfs_alloc.h          |  38 ++++-
+ fs/xfs/libxfs/xfs_alloc_btree.c    |  63 +++++--
+ fs/xfs/libxfs/xfs_alloc_btree.h    |   5 +
+ fs/xfs/libxfs/xfs_attr_leaf.c      |   2 +-
+ fs/xfs/libxfs/xfs_bmap.c           | 101 ++++-------
+ fs/xfs/libxfs/xfs_bmap.h           |  35 +---
+ fs/xfs/libxfs/xfs_bmap_btree.c     |  62 +++++--
+ fs/xfs/libxfs/xfs_bmap_btree.h     |   5 +
+ fs/xfs/libxfs/xfs_btree.c          | 333 +++++++++++++++++++++++--------------
+ fs/xfs/libxfs/xfs_btree.h          |  99 ++++++++---
+ fs/xfs/libxfs/xfs_btree_staging.c  |   8 +-
+ fs/xfs/libxfs/xfs_da_btree.c       |   6 +-
+ fs/xfs/libxfs/xfs_da_btree.h       |   3 +-
+ fs/xfs/libxfs/xfs_defer.c          | 241 ++++++++++++++++++++-------
+ fs/xfs/libxfs/xfs_defer.h          |  41 ++++-
+ fs/xfs/libxfs/xfs_dquot_buf.c      |   4 +-
+ fs/xfs/libxfs/xfs_format.h         |  12 +-
+ fs/xfs/libxfs/xfs_fs.h             |   2 +
+ fs/xfs/libxfs/xfs_ialloc.c         |   5 +-
+ fs/xfs/libxfs/xfs_ialloc_btree.c   |  90 +++++++++-
+ fs/xfs/libxfs/xfs_ialloc_btree.h   |   5 +
+ fs/xfs/libxfs/xfs_inode_buf.c      |   6 +-
+ fs/xfs/libxfs/xfs_inode_fork.c     |  24 +--
+ fs/xfs/libxfs/xfs_inode_fork.h     |   2 +-
+ fs/xfs/libxfs/xfs_refcount.c       |  46 +++--
+ fs/xfs/libxfs/xfs_refcount.h       |   7 +-
+ fs/xfs/libxfs/xfs_refcount_btree.c |  73 ++++++--
+ fs/xfs/libxfs/xfs_refcount_btree.h |   5 +
+ fs/xfs/libxfs/xfs_rmap.c           |  21 ++-
+ fs/xfs/libxfs/xfs_rmap.h           |   7 +-
+ fs/xfs/libxfs/xfs_rmap_btree.c     | 116 ++++++++++---
+ fs/xfs/libxfs/xfs_rmap_btree.h     |   5 +
+ fs/xfs/libxfs/xfs_sb.c             |   4 +-
+ fs/xfs/libxfs/xfs_trans_resv.c     |  18 +-
+ fs/xfs/libxfs/xfs_trans_space.h    |   9 +-
+ fs/xfs/scrub/agheader.c            |  13 +-
+ fs/xfs/scrub/agheader_repair.c     |   8 +-
+ fs/xfs/scrub/bitmap.c              |  22 +--
+ fs/xfs/scrub/bmap.c                |   2 +-
+ fs/xfs/scrub/btree.c               | 121 +++++++-------
+ fs/xfs/scrub/btree.h               |  17 +-
+ fs/xfs/scrub/dabtree.c             |  62 +++----
+ fs/xfs/scrub/repair.h              |   3 +
+ fs/xfs/scrub/scrub.c               |  64 +++----
+ fs/xfs/scrub/trace.c               |  11 +-
+ fs/xfs/scrub/trace.h               |  10 +-
+ fs/xfs/xfs_aops.c                  |  15 +-
+ fs/xfs/xfs_attr_inactive.c         |   2 +-
+ fs/xfs/xfs_bmap_item.c             |  18 +-
+ fs/xfs/xfs_bmap_item.h             |   6 +-
+ fs/xfs/xfs_buf.c                   |  14 +-
+ fs/xfs/xfs_buf_item.c              |   8 +-
+ fs/xfs/xfs_buf_item.h              |   2 +-
+ fs/xfs/xfs_buf_item_recover.c      |   2 +-
+ fs/xfs/xfs_dquot.c                 |  28 ++--
+ fs/xfs/xfs_extfree_item.c          |  33 ++--
+ fs/xfs/xfs_extfree_item.h          |   6 +-
+ fs/xfs/xfs_icache.c                |  10 +-
+ fs/xfs/xfs_icreate_item.c          |   6 +-
+ fs/xfs/xfs_icreate_item.h          |   2 +-
+ fs/xfs/xfs_inode.c                 |  12 +-
+ fs/xfs/xfs_inode.h                 |   2 +-
+ fs/xfs/xfs_inode_item.c            |   6 +-
+ fs/xfs/xfs_inode_item.h            |   2 +-
+ fs/xfs/xfs_ioctl.c                 |   6 +-
+ fs/xfs/xfs_log.c                   |   6 +-
+ fs/xfs/xfs_log_priv.h              |   2 +-
+ fs/xfs/xfs_log_recover.c           |  12 +-
+ fs/xfs/xfs_mount.c                 |  14 ++
+ fs/xfs/xfs_mount.h                 |   5 +-
+ fs/xfs/xfs_mru_cache.c             |   2 +-
+ fs/xfs/xfs_qm.c                    |   2 +-
+ fs/xfs/xfs_qm.h                    |   2 +-
+ fs/xfs/xfs_refcount_item.c         |  18 +-
+ fs/xfs/xfs_refcount_item.h         |   6 +-
+ fs/xfs/xfs_reflink.c               |   2 +-
+ fs/xfs/xfs_rmap_item.c             |  18 +-
+ fs/xfs/xfs_rmap_item.h             |   6 +-
+ fs/xfs/xfs_super.c                 | 233 +++++++++++++-------------
+ fs/xfs/xfs_sysfs.c                 |  24 +--
+ fs/xfs/xfs_trace.h                 |   2 +-
+ fs/xfs/xfs_trans.c                 |  16 +-
+ fs/xfs/xfs_trans.h                 |   8 +-
+ fs/xfs/xfs_trans_dquot.c           |   4 +-
+ 89 files changed, 1656 insertions(+), 907 deletions(-)
