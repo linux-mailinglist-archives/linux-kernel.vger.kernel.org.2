@@ -2,88 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C8BD443969
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:16:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FC344396A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:16:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhKBXS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 19:18:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231379AbhKBXS4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 19:18:56 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637CBC061714;
-        Tue,  2 Nov 2021 16:16:21 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id i5so860418wrb.2;
-        Tue, 02 Nov 2021 16:16:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=e6rjzzyUGSlERAuwJSH0XEKW/VN+PnGvJFm5FyzCoaY=;
-        b=SQhskytV8xOmkEZ4+m1uy2ll3kfcpHqeQ4A7fnLA24OIBAYNc2Kf+l6rdlTfJ2cUac
-         5GVjMRMfuMXH3dY+DjEK5HkIBzQSDDZDdK+DV+Yis8BLyNO/eNEZNylRucwy7rSfTZWu
-         7WaKLCFzm+6dfoTWY/2qStAKEnXVclHHHOgGcVceXj1sWGTO+qODkmLI5NwylK7T0ikD
-         Yelof2Ej02qQPskEWJFLga8VYKOuDQkETpy3NXz6yFAfSa+OgA/Q0aZe/QXcB4TP1+B4
-         NByYHUxKAW+bK8IbOMxrlF8ikmhu77eN+COBWE5Io2B0rU2e/x7muo3gdgfpP/HhpuSk
-         t7ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=e6rjzzyUGSlERAuwJSH0XEKW/VN+PnGvJFm5FyzCoaY=;
-        b=ePENgu0OD+Qv3ML/Jh/hZQ3r85cce99tnSpHlksijT6IzLo8u33LaQ7vdOKNzetE6c
-         hSC4OJP1udya1W0rSJY/In3STi53nbfKMffHI1bTQ5PG8JWDfjCd5wB0Z9VcJph2/yql
-         9kNtICHUiW2ygSIvKhbNUfl2sP8QTfGR0encjAEjs7ksO+oqoPMwfBF7WTWml8k8qJr5
-         zElv6901NS3a7AZQZrnQPz4GYhn2Rbm3JbVn7eeQncaWtYAgK1CiZQELdeQhi2qZeu+d
-         6WmOn6d/0qnxNcwvEnWvBzxDC0/UB0fic57l34+JNNhg37jGjFwXyUmMtwc1iDUsCS6O
-         ciZQ==
-X-Gm-Message-State: AOAM530+M3tMOfuyR4wPgbtWAJ4XcBZqaXhdEReB6P8jh0jbhujLFDPr
-        3QMGgqdOrMBFvA==
-X-Google-Smtp-Source: ABdhPJwgWQ+0bukxu84IxX9ucHGOlez2D67MBHn0KTjY4ZaQQR4vrEXDJe+QaCI+iqBw+g0bCbxwVA==
-X-Received: by 2002:a5d:508d:: with SMTP id a13mr7354426wrt.41.1635894980021;
-        Tue, 02 Nov 2021 16:16:20 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id r10sm323399wrl.92.2021.11.02.16.16.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 16:16:19 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@googlemail.com>
-X-Google-Original-From: Colin Ian King <colin.i.king@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mailmap: update email address for Colin King
-Date:   Tue,  2 Nov 2021 23:16:17 +0000
-Message-Id: <20211102231617.78569-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S231445AbhKBXTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 19:19:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:47126 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231509AbhKBXTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 19:19:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1136511B3;
+        Tue,  2 Nov 2021 16:16:33 -0700 (PDT)
+Received: from [10.57.47.15] (unknown [10.57.47.15])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 37F4D3F719;
+        Tue,  2 Nov 2021 16:16:31 -0700 (PDT)
+Subject: Re: [PATCH] [RFC] arm64: export this_cpu_has_cap
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>
+References: <20211029113023.760421-1-arnd@kernel.org>
+ <9d4e09b4-47dc-ed3c-2b6d-e0d1a081e592@arm.com> <YXw4H2BNx85KnLDh@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <e8fa9099-ec4c-d6c5-ce40-1b98ed11005c@arm.com>
+Date:   Tue, 2 Nov 2021 23:16:30 +0000
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YXw4H2BNx85KnLDh@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Colin King has moved to Intel to update gmail and Canonical
-email addresses.
+Arnd
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- .mailmap | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/.mailmap b/.mailmap
-index 9d4fc1fea665..14314e3c5d5e 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -73,6 +73,8 @@ Chris Chiu <chris.chiu@canonical.com> <chiu@endlessm.com>
- Chris Chiu <chris.chiu@canonical.com> <chiu@endlessos.org>
- Christophe Ricard <christophe.ricard@gmail.com>
- Christoph Hellwig <hch@lst.de>
-+Colin Ian King <colin.king@intel.com> <colin.king@canonical.com>
-+Colin Ian King <colin.king@intel.com> <colin.i.king@gmail.com>
- Corey Minyard <minyard@acm.org>
- Damian Hobson-Garcia <dhobsong@igel.co.jp>
- Daniel Borkmann <daniel@iogearbox.net> <danborkmann@googlemail.com>
--- 
-2.32.0
+On 29/10/2021 19:06, Catalin Marinas wrote:
+> On Fri, Oct 29, 2021 at 02:31:23PM +0100, Suzuki K Poulose wrote:
+>> On 29/10/2021 12:30, Arnd Bergmann wrote:
+>>> From: Arnd Bergmann <arnd@arndb.de>
+>>>
+>>> It's now used in a coresight driver that can be a loadable module:
+>>>
+>>> ERROR: modpost: "this_cpu_has_cap" [drivers/hwtracing/coresight/coresight-trbe.ko] undefined!
+>>>
+>>> Fixes: 8a1065127d95 ("coresight: trbe: Add infrastructure for Errata handling")
+>>
+>> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Tested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>
+>> Will, Catalin, Mathieu,
+>>
+>> Do you have a preference on how this fix can be pulled in ? This may
+>> be safe to go via coresight tree if it is not too late. Otherwise,
+>> it could go via the arm64 tree.
+> 
+> I think Will already closed/tagged the arm64 tree for the upcoming
+> merging window, though he could take it as a fix afterwards.
+> 
+> If it doesn't conflict with the arm64 for-next/core, it's fine by me to
+> go through the coresight tree.
+> 
+>>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>>> ---
+>>> Not sure if we actually want this to be exported, this is my local
+>>> workaround for the randconfig build bot.
+>>> ---
+>>>    arch/arm64/kernel/cpufeature.c | 1 +
+>>>    1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+>>> index ecbdff795f5e..beccbcfa7391 100644
+>>> --- a/arch/arm64/kernel/cpufeature.c
+>>> +++ b/arch/arm64/kernel/cpufeature.c
+>>> @@ -2864,6 +2864,7 @@ bool this_cpu_has_cap(unsigned int n)
+>>>    	return false;
+>>>    }
+>>> +EXPORT_SYMBOL(this_cpu_has_cap);
+> 
+> EXPORT_SYMBOL_GPL? I think this_cpu_has_cap() is a bit more more
+> specialised than cpus_have_const_cap().
+> 
+> With that:
+> 
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> 
+
+Do you plan to send an updated patch with above ?
+
+Suzuki
+
 
