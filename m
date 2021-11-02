@@ -2,175 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0228442D7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:06:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C52442D89
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:08:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhKBMIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 08:08:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57206 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229577AbhKBMIq (ORCPT
+        id S230442AbhKBMKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 08:10:51 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:51390 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229577AbhKBMKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 08:08:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635854771;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Db4CzAP+L3jtj1KLq/9Mushjs5f9BjiScDLfHzCS5nU=;
-        b=P1ACbCILkjZil25ZNScu+pLnDGWVMkIjZtmjhLK652safurufGR4PuwYX16sWkQEhxZk3u
-        BBPuLF05buf/IghbsXbBL45EO6X+iBpM+1YOegukHa9lPak6rPdnMWxRSWW3/tJrssuD5a
-        2HP6S5I2XqNTjbSwp6XwovYz6B/F7Ek=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-576-rjohv25ENJmP3OFkukysZQ-1; Tue, 02 Nov 2021 08:06:10 -0400
-X-MC-Unique: rjohv25ENJmP3OFkukysZQ-1
-Received: by mail-wm1-f72.google.com with SMTP id k25-20020a05600c1c9900b00332f798ba1dso1031691wms.4
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 05:06:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=Db4CzAP+L3jtj1KLq/9Mushjs5f9BjiScDLfHzCS5nU=;
-        b=hW4mxfVRAhPdO9YfBeSJnk4c1FOlf1dnruMQ7C1SYNcjJXxZNQPo/xIlzL8BHj2Bnk
-         fc1yrP7jW20BuF4sYL951+RmyCTzKAUNCIBnHM9XhauIJkrfa7pZfT0ci2WUqu+h/Yqz
-         CvLq2d33zAKUpm96W6CEVQl++1kCdDimdYfy/oI39AB7qRU7O0dwtP3YAJpBNPab5uR5
-         xUJX1fNSAExgb1UEFRqUCEE9swFOIYSupewfvS3al8n6da4Pbf81CxTlwelxQxqx+hg2
-         OOx8U/aGQQMVYeynBaBnoMSqnuV0vOSqOW3wbXj/OIualUtai8Zi+LpJKcQN6+mwpKsT
-         0nGQ==
-X-Gm-Message-State: AOAM530Pd/ZISINMYgssTAuf2LolfUnF4QVMgX8fWjWWseN0ASXFDoms
-        DvO69y4pI2v2VZ8BM9BfzRIXkCjtpnYikhrIX6cthQve0ZLJGXXlWS4mdQbLyEZ7+64CgIfQuWx
-        jbEcrf+g8TTNTjgnwaHJh8f6c
-X-Received: by 2002:a1c:2904:: with SMTP id p4mr6585029wmp.49.1635854768654;
-        Tue, 02 Nov 2021 05:06:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx5hLAbJGUIkd4RxXJdsL7Kb8mcCW4AsapmE12n3CdKQp54BoRsQmVs+BhrOG9Oye9TiSqHwQ==
-X-Received: by 2002:a1c:2904:: with SMTP id p4mr6584984wmp.49.1635854768338;
-        Tue, 02 Nov 2021 05:06:08 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6810.dip0.t-ipconnect.de. [91.12.104.16])
-        by smtp.gmail.com with ESMTPSA id g10sm2746870wmq.13.2021.11.02.05.06.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 05:06:07 -0700 (PDT)
-Message-ID: <42abfba6-b27e-ca8b-8cdf-883a9398b506@redhat.com>
-Date:   Tue, 2 Nov 2021 13:06:06 +0100
+        Tue, 2 Nov 2021 08:10:47 -0400
+X-UUID: fc93807cb8d54e30a261ce4965f119d4-20211102
+X-UUID: fc93807cb8d54e30a261ce4965f119d4-20211102
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 142101394; Tue, 02 Nov 2021 20:08:08 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3;
+ Tue, 2 Nov 2021 20:08:07 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs10n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.792.15 via Frontend Transport; Tue, 2 Nov 2021 20:08:07 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     <ohad@wizery.com>, <bjorn.andersson@linaro.org>,
+        <mathieu.poirier@linaro.org>
+CC:     <matthias.bgg@gmail.com>, <linux-remoteproc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <mark-pk.tsai@mediatek.com>,
+        <yj.chiang@mediatek.com>
+Subject: [PATCH] remoteproc: use %d format string to print return error code
+Date:   Tue, 2 Nov 2021 20:08:05 +0800
+Message-ID: <20211102120805.27137-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Alexey Makhalov <amakhalov@vmware.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Oscar Salvador <OSalvador@suse.com>
-References: <20211101201312.11589-1-amakhalov@vmware.com>
- <YYDtDkGNylpAgPIS@dhcp22.suse.cz>
- <7136c959-63ff-b866-b8e4-f311e0454492@redhat.com>
- <C69EF2FE-DFF6-492E-AD40-97A53739C3EC@vmware.com>
- <YYD/FkpAk5IvmOux@dhcp22.suse.cz>
- <b2e4a611-45a6-732a-a6d3-6042afd2af6e@redhat.com>
- <E34422F0-A44A-48FD-AE3B-816744359169@vmware.com>
- <b3908fce-6b07-8390-b691-56dd2f85c05f@redhat.com>
- <YYEkqH8l0ASWv/JT@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH] mm: fix panic in __alloc_pages
-In-Reply-To: <YYEkqH8l0ASWv/JT@dhcp22.suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.11.21 12:44, Michal Hocko wrote:
-> On Tue 02-11-21 12:00:57, David Hildenbrand wrote:
->> On 02.11.21 11:34, Alexey Makhalov wrote:
-> [...]
->>>> The node onlining logic when onlining a CPU sounds bogus as well: Let's
->>>> take a look at try_offline_node(). It checks that:
->>>> 1) That no memory is *present*
->>>> 2) That no CPU is *present*
->>>>
->>>> We should online the node when adding the CPU ("present"), not when
->>>> onlining the CPU.
->>>
->>> Possible.
->>> Assuming try_online_node was moved under add_cpu(), let’s
->>> take look on this call stack:
->>> add_cpu()
->>>   try_online_node()
->>>     __try_online_node()
->>>       hotadd_new_pgdat()
->>> At line 1190 we'll have a problem:
->>> 1183         pgdat = NODE_DATA(nid);
->>> 1184         if (!pgdat) {
->>> 1185                 pgdat = arch_alloc_nodedata(nid);
->>> 1186                 if (!pgdat)
->>> 1187                         return NULL;
->>> 1188
->>> 1189                 pgdat->per_cpu_nodestats =
->>> 1190                         alloc_percpu(struct per_cpu_nodestat);
->>> 1191                 arch_refresh_nodedata(nid, pgdat);
->>>
->>> alloc_percpu() will go for all possible CPUs and will eventually end up
->>> calling alloc_pages_node() trying to use subject nid for corresponding CPU
->>> hitting the same state #2 problem as NODE_DATA(nid) is still NULL and nid
->>> is not yet online.
->>
->> Right, we will end up calling pcpu_alloc_pages()->alloc_pages_node() for
->> each possible CPU. We use cpu_to_node() to come up with the NID.
-> 
-> Shouldn't this be numa_mem_id instead? Memory less nodes are odd little
+Use %d format string to print return error code which
+make the error message easier to understand.
 
-Hm, good question. Most probably yes for offline nodes.
+Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+---
+ drivers/remoteproc/remoteproc_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/percpu-vm.c b/mm/percpu-vm.c
-index 2054c9213c43..c21ff5bb91dc 100644
---- a/mm/percpu-vm.c
-+++ b/mm/percpu-vm.c
-@@ -84,15 +84,19 @@ static int pcpu_alloc_pages(struct pcpu_chunk *chunk,
-                            gfp_t gfp)
- {
-        unsigned int cpu, tcpu;
--       int i;
-+       int i, nid;
+diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+index 502b6604b757..c5cc7f30f06e 100644
+--- a/drivers/remoteproc/remoteproc_core.c
++++ b/drivers/remoteproc/remoteproc_core.c
+@@ -575,7 +575,7 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
+ 					   dma_get_mask(rproc->dev.parent));
+ 	if (ret) {
+ 		dev_warn(dev,
+-			 "Failed to set DMA mask %llx. Trying to continue... %x\n",
++			 "Failed to set DMA mask %llx. Trying to continue... %d\n",
+ 			 dma_get_mask(rproc->dev.parent), ret);
+ 	}
  
-        gfp |= __GFP_HIGHMEM;
- 
-        for_each_possible_cpu(cpu) {
-+               nid = cpu_to_node(cpu);
-+
-+               if (nid == NUMA_NO_NODE || !node_online(nid))
-+                       nid = numa_mem_id();
-                for (i = page_start; i < page_end; i++) {
-                        struct page **pagep = &pages[pcpu_page_idx(cpu, i)];
- 
--                       *pagep = alloc_pages_node(cpu_to_node(cpu), gfp, 0);
-+                       *pagep = alloc_pages_node(nid, gfp, 0);
-                        if (!*pagep)
-                                goto err;
-                }
-
-
-> critters crafted into the MM code without wider considerations. From
-> time to time we are struggling with some fallouts but the primary thing
-> is that zonelists should be valid for all memory less nodes.
-
-Yes, but a zonelist cannot be correct for an offline node, where we might
-not even have an allocated pgdat yet. No pgdat, no zonelist. So as soon as
-we allocate the pgdat and set the node online (->hotadd_new_pgdat()), the zone lists have to be correct. And I can spot an build_all_zonelists() in hotadd_new_pgdat().
-
-I agree that someone passing an offline NID into an allocator function
-should be fixed.
-
-Maybe __alloc_pages_bulk() and alloc_pages_node() should bail out directly
-(VM_BUG()) in case we're providing an offline node with eventually no/stale pgdat as
-preferred nid.
-
 -- 
-Thanks,
-
-David / dhildenb
+2.18.0
 
