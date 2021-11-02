@@ -2,100 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B7C4425F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3354425F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:13:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231856AbhKBDRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 23:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
+        id S231811AbhKBDQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 23:16:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbhKBDRS (ORCPT
+        with ESMTP id S231661AbhKBDQV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 23:17:18 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A0E9C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 20:14:44 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id m14so18008717edd.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 20:14:44 -0700 (PDT)
+        Mon, 1 Nov 2021 23:16:21 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63135C061764
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 20:13:47 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id j21so48111437edt.11
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 20:13:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=KHkSeemGPSvNiCh0s45k04F2zwQ0kuwkYVmbYsHMt8o=;
-        b=EgiznZQNFI7r6O00KTXk7Ec0KBjB5MD7j7Q7Vt8ty3OZq0TTmFpp0STErNyzw6TOMv
-         4FY+oJFrfNjh6hAiVr0WDZATY6EONr3+qDov4y/RR2USrRSzJWbQmy9hcdgE0NjhXtTt
-         CgDTNcSNzmODBrlinMP9n3Z9uFViS/4oL5qjo=
+        bh=ImR1y3JaphUdqd3JeYTiTRE42eA3JabgzCrov3HxDTY=;
+        b=PPpQn+f1YtZ8r3/iKBf2PkbvIFzo0gyycxMIKfe3JMofdLmSmLn++xD45P9f+2hzzl
+         Zf8N1F3ToUi/7ntOft+Ylfm13qKKQOxHzdx8W/X05R50WhVf993YoX/yrpZN87t9AzQ3
+         eOFaONyZei33zzAf9jEjITngbt5KhcQ/Ns17PbUk2z56fpOKIf/XwmYWAxE8OPlblqr0
+         ZD0+NTl2iag7fmq+LiuAPDSBjssXY+7Dp36t14hADh2CP4juDSkX6rQkMR98xEUf/aPP
+         +LwqM6enOwTYj9fImxSMiFRiTkFBLMxIbkbVGSQX7chfyzMIOEUxaCGjWosA7pmhTH+0
+         D4EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KHkSeemGPSvNiCh0s45k04F2zwQ0kuwkYVmbYsHMt8o=;
-        b=tkm7YVrEYLrvILq8yr++QH3l3qXC3L1nYiAF9AHh3zu5X1y2Y8l/os35NfhO6CMejP
-         dMb4SWbjDNu+doqVJ38vnaJwhreJfH2FPxiqazRbsoDUtKmZBUN4RRfkG/aWuB0I7+j4
-         HE8MUwnkQwPJxhOq9ZvqakV04UhvSvOunvEg7ktVW0RoKP3ZakmkZveo2faPneXoUrcC
-         NrYir4KJBDjznY8Bzd7cHzTZikGBij4O0/mLynAFNXdamQxF3E5r6EldGCXbCp41UwO4
-         /uigA9AQ/A3Oc8OCZMcsesDkPO/i+tmjTFaKIMoOYA5MTdDuXWZMvsmrBHHYc123njpu
-         WpOg==
-X-Gm-Message-State: AOAM531ayV1JqtXK0SxfBstcl+8dEpoHTyFi6MAWDKixf4eyVA9nHKMZ
-        P3y4t7PRj5GuK4seMPdofkMqE9cD7rdpKRlfBMo=
-X-Google-Smtp-Source: ABdhPJz8VGqalF5HQPNThahWo6/MdqkHzADEaaH9xXAgFAupQuZPesHOctnfyPYwS7ZcTbJ43ZAP4A==
-X-Received: by 2002:a17:907:6eaa:: with SMTP id sh42mr33455574ejc.556.1635822882527;
-        Mon, 01 Nov 2021 20:14:42 -0700 (PDT)
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
-        by smtp.gmail.com with ESMTPSA id w18sm10341661edc.4.2021.11.01.20.14.42
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 20:14:42 -0700 (PDT)
-Received: by mail-ed1-f44.google.com with SMTP id z20so71293427edc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 20:14:42 -0700 (PDT)
-X-Received: by 2002:a19:ad0c:: with SMTP id t12mr31485660lfc.173.1635822526470;
- Mon, 01 Nov 2021 20:08:46 -0700 (PDT)
+        bh=ImR1y3JaphUdqd3JeYTiTRE42eA3JabgzCrov3HxDTY=;
+        b=12yoi+JK1bSBNJ67OTz4FYsNEdf2dEMDwl8Yi4mhFsrM008+x5wgf3LKUHInvsMZBN
+         b/MgHsBEweG9UUItmSbhAg6h5wIdOgzgWeUn5QzDNKdrH884EpSI6g9iVLJ0ed/C3rE2
+         6IrH+s1wnxqv7+v22PLd1uQi83Oncfd3olO4nfpqOxMlW1at7gQ36HhQ9NoPNjzOlhRe
+         SEKzOfn1NQlopoRilV5l2+EvwSTZWWzc7I/Bi3JhYKPxJHocWVjOSSVTnzGoXvO2zY3v
+         oSN91MK2XiioInvBjH9JMI1JzwEYq0cqE9Vb8j7g5+gweGiHDLyBMuB30IDR3qc8UxGL
+         0Dfg==
+X-Gm-Message-State: AOAM530JibuUGAKJSiyDCulE7MJtgjw3ozS4D1RuTBHRBjB9//GJyJTQ
+        fRGECULsM7n3zL+jqGCdMLMv36kpqMtkeAWNibQTbYG6BWpQ
+X-Google-Smtp-Source: ABdhPJweZhd8VLpBDfIfGU08rhV+YbiCX45grDUpmBIyS1bXzq26rwbOdLe0Fv7/r92eLdJQlhhjrpb5X9iny9ckbnM=
+X-Received: by 2002:a17:906:f90c:: with SMTP id lc12mr32433055ejb.104.1635822825835;
+ Mon, 01 Nov 2021 20:13:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211101175544.00fc0d57@gandalf.local.home>
-In-Reply-To: <20211101175544.00fc0d57@gandalf.local.home>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 1 Nov 2021 20:08:30 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgY1B0Ae+gVNP0e2bZPSBgaDJPwSVXFOx5r-dGgurJuvQ@mail.gmail.com>
-Message-ID: <CAHk-=wgY1B0Ae+gVNP0e2bZPSBgaDJPwSVXFOx5r-dGgurJuvQ@mail.gmail.com>
-Subject: Re: [GIT PULL] tracing: Updates for 5.16
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Carles Pey <carles.pey@gmail.com>,
-        Changbin Du <changbin.du@intel.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Punit Agrawal <punitagrawal@gmail.com>,
-        "Robin H. Johnson" <robbat2@gentoo.org>,
-        Song Liu <songliubraving@fb.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Viktor Rosendahl <Viktor.Rosendahl@bmw.de>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        Weizhao Ouyang <o451686892@gmail.com>,
-        chongjiapeng <jiapeng.chong@linux.alibaba.com>,
-        kernel test robot <lkp@intel.com>,
-        =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+References: <CAHC9VhRJ=fHzMHM6tt8JqkZa4bf0h72CAytSX9YrEs14Oaj8SA@mail.gmail.com>
+ <CAHk-=wj2LqbZ3xSLKfnR42y7ZEgqw8K42-mE+nsHwsoFiNNpKw@mail.gmail.com>
+In-Reply-To: <CAHk-=wj2LqbZ3xSLKfnR42y7ZEgqw8K42-mE+nsHwsoFiNNpKw@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 1 Nov 2021 23:13:35 -0400
+Message-ID: <CAHC9VhS3LfGvuVyXW5ePTQNtQ0KeQ7vz3wLinoZrbGVjU6GuoQ@mail.gmail.com>
+Subject: Re: [GIT PULL] SELinux patches for v5.16
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     SElinux list <selinux@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 2:55 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Mon, Nov 1, 2021 at 8:44 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Mon, Nov 1, 2021 at 4:59 PM Paul Moore <paul@paul-moore.com> wrote:
+> >
+> > - Add LSM/SELinux/Smack controls and auditing for io-uring.
 >
-> Also, this pull request will conflict with your tree against a fix I had
-> for trace recursions. I did the conflict resolution and pushed it to my
-> ftrace/conflicts branch if you want to reference it.
+> I started doing the merge resolution, and then I noted that there is
+> no sign that this has been discussed with the io_uring developers at
+> all.
 
-In the meantime, my tree had grown a few more conflicts elsewhere, but
-it all looked fairly straightforward.
+I felt I addressed that in the pull request cover letter, although it
+appears not in a way that you found adequate.  More on this below, but
+here is the discussion history, with lore links:
 
-It might be a good idea if you were to double-check that everything
-looks good, though.
+*** Initial Draft (RFC) (May 2021)
+https://lore.kernel.org/linux-security-module/162163367115.8379.8459012634106035341.stgit@sifl/
 
-                    Linus
+In the initial RFC you will see a lot of discussion with Jens Axboe
+and Pavel Begunkov discussing the patchset and potential changes to
+the solution.  Jens summarized his opinion on resolving this in the
+message below, you'll note Jens approach is what was implemented and
+sent to you via PR.
+
+* Jens' Summary
+https://lore.kernel.org/linux-security-module/46381e4e-a65d-f217-1d0d-43d1fa8a99aa@kernel.dk/
+
+  "Sorry for the lack of response here, but to sum up my
+   order of preference:
+
+   1) It's probably better to just make the audit an opt-out
+      in io_op_defs for each opcode, and avoid needing boiler
+      plate code for each op handler. The opt-out would ensure
+      that new opcodes get it by default it someone doesn't
+      know what it is, and the io_op_defs addition would mean
+      that it's in generic code rather then in the handlers.
+      Yes it's a bit slower, but it's saner imho.
+
+   2) With the above, I'm fine with adding this to io_uring.
+      I don't think going the route of mutual exclusion in
+      kconfig helps anyone, it'd be counter productive to
+      both sides."
+
+*** Second Revision (RFC) (Aug 2021)
+https://lore.kernel.org/linux-security-module/162871480969.63873.9434591871437326374.stgit@olly/
+
+This patchset implemented the approach described by Jens as well as
+incorporated all of the feedback from the initial RFC.  There was some
+additional discussion among the LSM/audit crowd but no additional
+comments from the io-uring devs despite being on the To/CC line and
+the cover letter explicitly asking for their ACKs.
+
+*** Third Revision (Sept 2021)
+https://lore.kernel.org/linux-security-module/163159032713.470089.11728103630366176255.stgit@olly/
+
+The third revision only had minor changes compared to the second, no
+direct comments to this revision although related comments continued
+to be made on prevision revisions.  The io-uring developers continue
+to be on the To/CC line, with no comments.
+
+*** Fourth Revision (Sept 2021)
+https://lore.kernel.org/linux-security-module/163172413301.88001.16054830862146685573.stgit@olly/
+
+The fourth revision also only had minor changes.  The patchset
+continued to keep the io_uring devs on the To/CC line and there was an
+explicit plea to ask for their review/ACK/etc. but none was ever sent.
+
+> Maybe there have been extensive discussions. I wouldn't know. There's
+> no acks, no links, no nothing in the commit messages.
+>
+> So I ended up deciding not to pull at all after all.
+>
+> You really can't just decide "let's add random audit hooks to this"
+> without talking to the maintainers.
+
+*sigh*
+
+I can promise you I've never done that, nor would I ever consider it.
+
+> And if you _did_ talk to maintainers, and got the go-ahead, why is
+> there absolutely zero sign of that in the commits?
+
+I felt the comment in the pull request was sufficient, however based
+on your response it clearly isn't.  Would you like me to edit the
+commits to add various discussion tags, is this follow-up sufficient,
+or would you like me to do something else?  Just let me know what you
+need to feel good about merging this pull request.
+
+-- 
+paul moore
+www.paul-moore.com
