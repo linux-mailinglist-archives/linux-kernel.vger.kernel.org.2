@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFD7443978
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:17:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83CD444397F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231830AbhKBXUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 19:20:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50718 "EHLO
+        id S231368AbhKBXU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 19:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbhKBXUH (ORCPT
+        with ESMTP id S230331AbhKBXUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 19:20:07 -0400
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D57CC061203;
-        Tue,  2 Nov 2021 16:17:31 -0700 (PDT)
-Received: by mail-ua1-x92f.google.com with SMTP id e5so1042104uam.11;
-        Tue, 02 Nov 2021 16:17:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZsNw+rozMJw0uF1kikrp6ToQQ8yZiRgQpxArMCQC7PY=;
-        b=fl9496zHGb1NMIhicizBPN50+jkvVCzoSslA/3cjMnpa+V5Kk/tzqoNIW+vTJbkT46
-         UnfGFq/LPeYOmOIklcJ/kTkv1M02gBxrdakFh/fHfrLqPQub6NnpOHSvOUgZndUCTvsA
-         UxncsTS2FxzQzqnp5E4pKxsnzvtfexsn4kdBAyHztGytBIP0UtSUHrHE+m5aDlWCaXno
-         CImAuLb8lQL3fI2V7b1LB8jiwAaxTpJrA7LxeF82W9qFv9pBpn96+XVytZ3+BXGfFUhM
-         JoPLD1oxIHfd9RDAANGZiCow8xM3fDv06KG7SVCD4qmhxZ+HGYLbXctdsVepreqoYo0Q
-         7S8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZsNw+rozMJw0uF1kikrp6ToQQ8yZiRgQpxArMCQC7PY=;
-        b=eO3NI9erepxl0Eoa1BMxhiIZho/TDNaxkNMfsbNgQFUkLNpyYCQpZpfOoY1XFBgJRg
-         uoHMSibTPSnI/dZuifoMfBLPKSpRf0MMUIM9lyJYbvtVHWb/3gZgFq72h84uzz5cEzM9
-         8+zOAhjuEzmDdHNBHeYhlEu12eDyRsqfOvY9dY5YCjHY32K1s2GtM2GWY1BBcI56VK/9
-         22cB3WZzgzIUoZQBudtUU7I72IfUQ9SKMoIq75l9D3j/2llxOfr9obot4yroiSPMicMF
-         6M7252q9+otgs14ooh3iSzU6dOgvtqfKw7sdTix+QEChZJwQovUSsDj11wixFEbLBeul
-         cjkQ==
-X-Gm-Message-State: AOAM531ZtEHJLhS6vYwP6/BHpr2ffrr9OJDIcsuhD+y2tGgi4UPWdpr2
-        1Er+SRaswhhlj744A50MWpOOz7XzrARnb9tW2ao=
-X-Google-Smtp-Source: ABdhPJyKSz6TCwnh7C+kJRYFN36Ph1nCIbuAY9M8q8RU9WcxjgDuFfVym1xz6Ue87gxiQx13egUc+1+Z88EDJpe8oCo=
-X-Received: by 2002:ab0:6ca7:: with SMTP id j7mr31958596uaa.133.1635895049876;
- Tue, 02 Nov 2021 16:17:29 -0700 (PDT)
+        Tue, 2 Nov 2021 19:20:51 -0400
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C11DC061714;
+        Tue,  2 Nov 2021 16:18:16 -0700 (PDT)
+Received: by nautica.notk.org (Postfix, from userid 108)
+        id 0B831C01E; Wed,  3 Nov 2021 00:18:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1635895093; bh=1pTmdyOEPgOjYARloB4mWE8fy1Eol4wLWmFLu9HJ9HY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PB3sJX7ee1PdTCz/uu2NiiQ5Ep6Om8viNgcQyRp5Bw1NHkVQC3QvADAN87adnHVv/
+         L5UDX4ChOrPPPgUVqe8+0WbVA4ub7X2PF3jtObKevy/RklsI62y7Gum4eNoiuIWsee
+         Bc3iOp2djV75QpLPu2Rn+tA8xJPcR282XBfc1GS7dRfaHO1FTWE7K6+L3uYuv+9sJA
+         AF/kFO6rsSHV05EmVUVAXiFG0+dPsVXBvu8cKfxaSnS9GZBuTOOLAYEs5l6SvyqZYH
+         5Marh2R2lDncDhLaiBY0UtGF4wMjrVS3I01Ut6Dr+VNH5Pyngku84CHJztxvokLYw8
+         ldVPSI3ULNQGg==
+X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
+        autolearn=unavailable version=3.3.2
+Received: from odin.codewreck.org (localhost [127.0.0.1])
+        by nautica.notk.org (Postfix) with ESMTPS id 17F70C009;
+        Wed,  3 Nov 2021 00:18:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1635895092; bh=1pTmdyOEPgOjYARloB4mWE8fy1Eol4wLWmFLu9HJ9HY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GfFvZOVHKaTCacEuOTpM+PDYMG1MHeEe72nG3gegKvRY75jnQ54IW59FrxLe2Ov0B
+         rsb0Wd9/9Lowe8bULCnn/s8zQZH3aprHJXIZKcIEeOLV2dVVCkuuQlujwhu74Ok/Ib
+         fA1Pj8iqPimUgFcTLlzFddFPN+tn3MXdgYSC7Dh6qfKsl5g8HKlzrs8RdF2yOCwjZ0
+         744cjEWMXff+9KW72Hrt2Ak+ON6JCsil4LFudzQjUzTwDXaSPsqdw3ONbyy1+Cr0lP
+         QYumJNUDypC/+OmHRbNTK/PxZQampBJEDUMUQ97vo5D0IkYpaBZOJnQuXAQ03aMBJt
+         k7otCdrpvKy2w==
+Received: from localhost (odin.codewreck.org [local])
+        by odin.codewreck.org (OpenSMTPD) with ESMTPA id 42328f3f;
+        Tue, 2 Nov 2021 23:18:06 +0000 (UTC)
+Date:   Wed, 3 Nov 2021 08:17:51 +0900
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc:     Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/9p: autoload transport modules
+Message-ID: <YYHHHy0qJGlpGEaQ@codewreck.org>
+References: <20211017134611.4330-1-linux@weissschuh.net>
+ <YYEYMt543Hg+Hxzy@codewreck.org>
+ <922a4843-c7b0-4cdc-b2a6-33bf089766e4@t-8ch.de>
+ <YYEmOcEf5fjDyM67@codewreck.org>
+ <ddf6b6c9-1d9b-4378-b2ee-b7ac4a622010@t-8ch.de>
+ <YYFSBKXNPyIIFo7J@codewreck.org>
+ <3e8fcaff-6a2e-4546-87c9-a58146e02e88@t-8ch.de>
 MIME-Version: 1.0
-References: <20211102225701.98944-1-Mr.Bossman075@gmail.com> <20211102225701.98944-12-Mr.Bossman075@gmail.com>
-In-Reply-To: <20211102225701.98944-12-Mr.Bossman075@gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 2 Nov 2021 20:17:19 -0300
-Message-ID: <CAOMZO5AxMXxDkNDqGJDhtepqSUxGRCWO+L=c67O==4fx66M7XQ@mail.gmail.com>
-Subject: Re: [PATCH v2 11/13] mmc: sdhci-esdhc-imx: Add sdhc support for
- i.MXRT series
-To:     Jesse Taube <mr.bossman075@gmail.com>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Stefan Agner <stefan@agner.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Abel Vesa <abel.vesa@nxp.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Giulio Benetti <giulio.benetti@benettiengineering.com>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-serial@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3e8fcaff-6a2e-4546-87c9-a58146e02e88@t-8ch.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 7:57 PM Jesse Taube <mr.bossman075@gmail.com> wrote:
+Thomas Weißschuh wrote on Tue, Nov 02, 2021 at 04:32:21PM +0100:
+> > with 9p/9pnet loaded,
+> > running "mount -t 9p -o trans=virtio tmp /mnt"
+> > request_module("9p-%s", "virtio") returns -2 (ENOENT)
+> 
+> Can you retry without 9p/9pnet loaded and see if they are loaded by the mount
+> process?
+> The same autoloading functionality exists for filesystems using
+> request_module("fs-%s") in fs/filesystems.c
+> If that also doesn't work it would indicate an issue with the kernel setup in general.
 
->  static struct esdhc_soc_data usdhc_imx8qxp_data = {
->         .flags = ESDHC_FLAG_USDHC | ESDHC_FLAG_STD_TUNING
-> @@ -357,6 +363,7 @@ static const struct of_device_id imx_esdhc_dt_ids[] = {
->         { .compatible = "fsl,imx7ulp-usdhc", .data = &usdhc_imx7ulp_data, },
->         { .compatible = "fsl,imx8qxp-usdhc", .data = &usdhc_imx8qxp_data, },
->         { .compatible = "fsl,imx8mm-usdhc", .data = &usdhc_imx8mm_data, },
-> +       { .compatible = "fsl,imxrt-usdhc", .data = &usdhc_imxrt_data, },
+Right, that also didn't work, which matches modprobe not being called
+correctly
 
-I thought Rob suggested to use the SoC name, so this would be:
 
-{ .compatible = "fsl,imxrt1050-usdhc", .data = &usdhc_imxrt1050_data, },
+> > Looking at the code it should be running "modprobe -q -- 9p-virtio"
+> > which finds the module just fine, hence my supposition usermodhelper is
+> > not setup correctly
+> > 
+> > Do you happen to know what I need to do for it?
+> 
+> What is the value of CONFIG_MODPROBE_PATH?
+> And the contents of /proc/sys/kernel/modprobe?
 
-The same applies to the other bindings in the series.
+aha, these two were indeed different from where my modprobe is so it is
+a setup problem -- I might have been a little rash with this initrd
+setup and modprobe ended up in /bin with path here in /sbin...
 
-This way it would be possible to differentiate between future
-supported i.MX RT devices.
+Thanks for the pointer, I saw the code setup an environment with a
+full-blown PATH so didn't think of checking if this kind of setting
+existed!
+All looks in order then :)
+
+-- 
+Dominique
