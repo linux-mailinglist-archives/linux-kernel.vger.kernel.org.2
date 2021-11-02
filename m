@@ -2,109 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62899442E59
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:40:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B48A442E64
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:45:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbhKBMme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 08:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbhKBMmd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 08:42:33 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BEAC061714;
-        Tue,  2 Nov 2021 05:39:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Q2t2Yay9P4Tekd7fAPWyB6W35FYZ8UjNPE7qgmxtFgo=; b=mzrMOti1jC7Z7IrbXrFKTxSdjj
-        xBdhuoTsRPyszsPNVJYGOM9tVuEUkNjumWw8op58jmC+Klrwy0rGjhCSOHgJPbCkVC+1lzq2mtm4D
-        t86k3knymXnDi/mx9OWBtMV3bSEpm+L3YEGn40GGagGNuqVLdhQdFZ1K30/Ok8hczyJxGYVUzo8Vq
-        FYQrT+XN+w0HPHiv8oWogVv0zNN+muK+TF7ib5PiIJg3onDrfMcWBQ+RsCcRpXXJ25YBGrlCPoskT
-        MtH87Vcwn9uecvpIVZxx1A1hnxQMYmxObQWAsq5wWvqjtKO2zs1QMac4NsDB3hJivGwUOXqkzQNel
-        YG6nSHWw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55438)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mht50-0003oe-Oy; Tue, 02 Nov 2021 12:39:54 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mht4y-0005QI-Rn; Tue, 02 Nov 2021 12:39:52 +0000
-Date:   Tue, 2 Nov 2021 12:39:52 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [RFC PATCH] net: phy/mdio: enable mmd indirect access through
- phy_mii_ioctl()
-Message-ID: <YYExmHYW49jOjfOt@shell.armlinux.org.uk>
-References: <20211101182859.24073-1-grygorii.strashko@ti.com>
- <YYBBHsFEwGdPJw3b@lunn.ch>
- <YYBF3IZoSN6/O6AL@shell.armlinux.org.uk>
- <YYCLJnY52MoYfxD8@lunn.ch>
+        id S230201AbhKBMrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 08:47:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48272 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229538AbhKBMrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 08:47:39 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F96260EB8;
+        Tue,  2 Nov 2021 12:45:03 +0000 (UTC)
+Date:   Tue, 2 Nov 2021 08:45:02 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [RFC] printk's sync mode for ftrace_dump()
+Message-ID: <20211102084502.5c5a7580@gandalf.local.home>
+In-Reply-To: <20211102122048.wtjcrcar3ss2akdb@linutronix.de>
+References: <20211029102603.4qp4g5bzuydrbkrx@linutronix.de>
+        <87y26c9ja6.fsf@jogness.linutronix.de>
+        <20211102122048.wtjcrcar3ss2akdb@linutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYCLJnY52MoYfxD8@lunn.ch>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 01:49:42AM +0100, Andrew Lunn wrote:
-> > The use of the indirect registers is specific to PHYs, and we already
-> > know that various PHYs don't support indirect access, and some emulate
-> > access to the EEE registers - both of which are handled at the PHY
-> > driver level.
-> 
-> That is actually an interesting point. Should the ioctl call actually
-> use the PHY driver read_mmd and write_mmd? Or should it go direct to
-> the bus? realtek uses MII_MMD_DATA for something to do with suspend,
-> and hence it uses genphy_write_mmd_unsupported(), or it has its own
-> function emulating MMD operations.
-> 
-> So maybe the ioctl handler actually needs to use __phy_read_mmd() if
-> there is a phy at the address, rather than go direct to the bus?
-> 
-> Or maybe we should just say no, you should do this all from userspace,
-> by implementing C45 over C22 in userspace, the ioctl allows that, the
-> kernel does not need to be involved.
+On Tue, 2 Nov 2021 13:20:48 +0100
+Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
 
-Yes and no. There's a problem accessing anything that involves some kind
-of indirect or paged access with the current API - you can only do one
-access under the bus lock at a time, which makes the whole thing
-unreliable. We've accepted that unreliability on the grounds that this
-interface is for debugging only, so if it does go wrong, you get to keep
-all the pieces!
+> This can be triggered not only by sysrq. panic-on-oops seems to do the
+> right thing. It seems that it makes sense to have this sync-mode always
+> while ftrace_dump() is running.
+> But then any sysrq-request has this limitation so maybe any sysrq should
+> force sync-mode. But the sysrq request itself could be redirected into
+> printing thread unless the system has some kind of scheduling problem.
+> The printing request may not disable interrupts for the whole time as it
+> is the case with the trace buffer so it would be possible to wait until
+> printing is done if done from the printing thread.
+> An additional sysrq to trigger the sync mode seems to be problematic
+> because people might not be aware of it. Also, what is it point of
+> sysrq-t if you see the last few entries?
 
-The paged access case is really no different from the indirect C45 case.
-They're both exactly the same type of indirect access, just using
-different registers.
+Looking at ftrace_dump(), I'm not sure we need interrupts disabled. I think
+that was there because it was created for panic only, but today I believe
+the ring buffer is more robust, and it does disable everything before
+reading the ring buffer. We may want to add some logic to make sure the
+user doesn't re-enable tracing while the dump is happening. Or maybe we
+don't care. If the user wants the dump to never end, let them re-enable it
+;-)
 
-That said, the MII ioctls are designed to be a bus level thing - you can
-address anything on the MII bus with them. Pushing the ioctl up to the
-PHY layer means we need to find the right phy device to operate on. What
-if we attempt a C45 access at an address that there isn't a phy device?
+I can write a patch to remove the irq disabling, or at least (to be on the
+safe side) to enable it before entering the loop.
 
-For example, what would be the effect of trying a C45 indirect access to
-a DSA switch?
-
-Personally, my feeling would be that if we want to solve this, we need
-to solve this properly - we need to revise the interface so it's
-possible to request the kernel to perform a group of MII operations, so
-that userspace can safely access any paged/indirect register. With that
-solved, there will be no issue with requiring userspace to know what
-it's doing with indirect C45 accesses.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+-- Steve
