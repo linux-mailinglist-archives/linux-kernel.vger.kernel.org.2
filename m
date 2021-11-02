@@ -2,122 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0C24431A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:26:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8A3443182
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234580AbhKBP2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:28:45 -0400
-Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:47482 "EHLO
-        herzl.nuvoton.co.il" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234599AbhKBP2k (ORCPT
+        id S233669AbhKBP0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:26:23 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:54094 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231721AbhKBP0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:28:40 -0400
-Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
-        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 1A2FMgOT005904;
-        Tue, 2 Nov 2021 17:22:42 +0200
-Received: by taln60.nuvoton.co.il (Postfix, from userid 10140)
-        id E47BB63A1D; Tue,  2 Nov 2021 17:22:53 +0200 (IST)
-From:   amirmizi6@gmail.com
-To:     Eyal.Cohen@nuvoton.com, jarkko@kernel.org, oshrialkoby85@gmail.com,
-        alexander.steffen@infineon.com, robh+dt@kernel.org,
-        mark.rutland@arm.com, peterhuewe@gmx.de, jgg@ziepe.ca,
-        arnd@arndb.de, gregkh@linuxfoundation.org, benoit.houyere@st.com,
-        eajames@linux.ibm.com, joel@jms.id.au
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, oshri.alkoby@nuvoton.com,
-        tmaimon77@gmail.com, gcwilson@us.ibm.com, kgoldman@us.ibm.com,
-        Dan.Morav@nuvoton.com, oren.tanami@nuvoton.com,
-        shmulik.hager@nuvoton.com, amir.mizinski@nuvoton.com,
-        Amir Mizinski <amirmizi6@gmail.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v18 6/6] tpm: Add YAML schema for TPM TIS I2C options
-Date:   Tue,  2 Nov 2021 17:20:56 +0200
-Message-Id: <20211102152056.241769-7-amirmizi6@gmail.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20211102152056.241769-1-amirmizi6@gmail.com>
-References: <20211102152056.241769-1-amirmizi6@gmail.com>
+        Tue, 2 Nov 2021 11:26:21 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A2CZGxO025646;
+        Tue, 2 Nov 2021 16:23:43 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=hixitRXFt2cnZxXEXUSdZw7s3ZLaCDWux2Zfi6hV6vE=;
+ b=XVJ/Jzmdv9AmVZRhq49gDOHpZEl4FjLHNck13XVYQ0W8QJT6COcmso+bxO9HAxNJsgGS
+ QfOGUKd1X0GCkwvMRVfj51LXGaLyG2o4oEKT6WzTWfRD7jJTwYmuWizP1JLPksPjn64d
+ wPPkGMl1Pd94EDGtxCceH/hWZNPsEGByUQSgniPZ+cWAhhvJm0T8U/hMaSFDU1Q+mU9s
+ 5rriCKdhCR6fqmBfnVwXh7EZRyJm4NeQI4AFfxu2Gh5h6eki0zHPzPXTLN6HAtufpPm0
+ +XmK70mgFZf52XJ37ovrxOxnDObk4mrU7Lh0AL1UijHdjRdgnQSOExpLYi0fgW9vu92l oA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c30vnb80f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Nov 2021 16:23:43 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9EDBF10002A;
+        Tue,  2 Nov 2021 16:23:42 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 95E22248EF7;
+        Tue,  2 Nov 2021 16:23:42 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.51) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 2 Nov
+ 2021 16:23:41 +0100
+Subject: Re: [PATCH v6 02/10] rpmsg: create the rpmsg class in core instead of
+ in rpmsg char
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+CC:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>, <julien.massot@iot.bzh>
+References: <20211022125426.2579-1-arnaud.pouliquen@foss.st.com>
+ <20211022125426.2579-3-arnaud.pouliquen@foss.st.com>
+ <YYAcYLxEmbwJShg7@builder.lan>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <962ca426-5cc4-4adb-df55-27fe93f7e767@foss.st.com>
+Date:   Tue, 2 Nov 2021 16:23:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YYAcYLxEmbwJShg7@builder.lan>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-02_08,2021-11-02_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amir Mizinski <amirmizi6@gmail.com>
 
-Add a YAML schema to support tpm tis i2c related dt-bindings for the I2c
-PTP based physical layer.
 
-This patch adds the documentation for corresponding device tree bindings of
-I2C based Physical TPM.
-Refer to the 'I2C Interface Definition' section in
-'TCG PC Client PlatformTPMProfile(PTP) Specification' publication
-for specification.
+On 11/1/21 5:57 PM, Bjorn Andersson wrote:
+> On Fri 22 Oct 07:54 CDT 2021, Arnaud Pouliquen wrote:
+> 
+>> Migrate the creation of the rpmsg class from the rpmsg_char
+>> to the core that the class is usable by all rpmsg services.
+>>
+>> Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+>> ---
+>>  drivers/rpmsg/rpmsg_char.c | 14 ++------------
+>>  drivers/rpmsg/rpmsg_core.c | 26 ++++++++++++++++++++++++--
+>>  include/linux/rpmsg.h      | 10 ++++++++++
+>>  3 files changed, 36 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+>> index 941c5c54dd72..327ed739a3a7 100644
+>> --- a/drivers/rpmsg/rpmsg_char.c
+>> +++ b/drivers/rpmsg/rpmsg_char.c
+>> @@ -28,7 +28,6 @@
+>>  #define RPMSG_DEV_MAX	(MINORMASK + 1)
+>>  
+>>  static dev_t rpmsg_major;
+>> -static struct class *rpmsg_class;
+>>  
+>>  static DEFINE_IDA(rpmsg_ctrl_ida);
+>>  static DEFINE_IDA(rpmsg_ept_ida);
+>> @@ -362,7 +361,7 @@ int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent
+>>  	init_waitqueue_head(&eptdev->readq);
+>>  
+>>  	device_initialize(dev);
+>> -	dev->class = rpmsg_class;
+>> +	dev->class = rpmsg_get_class();
+>>  	dev->parent = parent;
+>>  	dev->groups = rpmsg_eptdev_groups;
+>>  	dev_set_drvdata(dev, eptdev);
+>> @@ -482,7 +481,7 @@ static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
+>>  	dev = &ctrldev->dev;
+>>  	device_initialize(dev);
+>>  	dev->parent = &rpdev->dev;
+>> -	dev->class = rpmsg_class;
+>> +	dev->class = rpmsg_get_class();
+>>  
+>>  	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
+>>  	ctrldev->cdev.owner = THIS_MODULE;
+>> @@ -558,17 +557,9 @@ static int rpmsg_chrdev_init(void)
+>>  		return ret;
+>>  	}
+>>  
+>> -	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
+>> -	if (IS_ERR(rpmsg_class)) {
+>> -		pr_err("failed to create rpmsg class\n");
+>> -		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+>> -		return PTR_ERR(rpmsg_class);
+>> -	}
+>> -
+>>  	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
+>>  	if (ret < 0) {
+>>  		pr_err("rpmsgchr: failed to register rpmsg driver\n");
+>> -		class_destroy(rpmsg_class);
+>>  		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+>>  	}
+>>  
+>> @@ -579,7 +570,6 @@ postcore_initcall(rpmsg_chrdev_init);
+>>  static void rpmsg_chrdev_exit(void)
+>>  {
+>>  	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
+>> -	class_destroy(rpmsg_class);
+>>  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+>>  }
+>>  module_exit(rpmsg_chrdev_exit);
+>> diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
+>> index 9151836190ce..53162038254d 100644
+>> --- a/drivers/rpmsg/rpmsg_core.c
+>> +++ b/drivers/rpmsg/rpmsg_core.c
+>> @@ -20,6 +20,8 @@
+>>  
+>>  #include "rpmsg_internal.h"
+>>  
+>> +static struct class *rpmsg_class;
+>> +
+>>  /**
+>>   * rpmsg_create_channel() - create a new rpmsg channel
+>>   * using its name and address info.
+>> @@ -296,6 +298,19 @@ __poll_t rpmsg_poll(struct rpmsg_endpoint *ept, struct file *filp,
+>>  }
+>>  EXPORT_SYMBOL(rpmsg_poll);
+>>  
+>> +/**
+>> + * rpmsg_get_class() - get reference to the sysfs rpmsg class
+>> + *
+>> + * This function return the pointer to the "rpmsg" class created by the rpmsg core.
+>> + *
+>> + * Returns the struct class pointer
+>> + */
+>> +struct class *rpmsg_get_class(void)
+> 
+> What value does this helper function add? Can't we just expose
+> rpmsg_class directly?
 
-Signed-off-by: Amir Mizinski <amirmizi6@gmail.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../bindings/security/tpm/tpm-tis-i2c.yaml         | 52 ++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
+look to me cleaner to not expose directly the rpmsg_class in rpmsg.h as this
+variable is read only for rpmsg services.
 
-diff --git a/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
-new file mode 100644
-index 0000000..217ba8e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
-@@ -0,0 +1,52 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/security/tpm/tpm-tis-i2c.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: I2C PTP based TPM Device Tree Bindings
-+
-+maintainers:
-+  - Amir Mizinski <amirmizi6@gmail.com>
-+
-+description:
-+  Device Tree Bindings for I2C based Trusted Platform Module(TPM).
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          # Nuvoton's Trusted Platform Module (TPM) (NPCT75x)
-+          - nuvoton,npct75x
-+      - const: tcg,tpm-tis-i2c
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupt:
-+    maxItems: 1
-+
-+  crc-checksum:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Set this flag to enable CRC checksum.
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      tpm@2e {
-+        compatible = "nuvoton,npct75x", "tcg,tpm-tis-i2c";
-+        reg = <0x2e>;
-+        crc-checksum;
-+      };
-+    };
-+...
--- 
-2.7.4
+> 
+>> +{
+>> +	return rpmsg_class;
+>> +}
+>> +EXPORT_SYMBOL(rpmsg_get_class);
+>> +
+>>  /**
+>>   * rpmsg_trysend_offchannel() - send a message using explicit src/dst addresses
+>>   * @ept: the rpmsg endpoint
+>> @@ -629,10 +644,17 @@ static int __init rpmsg_init(void)
+>>  {
+>>  	int ret;
+>>  
+>> +	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
+>> +	if (IS_ERR(rpmsg_class)) {
+>> +		pr_err("failed to create rpmsg class\n");
+>> +		return PTR_ERR(rpmsg_class);
+>> +	}
+>> +
+>>  	ret = bus_register(&rpmsg_bus);
+>> -	if (ret)
+>> +	if (ret) {
+>>  		pr_err("failed to register rpmsg bus: %d\n", ret);
+>> -
+>> +		class_destroy(rpmsg_class);
+>> +	}
+>>  	return ret;
+>>  }
+>>  postcore_initcall(rpmsg_init);
+>> diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
+> 
+> Isn't this just going to be used by rpmsg_char and rpmsg_ctrl? Do we
+> really need to expose it in the client-facing API?
 
+I based this dev on hypothesis that the class could be used by some other rpmsg
+clients. But it is not mandatory. It can be extended later, on need.
+
+What would you propose as an alternative to this API?
+
+I can see 2 alternatives:
+- Define the rpmsg_class in rpmsg_internal.h
+  In current patchset rpmsg_char.c does not include the rpmsg_internal.h.
+  I'm not sure if this include makes sense for an rpmsg service driver.
+
+- Use "extern struct class *rpmsg_class; " in rpmsg_char and rpmsg_ctrl modules
+
+Regards,
+Arnaud
+
+> 
+> Regards,
+> Bjorn
+> 
+>> index a8dcf8a9ae88..6fe51549d931 100644
+>> --- a/include/linux/rpmsg.h
+>> +++ b/include/linux/rpmsg.h
+>> @@ -186,6 +186,8 @@ int rpmsg_trysend_offchannel(struct rpmsg_endpoint *ept, u32 src, u32 dst,
+>>  __poll_t rpmsg_poll(struct rpmsg_endpoint *ept, struct file *filp,
+>>  			poll_table *wait);
+>>  
+>> +struct class *rpmsg_get_class(void);
+>> +
+>>  #else
+>>  
+>>  static inline int rpmsg_register_device(struct rpmsg_device *rpdev)
+>> @@ -296,6 +298,14 @@ static inline __poll_t rpmsg_poll(struct rpmsg_endpoint *ept,
+>>  	return 0;
+>>  }
+>>  
+>> +static inline struct class *rpmsg_get_class(void)
+>> +{
+>> +	/* This shouldn't be possible */
+>> +	WARN_ON(1);
+>> +
+>> +	return NULL;
+>> +}
+>> +
+>>  #endif /* IS_ENABLED(CONFIG_RPMSG) */
+>>  
+>>  /* use a macro to avoid include chaining to get THIS_MODULE */
+>> -- 
+>> 2.17.1
+>>
