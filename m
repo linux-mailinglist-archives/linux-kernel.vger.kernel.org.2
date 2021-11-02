@@ -2,57 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C26044285D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:27:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E79D442860
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbhKBHa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
+        id S230281AbhKBHbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:31:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhKBHaZ (ORCPT
+        with ESMTP id S229526AbhKBHbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:30:25 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A22AC061714;
-        Tue,  2 Nov 2021 00:27:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2pzVrj3KgNRJSfwqecJlS+yDSqGzz8+/uIWD40ya7Oc=; b=sUwsQIAmrzIgMMT4X50/yhEmVo
-        Tm8HBPcT+iwr8N5eNjVTXKeDn7tIcpFE66El5nBvM9CG9TyQnQ9rEYknLplaK597QTSE0LQ2lKY9B
-        ml/3l2Eidy6gC6akywufb7XtuYQnR/9975/n1n+TVjaanhi3EG3+8Yn6/9uRQgroSjZJDdKOx7X4K
-        wSIytga43+/0qRlE4Ky/DqzDQN7iHAZmU3BAgZ/CU3smjvKgmb15pq3+2sZKTNb+Lmu7QGBd5em1j
-        jQT7BfJYmbzOjjl1JxnSMb9trK795UXWSpPp9TDEPrQtFs082m5621mgpiAqqO1zhTp+7+xTO3xJL
-        JR+JFwkQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhoD0-000mPl-8b; Tue, 02 Nov 2021 07:27:50 +0000
-Date:   Tue, 2 Nov 2021 00:27:50 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 21/21] xfs: Support multi-page folios
-Message-ID: <YYDoduRUjSwPouEJ@infradead.org>
-References: <20211101203929.954622-1-willy@infradead.org>
- <20211101203929.954622-22-willy@infradead.org>
+        Tue, 2 Nov 2021 03:31:19 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FA7C061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 00:28:45 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id g14so10571519edz.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 00:28:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cxWHL2V8mPHZBwLVhPzyF2zYMkIP2xx0HETqHhyGJcg=;
+        b=iey7kGkTQNS4cdfGrLnzmco9FYAcaG3/Lt4lTcV/ulyAh1Z2y0joLzbSJBglwa7aGO
+         D2vriEeB4RfYHANCz0k/6kcwYLK3oGMkfaJGVi3BJWuhlV+xsFP5zKjJ5mI+NCj4/X3n
+         bw1cl3F1ERhfsW66v3xYOv2DJbSWjoFNA3KxdbMnR/JiIJPl/5VoHBsKQem4D4zXawdc
+         rlHqCE+mcldGqDj29EDDjRRXwIJZbSsV/I5rhvCSlcXuY0+aFZnXQlGttPNYGoXYYVFP
+         XrZ2yGpg8LBv/4zoUV0hkjqQtxYcfNBV8bgfVjht6YrcnJqGi764/yvKNuVnlGzxWXCl
+         s/Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cxWHL2V8mPHZBwLVhPzyF2zYMkIP2xx0HETqHhyGJcg=;
+        b=fEcSE4bjum2QLMhK2KLrwcwnO0FA9Dbh8p7VLqhuupwb3mHGkacJgQ1b0cIMjMSFFT
+         5gy1FxS3M8mQLX31B4QCCXIIGysf7+SLtUWvN08Pv+PtvW7mU6iZef86vvdwsqXzhYhi
+         eEDditfNj79JOeDh+WfaEumR6aJMW8SU/1zuzGxHeIbSli/OCQ8NLoksVWM9IeHCy/+w
+         iFhGIm1SMvsO5TPX1CcYSl7R8aRFg19Alm7R+KeNV3VS+SiWfN3Mhxnrp6DBH3ZLQ4wG
+         c6cbjFVcKVjsEQCCLf0nExpUoUBdtlDoE6fBHs4mYUAvC1Cz0Yk+uj9xNsp6Z5L2iHAd
+         MLzw==
+X-Gm-Message-State: AOAM530Vtmu07g+4JrdsafLMBHnnzQM5lXK5DxFBkmDL7bxPf+YJrbxI
+        9IdySLo0wYY6BCTuA5b402+uMXWfFzg/9qdYcL4a3Q==
+X-Google-Smtp-Source: ABdhPJzBUn1XxjtNqfsSYCgfNEkUxIwv7rDpDKzciCK8euvDYZt3owKWYY3HP8+mzViVfwrZ9eI1dDMMBnbYpy0Ba9M=
+X-Received: by 2002:a17:907:7fa7:: with SMTP id qk39mr43447345ejc.384.1635838123761;
+ Tue, 02 Nov 2021 00:28:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211101203929.954622-22-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <20211101114235.515637019@linuxfoundation.org>
+In-Reply-To: <20211101114235.515637019@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 2 Nov 2021 12:58:32 +0530
+Message-ID: <CA+G9fYu9-sr7u9Lqf364pg07Zk-a3OBiBHPE2RTJPnYPxdZs+g@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/51] 5.4.157-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 08:39:29PM +0000, Matthew Wilcox (Oracle) wrote:
-> Now that iomap has been converted, XFS is multi-page folio safe.
-> Indicate to the VFS that it can now create multi-page folios for XFS.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+On Mon, 1 Nov 2021 at 17:14, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.157 release.
+> There are 51 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 03 Nov 2021 11:42:01 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.157-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Looks good,
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+NOTE:
+With new gcc-11 toolchain arm builds failed.
+The fix patch is under review [1].
+Due to this reason not considering it as a kernel regression.
+* arm, build
+    - gcc-11-defconfig FAILED
+
+[1]
+ARM: drop cc-option fallbacks for architecture selection
+https://lore.kernel.org/linux-arm-kernel/20211018140735.3714254-1-arnd@kern=
+el.org/
+
+## Build
+* kernel: 5.4.157-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.4.y
+* git commit: 48b0aec9543c78e79579e887ded0a2d96126081f
+* git describe: v5.4.156-52-g48b0aec9543c
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
+56-52-g48b0aec9543c
+
+## No regressions (compared to v5.4.156)
+
+## No fixes (compared to v5.4.156)
+
+## Test result summary
+total: 82388, pass: 67744, fail: 799, skip: 12415, xfail: 1430
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 420 total, 369 passed, 51 failed
+* arm64: 39 total, 39 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 20 total, 20 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 37 total, 37 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 36 total, 36 passed, 0 failed
+* riscv: 24 total, 24 passed, 0 failed
+* s390: 12 total, 12 passed, 0 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 39 total, 39 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
