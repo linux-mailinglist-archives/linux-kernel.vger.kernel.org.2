@@ -2,165 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973A2442827
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:19:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D31944282E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:19:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbhKBHVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:21:43 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:46091 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231219AbhKBHVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:21:40 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635837546; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To:
- Subject: From: Sender; bh=y6Sz6xkt/HSEuNS0flTXHuzKjPeOjD94Xhcr7nenToU=;
- b=S5lSnoZa0VrENqPxzaTyYk5IFGMK+ZCAEOHmZXavKSw2orC1G/v0TWNaAGuIGty0XcGZmX5H
- 4BJSjnY/Zsd0FH8DXgrGmWYOLoDsr/Bt+IL7mVmmhF0FWW2rBf0f9UJnry8xEK9dqLO4lK6a
- myWB3rYcrjlNUMvKIWxLfRAqDjM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6180e65caeb239055603ddb8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Nov 2021 07:18:52
- GMT
-Sender: zijuhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 56A90C4338F; Tue,  2 Nov 2021 07:18:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.104] (unknown [183.195.15.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zijuhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 28A10C4360C;
-        Tue,  2 Nov 2021 07:18:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 28A10C4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Zijun Hu <zijuhu@codeaurora.org>
-Subject: Re: [PATCH v1] serdev: Add interface serdev_device_ioctl
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Marcel Holtmann <marcel@holtmann.org>
-Cc:     robh@kernel.org, jirislaby@kernel.org,
-        linux-serial@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Zijun Hu <quic_zijuhu@quicinc.com>
-References: <1635753048-5289-1-git-send-email-zijuhu@codeaurora.org>
- <YX+eRgCrUs2Y5iaX@kroah.com>
- <fe5a8bec-b186-c719-5f02-a0a67eb8862f@codeaurora.org>
- <YX+mDGr8tDzVT4Hr@kroah.com>
- <573d3640-2e8b-9266-4205-755ac0951abd@codeaurora.org>
- <YX/M/MZL8jbu7p7I@kroah.com>
- <DC399B43-DB1E-42AC-8A31-3A2C9407EE6D@holtmann.org>
- <YX/VYUC3ngOf5bX5@kroah.com>
-Message-ID: <787fa2b6-146a-16b1-e304-c7e3b26dbf99@codeaurora.org>
-Date:   Tue, 2 Nov 2021 15:18:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S231538AbhKBHWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231392AbhKBHWN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 03:22:13 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D355C061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 00:19:38 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id f8so50964470edy.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 00:19:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Tbu9/nDcoruYXq0v34C9MDD4hNvw09CUSs/P0rP2wA4=;
+        b=roX2kuxQ7uDcwhd5XYeSGkiBgX0XraTYRjQN1OyTe1So8wjqRZ01aghO5JjkRNDrb3
+         mqAOPX50AKy+yCp5BZYMcX1680EM91yP9QfuvV9SU1DY7M1sqyGwj2dfGVCY158gdC1I
+         ly5wPBR444rR4xuNt9TbUEtVdgBRpV2SKtDOXnIYTKDMiknNBp6NyvOrr6uZi7JY2bvt
+         cfgI4AUcy/LAxYNAIymDhmyswOmiUA+kYWtJvIsJymiDWcSbzwRK78LI2FHD4o4xCEx1
+         M88dgvzq/uQapjx2vunzcyY4BPKmHkoGuV/qn8y0mcND1+jRFdisKTorH2XuzKOdz75g
+         LznA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Tbu9/nDcoruYXq0v34C9MDD4hNvw09CUSs/P0rP2wA4=;
+        b=kfK8mt0DIvStnDr6UrfegBISrN9c9liTLHuoa48fuk3rEgFIIhU3ExD9K8BrncTA+Q
+         /qKy8qJKJePZzitmSf23y0H8VjR7nfdWEBqwYS8KkjbhstwxlD3HtJwOfs7BGdiIn2Au
+         ls3IGA2PHhEnyw3G6umygzLX4UeipAHNWAOFLM6yUnX1br1MlZ82OtMTUgkXx8zlcn3H
+         BWVb+fsSZ8BnqIkoi2Rt9/5HiXme/ke+pC/HK1DHfuHn3tb0xhozRwLus0VbTChUlgkq
+         b27dAVzA3F25lPkk6kEXscD68y0CCpbunxxObKnuLU6AilmkNECkfBu5Iahus3MAffDB
+         aLnw==
+X-Gm-Message-State: AOAM530UkoZZrD8Bu/VnwCp5KE3n4+s9XYfTaoByf1eUx1Hu8a/7ecPM
+        0IajB+xPiFMcaiv+WGssz15sih1lsfxXpiu2QFzvhg==
+X-Google-Smtp-Source: ABdhPJyARKggcDVSp92WsxoZw09RWWBsxLa+TgvBeWNK+nsHHGCFy23UN6ZsaX2ITLxK2NPiFlbdOhrygz62DumVgPc=
+X-Received: by 2002:a17:906:4bcf:: with SMTP id x15mr19087441ejv.493.1635837576699;
+ Tue, 02 Nov 2021 00:19:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YX/VYUC3ngOf5bX5@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211101082533.618411490@linuxfoundation.org>
+In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 2 Nov 2021 12:49:24 +0530
+Message-ID: <CA+G9fYuCt_D=M_j41eLqScv4qWF4LrKLCF_VaZMZu_HyKbm5Cg@mail.gmail.com>
+Subject: Re: [PATCH 5.14 000/125] 5.14.16-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/1/2021 7:54 PM, Greg KH wrote:
-> On Mon, Nov 01, 2021 at 12:45:36PM +0100, Marcel Holtmann wrote:
->> Hi Greg,
->>
->>>>>>>> For serdev_device which is mounted at virtual tty port, tty ioctl()
->>>>>>>> maybe be used to make serdev_device ready to talk with tty port, so
->>>>>>>> add interface serdev_device_ioctl().
->>>>>>>>
->>>>>>>> Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
->>>>>>>> ---
->>>>>>>> drivers/tty/serdev/core.c           | 11 +++++++++++
->>>>>>>> drivers/tty/serdev/serdev-ttyport.c | 12 ++++++++++++
->>>>>>>> include/linux/serdev.h              |  9 +++++++++
->>>>>>>> 3 files changed, 32 insertions(+)
->>>>>>>>
->>>>>>>> diff --git a/drivers/tty/serdev/core.c b/drivers/tty/serdev/core.c
->>>>>>>> index f1324fe99378..c0f6cd64716b 100644
->>>>>>>> --- a/drivers/tty/serdev/core.c
->>>>>>>> +++ b/drivers/tty/serdev/core.c
->>>>>>>> @@ -405,6 +405,17 @@ int serdev_device_set_tiocm(struct serdev_device *serdev, int set, int clear)
->>>>>>>> }
->>>>>>>> EXPORT_SYMBOL_GPL(serdev_device_set_tiocm);
->>>>>>>>
->>>>>>>> +int serdev_device_ioctl(struct serdev_device *serdev, unsigned int cmd, unsigned long arg)
->>>>>>>> +{
->>>>>>>> +	struct serdev_controller *ctrl = serdev->ctrl;
->>>>>>>> +
->>>>>>>> +	if (!ctrl || !ctrl->ops->ioctl)
->>>>>>>> +		return -EOPNOTSUPP;
->>>>>>>
->>>>>>> Wrong error for returning that an ioctl is not handled :(
->>>>>> checkpatch.pl always reports below WARNING when i use ENOTSUPP as present interfaces
->>>>>> do. so i change error code to EOPNOTSUPP.
->>>>>>
->>>>>> #28: FILE: drivers/tty/serdev/core.c:412:
->>>>>> +               return -ENOTSUPP;
->>>>>>
->>>>>> WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
->>>>>
->>>>> Both of them are not the correct error to return when an ioctl is not
->>>>> supported.
->>>>>
->>>> is ENODEV okay?
->>>
->>> No, -ENOTTY is the correct one as per the documentation, right?
->>>
->>>>>>> Anyway, what in-tree driver needs this functionality?  Why does serdev
->>>>>>> need any ioctl commands?
->>>>>>>
->>>>>> i am developing driver for a special bluetooth controller which is integrated within SOC,
->>>>>> and it does not connect with the BT HOST with UART as normal controller do, but it has very
->>>>>> similar features as the BT controller with UART I/F. it is mounted on a virtual serial port
->>>>>> driven by a tty driver developed. but it need to call tty ioctl to make the 
->>>>>> special BT controller ready to talk with tty port. so i add this interface.
->>>>>
->>>>> Please submit this change when you submit your driver that uses it at
->>>>> the same time so we can review them all at once.  We do not add apis
->>>>> that are not used in the kernel tree.
->>>>>
->>>> okay
->>>>>> as you known, the main purpose of ioctl is to achieve MISC and irregular control. so it is useful
->>>>>> for these irregular devices.
->>>>>
->>>>> For tty devices, "custom" ioctls are not ok, use the standard tty
->>>>> commands and you should be fine for everything you need to do.
->>>>>
->>>>> If not, then perhaps your design is incorrect?
->>>>>
->>>> i just want to refer bt_ioctl within https://source.codeaurora.org/quic/qsdk/oss/kernel/linux-ipq-5.4/tree/drivers/soc/qcom/bt_tty.c?h=NHSS.QSDK.11.5.0.5.r2
->>>> by serdev. so add this interface.
->>>
->>> The 5.4 kernel is not relevant here, so I do not understand.
->>>
->>>> are there any other good solution to advise?
->>>
->>> Why not work with the bluetooth developers on this?
->>
->> if this is just to have some hackish Bluetooth driver, then NAK from my side. Since we have serdev, we have no need for, or requirements for any ioctl anymore. If such thing is needed, it is a bad design.
-> 
-> Thanks for the confirmation, seems sane to me!
-> 
-> Zijun, please fix up your driver and submit it to be merged and all
-> should be fine, no need for any custom ioctls.
-> 
- thank you Greg, i have submitted all changes to support the special BT controller, certainly, it includes this serdev change.
+On Mon, 1 Nov 2021 at 14:58, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.14.16 release.
+> There are 125 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 03 Nov 2021 08:24:20 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.14.16-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.14.y
+> and the diffstat can be found below.
+>
 > thanks,
-> 
+>
 > greg k-h
-> 
+
+
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+NOTE:
+With new gcc-11 toolchain arm builds failed.
+The fix patch is under review [1].
+Due to this reason not considering it as a kernel regression.
+* arm, build
+    - gcc-11-defconfig FAILED
+
+[1]
+ARM: drop cc-option fallbacks for architecture selection
+https://lore.kernel.org/linux-arm-kernel/20211018140735.3714254-1-arnd@kern=
+el.org/
+
+## Build
+* kernel: 5.14.16-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.14.y
+* git commit: c99063ce032cc300f6046ce43af6a0f5155171d3
+* git describe: v5.14.15-126-gc99063ce032c
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.14.y/build/v5.14=
+.15-126-gc99063ce032c
+
+## No regressions (compared to v5.14.15)
+
+## No fixes (compared to v5.14.15)
+
+## Test result summary
+total: 91356, pass: 77480, fail: 764, skip: 12385, xfail: 727
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 422 total, 370 passed, 52 failed
+* arm64: 40 total, 40 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 39 total, 39 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 37 total, 37 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 36 total, 36 passed, 0 failed
+* riscv: 24 total, 24 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 40 total, 40 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselfte[
+* kselftest-
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-[
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-co[
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
