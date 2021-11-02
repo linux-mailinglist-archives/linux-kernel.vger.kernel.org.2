@@ -2,102 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A5744290E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE41442913
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhKBIFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 04:05:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38640 "EHLO
+        id S230000AbhKBIIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 04:08:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhKBIFo (ORCPT
+        with ESMTP id S229720AbhKBII2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 04:05:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AC3CC061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 01:03:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rMcaU0eXNJrQzQEGjllDL02FizhCwJm5AcvCOAERMAk=; b=DJ/r/DbPU1N+tG8eTERztYDKZX
-        vEpPchywZxXvrlKBaYXzlF5z8d4aQhh0RJeUMqB2JZTD+nVy+9vY29QAOkCVxHXFi1F5Pp4uPwdJz
-        790L6QY6KX6iZbc9sVwHj7ToVCJax039RCz49vshYkWDNBkA1SS2G8yvBGa83T+Andqj0V2+R/sA2
-        xQbHuE4rA2J0Y+VyQCcoN3SHGC5UuMWm/vUrv92g73gKmN2Z/6EGKd3Lm31RW9lk3Q7xkb8pWkR7B
-        W+nmtlEHiO4m3nUJPN5Wjfm7ehzmgkg1zwjI9sZ/be6wcWVH0W5mveyzKNu5elI9P8i/KYkuFAdm7
-        3Ibg+Lfw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mhoij-004M5X-Sc; Tue, 02 Nov 2021 08:00:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3DC93300130;
-        Tue,  2 Nov 2021 09:00:36 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2BE052D202F07; Tue,  2 Nov 2021 09:00:36 +0100 (CET)
-Date:   Tue, 2 Nov 2021 09:00:36 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [GIT pull] objtool/core for v5.16-rc1
-Message-ID: <YYDwJORywW2FjprP@hirez.programming.kicks-ass.net>
-References: <163572864256.3357115.931779940195622047.tglx@xen13>
- <163572864563.3357115.8793939214537874196.tglx@xen13>
- <CAHk-=wgNzL3AaVNruwLv=kcGXi1EbJN9CZC6GoRY66t6WFcfGg@mail.gmail.com>
+        Tue, 2 Nov 2021 04:08:28 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32AFC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 01:05:53 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id ee33so1894861edb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 01:05:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BpUXHehpO0L4RH7cQq/HeK6Cl2xp1SAYTz/IbfVB1Fk=;
+        b=sVhhf4hLr1hHL0FAWE/2GzyF7iHYiiI5a57k0YqAmDolqT+LeRDJV4pnjkrq+nI612
+         LtYkk36qFXfJ5omIsnQfpER6PdVacQjfhWUkANedhj9wmJqwgTmYWospdXmU/UDpwkED
+         dsIqyvf6pJ3CpHOw5cYwQXeV2iWaAxjoc8/+10EC5YTOie5f1OlXTzxX1nShY3u0ZLn1
+         w0DCSLZoq9ROh1qtIsw23RDby3lWuhmM5Gpr4Et3drgO/3K1SyOFendMm1FxcsbzKaVr
+         aXvNpnjZeB4rgEkGNzDC5iz1olLNMXS/UI0QerlDC8UmcJPBrFRba5XIu3qg3rOrNGn0
+         b8ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BpUXHehpO0L4RH7cQq/HeK6Cl2xp1SAYTz/IbfVB1Fk=;
+        b=pepmNikSZFVaNwtd5VDGXJGpqG4sXKjzjcV8b6gzze1VZh3ig2WwsXVGFqpfiEvuIZ
+         NQudOnnB0Kk1ap2o8sx6wuSO+BSJLlp1CS2Tz6wURteHgFT8Kf+gvZjbqorJkzM2tUFW
+         F8iEo3pCcL+mBjI8GGd6oisKN60pfNsgny8TZL6QMsDIlbA/VuU00Oj9+m6W0cKd+2GV
+         hh4BMILerkClpRwQywoE+Lon7J+HFOf6evk7sgcu3b9X9Jkk0begZiz3vDdmuKGaMRld
+         5CiHOCOqSlWCGHMQrhVcsacd+0hr8rxQmmfDarQU4ZB1NqSEw2yZK39tIE/7ms27v4Ok
+         PJew==
+X-Gm-Message-State: AOAM530/xaN1LueXsPfqLTHCsvdWYafg2b48Q2bpA9ZyuqWECT6LRX6T
+        BPAHbX83halew0ZCgNQN8HSP1Lv7BETEeKhxo32Waw==
+X-Google-Smtp-Source: ABdhPJy6oeKtwjzN3+JAeygl+bciukufcgFxfnRBe8VWVO8u4C77zVI5TTDK44YkbRh1L60+3uyAVOS7ZVGkzeahrp8=
+X-Received: by 2002:a17:906:4bcf:: with SMTP id x15mr19367236ejv.493.1635840351988;
+ Tue, 02 Nov 2021 01:05:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgNzL3AaVNruwLv=kcGXi1EbJN9CZC6GoRY66t6WFcfGg@mail.gmail.com>
+References: <20211101114159.506284752@linuxfoundation.org>
+In-Reply-To: <20211101114159.506284752@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 2 Nov 2021 13:35:40 +0530
+Message-ID: <CA+G9fYvjAXxuVj3ZT1W0DbOgA2PNs03NFHqV0TGc+G4CSdWZaw@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/25] 4.14.254-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 01:44:39PM -0700, Linus Torvalds wrote:
-> On Sun, Oct 31, 2021 at 6:16 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >
-> > please pull the latest objtool/core branch from:
-> 
-> Hmm. I've pulled this, but I'm not happy about the new warnings it
-> generates with an allmodconfig build:
+On Mon, 1 Nov 2021 at 17:13, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.254 release.
+> There are 25 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 03 Nov 2021 11:41:39 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.254-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Right, due to fixing the dependency on !PARAVIRT, allyesconfig now does
-a noinstr validation, and this is the result.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
->   vmlinux.o: warning: objtool: __do_fast_syscall_32()+0xa: call to
-> stackleak_track_stack() leaves .noinstr.text section
->    ..
->     mce_setup()+0x18: call to memset ...
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Boris was having a poke at the MCE stuff.
+NOTE:
+With new gcc-11 toolchain arm builds failed.
+The fix patch is under review [1].
+Due to this reason not considering it as a kernel regression.
+* arm, build
+    - gcc-11-defconfig FAILED
 
->     rcu_dynticks_eqs_enter()+0x0: call to rcu_dynticks_task_trace_enter ...
->     rcu_dynticks_eqs_exit()+0xe: call to rcu_dynticks_task_trace_exit ...
->     rcu_nmi_enter()+0x36: call to __kasan_check_read ...
+[1]
+ARM: drop cc-option fallbacks for architecture selection
+https://lore.kernel.org/linux-arm-kernel/20211018140735.3714254-1-arnd@kern=
+el.org/
 
-Fixes for those ^ should be in the rcu tree.
+## Build
+* kernel: 4.14.254-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-4.14.y
+* git commit: 64fad352ab39db2d688622d38f866978ba7a7ded
+* git describe: v4.14.253-26-g64fad352ab39
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
+.253-26-g64fad352ab39
 
-There were also a bunch of Xen ones that should be fixed in the Xen
-tree, perhaps you've already pulled that.
+## No regressions (compared to v4.14.253)
 
->     do_machine_check()+0x27: call to stackleak_track_stack ...
->     do_syscall_64()+0x9: call to stackleak_track_stack ...
->     do_int80_syscall_32()+0x9: call to stackleak_track_stack ...
->     exc_general_protection()+0x22: call to stackleak_track_stack ...
->     fixup_bad_iret()+0x20: call to stackleak_track_stack ...
->     .entry.text+0x10e6: call to stackleak_erase ...
->     .entry.text+0x143: call to stackleak_erase ...
->     .entry.text+0x17d9: call to stackleak_erase ...
-> 
-> most seem to be about the stackleak thing,
+## No fixes (compared to v4.14.253)
 
-Right, I recently ran into this and hacen't yet had time to look into
-it. I suspect my normal build box doesn't have the GCC plugin crud
-enabled or somesuch.
+## Test result summary
+total: 76449, pass: 61036, fail: 681, skip: 12640, xfail: 2092
 
-I think the GCC stackleak plugin needs fixing, specifically it needs a
-function attribute such that it will not emit instrumentation in noinstr
-functions. I'll go chase down the developer of that thing.
+## Build Summary
+* arm: 260 total, 210 passed, 50 failed
+* arm64: 35 total, 35 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 19 total, 19 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 22 total, 22 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 19 total, 19 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
