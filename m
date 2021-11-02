@@ -2,133 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD54A442D9C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1FAC442DA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231135AbhKBMPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 08:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38766 "EHLO
+        id S230109AbhKBMRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 08:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231165AbhKBMPt (ORCPT
+        with ESMTP id S229530AbhKBMRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 08:15:49 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51EEC061764;
-        Tue,  2 Nov 2021 05:13:14 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hk81d5ZR5z4xbs;
-        Tue,  2 Nov 2021 23:13:08 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1635855190;
-        bh=NpDEJY5HJpNz4CKwDnMhbilPOiKREP07cOFK93HNPps=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mJAlJJwtHRcO48iRgRhiiGem/2Sx9ZyGzcJ/OIIreJHuNgqLFOda82BSKK1sd97MO
-         FCkdixBfjTVzrjozn29qU/9sHET2Ha/iwIW+l53FGt28+ol/ZWf7t9Hspw/7LKo6MS
-         /Uh1m9voDuBuKBgIp2vIqZNHIV1/yIz8No8iT/lrEYVm24ShGF9XJ8APBu/NJnKj+Z
-         ZN9RAGp/jjBT8Ao0b/OyEW0pOGVfFJKuiHfQZIoe/VQvzG+d2C16vdv0UB5ufpwwrR
-         1dJ0E8TSfKVxG3gOlGGdqD9/KfvTsnSV0qMU9F+mFT6Y7/5p2IkybeOEmhu19SjHkT
-         zuSS1rkAKbLAg==
-Date:   Tue, 2 Nov 2021 23:13:07 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: linux-next: build failure after merge of almost all the trees
-Message-ID: <20211102231307.6ba98df2@canb.auug.org.au>
-In-Reply-To: <CAK8P3a3Fx0UmbxP48RnXHcJYf_tU3_NTkMZrFnM42eAb_F4jRQ@mail.gmail.com>
-References: <20211028212651.57beb05b@canb.auug.org.au>
-        <20211028233844.292e1319@canb.auug.org.au>
-        <20211102174400.1aaee22c@canb.auug.org.au>
-        <CAK8P3a3Fx0UmbxP48RnXHcJYf_tU3_NTkMZrFnM42eAb_F4jRQ@mail.gmail.com>
+        Tue, 2 Nov 2021 08:17:45 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E3FC061714;
+        Tue,  2 Nov 2021 05:15:10 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id s3so19248391ybs.9;
+        Tue, 02 Nov 2021 05:15:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H0Nynl9KYEos60TLF3kMyaTZRdbJ2IJWnWt8dmgsZ8o=;
+        b=Oy4e08YQ+S5kroIaoipFHcseTK3NpOCo+MSIUrjmGs+88S/D2FVe1zsab/MobPaAsJ
+         PQSblcw2EVBRG7rlaelIkp5D00fsyXAEz5c56YjBeOkuUcgFksHHayttv/PlUy02IcOw
+         4nYDu8pQY0a/1NAAIM0hgPWQF9DdZl0/SwbFRVd+BQBVuUxAasx1nyiEcz9r94hfjt4X
+         iSf84fPNvSvJrMBzzKbo04BZXEl5kI6YVUB2vTaEDy+Oc9rXn8V6WHlcLml1QSj6+70S
+         GCa4ByRWzS8yR6FfDveQEFkp41ZSXZByjoP+diuB7jYpeUlZhqJDZQrUwxjxKLSg3zQX
+         wD5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H0Nynl9KYEos60TLF3kMyaTZRdbJ2IJWnWt8dmgsZ8o=;
+        b=P5INML07dtu9jeoy/aoQscXZf13gUFKThjXynMXFQhllUBkNwRPpCgPBLH4pF/MofN
+         jkTQZnJXzmjes2cKXLH9gd5WBIWGpUcatSoUWK48p5Wlm39DBW0JSGefo5+UdOgzTzW3
+         ipdM2I+KtEF1cOcDaRgX/GWVIZ/pBqorOAf3TJNrxokIqaR/A9zSWD1BGqmXjO60PVnn
+         UrHhVXTBWFDRHPDfO64d/FRCidlR6sj3wLKc6Y7TDefzDGikdUK/sysvfltev9lE8c1Z
+         dNTB6h2jjaRtfpwMVCPCsReD68lzhDx/zWvkoirnT6LmYlaUSt8nfH8YnXA5QpHkC1SX
+         FApA==
+X-Gm-Message-State: AOAM533cXMfkXe8LAUC55CjH5P+VVrZAUffU0jYfNGeVkPPYaWcNp7cb
+        5AS/WJj1Quiuf76DtWANVIrsFEakQ0RTWqOrk/8zLuBAqmc=
+X-Google-Smtp-Source: ABdhPJxLjg53nX46gv9ag9zyfyZJr3b9fP3tgKwpwWhIuIrPOLIV5FCJQF8aI+BgAh5o6cQY+rn/rGbzr6eUr7UoMbk=
+X-Received: by 2002:a25:71c3:: with SMTP id m186mr37252318ybc.434.1635855309301;
+ Tue, 02 Nov 2021 05:15:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ad6Ic7P=fhScIZp04Ev76Ff";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
+ <20211028141938.3530-12-lukas.bulwahn@gmail.com> <CAK8P3a0Nq9hLbGiPCQTjVTiGFPR9-tdhN8Tf06Q=cWTgMK78yw@mail.gmail.com>
+ <CACPK8XfiN5qziPHLU6J=bC34mcjz+ix7jjSX=xk9zsr7+vyTdw@mail.gmail.com>
+ <CAKXUXMyrhrM2o-OEW_qTTKjfKgxt-Z6Nt69geU80AoFnM1OuMA@mail.gmail.com> <CAK8P3a2N3zNkGzXQD8Pbs-8pDL7mv6rneJop-C_p_+d7-_sNqA@mail.gmail.com>
+In-Reply-To: <CAK8P3a2N3zNkGzXQD8Pbs-8pDL7mv6rneJop-C_p_+d7-_sNqA@mail.gmail.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Tue, 2 Nov 2021 13:14:58 +0100
+Message-ID: <CAKXUXMzeTE11Qfces6sHLb7F_0sSSCOr91aivZmnqCS4cZM-VQ@mail.gmail.com>
+Subject: Re: [PATCH 11/13] arm: npcm: drop selecting non-existing ARM_ERRATA_794072
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Joel Stanley <joel@jms.id.au>, Tomer Maimon <tmaimon77@gmail.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linusw@kernel.org>,
+        Imre Kaloz <kaloz@openwrt.org>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ad6Ic7P=fhScIZp04Ev76Ff
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Arnd,
-
-On Tue, 2 Nov 2021 08:06:10 +0100 Arnd Bergmann <arnd@arndb.de> wrote:
+On Tue, Nov 2, 2021 at 9:11 AM Arnd Bergmann <arnd@arndb.de> wrote:
 >
-> On Tue, Nov 2, 2021 at 7:44 AM Stephen Rothwell <sfr@canb.auug.org.au> wr=
-ote:
+> On Tue, Nov 2, 2021 at 8:31 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+> > On Fri, Oct 29, 2021 at 8:36 AM Joel Stanley <joel@jms.id.au> wrote:
+> > > On Thu, 28 Oct 2021 at 14:57, Arnd Bergmann <arnd@arndb.de> wrote:
+> > > > On Thu, Oct 28, 2021 at 4:19 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+> > > https://lore.kernel.org/all/6be32e0b5b454ed7b609317266a8e798@BLUPR03MB358.namprd03.prod.outlook.com/
+> > >
+> > > It looks like it's the same workaround as ARM_ERRATA_742230, which the
+> > > kernel does implement.
+> > >
+> > > It would be good to hear from the Nuvoton people, or an Arm person.
 > >
-> > On Thu, 28 Oct 2021 23:38:44 +1100 Stephen Rothwell <sfr@canb.auug.org.=
-au> wrote: =20
-> > >
-> > > On Thu, 28 Oct 2021 21:26:51 +1100 Stephen Rothwell <sfr@canb.auug.or=
-g.au> wrote: =20
-> > > >
-> > > > Today's linux-next build (powerpc allyesconfig) failed like this:
-> > > >
-> > > > fs/ntfs/aops.c: In function 'ntfs_write_mst_block':
-> > > > fs/ntfs/aops.c:1311:1: error: the frame size of 2304 bytes is large=
-r than 2048 bytes [-Werror=3Dframe-larger-than=3D]
-> > > >  1311 | }
-> > > >       | ^
-> > > > cc1: all warnings being treated as errors
-> > > >
-> > > > I have no idea what has caused this. =20
-> > >
-> > > With a nudge from Arnd, it seems the immediate case was commit
-> > >
-> > >   f22969a66041 ("powerpc/64s: Default to 64K pages for 64 bit book3s")
-> > >
-> > > from the powerpc tree switching the allyesconfig build from 4k pages =
-to
-> > > 64k pages which expanded a few arrays on the stack in that function. =
-=20
+> > I will happily update the patch to select ARM_ERRATA_742230 instead of
+> > the dead non-existing ARM_ERRATA_794072.
 > >
-> > Can we do something about this, please? =20
->=20
-> I submitted a workaround a while ago. Anton didn't like it, but has not
-> come up with a proper fix in ntfs either:
->=20
-> https://lore.kernel.org/lkml/20210927141815.1711736-1-arnd@kernel.org/
->=20
-> It does need to be changed a bit as I realized it depends on a rework of
-> the Kconfig logic that I had in my randconfig build tree to have a common
-> page size symbol across architectures. Without my other patch, it also
-> needs to check for PPC_64K_PAGES.
->=20
-> Should I send an updated version of the patch?
+> > In contrast to the current patch that basically only cleans up "dead
+> > config" and has no effective functional change, the new patch would
+> > change the behaviour. I cannot test this patch (beyond some basic
+> > compile test) on the hardware; so, we certainly need someone to have
+> > that hardware, knows how to test it or confirm otherwise that we
+> > should select the ARM_ERRATA_742230 fix for this hardware.
+> >
+> > The current patch should be subsumed by the new patch; the submission
+> > of the new patch is deferred until that person shows up. Let's see.
+>
+> I'd prefer to leave the broken Kconfig symbol in place as a reminder until it
+> gets fixed properly then.
+>
 
-That would be good, thanks.
+Agree, this patch here should not be integrated. I rather expect that
+Avi or others at Nuvoton will provide a proper patch to act
+appropriately for the ARM_ERRATA_794072, or after proper analysis can
+determine that there is no change in the kernel required.
 
-Even better would be to split up the function some how, but having had
-a bit of a look at it, that may be a much longer job.  I am assuming
-that allocations (or their failure) are out of the question in that
-particular function.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ad6Ic7P=fhScIZp04Ev76Ff
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGBK1MACgkQAVBC80lX
-0GyH/QgAkAvmgeUUmIMHgVN2m9h4guoICCFaUpOvyw2zyhfDdXEjQ3IslYm3udfz
-L6CfZnDtQzOtJzhAlnXQaaZcBthWupxc0EwZKhwgN3E/grpIoJXdv+eFm++3GFad
-1xnFl7CNuBMd+TjQNQ6Q42L3/SitGbojx5oZBaFJBdFPoJVofsXmWHptC2kJXpvE
-E04k/dznl0GhZisJEv5sVXtXHE6qBDJp4PrzMU+a/9jIjJLX8qG8qzipjLcXhC6c
-tKRm8QEHBLVkI634zjWOA6wFgRAUIRjmFIV9r3rvdaqoWjSdJfub/0aXgZzR3sIZ
-CVV6MjXXqO7NUo6ZTD6/p7fdR3AluA==
-=1Yz5
------END PGP SIGNATURE-----
-
---Sig_/ad6Ic7P=fhScIZp04Ev76Ff--
+Lukas
