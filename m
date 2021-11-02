@@ -2,75 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C54B4436D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 20:55:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C6F4436D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 20:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbhKBT6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 15:58:16 -0400
-Received: from mga09.intel.com ([134.134.136.24]:21882 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229813AbhKBT6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 15:58:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10156"; a="231207667"
-X-IronPort-AV: E=Sophos;i="5.87,203,1631602800"; 
-   d="scan'208";a="231207667"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 12:55:40 -0700
-X-IronPort-AV: E=Sophos;i="5.87,203,1631602800"; 
-   d="scan'208";a="489251107"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 12:55:40 -0700
-Date:   Tue, 2 Nov 2021 12:55:39 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Dave Jones <davej@codemonkey.org.uk>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>
-Subject: Re: mce: Add errata workaround for Skylake SKX37
-Message-ID: <YYGXu9KxCq2+wlQL@agluck-desk2.amr.corp.intel.com>
-References: <20211029205759.GA7385@codemonkey.org.uk>
+        id S231326AbhKBT6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 15:58:37 -0400
+Received: from mail-oo1-f44.google.com ([209.85.161.44]:41503 "EHLO
+        mail-oo1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231204AbhKBT6g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 15:58:36 -0400
+Received: by mail-oo1-f44.google.com with SMTP id t201-20020a4a3ed2000000b002b8c98da3edso57095oot.8;
+        Tue, 02 Nov 2021 12:56:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=D6qcazaxzVHPjC/WUharTcf2EmpETM0fWCuJ5fZpLW8=;
+        b=RDS7yGTdfitEYCX+Ke24p7r5YLQx/LLHvcucHSRic76LFy0gtEBZYUrC3qu/sFUyiK
+         clx/UszFMhH6gF3omRcvRIRyPoEr8o0L2gao5Te2vAF+sfSxLcmtxfO1nwzNvpTB4FPc
+         CtMjPGDVYCdgbQowoLf1nKQDjDusP3/LkBlBUQ+8Kl8PLb2ddglWuT6RA2aJpl9A4ePs
+         IQCJ18YiINxb3W0Z4JZd4oahoFhaIa055G1I09oFzYfrRFeMZuXSpoN6Q+T4HknoJv76
+         YuziwS6WZO3pQ4c8eKSKZyoxMFr4cpq7UMYIkwfO6iYs07VNOqggjSFcwFp9kPQjCUGQ
+         i8qQ==
+X-Gm-Message-State: AOAM531ZieYKdwTkxX9FSLxlU0BJsFTQAUEywTklCmvxjZVJpWlOS3OP
+        uZBJsgR6f2a9sdvZ1g5FI4lC4Qq3lmDjY/1X/XtMxCNXrsQ=
+X-Google-Smtp-Source: ABdhPJzQsOJRKjTZymHsuIVPVkCr14kTLsFbFyHaD8GPCyMpnFFZz6WKmOeU3dHD9vguNjy32qWSzGXNuf9g3AGCn1w=
+X-Received: by 2002:a4a:e9fc:: with SMTP id w28mr7702851ooc.89.1635882960530;
+ Tue, 02 Nov 2021 12:56:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211029205759.GA7385@codemonkey.org.uk>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 2 Nov 2021 20:55:49 +0100
+Message-ID: <CAJZ5v0g4KiDt5Ja-bnP-kJCk311wbOwwr4q7UjXTsoc3ePdbbA@mail.gmail.com>
+Subject: [GIT PULL] PNP update for v5.16-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 04:57:59PM -0400, Dave Jones wrote:
-> Errata SKX37 is word-for-word identical to the other errata listed in
-> this workaround.   I happened to notice this after investigating a CMCI
-> storm on a Skylake host.  While I can't confirm this was the root cause,
-> spurious corrected errors does sound like a likely suspect.
-> 
-> Signed-off-by: Dave Jones <davej@codemonkey.org.uk>
+Hi Linus,
 
-Needs:
+Please pull from the tag
 
-Fixes: 2976908e4198 ("x86/mce: Do not log spurious corrected mce errors")
-Cc: <stable@vger.kernel.org>
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pnp-5.16-rc1
 
-otherwise:
+with top-most commit 47e9249a6cc78c2856bdc8c2f8bd495309cbc060
 
-Reviewed-by: Tony Luck <tony.luck@intel.com>
+ PNP: system.c: unmark a comment as being kernel-doc
 
-> 
-> diff --git arch/x86/kernel/cpu/mce/intel.c arch/x86/kernel/cpu/mce/intel.c
-> index acfd5d9f93c6..bb9a46a804bf 100644
-> --- arch/x86/kernel/cpu/mce/intel.c
-> +++ arch/x86/kernel/cpu/mce/intel.c
-> @@ -547,12 +547,13 @@ bool intel_filter_mce(struct mce *m)
->  {
->  	struct cpuinfo_x86 *c = &boot_cpu_data;
->  
-> -	/* MCE errata HSD131, HSM142, HSW131, BDM48, and HSM142 */
-> +	/* MCE errata HSD131, HSM142, HSW131, BDM48, HSM142 and SKX37 */
->  	if ((c->x86 == 6) &&
->  	    ((c->x86_model == INTEL_FAM6_HASWELL) ||
->  	     (c->x86_model == INTEL_FAM6_HASWELL_L) ||
->  	     (c->x86_model == INTEL_FAM6_BROADWELL) ||
-> -	     (c->x86_model == INTEL_FAM6_HASWELL_G)) &&
-> +	     (c->x86_model == INTEL_FAM6_HASWELL_G) ||
-> +	     (c->x86_model == INTEL_FAM6_SKYLAKE_X)) &&
->  	    (m->bank == 0) &&
->  	    ((m->status & 0xa0000000ffffffff) == 0x80000000000f0005))
->  		return true;
+on top of commit 9e1ff307c779ce1f0f810c7ecce3d95bbae40896
+
+ Linux 5.15-rc4
+
+to receive a PNP update for 5.16-rc1.
+
+This fixes a comment incorrectly marked as kernel-doc (Randy Dunlap).
+
+Thanks!
+
+
+---------------
+
+Randy Dunlap (1):
+      PNP: system.c: unmark a comment as being kernel-doc
+
+---------------
+
+ drivers/pnp/system.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
