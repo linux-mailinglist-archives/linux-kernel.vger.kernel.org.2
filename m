@@ -2,82 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313144427F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2634427FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbhKBHP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:15:57 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:6866 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbhKBHPr (ORCPT
+        id S231436AbhKBHQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231176AbhKBHQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:15:47 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1A26oHrr050484;
-        Tue, 2 Nov 2021 14:50:17 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from JammyHuang-PC.aspeed.com (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Nov
- 2021 15:13:04 +0800
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-To:     <eajames@linux.ibm.com>, <mchehab@kernel.org>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <linux-media@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] media: aspeed: fix mode-detect always timeout at 2nd run
-Date:   Tue, 2 Nov 2021 15:13:37 +0800
-Message-ID: <20211102071337.5983-1-jammy_huang@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 2 Nov 2021 03:16:22 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D755EC061764;
+        Tue,  2 Nov 2021 00:13:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=kSthjGL7SDopyUnpB9YVlk25Gn
+        EaU55W6Bh3y4pFw4pa4kHzimIPnGzDiG3xmvv0oHWUE2siAMuydilqdtcCYoDcOGTUi1Gib88a/sV
+        V9+Jn/646XGT2gy3zTDrXCNx+Fg/vco8j/5b/Z4/mxKtPpj4kqwHRy5ZX+aw47vJ6OYn1y5EfQVoP
+        x0AqGlimnDenQDO/s7Q7EIi+tXdu5rOECVh3OuyrOUd7X66kK0m7XjWsPvdpl74HsR7d3QN7Gbnm0
+        RKuq6suYARqQ+E0iqDSqDga+FSc2U0pSKHog+6SpMvR/8k8uo8VU4Cr2GFE9hu1ka84y0cWCR/9zC
+        /gK79AxQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhnzM-000jnG-VD; Tue, 02 Nov 2021 07:13:44 +0000
+Date:   Tue, 2 Nov 2021 00:13:44 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 04/21] iomap: Convert to_iomap_page to take a folio
+Message-ID: <YYDlKENvT0JODCg4@infradead.org>
+References: <20211101203929.954622-1-willy@infradead.org>
+ <20211101203929.954622-5-willy@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1A26oHrr050484
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211101203929.954622-5-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-aspeed_video_get_resolution() will try to do res-detect again if the
-timing got in last try is invalid. But it will always timeout because
-VE_SEQ_CTRL_TRIG_MODE_DET only cleared after 1st mode-detect.
+Looks good,
 
-To fix the problem, just clear VE_SEQ_CTRL_TRIG_MODE_DET before set in
-aspeed_video_enable_mode_detect().
-
-Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
----
- drivers/media/platform/aspeed-video.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-index cd2b71c81e31..b470f4b68aa0 100644
---- a/drivers/media/platform/aspeed-video.c
-+++ b/drivers/media/platform/aspeed-video.c
-@@ -611,6 +611,10 @@ static void aspeed_video_enable_mode_detect(struct aspeed_video *video)
- 	aspeed_video_update(video, VE_INTERRUPT_CTRL, 0,
- 			    VE_INTERRUPT_MODE_DETECT);
- 
-+	/* Disable mode detect in order to re-trigger */
-+	aspeed_video_update(video, VE_SEQ_CTRL,
-+			    VE_SEQ_CTRL_TRIG_MODE_DET, 0);
-+
- 	/* Trigger mode detect */
- 	aspeed_video_update(video, VE_SEQ_CTRL, 0, VE_SEQ_CTRL_TRIG_MODE_DET);
- }
-@@ -930,10 +934,6 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
- 			return;
- 		}
- 
--		/* Disable mode detect in order to re-trigger */
--		aspeed_video_update(video, VE_SEQ_CTRL,
--				    VE_SEQ_CTRL_TRIG_MODE_DET, 0);
--
- 		aspeed_video_check_and_set_polarity(video);
- 
- 		aspeed_video_enable_mode_detect(video);
--- 
-2.25.1
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
