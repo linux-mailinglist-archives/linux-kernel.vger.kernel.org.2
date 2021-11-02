@@ -2,300 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E13F443390
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:44:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB604433A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234934AbhKBQrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234707AbhKBQqs (ORCPT
+        id S231721AbhKBQts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:49:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57301 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231725AbhKBQto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:46:48 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF54AC06118D;
-        Tue,  2 Nov 2021 09:12:12 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id m14so24530823edd.0;
-        Tue, 02 Nov 2021 09:12:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=n3D3isQYQoZt8oK+QagFyG/F4ee/acgQw48favSVe0E=;
-        b=dljsXv3wZeh8L5SZBGkLn6Pt+w3Saj23K1mjCSrTEgOWc/68atJmLq05wJs6FL7xxh
-         SIS7v5MG7pbqSgcnyDOEp8PWErMj0F0ctDDlM4lF1BoMVkXW5Y3Sp+vjaxrC8lkiUSli
-         gcVGHCDHjCodm5u8tBjp8LjIuCwdSpJMJkTK6eP+mma8bk87BDhtiJztT21OggOqurCj
-         /0hNVRrz2WnFye6g+9vcUnvedC8aRQDW+x+24ww6klSRKCDKx1e7jHOLB54Jwdtm0ulm
-         mR/UX3HgKvY9vGFAAXvhTIghvJIXQ5+jDAI7s2v109xY1YroDwwpXFHg/XFilnXvucy2
-         Tt5g==
+        Tue, 2 Nov 2021 12:49:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635871628;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OXCcgVDujHkdu74YmEm/6uZxSbK6QTtbfJnMu16uuZU=;
+        b=hgaFsWGpl073kSM7zs0J6RIyNgrUoIZOtWxnxxV+pwq2kUlSeXihoak9vycHUtuIZayYpl
+        3z0RRwqlJMe8+lzBK+qFyLGcWUPAPLmWM8mmX4cjhdbGV1iL7Ew5gWNos08lw5wjqMtGuS
+        hiq8B/1WE1hv4VIZK1lkvGELnlOwkXw=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-37-PlaI5KeEOta_NaDDU4k45g-1; Tue, 02 Nov 2021 12:11:30 -0400
+X-MC-Unique: PlaI5KeEOta_NaDDU4k45g-1
+Received: by mail-ed1-f72.google.com with SMTP id w12-20020aa7da4c000000b003e28acbf765so6833372eds.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:11:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=n3D3isQYQoZt8oK+QagFyG/F4ee/acgQw48favSVe0E=;
-        b=5jnXYkJxRphCx9ZcXiEvHjc8CSgnUaLWX0qObC7BmGri8bf2EjtJTfqEGQ4Ar/t3mC
-         +rV6F/GQt8OfRgSIcS5OFYzCv1CPnHBotMw8l3JrvsHGS+ioLYfCwc/GovZS31Nr+yta
-         wIocGJD76z+upEv4pkM3xP1rpm70LbNC4HpP99fBOwd9xWgnPRj41is6a35ec2GlfaUH
-         KoOMl3QUk1TYugaSuR71HE8oZWqNjN+28+dxMQm2dnH6/oQtHogAWRSenP6myUe4pHH+
-         y0MYK67FzcPaJN4dqd0hH9FTxXcNLHHcix8Nn1cuk4DPtXyq+/YIrqZnKN/eZEcjJuO1
-         Rj4A==
-X-Gm-Message-State: AOAM533z7+r/HMGwJuqYATrMyU9pe46sYm+qpvwhXgzKs87+6p9VOVT4
-        zN9Zj532K09eopSgqI/a9eA=
-X-Google-Smtp-Source: ABdhPJwqsnQ8XwkGvDCTh7wJhlcnFGeqD1H43P++XZjui4DqdM1Mm5nlAPqbxstxZhhXo8If7vSMyA==
-X-Received: by 2002:a17:907:961a:: with SMTP id gb26mr45903415ejc.527.1635869529075;
-        Tue, 02 Nov 2021 09:12:09 -0700 (PDT)
-Received: from stitch.. (80.71.140.73.ipv4.parknet.dk. [80.71.140.73])
-        by smtp.gmail.com with ESMTPSA id c7sm8451374ejd.91.2021.11.02.09.12.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 09:12:08 -0700 (PDT)
-Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-To:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Cc:     Emil Renner Berthing <kernel@esmil.dk>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 16/16] RISC-V: Add BeagleV Starlight Beta device tree
-Date:   Tue,  2 Nov 2021 17:11:25 +0100
-Message-Id: <20211102161125.1144023-17-kernel@esmil.dk>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211102161125.1144023-1-kernel@esmil.dk>
-References: <20211102161125.1144023-1-kernel@esmil.dk>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=OXCcgVDujHkdu74YmEm/6uZxSbK6QTtbfJnMu16uuZU=;
+        b=N4ohmrrxxsI04aEZJilwjPOlCP9Gh9r5PIabV8280/IrtuATljftxyZRMBaP1bdQcG
+         B6UJ2/DIRRjTZjy3xyDWtfQKEqPMmZbWicmvKKKPelCyVGLdLxZcbQZaWC9klGWlrwFU
+         QhJBKw6tHBwB9dEyIUmQFT/LMEfIRgtiBvXjGwTD+Mb8vC63aQnThyBKviBACmF+Necn
+         cAImknVCIXsKGDm6HkeWec1sEYWyXVFF/Xul8Bjp5jWRZyB2yWvZc9ZoF5JOa//5NQ4H
+         RMFTgryXJKOXBx3lPVoHseZGlaPZ3JSOTdoOxu/+Go65LICGl0aBxLtF/CUEAzOJxbvU
+         lsYw==
+X-Gm-Message-State: AOAM530MuEEU9bfX8ONLPVRjY/rFLioeuPl0F4PRBlFU72VKSTw+/sJy
+        Hr3vuaBQuV6EXaxA2jdzqcdyKP/O98O3AjpB+Dxsrw4fYOSHnHU3pwQcQds5In8G6jLlIUZQA6i
+        zRfQtw5thDtPaG3UrbPzhUPKX
+X-Received: by 2002:a17:906:ce2b:: with SMTP id sd11mr41196375ejb.357.1635869489659;
+        Tue, 02 Nov 2021 09:11:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwc7xvozzFCrT+ldZQZpz2qqh+5IJOeJ4jcizwG2L2dQLGetL43/Fnv4jvYRJN+ddJ55lpktA==
+X-Received: by 2002:a17:906:ce2b:: with SMTP id sd11mr41196329ejb.357.1635869489417;
+        Tue, 02 Nov 2021 09:11:29 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id j3sm8322037ejo.2.2021.11.02.09.11.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 09:11:28 -0700 (PDT)
+Message-ID: <69cc36ec-0674-2acb-6d23-4d7bc8c63fd9@redhat.com>
+Date:   Tue, 2 Nov 2021 17:11:27 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v5 10/11] platform/x86: int3472: Pass
+ tps68470_regulator_platform_data to the tps68470-regulator MFD-cell
+Content-Language: en-US
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+References: <20211102094907.31271-1-hdegoede@redhat.com>
+ <20211102094907.31271-11-hdegoede@redhat.com>
+ <CAHp75Vd-xY43H8jPOUqJp55Rq3Wuhsdzctfhqq300S0vAKTzpw@mail.gmail.com>
+ <1f4377bb-2902-05e9-95c7-ad924477b543@redhat.com>
+ <CAHp75VfJZYiVvE0uQ6ahOJo9wxh0EwjgkeN81vas89pNMDv3GQ@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <CAHp75VfJZYiVvE0uQ6ahOJo9wxh0EwjgkeN81vas89pNMDv3GQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial device tree for the BeagleV Starlight Beta board. About 300
-of these boards were sent out as part of a now cancelled BeagleBoard.org
-project.
+Hi,
 
-I2C timing data is based on the device tree in the vendor u-boot port.
-Heartbeat LED added by Geert.
+On 11/2/21 16:52, Andy Shevchenko wrote:
+> On Tue, Nov 2, 2021 at 4:59 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>> On 11/2/21 15:34, Andy Shevchenko wrote:
+>>> On Tue, Nov 2, 2021 at 11:50 AM Hans de Goede <hdegoede@redhat.com> wrote:
+> 
+> ...
+> 
+>>>> +               board_data = int3472_tps68470_get_board_data(dev_name(&client->dev));
+>>>> +               if (!board_data) {
+>>>> +                       dev_err(&client->dev, "No board-data found for this laptop/tablet model\n");
+>>>> +                       return -ENODEV;
+>>>
+>>> It's fine to use dev_err_probe() for known error codes.
+>>>
+>>>> +               }
+>>>
+>>> ...
+>>>
+>>>> +               cells[1].platform_data = (void *)board_data->tps68470_regulator_pdata;
+>>>
+>>> Do we need casting?
+>>
+>> Yes, the cast casts away a "const", the const is correct
+>> since the data only ever gets read by the regulator driver,
+>> but platform_data pointers are normally not const, so it
+>> is either the cast, or loose the const on the definition
+>> of the struct to which board_data->tps68470_regulator_pdata
+>> points...
+>>
+>> So not good choice here really, only chosing between bad
+>> options and I picked the lets do the cast "least worse"
+>> option (at least to me). I'm open to changing this.
+> 
+> Hmm... Okay, I was under the impression that MFD is using const for
+> that field...
 
-Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-Co-developed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/riscv/boot/dts/Makefile                  |   1 +
- arch/riscv/boot/dts/starfive/Makefile         |   2 +
- .../dts/starfive/jh7100-beaglev-starlight.dts | 164 ++++++++++++++++++
- 3 files changed, 167 insertions(+)
- create mode 100644 arch/riscv/boot/dts/starfive/Makefile
- create mode 100644 arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts
+Nope, I just double-checked and it is a plain "void *" 
 
-diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makefile
-index fe996b88319e..ff174996cdfd 100644
---- a/arch/riscv/boot/dts/Makefile
-+++ b/arch/riscv/boot/dts/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- subdir-y += sifive
-+subdir-y += starfive
- subdir-$(CONFIG_SOC_CANAAN_K210_DTB_BUILTIN) += canaan
- subdir-y += microchip
- 
-diff --git a/arch/riscv/boot/dts/starfive/Makefile b/arch/riscv/boot/dts/starfive/Makefile
-new file mode 100644
-index 000000000000..0ea1bc15ab30
---- /dev/null
-+++ b/arch/riscv/boot/dts/starfive/Makefile
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0
-+dtb-$(CONFIG_SOC_STARFIVE) += jh7100-beaglev-starlight.dtb
-diff --git a/arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts b/arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts
-new file mode 100644
-index 000000000000..c9af67f7a0d2
---- /dev/null
-+++ b/arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts
-@@ -0,0 +1,164 @@
-+// SPDX-License-Identifier: GPL-2.0 OR MIT
-+/*
-+ * Copyright (C) 2021 StarFive Technology Co., Ltd.
-+ * Copyright (C) 2021 Emil Renner Berthing <kernel@esmil.dk>
-+ */
-+
-+/dts-v1/;
-+#include "jh7100.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/leds/common.h>
-+#include <dt-bindings/pinctrl/pinctrl-starfive.h>
-+
-+/ {
-+	model = "BeagleV Starlight Beta";
-+	compatible = "beagle,beaglev-starlight-jh7100-r0", "starfive,jh7100";
-+
-+	aliases {
-+		serial0 = &uart3;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	cpus {
-+		timebase-frequency = <6250000>;
-+	};
-+
-+	memory@80000000 {
-+		device_type = "memory";
-+		reg = <0x0 0x80000000 0x2 0x0>;
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-ack {
-+			gpios = <&gpio 43 GPIO_ACTIVE_HIGH>;
-+			color = <LED_COLOR_ID_GREEN>;
-+			function = LED_FUNCTION_HEARTBEAT;
-+			linux,default-trigger = "heartbeat";
-+			label = "ack";
-+		};
-+	};
-+};
-+
-+&gpio {
-+	i2c0_pins: i2c0-0 {
-+		i2c-pins {
-+			pinmux = <GPIOMUX(62, GPO_LOW,
-+				  GPO_I2C0_PAD_SCK_OEN,
-+				  GPI_I2C0_PAD_SCK_IN)>,
-+				 <GPIOMUX(61, GPO_LOW,
-+				  GPO_I2C0_PAD_SDA_OEN,
-+				  GPI_I2C0_PAD_SDA_IN)>;
-+			bias-disable; /* external pull-up */
-+			input-enable;
-+			input-schmitt-enable;
-+		};
-+	};
-+
-+	i2c1_pins: i2c1-0 {
-+		i2c-pins {
-+			pinmux = <GPIOMUX(47, GPO_LOW,
-+				  GPO_I2C1_PAD_SCK_OEN,
-+				  GPI_I2C1_PAD_SCK_IN)>,
-+				 <GPIOMUX(48, GPO_LOW,
-+				  GPO_I2C1_PAD_SDA_OEN,
-+				  GPI_I2C1_PAD_SDA_IN)>;
-+			bias-pull-up;
-+			input-enable;
-+			input-schmitt-enable;
-+		};
-+	};
-+
-+	i2c2_pins: i2c2-0 {
-+		i2c-pins {
-+			pinmux = <GPIOMUX(60, GPO_LOW,
-+				  GPO_I2C2_PAD_SCK_OEN,
-+				  GPI_I2C2_PAD_SCK_IN)>,
-+				 <GPIOMUX(59, GPO_LOW,
-+				  GPO_I2C2_PAD_SDA_OEN,
-+				  GPI_I2C2_PAD_SDA_IN)>;
-+			bias-disable; /* external pull-up */
-+			input-enable;
-+			input-schmitt-enable;
-+		};
-+	};
-+
-+	uart3_pins: uart3-0 {
-+		rx-pins {
-+			pinmux = <GPIOMUX(13, GPO_LOW, GPO_DISABLE,
-+				  GPI_UART3_PAD_SIN)>;
-+			bias-pull-up;
-+			drive-strength = <14>;
-+			input-enable;
-+			input-schmitt-enable;
-+			slew-rate = <0>;
-+		};
-+		tx-pins {
-+			pinmux = <GPIOMUX(14, GPO_UART3_PAD_SOUT,
-+				  GPO_ENABLE, GPI_NONE)>;
-+			bias-disable;
-+			drive-strength = <35>;
-+			input-disable;
-+			input-schmitt-disable;
-+			slew-rate = <0>;
-+		};
-+	};
-+};
-+
-+&i2c0 {
-+	clock-frequency = <100000>;
-+	i2c-sda-hold-time-ns = <300>;
-+	i2c-sda-falling-time-ns = <500>;
-+	i2c-scl-falling-time-ns = <500>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c0_pins>;
-+	status = "okay";
-+
-+	pmic@5e {
-+		compatible = "ti,tps65086";
-+		reg = <0x5e>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		regulators {
-+		};
-+	};
-+};
-+
-+&i2c1 {
-+	clock-frequency = <400000>;
-+	i2c-sda-hold-time-ns = <300>;
-+	i2c-sda-falling-time-ns = <100>;
-+	i2c-scl-falling-time-ns = <100>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c1_pins>;
-+	status = "okay";
-+};
-+
-+&i2c2 {
-+	clock-frequency = <100000>;
-+	i2c-sda-hold-time-ns = <300>;
-+	i2c-sda-falling-time-ns = <500>;
-+	i2c-scl-falling-time-ns = <500>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c2_pins>;
-+	status = "okay";
-+};
-+
-+&osc_sys {
-+	clock-frequency = <25000000>;
-+};
-+
-+&osc_aud {
-+	clock-frequency = <27000000>;
-+};
-+
-+&uart3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart3_pins>;
-+	status = "okay";
-+};
--- 
-2.33.1
+Regards,
+
+Hans
 
