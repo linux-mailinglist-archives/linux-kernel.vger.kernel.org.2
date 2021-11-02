@@ -2,97 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D5A4435D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC714435DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235610AbhKBSnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 14:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235652AbhKBSnL (ORCPT
+        id S235179AbhKBSny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 14:43:54 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:34655 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230131AbhKBSnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 14:43:11 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9231C061205
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 11:40:33 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id t11so151992plq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 11:40:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LXw6r8OwYfTq33ELj55YCs9jKPuVtDt4Fh+PISCMrrw=;
-        b=f2h7f/vYmLN+UZ9czpcLC3O52WrxCV22IPzJC1zoR10W9CvHXi2vYuIa4edpjYDfr0
-         v00CulTRVhN1sjgSdo8klPh5rN+3z0WE2yTF4ov/99SFGmJ1OKAl0bLm6PB9PjFHJP/9
-         /OGDlWfouawkxDHp8p5urWyluFWK7mAeqfO6U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LXw6r8OwYfTq33ELj55YCs9jKPuVtDt4Fh+PISCMrrw=;
-        b=HZWYxxUbKg7ojfnhLLl9UAHmiTkmEAbKaoZ5KddudN7I0LRRiwhEDNN4RXgATkGIrx
-         6EvU4N1AaupC2Gwc992AgaU5P179nLs3n3Xkb/Sk8eaGLpkQS0OZ4GKSMQc8+0U+wMru
-         7zvL3qaXAwdXg5JYn32bozYhFBMVXdqET5I6Xyt0VyjcDkDRc0WTSoAwtjPbAd0K6odZ
-         b4AsbcKpDvxzYMRQeCIrPhjEZMRZdy0b7k8S1I4vkm5PrgATT/WrDEkngrnaJLwbKezK
-         BxhIpQ0s6bo7aSKrsRGCw/qOEtqg16LM2gL6kWZGwMecxtLtRf7S1cs/Ecdd/L/aPygA
-         p/fQ==
-X-Gm-Message-State: AOAM531wtreQ83n4zLGXSsmLU5BPTZotboQD3MHH+qC0LZC39MVAjLC3
-        V3X4vwIgl32YsTXVWw/C9ml8uQ==
-X-Google-Smtp-Source: ABdhPJyZNs8g12zXsaKnLuGtxMDQlO53LpWL47lM0JyvTOk1Xc0+CZdy90R1IqzNJGm5XYJld0yNwQ==
-X-Received: by 2002:a17:90b:4c88:: with SMTP id my8mr8706139pjb.49.1635878433294;
-        Tue, 02 Nov 2021 11:40:33 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:ed8a:42c4:80bb:9a91])
-        by smtp.gmail.com with UTF8SMTPSA id f11sm9114357pfe.3.2021.11.02.11.40.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 11:40:32 -0700 (PDT)
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jim Broadus <jbroadus@gmail.com>,
-        Johnny Chuang <johnny.chuang.emc@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] HID: i2c-hid: Report wakeup events
-Date:   Tue,  2 Nov 2021 11:40:25 -0700
-Message-Id: <20211102114017.1.I16ef7b761c8467be2106880e9b24ce304ae2b532@changeid>
-X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 2 Nov 2021 14:43:52 -0400
+Received: from smtpclient.apple (p4fefc15c.dip0.t-ipconnect.de [79.239.193.92])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 30E6BCECF5;
+        Tue,  2 Nov 2021 19:41:15 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [PATCH v7 2/2] Bluetooth: aosp: Support AOSP Bluetooth Quality
+ Report
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20211102151908.v7.2.Iaa4a0269e51d8e8d8784a6ac8e05899b49a1377d@changeid>
+Date:   Tue, 2 Nov 2021 19:41:14 +0100
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        =?utf-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        josephsih@google.com, Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <70E30E57-1478-466B-B02E-1E05FC38F625@holtmann.org>
+References: <20211102151908.v7.1.I139e71adfd3f00b88fe9edb63d013f9cd3e24506@changeid>
+ <20211102151908.v7.2.Iaa4a0269e51d8e8d8784a6ac8e05899b49a1377d@changeid>
+To:     Joseph Hwang <josephsih@chromium.org>
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i2c-hid driver generally supports wakeup, bit it currently
-doesn't report wakeup events to the PM subsystem. Change that.
+Hi Joseph,
 
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
----
+> This patch adds the support of the AOSP Bluetooth Quality Report
+> (BQR) events.
+> 
+> Multiple vendors have supported the AOSP Bluetooth Quality Report.
+> When a Bluetooth controller supports the capability, it can enable
+> the aosp capability through hci_set_aosp_capable. Then hci_core will
+> set up the hdev->aosp_set_quality_report callback through aosp_do_open
+> if the controller responds to support the quality report capability.
+> 
+> Note that Intel also supports a distinct telemetry quality report
+> specification. Intel sets up the hdev->set_quality_report callback
+> in the btusb driver module.
+> 
+> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+> Signed-off-by: Joseph Hwang <josephsih@chromium.org>
+> 
+> ---
+> 
+> Changes in v7:
+> - Remove the unnecessary debug print.
+> 
+> Changes in v6:
+> - Use the decimal version instead of hexadecimal version to be
+>  consistent with the AOSP specification.
+> - Move the code of checking the bluetooth_quality_report_support field
+>  to the previous patch.
+> 
+> Changes in v5:
+> - Fix the patch per
+>  [RFC PATCH] Bluetooth: Add framework for AOSP quality report setting
+> - Declare aosp_set_quality_report.
+> - Use aosp_do_open() to set hdev->aosp_set_quality_report.
+> - Add aosp_has_quality_report().
+> - In mgmt, use hdev->aosp_set_quality_report and
+>  hdev->set_quality_report separately.
+> 
+> Changes in v4:
+> - Move the AOSP BQR support from the driver level to net/bluetooth/aosp.
+> - Fix the drivers to use hci_set_aosp_capable to enable aosp.
+> - Add Mediatek to support the capability too.
+> 
+> Changes in v3:
+> - Fix the auto build test ERROR
+>  "undefined symbol: btandroid_set_quality_report" that occurred
+>  with some kernel configs.
+> - Note that the mgmt-tester "Read Exp Feature - Success" failed.
+>  But on my test device, the same test passed. Please kindly let me
+>  know what may be going wrong. These patches do not actually
+>  modify read/set experimental features.
+> - As to CheckPatch failed. No need to modify the MAINTAINERS file.
+>  Thanks.
+> 
+> Changes in v2:
+> - Fix the titles of patches 2/3 and 3/3 and reduce their lengths.
+> 
+> net/bluetooth/aosp.c | 87 ++++++++++++++++++++++++++++++++++++++++++++
+> net/bluetooth/aosp.h | 13 +++++++
+> net/bluetooth/mgmt.c | 17 ++++++---
+> 3 files changed, 112 insertions(+), 5 deletions(-)
 
- drivers/hid/i2c-hid/i2c-hid-core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+patch has been applied to bluetooth-next tree.
 
-diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-index 517141138b00..68d9a089e3e8 100644
---- a/drivers/hid/i2c-hid/i2c-hid-core.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-@@ -522,9 +522,12 @@ static void i2c_hid_get_input(struct i2c_hid *ihid)
- 
- 	i2c_hid_dbg(ihid, "input: %*ph\n", ret_size, ihid->inbuf);
- 
--	if (test_bit(I2C_HID_STARTED, &ihid->flags))
-+	if (test_bit(I2C_HID_STARTED, &ihid->flags)) {
-+		pm_wakeup_event(&ihid->client->dev, 0);
-+
- 		hid_input_report(ihid->hid, HID_INPUT_REPORT, ihid->inbuf + 2,
- 				ret_size - 2, 1);
-+	}
- 
- 	return;
- }
--- 
-2.33.1.1089.g2158813163f-goog
+Regards
+
+Marcel
 
