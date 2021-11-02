@@ -2,74 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 768314434BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8974434BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 18:44:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234629AbhKBRqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 13:46:17 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:38800 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231702AbhKBRqP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 13:46:15 -0400
-Received: by mail-oi1-f179.google.com with SMTP id bo10so4217281oib.5;
-        Tue, 02 Nov 2021 10:43:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1T3840NthAg+NzqSwmuw7M3cighqIVRGGdTsN20/Ies=;
-        b=TYMduyVR3YxyjL9pEFMKw1U6wMim/q0Qa8VlUBGlEmZiTnejIQMizEAf3VTagvoOPv
-         MGpmd3sI3ehEjiDFWnpxrqZ4WCymJWfJhTXlNsqZdbD/tZVpwx+6/4fxaW/L7N2y+xKp
-         y+RQ19Bt3RhX+rrVqJsz3OjDLG+CJGxsP+52x95b/felXBAcTCf4F89R2uW66eT0uDf7
-         Z9vFv/yGygTmOYeJSdX+CEDlZsADzk3uzgIDGFrU9xQzi+6HKDymFzU6qfdSr3AXZpZH
-         TLzsaD3zCj5zDRkxOaehe22G4rDl2wXyeepTOAyzHBNrowemS28NCBtDSqVZeyC1ryFh
-         WjBw==
-X-Gm-Message-State: AOAM530MoQ+/UkDYWGBl8cASErc1/Fy2+3Dp+SjXS2WIbtd5Dky9m+Kh
-        rgU1Yjg4E/BYsqiOrY6Q0A==
-X-Google-Smtp-Source: ABdhPJzrO50Y4/4GkGyHbeY+MZvvQN8+acMvreHLSq8/gloe/iF6NOGhwlsm3d6o+ATIPcwWFX6DZg==
-X-Received: by 2002:a54:4f94:: with SMTP id g20mr6492412oiy.10.1635875019833;
-        Tue, 02 Nov 2021 10:43:39 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id k24sm539690oou.18.2021.11.02.10.43.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 10:43:38 -0700 (PDT)
-Received: (nullmailer pid 3141437 invoked by uid 1000);
-        Tue, 02 Nov 2021 17:43:38 -0000
-Date:   Tue, 2 Nov 2021 12:43:38 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Cc:     linux-phy@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Vinod Koul <vkoul@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v3 7/8] dt-bindings: phy: uniphier-ahci: Add bindings for
- Pro4 SoC
-Message-ID: <YYF4ygcYuLLILnji@robh.at.kernel.org>
-References: <1635503947-18250-1-git-send-email-hayashi.kunihiko@socionext.com>
- <1635503947-18250-8-git-send-email-hayashi.kunihiko@socionext.com>
+        id S234656AbhKBRqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 13:46:37 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:58144 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230500AbhKBRqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 13:46:36 -0400
+Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mhxpC-0003PG-1v; Tue, 02 Nov 2021 18:43:54 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Russell King <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, Olof Johansson <olof@lixom.net>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Inki Dae <inki.dae@samsung.com>, Cedric Roux <sed@free.fr>,
+        Sam Van Den Berge <sam.van.den.berge@telenet.be>,
+        Lihua Yao <ylhuajnu@outlook.com>
+Subject: Re: [RFC PATCH] ARM: s3c: mark as deprecated and schedule removal after 2022
+Date:   Tue, 02 Nov 2021 18:43:53 +0100
+Message-ID: <1678494.ihjLuDa2nf@diego>
+In-Reply-To: <20211102110519.142434-1-krzysztof.kozlowski@canonical.com>
+References: <20211102110519.142434-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1635503947-18250-8-git-send-email-hayashi.kunihiko@socionext.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 19:39:06 +0900, Kunihiko Hayashi wrote:
-> Update AHCI-PHY binding document for UniPhier Pro4 SoC. Add a compatible
-> string, clock and reset lines for the SoC to the document.
+Am Dienstag, 2. November 2021, 12:05:19 CET schrieb Krzysztof Kozlowski:
+> The Samsung S3C24xx and S3C64xx platforms are very old designs. S3C2416
+> was introduced in 2008 and S3C6410 in 2009/2010.  They are not widely
+> available anymore - out-of-stock on FriendlyArm (one of manufacturers of
+> boards) and only few specialist stores still offer them for quite a high
+> price.
 > 
-> Pro4 AHCI-PHY needs to control additional GIO clock line and reset lines
-> ("pm", "tx", and "rx").
+> The community around these platforms was not very active, so I suspect
+> no one really uses them anymore. Maintenance takes precious time so
+> there is little sense in keeping them alive if there are no real users.
 > 
-> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> Let's mark all S3C24xx and S3C64xx platforms as deprecated and mention
+> possible removal in one year (after 2022).  The deprecation message will
+> be as text in Kconfig, build message (not a warning though) and runtime
+> print error.
+> 
+> If there are any users, they might respond and postpone the removal.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+
+
+s3c2416/s3c2450 was my entry into kernel development, so I have an
+emotional connection to it ;-) - and also still hold onto a stash of devices.
+
+Nevertheless personally I don't see myself finding the time to continue
+working on those platforms (or the s3c2443-based Openmoko Freerunner
+I also still have), because as you said those platforms are so old.
+
+
+So
+Acked-by: Heiko Stuebner <heiko@sntech.de>
+
 > ---
->  .../bindings/phy/socionext,uniphier-ahci-phy.yaml   | 21 +++++++++++++++++----
->  1 file changed, 17 insertions(+), 4 deletions(-)
+>  arch/arm/Kconfig                  | 7 ++++++-
+>  arch/arm/mach-s3c/Kconfig.s3c64xx | 7 ++++++-
+>  arch/arm/mach-s3c/cpu.c           | 1 +
+>  arch/arm/mach-s3c/init.c          | 2 ++
+>  arch/arm/mach-s3c/s3c24xx.c       | 5 +++++
+>  arch/arm/mach-s3c/s3c64xx.c       | 5 +++++
+>  6 files changed, 25 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+> index f0f9e8bec83a..bd8237c7e7f1 100644
+> --- a/arch/arm/Kconfig
+> +++ b/arch/arm/Kconfig
+> @@ -473,7 +473,7 @@ config ARCH_SA1100
+>  	  Support for StrongARM 11x0 based boards.
+>  
+>  config ARCH_S3C24XX
+> -	bool "Samsung S3C24XX SoCs"
+> +	bool "Samsung S3C24XX SoCs (deprecated, see help)"
+>  	select ATAGS
+>  	select CLKSRC_SAMSUNG_PWM
+>  	select GPIO_SAMSUNG
+> @@ -491,6 +491,11 @@ config ARCH_S3C24XX
+>  	  (<http://www.simtec.co.uk/products/EB110ITX/>), the IPAQ 1940 or the
+>  	  Samsung SMDK2410 development board (and derivatives).
+>  
+> +	  The platform is deprecated and scheduled in removal. Please reach to
+> +	  the maintainers of the platform and linux-samsung-soc@vger.kernel.org if
+> +	  you still use it.
+> +	  Without such feedback, the platform will be removed after 2022.
+> +
+>  config ARCH_OMAP1
+>  	bool "TI OMAP1"
+>  	depends on MMU
+> diff --git a/arch/arm/mach-s3c/Kconfig.s3c64xx b/arch/arm/mach-s3c/Kconfig.s3c64xx
+> index f3fcb570edf5..3b090ae72bbd 100644
+> --- a/arch/arm/mach-s3c/Kconfig.s3c64xx
+> +++ b/arch/arm/mach-s3c/Kconfig.s3c64xx
+> @@ -4,7 +4,7 @@
+>  #	Simtec Electronics, Ben Dooks <ben@simtec.co.uk>
+>  
+>  menuconfig ARCH_S3C64XX
+> -	bool "Samsung S3C64XX"
+> +	bool "Samsung S3C64XX (deprecated, see help)"
+>  	depends on ARCH_MULTI_V6
+>  	select ARM_AMBA
+>  	select ARM_VIC
+> @@ -25,6 +25,11 @@ menuconfig ARCH_S3C64XX
+>  	help
+>  	  Samsung S3C64XX series based systems
+>  
+> +	  The platform is deprecated and scheduled in removal. Please reach to
+> +	  the maintainers of the platform and linux-samsung-soc@vger.kernel.org if
+> +	  you still use it.
+> +	  Without such feedback, the platform will be removed after 2022.
+> +
+>  if ARCH_S3C64XX
+>  
+>  # Configuration options for the S3C6410 CPU
+> diff --git a/arch/arm/mach-s3c/cpu.c b/arch/arm/mach-s3c/cpu.c
+> index 6e9772555f0d..3b16cf42910f 100644
+> --- a/arch/arm/mach-s3c/cpu.c
+> +++ b/arch/arm/mach-s3c/cpu.c
+> @@ -28,4 +28,5 @@ void __init s3c64xx_init_cpu(void)
+>  	}
+>  
+>  	pr_info("Samsung CPU ID: 0x%08lx\n", samsung_cpu_id);
+> +	pr_err("The platform is deprecated and scheduled in removal. Please reach to the maintainers of the platform and linux-samsung-soc@vger.kernel.org if you still use it.  Without such feedback, the platform will be removed after 2022.\n");
+>  }
+> diff --git a/arch/arm/mach-s3c/init.c b/arch/arm/mach-s3c/init.c
+> index 9d92f03e9bc1..5db7dc54340c 100644
+> --- a/arch/arm/mach-s3c/init.c
+> +++ b/arch/arm/mach-s3c/init.c
+> @@ -59,6 +59,8 @@ void __init s3c_init_cpu(unsigned long idcode,
+>  
+>  	if (cpu->map_io)
+>  		cpu->map_io();
+> +
+> +	pr_err("The platform is deprecated and scheduled in removal. Please reach to the maintainers of the platform and linux-samsung-soc@vger.kernel.org if you still use it.  Without such feedback, the platform will be removed after 2022.\n");
+>  }
+>  
+>  /* s3c24xx_init_clocks
+> diff --git a/arch/arm/mach-s3c/s3c24xx.c b/arch/arm/mach-s3c/s3c24xx.c
+> index ccfed48c98aa..2ea1cb21dfbc 100644
+> --- a/arch/arm/mach-s3c/s3c24xx.c
+> +++ b/arch/arm/mach-s3c/s3c24xx.c
+> @@ -678,3 +678,8 @@ struct platform_device s3c2410_device_dclk = {
+>  	},
+>  };
+>  #endif
+> +
+> +#pragma message "The platform is deprecated and scheduled in removal (see platform help). " \
+> +		"Please reach to the maintainers of the platform " \
+> +		"and linux-samsung-soc@vger.kernel.org if you still use it." \
+> +		"Without such feedback, the platform will be removed after 2022."
+> diff --git a/arch/arm/mach-s3c/s3c64xx.c b/arch/arm/mach-s3c/s3c64xx.c
+> index 4dfb648142f2..3e248f0e96a2 100644
+> --- a/arch/arm/mach-s3c/s3c64xx.c
+> +++ b/arch/arm/mach-s3c/s3c64xx.c
+> @@ -425,3 +425,8 @@ static int __init s3c64xx_init_irq_eint(void)
+>  	return 0;
+>  }
+>  arch_initcall(s3c64xx_init_irq_eint);
+> +
+> +#pragma message "The platform is deprecated and scheduled in removal (see platform help). " \
+> +		"Please reach to the maintainers of the platform " \
+> +		"and linux-samsung-soc@vger.kernel.org if you still use it." \
+> +		"Without such feedback, the platform will be removed after 2022."
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+
+
+
