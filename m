@@ -2,216 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633344439E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:41:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0177D4439F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbhKBXny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 19:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
+        id S231160AbhKBXpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 19:45:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbhKBXnv (ORCPT
+        with ESMTP id S229747AbhKBXpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 19:43:51 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5686C061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 16:41:15 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id e65so757659pgc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 16:41:15 -0700 (PDT)
+        Tue, 2 Nov 2021 19:45:18 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD4DC061714;
+        Tue,  2 Nov 2021 16:42:43 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id b3so1216209uam.1;
+        Tue, 02 Nov 2021 16:42:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ztFy+AIhTro45Wm/0WSCmIyJLR2meR9e0zaFbQwWOPE=;
-        b=C0WPRzj4nG3Jbynwjw9puJw+3WLHNSuJwkJ+B0draM5st3HbUKDGyCaAXMB1yebh5g
-         Z931U4Aw5C2nUBbgJtWmLpUcJdnM/Q9uwWFhmMjecK+UmJ/TaYVMioKqQ07BrTRIwwba
-         0+1Igqg9Tbg0qyq5oOe3UKK0OyoW5Bqt+W2XE=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O8/enUMhz+riyzQ2Zd8RV/GG8++DAENfi7ZT3OLtTzs=;
+        b=n6VZ9pT7W0nCDLDr1BLiRtznprYVOhzyzxWqZRe3Dzld4TwJqFhWdnGQW72uIy7/c7
+         p6Nrb/7UBpO+s3/fv4uTWtVhC5cYgoEwnFU0SM/AAySBDub0b7xVhk1qn3OmW5B9/mL0
+         kSsOnYbgWoZDhcmz5tEqx+gN35vEQAcbAehYBDycY/faaZN06EJJYFJ6ncuw15SrmLML
+         tjXvJ3p90QRX6fPR+tknrlMNS5RLBEH6o4xnzEQiePE4LLoIF68xw2+d08xWrSi5zsQr
+         Wujoh0Yww4IpvOExhcUbhf+Tv51Leih2LL2HrCQKs5MRLal3pntCsG4k69eG/va0jX8v
+         0dbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ztFy+AIhTro45Wm/0WSCmIyJLR2meR9e0zaFbQwWOPE=;
-        b=SQGNMS637SQ4oYF+eSSBbkUtsuTbD+PxOrXn8scTECZiqK+BSvSPC0euyFhDF4Tkjv
-         Gu4mj8G5197qzfqcMl5xsyQmMN9AVuNra2FDUiR/EnytIbcUclKkRXwE7Xi7qPSXkWrP
-         GTvhhHAwgG6gApxTjg2zxOKgPM2IopOcymXVZ97DYuRZtQUTjhRj48vUlvC4LlC148nu
-         gEND+3nIPiDzFQaR2l+0kONoFfyVRAWL1YdJ2R+NnyN2cHQIzX328fITByMGU5GX9McF
-         MeOVZ1m8e0HbPEc6FF58heHTMQ8Sl/21PSKtfLx1UBU+LMyquj7nCKsZkYOeYZQuOSIi
-         zTGg==
-X-Gm-Message-State: AOAM532QPmbFR3AO8monITw/4C4efjLaxTFV4kSAKbCnQ9r4UTTsWIvu
-        o4aO+E2pFklW9sNZVpAsdGnIrun0JI2Zhg==
-X-Google-Smtp-Source: ABdhPJyJi8JUw18UQD3rX3Oyor5l+xAfn3rBA6Lk5ErmPZg5jFoFgf94EubxEFR41EfsEw23Bx6r4w==
-X-Received: by 2002:aa7:9219:0:b0:480:2117:8306 with SMTP id 25-20020aa79219000000b0048021178306mr27636727pfo.31.1635896475054;
-        Tue, 02 Nov 2021 16:41:15 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:3dd6:e5e8:407:748c])
-        by smtp.gmail.com with ESMTPSA id f10sm245889pfe.82.2021.11.02.16.41.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 16:41:14 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <groeck@chromium.org>
-Subject: [PATCH] platform/chrome: cros_ec_chardev: Export chardev ioctls to UAPI
-Date:   Tue,  2 Nov 2021 16:41:13 -0700
-Message-Id: <20211102234113.3896676-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O8/enUMhz+riyzQ2Zd8RV/GG8++DAENfi7ZT3OLtTzs=;
+        b=JsQlfMTXsE9ooXFXP3YdeEricHg59tmznLwGrj5xKOC6/y5VHovEbB2KX3xgkTG313
+         rYQrCXHwDdHlxIjAuzQO6/eBlIohAo8t3cW7NBt0BdVYetYttDmXS0KXFZJH+4BRdXuN
+         1WTpL0tgIoZYJo4OVLuq7nSXba1h0mtkMLZXfX2g9swZ7VjroHmhNMSHETR8joDm7fpX
+         /vJ4AUa4MYqxlr7IwaL+F3NQeb6NJ7rw7BG6KQp0f3xt5V9NQm/hZKJjeCInq1rMdZ5y
+         ywxnrm4jsfiikdbGr2G3s8eo7u2L7+aaI9CTiGlAsCDx78V9DqGGSWmED7bjfQwCFa4D
+         aIdw==
+X-Gm-Message-State: AOAM532+1LzI6G0gh0lEUVf1eKG69MjwzpshJTD3bbzp3IOiFc3zkWZf
+        Ats2VXXoBNYnOs98ARGHJnXCV/isLoLG+WTCWxc=
+X-Google-Smtp-Source: ABdhPJwurPunbhgaMhr2aohB9ULiuMaCOL1VxU+6z5Q9/nzQIcTtnZQ7HFyfuV8GL22sGJRc0itAFSRr6ZB6VOkTllQ=
+X-Received: by 2002:a67:af13:: with SMTP id v19mr4403884vsl.5.1635896562431;
+ Tue, 02 Nov 2021 16:42:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211102225701.98944-1-Mr.Bossman075@gmail.com> <20211102225701.98944-13-Mr.Bossman075@gmail.com>
+In-Reply-To: <20211102225701.98944-13-Mr.Bossman075@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Tue, 2 Nov 2021 20:42:31 -0300
+Message-ID: <CAOMZO5DV-6dKnaGMgARhtv7mq-nOr9jO-XUWAJDmJWwNxc+B1g@mail.gmail.com>
+Subject: Re: [PATCH v2 12/13] ARM: dts: imx: add i.MXRT1050-EVK support
+To:     Jesse Taube <mr.bossman075@gmail.com>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Giulio Benetti <giulio.benetti@benettiengineering.com>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These ioctls and structures are part of the UAPI, export them as such by
-moving the header to include/uapi/. We leave the version define out of
-the header as it isn't part of the UAPI. Similarly, EC_MEMMAP_SIZE is
-from the copy/pasted cros ec header so we just hardcode the array size
-instead of exporting that define.
+On Tue, Nov 2, 2021 at 7:57 PM Jesse Taube <mr.bossman075@gmail.com> wrote:
 
-Cc: Guenter Roeck <groeck@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/mfd/cros_ec_dev.c                     |  1 -
- drivers/platform/chrome/cros_ec_chardev.c     |  5 ++-
- include/linux/platform_data/cros_ec_proto.h   | 19 +-----------
- .../linux}/cros_ec_chardev.h                  | 31 +++++++++++++------
- 4 files changed, 27 insertions(+), 29 deletions(-)
- rename include/{linux/platform_data => uapi/linux}/cros_ec_chardev.h (55%)
+> +/ {
+> +       model = "NXP IMXRT1050-evk board";
+> +       compatible = "fsl,imxrt1050-evk", "fsl,imxrt1050";
+> +
+> +       chosen {
+> +               bootargs = "root=/dev/ram";
 
-diff --git a/drivers/mfd/cros_ec_dev.c b/drivers/mfd/cros_ec_dev.c
-index 8c08d1c55726..8c54381bbf45 100644
---- a/drivers/mfd/cros_ec_dev.c
-+++ b/drivers/mfd/cros_ec_dev.c
-@@ -12,7 +12,6 @@
- #include <linux/mod_devicetable.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
--#include <linux/platform_data/cros_ec_chardev.h>
- #include <linux/platform_data/cros_ec_commands.h>
- #include <linux/platform_data/cros_ec_proto.h>
- #include <linux/slab.h>
-diff --git a/drivers/platform/chrome/cros_ec_chardev.c b/drivers/platform/chrome/cros_ec_chardev.c
-index e0bce869c49a..3116c5de9fa2 100644
---- a/drivers/platform/chrome/cros_ec_chardev.c
-+++ b/drivers/platform/chrome/cros_ec_chardev.c
-@@ -16,7 +16,6 @@
- #include <linux/miscdevice.h>
- #include <linux/module.h>
- #include <linux/notifier.h>
--#include <linux/platform_data/cros_ec_chardev.h>
- #include <linux/platform_data/cros_ec_commands.h>
- #include <linux/platform_data/cros_ec_proto.h>
- #include <linux/platform_device.h>
-@@ -25,6 +24,10 @@
- #include <linux/types.h>
- #include <linux/uaccess.h>
- 
-+#include <uapi/linux/cros_ec_chardev.h>
-+
-+#define CROS_EC_DEV_VERSION	"1.0.0"
-+
- #define DRV_NAME		"cros-ec-chardev"
- 
- /* Arbitrary bounded size for the event queue */
-diff --git a/include/linux/platform_data/cros_ec_proto.h b/include/linux/platform_data/cros_ec_proto.h
-index 02599687770c..6fa882768239 100644
---- a/include/linux/platform_data/cros_ec_proto.h
-+++ b/include/linux/platform_data/cros_ec_proto.h
-@@ -13,6 +13,7 @@
- #include <linux/notifier.h>
- 
- #include <linux/platform_data/cros_ec_commands.h>
-+#include <uapi/linux/cros_ec_chardev.h>
- 
- #define CROS_EC_DEV_NAME	"cros_ec"
- #define CROS_EC_DEV_FP_NAME	"cros_fp"
-@@ -54,24 +55,6 @@ enum {
- 	EC_MAX_MSG_BYTES	= 64 * 1024,
- };
- 
--/**
-- * struct cros_ec_command - Information about a ChromeOS EC command.
-- * @version: Command version number (often 0).
-- * @command: Command to send (EC_CMD_...).
-- * @outsize: Outgoing length in bytes.
-- * @insize: Max number of bytes to accept from the EC.
-- * @result: EC's response to the command (separate from communication failure).
-- * @data: Where to put the incoming data from EC and outgoing data to EC.
-- */
--struct cros_ec_command {
--	uint32_t version;
--	uint32_t command;
--	uint32_t outsize;
--	uint32_t insize;
--	uint32_t result;
--	uint8_t data[];
--};
--
- /**
-  * struct cros_ec_device - Information about a ChromeOS EC device.
-  * @phys_name: Name of physical comms layer (e.g. 'i2c-4').
-diff --git a/include/linux/platform_data/cros_ec_chardev.h b/include/uapi/linux/cros_ec_chardev.h
-similarity index 55%
-rename from include/linux/platform_data/cros_ec_chardev.h
-rename to include/uapi/linux/cros_ec_chardev.h
-index 7de8faaf77df..61f8690e86c4 100644
---- a/include/linux/platform_data/cros_ec_chardev.h
-+++ b/include/uapi/linux/cros_ec_chardev.h
-@@ -1,4 +1,4 @@
--/* SPDX-License-Identifier: GPL-2.0 */
-+/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
- /*
-  * ChromeOS EC device interface.
-  *
-@@ -8,13 +8,26 @@
- #ifndef _UAPI_LINUX_CROS_EC_DEV_H_
- #define _UAPI_LINUX_CROS_EC_DEV_H_
- 
--#include <linux/bits.h>
- #include <linux/ioctl.h>
- #include <linux/types.h>
- 
--#include <linux/platform_data/cros_ec_commands.h>
--
--#define CROS_EC_DEV_VERSION "1.0.0"
-+/**
-+ * struct cros_ec_command - Information about a ChromeOS EC command.
-+ * @version: Command version number (often 0).
-+ * @command: Command to send (EC_CMD_...).
-+ * @outsize: Outgoing length in bytes.
-+ * @insize: Max number of bytes to accept from the EC.
-+ * @result: EC's response to the command (separate from communication failure).
-+ * @data: Where to put the incoming data from EC and outgoing data to EC.
-+ */
-+struct cros_ec_command {
-+	__u32 version;
-+	__u32 command;
-+	__u32 outsize;
-+	__u32 insize;
-+	__u32 result;
-+	__u8 data[];
-+};
- 
- /**
-  * struct cros_ec_readmem - Struct used to read mapped memory.
-@@ -25,9 +38,9 @@
-  *         read or negative on error.
-  */
- struct cros_ec_readmem {
--	uint32_t offset;
--	uint32_t bytes;
--	uint8_t buffer[EC_MEMMAP_SIZE];
-+	__u32 offset;
-+	__u32 bytes;
-+	__u8  buffer[255];
- };
- 
- #define CROS_EC_DEV_IOC       0xEC
-@@ -35,4 +48,4 @@ struct cros_ec_readmem {
- #define CROS_EC_DEV_IOCRDMEM  _IOWR(CROS_EC_DEV_IOC, 1, struct cros_ec_readmem)
- #define CROS_EC_DEV_IOCEVENTMASK _IO(CROS_EC_DEV_IOC, 2)
- 
--#endif /* _CROS_EC_DEV_H_ */
-+#endif /* _UAPI_LINUX_CROS_EC_DEV_H_ */
+No need to pass bootargs here.
 
-base-commit: 8bb7eca972ad531c9b149c0a51ab43a417385813
--- 
-https://chromeos.dev
+> +               stdout-path = &lpuart1;
+> +       };
+> +
+> +       aliases {
+> +               gpio0 = &gpio1;
+> +               gpio1 = &gpio2;
+> +               gpio2 = &gpio3;
+> +               gpio3 = &gpio4;
+> +               gpio4 = &gpio5;
+> +               mmc0 = &usdhc1;
+> +               serial0 = &lpuart1;
+> +       };
+> +
+> +       memory@0 {
 
+memory@80000000
+
+Building with W=1 should give a dtc warning due to the unit address
+and reg mismatch.
+
+> +               device_type = "memory";
+> +               reg = <0x80000000 0x2000000>;
+> +       };
+> +
+
+Unneeded blank line.
+> +
+> +&iomuxc {
+> +       pinctrl-names = "default";
+> +
+> +       imxrt1050-evk {
+
+No need for this imxrt1050-evk container.
+
+> +               pinctrl_lpuart1: lpuart1grp {
+> +                       fsl,pins = <
+> +                               MXRT1050_IOMUXC_GPIO_AD_B0_12_LPUART1_TXD
+> +                                       0xf1
+
+Put it on a single line. It helps readability. Same applies globally.
+> +&usdhc1 {
+> +       pinctrl-names = "default", "state_100mhz", "state_200mhz", "sleep";
+> +       pinctrl-0 = <&pinctrl_usdhc0>;
+> +       pinctrl-1 = <&pinctrl_usdhc0>;
+> +       pinctrl-2 = <&pinctrl_usdhc0>;
+> +       pinctrl-3 = <&pinctrl_usdhc0>;
+> +       status = "okay";
+> +
+> +       cd-gpios = <&gpio2 28 GPIO_ACTIVE_LOW>;
+
+Make 'status' to be the last property. Remove the blank line.
+
+> +               edma1: dma-controller@400e8000 {
+> +                       #dma-cells = <2>;
+> +                       compatible = "fsl,imx7ulp-edma";
+> +                       reg = <0x400e8000 0x4000>,
+> +                               <0x400ec000 0x4000>;
+> +                       dma-channels = <32>;
+> +                       interrupts = <0>,
+> +                               <1>,
+> +                               <2>,
+> +                               <3>,
+> +                               <4>,
+> +                               <5>,
+> +                               <6>,
+> +                               <7>,
+> +                               <8>,
+> +                               <9>,
+> +                               <10>,
+> +                               <11>,
+> +                               <12>,
+> +                               <13>,
+> +                               <14>,
+> +                               <15>,
+> +                               <16>;
+
+Please group more elements into the same line.
+
+Putting one entry per line makes it extremely long.
+
+> +               gpio5: gpio@400c0000 {
+> +                       compatible = "fsl,imxrt-gpio", "fsl,imx35-gpio";
+> +                       reg = <0x400c0000 0x4000>;
+> +                       interrupts = <88>,
+> +                               <89>;
+
+Put the interrupts into a single line.
