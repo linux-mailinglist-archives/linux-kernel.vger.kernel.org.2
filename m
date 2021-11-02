@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90CB442C0E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD288442C0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 12:02:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbhKBLFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 07:05:04 -0400
-Received: from first.geanix.com ([116.203.34.67]:37540 "EHLO first.geanix.com"
+        id S231383AbhKBLFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 07:05:01 -0400
+Received: from first.geanix.com ([116.203.34.67]:37542 "EHLO first.geanix.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230109AbhKBLEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230511AbhKBLEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Nov 2021 07:04:50 -0400
 Received: from zen.. (unknown [185.17.218.86])
-        by first.geanix.com (Postfix) with ESMTPSA id 3B62ED7478;
-        Tue,  2 Nov 2021 11:02:10 +0000 (UTC)
+        by first.geanix.com (Postfix) with ESMTPSA id A20E3D747B;
+        Tue,  2 Nov 2021 11:02:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1635850930; bh=u1QiAAw6X6LgXTU44geERokABB9hy1J5K+hpPufCwYE=;
+        t=1635850931; bh=daO+Y1OCTBro/SQlNmjckPsesZNNVg/tJVluOHMiVlU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=eIqmfsTZrIQXJuLn/Z6o8Kwmd/jfmlhJSaVQMNc4HaoDj7YS8mboFjxOEhj3Ux7XK
-         RZvFpYe21bAHRGldmTFcnzF3cUGcm5EjEK3jWncNY+pgrSxUhMG/lUXrE6ByYviYP8
-         QLcpqcYJQooZDXvp4aF12CjbuaaPXuk1bm1C7EN8t64D9mFK5rOhmHXzvu9LT4/YOK
-         uXSWZx6T4qJfTN/lMuiQHZY6OXcSea7aUl+tApxyJYVDxbVzlKMFzehda64ia2OkpW
-         amHSJjhK5//21daR36Y9gLWPE5QckisD1IDREQfY8i4jSA19et5kYYQS8uiJ6pqXKT
-         qW6QsuG4WoyoQ==
+        b=V5e3/OInDSgyW9RFiB6zJPegKINakabRLwOWSr5UPyjbbB/rpwkcLybXJXCt1EbnT
+         pBYhwMqjrbm6OKcJmUVoe41kO9613Mb1KIrxiytJUdJZ7z47rW8irwOV4DIucJSYs4
+         f4ZYzN7AgefcikLssSSC2habX5cIb03T8XY2c/So8yamw0jmlKRxlTmDMDJAnSad3o
+         NPfsLgif+9llt9cHi9izKuRLSyM87HGA6gCc7qfV1QtxuyuULToEPDA6XCC/7XAwxG
+         gLO7AN8/WYmzFxR1+BcW4R114opUUrGQX2tiSvhIfUnSWWJezRI85woqzzx/6sBeFM
+         fMURgjGrZC6Mg==
 From:   Sean Nyekjaer <sean@geanix.com>
 To:     Boris Brezillon <boris.brezillon@collabora.com>
 Cc:     Sean Nyekjaer <sean@geanix.com>,
@@ -31,9 +31,9 @@ Cc:     Sean Nyekjaer <sean@geanix.com>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         Boris Brezillon <bbrezillon@kernel.org>,
         linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 1/4] mtd: rawnand: nand_bbt: hide suspend/resume hooks while scanning bbt
-Date:   Tue,  2 Nov 2021 12:02:01 +0100
-Message-Id: <20211102110204.3334609-2-sean@geanix.com>
+Subject: [PATCH v5 2/4] mtd: mtdconcat: don't use mtd_{suspend,resume}()
+Date:   Tue,  2 Nov 2021 12:02:02 +0100
+Message-Id: <20211102110204.3334609-3-sean@geanix.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211102110204.3334609-1-sean@geanix.com>
 References: <20211102110204.3334609-1-sean@geanix.com>
@@ -49,65 +49,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Boris Brezillon <boris.brezillon@collabora.com>
 
-The BBT scan logic use the MTD helpers before the MTD layer had a
-chance to initialize the device, and that leads to issues when
-accessing the uninitialized suspend lock. Let's temporarily set the
-suspend/resume hooks to NULL to skip the lock acquire/release step.
+The MTD suspend logic will soon be adjusted to automatically wait for
+device wake-up before issuing IOs. In order to do that a new read-write
+lock will be added and taken in write-mode in the
+mtd_{suspend,resume}() path. Since mtdconcat.c itself is an MTD device,
+calling mtd_suspend/resume() on subdevices from the mtdconcat
+->_{suspend,resume}() hook will lead to a nested lock, which lockdep
+will complain about if we don't add a proper annotation. Let's keep
+things simple and replace those mtd_{suspend,resume}(subdev) calls by
+subdev->_{suspend,resume}() ones to avoid this situation.
 
 Tested-by: Sean Nyekjaer <sean@geanix.com>
 Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
 Signed-off-by: Sean Nyekjaer <sean@geanix.com>
 ---
- drivers/mtd/nand/raw/nand_bbt.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+ drivers/mtd/mtdconcat.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
-index b7ad030225f8..93d385703469 100644
---- a/drivers/mtd/nand/raw/nand_bbt.c
-+++ b/drivers/mtd/nand/raw/nand_bbt.c
-@@ -1397,8 +1397,28 @@ static int nand_create_badblock_pattern(struct nand_chip *this)
-  */
- int nand_create_bbt(struct nand_chip *this)
- {
-+	struct mtd_info *mtd = nand_to_mtd(this);
-+	int (*suspend) (struct mtd_info *) = mtd->_suspend;
-+	void (*resume) (struct mtd_info *) = mtd->_resume;
- 	int ret;
+diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+index f685a581df48..f4a4274489b4 100644
+--- a/drivers/mtd/mtdconcat.c
++++ b/drivers/mtd/mtdconcat.c
+@@ -566,9 +566,15 @@ static int concat_suspend(struct mtd_info *mtd)
  
-+	/*
-+	 * The BBT scan logic use the MTD helpers before the MTD layer had a
-+	 * chance to initialize the device, and that leads to issues when
-+	 * accessing the uninitialized suspend lock. Let's temporarily set the
-+	 * suspend/resume hooks to NULL to skip the lock acquire/release step.
-+	 *
-+	 * FIXME: This is an ugly hack, so please don't copy this pattern to
-+	 * other MTD implementations. The proper fix would be to implement a
-+	 * generic BBT scan logic at the NAND level that's not using any of the
-+	 * MTD helpers to access pages. We also might consider doing a two
-+	 * step initialization at the MTD level (mtd_device_init() +
-+	 * mtd_device_register()) so some of the fields are initialized
-+	 * early.
-+	 */
-+	mtd->_suspend = NULL;
-+	mtd->_resume = NULL;
-+
- 	/* Is a flash based bad block table requested? */
- 	if (this->bbt_options & NAND_BBT_USE_FLASH) {
- 		/* Use the default pattern descriptors */
-@@ -1422,7 +1442,13 @@ int nand_create_bbt(struct nand_chip *this)
- 			return ret;
+ 	for (i = 0; i < concat->num_subdev; i++) {
+ 		struct mtd_info *subdev = concat->subdev[i];
+-		if ((rc = mtd_suspend(subdev)) < 0)
++		/*
++		 * Call the MTD hook directly to avoid a nested lock
++		 * on ->suspend_lock.
++		 */
++		rc = subdev->_suspend ? subdev->_suspend(subdev) : 0;
++		if (rc < 0)
+ 			return rc;
  	}
- 
--	return nand_scan_bbt(this, this->badblock_pattern);
-+	ret = nand_scan_bbt(this, this->badblock_pattern);
 +
-+	/* Restore the suspend/resume hooks. */
-+	mtd->_suspend = suspend;
-+	mtd->_resume = resume;
-+
-+	return ret;
+ 	return rc;
  }
- EXPORT_SYMBOL(nand_create_bbt);
+ 
+@@ -579,7 +585,12 @@ static void concat_resume(struct mtd_info *mtd)
+ 
+ 	for (i = 0; i < concat->num_subdev; i++) {
+ 		struct mtd_info *subdev = concat->subdev[i];
+-		mtd_resume(subdev);
++		/*
++		 * Call the MTD hook directly to avoid a nested lock
++		 * on ->resume_lock.
++		 */
++		if (subdev->_resume)
++			subdev->_resume(subdev);
+ 	}
+ }
  
 -- 
 2.33.0
