@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4FC443A26
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:55:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2390E443A28
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231489AbhKBX5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 19:57:45 -0400
-Received: from smtpcmd13146.aruba.it ([62.149.156.146]:55007 "EHLO
+        id S231805AbhKBX54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 19:57:56 -0400
+Received: from smtpcmd13146.aruba.it ([62.149.156.146]:57186 "EHLO
         smtpcmd13146.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbhKBX5g (ORCPT
+        with ESMTP id S231348AbhKBX5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 19:57:36 -0400
+        Tue, 2 Nov 2021 19:57:38 -0400
 Received: from ubuntu.localdomain ([146.241.216.221])
         by Aruba Outgoing Smtp  with ESMTPSA
-        id i3cHmA3UmueW5i3cJmi7oB; Wed, 03 Nov 2021 00:55:00 +0100
+        id i3cHmA3UmueW5i3cKmi7os; Wed, 03 Nov 2021 00:55:00 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1635897300; bh=lhiNpRTEG/VNu3i9XvsLI9Q6PVfjYb5hPZrKzrJsi/o=;
+        t=1635897300; bh=6FTXldqIVH49mQUDD490TOZJdcoOZM40XWjBAPwXklk=;
         h=From:To:Subject:Date:MIME-Version;
-        b=dr4m6/R2eY+Mf9Z36nMaXf9rdUYvj36B/cV+ej+DhMMDtRx8/QjitlXRfSSeFjik5
-         nlAxOmVOT+trsLSVKzA3CgD4uPKkYCcaw8ntASzgwdyHY6IlB7STRqbmqY1i9LXu7O
-         La58uPoVsL5ntcJZ73zfWYrrrICHowLg8VuulsNUw+ldlZCQHO9C59BBk923wTGlJk
-         cB5oDIW3ZC11yJYIJuuH5bmHYDEt3aYmlOagyKIa3WRkeWGFeZi4NBQ4k4ktf+7ar1
-         +u+nykhF/bTx7IS5JZDk3AHGGJt7dbMZu3fwV2Gi0smxNCSZc2+OOpyX+MQysc+YhX
-         EghkaexqDMKtA==
+        b=GZiq9e7PMSL3t7hacCqipd3C/4fcEMAGc7t3v32zakKO7XjLIg1dsnVgEo0iICE4g
+         fOf9TYkyRLrh7ngK3kQF1QBh8OKz7+ESqbB30HR6QKI62nPLIKPzL4v7YGvzm07fn/
+         uvPZaAOVANAVqi8FI4Sm28D+SbFoK59aHvGsjIJNU5rAC2uTrewOy5asSCY1Zdiit6
+         46+sExK4eA8RlV9Ynv/HHRJNQsxqvl8FCl1lQyP3It2twGAsWSocfgURFgIKSHpbH/
+         O1E5lj0qZjc9NzlVNU/qHh9o97oFiPvv2iWuUppQy3vmyJswiXP3HIfNpXBFjPimTa
+         3Mns4TmSbQ0nA==
 From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
 To:     Lubomir Rintel <lkundrak@v3.sk>
 Cc:     Rob Herring <robh+dt@kernel.org>, Daniel Mack <daniel@zonque.org>,
@@ -37,9 +37,9 @@ Cc:     Rob Herring <robh+dt@kernel.org>, Daniel Mack <daniel@zonque.org>,
         Sam Ravnborg <sam@ravnborg.org>,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 3/7] ARM: dts: pxa910-dkb: fix wrong static ip autoconf
-Date:   Wed,  3 Nov 2021 00:54:52 +0100
-Message-Id: <20211102235456.710617-4-giulio.benetti@benettiengineering.com>
+Subject: [PATCH 4/7] ARM: mmp2: update mmp2_defconfig to fix wrong static ip autoconf
+Date:   Wed,  3 Nov 2021 00:54:53 +0100
+Message-Id: <20211102235456.710617-5-giulio.benetti@benettiengineering.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211102235456.710617-1-giulio.benetti@benettiengineering.com>
 References: <20211102235456.710617-1-giulio.benetti@benettiengineering.com>
@@ -69,22 +69,22 @@ So let's substitute <autoconf> 'on' with 'off'.
 
 Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
 ---
- arch/arm/boot/dts/pxa910-dkb.dts | 2 +-
+ arch/arm/configs/mmp2_defconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/pxa910-dkb.dts b/arch/arm/boot/dts/pxa910-dkb.dts
-index ce76158867c7..297a34f2ef2b 100644
---- a/arch/arm/boot/dts/pxa910-dkb.dts
-+++ b/arch/arm/boot/dts/pxa910-dkb.dts
-@@ -12,7 +12,7 @@ / {
- 	compatible = "mrvl,pxa910-dkb", "mrvl,pxa910";
- 
- 	chosen {
--		bootargs = "console=ttyS0,115200 root=/dev/nfs nfsroot=192.168.1.100:/nfsroot/ ip=192.168.1.101:192.168.1.100::255.255.255.0::eth0:on";
-+		bootargs = "console=ttyS0,115200 root=/dev/nfs nfsroot=192.168.1.100:/nfsroot/ ip=192.168.1.101:192.168.1.100::255.255.255.0::eth0:off";
- 	};
- 
- 	memory {
+diff --git a/arch/arm/configs/mmp2_defconfig b/arch/arm/configs/mmp2_defconfig
+index a5e8d2235a1a..231971ee0c8b 100644
+--- a/arch/arm/configs/mmp2_defconfig
++++ b/arch/arm/configs/mmp2_defconfig
+@@ -15,7 +15,7 @@ CONFIG_PREEMPT=y
+ CONFIG_AEABI=y
+ CONFIG_ZBOOT_ROM_TEXT=0x0
+ CONFIG_ZBOOT_ROM_BSS=0x0
+-CONFIG_CMDLINE="root=/dev/nfs rootfstype=nfs nfsroot=192.168.1.100:/nfsroot/ ip=192.168.1.101:192.168.1.100::255.255.255.0::eth0:on console=ttyS2,38400 mem=128M user_debug=255 earlyprintk"
++CONFIG_CMDLINE="root=/dev/nfs rootfstype=nfs nfsroot=192.168.1.100:/nfsroot/ ip=192.168.1.101:192.168.1.100::255.255.255.0::eth0:off console=ttyS2,38400 mem=128M user_debug=255 earlyprintk"
+ CONFIG_VFP=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
 -- 
 2.25.1
 
