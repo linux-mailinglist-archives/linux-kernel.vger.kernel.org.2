@@ -2,108 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5CB442612
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B25442613
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 04:32:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232123AbhKBDe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 23:34:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34860 "EHLO
+        id S232414AbhKBDfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 23:35:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231639AbhKBDez (ORCPT
+        with ESMTP id S232420AbhKBDfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 23:34:55 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBCAEC061714;
-        Mon,  1 Nov 2021 20:32:20 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id 19so16205259qtt.7;
-        Mon, 01 Nov 2021 20:32:20 -0700 (PDT)
+        Mon, 1 Nov 2021 23:35:02 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C86C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Nov 2021 20:32:28 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id x5so9143646pgk.11
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 20:32:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=q5xMzCydsOIW4HjjOOaSLM7lfTR/flQAzXNP4pGjc9U=;
-        b=U78XbMRz+qE4VaDT7oxdXMYQ/jmLMdehcG/VGRktZQktJubRPUJJxkDuurnUVcehvR
-         0IVl+Bh8/FvVmGYH0T4OrasWQIxlVo8Xb1iFXzppqXv/ZlEVRbdeJlkg2EZKL0Apzzxr
-         N/T/zKCLkEisYWxqhKHKRNBx4rUreKGAnd+6L+JfdYsNc1CBxBr/RvxCQj0yo1K/IGRp
-         F7zpiLslbTYhnGt+xhwmCDtEU/nuWehaVE5wmzLHlDX5gdHLp8uXFah9L9a2Q7AKHd2x
-         pU/d19XiG/UwuGXsckmXZhBKKDlLZO2pDMmmh0MBxg5KsyIwf/RERiu/tJdz4TutwaPO
-         gpsg==
+        h=from:to:cc:subject:date:message-id;
+        bh=EEtgEXOACUA3wKgJhhNtGNwsVVeGXT8yNYslnmQWcCk=;
+        b=f9u5ZqQMRscLfivm6j2Nct+cObOy/UZGbS5T4Pi580A/n7atUi1PCx6+1G36J367uT
+         /WW14bqFLXYyRJupCzQf26JBHnwguiXfPAK+UvpPQ5CSjwDCWI0DkYm85b/9di08A0h/
+         5WiayzrfmhSkoi+FfFsqK3ZGFwL/46Iq0GLw7/HPzzIRqpma0dwOd2LOSMbIR17G0B70
+         LXJGgTcl3WiEvQGsWrRcky50MzXCxzb+h/A8849SzrhGA7opPOs86KSKNlmwmo9rnntd
+         j+99mD9rp8KLzE6c8CaARSB7dxZ8ty5O7o3MEw4Dz70uW0ryrzi2dy3LRHjDWeZXW2IV
+         j2bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=q5xMzCydsOIW4HjjOOaSLM7lfTR/flQAzXNP4pGjc9U=;
-        b=ezlAEB+FPSgNjK6EDP5rlYxUE69xwvp9ZQojc0fvntTbBkgH0nlX5xgR9aq8hdEQ8k
-         WkrNlXOMMY8qgHRer8lkZAiPAvM3ToDGJEQlCumfoLAShug1MYLGBrjCbCB7OE1sJVan
-         J9kruwypcCqIeTSuEX+qpOuTnm1kuOClqrxERHgX9xv7ukuG4ywLY3A1EjBJsRTOnjtk
-         GTsJq5EUBd2HJRYGXVkEyESO4PVScf6tGoEWTkGBEpRsXreXGibI2cel1B6ZZv4YQ5Io
-         lfvp+ycA4gQfhr/AVQslJd0ZVSExev/0NK39sNqEb0QHuJn6h9g2C32EGzzQXcRAvVlE
-         Lh1g==
-X-Gm-Message-State: AOAM531UJX6HuN9m9KiZ3n+j2vPs/cEPtViu0iJUPiyM650Md6hNkbXR
-        2yS3Xm1bdBOGwKPuEonsq0E=
-X-Google-Smtp-Source: ABdhPJzF5RqaqayWs3xAVNhdtWPF99fNOWgT7/fdcJTkR9sKGuVAuM+WBDmRff/bw28k+/7FBj68Fg==
-X-Received: by 2002:a05:622a:1441:: with SMTP id v1mr35430791qtx.45.1635823939799;
-        Mon, 01 Nov 2021 20:32:19 -0700 (PDT)
-Received: from [10.4.10.38] (146-115-144-188.s4282.c3-0.nwt-cbr1.sbo-nwt.ma.cable.rcncustomer.com. [146.115.144.188])
-        by smtp.gmail.com with ESMTPSA id l22sm81668qtq.45.2021.11.01.20.32.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Nov 2021 20:32:19 -0700 (PDT)
-Message-ID: <071c0b81-be62-8fc3-cf0a-d8a74a9a556c@gmail.com>
-Date:   Mon, 1 Nov 2021 23:32:17 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH 03/13] dt-bindings: imx: Add pinctrl binding doc for
- i.MXRT1050
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-imx@nxp.com, mturquette@baylibre.com, sboyd@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, ulf.hansson@linaro.org, stefan@agner.ch,
-        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
-        arnd@arndb.de, olof@lixom.net, soc@kernel.org,
-        linux@armlinux.org.uk, abel.vesa@nxp.com, adrian.hunter@intel.com,
-        jirislaby@kernel.org, giulio.benetti@benettiengineering.com,
-        nobuhiro1.iwamatsu@toshiba.co.jp, leonard.crestez@nxp.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20211024154027.1479261-1-Mr.Bossman075@gmail.com>
- <20211024154017.5X5YE5S_x5KJDGyYyx5jd-8m4gybur1xerb15SgFAiY@z>
- <YYBJyKv61p/sk1PE@robh.at.kernel.org>
-From:   Jesse Taube <mr.bossman075@gmail.com>
-In-Reply-To: <YYBJyKv61p/sk1PE@robh.at.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=EEtgEXOACUA3wKgJhhNtGNwsVVeGXT8yNYslnmQWcCk=;
+        b=H4tHKTUGos6swZLeHu3ZHPohmmHMAAtHqNgRpV6RgW4TIJVw/vusPz/SISAW27E8sp
+         kjknR3E1dnTtUuuRGa0VTlYk8czlitdLBXGvB+uBMRMQh88LC9Ueyw+OHKiRdoxkRvwv
+         aAUXs66KqRctEI7jSKLYe4Q6EtZ+IhuTUbC7tAG+mW5hGO3pFXf61EluOwUnKJrqpisK
+         YDgd34DFffSqq97rZ8vPA+Gtye/b840rF0BP08wkIVvyxLKySZ6VpVKOCOZ6118enMI7
+         aT4up/3xNVYuJqmDc/AN+qnuuYj2l4MM/uJEpXwfu+0pQZr4GPzGvxDjAJhGxgheeOyV
+         RNqw==
+X-Gm-Message-State: AOAM531cwpFj69bbG+apOd3pquKF+VVAKKznMB/0FQGG1Dt5KxO749R8
+        cKB3MQyqyRUL98+UN+xUrS4=
+X-Google-Smtp-Source: ABdhPJx0rqGpL+96sH9guHKoU1KDdgjt8V/3RIX2d8+BiZ8N5riUsa5Fn6nlnDXVmEEwHg9D6CAXBQ==
+X-Received: by 2002:a63:455f:: with SMTP id u31mr5567894pgk.206.1635823948233;
+        Mon, 01 Nov 2021 20:32:28 -0700 (PDT)
+Received: from BJ-zhangqiang.qcraft.lan ([137.59.101.13])
+        by smtp.gmail.com with ESMTPSA id c21sm3937785pfv.119.2021.11.01.20.32.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Nov 2021 20:32:27 -0700 (PDT)
+From:   Zqiang <qiang.zhang1211@gmail.com>
+To:     tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Zqiang <qiang.zhang1211@gmail.com>
+Subject: [PATCH] ALSA: seq: Fix RCU stall in snd_seq_write()
+Date:   Tue,  2 Nov 2021 11:32:22 +0800
+Message-Id: <20211102033222.3849-1-qiang.zhang1211@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If we have a lot of cell object, this cycle may take a long time, and
+trigger RCU stall. insert a conditional reschedule point to fix it.
 
+rcu: INFO: rcu_preempt self-detected stall on CPU
+rcu: 	1-....: (1 GPs behind) idle=9f5/1/0x4000000000000000
+	softirq=16474/16475 fqs=4916
+	(t=10500 jiffies g=19249 q=192515)
+NMI backtrace for cpu 1
+......
+asm_sysvec_apic_timer_interrupt
+RIP: 0010:_raw_spin_unlock_irqrestore+0x38/0x70
+spin_unlock_irqrestore
+snd_seq_prioq_cell_out+0x1dc/0x360
+snd_seq_check_queue+0x1a6/0x3f0
+snd_seq_enqueue_event+0x1ed/0x3e0
+snd_seq_client_enqueue_event.constprop.0+0x19a/0x3c0
+snd_seq_write+0x2db/0x510
+vfs_write+0x1c4/0x900
+ksys_write+0x171/0x1d0
+do_syscall_64+0x35/0xb0
 
-On 11/1/21 16:10, Rob Herring wrote:
-> On Sun, Oct 24, 2021 at 11:40:17AM -0400, Jesse Taube wrote:
->> From: Giulio Benetti <giulio.benetti@benettiengineering.com>
->>
->> Add binding doc for i.MXRT1050 pinctrl driver.
->>
->> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
->> Signed-off-by: Jesse Taube <Mr.Bossman075@gmail.com>
->> ---
->>   include/dt-bindings/pinctrl/pins-imxrt1050.h | 993 +++++++++++++++++++
->>   1 file changed, 993 insertions(+)
->>   create mode 100644 include/dt-bindings/pinctrl/pins-imxrt1050.h
->>
->> diff --git a/include/dt-bindings/pinctrl/pins-imxrt1050.h b/include/dt-bindings/pinctrl/pins-imxrt1050.h
->> new file mode 100644
->> index 000000000000..a29031ab3de0
->> --- /dev/null
->> +++ b/include/dt-bindings/pinctrl/pins-imxrt1050.h
->> @@ -0,0 +1,993 @@
->> +/* SPDX-License-Identifier: GPL-2.0+ */
-> 
-> Needs to match the .dts files which has BSD-3-Clause. The rest of i.MX
-> uses MIT IIRC. You should align with that.
-> 
-It seems to use "GPL-2.0+ OR MIT", I shall replace the both with that.
+Reported-by: syzbot+bb950e68b400ab4f65f8@syzkaller.appspotmail.com
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+---
+ sound/core/seq/seq_queue.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/core/seq/seq_queue.c b/sound/core/seq/seq_queue.c
+index d6c02dea976c..f5b1e4562a64 100644
+--- a/sound/core/seq/seq_queue.c
++++ b/sound/core/seq/seq_queue.c
+@@ -263,6 +263,7 @@ void snd_seq_check_queue(struct snd_seq_queue *q, int atomic, int hop)
+ 		if (!cell)
+ 			break;
+ 		snd_seq_dispatch_event(cell, atomic, hop);
++		cond_resched();
+ 	}
+ 
+ 	/* Process time queue... */
+@@ -272,6 +273,7 @@ void snd_seq_check_queue(struct snd_seq_queue *q, int atomic, int hop)
+ 		if (!cell)
+ 			break;
+ 		snd_seq_dispatch_event(cell, atomic, hop);
++		cond_resched();
+ 	}
+ 
+ 	/* free lock */
+-- 
+2.17.1
+
