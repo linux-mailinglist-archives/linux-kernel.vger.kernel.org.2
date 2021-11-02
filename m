@@ -2,92 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6A04425A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 03:22:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF8B4425D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 03:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232385AbhKBCY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Nov 2021 22:24:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38640 "EHLO mail.kernel.org"
+        id S231775AbhKBDBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Nov 2021 23:01:08 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:51748 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231840AbhKBCYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Nov 2021 22:24:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F5A0613A1
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 02:21:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635819697;
-        bh=Sh+E3vhcUYFTuSr5p8OLYai9a31WkvMD0XH84I6uVVk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jGvLS2mvwvbQjzIZdPfSQrOYwqj1joqIK71bIW9nPy+rNYFWVRAYzXRXGzXJQQLld
-         HbhLIGOoecO+5AO2EiTGb9K83lonHTXmC9j9/qJ/4TnJTycWcWRoqVvt+tK1QNuboF
-         bHxd/6eUveB7jjY4Kt9EZj1Gy7tHLyDQHKzKgoSB9QJayujftcJsE4CCpoDdirODGK
-         NYo4JO1KAOPD/K3CJxy4U+/ABjwsjPuSkZUZCXjitWXwDFlZqsn4WGk4qNO8Q/MFoF
-         zzK4O3H+cbpNCSrHhFP9HwY7y0NuFdMs9i3rPr73d48KmTQdc/2UBFy5DJL2EkHzW7
-         Spkq22ZryELLA==
-Received: by mail-vk1-f178.google.com with SMTP id t127so8882486vke.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Nov 2021 19:21:37 -0700 (PDT)
-X-Gm-Message-State: AOAM533UBZsUVVYauxJVhnly0ql/SqRx61KmJ6xRxCNRcrRlNo4g7HJ8
-        pHR4BeevCCUVCoWn+MliqPnl2F6x+SQHWDQPESc=
-X-Google-Smtp-Source: ABdhPJxL9iIZ+HGyalsZ8HcJwGeVT3uEvIXAyPennCwENsyNtPuJA9yWQJYWPYLFiyb/lwBb0ciA7KgQ5z3VEUDOr4E=
-X-Received: by 2002:a1f:1844:: with SMTP id 65mr33732861vky.3.1635819696531;
- Mon, 01 Nov 2021 19:21:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211024013303.3499461-1-guoren@kernel.org> <20211024013303.3499461-2-guoren@kernel.org>
-In-Reply-To: <20211024013303.3499461-2-guoren@kernel.org>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 2 Nov 2021 10:21:25 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSDTXu7HsABTHfTbCd2TNpHBpzSMqYGh9Av8kzJ+6AOPw@mail.gmail.com>
-Message-ID: <CAJF2gTSDTXu7HsABTHfTbCd2TNpHBpzSMqYGh9Av8kzJ+6AOPw@mail.gmail.com>
-Subject: Re: [PATCH V5 1/3] dt-bindings: vendor-prefixes: add T-Head Semiconductor
-To:     Guo Ren <guoren@kernel.org>, Rob Herring <robh@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
-Content-Type: text/plain; charset="UTF-8"
+        id S229526AbhKBDBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Nov 2021 23:01:07 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E12812001BA;
+        Tue,  2 Nov 2021 03:58:31 +0100 (CET)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7E3A2200168;
+        Tue,  2 Nov 2021 03:58:31 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id C4D8B183AD05;
+        Tue,  2 Nov 2021 10:58:29 +0800 (+08)
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     l.stach@pengutronix.de, marcel.ziswiler@toradex.com,
+        tharvey@gateworks.com, kishon@ti.com, vkoul@kernel.org,
+        robh@kernel.org, galak@kernel.crashing.org, shawnguo@kernel.org
+Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, linux-imx@nxp.com
+Subject: [PATCH v5 0/8] Add the imx8m pcie phy driver and imx8mm pcie support
+Date:   Tue,  2 Nov 2021 10:32:27 +0800
+Message-Id: <1635820355-27009-1-git-send-email-hongxing.zhu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Refer to the discussion [1] when try to enable i.MX8MM PCIe support,
+one standalone PCIe PHY driver should be seperated from i.MX PCIe
+driver when enable i.MX8MM PCIe support.
 
-ping? If there is no problem, could you help pick up this patch into your tree?
+This patch-set adds the standalone PCIe PHY driver suport[1-5], and i.MX8MM
+PCIe support[6-8] to have whole view to review this patch-set.
 
-On Sun, Oct 24, 2021 at 9:33 AM <guoren@kernel.org> wrote:
->
-> From: Guo Ren <guoren@linux.alibaba.com>
->
-> Add vendor prefix for T-Head Semiconductor [1] [2]
->
-> [1] https://github.com/T-head-Semi
-> [2] https://www.t-head.cn/
->
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> index a867f7102c35..f532a8830693 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> @@ -1169,6 +1169,8 @@ patternProperties:
->      description: Terasic Inc.
->    "^tfc,.*":
->      description: Three Five Corp
-> +  "^thead,.*":
-> +    description: T-Head Semiconductor Co., Ltd.
->    "^thine,.*":
->      description: THine Electronics, Inc.
->    "^thingyjp,.*":
-> --
-> 2.25.1
->
+The PCIe works on i.MX8MM EVK board based the the blkctrl power driver
+[2] and this patch-set. And tested by Tim and Marcel on the different
+reference clock modes boards.
 
+[1] https://patchwork.ozlabs.org/project/linux-pci/patch/20210510141509.929120-3-l.stach@pengutronix.de/
+[2] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210910202640.980366-1-l.stach@pengutronix.de/
 
--- 
-Best Regards
- Guo Ren
+Main changes v4 --> v5:
+- Set the AUX_EN always 1b'1, thus it can fix the regression introduced in v4
+  series on Marcel's board.
+- Use the lower-case letter in the devicetreee refer to Marcel's comments.
+- Since the default value of the deemphasis parameters are zero, only set
+  the deemphasis registers when the input paramters are none zero.
 
-ML: https://lore.kernel.org/linux-csky/
+Main changes v3 --> v4:
+- Update the yaml to fix syntax error, add maxitems and drop description of phy
+- Correct the clock name in PHY DT node.
+- Squash the EVK board relalted dts changes into one patch, and drop the
+  useless dummy clock and gpio suffix in DT nodes.
+- Add board specific de-emphasis parameters as DT properties. Thus each board
+  can specify its actual de-emphasis values.
+- Update the commit log of PHY driver.
+- Remove the useless codes from PCIe driver, since they are moved to PHY driver
+- After the discussion and verification of the CLKREQ# configurations with Tim,
+  agree to add an optional boolean property "fsl,clkreq-unsupported", indicates
+  the CLKREQ# signal is hooked or not in HW designs.
+- Add "Tested-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>" tag, since
+  Marcel help to test the v3 patch-set.
+
+Main changes v2 --> v3:
+- Regarding Lucas' comments.
+ - to have a whole view to review the patches, send out the i.MX8MM PCIe support too.
+ - move the PHY related bits manipulations of the GPR/SRC to standalone PHY driver.
+ - split the dts changes to SOC and board DT, and use the enum instead of raw value.
+ - update the license of the dt-binding header file.
+
+Changes v1 --> v2:
+- Update the license of the dt-binding header file to make the license
+  compatible with dts files.
+- Fix the dt_binding_check errors.
+
+Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml    |   6 +++
+Documentation/devicetree/bindings/phy/fsl,imx8-pcie-phy.yaml |  95 ++++++++++++++++++++++++++++++++
+arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi                |  55 +++++++++++++++++++
+arch/arm64/boot/dts/freescale/imx8mm.dtsi                    |  46 +++++++++++++++-
+drivers/pci/controller/dwc/pci-imx6.c                        |  73 ++++++++++++++++++++++---
+drivers/phy/freescale/Kconfig                                |   9 ++++
+drivers/phy/freescale/Makefile                               |   1 +
+drivers/phy/freescale/phy-fsl-imx8m-pcie.c                   | 237 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+include/dt-bindings/phy/phy-imx8-pcie.h                      |  14 +++++
+9 files changed, 528 insertions(+), 8 deletions(-)
+
+[PATCH v5 1/8] dt-bindings: phy: phy-imx8-pcie: Add binding for the
+[PATCH v5 2/8] dt-bindings: phy: Add imx8 pcie phy driver support
+[PATCH v5 3/8] dt-bindings: imx6q-pcie: Add PHY phandles and name
+[PATCH v5 4/8] arm64: dts: imx8mm: Add the pcie phy support
+[PATCH v5 5/8] phy: freescale: pcie: Initialize the imx8 pcie
+[PATCH v5 6/8] arm64: dts: imx8mm: Add the pcie support
+[PATCH v5 7/8] arm64: dts: imx8mm-evk: Add the pcie support on imx8mm
+[PATCH v5 8/8] PCI: imx: Add the imx8mm pcie support
