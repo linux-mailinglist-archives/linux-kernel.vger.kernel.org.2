@@ -2,131 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB95A442943
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BBBC442949
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 09:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhKBIYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 04:24:32 -0400
-Received: from mail-eopbgr60093.outbound.protection.outlook.com ([40.107.6.93]:55170
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229526AbhKBIY1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 04:24:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LjOwDnh5IoqdP+ern0DvrlqWt6e1OdRqXZDYA4Y7JR5jISpTWl1apsQVFqTDIUv4T6+sKjUGzKBaacgJjJRoFeYYa94cuj134Fl9N2GetIPexBxXSOdmrCGe5r6wZr/YEbboIsMPO2XtNVND+UiCZbDMlcrmOuQxJB15ja0D8OyABMd6XCxwruCPtBY9rIVivhqc6OxmFBLUWFLsVvAHqHQUdpSBL+iuB6Pa0d7MrLRsmgqXr/UsDO57+ZTHxMaX6f9ytE/v/iP2/7jvB1TeUJ1mUcmvFXav2SABOYMpuF66qAC1BGqcfCcGT+tDPkwd/dvwCmn+mNSGaQNfNKdwAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2fKnpXl1FPJIuZcw32MTszuBGiiaqHetm9ofmK3WJnQ=;
- b=gVqI8hfHGg8pGdVrZkhSsIgVVGzuEeXv0MTd+SOu7m0wt0kYQ2iYmjNfVIRtOmHmrkQGy0zS9aiQKxtZco5YjsvkcSqxYOsTtXQ1iHxY32NhDuuHpshgJRRCKWYY32dtFpea4Iz0cVdmXvBDzIO4bpkRVk7Qn672jCxLKZunrHRG+HY6zQ6pm1vHKjTgE+nyNa43Oon9x0VOq9Y8fvY9RQkIShupJe7hNev+6fO2zMpcnEb5yV/hicL7srLvRbomoOvu9M8xlXXNkZJJBD3vqJWn6BLIpvMAW1zUxdh8ljTV/qMpEJGXc4Ak+fpP1rXePbx5mXUF7SHhKWbdom5tHw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
- dkim=pass header.d=toradex.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2fKnpXl1FPJIuZcw32MTszuBGiiaqHetm9ofmK3WJnQ=;
- b=IIB1uFfVtMVNSEHdEn8sI4pClwF5PYZnhhKyFkwMVx0ARJs3ZtY+n5lxp0/BxBYxcK/dHLAAJ1XcrrHkTlo/HYP9vUOvHBWywGOM97sU25dzVrFwZ6wSX3JOTZ32tphT98VQ7yv2WJgS3YAjno23E2M4cGzRCUH4IQ/P1MTF9x4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=toradex.com;
-Received: from DBAPR05MB7445.eurprd05.prod.outlook.com (2603:10a6:10:1a0::8)
- by DB6PR05MB3448.eurprd05.prod.outlook.com (2603:10a6:6:1e::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.18; Tue, 2 Nov
- 2021 08:21:51 +0000
-Received: from DBAPR05MB7445.eurprd05.prod.outlook.com
- ([fe80::90ca:ed3d:a3e5:1651]) by DBAPR05MB7445.eurprd05.prod.outlook.com
- ([fe80::90ca:ed3d:a3e5:1651%3]) with mapi id 15.20.4649.019; Tue, 2 Nov 2021
- 08:21:51 +0000
-Date:   Tue, 2 Nov 2021 09:21:47 +0100
-From:   Francesco Dolcini <francesco.dolcini@toradex.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Francesco Dolcini <francesco.dolcini@toradex.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        marcel.ziswiler@toradex.com,
-        Oleksandr Suvorov <oleksandr.suvorov@foundries.io>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mfd: stmpe: Support disabling sub-functions
-Message-ID: <20211102082147.GA5168@francesco-nb.int.toradex.com>
-References: <20211027082155.206449-1-francesco.dolcini@toradex.com>
- <20211101094844.GA4549@francesco-nb.int.toradex.com>
- <YX/Z47ztw8d4uMuQ@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YX/Z47ztw8d4uMuQ@google.com>
-X-ClientProxiedBy: GVAP278CA0014.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:710:20::24) To DBAPR05MB7445.eurprd05.prod.outlook.com
- (2603:10a6:10:1a0::8)
+        id S231133AbhKBIZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 04:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229920AbhKBIY4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 04:24:56 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF7CC061764;
+        Tue,  2 Nov 2021 01:22:16 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id p16so41399169lfa.2;
+        Tue, 02 Nov 2021 01:22:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ne7EPu6jTpGVLHdvimehHVoEG1G7OTA5OiY+BOnLe4A=;
+        b=PjUNJMcSRJ62akTQe/diEaqWuErpiYU8V09h41nU2mp9HKydnky/bk6OV2dQuyewS2
+         S9RuIpT48CK73n4qcfBiHUYtyhouUpWA0+J54GBgSj7yynd2vT4DW8fv4ahrzlsrT0E6
+         /lijxNB4x8IwycViFV+jzEaUZm/3pQxtQJf916W/qvzbddRwXkIOIm4OiMVLn/WIZ/DY
+         N5odBUKp0BxW4l3NBxeuLswtCe3PZ5pflo9kkmST1Cs2eJToB0wimMkmOPSuyQTpfxUg
+         oA9KmxcFF04RD5lgmyzKxuHhhF7bgKu7R5M+jFKRFH6KtY1r31FAMN4zM91jGi33Xl0z
+         BFsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ne7EPu6jTpGVLHdvimehHVoEG1G7OTA5OiY+BOnLe4A=;
+        b=1WFLEUF16Ai7gOsHSqGBy/gsqn3ghIsMr0ZOnaIyQMzg9FxHIhe/GSOd1pCRzhmSgJ
+         A+23GYFvan8gBDS5jMGfD9IUugvbtyd55BGw9cPC8s6wvoNjBOgly1YZi6qYDL4KJ5qB
+         8DOgy3ExtgsPVO+0qf7PFrRYyuFh0/foVVpOcgawrWUWmkdQVoYE3wJp8VXAou7y6Fij
+         C18AzTeiiD3s66uNIyQhbxAa4Z7gpyVIf76z+ra74UwRLQAVIPB6vnpoAduyjsUrZ/YW
+         XTO06qZkABY+0IYElKEy3MU1MLwv3SfHOKf8D8y8kvDLnE0QfzFoDG4n7651WAN7rT0K
+         yuGA==
+X-Gm-Message-State: AOAM530bR1n1ELHva8LRKZdm2qD3R2nDuDI6sqUjEMMMEJfcDN/jWaCE
+        ziucLvUbU1ZJOxFRTyuIwuCxZvllLnEL/04D0A==
+X-Google-Smtp-Source: ABdhPJz2sTRMCaO5nz6DI/gO9EPlcsOXPYF/+nvlvqLAyf4DhHKZV4nnIz1ld2TtCyuBcBxPgayITk4DR6CTKXKkKxk=
+X-Received: by 2002:a05:6512:3c9e:: with SMTP id h30mr2097037lfv.93.1635841334320;
+ Tue, 02 Nov 2021 01:22:14 -0700 (PDT)
 MIME-Version: 1.0
-Received: from francesco-nb.toradex.int (93.49.2.63) by GVAP278CA0014.CHEP278.PROD.OUTLOOK.COM (2603:10a6:710:20::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.17 via Frontend Transport; Tue, 2 Nov 2021 08:21:50 +0000
-Received: by francesco-nb.toradex.int (Postfix, from userid 1000)       id E78D610A1001; Tue,  2 Nov 2021 09:21:47 +0100 (CET)
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: eac204b0-1077-47d5-5db6-08d99dd9d1b0
-X-MS-TrafficTypeDiagnostic: DB6PR05MB3448:
-X-Microsoft-Antispam-PRVS: <DB6PR05MB34488CDDE8E86F5C6250ADEBE28B9@DB6PR05MB3448.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8Olm773pu/Vd4oP/AunivTKiKzAw7XJpKjR62aZWzeh3em5p0vfa3HakDMy+700lnhB0M9uTLzy4Hg2jkYqxhq+l2uFV8qGnyftu1a313mb0WWccl+32jnbGT/CEWGc9NVoIEYh4qu0QOU35Qdvs5d4IU591SviGIi2doKTAB2p5zrLeUReb5HjUcBs1/8e4pz9+qH23bNF/NkoNYa3CZfvjJGOcStON6LQJ8qb8yOHevgk0RtyxIDt50HDFS2KqbwgpvfOM5A9YlSCzQrktFN26iYxhjSzwSTe6fdlQhG9BbCRzrwWfOktxqRunziYKloUHXJ01K4ru/KMiZJsQQlIShlPwajxf1CW5SD7LbyT3CjNqN/ofShNFSZLKS3ezbFjDFvDd+OHqH67E35MMZ3wOrwPpjyCSZQEIxHVq7Oehy3/6K4xCMkh8uLRs1i0UVprXr+b4oFCjnSUXg+rEo/XD0+skJvJTBwSjLMcF1BZEI4H5nNF9Q4dtgyU03EBblJHb0t2qx1EbSLzTpYI+5SjA97T25QSNg4BEAkJQi6y1Gcc4JUm5Um8L/KqaMYRRu9Ll06WpEIzW6UoRKhH1AiAzmH5BXDNHMyNeSX9H7cfs9rxmVBN5FO5ZiOKmDlwDrsmYhdIs7WyMgEFFoelED4hjUnOXRKuBRuiW8xGIYOb053ZGY1PhP8DwmTtrAeWLpfKz15a8evBBvNh/QUflKg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBAPR05MB7445.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(26005)(5660300002)(508600001)(38100700002)(6916009)(52116002)(42186006)(4326008)(8936002)(66476007)(186003)(38350700002)(4744005)(6266002)(1076003)(66946007)(44832011)(2906002)(86362001)(8676002)(54906003)(66556008)(33656002)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WW82GEbrqIX1st4/0hKM8RUY0u01PvJfOdWowfRjjFtIGYOnY+phMFmD2uSS?=
- =?us-ascii?Q?cATUAq8bSgrz+sM6DVXTD1iXi5LC0+2r0FNpU4TsVSWhKKJKequK0t06bYI/?=
- =?us-ascii?Q?AHbwfZLQ2hV7PuiGkN/GdbDB4ojnBO7HE06lpmmrU0gURaqoYIGA8skhd85R?=
- =?us-ascii?Q?/MzUdIJJICFMwYnlT6L50IRrM8R+vjHfNLzv3EPoOnYTl6nGuK5OHV0FVeI4?=
- =?us-ascii?Q?THTNYSyqzXM/ZMIRkMegW9itiUiZIDWQywZrcuQQaIegXiuhZdfQajxKsiWk?=
- =?us-ascii?Q?cgON9kgpdGrKijla4khk+SAPwxlLf8mgW+L2d9/IeyUggSq0DzildrUBuyfk?=
- =?us-ascii?Q?T+cjaUrMbzcApXYRZMRmjynrQljKuSb9T3HIGc9hPMB65uX9hTffKtiMEL1N?=
- =?us-ascii?Q?AwYFkr9z3teM/SjwMeQmJEyqTgX4vpvlXTOcJMsIeL/2xtJT5BsERl2bsfhx?=
- =?us-ascii?Q?98UHIx/cfOoQpqPQZpSnqitiHY6QTRP1gpoQ1usC6Ld6mjesxipVfr3/n7p+?=
- =?us-ascii?Q?9uzzzw9vDQIQPjXFI+PVpyMa0fj0ES1IiLAyAVVYPQJv7Vh/z7m5PgC0A9jd?=
- =?us-ascii?Q?30mEF9/oO8f0ZXNvlCq0D4Sn1Qz1wSZspdt+SytixRjc1B40NmzMLxCfm4VL?=
- =?us-ascii?Q?3Q5cfCEx1c3G19s7MHnuoYg+ku1tTEOOsiwIWAQS+xHJjKKm3cwKT6397tT3?=
- =?us-ascii?Q?tixh/u0oi4mPa0gOUc7ynGNR6VnycSnxQtdOayshBGDous6bn4mJVfOScXR1?=
- =?us-ascii?Q?lPqxgEUblKR0tp8aQNuci1d/QjZE90rJaibvbmYLLWYJgDUhpFAFaGlVnBQu?=
- =?us-ascii?Q?7lpMitjDqv34bzsnSuvTOEAvmVHfxfRnUpjiOWNNf4jTFnsm9KKPTR+6yj2X?=
- =?us-ascii?Q?sVkFlGMuSHF7JK37TbS2iv3Hq4DRbiZt+UOVmtqd6bSoF9imAZvfENYpTvWC?=
- =?us-ascii?Q?J8o7iIIrQCRYO1tph+R8My1nVpaSt2ea8hQuzXk6yglD8RWlea+cG9eWpSJU?=
- =?us-ascii?Q?w4miOmNy/rlxEp9haGpACn7IID1RtWB1zNjGtz+8k0o4eDBz+8Jfl6yF/2wL?=
- =?us-ascii?Q?B3peuv1NFRxomMc9lEnQGIoEvMOkkMdat9RVTBn4AmSMxASjqiTEhsNGfGDn?=
- =?us-ascii?Q?IEe/nD7/6QOIKE78k5tAsr1GD2Giqldv5YBR9/YlRjams1GHI76W6vDfFk8V?=
- =?us-ascii?Q?lvBnUc8B//jiojbB3W4y+tAPn/nezf6RahmfyFVWwysBuyQUf7v5oUAiemH+?=
- =?us-ascii?Q?4XMEeY55NptkXVIO0QVuFHHCW+tQMcFiN8hlmQa4qm4v8OGw9agJnFR3fCih?=
- =?us-ascii?Q?n72YN5hMJZAJ9T6yhPPXWJLqsPkUtYqDoGhthz1X3Ac3FJ2pPzqjcdHonDoK?=
- =?us-ascii?Q?3YUQTDgFPE9drF++8lEZxKqGVptO+gr4aaPluq1dNHRU6ochdYU2k4GUBhv5?=
- =?us-ascii?Q?uLzM1odFwztP3Z+oc+ryMp/8OtboPhlo2HmQ26qKJZYprYJ43IiMcVyAc5OB?=
- =?us-ascii?Q?s4Frb56fQFqmnYl2WdMS14pOh3oENyvdjjfNRwzNqN2bAqw21kiQO2Kve63u?=
- =?us-ascii?Q?bTepmPpI/JjZpQa8UwZvBeeFN3BuCUPg8RNjYhFteqj49x1rcyi/yqEQFVbM?=
- =?us-ascii?Q?1at/LKADQYo8pGXjpUfiMG3e8ymRmThrDCN/lvgt/MXERNOLOcLzmv32jddO?=
- =?us-ascii?Q?UIgEEw=3D=3D?=
-X-OriginatorOrg: toradex.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eac204b0-1077-47d5-5db6-08d99dd9d1b0
-X-MS-Exchange-CrossTenant-AuthSource: DBAPR05MB7445.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 08:21:50.9728
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d9995866-0d9b-4251-8315-093f062abab4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YGuzvVFmMkfFKtGOzVMFFBQR6Od69rPvHwsxEMnG1Waxyse5n6iVveBircfEj/7jDaz8mjFNuxqUJNHHmB0phNYWfGjziGbNukV4R5X1MHA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR05MB3448
+References: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
+ <20211028141938.3530-12-lukas.bulwahn@gmail.com> <CAK8P3a0Nq9hLbGiPCQTjVTiGFPR9-tdhN8Tf06Q=cWTgMK78yw@mail.gmail.com>
+ <CACPK8XfiN5qziPHLU6J=bC34mcjz+ix7jjSX=xk9zsr7+vyTdw@mail.gmail.com> <CAKXUXMyrhrM2o-OEW_qTTKjfKgxt-Z6Nt69geU80AoFnM1OuMA@mail.gmail.com>
+In-Reply-To: <CAKXUXMyrhrM2o-OEW_qTTKjfKgxt-Z6Nt69geU80AoFnM1OuMA@mail.gmail.com>
+From:   Avi Fishman <avifishman70@gmail.com>
+Date:   Tue, 2 Nov 2021 10:22:03 +0200
+Message-ID: <CAKKbWA7OiU_pp33=EQoCTOeyd3Ecmm-dtTFeu1VB_Xcpt0gMvg@mail.gmail.com>
+Subject: Re: [PATCH 11/13] arm: npcm: drop selecting non-existing ARM_ERRATA_794072
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Joel Stanley <joel@jms.id.au>, Arnd Bergmann <arnd@arndb.de>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linusw@kernel.org>,
+        Imre Kaloz <kaloz@openwrt.org>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 12:13:23PM +0000, Lee Jones wrote:
-> On Mon, 01 Nov 2021, Francesco Dolcini wrote:
-> > Hello Lee,
-> > any chance you could take this one line patch for this merge window?
-> 
-> For a patch sent 0.5 weeks before the merge-window?  Nope. :)
+Hi,
 
-Hello Lee,
-no problem, I thought it was that trivial to not create any worries.
-I'll resend it in a while unless you take it before.
+At Nuvoton we implied this WA in the past, not because we encountered
+a specific problem but since the errata says so and we saw this in
+other patches like:
+https://patchwork.kernel.org/project/linux-arm-kernel/patch/1396298072-13254-2-git-send-email-nitin.garg@freescale.com/
+But we didn't upstream the arch/arm/mm/proc-v7.S
 
-Francesco
+From the errata document.
+"794072 A short loop including a DMB instruction might cause a denial
+of service on
+another processor which executes a CP15 broadcast operation
+Status
+Affects:
+Fault Type:
+Fault Status: Cortex-A9 MPCore.
+Programmer Category B
+Present in: All r1, r2, r3 and r4 revisions Open
+Description
+A processor which continuously executes a short loop containing a DMB
+instruction might prevent a CP15
+operation broadcast by another processor making further progress,
+causing a denial of service.
+Configurations affected
+This erratum affects all Cortex-A9 MPCore processors with two or more
+processors.
+Conditions
+The erratum requires the following conditions:
+- Two or more processors are working in SMP mode (ACTLR.SMP=1)
+- One of the processors continuously executes a short loop containing
+at least one DMB instruction.
+- Another processor executes a CP15 maintenance operation that is
+broadcast. This requires that this
+processor has enabled the broadcasting of CP15 operations (ACTLR.FW=1)
+For the erratum to occur, the short loop containing the DMB
+instruction must meet all of the following additional
+conditions:
+- No more than 10 instructions other than the DMB are executed between each DMB
+- No non-conditional Load or Store, or conditional Load or Store which
+pass the condition code check, are
+executed between each DMB
+When all the conditions for the erratum are met, the short loop
+creates a continuous stream of DMB instructions.
+This might cause a denial of service, by preventing the processor
+executing the short loop from executing the
+received broadcast CP15 operation. As a result, the processor that
+originally executed the broadcast CP15
+operation is stalled until the execution of the loop is interrupted.
+Note that because the process issuing the CP15 broadcast operation
+cannot complete operation, it cannot enter
+any debug-mode, and cannot take any interrupt. If the processor
+executing the short loop also cannot be
+interrupted, for example if it has disabled its interrupts, or if no
+interrupts are routed to this processor, this
+erratum might cause a system livelock.
+Implications
+The erratum might create performance issues, or in the worst case it
+might cause a system livelock if the
+processor executing the DMB is in an infinite loop that cannot be interrupted.
+Workaround
+This erratum can be worked round by setting bit[4] of the undocumented
+Diagnostic Control Register to 1. This
+register is encoded as CP15 c15 0 c0 1.
+This bit can be written in Secure state only, with the following
+Read/Modify/Write code sequence:
+MRC p15,0,rt,c15,c0,1
+ORR rt,rt,#0x10
+MCR p15,0,rt,c15,c0,1
+When it is set, this bit causes the DMB instruction to be decoded and
+executed like a DSB.
+Using this software workaround is not expected to have any impact on
+the overall performance of the processor
+on a typical code base.
+Other workarounds are also available for this erratum, to either
+prevent or interrupt the continuous stream of
+DMB instructions that causes the deadlock. For example:
+- Inserting a non-conditional Load or Store instruction in the loop
+between each DMB
+- Inserting additional instructions in the loop, such as NOPs, to
+avoid the processor seeing back to back
+DMB instructions.
+- Making the processor executing the short loop take regular interrupts."
 
+Avi
+
+On Tue, Nov 2, 2021 at 9:31 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> On Fri, Oct 29, 2021 at 8:36 AM Joel Stanley <joel@jms.id.au> wrote:
+> >
+> > On Thu, 28 Oct 2021 at 14:57, Arnd Bergmann <arnd@arndb.de> wrote:
+> > >
+> > > On Thu, Oct 28, 2021 at 4:19 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+> > > >
+> > > > There is no and never was a Kconfig for ARM_ERRATA_794072 in the kernel
+> > > > tree. So, there is no need to select ARM_ERRATA_794072 in
+> > > > ./arch/arm/mach-npcm/Kconfig.
+> > > >
+> > > > Simply drop selecting the non-existing ARM_ERRATA_794072.
+> > > >
+> > > > This issue was discovered with ./scripts/checkkconfigsymbols.py.
+> > > >
+> > > > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > > > ---
+> > >
+> > > Could this be a typo? Maybe we need to enable a different errata workaround
+> > > here, or maybe that code is actually needed and has to get sent.
+> >
+> > Doing some searching, u-boot had a workaround for something called
+> > ARM_ERRATA_794072.
+> >
+> > https://github.com/u-boot/u-boot/commit/f71cbfe3ca5d2ad20159871700e8e248c8818ba8
+> >
+> > Lore has the review history for that patch:
+> >
+> > https://lore.kernel.org/all/6be32e0b5b454ed7b609317266a8e798@BLUPR03MB358.namprd03.prod.outlook.com/
+> >
+> > It looks like it's the same workaround as ARM_ERRATA_742230, which the
+> > kernel does implement.
+> >
+> > It would be good to hear from the Nuvoton people, or an Arm person.
+> >
+>
+> I will happily update the patch to select ARM_ERRATA_742230 instead of
+> the dead non-existing ARM_ERRATA_794072.
+>
+> In contrast to the current patch that basically only cleans up "dead
+> config" and has no effective functional change, the new patch would
+> change the behaviour. I cannot test this patch (beyond some basic
+> compile test) on the hardware; so, we certainly need someone to have
+> that hardware, knows how to test it or confirm otherwise that we
+> should select the ARM_ERRATA_742230 fix for this hardware.
+>
+> The current patch should be subsumed by the new patch; the submission
+> of the new patch is deferred until that person shows up. Let's see.
+>
+> Lukas
+
+
+
+-- 
+Regards,
+Avi
