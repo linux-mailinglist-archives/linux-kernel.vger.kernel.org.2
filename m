@@ -2,109 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4344438B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:44:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 292384438B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:46:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbhKBWqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:46:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230248AbhKBWqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 18:46:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85B5161058;
-        Tue,  2 Nov 2021 22:44:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635893054;
-        bh=xlJTg+g45NA5Jmaqfo0H1zJ7M0aSNbSpGn8R3qo/alA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=J3E8y0mMMimFVMbrPwTI/vuLIbS5uGyGpj0wTtaionlsJrkEZvjuqdEcZYJCbGoqC
-         VnR72U8fFhgoSs3c6iwvcNl7Q6Lk24uo1cQLeJHNL2VqBjUlIbUSTuzokk+3KdooQG
-         9AdOmz6ri1V1FKeE93/vitgRtGKkBdyI3un1SXq/UYn46bTcCEOg00dUZAkq/6ONZB
-         VcgtqN/485DnHb4EfdiB3y4FMFkK1RZ0Z/XMYcffQv/QzhM6Fh67KOU7rgTHpmf4Fc
-         y41ieGpHxDUZM2ti0JC3T0sCeTeK6TUdOYr5ZbzOI6vGPnnQYi+jJCaMKEFro/AUI/
-         1HVR4qyzYonKg==
-Received: by mail-ed1-f44.google.com with SMTP id o8so2701547edc.3;
-        Tue, 02 Nov 2021 15:44:14 -0700 (PDT)
-X-Gm-Message-State: AOAM530htOJ4PyPsvP7U6nbz9frq7QZ0HDWigrLJ1gq/cwnx4Gn/mBXR
-        ukjiSjNI5NGU59EW6V0e1poN3CGnHv1krANOJw==
-X-Google-Smtp-Source: ABdhPJwWkcHLupHM+eSOeq+xd9impIHRTT3qkTjxiKN/kL5YOlS59jRuQo/tHhUYUb2vMifYDtwGGYH3OoSmTPh7gC0=
-X-Received: by 2002:a17:907:16ac:: with SMTP id hc44mr26056561ejc.363.1635893052996;
- Tue, 02 Nov 2021 15:44:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <097d8602906e9db279728330c6cf2837be184704.1635338663.git.geert+renesas@glider.be>
- <YYBdzwshhM5fmsEE@robh.at.kernel.org> <CAMuHMdUvy9oVCv+3HJ_dZr6Rm4iP8FPwTETxq+j2ja_BR1=c5A@mail.gmail.com>
-In-Reply-To: <CAMuHMdUvy9oVCv+3HJ_dZr6Rm4iP8FPwTETxq+j2ja_BR1=c5A@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 2 Nov 2021 17:44:00 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJTMORDCAb=9nuSaKiHgVgw6wb4jQw7ppMmuru-MZ1uuQ@mail.gmail.com>
-Message-ID: <CAL_JsqJTMORDCAb=9nuSaKiHgVgw6wb4jQw7ppMmuru-MZ1uuQ@mail.gmail.com>
-Subject: Re: [PATCH] bindings: media: venus: Drop bogus maxItems for power-domain-names
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Dikshita Agarwal <dikshita@codeaurora.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S230258AbhKBWt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:49:27 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:57505 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229685AbhKBWt0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 18:49:26 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id B980E5C0063;
+        Tue,  2 Nov 2021 18:46:50 -0400 (EDT)
+Received: from imap43 ([10.202.2.93])
+  by compute2.internal (MEProxy); Tue, 02 Nov 2021 18:46:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=+MmfI1hZqEV2ZXk8KmjNb0iZ8aI9C1X
+        wnf9lcQ3Z1uc=; b=YFmHr1Oukctfa1gHQIpggEvefuoGE4pnTJ5WbvG78Hb/MLR
+        EeNus6GyzokK1Fttz8p44luYffyp0Ewlu2MD/4s1pX8Kj/i0bq6RtIFD1HfUBDhZ
+        IPZ1hQei5b4JvrC74jSvh0w+2Zmt/Qeure3CpyH+2xZEvb1xzRJCsJ4lwomBUk/g
+        UR6dZUrQPfyD496Uk8DRWwqHq5UneFxRdUWwjea9IQrC1+h8GYYEADBDp03PX+Bm
+        JM9lKZQqtFn7Bn7DekpYBLZsD+3b3oyU3wETQH3ocgzi4lbiKadTU4Qukuxt1d0e
+        U7bXc7B5h2GPGBz8NMtZJMEDKv8/ds+VOwZEggQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=+MmfI1
+        hZqEV2ZXk8KmjNb0iZ8aI9C1Xwnf9lcQ3Z1uc=; b=HD1En9EfpDdtNdzzDK3z1A
+        qKRdQ4dEH6fT+NppFc2Tplbqnu6bZuwIZ2WlT/DM93uDNw1D26grn7xCytMSg2q2
+        xrVPEbIaXrvKMldB++BRrrPcFqWeHN6VqkSC5NIs+MrZ3f9iwd6YsqzlWB+kS6Gi
+        rXYaTV2LumDsuvRU9fMi7rvyhycqoSiPQP+ozimKIw9/soGC81oZZQD/hAyFwQd4
+        5/7JUYV9vx2W+iHYarCV1oKTBwPMcKBcob8LNaE7z/SNwo+WWwMtHGR4ltslXJSJ
+        LznpoJEZl0SuSAZuIpzUwbOxl0WyuRWfhlj/QuHwvn8dueRBVpkFnfICP3RJEgjQ
+        ==
+X-ME-Sender: <xms:2r-BYTq0n-5UldPg_zXq-JhZmzsp75EGAEEXvL1BEiYitN7qoaZvQA>
+    <xme:2r-BYdr0Wc9-VK76am5pTrJvQQaJ8XejF3ywxGC29ODiCq_uwK3xmEdJLWgtdMLre
+    m7gNkMED3mq4OWDKQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrtddugddtudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
+    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
+    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
+    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:2r-BYQN1odeZTH5cZ15jmB0wcHvGUAYh8uP328m5hMo8eAT5hwleBQ>
+    <xmx:2r-BYW7whpwHdmUZkJUde3_3rNIV1bF_Ewxia1lVDKzUDaduCpYW-w>
+    <xmx:2r-BYS73IicJx_qukKMIx6HyEDrCDFrdKZLHL6oSS_a7TxRnyUF9fA>
+    <xmx:2r-BYfubquuJ1R21rpgvG3cZ8rsh6hrsZPYt3Azxa36EUuxpnL2syg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 7A487AC0E8C; Tue,  2 Nov 2021 18:46:50 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1369-gd055fb5e7c-fm-20211018.002-gd055fb5e
+Mime-Version: 1.0
+Message-Id: <3fc55e2b-05cb-438d-b1cb-0d62f26c5411@www.fastmail.com>
+In-Reply-To: <20211029212157.14230-1-julianbraha@gmail.com>
+References: <20211029212157.14230-1-julianbraha@gmail.com>
+Date:   Wed, 03 Nov 2021 09:16:30 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Julian Braha" <julianbraha@gmail.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Joel Stanley" <joel@jms.id.au>
+Cc:     linux-aspeed@lists.ozlabs.org, linux-gpio@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, fazilyildiran@gmail.com
+Subject: Re: [PATCH] pinctrl: aspeed: fix unmet dependencies on MFD_SYSCON for
+ PINCTRL_ASPEED
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 3:42 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Rob,
->
-> On Mon, Nov 1, 2021 at 10:36 PM Rob Herring <robh@kernel.org> wrote:
-> > On Wed, Oct 27, 2021 at 02:45:30PM +0200, Geert Uytterhoeven wrote:
-> > > make dt_binding_check:
-> >
-> > I'd say it's redundant rather than bogus.
->
-> I wrote "bogus", as the "redundant" ones typically give:
->
->                 hint: "maxItems" is not needed with an "items" list
->
-> And I didn't get that here?
 
-Any schema file with an error shows up twice. First there's all the
-specific errors with details. Then there's what you reference which is
-all the schemas that we're skipping. If you set DT_SCHEMA_FILES now,
-you should only see the second case for other schema files.
 
-So it's probably better to reference the actual error:
+On Sat, 30 Oct 2021, at 07:51, Julian Braha wrote:
+> When PINCTRL_ASPEED_G* is selected,
+> and MFD_SYSCON is not selected,
+> Kbuild gives the following warnings:
+>
+> WARNING: unmet direct dependencies detected for PINCTRL_ASPEED
+>   Depends on [n]: PINCTRL [=y] && (ARCH_ASPEED [=n] || COMPILE_TEST 
+> [=y]) && OF [=y] && MFD_SYSCON [=n]
+>   Selected by [y]:
+>   - PINCTRL_ASPEED_G4 [=y] && PINCTRL [=y] && (MACH_ASPEED_G4 [=n] || 
+> COMPILE_TEST [=y]) && OF [=y]
+>
+> WARNING: unmet direct dependencies detected for PINCTRL_ASPEED
+>   Depends on [n]: PINCTRL [=y] && (ARCH_ASPEED [=n] || COMPILE_TEST 
+> [=y]) && OF [=y] && MFD_S>
+>   Selected by [y]:
+>   - PINCTRL_ASPEED_G5 [=y] && PINCTRL [=y] && (MACH_ASPEED_G5 [=n] || 
+> COMPILE_TEST [=y]) && O>
+>
+> WARNING: unmet direct dependencies detected for PINCTRL_ASPEED
+>   Depends on [n]: PINCTRL [=y] && (ARCH_ASPEED [=n] || COMPILE_TEST 
+> [=y]) && OF [=y] && MFD_S>
+>   Selected by [y]:
+>   - PINCTRL_ASPEED_G6 [=y] && PINCTRL [=y] && (MACH_ASPEED_G6 [=n] || 
+> COMPILE_TEST [=y]) && O>
+>
+> This is because PINCTRL_ASPEED_G* selects PINCTRL_ASPEED,
+> without selecting or depending on MFD_SYSCON, despite
+> PINCTRL_ASPEED depending on MFD_SYSCON.
+>
+> These unmet dependency bugs were detected by Kismet,
+> a static analysis tool for Kconfig. Please advise
+> if this is not the appropriate solution.
+>
+> Signed-off-by: Julian Braha <julianbraha@gmail.com>
 
-Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml:
-properties:power-domain-names: {'minItems': 2, 'maxItems': 3, 'items':
-[{'const': 'venus'}, {'const': 'vcodec0'}, {'const': 'cx'}]} should
-not be valid under {'required': ['maxItems']}
- hint: "maxItems" is not needed with an "items" list
- from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+From a system-level perspective MFD_SYSCON is selected by ARCH_ASPEED, 
+then the MACH_ASPEED_G* symbols depend on ARCH_ASPEED.
 
-> > >     Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml: ignoring, error in schema: properties: power-domain-names
-> > >     warning: no schema found in file: Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
-> > >
-> > > Fixes: e48b839b6699c226 ("media: dt-bindings: media: venus: Add sc7280 dt schema")
-> > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > > ---
-> > >  Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml | 1 -
-> > >  1 file changed, 1 deletion(-)
-> >
-> > Acked-by: Rob Herring <robh@kernel.org>
+However, that doesn't help the COMPILE_TEST case, so we need some 
+solution. Since MFD_SYSCON is required by all the relevant drivers and 
+the aspeed pinctrl core, maybe it would be best just to add as a select to 
+PINCTRL_ASPEED? Unless there's an argument for depends instead?
+
+Thanks for the patch and report!
+
+Andrew
+
+> ---
+>  drivers/pinctrl/aspeed/Kconfig | 3 +++
+>  1 file changed, 3 insertions(+)
 >
-> Thanks!
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+> diff --git a/drivers/pinctrl/aspeed/Kconfig b/drivers/pinctrl/aspeed/Kconfig
+> index de8b185c4fee..b0bae6144fc2 100644
+> --- a/drivers/pinctrl/aspeed/Kconfig
+> +++ b/drivers/pinctrl/aspeed/Kconfig
+> @@ -11,6 +11,7 @@ config PINCTRL_ASPEED
+>  config PINCTRL_ASPEED_G4
+>  	bool "Aspeed G4 SoC pin control"
+>  	depends on (MACH_ASPEED_G4 || COMPILE_TEST) && OF
+> +	depends on MFD_SYSCON
+>  	select PINCTRL_ASPEED
+>  	help
+>  	  Say Y here to enable pin controller support for Aspeed's 4th
+> @@ -19,6 +20,7 @@ config PINCTRL_ASPEED_G4
+>  config PINCTRL_ASPEED_G5
+>  	bool "Aspeed G5 SoC pin control"
+>  	depends on (MACH_ASPEED_G5 || COMPILE_TEST) && OF
+> +	depends on MFD_SYSCON
+>  	select PINCTRL_ASPEED
+>  	help
+>  	  Say Y here to enable pin controller support for Aspeed's 5th
+> @@ -27,6 +29,7 @@ config PINCTRL_ASPEED_G5
+>  config PINCTRL_ASPEED_G6
+>  	bool "Aspeed G6 SoC pin control"
+>  	depends on (MACH_ASPEED_G6 || COMPILE_TEST) && OF
+> +	depends on MFD_SYSCON
+>  	select PINCTRL_ASPEED
+>  	help
+>  	  Say Y here to enable pin controller support for Aspeed's 6th
+> -- 
+> 2.30.2
