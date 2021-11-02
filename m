@@ -2,125 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DA94435A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52ECD4435AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235084AbhKBSeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 14:34:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbhKBSeC (ORCPT
+        id S234685AbhKBSii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 14:38:38 -0400
+Received: from mail-out2.in.tum.de ([131.159.0.36]:48714 "EHLO
+        mail-out2.informatik.tu-muenchen.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230361AbhKBSih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 14:34:02 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15108C061714;
-        Tue,  2 Nov 2021 11:31:27 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id f4so668515edx.12;
-        Tue, 02 Nov 2021 11:31:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UzE3aFC5YcLdwkQ6Vy4Gt1qU86BWbr4tVYewcSG66nQ=;
-        b=jZ+w9TtW2uv87SbXr3TddnD2SSetbQayCuEm6ka7K8/V7gpObyBSBxmGR7Sllz4DY5
-         PP0pRHFxhmzDcF71DK2qdBrV4bDY5FMRPeQCcJNgaMDxuZteVJTqc+CMwY0VUQtX6nQt
-         2PhAsswt6XnQZSQdeQC5biGIi3EFCYtARHvVtDBvD2Q+tOZRF/O75+bq29NcLuhbbusX
-         eLp8QxsKcGL8HBqmpiUDb8JogaYKZdE7vPRHLYRy3J39fp4BR7jFvjS0ArCGEUC+C09N
-         Er/XjDsxsV864wcdipNLvpJo2abfuVwXVjZ/ydW9lugxj1q23u9zqn7kHJskPJ2xne/w
-         E9Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UzE3aFC5YcLdwkQ6Vy4Gt1qU86BWbr4tVYewcSG66nQ=;
-        b=Y7jl7rnrR39K/V1C/S/g9u1YqKxJjgDKCGdXTlxfjXkEtVWv28eGA0WUP2ILIzmi/t
-         bWsgU9a19rZQRVG7/u++hdULNuPrs7P5Im3QTXhU/JxrrzgA6/OvoKHXP9LTkd5JUO3k
-         YOq6TQG81P21RiALAEAO9+sF0KqPu//NWEUtS+9zNsqsonvEiJlY3hJJf/iKLNQPsTNz
-         QoCDKsJcvWzTzmYyq1W1LTux55FCvcYK/d5rmzm/xgWMiQ8+qCLs8vQH224HcqAC76iS
-         NeLW8LAmr4NNIt0OVdiD/X2Tblr1PLLaYXq+cSllk9bktAOwP8OA3vcH5JoIyo7jyb0U
-         GvLg==
-X-Gm-Message-State: AOAM532PEuAXOcn/PhN3D9u6Jgn/3ZjhOI7fW7CT8qgRx0n63p9BESE5
-        Qh3scIojAraYU7ootmfOg0Y=
-X-Google-Smtp-Source: ABdhPJy3gs9aUIGtc/eD8JPwWjgxRafNwE8jBy+EsImIlIRjoHJWFpz72i+bk43z9qcfiXth0XaBCA==
-X-Received: by 2002:a17:907:7fa8:: with SMTP id qk40mr19728228ejc.497.1635877885506;
-        Tue, 02 Nov 2021 11:31:25 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.googlemail.com with ESMTPSA id h7sm10802362edt.37.2021.11.02.11.31.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 11:31:25 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [net PATCH] net: dsa: qca8k: make sure PAD0 MAC06 exchange is disabled
-Date:   Tue,  2 Nov 2021 19:30:41 +0100
-Message-Id: <20211102183041.27429-1-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Tue, 2 Nov 2021 14:38:37 -0400
+Received: from mailrelay1.rbg.tum.de (mailrelay1.in.tum.de [131.159.254.14])
+        by mail-out2.informatik.tu-muenchen.de (Postfix) with ESMTP id 69C4A2400D6;
+        Tue,  2 Nov 2021 19:36:00 +0100 (CET)
+Received: by mailrelay1.rbg.tum.de (Postfix, from userid 112)
+        id 6736C466; Tue,  2 Nov 2021 19:36:00 +0100 (CET)
+Received: from mailrelay1.rbg.tum.de (localhost [127.0.0.1])
+        by mailrelay1.rbg.tum.de (Postfix) with ESMTP id 460C645A;
+        Tue,  2 Nov 2021 19:36:00 +0100 (CET)
+Received: from mail.in.tum.de (mailproxy.in.tum.de [IPv6:2a09:80c0::78])
+        by mailrelay1.rbg.tum.de (Postfix) with ESMTPS id 43455451;
+        Tue,  2 Nov 2021 19:36:00 +0100 (CET)
+Received: by mail.in.tum.de (Postfix, from userid 112)
+        id 4067A4A0620; Tue,  2 Nov 2021 19:36:00 +0100 (CET)
+Received: (Authenticated sender: heidekrp)
+        by mail.in.tum.de (Postfix) with ESMTPSA id ADD754A0115;
+        Tue,  2 Nov 2021 19:35:59 +0100 (CET)
+        (Extended-Queue-bit tech_cgasm@fff.in.tum.de)
+Date:   Tue, 2 Nov 2021 19:35:57 +0100
+From:   Paul =?iso-8859-1?Q?Heidekr=FCger?= <paul.heidekrueger@in.tum.de>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     paulmck@kernel.org, will@kernel.org, peterz@infradead.org,
+        boqun.feng@gmail.com, parri.andrea@gmail.com,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        elver@google.com, charalampos.mainas@gmail.com,
+        pramod.bhatotia@in.tum.de
+Subject: Re: Potentially Broken Address Dependency via test_bit() When
+ Compiling With Clang
+Message-ID: <YYGFDUR5dJ784P88@Pauls-MacBook-Pro>
+References: <YXknxGFjvaB46d/p@Pauls-MacBook-Pro>
+ <20211027142720.GB1319606@rowland.harvard.edu>
+ <YXqZm6XTlMGDSpMT@Pauls-MacBook-Pro>
+ <20211028143446.GA1351384@rowland.harvard.edu>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211028143446.GA1351384@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some device set MAC06 exchange in the bootloader. This cause some
-problem as we don't support this strange mode and we just set the port6
-as the primary CPU port. With MAC06 exchange, PAD0 reg configure port6
-instead of port0. Add an extra check and explicitly disable MAC06 exchange
-to correctly configure the port PAD config.
+On Thu, Oct 28, 2021 at 10:34:46AM -0400, Alan Stern wrote:
+> On Thu, Oct 28, 2021 at 02:37:47PM +0200, Paul Heidekrüger wrote:
+> > On Wed, Oct 27, 2021 at 10:27:20AM -0400, Alan Stern wrote:
+> > > On Wed, Oct 27, 2021 at 12:19:48PM +0200, Paul Heidekrüger wrote:
+> 
+> > > > Address dependency in source code, lines 373 - 375 in fs/afs/addr_list.c:
+> > > > 
+> > > > > [...]
+> > > > >   index = READ_ONCE(ac->alist->preferred);
+> > > > >   if (test_bit(index, &set))
+> > > > >     goto selected;
+> > > > > [...]
+> > > > 
+> > > > where test_bit() expands to the following in 
+> > > > include/asm-generic/bitops/non-atomic.h, lines 115 - 122:
+> > > > 
+> > > > > static __always_inline int
+> > > > > arch_test_bit(unsigned int nr, const volatile unsigned long *addr)
+> > > > > {
+> > > > >   return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+> > > > > }
+> > > > > #define test_bit arch_test_bit
+> 
+> > > However, I can't follow the IR code.  Can you please explain in ordinary 
+> > > English how the LLVM compiler manages to lose track of this dependency?
+> > > 
+> > > Alan Stern
+> > 
+> > Here's what we think might be going on:
+> > - In 'arch_test_bit()', 'addr[BIT_WORD(nr)]' expands to 'addr[(nr) / 64]'.
+> > - Since 'addr' points to an 'unsigned long', any other result than '0' for
+> >   '(nr) / 64' would be out of bounds and therefore undefined.
+> > - We assume LLVM is able to figure this out and use it to get rid of the
+> >   address computation all together.
+> 
+> Ah, that explains it.  Yes, when set is a single unsigned long (or an 
+> array of length 1), the address dependency is only syntactic, not 
+> semantic.  As a result, we should expect that compilers will sometimes 
+> not preserve it.
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Fixes: 3fcf734aa482 ("net: dsa: qca8k: add support for cpu port 6")
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
----
- drivers/net/dsa/qca8k.c | 8 ++++++++
- drivers/net/dsa/qca8k.h | 1 +
- 2 files changed, 9 insertions(+)
+In LKMM's explanation.txt, lines 450 - 453 state:
 
-Some comments here:
-Resetting the switch using the sw reg doesn't reset the port PAD
-configuration. I was thinking if it would be better to clear all the
-pad configuration but considering that the entire reg is set by phylink
-mac config, I think it's not necessary as the PAD related to the port will
-be reset anyway with the new values. Have a dirty configuration on PAD6
-doesn't cause any problem as we have that port disabled and it would be
-reset and configured anyway if defined.
+> A read event and another memory access event are linked by an address
+> dependency if the value obtained by the read affects the location
+> accessed by the other event.
 
-diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-index ea7f12778922..a429c9750add 100644
---- a/drivers/net/dsa/qca8k.c
-+++ b/drivers/net/dsa/qca8k.c
-@@ -1109,6 +1109,14 @@ qca8k_setup(struct dsa_switch *ds)
- 	if (ret)
- 		return ret;
- 
-+	/* Make sure MAC06 is disabled */
-+	ret = qca8k_reg_clear(priv, QCA8K_REG_PORT0_PAD_CTRL,
-+			      QCA8K_PORT0_PAD_MAC06_EXCHANGE_EN);
-+	if (ret) {
-+		dev_err(priv->dev, "failed disabling MAC06 exchange");
-+		return ret;
-+	}
-+
- 	/* Enable CPU Port */
- 	ret = qca8k_reg_set(priv, QCA8K_REG_GLOBAL_FW_CTRL0,
- 			    QCA8K_GLOBAL_FW_CTRL0_CPU_PORT_EN);
-diff --git a/drivers/net/dsa/qca8k.h b/drivers/net/dsa/qca8k.h
-index e10571a398c9..128b8cf85e08 100644
---- a/drivers/net/dsa/qca8k.h
-+++ b/drivers/net/dsa/qca8k.h
-@@ -34,6 +34,7 @@
- #define   QCA8K_MASK_CTRL_DEVICE_ID_MASK		GENMASK(15, 8)
- #define   QCA8K_MASK_CTRL_DEVICE_ID(x)			((x) >> 8)
- #define QCA8K_REG_PORT0_PAD_CTRL			0x004
-+#define   QCA8K_PORT0_PAD_MAC06_EXCHANGE_EN		BIT(31)
- #define   QCA8K_PORT0_PAD_SGMII_RXCLK_FALLING_EDGE	BIT(19)
- #define   QCA8K_PORT0_PAD_SGMII_TXCLK_FALLING_EDGE	BIT(18)
- #define QCA8K_REG_PORT5_PAD_CTRL			0x008
--- 
-2.32.0
+If we understand correctly, the ambiguity you're pointing out is that by
+looking at 'addr[BIT_WORD(nr)]', one could deduce an address dependency by
+seeing an array subscript operator, using a value which can be traced back to a
+'READ_ONCE()' (syntactic).
 
+However, since 'addr' points to an 'unsigned long', the 'READ_ONCE()' never
+affects the location accessed in 'arch_test_bit()' as the offset computed in
+the subscript operator can only be, as clang identified, '0' (semantic).
+
+> The danger, of course, is that people relying on an ordering prescribed
+> by the LKMM may get fooled because (unbeknownst to them) the dependency
+> in question is not semantic.
+
+Do you think this would warrant a change to LKMM's explanation.txt to make this
+more explicit?
+
+> It would be great if a static checker
+> could detect such things -- but this would require some way for us to
+> inform the checker about when the code does rely on a dependency
+> ordering.
+
+The compiler passes we're working on will hopefully be able to do exactly that,
+not taking into account the programmer's intent of course.
+
+Many thanks,
+Paul
