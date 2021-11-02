@@ -2,112 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A78C44394D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:03:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B06FB44395B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 00:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbhKBXGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 19:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbhKBXGc (ORCPT
+        id S231204AbhKBXLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 19:11:30 -0400
+Received: from mail-lj1-f169.google.com ([209.85.208.169]:37756 "EHLO
+        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229747AbhKBXL2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 19:06:32 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CFBC061203
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 16:03:57 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id l8so691348ilv.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 16:03:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5ymKBrF1lHUXhO11qLF1Obbq9g7saDwiiQnV7ykje44=;
-        b=YFGSHXOnzm3Nf6cQVlx1DrAesM0CL0yllAeadoyVP9ENEoi283lOqB4RtkwGGO442f
-         BKtE7QHbG4YnEOqX97+q4xEnk8DI92aNflHXnuz95nzTy4NNSBqD82OCGswWldycNAVo
-         zyGRIN7mUNUNa/kFrCKBAVOxcg11X9TopVtUY=
+        Tue, 2 Nov 2021 19:11:28 -0400
+Received: by mail-lj1-f169.google.com with SMTP id y8so763453ljm.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 16:08:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5ymKBrF1lHUXhO11qLF1Obbq9g7saDwiiQnV7ykje44=;
-        b=XQQN+B4MwusibDr2HV/cuaHEOqpYSJD1YboTCyY3J1/Qrq9GZ1KzqYiWcopE+96Bbe
-         xiXOEkvXjzyLGepM8vsz2bg+pDpqWdwoIIu4kjOtORvvKo9FzSbw6vh1t/7SfaoxV80l
-         jFiOhwrQp5EPU4L1JV0vYBRbpBV4Tha31MCNcw/3xrL6xRbXbvIjlg1qDUJd1TLlgBJr
-         v5nYl6HzWr9LMRicrgsNrEzj3BVTqU+rhpKQJHkN6VlZ1wkd2fjezFedgl58qKJvy/lv
-         /n6vxA+321s5PnBaqQBaz8ZNPuAnnFIxapasHsbWRiETJ7URCm5Kp/t06rf251l1qexw
-         kgMQ==
-X-Gm-Message-State: AOAM533pRgdBgvXeHgVjD2d0FcCQYHl8cXoeomfHauMzbDG6ODa5fMNe
-        9GsBcTq6SDUS5/H9cljbDZe66aFPBYVjzERu/knTeg==
-X-Google-Smtp-Source: ABdhPJxrEyxWhOFvEiJ7aJJq3ROYYxHETNEMLdfVno2uwC+yHFGeEJMQiQmUDl8OJyiSFOWGSCxCSglCc2mTTjZh5PI=
-X-Received: by 2002:a92:c547:: with SMTP id a7mr15498371ilj.189.1635894236494;
- Tue, 02 Nov 2021 16:03:56 -0700 (PDT)
+        bh=axqqCgDc0zLKZYFe0E+oIe0KfNTY1wneESMS3LuNr28=;
+        b=SkDFX1yzm1kEqoruu8qg5/VbwGv8lUuagrJo0KpdZCSGBKuzHkX4YGA4iHyS7vHgXm
+         c5/MJ/ozQvxcCgH+F0c/0RXYkWP7XhuyHyLXnzibkvRj39Pw7WuTNtBFc6t+7DKfX0Ch
+         jjIomFugVn1kaO0XidwDnk4V8APIn80pZwzweC8wXmUAIjXRURCgy8p0xXIOsOC523tv
+         2aHzfhAshlCu8zR3eW0qAbKBEEWaxolZ5gLcwwOx5P8v8wBUcMSCS7aTJR0QH47SC8Ie
+         tPEgAShvzWWuNzrae53tZcCLIXmVU7PfbF0KelDIzOkZjmKhWMl0OrLk7++QSmLXkCz0
+         nMNQ==
+X-Gm-Message-State: AOAM530BcXANCz5UBtDcrx8CQl4oQHFPAqVnUI22s13XMRv9aBvKzTYM
+        ko0nyHbqois1aePKrluosdDrAkfc6TqXx8j34J0=
+X-Google-Smtp-Source: ABdhPJxiwwaln10jm5kSeCsCVViU1WjBqYUYkApLGzf0w7/3uFSdRjhpfOxeAz2R36kDB7Rmmof9qRMS2bvMj/L7EEc=
+X-Received: by 2002:a05:651c:515:: with SMTP id o21mr9050371ljp.90.1635894532179;
+ Tue, 02 Nov 2021 16:08:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211028164357.1439102-1-revest@chromium.org> <20211028224653.qhuwkp75fridkzpw@kafai-mbp.dhcp.thefacebook.com>
- <CABRcYmLWAp6kYJBA2g+DvNQcg-5NaAz7u51ucBMPfW0dGykZAg@mail.gmail.com>
- <204584e8-7817-f445-1e73-b23552f54c2f@gmail.com> <CABRcYmJxp6-GSDRZfBQ-_7MbaJWTM_W4Ok=nSxLVEJ3+Sn7Fpw@mail.gmail.com>
- <dccc55b4-9f45-4b1c-2166-184a8979bdc6@fb.com> <CAADnVQ+pwWWumw9_--jj7e_RL=n6Q3jhe6yawuSeMJzpFi_E2A@mail.gmail.com>
- <CAEf4BzZ-YtppVG2GARkc_MNu-khqJXgS4=ThzOV4W6gic1rCxg@mail.gmail.com>
- <CAADnVQLKkqjnTOAqm3KeP45XsbfDATWcASJr5uoNOYT33W40OQ@mail.gmail.com> <CAEf4Bzb4Prxt48bfX8qJ-GSMXPZU9ndkqExvPtOWzEsuK965ig@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb4Prxt48bfX8qJ-GSMXPZU9ndkqExvPtOWzEsuK965ig@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Wed, 3 Nov 2021 00:03:45 +0100
-Message-ID: <CABRcYmKBAssv7YKqFnw5dOBA9NTCyNJ5DnffkiP6=NUjC3+USg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Allow bpf_d_path in perf_event_mmap
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20211029224929.379505-1-namhyung@kernel.org> <YYBXeVFPfm1ZWgBG@kernel.org>
+In-Reply-To: <YYBXeVFPfm1ZWgBG@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 2 Nov 2021 16:08:40 -0700
+Message-ID: <CAM9d7ch4Qj3oX1ocWenxiO2xN8UtQP3EGhUGimyntc8Spc+0Tg@mail.gmail.com>
+Subject: Re: [PATCH v3] perf evsel: Fix missing exclude_{host,guest} setting
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 5:06 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+Hi Arnaldo,
+
+On Mon, Nov 1, 2021 at 2:09 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 >
-> On Mon, Nov 1, 2021 at 8:20 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, Nov 1, 2021 at 8:16 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > >     FILE *vm_file = vma->vm_file; /* no checking is needed, vma from
-> > > > > parameter which is not NULL */
-> > > > >     if (vm_file)
-> > > > >       bpf_d_path(&vm_file->f_path, path, sizeof(path));
-> > > >
-> > > > That should work.
-> > > > The verifier can achieve that by marking certain fields as PTR_TO_BTF_ID_OR_NULL
-> > > > instead of PTR_TO_BTF_ID while walking such pointers.
-> > > > And then disallow pointer arithmetic on PTR_TO_BTF_ID_OR_NULL until it
-> > > > goes through 'if (Rx == NULL)' check inside the program and gets converted to
-> > > > PTR_TO_BTF_ID.
-> > > > Initially we can hard code such fields via BTF_ID(struct, file) macro.'
-> > > > So any pointer that results into a 'struct file' pointer will be
-> > > > PTR_TO_BTF_ID_OR_NULL.
-
-Right, this is what I had in mind originally. But I was afraid this
-could maybe prevent some existing programs from loading on newer
-kernels ? Not sure if that's an issue.
-
-> > The helper can check that it's [0, few_pages] and declare it's bad.
+> Em Fri, Oct 29, 2021 at 03:49:29PM -0700, Namhyung Kim escreveu:
+> > @@ -1900,10 +1935,17 @@ bool evsel__detect_missing_features(struct evsel *evsel)
+> >               perf_missing_features.mmap2 = true;
+> >               pr_debug2_peo("switching off mmap2\n");
+> >               return true;
+> > -     } else if (!perf_missing_features.exclude_guest &&
+> > -                (evsel->core.attr.exclude_guest || evsel->core.attr.exclude_host)) {
+> > -             perf_missing_features.exclude_guest = true;
+> > -             pr_debug2_peo("switching off exclude_guest, exclude_host\n");
+> > +     } else if ((evsel->core.attr.exclude_guest || evsel->core.attr.exclude_host) &&
+> > +                perf_missing_features.pmu != NULL &&
+> > +                !hashmap__find(perf_missing_features.pmu, evsel, NULL)) {
+> > +             uintptr_t pmu_features = PERF_MISSING_PMU_EXCLUDE_GUEST;
+> > +
+> > +             hashmap__add(perf_missing_features.pmu, evsel, (void *)pmu_features);
 >
-> That's basically what happens with direct memory reads, so I guess it
-> would be fine.
->
-> > I guess we can do that and only do what I proposed for "more than a page"
-> > math on the pointer. Or even disallow "add more than a page offset to
-> > PTR_TO_BTF_ID"
-> > for now, since it will cover 99% of the cases.
+> Can't hashmap__add() fail?
 
-Otherwise this sounds like a straightforward solution, yes :)
-Especially if this is how direct memory accesses already work.
+It can.  I will add a check.
 
-I'd be happy to look into this when I get some slack time. ;)
+Thanks,
+Namhyung
