@@ -2,248 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4BEB442905
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50849442907
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhKBIBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 04:01:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37636 "EHLO
+        id S231200AbhKBIB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 04:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhKBIBO (ORCPT
+        with ESMTP id S230411AbhKBIBW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 04:01:14 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB4DC061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 00:58:38 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id g14so10813361edz.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 00:58:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DE6vv6137Wma3IBrqsj7AHboxsRjxAALHxrkgjeJlPs=;
-        b=uM50o2FnOXduHUZUcFmJmXV7S476NPG5U1TbfnzlScr1+6zMy5SoTvgxQjkla2oLOx
-         HqfbDtwSWx/rE9z22MKBQ18PAff3IF/5OjtZtruOoXVLo0AFAxIdZklV2VxVaXTg6IC5
-         JibsUXvhtzFUAB0zDpEaJltIhxBXZVgb6nRVqyPcBRGklDpFbF9xi8oQYou0yA2lFpHh
-         HPbNRBuAMpuhc+2PidsVy1LyYGv5nn5kZ86sXJngn3PmIc6DCLjtgc+XJ3qb8goWUuuY
-         HzKeexzmfU34Atom2LnEXPxrwZEtbqow/rf0CtnMrgg3DPxSlxMOFjhoYvKL3Mbe1RjX
-         WdhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DE6vv6137Wma3IBrqsj7AHboxsRjxAALHxrkgjeJlPs=;
-        b=Lc9QqacA0CuptJk7DHWu33He4bvUB8uR6FRUeUAbwidZme6mIMMiuYe6vFk8co+G5I
-         fMUpfPNU6Xr75n6Gdt3LNZS57x9uosI+VI255pZ0SDiyVimlsp0nZxsyxopz6DCYug8S
-         T8pTBoy1I7E5GUmEaWUVAdhDhtPwCfROQLfBG+NsLJdTUmi8ROWa7m1D7W0fEnzUfYvV
-         Brc3pIAhQX9Bc66PF+18qYqpBMPckV2DN1lquVPI8u9nbcj7zZN80J1oR3WyH3cAiHM+
-         nK+aiHmjHF+MOl5jYiI30sdEJqBZhZAhtrlDCqnipkcfzY8exLAVuoImCr293W03v6Ia
-         7K+A==
-X-Gm-Message-State: AOAM5319qj2lFVdkB1zOrxVqhJN07UpiJEUdrnn+I0fIISj146o2KO+A
-        xASY+hpShxn96t9bSCMyxV88qHt7mKbAYmyWLq/8yQ==
-X-Google-Smtp-Source: ABdhPJyz3fTD+3tcx51chhWmDHyxkKtgsvWvEJdCs2Dos5bUsI8B3I0ybz7ZUldakgWbUSqIwowtIch/EmwvU3aEboc=
-X-Received: by 2002:a17:906:c7c1:: with SMTP id dc1mr44311153ejb.6.1635839917048;
- Tue, 02 Nov 2021 00:58:37 -0700 (PDT)
+        Tue, 2 Nov 2021 04:01:22 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7235CC061714;
+        Tue,  2 Nov 2021 00:58:47 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 2431C1F4448D
+Subject: Re: [PATCH] clk: composite: Also consider .determine_rate for rate +
+ mux composites
+To:     Alex Bee <knaerzche@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>
+Cc:     sboyd@kernel.org, heiko@sntech.de,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        "kernelci@groups.io" <kernelci@groups.io>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Chen-Yu Tsai <wens@csie.org>
+References: <163425193558.1688384.15520943968787313145@swboyd.mtv.corp.google.com>
+ <20211015120559.3515645-1-martin.blumenstingl@googlemail.com>
+ <04a58d50-634b-fa20-95b4-eb6831f77e85@collabora.com>
+ <CAFBinCAEt9_EfLYWZEzTBK6iN97+Wacho7pNd2LYDPX3+goMzg@mail.gmail.com>
+ <b6468523-a730-6a44-f4b9-3fd5b9ea2354@arm.com>
+ <3e42ae24-8db4-fb11-edf2-a25bca47ecae@arm.com>
+ <49a0dda1-8d0f-580c-d92d-de759b51edb3@gmail.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <31d462cb-1158-dd13-0ca8-46d54d2502f5@collabora.com>
+Date:   Tue, 2 Nov 2021 07:58:42 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211101114224.924071362@linuxfoundation.org>
-In-Reply-To: <20211101114224.924071362@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 2 Nov 2021 13:28:25 +0530
-Message-ID: <CA+G9fYtmu4qTACYr3n_mzTcAMr65znbx81yXQpfPNKFP7z5ixw@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/35] 4.19.215-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <49a0dda1-8d0f-580c-d92d-de759b51edb3@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Nov 2021 at 17:13, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.215 release.
-> There are 35 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 03 Nov 2021 11:41:55 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.215-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
++Kevin +Corentin
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+On 01/11/2021 22:41, Alex Bee wrote:
+> Hi Guillaume,
+> 
+> Am 01.11.21 um 23:11 schrieb Robin Murphy:
+>> On 2021-11-01 21:59, Robin Murphy wrote:
+>>> On 2021-11-01 20:58, Martin Blumenstingl wrote:
+>>>> Hi Guillaume,
+>>>>
+>>>> On Mon, Nov 1, 2021 at 9:19 PM Guillaume Tucker
+>>>> <guillaume.tucker@collabora.com> wrote:
+>>>>>
+>>>>> Hi Martin,
+>>>>>
+>>>>> Please see the bisection report below about a boot failure on
+>>>>> rk3328-rock64.
+>>>>>
+>>>>> Reports aren't automatically sent to the public while we're
+>>>>> trialing new bisection features on kernelci.org but this one
+>>>>> looks valid.
+>>>>>
+>>>>> Some more details can be found here:
+>>>>>
+>>>>>    https://linux.kernelci.org/test/case/id/617f11f5c157b666fb3358e6/
+>>>>>
+>>>>> Here's what appears to be the cause of the problem:
+>>>>>
+>>>>> [    0.033465] CPU: CPUs started in inconsistent modes
+>>>>> [    0.033557] Unexpected kernel BRK exception at EL1
+>>>>> [    0.034432] Internal error: BRK handler: f2000800 [#1] PREEMPT SMP
+>>>
+>>> What's weird is that that's really just the same WARN that's also
+>>> present in 'successful' logs, except for some reason it's behaving as
+>>> if the break handler hasn't been registered, despite that having
+>>> happened long before we got to smp_init(). At this point we're also
+>>> still some way off getting as far as initcalls, so I'm not sure that
+>>> the clock driver would be in the picture at all yet.
+>>>
+>>> Is the bisection repeatable, or is this just random flakiness
+>>> misleading things? I'd also note that you need pretty horrifically
+>>> broken firmware to hit that warning in the first place, which might
+>>> cast a bit of doubt over the trustworthiness of that board altogether.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+The bisection has checks to avoid false positives, so tests that
+produce flaky results won't normally lead to a report like this.
+Then they're manually triaged, and there were 2 separate
+bisections that landed on this same commit.
 
-NOTE:
-With new gcc-11 toolchain arm builds failed.
-The fix patch is under review [1].
-Due to this reason not considering it as a kernel regression.
-* arm, build
-    - gcc-11-defconfig FAILED
+>> Ah, on closer inspection it might be entirely repeatable for a given
+>> kernel build, but with the behaviour being very sensitive to code/data
+>> segment layout changes...
+>>
+>> ...
+>> 23:44:24.457917  Filename '1007060/tftp-deploy-dvdnydcw/kernel/Image'.
+>> 23:44:24.460178  Load address: 0x2000000
+>> ...
+>> 23:44:27.180962  Bytes transferred = 33681920 (201f200 hex)
+>> ...
+>> 23:44:27.288135  Filename
+>> '1007060/tftp-deploy-dvdnydcw/ramdisk/ramdisk.cpio.gz.uboot'.
+>> 23:44:27.288465  Load address: 0x4000000
+>> ...
 
-[1]
-ARM: drop cc-option fallbacks for architecture selection
-https://lore.kernel.org/linux-arm-kernel/20211018140735.3714254-1-arnd@kern=
-el.org/
+That is indeed where the remaining false positives are still
+likely to be coming from, when the infrastructure consistently
+causes test failures following particular kernel revisions.  I
+don't think there's an easy way to rule those out, but we can try
+to address them one by one at least.
 
-## Build
-* kernel: 4.19.215-rc2
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.19.y
-* git commit: a75679fb6ddbcf7814a3f96f09dcf0d89b430956
-* git describe: v4.19.214-36-ga75679fb6ddb
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
-.214-36-ga75679fb6ddb
+In the case of colliding address ranges in the bootloader, we
+could add a check with the "good" revision and extra data in the
+kernel image to make it at least as big as the "bad" revision...
 
-## No regressions (compared to v4.19.214)
+> could you try updating u-boot to more recent version: the ramdisk
+> address has been moved [1] to 0x06000000 in v2020.01-rc5.
 
-## No fixes (compared to v4.19.214)
+Thanks for investigating this.  The board is in BayLibre's lab.
 
-## Test result summary
-total: 74931, pass: 60213, fail: 776, skip: 12291, xfail: 1651
+Corentin, Kevin, could you please take a look?
 
-## Build Summary
-* arm: 260 total, 210 passed, 50 failed
-* arm64: 38 total, 38 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 19 total, 19 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 27 total, 27 passed, 0 failed
-* s390: 12 total, 12 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 22 total, 22 passed, 0 failed
+Thanks,
+Guillaume
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* prep-tmp-disk
-* rcutorture
-* ssuite
-* v4l2-compliance
+> I couldn't reproduce this issue with the very same board.
+> 
+> [1]
+> https://github.com/u-boot/u-boot/commit/b2e373d16b0345d3c3f4beefdf0889e83faf173d
+> 
+> Alex
+> 
+>>
+>> Yeah, that'll be a problem ;)
+>>
+>> Cheers,
+>> Robin.
+>>
+>>>>> There doesn't appear to be any other platform in KernelCI showing
+>>>>> the same issue.
+>>>> That's a strange error for the changes from my patch.
+>>>> At first glance I don't see any relation to clk-composite code:
+>>>> - the call trace doesn't have any references to CCF or rockchip clock
+>>>> drivers
+>>>> - clk-rk3328.c uses drivers/clk/rockchip/clk-cpu.c to register the CPU
+>>>> clock which does not use clk-composite
+>>>>
+>>>> Chen-Yu has tested this patch (plus [0]) on RK3399 and didn't observe
+>>>> any problems.
+>>>> So maybe this is a RK3328 specific issue?
+>>>> Anyways, I am interested in fixing this issue because reverting is
+>>>> becoming more and more complex (since I think we're at eight commits
+>>>> which would need to be reverted in total).
+>>>>
+>>>>> Please let us know if you need help debugging the issue or if you
+>>>>> have a fix to try.
+>>>> Could you please try [0] which is the second patch in the series which
+>>>> finally made it upstream.
+>>>> This second patch is not in 5.15 because I believed that it's only
+>>>> something to make the code in clk-composite.c more future-proof. It's
+>>>> not a condition that I am aware of.
+>>>>
+>>>> I don't have any Rockchip boards myself.
+>>>> So I am thankful for any help I can get.
+>>>>
+>>>>
+>>>> Best regards,
+>>>> Martin
+>>>>
+>>>>
+>>>> [0]
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/commit/?h=clk-next&id=6594988fd625ff0d9a8f90f1788e16185358a3e6
+>>>>
+>>>>
+>>>> _______________________________________________
+>>>> Linux-rockchip mailing list
+>>>> Linux-rockchip@lists.infradead.org
+>>>> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+>>>>
+>>>
+>>> _______________________________________________
+>>> Linux-rockchip mailing list
+>>> Linux-rockchip@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/linux-rockchip
 
---
-Linaro LKFT
-https://lkft.linaro.org
