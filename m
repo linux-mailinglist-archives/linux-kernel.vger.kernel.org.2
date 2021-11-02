@@ -2,260 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D31944282E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:19:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 948F544282A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 08:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231538AbhKBHWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 03:22:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
+        id S231366AbhKBHWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 03:22:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbhKBHWN (ORCPT
+        with ESMTP id S231356AbhKBHWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 03:22:13 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D355C061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 00:19:38 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id f8so50964470edy.4
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 00:19:38 -0700 (PDT)
+        Tue, 2 Nov 2021 03:22:11 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77AB9C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 00:19:35 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id p18so11314676plf.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 00:19:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Tbu9/nDcoruYXq0v34C9MDD4hNvw09CUSs/P0rP2wA4=;
-        b=roX2kuxQ7uDcwhd5XYeSGkiBgX0XraTYRjQN1OyTe1So8wjqRZ01aghO5JjkRNDrb3
-         mqAOPX50AKy+yCp5BZYMcX1680EM91yP9QfuvV9SU1DY7M1sqyGwj2dfGVCY158gdC1I
-         ly5wPBR444rR4xuNt9TbUEtVdgBRpV2SKtDOXnIYTKDMiknNBp6NyvOrr6uZi7JY2bvt
-         cfgI4AUcy/LAxYNAIymDhmyswOmiUA+kYWtJvIsJymiDWcSbzwRK78LI2FHD4o4xCEx1
-         M88dgvzq/uQapjx2vunzcyY4BPKmHkoGuV/qn8y0mcND1+jRFdisKTorH2XuzKOdz75g
-         LznA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=13hwNJhXlqX8JgwEFp5btGd3IwvyshzRtY7S25HF1qw=;
+        b=BPhvzgTwlZ7Qm0RyfCGd9rZvJLsOUTM6VKeVo1esXSU+M5dLJx7kBKTpLV1k2/8+21
+         OhHc6N36a9Nqr9SUV3dxmCldra070wcKEeAmmBrsAVhevWELaLMi2Ytb5h0mPXN6euWL
+         wSH0CCJ5Ccc3PK9weYfwX7nFiftqo4RzjKTsk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Tbu9/nDcoruYXq0v34C9MDD4hNvw09CUSs/P0rP2wA4=;
-        b=kfK8mt0DIvStnDr6UrfegBISrN9c9liTLHuoa48fuk3rEgFIIhU3ExD9K8BrncTA+Q
-         /qKy8qJKJePZzitmSf23y0H8VjR7nfdWEBqwYS8KkjbhstwxlD3HtJwOfs7BGdiIn2Au
-         ls3IGA2PHhEnyw3G6umygzLX4UeipAHNWAOFLM6yUnX1br1MlZ82OtMTUgkXx8zlcn3H
-         BWVb+fsSZ8BnqIkoi2Rt9/5HiXme/ke+pC/HK1DHfuHn3tb0xhozRwLus0VbTChUlgkq
-         b27dAVzA3F25lPkk6kEXscD68y0CCpbunxxObKnuLU6AilmkNECkfBu5Iahus3MAffDB
-         aLnw==
-X-Gm-Message-State: AOAM530UkoZZrD8Bu/VnwCp5KE3n4+s9XYfTaoByf1eUx1Hu8a/7ecPM
-        0IajB+xPiFMcaiv+WGssz15sih1lsfxXpiu2QFzvhg==
-X-Google-Smtp-Source: ABdhPJyARKggcDVSp92WsxoZw09RWWBsxLa+TgvBeWNK+nsHHGCFy23UN6ZsaX2ITLxK2NPiFlbdOhrygz62DumVgPc=
-X-Received: by 2002:a17:906:4bcf:: with SMTP id x15mr19087441ejv.493.1635837576699;
- Tue, 02 Nov 2021 00:19:36 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=13hwNJhXlqX8JgwEFp5btGd3IwvyshzRtY7S25HF1qw=;
+        b=6CLwknC38o5d8ZBSjOSmDT4ZBMlbMzeHNSYt9AyCPt154theTNRJ55/WZOmgKyPUHx
+         1jJRuksPf8W5clQEZbHOl7Ne48cay/CPWtQIX4ti7b8xkkdhq12rcEWzgdUZoT98ug16
+         Ih6EzYDToekAKvvbYKziAC/rd4iSzjqesZrO63G6dj01ZDJTQTnJCFxNvx6cQfQANps4
+         qDj4DiVrqzxzKYI6D3JaAiL0MxBSTQXuuQbSUnim0EP9iLFR5Ym/Wnh4dk9J12ALie84
+         GDDIE3F9Vjs1yoJXaZ6V/GNgw1v0Zmod6L/ZfVjOlqxjKcZIYNXFCThwGkI5swdhAtTM
+         Mamw==
+X-Gm-Message-State: AOAM532JxyKZlwZeauoBYklJ8e/KkOtVisYydxPNm3AMOkF8y+edRi+u
+        UbzGNJkcZE+AND8WcTh+MZ+4+w==
+X-Google-Smtp-Source: ABdhPJwQBUfENhnIvKd37TimZ4NnOPVuIT54Tuf6+ai+5Z3rnRqReGJXsd3zQzQ7DfvfkENGreEpyA==
+X-Received: by 2002:a17:90b:1bd2:: with SMTP id oa18mr4628798pjb.212.1635837575410;
+        Tue, 02 Nov 2021 00:19:35 -0700 (PDT)
+Received: from josephsih-z840.tpe.corp.google.com ([2401:fa00:1:10:df29:c6df:4e78:cf45])
+        by smtp.gmail.com with ESMTPSA id b13sm7165243pfv.186.2021.11.02.00.19.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 00:19:34 -0700 (PDT)
+From:   Joseph Hwang <josephsih@chromium.org>
+To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        luiz.dentz@gmail.com, pali@kernel.org
+Cc:     chromeos-bluetooth-upstreaming@chromium.org, josephsih@google.com,
+        Joseph Hwang <josephsih@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v7 1/2] Bluetooth: Add struct of reading AOSP vendor capabilities
+Date:   Tue,  2 Nov 2021 15:19:28 +0800
+Message-Id: <20211102151908.v7.1.I139e71adfd3f00b88fe9edb63d013f9cd3e24506@changeid>
+X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
 MIME-Version: 1.0
-References: <20211101082533.618411490@linuxfoundation.org>
-In-Reply-To: <20211101082533.618411490@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 2 Nov 2021 12:49:24 +0530
-Message-ID: <CA+G9fYuCt_D=M_j41eLqScv4qWF4LrKLCF_VaZMZu_HyKbm5Cg@mail.gmail.com>
-Subject: Re: [PATCH 5.14 000/125] 5.14.16-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Nov 2021 at 14:58, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.14.16 release.
-> There are 125 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 03 Nov 2021 08:24:20 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.14.16-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+This patch adds the struct of reading AOSP vendor capabilities.
+New capabilities are added incrementally. Note that the
+version_supported octets will be used to determine whether a
+capability has been defined for the version.
 
+Signed-off-by: Joseph Hwang <josephsih@chromium.org>
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+---
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Changes in v7:
+- Use the full struct aosp_rp_le_get_vendor_capa. If the
+  version_supported is >= 98, check bluetooth_quality_report_support.
+- Use __le16 and __le32.
+- Use proper bt_dev_err and bt_dev_warn per review comments.
+- Skip unnecessary bt_dev_dbg.
+- Remove unnecessary rp->status check.
+- Skip unnecessary check about version_supported on versions that we
+  do not care about. For now, we only care about quality report support.
+- Add the define for the length of the struct.
+- Mediatek will submit a separate patch to enable aosp.
 
-NOTE:
-With new gcc-11 toolchain arm builds failed.
-The fix patch is under review [1].
-Due to this reason not considering it as a kernel regression.
-* arm, build
-    - gcc-11-defconfig FAILED
+Changes in v6:
+- Add historical versions of struct aosp_rp_le_get_vendor_capabilities.
+- Perform the basic check about the struct length.
+- Through the version, bluetooth_quality_report_support can be checked.
 
-[1]
-ARM: drop cc-option fallbacks for architecture selection
-https://lore.kernel.org/linux-arm-kernel/20211018140735.3714254-1-arnd@kern=
-el.org/
+Changes in v5:
+- This is a new patch.
+- Add struct aosp_rp_le_get_vendor_capabilities so that next patch
+  can determine whether a particular capability is supported or not.
 
-## Build
-* kernel: 5.14.16-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.14.y
-* git commit: c99063ce032cc300f6046ce43af6a0f5155171d3
-* git describe: v5.14.15-126-gc99063ce032c
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.14.y/build/v5.14=
-.15-126-gc99063ce032c
+ include/net/bluetooth/hci_core.h |  1 +
+ net/bluetooth/aosp.c             | 83 +++++++++++++++++++++++++++++++-
+ 2 files changed, 83 insertions(+), 1 deletion(-)
 
-## No regressions (compared to v5.14.15)
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index 53a8c7d3a4bf..b5f061882c10 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -603,6 +603,7 @@ struct hci_dev {
+ 
+ #if IS_ENABLED(CONFIG_BT_AOSPEXT)
+ 	bool			aosp_capable;
++	bool			aosp_quality_report;
+ #endif
+ 
+ 	int (*open)(struct hci_dev *hdev);
+diff --git a/net/bluetooth/aosp.c b/net/bluetooth/aosp.c
+index a1b7762335a5..0d4f1702ce35 100644
+--- a/net/bluetooth/aosp.c
++++ b/net/bluetooth/aosp.c
+@@ -8,9 +8,43 @@
+ 
+ #include "aosp.h"
+ 
++/* Command complete parameters of LE_Get_Vendor_Capabilities_Command
++ * The parameters grow over time. The base version that declares the
++ * version_supported field is v0.95. Refer to
++ * https://cs.android.com/android/platform/superproject/+/master:system/
++ *         bt/gd/hci/controller.cc;l=452?q=le_get_vendor_capabilities_handler
++ */
++struct aosp_rp_le_get_vendor_capa {
++	/* v0.95: 15 octets */
++	__u8	status;
++	__u8	max_advt_instances;
++	__u8	offloaded_resolution_of_private_address;
++	__le16	total_scan_results_storage;
++	__u8	max_irk_list_sz;
++	__u8	filtering_support;
++	__u8	max_filter;
++	__u8	activity_energy_info_support;
++	__le16	version_supported;
++	__le16	total_num_of_advt_tracked;
++	__u8	extended_scan_support;
++	__u8	debug_logging_supported;
++	/* v0.96: 16 octets */
++	__u8	le_address_generation_offloading_support;
++	/* v0.98: 21 octets */
++	__le32	a2dp_source_offload_capability_mask;
++	__u8	bluetooth_quality_report_support;
++	/* v1.00: 25 octets */
++	__le32	dynamic_audio_buffer_support;
++} __packed;
++
++#define VENDOR_CAPA_BASE_SIZE		15
++#define VENDOR_CAPA_0_98_SIZE		21
++
+ void aosp_do_open(struct hci_dev *hdev)
+ {
+ 	struct sk_buff *skb;
++	struct aosp_rp_le_get_vendor_capa *rp;
++	u16 version_supported;
+ 
+ 	if (!hdev->aosp_capable)
+ 		return;
+@@ -20,9 +54,56 @@ void aosp_do_open(struct hci_dev *hdev)
+ 	/* LE Get Vendor Capabilities Command */
+ 	skb = __hci_cmd_sync(hdev, hci_opcode_pack(0x3f, 0x153), 0, NULL,
+ 			     HCI_CMD_TIMEOUT);
+-	if (IS_ERR(skb))
++	if (IS_ERR(skb)) {
++		bt_dev_err(hdev, "AOSP get vendor capabilities (%ld)",
++			   PTR_ERR(skb));
+ 		return;
++	}
++
++	/* A basic length check */
++	if (skb->len < VENDOR_CAPA_BASE_SIZE)
++		goto length_error;
++
++	rp = (struct aosp_rp_le_get_vendor_capa *)skb->data;
++
++	version_supported = le16_to_cpu(rp->version_supported);
++	/* AOSP displays the verion number like v0.98, v1.00, etc. */
++	bt_dev_info(hdev, "AOSP version v%u.%02u",
++		    version_supported >> 8, version_supported & 0xff);
++
++	/* Do not support very old versions. */
++	if (version_supported < 95) {
++		bt_dev_warn(hdev, "AOSP capabilities version %u too old",
++			    version_supported);
++		goto done;
++	}
++
++	if (version_supported >= 95 && version_supported < 98) {
++		bt_dev_warn(hdev, "AOSP quality report is not supported");
++		goto done;
++	}
++
++	if (version_supported >= 98) {
++		if (skb->len < VENDOR_CAPA_0_98_SIZE)
++			goto length_error;
++
++		/* The bluetooth_quality_report_support is defined at version
++		 * v0.98. Refer to
++		 * https://cs.android.com/android/platform/superproject/+/
++		 *         master:system/bt/gd/hci/controller.cc;l=477
++		 */
++		if (rp->bluetooth_quality_report_support) {
++			hdev->aosp_quality_report = true;
++			bt_dev_info(hdev, "AOSP quality report is supported");
++		}
++	}
++
++	goto done;
++
++length_error:
++	bt_dev_err(hdev, "AOSP capabilities length %d too short", skb->len);
+ 
++done:
+ 	kfree_skb(skb);
+ }
+ 
+-- 
+2.33.1.1089.g2158813163f-goog
 
-## No fixes (compared to v5.14.15)
-
-## Test result summary
-total: 91356, pass: 77480, fail: 764, skip: 12385, xfail: 727
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 422 total, 370 passed, 52 failed
-* arm64: 40 total, 40 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 39 total, 39 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 37 total, 37 passed, 0 failed
-* parisc: 12 total, 12 passed, 0 failed
-* powerpc: 36 total, 36 passed, 0 failed
-* riscv: 24 total, 24 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 24 total, 24 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 40 total, 40 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselfte[
-* kselftest-
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-[
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-co[
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
