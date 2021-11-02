@@ -2,121 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 715EA443575
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB611443579
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 19:22:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235078AbhKBSVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 14:21:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234908AbhKBSVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 14:21:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D93C261050;
-        Tue,  2 Nov 2021 18:19:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635877146;
-        bh=h3FsxzoZsN4ni/4lI/yEk7+MdpyXKG1ci08/Ok2la5g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hWPt9XW3nVDGVvqzjQYUqgfumWPiYtangbEBaE3Px55WQTYw+sG9+3lqDRZvtAtkd
-         cMztv0svVeIGV3boaaIBY7KkKd8Ur7AvJgZZBH//s5ck2FRxU9/2FzVPk61908Ub/o
-         UbNm1lHX+/K03QzDQ9ta14+AjBh82tESzPS8oYU0mc4tl6D38z60esOoLSRzmf99k0
-         KnDVvRu2u0lviEd4yKUz9KUUOPJNmXprVe5P+/tPHQi7zkh+lOJ7HrdqXMNxZzrS9n
-         CXf/M6djB7IPiGhmsYQQ8ERUM/HCn9wM05WDNguMIoqidIKbg8qyk0Dws9LM/BzN+j
-         Ewnh7sIYbkuZA==
-Received: by mail-ot1-f48.google.com with SMTP id n13-20020a9d710d000000b005558709b70fso60024otj.10;
-        Tue, 02 Nov 2021 11:19:06 -0700 (PDT)
-X-Gm-Message-State: AOAM5315cHEqGln/AOwgRWUjAgl2m6RW9KPyeI/+sufjVThJu9WI+WKu
-        +N9GTavUD2DwAAtrXEFtVSpQFGoWRJz3RxN0oXM=
-X-Google-Smtp-Source: ABdhPJxrWULj7AK5fSXolNdR3bzb7riOJO8zZJ4Vmi6cbfk/UgM4PodTzpd9r0hc5QUTvTb2q4BmPq+wwUCTkAi9VFY=
-X-Received: by 2002:a05:6830:1d6e:: with SMTP id l14mr28007931oti.147.1635877146217;
- Tue, 02 Nov 2021 11:19:06 -0700 (PDT)
+        id S235042AbhKBSZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 14:25:06 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:57560 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230230AbhKBSZE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 14:25:04 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:38068)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mhyQW-00AJ67-Tr; Tue, 02 Nov 2021 12:22:28 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:37228 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mhyQV-00EizZ-01; Tue, 02 Nov 2021 12:22:28 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <YXrN+Hnl9pSOsWlA@arighi-desktop> <202110280955.B18CB67@keescook>
+        <878rydm56l.fsf@disp2133> <202110281136.5CE65399A7@keescook>
+        <8735okls76.fsf@disp2133> <202110290755.451B036CE9@keescook>
+Date:   Tue, 02 Nov 2021 13:22:19 -0500
+In-Reply-To: <202110290755.451B036CE9@keescook> (Kees Cook's message of "Fri,
+        29 Oct 2021 07:58:02 -0700")
+Message-ID: <87y2665sf8.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
- <YX74Ch9/DtvYxzh/@hirez.programming.kicks-ass.net> <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
- <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net> <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
- <20211101090155.GW174703@worktop.programming.kicks-ass.net>
- <CAMj1kXGhRmdM3om289Q2-s1Pzfob3D2iSDMorzggfhSk1oj53A@mail.gmail.com>
- <YYE1yPClPMHvyvIt@hirez.programming.kicks-ass.net> <YYFWEnBb/UaZKGzz@hirez.programming.kicks-ass.net>
- <CAMj1kXFQSitDY5WT246YEXXFphUv_HSjBrgvGzQGiCr4jLrM+g@mail.gmail.com> <YYGAAVG5aRDKRHso@hirez.programming.kicks-ass.net>
-In-Reply-To: <YYGAAVG5aRDKRHso@hirez.programming.kicks-ass.net>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 2 Nov 2021 19:18:53 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHm99QNdHXUUAAJFD+M5VC-xFqjUoEVyg+oGkiJM51daA@mail.gmail.com>
-Message-ID: <CAMj1kXHm99QNdHXUUAAJFD+M5VC-xFqjUoEVyg+oGkiJM51daA@mail.gmail.com>
-Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev, joao@overdrivepizza.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1mhyQV-00EizZ-01;;;mid=<87y2665sf8.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/dOLwlXmVI7aCH/YYnczuKSEUIah1vXvg=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4933]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Kees Cook <keescook@chromium.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1377 ms - load_scoreonly_sql: 0.13 (0.0%),
+        signal_user_changed: 14 (1.0%), b_tie_ro: 12 (0.8%), parse: 1.56
+        (0.1%), extract_message_metadata: 18 (1.3%), get_uri_detail_list: 1.53
+        (0.1%), tests_pri_-1000: 19 (1.4%), tests_pri_-950: 1.64 (0.1%),
+        tests_pri_-900: 1.33 (0.1%), tests_pri_-90: 110 (8.0%), check_bayes:
+        105 (7.7%), b_tokenize: 7 (0.5%), b_tok_get_all: 6 (0.5%),
+        b_comp_prob: 2.5 (0.2%), b_tok_touch_all: 86 (6.2%), b_finish: 1.16
+        (0.1%), tests_pri_0: 1195 (86.8%), check_dkim_signature: 0.90 (0.1%),
+        check_dkim_adsp: 3.7 (0.3%), poll_dns_idle: 0.46 (0.0%), tests_pri_10:
+        2.4 (0.2%), tests_pri_500: 9 (0.6%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: selftests: seccomp_bpf failure on 5.15
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Nov 2021 at 19:14, Peter Zijlstra <peterz@infradead.org> wrote:
+Kees Cook <keescook@chromium.org> writes:
+
+> On Thu, Oct 28, 2021 at 05:06:53PM -0500, Eric W. Biederman wrote:
+>> Kees Cook <keescook@chromium.org> writes:
+>> 
+>> > On Thu, Oct 28, 2021 at 12:26:26PM -0500, Eric W. Biederman wrote:
+>> 
+>> Is it a problem that the debugger can see the signal if the process does
+>> not?
 >
-> On Tue, Nov 02, 2021 at 06:44:56PM +0100, Ard Biesheuvel wrote:
-> > On Tue, 2 Nov 2021 at 16:15, Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Tue, Nov 02, 2021 at 01:57:44PM +0100, Peter Zijlstra wrote:
-> > >
-> > > > So how insane is something like this, have each function:
-> > > >
-> > > > foo.cfi:
-> > > >       endbr64
-> > > >       xorl $0xdeadbeef, %r10d
-> > > >       jz foo
-> > > >       ud2
-> > > >       nop     # make it 16 bytes
-> > > > foo:
-> > > >       # actual function text goes here
-> > > >
-> > > >
-> > > > And for each hash have two thunks:
-> > > >
-> > > >
-> > > >       # arg: r11
-> > > >       # clobbers: r10, r11
-> > > > __x86_indirect_cfi_deadbeef:
-> > > >       movl -9(%r11), %r10             # immediate in foo.cfi
-> > > >       xorl $0xdeadbeef, %r10          # our immediate
-> > > >       jz 1f
-> > > >       ud2
-> > > > 1:    ALTERNATIVE_2   "jmp *%r11",
-> > > >                       "jmp __x86_indirect_thunk_r11", X86_FEATURE_RETPOLINE
-> > > >                       "lfence; jmp *%r11", X86_FEATURE_RETPOLINE_AMD
-> > > >
-> >
-> > So are these supposed to go into the jump tables? If so, there still
-> > needs to be a check against the boundary of the table at the call
-> > site, to ensure that we are not calling something that we shouldn't.
-> >
-> > If they are not going into the jump tables, I don't see the point of
-> > having them, as only happy flow/uncomprised code would bother to use
-> > them.
+> Right, I'm trying to understand that too. However, my neighbor just lost
+> power. :|
 >
-> I don't understand. If you can scribble your own code, you can
-> circumvent pretty much any range check anyway.
+> What I was in the middle of checking was what ptrace "sees" going
+> through a fatal SIGSYS; my initial debugging attempts were weird.
 
-A function pointer is data not code.
+Kees have you regained power and had a chance to see my SA_IMMUTABLE
+patch?
 
-> But if you can't scribble
-> your own code, you get to use the branch here and that checks the
-> callsite and callee signature.
->
+Does what I implemented seem like it will work for you?
 
-OK, so the call site has a direct branch to this trampoline then? That
-wasn't clear to me.
+I think it is a solid and simple solution to a pair of problems with my
+change to use the ordinary coredump path for seccomp.  But I would very
+much love to hear it seems reasonable to you, as you were looking at the
+problem as well.
 
-> The range check isn't fundamental to CFI, having a check is the
-> important thing AFAIU.
-
-Agreed. If the call site has a direct branch, it doesn't need the range check.
+Eric
