@@ -2,220 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2478D443225
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:56:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F83443239
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234305AbhKBP6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:58:51 -0400
-Received: from mail-bn8nam12on2087.outbound.protection.outlook.com ([40.107.237.87]:45665
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231361AbhKBP6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:58:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ITMbhIE00hfoQ/awovVpniZbGdkEIX7v9ybUp9HBF4KOFpE5uUPsKsGbk8TXLfGc6W8BnMY4Mtdye7/7/UgpjA7kV658GsfJgoNsHc74jZeSLOlDieP/ts24hE+2yuU8j9AFt6CFxF6ZR+J7eZ4C1zs+7nJDMZAzVqV/7Igcq3ynMcZ0Ayk1g2z9Fad3WdkVyOFXSHUehkilRRnFjIi6SqH76aaZJNXN0OZgmJxKTjqfIOIBlYfWTD3RL2kBFT4M5aBWvuVdajYm2wIzPQnPQMZaLZ9KK3arGwxniOcF9NDrcIxRwAoWTUnVgJXXAB/x9UoCoLPVkRAWIB72cSIHUQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=X6KoGp/hBHbfdFcbAEzVBZ9BGX0Di94+pkT1fjdjBa8=;
- b=GzvAe97JUvhSBJH8OoeqqdeLVEYOa1vCdaKb2nAz6ps6A7/uQTcU4i66tbvwe4RnBr9Wh95dUaSmZbbDfDfGwqAM3RFg9Z86/yYIuowjbJAQ54SP0bYdylnS3KbDh2E31F4/Sb8kivIPkbVwPKdsvLngk6TIUWtxPmuo32cEaSQhd+vM2G/sh3LxJpl9fzcW+v/y5g+lxea4Wf7Rp6bdMSh0pNp9XW1HmAb5WKDNJYNU1/hbzU8IiRFkZlCi9e9lTIj3DzpH0mBffpUPT9lKL0cugCVceBjJBfVSxF/t8yrYfuIwsoMorafENCghZ69tl1tTpKXNiw4e+y3eRCU+Og==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X6KoGp/hBHbfdFcbAEzVBZ9BGX0Di94+pkT1fjdjBa8=;
- b=Oh6XzIcUEn9JhPqrXx5Pm/f3c3SIdxxuo6Yf35IupJiA+tJDZqhvS2TwaOhscgzXNAEZkUV5ndmrRfRYMUc8tLPK8doaZdqLV0Eg34BTA/15ABTeR3snI9m/kyJfBH737UIJ3MO3Hr1iU85NX/ErDR5Wztm0I9KZ3aNz7t0FMZv2Do87d6/CdUPH1YX36S6SzE04l7mpiaH1QvgQM1AHgQLrhsQRFNLBg7hDa7C2qfJ9QStZ8hh5qqtAhyNu3CSPijv22GuStd1BNCSYvE9zlNJ4YyCiBylUt2lUd8rsXIUlebW+FKzmPJZye2aWQvD4kfxILnjzlwlYSsRAOW52/Q==
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5048.namprd12.prod.outlook.com (2603:10b6:208:30a::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10; Tue, 2 Nov
- 2021 15:56:12 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4649.020; Tue, 2 Nov 2021
- 15:56:12 +0000
-Date:   Tue, 2 Nov 2021 12:56:11 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     mst <mst@redhat.com>, linux-kernel <linux-kernel@vger.kernel.org>,
-        kvm <kvm@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        Maxime Coquelin <maxime.coquelin@redhat.com>,
-        "Liang, Cunming" <cunming.liang@intel.com>, zhihong.wang@intel.com,
-        rob.miller@broadcom.com, Xiao W Wang <xiao.w.wang@intel.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>,
-        eperezma <eperezma@redhat.com>, Cindy Lu <lulu@redhat.com>,
-        Parav Pandit <parav@mellanox.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ariel Adam <aadam@redhat.com>, jiri@mellanox.com,
-        shahafs@mellanox.com, Harpreet Singh Anand <hanand@xilinx.com>,
-        mhabets@solarflare.com, Gautam Dawar <gdawar@xilinx.com>,
-        Saugat Mitra <saugatm@xilinx.com>, vmireyno@marvell.com,
-        zhangweining@ruijie.com.cn, Tiwei Bie <tiwei.bie@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: [PATCH V9 7/9] vhost: introduce vDPA-based backend
-Message-ID: <20211102155611.GL2744544@nvidia.com>
-References: <20200326140125.19794-1-jasowang@redhat.com>
- <20200326140125.19794-8-jasowang@redhat.com>
- <20211101141133.GA1073864@nvidia.com>
- <CACGkMEtbs3u7J7krpkusfqczTU00+6o_YtZjD8htC=+Un9cNew@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACGkMEtbs3u7J7krpkusfqczTU00+6o_YtZjD8htC=+Un9cNew@mail.gmail.com>
-X-ClientProxiedBy: BL1P222CA0017.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:208:2c7::22) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S234469AbhKBQCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234359AbhKBQCj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 12:02:39 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5DDC0613B9
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 09:00:04 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id u18so34093251wrg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 09:00:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=soQC7NvwSDRBZqkI7s6xnknhSLp6r09XDuYbODEjkgc=;
+        b=mI1LdYKr3uNkluaEcBClbKGUsJfGPt6nnozQwAb02R4IwXZXZYGCrtZv+Q0v5NPyVQ
+         S9T/yR5BkKLFfLwvO2Vi7sjIk/Kxow9Q8jPhxeLwuO4yv7M2costSM+57epqyeJ9OFK3
+         N3kSnL5rWFVzYsVblRrjKoQSO9SE+taHm0AsvZWZ+2wZmAdKWMfETwnoAWZvZcgkhLZF
+         RR/vubCeacoqiI+vUEaYFxaXVaIIIXr0mouqVUgxvZFa6X2zZ9kLGkObCQYJTbP8y5lz
+         58D4t340IPKY2lUP+WSppERmUJ5gPTIfnzzdrhffNcpi8qVM3i6Jxsq3XgNLibxNvYqT
+         GSnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=soQC7NvwSDRBZqkI7s6xnknhSLp6r09XDuYbODEjkgc=;
+        b=1FhbfFZl7wruL+Z21HQd53b+CnGmxTk6SpvrA5lHg1/G28ivLKynU0++oOZFSk2HbT
+         BRzgBaFJCJMLLBnk0KifIIGR+wqwQazD+rnSnHWRsIXQgaAuUCfG3AiHWxtNU4+1YnDg
+         Mdl3IRDqIGi5I1vF3dgbkhRklRqIn3pU04eH/ZpPvPj14T2pmy9ODbNSytw1PGMcXME5
+         KNEKySFBVW5nGiN9XjRFaIHz7TERhi9YUE1W0QThQjAj+mEQ1AT6oWJusfxOWZIZwMDh
+         BRmkPQrc2vMGLdCM60ZbLuifw0Mo4BM6bATyLQUqZrMPkVgrGuriChQepdxZp73+5NU0
+         rBLA==
+X-Gm-Message-State: AOAM532KFOoPIeB3wJUZKbyOy50VdMmHi9VVGYFUqHMi4rXagNnSJsbk
+        xYc+mPY9eP/cLptSqFSOra65CA==
+X-Google-Smtp-Source: ABdhPJw9jPPQfCPPiExh9uQm6mXjK33Pw8aA2tl7f4/xtTsMj7OHHX5OrVdH3CJO/RqZC/el9fIZYA==
+X-Received: by 2002:adf:ef4f:: with SMTP id c15mr3296739wrp.226.1635868802700;
+        Tue, 02 Nov 2021 09:00:02 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id 10sm3576379wme.27.2021.11.02.09.00.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 09:00:02 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 16:00:00 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     =?utf-8?B?TWHDrXJh?= Canal <maira.canal@usp.br>
+Cc:     lee.jones@linaro.org, jingoohan1@gmail.com,
+        thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v4] backlight: lp855x: Switch to atomic PWM API
+Message-ID: <20211102160000.kvi6hhhgdjowgnft@maple.lan>
+References: <YX/pWeXPv1bykg2g@fedora>
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1P222CA0017.NAMP222.PROD.OUTLOOK.COM (2603:10b6:208:2c7::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15 via Frontend Transport; Tue, 2 Nov 2021 15:56:11 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mhw8x-005A4d-0n; Tue, 02 Nov 2021 12:56:11 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c323e2b8-e9f8-41c9-4c6f-08d99e194adc
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5048:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB50486612D34EB9C04EA42D29C28B9@BL1PR12MB5048.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8o4bYjOAPa/gca6QDIzMqQf835BZ9+tiMwNjzvoHJAvi3HT/4m+HMrZOoy+9UAkmTlkMFM2NlaqZl3DV43GLxEk/8X+RsoU8LKvO+cHqkGF6ckloldMQuPmF93BFw0MKTF7az6PU2BmkrillKsi82t2YV9kur2W1EjN2GbLuwaTemGnEfARis8iPzZXY97+VDvzjgPWHD2u9MGy/fpdo5nOAaEo+Efos1z8f6taLIzEFdVVTkNhtO9cYvxprKE+wqMTHqIz+9GS27BzlT1sefjMb1+6KXOX7GP8xrJIeyr+7mIHNBvJ3WL6U1w51vB/2qWS2QoFuy8YlQlaFCq6YznmBoMOcMYqZ/iYHzF5gmcLT2hxnvcaQEKg2Z2bYTiTE4SZaC05U0H5xiG41s0iUWiNk3ZNaZMX0DoaxEOm9EaI+lmonVdEx6qPBfphoc68mPB8a2Jnra2LsWdYzy8XqGhSh7B9zVJdwkHmq1A8wt97ByTbXV6aT1Mug/z28SNsJ+T0T9w5TnT/23GzP+Uwh8WokiO/OMZMQt1CvzDyHuAMN+lB+oCScd3IPqOnLE841tZxBWHvpdtW7vPynhyw4C5602l3SAQoMrqNxV2M8xMhPDHJio7L0v1a4TVidX7DKuKgLa56E7z8/yQxxj3TZ5w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(9786002)(6916009)(426003)(2906002)(53546011)(38100700002)(33656002)(7416002)(66556008)(66476007)(2616005)(8936002)(66946007)(83380400001)(9746002)(54906003)(5660300002)(186003)(86362001)(36756003)(8676002)(508600001)(26005)(316002)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qWpYtq6/4s2+sDXSL5zpD/reDVXYgKMkq5KQ9iLlyYHGTVhiknFir1tLQeg0?=
- =?us-ascii?Q?jPnr12uWGNcttQ+YdsN9yR0AYA/1udZviDMLAjQTEfVJ3505AUfWZzKuLFMn?=
- =?us-ascii?Q?wQ7lifUe+sjCr3CVCV+7RMwJ5+BVeIIrvNnVBTq9QNw5r0i0F6Poo5/HRR6C?=
- =?us-ascii?Q?Nb1hZtNa+0XvBtC+GEb9b8CURzYH5mzcdBdI5N2o7qfhBj+SkJXcIRnhVOhw?=
- =?us-ascii?Q?jwfsVzo7qmfmNsIDnrpvyQRzwusnuxgIHIq5cZTE+7JkbNjk845/W8+hTIbg?=
- =?us-ascii?Q?ZhEuwR2USTBzqh/4LJvAW9/8/01CQYS4eUJ9gVqfTzvhyuJh+CxQYBtA5rmj?=
- =?us-ascii?Q?P1lmtZBQn7TwYryuFMkp+2AYhoAsUq5DAVUIriCVjJoOo7E2ykX4a3MQAM3X?=
- =?us-ascii?Q?2qpfxPMuyFf70ZDMEQvREUYk/vvR6IFMP/pfIgPN5YCuE0DwVG2jnE+iUEtC?=
- =?us-ascii?Q?omiobs0r3GxoFF9HiTeTugL0LfIT3QvbmGFHKJ2q99h6Im+XwXCA5kzar1H7?=
- =?us-ascii?Q?iB6WSKNVrtDJcqSOWCVQhL4jIWOvg7zfmKI80wGMFrDHgCrN+xosqnpOO1d0?=
- =?us-ascii?Q?RX2HtHe36plyWMpQejQdyoJkkgDMfGCPc6JB9acY+SCVLFb1TQz1pNWsQVnc?=
- =?us-ascii?Q?t7IpBYpVtf+HRJ/cpj7GjTWiYs5Rl8NzLNgafex19xtLlt66nVDFcQFRUmmf?=
- =?us-ascii?Q?u6Fa+tqBCeoH2ETrEcyzA/uZ8ewfkT/U+DB94ShzAaGvD/73V1yHEV4B3E9a?=
- =?us-ascii?Q?bHm2NX3DE7//fvuO2W+qNP8mLkz5T+YAQLgXz1kI0Sh89T7FyRZuwts8rbqY?=
- =?us-ascii?Q?PBwNAtW5HTYy1Ww4OEjVgBKtA2maUDTwIfmM+uTv/EJ+2Vhyb4KjFje33QWO?=
- =?us-ascii?Q?apxexMFNoYYUAs/hVtk11zMARyuObUcCpZ1oQi/2FciY/pVbq2YaU+b94J11?=
- =?us-ascii?Q?ysjJ1hJDZt06T0hgMqFQvn5X7e8Jn1Go7JHAP9EIapSeU43I2IrThp/Y512+?=
- =?us-ascii?Q?/Ly+LDPmTDqYJsiGnfeE8bxOBxLivkSQ+Nha+lhsCuErNONtcC44fhfKZ1FI?=
- =?us-ascii?Q?61JKmfBprt+HOds4XMsMeTvEkCBJWWmEBuiDWxsPRexN5Es+HcqIIKkv3g1n?=
- =?us-ascii?Q?vhq+9MatCGB66q4b4yrC7ayKVHHMllBjpGbewGZNLK+ABJZlz4EtrIVzmtLD?=
- =?us-ascii?Q?BuM4Ki/5kKLr/NKjZQT02DqGRQUiVIlKnF+wLj3NuAOCISVmaQViYd/JOFhY?=
- =?us-ascii?Q?4oJJeHVgvlyro0+SKkJok+bVg9q8btxlB6swZaWzT2+cV73BQH4YOXBBZHd1?=
- =?us-ascii?Q?MDMy0TmMEFFP9oXlZb3dwDLO2fjqdYwpwVS5mdQT0zQp23tJRqLT9zgQEORI?=
- =?us-ascii?Q?f3qPpW4o3onGqYtXoA9pxA4z+Yn/lAbRvAYOprl9xkoaYpVh7su1w+iUDAY2?=
- =?us-ascii?Q?IoXBrkSLN0NvGRUyA4GDuXGasUbm/rtTHfvSaJhOypi76lnAJanAPvBnNmI8?=
- =?us-ascii?Q?yA6OcwUJIERJzG0t1/N+x+hOuQLGCZTQn8YaiZZpgDzy14vUn/8qzzvRvJ+P?=
- =?us-ascii?Q?2brzgt9Y2qrg1SvdAoI=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c323e2b8-e9f8-41c9-4c6f-08d99e194adc
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 15:56:11.9865
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: b79plKkiZN30Wh+tBRHRpPiCI0fM9Kelu4TE48Wey/RnLPLAxw6Nd7GdEmlaZkVZ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5048
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YX/pWeXPv1bykg2g@fedora>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 11:52:20AM +0800, Jason Wang wrote:
-> On Mon, Nov 1, 2021 at 10:11 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >
-> > On Thu, Mar 26, 2020 at 10:01:23PM +0800, Jason Wang wrote:
-> > > From: Tiwei Bie <tiwei.bie@intel.com>
-> > >
-> > > This patch introduces a vDPA-based vhost backend. This backend is
-> > > built on top of the same interface defined in virtio-vDPA and provides
-> > > a generic vhost interface for userspace to accelerate the virtio
-> > > devices in guest.
-> > >
-> > > This backend is implemented as a vDPA device driver on top of the same
-> > > ops used in virtio-vDPA. It will create char device entry named
-> > > vhost-vdpa-$index for userspace to use. Userspace can use vhost ioctls
-> > > on top of this char device to setup the backend.
-> > >
-> > > Vhost ioctls are extended to make it type agnostic and behave like a
-> > > virtio device, this help to eliminate type specific API like what
-> > > vhost_net/scsi/vsock did:
-> > >
-> > > - VHOST_VDPA_GET_DEVICE_ID: get the virtio device ID which is defined
-> > >   by virtio specification to differ from different type of devices
-> > > - VHOST_VDPA_GET_VRING_NUM: get the maximum size of virtqueue
-> > >   supported by the vDPA device
-> > > - VHSOT_VDPA_SET/GET_STATUS: set and get virtio status of vDPA device
-> > > - VHOST_VDPA_SET/GET_CONFIG: access virtio config space
-> > > - VHOST_VDPA_SET_VRING_ENABLE: enable a specific virtqueue
-> > >
-> > > For memory mapping, IOTLB API is mandated for vhost-vDPA which means
-> > > userspace drivers are required to use
-> > > VHOST_IOTLB_UPDATE/VHOST_IOTLB_INVALIDATE to add or remove mapping for
-> > > a specific userspace memory region.
-> > >
-> > > The vhost-vDPA API is designed to be type agnostic, but it allows net
-> > > device only in current stage. Due to the lacking of control virtqueue
-> > > support, some features were filter out by vhost-vdpa.
-> > >
-> > > We will enable more features and devices in the near future.
-> >
-> > [..]
-> >
-> > > +static int vhost_vdpa_alloc_domain(struct vhost_vdpa *v)
-> > > +{
-> > > +     struct vdpa_device *vdpa = v->vdpa;
-> > > +     const struct vdpa_config_ops *ops = vdpa->config;
-> > > +     struct device *dma_dev = vdpa_get_dma_dev(vdpa);
-> > > +     struct bus_type *bus;
-> > > +     int ret;
-> > > +
-> > > +     /* Device want to do DMA by itself */
-> > > +     if (ops->set_map || ops->dma_map)
-> > > +             return 0;
-> > > +
-> > > +     bus = dma_dev->bus;
-> > > +     if (!bus)
-> > > +             return -EFAULT;
-> > > +
-> > > +     if (!iommu_capable(bus, IOMMU_CAP_CACHE_COHERENCY))
-> > > +             return -ENOTSUPP;
-> > > +
-> > > +     v->domain = iommu_domain_alloc(bus);
-> > > +     if (!v->domain)
-> > > +             return -EIO;
-> > > +
-> > > +     ret = iommu_attach_device(v->domain, dma_dev);
-> > > +     if (ret)
-> > > +             goto err_attach;
-> > >
-> >
-> > I've been looking at the security of iommu_attach_device() users, and
-> > I wonder if this is safe?
-> >
-> > The security question is if userspace is able to control the DMA
-> > address the devices uses? Eg if any of the cpu to device ring's are in
-> > userspace memory?
-> >
-> > For instance if userspace can tell the device to send a packet from an
-> > arbitrary user controlled address.
+On Mon, Nov 01, 2021 at 10:19:21AM -0300, Maíra Canal wrote:
+> Remove legacy PWM interface (pwm_config, pwm_enable, pwm_disable) and
+> replace it for the atomic PWM API.
 > 
-> The map is validated via pin_user_pages() which guarantees that the
-> address is not arbitrary and must belong to userspace?
+> Signed-off-by: Maíra Canal <maira.canal@usp.br>
+> ---
+> V1 -> V2: Initialize variable and simply conditional loop
+> V2 -> V3: Fix assignment of NULL variable
+> V3 -> V4: Replace division for pwm_set_relative_duty_cycle
+> ---
+>  drivers/video/backlight/lp855x_bl.c | 20 ++++++++------------
+>  1 file changed, 8 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/video/backlight/lp855x_bl.c b/drivers/video/backlight/lp855x_bl.c
+> index e94932c69f54..bbf24564082a 100644
+> --- a/drivers/video/backlight/lp855x_bl.c
+> +++ b/drivers/video/backlight/lp855x_bl.c
+> @@ -233,9 +233,8 @@ static int lp855x_configure(struct lp855x *lp)
+>  
+>  static void lp855x_pwm_ctrl(struct lp855x *lp, int br, int max_br)
+>  {
+> -	unsigned int period = lp->pdata->period_ns;
+> -	unsigned int duty = br * period / max_br;
+>  	struct pwm_device *pwm;
+> +	struct pwm_state state;
+>  
+>  	/* request pwm device with the consumer name */
+>  	if (!lp->pwm) {
+> @@ -245,18 +244,15 @@ static void lp855x_pwm_ctrl(struct lp855x *lp, int br, int max_br)
+>  
+>  		lp->pwm = pwm;
+>  
+> -		/*
+> -		 * FIXME: pwm_apply_args() should be removed when switching to
+> -		 * the atomic PWM API.
+> -		 */
+> -		pwm_apply_args(pwm);
+> +		pwm_init_state(lp->pwm, &state);
+> +		state.period = lp->pdata->period_ns;
+>  	}
+>  
+> -	pwm_config(lp->pwm, duty, period);
+> -	if (duty)
+> -		pwm_enable(lp->pwm);
+> -	else
+> -		pwm_disable(lp->pwm);
+> +	pwm_get_state(lp->pwm, &state);
 
-That controls what gets put into the IOMMU, it doesn't restrict what
-DMA the device itself can issue.
+Should this be:
 
-Upon investigating more it seems the answer is that
-iommu_attach_device() requires devices to be in singleton groups, so
-there is no leakage from rouge DMA
+	} else {
+		pwm_get_state(lp->pwm, &state);
+	}
 
-Jason
+As currently written this will clobber the state.period that was set
+above.
+
+
+Daniel.
+
+
+> +	pwm_set_relative_duty_cycle(&state, br, max_br);
+> +	state.enabled = state.duty_cycle;
+> +
+> +	pwm_apply_state(lp->pwm, &state);
+>  }
+>  
+>  static int lp855x_bl_update_status(struct backlight_device *bl)
+> -- 
+> 2.31.1
+> 
