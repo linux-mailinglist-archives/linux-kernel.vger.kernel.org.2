@@ -2,101 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E57442BFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:59:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FE1442BFE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 11:59:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhKBLBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 07:01:46 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:55326 "EHLO m43-7.mailgun.net"
+        id S231133AbhKBLCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 07:02:17 -0400
+Received: from todd.t-8ch.de ([159.69.126.157]:48783 "EHLO todd.t-8ch.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhKBLBn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 07:01:43 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635850748; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
- Subject: Sender; bh=bisdeD3X1MxFxI1OCeAyuj8O9/LL4EAudrvUEowmfCw=; b=czSqJsq3rrRDdzCKnb0FAvGyd49MeYPngc187zEZ6GvUcGb90Mjks0zrPzcHu3DXcqwujWlM
- QGMYwpKcfeWgGRr1vCXou4249e/6UTGPlBquuni5mKyMn9gZU6fpVHsR6ED4RZk5o3He5XUf
- c9e1AmQj5ozymqHlRPGyW26dmFg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 618119ea2e144ac4d3f2d959 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Nov 2021 10:58:50
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B5F8AC43619; Tue,  2 Nov 2021 10:58:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.242.143.72] (unknown [202.46.23.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3002FC4338F;
-        Tue,  2 Nov 2021 10:58:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 3002FC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v4 2/2] ASoC: qcom: SC7280: Add machine driver
-To:     Randy Dunlap <rdunlap@infradead.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-References: <1635519876-7112-1-git-send-email-srivasam@codeaurora.org>
- <1635519876-7112-3-git-send-email-srivasam@codeaurora.org>
- <4d1ca1b5-6656-1b3b-65a0-c05c92824d18@infradead.org>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <25b2a191-ff9e-25e0-1d46-bc37a92e1ff1@codeaurora.org>
-Date:   Tue, 2 Nov 2021 16:28:40 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S229577AbhKBLCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 07:02:14 -0400
+Date:   Tue, 2 Nov 2021 11:59:32 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1635850778;
+        bh=EQgH6iFqsqRpn3YWDSWz+nzr9GGk1LqsgNBEiOd9Bno=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YOsujDQuLI5Pd5A72ogB7lsJe//g7lv4F5YHhFsroauupNNiSYRf3RnB3z3hImV1d
+         jSzB/ucHxWr7yBQtfAr8cPdjktzgkQUlw7wcPYyucv3hdtlWK3fmGvjRDh4DUpipbb
+         4mPVMzAS4ahegxuObHfWUhr1nYJdRED7cyGNQYLo=
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/9p: autoload transport modules
+Message-ID: <922a4843-c7b0-4cdc-b2a6-33bf089766e4@t-8ch.de>
+References: <20211017134611.4330-1-linux@weissschuh.net>
+ <YYEYMt543Hg+Hxzy@codewreck.org>
 MIME-Version: 1.0
-In-Reply-To: <4d1ca1b5-6656-1b3b-65a0-c05c92824d18@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <YYEYMt543Hg+Hxzy@codewreck.org>
+Jabber-ID: thomas@t-8ch.de
+X-Accept: text/plain, text/html;q=0.2, text/*;q=0.1
+X-Accept-Language: en-us, en;q=0.8, de-de;q=0.7, de;q=0.6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 10/30/2021 5:04 AM, Randy Dunlap wrote:
-Thanks for your time Randy!!!
-> On 10/29/21 8:04 AM, Srinivasa Rao Mandadapu wrote:
->> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
->> index cc7c1de..d9ffcb7 100644
->> --- a/sound/soc/qcom/Kconfig
->> +++ b/sound/soc/qcom/Kconfig
->> @@ -152,4 +152,16 @@ config SND_SOC_SC7180
->>         SC7180 SoC-based systems.
->>         Say Y if you want to use audio device on this SoCs.
->>   +config SND_SOC_SC7280
->> +    tristate "SoC Machine driver for SC7280 boards"
->> +    depends on I2C && SOUNDWIRE
->> +    select SND_SOC_QCOM_COMMON
->> +    select SND_SOC_MAX98357A
->> +    select SND_SOC_LPASS_RX_MACRO
->> +    select SND_SOC_LPASS_TX_MACRO
->> +    help
->> +      To add support for audio on Qualcomm Technologies Inc.
->> +      SC7280 SoC-based systems.
->> +      Say Y if you want to use audio device on this SoCs.
->
->       Say Y or M if you want to use audio devices on this SoC.
->
-Okay. Will change accordingly.
+On 2021-11-02 19:51+0900, Dominique Martinet wrote:
+> Sorry for the late reply
+> 
+> Thomas Weißschuh wrote on Sun, Oct 17, 2021 at 03:46:11PM +0200:
+> > Automatically load transport modules based on the trans= parameter
+> > passed to mount.
+> > The removes the requirement for the user to know which module to use.
+> 
+> This looks good to me, I'll test this briefly on differnet config (=y,
+> =m) and submit to Linus this week for the next cycle.
 
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Thanks. Could you also fix up the typo in the commit message when applying?
+("The removes" -> "This removes")
 
+> Makes me wonder why trans_fd is included in 9pnet and not in a 9pnet-fd
+> or 9pnet-tcp module but that'll be for another time...
+
+To prepare for the moment when those transport modules are split into their own
+module(s), we could already add MODULE_ALIAS_9P() calls to net/9p/trans_fd.c.
+
+Thomas
