@@ -2,218 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44204438D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:55:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A1B4438DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231489AbhKBW6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:58:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30306 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230227AbhKBW6O (ORCPT
+        id S231337AbhKBW7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:59:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229747AbhKBW7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 18:58:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635893738;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VI+rXenfrHQ9NQf88Xc3kujdb0UXyWU2YSRE7S/ay+s=;
-        b=GBb5eVi6bvcQuNdUJrKCOQ9YQ6GPh7iTuDB9oF7YvZJVBfd31uQYlVcXtIIiZGlCLcoxnt
-        o3bh5i2Vj3N2ukO7QD67GNRa/h/OiCNvjd4WcWS2r2Va35NBuQ7CRAp/52G0kVHOTg2NNH
-        eZcgIKgeAwMjp7CFNmOh5Qs2FcC0zk4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-200-BsE6o8K7PGOKsX00YOPiag-1; Tue, 02 Nov 2021 18:55:33 -0400
-X-MC-Unique: BsE6o8K7PGOKsX00YOPiag-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1475E8042DB;
-        Tue,  2 Nov 2021 22:55:32 +0000 (UTC)
-Received: from x1.localdomain (unknown [10.39.192.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AE4CF60657;
-        Tue,  2 Nov 2021 22:55:30 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] backlight: lp855x: Add support ACPI enumeration
-Date:   Tue,  2 Nov 2021 23:55:04 +0100
-Message-Id: <20211102225504.18920-3-hdegoede@redhat.com>
-In-Reply-To: <20211102225504.18920-1-hdegoede@redhat.com>
-References: <20211102225504.18920-1-hdegoede@redhat.com>
+        Tue, 2 Nov 2021 18:59:41 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0574C061714;
+        Tue,  2 Nov 2021 15:57:05 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id bq14so619517qkb.1;
+        Tue, 02 Nov 2021 15:57:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KIYisbZsaWO2J//hyz2WxZPwqBd239vjWte2s5yR2ys=;
+        b=LL2bPORTmHw5LJecj4U/ZA0GNrmoo7CQe0IRKm7B8NabGS0i4Zmp0WLIxzChPUQSgq
+         AeU4nFkaupYIQzpLkKphcy0RuzmbeMDUx/WuoBOWfIREIWo4U0JZ6Pm64KI7qQ+y7nLk
+         T4++3+zUDvm2qtP5zFRZGvLElcEzTfyt1MBCpvx2/+jSTFkdzQbezCl9+pPU1/+3u7G3
+         xcEs7R/s00fiiXVExSt6uBoUu5jIr0z9FyfEzIke42ETx3Vt6QDOTBj3u6lo5a4NqpHt
+         WdzG1aCWfdpxFqZX8Gk195mbhQTaar8LeuBmJv4Z6xUJPN0tGNh1333R7biHfaTBfRBH
+         BFFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KIYisbZsaWO2J//hyz2WxZPwqBd239vjWte2s5yR2ys=;
+        b=TjVURAReaeFzpJo+5LV2/eKJLZSdr6AyZLlad0nJdWe+lhxX8m3z2Vi1xHMkpDChAP
+         4weuO/5+tKuzyNRysTaICP71CTTmIwd1ru3n2vIWAagy/hq6frKLMPs6vJkx9o9YFaMW
+         Sudrval11jgI3zBi9+2Pii4EkUfHIvf4Ayr57Wmx98gOHlN5XwCidYviLhjtXZXPsKLi
+         u8Y7B7+yptBA8ze//bPufqD37HoMc52+GxUErDEob9Djg4wz1oEdnhuDac/ZeNja41Mz
+         +LoaUFqtJEWzqpuQNUT0Ka9ltJRptj4QsCFm1LAUoArsvXc9Ss8mB3KxnPRu8fxusCrZ
+         f2Cg==
+X-Gm-Message-State: AOAM532edoG564KhUgsX73dB3fh1VPme2QznttpqV8EDfSb2PE5QERsr
+        M68fMm2khAEjlISgIG7DFKU=
+X-Google-Smtp-Source: ABdhPJz6W+2d5SZUl1RkGSRUkSfqY9CHmb9HCjjkEoKiGlQNTqAyGyj8o91AAI6XjdcklmMMiXHbnQ==
+X-Received: by 2002:a05:620a:40c4:: with SMTP id g4mr25496206qko.14.1635893824295;
+        Tue, 02 Nov 2021 15:57:04 -0700 (PDT)
+Received: from jesse-desktop.jtp-bos.lab (146-115-144-188.s4282.c3-0.nwt-cbr1.sbo-nwt.ma.cable.rcncustomer.com. [146.115.144.188])
+        by smtp.gmail.com with ESMTPSA id v19sm351222qtk.6.2021.11.02.15.57.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 15:57:03 -0700 (PDT)
+From:   Jesse Taube <mr.bossman075@gmail.com>
+X-Google-Original-From: Jesse Taube <Mr.Bossman075@gmail.com>
+To:     linux-imx@nxp.com
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, ulf.hansson@linaro.org, aisheng.dong@nxp.com,
+        stefan@agner.ch, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, arnd@arndb.de, olof@lixom.net,
+        soc@kernel.org, linux@armlinux.org.uk, abel.vesa@nxp.com,
+        adrian.hunter@intel.com, jirislaby@kernel.org,
+        giulio.benetti@benettiengineering.com,
+        nobuhiro1.iwamatsu@toshiba.co.jp, Mr.Bossman075@gmail.com,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Subject: [PATCH v2 00/13] Add initial support for the i.MXRTxxxx SoC family starting from i.IMXRT1050 SoC.
+Date:   Tue,  2 Nov 2021 18:56:48 -0400
+Message-Id: <20211102225701.98944-1-Mr.Bossman075@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Xiaomi Mi Pad 2 tablet uses an ACPI enumerated LP8556 backlight
-controller for its LCD-panel, with a Xiaomi specific ACPI HID of
-"XMCC0001", add support for this.
+This patchset contains:
+- i.MXRT10xx family infrastructure
+- i.MXRT1050 pinctrl driver adaption
+- i.MXRT1050 clock driver adaption
+- i.MXRT1050 sd-card driver adaption
+- i.MXRT1050 uart driver adaption
+- i.MXRT1050-evk basic support
 
-Note the new "if (id)" check also fixes a NULL pointer deref when a user
-tries to manually bind the driver from sysfs.
+The i.MXRTxxxx family that could have support by Linux actually spreads
+from i.MXRT1020 to i.MXRT1170 with the first one supporting 1 USB OTG &
+100M ethernet with a cortex-M7@500Mhz up to the latter with i.MXRT1170
+with cortex-M7@1Ghz and cortex-M4@400Mhz, 2MB of internal SRAM, 2D GPU,
+2x 1Gb and 1x 100Mb ENET. The i.MXRT family is NXP's answer to
+STM32F7XX, as it uses only simple SDRAM, it gives the chance of a 4 or
+less layer PCBs. Seeing that these chips are comparable to the
+STM32F7XXs which have linux ported to them it seems reasonable to add
+support for them.
 
-When CONFIG_ACPI is disabled acpi_match_device() will always return NULL,
-so the lp855x_parse_acpi() call will get optimized away.
+Giving Linux support to this family should ease the development process,
+instead of using a RTOS they could use Embedded Linux allowing for more
+portability, ease of design and will broaden the scope of people using
+embedded linux.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
-Changes in v2:
-- Remove `lp->pdata = pdata` assignment from lp855x_parse_dt()
-- Add "and is in register mode" to the comment in
-  lp855x_parse_acpi()
----
- drivers/video/backlight/lp855x_bl.c | 73 ++++++++++++++++++++++++-----
- 1 file changed, 61 insertions(+), 12 deletions(-)
+The EVK has very little SDRAM, generally 32MB starting from
+i.MXRT1020(the lowest P/N), although the i.MXRT1160/70 provide instead
+64MB of SDRAM for more functionality.
 
-diff --git a/drivers/video/backlight/lp855x_bl.c b/drivers/video/backlight/lp855x_bl.c
-index d1d27d5eb0f2..2b9e2bbbb03e 100644
---- a/drivers/video/backlight/lp855x_bl.c
-+++ b/drivers/video/backlight/lp855x_bl.c
-@@ -5,6 +5,7 @@
-  *			Copyright (C) 2011 Texas Instruments
-  */
- 
-+#include <linux/acpi.h>
- #include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/i2c.h>
-@@ -330,7 +331,7 @@ static int lp855x_parse_dt(struct lp855x *lp)
- {
- 	struct device *dev = lp->dev;
- 	struct device_node *node = dev->of_node;
--	struct lp855x_platform_data *pdata;
-+	struct lp855x_platform_data *pdata = lp->pdata;
- 	int rom_length;
- 
- 	if (!node) {
-@@ -338,10 +339,6 @@ static int lp855x_parse_dt(struct lp855x *lp)
- 		return -EINVAL;
- 	}
- 
--	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
--	if (!pdata)
--		return -ENOMEM;
--
- 	of_property_read_string(node, "bl-name", &pdata->name);
- 	of_property_read_u8(node, "dev-ctrl", &pdata->device_control);
- 	of_property_read_u8(node, "init-brt", &pdata->initial_brightness);
-@@ -368,8 +365,6 @@ static int lp855x_parse_dt(struct lp855x *lp)
- 		pdata->rom_data = &rom[0];
- 	}
- 
--	lp->pdata = pdata;
--
- 	return 0;
- }
- #else
-@@ -379,8 +374,32 @@ static int lp855x_parse_dt(struct lp855x *lp)
- }
- #endif
- 
-+static int lp855x_parse_acpi(struct lp855x *lp)
-+{
-+	int ret;
-+
-+	/*
-+	 * On ACPI the device has already been initialized by the firmware
-+	 * and is in register mode, so we can read back the settings from
-+	 * the registers.
-+	 */
-+	ret = i2c_smbus_read_byte_data(lp->client, lp->cfg->reg_brightness);
-+	if (ret < 0)
-+		return ret;
-+
-+	lp->pdata->initial_brightness = ret;
-+
-+	ret = i2c_smbus_read_byte_data(lp->client, lp->cfg->reg_devicectrl);
-+	if (ret < 0)
-+		return ret;
-+
-+	lp->pdata->device_control = ret;
-+	return 0;
-+}
-+
- static int lp855x_probe(struct i2c_client *cl, const struct i2c_device_id *id)
- {
-+	const struct acpi_device_id *acpi_id = NULL;
- 	struct device *dev = &cl->dev;
- 	struct lp855x *lp;
- 	int ret;
-@@ -394,10 +413,20 @@ static int lp855x_probe(struct i2c_client *cl, const struct i2c_device_id *id)
- 
- 	lp->client = cl;
- 	lp->dev = dev;
--	lp->chipname = id->name;
--	lp->chip_id = id->driver_data;
- 	lp->pdata = dev_get_platdata(dev);
- 
-+	if (id) {
-+		lp->chipname = id->name;
-+		lp->chip_id = id->driver_data;
-+	} else {
-+		acpi_id = acpi_match_device(dev->driver->acpi_match_table, dev);
-+		if (!acpi_id)
-+			return -ENODEV;
-+
-+		lp->chipname = acpi_id->id;
-+		lp->chip_id = acpi_id->driver_data;
-+	}
-+
- 	switch (lp->chip_id) {
- 	case LP8550:
- 	case LP8551:
-@@ -415,9 +444,19 @@ static int lp855x_probe(struct i2c_client *cl, const struct i2c_device_id *id)
- 	}
- 
- 	if (!lp->pdata) {
--		ret = lp855x_parse_dt(lp);
--		if (ret < 0)
--			return ret;
-+		lp->pdata = devm_kzalloc(dev, sizeof(*lp->pdata), GFP_KERNEL);
-+		if (!lp->pdata)
-+			return -ENOMEM;
-+
-+		if (id) {
-+			ret = lp855x_parse_dt(lp);
-+			if (ret < 0)
-+				return ret;
-+		} else {
-+			ret = lp855x_parse_acpi(lp);
-+			if (ret < 0)
-+				return ret;
-+		}
- 	}
- 
- 	if (lp->pdata->period_ns > 0)
-@@ -537,10 +576,20 @@ static const struct i2c_device_id lp855x_ids[] = {
- };
- MODULE_DEVICE_TABLE(i2c, lp855x_ids);
- 
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id lp855x_acpi_match[] = {
-+	/* Xiaomi specific HID used for the LP8556 on the Mi Pad 2 */
-+	{ "XMCC0001", LP8556 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(acpi, lp855x_acpi_match);
-+#endif
-+
- static struct i2c_driver lp855x_driver = {
- 	.driver = {
- 		   .name = "lp855x",
- 		   .of_match_table = of_match_ptr(lp855x_dt_ids),
-+		   .acpi_match_table = ACPI_PTR(lp855x_acpi_match),
- 		   },
- 	.probe = lp855x_probe,
- 	.remove = lp855x_remove,
+At the moment we do not support XIP for either u-boot or Linux but it
+should be done in the future. XIP will also save SDRAM.
+
+Another interesting fact is the amount of internal SRAM, as the P/N
+increases the SRAM will reach up to 2MB(some could be for cache and
+some would be for video).
+
+Also, some parts have embed flash of 4MB that can be used for
+u-boot/Linux, if both correctly sized it will leave the SDRAM free.
+
+External flash can be Quad SPI and HyperFlash, so throughput would be
+decent.
+
+The i.MXRT11xx series supports MIPI interface too.
+
+The family in general provide CAN bus, audio I/O, 1 or more
+USB(otg/host), 1 or more 100Mb/1Gb ethernet, camera interface, sd-card.
+
+All this can be used for simple GUIs, web-servers, point-of-sale
+stations, etc.
+
+Giulio Benetti (5):
+  ARM: imx: add initial support for i.MXRT10xx family
+  pinctrl: freescale: Add i.MXRT1050 pinctrl driver support
+  dt-bindings: imx: Add clock binding for i.MXRT1050
+  ARM: dts: imx: add i.MXRT1050-EVK support
+  ARM: imxrt_defconfig: add i.MXRT family defconfig
+
+Jesse Taube (8):
+  dt-bindings: pinctrl: add i.MXRT1050 pinctrl binding doc
+  ARM: dts: imxrt1050-pinfunc: Add pinctrl binding header
+  dt-bindings: clock: imx: Add documentation for i.MXRT clock
+  clk: imx: Add initial support for i.MXRT clock driver
+  dt-bindings: serial: fsl-lpuart: add i.MXRT compatible
+  tty: serial: fsl_lpuart: add i.MXRT support
+  dt-bindings: mmc: fsl-imx-esdhc: add i.MXRT compatible string
+  mmc: sdhci-esdhc-imx: Add sdhc support for i.MXRT series
+
+ .../bindings/clock/imxrt-clock.yaml           |  70 ++
+ .../bindings/mmc/fsl-imx-esdhc.yaml           |   1 +
+ .../bindings/pinctrl/fsl,imxrt1050.yaml       |  83 ++
+ .../bindings/serial/fsl-lpuart.yaml           |   1 +
+ arch/arm/boot/dts/Makefile                    |   2 +
+ arch/arm/boot/dts/imxrt1050-evk.dts           |  89 ++
+ arch/arm/boot/dts/imxrt1050-pinfunc.h         | 993 ++++++++++++++++++
+ arch/arm/boot/dts/imxrt1050.dtsi              | 187 ++++
+ arch/arm/configs/imxrt_defconfig              | 157 +++
+ arch/arm/mach-imx/Kconfig                     |   7 +
+ arch/arm/mach-imx/Makefile                    |   2 +
+ arch/arm/mach-imx/mach-imxrt.c                |  19 +
+ drivers/clk/imx/Kconfig                       |   4 +
+ drivers/clk/imx/Makefile                      |   1 +
+ drivers/clk/imx/clk-imxrt.c                   | 149 +++
+ drivers/mmc/host/sdhci-esdhc-imx.c            |   7 +
+ drivers/pinctrl/freescale/Kconfig             |   7 +
+ drivers/pinctrl/freescale/Makefile            |   1 +
+ drivers/pinctrl/freescale/pinctrl-imxrt1050.c | 349 ++++++
+ drivers/tty/serial/fsl_lpuart.c               |   8 +
+ include/dt-bindings/clock/imxrt1050-clock.h   |  72 ++
+ 21 files changed, 2209 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/imxrt-clock.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/fsl,imxrt1050.yaml
+ create mode 100644 arch/arm/boot/dts/imxrt1050-evk.dts
+ create mode 100644 arch/arm/boot/dts/imxrt1050-pinfunc.h
+ create mode 100644 arch/arm/boot/dts/imxrt1050.dtsi
+ create mode 100644 arch/arm/configs/imxrt_defconfig
+ create mode 100644 arch/arm/mach-imx/mach-imxrt.c
+ create mode 100644 drivers/clk/imx/clk-imxrt.c
+ create mode 100644 drivers/pinctrl/freescale/pinctrl-imxrt1050.c
+ create mode 100644 include/dt-bindings/clock/imxrt1050-clock.h
+
 -- 
-2.31.1
+2.33.1
 
