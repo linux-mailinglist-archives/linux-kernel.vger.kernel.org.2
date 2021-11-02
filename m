@@ -2,132 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B5B744334A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:41:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CAF44334D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 17:42:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234718AbhKBQoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 12:44:15 -0400
-Received: from mail-dm6nam11on2066.outbound.protection.outlook.com ([40.107.223.66]:62560
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234596AbhKBQoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 12:44:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cmxs5lZvtks1S8MUvyMWrlqQa6VYuIsLgGEq/Q+MARcud8S9S139FXCWZ8x41EgtwOwcdZYYzgaSnuOA146H37541nqmjpQxrAjoLX2J37X7tvmySm3UhTw9d5qb8AcBs292e4GqImrPvf5f51f+RbMcdnl84xtzSI0lKsHqN5tpYyWbAThhf7Xlqtfx/IR/VYqlMiuzUTWm6Bvt3azYkSRIsVqnb5hvjPoXFIpwdfxNbtGRzjUQU5dM3DmCP3/UnDOGELwmnN/akqokxILBkrpJfE5x4wdRSNJ5W/4CiOVIEAafg/R1eh76nGxZCBGVt64lxyopTBW4hJ0SjVceoQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Jx1sdjsA+OelSPA6F+Ak9DEU873zu6Bia7rJa6FvUKI=;
- b=Er3haAQboDl5BmWa5SZh+bHFd721SEzJ6W+eFSGeiDoWMKShVVvFPNWvxSbQWIxL+gjT7mUWt0oh6DJ8TQtse0LZ4j+PnFIL1v6TSG63/J8fj/lnuTtESg08vGj5iQ9j85Fy4YQHDLBvusZilQB8mAOaL76EApNsXcbZPOb95/T4DORklDzSK4JLOFVWiQw9uTytKZF5Eub5+zEbBpX/Tw7XtE+zyTvCYP111lOM3w/a4pokqibej9rJdaxGWmb3Y0eC7F4T+C1h7yFV/Wp+XyPGqvhf3Y2WVwZPI1y9Swh52iSgrhDJNBDX8gLvWuwL3U/Ux0opQ5hwbP5+WMfzmg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jx1sdjsA+OelSPA6F+Ak9DEU873zu6Bia7rJa6FvUKI=;
- b=q0wOoh37cPC9HLYXbYBAL5tn5LZsUTX/BuJy2m+JBXGKAvTlBX0xpr8sTQw3C8EkQBo4JQzQGBhpYZqWsRvroVbOFnZ6w6nczgSCSBj8YlBaewDzr/Qo9uAfgEYqrAbwhorWASb61nFv+i9eA+mBc1A9avvzD0x+r4iqfjSFRmBi8+ITIjWnRMvCM7GIngPsh2eygkcMi0cLIyI8SIw0Ms8cgPqcNcooI0UazHy2whvR+ORKJBDw2BNgl3vZPg1Xe+LM2BbJeb/4mx6z9RFICXi2CaaucJF+qogRU7AIjK5B7mPMrJPKBOFc5kFvk4L5ebB0b8BKXo4z63uAKnKYgQ==
-Authentication-Results: lst.de; dkim=none (message not signed)
- header.d=none;lst.de; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5556.namprd12.prod.outlook.com (2603:10b6:208:1cf::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Tue, 2 Nov
- 2021 16:41:37 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4649.020; Tue, 2 Nov 2021
- 16:41:37 +0000
-Date:   Tue, 2 Nov 2021 13:41:36 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 28/29] drm/i915/gvt: convert to use
- vfio_register_group_dev()
-Message-ID: <20211102164136.GI2744544@nvidia.com>
-References: <20211102070601.155501-1-hch@lst.de>
- <20211102070601.155501-29-hch@lst.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102070601.155501-29-hch@lst.de>
-X-ClientProxiedBy: BL1PR13CA0224.namprd13.prod.outlook.com
- (2603:10b6:208:2bf::19) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S234816AbhKBQof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 12:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234722AbhKBQod (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 12:44:33 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF68C061714;
+        Tue,  2 Nov 2021 09:41:57 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id f4so20000593edx.12;
+        Tue, 02 Nov 2021 09:41:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P9fLE2sZ7FZWPP/ecK148FNaLK2v6+054zpNZUAw408=;
+        b=GIC0or1lIv/x6KQ6dzmOaG72s2IQPXTII1ERwaYomoiFx+bptqPQe+uikUc5izujFr
+         dpVr2v8+y3TnmrFnFMjREDsY7E0uCosKQ+rOnXHP8LoaSgGAz/daBOBE5dSeyazWLO9R
+         HbQCOX7g6VUk7D7G6+vTPEQsTo7/aQl8spZd2TF1f5l0nEOV0eLjOR7C14DueTzMLDGF
+         tZF/apg9alp1dilggx1wwo5VME145khVjtJLD9MljtlJNx9+bcq8yVrSrpG3jj1Ho1Cb
+         XFFoR/pYN+xwvdg+X/WiuRmozIOuZPTc++y0ZE6zhC1YwQom7ps9DyyLmMtj4ZzClubW
+         2uNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P9fLE2sZ7FZWPP/ecK148FNaLK2v6+054zpNZUAw408=;
+        b=wBUqbHzbtAmm5gO22G6aiVHw4MHYtKCH+FgE+oYXJeK5XL6PrpWT3dryVlbiuP+8op
+         jVQoDYDM2q8MFkFEW3nwJKDPmcvDozlgj2dgnIydvAlNsveERJO+jtDa4Az8X0FRgrDu
+         FECJs8Y0SGbACIdaM7SJOH7/UMCfatZ4XMw4zgnXnP+teOMEBHKkQxMLs+MEbhW3Pfl4
+         Za7mEWwL1hj/pUJu7A5e21KdA3xxf3v/3+ASC/P9QWY641rV/lz+6S0VXdSkfzA2HsOM
+         3HZDlJWOIEydTjn766Oi14rpZ5qMUagx+fXMBL3VKUhCdDzyUz2jpDwYgApC49p1Tiw1
+         cY9A==
+X-Gm-Message-State: AOAM531G9NpNME0xLIoQxEvlRr6k1lPu9eiCSthOK2mw6ASZ3tYkXN9R
+        2grylmh5AAaHPkq7w4wXl2dOGWa+aWt3kxvd7GE=
+X-Google-Smtp-Source: ABdhPJxNeZEbOBiIM49ywxwCSNfzBI/QMJoNQe6/4NSu5+j4OYAjl7q4OkVEUsDhoUS2abnWGBw07ql4nTXVWnAqi5c=
+X-Received: by 2002:a17:906:3f83:: with SMTP id b3mr47174068ejj.233.1635871315881;
+ Tue, 02 Nov 2021 09:41:55 -0700 (PDT)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0224.namprd13.prod.outlook.com (2603:10b6:208:2bf::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.4 via Frontend Transport; Tue, 2 Nov 2021 16:41:37 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mhwqu-005Avq-P6; Tue, 02 Nov 2021 13:41:36 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a663149c-5673-4824-2deb-08d99e1fa395
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5556:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB5556E6BA20FE31F9141541A1C28B9@BL0PR12MB5556.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XrmqAmRm761zsDRhJFBLQTPobK7gVhTlqx1RqV4T1gs6pS9XQZ8TfqsGawgfvIdDAk3gex+Bb/tkMN+U5cdx7KxnvtE/XGAOfKMyVo/jg91KW25RgCbey/sfFUz4/aSGO8lEYFdgtHjtkvKUzRns0VBfqDZ1i/8pHA9Y/BgyKwKdLFP9Q04osgtrRsNWB5xQeAtyxMDOg1qZYnp9lyzCYjpDk+t+lALf7cnMj/H4GcTkXkAawwuiGQc4rBuPNKN9PE5pb5l9Oy8aH9wJawgloi2KEhvNUxAapUCSPAMqbgYqKQCYcBtA+kWzH3zF/+3Im2kAw7JI3O1K4wUzd4RVrDGsPQEHjllnKOe0D8+7QKflkxftDWRlP9vaEmIXZtHF+rwERoFqGLclf1ClbIZHuCcthp2Zmi2V9IlWg7iUuyFRBEKsbEsVpagsU/k54HUUR35HESIAJcl+fPFC5xVAqx8uvR3/d3J2D0bX9Z4vVADYTcnCRF+PX8mODTGJToa9w736TSwA1rEelmjQsgp6lWZoUAKdKzyjpQZly42GANnE2/zqyQXrBOjSzygKDxD1sBfny9kEOnSDHazYbB8C3VDhhnifl9hQ/sbgIIf8aK4NyQ9iaFplnD/OznWQhi0Pii4Md2zu52mVfWy+QmjwuA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(9746002)(2616005)(7416002)(9786002)(2906002)(36756003)(26005)(186003)(8936002)(508600001)(5660300002)(4326008)(38100700002)(426003)(1076003)(54906003)(316002)(86362001)(33656002)(4744005)(66946007)(66476007)(8676002)(6916009)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YJ7T9fiPAfdbAPOzYGp3SyL430UvcDKpXdIlcn30uckv17LG0iUf4Vb2m5zJ?=
- =?us-ascii?Q?Zgd2SpmU6//A6jDZX73f73xuswPengJygWjv2gxevHeAJzE9TbF0Oqi8rfV7?=
- =?us-ascii?Q?uB3o9xJe0XZwcWMVQtsjzOQaEtDINpftaIF1Jqdq8oTv95wmEdh+OMVWRh8v?=
- =?us-ascii?Q?fSzkw+MjSxAEdL2WLuS1Dz93aUpiynSHHjumUmHnI1xD3KFSD8DENEld0a0R?=
- =?us-ascii?Q?bF5V7gopGqCOesbucRiOubA2t8YVnbBGrWyS50gqBYHG9+9sWE1PL3Vm7OjE?=
- =?us-ascii?Q?TJyYuvwbJwkdrupQiaknf29bnGvKFlm+cIIuO1SfE69Fb9JVbl980Eb63F1f?=
- =?us-ascii?Q?ha2pHYUcZz7VPFKa59pWKfjEjL6hTlW0rjYf64nR7YsbRQT0EPKQfgIB1kKN?=
- =?us-ascii?Q?mk8BOjuLlKpqra6YALYZZSolv//aqkJKhi1F9ZC2rfAYI//OOcBzqHXWqI3O?=
- =?us-ascii?Q?bt4g2NOPDio7cJHSICUnI48mbkE3PBfao1Bx8N5u6JXLSJSXmsFXkqfZW5Jb?=
- =?us-ascii?Q?Vh4o7O7gQvcEpIeYmpMvEZ0Xu1QKDwfilC/I5yE9DpYLZQ61uCvuZOfC3B4z?=
- =?us-ascii?Q?guMMPKjz4+cuIo9ZjB3rHAMQFQRSOsdfoWmllv1GaT6E/wDs2EyUohHI9I5X?=
- =?us-ascii?Q?+2vlcy97F4iCn+N9L8YGQZoBznx4C6j+Jj/9q7Bruw3OU2mQfcZzF9v4qqXQ?=
- =?us-ascii?Q?+qtPpdsZ6vGhlQKbm8ROBqZuPG4/qwxSGeCCpXfnEjevP0BSr6qMGrGHekyc?=
- =?us-ascii?Q?gWMC76JNa9KOsei+Ez8wUmknXU21vg2usQVoYwKXWvYXYErz1dvnkr9vmY1a?=
- =?us-ascii?Q?S+3VZAXZ1W/FP4YFSQ8vAknqYF5tx8fuBqcwtMuPwDIzdFq2qh9xh5OD6iEE?=
- =?us-ascii?Q?beWzaHSl/RPj8kQsd5zMH7cnwWe3jf/dsnt1G43+Ekfj+YWi7bxOXbqlYM0V?=
- =?us-ascii?Q?P2d1+pTkjVAH80yoTzLKk+IChzedf8TQKlHscU8zBq+kZY5gon/DYGpof7Ky?=
- =?us-ascii?Q?8MMgM5s+/eqgU6Su62wv1zZMBkj1vAU1OZ52CpoMHJJL3v1vG6PZnYAwfSgK?=
- =?us-ascii?Q?+NYj9pTd8QhVwn49GeDpV+2DCdFUTE+jYJBC2gpi8dpE5ZYmIyKXXc0wM+kU?=
- =?us-ascii?Q?3yL/fsBfb/o8btw7n5siRQ8ojPbyKlbXxIgny51u9F9PLUVaQZ8330z6kG7u?=
- =?us-ascii?Q?TNu/un131ypnDU9tLn5Yw548J1BfRY6khyUbC353fN14QlcsWf4hKmkEau66?=
- =?us-ascii?Q?RzWClCcStyp7uqr0GNw+5u9hYLWFwJYOVV9LBvXYfUbv8BwPG/rS3g2zW68i?=
- =?us-ascii?Q?mPZ/i4dlr5sljeR/dCKueQSC1sJNz/3pWXU4sfWsXtwQfGp0oRNvfl8Dr8pk?=
- =?us-ascii?Q?jhC7QOPEHDVPIBl4mDYu+BGGehwnfenQYVh7go91bYRJa424gOJ5DWcENAhD?=
- =?us-ascii?Q?cFgJcbznHBDbg5ajGoOEpwHvradYhdK4cFisGko96y3JfNjLkFMRgY96Y/1F?=
- =?us-ascii?Q?Fg7nl4+vlsNhc3CvvfiMa7x2jSUp/O2Z9JtjS/TgcgHbQuIZhCGX9+Eh6HgA?=
- =?us-ascii?Q?xNoq8oTXCLtt8qtW/yY=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a663149c-5673-4824-2deb-08d99e1fa395
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2021 16:41:37.6896
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eTTXrnOCWPys9rmjzI8WeK1GJpxMsopL88ThVPib7NO8Cok9BSQkXk2orzthD2zk
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5556
+References: <CAPcxDJ5rgmyswPN5kL8-Mk2hk7MCjHXVy6pS50i=KQKzUGFHfA@mail.gmail.com>
+ <CAHbLzkp7mN0ePsZiSY4obA_cVqmReSnDd6tF-yxRAmALBzzKAw@mail.gmail.com> <YYC1Phb5eFn9hJfG@casper.infradead.org>
+In-Reply-To: <YYC1Phb5eFn9hJfG@casper.infradead.org>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 2 Nov 2021 09:41:43 -0700
+Message-ID: <CAHbLzkrwEsTgwmaMsOFHRbM6TEvBZA965N+FJwe-ZwSzbrL-VQ@mail.gmail.com>
+Subject: Re: [v5 PATCH 6/6] mm: hwpoison: handle non-anonymous THP correctly
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jue Wang <juew@google.com>, Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
+        Peter Xu <peterx@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 08:06:00AM +0100, Christoph Hellwig wrote:
-> This is straightforward conversion, the intel_vgpu already has a pointer
-> to the vfio_dev, which can be replaced with the embedded structure and
-> we can replace all the mdev_get_drvdata() with a simple container_of().
+On Mon, Nov 1, 2021 at 8:50 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Mon, Nov 01, 2021 at 01:11:33PM -0700, Yang Shi wrote:
+> > On Mon, Nov 1, 2021 at 12:38 PM Jue Wang <juew@google.com> wrote:
+> > >
+> > > A related bug but whose fix may belong to a separate series:
+> > >
+> > > split_huge_page fails when invoked concurrently on the same THP page.
+> > >
+> > > It's possible that multiple memory errors on the same THP get consumed
+> > > by multiple threads and come down to split_huge_page path easily.
+> >
+> > Yeah, I think it should be a known problem since the very beginning.
+> > The THP split requires to pin the page and does check if the refcount
+> > is expected or not and freezes the refcount if it is expected. So if
+> > two concurrent paths try to split the same THP, one will fail due to
+> > the pin from the other path, but the other one will succeed.
+>
+> No, they can both fail, if the timing is just right, because they each
+> have a refcount, so neither will succeed.
 
-This should be using vfio_register_emulated_iommu_dev(), right?
-
-I expect drivers using the pin API to use the emulated_iommu_dev()
-interface at least..
-
-Otherwise this looks good
-
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Jason
+Oh, yes, if there is race between unlock_page and put_page.
