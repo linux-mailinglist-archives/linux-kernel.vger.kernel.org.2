@@ -2,73 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D46442E91
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:57:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BA5442E94
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 13:58:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbhKBM7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 08:59:43 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:48428 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhKBM7m (ORCPT
+        id S231232AbhKBNAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 09:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230326AbhKBNAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 08:59:42 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id C7C111C0B7F; Tue,  2 Nov 2021 13:57:06 +0100 (CET)
-Date:   Tue, 2 Nov 2021 13:57:02 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/35] 4.19.215-rc2 review
-Message-ID: <20211102125702.GC26639@duo.ucw.cz>
-References: <20211101114224.924071362@linuxfoundation.org>
+        Tue, 2 Nov 2021 09:00:51 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B56C061714;
+        Tue,  2 Nov 2021 05:58:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bGKSmCTDpFoLP1JJLQXqMm0zWZVdp9goOESdYBnNV2s=; b=p0lMGiJdFK4mTiRAYVcEK1G2JK
+        YEbC6rEB5RywDf91bgqWy4Y83973HIJ+Jz5Xu5rt6nJt0hmaFs1hkgzEWR7apTOgcsMiLUsifBSYb
+        tMcUVV8vlvgPp0i4+mgrT/2nQdcaEArOiGjQbLa/k/shnHoY4WkrHaEAxn8134aF/2wlb3kpordKv
+        6woGBkyova35sHK+e9dYSkuq8qS9S/3ciikOGSbBIedmtSG6PdCizOB8uY4bL1oQ+SLsoHN/kcVix
+        3ogE4BhlwnevwpJU09OALRUhFgN3P59PTVTC/uWaL6+EWlXWa9T6D5EZtBS0Ka7JtSZorJzuNSi20
+        MxjTw0zg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mhtMH-00Dkn7-Vb; Tue, 02 Nov 2021 12:57:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8EF783005F4;
+        Tue,  2 Nov 2021 13:57:44 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1DB0D2C8D22FD; Tue,  2 Nov 2021 13:57:44 +0100 (CET)
+Date:   Tue, 2 Nov 2021 13:57:44 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Mark Rutland <mark.rutland@arm.com>, X86 ML <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
+Message-ID: <YYE1yPClPMHvyvIt@hirez.programming.kicks-ass.net>
+References: <CAMj1kXF4ZNAvdC8tP_H=v1Dn_Zcv=La11Ok43ceQOyb1Xo1jXQ@mail.gmail.com>
+ <CAMj1kXEvemVOWf4M_0vsduN_kiCsGVmM92cE7KPMoNKViKp=RQ@mail.gmail.com>
+ <20211031163920.GV174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXHk5vbrT49yRCivX3phrEkN6Xbb+g8WEmavL_d1iE0OxQ@mail.gmail.com>
+ <YX74Ch9/DtvYxzh/@hirez.programming.kicks-ass.net>
+ <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
+ <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
+ <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
+ <20211101090155.GW174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXGhRmdM3om289Q2-s1Pzfob3D2iSDMorzggfhSk1oj53A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="2JFBq9zoW8cOFH7v"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211101114224.924071362@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAMj1kXGhRmdM3om289Q2-s1Pzfob3D2iSDMorzggfhSk1oj53A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 01, 2021 at 03:14:41PM +0100, Ard Biesheuvel wrote:
+> On Mon, 1 Nov 2021 at 10:05, Peter Zijlstra <peterz@infradead.org> wrote:
 
---2JFBq9zoW8cOFH7v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > How is that not true for the jump table approach? Like I showed earlier,
+> > it is *trivial* to reconstruct the actual function pointer from a
+> > jump-table entry pointer.
+> >
+> 
+> That is not the point. The point is that Clang instruments every
+> indirect call that it emits, to check whether the type of the jump
+> table entry it is about to call matches the type of the caller. IOW,
+> the indirect calls can only branch into jump tables, and all jump
+> table entries in a table each branch to the start of some function of
+> the same type.
+> 
+> So the only thing you could achieve by adding or subtracting a
+> constant value from the indirect call address is either calling
+> another function of the same type (if you are hitting another entry in
+> the same table), or failing the CFI type check.
 
-Hi!
+Ah, I see, so the call-site needs to have a branch around the indirect
+call instruction.
 
-> This is the start of the stable review cycle for the 4.19.215 release.
-> There are 35 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Instrumenting the callee only needs something like BTI, and a
+> consistent use of the landing pads to ensure that you cannot trivially
+> omit the check by landing right after it.
 
-CIP testing did not find any problems here:
+That does bring up another point tho; how are we going to do a kernel
+that's optimal for both software CFI and hardware aided CFI?
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.19.y
+All questions that need answering I think.
 
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
 
-Best regards,
-                                                                Pavel
+So how insane is something like this, have each function:
 
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+foo.cfi:
+	endbr64
+	xorl $0xdeadbeef, %r10d
+	jz foo
+	ud2
+	nop	# make it 16 bytes
+foo:
+	# actual function text goes here
 
---2JFBq9zoW8cOFH7v
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+And for each hash have two thunks:
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYYE1ngAKCRAw5/Bqldv6
-8tnlAKCXTMpJAngDAszqGPXfwVxtV4SlVgCeIwgPQgbJTIEtaapr5ShmTCSHY+M=
-=5P3+
------END PGP SIGNATURE-----
 
---2JFBq9zoW8cOFH7v--
+	# arg: r11
+	# clobbers: r10, r11
+__x86_indirect_cfi_deadbeef:
+	movl -9(%r11), %r10		# immediate in foo.cfi
+	xorl $0xdeadbeef, %r10		# our immediate
+	jz 1f
+	ud2
+1:	ALTERNATIVE_2	"jmp *%r11",
+			"jmp __x86_indirect_thunk_r11", X86_FEATURE_RETPOLINE
+			"lfence; jmp *%r11", X86_FEATURE_RETPOLINE_AMD
+
+
+
+	# arg: r11
+	# clobbers: r10, r11
+__x86_indirect_ibt_deadbeef:
+	movl $0xdeadbeef, %r10
+	subq $0x10, %r11
+	ALTERNATIVE "", "lfence", X86_FEATURE_RETPOLINE
+	jmp *%r11
+
+
+
+And have the actual indirect callsite look like:
+
+	# r11 - &foo
+	ALTERNATIVE_2	"cs call __x86_indirect_thunk_r11",
+			"cs call __x86_indirect_cfi_deadbeef", X86_FEATURE_CFI
+			"cs call __x86_indirect_ibt_deadbeef", X86_FEATURE_IBT
+
+Although if the compiler were to emit:
+
+	cs call __x86_indirect_cfi_deadbeef
+
+we could probaly fix it up from there.
+
+
+Then we can at runtime decide between:
+
+  {!cfi, cfi, ibt} x {!retpoline, retpoline, retpoline-amd}
+
