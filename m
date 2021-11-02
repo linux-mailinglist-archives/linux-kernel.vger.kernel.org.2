@@ -2,73 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFDF7443864
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2BD443873
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhKBW1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:27:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43518 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229685AbhKBW1b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 18:27:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 935266103C;
-        Tue,  2 Nov 2021 22:24:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635891895;
-        bh=93ugh0/BharcNUSuO+AJG4ohymbTtkSYR9JCqKEs5M0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TcQUCOBO5p4PfBwfe7iqQTP0rDNmMuNFAy+MfUl4JStO0J7EHdgibkSlSVRlQd1UW
-         Jx9GCgP+4ZCri5XjnvSeoQgS2VIrGkIaljYiZaU0vUpO5RACU0gvntOLh9tOal1VAE
-         ZbrQ1ukoRnjjC+J3D+ZCdkykrTY4mtwQm1BtMAgthGbsKK5un9MkR1M+erh4Mztuyg
-         sXilXG01WL2wapo6rn98FxDbxx/F/7qgozdEoVGwqku9A9N+2tYnjmd5OcRsamwIRi
-         51nXgMTQahWK1ljnl//OyuT/BC5ZikAGm6Gok7puHca30dsJDmbI4YzuphHIJi1Rkc
-         NuE9GRuifODyw==
-Date:   Tue, 2 Nov 2021 15:24:55 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 03/21] block: Add bio_for_each_folio_all()
-Message-ID: <20211102222455.GI24307@magnolia>
-References: <20211101203929.954622-1-willy@infradead.org>
- <20211101203929.954622-4-willy@infradead.org>
- <YYDlEmcpkTrph5HI@infradead.org>
- <YYGebqvswvJBdxuc@casper.infradead.org>
+        id S231230AbhKBW3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:29:47 -0400
+Received: from mail-pg1-f182.google.com ([209.85.215.182]:43654 "EHLO
+        mail-pg1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229685AbhKBW3m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 18:29:42 -0400
+Received: by mail-pg1-f182.google.com with SMTP id b4so620101pgh.10;
+        Tue, 02 Nov 2021 15:27:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LPagmY9ax5jGwuuYaLAQO2StTmpuEoeH5CDXl+WMcP0=;
+        b=mzdk7bA0Tzx2fOS9H/zthww5CmGblzRU04TxVH1RbXpuSR4fGwcI0G+pOUbY5JTtYN
+         DPrqXwv7tOKikYpy0lOitY+f9JHAwDJSiwdUlBb7OovXT44plkz1FCQ3iWx/ms8Cq1RP
+         OUsBJh4KsTGmL0Tl5jgTe1ZkyjnyuImE7dnZeygVQ8dShKxEHlnA2VDJSkQ3mhGaZVU0
+         PnosyalokxEOxFZ/KUwDbiWTmoe6lqsJEBQU0a5rcd+k4NjooRuvxCVCDMZGoEiKJuhN
+         mPn6/01+7FscaEe0hdsOvyrDujh5wHOBQhDwa61vG2h4R1Eh+mYO/fcgZLZOaymZLEfF
+         6Dqw==
+X-Gm-Message-State: AOAM530UkzUplXnZcn9AdJTzaXNf85nPuiaYeHoxOcK8UYkUHA7kVT8r
+        bQ2t5Re8uJMypR4dax6lOV0=
+X-Google-Smtp-Source: ABdhPJyj7hc3qRc+L8ZUozDCjohl33jRvYGbO4S0ha0Ex/fT1ibQcpQs4rSMq4fAuqpnUDiF39UpnQ==
+X-Received: by 2002:a63:9f1a:: with SMTP id g26mr29819553pge.170.1635892027169;
+        Tue, 02 Nov 2021 15:27:07 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:55da:34a:7577:bc7])
+        by smtp.gmail.com with ESMTPSA id y7sm101248pge.44.2021.11.02.15.27.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 15:27:06 -0700 (PDT)
+Subject: Re: [PATCH] scsi: core: initialize cmd->cmnd before it is used
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>, dgilbert@interlog.com,
+        linux-scsi@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        syzbot+5516b30f5401d4dcbcae@syzkaller.appspotmail.com
+References: <20211101192417.324799-1-tadeusz.struk@linaro.org>
+ <4cfa4049-aae5-51db-4ad2-b4c9db996525@acm.org>
+ <0024e0e1-589c-e2cd-2468-f4af8ec1cb95@linaro.org>
+ <da8d3418-b95c-203d-16c3-8c4086ceaf73@acm.org>
+ <8fbb619a-37b3-4890-37e0-b586bdee49d6@interlog.com>
+ <17a1b72e-2c2a-8492-cb92-4dec36a6531d@acm.org>
+ <cad499a9-7587-1fa9-9f7d-223e66a18efa@interlog.com>
+ <f80fd188-a0e5-2e75-506c-3e82d138fe28@linaro.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <9115c893-3fcd-ae81-7422-723ae5370319@acm.org>
+Date:   Tue, 2 Nov 2021 15:27:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYGebqvswvJBdxuc@casper.infradead.org>
+In-Reply-To: <f80fd188-a0e5-2e75-506c-3e82d138fe28@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 08:24:14PM +0000, Matthew Wilcox wrote:
-> On Tue, Nov 02, 2021 at 12:13:22AM -0700, Christoph Hellwig wrote:
-> > On Mon, Nov 01, 2021 at 08:39:11PM +0000, Matthew Wilcox (Oracle) wrote:
-> > > +static inline
-> > > +void bio_first_folio(struct folio_iter *fi, struct bio *bio, int i)
-> > 
-> > Please fix the weird prototype formatting here.
-> 
-> I dunno, it looks weirder this way:
-> 
-> -static inline
-> -void bio_first_folio(struct folio_iter *fi, struct bio *bio, int i)
-> +static inline void bio_first_folio(struct folio_iter *fi, struct bio *bio,
-> +               int i)
-> 
-> Anyway, I've made that change, but I still prefer it the way I had it.
+On 11/2/21 3:22 PM, Tadeusz Struk wrote:
+> Do you want me to send a patch with the check in scsi_fill_sghdr_rq()?
+> I want to close the mentioned syzbot issue in 5.10. I can also do the
+> back-porting if anything will be required.
 
-I /think/ Christoph meant:
+Hi Tadeusz,
 
-static inline void
-bio_first_folio(...)
+I think we need two patches: one for the SG_IO code that rejects SG_IO
+requests if the CDB length is not valid and a second patch that removes
+the code from scsi_lib.c for assigning the CDB length. Please let me
+know if you would not have the time to work on this.
 
-Though the form that you've changed it to is also fine.
+Bart.
 
---D
 
-> > Otherwise looks good:
-> > 
-> > Reviewed-by: Christoph Hellwig <hch@lst.de>
