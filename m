@@ -2,238 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2434431FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB31443201
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 16:48:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232782AbhKBPu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 11:50:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234368AbhKBPuX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 11:50:23 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D0AC061714;
-        Tue,  2 Nov 2021 08:47:47 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id m14so24291319edd.0;
-        Tue, 02 Nov 2021 08:47:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=auc7OgLCpATUuyoO8qYN4YH3bnE9LQ0zTQtkgZFev+I=;
-        b=dwbRfoKq4gVI6dLN+m2fblo9Cm9hxniPkmZw3Fsfm5Oy3vF5cC1VYM2boNPa8OZaKN
-         RsFEqFGYOoGJU8nJTax3smVIZJ4Qn1SuAGkqcfmHuhNmCuMOizbKR8W10x1lAc3oohX6
-         a/s7+qJH/jiKyqupANDIcsuNaTMypBsFt+zXtVVtDY/G9xC9l18DsgJvVBjlgXRVdeRW
-         zNvafJHrdtR3z0OfaUDbEk/4NzUofNlCwzEZ+Sjca7yocO76nRXgUBikkB0Fls5EQYGX
-         I5IeajNXG0Q3SOLfXmnlKm0q7Gv+Oa5TI1tuTuJ+Dqx/KK97L/F34HdaIA/aBHEDvGZ+
-         UZoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=auc7OgLCpATUuyoO8qYN4YH3bnE9LQ0zTQtkgZFev+I=;
-        b=b2bpD9bRfpln8wv2qq6STlLoSIq/ZCOKySYttlHPaxS47xg/Gx/ISOIW/4nh0TAFXx
-         lnNOX0HHYC5evga8XA3KvqWlqC1XiqsUWXDg6ilP67JbK0Gdyq1BBjjEKsPgU/Fvu6xt
-         LUngmvtAKyV8gPtViztHWFvfdSn5bGE04rEbXn5qaQPFtJiCz3v6hJcDqm3ynMJPCZYe
-         gRu481yfsiB8Ji5JYnILF33obGBC8JQ+Yb5tPsCpC/kZH6xaeG/NbuFXNQsGIN/udDxp
-         jRLJiU0maEpHHcIGDNAgtLuZMs2giRPCAaYvJBZFIegu4zfygXK1DltZnxbhHr62CbFX
-         uFkw==
-X-Gm-Message-State: AOAM530038M/JLz5UXBFnjW0VwYqJjVIEMQLrz/YLspEeDYmtF1HsMku
-        nmrhaRbjfp4Pc5ULE08QdzE=
-X-Google-Smtp-Source: ABdhPJw6ue1bg9MQoVbz2o+REGts6UBWFADGp6/8AduIJoGC1/8Uw38E9pZNbMsY+Mt4amyJev28zg==
-X-Received: by 2002:a50:e089:: with SMTP id f9mr52052884edl.290.1635868065292;
-        Tue, 02 Nov 2021 08:47:45 -0700 (PDT)
-Received: from tom-ThinkBook-14-G2-ARE ([89.42.6.254])
-        by smtp.gmail.com with ESMTPSA id q2sm8339785eje.118.2021.11.02.08.47.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 08:47:44 -0700 (PDT)
-Date:   Tue, 2 Nov 2021 16:47:42 +0100
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Peng Fan <peng.fan@nxp.com>, Alice Guo <alice.guo@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>
-Subject: Re: [PATCH] arm64: dts: imx8m: add syscon node for display_blk_ctrl
- module regs
-Message-ID: <20211102154742.GA86474@tom-ThinkBook-14-G2-ARE>
-References: <20211101222857.6940-1-tomm.merciai@gmail.com>
- <c04d4af6-8c7b-da23-d562-78324948ac35@pengutronix.de>
- <20211101225827.GA9208@tom-desktop>
- <CAHCN7xLDHCQoA41FJpP3GY+nbFm99zf=tspHSOXkeFogMF22+A@mail.gmail.com>
- <20211102115739.GA48972@tom-ThinkBook-14-G2-ARE>
- <CAHCN7xLoePWS33HsFANcHQB2-VgQVNG40EgDoz+-xba810XPBQ@mail.gmail.com>
+        id S234455AbhKBPvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 11:51:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234309AbhKBPvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 11:51:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FC9F60EDF;
+        Tue,  2 Nov 2021 15:48:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635868113;
+        bh=BHm+QTa4p5+sFBXS+kVc0X588xMrOSvDZH+YSNCv6v4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iRy+tNKqnvjdg56I8GVD8WM/MoVIYqZmf3V1GJken0L0oCB2MYmJsh0f9Nqjo7Rub
+         3M8xNd2+X8dNHgcQA58Q+3aEE2jy/OQAiC97BBp0UqUqeU7aM9KkivXc9dafkFdKf6
+         7QyUzpX2E0WYGAvCU0/v2GSTDm/hZVVNiJBhWZ1GN9QgdwAHtIm9u/rdSyzaJ2WxwN
+         5D9XfpNgxl8NkAx94nJ9iPRiKNtrvZxgE34OT0gbfUfGI8AfEhPxTAATJT2BWtaobd
+         GBPHndCgdS1GgdxLtAyd1y/9WfkpElTdm++QYO6EkwjY4LqNIwxROaPtmJQlzgJAFW
+         EfjZm1Q4kR0Pg==
+Received: by pali.im (Postfix)
+        id 4BEE0A41; Tue,  2 Nov 2021 16:48:31 +0100 (CET)
+Date:   Tue, 2 Nov 2021 16:48:31 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Marvell: Update PCIe fixup
+Message-ID: <20211102154831.xtrlgrmrizl5eidl@pali>
+References: <20211101150405.14618-1-pali@kernel.org>
+ <20211102084241.GA6134@alpha.franken.de>
+ <20211102090246.unmbruykfdjabfga@pali>
+ <20211102094700.GA7376@alpha.franken.de>
+ <20211102100034.rhcb3k2jvr6alm6y@pali>
+ <alpine.DEB.2.21.2111021210180.57165@angie.orcam.me.uk>
+ <20211102125843.sqsusis4krnmhorq@pali>
+ <alpine.DEB.2.21.2111021312160.57165@angie.orcam.me.uk>
+ <20211102144929.c5wt5pbl42ocrxly@pali>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHCN7xLoePWS33HsFANcHQB2-VgQVNG40EgDoz+-xba810XPBQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211102144929.c5wt5pbl42ocrxly@pali>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 07:23:06AM -0500, Adam Ford wrote:
-> The upcoming 5.16 kernel will have a new blk-ctrl driver which will
-> work in conjunction with the GPC.  You can see it in linux-next [1],
-> and I would expect it to be present in 5.16-rc1 once the merge is
-> done.
-> 
-> In [1], Look for :
-> 
-> disp_blk_ctrl: blk-ctrl@32e28000 {
->     compatible = "fsl,imx8mm-disp-blk-ctrl", "syscon";
-> 
-> It creates a bunch of virtual power domains which are effectively the
-> resets for the VPU, CSI, DSI, and LCDIF [2].
-> 
-> Basically, to pull the respective device out of reset, you'd reference
-> them using power-domains.  I have an RFC patch for the CSI located [3]
-> which should bring the GPC power domain up, then take the CSI bridge
-> and MIPI_CSI out of reset using the blk-ctrl.  A few of us are still
-> investigating the CSI bridge and mipi_csi drivers to determine what's
-> going wrong, but  inside that patch, you'll see that we reference
-> "power-domains = <&disp_blk_ctrl IMX8MM_DISPBLK_PD_CSI_BRIDGE>;" and
-> "power-domains = <&disp_blk_ctrl IMX8MM_DISPBLK_PD_MIPI_CSI>;" which
-> are part of the new blk-ctrl driver @32e2800.  Other peripherals like
-> LCD, DSI, and the VPU's should be able to reference their respective
-> power domains to activate the corresponding resets after enabling the
-> proper GPC power domain.
+On Tuesday 02 November 2021 15:49:29 Pali Rohár wrote:
+> On Tuesday 02 November 2021 14:01:41 Maciej W. Rozycki wrote:
+> > On Tue, 2 Nov 2021, Pali Rohár wrote:
+> > 
+> > > >  None of the Galileo system controllers I came across had the class code 
+> > > > set incorrectly.
+> > > 
+> > > In kernel there is quirk only for one device with id:
+> > > PCI_VENDOR_ID_MARVELL (0x11ab) PCI_DEVICE_ID_MARVELL_GT64111 (0x4146)
+> > > 
+> > > So for some reasons quirk is needed... Anyway, patch for this quirk just
+> > > adds comment as there is no explanation for it. It does not modify quirk
+> > > code.
+> > > 
+> > > So it is possible that Marvell (or rather Galileo at that time) included
+> > > some config space fixup in some products and 0x4146 did not have it.
+> > > Just guessing... We can really only guess what could happen at that time
+> > > 20 years ago...
+> > 
+> >  Ah, there you go! -- sadly I don't seem to have a copy of the datasheet 
+> > for the GT-64111, but the GT-64115 has it[1]:
+> > 
+> > Table 158: PCI Class Code and Revision ID, Offset: 0x008
+> >  Bits  Field name Function                                     Initial Value
+> >  7:0   RevID      Indicates the GT-64115 PCI Revision          0x01
+> >                   number.
+> >  15:8  Reserved   Read only.                                   0x0
+> >  23:16 SubClass   Indicates the GT-64115 Subclass - Mem-       0x80
+> >                   ory controller.
+> >  31:24 BaseClass  Indicates the GT-64115 Base Class -          0x05
+> >                   memory controller.
+> > 
+> > and then:
+> > 
+> > "Device and Vendor ID (0x000), Class Code and Revision ID (0x008), and 
+> > Header Type (0x00e) fields are read only from the PCI bus.  These fields 
+> > can be modified and read via the CPU bus."
+> > 
+> > Likewise with the GT-64120[2]:
+> > 
+> > Table 208: PCI_0 Class Code and Revision ID, Offset: 0x008 from PCI_0 or CPU; 0x088 from
+> >            PCI_1
+> >  Bits  Field name Function                                      Initial Value
+> >  7:0   RevID      Indicates the GT-64120 PCI_0 revision number. 0x02
+> >  15:8  Reserved   Read Only 0.                                  0x0
+> >  23:16 SubClass   Indicates the GT-64120 Subclass               Depends on value
+> >                   0x00 - Host Bridge Device.                    sampled at reset
+> >                   0x80 - Memory Device.                         on BankSel[0]. See
+> >                                                                 Table 44 on page
+> >                                                                 11-1.
+> >  31:24 BaseClass  Indicates the GT-64120 Base Class             Depends on value
+> >                   0x06 - Bridge Device.                         sampled at reset
+> >                   0x05 - Memory Device.                         on BankSel[0]. See
+> >                                                                 Table 44 on page
+> >                                                                 11-1.
+> > 
+> > Table 209: PCI_1 Class Code and Revision ID, Offset: 0x088 from PCI_0 or CPU; 0x008 from
+> >            PCI_1
+> >  Bits  Field name Function                                      Initial Value
+> >  31:0  Various    Same as for PCI_0 Class Code and Revision ID.
+> > 
+> > and then also:
+> > 
+> > "Device and Vendor ID (0x000), Class Code and Revision ID (0x008), and 
+> > Header Type (0x00e) fields are read only from the PCI bus.  These fields 
+> > can be modified and read via the CPU bus."
+> > 
+> > -- so this is system-specific and an intended chip feature rather than an 
+> > erratum (or rather it is a system erratum if the reset strap or the boot 
+> > firmware has got it wrong).
+> > 
+> >  The memory device class code is IIUC meant to be typically chosen when 
+> > the Galileo/Marvell device is used without the CPU interface, i.e. as a 
+> > PCI memory controller device only[3].
 
-  Hi Adam,
-  Then is all done right. Using this this new driver/dts node eLCDIF/mipi_dsi 
-  module are out of reset. Thanks for the tips. I'm trying to get eLCDIF/mipi_dsi 
-  work on mainline. I try to get work 
+I have found on internet some copy of GT64111 datasheet ("GT-64111
+System Controller for RC4640, RM523X and VR4300 CPUs", Galileo
+Technology, Product Preview Revision 1.1, FEB 4, 1999) and in section
+"17.15 PCI Configuration Registers" there is subsection "Class Code and
+Revision ID, Offset: 0x008" with content:
 
-  - eLCDIF using: mxsfb_drv.c
-  - mipi_dsi using: nwl-dsi.c
+Bits  Field name Function                                           Initial Value
+7:0   RevID      Indicates the GT-64111 Revision number.            0x10
+                 GT-64111-P-0 = 0x10
+15:8  Reserved                                                      0x0
+23:16 SubClass   Indicates the GT-64111 Subclass (0x80 - other mem- 0x80
+                 ory controller)
+31:24 BaseClass  Indicates the GT-64111 Base Class (0x5 - memory    0x05
+                 controller).
 
-  What do you think about? You think that can be a good way ( taking
-  imx8mq as reference )?
+And in section "6.5.3 PCI Autoconfiguration at RESET" is following
+interesting information:
 
-  Let me know.
-  Thanks,
+Eight PCI registers can be automatically loaded after Rst*.
+Autoconfiguration mode is enabled by asserting the DMAReq[3]* LOW on
+Rst*. Any PCI transactions targeted for the GT-64111 will be retried
+while the loading of the PCI configuration registers is in process.
 
-  Tommaso
+It is highly recommended that all PC applications utilize the PCI
+Autoconfiguration at RESET feature. The autoload feature can be easily
+implemented with a very low cost EPLD. Galileo provides sample EPLD
+equations upon request. (You can always pull the EPLD off your final
+product if you find there are no issues during testing.)
+
+NOTE: The GT-64111’s default Class Code is 0x0580 (Memory Controller)
+which is a change from the GT-64011.
+
+The GT-64011 used the Class Code 0x0600 which denotes Host Bridge. Some
+PCs refuse to configure host bridges if they are found plugged into a
+PCI slot (ask the BIOS vendors why...). The “Memory Controller” Class
+Code does not cause a problem for these non-compliant BIOSes, so we used
+this as the default in the GT-64111. The Class Code can be reporgrammed
+in both devices via autoload or CPU register writes.
+
+The PCI register values are loaded from the ROM controlled by BootCS*
+are shown in Table 21, below.
+
+TABLE 21. PCI Registers Loaded at RESET
+Register                        Offset Boot Device Address
+Device and Vendor ID            0x000  0x1fffffe0
+Class Code and Revision ID      0x008  0x1fffffe4
+Subsystem Device and Vendor ID  0x02c  0x1fffffe8
+Interrupt Pin and Line          0x03c  0x1fffffec
+RAS[1:0]* Bank Size             0xc08  0x1ffffff0
+RAS[3:2]* Bank Size             0xc0c  0x1ffffff4
+CS[2:0]* Bank Size              0xc10  0x1ffffff8
+CS[3]* & Boot CS* Bank Size     0xc14  0x1ffffffc
+
+===
+
+So the conclusion is that there is also some RESET configuration via
+BootCS (I have no idea what it is or was). And default value (when RESET
+configuration is not used) is always "Memory controller" due to
+existence of "broken PC BIOSes" (probably x86).
+
+Hence the quirk for GT64111 in kernel is always needed. And Thomas
+already confirmed in his pci hexdump that PCI Class code is set to
+Memory Controller.
+
+I hope that now this mystery of this GT64111 quirk is solved :-) I will
+update patch with correct comment, why quirk is needed.
+
+So due to the fact that 20 years ago there were broken x86 BIOSes which
+did not like PCI devices with PCI Class code of Host Bridge, Marvell
+changed default PCI Class code to Memory Controller and let it in this
+state also for future PCIe-based ARM and AR64 SoCs for next 20 years.
+Which generally leaded to broken PCIe support in mvebu SoCs. I have no
+more comments about it... :-(
+
+> > > > The lack of a quirk with a platform does not mean it cannot have a certain 
+> > > > PCI/e device.
+> > > 
+> > > This is 11ab:4620 device an there is no PCIe capability in its config
+> > > space (you can inspect it via 'lspci -F dump.txt -nn -vv' but there is
+> > > nothing interesting).
+> > 
+> >  Of course, just as Thomas told you about the GT-64111 too.  But you were 
+> > right in that the memory controller feature seems shared across all the 
+> > chip line, whether PCI or PCIe.
+> > 
+> > References:
+> > 
+> > [1] "GT-64115 System Controller for RC4640, RM523X, and VR4300 CPUs", 
+> >     Galileo Technology, Datasheet Revision 1.11, APR 04, 2000, Section 
+> >     18.16 "PCI Configuration", p. 161
+> > 
+> > [2] "GT-64120 System Controller For RC4650/4700/5000 and RM526X/527X/7000 
+> >     CPUs", Galileo Technology, Datasheet Revision 1.4, SEP 14, 1999, 
+> >     Section 17.16 "PCI Configuration", p. 17-59
+> > 
+> > [3] same, Chapter 14. "Using the GT-64120 Without the CPU Interface", p. 
+> >     14-1
+> > 
+> >   Maciej
 > 
+> Hello Maciej! Thank you very much for the explanation!
 > 
-> [1] - https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/arch/arm64/boot/dts/freescale/imx8mm.dtsi?h=next-20211102
-> [2] - https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/include/dt-bindings/power/imx8mm-power.h?h=next-20211102
-> [3] - https://patchwork.kernel.org/project/linux-arm-kernel/patch/20211023203457.1217821-2-aford173@gmail.com/
+> Now it makes sense and looks like that for GT-64111 it is "system
+> erratum" that strapping pins are incorrectly set which leads to wrong
+> PCI class code.
 > 
-> On Tue, Nov 2, 2021 at 6:59 AM Tommaso Merciai <tomm.merciai@gmail.com> wrote:
-> >
-> > On Mon, Nov 01, 2021 at 11:22:21PM -0500, Adam Ford wrote:
-> > > On Mon, Nov 1, 2021 at 5:58 PM Tommaso Merciai <tomm.merciai@gmail.com> wrote:
-> > > >
-> > > > On Mon, Nov 01, 2021 at 11:35:49PM +0100, Ahmad Fatoum wrote:
-> > > > > Hello Tommaso,
-> > > > >
-> > > > > On 01.11.21 23:28, Tommaso Merciai wrote:
-> > > > > > Add system controller node for registers of module Display Block Control
-> > > > > > (DISPLAY_BLK_CTRL, base address: 0x32e28000).
-> > > > > > The DISPLAY_BLK_CTRL module contains general purpose registers (GPRs),
-> > > > > > which control varied features of the associated peripherals.
-> > > > > > Reference: IMX8MMRM Rev. 3, 11/2020, p 3897
-> > > > > > ---
-> > > > > >  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 5 +++++
-> > > > > >  1 file changed, 5 insertions(+)
-> > > > > >
-> > > > > > diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> > > > > > index 2f632e8ca388..3e496b457e1a 100644
-> > > > > > --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> > > > > > +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> > > > > > @@ -961,6 +961,11 @@ aips4: bus@32c00000 {
-> > > > > >                     #size-cells = <1>;
-> > > > > >                     ranges = <0x32c00000 0x32c00000 0x400000>;
-> > > > > >
-> > > > > > +                   dispmix_gpr: display-gpr@32e28000 {
-> > > > > > +                           compatible = "fsl, imx8mm-iomuxc-gpr", "syscon";
-> > > > >
-> > > > > Please read vendor patches before submitting them. The space
-> > > > > is out-of-place in the compatible and the compatible is wrong:
-> > > > > This doesn't look like a i.MX8MM pin controller.
-> > > > >
-> > > > > Cheers,
-> > > > > Ahmad
-> > > >
-> > > >   Hi Ahmad,
-> > > >   Thanks for your review. Do you think this is correct?
-> > > >
-> > > >   compatible = "fsl,imx8mm-dispmix-gpr", "syscon";
-> > > >
-> > > >   Let me know.
-> > >
-> > > There was already a driver created for the blk-ctrl stuff and it has a
-> > > device tree binding at 32e28000.  It's tied into the power-domain
-> > > system, so if you want to enable the csi, dsi, or lcd, etc. you can
-> > > just reference the blt-ctrl power domain index, and it enables the
-> > > device's gpc power domain and takes the corresponding device out of
-> > > reset.
-> >
-> >   Hi Adam,
-> >   You mean using the gpcv2.c driver?
-> >
-> >   drivers/soc/imx/gpcv2.c
-> >
-> >   With the following node, to put out of reset eLCDIF and mipi_dsi:
-> >
-> >   gpc: gpc@303a0000 {
-> >         compatible = "fsl,imx8mm-gpc";
-> >         reg = <0x303a0000 0x10000>;
-> >         interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
-> >         interrupt-parent = <&gic>;
-> >         interrupt-controller;
-> >         #interrupt-cells = <3>;
-> >
-> >         pgc {
-> >
-> >          #address-cells = <1>;
-> >          #size-cells = <0>;
-> >          pgc_mipi: power-domain@0 {
-> >                                         #power-domain-cells = <0>;
-> >                                         reg = <IMX8M_POWER_DOMAIN_MIPI>;
-> >                                   };
-> >
-> >         pgc_disp: power-domain@7 {
-> >                                         #power-domain-cells = <0>;
-> >                                         reg = <IMX8M_POWER_DOMAIN_DISP>;
-> >                                  };
-> >    };
-> >   };
-> >
-> >   Let me know.
-> >
-> >   Thanks,
-> >   Tommaso
-> >
-> > >
-> > > adam
-> > > >
-> > > >   Thanks,
-> > > >   Tommaso
-> > > >
-> > > > >
-> > > > > > +                           reg = <0x32e28000 0x100>;
-> > > > > > +                   };
-> > > > > > +
-> > > > > >                     usbotg1: usb@32e40000 {
-> > > > > >                             compatible = "fsl,imx8mm-usb", "fsl,imx7d-usb";
-> > > > > >                             reg = <0x32e40000 0x200>;
-> > > > > >
-> > > > >
-> > > > >
-> > > > > --
-> > > > > Pengutronix e.K.                           |                             |
-> > > > > Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-> > > > > 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-> > > > > Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> I will update comment for GT-64111 quirk in v2.
+> 
+> I'm surprised that Marvell copied this 20 years old MIPS Galileo PCI
+> logic into followup ARM SoC PCIe IPs (and later also into recent ARM64
+> A3720 SoC PCIe IP), removed configuration of PCI class code via
+> strapping pins and let default PCI class code value to Memory device,
+> even also when PCIe controller is running in Root Complex mode. And so
+> correction can be done only from "CPU bus".
+> 
+> Just Marvell forgot to include chapter about usage without CPU interface
+> in new ARM and ARM64 SoCs and origin/usage of that Memory Controller
+> Device was lost in history, even Marvell people was not able to figure
+> out what was wrong with PCIe IP in their ARM SoCs...
+> https://lore.kernel.org/linux-pci/20211003120944.3lmwxylnhlp2kfj7@pali/
+> 
+> Maciej, if I had known that you have this kind of information I would
+> have written you year ago :-)
