@@ -2,111 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6EE4438C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:52:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 896D14438CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Nov 2021 23:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhKBWza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 18:55:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59538 "EHLO mail.kernel.org"
+        id S231230AbhKBW4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 18:56:37 -0400
+Received: from mga04.intel.com ([192.55.52.120]:52218 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229685AbhKBWz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 18:55:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40DBB6044F;
-        Tue,  2 Nov 2021 22:52:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635893573;
-        bh=cTstKgx9m0Sh1q6mCiNjCpoALRcGk8ifU4/m88M8cv0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kMLW3mbMG6pyMU10wApwwn7boni9kbp57SJkk9BNGgTbRqONhOKuWKXvCx5koC2zb
-         9HvNwjmFE0DLzx5f7UarSFvBTm8OxvU9IPmxYPSaJIGR+uHszclrrmq9p4mQfuGPFO
-         Q5a1S1Y8RRYTU9iVi/0kp6VmYNEdAQTfErCBAvQrjkYgnaXnCE52GFhjWv5ypQrxrT
-         sVGcQFGvn/kZ8CO2Pc4DCA2nBMxGB/atSRNcGa5ilTScBjJRlbTtJkSK7fzrSrNR3t
-         gP/o1PPUKkRJJpJtFCj8Y7TxxQouYiTxaX4uj7CF6aSUDgaZCz/01C8O3tIOpcRQ93
-         6bgJ8ebt8Ae9A==
-Date:   Tue, 2 Nov 2021 22:52:45 +0000
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        id S229685AbhKBW4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 18:56:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10156"; a="230105615"
+X-IronPort-AV: E=Sophos;i="5.87,203,1631602800"; 
+   d="scan'208";a="230105615"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 15:53:22 -0700
+X-IronPort-AV: E=Sophos;i="5.87,203,1631602800"; 
+   d="scan'208";a="489298161"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 15:53:22 -0700
+From:   ira.weiny@intel.com
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Yang Li <abaci-bugfix@linux.alibaba.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Alan <alan@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [BUG/RFC PATCH 3/5] [BUG][RFC] media: atomisp: pci: add NULL
- check for asd obtained from atomisp_video_pipe
-Message-ID: <20211102225245.0cd3bd20@sal.lan>
-In-Reply-To: <YYFd/Zb4aT3Qfjpi@smile.fi.intel.com>
-References: <20211017162337.44860-1-kitakar@gmail.com>
-        <20211017162337.44860-4-kitakar@gmail.com>
-        <20211102130245.GE2794@kadam>
-        <CAHp75VeThcCywYZsrUNYSA3Yc3MjJwfiCBCGep1DpWFFUg71cw@mail.gmail.com>
-        <CAHp75VdnvxCWYrdrBqtSDP0A2PCT6dYvHAhszY9iH9ooWKT49g@mail.gmail.com>
-        <20211102150523.GJ2794@kadam>
-        <YYFd/Zb4aT3Qfjpi@smile.fi.intel.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>,
+        linux-doc@vger.kernel.org
+Subject: [PATCH v2] Documentation/auxiliary_bus: Clarify auxiliary_device creation
+Date:   Tue,  2 Nov 2021 15:53:10 -0700
+Message-Id: <20211102225310.3677785-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+In-Reply-To: <87k0hq2oxc.fsf@meer.lwn.net>
+References: <87k0hq2oxc.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 2 Nov 2021 17:49:17 +0200
-Andy Shevchenko <andy.shevchenko@gmail.com> escreveu:
+From: Ira Weiny <ira.weiny@intel.com>
 
-> On Tue, Nov 02, 2021 at 06:05:23PM +0300, Dan Carpenter wrote:
-> > On Tue, Nov 02, 2021 at 04:45:20PM +0200, Andy Shevchenko wrote:  
-> > > On Tue, Nov 2, 2021 at 4:44 PM Andy Shevchenko
-> > > <andy.shevchenko@gmail.com> wrote:  
-> > > > On Tue, Nov 2, 2021 at 3:10 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:  
-> > > > > On Mon, Oct 18, 2021 at 01:23:34AM +0900, Tsuchiya Yuto wrote:  
-> 
-> ...
-> 
-> > > > > Run your patches through scripts/checkpatch.pl.  
-> > > >
-> > > > While it's good advice, we are dealing with quite a bad code under
-> > > > staging, so the requirements may be relaxed.  
+The documentation for creating an auxiliary device is a 3 step not a 2
+step process.  Specifically the requirements of setting the name, id,
+dev.release, and dev.parent fields was not clear as a precursor to the '2
+step' process documented.
 
-FYI, I fixed the checkpatch issue when I applied at media_stage:
+Clarify by declaring this a 3 step process starting with setting the
+fields of struct auxiliary_device correctly.
 
-	https://git.linuxtv.org/media_stage.git/commit/?id=8a5457b7c7c3b6aa1789b18bbaff9b6a99d74caa
+Also add some sample code and tie the change into the rest of the
+documentation.
 
-Ok, I could have instead replied to Tsuchiya instead, but, as Andy
-pointed, those patches solved longstanding issues at the atomisp
-driver. So, I just went ahead and cleaned up the issue ;-)
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-> > > 
-> > > To be more clear: the goal now is getting it _working_. That's why
-> > > this kind of noise is not important _for now_.  
-> > 
-> > If it's a new driver, then we accept all sorts of garbage, that's true.  
-> 
-> It was in kernel for a while, but never worked (hence anyhow tested)
-> up to the recent effort made by Tsuchiya.
-> 
-> In any case, as I said, we shall run checkpatch in the future when
-> we have something working.
+---
+Changes from V1:
+	From Jonathan
+		Fix auxiliary spelling
+---
+ Documentation/driver-api/auxiliary_bus.rst | 77 +++++++++++++++++-----
+ 1 file changed, 59 insertions(+), 18 deletions(-)
 
-Yeah, agreed. The best is to run checkpatch and save some time from
-the maintainers.
+diff --git a/Documentation/driver-api/auxiliary_bus.rst b/Documentation/driver-api/auxiliary_bus.rst
+index ef902daf0d68..cecfa2db46e6 100644
+--- a/Documentation/driver-api/auxiliary_bus.rst
++++ b/Documentation/driver-api/auxiliary_bus.rst
+@@ -79,18 +79,6 @@ is given a name that, combined with the registering drivers KBUILD_MODNAME,
+ creates a match_name that is used for driver binding, and an id that combined
+ with the match_name provide a unique name to register with the bus subsystem.
+ 
+-Registering an auxiliary_device is a two-step process.  First call
+-auxiliary_device_init(), which checks several aspects of the auxiliary_device
+-struct and performs a device_initialize().  After this step completes, any
+-error state must have a call to auxiliary_device_uninit() in its resolution path.
+-The second step in registering an auxiliary_device is to perform a call to
+-auxiliary_device_add(), which sets the name of the device and add the device to
+-the bus.
+-
+-Unregistering an auxiliary_device is also a two-step process to mirror the
+-register process.  First call auxiliary_device_delete(), then call
+-auxiliary_device_uninit().
+-
+ .. code-block:: c
+ 
+ 	struct auxiliary_device {
+@@ -99,15 +87,68 @@ auxiliary_device_uninit().
+ 		u32 id;
+ 	};
+ 
+-If two auxiliary_devices both with a match_name "mod.foo" are registered onto
+-the bus, they must have unique id values (e.g. "x" and "y") so that the
+-registered devices names are "mod.foo.x" and "mod.foo.y".  If match_name + id
+-are not unique, then the device_add fails and generates an error message.
++Registering an auxiliary_device is a three-step process.
++
++First, a 'struct auxiliary_device' needs to be defined or allocated for each
++sub-device desired.  The name, id, dev.release, and dev.parent fields of this
++structure must be filled in as follows.
++
++The 'name' field is to be given a name that is recognized by the auxiliary
++driver.  If two auxiliary_devices with the same match_name, eg
++"mod.MY_DEVICE_NAME", are registered onto the bus, they must have unique id
++values (e.g. "x" and "y") so that the registered devices names are "mod.foo.x"
++and "mod.foo.y".  If match_name + id are not unique, then the device_add fails
++and generates an error message.
+ 
+ The auxiliary_device.dev.type.release or auxiliary_device.dev.release must be
+-populated with a non-NULL pointer to successfully register the auxiliary_device.
++populated with a non-NULL pointer to successfully register the
++auxiliary_device.  This release call is where resources associated with the
++auxiliary device must be free'ed.  Because once the device is placed on the bus
++the parent driver can not tell what other code may have a reference to this
++data.
++
++The auxiliary_device.dev.parent should be set.  Typically to the registering
++drivers device.
++
++Second, call auxiliary_device_init(), which checks several aspects of the
++auxiliary_device struct and performs a device_initialize().  After this step
++completes, any error state must have a call to auxiliary_device_uninit() in its
++resolution path.
++
++The third and final step in registering an auxiliary_device is to perform a
++call to auxiliary_device_add(), which sets the name of the device and adds the
++device to the bus.
++
++.. code-block:: c
++
++	struct auxiliary_device *my_aux_dev = my_aux_dev_alloc(xxx);
++
++        /* Step 1: */
++	my_aux_dev->name = MY_DEVICE_NAME;
++	my_aux_dev->id = my_unique_id_alloc(xxx);
++	my_aux_dev->dev.release = my_aux_dev_release;
++	my_aux_dev->dev.parent = my_dev;
++
++        /* Step 2: */
++        if (auxiliary_device_init(my_aux_dev))
++                goto fail;
++
++        /* Step 3: */
++        if (auxiliary_device_add(my_aux_dev)) {
++                auxiliary_device_uninit(my_aux_dev);
++                goto fail;
++        }
++
++Unregistering an auxiliary_device is a two-step process to mirror the register
++process.  First call auxiliary_device_delete(), then call
++auxiliary_device_uninit().
++
++
++.. code-block:: c
++
++        auxiliary_device_delete(my_dev->my_aux_dev);
++        auxiliary_device_uninit(my_dev->my_aux_dev);
+ 
+-The auxiliary_device.dev.parent must also be populated.
+ 
+ Auxiliary Device Memory Model and Lifespan
+ ------------------------------------------
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
 
-In any case, as Andy pointed out, this driver still requires major
-cleanups everywhere. Yet, our current focus is to make it work with
-standard V4L2 apps.
-
-Regards,
-Mauro
