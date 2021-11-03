@@ -2,666 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB3D4444DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:45:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 854D84444DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232100AbhKCPsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 11:48:12 -0400
-Received: from mga04.intel.com ([192.55.52.120]:16587 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232068AbhKCPsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 11:48:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10157"; a="230248525"
-X-IronPort-AV: E=Sophos;i="5.87,206,1631602800"; 
-   d="scan'208";a="230248525"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 08:44:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,206,1631602800"; 
-   d="scan'208";a="449861416"
-Received: from chenyu-desktop.sh.intel.com ([10.239.158.186])
-  by orsmga006.jf.intel.com with ESMTP; 03 Nov 2021 08:44:54 -0700
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     linux-acpi@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>, Chen Yu <yu.c.chen@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v8 4/4] tools: Introduce power/acpi/pfru/pfru
-Date:   Wed,  3 Nov 2021 23:44:14 +0800
-Message-Id: <98d1be8efa8c717f7e303e7b4d21d8c269ce4317.1635953446.git.yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1635953446.git.yu.c.chen@intel.com>
-References: <cover.1635953446.git.yu.c.chen@intel.com>
+        id S231848AbhKCPtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 11:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhKCPs6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 11:48:58 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FA0C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 08:46:21 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id i3so6051518lfu.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 08:46:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LUFgqV2BeqlQdLiPN9gxuMdCmao9D8TOC5wrMIKCTOc=;
+        b=fVf+NMzoGPq6KGTd45BRfVLWum48YsEIdLDF4TVmL8K7f2Bgz0yhgBdMyc4tdIITvY
+         QBLrcAIHT9im5JHhnMTJnmVFDPraqJd/sqs2Xj1119W0XZIMm0wUGYcoY5g/dchxNRBa
+         OPI+s9A3mVx3jJV7ZGqFdTbahHreInlzxr7Amw/npcXyDuKjTjWNWEaXrR6EU/S77hGR
+         kGTkugp6VeJuy/7CD1xHucS7slzZPFtw8JeUjpenFyPerURoldrnBUjez03gSXVf2aBR
+         jQgrzIWt/xUsO8GnZ20f+E5N4jCDK0dMsCwJsFPDTtUGB0REWWrNjMt7jBhIvV1m7thd
+         42eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LUFgqV2BeqlQdLiPN9gxuMdCmao9D8TOC5wrMIKCTOc=;
+        b=TTl53rh93lyNnrsiW/ZKqIMdHQcfRy5OM/CsdLsBAhpyeomZFKwAkgVWarB0ZgC2jH
+         zQBOvRRn8H5jaKX6VAmJykHYlcbGNgSToA4eYbQru1Mm13x+cZV8WxO8jCcFsgnvEWA6
+         mbAVZz2MZjXqGyqk67hyZCMUfx9M27HCmpe1p+JodvB5C5wnsst6o0UOxbO6PIj5vgM6
+         IkhoF9MiC4NrDetGffOvP15lhNTqQkxhW6KVWjNkdKyGsWt6uMectSBskNlPlOijYQeW
+         BHu9w62pPwYdZ23HM6zoZgI1kTUS/I9b/2TK++p6AGBvl7IsuXi8uTgtCX5YmQlqGKMX
+         b4wA==
+X-Gm-Message-State: AOAM533Pw860zgeXDQu9las0XmpIUIzdzirOCbIC1QgF0P8YzNDdWt/3
+        Xm/sZD9B9JpOSlazKrO8OaPWzQl7xitRoQ==
+X-Google-Smtp-Source: ABdhPJxWgAoHS252IWjkNnUgK0ekH385u8dmsIf0Cv4ar7mskAphkPhF6S64CZ9tBJbKyG1RBj7xuA==
+X-Received: by 2002:a05:6512:3988:: with SMTP id j8mr32944575lfu.533.1635954380093;
+        Wed, 03 Nov 2021 08:46:20 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id i1sm209022lfr.178.2021.11.03.08.46.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 08:46:19 -0700 (PDT)
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+X-Google-Original-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 90EB31033EB; Wed,  3 Nov 2021 18:46:18 +0300 (+03)
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Joerg Roedel <jroedel@suse.de>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCHv3 0/4] Add generic MMIO instruction deconding to be used in SEV and TDX
+Date:   Wed,  3 Nov 2021 18:45:51 +0300
+Message-Id: <20211103154555.23729-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a user space tool to make use of the interface exposed by
-Platform Firmware Runtime Update and Telemetry drivers. The users
-can use this tool to do firmware code injection, driver update and
-to retrieve the telemetry data.
 
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
-v8: Print the length of OEM information if requested.
-v7: No change since v6.
-v6: Simplify the userspace tool to use while loop for getopt_long().
-    (Andy Shevchenko)
-v5: Replace the read() with mmap() so that the userspace
-    could mmap once, and read multiple times. (Greg Kroah-Hartman)
----
- tools/power/acpi/pfru/Makefile |  25 ++
- tools/power/acpi/pfru/pfru.8   | 137 +++++++++++
- tools/power/acpi/pfru/pfru.c   | 417 +++++++++++++++++++++++++++++++++
- 3 files changed, 579 insertions(+)
- create mode 100644 tools/power/acpi/pfru/Makefile
- create mode 100644 tools/power/acpi/pfru/pfru.8
- create mode 100644 tools/power/acpi/pfru/pfru.c
+Both AMD SEV and Intel TDX has to decode MMIO instruction to be able to
+handle MMIO.
 
-diff --git a/tools/power/acpi/pfru/Makefile b/tools/power/acpi/pfru/Makefile
-new file mode 100644
-index 000000000000..54bf913b2a09
---- /dev/null
-+++ b/tools/power/acpi/pfru/Makefile
-@@ -0,0 +1,25 @@
-+# SPDX-License-Identifier: GPL-2.0+
-+
-+CFLAGS += -Wall -O2
-+CFLAGS += -DPFRU_HEADER='"../../../../include/uapi/linux/pfru.h"'
-+BUILD_OUTPUT	:= $(CURDIR)
-+
-+ifeq ("$(origin O)", "command line")
-+	BUILD_OUTPUT := $(O)
-+endif
-+
-+pfru : pfru.c
-+
-+%: %.c
-+	@mkdir -p $(BUILD_OUTPUT)
-+	$(CC) $(CFLAGS) $< -o $(BUILD_OUTPUT)/$@ $(LDFLAGS) -luuid
-+
-+.PHONY : clean
-+clean :
-+	@rm -f $(BUILD_OUTPUT)/pfru
-+
-+install : pfru
-+	install -d  $(DESTDIR)$(PREFIX)/bin
-+	install $(BUILD_OUTPUT)/pfru $(DESTDIR)$(PREFIX)/bin/pfru
-+	install -d  $(DESTDIR)$(PREFIX)/share/man/man8
-+	install -m 644 pfru.8 $(DESTDIR)$(PREFIX)/share/man/man8
-diff --git a/tools/power/acpi/pfru/pfru.8 b/tools/power/acpi/pfru/pfru.8
-new file mode 100644
-index 000000000000..d9cda7beaa3c
---- /dev/null
-+++ b/tools/power/acpi/pfru/pfru.8
-@@ -0,0 +1,137 @@
-+.TH "PFRU" "8" "October 2021" "pfru 1.0" ""
-+.hy
-+.SH Name
-+.PP
-+pfru \- Platform Firmware Runtime Update tool
-+.SH SYNOPSIS
-+.PP
-+\f[B]pfru\f[R] [\f[I]Options\f[R]]
-+.SH DESCRIPTION
-+.PP
-+The PFRU(Platform Firmware Runtime Update) kernel interface is designed
-+to
-+.PD 0
-+.P
-+.PD
-+interact with the platform firmware interface defined in the
-+.PD 0
-+.P
-+.PD
-+Management Mode Firmware Runtime
-+Update (https://uefi.org/sites/default/files/resources/Intel_MM_OS_Interface_Spec_Rev100.pdf)
-+.PD 0
-+.P
-+.PD
-+\f[B]pfru\f[R] is the tool to interact with the kernel interface.
-+.PD 0
-+.P
-+.PD
-+.SH OPTIONS
-+.TP
-+.B \f[B]\-h\f[R], \f[B]\-\-help\f[R]
-+Display helper information.
-+.TP
-+.B \f[B]\-l\f[R], \f[B]\-\-load\f[R]
-+Load the capsule file into the system.
-+To be more specific, the capsule file will be copied to the
-+communication buffer.
-+.TP
-+.B \f[B]\-s\f[R], \f[B]\-\-stage\f[R]
-+Stage the capsule image from communication buffer into Management Mode
-+and perform authentication.
-+.TP
-+.B \f[B]\-a\f[R], \f[B]\-\-activate\f[R]
-+Activate a previous staged capsule image.
-+.TP
-+.B \f[B]\-u\f[R], \f[B]\-\-update\f[R]
-+Perform both stage and activation actions.
-+.TP
-+.B \f[B]\-q\f[R], \f[B]\-\-query\f[R]
-+Query the update capability.
-+.TP
-+.B \f[B]\-d\f[R], \f[B]\-\-setrev\f[R]
-+Set the revision ID of code injection/driver update.
-+.TP
-+.B \f[B]\-D\f[R], \f[B]\-\-setrevlog\f[R]
-+Set the revision ID of telemetry.
-+.TP
-+.B \f[B]\-G\f[R], \f[B]\-\-getloginfo\f[R]
-+Get telemetry log information and print it out.
-+.TP
-+.B \f[B]\-T\f[R], \f[B]\-\-type\f[R]
-+Set the telemetry log data type.
-+.TP
-+.B \f[B]\-L\f[R], \f[B]\-\-level\f[R]
-+Set the telemetry log level.
-+.TP
-+.B \f[B]\-R\f[R], \f[B]\-\-read\f[R]
-+Read all the telemetry data and print it out.
-+.SH EXAMPLES
-+.PP
-+\f[B]pfru \-G\f[R]
-+.PP
-+log_level:4
-+.PD 0
-+.P
-+.PD
-+log_type:0
-+.PD 0
-+.P
-+.PD
-+log_revid:2
-+.PD 0
-+.P
-+.PD
-+max_data_size:65536
-+.PD 0
-+.P
-+.PD
-+chunk1_size:0
-+.PD 0
-+.P
-+.PD
-+chunk2_size:1401
-+.PD 0
-+.P
-+.PD
-+rollover_cnt:0
-+.PD 0
-+.P
-+.PD
-+reset_cnt:4
-+.PP
-+\f[B]pfru \-q\f[R]
-+.PP
-+code injection image type:794bf8b2\-6e7b\-454e\-885f\-3fb9bb185402
-+.PD 0
-+.P
-+.PD
-+fw_version:0
-+.PD 0
-+.P
-+.PD
-+code_rt_version:1
-+.PD 0
-+.P
-+.PD
-+driver update image type:0e5f0b14\-f849\-7945\-ad81\-bc7b6d2bb245
-+.PD 0
-+.P
-+.PD
-+drv_rt_version:0
-+.PD 0
-+.P
-+.PD
-+drv_svn:0
-+.PD 0
-+.P
-+.PD
-+platform id:39214663\-b1a8\-4eaa\-9024\-f2bb53ea4723
-+.PD 0
-+.P
-+.PD
-+oem id:a36db54f\-ea2a\-e14e\-b7c4\-b5780e51ba3d
-+.PP
-+\f[B]pfru \-l yours.cap \-u \-T 1 \-L 4\f[R]
-+.SH AUTHORS
-+Chen Yu.
-diff --git a/tools/power/acpi/pfru/pfru.c b/tools/power/acpi/pfru/pfru.c
-new file mode 100644
-index 000000000000..eeec5043f825
---- /dev/null
-+++ b/tools/power/acpi/pfru/pfru.c
-@@ -0,0 +1,417 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Platform Firmware Runtime Update tool to do Management
-+ * Mode code injection/driver update and telemetry retrieval.
-+ */
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <getopt.h>
-+#include <sys/ioctl.h>
-+#include <sys/mman.h>
-+#include <uuid/uuid.h>
-+#include PFRU_HEADER
-+
-+char *capsule_name;
-+int action, query_cap, log_type, log_level, log_read, log_getinfo,
-+	revid, log_revid;
-+int set_log_level, set_log_type,
-+	set_revid, set_log_revid;
-+
-+char *progname;
-+
-+#define LOG_ERR		0
-+#define LOG_WARN	1
-+#define LOG_INFO	2
-+#define LOG_VERB	4
-+#define LOG_EXEC_IDX	0
-+#define LOG_HISTORY_IDX	1
-+#define REVID_1		1
-+#define REVID_2		2
-+
-+static int valid_log_level(int level)
-+{
-+	return level == LOG_ERR || level == LOG_WARN ||
-+	       level == LOG_INFO || level == LOG_VERB;
-+}
-+
-+static int valid_log_type(int type)
-+{
-+	return type == LOG_EXEC_IDX || type == LOG_HISTORY_IDX;
-+}
-+
-+static inline int valid_log_revid(int id)
-+{
-+	return id == REVID_1 || id == REVID_2;
-+}
-+
-+static void help(void)
-+{
-+	fprintf(stderr,
-+		"usage: %s [OPTIONS]\n"
-+		" code injection:\n"
-+		"  -l, --load\n"
-+		"  -s, --stage\n"
-+		"  -a, --activate\n"
-+		"  -u, --update [stage and activate]\n"
-+		"  -q, --query\n"
-+		"  -d, --revid update\n"
-+		" telemetry:\n"
-+		"  -G, --getloginfo\n"
-+		"  -T, --type(0:execution, 1:history)\n"
-+		"  -L, --level(0, 1, 2, 4)\n"
-+		"  -R, --read\n"
-+		"  -D, --revid log\n",
-+		progname);
-+}
-+
-+char *option_string = "l:sauqd:GT:L:RD:h";
-+static struct option long_options[] = {
-+	{"load", required_argument, 0, 'l'},
-+	{"stage", no_argument, 0, 's'},
-+	{"activate", no_argument, 0, 'a'},
-+	{"update", no_argument, 0, 'u'},
-+	{"query", no_argument, 0, 'q'},
-+	{"getloginfo", no_argument, 0, 'G'},
-+	{"type", required_argument, 0, 'T'},
-+	{"level", required_argument, 0, 'L'},
-+	{"read", no_argument, 0, 'R'},
-+	{"setrev", required_argument, 0, 'd'},
-+	{"setrevlog", required_argument, 0, 'D'},
-+	{"help", no_argument, 0, 'h'},
-+	{}
-+};
-+
-+static void parse_options(int argc, char **argv)
-+{
-+	int option_index = 0;
-+	char *pathname;
-+	int opt;
-+
-+	pathname = strdup(argv[0]);
-+	progname = basename(pathname);
-+
-+	while ((opt = getopt_long_only(argc, argv, option_string,
-+				       long_options, &option_index)) != -1) {
-+		switch (opt) {
-+		case 'l':
-+			capsule_name = optarg;
-+			break;
-+		case 's':
-+			action = 1;
-+			break;
-+		case 'a':
-+			action = 2;
-+			break;
-+		case 'u':
-+			action = 3;
-+			break;
-+		case 'q':
-+			query_cap = 1;
-+			break;
-+		case 'G':
-+			log_getinfo = 1;
-+			break;
-+		case 'T':
-+			log_type = atoi(optarg);
-+			set_log_type = 1;
-+			break;
-+		case 'L':
-+			log_level = atoi(optarg);
-+			set_log_level = 1;
-+			break;
-+		case 'R':
-+			log_read = 1;
-+			break;
-+		case 'd':
-+			revid = atoi(optarg);
-+			set_revid = 1;
-+			break;
-+		case 'D':
-+			log_revid = atoi(optarg);
-+			set_log_revid = 1;
-+			break;
-+		case 'h':
-+			help();
-+			exit(0);
-+		default:
-+			break;
-+		}
-+	}
-+}
-+
-+void print_cap(struct pfru_update_cap_info *cap)
-+{
-+	char *uuid;
-+
-+	uuid = malloc(37);
-+	if (!uuid) {
-+		perror("Can not allocate uuid buffer\n");
-+		exit(1);
-+	}
-+
-+	uuid_unparse(cap->code_type, uuid);
-+	printf("code injection image type:%s\n", uuid);
-+	printf("fw_version:%d\n", cap->fw_version);
-+	printf("code_rt_version:%d\n", cap->code_rt_version);
-+
-+	uuid_unparse(cap->drv_type, uuid);
-+	printf("driver update image type:%s\n", uuid);
-+	printf("drv_rt_version:%d\n", cap->drv_rt_version);
-+	printf("drv_svn:%d\n", cap->drv_svn);
-+
-+	uuid_unparse(cap->platform_id, uuid);
-+	printf("platform id:%s\n", uuid);
-+	uuid_unparse(cap->oem_id, uuid);
-+	printf("oem id:%s\n", uuid);
-+	printf("oem information length:%d\n", cap->oem_info_len);
-+
-+	free(uuid);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int fd_update, fd_update_log, fd_capsule;
-+	struct pfru_log_data_info data_info;
-+	struct pfru_log_info info;
-+	struct pfru_update_cap_info cap;
-+	void *addr_map_capsule;
-+	struct stat st;
-+	char *log_buf;
-+	int ret = 0;
-+
-+	if (getuid() != 0) {
-+		printf("Please run the tool as root - Exiting.\n");
-+		return 1;
-+	}
-+
-+	parse_options(argc, argv);
-+
-+	fd_update = open("/dev/acpi_pfru0", O_RDWR);
-+	if (fd_update < 0) {
-+		printf("PFRU device not supported - Quit...\n");
-+		return 1;
-+	}
-+
-+	fd_update_log = open("/dev/acpi_pfru_telemetry0", O_RDWR);
-+	if (fd_update_log < 0) {
-+		printf("PFRU telemetry device not supported - Quit...\n");
-+		return 1;
-+	}
-+
-+	if (query_cap) {
-+		ret = ioctl(fd_update, PFRU_IOC_QUERY_CAP, &cap);
-+		if (ret)
-+			perror("Query Update Capability info failed.");
-+		else
-+			print_cap(&cap);
-+
-+		close(fd_update);
-+		close(fd_update_log);
-+
-+		return ret;
-+	}
-+
-+	if (log_getinfo) {
-+		ret = ioctl(fd_update_log, PFRU_LOG_IOC_GET_DATA_INFO, &data_info);
-+		if (ret) {
-+			perror("Get telemetry data info failed.");
-+			close(fd_update);
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		ret = ioctl(fd_update_log, PFRU_LOG_IOC_GET_INFO, &info);
-+		if (ret) {
-+			perror("Get telemetry info failed.");
-+			close(fd_update);
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		printf("log_level:%d\n", info.log_level);
-+		printf("log_type:%d\n", info.log_type);
-+		printf("log_revid:%d\n", info.log_revid);
-+		printf("max_data_size:%d\n", data_info.max_data_size);
-+		printf("chunk1_size:%d\n", data_info.chunk1_size);
-+		printf("chunk2_size:%d\n", data_info.chunk2_size);
-+		printf("rollover_cnt:%d\n", data_info.rollover_cnt);
-+		printf("reset_cnt:%d\n", data_info.reset_cnt);
-+
-+		return 0;
-+	}
-+
-+	info.log_level = -1;
-+	info.log_type = -1;
-+	info.log_revid = -1;
-+
-+	if (set_log_level) {
-+		if (!valid_log_level(log_level)) {
-+			printf("Invalid log level %d\n",
-+			       log_level);
-+		} else {
-+			info.log_level = log_level;
-+		}
-+	}
-+
-+	if (set_log_type) {
-+		if (!valid_log_type(log_type)) {
-+			printf("Invalid log type %d\n",
-+			       log_type);
-+		} else {
-+			info.log_type = log_type;
-+		}
-+	}
-+
-+	if (set_log_revid) {
-+		if (!valid_log_revid(log_revid)) {
-+			printf("Invalid log revid %d, unchanged.\n",
-+			       log_revid);
-+		} else {
-+			info.log_revid = log_revid;
-+		}
-+	}
-+
-+	ret = ioctl(fd_update_log, PFRU_LOG_IOC_SET_INFO, &info);
-+	if (ret) {
-+		perror("Log information set failed.(log_level, log_type, log_revid)");
-+		close(fd_update);
-+		close(fd_update_log);
-+
-+		return 1;
-+	}
-+
-+	if (set_revid) {
-+		ret = ioctl(fd_update, PFRU_IOC_SET_REV, &revid);
-+		if (ret) {
-+			perror("pfru update revid set failed");
-+			close(fd_update);
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		printf("pfru update revid set to %d\n", revid);
-+	}
-+
-+	if (capsule_name) {
-+		fd_capsule = open(capsule_name, O_RDONLY);
-+		if (fd_capsule < 0) {
-+			perror("Can not open capsule file...");
-+			close(fd_update);
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		if (fstat(fd_capsule, &st) < 0) {
-+			perror("Can not fstat capsule file...");
-+			close(fd_capsule);
-+			close(fd_update);
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		addr_map_capsule = mmap(NULL, st.st_size, PROT_READ, MAP_SHARED,
-+					fd_capsule, 0);
-+		if (addr_map_capsule == MAP_FAILED) {
-+			perror("Failed to mmap capsule file.");
-+			close(fd_capsule);
-+			close(fd_update);
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		ret = write(fd_update, (char *)addr_map_capsule, st.st_size);
-+		printf("Load %d bytes of capsule file into the system\n",
-+		       ret);
-+
-+		if (ret == -1) {
-+			perror("Failed to load capsule file");
-+			close(fd_capsule);
-+			close(fd_update);
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		munmap(addr_map_capsule, st.st_size);
-+		close(fd_capsule);
-+		printf("Load done.\n");
-+	}
-+
-+	if (action) {
-+		if (action == 1) {
-+			ret = ioctl(fd_update, PFRU_IOC_STAGE, NULL);
-+		} else if (action == 2) {
-+			ret = ioctl(fd_update, PFRU_IOC_ACTIVATE, NULL);
-+		} else if (action == 3) {
-+			ret = ioctl(fd_update, PFRU_IOC_STAGE_ACTIVATE, NULL);
-+		} else {
-+			close(fd_update);
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+		printf("Update finished, return %d\n", ret);
-+	}
-+
-+	close(fd_update);
-+
-+	if (log_read) {
-+		void *p_mmap;
-+		int max_data_sz;
-+
-+		ret = ioctl(fd_update_log, PFRU_LOG_IOC_GET_DATA_INFO, &data_info);
-+		if (ret) {
-+			perror("Get telemetry data info failed.");
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		max_data_sz = data_info.max_data_size;
-+		if (!max_data_sz) {
-+			printf("No telemetry data available.\n");
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		log_buf = malloc(max_data_sz + 1);
-+		if (!log_buf) {
-+			perror("log_buf allocate failed.");
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		p_mmap = mmap(NULL, max_data_sz, PROT_READ, MAP_SHARED, fd_update_log, 0);
-+		if (p_mmap == MAP_FAILED) {
-+			perror("mmap error.");
-+			close(fd_update_log);
-+
-+			return 1;
-+		}
-+
-+		memcpy(log_buf, p_mmap, max_data_sz);
-+		log_buf[max_data_sz] = '\0';
-+		printf("%s\n", log_buf);
-+		free(log_buf);
-+
-+		munmap(p_mmap, max_data_sz);
-+	}
-+
-+	close(fd_update_log);
-+
-+	return 0;
-+}
+Extract insn_decode_mmio() from SEV code. TDX will also use this helper.
+
+v3:
+ - Handle insn_get_opcode() in is_string_insn()
+v2:
+ - insn_get_modrm_reg_ptr() returns unsigned long pointer now (PeterZ);
+ - Handle insn_get_opcode() failure in insn_decode_mmio() (PeterZ);
+
+Kirill A. Shutemov (4):
+  x86/insn-eval: Handle insn_get_opcode() failure
+  x86/insn-eval: Introduce insn_get_modrm_reg_ptr()
+  x86/insn-eval: Introduce insn_decode_mmio()
+  x86/sev-es: Use insn_decode_mmio() for MMIO implementation
+
+ arch/x86/include/asm/insn-eval.h |  13 +++
+ arch/x86/kernel/sev.c            | 171 ++++++++-----------------------
+ arch/x86/lib/insn-eval.c         | 109 +++++++++++++++++++-
+ 3 files changed, 160 insertions(+), 133 deletions(-)
+
 -- 
-2.25.1
+2.32.0
 
