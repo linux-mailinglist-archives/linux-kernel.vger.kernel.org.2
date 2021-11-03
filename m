@@ -2,74 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5ED443B57
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 03:25:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A78443B58
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 03:26:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbhKCC1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 22:27:54 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:30907 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhKCC1x (ORCPT
+        id S231166AbhKCC3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 22:29:22 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:27105 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229650AbhKCC3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 22:27:53 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HkVqM37Dczcb3Q;
-        Wed,  3 Nov 2021 10:20:31 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 3 Nov 2021 10:25:15 +0800
-Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 3 Nov 2021 10:25:15 +0800
-Received: from dggpeml500011.china.huawei.com ([7.185.36.84]) by
- dggpeml500011.china.huawei.com ([7.185.36.84]) with mapi id 15.01.2308.015;
- Wed, 3 Nov 2021 10:25:15 +0800
-From:   "zhudi (E)" <zhudi2@huawei.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v4 1/2] bpf: support BPF_PROG_QUERY for progs
- attached to sockmap
-Thread-Topic: [PATCH bpf-next v4 1/2] bpf: support BPF_PROG_QUERY for progs
- attached to sockmap
-Thread-Index: AdfQWgMDvyYgLEBsV02Bu8t6VBuCgQ==
-Date:   Wed, 3 Nov 2021 02:25:15 +0000
-Message-ID: <9ed289892e1448c69f58f0268c395167@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.136.114.155]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 2 Nov 2021 22:29:20 -0400
+Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HkVw64WdJz1DHkd;
+        Wed,  3 Nov 2021 10:24:38 +0800 (CST)
+Received: from [10.67.110.136] (10.67.110.136) by
+ dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Wed, 3 Nov 2021 10:26:42 +0800
+Subject: Re: [PATCH -V2] drm/sun4i: Grab reference of connector before return
+ connector from sun4i_tcon_get_connector
+To:     Maxime Ripard <maxime@cerno.tech>
+CC:     <wens@csie.org>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <jernej.skrabec@gmail.com>, <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-sunxi@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+References: <33e01d45-c9f9-0e8c-6871-868ecd198368@huawei.com>
+ <20211102084628.149070-1-heying24@huawei.com>
+ <20211102150331.526nn2e6oqjbf6ur@gilmour>
+From:   He Ying <heying24@huawei.com>
+Message-ID: <a0871590-62b2-bbf2-d6ab-920abdf20fad@huawei.com>
+Date:   Wed, 3 Nov 2021 10:26:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20211102150331.526nn2e6oqjbf6ur@gilmour>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.110.136]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme756-chm.china.huawei.com (10.3.19.102)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiBUdWUsIE5vdiAyLCAyMDIxIGF0IDE6MTEgUE0gWW9uZ2hvbmcgU29uZyA8eWhzQGZiLmNv
-bT4gd3JvdGU6DQo+ID4gPg0KPiA+ID4gLXN0YXRpYyBpbnQgc29ja19tYXBfcHJvZ191cGRhdGUo
-c3RydWN0IGJwZl9tYXAgKm1hcCwgc3RydWN0IGJwZl9wcm9nDQo+ICpwcm9nLA0KPiA+ID4gLSAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IGJwZl9wcm9nICpvbGQsIHUzMiB3aGlj
-aCkNCj4gPiA+ICtzdGF0aWMgaW50IHNvY2tfbWFwX3Byb2dfbG9va3VwKHN0cnVjdCBicGZfbWFw
-ICptYXAsIHN0cnVjdCBicGZfcHJvZw0KPiAqKnBwcm9nW10sDQo+ID4NCj4gPiBDYW4gd2UganVz
-dCBjaGFuZ2UgIioqcHByb2dbXSIgdG8gIioqKnBwcm9nIj8gSW4gdGhlIGNvZGUsIHlvdSByZWFs
-bHkNCj4gPiBqdXN0IHBhc3MgdGhlIGFkZHJlc3Mgb2YgdGhlIGRlY2wgInN0cnVjdCBicGZfcHJv
-ZyAqKnBwcm9nOyIgdG8gdGhlDQo+ID4gZnVuY3Rpb24uDQo+IA0KPiBEaSwNCj4gDQo+IHRoaXMg
-ZmVlZGJhY2sgd2FzIGdpdmVuIHR3aWNlIGFscmVhZHkuDQo+IFlvdSBhbHNvIGRpZG4ndCBhZGRy
-ZXNzIHNldmVyYWwgb3RoZXIgcG9pbnRzIGZyb20gdGhlIGVhcmxpZXIgcmV2aWV3cy4NCj4gUGxl
-YXNlIGRvIG5vdCByZXN1Ym1pdCB1bnRpbCB5b3UgYWRkcmVzcyBhbGwgcG9pbnRzLg0KDQpNYXli
-ZSBpIG1pc3Mgc29tZXRoaW5nLi4uDQpJIHdpbGwgcmVjaGVjayB0aGUgcmV2aWV3IGNvbW1lbnRz
-Lg0K
+
+在 2021/11/2 23:03, Maxime Ripard 写道:
+> Hi,
+>
+> On Tue, Nov 02, 2021 at 04:46:28AM -0400, He Ying wrote:
+>>  From the comments of drm_for_each_connector_iter(), we know
+>> that "connector is only valid within the list body, if you
+>> want to use connector after calling drm_connector_list_iter_end()
+>> then you need to grab your own reference first using
+>> drm_connector_get()". So fix the wrong use of connector
+>> according to the comments and then call drm_connector_put()
+>> after using connector finishes.
+>>
+>> Signed-off-by: He Ying <heying24@huawei.com>
+>> ---
+>>
+>> V2:
+>>   Use proper subject prefix
+>>
+>>   drivers/gpu/drm/sun4i/sun4i_tcon.c | 18 +++++++++++++-----
+>>   1 file changed, 13 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+>> index 9f06dec0fc61..24fa6784ee5f 100644
+>> --- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
+>> +++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+>> @@ -47,12 +47,12 @@ static struct drm_connector *sun4i_tcon_get_connector(const struct drm_encoder *
+>>   	drm_connector_list_iter_begin(encoder->dev, &iter);
+>>   	drm_for_each_connector_iter(connector, &iter)
+>>   		if (connector->encoder == encoder) {
+>> -			drm_connector_list_iter_end(&iter);
+>> -			return connector;
+>> +			drm_connector_get(connector);
+>> +			break;
+>>   		}
+>>   	drm_connector_list_iter_end(&iter);
+>>   
+>> -	return NULL;
+>> +	return connector;
+> Connector might be uninitialized if we don't find one here
+
+Connector should be NULL if we don't find one. The code is
+
+#define drm_for_each_connector_iter(connector, iter) \
+    while ((connector = drm_connector_list_iter_next(iter)))
+
+So, when we don't break from the while body, connector
+
+can only be NULL.
+
+>
+>>   }
+>>   
+>>   static int sun4i_tcon_get_pixel_depth(const struct drm_encoder *encoder)
+>> @@ -65,6 +65,7 @@ static int sun4i_tcon_get_pixel_depth(const struct drm_encoder *encoder)
+>>   		return -EINVAL;
+>>   
+>>   	info = &connector->display_info;
+>> +	drm_connector_put(connector);
+>>   	if (info->num_bus_formats != 1)
+> We're still accessing connector->display_info here, but it might have been
+> freed already.
+Agree. I'll place it after using 'info' finishes in v3.
+>
+> Maxime
