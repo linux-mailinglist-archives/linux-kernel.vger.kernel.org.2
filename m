@@ -2,117 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2204446C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:12:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD0C4446D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhKCRPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 13:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39834 "EHLO
+        id S230326AbhKCRTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 13:19:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbhKCRPC (ORCPT
+        with ESMTP id S229621AbhKCRTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 13:15:02 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0137DC061714;
-        Wed,  3 Nov 2021 10:12:26 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id o12so1555524qtv.4;
-        Wed, 03 Nov 2021 10:12:25 -0700 (PDT)
+        Wed, 3 Nov 2021 13:19:35 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8594EC061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 10:16:58 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id h24so684369pjq.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 10:16:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9Yon/UNkvBv++0ELrNkjj8vCgTMl+XYKOntpW9f64Bw=;
-        b=HjYxBmcoWQoUGLuHCKKWEKX5kjOjXU6KFT8ycDPcR5Bas9M2mFqKPjupkNJ58t6CJB
-         YeOi0TDsj2ij/2mgqSHhaLPa8C1n/UvAYKEycX3B1WLXXUfs2FS1q27V3Lh1+/KzNkUJ
-         tD4fOQdX8uCaiQu+AFLzrgULjsdyEwAUPO+b1gryzbfrE06GL/Br9FYLcGsTzmUQKALY
-         i1kO1e/a/vNzdmNPvPA7Z2B++Fykd9xmlCCPshu342G1bF1W2XgM5F6cvNUYD71kThEJ
-         TBOzm3a11joNl4svA9qA81MH5EWs3eD0HCrR0WgDLRILc60+WDddSZ4O8SgAsAV43D+g
-         Uj7g==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bV161Tgs4wSnzMybCdsPXiLVkj0ud2/om2LUNqGC1RA=;
+        b=ZRMroyRI+rPDWvePSSpTvBhiJsCJEQmo2gt/kDiy/MlSfUtg7NNa0p2QaZUikvBA0n
+         zyFTTC2Qc1Z5Tzzn0Nluc1PqpAmhJf7FSULF8I+1qo+QgLQ8pAWGoxdz5CHT1yipbSan
+         rH0pjlfV/T2v8996rQXxkGTZbPpNwpcuUpbek=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9Yon/UNkvBv++0ELrNkjj8vCgTMl+XYKOntpW9f64Bw=;
-        b=jAVJhxj5WejsJ2zQPZqwqV80NoVoww3XbTh4SCGBIxBlZgQJNpSQ6VLbxx2HN4VaLX
-         jgcaRiMe1aG+vZALW1LnxSWHjx2S2gR+ZJ0dK+KNsbbAc6Lu06/CDSsH5h45ptIcFNL7
-         ZHbZAUYAi3Upi0qAEsco7ABYvSZPoxsa1xQZxqQgk3kNUAa/ua090UBWvrIrmOFf4mdZ
-         bPpHk/trNUkAqyqIhwtJJeiQKWnbA3bMCULiAX4onRI14PboDOCwsH/XNqDnhhNiLiCy
-         eeJiBJzgZUiqT8sb1F6XnSg+92Gwnn/5MFvohFcOWk6J98PvvEEtJiJR49ah3jxuXAnT
-         OQBw==
-X-Gm-Message-State: AOAM532gtYt9X1lh5b0LufVvFLIN/rYRqbdRK2kdJ3LwlzIVIKbHhxoP
-        mIgZjecfB/8RiQL0gWqd/izoDhiS4K6lpY9Khw==
-X-Google-Smtp-Source: ABdhPJxq2UgyOnxT41jhoN4lP4xkSptM+QHl4MmThU3e1NiJfPJjtIHydWt1Nf7ZCOHjBe91DzZk1RJ0JUxrxUpbM+M=
-X-Received: by 2002:ac8:5bd6:: with SMTP id b22mr25897430qtb.157.1635959545206;
- Wed, 03 Nov 2021 10:12:25 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bV161Tgs4wSnzMybCdsPXiLVkj0ud2/om2LUNqGC1RA=;
+        b=ds3vJo5FtN3AneNGn8AQqvFpp+0ayw3xtCxobOnN1NpnSeRNIWEx2mjxlNZ4+MiF63
+         uAVjeEOUlfoYnGFMEIalJzrj1SdGR5pYVK6lvu2DXRx1cKvtk+TNgKEBPmvUHgisVAbG
+         o2mri5TlGNDh+kHC0UMeXphiQXJi9wYpkRFnahuTzn3bgiI7c+QW72jnG8N667gSvC68
+         tiEvJnfOnFNIDgQSO4l8Qb1zdzVwNQnnQkKsIQblGdSh3RyzBEgJcfMuhWisZRJMc60u
+         OvzxQ2/GPHSUlPlyJc28PlavHCpcaIoDX2w0+KAwqIh8YoCtHPAh5QWialxxfeFDQeBg
+         kNnQ==
+X-Gm-Message-State: AOAM532U/5uPwjaHijh62Y8a6ohC3UZN37CCut3KzVxtAPC3rgjWd8V+
+        7e9+ykNJNwY5kzyvnLLKiaG+c0x7H8k7fw==
+X-Google-Smtp-Source: ABdhPJwh5SjYa4p7foq2MopnWWiswUTmgThs5HIPn+o8rdj7paxcik4BtfS1J70kzanuk0eN0WNGzw==
+X-Received: by 2002:a17:90a:c58d:: with SMTP id l13mr16185603pjt.189.1635959817332;
+        Wed, 03 Nov 2021 10:16:57 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:b5cc:11fb:70c8:786f])
+        by smtp.gmail.com with UTF8SMTPSA id q1sm3256107pfu.44.2021.11.03.10.16.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Nov 2021 10:16:56 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 10:16:55 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sujit Kautkar <sujitka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] rpmsg: glink: Update cdev add/del API in
+ rpmsg_ctrldev_release_device()
+Message-ID: <YYLEBxIUjlxz3Nhz@google.com>
+References: <20211102235147.872921-1-sujitka@chromium.org>
+ <20211102165137.v3.2.Ie09561c5b453a91f10ecc7e1974c602c4ff78245@changeid>
 MIME-Version: 1.0
-References: <20211102021432.2807760-1-jevburton.kernel@gmail.com> <aa6081aa-9741-be05-8051-e01909662ff1@mojatatu.com>
-In-Reply-To: <aa6081aa-9741-be05-8051-e01909662ff1@mojatatu.com>
-From:   Joe Burton <jevburton.kernel@gmail.com>
-Date:   Wed, 3 Nov 2021 10:12:14 -0700
-Message-ID: <CAN22DihBMX=xTMeTQ2-Z8Fa6r=1ynKshbfhFJJ5Jb=-ww_9hDQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 0/3] Introduce BPF map tracing capability
-To:     Jamal Hadi Salim <jhs@mojatatu.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Petar Penkov <ppenkov@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Joe Burton <jevburton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211102165137.v3.2.Ie09561c5b453a91f10ecc7e1974c602c4ff78245@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-That's a good point. Since the probe is invoked before the update takes
-place, it would not be possible to account for the possibility that the
-update failed.
+On Tue, Nov 02, 2021 at 04:51:51PM -0700, Sujit Kautkar wrote:
+> Replace cdev add/del APIs with cdev_device_add/cdev_device_del to avoid
+> below kernel warning. This correctly takes a reference to the parent
+> device so the parent will not get released until all references to the
+> cdev are released.
+> 
+> | ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x7c
+> | WARNING: CPU: 7 PID: 19892 at lib/debugobjects.c:488 debug_print_object+0x13c/0x1b0
+> | CPU: 7 PID: 19892 Comm: kworker/7:4 Tainted: G        W         5.4.147-lockdep #1
+> | ==================================================================
+> | Hardware name: Google CoachZ (rev1 - 2) with LTE (DT)
+> | Workqueue: events kobject_delayed_cleanup
+> | pstate: 60c00009 (nZCv daif +PAN +UAO)
+> | pc : debug_print_object+0x13c/0x1b0
+> | lr : debug_print_object+0x13c/0x1b0
+> | sp : ffffff83b2ec7970
+> | x29: ffffff83b2ec7970 x28: dfffffd000000000
+> | x27: ffffff83d674f000 x26: dfffffd000000000
+> | x25: ffffffd06b8fa660 x24: dfffffd000000000
+> | x23: 0000000000000000 x22: ffffffd06b7c5108
+> | x21: ffffffd06d597860 x20: ffffffd06e2c21c0
+> | x19: ffffffd06d5974c0 x18: 000000000001dad8
+> | x17: 0000000000000000 x16: dfffffd000000000
+> | BUG: KASAN: use-after-free in qcom_glink_rpdev_release+0x54/0x70
+> | x15: ffffffffffffffff x14: 79616c6564203a74
+> | x13: 0000000000000000 x12: 0000000000000080
+> | Write of size 8 at addr ffffff83d95768d0 by task kworker/3:1/150
+> | x11: 0000000000000001 x10: 0000000000000000
+> | x9 : fc9e8edec0ad0300 x8 : fc9e8edec0ad0300
+> |
+> | x7 : 0000000000000000 x6 : 0000000000000000
+> | x5 : 0000000000000080 x4 : 0000000000000000
+> | CPU: 3 PID: 150 Comm: kworker/3:1 Tainted: G        W         5.4.147-lockdep #1
+> | x3 : ffffffd06c149574 x2 : ffffff83f77f7498
+> | x1 : ffffffd06d596f60 x0 : 0000000000000061
+> | Hardware name: Google CoachZ (rev1 - 2) with LTE (DT)
+> | Call trace:
+> |  debug_print_object+0x13c/0x1b0
+> | Workqueue: events kobject_delayed_cleanup
+> |  __debug_check_no_obj_freed+0x25c/0x3c0
+> |  debug_check_no_obj_freed+0x18/0x20
+> | Call trace:
+> |  slab_free_freelist_hook+0xb4/0x1bc
+> |  kfree+0xe8/0x2d8
+> |  dump_backtrace+0x0/0x27c
+> |  rpmsg_ctrldev_release_device+0x78/0xb8
+> |  device_release+0x68/0x14c
+> |  show_stack+0x20/0x2c
+> |  kobject_cleanup+0x12c/0x298
+> |  kobject_delayed_cleanup+0x10/0x18
+> |  dump_stack+0xe0/0x19c
+> |  process_one_work+0x578/0x92c
+> |  worker_thread+0x804/0xcf8
+> |  print_address_description+0x3c/0x4a8
+> |  kthread+0x2a8/0x314
+> |  ret_from_fork+0x10/0x18
+> |  __kasan_report+0x100/0x124
+> 
+> Signed-off-by: Sujit Kautkar <sujitka@chromium.org>
 
-Unless someone wants the `pre update' hook, I'll simply adjust the
-existing hooks' semantics so that they are invoked after the update.
-As discussed, this better suits the intended use case.
-
-On Wed, Nov 3, 2021 at 3:34 AM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
->
-> On 2021-11-01 22:14, Joe Burton wrote:
-> > From: Joe Burton<jevburton@google.com>
-> >
-> > This is the third version of a patch series implementing map tracing.
-> >
-> > Map tracing enables executing BPF programs upon BPF map updates. This
-> > might be useful to perform upgrades of stateful programs; e.g., tracing
-> > programs can propagate changes to maps that occur during an upgrade
-> > operation.
-> >
-> > This version uses trampoline hooks to provide the capability.
-> > fentry/fexit/fmod_ret programs can attach to two new functions:
-> >          int bpf_map_trace_update_elem(struct bpf_map* map, void* key,
-> >                  void* val, u32 flags);
-> >          int bpf_map_trace_delete_elem(struct bpf_map* map, void* key);
-> >
-> > These hooks work as intended for the following map types:
-> >          BPF_MAP_TYPE_ARRAY
-> >          BPF_MAP_TYPE_PERCPU_ARRAY
-> >          BPF_MAP_TYPE_HASH
-> >          BPF_MAP_TYPE_PERCPU_HASH
-> >          BPF_MAP_TYPE_LRU_HASH
-> >          BPF_MAP_TYPE_LRU_PERCPU_HASH
-> >
-> > The only guarantee about the semantics of these hooks is that they execute
-> > before the operation takes place. We cannot call them with locks held
-> > because the hooked program might try to acquire the same locks. Thus they
-> > may be invoked in situations where the traced map is not ultimately
-> > updated.
->
-> Sorry, I may have missed something obvious while staring at the patches,
-> but:
-> Dont you want the notification if the command actually was successful
-> on the map? If the command failed for whatever reason theres nothing
-> to synchronize? Unless you use that as an indicator to re-read the map?
->
-> cheers,
-> jamal
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
