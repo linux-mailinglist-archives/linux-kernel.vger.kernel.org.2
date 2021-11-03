@@ -2,122 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F76A44407B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 12:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD3A44407E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 12:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231511AbhKCLXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 07:23:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43981 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230299AbhKCLXq (ORCPT
+        id S231705AbhKCLY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 07:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230304AbhKCLYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 07:23:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635938469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qMsm4l7tSaUZIWaNbRsjHnQoDrghReNTpOtLwY9pusY=;
-        b=SZTvhrtxrk4tBcobwwGdCqfgnSSnOLLZ2ZkAnswjgNTs+MaOzMTxIxcQGstQUIf4iCG7+M
-        /PZFH7Q7bI8FBTc0k1MJ4mcSGFZ6zMb9v4DfdCTTGaSoi5seJhdZw0idZSJUfX6d7kYaQ1
-        KLBZK3Qmxonabc7R0r3eyrhnJAVdLBk=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-561-ai2SafeAPgWYz_AcliVRxQ-1; Wed, 03 Nov 2021 07:21:08 -0400
-X-MC-Unique: ai2SafeAPgWYz_AcliVRxQ-1
-Received: by mail-wm1-f69.google.com with SMTP id a18-20020a1cf012000000b0032ca3eb2ac3so961070wmb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 04:21:08 -0700 (PDT)
+        Wed, 3 Nov 2021 07:24:55 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF8FC061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 04:22:19 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id b12so3030474wrh.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 04:22:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KoBsY/v2YAD1F++lHfydsccb+T5wE0Od+5p17s3OU2Y=;
+        b=OXNFVzvq+7nEH4ch8+to3fOVoIMMO2gBiWS8xhy4MCq7yWZtUQBJOUu4Jb6nLeJS+Y
+         B/Dkakm3hIhKqUPfR2I4SN/WC8e+78yYmVUZOBEvEF/RfxOXixnTsG1AYGlBjpEo0pcd
+         D+msUGoGtZlwXrFYumjvhJkf0ILFoRnMppVcfMWhVCJ9aeDs3O6xZLMO8WEMYFC77P2x
+         TOLwQImtGQ/tiKjAKBM9Saj5Vx2gmTmpI+v+n2G0VMr3QkRxWuN0BI5YDHhLrcQs92Nd
+         pEvqGYISAQ47iw76UENR4ukRS0PJ8vKZOd7sJpQNPsEK/wXV3gjnmUf2BrJMnY3K1GIC
+         At7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=qMsm4l7tSaUZIWaNbRsjHnQoDrghReNTpOtLwY9pusY=;
-        b=jXMy7c8HQMNl1XaUY9a/0N5My6GnW1B6mqA44KT1u82zhoTT5BcxQ1QirYYu33L2Mz
-         fj0Z1hj2yprcUfQI/nH3UxBFIRSDvbs8ARRzPcrwMIkAGpfowOiIam6GC6KaL4x/cSAH
-         GLDBpFGqEXYt0AfOKou+DROq69nEMbOt98OGyhEAdlhwQozpF1grwZIq2kRhiqHXl2tu
-         UKKnxQGX4aZoTEib70SWVZ7rJGKjk5IYPbhUpImIKJ6n/qIjpBcCa/Zr/EhV4KUIz4e1
-         DJX8M9usXrzUywsokqSd1N3GXwx412sEQOClTugCO0HvpAfeMS3vBE1Mgl4YJsV5uvLv
-         C2tw==
-X-Gm-Message-State: AOAM5316oOL3QOvsrUOwoHZIwpUsJsbmgtEL3axp0nCyR+jEoYF0k7kS
-        0hmFayVFzDWlY2BxnScKmmsp6x3hANF0rTmsINHNB2FLKo3ri0embP2iGhwi9YRT2AEHsqYUILP
-        A2yKNF5Qy8FbRaY2mWkSO2LY0
-X-Received: by 2002:a05:600c:4fd1:: with SMTP id o17mr14712236wmq.110.1635938466741;
-        Wed, 03 Nov 2021 04:21:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyO+jI/YCKK8ByXrXNFn/5jY/jVaSLifadMvClU1bKSzOii0MQ1babTIiX1yjvpa29ZT7GA+Q==
-X-Received: by 2002:a05:600c:4fd1:: with SMTP id o17mr14712203wmq.110.1635938466556;
-        Wed, 03 Nov 2021 04:21:06 -0700 (PDT)
-Received: from [192.168.1.128] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id z1sm1707031wre.21.2021.11.03.04.21.05
+        bh=KoBsY/v2YAD1F++lHfydsccb+T5wE0Od+5p17s3OU2Y=;
+        b=a5SsBauOupDTQjUO26rb+EtfWvI1FGYcX3r5IahFSxs8QuzdfIx+mJGX3GPsqXTlvD
+         IO2dLvVaCN52/TGsSU94AHSg18MkBJjTgkNE6vlCS40UTemh39KZn72eywPBrByv+h4x
+         1wcQB29xAX+MP89piybRJshaRCuNNKAwz/ZUEO8KMdzGPig/VjBZH2p35m026iCnmovj
+         LniyzMq2pVwV8n/C2IUDqDWzUfY8kBw1uhf9lfGLIFJ/IotLny6YhH68S3bvphn3uzFs
+         8H+iHR80PusEA2ga58nXvH/oJIO5tjvMgiZ243neBY1retZqh/LRhvpJsJCznghkdUh8
+         zXwg==
+X-Gm-Message-State: AOAM532EbzcDMiR6TkwMzSWB7uEXS42dnpmxItxFA+TUZ79s/LGz3Zvt
+        1n6cCpUDUQcMl8xzqHozqszNOQ==
+X-Google-Smtp-Source: ABdhPJwv+grHB+mZcRA+5mD+6l0sJS48c0xkSjK7q3ekgXs5ZAd7UVU1ZmlJW0S5D07s0h7TMr7rcA==
+X-Received: by 2002:a05:6000:120a:: with SMTP id e10mr11955108wrx.156.1635938537706;
+        Wed, 03 Nov 2021 04:22:17 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id u5sm1696919wrg.57.2021.11.03.04.22.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 04:21:06 -0700 (PDT)
-Message-ID: <6bd3ff4c-c2df-5cc8-bdc5-22bc37c0cb9e@redhat.com>
-Date:   Wed, 3 Nov 2021 12:21:04 +0100
+        Wed, 03 Nov 2021 04:22:17 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] pinctrl: qcom: Update lpass variant independent
+ functions as generic
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org
+Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
+References: <1635342097-2726-1-git-send-email-srivasam@codeaurora.org>
+ <1635342097-2726-2-git-send-email-srivasam@codeaurora.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <01c32c7f-9639-b3c8-045b-35469a3e54aa@linaro.org>
+Date:   Wed, 3 Nov 2021 11:22:15 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 2/5] drm: Move nomodeset kernel parameter handler to the
- DRM subsystem
+In-Reply-To: <1635342097-2726-2-git-send-email-srivasam@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Neal Gompa <ngompa13@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
-References: <20211103104812.1022936-1-javierm@redhat.com>
- <20211103104812.1022936-3-javierm@redhat.com>
- <CAEg-Je_3n9vFpP-vmVzkbDZY154g3xOK5JqPN7r9kGXJ1Zp0+w@mail.gmail.com>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-In-Reply-To: <CAEg-Je_3n9vFpP-vmVzkbDZY154g3xOK5JqPN7r9kGXJ1Zp0+w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Neal,
+Hi Srinivasa,
+Thanks for the patches, I think you forgot to add correct mailing list 
+for this drivers.
 
-On 11/3/21 12:05, Neal Gompa wrote:
-> On Wed, Nov 3, 2021 at 6:48 AM Javier Martinez Canillas
-> <javierm@redhat.com> wrote:
->>
->> The "nomodeset" kernel cmdline parameter is handled by the vgacon driver
->> but the exported vgacon_text_force() symbol is only used by DRM drivers.
->>
->> It makes much more sense for the parameter logic to be in the subsystem
->> of the drivers that are making use of it. Let's move that to DRM.
->>
->> Suggested-by: Daniel Vetter <daniel.vetter@ffwll.ch>
->> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
->> ---
+Please consider using scripts/get_maintainer.pl to help you with this list.
+
+On 27/10/2021 14:41, Srinivasa Rao Mandadapu wrote:
+> Update pin control variable names to make common for all lpass varients.
+> Update bulk clock voting to optional voting as ADSP bypass platform doesn't
+> need macro and decodec clocks, these are maintained as power domains and
+> operated from lpass audio core cc.
+
+How are you going to ensure that the powerdomains are switched on when 
+setting up the pinctrl configuration.
+
+Should we not take a reference to the power-domain in this driver?
+
+--srini
 > 
-> Please no, I'd much rather have a better, more meaningful option
-> instead of "nomodeset". If anything, I would like this option to
-> eventually do nothing and replace it with a better named option that's
-> namespaced by drm on the command-line. That was part of the feedback I
-> gave in the original patch set, and I still stand by that.
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> ---
+>   drivers/pinctrl/qcom/pinctrl-lpass-lpi.c | 16 ++++++++--------
+>   1 file changed, 8 insertions(+), 8 deletions(-)
 > 
-
-I do agree with you that a more meaningful parameter would be desirable.
-
-But I think that's orthogonal to this series and something that could be
-done as a follow-up. That is, nomodeset isn't going away anytime soon as
-that's what users are get to.
-
-This doesn't mean that a drm.disable_native_drivers, drm.safe_mode or
-whatever could be added. Internally it would also toggle the same value
-but it will be much more clear to users what's the expected behaviour.
-
-By having a module parameter under the drm namespace, it would also allow
-to change this from user-space through a sysfs entry. Something that's not
-currently possible for the "nomodeset" paramter.
-
-Best regards,
--- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
-
+> diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+> index 2f19ab4..0bd0c16 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+> @@ -107,7 +107,7 @@ struct lpi_pinctrl {
+>   };
+>   
+>   /* sm8250 variant specific data */
+> -static const struct pinctrl_pin_desc sm8250_lpi_pins[] = {
+> +static const struct pinctrl_pin_desc lpass_lpi_pins[] = {
+>   	PINCTRL_PIN(0, "gpio0"),
+>   	PINCTRL_PIN(1, "gpio1"),
+>   	PINCTRL_PIN(2, "gpio2"),
+> @@ -124,7 +124,7 @@ static const struct pinctrl_pin_desc sm8250_lpi_pins[] = {
+>   	PINCTRL_PIN(13, "gpio13"),
+>   };
+>   
+> -enum sm8250_lpi_functions {
+> +enum lpass_lpi_functions {
+>   	LPI_MUX_dmic1_clk,
+>   	LPI_MUX_dmic1_data,
+>   	LPI_MUX_dmic2_clk,
+> @@ -203,7 +203,7 @@ static const struct lpi_pingroup sm8250_groups[] = {
+>   	LPI_PINGROUP(13, NO_SLEW, dmic3_data, i2s2_data, _, _),
+>   };
+>   
+> -static const struct lpi_function sm8250_functions[] = {
+> +static const struct lpi_function lpass_functions[] = {
+>   	LPI_FUNCTION(dmic1_clk),
+>   	LPI_FUNCTION(dmic1_data),
+>   	LPI_FUNCTION(dmic2_clk),
+> @@ -228,12 +228,12 @@ static const struct lpi_function sm8250_functions[] = {
+>   };
+>   
+>   static struct lpi_pinctrl_variant_data sm8250_lpi_data = {
+> -	.pins = sm8250_lpi_pins,
+> -	.npins = ARRAY_SIZE(sm8250_lpi_pins),
+> +	.pins = lpass_lpi_pins,
+> +	.npins = ARRAY_SIZE(lpass_lpi_pins),
+>   	.groups = sm8250_groups,
+>   	.ngroups = ARRAY_SIZE(sm8250_groups),
+> -	.functions = sm8250_functions,
+> -	.nfunctions = ARRAY_SIZE(sm8250_functions),
+> +	.functions = lpass_functions,
+> +	.nfunctions = ARRAY_SIZE(lpass_functions),
+>   };
+>   
+>   static int lpi_gpio_read(struct lpi_pinctrl *state, unsigned int pin,
+> @@ -615,7 +615,7 @@ static int lpi_pinctrl_probe(struct platform_device *pdev)
+>   		return dev_err_probe(dev, PTR_ERR(pctrl->slew_base),
+>   				     "Slew resource not provided\n");
+>   
+> -	ret = devm_clk_bulk_get(dev, MAX_LPI_NUM_CLKS, pctrl->clks);
+> +	ret = devm_clk_bulk_get_optional(dev, MAX_LPI_NUM_CLKS, pctrl->clks);
+>   	if (ret)
+>   		return dev_err_probe(dev, ret, "Can't get clocks\n");
+>   
+> 
