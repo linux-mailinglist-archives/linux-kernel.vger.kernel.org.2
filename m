@@ -2,76 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE42A44463F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C826444645
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232973AbhKCQuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 12:50:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229894AbhKCQup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 12:50:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AAB361101;
-        Wed,  3 Nov 2021 16:48:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635958089;
-        bh=Onh+9SDppBgVYBNjrWSKWxstYzfa9gsZw6qD9P8yiyA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Dr/lRAdpAqeebbrq5bNWIFBiZENgFGkju/vgBWonUZGUYZsrFkcEXSQho0S4XkvM9
-         UB5JpAioQRK5jupTyzKiXT0oBOc7q1qB12Z/9lJ2qiyKH/UImCe1UD4Tv+/M4m0Ldm
-         L4rUOFwWMqYhdtLrM1V3uEj6ftaKLsVhg1ArGcyNiHuXsN+CvR5o4rAzvTHKoT7cvo
-         cXVX31OXJahT8G9aMmCMOSmhIvbmzsXz/FS/IJO9mIJ5hdcDOkWYlnnDigW2Sql/75
-         YWgMUouamzvVjS+v4KPn9SVcrDDvlPVNy9KdumXFENfGn5Y3ZlTvP/aoSGCxSV7Cr5
-         82FM29cupwR0w==
-From:   Will Deacon <will@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Will Deacon <will@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [PATCH] clocksource/drivers/exynos_mct: Fix silly typo resulting in checkpatch warning
-Date:   Wed,  3 Nov 2021 16:48:04 +0000
-Message-Id: <20211103164804.30182-1-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S233001AbhKCQwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 12:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232952AbhKCQwD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 12:52:03 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABDC3C061205
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 09:49:24 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id j28so3225753ila.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 09:49:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=RkjMpeIuQ6aVWCs6FPMVIVUmVZwq7aWhwwHDvLPHoTA=;
+        b=KicifnRFUfO4N9gaBjWUeuCchiYARsN8O1co+rO5IPT91uvvueOb0wsNsI11GdxVwJ
+         dr9v6erho2NSiuAeQPjWWXr80/aDVX4ZDGtF2bYMrGeduV8774afaJs3cID0VrxXXw7W
+         JDNCz20doyAvjpa932g4VxBDygv/KK4Hwh9BB6Swam9PLtudLuRnmWMqKFmrCPti0oN6
+         3OZoxOISvBEHzZfHQFfitqzxdyzkjiYvSP50xycioY8b7q/U3fNpFPjIe+8bUg6ZzHGT
+         Rdiyer48xVYTxzp41hAy+B1fxpvmAGO5SZ5uQpOd5wdpNL64m7eSnlE6qoHNEWewrATl
+         tLUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=RkjMpeIuQ6aVWCs6FPMVIVUmVZwq7aWhwwHDvLPHoTA=;
+        b=2NAVSHA0k6Mlr7bWnvwyt2GThawj/RsAyRKsM0KM56TEG4e8fLv3rYlLzjDOoAtUKM
+         DTCdvVsEYl+JNg8sJP6h8jSL9C70bh8gWRcYcqydl5sJnRErJXEzy/J4yUvrLvsGWeZ0
+         SdKDBppathVcUZIOMBCuDuscm6N5Ea8UCUhnRBz85AoVuCnlHcfa2CGZbu2l8Jqb8LwH
+         lhXHQZKDK8RW39yeBG//QxfFvXAaS+ZA3TNRmtbNJnblkgAkpdxvYOps7WKEpxPEP8ao
+         OoS2WSBJrNKqvc/ftxORwuOXMoX13GVtcMcCjfspMpmHD49wVFdnXTTDbkFoATDwRVTS
+         FV/g==
+X-Gm-Message-State: AOAM530O/qQT8Wui1jZMwnfDIm5OaK0leqZ9+aHIZxE9/2JPYUSF4aYT
+        SPimcR0wqp91roKYgfgEEj0f9J8XLaWup6wZIZc=
+X-Google-Smtp-Source: ABdhPJzDZdGYiXBK4LHoEf4nsJbCPFz0PgWUFSUy6M3Q4PINGqDOM979ILAXeEjz4rLCT609Uhbd5D7Dop6EpQ1n0zc=
+X-Received: by 2002:a05:6e02:1848:: with SMTP id b8mr6349174ilv.299.1635958163970;
+ Wed, 03 Nov 2021 09:49:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Reply-To: mrsdaniella.kyle@yandex.com
+Sender: marksmithtinufelix@gmail.com
+Received: by 2002:a05:6638:16ce:0:0:0:0 with HTTP; Wed, 3 Nov 2021 09:49:23
+ -0700 (PDT)
+From:   Mrs Daniella Kyle <mrsdaniellakyle6@gmail.com>
+Date:   Wed, 3 Nov 2021 09:49:23 -0700
+X-Google-Sender-Auth: kY5Mgx72WX63GBhVTYyCO1hJNRE
+Message-ID: <CA+EzCkr4+A=h3ZA1jNaO5PpgS4M7LpScPb39OCAVex9JAy9qwA@mail.gmail.com>
+Subject: Re:ATM Visa card compensation, Thanks for your past effort
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit ae460fd9164b ("clocksource/drivers/exynos_mct: Prioritise Arm
-arch timer on arm64") changed the rating of the MCT clockevents device
-to be lower than the Arm architected timer and, in the process, replaced
-a semicolon with a comma thanks to a silly copy-paste error.
+Good Day,
 
-Put the semicolon back so that the code looks more idiomatic and resolve
-the SUSPECT_COMMA_SEMICOLON warning from checkpatch at the same time.
+This message may actually come to you as surprises today, To be very
+honest with you, It is a joyful moment for me and my family right now,
+so therefore am using this opportunity to inform you that have
+successfully move to Vietnam where am currently living with my
+business partner who assisted me to complete the transfer, but due to
+the willingness and acceptance you showed during my pain have decided
+to willingly compensated you and show my gratitude to you with these
+sum of $950,000.00 Nine Hundred and fifty Thousand US Dollars).
 
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Signed-off-by: Will Deacon <will@kernel.org>
----
+I want you to accept this amount it=E2=80=99s from the bottom of my heart,
+have issued the check and instructed the bank to roll the fund on a
+master card for security reasons, you can use the card to withdraw
+money from any ATM machine worldwide with a maximum of US$10,000 per
+day. My bank account manager said you can receive the card and use it
+anywhere in this global world.
 
-Although this doesn't have a functional impact and I'd normally not pay
-too much attention to checkpatch warnings, the code is pretty weird as-is
-and I didn't intend for that comma to be there!
+ Go ahead contact the Global ATM Alliance directly with this below
+information. Email Address:   maastercarddeptme20@yahoo.com
 
- drivers/clocksource/exynos_mct.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The Company Name: ........... ....... Global Alliance Burkina Faso
+Company Address; ...... 01BP 23 Rue Des Grands Moulins.Ouagadougou, Burkina=
+ Faso
+Email Address: ..... [maastercarddeptme20@yahoo.com]
+Name of Manager In charge: Mrs Zoure Gueratou
 
-diff --git a/drivers/clocksource/exynos_mct.c b/drivers/clocksource/exynos_mct.c
-index 5e3e96d3d1b9..77ebe960c8c7 100644
---- a/drivers/clocksource/exynos_mct.c
-+++ b/drivers/clocksource/exynos_mct.c
-@@ -467,7 +467,7 @@ static int exynos4_mct_starting_cpu(unsigned int cpu)
- 	evt->tick_resume = set_state_shutdown;
- 	evt->features = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT |
- 			CLOCK_EVT_FEAT_PERCPU;
--	evt->rating = MCT_CLKEVENTS_RATING,
-+	evt->rating = MCT_CLKEVENTS_RATING;
- 
- 	exynos4_mct_write(TICK_BASE_CNT, mevt->base + MCT_L_TCNTB_OFFSET);
- 
--- 
-2.34.0.rc0.344.g81b53c2807-goog
+Presently, I am very busy here in Vietnam because of the investment
+projects which I and my new partner are having at hand, I have given
+instructions to the ATM Visa card office on your behalf to release the
+ATM card which I gave to you as compensation. Therefore feel free and
+get in touch with her and she will send the card and the pin code to
+you in your location in order for you to start withdrawing the
+compensation money without delay.
 
+Let me know as soon you received the card together with the pin code.
+
+Thank you
+Yours Sincerely
+Daniela Angelo Kyle
