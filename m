@@ -2,126 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C1DF4442BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85EF84442C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:54:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231618AbhKCN4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 09:56:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:59644 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231254AbhKCNzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 09:55:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F2385ED1;
-        Wed,  3 Nov 2021 06:52:58 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.75.102])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F5E03F7B4;
-        Wed,  3 Nov 2021 06:52:57 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 13:52:49 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [GIT pull] sched/core for v5.16-rc1
-Message-ID: <20211103135249.GA38767@C02TD0UTHF1T.local>
-References: <163572864256.3357115.931779940195622047.tglx@xen13>
- <163572864855.3357115.17938524897008353101.tglx@xen13>
- <CAHk-=whEbr+0ZSRMkQ1wqLCeBEiK7o2-Hm=55aTBpdeVxnFbVQ@mail.gmail.com>
- <CAHk-=whwxyA11LQ+0y73nJAS4ZB=s8CeYM6OGCEzKiy+8fyLiw@mail.gmail.com>
- <YYD5ti23DQUjdQdz@hirez.programming.kicks-ass.net>
+        id S232313AbhKCN4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 09:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232033AbhKCNz6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 09:55:58 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17583C06120A;
+        Wed,  3 Nov 2021 06:53:22 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id m14so9528285edd.0;
+        Wed, 03 Nov 2021 06:53:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dfUFmaE5TGftvuGL4qHxLuZZEptBzH+lcqE9KzsoXGM=;
+        b=Jf1azWXHQGcZ+fZtVcffWmqE0TjjnOeYCBc6wWasWhsJPS+EyIlCb+E7Y2AVfH5ice
+         J6OEjjELuwDgG1shxFq3RdyWucjescEqudtEDZBi6RbslrXYeluaIONomAzItMs50tZM
+         R5ylYvz26n2YGNFk59UgnmDxpzF1yEKtQyYiEQ3vgNQzD2FM0VNcgSeV/zzgT0C/3bIL
+         zVNfro6OK/cQz+Mp6Tas727z4AbqVHjfM+jaMREDMk0ypEcZtJ4WKrS3w8Xft0FuNT3t
+         Bn5Ugdo9BQjKZBfFMoZb6FNo9DIjAov+k/NTsj5K4vlCJnZrE82g4iK7GcXRgCcoVcix
+         H6ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dfUFmaE5TGftvuGL4qHxLuZZEptBzH+lcqE9KzsoXGM=;
+        b=OXL+GVDuPliBnejD6NqJyv9jehHmnH4N0L01Q2Ic8HxK4SN8m8PvrRIys6W2d6HlBF
+         g6P4PbB3SpRtBoBw+RmvxOdZLAQ6/Js0E95ximrXwdycoq4ENpYR/Kw1O7YD+Z4Hr8Ra
+         4BWkkFv7sYobkzMkpd2r6Yi/d+clgAt4igvSG3AnsUxw62/ut1UQHEKPj9GcMXfw4cJ3
+         swOpLaA7/isB/0nhx0S0ApUX/5ep+ZKOIw0tKm4kg82I/+HlnpBjYoGEEydo3wQ0+ftP
+         Ch44MlQPnDdUFhzWUNYZWBrfYMJD5AZ4zcv9D0FeJF/v9LpO4ahaDsr5K2zDXPoPpja/
+         Tq6A==
+X-Gm-Message-State: AOAM531qmxidJ28Y9K6mLjQZGedxssWoHqSwU8Oq+Hf+5/Y7a1DNWMlh
+        hKGk7Qbozne6I2h41gIhs1E=
+X-Google-Smtp-Source: ABdhPJw4gowrGcHdX8t8zp8CVWwIrlYyg4ac+gAgxzIynDCzNMXgKm9Rk1nbNF17m7KktWbyFJvCiA==
+X-Received: by 2002:a05:6402:438f:: with SMTP id o15mr197151edc.235.1635947597131;
+        Wed, 03 Nov 2021 06:53:17 -0700 (PDT)
+Received: from tom-desktop.station (net-188-153-110-208.cust.vodafonedsl.it. [188.153.110.208])
+        by smtp.gmail.com with ESMTPSA id g10sm1341017edr.56.2021.11.03.06.53.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 06:53:16 -0700 (PDT)
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     tomm.merciai@gmail.com, Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Alice Guo <alice.guo@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        Adam Ford <aford173@gmail.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] arm64: dts: imx8mm: Add NOC node
+Date:   Wed,  3 Nov 2021 14:53:11 +0100
+Message-Id: <20211103135313.6428-1-tomm.merciai@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYD5ti23DQUjdQdz@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 09:41:26AM +0100, Peter Zijlstra wrote:
-> On Mon, Nov 01, 2021 at 02:27:49PM -0700, Linus Torvalds wrote:
-> > On Mon, Nov 1, 2021 at 2:01 PM Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > Unwinders that need locks because they can do bad things if they are
-> > > working on unstable data are EVIL and WRONG.
-> > 
-> > Note that this is fundamental: if you can fool an unwider to do
-> > something bad just because the data isn't stable, then the unwinder is
-> > truly horrendously buggy, and not usable.
-> 
-> From what I've been led to believe, quite a few of our arch unwinders
-> seem to fall in that category. They're mostly only happy when unwinding
-> self and don't have many guardrails on otherwise.
-> 
-> > It could be a user process doing bad things to the user stack frame
-> > from another thread when profiling is enabled.
-> 
-> Most of the unwinders seem to only care about the kernel stack. Not the
-> user stack.
+Add support for dynamic frequency scaling of the main NOC configuration
+on imx8mm.
 
-Yup; there are usually separate unwinders for user/kernel, since there
-are different constaints (and potentially different ABIs for unwinding).
+References:
+ - i.MX 8M Mini Applications Processor RM, Rev. 3, 11/2020
+ - f18e6d573b80 arm64: dts: imx8mq: Add NOC node
+ - 912b9dacf3f0 arm64: dts: imx8mq: increase NOC clock to 800 MHz
+ - https://source.codeaurora.org/external/imx/linux-imx/tree/arch/ \
+   arm64/boot/dts/freescale/imx8mm.dtsi?h=lf-5.10.y
 
-> > It could be debug code unwinding without locks for random reasons.
-> > 
-> > So I really don't like "take a lock for unwinding". It's a pretty bad
-> > bug if the lock required.
-> 
-> Fair enough; te x86 unwinder is pretty robust in this regard, but it
-> seems to be one of few :/
+---
+Changes since v1:
+ - Fix noc_opp_table frequencies taking NXP bsp as reference
+ - Add reference link to nxp imx8mm dtsi on commit body
 
-FWIW, the arm64 kernel unwinder also shouldn't blow up (so long as the
-target stack is pinned via try_get_stack() or similar).
+ arch/arm64/boot/dts/freescale/imx8mm.dtsi | 25 +++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-However, depending on how the task reuses the stack, the results can be
-entirely bogus rather than just stale, since data on the stack can look
-like a kernel pointer (even if that's fairly unllikely). I'm happy to
-believe that we don't care aobut that for wchan, but it's not something
-I'd like to see spread.
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+index c2f3f118f82e..1bcc5e361ca3 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+@@ -719,6 +719,31 @@ pgc_mipi: power-domain@11 {
+ 			};
+ 		};
+ 
++		noc: interconnect@32700000 {
++			compatible = "fsl,imx8mm-noc", "fsl,imx8m-noc";
++			reg = <0x32700000 0x100000>;
++			clocks = <&clk IMX8MM_CLK_NOC>;
++			fsl,ddrc = <&ddrc>;
++			#interconnect-cells = <1>;
++			operating-points-v2 = <&noc_opp_table>;
++
++			noc_opp_table: opp-table {
++				compatible = "operating-points-v2";
++
++				opp-150M {
++					opp-hz = /bits/ 64 <150000000>;
++				};
++
++				opp-375M {
++					opp-hz = /bits/ 64 <375000000>;
++				};
++
++				opp-750M {
++					opp-hz = /bits/ 64 <750000000>;
++				};
++			};
++		};
++
+ 		aips2: bus@30400000 {
+ 			compatible = "fsl,aips-bus", "simple-bus";
+ 			reg = <0x30400000 0x400000>;
+-- 
+2.25.1
 
-> > The "Link" in the commit also is entirely useless, pointing back to
-> > the emailed submission of the patch, rather than any useful discussion
-> > about why the patch happened.
-> 
-> So the initial discussion started here:
-> 
->   https://lkml.kernel.org/r/20210923233105.4045080-1-keescook@chromium.org
-> 
-> A later thread that might also be of interest is:
-> 
->   https://lkml.kernel.org/r/YWgyy+KvNLQ7eMIV@shell.armlinux.org.uk
-> 
-> Also, an even later thread proposes to push that lock into more stack
-> unwinding functions (anything doing remote unwinds):
-> 
->   https://lkml.kernel.org/r/20211022150933.883959987@infradead.org
-> 
-> But it seems to be you're thinking that's fundamentally buggered and
-> people should instead invest in fixing their unwinders already.
-> 
-> Now, as is, this stuff is user exposed through /proc/$pid/{wchan,stack}
-> and as such I think it *can* do with a few extra guardrails in generic
-> code. OTOH, /proc/$pid/stack is root only.
-> 
-> Also, the remote stack-trace code is hooked into bpf (because
-> kitchen-sink) and while I didn't look too hard, I can imagine it could
-> be used to trigger crashes on our less robust architectures if prodded
-> just right.
-
-I do worry that remote unwinds from BPF are just silently generating
-junk, but it's not clear to me what they're actually used for and how
-much that matters. I don't understand why a remote unwind is necessary
-at all.
-
-> Should I care about all this from a generic code PoV, or simply let the
-> architectures that got it 'wrong' deal with it?
-
-FWIW I'm happy either way. There are some upcoming improvements to the
-arm64 unwinder that currently conflict and I need to know whether to
-wait and rebase or assume that we take those first.
-
-Thanks,
-Mark.
