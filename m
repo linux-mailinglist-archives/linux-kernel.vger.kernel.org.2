@@ -2,86 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 836A2444820
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 19:19:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 740FB444828
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 19:20:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231251AbhKCSVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 14:21:47 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:43871 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231211AbhKCSVf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 14:21:35 -0400
-Received: by mail-oi1-f172.google.com with SMTP id o4so4970508oia.10;
-        Wed, 03 Nov 2021 11:18:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mg4euAY1KC0JDtts5aqpH876TSTS290bNkk/ITLN05s=;
-        b=DerVTfaqbawVcqRaTKlVJxNVVx7ZJ1lAFDAPg7bpD0v/dlG18k3Fr9GPRWuMGfAYcU
-         x9UYx7ANmXBLRd3FHBcd29gVYa9UEfGcW4L8ugTtc5586tRsAW2+lMGtF6yN2JOAZpi7
-         e8edg90MKvabOLoBdGrTlqgr0hwPGqoTAGMFhpXRjUb/Z9ye1EiTwsHhg+cbmAmHfe5K
-         eDE+BmYjlmcA4/nIXWoRc4eLgaDWl3/8JWV3Z9bJqlaq5JD2x7zSTbKbeOPGE1Z4sZfr
-         KmUAJ+Eav+PRWKQGVAhJmAmi/hZVHd9U2QyPtBuhTvFekBzwJ5dIsCa6R9IVIRfs1MFw
-         o7Hw==
-X-Gm-Message-State: AOAM532oCBc+/hxs9KfQZp8MWQJlj4X6KVayGp2oFForQFjQr9PCD9d7
-        /AhmuzSVjPTpD7bspA/7T8Oi+wFSGII0Yxim3cU=
-X-Google-Smtp-Source: ABdhPJwoZwuP9fL0EYyTVOy2C4PXcr4TuRHUyjNf7x5eakoUVSWeiB/N4A9oUcgTpM/J3GlAAsFgaAJktwTbLYOKLmY=
-X-Received: by 2002:a05:6808:128d:: with SMTP id a13mr12256199oiw.51.1635963538874;
- Wed, 03 Nov 2021 11:18:58 -0700 (PDT)
+        id S231348AbhKCSXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 14:23:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38244 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230036AbhKCSW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 14:22:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCF3F61058;
+        Wed,  3 Nov 2021 18:20:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635963621;
+        bh=FFi00w/SCD/3fQFpsM7+rPKbDql1iCHDgUj+gyZBz6A=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ryP3DtXtXowf0J0FOPp8+cOTD4gihzfI3gzomyvNG4Ji0RnlY/rFbQJXodadnWiiD
+         bZgNFCx0J8jlsUqsRZHr7tr4YbM2TQMoCVmGWg4RivKM2faAiQqRRDaP2kWewUzji/
+         zMsY/CVq5GlaOenCZsas8kUB2vOUqObHUcxXtMfDcfqqDaS/Yes/GKVeRDiAEagzUe
+         Ghg/spxriWY6lSMgjaUAiIyGmdTL//Gmqy8xnJuGZTtH2qJ2q+LowWfZhij3VlsMVa
+         LmNINM7rmPktnhby1zYGvMquIODdyoNa5NPsSxnQdHe528fW1nzKFMHD7tUObqjogD
+         ZtTNkLFGBg5Hg==
+From:   Gao Xiang <xiang@kernel.org>
+To:     linux-erofs@lists.ozlabs.org, Chao Yu <chao@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Gao Xiang <xiang@kernel.org>,
+        stable@vger.kernel.org
+Subject: [PATCH v2] erofs: fix unsafe pagevec reuse of hooked pclusters
+Date:   Thu,  4 Nov 2021 02:20:06 +0800
+Message-Id: <20211103182006.4040-1-xiang@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20211103174953.3209-1-xiang@kernel.org>
+References: <20211103174953.3209-1-xiang@kernel.org>
 MIME-Version: 1.0
-References: <20211103055119.19312-1-wangzhitong@uniontech.com>
-In-Reply-To: <20211103055119.19312-1-wangzhitong@uniontech.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 3 Nov 2021 19:18:47 +0100
-Message-ID: <CAJZ5v0gS5Mo3REP-Y14gxUWge3avdiANHXi51R+mwz+EOBi_1w@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: EC: fix error "do not initialise statics to false"
-To:     wangzhitong <wangzhitong@uniontech.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 6:52 AM wangzhitong <wangzhitong@uniontech.com> wrote:
->
-> this patch fixes below Errors reported by checkpatch
-> ERROR: do not initialise statics to false
-> +static bool ec_freeze_events __read_mostly = false;
-> ERROR: do not initialise statics to false
-> +static bool boot_ec_is_ecdt = false;
->
-> Signed-off-by: wangzhitong <wangzhitong@uniontech.com>
-> ---
->  drivers/acpi/ec.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
-> index 04ce2b96c3da..1255649a4da9 100644
-> --- a/drivers/acpi/ec.c
-> +++ b/drivers/acpi/ec.c
-> @@ -133,7 +133,7 @@ static unsigned int ec_storm_threshold  __read_mostly = 8;
->  module_param(ec_storm_threshold, uint, 0644);
->  MODULE_PARM_DESC(ec_storm_threshold, "Maxim false GPE numbers not considered as GPE storm");
->
-> -static bool ec_freeze_events __read_mostly = false;
-> +static bool ec_freeze_events __read_mostly;
->  module_param(ec_freeze_events, bool, 0644);
->  MODULE_PARM_DESC(ec_freeze_events, "Disabling event handling during suspend/resume");
->
-> @@ -177,7 +177,7 @@ struct acpi_ec *first_ec;
->  EXPORT_SYMBOL(first_ec);
->
->  static struct acpi_ec *boot_ec;
-> -static bool boot_ec_is_ecdt = false;
-> +static bool boot_ec_is_ecdt;
->  static struct workqueue_struct *ec_wq;
->  static struct workqueue_struct *ec_query_wq;
->
-> --
+There are pclusters in runtime marked with Z_EROFS_PCLUSTER_TAIL
+before actual I/O submission. Thus, the decompression chain can be
+extended if the following pcluster chain hooks such tail pcluster.
 
-Applied as 5.16-rc material with rewritten changelog and subject, thanks!
+As the related comment mentioned, if some page is made of a hooked
+pcluster and another followed pcluster, it can be reused for in-place
+I/O (since I/O should be submitted anyway):
+ _______________________________________________________________
+|  tail (partial) page |          head (partial) page           |
+|_____PRIMARY_HOOKED___|____________PRIMARY_FOLLOWED____________|
+
+However, it's by no means safe to reuse as pagevec since if such
+PRIMARY_HOOKED pclusters finally move into bypass chain without I/O
+submission. It's somewhat hard to reproduce with LZ4 and I just found
+it (general protection fault) by ro_fsstressing a LZMA image for long
+time.
+
+I'm going to actively clean up related code together with multi-page
+folio adaption in the next few months. Let's address it directly for
+easier backporting for now.
+
+Call trace for reference:
+  z_erofs_decompress_pcluster+0x10a/0x8a0 [erofs]
+  z_erofs_decompress_queue.isra.36+0x3c/0x60 [erofs]
+  z_erofs_runqueue+0x5f3/0x840 [erofs]
+  z_erofs_readahead+0x1e8/0x320 [erofs]
+  read_pages+0x91/0x270
+  page_cache_ra_unbounded+0x18b/0x240
+  filemap_get_pages+0x10a/0x5f0
+  filemap_read+0xa9/0x330
+  new_sync_read+0x11b/0x1a0
+  vfs_read+0xf1/0x190
+
+Fixes: 3883a79abd02 ("staging: erofs: introduce VLE decompression support")
+Cc: <stable@vger.kernel.org> # 4.19+
+Signed-off-by: Gao Xiang <xiang@kernel.org>
+---
+changes since v1:
+ - fix typos in commit message.
+
+ fs/erofs/zdata.c | 13 +++++++------
+ fs/erofs/zpvec.h | 13 ++++++++++---
+ 2 files changed, 17 insertions(+), 9 deletions(-)
+
+diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+index 11c7a1aaebad..eb51df4a9f77 100644
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -373,8 +373,8 @@ static bool z_erofs_try_inplace_io(struct z_erofs_collector *clt,
+ 
+ /* callers must be with collection lock held */
+ static int z_erofs_attach_page(struct z_erofs_collector *clt,
+-			       struct page *page,
+-			       enum z_erofs_page_type type)
++			       struct page *page, enum z_erofs_page_type type,
++			       bool pvec_safereuse)
+ {
+ 	int ret;
+ 
+@@ -384,9 +384,9 @@ static int z_erofs_attach_page(struct z_erofs_collector *clt,
+ 	    z_erofs_try_inplace_io(clt, page))
+ 		return 0;
+ 
+-	ret = z_erofs_pagevec_enqueue(&clt->vector, page, type);
++	ret = z_erofs_pagevec_enqueue(&clt->vector, page, type,
++				      pvec_safereuse);
+ 	clt->cl->vcnt += (unsigned int)ret;
+-
+ 	return ret ? 0 : -EAGAIN;
+ }
+ 
+@@ -729,7 +729,8 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+ 		tight &= (clt->mode >= COLLECT_PRIMARY_FOLLOWED);
+ 
+ retry:
+-	err = z_erofs_attach_page(clt, page, page_type);
++	err = z_erofs_attach_page(clt, page, page_type,
++				  clt->mode >= COLLECT_PRIMARY_FOLLOWED);
+ 	/* should allocate an additional short-lived page for pagevec */
+ 	if (err == -EAGAIN) {
+ 		struct page *const newpage =
+@@ -737,7 +738,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+ 
+ 		set_page_private(newpage, Z_EROFS_SHORTLIVED_PAGE);
+ 		err = z_erofs_attach_page(clt, newpage,
+-					  Z_EROFS_PAGE_TYPE_EXCLUSIVE);
++					  Z_EROFS_PAGE_TYPE_EXCLUSIVE, true);
+ 		if (!err)
+ 			goto retry;
+ 	}
+diff --git a/fs/erofs/zpvec.h b/fs/erofs/zpvec.h
+index dfd7fe0503bb..b05464f4a808 100644
+--- a/fs/erofs/zpvec.h
++++ b/fs/erofs/zpvec.h
+@@ -106,11 +106,18 @@ static inline void z_erofs_pagevec_ctor_init(struct z_erofs_pagevec_ctor *ctor,
+ 
+ static inline bool z_erofs_pagevec_enqueue(struct z_erofs_pagevec_ctor *ctor,
+ 					   struct page *page,
+-					   enum z_erofs_page_type type)
++					   enum z_erofs_page_type type,
++					   bool pvec_safereuse)
+ {
+-	if (!ctor->next && type)
+-		if (ctor->index + 1 == ctor->nr)
++	if (!ctor->next) {
++		/* some pages cannot be reused as pvec safely without I/O */
++		if (type == Z_EROFS_PAGE_TYPE_EXCLUSIVE && !pvec_safereuse)
++			type = Z_EROFS_VLE_PAGE_TYPE_TAIL_SHARED;
++
++		if (type != Z_EROFS_PAGE_TYPE_EXCLUSIVE &&
++		    ctor->index + 1 == ctor->nr)
+ 			return false;
++	}
+ 
+ 	if (ctor->index >= ctor->nr)
+ 		z_erofs_pagevec_ctor_pagedown(ctor, false);
+-- 
+2.20.1
+
