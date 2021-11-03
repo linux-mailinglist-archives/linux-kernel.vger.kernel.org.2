@@ -2,94 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192E1444A84
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 22:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BDC444A86
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 22:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhKCV41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 17:56:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbhKCV4V (ORCPT
+        id S231147AbhKCV4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 17:56:49 -0400
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:62935 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230340AbhKCV4s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 17:56:21 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2AA7C061203
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 14:53:44 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id d3so5644297wrh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 14:53:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D7FSrtNrX5nOFnwygS5xpyL/5wYBkJfbm++yYupLlqo=;
-        b=BOnSOl6YXnuSil9Gt1blmrWYKaP4cFrvlgfMaylmUIXlRY1YXa4xesmT9UQguUTb/6
-         qKzdmnPAMJktxgWyrIpHWagD6SAb8VIRF6UKohjYn+HjjDgNPy30KAOMIkTMeOaMLsSA
-         G1T2j7JWpytiQMstMlQ/Og41MeZRXcoV5nXaE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D7FSrtNrX5nOFnwygS5xpyL/5wYBkJfbm++yYupLlqo=;
-        b=i/p/Wfyy1NuQCFJeP44G9UCsI3iUpMR7ZbIcKuFIQSs4xag3QjQtlUYp0qcbNHpFBV
-         V3Pee3UR1ydAYPoPDq1CZCsuBdW98Q4m/kxt9UDzQrSq/NthTB9gxdXsO193WfxD9Txk
-         KOHZWyeV/EhZcUpJl7/Nf2cgASwvdr5mkTGRj9lG91NMo0WBELqqMdbMG5KMHoh/3lyv
-         m0yay396Jjv/d6PGBGARazCzVVNV4wxXaaQkLatX5ZpZgNFv+cPVwxCr81UZxfICeD2n
-         Z8MVRfog0VTq1Ee2VeXLXWAaBY7BWCZBZb9GuQXLsjqhrEVb7SuSX0m1yd68RbiVS5rK
-         NFpg==
-X-Gm-Message-State: AOAM530Qy9/2Q2slm8q7UXx0OvMDzFqRVBoJ+JDm3s74QF4ziAdqASQC
-        tGcmJ76Oa3rnWr2VnuoUdx4K/cwUep8Ii81QTraF+A==
-X-Google-Smtp-Source: ABdhPJy0sTuL7PHeTb2+ERKpgRvzQcvSzbrxX79HbSBGj+++Szj2w7dWetm+oKLaSe4IhQdSf37ppgqKLgegphecNFQ=
-X-Received: by 2002:adf:ba87:: with SMTP id p7mr59062923wrg.282.1635976423448;
- Wed, 03 Nov 2021 14:53:43 -0700 (PDT)
+        Wed, 3 Nov 2021 17:56:48 -0400
+Received: from [192.168.1.18] ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id iOCvmLlHeBazoiOCvmx3Yo; Wed, 03 Nov 2021 22:54:10 +0100
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Wed, 03 Nov 2021 22:54:10 +0100
+X-ME-IP: 86.243.171.122
+Subject: Re: [PATCH] mm/mremap_pages: Save a few cycles in 'get_dev_pagemap()'
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <b4a47154877853cc64be3a35dcfd594d40cc2bce.1635975283.git.christophe.jaillet@wanadoo.fr>
+ <YYMCI2S03+azi7nK@casper.infradead.org>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <5da6ef93-97c6-6165-8a73-eb1050589ba7@wanadoo.fr>
+Date:   Wed, 3 Nov 2021 22:54:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211103184939.45263-1-jim2101024@gmail.com> <20211103184939.45263-6-jim2101024@gmail.com>
- <YYLm3z0MAgBK24z5@sirena.org.uk> <CA+-6iNzkg4R8Kt=Q=sgdB++HHStRSHRUOUTvAfjZr31-FUrzNA@mail.gmail.com>
- <CA+-6iNziZv0UycoaoFhscmp39Z2Y2bHrWUpFW4f9MBK-uM24qA@mail.gmail.com> <YYMEkjlbFdeIjror@sirena.org.uk>
-In-Reply-To: <YYMEkjlbFdeIjror@sirena.org.uk>
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-Date:   Wed, 3 Nov 2021 17:53:32 -0400
-Message-ID: <CA+-6iNwshLwTaHuh+BezmqjGi7wRnFUqa2HvKestecOy06qj8g@mail.gmail.com>
-Subject: Re: [PATCH v7 5/7] PCI: brcmstb: Add control of subdevice voltage regulators
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Jim Quinlan <jim2101024@gmail.com>,
-        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
-        <linux-pci@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YYMCI2S03+azi7nK@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 5:52 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Wed, Nov 03, 2021 at 04:34:34PM -0400, Jim Quinlan wrote:
-> > On Wed, Nov 3, 2021 at 4:25 PM Jim Quinlan <james.quinlan@broadcom.com> wrote:
->
-> > > I did it to squelch the "supply xxxxx not found, using dummy
-> > > regulator" output.  I'll change it.
->
-> > Now I remember: if I know there are no vpciexxx-supplly props in the
-> > DT, I can skip executing all of the buik regulator calls entirely, as
-> > well as walking the PCI bus as in brcm_regulators_off().
->
-> > Do you consider this a valid reason?
->
-> No, the whole point in the core code providing dummy supplies is that it
-> removes the complexity introduced by client drivers trying to guess if
-> there's supplies available or not.  If they do that then we end up with
-> a bunch of code duplication and issues if there's any changes or
-> extensions to the generic bindings.
-Ok, will change it.
-Thanks, Jim
+Le 03/11/2021 à 22:41, Matthew Wilcox a écrit :
+> On Wed, Nov 03, 2021 at 10:35:34PM +0100, Christophe JAILLET wrote:
+>> Use 'percpu_ref_tryget_live_rcu()' instead of 'percpu_ref_tryget_live()' to
+>> save a few cycles when it is known that the rcu lock is already
+>> taken/released.
+> 
+> If this is really important, we can add an __xa_load() which doesn't
+> take the RCU read lock.
+
+There are a few:
+    rcu_read_lock();
+    mem = xa_load(...);
+    rcu_read_unlock();
+patterns here and there.
+
+I don't have any numbers of if saving some rcu_read_lock/rcu_read_unlock 
+would be useful in these cases.
+
+The only numbers I have are in [1].
+
+[1]: 
+https://lore.kernel.org/linux-kernel/cover.1634822969.git.asml.silence@gmail.com/
+
+CJ
+
+
+> 
+> I honestly think that the xarray is the wrong data structure here,
+> and we'd be better off with a simple array of (start, pointer)
+> tuples.
+> 
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>>   mm/memremap.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/mm/memremap.c b/mm/memremap.c
+>> index 84de22c14567..012e8d23d365 100644
+>> --- a/mm/memremap.c
+>> +++ b/mm/memremap.c
+>> @@ -506,7 +506,7 @@ struct dev_pagemap *get_dev_pagemap(unsigned long pfn,
+>>   	/* fall back to slow path lookup */
+>>   	rcu_read_lock();
+>>   	pgmap = xa_load(&pgmap_array, PHYS_PFN(phys));
+>> -	if (pgmap && !percpu_ref_tryget_live(pgmap->ref))
+>> +	if (pgmap && !percpu_ref_tryget_live_rcu(pgmap->ref))
+>>   		pgmap = NULL;
+>>   	rcu_read_unlock();
+>>   
+>> -- 
+>> 2.30.2
+>>
+>>
+> 
+
