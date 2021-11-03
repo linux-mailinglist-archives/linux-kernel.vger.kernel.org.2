@@ -2,91 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F55444B3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 00:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 890B8444B3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 00:08:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbhKCXKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 19:10:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229561AbhKCXKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 19:10:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E35B061108;
-        Wed,  3 Nov 2021 23:07:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635980864;
-        bh=ksVBAHxaotyoaSheG1DS+q0WjnPxmPNhpLsMd9Xw3qs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qNrfBTlRKmry4asedm/zMIlYDQiQskAQyiV34Ja1UQx4nSB2Yy+QcZdVATpIyLRJT
-         2rEOQ5gt61mYnTQBSfoP/3cQfIMK+yGNxMb6qIZw5dd3uDU/lpxPLOVUrHDQyZ9K46
-         DnULkVvvJs7U400vTRASjU9Y+RIQUk1TONsdKd0JO1UrvHPlWyW/yj2I7baflBKmXv
-         WHWt7Wl3cmTK/Uci2Jvlrz3NZU0HLDLao5oha1ELkqIZ8dhz4RZg7SlnJkuGKD8bBk
-         5Z2OD4WEFLmybOhfzEhIUWVfZ3GGvMBxrZqJKZyyE+/MrEcXBQ6f/QQ4djS5IQqhi6
-         mThMIppguLRbw==
-Date:   Wed, 3 Nov 2021 16:07:42 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-omap@vger.kernel.org>, Tony Lindgren <tony@atomide.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH net-next v2 2/3] net: ethernet: ti: am65-cpsw: enable
- bc/mc storm prevention support
-Message-ID: <20211103160742.51218d7d@kicinski-fedora-PC1C0HJN>
-In-Reply-To: <81a427a1-b969-4039-0c3f-567b3073abc1@ti.com>
-References: <20211101170122.19160-1-grygorii.strashko@ti.com>
-        <20211101170122.19160-3-grygorii.strashko@ti.com>
-        <20211102173840.01f464ec@kicinski-fedora-PC1C0HJN>
-        <81a427a1-b969-4039-0c3f-567b3073abc1@ti.com>
+        id S230084AbhKCXKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 19:10:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229561AbhKCXKg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 19:10:36 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C2FC061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 16:07:59 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id b4so3681111pgh.10
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 16:07:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8yaW7bzXe4yys7yTtEPfAvcvjjvX4R1Y6KiKrJ3surQ=;
+        b=BN9M8yhbhfPl4RAvGzgSz0yTDRbGdwqEAZn7Uqiqx8NtTEj7Z8oLPsEl16K3Bc78I2
+         8og91Xy589UPQHpUBVAwmehZTG0MfNE9IaqFxOms+QkBaG/ZRdjnwpn/q0/fLR8YnMaY
+         Bk1shaKheagMnMhdGSgVTJG4SvBUEbUTYmsz3LzLbA0201mcJykfcLpuU4kvz76tiPo+
+         bsA7Tcakz4ciVt62k9xcnasvyAwrUDVRxeR6k8uPIGBg4mcbbT/1m/dF/5lYkiAxF0jT
+         L+xVbDJWzwAGxXWaYZy+6QDOSxvX5IvxT9HgfX4gu9cCDsWqOxXTateWnqegjAYsB1Wg
+         5OsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8yaW7bzXe4yys7yTtEPfAvcvjjvX4R1Y6KiKrJ3surQ=;
+        b=cKj/gBW9VS7yCMtSqgRc2rl0FSTfOTtlMAuIH6m1zENgzYwI84FWt1iyfn6EkGpVNW
+         yvN8L09UX2cosFD7fQySIXOX3e0pPHrYPu7c4Wqh1zVj7ihWiG7aA1WN/B1JCR7YVt/i
+         BvqrKoRpfMPabsUSONwK1lJfXoHu/gWKrJDg/1G0/4G4x1ARh8oljsrN2cU2rXnztN3h
+         yE5wCdgbatDvoOYDGaGw/KxrlNF0NBX7JeYUHTLfBwEwbyy35Axmx/g8Kj3X5gR+AirJ
+         BnH9Ybki2aizUErIm1TITOxTlREGVQgyoXqEjJP8lSF0CT/NAsZmqxkOMmwjGtziN0pV
+         4j3w==
+X-Gm-Message-State: AOAM530RhCIiDVe8YOdIaUggW5iKQP9OOzE9xCfB2ifWvDkLV1YaGJuB
+        BqYP0EaVojxtIUrHCgECVB/xSA==
+X-Google-Smtp-Source: ABdhPJxpfqJe3VGZemJkfTGPxc6se4YW+yh21PyNUGidR5vmQBrWCmxkc/4bTNFR3tgDcboY2DHE2g==
+X-Received: by 2002:a63:a801:: with SMTP id o1mr36104100pgf.23.1635980878910;
+        Wed, 03 Nov 2021 16:07:58 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id b10sm3291227pfi.122.2021.11.03.16.07.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 16:07:58 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 23:07:54 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     pbonzini@redhat.com, jmattson@google.com, dmatlack@google.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] Add wrapper to read GPR of INVPCID, INVVPID, and
+ INVEPT
+Message-ID: <YYMWSvDlYZ26D4yU@google.com>
+References: <20211103205911.1253463-1-vipinsh@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211103205911.1253463-1-vipinsh@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Nov 2021 00:20:30 +0200 Grygorii Strashko wrote:
-> On 03/11/2021 02:38, Jakub Kicinski wrote:
-> > On Mon, 1 Nov 2021 19:01:21 +0200 Grygorii Strashko wrote:  
-> >>   - 01:00:00:00:00:00 fixed value has to be used for MC packets rate
-> >>     limiting (exact match)  
-> > 
-> > This looks like a stretch, why not use a mask? You can require users to
-> > always install both BC and MC rules if you want to make sure the masked
-> > rule does not match BC.
-> >   
+On Wed, Nov 03, 2021, Vipin Sharma wrote:
+> Hello,
 > 
-> Those matching rules are hard coded in HW for packet rate limiting and SW only
-> enables them and sets requested pps limit.
-> - 1:BC: HW does exact match on BC MAC address
-> - 2:MC: HW does match on MC bit (the least-significant bit of the first octet)
-> 
-> Therefore the exact match done in this patch for above dst_mac's with
-> is_broadcast_ether_addr() and ether_addr_equal().
+> v3 is similar to v2 except that the commit message of "PATCH v3 2/2" is now
+> clearer and detailed.
 
-Right but flower supports masked matches for dest address, as far as I
-can tell. So you should check the mask is what you expect as well, not
-just look at the key. Mask should be equal to key in your case IIUC, so:
-
-	if (is_broadcast_ether_addr(match.key->dst) &&
-	    is_broadcast_ether_addr(match.mask->dst))
-
-and
-
-	if (!memcmp(match.key->dst, mc_mac, ETH_ALEN) &&
-	    !memcmp(match.mask->dst, mc_mac, ETH_ALEN))
-
-I think you should also test that the mask, not the key of source addr
-is zero.
-
-Note that ether_addr_equal() assumes the mac address is alinged to 2,
-which I'm not sure is the case here.
-
-Also you can make mc_mac a static const.
-
-> The K3 cpsw also supports number configurable policiers (bit rate limit) in
-> ALE for which supports is to be added, and for them MC mask (sort of, it uses
-> number of ignored bits, like FF-FF-FF-00-00-00) can be used.
+Heh, please wait at _minimum_ one day before spinning a new version.  I know it's
+a bit weird/silly for such a small series, but even in this case I replied to the
+previous version because I circled back to the "series" while waiting for a build
+to complete.  For small series and/or single patches, unless there's a reason for
+urgency, it's polite to wait a few days between versions to give folks a reasonable
+chance to weigh in before getting hit with a new version.
