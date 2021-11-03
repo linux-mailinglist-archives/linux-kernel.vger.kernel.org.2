@@ -2,182 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AFC4442CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:54:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C12B94442CD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbhKCN45 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Nov 2021 09:56:57 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:33827 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232135AbhKCN4a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 09:56:30 -0400
-Received: (Authenticated sender: clement.leger@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 060911BF207;
-        Wed,  3 Nov 2021 13:53:51 +0000 (UTC)
-Date:   Wed, 3 Nov 2021 14:53:51 +0100
-From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 3/6] net: ocelot: pre-compute injection frame header
- content
-Message-ID: <20211103145351.793538c3@fixe.home>
-In-Reply-To: <20211103123811.im5ua7kirogoltm7@skbuf>
-References: <20211103091943.3878621-1-clement.leger@bootlin.com>
-        <20211103091943.3878621-4-clement.leger@bootlin.com>
-        <20211103123811.im5ua7kirogoltm7@skbuf>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230472AbhKCN5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 09:57:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231629AbhKCN5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 09:57:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 509EB6113E;
+        Wed,  3 Nov 2021 13:54:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635947667;
+        bh=PP9X/VqIDyGJfFDaTj/v35bE7Q5KLkOmp0KNQo8eB5E=;
+        h=Date:From:To:Cc:Subject:From;
+        b=E1ap4Cm3EBRJAOHhh+sjbMPHw84J68lOpJ/c3/IW21teRIjF0rUDNhlJL+7nZp5+S
+         hSJwcvjn6++344ErubC+tk4lqPcdm/2TZfsmCRKy4Qc7NuhHmGqQuU+oJI/zn87k+Z
+         0YssCkqWCzfqFBD8HNTtqlf0aPGjN86xM1HIb7/ymPn8frZbUxkf1Zt0y4DGBKAVKu
+         ibwbDKVZ4Uo6p9w/oaT/ge4T2NV1tuVa7tOP0TiN7OwREfI6Ixh8UYXPybABuLcmD0
+         s3FTCNsfihtD0cQTmqYxT+rfVqsjdw2UTas8jb5ElFCrkLHdHwsHKSP6A0LK+KAfJl
+         aDc4opGVIu7nw==
+Date:   Wed, 3 Nov 2021 13:54:18 +0000
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Kaixu Xia <kaixuxia@tencent.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Yang Li <abaci-bugfix@linux.alibaba.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Alan <alan@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: atomisp current issues
+Message-ID: <20211103135418.496f75d5@sal.lan>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Wed, 3 Nov 2021 12:38:12 +0000,
-Vladimir Oltean <vladimir.oltean@nxp.com> a écrit :
+Hi,
 
-> On Wed, Nov 03, 2021 at 10:19:40AM +0100, Clément Léger wrote:
-> > IFH preparation can take quite some time on slow processors (up to
-> > 5% in a iperf3 test for instance). In order to reduce the cost of
-> > this preparation, pre-compute IFH since most of the parameters are
-> > fixed per port. Only rew_op and vlan tag will be set when sending
-> > if different than 0. This allows to remove entirely the calls to
-> > packing() with basic usage. In the same time, export this function
-> > that will be used by FDMA.
-> > 
-> > Signed-off-by: Clément Léger <clement.leger@bootlin.com>
-> > ---  
-> 
-> Honestly, this feels a bit cheap/gimmicky, and not really the
-> fundamental thing to address. In my testing of a similar idea (see
-> commits 67c2404922c2 ("net: dsa: felix: create a template for the DSA
-> tags on xmit") and then 7c4bb540e917 ("net: dsa: tag_ocelot: create
-> separate tagger for Seville"), the net difference is not that stark,
-> considering that now you need to access one more memory region which
-> you did not need before, do a memcpy, and then patch the IFH anyway
-> for the non-constant stuff.
+=46rom what I've seen so far, those are the main issues with regards to V4L2 =
+API,
+in order to allow a generic V4L2 application to work with it.
 
-The memcpy is neglectable and the patching happens only in a few
-cases (at least vs the packing function call). The VSC7514 CPU is really
-slow and lead to 2.5% up to 5% time spent in packing() when using iperf3
-and depending on the use case (according to ftrace).
+MMAP support
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-> 
-> Certainly, for the calls to ocelot_port_inject_frame() from DSA, I
-> would prefer not having this pre-computed IFH.
-> 
-> Could you provide some before/after performance numbers and perf
-> counters?
+Despite having some MMAP code on it, the current implementation is broken.=
+=20
+Fixing it is not trivial, as it would require fixing the HMM support on it,=
+=20
+which does several tricks.
 
-I will make another round of measure to confirm my previous number and
-check the impact on the injection rate on ocelot.
+The best would be to replace it by something simpler. If this is similar
+enough to IPU3, perhaps one idea would be to replace the HMM code on it by=
+=20
+videodev2 + IPU3 HMM code.
 
-> 
-> >  drivers/net/ethernet/mscc/ocelot.c | 23 ++++++++++++++++++-----
-> >  include/soc/mscc/ocelot.h          |  5 +++++
-> >  2 files changed, 23 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/mscc/ocelot.c
-> > b/drivers/net/ethernet/mscc/ocelot.c index
-> > e6c18b598d5c..97693772595b 100644 ---
-> > a/drivers/net/ethernet/mscc/ocelot.c +++
-> > b/drivers/net/ethernet/mscc/ocelot.c @@ -1076,20 +1076,29 @@ bool
-> > ocelot_can_inject(struct ocelot *ocelot, int grp) }
-> >  EXPORT_SYMBOL(ocelot_can_inject);
-> >  
-> > +void ocelot_ifh_port_set(void *ifh, struct ocelot_port *port, u32
-> > rew_op,
-> > +			 u32 vlan_tag)
-> > +{
-> > +	memcpy(ifh, port->ifh, OCELOT_TAG_LEN);
-> > +
-> > +	if (vlan_tag)
-> > +		ocelot_ifh_set_vlan_tci(ifh, vlan_tag);
-> > +	if (rew_op)
-> > +		ocelot_ifh_set_rew_op(ifh, rew_op);
-> > +}
-> > +EXPORT_SYMBOL(ocelot_ifh_port_set);
-> > +
-> >  void ocelot_port_inject_frame(struct ocelot *ocelot, int port, int
-> > grp, u32 rew_op, struct sk_buff *skb)
-> >  {
-> > +	struct ocelot_port *port_s = ocelot->ports[port];
-> >  	u32 ifh[OCELOT_TAG_LEN / 4] = {0};
-> >  	unsigned int i, count, last;
-> >  
-> >  	ocelot_write_rix(ocelot, QS_INJ_CTRL_GAP_SIZE(1) |
-> >  			 QS_INJ_CTRL_SOF, QS_INJ_CTRL, grp);
-> >  
-> > -	ocelot_ifh_set_bypass(ifh, 1);
-> > -	ocelot_ifh_set_dest(ifh, BIT_ULL(port));
-> > -	ocelot_ifh_set_tag_type(ifh, IFH_TAG_TYPE_C);
-> > -	ocelot_ifh_set_vlan_tci(ifh, skb_vlan_tag_get(skb));
-> > -	ocelot_ifh_set_rew_op(ifh, rew_op);
-> > +	ocelot_ifh_port_set(ifh, port_s, rew_op,
-> > skb_vlan_tag_get(skb)); 
-> >  	for (i = 0; i < OCELOT_TAG_LEN / 4; i++)
-> >  		ocelot_write_rix(ocelot, ifh[i], QS_INJ_WR, grp);
-> > @@ -2128,6 +2137,10 @@ void ocelot_init_port(struct ocelot *ocelot,
-> > int port) 
-> >  	skb_queue_head_init(&ocelot_port->tx_skbs);
-> >  
-> > +	ocelot_ifh_set_bypass(ocelot_port->ifh, 1);
-> > +	ocelot_ifh_set_dest(ocelot_port->ifh, BIT_ULL(port));
-> > +	ocelot_ifh_set_tag_type(ocelot_port->ifh, IFH_TAG_TYPE_C);
-> > +
-> >  	/* Basic L2 initialization */
-> >  
-> >  	/* Set MAC IFG Gaps
-> > diff --git a/include/soc/mscc/ocelot.h b/include/soc/mscc/ocelot.h
-> > index fef3a36b0210..b3381c90ff3e 100644
-> > --- a/include/soc/mscc/ocelot.h
-> > +++ b/include/soc/mscc/ocelot.h
-> > @@ -6,6 +6,7 @@
-> >  #define _SOC_MSCC_OCELOT_H
-> >  
-> >  #include <linux/ptp_clock_kernel.h>
-> > +#include <linux/dsa/ocelot.h>
-> >  #include <linux/net_tstamp.h>
-> >  #include <linux/if_vlan.h>
-> >  #include <linux/regmap.h>
-> > @@ -623,6 +624,8 @@ struct ocelot_port {
-> >  
-> >  	struct net_device		*bridge;
-> >  	u8				stp_state;
-> > +
-> > +	u8				ifh[OCELOT_TAG_LEN];
-> >  };
-> >  
-> >  struct ocelot {
-> > @@ -754,6 +757,8 @@ void __ocelot_target_write_ix(struct ocelot
-> > *ocelot, enum ocelot_target target, bool ocelot_can_inject(struct
-> > ocelot *ocelot, int grp); void ocelot_port_inject_frame(struct
-> > ocelot *ocelot, int port, int grp, u32 rew_op, struct sk_buff *skb);
-> > +void ocelot_ifh_port_set(void *ifh, struct ocelot_port *port, u32
-> > rew_op,
-> > +			 u32 vlan_tag);
-> >  int ocelot_xtr_poll_frame(struct ocelot *ocelot, int grp, struct
-> > sk_buff **skb); void ocelot_drain_cpu_queue(struct ocelot *ocelot,
-> > int grp); 
-> > -- 
-> > 2.33.0
->   
+As this is not trivial, I'm postponing such task. If someone has enough
+time, it would be great to have this fixed.
+
+=46rom my side, I opted to add support for USERPTR on camorama:
+
+	https://github.com/alessio/camorama
+
+As this is something I wanted to do anyway, and it allowed me to cleanup
+several things in camorama's code.
+
+Support for USERPTR is not autodetected. So, this should be selected
+via a command line parameter. Here (Fedora), I installed the build
+dependencies on my test device with:
+
+	$ sudo dnf builddep camorama
+	$ sudo dnf install gnome-common  # for gnome-autogen.sh
+
+Testing it with atomisp would be:
+
+	$ git clone https://github.com/alessio/camorama
+	$ cd camorama && ./autogen.sh
+	$ make && ./src/camorama -d /dev/video2  --debug -U -D
+
+In time:
+--------
+
+ Camorama currently doesn't work due to some other API bugs. See below.
 
 
+VIDIOC_G_FMT/VIDIOC_S_FMT/VIDIOC_TRY_FMT issues
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
--- 
-Clément Léger,
-Embedded Linux and Kernel engineer at Bootlin
-https://bootlin.com
+The implementation for VIDIOC_G_FMT/VIDIOC_S_FMT/VIDIOC_TRY_FMT are not
+properly implemented. It has several issues.
+
+The main one is related to padding. Based on the comments inside the code,
+the ISP 2 seems to require padding to work, both vertically an horizontally.
+
+Those are controlled by two modprobe parameters: pad_h and pad_w.
+The default for both is 16.
+
+There are some other padding logic inside the function which sets the
+video formats at atomisp_cmd: atomisp_set_fmt(). This function is quite
+complex, being big and it calls several other atomisp kAPIs.
+
+It basically queries the sensor, and then it mounts a pipeline that
+will have the sensor + ISP blocks. Those ISP blocks convert the format
+from Bayer into YUYV or RGB and scale down the resolution in order to
+match the request.
+
+It also adjusts the padding. The padding code there is very complex,
+as it not only uses pad_h/pad_w, having things like:
+
+	if (!atomisp_subdev_format_conversion(asd, source_pad)) {
+		padding_w =3D 0;
+		padding_h =3D 0;
+	} else if (IS_BYT) {
+		padding_w =3D 12;
+		padding_h =3D 12;
+	}
+	...
+	atomisp_get_dis_envelop(asd, f->fmt.pix.width, f->fmt.pix.height,
+				&dvs_env_w, &dvs_env_h);
+	...
+	/*
+	 * set format info to sensor
+	 * In continuous mode, resolution is set only if it is higher than
+	 * existing value. This because preview pipe will be configured after
+	 * capture pipe and usually has lower resolution than capture pipe.
+	 */
+	if (!asd->continuous_mode->val ||
+	    isp_sink_fmt->width < (f->fmt.pix.width + padding_w + dvs_env_w) ||
+	    isp_sink_fmt->height < (f->fmt.pix.height + padding_h +
+				    dvs_env_h)) {
+
+Due to that, the sensors are set to have those extra 16 columns/lines.
+Those extra data are consumed internally at the driver, so the output
+buffer won't contain those.
+
+Yet, the buffer size to be allocated by userspace on USERPTR mode is not ju=
+st
+width x height x bpp, but it may need extra space for such pads and/or othe=
+r=20
+things.
+
+In practice, when VIDIOC_S_FMT asks for a 1600x1200 resolution, it
+actually sets 1616x1216 at the sensor (at the pad source), but the
+pad sink provides the requested resolution: 1600x1200.
+
+However, the resolution returned by VIDIOC_G_FMT/VIDIOC_S_FMT/VIDIOC_TRY_FMT
+is not always the sink resolution. Sometimes, it returns the sensor format.
+
+Fixing it has been challenging.
+
+-
+
+Another related issue is that, when a resolution bigger than the maximum
+resolution is requested, the driver doesn't return 1600x1200, but, instead,
+a smaller one.
+
+On other words, setting to YUYV 1600x1200 gives:
+
+	$ v4l2-ctl --set-fmt-video pixelformat=3DYUYV,width=3D1600,height=3D1200 -=
+d /dev/video2 --verbose
+	VIDIOC_QUERYCAP: ok
+	VIDIOC_G_FMT: ok
+	VIDIOC_S_FMT: ok
+	Format Video Capture:
+		Width/Height      : 1600/1200
+		Pixel Format      : 'YUYV' (YUYV 4:2:2)
+		Field             : None
+		Bytes per Line    : 3200
+		Size Image        : 3842048
+		Colorspace        : Rec. 709
+		Transfer Function : Rec. 709
+		YCbCr/HSV Encoding: Rec. 709
+		Quantization      : Default (maps to Limited Range)
+		Flags             :=20
+
+Setting to a higher resolution (which is a method that some apps use to test
+for the max resolution, when VIDIOC_ENUM_FRAMESIZES is not available or
+broken) produces:
+
+	$ v4l2-ctl --set-fmt-video pixelformat=3DYUYV,width=3D10000,height=3D10000=
+ -d /dev/video2 --verbose
+	VIDIOC_QUERYCAP: ok
+	VIDIOC_G_FMT: ok
+	VIDIOC_S_FMT: ok
+	Format Video Capture:
+		Width/Height      : 1600/900
+		Pixel Format      : 'YUYV' (YUYV 4:2:2)
+		Field             : None
+		Bytes per Line    : 3200
+		Size Image        : 2883584
+		Colorspace        : Rec. 709
+		Transfer Function : Rec. 709
+		YCbCr/HSV Encoding: Rec. 709
+		Quantization      : Default (maps to Limited Range)
+		Flags             :=20
+
+Trying to set to the sensor resolution is even worse, as it returns EINVAL:
+
+	$ v4l2-ctl --set-fmt-video pixelformat=3DYUYV,width=3D1616,height=3D1216 -=
+d /dev/video2 --verbose
+	VIDIOC_QUERYCAP: ok
+	VIDIOC_G_FMT: ok
+	VIDIOC_S_FMT: failed: Invalid argument
+
+The logs for such case are:
+
+	[ 4799.594724] atomisp-isp2 0000:00:03.0: can't create streams
+	[ 4799.594757] atomisp-isp2 0000:00:03.0: __get_frame_info 1616x1216 (padd=
+ed to 0) returned -22
+	[ 4799.594781] atomisp-isp2 0000:00:03.0: Can't set format on ISP. Error -=
+22
+
+Video devices
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Currently, 10 video? devices are created:
+
+	$ for i in $(ls /dev/video*|sort -k2 -to -n); do echo -n $i:; v4l2-ctl -D =
+-d $i|grep Name; done
+	/dev/video0:	Name             : ATOMISP ISP CAPTURE output
+	/dev/video1:	Name             : ATOMISP ISP VIEWFINDER output
+	/dev/video2:	Name             : ATOMISP ISP PREVIEW output
+	/dev/video3:	Name             : ATOMISP ISP VIDEO output
+	/dev/video4:	Name             : ATOMISP ISP ACC
+	/dev/video5:	Name             : ATOMISP ISP MEMORY input
+	/dev/video6:	Name             : ATOMISP ISP CAPTURE output
+	/dev/video7:	Name             : ATOMISP ISP VIEWFINDER output
+	/dev/video8:	Name             : ATOMISP ISP PREVIEW output
+	/dev/video9:	Name             : ATOMISP ISP VIDEO output
+	/dev/video10:	Name             : ATOMISP ISP ACC
+
+That seems to be written to satisfy some Android-based app, but we don't
+really need all of those.
+
+I'm thinking to comment out the part of the code which creates all of those,
+keeping just "ATOMISP ISP PREVIEW output", as I don't think we need all
+of those.
+
+Comments?
+
+Regards,
+Mauro
