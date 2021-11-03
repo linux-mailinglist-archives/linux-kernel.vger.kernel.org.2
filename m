@@ -2,60 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5854444527
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:01:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B93DC44452B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232531AbhKCQEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 12:04:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42354 "EHLO mail.kernel.org"
+        id S232648AbhKCQEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 12:04:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231868AbhKCQEQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 12:04:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 625E460E98;
-        Wed,  3 Nov 2021 16:01:40 +0000 (UTC)
+        id S232621AbhKCQEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 12:04:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 128EB60F39;
+        Wed,  3 Nov 2021 16:02:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635955300;
-        bh=8cwOPhrjcgjfDwmGuLRC9YxSx7AHg3b7GIj7n4VeJlE=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=UesVcoUnQ1pPReAaqglBTqgKQ8/QXSqzBy5y//HG2BdNKiZPD5BvsFuhqUI+bA3wY
-         qUElGEY2QJjcYnQHwITxKeL+O+WcZpUk/Jpf/0tUZ9UZxBx9niWEZKLl+OW6yVMkLz
-         sMaM+aVYfmBtt2VmZwMdYtLvJyvLCfjFPgFG2+JThGZilqxV1Jk8N1lZoj0CdY5vZN
-         eoYK4WgQvQ2RlGcm2GDg5KODwq/BK9FLvEA3o9xvzeGljUEOKyiqxYCl6rFSQgnNHd
-         xy6k/JFty5BqDRpoA6U0FpZOdMjbW6ZfoqMq6iMIk4Hq7lXv3HLAzd9ME2e3eV+yeY
-         OBUxtNOQEA5vQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 53A6E60723;
-        Wed,  3 Nov 2021 16:01:40 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211103134323.GA1344917@nvidia.com>
-References: <20211103134323.GA1344917@nvidia.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211103134323.GA1344917@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: f1a090f09f42be5a5542009f0be310fdb3e768fc
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 25edbc383b72c2364c7b339245c1c5db84e615e1
-Message-Id: <163595530028.26844.12752903569882253874.pr-tracker-bot@kernel.org>
-Date:   Wed, 03 Nov 2021 16:01:40 +0000
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        s=k20201202; t=1635955336;
+        bh=u5i16BEePwX4WEXCbo2JNpQXuAFbW+rjoTHBDvqeohg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L4+wON+EMB/OFHnYytPqWyw/GK5JtmmvlAHuFX3bcttqFurJTmQslmPfADYkBsOCV
+         KfL/VMKcqRofy+VNs2aCGIVLg0KBQHxHH/vMtGAq1HE/ONx8bv0++a0TH4/DppmjSx
+         GSiqT7RqoudEznlgQvGeiI7i+VvYyjfDTQ4qozpxVqLyZH3kDJi3Q2xJYAgDRyBjAJ
+         dBC8S7BmgpKaC1uRlfZnv8XuvvXdnCsnoo86KbksLt2ndPrIWNyckGch4jRj3TAtoe
+         nLgMKxYlSGqSpJN2tjz6w6B1NSw5z8cqFRhAvGJh8VrCiwbHFdix0k4f093tvdffEJ
+         soX9UkuQh2ckQ==
+Date:   Wed, 3 Nov 2021 09:02:15 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 19/21] iomap: Convert iomap_migrate_page to use folios
+Message-ID: <20211103160215.GL24307@magnolia>
+References: <20211101203929.954622-1-willy@infradead.org>
+ <20211101203929.954622-20-willy@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211101203929.954622-20-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 3 Nov 2021 10:43:23 -0300:
+On Mon, Nov 01, 2021 at 08:39:27PM +0000, Matthew Wilcox (Oracle) wrote:
+> The arguments are still pages for now, but we can use folios internally
+> and cut out a lot of calls to compound_head().
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/25edbc383b72c2364c7b339245c1c5db84e615e1
+--D
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> ---
+>  fs/iomap/buffered-io.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 2436933dfe42..3b93fdfedb72 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -493,19 +493,21 @@ int
+>  iomap_migrate_page(struct address_space *mapping, struct page *newpage,
+>  		struct page *page, enum migrate_mode mode)
+>  {
+> +	struct folio *folio = page_folio(page);
+> +	struct folio *newfolio = page_folio(newpage);
+>  	int ret;
+>  
+> -	ret = migrate_page_move_mapping(mapping, newpage, page, 0);
+> +	ret = folio_migrate_mapping(mapping, newfolio, folio, 0);
+>  	if (ret != MIGRATEPAGE_SUCCESS)
+>  		return ret;
+>  
+> -	if (page_has_private(page))
+> -		attach_page_private(newpage, detach_page_private(page));
+> +	if (folio_test_private(folio))
+> +		folio_attach_private(newfolio, folio_detach_private(folio));
+>  
+>  	if (mode != MIGRATE_SYNC_NO_COPY)
+> -		migrate_page_copy(newpage, page);
+> +		folio_migrate_copy(newfolio, folio);
+>  	else
+> -		migrate_page_states(newpage, page);
+> +		folio_migrate_flags(newfolio, folio);
+>  	return MIGRATEPAGE_SUCCESS;
+>  }
+>  EXPORT_SYMBOL_GPL(iomap_migrate_page);
+> -- 
+> 2.33.0
+> 
