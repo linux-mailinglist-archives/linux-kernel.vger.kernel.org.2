@@ -2,80 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF8A4443AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A344443B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231590AbhKCOhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 10:37:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:52662 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230252AbhKCOhT (ORCPT
+        id S231643AbhKCOiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 10:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230282AbhKCOiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 10:37:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635950083;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sBt63SHG96A9DgD47p6bvc+4BuRpJkNrq/VWF2GMPR0=;
-        b=UR445JqUlGNE4EdLRVh25T1e5z99NKcmklHYjR4Q4hIInbfkGlPek5GnqI8wIbvWownOY/
-        RVg80Dq0IRo5QTTAgtGmGsEBs1KL7v2T7+wZUrAct5F7510qCISx6TaZVUdTpbKayWSqV/
-        SEP9XUDlL4HTH9lnJtYxSUwJs+WsQbc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-273-NU2BJUTbNw2ManfRoqAm1g-1; Wed, 03 Nov 2021 10:34:40 -0400
-X-MC-Unique: NU2BJUTbNw2ManfRoqAm1g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6D93800053;
-        Wed,  3 Nov 2021 14:34:37 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.144])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C5F115F4EA;
-        Wed,  3 Nov 2021 14:34:34 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YYKLkBwQdtn4ja+i@casper.infradead.org>
-References: <YYKLkBwQdtn4ja+i@casper.infradead.org> <163584174921.4023316.8927114426959755223.stgit@warthog.procyon.org.uk> <163584184628.4023316.9386282630968981869.stgit@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        v9fs-developer@lists.sourceforge.net,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        devel@lists.orangefs.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/6] folio: Add a function to get the host inode for a folio
+        Wed, 3 Nov 2021 10:38:12 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F918C061714;
+        Wed,  3 Nov 2021 07:35:34 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id f4so9872120edx.12;
+        Wed, 03 Nov 2021 07:35:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CByJ2uWF6xZdqY/Jyt0Y0rDuvjgikIkxQadq3PJ48O0=;
+        b=dQvabTYVGPVKpaBRsU5ZArappxUZv1uP7hFP0poaqFaon4o++HOqzaJ2l3Aq+LDSaH
+         cjkjlSdDTuCDfz7YJ3fk6OSLPTDp22nMO12ilF/0tFPiAFx3BLAtbKe/jEjmmlR0DsZ3
+         vIa+Gti119IsH9bDtwTnw6NM27rUsyJLrjgR9Hk1Y04rWj093463cnaGv2bwfFJN6n8/
+         I/StKulMIQZNRCIcOVu2/YDMNaEqaQCWCtFaxVsc5/PkKXI4e72fEfGvI5hELW/Armyj
+         +ZnKZv3ffc0gvsu4n2NlCIyQJrWpxuBQ1HvA4qYO9TqqVAVJBZpmKYNCchkHyA9rV4/h
+         d1Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CByJ2uWF6xZdqY/Jyt0Y0rDuvjgikIkxQadq3PJ48O0=;
+        b=H+1hrg02P0jheC1xGF34MAf4IIed8EB7MpGakDmgSia9HQB7b5hO94TS+OH8PjZn68
+         +mFDgkQGl9QyMt11AmkO1JNqHzA31QiDvExYhOVopFEQitcso7J1HExebR1x8IN+WpIO
+         MWbtm5ieGopvuOckxu8Kx69v/LzGIqMqpoie4h4UQ3zj1Vj5qP3/0uQgXI1uu4zqkt8Q
+         cVzyR4w1iD6vFPgcwmD8wON0y75iizbP1LS2N2tqXg4SgJO7LUvyDNmere2773LR+ak8
+         hedfQwIz5t8u5YaKeSm0OlVlgEb/gYkN0I5dHJOYlkW8/uc8RSZKGUjWNJkOjEt/ggcB
+         /GzA==
+X-Gm-Message-State: AOAM533WavRwHkt2YXskfzPraXqCu85EoSyYDs15d6fLORvspa63ipZM
+        JGEVlckdkarl1BS3hW0J0l+7rRLOfdvjpZQQ3Bg=
+X-Google-Smtp-Source: ABdhPJzq9+wLGi9ITQa0cEXGEipuMzevr5v2gchEoOPbk3TiU5aGmIfc2OL8lygajTbjcfLuPWykgMiSRdPk4KsIr30=
+X-Received: by 2002:a17:906:9f21:: with SMTP id fy33mr54543559ejc.567.1635950129415;
+ Wed, 03 Nov 2021 07:35:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1037301.1635950073.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 03 Nov 2021 14:34:33 +0000
-Message-ID: <1037302.1635950073@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20211103135418.496f75d5@sal.lan>
+In-Reply-To: <20211103135418.496f75d5@sal.lan>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 3 Nov 2021 16:34:39 +0200
+Message-ID: <CAHp75VehnnD7VPYCH0YaB43_UvWL=FzfgDkYJ3PhgrK8PhQKtQ@mail.gmail.com>
+Subject: Re: atomisp current issues
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Kaixu Xia <kaixuxia@tencent.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Yang Li <abaci-bugfix@linux.alibaba.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Alan <alan@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
+On Wed, Nov 3, 2021 at 3:54 PM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
 
-> > + * For folios which are in the page cache, return the inode that is h=
-osting
-> > + * this folio belongs to.
-> =
+...
 
-> This looks like an editing mistake.  Either you meant
-> 'return the inode that hosts this folio' or
-> 'return the inode this folio belongs to'
-> (and i prefer the second).
+> Currently, 10 video? devices are created:
+>
+>         $ for i in $(ls /dev/video*|sort -k2 -to -n); do echo -n $i:; v4l2-ctl -D -d $i|grep Name; done
+>         /dev/video0:    Name             : ATOMISP ISP CAPTURE output
+>         /dev/video1:    Name             : ATOMISP ISP VIEWFINDER output
+>         /dev/video2:    Name             : ATOMISP ISP PREVIEW output
+>         /dev/video3:    Name             : ATOMISP ISP VIDEO output
+>         /dev/video4:    Name             : ATOMISP ISP ACC
+>         /dev/video5:    Name             : ATOMISP ISP MEMORY input
+>         /dev/video6:    Name             : ATOMISP ISP CAPTURE output
+>         /dev/video7:    Name             : ATOMISP ISP VIEWFINDER output
+>         /dev/video8:    Name             : ATOMISP ISP PREVIEW output
+>         /dev/video9:    Name             : ATOMISP ISP VIDEO output
+>         /dev/video10:   Name             : ATOMISP ISP ACC
+>
+> That seems to be written to satisfy some Android-based app, but we don't
+> really need all of those.
+>
+> I'm thinking to comment out the part of the code which creates all of those,
+> keeping just "ATOMISP ISP PREVIEW output", as I don't think we need all
+> of those.
 
-Yeah - I'll go with that.
+Are they using the same microprograms (named routines) in the firmware?
 
-David
-
+-- 
+With Best Regards,
+Andy Shevchenko
