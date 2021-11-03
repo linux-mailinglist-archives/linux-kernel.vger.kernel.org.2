@@ -2,87 +2,505 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27588444A66
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 22:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E01C444A6F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 22:43:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhKCVpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 17:45:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44340 "EHLO
+        id S230509AbhKCVqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 17:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbhKCVpL (ORCPT
+        with ESMTP id S230267AbhKCVqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 17:45:11 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB5FC061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 14:42:34 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id j21so14137199edt.11
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 14:42:34 -0700 (PDT)
+        Wed, 3 Nov 2021 17:46:10 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A339C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 14:43:33 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id h2so4046478ili.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 14:43:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=QXi5kHjHWd6fjjRgTXkyGAMS+MMuGm4cZgmMpd4J85s=;
-        b=qpXCL9Ha+6lAv2Z1gR3utdilQHvlx5bRWkK/p3cNlsOj35GQaPftcLokjvqM/H6z1G
-         UdSI4Q2t7khKjHPmGGNOP2lymJtaUNzz7cwVr+oxlKb77WcUWz8J5IiXlpCUwQnlr02U
-         iQY//zWlYaGsGHTtZns7iNJJsEHPbj7DdmJ6GyvA4+Hj18TPZMByqYHidyldiPinJEym
-         a3obqHRR/MYQcup/S6unrfnCRUTi3e09NAyLMB6JBZOzpMu4gYG3+EoD3t6gDNrlItMR
-         cCRWLQnjsjc1KoS9rDOPZYifVmv+7zzT1a66gFO2dS3ahgQJ0NnXxHZKaQDa89AynEyL
-         oafA==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EAi4O14LsoudO9jsmZ3QJYP/+NoLL/AWLs480HycinQ=;
+        b=fSxWyheVmsuf33PjE4PH3p6+KEdCrGg8zI7nU0HsIoe+ImR3q5K+rCmodvf3bSnFAm
+         FJ3RZgU4OxxM0Hr3+02Pu0ZLnQeOXNxKudpBn5V4EgAdJGQUH9YNicLnYSjMQOmh0Y1J
+         1xOXcOIwAiTFiN4Z3CzVNH8acuOwNYQDz2pIhr9eaIh4yZ4Qo87t3kMBQjYj6zTyrLG0
+         dmFe0OCdaI0BgJWhXryG9ILtGPKTkiKpQ6UYDs37tPVTydV3NbBpxCViyFwOWPi/ifnU
+         3g3GVW3HcNyiCPnmR7HvrZ4msASErUyuEiTem1ccebp8f48eBZI2hqsZquWF+q6PSN2S
+         V8iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=QXi5kHjHWd6fjjRgTXkyGAMS+MMuGm4cZgmMpd4J85s=;
-        b=V84pBIulAb1WOAzcPbJlGaBQSI+cDqyICU4yfk2W1Ou1CBAWg2zjTAfAxr26bpvBvy
-         HV2Q38Ub0mko6WvMfhQfb5iF7xfcuY7pvfeeznPcZRA1L9/agYH1aYkN4yxxyDBwa2Wf
-         ygTqSHxOShI5YPM7mMFFH+iChkU6yfq8E6CXBhXNuR09fM4vZmPoKh9iwVTCEmqJ9Aku
-         k3RhPecnRNao/3vYtXdEYvfDLuRTS7O82AIQ0K6iB8IOnmKieDwqmitWgHs0mys3PdNV
-         bshU+Bzvjd4p3+PkUTupalsEfcwlJaOszh7R/pkp7s8UO+mWlYCPqbcbA7/GEekf4RWc
-         fDJQ==
-X-Gm-Message-State: AOAM532aCwU4PLYa2x6+pIHatRVN7GMpQWJA777m+6MWOlYH4uraB8Jb
-        tgHnDBpULayIpt+Ix2EbBPrQAdDVWpUnfOFqwEw=
-X-Google-Smtp-Source: ABdhPJzuAQvExOY06sbsxez9/L2gnGhh7TjvBUdusUvEX+pZl+DzTqQg1Xlkd6OydicZHcfMGmYieX/uGFhGIbFpoLQ=
-X-Received: by 2002:aa7:da10:: with SMTP id r16mr41008137eds.56.1635975753087;
- Wed, 03 Nov 2021 14:42:33 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EAi4O14LsoudO9jsmZ3QJYP/+NoLL/AWLs480HycinQ=;
+        b=aQHZfUszX/nxnvU1fIj5E1v6ayVz5Mk6LhQ482Ftpi4DYpM2vCDYltYRs6TaIcsDwo
+         fT46Ug5uaarr0qapEzV4OVFhV+MPZ9Waj0/gcpLuNOlG2MaXeu16P79cr4dJ/8ov4oQe
+         hFLn1eaadz1UdPZh5mjku3l1+bQCBOPe1QtjX1m2sZkyPYHvHu38GD7/VZ1v6JDmaAZv
+         aWOGDdKW2zwhrSpYKQ+sf6vZClG/76+UJk6oVmbjwqyEw+JvXNJtbRkfV2YMA2RPs0nc
+         RiE0/6HUBSszjTJDbI0lcHlpOAIIut2m2dtUEW+QxqLqNtPK4c/XMMg0SLYNLbhMfoZ+
+         orAg==
+X-Gm-Message-State: AOAM530BWXYc/kuDv6A3dl21al5crJn6g0ZeKsyNKIy03+VySNWpYTtc
+        qQToSPcN8w1u9GtuL0b7gnzzVg==
+X-Google-Smtp-Source: ABdhPJw7HeYm9XrJhcI2fUw5PAPlPlf2ovLgY6XpBZtaBpSDelIBs5dgmeFbRq/gAcTthkYfOGBf4w==
+X-Received: by 2002:a05:6e02:216e:: with SMTP id s14mr14929682ilv.247.1635975812468;
+        Wed, 03 Nov 2021 14:43:32 -0700 (PDT)
+Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
+        by smtp.gmail.com with ESMTPSA id o14sm1623834ioo.36.2021.11.03.14.43.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 14:43:31 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 21:43:28 +0000
+From:   Oliver Upton <oupton@google.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [RFC PATCH 1/8] KVM: arm64: Factor out firmware register
+ handling from psci.c
+Message-ID: <YYMCgC6qMEEWhNrk@google.com>
+References: <20211102002203.1046069-1-rananta@google.com>
+ <20211102002203.1046069-2-rananta@google.com>
 MIME-Version: 1.0
-Sender: judenkuma10@gmail.com
-Received: by 2002:a05:6402:42cc:0:0:0:0 with HTTP; Wed, 3 Nov 2021 14:42:32
- -0700 (PDT)
-From:   "helen.carlsen" <helen.carlsen26@gmail.com>
-Date:   Wed, 3 Nov 2021 22:42:32 +0100
-X-Google-Sender-Auth: 4s9yLMAbeT0cWuAbrNlAFbbl6tk
-Message-ID: <CAP=Po6eaZnRxOSdqfVM_gEWH2C9We45op6Ui=j7OdSdFoRL5bw@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211102002203.1046069-2-rananta@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- I sent this mail praying it will found you in a good condition of
-health, since I myself are in a very critical health condition in
-which I  sleep every night without knowing if I may be alive to see
-the next day. I'm Mrs. Helen John carlsen, wife of late Mrs. Helen
-John carlsen, a widow suffering from long time illness. I have some
-funds I inherited from my late husband, the sum of($ 11.000.000,eleven
-million dollars)my Doctor told me recently that I have serious
-sickness which is cancer problem. What disturbs me most is my stroke
-sickness.Having known my condition, I decided to donate this fund to a
-good person that will utilize it the way i am going to instruct
-herein. I need a very honest and God fearing person who can claim this
-money and use it for Charity works, for orphanages, widows and also
-build schools for less privileges that will be named after my late
-husband if possible and to promote the word of God and the effort that
-the house of God is maintained.
+Hi Raghu,
 
-I do not want a situation where this money will be used in an ungodly
-manner. That's why I'm taking this decision. I'm not afraid of death
-so I know where I'm going. I accept this decision because I do not
-have any child who will inherit this money after I die. Please I want
-your sincerely and urgent answer to know if you will be able to
-execute this project, and I will give you more information on how the
-fund will be transferred to your bank account. I am waiting for your
-reply.
+On Tue, Nov 02, 2021 at 12:21:56AM +0000, Raghavendra Rao Ananta wrote:
+> Common hypercall firmware register handing is currently employed
+> by psci.c. Since the upcoming patches add more of these registers,
+> it's better to move the generic handling to hypercall.c for a
+> cleaner presentation.
+> 
+> While we are at it, collect all the firmware registers under
+> fw_reg_ids[] to help implement kvm_arm_get_fw_num_regs() and
+> kvm_arm_copy_fw_reg_indices() in a generic way.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> ---
+>  arch/arm64/kvm/guest.c       |   2 +-
+>  arch/arm64/kvm/hypercalls.c  | 151 +++++++++++++++++++++++++++++++
+>  arch/arm64/kvm/psci.c        | 167 +++--------------------------------
+>  include/kvm/arm_hypercalls.h |   7 ++
+>  include/kvm/arm_psci.h       |   8 +-
+>  5 files changed, 172 insertions(+), 163 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
+> index 5ce26bedf23c..625f97f7b304 100644
+> --- a/arch/arm64/kvm/guest.c
+> +++ b/arch/arm64/kvm/guest.c
+> @@ -18,7 +18,7 @@
+>  #include <linux/string.h>
+>  #include <linux/vmalloc.h>
+>  #include <linux/fs.h>
+> -#include <kvm/arm_psci.h>
+> +#include <kvm/arm_hypercalls.h>
+>  #include <asm/cputype.h>
+>  #include <linux/uaccess.h>
+>  #include <asm/fpsimd.h>
+> diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
+> index 30da78f72b3b..d030939c5929 100644
+> --- a/arch/arm64/kvm/hypercalls.c
+> +++ b/arch/arm64/kvm/hypercalls.c
+> @@ -146,3 +146,154 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+>  	smccc_set_retval(vcpu, val[0], val[1], val[2], val[3]);
+>  	return 1;
+>  }
+> +
+> +static const u64 fw_reg_ids[] = {
+> +	KVM_REG_ARM_PSCI_VERSION,
+> +	KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1,
+> +	KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2,
+> +};
+> +
+> +int kvm_arm_get_fw_num_regs(struct kvm_vcpu *vcpu)
+> +{
+> +	return ARRAY_SIZE(fw_reg_ids);
+> +}
+> +
+> +int kvm_arm_copy_fw_reg_indices(struct kvm_vcpu *vcpu, u64 __user *uindices)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(fw_reg_ids); i++) {
+> +		if (put_user(fw_reg_ids[i], uindices))
+> +			return -EFAULT;
+> +	}
+> +
+> +	return 0;
+> +}
 
-Best Regards,
+It would appear that this patch is separating out the hypercall services
+to each handle their own FW regs. At the same time, this is
+consolidating the register enumeration into a single place.
 
-Mrs. Helen John carlsen,
+It would be nice to keep the scoping consistent with your accessors
+below, or simply just handle all regs in hypercalls.c. Abstracting
+per-service might result in a lot of boilerplate, though.
+
+> +#define KVM_REG_FEATURE_LEVEL_WIDTH	4
+> +#define KVM_REG_FEATURE_LEVEL_MASK	(BIT(KVM_REG_FEATURE_LEVEL_WIDTH) - 1)
+> +
+> +/*
+> + * Convert the workaround level into an easy-to-compare number, where higher
+> + * values mean better protection.
+> + */
+> +static int get_kernel_wa_level(u64 regid)
+> +{
+> +	switch (regid) {
+> +	case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1:
+> +		switch (arm64_get_spectre_v2_state()) {
+> +		case SPECTRE_VULNERABLE:
+> +			return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_NOT_AVAIL;
+> +		case SPECTRE_MITIGATED:
+> +			return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_AVAIL;
+> +		case SPECTRE_UNAFFECTED:
+> +			return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_NOT_REQUIRED;
+> +		}
+> +		return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_NOT_AVAIL;
+> +	case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2:
+> +		switch (arm64_get_spectre_v4_state()) {
+> +		case SPECTRE_MITIGATED:
+> +			/*
+> +			 * As for the hypercall discovery, we pretend we
+> +			 * don't have any FW mitigation if SSBS is there at
+> +			 * all times.
+> +			 */
+> +			if (cpus_have_final_cap(ARM64_SSBS))
+> +				return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL;
+> +			fallthrough;
+> +		case SPECTRE_UNAFFECTED:
+> +			return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_REQUIRED;
+> +		case SPECTRE_VULNERABLE:
+> +			return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL;
+> +		}
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +int kvm_arm_get_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
+> +{
+> +	void __user *uaddr = (void __user *)(long)reg->addr;
+> +	u64 val;
+> +
+> +	switch (reg->id) {
+> +	case KVM_REG_ARM_PSCI_VERSION:
+> +		val = kvm_psci_version(vcpu, vcpu->kvm);
+
+Should this become kvm_arm_get_fw_reg() to consistently genericize the
+PSCI FW register accessors?
+
+> +		break;
+> +	case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1:
+> +	case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2:
+> +		val = get_kernel_wa_level(reg->id) & KVM_REG_FEATURE_LEVEL_MASK;
+> +		break;
+> +	default:
+> +		return -ENOENT;
+> +	}
+> +
+> +	if (copy_to_user(uaddr, &val, KVM_REG_SIZE(reg->id)))
+> +		return -EFAULT;
+> +
+> +	return 0;
+> +}
+> +
+> +int kvm_arm_set_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
+> +{
+> +	void __user *uaddr = (void __user *)(long)reg->addr;
+> +	u64 val;
+> +	int wa_level;
+> +
+> +	if (copy_from_user(&val, uaddr, KVM_REG_SIZE(reg->id)))
+> +		return -EFAULT;
+> +
+> +	switch (reg->id) {
+> +	case KVM_REG_ARM_PSCI_VERSION:
+> +		return kvm_arm_set_psci_fw_reg(vcpu, val);
+> +
+> +	case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1:
+> +		if (val & ~KVM_REG_FEATURE_LEVEL_MASK)
+> +			return -EINVAL;
+> +
+> +		if (get_kernel_wa_level(reg->id) < val)
+> +			return -EINVAL;
+> +
+> +		return 0;
+> +
+> +	case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2:
+> +		if (val & ~(KVM_REG_FEATURE_LEVEL_MASK |
+> +			    KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_ENABLED))
+> +			return -EINVAL;
+> +
+> +		/* The enabled bit must not be set unless the level is AVAIL. */
+> +		if ((val & KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_ENABLED) &&
+> +		    (val & KVM_REG_FEATURE_LEVEL_MASK) != KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_AVAIL)
+> +			return -EINVAL;
+> +
+> +		/*
+> +		 * Map all the possible incoming states to the only two we
+> +		 * really want to deal with.
+> +		 */
+> +		switch (val & KVM_REG_FEATURE_LEVEL_MASK) {
+> +		case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL:
+> +		case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_UNKNOWN:
+> +			wa_level = KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL;
+> +			break;
+> +		case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_AVAIL:
+> +		case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_REQUIRED:
+> +			wa_level = KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_REQUIRED;
+> +			break;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +
+> +		/*
+> +		 * We can deal with NOT_AVAIL on NOT_REQUIRED, but not the
+> +		 * other way around.
+> +		 */
+> +		if (get_kernel_wa_level(reg->id) < wa_level)
+> +			return -EINVAL;
+> +
+> +		return 0;
+> +	default:
+> +		return -ENOENT;
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+> diff --git a/arch/arm64/kvm/psci.c b/arch/arm64/kvm/psci.c
+> index 74c47d420253..b9bcbc919b19 100644
+> --- a/arch/arm64/kvm/psci.c
+> +++ b/arch/arm64/kvm/psci.c
+> @@ -404,168 +404,25 @@ int kvm_psci_call(struct kvm_vcpu *vcpu)
+>  	};
+>  }
+>  
+> -int kvm_arm_get_fw_num_regs(struct kvm_vcpu *vcpu)
+> +int kvm_arm_set_psci_fw_reg(struct kvm_vcpu *vcpu, u64 val)
+>  {
+> -	return 3;		/* PSCI version and two workaround registers */
+> -}
+> -
+> -int kvm_arm_copy_fw_reg_indices(struct kvm_vcpu *vcpu, u64 __user *uindices)
+> -{
+> -	if (put_user(KVM_REG_ARM_PSCI_VERSION, uindices++))
+> -		return -EFAULT;
+> -
+> -	if (put_user(KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1, uindices++))
+> -		return -EFAULT;
+> -
+> -	if (put_user(KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2, uindices++))
+> -		return -EFAULT;
+> -
+> -	return 0;
+> -}
+> +	bool wants_02;
+>  
+> -#define KVM_REG_FEATURE_LEVEL_WIDTH	4
+> -#define KVM_REG_FEATURE_LEVEL_MASK	(BIT(KVM_REG_FEATURE_LEVEL_WIDTH) - 1)
+> -
+> -/*
+> - * Convert the workaround level into an easy-to-compare number, where higher
+> - * values mean better protection.
+> - */
+> -static int get_kernel_wa_level(u64 regid)
+> -{
+> -	switch (regid) {
+> -	case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1:
+> -		switch (arm64_get_spectre_v2_state()) {
+> -		case SPECTRE_VULNERABLE:
+> -			return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_NOT_AVAIL;
+> -		case SPECTRE_MITIGATED:
+> -			return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_AVAIL;
+> -		case SPECTRE_UNAFFECTED:
+> -			return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_NOT_REQUIRED;
+> -		}
+> -		return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_NOT_AVAIL;
+> -	case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2:
+> -		switch (arm64_get_spectre_v4_state()) {
+> -		case SPECTRE_MITIGATED:
+> -			/*
+> -			 * As for the hypercall discovery, we pretend we
+> -			 * don't have any FW mitigation if SSBS is there at
+> -			 * all times.
+> -			 */
+> -			if (cpus_have_final_cap(ARM64_SSBS))
+> -				return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL;
+> -			fallthrough;
+> -		case SPECTRE_UNAFFECTED:
+> -			return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_REQUIRED;
+> -		case SPECTRE_VULNERABLE:
+> -			return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL;
+> -		}
+> -	}
+> +	wants_02 = test_bit(KVM_ARM_VCPU_PSCI_0_2, vcpu->arch.features);
+>  
+> -	return -EINVAL;
+> -}
+> -
+> -int kvm_arm_get_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
+> -{
+> -	void __user *uaddr = (void __user *)(long)reg->addr;
+> -	u64 val;
+> -
+> -	switch (reg->id) {
+> -	case KVM_REG_ARM_PSCI_VERSION:
+> -		val = kvm_psci_version(vcpu, vcpu->kvm);
+> -		break;
+> -	case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1:
+> -	case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2:
+> -		val = get_kernel_wa_level(reg->id) & KVM_REG_FEATURE_LEVEL_MASK;
+> -		break;
+> -	default:
+> -		return -ENOENT;
+> -	}
+> -
+> -	if (copy_to_user(uaddr, &val, KVM_REG_SIZE(reg->id)))
+> -		return -EFAULT;
+> -
+> -	return 0;
+> -}
+> -
+> -int kvm_arm_set_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
+> -{
+> -	void __user *uaddr = (void __user *)(long)reg->addr;
+> -	u64 val;
+> -	int wa_level;
+> -
+> -	if (copy_from_user(&val, uaddr, KVM_REG_SIZE(reg->id)))
+> -		return -EFAULT;
+> -
+> -	switch (reg->id) {
+> -	case KVM_REG_ARM_PSCI_VERSION:
+> -	{
+> -		bool wants_02;
+> -
+> -		wants_02 = test_bit(KVM_ARM_VCPU_PSCI_0_2, vcpu->arch.features);
+> -
+> -		switch (val) {
+> -		case KVM_ARM_PSCI_0_1:
+> -			if (wants_02)
+> -				return -EINVAL;
+> -			vcpu->kvm->arch.psci_version = val;
+> -			return 0;
+> -		case KVM_ARM_PSCI_0_2:
+> -		case KVM_ARM_PSCI_1_0:
+> -			if (!wants_02)
+> -				return -EINVAL;
+> -			vcpu->kvm->arch.psci_version = val;
+> -			return 0;
+> -		}
+> -		break;
+> -	}
+> -
+> -	case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1:
+> -		if (val & ~KVM_REG_FEATURE_LEVEL_MASK)
+> -			return -EINVAL;
+> -
+> -		if (get_kernel_wa_level(reg->id) < val)
+> +	switch (val) {
+> +	case KVM_ARM_PSCI_0_1:
+> +		if (wants_02)
+>  			return -EINVAL;
+> -
+> +		vcpu->kvm->arch.psci_version = val;
+>  		return 0;
+> -
+> -	case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2:
+> -		if (val & ~(KVM_REG_FEATURE_LEVEL_MASK |
+> -			    KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_ENABLED))
+> -			return -EINVAL;
+> -
+> -		/* The enabled bit must not be set unless the level is AVAIL. */
+> -		if ((val & KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_ENABLED) &&
+> -		    (val & KVM_REG_FEATURE_LEVEL_MASK) != KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_AVAIL)
+> -			return -EINVAL;
+> -
+> -		/*
+> -		 * Map all the possible incoming states to the only two we
+> -		 * really want to deal with.
+> -		 */
+> -		switch (val & KVM_REG_FEATURE_LEVEL_MASK) {
+> -		case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL:
+> -		case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_UNKNOWN:
+> -			wa_level = KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL;
+> -			break;
+> -		case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_AVAIL:
+> -		case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_REQUIRED:
+> -			wa_level = KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_REQUIRED;
+> -			break;
+> -		default:
+> -			return -EINVAL;
+> -		}
+> -
+> -		/*
+> -		 * We can deal with NOT_AVAIL on NOT_REQUIRED, but not the
+> -		 * other way around.
+> -		 */
+> -		if (get_kernel_wa_level(reg->id) < wa_level)
+> +	case KVM_ARM_PSCI_0_2:
+> +	case KVM_ARM_PSCI_1_0:
+> +		if (!wants_02)
+>  			return -EINVAL;
+> -
+> +		vcpu->kvm->arch.psci_version = val;
+>  		return 0;
+>  	default:
+> -		return -ENOENT;
+> +		return -EINVAL;
+>  	}
+> -
+> -	return -EINVAL;
+>  }
+> diff --git a/include/kvm/arm_hypercalls.h b/include/kvm/arm_hypercalls.h
+> index 0e2509d27910..5d38628a8d04 100644
+> --- a/include/kvm/arm_hypercalls.h
+> +++ b/include/kvm/arm_hypercalls.h
+> @@ -40,4 +40,11 @@ static inline void smccc_set_retval(struct kvm_vcpu *vcpu,
+>  	vcpu_set_reg(vcpu, 3, a3);
+>  }
+>  
+> +struct kvm_one_reg;
+> +
+> +int kvm_arm_get_fw_num_regs(struct kvm_vcpu *vcpu);
+> +int kvm_arm_copy_fw_reg_indices(struct kvm_vcpu *vcpu, u64 __user *uindices);
+> +int kvm_arm_get_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg);
+> +int kvm_arm_set_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg);
+> +
+>  #endif
+> diff --git a/include/kvm/arm_psci.h b/include/kvm/arm_psci.h
+> index 5b58bd2fe088..eddbd7d805e9 100644
+> --- a/include/kvm/arm_psci.h
+> +++ b/include/kvm/arm_psci.h
+> @@ -41,12 +41,6 @@ static inline int kvm_psci_version(struct kvm_vcpu *vcpu, struct kvm *kvm)
+>  
+>  
+>  int kvm_psci_call(struct kvm_vcpu *vcpu);
+> -
+> -struct kvm_one_reg;
+> -
+> -int kvm_arm_get_fw_num_regs(struct kvm_vcpu *vcpu);
+> -int kvm_arm_copy_fw_reg_indices(struct kvm_vcpu *vcpu, u64 __user *uindices);
+> -int kvm_arm_get_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg);
+> -int kvm_arm_set_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg);
+> +int kvm_arm_set_psci_fw_reg(struct kvm_vcpu *vcpu, u64 val);
+>  
+>  #endif /* __KVM_ARM_PSCI_H__ */
+> -- 
+> 2.33.1.1089.g2158813163f-goog
+> 
