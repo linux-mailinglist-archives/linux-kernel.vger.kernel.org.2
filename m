@@ -2,197 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55156443FFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 11:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23974443FF8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 11:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbhKCKbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 06:31:07 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12684 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231993AbhKCKbG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 06:31:06 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A3AFHBN012737;
-        Wed, 3 Nov 2021 10:28:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=PB61rs0xcv2ngNqkbJK88LDgKUPemFOZsXULxkl5cYo=;
- b=ORzoFufkU1rWqBvfb7D8aItZgx/eVJ7VK/GJiW8wlsww/hgDTFNks/flW0QBr8vgx5W5
- E6exdmD7mFuIKoOOolDBrm62Q+RWlyrEIFNPGrNK5yFmSvD2ZOxcr/9QH3ONyR/g1WiN
- ACb12vFXTQJSPjzr46+E3sZzHmfMhQoRI83xVgm1ZNbcX72Y5y7mJwQjEZZBlePQvabG
- nXxOSAicYsdJ/7XhZmt5S+iRUmGJWCsuQASuPSgLI5ifR2C35lt4HhCAPlop+O+hTGV4
- kh5fBDBzEVsAl9sDV4HhQwd2N/pTLDXi9USVdJLziTpeCG/pab0XuexQ6tSVVUOB8p4c kg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3c3ju4pn7f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Nov 2021 10:28:04 +0000
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1A3AJOQl025747;
-        Wed, 3 Nov 2021 10:28:03 GMT
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3c3ju4pn6r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Nov 2021 10:28:03 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1A3AQw5V001046;
-        Wed, 3 Nov 2021 10:28:00 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma01fra.de.ibm.com with ESMTP id 3c0wpa2e1k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Nov 2021 10:28:00 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1A3ARw6v3539662
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 3 Nov 2021 10:27:58 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E321311C050;
-        Wed,  3 Nov 2021 10:27:57 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9418C11C05C;
-        Wed,  3 Nov 2021 10:27:56 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.144.175])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed,  3 Nov 2021 10:27:56 +0000 (GMT)
-Date:   Wed, 3 Nov 2021 12:27:54 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org,
-        fenghua.yu@intel.com, reinette.chatre@intel.com,
-        john.stultz@linaro.org, tglx@linutronix.de,
-        akpm@linux-foundation.org, nathan@kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] selftests: kselftest.h: mark functions with 'noreturn'
-Message-ID: <YYJkKjNwWycYfs8a@linux.ibm.com>
-References: <20211029114312.1921603-1-anders.roxell@linaro.org>
- <834d18b6-4106-045f-0264-20e54edf47bc@linuxfoundation.org>
- <CAKwvOdk8D5=AxzSpqjvXJc4XXL8CA7O=WY-LW0mZb3eQRK_EWg@mail.gmail.com>
- <CADYN=9+iueC3rJ4=32OM9rOUDLLmvcKY-y_By4hwAj1+9gxRiQ@mail.gmail.com>
- <CADYN=9+e=qLGBN+qxmKObiOp0hTQ_sGHSusn+4YvAXuprGVp2A@mail.gmail.com>
+        id S231971AbhKCKam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 06:30:42 -0400
+Received: from mail-bn7nam10on2085.outbound.protection.outlook.com ([40.107.92.85]:60161
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231278AbhKCKal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 06:30:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gxICymY0xbMCiSaU9wlU575GuXDZ/4b1jDxv3c/2JqCK5Wr4aM6sDEyp6IfmOtVxhW0ErtD5PXo1NybOjIOH9Uj9+3FYWMv7lpeo1F3lV2KS5G/SjBM5ipvTO6fFEKkN6AZxpdUV6h3BnolYGg978ee/tN8Bd5rnrGgt8J0nSAotEmxXn2t27sMs/V3QK7tWFNwNvdjZWPdO7lPP8h6+8ZoANFPYbSW1bCR8n0BqOOfznMOV+D2ahm+NAjed5qxAgwbUmfneSom5IydWHB4/CPMFcshE4o0mwdPDfowPnEgrJIKuVY9NT6gphCk1ZB3LQIYXw8YQYSWhe2B3RiMkfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gsnlwmatFDoeNO81+KIHQMInjuDK7gKfbd1pcWZ6HqE=;
+ b=BG5ZDKEEvWAJHxguT9BC4DGamQe1G71OIwzvOtb6mfs/jLwSgvZIO7sTJ7n+OLr4gwj1LaRPTpPXg6OhHKwyXVwObSgy2bYez0z/cw3CmyLShOI8sVlxJbtBNGL9GOo4fVYP0fvQaxJZ0R4t/P/nkMuFjJLxRWSKaxUS4MColmPo4Rb3RpJzbKIsSmYzYEonZ2CsDVtn34r0OizvSL54OAaVsDP56S8r+vEfK1+Q/YOy4xC8GM9WUjf+Q5huWNiMxR5DG0jT+131AqdUFyerq+nYVNsngKi6C2X2WcVwiJE9XWyqO3qdk+K/BJE0ws+v5OtxgX6SinSOoGubqoL95w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gsnlwmatFDoeNO81+KIHQMInjuDK7gKfbd1pcWZ6HqE=;
+ b=ZcQE31oDdYtRjXneLwAG7W0MLRRlqCAnYYb/w5UQpHV+IGs8qv0l3Remp5cP8xZIWllS8xIRLZlJtJ7rMDYI940adO47FAg/ZqrEN+s2wnYLc1BdRkfKzgTu5v4z/ysnjWV/ZbYTlinWop5Px2XwcXS7GwxMjRdSmgf9wdhJ5Vs=
+Received: from MWHPR12MB1631.namprd12.prod.outlook.com (2603:10b6:301:f::19)
+ by MWHPR12MB1230.namprd12.prod.outlook.com (2603:10b6:300:f::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11; Wed, 3 Nov
+ 2021 10:28:02 +0000
+Received: from MWHPR12MB1631.namprd12.prod.outlook.com
+ ([fe80::48ee:f48:5a1:dcd8]) by MWHPR12MB1631.namprd12.prod.outlook.com
+ ([fe80::48ee:f48:5a1:dcd8%8]) with mapi id 15.20.4649.020; Wed, 3 Nov 2021
+ 10:28:02 +0000
+From:   "Yuan, Perry" <Perry.Yuan@amd.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Huang, Shimmer" <Xinmei.Huang@amd.com>,
+        "Huang, Ray" <Ray.Huang@amd.com>
+Subject: RE: [PATCH v2] drm/dp: Fix aux->transfer NULL pointer dereference on
+ drm_dp_dpcd_access
+Thread-Topic: [PATCH v2] drm/dp: Fix aux->transfer NULL pointer dereference on
+ drm_dp_dpcd_access
+Thread-Index: AQHXzudL2995hzb9gUSl5xB6lKH0RavupMsAgADbG0CAAGzFgIABkBRA
+Date:   Wed, 3 Nov 2021 10:28:01 +0000
+Message-ID: <MWHPR12MB163124867D43AD8E19EED1D39C8C9@MWHPR12MB1631.namprd12.prod.outlook.com>
+References: <20211101061053.38173-1-Perry.Yuan@amd.com>
+ <87a6iodnz7.fsf@intel.com>
+ <MWHPR12MB1631610D235FCC3B47064F6B9C8B9@MWHPR12MB1631.namprd12.prod.outlook.com>
+ <87y267c5nc.fsf@intel.com>
+In-Reply-To: <87y267c5nc.fsf@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Enabled=true;
+ MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SetDate=2021-11-03T10:27:59Z;
+ MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Method=Standard;
+ MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Name=AMD Official Use
+ Only-AIP 2.0;
+ MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+ MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ActionId=dac8f9cd-cb26-4c8e-875f-5a4c96e311f5;
+ MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ContentBits=1
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d6533a35-8861-418e-3d3e-08d99eb49d6a
+x-ms-traffictypediagnostic: MWHPR12MB1230:
+x-microsoft-antispam-prvs: <MWHPR12MB123023790D73BE81CD15F5E79C8C9@MWHPR12MB1230.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: miouBwG2Ft4VUVM/DaglmJipGx6cN7f8JRfb1Mm7QcmNanJS2MPqNthRop/63yaNJ7qaVYXaaVcfb2jMCyTeCgkaOU3aQGyvvLvaJPXsKWbq9Ztnypd87iHiSs4ViUKKI8tnQ+hbU8ZBKLN+9q4pyr7LdiNoF9ZSlQr4trIGT+Cv5EeHDqBjiymSAfXicu7e3h5PF5ycZmIwk2ewa5Skc/oL1HFoU+H5ZOLq/4+F52u2AR6/1YK/Env0v5QSueFT6VQ5pKB0K41UldCR7wzeGbjpXFHdoXDw31SD+XS0DH5nX8CPw2brfwC9Tp4+UQt//l8YGmtlteuNFheSuEL+xcjr3RDB+WEBookVs1VoYRKUD+GF3DUIrW2wyY4/jLUe28UTkZ387q4TEuJ3ntZUNNFGpTMKsCeINxoGkhwO/S2HKU4R17IDfLU07ExeW25EXAYK2V5EwH74WrDhtB9BxKejPfyfU4mpdZyzasAJtwxURJ2AXBvQojnW9ge4yF08EuvqGW0zIy9vqy0GPoDSwNJWk1w1jSIdlEh71mtjIuPHdcvrQ2yQccSgcQ5gC3j9GdmgUjzqXOnDFPrsSKh9/L7HVCE0+SEgyShFGi0cUd8Dj3D94zZeo5ad5BgHU6MKwuXd3AhK6Am3uUZQb6BOiOa5jvUsYvwRTZiPsxduFfPpP4niXkPy9QpVHNcPXT8SKOGTu031VDbcS3GTzpcYbWFYoEOYOE6PsgBa009o/YY9rZr/JMj8oLBNhRjq4RucI/BQ8Oji5/eIO3ePd4zbf1VPsOaULzwFZS4T7mW+cyk=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1631.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(186003)(38070700005)(83380400001)(5660300002)(4326008)(53546011)(6506007)(33656002)(45080400002)(2906002)(7696005)(316002)(66946007)(66556008)(8676002)(508600001)(8936002)(76116006)(64756008)(66446008)(52536014)(966005)(26005)(66476007)(71200400001)(110136005)(122000001)(38100700002)(9686003)(55016002)(54906003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?UrVmk+otSqtYGPdgMRL1+m8PV4NK5/kEe87KCJflFugMeN/q5sh4e++12kP2?=
+ =?us-ascii?Q?E/1FoxXyVkeXxv3bWZyQr7vtF4UrrEva56k7V+O87BxAS7dGclaq8PMG7bPC?=
+ =?us-ascii?Q?teJpsuTdBktODbD5+0ScZGfBGHkWOPP/AD9s+7AQXopaoYdYN4yBRLjaZPnI?=
+ =?us-ascii?Q?k4jhEFGZQgiVm+NUfwEsaA3cRFUTrIf1apJDQqobbQErAOtYGI1Fs0kEhEoa?=
+ =?us-ascii?Q?Q1S/8mg5I0VLERpTOIDSdjeqWS/XVmJ1lsJOA17eyWcyXuGDAZL6JtHqQfPr?=
+ =?us-ascii?Q?g+nEcCfcUIPQGYU+pqY0vbf5g8QWJ88EhiK0Y6b5QhpmTA9YM8gLGSUQCpOK?=
+ =?us-ascii?Q?NgQwAJ+VnjJuxBhwFGoHPFaPsZ3LV9XhYnTufM0tjD9PWxIEVj9joo8dXHbj?=
+ =?us-ascii?Q?nlMz6T1Ww1sTn5vL6QeXkdBc5I6AjAWHK7U3IEEZjOsQ9tBjpSw2W72h1R+A?=
+ =?us-ascii?Q?CHmlzZklCuV8xDzj2Yx3z8DpgV/yJDyEIOheSx1Mq3KHK+RrgwqjSJF64xAo?=
+ =?us-ascii?Q?Cr+szr6MbKDlLyS+BrAwtaqTVCaR+1KZgTV5sWMP20AcyCH2CghtsjmN4Vic?=
+ =?us-ascii?Q?5rYajZfA/M+ymhtWsMWxKkdGJOJRl6lXSrHGRsZAHOs7zaSm8kVyf0qKX9Jk?=
+ =?us-ascii?Q?CCB7uGqiE14Z3B8/drHCZuQHvp4BXAoBP92pv5hi44Z2D+nMUKhwFwakyz8G?=
+ =?us-ascii?Q?oolv3xMJTMgIOEqdnA396gEEjNyHglFYaTlp2WrAz66JK4v16eEjazretPjK?=
+ =?us-ascii?Q?/V/Csrvj4X/UCyyrO1clI5BAYfmiS9pPqs9gyzSl8PY7AQZ1va7EqPFl/0/e?=
+ =?us-ascii?Q?a0dyMpgKRIrGtXSddXNaXOdV3ZPw/8P0AG4v64zIFap4/Qc+U14fICLu9Y3Z?=
+ =?us-ascii?Q?KEneBxZX2LI1iOLcAiFvBkN/zZIUNxrNjN72dXJRVzGKzR7139+Km/LNok1S?=
+ =?us-ascii?Q?FeV8zuUiwkMAMYGnufykDymba2+ZXv5+21PIJ3wITq4uNaRSdII9vDmftH6r?=
+ =?us-ascii?Q?rl678r82ZS3t7ZxezgUUUm6LjoSQBZqXAqUzl0fW/ECXwcnS3lfu+q9aEo1j?=
+ =?us-ascii?Q?nBbTCbwyl+WsM0cSBrIWDCSeeUSLZkMtyD6m+FHalK/uzKcAEWfVz5cQarpm?=
+ =?us-ascii?Q?XO5xgNluEeKt9Ko/vHMJiuPX0VhZUJ32gvwYPKt0x+a2drKG43VnPlhLr8yd?=
+ =?us-ascii?Q?Q+frf6pVUwu5NVK4fXUq25lhW2XYo21CFYb1Skvov4W0iJA0AiwuLj9CrDdy?=
+ =?us-ascii?Q?pKg96+AbE6aUBJPBF5H1Kk7yqE9EnekS0/VQm2ukVGAwShvVWF79xcQTG82I?=
+ =?us-ascii?Q?CnFxB5a37JK1OiMJPhYxuxBDVYf7Y8IGOeINpesGlUvLm2A2/it0Iaz52/Yh?=
+ =?us-ascii?Q?BlV6gzg9dGfL8b4X/yLssjgeGzjJYalUKwf5iOQ9r1+jMS6Q4v7tDkro12Od?=
+ =?us-ascii?Q?ZQ4pPEoz7hkAEFoflf0S7LJbtmCHIQfw8UcnDynnCfG+2Fvr56saJ7UcH7pC?=
+ =?us-ascii?Q?eEfxG1n01tqwsyADwcDKC3zmBB/GDxM8eRrB0BYvA7o8l8YDXJ9hgBREtNfo?=
+ =?us-ascii?Q?CXFpGy0f55133yiLfbvGAC6U0M++vKgPJw9eJyEvpjYI5FC97fWBJX0gCt2L?=
+ =?us-ascii?Q?6C9H+TMMHWd4Rclo5z2G8OA=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADYN=9+e=qLGBN+qxmKObiOp0hTQ_sGHSusn+4YvAXuprGVp2A@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ZTknOKt1uRoKBIONki3_8T4uwEJiRra-
-X-Proofpoint-GUID: iuTZILz1ZXN86IR1p2XYOx4Bdb-ZXZ39
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-03_03,2021-11-03_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- phishscore=0 spamscore=0 priorityscore=1501 malwarescore=0 impostorscore=0
- bulkscore=0 mlxscore=0 clxscore=1011 mlxlogscore=999 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111030057
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR12MB1631.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6533a35-8861-418e-3d3e-08d99eb49d6a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2021 10:28:02.0173
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RP5lCWrPwsrh4GjbvxJM7yz+8iuRp6u16EXIjuGS7v5tmjtrl2nHdeykkZKG5wTo/Y+8Ep/mIsxRDhjtpvIR7w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1230
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 10:38:17AM +0100, Anders Roxell wrote:
-> On Tue, 2 Nov 2021 at 23:04, Anders Roxell <anders.roxell@linaro.org> wrote:
+[AMD Official Use Only]
+
+Hi Jani:
+
+> -----Original Message-----
+> From: Jani Nikula <jani.nikula@linux.intel.com>
+> Sent: Tuesday, November 2, 2021 4:40 PM
+> To: Yuan, Perry <Perry.Yuan@amd.com>; Maarten Lankhorst
+> <maarten.lankhorst@linux.intel.com>; Maxime Ripard <mripard@kernel.org>;
+> Thomas Zimmermann <tzimmermann@suse.de>; David Airlie <airlied@linux.ie>;
+> Daniel Vetter <daniel@ffwll.ch>
+> Cc: dri-devel@lists.freedesktop.org; linux-kernel@vger.kernel.org; Huang,
+> Shimmer <Xinmei.Huang@amd.com>; Huang, Ray <Ray.Huang@amd.com>
+> Subject: RE: [PATCH v2] drm/dp: Fix aux->transfer NULL pointer dereferenc=
+e on
+> drm_dp_dpcd_access
+>=20
+> [CAUTION: External Email]
+>=20
+> On Tue, 02 Nov 2021, "Yuan, Perry" <Perry.Yuan@amd.com> wrote:
+> > [AMD Official Use Only]
 > >
-> > On Sat, 30 Oct 2021 at 00:08, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > >
-> > > On Fri, Oct 29, 2021 at 11:19 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
-> > > >
-> > > > On 10/29/21 5:43 AM, Anders Roxell wrote:
-> > > > > When building kselftests/capabilities the following warning shows up:
-> > > > >
-> > > > > clang -O2 -g -std=gnu99 -Wall    test_execve.c -lcap-ng -lrt -ldl -o test_execve
-> > > > > test_execve.c:121:13: warning: variable 'have_outer_privilege' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-> > > > >          } else if (unshare(CLONE_NEWUSER | CLONE_NEWNS) == 0) {
-> > > > >                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > test_execve.c:136:9: note: uninitialized use occurs here
-> > > > >          return have_outer_privilege;
-> > > > >                 ^~~~~~~~~~~~~~~~~~~~
-> > > > > test_execve.c:121:9: note: remove the 'if' if its condition is always true
-> > > > >          } else if (unshare(CLONE_NEWUSER | CLONE_NEWNS) == 0) {
-> > > > >                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > test_execve.c:94:27: note: initialize the variable 'have_outer_privilege' to silence this warning
-> > > > >          bool have_outer_privilege;
-> > > > >                                   ^
-> > > > >                                    = false
-> > > > >
-> > > > > Rework so all the ksft_exit_*() functions have attribue
-> > > > > '__attribute__((noreturn))' so the compiler knows that there wont be
-> > > > > any return from the function. That said, without
-> > > > > '__attribute__((noreturn))' the compiler warns about the above issue
-> > > > > since it thinks that it will get back from the ksft_exit_skip()
-> > > > > function, which it wont.
-> > > > > Cleaning up the callers that rely on ksft_exit_*() return code, since
-> > > > > the functions ksft_exit_*() have never returned anything.
-> > > > >
-> > > > > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
-> > > >
-> > > > Lot of changes to fix this warning. Is this necessary? I would
-> > > > like to explore if there is an easier and localized change that
-> > > > can fix the problem.
-> > >
-> > > via `man 3 exit`:
-> > > ```
-> > > The  exit() function causes normal process termination ...
-> > > ...
-> > > RETURN VALUE
-> > >        The exit() function does not return.
-> > > ```
-> > > so seeing `ksft_exit_pass`, `ksft_exit_fail`, `ksft_exit_fail_msg`,
-> > > `ksft_exit_xfail`, `ksft_exit_xpass`, and `ksft_exit_skip` all
-> > > unconditional call `exit` yet return an `int` looks wrong to me on
-> > > first glance. So on that point this patch and its resulting diffstat
-> > > LGTM.
+> > Hi Jani:
+> > Thanks for your comments.
 > >
-> > I'll respin the patch with these changes only.
+> >> -----Original Message-----
+> >> From: Jani Nikula <jani.nikula@linux.intel.com>
+> >> Sent: Monday, November 1, 2021 9:07 PM
+> >> To: Yuan, Perry <Perry.Yuan@amd.com>; Maarten Lankhorst
+> >> <maarten.lankhorst@linux.intel.com>; Maxime Ripard
+> >> <mripard@kernel.org>; Thomas Zimmermann <tzimmermann@suse.de>;
+> David
+> >> Airlie <airlied@linux.ie>; Daniel Vetter <daniel@ffwll.ch>
+> >> Cc: Yuan, Perry <Perry.Yuan@amd.com>;
+> >> dri-devel@lists.freedesktop.org; linux- kernel@vger.kernel.org;
+> >> Huang, Shimmer <Xinmei.Huang@amd.com>; Huang, Ray
+> <Ray.Huang@amd.com>
+> >> Subject: Re: [PATCH v2] drm/dp: Fix aux->transfer NULL pointer
+> >> dereference on drm_dp_dpcd_access
+> >>
+> >> [CAUTION: External Email]
+> >>
+> >> On Mon, 01 Nov 2021, Perry Yuan <Perry.Yuan@amd.com> wrote:
+> >> > Fix below crash by adding a check in the drm_dp_dpcd_access which
+> >> > ensures that aux->transfer was actually initialized earlier.
+> >>
+> >> Gut feeling says this is papering over a real usage issue somewhere
+> >> else. Why is the aux being used for transfers before ->transfer has
+> >> been set? Why should the dp helper be defensive against all kinds of
+> misprogramming?
+> >>
+> >>
+> >> BR,
+> >> Jani.
+> >>
 > >
-> > >
-> > > That said, there are many changes that explicitly call `ksft_exit`
-> > > with an expression; are those setting the correct exit code? Note that
-> > > ksft_exit_pass is calling exit with KSFT_PASS which is 0.  So some of
-> > > the negations don't look quite correct to me.  For example:
-> > >
-> > > -       return !ksft_get_fail_cnt() ? ksft_exit_pass() : ksft_exit_fail();
-> > > +       ksft_exit(!ksft_get_fail_cnt());
-> > >
-> > > so if ksft_get_fail_cnt() returns 0, then we were calling
-> > > ksft_exit_pass() which exited with 0. Now we'd be exiting with 1?
+> > The issue was found by Intel IGT test suite, graphic by pass test case.
+> > https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgit=
+l
+> > ab.freedesktop.org%2Fdrm%2Figt-gpu-
+> tools&amp;data=3D04%7C01%7CPerry.Yuan
+> > %40amd.com%7C83d011acfe65437c0fa808d99ddc65b0%7C3dd8961fe4884e6
+> 08e11a8
 > >
-> > oh, right, thank you for your review.
-> > I will drop all the 'ksft_exit()' changes, they should be fixed and go
-> > in as separete patches.
-> 
-> tools/testing/selftests/vm/memfd_secret.c has the
-> 'ksft_exit(!ksft_get_fail_cnt())'
-> statement and when I looked at it it when I did this patch it looked correct.
-> However, when I look at it now I get a bit confused how ksft_exit() can be used
-> with ksft_get_fail_cnt(). @Mike can you please clarify the
-> 'ksft_exit(!ksft_get_fail_cnt())' instance in
-> tools/testing/selftests/vm/memfd_secret.c.
+> 2d994e183d%7C0%7C0%7C637714392203200313%7CUnknown%7CTWFpbGZsb
+> 3d8eyJWIj
+> >
+> oiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C100
+> 0&am
+> >
+> p;sdata=3DsnPpRYLGeJtTpNGle1YHZAvevcABbgLkgOsffiNzQPw%3D&amp;reserved
+> =3D0
+> > normally use case will not see the issue.
+> > To avoid this issue happy again when we run the test case , it will be =
+nice to
+> add a check before the transfer is called.
+> > And we can see that it really needs to have a check here to make ITG &k=
+ernel
+> happy.
+>=20
+> You're missing my point. What is the root cause? Why do you have the aux
+> device or connector registered before ->transfer function is initialized.=
+ I don't
+> think you should do that.
+>=20
+> BR,
+> Jani.
+>=20
 
-ksft_exit() does not take the error code but rather a condition:
+One potential IGT fix patch to resolve the test case failure is:
 
-/**
- * ksft_exit() - Exit selftest based on truth of condition
- *
- * @condition: if true, exit self test with success, otherwise fail.
- */
-#define ksft_exit(condition) do {	\
-	if (!!(condition))		\
-		ksft_exit_pass();	\
-	else				\
-		ksft_exit_fail();	\
-	} while (0)
+tests/amdgpu/amd_bypass.c
+	data->pipe_crc =3D igt_pipe_crc_new(data->drm_fd, data->pipe_id,
+					 - AMDGPU_PIPE_CRC_SOURCE_DPRX);
+					 + INTEL_PIPE_CRC_SOURCE_AUTO);
+The kernel panic error gone after change  "dprx" to "auto" in the IGT test.
 
-So
+In my view ,the IGT amdgpu bypass test will do some common setup work inclu=
+ding crc piple, source.=20
+When the IGT sets up a new CRC pipe capture source for amdgpu bypass test, =
+ the SOURCE was set as "dprx" instead of "auto"=20
+It makes "amdgpu_dm_crtc_set_crc_source()"  failed to set correct  AUX and =
+it's  transfer function invalid .
+The system I tested use HDMI port connected to monitor .
 
-	!ksft_get_fail_cnt() ? ksft_exit_pass() : ksft_exit_fail();
+amdgpu_dm_crtc_set_crc_source->    (aux =3D (aconn->port) ? &aconn->port->a=
+ux : &aconn->dm_dp_aux.aux;)
+	 drm_dp_start_crc ->  =20
+		drm_dp_dpcd_readb->   aux->transfer is NULL, issue here.=20
+The fix will  use the "auto" keyword, which will let the driver select a de=
+fault source of frame CRCs for this CRTC.
 
-and
+Correct me if have some wrong points.=20
 
-	ksft_exit(!ksft_get_fail_cnt())
+Thank you!
+Perry.
 
-are equivalent.
-
--- 
-Sincerely yours,
-Mike.
+>=20
+> >
+> > Perry.
+> >
+> >>
+> >> >
+> >> > BUG: kernel NULL pointer dereference, address: 0000000000000000 PGD
+> >> > 0 P4D 0
+> >> > Oops: 0010 [#1] SMP NOPTI
+> >> > RIP: 0010:0x0
+> >> > Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+> >> > RSP: 0018:ffffa8d64225bab8 EFLAGS: 00010246
+> >> > RAX: 0000000000000000 RBX: 0000000000000020 RCX: ffffa8d64225bb5e
+> >> > RDX: ffff93151d921880 RSI: ffffa8d64225bac8 RDI: ffff931511a1a9d8
+> >> > RBP: ffffa8d64225bb10 R08: 0000000000000001 R09: ffffa8d64225ba60
+> >> > R10: 0000000000000002 R11: 000000000000000d R12: 0000000000000001
+> >> > R13: 0000000000000000 R14: ffffa8d64225bb5e R15: ffff931511a1a9d8
+> >> > FS: 00007ff8ea7fa9c0(0000) GS:ffff9317fe6c0000(0000)
+> >> > knlGS:0000000000000000
+> >> > CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >> > CR2: ffffffffffffffd6 CR3: 000000010d5a4000 CR4: 0000000000750ee0
+> >> > PKRU: 55555554
+> >> > Call Trace:
+> >> > drm_dp_dpcd_access+0x72/0x110 [drm_kms_helper]
+> >> > drm_dp_dpcd_read+0xb7/0xf0 [drm_kms_helper]
+> >> > drm_dp_start_crc+0x38/0xb0 [drm_kms_helper]
+> >> > amdgpu_dm_crtc_set_crc_source+0x1ae/0x3e0 [amdgpu]
+> >> > crtc_crc_open+0x174/0x220 [drm]
+> >> > full_proxy_open+0x168/0x1f0
+> >> > ? open_proxy_open+0x100/0x100
+> >> > do_dentry_open+0x156/0x370
+> >> > vfs_open+0x2d/0x30
+> >> >
+> >> > v2: fix some typo
+> >> >
+> >> > Signed-off-by: Perry Yuan <Perry.Yuan@amd.com>
+> >> > ---
+> >> >  drivers/gpu/drm/drm_dp_helper.c | 4 ++++
+> >> >  1 file changed, 4 insertions(+)
+> >> >
+> >> > diff --git a/drivers/gpu/drm/drm_dp_helper.c
+> >> > b/drivers/gpu/drm/drm_dp_helper.c index 6d0f2c447f3b..76b28396001a
+> >> > 100644
+> >> > --- a/drivers/gpu/drm/drm_dp_helper.c
+> >> > +++ b/drivers/gpu/drm/drm_dp_helper.c
+> >> > @@ -260,6 +260,10 @@ static int drm_dp_dpcd_access(struct
+> >> > drm_dp_aux
+> >> *aux, u8 request,
+> >> >       msg.buffer =3D buffer;
+> >> >       msg.size =3D size;
+> >> >
+> >> > +     /* No transfer function is set, so not an available DP connect=
+or */
+> >> > +     if (!aux->transfer)
+> >> > +             return -EINVAL;
+> >> > +
+> >> >       mutex_lock(&aux->hw_mutex);
+> >> >
+> >> >       /*
+> >>
+> >> --
+> >> Jani Nikula, Intel Open Source Graphics Center
+>=20
+> --
+> Jani Nikula, Intel Open Source Graphics Center
