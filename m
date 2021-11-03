@@ -2,73 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4754445D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D86C4445DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232821AbhKCQ0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 12:26:14 -0400
-Received: from mail-pl1-f179.google.com ([209.85.214.179]:44628 "EHLO
-        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232745AbhKCQ0H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 12:26:07 -0400
-Received: by mail-pl1-f179.google.com with SMTP id t11so2778429plq.11;
-        Wed, 03 Nov 2021 09:23:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cUoN3Jf7ze15Ze1I6TWgtZLhkp0qQPWGYTaiuciHyZM=;
-        b=1GwGI93OqzZt0P0NeTl7+gYc0KLfdO50iA4oatHEwaZNnUuMC1xADKTEg8C5Rnk0AP
-         U3DZPZk1sGiZgOugQx3VSJWfj5zB7GhoCm8SVA3GccN0rWMpE9ANH2wDT/i0gMD0Psn/
-         e7mHwTiejwd31MHyX7aR9eBEM15tw7jYmUuE/7dwV5MUId0Gs/VvqvOmfiXnlmKl5X5t
-         be3LBbyS1spDFHTco8PPHyLU+OTjZHs2lRLt/2xPtmy9ZT0U5zMeVe7CLr134/lgDiwg
-         fgzEObuE3ZFh82tMhhhHhiPXZ4UMQmiD1+SZoIZR+XRZNSgNl1OGLSFz5RWxfdHNE0dq
-         Kyhw==
-X-Gm-Message-State: AOAM532T3QQQiHxl1ZBaZVZChPE2bycHljo2psHeAgSoCqYPrKJFgx3h
-        tDx84e3fXatZs4Bwr5d2tU+4flRR+53lcw==
-X-Google-Smtp-Source: ABdhPJzP11S30D47yxpOmjlgXUSpOLbouptt4JxJyV6701Q4HkduWL0HOfIqY5cQJtAM7sGPH3zG2w==
-X-Received: by 2002:a17:902:900c:b0:13f:974c:19b0 with SMTP id a12-20020a170902900c00b0013f974c19b0mr38732145plp.12.1635956607230;
-        Wed, 03 Nov 2021 09:23:27 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:9416:5327:a40e:e300])
-        by smtp.gmail.com with ESMTPSA id h12sm2959965pfv.117.2021.11.03.09.23.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 09:23:26 -0700 (PDT)
-Subject: Re: kernel 5.15 does not boot with 3ware card (never had this issue
- <= 5.14) - scsi 0:0:0:0: WARNING: (0x06:0x002C) : Command (0x12) timed out,
- resetting card
-To:     Justin Piszcz <jpiszcz@lucidpixels.com>,
-        Douglas Miller <dougmill@linux.vnet.ibm.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-scsi@vger.kernel.org
-References: <006a01d7cead$b9262d70$2b728850$@lucidpixels.com>
- <a4a88807-8f52-ef9a-c58e-0ff454da5ade@acm.org>
- <CAO9zADxiobgwDE5dtvo98EL0djdgQyrGJA_w4Oxb+pZ9pvOEjQ@mail.gmail.com>
- <CAO9zADycForyq9cmh=epw9r-Wzz=xt32vL3mePuBAPehCgUTjw@mail.gmail.com>
- <50a16ee2-dfa4-d009-17c5-1984cf0a6161@linux.vnet.ibm.com>
- <CAO9zADwVnuKU-tfZxm4USjf76yJhTZqWfZw4yspv8sc93RuBbQ@mail.gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <e0c2935d-d961-11a0-1b4c-580b55dc6b59@acm.org>
-Date:   Wed, 3 Nov 2021 09:23:25 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <CAO9zADwVnuKU-tfZxm4USjf76yJhTZqWfZw4yspv8sc93RuBbQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S232770AbhKCQ3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 12:29:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232101AbhKCQ3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 12:29:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id EE0D2600EF;
+        Wed,  3 Nov 2021 16:26:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635956817;
+        bh=eBJLdBzlBvPH/vziSGIhJJBi8wzOiQuI+d0HEyR+gYM=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=BF1p8LXQlXMRXfCNBV9wlDEKpNsncL5NUhKvtO/KG8cOUAICadt0PajTP7J5Qp8Ne
+         KvBDB2bI3aSh+dGH+ALNxziSY5X+jEwpznGBCsCsO9jE51JD7bLmpSTT6jbm7TXWPW
+         TqsTT2zCVT5/5L7lmWdo0ExgABa3tg7ppxuhaR2Aa6W3viYA7bmQgSWGG4YARjkgMF
+         bWov1XuQcaStcaJ2hZCnFl2GA3yAJV8JZAPmPc6phGXsP6vWOxUpZRZGrAk+EP9Xub
+         d4uAtMsCJ521eMtW2HOHiuuv1/VRq4xRiJkbPpJ4FOLa7bQs0/6UC0IhmrS1hI5r7O
+         HGrY0XSgEDhXw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DB61860176;
+        Wed,  3 Nov 2021 16:26:56 +0000 (UTC)
+Subject: Re: [GIT PULL] tracing: Set two for 5.16
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20211103100507.368812ee@gandalf.local.home>
+References: <20211103100507.368812ee@gandalf.local.home>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211103100507.368812ee@gandalf.local.home>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.16-2
+X-PR-Tracked-Commit-Id: 67d4f6e3bf5dddced226fbf19704cdbbb0c98847
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e1fd0b2acde6359a598dd4aeb158713fc0a361b2
+Message-Id: <163595681684.8679.11979356712129706258.pr-tracker-bot@kernel.org>
+Date:   Wed, 03 Nov 2021 16:26:56 +0000
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Kalesh Singh <kaleshsingh@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/21 9:18 AM, Justin Piszcz wrote:
-> Thanks!-- Has anyone else reading run into this issue and/or are there
-> any suggestions how I can troubleshoot this further (as all -rc's have
-> the same issue)?
+The pull request you sent on Wed, 3 Nov 2021 10:05:07 -0400:
 
-How about bisecting this issue
-(https://www.kernel.org/doc/html/latest/admin-guide/bug-bisect.html)?
+> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.16-2
 
-Thanks,
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e1fd0b2acde6359a598dd4aeb158713fc0a361b2
 
-Bart.
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
