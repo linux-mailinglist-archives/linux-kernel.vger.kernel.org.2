@@ -2,202 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CF49443E06
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:08:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A30C5443E08
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:08:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhKCIKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 04:10:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbhKCIKr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 04:10:47 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6562C061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 01:08:10 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id a20-20020a1c7f14000000b003231d13ee3cso3868999wmd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 01:08:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=y+h6ogY2iFX9VezgygiGlqtRgxxUVwR6ulA1k3hBo7w=;
-        b=OHisHYZRhq5lsyMbcUfFslcsN7JkTBjw4xufAleoROAYHMtNzqjLMvnQgZpFwJuBy+
-         ZbGNJJpbKU1mNkOpiOjfueRuzyPDY4XsXcmAyWqBYFZZHqicVjKJWfhJqmklA6Zi3Y8G
-         DwJ81jU4WCHgAZyLi9BW5PokXg1fP/eGVhy/6CN2KCATQdOxRdZq9q9o6s/jB5h08Cex
-         GV/nc0kJ83etEqs1p8B9Zbndo/Z6FCFOOcoKpEmtgQ8icDJdfqig2D1Ei8CjOXA6zyCa
-         etJPosWh0QP44YzVFwyBfJDgjaPTpJIhNoMMazfIEFjBv93gpt84quog84P3/MJtgLlj
-         cmIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=y+h6ogY2iFX9VezgygiGlqtRgxxUVwR6ulA1k3hBo7w=;
-        b=aBD9FL4zoSuiYaDgvPYgD1Z47mGNGnrBE5IKadmUXjv/R3IBWdPp8koEhHPvQJYuI1
-         Aya1Kf6aWI5uyxaJRWBmkTDwvESpo/qu3zPHH7SBUN9Oyx2lMH+XOVGeZqlPPUCHfKUH
-         rUvKiDzCLrzBoYJWcCOR2eHShY9fSVs/YweADndZjcPp/krc8bUzk+TDRr3nrknGM5s5
-         ohiZ2/VbbZoSbEduJCjPFhuQEF381bMhaMRSV++01USFdridZv3VPCdgS7Gm5Is3fGMl
-         zgVGpzmsquf9K/6GBUj6qeYEAhhIp4u7Oioxn2ciYIc3F2lSEO3V/1FLhx9etRmbGW35
-         bomA==
-X-Gm-Message-State: AOAM530TlWfHswXuy29GD7RgmLW/QhQ7WVga4HztSMeUCFBnapVUnnWF
-        F1HQLeaJElxbfbrbBPg7+2U87bLFFjjHc2tICOfzLw==
-X-Google-Smtp-Source: ABdhPJydxpJleTtHMM1rdITnTQNqXOqaqV+zjrYGIl6eHPiP/Tk8I+O+dfPeGWvmpr+a1HX+rwsbSjdS7mF2pJbxVFc=
-X-Received: by 2002:a05:600c:2308:: with SMTP id 8mr2934903wmo.179.1635926888930;
- Wed, 03 Nov 2021 01:08:08 -0700 (PDT)
+        id S231539AbhKCILA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 04:11:00 -0400
+Received: from mga05.intel.com ([192.55.52.43]:4718 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231512AbhKCIK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 04:10:58 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10156"; a="317654897"
+X-IronPort-AV: E=Sophos;i="5.87,205,1631602800"; 
+   d="scan'208";a="317654897"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 01:08:22 -0700
+X-IronPort-AV: E=Sophos;i="5.87,205,1631602800"; 
+   d="scan'208";a="599802531"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 01:08:18 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 09D522036B;
+        Wed,  3 Nov 2021 10:08:16 +0200 (EET)
+Date:   Wed, 3 Nov 2021 10:08:16 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Eugen Hristev <eugen.hristev@microchip.com>
+Cc:     akinobu.mita@gmail.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: i2c: ov7740: implement get_mbus_config
+Message-ID: <YYJDcIiBXo/XlKCX@paasikivi.fi.intel.com>
+References: <20211102153008.1349895-1-eugen.hristev@microchip.com>
 MIME-Version: 1.0
-References: <20211102192742.1.I3ba1a76d72da5a813cf6e6f219838c9ef28c5eaa@changeid>
- <4049F5B5-D5A7-4F60-A33D-F22B601E7064@holtmann.org>
-In-Reply-To: <4049F5B5-D5A7-4F60-A33D-F22B601E7064@holtmann.org>
-From:   Archie Pusaka <apusaka@google.com>
-Date:   Wed, 3 Nov 2021 16:07:58 +0800
-Message-ID: <CAJQfnxG=TF1G3yqiok1m6bcU7LT3p+PGCAhFQsi4W1hBpg2hnA@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: Fix receiving HCI_LE_Advertising_Set_Terminated
- event
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Alain Michaud <alainm@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211102153008.1349895-1-eugen.hristev@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel,
+Hi Eugen,
 
-Thanks for your reply.
-I've sent a v2 patch to incorporate your suggestions.
+Thanks for the patch.
 
+On Tue, Nov 02, 2021 at 05:30:08PM +0200, Eugen Hristev wrote:
+> Implement the get_mbus_config callback.
+> ov7740 is a parallel sensor, and according to datasheet, the register
+> REG12 controls the CCIR656 mode. This register is written to 0 in yuyv mode.
+> According to REG12[5] , CCIR656 mode, the behavior is:
+> CCIR656: disabled
+> REG28 controls the polarity of the signals. This register is unused.
+> The default behavior is then:
+> HSYNC polarity : positive
+> VSYNC polarity : positive
+> HREF polarity: positive
+> 
+
+Doesn't the receiver driver get this information from DT?
+
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> ---
+>  drivers/media/i2c/ov7740.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/drivers/media/i2c/ov7740.c b/drivers/media/i2c/ov7740.c
+> index 2539cfee85c8..f8a717aecb6f 100644
+> --- a/drivers/media/i2c/ov7740.c
+> +++ b/drivers/media/i2c/ov7740.c
+> @@ -873,12 +873,26 @@ static int ov7740_get_fmt(struct v4l2_subdev *sd,
+>  	return ret;
+>  }
+>  
+> +static int ov7740_get_mbus_config(struct v4l2_subdev *sd,
+> +				  unsigned int pad,
+> +				  struct v4l2_mbus_config *cfg)
+> +{
+> +	cfg->type = V4L2_MBUS_PARALLEL;
+> +	cfg->flags = V4L2_MBUS_MASTER | V4L2_MBUS_HSYNC_ACTIVE_HIGH |
+> +		     V4L2_MBUS_VSYNC_ACTIVE_HIGH |
+> +		     V4L2_MBUS_PCLK_SAMPLE_RISING |
+> +		     V4L2_MBUS_FIELD_EVEN_LOW | V4L2_MBUS_DATA_ACTIVE_HIGH;
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct v4l2_subdev_pad_ops ov7740_subdev_pad_ops = {
+>  	.enum_frame_interval = ov7740_enum_frame_interval,
+>  	.enum_frame_size = ov7740_enum_frame_size,
+>  	.enum_mbus_code = ov7740_enum_mbus_code,
+>  	.get_fmt = ov7740_get_fmt,
+>  	.set_fmt = ov7740_set_fmt,
+> +	.get_mbus_config = ov7740_get_mbus_config,
+>  };
+>  
+>  static const struct v4l2_subdev_ops ov7740_subdev_ops = {
+
+-- 
 Regards,
-Archie
 
-On Tue, 2 Nov 2021 at 22:00, Marcel Holtmann <marcel@holtmann.org> wrote:
->
-> Hi Archie,
->
-> > This event is received when the controller stops advertising,
-> > specifically for these three reasons:
-> > (a) Connection is successfully created (success).
-> > (b) Timeout is reached (error).
-> > (c) Number of advertising events is reached (error).
-> > (*) This event is NOT generated when the host stops the advertisement.
-> > Refer to the BT spec ver 5.3 vol 4 part E sec 7.7.65.18. Note that the
-> > section was revised from BT spec ver 5.0 vol 2 part E sec 7.7.65.18
-> > which was ambiguous about (*).
-> >
-> > Some chips (e.g. RTL8822CE) send this event when the host stops the
-> > advertisement with status =3D HCI_ERROR_CANCELLED_BY_HOST (due to (*)
-> > above). This is treated as an error and the advertisement will be
-> > removed and userspace will be informed via MGMT event.
-> >
-> > On suspend, we are supposed to temporarily disable advertisements,
-> > and continue advertising on resume. However, due to the behavior
-> > above, the advertisements are removed instead.
-> >
-> > This patch returns early if HCI_ERROR_CANCELLED_BY_HOST is received.
->
-> lets include a btmon snippet here to show the faulty behavior.
->
-> >
-> > Additionally, this patch also clear HCI_LE_ADV if there are no more
-> > advertising instances after receiving other errors.
->
-> Does this really belong in this patch? I think it warrants a separate pat=
-ch with an appropriate Fixes: tag. Especially in the case we are working ar=
-ound a firmware bug, this should be separate. It gives us a better chance t=
-o bisect anything if we ever have to.
->
-> >
-> > Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> > Reviewed-by: Alain Michaud <alainm@chromium.org>
-> >
-> > ---
-> >
-> > include/net/bluetooth/hci.h |  1 +
-> > net/bluetooth/hci_event.c   | 12 ++++++++++++
-> > 2 files changed, 13 insertions(+)
-> >
-> > diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-> > index 63065bc01b76..84db6b275231 100644
-> > --- a/include/net/bluetooth/hci.h
-> > +++ b/include/net/bluetooth/hci.h
-> > @@ -566,6 +566,7 @@ enum {
-> > #define HCI_ERROR_INVALID_LL_PARAMS   0x1e
-> > #define HCI_ERROR_UNSPECIFIED         0x1f
-> > #define HCI_ERROR_ADVERTISING_TIMEOUT 0x3c
-> > +#define HCI_ERROR_CANCELLED_BY_HOST  0x44
-> >
-> > /* Flow control modes */
-> > #define HCI_FLOW_CTL_MODE_PACKET_BASED        0x00
-> > diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-> > index d4b75a6cfeee..150b50677790 100644
-> > --- a/net/bluetooth/hci_event.c
-> > +++ b/net/bluetooth/hci_event.c
-> > @@ -5538,6 +5538,14 @@ static void hci_le_ext_adv_term_evt(struct hci_d=
-ev *hdev, struct sk_buff *skb)
-> >
-> >       adv =3D hci_find_adv_instance(hdev, ev->handle);
-> >
-> > +     /* Some chips (e.g. RTL8822CE) emit HCI_ERROR_CANCELLED_BY_HOST. =
-This
-> > +      * event is being fired as a result of a hci_cp_le_set_ext_adv_en=
-able
-> > +      * disable request, which will have its own callback and cleanup =
-via
-> > +      * the hci_cc_le_set_ext_adv_enable path.
-> > +      */
->
-> I am not in favor of pointing fingers at bad hardware in the source code =
-of core (that belongs in a commit message). Blaming hardware is really up t=
-o the drivers. So I would rather phrase it like this:
->
->         /* The Bluetooth Core 5.3 specification clearly states that this =
-event
->          * shall not be sent when the Host disables the advertising set. =
-So in
->          * case of HCI_ERROR_CANCELLED_BY_HOST, just ignore the event.
->          *
->          * When the Host disables an advertising set, all cleanup is done=
- via
->          * its command callback and not needed to be duplicated here.
->          */
->
-> > +     if (ev->status =3D=3D HCI_ERROR_CANCELLED_BY_HOST)
-> > +             return;
-> > +
->
-> And since this is clearly an implementation issue, the manufactures can i=
-ssue a firmware fix for this. So lets be verbose and complain about it.
->
->         if (ev->status =3D=3D HCI_ERRROR..) {
->                 bt_dev_warn_ratelimited(hdev, =E2=80=9CUnexpected adverti=
-sing set terminated event=E2=80=9D);
->                 return;
->         }
->
-> >       if (ev->status) {
-> >               if (!adv)
-> >                       return;
-> > @@ -5546,6 +5554,10 @@ static void hci_le_ext_adv_term_evt(struct hci_d=
-ev *hdev, struct sk_buff *skb)
-> >               hci_remove_adv_instance(hdev, ev->handle);
-> >               mgmt_advertising_removed(NULL, hdev, ev->handle);
-> >
-> > +             /* If we are no longer advertising, clear HCI_LE_ADV */
-> > +             if (list_empty(&hdev->adv_instances))
-> > +                     hci_dev_clear_flag(hdev, HCI_LE_ADV);
-> > +
->
-> See comment above why this might be better suited for a separate patch.
->
-> Regards
->
-> Marcel
->
+Sakari Ailus
