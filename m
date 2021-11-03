@@ -2,133 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBF444450F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:57:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF21444515
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232513AbhKCP7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 11:59:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50186 "EHLO
+        id S231857AbhKCQBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 12:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231857AbhKCP7n (ORCPT
+        with ESMTP id S231340AbhKCQA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 11:59:43 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53042C061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 08:57:06 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id d13so4275508wrf.11
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 08:57:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=eRvj9qYI+2l7/7aUCZ50U+44Z6UG0IqeflVK/0bEcvo=;
-        b=BZz+zyywefqfNDI4gN4GDIM0uwo+FGSPcLNoq8DH2EXoe56E32R0v4glZZpSqHvkR/
-         sbLHeTm4jmFtLgyiP5il6cidyVwnm/QcUw+cpD1tSl0vT7dMlJnK2qrC2bJvlJVSeLBz
-         mItrt4gUdMoh7jQfhyR0fMzPZnw+Slkatr5pyLYowy4Vqf9MZWbXhjXvWJHn1o7tFSBl
-         3kw7mG28mKixAVjUtYZzWipsWohjqyBC8vluMVwO+QhPb3QAcNJlAqREIe+O56MgF+Rj
-         6lSVMNXjMG0DB5I3FHvra0nW8vhSCHdLX85k5eUkA6+Fq4mpthVNJGWj1iaLSihcnUmM
-         QD/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=eRvj9qYI+2l7/7aUCZ50U+44Z6UG0IqeflVK/0bEcvo=;
-        b=K++0PeyNKuj8BXsnNDHg2DnTqS2h7llLk2XIC5N50223vZ1HwN4dP3qJ9kMiBl5Dul
-         3uSkmtRJsXeUtg+286yYnTg9QhpHZBKTkYYAT+Bl5sb/c1SCqL5f5+6JqUNVadTZzpjh
-         /9oV+W6ODvjHrqMo4Hl3X9r+xU/e8eIWgTahjA8eucBvgKPj660tYO0DQt5JpLkfFpV1
-         UwomiMjUztLGXwxGkeCb+F8EHD/nzT12V7MVxqDJrN1MIOvqhXDLuTtfgf5+jtXX3D+Z
-         J/aSJ//OC69yRNFyW4+yTwifqJM66Bbcn96v7DxuBYCX6gmt/ebLnXiiMwKInFGdoeyP
-         baiQ==
-X-Gm-Message-State: AOAM530gm00/eyM0zlkmt+XzgNrmKzozd1FCgt9u63NvE7SWq68IvUQ8
-        L3JVvEZoiZfGJNAifrSyP+VYeMBwT3uqvA==
-X-Google-Smtp-Source: ABdhPJxvQ4B9y40EuhwiBKOvJ12HuXF5RU2mRbTh9lwg4xo6yOedTE2cuS4DHK3f5Fl5qo4ZYIHTSg==
-X-Received: by 2002:a5d:4890:: with SMTP id g16mr58678884wrq.10.1635955024911;
-        Wed, 03 Nov 2021 08:57:04 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id p13sm6470355wmi.0.2021.11.03.08.57.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 08:57:04 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 16:57:02 +0100
-From:   LABBE Corentin <clabbe@baylibre.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
-Subject: Re: [PATCH v3 00/14] staging: media: zoran: fusion in one module
-Message-ID: <YYKxTrWI299pvqo7@Red>
-References: <20211026193416.1176797-1-clabbe@baylibre.com>
- <a85c93db-e118-274f-d86a-d127c7399926@xs4all.nl>
+        Wed, 3 Nov 2021 12:00:57 -0400
+Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com [IPv6:2620:100:9001:583::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9EEC061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 08:58:20 -0700 (PDT)
+Received: from pps.filterd (m0122332.ppops.net [127.0.0.1])
+        by mx0a-00190b01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A3EFwAM004710;
+        Wed, 3 Nov 2021 15:58:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=jan2016.eng;
+ bh=K5MB/afSy0GjtB5qyrUWeIQGAcQDhFtW4eDszHTa6tY=;
+ b=fQu/eDLXkxof7l6jV9tpylDxn6MmJ1jx9fH6syLPFjfsnnBJTNEUzulHhB0ZHGjmtvWp
+ NyGAWtR2AFR46DYveuJUohDKb1gTE4j3EmZNHWS1dAUtlcz9Xyc/Qv3sP50Ghda7dUJO
+ ErdNEYLj758LBwpLNR1lUlg3ccoRtqb7h7y6Khd3MTNu4xHtHqIBEt4+Ga9TaLJAR+Le
+ UFrhsAVgb95meWrCfkXBj0x/xQ6n/32ZOZnT1bh2DjMLpIPAnvQjpLHnCQ9xQ/Cy0CML
+ YTwJgilx+TnnyHmzWXcVYbW8yGCiiavU+ZVqcbGqfGI9zdrsedEi2W0IFGBzbgPZXgLz 1g== 
+Received: from prod-mail-ppoint8 (a72-247-45-34.deploy.static.akamaitechnologies.com [72.247.45.34] (may be forged))
+        by mx0a-00190b01.pphosted.com (PPS) with ESMTPS id 3c3dchdntc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Nov 2021 15:58:12 +0000
+Received: from pps.filterd (prod-mail-ppoint8.akamai.com [127.0.0.1])
+        by prod-mail-ppoint8.akamai.com (8.16.1.2/8.16.1.2) with SMTP id 1A3FoKtI012361;
+        Wed, 3 Nov 2021 11:58:11 -0400
+Received: from prod-mail-relay18.dfw02.corp.akamai.com ([172.27.165.172])
+        by prod-mail-ppoint8.akamai.com with ESMTP id 3c39aux7e9-1;
+        Wed, 03 Nov 2021 11:58:11 -0400
+Received: from [0.0.0.0] (unknown [172.27.119.138])
+        by prod-mail-relay18.dfw02.corp.akamai.com (Postfix) with ESMTP id 7D857168;
+        Wed,  3 Nov 2021 15:58:10 +0000 (GMT)
+Subject: Re: [PATCH v9 10/10] drm: use DEFINE_DYNAMIC_DEBUG_TRACE_CATEGORIES
+ bitmap to tracefs
+To:     Jim Cromie <jim.cromie@gmail.com>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux@rasmusvillemoes.dk,
+        daniel.vetter@ffwll.ch, seanpaul@chromium.org,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+References: <20211027043645.153133-1-jim.cromie@gmail.com>
+ <20211027043645.153133-11-jim.cromie@gmail.com>
+From:   Jason Baron <jbaron@akamai.com>
+Message-ID: <3a55ab9c-8109-8025-21e3-e3635bd891b2@akamai.com>
+Date:   Wed, 3 Nov 2021 11:58:10 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a85c93db-e118-274f-d86a-d127c7399926@xs4all.nl>
+In-Reply-To: <20211027043645.153133-11-jim.cromie@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.790
+ definitions=2021-11-03_05:2021-11-03,2021-11-03 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0
+ mlxlogscore=999 bulkscore=0 adultscore=0 spamscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111030090
+X-Proofpoint-GUID: LdcoH8ebA5GhSST3D52LB7GgMum2xmNl
+X-Proofpoint-ORIG-GUID: LdcoH8ebA5GhSST3D52LB7GgMum2xmNl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-03_05,2021-11-03_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0
+ lowpriorityscore=0 mlxlogscore=999 adultscore=0 clxscore=1011
+ priorityscore=1501 suspectscore=0 phishscore=0 malwarescore=0
+ impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2111030090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Wed, Nov 03, 2021 at 04:21:02PM +0100, Hans Verkuil a écrit :
-> Hi Corentin,
-> 
-> On 26/10/2021 21:34, Corentin Labbe wrote:
-> > Hello
-> > 
-> > The main change of this serie is to fusion all zoran related modules in
-> > one.
-> > This fixes the load order problem when everything is built-in.
-> 
-> I've been testing this series, and while the module load/unload is now working,
-> I'm running into a lot of other v4l2 compliance issues.
-> 
-> I've fixed various issues in some follow-up patches available in my tree:
-> 
-> https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=zoran
-> 
-> At least some of the worst offenders are now resolved. Note that the patch
-> dropping read/write support relies on this patch:
-> 
-> https://patchwork.linuxtv.org/project/linux-media/patch/4f89b139-13b7-eee6-9662-996626b778b0@xs4all.nl/
 
-Hello
 
-My test branch already included your "zoran: fix various V4L2 compliance errors"
-I have quickly checked other patch and I am ok with them.
-I will add and test with them.
-
+On 10/27/21 12:36 AM, Jim Cromie wrote:
+> Use new macro to create a sysfs control bitmap knob to control
+> print-to-trace in: /sys/module/drm/parameters/trace
 > 
-> But there is one really major bug that makes me hesitant to merge this:
+> todo: reconsider this api, ie a single macro expecting both debug &
+> trace terms (2 each), followed by a single description and the
+> bitmap-spec::
 > 
-> This works:
+> Good: declares bitmap once for both interfaces
 > 
-> v4l2-ctl -v pixelformat=MJPG,width=768,height=576
-> v4l2-ctl --stream-mmap
-> 
-> This fails:
-> 
-> v4l2-ctl -v pixelformat=MJPG,width=768,height=288
-> v4l2-ctl --stream-mmap
-> 
-> It's an immediate lock up with nothing to indicate what is wrong.
-> As soon as the height is 288 or less, this happens.
-> 
-> Both with my DC30 and DC30D.
-
-Just for curiosity, what is the difference between thoses two ?
-
-> 
-> Do you see the same? Any idea what is going on? I would feel much happier
-> if this is fixed.
-> 
-> Note that the same problem is present without this patch series, so it's
-> been there for some time.
+> Bad: arg-type/count handling (expecting 4 args) is ugly,
+>      especially preceding the bitmap-init var-args.
 > 
 
-I will start on digging this problem and add thoses commands to my CI.
-And I know there are a huge quantity of problem since origins.
-A simple example is that just setting MJPEG as default input format does not work.
+Hi Jim,
 
-But since it is not related to my serie, can you please merge it.
+I agree having the bitmap declared twice seems redundant. But I like having fewer args and not necessarily combining the trace/log variants of
+DEBUG_CATEGORIES. hmmm...what if the DEFINE_DYNAMIC_DEBUG_CATEGORIES() took a pointer to the array of struct dyndbg_bitdesc map[] directly as the
+final argument instead of the __VA_ARGS__? Then, we could just declare the map once?
 
-Thanks
-Regards
+Thanks,
+
+-Jason
+
+> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> ---
+>  drivers/gpu/drm/drm_print.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_print.c b/drivers/gpu/drm/drm_print.c
+> index ce662d0f339b..7b49fbc5e21d 100644
+> --- a/drivers/gpu/drm/drm_print.c
+> +++ b/drivers/gpu/drm/drm_print.c
+> @@ -73,6 +73,25 @@ DEFINE_DYNAMIC_DEBUG_CATEGORIES(debug, __drm_debug,
+>  				[7] = { DRM_DBG_CAT_LEASE },
+>  				[8] = { DRM_DBG_CAT_DP },
+>  				[9] = { DRM_DBG_CAT_DRMRES });
+> +
+> +#ifdef CONFIG_TRACING
+> +unsigned long __drm_trace;
+> +EXPORT_SYMBOL(__drm_trace);
+> +DEFINE_DYNAMIC_DEBUG_TRACE_CATEGORIES(trace, __drm_trace,
+> +				      DRM_DEBUG_DESC,
+> +				      [0] = { DRM_DBG_CAT_CORE },
+> +				      [1] = { DRM_DBG_CAT_DRIVER },
+> +				      [2] = { DRM_DBG_CAT_KMS },
+> +				      [3] = { DRM_DBG_CAT_PRIME },
+> +				      [4] = { DRM_DBG_CAT_ATOMIC },
+> +				      [5] = { DRM_DBG_CAT_VBL },
+> +				      [6] = { DRM_DBG_CAT_STATE },
+> +				      [7] = { DRM_DBG_CAT_LEASE },
+> +				      [8] = { DRM_DBG_CAT_DP },
+> +				      [9] = { DRM_DBG_CAT_DRMRES });
+> +
+> +struct trace_array *trace_arr;
+> +#endif
+>  #endif
+>  
+>  void __drm_puts_coredump(struct drm_printer *p, const char *str)
+> 
