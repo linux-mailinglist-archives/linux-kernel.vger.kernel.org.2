@@ -2,397 +2,811 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3791444906
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C4B444904
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:34:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhKCTh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 15:37:28 -0400
-Received: from mga09.intel.com ([134.134.136.24]:5021 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229918AbhKCThZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 15:37:25 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10157"; a="231423766"
-X-IronPort-AV: E=Sophos;i="5.87,206,1631602800"; 
-   d="gz'50?scan'50,208,50";a="231423766"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 12:34:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,206,1631602800"; 
-   d="gz'50?scan'50,208,50";a="667643980"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 03 Nov 2021 12:34:27 -0700
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1miM1j-0005oI-5G; Wed, 03 Nov 2021 19:34:27 +0000
-Date:   Thu, 4 Nov 2021 03:33:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: lib/test_kasan_module.c:90:26: sparse: sparse: incompatible types in
- comparison expression (different address spaces):
-Message-ID: <202111040340.6sti69Cb-lkp@intel.com>
+        id S231420AbhKCTgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 15:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231295AbhKCTgb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 15:36:31 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6245C061205
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 12:33:54 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id bk22so3438266qkb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 12:33:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20210112.gappssmtp.com; s=20210112;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kvJARQBgxQBuanY2lBgiTblXV67ARfNybrCEeUkG2MM=;
+        b=vICOmJrXa+l5wsSd5+ENhjBTHdoC2U/98el5c/EBKE/ooHldG3Dh+X+YHoMFzsiO3V
+         KrlukERdV9OQkYzbpzqwRht1S8e4MpsZ5qVKrbiWeTWKnnysdZ3dnYsnCm3KC9ueuZpa
+         9DbRgrrRuHGjwVrSVeMoRY+wEhIDZgSn8xtod0azUeHszuBANdt3903wSeem+WRCI+uw
+         X5KCBv+NOb0JQLZWCiqK/eD4atO+DdLsIyU3PMFGH3rsOWrK4WapkPZf96oDKJ9x92vX
+         RuhhomVAvPM/cYr4UJBBQyQXcDXHoEBiH+iGCFgnyR3HQ1MKZHCXbxM2AFRj7j3KVpN+
+         JeOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kvJARQBgxQBuanY2lBgiTblXV67ARfNybrCEeUkG2MM=;
+        b=6KXTQU/5qyNQvZTOkUM+fDXd+TAHTZ9zz13nMlLrDuDgecN6AeGrYgqsz6BUW7KkFl
+         4UzBcZrA6TYoly+J1FMj9uPkeyxPHpGAOlOOIBBqwEtmkGiSuJlmeHyHzDGnfnkS5+Ow
+         tUtY+6P1VPbq7lI9LcH+uwA13tFvfbE4k3gCXkGCgNQsdLz2EF0ZRBc4PBAZ0/920gsu
+         3Sw2rYjiJGj/8BzJx4dqbnKlIV84sx3Z5SoS3GZbHsIqfg8J2+S3trECHo8nMv8G/q73
+         Gi3na9dVFZW12a9FsfUB9jzJQqherAgq0ahQ9Z91zzx7zDzUppXTrcY8OHorR19jL6Bn
+         7XoQ==
+X-Gm-Message-State: AOAM5324ZhI0/VH//lfD82N1u4oTTRphcTrYERhC2ozg/8AZ8ERMYcin
+        oUmO1KS4wMO2cQGGG/EHYDlCb+BCjcW0YRRw
+X-Google-Smtp-Source: ABdhPJx2H60WAFNr0QF3j+cuOxjuVypPoffaslZayXjBYW4RRZ57PZvP9MV4XYK7JRVsq2M8niyQTg==
+X-Received: by 2002:a37:54d:: with SMTP id 74mr7335988qkf.209.1635968033653;
+        Wed, 03 Nov 2021 12:33:53 -0700 (PDT)
+Received: from [192.168.0.104] ([66.199.72.44])
+        by smtp.gmail.com with ESMTPSA id k2sm2097853qtg.35.2021.11.03.12.33.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Nov 2021 12:33:53 -0700 (PDT)
+Subject: Re: [PATCH v5] include: linux: Reorganize timekeeping and ktime
+ headers
+From:   Carlos Bilbao <bilbao@vt.edu>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kbuild test robot <lkp@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <b5d4536f-a096-b259-1385-3c1d32754dbf@vt.edu>
+ <095645cd-ce53-a803-cb99-522545a409b8@vt.edu> <YSJP18Z72t0X+xsp@kroah.com>
+ <1c156aca-d0ad-e7e8-2238-5c3d904d171c@vt.edu>
+ <327f5c2f-b996-8aa1-cbbf-3354e01ee1f3@vt.edu>
+Message-ID: <fb66b935-b498-723a-1f05-f02648f8f580@vt.edu>
+Date:   Wed, 3 Nov 2021 15:33:52 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="RnlQjJ0d97Da+TV1"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <327f5c2f-b996-8aa1-cbbf-3354e01ee1f3@vt.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello everyone,
 
---RnlQjJ0d97Da+TV1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Some time ago I sent a small patch to avoid implicit function declaration. 
+In particular, timekeeping.h was using ktime_to_ns(), a static function defined 
+in a header it does no include, ktime.h. Some maintainers saw this as an 
+opportunity to reorganize ktime, and so I did and tested for all architectures.
+Now, this patch has fallen into the "limbo of patches", so the original problem
+remains unsolved. Please, either take a look at this or check the original
+patch for the header dependencies.
 
-Hi Andrey,
+Thanks!!
+Carlos.
 
-First bad commit (maybe != root cause):
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   655fedaad36c0b31a6f6cb8f469b739b2359d74f
-commit: 5d92bdffd2d53f98de683229c0ad7d028703fdba kasan: rename CONFIG_TEST_KASAN_MODULE
-date:   8 months ago
-config: s390-randconfig-s031-20211103 (attached as .config)
-compiler: s390-linux-gcc (GCC) 11.2.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5d92bdffd2d53f98de683229c0ad7d028703fdba
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout 5d92bdffd2d53f98de683229c0ad7d028703fdba
-        # save the attached .config to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=s390 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-
-sparse warnings: (new ones prefixed by >>)
->> lib/test_kasan_module.c:90:26: sparse: sparse: incompatible types in comparison expression (different address spaces):
->> lib/test_kasan_module.c:90:26: sparse:    struct kasan_rcu_info [noderef] __rcu *
->> lib/test_kasan_module.c:90:26: sparse:    struct kasan_rcu_info *
-
-vim +90 lib/test_kasan_module.c
-
-73228c7ecc5e40 Patricia Alfonso 2020-10-13  78  
-73228c7ecc5e40 Patricia Alfonso 2020-10-13  79  static noinline void __init kasan_rcu_uaf(void)
-73228c7ecc5e40 Patricia Alfonso 2020-10-13  80  {
-73228c7ecc5e40 Patricia Alfonso 2020-10-13  81  	struct kasan_rcu_info *ptr;
-73228c7ecc5e40 Patricia Alfonso 2020-10-13  82  
-73228c7ecc5e40 Patricia Alfonso 2020-10-13  83  	pr_info("use-after-free in kasan_rcu_reclaim\n");
-73228c7ecc5e40 Patricia Alfonso 2020-10-13  84  	ptr = kmalloc(sizeof(struct kasan_rcu_info), GFP_KERNEL);
-73228c7ecc5e40 Patricia Alfonso 2020-10-13  85  	if (!ptr) {
-73228c7ecc5e40 Patricia Alfonso 2020-10-13  86  		pr_err("Allocation failed\n");
-73228c7ecc5e40 Patricia Alfonso 2020-10-13  87  		return;
-73228c7ecc5e40 Patricia Alfonso 2020-10-13  88  	}
-73228c7ecc5e40 Patricia Alfonso 2020-10-13  89  
-73228c7ecc5e40 Patricia Alfonso 2020-10-13 @90  	global_rcu_ptr = rcu_dereference_protected(ptr, NULL);
-73228c7ecc5e40 Patricia Alfonso 2020-10-13  91  	call_rcu(&global_rcu_ptr->rcu, kasan_rcu_reclaim);
-73228c7ecc5e40 Patricia Alfonso 2020-10-13  92  }
-73228c7ecc5e40 Patricia Alfonso 2020-10-13  93  
-
-:::::: The code at line 90 was first introduced by commit
-:::::: 73228c7ecc5e40c0851c4703c5ec6ed38123e989 KASAN: port KASAN Tests to KUnit
-
-:::::: TO: Patricia Alfonso <trishalfonso@google.com>
-:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
---RnlQjJ0d97Da+TV1
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
-
-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
-7rfbAAA=
-
---RnlQjJ0d97Da+TV1--
+On 9/12/21 11:33 AM, Carlos Bilbao wrote:
+> Reorganize and separate the headers by making ktime.h take care of the 
+> ktime_get() family of functions, and reserve timekeeping.h for the actual 
+> timekeeping. This also helps to avoid implicit function errors and strengthens
+> the header dependencies, since timekeeping.h was using ktime_to_ns(), a static 
+> function defined in a header it does no include, ktime.h. Include the header 
+> timekeeping.h wherever it is necessary for a successful compilation after the 
+> header code reorganization.
+> 
+> Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+> Changelog:
+> - v2: Add three more files that also needed a header update for x86: 
+>   pps_kernel.h, posix-timers.c and hda_controller.c
+> - v3: Cover build tests for other architectures than x86. To compile arm64, 
+>   update arch/arm64/kvm/hypercalls.c, include/linux/stmmac.h, and 
+>   drivers/rtc/class.c. No other arch/ seems to need fixes but to be on the safe
+>   side compiled arm, mips, powerpc, sparc, s390, riscv and i386.
+> - v4: Fix kernel test robot warnings for ia64 and x86.
+> - v5: Fix kernel test robot warnings for m68k and powerpc.
+> ---
+>  arch/arm64/kvm/hypercalls.c    |   1 +
+>  arch/ia64/kernel/time.c        |   1 +
+>  arch/m68k/atari/time.c         |   1 +
+>  arch/m68k/hp300/time.c         |   2 +
+>  arch/m68k/mac/via.c            |   1 +
+>  arch/m68k/mvme16x/config.c     |   1 +
+>  arch/m68k/sun3/sun3ints.c      |   1 +
+>  arch/powerpc/kernel/time.c     |   1 +
+>  arch/x86/kernel/rtc.c          |   1 +
+>  arch/x86/kernel/tsc.c          |   1 +
+>  drivers/rtc/class.c            |   1 +
+>  include/linux/ktime.h          | 196 +++++++++++++++++++++++++++++++-
+>  include/linux/pps_kernel.h     |   1 +
+>  include/linux/sched_clock.h    |   2 +
+>  include/linux/stmmac.h         |   1 +
+>  include/linux/timekeeping.h    | 197 +--------------------------------
+>  init/main.c                    |   1 +
+>  kernel/time/ntp.c              |   1 +
+>  kernel/time/posix-timers.c     |   1 +
+>  kernel/time/tick-legacy.c      |   1 +
+>  kernel/time/time.c             |   1 +
+>  kernel/time/timekeeping.c      |   1 +
+>  sound/pci/hda/hda_controller.c |   1 +
+>  23 files changed, 218 insertions(+), 198 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
+> index 30da78f72b3b..41499c1d7379 100644
+> --- a/arch/arm64/kvm/hypercalls.c
+> +++ b/arch/arm64/kvm/hypercalls.c
+> @@ -3,6 +3,7 @@
+>  
+>  #include <linux/arm-smccc.h>
+>  #include <linux/kvm_host.h>
+> +#include <linux/timekeeping.h>
+>  
+>  #include <asm/kvm_emulate.h>
+>  
+> diff --git a/arch/ia64/kernel/time.c b/arch/ia64/kernel/time.c
+> index fa9c0ab8c6fc..85e79ff3c98e 100644
+> --- a/arch/ia64/kernel/time.c
+> +++ b/arch/ia64/kernel/time.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/efi.h>
+>  #include <linux/timex.h>
+>  #include <linux/timekeeper_internal.h>
+> +#include <linux/timekeeping.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/sched/cputime.h>
+>  
+> diff --git a/arch/m68k/atari/time.c b/arch/m68k/atari/time.c
+> index 7e44d0e9d0f8..b09d3ff40b36 100644
+> --- a/arch/m68k/atari/time.c
+> +++ b/arch/m68k/atari/time.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/clocksource.h>
+>  #include <linux/delay.h>
+>  #include <linux/export.h>
+> +#include <linux/timekeeping.h>
+>  
+>  #include <asm/atariints.h>
+>  #include <asm/machdep.h>
+> diff --git a/arch/m68k/hp300/time.c b/arch/m68k/hp300/time.c
+> index 1d1b7b3b5dd4..56c575096bcb 100644
+> --- a/arch/m68k/hp300/time.c
+> +++ b/arch/m68k/hp300/time.c
+> @@ -14,6 +14,8 @@
+>  #include <linux/sched.h>
+>  #include <linux/kernel_stat.h>
+>  #include <linux/interrupt.h>
+> +#include <linux/timekeeping.h>
+> +
+>  #include <asm/machdep.h>
+>  #include <asm/irq.h>
+>  #include <asm/io.h>
+> diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
+> index 3d11d6219cdd..6dd8f85288e4 100644
+> --- a/arch/m68k/mac/via.c
+> +++ b/arch/m68k/mac/via.c
+> @@ -31,6 +31,7 @@
+>  #include <linux/init.h>
+>  #include <linux/module.h>
+>  #include <linux/irq.h>
+> +#include <linux/timekeeping.h>
+>  
+>  #include <asm/macintosh.h>
+>  #include <asm/macints.h>
+> diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
+> index b59593c7cfb9..bb2ae926bb17 100644
+> --- a/arch/m68k/mvme16x/config.c
+> +++ b/arch/m68k/mvme16x/config.c
+> @@ -28,6 +28,7 @@
+>  #include <linux/rtc.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/module.h>
+> +#include <linux/timekeeping.h>
+>  
+>  #include <asm/bootinfo.h>
+>  #include <asm/bootinfo-vme.h>
+> diff --git a/arch/m68k/sun3/sun3ints.c b/arch/m68k/sun3/sun3ints.c
+> index 41ae422119d3..3834a172be47 100644
+> --- a/arch/m68k/sun3/sun3ints.c
+> +++ b/arch/m68k/sun3/sun3ints.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/sched.h>
+>  #include <linux/kernel_stat.h>
+>  #include <linux/interrupt.h>
+> +#include <linux/timekeeping.h>
+>  #include <asm/segment.h>
+>  #include <asm/intersil.h>
+>  #include <asm/oplib.h>
+> diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
+> index e45ce427bffb..4b6952165a0a 100644
+> --- a/arch/powerpc/kernel/time.c
+> +++ b/arch/powerpc/kernel/time.c
+> @@ -55,6 +55,7 @@
+>  #include <linux/sched/cputime.h>
+>  #include <linux/sched/clock.h>
+>  #include <linux/processor.h>
+> +#include <linux/timekeeping.h>
+>  #include <asm/trace.h>
+>  
+>  #include <asm/interrupt.h>
+> diff --git a/arch/x86/kernel/rtc.c b/arch/x86/kernel/rtc.c
+> index 586f718b8e95..98ea05cc6aeb 100644
+> --- a/arch/x86/kernel/rtc.c
+> +++ b/arch/x86/kernel/rtc.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/export.h>
+>  #include <linux/pnp.h>
+>  #include <linux/of.h>
+> +#include <linux/timekeeping.h>
+>  
+>  #include <asm/vsyscall.h>
+>  #include <asm/x86_init.h>
+> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+> index 2e076a459a0c..b730cb20f5fd 100644
+> --- a/arch/x86/kernel/tsc.c
+> +++ b/arch/x86/kernel/tsc.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/timex.h>
+>  #include <linux/static_key.h>
+>  #include <linux/static_call.h>
+> +#include <linux/timekeeping.h>
+>  
+>  #include <asm/hpet.h>
+>  #include <asm/timer.h>
+> diff --git a/drivers/rtc/class.c b/drivers/rtc/class.c
+> index f77bc089eb6b..1bdf1f790beb 100644
+> --- a/drivers/rtc/class.c
+> +++ b/drivers/rtc/class.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/kdev_t.h>
+>  #include <linux/idr.h>
+>  #include <linux/slab.h>
+> +#include <linux/timekeeping.h>
+>  #include <linux/workqueue.h>
+>  
+>  #include "rtc-core.h"
+> diff --git a/include/linux/ktime.h b/include/linux/ktime.h
+> index 73f20deb497d..37955d6664dd 100644
+> --- a/include/linux/ktime.h
+> +++ b/include/linux/ktime.h
+> @@ -229,6 +229,198 @@ static inline ktime_t ms_to_ktime(u64 ms)
+>  	return ms * NSEC_PER_MSEC;
+>  }
+>  
+> -# include <linux/timekeeping.h>
+> +/*
+> + * ktime_get() family: read the current time in a multitude of ways,
+> + *
+> + * The default time reference is CLOCK_MONOTONIC, starting at
+> + * boot time but not counting the time spent in suspend.
+> + * For other references, use the functions with "real", "clocktai",
+> + * "boottime" and "raw" suffixes.
+> + *
+> + * To get the time in a different format, use the ones wit
+> + * "ns", "ts64" and "seconds" suffix.
+> + *
+> + * See Documentation/core-api/timekeeping.rst for more details.
+> + */
+>  
+> -#endif
+> +
+> +/*
+> + * timespec64 based interfaces
+> + */
+> +extern void ktime_get_raw_ts64(struct timespec64 *ts);
+> +extern void ktime_get_ts64(struct timespec64 *ts);
+> +extern void ktime_get_real_ts64(struct timespec64 *tv);
+> +extern void ktime_get_coarse_ts64(struct timespec64 *ts);
+> +extern void ktime_get_coarse_real_ts64(struct timespec64 *ts);
+> +
+> +void getboottime64(struct timespec64 *ts);
+> +
+> +/*
+> + * time64_t base interfaces
+> + */
+> +extern time64_t ktime_get_seconds(void);
+> +extern time64_t __ktime_get_real_seconds(void);
+> +extern time64_t ktime_get_real_seconds(void);
+> +
+> +/*
+> + * ktime_t based interfaces
+> + */
+> +
+> +enum tk_offsets {
+> +       TK_OFFS_REAL,
+> +       TK_OFFS_BOOT,
+> +       TK_OFFS_TAI,
+> +       TK_OFFS_MAX,
+> +};
+> +
+> +extern ktime_t ktime_get(void);
+> +extern ktime_t ktime_get_with_offset(enum tk_offsets offs);
+> +extern ktime_t ktime_get_coarse_with_offset(enum tk_offsets offs);
+> +extern ktime_t ktime_mono_to_any(ktime_t tmono, enum tk_offsets offs);
+> +extern ktime_t ktime_get_raw(void);
+> +extern u32 ktime_get_resolution_ns(void);
+> +
+> +/**
+> + * ktime_get_real - get the real (wall-) time in ktime_t format
+> + */
+> +static inline ktime_t ktime_get_real(void)
+> +{
+> +       return ktime_get_with_offset(TK_OFFS_REAL);
+> +}
+> +
+> +static inline ktime_t ktime_get_coarse_real(void)
+> +{
+> +       return ktime_get_coarse_with_offset(TK_OFFS_REAL);
+> +}
+> +
+> +/**
+> + * ktime_get_boottime - Returns monotonic time since boot in ktime_t format
+> + *
+> + * This is similar to CLOCK_MONTONIC/ktime_get, but also includes the
+> + * time spent in suspend.
+> + */
+> +static inline ktime_t ktime_get_boottime(void)
+> +{
+> +       return ktime_get_with_offset(TK_OFFS_BOOT);
+> +}
+> +
+> +static inline ktime_t ktime_get_coarse_boottime(void)
+> +{
+> +       return ktime_get_coarse_with_offset(TK_OFFS_BOOT);
+> +}
+> +
+> +/**
+> + * ktime_get_clocktai - Returns the TAI time of day in ktime_t format
+> + */
+> +static inline ktime_t ktime_get_clocktai(void)
+> +{
+> +       return ktime_get_with_offset(TK_OFFS_TAI);
+> +}
+> +
+> +static inline ktime_t ktime_get_coarse_clocktai(void)
+> +{
+> +       return ktime_get_coarse_with_offset(TK_OFFS_TAI);
+> +}
+> +
+> +static inline ktime_t ktime_get_coarse(void)
+> +{
+> +       struct timespec64 ts;
+> +
+> +       ktime_get_coarse_ts64(&ts);
+> +       return timespec64_to_ktime(ts);
+> +}
+> +
+> +static inline u64 ktime_get_coarse_ns(void)
+> +{
+> +       return ktime_to_ns(ktime_get_coarse());
+> +}
+> +
+> +static inline u64 ktime_get_coarse_real_ns(void)
+> +{
+> +       return ktime_to_ns(ktime_get_coarse_real());
+> +}
+> +
+> +static inline u64 ktime_get_coarse_boottime_ns(void)
+> +{
+> +       return ktime_to_ns(ktime_get_coarse_boottime());
+> +}
+> +
+> +static inline u64 ktime_get_coarse_clocktai_ns(void)
+> +{
+> +       return ktime_to_ns(ktime_get_coarse_clocktai());
+> +}
+> +
+> +/**
+> + * ktime_mono_to_real - Convert monotonic time to clock realtime
+> + */
+> +static inline ktime_t ktime_mono_to_real(ktime_t mono)
+> +{
+> +       return ktime_mono_to_any(mono, TK_OFFS_REAL);
+> +}
+> +
+> +static inline u64 ktime_get_ns(void)
+> +{
+> +       return ktime_to_ns(ktime_get());
+> +}
+> +
+> +static inline u64 ktime_get_real_ns(void)
+> +{
+> +       return ktime_to_ns(ktime_get_real());
+> +}
+> +
+> +static inline u64 ktime_get_boottime_ns(void)
+> +{
+> +       return ktime_to_ns(ktime_get_boottime());
+> +}
+> +
+> +static inline u64 ktime_get_clocktai_ns(void)
+> +{
+> +       return ktime_to_ns(ktime_get_clocktai());
+> +}
+> +
+> +static inline u64 ktime_get_raw_ns(void)
+> +{
+> +       return ktime_to_ns(ktime_get_raw());
+> +}
+> +
+> +extern u64 ktime_get_mono_fast_ns(void);
+> +extern u64 ktime_get_raw_fast_ns(void);
+> +extern u64 ktime_get_boot_fast_ns(void);
+> +extern u64 ktime_get_real_fast_ns(void);
+> +
+> +/*
+> + * timespec64/time64_t interfaces utilizing the ktime based ones
+> + * for API completeness, these could be implemented more efficiently
+> + * if needed.
+> + */
+> +static inline void ktime_get_boottime_ts64(struct timespec64 *ts)
+> +{
+> +       *ts = ktime_to_timespec64(ktime_get_boottime());
+> +}
+> +
+> +static inline void ktime_get_coarse_boottime_ts64(struct timespec64 *ts)
+> +{
+> +       *ts = ktime_to_timespec64(ktime_get_coarse_boottime());
+> +}
+> +
+> +static inline time64_t ktime_get_boottime_seconds(void)
+> +{
+> +       return ktime_divns(ktime_get_coarse_boottime(), NSEC_PER_SEC);
+> +}
+> +
+> +static inline void ktime_get_clocktai_ts64(struct timespec64 *ts)
+> +{
+> +       *ts = ktime_to_timespec64(ktime_get_clocktai());
+> +}
+> +
+> +static inline void ktime_get_coarse_clocktai_ts64(struct timespec64 *ts)
+> +{
+> +       *ts = ktime_to_timespec64(ktime_get_coarse_clocktai());
+> +}
+> +
+> +static inline time64_t ktime_get_clocktai_seconds(void)
+> +{
+> +       return ktime_divns(ktime_get_coarse_clocktai(), NSEC_PER_SEC);
+> +}
+> +
+> +#endif /* _LINUX_KTIME_H */
+> diff --git a/include/linux/pps_kernel.h b/include/linux/pps_kernel.h
+> index 78c8ac4951b5..24970c202ac6 100644
+> --- a/include/linux/pps_kernel.h
+> +++ b/include/linux/pps_kernel.h
+> @@ -12,6 +12,7 @@
+>  #include <linux/cdev.h>
+>  #include <linux/device.h>
+>  #include <linux/time.h>
+> +#include <linux/timekeeping.h>
+>  
+>  /*
+>   * Global defines
+> diff --git a/include/linux/sched_clock.h b/include/linux/sched_clock.h
+> index 835ee87ed792..f0fa287710da 100644
+> --- a/include/linux/sched_clock.h
+> +++ b/include/linux/sched_clock.h
+> @@ -5,6 +5,8 @@
+>  #ifndef LINUX_SCHED_CLOCK
+>  #define LINUX_SCHED_CLOCK
+>  
+> +#include <linux/timekeeping.h>
+> +
+>  #ifdef CONFIG_GENERIC_SCHED_CLOCK
+>  /**
+>   * struct clock_read_data - data required to read from sched_clock()
+> diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+> index a6f03b36fc4f..bf235ff101d5 100644
+> --- a/include/linux/stmmac.h
+> +++ b/include/linux/stmmac.h
+> @@ -14,6 +14,7 @@
+>  
+>  #include <linux/platform_device.h>
+>  #include <linux/phy.h>
+> +#include <linux/timekeeping.h>
+>  
+>  #define MTL_MAX_RX_QUEUES	8
+>  #define MTL_MAX_TX_QUEUES	8
+> diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
+> index 78a98bdff76d..b1c54f5ff91e 100644
+> --- a/include/linux/timekeeping.h
+> +++ b/include/linux/timekeeping.h
+> @@ -19,201 +19,6 @@ extern void legacy_timer_tick(unsigned long ticks);
+>  extern int do_settimeofday64(const struct timespec64 *ts);
+>  extern int do_sys_settimeofday64(const struct timespec64 *tv,
+>  				 const struct timezone *tz);
+> -
+> -/*
+> - * ktime_get() family: read the current time in a multitude of ways,
+> - *
+> - * The default time reference is CLOCK_MONOTONIC, starting at
+> - * boot time but not counting the time spent in suspend.
+> - * For other references, use the functions with "real", "clocktai",
+> - * "boottime" and "raw" suffixes.
+> - *
+> - * To get the time in a different format, use the ones wit
+> - * "ns", "ts64" and "seconds" suffix.
+> - *
+> - * See Documentation/core-api/timekeeping.rst for more details.
+> - */
+> -
+> -
+> -/*
+> - * timespec64 based interfaces
+> - */
+> -extern void ktime_get_raw_ts64(struct timespec64 *ts);
+> -extern void ktime_get_ts64(struct timespec64 *ts);
+> -extern void ktime_get_real_ts64(struct timespec64 *tv);
+> -extern void ktime_get_coarse_ts64(struct timespec64 *ts);
+> -extern void ktime_get_coarse_real_ts64(struct timespec64 *ts);
+> -
+> -void getboottime64(struct timespec64 *ts);
+> -
+> -/*
+> - * time64_t base interfaces
+> - */
+> -extern time64_t ktime_get_seconds(void);
+> -extern time64_t __ktime_get_real_seconds(void);
+> -extern time64_t ktime_get_real_seconds(void);
+> -
+> -/*
+> - * ktime_t based interfaces
+> - */
+> -
+> -enum tk_offsets {
+> -	TK_OFFS_REAL,
+> -	TK_OFFS_BOOT,
+> -	TK_OFFS_TAI,
+> -	TK_OFFS_MAX,
+> -};
+> -
+> -extern ktime_t ktime_get(void);
+> -extern ktime_t ktime_get_with_offset(enum tk_offsets offs);
+> -extern ktime_t ktime_get_coarse_with_offset(enum tk_offsets offs);
+> -extern ktime_t ktime_mono_to_any(ktime_t tmono, enum tk_offsets offs);
+> -extern ktime_t ktime_get_raw(void);
+> -extern u32 ktime_get_resolution_ns(void);
+> -
+> -/**
+> - * ktime_get_real - get the real (wall-) time in ktime_t format
+> - */
+> -static inline ktime_t ktime_get_real(void)
+> -{
+> -	return ktime_get_with_offset(TK_OFFS_REAL);
+> -}
+> -
+> -static inline ktime_t ktime_get_coarse_real(void)
+> -{
+> -	return ktime_get_coarse_with_offset(TK_OFFS_REAL);
+> -}
+> -
+> -/**
+> - * ktime_get_boottime - Returns monotonic time since boot in ktime_t format
+> - *
+> - * This is similar to CLOCK_MONTONIC/ktime_get, but also includes the
+> - * time spent in suspend.
+> - */
+> -static inline ktime_t ktime_get_boottime(void)
+> -{
+> -	return ktime_get_with_offset(TK_OFFS_BOOT);
+> -}
+> -
+> -static inline ktime_t ktime_get_coarse_boottime(void)
+> -{
+> -	return ktime_get_coarse_with_offset(TK_OFFS_BOOT);
+> -}
+> -
+> -/**
+> - * ktime_get_clocktai - Returns the TAI time of day in ktime_t format
+> - */
+> -static inline ktime_t ktime_get_clocktai(void)
+> -{
+> -	return ktime_get_with_offset(TK_OFFS_TAI);
+> -}
+> -
+> -static inline ktime_t ktime_get_coarse_clocktai(void)
+> -{
+> -	return ktime_get_coarse_with_offset(TK_OFFS_TAI);
+> -}
+> -
+> -static inline ktime_t ktime_get_coarse(void)
+> -{
+> -	struct timespec64 ts;
+> -
+> -	ktime_get_coarse_ts64(&ts);
+> -	return timespec64_to_ktime(ts);
+> -}
+> -
+> -static inline u64 ktime_get_coarse_ns(void)
+> -{
+> -	return ktime_to_ns(ktime_get_coarse());
+> -}
+> -
+> -static inline u64 ktime_get_coarse_real_ns(void)
+> -{
+> -	return ktime_to_ns(ktime_get_coarse_real());
+> -}
+> -
+> -static inline u64 ktime_get_coarse_boottime_ns(void)
+> -{
+> -	return ktime_to_ns(ktime_get_coarse_boottime());
+> -}
+> -
+> -static inline u64 ktime_get_coarse_clocktai_ns(void)
+> -{
+> -	return ktime_to_ns(ktime_get_coarse_clocktai());
+> -}
+> -
+> -/**
+> - * ktime_mono_to_real - Convert monotonic time to clock realtime
+> - */
+> -static inline ktime_t ktime_mono_to_real(ktime_t mono)
+> -{
+> -	return ktime_mono_to_any(mono, TK_OFFS_REAL);
+> -}
+> -
+> -static inline u64 ktime_get_ns(void)
+> -{
+> -	return ktime_to_ns(ktime_get());
+> -}
+> -
+> -static inline u64 ktime_get_real_ns(void)
+> -{
+> -	return ktime_to_ns(ktime_get_real());
+> -}
+> -
+> -static inline u64 ktime_get_boottime_ns(void)
+> -{
+> -	return ktime_to_ns(ktime_get_boottime());
+> -}
+> -
+> -static inline u64 ktime_get_clocktai_ns(void)
+> -{
+> -	return ktime_to_ns(ktime_get_clocktai());
+> -}
+> -
+> -static inline u64 ktime_get_raw_ns(void)
+> -{
+> -	return ktime_to_ns(ktime_get_raw());
+> -}
+> -
+> -extern u64 ktime_get_mono_fast_ns(void);
+> -extern u64 ktime_get_raw_fast_ns(void);
+> -extern u64 ktime_get_boot_fast_ns(void);
+> -extern u64 ktime_get_real_fast_ns(void);
+> -
+> -/*
+> - * timespec64/time64_t interfaces utilizing the ktime based ones
+> - * for API completeness, these could be implemented more efficiently
+> - * if needed.
+> - */
+> -static inline void ktime_get_boottime_ts64(struct timespec64 *ts)
+> -{
+> -	*ts = ktime_to_timespec64(ktime_get_boottime());
+> -}
+> -
+> -static inline void ktime_get_coarse_boottime_ts64(struct timespec64 *ts)
+> -{
+> -	*ts = ktime_to_timespec64(ktime_get_coarse_boottime());
+> -}
+> -
+> -static inline time64_t ktime_get_boottime_seconds(void)
+> -{
+> -	return ktime_divns(ktime_get_coarse_boottime(), NSEC_PER_SEC);
+> -}
+> -
+> -static inline void ktime_get_clocktai_ts64(struct timespec64 *ts)
+> -{
+> -	*ts = ktime_to_timespec64(ktime_get_clocktai());
+> -}
+> -
+> -static inline void ktime_get_coarse_clocktai_ts64(struct timespec64 *ts)
+> -{
+> -	*ts = ktime_to_timespec64(ktime_get_coarse_clocktai());
+> -}
+> -
+> -static inline time64_t ktime_get_clocktai_seconds(void)
+> -{
+> -	return ktime_divns(ktime_get_coarse_clocktai(), NSEC_PER_SEC);
+> -}
+> -
+>  /*
+>   * RTC specific
+>   */
+> @@ -308,4 +113,4 @@ void read_persistent_wall_and_boot_offset(struct timespec64 *wall_clock,
+>  extern int update_persistent_clock64(struct timespec64 now);
+>  #endif
+>  
+> -#endif
+> +#endif /* _LINUX_TIMEKEEPING_H */
+> diff --git a/init/main.c b/init/main.c
+> index f5b8246e8aa1..a8db3a136d6a 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -100,6 +100,7 @@
+>  #include <linux/kcsan.h>
+>  #include <linux/init_syscalls.h>
+>  #include <linux/stackdepot.h>
+> +#include <linux/timekeeping.h>
+>  
+>  #include <asm/io.h>
+>  #include <asm/bugs.h>
+> diff --git a/kernel/time/ntp.c b/kernel/time/ntp.c
+> index 406dccb79c2b..804f06801737 100644
+> --- a/kernel/time/ntp.c
+> +++ b/kernel/time/ntp.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/module.h>
+>  #include <linux/rtc.h>
+>  #include <linux/audit.h>
+> +#include <linux/timekeeping.h>
+>  
+>  #include "ntp_internal.h"
+>  #include "timekeeping_internal.h"
+> diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
+> index dd5697d7347b..14f82cd95d10 100644
+> --- a/kernel/time/posix-timers.c
+> +++ b/kernel/time/posix-timers.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/slab.h>
+>  #include <linux/time.h>
+> +#include <linux/timekeeping.h>
+>  #include <linux/mutex.h>
+>  #include <linux/sched/task.h>
+>  
+> diff --git a/kernel/time/tick-legacy.c b/kernel/time/tick-legacy.c
+> index af225b32f5b3..9a534f716462 100644
+> --- a/kernel/time/tick-legacy.c
+> +++ b/kernel/time/tick-legacy.c
+> @@ -7,6 +7,7 @@
+>  #include <linux/irq.h>
+>  #include <linux/profile.h>
+>  #include <linux/timekeeper_internal.h>
+> +#include <linux/timekeeping.h>
+>  
+>  #include "tick-internal.h"
+>  
+> diff --git a/kernel/time/time.c b/kernel/time/time.c
+> index 29923b20e0e4..7292ed074742 100644
+> --- a/kernel/time/time.c
+> +++ b/kernel/time/time.c
+> @@ -29,6 +29,7 @@
+>  #include <linux/timex.h>
+>  #include <linux/capability.h>
+>  #include <linux/timekeeper_internal.h>
+> +#include <linux/timekeeping.h>
+>  #include <linux/errno.h>
+>  #include <linux/syscalls.h>
+>  #include <linux/security.h>
+> diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+> index 8a364aa9881a..4dfee925adc8 100644
+> --- a/kernel/time/timekeeping.c
+> +++ b/kernel/time/timekeeping.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/pvclock_gtod.h>
+>  #include <linux/compiler.h>
+>  #include <linux/audit.h>
+> +#include <linux/timekeeping.h>
+>  
+>  #include "tick-internal.h"
+>  #include "ntp_internal.h"
+> diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+> index ca2f2ecd1488..efbbe624d81d 100644
+> --- a/sound/pci/hda/hda_controller.c
+> +++ b/sound/pci/hda/hda_controller.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/module.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/slab.h>
+> +#include <linux/timekeeping.h>
+>  
+>  #ifdef CONFIG_X86
+>  /* for art-tsc conversion */
+> 
