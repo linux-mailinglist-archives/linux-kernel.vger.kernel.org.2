@@ -2,101 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 903B5444BA9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 00:30:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27F45444BB5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 00:40:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhKCXdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 19:33:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48734 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229561AbhKCXdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 19:33:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A373D61106;
-        Wed,  3 Nov 2021 23:30:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635982228;
-        bh=7d/S4PKHh5BjgsWH9oW8QND3gTFHBsCnsBmyV42Jt2E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UiZpRXk4ZuAg7XsO2NrmzPchHR3tzGZoDm90ziWbXv/x734FXpkyzfGstUzoq+krg
-         x23zr8GfxMH7oUxjM5y0z0zjbExRYWVx0EMg6fdA4r81SHLztEitUaQ9b/XN+PH0YJ
-         6sPPoHvTwUqGsVuls+6SsO8ib5hMBm/9xcootPivFTGuZ6qwWaa+sLKjSfP7ox2HKV
-         5667w2eh3OuhVJ1iGqTFx1XprXM1Qfr33zX0v+PZ8CPCFsf7jG3p1KTTAj13RaZBVT
-         qbm2T7Wl2L6HCFGWgyedhHhBsoh++69ketpnp+ZzvBDYQu02GouHe0AIEFEeJDSrxn
-         iNUqNwcy0vxDw==
-Received: by pali.im (Postfix)
-        id 50C087F0; Thu,  4 Nov 2021 00:30:26 +0100 (CET)
-Date:   Thu, 4 Nov 2021 00:30:26 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 4/7] PCI: pci_alloc_child_bus() return NULL if
- ->add_bus() returns -ENOLINK
-Message-ID: <20211103233026.trzas3cwrb26mqb3@pali>
-References: <20211103184939.45263-1-jim2101024@gmail.com>
- <20211103184939.45263-5-jim2101024@gmail.com>
+        id S230011AbhKCXnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 19:43:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229561AbhKCXnF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 19:43:05 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA8EC061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 16:40:28 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id u17so4174854plg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 16:40:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h29gM7Edy6vLtHykubE2EOJmPzM6wMTb8eMVyU/eFYE=;
+        b=EKBq7zuZioawowrHgnbn8nDEPEgxFsN+8IzKYZ1DFSblRd9o95aQr7V3qDl6+Rvs6U
+         jhur7uPRIVdgQk5dvuuZVjl+0kshlBwghkKpob4bwbfvPBHyszsWfI64Og2MKXG1n71F
+         oaX41A5YNhCrqinehnJDHuuOGij5giULBMcZ8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h29gM7Edy6vLtHykubE2EOJmPzM6wMTb8eMVyU/eFYE=;
+        b=tsGsRLsnhMf4HWRmESkVCXnikoj1flEMzYao0LiRajg8KkKDbBnwCg9vvBtm0eQgr5
+         5l8wnz78of9G6r5X+CU36cEhipOui7MZRd17k5NlBMLnryrudV256MSHTKtAdPhdDDrP
+         dS9T+DC7ZbQZpiILzrbOXCq7HuIVRX4g0IyQzZ91Xbas5lN7/mfbwFk15YHoGZYUGSZz
+         fJZD9qXp5/KFWYY8Yr1ML1uSt4uB/DpGn+nzTDboGabIiShUZzbZRx9Ksolrsl8A2Grl
+         GEO37syKCKvKEWjzcy7sAP/0CHenF2LLvHxjb8lFiCzOO4gwRnUlXXw7E0asp1fVeAyi
+         0aBw==
+X-Gm-Message-State: AOAM533u6uy1dpse2oFx/WnJoKhc5BivnxL2r1W9K7kJ/iedztaChfWL
+        aE0FqjrKJgQyr8P4bbdvnrAdjg==
+X-Google-Smtp-Source: ABdhPJzSZ0NFj4DVKnvqt8lE+Z4I+URLHTd7SEETpWfrpdOsqyzMOJMhtRZ3er6pUKkLZSku7DTQvQ==
+X-Received: by 2002:a17:902:7892:b0:140:283:6683 with SMTP id q18-20020a170902789200b0014002836683mr41176310pll.19.1635982827749;
+        Wed, 03 Nov 2021 16:40:27 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:49a7:f0ba:24b0:bc39])
+        by smtp.gmail.com with UTF8SMTPSA id n126sm3391952pfn.6.2021.11.03.16.40.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Nov 2021 16:40:27 -0700 (PDT)
+From:   Brian Norris <briannorris@chromium.org>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        David Airlie <airlied@linux.ie>,
+        linux-rockchip@lists.infradead.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Doug Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Brian Norris <briannorris@chromium.org>
+Subject: [PATCH 0/2] drm: Support input-boosted panel self-refresh exit
+Date:   Wed,  3 Nov 2021 16:40:16 -0700
+Message-Id: <20211103234018.4009771-1-briannorris@chromium.org>
+X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103184939.45263-5-jim2101024@gmail.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 03 November 2021 14:49:34 Jim Quinlan wrote:
-> Currently, if the call to the pci_ops add_bus() method returns an error, a
-> WARNING and dev_err() occurs.  We keep this behavior for all errors except
-> -ENOLINK; for -ENOLINK we want to skip the WARNING and immediately return
-> NULL.  The argument for this case is that one does not want to continue
-> enumerating if pcie-link has not been established.  The real reason is that
-> without doing this the pcie-brcmstb.c driver panics when the dev/id is
-> read, as this controller panics on such accesses rather than returning
-> 0xffffffff.
+A variety of applications have found it useful to listen to
+user-initiated input events to make decisions within a DRM driver, given
+that input events are often the first sign that we're going to start
+doing latency-sensitive activities:
 
-I think that this is something which should be fixed in the driver, not
-in the pci core code. Check in driver code that you can touch HW and if
-not return fabricated value 0xffffffff.
+ * Panel self-refresh: software-directed self-refresh (e.g., with
+   Rockchip eDP) is especially latency sensitive. In some cases, it can
+   take 10s of milliseconds for a panel to exit self-refresh, which can
+   be noticeable. Rockchip RK3399 Chrome OS systems have always shipped
+   with an input_handler boost, that preemptively exits self-refresh
+   whenever there is input activity.
 
-> It appears that there are only a few uses of the pci_ops add_bus() method
-> in the kernel and none of them currently return -ENOLINK so it should be
-> safe to do this.
-> 
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> ---
->  drivers/pci/probe.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index d9fc02a71baa..fdc3f42634b7 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -1122,6 +1122,9 @@ static struct pci_bus *pci_alloc_child_bus(struct pci_bus *parent,
->  
->  	if (child->ops->add_bus) {
->  		ret = child->ops->add_bus(child);
-> +		/* Don't return the child if w/o pcie link-up */
-> +		if (ret == -ENOLINK)
+ * GPU drivers: on GPU-accelerated desktop systems, we may need to
+   render new frames immediately after user activity. Powering up the
+   GPU can take enough time that it is worthwhile to start this process
+   as soon as there is input activity. Many Chrome OS systems also ship
+   with an input_handler boost that powers up the GPU.
 
-In my opinion ENOLINK is not the correct errno code for signaling
-"no link-up" error. IIRC ENOLINK was defined for file/inode links. For
-network connections there is ENETDOWN errno code which is more similar
-to "no link-up" than inode link.
+I implement the first bullet in this series, and I also compared with
+some out-of-tree patches for the second, to ensure this could be useful
+there too.
 
-Anyway, I still do not think if it is a good idea to have this check in
-core pci code.
+Past work on upstreaming a variety of Chromebook display patches got
+held up for this particular feature, as there was some desire to make it
+a bit more generic, for one. See the latest here:
 
-(This is just my opinion... wait for Bjorn with maintainer's hat what
-will say that is the best way to handle above issue)
+  https://lore.kernel.org/all/20180405095000.9756-25-enric.balletbo@collabora.com/
+  [PATCH v6 24/30] drm/rockchip: Disable PSR on input events
 
-> +			return NULL;
->  		if (WARN_ON(ret < 0))
->  			dev_err(&child->dev, "failed to add bus: %d\n", ret);
->  	}
-> -- 
-> 2.17.1
-> 
+I significantly rewrote this to adapt it to the new common
+drm_self_refresh_helpers and to add a new drm_input_helper thin library,
+so I only carry my own authorship on this series.
+
+Admittedly, this "drm_input_helper" library is barely DRM-specific at
+all, except that all display- and GPU-related input-watchers are likely
+to want to watch similar device behavior (unlike, say, rfkill or led
+input_handler code). If we find other applications need the same
+behavior outside of drivers/gpu/drm/, maybe this could find a home
+elsewhere.
+
+
+Brian Norris (2):
+  drm/input_helper: Add new input-handling helper
+  drm/self_refresh: Disable self-refresh on input events
+
+ drivers/gpu/drm/Makefile                  |   3 +-
+ drivers/gpu/drm/drm_input_helper.c        | 143 ++++++++++++++++++++++
+ drivers/gpu/drm/drm_self_refresh_helper.c |  54 +++++++-
+ include/drm/drm_input_helper.h            |  22 ++++
+ 4 files changed, 215 insertions(+), 7 deletions(-)
+ create mode 100644 drivers/gpu/drm/drm_input_helper.c
+ create mode 100644 include/drm/drm_input_helper.h
+
+-- 
+2.34.0.rc0.344.g81b53c2807-goog
+
