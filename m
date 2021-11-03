@@ -2,93 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E080C444336
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:16:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F71E444339
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbhKCOSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 10:18:45 -0400
-Received: from mga17.intel.com ([192.55.52.151]:54837 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231131AbhKCOSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 10:18:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10156"; a="212253588"
-X-IronPort-AV: E=Sophos;i="5.87,206,1631602800"; 
-   d="scan'208";a="212253588"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 07:16:07 -0700
-X-IronPort-AV: E=Sophos;i="5.87,206,1631602800"; 
-   d="scan'208";a="450079125"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 07:16:03 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1miH3L-003HQz-Ib;
-        Wed, 03 Nov 2021 16:15:47 +0200
-Date:   Wed, 3 Nov 2021 16:15:47 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jonas =?iso-8859-1?Q?Dre=DFler?= <verdre@v0yd.nl>
-Cc:     Brian Norris <briannorris@chromium.org>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Subject: Re: [PATCH] mwifiex: Add quirk to disable deep sleep with certain
- hardware revision
-Message-ID: <YYKZkz3EFfdENhoZ@smile.fi.intel.com>
-References: <20211028073729.24408-1-verdre@v0yd.nl>
- <CA+ASDXOrad3b=b8+vwuF6m3+ZcigVaoJySpDXXZOnC3O8CJBSw@mail.gmail.com>
- <cc7432f4-824a-abe2-e304-5ba019ac8c89@v0yd.nl>
- <b2aaf6f7-9f22-926a-963b-cfd0d4fca31d@v0yd.nl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b2aaf6f7-9f22-926a-963b-cfd0d4fca31d@v0yd.nl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S230527AbhKCOTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 10:19:03 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55764 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231131AbhKCOTC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 10:19:02 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C070F218ED;
+        Wed,  3 Nov 2021 14:16:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635948984; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IyCOQbcy3kmJ3VHhwgirT3uI+66g9isWYZuWQVudD5U=;
+        b=s6zdvMx6f15tKA0FclGGivM0XIvPj1DwF8r2EbGbsl6aIJgm/4GxnTmHK7nfNmCLyYcaY+
+        Ez4/kY2SxZaC8lIx0dKyXw+P1+2ySFL/Bdx+i5+rsD2bRtDBQ5r2am1sNFI4IEQss+nX29
+        ko4nCuqO7sY8kXs8lN2aXOZpxY0kXqw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635948984;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IyCOQbcy3kmJ3VHhwgirT3uI+66g9isWYZuWQVudD5U=;
+        b=WXN/danrABGacO1mjCDSSCRV3P4J6huxkSkgR4N5BAM0fpxTaZEVsotRP6ihIjqJn1WKfv
+        aIliMgpB2D7XBsAQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id AF6D62C150;
+        Wed,  3 Nov 2021 14:16:24 +0000 (UTC)
+Date:   Wed, 03 Nov 2021 15:16:24 +0100
+Message-ID: <s5ha6ilmiiv.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <perex@perex.cz>,
+        <tiwai@suse.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <alsa-devel@alsa-project.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 01/10] ASoC: tegra: Fix kcontrol put callback in ADMAIF
+In-Reply-To: <1635947547-24391-2-git-send-email-spujar@nvidia.com>
+References: <1635947547-24391-1-git-send-email-spujar@nvidia.com>
+        <1635947547-24391-2-git-send-email-spujar@nvidia.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 02:37:53PM +0100, Jonas Dreßler wrote:
-> On 11/3/21 13:25, Jonas Dreßler wrote:
-
-...
-
-> > > > +               if (strncmp(ver_ext->version_str, "ChipRev:20, BB:9b(10.00), RF:40(21)", 128) == 0) {
-> > > 
-> > > Rather than memorize the 128-size array here, maybe use
-> > > sizeof(ver_ext->version_str) ?
-> > 
-> > Sounds like a good idea, yeah.
+On Wed, 03 Nov 2021 14:52:17 +0100,
+Sameer Pujar wrote:
 > 
-> Nevermind, the reason I did this was for consistency in the
-> function, right underneath in the same function it also assumes
-> a fixed size of 128 characters, so I'd rather use the same
-> length.
+> The kcontrol put callback is expected to return 1 when there is change
+> in HW or when the update is acknowledged by driver. This would ensure
+> that change notifications are sent to subscribed applications. Update
+> the ADMAIF driver accordingly
 > 
-> > 		memcpy(version_ext->version_str, ver_ext->version_str,
-> > 		       sizeof(char) * 128);
-
-Besides sizeof(char)...
-
-> > 		memcpy(priv->version_str, ver_ext->version_str, 128);
+> Fixes: f74028e159bb ("ASoC: tegra: Add Tegra210 based ADMAIF driver")
+> Suggested-by: Jaroslav Kysela <perex@perex.cz>
+> Suggested-by: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> ---
+>  sound/soc/tegra/tegra210_admaif.c | 23 ++++++++++++++++++-----
+>  1 file changed, 18 insertions(+), 5 deletions(-)
 > 
-> Might be a good idea to #define it as MWIFIEX_VERSION_STR_LENGTH
-> in fw.h though...
+> diff --git a/sound/soc/tegra/tegra210_admaif.c b/sound/soc/tegra/tegra210_admaif.c
+> index bcccdf3..dc71075 100644
+> --- a/sound/soc/tegra/tegra210_admaif.c
+> +++ b/sound/soc/tegra/tegra210_admaif.c
+> @@ -452,16 +452,29 @@ static int tegra_admaif_put_control(struct snd_kcontrol *kcontrol,
+>  	struct tegra_admaif *admaif = snd_soc_component_get_drvdata(cmpnt);
+>  	int value = ucontrol->value.integer.value[0];
+>  
+> -	if (strstr(kcontrol->id.name, "Playback Mono To Stereo"))
+> +	if (strstr(kcontrol->id.name, "Playback Mono To Stereo")) {
+> +		if (admaif->mono_to_stereo[ADMAIF_TX_PATH][ec->reg] == value)
+> +			return 0;
+> +
+>  		admaif->mono_to_stereo[ADMAIF_TX_PATH][ec->reg] = value;
+> -	else if (strstr(kcontrol->id.name, "Capture Mono To Stereo"))
+> +	} else if (strstr(kcontrol->id.name, "Capture Mono To Stereo")) {
+> +		if (admaif->mono_to_stereo[ADMAIF_RX_PATH][ec->reg] == value)
+> +			return 0;
+> +
+>  		admaif->mono_to_stereo[ADMAIF_RX_PATH][ec->reg] = value;
+> -	else if (strstr(kcontrol->id.name, "Playback Stereo To Mono"))
+> +	} else if (strstr(kcontrol->id.name, "Playback Stereo To Mono")) {
+> +		if (admaif->stereo_to_mono[ADMAIF_TX_PATH][ec->reg] == value)
+> +			return 0;
+> +
+>  		admaif->stereo_to_mono[ADMAIF_TX_PATH][ec->reg] = value;
+> -	else if (strstr(kcontrol->id.name, "Capture Stereo To Mono"))
+> +	} else if (strstr(kcontrol->id.name, "Capture Stereo To Mono")) {
+> +		if (admaif->stereo_to_mono[ADMAIF_RX_PATH][ec->reg] == value)
+> +			return 0;
+> +
+>  		admaif->stereo_to_mono[ADMAIF_RX_PATH][ec->reg] = value;
+> +	}
+>  
+> -	return 0;
+> +	return 1;
 
-...I think you simply need a precursor patch that changes this
-to sizeof() / #define approach.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Hrm, that looks too redundant.  The similar checks are seen in the get
+part, so we may have a better helper function to reduce the string
+checks, something like below.
 
 
+BTW, independent from this patch set, I noticed that those get/put
+callbacks handle the wrong type.  For enum ctls, you have to use 
+ucontrol->value.enumerated.value instead of
+ucontrol->value.integer.value.  The former is long while the latter is
+int, hence they may have different sizes.
+
+Such a bug could be caught if you test once with
+CONFIG_SND_CTL_VALIDATION=y.  It's recommended to test with that
+config once for a new driver code.
+
+So, please submit the fix patch(es) for correcting the ctl value
+types, too.
+
+
+thanks,
+
+Takashi
+
+--- a/sound/soc/tegra/tegra210_admaif.c
++++ b/sound/soc/tegra/tegra210_admaif.c
+@@ -424,44 +424,46 @@ static const struct snd_soc_dai_ops tegra_admaif_dai_ops = {
+ 	.trigger	= tegra_admaif_trigger,
+ };
+ 
+-static int tegra_admaif_get_control(struct snd_kcontrol *kcontrol,
+-				    struct snd_ctl_elem_value *ucontrol)
++static unsigned int *tegra_admaif_route_val(struct snd_kcontrol *kcontrol)
+ {
+ 	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
+ 	struct soc_enum *ec = (struct soc_enum *)kcontrol->private_value;
+ 	struct tegra_admaif *admaif = snd_soc_component_get_drvdata(cmpnt);
+-	long *uctl_val = &ucontrol->value.integer.value[0];
+ 
+ 	if (strstr(kcontrol->id.name, "Playback Mono To Stereo"))
+-		*uctl_val = admaif->mono_to_stereo[ADMAIF_TX_PATH][ec->reg];
++		return &admaif->mono_to_stereo[ADMAIF_TX_PATH][ec->reg];
+ 	else if (strstr(kcontrol->id.name, "Capture Mono To Stereo"))
+-		*uctl_val = admaif->mono_to_stereo[ADMAIF_RX_PATH][ec->reg];
++		return &admaif->mono_to_stereo[ADMAIF_RX_PATH][ec->reg];
+ 	else if (strstr(kcontrol->id.name, "Playback Stereo To Mono"))
+-		*uctl_val = admaif->stereo_to_mono[ADMAIF_TX_PATH][ec->reg];
++		return &admaif->stereo_to_mono[ADMAIF_TX_PATH][ec->reg];
+ 	else if (strstr(kcontrol->id.name, "Capture Stereo To Mono"))
+-		*uctl_val = admaif->stereo_to_mono[ADMAIF_RX_PATH][ec->reg];
++		return &admaif->stereo_to_mono[ADMAIF_RX_PATH][ec->reg];
++	return NULL;
++}
+ 
++static int tegra_admaif_get_control(struct snd_kcontrol *kcontrol,
++				    struct snd_ctl_elem_value *ucontrol)
++{
++	unsigned int *valp = tegra_admaif_route_val(admaif, kcontrol);
++
++	if (!valp)
++		return -EINVAL;
++	ucontrol->value.integer.value[0] = *valp;
+ 	return 0;
+ }
+ 
+ static int tegra_admaif_put_control(struct snd_kcontrol *kcontrol,
+ 				    struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
+-	struct soc_enum *ec = (struct soc_enum *)kcontrol->private_value;
+-	struct tegra_admaif *admaif = snd_soc_component_get_drvdata(cmpnt);
++	unsigned int *valp = tegra_admaif_route_val(admaif, kcontrol);
+ 	int value = ucontrol->value.integer.value[0];
+ 
+-	if (strstr(kcontrol->id.name, "Playback Mono To Stereo"))
+-		admaif->mono_to_stereo[ADMAIF_TX_PATH][ec->reg] = value;
+-	else if (strstr(kcontrol->id.name, "Capture Mono To Stereo"))
+-		admaif->mono_to_stereo[ADMAIF_RX_PATH][ec->reg] = value;
+-	else if (strstr(kcontrol->id.name, "Playback Stereo To Mono"))
+-		admaif->stereo_to_mono[ADMAIF_TX_PATH][ec->reg] = value;
+-	else if (strstr(kcontrol->id.name, "Capture Stereo To Mono"))
+-		admaif->stereo_to_mono[ADMAIF_RX_PATH][ec->reg] = value;
+-
+-	return 0;
++	if (!valp)
++		return -EINVAL;
++	if (value == *valp)
++		return 0;
++	*valp = value;
++	return 1;
+ }
+ 
+ static int tegra_admaif_dai_probe(struct snd_soc_dai *dai)
