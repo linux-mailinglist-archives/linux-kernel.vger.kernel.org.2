@@ -2,71 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4CA444319
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFD3444327
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231804AbhKCOMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 10:12:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36348 "EHLO mail.kernel.org"
+        id S231748AbhKCOQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 10:16:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230527AbhKCOMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 10:12:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 19EA5610FD;
-        Wed,  3 Nov 2021 14:10:08 +0000 (UTC)
+        id S231393AbhKCOQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 10:16:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3EF5604DA;
+        Wed,  3 Nov 2021 14:13:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635948608;
-        bh=BBg/FnAjGaRt92WhYyr7ILk51DRhyJHZCYUUgze85xg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=iPA/TA7h5bZbeH+o6q4jXKpcXePojLy/PlS87HDrfUt0Ovf/BCQ21xVFG4mm7jCbk
-         srI5W+tql+jSOlZzW3oOJgibBSpHLS9MnFf0PQQPc+EJRQR8w370+IjHQl5GEf8czJ
-         JiGR0METeE7IwDrqroMKqYZmwK56yDbRcJJZdy7xV8SqiSDAm5I4oKTIVjbf/QubPx
-         HXvchZ2jZJShxENTz14396YfLqCXoQZCZ+8/JXizTlx0AiiYoi3hw5X4NCbuSuCuE+
-         +imG5Xlinllt8ofa0AROqasiVm6DoYsfw1f4ebB6STHnXQgJQrjRH76+MiKc9Cg6kq
-         Z2KhQL6giHs9w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0E06C60176;
-        Wed,  3 Nov 2021 14:10:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1635948818;
+        bh=JtiUVBkjhkrls5IZYmkhfWzLdJrUAOtNRhSf6a+L2uY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jnXNmfzhYfAKsZAcftXkjCDLysLiYVP94rm9qOZsC3rAXfU9677BZ77IXB9aF7HBs
+         uJ7gSn6Q+UEJ5+kTy6Wr5pajsTYbfaqcVoWYp9leD7UomUNAkhF7MaGGRH+eH16aOw
+         So5uWWKU25QvvYCmNcPYKwjkPXzSu8kwxJidCMJ2QeqZaR4JukQgFnkmhtBg8oVjLI
+         kG1CENxOfAkfFTn/N+axwUMknQ73g6qDVU/KNhHtCo//+/21fQatsODxIw2TmUQK3r
+         9xXSv7mNKVv8hFeHZwkQImgClvcvg96ZFZGQivGGAuJNq3pJcWKhbkc/77fGazdnxV
+         KxobObcTAi6GQ==
+Received: by mail-ed1-f46.google.com with SMTP id f4so9652450edx.12;
+        Wed, 03 Nov 2021 07:13:37 -0700 (PDT)
+X-Gm-Message-State: AOAM531LGoX/6VtWU6ajwspRstwJMHVy3dDuf573BMwbxaqRCdAQe21Y
+        wE8LwFafMaSPkK5tuMVUP0rYEnCb1p6VWofhEQ==
+X-Google-Smtp-Source: ABdhPJwO12MEg4fn8zCn2MRFAsgTPTKeRw19mkSIVVPiSrlIwwzZRBRcieuiu0Obm+3chTTmCf31R0a0NgKnYnfd1fU=
+X-Received: by 2002:a17:907:980d:: with SMTP id ji13mr26759965ejc.466.1635948810946;
+ Wed, 03 Nov 2021 07:13:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: udp6: replace __UDP_INC_STATS() with
- __UDP6_INC_STATS()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163594860805.30241.17271851271113294575.git-patchwork-notify@kernel.org>
-Date:   Wed, 03 Nov 2021 14:10:08 +0000
-References: <20211103082843.521796-1-imagedong@tencent.com>
-In-Reply-To: <20211103082843.521796-1-imagedong@tencent.com>
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     yoshfuji@linux-ipv6.org, davem@davemloft.net, dsahern@kernel.org,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, imagedong@tencent.com
+References: <20211101122545.3417624-1-horatiu.vultur@microchip.com>
+ <20211101122545.3417624-2-horatiu.vultur@microchip.com> <fb0ca91d-f5fa-5977-7574-8926d8d0e3bb@axentia.se>
+ <20211101213201.wdjsuexuuinepu3m@soft-dev3-1.localhost> <YYGFYLtehnDOgA9d@robh.at.kernel.org>
+ <20211102222757.ny4c7gdnyxm3gorw@soft-dev3-1.localhost> <087a49e0-30fe-7b09-b246-6d50e96299d1@axentia.se>
+In-Reply-To: <087a49e0-30fe-7b09-b246-6d50e96299d1@axentia.se>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 3 Nov 2021 09:13:19 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJYLgmPu8ACFcbwdj9GukPiSpMGsZWr6x659WMNyZEL9A@mail.gmail.com>
+Message-ID: <CAL_JsqJYLgmPu8ACFcbwdj9GukPiSpMGsZWr6x659WMNyZEL9A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: i2c-mux: Add property for settle time
+To:     Peter Rosin <peda@axentia.se>
+Cc:     Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Wed, Nov 3, 2021 at 6:45 AM Peter Rosin <peda@axentia.se> wrote:
+>
+> On 2021-11-02 23:27, Horatiu Vultur wrote:
+> > The 11/02/2021 13:37, Rob Herring wrote:
+> >> On Mon, Nov 01, 2021 at 10:32:01PM +0100, Horatiu Vultur wrote:
+> >>> The 11/01/2021 15:32, Peter Rosin wrote:
+>
+> *snip*
+>
+> >>>
+> >>> +required:
+> >>> +  - compatible
+> >>
+> >> compatible should not be required here.
+> >>
+> >>> +  - '#address-cells'
+> >>> +  - '#size-cells'
+> >>> +
+> >>>  examples:
+> >>>    - |
+> >>>      /*
+> >>> ---
+> >>>
+> >>> If I have this then my problem is with the required properties because then I
+> >>> start to get new warnings once I run:
+> >>>
+> >>> make ARCH=arm CROSS_COMPILE=arm-linux- dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/i2c/i2c-mux.yaml
+> >>>
+> >>> For example, one of new the warnings is this:
+> >>>
+> >>> /home/hvultur/linux/arch/arm/boot/dts/am335x-icev2.dt.yaml: mux-mii-hog: 'compatible' is a required property
+> >>>       From schema: /home/hvultur/linux/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
+> >>> /home/hvultur/linux/arch/arm/boot/dts/am335x-icev2.dt.yaml: mux-mii-hog: '#address-cells' is a required property
+> >>>       From schema: /home/hvultur/linux/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
+> >>> /home/hvultur/linux/arch/arm/boot/dts/am335x-icev2.dt.yaml: mux-mii-hog: '#size-cells' is a required property
+> >>>       From schema: /home/hvultur/linux/Documentation/devicetree/bindings/i2c/i2c-mux.yaml
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
+There's actually a ton of 'mux' nodes that should be causing warnings too.
 
-On Wed,  3 Nov 2021 16:28:43 +0800 you wrote:
-> From: Menglong Dong <imagedong@tencent.com>
-> 
-> __UDP_INC_STATS() is used in udpv6_queue_rcv_one_skb() when encap_rcv()
-> fails. __UDP6_INC_STATS() should be used here, so replace it with
-> __UDP6_INC_STATS().
-> 
-> Signed-off-by: Menglong Dong <imagedong@tencent.com>
-> 
-> [...]
+> >> This is because of the $nodename pattern being pretty lax and matches
+> >> on mux-mii-hog by mistake. We have 2 options. Change the nodename
+> >> pattern to '^(i2c-?)?mux(@.*)?$' or add 'select: false'. The former
+> >> would still match on 'mux' or 'mux@.*' which might still have problems.
+> >> For the latter, we just need to make sure all the i2c-mux schemas have a
+> >> $ref to this schema. Also, with that change we'd stop checking 'i2c-mux'
+> >> nodes that don't yet have a specific schema. That said, I do lean toward
+> >> the latter option.
+> >
+> > From what I can see there are only two i2c-mux schemas and both of them
+> > have a $ref to this schema [1][2]
+> >
+> > [1] https://elixir.bootlin.com/linux/latest/source/Documentation/devicetree/bindings/i2c/i2c-mux-gpmux.yaml#L33
+> > [2] https://elixir.bootlin.com/linux/latest/source/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml#L16
+>
+> I'm a relative yaml bindings newbie, but I assume adding "select: false" will
+> have the side effect of not enforcing this i2c-mux schema on i2c-muxes that
+> have not yet been converted to yaml? E.g. i2c-mux-gpio.txt, i2c-mux-pinctrl.txt
+> etc etc. But there are not too many of those. Is it a prerequisite to update
+> those bindings to yaml before doing "select: false"?
 
-Here is the summary with links:
-  - [net-next] net: udp6: replace __UDP_INC_STATS() with __UDP6_INC_STATS()
-    https://git.kernel.org/netdev/net/c/250962e46846
+No. We may be losing some checks temporarily, but we've got plenty of
+other warnings to keep busy. And most cases in tree seem to be pca954x
+anyways.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> Looking further I think
+> there's a total of about 15-20 drivers doing i2c-muxing (or arbing/gating),
+> and some of those exist outside the "i2c umbrella".
+>
+> I wonder if e.g. this one [1] should really reference i2c-controller.yaml as
+> it is currently doing, or if i2c-mux.yaml is correct?
+>
+> [1] Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.yaml
+>
+> Maybe i2c-mux.yaml didn't work in that case because the node names were
+> "wrong" and did not match the pattern and then someone stuck
+> i2c-controller.yaml in there simply because that was close enough, and
+> also happened to work?
 
+While the device does have muxing capability, it does much more and
+the use is rather specific. So I think it is fine.
 
+Rob
