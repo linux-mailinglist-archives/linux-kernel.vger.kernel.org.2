@@ -2,145 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621F0443F73
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 10:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8648443F7C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 10:38:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232063AbhKCJe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 05:34:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48221 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231922AbhKCJeq (ORCPT
+        id S231913AbhKCJl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 05:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231749AbhKCJlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 05:34:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635931930;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HXwpnkGi8E1tecrDeHdASgGseLR/pV5+X21g3UrIJX0=;
-        b=CNP4Kxsy2XFaeCohXZeLAjZy9to+Qj+URSrN6sCySX4BPYZrN1Qha6+r59EVFOgsASLQpD
-        g0lNlionHWKsme1XBpVM1+29vEk1X269Zw5cv5My30wp4rTP6bdBrcown+x2gspPiT/h0V
-        e65GTNrZEnlCPI+/BcoLlOd+tUlUXio=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-447-61hBb0CdPaa9GQe4Bh2JFw-1; Wed, 03 Nov 2021 05:32:07 -0400
-X-MC-Unique: 61hBb0CdPaa9GQe4Bh2JFw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B896DBBEF7;
-        Wed,  3 Nov 2021 09:32:00 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DE9BD19723;
-        Wed,  3 Nov 2021 09:31:56 +0000 (UTC)
-Message-ID: <c6477e5bfb67f2a939a8f62cb22e48c14587a75c.camel@redhat.com>
-Subject: Re: [PATCH] KVM: x86: inhibit APICv when KVM_GUESTDBG_BLOCKIRQ
- active
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>
-Date:   Wed, 03 Nov 2021 11:31:55 +0200
-In-Reply-To: <20211103092912.425128-1-mlevitsk@redhat.com>
-References: <e508be0ecda6db330d83b954f4e4d1ad12c08c64.camel@redhat.com>
-         <20211103092912.425128-1-mlevitsk@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Wed, 3 Nov 2021 05:41:23 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246D2C061203
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 02:38:30 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id f4so6821494edx.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 02:38:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zEyIczqFSHpavkegJTGcffG0KJRQlbVgPG2I11SEzIk=;
+        b=vE8celaAZhFLiXMY3hj+ux1f4WpUOtB+IYPgxA+T3rNqveRNEQm86XNOSQ7+s9eVJn
+         GELJidoE/FALVgt0sG3aOE+fD/QYwbJjtvBMP2BG/I77YXX1+zxkPFgFEjzuIi9SoMwO
+         RSXHZld3YZhMd6yXkQNEk15b28o4td9KGN+hOkrjxmr4fN6kxERAFDOB8ralLISEDiFK
+         Z4lpDlK9gSUHrwPDYHDoV30hbKcHE/jPhgpceG9mTT47ADu5zyKrpUs/PmasPL51k1Q/
+         8Nda7xOAFirJX1iOO0xRXBrMaHaSyz/0FrkkVQsPv4JijQpkp77F7idxvjr0jZXCLle8
+         O+yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zEyIczqFSHpavkegJTGcffG0KJRQlbVgPG2I11SEzIk=;
+        b=C8qPGVlen+98a19o3jhpkEV9oF01PVLXQIyQk7NncOFLYdd2FGvS32envntXD52V0m
+         y/rCYWR0Nm0NsbP7tj9oACwqb329B1Oz4gXXMI37NMsdodhA/fAAM0/w3+zbgktJHt0+
+         eUx8adqFA7mNu9n5gZRjGEzdhWmSspKbi5Wf/R9fNnm666gm1AwzbZvJL4f+YIXjCPzj
+         krj9C6wOCtoVb3+6/xqOuQo/HBhnu8OOpdzVGgY39bdA1tEIUIgnxqaEjPP2F0oKObBf
+         77F9NH1Q+UavnQ6AW/EEtVIaXoaNKgigLQ2USfZNaSW7E9Eyf1M3wVBoyMZyKJZC2Mee
+         PcWA==
+X-Gm-Message-State: AOAM531QCZEoAkUoHvcpgjfESKSpeH6ETvEIgWaKeDhHlqrzb20dmQTu
+        qn9JrOnKGVYCpZDUx83DvLPl0ZR1aX67gL5F95EE3Q==
+X-Google-Smtp-Source: ABdhPJylvEHPgODpfxQWb3myB8GzOfRCv9ha0X5xGunFbmsG+KmnpYDbhMqV4MR+y93eMexM+Aj3CQofSDWo2t+wrHA=
+X-Received: by 2002:a17:907:10cf:: with SMTP id rv15mr2446809ejb.383.1635932308691;
+ Wed, 03 Nov 2021 02:38:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20211029114312.1921603-1-anders.roxell@linaro.org>
+ <834d18b6-4106-045f-0264-20e54edf47bc@linuxfoundation.org>
+ <CAKwvOdk8D5=AxzSpqjvXJc4XXL8CA7O=WY-LW0mZb3eQRK_EWg@mail.gmail.com> <CADYN=9+iueC3rJ4=32OM9rOUDLLmvcKY-y_By4hwAj1+9gxRiQ@mail.gmail.com>
+In-Reply-To: <CADYN=9+iueC3rJ4=32OM9rOUDLLmvcKY-y_By4hwAj1+9gxRiQ@mail.gmail.com>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Wed, 3 Nov 2021 10:38:17 +0100
+Message-ID: <CADYN=9+e=qLGBN+qxmKObiOp0hTQ_sGHSusn+4YvAXuprGVp2A@mail.gmail.com>
+Subject: Re: [PATCH] selftests: kselftest.h: mark functions with 'noreturn'
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org,
+        fenghua.yu@intel.com, reinette.chatre@intel.com,
+        john.stultz@linaro.org, tglx@linutronix.de,
+        akpm@linux-foundation.org, nathan@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, llvm@lists.linux.dev,
+        Mike Rapoport <rppt@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-11-03 at 11:29 +0200, Maxim Levitsky wrote:
-> KVM_GUESTDBG_BLOCKIRQ relies on interrupts being injected using
-> standard kvm's inject_pending_event, and not via APICv/AVIC.
-> 
-> Since this is a debug feature, just inhibit it while it
-> is in use.
-> 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> ---
->  arch/x86/include/asm/kvm_host.h | 1 +
->  arch/x86/kvm/svm/avic.c         | 3 ++-
->  arch/x86/kvm/vmx/vmx.c          | 3 ++-
->  arch/x86/kvm/x86.c              | 3 +++
->  4 files changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 88fce6ab4bbd7..8f6e15b95a4d8 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1034,6 +1034,7 @@ struct kvm_x86_msr_filter {
->  #define APICV_INHIBIT_REASON_IRQWIN     3
->  #define APICV_INHIBIT_REASON_PIT_REINJ  4
->  #define APICV_INHIBIT_REASON_X2APIC	5
-> +#define APICV_INHIBIT_REASON_BLOCKIRQ	6
->  
->  struct kvm_arch {
->  	unsigned long n_used_mmu_pages;
-> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-> index 8052d92069e01..affc0ea98d302 100644
-> --- a/arch/x86/kvm/svm/avic.c
-> +++ b/arch/x86/kvm/svm/avic.c
-> @@ -904,7 +904,8 @@ bool svm_check_apicv_inhibit_reasons(ulong bit)
->  			  BIT(APICV_INHIBIT_REASON_NESTED) |
->  			  BIT(APICV_INHIBIT_REASON_IRQWIN) |
->  			  BIT(APICV_INHIBIT_REASON_PIT_REINJ) |
-> -			  BIT(APICV_INHIBIT_REASON_X2APIC);
-> +			  BIT(APICV_INHIBIT_REASON_X2APIC) |
-> +			  BIT(APICV_INHIBIT_REASON_BLOCKIRQ);
->  
->  	return supported & BIT(bit);
->  }
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 71f54d85f104c..e4fc9ff7cd944 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7565,7 +7565,8 @@ static void hardware_unsetup(void)
->  static bool vmx_check_apicv_inhibit_reasons(ulong bit)
->  {
->  	ulong supported = BIT(APICV_INHIBIT_REASON_DISABLE) |
-> -			  BIT(APICV_INHIBIT_REASON_HYPERV);
-> +			  BIT(APICV_INHIBIT_REASON_HYPERV) |
-> +			  BIT(APICV_INHIBIT_REASON_BLOCKIRQ);
->  
->  	return supported & BIT(bit);
->  }
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index ac83d873d65b0..eb3b8d2375713 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10747,6 +10747,9 @@ int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
->  	if (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)
->  		vcpu->arch.singlestep_rip = kvm_get_linear_rip(vcpu);
->  
-> +	kvm_request_apicv_update(vcpu->kvm,
-> +			!(vcpu->guest_debug & KVM_GUESTDBG_BLOCKIRQ),
-> +			APICV_INHIBIT_REASON_BLOCKIRQ);
-I need more coffee, bad indention here :)
+On Tue, 2 Nov 2021 at 23:04, Anders Roxell <anders.roxell@linaro.org> wrote:
+>
+> On Sat, 30 Oct 2021 at 00:08, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> >
+> > On Fri, Oct 29, 2021 at 11:19 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+> > >
+> > > On 10/29/21 5:43 AM, Anders Roxell wrote:
+> > > > When building kselftests/capabilities the following warning shows up:
+> > > >
+> > > > clang -O2 -g -std=gnu99 -Wall    test_execve.c -lcap-ng -lrt -ldl -o test_execve
+> > > > test_execve.c:121:13: warning: variable 'have_outer_privilege' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+> > > >          } else if (unshare(CLONE_NEWUSER | CLONE_NEWNS) == 0) {
+> > > >                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > test_execve.c:136:9: note: uninitialized use occurs here
+> > > >          return have_outer_privilege;
+> > > >                 ^~~~~~~~~~~~~~~~~~~~
+> > > > test_execve.c:121:9: note: remove the 'if' if its condition is always true
+> > > >          } else if (unshare(CLONE_NEWUSER | CLONE_NEWNS) == 0) {
+> > > >                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > test_execve.c:94:27: note: initialize the variable 'have_outer_privilege' to silence this warning
+> > > >          bool have_outer_privilege;
+> > > >                                   ^
+> > > >                                    = false
+> > > >
+> > > > Rework so all the ksft_exit_*() functions have attribue
+> > > > '__attribute__((noreturn))' so the compiler knows that there wont be
+> > > > any return from the function. That said, without
+> > > > '__attribute__((noreturn))' the compiler warns about the above issue
+> > > > since it thinks that it will get back from the ksft_exit_skip()
+> > > > function, which it wont.
+> > > > Cleaning up the callers that rely on ksft_exit_*() return code, since
+> > > > the functions ksft_exit_*() have never returned anything.
+> > > >
+> > > > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> > >
+> > > Lot of changes to fix this warning. Is this necessary? I would
+> > > like to explore if there is an easier and localized change that
+> > > can fix the problem.
+> >
+> > via `man 3 exit`:
+> > ```
+> > The  exit() function causes normal process termination ...
+> > ...
+> > RETURN VALUE
+> >        The exit() function does not return.
+> > ```
+> > so seeing `ksft_exit_pass`, `ksft_exit_fail`, `ksft_exit_fail_msg`,
+> > `ksft_exit_xfail`, `ksft_exit_xpass`, and `ksft_exit_skip` all
+> > unconditional call `exit` yet return an `int` looks wrong to me on
+> > first glance. So on that point this patch and its resulting diffstat
+> > LGTM.
+>
+> I'll respin the patch with these changes only.
+>
+> >
+> > That said, there are many changes that explicitly call `ksft_exit`
+> > with an expression; are those setting the correct exit code? Note that
+> > ksft_exit_pass is calling exit with KSFT_PASS which is 0.  So some of
+> > the negations don't look quite correct to me.  For example:
+> >
+> > -       return !ksft_get_fail_cnt() ? ksft_exit_pass() : ksft_exit_fail();
+> > +       ksft_exit(!ksft_get_fail_cnt());
+> >
+> > so if ksft_get_fail_cnt() returns 0, then we were calling
+> > ksft_exit_pass() which exited with 0. Now we'd be exiting with 1?
+>
+> oh, right, thank you for your review.
+> I will drop all the 'ksft_exit()' changes, they should be fixed and go
+> in as separete patches.
 
-Could you test if this patch works for you?
+tools/testing/selftests/vm/memfd_secret.c has the
+'ksft_exit(!ksft_get_fail_cnt())'
+statement and when I looked at it it when I did this patch it looked correct.
+However, when I look at it now I get a bit confused how ksft_exit() can be used
+with ksft_get_fail_cnt(). @Mike can you please clarify the
+'ksft_exit(!ksft_get_fail_cnt())' instance in
+tools/testing/selftests/vm/memfd_secret.c.
 
-I managed to reproduce this issue on AVIC, by patching out the x2apic inhibit,
-and then this patch fixed the issue for me.
-
-
-Best regards,
-	Maxim Levitsky
-
->  	/*
->  	 * Trigger an rflags update that will inject or remove the trace
->  	 * flags.
-
-
+Cheers,
+Anders
