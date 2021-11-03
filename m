@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE60E44484D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 19:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62656444853
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 19:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231345AbhKCSgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 14:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
+        id S231486AbhKCSgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 14:36:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbhKCSg1 (ORCPT
+        with ESMTP id S231219AbhKCSga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 14:36:27 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D92C9C061203
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 11:33:50 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id r30-20020aa7989e000000b004812fdc343eso1819071pfl.9
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 11:33:50 -0700 (PDT)
+        Wed, 3 Nov 2021 14:36:30 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0285C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 11:33:53 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id n22-20020a6563d6000000b0029261ffde9bso1860289pgv.22
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 11:33:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=J5vfKF6W1D5gAeKm4lwrd0QK8zJYwxNEd4UBSUYOqrg=;
-        b=To0pew1bYcekjF4Ldq5rjlQpbzzSeeCXehNV77kz2dvXRRMBkbbIm6yMN4WnRfwQzq
-         s1/Hnpi9zbJ6ULjoqxYkxerz8TvwSqQ4j6oSJ3ZYKTO7gOUs7Sn3vIA7+ZAIAtEtNVAT
-         fSPrXdhlZb4Xi890mAC2fRXzuYdNRpv/1czBHMZKiUgwOvJ2CQxhwTON1bO2MlLX91th
-         JHHv6kvT84/PyjSCGCwfXiCNzDlkkEqcHr52wt3t9TXjJMF6scvmSAFprAuuruy9LxBO
-         UgW4l9LQ7VgbdO3h4Nd+l5r6059C1CP9D7FMRIeMvGovYJY49BjemuNqaD5dWngY+tbP
-         xGXg==
+        bh=OlHAqqU2TheCKRbtoKErhWOTUsWwfnc35tms2ZBHd5Q=;
+        b=kh9+dLdjtxAPihCGtfVuX/FN1/EC0cmISDZJ1SAjQZrt2KWL6jL5YvrHCbdsFFT8ph
+         CC3/JoqRSQp1BmmqW8DNC5w8IL6g0uXSqPaPChgT3Sgr3YOYCBtQ2NLv2V+zgy7C9l4g
+         gHOD2S4ivcsnDHqD1/lzbGkYAgAJXtMXNH3ajmNE8K30/KeX9Kp5mAR3J383w3yuBOAx
+         BwTgomWiAbY8a3sa9Sc0QvbYOU9llKxJEUJP20JWVUpohQ+576iXpQ8RMp4cvkY5DPCE
+         dSStnvIvy4FCjbnzoTYgpFffdjV3lZT45/XE9iRkfv+42jRnu+Po8S1+6z1C59kOrXJG
+         c3gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=J5vfKF6W1D5gAeKm4lwrd0QK8zJYwxNEd4UBSUYOqrg=;
-        b=ZNoVTHy8619s7N9Nx8YFLVAgoZksCuTvcZesfBEkdKMzCsuqIlR0wZm+YO5V/TlSnd
-         R/eM2TuaVoxdka+y9geRo6zFJlNS2tcp76kjF+lRBTEF96H6S1V4luo9q3/Nw4qsX1J/
-         mcPaNynsrdHtfyIJbJCo/ISnS3dkKKQTTBwa6repj/dkUbri6YzZCgohL9V6fcSQRnyL
-         VGzkI3Dl4P2TO92xgwZQplgAM4vUXGWFDEeEB8Odyxd1JNRhAWNs/Qg6sQiS+WFhnplv
-         c0nofzpTwINIcfyz0ZIVI42PTI0VgIHva2lK+9MP/uGKKoRecvl3HB0nnStpPjCj+jbC
-         GoqQ==
-X-Gm-Message-State: AOAM533vNFBhzwCl/TLfXC23C1s63gbQlkP/nfxKhyGwN82ihu0YeRhH
-        krooCwoGVcbocUUDZHQHPfvTzmC9KZTu
-X-Google-Smtp-Source: ABdhPJwC4fvy2sGmysq37/bAuht9+nkpD/vRteKePPgPc/w35pQ2gLI8Z0wLKbfoL1Y90YyHELXppPMrt35o
+        bh=OlHAqqU2TheCKRbtoKErhWOTUsWwfnc35tms2ZBHd5Q=;
+        b=AUlrf+wFOogF63Ax1uLan6uvIQniQ3hVqFpcZNdrftc91G2/NzjMk0npNnRv6N0GSP
+         iOn5wH8ZEWv+JHnLpzJJPHphHOkvfxTv7MMl0QJHfc+NI1SvlSEGoKJ3G/Fj1/+2kF3i
+         9qqIdciCB7/xCskttUQ+6gk1zXhudmt2Xx9qqf7d5vbkeW4Y/ONTFtzp+LA6wyp+JpxW
+         /r3703FURVwbQfm9c9MUTx1J/F78blnsJqTpKx5+9xXM1H5jnPzpnW+4YlBKfmQ78xd4
+         pD8BlaxkrU4W5pzU60Tz1P1T8tCD+V2NmLPG4Hg1Uq+ujR2UehXOEUEn+6XBTGeejWIb
+         JxGQ==
+X-Gm-Message-State: AOAM531oD4nT8y3TCLUcUkR7G3kOPNdKFGUQzB7eYZFbz7S9mXep6HqL
+        108OSIEyq7MmEVV9whjEMgUjRM0WIjCo
+X-Google-Smtp-Source: ABdhPJydw8wL5wpiEWFxnBPPsArRY1Rud9a1UMXMzjKks9ifhZxNcejfeX53ueIDLpjfSsggZ/sF/FlCnLkf
 X-Received: from vipinsh.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:36b0])
- (user=vipinsh job=sendgmr) by 2002:a05:6a00:2293:b0:481:fe4:c9df with SMTP id
- f19-20020a056a00229300b004810fe4c9dfmr22559109pfe.69.1635964430317; Wed, 03
- Nov 2021 11:33:50 -0700 (PDT)
-Date:   Wed,  3 Nov 2021 18:32:31 +0000
+ (user=vipinsh job=sendgmr) by 2002:a17:903:1207:b0:13d:b9b1:ead7 with SMTP id
+ l7-20020a170903120700b0013db9b1ead7mr39915184plh.63.1635964433179; Wed, 03
+ Nov 2021 11:33:53 -0700 (PDT)
+Date:   Wed,  3 Nov 2021 18:32:32 +0000
 In-Reply-To: <20211103183232.1213761-1-vipinsh@google.com>
-Message-Id: <20211103183232.1213761-2-vipinsh@google.com>
+Message-Id: <20211103183232.1213761-3-vipinsh@google.com>
 Mime-Version: 1.0
 References: <20211103183232.1213761-1-vipinsh@google.com>
 X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v2 1/2] KVM: VMX: Add a wrapper to read index of GPR for
- INVPCID, INVVPID, and INVEPT
+Subject: [PATCH v2 2/2] KVM: Move INVPCID type check from vmx and svm to the
+ common kvm_handle_invpcid()
 From:   Vipin Sharma <vipinsh@google.com>
 To:     pbonzini@redhat.com, seanjc@google.com, jmattson@google.com
 Cc:     dmatlack@google.com, kvm@vger.kernel.org,
@@ -63,94 +63,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-handle_invept(), handle_invvpid(), handle_invpcid() read the same reg2
-on VM exit. Move them to a common wrapper function.
+This check will be done in switch statement of kvm_handle_invpcid(),
+used by both VMX and SVM. It also removes (type > 3) check.
 
 Signed-off-by: Vipin Sharma <vipinsh@google.com>
 ---
- arch/x86/kvm/vmx/nested.c | 10 ++++++----
- arch/x86/kvm/vmx/vmx.c    |  4 +++-
- arch/x86/kvm/vmx/vmx.h    |  5 +++++
- 3 files changed, 14 insertions(+), 5 deletions(-)
+ arch/x86/kvm/svm/svm.c | 5 -----
+ arch/x86/kvm/vmx/vmx.c | 5 -----
+ arch/x86/kvm/x86.c     | 3 ++-
+ 3 files changed, 2 insertions(+), 11 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index b4ee5e9f9e20..f73d4e31dd99 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -5379,7 +5379,7 @@ static int handle_invept(struct kvm_vcpu *vcpu)
- 	struct {
- 		u64 eptp, gpa;
- 	} operand;
--	int i, r;
-+	int i, r, gpr_index;
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 21bb81710e0f..ccbf96876ec6 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -3119,11 +3119,6 @@ static int invpcid_interception(struct kvm_vcpu *vcpu)
+ 	type = svm->vmcb->control.exit_info_2;
+ 	gva = svm->vmcb->control.exit_info_1;
  
- 	if (!(vmx->nested.msrs.secondary_ctls_high &
- 	      SECONDARY_EXEC_ENABLE_EPT) ||
-@@ -5392,7 +5392,8 @@ static int handle_invept(struct kvm_vcpu *vcpu)
- 		return 1;
+-	if (type > 3) {
+-		kvm_inject_gp(vcpu, 0);
+-		return 1;
+-	}
+-
+ 	return kvm_handle_invpcid(vcpu, type, gva);
+ }
  
- 	vmx_instruction_info = vmcs_read32(VMX_INSTRUCTION_INFO);
--	type = kvm_register_read(vcpu, (vmx_instruction_info >> 28) & 0xf);
-+	gpr_index = vmx_get_instr_info_reg2(vmx_instruction_info);
-+	type = kvm_register_read(vcpu, gpr_index);
- 
- 	types = (vmx->nested.msrs.ept_caps >> VMX_EPT_EXTENT_SHIFT) & 6;
- 
-@@ -5459,7 +5460,7 @@ static int handle_invvpid(struct kvm_vcpu *vcpu)
- 		u64 gla;
- 	} operand;
- 	u16 vpid02;
--	int r;
-+	int r, gpr_index;
- 
- 	if (!(vmx->nested.msrs.secondary_ctls_high &
- 	      SECONDARY_EXEC_ENABLE_VPID) ||
-@@ -5472,7 +5473,8 @@ static int handle_invvpid(struct kvm_vcpu *vcpu)
- 		return 1;
- 
- 	vmx_instruction_info = vmcs_read32(VMX_INSTRUCTION_INFO);
--	type = kvm_register_read(vcpu, (vmx_instruction_info >> 28) & 0xf);
-+	gpr_index = vmx_get_instr_info_reg2(vmx_instruction_info);
-+	type = kvm_register_read(vcpu, gpr_index);
- 
- 	types = (vmx->nested.msrs.vpid_caps &
- 			VMX_VPID_EXTENT_SUPPORTED_MASK) >> 8;
 diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 71f54d85f104..e41d207e3298 100644
+index e41d207e3298..a3bb9854f4d2 100644
 --- a/arch/x86/kvm/vmx/vmx.c
 +++ b/arch/x86/kvm/vmx/vmx.c
-@@ -5494,6 +5494,7 @@ static int handle_invpcid(struct kvm_vcpu *vcpu)
- 		u64 pcid;
- 		u64 gla;
- 	} operand;
-+	int gpr_index;
+@@ -5505,11 +5505,6 @@ static int handle_invpcid(struct kvm_vcpu *vcpu)
+ 	gpr_index = vmx_get_instr_info_reg2(vmx_instruction_info);
+ 	type = kvm_register_read(vcpu, gpr_index);
  
- 	if (!guest_cpuid_has(vcpu, X86_FEATURE_INVPCID)) {
- 		kvm_queue_exception(vcpu, UD_VECTOR);
-@@ -5501,7 +5502,8 @@ static int handle_invpcid(struct kvm_vcpu *vcpu)
+-	if (type > 3) {
+-		kvm_inject_gp(vcpu, 0);
+-		return 1;
+-	}
+-
+ 	/* According to the Intel instruction reference, the memory operand
+ 	 * is read even if it isn't needed (e.g., for type==all)
+ 	 */
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index ac83d873d65b..134585027e92 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -12443,7 +12443,8 @@ int kvm_handle_invpcid(struct kvm_vcpu *vcpu, unsigned long type, gva_t gva)
+ 		return kvm_skip_emulated_instruction(vcpu);
+ 
+ 	default:
+-		BUG(); /* We have already checked above that type <= 3 */
++		kvm_inject_gp(vcpu, 0);
++		return 1;
  	}
- 
- 	vmx_instruction_info = vmcs_read32(VMX_INSTRUCTION_INFO);
--	type = kvm_register_read(vcpu, (vmx_instruction_info >> 28) & 0xf);
-+	gpr_index = vmx_get_instr_info_reg2(vmx_instruction_info);
-+	type = kvm_register_read(vcpu, gpr_index);
- 
- 	if (type > 3) {
- 		kvm_inject_gp(vcpu, 0);
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index e7db42e3b0ce..95c9bca45cdd 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -522,4 +522,9 @@ static inline bool vmx_guest_state_valid(struct kvm_vcpu *vcpu)
- 
- void dump_vmcs(struct kvm_vcpu *vcpu);
- 
-+static inline int vmx_get_instr_info_reg2(u32 vmx_instr_info)
-+{
-+	return (vmx_instr_info >> 28) & 0xf;
-+}
-+
- #endif /* __KVM_X86_VMX_H */
+ }
+ EXPORT_SYMBOL_GPL(kvm_handle_invpcid);
 -- 
 2.33.1.1089.g2158813163f-goog
 
