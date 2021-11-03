@@ -2,53 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA03443ABA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 02:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45146443ABF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 02:13:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbhKCBNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 21:13:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53082 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230295AbhKCBNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 21:13:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12D6E60FC4;
-        Wed,  3 Nov 2021 01:10:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635901842;
-        bh=xI9EJ2i6X9dxqm5x8ZW0RA+QOVBUId4dJCq44ghvmK8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mUq1CEHZdLfPWeL31ZzgZgIxBBnELvCAd0rvfWK31pNdiH7nDIppJ4x01QFHl7fZu
-         Hs3ZeXZIIyyks5fG62xLL8Wz/ymXWeqeqNfUBDWlfc+7pPQiM6j/0w1ra7qMQ/AdVb
-         fW+P9eVukjDa9hmepXUbLU1KV3aE5IFu8wn9OJip3UU1qzdq+zUZgWNXmOevft3/qx
-         veyWvfqR6ei7k6qMWpSHFzGTBlYef/gfNxgc6mclex9vCyyfSfiRYjstdf+SeBjULK
-         pXVBm9i5SxiTgGFBeBIMzn0xETmPhU5Cp2ZhJ41gA7ZhZZ6Ow+aUzSwOGdUOWJKd4U
-         Y38tFhLnFmKgw==
-Date:   Tue, 2 Nov 2021 18:10:38 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Volodymyr Mytnyk [C]" <vmytnyk@marvell.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "Taras Chornyi [C]" <tchornyi@marvell.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Yevhen Orlov <yevhen.orlov@plvision.eu>,
-        "Vadym Kochan [C]" <vkochan@marvell.com>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] [-next] net: marvell: prestera: Add explicit padding
-Message-ID: <20211102181038.31035104@kicinski-fedora-PC1C0HJN>
-In-Reply-To: <SJ0PR18MB4009AED9ADC1CB53775F71FEB28B9@SJ0PR18MB4009.namprd18.prod.outlook.com>
-References: <20211102082433.3820514-1-geert@linux-m68k.org>
-        <CAK8P3a1x0dU=x=mnBC8JeDG=dsQNfyO7X=16jm0WUwQ8wwLp=w@mail.gmail.com>
-        <SJ0PR18MB4009AED9ADC1CB53775F71FEB28B9@SJ0PR18MB4009.namprd18.prod.outlook.com>
+        id S231967AbhKCBQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 21:16:04 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:61125 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230295AbhKCBQD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 21:16:03 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 1A30oVLk051715;
+        Wed, 3 Nov 2021 08:50:31 +0800 (GMT-8)
+        (envelope-from jammy_huang@aspeedtech.com)
+Received: from JammyHuang-PC.aspeed.com (192.168.2.115) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Nov
+ 2021 09:13:21 +0800
+From:   Jammy Huang <jammy_huang@aspeedtech.com>
+To:     <eajames@linux.ibm.com>, <mchehab@kernel.org>, <joel@jms.id.au>,
+        <andrew@aj.id.au>, <linux-media@vger.kernel.org>,
+        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+CC:     Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: [PATCH v2] media: aspeed: fix mode-detect always time out at 2nd run
+Date:   Wed, 3 Nov 2021 09:13:57 +0800
+Message-ID: <20211103011357.22067-1-jammy_huang@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.2.115]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 1A30oVLk051715
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Nov 2021 11:36:19 +0000 Volodymyr Mytnyk [C] wrote:
-> Should I rebase my changes based on yours now ? Is it possible to make a relation chain ?
+aspeed_video_get_resolution() will try to do res-detect again if the
+timing got in last try is invalid. But it will always time out because
+VE_SEQ_CTRL_TRIG_MODE_DET is only cleared after 1st mode-detect.
 
-Please rebase your changes on top of net/master.
+To fix the problem, just clear VE_SEQ_CTRL_TRIG_MODE_DET before setting
+it in aspeed_video_enable_mode_detect().
+
+Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+Acked-by: Paul Menzel <pmenzel@molgen.mpg.de>
+---
+v2:
+  - update commit message
+---
+ drivers/media/platform/aspeed-video.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
+index 5ffbabf884eb..fea5e4d0927e 100644
+--- a/drivers/media/platform/aspeed-video.c
++++ b/drivers/media/platform/aspeed-video.c
+@@ -518,6 +518,10 @@ static void aspeed_video_enable_mode_detect(struct aspeed_video *video)
+ 	aspeed_video_update(video, VE_INTERRUPT_CTRL, 0,
+ 			    VE_INTERRUPT_MODE_DETECT);
+ 
++	/* Disable mode detect in order to re-trigger */
++	aspeed_video_update(video, VE_SEQ_CTRL,
++			    VE_SEQ_CTRL_TRIG_MODE_DET, 0);
++
+ 	/* Trigger mode detect */
+ 	aspeed_video_update(video, VE_SEQ_CTRL, 0, VE_SEQ_CTRL_TRIG_MODE_DET);
+ }
+@@ -809,10 +813,6 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
+ 			return;
+ 		}
+ 
+-		/* Disable mode detect in order to re-trigger */
+-		aspeed_video_update(video, VE_SEQ_CTRL,
+-				    VE_SEQ_CTRL_TRIG_MODE_DET, 0);
+-
+ 		aspeed_video_check_and_set_polarity(video);
+ 
+ 		aspeed_video_enable_mode_detect(video);
+-- 
+2.25.1
+
