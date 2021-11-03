@@ -2,79 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DC5444433
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:03:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CC044443A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbhKCPF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 11:05:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50098 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231204AbhKCPFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 11:05:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3767F6103B;
-        Wed,  3 Nov 2021 15:03:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635951799;
-        bh=cw6rpwEx5q/ntjpJ1uyg4chlz0n+39ZDTckn9Jrff1g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JLa36mY7gyJ6uT8N0fEJIc8RC6xwHHEBr11tSeQEm/U/X8V5SendSB4JiyzoNt2ua
-         NQfokxE5NuhN9zS+JtnBhQ27FFaP+sx3KXjeRHZmbMTEcQyxeqtjP+gqlGyMag/dvy
-         snQXjO/l13Jh4c8ph68Mh71cUYQObCXd+1gGLjetXcIOYvukguUT7zSDF4Hhu0w/a/
-         3XiQnb3in8vVX2nlDoRUxgteJ6vZTGhbGIkD31PELhkiq4Emjz4a58vDgIGk3F1MjY
-         MUG8QzvlGg0kGIKEJXSfnDluL7UxFSwMy+zJYMPmSJD3mBjz85fKG8msVoe7g5SwZJ
-         90P+ChnEa7MWw==
-Received: by pali.im (Postfix)
-        id D26476FC; Wed,  3 Nov 2021 16:03:16 +0100 (CET)
-Date:   Wed, 3 Nov 2021 16:03:16 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: Marvell: Update PCIe fixup
-Message-ID: <20211103150316.6vjtycnak5nkkiuz@pali>
-References: <20211101150405.14618-1-pali@kernel.org>
- <20211102084241.GA6134@alpha.franken.de>
- <20211102090246.unmbruykfdjabfga@pali>
- <20211102094700.GA7376@alpha.franken.de>
- <20211102100034.rhcb3k2jvr6alm6y@pali>
- <alpine.DEB.2.21.2111021210180.57165@angie.orcam.me.uk>
- <20211102125843.sqsusis4krnmhorq@pali>
- <alpine.DEB.2.21.2111021312160.57165@angie.orcam.me.uk>
- <20211102144929.c5wt5pbl42ocrxly@pali>
- <alpine.DEB.2.21.2111031430500.57165@angie.orcam.me.uk>
+        id S231379AbhKCPGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 11:06:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhKCPGt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 11:06:49 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CBBC061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 08:04:13 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id m14so2608573pfc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 08:04:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iRvWtzwg/X+s+PVSCDVSgb8j+VJEj6TNe4P8gzkbf1E=;
+        b=bHso6gi1DV1CF5WZ9TAs3H1Xlxf1WMMoI+tP6FGXAHPjJeiGAN+EnsdUBTiNl8eDZU
+         kuKR39LqXDa8RpGyzqZjIzz/U1fQX5ZpAsjl7SbJTLnVE2m9pnhAiQrWmjrv3TWj1PiY
+         GJdYf3hDaE134sx2ZFosOX2o30t5fh09v1GgMUXPS7JTxiGIHWaQ3VrvpSu114plf20a
+         a4TtC6+WV825bmrzQOq3/5y+sRmHEnWzg2DaUPq5gGprf1Hdonvz4lAYa0Qr0x/JlaJR
+         cxWG+R7Qy8CAw9XI/4goKMajav8EfIWyaTx1WVQapGyn/zEs2Rhj4Hpr5vzr0AogThnc
+         xaxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iRvWtzwg/X+s+PVSCDVSgb8j+VJEj6TNe4P8gzkbf1E=;
+        b=uQ1a2gkd2c1r61sme5KzC4D1mILCnsbc60aZ86aBJMY3kQj9yoRaefEaj5jeURkIt7
+         nOgGWVIHhP+fMfZm32PW3h9S38wyLljQ2sVDhfiQ/vypSp7aa5wuH9nswUnGeW1l/hEI
+         4mehVjrzQVG8EGf2Gf9wLn6s30IZeNtRnXChcimACqCiSIzmFy/k+4r/mp+RfLiwA8NU
+         1p7wHNKSTCw90TnDjKzdPnU8s9reFZh2Sdm07RPood7FVfLdlpTpFDvbw+jf2vzy6SST
+         dAVl+9j/FOtQIIjthp2NV/x38SsubDoBmPt/H27ES5ZLCNfWg26fcWG7ar3Z1gH6pzVt
+         2ylA==
+X-Gm-Message-State: AOAM531Bsg8MX6od4uymStw9VmcOmVBMPcM331qp52ZYX2XtCCc0cDOz
+        oHoVX/BlXw2NOh19G05fqvib85m17RvJpU3sYfR+PQ==
+X-Google-Smtp-Source: ABdhPJy38kv5yu9QkI0Sc1dz3CnMHn3IkSiqnB7JWHoxSzZxmxMosM6+HZrXEOIfa5D3aPYkHr/k2LSt1kVITbbIoRM=
+X-Received: by 2002:aa7:88c4:0:b0:481:22c7:3d57 with SMTP id
+ k4-20020aa788c4000000b0048122c73d57mr13744491pff.1.1635951852566; Wed, 03 Nov
+ 2021 08:04:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <alpine.DEB.2.21.2111031430500.57165@angie.orcam.me.uk>
-User-Agent: NeoMutt/20180716
+References: <7dc405471da4771641d2942960d364a588bb4395.1628161369.git.xji@analogixsemi.com>
+ <20211018030529.2055255-1-xji@analogixsemi.com> <20211103142003.GW2794@kadam>
+In-Reply-To: <20211103142003.GW2794@kadam>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Wed, 3 Nov 2021 16:04:00 +0100
+Message-ID: <CAG3jFysp-Gs_Zk2PooTpqig1ns5pi+FKASMy=FW1V7oecdNGig@mail.gmail.com>
+Subject: Re: [PATCH v11 4/4] drm/bridge: anx7625: add HDMI audio function
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Xin Ji <xji@analogixsemi.com>, devel@driverdev.osuosl.org,
+        drinkcat@google.com, span@analogixsemi.com, sam@ravnborg.org,
+        jonas@kwiboo.se, airlied@linux.ie, narmstrong@baylibre.com,
+        zhenli@analogixsemi.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, anarsoul@gmail.com,
+        a.hajda@samsung.com, boris.brezillon@collabora.com, duwe@lst.de,
+        laurent.pinchart@ideasonboard.com, daniel@ffwll.ch,
+        hsinyi@chromium.org, bliang@analogixsemi.com,
+        m.szyprowski@samsung.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 03 November 2021 14:49:07 Maciej W. Rozycki wrote:
-> On Tue, 2 Nov 2021, Pali Rohár wrote:
-> 
-> > Hello Maciej! Thank you very much for the explanation!
-> 
->  You are welcome!
-> 
-> > I'm surprised that Marvell copied this 20 years old MIPS Galileo PCI
-> > logic into followup ARM SoC PCIe IPs (and later also into recent ARM64
-> > A3720 SoC PCIe IP), removed configuration of PCI class code via
-> > strapping pins and let default PCI class code value to Memory device,
-> > even also when PCIe controller is running in Root Complex mode. And so
-> > correction can be done only from "CPU bus".
-> 
->  Still the bootstrap firmware (say U-boot, as I can see it mentioned in 
-> your reference) can write the correct value to the class code register.  
-> Or can it?
+Hey Xin,
 
-Yes, it can. And I have already sent patches to do it.
+This series does not apply on drm-misc-next. Please fix this and
+resend. Make sure that checkpatch --strict passes as well.
+
+On Wed, 3 Nov 2021 at 15:20, Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> This is a super awkward way to resend a patch series.  Next time, just
+> start a new thread and put [PATCH RESEND] in the subject.
+>
+> I am sorry that no one responded to your thread.  :/
+>
+> regards,
+> dan carpenter
