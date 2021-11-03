@@ -2,87 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F21444762
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FA8444766
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbhKCRme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 13:42:34 -0400
-Received: from mga01.intel.com ([192.55.52.88]:37473 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230156AbhKCRmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 13:42:32 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10157"; a="255188797"
-X-IronPort-AV: E=Sophos;i="5.87,206,1631602800"; 
-   d="scan'208";a="255188797"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 10:39:55 -0700
-X-IronPort-AV: E=Sophos;i="5.87,206,1631602800"; 
-   d="scan'208";a="585274566"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 10:39:50 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1miKEZ-003KOE-4t;
-        Wed, 03 Nov 2021 19:39:35 +0200
-Date:   Wed, 3 Nov 2021 19:39:34 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jonas =?iso-8859-1?Q?Dre=DFler?= <verdre@v0yd.nl>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Subject: Re: [PATCH v3 0/2] mwifiex: Add quirk to disable deep sleep with
- certain hardware revision
-Message-ID: <YYLJVoR9egoPpmLv@smile.fi.intel.com>
-References: <20211103171055.16911-1-verdre@v0yd.nl>
+        id S231130AbhKCRn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 13:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229558AbhKCRn6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 13:43:58 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47071C061714;
+        Wed,  3 Nov 2021 10:41:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Nf6zVa2oCcsZyM8BKLppSX770p+0nEqOT17MYVcAujo=; b=NemGOUnskqTSSj1I9TIaTg7pRu
+        bghyAuZ7FUYA25pOlE+9XktIghK/Cg0/3qrumwOCrwsPx07eMEgYX8TWT9pYtXtze6kq6Wo5nkp/W
+        yjW/IkJNOdKTsMnIXpBKeCr8zBhIWsWVWtbDk/QDlY9b6Pk58w/KxmLStAwwLgYvHGm19v3iagQwD
+        eHqrLle1ZPT2LbKprtC0Q1zSvx+xDUpsIpYi0u5lxqHGCvIumUi/zcmzMfWhliKNakexnHg6ZfXXH
+        ShQL2SNIA9wIQxphHr0a4DpSTWNBgpcMJHi2CHyDP8aliewz7DBYdBkg48yL60dP+SVRnzkKrGVF3
+        gTzgt1JQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1miKG7-005yXB-2L; Wed, 03 Nov 2021 17:41:11 +0000
+Date:   Wed, 3 Nov 2021 10:41:11 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
+        dan.j.williams@intel.com, vishal.l.verma@intel.com,
+        dave.jiang@intel.com, ira.weiny@intel.com, richard@nod.at,
+        miquel.raynal@bootlin.com, vigneshr@ti.com, efremov@linux.com,
+        song@kernel.org, martin.petersen@oracle.com, hare@suse.de,
+        jack@suse.cz, ming.lei@redhat.com, tj@kernel.org
+Cc:     linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/13] block: add_disk() error handling stragglers
+Message-ID: <YYLJt8qkHccpTycn@bombadil.infradead.org>
+References: <20211103122157.1215783-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211103171055.16911-1-verdre@v0yd.nl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20211103122157.1215783-1-mcgrof@kernel.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 06:10:53PM +0100, Jonas Dreßler wrote:
-> Third revision of this patch.
-> v1: https://lore.kernel.org/linux-wireless/20211028073729.24408-1-verdre@v0yd.nl/T/
-> v2: https://lore.kernel.org/linux-wireless/20211103135529.8537-1-verdre@v0yd.nl/T/
-
-With one comment addressed
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-Thanks for continuing fixing this crappy SW+FW.
-
-> Changes between v2 and v3:
->  - Remove redundant sizeof(char) in the second patch
+On Wed, Nov 03, 2021 at 05:21:44AM -0700, Luis Chamberlain wrote:
+> This is the last pending changes to address add_disk() error handling
+> completely. Changes on this v2 series:
 > 
-> Jonas Dreßler (2):
->   mwifiex: Use a define for firmware version string length
->   mwifiex: Add quirk to disable deep sleep with certain hardware
->     revision
-> 
->  drivers/net/wireless/marvell/mwifiex/fw.h     |  4 ++-
->  drivers/net/wireless/marvell/mwifiex/main.c   | 18 +++++++++++++
->  drivers/net/wireless/marvell/mwifiex/main.h   |  3 ++-
->  .../wireless/marvell/mwifiex/sta_cmdresp.c    | 25 +++++++++++++++++--
->  4 files changed, 46 insertions(+), 4 deletions(-)
-> 
-> -- 
-> 2.33.1
-> 
+>   o dropped all patches which folks have said they'd pick up on their
+>     own trees or that I already see present on linux-next
+>   o rebased onto next-20211103
+>   o Added Reviewed-by tag by Dan Williams and addressed his recommended
+>     changes.
+>   o Re-added the nvdimm/blk changes given Dan Williams was not able to
+>     remove the driver in time for v5.16
+>   o Added new nvdimm/pmem driver changes, not sure how I missed addressing
+>     this before.
+>   o Just note that I keep Tetsuo Handa's patch in this series as it is
+>     a requirement for the __register_blkdev() changes.
 
--- 
-With Best Regards,
-Andy Shevchenko
+I'll just send a v3 series which collects all reviewed-by tags and with
+the updates.
 
-
+  Luis
