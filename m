@@ -2,94 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE134445EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA074445E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:29:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232875AbhKCQcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 12:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58132 "EHLO
+        id S232850AbhKCQc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 12:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232762AbhKCQcv (ORCPT
+        with ESMTP id S232762AbhKCQc0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 12:32:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5162C061714;
-        Wed,  3 Nov 2021 09:30:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Cj3Ogsyg3Lz2VHkzTH5tWxtqDLyQrRH//9PvxlJINbM=; b=fzyxYkOmFPj5mYRu0/Oue66U8S
-        mc6O0rW/kmK4juSuHAU3CVAQPNMgm/sfRYX1W3hu9MEF0wdRYKKU+fMwrX6m5CqZ5H9YIcVCkfcsG
-        tYwUkAuyvHDFBxme5tS/H3+Es/qGwxYcpTd7gwU2WwiYAM9FbeA1misue+ng5vVHMjNcJYibRS6HE
-        WIkIM4l8gezYIUYMFZGIcCXKadJJeAR4yJaMhMtwUkrY1uGtwpY6b8RSwIvBFDPLB0QRcCKqv77Tc
-        OmzJM6qWyh30kQ5HqTByWvac7h2bKmAEP9UdCHaANqqkbZa1njQxffyq02IGVOdug+WDpHrY1jdQV
-        lT9xVz4g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1miJ6W-005Jo8-KL; Wed, 03 Nov 2021 16:27:44 +0000
-Date:   Wed, 3 Nov 2021 16:27:12 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        v9fs-developer@lists.sourceforge.net,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-cachefs@redhat.com, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        devel@lists.orangefs.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/6] netfs, 9p, afs, ceph: Use folios
-Message-ID: <YYK4YKCnDyoJx5eW@casper.infradead.org>
-References: <YYKa3bfQZxK5/wDN@casper.infradead.org>
- <163584174921.4023316.8927114426959755223.stgit@warthog.procyon.org.uk>
- <163584187452.4023316.500389675405550116.stgit@warthog.procyon.org.uk>
- <1038257.1635951492@warthog.procyon.org.uk>
+        Wed, 3 Nov 2021 12:32:26 -0400
+Received: from lb1-smtp-cloud7.xs4all.net (lb1-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85BDC061714;
+        Wed,  3 Nov 2021 09:29:49 -0700 (PDT)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id iJ90mznJMFZvciJ91maBfP; Wed, 03 Nov 2021 17:29:47 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1635956987; bh=q06/a6NhPPbSu2bM9BmCNRxXQvZOuI61JEGUeXJUBmk=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=j/kIIE5G6Foqc83nOSk9Sh0Lg1YlXEsAlPBK9A0zJ1ZADDVtyGLzOLvxnYOwZL7Ny
+         zq4JC8OhYKbtfvfjSOfTN/jqD3QbAUQF57ueUlwGuCPMw3ZmdTA/1PhGBDNkyVEBNS
+         OThhJVaPRbeL4Q2Sbvcxdw+V6i+t5iMF6J/qoJfL84WKC5ZyAysxcjWuIwn76+Efct
+         zPpVf/+rBrsUQcKir0t7KVz2Q4Pt8q9NI40foLj0uOeVjCyStIQ5PgKX1jzUVuCRl9
+         4615UuzmEnSPwYeHvMI8hszR+tqI29K6/EX7BhLgTKyhLpBfxdCQesPOk3bmSXz7IY
+         AsrVrzgutv06Q==
+Subject: Re: [PATCH v3 00/14] staging: media: zoran: fusion in one module
+To:     LABBE Corentin <clabbe@baylibre.com>
+Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
+References: <20211026193416.1176797-1-clabbe@baylibre.com>
+ <a85c93db-e118-274f-d86a-d127c7399926@xs4all.nl> <YYKxTrWI299pvqo7@Red>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <2bbce7ef-acf8-3c0f-2705-09d34b2d92be@xs4all.nl>
+Date:   Wed, 3 Nov 2021 17:29:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1038257.1635951492@warthog.procyon.org.uk>
+In-Reply-To: <YYKxTrWI299pvqo7@Red>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfKrptr7PwToxoeIwYq/ugkCAdgOjfHO4zoLTeUBEDSS/u2innE/hGUZ66Te3fyxbTkVjBMlRxerT3S8vy6mKT8e5hyfuOIm4ZhZb193v1+PhlqRDShU5
+ 3Fcd+ERqqWANpALMP3bJvxke6askZfGEdVCJMJ3pD0WhsQmOv+8Q64aT5c9T0lEfqLMS7N1/CHKi4F4cZpDgkwUqss9R+h1x0Fs+NCj62m8+Dfhb5BJHRLP4
+ Lc3MtciN5t3KEQtzwIyw88PWxgHhX40mT35qSDwx27L5WyH0khNv+cRr0eQgle18szH8IUKMhPfSPowK1oIQU/dS8okPCv1kKwgLl/b63zc5/TXicx3TUV5Z
+ LTAUfEqIbmwQJItBhdL5029ynzl6tOQgtBctN/CqTyMYRRpABwMNxiBG5wHf7bmCIapWuWKmUWh7PRtToTcgR7RftBSPpV4MU5C1hhazh7zhHYKFV7HylSJ6
+ GRGcRDChddSg4Wqs/llAZJr6dCbxmis9FmknTZSBI7wN1Xo0m8wQO+4QnAg=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 02:58:12PM +0000, David Howells wrote:
-> Matthew Wilcox <willy@infradead.org> wrote:
+On 03/11/2021 16:57, LABBE Corentin wrote:
+> Le Wed, Nov 03, 2021 at 04:21:02PM +0100, Hans Verkuil a écrit :
+>> Hi Corentin,
+>>
+>> On 26/10/2021 21:34, Corentin Labbe wrote:
+>>> Hello
+>>>
+>>> The main change of this serie is to fusion all zoran related modules in
+>>> one.
+>>> This fixes the load order problem when everything is built-in.
+>>
+>> I've been testing this series, and while the module load/unload is now working,
+>> I'm running into a lot of other v4l2 compliance issues.
+>>
+>> I've fixed various issues in some follow-up patches available in my tree:
+>>
+>> https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=zoran
+>>
+>> At least some of the worst offenders are now resolved. Note that the patch
+>> dropping read/write support relies on this patch:
+>>
+>> https://patchwork.linuxtv.org/project/linux-media/patch/4f89b139-13b7-eee6-9662-996626b778b0@xs4all.nl/
 > 
-> > > +	len = (size >= start + gran) ? gran : size - start;
-> > 
-> > This seems like the most complicated way to write this ... how about:
-> > 
-> >         size_t len = min_t(loff_t, isize - start, folio_size(folio));
+> Hello
 > 
-> I was trying to hedge against isize-start going negative.  Can this code race
-> against truncate?  truncate_setsize() changes i_size *before* invalidating the
-> pages.
-
-We should check for isize < start separately, and skip the writeback
-entirely.
-
-> > >  static int afs_symlink_readpage(struct file *file, struct page *page)
-> > >  {
-> > > -	struct afs_vnode *vnode = AFS_FS_I(page->mapping->host);
-> > > +	struct afs_vnode *vnode = AFS_FS_I(page_mapping(page)->host);
-> > 
-> > How does swap end up calling readpage on a symlink?
+> My test branch already included your "zoran: fix various V4L2 compliance errors"
+> I have quickly checked other patch and I am ok with them.
+> I will add and test with them.
 > 
-> Um - readpage is called to read the symlink.
-
-But the only reason to use page_mapping() instead of page->mapping
-is if you don't know that the page is in the page cache.  You know
-that here, so I don't understand why you changed it.
-
-> > > -	page_endio(page, false, ret);
-> > > +	page_endio(&folio->page, false, ret);
-> > 
-> > We need a folio_endio() ...
+>>
+>> But there is one really major bug that makes me hesitant to merge this:
+>>
+>> This works:
+>>
+>> v4l2-ctl -v pixelformat=MJPG,width=768,height=576
+>> v4l2-ctl --stream-mmap
+>>
+>> This fails:
+>>
+>> v4l2-ctl -v pixelformat=MJPG,width=768,height=288
+>> v4l2-ctl --stream-mmap
+>>
+>> It's an immediate lock up with nothing to indicate what is wrong.
+>> As soon as the height is 288 or less, this happens.
+>>
+>> Both with my DC30 and DC30D.
 > 
-> I think we mentioned this before and I think you said you had or would make a
-> patch for it.  I can just create a wrapper for it if that'll do.
+> Just for curiosity, what is the difference between thoses two ?
 
-Probably better to convert it and put a page_endio wrapper in
-folio-compat.c
+It's the DC30 variant without an adv7175.
+
+> 
+>>
+>> Do you see the same? Any idea what is going on? I would feel much happier
+>> if this is fixed.
+>>
+>> Note that the same problem is present without this patch series, so it's
+>> been there for some time.
+>>
+> 
+> I will start on digging this problem and add thoses commands to my CI.
+> And I know there are a huge quantity of problem since origins.
+> A simple example is that just setting MJPEG as default input format does not work.
+> 
+> But since it is not related to my serie, can you please merge it.
+
+Before I do that, I would really like to know a bit more about this issue:
+can you reproduce it? Is it DC30 specific or a general problem with zoran?
+
+The problem with this hard hang is that it is hard to do regression testing
+with v4l2-compliance, since it will hang as soon as MJPG pixelformat is
+tested.
+
+I would feel much happier if the hang can be avoided, even if it is just
+with a temporary hack. It will make it much easier going forward.
+
+Regards,
+
+	Hans
