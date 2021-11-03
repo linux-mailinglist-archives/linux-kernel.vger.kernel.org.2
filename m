@@ -2,73 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E513443D84
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:04:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1824443D80
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232079AbhKCHGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 03:06:04 -0400
-Received: from nautica.notk.org ([91.121.71.147]:52664 "EHLO nautica.notk.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232034AbhKCHGB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 03:06:01 -0400
-X-Greylist: delayed 27910 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Nov 2021 03:05:59 EDT
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id A27A5C009; Wed,  3 Nov 2021 08:03:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1635922997; bh=3m8R8rVPzcOA9Kl+sPidNtixAK7CoaPvD/KCTUeBcTw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yxaYyOsjsFIKmM1Y8MTypkHz1t4PcwrWoKtT0NXupWUto9ecjp3ybW23C75y4p4Yb
-         e84FqJtjfM8fbmtWmZbkUg50wXDmMbYAE2Go4UlPshPn4cgZVgBMng8ysjzj6WDQA/
-         R2Vey7elBuZKbk0wFj6g31kaxvETTD80ydHFbz4vDUj6e+rwCKX4fJg1HoE5gjYoiO
-         ZI8lbtnUKHLxVUM2IaPgOolRv1BHX5ymUeEGujp317GwPA5hBwTYNP1RmBg4av2XYy
-         2ZTdCjJtD1KErp8kTxZej9XiA6LsdkH6UoVWGJq6rqsQ69mmwHS2VGVNX4hcGulosA
-         CUoBE9WPv/ALg==
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
-        autolearn=unavailable version=3.3.2
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 503DDC009;
-        Wed,  3 Nov 2021 08:03:16 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1635922997; bh=3m8R8rVPzcOA9Kl+sPidNtixAK7CoaPvD/KCTUeBcTw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yxaYyOsjsFIKmM1Y8MTypkHz1t4PcwrWoKtT0NXupWUto9ecjp3ybW23C75y4p4Yb
-         e84FqJtjfM8fbmtWmZbkUg50wXDmMbYAE2Go4UlPshPn4cgZVgBMng8ysjzj6WDQA/
-         R2Vey7elBuZKbk0wFj6g31kaxvETTD80ydHFbz4vDUj6e+rwCKX4fJg1HoE5gjYoiO
-         ZI8lbtnUKHLxVUM2IaPgOolRv1BHX5ymUeEGujp317GwPA5hBwTYNP1RmBg4av2XYy
-         2ZTdCjJtD1KErp8kTxZej9XiA6LsdkH6UoVWGJq6rqsQ69mmwHS2VGVNX4hcGulosA
-         CUoBE9WPv/ALg==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id 795e0252;
-        Wed, 3 Nov 2021 07:03:12 +0000 (UTC)
-Date:   Wed, 3 Nov 2021 16:02:57 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commit in the v9fs tree
-Message-ID: <YYI0IfG6lO83of3J@codewreck.org>
-References: <20211103171115.1694cd05@canb.auug.org.au>
+        id S232035AbhKCHF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 03:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230152AbhKCHF5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 03:05:57 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0766C061714;
+        Wed,  3 Nov 2021 00:03:21 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id gt5so643412pjb.1;
+        Wed, 03 Nov 2021 00:03:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QGc0CAiOAozapI53hKAH/Jnun3Rk9U/5qkQg7Ukw/Oc=;
+        b=qzNxbe4D6Ddl5KW1/7n3QfLdXFZq6CP0DBEKrBua4sblu9WvMAgiqVo9qPcbJPYG5W
+         bWSdfih3Cz41UpZUgHjD/3eV9JnrRG8fMfH8kCZ9m7IxsZFooYt9uvjgrBTgQsEaxg9b
+         DsMMYVszMaCxUFvdZwYxU9JLFGahQUoPHxP7Epo9GuvdEpnVtqiZ5IOCs6Vumvo+bv3R
+         EELR31KSVS+JUCua5Xicwq2AyuOH7o1QGezmkamlA6BqLf7WeGtdUbbWUUAZ8JmwNp43
+         YVYitGZb41s1azbojl8EO8ZjM15KVabldcrbP6Ea5iiqWgi4FxD4ZxrRZY526Cs6ywt1
+         FLAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QGc0CAiOAozapI53hKAH/Jnun3Rk9U/5qkQg7Ukw/Oc=;
+        b=qTi1PNE0Nu/Dt/4VECj+xpn8Wsn/H2iJ3yqdR1WUKIP+//Mh4twhOFMkTOMjuvvpIL
+         BDKGgQkoSbbAEw+SN70kZbdTZVdXHN8J+Q93xpSG058jUDzdTIfuUToaJBifMSCER2MD
+         llUZ1yVG7hYgYqm0N2lLiWl8jUzOyIu/iuPTxIWm9dUqs3ktjEwzstYveGsBW2PseseZ
+         0S9Xhev2syY4i9lJ7N25BF+jzrdsoLSCfd5Xl6Zx3tBVB096udVSw1UsTdsvP+fW0SdR
+         4chP5D/ULmi/3wgE6dZVjZIeJ6b/VJHVuN6nAB9ctz2PCbYVkWqz0oGmp11PE8EeFYcS
+         MDJA==
+X-Gm-Message-State: AOAM532SSFKuqULeA9NmHxHXoSyhTGrjQJN++nRs0xkarfKjWHd9i67C
+        ZoIBrbbc8UigHIv5WCkWzU4=
+X-Google-Smtp-Source: ABdhPJxfPzVhfuq391Q83MnxJQ035ZENxbNGLiXJP+SMZM/sgW1LMXBc1R/YEBl1RXkKoBmVuoWkcg==
+X-Received: by 2002:a17:90b:1c8f:: with SMTP id oo15mr12391932pjb.169.1635923001245;
+        Wed, 03 Nov 2021 00:03:21 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id x9sm4242564pjp.50.2021.11.03.00.03.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 03 Nov 2021 00:03:20 -0700 (PDT)
+From:   Like Xu <like.xu.linux@gmail.com>
+X-Google-Original-From: Like Xu <likexu@tencent.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] Use static_call for kvm_pmu_ops
+Date:   Wed,  3 Nov 2021 15:03:07 +0800
+Message-Id: <20211103070310.43380-1-likexu@tencent.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211103171115.1694cd05@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell wrote on Wed, Nov 03, 2021 at 05:11:15PM +1100:
-> Commit
-> 
->   33b741d6c4f9 ("fixup! 9p: Convert to using the netfs helper lib to do reads and caching")
-> 
-> is missing a Signed-off-by from its author and committer.
+Hi,
 
-Argh, I planned on squashing it after David had a chance to see it but
-that was bad practice, sorry - cleaned up.
+This is a successor to a previous patch set from Jason Baron. Let's convert
+kvm_pmu_ops to use static_call. Shows good performance gains for
+a typical perf use case [2] in the guest (results in patch 3/3).
 
-Thanks for the heads up!
+[1] https://lore.kernel.org/lkml/cover.1610680941.git.jbaron@akamai.com/
+[2] perf record -e branch-instructions -e branch-misses \
+-e cache-misses -e cache-references -e cpu-cycles \
+-e instructions ./workload
+
+Thanks,
+
+Like Xu (3):
+  KVM: x86: Copy kvm_pmu_ops by value to eliminate layer of indirection
+  KVM: x86: Introduce definitions to support static calls for
+    kvm_pmu_ops
+  KVM: x86: Use static calls to reduce kvm_pmu_ops overhead
+
+ arch/x86/include/asm/kvm-x86-pmu-ops.h | 32 ++++++++++++++++++
+ arch/x86/kvm/pmu.c                     | 46 +++++++++++++++-----------
+ arch/x86/kvm/pmu.h                     | 19 ++++++++++-
+ arch/x86/kvm/vmx/nested.c              |  2 +-
+ arch/x86/kvm/x86.c                     |  5 +++
+ 5 files changed, 83 insertions(+), 21 deletions(-)
+ create mode 100644 arch/x86/include/asm/kvm-x86-pmu-ops.h
+
 -- 
-Dominique
+2.33.0
 
