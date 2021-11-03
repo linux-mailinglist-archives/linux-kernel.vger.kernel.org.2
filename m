@@ -2,162 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B230A444AD6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 23:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D74444AD8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 23:25:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhKCWZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 18:25:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53358 "EHLO
+        id S229913AbhKCW1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 18:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhKCWZ3 (ORCPT
+        with ESMTP id S229618AbhKCW1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 18:25:29 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8915C061714;
-        Wed,  3 Nov 2021 15:22:52 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id f8so14723073edy.4;
-        Wed, 03 Nov 2021 15:22:52 -0700 (PDT)
+        Wed, 3 Nov 2021 18:27:45 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A494BC061714;
+        Wed,  3 Nov 2021 15:25:08 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id s136so3636294pgs.4;
+        Wed, 03 Nov 2021 15:25:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=J2NdaQ8T+dt9p0jHQsB0InvqWOp8/QEv69XWnnosGBY=;
-        b=GzUMX9Jd1JqRALeydvQkd1EteV+LGofdP3599Qk4mjqzSesoDGjQdQcKoqGFR4aoDk
-         JsSLfMQxKvkEfaa+V4djLBHJg7gcSyqFtQvkkMJEbH9MofIg56bjXxLf+Vbfyf6NuNdZ
-         efy9VFnCdyjcQmueGYDvJv5cL8JcrhSDLQls9ycfzplAA8GWc8BwHVEAqTfPJQkWi5Ov
-         41UH+Cfvqw8ipreeDS/0Lo/dbZJuIAK2WVBsv7ekD1Rfdf/uNBVLkKM3v/YbFoTyqxWw
-         UwIxMgDH50zWAm2SzdskqS58ZW6oBLOos6zQQG4FhNXgtAMqfWXQXyuOg0AszvkWxh7i
-         Tr6g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jihVygVNweEvYj3Lol5vLLtRaZPbjtnCrZIu/J/L8tI=;
+        b=f+TDVr1dxCDVIlpTeXrd/XakLi4Fv1BcwK5FeC+7hsZ2FoikjGcCiKvzb9GZR80c9O
+         2lroPoP2patWuNjIz5mXDgv4Ec3cRN9WC8Y80302R+2HQF/CbgUl3QMQejcDz8WSmTzu
+         7IsJzUJpy7KSChKA6p3GcsxdWJf58Rl5O7DidnKFj0q3qN2VXKRmxZvQdCcnbLB2oBXF
+         Ax0MzHheATx8CWv78P7cjvmDnlSYh7GccaBiykwW4Qdwc/cGh37Tc6gAXCAz+Yxk2cPO
+         mbVo9q/YhYI9kwVrD0aaDnFa7PGxXlUcfDMg+QxdlS/J/uNPxU3wL5/ohUQi6idqidx0
+         bKhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J2NdaQ8T+dt9p0jHQsB0InvqWOp8/QEv69XWnnosGBY=;
-        b=yLj5H2Hk3FYmZ6a7Uta8ESfZ8EROBMuEhyp5ZT0kcyu1zudciX2HaTV5WrD4DL7bZO
-         ddxzjLUnZxrYCifmjsGOCGsUlvj/PmOf7QgprAdWjPdfrEDlldsmlP2SQB7wz8UHuaJd
-         R3bTuyVoBGKF5MQLP0Iqc8RGvKIsZ/qRP6JGfh2D8CzNy8VDCNU9B0lakmsgqYaf1EfZ
-         //NgvSKqcGEexR1HYNmewfUuzzvxJkX1LeukCqr+hm3ed00zjmaXtsck4A/gTvHbwaBK
-         YZ4LrgGhkdM91CAi8tNs+ZFsIQ1ilsujJy+Gscv+e6z3dw448k4iPnntJ6ysOEgHh6db
-         It8Q==
-X-Gm-Message-State: AOAM532wfw64ASo5iuz5H+QuXBYwaV4fzH5BxuAfadyurH7wKcjae6fn
-        LPnJ3/QaYQxTrkC9cwS54SKGJ/JOz91Tpg==
-X-Google-Smtp-Source: ABdhPJzV4/y5qTs4xQPrAXlnayDNX8Mrj7BkhVqpL8WzEHl/VS/hgdFLOpFJr0DwVrlp/gonwlrvsA==
-X-Received: by 2002:a17:907:1c85:: with SMTP id nb5mr23550781ejc.502.1635978171338;
-        Wed, 03 Nov 2021 15:22:51 -0700 (PDT)
-Received: from ?IPv6:2a04:241e:501:3800:dd98:1fb5:16b3:cb28? ([2a04:241e:501:3800:dd98:1fb5:16b3:cb28])
-        by smtp.gmail.com with ESMTPSA id p23sm2064759edw.94.2021.11.03.15.22.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 15:22:50 -0700 (PDT)
-Subject: Re: [PATCH v2] tcp: Initial support for RFC5925 auth option
-To:     David Ahern <dsahern@gmail.com>, David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yuchung Cheng <ycheng@google.com>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Christoph Paasch <cpaasch@apple.com>,
-        Ivan Delalande <colona@arista.com>,
-        Priyaranjan Jha <priyarjha@google.com>, netdev@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1635784253.git.cdleonard@gmail.com>
- <832e6d49-8490-ab8b-479b-0420596d0aaa@gmail.com>
-From:   Leonard Crestez <cdleonard@gmail.com>
-Message-ID: <9bcd27f0-e14e-ab89-88a4-f6cf6b4323b4@gmail.com>
-Date:   Thu, 4 Nov 2021 00:22:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jihVygVNweEvYj3Lol5vLLtRaZPbjtnCrZIu/J/L8tI=;
+        b=gGptz0CqWn8Xpa69cX22ZOrpNT7NeWQu6otkFCUDN9QpLvXCuVTJaiur4Ql9fBEiqh
+         Ia9qWVhvIi7Y/ot8//5ZMtRt35Cai8Aq3OUc1t8Ce4NmiTXL9r30ID77CYz5hkWn5COt
+         BslTnhs2VAG5ZbEqpEtXWUYlvlQ24RXpymiTYefCGs9UC55pube+ZA0koB3IWsvo1BTD
+         GKGb5QJ/mJ8/u/f1iRoFJL6SQPxFrkT/zu2Bx5qif0rMGOoo3crg/B3a3oNz/vPgLxAa
+         FgPTc5yVA6MzvqAbyvxeGpwSRkOCenYrSPLwaHtbfmlICHUIOckSrHfj0He609dYptsf
+         OrUg==
+X-Gm-Message-State: AOAM532JTn+pFE3jBfpoI4a9022Bxuanx3CtMDIMxhSwI6Bc1XivWGPF
+        W5JNrYKwaDbaUcX9Lo7qF9hffKNPAaNY+sEby/A=
+X-Google-Smtp-Source: ABdhPJyofOXDYAsy2Z2SHu46tYRMlg0uGRdEOQOdrdKOCRsgfkk8a91UKl2CN2vqiR+C/i+w+tpxnahaqTKq9WUdxKY=
+X-Received: by 2002:a63:6881:: with SMTP id d123mr19145847pgc.68.1635978308099;
+ Wed, 03 Nov 2021 15:25:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <832e6d49-8490-ab8b-479b-0420596d0aaa@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211103073131.GA15173@raspberrypi> <79835dce-7e15-38e2-5341-2fb246a445e7@schaufler-ca.com>
+In-Reply-To: <79835dce-7e15-38e2-5341-2fb246a445e7@schaufler-ca.com>
+From:   Austin Kim <austindh.kim@gmail.com>
+Date:   Thu, 4 Nov 2021 07:24:57 +0900
+Message-ID: <CADLLry7i=MB1diZmHXAv3tf8yTMgwceTA4OeuWPVrxt-13wdZQ@mail.gmail.com>
+Subject: Re: [PATCH] smack: clean up smack_enabled to be more readable
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-team@lge.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/21 5:18 AM, David Ahern wrote:
-> On 11/1/21 10:34 AM, Leonard Crestez wrote:
->> This is similar to TCP MD5 in functionality but it's sufficiently
->> different that wire formats are incompatible. Compared to TCP-MD5 more
->> algorithms are supported and multiple keys can be used on the same
->> connection but there is still no negotiation mechanism.
->>
->> Expected use-case is protecting long-duration BGP/LDP connections
->> between routers using pre-shared keys. The goal of this series is to
->> allow routers using the linux TCP stack to interoperate with vendors
->> such as Cisco and Juniper.
->>
->> Both algorithms described in RFC5926 are implemented but the code is not
->> very easily extensible beyond that. In particular there are several code
->> paths making stack allocations based on RFC5926 maximum, those would
->> have to be increased.
->>
->> This version implements SNE and l3mdev awareness and adds more tests.
->> Here are some known flaws and limitations:
->>
->> * Interaction with TCP-MD5 not tested in all corners
->> * Interaction with FASTOPEN not tested and unlikely to work because
->> sequence number assumptions for syn/ack.
->> * Not clear if crypto_shash_setkey might sleep. If some implementation
->> do that then maybe they could be excluded through alloc flags.
->> * Traffic key is not cached (reducing performance)
->> * User is responsible for ensuring keys do not overlap.
->> * There is no useful way to list keys, making userspace debug difficult.
->> * There is no prefixlen support equivalent to md5. This is used in
->> some complex FRR configs.
->>
->> Test suite was added to tools/selftests/tcp_authopt. Tests are written
->> in python using pytest and scapy and check the API in some detail and
->> validate packet captures. Python code is already used in linux and in
->> kselftests but virtualenvs not very much, this particular test suite
->> uses `pip` to create a private virtualenv and hide dependencies.
->>
->> This actually forms the bulk of the series by raw line-count. Since
->> there is a lot of code it was mostly split on "functional area" so most
->> files are only affected by a single code. A lot of those tests are
->> relevant to TCP-MD5 so perhaps it might help to split into a separate
->> series?
->>
->> Some testing support is included in nettest and fcnal-test.sh, similar
->> to the current level of tcp-md5 testing.
->>
->> SNE was tested by creating connections in a loop until a large SEQ is
->> randomly selected and then making it rollover. The "connect in a loop"
->> step ran into timewait overflow and connection failure on port reuse.
->> After spending some time on this issue and my conclusion is that AO
->> makes it impossible to kill remainders of old connections in a manner
->> similar to unsigned or md5sig, this is because signatures are dependent
->> on ISNs.  This means that if a timewait socket is closed improperly then
->> information required to RST the peer is lost.
->>
->> The fact that AO completely breaks all connection-less RSTs is
->> acknowledged in the RFC and the workaround of "respect timewait" seems
->> acceptable.
->>
->> Changes for frr (old): https://github.com/FRRouting/frr/pull/9442
->> That PR was made early for ABI feedback, it has many issues.
->>
-> 
-> overall looks ok to me. I did not wade through the protocol details.
-> 
-> I did see the comment about no prefixlen support in the tests. A lot of
-> patches to absorb, perhaps I missed it. Does AuthOpt support for
-> prefixes? If not, you should consider adding that as a quick follow on
-> (within the same dev cycle). MD5 added prefix support for scalability;
-> seems like AO should be concerned about the same.
+2021=EB=85=84 11=EC=9B=94 4=EC=9D=BC (=EB=AA=A9) =EC=98=A4=EC=A0=84 1:01, C=
+asey Schaufler <casey@schaufler-ca.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
+=B1:
+>
+> On 11/3/2021 12:31 AM, Austin Kim wrote:
+> > The smack_enabled is only set to 0, 1. So changing type of smack_enable=
+d
+> > as bool may make relevant routine be more readable.
+> >
+> > Signed-off-by: Austin Kim <austindh.kim@gmail.com>
+>
+> A couple of changes below.
+>
+> > ---
+> >   security/smack/smack.h           | 2 +-
+> >   security/smack/smack_lsm.c       | 4 ++--
+> >   security/smack/smack_netfilter.c | 2 +-
+> >   security/smack/smackfs.c         | 2 +-
+> >   4 files changed, 5 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/security/smack/smack.h b/security/smack/smack.h
+> > index 99c3422596ab..dc1726f5953f 100644
+> > --- a/security/smack/smack.h
+> > +++ b/security/smack/smack.h
+> > @@ -302,7 +302,7 @@ int smack_populate_secattr(struct smack_known *skp)=
+;
+> >   /*
+> >    * Shared data.
+> >    */
+> > -extern int smack_enabled __initdata;
+> > +extern bool smack_enabled __initdata;
+> >   extern int smack_cipso_direct;
+> >   extern int smack_cipso_mapped;
+> >   extern struct smack_known *smack_net_ambient;
+> > diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+> > index efd35b07c7f8..ba3b46bd2ceb 100644
+> > --- a/security/smack/smack_lsm.c
+> > +++ b/security/smack/smack_lsm.c
+> > @@ -56,7 +56,7 @@ static DEFINE_MUTEX(smack_ipv6_lock);
+> >   static LIST_HEAD(smk_ipv6_port_list);
+> >   #endif
+> >   struct kmem_cache *smack_rule_cache;
+> > -int smack_enabled __initdata;
+> > +bool smack_enabled __initdata;
+> >
+> >   #define A(s) {"smack"#s, sizeof("smack"#s) - 1, Opt_##s}
+> >   static struct {
+> > @@ -4953,7 +4953,7 @@ static __init int smack_init(void)
+> >        * Register with LSM
+> >        */
+> >       security_add_hooks(smack_hooks, ARRAY_SIZE(smack_hooks), "smack")=
+;
+> > -     smack_enabled =3D 1;
+> > +     smack_enabled =3D true;
+> >
+> >       pr_info("Smack:  Initializing.\n");
+> >   #ifdef CONFIG_SECURITY_SMACK_NETFILTER
+> > diff --git a/security/smack/smack_netfilter.c b/security/smack/smack_ne=
+tfilter.c
+> > index b945c1d3a743..82092d9387a3 100644
+> > --- a/security/smack/smack_netfilter.c
+> > +++ b/security/smack/smack_netfilter.c
+> > @@ -70,7 +70,7 @@ static struct pernet_operations smack_net_ops =3D {
+> >
+> >   static int __init smack_nf_ip_init(void)
+> >   {
+> > -     if (smack_enabled =3D=3D 0)
+> > +     if (smack_enabled =3D=3D false)
+>
+> If you want to use a bool you should use it fully.
+>   +     if (!smack_enabled)
+>
+> >               return 0;
+> >
+> >       printk(KERN_DEBUG "Smack: Registering netfilter hooks\n");
+> > diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
+> > index 658eab05599e..7649ad8cc335 100644
+> > --- a/security/smack/smackfs.c
+> > +++ b/security/smack/smackfs.c
+> > @@ -2993,7 +2993,7 @@ static int __init init_smk_fs(void)
+> >       int err;
+> >       int rc;
+> >
+> > -     if (smack_enabled =3D=3D 0)
+> > +     if (smack_enabled =3D=3D false)
+>
+> Same here.
 
-I just skipped it because it's not required for core functionality.
+Thanks for feedback.
+Let me resend the patch.
 
-It's very straight forward so I will add it to the next version.
+BR,
+Austin Kim
 
---
-Regards,
-Leonard
+>
+> >               return 0;
+> >
+> >       err =3D smk_init_sysfs();
