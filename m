@@ -2,144 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3064448AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 19:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE624448B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:02:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhKCS6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 14:58:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35288 "EHLO
+        id S230460AbhKCTFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 15:05:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhKCS6m (ORCPT
+        with ESMTP id S229772AbhKCTFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 14:58:42 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC558C061714;
-        Wed,  3 Nov 2021 11:56:05 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id e65so3181553pgc.5;
-        Wed, 03 Nov 2021 11:56:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q/BrXCmOSs3/mGKmysJ1cd+BoUzUQUIDjvCN0RCeiw8=;
-        b=NSwMeLR1j7w1qSNmkTnf3xnPLC9Z3bdnDxsH7+/ioFXR4avq8tZT9vmiGNvbnV2pU6
-         c0dhQ+XuYG/CDn41eo/FSLoPNl9qr18l4LCKP25Y8Sz8lyKB2V5UOyvIFQkByv9HeBRF
-         dklqbvtdB6dVDIkU44FVEul9rkGIYHJSivnFWQik0CfibTKzB7Z7XljaEgJWmmW6cSra
-         v1bWC9uhksYBnlo0mwi1IvIbMpWizCRGbbgcDVXMSVPitJcbNTFB/K1UkPjGmGvWWasL
-         dFahh/CabnqdAWwY2y49s51dvPGlZ3VWPEJK9m9ZstH7Tl5505E2J4MW3ltCbvBwayd2
-         mdKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q/BrXCmOSs3/mGKmysJ1cd+BoUzUQUIDjvCN0RCeiw8=;
-        b=U06X4u2Dt/8TJxcfFsJ7GBrnGTNeSpPcbCwtFyTngA3g61cf4YvN3P7FqthnZYi5vJ
-         etg3Qanv8S99583B8+YdalWnRcbqtX8wTvf6X6L9WWhD5xqJSmG6Oskinl7eikTl+nXf
-         2J4sSZeIyTStqfpCBODbg9awzkZ3m0TtxXBMXOSpIFOseri2KQA38OzRfBKsWPA6AHuU
-         36w3QafG+ep0POk+I7GqaHRa+HvBTp3UgBGH3OLzbttM4bYBW+GPuqU9+/X3qe1/zPch
-         jTEjjfJFrkRsCIoNsSsBNuB/j01gNcm/uVYAqjyQvNtdLh5M3jZPAw2oXgpm2EL0XD44
-         ayxQ==
-X-Gm-Message-State: AOAM530fLY3gxo93sa+Ww5Ty6X07qsAGoyzi3yiPraBw8fEDOl4wh2ty
-        Drwv9WCkOokrzepDiyAGo9AEYW1ki3P77q+GYLM=
-X-Google-Smtp-Source: ABdhPJxTZj1iVDBD+igMJrt6cgGEXt4/wkX17YOCZmoKy2lm82ZBJHpFyBB4oHn84FqNgmFsQb1EVGcZzaNAkqRMyV4=
-X-Received: by 2002:a63:ed0e:: with SMTP id d14mr3402467pgi.92.1635965764955;
- Wed, 03 Nov 2021 11:56:04 -0700 (PDT)
+        Wed, 3 Nov 2021 15:05:19 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B895C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 12:02:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5QBJKfFT1x1NaSqmO/BJvj40AkB1znqo2ky8ALUH6n4=; b=ezJQGHgxE+i4PGNKcrhgC3Hi/c
+        vf9BFCEfOpxYdrfBWeZhTZFdKdrh3PPg/8tYyoWA8RChSKaC2WCvtjKqyNEjDfGbIr37rGczoKnxA
+        W6yUafutMLpoiweXSho2/rP5u851XaRiVy3pt81SoRXhZ8sg4X60TwEHTzEtDWegmWCq67QaJYIG4
+        +I0qT7O+eu40eeAWnBVSssmHXFWzt3zjXDCB5FbvjJbx8htktk9oar2fXExcULXfDNb/BLvq9XRJo
+        i1dYw/kvWaU7e/RkzuDE7O70Ft92VK8dcTKIqEWMRCHYISvOBr1xRohZhmm2Z9oXROY9TKBIeuVnF
+        5b5TBBwA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1miLSy-005PDK-P3; Wed, 03 Nov 2021 18:58:46 +0000
+Date:   Wed, 3 Nov 2021 18:58:32 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jimmy Shiu <jimmyshiu@google.com>
+Cc:     mingo@redhat.com, joaodias@google.com, wvw@google.com,
+        Minchan Kim <minchan@google.com>,
+        Will McVicker <willmcvicker@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] SCHED: attribute page lock and waitqueue functions as
+ sched
+Message-ID: <YYLb2BGL1jR+kqF+@casper.infradead.org>
+References: <20211103184708.1778294-1-jimmyshiu@google.com>
 MIME-Version: 1.0
-References: <20211103135313.6428-1-tomm.merciai@gmail.com>
-In-Reply-To: <20211103135313.6428-1-tomm.merciai@gmail.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Wed, 3 Nov 2021 13:55:54 -0500
-Message-ID: <CAHCN7xLOkvahKSzuUAe5d4sBMoMs51PHDt3G5PB+jEtDkRf30Q@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: dts: imx8mm: Add NOC node
-To:     Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Alice Guo <alice.guo@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211103184708.1778294-1-jimmyshiu@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 8:53 AM Tommaso Merciai <tomm.merciai@gmail.com> wrote:
->
-> Add support for dynamic frequency scaling of the main NOC configuration
-> on imx8mm.
->
-> References:
->  - i.MX 8M Mini Applications Processor RM, Rev. 3, 11/2020
->  - f18e6d573b80 arm64: dts: imx8mq: Add NOC node
->  - 912b9dacf3f0 arm64: dts: imx8mq: increase NOC clock to 800 MHz
->  - https://source.codeaurora.org/external/imx/linux-imx/tree/arch/ \
->    arm64/boot/dts/freescale/imx8mm.dtsi?h=lf-5.10.y
->
+On Thu, Nov 04, 2021 at 02:47:03AM +0800, Jimmy Shiu wrote:
+> Bug: 144961676
+> Bug: 144713689
+> Bug: 172212772
 
-You're missing the signed-off-by tag.
+A bug number is meaningless without knowing which bug tracker they
+refer to.  I suggest contemplating the meaning of the 'U' in URL.
 
-From what I can tell, the default NOC clock is 750MHz.  With this
-patch enabled, i can manually change the NOC clock to 150, 375 or 750,
-but it's not clear to me what this impacts.  In the 8MQ, there are a
-couple peripherals that are linked to the NOC, but we don't have those
-same peripherals enabled in the 8mm.  The
-dt-bindings/interconnect/imx8mq.h list more NOC references than are
-used in the device tree, so it's unclear to me if and what we need to
-reference anything in the 8MM based on
-dt-bindings/interconnect/imx8mm.h
+> Signed-off-by: Minchan Kim <minchan@google.com>
+> Signed-off-by: Jimmy Shiu <jimmyshiu@google.com>
+> (cherry picked from commit 1e4de875d9e0cfaccf5131bcc709ae8646cdc168)
 
-adam
+what tree is that commit ID in?  I suggest it's meaningless and
+should be removed.
 
-> ---
-> Changes since v1:
->  - Fix noc_opp_table frequencies taking NXP bsp as reference
->  - Add reference link to nxp imx8mm dtsi on commit body
->
->  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 25 +++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> index c2f3f118f82e..1bcc5e361ca3 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> @@ -719,6 +719,31 @@ pgc_mipi: power-domain@11 {
->                         };
->                 };
->
-> +               noc: interconnect@32700000 {
-> +                       compatible = "fsl,imx8mm-noc", "fsl,imx8m-noc";
-> +                       reg = <0x32700000 0x100000>;
-> +                       clocks = <&clk IMX8MM_CLK_NOC>;
-> +                       fsl,ddrc = <&ddrc>;
-> +                       #interconnect-cells = <1>;
-> +                       operating-points-v2 = <&noc_opp_table>;
-> +
-> +                       noc_opp_table: opp-table {
-> +                               compatible = "operating-points-v2";
-> +
-> +                               opp-150M {
-> +                                       opp-hz = /bits/ 64 <150000000>;
-> +                               };
-> +
-> +                               opp-375M {
-> +                                       opp-hz = /bits/ 64 <375000000>;
-> +                               };
-> +
-> +                               opp-750M {
-> +                                       opp-hz = /bits/ 64 <750000000>;
-> +                               };
-> +                       };
-> +               };
-> +
->                 aips2: bus@30400000 {
->                         compatible = "fsl,aips-bus", "simple-bus";
->                         reg = <0x30400000 0x400000>;
-> --
-> 2.25.1
->
+> @@ -687,7 +688,7 @@ static inline void folio_lock(struct folio *folio)
+>  /*
+>   * lock_page may only be called if we have the page's inode pinned.
+>   */
+> -static inline void lock_page(struct page *page)
+> +static inline __sched void lock_page(struct page *page)
+
+Why do you need to tag a static inline function as __sched?  This would
+be the only place where that is done.
+
+> +++ b/kernel/sched/wait.c
+> @@ -404,7 +404,8 @@ void finish_wait(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_en
+>  }
+>  EXPORT_SYMBOL(finish_wait);
+>  
+> -int autoremove_wake_function(struct wait_queue_entry *wq_entry, unsigned mode, int sync, void *key)
+> +__sched int autoremove_wake_function(struct wait_queue_entry *wq_entry, unsigned int mode,
+> +				     int sync, void *key)
+>  {
+
+This function doesn't sleep.  Why does it need to be tagged __sched?
+
+> @@ -440,7 +441,7 @@ static inline bool is_kthread_should_stop(void)
+>   * }						smp_mb(); // C
+>   * remove_wait_queue(&wq_head, &wait);		wq_entry->flags |= WQ_FLAG_WOKEN;
+>   */
+> -long wait_woken(struct wait_queue_entry *wq_entry, unsigned mode, long timeout)
+> +__sched long wait_woken(struct wait_queue_entry *wq_entry, unsigned int mode, long timeout)
+
+This one makes sense, but you've extended the length of the line past 80
+columns, and it seems like it should be a separate patch with its own
+justification.
+
+> +__sched int woken_wake_function(struct wait_queue_entry *wq_entry, unsigned int mode,
+> +				int sync, void *key)
+
+This doesn't seem to sleep either?
+
+> +++ b/mm/filemap.c
+> @@ -1271,7 +1271,7 @@ static inline bool folio_trylock_flag(struct folio *folio, int bit_nr,
+>  /* How many times do we accept lock stealing from under a waiter? */
+>  int sysctl_page_lock_unfairness = 5;
+>  
+> -static inline int folio_wait_bit_common(struct folio *folio, int bit_nr,
+> +static inline __sched int folio_wait_bit_common(struct folio *folio, int bit_nr,
+>  		int state, enum behavior behavior)
+>  {
+>  	wait_queue_head_t *q = folio_waitqueue(folio);
+> @@ -1411,13 +1411,13 @@ static inline int folio_wait_bit_common(struct folio *folio, int bit_nr,
+>  	return wait->flags & WQ_FLAG_WOKEN ? 0 : -EINTR;
+>  }
+>  
+> -void folio_wait_bit(struct folio *folio, int bit_nr)
+> +__sched void folio_wait_bit(struct folio *folio, int bit_nr)
+>  {
+>  	folio_wait_bit_common(folio, bit_nr, TASK_UNINTERRUPTIBLE, SHARED);
+>  }
+>  EXPORT_SYMBOL(folio_wait_bit);
+>  
+> -int folio_wait_bit_killable(struct folio *folio, int bit_nr)
+> +__sched int folio_wait_bit_killable(struct folio *folio, int bit_nr)
+>  {
+>  	return folio_wait_bit_common(folio, bit_nr, TASK_KILLABLE, SHARED);
+>  }
+> @@ -1628,21 +1628,21 @@ EXPORT_SYMBOL_GPL(page_endio);
+>   * __folio_lock - Get a lock on the folio, assuming we need to sleep to get it.
+>   * @folio: The folio to lock
+>   */
+> -void __folio_lock(struct folio *folio)
+> +__sched void __folio_lock(struct folio *folio)
+>  {
+>  	folio_wait_bit_common(folio, PG_locked, TASK_UNINTERRUPTIBLE,
+>  				EXCLUSIVE);
+>  }
+>  EXPORT_SYMBOL(__folio_lock);
+>  
+> -int __folio_lock_killable(struct folio *folio)
+> +__sched int __folio_lock_killable(struct folio *folio)
+>  {
+>  	return folio_wait_bit_common(folio, PG_locked, TASK_KILLABLE,
+>  					EXCLUSIVE);
+>  }
+>  EXPORT_SYMBOL_GPL(__folio_lock_killable);
+>  
+> -static int __folio_lock_async(struct folio *folio, struct wait_page_queue *wait)
+> +static __sched int __folio_lock_async(struct folio *folio, struct wait_page_queue *wait)
+>  {
+>  	struct wait_queue_head *q = folio_waitqueue(folio);
+>  	int ret = 0;
+> @@ -1679,7 +1679,7 @@ static int __folio_lock_async(struct folio *folio, struct wait_page_queue *wait)
+>   * If neither ALLOW_RETRY nor KILLABLE are set, will always return true
+>   * with the folio locked and the mmap_lock unperturbed.
+>   */
+> -bool __folio_lock_or_retry(struct folio *folio, struct mm_struct *mm,
+> +__sched bool __folio_lock_or_retry(struct folio *folio, struct mm_struct *mm,
+>  			 unsigned int flags)
+>  {
+>  	if (fault_flag_allow_retry_first(flags)) {
+> -- 
+> 2.34.0.rc0.344.g81b53c2807-goog
+> 
+> 
