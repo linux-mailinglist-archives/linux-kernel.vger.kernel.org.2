@@ -2,158 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F17C04446BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0044446C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:11:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231230AbhKCRNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 13:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231204AbhKCRNv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 13:13:51 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B8DC061714;
-        Wed,  3 Nov 2021 10:11:14 -0700 (PDT)
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [80.241.60.245])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4Hktb523P7zQkb9;
-        Wed,  3 Nov 2021 18:11:13 +0100 (CET)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-From:   =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>
-To:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH v3 2/2] mwifiex: Add quirk to disable deep sleep with certain hardware revision
-Date:   Wed,  3 Nov 2021 18:10:55 +0100
-Message-Id: <20211103171055.16911-3-verdre@v0yd.nl>
-In-Reply-To: <20211103171055.16911-1-verdre@v0yd.nl>
-References: <20211103171055.16911-1-verdre@v0yd.nl>
+        id S231359AbhKCRN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 13:13:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231211AbhKCRNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 13:13:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EC1361076;
+        Wed,  3 Nov 2021 17:11:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635959475;
+        bh=WsRWg5CcxOzuGYk3TbRj5+iaVwnIPkjCC9bWw72ciDA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qCfHjpJKYbewaAuNBwdCa9dT9LmiRfV1skX34KSobrsAEWSiiQqFGisTwJuJb8szj
+         Y6lypsMVfM64KNySmd3Z7DsJFKFILfZ8MKF2MKP3uOGVbxHcsskko5kThWsqcaCBOo
+         e5aNvioONzBbpDuW059nV8VL6AXRJ/Qt2Fd7UOYcf0wcFvy3i8h5HQjSGRiM1eM2xH
+         jxiqKy+pt8w3rwDmgEjIs3EV4VSmfsjiACNkwM7rP2qcg80MnCdBLU0yH3xB+9l2S0
+         W30FPVmnMa7l2tpfkU+JQSMpoZzqGgWTe5rcLym41agfRxoD3gj0QfLA2VnurSXCUq
+         dIK4AqmFpGs0w==
+Date:   Wed, 3 Nov 2021 19:11:08 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Kushal Kothari <kushalkothari285@gmail.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, mike.rapoport@gmail.com,
+        kushalkothari2850@gmail.com
+Subject: Re: [PATCH v2] mm: Fix ERROR:do not initialise statics to 0 or NULL
+ in memblock.c
+Message-ID: <YYLCrAQnky9LM06s@kernel.org>
+References: <20211103124523.10670-1-kushalkothari285@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: E523E1313
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211103124523.10670-1-kushalkothari285@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 88W8897 PCIe+USB card in the hardware revision 20 apparently has a
-hardware issue where the card wakes up from deep sleep randomly and very
-often, somewhat depending on the card activity, maybe the hardware has a
-floating wakeup pin or something. This was found by comparing two MS
-Surface Book 2 devices, where one devices wifi card experienced spurious
-wakeups, while the other one didn't.
+Hi,
 
-Those continuous wakeups prevent the card from entering host sleep when
-the computer suspends. And because the host won't answer to events from
-the card anymore while it's suspended, the firmwares internal power
-saving state machine seems to get confused and the card can't sleep
-anymore at all after that.
+On Wed, Nov 03, 2021 at 06:15:23PM +0530, Kushal Kothari wrote:
+> Subject: mm: Fix ERROR:do not initialise statics to 0 or NULL in memblock.c
 
-Since we can't work around that hardware bug in the firmware, let's
-get the hardware revision string from the firmware and match it with
-known bad revisions. Then disable auto deep sleep for those revisions,
-which makes sure we no longer get those spurious wakeups.
+Please use mm/memblock: or just memblock: prefix for memblock patches.
+Besides, this patch does not fix a real error, it's only style fixup, so
+"Fix ERROR" should be omitted here.
 
-Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
----
- drivers/net/wireless/marvell/mwifiex/main.c   | 18 +++++++++++++++++
- drivers/net/wireless/marvell/mwifiex/main.h   |  1 +
- .../wireless/marvell/mwifiex/sta_cmdresp.c    | 20 +++++++++++++++++++
- 3 files changed, 39 insertions(+)
+> The default value of static variable is zero and bool is false so
+> not need to set it here.
+> This patch fixes this ERROR in memblock.c
+> Error found with checkpatch.pl.
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/main.c b/drivers/net/wireless/marvell/mwifiex/main.c
-index 19b996c6a260..ace7371c4773 100644
---- a/drivers/net/wireless/marvell/mwifiex/main.c
-+++ b/drivers/net/wireless/marvell/mwifiex/main.c
-@@ -226,6 +226,23 @@ static int mwifiex_process_rx(struct mwifiex_adapter *adapter)
- 	return 0;
- }
+Again, this is not a real error in the code but rather a coding style
+inconsistency. Please update the changelog text to reflect this.
  
-+static void maybe_quirk_fw_disable_ds(struct mwifiex_adapter *adapter)
-+{
-+	struct mwifiex_private *priv = mwifiex_get_priv(adapter, MWIFIEX_BSS_ROLE_STA);
-+	struct mwifiex_ver_ext ver_ext;
-+
-+	if (test_and_set_bit(MWIFIEX_IS_REQUESTING_FW_VEREXT, &adapter->work_flags))
-+		return;
-+
-+	memset(&ver_ext, 0, sizeof(ver_ext));
-+	ver_ext.version_str_sel = 1;
-+	if (mwifiex_send_cmd(priv, HostCmd_CMD_VERSION_EXT,
-+			     HostCmd_ACT_GEN_GET, 0, &ver_ext, false)) {
-+		mwifiex_dbg(priv->adapter, MSG,
-+			    "Checking hardware revision failed.\n");
-+	}
-+}
-+
- /*
-  * The main process.
-  *
-@@ -356,6 +373,7 @@ int mwifiex_main_process(struct mwifiex_adapter *adapter)
- 			if (adapter->hw_status == MWIFIEX_HW_STATUS_INIT_DONE) {
- 				adapter->hw_status = MWIFIEX_HW_STATUS_READY;
- 				mwifiex_init_fw_complete(adapter);
-+				maybe_quirk_fw_disable_ds(adapter);
- 			}
- 		}
- 
-diff --git a/drivers/net/wireless/marvell/mwifiex/main.h b/drivers/net/wireless/marvell/mwifiex/main.h
-index 65609ea2327e..eabd0e0a9f56 100644
---- a/drivers/net/wireless/marvell/mwifiex/main.h
-+++ b/drivers/net/wireless/marvell/mwifiex/main.h
-@@ -524,6 +524,7 @@ enum mwifiex_adapter_work_flags {
- 	MWIFIEX_IS_SUSPENDED,
- 	MWIFIEX_IS_HS_CONFIGURED,
- 	MWIFIEX_IS_HS_ENABLING,
-+	MWIFIEX_IS_REQUESTING_FW_VEREXT,
- };
- 
- struct mwifiex_band_config {
-diff --git a/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c b/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
-index 20b69a37f9e1..6c7b0b9bc4e9 100644
---- a/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
-+++ b/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
-@@ -708,6 +708,26 @@ static int mwifiex_ret_ver_ext(struct mwifiex_private *priv,
- {
- 	struct host_cmd_ds_version_ext *ver_ext = &resp->params.verext;
- 
-+	if (test_and_clear_bit(MWIFIEX_IS_REQUESTING_FW_VEREXT, &priv->adapter->work_flags)) {
-+		if (strncmp(ver_ext->version_str, "ChipRev:20, BB:9b(10.00), RF:40(21)",
-+			    MWIFIEX_VERSION_STR_LENGTH) == 0) {
-+			struct mwifiex_ds_auto_ds auto_ds = {
-+				.auto_ds = DEEP_SLEEP_OFF,
-+			};
-+
-+			mwifiex_dbg(priv->adapter, MSG,
-+				    "Bad HW revision detected, disabling deep sleep\n");
-+
-+			if (mwifiex_send_cmd(priv, HostCmd_CMD_802_11_PS_MODE_ENH,
-+					     DIS_AUTO_PS, BITMAP_AUTO_DS, &auto_ds, false)) {
-+				mwifiex_dbg(priv->adapter, MSG,
-+					    "Disabling deep sleep failed.\n");
-+			}
-+		}
-+
-+		return 0;
-+	}
-+
- 	if (version_ext) {
- 		version_ext->version_str_sel = ver_ext->version_str_sel;
- 		memcpy(version_ext->version_str, ver_ext->version_str,
+> Signed-off-by: Kushal Kothari <kushalkothari285@gmail.com>
+> ---
+> 
+> Changes in v2: Correct the subject line and remove <stdbool.h> which isn't
+> necessary 
+> 
+>  mm/memblock.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index 5c3503c98b2f..9e2b7c1dbd03 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -152,10 +152,10 @@ static __refdata struct memblock_type *memblock_memory = &memblock.memory;
+>  	} while (0)
+>  
+>  static int memblock_debug __initdata_memblock;
+> -static bool system_has_some_mirror __initdata_memblock = false;
+> +static bool system_has_some_mirror __initdata_memblock;
+>  static int memblock_can_resize __initdata_memblock;
+> -static int memblock_memory_in_slab __initdata_memblock = 0;
+> -static int memblock_reserved_in_slab __initdata_memblock = 0;
+> +static int memblock_memory_in_slab __initdata_memblock;
+> +static int memblock_reserved_in_slab __initdata_memblock;
+>  
+>  static enum memblock_flags __init_memblock choose_memblock_flags(void)
+>  {
+> -- 
+> 2.25.1
+> 
+
 -- 
-2.33.1
-
+Sincerely yours,
+Mike.
