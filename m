@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA81444470
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D024D444476
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231705AbhKCPQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 11:16:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:47163 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231571AbhKCPQC (ORCPT
+        id S231751AbhKCPQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 11:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231175AbhKCPQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 11:16:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635952405;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EcjS/U0esOcZt9aUj7QJ/b283I90hVCo2RapOPx/5rA=;
-        b=HGFiV6qERFV8CfhHYS7/H9qzRdvTs34XX8F71Lqu2a/MBdd+KZCLf/1fxBTYmoMyWC/iox
-        5lNPD/YYPmb9se8yI/H54x/c335HeKzIyNqkGQzp46/7Na9nViuF8UqaYfFgP0UtdyfMcF
-        8E4YEQTTIgC1areHilmZ1cR9H2BvIh4=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-197-DilQ9wL3P5uSfLdUwKb2NQ-1; Wed, 03 Nov 2021 11:13:23 -0400
-X-MC-Unique: DilQ9wL3P5uSfLdUwKb2NQ-1
-Received: by mail-wr1-f70.google.com with SMTP id c4-20020adfed84000000b00185ca4eba36so491948wro.21
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 08:13:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=EcjS/U0esOcZt9aUj7QJ/b283I90hVCo2RapOPx/5rA=;
-        b=TM57SZ0avqolpD8cbH9C4jRsJYJPS7RPbYesfX0Cc6aXdVIKm2ZXRV6ZEd3x6p86xU
-         d8HzVjRkxHzwoYcaM7xutPXt8MkgOdem/dhoComT/AJSRL4NWNw9YinqWLLmprv7kKU9
-         KPiccBRPVHuD2Z7Hv4ULHyGFe4ww3QTMBoVHhG28fYjYtxcx1tawloOmbikAefHcvXxo
-         zicAAGuOGI3oFpObIFuu1Zs43gKj26f5ZthCEaXhK+IORmJdx8hLCjJAm7Xuph4SAYhP
-         xQKWANwm23ev8QFLEnEN45xOXOe1LugarvgiW114fbPEB02Y8sO55hrMcGyehNFzYU3B
-         jrsQ==
-X-Gm-Message-State: AOAM532beOoU9KLy6GvjxvzMCF/7noCAHVQWy+SE6h1f26ePHdtdIw+v
-        bFnCfYVcBTSQ2Lr4Zbul2z86x/nhU/QIKBlBhdoCBzAC+pCGCl0kisZF3QsfXk2ISz2OxJkwii9
-        vaFNGeXFhlkU82wAEXYXTuKguIvi/sJoKpEJIWqJYvVmaM5Uz2nUcLK6p4XMpkrLRVbD4kzWeLO
-        a8
-X-Received: by 2002:a05:600c:198d:: with SMTP id t13mr16116872wmq.21.1635952402269;
-        Wed, 03 Nov 2021 08:13:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJywJOfU5ytKMlivfLi6bw4DBBApAa9fqr7O37GSjz4t8SwMadSRVC41M824DZivE+K+jo0kcg==
-X-Received: by 2002:a05:600c:198d:: with SMTP id t13mr16116832wmq.21.1635952402009;
-        Wed, 03 Nov 2021 08:13:22 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id w1sm5574500wmc.19.2021.11.03.08.13.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 08:13:21 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/4] KVM: nVMX: Enlightened MSR Bitmap feature for
- Hyper-V on KVM
-In-Reply-To: <20211013142258.1738415-1-vkuznets@redhat.com>
-References: <20211013142258.1738415-1-vkuznets@redhat.com>
-Date:   Wed, 03 Nov 2021 16:13:18 +0100
-Message-ID: <87r1bxmfw1.fsf@vitty.brq.redhat.com>
+        Wed, 3 Nov 2021 11:16:55 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 496F3C061714;
+        Wed,  3 Nov 2021 08:14:19 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A11AA1BFB;
+        Wed,  3 Nov 2021 16:14:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1635952456;
+        bh=/pT0t4HdxZZH4X3sUJBg74ZiNquibZZWZCEsPHLK+ZQ=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=URdzYwnH5zgh00Sm7Wb9YBwFkJgsCoWwAX27I69UjBlWQ54ILde1ZA8U4D1+0YURe
+         Pn1IamuWX6Sqx6vQwA7U0BT23NMS1LjVv3pCE8AMUTYKlSoKvxmGcvWewr4XYchUJT
+         +VZYGO4ZB8EDKouv8yoUhvNSPpSM0ifBXnQoRUqo=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211103083337.387083-1-yang.guang5@zte.com.cn>
+References: <20211103083337.387083-1-yang.guang5@zte.com.cn>
+Subject: Re: [PATCH] media: use swap() to make code cleaner
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     hverkuil-cisco@xs4all.nl, arnd@arndb.de,
+        laurent.pinchart@ideasonboard.com, Julia.Lawall@inria.fr,
+        yang.guang5@zte.com.cn, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+To:     davidcomponentone@gmail.com, mchehab@kernel.org
+Date:   Wed, 03 Nov 2021 15:14:14 +0000
+Message-ID: <163595245449.275423.13730372490445199703@Monstersaurus>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vitaly Kuznetsov <vkuznets@redhat.com> writes:
+Hi David,
 
-> Changes since v2:
-> - Renamed 'msr_bitmap_changed' to 'msr_bitmap_force_recalc' [Paolo] and
->   expanded the comment near its definition explaining its limited 
->   usefulness [Sean].
->
-> Original description:
->
-> Updating MSR bitmap for L2 is not cheap and rearly needed. TLFS for Hyper-V
-> offers 'Enlightened MSR Bitmap' feature which allows L1 hypervisor to
-> inform L0 when it changes MSR bitmap, this eliminates the need to examine
-> L1's MSR bitmap for L2 every time when 'real' MSR bitmap for L2 gets
-> constructed.
->
-> When the feature is enabled for Win10+WSL2, it shaves off around 700 CPU
-> cycles from a nested vmexit cost (tight cpuid loop test).
->
-> First patch of the series is unrelated to the newly implemented feature,
-> it fixes a bug in Enlightened MSR Bitmap usage when KVM runs as a nested
-> hypervisor on top of Hyper-V.
->
+Is this patch something you discovered somewhere and have posted on
+behalf of Yang Guang?
 
-Ping?
+Have you made any modifications to it that would require your sign off?
+or is it simply a repost of a patch you came across?
 
--- 
-Vitaly
+Quoting davidcomponentone@gmail.com (2021-11-03 08:33:37)
+> From: Yang Guang <yang.guang5@zte.com.cn>
+>=20
+> Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
+> opencoding it.
+>=20
+> Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
 
+The change itself looks fine to me though.
+
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+> ---
+>  drivers/media/pci/saa7134/saa7134-video.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/media/pci/saa7134/saa7134-video.c b/drivers/media/pc=
+i/saa7134/saa7134-video.c
+> index 374c8e1087de..6f4132058c35 100644
+> --- a/drivers/media/pci/saa7134/saa7134-video.c
+> +++ b/drivers/media/pci/saa7134/saa7134-video.c
+> @@ -823,7 +823,7 @@ static int buffer_activate(struct saa7134_dev *dev,
+>  {
+>         struct saa7134_dmaqueue *dmaq =3D buf->vb2.vb2_buf.vb2_queue->drv=
+_priv;
+>         unsigned long base,control,bpl;
+> -       unsigned long bpl_uv,lines_uv,base2,base3,tmp; /* planar */
+> +       unsigned long bpl_uv, lines_uv, base2, base3; /* planar */
+> =20
+>         video_dbg("buffer_activate buf=3D%p\n", buf);
+>         buf->top_seen =3D 0;
+> @@ -869,9 +869,7 @@ static int buffer_activate(struct saa7134_dev *dev,
+>                 base2    =3D base + bpl * dev->height;
+>                 base3    =3D base2 + bpl_uv * lines_uv;
+>                 if (dev->fmt->uvswap) {
+> -                       tmp =3D base2;
+> -                       base2 =3D base3;
+> -                       base3 =3D tmp;
+> +                       swap(base2, base3);
+>                 }
+>                 video_dbg("uv: bpl=3D%ld lines=3D%ld base2/3=3D%ld/%ld\n",
+>                         bpl_uv,lines_uv,base2,base3);
+> --=20
+> 2.30.2
+>
