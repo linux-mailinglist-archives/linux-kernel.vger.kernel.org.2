@@ -2,87 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E029443E7E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:39:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D392443E83
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:41:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbhKCIly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 04:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230463AbhKCIlx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 04:41:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0B2C061714;
-        Wed,  3 Nov 2021 01:39:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JsSCd4BUHuy7v+Nl/hcJhjaRwZ5I4g7Y8Z+ohPTpfsQ=; b=sOFEALajwKbrh4NJXZglhMjojt
-        sslQXZ6An3xS/C5R4ixgCsmtppAP2XYyjf6b+umCO0YCJ4Q9vocClZkgKgu767KW7hmBIWoCiwqH/
-        SJem8ZBkFM3C0RhR4e8SmS5GwsFSdX0VQUpf5vyP6aH8thGxQw4HwE58snW4k97RxqQuHhOLKP7Xq
-        lWJTy4x6UO20nW2URnTbs2k5GMR87vi5jrbWcdHPnWESyp3ZaVAcYoCsDo0mRGojnkOCgKGeKgxUF
-        15kUPASdSFIG+XRyerIRFVGDKbdmKvWSfNZMG/6idh2SoXYBar2S7Rn9tuCjRQ1EDUaiETM21lcgV
-        D/95v6Tw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1miBkW-00550p-6T; Wed, 03 Nov 2021 08:36:35 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C745F986378; Wed,  3 Nov 2021 09:35:59 +0100 (CET)
-Date:   Wed, 3 Nov 2021 09:35:59 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
-Message-ID: <20211103083559.GB174703@worktop.programming.kicks-ass.net>
-References: <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
- <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
- <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
- <20211101090155.GW174703@worktop.programming.kicks-ass.net>
- <CAMj1kXGhRmdM3om289Q2-s1Pzfob3D2iSDMorzggfhSk1oj53A@mail.gmail.com>
- <YYE1yPClPMHvyvIt@hirez.programming.kicks-ass.net>
- <202111021040.6570189A5@keescook>
- <90a14299-ce56-41d5-9df9-f625aae1ac70@www.fastmail.com>
- <202111021603.EDE5780FE@keescook>
- <bbde172b-2dae-fdc0-fbb5-edec6752c740@kernel.org>
+        id S231557AbhKCIo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 04:44:27 -0400
+Received: from www.zeus03.de ([194.117.254.33]:56542 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231259AbhKCIoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 04:44:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=dMC2lX62GntGviPXdg/KWy3WWd2f
+        nwOs+hAlvdSI+Lo=; b=QkUE+PYyhJ6Za2I7PJCop+MWdhAp1+DuxGz25qrGeOSO
+        4aZYDMTQ/rzXAh8NesG7J2PDQsMWCSKD7FxVLHhkCscS9xLyax7W5hGuYiokKYwN
+        7trj+QmOo/rS0vuMoxsz3Gluqen6Ok+q0NGYvlIKuUYWkKxXxI6icfsSqPXpDmo=
+Received: (qmail 3771547 invoked from network); 3 Nov 2021 09:41:47 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 3 Nov 2021 09:41:47 +0100
+X-UD-Smtp-Session: l3s3148p1@kvpAYd7PnoAgAwDPXwjwAA05VFZREelC
+Date:   Wed, 3 Nov 2021 09:41:44 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-mtd@lists.infradead.org,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH v2 7/7] memory: renesas-rpc-if: Add support for RZ/G2L
+Message-ID: <YYJLSCE9ak2I/9A/@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211025205631.21151-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <YYElefbpP4pwfmUl@shikoro>
+ <CA+V-a8uJxeSr=uoF14gccuSLG7WRqRk8X8uD9UDoxKPGM8hGgQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pYP2Iqqm8byYnsBb"
 Content-Disposition: inline
-In-Reply-To: <bbde172b-2dae-fdc0-fbb5-edec6752c740@kernel.org>
+In-Reply-To: <CA+V-a8uJxeSr=uoF14gccuSLG7WRqRk8X8uD9UDoxKPGM8hGgQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 05:20:05PM -0700, Andy Lutomirski wrote:
-> I think that's a big mistake -- any sane ENDBR-using scheme would
-> really prefer that ENDBR to be right next to the actual function body,
-> and really any scheme would benefit due to better cache locality. 
 
-Agreed, IBT/BTI want the landing pad in front of the actual function.
+--pYP2Iqqm8byYnsBb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> But, more importantly, IMO any sane ENDBR-using scheme wants to
-> generate the indirect stub as part of code gen for the actual
-> function.
+Hi Prabhakar,
 
-Sorta, I really want to be able to not have a landing pad for functions
-whose address is never taken. At that point it doesn't matter if it gets
-generated along with the function and then stripped/poisoned later, or
-generated later.
+> Oops I missed that, does the below look good?
 
-As such, the landing pad should not be part of the function proper,
-direct calls should never observe it.
+Yes, only a minor nit.
 
-Less landing pads is more better.
+>=20
+> #define RPCIF_PHYADD_ADD_MD 0x00
+> #define RPCIF_PHYADD_ADD_RDLSEL 0x22
+> #define RPCIF_PHYADD_ADD_FDLSEL 0x24
+> #define RPCIF_PHYADD_ADD_RDLMON 0x26
+> #define RPCIF_PHYADD_ADD_FDLMON 0x28
+>=20
+> #define RPCIF_PHYADD_ACCEN BIT(31)
+> #define RPCIF_PHYADD_RW BIT(30)
+
+Maybe we could leave this because we don't use it? You decide.
+
+> > +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00000030);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000032);
+> >
+> For the above do you have any suggestions? As I couldn't find any
+> details about it or shall I just go with magic numbers for now?
+
+Ack. I couldn't find docs about these as well. I suggest to add a
+comment where this value came from. We can ask the BSP and/or HW team
+for details and update this pair incrementally.
+
+> thanks, once we agree upon above I shall re-spin v3.
+
+Cool, looking forward to it!
+
+Happy hacking,
+
+   Wolfram
+
+
+--pYP2Iqqm8byYnsBb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGCS0QACgkQFA3kzBSg
+KbbuNhAAnt0A/Q1rD7IOA7oPFNk3ipuC9zHlHj5EodZ/Ad1DoMUIezY+NV5bSbEf
+HP4OuTP+/OSbd3bQbyBnNwM1P8dTR6FBK4CfqPnRISF5qm8AsB3ByoA5Webxy5QO
+GeP2cSJwY+zQetc9EcMoxARH+1ZztRDLK7CA/y5oiURwSeUBxafJ8uRuRYOTgoA6
+SAx9c7NAfH7D1Yv/eMsZrA7Kwe0Ms2wYwWyjLl9W0NDZiAgoPiUk2RDojMcbA00J
+6fvEd5wYY6yPyjay4dFXHjFp3SToPq6KZ2+oBCSaTqhJFoLLUgWgJUQSHO/0TgaQ
+Za8j3ncwdvj1lilrsxBZ7rdA9A/vyq6nFgBadvLVBB8wz/G9tWRSQZSKouvUQ6QO
+6yEsCic5yrg2cmgj4XU964fM5a1pCVYpISE6UX3R5l/gJwMlPtXeyP7w6n53ZvaJ
+lCtT8ulpZxdPrv6uHSH0qXEXwudZ2XxEOPlTYczJVXd5o6ckZCdeToDvZyR19AU9
+ud2N0oc39jcYI4B6P0afBxZiavi1cu4xixaBxl6xq5o0wx6BSZR0gqHNXznQ5GWo
+zsshKoBvM+tpInbYYJXBLj+9pLLjMjh5/1zEA6+zF5t6fcxTGbrQ/sSc/ssBXr+R
+b50WBFSq6RsGLUIVFJJAhWSDUpd7XBZpc2fzbzGcKKnpNBNweo4=
+=7d/U
+-----END PGP SIGNATURE-----
+
+--pYP2Iqqm8byYnsBb--
