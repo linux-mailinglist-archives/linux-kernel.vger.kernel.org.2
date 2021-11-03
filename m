@@ -2,127 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B9C4444AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2594444B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231359AbhKCPgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 11:36:12 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:37854 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229587AbhKCPgL (ORCPT
+        id S231679AbhKCPiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 11:38:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231502AbhKCPiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 11:36:11 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A3EFfR0021308;
-        Wed, 3 Nov 2021 16:33:15 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=selector1;
- bh=mYKeBd4Rvz5CtOAEHTz2L9t5qnO8yoveDHhoGmG7whM=;
- b=j5RNufqEae/YrSmA/HIUdjJHd2nDtrcHxJTiAe8I1w2VujVTGyUJxvsQF+XxzqLaMvCD
- wUqTfOe632sXn4q9/iQAMcaovjf36b4/eyYxB4IbEeqjbWnpLNeLqHoWZqPsrmZYd2qA
- nNS3RX6xayIaYsESlXHPHdQZpQw3/vYLkbDTqcnoux7Ie+qkKb8IzXuU/Fw/h0VcRa21
- 16ty++0jf5UNUE8BzrOfyh7Zfm5QsOVZP5ibVb83vu7dGi6V5WoHKoTfY7w9p9qVoIgJ
- UQuOF+cAoh/+1f6FciQWLwJCh1JNWaN57TDL8x6Kev7YIcYikHylt+VDYg++hLTW5b+G dw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c3db954tn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Nov 2021 16:33:15 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4119410002A;
-        Wed,  3 Nov 2021 16:33:14 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1B98224164E;
-        Wed,  3 Nov 2021 16:33:14 +0100 (CET)
-Received: from localhost (10.75.127.51) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 3 Nov 2021 16:33:13
- +0100
-From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     <dmaengine@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH 1/1] dmaengine: stm32-dma: avoid 64-bit division in stm32_dma_get_max_width
-Date:   Wed, 3 Nov 2021 16:33:12 +0100
-Message-ID: <20211103153312.41483-1-amelie.delaunay@foss.st.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 3 Nov 2021 11:38:14 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD6AC061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 08:35:38 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id n23so2683657pgh.8
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 08:35:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=U+B8Hf1PfsKsr2YH8Xlnh9nNd0DF8feROp75CoCDRiA=;
+        b=FukFJQLwi8HTKk0+fixspqNA2BgQXBjfOgW8NENe6o38DP7dfo0RaIZgQNOPbaL6+p
+         /0dem6RQ/p5GvzfR42F5v0TLvItvnPuGstUNc6eXBfoowjj0hdyP0IOA4Qf14J+MLB28
+         A13954FyI3LP/a05AZkst9fRVLXRGK+CrYKwSo8COIhIkKhF0pjy7kL0SuyFDP0leP2G
+         eU+rlumzwyMgjigZSzsCaWj5uEaUbZjfU5RlnvC08eQy+WY366uA1sSM8vlOw1My7veS
+         RZbF1/6V973ZON6MPYq/6EMpOSq8o7Ndl6Qt4Yc+mUsjIAJ1pdk8vfUgSOk0e51dBsC6
+         9Fpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=U+B8Hf1PfsKsr2YH8Xlnh9nNd0DF8feROp75CoCDRiA=;
+        b=5tVf+uLkjKvB461EyDjLkuzW7k9l0Ig3i96aZT4BrH4ziPFPcC8QdUPRQHFXPUQU7/
+         su3hbMXRPbQ6UYtSZfhtD2cwGga9Z+wCUSZVV5tZ/vJQJwGf6CwLR/EDpTZ8bP1PUbnN
+         YH5b3XxbLxNb4CfmxGMTU7mdtTesEg3D0kniq0h/IrKvESgZ4dx1zy1bc3FCPmNOb4yr
+         g2DmEEvwvklvuAvg4JGnmjsOy+p22Z1FX/fcmH02zzR/g+tsy35Bj/bBtvb+H2tw1Zs5
+         U+YloOEPbxFT0/SnZCGVoqs16w4EB8jG08AdkfGHXpcuVXxfxLzWLadi804tlYQIMpvN
+         5jBg==
+X-Gm-Message-State: AOAM533H4qiCThABGCt2b5IyHTf414BLG7N0jqrccQq0RKmiYlnHHayl
+        ES3w9peKNKFwiVjn+fMT5Xa4h6KBBd4=
+X-Google-Smtp-Source: ABdhPJyBxDVtiZ2twRWo36io7cuy4zlus0U0RUX3qcrBJAznP+R8QvHG+dHeOJZrivrwmgjX4RvudQ==
+X-Received: by 2002:a62:7dc7:0:b0:47e:50ae:b9eb with SMTP id y190-20020a627dc7000000b0047e50aeb9ebmr43735240pfc.77.1635953737566;
+        Wed, 03 Nov 2021 08:35:37 -0700 (PDT)
+Received: from pc ([223.197.3.99])
+        by smtp.gmail.com with ESMTPSA id 1sm2547453pfl.133.2021.11.03.08.35.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 03 Nov 2021 08:35:37 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 23:35:29 +0800
+From:   Zhaoyu Liu <zackary.liu.pro@gmail.com>
+To:     gregkh@linuxfoundation.org, masahiroy@kernel.org,
+        ripxorip@gmail.com, zackary.liu.pro@gmail.com, mpe@ellerman.id.au
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] scripts/tags: merge "TAGS" and "tags" in case
+Message-ID: <20211103153522.GA23842@pc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-03_05,2021-11-03_01,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+merge "TAGS" and "tags" for the code more concise
 
-Using the % operator on a 64-bit variable is expensive and can
-cause a link failure:
-
-arm-linux-gnueabi-ld: drivers/dma/stm32-dma.o: in function `stm32_dma_get_max_width':
-stm32-dma.c:(.text+0x170): undefined reference to `__aeabi_uldivmod'
-arm-linux-gnueabi-ld: drivers/dma/stm32-dma.o: in function `stm32_dma_set_xfer_param':
-stm32-dma.c:(.text+0x1cd4): undefined reference to `__aeabi_uldivmod'
-
-As we know that we just want to check the alignment in
-stm32_dma_get_max_width(), there is no need for a full division, and
-using a simple mask is a faster replacement.
-
-Same in stm32_dma_set_xfer_param(), change this to only allow burst
-transfers if the address is a multiple of the length.
-stm32_dma_get_best_burst just after will take buf_len into account to fix
-burst in case of misalignment.
-
-Fixes: b20fd5fa310c ("dmaengine: stm32-dma: fix stm32_dma_get_max_width")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Signed-off-by: Zhaoyu Liu <zackary.liu.pro@gmail.com>
 ---
- drivers/dma/stm32-dma.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ scripts/tags.sh | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/dma/stm32-dma.c b/drivers/dma/stm32-dma.c
-index 2283c500f4ce..83a37a6955a3 100644
---- a/drivers/dma/stm32-dma.c
-+++ b/drivers/dma/stm32-dma.c
-@@ -280,7 +280,7 @@ static enum dma_slave_buswidth stm32_dma_get_max_width(u32 buf_len,
- 	       max_width > DMA_SLAVE_BUSWIDTH_1_BYTE)
- 		max_width = max_width >> 1;
+diff --git a/scripts/tags.sh b/scripts/tags.sh
+index 16d475b3e203..a9181dd0fee2 100755
+--- a/scripts/tags.sh
++++ b/scripts/tags.sh
+@@ -315,15 +315,11 @@ case "$1" in
+ 		dogtags
+ 		;;
  
--	if (buf_addr % max_width)
-+	if (buf_addr & (max_width - 1))
- 		max_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
- 
- 	return max_width;
-@@ -757,7 +757,7 @@ static int stm32_dma_set_xfer_param(struct stm32_dma_chan *chan,
- 		 * Set memory burst size - burst not possible if address is not aligned on
- 		 * the address boundary equal to the size of the transfer
- 		 */
--		if (buf_addr % buf_len)
-+		if (buf_addr & (buf_len - 1))
- 			src_maxburst = 1;
- 		else
- 			src_maxburst = STM32_DMA_MAX_BURST;
-@@ -813,7 +813,7 @@ static int stm32_dma_set_xfer_param(struct stm32_dma_chan *chan,
- 		 * Set memory burst size - burst not possible if address is not aligned on
- 		 * the address boundary equal to the size of the transfer
- 		 */
--		if (buf_addr % buf_len)
-+		if (buf_addr & (buf_len - 1))
- 			dst_maxburst = 1;
- 		else
- 			dst_maxburst = STM32_DMA_MAX_BURST;
+-	"tags")
+-		rm -f tags
+-		xtags ctags
+-		remove_structs=y
+-		;;
+-
+-	"TAGS")
+-		rm -f TAGS
+-		xtags etags
++	"TAGS" | "tags")
++		rm -f $1
++		xtags $([ $1 = "tags" ]	\
++			&& echo ctags		\
++			|| echo etags)
+ 		remove_structs=y
+ 		;;
+ esac
 -- 
-2.25.1
+2.17.1
 
