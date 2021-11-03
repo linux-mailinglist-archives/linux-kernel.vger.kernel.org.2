@@ -2,182 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82601443A7C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 01:36:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D687A443A78
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 01:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbhKCAjT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Nov 2021 20:39:19 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:52358 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbhKCAjR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 20:39:17 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1A30aI4D1002553, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 1A30aI4D1002553
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 3 Nov 2021 08:36:18 +0800
-Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
- RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 3 Nov 2021 08:36:18 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 3 Nov 2021 08:36:17 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::dc53:1026:298b:c584]) by
- RTEXMBS04.realtek.com.tw ([fe80::dc53:1026:298b:c584%5]) with mapi id
- 15.01.2308.015; Wed, 3 Nov 2021 08:36:17 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-CC:     Colin King <colin.king@canonical.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH][next] rtw89: Fix potential dereference of the null pointer sta
-Thread-Topic: [PATCH][next] rtw89: Fix potential dereference of the null
- pointer sta
-Thread-Index: AQHXwduziBNegQ3KtE6tzEeaYjpkJqvX/pCwgBfOyICAAT/CgA==
-Date:   Wed, 3 Nov 2021 00:36:17 +0000
-Message-ID: <c3de973999ea40cf967ffefe0ee56ed4@realtek.com>
-References: <20211015154530.34356-1-colin.king@canonical.com>
- <9cc681c217a449519aee524b35e6b6bc@realtek.com> <20211102131437.GF2794@kadam>
-In-Reply-To: <20211102131437.GF2794@kadam>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.188]
-x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/11/2_=3F=3F_10:50:00?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S232833AbhKCAjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 20:39:00 -0400
+Received: from mail-mw2nam12on2075.outbound.protection.outlook.com ([40.107.244.75]:45148
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229804AbhKCAi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Nov 2021 20:38:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YIQb/TJa1WKdWZN4a5Gbp66swYpVq61q951zix3vSCZHLDznBYG00scnTcU6c2d4pTT4XyKZUhL86Keehjk/Toza/QO12P3Yf+qB8SR4/dDaM/gcBrBLW3MROS51g9nFFRHUJu4ov8QYSI7KvkMdRZLJe5WTFodfh5qBbeavAiOCjNKgnrv+CDuAlIY6p8mz7rasqo4exI8BVXJSOssXvwXC8LnVPqjG/szsBEWQGX3YCNGIGByjBwPnLDSwRVgTg0zg2xp45FaGvj5Qe51CvUwwptpyiAfsSXJxt6UtEuJoN+EnU2T+dDSUhgOoAqZvXivtFtg38LY5W1p5dpyzeQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VH5jxM49JMmiKzgqtmIyfO7TI/XvZiQSEiiVMHZm78g=;
+ b=EeRPUj3xJ1wuYBU2BC5uQ9AZV408khkgzTkDUHtbttdRUmdz11KZyeAbm3ILOpuL5xHPBsYDPtwORLRSp+WKeIGJEYopMIj4Pz/L8SIuvSqUq+uknKuXOgOyQi6/5icC1B7CHT/NdYuHT17nFFfpVvCP38ZoX9GXJz2DJz/1FHyDa7mJlXYJQrkQYv0MBY9SrkMO0czngoGFH8RfcVycko6OYLp3o1rYtF7AY5hYEM+Klnvh7C7PVqW1IyVwmt82p3BQGssqN4MXD/L8DXD2L0/8caBr+Qq39MDjAhR0Z2y4HkujDedOJCyvuFldyBTlrXdxtwbsP/a9OIS9mGJ6+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VH5jxM49JMmiKzgqtmIyfO7TI/XvZiQSEiiVMHZm78g=;
+ b=F8i1m1nk53TK6MJLy26Ctwvbv5Ocs4W/jpznZKq5LQ2Ln8Y6RFYxa02b6v7/MbMz03YKaWpsx3T2SLcUz+iCA+K8rfEmcXUN37SggXpaTO9oQpDwJkrOmayRvyTv6bohqfrAj3kFAvlQjHqhpU5J3j+tYCvdfkrxInUNQgQtLiJhHIMzqx2YfKFzLQckKYfsnErQUGPbGSX5ZbqzrBEUsZTJ0HyquKhVo2cZKkp/XEH0T2ecgB07/hnmWVg2x5+pj7mv3seUqozKIrD/mmh6LKbeJRXFb7FV7fz+G6JfgIhm6kY+A5hNxDB7c7g8FnX/dKg6XmVhaCiVzV8Kpm62Ow==
+Received: from BN9P223CA0013.NAMP223.PROD.OUTLOOK.COM (2603:10b6:408:10b::18)
+ by BN6PR12MB1553.namprd12.prod.outlook.com (2603:10b6:405:6::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10; Wed, 3 Nov
+ 2021 00:36:20 +0000
+Received: from BN8NAM11FT060.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:10b:cafe::9) by BN9P223CA0013.outlook.office365.com
+ (2603:10b6:408:10b::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10 via Frontend
+ Transport; Wed, 3 Nov 2021 00:36:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT060.mail.protection.outlook.com (10.13.177.211) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4669.10 via Frontend Transport; Wed, 3 Nov 2021 00:36:20 +0000
+Received: from [172.17.173.69] (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 3 Nov
+ 2021 00:36:18 +0000
+Subject: Re: [RFC v2 02/11] drivers: Add hardware timestamp engine (HTE)
+To:     Randy Dunlap <rdunlap@infradead.org>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <linux-kernel@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
+        <warthog618@gmail.com>, <devicetree@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <robh+dt@kernel.org>
+References: <20210930232617.6396-1-dipenp@nvidia.com>
+ <20210930232617.6396-3-dipenp@nvidia.com>
+ <010426c7-74ed-33fb-0c06-c42408cffc0e@infradead.org>
+X-Nvconfidentiality: public
+From:   Dipen Patel <dipenp@nvidia.com>
+Message-ID: <b720c238-a285-9741-4209-c22166765fa3@nvidia.com>
+Date:   Tue, 2 Nov 2021 17:37:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 11/03/2021 00:25:21
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 167068 [Nov 03 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 465 465 eb31509370142567679dd183ac984a0cb2ee3296
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 11/03/2021 00:28:00
+In-Reply-To: <010426c7-74ed-33fb-0c06-c42408cffc0e@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1fb6aebe-1182-48a6-e78d-08d99e61f4ac
+X-MS-TrafficTypeDiagnostic: BN6PR12MB1553:
+X-Microsoft-Antispam-PRVS: <BN6PR12MB155330E16F0159DD19B242A6AE8C9@BN6PR12MB1553.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qRDYA76A6dabcRcYmh3ZFTV8+MvtrRg2XeKI6Witt1SrGqLlLGeC/4IHeIJrLZdPzyerBKlkwUR7Dm0Wc+TNbZuJ0EDrBDMwU2IaiiWz1VA0cDWmZO395gJ2rs51Hxqa1zFaH6aDB/vPQyXxncHk+A0KUvNZbMnTQbnf3g4FZ4kbK+DCRe6ZXwOZOkZSzV5BjcQ4XepXNmgUVodIt3VnsDU25mw8DgNV960nJx++sf3JEhMNdCGUeXLNt7TAXhI8FgeFw5Bbzqymw5lY4o9jWyNStOzs46s/mllguEahzsD8WhldU4GCg2ePdsuAif5YitOKWA9mx1ri+XLRmgdVx8RLslbaJ4Utu7To8gi0mH/UF05DwG8+v94yamkr5Cmkyxo9WuBTqOe4AhHh4lEIzIw6zuSIZgd4Vz3xp+mlssjnGEhfAjhhwaBFQaz9FoP4OQup/EMJ81cCYrF2BD/o7D0gReB5h8JT1xwIKaqySJTJ0tuoKZh+X7eR5KzmfgsGbs8iuOJB6NFc+1EgyWH/lTMQ9z4AjIXFdlN67nNY/umGNuppEVut4szGSzHIFA8agz21KOJk47YAsIe69oaAO7JCK54+GM6lOW9ieRLzeXzGImpNb/zjeLjC8nrjWsMTfqvAVBByOvcvSkyuq4MaSFRvOJUy+U7AUrXHPXtlXix0BLSlcTqD01HFrzTNg9aiSAg57FCYzpxf+QyygR6C7cnGeQNRKMNIUTZ8O7pwLDWTx8Uz7S+xT1sSFwqNSKM1L4/GDCugBeYA0Lz0Ya9AzL5Anm9HAJVKIJATKO17IO0=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(36906005)(47076005)(8936002)(83380400001)(508600001)(110136005)(7416002)(70206006)(2616005)(26005)(31686004)(316002)(86362001)(16526019)(921005)(2906002)(36860700001)(70586007)(31696002)(356005)(7636003)(8676002)(36756003)(336012)(5660300002)(53546011)(16576012)(186003)(426003)(82310400003)(43740500002)(2101003)(83996005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2021 00:36:20.1805
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1fb6aebe-1182-48a6-e78d-08d99e61f4ac
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT060.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1553
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Randy,
 
-> -----Original Message-----
-> From: Dan Carpenter <dan.carpenter@oracle.com>
-> Sent: Tuesday, November 2, 2021 9:15 PM
-> To: Pkshih <pkshih@realtek.com>
-> Cc: Colin King <colin.king@canonical.com>; Kalle Valo <kvalo@codeaurora.org>; David S . Miller
-> <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; linux-wireless@vger.kernel.org;
-> netdev@vger.kernel.org; kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH][next] rtw89: Fix potential dereference of the null pointer sta
-> 
-> On Mon, Oct 18, 2021 at 03:35:28AM +0000, Pkshih wrote:
-> >
-> > > -----Original Message-----
-> > > From: Colin King <colin.king@canonical.com>
-> > > Sent: Friday, October 15, 2021 11:46 PM
-> > > To: Kalle Valo <kvalo@codeaurora.org>; David S . Miller <davem@davemloft.net>; Jakub Kicinski
-> > > <kuba@kernel.org>; Pkshih <pkshih@realtek.com>; linux-wireless@vger.kernel.org;
-> > > netdev@vger.kernel.org
-> > > Cc: kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
-> > > Subject: [PATCH][next] rtw89: Fix potential dereference of the null pointer sta
-> > >
-> > > From: Colin Ian King <colin.king@canonical.com>
-> > >
-> > > The pointer rtwsta is dereferencing pointer sta before sta is
-> > > being null checked, so there is a potential null pointer deference
-> > > issue that may occur. Fix this by only assigning rtwsta after sta
-> > > has been null checked. Add in a null pointer check on rtwsta before
-> > > dereferencing it too.
-> > >
-> > > Fixes: e3ec7017f6a2 ("rtw89: add Realtek 802.11ax driver")
-> > > Addresses-Coverity: ("Dereference before null check")
-> > > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > > ---
-> > >  drivers/net/wireless/realtek/rtw89/core.c | 9 +++++++--
-> > >  1 file changed, 7 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/net/wireless/realtek/rtw89/core.c
-> > > b/drivers/net/wireless/realtek/rtw89/core.c
-> > > index 06fb6e5b1b37..26f52a25f545 100644
-> > > --- a/drivers/net/wireless/realtek/rtw89/core.c
-> > > +++ b/drivers/net/wireless/realtek/rtw89/core.c
-> > > @@ -1534,9 +1534,14 @@ static bool rtw89_core_txq_agg_wait(struct rtw89_dev *rtwdev,
-> > >  {
-> > >  	struct rtw89_txq *rtwtxq = (struct rtw89_txq *)txq->drv_priv;
-> > >  	struct ieee80211_sta *sta = txq->sta;
-> > > -	struct rtw89_sta *rtwsta = (struct rtw89_sta *)sta->drv_priv;
-> >
-> > 'sta->drv_priv' is only a pointer, we don't really dereference the
-> > data right here, so I think this is safe. More, compiler can optimize
-> > this instruction that reorder it to the place just right before using.
-> > So, it seems like a false alarm.
-> 
-> The warning is about "sta" not "sta->priv".  It's not a false positive.
-> 
-> I have heard discussions about compilers trying to work around these
-> bugs by re-ordering the code.  Is that an option in GCC?  It's not
-> something we should rely on, but I'm just curious if it exists in
-> released versions.
-> 
-
-I say GCC does "reorder" the code, because the object codes of following
-two codes are identical with default or -Os ccflags.
-If I misuse the term, please correct me.
-
-Code-1:
-	struct rtw89_sta *rtwsta = (struct rtw89_sta *)sta->drv_priv;
-
-	if (!sta)
-		return false;
-
-	if (rtwsta->max_agg_wait <= 0)
-		return false;
-
-Code-2:
-	struct rtw89_sta *rtwsta;
-
-	if (!sta)
-		return false;
-
-	rtwsta = (struct rtw89_sta *)sta->drv_priv;
-	if (rtwsta->max_agg_wait <= 0)
-		return false;
+I will implement all your suggestions in RFC v3.
 
 
-The code-1 is the original code Coverity and smatch warn use-before-check.
-The code-2 can avoid this warning without doubt.
+Best Regards,
 
-To be clear, I have sent a patch to fix this.
+Dipen Patel
 
---
-Ping-Ke
-
+On 10/1/21 4:53 PM, Randy Dunlap wrote:
+> On 9/30/21 4:26 PM, Dipen Patel wrote:
+>> diff --git a/drivers/hte/Kconfig b/drivers/hte/Kconfig
+>> new file mode 100644
+>> index 000000000000..6fdf243d281b
+>> --- /dev/null
+>> +++ b/drivers/hte/Kconfig
+>> @@ -0,0 +1,22 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only
+>> +menuconfig HTE
+>> +    bool "Hardware Timestamping Engine (HTE) Support"
+>> +    help
+>> +      Hardware Timestamping Engine (HTE) Support.
+>> +
+>> +      Some devices provide hardware timestamping engine which can timestamp
+>
+>                    provide a hardware
+>
+>> +      certain device lines/signals in realtime. This way to provide
+>
+>                                                 This provides a
+>
+>> +      hardware assisted timestamp to generic signals like GPIOs, IRQs lines
+>
+>       hardware-assisted                              like GPIOs or IRQ lines.
+>
+>
+>> +      comes with benefit for the applications like autonomous machines
+>
+>       It comes with a benefit for applications like
+>
+>> +      needing accurate timestamping event with less jitter.
+>> +
+>> +      This framework provides a generic interface to such HTE devices
+>> +      within the Linux kernel. It provides an API to register and
+>> +      unregister a HTE provider chip, configurable sw buffer to
+>
+>                                                    software
+>
+>> +      store the timestamps, push the timestamp from the HTE providers and
+>> +      retrieve timestamps for the consumers. It also provides means for the
+>> +      consumers to request signals it wishes to hardware timestamp and
+>> +      release them if not required.
+>> +
+>> +      If unsure, say no.
+>
+>
+> HTH.
