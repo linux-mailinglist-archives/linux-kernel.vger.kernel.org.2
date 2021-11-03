@@ -2,155 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB32444245
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A2544424F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:23:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231521AbhKCNW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 09:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
+        id S231721AbhKCN0R convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Nov 2021 09:26:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbhKCNWZ (ORCPT
+        with ESMTP id S231151AbhKCN0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 09:22:25 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12576C061714;
-        Wed,  3 Nov 2021 06:19:49 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id o8so9178441edc.3;
-        Wed, 03 Nov 2021 06:19:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iBw1yCNAA4AvNhG6fsCpNeC6xd4fv5a0QO7+TeMW5tA=;
-        b=HTIoVNTxRT6hNM5LESbhnxcGZT7AvCkDzzgpLZhbYoUYfyHgpYWtcPNB9nSZweVMeT
-         lzZhxLQaJLYt9Wd1f/djPCvUAFW21ZOYGzFj6OHdfl8pt2Qn6uFhAI70gfD5Hx6HqtXB
-         q0WIKRsR/g0+OiM04hRDMrasK2TVVfgYWkPpCTWPv7u9sTNGMY4BjI4OEgTq/FuGNTtw
-         lHRCtBvdw0s03AaZvOOihBhPhz8l6QFJWB60kdMAIO8KniJgBKkSD4EUFHHPmVpDKtD2
-         4GUsgh4ry0Jpm7jIMNx7r34GpJ8q0yfHetZEsnCQP1IoWsQbTgMP0Bht19kx9o7qxtcE
-         /jfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iBw1yCNAA4AvNhG6fsCpNeC6xd4fv5a0QO7+TeMW5tA=;
-        b=HJRbMqXhHkFQIhAiHOuSGcJaouW6mHgyzBlf7V3ClxMEUAYGYwE0yVh1ettLVy9qXN
-         eY7Ke80Q1+fvpJT83g0Qta0vzR+sF5156yoffFE+KIb63TR/I1hzZG8ofnHFk5RDOVP9
-         cbKS7hVrhtEjft4Q50WKyH9V4WALlxEJ50AA1zxAwDvVhhrdLoye8+CQyCOQv92mxz0H
-         dXcCJRbKSokhJLBMD7abzn6uGrqvctWWbOTMPJZJd9AftPXQHBE6kobGCZUN8JqRJn0N
-         O28IkyLi7VtXfsQZNaUQd6BHiKuzNhn5oxl7ujtdCFgbrWAo7jl8iADsCrz23ajKMn5P
-         uzug==
-X-Gm-Message-State: AOAM5330rkugB+koiXMDjDutjX9sH15cylPpImoK8Ku/eiDykrjYVvf6
-        Cozp1N/FSUHTUyD8NfVqAzr9UCP9rz4/fuf5d2o=
-X-Google-Smtp-Source: ABdhPJymNaCzymWXJ7HPOMdKPi+w3XAJ/Jbn3I1ltpX9fSk5Hp/PjzgUNq7MBbIr63pBoadGGQ1dyVlQOddMi+IlfKQ=
-X-Received: by 2002:a17:907:75f0:: with SMTP id jz16mr4601572ejc.77.1635945586742;
- Wed, 03 Nov 2021 06:19:46 -0700 (PDT)
+        Wed, 3 Nov 2021 09:26:12 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C08AC061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 06:23:36 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1miGEe-0001tb-E1; Wed, 03 Nov 2021 14:23:24 +0100
+Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1miGEb-000576-Hg; Wed, 03 Nov 2021 14:23:21 +0100
+Date:   Wed, 3 Nov 2021 14:23:21 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Oleksij Rempel <linux@rempel-privat.de>, kernel@pengutronix.de,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v2 1/3] can: j1939: j1939_tp_cmd_recv(): ignore abort
+ message in the BAM transport
+Message-ID: <20211103132321.GK20681@pengutronix.de>
+References: <1635431907-15617-1-git-send-email-zhangchangzhong@huawei.com>
+ <1635431907-15617-2-git-send-email-zhangchangzhong@huawei.com>
 MIME-Version: 1.0
-References: <20211103124329.171124-1-tomm.merciai@gmail.com>
-In-Reply-To: <20211103124329.171124-1-tomm.merciai@gmail.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Wed, 3 Nov 2021 08:19:34 -0500
-Message-ID: <CAHCN7x+MbLJ=JLLJBK1_XpW7CtP5NUqZixB0AHnDg=r83uC2Bw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: imx8mm: Add NOC node
-To:     Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Peng Fan <peng.fan@nxp.com>, Alice Guo <alice.guo@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Abel Vesa <abelvesa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <1635431907-15617-2-git-send-email-zhangchangzhong@huawei.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 14:22:52 up 258 days, 16:46, 133 users,  load average: 0.02, 0.25,
+ 0.29
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 7:43 AM Tommaso Merciai <tomm.merciai@gmail.com> wrote:
->
-> Add support for dynamic frequency scaling of the main NOC configuration
-> on imx8mm.
->
-> References:
->  - i.MX 8M Mini Applications Processor RM, Rev. 3, 11/2020
->  - f18e6d573b80 arm64: dts: imx8mq: Add NOC node
->  - 912b9dacf3f0 arm64: dts: imx8mq: increase NOC clock to 800 MHz
+On Thu, Oct 28, 2021 at 10:38:25PM +0800, Zhang Changzhong wrote:
+> This patch prevents BAM transport from being closed by receiving abort
+> message, as specified in SAE-J1939-82 2015 (A.3.3 Row 4).
+> 
+> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+
 > ---
-
-+ Abel
-
->  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 25 +++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> index c2f3f118f82e..c5f64abcecff 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> @@ -719,6 +719,31 @@ pgc_mipi: power-domain@11 {
->                         };
->                 };
->
-> +               noc: interconnect@32700000 {
-> +                       compatible = "fsl,imx8mm-noc", "fsl,imx8m-noc";
-> +                       reg = <0x32700000 0x100000>;
-> +                       clocks = <&clk IMX8MM_CLK_NOC>;
-> +                       fsl,ddrc = <&ddrc>;
-> +                       #interconnect-cells = <1>;
-> +                       operating-points-v2 = <&noc_opp_table>;
+>  net/can/j1939/transport.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index 6c0a0eb..05eb3d0 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+> @@ -2085,6 +2085,12 @@ static void j1939_tp_cmd_recv(struct j1939_priv *priv, struct sk_buff *skb)
+>  		break;
+>  
+>  	case J1939_ETP_CMD_ABORT: /* && J1939_TP_CMD_ABORT */
+> +		if (j1939_cb_is_broadcast(skcb)) {
+> +			netdev_err_once(priv->ndev, "%s: abort to broadcast (%02x), ignoring!\n",
+> +					__func__, skcb->addr.sa);
+> +			return;
+> +		}
 > +
-> +                       noc_opp_table: opp-table {
-> +                               compatible = "operating-points-v2";
-> +
-> +                               opp-133M {
-> +                                       opp-hz = /bits/ 64 <133333333>;
-> +                               };
-> +
-> +                               opp-400M {
-> +                                       opp-hz = /bits/ 64 <400000000>;
-> +                               };
-> +
-> +                               opp-800M {
-> +                                       opp-hz = /bits/ 64 <800000000>;
-> +                               };
+>  		if (j1939_tp_im_transmitter(skcb))
+>  			j1939_xtp_rx_abort(priv, skb, true);
+>  
+> -- 
+> 2.9.5
+> 
+> 
 
-When I look at the opp table from the NXP's custom kernel [1] , they
-have a different opp table with a max frequency of 750MHz instead of
-800MHz.  The i.MX8MM Ref manual shows there is something at 3270_0000,
-but it doesn't go into details of the registers there. However the max
-speed of the NOC clock does appear to be 800MHz and not the 750 MHz
-listed in the NXP kernel.
-
-However, In the clk node of imx8mm.dtsi file, the IMX8MM_CLK_NOC
-parent is set to IMX8MM_SYS_PLL3_OUT and IMX8MM_SYS_PLL3_OUT is set to
-750MHz, so I think setting the IMX8MM_CLK_NOC to 800MHz is likely not
-what we want if we're setting this clock parent and clock rate to
-750MHz.  However if the NOC operates correctly at 800MHz when the
-parent is set to IMX8MM_SYS_PLL1_800M, it might make sense.  Looking
-at the imx8mq.dtsi file, it appears that the NOC node is referencing
-the ddrc node, and the imx8mq is able to operate the ddrc at 800MHz,
-while I beleive the 8MM is capped at 750M.
-
-Since I do not know if the NOC is tied to the processor speed, the
-DRAM speed, or it runs independently, I can't say with any confidence
-what it should be and/or how to test it, but I would assume that with
-the ddrc node capped at 750MHz, the opp table in the NXP kernel is
-probably the correct one.
-
-[1] - https://source.codeaurora.org/external/imx/linux-imx/tree/arch/arm64/boot/dts/freescale/imx8mm.dtsi?h=lf-5.10.y
-
-adam
-
-> +                       };
-> +               };
-> +
->                 aips2: bus@30400000 {
->                         compatible = "fsl,aips-bus", "simple-bus";
->                         reg = <0x30400000 0x400000>;
-> --
-> 2.25.1
->
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
