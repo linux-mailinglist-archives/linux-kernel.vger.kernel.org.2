@@ -2,296 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74270444A78
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 22:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CE1444A7A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 22:49:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbhKCVvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 17:51:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229893AbhKCVvX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 17:51:23 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31484C061714;
-        Wed,  3 Nov 2021 14:48:46 -0700 (PDT)
-Date:   Wed, 03 Nov 2021 21:48:41 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1635976123;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WZ1ThKKV6+L5ZvB+T+QMPLsypQGTp0xWXbjjY4y9Bks=;
-        b=e+CtlNwlajVAPuSpwyCJsinVE/+Nk8g7O7ZpLAWPWDYRUUKmvLs3kMwsHJKYHNZ3amqEV+
-        GiMeTVk6zfz8G8PSBq8CLYc4//u9TKHkiLrm5HZ8MxfMPaNXXcwx6kob+uUNQB9MTh+9dN
-        bfcxW3mS3clyov2NKwCWb/SiUo2kEb4p0tE5FPNSbD5oUiRlBymWaDV5U/81x8ZMbrpD3Y
-        UO+E6wlZTZ2/raQfUGOR61MHB8E1AvYheX2CNf2k8QQkjSOmI5mxg9XwW3KGDkerdDid9i
-        +AuLnY2dbJBnJheAczTyMCmd2KTL9XToK8ogCiL9WUhhrhDdqxIKSYsum15uww==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1635976123;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WZ1ThKKV6+L5ZvB+T+QMPLsypQGTp0xWXbjjY4y9Bks=;
-        b=THxykxH315xX/RqWmnQk4XKoWnJEZhjesLeOzCloZSbN7KTVTJIBkggP96ezcrExOVo3Xw
-        mXHBhIlBTfgXdMAw==
-From:   "tip-bot2 for Dave Hansen" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/fpu: Optimize out sigframe xfeatures when in init state
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20211102224750.FA412E26@davehans-spike.ostc.intel.com>
-References: <20211102224750.FA412E26@davehans-spike.ostc.intel.com>
+        id S230334AbhKCVwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 17:52:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52202 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229893AbhKCVwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 17:52:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C9C861108;
+        Wed,  3 Nov 2021 21:49:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635976183;
+        bh=SmRyUyP5KOg18MaALrY8w4qrElXiQ7dRqmIWRis2gOI=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=FvOgEy+aHAPq5w9FY+8mxq3NTG8gv37aq6KsmVZCbB2BxvKYFPKd+yCduej1XYaFw
+         1Ly1zCYXqxc77JTlgOfnT5jmHK4rfRUQOP8vV1BnWuhRAl3KYyOMZYY82GVI12RRf9
+         fPPp8CD2GJD+Hn8byx7ezZsmM4IVot28XEkFPPGOf4TWvgpzk2Yu+OwkRChgsigLNZ
+         IMqyWTVpzcO1s2tkhxqwPPT89J7m4ZjBYNQMCXD6Yo3EwFF/clEBLttaJVuVwx5Zoj
+         qL6W9D9r+eF8iHjihNat1iD4k1oRCXBj/0ZyGAiSl7HKISyL+v2nz6pfKQHaoTNPJg
+         0FQ+ei6i4FnpA==
+Message-ID: <d3711ca7d612627bb891c10e20c3d569fa6f2bf3.camel@kernel.org>
+Subject: Re: [PATCH v11 2/2] x86/sgx: Add an attribute for the amount of SGX
+ memory in a NUMA node
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, reinette.chatre@intel.com,
+        tony.luck@intel.com, nathaniel@profian.com,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
+Date:   Wed, 03 Nov 2021 23:49:40 +0200
+In-Reply-To: <YYJGzgkLJs6819t8@kroah.com>
+References: <20211103012813.670195-1-jarkko@kernel.org>
+         <20211103012813.670195-2-jarkko@kernel.org> <YYJGzgkLJs6819t8@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Message-ID: <163597612165.626.15614463658086299478.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Wed, 2021-11-03 at 09:22 +0100, Greg Kroah-Hartman wrote:
+> On Wed, Nov 03, 2021 at 03:28:13AM +0200, Jarkko Sakkinen wrote:
+> > The amount of SGX memory on the system is determined by the BIOS and it
+> > varies wildly between systems.=C2=A0 It can be from dozens of MB's on d=
+esktops
+> > or VM's, up to many GB's on servers.=C2=A0 Just like for regular memory=
+, it is
+> > sometimes useful to know the amount of usable SGX memory in the system.
+> >=20
+> > Introduce CONFIG_HAVE_ARCH_NODE_DEV_GROUP opt-in flag to expose an arch
+> > specific attribute group, and add an attribute for the amount of SGX
+> > memory in bytes to each NUMA node:
+> >=20
+> > /sys/devices/system/node/nodeX/x86/sgx_total_bytes
+> >=20
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > ---
+> > v11:
+> > * Fix documentation and the commit message.
+> >=20
+> > v10:
+> > * Change DEVICE_ATTR_RO() to static (Greg K-H)
+> > * Change the attribute name as sgx_total_bytes, and attribute group
+> > =C2=A0 name as "x86" (Dave).
+> > * Add a new config flag HAVE_ARCH_NODE_DEV_GROUP to identify, whether
+> > =C2=A0 an arch exports arch specific attribute group for NUMA nodes.
+> >=20
+> > v9:
+> > * Fix racy initialization of sysfs attributes:
+> > =C2=A0 https://lore.kernel.org/linux-sgx/YXOsx8SvFJV5R7lU@kroah.com/
+> >=20
+> > v8:
+> > * Fix a bug in sgx_numa_init(): node->dev should be only set after
+> > =C2=A0 sysfe_create_group().=C2=A0 Otherwise, sysfs_remove_group() will=
+ issue a
+> > =C2=A0 warning in sgx_numa_exit(), when sgx_create_group() is unsuccess=
+ful,
+> > =C2=A0 because the group does not exist.
+> >=20
+> > v7:
+> > * Shorten memory_size to size. The prefix makes the name only longer
+> > =C2=A0 but does not clarify things more than "size" would.
+> > * Use device_attribute instead of kobj_attribute.
+> > * Use named attribute group instead of creating raw kobject just for
+> > =C2=A0 the "sgx" subdirectory.
+> >=20
+> > v6:
+> > * Initialize node->size to zero in sgx_setup_epc_section(), when the
+> > =C2=A0 node is first accessed.
+> >=20
+> > v5
+> > * A new patch based on the discussion on
+> > =C2=A0 https://lore.kernel.org/linux-sgx/3a7cab4115b4f902f3509ad8652e61=
+6b91703e1d.camel@kernel.org/T/#t
+> > ---
+> > =C2=A0Documentation/ABI/stable/sysfs-devices-node |=C2=A0 6 ++++
+> > =C2=A0arch/Kconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 4 +++
+> > =C2=A0arch/x86/Kconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 1 +
+> > =C2=A0arch/x86/kernel/cpu/sgx/main.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 31 +++++++++++++++++++++
+> > =C2=A0arch/x86/kernel/cpu/sgx/sgx.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 2 ++
+> > =C2=A0drivers/base/node.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 | 13 ++++++++-
+> > =C2=A0include/linux/numa.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |=C2=A0 4 +++
+> > =C2=A07 files changed, 60 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/Documentation/ABI/stable/sysfs-devices-node b/Documentatio=
+n/ABI/stable/sysfs-devices-node
+> > index 484fc04bcc25..8db67aa472f1 100644
+> > --- a/Documentation/ABI/stable/sysfs-devices-node
+> > +++ b/Documentation/ABI/stable/sysfs-devices-node
+> > @@ -176,3 +176,9 @@ Contact:=C2=A0=C2=A0=C2=A0=C2=A0Keith Busch <keith.=
+busch@intel.com>
+> > =C2=A0Description:
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0The cache write policy: 0 for write-back, 1 for =
+write-through,
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0other or unknown.
+> > +
+> > +What:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/sys/=
+devices/system/node/nodeX/x86/sgx_total_bytes
+> > +Date:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Novem=
+ber 2021
+> > +Contact:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Jarkko Sakkinen <jar=
+kko@kernel.org>
+> > +Description:
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0The total amount of SGX physical memory in bytes.
+> > diff --git a/arch/Kconfig b/arch/Kconfig
+> > index 98db63496bab..ca5d75b5a427 100644
+> > --- a/arch/Kconfig
+> > +++ b/arch/Kconfig
+> > @@ -1285,6 +1285,10 @@ config ARCH_HAS_ELFCORE_COMPAT
+> > =C2=A0config ARCH_HAS_PARANOID_L1D_FLUSH
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0bool
+> > =C2=A0
+> > +# Select, if arch has a named attribute group bound to NUMA device nod=
+es.
+> > +config HAVE_ARCH_NODE_DEV_GROUP
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0bool
+> > +
+> > =C2=A0source "kernel/gcov/Kconfig"
+> > =C2=A0
+> > =C2=A0source "scripts/gcc-plugins/Kconfig"
+> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > index 421fa9e38c60..8503c3bdf63f 100644
+> > --- a/arch/x86/Kconfig
+> > +++ b/arch/x86/Kconfig
+> > @@ -266,6 +266,7 @@ config X86
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0select HAVE_ARCH_KCSAN=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if X86_64
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0select X86_FEATURE_NAME=
+S=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0if PROC_FS
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0select PROC_PID_ARCH_ST=
+ATUS=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0if PROC_FS
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0select HAVE_ARCH_NODE_DEV_GR=
+OUP=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if X86_SGX
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0imply IMA_SECURE_AND_OR=
+_TRUSTED_BOOT=C2=A0=C2=A0=C2=A0 if EFI
+> > =C2=A0
+> > =C2=A0config INSTRUCTION_DECODER
+> > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/m=
+ain.c
+> > index a6e313f1a82d..02ebb233c511 100644
+> > --- a/arch/x86/kernel/cpu/sgx/main.c
+> > +++ b/arch/x86/kernel/cpu/sgx/main.c
+> > @@ -714,9 +714,12 @@ static bool __init sgx_page_cache_init(void)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+spin_lock_init(&sgx_numa_nodes[nid].lock);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+INIT_LIST_HEAD(&sgx_numa_nodes[nid].free_page_list);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+node_set(nid, sgx_numa_mask);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0sgx_nu=
+ma_nodes[nid].size =3D 0;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+> > =C2=A0
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0sgx_epc_sections[i].node =3D=C2=A0 &sgx_numa_nod=
+es[nid];
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0sgx_numa_nodes[nid].dev =3D &node_devices[nid]->dev;
+>=20
+> You are saving off a pointer to an object without incrementing the
+> reference count of it?=C2=A0 What prevents it from going away in the futu=
+re?
 
-Commit-ID:     30d02551ba4f681cfa605cedacf231b8641169f0
-Gitweb:        https://git.kernel.org/tip/30d02551ba4f681cfa605cedacf231b8641169f0
-Author:        Dave Hansen <dave.hansen@linux.intel.com>
-AuthorDate:    Tue, 02 Nov 2021 15:47:50 -07:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 03 Nov 2021 22:42:35 +01:00
+Since the arch specific attribute group is part of the "groups" of that dev=
+ice,
+I'd presume that when sgx_total_bytes_show() is called the device has not g=
+one
+away:
 
-x86/fpu: Optimize out sigframe xfeatures when in init state
+static const struct attribute_group *node_dev_groups[] =3D {
+	&node_dev_group,
+#ifdef CONFIG_HAVE_ARCH_NODE_DEV_GROUP
+	&arch_node_dev_group,
+#endif
+	NULL,
+};
 
-tl;dr: AMX state is ~8k.  Signal frames can have space for this
-~8k and each signal entry writes out all 8k even if it is zeros.
-Skip writing zeros for AMX to speed up signal delivery by about
-4% overall when AMX is in its init state.
+I mean the "dev" parameter in sgx_total_bytes_show() is probably valid, whe=
+n
+sysfs framework calls it, right?
 
-This is a user-visible change to the sigframe ABI.
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0sgx_numa_nodes[nid].size +=3D size;
+> > =C2=A0
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0sgx_nr_epc_sections++;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+> > @@ -790,6 +793,34 @@ int sgx_set_attribute(unsigned long *allowed_attri=
+butes,
+> > =C2=A0}
+> > =C2=A0EXPORT_SYMBOL_GPL(sgx_set_attribute);
+> > =C2=A0
+> > +#ifdef CONFIG_NUMA
+> > +static ssize_t sgx_total_bytes_show(struct device *dev, struct device_=
+attribute *attr, char *buf)
+> > +{
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0unsigned long size =3D 0;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int nid;
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0for (nid =3D 0; nid < num_po=
+ssible_nodes(); nid++) {
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0if (dev =3D=3D sgx_numa_nodes[nid].dev) {
+>=20
+> Why aren't these values all just part of the device that is being used
+> here?=C2=A0 You are walking some odd array, with no locking, and no refer=
+ence
+> counting on the objects you are looking at, just to find the same object
+> that you started out with???
 
-== Hardware XSAVE Background ==
+This code looks up the struct sgx_numa_node instance, and the array is
+indexed with NUMA node ID. "dev" is only used as lookup key.
 
-XSAVE state components may be tracked by the processor as being
-in their initial configuration.  Software can detect which
-features are in this configuration by looking at the XSTATE_BV
-field in an XSAVE buffer or with the XGETBV(1) instruction.
+> That's not the proper thing to do here at all, these values should be
+> part of the device structure that this attribute lives on, in order to
+> properly handle all of these reference counting and locking issues
+> automatically.
 
-Both the XSAVE and XSAVEOPT instructions enumerate features s
-being in the initial configuration via the XSTATE_BV field in the
-XSAVE header,  However, XSAVEOPT declines to actually write
-features in their initial configuration to the buffer.  XSAVE
-writes the feature unconditionally, regardless of whether it is
-in the initial configuration or not.
+The attribute group is part of the device structure, so in that sense
+it is already like this. And I think that all NUMA node specific data
+(most of which is unrelated to device sysfs) is best kept in the private
+struct.
 
-Basically, XSAVE users never need to inspect XSTATE_BV to
-determine if the feature has been written to the buffer.
-XSAVEOPT users *do* need to inspect XSTATE_BV.  They might also
-need to clear out the buffer if they want to make an isolated
-change to the state, like modifying one register.
+> Please fix the design of this code first, _before_ adding new
+> attributes.
 
-== Software Signal / XSAVE Background ==
+I sincerely think it is correct now.
 
-Signal frames have historically been written with XSAVE itself.
-Each state is written in its entirety, regardless of being in its
-initial configuration.
+>=20
+> thanks,
+>=20
+> greg k-h
 
-In other words, the signal frame ABI uses the XSAVE behavior, not
-the XSAVEOPT behavior.
+/Jarkko
 
-== Problem ==
-
-This means that any application which has acquired permission to
-use AMX via ARCH_REQ_XCOMP_PERM will write 8k of state to the
-signal frame.  This 8k write will occur even when AMX was in its
-initial configuration and software *knows* this because of
-XSTATE_BV.
-
-This problem also exists to a lesser degree with AVX-512 and its
-2k of state.  However, AVX-512 use does not require
-ARCH_REQ_XCOMP_PERM and is more likely to have existing users
-which would be impacted by any change in behavior.
-
-== Solution ==
-
-Stop writing out AMX xfeatures which are in their initial state
-to the signal frame.  This effectively makes the signal frame
-XSAVE buffer look as if it were written with a combination of
-XSAVEOPT and XSAVE behavior.  Userspace which handles XSAVEOPT-
-style buffers should be able to handle this naturally.
-
-For now, include only the AMX xfeatures: XTILE and XTILEDATA in
-this new behavior.  These require new ABI to use anyway, which
-makes their users very unlikely to be broken.  This XSAVEOPT-like
-behavior should be expected for all future dynamic xfeatures.  It
-may also be extended to legacy features like AVX-512 in the
-future.
-
-Only attempt this optimization on systems with dynamic features.
-Disable dynamic feature support (XFD) if XGETBV1 is unavailable
-by adding a CPUID dependency.
-
-This has been measured to reduce the *overall* cycle cost of
-signal delivery by about 4%.
-
-Fixes: 2308ee57d93d ("x86/fpu/amx: Enable the AMX feature in 64-bit mode")
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: "Chang S. Bae" <chang.seok.bae@intel.com>
-Link: https://lore.kernel.org/r/20211102224750.FA412E26@davehans-spike.ostc.intel.com
-
----
- Documentation/x86/xstate.rst      |  9 +++++++-
- arch/x86/include/asm/fpu/xcr.h    | 12 ++++++++++-
- arch/x86/include/asm/fpu/xstate.h |  7 ++++++-
- arch/x86/kernel/cpu/cpuid-deps.c  |  1 +-
- arch/x86/kernel/fpu/xstate.h      | 37 ++++++++++++++++++++++++++++--
- 5 files changed, 64 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/x86/xstate.rst b/Documentation/x86/xstate.rst
-index 65de3f0..5cec7fb 100644
---- a/Documentation/x86/xstate.rst
-+++ b/Documentation/x86/xstate.rst
-@@ -63,3 +63,12 @@ kernel sends SIGILL to the application. If the process has permission then
- the handler allocates a larger xstate buffer for the task so the large
- state can be context switched. In the unlikely cases that the allocation
- fails, the kernel sends SIGSEGV.
-+
-+Dynamic features in signal frames
-+---------------------------------
-+
-+Dynamcally enabled features are not written to the signal frame upon signal
-+entry if the feature is in its initial configuration.  This differs from
-+non-dynamic features which are always written regardless of their
-+configuration.  Signal handlers can examine the XSAVE buffer's XSTATE_BV
-+field to determine if a features was written.
-diff --git a/arch/x86/include/asm/fpu/xcr.h b/arch/x86/include/asm/fpu/xcr.h
-index 79f95d3..9656a5b 100644
---- a/arch/x86/include/asm/fpu/xcr.h
-+++ b/arch/x86/include/asm/fpu/xcr.h
-@@ -3,6 +3,7 @@
- #define _ASM_X86_FPU_XCR_H
- 
- #define XCR_XFEATURE_ENABLED_MASK	0x00000000
-+#define XCR_XFEATURE_IN_USE_MASK	0x00000001
- 
- static inline u64 xgetbv(u32 index)
- {
-@@ -20,4 +21,15 @@ static inline void xsetbv(u32 index, u64 value)
- 	asm volatile("xsetbv" :: "a" (eax), "d" (edx), "c" (index));
- }
- 
-+/*
-+ * Return a mask of xfeatures which are currently being tracked
-+ * by the processor as being in the initial configuration.
-+ *
-+ * Callers should check X86_FEATURE_XGETBV1.
-+ */
-+static inline u64 xfeatures_in_use(void)
-+{
-+	return xgetbv(XCR_XFEATURE_IN_USE_MASK);
-+}
-+
- #endif /* _ASM_X86_FPU_XCR_H */
-diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
-index 0f8b90a..cd3dd17 100644
---- a/arch/x86/include/asm/fpu/xstate.h
-+++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -92,6 +92,13 @@
- #define XFEATURE_MASK_FPSTATE	(XFEATURE_MASK_USER_RESTORE | \
- 				 XFEATURE_MASK_SUPERVISOR_SUPPORTED)
- 
-+/*
-+ * Features in this mask have space allocated in the signal frame, but may not
-+ * have that space initialized when the feature is in its init state.
-+ */
-+#define XFEATURE_MASK_SIGFRAME_INITOPT	(XFEATURE_MASK_XTILE | \
-+					 XFEATURE_MASK_USER_DYNAMIC)
-+
- extern u64 xstate_fx_sw_bytes[USER_XSTATE_FX_SW_WORDS];
- 
- extern void __init update_regset_xstate_info(unsigned int size,
-diff --git a/arch/x86/kernel/cpu/cpuid-deps.c b/arch/x86/kernel/cpu/cpuid-deps.c
-index cb2fdd1..c881bca 100644
---- a/arch/x86/kernel/cpu/cpuid-deps.c
-+++ b/arch/x86/kernel/cpu/cpuid-deps.c
-@@ -76,6 +76,7 @@ static const struct cpuid_dep cpuid_deps[] = {
- 	{ X86_FEATURE_SGX1,			X86_FEATURE_SGX       },
- 	{ X86_FEATURE_SGX2,			X86_FEATURE_SGX1      },
- 	{ X86_FEATURE_XFD,			X86_FEATURE_XSAVES    },
-+	{ X86_FEATURE_XFD,			X86_FEATURE_XGETBV1   },
- 	{ X86_FEATURE_AMX_TILE,			X86_FEATURE_XFD       },
- 	{}
- };
-diff --git a/arch/x86/kernel/fpu/xstate.h b/arch/x86/kernel/fpu/xstate.h
-index e18210d..86ea7c0 100644
---- a/arch/x86/kernel/fpu/xstate.h
-+++ b/arch/x86/kernel/fpu/xstate.h
-@@ -4,6 +4,7 @@
- 
- #include <asm/cpufeature.h>
- #include <asm/fpu/xstate.h>
-+#include <asm/fpu/xcr.h>
- 
- #ifdef CONFIG_X86_64
- DECLARE_PER_CPU(u64, xfd_state);
-@@ -199,6 +200,32 @@ static inline void os_xrstor_supervisor(struct fpstate *fpstate)
- }
- 
- /*
-+ * XSAVE itself always writes all requested xfeatures.  Removing features
-+ * from the request bitmap reduces the features which are written.
-+ * Generate a mask of features which must be written to a sigframe.  The
-+ * unset features can be optimized away and not written.
-+ *
-+ * This optimization is user-visible.  Only use for states where
-+ * uninitialized sigframe contents are tolerable, like dynamic features.
-+ *
-+ * Users of buffers produced with this optimization must check XSTATE_BV
-+ * to determine which features have been optimized out.
-+ */
-+static inline u64 xfeatures_need_sigframe_write(void)
-+{
-+	u64 xfeaures_to_write;
-+
-+	/* In-use features must be written: */
-+	xfeaures_to_write = xfeatures_in_use();
-+
-+	/* Also write all non-optimizable sigframe features: */
-+	xfeaures_to_write |= XFEATURE_MASK_USER_SUPPORTED &
-+			     ~XFEATURE_MASK_SIGFRAME_INITOPT;
-+
-+	return xfeaures_to_write;
-+}
-+
-+/*
-  * Save xstate to user space xsave area.
-  *
-  * We don't use modified optimization because xrstor/xrstors might track
-@@ -220,10 +247,16 @@ static inline int xsave_to_user_sigframe(struct xregs_state __user *buf)
- 	 */
- 	struct fpstate *fpstate = current->thread.fpu.fpstate;
- 	u64 mask = fpstate->user_xfeatures;
--	u32 lmask = mask;
--	u32 hmask = mask >> 32;
-+	u32 lmask;
-+	u32 hmask;
- 	int err;
- 
-+	/* Optimize away writing unnecessary xfeatures: */
-+	if (fpu_state_size_dynamic())
-+		mask &= xfeatures_need_sigframe_write();
-+
-+	lmask = mask;
-+	hmask = mask >> 32;
- 	xfd_validate_state(fpstate, mask, false);
- 
- 	stac();
