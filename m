@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6A8444501
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24174444505
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:56:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbhKCP5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 11:57:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49632 "EHLO
+        id S232110AbhKCP6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 11:58:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232102AbhKCP5c (ORCPT
+        with ESMTP id S231843AbhKCP6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 11:57:32 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6702C061714;
-        Wed,  3 Nov 2021 08:54:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OrHZfcODQam8SYKtC3Lj9MXWr83XzejExt/jJ8/GaiA=; b=kIf1jB08vxK2+2uoEHR3BYtha+
-        2o8bvNTvMsNJM16+W18FdOTHBPzWFBQL7XA9Fq9Kq7zQPai8jwq1oEIXPTDP4Akf+zpRKCJ4/2SrF
-        C3bOlxB27VecrXKlkZk8Yt53OtwohVG+PNM8znTpcwwRG+NR8rmjPUUy9jpE/GBusVUZSsz1sT6py
-        7n0bpx4CPLuvcsTr9r8/nNA47g6Ufniwbgt52lgdGr+Lv0JMiYGlJxRDFQ/C01VrkOOHcM0obKMgW
-        iF3fCoqq8pTju8mm3WHLy64p3YzZ4JLfBpvRUmHTwQ1m2PxKSjogq2aMRqBxgKiclM95b9y1sDorC
-        zYLHPfAg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1miIbC-005c6F-1n; Wed, 03 Nov 2021 15:54:50 +0000
-Date:   Wed, 3 Nov 2021 08:54:50 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 18/21] iomap: Convert iomap_add_to_ioend to take a folio
-Message-ID: <YYKwyudsHOmPthUP@infradead.org>
-References: <20211101203929.954622-1-willy@infradead.org>
- <20211101203929.954622-19-willy@infradead.org>
- <YYDoMltwjNKtJaWR@infradead.org>
- <YYGfUuItAyTNax5V@casper.infradead.org>
+        Wed, 3 Nov 2021 11:58:36 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62177C061208
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 08:56:00 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so1725379pjl.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 08:56:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=squareup.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wB6L2zhgIZw3VuMIvl+9jSRccRbfwY9247FkYpdL0aY=;
+        b=dW56jnmgDtqynIU5Q+4TgJNOK5/NMDKboPX1MmaRr6TIPGKKMuTORRHVd+eKO+gb1J
+         F9CjXz01U3+wl3H2VbwpaCRDn4ueAv46ELOXnvjHif0wov09YHb+xvJrjcQLfbP0aY4G
+         KvSDnOftdKvwJ8dakI0KNrEwnWLpHoBXzlNvs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wB6L2zhgIZw3VuMIvl+9jSRccRbfwY9247FkYpdL0aY=;
+        b=m8oiazEci8/OIYe2HTuGIIo2kqymfC1/OCoF8N2wY6AOW2bV/RMqY+j6avrafzlwQ+
+         EUFgmyV8+k+YeXVINCj/9b+QfkztUKTCY8IdQ3mL99bQ64jBqGwzpvlh1tlZAdbCFv5s
+         jAlKrjhvyH4o0DvJ6ehU2Ua2a6UxW79pHa1T1k99Qg2pHRCdxRUcTIQP1vSBCa8XiWHW
+         bVjciPK495+eaaZrp9LOuoGm4FCQby5uPsaEGltN+tHGOs7Ha/2SlYhgRycrGwPVSD+6
+         /zLs+CjwMRtRMaOaRriYYpro5wI4Gjtaqr4g3DgptmMOJrOvOIhL1+x0GpT6LE+jM6cc
+         Er9Q==
+X-Gm-Message-State: AOAM533CeW+32cZEM0+IKnMUrLZZYXmrbC93R+RejAzIlX3uiDkM/+pB
+        9/cMf3+3O+zvIBHKLj6ooNpCnQ==
+X-Google-Smtp-Source: ABdhPJwJHBwZvky/2hhePb9Q/bclZzLHICNSu13XZlb7MrPyS8HuhRjfaZtItq8TjUEpDSH9B5Errg==
+X-Received: by 2002:a17:902:654d:b0:141:7df3:b94 with SMTP id d13-20020a170902654d00b001417df30b94mr38998695pln.60.1635954959352;
+        Wed, 03 Nov 2021 08:55:59 -0700 (PDT)
+Received: from localhost ([2600:6c50:4d00:d401:aa7a:1484:c7d0:ae82])
+        by smtp.gmail.com with ESMTPSA id x17sm2742679pfa.209.2021.11.03.08.55.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Nov 2021 08:55:58 -0700 (PDT)
+From:   Benjamin Li <benl@squareup.com>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Benjamin Li <benl@squareup.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, wcn36xx@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] wcn36xx: populate band before determining rate on RX
+Date:   Wed,  3 Nov 2021 08:55:40 -0700
+Message-Id: <20211103155543.1037604-1-benl@squareup.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYGfUuItAyTNax5V@casper.infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 08:28:02PM +0000, Matthew Wilcox wrote:
-> On Tue, Nov 02, 2021 at 12:26:42AM -0700, Christoph Hellwig wrote:
-> > Looking at the code not part of the context this looks fine.  But I
-> > really wonder if this (and also the blocks change above) would be
-> > better off being split into separate, clearly documented patches.
-> 
-> How do these three patches look?  I retained your R-b on all three since
-> I figured the one you offered below was good for all of them.
+v2:
+Fix unused variable warning.
 
-Sounds good, and the patches looks good. Minor nitpicks below:
+Benjamin Li (2):
+  wcn36xx: populate band before determining rate on RX
+  wcn36xx: fix RX BD rate mapping for 5GHz legacy rates
 
-> Rename end_offset to end_pos and file_offset to pos to match the
-> rest of the file.  Simplify the loop by calculating nblocks
-> up front instead of each time around the loop.
+ drivers/net/wireless/ath/wcn36xx/txrx.c | 42 ++++++++++++-------------
+ 1 file changed, 20 insertions(+), 22 deletions(-)
 
-Might be worth mentioning why it changes the types from u64 to loff_t.
-
->  	/*
-> -	 * Walk through the page to find areas to write back. If we run off the
-> -	 * end of the current map or find the current map invalid, grab a new
-> -	 * one.
-> +	 * Walk through the folio to find areas to write back. If we
-> +	 * run off the end of the current map or find the current map
-> +	 * invalid, grab a new one.
-
-No real need for reflowing the comment, it still fits just fine even
-with the folio change.
-
-> Rename end_offset to end_pos and offset_into_page to poff to match the
-> rest of the file.  Simplify the handling of the last page straddling
-> i_size.
-
-... by doing the EOF check purely based on the byte granularity i_size
-instead of converting to a pgoff prematurely.
-
-> +	isize = i_size_read(inode);
-> +	end_pos = page_offset(page) + PAGE_SIZE;
-> +	if (end_pos - 1 >= isize) {
-
-Wouldn't this check be more obvious as:
-
-	if (end_pos > i_size) {
+-- 
+2.25.1
 
