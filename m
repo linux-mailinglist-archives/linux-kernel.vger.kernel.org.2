@@ -2,95 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 920604445AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:15:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7EA64445C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:17:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232848AbhKCQSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 12:18:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbhKCQST (ORCPT
+        id S232747AbhKCQU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 12:20:26 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:17478 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232506AbhKCQUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 12:18:19 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8A0C061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 09:15:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=AOsyCgZE6MJ4p0vyz+bhHBA8QhVxzWHGR03f3rBg+1o=; b=aLUGp44NafpCSUm7Qy08z/kw24
-        JYbtsX4n3idfMynbyx+Ae0BkGO6EH5tXIvw4qEA1eLFv1p8d1udn77qtqLznUegSLR86nracRJ17X
-        kqQ0OKaQSS8t5AZipevuRJmIUSGOVLF1RCJtLPX95u/PJTsK1wcX2cAdW4vnDHscpyk141TsqF/+H
-        BEGDQaBiJK2BQXW/NJlBgTMeAPOTisz4FTFVCFSk+EqUek/2nRRaJb5Jq9iSk8Q2tanfzce6//erL
-        3KJW3KQ0FTVLYb9h3PsYKZFi1qT0x1FADtVEEo1JKTy99FUlKi/xQIY3jJUJ67aPVCydODa40kpRY
-        MXZ4PsFA==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1miIvM-005hxE-TK; Wed, 03 Nov 2021 16:15:41 +0000
-Subject: Re: [PATCH] ASoC: amd: vangogh: add SPI dependency
-To:     Arnd Bergmann <arnd@kernel.org>, Mark Brown <broonie@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20211019191453.3047514-1-arnd@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <b2a01d9f-7012-3e7c-5792-2620acce8967@infradead.org>
-Date:   Wed, 3 Nov 2021 09:15:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 3 Nov 2021 12:20:25 -0400
+IronPort-Data: =?us-ascii?q?A9a23=3AM2Fllq/6IhC5gAcW8jz1DrUDEnyTJUtcMsCJ2f8?=
+ =?us-ascii?q?bfWQNrUp21TUAy2dJWmGAOfaKazH2Kt8naIqz9hkFvsTWzYRhTFdlrnsFo1Bi+?=
+ =?us-ascii?q?ZOUX4zBRqvTF3rPdZObFBoPA/3z27AsFehsJpPnjkrrYueJQUVUj/nSH+OlULW?=
+ =?us-ascii?q?cYUideCc/IMsfoUM68wIGqt4w6TSJK1vlVeLa+6UzCnf9s9JHGj58B5a4lf9al?=
+ =?us-ascii?q?K+aVAX0EbAJTasjUFf2zxH5BX+ETE27ByOQroJ8RoZWSwtfpYxV8F81/z91Yj+?=
+ =?us-ascii?q?kurbyflcLT7i60Qqm2icQBfjk20Ib4HVtic7XN9JFAatTozeUm9F4jtFEqpW0T?=
+ =?us-ascii?q?S8oOLfNkaITSXG0FgknbfAeqOaeSZS4mYnJp6HcSFPm2fRnCgc1PIgw+u9tDWJ?=
+ =?us-ascii?q?D7/oVLHYGaRXrr+G83bO/RqxlgsALKMjwIJhZ4igmyivWZd4iQJbeU+DJ6MVe0?=
+ =?us-ascii?q?TMYmM9DB7DdatAfZD4paw7PCzVTPV0aFI4zhs+ng3D+d3tTr1f9ja8242HSyAF?=
+ =?us-ascii?q?q26W3NfLaf9WLQYNemUPwjnnL9Hn2EwwyO9mWyD7D+XWp7tIjNwuTtJk6TeLjs?=
+ =?us-ascii?q?Kcw2RvNlipDVVsMWEX9uvejzEizR7pix4Uv0nJGhcAPGIaDF7ERhyGFnUM=3D?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A4iBzC6kiL2nAlP1DoOCmRLKM3cPpDfKw3DAb?=
+ =?us-ascii?q?v31ZSRFFG/Fxl6iV7ZAmPHjP+UwssRAb6Le90ca7MAvhHPJOjLX5eI3MYOCEgh?=
+ =?us-ascii?q?rSEGgB1+rfKmbbalTDH4dmvM8KT0E9MrPN5D5B4foSizPTL/8QhP2O96inieqb?=
+ =?us-ascii?q?5EcFd3AJV4hQqzxFTiOcFFQzfRJLGpY/CZqb4aN8xwaISDAtU4CcHXkKX+/Kop?=
+ =?us-ascii?q?nmk5jhbB4ACXccmW+zpALt04O/NQOZ0BcYWy5I2t4ZgA34uj283ZjmjvGwyBPA?=
+ =?us-ascii?q?vlWjjKhrpA=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.87,206,1631570400"; 
+   d="scan'208";a="1850811"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 17:17:48 +0100
+Date:   Wed, 3 Nov 2021 17:17:47 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Brian Kim <brian.kim@hardkernel.com>
+cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Dongjin Kim <tobetter@gmail.com>,
+        memeka <mihailescu2m@gmail.com>, Yang Deokgyu <secugyu@gmail.com>
+Subject: [PATCH] ODROID-XU4: char: exynos: fix platform_no_drv_owner.cocci
+ warnings
+Message-ID: <alpine.DEB.2.22.394.2111031716330.3289@hadrien>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <20211019191453.3047514-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/21 12:14 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Without CONFIG_SPI, this fails to build:
-> 
-> WARNING: unmet direct dependencies detected for SND_SOC_CS35L41_SPI
->    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SPI_MASTER [=n]
->    Selected by [m]:
->    - SND_SOC_AMD_VANGOGH_MACH [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_SOC_AMD_ACP5x [=m] && I2C [=y]
-> ERROR: modpost: "spi_setup" [sound/soc/codecs/snd-soc-cs35l41-spi.ko] undefined!
-> ERROR: modpost: "__devm_regmap_init_spi" [sound/soc/codecs/snd-soc-cs35l41-spi.ko] undefined!
-> 
-> Fixes: 96792fdd77cd ("ASoC: amd: enable vangogh platform machine driver build")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   sound/soc/amd/Kconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-> index d91a9399777c..edee2098c82e 100644
-> --- a/sound/soc/amd/Kconfig
-> +++ b/sound/soc/amd/Kconfig
-> @@ -68,7 +68,7 @@ config SND_SOC_AMD_VANGOGH_MACH
->   	tristate "AMD Vangogh support for NAU8821 CS35L41"
->   	select SND_SOC_NAU8821
->   	select SND_SOC_CS35L41_SPI
-> -	depends on SND_SOC_AMD_ACP5x && I2C
-> +	depends on SND_SOC_AMD_ACP5x && I2C && SPI
->   	help
->   	  This option enables machine driver for Vangogh platform
->   	  using NAU8821 and CS35L41 codecs.
-> 
+From: kernel test robot <lkp@intel.com>
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+No need to set .owner here. The core will do it.
 
-Just had this build error in linux-next-20211103
-so this patch is needed there.
+Generated by: scripts/coccinelle/api/platform_no_drv_owner.cocci
 
-Thanks.
+CC: Brian Kim <brian.kim@hardkernel.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+---
 
--- 
-~Randy
+tree:   https://github.com/tobetter/linux odroid-5.15.y
+head:   49f1393b8740941fa5176620b302f25ab5f786dc
+commit: 61f45d975621becb00c0aef303769f10428b9cd8 [21/75] ODROID-XU4: char: exynos: add /dev/gpiomem device for rootless user GPIO access
+:::::: branch date: 4 hours ago
+:::::: commit date: 6 hours ago
+
+ exynos-gpiomem.c |    1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/drivers/char/exynos-gpiomem.c
++++ b/drivers/char/exynos-gpiomem.c
+@@ -255,7 +255,6 @@ MODULE_DEVICE_TABLE(of, exynos_gpiomem_o
+ static struct platform_driver exynos_gpiomem_driver = {
+ 	.driver			= {
+ 		.name		= DRIVER_NAME,
+-		.owner		= THIS_MODULE,
+ 		.of_match_table	= exynos_gpiomem_of_match,
+ 	},
+ 	.probe			= exynos_gpiomem_probe,
