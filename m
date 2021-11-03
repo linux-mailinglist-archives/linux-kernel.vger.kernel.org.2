@@ -2,48 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EA2443D5B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 07:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E0F443D63
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 07:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbhKCGnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 02:43:42 -0400
-Received: from verein.lst.de ([213.95.11.211]:58411 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230152AbhKCGng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 02:43:36 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 66A3C68AA6; Wed,  3 Nov 2021 07:40:56 +0100 (CET)
-Date:   Wed, 3 Nov 2021 07:40:56 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 28/29] drm/i915/gvt: convert to use
- vfio_register_group_dev()
-Message-ID: <20211103064056.GA30216@lst.de>
-References: <20211102070601.155501-1-hch@lst.de> <20211102070601.155501-29-hch@lst.de> <20211102164136.GI2744544@nvidia.com>
+        id S231938AbhKCGrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 02:47:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230152AbhKCGrk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 02:47:40 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58EE1C061714;
+        Tue,  2 Nov 2021 23:45:04 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id om14so613784pjb.5;
+        Tue, 02 Nov 2021 23:45:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mi8r83pUTBrcQ3MNCYSGeibYSRXnJ8qCuYpYc7RJ1PM=;
+        b=ZsNvY/1QZJqQwmSQD0ybdPyn4eJsxCZ886ZuEMim6DMxXNegPsZxY6Mmq4/5K/j0sa
+         7LnF4lcNyDBe3XmSDd+30N3idJn7j7+z/lGNM116lkLxv6RQbn6PyFnxYdLT0uF9K2j/
+         m554MJiuBAjQB5HoPtuBw7Q8XFTyt37bFkMoNa6ujxQxo4uLbtYfDTRGZmdsILGmOLXT
+         mxSbbkzDiSPtM80rdR/2krFfIFTQ0NSCBJ5qgUyNQyeacGz259zne9E767hBwXK1RySr
+         7Q2q9NGYSCDAQwkVL6yNC1LGn0nv0HmENdu69QlCdBm7fC9sFsWFIHvp8tbEcyfxrzlx
+         xRwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mi8r83pUTBrcQ3MNCYSGeibYSRXnJ8qCuYpYc7RJ1PM=;
+        b=Qifd1BiaGGEeQM2OvSR4GcRJet3lWv8sMzQqr6XVMbaSdtJRPdsLMBrG3OF3lRLAE4
+         DvJ5eQpLxGkmdwEIvFkPXgmtE8K/2sXWVxS0MPRkapQQLr8YdrzlkbymxCS8ah8F9IFD
+         4IS5WVwQFfh8e21n1s+WgrOrescHKUEH7IJfYzHlrTzr1Nyk90tEF2piEGowjn4tdCtH
+         RxrEfGRcpN21T07TjVpBsapGtEg6ER0A1VhVtWW2obc6FpSodoBASWaYKjkqhC7s5RPN
+         jd2OImZo60IPqsYOXgKkBM6f6ZjiC71j1n6bwRRGC2wLzKSWcY1wcF9t+2nVfPBSSA/Z
+         rinQ==
+X-Gm-Message-State: AOAM5320e7DEopHoig+gDeRUo+W2YnuDux9CBH6/1b2SGQ5QJHSyWMEj
+        5ddxOThuDRPYEiEIkvnL8e0=
+X-Google-Smtp-Source: ABdhPJwyrnGs7LULTukmToIpcaU8jGvQcHTFD9U/AKD/YWHxNv+Au45UjpJy+CtAzY6Bamn4smnLBg==
+X-Received: by 2002:a17:902:c206:b0:142:631:5ffc with SMTP id 6-20020a170902c20600b0014206315ffcmr10004182pll.38.1635921903857;
+        Tue, 02 Nov 2021 23:45:03 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id q32sm898389pja.4.2021.11.02.23.45.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 23:45:03 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: zhang.mingyu@zte.com.cn
+To:     anup.patel@wdc.com
+Cc:     atish.patra@wdc.com, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Zhang Mingyu <zhang.mingyu@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] RISC-V: KVM:Remove unneeded semicolon
+Date:   Wed,  3 Nov 2021 06:44:58 +0000
+Message-Id: <20211103064458.26916-1-zhang.mingyu@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102164136.GI2744544@nvidia.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 01:41:36PM -0300, Jason Gunthorpe wrote:
-> On Tue, Nov 02, 2021 at 08:06:00AM +0100, Christoph Hellwig wrote:
-> > This is straightforward conversion, the intel_vgpu already has a pointer
-> > to the vfio_dev, which can be replaced with the embedded structure and
-> > we can replace all the mdev_get_drvdata() with a simple container_of().
-> 
-> This should be using vfio_register_emulated_iommu_dev(), right?
+From: Zhang Mingyu <zhang.mingyu@zte.com.cn>
 
-Yes, once rebased to 5.16-rc where this function appears.
+Eliminate the following coccinelle check warning:
+arch/riscv/kvm/vcpu.c:167:2-3
+arch/riscv/kvm/vcpu.c:204:2-3
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Zhang Mingyu <zhang.mingyu@zte.com.cn>
+---
+ arch/riscv/kvm/vcpu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
+index e92ba3e5db8c..e3d3aed46184 100644
+--- a/arch/riscv/kvm/vcpu.c
++++ b/arch/riscv/kvm/vcpu.c
+@@ -164,7 +164,7 @@ static int kvm_riscv_vcpu_get_reg_config(struct kvm_vcpu *vcpu,
+ 		break;
+ 	default:
+ 		return -EINVAL;
+-	};
++	}
+ 
+ 	if (copy_to_user(uaddr, &reg_val, KVM_REG_SIZE(reg->id)))
+ 		return -EFAULT;
+@@ -201,7 +201,7 @@ static int kvm_riscv_vcpu_set_reg_config(struct kvm_vcpu *vcpu,
+ 		break;
+ 	default:
+ 		return -EINVAL;
+-	};
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
+
