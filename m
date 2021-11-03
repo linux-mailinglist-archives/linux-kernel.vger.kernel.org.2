@@ -2,121 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4C04448CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:10:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 181054448CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbhKCTNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 15:13:24 -0400
-Received: from smtpcmd0756.aruba.it ([62.149.156.56]:43680 "EHLO
-        smtpcmd0756.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231230AbhKCTNW (ORCPT
+        id S231251AbhKCTSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 15:18:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229697AbhKCTSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 15:13:22 -0400
-Received: from [192.168.153.129] ([146.241.216.221])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id iLehmQUVD4n4riLehmFuEJ; Wed, 03 Nov 2021 20:10:44 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1635966644; bh=0/31yxmO9a/oC0P8HSIAOi7F4D8XhUglntlI8cyweIg=;
-        h=Subject:To:From:Date:MIME-Version:Content-Type;
-        b=JHt8XzSjYLi1rWyUyi2ykyjLwTWrBHdvKgItGaNHY9vgQDx4CIXQIBALXxgxMWPRM
-         oGtbjIF7McsY1X/k1uP2Acdeqw2BIas+OYupr81C2Dcca7XMa2Vp0Sp0FJTrwpcsSX
-         gFRfNMSc4dWtlo/n9+z2VXPjPRkCSC59N3R0G8+8JwmsfgviQHXTaF7kvRBJuWubei
-         hx+F0V/WiqGSUyEdMZ1mqAWtMsH7ZhpC7rP9NDKtvKOajBIDiWHDZJL7lyTxdyUfDg
-         n4sufjnQVMtJZjMUz4pfih0uAXT2MavO/91P0GGzNZ/d33kaReBHi5j6jAzzW4d6FZ
-         +cACDqCxUK6YQ==
-Subject: Re: [PATCH v2 11/13] mmc: sdhci-esdhc-imx: Add sdhc support for
- i.MXRT series
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Jesse Taube <mr.bossman075@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Stefan Agner <stefan@agner.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Abel Vesa <abel.vesa@nxp.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-serial@vger.kernel.org
-References: <20211102225701.98944-1-Mr.Bossman075@gmail.com>
- <20211102225701.98944-12-Mr.Bossman075@gmail.com>
- <CAOMZO5AxMXxDkNDqGJDhtepqSUxGRCWO+L=c67O==4fx66M7XQ@mail.gmail.com>
- <c1610093-95ae-68d3-57ae-93b1bc9715d7@gmail.com>
- <5ebe48f5-7b9c-be99-d50c-65a056084b96@benettiengineering.com>
- <CAOMZO5DHCYaxzSASKq6Bk8ALkiQeVjPOHOyk-pKYepJFJk6oFQ@mail.gmail.com>
-From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
-Message-ID: <78cba8ec-72b0-89b8-d6e3-09ecea19ca7b@benettiengineering.com>
-Date:   Wed, 3 Nov 2021 20:10:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 3 Nov 2021 15:18:14 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A7FC061203
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 12:15:38 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id v65so4129798ioe.5
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 12:15:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zvN8Wx3cerlS5kndbX104hKLH3gFaS6msaaX+fbSIaA=;
+        b=sn/PLQIBmfI06w/WOGfSjv9Kw13j3swiXnsEhqgCbHbteMIUbCOen4UyZk0AH6wWkN
+         1IEIFq5KLrsfJ2vFFB03I0IsLZJ3JX06eusxHqxIXlIbbh2gBJB2ILDk+KUJQFyAmexf
+         uRPiqcTti8SZbHRBQPMCfp5tI16Y+UuyXeiTdP9hdG8LLMUPgUqQcmP1Afl5ijYH6dlw
+         Tt3gYdC0zn2cteKEyCdxxc0CMv7mUfSu0TAW93Y5J894XHqwomsaHv3udZdWMj48Agpx
+         d/4Pw/YNf6ct+1vVYr0RpRpk64LD/B6UHvCDqr9fdH/d82D9Jr1G1E1FR+vJlY2JQGMM
+         gc0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zvN8Wx3cerlS5kndbX104hKLH3gFaS6msaaX+fbSIaA=;
+        b=7EZg5WQ8G9DZW+0VDEVB2tFF8CHHhCMpUZsBBF8stKdwDGbIJ0WibVQDegw8JqOrrl
+         m/Air2dQvJwlr0sHV5/WJNvCtB+TD6TJ253A15wcNreEMxGHYNtG/4VSPN5bfvATrN0z
+         04fqWyE9aW7YuBngkGhLR/W51nP79E2t8Yd4cxRsRnaIpsjeMKvD+rrpDwyI/rKCnxfJ
+         Yol33cKqp/e4+7TfZlGOd/HcTAPaPu5YJ3CmYaQMouF+1l+zzR2HCttbK6JnC3etHAOP
+         SBsu3O9B8m7Nb9qIzw9duK0YUB8i30x58iqs5f/qHAbPJuqZdgzSPqXfSI/drL1AJjx9
+         Vy7g==
+X-Gm-Message-State: AOAM532bqZwBQwClz7vqfUS8lgJ5cgCjfjZjBEdbQj6CSqDBTISteZrz
+        2gZpsbpGTi07YbvXX+qtvTVVBEwV/tbPDRJpvPy0lQ==
+X-Google-Smtp-Source: ABdhPJxudaSAmjjQlGS3xDDYyZVrcKdBo6oXuNr/UTLcuIJ4p6l1tEQvNCUjaVtRr9WFf7YDMvYVtdF5ogAif4lLXsA=
+X-Received: by 2002:a05:6602:2d88:: with SMTP id k8mr22838002iow.18.1635966937329;
+ Wed, 03 Nov 2021 12:15:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAOMZO5DHCYaxzSASKq6Bk8ALkiQeVjPOHOyk-pKYepJFJk6oFQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfF6/WWjL7PJeZTTfz9UiWozyugqncNHx9tTkfwkkeDbnl31INXrmdyJqCSDLjNgQNAiX+KEFaL/glNmQk4hLNz+e91vJZFmZ3NF5I4POniLdU+133jcp
- XzXAVa/DOc7iJ7Umt9dQCiK70yv+dPSCm6DyvEHh3sPzUmjoblvN2rbQedLd/KRav15zduP3h7pa3TBT7GXnqFDja1xM10FZDIRnNyWpakY0+K6IpWr9CtRp
- RbGD2bB0eWYl2pgQ6oK7rgqwkfBiXt6WBqx32YZalbWMiwFTgFZXYFX2bhI4iGNXtHbYX6M7a2P6awc9yt+RpNOC46ceA2OSF2GD2nNLCCA85tkJbOLpIuW+
- 2qJ4tYuOUeifsY8fJ1OAWVgvpme4hq+Jn9KOnjeL9hMJkqLhKlMoFBWG4ZFAjx6P+T/WjW84919f5FBekomjfNlXPtI2bx8LowHcHVMxxtgWKrIy8/HCjQse
- hMtGvQbiPuqHqMSGKMU0Q3721Q7hTJXFuObQDrhcRED7Kw6KTtE+Aczv5xnK+GZFMBgayrKg+SPoimBROvDme87huk7quiukeu+sSdj2ldoS4sJzD14db2fG
- fUZGCElF1aWolDYn3zDRnuI9aNLyzS3y1bYpg51QmCdVikiJpSb9nuEDd32x1YmU5g6bp8wj6JvNaeEdLN+hZ8C98TiPIvfIAQlyjNyu4rl6AtSJkRa0xbkl
- Oqwe2dhAY8fi/AdyGAOTkGT9EcPX6i/VjPEh3HGAOLI7lQRyq0Do61LOcfvBUvIvN4UdwfKqBwD9s9EPIMQEYbN3mTdK+1FUVYNZBAwyyypuvn/FOjtDyP2H
- JMyFerHaBWkngEyHrqz25mjCOQMODTDTsNvvVliBq93lDPsgK3mJEl0Habe+NGvFA2p8EJtf0FwLgL0DRkJHzdhMV88ocFN+5a1+J0RrGZr4w1tABUN/5cm1
- WudLVrZSILp4LPugdLhbdtWqzTVqLr7Z5bwjuyY0ykWP1Okhj8x8edAs9QHPcNhSXogZq6iiuo5o1gC6xSOGhsYvQsVxL3miS8s3fPyG/QjEvDLLBWrnRyF1
- 0glwqRkuoJSHoK/FA3aAdIQ9Aeg2lDGEs3pbsWIwLor0bSAzNFFlUwrWmx7Z5ykPs8sZoNMAWTJRAnNPRjzG87S0dPFSboLuLSo=
+References: <20211013174604.747276-1-irogers@google.com> <YXAINnEcHsy450zm@krava>
+ <CAP-5=fVCqisvy8-Obx9TA3Zgi_BJdefYr-g4LCsuy1KKb2xtBQ@mail.gmail.com>
+ <CAP-5=fXGvBY7hmvCAS7deNAYVxppYj9DZoxstJ93p68BHTSACw@mail.gmail.com> <YXvmtrBKV7eawT7h@krava>
+In-Reply-To: <YXvmtrBKV7eawT7h@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 3 Nov 2021 12:15:23 -0700
+Message-ID: <CAP-5=fWLY2cF97P0oiMpnLzKjBJ-tC_jRyRNicSHjx6m73KrWg@mail.gmail.com>
+Subject: Re: [PATCH v2 00/22] Start aligning perf test with kunit style
+To:     Jiri Olsa <jolsa@redhat.com>,
+        Sohaib Mohamed <sohaib.amhmd@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        David Gow <davidgow@google.com>, eranian@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabio, Jesse, Rob, All,
+On Fri, Oct 29, 2021 at 5:19 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Thu, Oct 28, 2021 at 04:52:13PM -0700, Ian Rogers wrote:
+> > On Wed, Oct 20, 2021 at 8:51 AM Ian Rogers <irogers@google.com> wrote:
+> > >
+> > > On Wed, Oct 20, 2021 at 5:14 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > >
+> > > > On Wed, Oct 13, 2021 at 10:45:42AM -0700, Ian Rogers wrote:
+> > > > > Perf test uses its own structs and code layout that differs from =
+kunit
+> > > > > that was more recently introduced to the kernel. Besides consiste=
+ncy,
+> > > > > it is hoped that moving in the direction of kunit style will enab=
+le
+> > > > > reuse of infrastructure like test output formatting for continuou=
+s
+> > > > > testing systems. For example:
+> > > > > https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn=
+6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
+> > > > >
+> > > > > The motivation for this restructuring comes from wanting to be ab=
+le to
+> > > > > tag tests with a size:
+> > > > > https://lore.kernel.org/linux-perf-users/CAP-5=3DfWmGyuqFKc-EMP3r=
+bmTkjZ3MS+YSajGZfeRMc38HS82gw@mail.gmail.com/
+> > > > > To have more exhaustive and slower running tests.  This isn't
+> > > > > something kunit currently supports, nor is the execution of pytho=
+n and
+> > > > > shell tests, but it seems sensible to work on an approach with ku=
+nit
+> > > > > rather to invent a new wheel inside of perf.
+> > > > >
+> > > > > These initial patches are just refactoring the main test suite
+> > > > > definitions to be in a more kunit style. Kunit isn't depended upo=
+n, it
+> > > > > is hoped that this can be done in later patches for the sake of
+> > > > > consistency.
+> > > > >
+> > > > > v2. Gets to a point of the perf test test suite/case structs bein=
+g
+> > > > >     close facsimiles of the kunit ones. It also addresses feedbac=
+k on
+> > > > >     the v1 RFC, in particular from Jiri Olsa <jolsa@redhat.com>.
+> > > >
+> > > > hi,
+> > > > when I compile with DEBUG=3D1 it's ok, but with just make:
+> > > >
+> > > > [root@krava perf]# ./perf test
+> > > > Segmentation fault (core dumped)
+> > > > [root@krava perf]# gdb ./perf
+> > > > GNU gdb (GDB) Fedora 10.2-4.fc33
+> > > > Copyright (C) 2021 Free Software Foundation, Inc.
+> > > > License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses=
+/gpl.html>
+> > > > This is free software: you are free to change and redistribute it.
+> > > > There is NO WARRANTY, to the extent permitted by law.
+> > > > Type "show copying" and "show warranty" for details.
+> > > > This GDB was configured as "x86_64-redhat-linux-gnu".
+> > > > Type "show configuration" for configuration details.
+> > > > For bug reporting instructions, please see:
+> > > > <https://www.gnu.org/software/gdb/bugs/>.
+> > > > Find the GDB manual and other documentation resources online at:
+> > > >     <http://www.gnu.org/software/gdb/documentation/>.
+> > > >
+> > > > For help, type "help".
+> > > > Type "apropos word" to search for commands related to "word"...
+> > > > Reading symbols from ./perf...
+> > > > (gdb) r test
+> > > > Starting program: /home/jolsa/kernel/linux-perf/tools/perf/perf tes=
+t
+> > > > [Thread debugging using libthread_db enabled]
+> > > > Using host libthread_db library "/lib64/libthread_db.so.1".
+> > > >
+> > > > Program received signal SIGSEGV, Segmentation fault.
+> > > > __strlen_avx2 () at ../sysdeps/x86_64/multiarch/strlen-avx2.S:96
+> > > > 96              VPCMPEQ (%rdi), %ymm0, %ymm1
+> > > > Missing separate debuginfos, use: dnf debuginfo-install bzip2-libs-=
+1.0.8-4.fc33.x86_64 cyrus-sasl-lib-2.1.27-6.fc33.x86_64 elfutils-debuginfod=
+-client-0.185-2.fc33.x86_64 elfutils-libelf-0.185-2.fc33.x86_64 elfutils-li=
+bs-0.185-2.fc33.x86_64 keyutils-libs-1.6.1-1.fc33.x86_64 krb5-libs-1.18.2-3=
+1.fc33.x86_64 libbabeltrace-1.5.8-3.fc33.x86_64 libbrotli-1.0.9-3.fc33.x86_=
+64 libcap-2.48-2.fc33.x86_64 libcom_err-1.45.6-4.fc33.x86_64 libgcc-10.3.1-=
+1.fc33.x86_64 libidn2-2.3.2-1.fc33.x86_64 libnghttp2-1.43.0-1.fc33.x86_64 l=
+ibpsl-0.21.1-2.fc33.x86_64 libselinux-3.1-2.fc33.x86_64 libssh-0.9.6-1.fc33=
+.x86_64 libunistring-0.9.10-9.fc33.x86_64 libunwind-1.4.0-4.fc33.x86_64 lib=
+uuid-2.36.1-1.fc33.x86_64 libxcrypt-4.4.26-2.fc33.x86_64 numactl-libs-2.0.1=
+4-1.fc33.x86_64 openldap-2.4.50-5.fc33.x86_64 openssl-libs-1.1.1l-2.fc33.x8=
+6_64 pcre-8.44-2.fc33.x86_64 perl-libs-5.32.1-471.fc33.x86_64 popt-1.18-2.f=
+c33.x86_64 python2.7-2.7.18-15.fc33.x86_64 slang-2.3.2-8.fc33.x86_64 xz-lib=
+s-5.2.5-4.fc33.x86_64 zlib-1.2.11-23.fc33.x86_64
+> > > > (gdb) bt
+> > > > #0  __strlen_avx2 () at ../sysdeps/x86_64/multiarch/strlen-avx2.S:9=
+6
+> > > > #1  0x00000000004a3848 in __cmd_test (skiplist=3D0x0, argv=3D0x7fff=
+ffffd6c0, argc=3D0) at tests/builtin-test.c:150
+> > > > #2  cmd_test (argc=3D0, argv=3D0x7fffffffd6c0) at tests/builtin-tes=
+t.c:628
+> > > > #3  0x00000000004cc47b in run_builtin (p=3Dp@entry=3D0xa7cda8 <comm=
+ands+552>, argc=3Dargc@entry=3D1, argv=3Dargv@entry=3D0x7fffffffd6c0) at pe=
+rf.c:313
+> > > > #4  0x00000000004397ae in handle_internal_command (argv=3D0x7ffffff=
+fd6c0, argc=3D1) at perf.c:365
+> > > > #5  run_argv (argv=3D<synthetic pointer>, argcp=3D<synthetic pointe=
+r>) at perf.c:409
+> > > > #6  main (argc=3D1, argv=3D0x7fffffffd6c0) at perf.c:539
+> > > > (gdb)
+> > >
+> > > Thanks, I'll take a look.
+> >
+> > I wasn't able to reproduce this, I tried with gcc-10 on each patch
+> > individually, debug disabled and O3. I can send a v3 patch set, but
+> > currently it is just a rebase of v2.
+>
+> ok, I'll try to debug that if I can still reproduce
+>
+> jirka
 
-On 11/3/21 6:51 PM, Fabio Estevam wrote:
-> Hi Giulio,
-> 
-> On Tue, Nov 2, 2021 at 8:30 PM Giulio Benetti
-> <giulio.benetti@benettiengineering.com> wrote:
-> 
->> If we add every SoC we will end up having a long list for every device
->> driver. At the moment it would be 7 parts:
->> 1) imxrt1020
->> 2) imxrt1024
->> .
->> .
->> .
->> 7) imxrt1170
->>
->> Is it ok anyway?
-> 
-> As this patch adds the support for imxrt1050, I would go with
-> "fsl,imxrt1050-usdhc" for now.
-> 
+Thanks to Sohaib I have a reproduction now, and it looks like there
+are a bunch of issues to fix in v3.
 
-Ok, then it's the same as pointed by Rob for lpuart[1]; @Jesse: we will 
-do the same for all peripherals(more or less) since it seems there are 
-little differences in the i.MXRT family.
-
-[1]: 
-https://lore.kernel.org/lkml/D0A3E11F-FEDE-4B2D-90AB-63DFC245A935@benettiengineering.com/T/
-
-Thanks a lot
-Best regards
--- 
-Giulio Benetti
-Benetti Engineering sas
+Thanks,
+Ian
