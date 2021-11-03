@@ -2,189 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9C3443C27
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 05:21:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BAB6443C30
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 05:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhKCEYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 00:24:09 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:34298 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230059AbhKCEYH (ORCPT
+        id S231304AbhKCEZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 00:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230483AbhKCEZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 00:24:07 -0400
-X-UUID: cb9d0a0e1d574e2198d3f0d473b6d596-20211103
-X-UUID: cb9d0a0e1d574e2198d3f0d473b6d596-20211103
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <james.lo@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 607324921; Wed, 03 Nov 2021 12:21:29 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Wed, 3 Nov 2021 12:21:28 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 3 Nov 2021 12:21:27 +0800
-From:   James Lo <james.lo@mediatek.com>
-To:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        James Lo <james.lo@mediatek.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Henry Chen <henryc.chen@mediatek.com>
-Subject: [v13 4/4] spmi: mediatek: Add support for MT8195
-Date:   Wed, 3 Nov 2021 12:21:03 +0800
-Message-ID: <20211103042103.4984-5-james.lo@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20211103042103.4984-1-james.lo@mediatek.com>
-References: <20211103042103.4984-1-james.lo@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        Wed, 3 Nov 2021 00:25:09 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A8AC061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 21:22:33 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id p20-20020a63fe14000000b002cc2a31eaf6so903713pgh.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 21:22:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=0XauQlZsaPUfyum8gatBpe8x8WpyNCmm8SdAdVAZ9Qo=;
+        b=DH/50Tu1YmUDH6wSMIfrdQahebDs+g8pBwDxf7xOVKI/RwroMkffOccH2HgZwPuNmX
+         Lbt6kJ8e8Ao2YMbgirpGdSlk8+X32EBih0w5+D9PlteoIZGgQP9lURxFcIgQ98+SniVk
+         e195YnEcNZqSYWNfmQOLn9wWCwmlNzFKxYWXWBuNSPq94vOna3SNVhsXBJLX/CUJ9RsS
+         SdJ/TzLe1zkiSwdMcPwsZD2/SU0Lcu+3XZH/yOergrpIBjWWwHSi2BJihKBeWjMgZxul
+         bB/Zl8iwByCbyls2F9afcYkALfZeuEsyE01aaSouD5j3mogNY1MSU5PPM9Fw1N9qG6tA
+         RaTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=0XauQlZsaPUfyum8gatBpe8x8WpyNCmm8SdAdVAZ9Qo=;
+        b=kNvI4qR/XxSaKdDTTpyklP7KqVbMk6DEb247GycyHTIVAE70u82HRFKXOmRlGflqCv
+         SM8ZsXwv0YxDrLTRsZkvhaXmmEYkQ6xquAcwdecKppipujF0jvTYcytlrGNhE3ulgkZC
+         FkN+47lMOMc2HzJVIaRflnfwNPzHoM8kRhOUpv1yBJD112qgchj6nzD9gZHn8oxdqa1u
+         l4G1ZN2xlQKLIpXxs2hbGtTaEXji1aSIehEZ3elpc5GOR9BLKD5nVzSCJp4x4VuZMW8W
+         p2s3k7mzKmBw+R8n2Ez7S9GbKdzNlCUdmFVu0sjRJJTJ2Rxv3iS2sQEKV9d7BYZ+GWAz
+         5uDw==
+X-Gm-Message-State: AOAM533eKEY/CuyPjfCUJDxugH06voh4rZ0fMtOG0gH2GEptPyW+Mpqr
+        Thkamyz6Q41ymcFUphdVKrj1U252UY35vg==
+X-Google-Smtp-Source: ABdhPJy6F6sECljSr8P+CKXCM5bzqTUqG8i1/Lv+sXbzT0r+Ugr2nDhG9i/PiVruwD/smdMXZo7K7KCWuu1RMQ==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:8673:8d2f:d693:6af])
+ (user=dlatypov job=sendgmr) by 2002:aa7:8016:0:b0:481:2405:e72b with SMTP id
+ j22-20020aa78016000000b004812405e72bmr9625182pfi.54.1635913352981; Tue, 02
+ Nov 2021 21:22:32 -0700 (PDT)
+Date:   Tue,  2 Nov 2021 21:22:28 -0700
+Message-Id: <20211103042228.586967-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
+Subject: [PATCH v2] kunit: add run_checks.py script to validate kunit changes
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add spmi support for MT8195.
+This formalizes the checks KUnit maintainers have been running (or in
+other cases: forgetting to run).
 
-Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
-Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Acked-By: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+This script also runs them all in parallel to minimize friction (pytype
+can be fairly slow, but not slower than running kunit.py).
+
+Example output:
+$ ./tools/testing/kunit/run_checks.py
+Waiting on 4 checks (kunit_tool_test.py, kunit smoke test, pytype, mypy)...
+kunit_tool_test.py: PASSED
+mypy: PASSED
+pytype: PASSED
+kunit smoke test: PASSED
+
+On failure or timeout (5 minutes), it'll dump out the stdout/stderr.
+E.g. adding in a type-checking error:
+  mypy: FAILED
+  > kunit.py:54: error: Name 'nonexistent_function' is not defined
+  > Found 1 error in 1 file (checked 8 source files)
+
+mypy and pytype are two Python type-checkers and must be installed.
+This file treats them as optional and will mark them as SKIPPED if not
+installed.
+
+This tool also runs `kunit.py run --kunitconfig=lib/kunit` to run
+KUnit's own KUnit tests and to verify KUnit kernel code and kunit.py
+play nicely together.
+
+It uses --build_dir=kunit_run_checks so as not to clobber the default
+build_dir, which helps make it faster by reducing the need to rebuild,
+esp. if you're been passing in --arch instead of using UML.
+
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+Reviewed-by: David Gow <davidgow@google.com>
 ---
- drivers/spmi/spmi-mtk-pmif.c | 88 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 88 insertions(+)
+ tools/testing/kunit/run_checks.py | 81 +++++++++++++++++++++++++++++++
+ 1 file changed, 81 insertions(+)
+ create mode 100755 tools/testing/kunit/run_checks.py
 
-diff --git a/drivers/spmi/spmi-mtk-pmif.c b/drivers/spmi/spmi-mtk-pmif.c
-index 3283d0a5903c..c5946494087f 100644
---- a/drivers/spmi/spmi-mtk-pmif.c
-+++ b/drivers/spmi/spmi-mtk-pmif.c
-@@ -152,6 +152,54 @@ static const u32 mt6873_regs[] = {
- 	[PMIF_SWINF_3_STA] =	0x0CE8,
- };
- 
-+static const u32 mt8195_regs[] = {
-+	[PMIF_INIT_DONE] = 0x0000,
-+	[PMIF_INF_EN] = 0x0024,
-+	[PMIF_ARB_EN] = 0x0150,
-+	[PMIF_CMDISSUE_EN] = 0x03B8,
-+	[PMIF_TIMER_CTRL] = 0x03E4,
-+	[PMIF_SPI_MODE_CTRL] = 0x0408,
-+	[PMIF_IRQ_EVENT_EN_0] = 0x0420,
-+	[PMIF_IRQ_FLAG_0] = 0x0428,
-+	[PMIF_IRQ_CLR_0] = 0x042C,
-+	[PMIF_IRQ_EVENT_EN_1] = 0x0430,
-+	[PMIF_IRQ_FLAG_1] = 0x0438,
-+	[PMIF_IRQ_CLR_1] = 0x043C,
-+	[PMIF_IRQ_EVENT_EN_2] = 0x0440,
-+	[PMIF_IRQ_FLAG_2] = 0x0448,
-+	[PMIF_IRQ_CLR_2] = 0x044C,
-+	[PMIF_IRQ_EVENT_EN_3] = 0x0450,
-+	[PMIF_IRQ_FLAG_3] = 0x0458,
-+	[PMIF_IRQ_CLR_3] = 0x045C,
-+	[PMIF_IRQ_EVENT_EN_4] = 0x0460,
-+	[PMIF_IRQ_FLAG_4] = 0x0468,
-+	[PMIF_IRQ_CLR_4] = 0x046C,
-+	[PMIF_WDT_EVENT_EN_0] = 0x0474,
-+	[PMIF_WDT_FLAG_0] = 0x0478,
-+	[PMIF_WDT_EVENT_EN_1] = 0x047C,
-+	[PMIF_WDT_FLAG_1] = 0x0480,
-+	[PMIF_SWINF_0_ACC] = 0x0800,
-+	[PMIF_SWINF_0_WDATA_31_0] = 0x0804,
-+	[PMIF_SWINF_0_RDATA_31_0] = 0x0814,
-+	[PMIF_SWINF_0_VLD_CLR] = 0x0824,
-+	[PMIF_SWINF_0_STA] = 0x0828,
-+	[PMIF_SWINF_1_ACC] = 0x0840,
-+	[PMIF_SWINF_1_WDATA_31_0] = 0x0844,
-+	[PMIF_SWINF_1_RDATA_31_0] = 0x0854,
-+	[PMIF_SWINF_1_VLD_CLR] = 0x0864,
-+	[PMIF_SWINF_1_STA] = 0x0868,
-+	[PMIF_SWINF_2_ACC] = 0x0880,
-+	[PMIF_SWINF_2_WDATA_31_0] = 0x0884,
-+	[PMIF_SWINF_2_RDATA_31_0] = 0x0894,
-+	[PMIF_SWINF_2_VLD_CLR] = 0x08A4,
-+	[PMIF_SWINF_2_STA] = 0x08A8,
-+	[PMIF_SWINF_3_ACC] = 0x08C0,
-+	[PMIF_SWINF_3_WDATA_31_0] = 0x08C4,
-+	[PMIF_SWINF_3_RDATA_31_0] = 0x08D4,
-+	[PMIF_SWINF_3_VLD_CLR] = 0x08E4,
-+	[PMIF_SWINF_3_STA] = 0x08E8,
-+};
+diff --git a/tools/testing/kunit/run_checks.py b/tools/testing/kunit/run_checks.py
+new file mode 100755
+index 000000000000..4f32133ed77c
+--- /dev/null
++++ b/tools/testing/kunit/run_checks.py
+@@ -0,0 +1,81 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: GPL-2.0
++#
++# This file runs some basic checks to verify kunit works.
++# It is only of interest if you're making changes to KUnit itself.
++#
++# Copyright (C) 2021, Google LLC.
++# Author: Daniel Latypov <dlatypov@google.com.com>
 +
- enum spmi_regs {
- 	SPMI_OP_ST_CTRL,
- 	SPMI_GRP_ID_EN,
-@@ -165,6 +213,15 @@ enum spmi_regs {
- 	SPMI_REC3,
- 	SPMI_REC4,
- 	SPMI_MST_DBG,
++from concurrent import futures
++import datetime
++import os
++import shutil
++import subprocess
++import sys
++import textwrap
++from typing import Dict, List, Sequence, Tuple
 +
-+	/* MT8195 spmi regs */
-+	SPMI_MST_RCS_CTRL,
-+	SPMI_SLV_3_0_EINT,
-+	SPMI_SLV_7_4_EINT,
-+	SPMI_SLV_B_8_EINT,
-+	SPMI_SLV_F_C_EINT,
-+	SPMI_REC_CMD_DEC,
-+	SPMI_DEC_DBG,
- };
- 
- static const u32 mt6873_spmi_regs[] = {
-@@ -182,6 +239,28 @@ static const u32 mt6873_spmi_regs[] = {
- 	[SPMI_MST_DBG] =	0x00fc,
- };
- 
-+static const u32 mt8195_spmi_regs[] = {
-+	[SPMI_OP_ST_CTRL] = 0x0000,
-+	[SPMI_GRP_ID_EN] = 0x0004,
-+	[SPMI_OP_ST_STA] = 0x0008,
-+	[SPMI_MST_SAMPL] = 0x000C,
-+	[SPMI_MST_REQ_EN] = 0x0010,
-+	[SPMI_MST_RCS_CTRL] = 0x0014,
-+	[SPMI_SLV_3_0_EINT] = 0x0020,
-+	[SPMI_SLV_7_4_EINT] = 0x0024,
-+	[SPMI_SLV_B_8_EINT] = 0x0028,
-+	[SPMI_SLV_F_C_EINT] = 0x002C,
-+	[SPMI_REC_CTRL] = 0x0040,
-+	[SPMI_REC0] = 0x0044,
-+	[SPMI_REC1] = 0x0048,
-+	[SPMI_REC2] = 0x004C,
-+	[SPMI_REC3] = 0x0050,
-+	[SPMI_REC4] = 0x0054,
-+	[SPMI_REC_CMD_DEC] = 0x005C,
-+	[SPMI_DEC_DBG] = 0x00F8,
-+	[SPMI_MST_DBG] = 0x00FC,
-+};
++ABS_TOOL_PATH = os.path.abspath(os.path.dirname(__file__))
++TIMEOUT = datetime.timedelta(minutes=5).total_seconds()
 +
- static u32 pmif_readl(struct pmif *arb, enum pmif_regs reg)
- {
- 	return readl(arb->base + arb->data->regs[reg]);
-@@ -345,6 +424,12 @@ static const struct pmif_data mt6873_pmif_arb = {
- 	.soc_chan = 2,
- };
- 
-+static const struct pmif_data mt8195_pmif_arb = {
-+	.regs = mt8195_regs,
-+	.spmimst_regs = mt8195_spmi_regs,
-+	.soc_chan = 2,
-+};
++commands: Dict[str, Sequence[str]] = {
++	'kunit_tool_test.py': ['./kunit_tool_test.py'],
++	'kunit smoke test': ['./kunit.py', 'run', '--kunitconfig=lib/kunit', '--build_dir=kunit_run_checks'],
++	'pytype': ['/bin/sh', '-c', 'pytype *.py'],
++	'mypy': ['/bin/sh', '-c', 'mypy *.py'],
++}
 +
- static int mtk_spmi_probe(struct platform_device *pdev)
- {
- 	struct pmif *arb;
-@@ -433,6 +518,9 @@ static const struct of_device_id mtk_spmi_match_table[] = {
- 	{
- 		.compatible = "mediatek,mt6873-spmi",
- 		.data = &mt6873_pmif_arb,
-+	}, {
-+		.compatible = "mediatek,mt8195-spmi",
-+		.data = &mt8195_pmif_arb,
- 	}, {
- 		/* sentinel */
- 	},
++# The user might not have mypy or pytype installed, skip them if so.
++# Note: you can install both via `$ pip install mypy pytype`
++necessary_deps : Dict[str, str] = {
++	'pytype': 'pytype',
++	'mypy': 'mypy',
++}
++
++def main(argv: Sequence[str]) -> None:
++	if argv:
++		raise RuntimeError('This script takes no arguments')
++
++	future_to_name: Dict[futures.Future, str] = {}
++	executor = futures.ThreadPoolExecutor(max_workers=len(commands))
++	for name, argv in commands.items():
++		if name in necessary_deps and shutil.which(necessary_deps[name]) is None:
++			print(f'{name}: SKIPPED, {necessary_deps[name]} not in $PATH')
++			continue
++		f = executor.submit(run_cmd, argv)
++		future_to_name[f] = name
++
++	has_failures = False
++	print(f'Waiting on {len(future_to_name)} checks ({", ".join(future_to_name.values())})...')
++	for f in  futures.as_completed(future_to_name.keys()):
++		name = future_to_name[f]
++		ex = f.exception()
++		if not ex:
++			print(f'{name}: PASSED')
++			continue
++
++		has_failures = True
++		if isinstance(ex, subprocess.TimeoutExpired):
++			print(f'{name}: TIMED OUT')
++		elif isinstance(ex, subprocess.CalledProcessError):
++			print(f'{name}: FAILED')
++		else:
++			print('{name}: unexpected exception: {ex}')
++			continue
++
++		output = ex.output
++		if output:
++			print(textwrap.indent(output.decode(), '> '))
++	executor.shutdown()
++
++	if has_failures:
++		sys.exit(1)
++
++
++def run_cmd(argv: Sequence[str]):
++	subprocess.check_output(argv, stderr=subprocess.STDOUT, cwd=ABS_TOOL_PATH, timeout=TIMEOUT)
++
++
++if __name__ == '__main__':
++	main(sys.argv[1:])
+
+base-commit: 52a5d80a2225e2d0b2a8f4656b76aead2a443b2a
 -- 
-2.18.0
+2.33.1.1089.g2158813163f-goog
 
