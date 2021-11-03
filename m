@@ -2,122 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E2F4441D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:46:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 462964441E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhKCMtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 08:49:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54968 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230185AbhKCMtL (ORCPT
+        id S231955AbhKCMws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 08:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230282AbhKCMwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 08:49:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635943594;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=z6Gv9aPGAm2nkgSP8Un5y2TgCpXofV69fWr18YkFIeQ=;
-        b=AlBOiaM2/FQAR6QEqjF3uH7XdY9a2m2KVbSipFasTRy8GeblOTZiWMpc5jKeAlJ3RgGudn
-        4i/pmnF+qccXrHJ9cfFK9kf9qyU1vfKXqT6pENzs3wcZpH0BCxKUXnYpt/WgbWMX3ciBXe
-        L9+ZQjSyTKZL6Y410uTF4QGY3jFQRzM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-315-nRiYLvqzPYK0wVmqGeNc8Q-1; Wed, 03 Nov 2021 08:46:31 -0400
-X-MC-Unique: nRiYLvqzPYK0wVmqGeNc8Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 19444DF8A7;
-        Wed,  3 Nov 2021 12:46:30 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 85E4070F6A;
-        Wed,  3 Nov 2021 12:46:15 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        linux-crypto@vger.kernel.org (open list:CRYPTO API),
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH] crypto: x86/aes-ni: fix AVX detection
-Date:   Wed,  3 Nov 2021 14:46:14 +0200
-Message-Id: <20211103124614.499580-1-mlevitsk@redhat.com>
+        Wed, 3 Nov 2021 08:52:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78026C061714;
+        Wed,  3 Nov 2021 05:50:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AWxSgl03y6hj3Uclf1xozKOXfzyGEIJRVjgfKOuJfpg=; b=YuVMiK6AS8CrpAonDsTY6eSJVb
+        OugD9VsmoHFM7boGrHLu1QNyCytMHEg5N91zyXYRxpdssp5JyGumIRtnDLczTlyGZjvjxZbOfVUSu
+        u7Voc9B6hX01wrjNWQ52S3RodehRg4jMLvQ7dSctJVKuaig11MUJMUNnKJGQ5WGkcgnzrRHpn9oh5
+        x/pOcow5cBk8Muleo21zE8sYrnuJLCICJrc7wSzHPq5g/+Wq5jS8KofnVayU2t4XMSZRBm5+nWZ3M
+        x3Iz+x5zsxxIyb8HG/mzwYgDPnbD82Aniau6Qs8ra5Wo6Cw+aWZbw0HF5+o76aMPh3S6teWu+26zG
+        uYXZsPyw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1miFgM-005Cll-UN; Wed, 03 Nov 2021 12:48:29 +0000
+Date:   Wed, 3 Nov 2021 12:47:58 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 15/21] iomap: Convert iomap_write_begin and
+ iomap_write_end to folios
+Message-ID: <YYKE/ohWPf7jUBM/@casper.infradead.org>
+References: <20211101203929.954622-1-willy@infradead.org>
+ <20211101203929.954622-16-willy@infradead.org>
+ <20211102232215.GG2237511@magnolia>
+ <YYH+wfNdgubpqtyP@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYH+wfNdgubpqtyP@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix two semi-theoretical issues that are present.
+On Wed, Nov 03, 2021 at 03:15:13AM +0000, Matthew Wilcox wrote:
+> On Tue, Nov 02, 2021 at 04:22:15PM -0700, Darrick J. Wong wrote:
+> > > +	page = folio_file_page(folio, pos >> PAGE_SHIFT);
+> > 
+> > Isn't this only needed in the BUFFER_HEAD case?
+> 
+> Good catch.  Want me to fold this in?
+> 
+> @@ -632,12 +631,12 @@ static int iomap_write_begin(const struct iomap_iter *iter, loff_t pos,
+>                 goto out_no_page;
+>         }
+>  
+> -       page = folio_file_page(folio, pos >> PAGE_SHIFT);
+>         if (srcmap->type == IOMAP_INLINE)
+>                 status = iomap_write_begin_inline(iter, folio);
+> -       else if (srcmap->flags & IOMAP_F_BUFFER_HEAD)
+> +       else if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
+> +               struct page *page = folio_file_page(folio, pos >> PAGE_SHIFT);
+>                 status = __block_write_begin_int(page, pos, len, NULL, srcmap);
 
-1. AVX is assumed to be present when AVX2 is present.
- That can be false in a VM.
- This can be considered a hypervisor bug,
- but the kernel should not crash in this case if this is possible.
-
-2. YMM state can be soft disabled in XCR0.
-
-Fix both issues by using 'cpu_has_xfeatures(XFEATURE_MASK_YMM')
-to check for usable AVX support.
-
-Fixes: d764593af9249 ("crypto: aesni - AVX and AVX2 version of AESNI-GCM encode and decode")
-
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/crypto/aesni-intel_glue.c | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
-
-diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
-index 0fc961bef299c..20db1e500ef6f 100644
---- a/arch/x86/crypto/aesni-intel_glue.c
-+++ b/arch/x86/crypto/aesni-intel_glue.c
-@@ -1147,24 +1147,25 @@ static int __init aesni_init(void)
- 	if (!x86_match_cpu(aesni_cpu_id))
- 		return -ENODEV;
- #ifdef CONFIG_X86_64
--	if (boot_cpu_has(X86_FEATURE_AVX2)) {
--		pr_info("AVX2 version of gcm_enc/dec engaged.\n");
--		static_branch_enable(&gcm_use_avx);
--		static_branch_enable(&gcm_use_avx2);
--	} else
--	if (boot_cpu_has(X86_FEATURE_AVX)) {
--		pr_info("AVX version of gcm_enc/dec engaged.\n");
-+	if (cpu_has_xfeatures(XFEATURE_MASK_YMM, NULL)) {
-+
- 		static_branch_enable(&gcm_use_avx);
--	} else {
--		pr_info("SSE version of gcm_enc/dec engaged.\n");
--	}
--	if (boot_cpu_has(X86_FEATURE_AVX)) {
-+
-+		if (boot_cpu_has(X86_FEATURE_AVX2)) {
-+			static_branch_enable(&gcm_use_avx2);
-+			pr_info("AVX2 version of gcm_enc/dec engaged.\n");
-+		} else {
-+			pr_info("AVX version of gcm_enc/dec engaged.\n");
-+		}
-+
- 		/* optimize performance of ctr mode encryption transform */
- 		static_call_update(aesni_ctr_enc_tfm, aesni_ctr_enc_avx_tfm);
- 		pr_info("AES CTR mode by8 optimization enabled\n");
-+
-+	} else {
-+		pr_info("SSE version of gcm_enc/dec engaged.\n");
- 	}
- #endif
--
- 	err = crypto_register_alg(&aesni_cipher_alg);
- 	if (err)
- 		return err;
--- 
-2.26.3
-
+On second thoughts, this is silly.  __block_write_begin_int() doesn't
+want the precise page (because it constructs buffer_heads and attaches
+them to the passed-in page).  I should just pass &folio->page here.
+And __block_write_begin_int() should be converted to take a folio
+at some point.
