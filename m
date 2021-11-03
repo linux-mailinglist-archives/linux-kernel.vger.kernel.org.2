@@ -2,134 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063BB44437E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72327444382
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:27:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232110AbhKCO3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 10:29:54 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:52468 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231679AbhKCO3u (ORCPT
+        id S231816AbhKCOaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 10:30:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232163AbhKCOaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 10:29:50 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 005D21FD39;
-        Wed,  3 Nov 2021 14:27:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635949633; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WjVRAY/znLnXw9klPTASWRvUFX89s7VJBB58DLKxfUQ=;
-        b=hPdDISF7zAFlR3D1VghEwmjLHCyJzAEZGI0T8s7i9kBvzyNFjrw+frUJBJfEZeC8Ip0b2k
-        9CYntkKVcibvtIt4bOiDd2rt7wfUJMSf6sMOczsmStyf+tPif9oe5fW8uRhLvXi6kodmy2
-        B8ic5OKRxc3H7Yhx3sv/wI4gfMCqG1w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635949633;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WjVRAY/znLnXw9klPTASWRvUFX89s7VJBB58DLKxfUQ=;
-        b=M/L7iHHfkmz+2rw50TnNglTComYCUk4dpfnWf3iG+LhOoQW3W2vt25Q5xGT8rHAr1z6NTC
-        faUcUhialZOVm3AQ==
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
-        by relay2.suse.de (Postfix) with ESMTP id D155AA3B92;
-        Wed,  3 Nov 2021 14:27:12 +0000 (UTC)
-From:   Michal Suchanek <msuchanek@suse.de>
-To:     keyrings@vger.kernel.org
-Cc:     Michal Suchanek <msuchanek@suse.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>, Rob Herring <robh@kernel.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Frank van der Linden <fllinden@amazon.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org
-Subject: [PATCH 3/3] powerpc/kexec_file: Add KEXEC_SIG support.
-Date:   Wed,  3 Nov 2021 15:27:08 +0100
-Message-Id: <ba7ffddf9e15288baeae6c2099e573509321738c.1635948742.git.msuchanek@suse.de>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1635948742.git.msuchanek@suse.de>
-References: <cover.1635948742.git.msuchanek@suse.de>
+        Wed, 3 Nov 2021 10:30:04 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D2FC06120B;
+        Wed,  3 Nov 2021 07:27:25 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f13290006136262b125c835.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:2900:613:6262:b125:c835])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 127091EC0567;
+        Wed,  3 Nov 2021 15:27:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1635949644;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=PN13d60ZQ5g2G8iEXh3tkIMCVCu0bXX1/VFUYwMyhZo=;
+        b=hRLfXtHgTs4/Lm9rNp+SY306FCQskMF/7tpsnJV3kuA2NqDuTzGrs+Bjpdfm1FnKyEzrBI
+        uuDrkCL5NNlFxWSJ0YptWv30kTilcRNvxBXYdwApFSD4DYkUsQyysd1uuiAl7uqSlEYbm+
+        4WjnKmhIKmrbObBfRMq3Z6Hgu8bgyFI=
+Date:   Wed, 3 Nov 2021 15:27:23 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Eric Biederman <ebiederm@xmission.com>,
+        kexec@lists.infradead.org, Joerg Roedel <jroedel@suse.de>,
+        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 03/12] x86/sev: Save and print negotiated GHCB
+ protocol version
+Message-ID: <YYKcS2OIzAV+MTzr@zn.tnic>
+References: <20210913155603.28383-1-joro@8bytes.org>
+ <20210913155603.28383-4-joro@8bytes.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210913155603.28383-4-joro@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the module verifier for the kernel image verification.
+On Mon, Sep 13, 2021 at 05:55:54PM +0200, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
+> 
+> Save the results of the GHCB protocol negotiation into a data structure
+> and print information about versions supported and used to the kernel
+> log.
 
-Signed-off-by: Michal Suchanek <msuchanek@suse.de>
----
- arch/powerpc/Kconfig        | 11 +++++++++++
- arch/powerpc/kexec/elf_64.c | 14 ++++++++++++++
- 2 files changed, 25 insertions(+)
+Which is useful for?
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 743c9783c64f..27bffafa9e79 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -558,6 +558,17 @@ config KEXEC_FILE
- config ARCH_HAS_KEXEC_PURGATORY
- 	def_bool KEXEC_FILE
- 
-+config KEXEC_SIG
-+	bool "Verify kernel signature during kexec_file_load() syscall"
-+	depends on KEXEC_FILE && MODULE_SIG_FORMAT
-+	help
-+	  This option makes kernel signature verification mandatory for
-+	  the kexec_file_load() syscall.
-+
-+	  In addition to that option, you need to enable signature
-+	  verification for the corresponding kernel image type being
-+	  loaded in order for this to work.
-+
- config PPC64_BUILD_ELF_V2_ABI
- 	bool
- 
-diff --git a/arch/powerpc/kexec/elf_64.c b/arch/powerpc/kexec/elf_64.c
-index eeb258002d1e..e8dff6b23ac5 100644
---- a/arch/powerpc/kexec/elf_64.c
-+++ b/arch/powerpc/kexec/elf_64.c
-@@ -23,6 +23,7 @@
- #include <linux/of_fdt.h>
- #include <linux/slab.h>
- #include <linux/types.h>
-+#include <linux/verification.h>
- 
- static void *elf64_load(struct kimage *image, char *kernel_buf,
- 			unsigned long kernel_len, char *initrd,
-@@ -151,7 +152,20 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
- 	return ret ? ERR_PTR(ret) : NULL;
- }
- 
-+#ifdef CONFIG_KEXEC_SIG
-+int elf64_verify_sig(const char *kernel, unsigned long length)
-+{
-+	size_t kernel_len = length;
-+
-+	return verify_appended_signature(kernel, &kernel_len, VERIFY_USE_PLATFORM_KEYRING,
-+					 "kexec_file");
-+}
-+#endif /* CONFIG_KEXEC_SIG */
-+
- const struct kexec_file_ops kexec_elf64_ops = {
- 	.probe = kexec_elf_probe,
- 	.load = elf64_load,
-+#ifdef CONFIG_KEXEC_SIG
-+	.verify_sig = elf64_verify_sig,
-+#endif
- };
+> +/*
+> + * struct sev_ghcb_protocol_info - Used to return GHCB protocol
+> + *				   negotiation details.
+> + *
+> + * @hv_proto_min:	Minimum GHCB protocol version supported by Hypervisor
+> + * @hv_proto_max:	Maximum GHCB protocol version supported by Hypervisor
+> + * @vm_proto:		Protocol version the VM (this kernel) will use
+> + */
+> +struct sev_ghcb_protocol_info {
+
+Too long a name - ghcb_info is perfectly fine.
+
 -- 
-2.31.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
