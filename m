@@ -2,73 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F4F444396
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78DA4444399
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232143AbhKCOcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 10:32:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42614 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231572AbhKCOco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 10:32:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B3637610EA;
-        Wed,  3 Nov 2021 14:30:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635949807;
-        bh=U6oZiDXnzpVV8shO8jA0CWDHcZZgaJaPrcU8jO43zyQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=qXOMXMsoqUbJ+77sutkKcd4zs6swPH8djcS5qFS//RbqQpucsHqSPmzEFUoXO59kN
-         KuuAUbEvQIzEIw1IFZVDJAdH8kq/Cn909Y4S94TCbJOG0SB7uKwhLE9uHPZQdaP8eW
-         VLCMVMgws2/ijOrWmX1IT6t32jP5tMY9hDh492t1ZykbGTNsLF1u/UdtzFlxCid93v
-         83amvBwsUyvkoOzKT5xNSZSl5jJ+M1vDmcNUyoRVXSFOkxKB907eq5g/oyQI9REFGm
-         ciYZwOZK8jcNshH/s2neZVnxiloD9dFjnJrmymtHFzWaJZ29zP8uZ7rnmNRxKvpWE9
-         yAGpVR2hF5VnA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A872160A2E;
-        Wed,  3 Nov 2021 14:30:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232158AbhKCOc4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Nov 2021 10:32:56 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:44921 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232126AbhKCOct (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 10:32:49 -0400
+Received: (Authenticated sender: clement.leger@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 77CEB1BF210;
+        Wed,  3 Nov 2021 14:30:08 +0000 (UTC)
+Date:   Wed, 3 Nov 2021 15:30:07 +0100
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 6/6] net: ocelot: add jumbo frame support for FDMA
+Message-ID: <20211103153007.405509c0@fixe.home>
+In-Reply-To: <20211103124319.e7th7khpsybs7zjd@skbuf>
+References: <20211103091943.3878621-1-clement.leger@bootlin.com>
+        <20211103091943.3878621-7-clement.leger@bootlin.com>
+        <20211103124319.e7th7khpsybs7zjd@skbuf>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [net PATCH] net: dsa: qca8k: make sure PAD0 MAC06 exchange is
- disabled
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163594980768.8310.7991708894405990412.git-patchwork-notify@kernel.org>
-Date:   Wed, 03 Nov 2021 14:30:07 +0000
-References: <20211102183041.27429-1-ansuelsmth@gmail.com>
-In-Reply-To: <20211102183041.27429-1-ansuelsmth@gmail.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Le Wed, 3 Nov 2021 12:43:20 +0000,
+Vladimir Oltean <vladimir.oltean@nxp.com> a écrit :
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Tue,  2 Nov 2021 19:30:41 +0100 you wrote:
-> Some device set MAC06 exchange in the bootloader. This cause some
-> problem as we don't support this strange mode and we just set the port6
-> as the primary CPU port. With MAC06 exchange, PAD0 reg configure port6
-> instead of port0. Add an extra check and explicitly disable MAC06 exchange
-> to correctly configure the port PAD config.
+> On Wed, Nov 03, 2021 at 10:19:43AM +0100, Clément Léger wrote:
+> > When using the FDMA, using jumbo frames can lead to a large performance
+> > improvement. When changing the MTU, the RX buffer size must be
+> > increased to be large enough to receive jumbo frame. Since the FDMA is
+> > shared amongst all interfaces, all the ports must be down before
+> > changing the MTU. Buffers are sized to accept the maximum MTU supported
+> > by each port.
+> > 
+> > Signed-off-by: Clément Léger <clement.leger@bootlin.com>
+> > ---  
 > 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> Fixes: 3fcf734aa482 ("net: dsa: qca8k: add support for cpu port 6")
-> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+> Instead of draining buffers and refilling with a different size, which
+> impacts the user experience, can you not just use scatter/gather RX
+> processing for frames larger than the fixed buffer size, like a normal
+> driver would?
+
+I could do that yes but I'm not sure it will improve the FDMA
+performance that much then. I will check.
+
 > 
-> [...]
+> >  drivers/net/ethernet/mscc/ocelot_fdma.c | 61 +++++++++++++++++++++++++
+> >  drivers/net/ethernet/mscc/ocelot_fdma.h |  1 +
+> >  drivers/net/ethernet/mscc/ocelot_net.c  |  7 +++
+> >  3 files changed, 69 insertions(+)
+> > 
+> > diff --git a/drivers/net/ethernet/mscc/ocelot_fdma.c b/drivers/net/ethernet/mscc/ocelot_fdma.c
+> > index d8cdf022bbee..bee1a310caa6 100644
+> > --- a/drivers/net/ethernet/mscc/ocelot_fdma.c
+> > +++ b/drivers/net/ethernet/mscc/ocelot_fdma.c
+> > @@ -530,6 +530,67 @@ static void fdma_free_skbs_list(struct ocelot_fdma *fdma,
+> >  	}
+> >  }
+> >  
+> > +int ocelot_fdma_change_mtu(struct net_device *dev, int new_mtu)
+> > +{
+> > +	struct ocelot_port_private *priv = netdev_priv(dev);
+> > +	struct ocelot_port *port = &priv->port;
+> > +	struct ocelot *ocelot = port->ocelot;
+> > +	struct ocelot_fdma *fdma = ocelot->fdma;
+> > +	struct ocelot_fdma_dcb *dcb, *dcb_temp;
+> > +	struct list_head tmp = LIST_HEAD_INIT(tmp);
+> > +	size_t old_rx_buf_size = fdma->rx_buf_size;
+> > +	bool all_ports_down = true;
+> > +	u8 port_num;
+> > +
+> > +	/* The FDMA RX list is shared amongst all the port, get the max MTU from
+> > +	 * all of them
+> > +	 */
+> > +	for (port_num = 0; port_num < ocelot->num_phys_ports; port_num++) {
+> > +		port = ocelot->ports[port_num];
+> > +		if (!port)
+> > +			continue;
+> > +
+> > +		priv = container_of(port, struct ocelot_port_private, port);
+> > +
+> > +		if (READ_ONCE(priv->dev->mtu) > new_mtu)
+> > +			new_mtu = READ_ONCE(priv->dev->mtu);
+> > +
+> > +		/* All ports must be down to change the RX buffer length */
+> > +		if (netif_running(priv->dev))
+> > +			all_ports_down = false;
+> > +	}
+> > +
+> > +	fdma->rx_buf_size = fdma_rx_compute_buffer_size(new_mtu);
+> > +	if (fdma->rx_buf_size == old_rx_buf_size)
+> > +		return 0;
+> > +
+> > +	if (!all_ports_down)
+> > +		return -EBUSY;
+> > +
+> > +	priv = netdev_priv(dev);
+> > +
+> > +	fdma_stop_channel(fdma, MSCC_FDMA_INJ_CHAN);
+> > +
+> > +	/* Discard all pending RX software and hardware descriptor */
+> > +	fdma_free_skbs_list(fdma, &fdma->rx_hw, DMA_FROM_DEVICE);
+> > +	fdma_free_skbs_list(fdma, &fdma->rx_sw, DMA_FROM_DEVICE);
+> > +
+> > +	/* Move all DCBs to a temporary list that will be injected in sw list */
+> > +	if (!list_empty(&fdma->rx_hw))
+> > +		list_splice_tail_init(&fdma->rx_hw, &tmp);
+> > +	if (!list_empty(&fdma->rx_sw))
+> > +		list_splice_tail_init(&fdma->rx_sw, &tmp);
+> > +
+> > +	list_for_each_entry_safe(dcb, dcb_temp, &tmp, node) {
+> > +		list_del(&dcb->node);
+> > +		ocelot_fdma_rx_add_dcb_sw(fdma, dcb);
+> > +	}
+> > +
+> > +	ocelot_fdma_rx_refill(fdma);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static int fdma_init_tx(struct ocelot_fdma *fdma)
+> >  {
+> >  	int i;
+> > diff --git a/drivers/net/ethernet/mscc/ocelot_fdma.h b/drivers/net/ethernet/mscc/ocelot_fdma.h
+> > index 6c5c5872abf5..74514a0b291a 100644
+> > --- a/drivers/net/ethernet/mscc/ocelot_fdma.h
+> > +++ b/drivers/net/ethernet/mscc/ocelot_fdma.h
+> > @@ -55,5 +55,6 @@ int ocelot_fdma_start(struct ocelot_fdma *fdma);
+> >  int ocelot_fdma_stop(struct ocelot_fdma *fdma);
+> >  int ocelot_fdma_inject_frame(struct ocelot_fdma *fdma, int port, u32 rew_op,
+> >  			     struct sk_buff *skb, struct net_device *dev);
+> > +int ocelot_fdma_change_mtu(struct net_device *dev, int new_mtu);
+> >  
+> >  #endif
+> > diff --git a/drivers/net/ethernet/mscc/ocelot_net.c b/drivers/net/ethernet/mscc/ocelot_net.c
+> > index 3971b810c5b4..d5e88d7b15c7 100644
+> > --- a/drivers/net/ethernet/mscc/ocelot_net.c
+> > +++ b/drivers/net/ethernet/mscc/ocelot_net.c
+> > @@ -492,6 +492,13 @@ static int ocelot_change_mtu(struct net_device *dev, int new_mtu)
+> >  	struct ocelot_port_private *priv = netdev_priv(dev);
+> >  	struct ocelot_port *ocelot_port = &priv->port;
+> >  	struct ocelot *ocelot = ocelot_port->ocelot;
+> > +	int ret;
+> > +
+> > +	if (ocelot->fdma) {
+> > +		ret = ocelot_fdma_change_mtu(dev, new_mtu);
+> > +		if (ret)
+> > +			return ret;
+> > +	}
+> >  
+> >  	ocelot_port_set_maxlen(ocelot, priv->chip_port, new_mtu);
+> >  	WRITE_ONCE(dev->mtu, new_mtu);
+> > -- 
+> > 2.33.0
+>   
 
-Here is the summary with links:
-  - [net] net: dsa: qca8k: make sure PAD0 MAC06 exchange is disabled
-    https://git.kernel.org/netdev/net/c/5f15d392dcb4
 
-You are awesome, thank you!
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Clément Léger,
+Embedded Linux and Kernel engineer at Bootlin
+https://bootlin.com
