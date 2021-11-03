@@ -2,65 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01830443EC7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:56:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E07443EB9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231985AbhKCI70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 04:59:26 -0400
-Received: from smtpbg128.qq.com ([106.55.201.39]:38377 "EHLO smtpbg587.qq.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231979AbhKCI7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 04:59:18 -0400
-X-QQ-mid: bizesmtp41t1635929693tbvakmm4
-Received: from localhost.localdomain (unknown [125.70.163.9])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Wed, 03 Nov 2021 16:54:39 +0800 (CST)
-X-QQ-SSF: 0100000000200050B000B00A0000000
-X-QQ-FEAT: a4niRxydalHUoIDzp4wZcetK6yCNEivE+y+BoSP/43EZHsmGONz+CjZPv3JUQ
-        bQ+YwuMQkPgdUEf1hJr+KoCDXy5tQMLZIJ4RN5maSpI+SCoWrv05M+PjfXVhVgTpIlxdKHt
-        Rmd5dgh5VtOP6HQY+cl2GIJjh17WHyVFnmI+zZDfCT2+/aUENP0M5oUIGPlUbFgp22SHwQ7
-        k+1rVUnYHmVZja3bEc9ZtPduP/ivyG9oJKwN7+x5fWLVWjLVCSoufPS5iauTrr6syn4B6kD
-        UFB9ljae8ljmewDeE2AWNB7wnvFHqlGMSnZmGwZpUtz20cId9oQCb+319pYfsbIxF/3RCB7
-        IMuZJSm5n7iDoUDrxvtOIWvRbDdYw==
-X-QQ-GoodBg: 0
-From:   Jingjing Liu <liujingjing@cdjrlc.com>
-To:     linux@armlinux.org.uk
-Cc:     ira.weiny@intel.com, akpm@linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jingjing Liu <liujingjing@cdjrlc.com>
-Subject: [PATCH] mm: change 0 to false in boolean function
-Date:   Wed,  3 Nov 2021 16:54:32 +0800
-Message-Id: <20211103085432.49305-1-liujingjing@cdjrlc.com>
-X-Mailer: git-send-email 2.33.1
+        id S231775AbhKCI6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 04:58:04 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:42915 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230463AbhKCI6D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 04:58:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1635929727; h=Message-ID: Subject: Cc: To: From: Date:
+ Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
+ bh=oz91arYKn1LybkXaT1qvMqZJN2Z5/qjO+oxjfPs9Vlw=; b=FzdgKUDbFU6SNTGFIjccSFxP7IXO8mJT9aVh1vWVadviqg8cztxrH4a8kJw/jVCi1bAovaMp
+ a6sh4nK9ZPoMKHipeIymcXcmIELvJJHXuVDA2EYihP25YlImvUIa+h5lICFsLoLwdyle6VtF
+ qkrfTGh+DaXC0QqdXVixJ3ZiIX4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 61824e705bda9665a1813e2f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Nov 2021 08:55:12
+ GMT
+Sender: tjiang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A5D75C43460; Wed,  3 Nov 2021 08:55:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: tjiang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C41BDC4338F;
+        Wed,  3 Nov 2021 08:55:10 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam5
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 03 Nov 2021 16:55:10 +0800
+From:   tjiang@codeaurora.org
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
+Subject: [PATCH v2] Bluetooth: btusb: using big-endian definition for board_id
+  in struct qca_version
+Message-ID: <c92c38b60b1b55b5d72f7f1c718641e1@codeaurora.org>
+X-Sender: tjiang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-return of 0/1 in function 'security_extensions_enabled' with return type
-bool
+As we name nvm file by using big-endian for boardID, so align host with 
+it.
 
-Signed-off-by: Jingjing Liu <liujingjing@cdjrlc.com>
+Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
 ---
- arch/arm/mm/nommu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  drivers/bluetooth/btusb.c | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/mm/nommu.c b/arch/arm/mm/nommu.c
-index 2658f52903da..7256ac159acb 100644
---- a/arch/arm/mm/nommu.c
-+++ b/arch/arm/mm/nommu.c
-@@ -56,7 +56,7 @@ static inline bool security_extensions_enabled(void)
- 	if ((read_cpuid_id() & 0x000f0000) == 0x000f0000)
- 		return cpuid_feature_extract(CPUID_EXT_PFR1, 4) ||
- 			cpuid_feature_extract(CPUID_EXT_PFR1, 20);
--	return 0;
-+	return false;
- }
- 
- unsigned long setup_vectors_base(void)
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 46d892bbde62..08a1c6d8390f 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -2883,7 +2883,7 @@ struct qca_version {
+  	__le32	rom_version;
+  	__le32	patch_version;
+  	__le32	ram_version;
+-	__le16	board_id;
++	__be16	board_id;
+  	__le16	flag;
+  	__u8	reserved[4];
+  } __packed;
+@@ -3072,7 +3072,7 @@ static void btusb_generate_qca_nvm_name(char 
+*fwname, size_t max_size,
+  	u16 flag = le16_to_cpu(ver->flag);
+
+  	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+-		u16 board_id = le16_to_cpu(ver->board_id);
++		u16 board_id = be16_to_cpu(ver->board_id);
+  		const char *variant;
+
+  		switch (le32_to_cpu(ver->ram_version)) {
 -- 
-2.33.1
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum, a Linux Foundation Collaborative Project
