@@ -2,115 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BFAF443DC7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:41:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A329E443DCB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:43:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232124AbhKCHnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 03:43:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49336 "EHLO
+        id S231443AbhKCHqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 03:46:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231985AbhKCHnu (ORCPT
+        with ESMTP id S231985AbhKCHqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 03:43:50 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2086FC061714;
-        Wed,  3 Nov 2021 00:41:14 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id u1so2073309wru.13;
-        Wed, 03 Nov 2021 00:41:14 -0700 (PDT)
+        Wed, 3 Nov 2021 03:46:31 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1C3C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 00:43:54 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id b2-20020a1c8002000000b0032fb900951eso3829478wmd.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 00:43:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rEUk3hjZbgaNLemqWe9Q44RKe4LYiJjMpeJVdUSL6cI=;
-        b=SzSEr4GzUIi1n53esxrhyzEL+hnpq51VXmuNzoRbJng2jp0GsMOv6J6G+0AUT7sKib
-         WaR12lSVZFAI5pPfRFm9i0NG3DAZEN4srkUw67DLwYHYnhu3wUCn780FuNIYfO0LzT40
-         1Nj9cfpioDcXN/7KmFeruIRM9XUofAP7KZhnQMRuqUkJhuz49XhNdRrR2FIzrb8Ah5f0
-         xSfFjOU9PBmgkriGn55A5Q6gxEwiETQJqtV1yx7WGqGX849wiHMl3lVPW3SrzN3LFSmT
-         tBrMKwDkH4oSdrSOYaHSJLP2+zRMOnlibiAZVi1+gMlRLxYDs5zu6QQoVEsDBOje/AjA
-         dS4g==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ClKuP8tpWpUknWlqku1MtPOSrXJ/D/OoFdlpIIkXVR8=;
+        b=dbNGWgs8fET68NobNr6n8pcDdNKfY/jPjt3XP2pCjvJGU6gK9nJhHWeKNyoMiwwEJY
+         S8A4TDlscSKLoSXKKc0mZ86OW1tPWizq9DN21jR0u4f1C3x1kPbcDuY14PZpf4EhosD1
+         0gsrxvsxQkkZhiIpeyJ+E+FovlkV8bFjn0uV9XFmBQ6twZ8n60repSUho4/epZVwnXVK
+         BQbgBwpkiK5b/KoC7Ago/H439Vj30m2HABtuH2fMbHDZdmqEiwRDa6U7/kDGMFfEJDFF
+         kkk3ggxEzDvjr0B/oC1k4pfKkqWe3Eeq/rFbJpLJBtYO+/gLt+aY1CPbv4VGiIO75kdg
+         U3Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rEUk3hjZbgaNLemqWe9Q44RKe4LYiJjMpeJVdUSL6cI=;
-        b=F4+JdGU5/88RO+OLiI1m2zc/lDBPS1ymNR832P2tBao7fVSS4yYivFG1/VuFNhEL8G
-         E5UcQuEw+9T6tg0On+llcbwOm9nhjNy8eEqJAopTfE/OZEzIiUU1OesfcbvnhfvSFJl1
-         fENZan8r/DPEJMNgFsrFFYH/shoMjs7Qol+ssar+E7zq1OoF/ROyd3wX+0EVBspBngcE
-         5dfm4rWrFPJ6/4qIZCJ6QKSeDNX+GBZQaoSQV4xdV/Hk0fuAyNnF2nhLsbgQOYh8T7+Y
-         9Kxlm5aZb1xyb5atqdkrzv7ldmPZQ32CgZT6FsjJilodJQVaXpPnP92STomciBbtlhkJ
-         4x8Q==
-X-Gm-Message-State: AOAM5315Kj9IWAeZrlAagiRFlLYOk73lmrh914R/u2sdy0qCkT5S/byQ
-        /MJpF4AFwqL7D/1rWCpN9YyYOcOdKwj8v8FTmSQy28bgcFA2Ng==
-X-Google-Smtp-Source: ABdhPJyzngaH7X863kxwlhmnQIi8Eo36rd8szhefxmDQ/tTo5iBVuHnTW5qLSd4+auf3a1fe/uazHgl4Ex4uDlBMxLU=
-X-Received: by 2002:a05:6000:12d2:: with SMTP id l18mr42076950wrx.289.1635925272752;
- Wed, 03 Nov 2021 00:41:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ClKuP8tpWpUknWlqku1MtPOSrXJ/D/OoFdlpIIkXVR8=;
+        b=P2itP25Q0qNhHw+mFKWuVBO8Z+bJP5eqmpvWh/u5zCGErmNxj0XMxyAhNE6Rg1KhbP
+         gAHrZwsu9v6+op5IpEqhfSMtVb98eNkEEvTpPrU5x8GDukYH0ycSSOD9lUin1f+FOQqA
+         IeDwas98iVZ3PWxUf13xW4EB+w7uDuVK/zP3NoptgiMfIDLk6K/GuYkJbvQxLFcPfZzy
+         +2hD6JFG479BuuBAQKinYLc7z2BD8GrJe7NgwfPhuJox1mzE00f2wZQP1Z3QTsf/PZl5
+         r2ZilbPc83sX6kxn/TWh/dYzLPorF+bE2euDpHSM+y4Sbg0KscnYJqbsOaK0Ejfyubfz
+         7G/g==
+X-Gm-Message-State: AOAM532hM1r2mfXDrvE5bDn4bSgc/SNPBBu6/gV360Tnx39olBTxoxOR
+        DWH1AapsTVH1Uj/BLglCkABhRQS+iEBkOQ==
+X-Google-Smtp-Source: ABdhPJwpvPvRu2f3cAb5Rp9w93Klt/tdpQWD1EFjzvldLeAQIVOLSfYijN2eqqTE8kSGNPTNLyJNXA==
+X-Received: by 2002:a1c:2541:: with SMTP id l62mr13529661wml.11.1635925433583;
+        Wed, 03 Nov 2021 00:43:53 -0700 (PDT)
+Received: from google.com ([95.148.6.174])
+        by smtp.gmail.com with ESMTPSA id w15sm1161593wrk.77.2021.11.03.00.43.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 00:43:53 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 07:43:51 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Paul Burton <paul.burton@mips.com>,
+        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 1/9] Remove unused headers <linux/jz4740-adc.h> and
+ <linux/power/jz4740-battery.h>
+Message-ID: <YYI9t2Ng1Uppkiav@google.com>
+References: <20211102220203.940290-1-corbet@lwn.net>
+ <20211102220203.940290-2-corbet@lwn.net>
 MIME-Version: 1.0
-References: <20211102145642.724820-1-tongtiangen@huawei.com>
- <CAJ+HfNg1Ki=1Zc+ThW-ynvtDo5=fNAUK-XV08-icz-nY9CNoUQ@mail.gmail.com>
- <448599f5-e773-6ab5-bdaf-289f583edf01@huawei.com> <CAJ+HfNj_p36trWFzdyxVVgykrPVq=OvKcYq61w2QyKsHwa0gDw@mail.gmail.com>
- <f3ed7e48-c565-9147-eca0-6298a36b3d61@huawei.com>
-In-Reply-To: <f3ed7e48-c565-9147-eca0-6298a36b3d61@huawei.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Wed, 3 Nov 2021 08:41:01 +0100
-Message-ID: <CAJ+HfNgze3=heV-ehvagHQFc5w6ymZ7XQMfKPzeWBo1M82+E-Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] riscv, bpf: fix some compiler error
-To:     tongtiangen <tongtiangen@huawei.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211102220203.940290-2-corbet@lwn.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Nov 2021 at 08:26, tongtiangen <tongtiangen@huawei.com> wrote:
->
+On Tue, 02 Nov 2021, Jonathan Corbet wrote:
 
-[...]
+> Commit ff71266aa490 ("mfd: Drop obsolete JZ4740 driver") removed the last
+> file to include <linux/jz4740-adc.h> but left the header file itself
+> behind.  Nothing uses it, remove it now.
+> 
+> Similarly, aea12071d6fc ("power/supply: Drop obsolete JZ4740 driver")
+> deleted the last use of <linux/power/jz4740-battery.h>, so remove that one
+> too.
+> 
+> Cc: Paul Cercueil <paul@crapouillou.net>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: Paul Burton <paul.burton@mips.com>
+> Cc: Sebastian Reichel <sre@kernel.org>
+> Cc: linux-pm@vger.kernel.org
+> Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+> ---
+>  include/linux/jz4740-adc.h           | 33 ----------------------------
+>  include/linux/power/jz4740-battery.h | 15 -------------
 
->
-> Adding a function declaration in bpf_jit_comp64.c file cannot fix this co=
-mpiler error:
->
+It appears as though there are still references to both of these
+*devices* in the kernel tree.  Should those be removed also?
 
-AFAIK, there are two issues:
+>  2 files changed, 48 deletions(-)
+>  delete mode 100644 include/linux/jz4740-adc.h
+>  delete mode 100644 include/linux/power/jz4740-battery.h
 
-1. https://lore.kernel.org/llvm/202110290334.2zdMyRq4-lkp@intel.com/
-2. https://lore.kernel.org/llvm/202111020610.9oy9Rr0G-lkp@intel.com/
+Patch looks fine though.
 
-1 is a warning when W=3D1 is enabled (missing prototype from -Wmissing-prot=
-otypes)
-2 is an error, since the function is not defined when building CONFIG_ARCH_=
-RV32I
+Let me know if you want me to take it in via MFD.  Otherwise:
 
-You are trying to address both issues in this patch.
+Acked-by: Lee Jones <lee.jones@linaro.org>
 
-> ....
-> when CONFIG_BPF_JIT and CONFIG_ARCH_64I is open, There is the following c=
-ompiler error (W=3D1):
->    error: no previous prototype for 'rv_bpf_fixup_exception'
-> ....
->
-> To fix this compiler error, you need to make a declaration in a header fi=
-le, which is also
-> the reason for introducing extable.h.
->
-
-No, you don't need the header file. The forward declaration is
-sufficient to get rid of the warning, and the adding CONFIG_ARCH_RV64I
-fixes the RV32I build.
-
-
-Bj=C3=B6rn
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
