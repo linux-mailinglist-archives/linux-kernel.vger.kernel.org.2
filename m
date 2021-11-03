@@ -2,93 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D89C44497F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 21:23:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1AB444981
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 21:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhKCU0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 16:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54946 "EHLO
+        id S230340AbhKCU2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 16:28:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbhKCU0Q (ORCPT
+        with ESMTP id S230122AbhKCU2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 16:26:16 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D022BC061203
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 13:23:39 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id bi35so7504487lfb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 13:23:39 -0700 (PDT)
+        Wed, 3 Nov 2021 16:28:41 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2C6C061203
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 13:26:04 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id t30so5350912wra.10
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 13:26:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IxN7xgD0iXSw13F0ipDNCDWnNNmNAyOzVQih9uftgyE=;
-        b=E4J25Q2pudhON45fR3Ntmj+rxfJTuheLQ9A0zpV/g9nLr4j2b5wNMamPgojdn2BlUZ
-         vn5Oricpphfe/mHsqdm0R8rD1KtLxcg5ljzSlWEmdAHZjL6S/WIwxBDt+Zh5ohNww0d0
-         P/x9uD4qi7IZm97z8FLJdyLye347iZ0mahDxooBOd3kvw8os1OazifhAlDY37HY7WTRz
-         dZlUiDeDIpz2Qoi1yamy1CFxN9pPnJaifXY/nTbU+h9f1iFcJpOQRjKuFA5Z/IMc4dvi
-         VhPLMV7gmJUTTcR0mG4BeeWIjRj7I7l3b50Ugbi6H6+gFVxIdF3QREgeoIWhsNdzP6HM
-         k7zA==
+        bh=WdZ06WrNTWvO8pTfOQR/yXY5eszuPIqL50d8LNSENc4=;
+        b=PfKl8iu1Omfr9P216DEugB9EtfwJhvRDwemVWlAaNhWyvt1Zt6BVbQL4EslGLihiiq
+         y2qytpLBKB1emFFL8ajlaRiFgE8x77IT1XgoNRhwW/FrluL9UBg7ZAqawYsx1XhA89P7
+         JcCqBVHYUsMZknMr8t2A9ZLLHIVyk9Dh2GAtA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IxN7xgD0iXSw13F0ipDNCDWnNNmNAyOzVQih9uftgyE=;
-        b=jJsLQOwwEAKkcGKjut2GXZ2dmi/ePouyWzGPtRyQaKmNHOID1peF+xf5apk92f0rjn
-         YFNGLU4AJS/9NR2Nn+4lhkhr1x0PubxQl+Uu8ty2vKh7ooYKnwlXMRuQHle3gG1Hd8AP
-         0dLSD/7N5Bg3KmNtUXkkImCv/cPDqoVgIndhp2FVhPQD2zycLVXO6PNSPq4CmY9+rwnn
-         0fwwblivR8Cro/WGxrm7XmQEZFZQMjuMHBAmyVtrAtAl4PX6BwlHyOEm3m+n183+VUcC
-         FZR+DduF/wTtyS5lMTu16vInnWF2fMwGZe27dTxDWsVGiXlWCE6UYb+//zXIIVfgajmV
-         n3/A==
-X-Gm-Message-State: AOAM530ZYvCw/zE78ciPlORsy4BOw/izvwo4FSzUNYpZ/U/8S1HErHnC
-        hRFW5Eov+3ys8+6/rQqEgL4pnI3XJrvWy/ol0Zb+Qg==
-X-Google-Smtp-Source: ABdhPJxbCGrrn1mL2csyohdl4SutP0n6yFXUsYy1lJDoQWH0TqVRaru+bSnlVhGUZ647VrzZrYCT1sbGrvvzZuYEUBM=
-X-Received: by 2002:a19:c211:: with SMTP id l17mr5051426lfc.627.1635971017862;
- Wed, 03 Nov 2021 13:23:37 -0700 (PDT)
+        bh=WdZ06WrNTWvO8pTfOQR/yXY5eszuPIqL50d8LNSENc4=;
+        b=eMkVEblmu8kW+CQZIRy+E69bX4Fl+v1USwYGlAiTv9fs5I/C58pxWWoY+ptLFgTI75
+         6bdpvA1gtfrHSMB599pR5rJEh+X3FAh+gfXnuYcKQI/gjpaww9v5lQ8RMqfK4T7AWFTE
+         cEWb0bluVZpTKwQBCQIaatY5ZEtPC2x7yAPrvcsJJBWKDcvQpdd8Q3BNIAJFnOY3kAPA
+         fm8/fzrbZcgzFNVZ08/9NhvNLsuiXxwcDPlsDZv5oHygQBgNzKMjWNuKY1doqlu1A0WH
+         9MvrALkDr0RIMUIuW/fYmYK/kNkxUyGTXz2WUf2mcAepEOAiR8qbkR/CjwFGI5KNIPYK
+         sSVA==
+X-Gm-Message-State: AOAM531GdXzpGMwJ8bdPIrhNU3UGwIX05GXBA3ReFsKQrF7CtSs0MiX/
+        ds/jMpCx+UIrnqDSNY/fldnHICZwqs6bsvwFzXmLBg==
+X-Google-Smtp-Source: ABdhPJz2xY1JmknziADTseDioWd5Ar+tPVGVN4X9kwFu9fL9OUxf2sdzgQDXX/Y/SaqOJ6lWuOl3quMYpB9MVubseUM=
+X-Received: by 2002:a5d:59ab:: with SMTP id p11mr14064647wrr.340.1635971162712;
+ Wed, 03 Nov 2021 13:26:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211103183232.1213761-1-vipinsh@google.com> <20211103183232.1213761-3-vipinsh@google.com>
- <YYLqRRfaiXrWo7Yz@google.com>
-In-Reply-To: <YYLqRRfaiXrWo7Yz@google.com>
-From:   Vipin Sharma <vipinsh@google.com>
-Date:   Wed, 3 Nov 2021 13:23:01 -0700
-Message-ID: <CAHVum0dzN0cBzkS1ruWNQhJ+wSkfJO3uqFoNjzi67hiMzF2wwQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] KVM: Move INVPCID type check from vmx and svm to
- the common kvm_handle_invpcid()
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     pbonzini@redhat.com, jmattson@google.com, dmatlack@google.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211103184939.45263-1-jim2101024@gmail.com> <20211103184939.45263-6-jim2101024@gmail.com>
+ <YYLm3z0MAgBK24z5@sirena.org.uk>
+In-Reply-To: <YYLm3z0MAgBK24z5@sirena.org.uk>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Wed, 3 Nov 2021 16:25:51 -0400
+Message-ID: <CA+-6iNzkg4R8Kt=Q=sgdB++HHStRSHRUOUTvAfjZr31-FUrzNA@mail.gmail.com>
+Subject: Re: [PATCH v7 5/7] PCI: brcmstb: Add control of subdevice voltage regulators
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Jim Quinlan <jim2101024@gmail.com>, linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 1:00 PM Sean Christopherson <seanjc@google.com> wrote:
+On Wed, Nov 3, 2021 at 3:45 PM Mark Brown <broonie@kernel.org> wrote:
 >
-> On Wed, Nov 03, 2021, Vipin Sharma wrote:
-> > This check will be done in switch statement of kvm_handle_invpcid(),
+> On Wed, Nov 03, 2021 at 02:49:35PM -0400, Jim Quinlan wrote:
 >
-> Please make the changelog a stand on its own, i.e. don't rely on the shortlog
-> for context.
+> > +     for_each_property_of_node(dn, pp) {
+> > +             for (i = 0; i < ns; i++) {
+> > +                     char prop_name[64]; /* 64 is max size of property name */
+> > +
+> > +                     snprintf(prop_name, 64, "%s-supply", supplies[i]);
+> > +                     if (strcmp(prop_name, pp->name) == 0)
+> > +                             break;
+> > +             }
+> > +             if (i >= ns || pcie->num_supplies >= ARRAY_SIZE(supplies))
+> > +                     continue;
+> > +
+> > +             pcie->supplies[pcie->num_supplies++].supply = supplies[i];
+> > +     }
 >
-> > used by both VMX and SVM. It also removes (type > 3) check.
->
-> Use imperative mood, i.e. state what you're doing as a "command", don't refer to
-> the patch from a third-person point of view.
->
-> The changelog also needs to call out that, unlike INVVPID and INVEPT, INVPCID is
-> not explicitly documented as checking the "type" before reading the operand from
-> memory.  I.e. there's a subtle, undocumented functional change in this patch.
->
-> Something like:
->
->   Handle #GP on INVCPID due to an invalid type in the common switch statement
->   instead of relying on callers to manually verify the type is valid.  Unlike
->   INVVPID and INVPET, INVPCID is not explicitly documented as checking the type
->   before reading the operand from memory, so deferring the type validity check
->   until after that point is architecturally allowed.
->
+> Why are we doing this?  If the DT omits the supplies the framework will
+> provide dummy supplies so there is no need to open code handling for
+> supplies not being present at all in client drivers.  Just
+> unconditionally ask for all the supplies.
 
-Thanks. I will update it and send out v3.
-
-> For the code:
->
-> Reviewed-by: Sean Christopherson <seanjc@google.com>
+I did it to squelch the "supply xxxxx not found, using dummy
+regulator" output.  I'll change it.
+Regards, Jim
