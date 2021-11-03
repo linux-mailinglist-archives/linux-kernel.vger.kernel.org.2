@@ -2,107 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADF144493E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:56:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 306F8444942
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:56:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhKCT7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 15:59:02 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:51055 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231343AbhKCT65 (ORCPT
+        id S230343AbhKCT7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 15:59:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231650AbhKCT7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 15:58:57 -0400
-X-IronPort-AV: E=Sophos;i="5.87,206,1631545200"; 
-   d="scan'208";a="99386768"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 04 Nov 2021 04:56:20 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7B90240E5D50;
-        Thu,  4 Nov 2021 04:56:18 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 3/3] arm64: dts: renesas: rzg2l-smarc: Enable SCIF2 on carrier board
-Date:   Wed,  3 Nov 2021 19:56:00 +0000
-Message-Id: <20211103195600.23964-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211103195600.23964-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20211103195600.23964-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Wed, 3 Nov 2021 15:59:07 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D8FC061220
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 12:56:31 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id g91-20020a9d12e4000000b0055ae68cfc3dso2404877otg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 12:56:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TuTvA2VFldo5bKpIsQIYkfQTcqu/XUpeO+ZJ0o08srE=;
+        b=Kc8JPw+Qw4syw39DvCFAkRFc5WtVBGeDV5KtRwWrl0nAo3ukcKEGX0JNPykLf0qpfx
+         Qtx22OiLajageqDIjzdNeIIb07E4fDhKWMAjYJbE5Jmm+1F5bKW93Txpyz0JuUnohPRE
+         GE3UEeEQiAr5D5b7RSd4Yp+FYUAFz4WR9be+pPc14cn/a01nloyJFiq6L9PW7jnPVXkk
+         Xok+mMAlMsjyxEB9CA2RZQt4IfEftkY/0RqtzLOe+zbPta+iNyyF3JmoP0IVlTT+FSfH
+         OGJhr922EJ40Zl3aKElIg4wtIZeBOHCeEsTkxiWNnd9+7IzEqt3jCcqkm3sCrqbIYxVI
+         8WjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TuTvA2VFldo5bKpIsQIYkfQTcqu/XUpeO+ZJ0o08srE=;
+        b=aa1dM0LDlPg7CmOK/65LAUssoFigiaYoQE0z1JlafQaKL3wmGU6uRFObLBw3yRygEe
+         iQqphzDTOFcKh1iTYR2G6MAnJwwfiZul4ucqSKXxeVGTrF0LLXgpfS44tJWbhRenIt8G
+         1teaSdjmpRBREsQYJYsRcwnjlUm9PbohHHuHoP15aa0MHsVVIvDizGSKZTQXTEg6fUpZ
+         Ez3uUt2NeFn+oNPhq9AgvUJe9DH/+mBwUo6VNEgQyp2+JoLuzLfqarzWb1iIphrX2UPg
+         3JVVsK+yzpXLEml5os4L5GSscbLDD9oMnYKg0u9zf0z4NkngoBBwV2YGLB+6+vdsj+yY
+         /q1g==
+X-Gm-Message-State: AOAM533k2ShKSMfMy6juIRoX1sxKXxWE1uQB+798B8OrTU+3Kq+RAxA3
+        mpqf7JgagH4KDKEWrY67/grujtVFMWiNEA==
+X-Google-Smtp-Source: ABdhPJxZAUHsHE+0bvOdtD3JkKcJuO8LDLO+Hz6J+nPiBBZWkwAOQI9WRgQ/AfNVGJ8qdhntnN2pSQ==
+X-Received: by 2002:a05:6830:43aa:: with SMTP id s42mr16579659otv.13.1635969390149;
+        Wed, 03 Nov 2021 12:56:30 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id z12sm23945oid.45.2021.11.03.12.56.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Nov 2021 12:56:29 -0700 (PDT)
+Subject: Re: [PATCH 1/4] block: add rq_flags to struct blk_mq_alloc_data
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-block@vger.kernel.org,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-kernel@vger.kernel.org
+References: <20211019153300.623322-1-axboe@kernel.dk>
+ <20211019153300.623322-2-axboe@kernel.dk>
+ <20211103195411.GA3156469@roeck-us.net>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <ef74ff48-6d9c-f39c-aff2-8a820440c953@kernel.dk>
+Date:   Wed, 3 Nov 2021 13:56:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20211103195411.GA3156469@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SCIF2 interface is available on PMOD1 connector (CN7) on carrier board,
-This patch adds pinmux and scif2 node to carrier board dtsi file.
+On 11/3/21 1:54 PM, Guenter Roeck wrote:
+> Hi,
+> 
+> On Tue, Oct 19, 2021 at 09:32:57AM -0600, Jens Axboe wrote:
+>> There's a hole here we can use, and it's faster to set this earlier
+>> rather than need to check q->elevator multiple times.
+>>
+>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> 
+> This patch results in a warning backtrace with one of my qemu
+> boot tests.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi | 28 ++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+Should be fixed in the current tree, will go out soonish. If you
+have time, can you pull in:
 
-diff --git a/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi b/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
-index 2863e487a640..4c32f068a1f0 100644
---- a/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
-+++ b/arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi
-@@ -21,9 +21,13 @@
-  *
-  */
- 
-+/* comment the #define statement to disable SCIF2 (SER0) on PMOD1 (CN7) */
-+#define PMOD1_SER0	1
-+
- / {
- 	aliases {
- 		serial0 = &scif0;
-+		serial1 = &scif2;
- 		i2c0 = &i2c0;
- 		i2c1 = &i2c1;
- 		i2c3 = &i2c3;
-@@ -208,6 +212,13 @@
- 			 <RZG2L_PORT_PINMUX(38, 1, 1)>;	/* RxD */
- 	};
- 
-+	scif2_pins: scif2 {
-+		pinmux = <RZG2L_PORT_PINMUX(48, 0, 1)>, /* TxD */
-+			 <RZG2L_PORT_PINMUX(48, 1, 1)>, /* RxD */
-+			 <RZG2L_PORT_PINMUX(48, 3, 1)>, /* CTS# */
-+			 <RZG2L_PORT_PINMUX(48, 4, 1)>; /* RTS# */
-+	};
-+
- 	sd1-pwr-en-hog {
- 		gpio-hog;
- 		gpios = <RZG2L_GPIO(39, 2) GPIO_ACTIVE_HIGH>;
-@@ -277,6 +288,23 @@
- 	status = "okay";
- };
- 
-+/*
-+ * To enable SCIF2 (SER0) on PMOD1 (CN7)
-+ * SW1 should be at position 2->3 so that SER0_CTS# line is activated
-+ * SW2 should be at position 2->3 so that SER0_TX line is activated
-+ * SW3 should be at position 2->3 so that SER0_RX line is activated
-+ * SW4 should be at position 2->3 so that SER0_RTS# line is activated
-+ */
-+#if PMOD1_SER0
-+&scif2 {
-+	pinctrl-0 = <&scif2_pins>;
-+	pinctrl-names = "default";
-+
-+	uart-has-rtscts;
-+	status = "okay";
-+};
-+#endif
-+
- &sdhi1 {
- 	pinctrl-0 = <&sdhi1_pins>;
- 	pinctrl-1 = <&sdhi1_pins_uhs>;
+git://git.kernel.dk/linux-block for-next
+
+into -git and see if it fixes it for you?
+
 -- 
-2.17.1
+Jens Axboe
 
