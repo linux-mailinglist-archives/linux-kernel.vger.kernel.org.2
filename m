@@ -2,134 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D7F44449D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B9C4444AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232481AbhKCP0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 11:26:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231785AbhKCP0S (ORCPT
+        id S231359AbhKCPgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 11:36:12 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:37854 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229587AbhKCPgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 11:26:18 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64646C061203
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 08:23:42 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id az8so2650905qkb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 08:23:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=yNC62w+2HzH2SSJhKHtvCjiHcp3DcKu13in8YXC3L58=;
-        b=M+/I/5Hft2NlUO4i9S63IGXtD51pzlQDc0ULTbi6L/ghNtnKUooxVNq/SoYMwi/zvp
-         3ahh0cL98Kl38mypdfi39VAQKnvM/O3y38/UAns84MaTzcyyJ+7s6fg16KXNdcyRBZdT
-         FwODxzltEwj1ZghagD2B9aw/e/BwPbzu9QAVS5hZ0zT4PepwV/BfoXga0U50Xa5fQyN4
-         2hBub2Hq19bZtgvlv6/vmGGs+wyeckvmviP0QMeRRaep6xcFXm1e+zgC9ZiHl4l4Rc94
-         bNvoyhpmW60gS7MVRSnt79hvX7pZnMn8yVimbCbRD8Gq1xatvxtdtWw8ZjwfynRbIXCP
-         rhbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=yNC62w+2HzH2SSJhKHtvCjiHcp3DcKu13in8YXC3L58=;
-        b=krp/wJ4SDgIMs3j014WPulwmENzCHWGq5APojwd6DFXklldQkLAvEvDnGN8HGuPwQQ
-         Hu0lzdVK1yWln636JtuISwiSG+V+NThcFrIocoIEFN2DghtsBRaTRbCOdmR4idUWyIDW
-         ijcnBhtRnhhmag2UaH5HS6XL5CouV1xB8wPfuJekE1CsglAb1ittHGndWHVudNN1C3DO
-         IfxKoLf4uY5ryurxqr9TJicO9z43bmcH83pvaEt/v0zAix9z2yeJH2UF42NiLUDkcR09
-         m2UMFvcRATOJmD/U6/4OHRtyQ6vXzX/xudxHBbhM8h/AbkjzoVwwFbivYMWR+afp5z0k
-         f+qw==
-X-Gm-Message-State: AOAM533tiPzGhLKl36oHh5ymjD4nnaC6tQMGdA6sM992NuXKVpuUz9al
-        LvDiXocuHL0frbFG9LDGHKBslA==
-X-Google-Smtp-Source: ABdhPJy4df7FJ5jzZA9CX3XJtZc5nqiiuNWg/WwEWiY+wux4cxWLrQ/cnNXjtkeLmUJr9/v8V9RPUQ==
-X-Received: by 2002:a05:620a:2f4:: with SMTP id a20mr12095070qko.123.1635953020908;
-        Wed, 03 Nov 2021 08:23:40 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (mtl.collabora.ca. [66.171.169.34])
-        by smtp.gmail.com with ESMTPSA id m20sm1736604qkp.57.2021.11.03.08.23.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 08:23:40 -0700 (PDT)
-Message-ID: <b398917ca0c467d83c795f02f751609a52d56edb.camel@ndufresne.ca>
-Subject: Re: [PATCH v2] media: mtk-vcodec: Align width and height to 64 bytes
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        Steve Cho <stevecho@google.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>
-Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Date:   Wed, 03 Nov 2021 11:23:38 -0400
-In-Reply-To: <20211103033708.14469-1-yunfei.dong@mediatek.com>
-References: <20211103033708.14469-1-yunfei.dong@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 (3.42.0-1.fc35) 
+        Wed, 3 Nov 2021 11:36:11 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A3EFfR0021308;
+        Wed, 3 Nov 2021 16:33:15 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=selector1;
+ bh=mYKeBd4Rvz5CtOAEHTz2L9t5qnO8yoveDHhoGmG7whM=;
+ b=j5RNufqEae/YrSmA/HIUdjJHd2nDtrcHxJTiAe8I1w2VujVTGyUJxvsQF+XxzqLaMvCD
+ wUqTfOe632sXn4q9/iQAMcaovjf36b4/eyYxB4IbEeqjbWnpLNeLqHoWZqPsrmZYd2qA
+ nNS3RX6xayIaYsESlXHPHdQZpQw3/vYLkbDTqcnoux7Ie+qkKb8IzXuU/Fw/h0VcRa21
+ 16ty++0jf5UNUE8BzrOfyh7Zfm5QsOVZP5ibVb83vu7dGi6V5WoHKoTfY7w9p9qVoIgJ
+ UQuOF+cAoh/+1f6FciQWLwJCh1JNWaN57TDL8x6Kev7YIcYikHylt+VDYg++hLTW5b+G dw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c3db954tn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Nov 2021 16:33:15 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4119410002A;
+        Wed,  3 Nov 2021 16:33:14 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1B98224164E;
+        Wed,  3 Nov 2021 16:33:14 +0100 (CET)
+Received: from localhost (10.75.127.51) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 3 Nov 2021 16:33:13
+ +0100
+From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     <dmaengine@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH 1/1] dmaengine: stm32-dma: avoid 64-bit division in stm32_dma_get_max_width
+Date:   Wed, 3 Nov 2021 16:33:12 +0100
+Message-ID: <20211103153312.41483-1-amelie.delaunay@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-03_05,2021-11-03_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mercredi 03 novembre 2021 à 11:37 +0800, Yunfei Dong a écrit :
-> Width and height need to 64 bytes aligned when setting the format.
-> Need to make sure all is 64 bytes align when use width and height to
-> calculate buffer size.
-> 
-> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-> Change-Id: I39886b1a6b433c92565ddbf297eb193456eec1d2
+From: Arnd Bergmann <arnd@arndb.de>
 
-Perhaps avoid this tag later ? Another perhaps, there is a tag to indicate which
-patch introduce that bug, if you add this tag, the patch will be automatically
-backported into relevant stable kernel. The format is:
+Using the % operator on a 64-bit variable is expensive and can
+cause a link failure:
 
-> Fixes: <short-hash> ("<short commit description")
+arm-linux-gnueabi-ld: drivers/dma/stm32-dma.o: in function `stm32_dma_get_max_width':
+stm32-dma.c:(.text+0x170): undefined reference to `__aeabi_uldivmod'
+arm-linux-gnueabi-ld: drivers/dma/stm32-dma.o: in function `stm32_dma_set_xfer_param':
+stm32-dma.c:(.text+0x1cd4): undefined reference to `__aeabi_uldivmod'
 
-Acked-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+As we know that we just want to check the alignment in
+stm32_dma_get_max_width(), there is no need for a full division, and
+using a simple mask is a faster replacement.
 
-> ---
->  drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h        | 1 +
->  drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c | 4 ++--
->  2 files changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h
-> index e30806c1faea..66cd6d2242c3 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h
-> @@ -11,6 +11,7 @@
->  #include <media/videobuf2-core.h>
->  #include <media/v4l2-mem2mem.h>
->  
-> +#define VCODEC_DEC_ALIGNED_64 64
->  #define VCODEC_CAPABILITY_4K_DISABLED	0x10
->  #define VCODEC_DEC_4K_CODED_WIDTH	4096U
->  #define VCODEC_DEC_4K_CODED_HEIGHT	2304U
-> diff --git a/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c b/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
-> index d402fc4bda69..e1a3011772a9 100644
-> --- a/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
-> +++ b/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
-> @@ -562,8 +562,8 @@ static void get_pic_info(struct vdec_h264_slice_inst *inst,
->  {
->  	struct mtk_vcodec_ctx *ctx = inst->ctx;
->  
-> -	ctx->picinfo.buf_w = (ctx->picinfo.pic_w + 15) & 0xFFFFFFF0;
-> -	ctx->picinfo.buf_h = (ctx->picinfo.pic_h + 31) & 0xFFFFFFE0;
-> +	ctx->picinfo.buf_w = ALIGN(ctx->picinfo.pic_w, VCODEC_DEC_ALIGNED_64);
-> +	ctx->picinfo.buf_h = ALIGN(ctx->picinfo.pic_h, VCODEC_DEC_ALIGNED_64);
->  	ctx->picinfo.fb_sz[0] = ctx->picinfo.buf_w * ctx->picinfo.buf_h;
->  	ctx->picinfo.fb_sz[1] = ctx->picinfo.fb_sz[0] >> 1;
->  	inst->vsi_ctx.dec.cap_num_planes =
+Same in stm32_dma_set_xfer_param(), change this to only allow burst
+transfers if the address is a multiple of the length.
+stm32_dma_get_best_burst just after will take buf_len into account to fix
+burst in case of misalignment.
+
+Fixes: b20fd5fa310c ("dmaengine: stm32-dma: fix stm32_dma_get_max_width")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+---
+ drivers/dma/stm32-dma.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/dma/stm32-dma.c b/drivers/dma/stm32-dma.c
+index 2283c500f4ce..83a37a6955a3 100644
+--- a/drivers/dma/stm32-dma.c
++++ b/drivers/dma/stm32-dma.c
+@@ -280,7 +280,7 @@ static enum dma_slave_buswidth stm32_dma_get_max_width(u32 buf_len,
+ 	       max_width > DMA_SLAVE_BUSWIDTH_1_BYTE)
+ 		max_width = max_width >> 1;
+ 
+-	if (buf_addr % max_width)
++	if (buf_addr & (max_width - 1))
+ 		max_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
+ 
+ 	return max_width;
+@@ -757,7 +757,7 @@ static int stm32_dma_set_xfer_param(struct stm32_dma_chan *chan,
+ 		 * Set memory burst size - burst not possible if address is not aligned on
+ 		 * the address boundary equal to the size of the transfer
+ 		 */
+-		if (buf_addr % buf_len)
++		if (buf_addr & (buf_len - 1))
+ 			src_maxburst = 1;
+ 		else
+ 			src_maxburst = STM32_DMA_MAX_BURST;
+@@ -813,7 +813,7 @@ static int stm32_dma_set_xfer_param(struct stm32_dma_chan *chan,
+ 		 * Set memory burst size - burst not possible if address is not aligned on
+ 		 * the address boundary equal to the size of the transfer
+ 		 */
+-		if (buf_addr % buf_len)
++		if (buf_addr & (buf_len - 1))
+ 			dst_maxburst = 1;
+ 		else
+ 			dst_maxburst = STM32_DMA_MAX_BURST;
+-- 
+2.25.1
 
