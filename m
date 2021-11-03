@@ -2,120 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D09443CCF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 06:42:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD957443CD5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 06:45:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbhKCFpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 01:45:22 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:11088 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhKCFpV (ORCPT
+        id S231283AbhKCFrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 01:47:51 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58580 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231127AbhKCFru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 01:45:21 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1A35Jl9W075146;
-        Wed, 3 Nov 2021 13:19:47 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from JammyHuang-PC.aspeed.com (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Nov
- 2021 13:42:38 +0800
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-To:     <eajames@linux.ibm.com>, <mchehab@kernel.org>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <linux-media@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] media: aspeed: use reset to replace clk off/on
-Date:   Wed, 3 Nov 2021 13:43:16 +0800
-Message-ID: <20211103054316.25272-1-jammy_huang@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 3 Nov 2021 01:47:50 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 700FA218F6;
+        Wed,  3 Nov 2021 05:45:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635918313; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0g5P1DQxGfxWOLYxICRbFGItTJs0exSHUoyxrjmLfaE=;
+        b=nCL4BhbrSG5yBXKIee++XTA+llynnmy6UAP7fQdhr+ud3u+T5kuFoZLqWDYmdqZQKoeDPS
+        +i5pNEAtkzQw6HS8ON80ftrqSBQOkWHF7rFf+sL16z42bGm9TLZ+Zg47Jt5MMW8tit2kFp
+        ZpuLGTCQ+HrPITtbPlmIJRxVWXczTnY=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 25C4413C7E;
+        Wed,  3 Nov 2021 05:45:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id FubeB+khgmGOGgAAMHmgww
+        (envelope-from <jgross@suse.com>); Wed, 03 Nov 2021 05:45:13 +0000
+Subject: Re: [PATCH] x86/smp: Factor out parts of native_smp_prepare_cpus()
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
+Cc:     tglx@linutronix.de, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com
+References: <1635896196-18961-1-git-send-email-boris.ostrovsky@oracle.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <49bbfc70-8dcd-ae43-c42d-bda1a49e9cf1@suse.com>
+Date:   Wed, 3 Nov 2021 06:45:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1A35Jl9W075146
+In-Reply-To: <1635896196-18961-1-git-send-email-boris.ostrovsky@oracle.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="7GDMiikNHVQKp2xOZTM6HQeA6GpfFSkjJ"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-reset should be more proper than clk off/on to bring HW back to good
-state.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--7GDMiikNHVQKp2xOZTM6HQeA6GpfFSkjJ
+Content-Type: multipart/mixed; boundary="3A3RUhbvxXloGF3uvUEsAK6qtY3MosJeV";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
+Cc: tglx@linutronix.de, bp@alien8.de, dave.hansen@linux.intel.com,
+ x86@kernel.org, hpa@zytor.com
+Message-ID: <49bbfc70-8dcd-ae43-c42d-bda1a49e9cf1@suse.com>
+Subject: Re: [PATCH] x86/smp: Factor out parts of native_smp_prepare_cpus()
+References: <1635896196-18961-1-git-send-email-boris.ostrovsky@oracle.com>
+In-Reply-To: <1635896196-18961-1-git-send-email-boris.ostrovsky@oracle.com>
 
-Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
----
- drivers/media/platform/aspeed-video.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+--3A3RUhbvxXloGF3uvUEsAK6qtY3MosJeV
+Content-Type: multipart/mixed;
+ boundary="------------F9B175CBC6E4CD4126C9011E"
+Content-Language: en-US
 
-diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-index fea5e4d0927e..10d182139809 100644
---- a/drivers/media/platform/aspeed-video.c
-+++ b/drivers/media/platform/aspeed-video.c
-@@ -23,6 +23,7 @@
- #include <linux/workqueue.h>
- #include <linux/debugfs.h>
- #include <linux/ktime.h>
-+#include <linux/reset.h>
- #include <media/v4l2-ctrls.h>
- #include <media/v4l2-dev.h>
- #include <media/v4l2-device.h>
-@@ -220,6 +221,7 @@ struct aspeed_video {
- 	void __iomem *base;
- 	struct clk *eclk;
- 	struct clk *vclk;
-+	struct reset_control *reset;
- 
- 	struct device *dev;
- 	struct v4l2_ctrl_handler ctrl_handler;
-@@ -554,6 +556,13 @@ static void aspeed_video_on(struct aspeed_video *video)
- 	set_bit(VIDEO_CLOCKS_ON, &video->flags);
- }
- 
-+static void aspeed_video_reset(struct aspeed_video *v)
-+{
-+	reset_control_assert(v->reset);
-+	udelay(100);
-+	reset_control_deassert(v->reset);
-+}
-+
- static void aspeed_video_bufs_done(struct aspeed_video *video,
- 				   enum vb2_buffer_state state)
- {
-@@ -574,7 +583,9 @@ static void aspeed_video_irq_res_change(struct aspeed_video *video, ulong delay)
- 	set_bit(VIDEO_RES_CHANGE, &video->flags);
- 	clear_bit(VIDEO_FRAME_INPRG, &video->flags);
- 
--	aspeed_video_off(video);
-+	aspeed_video_write(video, VE_INTERRUPT_CTRL, 0);
-+	aspeed_video_write(video, VE_INTERRUPT_STATUS, 0xffffffff);
-+	aspeed_video_reset(video);
- 	aspeed_video_bufs_done(video, VB2_BUF_STATE_ERROR);
- 
- 	schedule_delayed_work(&video->res_work, delay);
-@@ -1507,8 +1518,7 @@ static void aspeed_video_stop_streaming(struct vb2_queue *q)
- 		 * Need to force stop any DMA and try and get HW into a good
- 		 * state for future calls to start streaming again.
- 		 */
--		aspeed_video_off(video);
--		aspeed_video_on(video);
-+		aspeed_video_reset(video);
- 
- 		aspeed_video_init_regs(video);
- 
-@@ -1715,6 +1725,12 @@ static int aspeed_video_init(struct aspeed_video *video)
- 		return rc;
- 	}
- 
-+	video->reset = devm_reset_control_get(dev, NULL);
-+	if (IS_ERR(video->reset)) {
-+		dev_err(dev, "Unable to get reset\n");
-+		return PTR_ERR(video->reset);
-+	}
-+
- 	video->eclk = devm_clk_get(dev, "eclk");
- 	if (IS_ERR(video->eclk)) {
- 		dev_err(dev, "Unable to get ECLK\n");
--- 
-2.25.1
+This is a multi-part message in MIME format.
+--------------F9B175CBC6E4CD4126C9011E
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
+On 03.11.21 00:36, Boris Ostrovsky wrote:
+> Commit 66558b730f25 ("sched: Add cluster scheduler level for x86")
+> introduced cpu_l2c_shared_map mask which is expected to be initialized
+> by smp_op.smp_prepare_cpus(). That commit only updated
+> native_smp_prepare_cpus() version but not xen_pv_smp_prepare_cpus().
+> As result Xen PV guests crash in set_cpu_sibling_map().
+>=20
+> While the new mask can be allocated in xen_pv_smp_prepare_cpus() one ca=
+n
+> see that both versions of smp_prepare_cpus ops share a number of common=
+
+> operations that can be factored out. So do that instead.
+>=20
+> Fixes: 66558b730f25 ("sched: Add cluster scheduler level for x86")
+> Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+
+Reviewed-by: Juergen Gross <jgross@suse.com>
+
+
+Juergen
+
+--------------F9B175CBC6E4CD4126C9011E
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------F9B175CBC6E4CD4126C9011E--
+
+--3A3RUhbvxXloGF3uvUEsAK6qtY3MosJeV--
+
+--7GDMiikNHVQKp2xOZTM6HQeA6GpfFSkjJ
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmGCIegFAwAAAAAACgkQsN6d1ii/Ey/9
+3wf+ODn931uqiWlVLU/8D/A6Y44LsvMgv67VayTxLPeRiz4iXdydWiftKZfGD8LwohJuwL9XPsEY
+XrXfL9X7xglk19/NEKP7Ih8EQjp9Qp1hkxFi/Dl/v8DZZOcFrHv+WNtrWsQ6nPwOx9IHRAo2Hqov
+DD42bKbJjpN41Nn/tjS1x5NXgVWCa57ypebAJhBA6tA6lPFezZglIT3Mq7JChOSKMVH/DPyMkwtX
+ZqrCH8zACQMv60ARIR8Y6DvB6fE5RctWbK68YxTXniO235J5powSLQbnJcoEH4YC+de8FwT9WMRg
+omp4yNeKJMx25Cl9j5UwgfziiAkUpmDEJ54Liyln1A==
+=j0VV
+-----END PGP SIGNATURE-----
+
+--7GDMiikNHVQKp2xOZTM6HQeA6GpfFSkjJ--
