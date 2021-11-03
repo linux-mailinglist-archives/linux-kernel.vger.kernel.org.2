@@ -2,109 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4AD443C48
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 05:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 825AF443C4C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 06:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhKCEvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 00:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhKCEvI (ORCPT
+        id S230191AbhKCFFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 01:05:18 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:10104 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229650AbhKCFFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 00:51:08 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360A1C061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 21:48:32 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id r8so1618480wra.7
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 21:48:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=87974z5AtJmOln+zwYWiwSnZztUMWAZ2LkjaXiT2MxY=;
-        b=iW6iWKTWBYsCImYrih+6jD6BL6qW31QNIf1MhcIipNBV+T1/YZFlIJboDjw5Te6eEv
-         AjqSP/7df2OJv40xYMhcBJjaxnRAY6185jxwr+8r5OceIDKubIFFKIvbPT0N6xvbd8Up
-         scDnHGMmZ0ruwn+0zbjbUL/aQm3cGf1oIM6mrSubuYdvpy6ZHRWSJHn2NtKeMf7sawVW
-         T36xev27ocoy1r/Pzf31CK5sygwmQU2pbJ8B0BVOhaN5ikiGj0OsHGKpti7ziSdx0csk
-         9xlZ0Pvlt18omSGDD0Pct2+ks5+rpJvr2Nd/XcguE7x4YytT2FTds4es2HKftuHFdyWB
-         v61Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=87974z5AtJmOln+zwYWiwSnZztUMWAZ2LkjaXiT2MxY=;
-        b=uEfuOy76ojoTg0BxI11t1BQB3PoBkqkFuNd7X1gryfIemJsikbtESZnu5cVYM2OnZy
-         WCOwSBvJK8AUYbvjCnSP9YbLO7nP52yxEeya9dRaRy4OcxhV2v96jv6lNMS24qJb9xT7
-         M3mbnHY3RHzutJBNOo9WQ5CbYXMOG63QawZmw9iJY+EzBptM+KeMwKHMns5vLrqqEWv6
-         fBrQkzyy8lv21ZvjM+PABihMqRdFwQiqanaoM71wN2H8oeoZwUv5t858peyX5ZYL1VpJ
-         d1+ZqcKpEWHQY3SBHb3kh++ZR9GkRpPCIcFJ1t0vtu3UaxA/+PbyUf3kzHjDzxeJ+LY7
-         QuJQ==
-X-Gm-Message-State: AOAM533OhykON3E9pb1jaRZLLB/tDBCpeTfQyYIeHvsaajSnHepgCGT7
-        JxtmmYYgdKNgsmb8wCJ5eAJcNKSERYU9u+pQ9NTVPN5w0LJR6w==
-X-Google-Smtp-Source: ABdhPJzgZcfUYgphAObDCJ7ZlKG/hkC2+JnD658GVFTfICkxiCG/wyerCejBDhWQm47ai/Fp8r7KayCwSI6hQpUuOes=
-X-Received: by 2002:a5d:4882:: with SMTP id g2mr51606109wrq.399.1635914910551;
- Tue, 02 Nov 2021 21:48:30 -0700 (PDT)
+        Wed, 3 Nov 2021 01:05:17 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 1A34dkWW071525;
+        Wed, 3 Nov 2021 12:39:46 +0800 (GMT-8)
+        (envelope-from jammy_huang@aspeedtech.com)
+Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Nov
+ 2021 13:02:37 +0800
+Message-ID: <3a40bb81-2c6e-47e3-fb85-e615aecd129a@aspeedtech.com>
+Date:   Wed, 3 Nov 2021 13:02:38 +0800
 MIME-Version: 1.0
-References: <20211103042228.586967-1-dlatypov@google.com>
-In-Reply-To: <20211103042228.586967-1-dlatypov@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Wed, 3 Nov 2021 12:48:19 +0800
-Message-ID: <CABVgOSmivNm9=Zoq-1n4qpVwHbTkvTjW=chk-bEuJjt1SN6KEA@mail.gmail.com>
-Subject: Re: [PATCH v2] kunit: add run_checks.py script to validate kunit changes
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v2] media: aspeed: fix mode-detect always time out at 2nd
+ run
+Content-Language: en-US
+To:     Joel Stanley <joel@jms.id.au>
+CC:     Eddie James <eajames@linux.ibm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        Paul Menzel <pmenzel@molgen.mpg.de>
+References: <20211103011357.22067-1-jammy_huang@aspeedtech.com>
+ <CACPK8XcuhVVvbs4m5k=1d6oFiewEo2RqqOqf5R72KJ4yjiEiUw@mail.gmail.com>
+ <CACPK8XezrCtCbKVgNOPNt+N_7ki6Rctf9M8oLBHyixa+Wph2Sw@mail.gmail.com>
+From:   Jammy Huang <jammy_huang@aspeedtech.com>
+In-Reply-To: <CACPK8XezrCtCbKVgNOPNt+N_7ki6Rctf9M8oLBHyixa+Wph2Sw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [192.168.2.115]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 1A34dkWW071525
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 12:22 PM Daniel Latypov <dlatypov@google.com> wrote:
->
-> This formalizes the checks KUnit maintainers have been running (or in
-> other cases: forgetting to run).
->
-> This script also runs them all in parallel to minimize friction (pytype
-> can be fairly slow, but not slower than running kunit.py).
->
-> Example output:
-> $ ./tools/testing/kunit/run_checks.py
-> Waiting on 4 checks (kunit_tool_test.py, kunit smoke test, pytype, mypy)...
-> kunit_tool_test.py: PASSED
-> mypy: PASSED
-> pytype: PASSED
-> kunit smoke test: PASSED
->
-> On failure or timeout (5 minutes), it'll dump out the stdout/stderr.
-> E.g. adding in a type-checking error:
->   mypy: FAILED
->   > kunit.py:54: error: Name 'nonexistent_function' is not defined
->   > Found 1 error in 1 file (checked 8 source files)
->
-> mypy and pytype are two Python type-checkers and must be installed.
-> This file treats them as optional and will mark them as SKIPPED if not
-> installed.
->
-> This tool also runs `kunit.py run --kunitconfig=lib/kunit` to run
-> KUnit's own KUnit tests and to verify KUnit kernel code and kunit.py
-> play nicely together.
->
-> It uses --build_dir=kunit_run_checks so as not to clobber the default
-> build_dir, which helps make it faster by reducing the need to rebuild,
-> esp. if you're been passing in --arch instead of using UML.
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> Reviewed-by: David Gow <davidgow@google.com>
-> ---
+Dear Joel,
 
-Works a treat, thanks.
+Sure. Thanks for your reminder.
 
-This is still
-Reviewed-by: David Gow <davidgow@google.com>
+On 2021/11/3 上午 09:53, Joel Stanley wrote:
+> On Wed, 3 Nov 2021 at 01:47, Joel Stanley <joel@jms.id.au> wrote:
+>> On Wed, 3 Nov 2021 at 01:13, Jammy Huang <jammy_huang@aspeedtech.com> wrote:
+>>> aspeed_video_get_resolution() will try to do res-detect again if the
+>>> timing got in last try is invalid. But it will always time out because
+>>> VE_SEQ_CTRL_TRIG_MODE_DET is only cleared after 1st mode-detect.
+>>>
+>>> To fix the problem, just clear VE_SEQ_CTRL_TRIG_MODE_DET before setting
+>>> it in aspeed_video_enable_mode_detect().
+>>>
+>>> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+>>> Acked-by: Paul Menzel <pmenzel@molgen.mpg.de>
+>> Reviewed-by: Joel Stanley <joel@jms.id.au>
+> When applying, can we please have this tag added:
+>
+> Fixes: d2b4387f3bdf ("media: platform: Add Aspeed Video Engine driver")
+>
+> Cheers,
+>
+> Joel
+>
+>
+>>> ---
+>>> v2:
+>>>    - update commit message
+>>> ---
+>>>   drivers/media/platform/aspeed-video.c | 8 ++++----
+>>>   1 file changed, 4 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
+>>> index 5ffbabf884eb..fea5e4d0927e 100644
+>>> --- a/drivers/media/platform/aspeed-video.c
+>>> +++ b/drivers/media/platform/aspeed-video.c
+>>> @@ -518,6 +518,10 @@ static void aspeed_video_enable_mode_detect(struct aspeed_video *video)
+>>>          aspeed_video_update(video, VE_INTERRUPT_CTRL, 0,
+>>>                              VE_INTERRUPT_MODE_DETECT);
+>>>
+>>> +       /* Disable mode detect in order to re-trigger */
+>>> +       aspeed_video_update(video, VE_SEQ_CTRL,
+>>> +                           VE_SEQ_CTRL_TRIG_MODE_DET, 0);
+>>> +
+>>>          /* Trigger mode detect */
+>>>          aspeed_video_update(video, VE_SEQ_CTRL, 0, VE_SEQ_CTRL_TRIG_MODE_DET);
+>>>   }
+>>> @@ -809,10 +813,6 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
+>>>                          return;
+>>>                  }
+>>>
+>>> -               /* Disable mode detect in order to re-trigger */
+>>> -               aspeed_video_update(video, VE_SEQ_CTRL,
+>>> -                                   VE_SEQ_CTRL_TRIG_MODE_DET, 0);
+>>> -
+>>>                  aspeed_video_check_and_set_polarity(video);
+>>>
+>>>                  aspeed_video_enable_mode_detect(video);
+>>> --
+>>> 2.25.1
+>>>
+-- 
+Best Regards
+Jammy
 
-Cheers,
--- David
