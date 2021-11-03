@@ -2,152 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282F8443B98
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 03:49:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEAF4443BAD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 04:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbhKCCvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 22:51:42 -0400
-Received: from smtpcmd11117.aruba.it ([62.149.156.117]:33873 "EHLO
-        smtpcmd11117.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbhKCCvg (ORCPT
+        id S230112AbhKCDJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 23:09:18 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15349 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229746AbhKCDJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 22:51:36 -0400
-Received: from smtpclient.apple ([146.241.216.221])
-        by Aruba Outgoing Smtp  with ESMTPA
-        id i6KdmWeslumo4i6KdmXOCm; Wed, 03 Nov 2021 03:48:58 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1635907738; bh=vn0en0EIlHgkPwPZZERx136vgq1/nmIMJ6ZT4dkZqag=;
-        h=Content-Type:From:Mime-Version:Subject:Date:To;
-        b=J9naTf+IAohR2xOuGFgEzMfooC6CT8nvH3rCcxEWgk4ynOkf9Na/5Aqb8CB1TYo6O
-         E72mOAH0K6Haxm+L3WXrEe/q9WMjDSlZd5pngARGRVwsq1+tUy5onszIqxfCDTHDSw
-         FJqY5awdjZXgfm/Z33r99rSTvYbfrSaei0yvkgo895UNDUgzzsfwvlsL4GZT5zf8g4
-         mlgBpKAQEB6xb/Nih89L56sQBD2benwgBCFHMJXdhbWd1w9XRNB2i+f+KJ5UaLAXax
-         xyAM63MAPZlAmH/xCTEiZZWeY0G7t6TrNo2hUg29dncGJPIvgBy6Z765r06VGFHqS3
-         /ZU34wbBbftfA==
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 08/13] dt-bindings: serial: fsl-lpuart: add i.MXRT compatible
-Date:   Wed, 3 Nov 2021 03:48:54 +0100
-Message-Id: <D0A3E11F-FEDE-4B2D-90AB-63DFC245A935@benettiengineering.com>
-References: <CAL_JsqJR6EfDsmwPmXxgdaC1GB7CLGYpjmDnOkD_f53Frsq6LA@mail.gmail.com>
-Cc:     Jesse Taube <mr.bossman075@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Stefan Agner <stefan@agner.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        SoC Team <soc@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Abel Vesa <abel.vesa@nxp.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        Anson Huang <b20788@freescale.com>,
-        Fugang Duan <fugang.duan@nxp.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-In-Reply-To: <CAL_JsqJR6EfDsmwPmXxgdaC1GB7CLGYpjmDnOkD_f53Frsq6LA@mail.gmail.com>
-To:     Rob Herring <robh@kernel.org>
-X-Mailer: iPhone Mail (18H17)
-X-CMAE-Envelope: MS4wfATmIMv5GA3j34nA+iOgc1h+7L3tNW3abl9oCE6PZB8OMXI5H3mb85Frc03sGYy21FlO+oJkV4yTBbwgW5Rj/0du+RvtJQeN4d3pTWoUGmPhXXFYvLcV
- QNuPaJZ09aPj0+mshEem7c3H/dDtmBF6Js+GbUpl3X77ZVu54p7RysYHkjD72LZmj1H9nrKMau+2FU6gAH8OfwkJcqu+K/QuRnCIGQyGPr3XRSCMWIAeXcnh
- 14cBS5S+yv55Rx3kGkl8t/GASJe4FVaWXcwh2TmSlklGOJv0BnitVeN15pb+g3w02oFJrUgKwPJ60fOGTuEBSmuaWhDSUp0BnITKWVtU8NWjCdg22E/rK3ua
- UvuthcK4Gt+pMHdeNuelu7OQNeUa4osFW/xmS2SqnXAjQ/zXPIoKDZ9wYTW69+lVlUjcEQaQSIL5cDlAWhgyLYe58s0lVB+PUteYTjf5XPopnlNbF4BlhSUn
- 1703ZYebBfSnDYcMuwywTgcke/l6oZOuiSXUAER9Kw+NQDUTm6vTA1zd63V6/2mI8V6fIuErDfUgGhwidKoWGZgy8w0lMux5lnPF152l3b+t+PRXsgoo8Fup
- vyE5oPOG87RvxafyxS+PGYtiDRSgb5g6gBK+6HKCBnCITIepAP0MxaYELLdoZIxHd2jQNXlyEXbPoapsLfCN839NHGj5xtHTF+RdCX6xRJLv7QbeBGv2lxdk
- WQuMJJl1glCO71l/9HImQMgssA4qHKsCwrUS4eVH4UwdhuKJRRfzXYZJNepCANMb5jUUomkTVI3BMVMYPLFcPn2lylrtW6uuvCzwHaPbLJuHEchajyGi9mPy
- cNs/j1wljxUbrkXF2DSbjxuGxED1hrUDrV4auoDE5lUYgSroodiTneWziQtrRVB/JzYl4C6iYazCH18QbLDLZc0W24SBjADnoy2c3JaRoN05Me4ZYOFsc4Lp
- Rc/MtcuLY1/6kPE7+x4/Pu0oLxAPRi9gvMjOAn+TcU4p3/lAW2Cj8/Kzy9ZtRUlfltDpjFZJDqdxAgCh7oCj9sIreifIVrSwfCx6JcENijeCT6gpQ4OzTaxq
- mwcnYVUpvxOA21nMdUUvMEJlVoadyglqlr9tgcp/tZNlXbX2jPakmS1Bx/8Q/gOFJTP6kTQF5NkXBVxbUWxgSoRnllcDGy2LlCt2WmbbdKWGh7d8jt98gwJD
- czQA9XU4BZVnndLpD6YTF4YbKlfBqXsPIzN57bT3ahyvfyxxMEVyQ+no+RY503EiVcfZf3vMJa6jb/9lw3xxrA==
+        Tue, 2 Nov 2021 23:09:14 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HkWrM0tPzz90mT;
+        Wed,  3 Nov 2021 11:06:27 +0800 (CST)
+Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 3 Nov 2021 11:06:33 +0800
+Received: from [10.174.179.234] (10.174.179.234) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 3 Nov 2021 11:06:32 +0800
+Subject: Re: [PATCH bpf-next] riscv, bpf: fix some compiler error
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+References: <20211102145642.724820-1-tongtiangen@huawei.com>
+ <CAJ+HfNg1Ki=1Zc+ThW-ynvtDo5=fNAUK-XV08-icz-nY9CNoUQ@mail.gmail.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+From:   tongtiangen <tongtiangen@huawei.com>
+Message-ID: <448599f5-e773-6ab5-bdaf-289f583edf01@huawei.com>
+Date:   Wed, 3 Nov 2021 11:06:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
+MIME-Version: 1.0
+In-Reply-To: <CAJ+HfNg1Ki=1Zc+ThW-ynvtDo5=fNAUK-XV08-icz-nY9CNoUQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.234]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rob, Jesse, All,
 
-> Il giorno 3 nov 2021, alle ore 01:49, Rob Herring <robh@kernel.org> ha scr=
-itto:
->=20
-> =EF=BB=BFOn Mon, Nov 1, 2021 at 6:34 PM Jesse Taube <mr.bossman075@gmail.c=
-om> wrote:
->>=20
->>=20
->>=20
->>> On 11/1/21 16:13, Rob Herring wrote:
->>> On Sun, Oct 24, 2021 at 11:40:22AM -0400, Jesse Taube wrote:
->>>> Add i.MXRT documentation for compatible string.
->>>>=20
->>>> Cc: Giulio Benetti <giulio.benetti@benettiengineering.com>
->>>> Signed-off-by: Jesse Taube <Mr.Bossman075@gmail.com>
->>>> ---
->>>> Documentation/devicetree/bindings/serial/fsl-lpuart.yaml | 1 +
->>>> 1 file changed, 1 insertion(+)
->>>>=20
->>>> diff --git a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml b=
-/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
->>>> index a90c971b4f1f..4b4340def2aa 100644
->>>> --- a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
->>>> +++ b/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
->>>> @@ -21,6 +21,7 @@ properties:
->>>>           - fsl,ls1028a-lpuart
->>>>           - fsl,imx7ulp-lpuart
->>>>           - fsl,imx8qm-lpuart
->>>> +          - fsl,imxrt-lpuart
->>>=20
->>> Actually, 'rt' is not a single part is it? If the variations are same
->>> die, but fused off then no need to distinguish. Otherwise, these should
->>> be SoC specific.
->>>=20
->> I don't exactly know what "but fused off" means I would assume
->> disconnected but on-die?
->=20
-> Right. Or not pinned out is another possibility.
->=20
->> The imxrtxxx is a series that has the same UART
->> controller across them. Should I add ACK?
->=20
-> Looking at the errata docs briefly, there's at least 2 die as some of
-> the errata docs give the mask id. So they aren't necessarily 'the
-> same'.
 
-Thank you for pointing, we=E2=80=99ve missed this particular.
+On 2021/11/2 23:45, Björn Töpel wrote:
+> On Tue, 2 Nov 2021 at 15:40, Tong Tiangen <tongtiangen@huawei.com> wrote:
+>>
+>> This patch fix two compile errors:
+>> 1. when CONFIG_BPF_JIT and CONFIG_ARCH_32I is open, There is the following
+>> compiler error:
+>>   error: undefined symbol: rv_bpf_fixup_exception
+>>
+>
+> Good catch for the RV32!
+>
+>> 2. when CONFIG_BPF_JIT and CONFIG_ARCH_64I is open, There is the following
+>> compiler error (W=1):
+>>   error: no previous prototype for 'rv_bpf_fixup_exception'
+>>
+>> In this patch, asm/extable.h is introduced,  the rv_bpf_fixup_exception
+>> function declaration is added to this file. in addition, the definition of
+>> exception_table_entry is moved from asm-generic/extable.h to this file.
+>>
+>
+> This is way too complicated. More below.
+>
+>> Fixes: 252c765bd764 ("riscv, bpf: Add BPF exception tables")
+>> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+>> ---
+>>  arch/riscv/include/asm/Kbuild    |  1 -
+>>  arch/riscv/include/asm/extable.h | 49 ++++++++++++++++++++++++++++++++
+>>  arch/riscv/include/asm/uaccess.h | 13 ---------
+>>  arch/riscv/mm/extable.c          |  8 +-----
+>>  4 files changed, 50 insertions(+), 21 deletions(-)
+>>  create mode 100644 arch/riscv/include/asm/extable.h
+>>
+>> diff --git a/arch/riscv/include/asm/Kbuild b/arch/riscv/include/asm/Kbuild
+>> index 445ccc97305a..57b86fd9916c 100644
+>> --- a/arch/riscv/include/asm/Kbuild
+>> +++ b/arch/riscv/include/asm/Kbuild
+>> @@ -1,6 +1,5 @@
+>>  # SPDX-License-Identifier: GPL-2.0
+>>  generic-y += early_ioremap.h
+>> -generic-y += extable.h
+>>  generic-y += flat.h
+>>  generic-y += kvm_para.h
+>>  generic-y += user.h
+>> diff --git a/arch/riscv/include/asm/extable.h b/arch/riscv/include/asm/extable.h
+>> new file mode 100644
+>> index 000000000000..aa0332b053fb
+>> --- /dev/null
+>> +++ b/arch/riscv/include/asm/extable.h
+>> @@ -0,0 +1,49 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +#ifndef __ASM_EXTABLE_H
+>> +#define __ASM_EXTABLE_H
+>> +
+>> +/*
+>> + * The exception table consists of pairs of addresses: the first is the
+>> + * address of an instruction that is allowed to fault, and the second is
+>> + * the address at which the program should continue.  No registers are
+>> + * modified, so it is entirely up to the continuation code to figure out
+>> + * what to do.
+>> + *
+>> + * All the routines below use bits of fixup code that are out of line
+>> + * with the main instruction path.  This means when everything is well,
+>> + * we don't even have to jump over them.  Further, they do not intrude
+>> + * on our cache or tlb entries.
+>> + */
+>> +struct exception_table_entry {
+>> +       unsigned long insn, fixup;
+>> +};
+>> +
+>> +struct pt_regs;
+>> +int fixup_exception(struct pt_regs *regs);
+>> +
+>> +#if defined(CONFIG_MMU)
+>> +static inline bool rv_in_bpf_jit(struct pt_regs *regs)
+>> +{
+>> +       if (!IS_ENABLED(CONFIG_BPF_JIT) || !IS_ENABLED(CONFIG_64BIT))
+>> +               return false;
+>> +
+>> +       return regs->epc >= BPF_JIT_REGION_START && regs->epc < BPF_JIT_REGION_END;
+>> +}
+>> +#else
+>> +static inline bool rv_in_bpf_jit(struct pt_regs *regs)
+>> +{
+>> +       return false;
+>> +}
+>> +#endif
+>> +
+>> +#if defined(CONFIG_BPF_JIT) && defined(CONFIG_64BIT)
+>> +int rv_bpf_fixup_exception(const struct exception_table_entry *ex, struct pt_regs *regs);
+>> +#else
+>> +static inline int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
+>> +                                        struct pt_regs *regs)
+>> +{
+>> +       return 0;
+>> +}
+>> +#endif
+>> +
+>> +#endif
+>> diff --git a/arch/riscv/include/asm/uaccess.h b/arch/riscv/include/asm/uaccess.h
+>> index f314ff44c48d..96ea91dc0e9c 100644
+>> --- a/arch/riscv/include/asm/uaccess.h
+>> +++ b/arch/riscv/include/asm/uaccess.h
+>> @@ -56,19 +56,6 @@ static inline int __access_ok(unsigned long addr, unsigned long size)
+>>         return size <= TASK_SIZE && addr <= TASK_SIZE - size;
+>>  }
+>>
+>> -/*
+>> - * The exception table consists of pairs of addresses: the first is the
+>> - * address of an instruction that is allowed to fault, and the second is
+>> - * the address at which the program should continue.  No registers are
+>> - * modified, so it is entirely up to the continuation code to figure out
+>> - * what to do.
+>> - *
+>> - * All the routines below use bits of fixup code that are out of line
+>> - * with the main instruction path.  This means when everything is well,
+>> - * we don't even have to jump over them.  Further, they do not intrude
+>> - * on our cache or tlb entries.
+>> - */
+>> -
+>>  #define __LSW  0
+>>  #define __MSW  1
+>>
+>> diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
+>> index 18bf338303b6..264f465db5bb 100644
+>> --- a/arch/riscv/mm/extable.c
+>> +++ b/arch/riscv/mm/extable.c
+>> @@ -11,10 +11,6 @@
+>>  #include <linux/module.h>
+>>  #include <linux/uaccess.h>
+>>
+>> -#ifdef CONFIG_BPF_JIT
+>> -int rv_bpf_fixup_exception(const struct exception_table_entry *ex, struct pt_regs *regs);
+>> -#endif
+>> -
+>>  int fixup_exception(struct pt_regs *regs)
+>>  {
+>>         const struct exception_table_entry *fixup;
+>> @@ -23,10 +19,8 @@ int fixup_exception(struct pt_regs *regs)
+>>         if (!fixup)
+>>                 return 0;
+>>
+>> -#ifdef CONFIG_BPF_JIT
+>> -       if (regs->epc >= BPF_JIT_REGION_START && regs->epc < BPF_JIT_REGION_END)
+>> +       if (rv_in_bpf_jit(regs))
+>>                 return rv_bpf_fixup_exception(fixup, regs);
+>> -#endif
+>>
+>
+> The only changes that are needed are:
+> 1. Simply gate with CONFIG_BPF_JIT && CONFIG_ARCH_RV64I, instead of of
+> CONFIG_BPF_JIT
+>
+> 2. Forward declaration of the rv_bpf_fixup_exception() in bpf_jit_comp64.c.
+>
+Hi Björn:
+ From the perspective of development, introduce asm/extable.h is also prepare for the
+subsequent modification of exception_table_entry, such as:
+   1. https://lkml.org/lkml/2021/10/20/591
+   2. https://lore.kernel.org/linux-arm-kernel/20211019160219.5202-11-mark.rutland@arm.com/
 
-> You want the compatible strings to be specific enough to handle
-> any differences or errata. If you only care about the imxrt1050, then
-> I'd just use that and move on.
+Therefore, the prototype declarations and definitions related to kernel config are placed in head file,
+which can avoid compiler error and simplify the rendering of functions.
 
-We plan to add from imxrt1020 to imxrt1170 and eventual new SoC, so we defin=
-itely need separate
-.compatible strings.
+Thanks.
+Tong.
 
-@Jesse, can you please update with =E2=80=98fsl,imxrt1050=E2=80=9D?
-
-> Otherwise, maybe someone from NXP wants
-> to comment?
-
-Any NXP comment is welcome!
-
-Best regards
-Giulio Benetti
-Benetti engineering sas
-
->=20
-> Rob
-
+>
+> Björn
+> .
+>
