@@ -2,118 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B21C444660
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF55444689
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232991AbhKCRAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 13:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232870AbhKCRAL (ORCPT
+        id S233049AbhKCRFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 13:05:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31873 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232946AbhKCRFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 13:00:11 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C5EC061205
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 09:57:34 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id w9-20020a17090a1b8900b001a6b3b7ec17so1754623pjc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 09:57:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IBSuB2sX7yC2N+skcd1kW4OtMhtED2f+hVFLuKO9FNc=;
-        b=wTNdA3Oz63ouFKMX/zm8/Y+znNyrUzRhG2N2tsdnBznIJC7x5jkh5uMDkh4O3Hx8R+
-         xkPc16Fw0goWAMKBCB4oDaRs+g0w2P+XUtYxRc/62cFMhInyDMUInR/8Qe+kp2VcTqrt
-         J4pd/n5UKfiPNzZ0M0ZGQgirk/w56WXw3BQsOTt8buZp8UBAeP5zoKOeXahykr5KZdxP
-         VBJ3q+FCrhu3i56doXt3CgNFCH2jEbeZB4MUe36rUeXsK1tMD5bsOVnRbV3LhEeG8nT8
-         pGZK91HbDI1J/NyHRq+bHmKS5nQo5nytN5BQaHsKTkSuPUn9hbNuF54JevIVPuxX8CYu
-         okcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IBSuB2sX7yC2N+skcd1kW4OtMhtED2f+hVFLuKO9FNc=;
-        b=0HKi6xVsKH9igFtwk76VJnvAZctb56Twd7immQhKCMW0EVgPgFXPmxQT8kLDqaBvZa
-         SBnWKRfI6H1J3Czvwn2NAmW1svp0fd9B8GyjRc7YXKYOwY/tTMk2VuIISdRn+1pZkXvq
-         EF4ZxLs8joPOdnue9fZaeO7L92T2iV6aLKMqgMbiLAofphGR1+IalHa4pxk7mofam9Kq
-         9Tn3D9MFK0BgMeMrQTUp/aSvEok5rw+L2cOQHsnFKIEhjfes9puVqG6va4JNrUO2rE09
-         NFsS5Elz1nMLoj4eKU8pcwyFVxUFVsJTKQPkQ+22drdR0zFGeysLg6aVbRWFCIZzQqYh
-         D2Qw==
-X-Gm-Message-State: AOAM531WMWETeh/f/8Bhd9I5bXrkyUIgIfgDKXRLmDXshS29m0HzODcG
-        1xr6SVpiexWgMojDQJ7Dx9D5GTEchzbc24Fv/SPo4A==
-X-Google-Smtp-Source: ABdhPJzUnQk5Cmt2i6mzswb2rLjgrcIQaBoi2fOvdvX9lCslbk7TLUjrnsn0nSemd+HWgru1iz0235PqX2K8UC/UTbI=
-X-Received: by 2002:a17:90a:1190:: with SMTP id e16mr15889288pja.209.1635958653600;
- Wed, 03 Nov 2021 09:57:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211103155543.1037604-1-benl@squareup.com> <20211103155543.1037604-3-benl@squareup.com>
-In-Reply-To: <20211103155543.1037604-3-benl@squareup.com>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Wed, 3 Nov 2021 18:08:15 +0100
-Message-ID: <CAMZdPi8c1aJCCL8b6iYSz1Ev46jK15Fpa9pG-2FGhrT3FR2RMA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] wcn36xx: fix RX BD rate mapping for 5GHz legacy rates
-To:     Benjamin Li <benl@squareup.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
-        linux-arm-msm@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, wcn36xx@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        Wed, 3 Nov 2021 13:05:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635958984;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QrRmGVF1h5sT+EiXZiJeSIoEBq6T7Fh3KxMTJt9AHos=;
+        b=F8/kAAObe5W1B9PZkZQDCCg8AkROOKz1YMiIUTYCzEsdpy1qd+FmSjCEoad3hfmtu+1k1l
+        l0a0Ra7WPZnyav9exTb7Eot0ydUedAhUyq9Hh05AcPilW0XKaPUTyFtWJmZomaM1iXgVPl
+        dO//KSVt2vYtDDfMmGvzb5XOQLvD0rU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-200-Hb0P2fPZOxWH3BvHE08raw-1; Wed, 03 Nov 2021 13:03:01 -0400
+X-MC-Unique: Hb0P2fPZOxWH3BvHE08raw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 423B91006AA2;
+        Wed,  3 Nov 2021 17:02:59 +0000 (UTC)
+Received: from starship (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6D65B60C05;
+        Wed,  3 Nov 2021 17:02:55 +0000 (UTC)
+Message-ID: <88fc4a2463db6daff52b3f4c2be7d6c76c42fb6e.camel@redhat.com>
+Subject: Re: [PATCH v5 2/7] nSVM: introduce smv->nested.save to cache save
+ area fields
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         linux-kernel@vger.kernel.org
+Date:   Wed, 03 Nov 2021 19:02:54 +0200
+In-Reply-To: <20211103140527.752797-3-eesposit@redhat.com>
+References: <20211103140527.752797-1-eesposit@redhat.com>
+         <20211103140527.752797-3-eesposit@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ben,
-
-On Wed, 3 Nov 2021 at 16:56, Benjamin Li <benl@squareup.com> wrote:
->
-> The linear mapping between the BD rate field and the driver's 5GHz
-> legacy rates table (wcn_5ghz_rates) does not only apply for the latter
-> four rates -- it applies to all eight rates.
->
-> Fixes: 6ea131acea98 ("wcn36xx: Fix warning due to bad rate_idx")
-> Signed-off-by: Benjamin Li <benl@squareup.com>
+On Wed, 2021-11-03 at 10:05 -0400, Emanuele Giuseppe Esposito wrote:
+> This is useful in next patch, to avoid having temporary
+> copies of vmcb12 registers and passing them manually.
+> 
+> Right now, instead of blindly copying everything,
+> we just copy EFER, CR0, CR3, CR4, DR6 and DR7. If more fields
+> will need to be added, it will be more obvious to see
+> that they must be added in struct vmcb_save_area_cached and
+> in nested_copy_vmcb_save_to_cache().
+> 
+> _nested_copy_vmcb_save_to_cache() takes a vmcb_save_area_cached
+> parameter, useful when we want to save the state to a local
+> variable instead of svm internals.
+> 
+> Note that in svm_set_nested_state() we want to cache the L2
+> save state only if we are in normal non guest mode, because
+> otherwise it is not touched.
+> 
+> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
 > ---
->  drivers/net/wireless/ath/wcn36xx/txrx.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/wcn36xx/txrx.c b/drivers/net/wireless/ath/wcn36xx/txrx.c
-> index f0a9f069a92a9..fce3a6a98f596 100644
-> --- a/drivers/net/wireless/ath/wcn36xx/txrx.c
-> +++ b/drivers/net/wireless/ath/wcn36xx/txrx.c
-> @@ -272,7 +272,6 @@ int wcn36xx_rx_skb(struct wcn36xx *wcn, struct sk_buff *skb)
->         const struct wcn36xx_rate *rate;
->         struct ieee80211_hdr *hdr;
->         struct wcn36xx_rx_bd *bd;
-> -       struct ieee80211_supported_band *sband;
->         u16 fc, sn;
->
->         /*
-> @@ -350,12 +349,10 @@ int wcn36xx_rx_skb(struct wcn36xx *wcn, struct sk_buff *skb)
->                 status.enc_flags = rate->encoding_flags;
->                 status.bw = rate->bw;
->                 status.rate_idx = rate->mcs_or_legacy_index;
-> -               sband = wcn->hw->wiphy->bands[status.band];
->                 status.nss = 1;
->
->                 if (status.band == NL80211_BAND_5GHZ &&
-> -                   status.encoding == RX_ENC_LEGACY &&
-> -                   status.rate_idx >= sband->n_bitrates) {
+>  arch/x86/kvm/svm/nested.c | 27 ++++++++++++++++++++++++++-
+>  arch/x86/kvm/svm/svm.c    |  1 +
+>  arch/x86/kvm/svm/svm.h    | 16 ++++++++++++++++
+>  3 files changed, 43 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index 946c06a25d37..ea64fea371c8 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -328,6 +328,28 @@ void nested_load_control_from_vmcb12(struct vcpu_svm *svm,
+>  	svm->nested.ctl.iopm_base_pa  &= ~0x0fffULL;
+>  }
+>  
+> +static void _nested_copy_vmcb_save_to_cache(struct vmcb_save_area_cached *to,
+> +					    struct vmcb_save_area *from)
+> +{
+> +	/*
+> +	 * Copy only fields that are validated, as we need them
+> +	 * to avoid TOC/TOU races.
+> +	 */
+> +	to->efer = from->efer;
+> +	to->cr0 = from->cr0;
+> +	to->cr3 = from->cr3;
+> +	to->cr4 = from->cr4;
+> +
+> +	to->dr6 = from->dr6;
+> +	to->dr7 = from->dr7;
+> +}
+> +
+> +void nested_copy_vmcb_save_to_cache(struct vcpu_svm *svm,
+> +				    struct vmcb_save_area *save)
+> +{
+> +	_nested_copy_vmcb_save_to_cache(&svm->nested.save, save);
+> +}
+> +
+>  /*
+>   * Synchronize fields that are written by the processor, so that
+>   * they can be copied back into the vmcb12.
+> @@ -670,6 +692,7 @@ int nested_svm_vmrun(struct kvm_vcpu *vcpu)
+>  		return -EINVAL;
+>  
+>  	nested_load_control_from_vmcb12(svm, &vmcb12->control);
+> +	nested_copy_vmcb_save_to_cache(svm, &vmcb12->save);
+>  
+>  	if (!nested_vmcb_valid_sregs(vcpu, &vmcb12->save) ||
+>  	    !nested_vmcb_check_controls(vcpu, &svm->nested.ctl)) {
+> @@ -1402,8 +1425,10 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+>  
+>  	if (is_guest_mode(vcpu))
+>  		svm_leave_nested(svm);
+> -	else
+> +	else {
+>  		svm->nested.vmcb02.ptr->save = svm->vmcb01.ptr->save;
+> +		nested_copy_vmcb_save_to_cache(svm, &svm->nested.vmcb02.ptr->save);
+> +	}
+>  
+>  	svm_set_gif(svm, !!(kvm_state->flags & KVM_STATE_NESTED_GIF_SET));
+>  
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 21bb81710e0f..6e5c2671e823 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -4438,6 +4438,7 @@ static int svm_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
+>  
+>  	vmcb12 = map.hva;
+>  	nested_load_control_from_vmcb12(svm, &vmcb12->control);
+> +	nested_copy_vmcb_save_to_cache(svm, &vmcb12->save);
+>  	ret = enter_svm_guest_mode(vcpu, vmcb12_gpa, vmcb12, false);
+>  
+>  unmap_save:
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 0d7bbe548ac3..0897551d8868 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -103,6 +103,19 @@ struct kvm_vmcb_info {
+>  	uint64_t asid_generation;
+>  };
+>  
+
+Nitpick: There is a bit of ambiguity in this comment. I think you mean that
+the contents of the svm->nested.save are not always up to date,
+but then the comment should be there, where the field is
+declared.
+
+I first read this comment as if the fields of this struct are not
+up to date vs SVM spec or something.
+
+Also the same can be said about the svm->nested.ctl and such when not
+running a nested guest. Maybe we need to drop that coment at all.
+
+> +/*
+> + * This struct is not kept up-to-date, and it is only valid within
+> + * svm_set_nested_state and nested_svm_vmrun.
+> + */
+> +struct vmcb_save_area_cached {
+> +	u64 efer;
+> +	u64 cr4;
+> +	u64 cr3;
+> +	u64 cr0;
+> +	u64 dr7;
+> +	u64 dr6;
+> +};
+> +
+>  struct svm_nested_state {
+>  	struct kvm_vmcb_info vmcb02;
+>  	u64 hsave_msr;
+> @@ -119,6 +132,7 @@ struct svm_nested_state {
+>  
+>  	/* cache for control fields of the guest */
+>  	struct vmcb_control_area ctl;
+> +	struct vmcb_save_area_cached save;
+>  
+>  	bool initialized;
+>  };
+> @@ -490,6 +504,8 @@ void nested_svm_update_tsc_ratio_msr(struct kvm_vcpu *vcpu);
+>  void svm_write_tsc_multiplier(struct kvm_vcpu *vcpu, u64 multiplier);
+>  void nested_load_control_from_vmcb12(struct vcpu_svm *svm,
+>  				     struct vmcb_control_area *control);
+> +void nested_copy_vmcb_save_to_cache(struct vcpu_svm *svm,
+> +				    struct vmcb_save_area *save);
+>  void nested_sync_control_from_vmcb02(struct vcpu_svm *svm);
+>  void nested_vmcb02_compute_g_pat(struct vcpu_svm *svm);
+>  void svm_switch_vmcb(struct vcpu_svm *svm, struct kvm_vmcb_info *target_vmcb);
+
+Other than the nitpick looks good.
 
 
-It looks fine, but can you replace it with a 'status.rate_idx  >= 4'.
-I get sporadic 5Ghz frames reported with rate_idx=0 (firmware miss?),
-leading to warnings because status.rate_idx is -4(unsigned) in that
-case. So better to report a wrong rate than a corrupted one.
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
->
-> +                   status.encoding == RX_ENC_LEGACY) {
->                         /* no dsss rates in 5Ghz rates table */
->                         status.rate_idx -= 4;
->                 }
-> --
+Best regards,
+	Maxim Levitsky
 
 
-Regards,
-Loic
