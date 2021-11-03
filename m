@@ -2,210 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F75443EC9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:57:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7EF443EDF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 10:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231911AbhKCJAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 05:00:23 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:56806 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230463AbhKCJAW (ORCPT
+        id S231749AbhKCJFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 05:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231547AbhKCJFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 05:00:22 -0400
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20211103085743epoutp04036039cba2545e4071b19393f2d95f70~z-YsnkQU-3192231922epoutp04q
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 08:57:43 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20211103085743epoutp04036039cba2545e4071b19393f2d95f70~z-YsnkQU-3192231922epoutp04q
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1635929863;
-        bh=JxmrlYFxp5I2K7CDnqbrQ3lhPQqZXHzq5G7XwS0/PRo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hNKiLTWrOjjrw2B7ngNXT2bSkFZJBV3B0l0keLDCk+D3xsUDZj30Ay0JRGBKmoWtG
-         pXTNqaonCl5xl4uqnUgWIfG0t6K06/EawUfGmSJRORk8W0EziRyKwPaAuptG2oQVf+
-         fZ1htPOsakv3ly7rk9iF8cnq2sRxNnYAmaOgkNyc=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20211103085743epcas2p1758ab17ad505da4a3f8abc9ec75f1f23~z-YsKfnGE0097600976epcas2p1Z;
-        Wed,  3 Nov 2021 08:57:43 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.36.92]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4HkgdT2f5tz4x9QW; Wed,  3 Nov
-        2021 08:57:33 +0000 (GMT)
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        75.41.10018.BFE42816; Wed,  3 Nov 2021 17:57:31 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-        20211103085730epcas2p492e5ce9dfd46c509890a18856f1de5a7~z-YghRp0I1303213032epcas2p4J;
-        Wed,  3 Nov 2021 08:57:30 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20211103085730epsmtrp268d7cc7c98c311f10c733ff8e2bcd7e1~z-YggIaid1407014070epsmtrp2S;
-        Wed,  3 Nov 2021 08:57:30 +0000 (GMT)
-X-AuditID: b6c32a46-a0fff70000002722-82-61824efb7b80
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        33.F9.29871.AFE42816; Wed,  3 Nov 2021 17:57:30 +0900 (KST)
-Received: from perf (unknown [12.36.155.123]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20211103085730epsmtip200124925e3209d1df5f8e422f17b6d50~z-YgQzap60627206272epsmtip2Y;
-        Wed,  3 Nov 2021 08:57:30 +0000 (GMT)
-Date:   Wed, 3 Nov 2021 18:24:45 +0900
-From:   Youngmin Nam <youngmin.nam@samsung.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     will@kernel.org, mark.rutland@arm.com, daniel.lezcano@linaro.org,
-        tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, pullip.cho@samsung.com,
-        hoony.yu@samsung.com, hajun.sung@samsung.com,
-        myung-su.cha@samsung.com, kgene@kernel.org
-Subject: Re: [PATCH v2 1/2] clocksource/drivers/exynos_mct_v2: introduce
- Exynos MCT version 2 driver for next Exynos SoC
-Message-ID: <20211103092444.GA7013@perf>
+        Wed, 3 Nov 2021 05:05:39 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46340C061205
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 02:03:03 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id g3so2595131ljm.8
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 02:03:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IOBd8zmaQ/o/1Os9BhWOC3FQNCJBCGeietUzMVOB0tg=;
+        b=lkTCANroPPKqVJC2MHaOK86LkAxmqCcoPdzizhKQsu5FLX5GklvxDeJF36LAnEbriE
+         /d0D/zPVKfsDXRgwEhutWoZmAA51U6dk3gI5+u9Lv3F0VUsAHP3Xv6RVDqszdo5BAoI1
+         JyoHV7aHz2FclXZTqCpT1XmaI2aQbjBVX7IWMqUmOELfd4xCE95fU/YAOAnnFLaB8Vou
+         qoW0LDe3srMyajm/2DrskM/J8/+Zyp+W9tkYBxloCHJHnbiFEx3Sh/zw6ehmn8mjV3ED
+         jrSVMvnb93+jMNWRO/u+Gmse7D47hIk5dz4ytn6rByjj/ZLKlnTfmVppPx4KWIcV1O42
+         P8kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IOBd8zmaQ/o/1Os9BhWOC3FQNCJBCGeietUzMVOB0tg=;
+        b=5VX88LQV/Q91R0puyZ+Y2p0WBPRTdIhi5fsl8jE74w+Gv+fYgcxvdil/lgYiwGL7Yp
+         8jxFWr38FnKQqMFkAe0i8Dxck9h7XEJ2iJzZZ56/bH8a9V+JrtLxUl7bIV+IuORw6mW8
+         AjR9S6ei7UNLlyjySLf5Q3sttFL+XK5twDwxRY0QtBxFsLYxOI1lHtPXkburJMosLJFj
+         U5XySNWdLyk9MGPTTbjg+6G/tR+l2gEU938pfP8XtAaXJjFvAShYNBjGOOo5L0UOh1kg
+         Jm1kSKF6bU67Y1g8Wi4T5JeLP19E08ZulTUEaBGcKRAfR+pEQ6hn8OceXVbfazv0GGfq
+         RNcA==
+X-Gm-Message-State: AOAM530/VDwOMO77EOxR7wAO9ecs1gKaOtbQvCGzYCbrvKSUbjBtUwKr
+        9vuuAuszMQlxV8RQVYZ0vmXlrVM/auw9c7vZqxE=
+X-Google-Smtp-Source: ABdhPJw1zrzgQqG3DycM6ORsIoM0D4GUG1DpG6pE6I48Ta4qjxKuttUcAyk2hbAKXaylJrPkGpV71w==
+X-Received: by 2002:a2e:a5c8:: with SMTP id n8mr43739989ljp.307.1635930181221;
+        Wed, 03 Nov 2021 02:03:01 -0700 (PDT)
+Received: from jade.urgonet (h-94-254-48-165.A175.priv.bahnhof.se. [94.254.48.165])
+        by smtp.gmail.com with ESMTPSA id w16sm124373lfr.233.2021.11.03.02.03.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 02:03:00 -0700 (PDT)
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org, devicetree@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     Jerome Forissier <jerome@forissier.org>,
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>, jens.vankeirsbilck@kuleuven.be,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Subject: [PATCH v8 0/6] Asynchronous notifications from secure world
+Date:   Wed,  3 Nov 2021 10:02:49 +0100
+Message-Id: <20211103090255.998070-1-jens.wiklander@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <83f6574b-bbab-f0c3-7198-f773c3dcfc63@canonical.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Tf1AUZRjHe3fv9hans+0Ae+cExSVLqYO76w6WunMoGdvRpmGGmohRYbvb
-        AeJ+dbuk4YwSMUg0l9DQZKAIIUQHiB14IQIRPwJiIpEJLZkxxSgQFARJ7+KmOxYb//s83+f5
-        vs/z/sJRWS8mx7MsPGu3MCYSWydy926PU3hfz2eUPsfjVOViOJX//SWUGmi6JaaOTd5CqW/n
-        7iOUa3JcTI21n8Co4790IVTt5VGEqpmsRyif4wdAtbg+R6mCCW2ClG6sbAR0eZ4Do13OjzF6
-        YrwDo2+PjEjoltNH6E9bnYBedG1KwlOzdZksY2TtEazFYDVmWTL05J7ktJ1p2lilSqGKp+LI
-        CAtjZvVk4mtJil1ZJv/AZMT7jCnHLyUxHEfG7NDZrTk8G5Fp5Xg9ydqMJlucLZpjzFyOJSPa
-        wvIvqpRKtdZfmJ6d2d57VGSrJA8O9U1J8kBTWDEIwiGhgb6KWkkxWIfLiDYAZ38rRoXgLoBj
-        i2NACJYB9CyXoQ8t/R9+IhISnQCe6SnFAgkZcQPA61dAgEXE07Dae0ccYIxQQPegb1UPIV6C
-        /edOrbZAifMInBk5vmoOJnLhsusBEmApsQ06Z4+JBX4SDn15UxTgIOJl+POsVxLgUCISdrsH
-        kMBCkOjA4fSvpWvjJcIfPysVCRwMZwZaJQLL4eLtTkzgI7DGXYsK5hIAT7nm14pegOVTR1dH
-        RYlMuHznqt+A+/VI2Pe7SJDXw6LeFYkgS2FRoUxwPgM9ZWeBwGHwQk392jg0dNRVYcJpDSJw
-        aPKSuARsLn9kb+WPdBP4eVh14a6fcT9vhF/7cAG3w+b2mCogdoINrI0zZ7Cc2qb+/7oNVrML
-        rL7mqF1toGxuProHIDjoARBHyRCpQ5fPyKRG5oNc1m5Ns+eYWK4HaP03VYrKQw1W/3ew8Gkq
-        TbxSExurilNrlXHkU9L40GxGRmQwPJvNsjbW/tCH4EHyPCTltKH5zytbuiO7TIapqM7QP956
-        u//V/St8ysaGmQ0JE96mw20NJ0Xd55GejifSZ7Vd7btn07+5F2wubJ/nQuqTm5dXwlpTwo0L
-        qbVnPC11ZfwJzcVnlcZmwz5RAfvYcN0bJz0Jjg599dZBd5J9UtznLP9C/p4uZ7/Ld/Gss/FB
-        2+WfyMJx1VCj8h3Yylekxhx4ZSYx6JDC0oVt8bgXnoP6ls43R5f20nML0mvJ0dWNSz4ivGBH
-        g/5fzfR00j9ufnzbXyvBu/eUHFiq3pf81cHhwq17b1QeurqTqyDUkhj1pvx3z13fnDtmvl+E
-        3Cz42ztcoru2fmW0qqkqMeOj6MOK7+6RIi6TUUWhdo75D7J9y4NWBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupkkeLIzCtJLcpLzFFi42LZdlhJXveXX1OiwbR+dYt5n2UtmvZfYrY4
-        vvY1q0X/49fMFhvf/mCy2PT4GqvF5V1z2CxmnN/HZLH0+kUmi8WPVzBZ/Os9yGixedNUZouW
-        O6YOvB5r5q1h9JjV0MvmsWlVJ5vHnWt72DzenTvH7rF5Sb1H35ZVjB6fN8kFcERx2aSk5mSW
-        pRbp2yVwZRy51MRacEe+Ynv7H5YGxjapLkZODgkBE4mjjd0sXYxcHEICuxkldv7/ygKRkJG4
-        vfIyK4QtLHG/5QgrRNEDRomtm7ewgyRYBFQkFv5+D1bEJqArse3EP0YQW0TAWuLo1vnMIA3M
-        AruZJFa23QArEhaokvi26ScTiM0roCGx6k0/1NRTTBJn7rdAJQQlTs58AnYGs4CWxI1/L4Hi
-        HEC2tMTyfxwgYU4BR4mzb36DHSEqoCxxYNtxpgmMgrOQdM9C0j0LoXsBI/MqRsnUguLc9Nxi
-        wwLDvNRyveLE3OLSvHS95PzcTYzg2NLS3MG4fdUHvUOMTByMhxglOJiVRHh7bZoShXhTEiur
-        Uovy44tKc1KLDzFKc7AoifNe6DoZLySQnliSmp2aWpBaBJNl4uCUamCqXBPawfVT2+FtiBtX
-        ZcThhfXuyYXNphGJtnGTfJa/3Nkz2+CJ0Zl5LrNWii9WF9Gqi3NruHhZfuF+x/6M+t1TXm1h
-        kys96GZYdOjl2o/1e3hFE56yih3VZG3Kdftl8fP92meLHFI28Judy3jZVqWmaLXOdMLuQul9
-        fU5yx/VXB5bLLXK++mhxibPzxgvnwl+kPJKQTXGtLWlxFvTek+bYNlXHZ9vVEEGxTzlbbR6H
-        1QvozFiVzX2SfdfSfxarJqVILZBsWfhVeMksI7XJZ9JtDY5YTMrJ2NSw8bnm58YDxVP/bEyY
-        KpJsnfNkDc+neDs9mVWHm5jOb1684meFY4pLpsolF51vCXPYttdqRyixFGckGmoxFxUnAgBG
-        +mwbHAMAAA==
-X-CMS-MailID: 20211103085730epcas2p492e5ce9dfd46c509890a18856f1de5a7
-X-Msg-Generator: CA
-Content-Type: multipart/mixed;
-        boundary="----mmfly-N9_Az8CuUfOpQ-IXGlHSM_dkjAIAXexKnxhYFVpy7c=_b4dc3_"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20211101234500epcas2p2d0e5bc54615b635f6694bc1be4c89fb5
-References: <20211102001122.27516-1-youngmin.nam@samsung.com>
-        <CGME20211101234500epcas2p2d0e5bc54615b635f6694bc1be4c89fb5@epcas2p2.samsung.com>
-        <20211102001122.27516-2-youngmin.nam@samsung.com>
-        <20211102102802.GA16545@C02TD0UTHF1T.local> <20211103000945.GA48132@perf>
-        <83f6574b-bbab-f0c3-7198-f773c3dcfc63@canonical.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-------mmfly-N9_Az8CuUfOpQ-IXGlHSM_dkjAIAXexKnxhYFVpy7c=_b4dc3_
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
+Hi all,
 
-On Wed, Nov 03, 2021 at 09:18:07AM +0100, Krzysztof Kozlowski wrote:
-> On 03/11/2021 01:09, Youngmin Nam wrote:
-> > On Tue, Nov 02, 2021 at 10:28:10AM +0000, Mark Rutland wrote:
-> >> On Tue, Nov 02, 2021 at 09:11:21AM +0900, Youngmin Nam wrote:
-> >>> Exynos MCT version 2 is composed of 1 FRC and 12 comparators.
-> >>> There are no global timer and local timer anymore.
-> >>> The 1 of 64bit FRC serves as "up-counter"(not "comparators").
-> >>> The 12 comaprators(not "counter") can be used as per-cpu event timer
-> >>> so that it can support upto 12 cores.
-> >>> And a RTC source can be used as backup clock source.
-> >>
-> >> [...]
-> >>
-> >>> +static int exynos_mct_starting_cpu(unsigned int cpu)
-> >>> +{
-> >>> +	struct mct_clock_event_device *mevt = per_cpu_ptr(&percpu_mct_tick, cpu);
-> >>> +	struct clock_event_device *evt = &mevt->evt;
-> >>> +
-> >>> +	snprintf(mevt->name, sizeof(mevt->name), "mct_comp%d", cpu);
-> >>> +
-> >>> +	evt->name = mevt->name;
-> >>> +	evt->cpumask = cpumask_of(cpu);
-> >>> +	evt->set_next_event = exynos_comp_set_next_event;
-> >>> +	evt->set_state_periodic = mct_set_state_periodic;
-> >>> +	evt->set_state_shutdown = mct_set_state_shutdown;
-> >>> +	evt->set_state_oneshot = mct_set_state_shutdown;
-> >>> +	evt->set_state_oneshot_stopped = mct_set_state_shutdown;
-> >>> +	evt->tick_resume = mct_set_state_shutdown;
-> >>> +	evt->features = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT;
-> >>> +	evt->rating = 500;	/* use value higher than ARM arch timer */
-> >>
-> >> Previously Will asked you to try CLOCK_EVT_FEAT_PERCPU here, and to set
-> >> the C3STOP flag on the arch timer via the DT when necessary, rather than
-> >> trying to override the arch timer like this:
-> >>
-> >>   https://protect2.fireeye.com/v1/url?k=72526080-2dc9598b-7253ebcf-002590f5b904-ca603717c6462908&q=1&e=be56aa83-dbac-4639-913d-d388620fe3fc&u=https%3A%2F%2Flore.kernel.org%2Fr%2F20211027073458.GA22231%40willie-the-truck
-> >>
-> >> There are a bunch of things that depend on the architected timer working
-> >> as a clocksource (e.g. vdso, kvm), and it *should* work as a lock
-> >> clockevent_device if configured correctly, and it's much more consistent
-> >> with *everyone else* to use the arhcitected timer by default.
-> >>
-> >> Please try as Will suggested above, so that this works from day one.
-> >>
-> >> Thanks,
-> >> Mark.
-> >>
-> > 
-> > Hi Mark.
-> > It looks like you missed my previous mail.
-> > https://protect2.fireeye.com/v1/url?k=ab15817a-cbf71c27-ab140a35-000babd9f1ba-123b7f313b1b1ccc&q=1&e=34c8716e-6d2e-4d8e-82fe-04777ebc5eb3&u=https%3A%2F%2Flore.kernel.org%2Fall%2F20211029035422.GA30523%40perf%2F%23t
-> > 
-> > Yes, I believe Will's suggestion definitely will work.
-> > But that is for performance not functionality.
-> > As a driver for new H/W IP I would like to confirm functionality first.
-> > 
-> > We need more time to test this feature with our exynos core power down feature.
-> > And we need to do a various regression test whether there is another corner case or not.
-> > So, how about we apply Will's suggetion later after the current patchset is merged first?
-> > After doing our regression test with our exynos core power down feature, we can confirm this.
-> > 
-> 
-> Not really, because once it is merged there is no incentive to fix it or
-> simply changing it can be forgotten. Also similarly to commit
-> 6282edb72bed ("clocksource/drivers/exynos_mct: Increase priority over
-> ARM arch timer"), there should be a valid and serious reason to
-> prioritize Exynos MCT.
-> 
+This adds support for asynchronous notifications from OP-TEE in secure
+world to the OP-TEE driver. This allows a design with a top half and bottom
+half type of driver where the top half runs in secure interrupt context and
+a notifications tells normal world to schedule a yielding call to do the
+bottom half processing.
 
-No, it's not. I also want to decrease MCTv2 timer rating so that we want to use arm arch timer as a default.
-But this feature has to be confirmed with core power down feature enabled.
-Without core power down feature, we can't comfirm this.
-Ater that we need to check whether there is regression or not related power, stability, and so on.
-I'm not saying I will not apply Will's suggestion but I just want to apply later after some hard test.
+An edge-triggered interrupt is used to notify the driver that there are
+asynchronous notifications pending.
 
-> 
-> Best regards,
-> Krzysztof
-> 
+Only the SMC based ABI of the OP-TEE driver gains asynchronous
+notifications. Future support for asynchronous notifications in the FF-A
+based ABI will rely on APIs which are expected to be provided by the FF-A
+driver in a not too distant future.
 
+This patchset is also available at
+https://git.linaro.org/people/jens.wiklander/linux-tee.git/log/?h=async_notif_v8
 
+v7->v8:
+* Fixed an error in "dt-bindings: arm: optee: add interrupt property"
+  reported by Rob's bot.
+* "optee: add asynchronous notifications":
+  - Fixed a few spell errors in comments
+  - Added a missing optee_unregister_devices() in the cleanup path of
+    optee_probe().
+  - Added Sumit's Reviewed-by
 
+v6->v7:
+* Rebased on 4615e5a34b95 ("optee: add FF-A support") in
+  https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git with
+  34f3c67b8178 ("optee: smc_abi.c: add missing #include <linux/mm.h>")
+  cherry-picked on top. This allows to resolve the conflicts with
+  pull request "[GIT PULL] OP-TEE FF-A for V5.16"
+* Factored out the interrupt handling added in "optee: add asynchronous
+  notifications" to only go into smb_abi.c. A different approach is
+  expected with FF-A once it has asynchronous notifications.
+* Addressed review comments from Sumit Garg:
+  - Replaced 0 and 1 with the macros GIC_SPI and IRQ_TYPE_EDGE_RISING in
+    the example in the bindings.
+  - Replaced the magic number to optee_notif_init() with
+    OPTEE_DEFAULT_MAX_NOTIF_VALUE in the commit "optee: separate notification
+    functions"
+  - Switched back to tagged error path in optee_probe()
+  - Fixed a few nits in "optee: add asynchronous notifications"
+  - Applied Sumit's Reviewed-by on all commits but the last,
+    "optee: add asynchronous notifications"
 
+v5->v6:
+* Rebased on v5.15-rc2
+* Replaced "tee: add tee_dev_open_helper() primitive" with "tee: export
+  teedev_open() and teedev_close_context()" since it turned out that the
+  normal teedev functions could be used instead as noted by Sumit.
+* Changed "optee: add asynchronous notifications" to use the exported
+  teedev_open() and teedev_close_context() functions instead.
 
-------mmfly-N9_Az8CuUfOpQ-IXGlHSM_dkjAIAXexKnxhYFVpy7c=_b4dc3_
-Content-Type: text/plain; charset="utf-8"
+v4->v5:
+* Rebased on v5.14-rc7
+* Updated documentation to clarify that one interrupt may represent multiple
+  notifications as requested.
+* Applied Marc's and Rob's tags
 
+v3->v4:
+* Clarfied the expected type of interrypt is edge-triggered, both in
+  the normal documentation and in the DT bindings as requested.
 
-------mmfly-N9_Az8CuUfOpQ-IXGlHSM_dkjAIAXexKnxhYFVpy7c=_b4dc3_--
+v2->v3:
+* Rebased on v5.14-rc2 which made the patch "dt-bindings: arm: Convert
+  optee binding to json-schema" from the V2 patch set obsolete.
+* Applied Ard's Acked-by on "optee: add asynchronous notifications"
+
+v1->v2:
+* Added documentation
+* Converted optee bindings to json-schema and added interrupt property
+* Configure notification interrupt from DT instead of getting it
+  from secure world, suggested by Ard Biesheuvel <ardb@kernel.org>.
+
+Thanks,
+Jens
+
+Jens Wiklander (6):
+  docs: staging/tee.rst: add a section on OP-TEE notifications
+  dt-bindings: arm: optee: add interrupt property
+  tee: fix put order in teedev_close_context()
+  tee: export teedev_open() and teedev_close_context()
+  optee: separate notification functions
+  optee: add asynchronous notifications
+
+ .../arm/firmware/linaro,optee-tz.yaml         |   8 +
+ Documentation/staging/tee.rst                 |  30 +++
+ drivers/tee/optee/Makefile                    |   1 +
+ drivers/tee/optee/core.c                      |   2 +-
+ drivers/tee/optee/ffa_abi.c                   |   6 +-
+ drivers/tee/optee/notif.c                     | 125 +++++++++
+ drivers/tee/optee/optee_msg.h                 |   9 +
+ drivers/tee/optee/optee_private.h             |  28 +-
+ drivers/tee/optee/optee_rpc_cmd.h             |  31 ++-
+ drivers/tee/optee/optee_smc.h                 |  75 +++++-
+ drivers/tee/optee/rpc.c                       |  71 +-----
+ drivers/tee/optee/smc_abi.c                   | 241 +++++++++++++++---
+ drivers/tee/tee_core.c                        |  10 +-
+ include/linux/tee_drv.h                       |  14 +
+ 14 files changed, 525 insertions(+), 126 deletions(-)
+ create mode 100644 drivers/tee/optee/notif.c
+
+-- 
+2.31.1
+
