@@ -2,116 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC92444A05
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 21:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5229B444A0D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 22:02:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhKCVCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 17:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34962 "EHLO
+        id S230500AbhKCVEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 17:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbhKCVCZ (ORCPT
+        with ESMTP id S229968AbhKCVEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 17:02:25 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 595A9C061220;
-        Wed,  3 Nov 2021 13:59:48 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id t21so3617665plr.6;
-        Wed, 03 Nov 2021 13:59:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=L9qwrwPbSWoePEB3ehdDf5IbmlgUKU2I8KPH/uSpeUo=;
-        b=Lt7D40yqrcq+E/eilwiYhnbfmectRjM0BEy3zDvpgY/YI+nYSYktulLHdhS7BASmnO
-         iSi8st9ezddOSPiHfRH8xWEuCPNhsYsfPwbjQxbnNJrOoko3i3gUsjsFP32D68RXLwGV
-         WWng7gvsEjtkCcCq6TMHp5hdWQ1RuTkOaRLoeMSIr2t8+++k8WUnFFk7iNshgVvFyhu2
-         TFxbOQrUcl1RR+7AGuQwxIDIWf458+NHSLuPMzOwU0E/C6YXaCixBZsSvaPEcnwpnS3M
-         SFudCIGtoidM0MA58XZeyqkAHRKSOceNylCO9GF98IJxY7j4FhliZSHSzKGltQtvqACn
-         sL6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=L9qwrwPbSWoePEB3ehdDf5IbmlgUKU2I8KPH/uSpeUo=;
-        b=KAiMt9H2rXnF7vt05qiWC5RId8tw3NcNLk6tyEhUBStxBHBKJcSfbeoBSyLaNeIbJA
-         sKUQnZYqtN+rbG8PHZrV7lH7uU4zfaKBMN43B2UAb6e3UFbVZhfgRdbRY8XrFKfPop2a
-         /cwYJb+rosP/vl+5srLFCi7H0RYeilzPFZp3iNJHdJ3/sJXqbTowULm09u0E0tZNkp4g
-         J3wsRAe2ZN3+juP20l36X4R51WD7mfQMKbVK/JFE0HlIUstdAmnLBFAADx7Sd1UZCPiE
-         irWFhpJIDox1Jp6NK4GvhVcgYwE0pUsfjyaIcLA4OGAfbAv7gkXnxNTCzmkua89l0iyV
-         /xgA==
-X-Gm-Message-State: AOAM530Y66XUcNsrQmLRcNU7VUG2w3BJLLolbnrNlast8tSPhe03vBj6
-        Odfmm0cXpCikUat0YpJWfNc=
-X-Google-Smtp-Source: ABdhPJwfJWRdXRDYT7uBQR1KDP+2q5UZB5BKScj36CPSOBHca+96rzKNXm46X2qjbmIdDSDLwr74EA==
-X-Received: by 2002:a17:902:ec90:b0:142:269:4691 with SMTP id x16-20020a170902ec9000b0014202694691mr15363741plg.48.1635973187891;
-        Wed, 03 Nov 2021 13:59:47 -0700 (PDT)
-Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id c20sm2700362pfl.201.2021.11.03.13.59.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 13:59:47 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/msm: Hangcheck timer fixes
-Date:   Wed,  3 Nov 2021 14:04:45 -0700
-Message-Id: <20211103210445.623681-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 3 Nov 2021 17:04:39 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE6FC061714;
+        Wed,  3 Nov 2021 14:02:01 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HkzjF39VRz4xbP;
+        Thu,  4 Nov 2021 08:01:53 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635973316;
+        bh=ze51YqyQ24HHSCk1klgzOPlEpIvTFiZ1Sss+0V9Rv8o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pk01sbKOFLlMMOMNZXG4w79sapIU4+nNWL1fiTDjSpDClNkEB9uu7uOaZFpvTrsiu
+         0zuVdBgVjUDyhY7iR0hO+/NhM6R4jPH0rBdzTIHjq1WLLuh7/r7kGHopU3Qo0wIuHF
+         fwVam5XQi8lI2HXR0FacehScUwml/KckB/+WNq7HxjXxG6rLiqYpDcQ2mijSOFN9SP
+         kyEButS5pTuVGweuzyHARvkNB7qEWHAZWLegJThL3FHkYLmRNutwxpvr/h5NV7NU21
+         mStF+LOeGBI8mnMOU3D+pSk2qfsQSaR/DcWgSSZxis5Bc98S3Yd6MX/kO/dWECXMWp
+         Nwnu2modAbM/A==
+Date:   Thu, 4 Nov 2021 08:01:52 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Antonio Terceiro <antonio.terceiro@linaro.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Boris-Chengbiao Zhou <bobo1239@web.de>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        Dariusz Sosnowski <dsosnowski@dsosnowski.pl>,
+        Douglas Su <d0u9.su@outlook.com>, Finn Behrens <me@kloenk.de>,
+        Gary Guo <gary@garyguo.net>, Jiri Olsa <jolsa@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>
+Subject: Re: linux-next: manual merge of the rust tree with Linus' tree
+Message-ID: <20211104080152.41c38912@canb.auug.org.au>
+In-Reply-To: <CANiq72=fuk-eVuCpW5jkDn71Pbs=1L2LhSvadR_bTjxcPvtVUQ@mail.gmail.com>
+References: <20211103141919.4feefaf0@canb.auug.org.au>
+        <CANiq72=fuk-eVuCpW5jkDn71Pbs=1L2LhSvadR_bTjxcPvtVUQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/z07oAPJTQhLVaDkPgO=xexn";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+--Sig_/z07oAPJTQhLVaDkPgO=xexn
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Cancel the timer when the GPU is idle, but also remember to restart it
-in the recover path if we've re-submitted submits following the one that
-hung.
+Hi Miguel,
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/msm_gpu.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+On Wed, 3 Nov 2021 11:30:35 +0100 Miguel Ojeda <miguel.ojeda.sandonis@gmail=
+.com> wrote:
+>
+> On Wed, Nov 3, 2021 at 4:19 AM Stephen Rothwell <sfr@canb.auug.org.au> wr=
+ote:
+> >
+> > diff --cc scripts/Makefile.modfinal
+> > index 7f39599e9fae,c0842e999a75..000000000000
+> > --- a/scripts/Makefile.modfinal
+> > +++ b/scripts/Makefile.modfinal
+> > @@@ -39,11 -39,12 +39,12 @@@ quiet_cmd_ld_ko_o =3D LD [M]  $
+> >
+> >   quiet_cmd_btf_ko =3D BTF [M] $@
+> >         cmd_btf_ko =3D                                                 =
+   \
+> > -       if [ -f vmlinux ]; then                                        =
+ \
+> > -               LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS=
+) --btf_base vmlinux $@; \
+> > -               $(RESOLVE_BTFIDS) -b vmlinux $@;                       =
+ \
+> > -       else                                                           =
+ \
+> > +       if [ ! -f vmlinux ]; then                                      =
+ \
+> >                 printf "Skipping BTF generation for %s due to unavailab=
+ility of vmlinux\n" $@ 1>&2; \
+> > +       elif $(srctree)/scripts/is_rust_module.sh $@; then             =
+ \
+> > +               printf "Skipping BTF generation for %s because it's a R=
+ust module\n" $@ 1>&2; \
+> > +       else                                                           =
+ \
+> >  -              LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J --btf_base vml=
+inux $@; \
+> > ++              LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS=
+) --btf_base vmlinux $@; \
+> >         fi; =20
+>=20
+> It looks like the `$(RESOLVE_BTFIDS)` line is gone with this
+> resolution. The rest looks good.
 
-diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
-index 0d56699297c7..367f0c698b40 100644
---- a/drivers/gpu/drm/msm/msm_gpu.c
-+++ b/drivers/gpu/drm/msm/msm_gpu.c
-@@ -16,6 +16,8 @@
- #include <linux/devcoredump.h>
- #include <linux/sched/task.h>
- 
-+static void hangcheck_timer_reset(struct msm_gpu *gpu);
-+
- /*
-  * Power Management:
-  */
-@@ -450,6 +452,10 @@ static void recover_worker(struct kthread_work *work)
- 				gpu->funcs->submit(gpu, submit);
- 			spin_unlock_irqrestore(&ring->submit_lock, flags);
- 		}
-+
-+		hangcheck_timer_reset(gpu);
-+	} else {
-+		del_timer(&gpu->hangcheck_timer);
- 	}
- 
- 	mutex_unlock(&dev->struct_mutex);
-@@ -721,6 +727,10 @@ static void retire_worker(struct kthread_work *work)
- 	struct msm_gpu *gpu = container_of(work, struct msm_gpu, retire_work);
- 
- 	retire_submits(gpu);
-+
-+	if (!msm_gpu_active(gpu)) {
-+		del_timer(&gpu->hangcheck_timer);
-+	}
- }
- 
- /* call from irq handler to schedule work to retire bo's */
--- 
-2.31.1
+Oops, sorry about that.  I have added it back from today.
 
+BTW, are you intending to submit the rust tree this merge window?
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/z07oAPJTQhLVaDkPgO=xexn
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGC+MAACgkQAVBC80lX
+0GzUJQgAgsxtY0bhyFXGssUforwGW/GSP2C/ncp3HTqpFWd3pTsj7Q1Orb6BQESE
+tnVtNpghsO1HHTsEKtTJNCGqwOwm/8Qp9nrXl1caEQEH/oO79tdujGTN7UtFqYX3
+85+4bBsidw7KdLiDWFm+LClfjf2FOQlPhEsORkgASt9KWzsKScFEB9mKT8ASvz4Q
+GUIp/jZJTBOmcSMMFFQCzDcdHjapiwRH4DmNlCDnrI1dooT1xwH/a5NueGjwGYdM
+rzE/ahdFevFvXfaaQTXOXCpXBPnN7E0t3rjSN3mV1UnNewPdVXrsuBh/gR1fMdpB
+Q70JIWf8ZJtkTEEqKtUKn4dQ1jrMWQ==
+=gxUZ
+-----END PGP SIGNATURE-----
+
+--Sig_/z07oAPJTQhLVaDkPgO=xexn--
