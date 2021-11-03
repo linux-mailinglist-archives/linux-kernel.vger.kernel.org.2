@@ -2,116 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7014F4445B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:16:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D054445AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232896AbhKCQSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 12:18:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:24496 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232888AbhKCQSl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 12:18:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635956164;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=+Opb5XjIjvU4WythImF8wPWmsUb4lObJFswO1EWR5cA=;
-        b=QnAthvRoDJ1/6CFzuMDYP8jpWMzeB8U10e4XFbeQnQ+HJ+CjwnyuzEdq/BOhmqfmCGYn6A
-        CdoWShGEIHcX7LyTRJSab2dC4lu40d0M996MjqmyzYxAw6vcKpnFSGh22zCpouInvVjPhY
-        HqYYJ+T5TuWw711bSsXTdMfyN3ofOLw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-243-G_MzGzteMOyKF7Qgby8XBw-1; Wed, 03 Nov 2021 12:15:57 -0400
-X-MC-Unique: G_MzGzteMOyKF7Qgby8XBw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C4EB81808318;
-        Wed,  3 Nov 2021 16:15:56 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5698A60C04;
-        Wed,  3 Nov 2021 16:15:56 +0000 (UTC)
-From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>
-Subject: [PATCH v1] nested.c: replace spaces with tabs
-Date:   Wed,  3 Nov 2021 12:15:13 -0400
-Message-Id: <20211103161513.789230-1-eesposit@redhat.com>
+        id S232828AbhKCQSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 12:18:12 -0400
+Received: from mail-bn8nam11on2078.outbound.protection.outlook.com ([40.107.236.78]:27669
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232854AbhKCQSI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 12:18:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XpUwfH8bBZzPQ0/x0eagczHmyBXNv1a6lJFa8PRWCDmC3hoSZvsot6a3xLq0R3l5vx3icqU1N4kKSyqKh9+VslxqSMzXSrYWwd4j0hubM4/1kZnC6tgjSOniiR/phy4V5bkn2bATAHPYmwSeM2oL/L+EcUMdIuWZmwbA5fpYOd7680ZnN3lusi0s/1v7pPczH1tCQ7iSJXfFPux+/qajZTqtFoRVonp0q+sFQCriikDKawvRT/ocyJZRMh4UCm8uz/HIlby9Eaw46qye84dbWu/eXurETNOUEWUzInHg5Ix3uOzfP3IksFJrFrtH/PcnPlvATGltJKjQ9b4v3ROH/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uYQoXBx83YscAdALr7mf2Duf4tI3k6XzUacMVhvGjik=;
+ b=nch/nNlTaVr/uvPY2XGwxd9THXCGS52UKQAoSFsvaMFEJ1qbodfER5lxb8EZpNle0XdsjMWSPNgu7U6rX00/kQkP/Rc+09ejfCobckuwEu4SODbTfyYmMedYDekHIUUugAomNCmo2hpQexMHyWuYKX4kw/ccnsAloKKO9Ep6w53dBQEalS6oQudRGbrxgUnXSQpjkSFaFFRqMlWMz25Jekdi/jPDcCEfQxsB2IWu9wNszM933LfpPTppy1zJkS/ZqvP74F1iHHp65xzorPYM2smfpUGSlkffs34jDodV9HyiyUG6yECxJNr8tOceDXV08fD6YJraLI5U3HF13pedpQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uYQoXBx83YscAdALr7mf2Duf4tI3k6XzUacMVhvGjik=;
+ b=eMTrL3Cdj0An+yWbGjStGdmnTfxAhHZlZi1w3Q6AT/cog4huXBBPwX/3Mc/WQWKPOkVCabcWjXka6KhfoU2C5ZannOQqKwSk7MVWuBh2iMxToV6lHNi+Wy+51VqnjVZ4vs8t9WKmJ36NWzBKJ1xMpGQ24uaw9enrWm0tmX8TEII=
+Received: from MW4P221CA0024.NAMP221.PROD.OUTLOOK.COM (2603:10b6:303:8b::29)
+ by BN9PR12MB5179.namprd12.prod.outlook.com (2603:10b6:408:11c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Wed, 3 Nov
+ 2021 16:15:29 +0000
+Received: from CO1NAM11FT009.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:8b:cafe::e8) by MW4P221CA0024.outlook.office365.com
+ (2603:10b6:303:8b::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11 via Frontend
+ Transport; Wed, 3 Nov 2021 16:15:29 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT009.mail.protection.outlook.com (10.13.175.61) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4669.10 via Frontend Transport; Wed, 3 Nov 2021 16:15:29 +0000
+Received: from ethanolxb27ehost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Wed, 3 Nov
+ 2021 11:15:28 -0500
+From:   Terry Bowman <terry.bowman@amd.com>
+To:     <linux-watchdog@vger.kernel.org>
+CC:     <terry.bowman@amd.com>, <rrichter@amd.com>,
+        <linux-kernel@vger.kernel.org>, <wim@linux-watchdog.org>,
+        <linux@roeck-us.net>, <ssg.sos.patches@amd.com>,
+        <sudheesh.mavila@amd.com>
+Subject: [PATCH v2 0/4] Watchdog: sp5100_tco: Replace watchdog cd6h/cd7h port I/O accesses with MMIO accesses
+Date:   Wed, 3 Nov 2021 11:15:17 -0500
+Message-ID: <20211103161521.43447-1-terry.bowman@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d43ff801-9851-4505-ed92-08d99ee52751
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5179:
+X-Microsoft-Antispam-PRVS: <BN9PR12MB5179E34B70D2D860B0342B39838C9@BN9PR12MB5179.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: afuoRLFg7kXBFd+f5wKknO16SJonWjpSgCihjAQ4BE+MHwED+sXjK0wFDmYyaQLCsMMq8rqPZ6v1L/m0JN35rvvo1cpw6Cc282F3AvXoUadLIJ0uAD1vEHyeCiDuTa8DFAjl7BmdJmuWrF7361Y10ILP2f2j3Je3GXyzH8UEBQL8cM1YfNNDmAz8/VarJJ11yaCHgn8mYUQLZo2K53HvXL87teJ3ID2aNtfJXU7gIpZNK8bSquilPmzCT1QMd8lI1JHrZl8ivO4U/OoeZCj184S7jkH+WSKb9y8iJSaCiFm0Kwt47X+YdMWWO7egQO/ExyWUPApWrym+zbtA/R7WX36X5ROu5uOI5VlJXDOxHewJLmIjBlhVDPpxnx0e4q49GaLt3/kPRJ93Zjf+4OZl9AWge5r9KBznEQJ5Vb3ecYfMpA7phmyOR7aBkvqjqLzbTcFkijN2P67BftXp48fEhV7F71xPHV0Ui3MDSf//UJDD+8nS5dxXANQ0jySn5L0lIhUvFaz0UdXV9gq/RRzCXNek1/bTOEegxhC5RtwvV6V93M1+ITAba7wEikNH11VQSiNJ8rhEcvlnRMbDc3CS5nJCwxvm2u9BvWyndswDSdNJbKPQENGQPJXhB52CFw3mj0j4wA2YMXAl0G7XHc20+JLWNrHovd/t/iYa/4lxqJnQKavvumZVsWwjbDiHz4EuCD3nsk2I11UG+GrcymBbn+MsutXdMxoWMQJKUxRH5dWPseKxTcjYsfjwsTB+thG8Ao8mAUOYi3UbAkgcXa+ruQ==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(5660300002)(6916009)(54906003)(82310400003)(316002)(7696005)(4326008)(36860700001)(47076005)(36756003)(8676002)(81166007)(356005)(2906002)(8936002)(70206006)(70586007)(6666004)(336012)(86362001)(26005)(426003)(83380400001)(2616005)(1076003)(508600001)(186003)(16526019)(44832011)(32563001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2021 16:15:29.2276
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d43ff801-9851-4505-ed92-08d99ee52751
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT009.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5179
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For some reasons, some code blocks are indented with spaces
-instead of tabs. Checkpatch also complains when having to
-deal with this code. Fix this at least in nested.c
+Use MMIO instead of cd6h/cd7h port I/O during EFCH watchdog initialization.
+EFCH cd6h/cd7h PIO can be disabled and the recommended workaround is to use
+MMIO. As a result MMIO will be used for EFCH SMBus controller address
+discovery and starting the EFCH watchdog timer.
 
-Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
----
- arch/x86/kvm/svm/nested.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+Update EFCH detection to support future AMD processors. This will support
+new AMD processors without requiring driver modifications.
 
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index f8b7bc04b3e7..3cf04ef8738a 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -55,19 +55,20 @@ static void nested_svm_inject_npf_exit(struct kvm_vcpu *vcpu,
- 
- static void svm_inject_page_fault_nested(struct kvm_vcpu *vcpu, struct x86_exception *fault)
- {
--       struct vcpu_svm *svm = to_svm(vcpu);
--       WARN_ON(!is_guest_mode(vcpu));
-+	struct vcpu_svm *svm = to_svm(vcpu);
-+
-+	WARN_ON(!is_guest_mode(vcpu));
- 
--       if (vmcb_is_intercept(&svm->nested.ctl, INTERCEPT_EXCEPTION_OFFSET + PF_VECTOR) &&
-+	if (vmcb_is_intercept(&svm->nested.ctl, INTERCEPT_EXCEPTION_OFFSET + PF_VECTOR) &&
- 	   !svm->nested.nested_run_pending) {
--               svm->vmcb->control.exit_code = SVM_EXIT_EXCP_BASE + PF_VECTOR;
--               svm->vmcb->control.exit_code_hi = 0;
--               svm->vmcb->control.exit_info_1 = fault->error_code;
--               svm->vmcb->control.exit_info_2 = fault->address;
--               nested_svm_vmexit(svm);
--       } else {
--               kvm_inject_page_fault(vcpu, fault);
--       }
-+		svm->vmcb->control.exit_code = SVM_EXIT_EXCP_BASE + PF_VECTOR;
-+		svm->vmcb->control.exit_code_hi = 0;
-+		svm->vmcb->control.exit_info_1 = fault->error_code;
-+		svm->vmcb->control.exit_info_2 = fault->address;
-+		nested_svm_vmexit(svm);
-+	} else {
-+		kvm_inject_page_fault(vcpu, fault);
-+	}
- }
- 
- static u64 nested_svm_get_tdp_pdptr(struct kvm_vcpu *vcpu, int index)
-@@ -1175,7 +1176,7 @@ static int svm_check_nested_events(struct kvm_vcpu *vcpu)
- 		 * vmcb field, while delivering the pending exception.
- 		 */
- 		if (svm->nested.nested_run_pending)
--                        return -EBUSY;
-+			return -EBUSY;
- 		if (!nested_exit_on_exception(svm))
- 			return 0;
- 		nested_svm_inject_exception_vmexit(svm);
-@@ -1376,7 +1377,7 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
- 	 * valid for guest mode (see nested_vmcb_check_save).
- 	 */
- 	cr0 = kvm_read_cr0(vcpu);
--        if (((cr0 & X86_CR0_CD) == 0) && (cr0 & X86_CR0_NW))
-+	if (((cr0 & X86_CR0_CD) == 0) && (cr0 & X86_CR0_NW))
- 		goto out_free;
- 
- 	/*
+Patch details:
+
+The first patch refactors watchdog timer initialization into a separate
+function. This is needed for future patches. New functional changes are
+not added.
+
+The second patch splits out existing memory reservation and address
+mapping into new functions. New functional changes are not added.
+
+The third patch introduces EFCH initialization using MMIO. This is
+required because cd6h/cd7h port I/O can be disabled on recent AMD hardware.
+
+The fourth patch adds SMBus controller PCI ID check to enable EFCH MMIO
+initialization. This eliminates the need for driver updates to support
+future processors supporting the same EFCH functionality.
+
+Testing:
+Tested on AMD Fam17h and Fam19h processors using:
+cat  >> /dev/watchdog
+
+Terry Bowman (4):
+  Watchdog: sp5100_tco: Move timer initialization into function
+  Watchdog: sp5100_tco: Refactor MMIO base address initialization
+  Watchdog: sp5100_tco: Add EFCH SMBus controller initialization using
+    MMIO
+  Watchdog: sp5100_tco: Enable Family 17h+ CPUs
+
+ drivers/watchdog/sp5100_tco.c | 360 +++++++++++++++++++++++-----------
+ drivers/watchdog/sp5100_tco.h |   6 +
+ 2 files changed, 251 insertions(+), 115 deletions(-)
+
+Co-developed-by: Robert Richter <rrichter@amd.com>
+Signed-off-by: Robert Richter <rrichter@amd.com>
+Signed-off-by: Terry Bowman <terry.bowman@amd.com>
+To: linux-watchdog@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Robert Richter <rrichter@amd.com>
+
+Changes in V2:
+   - Refactor into 4 patch series
+   - Move MMIO reservation and mapping into helper functions
+   - Combine mmio_addr and alternate mmio_addr base address discovery
+   - Replace efch_use_mmio() with efch_mmio layout type
 -- 
-2.27.0
+2.25.1
 
