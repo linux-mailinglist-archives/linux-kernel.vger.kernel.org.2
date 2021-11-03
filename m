@@ -2,130 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9073344429F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 165244442A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhKCNrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 09:47:51 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:42399 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbhKCNru (ORCPT
+        id S231558AbhKCNwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 09:52:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32670 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230213AbhKCNwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 09:47:50 -0400
-Received: (Authenticated sender: jacopo@jmondi.org)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 81CD424000B;
-        Wed,  3 Nov 2021 13:45:11 +0000 (UTC)
-Date:   Wed, 3 Nov 2021 14:46:03 +0100
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Eugen.Hristev@microchip.com
-Cc:     sakari.ailus@linux.intel.com, akinobu.mita@gmail.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: i2c: ov7740: implement get_mbus_config
-Message-ID: <20211103134603.ke2ireimojupi3yf@uno.localdomain>
-References: <20211102153008.1349895-1-eugen.hristev@microchip.com>
- <YYJDcIiBXo/XlKCX@paasikivi.fi.intel.com>
- <84ff4389-3458-0811-b43f-ded957c01f88@microchip.com>
+        Wed, 3 Nov 2021 09:52:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635947363;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HvvBtFFD47+ufbEQ8dXpkpIFQ9Q2+BGMrva/35vcuLk=;
+        b=ELSMs/iPbge0qIQXLawJTyWk+Xx4zV1D5/kh+Nd6yqdTvBq0xdIwoDpj3bW1u+53jZ1my6
+        y0iaAQMfpMQ27f4JKGJFJBuizacjwwAhDJeBRvoFUwUFlRRDFwv73dmUfYZnKybh7XGHFB
+        3ajFpo+z9RZYKmBs34hX4+ksj9gPG6o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-567-iB7flddOOA26E61IlkTuCA-1; Wed, 03 Nov 2021 09:49:20 -0400
+X-MC-Unique: iB7flddOOA26E61IlkTuCA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C936F18125C5;
+        Wed,  3 Nov 2021 13:49:17 +0000 (UTC)
+Received: from starship (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D0EF668D7D;
+        Wed,  3 Nov 2021 13:49:13 +0000 (UTC)
+Message-ID: <8b7949ae8094217c92b714cfd193fc571654cea7.camel@redhat.com>
+Subject: Re: [PATCH v2] KVM: x86: inhibit APICv when KVM_GUESTDBG_BLOCKIRQ
+ active
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Date:   Wed, 03 Nov 2021 15:49:12 +0200
+In-Reply-To: <871r3xnzaw.fsf@vitty.brq.redhat.com>
+References: <20211103094255.426573-1-mlevitsk@redhat.com>
+         <871r3xnzaw.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <84ff4389-3458-0811-b43f-ded957c01f88@microchip.com>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, 2021-11-03 at 14:28 +0100, Vitaly Kuznetsov wrote:
+> Maxim Levitsky <mlevitsk@redhat.com> writes:
+> 
+> > KVM_GUESTDBG_BLOCKIRQ relies on interrupts being injected using
+> > standard kvm's inject_pending_event, and not via APICv/AVIC.
+> > 
+> > Since this is a debug feature, just inhibit it while it
+> > is in use.
+> > 
+> > Fixes: 61e5f69ef0837 ("KVM: x86: implement KVM_GUESTDBG_BLOCKIRQ")
+> > 
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > ---
+> >  arch/x86/include/asm/kvm_host.h | 1 +
+> >  arch/x86/kvm/svm/avic.c         | 3 ++-
+> >  arch/x86/kvm/vmx/vmx.c          | 3 ++-
+> >  arch/x86/kvm/x86.c              | 3 +++
+> >  4 files changed, 8 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> > index 88fce6ab4bbd7..8f6e15b95a4d8 100644
+> > --- a/arch/x86/include/asm/kvm_host.h
+> > +++ b/arch/x86/include/asm/kvm_host.h
+> > @@ -1034,6 +1034,7 @@ struct kvm_x86_msr_filter {
+> >  #define APICV_INHIBIT_REASON_IRQWIN     3
+> >  #define APICV_INHIBIT_REASON_PIT_REINJ  4
+> >  #define APICV_INHIBIT_REASON_X2APIC	5
+> > +#define APICV_INHIBIT_REASON_BLOCKIRQ	6
+> >  
+> >  struct kvm_arch {
+> >  	unsigned long n_used_mmu_pages;
+> > diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+> > index 8052d92069e01..affc0ea98d302 100644
+> > --- a/arch/x86/kvm/svm/avic.c
+> > +++ b/arch/x86/kvm/svm/avic.c
+> > @@ -904,7 +904,8 @@ bool svm_check_apicv_inhibit_reasons(ulong bit)
+> >  			  BIT(APICV_INHIBIT_REASON_NESTED) |
+> >  			  BIT(APICV_INHIBIT_REASON_IRQWIN) |
+> >  			  BIT(APICV_INHIBIT_REASON_PIT_REINJ) |
+> > -			  BIT(APICV_INHIBIT_REASON_X2APIC);
+> > +			  BIT(APICV_INHIBIT_REASON_X2APIC) |
+> > +			  BIT(APICV_INHIBIT_REASON_BLOCKIRQ);
+> >  
+> >  	return supported & BIT(bit);
+> >  }
+> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > index 71f54d85f104c..e4fc9ff7cd944 100644
+> > --- a/arch/x86/kvm/vmx/vmx.c
+> > +++ b/arch/x86/kvm/vmx/vmx.c
+> > @@ -7565,7 +7565,8 @@ static void hardware_unsetup(void)
+> >  static bool vmx_check_apicv_inhibit_reasons(ulong bit)
+> >  {
+> >  	ulong supported = BIT(APICV_INHIBIT_REASON_DISABLE) |
+> > -			  BIT(APICV_INHIBIT_REASON_HYPERV);
+> > +			  BIT(APICV_INHIBIT_REASON_HYPERV) |
+> > +			  BIT(APICV_INHIBIT_REASON_BLOCKIRQ);
+> >  
+> >  	return supported & BIT(bit);
+> >  }
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index ac83d873d65b0..dccf927baa4dd 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -10747,6 +10747,9 @@ int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
+> >  	if (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)
+> >  		vcpu->arch.singlestep_rip = kvm_get_linear_rip(vcpu);
+> >  
+> > +	kvm_request_apicv_update(vcpu->kvm,
+> > +				 !(vcpu->guest_debug & KVM_GUESTDBG_BLOCKIRQ),
+> > +				 APICV_INHIBIT_REASON_BLOCKIRQ);
+> >  	/*
+> >  	 * Trigger an rflags update that will inject or remove the trace
+> >  	 * flags.
+> 
+> This fixes the problem for me!
+> 
+> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-   for a bit more of context
+Cool!
+> 
 
-On Wed, Nov 03, 2021 at 12:39:52PM +0000, Eugen.Hristev@microchip.com wrote:
-> On 11/3/21 10:08 AM, Sakari Ailus wrote:
-> > Hi Eugen,
-> >
-> > Thanks for the patch.
-> >
-> > On Tue, Nov 02, 2021 at 05:30:08PM +0200, Eugen Hristev wrote:
-> >> Implement the get_mbus_config callback.
-> >> ov7740 is a parallel sensor, and according to datasheet, the register
-> >> REG12 controls the CCIR656 mode. This register is written to 0 in yuyv mode.
-> >> According to REG12[5] , CCIR656 mode, the behavior is:
-> >> CCIR656: disabled
-> >> REG28 controls the polarity of the signals. This register is unused.
-> >> The default behavior is then:
-> >> HSYNC polarity : positive
-> >> VSYNC polarity : positive
-> >> HREF polarity: positive
-> >>
-> >
-> > Doesn't the receiver driver get this information from DT?
-> >
->
-> Hi Sakari,
->
-> This patch comes as a result of my discussions with Jacopo, he advised
-> to get mbus configuration via the get_mbus_config . I agree that this
+Now that I think about it, since guest debug flags are per-vcpu, this code won't
+work if there are multiple vCPUs and you enable KVM_GUESTDBG_BLOCKIRQ on all of them
+and then disable on this flag on just one of vCPUs, because this code will re-enable APICv/AVIC in this case.
+A counter is needed, like you did in synic/autoeoi case.
 
-That's where getting info at runtime was suggested
-
-https://patchwork.linuxtv.org/project/linux-media/patch/20200826065142.205000-1-eugen.hristev@microchip.com/#122336
+I'll send a V3 soon.
 
 
-> information can be taken from DT as you said.
-> In the end , my understanding is that get_mbus_config should be used
-> only for runtime configuration which can change.
-> Thus, if all this information is static, then, I will proceed with
-> obtaining it from DT, and you can disregard this patch, as it is not useful.
+Best regards,
+	Maxim Levitsky
 
-And the latest comment where getting it from DTS was suggested
-
-https://patchwork.linuxtv.org/project/linux-media/patch/20211022075247.518880-4-eugen.hristev@microchip.com/#132605
-
-Thanks
-   j
-
->
-> Thanks,
-> Eugen
->
-> >> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> >> ---
-> >>   drivers/media/i2c/ov7740.c | 14 ++++++++++++++
-> >>   1 file changed, 14 insertions(+)
-> >>
-> >> diff --git a/drivers/media/i2c/ov7740.c b/drivers/media/i2c/ov7740.c
-> >> index 2539cfee85c8..f8a717aecb6f 100644
-> >> --- a/drivers/media/i2c/ov7740.c
-> >> +++ b/drivers/media/i2c/ov7740.c
-> >> @@ -873,12 +873,26 @@ static int ov7740_get_fmt(struct v4l2_subdev *sd,
-> >>        return ret;
-> >>   }
-> >>
-> >> +static int ov7740_get_mbus_config(struct v4l2_subdev *sd,
-> >> +                               unsigned int pad,
-> >> +                               struct v4l2_mbus_config *cfg)
-> >> +{
-> >> +     cfg->type = V4L2_MBUS_PARALLEL;
-> >> +     cfg->flags = V4L2_MBUS_MASTER | V4L2_MBUS_HSYNC_ACTIVE_HIGH |
-> >> +                  V4L2_MBUS_VSYNC_ACTIVE_HIGH |
-> >> +                  V4L2_MBUS_PCLK_SAMPLE_RISING |
-> >> +                  V4L2_MBUS_FIELD_EVEN_LOW | V4L2_MBUS_DATA_ACTIVE_HIGH;
-> >> +
-> >> +     return 0;
-> >> +}
-> >> +
-> >>   static const struct v4l2_subdev_pad_ops ov7740_subdev_pad_ops = {
-> >>        .enum_frame_interval = ov7740_enum_frame_interval,
-> >>        .enum_frame_size = ov7740_enum_frame_size,
-> >>        .enum_mbus_code = ov7740_enum_mbus_code,
-> >>        .get_fmt = ov7740_get_fmt,
-> >>        .set_fmt = ov7740_set_fmt,
-> >> +     .get_mbus_config = ov7740_get_mbus_config,
-> >>   };
-> >>
-> >>   static const struct v4l2_subdev_ops ov7740_subdev_ops = {
-> >
-> > --
-> > Regards,
-> >
-> > Sakari Ailus
-> >
->
