@@ -2,75 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 778F94448DE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:19:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F2B4448EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhKCTWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 15:22:15 -0400
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:65394 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhKCTWI (ORCPT
+        id S230198AbhKCTa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 15:30:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230199AbhKCTat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 15:22:08 -0400
-Received: from pop-os.home ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id iLnEmtQIGUGqliLnEms32M; Wed, 03 Nov 2021 20:19:29 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Wed, 03 Nov 2021 20:19:29 +0100
-X-ME-IP: 86.243.171.122
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, srinivas.kandagatla@linaro.org,
-        yang.lee@linux.alibaba.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] ASoC: codecs: Axe some dead code in 'wcd_mbhc_adc_hs_rem_irq()'
-Date:   Wed,  3 Nov 2021 20:19:27 +0100
-Message-Id: <57a89cc31eb2312addd3c77896d7df8206aef138.1635967035.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Wed, 3 Nov 2021 15:30:49 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A12C061208
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 12:28:12 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id g25-20020a9d5f99000000b0055af3d227e8so547821oti.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 12:28:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UePDyJ5YGTt0SI7wSYrq2teto/cQR2vkkj6nAm2W3a0=;
+        b=iJPu7qjoWnWpnlD3pbi8ofB5MCwNTChZ4jlIPjBLmxcCizs6UsV3G8NIpJvwQns6xz
+         Mcu2063seKgTdnAoui3FtZzMw8tih4oa/T0SA1zkZ8TWIgMTCTlvKwUnRQJJX9o8hTQo
+         NO5VmJ63MSPyzGtQlLxtrNhEUEkrQEkpnINZoI7anc9hmGLMdLfv28zMqBiXyzp7XfrI
+         Ch4low2MMbl4FMIg2eatNVS8VMh4Fy+7tyv+dPfwdSjjwvwv6LXIR/YJ6bywUGJoXBmN
+         xJ2/AiVAJMuY6c1kefCFBdNCE67M6OuV9vkZKDH4WRUFtlR5dRH6zzPvPZ7M7qHdques
+         FncQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UePDyJ5YGTt0SI7wSYrq2teto/cQR2vkkj6nAm2W3a0=;
+        b=suyFJnRJR4XinycptyU4Vg1jXdxeDRbgCRe29kQ+w1A3pQimI6C71durDREVE3/K08
+         ueLcxoWlzIqOYjl524OcljI2um3UwNHfw+kiO2lMasYaQd/4tjrqMzPZnoEcjqkoxQds
+         dihOJuzWS1BH6JhLKETHdg500KvE92ExZPZAaGpR7lrQ/J/qHVZ/hn1SjkB88/8jFqsj
+         ITH4jJCMYz+moy/rTru4t56EmQFJY9T4WC6sTFxp+Mjob0tZaQzjhGy7fDAMD5/3hXmB
+         Ddwc6WMmPNUeRMtmHMNA7LVhmOLWU3amm1Buk68hca9M1TNYciOcovPZwN5jQ+c25cDk
+         +AWA==
+X-Gm-Message-State: AOAM533LUlWARRhHI8TeCeWHvXXBvjWBA/bQ1vzeTL1MZByt5sE+0ttT
+        Sd334nX2NuoY+z5P7SexXk2Mm7zGlsDNLA==
+X-Google-Smtp-Source: ABdhPJyDHe9v7v0ovnKDw8B7RfOBJHhSliZhy8hiaOCde7In7CDoT4l8tvqDIUDUaywzpQBTQ1nVDQ==
+X-Received: by 2002:a05:6830:2058:: with SMTP id f24mr19740345otp.248.1635967691754;
+        Wed, 03 Nov 2021 12:28:11 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id c1sm790336otl.71.2021.11.03.12.28.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Nov 2021 12:28:11 -0700 (PDT)
+Subject: Re: [PATCH v4 0/4] last set for add_disk() error handling
+To:     Luis Chamberlain <mcgrof@kernel.org>, hch@lst.de,
+        penguin-kernel@i-love.sakura.ne.jp, dan.j.williams@intel.com,
+        vishal.l.verma@intel.com, dave.jiang@intel.com,
+        ira.weiny@intel.com, richard@nod.at, miquel.raynal@bootlin.com,
+        vigneshr@ti.com, efremov@linux.com, song@kernel.org,
+        martin.petersen@oracle.com, hare@suse.de, jack@suse.cz,
+        ming.lei@redhat.com, tj@kernel.org
+Cc:     linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211103181258.1462704-1-mcgrof@kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <e01938a3-11c9-e368-65da-fcb5830e5a4c@kernel.dk>
+Date:   Wed, 3 Nov 2021 13:28:10 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211103181258.1462704-1-mcgrof@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'hphpa_on' is know to be false, so this is just dead code that should be
-removed.
+On 11/3/21 12:12 PM, Luis Chamberlain wrote:
+> This v4 only updates the last 2 patches from my v3 series of stragglers
+> to account for Christoph's request to split the __register_blkdev()
+> probe call changes into 3 patches, one for documentation, the other 2
+> patches for each respective driver.
 
-Suggested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-This patch is a follow-up of:
-https://lore.kernel.org/kernel-janitors/988948f7f266aa00698704687537335b7e6a67b2.1634455711.git.christophe.jaillet@wanadoo.fr/
----
- sound/soc/codecs/wcd-mbhc-v2.c | 5 -----
- 1 file changed, 5 deletions(-)
+Part of the reason why I think this has taken so long is that there's
+a hundreds of series, and then you get partial updates, etc. It's really
+super hard to keep track of...
 
-diff --git a/sound/soc/codecs/wcd-mbhc-v2.c b/sound/soc/codecs/wcd-mbhc-v2.c
-index 405128ccb4b0..b905eb8f3c67 100644
---- a/sound/soc/codecs/wcd-mbhc-v2.c
-+++ b/sound/soc/codecs/wcd-mbhc-v2.c
-@@ -1176,7 +1176,6 @@ static irqreturn_t wcd_mbhc_adc_hs_rem_irq(int irq, void *data)
- 	struct wcd_mbhc *mbhc = data;
- 	unsigned long timeout;
- 	int adc_threshold, output_mv, retry = 0;
--	bool hphpa_on = false;
- 
- 	mutex_lock(&mbhc->lock);
- 	timeout = jiffies + msecs_to_jiffies(WCD_FAKE_REMOVAL_MIN_PERIOD_MS);
-@@ -1210,10 +1209,6 @@ static irqreturn_t wcd_mbhc_adc_hs_rem_irq(int irq, void *data)
- 	wcd_mbhc_elec_hs_report_unplug(mbhc);
- 	wcd_mbhc_write_field(mbhc, WCD_MBHC_BTN_ISRC_CTL, 0);
- 
--	if (hphpa_on) {
--		hphpa_on = false;
--		wcd_mbhc_write_field(mbhc, WCD_MBHC_HPH_PA_EN, 3);
--	}
- exit:
- 	mutex_unlock(&mbhc->lock);
- 	return IRQ_HANDLED;
+Can we please just have one final series, not 1 and then another one
+that turns the last two into more?
+
 -- 
-2.30.2
+Jens Axboe
 
