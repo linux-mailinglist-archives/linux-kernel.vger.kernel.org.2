@@ -2,118 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED4C443FC2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 11:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3124D443FCF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 11:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbhKCKEW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Nov 2021 06:04:22 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:60789 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231749AbhKCKEU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 06:04:20 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-46-D8J9dP9POlyetI0EQ9wyKQ-1; Wed, 03 Nov 2021 10:01:41 +0000
-X-MC-Unique: D8J9dP9POlyetI0EQ9wyKQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.24; Wed, 3 Nov 2021 10:01:40 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.024; Wed, 3 Nov 2021 10:01:40 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Peter Zijlstra' <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-CC:     Kees Cook <keescook@chromium.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Sami Tolvanen" <samitolvanen@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
-Subject: RE: [PATCH] static_call,x86: Robustify trampoline patching
-Thread-Topic: [PATCH] static_call,x86: Robustify trampoline patching
-Thread-Index: AQHX0I3T+Rz8ZcLBT06sRWcPs/oqcKvxiwhw
-Date:   Wed, 3 Nov 2021 10:01:40 +0000
-Message-ID: <af7756b2244e47b7b7fae534236dac30@AcuMS.aculab.com>
-References: <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
- <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
- <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
- <20211101090155.GW174703@worktop.programming.kicks-ass.net>
- <CAMj1kXGhRmdM3om289Q2-s1Pzfob3D2iSDMorzggfhSk1oj53A@mail.gmail.com>
- <YYE1yPClPMHvyvIt@hirez.programming.kicks-ass.net>
- <202111021040.6570189A5@keescook>
- <90a14299-ce56-41d5-9df9-f625aae1ac70@www.fastmail.com>
- <202111021603.EDE5780FE@keescook>
- <bbde172b-2dae-fdc0-fbb5-edec6752c740@kernel.org>
- <20211103083559.GB174703@worktop.programming.kicks-ass.net>
-In-Reply-To: <20211103083559.GB174703@worktop.programming.kicks-ass.net>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S231755AbhKCKHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 06:07:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:56150 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231278AbhKCKHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 06:07:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C331D6E;
+        Wed,  3 Nov 2021 03:04:30 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.75.102])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B8073F719;
+        Wed,  3 Nov 2021 03:04:27 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 10:04:18 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Youngmin Nam <youngmin.nam@samsung.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        will@kernel.org, daniel.lezcano@linaro.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, pullip.cho@samsung.com,
+        hoony.yu@samsung.com, hajun.sung@samsung.com,
+        myung-su.cha@samsung.com, kgene@kernel.org
+Subject: Re: [PATCH v2 1/2] clocksource/drivers/exynos_mct_v2: introduce
+ Exynos MCT version 2 driver for next Exynos SoC
+Message-ID: <20211103100407.GA35817@C02TD0UTHF1T.local>
+References: <20211102001122.27516-1-youngmin.nam@samsung.com>
+ <CGME20211101234500epcas2p2d0e5bc54615b635f6694bc1be4c89fb5@epcas2p2.samsung.com>
+ <20211102001122.27516-2-youngmin.nam@samsung.com>
+ <20211102102802.GA16545@C02TD0UTHF1T.local>
+ <20211103000945.GA48132@perf>
+ <83f6574b-bbab-f0c3-7198-f773c3dcfc63@canonical.com>
+ <20211103092444.GA7013@perf>
+ <f7871718-f244-8a9e-9302-c27bdb2d3cc1@canonical.com>
+ <20211103095727.GA19093@perf>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211103095727.GA19093@perf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra
-> Sent: 03 November 2021 08:36
-> 
-> On Tue, Nov 02, 2021 at 05:20:05PM -0700, Andy Lutomirski wrote:
-> > I think that's a big mistake -- any sane ENDBR-using scheme would
-> > really prefer that ENDBR to be right next to the actual function body,
-> > and really any scheme would benefit due to better cache locality.
-> 
-> Agreed, IBT/BTI want the landing pad in front of the actual function.
-> 
-> > But, more importantly, IMO any sane ENDBR-using scheme wants to
-> > generate the indirect stub as part of code gen for the actual
-> > function.
-> 
-> Sorta, I really want to be able to not have a landing pad for functions
-> whose address is never taken. At that point it doesn't matter if it gets
-> generated along with the function and then stripped/poisoned later, or
-> generated later.
-> 
-> As such, the landing pad should not be part of the function proper,
-> direct calls should never observe it.
-> 
-> Less landing pads is more better.
+On Wed, Nov 03, 2021 at 06:57:28PM +0900, Youngmin Nam wrote:
+> On Wed, Nov 03, 2021 at 10:04:36AM +0100, Krzysztof Kozlowski wrote:
+> > On 03/11/2021 10:24, Youngmin Nam wrote:
+> > > On Wed, Nov 03, 2021 at 09:18:07AM +0100, Krzysztof Kozlowski wrote:
+> > >> On 03/11/2021 01:09, Youngmin Nam wrote:
+> > >>> On Tue, Nov 02, 2021 at 10:28:10AM +0000, Mark Rutland wrote:
+> > >>>> On Tue, Nov 02, 2021 at 09:11:21AM +0900, Youngmin Nam wrote:
 
-One problem is when a direct call is 'too far' for a call instruction.
-IIRC this can happen in arm64 with modules (all 64bit except x86?).
-So an indirect call has to be used instead - which needs the landing pad.
-Although it may actually be better to put a trampoline (landing pad
-+ near jump) elsewhere and have the module loader do the correct fixup.
-(Is the loader already generating a trampoline in the module code?)
-The function body can then be cache-line aligned - with its benefits.
+> > >>>>> +	evt->rating = 500;	/* use value higher than ARM arch timer */
+> > >>>>
+> > >>>> Previously Will asked you to try CLOCK_EVT_FEAT_PERCPU here, and to set
+> > >>>> the C3STOP flag on the arch timer via the DT when necessary, rather than
+> > >>>> trying to override the arch timer like this:
+> > >>>>
+> > >>>>   https://protect2.fireeye.com/v1/url?k=72526080-2dc9598b-7253ebcf-002590f5b904-ca603717c6462908&q=1&e=be56aa83-dbac-4639-913d-d388620fe3fc&u=https%3A%2F%2Flore.kernel.org%2Fr%2F20211027073458.GA22231%40willie-the-truck
 
-Can't anything that can write instructions always use a retpoline
-to implement a jump indirect to an arbitrary address?
-(Not to mention just generating the required code rather than a call.)
+> > >>> Hi Mark.
+> > >>> It looks like you missed my previous mail.
+> > >>> https://protect2.fireeye.com/v1/url?k=ab15817a-cbf71c27-ab140a35-000babd9f1ba-123b7f313b1b1ccc&q=1&e=34c8716e-6d2e-4d8e-82fe-04777ebc5eb3&u=https%3A%2F%2Flore.kernel.org%2Fall%2F20211029035422.GA30523%40perf%2F%23t
+> > >>>
+> > >>> Yes, I believe Will's suggestion definitely will work.
 
-AFAICT CFI is all about detecting invalid values in function pointer tables.
-It doesn't really protect in any way from JIT code doing incorrect things.
+Then please do so.
 
-	David
+> > >>> But that is for performance not functionality.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+No; it's about *consistency*, and avoiding unnecssary special cases. The
+whole point is that marking the generic timer as C3STOP *accurately*
+describes how the timer behaves on your platform, and marking the MCTv2
+as a percpu timer which *can* act as a back-up also aligns with that.
 
+That approach leaves the policy in the kernel, and we can play about
+with that later without functional breakage.
+
+> > >>> As a driver for new H/W IP I would like to confirm functionality first.
+> > >>> We need more time to test this feature with our exynos core power down feature.
+> > >>> And we need to do a various regression test whether there is another corner case or not.
+> > >>> So, how about we apply Will's suggetion later after the current patchset is merged first?
+> > >>> After doing our regression test with our exynos core power down feature, we can confirm this.
+> > >>
+> > >> Not really, because once it is merged there is no incentive to fix it or
+> > >> simply changing it can be forgotten. Also similarly to commit
+> > >> 6282edb72bed ("clocksource/drivers/exynos_mct: Increase priority over
+> > >> ARM arch timer"), there should be a valid and serious reason to
+> > >> prioritize Exynos MCT.
+
+It's also worth nothing that the case described for 6282edb72bed is
+really a system design erratum, since the counter is supposed to be in
+an always-on power domain and should be counting well before a regular
+OS kernel boots. The arm64 kernel requires the architected counter to be
+running before it is entered, or there will be subtle breakage.
+
+> > > No, it's not. I also want to decrease MCTv2 timer rating so that we want to use arm arch timer as a default.
+> > > But this feature has to be confirmed with core power down feature enabled.
+> > > Without core power down feature, we can't comfirm this.
+> > > Ater that we need to check whether there is regression or not related power, stability, and so on.
+> > > I'm not saying I will not apply Will's suggestion but I just want to apply later after some hard test.
+> > 
+> > You repeat the same argument, the same words. Nothing new. Repeating the
+> > same won't change it, use the lower priority. This is a patch for new
+> > kernel, so there is a plenty of time to test it and it won't affect your
+> > production environment.
+> > 
+> So, how about we control timer rating value with DT ?
+> Of course the default rating value should be lower than arm arch timer's.
+> Do you agree with this?
+
+No; placing a rating value in the DT is a hack. That should *not* live
+in the DT because it's linux-internal detail and not a description of
+the HW.
+
+Thanks,
+Mark.
