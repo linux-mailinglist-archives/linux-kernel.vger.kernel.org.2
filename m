@@ -2,174 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A87F444998
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 21:34:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B02544499B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 21:34:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbhKCUgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 16:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57420 "EHLO
+        id S231335AbhKCUhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 16:37:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230395AbhKCUgp (ORCPT
+        with ESMTP id S230313AbhKCUhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 16:36:45 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9571BC061205
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 13:34:08 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id p18so3446591plf.13
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 13:34:08 -0700 (PDT)
+        Wed, 3 Nov 2021 16:37:24 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 343D4C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 13:34:47 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id u18so5418632wrg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 13:34:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yInAWWmX6IbmZJ/wlq7G3j0MiE3+bSNug2mSaBSOXp8=;
-        b=76cN/dMP7BqwBLUJnpcvyKqVcG+CC88CrdxlxKbuWcqgSNC4iPTXsV5pEiM/szthaN
-         Xo89SOuuPuU5YXp+WcuZ7SKey/WjFrMFEsRcbrumh+FON7X9feOrs8wybo/qwPSQmfa3
-         towr9do08xJMA1zWOME1jqPr3A7hxpwtRbDrM1SInoR0fsYb7PLlPGkUhsefH52nHFwO
-         TVwBYtIuUDXEdU3dCPmJVGhNoO7PsHy0XvRS6W8OZhZcXv6RWtmKPrCPEmoZLTI+a1Oo
-         qWr6rSOMVbiRYE8S0AYAKP1ze/0ZLmJst3S16f7RqQsq0qA65YaSBt0SYocldMoku4dm
-         5CAQ==
+        bh=Yco9evUJj0CBgwCmjM2Iq7hySweqrEh+7cAP7IGEsfA=;
+        b=OMJBnz0JgdbyGPIYCxZw64eTbuYgtnzgFLs5YAgMI+PzhnDW7MVC/uEsyGf4fGrblZ
+         CTIzjyNi7zTOV5kvEmCgpX9auPo1y0ZPyI5lHGYkYarjBjMvkAVmZ/pH2FCM9W7zGU2/
+         XHwennbVtuFNnz2FmOC9TuXEP+GR3Vm+STANs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yInAWWmX6IbmZJ/wlq7G3j0MiE3+bSNug2mSaBSOXp8=;
-        b=2jY0Vg6j8Jj7pFOOI8/ONu/XpUeg2LlskBV064nSwedJ4nNDqnu0wLecK1iWAG4tzJ
-         8WIYTX7faPYXx0eLj4T9sT6A99PtB9fyLe809YThkV1QmO7cz0YLTQ4BO8XUyeSc5bcA
-         Yo1l+iU9ODiSZyTDDoPMnnTAg0YNevEEEY60iZ4UeT5nyJ7XXHFO5jV+u4rTIAqqIy0/
-         NTs75IRyvIjVgPB9uUpVXmB2LpYOnMKHdsX/LmPw56o/2VBDfuztUoVi+5Tkgp7cMMzc
-         T6zclI7ZBig7UjyxQgmvTvIXx6oQpYp/uhI4oW35gMezwSIeI1kfJkc0kQeCi8IaTKD8
-         Rm6Q==
-X-Gm-Message-State: AOAM533LJ9iLVGGuL/i2ryohdbeKf01nD/FR92Mb1sJ965yRfDmkotvp
-        lTD4eEEY5AcIxJv13tgvxECSUSoxLi7rZNvBVvEGIA==
-X-Google-Smtp-Source: ABdhPJzd7Z8lZ96OuyBaVsmPkzvXvAiMBjG+8ylo9BgB66C56AZdzDtCJhUvR3LVHaBpBpz3Mis5HNJMl34JvAiOnPA=
-X-Received: by 2002:a17:90b:350f:: with SMTP id ls15mr17053980pjb.220.1635971648063;
- Wed, 03 Nov 2021 13:34:08 -0700 (PDT)
+        bh=Yco9evUJj0CBgwCmjM2Iq7hySweqrEh+7cAP7IGEsfA=;
+        b=hzokdUetDATxHLKsrQZT+6Hd21a0GG+jmdXBFlYadce4tgLk81uBV1zkqEwrRPbQ38
+         YvfubUq2vpimzl/Dhj0/C3ne/0SSsfpJnLJhvKIa7+kwxvHMiu5jGA+hFrwP6fQDrsjZ
+         SrTnHYiUJWnqzGZte/ev0m8p7cBKgaCz7iyPzT13pWbMd7fnT5jT08era961/cZNxHyE
+         0cq7NNbcMLJ6Yl8B11eZrfb/BRO7kqRC5XIWfMo+dPADhXzcTyAEFPRPhflOzRKL5gm6
+         6H479sTfZfajpL9FlkvclBNmN++VMos7bw+km0h4byElR37pDSSiXgS5IVh3tyrdU49a
+         VlHg==
+X-Gm-Message-State: AOAM532fIgKznmhY5qIOFUj8N9TJPlOdFux7UZt0Jn4AWEWpleYt8uE4
+        575Uj7DQfpo/8Ba8DS6tJX2bPDojOEutoMg1STTJAw==
+X-Google-Smtp-Source: ABdhPJxWOzzblfarSMnvULC1Bu1z2O8qU/zTIWQbnShf1doancfUJreB7+Z8Yen6p47mS7hcOyU1jg6y2XGz79dFD2k=
+X-Received: by 2002:adf:ba87:: with SMTP id p7mr58590678wrg.282.1635971685804;
+ Wed, 03 Nov 2021 13:34:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211021001059.438843-1-jane.chu@oracle.com> <YXFPfEGjoUaajjL4@infradead.org>
- <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com> <YXJN4s1HC/Y+KKg1@infradead.org>
- <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com> <YXj2lwrxRxHdr4hb@infradead.org>
- <20211028002451.GB2237511@magnolia> <YYDYUCCiEPXhZEw0@infradead.org>
- <CAPcyv4j8snuGpy=z6BAXogQkP5HmTbqzd6e22qyERoNBvFKROw@mail.gmail.com> <YYK/tGfpG0CnVIO4@infradead.org>
-In-Reply-To: <YYK/tGfpG0CnVIO4@infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 3 Nov 2021 13:33:58 -0700
-Message-ID: <CAPcyv4it2_PVaM8z216AXm6+h93frg79WM-ziS9To59UtEQJTA@mail.gmail.com>
-Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with RWF_RECOVERY_DATA flag
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Jane Chu <jane.chu@oracle.com>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+References: <20211103184939.45263-1-jim2101024@gmail.com> <20211103184939.45263-6-jim2101024@gmail.com>
+ <YYLm3z0MAgBK24z5@sirena.org.uk> <CA+-6iNzkg4R8Kt=Q=sgdB++HHStRSHRUOUTvAfjZr31-FUrzNA@mail.gmail.com>
+In-Reply-To: <CA+-6iNzkg4R8Kt=Q=sgdB++HHStRSHRUOUTvAfjZr31-FUrzNA@mail.gmail.com>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Wed, 3 Nov 2021 16:34:34 -0400
+Message-ID: <CA+-6iNziZv0UycoaoFhscmp39Z2Y2bHrWUpFW4f9MBK-uM24qA@mail.gmail.com>
+Subject: Re: [PATCH v7 5/7] PCI: brcmstb: Add control of subdevice voltage regulators
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Jim Quinlan <jim2101024@gmail.com>, linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 9:58 AM Christoph Hellwig <hch@infradead.org> wrote:
+On Wed, Nov 3, 2021 at 4:25 PM Jim Quinlan <james.quinlan@broadcom.com> wrote:
 >
-> On Tue, Nov 02, 2021 at 12:57:10PM -0700, Dan Williams wrote:
-> > This goes back to one of the original DAX concerns of wanting a kernel
-> > library for coordinating PMEM mmap I/O vs leaving userspace to wrap
-> > PMEM semantics on top of a DAX mapping. The problem is that mmap-I/O
-> > has this error-handling-API issue whether it is a DAX mapping or not.
+> On Wed, Nov 3, 2021 at 3:45 PM Mark Brown <broonie@kernel.org> wrote:
+> >
+> > On Wed, Nov 03, 2021 at 02:49:35PM -0400, Jim Quinlan wrote:
+> >
+> > > +     for_each_property_of_node(dn, pp) {
+> > > +             for (i = 0; i < ns; i++) {
+> > > +                     char prop_name[64]; /* 64 is max size of property name */
+> > > +
+> > > +                     snprintf(prop_name, 64, "%s-supply", supplies[i]);
+> > > +                     if (strcmp(prop_name, pp->name) == 0)
+> > > +                             break;
+> > > +             }
+> > > +             if (i >= ns || pcie->num_supplies >= ARRAY_SIZE(supplies))
+> > > +                     continue;
+> > > +
+> > > +             pcie->supplies[pcie->num_supplies++].supply = supplies[i];
+> > > +     }
+> >
+> > Why are we doing this?  If the DT omits the supplies the framework will
+> > provide dummy supplies so there is no need to open code handling for
+> > supplies not being present at all in client drivers.  Just
+> > unconditionally ask for all the supplies.
 >
-> Semantics of writes through shared mmaps are a nightmare.  Agreed,
-> including agreeing that this is neither new nor pmem specific.  But
-> it also has absolutely nothing to do with the new RWF_ flag.
+> I did it to squelch the "supply xxxxx not found, using dummy
+> regulator" output.  I'll change it.
+Now I remember: if I know there are no vpciexxx-supplly props in the
+DT, I can skip executing all of the buik regulator calls entirely, as
+well as walking the PCI bus as in brcm_regulators_off().
 
-Ok.
+Do you consider this a valid reason?
 
-> > CONFIG_ARCH_SUPPORTS_MEMORY_FAILURE implies that processes will
-> > receive SIGBUS + BUS_MCEERR_A{R,O} when memory failure is signalled
-> > and then rely on readv(2)/writev(2) to recover. Do you see a readily
-> > available way to improve upon that model without CPU instruction
-> > changes? Even with CPU instructions changes, do you think it could
-> > improve much upon the model of interrupting the process when a load
-> > instruction aborts?
->
-> The "only" think we need is something like the exception table we
-> use in the kernel for the uaccess helpers (and the new _nofault
-> kernel access helper).  But I suspect refitting that into userspace
-> environments is probably non-trivial.
+Jim
 
-Is the exception table requirement not already fulfilled by:
+Jim
 
-sigaction(SIGBUS, &act, 0);
-...
-if (sigsetjmp(sj_env, 1)) {
-...
+Jim
 
-...but yes, that's awkward when all you want is an error return from a
-copy operation.
-
-For _nofault I'll note that on the kernel side Linus was explicit
-about not mixing fault handling and memory error exception handling in
-the same accessor. That's why copy_mc_to_kernel() and
-copy_{to,from}_kernel_nofault() are distinct. I only say that to probe
-deeper about what a "copy_mc()" looks like in userspace? Perhaps an
-interface to suppress SIGBUS generation and register a ring buffer
-that gets filled with error-event records encountered over a given
-MMAP I/O code sequence?
-
-> > I do agree with you that DAX needs to separate itself from block, but
-> > I don't think it follows that DAX also needs to separate itself from
-> > readv/writev for when a kernel slow-path needs to get involved because
-> > mmap I/O (just CPU instructions) does not have the proper semantics.
-> > Even if you got one of the ARCH_SUPPORTS_MEMORY_FAILURE to implement
-> > those semantics in new / augmented CPU instructions you will likely
-> > not get all of them to move and certainly not in any near term
-> > timeframe, so the kernel path will be around indefinitely.
->
-> I think you misunderstood me.  I don't think pmem needs to be
-> decoupled from the read/write path.  But I'm very skeptical of adding
-> a new flag to the common read/write path for the special workaround
-> that a plain old write will not actually clear errors unlike every
-> other store interfac.
-
-Ah, ok, yes, I agree with you there that needing to redirect writes to
-a platform firmware call to clear errors, and notify the device that
-its error-list has changed is exceedingly awkward. That said, even if
-the device-side error-list auto-updated on write (like the promise of
-MOVDIR64B) there's still the question about when to do management on
-the software error lists in the driver and/or filesytem. I.e. given
-that XFS at least wants to be aware of the error lists for block
-allocation and "list errors" type features. More below...
-
-> > Meanwhile, I think RWF_RECOVER_DATA is generically useful for other
-> > storage besides PMEM and helps storage-drivers do better than large
-> > blast radius "I/O error" completions with no other recourse.
->
-> How?
-
-Hasn't this been a perennial topic at LSF/MM, i.e. how to get an
-interface for the filesystem to request "try harder" to return data?
-If the device has a recovery slow-path, or error tracking granularity
-is smaller than the I/O size, then RWF_RECOVER_DATA gives the
-device/driver leeway to do better than the typical fast path. For
-writes though, I can only come up with the use case of this being a
-signal to the driver to take the opportunity to do error-list
-management relative to the incoming write data.
-
-However, if signaling that "now is the time to update error-lists" is
-the requirement, I imagine the @kaddr returned from
-dax_direct_access() could be made to point to an unmapped address
-representing the poisoned page. Then, arrange for a pmem-driver fault
-handler to emulate the copy operation and do the slow path updates
-that would otherwise have been gated by RWF_RECOVER_DATA.
-
-Although, I'm not excited about teaching every PMEM arch's fault
-handler about this new source of kernel faults. Other ideas?
-RWF_RECOVER_DATA still seems the most viable / cleanest option, but
-I'm willing to do what it takes to move this error management
-capability forward.
+> Regards, Jim
