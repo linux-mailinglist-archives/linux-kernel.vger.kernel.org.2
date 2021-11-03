@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB212444363
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0286E44437A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:27:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231816AbhKCO1e convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Nov 2021 10:27:34 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:44428 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231476AbhKCO1d (ORCPT
+        id S232047AbhKCO3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 10:29:51 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56740 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230527AbhKCO3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 10:27:33 -0400
-Received: from smtpclient.apple (p4fefc15c.dip0.t-ipconnect.de [79.239.193.92])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 9F9D9CED12;
-        Wed,  3 Nov 2021 15:24:53 +0100 (CET)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
-Subject: Re: [PATCH v2] Bluetooth: btusb: using big-endian definition for
- board_id in struct qca_version
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <c92c38b60b1b55b5d72f7f1c718641e1@codeaurora.org>
-Date:   Wed, 3 Nov 2021 15:24:53 +0100
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
-        c-hbandi@codeaurora.org, Hemantg <hemantg@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rocky Liao <rjliao@codeaurora.org>, zijuhu@codeaurora.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <90D7F483-BCD9-430C-94EA-4018237ABE36@holtmann.org>
-References: <c92c38b60b1b55b5d72f7f1c718641e1@codeaurora.org>
-To:     tjiang@codeaurora.org
-X-Mailer: Apple Mail (2.3693.20.0.1.32)
+        Wed, 3 Nov 2021 10:29:49 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 6FCE5218D9;
+        Wed,  3 Nov 2021 14:27:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635949632; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Dog1kS0Nm8BT5xToDrdeBUJVtPUNFmm5wWj5SRd7+2I=;
+        b=BORuspiw5Z2g1pJmzhS/Mn/w26i3SRVFn4yIidQgmvBEwaNrAoDYRkIsdA1J7ZtN8oUtx8
+        /m/9RbtrEeXQNjK/UZyI0IkzAkQWSeNrBkGMWK3WLWwzXhx80V04K9Q+i1p/2b8Bc5IJu7
+        aTVOKIZI7QIiWwdudr4Z694kUKcYpiU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635949632;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Dog1kS0Nm8BT5xToDrdeBUJVtPUNFmm5wWj5SRd7+2I=;
+        b=FTgDDkPGlsImvWmFW+/Zw3OfT/3JwHgMG85BIekvkJkkoZVThpg3GQtPj8HmbLxg9F/bCi
+        t/ooTeugcRuWZkDw==
+Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+        by relay2.suse.de (Postfix) with ESMTP id 3C1A9A3B84;
+        Wed,  3 Nov 2021 14:27:11 +0000 (UTC)
+From:   Michal Suchanek <msuchanek@suse.de>
+To:     keyrings@vger.kernel.org
+Cc:     Michal Suchanek <msuchanek@suse.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>, Rob Herring <robh@kernel.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Frank van der Linden <fllinden@amazon.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: [PATCH 0/3] KEXEC_SIG with appended signature
+Date:   Wed,  3 Nov 2021 15:27:05 +0100
+Message-Id: <cover.1635948742.git.msuchanek@suse.de>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tim,
+S390 uses appended signature for kernel but implements the check
+separately from module loader.
 
-> As we name nvm file by using big-endian for boardID, so align host with it.
-> 
-> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
-> ---
-> drivers/bluetooth/btusb.c | 4 ++--
-> 1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> index 46d892bbde62..08a1c6d8390f 100644
-> --- a/drivers/bluetooth/btusb.c
-> +++ b/drivers/bluetooth/btusb.c
-> @@ -2883,7 +2883,7 @@ struct qca_version {
-> 	__le32	rom_version;
-> 	__le32	patch_version;
-> 	__le32	ram_version;
-> -	__le16	board_id;
-> +	__be16	board_id;
-> 	__le16	flag;
-> 	__u8	reserved[4];
-> } __packed;
-> @@ -3072,7 +3072,7 @@ static void btusb_generate_qca_nvm_name(char *fwname, size_t max_size,
-> 	u16 flag = le16_to_cpu(ver->flag);
-> 
-> 	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
-> -		u16 board_id = le16_to_cpu(ver->board_id);
-> +		u16 board_id = be16_to_cpu(ver->board_id);
-> 		const char *variant;
+Support for secure boot on powerpc with appended signature is planned -
+grub patches submitted upstream but not yet merged.
 
-my original comment still stands. Are you sure you are doing this correctly. The in-memory layout of your NVM is mixed little-endian and big-endian? Really? Or do you want to convert back from host endian to big endian?
+This is an attempt at unified appended signature verification.
 
-You commit message text suggest that you have to do this:
+Thanks
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 46d892bbde62..55a33a5fea56 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -3090,7 +3090,7 @@ static void btusb_generate_qca_nvm_name(char *fwname, size_t max_size,
-                                rom_version, variant);
-                } else {
-                        snprintf(fwname, max_size, "qca/nvm_usb_%08x%s_%04x.bin",
--                               rom_version, variant, board_id);
-+                               rom_version, variant, cpu_to_be16(board_id));
-                }
-        } else {
-                snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin”,
+Michal
 
-And really, I can not do this anymore. Write lengthy commit messages explaining your change in detail. I am not looking a patches anymore until they have a proper paragraph explaining the change and why it is correct.
+Michal Suchanek (3):
+  s390/kexec_file: Don't opencode appended signature verification.
+  module: strip the signature marker in the verification function.
+  powerpc/kexec_file: Add KEXEC_SIG support.
 
-Also this change had v16 before I merged and even in that version I had to fix issues. Please stop wasting my time. I have no idea why this wasn’t caught earlier. It is a fundamental flaw. I am close to just reverting the previous patch since it seems it clearly needs more testing.
+ arch/powerpc/Kconfig                  | 11 +++++++
+ arch/powerpc/kexec/elf_64.c           | 14 +++++++++
+ arch/s390/kernel/machine_kexec_file.c | 42 +++------------------------
+ include/linux/verification.h          |  3 ++
+ kernel/module-internal.h              |  2 --
+ kernel/module.c                       | 11 +++----
+ kernel/module_signing.c               | 32 ++++++++++++++------
+ 7 files changed, 59 insertions(+), 56 deletions(-)
 
-Regards
-
-Marcel
+-- 
+2.31.1
 
