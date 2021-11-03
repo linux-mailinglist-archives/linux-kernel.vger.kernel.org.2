@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454A0444948
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 21:00:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5637F44494A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 21:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbhKCUCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 16:02:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbhKCUCr (ORCPT
+        id S231402AbhKCUDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 16:03:01 -0400
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:49938 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231325AbhKCUC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 16:02:47 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A904BC061203
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 13:00:10 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id x64so3507054pfd.6
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 13:00:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KsEvoPiFtl6bqNouQ+fGJ/sS+WphUQOBaAHxMhk3DGA=;
-        b=YrJyFwWp4grOY1mPXnQnE+Hg0CdtJ9GnY15cK8Z+OkAURPeGDQU9vhCR3iWinmvMxu
-         eircPif344srajRe1A7ME4omZYYSKP6lb2gpcbGF/fNpmsEYia772dhvYgiSkWHr2nNp
-         1uIv2yYv7LiawmDTAeTFGEor+MbVXu9FPGqS0TysHRSYA/nZsV+MtC/D4IWZ/eUZzT5b
-         e0cilCc559JgOeQuEGuBNUYx/f5GjZ5fEbgpZKWBmB3A4aw9m/idmSvzXlB75bzjmjEW
-         2akZacI0oiOu+xg/hTDuJlLl4diKlqhZ0iWowZ+6tTMpPiEH6PAJ1nnTkvG7nrkvMQsU
-         Yrkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KsEvoPiFtl6bqNouQ+fGJ/sS+WphUQOBaAHxMhk3DGA=;
-        b=f0DLMJXibO0f6pa5HAwEXLGu3Fhr6CkcHyfIyECN16OTwwYdDvw3DOOfA/OOCM4sTF
-         nG2U3penaakXVtMbSFqqPbPweCf9XooEJbBgGRY6bsx6pbmvhbfvSZqh296ym9ZYxJfb
-         IaKpwo45ODMxnnjAMFu9vKK8mX+6wZPnXCWuIBTAWQczOKiy13rREXkxKSWDfunRCoz8
-         mA0qBoIsI/tkxQgOlil1Wvyjbgqlc7LbZQNDliFN1VDxBYqwQcEqZlZxrMww2ozuPm1J
-         p4zEwptDcYPOT/FN9hb2/v6+UM7kHmHc5sW2+2boYpH4bwY6rx3zNUj6EROKwlxddhzd
-         b+oA==
-X-Gm-Message-State: AOAM530yHyyPrAel0aD7DPFA2ErPiGbDaGtdiykUu1ciOprX2/F8dK7X
-        ckTlOFdvfSMB68DRSfo9oRZvOA==
-X-Google-Smtp-Source: ABdhPJwBiTa8ecNTn5rCGLRr0uGC3m4OVyK7YALZosFLuZqUjO7nFr2X1bzBQDcNmWw0mlHEb/TsNA==
-X-Received: by 2002:a65:62d1:: with SMTP id m17mr35112758pgv.370.1635969610032;
-        Wed, 03 Nov 2021 13:00:10 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id y9sm5801708pjt.27.2021.11.03.13.00.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 13:00:09 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 20:00:05 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     pbonzini@redhat.com, jmattson@google.com, dmatlack@google.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] KVM: Move INVPCID type check from vmx and svm to
- the common kvm_handle_invpcid()
-Message-ID: <YYLqRRfaiXrWo7Yz@google.com>
-References: <20211103183232.1213761-1-vipinsh@google.com>
- <20211103183232.1213761-3-vipinsh@google.com>
+        Wed, 3 Nov 2021 16:02:59 -0400
+Received: from pop-os.home ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id iMQlmtl2MUGqliMQlmsAS1; Wed, 03 Nov 2021 21:00:21 +0100
+X-ME-Helo: pop-os.home
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Wed, 03 Nov 2021 21:00:21 +0100
+X-ME-IP: 86.243.171.122
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     leoyang.li@nxp.com, tyreld@linux.ibm.com
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 1/2] soc: fsl: guts: Revert commit 3c0d64e867ed
+Date:   Wed,  3 Nov 2021 21:00:17 +0100
+Message-Id: <1063e5a4738d897adcaffce2ab8e4e45f07998ff.1635969326.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103183232.1213761-3-vipinsh@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021, Vipin Sharma wrote:
-> This check will be done in switch statement of kvm_handle_invpcid(),
+This reverts commit 3c0d64e867ed
+("soc: fsl: guts: reuse machine name from device tree").
 
-Please make the changelog a stand on its own, i.e. don't rely on the shortlog
-for context.
+A following patch will fix the missing memory allocation failure check
+instead.
 
-> used by both VMX and SVM. It also removes (type > 3) check.
+Suggested-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+This is a follow-up of discussion in:
+https://lore.kernel.org/kernel-janitors/b12e8c5c5d6ab3061d9504de8fbaefcad6bbc385.1629321668.git.christophe.jaillet@wanadoo.fr/
+---
+ drivers/soc/fsl/guts.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-Use imperative mood, i.e. state what you're doing as a "command", don't refer to
-the patch from a third-person point of view.
+diff --git a/drivers/soc/fsl/guts.c b/drivers/soc/fsl/guts.c
+index 072473a16f4d..af7741eafc57 100644
+--- a/drivers/soc/fsl/guts.c
++++ b/drivers/soc/fsl/guts.c
+@@ -28,7 +28,6 @@ struct fsl_soc_die_attr {
+ static struct guts *guts;
+ static struct soc_device_attribute soc_dev_attr;
+ static struct soc_device *soc_dev;
+-static struct device_node *root;
+ 
+ 
+ /* SoC die attribute definition for QorIQ platform */
+@@ -138,7 +137,7 @@ static u32 fsl_guts_get_svr(void)
+ 
+ static int fsl_guts_probe(struct platform_device *pdev)
+ {
+-	struct device_node *np = pdev->dev.of_node;
++	struct device_node *root, *np = pdev->dev.of_node;
+ 	struct device *dev = &pdev->dev;
+ 	const struct fsl_soc_die_attr *soc_die;
+ 	const char *machine;
+@@ -159,8 +158,9 @@ static int fsl_guts_probe(struct platform_device *pdev)
+ 	root = of_find_node_by_path("/");
+ 	if (of_property_read_string(root, "model", &machine))
+ 		of_property_read_string_index(root, "compatible", 0, &machine);
++	of_node_put(root);
+ 	if (machine)
+-		soc_dev_attr.machine = machine;
++		soc_dev_attr.machine = devm_kstrdup(dev, machine, GFP_KERNEL);
+ 
+ 	svr = fsl_guts_get_svr();
+ 	soc_die = fsl_soc_die_match(svr, fsl_soc_die);
+@@ -195,7 +195,6 @@ static int fsl_guts_probe(struct platform_device *pdev)
+ static int fsl_guts_remove(struct platform_device *dev)
+ {
+ 	soc_device_unregister(soc_dev);
+-	of_node_put(root);
+ 	return 0;
+ }
+ 
+-- 
+2.30.2
 
-The changelog also needs to call out that, unlike INVVPID and INVEPT, INVPCID is
-not explicitly documented as checking the "type" before reading the operand from
-memory.  I.e. there's a subtle, undocumented functional change in this patch.
-
-Something like:
-
-  Handle #GP on INVCPID due to an invalid type in the common switch statement
-  instead of relying on callers to manually verify the type is valid.  Unlike
-  INVVPID and INVPET, INVPCID is not explicitly documented as checking the type
-  before reading the operand from memory, so deferring the type validity check
-  until after that point is architecturally allowed.
-
-For the code:
-
-Reviewed-by: Sean Christopherson <seanjc@google.com>
