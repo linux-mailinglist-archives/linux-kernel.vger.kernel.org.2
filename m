@@ -2,402 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0722444959
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 21:08:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB6244495D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 21:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbhKCUL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 16:11:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbhKCUL1 (ORCPT
+        id S231305AbhKCULg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Nov 2021 16:11:36 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4062 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230172AbhKCULe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 16:11:27 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53209C061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 13:08:50 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id j6-20020a4aab46000000b002bb88bfb594so1199412oon.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 13:08:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=i0vvoL0JhDjXjmlIHE6wEDSwgLEUMmC4L6sOXE++DvA=;
-        b=OCNGd+q5dLrcaeXvfMZPoj2sl8Ui0K32vkccOOvgJW8migkcTA+31y9+PzED/tD1cg
-         0W8/d+/GyZz1n9bOn9si75yiVqxzFhGcOGra75hYKJQMp+4nKyPeqZQYR0QiqdXm0/6t
-         kIP8GuzXcOXTiHTk04ep8LQN2K4H+B6rlXKT8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=i0vvoL0JhDjXjmlIHE6wEDSwgLEUMmC4L6sOXE++DvA=;
-        b=QUuHfghoGz75WHHGQyGJgI0kYiZi2DLgHLDt42oVH/lKh6GvZgDr7ZpD+l48NqO2zY
-         NljOUe5SGbyTA2RZLpeiICKIBlZ3q47bH3g7+JlapxVUsgLaHigkK3LEHkSwKZMuYTME
-         qlkHQUqExlzVxrrgJtpRPpf1iMSPJslR1Ed+hJ2q16cLtemAI2mKHAnR2l0F7WmMC/q8
-         VPJ+yOAhYFkXBZMN661If0ulWuwvnMy4aV4zYAL5JsElBBm1ZCWoaHxfDyx+GPVpe8BE
-         hqtEccVYq7Xc0qVZT51fe5utckiDGkzid8RxAIowwef4Iy/8v+DdDaQNol0c6A0bywzf
-         26ww==
-X-Gm-Message-State: AOAM533gognsZBkO8xyzmVwQMbiKdSMmhMvCJ3kGW5DpIvCF91H7i3M4
-        EXVewcv9NdHu8MUY2SaN3HBw9R8h/fGNy0ikv5cv1Q==
-X-Google-Smtp-Source: ABdhPJwpDKi7fj37JCIaFQ9MwgdUsogP8lps/n9C0M3ER5GGOxkRQhnyXyOfPbGiXTOZj1hBKXu6kzYFvZKi14wJJRY=
-X-Received: by 2002:a4a:4085:: with SMTP id n127mr477122ooa.8.1635970129585;
- Wed, 03 Nov 2021 13:08:49 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 3 Nov 2021 13:08:48 -0700
+        Wed, 3 Nov 2021 16:11:34 -0400
+Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HkyQw5NlHz67DfB;
+        Thu,  4 Nov 2021 04:04:24 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 3 Nov 2021 21:08:55 +0100
+Received: from localhost (10.52.121.67) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Wed, 3 Nov
+ 2021 20:08:54 +0000
+Date:   Wed, 3 Nov 2021 20:08:51 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+CC:     <jic23@kernel.org>, <robh+dt@kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] dt-bindings:iio:amplifiers: add ad7293 doc
+Message-ID: <20211103200851.00007c67@Huawei.com>
+In-Reply-To: <20211102135947.131223-3-antoniu.miclaus@analog.com>
+References: <20211102135947.131223-1-antoniu.miclaus@analog.com>
+        <20211102135947.131223-3-antoniu.miclaus@analog.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <1635891224-16357-1-git-send-email-khsieh@codeaurora.org>
-References: <1635891224-16357-1-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 3 Nov 2021 13:08:48 -0700
-Message-ID: <CAE-0n50XL90kGi48LOmniuS5bfAAShctNOuOv+65E6ZtpsCCtA@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/dp: employ bridge mechanism for display enable
- and disable
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
-        airlied@linux.ie, bjorn.andersson@linaro.org, daniel@ffwll.ch,
-        dmitry.baryshkov@linaro.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org
-Cc:     quic_abhinavk@quicinc.com, aravindh@codeaurora.org,
-        quic_khsieh@quicinc.com, freedreno@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.52.121.67]
+X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-11-02 15:13:44)
-> Current display mode_set, enable and disable functions are implemented
-> as function called directly from drm encoder. This patch have display
-> mode_set, enable and disable be implemented as callback function of drm
-> bridge.
+On Tue, 2 Nov 2021 15:59:47 +0200
+Antoniu Miclaus <antoniu.miclaus@analog.com> wrote:
 
-Why is it important? Please add those details here.
+> Add device tree bindings for the AD7293 Power Amplifier.
+> 
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
 
->
-> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+Hi Antoniu
+
+Whilst the driver may not support all the features, we should
+try to describe as many of the hardware connections / power supplies
+etc as possible.
+
+From a quick glance, I'm seeing a reset gpio, some alert pins (which I'm
+assuming can be used as interrupts, and several power supplies that should
+be provided by regulators.
+
+So for v2, please added as much of that as possible.
+
+There may be odd corner cases (e.g. the sleep pins) where we aren't
+completely sure how they would be used, which you can leave for when/if
+we figure out what makes sense.
+
+Jonathan
+
 > ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c |  21 ------
->  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c     |   8 ++
->  drivers/gpu/drm/msm/dp/dp_display.c         |  26 +++----
->  drivers/gpu/drm/msm/dp/dp_display.h         |   8 ++
->  drivers/gpu/drm/msm/dp/dp_drm.c             | 113 ++++++++++++++++++++++++++++
->  drivers/gpu/drm/msm/msm_drv.h               |  29 ++-----
->  6 files changed, 147 insertions(+), 58 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> index 27d98b5..3bbd09c 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> @@ -557,6 +557,14 @@ static int _dpu_kms_initialize_displayport(struct drm_device *dev,
->                                   encoder->base.id, rc);
->                         return rc;
->                 }
+>  .../bindings/iio/amplifiers/adi,ad7293.yaml   | 49 +++++++++++++++++++
+>  1 file changed, 49 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/amplifiers/adi,ad7293.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/amplifiers/adi,ad7293.yaml b/Documentation/devicetree/bindings/iio/amplifiers/adi,ad7293.yaml
+> new file mode 100644
+> index 000000000000..b9cfd4621fb7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/amplifiers/adi,ad7293.yaml
+> @@ -0,0 +1,49 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/amplifiers/adi,ad7293.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +               rc = msm_dp_bridge_init(priv->dp[i], dev, encoder);
+> +title: AD7293 12-Bit Power Amplifier Current Controller with ADC,
+> +       DACs, Temperature and Current Sensors
+> +
+> +maintainers:
+> +  - Antoniu Miclaus <antoniu.miclaus@analog.com>
+> +
+> +description: |
+> +   Power Amplifier drain current controller containing functionality
+> +   for general-purpose monitoring and control of current, voltage,
+> +   and temperature, integrated into a single chip solution with an
+> +   SPI-compatible interface.
+> +
+> +   https://www.analog.com/en/products/ad7293.html
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - adi,ad7293
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  spi-max-frequency:
+> +    maximum: 1000000
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    spi {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      ad7293@0 {
+> +        compatible = "adi,ad7293";
+> +        reg = <0>;
+> +        spi-max-frequency = <1000000>;
+> +      };
+> +    };
+> +...
 
-Use tabs?
-
-> +                if (rc) {
-> +                       DPU_ERROR("failed to setup DPU bridge %d: rc:%d\n",
-> +                                 encoder->base.id, rc);
-> +                       return rc;
-> +                }
-> +
->         }
->
->         return rc;
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> index e41dd40..317f963 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -569,8 +569,8 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
->         return 0;
->  };
->
-> -static int dp_display_enable(struct dp_display_private *dp, u32 data);
-> -static int dp_display_disable(struct dp_display_private *dp, u32 data);
-> +static int __dp_display_enable(struct dp_display_private *dp, u32 data);
-> +static int __dp_display_disable(struct dp_display_private *dp, u32 data);
->
->  static int dp_connect_pending_timeout(struct dp_display_private *dp, u32 data)
->  {
-> @@ -855,7 +855,7 @@ static int dp_display_prepare(struct msm_dp *dp_display)
->         return 0;
->  }
->
-> -static int dp_display_enable(struct dp_display_private *dp, u32 data)
-> +static int __dp_display_enable(struct dp_display_private *dp, u32 data)
->  {
->         int rc = 0;
->
-> @@ -898,7 +898,7 @@ static int dp_display_post_enable(struct msm_dp *dp_display)
->         return 0;
->  }
->
-> -static int dp_display_disable(struct dp_display_private *dp, u32 data)
-> +static int __dp_display_disable(struct dp_display_private *dp, u32 data)
->  {
->         struct msm_dp *dp_display = &dp->dp_display;
->
-> @@ -1533,7 +1533,7 @@ int msm_dp_modeset_init(struct msm_dp *dp_display, struct drm_device *dev,
->         return 0;
->  }
->
-> -int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
-> +int dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
->  {
->         int rc = 0;
->         struct dp_display_private *dp_display;
-> @@ -1569,12 +1569,12 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
->         if (state == ST_DISPLAY_OFF)
->                 dp_display_host_init(dp_display, true);
->
-> -       dp_display_enable(dp_display, 0);
-> +       __dp_display_enable(dp_display, 0);
->
->         rc = dp_display_post_enable(dp);
->         if (rc) {
->                 DRM_ERROR("DP display post enable failed, rc=%d\n", rc);
-> -               dp_display_disable(dp_display, 0);
-> +               __dp_display_disable(dp_display, 0);
->                 dp_display_unprepare(dp);
->         }
->
-> @@ -1590,7 +1590,7 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
->         return rc;
->  }
->
-> -int msm_dp_display_pre_disable(struct msm_dp *dp, struct drm_encoder *encoder)
-> +int dp_display_pre_disable(struct msm_dp *dp, struct drm_encoder *encoder)
->  {
->         struct dp_display_private *dp_display;
->
-> @@ -1601,7 +1601,7 @@ int msm_dp_display_pre_disable(struct msm_dp *dp, struct drm_encoder *encoder)
->         return 0;
->  }
->
-> -int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
-> +int dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
->  {
->         int rc = 0;
->         u32 state;
-> @@ -1614,7 +1614,7 @@ int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
->         /* stop sentinel checking */
->         dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
->
-> -       dp_display_disable(dp_display, 0);
-> +       __dp_display_disable(dp_display, 0);
->
->         rc = dp_display_unprepare(dp);
->         if (rc)
-> @@ -1632,9 +1632,9 @@ int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
->         return rc;
->  }
->
-> -void msm_dp_display_mode_set(struct msm_dp *dp, struct drm_encoder *encoder,
-> -                               struct drm_display_mode *mode,
-> -                               struct drm_display_mode *adjusted_mode)
-> +void dp_display_mode_set(struct msm_dp *dp, struct drm_encoder *encoder,
-
-I enjoyed the msm_dp prefix before, please leave this alone. It will
-make the patch much smaller too.
-
-> +                               const struct drm_display_mode *mode,
-> +                               const struct drm_display_mode *adjusted_mode)
->  {
->         struct dp_display_private *dp_display;
->
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.h b/drivers/gpu/drm/msm/dp/dp_display.h
-> index 76f45f9..4fb6ada 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.h
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.h
-> @@ -13,6 +13,7 @@
->  struct msm_dp {
->         struct drm_device *drm_dev;
->         struct device *codec_dev;
-> +       struct drm_bridge *bridge;
->         struct drm_connector *connector;
->         struct drm_encoder *encoder;
->         struct drm_panel *drm_panel;
-> @@ -40,4 +41,11 @@ int dp_display_get_test_bpp(struct msm_dp *dp_display);
->  void dp_display_signal_audio_start(struct msm_dp *dp_display);
->  void dp_display_signal_audio_complete(struct msm_dp *dp_display);
->
-> +int dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder);
-> +int dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder);
-> +int dp_display_pre_disable(struct msm_dp *dp, struct drm_encoder *encoder);
-> +void dp_display_mode_set(struct msm_dp *dp, struct drm_encoder *encoder,
-> +                               const struct drm_display_mode *mode,
-> +                               const struct drm_display_mode *adjusted_mode);
-> +
->  #endif /* _DP_DISPLAY_H_ */
-> diff --git a/drivers/gpu/drm/msm/dp/dp_drm.c b/drivers/gpu/drm/msm/dp/dp_drm.c
-> index f33e315..812a091 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_drm.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_drm.c
-> @@ -3,14 +3,25 @@
->   * Copyright (c) 2017-2020, The Linux Foundation. All rights reserved.
->   */
->
-> +#include <linux/platform_device.h>
-
-Why is this include necessary?
-
-> +
->  #include <drm/drm_atomic_helper.h>
->  #include <drm/drm_atomic.h>
-> +#include <drm/drm_bridge.h>
->  #include <drm/drm_crtc.h>
->
->  #include "msm_drv.h"
->  #include "msm_kms.h"
->  #include "dp_drm.h"
->
-> +
-> +struct dp_bridge {
-
-msm_dp_bridge?
-
-> +        struct drm_bridge bridge;
-> +        struct msm_dp *dp_display;
-> +};
-> +
-> +#define to_dp_display(x)     container_of((x), struct dp_bridge, bridge)
-> +
->  struct dp_connector {
->         struct drm_connector base;
->         struct msm_dp *dp_display;
-> @@ -162,3 +173,105 @@ struct drm_connector *dp_drm_connector_init(struct msm_dp *dp_display)
->
->         return connector;
->  }
-> +
-> +
-> +static int dp_bridge_attach(struct drm_bridge *dp_bridge,
-> +                                enum drm_bridge_attach_flags flags)
-> +{
-> +       return 0;
-> +}
-> +
-> +static bool dp_bridge_mode_fixup(struct drm_bridge *drm_bridge,
-> +                                  const struct drm_display_mode *mode,
-> +                                  struct drm_display_mode *adjusted_mode)
-> +{
-> +       return true;
-> +}
-
-Do we need these largely empty functions?
-
-> +
-> +static void dp_bridge_mode_set(struct drm_bridge *drm_bridge,
-> +                                const struct drm_display_mode *mode,
-> +                                const struct drm_display_mode *adjusted_mode)
-> +{
-> +       struct dp_bridge *dp_bridge = to_dp_display(drm_bridge);
-> +       struct msm_dp *dp_display = dp_bridge->dp_display;
-> +
-> +       dp_display_mode_set(dp_display, drm_bridge->encoder, mode, adjusted_mode);
-> +}
-> +
-> +static void dp_bridge_pre_enable(struct drm_bridge *drm_bridge)
-> +{
-> +
-> +}
-
-Do we need this empty function?
-
-> +
-> +static void dp_bridge_enable(struct drm_bridge *drm_bridge)
-> +{
-> +       struct dp_bridge *dp_bridge = to_dp_display(drm_bridge);
-> +       struct msm_dp *dp_display = dp_bridge->dp_display;
-> +
-> +       dp_display_enable(dp_display, drm_bridge->encoder);
-> +}
-> +
-> +static void dp_bridge_disable(struct drm_bridge *drm_bridge)
-> +{
-> +       struct dp_bridge *dp_bridge = to_dp_display(drm_bridge);
-> +       struct msm_dp *dp_display = dp_bridge->dp_display;
-> +
-> +       dp_display_pre_disable(dp_display, drm_bridge->encoder);
-> +}
-> +
-> +static void dp_bridge_post_disable(struct drm_bridge *drm_bridge)
-> +{
-> +       struct dp_bridge *dp_bridge = to_dp_display(drm_bridge);
-> +       struct msm_dp *dp_display = dp_bridge->dp_display;
-> +
-> +       dp_display_disable(dp_display, drm_bridge->encoder);
-> +}
-> +
-> +static const struct drm_bridge_funcs dp_bridge_ops = {
-> +        .attach       = dp_bridge_attach,
-> +        .mode_fixup   = dp_bridge_mode_fixup,
-> +        .pre_enable   = dp_bridge_pre_enable,
-> +        .enable       = dp_bridge_enable,
-> +        .disable      = dp_bridge_disable,
-> +        .post_disable = dp_bridge_post_disable,
-> +        .mode_set     = dp_bridge_mode_set,
-> +};
-> +
-> +int msm_dp_bridge_init(struct msm_dp *dp_display, struct drm_device *dev,
-> +                       struct drm_encoder *encoder)
-> +{
-> +       int rc = 0;
-
-Use tabs?
-
-> +        struct msm_drm_private *priv = NULL;
-
-Please drop initialization of rc and priv.
-
-> +        struct dp_bridge *dp_bridge;
-> +       struct drm_bridge *bridge;
-
-Use tabs?
-
-> +
-> +        dp_bridge = kzalloc(sizeof(*dp_bridge), GFP_KERNEL);
-> +        if (!dp_bridge) {
-> +                rc = -ENOMEM;
-> +                goto error;
-
-return -ENOMEM;
-
-> +        }
-> +
-> +        dp_bridge->dp_display = dp_display;
-> +
-> +       bridge = &dp_bridge->bridge;
-
-Use tabs?
-
-> +        bridge->funcs = &dp_bridge_ops;
-> +        bridge->encoder = encoder;
-> +
-> +        rc = drm_bridge_attach(encoder, bridge, NULL, 0);
-
-We need DRM_BRIDGE_ATTACH_NO_CONNECTOR flag set as this driver makes a
-connector, right?
-
-> +        if (rc) {
-> +                DRM_ERROR("failed to attach bridge, rc=%d\n", rc);
-> +                goto error_free_bridge;
-> +        }
-> +
-> +        priv = dev->dev_private;
-> +       priv->bridges[priv->num_bridges++] = bridge;
-> +       dp_display->bridge = bridge;
-
-More weird tabs.
-
-> +
-> +        return 0;
-> +
-> +error_free_bridge:
-> +        kfree(bridge);
-> +error:
-> +        return rc;
-> +
-> +}
