@@ -2,145 +2,395 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495504442D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1AF14442D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbhKCN5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 09:57:35 -0400
-Received: from mail-dm6nam11on2136.outbound.protection.outlook.com ([40.107.223.136]:13591
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232051AbhKCN53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 09:57:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QOIIrVToDWn+H5CxTFd4o1CSqA3CS4CYHrb/okQDzbjoKCy33W5eJxlq7EglTzcwg108rgmRncxpa8g9Ze0SCvHhth3su60W2DnQV91b7b5HSGAsLW9DNCfKiYP+dWisTyU1Um5zkHY5aJ932ZWJKGQdMf+IkPFRk6RUr54Xn+O0XajBxxn9719E3BVoXEaUWP64pV0qmtMQPUNYhJIAanm7wj+4sYEX/GS6wHeciD/Pv1KTNyyy7IXqQQdfJM5IpOY4CXSz5x3wwhSr55XHaSqh25VtQ1Wcx2FSgPF6feRkpdBnteOkoVhEHw/AKwf9YHqtWvQoi1+v6KDMOyUQpw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=txLk80q4M+3mWRiW0J7LprVuzxD4Pc7O6STVyHqMg4I=;
- b=iFk7xw183VWVUv1fkG64txyXKl8U8Hth8RbEcvr+XC79krkE4kM0M/xPUR96umUP2Zo1LN0Ig6AgYDd5NZORO4kbjbeM1IEuZkpGLehwePTExdkuFPJG0JgS0qwAOy5NSxkXvnsBjmSvXMLFmZ7/001Cd5AZ7XFRT/tZN1RbIJNScr9hxB4wpJf/O4LmbvciwR7n7zLieZMLA4iT0grrA2SyM7VS/aA/SJz/B8I+YsvHS8dL5SJKnwpDMMhfzx90v13qfke00OGpTFlDhyNl4DRpM5D39+jGpJDR4xDa64ftkTBfRdFiewMp80iaFfGXYplfKdi1FKU5xH3cOR3Mvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hammerspace.com; dmarc=pass action=none
- header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=txLk80q4M+3mWRiW0J7LprVuzxD4Pc7O6STVyHqMg4I=;
- b=bF8Z/kYRph0Rmw4/tLAC8Nl6IAk4pvkf+99iGRkWFFPFdh9AqvxETYiRTwJgdSqpzmgGMudNZViC/SloD1DCrEKhZ96SzZJh/b+xPYr6irRADSJpkpfUKirRKrxGpb0Gp6fsQfiwJw2TLKBr4UsozLNwZQJLDOo7YA3bRiIYyUI=
-Received: from CH0PR13MB5084.namprd13.prod.outlook.com (2603:10b6:610:111::7)
- by CH0PR13MB4714.namprd13.prod.outlook.com (2603:10b6:610:c2::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.6; Wed, 3 Nov
- 2021 13:54:49 +0000
-Received: from CH0PR13MB5084.namprd13.prod.outlook.com
- ([fe80::1533:4550:d876:1486]) by CH0PR13MB5084.namprd13.prod.outlook.com
- ([fe80::1533:4550:d876:1486%8]) with mapi id 15.20.4669.010; Wed, 3 Nov 2021
- 13:54:49 +0000
-From:   Trond Myklebust <trondmy@hammerspace.com>
-To:     "corbet@lwn.net" <corbet@lwn.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "hch@lst.de" <hch@lst.de>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
-Subject: Re: [PATCH 2/9] nfs: remove unused header <linux/pnfs_osd_xdr.h>
-Thread-Topic: [PATCH 2/9] nfs: remove unused header <linux/pnfs_osd_xdr.h>
-Thread-Index: AQHX0DVQ984FywqRDkeU7h4MdEH9Tqvw1XOAgAD6RICAAASXgA==
-Date:   Wed, 3 Nov 2021 13:54:49 +0000
-Message-ID: <c86b2be8e11f8586098bf202831c592f8d92476e.camel@hammerspace.com>
-References: <20211102220203.940290-1-corbet@lwn.net>
-         <20211102220203.940290-3-corbet@lwn.net>
-         <08d283fbedab1be09a9dd6cf5a296c6a465a9394.camel@hammerspace.com>
-         <87bl312wc2.fsf@meer.lwn.net>
-In-Reply-To: <87bl312wc2.fsf@meer.lwn.net>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: lwn.net; dkim=none (message not signed)
- header.d=none;lwn.net; dmarc=none action=none header.from=hammerspace.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 753af12e-3fa2-4906-7efc-08d99ed180b6
-x-ms-traffictypediagnostic: CH0PR13MB4714:
-x-microsoft-antispam-prvs: <CH0PR13MB47146693B467D5047B876798B88C9@CH0PR13MB4714.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3276;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: P1Nljc/6aiOHcdPOfsbB+slpnxSvdx7g5qg8/p7EvjQNwwjeDKJJxOqL1pXzWeHE26L9u00xpA3FMeGUVEmy39/RZuuCNj0yb6y2f7zpiFJfE9BFRkn/HOmd1GqGYD/dGwYBtWaz1sFXRou6T6fVhT6js7UJZP96rVum3+g/akNuAKnk+Xa9vwqZKd23b+dNAkJEwtcs3dLjVIvwmbGhGO3Iwuahn6WFU4x8ElYfI030Rjs1OJ9tKs00sZK5ImKkcluJjBynL4LlvCRzMF2qJ8VX1KXf8HV3YNrH4j4rWLE0x0/HnRl5/VJ7ldHX2SvH1QWgT5PRIakRwgcef3lFBlnp9RXZVq6TVOh26ZDA0dEAP3OCP2LYOFGBl4FAl87swYKw3EnbYOzoM0O/8bi+F1jl9Rq8wm0G6hbFowXSrKB360gj3HIuDaQFhMnCZ1a8Juma/7crmU6e+lvYQIjr6s6K9Ufxt6z/0fS9ofDHDMdEpEMqGB6xBPJc8Ib8ZFkfhiTNrzikvABERFV4zhEufuLBOh3rSt/JHq0LtV/cKWM9VwzdYbBGAmzp0/7rKsfc2ZFHNvmqpetgXIflrNqgNq6ej7w0pzWIyki0etvqjwwFJxoDrguisJH8bT1sapWQemWQq0roa5cFXtEv1wf/s/qXd+2iWlOi4LnZKTRsNnQ+3xOcq7I64ylgUlOktA+H+dI+iuzUY5eKAYZkS/xjRQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR13MB5084.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(26005)(316002)(5660300002)(38070700005)(83380400001)(2616005)(36756003)(508600001)(2906002)(66476007)(66556008)(64756008)(66446008)(186003)(66946007)(54906003)(76116006)(4326008)(6486002)(38100700002)(122000001)(8676002)(4744005)(8936002)(6506007)(110136005)(86362001)(71200400001)(6512007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?azZkb1l5R2h6N1QveTkvMFdSbXJRbjNURzFIcU9SQ2ZjZGZMTWVsRWs5VE5m?=
- =?utf-8?B?aENaS3V3WUZuNDRyODV5NWk3bDFlUHRrMXZXVmt2V0RPN1FDNkZJZCs1cnVh?=
- =?utf-8?B?NmNBNXFaMnJaNHlXZXI1QzU0Ly9oemVaamhCa3RwOWkwMWRsRmZpSEJyL1JD?=
- =?utf-8?B?U1RLSFlOV1Z3bnVkODZKamY4ZTY5YnZBeUI1bTRXRHlOeW5Dd2tvTWpyVDNs?=
- =?utf-8?B?ajR3K3RVa1pTVHNBc2xuQzNZNXZUREJPZ3I5d0RORVlpOTcyeERmZEZpRzlP?=
- =?utf-8?B?NzNWMS81TmlwdUZQSmY5cCs0TmlFR3FZQ1NhREVaN3g2ZnNOWFpMWXZzRENY?=
- =?utf-8?B?c2JtWFdEV2p5OStwMitEUzlhUC9UdnNQcU1NU1dBRHJpNS9oM1Q2V3pKVE1n?=
- =?utf-8?B?ajEySGtQZEJQWHNaNzNwOHg4SERtcHA5Vkw0cnp6VHRUZWJuNHA2VkVUa0ZN?=
- =?utf-8?B?VXE2eExYRjU1Z3k3L0RFN2xsSTVGZlNZL29ETFhFZlVxV1VnUEFpT2QzRnZV?=
- =?utf-8?B?T2JHMmZFaUZoVVhKYmszaDRwOTRKUTZYUjFOeEsrSGJoMVZkYVZqbjVpZ0I2?=
- =?utf-8?B?bExuU3pFUEZOeFUrUHFqaDBsVVN0VExFdlJBL1lTcVRIRmtqcGtrTTU1cXht?=
- =?utf-8?B?OS9BV3VZV0hjRVE2TlpYRmg3dVYySDBPT0VIWG5haGZtd2FNblJoNEZxNXpB?=
- =?utf-8?B?SHI2ekRIQ0tYakVLZTAydHFhUzlOQzdXOWxOWlhSamkvYWlWTWMrbk53djBH?=
- =?utf-8?B?bURDbS9EVlN0bVFPWXRvektwbFhFNU9TbXNLOGg3LzJPbHh1Qm9kRTRCRDFy?=
- =?utf-8?B?SlNKTFpQNGg4MEpzNC9ydkNJY3NuTVJLM3VzSnNvRFBMYVdScDBmSGdNRlRk?=
- =?utf-8?B?ZW1GT21VWC9IT0lha2FaaWVOdEc1QjF3WG1RYUZnOHRvUGcwVW9UTEY0Uy9m?=
- =?utf-8?B?ZlU1VzZFT1daL1FnYVJ5NUYvRDFJV3BHblhlMS8zb2RkSGxkU3laS1lEWW5O?=
- =?utf-8?B?UkI4ODB1RVFXWjlSZ3RGNmJLeXk2YVpvZmFaN05xcVBBMjNBQk1MUjQ0U3dB?=
- =?utf-8?B?cEh1TGRaRXFGaENyUUJ1WWRTRDRXd1B5RmNnNENabE9NNXBESHVsaDN1OXR4?=
- =?utf-8?B?QXJEUGVvd2p5bjc1Z1JjWFVFN2Zhbm1jT2xUc3dHdVBYKzJzK0xRTnBOZVFk?=
- =?utf-8?B?RVpuS1dIbEdMSm1zV3c1S2NYRThGM1pTc1BpdjVRSk5jbVdleEZ2Um5oYkNy?=
- =?utf-8?B?Z1h3eDhVdXQydjQzRnJ0SWNoK0w0UEZnc1BqaGRvYjAvQ3RGREpHQzVub0N5?=
- =?utf-8?B?YWhQY3FSNi9vNldtY3pudHlOTGFPdmhQR3BxbEtLdHMrdWg1ZkhhMjg5ZCs1?=
- =?utf-8?B?SG5aeWNvMytvQzd5NmNhV2RhZCs4Rk1QbG5MNFZmSUM0Z3JNTW5XOExqemtK?=
- =?utf-8?B?amdkTitFcUhiWnlqUTA4R01lQ2V0WGdSY1pIL3NWcFMrRGQwOUZyNjVFZ3FE?=
- =?utf-8?B?NXJmNVM3Rk54dHRNalJhTUc4c29ObFQ1OVBrWExlTFRhNjY1ZTc0cy9IOGdk?=
- =?utf-8?B?eDhWVzVkZldaU1JrUFdVbXdCdzlSVWRIN2dvZzE4R3lrdVB1NHh4VVJUSXRU?=
- =?utf-8?B?aWN4QkJmYnJEQkk5OHA5Tm83Nm0yOHlPQWU0OHRwbWE1QmNlazRLTllQbDhz?=
- =?utf-8?B?a1NoenZOZ0g4KzlZK3NCNFFZNnBpemR0RU9WZWtwVWE1aEJkZitUWmI1djB2?=
- =?utf-8?B?Q094eHRqdXBwM0VYd2F2Y0hZSWpPSnR2dlZPbmFLZnFEdVVHMHdOOE1ESVpO?=
- =?utf-8?B?c1ZUbFhHZEgvTVBrWGVFbDR4SHB5NGtRRndCQS9zNmdUa3Z6UmNUSllFdnlS?=
- =?utf-8?B?Uk5QMW53OFdVTXRHSUdZWmNiTDRac0xqamJGenlhTm9QMnNLSy9pcVJkQkds?=
- =?utf-8?B?RzIxdXl2V0VtV3owcFM3cjArVGRIbHUzTlBTK0J1RDJmVkRrTHRhYVlyUTg3?=
- =?utf-8?B?K3JWN2hyTmpkdEdYTXNjK2kwUjBpVjM1S0h1OEtjd2dMVUQ1NXlwbU15WkRr?=
- =?utf-8?B?TUpkcVpqbjVaR3IwZEw0WEtYNDh2VktHUGFTT3RRRWk3NGx2Wm52bDNpYmc1?=
- =?utf-8?B?cW9qUk93WU9zS2hCRUk1SVRwRkxFZnVLSUJ4b3pDSUtxSWtzTHdacUFrbXZM?=
- =?utf-8?Q?u3YAan7TPpAy7jATk/tB1J8=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1650A46B683D8449829771F954178694@namprd13.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S232036AbhKCN5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 09:57:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231986AbhKCN5s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 09:57:48 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3C0C06120A
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 06:55:11 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id e2so3915004ljg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 06:55:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yfikhx5lD6H4OrTwev9q1XoxrbyVQ+Nr+SFoJkjr/Qc=;
+        b=WRPeotSogutRyERtr8+k7ErZJzMVL1RlafpF9XIcpCxP0sS47WcRVR9PBUuWRUm0V1
+         mfGFzUjfCv/xe1jxXKkn70BN89qou1u8TT5Utr12MNRlwf1wNR9bl2zgF45wVaq8YLvh
+         r0s4hTW0LSZECUKHPSb1+g0eUTADzkxc88FawkxvhBCog/PgV2dkyrErtul1BuuHxUIn
+         9powIfTAp1oHWh2J2eBhvtDOqMnGfV8Ya6JC5/hhP1KikAKGKMhy4tDGvHOo9I0SfqUk
+         ADxGABR4i5ePr06NWoKo7O7LEx/5XKzTPN5FN6qfUGOg+1vElDsYpDXd7p5dk9/Cy74v
+         m30w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yfikhx5lD6H4OrTwev9q1XoxrbyVQ+Nr+SFoJkjr/Qc=;
+        b=VIbNBR8eRMDw7L9Q+RetABNxFp5rMcHxE966k9HmqjeNHKOZIEMQq3X5AN3VS9FqbE
+         aFZp0III4enzZ7KPsDxis66fMijZv4lO8eF2r8ThaRN5jXn9Sqiq9uNBr5IHQDZTyudS
+         xCxd4M0/hlS83umpOjrgX7Oi+1vECxBW3rYSSrMv9eZbZ/QvXjJ3skPFraCYIKDCkxTv
+         1IhkeOEqdmoSpvbwNyTInEe7uCWxBYlFMGQTIHLBAtPjAmNWI9iIftGxDrQ9/EDOZnM0
+         Nxpu9xj5XIMwfWOdDwgr3/azwxtBpBwJHOxSgtcYFV8uzZDYY9r1IbDX8xGwdBxKZ2Mk
+         DWbQ==
+X-Gm-Message-State: AOAM5311bqCYi1Ww6Z3n6+BoI7ftzQlBSWtLr21VbhrkLwyRFIaEFFa+
+        O2QC3pHn8MssHjXdbFCIywnFNo7Hf4FPvg==
+X-Google-Smtp-Source: ABdhPJzEU5Irc+DqLsdFfRseBtZZbnYSPeOfQRE9nJ+tuVxW+0QisgPUoU99hKMstcCDkLyWYVBmTA==
+X-Received: by 2002:a2e:b8c7:: with SMTP id s7mr16502027ljp.73.1635947709655;
+        Wed, 03 Nov 2021 06:55:09 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id y11sm185930lfs.135.2021.11.03.06.55.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Nov 2021 06:55:09 -0700 (PDT)
+Subject: Re: [PATCH v2 1/5] arm64: dts: qcom: msm8996: Revamp reserved memory
+To:     Yassine Oudjana <y.oudjana@protonmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Raffaele Tranquillini <raffaele.tranquillini@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, phone-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210926190555.278589-1-y.oudjana@protonmail.com>
+ <20210926190555.278589-2-y.oudjana@protonmail.com>
+ <YXTNL7boyiRFKQiV@builder.lan>
+ <4455e52f-7e8a-c431-9977-dcf4aefe9822@linaro.org>
+ <91b184266e545efcc5969fe6661b50da82351119.camel@protonmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <05b1f668-4dbf-36f7-76ef-6559e277d3c6@linaro.org>
+Date:   Wed, 3 Nov 2021 16:55:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-X-OriginatorOrg: hammerspace.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR13MB5084.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 753af12e-3fa2-4906-7efc-08d99ed180b6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2021 13:54:49.2989
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ok09STuP95Y/gh2+mrJ5fbAylZEHct0v4/giJwaa1g7RYpbgUdGJMEY3Wwv97wsTorWR4u238hwNjvStbJgvOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR13MB4714
+In-Reply-To: <91b184266e545efcc5969fe6661b50da82351119.camel@protonmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTExLTAzIGF0IDA3OjM4IC0wNjAwLCBKb25hdGhhbiBDb3JiZXQgd3JvdGU6
-DQo+IFRyb25kIE15a2xlYnVzdCA8dHJvbmRteUBoYW1tZXJzcGFjZS5jb20+IHdyaXRlczoNCj4g
-DQo+ID4gSGkgSm9uLA0KPiA+IA0KPiA+IE9uIFR1ZSwgMjAyMS0xMS0wMiBhdCAxNjowMSAtMDYw
-MCwgSm9uYXRoYW4gQ29yYmV0IHdyb3RlOg0KPiA+ID4gQ29tbWl0IDE5ZmNhZTNkNGYyZGQgKCJz
-Y3NpOiByZW1vdmUgdGhlIFNDU0kgT1NEIGxpYnJhcnkiKQ0KPiA+ID4gZGVsZXRlZA0KPiA+ID4g
-dGhlIGxhc3QNCj4gPiA+IGZpbGUgdGhhdCBpbmNsdWRlZCA8bGludXgvcG5mc19vc2RfeGRyLmg+
-IGJ1dCBsZWZ0IHRoYXQgZmlsZQ0KPiA+ID4gYmVoaW5kLsKgDQo+ID4gPiBJdCdzDQo+ID4gPiB1
-bnVzZWQsIGdldCByaWQgb2YgaXQgbm93Lg0KPiA+ID4gDQo+ID4gPiBDYzogQ2hyaXN0b3BoIEhl
-bGx3aWcgPGhjaEBsc3QuZGU+DQo+ID4gPiBDYzogVHJvbmQgTXlrbGVidXN0IDx0cm9uZC5teWts
-ZWJ1c3RAaGFtbWVyc3BhY2UuY29tPg0KPiA+ID4gQ2M6IEFubmEgU2NodW1ha2VyIDxhbm5hLnNj
-aHVtYWtlckBuZXRhcHAuY29tPg0KPiA+ID4gQ2M6IGxpbnV4LW5mc0B2Z2VyLmtlcm5lbC5vcmcN
-Cj4gPiA+IFNpZ25lZC1vZmYtYnk6IEpvbmF0aGFuIENvcmJldCA8Y29yYmV0QGx3bi5uZXQ+DQo+
-ID4gDQo+ID4gQXJlIHlvdSBzZW5kaW5nIHRoaXMgZGlyZWN0bHkgdG8gTGludXMgb3IgZG8geW91
-IHdhbnQgbWUgdG8gdGFrZSBpdA0KPiA+IHRocm91Z2ggdGhlIE5GUyBjbGllbnQgdHJlZT8gSSdt
-IGZpbmUgZWl0aGVyIHdheS4NCj4gDQo+IEdvIGFoZWFkIGFuZCB0YWtlIGl0LCBwbGVhc2UsIGlm
-IHRoYXQgd29ya3M7IGl0J3MgYSBiaXQgb2ZmLXRvcGljIGZvcg0KPiBteQ0KPiBkb2NzIHRyZWUu
-DQo+IA0KDQoNCldpbGwgZG8uIFRoYW5rcywgSm9uIQ0KDQotLSANClRyb25kIE15a2xlYnVzdA0K
-TGludXggTkZTIGNsaWVudCBtYWludGFpbmVyLCBIYW1tZXJzcGFjZQ0KdHJvbmQubXlrbGVidXN0
-QGhhbW1lcnNwYWNlLmNvbQ0KDQoNCg==
+On 03/11/2021 05:42, Yassine Oudjana wrote:
+> On Wed, 2021-11-03 at 03:50 +0400, Dmitry Baryshkov wrote:
+>> On 24/10/2021 06:04, Bjorn Andersson wrote:
+>>> On Sun 26 Sep 14:06 CDT 2021, Yassine Oudjana wrote:
+>>>
+>>>> Fix a total overlap between zap_shader_region and slpi_region, and rename
+>>>> all regions to match the naming convention in other Qualcomm SoC device trees.
+>>>>
+>>>> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+>>>
+>>> FYI, I like this series, but I held off applying it because I wanted to
+>>> verify that the shuffling of the memory regions works on the existing
+>>> 8996 boards.
+>>>
+>>> Unfortunately it didn't work, either with or without the shuffling on
+>>> the db820c - and I've not found the time to figure out why that is. I
+>>> hope to get back to this shortly (or that someone else will figure it
+>>> out and provide a tested-by)
+>>
+>> I gave this a test too on my db820c. Usually the board MSS will crash
+>> after ~0.1 - 0.15 seconds after booting up, then during recovery the
+>> board will crash/reboot somewhere at the end of q6v5_mss_load() (and
+>> typically after successful q6v5_rmb_mba_wait() call.
+> 
+>> Occasionally (approximately 1 of 20) the MSS will not crash, presenting
+>> PDS service to the userspace. Even in this state it doesn't seem to be
+>> able to lock the gps location (but this might be related to the big UART
+>> mezzanine sitting on top of the board).
+> 
+> I've had MSS crash on xiaomi-scorpio too, but far less often. It seemed
+> like some sort of race condition, as it only happened when ADSP and MSS
+> were booted at the same time. To workaround this, I delayed loading of
+> the rmtfs service to leave some time between booting ADSP and MSS.
+
+For the tests to get 1:20 I've disabled ADSP (and WiFi/BT) completely. 
+Without that I think I never got MSS to boot successfully. I think this 
+is some kind of power/regulators/clock with ADSP and MSS draining too 
+much power.
+
+Note to myself: check rmtfs/partitions usage on db820c.
+
+> 
+>>
+>> Unfortunately there seem to be no SLPI firmware for the db820c, so I can
+>> not test slpi.
+>>
+>> A notice regarding the patchset itself. It looks like pil_q6v5_mss.c
+>> driver misses mx and cx proxy power domains for the MSS_MSM8996 case.
+> 
+> I didn't notice that. I guess they stay on and MSS is able to boot
+> anyway. I'll add them similar to PATCH 2/5.
+
+Thanks!
+
+> 
+>>
+>>>
+>>> Regards,
+>>> Bjorn
+>>>
+>>>> ---
+>>>>    .../dts/qcom/msm8996-sony-xperia-tone.dtsi    | 18 ++++--
+>>>>    .../boot/dts/qcom/msm8996-xiaomi-common.dtsi  | 18 +++---
+>>>>    arch/arm64/boot/dts/qcom/msm8996.dtsi         | 63 ++++++++++---------
+>>>>    3 files changed, 55 insertions(+), 44 deletions(-)
+>>>>
+>>>> diff --git a/arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi b/arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi
+>>>> index 507396c4d23b..4c26e66f0610 100644
+>>>> --- a/arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi
+>>>> +++ b/arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi
+>>>> @@ -13,9 +13,10 @@
+>>>>    #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+>>>>    #include <dt-bindings/pinctrl/qcom,pmic-mpp.h>
+>>>>
+>>>> -/delete-node/ &slpi_region;
+>>>> -/delete-node/ &venus_region;
+>>>> -/delete-node/ &zap_shader_region;
+>>>> +/delete-node/ &adsp_mem;
+>>>> +/delete-node/ &slpi_mem;
+>>>> +/delete-node/ &venus_mem;
+>>>> +/delete-node/ &gpu_mem;
+>>>>
+>>>>    / {
+>>>>    	qcom,msm-id = <246 0x30001>; /* MSM8996 V3.1 (Final) */
+>>>> @@ -46,18 +47,23 @@ cont_splash_mem: memory@83401000 {
+>>>>    			no-map;
+>>>>    		};
+>>>>
+>>>> -		zap_shader_region: gpu@90400000 {
+>>>> +		adsp_mem: adsp@8ea00000 {
+>>>> +			reg = <0x0 0x8ea00000 0x0 0x1a00000>;
+>>>> +			no-map;
+>>>> +		};
+>>>> +
+>>>> +		gpu_mem: gpu@90400000 {
+>>>>    			compatible = "shared-dma-pool";
+>>>>    			reg = <0x0 0x90400000 0x0 0x2000>;
+>>>>    			no-map;
+>>>>    		};
+>>>>
+>>>> -		slpi_region: memory@90500000 {
+>>>> +		slpi_mem: memory@90500000 {
+>>>>    			reg = <0 0x90500000 0 0xa00000>;
+>>>>    			no-map;
+>>>>    		};
+>>>>
+>>>> -		venus_region: memory@90f00000 {
+>>>> +		venus_mem: memory@90f00000 {
+>>>>    			reg = <0 0x90f00000 0 0x500000>;
+>>>>    			no-map;
+>>>>    		};
+>>>> diff --git a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi b/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
+>>>> index d239b01b8505..a5e7bccadba2 100644
+>>>> --- a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
+>>>> +++ b/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
+>>>> @@ -66,32 +66,32 @@ memory@88800000 {
+>>>>
+>>>>    		/* This platform has all PIL regions offset by 0x1400000 */
+>>>>    		/delete-node/ mpss@88800000;
+>>>> -		mpss_region: mpss@89c00000 {
+>>>> +		mpss_mem: mpss@89c00000 {
+>>>>    			reg = <0x0 0x89c00000 0x0 0x6200000>;
+>>>>    			no-map;
+>>>>    		};
+>>>>
+>>>>    		/delete-node/ adsp@8ea00000;
+>>>> -		adsp_region: adsp@8ea00000 {
+>>>> +		adsp_mem: adsp@8fe00000 {
+>>>>    			reg = <0x0 0x8fe00000 0x0 0x1b00000>;
+>>>>    			no-map;
+>>>>    		};
+>>>>
+>>>> -		/delete-node/ slpi@90b00000;
+>>>> -		slpi_region: slpi@91900000 {
+>>>> +		/delete-node/ slpi@90500000;
+>>>> +		slpi_mem: slpi@91900000 {
+>>>>    			reg = <0x0 0x91900000 0x0 0xa00000>;
+>>>>    			no-map;
+>>>>    		};
+>>>>
+>>>> -		/delete-node/ gpu@8f200000;
+>>>> -		zap_shader_region: gpu@92300000 {
+>>>> +		/delete-node/ gpu@90f00000;
+>>>> +		gpu_mem: gpu@92300000 {
+>>>>    			compatible = "shared-dma-pool";
+>>>>    			reg = <0x0 0x92300000 0x0 0x2000>;
+>>>>    			no-map;
+>>>>    		};
+>>>>
+>>>>    		/delete-node/ venus@91000000;
+>>>> -		venus_region: venus@90400000 {
+>>>> +		venus_mem: venus@92400000 {
+>>>>    			reg = <0x0 0x92400000 0x0 0x500000>;
+>>>>    			no-map;
+>>>>    		};
+>>>> @@ -107,7 +107,7 @@ ramoops@92900000 {
+>>>>    			pmsg-size = <0x40000>;
+>>>>    		};
+>>>>
+>>>> -		/delete-node/ rmtfs@86700000;
+>>>> +		/delete-node/ rmtfs;
+>>>>    		rmtfs@f6c00000 {
+>>>>    			compatible = "qcom,rmtfs-mem";
+>>>>    			reg = <0 0xf6c00000 0 0x200000>;
+>>>> @@ -118,7 +118,7 @@ rmtfs@f6c00000 {
+>>>>    		};
+>>>>
+>>>>    		/delete-node/ mba@91500000;
+>>>> -		mba_region: mba@f6f00000 {
+>>>> +		mba_mem: mba@f6f00000 {
+>>>>    			reg = <0x0 0xf6f00000 0x0 0x100000>;
+>>>>    			no-map;
+>>>>    		};
+>>>> diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+>>>> index eb3ec5ff46eb..1495fff6ffc9 100644
+>>>> --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
+>>>> +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+>>>> @@ -384,60 +384,65 @@ reserved-memory {
+>>>>    		#size-cells = <2>;
+>>>>    		ranges;
+>>>>
+>>>> -		mba_region: mba@91500000 {
+>>>> -			reg = <0x0 0x91500000 0x0 0x200000>;
+>>>> +		hyp_mem: memory@85800000 {
+>>>> +			reg = <0x0 0x85800000 0x0 0x600000>;
+>>>>    			no-map;
+>>>>    		};
+>>>>
+>>>> -		slpi_region: slpi@90b00000 {
+>>>> -			reg = <0x0 0x90b00000 0x0 0xa00000>;
+>>>> +		xbl_mem: memory@85e00000 {
+>>>> +			reg = <0x0 0x85e00000 0x0 0x200000>;
+>>>>    			no-map;
+>>>>    		};
+>>>>
+>>>> -		venus_region: venus@90400000 {
+>>>> -			reg = <0x0 0x90400000 0x0 0x700000>;
+>>>> +		smem_mem: smem-mem@86000000 {
+>>>> +			reg = <0x0 0x86000000 0x0 0x200000>;
+>>>>    			no-map;
+>>>>    		};
+>>>>
+>>>> -		adsp_region: adsp@8ea00000 {
+>>>> -			reg = <0x0 0x8ea00000 0x0 0x1a00000>;
+>>>> +		tz_mem: memory@86200000 {
+>>>> +			reg = <0x0 0x86200000 0x0 0x2600000>;
+>>>>    			no-map;
+>>>>    		};
+>>>>
+>>>> -		mpss_region: mpss@88800000 {
+>>>> -			reg = <0x0 0x88800000 0x0 0x6200000>;
+>>>> +		rmtfs_mem: rmtfs {
+>>>> +			compatible = "qcom,rmtfs-mem";
+>>>> +
+>>>> +			size = <0x0 0x200000>;
+>>>> +			alloc-ranges = <0x0 0xa0000000 0x0 0x2000000>;
+>>>>    			no-map;
+>>>> +
+>>>> +			qcom,client-id = <1>;
+>>>> +			qcom,vmid = <15>;
+>>>>    		};
+>>>>
+>>>> -		smem_mem: smem-mem@86000000 {
+>>>> -			reg = <0x0 0x86000000 0x0 0x200000>;
+>>>> +		mpss_mem: mpss@88800000 {
+>>>> +			reg = <0x0 0x88800000 0x0 0x6200000>;
+>>>>    			no-map;
+>>>>    		};
+>>>>
+>>>> -		memory@85800000 {
+>>>> -			reg = <0x0 0x85800000 0x0 0x800000>;
+>>>> +		adsp_mem: adsp@8ea00000 {
+>>>> +			reg = <0x0 0x8ea00000 0x0 0x1b00000>;
+>>>>    			no-map;
+>>>>    		};
+>>>>
+>>>> -		memory@86200000 {
+>>>> -			reg = <0x0 0x86200000 0x0 0x2600000>;
+>>>> +		slpi_mem: slpi@90500000 {
+>>>> +			reg = <0x0 0x90500000 0x0 0xa00000>;
+>>>>    			no-map;
+>>>>    		};
+>>>>
+>>>> -		rmtfs@86700000 {
+>>>> -			compatible = "qcom,rmtfs-mem";
+>>>> -
+>>>> -			size = <0x0 0x200000>;
+>>>> -			alloc-ranges = <0x0 0xa0000000 0x0 0x2000000>;
+>>>> +		gpu_mem: gpu@90f00000 {
+>>>> +			compatible = "shared-dma-pool";
+>>>> +			reg = <0x0 0x90f00000 0x0 0x100000>;
+>>>>    			no-map;
+>>>> +		};
+>>>>
+>>>> -			qcom,client-id = <1>;
+>>>> -			qcom,vmid = <15>;
+>>>> +		venus_mem: venus@91000000 {
+>>>> +			reg = <0x0 0x91000000 0x0 0x500000>;
+>>>> +			no-map;
+>>>>    		};
+>>>>
+>>>> -		zap_shader_region: gpu@8f200000 {
+>>>> -			compatible = "shared-dma-pool";
+>>>> -			reg = <0x0 0x90b00000 0x0 0xa00000>;
+>>>> +		mba_mem: mba@91500000 {
+>>>> +			reg = <0x0 0x91500000 0x0 0x200000>;
+>>>>    			no-map;
+>>>>    		};
+>>>>    	};
+>>>> @@ -1013,7 +1018,7 @@ opp-133000000 {
+>>>>    			};
+>>>>
+>>>>    			zap-shader {
+>>>> -				memory-region = <&zap_shader_region>;
+>>>> +				memory-region = <&gpu_mem>;
+>>>>    			};
+>>>>    		};
+>>>>
+>>>> @@ -2001,7 +2006,7 @@ venus: video-codec@c00000 {
+>>>>    				 <&venus_smmu 0x2c>,
+>>>>    				 <&venus_smmu 0x2d>,
+>>>>    				 <&venus_smmu 0x31>;
+>>>> -			memory-region = <&venus_region>;
+>>>> +			memory-region = <&venus_mem>;
+>>>>    			status = "disabled";
+>>>>
+>>>>    			video-decoder {
+>>>> @@ -3008,7 +3013,7 @@ adsp_pil: remoteproc@9300000 {
+>>>>    			clocks = <&xo_board>;
+>>>>    			clock-names = "xo";
+>>>>
+>>>> -			memory-region = <&adsp_region>;
+>>>> +			memory-region = <&adsp_mem>;
+>>>>
+>>>>    			qcom,smem-states = <&smp2p_adsp_out 0>;
+>>>>    			qcom,smem-state-names = "stop";
+>>>> --
+>>>> 2.33.0
+>>>>
+>>>>
+>>
+>>
+>> --
+>> With best wishes
+>> Dmitry
+> 
+> 
+> 
+
+
+-- 
+With best wishes
+Dmitry
