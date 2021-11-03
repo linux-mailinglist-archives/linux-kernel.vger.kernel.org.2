@@ -2,185 +2,454 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34A14445F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:31:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31AC44445FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:34:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232931AbhKCQd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 12:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232904AbhKCQdV (ORCPT
+        id S232852AbhKCQgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 12:36:50 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:58166 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229652AbhKCQgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 12:33:21 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 045B0C06120D
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 09:30:45 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id p8so1499839pgh.11
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 09:30:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hSU4MEw1vmUcUpi17shW7A/nf+kzKhbS5n/SddgA9O4=;
-        b=ZRq8o3rMRKakkSdoK5LRqJcjb1b8tRoXqy0QPZzj8AQ7lK6BUhtdgWxdVBArTrIbrr
-         qHsyzakdYDk8y3bcA23kXvKBfBirr77AJRU6N5bYXqLmyq7LLe4e3H9GH62PL2XHenXy
-         EUnZq1zkkK+M+SpC4ASpsEj32tSdvybWu2WZA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hSU4MEw1vmUcUpi17shW7A/nf+kzKhbS5n/SddgA9O4=;
-        b=J/3L23uFMqEPlhqLw1j4KFXE1M5KHBPqlDeo0aQx0UdZ+5t9PnLWp/6pQ7ElNkkGLm
-         FxoXMqjR87NIF8Qs3BMx08fk0iq+cnd/suiIAvr2khFcL+exGjXa0te0h1KLnMIgT7+e
-         ynJ3HKetMo0QXI+FaqHpQoFq4Z0NAcXR6EiebJ7zTx5alYq3mHBIT3aTTxHVLEGGvBxl
-         z5zTe2p0YFoEbQ+gtP3vC5OBTZQGP5RubDnmjolItCce2ciPLi68B6X544TmqZqL9vqu
-         TAAz+EPvLZmMtD57H+abWaxYTOgOhkcjhaOMewhvzmZy3efUAHG/lrYbK+VDGClaMddF
-         Kjgw==
-X-Gm-Message-State: AOAM531d1M+pwX7Xyp5RPm7Axr+CQuSiHy/8GFBcVYnA+9ZzWa1Nyr9V
-        VnijSg4nrESOcFyGc1ipHrcI5Q==
-X-Google-Smtp-Source: ABdhPJwqAkHz1sDMuAlA/Zu6Io8atJqb2f8rFb56TeYotjt8Dvme8IKRkjdJqBIpG7W34wizMZ4SRg==
-X-Received: by 2002:a63:8f4a:: with SMTP id r10mr33661700pgn.337.1635957044496;
-        Wed, 03 Nov 2021 09:30:44 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id nm13sm2203048pjb.56.2021.11.03.09.30.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 09:30:43 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH 2/2] selftests/seccomp: Report event mismatches more clearly
-Date:   Wed,  3 Nov 2021 09:30:39 -0700
-Message-Id: <20211103163039.2104830-3-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211103163039.2104830-1-keescook@chromium.org>
-References: <20211103163039.2104830-1-keescook@chromium.org>
+        Wed, 3 Nov 2021 12:36:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1635957244;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ilFhKLK7irkRE+PfhRgibjE7Zsl3QoMXM4CQ9fmf7oE=;
+        b=dVH54fyvKeQOGhscHec5vbM0/ME3pMV+naWv9FgQwhTHuzp4D0NRXqkcieBTHJ1LSYeTGR
+        pJV5MgoI9LgCjzNbD8eJvCiXjAOfVwg2RxNRcOb4tDiq6TmRhIjFwdzBbyO6CaW/QDDMAz
+        MKgdzPfIHNoDFs1wgIgHVfKR/pYu7as=
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur04lp2053.outbound.protection.outlook.com [104.47.14.53]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-18-H3tF7HQKNoqB9zOI0w2C1g-1; Wed, 03 Nov 2021 17:34:03 +0100
+X-MC-Unique: H3tF7HQKNoqB9zOI0w2C1g-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ASM85MBcv9KWmr6n0HvMw8SjyWmcbHl5JHzktfInQp4Yy+GfZSzY2R4Y5V7rjQGfJxUIWK0Leupys6zs/55/t8+LRmAdpGL6NO7hBUsEsHFWeCJyfE/stRGSYm+0QoMe0IZMVpEWKcdUiMMDveeiFwQm9tutALubwxF/C3C0JPcXjk6MuvHFSj8AjTeA2zqVnS0yBF2VhgzAKbTM+7+nhcs7ZJuqwEwUkEY1JsuJT1x9P78m/mMKcjboA6M/mU/l12/7X/ZxNt4J9xHLTCWMb/v3h9+KRU2KlLAuta1HUS33M5Cn1EcnFnzf0swzk+ls/xhFccmcTxYdfeBlZn73XA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ilFhKLK7irkRE+PfhRgibjE7Zsl3QoMXM4CQ9fmf7oE=;
+ b=ODdGhonEm7adRNBGlb/iuRXIUpGRoBZrYZLV//hh1xcJOadG/zr4Ehs9SbnVhKhCdoJ3SFHf+PJFms78jhXV5CywREZFUdidf7XrOE3CPV6y0gU1sX8Dz8zQI95zxnafE+vyY2apNvEmvWTcUJB9xwUVRoOQCLYesRLDRkQg5jIMJbcb+q4smZiskhqbcmzwiQ2ylQbCxqzuFJvxAdl5rn9ciW9E+G+85yeR5ZHEEJ6Wa9xwj0JWa0wUdSTvJrJtcongnumplTsL4WC+RTyD+Oa9nwxs2TwFBMFhQgzQbisakpB+ynab09+OB3SyKYob6ajiKE0RWGeBAs7hjUo79w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AM6PR04MB5366.eurprd04.prod.outlook.com (2603:10a6:20b:9d::19)
+ by AM6PR04MB6679.eurprd04.prod.outlook.com (2603:10a6:20b:d9::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Wed, 3 Nov
+ 2021 16:34:02 +0000
+Received: from AM6PR04MB5366.eurprd04.prod.outlook.com
+ ([fe80::b81e:116f:90fa:1b9c]) by AM6PR04MB5366.eurprd04.prod.outlook.com
+ ([fe80::b81e:116f:90fa:1b9c%3]) with mapi id 15.20.4669.011; Wed, 3 Nov 2021
+ 16:34:02 +0000
+Message-ID: <d3de34d9-a144-f955-bd41-13384c9a04c8@suse.com>
+Date:   Wed, 3 Nov 2021 17:33:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-US
+To:     Charles Mirabile <cmirabil@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Serge Schneider <serge@raspberrypi.org>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        linux-rpi-kernel@lists.infradead.org, fedora-rpi@googlegroups.com,
+        Mwesigwa Guma <mguma@redhat.com>,
+        Joel Savitz <jsavitz@redhat.com>
+References: <20211029215516.801593-1-cmirabil@redhat.com>
+ <20211029215516.801593-2-cmirabil@redhat.com>
+From:   Matthias Brugger <mbrugger@suse.com>
+Subject: Re: [PATCH 1/5] drivers/mfd: sensehat: Raspberry Pi Sense HAT core
+ driver
+In-Reply-To: <20211029215516.801593-2-cmirabil@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM6P193CA0081.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:209:88::22) To AM6PR04MB5366.eurprd04.prod.outlook.com
+ (2603:10a6:20b:9d::19)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3916; h=from:subject; bh=G0yVpCH3xhjkJ1auI6tvazNhkTwsm1uC5S0md53TDcY=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhgrkv5H6DETVsitpah1lX33nJQP/HIzqMSAsM18Fh Hbquu/SJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYYK5LwAKCRCJcvTf3G3AJn9UEA CcUu7Gac9kA+lcV2BSjseTvB9ZbcjhhxJWD2oKo872hCcWokGfuaOVGNo/203FffnTrQDoB03k2l/M 4lQAR8+0BBMJJp8Ghv1WFkwgmwa0tQHxhmk0cm3a7pwB9SWqcryRrljMUd+rIgZuWa7TvGbn0q66BB SsvRGAAE8eesbMcJY0nigItVk2HjFHC08fP533Ik9YBwhrx3+BBeXC5dNb0GqiaFcko++uqFBmgysa bki7aHqluymwAMpZetKZL8/l2jJU8ffbY5ohlevgFRtE4hhnL1csBql1k1eC436Y26UKBz/Lmytcov J16X3XeScZRlQqNu6ko9vYkqZd4fmVXoLk2pWROXpvXdDjM9luoQ+nHPMfk737LTSXJUigCNEK5FqW zTvuqlhtU1Dfj8NdFXvctdJq2sGKQyDiy0C7fOEbPLGJyvjPoqvZ0INkkiRaV+lqxLyaEGfVlJRwDu zVngSmPOGOe+FPtSQjF9537dK2tY9fsOhGAHsfU3R8EiFZHGQlo2DAJTr0DBJHBf2M9687ilm9ijKR 8+nZtXylTytk/0v1Ozji24h3xhu2s8Yny66jkn2C4JAiPqoULs/y5i+flxhK2v0aE5Gy84fJX58cZn +mp2dylQoLcpYuI22fLmJGRetg6Dnx0nGHM44M03Umb9kOhRCsIp7PNGMgEA==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Received: from [192.168.0.18] (188.86.219.160) by AM6P193CA0081.EURP193.PROD.OUTLOOK.COM (2603:10a6:209:88::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10 via Frontend Transport; Wed, 3 Nov 2021 16:34:01 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b96c91cb-7a90-49de-ada7-08d99ee7be64
+X-MS-TrafficTypeDiagnostic: AM6PR04MB6679:
+X-Microsoft-Antispam-PRVS: <AM6PR04MB667946247A020F70138AEA24BA8C9@AM6PR04MB6679.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ELNF7SyuUVkM1ybLmKb2ytcUQpyQ654k0hfAJlKSnp24AlUHVVZO7lVVSXLrXOme6a5lqJLmyAivAaQ9IPD5a5yQcd7Q8pLflQVP7LmWjGc7xSqciS68fG7qscZpM8vu9mKtsOGJmufhhB9X5I4VRRCrlx53vhhtZnJezW2sMOlsP3USLP3imM0PFLxqMuAcoYMKSL91toDTJKeVKSMlqDDwKYHwBMZcL5uHd/xh5jhvQ7GrXNld/7J0LpGuKpXTl8GCQu1MmlPUyJtsNzSv+R8Tcm7f6/1ajiR8klzlUPNSDVe5iYS6+RF+7KVLtSJbPPQNgEN28yq3HC1peAWy5ium5PbJGkRpgG1jZKc8X0sx9qYTTQRNXk/6c8cLzwUXh2uQaedIxDOMkKV64DyaUIpbsrIiUreabTp8AaFzHBd0RnIiXYXiJf9Nnq3+qNzxCoGnpFXjI8CIo+tmMQJ4BxFnoWgvFtiU7tVmya1yY3brCJhuaiPHjTUmKrkWPD/7gkMtkavATGdCqC7fkr6/koz6R0mpoNxoGhQNUCgRYI3Z6Av1EIbUxnsE+wul6fXfmESlRWv4KcZbaojcKXrUQ3fSjqcqAXCj+ObnuY49yM5V1gBk2pyaY2W2vaHvIiv1UUzUSVsfjvchbPRC8NQsTzFb+c/xWwGN3YXsRfFaqwsIMq8WNqKSChZxONSEExC4EshVq8dpR0rd9lKMc9yD0YV7U4LJ/VfiH4QsFToD7/2BMPo1/xKaQQhEttNhDaM4gBmwjquGcznzF/9myWNlTZfs3CBt5njf+dapU4wJa/QghLZU6dZOYTJX9cKVdX1b
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5366.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(66946007)(508600001)(8936002)(66476007)(5660300002)(8676002)(4326008)(31686004)(66556008)(53546011)(7416002)(38100700002)(26005)(36756003)(956004)(86362001)(6486002)(31696002)(54906003)(55236004)(2906002)(966005)(16576012)(316002)(186003)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NzdOL0NtRzFoVXlHR0p0SEVCdGFHTXFPZndjTmppbXBUcExLdXJ2ZFNrNFZY?=
+ =?utf-8?B?Uy9RSEpuMlMwYkFUQ3h2OWJ1a3g0RDl0bE4xeFlBakJBQXRMNkpoTWxBbDRm?=
+ =?utf-8?B?VzZSQnlUcllCRjUxbW5KR1J3YzBLOGxBQzc4MHpkb21jQW1oWU0rUncyMThm?=
+ =?utf-8?B?UXVjRUdsSktoK1JMNmQvMFVwS0MvQ2xiTHROOGMvZ2RrOXlGQ2RXVVZkUEYv?=
+ =?utf-8?B?a0VrY2R4dmlIckxxRTZ3Z2xkZXpMaVByWWtyZm9RTzRpUGtwM1g5QjA2R1dn?=
+ =?utf-8?B?VkhCRzVMTEpJc0NUeHFXY2VrYU50RWJuM3MxUnV6aWZJSHMzcFdBRXdZcG5D?=
+ =?utf-8?B?OXkzNmJXc3N6SGdwbWh2WnV5VXphRVpzcVAxV0ROUWMySWgyMDdQajMzM3B0?=
+ =?utf-8?B?OHZJMXA4RDN1eDlHQm1ZT0dvSGdvN1BxQ2pIbERmc0dxWWNLMVRDODdEVlVU?=
+ =?utf-8?B?UXFxNEZ4NmRVODRFTUZHQ2ZhMEQ1L3doNkRjR0VacGY4ZDVndCtuSktWdUhm?=
+ =?utf-8?B?bk40VmRQTEhaUWtnSEtUV1d4RFVzUC8zOEprcXZTYVVHV2FVMWxnWXdvTkJ2?=
+ =?utf-8?B?WVpvNEhqTENpRlR6MEdQblA4SXhlY3QvbmVvM2RqNEwyWDl6S1A2UkRNVGVS?=
+ =?utf-8?B?YWtLT1R0OE1nZFpPWnpkNU1MTitxeU1zQ3RTUjRIQThTdzZMS2k1MmJPQzdj?=
+ =?utf-8?B?SUxRSWhtR0lNMk9NSFNWZFJGMlpZblBEbnJ4Ulgzd1B2YUFpeFhNeDNTRjJY?=
+ =?utf-8?B?OStSTzN1MFRZUDBLb3RCNXJSNmxOUngwWFNXZ1NUT1p1dkdXM0lSTlRpUU95?=
+ =?utf-8?B?WU5id2ExZWJOaTUxMVJtZjdQYnVIN2I0YWJ0a3V2S3Bzd2tvM0s1YStrM2xX?=
+ =?utf-8?B?RG5RZlRNeDhkS3hnMTJOT0FGbjF2THVHbFJIRHVqL0k2dERTRFk4RG9IcjYx?=
+ =?utf-8?B?Wm1EQjQ4K0s3MWczMUhqdXVLT3Z5eW01VllXektjZDZZb3M0UXdzNUllU0wz?=
+ =?utf-8?B?eVhnMXRQK0NJZFJtSWUxaGlmU2xzVktxMHdNTWF1STBkUmRsbWM5d21uMHNY?=
+ =?utf-8?B?NTNmbHdzVlhXU1QxeXBuaWJZYkg0MTQweWlFOEJ6czVFa2lld1ZGcG8xM2NW?=
+ =?utf-8?B?M0pGTENaTzBycTByTlkzbm5iVmJwRlNmb2xSNForS3hIK3kzOXUzMytxR0VO?=
+ =?utf-8?B?dlJDeUM4ZWF5cDNoTFhaN25VVmtNeThhT1VwMDdnTDlQYnkybkQwYm92R09V?=
+ =?utf-8?B?cHpYWTVaNllJN21LTXpma0ZQWUpGVFFzY28yMDBObUhvQzFTRE1ueXhYWjEy?=
+ =?utf-8?B?aGVuQ3VHSkp2SkRLWkIxRFNMUEsxc3Z6QVZ2SVJROTBwSk9jd2R1TGozZFI1?=
+ =?utf-8?B?VnRLRFFFQU52eXpReTB5eEpjeXZxVDl0OFM2d01ab1pwNzNoRWFaYmFEdWhh?=
+ =?utf-8?B?Rjg0azJoSHpFZzJhYjduaUp5YVMydlNJM1ZkV24zTTR0c01qaWkrbGtXTGRP?=
+ =?utf-8?B?K0s2MWNJSDFlcytGQ2xjNmRsRzZzeE9hNm1LOW0zaXJtNzVQZ1NxN0JjOHhY?=
+ =?utf-8?B?eU1WUTdsR2NOVm8wVlVza21UaTBiSHN4ZlVxOXZRM2Y5ZGpSckhwcHlIUFRw?=
+ =?utf-8?B?bGNidE1XMzZDNU5mZjh1QXhlOWRKSkNGU3Vjb2pmZmg4RDlySDZGZkdXMTBJ?=
+ =?utf-8?B?b1BRRjM5czJkM3Q1ZGo5Sm1xS3J4dFU0NW9Yd1drdVJXWWUvcW50RkJ2Mkgz?=
+ =?utf-8?B?M1Z5YTZiTmJ5Q0I2UlVEWElVblNqelhXU1VjRVMvbVMyM09NZTVlVlpOTFEz?=
+ =?utf-8?B?bmJLZURxa040Mm9VNThWbDA5azkzQ3BpdUFHd0FkRXA5WklJMFJJb0h4QTBI?=
+ =?utf-8?B?TWdPVVZKVU9rT2x3d3E0eUFoMDdtQnlSM0Q1ZkJqWWRQQmk4VTBOeWtEVHBO?=
+ =?utf-8?B?MHV0dUM5MmZLajc4MklGR2JiM0IyTzJ5WDZsYzQ3akl2YTB2S0RPV0RUaWZy?=
+ =?utf-8?B?dGJ5NzhVRlRjY0t3YUVHL1FaQmZ4cGYvSlFGckUxNlpqTDI5MUVObjJPYkJh?=
+ =?utf-8?B?QllDM2ZPNVorM0ExUjB6MFNydndmL0pwc1llK1hFelBiSmFEdEs1YnB4K0hM?=
+ =?utf-8?B?a2puYjMxQTNoajJYYVZtRDdGTXMzWnV2Q3dSOC9lNi9yM0FHR01CMlMzVXk5?=
+ =?utf-8?Q?yPsHJ35ad/H0xszEj21R4vc=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b96c91cb-7a90-49de-ada7-08d99ee7be64
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5366.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2021 16:34:01.9818
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gAb0Cgu+rEEBhMA76vMAprSrfw4FZo4RTc9bBViJCbehC5MOK8vKalPqQwBO4iGvDB9MSBO0RWLfNIcUJIVoig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB6679
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running under tracer, more explicitly report the status and event
-mismatches to help with debugging. Additionally add an "immediate kill"
-test when under tracing to verify that fatal SIGSYS behaves the same
-under ptrace or seccomp tracing.
 
-Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: Will Drewry <wad@chromium.org>
-Cc: linux-kselftest@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- tools/testing/selftests/seccomp/seccomp_bpf.c | 54 +++++++++++++++++--
- 1 file changed, 49 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index d999643d577c..60b8d5899fe3 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -1487,7 +1487,7 @@ TEST_F(precedence, log_is_fifth_in_any_order)
- #define PTRACE_EVENT_SECCOMP 7
- #endif
- 
--#define IS_SECCOMP_EVENT(status) ((status >> 16) == PTRACE_EVENT_SECCOMP)
-+#define PTRACE_EVENT_MASK(status) ((status) >> 16)
- bool tracer_running;
- void tracer_stop(int sig)
- {
-@@ -1539,12 +1539,22 @@ void start_tracer(struct __test_metadata *_metadata, int fd, pid_t tracee,
- 
- 		if (wait(&status) != tracee)
- 			continue;
--		if (WIFSIGNALED(status) || WIFEXITED(status))
--			/* Child is dead. Time to go. */
-+
-+		if (WIFSIGNALED(status)) {
-+			/* Child caught a fatal signal. */
-+			return;
-+		}
-+		if (WIFEXITED(status)) {
-+			/* Child exited with code. */
- 			return;
-+		}
- 
--		/* Check if this is a seccomp event. */
--		ASSERT_EQ(!ptrace_syscall, IS_SECCOMP_EVENT(status));
-+		/* Check if we got an expected event. */
-+		ASSERT_EQ(WIFCONTINUED(status), false);
-+		ASSERT_EQ(WIFSTOPPED(status), true);
-+		ASSERT_EQ(WSTOPSIG(status) & SIGTRAP, SIGTRAP) {
-+			TH_LOG("Unexpected WSTOPSIG: %d", WSTOPSIG(status));
-+		}
- 
- 		tracer_func(_metadata, tracee, status, args);
- 
-@@ -1961,6 +1971,11 @@ void tracer_seccomp(struct __test_metadata *_metadata, pid_t tracee,
- 	int ret;
- 	unsigned long msg;
- 
-+	EXPECT_EQ(PTRACE_EVENT_MASK(status), PTRACE_EVENT_SECCOMP) {
-+		TH_LOG("Unexpected ptrace event: %d", PTRACE_EVENT_MASK(status));
-+		return;
-+	}
-+
- 	/* Make sure we got the right message. */
- 	ret = ptrace(PTRACE_GETEVENTMSG, tracee, NULL, &msg);
- 	EXPECT_EQ(0, ret);
-@@ -2011,6 +2026,11 @@ void tracer_ptrace(struct __test_metadata *_metadata, pid_t tracee,
- 	long *syscall_nr = NULL, *syscall_ret = NULL;
- 	FIXTURE_DATA(TRACE_syscall) *self = args;
- 
-+	EXPECT_EQ(WSTOPSIG(status) & 0x80, 0x80) {
-+		TH_LOG("Unexpected WSTOPSIG: %d", WSTOPSIG(status));
-+		return;
-+	}
-+
- 	/*
- 	 * The traditional way to tell PTRACE_SYSCALL entry/exit
- 	 * is by counting.
-@@ -2128,6 +2148,7 @@ FIXTURE_SETUP(TRACE_syscall)
- 	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
- 	ASSERT_EQ(0, ret);
- 
-+	/* Do not install seccomp rewrite filters, as we'll use ptrace instead. */
- 	if (variant->use_ptrace)
- 		return;
- 
-@@ -2186,6 +2207,29 @@ TEST_F(TRACE_syscall, syscall_faked)
- 	EXPECT_SYSCALL_RETURN(45000, syscall(__NR_gettid));
- }
- 
-+TEST_F_SIGNAL(TRACE_syscall, kill_immediate, SIGSYS)
-+{
-+	struct sock_filter filter[] = {
-+		BPF_STMT(BPF_LD|BPF_W|BPF_ABS,
-+			offsetof(struct seccomp_data, nr)),
-+		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_mknodat, 0, 1),
-+		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_KILL_THREAD),
-+		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
-+	};
-+	struct sock_fprog prog = {
-+		.len = (unsigned short)ARRAY_SIZE(filter),
-+		.filter = filter,
-+	};
-+	long ret;
-+
-+	/* Install "kill on mknodat" filter. */
-+	ret = prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &prog, 0, 0);
-+	ASSERT_EQ(0, ret);
-+
-+	/* This should immediately die with SIGSYS, regardless of tracer. */
-+	EXPECT_EQ(-1, syscall(__NR_mknodat, -1, NULL, 0, 0));
-+}
-+
- TEST_F(TRACE_syscall, skip_after)
- {
- 	struct sock_filter filter[] = {
--- 
-2.30.2
+On 29/10/2021 23:55, Charles Mirabile wrote:
+> This patch adds the core driver file, containing the regmap configuration
+> needed to communicate with the board over I2C. We also add the header
+> file shared by all three drivers, containing common data and definitions.
+> In addition, we add a config option to toggle compilation of the driver.
+> 
+> Signed-off-by: Charles Mirabile <cmirabil@redhat.com>
+> Signed-off-by: Mwesigwa Guma <mguma@redhat.com>
+> Signed-off-by: Joel Savitz <jsavitz@redhat.com>
+> ---
+>   drivers/mfd/Kconfig          |   8 ++
+>   drivers/mfd/Makefile         |   1 +
+>   drivers/mfd/sensehat-core.c  | 164 +++++++++++++++++++++++++++++++++++
+>   include/linux/mfd/sensehat.h |  64 ++++++++++++++
+>   4 files changed, 237 insertions(+)
+>   create mode 100644 drivers/mfd/sensehat-core.c
+>   create mode 100644 include/linux/mfd/sensehat.h
+> 
+> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> index ca0edab91aeb..297ab2143ced 100644
+> --- a/drivers/mfd/Kconfig
+> +++ b/drivers/mfd/Kconfig
+> @@ -11,6 +11,14 @@ config MFD_CORE
+>   	select IRQ_DOMAIN
+>   	default n
+>   
+> +config MFD_SENSEHAT_CORE
+> +	tristate "Raspberry Pi Sense HAT core functions"
+> +	depends on I2C
+> +	select MFD_CORE
+> +	help
+> +	  This is the core driver for the Raspberry Pi Sense HAT. This provides
+> +	  the necessary functions to communicate with the hardware.
+> +
+>   config MFD_CS5535
+>   	tristate "AMD CS5535 and CS5536 southbridge core functions"
+>   	select MFD_CORE
+> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> index 2ba6646e874c..7347a040a4ac 100644
+> --- a/drivers/mfd/Makefile
+> +++ b/drivers/mfd/Makefile
+> @@ -264,6 +264,7 @@ obj-$(CONFIG_MFD_ROHM_BD718XX)	+= rohm-bd718x7.o
+>   obj-$(CONFIG_MFD_ROHM_BD957XMUF)	+= rohm-bd9576.o
+>   obj-$(CONFIG_MFD_STMFX) 	+= stmfx.o
+>   obj-$(CONFIG_MFD_KHADAS_MCU) 	+= khadas-mcu.o
+> +obj-$(CONFIG_MFD_SENSEHAT_CORE) += sensehat-core.o
+>   obj-$(CONFIG_MFD_ACER_A500_EC)	+= acer-ec-a500.o
+>   obj-$(CONFIG_MFD_QCOM_PM8008)	+= qcom-pm8008.o
+>   
+> diff --git a/drivers/mfd/sensehat-core.c b/drivers/mfd/sensehat-core.c
+> new file mode 100644
+> index 000000000000..fb6c89510ec0
+> --- /dev/null
+> +++ b/drivers/mfd/sensehat-core.c
+> @@ -0,0 +1,164 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Raspberry Pi Sense HAT core driver
+> + * http://raspberrypi.org
+> + *
+> + * Copyright (C) 2015 Raspberry Pi
+> + * Copyright (C) 2021 Charles Mirabile, Mwesigwa Guma, Joel Savitz
+> + *
+> + * Original Author: Serge Schneider
+> + * Revised for upstream Linux by: Charles Mirabile, Mwesigwa Guma, Joel Savitz
+> + *
+> + * This driver is based on wm8350 implementation and was refactored to use the
+> + * misc device subsystem rather than the deprecated framebuffer subsystem.
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/moduleparam.h>
+> +#include <linux/err.h>
+> +#include <linux/init.h>
+> +#include <linux/i2c.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +#include <linux/regmap.h>
+> +#include "sensehat.h"
+> +
+> +static struct platform_device *
+> +sensehat_client_dev_register(struct sensehat *sensehat, const char *name);
+> +
+> +static struct regmap_config sensehat_config;
+> +
+> +static int sensehat_probe(struct i2c_client *i2c,
+> +			       const struct i2c_device_id *id)
+> +{
+> +	int ret;
+> +	unsigned int reg;
+> +
+> +	struct sensehat *sensehat = devm_kzalloc(&i2c->dev, sizeof(*sensehat), GFP_KERNEL);
+> +
+> +	if (!sensehat)
+> +		return -ENOMEM;
+> +
+> +	i2c_set_clientdata(i2c, sensehat);
+> +	sensehat->dev = &i2c->dev;
+> +	sensehat->i2c_client = i2c;
+> +
+> +	sensehat->regmap = devm_regmap_init_i2c(sensehat->i2c_client, &sensehat_config);
+> +
+> +	if (IS_ERR(sensehat->regmap)) {
+> +		dev_err(sensehat->dev, "Failed to initialize sensehat regmap");
+> +		return PTR_ERR(sensehat->regmap);
+> +	}
+> +
+> +
+> +	ret = regmap_read(sensehat->regmap, SENSEHAT_WAI, &reg);
+> +	if (ret < 0) {
+> +		dev_err(sensehat->dev, "failed to read from device");
+> +		return ret;
+> +	}
+> +
+> +	if (reg != SENSEHAT_ID) {
+> +		dev_err(sensehat->dev, "expected device ID %i, got %i",
+> +			SENSEHAT_ID, ret);
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = regmap_read(sensehat->regmap, SENSEHAT_VER, &reg);
+> +	if (ret < 0) {
+> +		dev_err(sensehat->dev, "Unable to get sensehat firmware version");
+> +		return ret;
+> +	}
+> +
+> +	dev_info(sensehat->dev,
+> +		 "Raspberry Pi Sense HAT firmware version %i\n", reg);
+> +
+> +	sensehat->joystick.pdev = sensehat_client_dev_register(sensehat,
+> +							       "sensehat-joystick");
+
+Why don't you use devm_mfd_add_devices function together with mfd_cell?
+
+> +
+> +	if (IS_ERR(sensehat->joystick.pdev)) {
+> +		dev_err(sensehat->dev, "failed to register sensehat-joystick");
+> +		return PTR_ERR(sensehat->joystick.pdev);
+> +	}
+> +
+> +	sensehat->display.pdev = sensehat_client_dev_register(sensehat,
+> +								  "sensehat-display");
+> +
+> +	if (IS_ERR(sensehat->display.pdev)) {
+> +		dev_err(sensehat->dev, "failed to register sensehat-display");
+> +		return PTR_ERR(sensehat->display.pdev);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static struct platform_device *
+> +sensehat_client_dev_register(struct sensehat *sensehat, const char *name)
+> +{
+> +	long ret = -ENOMEM;
+> +	struct platform_device *pdev = platform_device_alloc(name, -1);
+> +
+> +	if (!pdev)
+> +		goto alloc_fail;
+> +
+> +	pdev->dev.parent = sensehat->dev;
+> +	platform_set_drvdata(pdev, sensehat);
+> +
+> +	ret = platform_device_add(pdev);
+> +	if (ret)
+> +		goto add_fail;
+> +
+> +	ret = devm_add_action_or_reset(sensehat->dev,
+> +		(void *)platform_device_unregister, pdev);
+> +	if (ret)
+> +		goto alloc_fail;
+> +
+> +	return pdev;
+> +
+> +add_fail:
+> +	platform_device_put(pdev);
+> +alloc_fail:
+> +	return ERR_PTR(ret);
+> +}
+> +
+> +static bool sensehat_writeable_register(struct device *dev, unsigned int reg)
+> +{
+> +	return (reg >= SENSEHAT_DISPLAY &&
+> +		reg < SENSEHAT_DISPLAY + sizeof(sensehat_fb_t))
+> +		|| reg == SENSEHAT_EE_WP;
+> +}
+> +static bool sensehat_readable_register(struct device *dev, unsigned int reg)
+> +{
+> +	return (reg >= SENSEHAT_DISPLAY &&
+> +		reg < SENSEHAT_DISPLAY + sizeof(sensehat_fb_t))
+> +		|| reg == SENSEHAT_WAI || reg == SENSEHAT_VER
+> +		|| reg == SENSEHAT_KEYS || reg == SENSEHAT_EE_WP;
+> +}
+
+I wonder if we really need this. In the end this is tied to in kernel drivers. 
+AFAIKS no userspace process can read. Without this we could move senhat_fb_t 
+into the display driver as it's local to that driver.
+
+> +
+> +static struct regmap_config sensehat_config = {
+> +	.name = "sensehat",
+> +	.reg_bits = 8,
+> +	.val_bits = 8,
+> +	.writeable_reg = sensehat_writeable_register,
+> +	.readable_reg = sensehat_readable_register,
+> +};
+> +
+> +static const struct i2c_device_id sensehat_i2c_id[] = {
+> +	{ "sensehat", 0 },
+> +	{ "rpi-sense", 0 },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(i2c, sensehat_i2c_id);
+> +
+> +static struct i2c_driver sensehat_driver = {
+> +	.driver = {
+> +		   .name = "sensehat",
+> +	},
+> +	.probe = sensehat_probe,
+> +	.id_table = sensehat_i2c_id,
+> +};
+> +
+> +module_i2c_driver(sensehat_driver);
+> +
+> +MODULE_DESCRIPTION("Raspberry Pi Sense HAT core driver");
+> +MODULE_AUTHOR("Serge Schneider <serge@raspberrypi.org>");
+> +MODULE_LICENSE("GPL");
+> diff --git a/include/linux/mfd/sensehat.h b/include/linux/mfd/sensehat.h
+> new file mode 100644
+> index 000000000000..7e2e97a43f90
+> --- /dev/null
+> +++ b/include/linux/mfd/sensehat.h
+> @@ -0,0 +1,64 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +/*
+> + * Raspberry Pi Sense HAT core driver
+> + * http://raspberrypi.org
+> + *
+> + * Copyright (C) 2015 Raspberry Pi
+> + * Copyright (C) 2021 Charles Mirabile, Mwesigwa Guma, Joel Savitz
+> + *
+> + * Original Author: Serge Schneider
+> + * Revised for upstream Linux by: Charles Mirabile, Mwesigwa Guma, Joel Savitz
+> + */
+> +
+> +#ifndef __LINUX_MFD_SENSEHAT_H_
+> +#define __LINUX_MFD_SENSEHAT_H_
+> +#include <linux/miscdevice.h>
+> +
+> +//8x8 display with 3 color channels
+> +typedef u8 sensehat_fb_t[8][3][8];
+
+I'm not a great fan of typedefs. AFAIK they are rarely used in kernel code.
+
+> +
+> +#define SENSEHAT_DISPLAY		0x00
+> +#define SENSEHAT_WAI			0xF0
+> +#define SENSEHAT_VER			0xF1
+> +#define SENSEHAT_KEYS			0xF2
+> +#define SENSEHAT_EE_WP			0xF3
+> +
+> +#define SENSEHAT_ID			's'
+> +
+> +#define SENSEDISP_IOC_MAGIC 0xF1
+> +
+> +#define SENSEDISP_IOGET_GAMMA _IO(SENSEDISP_IOC_MAGIC, 0)
+> +#define SENSEDISP_IOSET_GAMMA _IO(SENSEDISP_IOC_MAGIC, 1)
+> +#define SENSEDISP_IORESET_GAMMA _IO(SENSEDISP_IOC_MAGIC, 2)
+> +
+> +struct sensehat {
+> +	struct device *dev;
+> +	struct i2c_client *i2c_client;
+> +	struct regmap *regmap;
+> +
+> +	/* Client devices */
+> +	struct sensehat_joystick {
+> +		struct platform_device *pdev;
+> +		struct input_dev *keys_dev;
+> +		struct gpio_desc *keys_desc;
+> +		int keys_irq;
+> +	} joystick;
+> +
+> +	struct sensehat_display {
+> +		struct platform_device *pdev;
+> +		struct miscdevice mdev;
+> +		struct mutex rw_mtx;
+> +		u8 gamma[32];
+> +		struct {
+> +			u16 b:5, u:1, g:5, r:5;
+> +		} vmem[8][8];
+> +	} display;
+> +};
+> +
+> +enum gamma_preset {
+> +	GAMMA_DEFAULT = 0,
+> +	GAMMA_LOWLIGHT,
+> +	GAMMA_PRESET_COUNT,
+> +};
+
+Please review, which of this defines really need to be in the header and can't 
+be just local to the corresponding driver.
+
+Apart from that, I'd appreciate if you could add me in CC in the next version of 
+this patches. I also wonder why you didn't CC arm-linux-kernel mailinglist, in 
+the end this is a board for RPi and hence Arm.
+
+Regards,
+Matthias
+
+> +
+> +#endif
+> 
 
