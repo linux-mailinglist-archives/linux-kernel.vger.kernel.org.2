@@ -2,85 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD070444682
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:01:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3AB444684
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:01:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233065AbhKCREA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 13:04:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233022AbhKCRD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 13:03:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8003F61108;
-        Wed,  3 Nov 2021 17:01:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635958880;
-        bh=ctHs4cYJ4MVL59XgQwiliRdAEGQU0iYYEgGiBFXjHew=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y91pIA4eOn4EvbomZQhZcknl7XmH2WF8NJarBVW5n8E1TWR+srMaoricFWqXlyzg0
-         ywbpWG5TnAPurdaA6RZ69xerT08i4/LNTB2w/0zYJclHO9KAHWVszXFP50MqanVvYV
-         7Z6Xlvy4jE6+kvAjHS37qRqI6vqY2jyPJMIKkX/e45GG4GIbf08WRNR2ELwf7Ebhbu
-         TifRIVJVghxkPGLITo1RPxe7eaR+XcmxorlJIAa/hhnTr29E6aK+WLCFUwHyqd6jWc
-         8XsJFq6tJr79AO7fvhhEG5midws2PBJH8CeJm3bxr7OVD1wh4EiJqBY+E45qCgcCMc
-         Wn9akcRWBlRvg==
-Date:   Wed, 3 Nov 2021 17:01:16 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regmap: allow to define reg_update_bits for no bus
- configuration
-Message-ID: <YYLAXL4HjgBGuF91@sirena.org.uk>
-References: <20211102214138.28873-1-ansuelsmth@gmail.com>
+        id S233075AbhKCREE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 13:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233022AbhKCRED (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 13:04:03 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B83C061205
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 10:01:26 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 71so2507911wma.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 10:01:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=4lIhYLX16E5dGAMp8p9rDyFi1F2gTM+Q1Uh/Pl4rLPY=;
+        b=EaMKlGiCKGFYXlmVwztOTXSiL2HK7f05V2JPHBSDWT3027cIjatnLYxTIeXi99waqF
+         WI5CZsIgUtqMzRMn+MCMUVayjB0PZO/5w9rTyg/aB2FD+7/u2wipTNO1uKoTOtwcm29V
+         /MBOV6wocnSta4b76G23XaMj5wK2G4oE86QeeAHTd9cBXIQTXPr9ht1fV8w3IHwQOyns
+         XkK4BMUMkvChwanmCaSuyDQ5O3x4GVeHppLxIvTwEka+kRtSnYQVnoihhNtL348rl3wA
+         HGadB+Vd2gAwQMJJ0AzhAFeZThsRJW7/VELGAninhkI3hR9mcMYUgTR55y0huByLh+ZJ
+         BuLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=4lIhYLX16E5dGAMp8p9rDyFi1F2gTM+Q1Uh/Pl4rLPY=;
+        b=DmXxpuuDOWHGXCjNgDXRnCdaDs6xNnVmMoLSQe/OV+XWXbtXRwIF+h0C/X9mAqi0AC
+         gR3G8wmNalKEhcrOhjOEYmFYNf+nqH2r6pyw/sWGefciHuIlAeVgOYJWbLsFsEkc2Gu9
+         PaTrB6+GDFfs1gfdV/ulP7mnUPAO6Seafj/fgXdKmL+9gOBdsXF05xj2ynavysCadcZL
+         2R08JrM6CtiRetMdzW2HP1Cxai9I+DfvtTSVYrotZGBhCE5WG5fHcO0eF/llQg6bvAP5
+         JYHO/7vNAKpmIFmZm30IjBGxt3cHn11IFTGnlktLZiALFZAzNeP0YOKuSHUnn5PZFJSe
+         BNpw==
+X-Gm-Message-State: AOAM532lDhlxquplKPbWOt1i0culSqkiLqCpLVKbQNi8dXXQSNrLAdsD
+        LGWasMTIvm1+g5EgT68SiPF1XA==
+X-Google-Smtp-Source: ABdhPJzWDmxu6si35aJclXAhUjcBNkg1SJiEjJ8BjEAzBYVwwyPTExaj5FFOMQK5ecqvYP64K1g+Dg==
+X-Received: by 2002:a7b:cc8f:: with SMTP id p15mr7503442wma.129.1635958884853;
+        Wed, 03 Nov 2021 10:01:24 -0700 (PDT)
+Received: from google.com ([95.148.6.174])
+        by smtp.gmail.com with ESMTPSA id p13sm6639467wmi.0.2021.11.03.10.01.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 10:01:24 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 17:01:22 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     syzbot <syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com>
+Cc:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] KASAN: stack-out-of-bounds Read in iov_iter_revert
+Message-ID: <YYLAYvFU+9cnu+4H@google.com>
+References: <6f7d4c1d-f923-3ab1-c525-45316b973c72@gmail.com>
+ <00000000000047f3b805c962affb@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="a/xCltgFY3niSviz"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211102214138.28873-1-ansuelsmth@gmail.com>
-X-Cookie: Thank God I'm an atheist.
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <00000000000047f3b805c962affb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Good afternoon Pavel,
 
---a/xCltgFY3niSviz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> 
+> Reported-and-tested-by: syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com
+> 
+> Tested on:
+> 
+> commit:         bff2c168 io_uring: don't retry with truncated iter
+> git tree:       https://github.com/isilence/linux.git truncate
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=730106bfb5bf8ace
+> dashboard link: https://syzkaller.appspot.com/bug?extid=9671693590ef5aad8953
+> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+> 
+> Note: testing is done by a robot and is best-effort only.
 
-On Tue, Nov 02, 2021 at 10:41:38PM +0100, Ansuel Smith wrote:
+As you can see in the 'dashboard link' above this bug also affects
+android-5-10 which is currently based on v5.10.75.
 
-> @@ -3064,7 +3065,7 @@ static int _regmap_update_bits(struct regmap *map, =
-unsigned int reg,
->  	if (change)
->  		*change =3D false;
-> =20
-> -	if (regmap_volatile(map, reg) && map->reg_update_bits) {
-> +	if ((regmap_volatile(map, reg) || !map->bus) && map->reg_update_bits) {
->  		ret =3D map->reg_update_bits(map->bus_context, reg, mask, val);
->  		if (ret =3D=3D 0 && change)
->  			*change =3D true;
+I see that the back-port of this patch failed in v5.10.y:
 
-I don't understand this change.  The point of the check for volatile
-there is that if the register isn't volatile then we need to ensure that
-the cache gets updated with any change that happens so we need to go
-through paths that include cache updates.  The presence or otherwise of
-a bus does not seem at all relevant here.
+  https://lore.kernel.org/stable/163152589512611@kroah.com/
 
---a/xCltgFY3niSviz
-Content-Type: application/pgp-signature; name="signature.asc"
+And after solving the build-error by back-porting both:
 
------BEGIN PGP SIGNATURE-----
+  2112ff5ce0c11 iov_iter: track truncated size
+  89c2b3b749182 io_uring: reexpand under-reexpanded iters
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGCwFsACgkQJNaLcl1U
-h9Cr9gf/Rt2GQTK3uvJpL+ueiJcYhKUD4eskBUMhuQLL4Qg7FQ9CelORo1PeFzjL
-zNfAeeFv2+1dT+sT6BLGshAfbwwAqlIawcA+S5xoxePdjviYnZd04dSEthB5kUMG
-9ha3i6VFyivSIdrD3e0nWw8alM0Ntc4wUyoyPaje5teyZ93YOfyXy48ulmkTKT8q
-jUQRUJtIhZZfpop7bd8K8m65nrBc6HZhqUF6/ZtiNMpb9FBROgHx7SYQ4LauGYIr
-gD/UjYryp/tX8GVi50UKpdMJPs5RCIcFBGun6hStg+73owAVBlJx2orEZM7HY3ds
-XXEUl106BrjiL63+kYTc587QQa2sUQ==
-=clcK
------END PGP SIGNATURE-----
+I now see execution tripping the WARN() in iov_iter_revert():
 
---a/xCltgFY3niSviz--
+  if (WARN_ON(unroll > MAX_RW_COUNT))
+      return
+
+Am I missing any additional patches required to fix stable/v5.10.y?
+
+Any help would be gratefully received.
+
+Kind regards,
+Lee
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
