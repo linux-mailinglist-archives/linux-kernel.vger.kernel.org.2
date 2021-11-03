@@ -2,60 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CDAD443CCB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 06:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A423443CCE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 06:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhKCFl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 01:41:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230326AbhKCFlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 01:41:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 55E5161108;
-        Wed,  3 Nov 2021 05:38:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635917927;
-        bh=YEe8g2H9+10wRJ6hkPSXljQ2IW5sFrabAYmc/8V4RtQ=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Bvb6BmatXzGPxaT7d9UUoESZHYvm9Bu3HGZf3f2OtVhytWVfdeV0pxbxA2txst7nJ
-         i5uEhIpsbUF/kD6eeelwFU74eO8wJagoIVBWfLNd6qvfBU8uHUT6178uh5x6WJlX3k
-         iO6dZE24WDrXDQ6BGIt9std4zYdBkZq+YHsx7qkI6w9AjhBCL3X2yuh3usRaHCPq38
-         a4qE43zsQBKSfOn02DawxbpaSCl+pfCXOO3Oax+NeSENqcyvsHMsgg1AhWbl7aDI/s
-         DYU86iIZew25vHH09tiiiP/dw5NRGHat2b73upwxOKsqMc8MYugrCz6Vs9voDQolUA
-         wH8PLsgsKdC2A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4D9FC60173;
-        Wed,  3 Nov 2021 05:38:47 +0000 (UTC)
-Subject: Re: [GIT PULL] Kselftest next update for Linux 5.16-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <5ee0a2b3-d5c1-5664-cb02-c24a7f4cdeaa@linuxfoundation.org>
-References: <5ee0a2b3-d5c1-5664-cb02-c24a7f4cdeaa@linuxfoundation.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <5ee0a2b3-d5c1-5664-cb02-c24a7f4cdeaa@linuxfoundation.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-next-5.16-rc1
-X-PR-Tracked-Commit-Id: f35dcaa0a8a29188ed61083d153df1454cf89d08
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 84924e2e620f4395466d772767313fff0de1dad7
-Message-Id: <163591792731.8140.6941329903411486649.pr-tracker-bot@kernel.org>
-Date:   Wed, 03 Nov 2021 05:38:47 +0000
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S231319AbhKCFo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 01:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229650AbhKCFo1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 01:44:27 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFE6C061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 22:41:51 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id s136so1440490pgs.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 22:41:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=IkLavH6bHRnjOCk9c0dRR1U3BfPY7tUVIXIB9PCYDy4=;
+        b=p7XJQa6iK9SZ4fS3lGJdyVWApi0iUXUu9J0u6wGITQg53ccsLx1caSLsV71kf05ZeR
+         +DkJTQ09jhsM04iJGsFd0A64iUw6JkDCrUYLSri304jwqYQL2PGiXJZ6KBGumREOyDbm
+         n8r+lt9wf4y4xA5Gq29knnjrLcDfWUFBjiptVowoqsPkUABoQv4gbLw02Vx4g8kJk4R4
+         HAa03JuZrWETFcJvH/e0YpEfNuzkdJ3pVjbfPZfkmXTo1WbCtQ/s4ikcm2jwOCn2+Sv9
+         7cpGE1nVY3N6tZd0CIvrlRCxE24s1hYIrAyqrv2H/WJrvcL9hgY1dfPUzdmUWnkjz5r3
+         vMCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=IkLavH6bHRnjOCk9c0dRR1U3BfPY7tUVIXIB9PCYDy4=;
+        b=yqQsdnCyNvNHLjrsKmOmNT7YydyXALWGZz8Qb0Zh5Jvp1EtBmP2/j/qV0RfyP8jaWt
+         5y0Utu0JbeiWxdcXHbJT83eqQRETwMK70yAPN5sn7X6dkBlQDDbLcg0vYIvW5A5pjyt2
+         cG7pFkafG3nViYMW+ueXALBK4SxJBc5PVX2hj9YCBceAi25jpmL9icAj85As4c3oiVWU
+         zsV/zJi+IIsIumOiMkWqdaRopv7+QXGpRv3gZZfyuaJvr0QfQbF6phqWOjslwTX8NgD5
+         57EF2A0Ags74fJic9CjO2rZMmQ6sexT2fVUnrKIoyCRjsIdY5zIinvL1/ByB9SjSowKM
+         f1zA==
+X-Gm-Message-State: AOAM5331dZuoC9T9r/me55F6oas/54kTDQzrKuzQTNCpSnSTM0otjk0G
+        /Ler8WfHT7QoSViBEjqtNVAv4x2Vc5L9fA==
+X-Google-Smtp-Source: ABdhPJzaMyoDL/8+G0gZPvsMRnec4wTj5cy+ssft5uVKalYqvH2f3ubIwgNTV/uHFT2pihC77gXf/Q==
+X-Received: by 2002:a63:1e51:: with SMTP id p17mr2684150pgm.195.1635918110370;
+        Tue, 02 Nov 2021 22:41:50 -0700 (PDT)
+Received: from [172.18.2.138] ([137.59.101.13])
+        by smtp.gmail.com with ESMTPSA id h24sm927683pfn.180.2021.11.02.22.41.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 22:41:49 -0700 (PDT)
+Subject: Re: [PATCH] ALSA: seq: Fix RCU stall in snd_seq_write()
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+References: <20211102033222.3849-1-qiang.zhang1211@gmail.com>
+ <s5hy267ot27.wl-tiwai@suse.de>
+ <2d05ceab-b8b7-0c7b-f847-69950c6db14e@gmail.com>
+ <s5ho872q25p.wl-tiwai@suse.de>
+ <47f05b3a-811b-e64c-0366-3aebaece6c8e@gmail.com>
+ <s5hcznipwsm.wl-tiwai@suse.de>
+From:   Zqiang <qiang.zhang1211@gmail.com>
+Message-ID: <b8e27c66-2fe3-aae0-a19c-e87a3e56625e@gmail.com>
+Date:   Wed, 3 Nov 2021 13:41:47 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <s5hcznipwsm.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 2 Nov 2021 11:56:07 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-next-5.16-rc1
+On 2021/11/2 下午8:27, Takashi Iwai wrote:
+> On Tue, 02 Nov 2021 12:20:32 +0100,
+> Zqiang wrote:
+>>
+>> On 2021/11/2 下午6:31, Takashi Iwai wrote:
+>>> On Tue, 02 Nov 2021 10:41:57 +0100,
+>>> Zqiang wrote:
+>>>> On 2021/11/2 下午4:33, Takashi Iwai wrote:
+>>>>> On Tue, 02 Nov 2021 04:32:22 +0100,
+>>>>> Zqiang wrote:
+>>>>>> If we have a lot of cell object, this cycle may take a long time, and
+>>>>>> trigger RCU stall. insert a conditional reschedule point to fix it.
+>>>>>>
+>>>>>> rcu: INFO: rcu_preempt self-detected stall on CPU
+>>>>>> rcu: 	1-....: (1 GPs behind) idle=9f5/1/0x4000000000000000
+>>>>>> 	softirq=16474/16475 fqs=4916
+>>>>>> 	(t=10500 jiffies g=19249 q=192515)
+>>>>>> NMI backtrace for cpu 1
+>>>>>> ......
+>>>>>> asm_sysvec_apic_timer_interrupt
+>>>>>> RIP: 0010:_raw_spin_unlock_irqrestore+0x38/0x70
+>>>>>> spin_unlock_irqrestore
+>>>>>> snd_seq_prioq_cell_out+0x1dc/0x360
+>>>>>> snd_seq_check_queue+0x1a6/0x3f0
+>>>>>> snd_seq_enqueue_event+0x1ed/0x3e0
+>>>>>> snd_seq_client_enqueue_event.constprop.0+0x19a/0x3c0
+>>>>>> snd_seq_write+0x2db/0x510
+>>>>>> vfs_write+0x1c4/0x900
+>>>>>> ksys_write+0x171/0x1d0
+>>>>>> do_syscall_64+0x35/0xb0
+>>>>>>
+>>>>>> Reported-by: syzbot+bb950e68b400ab4f65f8@syzkaller.appspotmail.com
+>>>>>> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+>>>>>> ---
+>>>>>>     sound/core/seq/seq_queue.c | 2 ++
+>>>>>>     1 file changed, 2 insertions(+)
+>>>>>>
+>>>>>> diff --git a/sound/core/seq/seq_queue.c b/sound/core/seq/seq_queue.c
+>>>>>> index d6c02dea976c..f5b1e4562a64 100644
+>>>>>> --- a/sound/core/seq/seq_queue.c
+>>>>>> +++ b/sound/core/seq/seq_queue.c
+>>>>>> @@ -263,6 +263,7 @@ void snd_seq_check_queue(struct snd_seq_queue *q, int atomic, int hop)
+>>>>>>     		if (!cell)
+>>>>>>     			break;
+>>>>>>     		snd_seq_dispatch_event(cell, atomic, hop);
+>>>>>> +		cond_resched();
+>>>>>>     	}
+>>>>>>       	/* Process time queue... */
+>>>>>> @@ -272,6 +273,7 @@ void snd_seq_check_queue(struct snd_seq_queue *q, int atomic, int hop)
+>>>>>>     		if (!cell)
+>>>>>>     			break;
+>>>>>>     		snd_seq_dispatch_event(cell, atomic, hop);
+>>>>>> +		cond_resched();
+>>>>> It's good to have cond_resched() in those places but it must be done
+>>>>> more carefully, as the code path may be called from the non-atomic
+>>>>> context, too.  That is, it must have a check of atomic argument, and
+>>>>> cond_resched() is applied only when atomic==false.
+>>>>>
+>>>>> But I still wonder how this gets a RCU stall out of sudden.  Looking
+>>>>> through https://syzkaller.appspot.com/bug?extid=bb950e68b400ab4f65f8
+>>>>> it's triggered by many cases since the end of September...
+>>>> I did not find useful information from the log,  through calltrace, I
+>>>> guess it may be triggered by the long cycle time, which caused the
+>>>> static state of the RCU to
+>>>>
+>>>> not be reported in time.
+>>> Yes, I understand that logic.  But I wonder why this gets triggered
+>>> *now* out of sudden.  The code has been present over decades, and I
+>>> don't think the similar test case must have been performed by fuzzer.
+>>>
+>>>> I ignore the atomic parameter check,  I will resend v2 .   in
+>>>> no-atomic context, we can insert
+>>>>
+>>>> cond_resched() to avoid this situation, but in atomic context,
+>>>>
+>>>> the RCU stall maybe still trigger.
+>>> Right, so maybe it's better to have an upper limit for the processed
+>>> cells, something like below (totally untested).
+>>>
+>>> Could you reproduce the problem locally?  Otherwise it's all nothing
+>>> but a guess...
+>> yes, this is just a guess.  I haven't reproduced locally, limiting the
+>> number of cycles is a suitable modification,
+>>
+>> but the  MAX_CELL_PROCESSES_IN_QUEUE is an experience value.
+> Yes, that's why we need the reproducer in anyway before moving
+> forward.  The problem is that the patch looks as if it were fixing the
+> RCU stall, but we haven't verified it at all that it is really the
+> cause.  Even we haven't checked whether it's really the too many cells
+> queued, or just because the concurrent queuing made the function
+> re-running.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/84924e2e620f4395466d772767313fff0de1dad7
+Thanks your explanation,  I think we can send your changes out and wait 
+for syzbot to test.
 
-Thank you!
+thanks
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Zqiang
+
+>
+> Takashi
