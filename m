@@ -2,99 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4534441D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E2F4441D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:46:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbhKCMsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 08:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230185AbhKCMsF (ORCPT
+        id S231751AbhKCMtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 08:49:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54968 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230185AbhKCMtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 08:48:05 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D78EC061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 05:45:29 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id g184so2274076pgc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 05:45:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y2nSdHgQfwg8AfD5xMlGZZ/kVCHjM8ptgo0r0VuianE=;
-        b=aQPZScxUmVjCRzlQXRTFdCH5gp2ztq0r6esSpLRy+kIDyERPZDmCSrcZ/ja5Kbx//E
-         znsm/D78DODY9jj8LScuX51+XhiIeHn/rJ0PWIedRIoFVgywDwyT4FF/6rPrH5qESVXA
-         qwyFuv+R4IXVYmimi2u0QvW4R4Cr98jeZYHhjJQ9ljy/d1sVJYBvJRFBzKAK3Z/lhNjr
-         7fEGuMOaeR5En7ELQ8QtX5aQ/xzBhlysXM7oosXPTaDl7EO+TCss9AB60m9BbhOX4CGC
-         r2MpMlTiY9CJ6riN3qRPX67BTzyc+VRasMQKCFkmDgt9cAMry6+qA1cDg59yV2Qt0+YV
-         SHxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y2nSdHgQfwg8AfD5xMlGZZ/kVCHjM8ptgo0r0VuianE=;
-        b=qeYrull0OJes/yBhAookwbL05IPwDbqxUUwZh5xJ4twhRDYtmw1aac99Pp2wA71I6F
-         V6js9MwpOUz75h1EHhy8wWp0CgBLUijUZpB0ulqacTgTGaY3fHeBcGNZF0rZ+nStZ2Ci
-         4+H86PF7q85GryRcw1YJbIordKy5NKU+n9fyAckIomP5DzIlhA9XX9PXc4ouVMMJJnGP
-         F9Ar56fz8gANXBiFbdIXcNwVV1B+ga+03yAevqqOS4vowTNFAdEFeurA5tzonu+D+6TI
-         CJT7GjXqAAFm8SEXwdgpIfOMow1bVEpCUq7qL2G4kLU6E71NEVdcTEID4uMX24N3Q8Pv
-         Q2aw==
-X-Gm-Message-State: AOAM5330F/EkKrtbQD66mGsXW9ClmzcirNFTiovYmDPHWlqG7qP8iqS+
-        qYX/YMHaY1GKMQcmL1BvU7Y=
-X-Google-Smtp-Source: ABdhPJwDk4qWexpr+V0Fh42A8OX7yL6sR8mptZHDoR7vislj6OWKaB1/Pufw8wmmTw6zx5g72wUALQ==
-X-Received: by 2002:a63:2147:: with SMTP id s7mr30086807pgm.140.1635943528451;
-        Wed, 03 Nov 2021 05:45:28 -0700 (PDT)
-Received: from kushal ([115.96.218.96])
-        by smtp.gmail.com with ESMTPSA id 1sm2206743pfm.163.2021.11.03.05.45.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 05:45:28 -0700 (PDT)
-From:   Kushal Kothari <kushalkothari285@gmail.com>
-To:     rppt@kernel.org, akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, mike.rapoport@gmail.com,
-        kushalkothari2850@gmail.com
-Cc:     Kushal Kothari <kushalkothari285@gmail.com>
-Subject: [PATCH v2] mm: Fix ERROR:do not initialise statics to 0 or NULL in memblock.c
-Date:   Wed,  3 Nov 2021 18:15:23 +0530
-Message-Id: <20211103124523.10670-1-kushalkothari285@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 3 Nov 2021 08:49:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635943594;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=z6Gv9aPGAm2nkgSP8Un5y2TgCpXofV69fWr18YkFIeQ=;
+        b=AlBOiaM2/FQAR6QEqjF3uH7XdY9a2m2KVbSipFasTRy8GeblOTZiWMpc5jKeAlJ3RgGudn
+        4i/pmnF+qccXrHJ9cfFK9kf9qyU1vfKXqT6pENzs3wcZpH0BCxKUXnYpt/WgbWMX3ciBXe
+        L9+ZQjSyTKZL6Y410uTF4QGY3jFQRzM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-315-nRiYLvqzPYK0wVmqGeNc8Q-1; Wed, 03 Nov 2021 08:46:31 -0400
+X-MC-Unique: nRiYLvqzPYK0wVmqGeNc8Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 19444DF8A7;
+        Wed,  3 Nov 2021 12:46:30 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 85E4070F6A;
+        Wed,  3 Nov 2021 12:46:15 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        linux-crypto@vger.kernel.org (open list:CRYPTO API),
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Borislav Petkov <bp@alien8.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH] crypto: x86/aes-ni: fix AVX detection
+Date:   Wed,  3 Nov 2021 14:46:14 +0200
+Message-Id: <20211103124614.499580-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default value of static variable is zero and bool is false so
-not need to set it here.
-This patch fixes this ERROR in memblock.c
-Error found with checkpatch.pl.
+Fix two semi-theoretical issues that are present.
 
-Signed-off-by: Kushal Kothari <kushalkothari285@gmail.com>
+1. AVX is assumed to be present when AVX2 is present.
+ That can be false in a VM.
+ This can be considered a hypervisor bug,
+ but the kernel should not crash in this case if this is possible.
+
+2. YMM state can be soft disabled in XCR0.
+
+Fix both issues by using 'cpu_has_xfeatures(XFEATURE_MASK_YMM')
+to check for usable AVX support.
+
+Fixes: d764593af9249 ("crypto: aesni - AVX and AVX2 version of AESNI-GCM encode and decode")
+
+Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 ---
+ arch/x86/crypto/aesni-intel_glue.c | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-Changes in v2: Correct the subject line and remove <stdbool.h> which isn't
-necessary 
-
- mm/memblock.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 5c3503c98b2f..9e2b7c1dbd03 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -152,10 +152,10 @@ static __refdata struct memblock_type *memblock_memory = &memblock.memory;
- 	} while (0)
- 
- static int memblock_debug __initdata_memblock;
--static bool system_has_some_mirror __initdata_memblock = false;
-+static bool system_has_some_mirror __initdata_memblock;
- static int memblock_can_resize __initdata_memblock;
--static int memblock_memory_in_slab __initdata_memblock = 0;
--static int memblock_reserved_in_slab __initdata_memblock = 0;
-+static int memblock_memory_in_slab __initdata_memblock;
-+static int memblock_reserved_in_slab __initdata_memblock;
- 
- static enum memblock_flags __init_memblock choose_memblock_flags(void)
- {
+diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
+index 0fc961bef299c..20db1e500ef6f 100644
+--- a/arch/x86/crypto/aesni-intel_glue.c
++++ b/arch/x86/crypto/aesni-intel_glue.c
+@@ -1147,24 +1147,25 @@ static int __init aesni_init(void)
+ 	if (!x86_match_cpu(aesni_cpu_id))
+ 		return -ENODEV;
+ #ifdef CONFIG_X86_64
+-	if (boot_cpu_has(X86_FEATURE_AVX2)) {
+-		pr_info("AVX2 version of gcm_enc/dec engaged.\n");
+-		static_branch_enable(&gcm_use_avx);
+-		static_branch_enable(&gcm_use_avx2);
+-	} else
+-	if (boot_cpu_has(X86_FEATURE_AVX)) {
+-		pr_info("AVX version of gcm_enc/dec engaged.\n");
++	if (cpu_has_xfeatures(XFEATURE_MASK_YMM, NULL)) {
++
+ 		static_branch_enable(&gcm_use_avx);
+-	} else {
+-		pr_info("SSE version of gcm_enc/dec engaged.\n");
+-	}
+-	if (boot_cpu_has(X86_FEATURE_AVX)) {
++
++		if (boot_cpu_has(X86_FEATURE_AVX2)) {
++			static_branch_enable(&gcm_use_avx2);
++			pr_info("AVX2 version of gcm_enc/dec engaged.\n");
++		} else {
++			pr_info("AVX version of gcm_enc/dec engaged.\n");
++		}
++
+ 		/* optimize performance of ctr mode encryption transform */
+ 		static_call_update(aesni_ctr_enc_tfm, aesni_ctr_enc_avx_tfm);
+ 		pr_info("AES CTR mode by8 optimization enabled\n");
++
++	} else {
++		pr_info("SSE version of gcm_enc/dec engaged.\n");
+ 	}
+ #endif
+-
+ 	err = crypto_register_alg(&aesni_cipher_alg);
+ 	if (err)
+ 		return err;
 -- 
-2.25.1
+2.26.3
 
