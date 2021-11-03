@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E79B444919
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:38:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 544F1444920
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:42:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231486AbhKCTlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 15:41:17 -0400
-Received: from todd.t-8ch.de ([159.69.126.157]:38537 "EHLO todd.t-8ch.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230460AbhKCTlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 15:41:08 -0400
-From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1635968309;
-        bh=bXuf1Fnll4HQ6OApxVeazk1FgKp+3wfoq7NhsxXZiy8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rGlqzH+SLKMzu7H/ocY4KlIzi9xr/EW2+zV2jo1HuMmI6hVkMiNmbnK/dli9tn3/7
-         yDnUaYKiQvxgt/NufZd+gnBOZRqtOLHHMVo7F6a9KMuzqMS0pmuzhPW/yGiMVL1Ui/
-         pENNVyqQ09IBrFLfZrMYcx3010GPJoByx5oRzXc4=
-To:     v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org
-Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefano Stabellini <stefano@aporeto.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] net/p9: load default transports
-Date:   Wed,  3 Nov 2021 20:38:23 +0100
-Message-Id: <20211103193823.111007-5-linux@weissschuh.net>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211103193823.111007-1-linux@weissschuh.net>
-References: <20211103193823.111007-1-linux@weissschuh.net>
+        id S230404AbhKCTpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 15:45:18 -0400
+Received: from wrqvxttq.outbound-mail.sendgrid.net ([149.72.167.116]:33694
+        "EHLO wrqvxttq.outbound-mail.sendgrid.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230243AbhKCTpQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 15:45:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wasin.io;
+        h=from:subject:mime-version:to:cc:content-transfer-encoding:
+        content-type;
+        s=s1; bh=cwoMxqGWSt3BO2nOoSMa84BFuZND+djw3Sn79Yk2hEo=;
+        b=lpGdhdzfmqesyAC2vk/WLX7f3p1p0qBuuVRFUa2hKZwEfje/p461cQ/0HKHy7rIya3Z6
+        8CJBBFu3meGF7j2hdCfAL6Z2q0/z0b6BmX7Us10zbzc+fptgG18lE/JEEX4vn2NhUZm3Mi
+        AmkRzD7RUaFq3zgeaf79fJBx4XgQ9zZhPac/4WvE13kbEYnxXRTaHQPkF9+v5UvDWB4KHe
+        jD6vY5tDmthRG9DfIHI7Ktsgm4s1zXdO+YKb9pJPahs2IiZkCCRKBIddHpmBeAR/EyO3MF
+        f/9RuD4NmyLY1HCQaUiQVj7MYbLzxBgsT42IwmVQhNpPfvdlD/luDjrwm8mOWF3g==
+Received: by filterdrecv-75ff7b5ffb-wdd5z with SMTP id filterdrecv-75ff7b5ffb-wdd5z-1-6182E610-25
+        2021-11-03 19:42:08.423301295 +0000 UTC m=+5433736.524577116
+Received: from mail.wasin.io (unknown)
+        by geopod-ismtpd-5-0 (SG) with ESMTP
+        id rHoC_mYBRf6dz-rhgBYqXw
+        for <linux-kernel@vger.kernel.org>;
+        Wed, 03 Nov 2021 19:42:08.178 +0000 (UTC)
+Received: from mail.wasin.io (localhost.localdomain [127.0.0.1])
+        by mail.wasin.io (Postfix) with ESMTP id 13D4DA79D7
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 02:46:21 +0800 (SGT)
+X-Virus-Scanned: Debian amavisd-new at mail.wasin.io
+Received: from mail.wasin.io ([127.0.0.1])
+        by mail.wasin.io (mail.wasin.io [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id nnD13DgDqKZG for <linux-kernel@vger.kernel.org>;
+        Thu,  4 Nov 2021 02:45:57 +0800 (SGT)
+Received: from haxpor-desktop.fritz.box (unknown [185.134.6.138])
+        by mail.wasin.io (Postfix) with ESMTPSA id C61F6A793B;
+        Thu,  4 Nov 2021 02:45:50 +0800 (SGT)
+From:   Wasin Thonkaew <wasin@wasin.io>
+Subject: [PATCH RESEND] include/asm-generic/error-injection.h: fix a spelling
+ mistake, and a coding style issue
+Date:   Wed, 03 Nov 2021 19:42:08 +0000 (UTC)
+Message-Id: <20211103194030.186361-1-wasin@wasin.io>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-SG-EID: =?us-ascii?Q?zTXXJmbXDq374aSgSvBccBfxYYlnkEq2csSLV7s2zvJ+VzBfif=2FVK=2F1r3dRlUa?=
+ =?us-ascii?Q?HKdShZ1bg6oUZY4XHrArWueUDLbCFuMY7ic0Lmk?=
+ =?us-ascii?Q?THo6zb4KQvGYbtpeRd0Pk6+CAW8Kx0k7QhITQN6?=
+ =?us-ascii?Q?jemMZn4GtMHkMYIjrf+y5Ia+KJhM6QyrjF+xUIU?=
+ =?us-ascii?Q?maBSbWX3OpJNUeeKjmwKN9FYNzeAI1VMViNpILd?=
+ =?us-ascii?Q?fdmmr00AhUJ=2FJwPUFLT=2FfFGhvB=2FYRVhsrIE7cr?=
+To:     Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     mhiramat@kernel.org, Wasin Thonkaew <wasin@wasin.io>
+X-Entity-ID: 9qDajD32UCSRojGE52wDxw==
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that all transports are split into modules it may happen that no
-transports are registered when v9fs_get_default_trans() is called.
-When that is the case try to load more transports from modules.
+Fix a spelling mistake "ganerating" -> "generating".
+Remove trailing semicolon for a macro ALLOW_ERROR_INJECTION to fix a
+coding style issue.
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+Signed-off-by: Wasin Thonkaew <wasin@wasin.io>
 ---
- net/9p/mod.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ include/asm-generic/error-injection.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/9p/mod.c b/net/9p/mod.c
-index 8f1d067b272e..7bb875cd279f 100644
---- a/net/9p/mod.c
-+++ b/net/9p/mod.c
-@@ -128,6 +128,10 @@ struct p9_trans_module *v9fs_get_trans_by_name(const char *s)
- }
- EXPORT_SYMBOL(v9fs_get_trans_by_name);
+diff --git a/include/asm-generic/error-injection.h b/include/asm-generic/error-injection.h
+index 7ddd9dc10ce9..fbca56bd9cbc 100644
+--- a/include/asm-generic/error-injection.h
++++ b/include/asm-generic/error-injection.h
+@@ -20,7 +20,7 @@ struct pt_regs;
  
-+static const char * const v9fs_default_transports[] = {
-+	"virtio", "tcp", "fd", "unix", "xen", "rdma",
-+};
-+
- /**
-  * v9fs_get_default_trans - get the default transport
-  *
-@@ -136,6 +140,7 @@ EXPORT_SYMBOL(v9fs_get_trans_by_name);
- struct p9_trans_module *v9fs_get_default_trans(void)
- {
- 	struct p9_trans_module *t, *found = NULL;
-+	int i;
+ #ifdef CONFIG_FUNCTION_ERROR_INJECTION
+ /*
+- * Whitelist ganerating macro. Specify functions which can be
++ * Whitelist generating macro. Specify functions which can be
+  * error-injectable using this macro.
+  */
+ #define ALLOW_ERROR_INJECTION(fname, _etype)				\
+@@ -29,7 +29,7 @@ static struct error_injection_entry __used				\
+ 	_eil_addr_##fname = {						\
+ 		.addr = (unsigned long)fname,				\
+ 		.etype = EI_ETYPE_##_etype,				\
+-	};
++	}
  
- 	spin_lock(&v9fs_trans_lock);
- 
-@@ -153,6 +158,10 @@ struct p9_trans_module *v9fs_get_default_trans(void)
- 			}
- 
- 	spin_unlock(&v9fs_trans_lock);
-+
-+	for (i = 0; !found && i < ARRAY_SIZE(v9fs_default_transports); i++)
-+		found = v9fs_get_trans_by_name(v9fs_default_transports[i]);
-+
- 	return found;
- }
- EXPORT_SYMBOL(v9fs_get_default_trans);
+ void override_function_with_return(struct pt_regs *regs);
+ #else
 -- 
-2.33.1
+2.25.1
 
