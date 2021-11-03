@@ -2,128 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD0C4446D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:17:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E9E4446DB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:17:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhKCRTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 13:19:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbhKCRTf (ORCPT
+        id S231166AbhKCRTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 13:19:37 -0400
+Received: from kirsty.vergenet.net ([202.4.237.240]:35546 "EHLO
+        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhKCRTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 13:19:35 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8594EC061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 10:16:58 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id h24so684369pjq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 10:16:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bV161Tgs4wSnzMybCdsPXiLVkj0ud2/om2LUNqGC1RA=;
-        b=ZRMroyRI+rPDWvePSSpTvBhiJsCJEQmo2gt/kDiy/MlSfUtg7NNa0p2QaZUikvBA0n
-         zyFTTC2Qc1Z5Tzzn0Nluc1PqpAmhJf7FSULF8I+1qo+QgLQ8pAWGoxdz5CHT1yipbSan
-         rH0pjlfV/T2v8996rQXxkGTZbPpNwpcuUpbek=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bV161Tgs4wSnzMybCdsPXiLVkj0ud2/om2LUNqGC1RA=;
-        b=ds3vJo5FtN3AneNGn8AQqvFpp+0ayw3xtCxobOnN1NpnSeRNIWEx2mjxlNZ4+MiF63
-         uAVjeEOUlfoYnGFMEIalJzrj1SdGR5pYVK6lvu2DXRx1cKvtk+TNgKEBPmvUHgisVAbG
-         o2mri5TlGNDh+kHC0UMeXphiQXJi9wYpkRFnahuTzn3bgiI7c+QW72jnG8N667gSvC68
-         tiEvJnfOnFNIDgQSO4l8Qb1zdzVwNQnnQkKsIQblGdSh3RyzBEgJcfMuhWisZRJMc60u
-         OvzxQ2/GPHSUlPlyJc28PlavHCpcaIoDX2w0+KAwqIh8YoCtHPAh5QWialxxfeFDQeBg
-         kNnQ==
-X-Gm-Message-State: AOAM532U/5uPwjaHijh62Y8a6ohC3UZN37CCut3KzVxtAPC3rgjWd8V+
-        7e9+ykNJNwY5kzyvnLLKiaG+c0x7H8k7fw==
-X-Google-Smtp-Source: ABdhPJwh5SjYa4p7foq2MopnWWiswUTmgThs5HIPn+o8rdj7paxcik4BtfS1J70kzanuk0eN0WNGzw==
-X-Received: by 2002:a17:90a:c58d:: with SMTP id l13mr16185603pjt.189.1635959817332;
-        Wed, 03 Nov 2021 10:16:57 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:b5cc:11fb:70c8:786f])
-        by smtp.gmail.com with UTF8SMTPSA id q1sm3256107pfu.44.2021.11.03.10.16.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 10:16:56 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 10:16:55 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sujit Kautkar <sujitka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] rpmsg: glink: Update cdev add/del API in
- rpmsg_ctrldev_release_device()
-Message-ID: <YYLEBxIUjlxz3Nhz@google.com>
-References: <20211102235147.872921-1-sujitka@chromium.org>
- <20211102165137.v3.2.Ie09561c5b453a91f10ecc7e1974c602c4ff78245@changeid>
+        Wed, 3 Nov 2021 13:19:36 -0400
+Received: from madeliefje.horms.nl (ip-80-113-23-202.ip.prioritytelecom.net [80.113.23.202])
+        by kirsty.vergenet.net (Postfix) with ESMTPA id 7104C25AD6B;
+        Thu,  4 Nov 2021 04:16:57 +1100 (AEDT)
+Received: by madeliefje.horms.nl (Postfix, from userid 7100)
+        id 4F72D27B0; Wed,  3 Nov 2021 18:16:55 +0100 (CET)
+Date:   Wed, 3 Nov 2021 18:16:55 +0100
+From:   Simon Horman <horms@verge.net.au>
+To:     yangxingwu <xingwu.yang@gmail.com>
+Cc:     Julian Anastasov <ja@ssi.bg>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, Chuanqi Liu <legend050709@qq.com>
+Subject: Re: [PATCH nf-next v5] netfilter: ipvs: Fix reuse connection if RS
+ weight is 0
+Message-ID: <20211103171652.GA12763@vergenet.net>
+References: <20211101020416.31402-1-xingwu.yang@gmail.com>
+ <ae67eb7b-a25f-57d3-195f-cdbd9247ef5b@ssi.bg>
+ <CA+7U5Jumj_MwMZBmDTCvWLnvmfX28d==dbkLTq+6cOz+32GCvw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211102165137.v3.2.Ie09561c5b453a91f10ecc7e1974c602c4ff78245@changeid>
+In-Reply-To: <CA+7U5Jumj_MwMZBmDTCvWLnvmfX28d==dbkLTq+6cOz+32GCvw@mail.gmail.com>
+Organisation: Horms Solutions BV
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 04:51:51PM -0700, Sujit Kautkar wrote:
-> Replace cdev add/del APIs with cdev_device_add/cdev_device_del to avoid
-> below kernel warning. This correctly takes a reference to the parent
-> device so the parent will not get released until all references to the
-> cdev are released.
+On Wed, Nov 03, 2021 at 07:40:46PM +0800, yangxingwu wrote:
+> hello Simon
 > 
-> | ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x7c
-> | WARNING: CPU: 7 PID: 19892 at lib/debugobjects.c:488 debug_print_object+0x13c/0x1b0
-> | CPU: 7 PID: 19892 Comm: kworker/7:4 Tainted: G        W         5.4.147-lockdep #1
-> | ==================================================================
-> | Hardware name: Google CoachZ (rev1 - 2) with LTE (DT)
-> | Workqueue: events kobject_delayed_cleanup
-> | pstate: 60c00009 (nZCv daif +PAN +UAO)
-> | pc : debug_print_object+0x13c/0x1b0
-> | lr : debug_print_object+0x13c/0x1b0
-> | sp : ffffff83b2ec7970
-> | x29: ffffff83b2ec7970 x28: dfffffd000000000
-> | x27: ffffff83d674f000 x26: dfffffd000000000
-> | x25: ffffffd06b8fa660 x24: dfffffd000000000
-> | x23: 0000000000000000 x22: ffffffd06b7c5108
-> | x21: ffffffd06d597860 x20: ffffffd06e2c21c0
-> | x19: ffffffd06d5974c0 x18: 000000000001dad8
-> | x17: 0000000000000000 x16: dfffffd000000000
-> | BUG: KASAN: use-after-free in qcom_glink_rpdev_release+0x54/0x70
-> | x15: ffffffffffffffff x14: 79616c6564203a74
-> | x13: 0000000000000000 x12: 0000000000000080
-> | Write of size 8 at addr ffffff83d95768d0 by task kworker/3:1/150
-> | x11: 0000000000000001 x10: 0000000000000000
-> | x9 : fc9e8edec0ad0300 x8 : fc9e8edec0ad0300
-> |
-> | x7 : 0000000000000000 x6 : 0000000000000000
-> | x5 : 0000000000000080 x4 : 0000000000000000
-> | CPU: 3 PID: 150 Comm: kworker/3:1 Tainted: G        W         5.4.147-lockdep #1
-> | x3 : ffffffd06c149574 x2 : ffffff83f77f7498
-> | x1 : ffffffd06d596f60 x0 : 0000000000000061
-> | Hardware name: Google CoachZ (rev1 - 2) with LTE (DT)
-> | Call trace:
-> |  debug_print_object+0x13c/0x1b0
-> | Workqueue: events kobject_delayed_cleanup
-> |  __debug_check_no_obj_freed+0x25c/0x3c0
-> |  debug_check_no_obj_freed+0x18/0x20
-> | Call trace:
-> |  slab_free_freelist_hook+0xb4/0x1bc
-> |  kfree+0xe8/0x2d8
-> |  dump_backtrace+0x0/0x27c
-> |  rpmsg_ctrldev_release_device+0x78/0xb8
-> |  device_release+0x68/0x14c
-> |  show_stack+0x20/0x2c
-> |  kobject_cleanup+0x12c/0x298
-> |  kobject_delayed_cleanup+0x10/0x18
-> |  dump_stack+0xe0/0x19c
-> |  process_one_work+0x578/0x92c
-> |  worker_thread+0x804/0xcf8
-> |  print_address_description+0x3c/0x4a8
-> |  kthread+0x2a8/0x314
-> |  ret_from_fork+0x10/0x18
-> |  __kasan_report+0x100/0x124
+> I delete the "This will effectively disable expire_nodest_conn" section
+> from doc, and the others remain untouched. The following is how it looks
+> like after modification:
 > 
-> Signed-off-by: Sujit Kautkar <sujitka@chromium.org>
+> 0: disable any special handling on port reuse. The new
+> connection will be delivered to the same real server that was
+> servicing the previous connection.
+> 
+> Simon, pls help to check if it's necessary to replace servicing with
+> service.
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Sorry, my mistake. No need to replace servicing with service.
+
+> And I will move the conn_reuse_mode line above the bool line
+> 
+> On Tue, Nov 2, 2021 at 2:21 AM Julian Anastasov <ja@ssi.bg> wrote:
+> 
+> >
+> >         Hello,
+> >
+> > On Mon, 1 Nov 2021, yangxingwu wrote:
+> >
+> > > We are changing expire_nodest_conn to work even for reused connections
+> > when
+> > > conn_reuse_mode=0, just as what was done with commit dc7b3eb900aa ("ipvs:
+> > > Fix reuse connection if real server is dead").
+> > >
+> > > For controlled and persistent connections, the new connection will get
+> > the
+> > > needed real server depending on the rules in ip_vs_check_template().
+> > >
+> > > Fixes: d752c3645717 ("ipvs: allow rescheduling of new connections when
+> > port reuse is detected")
+> > > Co-developed-by: Chuanqi Liu <legend050709@qq.com>
+> > > Signed-off-by: Chuanqi Liu <legend050709@qq.com>
+> > > Signed-off-by: yangxingwu <xingwu.yang@gmail.com>
+> >
+> >         Looks good to me, thanks!
+> >
+> > Acked-by: Julian Anastasov <ja@ssi.bg>
+> >
+> > > ---
+> > >  Documentation/networking/ipvs-sysctl.rst | 3 +--
+> > >  net/netfilter/ipvs/ip_vs_core.c          | 8 ++++----
+> > >  2 files changed, 5 insertions(+), 6 deletions(-)
+> > >
+> > > diff --git a/Documentation/networking/ipvs-sysctl.rst
+> > b/Documentation/networking/ipvs-sysctl.rst
+> > > index 2afccc63856e..1cfbf1add2fc 100644
+> > > --- a/Documentation/networking/ipvs-sysctl.rst
+> > > +++ b/Documentation/networking/ipvs-sysctl.rst
+> > > @@ -37,8 +37,7 @@ conn_reuse_mode - INTEGER
+> > >
+> > >       0: disable any special handling on port reuse. The new
+> > >       connection will be delivered to the same real server that was
+> > > -     servicing the previous connection. This will effectively
+> > > -     disable expire_nodest_conn.
+> > > +     servicing the previous connection.
+> > >
+> > >       bit 1: enable rescheduling of new connections when it is safe.
+> > >       That is, whenever expire_nodest_conn and for TCP sockets, when
+> > > diff --git a/net/netfilter/ipvs/ip_vs_core.c
+> > b/net/netfilter/ipvs/ip_vs_core.c
+> > > index 128690c512df..f9d65d2c8da8 100644
+> > > --- a/net/netfilter/ipvs/ip_vs_core.c
+> > > +++ b/net/netfilter/ipvs/ip_vs_core.c
+> > > @@ -1964,7 +1964,6 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int
+> > hooknum, struct sk_buff *skb, int
+> > >       struct ip_vs_proto_data *pd;
+> > >       struct ip_vs_conn *cp;
+> > >       int ret, pkts;
+> > > -     int conn_reuse_mode;
+> > >       struct sock *sk;
+> > >
+> > >       /* Already marked as IPVS request or reply? */
+> > > @@ -2041,15 +2040,16 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int
+> > hooknum, struct sk_buff *skb, int
+> > >       cp = INDIRECT_CALL_1(pp->conn_in_get, ip_vs_conn_in_get_proto,
+> > >                            ipvs, af, skb, &iph);
+> > >
+> > > -     conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
+> > > -     if (conn_reuse_mode && !iph.fragoffs && is_new_conn(skb, &iph) &&
+> > cp) {
+> > > +     if (!iph.fragoffs && is_new_conn(skb, &iph) && cp) {
+> > >               bool old_ct = false, resched = false;
+> > > +             int conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
+> > >
+> > >               if (unlikely(sysctl_expire_nodest_conn(ipvs)) && cp->dest
+> > &&
+> > >                   unlikely(!atomic_read(&cp->dest->weight))) {
+> > >                       resched = true;
+> > >                       old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
+> > > -             } else if (is_new_conn_expected(cp, conn_reuse_mode)) {
+> > > +             } else if (conn_reuse_mode &&
+> > > +                        is_new_conn_expected(cp, conn_reuse_mode)) {
+> > >                       old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
+> > >                       if (!atomic_read(&cp->n_control)) {
+> > >                               resched = true;
+> > > --
+> > > 2.30.2
+> >
+> > Regards
+> >
+> > --
+> > Julian Anastasov <ja@ssi.bg>
+> >
