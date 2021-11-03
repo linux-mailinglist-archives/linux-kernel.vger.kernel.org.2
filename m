@@ -2,647 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C12443FBE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 11:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED4C443FC2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 11:01:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbhKCKDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 06:03:33 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:42966 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231974AbhKCKD2 (ORCPT
+        id S232043AbhKCKEW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Nov 2021 06:04:22 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:60789 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231749AbhKCKEU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 06:03:28 -0400
-X-UUID: 36820a73575e47c88a8748271fe519c2-20211103
-X-UUID: 36820a73575e47c88a8748271fe519c2-20211103
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <trevor.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 970169523; Wed, 03 Nov 2021 18:00:47 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 3 Nov 2021 18:00:46 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 3 Nov 2021 18:00:46 +0800
-From:   Trevor Wu <trevor.wu@mediatek.com>
-To:     <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <matthias.bgg@gmail.com>
-CC:     <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <yc.hung@mediatek.com>, <daniel.baluta@nxp.com>
-Subject: [PATCH 4/4] ASoC: mediatek: mt8195: add machine driver for MT8195 SOF support
-Date:   Wed, 3 Nov 2021 18:00:40 +0800
-Message-ID: <20211103100040.11933-5-trevor.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20211103100040.11933-1-trevor.wu@mediatek.com>
-References: <20211103100040.11933-1-trevor.wu@mediatek.com>
+        Wed, 3 Nov 2021 06:04:20 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-46-D8J9dP9POlyetI0EQ9wyKQ-1; Wed, 03 Nov 2021 10:01:41 +0000
+X-MC-Unique: D8J9dP9POlyetI0EQ9wyKQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.24; Wed, 3 Nov 2021 10:01:40 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.024; Wed, 3 Nov 2021 10:01:40 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Peter Zijlstra' <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+CC:     Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Sami Tolvanen" <samitolvanen@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
+Subject: RE: [PATCH] static_call,x86: Robustify trampoline patching
+Thread-Topic: [PATCH] static_call,x86: Robustify trampoline patching
+Thread-Index: AQHX0I3T+Rz8ZcLBT06sRWcPs/oqcKvxiwhw
+Date:   Wed, 3 Nov 2021 10:01:40 +0000
+Message-ID: <af7756b2244e47b7b7fae534236dac30@AcuMS.aculab.com>
+References: <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
+ <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
+ <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
+ <20211101090155.GW174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXGhRmdM3om289Q2-s1Pzfob3D2iSDMorzggfhSk1oj53A@mail.gmail.com>
+ <YYE1yPClPMHvyvIt@hirez.programming.kicks-ass.net>
+ <202111021040.6570189A5@keescook>
+ <90a14299-ce56-41d5-9df9-f625aae1ac70@www.fastmail.com>
+ <202111021603.EDE5780FE@keescook>
+ <bbde172b-2dae-fdc0-fbb5-edec6752c740@kernel.org>
+ <20211103083559.GB174703@worktop.programming.kicks-ass.net>
+In-Reply-To: <20211103083559.GB174703@worktop.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds SOF support for mt8195 board with mt6359, rt1019 and
-rt5682.
-We define connection table "sof_conn_stream" and add route path to
-connect SOF driver path to backend of normal platform in the late
-probe callback.
+From: Peter Zijlstra
+> Sent: 03 November 2021 08:36
+> 
+> On Tue, Nov 02, 2021 at 05:20:05PM -0700, Andy Lutomirski wrote:
+> > I think that's a big mistake -- any sane ENDBR-using scheme would
+> > really prefer that ENDBR to be right next to the actual function body,
+> > and really any scheme would benefit due to better cache locality.
+> 
+> Agreed, IBT/BTI want the landing pad in front of the actual function.
+> 
+> > But, more importantly, IMO any sane ENDBR-using scheme wants to
+> > generate the indirect stub as part of code gen for the actual
+> > function.
+> 
+> Sorta, I really want to be able to not have a landing pad for functions
+> whose address is never taken. At that point it doesn't matter if it gets
+> generated along with the function and then stripped/poisoned later, or
+> generated later.
+> 
+> As such, the landing pad should not be part of the function proper,
+> direct calls should never observe it.
+> 
+> Less landing pads is more better.
 
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
-Signed-off-by: YC Hung <yc.hung@mediatek.com>
----
- sound/soc/mediatek/mt8195/Makefile            |   7 +-
- .../mt8195/mt8195-mt6359-rt1019-rt5682-sof.c  | 557 ++++++++++++++++++
- 2 files changed, 563 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682-sof.c
+One problem is when a direct call is 'too far' for a call instruction.
+IIRC this can happen in arm64 with modules (all 64bit except x86?).
+So an indirect call has to be used instead - which needs the landing pad.
+Although it may actually be better to put a trampoline (landing pad
++ near jump) elsewhere and have the module loader do the correct fixup.
+(Is the loader already generating a trampoline in the module code?)
+The function body can then be cache-line aligned - with its benefits.
 
-diff --git a/sound/soc/mediatek/mt8195/Makefile b/sound/soc/mediatek/mt8195/Makefile
-index 2edcd2855847..6f1ad0048826 100644
---- a/sound/soc/mediatek/mt8195/Makefile
-+++ b/sound/soc/mediatek/mt8195/Makefile
-@@ -14,10 +14,15 @@ obj-$(CONFIG_SND_SOC_MT8195) += snd-soc-mt8195-afe.o
- # machine driver
- snd-soc-mt8195-rt-common-objs := mt8195-common.o mt8195-realtek-common.o
- 
-+ifneq ($(CONFIG_SND_SOC_SOF_MT8195),)
-+obj-$(CONFIG_SND_SOC_MT8195_MT6359_RT1019_RT5682) += \
-+	snd-soc-mt8195-rt-common.o \
-+	mt8195-mt6359-rt1019-rt5682-sof.o
-+else
- obj-$(CONFIG_SND_SOC_MT8195_MT6359_RT1019_RT5682) += \
- 	snd-soc-mt8195-rt-common.o \
- 	mt8195-mt6359-rt1019-rt5682.o
+Can't anything that can write instructions always use a retpoline
+to implement a jump indirect to an arbitrary address?
+(Not to mention just generating the required code rather than a call.)
+
+AFAICT CFI is all about detecting invalid values in function pointer tables.
+It doesn't really protect in any way from JIT code doing incorrect things.
+
+	David
+
 -
-+endif
- obj-$(CONFIG_SND_SOC_MT8195_MT6359_RT1011_RT5682) += \
- 	snd-soc-mt8195-rt-common.o \
- 	mt8195-mt6359-rt1011-rt5682.o
-diff --git a/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682-sof.c b/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682-sof.c
-new file mode 100644
-index 000000000000..9d2be7a77c7c
---- /dev/null
-+++ b/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682-sof.c
-@@ -0,0 +1,557 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * mt8195-rt1019-rt5682-sof.c  --
-+ *	MT8195-MT6359-RT1019-RT5682 ALSA SoC machine driver for SOF
-+ *
-+ * Copyright (c) 2021 MediaTek Inc.
-+ * Author: Trevor Wu <trevor.wu@mediatek.com>
-+ *         YC Hung <yc.hung@mediatek.com>
-+ */
-+
-+#include <linux/module.h>
-+#include <sound/soc.h>
-+#include <sound/sof.h>
-+#include "mt8195-common.h"
-+#include "mt8195-realtek-common.h"
-+
-+#define SOF_DMA_DL2 "SOF_DMA_DL2"
-+#define SOF_DMA_DL3 "SOF_DMA_DL3"
-+#define SOF_DMA_UL4 "SOF_DMA_UL4"
-+#define SOF_DMA_UL5 "SOF_DMA_UL5"
-+
-+struct sof_conn_stream {
-+	const char *normal_link;
-+	const char *sof_link;
-+	const char *sof_dma;
-+	int stream_dir;
-+};
-+
-+static const struct snd_soc_dapm_widget
-+	mt8195_mt6359_rt1019_rt5682_widgets[] = {
-+	SND_SOC_DAPM_SPK("Speakers", NULL),
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_MIXER(SOF_DMA_DL2, SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER(SOF_DMA_DL3, SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER(SOF_DMA_UL4, SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER(SOF_DMA_UL5, SND_SOC_NOPM, 0, 0, NULL, 0),
-+};
-+
-+static const struct snd_soc_dapm_route mt8195_mt6359_rt1019_rt5682_routes[] = {
-+	/* speaker */
-+	{ "Speakers", NULL, "Speaker" },
-+	/* headset */
-+	{ "Headphone Jack", NULL, "HPOL" },
-+	{ "Headphone Jack", NULL, "HPOR" },
-+	{ "IN1P", NULL, "Headset Mic" },
-+	/* SOF Uplink */
-+	{SOF_DMA_UL4, NULL, "O034"},
-+	{SOF_DMA_UL4, NULL, "O035"},
-+	{SOF_DMA_UL5, NULL, "O036"},
-+	{SOF_DMA_UL5, NULL, "O037"},
-+	/* SOF Downlink */
-+	{"I070", NULL, SOF_DMA_DL2},
-+	{"I071", NULL, SOF_DMA_DL2},
-+	{"I020", NULL, SOF_DMA_DL3},
-+	{"I021", NULL, SOF_DMA_DL3},
-+};
-+
-+static const struct snd_kcontrol_new mt8195_mt6359_rt1019_rt5682_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Speakers"),
-+	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
-+	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+};
-+
-+enum {
-+	DAI_LINK_DL10_FE,
-+	DAI_LINK_DL_SRC_BE,
-+	DAI_LINK_DPTX_BE,
-+	DAI_LINK_ETDM1_IN_BE,
-+	DAI_LINK_ETDM2_IN_BE,
-+	DAI_LINK_ETDM1_OUT_BE,
-+	DAI_LINK_ETDM2_OUT_BE,
-+	DAI_LINK_ETDM3_OUT_BE,
-+	DAI_LINK_PCM1_BE,
-+	DAI_LINK_UL_SRC1_BE,
-+	DAI_LINK_UL_SRC2_BE,
-+	DAI_LINK_SOF_DL2_BE,
-+	DAI_LINK_SOF_DL3_BE,
-+	DAI_LINK_SOF_UL4_BE,
-+	DAI_LINK_SOF_UL5_BE,
-+};
-+
-+/* FE */
-+SND_SOC_DAILINK_DEFS(DL10_FE,
-+		     DAILINK_COMP_ARRAY(COMP_CPU("DL10")),
-+		     DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+/* BE */
-+SND_SOC_DAILINK_DEFS(DL_SRC_BE,
-+		     DAILINK_COMP_ARRAY(COMP_CPU("DL_SRC")),
-+		     DAILINK_COMP_ARRAY(COMP_CODEC("mt6359-sound",
-+						   "mt6359-snd-codec-aif1")),
-+		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+SND_SOC_DAILINK_DEFS(DPTX_BE,
-+		     DAILINK_COMP_ARRAY(COMP_CPU("DPTX")),
-+		     DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+SND_SOC_DAILINK_DEFS(ETDM1_IN_BE,
-+		     DAILINK_COMP_ARRAY(COMP_CPU("ETDM1_IN")),
-+		     DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+SND_SOC_DAILINK_DEFS(ETDM2_IN_BE,
-+		     DAILINK_COMP_ARRAY(COMP_CPU("ETDM2_IN")),
-+		     DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+SND_SOC_DAILINK_DEFS(ETDM1_OUT_BE,
-+		     DAILINK_COMP_ARRAY(COMP_CPU("ETDM1_OUT")),
-+		     DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+SND_SOC_DAILINK_DEFS(ETDM2_OUT_BE,
-+		     DAILINK_COMP_ARRAY(COMP_CPU("ETDM2_OUT")),
-+		     DAILINK_COMP_ARRAY(COMP_CODEC(RT1019_DEV0_NAME,
-+						   RT1019_CODEC_DAI)),
-+		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+SND_SOC_DAILINK_DEFS(ETDM3_OUT_BE,
-+		     DAILINK_COMP_ARRAY(COMP_CPU("ETDM3_OUT")),
-+		     DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+SND_SOC_DAILINK_DEFS(PCM1_BE,
-+		     DAILINK_COMP_ARRAY(COMP_CPU("PCM1")),
-+		     DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+SND_SOC_DAILINK_DEFS(UL_SRC1_BE,
-+		     DAILINK_COMP_ARRAY(COMP_CPU("UL_SRC1")),
-+		     DAILINK_COMP_ARRAY(COMP_CODEC("mt6359-sound",
-+						   "mt6359-snd-codec-aif1"),
-+					COMP_CODEC("dmic-codec",
-+						   "dmic-hifi")),
-+		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+SND_SOC_DAILINK_DEFS(UL_SRC2_BE,
-+		     DAILINK_COMP_ARRAY(COMP_CPU("UL_SRC2")),
-+		     DAILINK_COMP_ARRAY(COMP_CODEC("mt6359-sound",
-+						   "mt6359-snd-codec-aif2")),
-+		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+SND_SOC_DAILINK_DEFS(AFE_SOF_DL2,
-+		     DAILINK_COMP_ARRAY(COMP_CPU("SOF_DL2")),
-+		     DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+		     DAILINK_COMP_ARRAY(COMP_PLATFORM("10803000.adsp")));
-+
-+SND_SOC_DAILINK_DEFS(AFE_SOF_DL3,
-+		     DAILINK_COMP_ARRAY(COMP_CPU("SOF_DL3")),
-+		     DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+		     DAILINK_COMP_ARRAY(COMP_PLATFORM("10803000.adsp")));
-+
-+SND_SOC_DAILINK_DEFS(AFE_SOF_UL4,
-+		     DAILINK_COMP_ARRAY(COMP_CPU("SOF_UL4")),
-+		     DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+		     DAILINK_COMP_ARRAY(COMP_PLATFORM("10803000.adsp")));
-+
-+SND_SOC_DAILINK_DEFS(AFE_SOF_UL5,
-+		     DAILINK_COMP_ARRAY(COMP_CPU("SOF_UL5")),
-+		     DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+		     DAILINK_COMP_ARRAY(COMP_PLATFORM("10803000.adsp")));
-+
-+static const struct sof_conn_stream g_sof_conn_streams[] = {
-+	{ "ETDM2_OUT_BE", "AFE_SOF_DL2", SOF_DMA_DL2, SNDRV_PCM_STREAM_PLAYBACK},
-+	{ "ETDM1_OUT_BE", "AFE_SOF_DL3", SOF_DMA_DL3, SNDRV_PCM_STREAM_PLAYBACK},
-+	{ "UL_SRC1_BE", "AFE_SOF_UL4", SOF_DMA_UL4, SNDRV_PCM_STREAM_CAPTURE},
-+	{ "ETDM2_IN_BE", "AFE_SOF_UL5", SOF_DMA_UL5, SNDRV_PCM_STREAM_CAPTURE},
-+};
-+
-+/* fixup the BE DAI link to match any values from topology */
-+static int mt8195_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
-+				 struct snd_pcm_hw_params *params)
-+{
-+	int i, j, ret = 0;
-+	struct snd_soc_card *card = rtd->card;
-+	struct snd_soc_dai_link *sof_dai_link = NULL;
-+	struct snd_soc_pcm_runtime *runtime;
-+	struct snd_soc_dai *cpu_dai;
-+
-+	for (i = 0; i < ARRAY_SIZE(g_sof_conn_streams); i++) {
-+		const struct sof_conn_stream *conn = &g_sof_conn_streams[i];
-+
-+		if (strcmp(rtd->dai_link->name, conn->normal_link))
-+			continue;
-+
-+		for_each_card_rtds(card, runtime) {
-+			if (strcmp(runtime->dai_link->name, conn->sof_link))
-+				continue;
-+
-+			for_each_rtd_cpu_dais(runtime, j, cpu_dai) {
-+				if (cpu_dai->stream_active[conn->stream_dir] > 0) {
-+					sof_dai_link = runtime->dai_link;
-+					break;
-+				}
-+			}
-+			break;
-+		}
-+
-+		if (sof_dai_link && sof_dai_link->be_hw_params_fixup) {
-+			ret = sof_dai_link->be_hw_params_fixup(runtime, params);
-+			if (!strcmp(rtd->dai_link->name, "ETDM2_IN_BE") ||
-+			    !strcmp(rtd->dai_link->name, "ETDM1_OUT_BE")) {
-+				mt8195_etdm_rt_hw_params_fixup(runtime, params);
-+			}
-+			break;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+static int mt8195_mt6359_rt1019_rt5682_card_late_probe(struct snd_soc_card *card)
-+{
-+	struct snd_soc_pcm_runtime *runtime;
-+	struct snd_soc_component *sof_comp;
-+	int i;
-+
-+	/* 1. find sof component */
-+	for_each_card_rtds(card, runtime) {
-+		for (i = 0; i < runtime->num_components; i++) {
-+			if (!runtime->components[i]->driver->name)
-+				continue;
-+			if (!strcmp(runtime->components[i]->driver->name, "sof-audio-component")) {
-+				sof_comp = runtime->components[i];
-+				break;
-+			}
-+		}
-+	}
-+
-+	if (!sof_comp) {
-+		dev_info(card->dev, " probe without component\n");
-+		return 0;
-+	}
-+	/* 2. add route path and fixup callback */
-+	for (i = 0; i < ARRAY_SIZE(g_sof_conn_streams); i++) {
-+		const struct sof_conn_stream *conn = &g_sof_conn_streams[i];
-+		struct snd_soc_pcm_runtime *sof_rtd = NULL;
-+		struct snd_soc_pcm_runtime *normal_rtd = NULL;
-+		struct snd_soc_pcm_runtime *rtd = NULL;
-+
-+		for_each_card_rtds(card, rtd) {
-+			if (!strcmp(rtd->dai_link->name, conn->sof_link)) {
-+				sof_rtd = rtd;
-+				continue;
-+			}
-+			if (!strcmp(rtd->dai_link->name, conn->normal_link)) {
-+				normal_rtd = rtd;
-+				continue;
-+			}
-+			if (normal_rtd && sof_rtd)
-+				break;
-+		}
-+		if (normal_rtd && sof_rtd) {
-+			int j;
-+			struct snd_soc_dai *cpu_dai;
-+
-+			for_each_rtd_cpu_dais(sof_rtd, j, cpu_dai) {
-+				struct snd_soc_dapm_route route;
-+				struct snd_soc_dapm_path *p = NULL;
-+				struct snd_soc_dapm_widget *play_widget =
-+					cpu_dai->playback_widget;
-+				struct snd_soc_dapm_widget *cap_widget =
-+					cpu_dai->capture_widget;
-+				memset(&route, 0, sizeof(route));
-+				if (conn->stream_dir == SNDRV_PCM_STREAM_CAPTURE &&
-+				    cap_widget) {
-+					snd_soc_dapm_widget_for_each_sink_path(cap_widget, p) {
-+						route.source = conn->sof_dma;
-+						route.sink = p->sink->name;
-+						snd_soc_dapm_add_routes(&card->dapm, &route, 1);
-+					}
-+				} else if (conn->stream_dir == SNDRV_PCM_STREAM_PLAYBACK &&
-+						play_widget){
-+					snd_soc_dapm_widget_for_each_source_path(play_widget, p) {
-+						route.source = p->source->name;
-+						route.sink = conn->sof_dma;
-+						snd_soc_dapm_add_routes(&card->dapm, &route, 1);
-+					}
-+				} else {
-+					dev_err(cpu_dai->dev, "stream dir and widget not pair\n");
-+				}
-+			}
-+			normal_rtd->dai_link->be_hw_params_fixup = mt8195_dai_link_fixup;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_link mt8195_mt6359_rt1019_rt5682_dai_links[] = {
-+	/* FE */
-+	[DAI_LINK_DL10_FE] = {
-+		.name = "DL10_FE",
-+		.stream_name = "DL10 Playback",
-+		.trigger = {
-+			SND_SOC_DPCM_TRIGGER_POST,
-+			SND_SOC_DPCM_TRIGGER_POST,
-+		},
-+		.dynamic = 1,
-+		.dpcm_playback = 1,
-+		.ops = &mt8195_hdmitx_dptx_playback_ops,
-+		SND_SOC_DAILINK_REG(DL10_FE),
-+	},
-+	/* BE */
-+	[DAI_LINK_DL_SRC_BE] = {
-+		.name = "DL_SRC_BE",
-+		.init = mt8195_mt6359_init,
-+		.no_pcm = 1,
-+		.dpcm_playback = 1,
-+		SND_SOC_DAILINK_REG(DL_SRC_BE),
-+	},
-+	[DAI_LINK_DPTX_BE] = {
-+		.name = "DPTX_BE",
-+		.no_pcm = 1,
-+		.dpcm_playback = 1,
-+		.ops = &mt8195_dptx_ops,
-+		.be_hw_params_fixup = mt8195_dptx_hw_params_fixup,
-+		SND_SOC_DAILINK_REG(DPTX_BE),
-+	},
-+	[DAI_LINK_ETDM1_IN_BE] = {
-+		.name = "ETDM1_IN_BE",
-+		.no_pcm = 1,
-+		.dai_fmt = SND_SOC_DAIFMT_I2S |
-+			SND_SOC_DAIFMT_NB_NF |
-+			SND_SOC_DAIFMT_CBS_CFS,
-+		.dpcm_capture = 1,
-+		SND_SOC_DAILINK_REG(ETDM1_IN_BE),
-+	},
-+	[DAI_LINK_ETDM2_IN_BE] = {
-+		.name = "ETDM2_IN_BE",
-+		.no_pcm = 1,
-+		.dai_fmt = SND_SOC_DAIFMT_I2S |
-+			SND_SOC_DAIFMT_NB_NF |
-+			SND_SOC_DAIFMT_CBS_CFS,
-+		.dpcm_capture = 1,
-+		.init = mt8195_rt5682_init,
-+		.ops = &mt8195_rt5682_etdm_ops,
-+		.be_hw_params_fixup = mt8195_etdm_rt_hw_params_fixup,
-+		SND_SOC_DAILINK_REG(ETDM2_IN_BE),
-+	},
-+	[DAI_LINK_ETDM1_OUT_BE] = {
-+		.name = "ETDM1_OUT_BE",
-+		.no_pcm = 1,
-+		.dai_fmt = SND_SOC_DAIFMT_I2S |
-+			SND_SOC_DAIFMT_NB_NF |
-+			SND_SOC_DAIFMT_CBS_CFS,
-+		.dpcm_playback = 1,
-+		.ops = &mt8195_rt5682_etdm_ops,
-+		.be_hw_params_fixup = mt8195_etdm_rt_hw_params_fixup,
-+		SND_SOC_DAILINK_REG(ETDM1_OUT_BE),
-+	},
-+	[DAI_LINK_ETDM2_OUT_BE] = {
-+		.name = "ETDM2_OUT_BE",
-+		.no_pcm = 1,
-+		.dai_fmt = SND_SOC_DAIFMT_I2S |
-+			SND_SOC_DAIFMT_NB_NF |
-+			SND_SOC_DAIFMT_CBS_CFS,
-+		.dpcm_playback = 1,
-+		SND_SOC_DAILINK_REG(ETDM2_OUT_BE),
-+	},
-+	[DAI_LINK_ETDM3_OUT_BE] = {
-+		.name = "ETDM3_OUT_BE",
-+		.no_pcm = 1,
-+		.dai_fmt = SND_SOC_DAIFMT_I2S |
-+			SND_SOC_DAIFMT_NB_NF |
-+			SND_SOC_DAIFMT_CBS_CFS,
-+		.dpcm_playback = 1,
-+		SND_SOC_DAILINK_REG(ETDM3_OUT_BE),
-+	},
-+	[DAI_LINK_PCM1_BE] = {
-+		.name = "PCM1_BE",
-+		.no_pcm = 1,
-+		.dai_fmt = SND_SOC_DAIFMT_I2S |
-+			SND_SOC_DAIFMT_NB_NF |
-+			SND_SOC_DAIFMT_CBS_CFS,
-+		.dpcm_capture = 1,
-+		SND_SOC_DAILINK_REG(PCM1_BE),
-+	},
-+	[DAI_LINK_UL_SRC1_BE] = {
-+		.name = "UL_SRC1_BE",
-+		.no_pcm = 1,
-+		.dpcm_capture = 1,
-+		SND_SOC_DAILINK_REG(UL_SRC1_BE),
-+	},
-+	[DAI_LINK_UL_SRC2_BE] = {
-+		.name = "UL_SRC2_BE",
-+		.no_pcm = 1,
-+		.dpcm_capture = 1,
-+		SND_SOC_DAILINK_REG(UL_SRC2_BE),
-+	},
-+	/* SOF BE */
-+	[DAI_LINK_SOF_DL2_BE] = {
-+		.name = "AFE_SOF_DL2",
-+		.no_pcm = 1,
-+		.dpcm_playback = 1,
-+		SND_SOC_DAILINK_REG(AFE_SOF_DL2),
-+	},
-+	[DAI_LINK_SOF_DL3_BE] = {
-+		.name = "AFE_SOF_DL3",
-+		.no_pcm = 1,
-+		.dpcm_playback = 1,
-+		SND_SOC_DAILINK_REG(AFE_SOF_DL3),
-+	},
-+	[DAI_LINK_SOF_UL4_BE] = {
-+		.name = "AFE_SOF_UL4",
-+		.no_pcm = 1,
-+		.dpcm_capture = 1,
-+		SND_SOC_DAILINK_REG(AFE_SOF_UL4),
-+	},
-+	[DAI_LINK_SOF_UL5_BE] = {
-+		.name = "AFE_SOF_UL5",
-+		.no_pcm = 1,
-+		.dpcm_capture = 1,
-+		SND_SOC_DAILINK_REG(AFE_SOF_UL5),
-+	},
-+};
-+
-+static struct snd_soc_card mt8195_mt6359_rt1019_rt5682_soc_card = {
-+	.name = "mt8195_r1019_5682",
-+	.owner = THIS_MODULE,
-+	.dai_link = mt8195_mt6359_rt1019_rt5682_dai_links,
-+	.num_links = ARRAY_SIZE(mt8195_mt6359_rt1019_rt5682_dai_links),
-+	.controls = mt8195_mt6359_rt1019_rt5682_controls,
-+	.num_controls = ARRAY_SIZE(mt8195_mt6359_rt1019_rt5682_controls),
-+	.dapm_widgets = mt8195_mt6359_rt1019_rt5682_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(mt8195_mt6359_rt1019_rt5682_widgets),
-+	.dapm_routes = mt8195_mt6359_rt1019_rt5682_routes,
-+	.num_dapm_routes = ARRAY_SIZE(mt8195_mt6359_rt1019_rt5682_routes),
-+	.late_probe = mt8195_mt6359_rt1019_rt5682_card_late_probe,
-+};
-+
-+static int mt8195_mt6359_rt1019_rt5682_dev_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = &mt8195_mt6359_rt1019_rt5682_soc_card;
-+	struct snd_soc_dai_link *dai_link;
-+	struct mt8195_priv *priv;
-+	struct device_node *machine_node;
-+	struct snd_soc_acpi_mach *mach;
-+	int is5682s = 0;
-+	int ret, i;
-+
-+	card->dev = &pdev->dev;
-+	mach = pdev->dev.platform_data;
-+	machine_node = mach->pdata;
-+
-+	ret = of_property_read_string_index(machine_node, "model",
-+					    0, &card->name);
-+	/*
-+	 * EINVAL means the property does not exist. This is fine providing
-+	 * card->name was previously set, which is checked later in
-+	 * snd_soc_register_card.
-+	 */
-+	if (ret < 0 && ret != -EINVAL) {
-+		dev_err(card->dev,
-+			"ASoC: Property 'model' could not be read: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	if (strstr(card->name, "_5682s"))
-+		is5682s = 1;
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->platform_node = of_parse_phandle(machine_node,
-+					       "mediatek,platform", 0);
-+
-+	if (!priv->platform_node) {
-+		dev_dbg(&pdev->dev, "Property 'platform' missing or invalid\n");
-+		return -EINVAL;
-+	}
-+
-+	for_each_card_prelinks(card, i, dai_link) {
-+		if (!dai_link->platforms->name)
-+			dai_link->platforms->of_node = priv->platform_node;
-+
-+		if (strcmp(dai_link->name, "DPTX_BE") == 0) {
-+			priv->dp_node =
-+				of_parse_phandle(machine_node,
-+						 "mediatek,dptx-codec", 0);
-+			if (!priv->dp_node) {
-+				dev_dbg(&pdev->dev, "No property 'dptx-codec'\n");
-+			} else {
-+				dai_link->codecs->of_node = priv->dp_node;
-+				dai_link->codecs->name = NULL;
-+				dai_link->codecs->dai_name = "i2s-hifi";
-+				dai_link->init = mt8195_dptx_codec_init;
-+			}
-+		} else if (strcmp(dai_link->name, "ETDM3_OUT_BE") == 0) {
-+			priv->hdmi_node =
-+				of_parse_phandle(machine_node,
-+						 "mediatek,hdmi-codec", 0);
-+			if (!priv->hdmi_node) {
-+				dev_dbg(&pdev->dev, "No property 'hdmi-codec'\n");
-+			} else {
-+				dai_link->codecs->of_node = priv->hdmi_node;
-+				dai_link->codecs->name = NULL;
-+				dai_link->codecs->dai_name = "i2s-hifi";
-+				dai_link->init = mt8195_hdmi_codec_init;
-+			}
-+		} else if (strcmp(dai_link->name, "ETDM1_OUT_BE") == 0 ||
-+			   strcmp(dai_link->name, "ETDM2_IN_BE") == 0) {
-+			dai_link->codecs->name =
-+				is5682s ? RT5682S_DEV0_NAME : RT5682_DEV0_NAME;
-+			dai_link->codecs->dai_name =
-+				is5682s ? RT5682S_CODEC_DAI : RT5682_CODEC_DAI;
-+		}
-+	}
-+
-+	snd_soc_card_set_drvdata(card, priv);
-+
-+	ret = devm_snd_soc_register_card(&pdev->dev, card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "%s snd_soc_register_card fail %d\n",
-+			__func__, ret);
-+		of_node_put(priv->hdmi_node);
-+		of_node_put(priv->dp_node);
-+		of_node_put(priv->platform_node);
-+	}
-+
-+	return ret;
-+}
-+
-+static int mt8195_mt6359_rt1019_rt5682_dev_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+	struct mt8195_priv *priv = snd_soc_card_get_drvdata(card);
-+
-+	of_node_put(priv->hdmi_node);
-+	of_node_put(priv->dp_node);
-+	of_node_put(priv->platform_node);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver mt8195_mt6359_rt1019_rt5682_driver = {
-+	.driver = {
-+		.name = "mt8195_mt6359_rt1019_rt5682",
-+		.pm = &mt8195_pm_ops,
-+	},
-+	.probe = mt8195_mt6359_rt1019_rt5682_dev_probe,
-+	.remove = mt8195_mt6359_rt1019_rt5682_dev_remove,
-+};
-+
-+module_platform_driver(mt8195_mt6359_rt1019_rt5682_driver);
-+
-+/* Module information */
-+MODULE_DESCRIPTION("MT8195-MT6359-RT1019-RT5682 ALSA SoC SOF machine driver");
-+MODULE_AUTHOR("Trevor Wu <trevor.wu@mediatek.com>");
-+MODULE_AUTHOR("YC Hung <yc.hung@mediatek.com>");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("mt8195_mt6359_rt1019_rt5682 soc card");
--- 
-2.18.0
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
