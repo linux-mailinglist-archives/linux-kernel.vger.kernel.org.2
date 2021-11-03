@@ -2,114 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E07444ACA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 23:18:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5079444AD1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 23:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230492AbhKCWV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 18:21:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbhKCWVW (ORCPT
+        id S230314AbhKCWXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 18:23:38 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:58944 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229698AbhKCWXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 18:21:22 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29888C06127A
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 15:18:45 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id r10-20020a056830448a00b0055ac7767f5eso5578942otv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 15:18:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KbAK3E9gZ0Rf65SdcooIGvTrnplapjhc1zBGEcQwMw0=;
-        b=FxVPe4f6LLQG7z67e383KouBmt/gDlXT01XhIyLpbOX1ubzbbveB/WebH8mdxVvBux
-         BoQH4kuafbBqw6mw9q2LJ5bCsnmHZjtsQis9+tdQGfJEaHQtqef8LpIiCNjy4zhacaad
-         m2NtcBHHSDnN+apNFNe73D1Cuixq/t5Rdm+xilmYnpWW0EbPBnJ0FHq9wO6rWLyJVII1
-         Xg32sN6EyH9QtS5md7S68uOiB819/jerOrmoyhxNGFQeiTm7iCDv8frX9kEA4BZzI620
-         aS7Pe8/2CPHahmk+nHDWlTKg9OlZO4wzwtgcpkZHdW1TRpqXLUggXsjQGEn8Lpn4/vUi
-         Y7pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KbAK3E9gZ0Rf65SdcooIGvTrnplapjhc1zBGEcQwMw0=;
-        b=wdM/6bhU47AtyLrMepHZ0k8DRYBJaaeKCpegA2F8VyR/b+DSX4m0lRyhI4jbYKFUOR
-         tUNIGnrisCPHZE9TG/rtKS7L+v1CyBn+Ktt+XeqkdZSV6c5x3+W/zclg3gOQUc6pC3Tw
-         KCNxxBGgHGY+ayZjVpv5ZXfJgamM7cJG9rJX+bt6YJ1C1uXotCcvAiyl6sgWpyv8o8mC
-         2pBSqm7emttBZFXU0B3WzUgSIighbOCZ6xn1jZfW11pi/2jkTK7l0VogiHpimVai5vFz
-         poeDJdkakx4zkV2EqcxgT2JJspUr80THjFh7YUbM839r3tGtd9l9fqTzF+QGaNshCcWz
-         J/9g==
-X-Gm-Message-State: AOAM533sVlbCKUh0SZ/oJHIUeXwdbfigtrQQ5ql9tvIgXkWC8KSg/fIb
-        qBmk8uhBsA0g+e90I6haGIqxow==
-X-Google-Smtp-Source: ABdhPJwE3gWlnEHH4Dmdjy/djjbu/ePiC4Xgep2d/Vs4xE4zOZ7x255+QMBS6qvbjDXdOMBbreC0yQ==
-X-Received: by 2002:a9d:774c:: with SMTP id t12mr28285120otl.282.1635977924469;
-        Wed, 03 Nov 2021 15:18:44 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id s21sm879524otp.57.2021.11.03.15.18.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 15:18:43 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 15:20:24 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Fenglin Wu <quic_fenglinw@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sboyd@kernel.org, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        collinsd@codeaurora.org, subbaram@codeaurora.org
-Subject: Re: [PATCH v1] dt-bindings: convert qcom,spmi-pmic-arb binding to
- YAML format
-Message-ID: <YYMLKCspjdyaKWUK@ripper>
-References: <1635836275-8873-1-git-send-email-quic_fenglinw@quicinc.com>
+        Wed, 3 Nov 2021 18:23:37 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1A3MKkL0051391;
+        Wed, 3 Nov 2021 17:20:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1635978046;
+        bh=nPRWGwf0M5iXxJZ1q+xhIqLjuZmGolgtAVobYVmw5cY=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=kEn0LCl7vY9bkeWj74VZ4GAhwrhpeS6IAcpXAskAKqO3a3npyMNXKL+nAKRVtm3+w
+         ciO4jcHfXfKc2aoSTm6qqNBiJAXc6xI6U8czsJu7mnukgkUsY9L3sdautyj/EFhoXb
+         wcmfeBN66p4pevQz3qGYyqnyokvsTQ9HY44boXk4=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1A3MKkQj028821
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 3 Nov 2021 17:20:46 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 3
+ Nov 2021 17:20:45 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Wed, 3 Nov 2021 17:20:45 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1A3MKgiX122125;
+        Wed, 3 Nov 2021 17:20:43 -0500
+Subject: Re: [PATCH net-next v2 2/3] net: ethernet: ti: am65-cpsw: enable
+ bc/mc storm prevention support
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-omap@vger.kernel.org>, Tony Lindgren <tony@atomide.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+References: <20211101170122.19160-1-grygorii.strashko@ti.com>
+ <20211101170122.19160-3-grygorii.strashko@ti.com>
+ <20211102173840.01f464ec@kicinski-fedora-PC1C0HJN>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <81a427a1-b969-4039-0c3f-567b3073abc1@ti.com>
+Date:   Thu, 4 Nov 2021 00:20:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1635836275-8873-1-git-send-email-quic_fenglinw@quicinc.com>
+In-Reply-To: <20211102173840.01f464ec@kicinski-fedora-PC1C0HJN>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 01 Nov 23:57 PDT 2021, Fenglin Wu wrote:
-[..]
-> diff --git a/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.yaml b/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.yaml
-> new file mode 100644
-> index 0000000..05bb114
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spmi/qcom,spmi-pmic-arb.yaml
-> @@ -0,0 +1,122 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spmi/qcom,spmi-pmic-arb.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm SPMI PMIC Arbiter
-> +
-> +maintainers:
-> +  - Fenglin Wu <quic_fenglinw@quicinc.com>
-> +
-> +description: |
-> +  The SPMI PMIC Arbiter is found on Snapdragon chipsets. It is an SPMI
-> +  controller with wrapping arbitration logic to allow for multiple
-> +  on-chip devices to control a single SPMI master.
-> +
-> +  The PMIC Arbiter can also act as an interrupt controller, providing
-> +  interrupts to slave devices.
-> +
-> +  See Documentation/devicetree/bindings/spmi/spmi.yaml for the generic
-> +  SPMI controller binding requirements for child nodes.
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^qcom,spmi@.*"
+hi Jakub,
 
-Node names should never contain "qcom,". Seems the agreed upon node
-named should be "spmi@.*".
+On 03/11/2021 02:38, Jakub Kicinski wrote:
+> On Mon, 1 Nov 2021 19:01:21 +0200 Grygorii Strashko wrote:
+>>   - 01:00:00:00:00:00 fixed value has to be used for MC packets rate
+>>     limiting (exact match)
+> 
+> This looks like a stretch, why not use a mask? You can require users to
+> always install both BC and MC rules if you want to make sure the masked
+> rule does not match BC.
+> 
 
-The rest looks like a reasonable conversion to me.
+Those matching rules are hard coded in HW for packet rate limiting and SW only
+enables them and sets requested pps limit.
+- 1:BC: HW does exact match on BC MAC address
+- 2:MC: HW does match on MC bit (the least-significant bit of the first octet)
 
-[..]
-> +examples:
-> +  - |
-> +    qcom,spmi@fc4cf000 {
+Therefore the exact match done in this patch for above dst_mac's with
+is_broadcast_ether_addr() and ether_addr_equal().
 
-Regards,
-Bjorn
+The K3 cpsw also supports number configurable policiers (bit rate limit) in
+ALE for which supports is to be added, and for them MC mask (sort of, it uses
+number of ignored bits, like FF-FF-FF-00-00-00) can be used.
+
+-- 
+Best regards,
+grygorii
