@@ -2,103 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D5D4448C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:10:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2304448CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhKCTMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 15:12:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31426 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231419AbhKCTMa (ORCPT
+        id S230500AbhKCTRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 15:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230156AbhKCTRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 15:12:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635966593;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Iy8BcW2yEN81eZ9A3QB8U2rJKIihcJ4l+Ba/l49vmfg=;
-        b=Bky6sLPdIXFTfV2s6sMfAvBMn0h+PL4Qy9GbCY48HqSIXgNeVGYZeQqoDBtK+wrTx2v6UJ
-        tG3HaoiuGhpF1WoXpIMPFhSR/A8O/abuUKoAhnqGviE0e5U1Lk/S/LATIi1eWCaad6gYA5
-        j/DL+sPDGzhjriB+lfJ8jjFa9Vg3Lqc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-482-x9HWEJP8M26GlRngDfDrxA-1; Wed, 03 Nov 2021 15:09:52 -0400
-X-MC-Unique: x9HWEJP8M26GlRngDfDrxA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E14958799F1;
-        Wed,  3 Nov 2021 19:09:50 +0000 (UTC)
-Received: from asgard.redhat.com (unknown [10.36.110.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B5733197FC;
-        Wed,  3 Nov 2021 19:09:48 +0000 (UTC)
-Date:   Wed, 3 Nov 2021 20:09:46 +0100
-From:   Eugene Syromiatnikov <esyr@redhat.com>
-To:     Jeremy Kerr <jk@codeconstruct.com.au>,
-        Matt Johnston <matt@codeconstruct.com.au>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 2/2] mctp: handle the struct sockaddr_mctp_ext
- padding field
-Message-ID: <09f02206829d8595b8c2794686c9b7bdb007fe8a.1635965993.git.esyr@redhat.com>
-References: <cover.1635965993.git.esyr@redhat.com>
+        Wed, 3 Nov 2021 15:17:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B275C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 12:14:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=umVR0keNkS2UpdTDJLTibW+h8rMr6o3BNZfkH6UmL48=; b=pyjGUN2BuGsm3EgukKxwqY7GOJ
+        HrXc37aP07LX0ODtwW+vxnF5VaNhP481iARxy4xGWWosUjZ7N6898ensPPRHcILwf5JtPu/mmmeZD
+        KIzbOwe8LSoBqDIVWiUBkBPsA6WjhislKnkUe9chTSBczWdABUK9+7ZZi4VQjbm28gBZvf70yuSXQ
+        4C7lCluyldy68qY64OpICWAH2iKaCEDhOEUBavktWjZnaMdRf96mYXNWsDtJJrFy5LsYHQSPV23mh
+        ZOw3vRscEr8qc0e2vZsvwsAZcWqU5k5ZPFe0676Syf/Mb7dUTYloyUONcpMigGWbNZ6zbcV7VLbQT
+        tlJENPTg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1miLee-005Pgd-ST; Wed, 03 Nov 2021 19:11:06 +0000
+Date:   Wed, 3 Nov 2021 19:10:36 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jimmy Shiu <jimmyshiu@google.com>
+Cc:     mingo@redhat.com, joaodias@google.com, wvw@google.com,
+        Minchan Kim <minchan@google.com>,
+        Will McVicker <willmcvicker@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] SCHED: attribute page lock and waitqueue functions as
+ sched
+Message-ID: <YYLerEPg02MpQFWs@casper.infradead.org>
+References: <20211103184708.1778294-1-jimmyshiu@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1635965993.git.esyr@redhat.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20211103184708.1778294-1-jimmyshiu@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct sockaddr_mctp_ext.__smctp_paddin0 has to be checked for being set
-to zero, otherwise it cannot be utilised in the future.
+On Thu, Nov 04, 2021 at 02:47:03AM +0800, Jimmy Shiu wrote:
+> +++ b/mm/filemap.c
+> @@ -1271,7 +1271,7 @@ static inline bool folio_trylock_flag(struct folio *folio, int bit_nr,
+>  /* How many times do we accept lock stealing from under a waiter? */
+>  int sysctl_page_lock_unfairness = 5;
+>  
+> -static inline int folio_wait_bit_common(struct folio *folio, int bit_nr,
+> +static inline __sched int folio_wait_bit_common(struct folio *folio, int bit_nr,
 
-Fixes: 99ce45d5e7dbde39 ("mctp: Implement extended addressing")
-Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
----
- net/mctp/af_mctp.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/net/mctp/af_mctp.c b/net/mctp/af_mctp.c
-index bc88159..871cf62 100644
---- a/net/mctp/af_mctp.c
-+++ b/net/mctp/af_mctp.c
-@@ -39,6 +39,13 @@ static bool mctp_sockaddr_is_ok(const struct sockaddr_mctp *addr)
- 	return !addr->__smctp_pad0 && !addr->__smctp_pad1;
- }
- 
-+static bool mctp_sockaddr_ext_is_ok(const struct sockaddr_mctp_ext *addr)
-+{
-+	return !addr->__smctp_pad0[0] &&
-+	       !addr->__smctp_pad0[1] &&
-+	       !addr->__smctp_pad0[2];
-+}
-+
- static int mctp_bind(struct socket *sock, struct sockaddr *addr, int addrlen)
- {
- 	struct sock *sk = sock->sk;
-@@ -135,7 +142,8 @@ static int mctp_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
- 		DECLARE_SOCKADDR(struct sockaddr_mctp_ext *,
- 				 extaddr, msg->msg_name);
- 
--		if (extaddr->smctp_halen > sizeof(cb->haddr)) {
-+		if (!mctp_sockaddr_ext_is_ok(extaddr) ||
-+		    extaddr->smctp_halen > sizeof(cb->haddr)) {
- 			rc = -EINVAL;
- 			goto err_free;
- 		}
-@@ -224,6 +232,7 @@ static int mctp_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
- 			msg->msg_namelen = sizeof(*ae);
- 			ae->smctp_ifindex = cb->ifindex;
- 			ae->smctp_halen = cb->halen;
-+			memset(ae->__smctp_pad0, 0x0, sizeof(ae->__smctp_pad0));
- 			memset(ae->smctp_haddr, 0x0, sizeof(ae->smctp_haddr));
- 			memcpy(ae->smctp_haddr, cb->haddr, cb->halen);
- 		}
--- 
-2.1.4
+It's not clear to me whether folio_wait_bit_common() needs to be marked
+as __sched or whether marking its callers is sufficient, but I'm pretty
+sure you forgot to mark put_and_wait_on_page_locked() as __sched, which
+is an important one as it's now where we wait for readahead to finish
+when reading a file.
 
