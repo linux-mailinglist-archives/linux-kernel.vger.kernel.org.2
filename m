@@ -2,104 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5FD444646
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 838AA44464A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233006AbhKCQwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 12:52:15 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:53534
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233005AbhKCQwO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 12:52:14 -0400
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 90F163F1F8
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 16:49:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1635958174;
-        bh=izkpWJi/pLLJ98XZDF6SVK70Q4PiKzjW5l5a2WFdAgA=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=PETWjrjzjs2gBgkFNJrkEhxccs+wq9JXdPx2prN7njJatX720biaXdgA2Q479z6z5
-         2ZUy2BDNVCqKyNxZUytiBPR45DwBAYiceq8GcnNBBnz4tXfqrVTsvhGgCnQHB6b6BL
-         X2Ej3i87rUifzRDnysi3Urwi8gMn+hAJr6H9ILNWSR9qlpfTvOECLi+aExbN53Zywy
-         i3w/6S0gUdPiBFMUvAVG8CY5ivlV6LMBEAy0oYJev9HO87CISzT1RObZkmzgr/t1mD
-         Zz3qs0+qSD3x7V4SGzHrWEbrKdw59ho/boj7gyflqkFj5DuWQbcmcb33Bgd2dMgr03
-         lh0sbuaR+36GA==
-Received: by mail-lf1-f71.google.com with SMTP id c13-20020a05651200cd00b004001aab328aso860847lfp.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 09:49:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=izkpWJi/pLLJ98XZDF6SVK70Q4PiKzjW5l5a2WFdAgA=;
-        b=BUhfs+0TAsYHTTdBkW0LQoLw8EgaZE5fPS3IZ+6kIyq3FBFJK2eEORMx7VKdrAxFum
-         vACMpc45roL+pV3QvtS8IWJcdECovaGsiXqgRrQMMvpxj4YdotHfC/BgIAuu/Rs8A6z3
-         zJnpDtcDjnGb/bIFVPL8m2xA7JEBAwnWBP7uu9mZ9cVU0Ey0F6qmd4ElNK4dWQsXJoKQ
-         Shfs/P83onaAh6CNRTwfwDLyICV7AoAnoIXCImI6aPcqspSujNmSsQvaKuR2DhqkvTSa
-         8B3bSvJu6UhLoB5M9C73mCY4M17s/uYp4hENeu89FF+xt4mAz9Yi+bLTjGzcVRrE0Q8O
-         w5Lw==
-X-Gm-Message-State: AOAM532elj/h1T0CF/3Em8Em4KNhoTDPuGO/TvMpaQ+FNQJkWnrvFgy3
-        Sx+/QmuV3y4eW6DRkQW7d+IAevffhlGAl9tlLxHkoFhZryT886iAnhBL1/oHvC2+Jc0+4s2QRav
-        3nSkb8trjIcrcxOUACpVMv//QumjgqQ+the8dr6WUWw==
-X-Received: by 2002:a05:6512:3322:: with SMTP id l2mr21487122lfe.452.1635958173981;
-        Wed, 03 Nov 2021 09:49:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxFpmixwFB/chab3tgeDDfSF2Tcjfddj5PDK2pW7XS1eDafNy2LVdo+7GRNXinIuZNga1S/PQ==
-X-Received: by 2002:a05:6512:3322:: with SMTP id l2mr21487093lfe.452.1635958173764;
-        Wed, 03 Nov 2021 09:49:33 -0700 (PDT)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id r3sm222911lfc.114.2021.11.03.09.49.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 09:49:33 -0700 (PDT)
-Message-ID: <c22e305e-cf28-9dfe-8354-9d71ee643faf@canonical.com>
-Date:   Wed, 3 Nov 2021 17:49:32 +0100
+        id S232957AbhKCQyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 12:54:15 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:45476 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229894AbhKCQyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 12:54:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=LoVd7Wmm4TPrtbMmrNBoE6nwq6Zb/G9Z6/gwUQBowxM=; b=eyTZKTEHMYWjzs0RERchgXYL1B
+        oeu7zlVS1lKjoUzkuPeLKc67E69yIhc/S0XOkXr85JDKz2f5p/qvpF4xLGLXYi/gAPMZpTMxvn7Nb
+        KQot8Nw6ynKUeWOuW+qUsYmC/8pH7HKe2XBlFvTWzbYx4n31vKe3e9xZ1BMAAubJmmz8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1miJU1-00CWZP-Av; Wed, 03 Nov 2021 17:51:29 +0100
+Date:   Wed, 3 Nov 2021 17:51:29 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Wells Lu <wellslutw@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, p.zabel@pengutronix.de,
+        Wells Lu <wells.lu@sunplus.com>
+Subject: Re: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+Message-ID: <YYK+EeCOu/BXBXDi@lunn.ch>
+References: <cover.1635936610.git.wells.lu@sunplus.com>
+ <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH] clocksource/drivers/exynos_mct: Fix silly typo resulting
- in checkpatch warning
-Content-Language: en-US
-To:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-References: <20211103164804.30182-1-will@kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211103164804.30182-1-will@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/11/2021 17:48, Will Deacon wrote:
-> Commit ae460fd9164b ("clocksource/drivers/exynos_mct: Prioritise Arm
-> arch timer on arm64") changed the rating of the MCT clockevents device
-> to be lower than the Arm architected timer and, in the process, replaced
-> a semicolon with a comma thanks to a silly copy-paste error.
-> 
-> Put the semicolon back so that the code looks more idiomatic and resolve
-> the SUSPECT_COMMA_SEMICOLON warning from checkpatch at the same time.
-> 
-> Cc: Krzysztof Kozlowski <krzk@kernel.org>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
-> 
-> Although this doesn't have a functional impact and I'd normally not pay
-> too much attention to checkpatch warnings, the code is pretty weird as-is
-> and I didn't intend for that comma to be there!
-> 
->  drivers/clocksource/exynos_mct.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+> +config NET_VENDOR_SUNPLUS
+> +	tristate "Sunplus Dual 10M/100M Ethernet (with L2 switch) devices"
+
+The "with L2 Switch" is causing lots of warning bells to ring for me.
+
+I don't see any references to switchdev or DSA in this driver. How is
+the switch managed? There have been a few examples in the past of
+similar two port switches being first supported in Dual MAC
+mode. Later trying to actually use the switch in the Linux was always
+ran into problems, and basically needed a new driver. So i want to
+make sure you don't have this problem.
+
+In the Linux world, Ethernet switches default to having there
+ports/interfaces separated. This effectively gives you your dual MAC
+mode by default.  You then create a Linux bridge, and add the
+ports/interfaces to the bridge. switchdev is used to offload the
+bridge, telling the hardware to enable the L2 switch between the
+ports.
+
+So you don't need the mode parameter in DT. switchdev tells you
+this. Switchdev gives user space access to the address table etc.
+
+> +obj-$(CONFIG_NET_VENDOR_SUNPLUS) += sp_l2sw.o
+...
+> +struct l2sw_common {
+
+Please change your prefix. l2sw is a common prefix, there are other
+silicon vendors using l2sw. I would suggest sp_l2sw or spl2sw.
+
+> +static int ethernet_do_ioctl(struct net_device *net_dev, struct ifreq *ifr, int cmd)
+> +{
+> +	struct l2sw_mac *mac = netdev_priv(net_dev);
+> +	struct l2sw_common *comm = mac->comm;
+> +	struct mii_ioctl_data *data = if_mii(ifr);
+> +	unsigned long flags;
+> +
+> +	pr_debug(" if = %s, cmd = %04x\n", ifr->ifr_ifrn.ifrn_name, cmd);
+> +	pr_debug(" phy_id = %d, reg_num = %d, val_in = %04x\n", data->phy_id,
+> +		 data->reg_num, data->val_in);
+
+You should not be using any of the pr_ functions. You have a net_dev,
+so netdev_dbg().
+
+> +
+> +	// Check parameters' range.
+> +	if ((cmd == SIOCGMIIREG) || (cmd == SIOCSMIIREG)) {
+> +		if (data->reg_num > 31) {
+> +			pr_err(" reg_num (= %d) excesses range!\n", (int)data->reg_num);
+
+Don't spam the kernel log for things like this.
+
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	switch (cmd) {
+> +	case SIOCGMIIPHY:
+> +		if (comm->dual_nic && (strcmp(ifr->ifr_ifrn.ifrn_name, "eth1") == 0))
+
+You cannot rely on the name, systemd has probably renamed it. If you
+have using phylib correctly, net_dev->phydev is what you want.
 
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> +			return comm->phy2_addr;
+> +		else
+> +			return comm->phy1_addr;
+> +
+> +	case SIOCGMIIREG:
+> +		spin_lock_irqsave(&comm->ioctl_lock, flags);
+> +		data->val_out = mdio_read(data->phy_id, data->reg_num);
+> +		spin_unlock_irqrestore(&comm->ioctl_lock, flags);
+> +		pr_debug(" val_out = %04x\n", data->val_out);
+> +		break;
+> +
+> +	case SIOCSMIIREG:
+> +		spin_lock_irqsave(&comm->ioctl_lock, flags);
+> +		mdio_write(data->phy_id, data->reg_num, data->val_in);
+> +		spin_unlock_irqrestore(&comm->ioctl_lock, flags);
+> +		break;
+> +
+
+You should be using phylink_mii_ioctl() or phy_mii_ioctl().
+
+You locking is also suspect.
+
+> +static int ethernet_change_mtu(struct net_device *ndev, int new_mtu)
+> +{
+> +	if (netif_running(ndev))
+> +		return -EBUSY;
+> +
+> +	if (new_mtu < 68 || new_mtu > ETH_DATA_LEN)
+> +		return -EINVAL;
+
+The core will do this for you, if you set the values in the ndev
+correct at probe time.
+
+> +
+> +	ndev->mtu = new_mtu;
+> +
+> +	return 0;
+> +}
+> +
 
 
-Best regards,
-Krzysztof
+> +static int mdio_access(u8 op_cd, u8 dev_reg_addr, u8 phy_addr, u32 wdata)
+> +{
+> +	u32 value, time = 0;
+> +
+> +	HWREG_W(phy_cntl_reg0, (wdata << 16) | (op_cd << 13) | (dev_reg_addr << 8) | phy_addr);
+> +	wmb();			// make sure settings are effective.
+
+That suggests you are using the wrong macros to access the registers.
+
+> +	do {
+> +		if (++time > MDIO_RW_TIMEOUT_RETRY_NUMBERS) {
+> +			pr_err(" mdio failed to operate!\n");
+> +			time = 0;
+> +		}
+> +
+> +		value = HWREG_R(phy_cntl_reg1);
+> +	} while ((value & 0x3) == 0);
+
+include/linux/iopoll.h.
+
+
+> +	if (time == 0)
+> +		return -1;
+
+-ETIMDEOUT. One of the advantages of iopoll.h is that reusing code
+ avoids issues like this.
+
+> +u32 mdio_read(u32 phy_id, u16 regnum)
+> +{
+> +	int ret;
+
+Please check for C45 and return -EOPNOTSUPP.
+
+> +
+> +	ret = mdio_access(MDIO_READ_CMD, regnum, phy_id, 0);
+> +	if (ret < 0)
+> +		return -EIO;
+> +
+> +	return ret;
+> +}
+> +
+> +u32 mdio_write(u32 phy_id, u32 regnum, u16 val)
+> +{
+> +	int ret;
+> +
+
+Please check for C45 and return -EOPNOTSUPP.
+
+> +	ret = mdio_access(MDIO_WRITE_CMD, regnum, phy_id, val);
+> +	if (ret < 0)
+> +		return -EIO;
+> +
+> +	return 0;
+> +}
+> +
+> +inline void tx_trigger(void)
+
+No inline functions in C code. Let the compiler decide.
+
+> +int phy_cfg(struct l2sw_mac *mac)
+> +{
+> +	// Bug workaround:
+> +	// Flow-control of phy should be enabled. L2SW IP flow-control will refer
+> +	// to the bit to decide to enable or disable flow-control.
+> +	mdio_write(mac->comm->phy1_addr, 4, mdio_read(mac->comm->phy1_addr, 4) | (1 << 10));
+> +	mdio_write(mac->comm->phy2_addr, 4, mdio_read(mac->comm->phy2_addr, 4) | (1 << 10));
+
+This should be in the PHY driver. The MAC driver should never need to
+touch PHY registers.
+
+> +++ b/drivers/net/ethernet/sunplus/l2sw_mdio.c
+> @@ -0,0 +1,118 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright Sunplus Technology Co., Ltd.
+> + *       All rights reserved.
+> + */
+> +
+> +#include "l2sw_mdio.h"
+> +
+> +static int mii_read(struct mii_bus *bus, int phy_id, int regnum)
+> +{
+> +	return mdio_read(phy_id, regnum);
+> +}
+> +
+> +static int mii_write(struct mii_bus *bus, int phy_id, int regnum, u16 val)
+> +{
+> +	return mdio_write(phy_id, regnum, val);
+> +}
+> +
+> +u32 mdio_init(struct platform_device *pdev, struct net_device *net_dev)
+> +{
+> +	struct l2sw_mac *mac = netdev_priv(net_dev);
+> +	struct mii_bus *mii_bus;
+> +	struct device_node *mdio_node;
+> +	u32 ret;
+> +
+> +	mii_bus = mdiobus_alloc();
+> +	if (!mii_bus) {
+> +		pr_err(" Failed to allocate mdio_bus memory!\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	mii_bus->name = "sunplus_mii_bus";
+> +	mii_bus->parent = &pdev->dev;
+> +	mii_bus->priv = mac;
+> +	mii_bus->read = mii_read;
+> +	mii_bus->write = mii_write;
+> +	snprintf(mii_bus->id, MII_BUS_ID_SIZE, "%s-mii", dev_name(&pdev->dev));
+> +
+> +	mdio_node = of_get_parent(mac->comm->phy1_node);
+> +	ret = of_mdiobus_register(mii_bus, mdio_node);
+> +	if (ret) {
+> +		pr_err(" Failed to register mii bus (ret = %d)!\n", ret);
+> +		mdiobus_free(mii_bus);
+> +		return ret;
+> +	}
+> +
+> +	mac->comm->mii_bus = mii_bus;
+> +	return ret;
+> +}
+> +
+> +void mdio_remove(struct net_device *net_dev)
+> +{
+> +	struct l2sw_mac *mac = netdev_priv(net_dev);
+> +
+> +	if (mac->comm->mii_bus) {
+> +		mdiobus_unregister(mac->comm->mii_bus);
+> +		mdiobus_free(mac->comm->mii_bus);
+> +		mac->comm->mii_bus = NULL;
+> +	}
+> +}
+
+You MDIO code is pretty scattered around. Please bring it all together
+in one file.
+
+> +static void mii_linkchange(struct net_device *netdev)
+> +{
+> +}
+
+Nothing to do? Seems very odd. Don't you need to tell the MAC it
+should do 10Mbps or 100Mbps? What about pause?
+
+> +
+> +int mac_phy_probe(struct net_device *netdev)
+> +{
+> +	struct l2sw_mac *mac = netdev_priv(netdev);
+> +	struct phy_device *phydev;
+> +	int i;
+> +
+> +	phydev = of_phy_connect(mac->net_dev, mac->comm->phy1_node, mii_linkchange,
+> +				0, PHY_INTERFACE_MODE_RGMII_ID);
+
+You should not hard code PHY_INTERFACE_MODE_RGMII_ID. Use the DT
+property "phy-mode"
+
+> +	if (!phydev) {
+> +		pr_err(" \"%s\" has no phy found\n", netdev->name);
+> +		return -1;
+
+-ENODEV;
+
+Never use -1, pick an error code.
+
+> +	}
+> +
+> +	if (mac->comm->phy2_node) {
+> +		of_phy_connect(mac->net_dev, mac->comm->phy2_node, mii_linkchange,
+> +			       0, PHY_INTERFACE_MODE_RGMII_ID);
+> +	}
+> +
+> +	linkmode_clear_bit(ETHTOOL_LINK_MODE_Pause_BIT, phydev->supported);
+> +	linkmode_clear_bit(ETHTOOL_LINK_MODE_Asym_Pause_BIT, phydev->supported);
+
+So the MAC does not support pause? I'm then confused about phy_cfg().
+
+   Andrew
