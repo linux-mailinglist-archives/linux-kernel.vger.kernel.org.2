@@ -2,113 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3AB444684
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B21C444660
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:57:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233075AbhKCREE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 13:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37166 "EHLO
+        id S232991AbhKCRAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 13:00:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233022AbhKCRED (ORCPT
+        with ESMTP id S232870AbhKCRAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 13:04:03 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B83C061205
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 10:01:26 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 71so2507911wma.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 10:01:26 -0700 (PDT)
+        Wed, 3 Nov 2021 13:00:11 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C5EC061205
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 09:57:34 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id w9-20020a17090a1b8900b001a6b3b7ec17so1754623pjc.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 09:57:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=4lIhYLX16E5dGAMp8p9rDyFi1F2gTM+Q1Uh/Pl4rLPY=;
-        b=EaMKlGiCKGFYXlmVwztOTXSiL2HK7f05V2JPHBSDWT3027cIjatnLYxTIeXi99waqF
-         WI5CZsIgUtqMzRMn+MCMUVayjB0PZO/5w9rTyg/aB2FD+7/u2wipTNO1uKoTOtwcm29V
-         /MBOV6wocnSta4b76G23XaMj5wK2G4oE86QeeAHTd9cBXIQTXPr9ht1fV8w3IHwQOyns
-         XkK4BMUMkvChwanmCaSuyDQ5O3x4GVeHppLxIvTwEka+kRtSnYQVnoihhNtL348rl3wA
-         HGadB+Vd2gAwQMJJ0AzhAFeZThsRJW7/VELGAninhkI3hR9mcMYUgTR55y0huByLh+ZJ
-         BuLQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IBSuB2sX7yC2N+skcd1kW4OtMhtED2f+hVFLuKO9FNc=;
+        b=wTNdA3Oz63ouFKMX/zm8/Y+znNyrUzRhG2N2tsdnBznIJC7x5jkh5uMDkh4O3Hx8R+
+         xkPc16Fw0goWAMKBCB4oDaRs+g0w2P+XUtYxRc/62cFMhInyDMUInR/8Qe+kp2VcTqrt
+         J4pd/n5UKfiPNzZ0M0ZGQgirk/w56WXw3BQsOTt8buZp8UBAeP5zoKOeXahykr5KZdxP
+         VBJ3q+FCrhu3i56doXt3CgNFCH2jEbeZB4MUe36rUeXsK1tMD5bsOVnRbV3LhEeG8nT8
+         pGZK91HbDI1J/NyHRq+bHmKS5nQo5nytN5BQaHsKTkSuPUn9hbNuF54JevIVPuxX8CYu
+         okcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=4lIhYLX16E5dGAMp8p9rDyFi1F2gTM+Q1Uh/Pl4rLPY=;
-        b=DmXxpuuDOWHGXCjNgDXRnCdaDs6xNnVmMoLSQe/OV+XWXbtXRwIF+h0C/X9mAqi0AC
-         gR3G8wmNalKEhcrOhjOEYmFYNf+nqH2r6pyw/sWGefciHuIlAeVgOYJWbLsFsEkc2Gu9
-         PaTrB6+GDFfs1gfdV/ulP7mnUPAO6Seafj/fgXdKmL+9gOBdsXF05xj2ynavysCadcZL
-         2R08JrM6CtiRetMdzW2HP1Cxai9I+DfvtTSVYrotZGBhCE5WG5fHcO0eF/llQg6bvAP5
-         JYHO/7vNAKpmIFmZm30IjBGxt3cHn11IFTGnlktLZiALFZAzNeP0YOKuSHUnn5PZFJSe
-         BNpw==
-X-Gm-Message-State: AOAM532lDhlxquplKPbWOt1i0culSqkiLqCpLVKbQNi8dXXQSNrLAdsD
-        LGWasMTIvm1+g5EgT68SiPF1XA==
-X-Google-Smtp-Source: ABdhPJzWDmxu6si35aJclXAhUjcBNkg1SJiEjJ8BjEAzBYVwwyPTExaj5FFOMQK5ecqvYP64K1g+Dg==
-X-Received: by 2002:a7b:cc8f:: with SMTP id p15mr7503442wma.129.1635958884853;
-        Wed, 03 Nov 2021 10:01:24 -0700 (PDT)
-Received: from google.com ([95.148.6.174])
-        by smtp.gmail.com with ESMTPSA id p13sm6639467wmi.0.2021.11.03.10.01.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 10:01:24 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 17:01:22 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     syzbot <syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com>
-Cc:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] KASAN: stack-out-of-bounds Read in iov_iter_revert
-Message-ID: <YYLAYvFU+9cnu+4H@google.com>
-References: <6f7d4c1d-f923-3ab1-c525-45316b973c72@gmail.com>
- <00000000000047f3b805c962affb@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IBSuB2sX7yC2N+skcd1kW4OtMhtED2f+hVFLuKO9FNc=;
+        b=0HKi6xVsKH9igFtwk76VJnvAZctb56Twd7immQhKCMW0EVgPgFXPmxQT8kLDqaBvZa
+         SBnWKRfI6H1J3Czvwn2NAmW1svp0fd9B8GyjRc7YXKYOwY/tTMk2VuIISdRn+1pZkXvq
+         EF4ZxLs8joPOdnue9fZaeO7L92T2iV6aLKMqgMbiLAofphGR1+IalHa4pxk7mofam9Kq
+         9Tn3D9MFK0BgMeMrQTUp/aSvEok5rw+L2cOQHsnFKIEhjfes9puVqG6va4JNrUO2rE09
+         NFsS5Elz1nMLoj4eKU8pcwyFVxUFVsJTKQPkQ+22drdR0zFGeysLg6aVbRWFCIZzQqYh
+         D2Qw==
+X-Gm-Message-State: AOAM531WMWETeh/f/8Bhd9I5bXrkyUIgIfgDKXRLmDXshS29m0HzODcG
+        1xr6SVpiexWgMojDQJ7Dx9D5GTEchzbc24Fv/SPo4A==
+X-Google-Smtp-Source: ABdhPJzUnQk5Cmt2i6mzswb2rLjgrcIQaBoi2fOvdvX9lCslbk7TLUjrnsn0nSemd+HWgru1iz0235PqX2K8UC/UTbI=
+X-Received: by 2002:a17:90a:1190:: with SMTP id e16mr15889288pja.209.1635958653600;
+ Wed, 03 Nov 2021 09:57:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <00000000000047f3b805c962affb@google.com>
+References: <20211103155543.1037604-1-benl@squareup.com> <20211103155543.1037604-3-benl@squareup.com>
+In-Reply-To: <20211103155543.1037604-3-benl@squareup.com>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Wed, 3 Nov 2021 18:08:15 +0100
+Message-ID: <CAMZdPi8c1aJCCL8b6iYSz1Ev46jK15Fpa9pG-2FGhrT3FR2RMA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] wcn36xx: fix RX BD rate mapping for 5GHz legacy rates
+To:     Benjamin Li <benl@squareup.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, wcn36xx@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good afternoon Pavel,
+Hi Ben,
 
-> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
-> 
-> Reported-and-tested-by: syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com
-> 
-> Tested on:
-> 
-> commit:         bff2c168 io_uring: don't retry with truncated iter
-> git tree:       https://github.com/isilence/linux.git truncate
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=730106bfb5bf8ace
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9671693590ef5aad8953
-> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-> 
-> Note: testing is done by a robot and is best-effort only.
+On Wed, 3 Nov 2021 at 16:56, Benjamin Li <benl@squareup.com> wrote:
+>
+> The linear mapping between the BD rate field and the driver's 5GHz
+> legacy rates table (wcn_5ghz_rates) does not only apply for the latter
+> four rates -- it applies to all eight rates.
+>
+> Fixes: 6ea131acea98 ("wcn36xx: Fix warning due to bad rate_idx")
+> Signed-off-by: Benjamin Li <benl@squareup.com>
+> ---
+>  drivers/net/wireless/ath/wcn36xx/txrx.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/wcn36xx/txrx.c b/drivers/net/wireless/ath/wcn36xx/txrx.c
+> index f0a9f069a92a9..fce3a6a98f596 100644
+> --- a/drivers/net/wireless/ath/wcn36xx/txrx.c
+> +++ b/drivers/net/wireless/ath/wcn36xx/txrx.c
+> @@ -272,7 +272,6 @@ int wcn36xx_rx_skb(struct wcn36xx *wcn, struct sk_buff *skb)
+>         const struct wcn36xx_rate *rate;
+>         struct ieee80211_hdr *hdr;
+>         struct wcn36xx_rx_bd *bd;
+> -       struct ieee80211_supported_band *sband;
+>         u16 fc, sn;
+>
+>         /*
+> @@ -350,12 +349,10 @@ int wcn36xx_rx_skb(struct wcn36xx *wcn, struct sk_buff *skb)
+>                 status.enc_flags = rate->encoding_flags;
+>                 status.bw = rate->bw;
+>                 status.rate_idx = rate->mcs_or_legacy_index;
+> -               sband = wcn->hw->wiphy->bands[status.band];
+>                 status.nss = 1;
+>
+>                 if (status.band == NL80211_BAND_5GHZ &&
+> -                   status.encoding == RX_ENC_LEGACY &&
+> -                   status.rate_idx >= sband->n_bitrates) {
 
-As you can see in the 'dashboard link' above this bug also affects
-android-5-10 which is currently based on v5.10.75.
 
-I see that the back-port of this patch failed in v5.10.y:
+It looks fine, but can you replace it with a 'status.rate_idx  >= 4'.
+I get sporadic 5Ghz frames reported with rate_idx=0 (firmware miss?),
+leading to warnings because status.rate_idx is -4(unsigned) in that
+case. So better to report a wrong rate than a corrupted one.
 
-  https://lore.kernel.org/stable/163152589512611@kroah.com/
+>
+> +                   status.encoding == RX_ENC_LEGACY) {
+>                         /* no dsss rates in 5Ghz rates table */
+>                         status.rate_idx -= 4;
+>                 }
+> --
 
-And after solving the build-error by back-porting both:
 
-  2112ff5ce0c11 iov_iter: track truncated size
-  89c2b3b749182 io_uring: reexpand under-reexpanded iters
-
-I now see execution tripping the WARN() in iov_iter_revert():
-
-  if (WARN_ON(unroll > MAX_RW_COUNT))
-      return
-
-Am I missing any additional patches required to fix stable/v5.10.y?
-
-Any help would be gratefully received.
-
-Kind regards,
-Lee
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Regards,
+Loic
