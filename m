@@ -2,478 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B14443A85
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 01:38:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82601443A7C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 01:36:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233298AbhKCAk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 20:40:58 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:55437 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbhKCAkz (ORCPT
+        id S232862AbhKCAjT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Nov 2021 20:39:19 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:52358 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229804AbhKCAjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 20:40:55 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 4B05EC0002;
-        Wed,  3 Nov 2021 00:38:17 +0000 (UTC)
-Date:   Wed, 3 Nov 2021 01:36:05 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Vincent Shih <vincent.sunplus@gmail.com>
-Cc:     a.zummo@towertech.it, p.zabel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        Vincent Shih <vincent.shih@sunplus.com>
-Subject: Re: [PATCH 1/2] rtc: Add driver for Sunplus SP7021
-Message-ID: <YYHZdXqpNqzusQ5n@piout.net>
-References: <1635834123-24668-1-git-send-email-vincent.shih@sunplus.com>
- <1635834123-24668-2-git-send-email-vincent.shih@sunplus.com>
+        Tue, 2 Nov 2021 20:39:17 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1A30aI4D1002553, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 1A30aI4D1002553
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 3 Nov 2021 08:36:18 +0800
+Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
+ RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 3 Nov 2021 08:36:18 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 3 Nov 2021 08:36:17 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::dc53:1026:298b:c584]) by
+ RTEXMBS04.realtek.com.tw ([fe80::dc53:1026:298b:c584%5]) with mapi id
+ 15.01.2308.015; Wed, 3 Nov 2021 08:36:17 +0800
+From:   Pkshih <pkshih@realtek.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+CC:     Colin King <colin.king@canonical.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH][next] rtw89: Fix potential dereference of the null pointer sta
+Thread-Topic: [PATCH][next] rtw89: Fix potential dereference of the null
+ pointer sta
+Thread-Index: AQHXwduziBNegQ3KtE6tzEeaYjpkJqvX/pCwgBfOyICAAT/CgA==
+Date:   Wed, 3 Nov 2021 00:36:17 +0000
+Message-ID: <c3de973999ea40cf967ffefe0ee56ed4@realtek.com>
+References: <20211015154530.34356-1-colin.king@canonical.com>
+ <9cc681c217a449519aee524b35e6b6bc@realtek.com> <20211102131437.GF2794@kadam>
+In-Reply-To: <20211102131437.GF2794@kadam>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.69.188]
+x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
+x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
+ rules found
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/11/2_=3F=3F_10:50:00?=
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1635834123-24668-2-git-send-email-vincent.shih@sunplus.com>
+X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 11/03/2021 00:25:21
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 167068 [Nov 03 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 465 465 eb31509370142567679dd183ac984a0cb2ee3296
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 11/03/2021 00:28:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On 02/11/2021 14:22:02+0800, Vincent Shih wrote:
-> +/**************************************************************************************************/
-> +/* How to test RTC:										  */
-> +/*												  */
-> +/* 1. use kernel commands									  */
-> +/* hwclock - query and set the hardware clock (RTC)						  */
-> +/*												  */
-> +/* (for i in `seq 5`; do (echo ------ && echo -n 'date      : ' && date && echo -n 'hwclock -r: ' */
-> +/*								&& hwclock -r; sleep 1); done)	  */
-> +/* date 121209002014 # Set system to 2014/Dec/12 09:00						  */
-> +/* (for i in `seq 5`; do (echo ------ && echo -n 'date      : ' && date && echo -n 'hwclock -r: ' */
-> +/*								&& hwclock -r; sleep 1); done)	  */
-> +/* hwclock -s # Set the System Time from the Hardware Clock					  */
-> +/* (for i in `seq 5`; do (echo ------ && echo -n 'date      : ' && date && echo -n 'hwclock -r: ' */
-> +/*								&& hwclock -r; sleep 1); done)	  */
-> +/* date 121213002014 # Set system to 2014/Dec/12 13:00						  */
-> +/* (for i in `seq 5`; do (echo ------ && echo -n 'date      : ' && date && echo -n 'hwclock -r: ' */
-> +/*								&& hwclock -r; sleep 1); done)	  */
-> +/* hwclock -w # Set the Hardware Clock to the current System Time				  */
-> +/* (for i in `seq 10000`; do (echo ------ && echo -n 'date  : ' && date && echo -n 'hwclock -r: ' */
-> +/*								&& hwclock -r; sleep 1); done)	  */
-> +/*												  */
-> +/* How to setup alarm (e.g., 10 sec later):							  */
-> +/*     echo 0 > /sys/class/rtc/rtc0/wakealarm && nnn=`date '+%s'` && echo $nnn && \		  */
-> +/*     nnn=`expr $nnn + 10` && echo $nnn > /sys/class/rtc/rtc0/wakealarm			  */
-> +/*												  */
-> +/* 2. use RTC Driver Test Program (\linux\application\module_test\rtc\rtc-test.c)		  */
-> +/*												  */
-> +/**************************************************************************************************/
-
-I don't feel this is a super useful comment, especially since it is
-buried in a driver and this basically says to use rtctest.c
-
-> +#include <linux/module.h>
-> +#include <linux/err.h>
-> +#include <linux/rtc.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/clk.h>
-> +#include <linux/reset.h>
-> +#include <linux/of.h>
-> +#include <linux/ktime.h>
-> +#include <linux/io.h>
-
-This list has to be sorted
-
-> +
-> +/* ---------------------------------------------------------------------------------------------- */
-> +#define FUNC_DEBUG() pr_debug("[RTC] Debug: %s(%d)\n", __func__, __LINE__)
-> +
-> +#define RTC_DEBUG(fmt, args ...) pr_debug("[RTC] Debug: " fmt, ## args)
-> +#define RTC_INFO(fmt, args ...) pr_info("[RTC] Info: " fmt, ## args)
-> +#define RTC_WARN(fmt, args ...) pr_warn("[RTC] Warning: " fmt, ## args)
-> +#define RTC_ERR(fmt, args ...) pr_err("[RTC] Error: " fmt, ## args)
-> +/* ---------------------------------------------------------------------------------------------- */
-> +
-> +struct sunplus_rtc {
-> +	struct clk *rtcclk;
-> +	struct reset_control *rstc;
-> +	unsigned long set_alarm_again;
-> +	u32 charging_mode;
-> +};
-> +
-> +struct sunplus_rtc sp_rtc;
-> +
-> +#define RTC_REG_NAME		"rtc_reg"
-> +
-> +struct sp_rtc_reg {
-> +	unsigned int rsv00;
-> +	unsigned int rsv01;
-> +	unsigned int rsv02;
-> +	unsigned int rsv03;
-> +	unsigned int rsv04;
-> +	unsigned int rsv05;
-> +	unsigned int rsv06;
-> +	unsigned int rsv07;
-> +	unsigned int rsv08;
-> +	unsigned int rsv09;
-> +	unsigned int rsv10;
-> +	unsigned int rsv11;
-> +	unsigned int rsv12;
-> +	unsigned int rsv13;
-> +	unsigned int rsv14;
-> +	unsigned int rsv15;
-> +	unsigned int rtc_ctrl;
-> +	unsigned int rtc_timer_out;
-> +	unsigned int rtc_divider;
-> +	unsigned int rtc_timer_set;
-> +	unsigned int rtc_alarm_set;
-> +	unsigned int rtc_user_data;
-> +	unsigned int rtc_reset_record;
-> +	unsigned int rtc_battery_ctrl;
-> +	unsigned int rtc_trim_ctrl;
-> +	unsigned int rsv25;
-> +	unsigned int rsv26;
-> +	unsigned int rsv27;
-> +	unsigned int rsv28;
-> +	unsigned int rsv29;
-> +	unsigned int rsv30;
-> +	unsigned int rsv31;
-> +};
-
-We don't use that kind of structs, please use defines and offsets.
-
-> +
-> +static struct sp_rtc_reg *rtc_reg_ptr;
-> +
-> +static void sp_get_seconds(unsigned long *secs)
-> +{
-> +	*secs = (unsigned long)readl(&rtc_reg_ptr->rtc_timer_out);
-> +}
-> +
-> +static void sp_set_seconds(unsigned long secs)
-> +{
-> +	writel((u32)secs, &rtc_reg_ptr->rtc_timer_set);
-> +}
-> +
-> +static int sp_rtc_read_time(struct device *dev, struct rtc_time *tm)
-> +{
-> +	unsigned long secs;
-> +
-> +	sp_get_seconds(&secs);
-> +	rtc_time64_to_tm(secs, tm);
-> +	RTC_DEBUG("%s:  RTC date/time to %d-%d-%d, %02d:%02d:%02d.\r\n",
-> +		__func__, tm->tm_mday, tm->tm_mon + 1, tm->tm_year,
-> +					tm->tm_hour, tm->tm_min, tm->tm_sec);
-> +
-> +	return rtc_valid_tm(tm);
-> +}
-> +
-> +int sp_rtc_get_time(struct rtc_time *tm)
-> +{
-> +	unsigned long secs;
-> +
-> +	sp_get_seconds(&secs);
-> +	rtc_time64_to_tm(secs, tm);
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(sp_rtc_get_time);
-> +
-
-Why is this exported?
-
-> +static int sp_rtc_suspend(struct platform_device *pdev, pm_message_t state)
-> +{
-> +	FUNC_DEBUG();
-> +
-> +	// Keep RTC from system reset
-> +	writel((1 << (16+4)) | (1 << 4), &rtc_reg_ptr->rtc_ctrl);
-> +
-
-Plenty of magic values here, please explain.
-
-> +	return 0;
-> +}
-> +
-> +static int sp_rtc_resume(struct platform_device *pdev)
-> +{
-> +	/*						*/
-> +	/* Because RTC is still powered during suspend,	*/
-> +	/* there is nothing to do here.			*/
-> +	/*						*/
-> +	FUNC_DEBUG();
-> +
-> +	// Keep RTC from system reset
-> +	writel((1 << (16+4)) | (1 << 4), &rtc_reg_ptr->rtc_ctrl);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sp_rtc_set_time(struct device *dev, struct rtc_time *tm)
-> +{
-> +	unsigned long secs;
-> +
-> +	secs = rtc_tm_to_time64(tm);
-> +	RTC_DEBUG("%s, secs = %lu\n", __func__, secs);
-> +	sp_set_seconds(secs);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sp_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
-> +{
-> +	struct rtc_device *rtc = dev_get_drvdata(dev);
-> +	unsigned long alarm_time;
-> +
-> +	alarm_time = rtc_tm_to_time64(&alrm->time);
-> +	RTC_DEBUG("%s, alarm_time: %u\n", __func__, (u32)(alarm_time));
-> +
-> +	if (alarm_time > 0xFFFFFFFF)
-> +		return -EINVAL;
-
-Please set the range of the rtc properly and the core will do this check
-for you.
-
-> +
-> +	if ((rtc->aie_timer.enabled) && (rtc->aie_timer.node.expires == ktime_set(alarm_time, 0))) {
-> +		if (rtc->uie_rtctimer.enabled)
-> +			sp_rtc.set_alarm_again = 1;
-> +	}
-
-You have to explain that.
-
-> +
-> +	writel((u32)alarm_time, &rtc_reg_ptr->rtc_alarm_set);
-> +	wmb();			// make sure settings are effective.
-
-doesn't writel come with a barrier?
-
-> +
-> +	// enable alarm for update irq
-> +	if (rtc->uie_rtctimer.enabled)
-> +		writel((0x003F << 16) | 0x17, &rtc_reg_ptr->rtc_ctrl);
-> +	else if (!rtc->aie_timer.enabled)
-> +		writel((0x0007 << 16) | 0x0, &rtc_reg_ptr->rtc_ctrl);
-
-Magic values, please explain also, I'm not sure why you need to look at
-uie_rtctimer and aie_timer as your RTC seems capable of having an alarm
-every seconds.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int sp_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alrm)
-> +{
-> +	unsigned int alarm_time;
-> +
-> +	alarm_time = readl(&rtc_reg_ptr->rtc_alarm_set);
-> +	RTC_DEBUG("%s, alarm_time: %u\n", __func__, alarm_time);
-> +	rtc_time64_to_tm((unsigned long)(alarm_time), &alrm->time);
-> +
-
-You have to also set whether the alarm is enabled or not, else, simply
-don't bother returning anything.
-
-> +	return 0;
-> +}
-> +
-> +static int sp_rtc_alarm_irq_enable(struct device *dev, unsigned int enabled)
-> +{
-> +	struct rtc_device *rtc = dev_get_drvdata(dev);
-> +
-> +	if (enabled)
-> +		writel((0x003F << 16) | 0x17, &rtc_reg_ptr->rtc_ctrl);
-> +	else if (!rtc->uie_rtctimer.enabled)
-> +		writel((0x0007 << 16) | 0x0, &rtc_reg_ptr->rtc_ctrl);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct rtc_class_ops sp_rtc_ops = {
-> +	.read_time =		sp_rtc_read_time,
-> +	.set_time =		sp_rtc_set_time,
-> +	.set_alarm =		sp_rtc_set_alarm,
-> +	.read_alarm =		sp_rtc_read_alarm,
-> +	.alarm_irq_enable =	sp_rtc_alarm_irq_enable,
-> +};
-> +
-> +static irqreturn_t rtc_irq_handler(int irq, void *dev_id)
-> +{
-> +	struct platform_device *plat_dev = dev_id;
-> +	struct rtc_device *rtc = platform_get_drvdata(plat_dev);
-> +
-> +	if (rtc->uie_rtctimer.enabled) {
-> +		rtc_update_irq(rtc, 1, RTC_IRQF | RTC_UF);
-> +		RTC_DEBUG("[RTC] update irq\n");
-> +
-> +		if (sp_rtc.set_alarm_again == 1) {
-> +			sp_rtc.set_alarm_again = 0;
-> +			rtc_update_irq(rtc, 1, RTC_IRQF | RTC_AF);
-> +			RTC_DEBUG("[RTC] alarm irq\n");
-> +		}
-> +	} else {
-> +		rtc_update_irq(rtc, 1, RTC_IRQF | RTC_AF);
-> +		RTC_DEBUG("[RTC] alarm irq\n");
-> +	}
-
-I'm pretty sure you can get rid of most of that and stop looking at
-uie_rtctimer.
-
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +/* ---------------------------------------------------------------------------------------------- */
-> +/* mode   bat_charge_rsel   bat_charge_dsel   bat_charge_en     Remarks				  */
-> +/* 0xE            x              x                 0            Disable				  */
-> +/* 0x1            0              0                 1            0.86mA (2K Ohm with diode)	  */
-> +/* 0x5            1              0                 1            1.81mA (250 Ohm with diode)	  */
-> +/* 0x9            2              0                 1            2.07mA (50 Ohm with diode)	  */
-> +/* 0xD            3              0                 1            16.0mA (0 Ohm with diode)	  */
-> +/* 0x3            0              1                 1            1.36mA (2K Ohm without diode)	  */
-> +/* 0x7            1              1                 1            3.99mA (250 Ohm without diode)	  */
-> +/* 0xB            2              1                 1            4.41mA (50 Ohm without diode)	  */
-> +/* 0xF            3              1                 1            16.0mA (0 Ohm without diode)	  */
-> +/* ---------------------------------------------------------------------------------------------- */
-> +static void sp_rtc_set_batt_charge_ctrl(u32 _mode)
-> +{
-> +	u8 m = _mode & 0x000F;
-> +
-> +	RTC_DEBUG("battery charge mode: 0x%X\n", m);
-> +	writel((0x000F << 16) | m, &rtc_reg_ptr->rtc_battery_ctrl);
-> +}
-> +
-> +static int sp_rtc_probe(struct platform_device *plat_dev)
-> +{
-> +	int ret;
-> +	int err, irq;
-> +	struct rtc_device *rtc = NULL;
-> +	struct resource *res;
-> +	void __iomem *reg_base = NULL;
-> +
-> +	FUNC_DEBUG();
-> +
-> +	memset(&sp_rtc, 0, sizeof(sp_rtc));
-> +
-> +	// find and map our resources
-> +	res = platform_get_resource_byname(plat_dev, IORESOURCE_MEM, RTC_REG_NAME);
-> +	RTC_DEBUG("res = 0x%x\n", res->start);
-> +
-> +	if (res) {
-> +		reg_base = devm_ioremap_resource(&plat_dev->dev, res);
-> +		if (IS_ERR(reg_base))
-> +			RTC_ERR("%s devm_ioremap_resource fail\n", RTC_REG_NAME);
-> +	}
-> +	RTC_DEBUG("reg_base = 0x%lx\n", (unsigned long)reg_base);
-> +
-> +	// clk
-> +	sp_rtc.rtcclk = devm_clk_get(&plat_dev->dev, NULL);
-> +	RTC_DEBUG("sp_rtc->clk = 0x%lx\n", (unsigned long)sp_rtc.rtcclk);
-> +	if (IS_ERR(sp_rtc.rtcclk))
-> +		RTC_DEBUG("devm_clk_get fail\n");
-> +
-> +	ret = clk_prepare_enable(sp_rtc.rtcclk);
-> +
-> +	// reset
-> +	sp_rtc.rstc = devm_reset_control_get(&plat_dev->dev, NULL);
-> +	RTC_DEBUG("sp_rtc->rstc = 0x%lx\n", (unsigned long)sp_rtc.rstc);
-> +	if (IS_ERR(sp_rtc.rstc)) {
-> +		ret = PTR_ERR(sp_rtc.rstc);
-> +		RTC_ERR("SPI failed to retrieve reset controller: %d\n", ret);
-> +		goto free_clk;
-> +	}
-> +
-> +	ret = reset_control_deassert(sp_rtc.rstc);
-> +	if (ret)
-> +		goto free_clk;
-> +
-> +	rtc_reg_ptr = (struct sp_rtc_reg *)(reg_base);
-> +
-> +	// Keep RTC from system reset
-> +	writel((1 << (16+4)) | (1 << 4), &rtc_reg_ptr->rtc_ctrl);
-> +
-> +	// request irq
-> +	irq = platform_get_irq(plat_dev, 0);
-> +	if (irq < 0) {
-> +		RTC_ERR("platform_get_irq failed\n");
-> +		goto free_reset_assert;
-> +	}
-> +
-> +	err = devm_request_irq(&plat_dev->dev, irq, rtc_irq_handler,
-> +					IRQF_TRIGGER_RISING, "rtc irq", plat_dev);
-> +	if (err) {
-> +		RTC_ERR("devm_request_irq failed: %d\n", err);
-> +		goto free_reset_assert;
-> +	}
-> +
-> +	// Get charging-mode.
-> +	ret = of_property_read_u32(plat_dev->dev.of_node, "charging-mode", &sp_rtc.charging_mode);
-> +	if (ret) {
-> +		RTC_ERR("Failed to retrieve \'charging-mode\'!\n");
-> +		goto free_reset_assert;
-> +	}
-> +	sp_rtc_set_batt_charge_ctrl(sp_rtc.charging_mode);
-
-There are generic trickle charger property, please use those.
-
-> +
-> +	device_init_wakeup(&plat_dev->dev, 1);
-> +
-> +	rtc = devm_rtc_device_register(&plat_dev->dev, "sp7021-rtc", &sp_rtc_ops, THIS_MODULE);
-> +	if (IS_ERR(rtc)) {
-> +		ret = PTR_ERR(rtc);
-> +		goto free_reset_assert;
-> +	}
-
-Use devm_rtc_allocate_device/devm_rtc_register_device instead.
-
-> +
-> +	platform_set_drvdata(plat_dev, rtc);
-> +
-> +	RTC_INFO("sp7021-rtc loaded\n");
-> +
-> +	return 0;
-> +
-> +free_reset_assert:
-> +	reset_control_assert(sp_rtc.rstc);
-> +free_clk:
-> +	clk_disable_unprepare(sp_rtc.rtcclk);
-> +
-> +	return ret;
-> +}
-> +
-> +static int sp_rtc_remove(struct platform_device *plat_dev)
-> +{
-> +	reset_control_assert(sp_rtc.rstc);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id sp_rtc_of_match[] = {
-> +	{ .compatible = "sunplus,sp7021-rtc" },
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, sp_rtc_of_match);
-> +
-> +static struct platform_driver sp_rtc_driver = {
-> +	.probe   = sp_rtc_probe,
-> +	.remove  = sp_rtc_remove,
-> +	.suspend = sp_rtc_suspend,
-> +	.resume  = sp_rtc_resume,
-> +	.driver  = {
-> +		.name = "sp7021-rtc",
-> +		.owner = THIS_MODULE,
-> +		.of_match_table = sp_rtc_of_match,
-> +	},
-> +};
-> +module_platform_driver(sp_rtc_driver);
-> +
-> +MODULE_AUTHOR("Vincent Shih <vincent.shih@sunplus.com>");
-> +MODULE_DESCRIPTION("Sunplus RTC driver");
-> +MODULE_LICENSE("GPL v2");
-> +
-> -- 
-> 2.7.4
+> -----Original Message-----
+> From: Dan Carpenter <dan.carpenter@oracle.com>
+> Sent: Tuesday, November 2, 2021 9:15 PM
+> To: Pkshih <pkshih@realtek.com>
+> Cc: Colin King <colin.king@canonical.com>; Kalle Valo <kvalo@codeaurora.org>; David S . Miller
+> <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; linux-wireless@vger.kernel.org;
+> netdev@vger.kernel.org; kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH][next] rtw89: Fix potential dereference of the null pointer sta
+> 
+> On Mon, Oct 18, 2021 at 03:35:28AM +0000, Pkshih wrote:
+> >
+> > > -----Original Message-----
+> > > From: Colin King <colin.king@canonical.com>
+> > > Sent: Friday, October 15, 2021 11:46 PM
+> > > To: Kalle Valo <kvalo@codeaurora.org>; David S . Miller <davem@davemloft.net>; Jakub Kicinski
+> > > <kuba@kernel.org>; Pkshih <pkshih@realtek.com>; linux-wireless@vger.kernel.org;
+> > > netdev@vger.kernel.org
+> > > Cc: kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
+> > > Subject: [PATCH][next] rtw89: Fix potential dereference of the null pointer sta
+> > >
+> > > From: Colin Ian King <colin.king@canonical.com>
+> > >
+> > > The pointer rtwsta is dereferencing pointer sta before sta is
+> > > being null checked, so there is a potential null pointer deference
+> > > issue that may occur. Fix this by only assigning rtwsta after sta
+> > > has been null checked. Add in a null pointer check on rtwsta before
+> > > dereferencing it too.
+> > >
+> > > Fixes: e3ec7017f6a2 ("rtw89: add Realtek 802.11ax driver")
+> > > Addresses-Coverity: ("Dereference before null check")
+> > > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > > ---
+> > >  drivers/net/wireless/realtek/rtw89/core.c | 9 +++++++--
+> > >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/net/wireless/realtek/rtw89/core.c
+> > > b/drivers/net/wireless/realtek/rtw89/core.c
+> > > index 06fb6e5b1b37..26f52a25f545 100644
+> > > --- a/drivers/net/wireless/realtek/rtw89/core.c
+> > > +++ b/drivers/net/wireless/realtek/rtw89/core.c
+> > > @@ -1534,9 +1534,14 @@ static bool rtw89_core_txq_agg_wait(struct rtw89_dev *rtwdev,
+> > >  {
+> > >  	struct rtw89_txq *rtwtxq = (struct rtw89_txq *)txq->drv_priv;
+> > >  	struct ieee80211_sta *sta = txq->sta;
+> > > -	struct rtw89_sta *rtwsta = (struct rtw89_sta *)sta->drv_priv;
+> >
+> > 'sta->drv_priv' is only a pointer, we don't really dereference the
+> > data right here, so I think this is safe. More, compiler can optimize
+> > this instruction that reorder it to the place just right before using.
+> > So, it seems like a false alarm.
+> 
+> The warning is about "sta" not "sta->priv".  It's not a false positive.
+> 
+> I have heard discussions about compilers trying to work around these
+> bugs by re-ordering the code.  Is that an option in GCC?  It's not
+> something we should rely on, but I'm just curious if it exists in
+> released versions.
 > 
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+I say GCC does "reorder" the code, because the object codes of following
+two codes are identical with default or -Os ccflags.
+If I misuse the term, please correct me.
+
+Code-1:
+	struct rtw89_sta *rtwsta = (struct rtw89_sta *)sta->drv_priv;
+
+	if (!sta)
+		return false;
+
+	if (rtwsta->max_agg_wait <= 0)
+		return false;
+
+Code-2:
+	struct rtw89_sta *rtwsta;
+
+	if (!sta)
+		return false;
+
+	rtwsta = (struct rtw89_sta *)sta->drv_priv;
+	if (rtwsta->max_agg_wait <= 0)
+		return false;
+
+
+The code-1 is the original code Coverity and smatch warn use-before-check.
+The code-2 can avoid this warning without doubt.
+
+To be clear, I have sent a patch to fix this.
+
+--
+Ping-Ke
+
