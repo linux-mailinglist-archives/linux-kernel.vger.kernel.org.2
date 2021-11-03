@@ -2,153 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1F24447BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C084447C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbhKCRxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 13:53:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231380AbhKCRwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 13:52:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7E0660F90;
-        Wed,  3 Nov 2021 17:50:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635961809;
-        bh=I7T2p9hGK8SvEPslDuk3l6+20Nz99bU1hW+iZqP6kEA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uZfS6Ee44JNWwy6mguQFZkJqlMEFe1nwGhQ1fEm9v8k3KfWHaYgtdVrUjLFLKngWB
-         QbpMRqnXH+2u9KRHhel5HuP7mWwYmiK38h1twNOLydC1SIir/5vIoRnvt+0auATcfo
-         SClWjWe2Y/muxtGGfZnnzfLtF++3quKFltm1Ebm6m/j6MuX8y/zYie01O5GRTozJFo
-         z6VlotKr2R/Bog6uWCdocXDfMycsP9e85w5tgiY0Iw8FwdIKLNofecCKWQA7WWhDDM
-         8R0VxU9Mpq4hs01jLUwDiZHhQV6DDoNv+VnPdfWDZp4K/X24oj49Uzp6PWPofGx0xM
-         z2J4VUd24LQBg==
-From:   Gao Xiang <xiang@kernel.org>
-To:     linux-erofs@lists.ozlabs.org, Chao Yu <chao@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Gao Xiang <xiang@kernel.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] erofs: fix unsafe pagevec reuse of hooked pclusters
-Date:   Thu,  4 Nov 2021 01:49:53 +0800
-Message-Id: <20211103174953.3209-1-xiang@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S231219AbhKCRyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 13:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229697AbhKCRyA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 13:54:00 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA77C061714;
+        Wed,  3 Nov 2021 10:51:23 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id b17so6091629uas.0;
+        Wed, 03 Nov 2021 10:51:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y16TxmkBvfqZgNLIXU85g39fksG0Qn9oks7FAgvFiCM=;
+        b=fPXyM8mzP3xvv8wh3rn4V3uaO87BNrn0AJ9Qk+6md27hPqHI7elIBnRFfZrMbkrB8z
+         HMRAMWtnw0XtczVwAoKFJVJIdYOkvt8HQYEM8C6xTdZXiSzf4OZxmxoe6Y08fRhREPSJ
+         XIWi2Lh6dvIz44V28gaJTn+LjOAiatp6weuHgHr8HN783Bom+vt60CdU1nql8hJzFwAf
+         8xk0AzN3X2eOPziruIBW+zMsjC7zIG02FuAJFh5F++waTBxWkxxKZf6WCNIdprizOMbW
+         Xm+0CZZTDVOgSmjSd7lFoDAmPZFRD0BUunnY1+vhJaIeWPGb9aoKk/6xNIoKE9mP9EBy
+         QQOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y16TxmkBvfqZgNLIXU85g39fksG0Qn9oks7FAgvFiCM=;
+        b=6ed8Ak2NxFyuoGWkmmzeNtFP+9ujHdtv9ZDijobAHU4OlBvshZxm2U188Q9L5z5dK/
+         fmT/ex04l0kVE2zarxz6Gk/8lG7Elfd7l2NCv//B5gEChpJnmFfKPtdFfoqrVdAln8m4
+         Vdx1knm2xcNgXy7Ie0RYCeNGQa+ECDf+QyNhkWhDDtzdAl+8c5xuFWAZ0AYHNJk9BTQT
+         tCrJPQf0kyw2zxNfzg01+R5xXegX0poj4npcKcgJjwlm4Qgg8DyGl8Yl8Mxa4k89YgEV
+         dBiQH8zd+0AmJ+suvBt4VdJzBZ/TYADHMgH99ZORQq/Z5pVH8yItVNcCPamWLsS4mAIx
+         CISA==
+X-Gm-Message-State: AOAM532KKTYw+5sL9nIyLuKDlMc9GmQU6KRqXWs9JMN8H57Nx/BWTHb9
+        tx2NYG0H7boJX16/FijrcDVGygK40wCcgHTwII8=
+X-Google-Smtp-Source: ABdhPJx8cB1VYKTTJlveYA1FJ28sZ0zZeouC+gUZUYrWW2QvfiO2tYkKYYUUJqVe1q+ewdOqhm9/EvWuL40E8vwi7uo=
+X-Received: by 2002:ab0:6ca7:: with SMTP id j7mr39236673uaa.133.1635961882870;
+ Wed, 03 Nov 2021 10:51:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211102225701.98944-1-Mr.Bossman075@gmail.com>
+ <20211102225701.98944-12-Mr.Bossman075@gmail.com> <CAOMZO5AxMXxDkNDqGJDhtepqSUxGRCWO+L=c67O==4fx66M7XQ@mail.gmail.com>
+ <c1610093-95ae-68d3-57ae-93b1bc9715d7@gmail.com> <5ebe48f5-7b9c-be99-d50c-65a056084b96@benettiengineering.com>
+In-Reply-To: <5ebe48f5-7b9c-be99-d50c-65a056084b96@benettiengineering.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Wed, 3 Nov 2021 14:51:12 -0300
+Message-ID: <CAOMZO5DHCYaxzSASKq6Bk8ALkiQeVjPOHOyk-pKYepJFJk6oFQ@mail.gmail.com>
+Subject: Re: [PATCH v2 11/13] mmc: sdhci-esdhc-imx: Add sdhc support for
+ i.MXRT series
+To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     Jesse Taube <mr.bossman075@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are pclusters in runtime marked with Z_EROFS_PCLUSTER_TAIL
-before actual I/O submission. Thus, the submission chain can be
-extended if the following pcluster chain hook such tail pcluster.
+Hi Giulio,
 
-As the related comment mentioned, if some page is made of a hooked
-pcluster and another followed pcluster, it can be reused for
-in-place I/O (since I/O should be submitted anyway):
- _______________________________________________________________
-|  tail (partial) page |          head (partial) page           |
-|_____PRIMARY_HOOKED___|____________PRIMARY_FOLLOWED____________|
+On Tue, Nov 2, 2021 at 8:30 PM Giulio Benetti
+<giulio.benetti@benettiengineering.com> wrote:
 
-However, it's by no means safe to reuse as pagevec since if such
-PRIMARY_HOOKED pclusters finally move into bypass chain without I/O
-submission. It's somewhat hard to reproduce with LZ4 and I just
-found it by ro_fsstress a LZMA image for long time.
+> If we add every SoC we will end up having a long list for every device
+> driver. At the moment it would be 7 parts:
+> 1) imxrt1020
+> 2) imxrt1024
+> .
+> .
+> .
+> 7) imxrt1170
+>
+> Is it ok anyway?
 
-I'm going to clean up related code together with multi-page folio
-adaption in the next few months. Let's address it directly for
-easier backporting for now.
-
-Call trace for reference:
-  z_erofs_decompress_pcluster+0x10a/0x8a0 [erofs]
-  z_erofs_decompress_queue.isra.36+0x3c/0x60 [erofs]
-  z_erofs_runqueue+0x5f3/0x840 [erofs]
-  z_erofs_readahead+0x1e8/0x320 [erofs]
-  read_pages+0x91/0x270
-  page_cache_ra_unbounded+0x18b/0x240
-  filemap_get_pages+0x10a/0x5f0
-  filemap_read+0xa9/0x330
-  new_sync_read+0x11b/0x1a0
-  vfs_read+0xf1/0x190
-
-Fixes: 3883a79abd02 ("staging: erofs: introduce VLE decompression support")
-Cc: <stable@vger.kernel.org> # 4.19+
-Signed-off-by: Gao Xiang <xiang@kernel.org>
----
- fs/erofs/zdata.c | 13 +++++++------
- fs/erofs/zpvec.h | 13 ++++++++++---
- 2 files changed, 17 insertions(+), 9 deletions(-)
-
-diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-index 11c7a1aaebad..eb51df4a9f77 100644
---- a/fs/erofs/zdata.c
-+++ b/fs/erofs/zdata.c
-@@ -373,8 +373,8 @@ static bool z_erofs_try_inplace_io(struct z_erofs_collector *clt,
- 
- /* callers must be with collection lock held */
- static int z_erofs_attach_page(struct z_erofs_collector *clt,
--			       struct page *page,
--			       enum z_erofs_page_type type)
-+			       struct page *page, enum z_erofs_page_type type,
-+			       bool pvec_safereuse)
- {
- 	int ret;
- 
-@@ -384,9 +384,9 @@ static int z_erofs_attach_page(struct z_erofs_collector *clt,
- 	    z_erofs_try_inplace_io(clt, page))
- 		return 0;
- 
--	ret = z_erofs_pagevec_enqueue(&clt->vector, page, type);
-+	ret = z_erofs_pagevec_enqueue(&clt->vector, page, type,
-+				      pvec_safereuse);
- 	clt->cl->vcnt += (unsigned int)ret;
--
- 	return ret ? 0 : -EAGAIN;
- }
- 
-@@ -729,7 +729,8 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
- 		tight &= (clt->mode >= COLLECT_PRIMARY_FOLLOWED);
- 
- retry:
--	err = z_erofs_attach_page(clt, page, page_type);
-+	err = z_erofs_attach_page(clt, page, page_type,
-+				  clt->mode >= COLLECT_PRIMARY_FOLLOWED);
- 	/* should allocate an additional short-lived page for pagevec */
- 	if (err == -EAGAIN) {
- 		struct page *const newpage =
-@@ -737,7 +738,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
- 
- 		set_page_private(newpage, Z_EROFS_SHORTLIVED_PAGE);
- 		err = z_erofs_attach_page(clt, newpage,
--					  Z_EROFS_PAGE_TYPE_EXCLUSIVE);
-+					  Z_EROFS_PAGE_TYPE_EXCLUSIVE, true);
- 		if (!err)
- 			goto retry;
- 	}
-diff --git a/fs/erofs/zpvec.h b/fs/erofs/zpvec.h
-index dfd7fe0503bb..b05464f4a808 100644
---- a/fs/erofs/zpvec.h
-+++ b/fs/erofs/zpvec.h
-@@ -106,11 +106,18 @@ static inline void z_erofs_pagevec_ctor_init(struct z_erofs_pagevec_ctor *ctor,
- 
- static inline bool z_erofs_pagevec_enqueue(struct z_erofs_pagevec_ctor *ctor,
- 					   struct page *page,
--					   enum z_erofs_page_type type)
-+					   enum z_erofs_page_type type,
-+					   bool pvec_safereuse)
- {
--	if (!ctor->next && type)
--		if (ctor->index + 1 == ctor->nr)
-+	if (!ctor->next) {
-+		/* some pages cannot be reused as pvec safely without I/O */
-+		if (type == Z_EROFS_PAGE_TYPE_EXCLUSIVE && !pvec_safereuse)
-+			type = Z_EROFS_VLE_PAGE_TYPE_TAIL_SHARED;
-+
-+		if (type != Z_EROFS_PAGE_TYPE_EXCLUSIVE &&
-+		    ctor->index + 1 == ctor->nr)
- 			return false;
-+	}
- 
- 	if (ctor->index >= ctor->nr)
- 		z_erofs_pagevec_ctor_pagedown(ctor, false);
--- 
-2.20.1
-
+As this patch adds the support for imxrt1050, I would go with
+"fsl,imxrt1050-usdhc" for now.
