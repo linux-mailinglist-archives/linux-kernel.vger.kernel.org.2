@@ -2,172 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EEB9443DAC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:24:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B171C443DAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232118AbhKCH0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 03:26:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39338 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232117AbhKCH0o (ORCPT
+        id S232073AbhKCH3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 03:29:33 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:27109 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231994AbhKCH3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 03:26:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635924248;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZJsErKlgOid2dgGzkeHMVCtfIFqJ3fNoFD5zA+9Z4Ao=;
-        b=RVHw7D+58p4jkBPyN+2KQcqpDHT9g4qkKJJuGw/bh52wgW1qFXLQG162yefPfxwc/o0QmF
-        5fvISjV5AXaAJ867SSfKseqQdiX3+M0DKZntjwhAwSGYCx2imXQpM9FzNCqRkvktvzMap9
-        06lOuMOA+npEZETEKWZ1iN1zR+Cuobc=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-291-SGSLTQQ9OSqzvVwGm9YKyw-1; Wed, 03 Nov 2021 03:24:07 -0400
-X-MC-Unique: SGSLTQQ9OSqzvVwGm9YKyw-1
-Received: by mail-ed1-f69.google.com with SMTP id g3-20020a056402424300b003e2981e1edbso1666384edb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 00:24:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZJsErKlgOid2dgGzkeHMVCtfIFqJ3fNoFD5zA+9Z4Ao=;
-        b=U4ezGGudodEhp8fgpA/hqmMn6sgem7adzLrb3bBNq2obIbizZ2YWB23wNB+dT7eEPs
-         MEGjirFP3etyrgqVh/nPjHnlAc+ikWuqt5qKqZ+biErdGSssbMaCZSsdec0WWUJcTD2w
-         nd3/eExVERYyMqNOSVgJpOv/GstAqheI6j52aTqeaI3sfe0bcEo0gwfBvxQ67YftMP46
-         6ZLbNEGgBhokiRBrDaNhS0z80u5i3tTsspnZ/Xr+MBPKqeuMYjL9iogbRO9rDf6st6IG
-         j1K57JyplZ7mEySXbq7P4ju0p7Xj2j8efvsjbOaLAu8GpN4sDQVv5cGISt1KuH0u8+ii
-         2zjA==
-X-Gm-Message-State: AOAM530YwTIlPnmvk3JUFbnijj2fXSmbitCHufGlqwuH7tj/BMDujIsA
-        lapH3K6N6j0H3+OaKgRvSVPhsOSBVpiyhuMfGexr3Z8OWo5SJ79eoATsPULZfe+gAZ+OQfMuTDj
-        NhIbNjvJ90JQq+kHye9forXgk
-X-Received: by 2002:aa7:cd6a:: with SMTP id ca10mr54572622edb.79.1635924246010;
-        Wed, 03 Nov 2021 00:24:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzlO+b3tfg/k1spcUTKa1n0g9XTsOcf6a6lwmi4Eixf6TkFEsJ0xIEF4JiUWwjNCQv/dZdRXw==
-X-Received: by 2002:aa7:cd6a:: with SMTP id ca10mr54572600edb.79.1635924245822;
-        Wed, 03 Nov 2021 00:24:05 -0700 (PDT)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id t15sm613532ejx.75.2021.11.03.00.24.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 00:24:05 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 08:24:03 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Wed, 3 Nov 2021 03:29:32 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HkdZS0sGcz1DJ8Z;
+        Wed,  3 Nov 2021 15:24:48 +0800 (CST)
+Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 3 Nov 2021 15:26:51 +0800
+Received: from [10.174.179.234] (10.174.179.234) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 3 Nov 2021 15:26:49 +0800
+Subject: Re: [PATCH bpf-next] riscv, bpf: fix some compiler error
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+References: <20211102145642.724820-1-tongtiangen@huawei.com>
+ <CAJ+HfNg1Ki=1Zc+ThW-ynvtDo5=fNAUK-XV08-icz-nY9CNoUQ@mail.gmail.com>
+ <448599f5-e773-6ab5-bdaf-289f583edf01@huawei.com>
+ <CAJ+HfNj_p36trWFzdyxVVgykrPVq=OvKcYq61w2QyKsHwa0gDw@mail.gmail.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v3] perf evsel: Fix missing exclude_{host,guest} setting
-Message-ID: <YYI5EwCjBojR+1QW@krava>
-References: <20211029224929.379505-1-namhyung@kernel.org>
- <YYFGxwFMvTRN5KBI@krava>
- <CAM9d7cjPq7=HoPAi3Cd3crcNJO8hWu0cU8j4qOTqSMxd7M6BqQ@mail.gmail.com>
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+From:   tongtiangen <tongtiangen@huawei.com>
+Message-ID: <f3ed7e48-c565-9147-eca0-6298a36b3d61@huawei.com>
+Date:   Wed, 3 Nov 2021 15:26:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7cjPq7=HoPAi3Cd3crcNJO8hWu0cU8j4qOTqSMxd7M6BqQ@mail.gmail.com>
+In-Reply-To: <CAJ+HfNj_p36trWFzdyxVVgykrPVq=OvKcYq61w2QyKsHwa0gDw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.234]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 04:21:21PM -0700, Namhyung Kim wrote:
-> Hi Jiri,
-> 
-> On Tue, Nov 2, 2021 at 7:10 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Fri, Oct 29, 2021 at 03:49:29PM -0700, Namhyung Kim wrote:
-> > > The current logic for the perf missing feature has a bug that it can
-> > > wrongly clear some modifiers like G or H.  Actually some PMUs don't
-> > > support any filtering or exclusion while others do.  But we check it
-> > > as a global feature.
-> > >
-> > > For example, the cycles event can have 'G' modifier to enable it only
-> > > in the guest mode on x86.  When you don't run any VMs it'll return 0.
-> > >
-> > >   # perf stat -a -e cycles:G sleep 1
-> > >
-> > >     Performance counter stats for 'system wide':
-> > >
-> > >                     0      cycles:G
-> > >
-> > >           1.000721670 seconds time elapsed
-> > >
-> > > But when it's used with other pmu events that don't support G modifier,
-> > > it'll be reset and return non-zero values.
-> > >
-> > >   # perf stat -a -e cycles:G,msr/tsc/ sleep 1
-> > >
-> > >     Performance counter stats for 'system wide':
-> > >
-> > >           538,029,960      cycles:G
-> > >        16,924,010,738      msr/tsc/
-> > >
-> > >           1.001815327 seconds time elapsed
-> > >
-> > > This is because of the missing feature detection logic being global.
-> > > Add a hashmap to set pmu-specific exclude_host/guest features.
-> > >
-> > > Reported-by: Stephane Eranian <eranian@google.com>
-> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > ---
-> > > v3 changes)
-> > >  * check memory allocation failure
-> > >  * add more NULL check
-> >
-> > we were discussing this with Arnaldo yesterday and he had an idea to use
-> > evsel->pmu link to store this info instead of hash.. I first thought we
-> > needed 'evsel' related data, but after I gave it some thought I think that
-> > might actually work
-> 
-> I don't get it.. do we have evsel->pmu already?  Or do you want to add it?
-> Yeah, the filtering facility (attr.exclude_*) should be kept in a PMU data
-> not in the evsel.  So I added a hashmap to find the pmu data from attr.type.
-> How do I use evsel->pmu to store the info then?
 
-evsel->pmu is not there yet (only evsel->pmu_name) so that
-would need to be added.. we have evsel__find_pmu available
 
-then the idea is to use evsel->pmu instead of the hasmap,
-like add:
+On 2021/11/3 14:10, Björn Töpel wrote:
+> On Wed, 3 Nov 2021 at 04:06, tongtiangen <tongtiangen@huawei.com> wrote:
+>>
+> [...]
+>>>
+>> Hi Björn:
+>>  From the perspective of development, introduce asm/extable.h is also prepare for the
+>> subsequent modification of exception_table_entry, such as:
+>>    1. https://lkml.org/lkml/2021/10/20/591
+>>    2. https://lore.kernel.org/linux-arm-kernel/20211019160219.5202-11-mark.rutland@arm.com/
+>>
+>> Therefore, the prototype declarations and definitions related to kernel config are placed in head file,
+>> which can avoid compiler error and simplify the rendering of functions.
+>>
+>
+> Sure, but *this* patch is about getting the broken RV32 build to work,
+> aimed for the bpf tree. Moving the extable.h is unrelated, and should
+> not be done here. IMO it would be better to have this patch small/easy
+> to read. I can't really see how this patch helps, when merging with
+> Jisheng's work.
+>
+> ...and I still think that:
+> --8<--
+> diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
+> index 18bf338303b6..ddb7d3b99e89 100644
+> --- a/arch/riscv/mm/extable.c
+> +++ b/arch/riscv/mm/extable.c
+> @@ -11,7 +11,7 @@
+>  #include <linux/module.h>
+>  #include <linux/uaccess.h>
+>
+> -#ifdef CONFIG_BPF_JIT
+> +#if defined(CONFIG_BPF_JIT) && defined(CONFIG_ARCH_RV64I)
+>  int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
+> struct pt_regs *regs);
+>  #endif
+>
+> @@ -23,7 +23,7 @@ int fixup_exception(struct pt_regs *regs)
+>         if (!fixup)
+>                 return 0;
+>
+> -#ifdef CONFIG_BPF_JIT
+> +#if defined(CONFIG_BPF_JIT) && defined(CONFIG_ARCH_RV64I)
+>         if (regs->epc >= BPF_JIT_REGION_START && regs->epc < BPF_JIT_REGION_END)
+>                 return rv_bpf_fixup_exception(fixup, regs);
+>  #endif
+> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+> index 2ca345c7b0bf..6372a235522d 100644
+> --- a/arch/riscv/net/bpf_jit_comp64.c
+> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> @@ -459,6 +459,8 @@ static int emit_call(bool fixed, u64 addr, struct
+> rv_jit_context *ctx)
+>  #define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
+>  #define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
+>
+> +int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
+> +                          struct pt_regs *regs);
+>  int rv_bpf_fixup_exception(const struct exception_table_entry *ex,
+>                                 struct pt_regs *regs)
+>  {
+> -->8--
+>
+> is much simpler.
 
-  struct pmu {
-    ...
-    bool missing_exclude_guest;
-  };
+Adding a function declaration in bpf_jit_comp64.c file cannot fix this compiler error:
 
-set it when the guest filtering fails and and check it
-instead of the hashmap__find call
+....
+when CONFIG_BPF_JIT and CONFIG_ARCH_64I is open, There is the following compiler error (W=1):
+   error: no previous prototype for 'rv_bpf_fixup_exception'
+....
 
-> 
-> >
-> > my argument was following usecase:
-> >
-> >   cycles:G,instructions:G,pmu/bla1/:G,pmu/bla2/
-> >
-> > that we would falsely clear pmu/bla1/:G if we used the 'evsel->pmu' data..
-> > but then I realized it's detection if pmu support :G and so if the :G is
-> > not there, none of the events should have it
-> >
-> > thoughts?
-> 
-> I don't think I'm following well... ;-p
-> 
-> If the pmu doesn't support host/guest filtering, pmu/bla1/G
-> may count something.  Not sure if it's better to error out.
-> But the cycles:G and instructions:G should result in 0
-> in case there's no VM running.
+To fix this compiler error, you need to make a declaration in a header file, which is also
+the reason for introducing extable.h.
 
-hm, I think if pmu doesn't support host/guest filtering then
-I think 'pmu/bla1/G' should error, no? better no number than
-bad number
+Before making this patch, I thought about this change, but on the whole, I think the modification
+scheme of adding header files moved me.;-)
 
-jitka
-
-> 
-> Thanks,
-> Namhyung
-> 
-
+>
+>
+>
+> Thoughts?
+> Björn
+>
+>
+>
+>
+>> Thanks.
+>> Tong.
+>>
+>>>
+>>> Björn
+>>> .
+>>>
+> .
+>
