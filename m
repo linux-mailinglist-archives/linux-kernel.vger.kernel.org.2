@@ -2,107 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E6D444001
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 11:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8E544400C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 11:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbhKCKdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 06:33:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
+        id S231910AbhKCKgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 06:36:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231961AbhKCKdX (ORCPT
+        with ESMTP id S231939AbhKCKgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 06:33:23 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0237C061714;
-        Wed,  3 Nov 2021 03:30:46 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id v65so2101163ioe.5;
-        Wed, 03 Nov 2021 03:30:46 -0700 (PDT)
+        Wed, 3 Nov 2021 06:36:47 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE57C061205
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 03:34:10 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id v4so469135qtw.8
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 03:34:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rJ0W9665zPN33aTHCee5/NAuKAsFNx/P9dYEi6U9HoY=;
-        b=LsZEz8mwaGbJQ9F6VUUAzCwksNpBCNKXe9VoZ8Wgck0e7kaQ8mXSqaGTx3PJ6mtUI3
-         Qun8/sZbcpXmcDcXvzOGvjMSZ6N3630nzhihI+yT9+clmvkNODgozOuww7WC9TT/QRfC
-         xfn17nuOmzuBxCaYyG7X2QQqcjWQzXwrsayadxhxohfWJLVkxvziCReqXhyxHqEldLBe
-         CIrXA7HmZK58E0sh828Gn/rAOs1xq7LauJqbtJ1IWORymFBcL2y/Fdo1yOFVh86O+EEv
-         vC7u7SmQdmv/4pJ36EvVO2aECSdWqdBvV865YCwHAtLRyCcKhBZXvVe+pM4pmwlqutbz
-         pqng==
+        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=Xom/hPiNgRklPy6PHcPTBsv7vizg3n2pK7P+Hb9c8c8=;
+        b=lp00QQOsPKxBS5e3MyUDUTuCVQF3o1j2ruBENN32WTbQ+VSvXRahf/mNw9oPtwnS54
+         ZtJUwPQp518dkw+Tonau/iePibZv3mYllnivU9e1tVi6ENCUiDJOaYhytTPJEFJCWdOu
+         ZM/2FkDWVff79sfaG0CVaqxsXKUN1cCE9xt/MfZi2olugzVRuRQH936IjxK9tG/lc0zl
+         AiPmFWVBE78FPnGXQLJJKEVlFSOVsBKmyV3DgWydRK0Tq4wbzKeCSR3m8eZEhXrVgQky
+         5SOwMDYKm6RNdjbmUUjcAnb5j7KhqBOgwVw25nHfNRzaw/FKpjyWw4Vmhq7WthGYPl9g
+         DVUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rJ0W9665zPN33aTHCee5/NAuKAsFNx/P9dYEi6U9HoY=;
-        b=anqudKXrmRFISy3K6xG1XqSsbuwHU1m+gVerw24v9+adj/0aj7xGhCp/H7Rok3RXPQ
-         3eGaBjjLJe3MPtgV9NYg2JY8rjawScerxGu2nHeQTz4Zgpb932WzF+qspWcfs/9M7ziQ
-         D97Ff3Qbjc2mY8y7tExy1D1dKAOYLFSyyc4EcDkyRmPCFMmoVifRAL2cuQLRAA7GEDtk
-         CLUIPMMvy1W9Q+KHe7Nd3ZC4zBHZ5rTvbeK147S7y/g8IRKVhY3oQDFNs0kMmuKDLDUp
-         vFrSwUvbjwHycBcFlGNHJymI6PpEpdsTtj8bb4GIx+1bkSPuLWdCQdNNEogs8nsRmWpp
-         GpNw==
-X-Gm-Message-State: AOAM533WR+2vHtO4pqQ/VMm+H6jLdW0sSDun4hQ2neo/lPOcqWq+sJfk
-        mY4ONWLqmz4pawc2AJSYFL5++2X+CAS4kTJKbY8=
-X-Google-Smtp-Source: ABdhPJwxaX+ZSzkC08wQZnyBshUwZ+yVOM14zJF+O1WfAUAgt2J2bqOjHxzj77GO0xfn0kklyH+x1iLyGXlJ1DeYzRY=
-X-Received: by 2002:a5d:9c4c:: with SMTP id 12mr30213483iof.64.1635935446370;
- Wed, 03 Nov 2021 03:30:46 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=Xom/hPiNgRklPy6PHcPTBsv7vizg3n2pK7P+Hb9c8c8=;
+        b=75QH7PRNvQwFAdzkNa4LMIsUpAv84YZbMgdohLgPuaU9H8O8M+s2eeMxK90FISUxGC
+         tq4QwjXKcrrMt+O+D73G0pp41j1pE8GqEHo+lJfMAxlHWcudesS/JDus8EugnXntRWAY
+         Vi8rTXBK7Xd69HgCBwOlvuH0aucv6I2XkPeObIWa0oOqNv6RtX1IX1quBJNys2lYdffk
+         7WeBU7LWk4aCh7Mlx9Tqkd6ZSmANIW/GkZbeU4j6gkvnFmnb+ke6HiNFhU0qoMDfbS4Q
+         9r5MhOfLIdPLm8i7fBavuAPQXlAn+dfchLK35p5P4f73kyaflntAP5ICtuJuH1/Fv8b+
+         M7Ng==
+X-Gm-Message-State: AOAM531lBWalrMqngGKNS/BmgCinFJ6jVEXe4I3IOm1cn8/eNJ69arV9
+        qZoTNeN8BFPdEkvDPoe/Bfachw==
+X-Google-Smtp-Source: ABdhPJwnHjhITyxdempWaCFmOm2UjBn2mXuDkwTso4NHabnTNvkdMSc8ra1hPDgpc3C+ZQcVaPDynA==
+X-Received: by 2002:a05:622a:107:: with SMTP id u7mr21943459qtw.79.1635935650114;
+        Wed, 03 Nov 2021 03:34:10 -0700 (PDT)
+Received: from [192.168.1.173] (bras-base-kntaon1617w-grc-33-142-112-185-132.dsl.bell.ca. [142.112.185.132])
+        by smtp.googlemail.com with ESMTPSA id r7sm1329295qtw.56.2021.11.03.03.34.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Nov 2021 03:34:09 -0700 (PDT)
+Message-ID: <aa6081aa-9741-be05-8051-e01909662ff1@mojatatu.com>
+Date:   Wed, 3 Nov 2021 06:34:08 -0400
 MIME-Version: 1.0
-References: <20211103141919.4feefaf0@canb.auug.org.au>
-In-Reply-To: <20211103141919.4feefaf0@canb.auug.org.au>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 3 Nov 2021 11:30:35 +0100
-Message-ID: <CANiq72=fuk-eVuCpW5jkDn71Pbs=1L2LhSvadR_bTjxcPvtVUQ@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the rust tree with Linus' tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [RFC PATCH v3 0/3] Introduce BPF map tracing capability
+Content-Language: en-US
+To:     Joe Burton <jevburton.kernel@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Antonio Terceiro <antonio.terceiro@linaro.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Boris-Chengbiao Zhou <bobo1239@web.de>,
-        Daniel Xu <dxu@dxuuu.xyz>,
-        Dariusz Sosnowski <dsosnowski@dsosnowski.pl>,
-        Douglas Su <d0u9.su@outlook.com>, Finn Behrens <me@kloenk.de>,
-        Gary Guo <gary@garyguo.net>, Jiri Olsa <jolsa@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Petar Penkov <ppenkov@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Joe Burton <jevburton@google.com>
+References: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+In-Reply-To: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On 2021-11-01 22:14, Joe Burton wrote:
+> From: Joe Burton<jevburton@google.com>
+> 
+> This is the third version of a patch series implementing map tracing.
+> 
+> Map tracing enables executing BPF programs upon BPF map updates. This
+> might be useful to perform upgrades of stateful programs; e.g., tracing
+> programs can propagate changes to maps that occur during an upgrade
+> operation.
+> 
+> This version uses trampoline hooks to provide the capability.
+> fentry/fexit/fmod_ret programs can attach to two new functions:
+>          int bpf_map_trace_update_elem(struct bpf_map* map, void* key,
+>                  void* val, u32 flags);
+>          int bpf_map_trace_delete_elem(struct bpf_map* map, void* key);
+> 
+> These hooks work as intended for the following map types:
+>          BPF_MAP_TYPE_ARRAY
+>          BPF_MAP_TYPE_PERCPU_ARRAY
+>          BPF_MAP_TYPE_HASH
+>          BPF_MAP_TYPE_PERCPU_HASH
+>          BPF_MAP_TYPE_LRU_HASH
+>          BPF_MAP_TYPE_LRU_PERCPU_HASH
+> 
+> The only guarantee about the semantics of these hooks is that they execute
+> before the operation takes place. We cannot call them with locks held
+> because the hooked program might try to acquire the same locks. Thus they
+> may be invoked in situations where the traced map is not ultimately
+> updated.
 
-On Wed, Nov 3, 2021 at 4:19 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> diff --cc scripts/Makefile.modfinal
-> index 7f39599e9fae,c0842e999a75..000000000000
-> --- a/scripts/Makefile.modfinal
-> +++ b/scripts/Makefile.modfinal
-> @@@ -39,11 -39,12 +39,12 @@@ quiet_cmd_ld_ko_o = LD [M]  $
->
->   quiet_cmd_btf_ko = BTF [M] $@
->         cmd_btf_ko =                                                    \
-> -       if [ -f vmlinux ]; then                                         \
-> -               LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_base vmlinux $@; \
-> -               $(RESOLVE_BTFIDS) -b vmlinux $@;                        \
-> -       else                                                            \
-> +       if [ ! -f vmlinux ]; then                                       \
->                 printf "Skipping BTF generation for %s due to unavailability of vmlinux\n" $@ 1>&2; \
-> +       elif $(srctree)/scripts/is_rust_module.sh $@; then              \
-> +               printf "Skipping BTF generation for %s because it's a Rust module\n" $@ 1>&2; \
-> +       else                                                            \
->  -              LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J --btf_base vmlinux $@; \
-> ++              LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_base vmlinux $@; \
->         fi;
+Sorry, I may have missed something obvious while staring at the patches,
+but:
+Dont you want the notification if the command actually was successful
+on the map? If the command failed for whatever reason theres nothing
+to synchronize? Unless you use that as an indicator to re-read the map?
 
-It looks like the `$(RESOLVE_BTFIDS)` line is gone with this
-resolution. The rest looks good.
-
-Thanks!
-
-Cheers,
-Miguel
+cheers,
+jamal
