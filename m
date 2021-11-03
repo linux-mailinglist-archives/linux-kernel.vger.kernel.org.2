@@ -2,102 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E3444416F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:24:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FD5444175
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbhKCM13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 08:27:29 -0400
-Received: from mx1.tq-group.com ([93.104.207.81]:28389 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231434AbhKCM12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 08:27:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1635942292; x=1667478292;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Z00lcqhZKxm6cRgN3F0meupfTSXsJK00NC3Jk6wxYPs=;
-  b=W2+58/cmfvx39Jxt/CnmOW8wCfLKIgTym17U8k/Ag/SpbMqkdZvOI2Ev
-   JNYXfU6A2QFQZYSP3InlZDhF08PCuHMeBwOnZl3VTB3GFAyJUSEeUSSFd
-   Lv2Icbd0rqBqCg/EhNbzQ+wpumFJu/XHXtQkOihWSthMmpm6aFbHpa45N
-   xSkdsaG39TPsD+i2IrZYlyIXhgl4z49SIwF3nDWleXdQWgsck4NUABRAF
-   ng8ly1j9VdAjaYL2W1fpyhY+Uy73+e5psjK1xdp7IRLIQTiSF5SZedqpu
-   NAsPOWh0H29KxI+KLyrapdnjlJtVLIgQfIs9ZTC1/ld3huIf1/AOxLvuB
-   A==;
-X-IronPort-AV: E=Sophos;i="5.87,205,1631570400"; 
-   d="scan'208";a="20324227"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 03 Nov 2021 13:24:50 +0100
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Wed, 03 Nov 2021 13:24:50 +0100
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Wed, 03 Nov 2021 13:24:50 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1635942290; x=1667478290;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Z00lcqhZKxm6cRgN3F0meupfTSXsJK00NC3Jk6wxYPs=;
-  b=GqSmWbEQ9yW3bDGGwdU10oMwVF1OEyr3IlfPoYcCwXuGxfG5FrnB+711
-   tbBrAFobRwoLYc4my87d37apLjYGjcXmLRJW5Tq2oM+B1d9hlOEQxFqIz
-   LZJH+tAD+3btWMyQKfHfEkubu55wziNQvlHlnNn0H//1O1zUx4LZGfXv7
-   S0CwtQ0Zcbor1Q6IIquY/exoKYpNJF+AjqWYavnTtMvnitOzSwiQa0PFe
-   fHt7alVTVcHJgZIHUavVwpNC+Y+LdvmUEOMR1GNE+B80J35HjpaYtAAQu
-   RSWQnaykwGklGG9Yr8F4NzAZw5E4f7fGNYagZzwlqf979Zq+svnFQeBVa
-   g==;
-X-IronPort-AV: E=Sophos;i="5.87,205,1631570400"; 
-   d="scan'208";a="20324226"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 03 Nov 2021 13:24:50 +0100
-Received: from steina-w.tq-net.de (unknown [10.123.49.12])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        id S231955AbhKCM23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 08:28:29 -0400
+Received: from mout-p-102.mailbox.org ([80.241.56.152]:52762 "EHLO
+        mout-p-102.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229816AbhKCM22 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 08:28:28 -0400
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:105:465:1:4:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 4132B280065;
-        Wed,  3 Nov 2021 13:24:50 +0100 (CET)
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Alexander Stein <alexander.stein@ew.tq-group.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] clk: composite: Fix 'switching' to same clock
-Date:   Wed,  3 Nov 2021 13:24:41 +0100
-Message-Id: <20211103122441.3208576-1-alexander.stein@ew.tq-group.com>
-X-Mailer: git-send-email 2.25.1
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4HkmFp4rVxzQjXt;
+        Wed,  3 Nov 2021 13:25:50 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Message-ID: <cc7432f4-824a-abe2-e304-5ba019ac8c89@v0yd.nl>
+Date:   Wed, 3 Nov 2021 13:25:44 +0100
 MIME-Version: 1.0
+Subject: Re: [PATCH] mwifiex: Add quirk to disable deep sleep with certain
+ hardware revision
+Content-Language: en-US
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+References: <20211028073729.24408-1-verdre@v0yd.nl>
+ <CA+ASDXOrad3b=b8+vwuF6m3+ZcigVaoJySpDXXZOnC3O8CJBSw@mail.gmail.com>
+From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
+In-Reply-To: <CA+ASDXOrad3b=b8+vwuF6m3+ZcigVaoJySpDXXZOnC3O8CJBSw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 80FB026B
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During commit 6594988fd625 ("clk: composite: Use rate_ops.determine_rate
-when also a mux is available") setting req->best_parent_hw got lost,
-so best_parent_hw stays NULL during switch to the same parent. This
-results in the (debug) message:
-  clk_calc_new_rates: lcdif_pixel not gated but wants to reparent
-and the following rate change is dropped.
+On 10/28/21 23:27, Brian Norris wrote:
+> On Thu, Oct 28, 2021 at 12:37 AM Jonas Dreßler <verdre@v0yd.nl> wrote:
+>>
+>> The 88W8897 PCIe+USB card in the hardware revision 20 apparently has a
+>> hardware issue where the card wakes up from deep sleep randomly and very
+>> often, somewhat depending on the card activity, maybe the hardware has a
+>> floating wakeup pin or something.
+> 
+> What makes you think it's associated with the particular "hardware
+> revision 20"? Have you used multiple revisions on the same platform
+> and found that only certain ones fail in this way? Otherwise, your
+> theory in the last part of your sentence sounds like a platform issue,
+> where you might do a DMI match instead.
 
-Fixes: 6594988fd625 ("clk: composite: Use rate_ops.determine_rate when also a mux is available")
-Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
----
-This is on linux-next tag 'next-20211101' and platform is a custom
-imx8mq board.
+The issue only appeared for some community members using Surface devices,
+happening on the Surface Book 2 of one person, but not on the Surface Book
+2 of another person. When investigating we were poking around in the dark
+for a long time and almost gave up until we found that those two devices
+had different hardware revisions of the same wifi card installed (ChipRev
+20 vs 21).
 
- drivers/clk/clk-composite.c | 1 +
- 1 file changed, 1 insertion(+)
+So it seems pretty clear that with revision 21 they fixed some hardware
+bug that causes those spurious wakeups.
 
-diff --git a/drivers/clk/clk-composite.c b/drivers/clk/clk-composite.c
-index c04ae0e7e4b4..b9c5f904f535 100644
---- a/drivers/clk/clk-composite.c
-+++ b/drivers/clk/clk-composite.c
-@@ -97,6 +97,7 @@ static int clk_composite_determine_rate(struct clk_hw *hw,
- 				return ret;
- 
- 			req->rate = tmp_req.rate;
-+			req->best_parent_hw = tmp_req.best_parent_hw;
- 			req->best_parent_rate = tmp_req.best_parent_rate;
- 
- 			return 0;
--- 
-2.25.1
+FWIW, obviously a proper workaround for this would have to be implemented
+in the firmware.
+
+> 
+>> --- a/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
+>> +++ b/drivers/net/wireless/marvell/mwifiex/sta_cmdresp.c
+>> @@ -708,6 +708,22 @@ static int mwifiex_ret_ver_ext(struct mwifiex_private *priv,
+>>   {
+>>          struct host_cmd_ds_version_ext *ver_ext = &resp->params.verext;
+>>
+>> +       if (test_and_clear_bit(MWIFIEX_IS_REQUESTING_FW_VEREXT, &priv->adapter->work_flags)) {
+>> +               if (strncmp(ver_ext->version_str, "ChipRev:20, BB:9b(10.00), RF:40(21)", 128) == 0) {
+> 
+> Rather than memorize the 128-size array here, maybe use
+> sizeof(ver_ext->version_str) ?
+
+Sounds like a good idea, yeah.
+
+> 
+> Brian
+> 
 
