@@ -2,134 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7084844419E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C20F444194
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbhKCMfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 08:35:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41074 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232081AbhKCMf1 (ORCPT
+        id S231963AbhKCMez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 08:34:55 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:49364 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230472AbhKCMey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 08:35:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635942771;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=WYRilsKXTSd9rCQl94c3WtrJx+PErIlJFSZVj4QEnnA=;
-        b=cT5xaZkCgZl6c1soc6dSMfwreVmba4uKECqqvHhpi8zGp7/7ObSS791NXlC/OW74/Lfdme
-        on+ToTyy3542oNWKjjXM6m9W9Ue1Rrlqm28+IUpQoh49E9wioXkcLKf424RdCll4EXoc7j
-        pvShaHx2qiyhqgb3XzYEkbv2zSPYwKE=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-435-danWSMkzNWG7Z6fnsmE0Sw-1; Wed, 03 Nov 2021 08:32:50 -0400
-X-MC-Unique: danWSMkzNWG7Z6fnsmE0Sw-1
-Received: by mail-wm1-f69.google.com with SMTP id f20-20020a05600c155400b0030db7b29174so1031114wmg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 05:32:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WYRilsKXTSd9rCQl94c3WtrJx+PErIlJFSZVj4QEnnA=;
-        b=CLt55H6mZC6PSlyCjEM1vqPbZohr4EoxXy850aCDfgTMIsrRQlfWd1ZOSAJNLu7w9V
-         k3ez+A/Dq3Xyy5v5v9n2ORibJfhxWd80/alqq7cRDau8ugCoP43LWN9HCPbBWg73UnID
-         VB50OK7a2NBhxE57vWtu+PfkmR4Cj3uFOZ29RuSU11dg66CFCzvEtTEtDtFDueqp6m8c
-         5HBmA8j7yqwpyTApL2VbqG5St4yKVyQeHcmXB3xoUbkBHtjXroYzwNoKyoYSqQTK/kt9
-         dvHUEVYof1dsdnRlsThi3MubqfLvoeZNNqciohGIHBz/VAPTRDPh+JzhBt5mS3uydV9b
-         zulA==
-X-Gm-Message-State: AOAM532ko7qz0gd0gZ7aO6N5tf9CIROJUSuTw5P5mhqm44tPLlQL1Aqt
-        XrNkhU10IvyLfxdw6CLnwW+U4w/8Jp8wyqt04X65kNBwnb8mNjFdMy79eQwcMom0i3V1KWax7qj
-        XyGoPI1SmpJmE0ImLl0koS7/zyS8yP4sDck+Wa2bBhc3h42xvge3CMrXIYhulB80jttTTv4qEaO
-        4=
-X-Received: by 2002:a5d:4b45:: with SMTP id w5mr28163706wrs.272.1635942768525;
-        Wed, 03 Nov 2021 05:32:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxL3nl9ZIaxmy0TeQNyii+JJT5uC8lrIzi9b77Ccpfz42Wnw9LhvaMNMIW70Bij6uW32P/3dA==
-X-Received: by 2002:a5d:4b45:: with SMTP id w5mr28163669wrs.272.1635942768316;
-        Wed, 03 Nov 2021 05:32:48 -0700 (PDT)
-Received: from minerva.home ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id o8sm1774844wrm.67.2021.11.03.05.32.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 05:32:47 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
+        Wed, 3 Nov 2021 08:34:54 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E9028212B8;
+        Wed,  3 Nov 2021 12:32:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635942736; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7t3NqlPAeIHhE9o0Rq3UU4B/b0/ayZJig+6W7UYbtSs=;
+        b=Z3aeh8zb6/KAy+ap1XhvBgnPJGqsD5SOIlbj7N9erRvMt3cjdQuAE1BFAgCOO9y8FCF68l
+        OtxAMRB0R8qyd2DDCjyiHC97N6nqeDcl6kERdFE9r2kZ6CvzGcwQ9e53/ezoOYvYmjmTcy
+        WKNTAXSK5Jyjj+Xn9bRyXx01F07fO3A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635942736;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7t3NqlPAeIHhE9o0Rq3UU4B/b0/ayZJig+6W7UYbtSs=;
+        b=Dj0dG155FeDxYjO5lgFAYMXMC1SPQ0rhafsGEyrlTtlPG1uBxg3Gr7pxYVa+2mv3eBXSxC
+        5/OF4H4/XxFid7CA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BF4A513DEB;
+        Wed,  3 Nov 2021 12:32:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id o+WZLVCBgmFXVgAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Wed, 03 Nov 2021 12:32:16 +0000
+Message-ID: <1dbc7d15-a314-677b-1870-276b0cca1705@suse.de>
+Date:   Wed, 3 Nov 2021 13:32:16 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH 2/5] drm: Move nomodeset kernel parameter handler to the
+ DRM subsystem
+Content-Language: en-US
+To:     Neal Gompa <ngompa13@gmail.com>,
+        Javier Martinez Canillas <javierm@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
         Peter Robinson <pbrobinson@gmail.com>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Neal Gompa <ngompa13@gmail.com>,
-        =?UTF-8?q?Michel=20D=C3=A4nzer?= <michel@daenzer.net>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        Javier Martinez Canillas <javierm@redhat.com>
-Subject: [RESEND PATCH 4/5] drm: Add a drm_drv_enabled() helper function
-Date:   Wed,  3 Nov 2021 13:32:06 +0100
-Message-Id: <20211103123206.1041442-1-javierm@redhat.com>
-X-Mailer: git-send-email 2.33.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+References: <20211103104812.1022936-1-javierm@redhat.com>
+ <20211103104812.1022936-3-javierm@redhat.com>
+ <CAEg-Je_3n9vFpP-vmVzkbDZY154g3xOK5JqPN7r9kGXJ1Zp0+w@mail.gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <CAEg-Je_3n9vFpP-vmVzkbDZY154g3xOK5JqPN7r9kGXJ1Zp0+w@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------Oct0720rCfKcZM0Bdx1176Dv"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DRM drivers can use this to determine whether they can be enabled or not.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------Oct0720rCfKcZM0Bdx1176Dv
+Content-Type: multipart/mixed; boundary="------------FosV0XO1j6G2WV4nyHvxZ0dW";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Neal Gompa <ngompa13@gmail.com>,
+ Javier Martinez Canillas <javierm@redhat.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Pekka Paalanen <pekka.paalanen@collabora.com>,
+ Peter Robinson <pbrobinson@gmail.com>, Daniel Vetter
+ <daniel.vetter@ffwll.ch>, =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+Message-ID: <1dbc7d15-a314-677b-1870-276b0cca1705@suse.de>
+Subject: Re: [PATCH 2/5] drm: Move nomodeset kernel parameter handler to the
+ DRM subsystem
+References: <20211103104812.1022936-1-javierm@redhat.com>
+ <20211103104812.1022936-3-javierm@redhat.com>
+ <CAEg-Je_3n9vFpP-vmVzkbDZY154g3xOK5JqPN7r9kGXJ1Zp0+w@mail.gmail.com>
+In-Reply-To: <CAEg-Je_3n9vFpP-vmVzkbDZY154g3xOK5JqPN7r9kGXJ1Zp0+w@mail.gmail.com>
 
-For now it's just a wrapper around drm_modeset_disabled() but having the
-indirection level will allow to add other conditions besides "nomodeset".
+--------------FosV0XO1j6G2WV4nyHvxZ0dW
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Suggested-by: Thomas Zimmermann <tzimmermann@suse.de>
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
----
+SGkNCg0KQW0gMDMuMTEuMjEgdW0gMTI6MDUgc2NocmllYiBOZWFsIEdvbXBhOg0KPiBPbiBX
+ZWQsIE5vdiAzLCAyMDIxIGF0IDY6NDggQU0gSmF2aWVyIE1hcnRpbmV6IENhbmlsbGFzDQo+
+IDxqYXZpZXJtQHJlZGhhdC5jb20+IHdyb3RlOg0KPj4NCj4+IFRoZSAibm9tb2Rlc2V0IiBr
+ZXJuZWwgY21kbGluZSBwYXJhbWV0ZXIgaXMgaGFuZGxlZCBieSB0aGUgdmdhY29uIGRyaXZl
+cg0KPj4gYnV0IHRoZSBleHBvcnRlZCB2Z2Fjb25fdGV4dF9mb3JjZSgpIHN5bWJvbCBpcyBv
+bmx5IHVzZWQgYnkgRFJNIGRyaXZlcnMuDQo+Pg0KPj4gSXQgbWFrZXMgbXVjaCBtb3JlIHNl
+bnNlIGZvciB0aGUgcGFyYW1ldGVyIGxvZ2ljIHRvIGJlIGluIHRoZSBzdWJzeXN0ZW0NCj4+
+IG9mIHRoZSBkcml2ZXJzIHRoYXQgYXJlIG1ha2luZyB1c2Ugb2YgaXQuIExldCdzIG1vdmUg
+dGhhdCB0byBEUk0uDQo+Pg0KPj4gU3VnZ2VzdGVkLWJ5OiBEYW5pZWwgVmV0dGVyIDxkYW5p
+ZWwudmV0dGVyQGZmd2xsLmNoPg0KPj4gU2lnbmVkLW9mZi1ieTogSmF2aWVyIE1hcnRpbmV6
+IENhbmlsbGFzIDxqYXZpZXJtQHJlZGhhdC5jb20+DQo+PiAtLS0NCj4gDQo+IFBsZWFzZSBu
+bywgSSdkIG11Y2ggcmF0aGVyIGhhdmUgYSBiZXR0ZXIsIG1vcmUgbWVhbmluZ2Z1bCBvcHRp
+b24NCj4gaW5zdGVhZCBvZiAibm9tb2Rlc2V0Ii4gSWYgYW55dGhpbmcsIEkgd291bGQgbGlr
+ZSB0aGlzIG9wdGlvbiB0bw0KPiBldmVudHVhbGx5IGRvIG5vdGhpbmcgYW5kIHJlcGxhY2Ug
+aXQgd2l0aCBhIGJldHRlciBuYW1lZCBvcHRpb24gdGhhdCdzDQo+IG5hbWVzcGFjZWQgYnkg
+ZHJtIG9uIHRoZSBjb21tYW5kLWxpbmUuIFRoYXQgd2FzIHBhcnQgb2YgdGhlIGZlZWRiYWNr
+IEkNCj4gZ2F2ZSBpbiB0aGUgb3JpZ2luYWwgcGF0Y2ggc2V0LCBhbmQgSSBzdGlsbCBzdGFu
+ZCBieSB0aGF0Lg0KDQpUaGlzIHdhcyBuYWNrJ2VkIGZvciBub3cgZHVyaW5nIGlyYyBjaGF0
+cyB3aXRoIG90aGVycy4gVGhlcmUgd2FzIG5vIA0KY2xlYXIgc2VtYW50aWNzIGZvciB0aGUg
+bmV3IHBhcmFtZXRlciBhbmQgbm9tb2Rlc2V0IGlzIGdvb2QgZW5vdWdoIGZvciANCm5vdy4g
+SSBhZ3JlZSB0aGF0IG5vbW9kZXNldCBpcyBiYWRseSBuYW1lZCwgdGhvdWdoLg0KDQpCZXN0
+IHJlZ2FyZHMNClRob21hcw0KDQo+IA0KPiANCg0KLS0gDQpUaG9tYXMgWmltbWVybWFubg0K
+R3JhcGhpY3MgRHJpdmVyIERldmVsb3Blcg0KU1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR2Vy
+bWFueSBHbWJIDQpNYXhmZWxkc3RyLiA1LCA5MDQwOSBOw7xybmJlcmcsIEdlcm1hbnkNCihI
+UkIgMzY4MDksIEFHIE7DvHJuYmVyZykNCkdlc2Now6RmdHNmw7xocmVyOiBJdm8gVG90ZXYN
+Cg==
 
- drivers/gpu/drm/drm_drv.c | 21 +++++++++++++++++++++
- include/drm/drm_drv.h     |  1 +
- 2 files changed, 22 insertions(+)
+--------------FosV0XO1j6G2WV4nyHvxZ0dW--
 
-diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
-index 8214a0b1ab7f..70ef08941e06 100644
---- a/drivers/gpu/drm/drm_drv.c
-+++ b/drivers/gpu/drm/drm_drv.c
-@@ -975,6 +975,27 @@ int drm_dev_set_unique(struct drm_device *dev, const char *name)
- }
- EXPORT_SYMBOL(drm_dev_set_unique);
- 
-+/**
-+ * drm_drv_enabled - Checks if a DRM driver can be enabled
-+ * @driver: DRM driver to check
-+ *
-+ * Checks whether a DRM driver can be enabled or not. This may be the case
-+ * if the "nomodeset" kernel command line parameter is used.
-+ *
-+ * Returns:
-+ * True if the DRM driver is enabled and false otherwise.
-+ */
-+bool drm_drv_enabled(const struct drm_driver *driver)
-+{
-+	if (drm_modeset_disabled()) {
-+		DRM_INFO("%s driver is disabled\n", driver->name);
-+		return false;
-+	}
-+
-+	return true;
-+}
-+EXPORT_SYMBOL(drm_drv_enabled);
-+
- /*
-  * DRM Core
-  * The DRM core module initializes all global DRM objects and makes them
-diff --git a/include/drm/drm_drv.h b/include/drm/drm_drv.h
-index 0cd95953cdf5..48f2b6eec012 100644
---- a/include/drm/drm_drv.h
-+++ b/include/drm/drm_drv.h
-@@ -598,5 +598,6 @@ static inline bool drm_drv_uses_atomic_modeset(struct drm_device *dev)
- 
- int drm_dev_set_unique(struct drm_device *dev, const char *name);
- 
-+bool drm_drv_enabled(const struct drm_driver *driver);
- 
- #endif
--- 
-2.33.1
+--------------Oct0720rCfKcZM0Bdx1176Dv
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmGCgVAFAwAAAAAACgkQlh/E3EQov+AK
+VhAAki6P8cBCNmFoqne4TUG4Fdz2BFEyPJfrjNI6lOy8qAxXS87MrWvcTCMjTqS9UM0W/APylPhr
+Zg+W9ZgSKFRkXvIJlP7JehQqSld8ZPqv/kCl/Bn5F9vMSeXoKU54CtebRcU1I8/AhD6P8YobHI58
+ewiazZCj7oOkX6BgC4bhMoCJn9o61lOUekYDI9c+Q44SfOl/pAFYtlYrqrXHs9PeTefw/ueKq8Qd
+eVoLLkDQYBujc6Dft2mDScd6RagnIrGAtYSdHJGcQ12pUJp1qi+HbFCeZTG2dKTmDWsxO3ZyinFf
+oza+ABz8izrEWOHkf9CzmGuwI4I1qVullQ8gBisRvfnHI6OKKgnNxuH3a/PVINlMQDd1nocBnEOD
+eK8XomFzXDaejJomo3HequOkcsYfiI0jBpAfWobkRER/DIUg2Tqrdh77J559KoMMzQwzZUKtGDPx
+Y+BzoH3eYMfvk691W/9HTCpcbo56z1ZjiTbA2NylsMFRPYcfBN766Alx5/PoIN6kN732wexX1DTl
+QjzlLmIzZcxoQboEIEjhID9YrPuiE59vpHPSiTB9IK+gWl1N437gjjh7VLAXDxXMEAMZbxOIcJry
+rN0Z2I+Uvt7HyaV3WEomUPcPvsLm3NsCOzFMgpCE1ewA3uxbVaobhYkKi3k+axv8zomvZx6EgIL8
+hvo=
+=BHEd
+-----END PGP SIGNATURE-----
+
+--------------Oct0720rCfKcZM0Bdx1176Dv--
