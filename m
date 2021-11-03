@@ -2,111 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC6544436A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7F644435A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbhKCO2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 10:28:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57388 "EHLO
+        id S232012AbhKCOZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 10:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230527AbhKCO2M (ORCPT
+        with ESMTP id S231834AbhKCOZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 10:28:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF57C061714;
-        Wed,  3 Nov 2021 07:25:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MHA8/5DT9+P3H8EQ2DoH0Mu3SBzybKb1RrICo62RwQ4=; b=t9eJNkfzrgV+QiZqspfhcfToYC
-        3Ec3SF3Q9ZLFQr4jT4+hVBAtuUAKgl1oeoJE6scE4G7P3IEjD2W/m5e99yCHLHHqSDI4E6rXc3JMg
-        w4hmwDJRapYDTm+u3lLY6FNZbczw88eT0WhKs9l37aOExnpxsFT0/MIanKBtIqeteHjLCUNpHkY3t
-        6V8IAR1xpI1GYombL4N7TBPf8hVo3yBjiDFh6Q6ZiaTO73ciucIzhdBOKDW+BOs+2QBbEDNk1eJ27
-        55B12uY/pzWiNJcJpqjIYYeUkBZkGAu0Sd3MqWEnqhWN6VDdSlaDtEesmkfjbJgM/JJGlieavLNzj
-        4sxQUXrw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1miH8f-005FeW-AM; Wed, 03 Nov 2021 14:21:52 +0000
-Date:   Wed, 3 Nov 2021 14:21:17 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        v9fs-developer@lists.sourceforge.net,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-cachefs@redhat.com, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        devel@lists.orangefs.org, linux-mm@kvack.org,
+        Wed, 3 Nov 2021 10:25:22 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA839C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 07:22:45 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so1501057pjc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 07:22:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=odOeSMEh9ZpBA89eL2qhRpEs4XuRy4e44peglvFnMtU=;
+        b=XvnnyeRAxuitPImPJIlZ70HPKNSIKTcgcDDCY0BNYwKZWzeSb5fDk1B3m41sj1be5e
+         JBE6X0HSXj9sHYamSvwZSv0DuNVWnqQ2rPGnd5vvxwHwHjRDOPLcfuYIriiJ7GUjv/Od
+         8BG9Kxs9jWpA1Xepdcr9KRfekCJQ0CmTHp+xZ5aQryS9DFroWIs6G/cYS+DuCdEP1Y5u
+         scsALWMNUaNfM4hT5rvf+MJak6cx1BlCEdKDTUO49B5uDS3DftuL/XS+O43iZX1uxePw
+         bVnhf1/EkcSTncJmKhvlbO72RoA2w0CDrgGISL1VMSgJQF5WpieOhKwKk3JT/ZmVIi4r
+         Ghmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=odOeSMEh9ZpBA89eL2qhRpEs4XuRy4e44peglvFnMtU=;
+        b=ree8weNHoMtRXAKG8bUaK15UxQbh1E+WX6uUdG3xO6Uy0TB5X5Cdo97Ic5by/hnrC5
+         J8T7RcPe+5XAKFiyleFQ7HgeKExc17ceMP+Nwj4XinYGH70TF78CVB/vV2Pl2QWCSI3P
+         KtyU2vXVvIvZD2mLyb6N0viZEmO4pAqYf959b0MiN4Qaga9J+wZLM/RZ2Sce+BH4+niP
+         LqMorNGc3RZJVFCqu/gb+nLV2dEY/nwmodGGDLN43vyuUva29wNlvKgOZo81QolHiBxD
+         gdKRXmnHayKvG/eI7PPJuR36ElrlHoz0OWqRRRqzMh4o/t0vkkPJNk02gUW/tD5EPwgo
+         PGzg==
+X-Gm-Message-State: AOAM531jMWSgn7CW8cMrQ7AlUvDQBteEOFfyM2vGZ2wG1V5DoM+gvM1A
+        8hRtkoZGainhdvWblAxaam0=
+X-Google-Smtp-Source: ABdhPJx9boeHyijVo0W1PSZZtMsybz7on3bwcC9dzysQlM/8X3F4rrEQ+xNqP6JGnTelBQ2qFY9VIg==
+X-Received: by 2002:a17:90b:1293:: with SMTP id fw19mr14920912pjb.155.1635949365327;
+        Wed, 03 Nov 2021 07:22:45 -0700 (PDT)
+Received: from localhost.localdomain ([94.177.118.123])
+        by smtp.gmail.com with ESMTPSA id z21sm2855893pfk.31.2021.11.03.07.22.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 07:22:44 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        linux-f2fs-devel@lists.sourceforge.net,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/6] netfs, 9p, afs, ceph: Use folios
-Message-ID: <YYKa3bfQZxK5/wDN@casper.infradead.org>
-References: <163584174921.4023316.8927114426959755223.stgit@warthog.procyon.org.uk>
- <163584187452.4023316.500389675405550116.stgit@warthog.procyon.org.uk>
+Subject: [PATCH] fs: f2fs: fix UAF in f2fs_available_free_memory
+Date:   Wed,  3 Nov 2021 22:22:27 +0800
+Message-Id: <20211103142228.1235864-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163584187452.4023316.500389675405550116.stgit@warthog.procyon.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 08:31:14AM +0000, David Howells wrote:
-> -static int v9fs_vfs_writepage_locked(struct page *page)
-> +static int v9fs_vfs_write_folio_locked(struct folio *folio)
->  {
-> -	struct inode *inode = page->mapping->host;
-> +	struct inode *inode = folio_inode(folio);
->  	struct v9fs_inode *v9inode = V9FS_I(inode);
-> -	loff_t start = page_offset(page);
-> +	loff_t start = folio_pos(folio);
->  	loff_t size = i_size_read(inode);
->  	struct iov_iter from;
-> -	int err, len;
-> +	size_t gran = folio_size(folio), len;
-> +	int err;
->  
-> -	if (page->index == size >> PAGE_SHIFT)
-> -		len = size & ~PAGE_MASK;
-> -	else
-> -		len = PAGE_SIZE;
-> +	len = (size >= start + gran) ? gran : size - start;
+f2fs_fill_super
+-> f2fs_build_segment_manager
+   -> create_discard_cmd_control
+      -> f2fs_start_discard_thread
 
-This seems like the most complicated way to write this ... how about:
+It invokes kthread_run to create a thread and run issue_discard_thread.
 
-        size_t len = min_t(loff_t, isize - start, folio_size(folio));
+However, if f2fs_build_node_manager fails, the control flow goes to
+free_nm and calls f2fs_destroy_node_manager. This function will free
+sbi->nm_info. However, if issue_discard_thread accesses sbi->nm_info
+after the deallocation, but before the f2fs_stop_discard_thread, it will
+cause UAF(Use-after-free).
 
-> @@ -322,23 +322,24 @@ static void afs_req_issue_op(struct netfs_read_subrequest *subreq)
->  
->  static int afs_symlink_readpage(struct file *file, struct page *page)
->  {
-> -	struct afs_vnode *vnode = AFS_FS_I(page->mapping->host);
-> +	struct afs_vnode *vnode = AFS_FS_I(page_mapping(page)->host);
+-> f2fs_destroy_segment_manager
+   -> destroy_discard_cmd_control
+      -> f2fs_stop_discard_thread
 
-How does swap end up calling readpage on a symlink?
+Fix this by switching the order of f2fs_build_segment_manager
+and f2fs_build_node_manager.
 
->  	ret = afs_fetch_data(fsreq->vnode, fsreq);
-> -	page_endio(page, false, ret);
-> +	page_endio(&folio->page, false, ret);
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ fs/f2fs/super.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-We need a folio_endio() ...
-
->  int afs_write_end(struct file *file, struct address_space *mapping,
->  		  loff_t pos, unsigned len, unsigned copied,
-> -		  struct page *page, void *fsdata)
-> +		  struct page *subpage, void *fsdata)
->  {
-> +	struct folio *folio = page_folio(subpage);
->  	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
->  	unsigned long priv;
-> -	unsigned int f, from = pos & (thp_size(page) - 1);
-> +	unsigned int f, from = pos & (folio_size(folio) - 1);
-
-Isn't that:
-
-	size_t from = offset_in_folio(folio, pos);
-
-(not that i think we're getting folios larger than 4GB any time soon,
-but it'd be nice to be prepared for it)
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 78ebc306ee2b..1a23b64cfb74 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -4135,18 +4135,18 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ 	}
+ 
+ 	/* setup f2fs internal modules */
+-	err = f2fs_build_segment_manager(sbi);
+-	if (err) {
+-		f2fs_err(sbi, "Failed to initialize F2FS segment manager (%d)",
+-			 err);
+-		goto free_sm;
+-	}
+ 	err = f2fs_build_node_manager(sbi);
+ 	if (err) {
+ 		f2fs_err(sbi, "Failed to initialize F2FS node manager (%d)",
+ 			 err);
+ 		goto free_nm;
+ 	}
++	err = f2fs_build_segment_manager(sbi);
++	if (err) {
++		f2fs_err(sbi, "Failed to initialize F2FS segment manager (%d)",
++			 err);
++		goto free_sm;
++	}
+ 
+ 	/* For write statistics */
+ 	sbi->sectors_written_start = f2fs_get_sectors_written(sbi);
+@@ -4351,10 +4351,10 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ 	sbi->node_inode = NULL;
+ free_stats:
+ 	f2fs_destroy_stats(sbi);
+-free_nm:
+-	f2fs_destroy_node_manager(sbi);
+ free_sm:
+ 	f2fs_destroy_segment_manager(sbi);
++free_nm:
++	f2fs_destroy_node_manager(sbi);
+ 	f2fs_destroy_post_read_wq(sbi);
+ stop_ckpt_thread:
+ 	f2fs_stop_ckpt_thread(sbi);
+-- 
+2.25.1
 
