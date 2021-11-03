@@ -2,60 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47AF5444621
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C097444607
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232941AbhKCQqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 12:46:31 -0400
-Received: from elvis.franken.de ([193.175.24.41]:58774 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232933AbhKCQq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 12:46:27 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1miJMb-000872-00; Wed, 03 Nov 2021 17:43:49 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id D507CC2929; Wed,  3 Nov 2021 17:36:17 +0100 (CET)
-Date:   Wed, 3 Nov 2021 17:36:17 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] MIPS: Cobalt: Explain GT64111 early PCI fixup
-Message-ID: <20211103163617.GA9984@alpha.franken.de>
-References: <20211101150405.14618-1-pali@kernel.org>
- <20211102171259.9590-1-pali@kernel.org>
- <20211102171259.9590-2-pali@kernel.org>
+        id S232895AbhKCQjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 12:39:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232865AbhKCQjL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 12:39:11 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145DEC061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 09:36:35 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id x9so3166233ilu.6
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 09:36:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kqcBRxOQ9MjURO/c5n7KjP3zUkTopF6FY6YrmNIOe3I=;
+        b=cnAmHdOWACGRJzcwjbOOl3C9Bd2t/C5gyWAYtrPEglsqE3Y0Cr57sjVPIrLKXctAkE
+         5ze6sOTjq1x7i85bssik+hzPJ7Di2Sg158ut8fqoiNLcc8lJ0BDU7D0d8FrZPRb4h71+
+         +a/aWNxxrRtDwjukw9/YQxh4+OJbEErwOu7w3Kpvs1sT2Yi6fk++v010mSvqxNxm9Yce
+         vfJakfaGtwGTZLIpDcwdwOauf3GCmO04s6lMqVtn5f8Gt5PQ34q/dOghZIPPlqdjLW0s
+         UFKyleCoBwJCPJX5ue12uN1atnUM+lga0v2GwHVTwyl2HH6B4FwY18fLwJ3BaeyyIoC4
+         d9Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kqcBRxOQ9MjURO/c5n7KjP3zUkTopF6FY6YrmNIOe3I=;
+        b=yAwbTC8HfjIFSjA9Ss04oEBsscw8e+tXlBGvKdzBrVPfn+HWYClmgZdslBgJ2pR82m
+         RvuHKVRDghUGxCrJFzxbnIeSleHlQdCI3hjw7ybB1PBF2kx/qIc8gUnma3mmHXvwMF3l
+         KTzEllEGq8i3tMqGwvwAYP28PLFgt7Cyij3tiGL6kxj+07GrZsOyKrdZ3NbI0mBoyLEL
+         ZV7B+Vc7crIqAxJlrDVA9yfq+L6HP69Iv/mZiaeXUj85KqNZCu1piyCtp2jB78bvgNEv
+         k4HR2VeRWrvAtAiqwXgQUEdxPHxNFvPPjS/mdJmr8x5KTFSF39vQ+X+LuRKWeeogKLx/
+         P5Gg==
+X-Gm-Message-State: AOAM531HGNgmkoVFkMFGrEfe9arBHf8Ka7Xr3cxZfuRJkVAa+xwiSk2U
+        3E3h0s6RgQTmWEPZpIwIx0zitOWG4ZhZkdCLKEsEHg==
+X-Google-Smtp-Source: ABdhPJwarWrYs67dhHO3W93iyUrOAUtT/O4f5jE/lxzIKtUiy6tmumpoNY+4xpGlX/oFsN+SBbOvLSD3ZrrkIwu2/Wk=
+X-Received: by 2002:a05:6e02:15c9:: with SMTP id q9mr31006491ilu.298.1635957394356;
+ Wed, 03 Nov 2021 09:36:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211102171259.9590-2-pali@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211103161833.3769487-1-seanjc@google.com>
+In-Reply-To: <20211103161833.3769487-1-seanjc@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 3 Nov 2021 09:36:23 -0700
+Message-ID: <CANgfPd9VVAdP0umt6Odz_-f+nUmKfsNa0hqvUzuto6=G6b=M+A@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86/mmu: Properly dereference rcu-protected TDP MMU
+ sptep iterator
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 06:12:59PM +0100, Pali Rohár wrote:
-> Properly document why changing PCI Class Code for GT64111 device to Host
-> Bridge is required as important details were after 20 years forgotten.
-> 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> 
+On Wed, Nov 3, 2021 at 9:18 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Wrap the read of iter->sptep in tdp_mmu_map_handle_target_level() with
+> rcu_dereference().  Shadow pages in the TDP MMU, and thus their SPTEs,
+> are protected by rcu.
+>
+> This fixes a Sparse warning at tdp_mmu.c:900:51:
+>   warning: incorrect type in argument 1 (different address spaces)
+>   expected unsigned long long [usertype] *sptep
+>   got unsigned long long [noderef] [usertype] __rcu *[usertype] sptep
+>
+> Fixes: 7158bee4b475 ("KVM: MMU: pass kvm_mmu_page struct to make_spte")
+> Cc: Ben Gardon <bgardon@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+
+Reviewed-by: Ben Gardon <bgardon@google.com>
+
+This change looks good to me. It also reminds me that the struct
+kvm_mmu_pages are also protected by RCU.
+I wonder if it would be worth creating something similar to tdp_ptep_t
+for the struct kvm_mmu_pages to add RCU annotations to them as well.
+
 > ---
-> Changes in v2:
-> * Split from ARM changes
-> * Removal of Kconfig changes
-> * Explanation is completely rewritten as as this MIPS Cobalt device
->   predates ARM Orion devices and reason is slightly different.
-> ---
->  arch/mips/pci/fixup-cobalt.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-
-applied to mips-next.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+>  arch/x86/kvm/mmu/tdp_mmu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 7c5dd83e52de..a54c3491af42 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -897,7 +897,7 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
+>                                           struct kvm_page_fault *fault,
+>                                           struct tdp_iter *iter)
+>  {
+> -       struct kvm_mmu_page *sp = sptep_to_sp(iter->sptep);
+> +       struct kvm_mmu_page *sp = sptep_to_sp(rcu_dereference(iter->sptep));
+>         u64 new_spte;
+>         int ret = RET_PF_FIXED;
+>         bool wrprot = false;
+> --
+> 2.33.1.1089.g2158813163f-goog
+>
