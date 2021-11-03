@@ -2,171 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFFB4445FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47AF5444621
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232869AbhKCQgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 12:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbhKCQgk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 12:36:40 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD142C061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 09:34:03 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id u33so2904382pfg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 09:34:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=slIukMnGdEjFvYLnsgPyMFQpuRCWCSMtQookMpWIfvo=;
-        b=el2xkxJfACIM7oCJT65CebNCQ8WmNxVQ2DB/EionnHAb40T4ku3HmRR9z64gnxsfll
-         vaX6PXIKcm+L7nuNIE7UwoFKA3Rc+r5Rfm/Ltum2UK48CXz+uWGDl3EXFCMu8N0E+nuF
-         CmbqdqbzF6EXQH+J+Yt0mTHpkN7aUekgRdoPI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=slIukMnGdEjFvYLnsgPyMFQpuRCWCSMtQookMpWIfvo=;
-        b=rFh3R9M9iYRl6JDua2rLjYI+kr5FhyeJuhdmZ/6SfzXzT3UFE0jGCpElaqrUUkfK1r
-         19TPu00ETu6+sEgMWB372W06MFhPkIOGZwazhO2smdTsXbpwBEYuJrAUdEY/9HtEHayT
-         A0gHecd7MTVhH9FjuZs4rlo9o3C28Au9NxIqy2s+v0G/6C5jf3+sxACLdrExY4EVaasF
-         kSiM8TjdJXzTeUG+SSZp/1tZmyA4WIV3bkke6ey390UNDOgcBcHbB/fYu0koOI6VZxX8
-         a0aAoltkVd5TTlvxBjE2gt4pXpdBXAyCo5aToN2DVFxf21Obc+jQvuX/DZ/5AR462lY0
-         z3iQ==
-X-Gm-Message-State: AOAM532XJ7P6qyue1Gc0OA7y3LwLJCBTs2bEJR2ip+sVkAU8AZT857/Q
-        jrfyE/NxO+1WSai7DDMwRkyufg==
-X-Google-Smtp-Source: ABdhPJySZdnjD6oZ6jsH9vBRx+o0Q6ebKk/YPLXkYbMgxUsRQJ4Dv6pdhVl4g0C3Ex4PS3dI0dvFew==
-X-Received: by 2002:a63:7516:: with SMTP id q22mr19387601pgc.24.1635957243446;
-        Wed, 03 Nov 2021 09:34:03 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:b5cc:11fb:70c8:786f])
-        by smtp.gmail.com with UTF8SMTPSA id e8sm2967610pfv.183.2021.11.03.09.34.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 09:34:02 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 09:34:01 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sujit Kautkar <sujitka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] rpmsg: glink: Fix use-after-free in
- qcom_glink_rpdev_release()
-Message-ID: <YYK5+WrJqF2J/nPo@google.com>
-References: <20211102235147.872921-1-sujitka@chromium.org>
- <20211102165137.v3.1.I2858f54e737295d746ea67e1dc0068fe63913ae5@changeid>
+        id S232941AbhKCQqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 12:46:31 -0400
+Received: from elvis.franken.de ([193.175.24.41]:58774 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232933AbhKCQq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 12:46:27 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1miJMb-000872-00; Wed, 03 Nov 2021 17:43:49 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id D507CC2929; Wed,  3 Nov 2021 17:36:17 +0100 (CET)
+Date:   Wed, 3 Nov 2021 17:36:17 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] MIPS: Cobalt: Explain GT64111 early PCI fixup
+Message-ID: <20211103163617.GA9984@alpha.franken.de>
+References: <20211101150405.14618-1-pali@kernel.org>
+ <20211102171259.9590-1-pali@kernel.org>
+ <20211102171259.9590-2-pali@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20211102165137.v3.1.I2858f54e737295d746ea67e1dc0068fe63913ae5@changeid>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211102171259.9590-2-pali@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sujit,
-
-On Tue, Nov 02, 2021 at 04:51:49PM -0700, Sujit Kautkar wrote:
-> qcom_glink_rpdev_release() sets channel->rpdev to NULL. However, with
-> debug enabled kernel, qcom_glink_rpdev_release() gets delayed due to
-> delayed kobject release and channel gets released by that time and
-> triggers below kernel warning. To avoid this use-after-free, clear ept
-> pointers during ept destroy and channel release and add a new condition
-> in qcom_glink_rpdev_release() to access channel
+On Tue, Nov 02, 2021 at 06:12:59PM +0100, Pali Rohár wrote:
+> Properly document why changing PCI Class Code for GT64111 device to Host
+> Bridge is required as important details were after 20 years forgotten.
 > 
-> | BUG: KASAN: use-after-free in qcom_glink_rpdev_release+0x54/0x70
-> | Write of size 8 at addr ffffffaba438e8d0 by task kworker/6:1/54
-> |
-> | CPU: 6 PID: 54 Comm: kworker/6:1 Not tainted 5.4.109-lockdep #16
-> | Hardware name: Google Lazor (rev3+) with KB Backlight (DT)
-> | Workqueue: events kobject_delayed_cleanup
-> | Call trace:
-> |  dump_backtrace+0x0/0x284
-> |  show_stack+0x20/0x2c
-> |  dump_stack+0xd4/0x170
-> |  print_address_description+0x3c/0x4a8
-> |  __kasan_report+0x144/0x168
-> |  kasan_report+0x10/0x18
-> |  __asan_report_store8_noabort+0x1c/0x24
-> |  qcom_glink_rpdev_release+0x54/0x70
-> |  device_release+0x68/0x14c
-> |  kobject_delayed_cleanup+0x158/0x2cc
-> |  process_one_work+0x7cc/0x10a4
-> |  worker_thread+0x80c/0xcec
-> |  kthread+0x2a8/0x314
-> |  ret_from_fork+0x10/0x18
+> Signed-off-by: Pali Rohár <pali@kernel.org>
 > 
-> Signed-off-by: Sujit Kautkar <sujitka@chromium.org>
 > ---
-> Changes in v3:
-> - Clear ept pointers and add extra conditions
-> 
 > Changes in v2:
-> - Fix typo in commit message
-> 
->  drivers/rpmsg/qcom_glink_native.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
-> index e1444fefdd1c0..0c64a6f7a4f09 100644
-> --- a/drivers/rpmsg/qcom_glink_native.c
-> +++ b/drivers/rpmsg/qcom_glink_native.c
-> @@ -269,6 +269,9 @@ static void qcom_glink_channel_release(struct kref *ref)
->  	idr_destroy(&channel->riids);
->  	spin_unlock_irqrestore(&channel->intent_lock, flags);
->  
-> +	if (channel->rpdev)
-> +		channel->rpdev->ept = NULL;
-> +
->  	kfree(channel->name);
->  	kfree(channel);
->  }
-> @@ -1214,6 +1217,8 @@ static void qcom_glink_destroy_ept(struct rpmsg_endpoint *ept)
->  	channel->ept.cb = NULL;
->  	spin_unlock_irqrestore(&channel->recv_lock, flags);
->  
-> +	channel->rpdev->ept = NULL;
-> +
->  	/* Decouple the potential rpdev from the channel */
->  	channel->rpdev = NULL;
->  
-> @@ -1371,9 +1376,12 @@ static const struct rpmsg_endpoint_ops glink_endpoint_ops = {
->  static void qcom_glink_rpdev_release(struct device *dev)
->  {
->  	struct rpmsg_device *rpdev = to_rpmsg_device(dev);
-> -	struct glink_channel *channel = to_glink_channel(rpdev->ept);
-> +	struct glink_channel *channel = NULL;
+> * Split from ARM changes
+> * Removal of Kconfig changes
+> * Explanation is completely rewritten as as this MIPS Cobalt device
+>   predates ARM Orion devices and reason is slightly different.
+> ---
+>  arch/mips/pci/fixup-cobalt.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
 
-no need to initialize the pointer, it is assigned in the path that uses it.
+applied to mips-next.
 
->  
-> -	channel->rpdev = NULL;
-> +	if (rpdev->ept) {
-> +		channel = to_glink_channel(rpdev->ept);
-> +		channel->rpdev = NULL;
-> +	}
->  	kfree(rpdev);
->  }
+Thomas.
 
-Looks like this is already fixed in -next by:
-
-commit 343ba27b6f9d473ec3e602cc648300eb03a7fa05
-Author: Chris Lew <clew@codeaurora.org>
-Date:   Thu Jul 30 10:48:15 2020 +0530
-
-    rpmsg: glink: Remove channel decouple from rpdev release
-
-    If a channel is being rapidly restarting and the kobj release worker is
-    busy, there is a chance the rpdev_release function will run after the
-    channel struct itself has been released.
-
-    There should not be a need to decouple the channel from rpdev in the
-    rpdev release since that should only happen from the close commands.
-
-    Signed-off-by: Chris Lew <clew@codeaurora.org>
-    Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
-    Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-    Link: https://lore.kernel.org/r/1596086296-28529-6-git-send-email-deesin@codeaurora.org
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
