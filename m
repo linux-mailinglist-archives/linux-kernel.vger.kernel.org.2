@@ -2,120 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA239444B87
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 00:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD567444B8C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 00:20:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhKCXWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 19:22:30 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:41984 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbhKCXW2 (ORCPT
+        id S230301AbhKCXXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 19:23:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229968AbhKCXXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 19:22:28 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1A3NJdUX033371;
-        Wed, 3 Nov 2021 18:19:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1635981579;
-        bh=3NI8re5mbbuzi7E/gBD8Pd6lBaiNoGJv6ABjsmw/z9Q=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=YdkPPvTvjoJCTTj9PxnRv6D6gzKKF2ee36r2BCCiScLwtm4Z5EtojjnMGh/t+Nsn9
-         SGBAlSPR1RRqzOee7SsfDfzObO+axPKNmnHUqqKJGWTYchAa8AzQPQV1ADvrpuPU5d
-         TPElMrbMukanTJxKT4MWv/87gzyDIF+ugZzDcUvs=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1A3NJdFs111402
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 3 Nov 2021 18:19:39 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 3
- Nov 2021 18:19:39 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 3 Nov 2021 18:19:39 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1A3NJaCN119288;
-        Wed, 3 Nov 2021 18:19:36 -0500
-Subject: Re: [PATCH net-next v2 2/3] net: ethernet: ti: am65-cpsw: enable
- bc/mc storm prevention support
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-omap@vger.kernel.org>, Tony Lindgren <tony@atomide.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-References: <20211101170122.19160-1-grygorii.strashko@ti.com>
- <20211101170122.19160-3-grygorii.strashko@ti.com>
- <20211102173840.01f464ec@kicinski-fedora-PC1C0HJN>
- <81a427a1-b969-4039-0c3f-567b3073abc1@ti.com>
- <20211103160742.51218d7d@kicinski-fedora-PC1C0HJN>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <de899dec-e9da-5fbc-77f5-672f0fed1222@ti.com>
-Date:   Thu, 4 Nov 2021 01:19:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 3 Nov 2021 19:23:10 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31939C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 16:20:33 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id u33so3958486pfg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 16:20:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/Y2S6Byxm0KbZa6sY2deNa9Jl5FKstAIjXV9nN4iMDk=;
+        b=K91RCxho56MVM9xkrEB3UKg+BWwwhcaLoHcPld8X+H1nqOstvWhabsJWdT86MzZbv7
+         oYqZLQrjvkH849hAVJZ2gX3z3qYj2UdkVjRVOf1PONjBt7BAw7bdI0IrQpUMqG5E28bI
+         2RjSQz8jt3phmu+OmeOnD8nIfgVc49b+0LoH9Vt+G7hZcEtEy7RR4CdCEeJtS6Nocs9H
+         MpO5GOPe8STy5QY0RmZA0cv4M9SiZF6+TN2V4hmGqbop68oXQXRFwvXRPh49V8XG8wJS
+         v9pqQ0qAZzxQfuN0eUwHeY91rh3DFXDFHHpyOgj10UE+5p3SwIqfQ5tns06PgJzkoTk/
+         cm1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/Y2S6Byxm0KbZa6sY2deNa9Jl5FKstAIjXV9nN4iMDk=;
+        b=p5H3Z98tzYND+fpe+ObUjljWSn1J9gi+y8NhD28z/y8QacEGDcj80h8JdsqRFHx4lA
+         VEkfyhK6bRsS9YV2/Klduw2Q74yttu8ta2cTmnGHqBgVTs8QqI1auMmMWs4j3KZDQuAA
+         Z8DgEw5xkH4hxC+7jh90Am+JbYxdBuCjmiwpt1/2F8oyipJcEwDtfbhQQmEPKIzHDcI6
+         2tmK49LeBIVYQNTtVfOLNYH5V7GNAYYZFfDKNfg9i8cNGat9soPzgtPWt4QEf6dfM+vY
+         AkeVfyGGOKEdEx/xhjeT03dq3dUUdGtkffLz/8iAD4EIS5eZqujVO1c+WR94vHkldgrv
+         omtg==
+X-Gm-Message-State: AOAM530be08A72Q7WSX3lZXEAeeqFX0inMF6AwUNo7kgDA3RRoVCkT1f
+        w04P1Yamo+RQkNwllddJh0jY8Q==
+X-Google-Smtp-Source: ABdhPJy4brD18aSZ3rwkyQEyhmNvGSzOxarylF5FcaeQ9OUCRHAS0uELEun5xfh8MoMWYe+r+G6K0A==
+X-Received: by 2002:a65:5082:: with SMTP id r2mr35784039pgp.353.1635981632525;
+        Wed, 03 Nov 2021 16:20:32 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id n20sm2682378pgc.10.2021.11.03.16.20.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 16:20:32 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 23:20:28 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     pbonzini@redhat.com, jmattson@google.com, dmatlack@google.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] KVM: Move INVPCID type check from vmx and svm to
+ the common kvm_handle_invpcid()
+Message-ID: <YYMZPKPkk5dVJ6nZ@google.com>
+References: <20211103205911.1253463-1-vipinsh@google.com>
+ <20211103205911.1253463-3-vipinsh@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20211103160742.51218d7d@kicinski-fedora-PC1C0HJN>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211103205911.1253463-3-vipinsh@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 03, 2021, Vipin Sharma wrote:
+> Handle #GP on INVPCID due to an invalid type in the common switch
+> statement instead of relying on the callers (VMX and SVM) to manually
+> validate the type.
+> 
+> Unlike INVVPID and INVEPT, INVPCID is not explicitly documented to check
+> the type before reading the operand from memory, so deferring the
+> type validity check until after that point is architecturally allowed.
+> 
+> Signed-off-by: Vipin Sharma <vipinsh@google.com>
+> ---
 
+For future reference, a R-b that comes with qualifiers can be carried so long as
+the issues raised by the reviewer are addressed.  Obviously it can be somewhat
+subjective, but common sense usually goes a long ways, and most reviewers won't
+be too grumpy about mistakes so long as you had good intentions and remedy any
+mistakes.  And if you're in doubt, you can always add a blurb in the cover letter
+or ignored part of the patch to explicitly confirm that it was ok to add the tag,
+e.g. "Sean, I added your Reviewed-by in patch 02 after fixing the changelog, let
+me know if that's not what you intended".
 
-On 04/11/2021 01:07, Jakub Kicinski wrote:
-> On Thu, 4 Nov 2021 00:20:30 +0200 Grygorii Strashko wrote:
->> On 03/11/2021 02:38, Jakub Kicinski wrote:
->>> On Mon, 1 Nov 2021 19:01:21 +0200 Grygorii Strashko wrote:
->>>>    - 01:00:00:00:00:00 fixed value has to be used for MC packets rate
->>>>      limiting (exact match)
->>>
->>> This looks like a stretch, why not use a mask? You can require users to
->>> always install both BC and MC rules if you want to make sure the masked
->>> rule does not match BC.
->>>    
->>
->> Those matching rules are hard coded in HW for packet rate limiting and SW only
->> enables them and sets requested pps limit.
->> - 1:BC: HW does exact match on BC MAC address
->> - 2:MC: HW does match on MC bit (the least-significant bit of the first octet)
->>
->> Therefore the exact match done in this patch for above dst_mac's with
->> is_broadcast_ether_addr() and ether_addr_equal().
-> 
-> Right but flower supports masked matches for dest address, as far as I
-> can tell. So you should check the mask is what you expect as well, not
-> just look at the key. Mask should be equal to key in your case IIUC, so:
-> 
-> 	if (is_broadcast_ether_addr(match.key->dst) &&
-> 	    is_broadcast_ether_addr(match.mask->dst))
-> 
-> and
-> 
-> 	if (!memcmp(match.key->dst, mc_mac, ETH_ALEN) &&
-> 	    !memcmp(match.mask->dst, mc_mac, ETH_ALEN))
-> 
-> I think you should also test that the mask, not the key of source addr
-> is zero.
-> 
-> Note that ether_addr_equal() assumes the mac address is alinged to 2,
-> which I'm not sure is the case here.
-> 
-> Also you can make mc_mac a static const.
+Thanks!
 
-Ah, got it. Thank you.
-
-> 
->> The K3 cpsw also supports number configurable policiers (bit rate limit) in
->> ALE for which supports is to be added, and for them MC mask (sort of, it uses
->> number of ignored bits, like FF-FF-FF-00-00-00) can be used.
-
--- 
-Best regards,
-grygorii
+Reviewed-by: Sean Christopherson <seanjc@google.com>
