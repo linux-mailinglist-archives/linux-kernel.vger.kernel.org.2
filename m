@@ -2,443 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D9D444654
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE81244465C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233003AbhKCQ4V convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Nov 2021 12:56:21 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4061 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbhKCQ4U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 12:56:20 -0400
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Hkt570wkHz686Hq;
-        Thu,  4 Nov 2021 00:48:43 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 3 Nov 2021 17:53:40 +0100
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.015;
- Wed, 3 Nov 2021 17:53:40 +0100
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "deven.desai@linux.microsoft.com" <deven.desai@linux.microsoft.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "paul@paul-moore.com" <paul@paul-moore.com>,
-        "eparis@redhat.com" <eparis@redhat.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>
-CC:     "jannh@google.com" <jannh@google.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-        "linux-audit@redhat.com" <linux-audit@redhat.com>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>
-Subject: RE: [RFC PATCH v7 14/16] scripts: add boot policy generation program
-Thread-Topic: [RFC PATCH v7 14/16] scripts: add boot policy generation program
-Thread-Index: AQHXwGWMtob3cI5FPU6KyidED8CNc6vyIPKAgAAEUjA=
-Date:   Wed, 3 Nov 2021 16:53:40 +0000
-Message-ID: <5b4cdc3c3dba4fe68dfc9590b7d12e48@huawei.com>
-References: <1634151995-16266-1-git-send-email-deven.desai@linux.microsoft.com>
- <1634151995-16266-15-git-send-email-deven.desai@linux.microsoft.com>
- <12aec559d6df4191a39ecaec7a0a378e@huawei.com>
-In-Reply-To: <12aec559d6df4191a39ecaec7a0a378e@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.204.63.33]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S233034AbhKCQ5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 12:57:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232870AbhKCQ5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 12:57:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A00461053;
+        Wed,  3 Nov 2021 16:54:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635958473;
+        bh=jO5V5YGkKZKCIIFUKlx4t5qdcFJRnyfTr9k5CI4kRxU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gzDGaCn5SjzHy/iIOG0t5Kv/B2qv58ao2WWhWgwwfP745Z8cGpV7C/HfIFrk726Bw
+         reKMlOSZk9p2q7B3PLtiJvgYiU4sKpuZ367tW1irGeNazp8wc3UaWCnlWJxVpP2rpT
+         hKGUSWjvtCSXae3Huw04rQ9G4x9a5Z4IvWKhJMsoUeVWqQVcPMp3ZqbbYOlimaRr9v
+         R2Nt6p7DOZ1LwGvx8EHFjtvF7RUewJ0vMiLSW5QVoAvyGKUhf2YZbZyPRRfpd7ZirK
+         c58+w7vqn7Iaj4gf/vxshko9SLO9aFZ2OAwhO7QZDfAeIIUt3LVtvZqdDxUyebjm5W
+         +C40Va2QDafeA==
+Date:   Wed, 3 Nov 2021 16:54:24 +0000
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kaixu Xia <kaixuxia@tencent.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Yang Li <abaci-bugfix@linux.alibaba.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Alan <alan@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: atomisp current issues
+Message-ID: <20211103165424.67296e13@sal.lan>
+In-Reply-To: <c39cac68-73ab-4ab0-a701-e92f01c92774@xs4all.nl>
+References: <20211103135418.496f75d5@sal.lan>
+        <c39cac68-73ab-4ab0-a701-e92f01c92774@xs4all.nl>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Roberto Sassu [mailto:roberto.sassu@huawei.com]
-> Sent: Wednesday, November 3, 2021 5:43 PM
-> > From: deven.desai@linux.microsoft.com
-> > [mailto:deven.desai@linux.microsoft.com]
-> > From: Deven Bowers <deven.desai@linux.microsoft.com>
-> >
-> > Enables an IPE policy to be enforced from kernel start, enabling access
-> > control based on trust from kernel startup. This is accomplished by
-> > transforming an IPE policy indicated by CONFIG_IPE_BOOT_POLICY into a
-> > c-string literal that is parsed at kernel startup as an unsigned policy.
-> >
-> > Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
-> > ---
-> >
-> > Relevant changes since v6:
-> >   * Move patch 01/12 to [14/16] of the series
-> >
-> > ---
-> >  MAINTAINERS                   |   1 +
-> >  scripts/Makefile              |   1 +
-> >  scripts/ipe/Makefile          |   2 +
-> >  scripts/ipe/polgen/.gitignore |   1 +
-> >  scripts/ipe/polgen/Makefile   |   6 ++
-> >  scripts/ipe/polgen/polgen.c   | 145 ++++++++++++++++++++++++++++++++++
-> >  security/ipe/.gitignore       |   1 +
-> >  security/ipe/Kconfig          |  10 +++
-> >  security/ipe/Makefile         |  13 +++
-> >  security/ipe/ctx.c            |  18 +++++
-> >  10 files changed, 198 insertions(+)
-> >  create mode 100644 scripts/ipe/Makefile
-> >  create mode 100644 scripts/ipe/polgen/.gitignore
-> >  create mode 100644 scripts/ipe/polgen/Makefile
-> >  create mode 100644 scripts/ipe/polgen/polgen.c
-> >  create mode 100644 security/ipe/.gitignore
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index f1e76f791d47..a84ca781199b 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -9283,6 +9283,7 @@ INTEGRITY POLICY ENFORCEMENT (IPE)
-> >  M:	Deven Bowers <deven.desai@linux.microsoft.com>
-> >  M:	Fan Wu <wufan@linux.microsoft.com>
-> >  S:	Supported
-> > +F:	scripts/ipe/
-> >  F:	security/ipe/
-> >
-> >  INTEL 810/815 FRAMEBUFFER DRIVER
-> > diff --git a/scripts/Makefile b/scripts/Makefile
-> > index 9adb6d247818..a31da6d57a36 100644
-> > --- a/scripts/Makefile
-> > +++ b/scripts/Makefile
-> > @@ -41,6 +41,7 @@ targets += module.lds
-> >  subdir-$(CONFIG_GCC_PLUGINS) += gcc-plugins
-> >  subdir-$(CONFIG_MODVERSIONS) += genksyms
-> >  subdir-$(CONFIG_SECURITY_SELINUX) += selinux
-> > +subdir-$(CONFIG_SECURITY_IPE) += ipe
-> >
-> >  # Let clean descend into subdirs
-> >  subdir-	+= basic dtc gdb kconfig mod
-> > diff --git a/scripts/ipe/Makefile b/scripts/ipe/Makefile
-> > new file mode 100644
-> > index 000000000000..e87553fbb8d6
-> > --- /dev/null
-> > +++ b/scripts/ipe/Makefile
-> > @@ -0,0 +1,2 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only
-> > +subdir-y := polgen
-> > diff --git a/scripts/ipe/polgen/.gitignore b/scripts/ipe/polgen/.gitignore
-> > new file mode 100644
-> > index 000000000000..80f32f25d200
-> > --- /dev/null
-> > +++ b/scripts/ipe/polgen/.gitignore
-> > @@ -0,0 +1 @@
-> > +polgen
-> > diff --git a/scripts/ipe/polgen/Makefile b/scripts/ipe/polgen/Makefile
-> > new file mode 100644
-> > index 000000000000..066060c22b4a
-> > --- /dev/null
-> > +++ b/scripts/ipe/polgen/Makefile
-> > @@ -0,0 +1,6 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +hostprogs-always-y	:= polgen
-> > +HOST_EXTRACFLAGS += \
-> > +	-I$(srctree)/include \
-> > +	-I$(srctree)/include/uapi \
-> > +
-> > diff --git a/scripts/ipe/polgen/polgen.c b/scripts/ipe/polgen/polgen.c
-> > new file mode 100644
-> > index 000000000000..73cf13e743f7
-> > --- /dev/null
-> > +++ b/scripts/ipe/polgen/polgen.c
-> > @@ -0,0 +1,145 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (C) Microsoft Corporation. All rights reserved.
-> > + */
-> > +
-> > +#include <stdlib.h>
-> > +#include <stddef.h>
-> > +#include <stdio.h>
-> > +#include <unistd.h>
-> > +#include <errno.h>
-> > +
-> > +static void usage(const char *const name)
-> > +{
-> > +	printf("Usage: %s OutputFile (PolicyFile)\n", name);
-> > +	exit(EINVAL);
-> > +}
-> > +
-> > +static int policy_to_buffer(const char *pathname, char **buffer, size_t *size)
-> > +{
-> > +	int rc = 0;
-> > +	FILE *fd;
-> > +	char *lbuf;
-> > +	size_t fsize;
-> > +	size_t read;
-> > +
-> > +	fd = fopen(pathname, "r");
-> > +	if (!fd) {
-> > +		rc = errno;
-> > +		goto out;
-> > +	}
-> > +
-> > +	fseek(fd, 0, SEEK_END);
-> > +	fsize = ftell(fd);
-> > +	rewind(fd);
-> > +
-> > +	lbuf = malloc(fsize);
-> > +	if (!lbuf) {
-> > +		rc = ENOMEM;
-> > +		goto out_close;
-> > +	}
-> > +
-> > +	read = fread((void *)lbuf, sizeof(*lbuf), fsize, fd);
-> > +	if (read != fsize) {
-> > +		rc = -1;
-> > +		goto out_free;
-> > +	}
-> > +
-> > +	*buffer = lbuf;
-> > +	*size = fsize;
-> > +	fclose(fd);
-> > +
-> > +	return rc;
-> > +
-> > +out_free:
-> > +	free(lbuf);
-> > +out_close:
-> > +	fclose(fd);
-> > +out:
-> > +	return rc;
-> > +}
-> > +
-> > +static int write_boot_policy(const char *pathname, const char *buf, size_t
-> size)
-> > +{
-> > +	int rc = 0;
-> > +	FILE *fd;
-> > +	size_t i;
-> > +
-> > +	fd = fopen(pathname, "w");
-> > +	if (!fd) {
-> > +		rc = errno;
-> > +		goto err;
-> > +	}
-> > +
-> > +	fprintf(fd, "/* This file is automatically generated.");
-> > +	fprintf(fd, " Do not edit. */\n");
-> > +	fprintf(fd, "#include <stddef.h>\n");
-> > +	fprintf(fd, "\nextern const char *const ipe_boot_policy;\n\n");
-> > +	fprintf(fd, "const char *const ipe_boot_policy =\n");
-> > +
-> > +	if (!buf || size == 0) {
-> > +		fprintf(fd, "\tNULL;\n");
-> > +		fclose(fd);
-> > +		return 0;
-> > +	}
-> > +
-> > +	fprintf(fd, "\t\"");
-> > +
-> > +	for (i = 0; i < size; ++i) {
-> > +		switch (buf[i]) {
-> > +		case '"':
-> > +			fprintf(fd, "\\\"");
-> > +			break;
-> > +		case '\'':
-> > +			fprintf(fd, "'");
-> > +			break;
-> > +		case '\n':
-> > +			fprintf(fd, "\\n\"\n\t\"");
-> > +			break;
-> > +		case '\\':
-> > +			fprintf(fd, "\\\\");
-> > +			break;
-> > +		case '\t':
-> > +			fprintf(fd, "\\t");
-> > +			break;
-> > +		case '\?':
-> > +			fprintf(fd, "\\?");
-> > +			break;
-> > +		default:
-> > +			fprintf(fd, "%c", buf[i]);
-> > +		}
-> > +	}
-> > +	fprintf(fd, "\";\n");
-> > +	fclose(fd);
-> > +
-> > +	return 0;
-> > +
-> > +err:
-> > +	if (fd)
-> > +		fclose(fd);
-> > +	return rc;
-> > +}
-> > +
-> > +int main(int argc, const char *const argv[])
-> > +{
-> > +	int rc = 0;
-> > +	size_t len = 0;
-> > +	char *policy = NULL;
-> > +
-> > +	if (argc < 2)
-> > +		usage(argv[0]);
-> > +
-> > +	if (argc > 2) {
-> > +		rc = policy_to_buffer(argv[2], &policy, &len);
-> > +		if (rc != 0)
-> > +			goto cleanup;
-> > +	}
-> > +
-> > +	rc = write_boot_policy(argv[1], policy, len);
-> > +cleanup:
-> > +	if (policy)
-> > +		free(policy);
-> > +	if (rc != 0)
-> > +		perror("An error occurred during policy conversion: ");
-> > +	return rc;
-> > +}
-> > diff --git a/security/ipe/.gitignore b/security/ipe/.gitignore
-> > new file mode 100644
-> > index 000000000000..eca22ad5ed22
-> > --- /dev/null
-> > +++ b/security/ipe/.gitignore
-> > @@ -0,0 +1 @@
-> > +boot-policy.c
-> > \ No newline at end of file
-> > diff --git a/security/ipe/Kconfig b/security/ipe/Kconfig
-> > index fcf82a8152ec..39df680b67a2 100644
-> > --- a/security/ipe/Kconfig
-> > +++ b/security/ipe/Kconfig
-> > @@ -20,6 +20,16 @@ menuconfig SECURITY_IPE
-> >
-> >  if SECURITY_IPE
-> >
-> > +config IPE_BOOT_POLICY
-> > +	string "Integrity policy to apply on system startup"
-> > +	help
-> > +	  This option specifies a filepath to a IPE policy that is compiled
-> > +	  into the kernel. This policy will be enforced until a policy update
-> > +	  is deployed via the $securityfs/ipe/policies/$policy_name/active
-> > +	  interface.
-> > +
-> > +	  If unsure, leave blank.
-> > +
-> >  choice
-> >  	prompt "Hash algorithm used in auditing policies"
-> >  	default IPE_AUDIT_HASH_SHA1
-> > diff --git a/security/ipe/Makefile b/security/ipe/Makefile
-> > index 1e7b2d7fcd9e..89fec670f954 100644
-> > --- a/security/ipe/Makefile
-> > +++ b/security/ipe/Makefile
-> > @@ -7,7 +7,18 @@
-> >
-> >  ccflags-y := -I$(srctree)/security/ipe/modules
-> >
-> > +quiet_cmd_polgen = IPE_POL $(2)
-> > +      cmd_polgen = scripts/ipe/polgen/polgen security/ipe/boot-policy.c $(2)
-> > +
-> > +$(eval $(call config_filename,IPE_BOOT_POLICY))
-> > +
-> > +targets += boot-policy.c
-> > +
-> > +$(obj)/boot-policy.c: scripts/ipe/polgen/polgen
-> > $(IPE_BOOT_POLICY_FILENAME) FORCE
-> > +	$(call if_changed,polgen,$(IPE_BOOT_POLICY_FILENAME))
-> > +
-> >  obj-$(CONFIG_SECURITY_IPE) += \
-> > +	boot-policy.o \
-> >  	ctx.o \
-> >  	eval.o \
-> >  	fs.o \
-> > @@ -21,3 +32,5 @@ obj-$(CONFIG_SECURITY_IPE) += \
-> >  	policyfs.o \
-> >
-> >  obj-$(CONFIG_AUDIT) += audit.o
-> > +
-> > +clean-files := boot-policy.c \
-> > diff --git a/security/ipe/ctx.c b/security/ipe/ctx.c
-> > index fc9b8e467bc9..879acf4ceac5 100644
-> > --- a/security/ipe/ctx.c
-> > +++ b/security/ipe/ctx.c
-> > @@ -15,6 +15,7 @@
-> >  #include <linux/spinlock.h>
-> >  #include <linux/moduleparam.h>
-> >
-> > +extern const char *const ipe_boot_policy;
-> >  static bool success_audit;
-> >  static bool enforce = true;
-> >
-> > @@ -329,6 +330,7 @@ void ipe_put_ctx(struct ipe_context *ctx)
-> >  int __init ipe_init_ctx(void)
-> >  {
-> >  	int rc = 0;
-> > +	struct ipe_policy *p = NULL;
-> >  	struct ipe_context *lns = NULL;
-> >
-> >  	lns = create_ctx();
-> > @@ -342,10 +344,26 @@ int __init ipe_init_ctx(void)
-> >  	WRITE_ONCE(lns->enforce, enforce);
-> >  	spin_unlock(&lns->lock);
-> >
-> > +	if (ipe_boot_policy) {
-> > +		p = ipe_new_policy(ipe_boot_policy, strlen(ipe_boot_policy),
-> > +				   NULL, 0);
-> > +		if (IS_ERR(p)) {
-> > +			rc = PTR_ERR(lns);
-> 
-> This should be:
-> 
-> 	rc = PTR_ERR(p);
-> 
-> > +			goto err;
-> > +		}
-> > +
-> > +		ipe_add_policy(lns, p);
-> > +		rc = ipe_set_active_pol(p);
-> > +		if (!rc)
-> 
-> Here you need to set a non-zero value, so that ipe_init()
-> does not enable the LSM.
+Em Wed, 3 Nov 2021 15:41:05 +0100
+Hans Verkuil <hverkuil-cisco@xs4all.nl> escreveu:
 
-Actually you probably should just check that rc is not zero
-and goto err.
-
-Roberto
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Zhong Ronghua
-
-> I would set to 1 a new global variable, like ipe_lsm_enabled,
-> in ipe_init() just before security_add_hooks().
+> On 03/11/2021 14:54, Mauro Carvalho Chehab wrote:
+> > Hi,
+> > 
+> > From what I've seen so far, those are the main issues with regards to V4L2 API,
+> > in order to allow a generic V4L2 application to work with it.
+> > 
+> > MMAP support
+> > ============
+> > 
+> > Despite having some MMAP code on it, the current implementation is broken. 
+> > Fixing it is not trivial, as it would require fixing the HMM support on it, 
+> > which does several tricks.
+> > 
+> > The best would be to replace it by something simpler. If this is similar
+> > enough to IPU3, perhaps one idea would be to replace the HMM code on it by 
+> > videodev2 + IPU3 HMM code.
+> > 
+> > As this is not trivial, I'm postponing such task. If someone has enough
+> > time, it would be great to have this fixed.
+> > 
+> > From my side, I opted to add support for USERPTR on camorama:
+> > 
+> > 	https://github.com/alessio/camorama
+> > 
+> > As this is something I wanted to do anyway, and it allowed me to cleanup
+> > several things in camorama's code.
+> > 
+> > Support for USERPTR is not autodetected. So, this should be selected  
 > 
-> Then, I would add a check of this variable in ipe_init_securityfs()
-> to avoid the kernel panic.
+> You can autodetect this: the capabilities field returned by VIDIOC_REQBUFS
+> or VIDIOC_CREATE_BUFS will indicate support for this. This works with any
+> vb2-based driver.
 > 
-> Roberto
-> 
-> HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-> Managing Director: Li Peng, Zhong Ronghua
-> 
-> > +			goto err;
-> > +	}
-> > +
-> >  	rcu_assign_pointer(*ipe_tsk_ctx(current), lns);
-> > +	ipe_put_policy(p);
-> >
-> >  	return 0;
-> >  err:
-> > +	ipe_put_policy(p);
-> >  	ipe_put_ctx(lns);
-> >  	return rc;
-> >  }
-> > --
-> > 2.33.0
+> Just thought I should mention this...
 
+Yeah, surely the app could try it, but:
+
+1. As libv4l doesn't support USERPTR, such detection should happen
+   early inside camorama code;
+
+2. Atomisp does have support for MMAP, but it is broken.
+   (this is the most relevant reason)
+
+Ok, we could change it to return -ENOIOCTLCMD for mmap, and add
+a basic logic at camorama that would try to call REQBUFS in order
+to verify if -ENOIOCTLCMD is returned.
+
+Perhaps one more item to our todo list, if nobody fixes MMAP before
+that.
+
+Regards,
+Mauro
