@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC7E443D65
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 07:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF0B443D68
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 07:47:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231961AbhKCGtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 02:49:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37058 "EHLO
+        id S231383AbhKCGuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 02:50:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbhKCGs7 (ORCPT
+        with ESMTP id S230152AbhKCGuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 02:48:59 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8CAC061714;
-        Tue,  2 Nov 2021 23:46:23 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 75so1572470pga.3;
-        Tue, 02 Nov 2021 23:46:23 -0700 (PDT)
+        Wed, 3 Nov 2021 02:50:20 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048DAC061714
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 23:47:44 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id w9-20020a17090a1b8900b001a6b3b7ec17so637433pjc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 23:47:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=pI36R+MtK4DFuDKTdniIaZGYlSfnURuzUDb6Loihijg=;
-        b=lTas3Zult9s5ThjdA295A+MwfeiN21Jq/UkfEIFriI9B5VbYqamL3YwDLjLBhSREap
-         IHOHQlrFUYQC7TsQDXzikUn6p/CRraNNeM40AIQolYhOVY4BrfffH/IH57ZH6AWy+I1Z
-         sYCiBHOX02iho1t4FzKDGYZ4uDJ4PY63qwIS1scZ4Pqw0q8V6m9pN6A8ogib+CE0GF3F
-         QNThWUw+g5lgx1qYK23z10CRxXe0A62zSjpsHUTZxT/tXrt5z+wcs9dQ8v1f9NvtbZqn
-         rMi66y/3knd4+FWQpsCDibNG+LfYEOQ0TBCkUMrE++X/rUFizQx0zmaQ09o5pqv2XDU8
-         YNpA==
+        bh=clCWFcgTum5tE9Tq40EAguqPo9Q3/lsmvWziGtgtDKs=;
+        b=gZo+LfkknTySRPhPrCljHO7GjlvLm5Vf7nI1NaHCS4BqS27XsPxLc4lHRa6IgI9vM1
+         xOTDLylcvU6zO4rYhJ/gMdPZgdzabMSsECrf7wOO5f5UJNgLMLhQfaeqMf6XDgPm+0H4
+         rhEW4twLxhp/ULjUgOz2XvC/pf/A+ximObqVT1Pr1C5DyXZNOoUMrUkqSZHBHVQFSMIU
+         ENfSSV7xTuFeRNZwXggZjHxuZ6y9XEThzgMQbutmNAI2/8geCF0uwCJ0cTNBbs1xMiH0
+         6mzSo+xLi7FEweJx4QwXyzAJOP9h1qnRas2ww88GVRNAZKd95xow/DC27czqIql8JXs1
+         FmWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=pI36R+MtK4DFuDKTdniIaZGYlSfnURuzUDb6Loihijg=;
-        b=5xkhm3U/zGOldlsttbVPgQRRzZOxzPbAB5agqYUk2JzB0ls6vuly5PcFf4yL79uYGM
-         PU26Hqeb/yHoQZ1mgcx2Ld3LrjOFYUGGL0jn0kTOdJkF8ln7tqULF2L9YX4Ac3BK/Eg9
-         SGV9QZg/s4yufxq50jVuYQZQm1YBogywCogvApY7nOGP9z92SWpp2ZCsCMcifEOPHVBM
-         8yjdoeAHcBEasiMlCvlq/EGg9LXsxRkJsUchn6QLu7lCZQjk8M5TRSGkI+htoVXsyI6N
-         4owb5BRmx0pHXNYB9keuq6E3x8LbcHXWNzB95KEM6CUYDl49iSTPq1mjZMF8IoyTBgAT
-         dxRw==
-X-Gm-Message-State: AOAM533wrfOAkA0L0HNZgtX5tp8tpQW6I+Ii01PSQDFhLWjfpkX7t/qq
-        Y+R+IBuG79RpK/t62/PL+0A=
-X-Google-Smtp-Source: ABdhPJzm67tjFDmosp6HWn3lMGapj+xYhNxcXqcHZbyh5bCcbHrtnz4FGAZIl7MbRUXwmPcZLowl2Q==
-X-Received: by 2002:a62:e719:0:b0:480:a0ab:c6bc with SMTP id s25-20020a62e719000000b00480a0abc6bcmr26876752pfh.79.1635921982739;
-        Tue, 02 Nov 2021 23:46:22 -0700 (PDT)
+        bh=clCWFcgTum5tE9Tq40EAguqPo9Q3/lsmvWziGtgtDKs=;
+        b=BLt6cS+6D0mGBtsfQb71hWQvUVWmlZSV9oEeOSzqM01bELMn8ZB5ITGyFXfZ9+i9Of
+         9KAnDqt9oUaQNZFg/b6QOpluSXBEukrTSudUJwesio7DqKhZJ2b55zC6tKFXAmIpf5Zy
+         dHCPkk/5PsPWBsd013NMGnbAA6xzsy8B3xo1JaHPQ3a0IS63xlJ0xVwFYsdyLwuOJgSZ
+         7uOJpTnCfTEcS30WWIG2OWHycw62nHdTSJt1YI8Bd+UDHssEQtDejPH5Jtxpd9Eu+ZWf
+         WdZtkPD+Ohedi56XknGqPrkyt9WluHUEm3s+bOLaA3Yr1WmrQHvJm6skL6sWYbMrDx3c
+         73Mg==
+X-Gm-Message-State: AOAM532q/ZqPhxGdEwmDf4LhScKj/X4JYW6MRXddS2/cbA79FBQZF4Hw
+        xok8QDH9Rm7fM0sP7H/vxmHy38qvdhQ=
+X-Google-Smtp-Source: ABdhPJzFlUGbJnFxGdJ5EVLm4hLFnEpu0QSipv96BgD3lERQm2gSxMNcjlGLvyHOMm4MHMi5ZKojyg==
+X-Received: by 2002:a17:90a:a503:: with SMTP id a3mr12517810pjq.122.1635922063637;
+        Tue, 02 Nov 2021 23:47:43 -0700 (PDT)
 Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id e12sm943377pgv.82.2021.11.02.23.46.20
+        by smtp.gmail.com with ESMTPSA id d18sm1213710pfv.161.2021.11.02.23.47.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 23:46:22 -0700 (PDT)
+        Tue, 02 Nov 2021 23:47:43 -0700 (PDT)
 From:   cgel.zte@gmail.com
 X-Google-Original-From: zhang.mingyu@zte.com.cn
-To:     davem@davemloft.net
-Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     anton@tuxera.com
+Cc:     linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org,
         Zhang Mingyu <zhang.mingyu@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] net:ipv6:Remove unneeded semicolon
-Date:   Wed,  3 Nov 2021 06:46:17 +0000
-Message-Id: <20211103064617.27021-1-zhang.mingyu@zte.com.cn>
+Subject: [PATCH] NTFS:Remove unneeded semicolon
+Date:   Wed,  3 Nov 2021 06:47:39 +0000
+Message-Id: <20211103064739.27110-1-zhang.mingyu@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -68,27 +67,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 From: Zhang Mingyu <zhang.mingyu@zte.com.cn>
 
 Eliminate the following coccinelle check warning:
-net/ipv6/seg6.c:381:2-3
+fs/ntfs/lcnalloc.c:902:2-3
 
 Reported-by: Zeal Robot <zealci@zte.com.cn>
 Signed-off-by: Zhang Mingyu <zhang.mingyu@zte.com.cn>
 ---
- net/ipv6/seg6.c | 2 +-
+ fs/ntfs/lcnalloc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/ipv6/seg6.c b/net/ipv6/seg6.c
-index 5daa1c3ed83b..a8b5784afb1a 100644
---- a/net/ipv6/seg6.c
-+++ b/net/ipv6/seg6.c
-@@ -378,7 +378,7 @@ static int __net_init seg6_net_init(struct net *net)
- 		kfree(rcu_dereference_raw(sdata->tun_src));
- 		kfree(sdata);
- 		return -ENOMEM;
+diff --git a/fs/ntfs/lcnalloc.c b/fs/ntfs/lcnalloc.c
+index eda9972e6159..66c2b29e09dd 100644
+--- a/fs/ntfs/lcnalloc.c
++++ b/fs/ntfs/lcnalloc.c
+@@ -899,7 +899,7 @@ s64 __ntfs_cluster_free(ntfs_inode *ni, const VCN start_vcn, s64 count,
+ 		}
+ 		/* We have freed @to_free real clusters. */
+ 		real_freed = to_free;
 -	};
 +	}
- #endif
- 
- 	return 0;
+ 	/* Go to the next run and adjust the number of clusters left to free. */
+ 	++rl;
+ 	if (count >= 0)
 -- 
 2.25.1
 
