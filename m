@@ -2,215 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816374449A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 21:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4404449B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 21:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhKCUqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 16:46:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60261 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229697AbhKCUqS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 16:46:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635972221;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=ycJtGdUUCpH0aUUTnC/bRRS7vczLyB6170Uz115xpB0=;
-        b=DpxDQo0kY3TF9joC3PeNXQanRpJPDP1M7sYuorTG1Jw9feiTP4kX2kRah9YKb7w5vkr/Xn
-        ePfcEsM6o5XDo7sMfTKkuR519t45vWSgMg44LFZpdB+Fr4s7JQuOrEgOOig/2HjB0YsXJn
-        Cunust1E9tNozVcTdqB555MdAyLl3RU=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-16-1nRmOBtBPKqtTY-VBlPu4Q-1; Wed, 03 Nov 2021 16:43:39 -0400
-X-MC-Unique: 1nRmOBtBPKqtTY-VBlPu4Q-1
-Received: by mail-wr1-f71.google.com with SMTP id c4-20020adfed84000000b00185ca4eba36so618420wro.21
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 13:43:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=ycJtGdUUCpH0aUUTnC/bRRS7vczLyB6170Uz115xpB0=;
-        b=GrrkrXNV/Nx1d359lmJKNVsaKlf2hqZMEVMmlhXY/pkGCZgalwlAYCxrWrvJaJyZ1W
-         2QR9PN5bbJRr5Cgt2uzjJvwovaR01QsmwickrHb/gLzhoj8Rpf/oRVVNLSa1CMLHmvRI
-         3nsariC7bhPUVkNSspL/Js7CGwIA0JJehqwZJ+Av6xmS1ak9wI4ujidF3rELmbkb7r9J
-         /FJbKyJb6AphtNz7aDzT+ZjnZgY4/CKUw+RkO6NNvC0WSfz1pzGCWXjoyKaQSGmfz13b
-         Reb/qD7/Pf2jUZXK1KpC6vB5RHoTv4L6zdSetdVzAL969tUAaTrObFAZH0SH9MuBB2CK
-         cYRQ==
-X-Gm-Message-State: AOAM533dSUHwmBWyCawVia/lXv422X3OWlDhRqvvXi7WgLar0yU1kShF
-        vgSusX6UrWrz8zPcLeYr13NF1JSnlsDtLkewjdidtbPvU5HZJVRnFh1vgytNlF8+SiDsFR/fG63
-        VJnZRUzQU/JT8F1I31a2prWdo
-X-Received: by 2002:a7b:c8d5:: with SMTP id f21mr16301045wml.146.1635972217916;
-        Wed, 03 Nov 2021 13:43:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyAOxXMQNUWbZpukHMPxGSMFHowFfE8y2JMN+RYHabViAVvjlT9WYHd7lkudlHiVcf5NGesSg==
-X-Received: by 2002:a7b:c8d5:: with SMTP id f21mr16300998wml.146.1635972217669;
-        Wed, 03 Nov 2021 13:43:37 -0700 (PDT)
-Received: from redhat.com ([2.55.17.31])
-        by smtp.gmail.com with ESMTPSA id z11sm2978466wrt.58.2021.11.03.13.43.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 13:43:37 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 16:43:32 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        amit@kernel.org, arnd@arndb.de, boqun.feng@gmail.com,
-        colin.i.king@gmail.com, colin.i.king@googlemail.com,
-        corentin.noel@collabora.com, elic@nvidia.com,
-        gustavoars@kernel.org, jasowang@redhat.com, jie.deng@intel.com,
-        lkp@intel.com, lvivier@redhat.com, mgurtovoy@nvidia.com,
-        mst@redhat.com, pankaj.gupta@ionos.com,
-        pankaj.gupta.linux@gmail.com, parav@nvidia.com, paulmck@kernel.org,
-        pbonzini@redhat.com, peterz@infradead.org, sgarzare@redhat.com,
-        stefanha@redhat.com, tglx@linutronix.de, viresh.kumar@linaro.org,
-        wuzongyong@linux.alibaba.com, xuanzhuo@linux.alibaba.com,
-        ye.guojin@zte.com.cn, zealci@zte.com.cn
-Subject: [GIT PULL] vhost,virtio,vhost: fixes,features
-Message-ID: <20211103164332-mutt-send-email-mst@kernel.org>
+        id S231147AbhKCUtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 16:49:51 -0400
+Received: from mout.gmx.net ([212.227.17.21]:58661 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229893AbhKCUts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 16:49:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1635972423;
+        bh=WOBdEGwwrN4GRQ7dSuVQwrPjh3u25/zRfRLX3CIFDPo=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:References:Date:In-Reply-To;
+        b=NG/+fnPP0wRfudjUHCOeACDLcQW2bMxCcNXrU71bkK5NLQBWDxo61NihvgU+HYpEa
+         ktxLYU191TXk4p5bAxqYGbgy04te7E/H6UtgNYNmP2VCBhcg6bQByNfZ7VptLfzLk2
+         GQZZXY2bRiBWhSdMyx4zK6o2H+yt5RvC0X71L6do=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.223.42.226]) by mail.gmx.net
+ (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1M72oB-1mpmkj3pQV-008cbU; Wed, 03 Nov 2021 21:47:02 +0100
+Received: by localhost.localdomain (Postfix, from userid 1000)
+        id EE8DA8009A; Wed,  3 Nov 2021 21:47:01 +0100 (CET)
+From:   Sven Joachim <svenjoac@gmx.de>
+To:     Karol Herbst <kherbst@redhat.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Erhard F." <erhard_f@mailbox.org>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        Huang Rui <ray.huang@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Subject: Re: [Nouveau] [PATCH 5.10 32/77] drm/ttm: fix memleak in
+ ttm_transfered_destroy
+References: <20211101082511.254155853@linuxfoundation.org>
+        <20211101082518.624936309@linuxfoundation.org>
+        <871r3x2f0y.fsf@turtle.gmx.de>
+        <CACO55tsq6DOZnyCZrg+N3m_hseJfN_6+YhjDyxVBAGq9PFJmGA@mail.gmail.com>
+        <CACO55tsQVcUHNWAkWcbJ8i-S5pgKhrin-Nb3JYswcBPDd3Wj4w@mail.gmail.com>
+Date:   Wed, 03 Nov 2021 21:47:01 +0100
+In-Reply-To: <CACO55tsQVcUHNWAkWcbJ8i-S5pgKhrin-Nb3JYswcBPDd3Wj4w@mail.gmail.com>
+        (Karol Herbst's message of "Wed, 3 Nov 2021 21:32:43 +0100")
+Message-ID: <87tugt0xx6.fsf@turtle.gmx.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.60 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mutt-Fcc: =sent
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:XAluwjzMfZfmdXvp4wQQxSAIvachPCef1CQ8R4ACrlRujjgA2qT
+ 5El/VRyr75du07dX/FgDPXWz6QG/tJZScgi20ZPTkZv9G0FISRCOZUEf2lc3Su2yrtG+0g9
+ DNrX61TUB89XkPtV1t1coc1p9dxzRK44w06p4u7o+Rrt5PULPZRKHViXVAIdiuo7sii8l3B
+ MRUjOXi5kADf1kvwtHSLg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:aFNoQfnGbkQ=:0jTkXTi4D06SqxY9Ax5SH/
+ 4C/f6XjDs/XYvIPq7ACtHsM5H/S531O8h3vNYSmlpB/rrArow1xzVQNmN0sK8bFSr61rr3IPk
+ 0OPLCTjGoDLYpGaD33p2jDsXMC7mPJWU3TsLyYBoZCzccnabVrq/8/ISHTm2IL1a23y2Dyknt
+ +9w22KrvIuFapBMau+mIWOCD0mMjc2xRsackE/Uz7UPxDTHFM/AKvNmc8jnGDAb2DDHf+bjYV
+ mScNObGQodesYWeIHvTxxRjWgLWaYqpp7r0NrdJgjmrVId93vA9UT+g0iJwm7J4AoiifIV56D
+ 0valvNVu7oroOBxuP8pf5sp5kpC/wSxZN3ZoU1j04jSeeLVqX0ouD6gb50DmFmBYlRDa2DTSj
+ NqOr8WHauKwPBfmqhrWG8prQoRhMhZFRkiGIhqUlEB/FKa2hCh6AsXxin2okQNVLUHt3OTjQw
+ Kki827ufHI2wYAareYwDzBnY+LtLaCU65PUmyIguXTAR6QyQ+0RVRHZu140Xb/vv1NYmBO0DO
+ boOLtJPRk2+l4bKMTap0LgFy0HreUxwMemvE7eypHjtw5ntfyWLj5HT9C7sYkmC6OdOou7NU5
+ 4xr6TQZYo79QZrruq3uBc/yBYW5dX6xjKC0wHv+V3OpLdALKwrnNxPnMbbPJDasSrnlrn6x11
+ QBXPUQbc8uOJnRloAuciqoTrhzqJUSYn7vuur5ymYmt2+RjP7MHns3q3TBCmM36WkeLmdaZFr
+ PCayAzBlMhcoQxVbTJ/VS8AZ/BOacLGD02veBCa6x3+mCbo58NRAD522u2R0tDlhvRQL6duNS
+ 8T4Qg9zPNGKCNlr3HVli17z1YY7tAzXCPk0F9Iwxv2iE0mwZSK0VICpMf+FtL5NSOsJVOmT3j
+ qqKf7Vu5SG67kDcUZFVGDbsCkmewxWomxMS6K7FdTdvE5OCTeadHCbeg2+V+HVHxAvOmDEDiE
+ BInb1yuyvRjyqaEyinkmcSd1nTvQ8K8NnmuiyTHf9L+5HCWTyQdf/pqztmuZzOYbXfYNo9hje
+ tpvNclqn5ZYfMmCXt8dfMrXtBff0SUipyHmyI+oLEUnMJ6vgOw7xnijiZ/4mt+v3v38pvWc5r
+ C08IC8LKL9Wdl8aKwxvgpK9czMO0edk2Z2r4PDpvTu0uE6hKT74JxUIoriHbCQDKevN7Mhn1I
+ advggC6wI4Iu2fKEGbPcuy5Hbz+vXxKrNXSVLPGhwDUgjc5UaSjRoqP/wUcj0Kjw5miEE659j
+ tw4HoQ/PNrREAXFIkHJzi0gxr51VUFO88SYLKrQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 8bb7eca972ad531c9b149c0a51ab43a417385813:
+On 2021-11-03 21:32 +0100, Karol Herbst wrote:
 
-  Linux 5.15 (2021-10-31 13:53:10 -0700)
+> On Wed, Nov 3, 2021 at 9:29 PM Karol Herbst <kherbst@redhat.com> wrote:
+>>
+>> On Wed, Nov 3, 2021 at 8:52 PM Sven Joachim <svenjoac@gmx.de> wrote:
+>> >
+>> > On 2021-11-01 10:17 +0100, Greg Kroah-Hartman wrote:
+>> >
+>> > > From: Christian K=F6nig <christian.koenig@amd.com>
+>> > >
+>> > > commit 0db55f9a1bafbe3dac750ea669de9134922389b5 upstream.
+>> > >
+>> > > We need to cleanup the fences for ghost objects as well.
+>> > >
+>> > > Signed-off-by: Christian K=F6nig <christian.koenig@amd.com>
+>> > > Reported-by: Erhard F. <erhard_f@mailbox.org>
+>> > > Tested-by: Erhard F. <erhard_f@mailbox.org>
+>> > > Reviewed-by: Huang Rui <ray.huang@amd.com>
+>> > > Bug: https://bugzilla.kernel.org/show_bug.cgi?id=3D214029
+>> > > Bug: https://bugzilla.kernel.org/show_bug.cgi?id=3D214447
+>> > > CC: <stable@vger.kernel.org>
+>> > > Link: https://patchwork.freedesktop.org/patch/msgid/20211020173211.2=
+247-1-christian.koenig@amd.com
+>> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> > > ---
+>> > >  drivers/gpu/drm/ttm/ttm_bo_util.c |    1 +
+>> > >  1 file changed, 1 insertion(+)
+>> > >
+>> > > --- a/drivers/gpu/drm/ttm/ttm_bo_util.c
+>> > > +++ b/drivers/gpu/drm/ttm/ttm_bo_util.c
+>> > > @@ -322,6 +322,7 @@ static void ttm_transfered_destroy(struc
+>> > >       struct ttm_transfer_obj *fbo;
+>> > >
+>> > >       fbo =3D container_of(bo, struct ttm_transfer_obj, base);
+>> > > +     dma_resv_fini(&fbo->base.base._resv);
+>> > >       ttm_bo_put(fbo->bo);
+>> > >       kfree(fbo);
+>> > >  }
+>> >
+>> > Alas, this innocuous looking commit causes one of my systems to lock up
+>> > as soon as run startx.  This happens with the nouveau driver, two other
+>> > systems with radeon and intel graphics are not affected.  Also I only
+>> > noticed it in 5.10.77.  Kernels 5.15 and 5.14.16 are not affected, and=
+ I
+>> > do not use 5.4 anymore.
+>> >
+>> > I am not familiar with nouveau's ttm management and what has changed
+>> > there between 5.10 and 5.14, but maybe one of their developers can shed
+>> > a light on this.
+>> >
+>> > Cheers,
+>> >        Sven
+>> >
+>>
+>> could be related to 265ec0dd1a0d18f4114f62c0d4a794bb4e729bc1
+>
+> maybe not.. but I did remember there being a few tmm related patches
+> which only hurt nouveau :/  I guess one could do a git bisect to
+> figure out what change "fixes" it.
 
-are available in the Git repository at:
+Maybe, but since the memory leaks reported by Erhard only started to
+show up in 5.14 (if I read the bugzilla reports correctly), perhaps the
+patch should simply be reverted on earlier kernels?
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+> On which GPU do you see this problem?
 
-for you to fetch changes up to 540061ac79f0302ae91e44e6cd216cbaa3af1757:
+On an old GeForce 8500 GT, the whole PC is rather ancient.
 
-  vdpa/mlx5: Forward only packets with allowed MAC address (2021-11-01 05:26:49 -0400)
-
-----------------------------------------------------------------
-vhost,virtio,vhost: fixes,features
-
-Hardening work by Jason
-vdpa driver for Alibaba ENI
-Performance tweaks for virtio blk
-virtio rng rework using an internal buffer
-mac/mtu programming for mlx5 vdpa
-Misc fixes, cleanups
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-
-----------------------------------------------------------------
-Colin Ian King (1):
-      virtio_blk: Fix spelling mistake: "advertisted" -> "advertised"
-
-Eli Cohen (5):
-      vdpa/mlx5: Remove mtu field from vdpa net device
-      vdpa/mlx5: Rename control VQ workqueue to vdpa wq
-      vdpa/mlx5: Propagate link status from device to vdpa driver
-      vdpa/mlx5: Support configuration of MAC
-      vdpa/mlx5: Forward only packets with allowed MAC address
-
-Gustavo A. R. Silva (1):
-      ALSA: virtio: Replace zero-length array with flexible-array member
-
-Jason Wang (10):
-      virtio-blk: validate num_queues during probe
-      virtio_console: validate max_nr_ports before trying to use it
-      virtio_config: introduce a new .enable_cbs method
-      virtio_pci: harden MSI-X interrupts
-      virtio-pci: harden INTX interrupts
-      virtio_ring: fix typos in vring_desc_extra
-      virtio_ring: validate used buffer length
-      virtio-net: don't let virtio core to validate used length
-      virtio-blk: don't let virtio core to validate used length
-      virtio-scsi: don't let virtio core to validate used buffer length
-
-Laurent Vivier (4):
-      hwrng: virtio - add an internal buffer
-      hwrng: virtio - don't wait on cleanup
-      hwrng: virtio - don't waste entropy
-      hwrng: virtio - always add a pending request
-
-Max Gurtovoy (2):
-      virtio-blk: avoid preallocating big SGL for data
-      virtio-blk: add num_request_queues module parameter
-
-Michael S. Tsirkin (3):
-      virtio_net: clarify tailroom logic
-      virtio_blk: allow 0 as num_request_queues
-      virtio_blk: correct types for status handling
-
-Pankaj Gupta (1):
-      virtio-pmem: add myself as virtio-pmem maintainer
-
-Parav Pandit (6):
-      vdpa: Introduce and use vdpa device get, set config helpers
-      vdpa: Introduce query of device config layout
-      vdpa: Use kernel coding style for structure comments
-      vdpa: Enable user to set mac and mtu of vdpa device
-      vdpa_sim_net: Enable user to set mac address and mtu
-      vdpa/mlx5: Fix clearing of VIRTIO_NET_F_MAC feature bit
-
-Viresh Kumar (1):
-      i2c: virtio: Add support for zero-length requests
-
-Wu Zongyong (8):
-      virtio-pci: introduce legacy device module
-      vdpa: fix typo
-      vp_vdpa: add vq irq offloading support
-      vdpa: add new callback get_vq_num_min in vdpa_config_ops
-      vdpa: min vq num of vdpa device cannot be greater than max vq num
-      virtio_vdpa: setup correct vq size with callbacks get_vq_num_{max,min}
-      vdpa: add new attribute VDPA_ATTR_DEV_MIN_VQ_SIZE
-      eni_vdpa: add vDPA driver for Alibaba ENI
-
-Xuan Zhuo (2):
-      virtio_ring: make virtqueue_add_indirect_packed prettier
-      virtio_ring: check desc == NULL when using indirect with packed
-
-Ye Guojin (1):
-      virtio-blk: fixup coccinelle warnings
-
- MAINTAINERS                            |   7 +
- drivers/block/Kconfig                  |   1 +
- drivers/block/virtio_blk.c             | 178 +++++++----
- drivers/char/hw_random/virtio-rng.c    |  84 +++--
- drivers/char/virtio_console.c          |   9 +
- drivers/i2c/busses/i2c-virtio.c        |  56 ++--
- drivers/net/virtio_net.c               |   4 +-
- drivers/scsi/virtio_scsi.c             |   1 +
- drivers/vdpa/Kconfig                   |   8 +
- drivers/vdpa/Makefile                  |   1 +
- drivers/vdpa/alibaba/Makefile          |   3 +
- drivers/vdpa/alibaba/eni_vdpa.c        | 553 +++++++++++++++++++++++++++++++++
- drivers/vdpa/ifcvf/ifcvf_main.c        |   3 +-
- drivers/vdpa/mlx5/core/mlx5_vdpa.h     |   2 +-
- drivers/vdpa/mlx5/net/mlx5_vnet.c      | 202 ++++++++++--
- drivers/vdpa/vdpa.c                    | 261 +++++++++++++++-
- drivers/vdpa/vdpa_sim/vdpa_sim_blk.c   |   3 +-
- drivers/vdpa/vdpa_sim/vdpa_sim_net.c   |  38 ++-
- drivers/vdpa/vdpa_user/vduse_dev.c     |   3 +-
- drivers/vdpa/virtio_pci/vp_vdpa.c      |  12 +
- drivers/vhost/vdpa.c                   |   3 +-
- drivers/virtio/Kconfig                 |  10 +
- drivers/virtio/Makefile                |   1 +
- drivers/virtio/virtio_pci_common.c     |  58 +++-
- drivers/virtio/virtio_pci_common.h     |  16 +-
- drivers/virtio/virtio_pci_legacy.c     | 106 ++-----
- drivers/virtio/virtio_pci_legacy_dev.c | 220 +++++++++++++
- drivers/virtio/virtio_pci_modern.c     |   6 +-
- drivers/virtio/virtio_ring.c           |  90 +++++-
- drivers/virtio/virtio_vdpa.c           |  19 +-
- include/linux/vdpa.h                   |  53 ++--
- include/linux/virtio.h                 |   2 +
- include/linux/virtio_config.h          |   6 +
- include/linux/virtio_pci_legacy.h      |  42 +++
- include/uapi/linux/vdpa.h              |   7 +
- include/uapi/linux/virtio_i2c.h        |   6 +
- sound/virtio/virtio_pcm_msg.c          |   5 +-
- 37 files changed, 1781 insertions(+), 298 deletions(-)
- create mode 100644 drivers/vdpa/alibaba/Makefile
- create mode 100644 drivers/vdpa/alibaba/eni_vdpa.c
- create mode 100644 drivers/virtio/virtio_pci_legacy_dev.c
- create mode 100644 include/linux/virtio_pci_legacy.h
-
+Cheers,
+       Sven
