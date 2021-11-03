@@ -2,78 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7C9444A71
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 22:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D3D444A61
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 22:42:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbhKCVqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 17:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230210AbhKCVq3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 17:46:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D481AC061714;
-        Wed,  3 Nov 2021 14:43:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6fB7Iv/vTAGVpFaMyL4RC5bfNZ1EkOgkaTbl7yf+osU=; b=rAaAhiBgZ/s/ebe2VxmLb/GcAa
-        6j8WBKDdATe866nlwbwsA6v+eQAU2hoXeuKIVN6TedPPfh1bDu4MW4AfOapoaFSDgz7kr9ZNrk8kG
-        GvYY7i4RY7/lFdEwR6dTG6KhUhONoma0/A4x3L+lDjw1b7CTRLKAfoD2D/crOc3TMvBp7nQlW9JgL
-        L0I14fkcRwwNQHnF+NSxXJu32zCVZ+jObzNTcQ9oe1K/tBbN5yAuQXVDpN/NgfHhMLwckVa5YtxDt
-        xBJZD+eFUYrqLrkp44NacZL6RnnmnOb4afQz4CQJtRUxKnGYkdsY4zISw3uGwuq4XIA7lnrxScmaO
-        PXQEeIAw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1miO15-005U8D-LY; Wed, 03 Nov 2021 21:42:24 +0000
-Date:   Wed, 3 Nov 2021 21:41:55 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] mm/mremap_pages: Save a few cycles in 'get_dev_pagemap()'
-Message-ID: <YYMCI2S03+azi7nK@casper.infradead.org>
-References: <b4a47154877853cc64be3a35dcfd594d40cc2bce.1635975283.git.christophe.jaillet@wanadoo.fr>
+        id S230383AbhKCVow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 17:44:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229698AbhKCVot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 17:44:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8393A610E7;
+        Wed,  3 Nov 2021 21:42:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635975732;
+        bh=dXG7SJaQ86pYqJemvGzySTPjN5HOWyXBZ8H3AZzV0mk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XDQvJJmqgrYtDTkFGpnKklT993BQjy5VMDYDDmPrbFmh2RiyVLdnOe/+edUVPy3LU
+         WYMzlPDCnRmpJyg6xuKz6tWbaIm8M3pBUwD2I4BBKotHWXH4eviCrKe4thQTmj+/lh
+         Vi3+Nvq0HvDovb94YsdTyUXcWj15fbzbq1kOOOLPcVNiSh2evrDvlC5yiPBoat1dqJ
+         b/9cBsZCykHL84fliTZ/QNO4BnC59EnxpojW/fk4nQuOr+HZajtvhIKu+ucyF1dwgQ
+         XKCZCNPI5rKQDvYMOoB/b3cPgF6nJfaZ5+J1Qno38WGRaxYzjQVh9zXnA05uXL4DcJ
+         gw6jpeNfeOhfQ==
+Received: by pali.im (Postfix)
+        id 0FB206FC; Wed,  3 Nov 2021 22:42:09 +0100 (CET)
+Date:   Wed, 3 Nov 2021 22:42:09 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Gregory Clement <gregory.clement@bootlin.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 0/6] serial: mvebu-uart: Support for higher baudrates
+Message-ID: <20211103214209.azo2z3z4gy7aj5hu@pali>
+References: <20210930095838.28145-1-pali@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <b4a47154877853cc64be3a35dcfd594d40cc2bce.1635975283.git.christophe.jaillet@wanadoo.fr>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210930095838.28145-1-pali@kernel.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 10:35:34PM +0100, Christophe JAILLET wrote:
-> Use 'percpu_ref_tryget_live_rcu()' instead of 'percpu_ref_tryget_live()' to
-> save a few cycles when it is known that the rcu lock is already
-> taken/released.
+On Thursday 30 September 2021 11:58:32 Pali Rohár wrote:
+> This patch series add support for baudrates higher than 230400 on
+> Marvell Armada 37xx boards.
 
-If this is really important, we can add an __xa_load() which doesn't
-take the RCU read lock.
+Stephen, Gregory, are there any issues with this patch series?
+If not, could you take them?
 
-I honestly think that the xarray is the wrong data structure here,
-and we'd be better off with a simple array of (start, pointer)
-tuples.
-
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  mm/memremap.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Changes in v7:
+> * fixed lint errors in yaml binding file
 > 
-> diff --git a/mm/memremap.c b/mm/memremap.c
-> index 84de22c14567..012e8d23d365 100644
-> --- a/mm/memremap.c
-> +++ b/mm/memremap.c
-> @@ -506,7 +506,7 @@ struct dev_pagemap *get_dev_pagemap(unsigned long pfn,
->  	/* fall back to slow path lookup */
->  	rcu_read_lock();
->  	pgmap = xa_load(&pgmap_array, PHYS_PFN(phys));
-> -	if (pgmap && !percpu_ref_tryget_live(pgmap->ref))
-> +	if (pgmap && !percpu_ref_tryget_live_rcu(pgmap->ref))
->  		pgmap = NULL;
->  	rcu_read_unlock();
->  
+> Changes in v6:
+> * fixed yaml binding file and dts files
+> 
+> Changes in v5:
+> * fixed yaml binding file
+> 
+> Changes in v4:
+> * converted armada3700-uart-clock documentation to YAML
+> * split documentation changes into two commits:
+>   - first which adds clock documentation
+>   - second which updates UART documentation
+> 
+> Changes in v3:
+> v3 is rebased on top of Linus master branch and all already applied patches
+> were dropped. There are no changes in patches itself since v2.
+> 
+> Pali Rohár (6):
+>   math64: New DIV_U64_ROUND_CLOSEST helper
+>   serial: mvebu-uart: implement UART clock driver for configuring UART
+>     base clock
+>   dt-bindings: mvebu-uart: document DT bindings for
+>     marvell,armada-3700-uart-clock
+>   dt-bindings: mvebu-uart: update information about UART clock
+>   arm64: dts: marvell: armada-37xx: add device node for UART clock and
+>     use it
+>   serial: mvebu-uart: implement support for baudrates higher than 230400
+> 
+>  .../clock/marvell,armada-3700-uart-clock.yaml |  59 ++
+>  .../devicetree/bindings/serial/mvebu-uart.txt |   9 +-
+>  arch/arm64/boot/dts/marvell/armada-37xx.dtsi  |  14 +-
+>  drivers/tty/serial/Kconfig                    |   1 +
+>  drivers/tty/serial/mvebu-uart.c               | 592 +++++++++++++++++-
+>  include/linux/math64.h                        |  13 +
+>  6 files changed, 667 insertions(+), 21 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/clock/marvell,armada-3700-uart-clock.yaml
+> 
 > -- 
-> 2.30.2
-> 
+> 2.20.1
 > 
