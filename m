@@ -2,82 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7EA64445C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A075B4445C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:18:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232747AbhKCQU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 12:20:26 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:17478 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232506AbhKCQUZ (ORCPT
+        id S232741AbhKCQVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 12:21:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232101AbhKCQVO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 12:20:25 -0400
-IronPort-Data: =?us-ascii?q?A9a23=3AM2Fllq/6IhC5gAcW8jz1DrUDEnyTJUtcMsCJ2f8?=
- =?us-ascii?q?bfWQNrUp21TUAy2dJWmGAOfaKazH2Kt8naIqz9hkFvsTWzYRhTFdlrnsFo1Bi+?=
- =?us-ascii?q?ZOUX4zBRqvTF3rPdZObFBoPA/3z27AsFehsJpPnjkrrYueJQUVUj/nSH+OlULW?=
- =?us-ascii?q?cYUideCc/IMsfoUM68wIGqt4w6TSJK1vlVeLa+6UzCnf9s9JHGj58B5a4lf9al?=
- =?us-ascii?q?K+aVAX0EbAJTasjUFf2zxH5BX+ETE27ByOQroJ8RoZWSwtfpYxV8F81/z91Yj+?=
- =?us-ascii?q?kurbyflcLT7i60Qqm2icQBfjk20Ib4HVtic7XN9JFAatTozeUm9F4jtFEqpW0T?=
- =?us-ascii?q?S8oOLfNkaITSXG0FgknbfAeqOaeSZS4mYnJp6HcSFPm2fRnCgc1PIgw+u9tDWJ?=
- =?us-ascii?q?D7/oVLHYGaRXrr+G83bO/RqxlgsALKMjwIJhZ4igmyivWZd4iQJbeU+DJ6MVe0?=
- =?us-ascii?q?TMYmM9DB7DdatAfZD4paw7PCzVTPV0aFI4zhs+ng3D+d3tTr1f9ja8242HSyAF?=
- =?us-ascii?q?q26W3NfLaf9WLQYNemUPwjnnL9Hn2EwwyO9mWyD7D+XWp7tIjNwuTtJk6TeLjs?=
- =?us-ascii?q?Kcw2RvNlipDVVsMWEX9uvejzEizR7pix4Uv0nJGhcAPGIaDF7ERhyGFnUM=3D?=
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A4iBzC6kiL2nAlP1DoOCmRLKM3cPpDfKw3DAb?=
- =?us-ascii?q?v31ZSRFFG/Fxl6iV7ZAmPHjP+UwssRAb6Le90ca7MAvhHPJOjLX5eI3MYOCEgh?=
- =?us-ascii?q?rSEGgB1+rfKmbbalTDH4dmvM8KT0E9MrPN5D5B4foSizPTL/8QhP2O96inieqb?=
- =?us-ascii?q?5EcFd3AJV4hQqzxFTiOcFFQzfRJLGpY/CZqb4aN8xwaISDAtU4CcHXkKX+/Kop?=
- =?us-ascii?q?nmk5jhbB4ACXccmW+zpALt04O/NQOZ0BcYWy5I2t4ZgA34uj283ZjmjvGwyBPA?=
- =?us-ascii?q?vlWjjKhrpA=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.87,206,1631570400"; 
-   d="scan'208";a="1850811"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 17:17:48 +0100
-Date:   Wed, 3 Nov 2021 17:17:47 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Brian Kim <brian.kim@hardkernel.com>
-cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Dongjin Kim <tobetter@gmail.com>,
-        memeka <mihailescu2m@gmail.com>, Yang Deokgyu <secugyu@gmail.com>
-Subject: [PATCH] ODROID-XU4: char: exynos: fix platform_no_drv_owner.cocci
- warnings
-Message-ID: <alpine.DEB.2.22.394.2111031716330.3289@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Wed, 3 Nov 2021 12:21:14 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C27C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 09:18:37 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id q7-20020a25b007000000b005c1d1377abdso4518152ybf.23
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 09:18:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=eD9dW/j7qWODztQefqhaj/ToXeE3Wj/nmDQbWVvMxKk=;
+        b=B7Tuyg6FcQjL73pK9DX41IC4JAWwExMKgucji0qg2qjeczLxUp2CqLYXrZvtjFGdBT
+         9U1MeUl7T5LeunTuiPha8fNH/D7LkXVMJkCYXYerQRPnEGobJrzvN1E9qVLrXT6K9jIi
+         GfsJbk0YI9inqzgSD/fABK+2I/RLQ0jhjvpB21M/7jOSoEg98GTB0WYtQtLTTa3l5zle
+         CJ/XX4fZdpfd915ZBeqxyPM9YNhI0P4vrI7pxhdZfowe84rrA0uhzHhkK9BzCkC1B/vq
+         Yu4eGUx3D2mf6guZzhRBf+S1PsFUY+8cdKAihax7iSPWUFkQ4FPUSqA90SKJPGMNwAn5
+         20yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=eD9dW/j7qWODztQefqhaj/ToXeE3Wj/nmDQbWVvMxKk=;
+        b=TVBKsDFtWENFruT5mv70BUYKrX96dVQwh4lHTCyl8fZptsMQtl1yiOLhEjkwDbqL1X
+         0EtMP7UuGKWOUM1vplurtXXdnchshbDcZmXuydGV/PcQFK2DqJjDF2JnKR+2zxtVrh3O
+         B3s7+lXB7jcaMzqv56oN5xRzOPvXcmNllYdaPyKUBCIUUAGg8xcHwgVW7/9NkfzwdzUd
+         ORk+wiTKIXQwpECO8Dq4u3ppfd2eB8zrTQEdFEqdLGSt1lL8X7wNCNLTsDdHlnudDFWG
+         kfWk3/HMXFpN3L420CmU/vt8MEGcojzoDela7TP7bdxJy0K7Tj3EYfCDt1H4LBQrofyo
+         B8CQ==
+X-Gm-Message-State: AOAM531OQaXNCxcagqDESE25bj8LOWd1bCpdMu8l61sQwC2GFCxMb1is
+        Cm8Z5F1ISmyNYhSgOYPsERjsgX5KJ4E=
+X-Google-Smtp-Source: ABdhPJwIxMNQnF6M/364DJH8bbgO+NKWv62p+iKm6Tzw44h2sXOq0ZJtujfou4G2qzCC+VnUbJkNvuaAqjE=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:e8d5:d0cd:12fd:266e])
+ (user=seanjc job=sendgmr) by 2002:a25:d15:: with SMTP id 21mr27811929ybn.141.1635956316718;
+ Wed, 03 Nov 2021 09:18:36 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Wed,  3 Nov 2021 09:18:33 -0700
+Message-Id: <20211103161833.3769487-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
+Subject: [PATCH] KVM: x86/mmu: Properly dereference rcu-protected TDP MMU
+ sptep iterator
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+Wrap the read of iter->sptep in tdp_mmu_map_handle_target_level() with
+rcu_dereference().  Shadow pages in the TDP MMU, and thus their SPTEs,
+are protected by rcu.
 
-No need to set .owner here. The core will do it.
+This fixes a Sparse warning at tdp_mmu.c:900:51:
+  warning: incorrect type in argument 1 (different address spaces)
+  expected unsigned long long [usertype] *sptep
+  got unsigned long long [noderef] [usertype] __rcu *[usertype] sptep
 
-Generated by: scripts/coccinelle/api/platform_no_drv_owner.cocci
-
-CC: Brian Kim <brian.kim@hardkernel.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+Fixes: 7158bee4b475 ("KVM: MMU: pass kvm_mmu_page struct to make_spte")
+Cc: Ben Gardon <bgardon@google.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
+ arch/x86/kvm/mmu/tdp_mmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-tree:   https://github.com/tobetter/linux odroid-5.15.y
-head:   49f1393b8740941fa5176620b302f25ab5f786dc
-commit: 61f45d975621becb00c0aef303769f10428b9cd8 [21/75] ODROID-XU4: char: exynos: add /dev/gpiomem device for rootless user GPIO access
-:::::: branch date: 4 hours ago
-:::::: commit date: 6 hours ago
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 7c5dd83e52de..a54c3491af42 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -897,7 +897,7 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
+ 					  struct kvm_page_fault *fault,
+ 					  struct tdp_iter *iter)
+ {
+-	struct kvm_mmu_page *sp = sptep_to_sp(iter->sptep);
++	struct kvm_mmu_page *sp = sptep_to_sp(rcu_dereference(iter->sptep));
+ 	u64 new_spte;
+ 	int ret = RET_PF_FIXED;
+ 	bool wrprot = false;
+-- 
+2.33.1.1089.g2158813163f-goog
 
- exynos-gpiomem.c |    1 -
- 1 file changed, 1 deletion(-)
-
---- a/drivers/char/exynos-gpiomem.c
-+++ b/drivers/char/exynos-gpiomem.c
-@@ -255,7 +255,6 @@ MODULE_DEVICE_TABLE(of, exynos_gpiomem_o
- static struct platform_driver exynos_gpiomem_driver = {
- 	.driver			= {
- 		.name		= DRIVER_NAME,
--		.owner		= THIS_MODULE,
- 		.of_match_table	= exynos_gpiomem_of_match,
- 	},
- 	.probe			= exynos_gpiomem_probe,
