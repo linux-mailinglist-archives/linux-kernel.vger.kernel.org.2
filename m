@@ -2,129 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954BA4443CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB0A4443D1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:47:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231643AbhKCOqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 10:46:30 -0400
-Received: from mga01.intel.com ([192.55.52.88]:18052 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230252AbhKCOq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 10:46:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10156"; a="255134963"
-X-IronPort-AV: E=Sophos;i="5.87,206,1631602800"; 
-   d="scan'208";a="255134963"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 07:43:46 -0700
-X-IronPort-AV: E=Sophos;i="5.87,206,1631602800"; 
-   d="scan'208";a="531942296"
-Received: from dedward1-mobl1.amr.corp.intel.com (HELO [10.212.199.210]) ([10.212.199.210])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 07:43:45 -0700
-Subject: Re: [PATCH] crypto: x86/aes-ni: fix AVX detection
-To:     Maxim Levitsky <mlevitsk@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "open list:CRYPTO API" <linux-crypto@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>
-References: <20211103124614.499580-1-mlevitsk@redhat.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <622444d6-f98b-dae4-381e-192e5cb02621@intel.com>
-Date:   Wed, 3 Nov 2021 07:43:43 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231558AbhKCOud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 10:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230252AbhKCOuc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 10:50:32 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D085AC061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 07:47:55 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id f5so2550279pgc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 07:47:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C0wf2K0rKG8C1RSWcaFIUVVK/MmFwAdNj5eu/GP5eZg=;
+        b=B9VpNWuxUqohM9ynGgVOtGz8t7EVldEXvn3TpJhPxTpkMNfKclNBrxgJdXzCq0J3Ep
+         uWL792cWDfDzfIAEEqij34sAHWOzPFONgEN5oY3XdM3Z9T90FapJZn8rOwaJFelsuFXR
+         GNNBiMkKbp7bWV0FyPlxCmbbFyFs/FJC6AOWaqUo89Vce/oTS/6ZKuvmPV8J3HtPVW7j
+         de88q1nuq/CKP2qgl14Xr/dB72CqhnsXK7AcNa9DCMkHKx9I6wDsnCIGDHnDfpyaSmON
+         l3onlOy36NkkWlhejiCAwar3Jx/gMyH+GKDuHmP9AbS9gcqx/shdiJUH1yBB4AFvHC98
+         VjIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C0wf2K0rKG8C1RSWcaFIUVVK/MmFwAdNj5eu/GP5eZg=;
+        b=JdqRBTsufd8cU/kuaCcMlhFeDGWMPquD3uWbCo2sP1x3pu4Lfsjsv0do7KdQH12oNj
+         0MedBEjiim6cJsc4wMBTTnLOpH1aSBRD87oCbtDaiKLL3aNx9qmrWt/zssA/z9H8lw7T
+         JfSVo1Gpj9hxDdRXt8U58vKIiRkc9vJeLYT2u6Tl7892cD9opLVctdHD4gsuXLoDRXfA
+         DHUSAGtYGQW+rJm9lltB6o4Giyi3swKkS//sKfwKJ0+p/Mg7H5EROfDsOTPNkDRYfulj
+         Bx80PSOCEqMlcUOhongdB6cggwRscBm6sYvBGwISNmcYKh1ry882huSgsDgrjO2GVVRf
+         BYsQ==
+X-Gm-Message-State: AOAM532WpTj9YQis+Lne6JtPFUav1Vg1oIYXt5MFwNdNVW3DC5IfiTZd
+        HFvtp9XAwTh1cIIWtS79r23o6w==
+X-Google-Smtp-Source: ABdhPJzlbiudLiylGp+N6jM6RDpt8UXV/HrVtNYeDnS3T2Pwf6PWIN+DJCztrwLJs+wcqW2qDqMztw==
+X-Received: by 2002:a63:556:: with SMTP id 83mr22917640pgf.222.1635950874972;
+        Wed, 03 Nov 2021 07:47:54 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id e24sm2586994pfn.8.2021.11.03.07.47.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 07:47:54 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 14:47:50 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 01/13] KVM: x86: Cache total page count to avoid
+ traversing the memslot array
+Message-ID: <YYKhFhoSa/8SHxJB@google.com>
+References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
+ <d07f07cdd545ab1a495a9a0da06e43ad97c069a2.1632171479.git.maciej.szmigiero@oracle.com>
+ <YW9Fi128rYxiF1v3@google.com>
+ <e618edce-b310-6d9a-3860-d7f4d8c0d98f@maciej.szmigiero.name>
+ <YXBnn6ZaXbaqKvOo@google.com>
+ <YYBqMipZT9qcwDMt@google.com>
+ <8017cf9d-2b03-0c27-b78a-41b3d03c308b@maciej.szmigiero.name>
 MIME-Version: 1.0
-In-Reply-To: <20211103124614.499580-1-mlevitsk@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8017cf9d-2b03-0c27-b78a-41b3d03c308b@maciej.szmigiero.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/21 5:46 AM, Maxim Levitsky wrote:
-> Fix two semi-theoretical issues that are present.
-> 
-> 1. AVX is assumed to be present when AVX2 is present.
->  That can be false in a VM.
->  This can be considered a hypervisor bug,
->  but the kernel should not crash in this case if this is possible.
+On Wed, Nov 03, 2021, Maciej S. Szmigiero wrote:
+> Capping total n_memslots_pages makes sense to me to avoid the (existing)
+> nr_mmu_pages wraparound issue, will update the next patchset version
+> accordingly.
 
-The kernel shouldn't crash in this case.  We've got a software
-dependency which should disable AVX2 if AVX is off:
-
-static const struct cpuid_dep cpuid_deps[] = {
-...
-        { X86_FEATURE_AVX2,                     X86_FEATURE_AVX,      },
-
-
-> 2. YMM state can be soft disabled in XCR0.
-> 
-> Fix both issues by using 'cpu_has_xfeatures(XFEATURE_MASK_YMM')
-> to check for usable AVX support.
-
-There's another table to ensure that this doesn't happen:
-
-> static unsigned short xsave_cpuid_features[] __initdata = {
->         [XFEATURE_FP]                           = X86_FEATURE_FPU,
->         [XFEATURE_SSE]                          = X86_FEATURE_XMM,
->         [XFEATURE_YMM]                          = X86_FEATURE_AVX,
-
-So, if XFEATURE_YMM isn't supported, X86_FEATURE_AVX should be cleared.
-
-But, that's all how it's _supposed_ to work.  It's quite possible we've
-got bugs somewhere, so if you're hitting an issue in practice please let
-us know.
-
-If this did end up confusing you and Paulo, that's not great either.
-Any patches that make these dependency tables easier to find or grok
-would be appreciated too.
+No need to do it yourself.  I have a reworked version of the series with a bunch
+of cleanups before and after the meat of your series, as well non-functional changes
+(hopefully) to the "Resolve memslot ID via a hash table" and "Keep memslots in
+tree-based structures" to avoid all the swap() behavior and to provide better
+continuity between the aforementioned patches.  Unless something goes sideways in
+the last few touchups, I'll get it posted today.
