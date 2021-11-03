@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0949443DD3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 536E7443DD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:51:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhKCHwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 03:52:04 -0400
-Received: from smtp25.cstnet.cn ([159.226.251.25]:40066 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229504AbhKCHwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 03:52:02 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-05 (Coremail) with SMTP id zQCowACniO3EPoJhbM4sBg--.22692S2;
-        Wed, 03 Nov 2021 15:48:20 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     marex@denx.de, stefan@agner.ch, airlied@linux.ie, daniel@ffwll.ch,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH] drm: mxsfb: Check NULL pointer
-Date:   Wed,  3 Nov 2021 07:48:18 +0000
-Message-Id: <1635925699-3414834-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: zQCowACniO3EPoJhbM4sBg--.22692S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtw4xJr47XFy7ur1UKw45Jrb_yoWfXwc_G3
-        s5Xan7Wrs09Fn8Cr17AF18AryIyw4UZFs7Xr4Fg393Gw4fGw13Z34UCry5Zw17WFZ8ZFn8
-        X3sFgFWfAr1IkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbVkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
-        n2IY04v7MxkIecxEwVAFwVW8CwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAI
-        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
-        nxnUUI43ZEXa7VUbhiSPUUUUU==
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S231240AbhKCHyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 03:54:22 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:14707 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230046AbhKCHyU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 03:54:20 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hkf746QSQzZcgV
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 15:49:36 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 3 Nov 2021 15:51:22 +0800
+Received: from [10.174.179.5] (10.174.179.5) by dggpemm500002.china.huawei.com
+ (7.185.36.229) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Wed, 3 Nov
+ 2021 15:51:22 +0800
+Subject: Re: [Question]: questions about 'Use sysidle detection to let the
+ timekeeper sleep'
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+To:     <fweisbec@gmail.com>
+CC:     Xie XiuQi <xiexiuqi@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <93236de5-f76e-3915-bbdf-9d060435937a@huawei.com>
+Message-ID: <197f0d3a-dd7c-b90f-4a9d-8a21e289fd6b@huawei.com>
+Date:   Wed, 3 Nov 2021 15:51:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <93236de5-f76e-3915-bbdf-9d060435937a@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.5]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As we see in the drm_connector_list_iter_next(), it could return
-NULL. In order to avoid the use of the NULL pointer, it may be
-better to check the return value.
+Sorry, I forgot to Cc the maillist again. Cc it in this mail.
 
-Fixes: c42001e ("drm: mxsfb: Use drm_panel_bridge")
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
----
- drivers/gpu/drm/mxsfb/mxsfb_drv.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/gpu/drm/mxsfb/mxsfb_drv.c b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-index 6da9355..b875c11 100644
---- a/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-+++ b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-@@ -145,6 +145,8 @@ static int mxsfb_attach_bridge(struct mxsfb_drm_private *mxsfb)
- 	 */
- 	drm_connector_list_iter_begin(drm, &iter);
- 	mxsfb->connector = drm_connector_list_iter_next(&iter);
-+	if (!mxsfb->connector)
-+		return 1;
- 	drm_connector_list_iter_end(&iter);
- 
- 	return 0;
--- 
-2.7.4
-
+On 2021/11/3 10:59, Xiongfeng Wang wrote:
+> Hi Frederic,
+> 
+> Sorry to disturb you. It's just that I came across the same problem as you
+> mentioned in the below link.
+> https://lwn.net/Articles/577424/
+> 
+> This is the problem in my situation. All the CPUs on my machine are in the same
+> power domain. When nohz_full is enabled, if one of the CPUs keep receiving tick
+> interrupts, all the CPUs can not be put into powerdown state, even thought all
+> other CPUs are idle.
+> 
+> I found your first version patchset in the below link.
+> https://lore.kernel.org/lkml/1387320692-28460-1-git-send-email-fweisbec@gmail.com/
+> But I couldn't found other verions. Even 'full-system-idle' is reverted in the
+> mailline in the following commit.
+>   commit fe5ac724d81a3c7803e60c2232718f212f3f38d4
+>   rcu: Remove nohz_full full-system-idle state machine
+> 
+> I am not sure if we have any other alternative solutions, or do we have rebased
+> the patchset to mainline kernel. The first version patchset I found is based on
+> v3.13.
+> 
+> Thanks,
+> Xiongfeng
+> 
