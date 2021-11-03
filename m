@@ -2,86 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA3F443E66
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:28:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC12443E68
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbhKCIbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 04:31:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231721AbhKCIbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 04:31:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 801E161183;
-        Wed,  3 Nov 2021 08:28:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1635928107;
-        bh=BPBXnGOqr3AM/VAnZ7RQiT94cY9nN4bCJuE3Xhs7PwA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uQWcYCyuKgJ4VC0zPznNYhlc8p3VfJ+DwuCzn9y5ksWtj/3VblIFbFYEJrXQu37rh
-         JRcQFCU6H3RSWT0nxmMEu+K8/2ZmS5+laTZKTZ8v+p4a5S2zI2ARt4f75WWXGqiEXH
-         QYAAA1yiAWl14SPp6Y5rw7JUFexaCG1aio55UybQ=
-Date:   Wed, 3 Nov 2021 09:28:22 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     cgel.zte@gmail.com
-Cc:     johan@kernel.org, linux-kernel@vger.kernel.org,
-        Jing Yao <yao.jing2@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH] drivers: most: replace snprintf in show functions with
- sysfs_emit
-Message-ID: <YYJIJqRLI2fjXlzl@kroah.com>
-References: <20211103082313.27570-1-yao.jing2@zte.com.cn>
+        id S231760AbhKCIb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 04:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231461AbhKCIb2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 04:31:28 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C9EC061714;
+        Wed,  3 Nov 2021 01:28:52 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id k4so1962954plx.8;
+        Wed, 03 Nov 2021 01:28:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i00n7ZrM5fqbcYZ0dL4GZEF2pe2591w/kRaRvHeY6D8=;
+        b=o+zbYQ/+3smyDPnCLyw8MpsJuUzw276DpyNBilTO9MlCZjVgDnIfdrP4NFFolxLLhl
+         kNGOcEpuPEVdtN2dy3uV+2UjimHNXXCVcxCx4aKcqytqFqpCz1JkPKnmYEsIoamNtA1+
+         OOhBrD0LHm+8uxp+WxPVuzcGsoAiQnuat8wQXMle1SGTmCoE3REsH5gSXPEWxPPP8cxp
+         QT50VkxFHup30eESzMQkZCLvUNjyBnETHe6yozl48Y9pkOBtUgZbZ3YwbU46z1EyuqFX
+         g4LwXr/nlawT4OnQ2x5XAFtjf4psLh5jv3hLgvo/HFyegBu1MViaZv4w/tMSTIYSTaXB
+         yb0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i00n7ZrM5fqbcYZ0dL4GZEF2pe2591w/kRaRvHeY6D8=;
+        b=pzGwsQ+nK6zZGAnE8C4oU3jIEoolYMg166cSTxkDjapCLyGhx8TX6ypifshtrAsmo7
+         bii8TBka9vS8RLHdZzJV5NPzPXWuga+EXGviDDO5gZAIpKZHBFsydNNBsC6jMcRqmtOE
+         DgspQ3um3xEHszIhK7p0ZS980bN0pZo6Tqrg9V53F7gYTu/Fz48d0y12Gbaue+ZL6hcJ
+         xB5YoKdNhOKOmiglIzAchk9bW/7JnjX5IMrNk6ZKzRm0PIwgHYIyCAyfCIgkVzp2Gkzn
+         gcB37Tc9FQQmFYvMSJC86i0TgYp3bCMQ+z9mqdQlI3K7//Whs5fHmOcuESNOYipgaZSv
+         yJVg==
+X-Gm-Message-State: AOAM531qZHUz/vfjDZWEl6p5oJ0husq1hUPuO+TuBfGVi0F1Gbl+f+oX
+        ZSOONYSg1Wq0bNRzHfFrNdRFVGWcHWA=
+X-Google-Smtp-Source: ABdhPJxO9RIWpTTaBTlTVVUZtvvGGaP/lw+7donogRs6IF6wxoaCXU4nnO67EBFBR1MKsn6XCbBCyg==
+X-Received: by 2002:a17:90a:fe87:: with SMTP id co7mr12800459pjb.21.1635928132059;
+        Wed, 03 Nov 2021 01:28:52 -0700 (PDT)
+Received: from desktop.cluster.local ([43.132.141.4])
+        by smtp.gmail.com with ESMTPSA id z16sm1520490pfr.69.2021.11.03.01.28.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 01:28:51 -0700 (PDT)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: imagedong@tencent.com
+To:     yoshfuji@linux-ipv6.org
+Cc:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Menglong Dong <imagedong@tencent.com>
+Subject: [PATCH net-next] net: udp6: replace __UDP_INC_STATS() with __UDP6_INC_STATS()
+Date:   Wed,  3 Nov 2021 16:28:43 +0800
+Message-Id: <20211103082843.521796-1-imagedong@tencent.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103082313.27570-1-yao.jing2@zte.com.cn>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 08:23:13AM +0000, cgel.zte@gmail.com wrote:
-> From: Jing Yao <yao.jing2@zte.com.cn>
-> 
-> coccicheck complains about the use of snprintf() in sysfs show
-> funcitons:
-> WARNING use scnprintf or sprintf
-> 
-> Use sysfs_emit instead of scnprintf, snprintf or sprintf makes more
-> sense.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
+From: Menglong Dong <imagedong@tencent.com>
 
-This "robot" is not coccicheck.
+__UDP_INC_STATS() is used in udpv6_queue_rcv_one_skb() when encap_rcv()
+fails. __UDP6_INC_STATS() should be used here, so replace it with
+__UDP6_INC_STATS().
 
+Signed-off-by: Menglong Dong <imagedong@tencent.com>
+---
+ net/ipv6/udp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
-> ---
->  drivers/most/most_usb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/most/most_usb.c b/drivers/most/most_usb.c
-> index acabb7715b42..dccbec16000c 100644
-> --- a/drivers/most/most_usb.c
-> +++ b/drivers/most/most_usb.c
-> @@ -831,7 +831,7 @@ static ssize_t value_show(struct device *dev, struct device_attribute *attr,
->  	int err;
->  
->  	if (sysfs_streq(name, "arb_address"))
-> -		return snprintf(buf, PAGE_SIZE, "%04x\n", dci_obj->reg_addr);
-> +		return sysfs_emit(buf, "%04x\n", dci_obj->reg_addr);
->  
->  	if (sysfs_streq(name, "arb_value"))
->  		reg_addr = dci_obj->reg_addr;
-> -- 
-> 2.25.1
+diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
+index 8d785232b479..4fd8c87c607f 100644
+--- a/net/ipv6/udp.c
++++ b/net/ipv6/udp.c
+@@ -700,9 +700,9 @@ static int udpv6_queue_rcv_one_skb(struct sock *sk, struct sk_buff *skb)
+ 
+ 			ret = encap_rcv(sk, skb);
+ 			if (ret <= 0) {
+-				__UDP_INC_STATS(sock_net(sk),
+-						UDP_MIB_INDATAGRAMS,
+-						is_udplite);
++				__UDP6_INC_STATS(sock_net(sk),
++						 UDP_MIB_INDATAGRAMS,
++						 is_udplite);
+ 				return -ret;
+ 			}
+ 		}
+-- 
+2.27.0
 
-Why did you only change one of the instances of this in this function
-and not both?
-
-Are you going to send a follow-on patch to change the other use of
-snprintf() here?
-
-Please do it all in one patch, and fix your "robot" to correctly notify
-you of mistakes like this.
-
-thanks,
-
-greg k-h
