@@ -2,102 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CDC7443B38
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 03:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4A4443B43
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 03:19:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhKCCMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 22:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32998 "EHLO
+        id S230291AbhKCCVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 22:21:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230441AbhKCCMm (ORCPT
+        with ESMTP id S229592AbhKCCVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 22:12:42 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B666C061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 19:10:02 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id gn3so235173pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 19:10:02 -0700 (PDT)
+        Tue, 2 Nov 2021 22:21:47 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 299C4C061714;
+        Tue,  2 Nov 2021 19:19:12 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id gh1so1194019qvb.8;
+        Tue, 02 Nov 2021 19:19:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JWcAzAJwFyEX20kiIgOysZ+EjN9Q2rmcEhAoAq/Hw+4=;
-        b=ftn4niXwlfXg0KAgoRYTpOjBX0DmSrZqbu64lUmu5jQGRQUcfl8LlHqk4aU+O0XP/c
-         Hlx8mhMkD1CBpO4LgBjH/k+Qhs4dEwwaQxajN/EMtX33cPTy8WR7M3QEC8YI4VLKmkY4
-         6EU0FcvTao5WhGcU4IV9okTr2dD7pSCKRHzNEBxKPfnQhoTpr5fZBMhLkkEFOKa7oQa/
-         EnJ3juXLL/uwtu/oAjtchHAtFjPcZGK93IePyZmXy/deGgfM48BDNyw3iS+ZL8y+cCpA
-         OT/4TsSVJsAw5PKtEVwatD/XXiTBRG3bUPfXUTlHRfjO7GFBZSmLb0DemiOXq5Gv5YWK
-         d5ow==
+        h=message-id:date:mime-version:user-agent:subject:content-language
+         :from:to:cc:references:in-reply-to:content-transfer-encoding;
+        bh=L6N++OXbiQ++WWRxdLoBQIcLBmefSWDWQ3m0E3cuKUs=;
+        b=QDvkU+3x9rPI046k0PUyt5niFs4wNe+UzIm+fLt/bZUbPNBPkfgNawdhqePx+1HSkn
+         bKR+udI4YDieAFP9AWzR19vifU7sAg8eAYvMJQzQd+GtwXcRbuuD4ebXyJlAShYRuYHc
+         v1gBTGNXVPSOdfDXkD626nKdU2aGCTzo61gg38xBPkt38PqWvoKmz44uBYKL/dX0KxLj
+         C+G5gD4nHiT8mXQ6UfBN9o2Xu62m9HrS81gnVZh25X6KUErMohg/Ov2iBN1QMwTTzRWy
+         k3GSJ9c1ikCSblEP/gzGnqQc09JS1QzqBp+CEgi8UBZiJMbvFdYmxzuozDhK28BR/r+i
+         xF7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
          :content-transfer-encoding;
-        bh=JWcAzAJwFyEX20kiIgOysZ+EjN9Q2rmcEhAoAq/Hw+4=;
-        b=CPfVgUrLV1XGeHPkqaBw3OXVK72k0zSQwTtDvd6gq87UsaLNZrxgV7v/bqrF0Igj44
-         hVdk9K5ZcgeMsNK76V0ieOjqWe4VCfMcFQWXfFIXCth/XQgA8/CkYjouKL6L0iR4lS3A
-         UrElnWwWXU1mH62MjZUruZNg1egJT4jZsacx0tWJ00jzV47Vs7pxbUIIQEj46eX4tDRT
-         hREFDQw8o92McbCiUlpmPc5BRxtKjvSq4/RTy/KQZFcj3owmXvyABL0sAhhvhm+gD5UK
-         JWv9FBFyaMzfmoRrjNF2+Zb3Q9T8DJATSs97KZmCVdUfuC59q1URpUsQf6PYzPkUTFZr
-         bFPA==
-X-Gm-Message-State: AOAM531/iTPmK0QLfXb3RHidPyZRzW/tRLqSLBZKhUt7pC5L9rcx8RVz
-        A0SuKKCPBxbAkvzyNE2BeR8=
-X-Google-Smtp-Source: ABdhPJzEjUBhFBa9JNyzfgf4pbiCTAasGDwJmHlECMAMn9YhBj0RYWb794EUFZ7Infey4RkYKPRGdQ==
-X-Received: by 2002:a17:90a:e613:: with SMTP id j19mr11373961pjy.182.1635905401572;
-        Tue, 02 Nov 2021 19:10:01 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id na13sm313174pjb.11.2021.11.02.19.09.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 19:10:01 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: deng.changcheng@zte.com.cn
-To:     anton@tuxera.com
-Cc:     linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] ntfs: Remove unneeded semicolon
-Date:   Wed,  3 Nov 2021 02:09:56 +0000
-Message-Id: <20211103020956.24466-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        bh=L6N++OXbiQ++WWRxdLoBQIcLBmefSWDWQ3m0E3cuKUs=;
+        b=D3go5n+xsKxG8JsDqc/uADDD+BKahf606WDkBW6jxxZk1TdbtGyJKeJfCgGziu7mOj
+         wKfAuZyiSqNJj0ZRERyxF6LZLUYUdMq01/rr6eEOaD6DYKzFdyZWOB3xhNy2SlXcsmye
+         xhvG6QZiitIrpt/oVHiqJxOb7U7AL1AsEvPihe+TOwahByWq8uSjGYka6YDq/P6lByFX
+         wT/ZZKGngIas/Zc+4bG+xwn4dDN5rGaMbYzFxFW7dbbkmFSkL/8zJAU/XDiyHdA6Js+C
+         PXP8wCrsCukB5ubaXPVqLXYlSpV36+S4GeIRwASoqLR18SN3hQHumZNm1r3heti7u8Fh
+         qKFw==
+X-Gm-Message-State: AOAM53287H2dQJLIwhoQ+zWYogiiOOguYILcldGRrK1KX5UeddYZRiTe
+        4oXzDkOsZeyx7QneNjq4AbM=
+X-Google-Smtp-Source: ABdhPJyStGa6ALGT7a9HuLOAfF37IRWpJUhJou9Ga7+i3LE11S7fpDMhER3fzk6jVgwNT6vkr4BY4w==
+X-Received: by 2002:ad4:43e8:: with SMTP id f8mr40707115qvu.41.1635905950891;
+        Tue, 02 Nov 2021 19:19:10 -0700 (PDT)
+Received: from [10.4.10.38] (146-115-144-188.s4282.c3-0.nwt-cbr1.sbo-nwt.ma.cable.rcncustomer.com. [146.115.144.188])
+        by smtp.gmail.com with ESMTPSA id s13sm605316qki.23.2021.11.02.19.19.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Nov 2021 19:19:10 -0700 (PDT)
+Message-ID: <2fbe7ced-60a7-2fd2-6032-e4ddae21b565@gmail.com>
+Date:   Tue, 2 Nov 2021 22:19:08 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v2 12/13] ARM: dts: imx: add i.MXRT1050-EVK support
+Content-Language: en-US
+From:   Jesse Taube <mr.bossman075@gmail.com>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Giulio Benetti <giulio.benetti@benettiengineering.com>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-serial@vger.kernel.org
+References: <20211102225701.98944-1-Mr.Bossman075@gmail.com>
+ <20211102225701.98944-13-Mr.Bossman075@gmail.com>
+ <CAOMZO5DV-6dKnaGMgARhtv7mq-nOr9jO-XUWAJDmJWwNxc+B1g@mail.gmail.com>
+ <e2f81ad7-9c58-3e39-fbb0-5ef3132bba7d@gmail.com>
+In-Reply-To: <e2f81ad7-9c58-3e39-fbb0-5ef3132bba7d@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-Fix the following coccicheck review:
-./fs/ntfs/super.c: 1615: 2-3: Review: Unneeded semicolon
-./fs/ntfs/super.c: 1684: 2-3: Review: Unneeded semicolon
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
----
- fs/ntfs/super.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ntfs/super.c b/fs/ntfs/super.c
-index 0d7e948cb29c..a45e06fa8a73 100644
---- a/fs/ntfs/super.c
-+++ b/fs/ntfs/super.c
-@@ -1612,7 +1612,7 @@ static bool load_and_init_attrdef(ntfs_volume *vol)
- 		memcpy((u8*)vol->attrdef + (index++ << PAGE_SHIFT),
- 				page_address(page), size);
- 		ntfs_unmap_page(page);
--	};
-+	}
- 	if (size == PAGE_SIZE) {
- 		size = i_size & ~PAGE_MASK;
- 		if (size)
-@@ -1681,7 +1681,7 @@ static bool load_and_init_upcase(ntfs_volume *vol)
- 		memcpy((char*)vol->upcase + (index++ << PAGE_SHIFT),
- 				page_address(page), size);
- 		ntfs_unmap_page(page);
--	};
-+	}
- 	if (size == PAGE_SIZE) {
- 		size = i_size & ~PAGE_MASK;
- 		if (size)
--- 
-2.25.1
-
+On 11/2/21 19:54, Jesse Taube wrote:
+> 
+> 
+> On 11/2/21 19:42, Fabio Estevam wrote:
+>> On Tue, Nov 2, 2021 at 7:57 PM Jesse Taube <mr.bossman075@gmail.com> wrote:
+>>
+>>> +/ {
+>>> +       model = "NXP IMXRT1050-evk board";
+>>> +       compatible = "fsl,imxrt1050-evk", "fsl,imxrt1050";
+>>> +
+>>> +       chosen {
+>>> +               bootargs = "root=/dev/ram";
+>>
+>> No need to pass bootargs here.
+>>
+>>> +               stdout-path = &lpuart1;
+>>> +       };
+>>> +
+>>> +       aliases {
+>>> +               gpio0 = &gpio1;
+>>> +               gpio1 = &gpio2;
+>>> +               gpio2 = &gpio3;
+>>> +               gpio3 = &gpio4;
+>>> +               gpio4 = &gpio5;
+>>> +               mmc0 = &usdhc1;
+>>> +               serial0 = &lpuart1;
+>>> +       };
+>>> +
+>>> +       memory@0 {
+>>
+>> memory@80000000
+>>
+>> Building with W=1 should give a dtc warning due to the unit address
+>> and reg mismatch.
+> Oh that makes sense.
+> I guess I'm going to have to figure out how to get warnings to work as I
+> couldn't last time I tried.
+Oh i got it to work I did something dumb...
+I didn't give a warning for this i still changed it of course.
+>>
+>>> +               device_type = "memory";
+>>> +               reg = <0x80000000 0x2000000>;
+>>> +       };
+>>> +
+>>
+>> Unneeded blank line.
+>>> +
+>>> +&iomuxc {
+>>> +       pinctrl-names = "default";
+>>> +
+>>> +       imxrt1050-evk {
+>>
+>> No need for this imxrt1050-evk container.
+> I was wondering if that was needed, u-boot has it, good to know.
+>>
+>>> +               pinctrl_lpuart1: lpuart1grp {
+>>> +                       fsl,pins = <
+>>> +                               MXRT1050_IOMUXC_GPIO_AD_B0_12_LPUART1_TXD
+>>> +                                       0xf1
+>>
+>> Put it on a single line. It helps readability. Same applies globally.
+>>> +&usdhc1 {
+>>> +       pinctrl-names = "default", "state_100mhz", "state_200mhz", "sleep";
+>>> +       pinctrl-0 = <&pinctrl_usdhc0>;
+>>> +       pinctrl-1 = <&pinctrl_usdhc0>;
+>>> +       pinctrl-2 = <&pinctrl_usdhc0>;
+>>> +       pinctrl-3 = <&pinctrl_usdhc0>;
+>>> +       status = "okay";
+>>> +
+>>> +       cd-gpios = <&gpio2 28 GPIO_ACTIVE_LOW>;
+>>
+>> Make 'status' to be the last property. Remove the blank line.
+>>
+>>> +               edma1: dma-controller@400e8000 {
+>>> +                       #dma-cells = <2>;
+>>> +                       compatible = "fsl,imx7ulp-edma";
+>>> +                       reg = <0x400e8000 0x4000>,
+>>> +                               <0x400ec000 0x4000>;
+>>> +                       dma-channels = <32>;
+>>> +                       interrupts = <0>,
+>>> +                               <1>,
+>>> +                               <2>,
+>>> +                               <3>,
+>>> +                               <4>,
+>>> +                               <5>,
+>>> +                               <6>,
+>>> +                               <7>,
+>>> +                               <8>,
+>>> +                               <9>,
+>>> +                               <10>,
+>>> +                               <11>,
+>>> +                               <12>,
+>>> +                               <13>,
+>>> +                               <14>,
+>>> +                               <15>,
+>>> +                               <16>;
+>>
+>> Please group more elements into the same line.
+>>
+>> Putting one entry per line makes it extremely long.
+>>
+>>> +               gpio5: gpio@400c0000 {
+>>> +                       compatible = "fsl,imxrt-gpio", "fsl,imx35-gpio";
+>>> +                       reg = <0x400c0000 0x4000>;
+>>> +                       interrupts = <88>,
+>>> +                               <89>;
+>>
+>> Put the interrupts into a single line.
+>>
+> Ah all these make sense, will fix, sry about that.
+> 
