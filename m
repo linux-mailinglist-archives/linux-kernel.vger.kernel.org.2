@@ -2,107 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C097444607
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:36:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B46444612
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:40:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232895AbhKCQjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 12:39:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59634 "EHLO
+        id S232890AbhKCQnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 12:43:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232865AbhKCQjL (ORCPT
+        with ESMTP id S232883AbhKCQnJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 12:39:11 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145DEC061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 09:36:35 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id x9so3166233ilu.6
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 09:36:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kqcBRxOQ9MjURO/c5n7KjP3zUkTopF6FY6YrmNIOe3I=;
-        b=cnAmHdOWACGRJzcwjbOOl3C9Bd2t/C5gyWAYtrPEglsqE3Y0Cr57sjVPIrLKXctAkE
-         5ze6sOTjq1x7i85bssik+hzPJ7Di2Sg158ut8fqoiNLcc8lJ0BDU7D0d8FrZPRb4h71+
-         +a/aWNxxrRtDwjukw9/YQxh4+OJbEErwOu7w3Kpvs1sT2Yi6fk++v010mSvqxNxm9Yce
-         vfJakfaGtwGTZLIpDcwdwOauf3GCmO04s6lMqVtn5f8Gt5PQ34q/dOghZIPPlqdjLW0s
-         UFKyleCoBwJCPJX5ue12uN1atnUM+lga0v2GwHVTwyl2HH6B4FwY18fLwJ3BaeyyIoC4
-         d9Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kqcBRxOQ9MjURO/c5n7KjP3zUkTopF6FY6YrmNIOe3I=;
-        b=yAwbTC8HfjIFSjA9Ss04oEBsscw8e+tXlBGvKdzBrVPfn+HWYClmgZdslBgJ2pR82m
-         RvuHKVRDghUGxCrJFzxbnIeSleHlQdCI3hjw7ybB1PBF2kx/qIc8gUnma3mmHXvwMF3l
-         KTzEllEGq8i3tMqGwvwAYP28PLFgt7Cyij3tiGL6kxj+07GrZsOyKrdZ3NbI0mBoyLEL
-         ZV7B+Vc7crIqAxJlrDVA9yfq+L6HP69Iv/mZiaeXUj85KqNZCu1piyCtp2jB78bvgNEv
-         k4HR2VeRWrvAtAiqwXgQUEdxPHxNFvPPjS/mdJmr8x5KTFSF39vQ+X+LuRKWeeogKLx/
-         P5Gg==
-X-Gm-Message-State: AOAM531HGNgmkoVFkMFGrEfe9arBHf8Ka7Xr3cxZfuRJkVAa+xwiSk2U
-        3E3h0s6RgQTmWEPZpIwIx0zitOWG4ZhZkdCLKEsEHg==
-X-Google-Smtp-Source: ABdhPJwarWrYs67dhHO3W93iyUrOAUtT/O4f5jE/lxzIKtUiy6tmumpoNY+4xpGlX/oFsN+SBbOvLSD3ZrrkIwu2/Wk=
-X-Received: by 2002:a05:6e02:15c9:: with SMTP id q9mr31006491ilu.298.1635957394356;
- Wed, 03 Nov 2021 09:36:34 -0700 (PDT)
+        Wed, 3 Nov 2021 12:43:09 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6931CC061714;
+        Wed,  3 Nov 2021 09:40:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=0qrxHNDIFk+edOnwg1RDygcWfmb5ExZeJL85X5Z4aFk=; b=iJuXfpma4uCw5qA5MICtL7C9VR
+        k9BfUV9v5hZfLEKhHTn0Zacyur9jdV8B5eZKtenl1NtgOYzm4Ree6GHKUXOcD+BSHWLnCD3opeJEy
+        CXtXH4Vmjn/qzuJDaT9wFAGpIH8HcwWb5iS9+gbb6UgufuRB0wOiZcUf3qbs7kjPP7jAOD6zrXLAz
+        hBt2/S3hnF6/9G+8TVbdpLEGHKlUDWs13ctDYGRcipkPgNL4Vm2SS6frxytGDhsH5KZsHM2Zg/DXu
+        BbksajzzYhxMukVzyyx+KhUBT8/MuQWGhnqutaV9GPS3s+FUE/SXRHXALQERR+xO+7LF+cYXL2wdZ
+        UmckpeTA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1miJJQ-005oHb-2i; Wed, 03 Nov 2021 16:40:32 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     axboe@kernel.dk, hare@suse.de, hch@infradead.org
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] block: fix device_add_disk() kobject_create_and_add() error handling
+Date:   Wed,  3 Nov 2021 09:40:23 -0700
+Message-Id: <20211103164023.1384821-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20211103161833.3769487-1-seanjc@google.com>
-In-Reply-To: <20211103161833.3769487-1-seanjc@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 3 Nov 2021 09:36:23 -0700
-Message-ID: <CANgfPd9VVAdP0umt6Odz_-f+nUmKfsNa0hqvUzuto6=G6b=M+A@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86/mmu: Properly dereference rcu-protected TDP MMU
- sptep iterator
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 9:18 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> Wrap the read of iter->sptep in tdp_mmu_map_handle_target_level() with
-> rcu_dereference().  Shadow pages in the TDP MMU, and thus their SPTEs,
-> are protected by rcu.
->
-> This fixes a Sparse warning at tdp_mmu.c:900:51:
->   warning: incorrect type in argument 1 (different address spaces)
->   expected unsigned long long [usertype] *sptep
->   got unsigned long long [noderef] [usertype] __rcu *[usertype] sptep
->
-> Fixes: 7158bee4b475 ("KVM: MMU: pass kvm_mmu_page struct to make_spte")
-> Cc: Ben Gardon <bgardon@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+Commit 83cbce957446 ("block: add error handling for device_add_disk /
+add_disk") added error handling to device_add_disk(), however the goto
+label for the kobject_create_and_add() failure did not set the return
+value correctly, and so we can end up in a situation where
+kobject_create_and_add() fails but we report success.
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
+Fixes: 83cbce957446 ("block: add error handling for device_add_disk / add_disk")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+---
+ block/genhd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-This change looks good to me. It also reminds me that the struct
-kvm_mmu_pages are also protected by RCU.
-I wonder if it would be worth creating something similar to tdp_ptep_t
-for the struct kvm_mmu_pages to add RCU annotations to them as well.
+diff --git a/block/genhd.c b/block/genhd.c
+index be4775c13760..b0b484116c3a 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -478,8 +478,10 @@ int __must_check device_add_disk(struct device *parent, struct gendisk *disk,
+ 	if (!disk->part0->bd_holder_dir)
+ 		goto out_del_integrity;
+ 	disk->slave_dir = kobject_create_and_add("slaves", &ddev->kobj);
+-	if (!disk->slave_dir)
++	if (!disk->slave_dir) {
++		ret = -ENOMEM;
+ 		goto out_put_holder_dir;
++	}
+ 
+ 	ret = bd_register_pending_holders(disk);
+ 	if (ret < 0)
+-- 
+2.33.0
 
-> ---
->  arch/x86/kvm/mmu/tdp_mmu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 7c5dd83e52de..a54c3491af42 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -897,7 +897,7 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
->                                           struct kvm_page_fault *fault,
->                                           struct tdp_iter *iter)
->  {
-> -       struct kvm_mmu_page *sp = sptep_to_sp(iter->sptep);
-> +       struct kvm_mmu_page *sp = sptep_to_sp(rcu_dereference(iter->sptep));
->         u64 new_spte;
->         int ret = RET_PF_FIXED;
->         bool wrprot = false;
-> --
-> 2.33.1.1089.g2158813163f-goog
->
