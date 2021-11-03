@@ -2,222 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3304446F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E389B444710
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231380AbhKCRXl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Nov 2021 13:23:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46396 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229621AbhKCRXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 13:23:39 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 281BB61073;
-        Wed,  3 Nov 2021 17:21:01 +0000 (UTC)
-Date:   Wed, 3 Nov 2021 17:25:34 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "Sa, Nuno" <Nuno.Sa@analog.com>
-Cc:     "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 1/2] iio: frequency: admv1013: add support for
- ADMV1013
-Message-ID: <20211103172534.5fddfcf3@jic23-huawei>
-In-Reply-To: <PH0PR03MB6366D6B1B17D3882FF2E35FA998B9@PH0PR03MB6366.namprd03.prod.outlook.com>
-References: <20211027092333.5270-1-antoniu.miclaus@analog.com>
-        <20211027184324.51811ef1@jic23-huawei>
-        <CY4PR03MB3399339315289769615E4DCD9B869@CY4PR03MB3399.namprd03.prod.outlook.com>
-        <20211028113101.0587a658@jic23-huawei>
-        <PH0PR03MB636669F27992B59B8A7B603D99879@PH0PR03MB6366.namprd03.prod.outlook.com>
-        <20211030161435.6ceaab21@jic23-huawei>
-        <PH0PR03MB6366D6B1B17D3882FF2E35FA998B9@PH0PR03MB6366.namprd03.prod.outlook.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S230494AbhKCRa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 13:30:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59765 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230198AbhKCRa4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 13:30:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635960499;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/3vUfVtNAp+NHc0VZGMqWaMG2ICg6HEbKSf06yppkuM=;
+        b=cDmR6QrKUIiNVQZLkADjV2DEu3GPIeSi9rHzBtLVeP9dJtuLB7AadhXoI9247kGrwTdhWx
+        Tk0Ir8pFgZCLU9bUQtCGOw0U3EfFIBtnyDqexU+JgfELjFA0mpIj8sYremRlu7bs35HUG1
+        KIgTCGxgVCRPxVG58eFsD1L2DHhns6M=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-521-kuvw_CapN4quKgNSOXapeg-1; Wed, 03 Nov 2021 13:28:17 -0400
+X-MC-Unique: kuvw_CapN4quKgNSOXapeg-1
+Received: by mail-ed1-f69.google.com with SMTP id o22-20020a056402439600b003dd4f228451so3166322edc.16
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 10:28:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=/3vUfVtNAp+NHc0VZGMqWaMG2ICg6HEbKSf06yppkuM=;
+        b=FMC0j34ANpRU6VZSHN5qh2pYVwd4qiDVvdMamFQPAzoMBBwyMXh/z3fP59n7Ct52/j
+         YVtIRYJArqDNhpoTlAqxPHRZ7L7QiIKUe3vwFbgZmWX2K90rd4FRqYBWuRkTOP1zntSA
+         /4SCyK3VBRu3PembPCvQm5f41viH8iwZwDwq10xsmkK/hdUfoDrgM6y8NrxJGW2eUU1U
+         mwqA39DBAO/FxlSYxLY3bQkIo9wPWJaGqwClvdYE5BsHq93EV1WLlllYxQC9E2Noj2ve
+         3L8RZ8G4I4D/49MATj0I9Hf3kd+gofftPO9HqrrsrC0Y23NRHBgDeXkzy/5fMvZwy3U5
+         692w==
+X-Gm-Message-State: AOAM531ZFHdvrGdNv8dcguT4l12dU2NmcQfNTd2lI1wdEfNtgXKwvJrU
+        RQ6Yf+83V6elBsF3Kz7SfNRFCTrQ9gzk4N0kw8kbTi9WpkM9WmZo9ZzO5nY74oO7rxd91aJ9He5
+        W8JEZBL+rkTBuo9kXu/X1dA+6
+X-Received: by 2002:aa7:c053:: with SMTP id k19mr60902711edo.293.1635960496654;
+        Wed, 03 Nov 2021 10:28:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxNRnaHb5jF+zfe4fkL84C73Vq/hpN9b4BZRfrqQi6jeIgKg0x54vAQgmUcJMDLIby7rEUY9g==
+X-Received: by 2002:aa7:c053:: with SMTP id k19mr60902675edo.293.1635960496469;
+        Wed, 03 Nov 2021 10:28:16 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id bm1sm1464617ejb.38.2021.11.03.10.28.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Nov 2021 10:28:16 -0700 (PDT)
+Message-ID: <5d431db5-30dc-b51c-7abb-ab57a3de2f8f@redhat.com>
+Date:   Wed, 3 Nov 2021 18:28:15 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 3/3] backlight: lp855x: Add support ACPI enumeration
+Content-Language: en-US
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20211102225504.18920-1-hdegoede@redhat.com>
+ <20211102225504.18920-3-hdegoede@redhat.com>
+ <20211103171756.wxthncse2f4syeiz@maple.lan>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20211103171756.wxthncse2f4syeiz@maple.lan>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Nov 2021 10:00:58 +0000
-"Sa, Nuno" <Nuno.Sa@analog.com> wrote:
+Hi,
 
-> > From: Jonathan Cameron <jic23@kernel.org>
-> > Sent: Saturday, October 30, 2021 5:15 PM
-> > To: Sa, Nuno <Nuno.Sa@analog.com>
-> > Cc: Miclaus, Antoniu <Antoniu.Miclaus@analog.com>;
-> > robh+dt@kernel.org; linux-iio@vger.kernel.org;
-> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Lars-Peter
-> > Clausen <lars@metafoo.de>
-> > Subject: Re: [PATCH v2 1/2] iio: frequency: admv1013: add support for
-> > ADMV1013
-> > 
-> > [External]
-> > 
-> > On Fri, 29 Oct 2021 07:49:41 +0000
-> > "Sa, Nuno" <Nuno.Sa@analog.com> wrote:
-> >   
-> > > Hi Jonathan,
-> > >  
-> > > > -----Original Message-----
-> > > > From: Jonathan Cameron <jic23@kernel.org>
-> > > > Sent: Thursday, October 28, 2021 12:31 PM
-> > > > To: Miclaus, Antoniu <Antoniu.Miclaus@analog.com>
-> > > > Cc: robh+dt@kernel.org; linux-iio@vger.kernel.org;
-> > > > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Sa,  
-> > Nuno  
-> > > > <Nuno.Sa@analog.com>; Lars-Peter Clausen <lars@metafoo.de>
-> > > > Subject: Re: [PATCH v2 1/2] iio: frequency: admv1013: add support  
-> > for  
-> > > > ADMV1013
-> > > >
-> > > > On Thu, 28 Oct 2021 10:08:08 +0000
-> > > > "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com> wrote:
-> > > >  
-> > > > > Hello Jonathan,
-> > > > >
-> > > > > Thanks for the review!
-> > > > >
-> > > > > Regarding the interface for the Mixer Offset adjustments:
-> > > > > ADMV1013_MIXER_OFF_ADJ_P
-> > > > > ADMV1013_MIXER_OFF_ADJ_N
-> > > > >
-> > > > > These parameters are related to the LO feedthrough offset  
-> > > > calibration.  
-> > > > > (LO and sideband suppression)
-> > > > >
-> > > > > On this matter, my suggestion would be to add IIO calibration  
-> > types,  
-> > > > something like:  
-> > > > > IIO_CHAN_INFO_CALIBFEEDTROUGH_POS
-> > > > > IIO_CHAN_INFO_CALIBFEEDTROUGH_NEG  
-> > > >
-> > > > These sound too specific to me - we want an interface that is
-> > > > potentially useful
-> > > > in other places.  They are affecting the 'channel' which here is
-> > > > simply an alt voltage channel, but I'm assuming it's something like
-> > > > separate analog tweaks to the positive and negative of the  
-> > differential  
-> > > > pair?  
-> > >
-> > > That's also my understanding. This kind of calibration seems to be  
-> > very  
-> > > specific for TX local oscillators...
-> > >  
-> > > > Current channel is represented as a single index, but one route to  
-> > this  
-> > > > would be
-> > > > to have it as a differential pair.
-> > > >
-> > > > out_altvoltage0-1_phase
-> > > > for the attribute that applies at the level of the differential pair and
-> > > >
-> > > > out_altvoltage0_calibbias
-> > > > out_altvoltage1_calibbias
-> > > > For the P and N signal specific attributes.  
-> > >
-> > > Honestly, I'm not very enthusiastic with having out_altvoltage{0|1}  
-> > as the  
-> > > this applies to a single channel... Having this with separate indexes  
-> > feels  
-> > > odd to me. Even though we have the phase with "0-1", this can be a  
-> > place  
-> > > for misuse and confusion...
-> > >
-> > > I was thinking about modifiers (to kind of represent differential  
-> > channels)  
-> > > but I don't think it would work out here... What about  
-> > IIO_CHAN_INFO_CALIBBIAS_P  
-> > > and  IIO_CHAN_INFO_CALIBBIAS_N? Or maybe just something like
-> > > IIO_CHAN_INFO_CALIBBIAS_DIFF and internally in IIO we would  
-> > automatically  
-> > > create both P and N sysfs files since I don't think it makes senses in  
-> > any case to  
-> > > just define one of the calibrations... Anyways, these are my 5 cents :)  
-> > 
-> > Definitely not a modifier.  It's almost arguable that these are different
-> > characteristics of the channel so I can live with the ABI perhaps, but
-> > unless this is a very common thing I'm not sure I want to burn 2 chan
-> > info
-> > bits for them. Note we are running very low on those anyway without
-> > changing
-> > how those are handled.  We will need to tackle that anyway, but let's
-> > not
-> > tie that to this driver.  
+On 11/3/21 18:17, Daniel Thompson wrote:
+> On Tue, Nov 02, 2021 at 11:55:04PM +0100, Hans de Goede wrote:
+>> The Xiaomi Mi Pad 2 tablet uses an ACPI enumerated LP8556 backlight
+>> controller for its LCD-panel, with a Xiaomi specific ACPI HID of
+>> "XMCC0001", add support for this.
+>>
+>> Note the new "if (id)" check also fixes a NULL pointer deref when a user
+>> tries to manually bind the driver from sysfs.
+>>
+>> When CONFIG_ACPI is disabled acpi_match_device() will always return NULL,
+>> so the lp855x_parse_acpi() call will get optimized away.
+>>
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 > 
-> Hmm, Honestly I was not even thinking about the mask size and used
-> bits. But I guess it's very unlikely for a driver to define lots of bits in one
-> of the masks (just curious)?
+> Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 
-It's a fairly small set in most cases, but as it is a bitmap that doesn't
-help us.  We still need to fit in an unsigned long (so 32 bits).
+Thank you.
 
-Any change to how we do this may be painful.  We might just jump to the
-BIT_ULL() approach for now and be a bit more resistant to adding more
-entries in future.
+So what is the process for upstreaming backlight patches,
+do these go through drm-misc-next (in that case I can push
+the series myself), or will you pick these up ?
 
+Regards,
 
-> 
-> > I don't like the idea of adding core magic to spin multiple files from one
-> > without more usecases.  So for now use extended attributes for these
-> > if
-> > we go this way.
-> > 
-> > I think I still prefer the separate channels approach.  Note this is how
-> > we deal with devices that are capable of either single ended or
-> > differential
-> > operation.  The channel numbering is reflecting the wire in both cases.
-> > However, I'm not sure we've ever made it clear the ABI would apply
-> > like this.
-> > We may have devices that use this interface but expect it to not apply
-> > to
-> > the differential case....
-> >   
-> 
-> Well, you actually gave me something to think about over the weekend and
-> I'm getting more convinced with the ABI you purposed here. Getting all
-> the bits in one differential channel could lead to having to "duplicate" bit masks
-> to differentiate between P and N. Or we would have to do some non obvious
-> handling in the core as I was suggesting.
-> 
-> With your ABI, the "single ended" files already differentiate the pair. The only
-> thing we might be missing is to have a clear rule in the ABI docs. Like, if we have
->  
-> out_altvoltageX-Y_phase and then 
-> 
-> out_altvoltageX_calibbias
-> out_altvoltageY_calibbias,
-> 
-> it should be clear that X is the N part of the pair while Y is P. Or the other way
-> around... The point is to have a clear rule.
-
-differential channel is X-Y so P-N would be how I would interpret it.
-
-> 
-> However, looking at the new series spin, it looks to me that we have an issue
-> that Antoniu might have to address in the series... These channels are both differential
-> and use modifiers and If I'm not missing nothing, we use channel2 for both cases.
-
-ouch.  That indeed is going to blow up.  Can't have modified differential channels
-and that is very hard to work around because of lack of space in the events format.
-
-I couldn't think of a reason why we'd have differential modified channels when
-I made this stuff up...
-
-Jonathan
-
-
-> 
-> I will leave a comment in the series which might be better...
-> 
-> - Nuno Sá
-> >   
-> > >
-> > > - Nuno Sá  
-> 
+Hans
 
