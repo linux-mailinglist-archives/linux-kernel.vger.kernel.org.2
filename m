@@ -2,87 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 699FC443F5B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 10:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BFC443F64
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 10:28:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231903AbhKCJ2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 05:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231278AbhKCJ2M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 05:28:12 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95636C061714;
-        Wed,  3 Nov 2021 02:25:36 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id x1-20020a17090a530100b001a1efa4ebe6so1332996pjh.0;
-        Wed, 03 Nov 2021 02:25:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=g4AX39dCBvYQienKQDyxN0jAYne+Ve3lwZzCPu1W3gU=;
-        b=PH53maJ5OzwSihtLJU7h5t4zhY047RlVK/GmR4RjwFn/p3FMRFVJohtvBP26G7B2Gq
-         +xEXvuXZYBWIcuDKedvJ3oNuoqsetU8hYb6iP5D7AEIokjuOUICVxE3dNh8zt3C/fDb5
-         NdQm0EFW/GeMzm8K+6oc+H9W5ZmDECBYXcjCnpgAs3WpslyjRrT0qhwPo0loCZkBQ7pj
-         9DphuE8vYrbud0axLOd7LMjAsL5O9qDMeV6QGc8yBRzaK2bL8ebssE7cwhhtF54qGJE6
-         NnbLBCarDh3ZOUU6JsFSquXyVATFJ73fu0HrJ42xOrM58ku6ZeG0vNtZhbaAU0jPTFa0
-         etxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=g4AX39dCBvYQienKQDyxN0jAYne+Ve3lwZzCPu1W3gU=;
-        b=IdeA4EfdG4TzLkHuh+VKeyfaFGe3wHfmUSbv3JtZ/DPICA5/be3iErTKTpNqSWPPx+
-         Au4HOgz78LKDjIiOxUfu/X68JJvxggvIyngVRWY8LlncUpQMcIFHJNBqqY1ofwPK+fqh
-         b0O+PO2gIvBbkd7l+ViZ5zmMKA8eCdru6RHzoi0dFiPOUqEgycZhgcCeLsaiwIaS7Zh5
-         7j+hPWMS8eLlFz0IBR/hVG6X5hojNgLgLmvyc5J31x1LhniBeBAieRsusY9tOgGId8jy
-         M1Rg78tlivwyjXz+KGEuvp29+Mu0h9vRwL8f4QgtphMO5EwkVlbRja7lBTjfVu0vLmoz
-         iolg==
-X-Gm-Message-State: AOAM532TZ1Yifewv1mKm+jy6cKZuKdAQnC2DzyoghVreVWxKPJ1bzdta
-        kc+bNph53LUafcIsfWyl7iSjfqpXGzNv8g==
-X-Google-Smtp-Source: ABdhPJxnpA5cJ54pRhjLNeqJbCTqdjZLA25xFnnMlXbh0/ElSQhiZvurWSJt7+c88DULYM5IMRRNSQ==
-X-Received: by 2002:a17:902:e548:b0:141:f4ae:d2bd with SMTP id n8-20020a170902e54800b00141f4aed2bdmr15976636plf.41.1635931536157;
-        Wed, 03 Nov 2021 02:25:36 -0700 (PDT)
-Received: from raspberrypi ([49.166.114.232])
-        by smtp.gmail.com with ESMTPSA id l1sm1416738pgn.27.2021.11.03.02.25.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 02:25:35 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 09:25:31 +0000
-From:   Austin Kim <austindh.kim@gmail.com>
-To:     john.johansen@canonical.com, serge@hallyn.com
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, austindh.kim@gmail.com
-Subject: [PATCH] apparmor: remove duplicated 'Returns:' comments
-Message-ID: <20211103092531.GA25721@raspberrypi>
+        id S231963AbhKCJad convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Nov 2021 05:30:33 -0400
+Received: from aposti.net ([89.234.176.197]:50244 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231912AbhKCJab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 05:30:31 -0400
+Date:   Wed, 03 Nov 2021 09:27:44 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 1/9] Remove unused headers <linux/jz4740-adc.h> and
+ <linux/power/jz4740-battery.h>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        Paul Burton <paul.burton@mips.com>,
+        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
+Message-Id: <8YOZ1R.5Y4XRHLJDAGS@crapouillou.net>
+In-Reply-To: <YYI9t2Ng1Uppkiav@google.com>
+References: <20211102220203.940290-1-corbet@lwn.net>
+        <20211102220203.940290-2-corbet@lwn.net> <YYI9t2Ng1Uppkiav@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It might look better if duplicated 'Returns:' comment is removed.
+Hi Lee,
 
-Signed-off-by: Austin Kim <austindh.kim@gmail.com>
----
- security/apparmor/procattr.c | 2 --
- 1 file changed, 2 deletions(-)
+Le mer., nov. 3 2021 at 07:43:51 +0000, Lee Jones 
+<lee.jones@linaro.org> a écrit :
+> On Tue, 02 Nov 2021, Jonathan Corbet wrote:
+> 
+>>  Commit ff71266aa490 ("mfd: Drop obsolete JZ4740 driver") removed 
+>> the last
+>>  file to include <linux/jz4740-adc.h> but left the header file itself
+>>  behind.  Nothing uses it, remove it now.
+>> 
+>>  Similarly, aea12071d6fc ("power/supply: Drop obsolete JZ4740 
+>> driver")
+>>  deleted the last use of <linux/power/jz4740-battery.h>, so remove 
+>> that one
+>>  too.
+>> 
+>>  Cc: Paul Cercueil <paul@crapouillou.net>
+>>  Cc: Lee Jones <lee.jones@linaro.org>
+>>  Cc: Paul Burton <paul.burton@mips.com>
+>>  Cc: Sebastian Reichel <sre@kernel.org>
+>>  Cc: linux-pm@vger.kernel.org
+>>  Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+>>  ---
+>>   include/linux/jz4740-adc.h           | 33 
+>> ----------------------------
+>>   include/linux/power/jz4740-battery.h | 15 -------------
+> 
+> It appears as though there are still references to both of these
+> *devices* in the kernel tree.  Should those be removed also?
 
-diff --git a/security/apparmor/procattr.c b/security/apparmor/procattr.c
-index c929bf4a3df1..fde332e0ea7d 100644
---- a/security/apparmor/procattr.c
-+++ b/security/apparmor/procattr.c
-@@ -21,8 +21,6 @@
-  * @profile: the profile to print profile info about  (NOT NULL)
-  * @string: Returns - string containing the profile info (NOT NULL)
-  *
-- * Returns: length of @string on success else error on failure
-- *
-  * Requires: profile != NULL
-  *
-  * Creates a string containing the namespace_name://profile_name for
--- 
-2.20.1
+These files were for older drivers that were since then replaced by 
+newer drivers; JZ47xx SoCs are still officially supported and 
+maintained.
+
+Cheers,
+-Paul
+
+>>   2 files changed, 48 deletions(-)
+>>   delete mode 100644 include/linux/jz4740-adc.h
+>>   delete mode 100644 include/linux/power/jz4740-battery.h
+> 
+> Patch looks fine though.
+> 
+> Let me know if you want me to take it in via MFD.  Otherwise:
+> 
+> Acked-by: Lee Jones <lee.jones@linaro.org>
+> 
+> --
+> Lee Jones [李琼斯]
+> Senior Technical Lead - Developer Services
+> Linaro.org │ Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
+
 
