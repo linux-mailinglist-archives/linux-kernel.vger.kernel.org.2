@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4797443C2A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 05:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86519443C2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 05:21:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbhKCEYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 00:24:10 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:43994 "EHLO
+        id S231230AbhKCEYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 00:24:12 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:44050 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230291AbhKCEYH (ORCPT
+        with ESMTP id S230441AbhKCEYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 00:24:07 -0400
-X-UUID: 3b63c6966e5e49bd955f807fcc1ee918-20211103
-X-UUID: 3b63c6966e5e49bd955f807fcc1ee918-20211103
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        Wed, 3 Nov 2021 00:24:08 -0400
+X-UUID: d92f1d5f056540e1a5442f998461bf42-20211103
+X-UUID: d92f1d5f056540e1a5442f998461bf42-20211103
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
         (envelope-from <james.lo@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1148264874; Wed, 03 Nov 2021 12:21:28 +0800
+        with ESMTP id 1448005471; Wed, 03 Nov 2021 12:21:28 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Wed, 3 Nov 2021 12:21:27 +0800
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Wed, 3 Nov 2021 12:21:27 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
  Transport; Wed, 3 Nov 2021 12:21:27 +0800
@@ -35,10 +35,12 @@ CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
         <linux-mediatek@lists.infradead.org>,
         <srv_heupstream@mediatek.com>,
         <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH v13 0/4] Add SPMI support for Mediatek SoC IC
-Date:   Wed, 3 Nov 2021 12:20:59 +0800
-Message-ID: <20211103042103.4984-1-james.lo@mediatek.com>
+Subject: [v13 1/4] dt-bindings: spmi: modify the constraint of reg property
+Date:   Wed, 3 Nov 2021 12:21:00 +0800
+Message-ID: <20211103042103.4984-2-james.lo@mediatek.com>
 X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20211103042103.4984-1-james.lo@mediatek.com>
+References: <20211103042103.4984-1-james.lo@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK:  N
@@ -46,33 +48,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds support for new SoC MT6873/MT8192/MT8195 to the spmi driver.
-This series is based on Chun-Jie's patches[1].
+The constraint of reg may larger than 1, so we modify to
+'minItem: 1' and 'maxItem: 2'.
 
-[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=521655
+Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/spmi/spmi.yaml | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-changes since v12:
-- rebase to v5.15-rc1.
-- fix yaml error
-- refine Kconfig and spmi-mtk-pmif.c
-
-Henry Chen (1):
-  spmi: mediatek: Add support for MT8195
-
-Hsin-Hsiung Wang (3):
-  dt-bindings: spmi: modify the constraint of reg property
-  dt-bindings: spmi: document binding for the Mediatek SPMI controller
-  spmi: mediatek: Add support for MT6873/8192
-
- .../bindings/spmi/mtk,spmi-mtk-pmif.yaml      |  76 +++
- .../devicetree/bindings/spmi/spmi.yaml        |   3 +-
- drivers/spmi/Kconfig                          |  11 +
- drivers/spmi/Makefile                         |   1 +
- drivers/spmi/spmi-mtk-pmif.c                  | 542 ++++++++++++++++++
- 5 files changed, 632 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
- create mode 100644 drivers/spmi/spmi-mtk-pmif.c
-
+diff --git a/Documentation/devicetree/bindings/spmi/spmi.yaml b/Documentation/devicetree/bindings/spmi/spmi.yaml
+index 1d243faef2f8..f29183a45adc 100644
+--- a/Documentation/devicetree/bindings/spmi/spmi.yaml
++++ b/Documentation/devicetree/bindings/spmi/spmi.yaml
+@@ -25,7 +25,8 @@ properties:
+     pattern: "^spmi@.*"
+ 
+   reg:
+-    maxItems: 1
++    maxItems: 2
++    minItems: 1
+ 
+   "#address-cells":
+     const: 2
 -- 
 2.18.0
 
