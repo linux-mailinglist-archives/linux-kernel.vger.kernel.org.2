@@ -2,76 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7F6443DE9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BA2443DED
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhKCIA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 04:00:57 -0400
-Received: from phobos.denx.de ([85.214.62.61]:34814 "EHLO phobos.denx.de"
+        id S231512AbhKCIBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 04:01:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230025AbhKCIAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 04:00:54 -0400
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: marex@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id E317182DB4;
-        Wed,  3 Nov 2021 08:58:16 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1635926297;
-        bh=oa/Uxsv/XQV6SQzir5MDA0SRJostU11TptI67xLy7ek=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=jIrSCETGj5Q3CQhhP3MphPGYcaagsGce28X3kpnlsD4uH9c55ZbJqBOx+LcNJp4ty
-         5lD9ykFniYEVG2ZsAM1MhbMKw5yTiEQMfdfX/AN9bMcTo/a6UqneCFB6bbwrVhWRmA
-         QzB0jB7tEUqjhduEEgB1j22xLABLRoxNbX/JyIOo4VeXCWFsIhHrQBtG/n0jH3MTRh
-         5D8lQlRQ1q8zwyUWP95qpG+H/f0a9QL8mxkbQQ+63/xq3AxNUwHc23ChL3RWEvsNV7
-         C3pp3F7/7olaLwPHezeROyWBop8c7oeNvIt7s66o10PVzNdIyTRwTrv0r+j7UxO6+9
-         jcg9qYMbfyCmw==
-Subject: Re: [PATCH] drm: mxsfb: Check NULL pointer
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>, stefan@agner.ch,
-        airlied@linux.ie, daniel@ffwll.ch, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <1635925699-3414834-1-git-send-email-jiasheng@iscas.ac.cn>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <579998fc-12ee-fb23-afe5-f0ef70807a3c@denx.de>
-Date:   Wed, 3 Nov 2021 08:58:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S229504AbhKCIBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 04:01:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC2E46109F;
+        Wed,  3 Nov 2021 07:58:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1635926318;
+        bh=Rl7lz8GNjFRdlMbmYLnI1tew/T4cpypsk+ho58waK7M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nwvjqouuvaL6lGuN+U8vFU1oob7IGU21izB0BD20OetyABN8mcboCo95tFe0RIRks
+         2k2BVU3ayx/QGYFpHovubxobb88p6q9cahJYi7VF4cdUyQId5l8MWDj7MwQJC+HBa7
+         WjfZza6N9RCKIjoTJh1sgMYuXetSNAM/PFcEmSUk=
+Date:   Wed, 3 Nov 2021 08:58:34 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     ira.weiny@intel.com
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH 0/3] Improve Auxiliary Device documentation
+Message-ID: <YYJBKrTlaqPfVYiJ@kroah.com>
+References: <20211102215317.3676782-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1635925699-3414834-1-git-send-email-jiasheng@iscas.ac.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211102215317.3676782-1-ira.weiny@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/21 8:48 AM, Jiasheng Jiang wrote:
-> As we see in the drm_connector_list_iter_next(), it could return
-> NULL. In order to avoid the use of the NULL pointer, it may be
-> better to check the return value.
+On Tue, Nov 02, 2021 at 02:53:14PM -0700, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> Fixes: c42001e ("drm: mxsfb: Use drm_panel_bridge")
-> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
-> ---
->   drivers/gpu/drm/mxsfb/mxsfb_drv.c | 2 ++
->   1 file changed, 2 insertions(+)
+> The auxiliary device documentation was not wrong but it was a bit difficult to
+> follow.  Add clarifications to ensure that details are not missed.
 > 
-> diff --git a/drivers/gpu/drm/mxsfb/mxsfb_drv.c b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-> index 6da9355..b875c11 100644
-> --- a/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-> +++ b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-> @@ -145,6 +145,8 @@ static int mxsfb_attach_bridge(struct mxsfb_drm_private *mxsfb)
->   	 */
->   	drm_connector_list_iter_begin(drm, &iter);
->   	mxsfb->connector = drm_connector_list_iter_next(&iter);
-> +	if (!mxsfb->connector)
-> +		return 1;
+> 
+> Ira Weiny (3):
+>   Documentation/auxiliary_bus: Clarify auxiliary_device creation
+>   Documentation/auxiliary_bus: Clarify match_name
+>   Documentation/auxiliary_bus: Update Auxiliary device lifespan
+> 
+>  Documentation/driver-api/auxiliary_bus.rst | 136 ++++++++++++++++-----
 
-In which case does this happen failure happen ?
-What is the test case ?
+Any chance that we can move this documentation into the .c file itself
+to make it easier to maintain and keep up to date over time?  I think
+the v4l2 and drm subsystems do this pretty well, right?
+
+thanks,
+
+greg k-h
