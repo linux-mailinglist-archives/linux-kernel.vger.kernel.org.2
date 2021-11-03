@@ -2,84 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FC044490A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:35:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 569BF44490C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbhKCTho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 15:37:44 -0400
-Received: from wrqvxttq.outbound-mail.sendgrid.net ([149.72.167.116]:18118
-        "EHLO wrqvxttq.outbound-mail.sendgrid.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231251AbhKCThl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 15:37:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wasin.io;
-        h=from:subject:mime-version:to:cc:content-transfer-encoding:
-        content-type;
-        s=s1; bh=qNBGXlLMnPhrJq5G4++xZYyQ0CDuclAGDf2//H9A8Jw=;
-        b=ATVwlzXPw6ucJT7y90v3tOD8+WcmUwa6p3KUrJcBgBwJCfUasDWzO6o+yKsla0vrNh5T
-        KdSqEAm8tZYLaCDSlMbuvlnNGR/gTXgTai+tum1kJVcvkMJa7QVzdk3Wzxj7EJ8dNHCwbF
-        /APUeRwyz35IRsUN6rZWXbcxq7sE6OQbya4o4kCdVhKFSZ9PUykIXH3W4RBUXsgxiv3QQV
-        nWFS+l0i/k+ClIUZOtk4kHqRnddSdujm0iMyIAA1n6wvgSpcDLcYrcaK/dPh92UfiuzRR5
-        xhsv0EQZUgh6BSDNkt+CWI8PAUiGgSI5hMnK/o/S4eHcASTx2MoqGVeIFkJPrlOQ==
-Received: by filterdrecv-7bc86b958d-g5ggb with SMTP id filterdrecv-7bc86b958d-g5ggb-1-6182E467-72
-        2021-11-03 19:35:03.921384625 +0000 UTC m=+5433307.461623071
-Received: from mail.wasin.io (unknown)
-        by geopod-ismtpd-1-0 (SG) with ESMTP
-        id LHoz9VGZQV-O_PwKEj1PFg
-        for <linux-kernel@vger.kernel.org>;
-        Wed, 03 Nov 2021 19:35:03.128 +0000 (UTC)
-Received: from mail.wasin.io (localhost.localdomain [127.0.0.1])
-        by mail.wasin.io (Postfix) with ESMTP id 89B13A79D7
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 02:39:16 +0800 (SGT)
-X-Virus-Scanned: Debian amavisd-new at mail.wasin.io
-Received: from mail.wasin.io ([127.0.0.1])
-        by mail.wasin.io (mail.wasin.io [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id vUn-1U0nVkYD for <linux-kernel@vger.kernel.org>;
-        Thu,  4 Nov 2021 02:38:54 +0800 (SGT)
-Received: from haxpor-desktop.fritz.box (unknown [185.134.6.138])
-        by mail.wasin.io (Postfix) with ESMTPSA id 5BA4BA79D5;
-        Thu,  4 Nov 2021 02:38:47 +0800 (SGT)
-From:   Wasin Thonkaew <wasin@wasin.io>
-Subject: [PATCH RESEND] docs: filesystems: Fix grammatical error "with" to
- "which"
-Date:   Wed, 03 Nov 2021 19:35:03 +0000 (UTC)
-Message-Id: <20211103193354.185647-1-wasin@wasin.io>
-X-Mailer: git-send-email 2.25.1
+        id S230395AbhKCTjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 15:39:37 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:45662 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230198AbhKCTjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 15:39:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=2u8+xxOn4g/JbmCkvm/SX9mKAxPVHUs+JVNIris0Gow=; b=BpO8NbkMDafRWlcCmDTJzWtcUn
+        AwNNb5RB9Jb6rwd5bXnjP+ZcisWRxogdevk8RoQAnFDP4O+9SO/doPtrCgiwD8SS9WbA1Bl4W5BF5
+        tYAYuy3cO8VqZPrBMvGSdzzNGBUtv6ZATTfvzX3dOgOr0PHBD10LDPI9TYYpQFhuh/1s=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1miM41-00CXAU-QW; Wed, 03 Nov 2021 20:36:49 +0100
+Date:   Wed, 3 Nov 2021 20:36:49 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [RFC PATCH] net: phy/mdio: enable mmd indirect access through
+ phy_mii_ioctl()
+Message-ID: <YYLk0dEKX2Jlq0Se@lunn.ch>
+References: <YYCLJnY52MoYfxD8@lunn.ch>
+ <YYExmHYW49jOjfOt@shell.armlinux.org.uk>
+ <bc9df441-49bf-5c8a-891c-cc3f0db00aba@ti.com>
+ <YYF4ZQHqc1jJsE/+@shell.armlinux.org.uk>
+ <e18f17bd-9e77-d3ef-cc1e-30adccb7cdd5@ti.com>
+ <828e2d69-be15-fe69-48d8-9cfc29c4e76e@ti.com>
+ <YYGxvomL/0tiPzvV@lunn.ch>
+ <8d24c421-064c-9fee-577a-cbbf089cdf33@ti.com>
+ <YYHXcyCOPiUkk8Tz@lunn.ch>
+ <01a0ebf9-5d3f-e886-4072-acb9bf418b12@ti.com>
 MIME-Version: 1.0
-X-SG-EID: =?us-ascii?Q?zTXXJmbXDq374aSgSvBccBfxYYlnkEq2csSLV7s2zvJ+VzBfif=2FVK=2F1r3dRlUa?=
- =?us-ascii?Q?HKdShZ1bg6oUZY4XHrArWueaHjBNLT01KMohBrC?=
- =?us-ascii?Q?Sa0nbaQdlxvdnO8WvPq=2F6UPCVQGz0Sexa6CVWWy?=
- =?us-ascii?Q?Mm=2FvurjjrKufXs16sM0DyQopN60=2Fa7+ahBnM+sQ?=
- =?us-ascii?Q?DQHShyJxPCztW23Ph9N53R7NwjU8QLfwaP1xZRb?=
- =?us-ascii?Q?oI5ZjJW+=2Fm83MGc2Jy7oH+S+cKVMOAwoIzQLue?=
-To:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Wasin Thonkaew <wasin@wasin.io>
-X-Entity-ID: 9qDajD32UCSRojGE52wDxw==
-Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <01a0ebf9-5d3f-e886-4072-acb9bf418b12@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Wasin Thonkaew <wasin@wasin.io>
----
- Documentation/filesystems/autofs.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Nov 03, 2021 at 08:42:07PM +0200, Grygorii Strashko wrote:
+> 
+> 
+> On 03/11/2021 02:27, Andrew Lunn wrote:
+> > > > What i find interesting is that you and the other resent requester are
+> > > > using the same user space tool. If you implement C45 over C22 in that
+> > > > tool, you get your solution, and it will work for older kernels as
+> > > > well. Also, given the diverse implementations of this IOTCL, it
+> > > > probably works for more drivers than just those using phy_mii_ioctl().
+> > > 
+> > > Do you mean change uapi, like
+> > >   add mdio_phy_id_is_c45_over_c22() and
+> > >   flag #define MDIO_PHY_ID_C45_OVER_C22 0x4000?
+> > 
+> > No, i mean user space implements C45 over C22. Make phytool write
+> > MII_MMD_CTRL and MII_MMD_DATA to perform a C45 over C22.
+> 
+> Now I give up - as mentioned there is now way to sync User space vs Kernel
+> MMD transactions and so no way to get trusted results.
 
-diff --git a/Documentation/filesystems/autofs.rst b/Documentation/filesystems/autofs.rst
-index 681c6a492bc0..4f490278d22f 100644
---- a/Documentation/filesystems/autofs.rst
-+++ b/Documentation/filesystems/autofs.rst
-@@ -35,7 +35,7 @@ This document describes only the kernel module and the interactions
- required with any user-space program.  Subsequent text refers to this
- as the "automount daemon" or simply "the daemon".
- 
--"autofs" is a Linux kernel module with provides the "autofs"
-+"autofs" is a Linux kernel module which provides the "autofs"
- filesystem type.  Several "autofs" filesystems can be mounted and they
- can each be managed separately, or all managed by the same daemon.
- 
--- 
-2.25.1
+Except that it will probably work 99% of the time, which is enough for
+a debug tool. phylib is pretty idle most of the time, it just polls
+the PHY once a second to see if the link status has changed. And does
+not poll at all if interrupts are wired up. And you can always do a
+read three times and see if you get the same answer, or do a write
+followed by a read to see if the write actually happened correctly, or
+corrupted some other register.
 
+	Andrew
