@@ -2,51 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4966D4444E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D164444E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbhKCPu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 11:50:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229928AbhKCPuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 11:50:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82E7360E73;
-        Wed,  3 Nov 2021 15:47:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635954467;
-        bh=ShZNa7IW9gaF+i032Z807KygJzIVvjgwfigBHlZygoM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZimQOUk4jdQdwDMhecAVgUsdtQ3K9TwgQybjHJlfCrXzeqQmtgJR/tsZKd4nZKmN5
-         8W0eWWO3l4hlIcmACaHjGlc2O50HhOFvBsxE4o/YgqDE1Bn3CIf/p3rPW6fWoi1pWy
-         f5Su3+xYGuN7pAdj5apkZapCReGbEVB7Zf8SRBKiX5dZ/sXoTUnOcfpncpCN6kOge+
-         nuqcArUV/yBjjC7uZmlCAlqWRDkDq3ULk6NLiaUG1v/9azpygcv/2z2RCpAq+7Yde3
-         SNnrWQlehQGRA2bTRyT8CzOsqlB0A+yub8si1KATIcQitEmIFpwYKJ63aIDWTBW+pO
-         FoWqSgynBzEuQ==
-Date:   Wed, 3 Nov 2021 08:47:46 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Ziyang Xuan <william.xuanziyang@huawei.com>, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2] net: vlan: fix a UAF in vlan_dev_real_dev()
-Message-ID: <20211103084746.2ae1c324@kicinski-fedora-PC1C0HJN>
-In-Reply-To: <20211103135034.GP2744544@nvidia.com>
-References: <20211102021218.955277-1-william.xuanziyang@huawei.com>
-        <20211103135034.GP2744544@nvidia.com>
+        id S229928AbhKCPuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 11:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231854AbhKCPua (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 11:50:30 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA84C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 08:47:54 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id w1so11016707edd.10
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 08:47:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=y0dw6iSs7wbSAVhV634Ng3l66t65/ksZhBOuiGx+tEI=;
+        b=N5s4Nl8LMN4AFMZPMSc2tfPh6uyAlWKY7Y77Lw3gkDdta6uD3SctBY4MvnvDqSCokO
+         FyGG0mrO1V6EaUQGwh9wqREG972EQInsBuRc6+YUlAGBVt7bEADj4uspUUsEirOc31Xl
+         kCSQS3Wzw8RGjmYlOdP6UwXoEB4pPqcNAR+5CiS+wDfLlAtsyd3iId8IgmvOC3RV/put
+         857Hn5+e9MjJirC1GlYMEp+J3a8cT4cAilIGJKUeYcLsFK7TUGtxficdPd6q0le4z6CL
+         /mMYOVNnJ3rN4IP+2j7z2bTtnK3dOPN8bmzkZjzDHYgFVqgy7rkec2rh/MekQkLEYc0s
+         SALg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=y0dw6iSs7wbSAVhV634Ng3l66t65/ksZhBOuiGx+tEI=;
+        b=fJayz6XLWXuPIZU6SB1HLMUX49OVbXGS4FUTtKigmh7WM2SS5OEtoP18wFmxIfVDrx
+         X3Twf/yrF5P1vmMRmIRM4F2mi68H6mZb9HkcSky53qErZzVX8ayLI0fpOkDUMl2FMQoi
+         Oshs9bd93vY/i63/a5DNPHd7lcuiDQE048SHJZefnD9A/CX9hYroX2IotRM+UhgvylQn
+         qznRIZk5m33VLg453g97PtKSngZT4YJH7mf8wKcN1WycNZS9tvXAIASW/D/EewDj77dt
+         UX1UkwLDnwJU1PCvUkEU8EF+AOLOKUE9znJld7k1py/NRI3QK0WVKnToy4yIdFX9cFpx
+         kV3Q==
+X-Gm-Message-State: AOAM530xPVNBMnRWIeZonoJZrJ3Us57T2/053EcjxEOjIJyFUflfUhMS
+        zk2H5yLYJrzYNFE1hqkWBeNlZ6F26+A0zaSmuaQ=
+X-Google-Smtp-Source: ABdhPJzIEFMdz3X5eFtim6R8Doqcy1P5HVPRXBRaEKtXjZwhK13Kv+AJ2ZnExGrIKwtqyadCplercmh8Rzs5oEZoL2g=
+X-Received: by 2002:aa7:c941:: with SMTP id h1mr62981863edt.128.1635954472946;
+ Wed, 03 Nov 2021 08:47:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a54:258b:0:0:0:0:0 with HTTP; Wed, 3 Nov 2021 08:47:52 -0700 (PDT)
+Reply-To: juliahelibert77@gmail.com
+From:   Julia Helibert <artslineinks@gmail.com>
+Date:   Wed, 3 Nov 2021 15:47:52 +0000
+Message-ID: <CAGzh0-ob6HRekGDRTPbE=tWFbEf7XN60Rp2+ygxGG9rvf=OzyA@mail.gmail.com>
+Subject: HO BISOGNO DELLA TUA RISPOSTA
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Nov 2021 10:50:34 -0300 Jason Gunthorpe wrote:
-> (though I can't tell either if there is a possiblecircular dep problem
-> in some oddball case)
+--=20
 
-Same, luckily we're just starting a new dev cycle and syzbot can have
-at it. 
+Buona giornata,
 
-We should probably not let this patch get into stable right away -
-assuming you agree - would you mind nacking the selection if it happens?
-I'm not sure I'll get CCed since it doesn't have my tags.
+Sono obbligato a effettuare il trasferimento dei tuoi fondi tramite ATM CAR=
+D.
+
+A causa della rigorosa politica finanziaria e della
+regolamentazione/riforma monetaria
+introdotto dalla Banca per il primo trimestre di questo anno fiscale 2021 e
+gli enormi costi legati al bonifico diretto del fondo dall'Apex
+banca, diventa opportuno formulare un mezzo pi=C3=B9 praticabile di
+versando il fondo su qualsiasi conto designato da te nominato.
+
+Richieder=C3=B2 che i fondi vengano impacchettati nel sistema bancario elet=
+tronico
+e pagato da Automated Payment Systems (CHAPS ///ATM per $ 1.200.000,00 Unit=
+ed
+solo dollari statunitensi).
+
+Un bancomat (ATM) =C3=A8 uno sportello bancario elettronico, che
+consente ai clienti di completare le transazioni di base senza
+l'ausilio di una filiale
+rappresentante o cassiere.
+
+Prender=C3=B2 le disposizioni adeguate per l'invio della carta bancomat nel
+i prossimi giorni.
+
+Riconfermami quanto segue:
+
+1. I tuoi nomi completi e indirizzo completo
+
+2.Il tuo numero di telefono diretto per consentirmi di raggiungerti in
+ogni momento
+
+RISPETTOSAMENTE,
+
+IL SIGNOR HELIBERT.
