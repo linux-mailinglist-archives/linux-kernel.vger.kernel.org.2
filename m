@@ -2,108 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A344443B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBD24443B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231643AbhKCOiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 10:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59748 "EHLO
+        id S231716AbhKCOjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 10:39:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230282AbhKCOiM (ORCPT
+        with ESMTP id S230282AbhKCOjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 10:38:12 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F918C061714;
-        Wed,  3 Nov 2021 07:35:34 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id f4so9872120edx.12;
-        Wed, 03 Nov 2021 07:35:34 -0700 (PDT)
+        Wed, 3 Nov 2021 10:39:49 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A99EC061714;
+        Wed,  3 Nov 2021 07:37:13 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id j21so9956323edt.11;
+        Wed, 03 Nov 2021 07:37:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CByJ2uWF6xZdqY/Jyt0Y0rDuvjgikIkxQadq3PJ48O0=;
-        b=dQvabTYVGPVKpaBRsU5ZArappxUZv1uP7hFP0poaqFaon4o++HOqzaJ2l3Aq+LDSaH
-         cjkjlSdDTuCDfz7YJ3fk6OSLPTDp22nMO12ilF/0tFPiAFx3BLAtbKe/jEjmmlR0DsZ3
-         vIa+Gti119IsH9bDtwTnw6NM27rUsyJLrjgR9Hk1Y04rWj093463cnaGv2bwfFJN6n8/
-         I/StKulMIQZNRCIcOVu2/YDMNaEqaQCWCtFaxVsc5/PkKXI4e72fEfGvI5hELW/Armyj
-         +ZnKZv3ffc0gvsu4n2NlCIyQJrWpxuBQ1HvA4qYO9TqqVAVJBZpmKYNCchkHyA9rV4/h
-         d1Kw==
+        bh=4l9+CNH1zvFA6GeAoxIinWOckYEE5i0Zd3a0AVw5MI8=;
+        b=ZCKWEyY2KrwG6BEz8j5F8WnqD/9xzHqezwSEXXf68Cfx9nCBfuLa+KvR4gDbN60sVb
+         WIHqxhEEgXCoSq6YvKVbjGZ+1OX9migWdTIpyMhh3a6qtX5qpS5qkDg64ntgvSmUnWmq
+         oSKfG/XgsqJKBeXJFEJVAVml7yCVlgV1//+pGWLHAHVs2ndd18YgEyk2osMbVe+4rRiD
+         nB+3efcMixAJ4jGkpQl8e1f37hr33XbzUUqwxl0yawNj7/SZHYrM6dIwtRVQwp3n6Iw+
+         2m+zeH2WkWudaASE7jcSPmjLYfOy0/AuEpGcqz1tWRtxVh8594nxf5u+ojHwCYc38azO
+         yqig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CByJ2uWF6xZdqY/Jyt0Y0rDuvjgikIkxQadq3PJ48O0=;
-        b=H+1hrg02P0jheC1xGF34MAf4IIed8EB7MpGakDmgSia9HQB7b5hO94TS+OH8PjZn68
-         +mFDgkQGl9QyMt11AmkO1JNqHzA31QiDvExYhOVopFEQitcso7J1HExebR1x8IN+WpIO
-         MWbtm5ieGopvuOckxu8Kx69v/LzGIqMqpoie4h4UQ3zj1Vj5qP3/0uQgXI1uu4zqkt8Q
-         cVzyR4w1iD6vFPgcwmD8wON0y75iizbP1LS2N2tqXg4SgJO7LUvyDNmere2773LR+ak8
-         hedfQwIz5t8u5YaKeSm0OlVlgEb/gYkN0I5dHJOYlkW8/uc8RSZKGUjWNJkOjEt/ggcB
-         /GzA==
-X-Gm-Message-State: AOAM533WavRwHkt2YXskfzPraXqCu85EoSyYDs15d6fLORvspa63ipZM
-        JGEVlckdkarl1BS3hW0J0l+7rRLOfdvjpZQQ3Bg=
-X-Google-Smtp-Source: ABdhPJzq9+wLGi9ITQa0cEXGEipuMzevr5v2gchEoOPbk3TiU5aGmIfc2OL8lygajTbjcfLuPWykgMiSRdPk4KsIr30=
-X-Received: by 2002:a17:906:9f21:: with SMTP id fy33mr54543559ejc.567.1635950129415;
- Wed, 03 Nov 2021 07:35:29 -0700 (PDT)
+        bh=4l9+CNH1zvFA6GeAoxIinWOckYEE5i0Zd3a0AVw5MI8=;
+        b=K7CLcgNhNyTgHOGIlCKGMvkIkC9qURKXxrJYXc4KjfgH7EKG4en4cX+0H5hRcefRy4
+         0jjQ27Ozo8g6sNTJGBCshPAQzSS5HkdfTCw5ygJaTIVYB7AdGuPFmNP9pLA/z0nJFTE6
+         Nw0v1souzIVzQChFwzA5lPTj1VgNT7tS4W1ztFLlmDGzLKLrX6wEfyLdsgkDbV1dS34B
+         9WUlLq5u6XaooQA40C7LCbJJYFvWpzq82FNFkcW7I0Kx0/jjgaMdXE3FOO+W9X3uUhv0
+         h5z+5Ub4RlXRwzSkbBumduiUzmBHVSZSzJ3YUnpyC7iDJSXi2Fp2lczA3Ge35a5g3l9T
+         evyg==
+X-Gm-Message-State: AOAM533xaHBdiHBpm/JzowjAHwqbdF5Pagcokg5mk8qsnngbh8ai5uW5
+        PKJVGvGzazGZ5nhMCnkr45RJBsit6MV/ABbK0AmphJt5
+X-Google-Smtp-Source: ABdhPJwt/pkDKB7laGuvay0LLu9639+72PKeT/pp6WyFWVUzg0/zcLKKhfoWry3aEhXHil2I96wgir8JneDfQhUc+Gg=
+X-Received: by 2002:a50:be81:: with SMTP id b1mr61526669edk.59.1635950230835;
+ Wed, 03 Nov 2021 07:37:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211103135418.496f75d5@sal.lan>
-In-Reply-To: <20211103135418.496f75d5@sal.lan>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 3 Nov 2021 16:34:39 +0200
-Message-ID: <CAHp75VehnnD7VPYCH0YaB43_UvWL=FzfgDkYJ3PhgrK8PhQKtQ@mail.gmail.com>
-Subject: Re: atomisp current issues
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Yang Li <abaci-bugfix@linux.alibaba.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Alan <alan@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201118230414.121316-1-aford173@gmail.com> <20201130220249.GA3109751@robh.at.kernel.org>
+ <CAHCN7x+om4W5jqnuAW4-nMkZLc5nrYu7NUsbM36r0wyFSYa4-g@mail.gmail.com> <CAHCN7xKEkpq07AfMbpPfEcz0x=XvVjST==8gYRyrbW+Cjs3ONg@mail.gmail.com>
+In-Reply-To: <CAHCN7xKEkpq07AfMbpPfEcz0x=XvVjST==8gYRyrbW+Cjs3ONg@mail.gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Wed, 3 Nov 2021 09:36:59 -0500
+Message-ID: <CAHCN7xJK-iMMNMOtJCn9a2T2Jox=3LK3ANPGgZAC645wJw=3JQ@mail.gmail.com>
+Subject: Re: [PATCH V5] dt-bindings: soc: imx: Add binding doc for spba bus
+To:     Rob Herring <robh@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 3:54 PM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
-
-...
-
-> Currently, 10 video? devices are created:
+On Sat, Oct 16, 2021 at 3:11 PM Adam Ford <aford173@gmail.com> wrote:
 >
->         $ for i in $(ls /dev/video*|sort -k2 -to -n); do echo -n $i:; v4l2-ctl -D -d $i|grep Name; done
->         /dev/video0:    Name             : ATOMISP ISP CAPTURE output
->         /dev/video1:    Name             : ATOMISP ISP VIEWFINDER output
->         /dev/video2:    Name             : ATOMISP ISP PREVIEW output
->         /dev/video3:    Name             : ATOMISP ISP VIDEO output
->         /dev/video4:    Name             : ATOMISP ISP ACC
->         /dev/video5:    Name             : ATOMISP ISP MEMORY input
->         /dev/video6:    Name             : ATOMISP ISP CAPTURE output
->         /dev/video7:    Name             : ATOMISP ISP VIEWFINDER output
->         /dev/video8:    Name             : ATOMISP ISP PREVIEW output
->         /dev/video9:    Name             : ATOMISP ISP VIDEO output
->         /dev/video10:   Name             : ATOMISP ISP ACC
+> On Thu, Apr 1, 2021 at 4:19 PM Adam Ford <aford173@gmail.com> wrote:
+> >
+> > On Mon, Nov 30, 2020 at 4:02 PM Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Wed, 18 Nov 2020 17:04:14 -0600, Adam Ford wrote:
+> > > > Add binding doc for fsl,spba-bus.
+> > > >
+> > > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > > > ---
+> > > > make dt_binding_check -j8 |grep spba
+> > > >   DTEX    Documentation/devicetree/bindings/bus/fsl,spba-bus.example.dts
+> > > >   DTC     Documentation/devicetree/bindings/bus/fsl,spba-bus.example.dt.yaml
+> > > >   CHECK   Documentation/devicetree/bindings/bus/fsl,spba-bus.example.dt.yaml
+> > > >
+> > > > V5:  Rebase on 5.10-rc2 to be able to check yaml
+> > > >      Add Reg entry
+> > > >
+> > > > V4:  Remove an accidental makefile change
+> > > >      Move type:object under additional properties
+> > > >
+> > > > V3:  Rebase sample from aips-bus example
+> > > >      Split off from series adding i.MX8M Nano functions to reduce noise
+> > > >
+> > > > V2:  Attempted to update yaml from feedback
+> > > >
+> > >
+> > > Applied, thanks!
+> >
+> > Rob,
+> >
+> > I am not seeing this anywhere.  Can you tell me where this was
+> > applied?  It's not appearing in Linux-next
 >
-> That seems to be written to satisfy some Android-based app, but we don't
-> really need all of those.
+> Rob,
 >
-> I'm thinking to comment out the part of the code which creates all of those,
-> keeping just "ATOMISP ISP PREVIEW output", as I don't think we need all
-> of those.
+> Patchwork shows this has been accepted [1], however I don't see that
+> it's still applied.
+>
+>
+> [1] https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20201118230414.121316-1-aford173@gmail.com/
+>
+> Can you apply it?  It looks like building the device tree is throwing
+> messages because this is missing.
+>
 
-Are they using the same microprograms (named routines) in the firmware?
+Shawn,
 
--- 
-With Best Regards,
-Andy Shevchenko
+Since you're the maintainer for the IMX stuff, can I update the
+MAINTAINERS file to add this yaml file under the IMX section?  When
+building device trees, it throws a bunch of splat because this patch
+was never applied, and checkpatch is showing it wants a maintainer.
+
+> adam
+> >
+> > adam
