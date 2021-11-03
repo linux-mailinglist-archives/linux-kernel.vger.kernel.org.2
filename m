@@ -2,391 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3ACC444A24
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 22:18:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9478B444A28
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 22:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhKCVUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 17:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhKCVUl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 17:20:41 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB78CC061203
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 14:18:04 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id f10so4039113ilu.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 14:18:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vp7L6fWq5JOaVwWXrcgwmhvI35J5PWQSGZU7/nILXi8=;
-        b=k0kOuwMyU27qhvZKgPW+bgT0b6uwzDdWQOIy223IiZN73FydP0W2fIJ8q4SMSBsWm9
-         pouS3KJiGhVaIP8VIP5T7qK1li0/QxB1H3kISS1ARdusqa9UAWsCmGAO0Pna/iUqZ8p0
-         ww6FnkUC1HKBndSvsg5CsjBwx3AWGBKMJMMgo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vp7L6fWq5JOaVwWXrcgwmhvI35J5PWQSGZU7/nILXi8=;
-        b=69BzEDq6QckrRo05bv0tucGb89wBr+P5pY8VcNwB0jnu9y2IDutTAqAmnRBmBAXrQJ
-         VwzbTGYeq7pD0MwOouxKFbgkFYy8wklH5BnjKuG85v4S1oXZ0xyNUTlwjgxUZQhDS3Q8
-         3ve6pZhqw5ltFnbW8IOl0RUQYfT8mL6DkuWX+b5bHl9oo9foY8sNjWciS33habAhiCUx
-         liW0Y4GZZcHiEmbxPcOcR568szNSzpHc11Iw8S45DMKZDPFmAyQGfN+mSSwiLiCBx55G
-         gOYb9NO6s6h0AteQknK/UDJbETOMIY/X90kQW0fX96nCcxOf8BHdleeveI4rd4Hc9gKQ
-         A94w==
-X-Gm-Message-State: AOAM533WMtf0w0hsGEa7oPpH7T8tloeHsSRGCxY1t/RqZo1CXBLcebB9
-        biWuSviog8TRb/GNa4oyOcHHfVLa97XUuQ==
-X-Google-Smtp-Source: ABdhPJzSy2+We+YA7gSzA3Fi9ws3efmXizOmEZ2w2wTlStkbClkRez2rhbsN0HEJUFYoQMd05cDxGw==
-X-Received: by 2002:a05:6e02:604:: with SMTP id t4mr31011046ils.129.1635974283749;
-        Wed, 03 Nov 2021 14:18:03 -0700 (PDT)
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com. [209.85.166.181])
-        by smtp.gmail.com with ESMTPSA id q8sm499470ilv.48.2021.11.03.14.18.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 14:18:03 -0700 (PDT)
-Received: by mail-il1-f181.google.com with SMTP id w10so3998063ilc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 14:18:03 -0700 (PDT)
-X-Received: by 2002:a05:6e02:144e:: with SMTP id p14mr445657ilo.180.1635974282559;
- Wed, 03 Nov 2021 14:18:02 -0700 (PDT)
+        id S230314AbhKCVXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 17:23:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48776 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229893AbhKCVXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 17:23:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 472D660F39;
+        Wed,  3 Nov 2021 21:21:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635974477;
+        bh=BIAet6su7MKFzmPK/WEoN6/xcs5HFlmPOuKV4IhKeBQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=JN9nudqOEIK2Xz/T3EG0+cNT0Ai8X/1MZqjHZLbs2uiABNGgc8I1bxBwcphSQ9iWm
+         Nzu79+ja5mHHV9d0lVdH34PsGPOfr/EbUroQBclRTwECF0PB6BjrC+xgLD9Dvlu2s8
+         LDol2SogdeGTaIhaRqa6BTKov7UHQEzEPANuBAGbvN4zvGanXnREWmlKkHg06Kk3rE
+         HgjeAY2eO5gAr22MiRXxejoLxtq5vRndF1ZNo/nEa6ZtsGZpEmmR1cIaxzAo0iKUxG
+         7YxmTX7A0qi+rZq9hGG1UtyujOlwfXF2v6BsAWlrpe0WuAXCcoeIpaj945AtoiVODc
+         55vq2bDQL+O3w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 0EBC35C0848; Wed,  3 Nov 2021 14:21:17 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 14:21:17 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Jun Miao <jun.miao@windriver.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Dmitry Vyukov <dvyukov@google.com>, qiang.zhang1211@gmail.com,
+        RCU <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        miaojun0823@163.com, ryabinin.a.a@gmail.com,
+        Alexander Potapenko <glider@google.com>,
+        jianwei.hu@windriver.com, melver@google.com
+Subject: Re: [PATCH] rcu: avoid alloc_pages() when recording stack
+Message-ID: <20211103212117.GA631708@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211101103158.3725704-1-jun.miao@windriver.com>
+ <96f9d669-b9da-f387-199e-e6bf36081fbd@windriver.com>
+ <CA+KHdyU98uHkf1VKbvFs0wcXz7SaizENRXn4BEpKJhe+KmXZuw@mail.gmail.com>
+ <baa768a3-aacf-ba3a-8d20-0abc78eca2f7@windriver.com>
+ <CA+KHdyUEtBQjh61Xx+4a-AS0+z18CW1W5GzaRVsihuy=PUpUxA@mail.gmail.com>
+ <20211103181315.GT880162@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-References: <20211020060954.1531783-1-vkoul@kernel.org>
-In-Reply-To: <20211020060954.1531783-1-vkoul@kernel.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 3 Nov 2021 14:17:50 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VDjqQsnGVOf0FPsk74xgP87iBnk3MznEi1TjTKHP0Ldw@mail.gmail.com>
-Message-ID: <CAD=FV=VDjqQsnGVOf0FPsk74xgP87iBnk3MznEi1TjTKHP0Ldw@mail.gmail.com>
-Subject: Re: [PATCH v5] spi: spi-geni-qcom: Add support for GPI dma
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211103181315.GT880162@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Nov 03, 2021 at 11:13:15AM -0700, Paul E. McKenney wrote:
+> On Wed, Nov 03, 2021 at 02:55:48PM +0100, Uladzislau Rezki wrote:
+> > On Wed, Nov 3, 2021 at 7:51 AM Jun Miao <jun.miao@windriver.com> wrote:
+> > >
+> > >
+> > > On 11/2/21 10:53 PM, Uladzislau Rezki wrote:
+> > > > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > > >
+> > > >> Add KASAN maintainers
+> > > >>
+> > > >> On 11/1/21 6:31 PM, Jun Miao wrote:
+> > > >>> The default kasan_record_aux_stack() calls stack_depot_save() with GFP_NOWAIT,
+> > > >>> which in turn can then call alloc_pages(GFP_NOWAIT, ...).  In general, however,
+> > > >>> it is not even possible to use either GFP_ATOMIC nor GFP_NOWAIT in certain
+> > > >>> non-preemptive contexts/RT kernel including raw_spin_locks (see gfp.h and ab00db216c9c7).
+> > > >>>
+> > > >>> Fix it by instructing stackdepot to not expand stack storage via alloc_pages()
+> > > >>> in case it runs out by using kasan_record_aux_stack_noalloc().
+> > > >>>
+> > > >>> Jianwei Hu reported:
+> > > >>>    BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:969
+> > > >>>    in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 15319, name: python3
+> > > >>>    INFO: lockdep is turned off.
+> > > >>>    irq event stamp: 0
+> > > >>>    hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> > > >>>    hardirqs last disabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
+> > > >>>    softirqs last  enabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
+> > > >>>    softirqs last disabled at (0): [<0000000000000000>] 0x0
+> > > >>>    CPU: 6 PID: 15319 Comm: python3 Tainted: G        W  O 5.15-rc7-preempt-rt #1
+> > > >>>    Hardware name: Supermicro SYS-E300-9A-8C/A2SDi-8C-HLN4F, BIOS 1.1b 12/17/2018
+> > > >>>    Call Trace:
+> > > >>>     show_stack+0x52/0x58
+> > > >>>     dump_stack+0xa1/0xd6
+> > > >>>     ___might_sleep.cold+0x11c/0x12d
+> > > >>>     rt_spin_lock+0x3f/0xc0
+> > > >>>     rmqueue+0x100/0x1460
+> > > >>>     rmqueue+0x100/0x1460
+> > > >>>     mark_usage+0x1a0/0x1a0
+> > > >>>     ftrace_graph_ret_addr+0x2a/0xb0
+> > > >>>     rmqueue_pcplist.constprop.0+0x6a0/0x6a0
+> > > >>>      __kasan_check_read+0x11/0x20
+> > > >>>      __zone_watermark_ok+0x114/0x270
+> > > >>>      get_page_from_freelist+0x148/0x630
+> > > >>>      is_module_text_address+0x32/0xa0
+> > > >>>      __alloc_pages_nodemask+0x2f6/0x790
+> > > >>>      __alloc_pages_slowpath.constprop.0+0x12d0/0x12d0
+> > > >>>      create_prof_cpu_mask+0x30/0x30
+> > > >>>      alloc_pages_current+0xb1/0x150
+> > > >>>      stack_depot_save+0x39f/0x490
+> > > >>>      kasan_save_stack+0x42/0x50
+> > > >>>      kasan_save_stack+0x23/0x50
+> > > >>>      kasan_record_aux_stack+0xa9/0xc0
+> > > >>>      __call_rcu+0xff/0x9c0
+> > > >>>      call_rcu+0xe/0x10
+> > > >>>      put_object+0x53/0x70
+> > > >>>      __delete_object+0x7b/0x90
+> > > >>>      kmemleak_free+0x46/0x70
+> > > >>>      slab_free_freelist_hook+0xb4/0x160
+> > > >>>      kfree+0xe5/0x420
+> > > >>>      kfree_const+0x17/0x30
+> > > >>>      kobject_cleanup+0xaa/0x230
+> > > >>>      kobject_put+0x76/0x90
+> > > >>>      netdev_queue_update_kobjects+0x17d/0x1f0
+> > > >>>      ... ...
+> > > >>>      ksys_write+0xd9/0x180
+> > > >>>      __x64_sys_write+0x42/0x50
+> > > >>>      do_syscall_64+0x38/0x50
+> > > >>>      entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > >>>
+> > > >>> Fixes: 84109ab58590 ("rcu: Record kvfree_call_rcu() call stack for KASAN")
+> > > >>> Fixes: 26e760c9a7c8 ("rcu: kasan: record and print call_rcu() call stack")
+> > > >>> Reported-by: Jianwei Hu <jianwei.hu@windriver.com>
+> > > >>> Signed-off-by: Jun Miao <jun.miao@windriver.com>
+> > > >>> ---
+> > > >>>    kernel/rcu/tree.c | 4 ++--
+> > > >>>    1 file changed, 2 insertions(+), 2 deletions(-)
+> > > >>>
+> > > >>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > >>> index 8270e58cd0f3..2c1034580f15 100644
+> > > >>> --- a/kernel/rcu/tree.c
+> > > >>> +++ b/kernel/rcu/tree.c
+> > > >>> @@ -3026,7 +3026,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > > >>>        head->func = func;
+> > > >>>        head->next = NULL;
+> > > >>>        local_irq_save(flags);
+> > > >>> -     kasan_record_aux_stack(head);
+> > > >>> +     kasan_record_aux_stack_noalloc(head);
+> > > >>>        rdp = this_cpu_ptr(&rcu_data);
+> > > >>>
+> > > >>>        /* Add the callback to our list. */
+> > > >>> @@ -3591,7 +3591,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > > >>>                return;
+> > > >>>        }
+> > > >>>
+> > > >>> -     kasan_record_aux_stack(ptr);
+> > > >>> +     kasan_record_aux_stack_noalloc(ptr);
+> > > >>>        success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
+> > > >>>        if (!success) {
+> > > >>>                run_page_cache_worker(krcp);
+> > > > Yep an allocation is tricky here. This change looks correct to me at
+> > > > least from the point that it does not allocate.
+> > > >
+> > > > --
+> > > > Uladzislau Rezki
+> > >
+> > > Thanks your approval. Could you like to give me a review?
+> > >
+> > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> 
+> I have queued it for review and testing, thank you both!  I do have
+> some remaining concerns about this code being starved for memory.  I am
+> wondering if the code needs to check the interrupt state.  And perhaps
+> also whether locks are held.  I of course will refrain from sending
+> this to mainline until these concerns are resolved.
+> 
+> Marco, Dmitry, thoughts?
 
-On Tue, Oct 19, 2021 at 11:10 PM Vinod Koul <vkoul@kernel.org> wrote:
->
-> We can use GPI DMA for devices where it is enabled by firmware. Add
-> support for this mode
->
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> --
-> -Changes since v4:
->  - Fix the kbuild bot warning
->
-> -Changes since v3:
->  - Drop merged spi core, geni patches
->  - Remove global structs and use local variables instead
->  - modularize code more as suggested by Doug
->  - fix kbuild bot warning
->
->  drivers/spi/spi-geni-qcom.c | 254 +++++++++++++++++++++++++++++++++---
->  1 file changed, 239 insertions(+), 15 deletions(-)
+Well, the compiler does have an opinion:
 
-This is already landed, but better review late than never? Maybe you
-can do a followup patch?
+kernel/rcu/tree.c: In function ‘__call_rcu’:
+kernel/rcu/tree.c:3029:2: error: implicit declaration of function ‘kasan_record_aux_stack_noalloc’; did you mean ‘kasan_record_aux_stack’? [-Werror=implicit-function-declaration]
+ 3029 |  kasan_record_aux_stack_noalloc(head);
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |  kasan_record_aux_stack
 
+I get the same message after merging in current mainline.
 
-> diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
-> index 2f51421e2a71..27a446faf143 100644
-> --- a/drivers/spi/spi-geni-qcom.c
-> +++ b/drivers/spi/spi-geni-qcom.c
-> @@ -2,6 +2,9 @@
->  // Copyright (c) 2017-2018, The Linux foundation. All rights reserved.
->
->  #include <linux/clk.h>
-> +#include <linux/dmaengine.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/dma/qcom-gpi-dma.h>
->  #include <linux/interrupt.h>
->  #include <linux/io.h>
->  #include <linux/log2.h>
-> @@ -63,6 +66,15 @@
->  #define TIMESTAMP_AFTER                BIT(3)
->  #define POST_CMD_DELAY         BIT(4)
->
-> +#define GSI_LOOPBACK_EN                BIT(0)
-> +#define GSI_CS_TOGGLE          BIT(3)
-> +#define GSI_CPHA               BIT(4)
-> +#define GSI_CPOL               BIT(5)
-> +
-> +#define MAX_TX_SG              3
-> +#define NUM_SPI_XFER           8
-> +#define SPI_XFER_TIMEOUT_MS    250
+I have therefore dropped this patch for the time being.
 
-Above three #defines are not used anywhere.
-
-
-> @@ -330,34 +345,197 @@ static int setup_fifo_params(struct spi_device *spi_slv,
->         return geni_spi_set_clock_and_bw(mas, spi_slv->max_speed_hz);
->  }
->
-> +static void
-> +spi_gsi_callback_result(void *cb, const struct dmaengine_result *result)
-> +{
-> +       struct spi_master *spi = cb;
-> +
-> +       if (result->result != DMA_TRANS_NOERROR) {
-> +               dev_err(&spi->dev, "DMA txn failed: %d\n", result->result);
-> +               return;
-> +       }
-> +
-> +       if (!result->residue) {
-> +               dev_dbg(&spi->dev, "DMA txn completed\n");
-> +               spi_finalize_current_transfer(spi);
-> +       } else {
-> +               dev_err(&spi->dev, "DMA xfer has pending: %d\n", result->residue);
-
-Wouldn't hurt to add a comment above saying that you're relying on the
-SPI core to timeout to get the system back in a usage state.
-
-nit that I'd also reorganize to make the two error cases to be more parallel:
-
-if (result->result != DMA_TRANS_NOERROR) {
-  dev_err(...);
-  return;
-}
-if (result->residue) {
-  dev_err(...);
-  return;
-}
-spi_finalize_current_transfer(...);
-
-
-> +static int setup_gsi_xfer(struct spi_transfer *xfer, struct spi_geni_master *mas,
-> +                         struct spi_device *spi_slv, struct spi_master *spi)
-> +{
-> +       unsigned long flags = DMA_PREP_INTERRUPT | DMA_CTRL_ACK;
-> +       struct dma_slave_config config = {};
-> +       struct gpi_spi_config peripheral = {};
-> +       struct dma_async_tx_descriptor *tx_desc, *rx_desc;
-> +       int ret;
-> +
-> +       config.peripheral_config = &peripheral;
-> +       config.peripheral_size = sizeof(peripheral);
-> +       peripheral.set_config = true;
-> +
-> +       if (xfer->bits_per_word != mas->cur_bits_per_word ||
-> +           xfer->speed_hz != mas->cur_speed_hz) {
-> +               mas->cur_bits_per_word = xfer->bits_per_word;
-> +               mas->cur_speed_hz = xfer->speed_hz;
-> +       }
-
-I'm pretty sure that "mas->cur_bits_per_word" isn't used in GSI mode
-(except below, where you could just use the values "xfer"), so you
-could get rid of this?
-
-For "mas->cur_speed_hz" maybe you should be using this to avoid
-unnecessary calls to get_spi_clk_cfg() for when the clock didn't
-change?
-
-
-> +
-> +       if (xfer->tx_buf && xfer->rx_buf) {
-> +               peripheral.cmd = SPI_DUPLEX;
-> +       } else if (xfer->tx_buf) {
-> +               peripheral.cmd = SPI_TX;
-> +               peripheral.rx_len = 0;
-> +       } else if (xfer->rx_buf) {
-> +               peripheral.cmd = SPI_RX;
-> +               if (!(mas->cur_bits_per_word % MIN_WORD_LEN)) {
-> +                       peripheral.rx_len = ((xfer->len << 3) / mas->cur_bits_per_word);
-> +               } else {
-> +                       int bytes_per_word = (mas->cur_bits_per_word / BITS_PER_BYTE) + 1;
-> +
-> +                       peripheral.rx_len = (xfer->len / bytes_per_word);
-> +               }
-> +       }
-> +
-> +       peripheral.loopback_en = !!(spi_slv->mode & SPI_LOOP);
-> +       peripheral.clock_pol_high = !!(spi_slv->mode & SPI_CPOL);
-> +       peripheral.data_pol_high = !!(spi_slv->mode & SPI_CPHA);
-
-The fact that the "!!" above is actually needed is a sign that the
-"struct gpi_spi_config" definition should be fixed. It should declare
-things as "bool", not "u8". Then you can get rid of the "!!" here.
-
-
-> +       peripheral.cs = spi_slv->chip_select;
-> +       peripheral.pack_en = true;
-> +       peripheral.word_len = xfer->bits_per_word - MIN_WORD_LEN;
-> +
-> +       ret = get_spi_clk_cfg(mas->cur_speed_hz, mas,
-> +                             &peripheral.clk_src, &peripheral.clk_div);
-> +       if (ret) {
-> +               dev_err(mas->dev, "Err in get_spi_clk_cfg() :%d\n", ret);
-> +               return ret;
-> +       }
-> +
-> +       if (!xfer->cs_change) {
-> +               if (!list_is_last(&xfer->transfer_list, &spi->cur_msg->transfers))
-> +                       peripheral.fragmentation = FRAGMENTATION;
-> +       }
-> +
-> +       if (peripheral.cmd & SPI_RX) {
-> +               dmaengine_slave_config(mas->rx, &config);
-> +               rx_desc = dmaengine_prep_slave_sg(mas->rx, xfer->rx_sg.sgl, xfer->rx_sg.nents,
-> +                                                 DMA_DEV_TO_MEM, flags);
-> +               if (!rx_desc) {
-> +                       dev_err(mas->dev, "Err setting up rx desc\n");
-> +                       return -EIO;
-> +               }
-> +       }
-> +
-> +       /*
-> +        * Prepare the TX always, even for RX or tx_buf being null, we would
-> +        * need TX to be prepared per GSI spec
-> +        */
-> +       dmaengine_slave_config(mas->tx, &config);
-> +       tx_desc = dmaengine_prep_slave_sg(mas->tx, xfer->tx_sg.sgl, xfer->tx_sg.nents,
-> +                                         DMA_MEM_TO_DEV, flags);
-> +       if (!tx_desc) {
-> +               dev_err(mas->dev, "Err setting up tx desc\n");
-> +               return -EIO;
-> +       }
-> +
-> +       tx_desc->callback_result = spi_gsi_callback_result;
-> +       tx_desc->callback_param = spi;
-
-I guess now when you get the TX callback then you assume that both the
-TX and RX are done. Is that truly safe? Perhaps I'm being paranoid (or
-maybe I just don't understand how things work), but I could sorta
-imagine that the peripheral has finished transmitting all the data but
-hasn't managed to DMA all the data that it received into main memory.
-If we were only going to pick one callback to register for and we have
-both TX and RX going, it seems like we should register for RX. Because
-of the way SPI works it seems like it would be impossible for TX to
-still be going if RX is fully done.
-
-
-> +       if (peripheral.cmd & SPI_RX)
-> +               dmaengine_submit(rx_desc);
-> +       dmaengine_submit(tx_desc);
-> +
-> +       if (peripheral.cmd & SPI_RX)
-> +               dma_async_issue_pending(mas->rx);
-> +
-> +       dma_async_issue_pending(mas->tx);
-> +       return 1;
-
-You're returning "1" here which lets the SPI core do all the timeout
-handling, right? ...but that means you need to provide the SPI core
-with a way to abort your transfer if it times out. This should be in
-spi->handle_err(). Right now that points to handle_fifo_timeout(). I
-think you need to add code to handle errors for GPI mode too.
-
-
-> +static int spi_geni_grab_gpi_chan(struct spi_geni_master *mas)
-> +{
-> +       int ret;
-> +
-> +       mas->tx = dma_request_chan(mas->dev, "tx");
-> +       ret = dev_err_probe(mas->dev, IS_ERR(mas->tx), "Failed to get tx DMA ch\n");
-
-s/IS_ERR/ERR_PTR/
-
-dev_err_probe takes an error code, not a boolean. The way you've coded
-it all errors will be reported as "error 1". You'll also never trip
-the "if" test below (I suppose a smarter compiler could even detect
-this?) since "ret" will always be either 0 or 1 (and neither of those
-is < 0)
-
-
-> +       if (ret < 0)
-> +               goto err_tx;
-> +
-> +       mas->rx = dma_request_chan(mas->dev, "rx");
-> +       ret = dev_err_probe(mas->dev, IS_ERR(mas->rx), "Failed to get rx DMA ch\n");
-
-s/IS_ERR/ERR_PTR/
-
-dev_err_probe takes an error code, not a boolean. The way you've coded
-it all errors will be reported as "error 1".
-
-
-> +static void spi_geni_release_dma_chan(struct spi_geni_master *mas)
-> +{
-> +       if (mas->rx) {
-> +               dma_release_channel(mas->rx);
-> +               mas->rx = NULL;
-> +       }
-> +
-> +       if (mas->tx) {
-> +               dma_release_channel(mas->tx);
-> +               mas->tx = NULL;
-> +       }
-
-nit: I would have skipped the setting to NULL. This is only used in
-the probe error and in the removal case and there's just no reason to
-NULL these out.
-
-
-> @@ -380,15 +558,38 @@ static int spi_geni_init(struct spi_geni_master *mas)
->         else
->                 mas->oversampling = 1;
->
-> -       geni_se_select_mode(se, GENI_SE_FIFO);
-> +       fifo_disable = readl(se->base + GENI_IF_DISABLE_RO) & FIFO_IF_DISABLE;
-> +       switch (fifo_disable) {
-> +       case 1:
-> +               ret = spi_geni_grab_gpi_chan(mas);
-> +               if (!ret) { /* success case */
-> +                       mas->cur_xfer_mode = GENI_GPI_DMA;
-> +                       geni_se_select_mode(se, GENI_GPI_DMA);
-> +                       dev_dbg(mas->dev, "Using GPI DMA mode for SPI\n");
-> +                       break;
-> +               }
-> +               /*
-> +                * in case of failure to get dma channel, we can still do the
-> +                * FIFO mode, so fallthrough
-
-Maybe mention that "FIFO_IF_DISABLE" is poorly named in the comments?
-
-
-> +                */
-> +               dev_warn(mas->dev, "FIFO mode disabled, but couldn't get DMA, fall back to FIFO mode\n");
-> +               fallthrough;
-> +
-> +       case 0:
-> +               mas->cur_xfer_mode = GENI_SE_FIFO;
-> +               geni_se_select_mode(se, GENI_SE_FIFO);
-> +               ret = 0;
-> +               break;
-> +       }
->
->         /* We always control CS manually */
->         spi_tx_cfg = readl(se->base + SE_SPI_TRANS_CFG);
->         spi_tx_cfg &= ~CS_TOGGLE;
->         writel(spi_tx_cfg, se->base + SE_SPI_TRANS_CFG);
-
-Is the above "We always control CS manually" only for FIFO mode? It
-must be, right? Move this to the FIFO section?
-
-
-> @@ -732,9 +944,17 @@ static int spi_geni_probe(struct platform_device *pdev)
->         if (ret)
->                 goto spi_geni_probe_runtime_disable;
->
-> +       /*
-> +        * check the mode supported and set_cs for fifo mode only
-> +        * for dma (gsi) mode, the gsi will set cs based on params passed in
-> +        * TRE
-> +        */
-> +       if (mas->cur_xfer_mode == GENI_SE_FIFO)
-> +               spi->set_cs = spi_geni_set_cs;
-
-It occurs to me that the other thing that's broken about not being
-able to set chip select manually is that you can't handle the chip
-select polarity (SPI_CS_HIGH), right? Maybe in the GSI transfer code
-you should be error checking that wasn't set?
-
-
--Doug
+							Thanx, Paul
