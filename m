@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245A0444210
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B117C44420E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:01:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbhKCNDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 09:03:40 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.169]:14152 "EHLO
+        id S231748AbhKCNDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 09:03:38 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.80]:30725 "EHLO
         mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231757AbhKCNDj (ORCPT
+        with ESMTP id S231838AbhKCNDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 09:03:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635944426;
+        Wed, 3 Nov 2021 09:03:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635944429;
     s=strato-dkim-0002; d=goldelico.com;
     h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=yzR9nXHIEXU7HQD5ysr5fsEwUzsWWv7a5dYoi7TfWEo=;
-    b=FcWjbhWKuYfV4iKIpiXs5hjIsgnmEbitRiGjRsxB6FJBn6+zfQx1hwEnHKsMJxSAUS
-    ZM12RLBYEF8Y2eBgMYCJz49swLGjX8i5RxO1+rmrLLdRNLv3xRvVQKHob8eDOraA57af
-    BuWWpxg7/Wr9HmsQYfR8p8y25EnktvM59vGJO5yNJu7LG5HMy08kJLXvAZoSnjr+PEaw
-    VQEqGZlSwUhSh29E0MJQaD7AIM3oe++RKq3yJSY1ixWN0v0ZxxWxBGYRFNuPYDxaZ83H
-    0seqj4USLLIp+8Tzd2U35guTy15affUUWwWkZOJxvV/LYYtBE+N3+KehewIeP6scjUkm
-    psoQ==
+    bh=cPrsVDNh3YgbTR+Pv/a4rxJ7+ywhFHuLHgps/nYnCwU=;
+    b=lrS+e14plMwdM6QOAPt6sQtEO8wkcQXMEce5CM0oWe+xS6Sg8zsBswksDNiAb5n30Q
+    NJWekpAufL24xehCcFqK7xVm7e0Eguf29ZABwTV+xYqjX2RymmBMBqBv/PCPFPn4mmKO
+    cL8ctRBClEdo54srpTTusrg8c3kN+gzDd/0dVjUcrPp/IrfxnDdy7UlLULCygyL6bhS7
+    xKC52RerH4xlTxEfDY3JyO+k5Uahshtt8gcP3gu4cQe1xA2B5fe6X5RvbNQAEJOFvUyd
+    XD+Od1oh2KX910YdjR8A7vR5SaSTf53rLEXH5XHXqdhLgjpZNADrcCV96HVNfO6OUaXD
+    +/bg==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UMf2MwPVbgc7na"
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
-    with ESMTPSA id 902c63xA3D0N0Ef
+    with ESMTPSA id 902c63xA3D0Q0Eg
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Wed, 3 Nov 2021 14:00:23 +0100 (CET)
+    Wed, 3 Nov 2021 14:00:26 +0100 (CET)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Ulf Hansson <ulf.hansson@linaro.org>,
         =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
@@ -42,96 +42,72 @@ To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Tony Lindgren <tony@atomide.com>, Bean Huo <beanhuo@micron.com>
 Cc:     notasas@gmail.com, linux-mmc@vger.kernel.org,
         linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
-        kernel@pyra-handheld.com
-Subject: [RFC v3 2/6] mmc: core: allow to match the device tree to apply quirks
-Date:   Wed,  3 Nov 2021 14:00:10 +0100
-Message-Id: <e6a52b238af3022b9a3dad7cad29b632fa34c00b.1635944413.git.hns@goldelico.com>
+        kernel@pyra-handheld.com,
+        "H. Nikolaus Schaller" <hns@goldelico.com>
+Subject: [RFC v3 3/6] mmc: core: provide macro and table to match the device tree to apply quirks
+Date:   Wed,  3 Nov 2021 14:00:11 +0100
+Message-Id: <47e753ce9d1e17bbb2910ee24a23a85d27f860ce.1635944413.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <cover.1635944413.git.hns@goldelico.com>
 References: <cover.1635944413.git.hns@goldelico.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+This (initially empty) table allows to match quirks early based
+on .compatible of the child node of some mmc/sdio interface.
 
-MMC subsystem provides a way to apply quirks when a device match some
-properties (VID, PID, etc...) Unfortunately, some SDIO devices does not
-comply with the SDIO specification and does not provide reliable VID/PID
-(eg. Silabs WF200).
+A new macro SDIO_FIXUP_COMPATIBLE makes the definition readable.
 
-So, the drivers for these devices rely on device tree to identify the
-device.
-
-This patch allows the MMC to also rely on the device tree to apply a
-quirk.
-
-Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- drivers/mmc/core/card.h   |  3 +++
- drivers/mmc/core/quirks.h | 18 ++++++++++++++++++
- 2 files changed, 21 insertions(+)
+ drivers/mmc/core/card.h   | 15 +++++++++++++++
+ drivers/mmc/core/quirks.h |  4 ++++
+ 2 files changed, 19 insertions(+)
 
 diff --git a/drivers/mmc/core/card.h b/drivers/mmc/core/card.h
-index 7bd392d55cfa5..2f73f8567e14f 100644
+index 2f73f8567e14f..c7a61e74c02ea 100644
 --- a/drivers/mmc/core/card.h
 +++ b/drivers/mmc/core/card.h
-@@ -59,6 +59,9 @@ struct mmc_fixup {
- 	/* for MMC cards */
- 	unsigned int ext_csd_rev;
+@@ -122,6 +122,21 @@ struct mmc_fixup {
+ 		   _vendor, _device,					\
+ 		   _fixup, _data, EXT_CSD_REV_ANY)			\
  
-+	/* Match against functions declared in device tree */
-+	const char *const *of_compatible;
++#define SDIO_FIXUP_COMPATIBLE(_compatible_list, _fixup, _data)		\
++	{						\
++		.name = CID_NAME_ANY,			\
++		.manfid = CID_MANFID_ANY,		\
++		.oemid = CID_OEMID_ANY,			\
++		.rev_start = 0,				\
++		.rev_end = -1ull,			\
++		.cis_vendor = SDIO_ANY_ID,		\
++		.cis_device = SDIO_ANY_ID,		\
++		.vendor_fixup = (_fixup),		\
++		.data = (_data),			\
++		.ext_csd_rev = EXT_CSD_REV_ANY,		\
++		.of_compatible = _compatible_list,\
++	}
 +
- 	void (*vendor_fixup)(struct mmc_card *card, int data);
- 	int data;
- };
+ #define cid_rev(hwrev, fwrev, year, month)	\
+ 	(((u64) hwrev) << 40 |			\
+ 	 ((u64) fwrev) << 32 |			\
 diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
-index c7ef2d14b359f..a8b82b34dcfd2 100644
+index a8b82b34dcfd2..619504b78bf46 100644
 --- a/drivers/mmc/core/quirks.h
 +++ b/drivers/mmc/core/quirks.h
-@@ -10,6 +10,7 @@
-  *
-  */
- 
-+#include <linux/of.h>
- #include <linux/mmc/sdio_ids.h>
- 
- #include "card.h"
-@@ -145,6 +146,20 @@ static const struct mmc_fixup __maybe_unused sdio_fixup_methods[] = {
+@@ -146,6 +146,10 @@ static const struct mmc_fixup __maybe_unused sdio_fixup_methods[] = {
  	END_FIXUP
  };
  
-+static inline bool mmc_fixup_of_compatible_match(struct mmc_card *card,
-+						 const char *const *compat_list)
-+{
-+	struct device_node *of_node;
-+	int i;
++static const struct mmc_fixup __maybe_unused sdio_card_init_methods[] = {
++	END_FIXUP
++};
 +
-+	for (i = 0; i < 7; i++) {
-+		of_node = mmc_of_find_child_device(card->host, i);
-+		if (of_node && of_device_compatible_match(of_node, compat_list))
-+			return true;
-+	}
-+	return false;
-+}
-+
- static inline void mmc_fixup_device(struct mmc_card *card,
- 				    const struct mmc_fixup *table)
+ static inline bool mmc_fixup_of_compatible_match(struct mmc_card *card,
+ 						 const char *const *compat_list)
  {
-@@ -173,6 +188,9 @@ static inline void mmc_fixup_device(struct mmc_card *card,
- 			continue;
- 		if (rev < f->rev_start || rev > f->rev_end)
- 			continue;
-+		if (f->of_compatible &&
-+		    !mmc_fixup_of_compatible_match(card, f->of_compatible))
-+			continue;
- 
- 		dev_dbg(&card->dev, "calling %ps\n", f->vendor_fixup);
- 		f->vendor_fixup(card, f->data);
 -- 
 2.33.0
 
