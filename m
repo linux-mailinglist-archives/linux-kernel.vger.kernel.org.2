@@ -2,140 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A85443A50
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 01:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9780443A54
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 01:13:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233203AbhKCAPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 20:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
+        id S232117AbhKCAPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 20:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233194AbhKCAPN (ORCPT
+        with ESMTP id S233226AbhKCAPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 20:15:13 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D169C061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 17:12:38 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id w15so835565ill.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 17:12:38 -0700 (PDT)
+        Tue, 2 Nov 2021 20:15:24 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C07BC061714;
+        Tue,  2 Nov 2021 17:12:49 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id b4so791423pgh.10;
+        Tue, 02 Nov 2021 17:12:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1hFdIa5+UMPz4ryPHs3ofaiooiYhjKx88rmchvIn5NY=;
-        b=gLfoJHd6ZKlzlQhbePQy2aggmQknUF8BWz65ttk38CoFAqmVayRCvKORjOJCI2iCLA
-         HlpNX5x1DH2gk4M0muenjcV9BlGiLmYKWAQIQRKddJSE4yGxk9jiEiTIOs/U9IVYDX6J
-         K9JMyXZBoaR6gCjYikPXnz5PYkLuXE1ilj0RtejIyCndyCwqiU2divrDhP4xR2Dsfhq3
-         9TNZINabHz+E/gvPNo1dNKIf92uVNzHMdVOLFHgjK4QU+PMkYZjVKGHS4x8Z9TnfbYiH
-         H8741WpUobi3T8CFLP6PsQUNNMj+Y7HkO7MFVVfx4uQjUyIo1UqVmTzrmiRwrlHUduVv
-         hd6Q==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sVponJRFQk6xcvhX2MIVmWhLebQPmXI4+qFJ5f+Bhmg=;
+        b=PgYcbMUvhevtKd+t1TTrND9SDCMrv8fIFo1H2XWkFbhXQnPJCZ+OY43VKfXsOvcx82
+         kN0qwQHGR6C0Zx6gk4blvMi8IhaHOqcV4/FYgaaMRHDZftuL3aaIzIbw73wfvkIdv9ex
+         nGt0Pi+0uEKR0/wmYspxR+Y+GyWzUaVNsQPgmPBEYW/ZS7HRBPW9G7Nge+M0f24AcY43
+         IZubGm7HB7Vd+iy13n9eOVbsk8wxT0nArxyrNCUKpG2hVL3Jot/QI1HZvNySyA5YD3QT
+         Jshf1yx+LhDVhxbBRqV3d8Exg4bawEJKMIMnEKkWW9NVpLJpefIXVvEkPye/+oBhJ1DZ
+         2biw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1hFdIa5+UMPz4ryPHs3ofaiooiYhjKx88rmchvIn5NY=;
-        b=A6icSGrG4g/OXESoW6uXlsm1jsbYXrsqBq+5670MY6O/LqVoMOYZsJo0rS98edFAhR
-         eMU4kbxlIOxJxUg22Be5o9BfLrDvkp/d3BGQU+S0yLFqX6k1+PiYwXpi82a6DivGxfUh
-         rzfwtHl7Jx2OBnEfXyOCGd5BOLLmQIszyioRN7B2pLn+sDZ3fURNFJVJzuYSfpC7mqbg
-         6/nSJtrQsgVEoMuS1o5CIebbHdmV+6cL5cqPvYC9ZaiObtEp8c53fgjhLocK45IUDQ2Y
-         /J7hPIFkoKgjVhBW3Scz8dTxKP6d8BLEoZz3ulUmD1RLSa0VPnx8/7hV4eY4+SinYWQg
-         C5fg==
-X-Gm-Message-State: AOAM532XbKSof//mYcrR9gg5r5eTj0Eg+KB6UYpje9I/VY9qHBUYuJn2
-        LsJnp2fG5MUDbymrfk2niyeJQHDk8gPzY9XHpc5dJQ==
-X-Google-Smtp-Source: ABdhPJyWD/JegcYFIIcy6BVOaSs6qyyeXkZkN5Cqniw7bm4x87PzruFAJR2UPC6iPqTJYKGsDlgM11UKmwiqgW0e39Q=
-X-Received: by 2002:a92:7f0e:: with SMTP id a14mr26683165ild.215.1635898357612;
- Tue, 02 Nov 2021 17:12:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sVponJRFQk6xcvhX2MIVmWhLebQPmXI4+qFJ5f+Bhmg=;
+        b=Pf6o/4jPtsGrLBKCnpBtbLdLKKdWPBdVRuHgmfVIyJI2aIfDSHOaZnmIW9ZSFx95xW
+         5JMoSerHoZiDbtc/tgWKdhMyxexkFbN/P3wFJUmoCokEgQj2alFOm7gbCZFn5/0Hek9c
+         lt4vqHG5ESNpdKmgxfHVkeTPe5ZlYDv+QJER9AVFm0EcBQusoePzCVDCIvqngWL6+LC4
+         1yq+nXGoCWggXitntopaTZGjEaDcUvphzV3svP5gwzzMKE08H1amWsZ62hWigNya1VrX
+         Wq8gsKp3n9S4Ax7+1U4ZcbuCenUWPkIueCCafNuydCJTonG9Sx1rb3Wz/COe5ILnUVkY
+         KsZQ==
+X-Gm-Message-State: AOAM530X9ArHGA4b4aEt7Lg4Dymae+8R9G7cgrb5o8YQscnlcQUIVS42
+        prLjZWDEyWY2M9R8zvlMPZA=
+X-Google-Smtp-Source: ABdhPJweXm1x9FcIlmiWgH7VbqI6S7ngxwuPu04X4F4/FqlpFWYg1CDxzy10sDN2pniI43Fcui4EIg==
+X-Received: by 2002:aa7:9208:0:b0:44d:3044:baf0 with SMTP id 8-20020aa79208000000b0044d3044baf0mr39862209pfo.73.1635898368541;
+        Tue, 02 Nov 2021 17:12:48 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:9df1])
+        by smtp.gmail.com with ESMTPSA id t4sm295995pfj.13.2021.11.02.17.12.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 17:12:48 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 17:12:45 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Joe Burton <jevburton.kernel@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Petar Penkov <ppenkov@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Joe Burton <jevburton@google.com>
+Subject: Re: [RFC PATCH v3 0/3] Introduce BPF map tracing capability
+Message-ID: <20211103001245.muyte7exph23tmco@ast-mbp.dhcp.thefacebook.com>
+References: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
 MIME-Version: 1.0
-References: <20210930085932.1.I8043d61cc238e0168e2f4ca5f4783223434aa587@changeid>
- <17d63b06-d1bd-85ab-92d3-71fa236b9493@suse.de>
-In-Reply-To: <17d63b06-d1bd-85ab-92d3-71fa236b9493@suse.de>
-From:   "Anand K. Mistry" <amistry@google.com>
-Date:   Wed, 3 Nov 2021 11:12:25 +1100
-Message-ID: <CAATStaMSFu=27LdxNOabtARGaRq7rm_k2BHSsZ9+M-fF+nnk7Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/prime: Fix use after free in mmap with drm_gem_ttm_mmap
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     dri-devel@lists.freedesktop.org, nartemiev@google.com,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Any movement on merging this patch? Not urgent on my end (we have this
-patch in our tree), but I think other amd users might run into this
-UAF.
+On Tue, Nov 02, 2021 at 02:14:29AM +0000, Joe Burton wrote:
+> From: Joe Burton <jevburton@google.com>
+> 
+> This is the third version of a patch series implementing map tracing.
+> 
+> Map tracing enables executing BPF programs upon BPF map updates. This
+> might be useful to perform upgrades of stateful programs; e.g., tracing
+> programs can propagate changes to maps that occur during an upgrade
+> operation.
+> 
+> This version uses trampoline hooks to provide the capability.
+> fentry/fexit/fmod_ret programs can attach to two new functions:
+>         int bpf_map_trace_update_elem(struct bpf_map* map, void* key,
+>                 void* val, u32 flags);
+>         int bpf_map_trace_delete_elem(struct bpf_map* map, void* key);
+> 
+> These hooks work as intended for the following map types:
+>         BPF_MAP_TYPE_ARRAY
+>         BPF_MAP_TYPE_PERCPU_ARRAY
+>         BPF_MAP_TYPE_HASH
+>         BPF_MAP_TYPE_PERCPU_HASH
+>         BPF_MAP_TYPE_LRU_HASH
+>         BPF_MAP_TYPE_LRU_PERCPU_HASH
+> 
+> The only guarantee about the semantics of these hooks is that they execute
+> before the operation takes place. We cannot call them with locks held
+> because the hooked program might try to acquire the same locks. Thus they
+> may be invoked in situations where the traced map is not ultimately
+> updated.
+> 
+> The original proposal suggested exposing a function for each
+> (map type) x (access type). The problem I encountered is that e.g.
+> percpu hashtables use a custom function for some access types
+> (htab_percpu_map_update_elem) but a common function for others
+> (htab_map_delete_elem). Thus a userspace application would have to
+> maintain a unique list of functions to attach to for each map type;
+> moreover, this list could change across kernel versions. Map tracing is
+> easier to use with fewer functions, at the cost of tracing programs
+> being triggered more times.
 
-On Thu, 30 Sept 2021 at 17:21, Thomas Zimmermann <tzimmermann@suse.de> wrot=
-e:
->
-> Hi
->
-> Am 30.09.21 um 01:00 schrieb Anand K Mistry:
-> > drm_gem_ttm_mmap() drops a reference to the gem object on success. If
-> > the gem object's refcount =3D=3D 1 on entry to drm_gem_prime_mmap(), th=
-at
-> > drop will free the gem object, and the subsequent drm_gem_object_get()
-> > will be a UAF. Fix by grabbing a reference before calling the mmap
-> > helper.
-> >
-> > This issue was forseen when the reference dropping was adding in
-> > commit 9786b65bc61ac ("drm/ttm: fix mmap refcounting"):
-> >    "For that to work properly the drm_gem_object_get() call in
-> >    drm_gem_ttm_mmap() must be moved so it happens before calling
-> >    obj->funcs->mmap(), otherwise the gem refcount would go down
-> >    to zero."
-> >
-> > Signed-off-by: Anand K Mistry <amistry@google.com>
->
-> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
->
-> This looks fine to me, but it affects many drivers. Let's maybe wait a
-> bit if more reviews come it.
->
-> Best regards
-> Thomas
->
-> > ---
-> >
-> >   drivers/gpu/drm/drm_prime.c | 6 ++++--
-> >   1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
-> > index 2a54f86856af..e1854fd24bb0 100644
-> > --- a/drivers/gpu/drm/drm_prime.c
-> > +++ b/drivers/gpu/drm/drm_prime.c
-> > @@ -719,11 +719,13 @@ int drm_gem_prime_mmap(struct drm_gem_object *obj=
-, struct vm_area_struct *vma)
-> >       if (obj->funcs && obj->funcs->mmap) {
-> >               vma->vm_ops =3D obj->funcs->vm_ops;
-> >
-> > +             drm_gem_object_get(obj);
-> >               ret =3D obj->funcs->mmap(obj, vma);
-> > -             if (ret)
-> > +             if (ret) {
-> > +                     drm_gem_object_put(obj);
-> >                       return ret;
-> > +             }
-> >               vma->vm_private_data =3D obj;
-> > -             drm_gem_object_get(obj);
-> >               return 0;
-> >       }
-> >
-> >
->
-> --
-> Thomas Zimmermann
-> Graphics Driver Developer
-> SUSE Software Solutions Germany GmbH
-> Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-> (HRB 36809, AG N=C3=BCrnberg)
-> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+Good point about htab_percpu.
+The patches look good to me.
+Few minor bits:
+- pls don't use #pragma once.
+  There was a discussion not too long ago about it and the conclusion
+  was that let's not use it.
+  It slipped into few selftest/bpf, but let's not introduce more users.
+- noinline is not needed in prototype.
+- bpf_probe_read is deprecated. Pls use bpf_probe_read_kernel.
 
---=20
-Anand K. Mistry
-Software Engineer
-Google Australia
+and thanks for detailed patch 3.
+
+> To prevent the compiler from optimizing out the calls to my tracing
+> functions, I use the asm("") trick described in gcc's
+> __attribute__((noinline)) documentation. Experimentally, this trick
+> works with clang as well.
+
+I think noinline is enough. I don't think you need that asm in there.
+
+In parallel let's figure out how to do:
+SEC("fentry/bpf_map_trace_update_elem")
+int BPF_PROG(copy_on_write__update,
+             struct bpf_map *map,
+             struct allow_reads_key__old *key,
+             void *value, u64 map_flags)
+
+It kinda sucks that bpf_probe_read_kernel is necessary to read key/values.
+It would be much nicer to be able to specify the exact struct for the key and
+access it directly.
+The verifier does this already for map iterator.
+It's 'void *' on the kernel side while iterator prog can cast this pointer
+to specific 'struct key *' and access it directly.
+See bpf_iter_reg->ctx_arg_info and btf_ctx_access().
+
+For fentry into bpf_map_trace_update_elem it's a bit more challenging,
+since it will be called for all maps and there is no way to statically
+check that specific_map->key_size is within prog->aux->max_rdonly_access.
+
+May be we can do a dynamic cast helper (simlar to those that cast sockets)
+that will check for key_size at run-time?
+Another alternative is to allow 'void *' -> PTR_TO_BTF_ID conversion
+and let inlined probe_read do the job.
