@@ -2,156 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40744443FF4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 11:26:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55156443FFB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 11:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231974AbhKCK3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 06:29:06 -0400
-Received: from mail-eopbgr80048.outbound.protection.outlook.com ([40.107.8.48]:18930
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231623AbhKCK3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 06:29:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nNJyyVd1ikrJc65n/piE/J6my0lA7gzDbYpSxbJGfbbFy2xngPDraQmqF7dosdaBE2IfON5WRrAZUthE8WSHY0bpVkmHb1AjH9rslcLl1jeM52tEmgjjcUQLL7BDKfgkwfX8Tpnb2pnvQ4XUPfHazelU7CVp7HbK5b9Qvb7kpYJ8XDEyeXj2Xcejtf/J1GzuvGoVhQ9lKsp/HZSLM4K69xLNaq+NApLkVFYeivDSwG47xnRfclXzs9AFZEmFOQR8oVFaL1Ri4CSa9nCQAhzZ7cHt2pYW95FLd0EDsq9/BRs6g7z+b+zaBIWB93LGdPyIHP5ps/LGu5lqLcjEnyXZdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+nCUIyDaA5J0R5McDqyPRsJVsSMvGY10LjGoGJOFsVc=;
- b=Lp2A4iuafBCkHsrVtHSj5Oj2ZDQ2wocpY3KAM7SGnnebIIJZTSKofiQXLevnN8a09lM2E+jltEb7ILapS6aG0zEXirM3aqv+fCAWireg62E0a1B0BTJeTwD4QJxlstlAb4CXQ/2Ye6CslzMwW1lV8Z+UD4SKGTSBG0NpeFraNWW0Pqhgm7+3yW4K77Nmy1sZZDiejIG3XE5jheZHa0Y5kBS7H5p/8y6/tjmUGQIJ2OLbastcVKmFisvbS/Cb4Jbd1WbFIsEevhKy1ab+JyIPjSW1OnEqXlyPkk4U9P6jesmX/2bxrNzj0cgIXiqjOuJefKR26BvUpzXu61qIT1kC0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+nCUIyDaA5J0R5McDqyPRsJVsSMvGY10LjGoGJOFsVc=;
- b=cVTsYVVn7nK/DbJN+2aPO781zjaBhZJWGL9FHs4mvTJ+ZkPaSoUdqGwcVfKQKc7ANIRA8OQtg/ySOq1KEPLn3KSyAginvyfX0LfFuIEYCbFWyx364Itaq5g41rUAsrszzuq1fVjJDF8033q7UPatal8bAmfF30miQUIOLvlYdY0=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VI1PR04MB4432.eurprd04.prod.outlook.com (2603:10a6:803:69::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.17; Wed, 3 Nov
- 2021 10:26:25 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e157:3280:7bc3:18c4]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e157:3280:7bc3:18c4%5]) with mapi id 15.20.4649.020; Wed, 3 Nov 2021
- 10:26:25 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 1/6] net: ocelot: add support to get port mac from
- device-tree
-Thread-Topic: [PATCH v2 1/6] net: ocelot: add support to get port mac from
- device-tree
-Thread-Index: AQHX0JQL0SfN3NCuTUafOx0abL6ZS6vxmVgA
-Date:   Wed, 3 Nov 2021 10:26:25 +0000
-Message-ID: <20211103102624.uujlwyhzq2t572o3@skbuf>
-References: <20211103091943.3878621-1-clement.leger@bootlin.com>
- <20211103091943.3878621-2-clement.leger@bootlin.com>
-In-Reply-To: <20211103091943.3878621-2-clement.leger@bootlin.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5676875b-2e98-4b82-f2b7-08d99eb463f8
-x-ms-traffictypediagnostic: VI1PR04MB4432:
-x-microsoft-antispam-prvs: <VI1PR04MB4432F3DE67E794EB20EF775FE08C9@VI1PR04MB4432.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:343;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: GDkLG/ZGCg3QlrpuNS61fsXC6ERnNoByrtfSfaD9sjB7hQGk4S131sIGH/PKCwvmxqWnvBoj9iKp1iU5oYkiL7YgUr7pnYd5zqRUG6qyP8eL19ePdNw79p58wChJQt2s0NxVlixvRBwaBWYJ418hT4whTDla6kf3b3rYfErah0n9FE9wxvFU/8odPy8v3Qw08PM8cMKlx/w4YXJz9IYSji/LnPUxBwwgFdvErlIjMf2TeIfpigJaf0697lmHJSKbx5oRrxSLgkv0t6rzSSc2hJ/GHEqzy6jpF8Z2RGYPcHy4vKmzGw+s6dBj/khRE4veXw1CiCrx3uArXikx8fjHd03PPNBSR9bTj9IGjJkSa1eMByHMdwZoZ/6ATJNoeIhdnos36cHrHwwG7kg3ms+X3DnWDmQd4uhrEB7mqPEdrbXGKt7Ys9CRJH7o+fcV/TKDMTJgzf67amBHvUT39DrVxpo91Qq/iCufjy5XUFSK0X8D7qxv6PaSZGgJkq8tQzJGiAkUNVcIdiR75U1ZLdaWvC7e2GmqVOOnIDW695FLeDgF2MrIN/i87soth8kvjgVQu102Lq8mwZhlyJr+4LN+F9O3BeOBpMJp8kovtaIkMsiVUP4Ak93c3JAg+Ow5p8wjOkFNRvhxDHu3H4EXDQ5dGAJR06F7OR7BnsbUJ+BFZT3RJzOMYQf1cdOKkcdhvdWFLQMBf5JaTCuX0nthA0i76Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(366004)(4326008)(66574015)(5660300002)(2906002)(508600001)(54906003)(186003)(38070700005)(86362001)(6506007)(9686003)(6486002)(8936002)(1076003)(26005)(6512007)(8676002)(33716001)(7416002)(44832011)(66476007)(91956017)(66556008)(66446008)(6916009)(71200400001)(66946007)(64756008)(76116006)(38100700002)(83380400001)(316002)(122000001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?wmTKMTsgbEiyDgrqt/Yh3oLIkWBf6RS7K5GGShE/fYqDQtPOsgk0spXwcw?=
- =?iso-8859-1?Q?1YA6tonlzLIvIYDcl0NKg4ZINUWMN93w93a03yfAbb2oJjtTRLB3xujaMK?=
- =?iso-8859-1?Q?mxCi4MdhME2W5BqUDpgeoxeA/DDqlBFKYY+ou7akIySm7/0qsRg8/8f54V?=
- =?iso-8859-1?Q?0nxptz05MZrt5Y75TPUTlAjd/lVNDFMeC+kMcjE4P6LD3FeETEYrLL3UO5?=
- =?iso-8859-1?Q?a41ClBRpEm1N1QjmAymxsZho0QTD0n26lQLgUwwzE4o0VS4usOW1i+cBs4?=
- =?iso-8859-1?Q?isdi9CclpXkoQ0MO2GqKU4ktN+wLylOosNj6vTjE64+KVZ1kYY6P4+TCy1?=
- =?iso-8859-1?Q?vtCOW9s4WAPYaZRKYP2EV2TFml6J+icbSgxfyUWyn/RmeFNZmCdU8MShSQ?=
- =?iso-8859-1?Q?tiSeviGC3YoZ9/QSAJC9G47yRkvngA9ytioOEZq1yB4WIfEdTBUPWzjmrA?=
- =?iso-8859-1?Q?w/YveDQcIBxgGAIhK7L60JnensvapHvn5yJR+SFcBEJsby015tIyQeUTd/?=
- =?iso-8859-1?Q?ik0G/+oeObXVC60BmLAjbR+xCzSJSPU0h2um2AU7yaEbj2J7kESCcbmzUa?=
- =?iso-8859-1?Q?kpbo7XwvopQwaNCQyF8rIOCOXKTsUdKfNt/W5ECYBs3F9oigCRXAHoNAkf?=
- =?iso-8859-1?Q?O0Nw5erIgO5QecQYqIZP51+SJLHBUUf61GC6rARTWklxpBg/ar8oHmV7Qn?=
- =?iso-8859-1?Q?8OGgDzWSOF8S6NouICl73Loax+vEkrIbEctjfaPUt+F18A4owg5HOD3cXQ?=
- =?iso-8859-1?Q?6znc281tFRLxn0Otj0v/XqmKNvjDe+kX2GB7yL1kPTrCKFNkGJv88/iMYp?=
- =?iso-8859-1?Q?terl8edv2QDCq8SfVaoAH+mhZT5cZtTCmS4h7rTrOtx7OaFmwZ8XK4aPif?=
- =?iso-8859-1?Q?qUxUbzLKrrZaBiBOElLJIZMuWRzdtpZbDjYplg9Y78cOAQKP/pBspr2ktk?=
- =?iso-8859-1?Q?/Yor2HMUxLLlfHiEd8zuNFT8LIW1W/gqNahXtsQ0qoSiiG04LYUOfePsNf?=
- =?iso-8859-1?Q?+Ue3Jlg3rGtKl/2xLaACbXmF6cB1CSNKMm6ZOR0lUA5masohwIQB7UeZGQ?=
- =?iso-8859-1?Q?pwHPXLIqquzMZymjGQ63uEGGu+p0t+hY5qgvBYUWvQ9PJyn7Hj0Jzbob4a?=
- =?iso-8859-1?Q?PWrJ+GyL/j23PT6DH9wJAM0iizDd1m+zSPikmclDL4ZzrnF6w4cDIdXXH+?=
- =?iso-8859-1?Q?Z0uOL4Z1/a86ux26jU4U1Nukha0WZSd0ObRfO4fAXaapnnVI2XA+UHj3iT?=
- =?iso-8859-1?Q?b6VW0Zl9HO0W5ZhhgAJPeol+S6q7S7LrOrBucmeH4OMfKOZ9Wq3kw9VXoi?=
- =?iso-8859-1?Q?6niRr/cdyJKTnkfKS2kseHx1MhQfpBLzqSdB453L9GOtBISKAGUuv5pY/w?=
- =?iso-8859-1?Q?1QA9U49r1mtzW63I/LgazkwVutedcIzyfuMJKNHic/58CFtRPCTWtNKlNv?=
- =?iso-8859-1?Q?1UnLMl1C9uIQz7mWVZbUCcEzWsKS6pmHjkRrAaAzIaUtxePYqYbwpjPeOr?=
- =?iso-8859-1?Q?dQYUiclVunJpNoAbG3oo+6DAQ0b9pMMzYVLsbYSX2LDtgZLSJvnO96F3qu?=
- =?iso-8859-1?Q?gGp3+SzzoGlD6W9nzbVm3vMu2j/f8+/cMDnRwKLNMmccL28FmkgFfhDQRa?=
- =?iso-8859-1?Q?SPugE7AJYgiJ/SBWHIQ2YSlTJjJgab7+5ACoYENjGqMCleM+guTjR552VA?=
- =?iso-8859-1?Q?hNyyv4mVmF3jMu9yqKg=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-ID: <518BF9C9D917C147B10223BD2B86F6C1@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S232004AbhKCKbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 06:31:07 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12684 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231993AbhKCKbG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 06:31:06 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A3AFHBN012737;
+        Wed, 3 Nov 2021 10:28:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=PB61rs0xcv2ngNqkbJK88LDgKUPemFOZsXULxkl5cYo=;
+ b=ORzoFufkU1rWqBvfb7D8aItZgx/eVJ7VK/GJiW8wlsww/hgDTFNks/flW0QBr8vgx5W5
+ E6exdmD7mFuIKoOOolDBrm62Q+RWlyrEIFNPGrNK5yFmSvD2ZOxcr/9QH3ONyR/g1WiN
+ ACb12vFXTQJSPjzr46+E3sZzHmfMhQoRI83xVgm1ZNbcX72Y5y7mJwQjEZZBlePQvabG
+ nXxOSAicYsdJ/7XhZmt5S+iRUmGJWCsuQASuPSgLI5ifR2C35lt4HhCAPlop+O+hTGV4
+ kh5fBDBzEVsAl9sDV4HhQwd2N/pTLDXi9USVdJLziTpeCG/pab0XuexQ6tSVVUOB8p4c kg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c3ju4pn7f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Nov 2021 10:28:04 +0000
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1A3AJOQl025747;
+        Wed, 3 Nov 2021 10:28:03 GMT
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c3ju4pn6r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Nov 2021 10:28:03 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1A3AQw5V001046;
+        Wed, 3 Nov 2021 10:28:00 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma01fra.de.ibm.com with ESMTP id 3c0wpa2e1k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Nov 2021 10:28:00 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1A3ARw6v3539662
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 3 Nov 2021 10:27:58 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E321311C050;
+        Wed,  3 Nov 2021 10:27:57 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9418C11C05C;
+        Wed,  3 Nov 2021 10:27:56 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.144.175])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed,  3 Nov 2021 10:27:56 +0000 (GMT)
+Date:   Wed, 3 Nov 2021 12:27:54 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org,
+        fenghua.yu@intel.com, reinette.chatre@intel.com,
+        john.stultz@linaro.org, tglx@linutronix.de,
+        akpm@linux-foundation.org, nathan@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] selftests: kselftest.h: mark functions with 'noreturn'
+Message-ID: <YYJkKjNwWycYfs8a@linux.ibm.com>
+References: <20211029114312.1921603-1-anders.roxell@linaro.org>
+ <834d18b6-4106-045f-0264-20e54edf47bc@linuxfoundation.org>
+ <CAKwvOdk8D5=AxzSpqjvXJc4XXL8CA7O=WY-LW0mZb3eQRK_EWg@mail.gmail.com>
+ <CADYN=9+iueC3rJ4=32OM9rOUDLLmvcKY-y_By4hwAj1+9gxRiQ@mail.gmail.com>
+ <CADYN=9+e=qLGBN+qxmKObiOp0hTQ_sGHSusn+4YvAXuprGVp2A@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5676875b-2e98-4b82-f2b7-08d99eb463f8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2021 10:26:25.6558
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8unISCMJojtCDG7tzoCWvtzdACpPz9v3hU3WQPqqMaalwtxJ8vxXmZx4MrWLkvaFXWtjCwqG5R2im+fHo4mtjw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4432
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADYN=9+e=qLGBN+qxmKObiOp0hTQ_sGHSusn+4YvAXuprGVp2A@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: ZTknOKt1uRoKBIONki3_8T4uwEJiRra-
+X-Proofpoint-GUID: iuTZILz1ZXN86IR1p2XYOx4Bdb-ZXZ39
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-03_03,2021-11-03_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ phishscore=0 spamscore=0 priorityscore=1501 malwarescore=0 impostorscore=0
+ bulkscore=0 mlxscore=0 clxscore=1011 mlxlogscore=999 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111030057
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 10:19:38AM +0100, Cl=E9ment L=E9ger wrote:
-> Add support to get mac from device-tree using of_get_mac_address.
->=20
-> Signed-off-by: Cl=E9ment L=E9ger <clement.leger@bootlin.com>
-> ---
+On Wed, Nov 03, 2021 at 10:38:17AM +0100, Anders Roxell wrote:
+> On Tue, 2 Nov 2021 at 23:04, Anders Roxell <anders.roxell@linaro.org> wrote:
+> >
+> > On Sat, 30 Oct 2021 at 00:08, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > >
+> > > On Fri, Oct 29, 2021 at 11:19 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+> > > >
+> > > > On 10/29/21 5:43 AM, Anders Roxell wrote:
+> > > > > When building kselftests/capabilities the following warning shows up:
+> > > > >
+> > > > > clang -O2 -g -std=gnu99 -Wall    test_execve.c -lcap-ng -lrt -ldl -o test_execve
+> > > > > test_execve.c:121:13: warning: variable 'have_outer_privilege' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+> > > > >          } else if (unshare(CLONE_NEWUSER | CLONE_NEWNS) == 0) {
+> > > > >                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > test_execve.c:136:9: note: uninitialized use occurs here
+> > > > >          return have_outer_privilege;
+> > > > >                 ^~~~~~~~~~~~~~~~~~~~
+> > > > > test_execve.c:121:9: note: remove the 'if' if its condition is always true
+> > > > >          } else if (unshare(CLONE_NEWUSER | CLONE_NEWNS) == 0) {
+> > > > >                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > test_execve.c:94:27: note: initialize the variable 'have_outer_privilege' to silence this warning
+> > > > >          bool have_outer_privilege;
+> > > > >                                   ^
+> > > > >                                    = false
+> > > > >
+> > > > > Rework so all the ksft_exit_*() functions have attribue
+> > > > > '__attribute__((noreturn))' so the compiler knows that there wont be
+> > > > > any return from the function. That said, without
+> > > > > '__attribute__((noreturn))' the compiler warns about the above issue
+> > > > > since it thinks that it will get back from the ksft_exit_skip()
+> > > > > function, which it wont.
+> > > > > Cleaning up the callers that rely on ksft_exit_*() return code, since
+> > > > > the functions ksft_exit_*() have never returned anything.
+> > > > >
+> > > > > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> > > >
+> > > > Lot of changes to fix this warning. Is this necessary? I would
+> > > > like to explore if there is an easier and localized change that
+> > > > can fix the problem.
+> > >
+> > > via `man 3 exit`:
+> > > ```
+> > > The  exit() function causes normal process termination ...
+> > > ...
+> > > RETURN VALUE
+> > >        The exit() function does not return.
+> > > ```
+> > > so seeing `ksft_exit_pass`, `ksft_exit_fail`, `ksft_exit_fail_msg`,
+> > > `ksft_exit_xfail`, `ksft_exit_xpass`, and `ksft_exit_skip` all
+> > > unconditional call `exit` yet return an `int` looks wrong to me on
+> > > first glance. So on that point this patch and its resulting diffstat
+> > > LGTM.
+> >
+> > I'll respin the patch with these changes only.
+> >
+> > >
+> > > That said, there are many changes that explicitly call `ksft_exit`
+> > > with an expression; are those setting the correct exit code? Note that
+> > > ksft_exit_pass is calling exit with KSFT_PASS which is 0.  So some of
+> > > the negations don't look quite correct to me.  For example:
+> > >
+> > > -       return !ksft_get_fail_cnt() ? ksft_exit_pass() : ksft_exit_fail();
+> > > +       ksft_exit(!ksft_get_fail_cnt());
+> > >
+> > > so if ksft_get_fail_cnt() returns 0, then we were calling
+> > > ksft_exit_pass() which exited with 0. Now we'd be exiting with 1?
+> >
+> > oh, right, thank you for your review.
+> > I will drop all the 'ksft_exit()' changes, they should be fixed and go
+> > in as separete patches.
+> 
+> tools/testing/selftests/vm/memfd_secret.c has the
+> 'ksft_exit(!ksft_get_fail_cnt())'
+> statement and when I looked at it it when I did this patch it looked correct.
+> However, when I look at it now I get a bit confused how ksft_exit() can be used
+> with ksft_get_fail_cnt(). @Mike can you please clarify the
+> 'ksft_exit(!ksft_get_fail_cnt())' instance in
+> tools/testing/selftests/vm/memfd_secret.c.
 
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+ksft_exit() does not take the error code but rather a condition:
 
->  drivers/net/ethernet/mscc/ocelot_net.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/net/ethernet/mscc/ocelot_net.c b/drivers/net/etherne=
-t/mscc/ocelot_net.c
-> index eaeba60b1bba..d76def435b23 100644
-> --- a/drivers/net/ethernet/mscc/ocelot_net.c
-> +++ b/drivers/net/ethernet/mscc/ocelot_net.c
-> @@ -1704,7 +1704,10 @@ int ocelot_probe_port(struct ocelot *ocelot, int p=
-ort, struct regmap *target,
->  		NETIF_F_HW_TC;
->  	dev->features |=3D NETIF_F_HW_VLAN_CTAG_FILTER | NETIF_F_HW_TC;
-> =20
-> -	eth_hw_addr_gen(dev, ocelot->base_mac, port);
-> +	err =3D of_get_mac_address(portnp, dev->dev_addr);
-> +	if (err)
-> +		eth_hw_addr_gen(dev, ocelot->base_mac, port);
-> +
->  	ocelot_mact_learn(ocelot, PGID_CPU, dev->dev_addr,
->  			  OCELOT_VLAN_UNAWARE_PVID, ENTRYTYPE_LOCKED);
-> =20
-> --=20
-> 2.33.0
->=
+/**
+ * ksft_exit() - Exit selftest based on truth of condition
+ *
+ * @condition: if true, exit self test with success, otherwise fail.
+ */
+#define ksft_exit(condition) do {	\
+	if (!!(condition))		\
+		ksft_exit_pass();	\
+	else				\
+		ksft_exit_fail();	\
+	} while (0)
+
+So
+
+	!ksft_get_fail_cnt() ? ksft_exit_pass() : ksft_exit_fail();
+
+and
+
+	ksft_exit(!ksft_get_fail_cnt())
+
+are equivalent.
+
+-- 
+Sincerely yours,
+Mike.
