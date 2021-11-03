@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E1E444869
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 19:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E79444870
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 19:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhKCSmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 14:42:01 -0400
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:57810 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231314AbhKCSl7 (ORCPT
+        id S230382AbhKCSnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 14:43:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229940AbhKCSnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 14:41:59 -0400
-Received: from pop-os.home ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id iLANmt2fXUGqliLAOmrupw; Wed, 03 Nov 2021 19:39:21 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Wed, 03 Nov 2021 19:39:21 +0100
-X-ME-IP: 86.243.171.122
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
-        mike.leach@linaro.org, leo.yan@linaro.org,
-        alexander.shishkin@linux.intel.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com
-Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH v2] coresight: Use devm_bitmap_zalloc when applicable
-Date:   Wed,  3 Nov 2021 19:39:18 +0100
-Message-Id: <a4b8454f560b70cedf0e4d06275787f08d576ee5.1635964610.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Wed, 3 Nov 2021 14:43:01 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F68BC061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 11:40:25 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id k2so3277231pff.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 11:40:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fnS1heGGb0+muHckszGySqCIwOaFpB98WMOnGGOqVKg=;
+        b=mEUUXJmD9IPgrcEV0fG8lr2QecKZsk9r5va8PT/HM3PQC0IP3ZgmcyX98lZFfOJj5/
+         aJtbR1VV82hV/qbOtprJNFzANIy0qLQ8xpGjlEfbW9QvAsHFQiUiZnRSNuMq0ac4PSQZ
+         0/PfJOwnqMHc30Rq1LXaa4KbNerYBDvAmmIvc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fnS1heGGb0+muHckszGySqCIwOaFpB98WMOnGGOqVKg=;
+        b=4rAvtJL5FML1mfKWYe+8v/wNtqEiWRwkYeFs6fm4a2anowD6gNVwrfzrBOcnxcz30d
+         S/yRK/OjEsTTKyfqiYfsWmfVlVZrFnZ73IMSbIh+nbfJ4x9CGDggvqagOSVjuJByVvnq
+         YwLlV0IVFO2SxEKO/q7GPAleHvz9VuiNoG4+YJ0Rv7yrU8IRvwbxXWU8KsdqN/Z1qin3
+         YI80cJAOT46l8JA/qAuPCFZE60AakS6O0u6cmx8qPZ5FUIaybpLUQEqGDqs7loWIAoLK
+         /ZM6eNAY7rk8wD5RZgz0ZIg4NlyrQIimgTU+aPSAuByM4UtXJkcIEd2KkWala/VoJasb
+         9IvQ==
+X-Gm-Message-State: AOAM533Od14uFpPajbzI8fZyE67Ed929A6q6PiirNYbr9YAcaMzoHiSV
+        ENdh67VfgBdvdqYrEQVrns0U4Q==
+X-Google-Smtp-Source: ABdhPJzp+ITq0OXvsRnDmkAnKuQZj8sZcIVhXXsgU0yOJeK6eluHRAzpXUU0NDQsHX7Jsb8XD104Mg==
+X-Received: by 2002:a63:3d8f:: with SMTP id k137mr35119137pga.21.1635964824700;
+        Wed, 03 Nov 2021 11:40:24 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 17sm3181541pfp.14.2021.11.03.11.40.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 11:40:24 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 11:40:23 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 0/2] selftests/seccomp: Report event mismatches more
+ clearly
+Message-ID: <202111031139.80CE97C532@keescook>
+References: <20211103163039.2104830-1-keescook@chromium.org>
+ <87lf253x1c.fsf@disp2133>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87lf253x1c.fsf@disp2133>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'drvdata->chs.guaranteed' is a bitmap. So use 'devm_bitmap_kzalloc()' to
-simplify code, improve the semantic and avoid some open-coded arithmetic
-in allocator arguments.
+On Wed, Nov 03, 2021 at 01:37:51PM -0500, Eric W. Biederman wrote:
+> Kees Cook <keescook@chromium.org> writes:
+> 
+> > Hi,
+> >
+> > This expands the seccomp selftests slightly to add additional debug
+> > reporting detail and a new "immediate fatal SIGSYS under tracing" test.
+> > I expect to be taking these via my seccomp tree.
+> 
+> Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> 
+> I am a little fuzzy on the details but I understand what and why
+> you are testing (I broken it).  So this is my 10,000 foot ack.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-v1 --> v2: remove the 'guaranteed' variable to be even less verbose
----
- drivers/hwtracing/coresight/coresight-stm.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+Thanks! Yeah, and the other tests did catch it, but it was kind of a
+"side effect", so I added the specific "direct" case where it can be
+seen more clearly.
 
-diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
-index 58062a5a8238..bb14a3a8a921 100644
---- a/drivers/hwtracing/coresight/coresight-stm.c
-+++ b/drivers/hwtracing/coresight/coresight-stm.c
-@@ -856,13 +856,11 @@ static int stm_probe(struct amba_device *adev, const struct amba_id *id)
- {
- 	int ret;
- 	void __iomem *base;
--	unsigned long *guaranteed;
- 	struct device *dev = &adev->dev;
- 	struct coresight_platform_data *pdata = NULL;
- 	struct stm_drvdata *drvdata;
- 	struct resource *res = &adev->res;
- 	struct resource ch_res;
--	size_t bitmap_size;
- 	struct coresight_desc desc = { 0 };
- 
- 	desc.name = coresight_alloc_device_name(&stm_devs, dev);
-@@ -904,12 +902,10 @@ static int stm_probe(struct amba_device *adev, const struct amba_id *id)
- 	else
- 		drvdata->numsp = stm_num_stimulus_port(drvdata);
- 
--	bitmap_size = BITS_TO_LONGS(drvdata->numsp) * sizeof(long);
--
--	guaranteed = devm_kzalloc(dev, bitmap_size, GFP_KERNEL);
--	if (!guaranteed)
-+	drvdata->chs.guaranteed = devm_bitmap_zalloc(dev, drvdata->numsp,
-+						     GFP_KERNEL);
-+	if (!drvdata->chs.guaranteed)
- 		return -ENOMEM;
--	drvdata->chs.guaranteed = guaranteed;
- 
- 	spin_lock_init(&drvdata->spinlock);
- 
 -- 
-2.30.2
-
+Kees Cook
