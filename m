@@ -2,110 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44FA34445D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4754445D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:23:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232782AbhKCQ0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 12:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbhKCQZ4 (ORCPT
+        id S232821AbhKCQ0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 12:26:14 -0400
+Received: from mail-pl1-f179.google.com ([209.85.214.179]:44628 "EHLO
+        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232745AbhKCQ0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 12:25:56 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F95DC061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 09:23:19 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id d12so2733459lfv.6
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 09:23:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cacIkAFs+72Yhz0c8MHvVrEE2bJVJOQ7A5GEEKjRHzE=;
-        b=JWCw98yoanqwDlL1uh0r5J0vyhG3dKr9z3OzkhdwhpsePnB67z7eMRNdBfRtxuQEek
-         bvlvwzlk25fR30S5NwUTMhz0Ofzex4aSIiRCgOzj/fy4DLQU4w/PE87iQUqhRWcxrhND
-         0CtZu32Xb0O1uHKkbmwPKlnwobyhw1KDDa7oo=
+        Wed, 3 Nov 2021 12:26:07 -0400
+Received: by mail-pl1-f179.google.com with SMTP id t11so2778429plq.11;
+        Wed, 03 Nov 2021 09:23:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cacIkAFs+72Yhz0c8MHvVrEE2bJVJOQ7A5GEEKjRHzE=;
-        b=GXwfMM5ql3vlbtxtUPI+D9mrVz5Z/xvUriJeOLeusO5ooW9SC2gVtvW09tG0uVZWVg
-         2/X5Bo8ZIm80tgKm94NGY7AuEdXFe/9t79Wz9Cspos4JAbf4jbPYjqTZ0clTIfs5VPne
-         OAVubczEvy05bYiYrrfqyeUNfqRNNbPtvUgDRSkHfM9hoCMbFheg2x72lYxhBXnSFv/S
-         DRo/4UggOqtrKfW5wDuzRf+d56+LToLKE73zK1lwJ7pdHgCRKmNeXHTO3D8Gq1Ow6AY3
-         l+jXQS/ajckvl2YSGrvHm482++8KhFdIXZjgz2QJaB8IXxy76+snpfigN0Ia3yGVcAaJ
-         MP6w==
-X-Gm-Message-State: AOAM532fwPlN55jDXnI2FVEJ9nRveIRhAMEzUFu+X7qOCTCSubxdldhF
-        hSLdPNzPp9c68EbkneqLnyNpJQt9J0X/sZcV
-X-Google-Smtp-Source: ABdhPJyc4EZGENYV3tZYnDinO6dHP/QIb+4vqTX3RzoZ7UHhSyPolK0Aaxqxxynj637NVsYDrsI8Lw==
-X-Received: by 2002:ac2:430d:: with SMTP id l13mr40449353lfh.656.1635956597331;
-        Wed, 03 Nov 2021 09:23:17 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id u13sm240451ljg.121.2021.11.03.09.23.16
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cUoN3Jf7ze15Ze1I6TWgtZLhkp0qQPWGYTaiuciHyZM=;
+        b=1GwGI93OqzZt0P0NeTl7+gYc0KLfdO50iA4oatHEwaZNnUuMC1xADKTEg8C5Rnk0AP
+         U3DZPZk1sGiZgOugQx3VSJWfj5zB7GhoCm8SVA3GccN0rWMpE9ANH2wDT/i0gMD0Psn/
+         e7mHwTiejwd31MHyX7aR9eBEM15tw7jYmUuE/7dwV5MUId0Gs/VvqvOmfiXnlmKl5X5t
+         be3LBbyS1spDFHTco8PPHyLU+OTjZHs2lRLt/2xPtmy9ZT0U5zMeVe7CLr134/lgDiwg
+         fgzEObuE3ZFh82tMhhhHhiPXZ4UMQmiD1+SZoIZR+XRZNSgNl1OGLSFz5RWxfdHNE0dq
+         Kyhw==
+X-Gm-Message-State: AOAM532T3QQQiHxl1ZBaZVZChPE2bycHljo2psHeAgSoCqYPrKJFgx3h
+        tDx84e3fXatZs4Bwr5d2tU+4flRR+53lcw==
+X-Google-Smtp-Source: ABdhPJzP11S30D47yxpOmjlgXUSpOLbouptt4JxJyV6701Q4HkduWL0HOfIqY5cQJtAM7sGPH3zG2w==
+X-Received: by 2002:a17:902:900c:b0:13f:974c:19b0 with SMTP id a12-20020a170902900c00b0013f974c19b0mr38732145plp.12.1635956607230;
+        Wed, 03 Nov 2021 09:23:27 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:9416:5327:a40e:e300])
+        by smtp.gmail.com with ESMTPSA id h12sm2959965pfv.117.2021.11.03.09.23.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 09:23:16 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id bq11so6238661lfb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 09:23:16 -0700 (PDT)
-X-Received: by 2002:ac2:4e15:: with SMTP id e21mr43505927lfr.655.1635956596237;
- Wed, 03 Nov 2021 09:23:16 -0700 (PDT)
+        Wed, 03 Nov 2021 09:23:26 -0700 (PDT)
+Subject: Re: kernel 5.15 does not boot with 3ware card (never had this issue
+ <= 5.14) - scsi 0:0:0:0: WARNING: (0x06:0x002C) : Command (0x12) timed out,
+ resetting card
+To:     Justin Piszcz <jpiszcz@lucidpixels.com>,
+        Douglas Miller <dougmill@linux.vnet.ibm.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-scsi@vger.kernel.org
+References: <006a01d7cead$b9262d70$2b728850$@lucidpixels.com>
+ <a4a88807-8f52-ef9a-c58e-0ff454da5ade@acm.org>
+ <CAO9zADxiobgwDE5dtvo98EL0djdgQyrGJA_w4Oxb+pZ9pvOEjQ@mail.gmail.com>
+ <CAO9zADycForyq9cmh=epw9r-Wzz=xt32vL3mePuBAPehCgUTjw@mail.gmail.com>
+ <50a16ee2-dfa4-d009-17c5-1984cf0a6161@linux.vnet.ibm.com>
+ <CAO9zADwVnuKU-tfZxm4USjf76yJhTZqWfZw4yspv8sc93RuBbQ@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <e0c2935d-d961-11a0-1b4c-580b55dc6b59@acm.org>
+Date:   Wed, 3 Nov 2021 09:23:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <163572864256.3357115.931779940195622047.tglx@xen13>
- <163572864855.3357115.17938524897008353101.tglx@xen13> <CAHk-=whEbr+0ZSRMkQ1wqLCeBEiK7o2-Hm=55aTBpdeVxnFbVQ@mail.gmail.com>
- <CAHk-=whwxyA11LQ+0y73nJAS4ZB=s8CeYM6OGCEzKiy+8fyLiw@mail.gmail.com> <YYD5ti23DQUjdQdz@hirez.programming.kicks-ass.net>
-In-Reply-To: <YYD5ti23DQUjdQdz@hirez.programming.kicks-ass.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 3 Nov 2021 09:23:00 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiB_utWx68aCGQKRC7aYMFSL+7Dr7hz_7yp4f3xM_EGbA@mail.gmail.com>
-Message-ID: <CAHk-=wiB_utWx68aCGQKRC7aYMFSL+7Dr7hz_7yp4f3xM_EGbA@mail.gmail.com>
-Subject: Re: [GIT pull] sched/core for v5.16-rc1
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAO9zADwVnuKU-tfZxm4USjf76yJhTZqWfZw4yspv8sc93RuBbQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 1:41 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> > It could be a user process doing bad things to the user stack frame
-> > from another thread when profiling is enabled.
->
-> Most of the unwinders seem to only care about the kernel stack. Not the
-> user stack.
+On 11/3/21 9:18 AM, Justin Piszcz wrote:
+> Thanks!-- Has anyone else reading run into this issue and/or are there
+> any suggestions how I can troubleshoot this further (as all -rc's have
+> the same issue)?
 
-Note that it very much happens for a kernel stack too.
+How about bisecting this issue
+(https://www.kernel.org/doc/html/latest/admin-guide/bug-bisect.html)?
 
-There the reason isn't some active attack, but simply stack
-corruption, or - not uncommonly - missing or incomplete debug notes
-that the unwinder crazily depends on.
+Thanks,
 
-If an unwinder isn't robust enough to deal with stack corruption, it
-damn well should be deleted immediately - it will only cause even
-*more* problems when some nasty bug happens, and suddenly the unwinder
-means that you don';t get a proper oops report.
-
-And yes, I feel strongly about this, because we very much used to have
-that situation on x86 too a long time ago. I spent a year fighting
-buggy unwinders, and then removed the unbelievable garbage in the end
-because the maintainer of said thing refused to admit that there was a
-problem.
-
-So I really think that the solution to "unwinder is not robust" is
-absolutely not to take more locks. Because that's literally just
-hiding the much bigger and serious problem.
-
-The fact that the lock in question is a fairly critical one (and needs
-to use "raw_spin_lock()" and friends) is just another argument against
-it.
-
-I've obviously pulled this on Monday already, and I'm not going to
-start reverting those commits unless they cause problems, but I do
-think they were seriously misguided.
-
-                  Linus
+Bart.
