@@ -2,154 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6B2C443BCC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 04:18:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4D1443BCE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 04:20:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhKCDVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 23:21:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47990 "EHLO
+        id S230299AbhKCDWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 23:22:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhKCDVT (ORCPT
+        with ESMTP id S229506AbhKCDWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 23:21:19 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D23C061714;
-        Tue,  2 Nov 2021 20:18:44 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id g125so1791585oif.9;
-        Tue, 02 Nov 2021 20:18:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=PEbxxhHJ2eGH/OjLCiM05u+bvjKoPzIV8y8oWEupz6w=;
-        b=eJ/n7RH5KFIu9tc0DtEY2eSsoA6R8uQ+D4jeb8mSvYJ9+Azxhtga+UyjGopDf+cxKe
-         UWwUoGvnAgYwsGlpRJHfndtWvsteiDS0hOkMGFMB0fKf5GF+xIZvN3b1aM/7K+5Mq01n
-         qlxENTi3gEhZqcftCMSvGpmikd20psKB3X2sJlPPSTGh5z1UF4QV13/X5AToW2ST3vFe
-         oIE4jWwjCBq1LlbtpovqffV4FxRQ5DrNGxDOY3otTf2d2sYuBA+RINi8Ao6dvPVEacLm
-         rS4RN1VTuG+KZpnyZQreMyCKx2vgXq9IxQdxFJyohxeqVN0UDEypEniwZu1vBAbCs2ue
-         XkTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=PEbxxhHJ2eGH/OjLCiM05u+bvjKoPzIV8y8oWEupz6w=;
-        b=RDeWxha5c7reDR7SRPmvq/i/b/s7wbsqySgpiiHToIAE6HMzMsCAlU7BHTxV9IeDjX
-         iJTUOwNsAgqPhuweQjQMtf4ajOMI47CkdT80g5gkcOv87fHEP+qaQaOdRrvb2FKC+N+J
-         pm8QmZZhgfd6NGaHfSP4RUBDm82K5Rh5FtIOD9ucrRHrd484twG69k0BZZVe7FvPBy74
-         AwFLC18JqFRFFMsI2jYVSPeBr62urlYDJmNk3g32tjtjAMyadA0rDKBXYME8BZdkGdiA
-         ipKLO9K83a6obm2mrzxyDnbPG9TQnHQfspJwAUIIBGAUEiNXF5EEAIRDwyxuuGGlc8vx
-         XeEQ==
-X-Gm-Message-State: AOAM530IE24BwVNLc8UCA0MWxR1ZN+9YaeGVWLf/XOFCyCYRsfNqqFqf
-        NlpERy8EKsv/kZEmVedCiMY=
-X-Google-Smtp-Source: ABdhPJy11Txp6pqUexodtsquZIXuERcqwbncivyGbDc605t27eOpm4i7LopxHFGEpG9biRxDBHM3yg==
-X-Received: by 2002:aca:af15:: with SMTP id y21mr4399522oie.61.1635909523555;
-        Tue, 02 Nov 2021 20:18:43 -0700 (PDT)
-Received: from [172.16.0.2] ([8.48.134.30])
-        by smtp.googlemail.com with ESMTPSA id a13sm244312oiy.9.2021.11.02.20.18.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 20:18:43 -0700 (PDT)
-Message-ID: <832e6d49-8490-ab8b-479b-0420596d0aaa@gmail.com>
-Date:   Tue, 2 Nov 2021 21:18:41 -0600
+        Tue, 2 Nov 2021 23:22:13 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859B0C061714;
+        Tue,  2 Nov 2021 20:19:30 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HkX7F2lDgz4xbC;
+        Wed,  3 Nov 2021 14:19:21 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635909565;
+        bh=mXNiDRbvftcWwQQwxnyYXK5OgdpAMzBq9zZ7/YFPumk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=lRDeW1gaLDTEmpeGRgH0wSX9B9eqUK1wK5lXMAVY3iTihV+lfj7KLdqKGNB6ZZHlK
+         sLRYJphTESScFge6FYY1sUl9lN/PQQquJXHWPC4f95ljkTjoHjWaQ0SJd9iiWdfB4g
+         iGJ2HmJkCjrqxl/2FBsgil1w10eknPHUzeErWTke+WRiR0kTUyYvTBP1+izCCzOWG1
+         iFW/TKWgTxdlb/IlHihrMaM/HjLv/tIINKMzDm4/TJTTtt7jrt1gpFqcWNRxdrEVaO
+         cyX0hJh3pTgTSV93E/TYljZOToTKu4CtjHBL+EZREn411fKEPFaYr53x54W9+zn58+
+         k2kKK8banh6cw==
+Date:   Wed, 3 Nov 2021 14:19:19 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Antonio Terceiro <antonio.terceiro@linaro.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Boris-Chengbiao Zhou <bobo1239@web.de>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        Dariusz Sosnowski <dsosnowski@dsosnowski.pl>,
+        Douglas Su <d0u9.su@outlook.com>, Finn Behrens <me@kloenk.de>,
+        Gary Guo <gary@garyguo.net>, Jiri Olsa <jolsa@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>
+Subject: linux-next: manual merge of the rust tree with Linus' tree
+Message-ID: <20211103141919.4feefaf0@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH v2] tcp: Initial support for RFC5925 auth option
-Content-Language: en-US
-To:     Leonard Crestez <cdleonard@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yuchung Cheng <ycheng@google.com>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Christoph Paasch <cpaasch@apple.com>,
-        Ivan Delalande <colona@arista.com>,
-        Priyaranjan Jha <priyarjha@google.com>, netdev@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1635784253.git.cdleonard@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-In-Reply-To: <cover.1635784253.git.cdleonard@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/i.X8tMgFsm0alWFe66nkbZF";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/21 10:34 AM, Leonard Crestez wrote:
-> This is similar to TCP MD5 in functionality but it's sufficiently
-> different that wire formats are incompatible. Compared to TCP-MD5 more
-> algorithms are supported and multiple keys can be used on the same
-> connection but there is still no negotiation mechanism.
-> 
-> Expected use-case is protecting long-duration BGP/LDP connections
-> between routers using pre-shared keys. The goal of this series is to
-> allow routers using the linux TCP stack to interoperate with vendors
-> such as Cisco and Juniper.
-> 
-> Both algorithms described in RFC5926 are implemented but the code is not
-> very easily extensible beyond that. In particular there are several code
-> paths making stack allocations based on RFC5926 maximum, those would
-> have to be increased.
-> 
-> This version implements SNE and l3mdev awareness and adds more tests.
-> Here are some known flaws and limitations:
-> 
-> * Interaction with TCP-MD5 not tested in all corners
-> * Interaction with FASTOPEN not tested and unlikely to work because
-> sequence number assumptions for syn/ack.
-> * Not clear if crypto_shash_setkey might sleep. If some implementation
-> do that then maybe they could be excluded through alloc flags.
-> * Traffic key is not cached (reducing performance)
-> * User is responsible for ensuring keys do not overlap.
-> * There is no useful way to list keys, making userspace debug difficult.
-> * There is no prefixlen support equivalent to md5. This is used in
-> some complex FRR configs.
-> 
-> Test suite was added to tools/selftests/tcp_authopt. Tests are written
-> in python using pytest and scapy and check the API in some detail and
-> validate packet captures. Python code is already used in linux and in
-> kselftests but virtualenvs not very much, this particular test suite
-> uses `pip` to create a private virtualenv and hide dependencies.
-> 
-> This actually forms the bulk of the series by raw line-count. Since
-> there is a lot of code it was mostly split on "functional area" so most
-> files are only affected by a single code. A lot of those tests are
-> relevant to TCP-MD5 so perhaps it might help to split into a separate
-> series?
-> 
-> Some testing support is included in nettest and fcnal-test.sh, similar
-> to the current level of tcp-md5 testing.
-> 
-> SNE was tested by creating connections in a loop until a large SEQ is
-> randomly selected and then making it rollover. The "connect in a loop"
-> step ran into timewait overflow and connection failure on port reuse.
-> After spending some time on this issue and my conclusion is that AO
-> makes it impossible to kill remainders of old connections in a manner
-> similar to unsigned or md5sig, this is because signatures are dependent
-> on ISNs.  This means that if a timewait socket is closed improperly then
-> information required to RST the peer is lost.
-> 
-> The fact that AO completely breaks all connection-less RSTs is
-> acknowledged in the RFC and the workaround of "respect timewait" seems
-> acceptable.
-> 
-> Changes for frr (old): https://github.com/FRRouting/frr/pull/9442
-> That PR was made early for ABI feedback, it has many issues.
-> 
+--Sig_/i.X8tMgFsm0alWFe66nkbZF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-overall looks ok to me. I did not wade through the protocol details.
+Hi all,
 
-I did see the comment about no prefixlen support in the tests. A lot of
-patches to absorb, perhaps I missed it. Does AuthOpt support for
-prefixes? If not, you should consider adding that as a quick follow on
-(within the same dev cycle). MD5 added prefix support for scalability;
-seems like AO should be concerned about the same.
+Today's linux-next merge of the rust tree got conflicts in:
 
+  Makefile
+  scripts/Makefile.modfinal
+
+between commit:
+
+  9741e07ece7c ("kbuild: Unify options for BTF generation for vmlinux and m=
+odules")
+
+from Linus' tree and commit:
+
+  fcd48fa27403 ("Kbuild: add Rust support")
+
+from the rust tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc Makefile
+index 8581ffca7f96,c4dd2c6b55e4..000000000000
+--- a/Makefile
++++ b/Makefile
+@@@ -533,10 -572,10 +574,11 @@@ export KBUILD_HOSTCXXFLAGS KBUILD_HOSTL
+ =20
+  export KBUILD_CPPFLAGS NOSTDINC_FLAGS LINUXINCLUDE OBJCOPYFLAGS KBUILD_LD=
+FLAGS
+  export KBUILD_CFLAGS CFLAGS_KERNEL CFLAGS_MODULE
++ export KBUILD_RUST_TARGET KBUILD_RUSTFLAGS RUSTFLAGS_KERNEL RUSTFLAGS_MOD=
+ULE
+  export KBUILD_AFLAGS AFLAGS_KERNEL AFLAGS_MODULE
+- export KBUILD_AFLAGS_MODULE KBUILD_CFLAGS_MODULE KBUILD_LDFLAGS_MODULE
+- export KBUILD_AFLAGS_KERNEL KBUILD_CFLAGS_KERNEL
++ export KBUILD_AFLAGS_MODULE KBUILD_CFLAGS_MODULE KBUILD_RUSTFLAGS_MODULE =
+KBUILD_LDFLAGS_MODULE
++ export KBUILD_AFLAGS_KERNEL KBUILD_CFLAGS_KERNEL KBUILD_RUSTFLAGS_KERNEL
+ +export PAHOLE_FLAGS
+ =20
+  # Files to ignore in find ... statements
+ =20
+@@@ -1089,9 -1203,12 +1167,13 @@@ export MODORDER :=3D $(extmod_prefix)modu
+  export MODULES_NSDEPS :=3D $(extmod_prefix)modules.nsdeps
+ =20
+  ifeq ($(KBUILD_EXTMOD),)
+ -core-y		+=3D kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/
+ +core-y			+=3D kernel/ certs/ mm/ fs/ ipc/ security/ crypto/
+ +core-$(CONFIG_BLOCK)	+=3D block/
+ =20
++ ifdef CONFIG_RUST
++ core-y		+=3D rust/
++ endif
++=20
+  vmlinux-dirs	:=3D $(patsubst %/,%,$(filter %/, \
+  		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
+  		     $(libs-y) $(libs-m)))
+diff --cc scripts/Makefile.modfinal
+index 7f39599e9fae,c0842e999a75..000000000000
+--- a/scripts/Makefile.modfinal
++++ b/scripts/Makefile.modfinal
+@@@ -39,11 -39,12 +39,12 @@@ quiet_cmd_ld_ko_o =3D LD [M]  $
+ =20
+  quiet_cmd_btf_ko =3D BTF [M] $@
+        cmd_btf_ko =3D 							\
+- 	if [ -f vmlinux ]; then						\
+- 		LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_base vml=
+inux $@; \
+- 		$(RESOLVE_BTFIDS) -b vmlinux $@; 			\
+- 	else								\
++ 	if [ ! -f vmlinux ]; then					\
+  		printf "Skipping BTF generation for %s due to unavailability of vmlinux=
+\n" $@ 1>&2; \
++ 	elif $(srctree)/scripts/is_rust_module.sh $@; then 		\
++ 		printf "Skipping BTF generation for %s because it's a Rust module\n" $@=
+ 1>&2; \
++ 	else								\
+ -		LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J --btf_base vmlinux $@; \
+++		LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_base vml=
+inux $@; \
+  	fi;
+ =20
+  # Same as newer-prereqs, but allows to exclude specified extra dependenci=
+es
+
+--Sig_/i.X8tMgFsm0alWFe66nkbZF
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGB/7cACgkQAVBC80lX
+0GwfVwf/d/0OQpkbR8tnolQawx/EByyl0Fm/vgrwWY9A6FRwAzuFFPVOpLgz4Mh0
+So5JpktRS3q9UMDhq/yXWV/j0c3Hnn45oDxoWy1c7+U6sxKYhucW98Ki8O294Oh1
+par5hFWRvtcjRNxwBAFbzXKfUw62XkmpnTGV6Rzira+i6qmPb8h0e2y372+cRdyL
+592vQ3HuKBv24EWxfR1442tb7/mhacxNIvrL9yCsaYjtLrmlVUkYKV/3VHuxp6XE
+OrJqY8OolDIdtSg83H1UakrBNbShUWMKS1vwmGsi1f+1KSm+y/mg4hJ1B9aOnRh/
+KOKaD2V+BWPKyBxn0jvdzr+YPs39oQ==
+=yY7i
+-----END PGP SIGNATURE-----
+
+--Sig_/i.X8tMgFsm0alWFe66nkbZF--
