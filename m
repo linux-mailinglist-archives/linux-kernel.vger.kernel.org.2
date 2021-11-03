@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E79444870
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 19:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D71F9444878
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 19:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhKCSnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 14:43:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbhKCSnB (ORCPT
+        id S230156AbhKCSpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 14:45:14 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:47646 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229697AbhKCSpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 14:43:01 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F68BC061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 11:40:25 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id k2so3277231pff.11
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 11:40:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fnS1heGGb0+muHckszGySqCIwOaFpB98WMOnGGOqVKg=;
-        b=mEUUXJmD9IPgrcEV0fG8lr2QecKZsk9r5va8PT/HM3PQC0IP3ZgmcyX98lZFfOJj5/
-         aJtbR1VV82hV/qbOtprJNFzANIy0qLQ8xpGjlEfbW9QvAsHFQiUiZnRSNuMq0ac4PSQZ
-         0/PfJOwnqMHc30Rq1LXaa4KbNerYBDvAmmIvc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fnS1heGGb0+muHckszGySqCIwOaFpB98WMOnGGOqVKg=;
-        b=4rAvtJL5FML1mfKWYe+8v/wNtqEiWRwkYeFs6fm4a2anowD6gNVwrfzrBOcnxcz30d
-         S/yRK/OjEsTTKyfqiYfsWmfVlVZrFnZ73IMSbIh+nbfJ4x9CGDggvqagOSVjuJByVvnq
-         YwLlV0IVFO2SxEKO/q7GPAleHvz9VuiNoG4+YJ0Rv7yrU8IRvwbxXWU8KsdqN/Z1qin3
-         YI80cJAOT46l8JA/qAuPCFZE60AakS6O0u6cmx8qPZ5FUIaybpLUQEqGDqs7loWIAoLK
-         /ZM6eNAY7rk8wD5RZgz0ZIg4NlyrQIimgTU+aPSAuByM4UtXJkcIEd2KkWala/VoJasb
-         9IvQ==
-X-Gm-Message-State: AOAM533Od14uFpPajbzI8fZyE67Ed929A6q6PiirNYbr9YAcaMzoHiSV
-        ENdh67VfgBdvdqYrEQVrns0U4Q==
-X-Google-Smtp-Source: ABdhPJzp+ITq0OXvsRnDmkAnKuQZj8sZcIVhXXsgU0yOJeK6eluHRAzpXUU0NDQsHX7Jsb8XD104Mg==
-X-Received: by 2002:a63:3d8f:: with SMTP id k137mr35119137pga.21.1635964824700;
-        Wed, 03 Nov 2021 11:40:24 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 17sm3181541pfp.14.2021.11.03.11.40.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 11:40:24 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 11:40:23 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 0/2] selftests/seccomp: Report event mismatches more
- clearly
-Message-ID: <202111031139.80CE97C532@keescook>
-References: <20211103163039.2104830-1-keescook@chromium.org>
- <87lf253x1c.fsf@disp2133>
+        Wed, 3 Nov 2021 14:45:12 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1A3IgNV1077205;
+        Wed, 3 Nov 2021 13:42:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1635964943;
+        bh=ITh8datjcB1pR9d1o9fFJSmT+Wo30raT9v1X19SdMQU=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=r2L8ZK+976zJKHazeiaAw46F0Yf0BMms8ZlO7CmrCp6VxsLv15hmFtMnHPgWbo8DG
+         3ZM9vfcqY2tX+wWWzn+CB1qZbGw93Bt6doLnc0gVuUOfQpehApvriTw8WfKJEJtTk5
+         UtjDZpLqjDV05msQKJrbSYRbJL1SZHIlCOSF5k8U=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1A3IgNUV033583
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 3 Nov 2021 13:42:23 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 3
+ Nov 2021 13:42:23 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Wed, 3 Nov 2021 13:42:22 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1A3IgJiA076322;
+        Wed, 3 Nov 2021 13:42:20 -0500
+Subject: Re: [RFC PATCH] net: phy/mdio: enable mmd indirect access through
+ phy_mii_ioctl()
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+References: <YYBBHsFEwGdPJw3b@lunn.ch>
+ <YYBF3IZoSN6/O6AL@shell.armlinux.org.uk> <YYCLJnY52MoYfxD8@lunn.ch>
+ <YYExmHYW49jOjfOt@shell.armlinux.org.uk>
+ <bc9df441-49bf-5c8a-891c-cc3f0db00aba@ti.com>
+ <YYF4ZQHqc1jJsE/+@shell.armlinux.org.uk>
+ <e18f17bd-9e77-d3ef-cc1e-30adccb7cdd5@ti.com>
+ <828e2d69-be15-fe69-48d8-9cfc29c4e76e@ti.com> <YYGxvomL/0tiPzvV@lunn.ch>
+ <8d24c421-064c-9fee-577a-cbbf089cdf33@ti.com> <YYHXcyCOPiUkk8Tz@lunn.ch>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <01a0ebf9-5d3f-e886-4072-acb9bf418b12@ti.com>
+Date:   Wed, 3 Nov 2021 20:42:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87lf253x1c.fsf@disp2133>
+In-Reply-To: <YYHXcyCOPiUkk8Tz@lunn.ch>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 01:37:51PM -0500, Eric W. Biederman wrote:
-> Kees Cook <keescook@chromium.org> writes:
-> 
-> > Hi,
-> >
-> > This expands the seccomp selftests slightly to add additional debug
-> > reporting detail and a new "immediate fatal SIGSYS under tracing" test.
-> > I expect to be taking these via my seccomp tree.
-> 
-> Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> 
-> I am a little fuzzy on the details but I understand what and why
-> you are testing (I broken it).  So this is my 10,000 foot ack.
 
-Thanks! Yeah, and the other tests did catch it, but it was kind of a
-"side effect", so I added the specific "direct" case where it can be
-seen more clearly.
+
+On 03/11/2021 02:27, Andrew Lunn wrote:
+>>> What i find interesting is that you and the other resent requester are
+>>> using the same user space tool. If you implement C45 over C22 in that
+>>> tool, you get your solution, and it will work for older kernels as
+>>> well. Also, given the diverse implementations of this IOTCL, it
+>>> probably works for more drivers than just those using phy_mii_ioctl().
+>>
+>> Do you mean change uapi, like
+>>   add mdio_phy_id_is_c45_over_c22() and
+>>   flag #define MDIO_PHY_ID_C45_OVER_C22 0x4000?
+> 
+> No, i mean user space implements C45 over C22. Make phytool write
+> MII_MMD_CTRL and MII_MMD_DATA to perform a C45 over C22.
+
+Now I give up - as mentioned there is now way to sync User space vs Kernel
+MMD transactions and so no way to get trusted results.
+
+
+Thanks all for participating in discussion.
 
 -- 
-Kees Cook
+Best regards,
+grygorii
