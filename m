@@ -2,79 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66275444694
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:04:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47691444691
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbhKCRG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 13:06:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233061AbhKCRGv (ORCPT
+        id S233054AbhKCRGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 13:06:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20675 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232985AbhKCRGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 13:06:51 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33EEBC061714;
-        Wed,  3 Nov 2021 10:04:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=u8Z/qqIhbDRh0Z9lXwnrC3LA7dcBQsND+N8bG1R6OJY=; b=y4OqgbyNItZScy80WmoDdm0cDF
-        Hur9oxkdvGoWlTSYEZhGzRfh8TUCRw2KlvesxH1ijn4vJrQysX66/7ncAQIRjEB3PPA08Q3jVLAyL
-        Vl2aYcsKvgiWt8J98lSUZ3hTC89wTmKEYw+YStjFwNCckDUlpOHTD3HRUgxb5Q0ybem/+K57J6QD9
-        jnz+lUXFm854hfwfO/X2yNEUkW2b/ul9t4CY2/cfytY6un/2jKt9BKcQfhRym+LGnKfkznUroDC3d
-        fTDyUjO5c+Qi3Ro58kWOo4rL/LxsnyKe5Ype/4xV2WIxGWE3qf+w4BOh6O5Gk9HpMF4x93iMXn1wu
-        oaos+0RQ==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1miJfy-005tqu-Dd; Wed, 03 Nov 2021 17:03:50 +0000
-Date:   Wed, 3 Nov 2021 10:03:50 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     axboe@kernel.dk, penguin-kernel@i-love.sakura.ne.jp,
-        dan.j.williams@intel.com, vishal.l.verma@intel.com,
-        dave.jiang@intel.com, ira.weiny@intel.com, richard@nod.at,
-        miquel.raynal@bootlin.com, vigneshr@ti.com, efremov@linux.com,
-        song@kernel.org, martin.petersen@oracle.com, hare@suse.de,
-        jack@suse.cz, ming.lei@redhat.com, tj@kernel.org,
-        linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
+        Wed, 3 Nov 2021 13:06:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635959051;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RhyNlcQTtItdzLKiKcw3dhTyVZjE7ucYL4TYcGsm9oc=;
+        b=AEbuDWdx68QYQnJzXSBKBmXiD1lYstkIIU8Cgiu2Pg2HPV6OOFKMelmDqWyyNXufAzwLmS
+        3Dc7AUsutdKgbbSwxlhK7roD5QJL+jvwzDCvSrZQ1O5LqH8ArTyazzpJUfVG+pMZQnD9BD
+        hA3oH4KrBykrhi0MrXZrZNoUKMPbrqg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-560-8JsqJgDlPjaKN51DpH_ouA-1; Wed, 03 Nov 2021 13:04:08 -0400
+X-MC-Unique: 8JsqJgDlPjaKN51DpH_ouA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C96DEC1A7;
+        Wed,  3 Nov 2021 17:04:06 +0000 (UTC)
+Received: from starship (unknown [10.40.194.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5E6955D9D3;
+        Wed,  3 Nov 2021 17:03:55 +0000 (UTC)
+Message-ID: <9743cd8aa1e2dd8ddb0caa1be1de608fb19c19d6.camel@redhat.com>
+Subject: Re: [PATCH v5 4/7] nSVM: use vmcb_save_area_cached in
+ nested_vmcb_valid_sregs()
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 12/13] block: make __register_blkdev() return an error
-Message-ID: <YYLA9g0cYBsEFZkm@bombadil.infradead.org>
-References: <20211103122157.1215783-1-mcgrof@kernel.org>
- <20211103122157.1215783-13-mcgrof@kernel.org>
- <20211103160933.GK31562@lst.de>
- <YYK8hY/giSBFN8YJ@bombadil.infradead.org>
- <20211103170049.GA4108@lst.de>
+Date:   Wed, 03 Nov 2021 19:03:54 +0200
+In-Reply-To: <20211103140527.752797-5-eesposit@redhat.com>
+References: <20211103140527.752797-1-eesposit@redhat.com>
+         <20211103140527.752797-5-eesposit@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103170049.GA4108@lst.de>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 06:00:49PM +0100, Christoph Hellwig wrote:
-> On Wed, Nov 03, 2021 at 09:44:53AM -0700, Luis Chamberlain wrote:
-> > Here's the thing, prober call a form of add_disk(), and so do we want
-> > to always ignore the errors on probe? If so we should document why that
-> > is sane then. I think this approach is a bit more sane though.
+On Wed, 2021-11-03 at 10:05 -0400, Emanuele Giuseppe Esposito wrote:
+> Now that struct vmcb_save_area_cached contains the required
+> vmcb fields values (done in nested_load_save_from_vmcb12()),
+> check them to see if they are correct in nested_vmcb_valid_sregs().
 > 
-> I suspect the right thing is to just kill of ->probe.
+> While at it, rename nested_vmcb_valid_sregs in nested_vmcb_check_save.
+> _nested_vmcb_check_save takes the additional @save parameter, so it
+> is helpful when we want to check a non-svm save state, like in
+> svm_set_nested_state. The reason for that is that save is the L1
+> state, not L2, so we just check it.
 > 
-> The only thing it supports is pre-devtmpfs, pre-udev semantics that
-> want to magically create disks when their pre-created device node
-> is accesses.
+> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
+> ---
+>  arch/x86/kvm/svm/nested.c | 18 ++++++++++++++----
+>  1 file changed, 14 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index 162b338a6c74..64fb43234e06 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -245,8 +245,8 @@ static bool nested_vmcb_check_controls(struct kvm_vcpu *vcpu,
+>  }
+>  
+>  /* Common checks that apply to both L1 and L2 state.  */
+> -static bool nested_vmcb_valid_sregs(struct kvm_vcpu *vcpu,
+> -				    struct vmcb_save_area *save)
+> +static bool _nested_vmcb_check_save(struct kvm_vcpu *vcpu,
+> +				     struct vmcb_save_area_cached *save)
+>  {
+>  	/*
+>  	 * FIXME: these should be done after copying the fields,
+> @@ -286,6 +286,14 @@ static bool nested_vmcb_valid_sregs(struct kvm_vcpu *vcpu,
+>  	return true;
+>  }
+>  
+> +static bool nested_vmcb_check_save(struct kvm_vcpu *vcpu)
+> +{
+> +	struct vcpu_svm *svm = to_svm(vcpu);
+> +	struct vmcb_save_area_cached *save = &svm->nested.save;
+> +
+> +	return _nested_vmcb_check_save(vcpu, save);
+> +}
+> +
+>  static
+>  void _nested_copy_vmcb_control_to_cache(struct vmcb_control_area *to,
+>  					struct vmcb_control_area *from)
+> @@ -694,7 +702,7 @@ int nested_svm_vmrun(struct kvm_vcpu *vcpu)
+>  	nested_copy_vmcb_control_to_cache(svm, &vmcb12->control);
+>  	nested_copy_vmcb_save_to_cache(svm, &vmcb12->save);
+>  
+> -	if (!nested_vmcb_valid_sregs(vcpu, &vmcb12->save) ||
+> +	if (!nested_vmcb_check_save(vcpu) ||
+>  	    !nested_vmcb_check_controls(vcpu, &svm->nested.ctl)) {
+>  		vmcb12->control.exit_code    = SVM_EXIT_ERR;
+>  		vmcb12->control.exit_code_hi = 0;
+> @@ -1330,6 +1338,7 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+>  		&user_kvm_nested_state->data.svm[0];
+>  	struct vmcb_control_area *ctl;
+>  	struct vmcb_save_area *save;
+> +	struct vmcb_save_area_cached save_cached;
+>  	unsigned long cr0;
+>  	int ret;
+>  
+> @@ -1397,10 +1406,11 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+>  	 * Validate host state saved from before VMRUN (see
+>  	 * nested_svm_check_permissions).
+>  	 */
 
-That sounds like a possible userspace impact? And so not for v5.16 for
-sure.
 
-> But if we don't remove it, yes I think not reporting
-> the error is best.  Just clean up whatever local resources were set
-> up in the ->probe method and let the open fail without the need of
-> passing on the actual error.
+> +	_nested_copy_vmcb_save_to_cache(&save_cached, save);
+Nitpick: here I would probalby add a comment that we are dealing here with L1
+save area and we just want to check it and not cache it.
 
-Alright, I'll do that and send a final v3 for the last 2 patches.
+Also suddenly the name _nested_copy_vmcb_save_to_cache sounds a bit off,
+but I don't have any better idea so I don't mind leaving it as is.
 
-  Luis
+Anyway,
+
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+
+Best regards,
+	Maxim Levitsky
+
+
+>  	if (!(save->cr0 & X86_CR0_PG) ||
+>  	    !(save->cr0 & X86_CR0_PE) ||
+>  	    (save->rflags & X86_EFLAGS_VM) ||
+> -	    !nested_vmcb_valid_sregs(vcpu, save))
+> +	    !_nested_vmcb_check_save(vcpu, &save_cached))
+>  		goto out_free;
+>  
+>  	/*
+
+
