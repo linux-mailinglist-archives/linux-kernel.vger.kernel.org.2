@@ -2,146 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8784444CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA8484444CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:44:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231777AbhKCPpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 11:45:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32874 "EHLO mail.kernel.org"
+        id S231794AbhKCPqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 11:46:38 -0400
+Received: from mga06.intel.com ([134.134.136.31]:20743 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229587AbhKCPpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 11:45:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D18561076;
-        Wed,  3 Nov 2021 15:43:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635954190;
-        bh=JrJPc27Pj0tqZ4ZP+BqiHNjvhEOsKrIRpVsSC3jH0zM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u3duK6HdKhrJ+gv7G4sdRhqAUI/wXrCFslo6C07CZfLiQRSjx6XWpSQTzPAdLZRGk
-         EyUrTnHOx2NztJUGzcoDPzWbdgTGWZC6n1OCySF1sHGC8BR+z3VTKL5r5HoVovgepY
-         TtN7YH7qSsOQXYWSd2oGB6VLotCVRxuDWn+nH0F4cuC44tuWRi0rHXJEcsxowEBOlx
-         xJiD4m3z55u5ufJIfeNXuOfBmWcKni7/Ih1NaI0K5QXh0lS656M68MRz39ZWQPthgY
-         6dZnu1G1TndELw1qOSMRnL9nmc1Rv0qmKmYdBMXyFRKdgJiq5KL36jGWfkdzsYCnkH
-         01RDqlE4zJzqg==
-Date:   Wed, 3 Nov 2021 08:43:09 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 17/21] iomap,xfs: Convert ->discard_page to
- ->discard_folio
-Message-ID: <20211103154309.GK24307@magnolia>
-References: <20211101203929.954622-1-willy@infradead.org>
- <20211101203929.954622-18-willy@infradead.org>
+        id S229587AbhKCPqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 11:46:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10157"; a="292363207"
+X-IronPort-AV: E=Sophos;i="5.87,206,1631602800"; 
+   d="scan'208";a="292363207"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 08:44:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,206,1631602800"; 
+   d="scan'208";a="449861147"
+Received: from chenyu-desktop.sh.intel.com ([10.239.158.186])
+  by orsmga006.jf.intel.com with ESMTP; 03 Nov 2021 08:43:56 -0700
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     linux-acpi@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>, Chen Yu <yu.c.chen@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v8 1/4] efi: Introduce EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and corresponding structures
+Date:   Wed,  3 Nov 2021 23:43:14 +0800
+Message-Id: <68d1c452bbf7f742793cb39ebb66f6b4ba6a3fb3.1635953446.git.yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1635953446.git.yu.c.chen@intel.com>
+References: <cover.1635953446.git.yu.c.chen@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211101203929.954622-18-willy@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 08:39:25PM +0000, Matthew Wilcox (Oracle) wrote:
-> XFS has the only implementation of ->discard_page today, so convert it
-> to use folios in the same patch as converting the API.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Platform Firmware Runtime Update image starts with UEFI headers, and the
+headers are defined in UEFI specification, but some of them have not been
+defined in the kernel yet.
 
-LGTM
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+For example, the header layout of a capsule file looks like this:
 
---D
+EFI_CAPSULE_HEADER
+EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
+EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER
+EFI_FIRMWARE_IMAGE_AUTHENTICATION
 
-> ---
->  fs/iomap/buffered-io.c |  4 ++--
->  fs/xfs/xfs_aops.c      | 24 ++++++++++++------------
->  include/linux/iomap.h  |  2 +-
->  3 files changed, 15 insertions(+), 15 deletions(-)
-> 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 6862487f4067..c50ae76835ca 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -1349,8 +1349,8 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
->  		 * won't be affected by I/O completion and we must unlock it
->  		 * now.
->  		 */
-> -		if (wpc->ops->discard_page)
-> -			wpc->ops->discard_page(page, file_offset);
-> +		if (wpc->ops->discard_folio)
-> +			wpc->ops->discard_folio(page_folio(page), file_offset);
->  		if (!count) {
->  			ClearPageUptodate(page);
->  			unlock_page(page);
-> diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
-> index 34fc6148032a..c6c4d07d0d26 100644
-> --- a/fs/xfs/xfs_aops.c
-> +++ b/fs/xfs/xfs_aops.c
-> @@ -428,37 +428,37 @@ xfs_prepare_ioend(
->   * see a ENOSPC in writeback).
->   */
->  static void
-> -xfs_discard_page(
-> -	struct page		*page,
-> -	loff_t			fileoff)
-> +xfs_discard_folio(
-> +	struct folio		*folio,
-> +	loff_t			pos)
->  {
-> -	struct inode		*inode = page->mapping->host;
-> +	struct inode		*inode = folio->mapping->host;
->  	struct xfs_inode	*ip = XFS_I(inode);
->  	struct xfs_mount	*mp = ip->i_mount;
-> -	unsigned int		pageoff = offset_in_page(fileoff);
-> -	xfs_fileoff_t		start_fsb = XFS_B_TO_FSBT(mp, fileoff);
-> -	xfs_fileoff_t		pageoff_fsb = XFS_B_TO_FSBT(mp, pageoff);
-> +	size_t			offset = offset_in_folio(folio, pos);
-> +	xfs_fileoff_t		start_fsb = XFS_B_TO_FSBT(mp, pos);
-> +	xfs_fileoff_t		pageoff_fsb = XFS_B_TO_FSBT(mp, offset);
->  	int			error;
->  
->  	if (xfs_is_shutdown(mp))
->  		goto out_invalidate;
->  
->  	xfs_alert_ratelimited(mp,
-> -		"page discard on page "PTR_FMT", inode 0x%llx, offset %llu.",
-> -			page, ip->i_ino, fileoff);
-> +		"page discard on page "PTR_FMT", inode 0x%llx, pos %llu.",
-> +			folio, ip->i_ino, pos);
->  
->  	error = xfs_bmap_punch_delalloc_range(ip, start_fsb,
-> -			i_blocks_per_page(inode, page) - pageoff_fsb);
-> +			i_blocks_per_folio(inode, folio) - pageoff_fsb);
->  	if (error && !xfs_is_shutdown(mp))
->  		xfs_alert(mp, "page discard unable to remove delalloc mapping.");
->  out_invalidate:
-> -	iomap_invalidatepage(page, pageoff, PAGE_SIZE - pageoff);
-> +	iomap_invalidate_folio(folio, offset, folio_size(folio) - offset);
->  }
->  
->  static const struct iomap_writeback_ops xfs_writeback_ops = {
->  	.map_blocks		= xfs_map_blocks,
->  	.prepare_ioend		= xfs_prepare_ioend,
-> -	.discard_page		= xfs_discard_page,
-> +	.discard_folio		= xfs_discard_folio,
->  };
->  
->  STATIC int
-> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> index 91de58ca09fc..1a161314d7e4 100644
-> --- a/include/linux/iomap.h
-> +++ b/include/linux/iomap.h
-> @@ -285,7 +285,7 @@ struct iomap_writeback_ops {
->  	 * Optional, allows the file system to discard state on a page where
->  	 * we failed to submit any I/O.
->  	 */
-> -	void (*discard_page)(struct page *page, loff_t fileoff);
-> +	void (*discard_folio)(struct folio *folio, loff_t pos);
->  };
->  
->  struct iomap_writepage_ctx {
-> -- 
-> 2.33.0
-> 
+These structures would be used by the Platform Firmware Runtime Update
+driver to parse the format of capsule file to verify if the corresponding
+version number is valid. The EFI_CAPSULE_HEADER has been defined in the
+kernel, however the rest are not, thus introduce corresponding UEFI
+structures accordingly. Besides, EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
+and EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER are required to be packed
+in the uefi specification. Ard has pointed out that, the __packed
+attribute does indicate to the compiler that the entire thing can appear
+misaligned in memory. So if one follows the other in the capsule header,
+the __packed attribute may be appropriate to ensure that the second one
+is not accessed using misaligned loads and stores.
+
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+---
+v8: Use efi_guid_t instead of guid_t. (Andy Shevchenko)
+v7: Use __packed instead of pragma pack(1). (Greg Kroah-Hartman, Ard Biesheuve)
+v6: No change since v5.
+v5: No change since v4.
+v4: Revise the commit log to make it more clear. (Rafael J. Wysocki)
+---
+ include/linux/efi.h | 46 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
+
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index 6b5d36babfcc..1ec73c5ab6c9 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -148,6 +148,52 @@ typedef struct {
+ 	u32 imagesize;
+ } efi_capsule_header_t;
+ 
++/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER */
++struct efi_manage_capsule_header {
++	u32 ver;
++	u16 emb_drv_cnt;
++	u16 payload_cnt;
++	/*
++	 * Variable array indicated by number of
++	 * (emb_drv_cnt + payload_cnt)
++	 */
++	u64 offset_list[];
++} __packed;
++
++/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER */
++struct efi_manage_capsule_image_header {
++	u32 ver;
++	efi_guid_t image_type_id;
++	u8 image_index;
++	u8 reserved_bytes[3];
++	u32 image_size;
++	u32 vendor_code_size;
++	/* ver = 2. */
++	u64 hw_ins;
++	/* ver = v3. */
++	u64 capsule_support;
++} __packed;
++
++/* WIN_CERTIFICATE */
++struct win_cert {
++	u32 len;
++	u16 rev;
++	u16 cert_type;
++};
++
++/* WIN_CERTIFICATE_UEFI_GUID */
++struct win_cert_uefi_guid {
++	struct win_cert	hdr;
++	efi_guid_t cert_type;
++	u8 cert_data[];
++};
++
++/* EFI_FIRMWARE_IMAGE_AUTHENTICATIO */
++struct efi_image_auth {
++	u64 mon_count;
++	struct win_cert_uefi_guid auth_info;
++};
++
+ /*
+  * EFI capsule flags
+  */
+-- 
+2.25.1
+
