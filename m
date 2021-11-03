@@ -2,93 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F3C444435
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2DC5444433
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:03:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhKCPGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 11:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231237AbhKCPGN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 11:06:13 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C193C061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 08:03:36 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id f3so5695179lfu.12
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 08:03:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ocVzS0OUcnB5+dQiLwWdw20NbFOBOR2SRavPv7B36iU=;
-        b=CrtoyVXd9K74O/kUB1tmaOsi7EIm1pbBWLAHcq5gR28HFqzBbU1IIB1hh+djAvmfsU
-         cnO0gWiTTMzstsAJuNwn9wesrjKyduBjZmINZ0sKhmdJqD2duOvAUd8C+2bG/cPbfN+i
-         z86EfDpMtY9ckjx8tOOeM2Jjcq/XTeyLsOR58=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ocVzS0OUcnB5+dQiLwWdw20NbFOBOR2SRavPv7B36iU=;
-        b=OkmgGT7LG4vGCGts4wXN9HcqPK5VFCnBJx2IoUeDSpQ9ANW97bWHJt2OjzZURolafc
-         esDIIIrGPsUBLmCKBQkCPVpKrA2eKRyxbjDUaFIOtPPRCQTtZ7gdkXAMHyi3we6KysyN
-         DdhlzWtl4CyKc7hXL7TSxJQJ29QDMSbuIff+dVFQYkms7C+UIt/Nt3Ra9z87lNQnU14B
-         KR0X8sGvOZHshP2xrZPOYGCMDjldvZInfa8DjUfXWO3B3LYs8t/BLECohACay6Gaay+h
-         f7MIf+MUt/5pUJLVkLYEZdn9eIfAPGc0TNHGmP7STLUjlJLzdE/gpjo1+RKsAANk2DKT
-         UQLQ==
-X-Gm-Message-State: AOAM5332IvDBoznkAaHhXFtoojbXyUXCP4MjxDSqZexl4N9VhMSVL6yA
-        MguEdIlOy0yW2fURendRQWGbGltDkdYCduhm
-X-Google-Smtp-Source: ABdhPJzIbz6ApvHA7tyzjGCn6zlSq+p9SqBGuAtn5HSmTYNNtrRG8cahjBTHyhfIo1xj83qzgJVIdw==
-X-Received: by 2002:ac2:59c6:: with SMTP id x6mr23260044lfn.502.1635951813684;
-        Wed, 03 Nov 2021 08:03:33 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id d20sm201204lfv.117.2021.11.03.08.03.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 08:03:32 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id y26so5714913lfa.11
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 08:03:32 -0700 (PDT)
-X-Received: by 2002:a05:6512:13a5:: with SMTP id p37mr39873997lfa.474.1635951811832;
- Wed, 03 Nov 2021 08:03:31 -0700 (PDT)
+        id S231219AbhKCPF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 11:05:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50098 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231204AbhKCPFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 11:05:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3767F6103B;
+        Wed,  3 Nov 2021 15:03:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635951799;
+        bh=cw6rpwEx5q/ntjpJ1uyg4chlz0n+39ZDTckn9Jrff1g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JLa36mY7gyJ6uT8N0fEJIc8RC6xwHHEBr11tSeQEm/U/X8V5SendSB4JiyzoNt2ua
+         NQfokxE5NuhN9zS+JtnBhQ27FFaP+sx3KXjeRHZmbMTEcQyxeqtjP+gqlGyMag/dvy
+         snQXjO/l13Jh4c8ph68Mh71cUYQObCXd+1gGLjetXcIOYvukguUT7zSDF4Hhu0w/a/
+         3XiQnb3in8vVX2nlDoRUxgteJ6vZTGhbGIkD31PELhkiq4Emjz4a58vDgIGk3F1MjY
+         MUG8QzvlGg0kGIKEJXSfnDluL7UxFSwMy+zJYMPmSJD3mBjz85fKG8msVoe7g5SwZJ
+         90P+ChnEa7MWw==
+Received: by pali.im (Postfix)
+        id D26476FC; Wed,  3 Nov 2021 16:03:16 +0100 (CET)
+Date:   Wed, 3 Nov 2021 16:03:16 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Marvell: Update PCIe fixup
+Message-ID: <20211103150316.6vjtycnak5nkkiuz@pali>
+References: <20211101150405.14618-1-pali@kernel.org>
+ <20211102084241.GA6134@alpha.franken.de>
+ <20211102090246.unmbruykfdjabfga@pali>
+ <20211102094700.GA7376@alpha.franken.de>
+ <20211102100034.rhcb3k2jvr6alm6y@pali>
+ <alpine.DEB.2.21.2111021210180.57165@angie.orcam.me.uk>
+ <20211102125843.sqsusis4krnmhorq@pali>
+ <alpine.DEB.2.21.2111021312160.57165@angie.orcam.me.uk>
+ <20211102144929.c5wt5pbl42ocrxly@pali>
+ <alpine.DEB.2.21.2111031430500.57165@angie.orcam.me.uk>
 MIME-Version: 1.0
-References: <CAJZ5v0hnj0zCXsZy0=Ukud3U_cn054GULmHmpz7Qrpg_TkLLqA@mail.gmail.com>
- <CAHk-=wijOKZNA0Ahd0fNDDa8pc6abv9wUHbxBf8giOeERHkW0g@mail.gmail.com> <60950c33-a5be-c465-cb5a-9e33b13a1ee4@linaro.org>
-In-Reply-To: <60950c33-a5be-c465-cb5a-9e33b13a1ee4@linaro.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 3 Nov 2021 08:03:15 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjf_FrwxU0mAR_27cmmmr3n35fMyuJ2D+g2baeroTCFOQ@mail.gmail.com>
-Message-ID: <CAHk-=wjf_FrwxU0mAR_27cmmmr3n35fMyuJ2D+g2baeroTCFOQ@mail.gmail.com>
-Subject: Re: [GIT PULL] Thermal control updates for v5.16-rc1
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <alpine.DEB.2.21.2111031430500.57165@angie.orcam.me.uk>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 12:53 AM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
-> Is the platform with 19 thermal zones and default thermal policy set to
-> userspace governor ?
+On Wednesday 03 November 2021 14:49:07 Maciej W. Rozycki wrote:
+> On Tue, 2 Nov 2021, Pali Rohár wrote:
+> 
+> > Hello Maciej! Thank you very much for the explanation!
+> 
+>  You are welcome!
+> 
+> > I'm surprised that Marvell copied this 20 years old MIPS Galileo PCI
+> > logic into followup ARM SoC PCIe IPs (and later also into recent ARM64
+> > A3720 SoC PCIe IP), removed configuration of PCI class code via
+> > strapping pins and let default PCI class code value to Memory device,
+> > even also when PCIe controller is running in Root Complex mode. And so
+> > correction can be done only from "CPU bus".
+> 
+>  Still the bootstrap firmware (say U-boot, as I can see it mentioned in 
+> your reference) can write the correct value to the class code register.  
+> Or can it?
 
-I think it has 11 thermal zones judging by
-/sys/class/thermal/thermal_zone* going from 0 to 10.
-
-And the kernel default seems to be
-
-   CONFIG_THERMAL_DEFAULT_GOV_STEP_WISE=y
-
-but presumably this is F34 then setting it to 'userspace' (the kernel
-config comes from the F34 one too, although it's been tweaked for the
-machine).
-
-I suspect I could just turn off THERMAL_GOV_USER_SPACE and get rid of
-the message, that's not the issue.
-
-The issue is "why is the kernel spewing pointlessly the same message
-over and over again?"
-
-                      Linus
+Yes, it can. And I have already sent patches to do it.
