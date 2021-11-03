@@ -2,156 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 350E2444353
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70822444350
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbhKCOX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 10:23:29 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:47808 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231517AbhKCOX1 (ORCPT
+        id S231925AbhKCOXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 10:23:17 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:57869 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231517AbhKCOXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 10:23:27 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A3DxOdi016608;
-        Wed, 3 Nov 2021 14:20:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=bj3I3+0pMXLqsiFXfr0Je/A9GndisOXvP7YOPKJxaS0=;
- b=NvLVDyAGfEQ8KbaVTx3VC3+QhZaSmeTvyiL5O7CphgyzW6N2IPugxZsacOzk2Yed2HDH
- oH/myaYsqDkajAximkgnMfbs2Xdh/dm6TxABYjwrRvZ7qxnxh3OoG6i0XAwSRz65DZq+
- emtWl7TROAje1ykS0ggCORFwSoDph1y33N2ArM6FQ84cjmCYct2WujQoA0NjvUFjqIXm
- x972HrSjOL9OAGNoKoqx6uSTlEnlwdbDqcDTsIWSw5Og+wk5M9S65AXBmwB2+VRqidPR
- c70yqgtr/j6/lLwE+fEjzfcucmP2yiPf2VumhSgOHd+uBfpH2nQdsmLrp12oPpsKy59x 2w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3c3mxh2944-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Nov 2021 14:20:29 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1A3EBvJp126913;
-        Wed, 3 Nov 2021 14:20:28 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2040.outbound.protection.outlook.com [104.47.56.40])
-        by aserp3020.oracle.com with ESMTP id 3c0wv6aj97-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Nov 2021 14:20:28 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wd4ZwmxtrgHolvpWZbOBSaaAnV4yAeDLnnST41p1gbW/V/hvv35Mb7vANsx2ZDA0iiQPO/+YX6kKJkT5C7+Xhi1f3r+zPuTP4SpvyJEoyn5jT6z/C/maAvjC6oxnCPerIMlfYCfcgNgwFlX6zApNcG0Zjcp3PB+02aahUvyFHz/Y48WPnJkncRkzNqjbuijULYapd2acwhK2j7hRXUqVSL2FItw9SMYP309Q/AYj6HtV6HORONdvVxlmGj3CzyrmZBSkgfNT5vSxpjiGAaMPSGs8+S5L6nrU3SwF7CYzqnfTpq0pIjsOSnEoXtciFj5IOSowxpB/JBQO949yVbF84Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bj3I3+0pMXLqsiFXfr0Je/A9GndisOXvP7YOPKJxaS0=;
- b=X4yk1CYMiFKHAuhCo8WG2N4zKBSXkklt/kNqeGYhFT9jUF59yzTUTlPTjgVAXuEn0/+I2tzGwWTojHKjea4n/1nnJKVwLNAgBgHsHENwTVLoMdD+qtxvvNNtSAG0wcZ7BCMa5edk3y7NpyjlM5xkx+D8TqrLFsBrMzHOCIwkESRc94Nt6b1Op4oX1+VRRvegXMa1A3X3A0P9ThV4fPxuSUGFtth2o7N0ITszsW9z4l9lWikpzcLCBBCrjPv1m6LcpKCVodJIcnUQTFZIc77AiEil2elYbk2nWrNVkV2Dgxh59RevFKHnqgbyl5c12oF5KP/WDMWpp8q/xUhJMCIA/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bj3I3+0pMXLqsiFXfr0Je/A9GndisOXvP7YOPKJxaS0=;
- b=khpJ3Um18/o+NKO/Dp1++hQf4IGYPIqNTCtCZFVEd8NQCEKWSmJwiNrCQSbNfS4UVGmvy1aPCBmlgO5NZSi7m2Q57g0lvpW/k0imfM1sZo+el12H+MSCivjTDm0mHEKs3nkC+BXIZ3LtSBRhl0J0iIRupILxFx2QA5JWaM+WGoY=
-Authentication-Results: analogixsemi.com; dkim=none (message not signed)
- header.d=none;analogixsemi.com; dmarc=none action=none
- header.from=oracle.com;
-Received: from CY4PR1001MB2358.namprd10.prod.outlook.com
- (2603:10b6:910:4a::32) by CY4PR1001MB2087.namprd10.prod.outlook.com
- (2603:10b6:910:47::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.18; Wed, 3 Nov
- 2021 14:20:26 +0000
-Received: from CY4PR1001MB2358.namprd10.prod.outlook.com
- ([fe80::e5e3:725b:4bb:7809]) by CY4PR1001MB2358.namprd10.prod.outlook.com
- ([fe80::e5e3:725b:4bb:7809%5]) with mapi id 15.20.4649.020; Wed, 3 Nov 2021
- 14:20:26 +0000
-Date:   Wed, 3 Nov 2021 17:20:03 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Xin Ji <xji@analogixsemi.com>
-Cc:     devel@driverdev.osuosl.org, drinkcat@google.com,
-        span@analogixsemi.com, sam@ravnborg.org, jonas@kwiboo.se,
-        airlied@linux.ie, robert.foss@linaro.org, narmstrong@baylibre.com,
-        zhenli@analogixsemi.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, anarsoul@gmail.com,
-        a.hajda@samsung.com, boris.brezillon@collabora.com, duwe@lst.de,
-        Laurent.pinchart@ideasonboard.com, daniel@ffwll.ch,
-        hsinyi@chromium.org, bliang@analogixsemi.com,
-        m.szyprowski@samsung.com
-Subject: Re: [PATCH v11 4/4] drm/bridge: anx7625: add HDMI audio function
-Message-ID: <20211103142003.GW2794@kadam>
-References: <7dc405471da4771641d2942960d364a588bb4395.1628161369.git.xji@analogixsemi.com>
- <20211018030529.2055255-1-xji@analogixsemi.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211018030529.2055255-1-xji@analogixsemi.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0061.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::19)
- To CY4PR1001MB2358.namprd10.prod.outlook.com (2603:10b6:910:4a::32)
+        Wed, 3 Nov 2021 10:23:15 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id B779558064C;
+        Wed,  3 Nov 2021 10:20:38 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 03 Nov 2021 10:20:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=tlyyf9ABd9leYDuixOZBsq3FaRp
+        fxSPQhOflw8Bwob0=; b=p7/giRW05Py516639NaVVmYpMrp5zRfPdHpCQEWmbsR
+        ffm1PNdqgBZfS2IXS+yxL95NlZO2vJnbbrHtJzW3a+Jjctc70t5VwF5FlO4jprLZ
+        wW59rWt0d5jsKLKNzRJZc0E0NEjwP0cewUjv/egBujVcHiplj7bbFZeV9f6Twnyg
+        Ewt3oi64mK1kAvvFcgQ8rtNGnG4r7h8HSXDPllTgUgSX0dxdx0MrUWOgEL+HS060
+        rM2G4rBtm6h9Tb6hS1dKmb+4zU9fTsuveEXNNpBhqPq+bnPsCD1VhphRIhJqCuss
+        yLHjBLJdRwAuB7hur85uMiMi39RbrOsYH9gH9cYffCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=tlyyf9
+        ABd9leYDuixOZBsq3FaRpfxSPQhOflw8Bwob0=; b=A/QZnJdt1b0fP0jEDlZgk4
+        TbZfm6lf8yaaVRWLse2RLROqdkSyeVbpWVUo0iPTxhxuXGDRyobBPKxn2nC2tcVV
+        xHzxbWKCMa1j06klCrn7kTeyub+SUQzhs/E7SM8Z+jm07RsPlDObdPVvq9O2D2MH
+        mhWJItocf+SAE2tWaJYcaplX5BC/yiOE9d+ARAHMS5R21eugOUQyLPKuN8rfhLBj
+        ekWtW6TuEW3K0y6ydTnb3KN2WF59qalWpLz0Q7swwFP72MUFSD1KfB/5uZ0zRxYB
+        7Nywt11QdfXTDCPMAuf97K94RFLua8LGs/QcE1FpOaofQ48NEekHCvLsyIB7LC6g
+        ==
+X-ME-Sender: <xms:tZqCYQGxC79otChLtyCmedivQQ-5zLuab2lwn1Bzf8m0Gz-nF5IrkQ>
+    <xme:tZqCYZVf4yv9_qqOJdwSROfotXzrnW59sEmNw5osWN6E52WnHgeVRaUhXyeJIAXxC
+    m8KWVi8a03etkB70qY>
+X-ME-Received: <xmr:tZqCYaLoa0L3JgGrsfFYQjYvkCG7cq2faahcp2flLULzc17fKcIBg2z17-2J-Pr_jNbP5JgE7Kw0ONNs4qpz4hV_UeidK9om>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrtddvgdeitdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdefhedmnecujfgurhepfffhvffukfhfgggtuggjsehgtdorredttddv
+    necuhfhrohhmpefrrghtrhhitghkucghihhllhhirghmshcuoehprghtrhhitghksehsth
+    iftgigrdighiiiqeenucggtffrrghtthgvrhhnpeetudehleehtddtjefhgedtjeejjeeg
+    teefjeefgeeukeeuheekteekhefhueetieenucffohhmrghinhepghhithhhuhgsrdgtoh
+    hmpdguvghvihgtvgdqthhrvggvqdhgphhiohdqnhgrmhhinhhgrdhmugenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehprghtrhhitghksehsth
+    iftgigrdighiii
+X-ME-Proxy: <xmx:tZqCYSEFL3E_hx0YCURMLUgRpfQkz6VMzBoSyfvj_BE6wriGjrxHlg>
+    <xmx:tZqCYWWZUASLhsptBp1ZJqS8Lv34kv3h75A8jDFkL4N7aFAN13dGzA>
+    <xmx:tZqCYVOqJMD1VS-sfJbbsMUjJYJR7P_e3G95YY8A86TbSUU0iws-Pw>
+    <xmx:tpqCYfNO1KsHb2QKngE-D9TMWlgLjKY9dtAy_NBJArE38DHfPwEy_g>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 3 Nov 2021 10:20:37 -0400 (EDT)
+Date:   Wed, 3 Nov 2021 09:20:36 -0500
+From:   Patrick Williams <patrick@stwcx.xyz>
+To:     Howard Chiu <howard10703049@gmail.com>
+Cc:     arnd@arndb.de, olof@lixom.net, robh+dt@kernel.org, joel@jms.id.au,
+        andrew@aj.id.au, soc@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        Howard Chiu <howard.chiu@quantatw.com>
+Subject: Re: [PATCH v1] ARM: dts: aspeed: Adding Facebook Bletchley BMC
+Message-ID: <YYKatBCCroiYxLew@heinlein>
+References: <20211103071417.388388-1-howard.chiu@quantatw.com>
 MIME-Version: 1.0
-Received: from kadam (62.8.83.22) by JNAP275CA0061.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.18 via Frontend Transport; Wed, 3 Nov 2021 14:20:16 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d02e9c1c-2b0e-419d-00a9-08d99ed51411
-X-MS-TrafficTypeDiagnostic: CY4PR1001MB2087:
-X-Microsoft-Antispam-PRVS: <CY4PR1001MB2087505F6BCD876B8A1234258E8C9@CY4PR1001MB2087.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vuhWDEVlZtif4Js60vrEx4o8yeLrPogGB5pOnoEj/Q5t0VyqiDv8aWZJgQH/BmFzqo051KP2P4i+9xl2ij49cMVFIkQeoi6Nh4uYrxQtfKl63eD7PjZgUh2GNWku4NkSuLlu0Hd/y68CMr4oZFifZfdmd6fZeRyRYgMHkNe5+EX4fa5udDJsSP2VlzKy8GRs4uEvVNXgS/LEc5ePyooojEDLSINF+KHTD0peRn/G/fgTxl+RXttkEJVHmuvU5r7AdMksgh8ceFUceMrd6mDymzH4bIvQnJhLccH4AJU9T2rJ9+W4F6TAULxRNaGfgdkhC5UoGssIQ6zQWp6xUu72Dh1NfP8Opdno68h9PArppLCiSvIm+FRgMPaKLKypkHPBpQZN42nHN9Cf45n2KF4SvpofLDtvjyzn2Fy1nEFSWFNXFtapKft19RozpwyN2Ih7zwx35McDz4nlRf9zXY23nTuZqwudyig9vR2sdopyUNcAhIpGO9YVcPXijsHYvb/+ln+pAZIT/1jQ1RBZzwNh1rTPmzp5oi5ZeKheIWHheSBvsobUmxTDxrXml6XKqdoIB/EAsQj9kbkSWiKXb1lfzK4iXVYIvPY2grJPPDxgvvSkYfa5pvWo9Ug/qmgjoKRFAT5wmmF0ozqsFw39oEujGdMoPPupG5pvRcGbONH5VLXEsWQ2HtI90sbR85EnzbfEfRuyZGmM46BWNZxBv6MZ4Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1001MB2358.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(86362001)(316002)(7416002)(26005)(9686003)(6666004)(38100700002)(8676002)(55016002)(8936002)(508600001)(558084003)(9576002)(38350700002)(4326008)(186003)(5660300002)(6496006)(2906002)(52116002)(6916009)(33716001)(66476007)(33656002)(44832011)(66556008)(1076003)(956004)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?44KAOToEJxdgOBSSIZrTyak4MJquYuJzcY/Y9ioJAOr5B+cvQrNXDJzKDWxp?=
- =?us-ascii?Q?UTyvE0zc16zk1ud110lX5pxZvinfvpnf0OQX8YyciiPOk6/BSDt/M9iNLSD0?=
- =?us-ascii?Q?dr0jebs8yegar74mbtS5pkETGE7E29QJEGkO/XRGA0TLrF0dnEXG+HfiSzTZ?=
- =?us-ascii?Q?ZvfZe2dOu9ZgAqMclJxJIvfPkO+w96oPQBloINib3O7FZoFskag1sdhkGfqU?=
- =?us-ascii?Q?Yzpvf8kDj2AdQj6PelmyoflOBajNUhg4AvsxRACJ0kgCmJ0USyUVCB/zjrjQ?=
- =?us-ascii?Q?BF6sNFdsEZyJDL6IQRMq13odOy5U/7oxNmV/dQhQCSnWpAZAgjQJEHqRNNxv?=
- =?us-ascii?Q?1tKp0X5qRJWb2Oo8uQqP5B3F29YhXaAXQU5jq9Lom6WKWucrW/UayjYjeCUd?=
- =?us-ascii?Q?A7NPuNLGij8hTs9HF5EGZD33XAYCEZtgjm/r2I4JZIjaO+YsYEcsNGoso1ch?=
- =?us-ascii?Q?l9pGe/0kWMkSqDd+36wglZmyqfkrdDwlBdObJUzOeuzjVA+O2o6Xlr+qYLxi?=
- =?us-ascii?Q?Mk6rAhUKKWjba47WtAl5dEaTpbeaIbG5p6YH6rs/vjzZJ3HaqAc//l9TpkQa?=
- =?us-ascii?Q?o5nmz1E0QCtwltHkYOxlWWdNlYfMFjVxNAWlxd6Y1HKrB03H+cT4OTWR/S1M?=
- =?us-ascii?Q?Y2Iqksnh9EoezXi96tzsiPid9v9QdtpOrNs597zO2ZBb1nFG3XMap5XdoL49?=
- =?us-ascii?Q?BMhiVG7sxGJy/aqNVrt7vSLvYpzGlREX6aPUslcKGv9LwRBZBFtfYUEOh3BU?=
- =?us-ascii?Q?20jTxPZsKiMPzxcJPiqKbXcf6+zgkT58wYMBxhUeSem80TbLk+SxoKQ7gCPM?=
- =?us-ascii?Q?yIpdukorDBZlhd8DojsNIpuHkwu9KPDrD7yIZJ8PdkdTuMe6gW0XiQIf17bP?=
- =?us-ascii?Q?sWxvO8lu+0uezvgE65lFb92zTXVnE8DZOcJoM8b2AXPMOwvDqGjPUgfegLtg?=
- =?us-ascii?Q?IAOWlSf4VjTYfafJZgpg7QIwp8Gu2nrKbHAjazkFLLenot4C/ciVYit6STkD?=
- =?us-ascii?Q?B8tuH31vCIXqcCAGkA+cLAeIBAYfhcAqDsFxus48kEUrVvYDDze43nrAVavX?=
- =?us-ascii?Q?Bf2g92G4g7JoP0/KsiT2or7QqYiVjhqLLWQs3teawi0gNBKIaBRVCXyYBDgg?=
- =?us-ascii?Q?pxuu+j9bJ1vxOv9miCdwJBpfxV5zbgHRHz6dKZnSWyGH/x7PXYiY23IJ0F5b?=
- =?us-ascii?Q?B2l7PKEg2v4zzl7uJ0JtWRBuKrrVn3NsWpQ8i9ewJ8tOe9DgC8+2g1u5egLZ?=
- =?us-ascii?Q?5pJI196ygNyHXI5bqwsSR/Qn5g/aU2azP+74cpL+S+NjRu2rsWjsZd6Fdpvj?=
- =?us-ascii?Q?zpWAT9Vca0w8+ByHQ39uxikl/O1bwABDOzt7c0nRY1bmIDj3r85XsOJf7SIG?=
- =?us-ascii?Q?81hDT9Haf8naigarJ9/Yzzdy6Wq3J5CdOFXmEA1f24x02Hxid/aNdpK1A7VB?=
- =?us-ascii?Q?2IwTpkP0a9Zx69Wu5at54JOyPqvqgC5Zl7bSPbVKiN4AuG69UC8q3vPwIHSk?=
- =?us-ascii?Q?iR0aSOHFv0PLCzyQO8XVOod9dZhMaKyCZiEH75VozGjLNth9F0GrAkLWtYgL?=
- =?us-ascii?Q?gvJpxDn+UdmJt9y99J6BGvIIPtUAUP5YA3PEAmcCH+EE3VCfv0x0iE6XtnY5?=
- =?us-ascii?Q?O8WSFpfeSRpNLXFXtyuJ2jsE6nxAYOt+PeJdarzU/bGLSHYlaBeULFSlQ6zn?=
- =?us-ascii?Q?bJxmVw=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d02e9c1c-2b0e-419d-00a9-08d99ed51411
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR1001MB2358.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2021 14:20:26.1631
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aB2ZE+20F7CaxbRtPM24uN1k50EmVGJurA3MskdtBi7vdFze1s83ZWl0WL59xD+j7Rt4CyR7128xtiuXTxLNS2rCljNoUmpDkjD0UgzrHVI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1001MB2087
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10156 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 malwarescore=0
- mlxscore=0 suspectscore=0 mlxlogscore=869 adultscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111030081
-X-Proofpoint-ORIG-GUID: uMw8EbhN0fLphZKGI3Ec_gqhB8iwwhxG
-X-Proofpoint-GUID: uMw8EbhN0fLphZKGI3Ec_gqhB8iwwhxG
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="76EoKyP6xdfx7kPV"
+Content-Disposition: inline
+In-Reply-To: <20211103071417.388388-1-howard.chiu@quantatw.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a super awkward way to resend a patch series.  Next time, just
-start a new thread and put [PATCH RESEND] in the subject.
 
-I am sorry that no one responded to your thread.  :/
+--76EoKyP6xdfx7kPV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-regards,
-dan carpenter
+Hello Howard,
+
+Thanks for supplying this.  I have a few comments below.
+
+On Wed, Nov 03, 2021 at 03:14:18PM +0800, Howard Chiu wrote:
+> Initial introduction of Facebook Bletchley equipped with
+> Aspeed 2600 BMC SoC.
+>=20
+> Signed-off-by: Howard Chiu <howard.chiu@quantatw.com>
+> ---
+>  arch/arm/boot/dts/Makefile                    |    1 +
+>  .../dts/aspeed-bmc-facebook-bletchley.dts     | 1160 +++++++++++++++++
+>  2 files changed, 1161 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-bletchley.dts
+>=20
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 7e0934180724..2cc2d804e75a 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -1474,6 +1474,7 @@ dtb-$(CONFIG_ARCH_ASPEED) +=3D \
+>  	aspeed-bmc-facebook-wedge400.dtb \
+>  	aspeed-bmc-facebook-yamp.dtb \
+>  	aspeed-bmc-facebook-yosemitev2.dtb \
+> +	aspeed-bmc-facebook-bletchley.dtb \
+>  	aspeed-bmc-ibm-everest.dtb \
+>  	aspeed-bmc-ibm-rainier.dtb \
+>  	aspeed-bmc-ibm-rainier-1s4u.dtb \
+
+I believe the preference is to keep these sorted.
+
+> diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-bletchley.dts b/arch/a=
+rm/boot/dts/aspeed-bmc-facebook-bletchley.dts
+> new file mode 100644
+> index 000000000000..af30be95fb23
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/aspeed-bmc-facebook-bletchley.dts
+
+> +
+> +	chosen {
+> +		bootargs =3D "console=3DttyS4,115200n8";
+> +	};
+
+Do we want this to be 115200 or 57600?
+
+> +		fan1_ember {
+> +			retain-state-shutdown;
+> +			default-state =3D "off";
+> +			gpios =3D <&fan_ioexp 13 GPIO_ACTIVE_HIGH>;
+
+I see a number of references to 'ember'/'EMBER'.  I think the intention is
+'amber'.
+
+    amber: a honey-yellow color typical of amber=20
+           or a yellow light used as a cautionary signal
+
+    ember: a small piece of burning or glowing coal or wood in a dying fire.
+
+
+> +&fmc {
+> +	status =3D "okay";
+> +	flash@0 {
+> +		status =3D "okay";
+> +		m25p,fast-read;
+> +		label =3D "bmc";
+> +		spi-max-frequency =3D <50000000>;
+> +#include "openbmc-flash-layout-64.dtsi"
+
+Is this board using 64MB or 128MB modules?  Many of the newer systems have =
+been
+starting to use 128MB.  I just want to confirm this is correct.
+
+> +	sled0_ioexp: pca9539@76 {
+> +		compatible =3D "nxp,pca9539";
+> +		reg =3D <0x76>;
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <0>;
+> +		gpio-controller;
+> +		#gpio-cells =3D <2>;
+> +
+> +		gpio-line-names =3D
+> +		"","SLED0_BMC_CCG5_INT","SLED0_INA230_ALERT","SLED0_P12V_STBY_ALERT",
+> +		"SLED0_SSD_ALERT","SLED0_MS_DETECT","SLED0_MD_REF_PWM","",
+> +		"SLED0_MD_STBY_RESET","SLED0_MD_IOEXP_EN_FAULT","SLED0_MD_DIR","SLED0_=
+MD_DECAY",
+> +		"SLED0_MD_MODE1","SLED0_MD_MODE2","SLED0_MD_MODE3","SLED0_AC_PWR_EN";
+
+In general, in OpenBMC, we have a preference for the GPIOs to not be schema=
+tic
+names but to be named based on their [software-oriented] function.  Please =
+take
+a look at:
+
+    https://github.com/openbmc/docs/blob/master/designs/device-tree-gpio-na=
+ming.md
+
+Any function you see that isn't documented there we should try to get docum=
+ented
+before fixing the GPIO name to match it.
+
+> +		gpio-line-names =3D
+> +		"SLED0_EMBER_LED","SLED0_BLUE_LED","SLED0_RST_IOEXP","",
+
+The LEDs are ones I know are already documented in the above linked file.
+
+> +&i2c13 {
+> +	multi-master;
+> +	aspeed,hw-timeout-ms =3D <1000>;
+> +	status =3D "okay";
+> +};
+
+Was this intentional to have defined a multi-master bus with nothing on it?
+
+--=20
+Patrick Williams
+
+--76EoKyP6xdfx7kPV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEBGD9ii4LE9cNbqJBqwNHzC0AwRkFAmGCmrIACgkQqwNHzC0A
+wRnw0RAAqViUSHmkD6lssoV4YyVBcAqa+5giq26JKHUQKTAIJO/dBK8OHWeWEAbU
++qZEU3xhNiZjaUl2ZBKVS2kdZzDfRwOlFvkT+v2o+Vt4c7vfNkK5u20Q8M6NCJBy
+HbkRTun38Nc2MS/aUAdcoQm2DsfRxHtlxIQDXmSDEpIDtI3ttduZw1jwjtFGjpF/
+z8LKJMOi0GXGj2C29KG10oAEjpC4vmFyqFsjc7DlErmmRP9Qb1rx+0dVNVhhb+Kj
+eUMkRZoRBbhJvN8fIE999aeaYW3T1uhhNVI/lWJipbrRgqgaFkq0WG6vfnHbtwVl
+8iOUcjGYpDsuUuU2SabVZWaX/8pl7EIS1QGsb4l1ue9L45zGXSZY5rrylctXs3Nj
+TzsStgS8eoDdrceiV9R+HCJi2mTwf7Lw6i7XbRVmm4YTsTmib3BC/jMu7Eve192a
+k7ZH/W8e6865N5evshoVgX0NlogxNKa/qch0DiFgS5Ep1ISyBAJKQwaTS5ZsqKqr
+fuNaQGh3efTzmdlQQ/spa1XOUJUWfw5B1nuCXz5ZdtOXhKpqyjN9H4JaRtio3ORS
+FEYS85xF8j4mz362uauFtZanTTLlPPoPzg61QVumk2oOU8Vv05fEOkT4+pJtae48
+wi2kfsRMOYrJ1Kem1LGNnGT5/tuK31FkOeqmybFcwhbMuLArh1M=
+=qzaE
+-----END PGP SIGNATURE-----
+
+--76EoKyP6xdfx7kPV--
