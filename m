@@ -2,181 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 699A5443DBD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E0D443DBF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:36:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbhKCHg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 03:36:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44836 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231985AbhKCHgz (ORCPT
+        id S232096AbhKCHja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 03:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231985AbhKCHj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 03:36:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635924859;
+        Wed, 3 Nov 2021 03:39:29 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CC3C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 00:36:53 -0700 (PDT)
+Received: from [IPv6:::1] (unknown [IPv6:2a02:810c:c240:2017:dcb:590b:cf44:decf])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id DA377223ED;
+        Wed,  3 Nov 2021 08:36:47 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1635925008;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2evzeN2dUJ97RkJYIYZWd1y4ZdCaTHeSbdPXFeoqPXY=;
-        b=SebnF1PktGsv7KYc26W1XANb0FtlWABmYo4ZAc4lvp4HjMqNyezxMeuvFM0AOYCYFLiSeM
-        QIo+DuVwYfdJzbEsnf3JDwTY3wv+VsnX4vf6SICrQVvjyChoSDvoXCPjtgfz7xQBCXFMPu
-        aLGQofRn+QiPHwCpJrJZuQXpks9X5IA=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-549-nNeTRXbCOLOjF3LnAztLDw-1; Wed, 03 Nov 2021 03:34:18 -0400
-X-MC-Unique: nNeTRXbCOLOjF3LnAztLDw-1
-Received: by mail-lf1-f70.google.com with SMTP id t62-20020a19c341000000b004000224ab0cso313712lff.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 00:34:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2evzeN2dUJ97RkJYIYZWd1y4ZdCaTHeSbdPXFeoqPXY=;
-        b=YzQNLn6ZoiIE9WubA/AVvlJ9wtmxBahbubNjYaQBoeDmH1qNtmafo9ZswVsPi/K9s7
-         lTxbz2nKPgmDNEEz2i/HIkn+Q1IP9/CTcpjvjJrSlu1J1RWt+82hKU/I1c7PXeA78css
-         DbdWupo7vRnYdmpwm/jYWRrMoOKJ8AUszhUS34DBlTSedj6nDaWyhbVlfst5ig1ckpAp
-         Jy4XmJOrbRC7E0+NZf9dYGwA1NDdBqjP0GLLoKl82yTzo2ZnDjAXvihj+HYbi23YnZZz
-         nkNhI9SegZbHS0ePUnpFNXSfjHwEM8v9997/AeHXYhkCzW3EVEu3N2OQILlXY2Qn3upv
-         UEPw==
-X-Gm-Message-State: AOAM530GIKRnIwpBwM+gLdlqUaW2EaQLtGRC3AKkOG5W7e97YzT4cniQ
-        bxgnoTQAt4iHj38koR8r27g/vIpqy9DOwLDD2DBvq7gFbqNvOAClTd0P7oDqynTYSxACNDrZZrT
-        EYSW1z8MuFKe80zN/7xxZHNP0JBatoFz0Lz245sVZ
-X-Received: by 2002:a2e:9155:: with SMTP id q21mr44928335ljg.217.1635924856892;
-        Wed, 03 Nov 2021 00:34:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxgumhOzJkMB3252KusefaLzXeoNl6AE+RgxHii73ou3HxIh+V3ny7+BZb0pyCgH7dvZNxuJB7iyjgLMLh5hNQ=
-X-Received: by 2002:a2e:9155:: with SMTP id q21mr44928307ljg.217.1635924856684;
- Wed, 03 Nov 2021 00:34:16 -0700 (PDT)
+        bh=fQ51OSKQaHvREsm8LH+OBDuLYQSwZuSPMGPty/9xfnA=;
+        b=CZRcCqrLKBnPt68/X8snzMr+mXYAT6zz8gxXMRiI6TeBpQFKwLeMWWHusw9L8Tkj/rXUQH
+        787PKt/P7Bj8g7WHwappA7RmqFDWqlmlWN39TvvAZeU+1XOUWoHmLaSNaesDTg0l6Ftw0I
+        lrNeRS5EE7sBz//9w2lb0lio8/Itz9g=
+Date:   Wed, 03 Nov 2021 08:36:42 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     Robert Marko <robert.marko@sartura.hr>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: simple-mfd-i2c: Select MFD_CORE to fix build error
+User-Agent: K-9 Mail for Android
+In-Reply-To: <YYI7DFjoCgYMdLl5@google.com>
+References: <20211102100420.112215-1-robert.marko@sartura.hr> <YYEeS8gz8TBW63X8@google.com> <8b2b9e6f61107b79f93dd191c3fc2918@walle.cc> <YYI7DFjoCgYMdLl5@google.com>
+Message-ID: <1FD0767C-3BF3-46D3-8C7D-BA31F9D7AE0D@walle.cc>
 MIME-Version: 1.0
-References: <20200326140125.19794-1-jasowang@redhat.com> <20200326140125.19794-8-jasowang@redhat.com>
- <20211101141133.GA1073864@nvidia.com> <CACGkMEtbs3u7J7krpkusfqczTU00+6o_YtZjD8htC=+Un9cNew@mail.gmail.com>
- <20211102155611.GL2744544@nvidia.com>
-In-Reply-To: <20211102155611.GL2744544@nvidia.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Wed, 3 Nov 2021 15:34:05 +0800
-Message-ID: <CACGkMEt35cLjb-YRD34yhyo2oiK5YqVozsg5t45a0oThiAKS4A@mail.gmail.com>
-Subject: Re: [PATCH V9 7/9] vhost: introduce vDPA-based backend
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     mst <mst@redhat.com>, linux-kernel <linux-kernel@vger.kernel.org>,
-        kvm <kvm@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        Maxime Coquelin <maxime.coquelin@redhat.com>,
-        "Liang, Cunming" <cunming.liang@intel.com>, zhihong.wang@intel.com,
-        rob.miller@broadcom.com, Xiao W Wang <xiao.w.wang@intel.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>,
-        eperezma <eperezma@redhat.com>, Cindy Lu <lulu@redhat.com>,
-        Parav Pandit <parav@mellanox.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ariel Adam <aadam@redhat.com>, jiri@mellanox.com,
-        shahafs@mellanox.com, Harpreet Singh Anand <hanand@xilinx.com>,
-        mhabets@solarflare.com, Gautam Dawar <gdawar@xilinx.com>,
-        Saugat Mitra <saugatm@xilinx.com>, vmireyno@marvell.com,
-        zhangweining@ruijie.com.cn, Tiwei Bie <tiwei.bie@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 11:56 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+Am 3=2E November 2021 08:32:28 MEZ schrieb Lee Jones <lee=2Ejones@linaro=2E=
+org>:
+>On Tue, 02 Nov 2021, Michael Walle wrote:
 >
-> On Tue, Nov 02, 2021 at 11:52:20AM +0800, Jason Wang wrote:
-> > On Mon, Nov 1, 2021 at 10:11 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > >
-> > > On Thu, Mar 26, 2020 at 10:01:23PM +0800, Jason Wang wrote:
-> > > > From: Tiwei Bie <tiwei.bie@intel.com>
-> > > >
-> > > > This patch introduces a vDPA-based vhost backend. This backend is
-> > > > built on top of the same interface defined in virtio-vDPA and provides
-> > > > a generic vhost interface for userspace to accelerate the virtio
-> > > > devices in guest.
-> > > >
-> > > > This backend is implemented as a vDPA device driver on top of the same
-> > > > ops used in virtio-vDPA. It will create char device entry named
-> > > > vhost-vdpa-$index for userspace to use. Userspace can use vhost ioctls
-> > > > on top of this char device to setup the backend.
-> > > >
-> > > > Vhost ioctls are extended to make it type agnostic and behave like a
-> > > > virtio device, this help to eliminate type specific API like what
-> > > > vhost_net/scsi/vsock did:
-> > > >
-> > > > - VHOST_VDPA_GET_DEVICE_ID: get the virtio device ID which is defined
-> > > >   by virtio specification to differ from different type of devices
-> > > > - VHOST_VDPA_GET_VRING_NUM: get the maximum size of virtqueue
-> > > >   supported by the vDPA device
-> > > > - VHSOT_VDPA_SET/GET_STATUS: set and get virtio status of vDPA device
-> > > > - VHOST_VDPA_SET/GET_CONFIG: access virtio config space
-> > > > - VHOST_VDPA_SET_VRING_ENABLE: enable a specific virtqueue
-> > > >
-> > > > For memory mapping, IOTLB API is mandated for vhost-vDPA which means
-> > > > userspace drivers are required to use
-> > > > VHOST_IOTLB_UPDATE/VHOST_IOTLB_INVALIDATE to add or remove mapping for
-> > > > a specific userspace memory region.
-> > > >
-> > > > The vhost-vDPA API is designed to be type agnostic, but it allows net
-> > > > device only in current stage. Due to the lacking of control virtqueue
-> > > > support, some features were filter out by vhost-vdpa.
-> > > >
-> > > > We will enable more features and devices in the near future.
-> > >
-> > > [..]
-> > >
-> > > > +static int vhost_vdpa_alloc_domain(struct vhost_vdpa *v)
-> > > > +{
-> > > > +     struct vdpa_device *vdpa = v->vdpa;
-> > > > +     const struct vdpa_config_ops *ops = vdpa->config;
-> > > > +     struct device *dma_dev = vdpa_get_dma_dev(vdpa);
-> > > > +     struct bus_type *bus;
-> > > > +     int ret;
-> > > > +
-> > > > +     /* Device want to do DMA by itself */
-> > > > +     if (ops->set_map || ops->dma_map)
-> > > > +             return 0;
-> > > > +
-> > > > +     bus = dma_dev->bus;
-> > > > +     if (!bus)
-> > > > +             return -EFAULT;
-> > > > +
-> > > > +     if (!iommu_capable(bus, IOMMU_CAP_CACHE_COHERENCY))
-> > > > +             return -ENOTSUPP;
-> > > > +
-> > > > +     v->domain = iommu_domain_alloc(bus);
-> > > > +     if (!v->domain)
-> > > > +             return -EIO;
-> > > > +
-> > > > +     ret = iommu_attach_device(v->domain, dma_dev);
-> > > > +     if (ret)
-> > > > +             goto err_attach;
-> > > >
-> > >
-> > > I've been looking at the security of iommu_attach_device() users, and
-> > > I wonder if this is safe?
-> > >
-> > > The security question is if userspace is able to control the DMA
-> > > address the devices uses? Eg if any of the cpu to device ring's are in
-> > > userspace memory?
-> > >
-> > > For instance if userspace can tell the device to send a packet from an
-> > > arbitrary user controlled address.
-> >
-> > The map is validated via pin_user_pages() which guarantees that the
-> > address is not arbitrary and must belong to userspace?
+>> Am 2021-11-02 12:17, schrieb Lee Jones:
+>> > On Tue, 02 Nov 2021, Robert Marko wrote:
+>> >=20
+>> > > MFD_SIMPLE_MFD_I2C should select the MFD_CORE to a prevent build
+>> > > error:
+>> > >=20
+>> > > aarch64-linux-ld: drivers/mfd/simple-mfd-i2c=2Eo: in function
+>> > > `simple_mfd_i2c_probe':
+>> > > drivers/mfd/simple-mfd-i2c=2Ec:55: undefined reference to
+>> > > `devm_mfd_add_devices'
+>> >=20
+>> > What is your use-case?
+>> >=20
+>> > How are you enabling this symbol?
+>>=20
+>> Mh? drivers/mfd/simple-mfd-i2c=2Ec is using devm_mfd_add_devices which
+>> is provided by drivers/mfd/core=2Ec=2E So select MFD_CORE is clearly
+>> missing here, no? I mean most of the MFD drivers do a "select MFD_CORE"=
+=2E
 >
-> That controls what gets put into the IOMMU, it doesn't restrict what
-> DMA the device itself can issue.
+>I'm not debating that=2E  The patch is fine=2E
 >
-> Upon investigating more it seems the answer is that
-> iommu_attach_device() requires devices to be in singleton groups, so
-> there is no leakage from rouge DMA
+>I am however, interested in how MFD_CORE is enabled for MFD_SL28CPLD=2E
 
-Yes, I think so.
+Because I'm mostly using the arch defconfig (arm64) it
+must have missed it because it was probably already=20
+enabled by another mfd driver=2E=20
 
-Thanks
+-michael
 
->
-> Jason
->
 
