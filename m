@@ -2,139 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37BB4440CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 12:50:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55AA84440D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 12:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbhKCLxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 07:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231557AbhKCLxQ (ORCPT
+        id S231958AbhKCL4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 07:56:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45091 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231804AbhKCL4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 07:53:16 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B23C061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 04:50:40 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id v20so2287827plo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 04:50:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7WTRWE2Tx5rUYcgUyt1HD8zRPERENbRuNdBuXXDi2wA=;
-        b=S2IijSX0oEbq28PNJ7sscwPJlTX8Sp9Dqz1T3E131g5SWFvStknnwiBvn8DNaye+5G
-         5I/iYKbhh0shIRisK9Fhljb9VnBb5OUrSSTrsD10OGSb2imcnMPztyzggd/EuF7Z6BhA
-         EaY52eu05YF78nIfL5QrUs1HanDAqxvJ4cW3+Gel4LKHzjvZWyW1mqLTr615yGOBvn5M
-         hEjQEnsBb6hJmCP5CSqKXOJCrG/rFzH7Xs2KJBJ7eEeJSM1AUPz9gSTyeHQ8r76WVhtM
-         4uSqNqK7jzG9bakj32avDGAntYAN+IiPEu5OngWa5IOIGSWwZZ3vKpSmGjk3i7nfGnzN
-         K+GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7WTRWE2Tx5rUYcgUyt1HD8zRPERENbRuNdBuXXDi2wA=;
-        b=fjEx4pJUrdV29UebwYLmGZfhGNh+5eY3ex5B3HjkeAEGdmQ33vzKQubFKCOv/tnsmH
-         LsHCev2otEe2AjDZ1A78PeqAmL6CHkRtfGnqWO+UEJc28GZWYTfrlg7xOiySL5spmmdJ
-         mIPx0kd349eG8RJHDViZ/68l/OxegpV4AXcK1uC2Q1JNxeF+PJrdTi+CL7rGiXQdKeMQ
-         ygOwbb/5YNiJh21AY29R5kNAcpbvZNY1ZzYQw5fqxM7Pcw1pDkNlUBvqOI1MgDsMvnYv
-         S9i4XxlrOruHcqUxbG1/WdoE81VneKgYa3xeq1vpEScFhXCM3WVWGCddtHbpEBt4HKqL
-         KZdw==
-X-Gm-Message-State: AOAM533Z2tUZtwpK9S1vN2HfGBS8zURAR9L5QBN/T70TeWLy4O16qhzA
-        UClsidLJucij7Cilm82kdYyty353MLA=
-X-Google-Smtp-Source: ABdhPJyD1OZmjdcpH7CwX0ShazGT6wIn1YSDudlQlWHYR+LiRAoUv0cQM9hL4et5QV9daNHCG0PqRg==
-X-Received: by 2002:a17:90b:4b01:: with SMTP id lx1mr1763752pjb.38.1635940239343;
-        Wed, 03 Nov 2021 04:50:39 -0700 (PDT)
-Received: from localhost ([2409:10:24a0:4700:e8ad:216a:2a9d:6d0c])
-        by smtp.gmail.com with ESMTPSA id z24sm1896529pgu.54.2021.11.03.04.50.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 04:50:38 -0700 (PDT)
-From:   Stafford Horne <shorne@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Stafford Horne <shorne@gmail.com>,
-        Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        openrisc@lists.librecores.org
-Subject: [PATCH] openrisc: fix SMP tlb flush NULL pointer dereference
-Date:   Wed,  3 Nov 2021 20:50:15 +0900
-Message-Id: <20211103115016.318043-1-shorne@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 3 Nov 2021 07:56:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635940412;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=L/P3UrVYThs6BCBvUjnusHuZyMwrK4mhs8KvOceIMpY=;
+        b=NSSXeDo7dqBE8YlnNy9ygtJmBYUoTQnnOi9uz/p3147z9ldIou64eRvuT22Woz+R8rQgSH
+        dKFrxSCYE8nUPu7IiwT6+8+oToKStwQn5Y9TFnKVrNXdI5VkQKxBB0wfJoQAWyLO/eUYBd
+        SxlQDkSAxZ2eQLFC1VK3ye9Zn9I6DZI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-500-duE2122INUOu_nTgl2chhw-1; Wed, 03 Nov 2021 07:53:29 -0400
+X-MC-Unique: duE2122INUOu_nTgl2chhw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00D1F8066EF;
+        Wed,  3 Nov 2021 11:53:26 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4148A19741;
+        Wed,  3 Nov 2021 11:53:15 +0000 (UTC)
+From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Subject: [PATCH v4 0/7] KVM: nSVM: avoid TOC/TOU race when checking vmcb12
+Date:   Wed,  3 Nov 2021 07:52:23 -0400
+Message-Id: <20211103115230.720154-1-eesposit@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Throughout the OpenRISC kernel port VMA is passed as NULL when flushing
-kernel tlb entries.  Somehow this was missed when I was testing
-c28b27416da9 ("openrisc: Implement proper SMP tlb flushing") and now the
-SMP kernel fails to completely boot.
+Currently there is a TOC/TOU race between the check of vmcb12's
+efer, cr0 and cr4 registers and the later save of their values in
+svm_set_*, because the guest could modify the values in the meanwhile.
 
-In OpenRISC VMA is used only to determine which cores need to have their
-TLB entries flushed.
+To solve this issue, this series introduces and uses svm->nested.save
+structure in enter_svm_guest_mode to save the current value of efer,
+cr0 and cr4 and later use these to set the vcpu->arch.* state.
 
-This patch updates the logic to flush tlbs on all cores when the VMA is
-passed as NULL.  Also, we update places VMA is passed as NULL to use
-flush_tlb_kernel_range instead.  Now, the only place VMA is passed as
-NULL is in the implementation of flush_tlb_kernel_range.
+Similarly, svm->nested.ctl contains fields that are not used, so having
+a full vmcb_control_area means passing uninitialized fields.
 
-Fixes: c28b27416da9 ("openrisc: Implement proper SMP tlb flushing")
-Reported-by: Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
-Signed-off-by: Stafford Horne <shorne@gmail.com>
+Patches 1,3 and 8 take care of renaming and refactoring code.
+Patches 2 and 6 introduce respectively vmcb_ctrl_area_cached and
+vmcb_save_area_cached.
+Patches 4 and 5 use vmcb_save_area_cached to avoid TOC/TOU, and patch
+7 uses vmcb_ctrl_area_cached.
+
+Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
+
 ---
- arch/openrisc/kernel/dma.c | 4 ++--
- arch/openrisc/kernel/smp.c | 6 ++++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
+v4:
+* introduce _* helpers (_nested_vmcb_check_save,
+  _nested_copy_vmcb_control_to_cache, _nested_copy_vmcb_save_to_cache)
+  that take care of additional parameters.
+* svm_set_nested_state: introduce {save, ctl}_cached variables
+  to not pollute svm->nested.{save,ctl} state, especially if the
+  check fails. remove also unnecessary memset added in previous versions.
+* svm_get_nested_state: change stack variable ctl introduced in this series
+ into a pointer that will be zeroed and freed after it has been copied to user
 
-diff --git a/arch/openrisc/kernel/dma.c b/arch/openrisc/kernel/dma.c
-index 1b16d97e7da7..a82b2caaa560 100644
---- a/arch/openrisc/kernel/dma.c
-+++ b/arch/openrisc/kernel/dma.c
-@@ -33,7 +33,7 @@ page_set_nocache(pte_t *pte, unsigned long addr,
- 	 * Flush the page out of the TLB so that the new page flags get
- 	 * picked up next time there's an access
- 	 */
--	flush_tlb_page(NULL, addr);
-+	flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
- 
- 	/* Flush page out of dcache */
- 	for (cl = __pa(addr); cl < __pa(next); cl += cpuinfo->dcache_block_size)
-@@ -56,7 +56,7 @@ page_clear_nocache(pte_t *pte, unsigned long addr,
- 	 * Flush the page out of the TLB so that the new page flags get
- 	 * picked up next time there's an access
- 	 */
--	flush_tlb_page(NULL, addr);
-+	flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
- 
- 	return 0;
- }
-diff --git a/arch/openrisc/kernel/smp.c b/arch/openrisc/kernel/smp.c
-index 415e209732a3..ba78766cf00b 100644
---- a/arch/openrisc/kernel/smp.c
-+++ b/arch/openrisc/kernel/smp.c
-@@ -272,7 +272,7 @@ static inline void ipi_flush_tlb_range(void *info)
- 	local_flush_tlb_range(NULL, fd->addr1, fd->addr2);
- }
- 
--static void smp_flush_tlb_range(struct cpumask *cmask, unsigned long start,
-+static void smp_flush_tlb_range(const struct cpumask *cmask, unsigned long start,
- 				unsigned long end)
- {
- 	unsigned int cpuid;
-@@ -320,7 +320,9 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long uaddr)
- void flush_tlb_range(struct vm_area_struct *vma,
- 		     unsigned long start, unsigned long end)
- {
--	smp_flush_tlb_range(mm_cpumask(vma->vm_mm), start, end);
-+	const struct cpumask *cmask = vma ? mm_cpumask(vma->vm_mm)
-+					  : cpu_online_mask;
-+	smp_flush_tlb_range(cmask, start, end);
- }
- 
- /* Instruction cache invalidate - performed on each cpu */
+v3:
+* merge this series with "KVM: nSVM: use vmcb_ctrl_area_cached instead
+  of vmcb_control_area in nested state"
+* rename "nested_load_save_from_vmcb12" in
+  "nested_copy_vmcb_save_to_cache"
+* rename "nested_load_control_from_vmcb12" in
+  "nested_copy_vmcb_control_to_cache"
+* change check functions (nested_vmcb_valid_sregs and nested_vmcb_valid_sregs)
+  to accept only the vcpu parameter, since we only check
+  nested state now
+* rename "vmcb_is_intercept_cached" in "vmcb12_is_intercept"
+  and duplicate the implementation instead of calling vmcb_is_intercept
+
+v2:
+* svm->nested.save is a separate struct vmcb_save_area_cached,
+  and not vmcb_save_area.
+* update also vmcb02->cr3 with svm->nested.save.cr3
+
+RFC:
+* use svm->nested.save instead of local variables.
+* not dependent anymore from "KVM: nSVM: remove useless kvm_clear_*_queue"
+* simplified patches, we just use the struct and not move the check
+  nearer to the TOU.
+
+Emanuele Giuseppe Esposito (7):
+  KVM: nSVM: move nested_vmcb_check_cr3_cr4 logic in
+    nested_vmcb_valid_sregs
+  nSVM: introduce smv->nested.save to cache save area fields
+  nSVM: rename nested_load_control_from_vmcb12 in
+    nested_copy_vmcb_control_to_cache
+  nSVM: use vmcb_save_area_cached in nested_vmcb_valid_sregs()
+  nSVM: use svm->nested.save to load vmcb12 registers and avoid TOC/TOU
+    races
+  nSVM: introduce struct vmcb_ctrl_area_cached
+  nSVM: use vmcb_ctrl_area_cached instead of vmcb_control_area in struct
+    svm_nested_state
+
+ arch/x86/kvm/svm/nested.c | 250 ++++++++++++++++++++++++--------------
+ arch/x86/kvm/svm/svm.c    |   7 +-
+ arch/x86/kvm/svm/svm.h    |  57 ++++++++-
+ 3 files changed, 212 insertions(+), 102 deletions(-)
+
 -- 
-2.31.1
+2.27.0
 
