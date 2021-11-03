@@ -2,68 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BBB443B15
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 02:40:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C840B443B1E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 02:47:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbhKCBnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 21:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54874 "EHLO
+        id S231140AbhKCBtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 21:49:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbhKCBnW (ORCPT
+        with ESMTP id S230479AbhKCBtt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 21:43:22 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC96C061714
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 18:40:47 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so1410396ote.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 18:40:47 -0700 (PDT)
+        Tue, 2 Nov 2021 21:49:49 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF16C061714;
+        Tue,  2 Nov 2021 18:47:13 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id b17so1096406qvl.9;
+        Tue, 02 Nov 2021 18:47:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=11NI8rJSPz43D1gV7A+JL1F9+LdB46OYj4gEDUOX0Xg=;
-        b=glI9IYhMmZLGR4o0NQhxH0PvnKwSLmemXVPfSiHoPbShnhdg4r1Pv52AJ7zvv30wKc
-         7gOkGlDQOiKMuvVO98MDYlgUiT+DKxjrGVsimB2s2qqsy4xGfjDz61pKpfgX6ssT0Zd6
-         JKPZj2PpCyUTawPcZQ2OrL1AiWTw54KMpdjQ1DsJfNRQ0giEdlwtNGp6dqF3ITEWsvJA
-         iZ14izlu6pGhb2afXzwu0fFPI5GJJsY8gaLfI/5xioy1iiDr07dsI+ZleL6S7OgaEEu8
-         IAstHJVgcHOcvEyGR0/vf1nKXQ9oRo0NXu8O8zseSBWyTJWeqhFg7jy3vIb/nB1vVwbd
-         9/zA==
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iIfhELKBA59uYTnqWLZdOTQFhHkJ8JIZdnz4Zyo8KZw=;
+        b=SMxYX+FjngAizwzwGf0p+JkubhUWAXjRGqDCq5xJ87DyiD+8mXCwqkH/x3YfF5f29A
+         xevwGdPchS1Fi5DrS3aexlrF5yG9gmA/jq6IJ1EjgqIBOD1whwOwinm0pghiUuVjdAP6
+         GKfcbgfSk7Xuh4KzSSzrACWz11mURursOpVtY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=11NI8rJSPz43D1gV7A+JL1F9+LdB46OYj4gEDUOX0Xg=;
-        b=iM3n8PgwcNeagrJAUaTIeuMleQz3PQpIFf/MzDeljPNHrO1ovXLNWeiWPvr8xk3bvr
-         utkn8lIfi2/ikShhB6m/LuSnTukRwgtDa04i0Uv5UTdRTErE/WgIU7idFrdm+fYUs4tD
-         P+pjvqAaOxECc9zNcBVV6TExn0uGkcL27lcygfL1/eHNdwK4v0HfS7IfimslerqnGr3G
-         0d2iCVrbSyVbq4Ryl7Qe77QZ8jf0nDVK+vGro5zyUS19xywNewFi5imXIPSjOBZnnZzW
-         eSeW4C48xmvzwRaxhWsZcfJ0n7/KSW1SRvlsHVCMwMeB7nXJu4IEZYBSr1l3T4r5gNtz
-         Ws2g==
-X-Gm-Message-State: AOAM532knpZOdRT2jzGrh3GDfTrtOhAG5Wr4eZfy5Zj618Z5F+VEeJvL
-        galZI7S6Es+Ki2/vNRikHqjMDuZlMxNLVG/uSY4=
-X-Google-Smtp-Source: ABdhPJyqo4m3JMEWp9mYQs/eud9JnwOEG8i8lJTPIeEVkSgDMEmibCjnGDOsduANdd00pxtN0kVXcAJBFpoDAgp1PYQ=
-X-Received: by 2002:a9d:6f15:: with SMTP id n21mr30161515otq.278.1635903646622;
- Tue, 02 Nov 2021 18:40:46 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iIfhELKBA59uYTnqWLZdOTQFhHkJ8JIZdnz4Zyo8KZw=;
+        b=h0iqtE5ZmOgHyMLVxYtuwnoHwxjrVFp+p1QU7bIwNN8+6V8ix5w7HZCk7XkdE0Gh5q
+         3Oh6BJKn5/QlPiIXwIfVXkNwlnnPJyKufdPJqZPp9MOagwxVQH1i8EADvJUHWcuSs30D
+         6JNmNRWlnKGivXJ9PQilLrhtXU5s4inoQWEL21qTsVBDWit82+f3/XiJBzQRA4DJCaTL
+         fpxiWmkm/ipgAHDXDIskqs/k0XgSXUqswQL+jfKntjEaYVNaYkXhLA+OlCSKW6O7AYBW
+         LJOB7CWEcLsFL5SM2BE6slTmcbB8nC+HgPnGU+ESpiTC0RoAUJNe2B4aP4vCxDCGiSLU
+         8RiA==
+X-Gm-Message-State: AOAM530jOP9cG5KkjXW4cbV+6B6tJIQyIHZuE1mIFsymlhQyVdgTV7Wm
+        Vm+c8RjLOaMQC0NnqUnYViQ/wXtF+yNaXV8yOlQ=
+X-Google-Smtp-Source: ABdhPJxWUZEryVqXcBikybAoLyADEf6kRUtBPv82PFH52VOA75zBpO5PHr7kAAXN7A+FwtfuY0PHMm74kIpUVbkNYTQ=
+X-Received: by 2002:a05:6214:5002:: with SMTP id jo2mr39450110qvb.27.1635904032986;
+ Tue, 02 Nov 2021 18:47:12 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a9d:2089:0:0:0:0:0 with HTTP; Tue, 2 Nov 2021 18:40:46 -0700 (PDT)
-Reply-To: ms.lisahugh000@gmail.com
-From:   Ms Lisa Hugh <safi.kabore000@gmail.com>
-Date:   Wed, 3 Nov 2021 02:40:46 +0100
-Message-ID: <CAN7WVKMEEDamS46DX5GEWTNVYgdaYLxcbwsP2wdthY_3wd94Kw@mail.gmail.com>
-Subject: YOU UNDERSTAND ? DETAILS LATER >>MS LISA HUGH.
-To:     undisclosed-recipients:;
+References: <20211103011357.22067-1-jammy_huang@aspeedtech.com>
+In-Reply-To: <20211103011357.22067-1-jammy_huang@aspeedtech.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 3 Nov 2021 01:47:01 +0000
+Message-ID: <CACPK8XcuhVVvbs4m5k=1d6oFiewEo2RqqOqf5R72KJ4yjiEiUw@mail.gmail.com>
+Subject: Re: [PATCH v2] media: aspeed: fix mode-detect always time out at 2nd run
+To:     Jammy Huang <jammy_huang@aspeedtech.com>
+Cc:     Eddie James <eajames@linux.ibm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>, linux-media@vger.kernel.org,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paul Menzel <pmenzel@molgen.mpg.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Wed, 3 Nov 2021 at 01:13, Jammy Huang <jammy_huang@aspeedtech.com> wrote:
+>
+> aspeed_video_get_resolution() will try to do res-detect again if the
+> timing got in last try is invalid. But it will always time out because
+> VE_SEQ_CTRL_TRIG_MODE_DET is only cleared after 1st mode-detect.
+>
+> To fix the problem, just clear VE_SEQ_CTRL_TRIG_MODE_DET before setting
+> it in aspeed_video_enable_mode_detect().
+>
+> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+> Acked-by: Paul Menzel <pmenzel@molgen.mpg.de>
 
-I am Ms Lisa Hugh accountant and files keeping by profession with the bank.
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
-I need Your help for this transfer($4,500,000,00 ,U.S.DOLLARS)to your
-bank account with your co-operation for both of us benefit.
-
-Please send the follow below,
-1)AGE....2)TELEPHONE NUMBER,,,,,...,3)COUNTRY.....4)OCCUPATION......
-Thanks.
-Ms Lisa Hugh
+> ---
+> v2:
+>   - update commit message
+> ---
+>  drivers/media/platform/aspeed-video.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
+> index 5ffbabf884eb..fea5e4d0927e 100644
+> --- a/drivers/media/platform/aspeed-video.c
+> +++ b/drivers/media/platform/aspeed-video.c
+> @@ -518,6 +518,10 @@ static void aspeed_video_enable_mode_detect(struct aspeed_video *video)
+>         aspeed_video_update(video, VE_INTERRUPT_CTRL, 0,
+>                             VE_INTERRUPT_MODE_DETECT);
+>
+> +       /* Disable mode detect in order to re-trigger */
+> +       aspeed_video_update(video, VE_SEQ_CTRL,
+> +                           VE_SEQ_CTRL_TRIG_MODE_DET, 0);
+> +
+>         /* Trigger mode detect */
+>         aspeed_video_update(video, VE_SEQ_CTRL, 0, VE_SEQ_CTRL_TRIG_MODE_DET);
+>  }
+> @@ -809,10 +813,6 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
+>                         return;
+>                 }
+>
+> -               /* Disable mode detect in order to re-trigger */
+> -               aspeed_video_update(video, VE_SEQ_CTRL,
+> -                                   VE_SEQ_CTRL_TRIG_MODE_DET, 0);
+> -
+>                 aspeed_video_check_and_set_polarity(video);
+>
+>                 aspeed_video_enable_mode_detect(video);
+> --
+> 2.25.1
+>
