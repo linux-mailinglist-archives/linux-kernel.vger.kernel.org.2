@@ -2,151 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A490F444A36
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 22:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2DC444A3B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 22:29:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbhKCV2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 17:28:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38404 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230070AbhKCV2s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 17:28:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635974771;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Znlql06AhhI7EaphpwppCQqpnxjsVHdYSJklJrdqL1M=;
-        b=EOJbcZovDDx+a2qFSS/xOYnGWXdmec8ETRP5qSd15DlZt3K3SftULTM33dhLU5PJ2Fnv/S
-        DC5WH4hjzl0MWkEwNkuZhjxJmHomZN/lh/IRWmzyCXtanvl6wGb5OaqwTM01KOaU+bUjpr
-        0VwGNwf+3ifiYFUoHmyzml/Z//N61Sw=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-299-P4bTqH89P6KRnRkbfaVTMQ-1; Wed, 03 Nov 2021 17:26:10 -0400
-X-MC-Unique: P4bTqH89P6KRnRkbfaVTMQ-1
-Received: by mail-wm1-f70.google.com with SMTP id o22-20020a1c7516000000b0030d6f9c7f5fso1643639wmc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 14:26:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Znlql06AhhI7EaphpwppCQqpnxjsVHdYSJklJrdqL1M=;
-        b=lB3XPnUCxL3PkV9UiJJAcDtj3CvNzUu/KdSKYJGP2bb1hcPccy7ptu2cquzPPmIy1M
-         QkuPs9PabLMeXHq3/PXli5DVWJUCnn5GbR+v6eZo5EhcJeXcauUhDQf7L8HPIAhdRFwk
-         kgGdYzIpEEalZlFQFhj6YHh+fuMybPJjvA18LH8JWqWMycRLOvEfpk8RUnN+27vhawDl
-         y+KH7jZ2affHuPE3IiUsJAcngN8uKequT4F4WZuSqPyVSLHSuywkC9vDIVaV0KsOnf/d
-         8POshklIty8F64XGiG56bbzoGps8gpcTbQ7GP6A3WbTgGlSpEFa4gBFgweg+SLGc/PwW
-         E+og==
-X-Gm-Message-State: AOAM530FpG8htLXZw8Tkc/3MPEMdlScEfjJkAwoDQTzn+FYeVgPN5E0r
-        JYAf7JiWA4CHUhZ3GCOHSzgnqbeR/r0Q30Yq9muqFCEAmAoB8R15rDZxtNSMGhKPiSFRNtU+k0r
-        59RKqx/JmN82ssj+JorZxq3ghDEa6DGXTGPPPPj0D
-X-Received: by 2002:a05:6000:2ae:: with SMTP id l14mr5061533wry.142.1635974768720;
-        Wed, 03 Nov 2021 14:26:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxwEJRXkYNzDroD2U2ofyOYD+EctMvHrMm2ahndQNqZj0d+LO2dkGqQ/YFDy55GG7GxIjNBx/OX2kxn9iLDPiU=
-X-Received: by 2002:a05:6000:2ae:: with SMTP id l14mr5061507wry.142.1635974768434;
- Wed, 03 Nov 2021 14:26:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211101082511.254155853@linuxfoundation.org> <20211101082518.624936309@linuxfoundation.org>
- <871r3x2f0y.fsf@turtle.gmx.de> <CACO55tsq6DOZnyCZrg+N3m_hseJfN_6+YhjDyxVBAGq9PFJmGA@mail.gmail.com>
- <CACO55tsQVcUHNWAkWcbJ8i-S5pgKhrin-Nb3JYswcBPDd3Wj4w@mail.gmail.com> <87tugt0xx6.fsf@turtle.gmx.de>
-In-Reply-To: <87tugt0xx6.fsf@turtle.gmx.de>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Wed, 3 Nov 2021 22:25:57 +0100
-Message-ID: <CACO55tsNKKTW6X_+Ym0oySX-iNtikyV6rgHGu01Co7_mDWkxhg@mail.gmail.com>
-Subject: Re: [Nouveau] [PATCH 5.10 32/77] drm/ttm: fix memleak in ttm_transfered_destroy
-To:     Sven Joachim <svenjoac@gmx.de>
+        id S230210AbhKCVbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 17:31:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229698AbhKCVbw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 17:31:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE20260F58;
+        Wed,  3 Nov 2021 21:29:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635974955;
+        bh=QHW65s3qziZ829pmv4kNPFVMJdUsIme66oYxqBjmzqU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BSgzKLkCrmJnQBoGqptjPVMAKgi0OicvSohQI3KmnXF/dmy8TJfJ7FPIwN5W1E/o2
+         XQp6I/rr58J1qJC5L4/C/oMW1GBHEVo1TtlYBUkvzq6tpFTrBq2lSl/b1mhBuXM0Q7
+         vrmJmxMPPlhZgRJvF933dIWtZFtf5Fttgt91r8qEJUCvc0kTf7C0rPkIeDCowK8Lju
+         VnbLhnP5ZQPg4nMOiQFV9NPsGG8YhFBV1WWoaWwPffLJmOhuHGgGPrKfVxWqoyolAZ
+         0F2hFT68vZJUwJY9cm1aK01eYZ4xdSaCEK9es5BFmRSnmRhtEq0uLLaC98jVRo9h2a
+         xaJcJD03jRRyg==
+Date:   Wed, 3 Nov 2021 21:29:11 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Erhard F." <erhard_f@mailbox.org>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Huang Rui <ray.huang@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regmap: allow to define reg_update_bits for no bus
+ configuration
+Message-ID: <YYL/JwHxKsTmGT84@sirena.org.uk>
+References: <20211102214138.28873-1-ansuelsmth@gmail.com>
+ <YYLAXL4HjgBGuF91@sirena.org.uk>
+ <YYLnlbTFRUdLrmpW@Ansuel-xps.localdomain>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gJshutYzvFzMAJPu"
+Content-Disposition: inline
+In-Reply-To: <YYLnlbTFRUdLrmpW@Ansuel-xps.localdomain>
+X-Cookie: Thank God I'm an atheist.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 9:47 PM Sven Joachim <svenjoac@gmx.de> wrote:
->
-> On 2021-11-03 21:32 +0100, Karol Herbst wrote:
->
-> > On Wed, Nov 3, 2021 at 9:29 PM Karol Herbst <kherbst@redhat.com> wrote:
-> >>
-> >> On Wed, Nov 3, 2021 at 8:52 PM Sven Joachim <svenjoac@gmx.de> wrote:
-> >> >
-> >> > On 2021-11-01 10:17 +0100, Greg Kroah-Hartman wrote:
-> >> >
-> >> > > From: Christian K=C3=B6nig <christian.koenig@amd.com>
-> >> > >
-> >> > > commit 0db55f9a1bafbe3dac750ea669de9134922389b5 upstream.
-> >> > >
-> >> > > We need to cleanup the fences for ghost objects as well.
-> >> > >
-> >> > > Signed-off-by: Christian K=C3=B6nig <christian.koenig@amd.com>
-> >> > > Reported-by: Erhard F. <erhard_f@mailbox.org>
-> >> > > Tested-by: Erhard F. <erhard_f@mailbox.org>
-> >> > > Reviewed-by: Huang Rui <ray.huang@amd.com>
-> >> > > Bug: https://bugzilla.kernel.org/show_bug.cgi?id=3D214029
-> >> > > Bug: https://bugzilla.kernel.org/show_bug.cgi?id=3D214447
-> >> > > CC: <stable@vger.kernel.org>
-> >> > > Link: https://patchwork.freedesktop.org/patch/msgid/20211020173211=
-.2247-1-christian.koenig@amd.com
-> >> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >> > > ---
-> >> > >  drivers/gpu/drm/ttm/ttm_bo_util.c |    1 +
-> >> > >  1 file changed, 1 insertion(+)
-> >> > >
-> >> > > --- a/drivers/gpu/drm/ttm/ttm_bo_util.c
-> >> > > +++ b/drivers/gpu/drm/ttm/ttm_bo_util.c
-> >> > > @@ -322,6 +322,7 @@ static void ttm_transfered_destroy(struc
-> >> > >       struct ttm_transfer_obj *fbo;
-> >> > >
-> >> > >       fbo =3D container_of(bo, struct ttm_transfer_obj, base);
-> >> > > +     dma_resv_fini(&fbo->base.base._resv);
-> >> > >       ttm_bo_put(fbo->bo);
-> >> > >       kfree(fbo);
-> >> > >  }
-> >> >
-> >> > Alas, this innocuous looking commit causes one of my systems to lock=
- up
-> >> > as soon as run startx.  This happens with the nouveau driver, two ot=
-her
-> >> > systems with radeon and intel graphics are not affected.  Also I onl=
-y
-> >> > noticed it in 5.10.77.  Kernels 5.15 and 5.14.16 are not affected, a=
-nd I
-> >> > do not use 5.4 anymore.
-> >> >
-> >> > I am not familiar with nouveau's ttm management and what has changed
-> >> > there between 5.10 and 5.14, but maybe one of their developers can s=
-hed
-> >> > a light on this.
-> >> >
-> >> > Cheers,
-> >> >        Sven
-> >> >
-> >>
-> >> could be related to 265ec0dd1a0d18f4114f62c0d4a794bb4e729bc1
-> >
-> > maybe not.. but I did remember there being a few tmm related patches
-> > which only hurt nouveau :/  I guess one could do a git bisect to
-> > figure out what change "fixes" it.
->
-> Maybe, but since the memory leaks reported by Erhard only started to
-> show up in 5.14 (if I read the bugzilla reports correctly), perhaps the
-> patch should simply be reverted on earlier kernels?
->
 
-Yeah, I think this is probably the right approach.
+--gJshutYzvFzMAJPu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > On which GPU do you see this problem?
->
-> On an old GeForce 8500 GT, the whole PC is rather ancient.
->
-> Cheers,
->        Sven
->
+On Wed, Nov 03, 2021 at 08:48:37PM +0100, Ansuel Smith wrote:
+> On Wed, Nov 03, 2021 at 05:01:16PM +0000, Mark Brown wrote:
+> > On Tue, Nov 02, 2021 at 10:41:38PM +0100, Ansuel Smith wrote:
 
+> > > -	if (regmap_volatile(map, reg) && map->reg_update_bits) {
+> > > +	if ((regmap_volatile(map, reg) || !map->bus) && map->reg_update_bit=
+s) {
+> > >  		ret =3D map->reg_update_bits(map->bus_context, reg, mask, val);
+> > >  		if (ret =3D=3D 0 && change)
+> > >  			*change =3D true;
+
+> > I don't understand this change.  The point of the check for volatile
+> > there is that if the register isn't volatile then we need to ensure that
+> > the cache gets updated with any change that happens so we need to go
+> > through paths that include cache updates.  The presence or otherwise of
+> > a bus does not seem at all relevant here.
+
+> I put the check there to not duplicate the code. The idea here is:
+> if we are doing a regmap_update_bits operation on a no bus configuration
+> and the function have a dedicated reg_update_bits function, use that
+> instead of the normal _reg_read, check and _reg_write.
+
+Yes, I can see that this is what the change does - the problem is that
+it's buggy.
+
+> To workaround the CACHE problem, I can add a check and detect if cache is
+> disabled and only with that option permit to add a reg_update_bits
+> function to the map (for no bus configuration).
+
+That's what the volatile check that is already there does - if there is
+no cache or that particular register is uncached then the register is
+volatile and we don't need to worry about updating the cache.  There is
+not and should not be any connection to how the device is physically
+accessed, any connection there is clearly an abstraction problem.
+
+> Again the problem here is in situation where lock is handled outside of
+> the read/write and the read/modify/write operation has to be done in one
+> go so splitting this operation in 2 step (like it's done for
+> regmap_update_bits) would be problematic.
+
+Unconditionally introducing a data corruption or power management bug
+for any device that provides an update bits operation regardless of
+their requirements to use that operation for a specific register is not
+a good idea.  If an individual device can't cope with some or all
+registers being cached then the driver for that device should configure
+it's regmap appropriately to ensure that the registers in question won't
+be cached.
+
+> Another solution would be to expose a way to change the cache externally
+> to the regmap operation so that if someone require cache operation and
+> require also a dedicated reg_update_bits, he can do that by implementing
+> that in his own function.
+
+I'm struggling to see a case where this would be useful without the
+register also being volatile in which case it's totally redundant.  If
+the register can change underneath us then it is by definition volatile,
+if the register can't be changed underneath us then with a cache there's
+unlikely to be any meaningful upside to using a specific read/modify/write
+operation in the first place.  You might have some case for wider
+registers where you can do a smaller transfer but that's got to be rare
+and I'd expect we'd have to be doing a lot of register I/O to care about
+the performance diffrence.
+
+> A third solution would be check if it's possible to cache the value
+> externally to function... Something that calls the reg_update_bits
+> dedicated function and then update the cache if needed.
+
+That's exactly what the existing volatility check does,=20
+
+> But do we really need to add all this complexity when we can just deny
+> an option with cache enabled and force to use the normal way (else part
+> in this function)
+
+> Hope I was able to explain better why we need this change.
+
+We do not need this change.  The change that is being proposed will
+cause bugs, my best guess is that it's trying to work around a bug in
+the driver you're developing where it's enabling caching but not marking
+all the volatile registers properly.  If there is any change needed in
+the _update_bits() implementation then where we get a device specific
+_update_bits() operation from should have no influence on our decision
+to use it, doing that is a clear sign that there's an abstraction
+problem.
+
+--gJshutYzvFzMAJPu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGC/yYACgkQJNaLcl1U
+h9B42Qf+JoTlobP4UDMi964BCwkqNghuGiaNUdlolWhuqT5oa9u45crHd4NXG+wW
+xRQ6x1cwAxUw2a8cCSF6FCqnaqKaLYCSJ2cw70CLTAXsak5Uh2l1xQOuIFzHlhQp
+e+TR6JZO4CsenLvvqs84B/DwUNZkKUl6arKRgdvoyZX6Uv3pVhCt1rdnr3G9gIIh
+ZzEMq+R3WHgYBax4BykcfwiqTNTC14Fbmg9EKpKJ09BfNvP6IjfiofoYh3M9oISg
+yddop8Vr0YPokKapSQKme8D/Wi+NWR8kjJapxxmcyOdnsmu9UIaGn4pr1l5vbz0g
+lei72LA0hlqabdzOdIO1dnTiSEM1Ng==
+=54PD
+-----END PGP SIGNATURE-----
+
+--gJshutYzvFzMAJPu--
