@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B117C44420E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 814E2444213
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:01:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231748AbhKCNDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 09:03:38 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.80]:30725 "EHLO
+        id S232066AbhKCNDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 09:03:55 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:16630 "EHLO
         mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231838AbhKCNDg (ORCPT
+        with ESMTP id S231982AbhKCNDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 09:03:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635944429;
+        Wed, 3 Nov 2021 09:03:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635944433;
     s=strato-dkim-0002; d=goldelico.com;
     h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=cPrsVDNh3YgbTR+Pv/a4rxJ7+ywhFHuLHgps/nYnCwU=;
-    b=lrS+e14plMwdM6QOAPt6sQtEO8wkcQXMEce5CM0oWe+xS6Sg8zsBswksDNiAb5n30Q
-    NJWekpAufL24xehCcFqK7xVm7e0Eguf29ZABwTV+xYqjX2RymmBMBqBv/PCPFPn4mmKO
-    cL8ctRBClEdo54srpTTusrg8c3kN+gzDd/0dVjUcrPp/IrfxnDdy7UlLULCygyL6bhS7
-    xKC52RerH4xlTxEfDY3JyO+k5Uahshtt8gcP3gu4cQe1xA2B5fe6X5RvbNQAEJOFvUyd
-    XD+Od1oh2KX910YdjR8A7vR5SaSTf53rLEXH5XHXqdhLgjpZNADrcCV96HVNfO6OUaXD
-    +/bg==
+    bh=NYA7HPQZf9DyTm9alYGShSLnmUJbxej82/KRXkB2LHk=;
+    b=VeBd+ErJQa5TyE4JTm+qg2sUo4LRlOIBKYDD99VJTGhUZjRR2b+qXXylZV7NEgnt3a
+    jX0HGY2IF25OKRQjVbD4Ux+lutkpU1VeZ5p1gJwfS7Bcvx29/FZeOwIuIAnP5PaboIlY
+    E/n33FkMmMM/hN4fQSTvPEYcQXpePYy8BpIl/hVIGLPmmTVa7Yk2qrvATW/Rdo1WxM0u
+    IYW7T0SizUTCLsHKvWTNj+XSu195vZD/UDZw8WeeLFmEGHeczarQqoCxIINNYi7FBf2T
+    elahYWprWybLhCOhqRpnh8X0T6/OjEJuVzVg5GTmz1CYw61dCkIV6NgsDc9/bNLmkz3w
+    oKLQ==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UMf2MwPVbgc7na"
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
-    with ESMTPSA id 902c63xA3D0Q0Eg
+    with ESMTPSA id 902c63xA3D0U0Eh
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Wed, 3 Nov 2021 14:00:26 +0100 (CET)
+    Wed, 3 Nov 2021 14:00:30 +0100 (CET)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Ulf Hansson <ulf.hansson@linaro.org>,
         =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
@@ -44,9 +44,9 @@ Cc:     notasas@gmail.com, linux-mmc@vger.kernel.org,
         linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
         kernel@pyra-handheld.com,
         "H. Nikolaus Schaller" <hns@goldelico.com>
-Subject: [RFC v3 3/6] mmc: core: provide macro and table to match the device tree to apply quirks
-Date:   Wed,  3 Nov 2021 14:00:11 +0100
-Message-Id: <47e753ce9d1e17bbb2910ee24a23a85d27f860ce.1635944413.git.hns@goldelico.com>
+Subject: [RFC v3 4/6] mmc: core: add new calls to mmc_fixup_device(sdio_card_init_methods)
+Date:   Wed,  3 Nov 2021 14:00:12 +0100
+Message-Id: <e1337857bbcb044edf4b6fdb4af3f6d887793a37.1635944413.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <cover.1635944413.git.hns@goldelico.com>
 References: <cover.1635944413.git.hns@goldelico.com>
@@ -56,58 +56,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This (initially empty) table allows to match quirks early based
-on .compatible of the child node of some mmc/sdio interface.
+This allows to add quirks based on device tree instead of having
+card specific code in the host ops.
 
-A new macro SDIO_FIXUP_COMPATIBLE makes the definition readable.
+We call it just after where host->ops->init_card() can be optionally
+called.
 
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- drivers/mmc/core/card.h   | 15 +++++++++++++++
- drivers/mmc/core/quirks.h |  4 ++++
- 2 files changed, 19 insertions(+)
+ drivers/mmc/core/mmc.c  | 1 +
+ drivers/mmc/core/sd.c   | 2 ++
+ drivers/mmc/core/sdio.c | 1 +
+ 3 files changed, 4 insertions(+)
 
-diff --git a/drivers/mmc/core/card.h b/drivers/mmc/core/card.h
-index 2f73f8567e14f..c7a61e74c02ea 100644
---- a/drivers/mmc/core/card.h
-+++ b/drivers/mmc/core/card.h
-@@ -122,6 +122,21 @@ struct mmc_fixup {
- 		   _vendor, _device,					\
- 		   _fixup, _data, EXT_CSD_REV_ANY)			\
+diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+index 29e58ffae3797..19cd138acaec9 100644
+--- a/drivers/mmc/core/mmc.c
++++ b/drivers/mmc/core/mmc.c
+@@ -1634,6 +1634,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
+ 	 */
+ 	if (host->ops->init_card)
+ 		host->ops->init_card(host, card);
++	mmc_fixup_device(card, sdio_card_init_methods);
  
-+#define SDIO_FIXUP_COMPATIBLE(_compatible_list, _fixup, _data)		\
-+	{						\
-+		.name = CID_NAME_ANY,			\
-+		.manfid = CID_MANFID_ANY,		\
-+		.oemid = CID_OEMID_ANY,			\
-+		.rev_start = 0,				\
-+		.rev_end = -1ull,			\
-+		.cis_vendor = SDIO_ANY_ID,		\
-+		.cis_device = SDIO_ANY_ID,		\
-+		.vendor_fixup = (_fixup),		\
-+		.data = (_data),			\
-+		.ext_csd_rev = EXT_CSD_REV_ANY,		\
-+		.of_compatible = _compatible_list,\
-+	}
-+
- #define cid_rev(hwrev, fwrev, year, month)	\
- 	(((u64) hwrev) << 40 |			\
- 	 ((u64) fwrev) << 32 |			\
-diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
-index a8b82b34dcfd2..619504b78bf46 100644
---- a/drivers/mmc/core/quirks.h
-+++ b/drivers/mmc/core/quirks.h
-@@ -146,6 +146,10 @@ static const struct mmc_fixup __maybe_unused sdio_fixup_methods[] = {
- 	END_FIXUP
- };
+ 	/*
+ 	 * For native busses:  set card RCA and quit open drain mode.
+diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+index 4646b7a03db6b..0d174fdf47164 100644
+--- a/drivers/mmc/core/sd.c
++++ b/drivers/mmc/core/sd.c
+@@ -23,6 +23,7 @@
+ #include "host.h"
+ #include "bus.h"
+ #include "mmc_ops.h"
++#include "quirks.h"
+ #include "sd.h"
+ #include "sd_ops.h"
  
-+static const struct mmc_fixup __maybe_unused sdio_card_init_methods[] = {
-+	END_FIXUP
-+};
-+
- static inline bool mmc_fixup_of_compatible_match(struct mmc_card *card,
- 						 const char *const *compat_list)
- {
+@@ -1427,6 +1428,7 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
+ 	 */
+ 	if (host->ops->init_card)
+ 		host->ops->init_card(host, card);
++	mmc_fixup_device(card, sdio_card_init_methods);
+ 
+ 	/*
+ 	 * For native busses:  get card RCA and quit open drain mode.
+diff --git a/drivers/mmc/core/sdio.c b/drivers/mmc/core/sdio.c
+index 68edf7a615be5..cf8ee66990508 100644
+--- a/drivers/mmc/core/sdio.c
++++ b/drivers/mmc/core/sdio.c
+@@ -707,6 +707,7 @@ static int mmc_sdio_init_card(struct mmc_host *host, u32 ocr,
+ 	 */
+ 	if (host->ops->init_card)
+ 		host->ops->init_card(host, card);
++	mmc_fixup_device(card, sdio_card_init_methods);
+ 
+ 	/*
+ 	 * If the host and card support UHS-I mode request the card
 -- 
 2.33.0
 
