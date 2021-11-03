@@ -2,195 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58840444264
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BFF444297
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232034AbhKCN3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 09:29:17 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:30914 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231971AbhKCN3P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 09:29:15 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HknVQ3mllzcZyZ;
-        Wed,  3 Nov 2021 21:21:50 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 3 Nov 2021 21:26:34 +0800
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 3 Nov 2021 21:26:34 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v2 3/3] ARM: Support KFENCE for ARM
-Date:   Wed, 3 Nov 2021 21:38:45 +0800
-Message-ID: <20211103133845.78528-4-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20211103133845.78528-1-wangkefeng.wang@huawei.com>
-References: <20211103133845.78528-1-wangkefeng.wang@huawei.com>
+        id S231593AbhKCNnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 09:43:46 -0400
+Received: from mga01.intel.com ([192.55.52.88]:11862 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230282AbhKCNnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 09:43:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10156"; a="255122386"
+X-IronPort-AV: E=Sophos;i="5.87,205,1631602800"; 
+   d="scan'208";a="255122386"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 06:41:06 -0700
+X-IronPort-AV: E=Sophos;i="5.87,205,1631602800"; 
+   d="scan'208";a="489568012"
+Received: from bmagdala-mobl.ger.corp.intel.com (HELO localhost) ([10.251.215.42])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 06:41:02 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Pekka Paalanen <pekka.paalanen@collabora.com>,
+        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Michel =?utf-8?Q?D=C3=A4nzer?= <michel@daenzer.net>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neal Gompa <ngompa13@gmail.com>
+Subject: Re: [RESEND PATCH 4/5] drm: Add a drm_drv_enabled() helper function
+In-Reply-To: <20211103123206.1041442-1-javierm@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211103123206.1041442-1-javierm@redhat.com>
+Date:   Wed, 03 Nov 2021 15:41:00 +0200
+Message-ID: <87o871bbmb.fsf@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add architecture specific implementation details for KFENCE and enable
-KFENCE on ARM. In particular, this implements the required interface in
- <asm/kfence.h>.
+On Wed, 03 Nov 2021, Javier Martinez Canillas <javierm@redhat.com> wrote:
+> DRM drivers can use this to determine whether they can be enabled or not.
+>
+> For now it's just a wrapper around drm_modeset_disabled() but having the
+> indirection level will allow to add other conditions besides "nomodeset".
+>
+> Suggested-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 
-KFENCE requires that attributes for pages from its memory pool can
-individually be set. Therefore, force the kfence pool to be mapped
-at page granularity.
+Can't see i915 trivially using this due to the drm_driver
+parameter. Please let's not merge helpers like this without actual
+users.
 
-Testing this patch using the testcases in kfence_test.c and all passed
-with or without ARM_LPAE.
+BR,
+Jani.
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- arch/arm/Kconfig              |  1 +
- arch/arm/include/asm/kfence.h | 53 +++++++++++++++++++++++++++++++++++
- arch/arm/mm/fault.c           | 19 ++++++++-----
- 3 files changed, 66 insertions(+), 7 deletions(-)
- create mode 100644 arch/arm/include/asm/kfence.h
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index b9f72337224c..6d1f6f48995c 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -69,6 +69,7 @@ config ARM
- 	select HAVE_ARCH_AUDITSYSCALL if AEABI && !OABI_COMPAT
- 	select HAVE_ARCH_BITREVERSE if (CPU_32v7M || CPU_32v7) && !CPU_32v6
- 	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL && !CPU_ENDIAN_BE32 && MMU
-+	select HAVE_ARCH_KFENCE if MMU && !XIP_KERNEL
- 	select HAVE_ARCH_KGDB if !CPU_ENDIAN_BE32 && MMU
- 	select HAVE_ARCH_KASAN if MMU && !XIP_KERNEL
- 	select HAVE_ARCH_MMAP_RND_BITS if MMU
-diff --git a/arch/arm/include/asm/kfence.h b/arch/arm/include/asm/kfence.h
-new file mode 100644
-index 000000000000..7980d0f2271f
---- /dev/null
-+++ b/arch/arm/include/asm/kfence.h
-@@ -0,0 +1,53 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __ASM_ARM_KFENCE_H
-+#define __ASM_ARM_KFENCE_H
-+
-+#include <linux/kfence.h>
-+
-+#include <asm/pgalloc.h>
-+#include <asm/set_memory.h>
-+
-+static inline int split_pmd_page(pmd_t *pmd, unsigned long addr)
-+{
-+	int i;
-+	unsigned long pfn = PFN_DOWN(__pa(addr));
-+	pte_t *pte = pte_alloc_one_kernel(&init_mm);
-+
-+	if (!pte)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < PTRS_PER_PTE; i++)
-+		set_pte_ext(pte + i, pfn_pte(pfn + i, PAGE_KERNEL), 0);
-+	pmd_populate_kernel(&init_mm, pmd, pte);
-+
-+	flush_tlb_kernel_range(addr, addr + PMD_SIZE);
-+	return 0;
-+}
-+
-+static inline bool arch_kfence_init_pool(void)
-+{
-+	unsigned long addr;
-+	pmd_t *pmd;
-+
-+	for (addr = (unsigned long)__kfence_pool; is_kfence_address((void *)addr);
-+	     addr += PAGE_SIZE) {
-+		pmd = pmd_off_k(addr);
-+
-+		if (pmd_leaf(*pmd)) {
-+			if (split_pmd_page(pmd, addr & PMD_MASK))
-+				return false;
-+		}
-+	}
-+
-+	return true;
-+}
-+
-+static inline bool kfence_protect_page(unsigned long addr, bool protect)
-+{
-+	set_memory_valid(addr, 1, !protect);
-+
-+	return true;
-+}
-+
-+#endif /* __ASM_ARM_KFENCE_H */
-diff --git a/arch/arm/mm/fault.c b/arch/arm/mm/fault.c
-index f7ab6dabe89f..49148b675b43 100644
---- a/arch/arm/mm/fault.c
-+++ b/arch/arm/mm/fault.c
-@@ -17,6 +17,7 @@
- #include <linux/sched/debug.h>
- #include <linux/highmem.h>
- #include <linux/perf_event.h>
-+#include <linux/kfence.h>
- 
- #include <asm/system_misc.h>
- #include <asm/system_info.h>
-@@ -99,6 +100,11 @@ void show_pte(const char *lvl, struct mm_struct *mm, unsigned long addr)
- { }
- #endif					/* CONFIG_MMU */
- 
-+static inline bool is_write_fault(unsigned int fsr)
-+{
-+	return (fsr & FSR_WRITE) && !(fsr & FSR_CM);
-+}
-+
- static void die_kernel_fault(const char *msg, struct mm_struct *mm,
- 			     unsigned long addr, unsigned int fsr,
- 			     struct pt_regs *regs)
-@@ -131,10 +137,14 @@ __do_kernel_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
- 	/*
- 	 * No handler, we'll have to terminate things with extreme prejudice.
- 	 */
--	if (addr < PAGE_SIZE)
-+	if (addr < PAGE_SIZE) {
- 		msg = "NULL pointer dereference";
--	else
-+	} else {
-+		if (kfence_handle_page_fault(addr, is_write_fault(fsr), regs))
-+			return;
-+
- 		msg = "paging request";
-+	}
- 
- 	die_kernel_fault(msg, mm, addr, fsr, regs);
- }
-@@ -207,11 +217,6 @@ static inline bool is_permission_fault(unsigned int fsr)
- 	return false;
- }
- 
--static inline bool is_write_fault(unsigned int fsr)
--{
--	return (fsr & FSR_WRITE) && !(fsr & FSR_CM);
--}
--
- static vm_fault_t __kprobes
- __do_page_fault(struct mm_struct *mm, unsigned long addr, unsigned int flags,
- 		unsigned long vma_flags, struct pt_regs *regs)
+> ---
+>
+>  drivers/gpu/drm/drm_drv.c | 21 +++++++++++++++++++++
+>  include/drm/drm_drv.h     |  1 +
+>  2 files changed, 22 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
+> index 8214a0b1ab7f..70ef08941e06 100644
+> --- a/drivers/gpu/drm/drm_drv.c
+> +++ b/drivers/gpu/drm/drm_drv.c
+> @@ -975,6 +975,27 @@ int drm_dev_set_unique(struct drm_device *dev, const char *name)
+>  }
+>  EXPORT_SYMBOL(drm_dev_set_unique);
+>  
+> +/**
+> + * drm_drv_enabled - Checks if a DRM driver can be enabled
+> + * @driver: DRM driver to check
+> + *
+> + * Checks whether a DRM driver can be enabled or not. This may be the case
+> + * if the "nomodeset" kernel command line parameter is used.
+> + *
+> + * Returns:
+> + * True if the DRM driver is enabled and false otherwise.
+> + */
+> +bool drm_drv_enabled(const struct drm_driver *driver)
+> +{
+> +	if (drm_modeset_disabled()) {
+> +		DRM_INFO("%s driver is disabled\n", driver->name);
+> +		return false;
+> +	}
+> +
+> +	return true;
+> +}
+> +EXPORT_SYMBOL(drm_drv_enabled);
+> +
+>  /*
+>   * DRM Core
+>   * The DRM core module initializes all global DRM objects and makes them
+> diff --git a/include/drm/drm_drv.h b/include/drm/drm_drv.h
+> index 0cd95953cdf5..48f2b6eec012 100644
+> --- a/include/drm/drm_drv.h
+> +++ b/include/drm/drm_drv.h
+> @@ -598,5 +598,6 @@ static inline bool drm_drv_uses_atomic_modeset(struct drm_device *dev)
+>  
+>  int drm_dev_set_unique(struct drm_device *dev, const char *name);
+>  
+> +bool drm_drv_enabled(const struct drm_driver *driver);
+>  
+>  #endif
+
 -- 
-2.26.2
-
+Jani Nikula, Intel Open Source Graphics Center
