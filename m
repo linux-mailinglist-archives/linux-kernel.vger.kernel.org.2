@@ -2,160 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A4544438B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:28:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A26444388
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:28:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232157AbhKCObX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 10:31:23 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:25932 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232077AbhKCObW (ORCPT
+        id S231989AbhKCObS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 10:31:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38478 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231476AbhKCObQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 10:31:22 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A3E173U008315;
-        Wed, 3 Nov 2021 14:28:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=AdrTipgVY0e4HgeDrXQ/vMlb5/10PfDAwIyRNkHWIUE=;
- b=UU/0OK5PJT2NWeeu1wTUxzKKj+u2VvLahwIclVx0fmoex/YhAKwi7eNA7omRq45YBmxi
- 9hwcuNbLd9npUM+GCNSLeMlkFVqN9gHgvwPGBOXQIJ5XWrf9eKB3H80coLfLRFk6NJ7f
- qaEzbGfjpzD9yP6VLlhWf6dKnzT1EyjYHXq1cp1BAI9T6lHJCCgL74TWFSD+j7YqSDco
- VL9lfd2oZFtBqibgh646D53Z5d5K9Q8mD0bWx4bQzEaWiQRfSdS2gmblK+nnRB613/9+
- mwhycD2kfJZIlbmCk1P7Tg6u6Y9Odbvc01FE7r31nsM+0AHE5b3Ywug6f27Vx2X01OJ/ 1A== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3c3q1n9rsk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Nov 2021 14:28:38 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1A3EP3Sk132661;
-        Wed, 3 Nov 2021 14:28:35 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2171.outbound.protection.outlook.com [104.47.55.171])
-        by userp3030.oracle.com with ESMTP id 3c27k73r7c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Nov 2021 14:28:35 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kqhOE1bbJeryoblhrUUOxnqah77NvCLvOhstubpJbDGjTidKfb2T4iTJSvaEoqwcqpXNmjYQpDxX+82GgBKsM168IEb4IekAyNvDN5NNjModJye+3fjmpQE1ae5ty2HS+2b/hrLooT9o8H8qOvMk0zYPTdA2g85iVd/BF7qiYd44XJNz9NmhrTUa+VUdlLTGhr407vskZxxBU72vjJKdrd5ZKCBrcKbLrYBhPf5QNwXRccqGFSHdi1+hKvqemfebwBofCHKtB4tdcjh7gVyuHndPriliARkkQMPpMzvCvl9sJ0MJnQh7KB2k48xYOb9ubp1RNznr3FDG61LIsRrl2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AdrTipgVY0e4HgeDrXQ/vMlb5/10PfDAwIyRNkHWIUE=;
- b=Idx8jbWL/BXKzlcK9A6Z9Ljm1tYTH6Xtzr64S+ZeofVbuePesOflhCPhLKt5hirQK71n8quIn3VexOBvAUibewLEPAN/aqTZEONJJG7Yx5BEJtjxrAnUo8qHdEwTV1KtxNH1FROVLeRVGU+HKs1BelVQlyVOsv3gBUfCAK6V06JEAelgi3sjgkVCCzYCDhUzZ93Lo+Dwl6wqCuRZhYwmlhll4CR8LXblX9g6wymzvA2Qpy8mjkMMoM4QEHnljsBB9yX1oAPiJdNPp8J/i2U+7BdtIybU2gZzO1F05fXKU+OJSYwkmLwnqThwVMsz+JxPAZb4csuWy3k6lmQSJLCgzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AdrTipgVY0e4HgeDrXQ/vMlb5/10PfDAwIyRNkHWIUE=;
- b=FEmw23/sNb6H21EcAfShAOaUyFRP2pCgfE0ALLsv48v34Wrgtdl2YAOjrsMDCS5D4NFlUgnmQCnbnvLzPmzYot90GDoSjTNtsUTRM5NQUc0oA4AX4tZrdc2uNNxh3XiP4udNsGbPrvqILipHL6mY1Wvs7L3Zau1UbieiYSKb/D0=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from CY4PR1001MB2358.namprd10.prod.outlook.com
- (2603:10b6:910:4a::32) by CY4PR10MB1479.namprd10.prod.outlook.com
- (2603:10b6:903:27::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.18; Wed, 3 Nov
- 2021 14:28:32 +0000
-Received: from CY4PR1001MB2358.namprd10.prod.outlook.com
- ([fe80::e5e3:725b:4bb:7809]) by CY4PR1001MB2358.namprd10.prod.outlook.com
- ([fe80::e5e3:725b:4bb:7809%5]) with mapi id 15.20.4649.020; Wed, 3 Nov 2021
- 14:28:32 +0000
-Date:   Wed, 3 Nov 2021 17:28:14 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Saurav Girepunje <saurav.girepunje@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, straube.linux@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        saurav.girepunje@hotmail.com
-Subject: Re: [PATCH] staging: r8188eu: hal: remove goto statement and local
- variable
-Message-ID: <20211103142814.GX2794@kadam>
-References: <YXjXsChOpaTThkxT@Sauravs-Air.domain.name>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXjXsChOpaTThkxT@Sauravs-Air.domain.name>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0015.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::20)
- To CY4PR1001MB2358.namprd10.prod.outlook.com (2603:10b6:910:4a::32)
+        Wed, 3 Nov 2021 10:31:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635949720;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wjCrBXWwYzBj3m1TWb42Da2qoJJrqcfHeMnXi0fhczc=;
+        b=jJRai2dU4RM0+tEparQIsy8VlNos8VTqdrSBYtIrFZw/5y0eTbyygdrQQIbYDmxdrV733S
+        4/Z740NgcmNgE30MAjkpOU3Tov/Fad95YsnCplfC4vEknjVxobG50/9yA6CVIeYQFbET0D
+        bAofaeTCbtBiPAqi2yUZKEVNFAyXjXQ=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-540-AMqk9vJkPhqK1gjFatCYXA-1; Wed, 03 Nov 2021 10:28:39 -0400
+X-MC-Unique: AMqk9vJkPhqK1gjFatCYXA-1
+Received: by mail-wm1-f71.google.com with SMTP id 69-20020a1c0148000000b0033214e5b021so1151150wmb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 07:28:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=wjCrBXWwYzBj3m1TWb42Da2qoJJrqcfHeMnXi0fhczc=;
+        b=f1K9uDzkDTsGf2+ng/LuQTT18lvN1ngk4ECnffplJX3SbhjbXuLc64Qoz81UasHEPm
+         wAOWPCdKL3o+pP65crMBUTINP9+NV+UL+DSf7MqhVc58BkXEB6UQMGfrcFKVg/Mv1CI5
+         HmGO0kTCDEjOxZWMWE3FrboPjIL+EG0Qi3Wt/I+awGh3SgogRtUux582rohax8j+KNPE
+         OUkMSPGkE9TgWlJ9skxBwhhHyajbVP3rEGBVA5rd+TN4LUOap6sJflU13J+ifklMW8l6
+         +r+l4X0s3Ggr/H5H2eF+tafXEoVW5n+sNcd6PcNyzjFUazcl43+E0/QT2S4tyRn2PPp1
+         HttA==
+X-Gm-Message-State: AOAM532ZVOhc2OrIUIlDycpl4qGECtV/9b0Gt1z7J/xyX1fn6yRTjrM9
+        2L4izIS3adXcXpLv2iHsh/8VMCSCiCI1lR4j7eoeUjmzACuRhV3bIdONUoTs/RdkO1FveHhBfFC
+        1mmDuSsUfqqv57rBnJIWsR/6A
+X-Received: by 2002:a5d:6d88:: with SMTP id l8mr21502516wrs.270.1635949718008;
+        Wed, 03 Nov 2021 07:28:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJygbrJwATC2G/bV3PqN0MYXRcgYe3aBtB674/ombGZ2HxFPH0E2H3yEXKRBe/gbkyWGcW/pQQ==
+X-Received: by 2002:a5d:6d88:: with SMTP id l8mr21502482wrs.270.1635949717828;
+        Wed, 03 Nov 2021 07:28:37 -0700 (PDT)
+Received: from [192.168.1.128] ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id z8sm2163734wrh.54.2021.11.03.07.28.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Nov 2021 07:28:37 -0700 (PDT)
+Message-ID: <5b4e4534-4786-d231-e331-78fdb5d8496a@redhat.com>
+Date:   Wed, 3 Nov 2021 15:28:35 +0100
 MIME-Version: 1.0
-Received: from kadam (62.8.83.22) by JNAP275CA0015.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10 via Frontend Transport; Wed, 3 Nov 2021 14:28:28 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 13526c94-debe-48e4-5509-08d99ed63682
-X-MS-TrafficTypeDiagnostic: CY4PR10MB1479:
-X-Microsoft-Antispam-PRVS: <CY4PR10MB1479DECD260D8734FDD5C1768E8C9@CY4PR10MB1479.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AQhikp+7W4UZz1CLulbQBeOB5SWneI4BWtqGQXRep8FziyurwbiQfuBMLznERLE0weDoF7cbFhRD/VQsE15V/MwaMZT6oSCfOOB8BbuK1GezKqDolH99xIfqzuhmN9swDZPXPW5kK/tJAbUe+Z4RhdquogrfrPyMufnQm+YIzHQ3FVvwcMecVdCjrlq2BEycb9W89wPh67pgvcXQgV6Z/qxsC7ZXn5DslIF2Dhucx8DXUuB1g3ck7GHgfgOrwajQvTjB+/0Ggs3J0mIgbeeQJTy6092RAer7EWK8JgG+tCiEPCVpfShQKSBbgcw+YKUVneJbt0VH6H5EK/I39dpkRNcEryBm/NAOL1eEVO0R+SJwVGocvC2BIFVBQOckZrQcA2zaSsBdCdU39jEs4pkTJaBkYJFjG80+DRgWJOP8u/AY54hxWdGWsLFoUGwI//cmXhbA0SOERvQMzoau1O/ZVsrNSXfyttOx7qpWsMAzqUuWf1b2pXbH7p0AwyD8vQSaNkgaoMT6EdfjS7ZhbUJDbnlrVj82Mwa4OBblfCX55g8MxAunPtJXMw93sJPk/kQIgj11TY/CYszYCZnE+Jd/oXIVrqxWakOPbjlqW26Mu0MEBO0ENGU1eLk7G2WR0OlbF/TPtMDsC5LBDPfO78tKi7qW6n4RYEr7U2Wf9Fo4ZhvwP3byNJxBfhI3e9Yjh41KOsKqgw7R61Vf8MZjWIB3Yg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1001MB2358.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(86362001)(1076003)(8676002)(5660300002)(9576002)(66946007)(26005)(186003)(8936002)(316002)(956004)(4744005)(33656002)(2906002)(38350700002)(6916009)(38100700002)(66556008)(52116002)(9686003)(55016002)(6496006)(33716001)(6666004)(66476007)(4326008)(508600001)(44832011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Pwohrlyt24LQs6DATJLae0y16KJjqywxdycJ39CuxSr14dlgiXkRTBzGE8T/?=
- =?us-ascii?Q?f9t6sntECorHlS8ckkqw046901lSH5QG+dczsEeyCKLC+yZdE6ChjtuFkJKq?=
- =?us-ascii?Q?HgGPD7AgKlme3PMi85i16/zRPdL07ka/KbS7lFx6p6psYG56NIY+yeH0bFCV?=
- =?us-ascii?Q?k8uYG3FqMfxDxyRNw2RYvXr1i6vouQwy8Vc6GKy17egoL1vN3llGRCWcDAtp?=
- =?us-ascii?Q?1DTUAFK05Y2hzuq5caF4aCSoH3uBnRmH9ZKvzlifpQNiyMgmGkG3V6eEcVou?=
- =?us-ascii?Q?+X3jHdjT0etd6zTVPVqZ2g7BlS2iIYgp0q4XJBWDrVtIL+rFBoPAVwUEQKoq?=
- =?us-ascii?Q?kE819VCGF5QEh5VBF2tTdA9Gqp5+uKFe/DTfhWEV2PCjOaY7xdtmF55DbxnA?=
- =?us-ascii?Q?LVgoqsOpBGvJZjA7KMIcfxhPu4m2a3oYrWC8uHKkqex8yFanLS34/EVYoAfi?=
- =?us-ascii?Q?p4/Nsp0mMGlE3WhHqYmwh35GlkWlLDjZR949hIxi6+NP3SLFa7PyeS+JC0Fi?=
- =?us-ascii?Q?qmXnanN44KPFtmXm5AlA12SKHCVEXfEHl9aa6mJ5UXnHBGsStcaxi46DLPCf?=
- =?us-ascii?Q?rIzwMNnWFItywrNLUHWzD8V68I5ZqK905CLWnLzAvFJWQW+x55Y/ouocB3Q9?=
- =?us-ascii?Q?zTjDQjCBaMiiP0QPNA4MO+m4TeEUU1OX3QvFPTJskjf0afxkct3DZIT4IkyG?=
- =?us-ascii?Q?/OVQnttcm4CvYjaL/xn93WjNqGj/2UPgf/oXD2bxM2l0Ivqu//cfKukaGiiy?=
- =?us-ascii?Q?mKte8ck7IAoVVbwkZYcFAPzip6AvEf1WZZymfFEuVKu22n0T9h4XSS4DIbyc?=
- =?us-ascii?Q?Nnz/EfKE7dFvrvbTl87kOGtpyGRhitV56yhYgMFIJoLKJqsVKEIPYn1A5wXe?=
- =?us-ascii?Q?WfbzghbhIGomqaHh/HyGG0xjYpOOW5pFGx38bidjjCaRsdW12KKjhr2M1vbD?=
- =?us-ascii?Q?Bxr4+eor3S1fAQr7W4pfW8UkH5pJptlDmzawkKXes8ta4qpcmeCHqnEip0ec?=
- =?us-ascii?Q?YBeUj39/N1NB2lwwtvY4QVnGCPN4SIzRCvfYTb5IESEN8hfCjjP6t8J4xoTP?=
- =?us-ascii?Q?t9x0XlUP8qQK6jHoAvl97TgQExZ8l1tcuzfu7CdGdyLz5FUphNw105ufbDeT?=
- =?us-ascii?Q?S+f0twszR8qwY8GwP/vTm2m2w76SYZjsUP8RT7NfsBFT2Ly1GUtmKPuOZiEw?=
- =?us-ascii?Q?hJ0StKCi3WLTvqNZR7dLAiG+Ut014iO3xBrFDeFGN1NsNkjBeK2b8CJTCLMp?=
- =?us-ascii?Q?g5dmoMZsCwfzUk+oWq87zUTCO0t+rP9uxnuNt54yWvMnPEYJoYF7m3vd+D+d?=
- =?us-ascii?Q?nawcwE9M9U1aatZUq/pAjiDSgoEIZyWu8Tr6hVG6EtGXE7YuVp2VKHs9gIXr?=
- =?us-ascii?Q?589oxqjYAnVsD+RqvCuixvxv1CqIqJOZ5tMjmxnQg6L6pBboh8C8wEg6ytw4?=
- =?us-ascii?Q?Rj7/Yvkure3ie2dpA3T7XKtkTvkkWJoy0VEvmiVuCoMuM4uxrPsE7/4aXWkm?=
- =?us-ascii?Q?nEfxUlm9wQp4+MOK+cE31sfriK35zb1gDjXILFvXEnm3pUVpDuW8lqaaL8rE?=
- =?us-ascii?Q?PDvuagIXjgASM5xgFvIZFX1oEth629Lykjp3mOQa/RFM421duy7lr6JEH66w?=
- =?us-ascii?Q?bLW3HzZNURJwuOl+j/VMYhkGIOvAXFeswDXeJXA/oQFnGvIcl4pANAlN7pcB?=
- =?us-ascii?Q?qoOheQ=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13526c94-debe-48e4-5509-08d99ed63682
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR1001MB2358.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2021 14:28:32.7255
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PRf3ZSlEQApRz2Nb+yUZuCt81hYK0EPRCsBzDNRZ+TPLBw30q6EaaOSqtb5rFnT4qxBaABlNR53kiTzzuAAUp2TyVXgsGlkAsDGL1Bw5opM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB1479
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10156 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 spamscore=0
- malwarescore=0 mlxlogscore=999 adultscore=0 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111030082
-X-Proofpoint-ORIG-GUID: IetIOVoPpqpHA9snwJexWtQjgWMBketE
-X-Proofpoint-GUID: IetIOVoPpqpHA9snwJexWtQjgWMBketE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [RESEND PATCH 3/5] drm: Rename vgacon_text_force() function to
+ drm_modeset_disabled()
+Content-Language: en-US
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
+Cc:     David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel@lists.freedesktop.org,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        amd-gfx@lists.freedesktop.org,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Neal Gompa <ngompa13@gmail.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        nouveau@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        spice-devel@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        intel-gfx@lists.freedesktop.org,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+References: <20211103122809.1040754-1-javierm@redhat.com>
+ <20211103122809.1040754-4-javierm@redhat.com>
+ <eddc2967-8355-b64a-79d8-6c1cda1bc732@suse.de>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+In-Reply-To: <eddc2967-8355-b64a-79d8-6c1cda1bc732@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 10:08:08AM +0530, Saurav Girepunje wrote:
-> Remove the goto statement from FillH2CCmd_88E(). In this function goto
-> can be replace by return statement. As on goto label exit, function
-> only return it is not performing any cleanup. Avoiding goto will
-> improve the function readability. After replacing the goto statement
-> local variable ret is also not needed. So remove the ret local variable.
+On 11/3/21 13:57, Thomas Zimmermann wrote:
+
+[snip]
+
+>>   
+>> -	if (vgacon_text_force()) {
+>> +	if (drm_modeset_disabled()) {
+>>   		DRM_ERROR("amdgpu kernel modesetting disabled.\n");
 > 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> ---
+> Please remove all such error messages from drivers. 
+> drm_modeset_disabled() should print a unified message instead.
+>
 
-Thanks!
+Agreed.
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+>> -static bool vgacon_text_mode_force;
+>> +static bool drm_nomodeset;
+>>   
+>> -bool vgacon_text_force(void)
+>> +bool drm_modeset_disabled(void)
+> 
+> I suggest to rename this function to drm_check_modeset() and have it 
+> return a negative errno code on failure. This gives maximum flexibility 
+> and reduces errors in drivers. Right now the drivers return something 
+> like -EINVAL, which seems wrong. Returning -ENODEV seems more appropriate.
+>
 
-regards,
-dan carpenter
+Good idea. I'll do it in v2 as well.
+ 
+Best regards,
+-- 
+Javier Martinez Canillas
+Linux Engineering
+Red Hat
 
