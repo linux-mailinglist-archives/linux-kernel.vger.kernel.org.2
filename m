@@ -2,90 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C542444A0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 22:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87444444A13
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 22:07:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230395AbhKCVF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 17:05:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230253AbhKCVF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 17:05:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1604961053;
-        Wed,  3 Nov 2021 21:03:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635973400;
-        bh=d8px2AtfrOiV2LtD9NN0uOgaogAqUK4i3BipGueAhqw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XI0ZCGYtiUEQQt77ffSVIwYk9OOH8yEpZBQvIGiJbIog8hts+dMWXj8db7mxSd8wL
-         vpDGD4/x90e5Y2oS1OxXUbCCJ61X2fjNfEgFvYjp3JhTkQwWPfC+y5uv2sMJAs5pEu
-         Up6NEkelo3AmeH7fF/RV16Iyoco9hmAG7MQyNEYHKHaHXyZkMphwls+Pw+2Ppbja/c
-         Ro14m2XAfz7RUA9Hmf87SFpgYcbTVC6YeS4mcrjUWlB3e4vv1qTOuz5uNquqZ3UiRU
-         ylb2hQgy01dhpvcVtc5YbXM2Tho9eYH7HNsOiqda16LxxjlO7DfVHLvLZ8d6hPUk+k
-         1RDustetjD+oQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E6E39410A1; Wed,  3 Nov 2021 18:03:17 -0300 (-03)
-Date:   Wed, 3 Nov 2021 18:03:17 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Stephane Eranian <eranian@google.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH v3] perf evsel: Fix missing exclude_{host,guest} setting
-Message-ID: <YYL5FaKQ1ZvGwd08@kernel.org>
-References: <20211029224929.379505-1-namhyung@kernel.org>
- <YYFGxwFMvTRN5KBI@krava>
- <CAM9d7cjPq7=HoPAi3Cd3crcNJO8hWu0cU8j4qOTqSMxd7M6BqQ@mail.gmail.com>
- <YYI5EwCjBojR+1QW@krava>
- <CABPqkBSHo3Gznor1e8M_Ue0XO8Z-HZt326q8N9kLWz4+jKkt-w@mail.gmail.com>
- <YYJzPkcUz2pcuspX@kernel.org>
- <CABPqkBQkqehAvpfJk77WZpXezrVO6cAj=9ktKFgL=C_m84_Dgg@mail.gmail.com>
+        id S230313AbhKCVKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 17:10:11 -0400
+Received: from smtp-fw-80006.amazon.com ([99.78.197.217]:21791 "EHLO
+        smtp-fw-80006.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229968AbhKCVKK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 17:10:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1635973654; x=1667509654;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=pwZqcl/VyJyVJhvsraqMbhkq73WN/eCXNJlf/Rr9QI0=;
+  b=NmPvJW7B+iPZtIgBGAfMFqPluRxGbIKE/lbjr6k2RfMB6kjzJcInY1tu
+   lbYbayEXEcdHLQbZwQeJkJMs3lC3G5O9oOUTIcP5z/jPlzGJjaDeHAOOh
+   4sGbzTPGvv+oGOF1fYDEZyKuFi3MvTXRsRZ+ntzVy88SqSYL+O82aU6cQ
+   0=;
+X-IronPort-AV: E=Sophos;i="5.87,206,1631577600"; 
+   d="scan'208";a="38972435"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-8691d7ea.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP; 03 Nov 2021 21:07:32 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-iad-1a-8691d7ea.us-east-1.amazon.com (Postfix) with ESMTPS id 8A1DEC0907;
+        Wed,  3 Nov 2021 21:07:30 +0000 (UTC)
+Received: from EX13D30UWC001.ant.amazon.com (10.43.162.128) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.24; Wed, 3 Nov 2021 21:07:29 +0000
+Received: from u3c3f5cfe23135f.ant.amazon.com (10.43.161.210) by
+ EX13D30UWC001.ant.amazon.com (10.43.162.128) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.24; Wed, 3 Nov 2021 21:07:29 +0000
+From:   Suraj Jitindar Singh <surajjs@amazon.com>
+To:     <linux-arm-kernel@lists.infradead.org>
+CC:     <linux-kernel@vger.kernel.org>, <live-patching@vger.kernel.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <sjitindarsingh@gmail.com>,
+        Suraj Jitindar Singh <surajjs@amazon.com>
+Subject: [PATCH] arm64: module: Use aarch64_insn_write when updating relocations later on
+Date:   Wed, 3 Nov 2021 14:07:09 -0700
+Message-ID: <20211103210709.31790-1-surajjs@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABPqkBQkqehAvpfJk77WZpXezrVO6cAj=9ktKFgL=C_m84_Dgg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.210]
+X-ClientProxiedBy: EX13D18UWC001.ant.amazon.com (10.43.162.105) To
+ EX13D30UWC001.ant.amazon.com (10.43.162.128)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Nov 03, 2021 at 10:35:04AM -0700, Stephane Eranian escreveu:
-> On Wed, Nov 3, 2021 at 4:32 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > Em Wed, Nov 03, 2021 at 12:44:12AM -0700, Stephane Eranian escreveu:
-> > > On Wed, Nov 3, 2021 at 12:24 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > > > If the pmu doesn't support host/guest filtering, pmu/bla1/G
-> > > > > may count something.  Not sure if it's better to error out.
-> > > > > But the cycles:G and instructions:G should result in 0
-> > > > > in case there's no VM running.
+Livepatch modules have relocation sections named
+.klp.rela.objname.section_name which are written on module load by calling
+klp_apply_section_relocs(). This is called in apply_relocations() to write
+relocations targeting objects in the vmlinux, before the module text is
+mapped read-only in complete_formation(). However relocations which target
+other modules are not written until after the mapping is made read-only
+causing them to fault.
 
-> > > > hm, I think if pmu doesn't support host/guest filtering then
-> > > > I think 'pmu/bla1/G' should error, no? better no number than
-> > > > bad number
+Avoid this fault by calling aarch64_insn_write() to update the instruction
+if the module text has already been marked read-only. Preserve the current
+behaviour if called before this has been done.
 
-> > > Yes, it should in my opinion.
+Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
+---
+ arch/arm64/kernel/module.c | 81 ++++++++++++++++++++++----------------
+ 1 file changed, 47 insertions(+), 34 deletions(-)
 
-> > Yeah, I thought about this yesterday (holiday here).
+diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
+index b5ec010c481f..35596ea870ab 100644
+--- a/arch/arm64/kernel/module.c
++++ b/arch/arm64/kernel/module.c
+@@ -19,6 +19,7 @@
+ #include <asm/alternative.h>
+ #include <asm/insn.h>
+ #include <asm/sections.h>
++#include <asm/patching.h>
+ 
+ void *module_alloc(unsigned long size)
+ {
+@@ -155,7 +156,8 @@ enum aarch64_insn_movw_imm_type {
+ };
+ 
+ static int reloc_insn_movw(enum aarch64_reloc_op op, __le32 *place, u64 val,
+-			   int lsb, enum aarch64_insn_movw_imm_type imm_type)
++			   int lsb, enum aarch64_insn_movw_imm_type imm_type,
++			   bool early)
+ {
+ 	u64 imm;
+ 	s64 sval;
+@@ -187,7 +189,10 @@ static int reloc_insn_movw(enum aarch64_reloc_op op, __le32 *place, u64 val,
+ 
+ 	/* Update the instruction with the new encoding. */
+ 	insn = aarch64_insn_encode_immediate(AARCH64_INSN_IMM_16, insn, imm);
+-	*place = cpu_to_le32(insn);
++	if (early)
++		*place = cpu_to_le32(insn);
++	else
++		aarch64_insn_write(place, insn);
+ 
+ 	if (imm > U16_MAX)
+ 		return -ERANGE;
+@@ -196,7 +201,8 @@ static int reloc_insn_movw(enum aarch64_reloc_op op, __le32 *place, u64 val,
+ }
+ 
+ static int reloc_insn_imm(enum aarch64_reloc_op op, __le32 *place, u64 val,
+-			  int lsb, int len, enum aarch64_insn_imm_type imm_type)
++			  int lsb, int len, enum aarch64_insn_imm_type imm_type,
++			  bool early)
+ {
+ 	u64 imm, imm_mask;
+ 	s64 sval;
+@@ -212,7 +218,10 @@ static int reloc_insn_imm(enum aarch64_reloc_op op, __le32 *place, u64 val,
+ 
+ 	/* Update the instruction's immediate field. */
+ 	insn = aarch64_insn_encode_immediate(imm_type, insn, imm);
+-	*place = cpu_to_le32(insn);
++	if (early)
++		*place = cpu_to_le32(insn);
++	else
++		aarch64_insn_write(place, insn);
+ 
+ 	/*
+ 	 * Extract the upper value bits (including the sign bit) and
+@@ -231,17 +240,17 @@ static int reloc_insn_imm(enum aarch64_reloc_op op, __le32 *place, u64 val,
+ }
+ 
+ static int reloc_insn_adrp(struct module *mod, Elf64_Shdr *sechdrs,
+-			   __le32 *place, u64 val)
++			   __le32 *place, u64 val, bool early)
+ {
+ 	u32 insn;
+ 
+ 	if (!is_forbidden_offset_for_adrp(place))
+ 		return reloc_insn_imm(RELOC_OP_PAGE, place, val, 12, 21,
+-				      AARCH64_INSN_IMM_ADR);
++				      AARCH64_INSN_IMM_ADR, early);
+ 
+ 	/* patch ADRP to ADR if it is in range */
+ 	if (!reloc_insn_imm(RELOC_OP_PREL, place, val & ~0xfff, 0, 21,
+-			    AARCH64_INSN_IMM_ADR)) {
++			    AARCH64_INSN_IMM_ADR, early)) {
+ 		insn = le32_to_cpu(*place);
+ 		insn &= ~BIT(31);
+ 	} else {
+@@ -253,7 +262,10 @@ static int reloc_insn_adrp(struct module *mod, Elf64_Shdr *sechdrs,
+ 						   AARCH64_INSN_BRANCH_NOLINK);
+ 	}
+ 
+-	*place = cpu_to_le32(insn);
++	if (early)
++		*place = cpu_to_le32(insn);
++	else
++		aarch64_insn_write(place, insn);
+ 	return 0;
+ }
+ 
+@@ -270,6 +282,7 @@ int apply_relocate_add(Elf64_Shdr *sechdrs,
+ 	void *loc;
+ 	u64 val;
+ 	Elf64_Rela *rel = (void *)sechdrs[relsec].sh_addr;
++	bool early = me->state == MODULE_STATE_UNFORMED;
+ 
+ 	for (i = 0; i < sechdrs[relsec].sh_size / sizeof(*rel); i++) {
+ 		/* loc corresponds to P in the AArch64 ELF document. */
+@@ -322,88 +335,88 @@ int apply_relocate_add(Elf64_Shdr *sechdrs,
+ 			fallthrough;
+ 		case R_AARCH64_MOVW_UABS_G0:
+ 			ovf = reloc_insn_movw(RELOC_OP_ABS, loc, val, 0,
+-					      AARCH64_INSN_IMM_MOVKZ);
++					      AARCH64_INSN_IMM_MOVKZ, early);
+ 			break;
+ 		case R_AARCH64_MOVW_UABS_G1_NC:
+ 			overflow_check = false;
+ 			fallthrough;
+ 		case R_AARCH64_MOVW_UABS_G1:
+ 			ovf = reloc_insn_movw(RELOC_OP_ABS, loc, val, 16,
+-					      AARCH64_INSN_IMM_MOVKZ);
++					      AARCH64_INSN_IMM_MOVKZ, early);
+ 			break;
+ 		case R_AARCH64_MOVW_UABS_G2_NC:
+ 			overflow_check = false;
+ 			fallthrough;
+ 		case R_AARCH64_MOVW_UABS_G2:
+ 			ovf = reloc_insn_movw(RELOC_OP_ABS, loc, val, 32,
+-					      AARCH64_INSN_IMM_MOVKZ);
++					      AARCH64_INSN_IMM_MOVKZ, early);
+ 			break;
+ 		case R_AARCH64_MOVW_UABS_G3:
+ 			/* We're using the top bits so we can't overflow. */
+ 			overflow_check = false;
+ 			ovf = reloc_insn_movw(RELOC_OP_ABS, loc, val, 48,
+-					      AARCH64_INSN_IMM_MOVKZ);
++					      AARCH64_INSN_IMM_MOVKZ, early);
+ 			break;
+ 		case R_AARCH64_MOVW_SABS_G0:
+ 			ovf = reloc_insn_movw(RELOC_OP_ABS, loc, val, 0,
+-					      AARCH64_INSN_IMM_MOVNZ);
++					      AARCH64_INSN_IMM_MOVNZ, early);
+ 			break;
+ 		case R_AARCH64_MOVW_SABS_G1:
+ 			ovf = reloc_insn_movw(RELOC_OP_ABS, loc, val, 16,
+-					      AARCH64_INSN_IMM_MOVNZ);
++					      AARCH64_INSN_IMM_MOVNZ, early);
+ 			break;
+ 		case R_AARCH64_MOVW_SABS_G2:
+ 			ovf = reloc_insn_movw(RELOC_OP_ABS, loc, val, 32,
+-					      AARCH64_INSN_IMM_MOVNZ);
++					      AARCH64_INSN_IMM_MOVNZ, early);
+ 			break;
+ 		case R_AARCH64_MOVW_PREL_G0_NC:
+ 			overflow_check = false;
+ 			ovf = reloc_insn_movw(RELOC_OP_PREL, loc, val, 0,
+-					      AARCH64_INSN_IMM_MOVKZ);
++					      AARCH64_INSN_IMM_MOVKZ, early);
+ 			break;
+ 		case R_AARCH64_MOVW_PREL_G0:
+ 			ovf = reloc_insn_movw(RELOC_OP_PREL, loc, val, 0,
+-					      AARCH64_INSN_IMM_MOVNZ);
++					      AARCH64_INSN_IMM_MOVNZ, early);
+ 			break;
+ 		case R_AARCH64_MOVW_PREL_G1_NC:
+ 			overflow_check = false;
+ 			ovf = reloc_insn_movw(RELOC_OP_PREL, loc, val, 16,
+-					      AARCH64_INSN_IMM_MOVKZ);
++					      AARCH64_INSN_IMM_MOVKZ, early);
+ 			break;
+ 		case R_AARCH64_MOVW_PREL_G1:
+ 			ovf = reloc_insn_movw(RELOC_OP_PREL, loc, val, 16,
+-					      AARCH64_INSN_IMM_MOVNZ);
++					      AARCH64_INSN_IMM_MOVNZ, early);
+ 			break;
+ 		case R_AARCH64_MOVW_PREL_G2_NC:
+ 			overflow_check = false;
+ 			ovf = reloc_insn_movw(RELOC_OP_PREL, loc, val, 32,
+-					      AARCH64_INSN_IMM_MOVKZ);
++					      AARCH64_INSN_IMM_MOVKZ, early);
+ 			break;
+ 		case R_AARCH64_MOVW_PREL_G2:
+ 			ovf = reloc_insn_movw(RELOC_OP_PREL, loc, val, 32,
+-					      AARCH64_INSN_IMM_MOVNZ);
++					      AARCH64_INSN_IMM_MOVNZ, early);
+ 			break;
+ 		case R_AARCH64_MOVW_PREL_G3:
+ 			/* We're using the top bits so we can't overflow. */
+ 			overflow_check = false;
+ 			ovf = reloc_insn_movw(RELOC_OP_PREL, loc, val, 48,
+-					      AARCH64_INSN_IMM_MOVNZ);
++					      AARCH64_INSN_IMM_MOVNZ, early);
+ 			break;
+ 
+ 		/* Immediate instruction relocations. */
+ 		case R_AARCH64_LD_PREL_LO19:
+ 			ovf = reloc_insn_imm(RELOC_OP_PREL, loc, val, 2, 19,
+-					     AARCH64_INSN_IMM_19);
++					     AARCH64_INSN_IMM_19, early);
+ 			break;
+ 		case R_AARCH64_ADR_PREL_LO21:
+ 			ovf = reloc_insn_imm(RELOC_OP_PREL, loc, val, 0, 21,
+-					     AARCH64_INSN_IMM_ADR);
++					     AARCH64_INSN_IMM_ADR, early);
+ 			break;
+ 		case R_AARCH64_ADR_PREL_PG_HI21_NC:
+ 			overflow_check = false;
+ 			fallthrough;
+ 		case R_AARCH64_ADR_PREL_PG_HI21:
+-			ovf = reloc_insn_adrp(me, sechdrs, loc, val);
++			ovf = reloc_insn_adrp(me, sechdrs, loc, val, early);
+ 			if (ovf && ovf != -ERANGE)
+ 				return ovf;
+ 			break;
+@@ -411,40 +424,40 @@ int apply_relocate_add(Elf64_Shdr *sechdrs,
+ 		case R_AARCH64_LDST8_ABS_LO12_NC:
+ 			overflow_check = false;
+ 			ovf = reloc_insn_imm(RELOC_OP_ABS, loc, val, 0, 12,
+-					     AARCH64_INSN_IMM_12);
++					     AARCH64_INSN_IMM_12, early);
+ 			break;
+ 		case R_AARCH64_LDST16_ABS_LO12_NC:
+ 			overflow_check = false;
+ 			ovf = reloc_insn_imm(RELOC_OP_ABS, loc, val, 1, 11,
+-					     AARCH64_INSN_IMM_12);
++					     AARCH64_INSN_IMM_12, early);
+ 			break;
+ 		case R_AARCH64_LDST32_ABS_LO12_NC:
+ 			overflow_check = false;
+ 			ovf = reloc_insn_imm(RELOC_OP_ABS, loc, val, 2, 10,
+-					     AARCH64_INSN_IMM_12);
++					     AARCH64_INSN_IMM_12, early);
+ 			break;
+ 		case R_AARCH64_LDST64_ABS_LO12_NC:
+ 			overflow_check = false;
+ 			ovf = reloc_insn_imm(RELOC_OP_ABS, loc, val, 3, 9,
+-					     AARCH64_INSN_IMM_12);
++					     AARCH64_INSN_IMM_12, early);
+ 			break;
+ 		case R_AARCH64_LDST128_ABS_LO12_NC:
+ 			overflow_check = false;
+ 			ovf = reloc_insn_imm(RELOC_OP_ABS, loc, val, 4, 8,
+-					     AARCH64_INSN_IMM_12);
++					     AARCH64_INSN_IMM_12, early);
+ 			break;
+ 		case R_AARCH64_TSTBR14:
+ 			ovf = reloc_insn_imm(RELOC_OP_PREL, loc, val, 2, 14,
+-					     AARCH64_INSN_IMM_14);
++					     AARCH64_INSN_IMM_14, early);
+ 			break;
+ 		case R_AARCH64_CONDBR19:
+ 			ovf = reloc_insn_imm(RELOC_OP_PREL, loc, val, 2, 19,
+-					     AARCH64_INSN_IMM_19);
++					     AARCH64_INSN_IMM_19, early);
+ 			break;
+ 		case R_AARCH64_JUMP26:
+ 		case R_AARCH64_CALL26:
+ 			ovf = reloc_insn_imm(RELOC_OP_PREL, loc, val, 2, 26,
+-					     AARCH64_INSN_IMM_26);
++					     AARCH64_INSN_IMM_26, early);
+ 
+ 			if (IS_ENABLED(CONFIG_ARM64_MODULE_PLTS) &&
+ 			    ovf == -ERANGE) {
+@@ -452,7 +465,7 @@ int apply_relocate_add(Elf64_Shdr *sechdrs,
+ 				if (!val)
+ 					return -ENOEXEC;
+ 				ovf = reloc_insn_imm(RELOC_OP_PREL, loc, val, 2,
+-						     26, AARCH64_INSN_IMM_26);
++						     26, AARCH64_INSN_IMM_26, early);
+ 			}
+ 			break;
+ 
+-- 
+2.17.1
 
-> Otherwise you create the illusion that you are monitoring in guest
-> mode when you are not.
-
-> The question is: how can the tool know which modifiers are supported
-> per pmu model?
-
-As things stand kernel-wise, we should just do capability querying, i.e.
-if the user asks for a feature not available for a specific PMU, we
-should refuse and provide a helpful error message to the user.
-
-If the PMUs in the kernel had some kind of mask that stated what of the
-'struct perf_event_attr' selectable features are supported, then we
-would just be able to avoid bothering the kernel asking for unsupported
-stuff.
-
-Just for exclude_guest we don't even need to have
-evsel->pmu->missing_features.exclude_guest, as this is a hard error, no
-point in caching previous capability queries.
-
-- Arnaldo
