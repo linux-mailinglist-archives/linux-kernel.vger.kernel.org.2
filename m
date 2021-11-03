@@ -2,250 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 507D1444BB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 00:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C8B444BC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 00:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhKCXnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 19:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhKCXnI (ORCPT
+        id S229964AbhKCXq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 19:46:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33981 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229561AbhKCXqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 19:43:08 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79A7C06127A
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 16:40:31 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id o14so4200356plg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 16:40:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Fvdv9qSjYcr4vPXhlPONLjBsydnb58oCITwHeQtG2OU=;
-        b=MO3krVRdTJELDUh0mqjI1Pfg521osGeQFg24altVUYAZw6vrTtbg1dfsV8smssBd/o
-         mTej0wBkgiszcZAKfslHnwT+0r38dkHVOKk7wGzSFG70i05Pb4JOuDbk0GEOfDOzA4WL
-         fq99zZDZP6YaseBcXJcojV9cBhtD+NenbMg/8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Fvdv9qSjYcr4vPXhlPONLjBsydnb58oCITwHeQtG2OU=;
-        b=Nc8dW10pQoXgLH1ZuqiokQHPiyJyRI7NtBKQ8wjpg2cI9Q5+AIXEfPiyrLhxLjw08t
-         ZleSg0mo45whnCZI7eDTZI07F2we0eH0VLsyStFNjWym7ZsmmR/DzzPSRUeZSNyKqgk0
-         HDiu/QTPDP5cditWbrqNG8/Yt60s2367xB7OjDcZePhnT+1m19fml6NapT7uM5aKM3AB
-         Z58JY0x3e46V/CfqzUv54V5YAc7722V4Z5dYtIyRQh0+iHyJSaH+HgZeXbpSwhhM64VT
-         cfwrRrp2LuAUUcWMcmjFFLWgR79uvY2gsm2u9i4uky0bATRlvo/vhQ+a6hf7WSjhzU3u
-         1ZWw==
-X-Gm-Message-State: AOAM531M8/N3s1VzWr95VW9bEyBq6pDiC9F0dt3tdlXL+oqfR2PNr32c
-        RN8S3aacDEZFgNTxivDlRVLlKQ==
-X-Google-Smtp-Source: ABdhPJwPVsz03tLONdef1f7X7daj00VlFBvZVhrh3qwJU9AViI2taK7DEGUQEi3DELwP5YgAhnrrvA==
-X-Received: by 2002:a17:902:ec8e:b0:141:da55:6158 with SMTP id x14-20020a170902ec8e00b00141da556158mr25304626plg.7.1635982831457;
-        Wed, 03 Nov 2021 16:40:31 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:49a7:f0ba:24b0:bc39])
-        by smtp.gmail.com with UTF8SMTPSA id hk18sm1224684pjb.20.2021.11.03.16.40.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 16:40:30 -0700 (PDT)
-From:   Brian Norris <briannorris@chromium.org>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        linux-rockchip@lists.infradead.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Brian Norris <briannorris@chromium.org>
-Subject: [PATCH 2/2] drm/self_refresh: Disable self-refresh on input events
-Date:   Wed,  3 Nov 2021 16:40:18 -0700
-Message-Id: <20211103164002.2.Ie6c485320b35b89fd49e15a73f0a68e3bb49eef9@changeid>
-X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
-In-Reply-To: <20211103234018.4009771-1-briannorris@chromium.org>
-References: <20211103234018.4009771-1-briannorris@chromium.org>
+        Wed, 3 Nov 2021 19:46:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635983028;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TY3Hzrdo8eAbxokPf+Hgzthrnx4D+WJ0/5UlAdCUFUc=;
+        b=S2zIvAMIO1TSgHFwZwio53ENWCSi8TOB/NMHlV2Rday3YG2Uzkd+N5ORG4yu5WGMVq8mwh
+        4K/jzfLMBRI0vvrnGKuoAAnseEhcHmB4yO2NV04ss/jcejft5SzZAINT/P88xxampyqduP
+        s0spwbwqT8Viq56ZETP+Xbs92Hv+Rm4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-331-_5gveUDqMF2UbP-vjO6A3Q-1; Wed, 03 Nov 2021 19:43:45 -0400
+X-MC-Unique: _5gveUDqMF2UbP-vjO6A3Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3BF9B8066F4;
+        Wed,  3 Nov 2021 23:43:44 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.144])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 55F9E19C79;
+        Wed,  3 Nov 2021 23:43:21 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] afs: Fix ENOSPC,
+ EDQUOT and other errors to fail a write rather than retrying
+From:   David Howells <dhowells@redhat.com>
+To:     marc.dionne@auristor.com
+Cc:     Jeffrey E Altman <jaltman@auristor.com>,
+        linux-afs@lists.infradead.org, dhowells@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 03 Nov 2021 23:43:20 +0000
+Message-ID: <163598300034.1327800.8060660349996331911.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To improve panel self-refresh exit latency, we speculatively start
-exiting when we
-receive input events. Occasionally, this may lead to false positives,
-but most of the time we get a head start on coming out of PSR. Depending
-on how userspace takes to produce a new frame in response to the event,
-this can completely hide the exit latency.
+Currently, at the completion of a storage RPC from writepages, the errors
+ENOSPC, EDQUOT, ENOKEY, EACCES, EPERM, EKEYREJECTED and EKEYREVOKED cause
+the pages involved to be redirtied and the write to be retried by the VM at
+a future time.
 
-In local tests on Chrome OS (Rockchip RK3399 eDP), we've found that the
-input notifier gives us about a 50ms head start over the
-fb-update-initiated exit.
+However, this is probably not the right thing to do, and, instead, the
+writes should be discarded so that the system doesn't get blocked (though
+unmounting will discard the uncommitted writes anyway).
 
-Leverage a new drm_input_helper library to get easy access to
-likely-relevant input event callbacks.
+Fix this by making afs_write_back_from_locked_page() call afs_kill_pages()
+instead of afs_redirty_pages() in those cases.
 
-Inspired-by: Kristian H. Kristensen <hoegsberg@google.com>
-Signed-off-by: Brian Norris <briannorris@chromium.org>
+EKEYEXPIRED is left to redirty the pages on the assumption that the caller
+just needs to renew their key.  Unknown errors also do that, though it
+might be better to squelch those too.
+
+This can be triggered by the generic/285 xfstest.  The writes can be
+observed in the server logs.  If a write fails with ENOSPC (ie. CODE
+49733403, UAENOSPC) because a file is made really large, e.g.:
+
+Wed Nov 03 23:21:35.794133 2021 [1589] EVENT YFS_SRX_StData CODE 49733403 NAME --UnAuth-- HOST [192.168.1.2]:7001 ID 32766 FID 1048664:0.172306:30364251 UINT64 17592187027456 UINT64 65536 UINT64 17592187092992 UINT64 0
+
+this should be seen once and not repeated.
+
+Reported-by: Marc Dionne <marc.dionne@auristor.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Jeffrey E Altman <jaltman@auristor.com>
+cc: linux-afs@lists.infradead.org
 ---
-This was in part picked up from:
 
-  https://lore.kernel.org/all/20180405095000.9756-25-enric.balletbo@collabora.com/
-  [PATCH v6 24/30] drm/rockchip: Disable PSR on input events
+ fs/afs/write.c |   14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-with significant rewrites/reworks:
+diff --git a/fs/afs/write.c b/fs/afs/write.c
+index 8b1d9c2f6bec..04f3f87b15cb 100644
+--- a/fs/afs/write.c
++++ b/fs/afs/write.c
+@@ -620,22 +620,18 @@ static ssize_t afs_write_back_from_locked_page(struct address_space *mapping,
+ 	default:
+ 		pr_notice("kAFS: Unexpected error from FS.StoreData %d\n", ret);
+ 		fallthrough;
+-	case -EACCES:
+-	case -EPERM:
+-	case -ENOKEY:
+ 	case -EKEYEXPIRED:
+-	case -EKEYREJECTED:
+-	case -EKEYREVOKED:
+ 		afs_redirty_pages(wbc, mapping, start, len);
+ 		mapping_set_error(mapping, ret);
+ 		break;
+ 
++	case -EACCES:
++	case -EPERM:
++	case -ENOKEY:
++	case -EKEYREJECTED:
++	case -EKEYREVOKED:
+ 	case -EDQUOT:
+ 	case -ENOSPC:
+-		afs_redirty_pages(wbc, mapping, start, len);
+-		mapping_set_error(mapping, -ENOSPC);
+-		break;
+-
+ 	case -EROFS:
+ 	case -EIO:
+ 	case -EREMOTEIO:
 
- - moved to common drm_input_helper and drm_self_refresh_helper
-   implementation
- - track state only through crtc->state->self_refresh_active
-
-Note that I'm relatively unfamiliar with DRM locking expectations, but I
-believe access to drm_crtc->state (which helps us track redundant
-transitions) is OK under the locking provided by
-drm_atomic_get_crtc_state().
-
- drivers/gpu/drm/drm_self_refresh_helper.c | 54 ++++++++++++++++++++---
- 1 file changed, 48 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_self_refresh_helper.c b/drivers/gpu/drm/drm_self_refresh_helper.c
-index dd33fec5aabd..dcab061cc90a 100644
---- a/drivers/gpu/drm/drm_self_refresh_helper.c
-+++ b/drivers/gpu/drm/drm_self_refresh_helper.c
-@@ -15,6 +15,7 @@
- #include <drm/drm_connector.h>
- #include <drm/drm_crtc.h>
- #include <drm/drm_device.h>
-+#include <drm/drm_input_helper.h>
- #include <drm/drm_mode_config.h>
- #include <drm/drm_modeset_lock.h>
- #include <drm/drm_print.h>
-@@ -58,17 +59,17 @@ DECLARE_EWMA(psr_time, 4, 4)
- struct drm_self_refresh_data {
- 	struct drm_crtc *crtc;
- 	struct delayed_work entry_work;
-+	struct work_struct exit_work;
-+	struct drm_input_handler input_handler;
- 
- 	struct mutex avg_mutex;
- 	struct ewma_psr_time entry_avg_ms;
- 	struct ewma_psr_time exit_avg_ms;
- };
- 
--static void drm_self_refresh_helper_entry_work(struct work_struct *work)
-+static void drm_self_refresh_transition(struct drm_self_refresh_data *sr_data,
-+					bool enable)
- {
--	struct drm_self_refresh_data *sr_data = container_of(
--				to_delayed_work(work),
--				struct drm_self_refresh_data, entry_work);
- 	struct drm_crtc *crtc = sr_data->crtc;
- 	struct drm_device *dev = crtc->dev;
- 	struct drm_modeset_acquire_ctx ctx;
-@@ -95,6 +96,9 @@ static void drm_self_refresh_helper_entry_work(struct work_struct *work)
- 		goto out;
- 	}
- 
-+	if (crtc->state->self_refresh_active == enable)
-+		goto out;
-+
- 	if (!crtc_state->enable)
- 		goto out;
- 
-@@ -107,8 +111,8 @@ static void drm_self_refresh_helper_entry_work(struct work_struct *work)
- 			goto out;
- 	}
- 
--	crtc_state->active = false;
--	crtc_state->self_refresh_active = true;
-+	crtc_state->active = !enable;
-+	crtc_state->self_refresh_active = enable;
- 
- 	ret = drm_atomic_commit(state);
- 	if (ret)
-@@ -129,6 +133,15 @@ static void drm_self_refresh_helper_entry_work(struct work_struct *work)
- 	drm_modeset_acquire_fini(&ctx);
- }
- 
-+static void drm_self_refresh_helper_entry_work(struct work_struct *work)
-+{
-+	struct drm_self_refresh_data *sr_data = container_of(
-+				to_delayed_work(work),
-+				struct drm_self_refresh_data, entry_work);
-+
-+	drm_self_refresh_transition(sr_data, true);
-+}
-+
- /**
-  * drm_self_refresh_helper_update_avg_times - Updates a crtc's SR time averages
-  * @state: the state which has just been applied to hardware
-@@ -223,6 +236,20 @@ void drm_self_refresh_helper_alter_state(struct drm_atomic_state *state)
- }
- EXPORT_SYMBOL(drm_self_refresh_helper_alter_state);
- 
-+static void drm_self_refresh_helper_exit_work(struct work_struct *work)
-+{
-+	struct drm_self_refresh_data *sr_data = container_of(
-+			work, struct drm_self_refresh_data, exit_work);
-+
-+	drm_self_refresh_transition(sr_data, false);
-+}
-+
-+static void drm_self_refresh_input_event(void *data)
-+{
-+	struct drm_self_refresh_data *sr_data = data;
-+
-+	schedule_work(&sr_data->exit_work);
-+}
- /**
-  * drm_self_refresh_helper_init - Initializes self refresh helpers for a crtc
-  * @crtc: the crtc which supports self refresh supported displays
-@@ -232,6 +259,7 @@ EXPORT_SYMBOL(drm_self_refresh_helper_alter_state);
- int drm_self_refresh_helper_init(struct drm_crtc *crtc)
- {
- 	struct drm_self_refresh_data *sr_data = crtc->self_refresh_data;
-+	int ret;
- 
- 	/* Helper is already initialized */
- 	if (WARN_ON(sr_data))
-@@ -243,6 +271,7 @@ int drm_self_refresh_helper_init(struct drm_crtc *crtc)
- 
- 	INIT_DELAYED_WORK(&sr_data->entry_work,
- 			  drm_self_refresh_helper_entry_work);
-+	INIT_WORK(&sr_data->exit_work, drm_self_refresh_helper_exit_work);
- 	sr_data->crtc = crtc;
- 	mutex_init(&sr_data->avg_mutex);
- 	ewma_psr_time_init(&sr_data->entry_avg_ms);
-@@ -256,8 +285,19 @@ int drm_self_refresh_helper_init(struct drm_crtc *crtc)
- 	ewma_psr_time_add(&sr_data->entry_avg_ms, SELF_REFRESH_AVG_SEED_MS);
- 	ewma_psr_time_add(&sr_data->exit_avg_ms, SELF_REFRESH_AVG_SEED_MS);
- 
-+	sr_data->input_handler.callback = drm_self_refresh_input_event;
-+	sr_data->input_handler.priv = sr_data;
-+	ret = drm_input_handle_register(crtc->dev, &sr_data->input_handler);
-+	if (ret)
-+		goto err;
-+
- 	crtc->self_refresh_data = sr_data;
-+
- 	return 0;
-+
-+err:
-+	kfree(sr_data);
-+	return ret;
- }
- EXPORT_SYMBOL(drm_self_refresh_helper_init);
- 
-@@ -275,7 +315,9 @@ void drm_self_refresh_helper_cleanup(struct drm_crtc *crtc)
- 
- 	crtc->self_refresh_data = NULL;
- 
-+	drm_input_handle_unregister(&sr_data->input_handler);
- 	cancel_delayed_work_sync(&sr_data->entry_work);
-+	cancel_work_sync(&sr_data->exit_work);
- 	kfree(sr_data);
- }
- EXPORT_SYMBOL(drm_self_refresh_helper_cleanup);
--- 
-2.34.0.rc0.344.g81b53c2807-goog
 
