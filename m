@@ -2,334 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75BE2444AC7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 23:18:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C61444ACE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 23:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbhKCWU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 18:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52324 "EHLO
+        id S229907AbhKCWVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 18:21:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhKCWU4 (ORCPT
+        with ESMTP id S230314AbhKCWVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 18:20:56 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902A8C06127A
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 15:18:19 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id h23so4179716ila.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 15:18:19 -0700 (PDT)
+        Wed, 3 Nov 2021 18:21:43 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A8DC061714;
+        Wed,  3 Nov 2021 15:19:06 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id r4so14053003edi.5;
+        Wed, 03 Nov 2021 15:19:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tSSvImRGB051WrN49hFyhzEZg7POCjjyReZt+Ezr0T8=;
-        b=q3BVHuIxeJlQU+j2tfydyRPjx9w1XwaYBpNDJhaLRZH4utnDO4rjXrkDgm1zcaWZZp
-         nrdOmeDUJnYDW/lXlTVVwxITvZSql6pw5sP8t9qfWHGPfTGWATYz76utmiRT8fuj13BG
-         ktHWOFunGt7bOmGz+pi1yBLcGg0/Etczkis+2ZYxgj23v5DQn9xeoOVpLjTt7VqxaE0R
-         SwvhsbWHFqPIbOm8RFiMP/ZFaOF0M3xsXCUs+/G9wQxGt+6/WFEjadL23L6XfRcsxMgj
-         mmmIYWGJjO9+QZbvNUEcB+FtJGLCSlMtQzaZqLFtHjWbta5a/fksT+ClznB1nGY3RgI1
-         ZpXw==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iN+fjjjE8vfKjzIBRU3snyLmptIrvKiwZXEyF/BTJnw=;
+        b=ax33eDurqbRoL9UjcGlbrlGR8fopzR4Ls4sBXY5QqgvahEAnZS4gohngzmi+qqKrkq
+         5ucrry5sbSAfNL0OEAM7VW9A1FfPlVpgPBvZpvInz7RQtySSvFBBb+McaLn6sxrmUltv
+         tSlqGpXkApuE3iZq//IEq/Dplyu/2JoJlA5/qblQev1at7q90lP3GN04mQRdJVOLng3i
+         FbV4DZWsD1uVZcVCdxPHXzxRs88Y8LdI/eW9hUiaPGtlILjkvv0Eb3LG1hh+2NDy5rpB
+         IZKZWzdbrtTLw3tTwoZnZspCJoGRebGAbD4Wyn6TameJxFTMMGR+PpUrSq+vjeDUHIFh
+         84xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tSSvImRGB051WrN49hFyhzEZg7POCjjyReZt+Ezr0T8=;
-        b=Qv1HicHsrVl9sLsmUbAFCTNWjt/82PJsXhHYkc6eM5CaUWIH8vuMpRJKeq0NXEJQOe
-         q07D2g6WPFKfElcHMU8EQNLLPVBcM5tVBLogtjhi6i4eEE+ySyVIabTgcyE5hCrrLxU5
-         0Bz/19PoDJrujIaMtESFc3qj/qNfPEJbhE0i7BHSy8Eil32MfRGgvebDLzg7JoRwWSEG
-         CKhWcZjCME5aQ2mxweEUj2YimMWpO0K8ci2fXykJOlZ+oWEA8t+yyOMTrKzHcQwXjLGa
-         YctbbLZSmTNHZY69Y2C8grxOZvIdiX7wRf1o4lMrmhCzhBPomqhH/OiMBv63PDaLJ17j
-         qz5Q==
-X-Gm-Message-State: AOAM533QYZ5HZqTTUZwp98vrJR0rEhyf7vgbUP+SASYu2wEjbSXsQ82u
-        TkG5tMVwtPgAn4DnGrZet1QXwA==
-X-Google-Smtp-Source: ABdhPJx8NrenxYTk5odmES1Z7jGlVd+bRuKPZBiNawUrPksdK1NFTh5xh0SLazbpCUwKXZBuzgAkgQ==
-X-Received: by 2002:a92:c244:: with SMTP id k4mr30380920ilo.293.1635977898577;
-        Wed, 03 Nov 2021 15:18:18 -0700 (PDT)
-Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
-        by smtp.gmail.com with ESMTPSA id i1sm1979317iov.10.2021.11.03.15.18.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 15:18:18 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 22:18:14 +0000
-From:   Oliver Upton <oupton@google.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [RFC PATCH 2/8] KVM: arm64: Setup base for hypercall firmware
- registers
-Message-ID: <YYMKphExkqttn2w0@google.com>
-References: <20211102002203.1046069-1-rananta@google.com>
- <20211102002203.1046069-3-rananta@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iN+fjjjE8vfKjzIBRU3snyLmptIrvKiwZXEyF/BTJnw=;
+        b=jW9S2R2QxJgGZQqZNa9NU3Knsn5R4QydDPe9uYQG35q/T9XxxdaT5VAix+HVT9eJ9N
+         JKGWFD86jt3E/1c9bIhqVzqOCYh2gmmDc7LoFVq0Yriwjvq4t3LmWsnQPtt81yuv5RmF
+         lOH27ucucbJyLn03T0CInJ68xQNg85BmL1C4rovsQ2LPl85ZAhTOMlb+8UXioyvRsMGc
+         UE82KZfzzZjWqXeSn9ePltQx+g+BACn7C3ARkh1B7JJrcuh9lVC8kI/4I3JI1KXG8frn
+         NGnBwSZyZS+gmr4nZmvDNNOwmbO2coK3qwLodEaU1lka+Ei2sLmEgg3Fl0GVRohj12pC
+         D/Mg==
+X-Gm-Message-State: AOAM530UmARiMU18VmkeEB71arovXdUdg0G3/bJ/v9VeeVncsTQyW95Y
+        a+yzuNTgcFrHCLEBdyVSOmU=
+X-Google-Smtp-Source: ABdhPJymCRkGj29o6X4rs34L4JYjl2N6jdyeOvhAAxYeQrmw34HklIKuSjbW01YvXpz1LWEQWtH9Bw==
+X-Received: by 2002:a50:fb15:: with SMTP id d21mr56598633edq.85.1635977944889;
+        Wed, 03 Nov 2021 15:19:04 -0700 (PDT)
+Received: from ?IPv6:2a04:241e:501:3800:dd98:1fb5:16b3:cb28? ([2a04:241e:501:3800:dd98:1fb5:16b3:cb28])
+        by smtp.gmail.com with ESMTPSA id e13sm1694067eje.95.2021.11.03.15.19.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Nov 2021 15:19:04 -0700 (PDT)
+Subject: Re: [PATCH v2 07/25] tcp: Use BIT() for OPTION_* constants
+To:     David Ahern <dsahern@gmail.com>, David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>, netdev@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>
+References: <cover.1635784253.git.cdleonard@gmail.com>
+ <dc9dca0006fa1b586da44dcd54e29eb4300fe773.1635784253.git.cdleonard@gmail.com>
+ <79ab8aae-8a61-b279-a702-15f24b406044@gmail.com>
+From:   Leonard Crestez <cdleonard@gmail.com>
+Message-ID: <6f07bab3-0c6f-84a6-870a-0f5e68a746f4@gmail.com>
+Date:   Thu, 4 Nov 2021 00:19:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102002203.1046069-3-rananta@google.com>
+In-Reply-To: <79ab8aae-8a61-b279-a702-15f24b406044@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 12:21:57AM +0000, Raghavendra Rao Ananta wrote:
-> The hypercall firmware registers may hold versioning information
-> for a particular hypercall service. Before a VM starts, these
-> registers are read/write to the user-space. That is, it can freely
-> modify the fields as it sees fit for the guest. However, this
-> shouldn't be allowed once the VM is started since it may confuse
-> the guest as it may have read an older value. As a result, introduce
-> a helper interface to convert the registers to read-only once any
-> vCPU starts running.
+On 11/3/21 4:31 AM, David Ahern wrote:
+> On 11/1/21 10:34 AM, Leonard Crestez wrote:
+>> Extending these flags using the existing (1 << x) pattern triggers
+>> complaints from checkpatch.
+>>
+>> Instead of ignoring checkpatch modify the existing values to use BIT(x)
+>> style in a separate commit.
+>>
+>> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
+>> ---
+>>   net/ipv4/tcp_output.c | 14 +++++++-------
+>>   1 file changed, 7 insertions(+), 7 deletions(-)
+>>
 > 
-> Extend this interface to also clear off all the feature bitmaps of
-> the firmware registers upon first write. Since KVM exposes an upper
-> limit of the feature-set to user-space via these registers, this
-> action will ensure that no new features get enabled by accident if
-> the user-space isn't aware of a newly added register.
-> 
-> Since the upcoming changes introduces more firmware registers,
-> rename the documentation to PSCI (psci.rst) to a more generic
-> hypercall.rst.
-> 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> ---
->  .../virt/kvm/arm/{psci.rst => hypercalls.rst} | 24 +++----
->  Documentation/virt/kvm/arm/index.rst          |  2 +-
->  arch/arm64/include/asm/kvm_host.h             |  8 +++
->  arch/arm64/kvm/arm.c                          |  7 +++
->  arch/arm64/kvm/hypercalls.c                   | 62 +++++++++++++++++++
->  5 files changed, 90 insertions(+), 13 deletions(-)
->  rename Documentation/virt/kvm/arm/{psci.rst => hypercalls.rst} (81%)
+> This one could be sent outside of this patch set since you are not
+> adding new values. Patch sets > 20 are generally frowned upon; sending
+> this one separately helps get the number down.
 
-nit: consider doing the rename in a separate patch.
+In the past I've seen maintainers pick small cleanups and fixes from 
+longer series that otherwise need further discussion.
 
-> diff --git a/Documentation/virt/kvm/arm/psci.rst b/Documentation/virt/kvm/arm/hypercalls.rst
-> similarity index 81%
-> rename from Documentation/virt/kvm/arm/psci.rst
-> rename to Documentation/virt/kvm/arm/hypercalls.rst
-> index d52c2e83b5b8..85dfd682d811 100644
-> --- a/Documentation/virt/kvm/arm/psci.rst
-> +++ b/Documentation/virt/kvm/arm/hypercalls.rst
-> @@ -1,22 +1,19 @@
->  .. SPDX-License-Identifier: GPL-2.0
->  
-> -=========================================
-> -Power State Coordination Interface (PSCI)
-> -=========================================
-> +=======================
-> +ARM Hypercall Interface
-> +=======================
->  
-> -KVM implements the PSCI (Power State Coordination Interface)
-> -specification in order to provide services such as CPU on/off, reset
-> -and power-off to the guest.
-> -
-> -The PSCI specification is regularly updated to provide new features,
-> -and KVM implements these updates if they make sense from a virtualization
-> +New hypercalls are regularly added by ARM specifications (or KVM), and
+Not sure if this practice is also common for netdev so I posted this 
+patch separately.
 
-nit: maybe we should use the abstraction of "hypercall service" to refer
-to the functional groups of hypercalls. i.e. PSCI or TRNG are hypercall
-services.
-
-> +are made available to the guests if they make sense from a virtualization
->  point of view.
->  
->  This means that a guest booted on two different versions of KVM can
->  observe two different "firmware" revisions. This could cause issues if
-> -a given guest is tied to a particular PSCI revision (unlikely), or if
-> -a migration causes a different PSCI version to be exposed out of the
-> -blue to an unsuspecting guest.
-> +a given guest is tied to a particular version of a specific hypercall
-> +(PSCI revision for instance (unlikely)), or if a migration causes a
-
-a particular version of a hypercall service
-
-> +different (PSCI) version to be exposed out of the blue to an unsuspecting
-> +guest.
->  
->  In order to remedy this situation, KVM exposes a set of "firmware
->  pseudo-registers" that can be manipulated using the GET/SET_ONE_REG
-> @@ -26,6 +23,9 @@ to a convenient value if required.
->  The following register is defined:
->  
->  * KVM_REG_ARM_PSCI_VERSION:
-> +    KVM implements the PSCI (Power State Coordination Interface)
-> +    specification in order to provide services such as CPU on/off, reset
-> +    and power-off to the guest.
->  
->    - Only valid if the vcpu has the KVM_ARM_VCPU_PSCI_0_2 feature set
->      (and thus has already been initialized)
-> diff --git a/Documentation/virt/kvm/arm/index.rst b/Documentation/virt/kvm/arm/index.rst
-> index 78a9b670aafe..e84848432158 100644
-> --- a/Documentation/virt/kvm/arm/index.rst
-> +++ b/Documentation/virt/kvm/arm/index.rst
-> @@ -8,6 +8,6 @@ ARM
->     :maxdepth: 2
->  
->     hyp-abi
-> -   psci
-> +   hypercalls
->     pvtime
->     ptp_kvm
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index d0221fb69a60..0b2502494a17 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -102,6 +102,11 @@ struct kvm_s2_mmu {
->  struct kvm_arch_memory_slot {
->  };
->  
-> +struct hvc_reg_desc {
-> +	bool write_disabled;
-> +	bool write_attempted;
-> +};
-> +
->  struct kvm_arch {
->  	struct kvm_s2_mmu mmu;
->  
-> @@ -137,6 +142,9 @@ struct kvm_arch {
->  
->  	/* Memory Tagging Extension enabled for the guest */
->  	bool mte_enabled;
-> +
-> +	/* Hypercall firmware registers' information */
-> +	struct hvc_reg_desc hvc_desc;
->  };
->  
->  struct kvm_vcpu_fault_info {
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index 24a1e86d7128..f9a25e439e99 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -630,6 +630,13 @@ static int kvm_vcpu_first_run_init(struct kvm_vcpu *vcpu)
->  	if (kvm_vm_is_protected(kvm))
->  		kvm_call_hyp_nvhe(__pkvm_vcpu_init_traps, vcpu);
->  
-> +	/* Mark the hypercall firmware registers as read-only since
-> +	 * at least once vCPU is about to start running.
-> +	 */
-> +	mutex_lock(&kvm->lock);
-> +	kvm->arch.hvc_desc.write_disabled = true;
-> +	mutex_unlock(&kvm->lock);
-> +
-
-This really is just an alias for if any vCPU in the VM has started yet.
-While the ARM KVM code does some bookkeeping around which vCPUs have
-been started, it is in no way specific to ARM.
-
-It might be nice to hoist vcpu->arch.has_run_once into the generic KVM
-code, then build some nice abstractions there to easily determine if any
-vCPU in the VM has been started yet.
-
->  	return ret;
->  }
->  
-> diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
-> index d030939c5929..7e873206a05b 100644
-> --- a/arch/arm64/kvm/hypercalls.c
-> +++ b/arch/arm64/kvm/hypercalls.c
-> @@ -58,6 +58,12 @@ static void kvm_ptp_get_time(struct kvm_vcpu *vcpu, u64 *val)
->  	val[3] = lower_32_bits(cycles);
->  }
->  
-> +static u64 *kvm_fw_reg_to_bmap(struct kvm *kvm, u64 fw_reg)
-> +{
-> +	/* No firmware registers supporting hvc bitmaps exits yet */
-> +	return NULL;
-> +}
-> +
->  int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
->  {
->  	u32 func_id = smccc_get_function(vcpu);
-> @@ -234,15 +240,71 @@ int kvm_arm_get_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
->  	return 0;
->  }
->  
-> +static void kvm_fw_regs_sanitize(struct kvm *kvm, struct hvc_reg_desc *hvc_desc)
-> +{
-> +	unsigned int i;
-> +	u64 *hc_bmap = NULL;
-> +
-> +	mutex_lock(&kvm->lock);
-> +
-> +	if (hvc_desc->write_attempted)
-> +		goto out;
-> +
-> +	hvc_desc->write_attempted = true;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(fw_reg_ids); i++) {
-> +		hc_bmap = kvm_fw_reg_to_bmap(kvm, fw_reg_ids[i]);
-> +		if (hc_bmap)
-> +			*hc_bmap = 0;
-> +	}
-
-Maybe instead of checking for feature bitmap registers in the full range
-of FW registers, you could separately track a list of feature bitmap
-regs and just iterate over that.
-
-You could then just stash an array/substructure of feature bitmap reg
-values in struct kvm_arch, along with a bitmap of which regs were
-touched by the VMM.
-
-For the first vCPU in KVM_RUN, zero out the FW feature regs that were
-never written to. You could then punt the clobber operation and do it
-exactly once for a VM.
-
-> +out:
-> +	mutex_unlock(&kvm->lock);
-> +}
-> +
-> +static bool
-> +kvm_fw_regs_block_write(struct kvm *kvm, struct hvc_reg_desc *hvc_desc, u64 val)
-> +{
-> +	bool ret = false;
-> +	unsigned int i;
-> +	u64 *hc_bmap = NULL;
-> +
-> +	mutex_lock(&kvm->lock);
-> +
-> +	for (i = 0; i < ARRAY_SIZE(fw_reg_ids); i++) {
-> +		hc_bmap = kvm_fw_reg_to_bmap(kvm, fw_reg_ids[i]);
-> +		if (hc_bmap)
-> +			break;
-> +	}
-> +
-> +	if (!hc_bmap)
-> +		goto out;
-> +
-> +	/* Do not allow any updates if the VM has already started */
-> +	if (hvc_desc->write_disabled && val != *hc_bmap)
-> +		ret = true;
-> +
-> +out:
-> +	mutex_unlock(&kvm->lock);
-> +	return ret;
-> +}
-> +
->  int kvm_arm_set_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
->  {
->  	void __user *uaddr = (void __user *)(long)reg->addr;
-> +	struct kvm *kvm = vcpu->kvm;
-> +	struct hvc_reg_desc *hvc_desc = &kvm->arch.hvc_desc;
->  	u64 val;
->  	int wa_level;
->  
->  	if (copy_from_user(&val, uaddr, KVM_REG_SIZE(reg->id)))
->  		return -EFAULT;
->  
-> +	if (kvm_fw_regs_block_write(kvm, hvc_desc, val))
-> +		return -EBUSY;
-> +
-> +	kvm_fw_regs_sanitize(kvm, hvc_desc);
-> +
->  	switch (reg->id) {
->  	case KVM_REG_ARM_PSCI_VERSION:
->  		return kvm_arm_set_psci_fw_reg(vcpu, val);
-> -- 
-> 2.33.1.1089.g2158813163f-goog
-> 
+--
+Regards,
+Leonard
