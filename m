@@ -2,109 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85B14441A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C8E4441A9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:35:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbhKCMhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 08:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231705AbhKCMhd (ORCPT
+        id S232036AbhKCMia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 08:38:30 -0400
+Received: from mail-pf1-f171.google.com ([209.85.210.171]:39933 "EHLO
+        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231993AbhKCMiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 08:37:33 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5266DC061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 05:34:57 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id e136so2734879ybc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 05:34:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MpA1Tb/ZSh9gS8Lr083i/yua35MUY6dI1yr07S+xRu8=;
-        b=PXgi4S/Znn2BLSS6qaiA/608BiZGv3BW8+T6/7cgGbJzk4AGyaovDRVu6YWfzhfRAZ
-         o2kKYwMt09RplerQbA/m7LJXw4z2EsbHzvUqEaICt05dgQbLjNEbX+2DgE5yr7SFeK6j
-         M/bu4hrtDD49mYmA3GylD6ABmUyl/PLe6iZIlPQYX7DRtMi/joL3cLdvg/5t+eNfBio0
-         pxxQuR1VWbbY3MG1aPBrMW8AeCWearDhvzHVSadG+BFia4dbIAdTXVrejooIRugbttLE
-         oCv0P+CRCeUKNVNmwIlpISXFyExYHplTOz0XmmgooxrV64jIFIt0HfpcRDzKyiy5ZMXD
-         W6jQ==
+        Wed, 3 Nov 2021 08:38:11 -0400
+Received: by mail-pf1-f171.google.com with SMTP id x64so2161555pfd.6;
+        Wed, 03 Nov 2021 05:35:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MpA1Tb/ZSh9gS8Lr083i/yua35MUY6dI1yr07S+xRu8=;
-        b=ISmAOPXqVOO9+RKHEGrxxr+iC9bUebxmbgMnMjl332OnVOZa57pjy4JK7Wf9an9rxs
-         1CdE5UdjDkoBXvUg9bjnKp5+F+MEhkqhP4JYt38WX6n+kj235fxR/tPwcwwov1gLf47q
-         xtoi7HyoOMjyGq3H9SrquZrjw+D48MIBmbxNmEafFDy0nwJmvfIBLoIaDCOP7LO9qJmY
-         +Mpp66qK3tWVjFvXcSX9UcWPek7q1UplGLMqTjYlu5mEh6GA5u1KDEJCns5M45ShS+7o
-         EpK7iAruXwf1Qirgyc8qC3I1X7yTQw/KQUrLWnZ4lMGFscYw0tpGQU+9bKCn1SyjXnmh
-         bttw==
-X-Gm-Message-State: AOAM532+LqhjL7HV7H9y/s5M0c+lU0sBbrNmOXugSErMijkR0SyjYhQB
-        /zu1C23HwrvIZBDNjoq4ZNRJFuDr5hVscrN6bqU=
-X-Google-Smtp-Source: ABdhPJw5CqcuP4ka6/OYnTROeaibGnBrUNlp94O+koFnFkp1/p7yF55PdIZlTyHXhz+o20NwafJmDbJ0CinsOUNHXIY=
-X-Received: by 2002:a25:5d4:: with SMTP id 203mr31233901ybf.290.1635942896360;
- Wed, 03 Nov 2021 05:34:56 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=JE/2edLy6usLclELy9HdQo+SFIip3f5Fv/danfH38Us=;
+        b=MqdddXuI5fFJnjftC8vLsoy2ixpIPYuFiM8V4oraxQUT2habCa1/OyVh9Or5gfhlsh
+         54/3R9jpxylyL59NOJYqx8AUw6mSbJYhw3biuhKm2adWmuVZACknH8ZNuHnUZ/0uG02b
+         OmCWlvN9TX3iMY7IGv/WKbv/v474vSrqB5kS2c3wn0ULhRtAyJOknq+t95nW0Lk3Zy95
+         LwBc1lj4j6oz9UtSbAf4l+osDv3bZAC0xQrNf+PSeygV8MS7manzlCFKNnK9bygpN0nV
+         urkvQwnd3LfAxkZ1ViFujKVTKGi7EUHwsYYGz9KDcDPuWp7eSZpDHhlHPFqipgi5r+y/
+         CwVA==
+X-Gm-Message-State: AOAM5311AHT7zBa2IzVqTifPUN7BErbjkrw5HebaKSMTVY+NoFg2980c
+        p0zTd45IlXYqMXRDyQCC7ZeMNrxMoUunQXhJGPU=
+X-Google-Smtp-Source: ABdhPJxYbn79vSJ2NRtioaA8LqjYkpfmXUk5eC68C/FQfgWNHpS1VH42PtOSnEicWrsOvNwI2un3ZgJ4IhQvUwx3oI0=
+X-Received: by 2002:a63:2d46:: with SMTP id t67mr32735713pgt.15.1635942934696;
+ Wed, 03 Nov 2021 05:35:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211103104812.1022936-1-javierm@redhat.com> <20211103104812.1022936-3-javierm@redhat.com>
- <CAEg-Je_3n9vFpP-vmVzkbDZY154g3xOK5JqPN7r9kGXJ1Zp0+w@mail.gmail.com> <1dbc7d15-a314-677b-1870-276b0cca1705@suse.de>
-In-Reply-To: <1dbc7d15-a314-677b-1870-276b0cca1705@suse.de>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Wed, 3 Nov 2021 08:34:20 -0400
-Message-ID: <CAEg-Je-mmwZOGR-J-dTcOs-8x2BfgCtv5GwFy_d9rBkxOZ1YBg@mail.gmail.com>
-Subject: Re: [PATCH 2/5] drm: Move nomodeset kernel parameter handler to the
- DRM subsystem
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-13-kernel@esmil.dk>
+ <CAHp75VdmnnrisuP00W0KYta0KgmC+fu3WMxm959dt5X1kpiKTw@mail.gmail.com>
+ <CANBLGczn8+po09wF_uEvvU8tLCn0ahY+Gkj9JJLxOcj1LC1aLA@mail.gmail.com> <CAHp75VetDHt9G+PT77_py8N4Z06j7oytnXgQq8zss_xZBBeEng@mail.gmail.com>
+In-Reply-To: <CAHp75VetDHt9G+PT77_py8N4Z06j7oytnXgQq8zss_xZBBeEng@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Wed, 3 Nov 2021 13:35:23 +0100
+Message-ID: <CANBLGczTnf1UrRt=d-czaG-CE=Rwb1x6MV4c97ia+P3u5Mt8Jg@mail.gmail.com>
+Subject: Re: [PATCH v3 12/16] pinctrl: starfive: Add pinctrl driver for
+ StarFive SoCs
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel@daenzer.net>
+        Huan Feng <huan.feng@starfivetech.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 8:32 AM Thomas Zimmermann <tzimmermann@suse.de> wrot=
-e:
+On Wed, 3 Nov 2021 at 10:13, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> On Tue, Nov 2, 2021 at 10:35 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > On Tue, 2 Nov 2021 at 21:02, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > On Tue, Nov 2, 2021 at 6:50 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
 >
-> Hi
+> > > > +       switch (trigger) {
 >
-> Am 03.11.21 um 12:05 schrieb Neal Gompa:
-> > On Wed, Nov 3, 2021 at 6:48 AM Javier Martinez Canillas
-> > <javierm@redhat.com> wrote:
-> >>
-> >> The "nomodeset" kernel cmdline parameter is handled by the vgacon driv=
-er
-> >> but the exported vgacon_text_force() symbol is only used by DRM driver=
-s.
-> >>
-> >> It makes much more sense for the parameter logic to be in the subsyste=
-m
-> >> of the drivers that are making use of it. Let's move that to DRM.
-> >>
-> >> Suggested-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> >> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-> >> ---
+> > > > +       default:
+> > >
+> > > > +               irq_set_handler_locked(d, handle_bad_irq);
+> > >
+> > > Why? You have it already in ->probe(), what's the point?
 > >
-> > Please no, I'd much rather have a better, more meaningful option
-> > instead of "nomodeset". If anything, I would like this option to
-> > eventually do nothing and replace it with a better named option that's
-> > namespaced by drm on the command-line. That was part of the feedback I
-> > gave in the original patch set, and I still stand by that.
+> > So last time you asked about this, I explained a situation where
+> > userspace first grabs a GPIO, set the interrupt to edge triggered, and
+> > then later loads a driver that requests an unsupported IRQ type.
 >
-> This was nack'ed for now during irc chats with others. There was no
-> clear semantics for the new parameter and nomodeset is good enough for
-> now. I agree that nomodeset is badly named, though.
+> I didn't get this scenario. Is it real?
+
+No, it's totally made up, but I mean we even have tools like fuzzing
+to help us find bugs that would never happen in real use cases.
+
+> > Then
+> > I'd like to set the handler back to handle_bad_irq so we don't get
+> > weird interrupts, but maybe now you know a reason why that doesn't
+> > matter or can't happen?
 >
+> In ->probe() you set _default_ handler to bad(), what do you mean by
+> 'set the handler back to bad()'? How is it otherwise if you free an
+> interrupt?
 
-Where are these chats happening? I'm mostly talking to Javier in the
-#devel:fedoraproject.org Matrix room, so I don't know about anything
-else...
+It might not be, but when not sure I thought it better to error on the
+safe side.
 
+> So, please elaborate with call traces what the scenario / use case you
+> are talking about. If it's true what you are saying, we have a
+> situation (plenty of GPIO drivers don't do what you are suggesting
+> here).
+>
+> > > > +               return -EINVAL;
+> > > > +       }
+>
+> ...
+>
+> > > > +       ret = reset_control_deassert(rst);
+> > > > +       if (ret)
+> > > > +               return dev_err_probe(dev, ret, "could not deassert resetd\n");
+> > >
+> > > > +       ret = devm_pinctrl_register_and_init(dev, &starfive_desc, sfp, &sfp->pctl);
+> > > > +       if (ret)
+> > >
+> > > I don't see who will assert reset here.
+> >
+> > No, so originally this driver would first assert and then deassert
+> > reset. I decided against that because in all likelyhood earlier boot
+> > stages would have set pinmux up for a serial port, and we don't want
+> > to interrupt the serial debug output. The only reason I make sure the
+> > reset line is deasserted is in case someone makes a really minimal
+> > bootloader that just does the absolute minimal to load a Linux kernel
+> > and doesn't even log any anything.
+> >
+> > By the same token we also don't want to assert reset on error in case
+> > it resets pin muxing for the the serial line that was supposed to log
+> > the error.
+>
+> Perhaps comment in the code explaining this?
 
-
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+Sure.
