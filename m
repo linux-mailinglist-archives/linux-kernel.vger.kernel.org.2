@@ -2,100 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB0A4443D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 066B54443D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhKCOud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 10:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34300 "EHLO
+        id S231335AbhKCOvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 10:51:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbhKCOuc (ORCPT
+        with ESMTP id S230213AbhKCOvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 10:50:32 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D085AC061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 07:47:55 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id f5so2550279pgc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 07:47:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=C0wf2K0rKG8C1RSWcaFIUVVK/MmFwAdNj5eu/GP5eZg=;
-        b=B9VpNWuxUqohM9ynGgVOtGz8t7EVldEXvn3TpJhPxTpkMNfKclNBrxgJdXzCq0J3Ep
-         uWL792cWDfDzfIAEEqij34sAHWOzPFONgEN5oY3XdM3Z9T90FapJZn8rOwaJFelsuFXR
-         GNNBiMkKbp7bWV0FyPlxCmbbFyFs/FJC6AOWaqUo89Vce/oTS/6ZKuvmPV8J3HtPVW7j
-         de88q1nuq/CKP2qgl14Xr/dB72CqhnsXK7AcNa9DCMkHKx9I6wDsnCIGDHnDfpyaSmON
-         l3onlOy36NkkWlhejiCAwar3Jx/gMyH+GKDuHmP9AbS9gcqx/shdiJUH1yBB4AFvHC98
-         VjIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C0wf2K0rKG8C1RSWcaFIUVVK/MmFwAdNj5eu/GP5eZg=;
-        b=JdqRBTsufd8cU/kuaCcMlhFeDGWMPquD3uWbCo2sP1x3pu4Lfsjsv0do7KdQH12oNj
-         0MedBEjiim6cJsc4wMBTTnLOpH1aSBRD87oCbtDaiKLL3aNx9qmrWt/zssA/z9H8lw7T
-         JfSVo1Gpj9hxDdRXt8U58vKIiRkc9vJeLYT2u6Tl7892cD9opLVctdHD4gsuXLoDRXfA
-         DHUSAGtYGQW+rJm9lltB6o4Giyi3swKkS//sKfwKJ0+p/Mg7H5EROfDsOTPNkDRYfulj
-         Bx80PSOCEqMlcUOhongdB6cggwRscBm6sYvBGwISNmcYKh1ry882huSgsDgrjO2GVVRf
-         BYsQ==
-X-Gm-Message-State: AOAM532WpTj9YQis+Lne6JtPFUav1Vg1oIYXt5MFwNdNVW3DC5IfiTZd
-        HFvtp9XAwTh1cIIWtS79r23o6w==
-X-Google-Smtp-Source: ABdhPJzlbiudLiylGp+N6jM6RDpt8UXV/HrVtNYeDnS3T2Pwf6PWIN+DJCztrwLJs+wcqW2qDqMztw==
-X-Received: by 2002:a63:556:: with SMTP id 83mr22917640pgf.222.1635950874972;
-        Wed, 03 Nov 2021 07:47:54 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id e24sm2586994pfn.8.2021.11.03.07.47.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 07:47:54 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 14:47:50 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 01/13] KVM: x86: Cache total page count to avoid
- traversing the memslot array
-Message-ID: <YYKhFhoSa/8SHxJB@google.com>
-References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
- <d07f07cdd545ab1a495a9a0da06e43ad97c069a2.1632171479.git.maciej.szmigiero@oracle.com>
- <YW9Fi128rYxiF1v3@google.com>
- <e618edce-b310-6d9a-3860-d7f4d8c0d98f@maciej.szmigiero.name>
- <YXBnn6ZaXbaqKvOo@google.com>
- <YYBqMipZT9qcwDMt@google.com>
- <8017cf9d-2b03-0c27-b78a-41b3d03c308b@maciej.szmigiero.name>
+        Wed, 3 Nov 2021 10:51:45 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 309CAC061714;
+        Wed,  3 Nov 2021 07:49:09 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 1824992009D; Wed,  3 Nov 2021 15:49:07 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 1526892009B;
+        Wed,  3 Nov 2021 14:49:07 +0000 (GMT)
+Date:   Wed, 3 Nov 2021 14:49:07 +0000 (GMT)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Marvell: Update PCIe fixup
+In-Reply-To: <20211102144929.c5wt5pbl42ocrxly@pali>
+Message-ID: <alpine.DEB.2.21.2111031430500.57165@angie.orcam.me.uk>
+References: <20211101150405.14618-1-pali@kernel.org> <20211102084241.GA6134@alpha.franken.de> <20211102090246.unmbruykfdjabfga@pali> <20211102094700.GA7376@alpha.franken.de> <20211102100034.rhcb3k2jvr6alm6y@pali> <alpine.DEB.2.21.2111021210180.57165@angie.orcam.me.uk>
+ <20211102125843.sqsusis4krnmhorq@pali> <alpine.DEB.2.21.2111021312160.57165@angie.orcam.me.uk> <20211102144929.c5wt5pbl42ocrxly@pali>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8017cf9d-2b03-0c27-b78a-41b3d03c308b@maciej.szmigiero.name>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021, Maciej S. Szmigiero wrote:
-> Capping total n_memslots_pages makes sense to me to avoid the (existing)
-> nr_mmu_pages wraparound issue, will update the next patchset version
-> accordingly.
+On Tue, 2 Nov 2021, Pali Rohár wrote:
 
-No need to do it yourself.  I have a reworked version of the series with a bunch
-of cleanups before and after the meat of your series, as well non-functional changes
-(hopefully) to the "Resolve memslot ID via a hash table" and "Keep memslots in
-tree-based structures" to avoid all the swap() behavior and to provide better
-continuity between the aforementioned patches.  Unless something goes sideways in
-the last few touchups, I'll get it posted today.
+> Hello Maciej! Thank you very much for the explanation!
+
+ You are welcome!
+
+> I'm surprised that Marvell copied this 20 years old MIPS Galileo PCI
+> logic into followup ARM SoC PCIe IPs (and later also into recent ARM64
+> A3720 SoC PCIe IP), removed configuration of PCI class code via
+> strapping pins and let default PCI class code value to Memory device,
+> even also when PCIe controller is running in Root Complex mode. And so
+> correction can be done only from "CPU bus".
+
+ Still the bootstrap firmware (say U-boot, as I can see it mentioned in 
+your reference) can write the correct value to the class code register.  
+Or can it?
+
+ I guess you can try it and report your findings back.  You can poke at 
+PCI/e registers directly from U-boot (`pci write.w', etc.) as with any 
+reasonable firmware monitor, no need to write code; I guess you probably 
+know that already.
+
+ I have no such hardware and I have no incentive to chase documentation 
+for it even if public copies are available for the affected devices.  
+Also you say it's IP rather than actual discrete chips as it used to be 
+with the Galileo system controllers, so it could be up to the customer to 
+get the IP wired/configured correctly.
+
+> Maciej, if I had known that you have this kind of information I would
+> have written you year ago :-)
+
+ Well, I have all kinds of information.
+
+  Maciej
