@@ -2,122 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB9F4440EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 12:59:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7894440F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 12:59:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231411AbhKCMB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 08:01:57 -0400
-Received: from mx1.tq-group.com ([93.104.207.81]:51424 "EHLO mx1.tq-group.com"
+        id S231948AbhKCMCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 08:02:22 -0400
+Received: from vps-vb.mhejs.net ([37.28.154.113]:49726 "EHLO vps-vb.mhejs.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229998AbhKCMB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 08:01:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1635940759; x=1667476759;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=u7rdF4NdfNB9nxiTZiM3YjsgOLHGvGQpa/fbZZV96k8=;
-  b=dePlM8oS9kt1NmE23GwypmsidyDDRyAlPhx624+C8oOi7aQFsLkxQh/5
-   KmDv2jcUBftS+7MWq0nyBjryFcYE9uuM3z8+ETW3arXjCbApNhm3Lp6e7
-   ZSElvRfYHUEj9HgY/bKwky0tOtNG2ZiEGIrprph8Sf9LBHh9yVrdwkNkR
-   VRJRPEAoXSsqcdNnqdws3DsPz666senN9HGu6mrr++k5Pv5qH/hUu+qat
-   cjVdn/hJ9o6Minv7XwMwwamcTzeJ/H1fKUwIXj1xrGkED5PYJR1LD0vzZ
-   Q5p67OdvlkxwXf0u0J8R62G2NJ3kPsP0LhCeFCnIf1UQIbRBJAf3bSaHY
-   A==;
-X-IronPort-AV: E=Sophos;i="5.87,205,1631570400"; 
-   d="scan'208";a="20323835"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 03 Nov 2021 12:59:18 +0100
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Wed, 03 Nov 2021 12:59:18 +0100
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Wed, 03 Nov 2021 12:59:18 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1635940758; x=1667476758;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=u7rdF4NdfNB9nxiTZiM3YjsgOLHGvGQpa/fbZZV96k8=;
-  b=VMhEW0PbjUSijTyfA5hHgHblj+vJY2gJi330hKDhr55lyTAucPPOhxiP
-   mdGpdbERikj6AZ8HdtEwXVIOfHZcvdYQtSYXTDQ2OuoyBGy5CZU44+i9h
-   tqDzI73kmlofReVZzoiL3DGCgv7fhJtfsmFHtY0MbHaA3kEz53vew60IX
-   VxlEOeFx0t4LT/vdPc0Zj5MOV7GaGAx/Vi9iGDW9Jfaau1t6CYlHhLYQE
-   NwkT8Jn4ixLBcGWFBM7Ey6+lzzN8+1K2+RYcKcrDZu94niLVbzynxf7SX
-   F3jAaOcy+OpmhApKEQEAq/pl8Xm6rtXcw/WZXp/e5q9ufWIPEd5j/255U
-   g==;
-X-IronPort-AV: E=Sophos;i="5.87,205,1631570400"; 
-   d="scan'208";a="20323834"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 03 Nov 2021 12:59:18 +0100
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 9B22D280065;
-        Wed,  3 Nov 2021 12:59:18 +0100 (CET)
-Message-ID: <77c9849442e7e4a747aebd79747fd88c383c6b57.camel@ew.tq-group.com>
-Subject: Re: [PATCH] net: fec: defer probe if PHY on external MDIO bus is
- not available
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        id S231476AbhKCMCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 08:02:20 -0400
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1miEvW-00070a-Rg; Wed, 03 Nov 2021 12:59:34 +0100
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Date:   Wed, 03 Nov 2021 12:59:16 +0100
-In-Reply-To: <e8e0f07afbae8333c94c198a20a66a9448c32ce6.camel@ew.tq-group.com>
-References: <20211014113043.3518-1-matthias.schiffer@ew.tq-group.com>
-         <YW7SWKiUy8LfvSkl@lunn.ch>
-         <aae9573f89560a32da0786dc90cb7be0331acad4.camel@ew.tq-group.com>
-         <YXBk8gwuCqrxDbVY@lunn.ch>
-         <c286107376a99ca2201db058e1973e2b2264e9fb.camel@ew.tq-group.com>
-         <YXFh/nLTqvCsLAXj@lunn.ch>
-         <7a478c1f25d2ea96ff09cee77d648e9c63b97dcf.camel@ew.tq-group.com>
-         <YXK1E9LLDCfajzmR@lunn.ch>
-         <e8e0f07afbae8333c94c198a20a66a9448c32ce6.camel@ew.tq-group.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <cover.1632171478.git.maciej.szmigiero@oracle.com>
+ <d07f07cdd545ab1a495a9a0da06e43ad97c069a2.1632171479.git.maciej.szmigiero@oracle.com>
+ <YW9Fi128rYxiF1v3@google.com>
+ <e618edce-b310-6d9a-3860-d7f4d8c0d98f@maciej.szmigiero.name>
+ <YXBnn6ZaXbaqKvOo@google.com> <YYBqMipZT9qcwDMt@google.com>
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH v5 01/13] KVM: x86: Cache total page count to avoid
+ traversing the memslot array
+Message-ID: <8017cf9d-2b03-0c27-b78a-41b3d03c308b@maciej.szmigiero.name>
+Date:   Wed, 3 Nov 2021 12:59:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <YYBqMipZT9qcwDMt@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-10-26 at 13:54 +0200, Matthias Schiffer wrote:
-> On Fri, 2021-10-22 at 14:56 +0200, Andrew Lunn wrote:
-> > > Hmm, lots of network drivers? I tried to find an example, but all
-> > > drivers that generate -EPROBE_DEFER for missing PHYs at all don't have
-> > > an internal MDIO bus and thus avoid the circular dependency.
-> > 
-> > Try drivers/net/dsa.
-> > 
-> > These often have mdio busses which get registered and then
-> > unregistered. There are also IRQ drivers which do the same.
-> > 
-> > 	Andrew
+On 01.11.2021 23:29, Sean Christopherson wrote:
+> On Wed, Oct 20, 2021, Sean Christopherson wrote:
+>> On Wed, Oct 20, 2021, Maciej S. Szmigiero wrote:
+>>> On 20.10.2021 00:24, Sean Christopherson wrote:
+>>>> E.g. the whole thing can be
+>>>>
+>>>> 	if (!kvm->arch.n_requested_mmu_pages &&
+>>>> 	    (change == KVM_MR_CREATE || change == KVM_MR_DELETE)) {
+>>>> 		unsigned long nr_mmu_pages;
+>>>>
+>>>> 		if (change == KVM_MR_CREATE) {
+>>>> 			kvm->arch.n_memslots_pages += new->npages;
+>>>> 		} else {
+>>>> 			WARN_ON(kvm->arch.n_memslots_pages < old->npages);
+>>>> 			kvm->arch.n_memslots_pages -= old->npages;
+>>>> 		}
+>>>>
+>>>> 		nr_mmu_pages = (unsigned long)kvm->arch.n_memslots_pages;
+>>>> 		nr_mmu_pages *= (KVM_PERMILLE_MMU_PAGES / 1000);
+>>>
+>>> The above line will set nr_mmu_pages to zero since KVM_PERMILLE_MMU_PAGES
+>>> is 20, so when integer-divided by 1000 will result in a multiplication
+>>> coefficient of zero.
+>>
+>> Ugh, math.  And thus do_div() to avoid the whole 64-bit divide issue on 32-bit KVM.
+>> Bummer.
 > 
-> 
-> All drivers I looked at were careful to register the MDIO bus in the
-> last part of the probe function, so that the only errors that could 
-> happen after that (and thus require to unregister the bus device again)
-> would not be -EPROBE_DEFER.
-> 
-> The documented infinite loop is easy to reproduce: You just need two
-> separate device instances with misbehaving probe() functions that
-> return -EPROBE_DEFER after registering and unregistering some
-> subdevice. If the missing device that causes the deferral never appears
-> (for example because its driver is not available), the two devices will
-> be probed ad infinitum.
-> 
-> I agree with the documentation that a driver should not do this, and
-> thus we need another way to deal with the cyclic dependency between an
-> Ethernet interface and a PHY on its internal MDIO bus.
-> 
-> While I think that a generic solution would be theoretically possible
-> by ensuring that the probing loop makes some kind of "progress", I
-> think this would set a precedent for "expensive" operations happening
-> before a -EPROBE_DEFER return, which should be avoided even when no
-> infinite loop results.
-> 
-> Matthias
+> I was revisiting this today because (a) simply making n_memslots_pages a u64 doesn't
+> cleanly handle the case where the resulting nr_mmu_pages would wrap, 
 
-Does anyone have a suggestion how to proceed with this issue?
+Handling this case without capping total n_memslots_pages would require
+either capping memslots_pages on 32-bit KVM to make it fit in 32-bits or
+changing kvm_mmu_change_mmu_pages() and all the logic further down to
+accept u64's.
 
+> (b) any fix
+> in that are should really go in a separate patch to fix
+> kvm_mmu_calculate_default_mmu_pages() and then carry that behavior forward
+> 
+> But as I dove deeper (and deeper), I came to the conclusion that supporting a
+> total number of memslot pages that doesn't fit in an unsigned long is a waste of
+> our time.  With a 32-bit kernel, userspace can at most address 3gb of virtual
+> memory, whereas wrapping the total number of pages would require 4tb+ of guest
+> physical memory.  Even with x86's second address space for SMM, that means userspace
+> would need to alias all of guest memory more than one _thousand_ times.  And on
+> older hardware with MAXPHYADDR < 43, the guest couldn't actually access any of those
+> aliases even if userspace lied about guest.MAXPHYADDR.
+> 
+> So unless I'm missing something, or PPC or MIPS has some crazy way for a 32-bit
+> host to support 4TB of guest memory, my vote would be to explicitly disallow
+> creating more memslot pages than can fit in an unsigned long.  Then x86 KVM could
+> reuse the cache nr_memslot_pages and x86's MMU wouldn't have to update a big pile
+> of code to support a scenario that practically speaking is useless.
+> 
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 72b329e82089..acabdbdef5cf 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -552,6 +552,7 @@ struct kvm {
+>           */
+>          struct mutex slots_arch_lock;
+>          struct mm_struct *mm; /* userspace tied to this vm */
+> +       unsigned long nr_memslot_pages;
+>          struct kvm_memslots __rcu *memslots[KVM_ADDRESS_SPACE_NUM];
+>          struct kvm_vcpu *vcpus[KVM_MAX_VCPUS];
+> 
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 8bf4b89cfa03..c63fc5c05322 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -1567,6 +1567,15 @@ static void kvm_commit_memory_region(struct kvm *kvm,
+>                                       const struct kvm_memory_slot *new,
+>                                       enum kvm_mr_change change)
+>   {
+> +       /*
+> +        * Update the total number of memslot pages before calling the arch
+> +        * hook so that architectures can consume the result directly.
+> +        */
+> +       if (change == KVM_MR_DELETE)
+> +               kvm->nr_memslot_pages -= old->npages;
+> +       else if (change == KVM_MR_CREATE)
+> +               kvm->nr_memslot_pages += new->npages;
+> +
+>          kvm_arch_commit_memory_region(kvm, old, new, change);
+> 
+>          /*
+> @@ -1738,6 +1747,9 @@ int __kvm_set_memory_region(struct kvm *kvm,
+>                  if (!old || !old->npages)
+>                          return -EINVAL;
+> 
+> +               if (WARN_ON_ONCE(kvm->nr_memslot_pages < old->npages))
+> +                       return -EIO;
+> +
+>                  memset(&new, 0, sizeof(new));
+>                  new.id = id;
+>                  new.as_id = as_id;
+> @@ -1756,6 +1768,13 @@ int __kvm_set_memory_region(struct kvm *kvm,
+> 
+>          if (!old || !old->npages) {
+>                  change = KVM_MR_CREATE;
+> +
+> +               /*
+> +                * To simplify KVM internals, the total number of pages across
+> +                * all memslots must fit in an unsigned long.
+> +                */
+> +               if ((kvm->nr_memslot_pages + new.npages) < kvm->nr_memslot_pages)
+> +                       return -EINVAL;
+>          } else { /* Modify an existing slot. */
+>                  if ((new.userspace_addr != old->userspace_addr) ||
+>                      (new.npages != old->npages) ||
+> 
+
+Capping total n_memslots_pages makes sense to me to avoid the (existing)
+nr_mmu_pages wraparound issue, will update the next patchset version
+accordingly.
+
+Thanks,
+Maciej
