@@ -2,138 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CCE443DB6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBFB0443DB8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:31:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbhKCHdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 03:33:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47076 "EHLO
+        id S232105AbhKCHeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 03:34:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231985AbhKCHdu (ORCPT
+        with ESMTP id S232033AbhKCHeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 03:33:50 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44EAC061714;
-        Wed,  3 Nov 2021 00:31:13 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id v65so1666787ioe.5;
-        Wed, 03 Nov 2021 00:31:13 -0700 (PDT)
+        Wed, 3 Nov 2021 03:34:12 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D449C061714;
+        Wed,  3 Nov 2021 00:31:36 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so723781pjb.4;
+        Wed, 03 Nov 2021 00:31:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JAPHh7CvtsrC2l0ncl5a6DyxiwK5Nhrc3UACjkOi0rk=;
-        b=NlSd5wSnPLL7oAwF36xuylxrUqR/ulkXL+KhDYqppGFvYlqXbf1BIWlbSAL1xxqXXk
-         9ROBxmaNffUXPU1Tubm9iXo6wLXhVFUnzAqt9L7O1ACkqhor0c0RjiKbzVdkpvIiOr+B
-         EX42b9KvSgD7KX4W1OpTA3zfY25AMmFauqyTIMzzLd49ltOfvYQAYASfPq5C80qU44Dv
-         whqxjCVYydAlXnDxhaaOOZXjfBzyRJEGtSTeF5UAgrMhj2QEFZvRLeTzPJMqMhpyklnk
-         AfJFsLvgbHmDnCjbWE0L3/vps2kPBeeusgOgnk+U+6QYZmfCwLTF5HbTN8VMGF7wUlbE
-         8IlQ==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=tlBDlVal1KG6zXw+Y+LdgDK2QBV75F/H10pKxwlc5xU=;
+        b=DoIqXaUgabSui7mO3St0+U75IJrVAVBvEuOv9BPHzR5GA+gnJhKEad18SN3sloRfvN
+         wVYA9SjbiIQEVyvtjMmAtTbN1m6hv6NJcGDgUPAuFRRBw9oqMKiDOLQhBlflWyeMZebV
+         LARaZ6nXbZoXya7omSoodYZtZLSkzWPxeuOzeaJG2rWj5Y6ACiUHyrpLowb1UcziB0al
+         U/zPJx/eBsXH5REwYnnZeJJrAHO5ZxMD46CyW1Ke1UVw9oFS5/tTu9aMuAcQlXp4339J
+         hNNyPDolVuyurN6ggsRzoq7aLQH1db+UxQ6B3RqRnK9bZXbBjT+C4zb/GudNfedy37Og
+         8yjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JAPHh7CvtsrC2l0ncl5a6DyxiwK5Nhrc3UACjkOi0rk=;
-        b=7OdRH5yqPRf/RAt0l4QjXKrj2/TF5XnWv35SpE/5akoqFRZEhWrEIWi6ryaSjQYGzD
-         +b6p/WxDDLmbBDHA9f6OUwp6H0DFPGrx0kcKPMkOjG6rcIFjv3Ghp/wAfSNwmdjkM78v
-         5Xqyq/OY3Nu/xCYpWTPjWz0uVidQdmroZJXm92/4SSg6ule7yrwF0br/aQlcao8zKKgd
-         BTNkHTKJy1dJkuBNWSvx3QJCMC7ZJOKQlD577Gc14RZjnO+CCj0hInBh0+14ynFAtq7J
-         5ZwrGhtsARAYukP63pSQJb54m3GI2lOMNW4Y8BJv3/BV7UgWLrpGfIOd4gKPkpFxcU1W
-         0rgw==
-X-Gm-Message-State: AOAM533F6BmQZ1a+Xphl32hdNHPzGWqEjwgjq5aPsbkODMKWVVRa+mno
-        CNx4KMO5Fe/1LtQfq607FJHpa7D1yH0SaDMW0Ixaxo+s+zc=
-X-Google-Smtp-Source: ABdhPJxc0GYK3KyCCfqFz2WEfti+47yIVGP56isd+dCZ+J/hXrjqgR0U85CNA22/mZoxqX442+2oX1URsRPVD/qu7Zw=
-X-Received: by 2002:a05:6602:1583:: with SMTP id e3mr6753444iow.112.1635924673390;
- Wed, 03 Nov 2021 00:31:13 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=tlBDlVal1KG6zXw+Y+LdgDK2QBV75F/H10pKxwlc5xU=;
+        b=qiN4irn0RFJJ0FwgJpEQi69LOsogOdF55neRUFth7m3pSJTmNiC/UlK5uC+T5EHOqK
+         DY/pOWYFyR8BeCu+IjOk/a1o9Yd/iSFMgcgjcyLLT3zRcnSARCCpmcQVCxYldWtz/vGX
+         X3DLYumwk8G6XuKq6Q//iFMMpQBmFYuYKJc14rxyWLlI5vZ9ewzAljDmn3TK1Q3a4jQW
+         C3eWtIvdR2eJPtf/QBoy+XUI+iTClQ6tt9zA+/vqkDBQ84QiVj1ZYa8xubApwCYtuD1U
+         k2McbsRs8B0Crbl7Del7EYmXo0PHsTfOdmk6hwXL5UkPOkxshekurmzHrWWcmIEdaMT7
+         tnhA==
+X-Gm-Message-State: AOAM532Hq8W982quCqOJIGUtDESD+NF1CIh2Ygd7CyVDixtp0tQU0Fku
+        uUSMt8GhhSsMnAl9bCRek2Ccw7akgs70Ow==
+X-Google-Smtp-Source: ABdhPJxDStkl0WN6KfNlIGGMahJI6wXL8tpPGOrcMt66IsojNI3Rz7HZ/LqKD3FiT6HtTdgFrowSFg==
+X-Received: by 2002:a17:90a:8c0f:: with SMTP id a15mr12954457pjo.25.1635924696053;
+        Wed, 03 Nov 2021 00:31:36 -0700 (PDT)
+Received: from raspberrypi ([49.166.114.232])
+        by smtp.gmail.com with ESMTPSA id c1sm1475326pfv.54.2021.11.03.00.31.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 00:31:35 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 07:31:31 +0000
+From:   Austin Kim <austindh.kim@gmail.com>
+To:     casey@schaufler-ca.com, jmorris@namei.org, serge@hallyn.com
+Cc:     linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@lge.com
+Subject: [PATCH] smack: clean up smack_enabled to be more readable
+Message-ID: <20211103073131.GA15173@raspberrypi>
 MIME-Version: 1.0
-References: <CAOQ4uxieK3KpY7pf0YTKcrNHW7rnTATTDZdK9L4Mqy32cDwV8w@mail.gmail.com>
- <YXgqRb21hvYyI69D@redhat.com> <CAOQ4uxhpCKK2MYxSmRJYYMEWaHKy5ezyKgxaM+YAKtpjsZkD-g@mail.gmail.com>
- <YXhIm3mOvPsueWab@redhat.com> <CAO17o20sdKAWQN6w7Oe0Ze06qcK+J=6rrmA_aWGnY__MRVDCKw@mail.gmail.com>
- <CAOQ4uxhA+f-GZs-6SwNtSYZvSwfsYz4_=8_tWAUqt9s-49bqLw@mail.gmail.com>
- <20211027132319.GA7873@quack2.suse.cz> <YXm2tAMYwFFVR8g/@redhat.com>
- <20211102110931.GD12774@quack2.suse.cz> <CAOQ4uxiYQYG8Ta=MNJKpa_0pAPd0MS9PL2r_0ZRD+_TKOw6C7g@mail.gmail.com>
- <YYGg1w/q31SC3PQ8@redhat.com>
-In-Reply-To: <YYGg1w/q31SC3PQ8@redhat.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 3 Nov 2021 09:31:02 +0200
-Message-ID: <CAOQ4uxg_KAg34TgmVRQ5nrfgHddzQepVv_bAUAhqtkDfHB7URw@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/7] Inotify support in FUSE and virtiofs
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Jan Kara <jack@suse.cz>,
-        Ioannis Angelakopoulos <iangelak@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Steve French <sfrench@samba.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > >
-> >
-> > What about group #1 that wants mask A and group #2 that wants mask B
-> > events?
-> >
-> > Do you propose to maintain separate event queues over the protocol?
-> > Attach a "recipient list" to each event?
-> >
-> > I just don't see how this can scale other than:
-> > - Local marks and connectors manage the subscriptions on local machine
-> > - Protocol updates the server with the combined masks for watched objects
-> >
-> > I think that the "post-mortem events" issue could be solved by keeping an
-> > S_DEAD fuse inode object in limbo just for the mark.
-> > When a remote server sends FS_IN_IGNORED or FS_DELETE_SELF for
-> > an inode, the fuse client inode can be finally evicted.
->
-> There is no guarantee that FS_IN_IGNORED or FS_DELETE_SELF will come
-> or when will it come. If another guest has reference on inode it might
-> not come for a long time. And this will kind of become a mechanism
-> for one guest to keep other's inode cache full of such objects.
->
-> If event queue becomes too full, we might drop these events. But I guess
-> in that case we will have to generate IN_Q_OVERFLOW and that can somehow
-> be used to cleanup such S_DEAD inodes?
+The smack_enabled is only set to 0, 1. So changing type of smack_enabled 
+as bool may make relevant routine be more readable.
 
-That depends on the server implementation.
-If the server is watching host fs using fanotify filesystem mark, then
-an overflow
-event does NOT mean that other new events on inode may be missed only
-that old events could have been missed.
-Server should know about all the watched inodes, so it can check on overflow
-if any of the watched inodes were deleted and notify the client using a reliable
-channel.
+Signed-off-by: Austin Kim <austindh.kim@gmail.com>
+---
+ security/smack/smack.h           | 2 +-
+ security/smack/smack_lsm.c       | 4 ++--
+ security/smack/smack_netfilter.c | 2 +-
+ security/smack/smackfs.c         | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-Given the current server implementation with inotify, IN_Q_OVERFLOW
-means server may have lost an IN_IGNORED event and may not get any
-more events on inode, so server should check all the watched inodes after
-overflow, notify the client of all deleted inodes and try to re-create
-the watches
-for all inodes with known path or use magic /prod/pid/fd path if that
-works (??).
+diff --git a/security/smack/smack.h b/security/smack/smack.h
+index 99c3422596ab..dc1726f5953f 100644
+--- a/security/smack/smack.h
++++ b/security/smack/smack.h
+@@ -302,7 +302,7 @@ int smack_populate_secattr(struct smack_known *skp);
+ /*
+  * Shared data.
+  */
+-extern int smack_enabled __initdata;
++extern bool smack_enabled __initdata;
+ extern int smack_cipso_direct;
+ extern int smack_cipso_mapped;
+ extern struct smack_known *smack_net_ambient;
+diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+index efd35b07c7f8..ba3b46bd2ceb 100644
+--- a/security/smack/smack_lsm.c
++++ b/security/smack/smack_lsm.c
+@@ -56,7 +56,7 @@ static DEFINE_MUTEX(smack_ipv6_lock);
+ static LIST_HEAD(smk_ipv6_port_list);
+ #endif
+ struct kmem_cache *smack_rule_cache;
+-int smack_enabled __initdata;
++bool smack_enabled __initdata;
+ 
+ #define A(s) {"smack"#s, sizeof("smack"#s) - 1, Opt_##s}
+ static struct {
+@@ -4953,7 +4953,7 @@ static __init int smack_init(void)
+ 	 * Register with LSM
+ 	 */
+ 	security_add_hooks(smack_hooks, ARRAY_SIZE(smack_hooks), "smack");
+-	smack_enabled = 1;
++	smack_enabled = true;
+ 
+ 	pr_info("Smack:  Initializing.\n");
+ #ifdef CONFIG_SECURITY_SMACK_NETFILTER
+diff --git a/security/smack/smack_netfilter.c b/security/smack/smack_netfilter.c
+index b945c1d3a743..82092d9387a3 100644
+--- a/security/smack/smack_netfilter.c
++++ b/security/smack/smack_netfilter.c
+@@ -70,7 +70,7 @@ static struct pernet_operations smack_net_ops = {
+ 
+ static int __init smack_nf_ip_init(void)
+ {
+-	if (smack_enabled == 0)
++	if (smack_enabled == false)
+ 		return 0;
+ 
+ 	printk(KERN_DEBUG "Smack: Registering netfilter hooks\n");
+diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
+index 658eab05599e..7649ad8cc335 100644
+--- a/security/smack/smackfs.c
++++ b/security/smack/smackfs.c
+@@ -2993,7 +2993,7 @@ static int __init init_smk_fs(void)
+ 	int err;
+ 	int rc;
+ 
+-	if (smack_enabled == 0)
++	if (smack_enabled == false)
+ 		return 0;
+ 
+ 	err = smk_init_sysfs();
+-- 
+2.20.1
 
->
-> nodeid is managed by server. So I am assuming that FORGET messages will
-> not be sent to server for this inode till we have seen FS_IN_IGNORED
-> and FS_DELETE_SELF events?
->
-
-Or until the application that requested the watch calls
-inotify_rm_watch() or closes
-the inotify fd.
-
-IOW, when fs implements remote fsnotify, the local watch keeps the local deleted
-inode object in limbo until the local watch is removed.
-When the remote fsnotify server informs that the remote watch (or remote inode)
-is gone, the local watch is removed as well and then the inotify
-application also gets
-an FS_IN_IGNORED event.
-
-Lifetime of local inode is complicated and lifetime of this "shared inode"
-is much more complicated, so I am not pretending to claim that I have this all
-figured out or that it could be reliably done at all.
-
-Thanks,
-Amir.
