@@ -2,281 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 682614440FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:01:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F5844410C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:05:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbhKCMDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 08:03:54 -0400
-Received: from mail-co1nam11on2063.outbound.protection.outlook.com ([40.107.220.63]:6209
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230304AbhKCMDw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 08:03:52 -0400
+        id S231913AbhKCMIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 08:08:18 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:65464 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229998AbhKCMIQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 08:08:16 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A3BOVNH016743;
+        Wed, 3 Nov 2021 12:05:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=xetH0H3j62sxnxYDqjFz7xYsfvZgswbQdhOS8V5LQYI=;
+ b=vjjBpfU5Sk17r1WZEHux9HSdvEz3/04O9J4YfKLs5Np4FQlw9ttB95qf+n7mkIzYs5iq
+ c2EvVjeMylZTT8rXkQ4HAB1fFQbQDVl/mxssVbQGGv+76VW1nAfPFeK9ArwJl/lZHIgr
+ h81fAUC772RN6MrtEH0Gk9NrF1towBheMj3cew+Vr4CgueXPcJFc2gXhDRUdPI3x7SQM
+ 63aUzghoI7mKRv3GD+qK+lqTynTCZa0XxzCSRJhRPz0Ebnz8h1juy0tLI/K6Yj5+JJfP
+ t+gy3c/SfRfvdeIj8nP0IWiOpU4u765s03rLwF9Y44AWmaTMtQv2lMoFKWBdROTn88zW 1Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3c3q1n8yx6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 03 Nov 2021 12:05:30 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1A3C0KA7173169;
+        Wed, 3 Nov 2021 12:05:29 GMT
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2047.outbound.protection.outlook.com [104.47.56.47])
+        by userp3020.oracle.com with ESMTP id 3c1khve83y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 03 Nov 2021 12:05:28 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=isnfpFx3gYVG2B1J7WEyaYAf8idmwVuYssa5TX/RJTKrbFEJZIHC1M0SghTkcdoBWnSpCJx9yovqIllfQbCHXT6PysXLB4/+s0rokAiEubb4evvBgh7Vj/KpL3AvtisNxa63MBCw6DqQ4ERTckmXDYjP4caCNqUi3j/eS5jTDcoInmDeCvTtgPQlAAJTkUrmkQy3EO5ZKbVQBZ+72qLHknTJ6irWJvckNuH0o0uoHPx64tNyjTpCyPJgmjQkMsWEnlT44kC4asDJMm339Oh0dy3kHiAm5ABorX/Se3/js00AKjsEnmNZ/u13pcodZlGibJhHapfNW6pXxPelri3cQg==
+ b=FwC3b0D+e1+/CWBJMYZKsppfpp6y6eDacY2qBbai18jX2sr+pGFDByOfnM6dCe8z62uZu1DBTHMSAd+my5RzyCKENEo3Z4AD+4wAxrQEM5F+fsAFRVX6/mlxZXdGJNHRc11jJYuA8vsEokhlIi4bgkAFMCF/izvIIsWBD+nx3YK8sYNr0wRBLn5BB8GaISR5Iyv2c95NYMKGPINIImAhPl4ds59scAXqPhp94ZwGS4qC7dVPCys8JgGVZhyLbmYmV1nWS0S/oVlncEDknc8ufhWcQntuMFZQhy74mG2EdyAP5UwoauLRuv4NFp9u4dpI9RgfZj+t2VEU6xriSy9+bg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JGFZlqyzSONSptzZW/kdjDQW+HJmvl+blbRqnT04jQE=;
- b=hPlKdE9qJZGMLZ6hm5u7Gz0aQ3M4mFqH55qtUfSVzn4f6Ac3kgCj8NJ9Cg8BGS4u2t9BaKR5J4JvnOgmCYpNiSjVHjgp7+RY9cCK/BHz4Cdt+tUUQXGAbXeLzwK/9mviHxqHqzlMO3D4D9aL/75JkY4IrcmsducVlc5tUcchAW0AX2CzcbzIUi84PBUOpJgH0rCa5qABo6y2/h9BAiveq71iRfWz/CLk1lDAjVN6gXNtGGT6gw0fQpmnyUlyTZk1lkRrj7ZCecv/fUABvhgUnwi0jZgetD5JWzfKKPiPLmfAUrH7SxXxrkUGZctBk4CHawQwCYepjjYYWG7Jpw57DQ==
+ bh=xetH0H3j62sxnxYDqjFz7xYsfvZgswbQdhOS8V5LQYI=;
+ b=ZlnObURGwehKGurLY6KqVr2RhTX6ZlKMH+/5czU+KUg9w3I7xjw69JDE4zCyVLktujKcA3hcGfpRqZEYWlR8xxabI3SnCcEgX/sO8Q6R6eXeh/eOMV5XhCr4+tIXKih+FoB2n45ukM2TSJ2o3MH3E4/Ck/RqOpp0CHgF0TRZ8LWglXc8iBuBtZZjmDCs+LMi8Yii281i3jDa7vBZ+QvGgrQUkkj/H9FWUxlELy41eZz9MIxK+uSjDmrqbLdHPnuqOxaaAj8PoSKSbMrEu60oBbw9rWlxL5CjEGL7lFUkGAd4FbyP0A+BqpLhvKukmltUqpJyjt/+N5fdem6+wS7Ing==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JGFZlqyzSONSptzZW/kdjDQW+HJmvl+blbRqnT04jQE=;
- b=j6mbr8Ij36j3yTKT0+BkU4lnNy78WYqyoKqxJ7EHa9oX2HgbWNjKBl73KaDMbwqrSZAsR+SvhgJ2XTjb3q+re9bvWZ/7W8WpyOjokAaUUVOvpOn4EMCJ6nLME/rtdmEvcQlVz3Q4nLsh7DKMs5aBvpVvuEjk49hpv6C2e6BvvFs=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from CY4PR1201MB0246.namprd12.prod.outlook.com
- (2603:10b6:910:23::16) by CY4PR12MB1205.namprd12.prod.outlook.com
- (2603:10b6:903:38::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Wed, 3 Nov
- 2021 12:01:11 +0000
-Received: from CY4PR1201MB0246.namprd12.prod.outlook.com
- ([fe80::5d29:d78d:3e89:b697]) by CY4PR1201MB0246.namprd12.prod.outlook.com
- ([fe80::5d29:d78d:3e89:b697%3]) with mapi id 15.20.4649.020; Wed, 3 Nov 2021
- 12:01:11 +0000
-Date:   Wed, 3 Nov 2021 20:00:43 +0800
-From:   Huang Rui <ray.huang@amd.com>
-To:     "Fontenot, Nathan" <Nathan.Fontenot@amd.com>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "Sharma, Deepak" <Deepak.Sharma@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
-        Steven Noonan <steven@valvesoftware.com>,
-        "Su, Jinzhou (Joe)" <Jinzhou.Su@amd.com>,
-        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH v3 08/21] cpufreq: amd: add acpi cppc function as the
- backend for legacy processors
-Message-ID: <YYJ568GR/g0rYcT1@hr-amd>
-References: <20211029130241.1984459-1-ray.huang@amd.com>
- <20211029130241.1984459-9-ray.huang@amd.com>
- <33fe4c81-76f7-2de7-6b19-1c6b233b49aa@amd.com>
+ bh=xetH0H3j62sxnxYDqjFz7xYsfvZgswbQdhOS8V5LQYI=;
+ b=xE71JmB+xcoD0jRY2Q4jMTjSk1+K+O0iFfYHPNQ3mEA1Z1PzzSN5kV+OE7ZJEInK5zrVKt01IXHAPn9y/QxmENgfIC+xD0CC38tavn2fE2VUunt5fA75Mu/5zF46SvmS5QTQpHvFGiFkm3dwh5Gr7U5WQAQWRPkynjUvo5EVu7E=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MW4PR10MB5679.namprd10.prod.outlook.com
+ (2603:10b6:303:18d::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10; Wed, 3 Nov
+ 2021 12:05:27 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4649.020; Wed, 3 Nov 2021
+ 12:05:27 +0000
+Date:   Wed, 3 Nov 2021 15:04:48 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Kushal Kothari <kushalkothari285@gmail.com>
+Cc:     gregkh@linuxfoundation.org, kush19992810@gmail.com,
+        outreachy-kernel@googlegroups.com, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com, fmdefrancesco@gmail.com,
+        marcocesati@gmail.com, straube.linux@gmail.com,
+        philippesdixon@gmail.com, manuelpalenzuelamerino@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        mike.rapoport@gmail.com, kushalkotharitest@googlegroups.com
+Subject: Re: [PATCH v4 3/4] staging: rtl8723bs: core: Remove unnecessary
+ space after a cast
+Message-ID: <20211103120448.GS2794@kadam>
+References: <cover.1634967010.git.kushalkothari285@gmail.com>
+ <baa1703e0c202dfb90e215b63b535161bd3ccccb.1634967010.git.kushalkothari285@gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <33fe4c81-76f7-2de7-6b19-1c6b233b49aa@amd.com>
-X-ClientProxiedBy: HK2PR02CA0218.apcprd02.prod.outlook.com
- (2603:1096:201:20::30) To CY4PR1201MB0246.namprd12.prod.outlook.com
- (2603:10b6:910:23::16)
+In-Reply-To: <baa1703e0c202dfb90e215b63b535161bd3ccccb.1634967010.git.kushalkothari285@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0051.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::14)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-Received: from hr-amd (165.204.134.251) by HK2PR02CA0218.apcprd02.prod.outlook.com (2603:1096:201:20::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.17 via Frontend Transport; Wed, 3 Nov 2021 12:01:06 +0000
+Received: from kadam (62.8.83.22) by JNAP275CA0051.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.29 via Frontend Transport; Wed, 3 Nov 2021 12:05:12 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 69dc52fb-5d9a-403b-7087-08d99ec1a0be
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1205:
-X-Microsoft-Antispam-PRVS: <CY4PR12MB12051F93D58972E57A6AA1EEEC8C9@CY4PR12MB1205.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Office365-Filtering-Correlation-Id: f94e2c41-3a2b-4684-88d7-08d99ec238ff
+X-MS-TrafficTypeDiagnostic: MW4PR10MB5679:
+X-Microsoft-Antispam-PRVS: <MW4PR10MB567939DE022878D3CA51C1BF8E8C9@MW4PR10MB5679.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: j40wm2iFaUpAYI/unUB/Utg4p7cKR6jRUGwj4nK2EckvzN4OrBYYXD2lzF0VynuFFI88nzeEPzAcpGsi7cpkL+tAKtEBthFVjKcICQ93R+pHf7otueIrXpyTzOqpW8abLrmA7U/+Bv+D4XIKRGS4mA13cxD/0bGei23E4vTrZrhlz3TBqCK9I9bTMsFyDBmKVsZazygvHJH2LpwWoAG3p8BJ6BgBr0MPt5znXXSXMV4NMR0cOiTYnanm05EjI67DpYf1pHqBddc8Cnrj/fshw6UK06z/+dY29/n6TyE03ADZaFpS4fvJQew3H14RLjyTbb3xoNJ3CzBIlywyUNeKdbyJVBhiC7JCU5XXGzrzXehVgIXv3NOIrSCIgGklxbYltO1QZEZLQ285etXpwmLzVuRxBWTJZGD5nkp9TMgrVyZcfBEpvK1KVzRmwAHTfEzPFwUglEueDRk2lSWg4MZNsbEyuBpx1Wu8odt7AYfLdRuidM7fRr9fI+2bKM0DTV5VUarB2QPYxUoiQsWaBb8kSECzpYNq/y8uXKAzbU1ow0PGoMzsiAvG82OWUKb10Gfc5Ci23SPANpWs0SHaWTdUg0M4u1mexjQhM+snlj9rcdCVHVTY8NfuiFgAlgb8mwTdLBtqeX6qRGukAcp+3fpouA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1201MB0246.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(9686003)(508600001)(2906002)(53546011)(186003)(83380400001)(7416002)(33716001)(4326008)(8676002)(8936002)(26005)(5660300002)(6666004)(66946007)(6862004)(55016002)(956004)(38100700002)(66476007)(66556008)(54906003)(6636002)(86362001)(6496006)(316002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: mlc2Q1OW9JEGqeAZWzwYaGSOqfN57vZ4mwiRWu+lw3ilyD/O6f7vW2uKW9gtcl+KyCkhnQbguk9GcOsS4NJ9nbTc8gqwzn0xwaWx/qjWn2MgVe5/0FsifP/62RJxqfc2Div9wuQT28qudbGrwa5Z0oLlO8/UVXZxwPLiuN57IrDKtleDE/FaHDmej6qP3NUXDuK2n9bYWm+Vdj5ywI03wDNHyBa4tsavQTqazIKegGglcgpts93b/C6XOSMNqIqO2X1xMi6KnA6zDc4BK0sQ1azH4gAt8i2w+54UVjN/9jHMHg/mZF8gKhGcrlZgMqBeURdJXfSNgHinJmGqhKl1PUCTJ6ba5/xdKh+dArQuUEQx6vQ9u8x5HULPLlxhprhnnrKotDcK9g7S+yhT1ZonMHcs7Za+aznlzx0ltQR3ghzJAou1nIAAkeNb6Ijfaw7MV3xMN0TYlm2d7DeZBa5zg7UNoThq4NPZAsnKu6ce0dBwNmvjMiANEV7cCOhMRYxRMzAwfOtW1pZomnHsw6Z1cSeBWBUN/bW0mibokF7wbKaVuZ/I6OaBBz7ug4Up9A0EpXuwlhaBIiEhJ8iuMVVM6lIzszBBo75+8h9E+EAbtdVmWg8SyYE7ZRM/Q3E8o2pzbbBPB1H/owE4+T+6r84PHW1RLIp8N44nmdw3zHvi+AKL5QOnPonuPfsXlT+Pq8eessyWKL7OSuht+yOQfAqRLg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(508600001)(956004)(6666004)(26005)(186003)(55016002)(38350700002)(86362001)(8676002)(9686003)(316002)(1076003)(5660300002)(52116002)(6496006)(2906002)(7416002)(66556008)(33656002)(33716001)(4326008)(6916009)(38100700002)(66476007)(44832011)(8936002)(9576002)(66946007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GpXZ4VfkwqsHVsP/fpWND2LzXW7pbtHyungcUugZtAPWXVsJzhVU7m5Wbh5w?=
- =?us-ascii?Q?YnRMMxL7qmPPB3nRyBXe9ujzjl02EJ5v5j2QwcA48xC4rpyWH+Gr9Nfo8SuL?=
- =?us-ascii?Q?UF+6dXISiHF/OrQaLyNITHfZWAYnIgZfU05lHRaj44OnuRSeHZOip+cErdbj?=
- =?us-ascii?Q?3BC3Zfg0ocAO6OoFMvJbajt5ofYMr+LhvCV8JND/EQ0s1+V1Od1pY/tEVmJP?=
- =?us-ascii?Q?hVdvgKUkD29LrG+hqLfzfHvYCQ2grNoWIf0LVFmcVSOeLuY+YDenpgA3KYSe?=
- =?us-ascii?Q?DS7OmHeoy1fqUXP76uBvW3Gbcbj+BYfOSz4werq4oncWevZ7ZCo44F9Nl3iU?=
- =?us-ascii?Q?q+1FZft+jMb/srMgQnbtXDq2pMYXA1yI3unB7qPm4hWgm8LZu7985gM+n09c?=
- =?us-ascii?Q?mF8ajFzL3nbvw2BaA+eh8ulSNIVjwoK0xqRitwOMtWRu+r5wklTIHne4MjOH?=
- =?us-ascii?Q?mACYSFlMHpLTTG5FVgkVTsG2OO94IlvfhQuRYST9HgKe/hRhuXV7Wzg0RpmG?=
- =?us-ascii?Q?BaqeOYU4UfFDPTPqSNd9epBcB+6izXq3T6CFtre+6AYdmIsR2Xjibe7+lfB7?=
- =?us-ascii?Q?vYdA31U5U2vByHhoZAhyUB2JJ452eEW2sxjSxpvnYQWphDW5ClzNXWrFO8pF?=
- =?us-ascii?Q?hAx/BAO7hY3qMJifIOrhxJvuQwXNPt8D4A07eSrE1L7Fo7Q6B+3/Qx+bJCc6?=
- =?us-ascii?Q?pCpAQMkjquHzu0bokgjyxm1QrqHyphrHUq5O9WDQsAbX2MH5KS5s4HjHOh2P?=
- =?us-ascii?Q?XMdSbzPgYyE5J9Mp6Y8/dsexPvGkC/n6luvTOfRe5bqAFWwUVR9L+crMvouk?=
- =?us-ascii?Q?XZLOJRtIJwjs6vYe23DhMWLJuq2dmLGmVFk84Ah1NPQfxj6CXMQTWjFLllja?=
- =?us-ascii?Q?ZHGm6KWfwV2Eoj6EApxD5T4oc+s1wRWikgQ/09O864CbaGwsIGeRdrwt3+cz?=
- =?us-ascii?Q?XTq5F20ZbgmPP7hPjDBu7el2xi9x86S8ox1d4+j9ClapPq4joq2TsXhu/an7?=
- =?us-ascii?Q?RwaxXKSYeulfH6buDoMTkMSqxEP2J4zSAaxZ3HvnczNjczx0t+xJsWVkElE3?=
- =?us-ascii?Q?95Z+UXiQ6GwIM+g31wf6Rn7xSDJpP1sR3Hz0jxK4b3cGibLBiwSTSMcyKG26?=
- =?us-ascii?Q?X0IRT/h4dX2Nbm6ndpUgRC0sAcI038OOimQROne+EYwYtl4MGAcnsD5sX+e9?=
- =?us-ascii?Q?MqBUs6AM23lEA/1CwMI8yedQSxeWmDTKGH5ZziMTRrcN++HTjeD+UaIb+d3L?=
- =?us-ascii?Q?DXIu3+wPToVgU+ERKQaykJjseP2RwKv4w3aS7qdXMP7zqecE/yhXkD2ZHcYA?=
- =?us-ascii?Q?hiasDz7vJxm7f6aV4riwNZtLmEZBbILzmnEDzp6tNTKYHtguUktrbW+zL4Qk?=
- =?us-ascii?Q?U+RXIE/MMRYYf1qTVZ0QvBrNrOrjPHzLw2BqrVzynJB6fwt8t6B+8JFagGcA?=
- =?us-ascii?Q?TyXrrTJ1JcIQFQG5UHnxZs7HS9FFhyIOS2p47KBMQXIHf9jEgTmnM195F4zd?=
- =?us-ascii?Q?4bdJ6FYzBnmOG5Ed7utHNMgDSjAkOfVJInnQt+ZFySfNcddOv21vb+Io1RhB?=
- =?us-ascii?Q?6lzXbLsCP64gia4j/oJsZx4o1D3QjnNPje/HNeVQFqkXQUmv4qxfu+wBIKL4?=
- =?us-ascii?Q?2bJoZQDfbUlW+umkLuE4KtA=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 69dc52fb-5d9a-403b-7087-08d99ec1a0be
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR1201MB0246.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6Xnebj7bk9qDzZRYokQO25J+aDGEJ4XpizPf1f8hWviN42/OIFLxX0yAXG8P?=
+ =?us-ascii?Q?zqo5VGowEHdfV5zRaxfmsqTol0uyr1sWU6jPbvucXnAaXpqTQWCgNt1TwXSm?=
+ =?us-ascii?Q?mgnqpt5hWV++E83YNkC0bttuBm2MmBFFLFzXmLZZerfn98cxZdYusR647VGL?=
+ =?us-ascii?Q?ZoA9+/okgVW6nKn0E+wEswAwdxOQjs1ZDobvjxRrbSQjbAqcjVH/OB7bUNUq?=
+ =?us-ascii?Q?nRuuDFBxzKJcafR54JYMtVkeXbm8SGYAmyqrPgkRFE1ry+8ohBE+BCHo79Es?=
+ =?us-ascii?Q?t2zc5XHwayZs9DZCP1+kPFVPoqsgOkEWFDtVti83Nn1TexstsmIm1hWRam2m?=
+ =?us-ascii?Q?xQipgfdK7XcjqBWhPvz5S2Wb+KyL21RbNYDHCrfyoX+LfKuo68fckqhS0N47?=
+ =?us-ascii?Q?qG65jvhwf/+1KEh3Ut/LcMIQqiFIIxDo5iKAKIicYkEcKMrynJIChMegoGiI?=
+ =?us-ascii?Q?6h/UmSKoLca4ZITW17x/7rGJ1tZ/k1cr35GBgwoMHGlFeU6LWXzwphkjiqfL?=
+ =?us-ascii?Q?tq3Mf9yctEJ8IJ+qGvNmKY7QuTI4VziecE67Qy1G5vH/9gbhw35njRX7I8mr?=
+ =?us-ascii?Q?/Yho70/6cWWOqfpxcWbqIRXGTbDDkpoRVDAQvpnb0WMh5gfwKKd1riC5jssK?=
+ =?us-ascii?Q?28+FUSlDoMdpZAI2t1bJrMsCP2tcuSt/qdnj1e8d+XJUO7c1Pk4EUmHXmqBl?=
+ =?us-ascii?Q?tAbVUKquximKnf6/WVrza9IDSoq02wX7gihJ3p8Wuad1YP5lgql3mWexDqlo?=
+ =?us-ascii?Q?yRnafFsp+sKf/r2YoHmtkZA2OiE5/bjKhqlEzsaTlY/pFY4hMlXVWlfdicWF?=
+ =?us-ascii?Q?Q2pv1RoiMTfCM5/YZYPvnK4piWkBVPKbLlVUXn5VY3fOfQnlSqePHNOxQO6Y?=
+ =?us-ascii?Q?3N/qzxTPtnCeM6++ad0kxt1pVa735JCWbFBjrmbYsCkAIxxjlmA/t5pj5RFy?=
+ =?us-ascii?Q?RRwrnCSfMFacSFW7MpRxUa5LskSQm1hfimIkOHaG7k77OXfrqDvYtLOeqUhK?=
+ =?us-ascii?Q?dKL9SG7H6kCgIZvO0Z4DGI5glRXEwwGrh7juVcAhvMvd7V5iVKa4JCbRxyZx?=
+ =?us-ascii?Q?PGvYgpanrZvfcnEMcZVb2S2KOeEvKDp55k4CaYcudJ+m5M/o8GFrQwakTZzp?=
+ =?us-ascii?Q?4aEvs4YfwT+L/6GcdiLxnd9s09GaoU08/rhGV7VRCm+oetSw4SW+kGpfRT2R?=
+ =?us-ascii?Q?NyO2eTjSTQ6lizImsanM09Uktt0GyVJzeP4CHc2mhIGeiVj3WiwM5MVzikLO?=
+ =?us-ascii?Q?Tpjw/BqdomDLI5liqnMSwybIiXqUlUSsDMLfy9Scm5lnjIhsbYh1hQiEc9P6?=
+ =?us-ascii?Q?iEBT0HlV8oCPo7bbyCFkmzRhuuLeglugKFJjYFZFRz+UYnSbeagCqzEISB6f?=
+ =?us-ascii?Q?DzGDz/KJzH6J12jIDGoCWgoFsFW5+/ggsRXPVZB0R3FaMqbzdYTy8Du7gC5d?=
+ =?us-ascii?Q?Oy3WO4V+/VQiI5dAizpVUgQuhKHM+DFXJ7ncThx8yifkHYCqScdG881GwnHY?=
+ =?us-ascii?Q?S4BOzKKLcF5c6N3l27BU69NDdE6wKo3Og8l5ifv9miSFDdUVfAKCfDDcw1Go?=
+ =?us-ascii?Q?ZIUuXtt38dHjTH4wU0rFZABdx54PnJJ9ilRIL2Uy1oxk+I6T5C22wNVENSn5?=
+ =?us-ascii?Q?LX1oU54Javnf+vZG+tlyaLGJnHTlh1L/F2h+wjoncZSPE30RCuWec2QpcI7T?=
+ =?us-ascii?Q?Whtx9g=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f94e2c41-3a2b-4684-88d7-08d99ec238ff
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2021 12:01:11.4916
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2021 12:05:26.9708
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CTKq/8IX6Yvvy5zthUWBJBmzGfjIfe3/GougVKqQ7V8vPsw3/YDW2Q+RAN0kIx1NJanG+eZHyKzTLwcf1JWC0Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1205
+X-MS-Exchange-CrossTenant-UserPrincipalName: aMup3n+eTknA8NeBJP5sG7tL/T2ifmoyhUCHQ824OoR0SDFhbDcxKggRyyWeBjeZr1MfNx2TNEg44o0EgatgPX0cTfzc/mPVktMNTWOfxCE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR10MB5679
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10156 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 bulkscore=0
+ spamscore=0 adultscore=0 suspectscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111030069
+X-Proofpoint-ORIG-GUID: OG5gRwZro93kh7mE0itF_nJ6WOxh5-JO
+X-Proofpoint-GUID: OG5gRwZro93kh7mE0itF_nJ6WOxh5-JO
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 02:46:37AM +0800, Fontenot, Nathan wrote:
-> On 10/29/21 8:02 AM, Huang Rui wrote:
-> > In some old Zen based processors, they are using the shared memory that
-> > exposed from ACPI SBIOS.
-> 
-> With this you present two different approaches for support in the driver,
-> MSRs and shared memory. For processors using shared memory you use the 
-> shared memory defined in the ACPI tables but access the MSRs directly.
-> 
-> Is there any concern that the MSR registers (defined in patch 2/21) can
-> differ from what is defined in the ACPI tables?
-> 
-> Should you use the drivers/acpi interfaces for MSRs also?
+This v4 patchset look good.  Thanks!
 
-That's very good question. Thanks to raise this. I consider the reasons
-below:
-
-1. We would like to support fast switch function, this function requires
-the directly MSR register operation. And it will have better performance
-for schedutil governor.
-
-2. There are some differences between MSR and shared memory definitions.
-E.X. CPPCEnableRegister of shared memory solution required us to enable the
-field on each thread. However the one of full MSR is per package, and we
-only programs it one-off.
-
-3. So far, I received many issues which reported from community, most of
-them are caused by SBIOS issues. E.X. Steven's SBIOS has additional object
-which modified by motherboard OEM vendor. (Thanks Steven to co-work with us
-addressing the issue). Using the MSR definitions directly is friendly for
-more platforms.
-
-4. I would like to keep the cppc_acpi as common for ACPI spec, because it's
-also used by ARM SOCs. And won't add x86/amd specific things in cppc_acpi.
-Using the MSR directly can be more straightforward in the amd-pstate driver
-like intel_pstate as well.
-
-Thanks,
-Ray
-
-> 
-> -Nathan
+On Sat, Oct 23, 2021 at 01:05:49PM +0530, Kushal Kothari wrote:
+> @@ -2027,7 +2027,7 @@ void rtw_setstaKey_cmdrsp_callback(struct adapter *padapter,  struct cmd_obj *pc
+>  {
 >  
-> > 
-> > Signed-off-by: Jinzhou Su <Jinzhou.Su@amd.com>
-> > Signed-off-by: Huang Rui <ray.huang@amd.com>
-> > ---
-> >  drivers/cpufreq/amd-pstate.c | 58 ++++++++++++++++++++++++++++++++----
-> >  1 file changed, 53 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-> > index 55ff03f85608..d399938d6d85 100644
-> > --- a/drivers/cpufreq/amd-pstate.c
-> > +++ b/drivers/cpufreq/amd-pstate.c
-> > @@ -73,6 +73,19 @@ static inline int pstate_enable(bool enable)
-> >  	return wrmsrl_safe(MSR_AMD_CPPC_ENABLE, enable ? 1 : 0);
-> >  }
-> >  
-> > +static int cppc_enable(bool enable)
-> > +{
-> > +	int cpu, ret = 0;
-> > +
-> > +	for_each_online_cpu(cpu) {
-> > +		ret = cppc_set_enable(cpu, enable ? 1 : 0);
-> > +		if (ret)
-> > +			return ret;
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> >  DEFINE_STATIC_CALL(amd_pstate_enable, pstate_enable);
-> >  
-> >  static inline int amd_pstate_enable(bool enable)
-> > @@ -103,6 +116,24 @@ static int pstate_init_perf(struct amd_cpudata *cpudata)
-> >  	return 0;
-> >  }
-> >  
-> > +static int cppc_init_perf(struct amd_cpudata *cpudata)
-> > +{
-> > +	struct cppc_perf_caps cppc_perf;
-> > +
-> > +	int ret = cppc_get_perf_caps(cpudata->cpu, &cppc_perf);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	WRITE_ONCE(cpudata->highest_perf, amd_get_highest_perf());
-> > +
-> > +	WRITE_ONCE(cpudata->nominal_perf, cppc_perf.nominal_perf);
-> > +	WRITE_ONCE(cpudata->lowest_nonlinear_perf,
-> > +		   cppc_perf.lowest_nonlinear_perf);
-> > +	WRITE_ONCE(cpudata->lowest_perf, cppc_perf.lowest_perf);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  DEFINE_STATIC_CALL(amd_pstate_init_perf, pstate_init_perf);
-> >  
-> >  static inline int amd_pstate_init_perf(struct amd_cpudata *cpudata)
-> > @@ -120,6 +151,19 @@ static void pstate_update_perf(struct amd_cpudata *cpudata, u32 min_perf,
-> >  			      READ_ONCE(cpudata->cppc_req_cached));
-> >  }
-> >  
-> > +static void cppc_update_perf(struct amd_cpudata *cpudata,
-> > +			     u32 min_perf, u32 des_perf,
-> > +			     u32 max_perf, bool fast_switch)
-> > +{
-> > +	struct cppc_perf_ctrls perf_ctrls;
-> > +
-> > +	perf_ctrls.max_perf = max_perf;
-> > +	perf_ctrls.min_perf = min_perf;
-> > +	perf_ctrls.desired_perf = des_perf;
-> > +
-> > +	cppc_set_perf(cpudata->cpu, &perf_ctrls);
-> > +}
-> > +
-> >  DEFINE_STATIC_CALL(amd_pstate_update_perf, pstate_update_perf);
-> >  
-> >  static inline void amd_pstate_update_perf(struct amd_cpudata *cpudata,
-> > @@ -346,7 +390,8 @@ static int amd_pstate_cpu_init(struct cpufreq_policy *policy)
-> >  	/* It will be updated by governor */
-> >  	policy->cur = policy->cpuinfo.min_freq;
-> >  
-> > -	policy->fast_switch_possible = true;
-> > +	if (boot_cpu_has(X86_FEATURE_AMD_CPPC))
-> > +		policy->fast_switch_possible = true;
-> >  
-> >  	ret = freq_qos_add_request(&policy->constraints, &cpudata->req[0],
-> >  				   FREQ_QOS_MIN, policy->cpuinfo.min_freq);
-> > @@ -397,7 +442,6 @@ static struct cpufreq_driver amd_pstate_driver = {
-> >  	.flags		= CPUFREQ_CONST_LOOPS | CPUFREQ_NEED_UPDATE_LIMITS,
-> >  	.verify		= amd_pstate_verify,
-> >  	.target		= amd_pstate_target,
-> > -	.adjust_perf    = amd_pstate_adjust_perf,
-> >  	.init		= amd_pstate_cpu_init,
-> >  	.exit		= amd_pstate_cpu_exit,
-> >  	.name		= "amd-pstate",
-> > @@ -421,10 +465,14 @@ static int __init amd_pstate_init(void)
-> >  		return -EEXIST;
-> >  
-> >  	/* capability check */
-> > -	if (!boot_cpu_has(X86_FEATURE_AMD_CPPC)) {
-> > -		pr_debug("%s, AMD CPPC MSR based functionality is not supported\n",
-> > +	if (boot_cpu_has(X86_FEATURE_AMD_CPPC)) {
-> > +		pr_debug("%s, AMD CPPC MSR based functionality is supported\n",
-> >  			 __func__);
-> > -		return -ENODEV;
-> > +		amd_pstate_driver.adjust_perf = amd_pstate_adjust_perf;
-> > +	} else {
-> > +		static_call_update(amd_pstate_enable, cppc_enable);
-> > +		static_call_update(amd_pstate_init_perf, cppc_init_perf);
-> > +		static_call_update(amd_pstate_update_perf, cppc_update_perf);
-> >  	}
-> >  
-> >  	/* enable amd pstate feature */
-> > 
+>  	struct sta_priv *pstapriv = &padapter->stapriv;
+> -	struct set_stakey_rsp *psetstakey_rsp = (struct set_stakey_rsp *) (pcmd->rsp);
+> +	struct set_stakey_rsp *psetstakey_rsp = (struct set_stakey_rsp *)(pcmd->rsp);
+                                                                         ^^^^^^^^^^^
+An unrelated note, if you wanted to send more patches.  These extra
+parentheses could be removed.
+
+>  	struct sta_info *psta = rtw_get_stainfo(pstapriv, psetstakey_rsp->addr);
+>  
+>  	if (!psta)
+> @@ -2042,7 +2042,7 @@ void rtw_setassocsta_cmdrsp_callback(struct adapter *padapter,  struct cmd_obj *
+>  	struct sta_priv *pstapriv = &padapter->stapriv;
+>  	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+>  	struct set_assocsta_parm *passocsta_parm = (struct set_assocsta_parm *)(pcmd->parmbuf);
+                                                                               ^^^^^^^^^^^^^^^
+Same here.
+
+> -	struct set_assocsta_rsp *passocsta_rsp = (struct set_assocsta_rsp *) (pcmd->rsp);
+> +	struct set_assocsta_rsp *passocsta_rsp = (struct set_assocsta_rsp *)(pcmd->rsp);
+                                                                            ^^^^^^^^^^^^
+Here.
+
+>  	struct sta_info *psta = rtw_get_stainfo(pstapriv, passocsta_parm->addr);
+>  
+>  	if (!psta)
+
+regards,
+dan carpenter
+
