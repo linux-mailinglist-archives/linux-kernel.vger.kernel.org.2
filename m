@@ -2,78 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E574448F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0434448FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:32:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhKCTdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 15:33:44 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:45642 "EHLO vps0.lunn.ch"
+        id S231211AbhKCTfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 15:35:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229697AbhKCTdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 15:33:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=cDxZEgsBvG6iig5CDrhw19H0EN2SLZIC0/Kvs9EyApA=; b=gmj0V+SP7kqiQv7v5WyFuUgR2i
-        u2SrW66hYSLro8AtOX4Q8eBA91/DmHcrq58DDst+cyJr5hJkIYBzo6uAxrkXrChrZHQBkNjsPOqom
-        uQc38i7Bzau6+1adeo4bAjPmOaSqnuDjtX3yCgtnhhDxiQv3nS7OaBlybSqsSjYIQ0fE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1miLyD-00CX8c-Dv; Wed, 03 Nov 2021 20:30:49 +0100
-Date:   Wed, 3 Nov 2021 20:30:49 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Wells Lu =?utf-8?B?5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Wells Lu <wellslutw@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
-Subject: Re: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
-Message-ID: <YYLjaYCQHzqBzN1l@lunn.ch>
-References: <cover.1635936610.git.wells.lu@sunplus.com>
- <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
- <d0217eed-a8b7-8eb9-7d50-4bf69cd38e03@infradead.org>
- <159ab76ac7114da983332aadc6056c08@sphcmbx02.sunplus.com.tw>
+        id S229697AbhKCTe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 15:34:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0119D60E98;
+        Wed,  3 Nov 2021 19:32:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635967942;
+        bh=4qyxgIZ8GahpT4Sx5VxjvY6yAitch4aqfKANRfXfzMI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=EKzUbtoGqYXQueNAw9ZofMWdyM20C6hoDsDrIihAbSiPwPBiAixcBRRgEW+61eaVs
+         eDLg9Bnxx08k5drs1IIe6VTgd16lttUteHvP1KTcQz6AevIViqmgpqsd1VAkOhZVvh
+         XMMPP1gjStSmb3Gn2GL9nnEIVNUMDF/qH4q9kYm+eq43WmaNB4fVS0yNtVyz2VmHud
+         aPI1adU/N6rIUQhNP6WQUt9cZpbyX156mJDG7vlBM8qbQa0movjufKGwSLuNpz8oqk
+         S7aoSwSj3Lf70aPD7Rd62uIqhDZuZ8ldy468agzN0Ree8DVkZy0rMxj3xsZJ9vv44x
+         96etEcHyZSo3w==
+Message-ID: <b996958f-eb69-c96c-b978-944ac5151e9a@kernel.org>
+Date:   Wed, 3 Nov 2021 12:32:20 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <159ab76ac7114da983332aadc6056c08@sphcmbx02.sunplus.com.tw>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] static_call,x86: Robustify trampoline patching
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+References: <CAMj1kXG+MuGaG3BHk8pnE1MKVmRf5E+nRNoFMHxOA1y84eGikg@mail.gmail.com>
+ <YX8AQJqyB+H3PF1d@hirez.programming.kicks-ass.net>
+ <CAMj1kXF3n-oQ1WP8=asb60K6UjSYOtz5RVhrcoCoNq3v7mZdQg@mail.gmail.com>
+ <20211101090155.GW174703@worktop.programming.kicks-ass.net>
+ <CAMj1kXGhRmdM3om289Q2-s1Pzfob3D2iSDMorzggfhSk1oj53A@mail.gmail.com>
+ <YYE1yPClPMHvyvIt@hirez.programming.kicks-ass.net>
+ <202111021040.6570189A5@keescook>
+ <90a14299-ce56-41d5-9df9-f625aae1ac70@www.fastmail.com>
+ <202111021603.EDE5780FE@keescook>
+ <bbde172b-2dae-fdc0-fbb5-edec6752c740@kernel.org>
+ <20211103083559.GB174703@worktop.programming.kicks-ass.net>
+From:   Andy Lutomirski <luto@kernel.org>
+In-Reply-To: <20211103083559.GB174703@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> config NET_VENDOR_SUNPLUS
-> 	bool "Sunplus devices"
-> 	default y
-> 	depends on ARCH_SUNPLUS
-
-Does it actually depend on ARCH_SUNPLUS? What do you make use of?
-
-Ideally, you want it to also build with COMPILE_TEST, so that the
-driver gets build by 0-day and all the other build bots.
-
-> 	---help---
-> 	  If you have a network (Ethernet) card belonging to this
-> 	  class, say Y here.
+On 11/3/21 01:35, Peter Zijlstra wrote:
+> On Tue, Nov 02, 2021 at 05:20:05PM -0700, Andy Lutomirski wrote:
+>> I think that's a big mistake -- any sane ENDBR-using scheme would
+>> really prefer that ENDBR to be right next to the actual function body,
+>> and really any scheme would benefit due to better cache locality.
 > 
-> 	  Note that the answer to this question doesn't directly
-> 	  affect the kernel: saying N will just cause the configurator
-> 	  to skip all the questions about Sunplus cards. If you say Y,
-> 	  you will be asked for your specific card in the following
-> 	  questions.
+> Agreed, IBT/BTI want the landing pad in front of the actual function.
 > 
-> if NET_VENDOR_SUNPLUS
+>> But, more importantly, IMO any sane ENDBR-using scheme wants to
+>> generate the indirect stub as part of code gen for the actual
+>> function.
 > 
-> config SP7021_EMAC
-> 	tristate "Sunplus Dual 10M/100M Ethernet (with L2 switch) devices"
-> 	depends on ETHERNET && SOC_SP7021
+> Sorta, I really want to be able to not have a landing pad for functions
+> whose address is never taken. At that point it doesn't matter if it gets
+> generated along with the function and then stripped/poisoned later, or
+> generated later.
 
-Does it actually depend on SOC_SP7021 to build?
+Stripping is conceptually straightforward even without LTO.
 
-     Andrew
+foo.indirect:
+  ENDBR
+foo:
+  ...
+
+and the linker learns (using magic function sections?) that, if 
+foo.indirect is not referenced, then it should not be generated.  Or a 
+very straightforward walk over all the relocations in an object to 
+poison the unused .indirect entries could be done.  Making this work 
+with DSOs, EXPORT_SYMBOL, etc will be somewhat nontrivial, but not 
+impossible.
+
+--Andy
