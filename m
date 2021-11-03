@@ -2,286 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CE2444748
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FF544474F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbhKCRid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 13:38:33 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:56066 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229621AbhKCRib (ORCPT
+        id S230450AbhKCRjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 13:39:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229621AbhKCRjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 13:38:31 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A3H4brs016836;
-        Wed, 3 Nov 2021 18:35:43 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=NwwJc06AJJJ8GFYgldvAefYVVwYgOsuHffpWjz0Fd7g=;
- b=UV3635N4GNPhLPolir7Bu/mxIc/mU/jbsSyYb1Cm3YKufztegC478AeBtpx/G3oV+gbq
- SLqi+jtI64MbmtabmjNlq9+p3jbZdgpYL7zKFQhDQVtCiQac0M3EG07N0T3GB9czwDl4
- qZ2lZ96DHlZ9pSgTY2VNeAnuXxPfeZQRuHvuba8XRgXdkP1g7uZvmF9jUl3mWVdm9cI4
- XOKorq5PlSpnbjpXtJrdeRc/gSyrbuzFrTCZ+3/Ys4J8wOADTkqAPLHNh2BhIATF7v+F
- CJjkDbvCf+s3LDza+5biPN/uKT1c20MBR7ppWqUgJgBABGnSErvqSLFJ+GzHQxlXZOQI 4w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c3xgmg4sb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Nov 2021 18:35:29 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E523510002A;
-        Wed,  3 Nov 2021 18:35:26 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D3D5F2C38B9;
-        Wed,  3 Nov 2021 18:35:26 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.50) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 3 Nov
- 2021 18:35:25 +0100
-Subject: Re: [PATCH v6 06/10] rpmsg: Introduce rpmsg_create_default_ept
- function
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>, <julien.massot@iot.bzh>
-References: <20211022125426.2579-1-arnaud.pouliquen@foss.st.com>
- <20211022125426.2579-7-arnaud.pouliquen@foss.st.com>
- <YYAlzvXns4Ejxa6S@builder.lan>
- <d1352a00-bc6d-91ae-b902-622c75448e3a@foss.st.com>
- <YYK/jiHIUh8RBvTo@builder.lan>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <5ba82f50-95ed-3855-3d5e-cdb4f1e28c3a@foss.st.com>
-Date:   Wed, 3 Nov 2021 18:35:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 3 Nov 2021 13:39:48 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20747C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 10:37:12 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id gn3so1773718pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 10:37:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=spfompkpCAA4ZvxYsMg1S2VVdCBK1SqXXwLI1Ib9KrU=;
+        b=hlz3m+CK+SemRWO2vwaxRQ/o+lHXUyuzVN3Z4PPAiugN1OaW8esD9UPh11aLr6lbsT
+         AGMc+Hyplk7RRgLwlZNVAaXnKphUQQXUVg0huFqmKcbEG7/PCxc/9TJmfAr0eNo4UgvO
+         c5HqNf88tX9BTdRsyesHtiqxza6pA9zBisbOA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=spfompkpCAA4ZvxYsMg1S2VVdCBK1SqXXwLI1Ib9KrU=;
+        b=CTx/Wp+YGBJUsuwz5hs8hYIxCDbxH+IZAHUTwBJCaZ8B8c/kUbm0N8phazibbRxN4S
+         eIBTcjN8iZqWgo1BNQmHi/4OnCqfehjSMkRCZtJ018WQBkd2YEx+3HPVBqrylBAKXs8H
+         nqxPg5Elix/S//la3dlgEQ9FeWSV05NUMqB/nagKDIm+IVVGlq6Uqgrya9SmKEE9diA/
+         X+pORip+IIf8EwlQfICB5YDyrQCHowDBmAbF2JKFRf+ywOVbGk5rsBJDWCm3Lqrmx01N
+         0H94bts3++DchWtjaX3MUQfjxZdZQcM8Y7EeOBdCb9dUbngVd2ohhm6CBstQG/xdVhGN
+         tyGg==
+X-Gm-Message-State: AOAM533SBNkoZKbEuFDCZapNSF2Nurkol5PkBNYaGkLyHc0E0bZt8b/R
+        fQEWt67NtrmNo8m48LNFLHyXFqbtyEbLbQ==
+X-Google-Smtp-Source: ABdhPJypYHxW4Nn5IdvGHSLtAcuovLbpOwH02ELrH3//+spnyoa61JajTQXrEnFp//MwG9uPrY3Q7Q==
+X-Received: by 2002:a17:90a:1b2a:: with SMTP id q39mr16365056pjq.219.1635961031632;
+        Wed, 03 Nov 2021 10:37:11 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j5sm2371553pjs.2.2021.11.03.10.37.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 10:37:11 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 10:37:10 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Andy Shevchenko <andy@kernel.org>, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>
+Subject: Re: [RESEND PATCH v2] string: uninline memcpy_and_pad
+Message-ID: <202111031011.D0F16D78@keescook>
+References: <20211102142518.3723655-1-linux@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <YYK/jiHIUh8RBvTo@builder.lan>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-03_05,2021-11-03_01,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211102142518.3723655-1-linux@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 02, 2021 at 07:25:18AM -0700, Guenter Roeck wrote:
+> When building m68k:allmodconfig, recent versions of gcc generate the
+> following error if the length of UTS_RELEASE is less than 8 bytes.
+> 
+> In function 'memcpy_and_pad',
+>     inlined from 'nvmet_execute_disc_identify' at
+>     	drivers/nvme/target/discovery.c:268:2:
+> arch/m68k/include/asm/string.h:72:25: error:
+> 	'__builtin_memcpy' reading 8 bytes from a region of size 7
+
+What things are size 8 and 7? "5.15.0\0" is 7 bytes -- is strlen()
+returning _8_?? It should return 6 here.
+
+> Discussions around the problem suggest that this only happens if an
+> architecture does not provide strlen(), if -ffreestanding is provided as
+> compiler option, and if CONFIG_FORTIFY_SOURCE=n. All of this is the case
+> for m68k. The exact reasons are unknown, but seem to be related to the
+> ability of the compiler to evaluate the return value of strlen() and
+> the resulting execution flow in memcpy_and_pad(). It would be possible
+> to work around the problem by using sizeof(UTS_RELEASE) instead of
+> strlen(UTS_RELEASE), but that would only postpone the problem until the
+> function is called in a similar way. Uninline memcpy_and_pad() instead
+> to solve the problem for good.
+
+Ew, no, this doesn't solve the problem -- it just makes the buffer sizes
+invisible to the compiler. This will hide legitimate problems. Please
+leave this inlined.
+
+struct nvme_id_ctrl {
+	...
+        char                    fr[8];
+...
+
+        memcpy_and_pad(id->fr, sizeof(id->fr),
+                       UTS_RELEASE, strlen(UTS_RELEASE), ' ');
+
+	memcpy_and_pad(id->fr, 8, UTS_RELEASE, 6, ' ')
 
 
-On 11/3/21 5:57 PM, Bjorn Andersson wrote:
-> On Tue 02 Nov 11:56 CDT 2021, Arnaud POULIQUEN wrote:
-> 
->>
->>
->> On 11/1/21 6:37 PM, Bjorn Andersson wrote:
->>> On Fri 22 Oct 07:54 CDT 2021, Arnaud Pouliquen wrote:
->>>
->>>> By providing a callback in the rpmsg_driver structure, the rpmsg devices
->>>> can be probed with a default endpoint created.
->>>>
->>>> In this case, it is not possible to associated to this endpoint private data
->>>> that could allow the driver to retrieve the context.
->>>>
->>>> This helper function allows rpmsg drivers to create a default endpoint
->>>> on runtime with an associated private context.
->>>>
->>>> For example, a driver might create a context structure on the probe and
->>>> want to provide that context as private data for the default rpmsg
->>>> callback.
->>>>
->>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->>>> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->>>> Tested-by: Julien Massot <julien.massot@iot.bzh>
->>>> ---
->>>>  drivers/rpmsg/rpmsg_core.c | 51 ++++++++++++++++++++++++++++++++++++++
->>>>  include/linux/rpmsg.h      | 13 ++++++++++
->>>>  2 files changed, 64 insertions(+)
->>>>
->>>> diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
->>>> index 53162038254d..92557c49d460 100644
->>>> --- a/drivers/rpmsg/rpmsg_core.c
->>>> +++ b/drivers/rpmsg/rpmsg_core.c
->>>> @@ -132,6 +132,57 @@ void rpmsg_destroy_ept(struct rpmsg_endpoint *ept)
->>>>  }
->>>>  EXPORT_SYMBOL(rpmsg_destroy_ept);
->>>>  
->>>> +/**
->>>> + * rpmsg_create_default_ept() - create a default rpmsg_endpoint for a rpmsg device
->>>> + * @rpdev: rpmsg channel device
->>>> + * @cb: rx callback handler
->>>> + * @priv: private data for the driver's use
->>>> + * @chinfo: channel_info with the local rpmsg address to bind with @cb
->>>> + *
->>>> + * On register_rpmsg_driver if no callback is provided in the rpmsg_driver structure,
->>>> + * no endpoint is created when the device is probed by the rpmsg bus.
->>>> + *
->>>> + * This function returns a pointer to the default endpoint if already created or creates
->>>> + * an endpoint and assign it as the default endpoint of the rpmsg device.
->>>
->>> But if the driver didn't specify a callback, when would this ever
->>> happen?
->>
->> Not sure to understand your point here...
->> Do you mean that something is missing in description such as:
->>  * On register_rpmsg_driver if no callback is provided in the rpmsg_driver
->>  * structure, no endpoint is created when the device is probed by the rpmsg bus.
->>  * The rpmsg driver can call rpmsg_create_default_ept during or after its
->>  * probing to register a default endpoint with an associated callback and @priv
->>  * context.
->>
-> 
-> I was referring specifically to the case of rpmsg_create_default_ept()
-> being called on a rpmsg_device that already has a rpdev->ept.
-> 
-> Afaict this would either be because the driver did specify a callback or
-> because the driver didn't but has already called
-> rpmsg_create_default_ept().
-> 
-> Both cases sounds like invalid usage.
-> 
->>>
->>>> + *
->>>> + * Drivers should provide their @rpdev channel (so the new endpoint would belong
->>>> + * to the same remote processor their channel belongs to), an rx callback
->>>> + * function, an optional private data (which is provided back when the
->>>> + * rx callback is invoked), and an address they want to bind with the
->>>> + * callback. If @addr is RPMSG_ADDR_ANY, then rpmsg_create_ept will
->>>> + * dynamically assign them an available rpmsg address (drivers should have
->>>> + * a very good reason why not to always use RPMSG_ADDR_ANY here).
->>>> + *
->>>> + * Returns a pointer to the endpoint on success, or NULL on error.
->>>
->>> Correct kerneldoc is "Return: ..."
->>
->> I will update this
->>
->>>
->>>> + */
->>>> +struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
->>>> +						rpmsg_rx_cb_t cb, void *priv,
->>>> +						struct rpmsg_channel_info chinfo)
->>>> +{
->>>> +	struct rpmsg_endpoint *ept;
->>>> +
->>>> +	if (WARN_ON(!rpdev))
->>>> +		return NULL;
->>>> +
->>>> +	/* It does not make sense to create a default endpoint without a callback. */
->>>> +	if (!cb)
->>>> +		return NULL;
->>>> +
->>>> +	if (rpdev->ept)
->>>> +		return rpdev->ept;
->>>
->>> How does the caller know if they should call rpmsg_destroy_ept() on the
->>> returned ept or not?
->>
->> This case is probably a bug. What about replacing the condition by
->> if(WARN_ON(rpdev->ept))?
->>
-> 
-> Right, I don't think it will be possible for the client driver to do the
-> right thing based on this logic.
-> 
->>>
->>>> +
->>>> +	ept = rpdev->ops->create_ept(rpdev, cb, priv, chinfo);
->>>> +	if (!ept)
->>>> +		return NULL;
->>>> +
->>>> +	/* Assign the new endpoint as default endpoint */
->>>> +	rpdev->ept = ept;
->>>> +	rpdev->src = ept->addr;
->>>> +
->>>> +	return ept;
->>>> +}
->>>> +EXPORT_SYMBOL(rpmsg_create_default_ept);
->>>> +
->>>>  /**
->>>>   * rpmsg_send() - send a message across to the remote processor
->>>>   * @ept: the rpmsg endpoint
->>>> diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
->>>> index 6fe51549d931..b071ac17ff78 100644
->>>> --- a/include/linux/rpmsg.h
->>>> +++ b/include/linux/rpmsg.h
->>>> @@ -172,6 +172,9 @@ void rpmsg_destroy_ept(struct rpmsg_endpoint *);
->>>>  struct rpmsg_endpoint *rpmsg_create_ept(struct rpmsg_device *,
->>>>  					rpmsg_rx_cb_t cb, void *priv,
->>>>  					struct rpmsg_channel_info chinfo);
->>>> +struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
->>>
->>> Is there ever a case where someone outside drivers/rpmsg/ should call
->>> this function?
->>
->> A rpmsg service driver could call it to generate the ns announcement after
->> the probe (for instance on a sysfs open).
->> (Please have a look to [PATCH v6 10/10] rpmsg: core: send a ns announcement when
->> a default endpoint is created)
->>
-> 
-> I'm still not convinced that it's correct to do NS only for primary
-> endpoints.
-> 
-> In particular looking down the path where you are instantiating services
-> on the Linux side; e.g. what if you want your driver to probe on some
-> control channel but have the actual data flow on a separate channel
-> (something I believe Loic talked about earlier).
-> 
-> How would the remote side know about that second endpoint if the NS
-> doesn't announce it?
+static inline void memcpy_and_pad(void *dest, size_t dest_len,
+				  const void *src, size_t count, int pad)
+	if (dest_len > count) {
+		memcpy(dest, src, count);
+		memset(dest + count, pad,  dest_len - count);
+	} else {
+		memcpy(dest, src, dest_len);
+	}
 
-Right, today it is a limitation of the announcement mechanism. The service is
-linked to rpmsg_dev_probe and rpmsg_dev_remove (except if the backend implements
-an announcement on create_ept & destroy_ept ops).
+->
 
-The rpmsg_create_default_ept follows this behavior.
-As result of this patch, the limitation will exist in both directions.
+	if (8 > 6) {
+		memcpy(id->fr, UTS_RELEASE, 6);
+		memset(fd->fr + 6, ' ', 2);
+	}
 
-Another limitation is an ack of the NS announcement to provide the associated
-remote address.
+Ah, I've found the earlier thread now:
+https://lore.kernel.org/all/CAMuHMdX365qmWiii=gQLADpW49EMkdDrVJDPWNBpAZuZM0WQFQ@mail.gmail.com/
 
-Extending rpmsg_ns.c to add new messages could solve these limitations, but that
-would be a separate topic.
+This looks like a compiler bug in that it isn't collapsing the strlen()
+into a compile-time constant. "sizeof(UTS_RELEASE) - 1" seems a
+reasonable work-around?
 
-Regards,
-Arnaud
+I'd suggest reporting this to GCC. I see two bugs:
+
+- strlen() not getting replace with a constant expression
+- warning being generated across a runtime check
+
+it seems like GCC *thinks* it knows strlen will be a CE, but then
+instead it keeps both branches anyway, triggering a warning.
+
+-Kees
 
 > 
-> Regards,
-> Bjorn
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Acked-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+> v2: Moved to lib/string_helpers.c
+>     Balanced { } in if/else statement to make checkpatch happy
+>     Added Reviewed-by: /Acked-by: tags
 > 
->> Thanks,
->> Arnaud
->>
->>>
->>> Regards,
->>> Bjorn
->>>
->>>> +						rpmsg_rx_cb_t cb, void *priv,
->>>> +						struct rpmsg_channel_info chinfo);
->>>>  
->>>>  int rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len);
->>>>  int rpmsg_sendto(struct rpmsg_endpoint *ept, void *data, int len, u32 dst);
->>>> @@ -236,6 +239,16 @@ static inline struct rpmsg_endpoint *rpmsg_create_ept(struct rpmsg_device *rpdev
->>>>  	return NULL;
->>>>  }
->>>>  
->>>> +static inline struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
->>>> +							      rpmsg_rx_cb_t cb, void *priv,
->>>> +							      struct rpmsg_channel_info chinfo)
->>>> +{
->>>> +	/* This shouldn't be possible */
->>>> +	WARN_ON(1);
->>>> +
->>>> +	return NULL;
->>>> +}
->>>> +
->>>>  static inline int rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len)
->>>>  {
->>>>  	/* This shouldn't be possible */
->>>> -- 
->>>> 2.17.1
->>>>
+>  include/linux/string.h | 19 ++-----------------
+>  lib/string_helpers.c   | 20 ++++++++++++++++++++
+>  2 files changed, 22 insertions(+), 17 deletions(-)
+> 
+> diff --git a/include/linux/string.h b/include/linux/string.h
+> index 5a36608144a9..b6572aeca2f5 100644
+> --- a/include/linux/string.h
+> +++ b/include/linux/string.h
+> @@ -253,23 +253,8 @@ static inline const char *kbasename(const char *path)
+>  #include <linux/fortify-string.h>
+>  #endif
+>  
+> -/**
+> - * memcpy_and_pad - Copy one buffer to another with padding
+> - * @dest: Where to copy to
+> - * @dest_len: The destination buffer size
+> - * @src: Where to copy from
+> - * @count: The number of bytes to copy
+> - * @pad: Character to use for padding if space is left in destination.
+> - */
+> -static inline void memcpy_and_pad(void *dest, size_t dest_len,
+> -				  const void *src, size_t count, int pad)
+> -{
+> -	if (dest_len > count) {
+> -		memcpy(dest, src, count);
+> -		memset(dest + count, pad,  dest_len - count);
+> -	} else
+> -		memcpy(dest, src, dest_len);
+> -}
+> +void memcpy_and_pad(void *dest, size_t dest_len, const void *src, size_t count,
+> +		    int pad);
+>  
+>  /**
+>   * memset_after - Set a value after a struct member to the end of a struct
+> diff --git a/lib/string_helpers.c b/lib/string_helpers.c
+> index faa9d8e4e2c5..d5d008f5b1d9 100644
+> --- a/lib/string_helpers.c
+> +++ b/lib/string_helpers.c
+> @@ -883,6 +883,26 @@ char *strreplace(char *s, char old, char new)
+>  }
+>  EXPORT_SYMBOL(strreplace);
+>  
+> +/**
+> + * memcpy_and_pad - Copy one buffer to another with padding
+> + * @dest: Where to copy to
+> + * @dest_len: The destination buffer size
+> + * @src: Where to copy from
+> + * @count: The number of bytes to copy
+> + * @pad: Character to use for padding if space is left in destination.
+> + */
+> +void memcpy_and_pad(void *dest, size_t dest_len, const void *src, size_t count,
+> +		    int pad)
+> +{
+> +	if (dest_len > count) {
+> +		memcpy(dest, src, count);
+> +		memset(dest + count, pad,  dest_len - count);
+> +	} else {
+> +		memcpy(dest, src, dest_len);
+> +	}
+> +}
+> +EXPORT_SYMBOL(memcpy_and_pad);
+> +
+>  #ifdef CONFIG_FORTIFY_SOURCE
+>  void fortify_panic(const char *name)
+>  {
+> -- 
+> 2.33.0
+> 
+
+-- 
+Kees Cook
