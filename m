@@ -2,96 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71F9444878
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 19:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F4F44487B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 19:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhKCSpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 14:45:14 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:47646 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhKCSpM (ORCPT
+        id S230326AbhKCSq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 14:46:28 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:57168 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229697AbhKCSq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 14:45:12 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1A3IgNV1077205;
-        Wed, 3 Nov 2021 13:42:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1635964943;
-        bh=ITh8datjcB1pR9d1o9fFJSmT+Wo30raT9v1X19SdMQU=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=r2L8ZK+976zJKHazeiaAw46F0Yf0BMms8ZlO7CmrCp6VxsLv15hmFtMnHPgWbo8DG
-         3ZM9vfcqY2tX+wWWzn+CB1qZbGw93Bt6doLnc0gVuUOfQpehApvriTw8WfKJEJtTk5
-         UtjDZpLqjDV05msQKJrbSYRbJL1SZHIlCOSF5k8U=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1A3IgNUV033583
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 3 Nov 2021 13:42:23 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 3
- Nov 2021 13:42:23 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 3 Nov 2021 13:42:22 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1A3IgJiA076322;
-        Wed, 3 Nov 2021 13:42:20 -0500
-Subject: Re: [RFC PATCH] net: phy/mdio: enable mmd indirect access through
- phy_mii_ioctl()
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-References: <YYBBHsFEwGdPJw3b@lunn.ch>
- <YYBF3IZoSN6/O6AL@shell.armlinux.org.uk> <YYCLJnY52MoYfxD8@lunn.ch>
- <YYExmHYW49jOjfOt@shell.armlinux.org.uk>
- <bc9df441-49bf-5c8a-891c-cc3f0db00aba@ti.com>
- <YYF4ZQHqc1jJsE/+@shell.armlinux.org.uk>
- <e18f17bd-9e77-d3ef-cc1e-30adccb7cdd5@ti.com>
- <828e2d69-be15-fe69-48d8-9cfc29c4e76e@ti.com> <YYGxvomL/0tiPzvV@lunn.ch>
- <8d24c421-064c-9fee-577a-cbbf089cdf33@ti.com> <YYHXcyCOPiUkk8Tz@lunn.ch>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <01a0ebf9-5d3f-e886-4072-acb9bf418b12@ti.com>
-Date:   Wed, 3 Nov 2021 20:42:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 3 Nov 2021 14:46:27 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id d43e149fe9a20e37; Wed, 3 Nov 2021 19:43:49 +0100
+Received: from kreacher.localnet (unknown [213.134.161.207])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id A3DEC661F93;
+        Wed,  3 Nov 2021 19:43:48 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Julia Lawall <julia.lawall@inria.fr>
+Subject: [PATCH] cpufreq: intel_pstate: Clear HWP desired on suspend/shutdown and offline
+Date:   Wed, 03 Nov 2021 19:43:47 +0100
+Message-ID: <2619739.mvXUDI8C0e@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <YYHXcyCOPiUkk8Tz@lunn.ch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.161.207
+X-CLIENT-HOSTNAME: 213.134.161.207
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvuddrtddvgdduudefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpefhgedtffejheekgeeljeevvedtuefgffeiieejuddutdekgfejvdehueejjeetvdenucfkphepvddufedrudefgedrudeiuddrvddtjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrdduiedurddvtdejpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehjuhhlihgrrdhlrgifrghllhesihhnrhhirgdrfhhr
+X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+Commit a365ab6b9dfb ("cpufreq: intel_pstate: Implement the
+->adjust_perf() callback") caused intel_pstate to use nonzero HWP
+desired values in certain usage scenarios, but it did not prevent
+them from being leaked into the confugirations in which HWP desired
+is expected to be 0.
+
+The failing scenarios are switching the driver from the passive
+mode to the active mode and starting a new kernel via kexec() while
+intel_pstate is running in the passive mode.
+
+To address this issue, ensure that HWP desired will be cleared on
+offline and suspend/shutdown.
+
+Fixes: a365ab6b9dfb ("cpufreq: intel_pstate: Implement the ->adjust_perf() callback")
+Reported-by: Julia Lawall <julia.lawall@inria.fr>
+Tested-by: Julia Lawall <julia.lawall@inria.fr>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/cpufreq/intel_pstate.c |   32 ++++++++++++++++++++++++++++++--
+ 1 file changed, 30 insertions(+), 2 deletions(-)
+
+Index: linux-pm/drivers/cpufreq/intel_pstate.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/intel_pstate.c
++++ linux-pm/drivers/cpufreq/intel_pstate.c
+@@ -1006,9 +1006,16 @@ static void intel_pstate_hwp_offline(str
+ 		 */
+ 		value &= ~GENMASK_ULL(31, 24);
+ 		value |= HWP_ENERGY_PERF_PREFERENCE(cpu->epp_cached);
+-		WRITE_ONCE(cpu->hwp_req_cached, value);
+ 	}
+ 
++	/*
++	 * Clear the desired perf field in the cached HWP request value to
++	 * prevent nonzero desired values from being leaked into the active
++	 * mode.
++	 */
++	value &= ~HWP_DESIRED_PERF(~0L);
++	WRITE_ONCE(cpu->hwp_req_cached, value);
++
+ 	value &= ~GENMASK_ULL(31, 0);
+ 	min_perf = HWP_LOWEST_PERF(READ_ONCE(cpu->hwp_cap_cached));
+ 
+@@ -3003,6 +3010,27 @@ static int intel_cpufreq_cpu_exit(struct
+ 	return intel_pstate_cpu_exit(policy);
+ }
+ 
++static int intel_cpufreq_suspend(struct cpufreq_policy *policy)
++{
++	intel_pstate_suspend(policy);
++
++	if (hwp_active) {
++		struct cpudata *cpu = all_cpu_data[policy->cpu];
++		u64 value = READ_ONCE(cpu->hwp_req_cached);
++
++		/*
++		 * Clear the desired perf field in MSR_HWP_REQUEST in case
++		 * intel_cpufreq_adjust_perf() is in use and the last value
++		 * written by it may not be suitable.
++		 */
++		value &= ~HWP_DESIRED_PERF(~0L);
++		wrmsrl_on_cpu(cpu->cpu, MSR_HWP_REQUEST, value);
++		WRITE_ONCE(cpu->hwp_req_cached, value);
++	}
++
++	return 0;
++}
++
+ static struct cpufreq_driver intel_cpufreq = {
+ 	.flags		= CPUFREQ_CONST_LOOPS,
+ 	.verify		= intel_cpufreq_verify_policy,
+@@ -3012,7 +3040,7 @@ static struct cpufreq_driver intel_cpufr
+ 	.exit		= intel_cpufreq_cpu_exit,
+ 	.offline	= intel_cpufreq_cpu_offline,
+ 	.online		= intel_pstate_cpu_online,
+-	.suspend	= intel_pstate_suspend,
++	.suspend	= intel_cpufreq_suspend,
+ 	.resume		= intel_pstate_resume,
+ 	.update_limits	= intel_pstate_update_limits,
+ 	.name		= "intel_cpufreq",
 
 
-On 03/11/2021 02:27, Andrew Lunn wrote:
->>> What i find interesting is that you and the other resent requester are
->>> using the same user space tool. If you implement C45 over C22 in that
->>> tool, you get your solution, and it will work for older kernels as
->>> well. Also, given the diverse implementations of this IOTCL, it
->>> probably works for more drivers than just those using phy_mii_ioctl().
->>
->> Do you mean change uapi, like
->>   add mdio_phy_id_is_c45_over_c22() and
->>   flag #define MDIO_PHY_ID_C45_OVER_C22 0x4000?
-> 
-> No, i mean user space implements C45 over C22. Make phytool write
-> MII_MMD_CTRL and MII_MMD_DATA to perform a C45 over C22.
 
-Now I give up - as mentioned there is now way to sync User space vs Kernel
-MMD transactions and so no way to get trusted results.
-
-
-Thanks all for participating in discussion.
-
--- 
-Best regards,
-grygorii
