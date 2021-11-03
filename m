@@ -2,84 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4ED0443BE7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 04:37:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA1B443BEB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 04:37:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbhKCDjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 23:39:52 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:25348 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbhKCDjv (ORCPT
+        id S230297AbhKCDjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 23:39:55 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:44350 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230059AbhKCDjw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 23:39:51 -0400
-Received: from dggeme762-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HkXQP1W8jzbhPk;
-        Wed,  3 Nov 2021 11:32:29 +0800 (CST)
-Received: from huawei.com (10.175.112.208) by dggeme762-chm.china.huawei.com
- (10.3.19.108) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Wed, 3
- Nov 2021 11:37:13 +0800
-From:   Wang Wensheng <wangwensheng4@huawei.com>
-To:     <perex@perex.cz>, <tiwai@suse.com>, <wangwensheng4@huawei.com>,
-        <broonie@kernel.org>, <joe@perches.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-CC:     <rui.xiang@huawei.com>
-Subject: [PATCH -next v2] ALSA: timer: Fix use-after-free problem
-Date:   Wed, 3 Nov 2021 03:35:17 +0000
-Message-ID: <20211103033517.80531-1-wangwensheng4@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 2 Nov 2021 23:39:52 -0400
+X-UUID: 865cbfb917494ae18ed211057195df6b-20211103
+X-UUID: 865cbfb917494ae18ed211057195df6b-20211103
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <yunfei.dong@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1412010393; Wed, 03 Nov 2021 11:37:13 +0800
+Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 3 Nov 2021 11:37:12 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb02.mediatek.inc
+ (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Nov
+ 2021 11:37:12 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 3 Nov 2021 11:37:10 +0800
+From:   Yunfei Dong <yunfei.dong@mediatek.com>
+To:     Steve Cho <stevecho@google.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>
+CC:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH v2] media: mtk-vcodec: Align width and height to 64 bytes
+Date:   Wed, 3 Nov 2021 11:37:08 +0800
+Message-ID: <20211103033708.14469-1-yunfei.dong@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.208]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeme762-chm.china.huawei.com (10.3.19.108)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the timer instance was add into ack_list but was not currently in
-process, the user could stop it via snd_timer_stop1() without delete it
-from the ack_list. Then the user could free the timer instance and when
-it was actually processed UAF occurred.
+Width and height need to 64 bytes aligned when setting the format.
+Need to make sure all is 64 bytes align when use width and height to
+calculate buffer size.
 
-This issue could be reproduced via testcase snd_timer01 in ltp - running
-several instances of that testcase at the same time.
-
-What I actually met was that the ack_list of the timer broken and the
-kernel went into deadloop with irqoff. That could be detected by
-hardlockup detector on board or when we run it on qemu, we could use gdb
-to dump the ack_list when the console has no response.
-
-To fix this issue, we delete the timer instance from ack_list and
-active_list unconditionally in snd_timer_stop1().
-
-Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
-Suggested-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+Change-Id: I39886b1a6b433c92565ddbf297eb193456eec1d2
 ---
- sound/core/timer.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h        | 1 +
+ drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/core/timer.c b/sound/core/timer.c
-index 92b7008fcdb8..4f9bab931951 100644
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -624,13 +624,13 @@ static int snd_timer_stop1(struct snd_timer_instance *timeri, bool stop)
- 	if (!timer)
- 		return -EINVAL;
- 	spin_lock_irqsave(&timer->lock, flags);
-+	list_del_init(&timeri->ack_list);
-+	list_del_init(&timeri->active_list);
- 	if (!(timeri->flags & (SNDRV_TIMER_IFLG_RUNNING |
- 			       SNDRV_TIMER_IFLG_START))) {
- 		result = -EBUSY;
- 		goto unlock;
- 	}
--	list_del_init(&timeri->ack_list);
--	list_del_init(&timeri->active_list);
- 	if (timer->card && timer->card->shutdown)
- 		goto unlock;
- 	if (stop) {
+diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h
+index e30806c1faea..66cd6d2242c3 100644
+--- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h
++++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h
+@@ -11,6 +11,7 @@
+ #include <media/videobuf2-core.h>
+ #include <media/v4l2-mem2mem.h>
+ 
++#define VCODEC_DEC_ALIGNED_64 64
+ #define VCODEC_CAPABILITY_4K_DISABLED	0x10
+ #define VCODEC_DEC_4K_CODED_WIDTH	4096U
+ #define VCODEC_DEC_4K_CODED_HEIGHT	2304U
+diff --git a/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c b/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
+index d402fc4bda69..e1a3011772a9 100644
+--- a/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
++++ b/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
+@@ -562,8 +562,8 @@ static void get_pic_info(struct vdec_h264_slice_inst *inst,
+ {
+ 	struct mtk_vcodec_ctx *ctx = inst->ctx;
+ 
+-	ctx->picinfo.buf_w = (ctx->picinfo.pic_w + 15) & 0xFFFFFFF0;
+-	ctx->picinfo.buf_h = (ctx->picinfo.pic_h + 31) & 0xFFFFFFE0;
++	ctx->picinfo.buf_w = ALIGN(ctx->picinfo.pic_w, VCODEC_DEC_ALIGNED_64);
++	ctx->picinfo.buf_h = ALIGN(ctx->picinfo.pic_h, VCODEC_DEC_ALIGNED_64);
+ 	ctx->picinfo.fb_sz[0] = ctx->picinfo.buf_w * ctx->picinfo.buf_h;
+ 	ctx->picinfo.fb_sz[1] = ctx->picinfo.fb_sz[0] >> 1;
+ 	inst->vsi_ctx.dec.cap_num_planes =
 -- 
-2.17.1
+2.25.1
 
