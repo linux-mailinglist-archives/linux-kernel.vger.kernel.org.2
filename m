@@ -2,107 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D95444116
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D46FC44411E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231960AbhKCMMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 08:12:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54410 "EHLO
+        id S229816AbhKCMM4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Nov 2021 08:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhKCMML (ORCPT
+        with ESMTP id S230304AbhKCMMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 08:12:11 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C29BAC061714;
-        Wed,  3 Nov 2021 05:09:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CjPiVZ6CEwcX8p9oXTmszPrcj/hHgUiyD1EHf7MNfJ0=; b=XzurOMddznm+TyCj4XwsbSfH2s
-        1YvfP1uoDLueWcdGH6UKl91Nyt8gDKHB0EJZ9p8GXoSZkeyuoSw8ro4Qpg/tDKhMXt+c9mW+5gvig
-        1va8ZDP9Nh1ngmnObtCgD9fU47k2fhRPj3dXSX7Q+lTu01AKUdRC9it3Sa+tHTmhK+XCPW1Cv90gO
-        R7V7DN8rv4o6RTbex5YLZcw3/fTiPGmDhJ63Nqpe7IxNAF3+ifnr4KV8D9upZ1LHWc4QF6we1wMvN
-        WLVU2pP8uA+m+xTONlFSZ1fqKx40wQtgin3/iIOHuvwTzaVliOxqefui88Q0pUzR6ZvdAPQHMeiq9
-        WniQlaUA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1miF4r-0053yg-Mm; Wed, 03 Nov 2021 12:09:13 +0000
-Date:   Wed, 3 Nov 2021 05:09:13 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Geoff Levand <geoff@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, Jim Paris <jim@jtan.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>, senozhatsky@chromium.org,
-        Richard Weinberger <richard@nod.at>, miquel.raynal@bootlin.com,
-        vigneshr@ti.com, Vishal L Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>, linux-block@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-mtd@lists.infradead.org,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        linux-nvme@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 06/13] nvdimm/blk: avoid calling del_gendisk() on early
- failures
-Message-ID: <YYJ76awe81sC9CHw@bombadil.infradead.org>
-References: <20211015235219.2191207-1-mcgrof@kernel.org>
- <20211015235219.2191207-7-mcgrof@kernel.org>
- <CAPcyv4j+xLT=5RUodHWgnPjNq6t5OcmX1oM2zK2ML0U+OS_16Q@mail.gmail.com>
- <YYHTejXKvsGoDlOa@bombadil.infradead.org>
- <CAPcyv4h1dqBm71OQ_A5Qv4agT3PhV7uoojmSB1pEpS-CXaWb5w@mail.gmail.com>
- <51f86768-04ca-bc7d-c17c-3d0357d84271@kernel.dk>
+        Wed, 3 Nov 2021 08:12:54 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFBCC061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 05:10:18 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1miF5l-00024e-1x; Wed, 03 Nov 2021 13:10:09 +0100
+Received: from pza by lupine with local (Exim 4.94.2)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1miF5i-000A5d-Ej; Wed, 03 Nov 2021 13:10:06 +0100
+Message-ID: <430b152167a1fdfb5ca66f1db702759f36d0ed56.camel@pengutronix.de>
+Subject: Re: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Wells Lu <wellslutw@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org, robh+dt@kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Wells Lu <wells.lu@sunplus.com>
+Date:   Wed, 03 Nov 2021 13:10:06 +0100
+In-Reply-To: <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
+References: <cover.1635936610.git.wells.lu@sunplus.com>
+         <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51f86768-04ca-bc7d-c17c-3d0357d84271@kernel.dk>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 07:28:02PM -0600, Jens Axboe wrote:
-> On 11/2/21 6:49 PM, Dan Williams wrote:
-> > On Tue, Nov 2, 2021 at 5:10 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> >>
-> >> On Fri, Oct 15, 2021 at 05:13:48PM -0700, Dan Williams wrote:
-> >>> On Fri, Oct 15, 2021 at 4:53 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> >>>>
-> >>>> If nd_integrity_init() fails we'd get del_gendisk() called,
-> >>>> but that's not correct as we should only call that if we're
-> >>>> done with device_add_disk(). Fix this by providing unwinding
-> >>>> prior to the devm call being registered and moving the devm
-> >>>> registration to the very end.
-> >>>>
-> >>>> This should fix calling del_gendisk() if nd_integrity_init()
-> >>>> fails. I only spotted this issue through code inspection. It
-> >>>> does not fix any real world bug.
-> >>>>
-> >>>
-> >>> Just fyi, I'm preparing patches to delete this driver completely as it
-> >>> is unused by any shipping platform. I hope to get that removal into
-> >>> v5.16.
-> >>
-> >> Curious if are you going to nuking it on v5.16? Otherwise it would stand
-> >> in the way of the last few patches to add __must_check for the final
-> >> add_disk() error handling changes.
-> > 
-> > True, I don't think I can get it nuked in time, so you can add my
-> > Reviewed-by for this one.
-> 
-> Luis, I lost track of the nv* patches from this discussion. If you want
-> them in 5.16 and they are reviewed, please do resend and I'll pick them
-> up for the middle-of-merge-window push.
+On Wed, 2021-11-03 at 19:02 +0800, Wells Lu wrote:
+[...]
+> diff --git a/drivers/net/ethernet/sunplus/l2sw_driver.c b/drivers/net/ethernet/sunplus/l2sw_driver.c
+> new file mode 100644
+> index 0000000..3dfd0dd
+> --- /dev/null
+> +++ b/drivers/net/ethernet/sunplus/l2sw_driver.c
+> @@ -0,0 +1,779 @@
+[...]
+> +static int l2sw_probe(struct platform_device *pdev)
+> +{
+> +	struct l2sw_common *comm;
+> +	struct resource *r_mem;
+> +	struct net_device *net_dev, *net_dev2;
+> +	struct l2sw_mac *mac, *mac2;
+> +	u32 mode;
+> +	int ret = 0;
+> +	int rc;
+> +
+> +	if (platform_get_drvdata(pdev))
+> +		return -ENODEV;
+> +
+> +	// Allocate memory for l2sw 'common' area.
+> +	comm = kmalloc(sizeof(*comm), GFP_KERNEL);
 
-Sure thing, I'll resend whatever is left. I also noticed for some reason
-I forgot to convert nvdimm/pmem and so I'll roll those new patches in,
-but I suspect that those might be too late unless we get them reviewed
-in time.
+I'd use devm_kzalloc() here for initialization and to simplify the
+cleanup path.
 
-  Luis
+> +	if (!comm)
+> +		return -ENOMEM;
+> +	pr_debug(" comm = %p\n", comm);
+
+What is this useful for?
+
+> +	memset(comm, '\0', sizeof(struct l2sw_common));
+
+Not needed with kzalloc, See above.
+
+[...]
+> +	// Get memory resoruce 0 from dts.
+> +	r_mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (r_mem) {
+> +		pr_debug(" res->name = \"%s\", r_mem->start = %pa\n", r_mem->name, &r_mem->start);
+> +		if (l2sw_reg_base_set(devm_ioremap(&pdev->dev, r_mem->start,
+> +						   (r_mem->end - r_mem->start + 1))) != 0) {
+> +			pr_err(" ioremap failed!\n");
+> +			ret = -ENOMEM;
+> +			goto out_free_comm;
+> +		}
+> +	} else {
+> +		pr_err(" No MEM resource 0 found!\n");
+> +		ret = -ENXIO;
+> +		goto out_free_comm;
+> +	}
+> +
+> +	// Get memory resoruce 1 from dts.
+> +	r_mem = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+> +	if (r_mem) {
+> +		pr_debug(" res->name = \"%s\", r_mem->start = %pa\n", r_mem->name, &r_mem->start);
+> +		if (moon5_reg_base_set(devm_ioremap(&pdev->dev, r_mem->start,
+> +						    (r_mem->end - r_mem->start + 1))) != 0) {
+> +			pr_err(" ioremap failed!\n");
+> +			ret = -ENOMEM;
+> +			goto out_free_comm;
+> +		}
+> +	} else {
+> +		pr_err(" No MEM resource 1 found!\n");
+> +		ret = -ENXIO;
+> +		goto out_free_comm;
+> +	}
+
+Using devm_ioremap_resource() would simplify both a lot.
+
+[...]
+> +	comm->rstc = devm_reset_control_get(&pdev->dev, NULL);
+
+Please use devm_reset_control_get_exclusive().
+
+> +	if (IS_ERR(comm->rstc)) {
+> +		dev_err(&pdev->dev, "Failed to retrieve reset controller!\n");
+> +		ret = PTR_ERR(comm->rstc);
+> +		goto out_free_comm;
+> +	}
+> +
+> +	// Enable clock.
+> +	clk_prepare_enable(comm->clk);
+> +	udelay(1);
+> +
+> +	ret = reset_control_assert(comm->rstc);
+
+No need to assign to ret if you ignore it anyway.
+
+> +	udelay(1);
+> +	ret = reset_control_deassert(comm->rstc);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Failed to deassert reset line (err = %d)!\n", ret);
+> +		ret = -ENODEV;
+> +		goto out_free_comm;
+> +	}
+> +	udelay(1);
+
+regards
+Philipp
