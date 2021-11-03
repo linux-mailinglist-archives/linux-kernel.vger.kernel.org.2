@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F4D4448F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA5F4448F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:29:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhKCTb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 15:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42560 "EHLO
+        id S231325AbhKCTcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 15:32:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230199AbhKCTb2 (ORCPT
+        with ESMTP id S230022AbhKCTcE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 15:31:28 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF97C061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 12:28:51 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id s7-20020a056830148700b0055ad72acb7eso3975305otq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 12:28:51 -0700 (PDT)
+        Wed, 3 Nov 2021 15:32:04 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FACEC061203
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 12:29:27 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id v40-20020a056830092800b0055591caa9c6so5009587ott.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 12:29:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:in-reply-to:references:subject:message-id:date
          :mime-version:content-transfer-encoding;
-        bh=b61kaA94Ee793GgceiiJmFJ4ShV9j6HR9f24wxuKQ8c=;
-        b=T98f3VrIfGiesq2Z1XXhRSZk+N5YbD0SjQoDgIl2tEDteNdxswYV4QUq2MbYnmRZ9k
-         7YcTBrJmq+u9Ba+a4S5548arcbTY4degLBnjzPd9VYyOyQ3Jlno/j9RGEY86eQeGpEre
-         DbT2/CHOoLo3SuanWAMa6q22t3asL8yjCPYYTlnvBNxZGXxDYenueMaaejA07O3899bz
-         eUidH78r2BLE0g4rfoe+yJi4NJgAPCjPiJ8a+7I5mhB5hjEm2UVu5Bq1iG38Q1p7TtMP
-         1E9Zps9r38ryBNwD/RKD53QA9mft1fL5AvvIWAt6BxgN/XrALQMvL1mbhhMR/jLhJMDx
-         l1bw==
+        bh=Y3d6E1SHGhXJn4Dvk0e2wYnCWALGfieMsoRHb/exO38=;
+        b=Nlpj9VQg9J9S4S48NzQMds56GucWKbqxz1cKoQevhTMAyjBD6P8S6lpVHh7hCKXk8Z
+         ubvCBQZIhFNRl75oWDVIjQU86EMiV5BhFO4w0FanEa2QNigig0oKKWExBqrHjOxyfbZD
+         x4AaeV2afFFIW2IAMXWX4paB5XyrVb/Uj4cGO1tMbtbwEDT6wDMYYwljYiyX6/tslQUV
+         8LEDllACSnwAVIXM1ijiEaFVt5mYJnLQ1pujeRWntcFSPR4ETsIliUxJFSTLCUzkcly1
+         wzz2jUT2upPO6voi4OfJ1Xs0INnNeCOy3lE3XgpYnKijSpinp+ba1DsNqikIJMr0lLkr
+         b6DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
          :message-id:date:mime-version:content-transfer-encoding;
-        bh=b61kaA94Ee793GgceiiJmFJ4ShV9j6HR9f24wxuKQ8c=;
-        b=IkMZhCO1LcW8N+HW2XLxG3jsXg0y7YwXGcNCEW+iPgrN0n20OQI0XOOj+LJ+7EJS8Z
-         naYy+3JpSr3diVhVIEnvaqVE9t7D8Qa+LDs410RtUreO31oNSgUbMS+YfswmOdG4YNOX
-         D69RKjBTw1B3SxAE0QNydPk/9A5ZAySf4X0hctU/HxZ7zRm96COMBYEwAxDanTrQBk6f
-         lt6t59t9yBw5WY85S7eGGzqjieWsJNhkCEyl83kX862hPYQvMhG2KQ4wKc/Im/cb2PkH
-         KMtlfrsOeYswfVuX5VYOuvwhJMIPRNH+o/ltIKiDnDC9ygHtesXPOw40AAUL/yj+vPot
-         lWwQ==
-X-Gm-Message-State: AOAM531HSgopSp1c6jLJ4hktw6VAeWTGZ9PVrX8CgaJEnn84TqaB5gbL
-        UvvoWb2B9CP0XtC8r0mCt1O8Iw==
-X-Google-Smtp-Source: ABdhPJxZNmzRvn9TAIPx2ko+UUajJ66iK1LzIcOX29RXqkWWpefaCi9UB3fGBgrRj8OKhlVi+qwvAA==
-X-Received: by 2002:a05:6830:1d63:: with SMTP id l3mr2584587oti.9.1635967730638;
-        Wed, 03 Nov 2021 12:28:50 -0700 (PDT)
+        bh=Y3d6E1SHGhXJn4Dvk0e2wYnCWALGfieMsoRHb/exO38=;
+        b=tB9RkP2FTKxEhS7bsSlYDKPhFMy6zUGLrGpthDVvRcoSMIfOD2ukG/euTG/N6cggcI
+         GTToLxeTxHOkyZKEC/dpRYncEyCXTU0jGZJcvOZJzHOOGKLCi9/43Jw0uKfEVEV7V1st
+         /jgyzSwFpC13P0Sih6VXvbS3OiUhFBGzJMxX1wuznO71X/PajmtqYauvsRh2yufgZJiP
+         5Be2/IGuD3b0beDN3ojyQUdG18gcr7ZPobOF+gcZ1w0EvOlAiU62i8LotTaKWXk66Cxo
+         ekxIhJaYiJlNHPWyRFCPbgQ1l9YuVPEktSMqqC4TcnUr7evLErixoGxCaFtkPylzNP5o
+         EPsQ==
+X-Gm-Message-State: AOAM531JsypxSbmyEWdPmgDXZZe8A0PrDMaHgK3fcd+eHM/OSpEohMW4
+        TfRBlf/Tp2BAx6YdH/4XWXYNnA==
+X-Google-Smtp-Source: ABdhPJyQzzTX1UgPm7SvPYQQRUJBgfitrA3qciUqirF/PD9KbBoSKsEuMnzT7nuMc4W5j3DiZHufsg==
+X-Received: by 2002:a9d:70c4:: with SMTP id w4mr21718621otj.78.1635967766484;
+        Wed, 03 Nov 2021 12:29:26 -0700 (PDT)
 Received: from [127.0.1.1] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id t22sm814853otd.25.2021.11.03.12.28.49
+        by smtp.gmail.com with ESMTPSA id z13sm748257otq.53.2021.11.03.12.29.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 12:28:50 -0700 (PDT)
+        Wed, 03 Nov 2021 12:29:25 -0700 (PDT)
 From:   Jens Axboe <axboe@kernel.dk>
-To:     Luis Chamberlain <mcgrof@kernel.org>, hare@suse.de,
-        hch@infradead.org
-Cc:     linux-block@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20211103164023.1384821-1-mcgrof@kernel.org>
-References: <20211103164023.1384821-1-mcgrof@kernel.org>
-Subject: Re: [PATCH] block: fix device_add_disk() kobject_create_and_add() error handling
-Message-Id: <163596772995.186346.6961527014377680159.b4-ty@kernel.dk>
-Date:   Wed, 03 Nov 2021 13:28:49 -0600
+To:     vishal.l.verma@intel.com, ira.weiny@intel.com,
+        dave.jiang@intel.com, Luis Chamberlain <mcgrof@kernel.org>,
+        hch@lst.de, dan.j.williams@intel.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nvdimm@lists.linux.dev
+In-Reply-To: <20211103165843.1402142-1-mcgrof@kernel.org>
+References: <20211103165843.1402142-1-mcgrof@kernel.org>
+Subject: Re: [PATCH v3] nvdimm/btt: do not call del_gendisk() if not needed
+Message-Id: <163596776548.186543.8354031131670153996.b4-ty@kernel.dk>
+Date:   Wed, 03 Nov 2021 13:29:25 -0600
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -67,20 +66,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Nov 2021 09:40:23 -0700, Luis Chamberlain wrote:
-> Commit 83cbce957446 ("block: add error handling for device_add_disk /
-> add_disk") added error handling to device_add_disk(), however the goto
-> label for the kobject_create_and_add() failure did not set the return
-> value correctly, and so we can end up in a situation where
-> kobject_create_and_add() fails but we report success.
+On Wed, 3 Nov 2021 09:58:43 -0700, Luis Chamberlain wrote:
+> del_gendisk() should not called if the disk has not been added. Fix this.
 > 
 > 
-> [...]
 
 Applied, thanks!
 
-[1/1] block: fix device_add_disk() kobject_create_and_add() error handling
-      commit: 3554ce121f632db1f56f4e28dfe37da846617c9c
+[1/1] nvdimm/btt: do not call del_gendisk() if not needed
+      commit: 3aefb5ee843fbe4789d03bb181e190d462df95e4
 
 Best regards,
 -- 
