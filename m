@@ -2,87 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6A5444B94
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 00:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 402B4444B98
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 00:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhKCXZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 19:25:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229879AbhKCXZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 19:25:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81B27608FB;
-        Wed,  3 Nov 2021 23:22:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635981772;
-        bh=PW/WWDcyBTnfu0tXHgz//eODV+c6DYwOC/CHWkF43eQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qFr+cdGTuy0DUFnhdx4aAHMJrJAEkmdH5Lyod6yTIRWwtCoYRhioX1jTxa6gc5SPK
-         NXmKrUWDm4/Yq7PW8G1svaxM60yJc/lZWx8yFlosacQSvVpPKkDoWq/Sh+/OW5LrgX
-         TlXf7387E+BC/h2Sn0jWIs2vB8222nR5LOYzYfMPz6OMPBIF9cPFoQxFiIBTZTJ46A
-         u9QU+iZ/GoT+60199T9691ZYtI8lxxmuxBGk1PcyuX1u1hUedRwKhokmvGSsaAIdkW
-         KtlIvbkRr8BIaHvRK7pfpk8raxBtwHdEEF8yIy9HTBKS+zrW/pXCeByD7iQYGagpXH
-         +z1QXWmCA1RrQ==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     reinette.chatre@intel.com, tony.luck@intel.com,
-        nathaniel@profian.com, stable@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/sgx: Free backing memory after faulting the enclave page
-Date:   Thu,  4 Nov 2021 01:22:38 +0200
-Message-Id: <20211103232238.110557-1-jarkko@kernel.org>
-X-Mailer: git-send-email 2.32.0
+        id S229968AbhKCX2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 19:28:14 -0400
+Received: from mout-p-102.mailbox.org ([80.241.56.152]:53176 "EHLO
+        mout-p-102.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229676AbhKCX2M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 19:28:12 -0400
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [80.241.60.233])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4Hl2tz34SczQk2Y;
+        Thu,  4 Nov 2021 00:25:31 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Message-ID: <f688d90c-f625-7b10-fde9-769bc1d49334@v0yd.nl>
+Date:   Thu, 4 Nov 2021 00:25:22 +0100
 MIME-Version: 1.0
+Subject: Re: [PATCH v4 0/3] mwifiex: Add quirk to disable deep sleep with
+ certain hardware revision
+Content-Language: en-US
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+References: <20211103201800.13531-1-verdre@v0yd.nl>
+ <CAHp75VdmynnjFnmxy5ebJ44BpikYt+WaqEhVB6qkftVHGoa2FA@mail.gmail.com>
+From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
+In-Reply-To: <CAHp75VdmynnjFnmxy5ebJ44BpikYt+WaqEhVB6qkftVHGoa2FA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 2A43F264
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The backing memory was not freed, after loading it back to the SGX
-reserved memory. This problem was not prevalent with the systems that
-were available at the time when SGX was first upstreamed, as the swapped
-memory could grow only up to 128 MB.  However, Icelake Server can have
-gigabytes of SGX memory, and thus this has become a real bottleneck.
+On 11/3/21 22:50, Andy Shevchenko wrote:
+> On Wed, Nov 3, 2021 at 10:19 PM Jonas Dreßler <verdre@v0yd.nl> wrote:
+>>
+>> Fourth revision of this patch.
+>> v1: https://lore.kernel.org/linux-wireless/20211028073729.24408-1-verdre@v0yd.nl/T/
+>> v2: https://lore.kernel.org/linux-wireless/20211103135529.8537-1-verdre@v0yd.nl/T/
+>> v3: https://lore.kernel.org/linux-wireless/YYLJVoR9egoPpmLv@smile.fi.intel.com/T/
+> 
+> Not sure why you ignored my tag...
+> As we discussed with Bjorn, it's fine to me to leave messages splitted
+> to two lines.
 
-Free the swap space for other use by calling shmem_truncate_range(),
-when a page is faulted back.
+Whoops, sorry, that wasn't on purpose. I'm still not really used to the whole
+email workflow of the kernel...
 
-Cc: stable@vger.kernel.org
-Fixes: 1728ab54b4be ("x86/sgx: Add a page reclaimer")
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
- arch/x86/kernel/cpu/sgx/encl.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index 001808e3901c..f2d3f2e5028f 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -22,6 +22,7 @@ static int __sgx_encl_eldu(struct sgx_encl_page *encl_page,
- {
- 	unsigned long va_offset = encl_page->desc & SGX_ENCL_PAGE_VA_OFFSET_MASK;
- 	struct sgx_encl *encl = encl_page->encl;
-+	struct inode *inode = file_inode(encl->backing);
- 	struct sgx_pageinfo pginfo;
- 	struct sgx_backing b;
- 	pgoff_t page_index;
-@@ -60,6 +61,9 @@ static int __sgx_encl_eldu(struct sgx_encl_page *encl_page,
- 
- 	sgx_encl_put_backing(&b, false);
- 
-+	/* Free the backing memory. */
-+	shmem_truncate_range(inode, PFN_PHYS(page_index), PFN_PHYS(page_index) + PAGE_SIZE - 1);
-+
- 	return ret;
- }
- 
--- 
-2.32.0
+> 
+>> Changes between v3 and v4:
+>>   - Add patch to ensure 0-termination of version string
+> 
+> 
 
