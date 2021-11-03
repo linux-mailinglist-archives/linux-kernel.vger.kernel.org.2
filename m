@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F5A443E55
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8D1443E57
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:24:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231435AbhKCI0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 04:26:39 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:25358 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbhKCI0i (ORCPT
+        id S231557AbhKCI1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 04:27:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230352AbhKCI1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 04:26:38 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1A3815ve088944;
-        Wed, 3 Nov 2021 16:01:05 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from JammyHuang-PC.aspeed.com (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Nov
- 2021 16:23:57 +0800
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-To:     <eajames@linux.ibm.com>, <mchehab@kernel.org>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <linux-media@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-CC:     Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: [Resend PATCH v3] media: aspeed: fix mode-detect always time out at 2nd run
-Date:   Wed, 3 Nov 2021 16:23:54 +0800
-Message-ID: <20211103082354.408-1-jammy_huang@aspeedtech.com>
+        Wed, 3 Nov 2021 04:27:00 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3014CC061714;
+        Wed,  3 Nov 2021 01:24:24 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id y4so1576710pfa.5;
+        Wed, 03 Nov 2021 01:24:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9NIKEDHqLCRhU12tMy0QZPx9nT1tD6ckOt8ztpTIROk=;
+        b=jV8MnVySVhW/cJONKXCarehnv9b3NpegTgTsbbUBIlm0Di3ouklO0uxonaUD8F3AzO
+         jza//rMwYPAkveezpcqWPB5FRJgvLwD8nPrNd8T/9zfkRjrfkJWhKEyNTH4h9Wv91xgX
+         pcYjCtnhgxY4PrfBj+n8EuaoIM0YcaJKhvBArjXObSIfaGkJRamBF4MwP+AoIFvkPybv
+         sTvHsYTXiVi4YpdF1eJ1RCR/6uv+LtOt6qqUrlpHeccQkikvW2xukSoeEFWaHFzVXcbB
+         rV4nb5x8kvahFbb49rJQRFxj4evwEOzAxdlTLp7kWp52eFOFpQQuEe2dlZnM0+oQFCm8
+         QWvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9NIKEDHqLCRhU12tMy0QZPx9nT1tD6ckOt8ztpTIROk=;
+        b=3HvQ+pzlHWZf96zgXlqqSJA9TRB3aP/ssvie8JGYN/hThPyQgQopOATDJyCZoDm83Z
+         Wm2u9jr6wRkC6C0IA5paMMglHRXXylX/urr3TuSmWxudJgKZQjzF9JjP6Rbhfx55vJgr
+         kJFBf7Ux2/D8tDFAlLyU0knquFZhGsFRkBZVo6AfKLICvuj7Vnss9ec1AhvKlUYA4wz/
+         PSCVF73oaPfk934gO6jiJ0pBN7P0Qme97piEAtwisGvB3sqa2m9F60vhfcR9OqwSlhWf
+         PY7A1L3q2vpnIsrjGzjHL2jrtjcidzjZGMRnzhDwX9UHZWIDnQjT0iaxQNrXVjJkKGND
+         hmMw==
+X-Gm-Message-State: AOAM531J79+g4YlPxh4KSh97qPDL0esZdRGY7/EBNW0yhNbd83/BmH4E
+        kedg/uns3sLlmrW2OoEFuI4=
+X-Google-Smtp-Source: ABdhPJwYSOnyPnCnKQlaMLKH3NA4QjvNt0/tyU103JR+DF1EFGbckBw5EvTrMXA5IvXOxhRyJJx+uQ==
+X-Received: by 2002:a05:6a00:b50:b0:48c:2d75:2ec1 with SMTP id p16-20020a056a000b5000b0048c2d752ec1mr5786440pfo.66.1635927863763;
+        Wed, 03 Nov 2021 01:24:23 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id e8sm1556614pfv.183.2021.11.03.01.24.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 01:24:23 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: yao.jing2@zte.com.cn
+To:     peterz@infradead.org
+Cc:     mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jing Yao <yao.jing2@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] kernel: events: replace snprintf in show functions with sysfs_emit
+Date:   Wed,  3 Nov 2021 08:24:18 +0000
+Message-Id: <20211103082418.27657-1-yao.jing2@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1A3815ve088944
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-aspeed_video_get_resolution() will try to do res-detect again if the
-timing got in last try is invalid. But it will always time out because
-VE_SEQ_CTRL_TRIG_MODE_DET is only cleared after 1st mode-detect.
+From: Jing Yao <yao.jing2@zte.com.cn>
 
-To fix the problem, just clear VE_SEQ_CTRL_TRIG_MODE_DET before setting
-it in aspeed_video_enable_mode_detect().
+coccicheck complains about the use of snprintf() in sysfs show
+functions:
+WARNING use scnprintf or sprintf
 
-Fixes: d2b4387f3bdf ("media: platform: Add Aspeed Video Engine driver")
-Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
-Acked-by: Paul Menzel <pmenzel@molgen.mpg.de>
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+Use sysfs_emit instead of scnprintf or sprintf make more sense.
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
 ---
-v3:
-  - add tag
-v2:
-  - update commit message
----
- drivers/media/platform/aspeed-video.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/events/core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-index 5ffbabf884eb..fea5e4d0927e 100644
---- a/drivers/media/platform/aspeed-video.c
-+++ b/drivers/media/platform/aspeed-video.c
-@@ -518,6 +518,10 @@ static void aspeed_video_enable_mode_detect(struct aspeed_video *video)
- 	aspeed_video_update(video, VE_INTERRUPT_CTRL, 0,
- 			    VE_INTERRUPT_MODE_DETECT);
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index f2253ea729a2..15419ced2a51 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -10921,7 +10921,7 @@ static ssize_t nr_addr_filters_show(struct device *dev,
+ {
+ 	struct pmu *pmu = dev_get_drvdata(dev);
  
-+	/* Disable mode detect in order to re-trigger */
-+	aspeed_video_update(video, VE_SEQ_CTRL,
-+			    VE_SEQ_CTRL_TRIG_MODE_DET, 0);
-+
- 	/* Trigger mode detect */
- 	aspeed_video_update(video, VE_SEQ_CTRL, 0, VE_SEQ_CTRL_TRIG_MODE_DET);
+-	return snprintf(page, PAGE_SIZE - 1, "%d\n", pmu->nr_addr_filters);
++	return sysfs_emit(page, "%d\n", pmu->nr_addr_filters);
  }
-@@ -809,10 +813,6 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
- 			return;
- 		}
+ DEVICE_ATTR_RO(nr_addr_filters);
  
--		/* Disable mode detect in order to re-trigger */
--		aspeed_video_update(video, VE_SEQ_CTRL,
--				    VE_SEQ_CTRL_TRIG_MODE_DET, 0);
--
- 		aspeed_video_check_and_set_polarity(video);
+@@ -10932,7 +10932,7 @@ type_show(struct device *dev, struct device_attribute *attr, char *page)
+ {
+ 	struct pmu *pmu = dev_get_drvdata(dev);
  
- 		aspeed_video_enable_mode_detect(video);
+-	return snprintf(page, PAGE_SIZE-1, "%d\n", pmu->type);
++	return sysfs_emit(page, "%d\n", pmu->type);
+ }
+ static DEVICE_ATTR_RO(type);
+ 
+@@ -10943,7 +10943,7 @@ perf_event_mux_interval_ms_show(struct device *dev,
+ {
+ 	struct pmu *pmu = dev_get_drvdata(dev);
+ 
+-	return snprintf(page, PAGE_SIZE-1, "%d\n", pmu->hrtimer_interval_ms);
++	return sysfs_emit(page, "%d\n", pmu->hrtimer_interval_ms);
+ }
+ 
+ static DEFINE_MUTEX(mux_interval_mutex);
 -- 
 2.25.1
 
