@@ -2,118 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B01443ADE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 02:21:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0EE443B03
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 02:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233353AbhKCBXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 21:23:32 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:45903 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231495AbhKCBXR (ORCPT
+        id S233326AbhKCB2j convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Nov 2021 21:28:39 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:30905 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231219AbhKCB2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 21:23:17 -0400
-Received: by mail-oi1-f174.google.com with SMTP id u2so1414700oiu.12;
-        Tue, 02 Nov 2021 18:20:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=7teodorTO0INls1DjJkT3je8WWhcqqBYQt3N+yxioBA=;
-        b=EDt6+4TgVBQ4iljRIN0mfmPqMrlbUCe825b30v6Dqwn9rmHUIcwV0s1fsgZ649p123
-         4IX/Ni44Evc3GVZn2WQ9ejn6OtirCBTVEWH17H6C2eMZk+54+vplfsXjpgH58Yh0yMvh
-         LazMIR8MR9qFpM8mtixarM8Ysp/vpwlqZi4J4nPEr4xxQJ2XrK479qSIZMPzg8GTmyhQ
-         AZ2m86o2XEUmsQj6nH81V6axECxTeEAVcML219kbkNoEmW8GHWV1K/+kWcP9UZjnb6vH
-         Lx0CSvVD0xrh1RRr6t5KhgDDp4ZubA2RBQHYMSN/S/o2aqK1zPjV0RweAa/0fa8msvZQ
-         YX/g==
-X-Gm-Message-State: AOAM531vn0Y3/nQZDxx5OWEyx3Pt2YUTVsuWdrIXQbADXR99fV8UrCQr
-        A3MAsPEevjtqPWZ8o8DaCw==
-X-Google-Smtp-Source: ABdhPJz+XiqXqa13HySwUt3ExapyVdCd7ov56jToPTJLR5fauSFywxLvyUKmpF4WrlpT7UIBwfhNfA==
-X-Received: by 2002:a05:6808:1408:: with SMTP id w8mr8047512oiv.128.1635902440976;
-        Tue, 02 Nov 2021 18:20:40 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id g21sm174822ooc.31.2021.11.02.18.20.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 18:20:39 -0700 (PDT)
-Received: (nullmailer pid 3880382 invoked by uid 1000);
-        Wed, 03 Nov 2021 01:20:37 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-serial@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-riscv@lists.infradead.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        linux-gpio@vger.kernel.org, Fu Wei <tekkamanninja@gmail.com>
-In-Reply-To: <20211102161125.1144023-12-kernel@esmil.dk>
-References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-12-kernel@esmil.dk>
-Subject: Re: [PATCH v3 11/16] dt-bindings: pinctrl: Add StarFive JH7100 bindings
-Date:   Tue, 02 Nov 2021 20:20:37 -0500
-Message-Id: <1635902437.610819.3880381.nullmailer@robh.at.kernel.org>
+        Tue, 2 Nov 2021 21:28:36 -0400
+Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HkTVy11MXzcZyC;
+        Wed,  3 Nov 2021 09:21:14 +0800 (CST)
+Received: from dggeme751-chm.china.huawei.com (10.3.19.97) by
+ dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Wed, 3 Nov 2021 09:25:58 +0800
+Received: from dggeme751-chm.china.huawei.com ([169.254.210.30]) by
+ dggeme751-chm.china.huawei.com ([169.254.210.30]) with mapi id
+ 15.01.2308.015; Wed, 3 Nov 2021 09:25:58 +0800
+From:   "wangjianjian (C)" <wangjianjian3@huawei.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>
+CC:     "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: RE: [PATCH 02/21] block: Add bio_add_folio()
+Thread-Topic: [PATCH 02/21] block: Add bio_add_folio()
+Thread-Index: AQHXz2GCGZfotygsu0GMr7Q1z+eru6vxBCEA
+Date:   Wed, 3 Nov 2021 01:25:57 +0000
+Message-ID: <d1d037a13796462a968b5de97c459ecc@huawei.com>
+References: <20211101203929.954622-1-willy@infradead.org>
+ <20211101203929.954622-3-willy@infradead.org>
+In-Reply-To: <20211101203929.954622-3-willy@infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.108.234.122]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 02 Nov 2021 17:11:20 +0100, Emil Renner Berthing wrote:
-> Add bindings for the GPIO/pin controller on the JH7100 RISC-V SoC by
-> StarFive Ltd. This is a test chip for their upcoming JH7110 SoC.
-> 
-> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> ---
-> 
-> @Linus: I'm really struggling to find a good way to describe how pin
-> muxing works on the JH7100. As you can see I've now resorted to
-> ascii-art to try to explain it, but please let me know if it's still
-> unclear.
-> 
->  .../pinctrl/starfive,jh7100-pinctrl.yaml      | 307 ++++++++++++++++++
->  1 file changed, 307 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/starfive,jh7100-pinctrl.yaml
-> 
+diff --git a/block/bio.c b/block/bio.c
+index 15ab0d6d1c06..0e911c4fb9f2 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -1033,6 +1033,28 @@ int bio_add_page(struct bio *bio, struct page *page,  }  EXPORT_SYMBOL(bio_add_page);
+ 
++/**
++ * bio_add_folio - Attempt to add part of a folio to a bio.
++ * @bio: BIO to add to.
++ * @folio: Folio to add.
++ * @len: How many bytes from the folio to add.
++ * @off: First byte in this folio to add.
++ *
++ * Filesystems that use folios can call this function instead of 
++calling
++ * bio_add_page() for each page in the folio.  If @off is bigger than
++ * PAGE_SIZE, this function can create a bio_vec that starts in a page
++ * after the bv_page.  BIOs do not support folios that are 4GiB or larger.
++ *
++ * Return: Whether the addition was successful.
++ */
++bool bio_add_folio(struct bio *bio, struct folio *folio, size_t len,
++		size_t off)
++{
++	if (len > UINT_MAX || off > UINT_MAX)
++		return 0;
++	return bio_add_page(bio, &folio->page, len, off) > 0; }
++
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/pinctrl/starfive,jh7100-pinctrl.example.dts:19:18: fatal error: dt-bindings/clock/starfive-jh7100.h: No such file or directory
-   19 |         #include <dt-bindings/clock/starfive-jh7100.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/pinctrl/starfive,jh7100-pinctrl.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1441: dt_binding_check] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1549835
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Newline.
