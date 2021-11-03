@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA5F4448F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E574448F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:31:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbhKCTcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 15:32:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbhKCTcE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 15:32:04 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FACEC061203
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 12:29:27 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id v40-20020a056830092800b0055591caa9c6so5009587ott.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 12:29:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:in-reply-to:references:subject:message-id:date
-         :mime-version:content-transfer-encoding;
-        bh=Y3d6E1SHGhXJn4Dvk0e2wYnCWALGfieMsoRHb/exO38=;
-        b=Nlpj9VQg9J9S4S48NzQMds56GucWKbqxz1cKoQevhTMAyjBD6P8S6lpVHh7hCKXk8Z
-         ubvCBQZIhFNRl75oWDVIjQU86EMiV5BhFO4w0FanEa2QNigig0oKKWExBqrHjOxyfbZD
-         x4AaeV2afFFIW2IAMXWX4paB5XyrVb/Uj4cGO1tMbtbwEDT6wDMYYwljYiyX6/tslQUV
-         8LEDllACSnwAVIXM1ijiEaFVt5mYJnLQ1pujeRWntcFSPR4ETsIliUxJFSTLCUzkcly1
-         wzz2jUT2upPO6voi4OfJ1Xs0INnNeCOy3lE3XgpYnKijSpinp+ba1DsNqikIJMr0lLkr
-         b6DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
-         :message-id:date:mime-version:content-transfer-encoding;
-        bh=Y3d6E1SHGhXJn4Dvk0e2wYnCWALGfieMsoRHb/exO38=;
-        b=tB9RkP2FTKxEhS7bsSlYDKPhFMy6zUGLrGpthDVvRcoSMIfOD2ukG/euTG/N6cggcI
-         GTToLxeTxHOkyZKEC/dpRYncEyCXTU0jGZJcvOZJzHOOGKLCi9/43Jw0uKfEVEV7V1st
-         /jgyzSwFpC13P0Sih6VXvbS3OiUhFBGzJMxX1wuznO71X/PajmtqYauvsRh2yufgZJiP
-         5Be2/IGuD3b0beDN3ojyQUdG18gcr7ZPobOF+gcZ1w0EvOlAiU62i8LotTaKWXk66Cxo
-         ekxIhJaYiJlNHPWyRFCPbgQ1l9YuVPEktSMqqC4TcnUr7evLErixoGxCaFtkPylzNP5o
-         EPsQ==
-X-Gm-Message-State: AOAM531JsypxSbmyEWdPmgDXZZe8A0PrDMaHgK3fcd+eHM/OSpEohMW4
-        TfRBlf/Tp2BAx6YdH/4XWXYNnA==
-X-Google-Smtp-Source: ABdhPJyQzzTX1UgPm7SvPYQQRUJBgfitrA3qciUqirF/PD9KbBoSKsEuMnzT7nuMc4W5j3DiZHufsg==
-X-Received: by 2002:a9d:70c4:: with SMTP id w4mr21718621otj.78.1635967766484;
-        Wed, 03 Nov 2021 12:29:26 -0700 (PDT)
-Received: from [127.0.1.1] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id z13sm748257otq.53.2021.11.03.12.29.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 12:29:25 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     vishal.l.verma@intel.com, ira.weiny@intel.com,
-        dave.jiang@intel.com, Luis Chamberlain <mcgrof@kernel.org>,
-        hch@lst.de, dan.j.williams@intel.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nvdimm@lists.linux.dev
-In-Reply-To: <20211103165843.1402142-1-mcgrof@kernel.org>
-References: <20211103165843.1402142-1-mcgrof@kernel.org>
-Subject: Re: [PATCH v3] nvdimm/btt: do not call del_gendisk() if not needed
-Message-Id: <163596776548.186543.8354031131670153996.b4-ty@kernel.dk>
-Date:   Wed, 03 Nov 2021 13:29:25 -0600
+        id S230500AbhKCTdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 15:33:44 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:45642 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229697AbhKCTdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 15:33:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=cDxZEgsBvG6iig5CDrhw19H0EN2SLZIC0/Kvs9EyApA=; b=gmj0V+SP7kqiQv7v5WyFuUgR2i
+        u2SrW66hYSLro8AtOX4Q8eBA91/DmHcrq58DDst+cyJr5hJkIYBzo6uAxrkXrChrZHQBkNjsPOqom
+        uQc38i7Bzau6+1adeo4bAjPmOaSqnuDjtX3yCgtnhhDxiQv3nS7OaBlybSqsSjYIQ0fE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1miLyD-00CX8c-Dv; Wed, 03 Nov 2021 20:30:49 +0100
+Date:   Wed, 3 Nov 2021 20:30:49 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Wells Lu =?utf-8?B?5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Wells Lu <wellslutw@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
+Subject: Re: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+Message-ID: <YYLjaYCQHzqBzN1l@lunn.ch>
+References: <cover.1635936610.git.wells.lu@sunplus.com>
+ <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
+ <d0217eed-a8b7-8eb9-7d50-4bf69cd38e03@infradead.org>
+ <159ab76ac7114da983332aadc6056c08@sphcmbx02.sunplus.com.tw>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <159ab76ac7114da983332aadc6056c08@sphcmbx02.sunplus.com.tw>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Nov 2021 09:58:43 -0700, Luis Chamberlain wrote:
-> del_gendisk() should not called if the disk has not been added. Fix this.
+> config NET_VENDOR_SUNPLUS
+> 	bool "Sunplus devices"
+> 	default y
+> 	depends on ARCH_SUNPLUS
+
+Does it actually depend on ARCH_SUNPLUS? What do you make use of?
+
+Ideally, you want it to also build with COMPILE_TEST, so that the
+driver gets build by 0-day and all the other build bots.
+
+> 	---help---
+> 	  If you have a network (Ethernet) card belonging to this
+> 	  class, say Y here.
 > 
+> 	  Note that the answer to this question doesn't directly
+> 	  affect the kernel: saying N will just cause the configurator
+> 	  to skip all the questions about Sunplus cards. If you say Y,
+> 	  you will be asked for your specific card in the following
+> 	  questions.
 > 
+> if NET_VENDOR_SUNPLUS
+> 
+> config SP7021_EMAC
+> 	tristate "Sunplus Dual 10M/100M Ethernet (with L2 switch) devices"
+> 	depends on ETHERNET && SOC_SP7021
 
-Applied, thanks!
+Does it actually depend on SOC_SP7021 to build?
 
-[1/1] nvdimm/btt: do not call del_gendisk() if not needed
-      commit: 3aefb5ee843fbe4789d03bb181e190d462df95e4
-
-Best regards,
--- 
-Jens Axboe
-
-
+     Andrew
