@@ -2,94 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C713443CE8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 06:56:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A07EA443CF2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 07:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhKCF7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 01:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhKCF7I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 01:59:08 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B04C061714;
-        Tue,  2 Nov 2021 22:56:33 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id t21so1755067plr.6;
-        Tue, 02 Nov 2021 22:56:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t7wqUhnpf2ljLZMeYQek9+0eByVdd6mRp60BpbWMryQ=;
-        b=XzTUj8/oGxrAKfnwYmCHaL/KD+jX69gDINS4NSle1ndT6Xq4/AYSM21Z+wmrlprrJb
-         9d7dumUxZSWpVmZBdnLV8U7V3m51gFSfAdnJETX2h3kpLDan9YbS+BHBM6Tjkiog3pgC
-         4KWmz73c+mgPVyEUy9KJiz9cNSekXe2/SSbA5gxmTzYLOt0xn5ixuW+fjtrzMPubJ+1z
-         uCUVGleLmqTuXZN47TikvAvxTa5wDJN4FrPxITpC8Jwfq6/r0mJiWOxqYtan5m1Mn4uQ
-         Tr/MMwR+xHeG/aohJNxMWLmBznxBUd7v2I+IVfMc3fKQRlv9FndwEPgHdoY5tnXEK9YD
-         CiXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t7wqUhnpf2ljLZMeYQek9+0eByVdd6mRp60BpbWMryQ=;
-        b=seeIDuRFcIo7pdZcxgMVyDK2VRBIr1LrIydfxWRSPQ7JGZlhGo06OF+cBJe33MrzHP
-         NYPfhiUKt7ej10O/8KOEdOuWV1FHB7Wp4EcOtjy/wvfkZoJ6PqwLMPnak+MXBYTHl16a
-         CXuEoeuoWELsdyOvqLn+yMcdqcQF37i9tOZ8mccJV08l2tLqHE2+HzgZLf6nW9Yvhci9
-         xwXj8ggBqQsNLLI6/ViegUYJa16+3+cnHkF/VmDttMfIkgKRylURYDjtSvKGvE8NRnRe
-         Fuc6ocUxButz9s0cv2UrKUL1uGAHIGfwpqjr2czztr6YvrsUPytGZse5k7cM+yJCR4eY
-         HGhw==
-X-Gm-Message-State: AOAM530bK2nEmImm4tEBtZU6wjNHX3JBIAHzTSt/+F6+sNGvfAjyh3RR
-        f3q7+kAqTY3tSllNHvsx//Q=
-X-Google-Smtp-Source: ABdhPJxTYnso3yZFt5DzHIUepYTD790GmzbWpUZ4pmudKFR/c2QWl9USJ+rf7FL55iu2Ta6Zu3Yc4Q==
-X-Received: by 2002:a17:90a:9915:: with SMTP id b21mr12072347pjp.195.1635918992254;
-        Tue, 02 Nov 2021 22:56:32 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id s28sm780757pgo.86.2021.11.02.22.56.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 22:56:31 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: zhang.mingyu@zte.com.cn
-To:     hca@linux.ibm.com
-Cc:     gor@linux.ibm.com, borntraeger@de.ibm.com, agordeev@linux.ibm.com,
-        svens@linux.ibm.com, egorenar@linux.ibm.com, geert@linux-m68k.org,
-        zhang.mingyu@zte.com.cn, frankja@linux.ibm.com,
-        ebiederm@xmission.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] s390:Use BUG_ON instead of if condition followed by BUG.
-Date:   Wed,  3 Nov 2021 05:56:22 +0000
-Message-Id: <20211103055622.25441-1-zhang.mingyu@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S231254AbhKCGL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 02:11:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47504 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230152AbhKCGL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 02:11:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3D95610FC;
+        Wed,  3 Nov 2021 06:09:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635919760;
+        bh=Lk2hJwn/SegNkcuMLDc4d/7YgbknXWvcWRkXlxJe5ko=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IioUIUW9ruj3Ectpff9Khw2Y0aMsjeTZbyx2HlHyuEXLscEop7HJwAHUWea3amcKY
+         ANN9bC1enr7aohv4Dj4ljmsr2+sav7B0Q0aH3iDxdxTeuKmfaj7maWaBKhNQGd5acL
+         vpQ5p3OQg3JBrG0ftZdnivW6RdH3Ze2uKyOyA+KysbTlTx3UavLNnMewc8M7qSqsY3
+         Gqte11OM+JbMGMe6R5QoJtOCGmirdMQLpCYyJdnQ0vjD8BdftPrGdwYSNVy9kt6Mvk
+         5SAiBC9ZWl53g6Qrttxk3cTbuCyoEkgX3TqEySNL3I//5PqFKNTl8ZDaxDyr6BZraK
+         tTz+A2wvQvodw==
+Received: by mail-lf1-f48.google.com with SMTP id j2so3070775lfg.3;
+        Tue, 02 Nov 2021 23:09:20 -0700 (PDT)
+X-Gm-Message-State: AOAM533TBCGH5EbiamxYkLmZkuU9i0Dzvi6e1gOPaQCxQsqMejNH5wuR
+        JI5jV2FhcptDpVXmOrI21zYuepRovC+62C1dqpo=
+X-Google-Smtp-Source: ABdhPJyWCLx1hA2Ex0BoQRzzE0dGJjAYL5e7kamrUW+pUk1zJI0+C2km8HKzZvTP6XPLNU3m2eWT7IQ6iiiaKqArGIs=
+X-Received: by 2002:ac2:5d4b:: with SMTP id w11mr38038128lfd.676.1635919759013;
+ Tue, 02 Nov 2021 23:09:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <7e805797dd70bc40aac9343f82548324ba28cd72.1635407415.git.yang.guang5@zte.com.cn>
+In-Reply-To: <7e805797dd70bc40aac9343f82548324ba28cd72.1635407415.git.yang.guang5@zte.com.cn>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 2 Nov 2021 23:09:07 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7acBzC--jdGTuiV6gJYn6uJE--J-MLLjcipW1oEMTT=w@mail.gmail.com>
+Message-ID: <CAPhsuW7acBzC--jdGTuiV6gJYn6uJE--J-MLLjcipW1oEMTT=w@mail.gmail.com>
+Subject: Re: [PATCH v2] raid5-ppl: use swap() to make code cleaner
+To:     cgel.zte@gmail.com
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>, linux-kbuild@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>, zealci@zte.com.cn,
+        yang.guang5@zte.com.cn
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Mingyu <zhang.mingyu@zte.com.cn>
+On Thu, Oct 28, 2021 at 1:48 AM <cgel.zte@gmail.com> wrote:
 
-This issue was detected with the help of Coccinelle.
+By the way, who is the owner of cgel.zte@gmail.com? I see the same
+account sending patches for different authors. If it is one person sending
+patches for another person, we need "Signed-off-by" from both of them.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Zhang Mingyu <zhang.mingyu@zte.com.cn>
----
- arch/s390/mm/fault.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
-index d30f5986fa85..48a0231158c9 100644
---- a/arch/s390/mm/fault.c
-+++ b/arch/s390/mm/fault.c
-@@ -824,8 +824,7 @@ void do_secure_storage_access(struct pt_regs *regs)
- 			break;
- 		rc = arch_make_page_accessible(page);
- 		put_page(page);
--		if (rc)
--			BUG();
-+		BUG_ON(rc);
- 		break;
- 	case GMAP_FAULT:
- 	default:
--- 
-2.25.1
-
+Thanks,
+Song
