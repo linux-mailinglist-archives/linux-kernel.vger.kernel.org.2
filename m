@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 306F8444942
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 454A0444948
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 21:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhKCT7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 15:59:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
+        id S231282AbhKCUCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 16:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbhKCT7H (ORCPT
+        with ESMTP id S230248AbhKCUCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 15:59:07 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D8FC061220
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 12:56:31 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id g91-20020a9d12e4000000b0055ae68cfc3dso2404877otg.9
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 12:56:31 -0700 (PDT)
+        Wed, 3 Nov 2021 16:02:47 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A904BC061203
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 13:00:10 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id x64so3507054pfd.6
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 13:00:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TuTvA2VFldo5bKpIsQIYkfQTcqu/XUpeO+ZJ0o08srE=;
-        b=Kc8JPw+Qw4syw39DvCFAkRFc5WtVBGeDV5KtRwWrl0nAo3ukcKEGX0JNPykLf0qpfx
-         Qtx22OiLajageqDIjzdNeIIb07E4fDhKWMAjYJbE5Jmm+1F5bKW93Txpyz0JuUnohPRE
-         GE3UEeEQiAr5D5b7RSd4Yp+FYUAFz4WR9be+pPc14cn/a01nloyJFiq6L9PW7jnPVXkk
-         Xok+mMAlMsjyxEB9CA2RZQt4IfEftkY/0RqtzLOe+zbPta+iNyyF3JmoP0IVlTT+FSfH
-         OGJhr922EJ40Zl3aKElIg4wtIZeBOHCeEsTkxiWNnd9+7IzEqt3jCcqkm3sCrqbIYxVI
-         8WjQ==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KsEvoPiFtl6bqNouQ+fGJ/sS+WphUQOBaAHxMhk3DGA=;
+        b=YrJyFwWp4grOY1mPXnQnE+Hg0CdtJ9GnY15cK8Z+OkAURPeGDQU9vhCR3iWinmvMxu
+         eircPif344srajRe1A7ME4omZYYSKP6lb2gpcbGF/fNpmsEYia772dhvYgiSkWHr2nNp
+         1uIv2yYv7LiawmDTAeTFGEor+MbVXu9FPGqS0TysHRSYA/nZsV+MtC/D4IWZ/eUZzT5b
+         e0cilCc559JgOeQuEGuBNUYx/f5GjZ5fEbgpZKWBmB3A4aw9m/idmSvzXlB75bzjmjEW
+         2akZacI0oiOu+xg/hTDuJlLl4diKlqhZ0iWowZ+6tTMpPiEH6PAJ1nnTkvG7nrkvMQsU
+         Yrkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TuTvA2VFldo5bKpIsQIYkfQTcqu/XUpeO+ZJ0o08srE=;
-        b=aa1dM0LDlPg7CmOK/65LAUssoFigiaYoQE0z1JlafQaKL3wmGU6uRFObLBw3yRygEe
-         iQqphzDTOFcKh1iTYR2G6MAnJwwfiZul4ucqSKXxeVGTrF0LLXgpfS44tJWbhRenIt8G
-         1teaSdjmpRBREsQYJYsRcwnjlUm9PbohHHuHoP15aa0MHsVVIvDizGSKZTQXTEg6fUpZ
-         Ez3uUt2NeFn+oNPhq9AgvUJe9DH/+mBwUo6VNEgQyp2+JoLuzLfqarzWb1iIphrX2UPg
-         3JVVsK+yzpXLEml5os4L5GSscbLDD9oMnYKg0u9zf0z4NkngoBBwV2YGLB+6+vdsj+yY
-         /q1g==
-X-Gm-Message-State: AOAM533k2ShKSMfMy6juIRoX1sxKXxWE1uQB+798B8OrTU+3Kq+RAxA3
-        mpqf7JgagH4KDKEWrY67/grujtVFMWiNEA==
-X-Google-Smtp-Source: ABdhPJxZAUHsHE+0bvOdtD3JkKcJuO8LDLO+Hz6J+nPiBBZWkwAOQI9WRgQ/AfNVGJ8qdhntnN2pSQ==
-X-Received: by 2002:a05:6830:43aa:: with SMTP id s42mr16579659otv.13.1635969390149;
-        Wed, 03 Nov 2021 12:56:30 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id z12sm23945oid.45.2021.11.03.12.56.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 12:56:29 -0700 (PDT)
-Subject: Re: [PATCH 1/4] block: add rq_flags to struct blk_mq_alloc_data
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-block@vger.kernel.org,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux-kernel@vger.kernel.org
-References: <20211019153300.623322-1-axboe@kernel.dk>
- <20211019153300.623322-2-axboe@kernel.dk>
- <20211103195411.GA3156469@roeck-us.net>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <ef74ff48-6d9c-f39c-aff2-8a820440c953@kernel.dk>
-Date:   Wed, 3 Nov 2021 13:56:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KsEvoPiFtl6bqNouQ+fGJ/sS+WphUQOBaAHxMhk3DGA=;
+        b=f0DLMJXibO0f6pa5HAwEXLGu3Fhr6CkcHyfIyECN16OTwwYdDvw3DOOfA/OOCM4sTF
+         nG2U3penaakXVtMbSFqqPbPweCf9XooEJbBgGRY6bsx6pbmvhbfvSZqh296ym9ZYxJfb
+         IaKpwo45ODMxnnjAMFu9vKK8mX+6wZPnXCWuIBTAWQczOKiy13rREXkxKSWDfunRCoz8
+         mA0qBoIsI/tkxQgOlil1Wvyjbgqlc7LbZQNDliFN1VDxBYqwQcEqZlZxrMww2ozuPm1J
+         p4zEwptDcYPOT/FN9hb2/v6+UM7kHmHc5sW2+2boYpH4bwY6rx3zNUj6EROKwlxddhzd
+         b+oA==
+X-Gm-Message-State: AOAM530yHyyPrAel0aD7DPFA2ErPiGbDaGtdiykUu1ciOprX2/F8dK7X
+        ckTlOFdvfSMB68DRSfo9oRZvOA==
+X-Google-Smtp-Source: ABdhPJwBiTa8ecNTn5rCGLRr0uGC3m4OVyK7YALZosFLuZqUjO7nFr2X1bzBQDcNmWw0mlHEb/TsNA==
+X-Received: by 2002:a65:62d1:: with SMTP id m17mr35112758pgv.370.1635969610032;
+        Wed, 03 Nov 2021 13:00:10 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id y9sm5801708pjt.27.2021.11.03.13.00.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 13:00:09 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 20:00:05 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     pbonzini@redhat.com, jmattson@google.com, dmatlack@google.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] KVM: Move INVPCID type check from vmx and svm to
+ the common kvm_handle_invpcid()
+Message-ID: <YYLqRRfaiXrWo7Yz@google.com>
+References: <20211103183232.1213761-1-vipinsh@google.com>
+ <20211103183232.1213761-3-vipinsh@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20211103195411.GA3156469@roeck-us.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211103183232.1213761-3-vipinsh@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/21 1:54 PM, Guenter Roeck wrote:
-> Hi,
-> 
-> On Tue, Oct 19, 2021 at 09:32:57AM -0600, Jens Axboe wrote:
->> There's a hole here we can use, and it's faster to set this earlier
->> rather than need to check q->elevator multiple times.
->>
->> Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> 
-> This patch results in a warning backtrace with one of my qemu
-> boot tests.
+On Wed, Nov 03, 2021, Vipin Sharma wrote:
+> This check will be done in switch statement of kvm_handle_invpcid(),
 
-Should be fixed in the current tree, will go out soonish. If you
-have time, can you pull in:
+Please make the changelog a stand on its own, i.e. don't rely on the shortlog
+for context.
 
-git://git.kernel.dk/linux-block for-next
+> used by both VMX and SVM. It also removes (type > 3) check.
 
-into -git and see if it fixes it for you?
+Use imperative mood, i.e. state what you're doing as a "command", don't refer to
+the patch from a third-person point of view.
 
--- 
-Jens Axboe
+The changelog also needs to call out that, unlike INVVPID and INVEPT, INVPCID is
+not explicitly documented as checking the "type" before reading the operand from
+memory.  I.e. there's a subtle, undocumented functional change in this patch.
 
+Something like:
+
+  Handle #GP on INVCPID due to an invalid type in the common switch statement
+  instead of relying on callers to manually verify the type is valid.  Unlike
+  INVVPID and INVPET, INVPCID is not explicitly documented as checking the type
+  before reading the operand from memory, so deferring the type validity check
+  until after that point is architecturally allowed.
+
+For the code:
+
+Reviewed-by: Sean Christopherson <seanjc@google.com>
