@@ -2,125 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E940D4442BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1DF4442BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232179AbhKCN4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 09:56:15 -0400
-Received: from mail-dm3nam07on2078.outbound.protection.outlook.com ([40.107.95.78]:65334
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231993AbhKCNzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 09:55:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HnYVPJoc9Y4BAdLUjaSQLa3IR2vuVJ9gt8995NIOt9jlMSRh71Oc7eabBuZO3f5EP4BUOmiPg7fMRdM7I6Y/nuCH848OhCISO7IwQHf79SJLhEjqHSBfZw9peOy6WWIPloEIDchn0y7gPkjaF9xs9v2Hzv1zl9QkRK6WBGEJ51Ca7lR6//WXkSxr7j/apq9JtdKA7Q7Em4K+UkMAfA4pdCANsqtgQ37/wfw+GuuVTXe1RAkxJ2r0b5IUu0lft5euGGuV1BPSAJ5nbMLuwTOliICD1cIbDW0g8KpF4nEnnK8cG3ZOgcY18dng7m6bo7/i0FoEIO2dqZLhbPaHU4IpWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WgUJ9s87Od92IhYOLI48pQMKrFUKSuJ7BIUwtBHCr7Y=;
- b=W6VSgp1pre/ZfOwYLmLNW7rYAfAUUnZgHj82ewRgc8DYM6lhUh9hy6SpJ3EZNKZuH5G+Y92YJu+aORrkwumzDYTNc7aQIOC+ukEMfxDuEpBI/hJZHizz2lAiW3M6CurDkgLdg92st5oySLVdDJ3Y7fLFbCJW9si9+3qJoqApSGVLSFkna7LAxf0VRWfN3xq+bbTLUibBqhakGsp5BG279RAS4FrtIqUic5O4j7Ivb47b0EH0VpHvB3oJfsVEu8lRsfKledjzHX9+eiXWLzSgBR7rGvZjwuAqnz69fGNKCnNEjSfjTDYZYYKgvhlaePskx1BaE5xVBJRMD3fd2szQFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.35) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WgUJ9s87Od92IhYOLI48pQMKrFUKSuJ7BIUwtBHCr7Y=;
- b=jfP7/dyK8diy6USb1+EhPcuvJ2uJi3GTG1Se1UXJz/AhU9muJZRlYXU++1siSsgqr6Uafcy+zMmsjS6p0Uo+waJ/wPtke0NrPJsQx10jkAVeY65DfmgQ4kzYh4LU8ReQ1iykkFsVxpVlZxING08ej/NMgtdhUXJIWCrfn7Dny+awHFaUxeF4MMesfGnWpNc3gxEUj8pPIz6VwTCugYVhBSg43NeRfMf9MfPe6IeiLnwzSWeib0VDo521XcowWvSTwfeMbMWuuLzmrH3WaoD9VqX4Skh03qN8Avy+CHuywApAnZ3uop67mENihgxJZFca9iD2vcjbyFsb5zBYX5e4VQ==
-Received: from BN9PR03CA0035.namprd03.prod.outlook.com (2603:10b6:408:fb::10)
- by CO6PR12MB5444.namprd12.prod.outlook.com (2603:10b6:5:35e::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Wed, 3 Nov
- 2021 13:53:12 +0000
-Received: from BN8NAM11FT065.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:fb:cafe::81) by BN9PR03CA0035.outlook.office365.com
- (2603:10b6:408:fb::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.18 via Frontend
- Transport; Wed, 3 Nov 2021 13:53:11 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
- smtp.mailfrom=nvidia.com; alsa-project.org; dkim=none (message not signed)
- header.d=none;alsa-project.org; dmarc=pass action=none
- header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.35; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.35) by
- BN8NAM11FT065.mail.protection.outlook.com (10.13.177.63) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4669.10 via Frontend Transport; Wed, 3 Nov 2021 13:53:10 +0000
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 3 Nov
- 2021 13:53:09 +0000
-Received: from audio.nvidia.com (172.20.187.6) by mail.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Wed, 3 Nov 2021 06:53:07 -0700
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <perex@perex.cz>,
-        <tiwai@suse.com>
-CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH v2 10/10] ASoC: tegra: Fix kcontrol put callback in Mixer
-Date:   Wed, 3 Nov 2021 19:22:26 +0530
-Message-ID: <1635947547-24391-11-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1635947547-24391-1-git-send-email-spujar@nvidia.com>
-References: <1635947547-24391-1-git-send-email-spujar@nvidia.com>
+        id S231618AbhKCN4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 09:56:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:59644 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231254AbhKCNzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 09:55:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F2385ED1;
+        Wed,  3 Nov 2021 06:52:58 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.75.102])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F5E03F7B4;
+        Wed,  3 Nov 2021 06:52:57 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 13:52:49 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [GIT pull] sched/core for v5.16-rc1
+Message-ID: <20211103135249.GA38767@C02TD0UTHF1T.local>
+References: <163572864256.3357115.931779940195622047.tglx@xen13>
+ <163572864855.3357115.17938524897008353101.tglx@xen13>
+ <CAHk-=whEbr+0ZSRMkQ1wqLCeBEiK7o2-Hm=55aTBpdeVxnFbVQ@mail.gmail.com>
+ <CAHk-=whwxyA11LQ+0y73nJAS4ZB=s8CeYM6OGCEzKiy+8fyLiw@mail.gmail.com>
+ <YYD5ti23DQUjdQdz@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a7e3791f-d016-4562-52ef-08d99ed14628
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5444:
-X-Microsoft-Antispam-PRVS: <CO6PR12MB5444FE92F1CC4C42AAA2053FA78C9@CO6PR12MB5444.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VX510ZvckgkQPCoaHluPCKub7Yf8HV+nT0bwS4QD2CY3183/JP/C8Xlplxlh37pvBlEErgdamHgTfbg9i3lacV+SyXawQiCSdITNmAkQ0c5q/ocOhOy3fJWCqLY34nMJEAfvUj99pIXMhej7X250/WGfTz21+D9+wQNwqCAPjAx5ouPXoO1FOorBdX0GXLNoFK23CNnEjHvSKOly4qp88e4dOdjAzgEt8dEprfaW6wjV0U+v5XGKuQkASbAizdhySfj6QTdd84LEZl5RrqK0gBvrWm3HlsVzNr1cEKcEfRp/MAOB0KjyHtIEn/R0dI1X34IdSWvb+z4LPP81YgAsDKgcE0cgXHfbIn765Co/FI4/uaL00GvsN85Qh+iJlAZzPBi8RFPEuNRbmm1OPztMHSOq4eyAV487zFP9OqIcWHwmtYVIpbf4rGrjba0Afx7gHPWFnguPKd4AVUn7PFhLorQNrFUVypS/SgBioy2bQZC1ARkQQKr0x4Oee8BC5ekjERJU8heZh7k0uY7Mrimo+sVmwUS5IEciOCfwKzKZ2x4QA53ea3IYKF3rv5Hi5sUQvrpZxmQkpsS3oZfP+snTAAdguVq2T9vocKAqfQXW9y9gcTQToqSzeL/AEK5M/qfM9LKPUCyvhvVicGcHE2YVknvRta0tv484pV9wq/PPurwzggQFvlBa7XmuMFZapqdYmyECizsoAYHC8l5QX3LLPw==
-X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid02.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(83380400001)(7696005)(2616005)(36906005)(2906002)(316002)(82310400003)(86362001)(6666004)(426003)(7636003)(36860700001)(4326008)(8936002)(54906003)(107886003)(26005)(8676002)(36756003)(110136005)(356005)(47076005)(336012)(70586007)(186003)(5660300002)(508600001)(70206006);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2021 13:53:10.7669
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7e3791f-d016-4562-52ef-08d99ed14628
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT065.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5444
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYD5ti23DQUjdQdz@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kcontrol put callback is expected to return 1 when there is change
-in HW or when the update is acknowledged by driver. This would ensure
-that change notifications are sent to subscribed applications. Filter
-out duplicate updates in Mixer driver.
+On Tue, Nov 02, 2021 at 09:41:26AM +0100, Peter Zijlstra wrote:
+> On Mon, Nov 01, 2021 at 02:27:49PM -0700, Linus Torvalds wrote:
+> > On Mon, Nov 1, 2021 at 2:01 PM Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > >
+> > > Unwinders that need locks because they can do bad things if they are
+> > > working on unstable data are EVIL and WRONG.
+> > 
+> > Note that this is fundamental: if you can fool an unwider to do
+> > something bad just because the data isn't stable, then the unwinder is
+> > truly horrendously buggy, and not usable.
+> 
+> From what I've been led to believe, quite a few of our arch unwinders
+> seem to fall in that category. They're mostly only happy when unwinding
+> self and don't have many guardrails on otherwise.
+> 
+> > It could be a user process doing bad things to the user stack frame
+> > from another thread when profiling is enabled.
+> 
+> Most of the unwinders seem to only care about the kernel stack. Not the
+> user stack.
 
-Fixes: 05bb3d5ec64a ("ASoC: tegra: Add Tegra210 based Mixer driver")
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-Suggested-by: Jaroslav Kysela <perex@perex.cz>
-Suggested-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/tegra/tegra210_mixer.c | 3 +++
- 1 file changed, 3 insertions(+)
+Yup; there are usually separate unwinders for user/kernel, since there
+are different constaints (and potentially different ABIs for unwinding).
 
-diff --git a/sound/soc/tegra/tegra210_mixer.c b/sound/soc/tegra/tegra210_mixer.c
-index 55e6177..d2d1946 100644
---- a/sound/soc/tegra/tegra210_mixer.c
-+++ b/sound/soc/tegra/tegra210_mixer.c
-@@ -210,6 +210,9 @@ static int tegra210_mixer_put_gain(struct snd_kcontrol *kcontrol,
- 	id = (reg - TEGRA210_MIXER_GAIN_CFG_RAM_ADDR_0) /
- 	     TEGRA210_MIXER_GAIN_CFG_RAM_ADDR_STRIDE;
- 
-+	if (mixer->gain_value[id] == ucontrol->value.integer.value[0])
-+		return 0;
-+
- 	mixer->gain_value[id] = ucontrol->value.integer.value[0];
- 
- 	err = tegra210_mixer_configure_gain(cmpnt, id, instant_gain);
--- 
-2.7.4
+> > It could be debug code unwinding without locks for random reasons.
+> > 
+> > So I really don't like "take a lock for unwinding". It's a pretty bad
+> > bug if the lock required.
+> 
+> Fair enough; te x86 unwinder is pretty robust in this regard, but it
+> seems to be one of few :/
 
+FWIW, the arm64 kernel unwinder also shouldn't blow up (so long as the
+target stack is pinned via try_get_stack() or similar).
+
+However, depending on how the task reuses the stack, the results can be
+entirely bogus rather than just stale, since data on the stack can look
+like a kernel pointer (even if that's fairly unllikely). I'm happy to
+believe that we don't care aobut that for wchan, but it's not something
+I'd like to see spread.
+
+> > The "Link" in the commit also is entirely useless, pointing back to
+> > the emailed submission of the patch, rather than any useful discussion
+> > about why the patch happened.
+> 
+> So the initial discussion started here:
+> 
+>   https://lkml.kernel.org/r/20210923233105.4045080-1-keescook@chromium.org
+> 
+> A later thread that might also be of interest is:
+> 
+>   https://lkml.kernel.org/r/YWgyy+KvNLQ7eMIV@shell.armlinux.org.uk
+> 
+> Also, an even later thread proposes to push that lock into more stack
+> unwinding functions (anything doing remote unwinds):
+> 
+>   https://lkml.kernel.org/r/20211022150933.883959987@infradead.org
+> 
+> But it seems to be you're thinking that's fundamentally buggered and
+> people should instead invest in fixing their unwinders already.
+> 
+> Now, as is, this stuff is user exposed through /proc/$pid/{wchan,stack}
+> and as such I think it *can* do with a few extra guardrails in generic
+> code. OTOH, /proc/$pid/stack is root only.
+> 
+> Also, the remote stack-trace code is hooked into bpf (because
+> kitchen-sink) and while I didn't look too hard, I can imagine it could
+> be used to trigger crashes on our less robust architectures if prodded
+> just right.
+
+I do worry that remote unwinds from BPF are just silently generating
+junk, but it's not clear to me what they're actually used for and how
+much that matters. I don't understand why a remote unwind is necessary
+at all.
+
+> Should I care about all this from a generic code PoV, or simply let the
+> architectures that got it 'wrong' deal with it?
+
+FWIW I'm happy either way. There are some upcoming improvements to the
+arm64 unwinder that currently conflict and I need to know whether to
+wait and rebase or assume that we take those first.
+
+Thanks,
+Mark.
