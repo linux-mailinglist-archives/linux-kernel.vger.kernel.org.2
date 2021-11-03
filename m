@@ -2,108 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB3A4445A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7014F4445B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:16:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232832AbhKCQR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 12:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232828AbhKCQR0 (ORCPT
+        id S232896AbhKCQSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 12:18:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:24496 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232888AbhKCQSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 12:17:26 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12944C061205
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 09:14:49 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id x16-20020a17090a789000b001a69735b339so1771781pjk.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 09:14:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Gcc0EUM1EauKNq+43vPpaFdtVYVD7iAXZHWErocDtp0=;
-        b=GerNQsh9cv7fbDFjWov4KivBQdKjB2oHp6+hu5L0IzSuHrFf7yC9nsNjEK4mKa1thg
-         lIef1g1Q5waG3Bo27dyQD9IGceZ5FdA0UnVr/ZFrZRZrTE5L/cCOMJ3+Ap+sF3V9itpe
-         xd7YTDezqpu5NUNKOUXH5YXvAc+giJbRz+574=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Gcc0EUM1EauKNq+43vPpaFdtVYVD7iAXZHWErocDtp0=;
-        b=k1Tlz/OiPlrXWgw0OzIRf4D49mDWCpsuiVwEdzZhJJENHErsas/lsPkvmGnuWTMua9
-         x6vrK/rSqRETSI6YWqwydqG3Z5jw/vd0kGrGpsRGlygKgOYGaGPFoZZTD8caaxktHx/2
-         Vl3WmOv19T13TPJ6l0dv/s85dT9maoZdIbZTSdl0mmUBQuPqHjiFjdpzQAAL1PM5YOKB
-         yhLKUn3SKFcZgZJiCoNnHwa52Jj4M1IpRhYwms41vFJPg/TvvkyG7qgFYiRD+80WUwQL
-         EymCvTbchd/UyaXaaJgDnCGK0cGeFHWIM288S9R8xFZvMpP4b+SuUBFL7gMZ9PVBoN+V
-         WZSg==
-X-Gm-Message-State: AOAM531luDqd8T5CzhTkgT+DxEesTTrgs55Ywamn8DD5FxA/8DU72Xgx
-        3M6Ob1ulybtRl2KUFKRW/dEorNTdj6jBoQ==
-X-Google-Smtp-Source: ABdhPJwfVfLAFqcLr/+fzW2AVuq4++yVTWfgk5KQYqUOGtMy5pycxzm1sypp4lVosI+3B8C3SbUzIg==
-X-Received: by 2002:a17:90b:124d:: with SMTP id gx13mr15668790pjb.106.1635956088496;
-        Wed, 03 Nov 2021 09:14:48 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id u33sm3296082pfg.0.2021.11.03.09.14.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 09:14:48 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 09:14:47 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: selftests: seccomp_bpf failure on 5.15
-Message-ID: <202111030838.CB201E4@keescook>
-References: <YXrN+Hnl9pSOsWlA@arighi-desktop>
- <202110280955.B18CB67@keescook>
- <878rydm56l.fsf@disp2133>
- <202110281136.5CE65399A7@keescook>
- <8735okls76.fsf@disp2133>
- <202110290755.451B036CE9@keescook>
- <87y2665sf8.fsf@disp2133>
+        Wed, 3 Nov 2021 12:18:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635956164;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+Opb5XjIjvU4WythImF8wPWmsUb4lObJFswO1EWR5cA=;
+        b=QnAthvRoDJ1/6CFzuMDYP8jpWMzeB8U10e4XFbeQnQ+HJ+CjwnyuzEdq/BOhmqfmCGYn6A
+        CdoWShGEIHcX7LyTRJSab2dC4lu40d0M996MjqmyzYxAw6vcKpnFSGh22zCpouInvVjPhY
+        HqYYJ+T5TuWw711bSsXTdMfyN3ofOLw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-243-G_MzGzteMOyKF7Qgby8XBw-1; Wed, 03 Nov 2021 12:15:57 -0400
+X-MC-Unique: G_MzGzteMOyKF7Qgby8XBw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C4EB81808318;
+        Wed,  3 Nov 2021 16:15:56 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5698A60C04;
+        Wed,  3 Nov 2021 16:15:56 +0000 (UTC)
+From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Subject: [PATCH v1] nested.c: replace spaces with tabs
+Date:   Wed,  3 Nov 2021 12:15:13 -0400
+Message-Id: <20211103161513.789230-1-eesposit@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y2665sf8.fsf@disp2133>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 01:22:19PM -0500, Eric W. Biederman wrote:
-> Kees Cook <keescook@chromium.org> writes:
-> 
-> > On Thu, Oct 28, 2021 at 05:06:53PM -0500, Eric W. Biederman wrote:
-> >> Kees Cook <keescook@chromium.org> writes:
-> >> 
-> >> > On Thu, Oct 28, 2021 at 12:26:26PM -0500, Eric W. Biederman wrote:
-> >> 
-> >> Is it a problem that the debugger can see the signal if the process does
-> >> not?
-> >
-> > Right, I'm trying to understand that too. However, my neighbor just lost
-> > power. :|
-> >
-> > What I was in the middle of checking was what ptrace "sees" going
-> > through a fatal SIGSYS; my initial debugging attempts were weird.
-> 
-> Kees have you regained power and had a chance to see my SA_IMMUTABLE
-> patch?
+For some reasons, some code blocks are indented with spaces
+instead of tabs. Checkpatch also complains when having to
+deal with this code. Fix this at least in nested.c
 
-Apologies; I got busy with other stuff, but I've tested this now. It's
-happy and I see the expected behaviors again. Note that I used the patch
-with this change:
+Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
+---
+ arch/x86/kvm/svm/nested.c | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
 
--#define SA_IMMUTABLE           0x008000000
-+#define SA_IMMUTABLE           0x00800000
-
-Tested-by: Kees Cook <keescook@chromium.org>
-
-Thanks!
-
--Kees
-
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index f8b7bc04b3e7..3cf04ef8738a 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -55,19 +55,20 @@ static void nested_svm_inject_npf_exit(struct kvm_vcpu *vcpu,
+ 
+ static void svm_inject_page_fault_nested(struct kvm_vcpu *vcpu, struct x86_exception *fault)
+ {
+-       struct vcpu_svm *svm = to_svm(vcpu);
+-       WARN_ON(!is_guest_mode(vcpu));
++	struct vcpu_svm *svm = to_svm(vcpu);
++
++	WARN_ON(!is_guest_mode(vcpu));
+ 
+-       if (vmcb_is_intercept(&svm->nested.ctl, INTERCEPT_EXCEPTION_OFFSET + PF_VECTOR) &&
++	if (vmcb_is_intercept(&svm->nested.ctl, INTERCEPT_EXCEPTION_OFFSET + PF_VECTOR) &&
+ 	   !svm->nested.nested_run_pending) {
+-               svm->vmcb->control.exit_code = SVM_EXIT_EXCP_BASE + PF_VECTOR;
+-               svm->vmcb->control.exit_code_hi = 0;
+-               svm->vmcb->control.exit_info_1 = fault->error_code;
+-               svm->vmcb->control.exit_info_2 = fault->address;
+-               nested_svm_vmexit(svm);
+-       } else {
+-               kvm_inject_page_fault(vcpu, fault);
+-       }
++		svm->vmcb->control.exit_code = SVM_EXIT_EXCP_BASE + PF_VECTOR;
++		svm->vmcb->control.exit_code_hi = 0;
++		svm->vmcb->control.exit_info_1 = fault->error_code;
++		svm->vmcb->control.exit_info_2 = fault->address;
++		nested_svm_vmexit(svm);
++	} else {
++		kvm_inject_page_fault(vcpu, fault);
++	}
+ }
+ 
+ static u64 nested_svm_get_tdp_pdptr(struct kvm_vcpu *vcpu, int index)
+@@ -1175,7 +1176,7 @@ static int svm_check_nested_events(struct kvm_vcpu *vcpu)
+ 		 * vmcb field, while delivering the pending exception.
+ 		 */
+ 		if (svm->nested.nested_run_pending)
+-                        return -EBUSY;
++			return -EBUSY;
+ 		if (!nested_exit_on_exception(svm))
+ 			return 0;
+ 		nested_svm_inject_exception_vmexit(svm);
+@@ -1376,7 +1377,7 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+ 	 * valid for guest mode (see nested_vmcb_check_save).
+ 	 */
+ 	cr0 = kvm_read_cr0(vcpu);
+-        if (((cr0 & X86_CR0_CD) == 0) && (cr0 & X86_CR0_NW))
++	if (((cr0 & X86_CR0_CD) == 0) && (cr0 & X86_CR0_NW))
+ 		goto out_free;
+ 
+ 	/*
 -- 
-Kees Cook
+2.27.0
+
