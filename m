@@ -2,74 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F0D44466B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 17:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76147444676
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233029AbhKCRBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 13:01:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233022AbhKCRBX (ORCPT
+        id S233023AbhKCRCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 13:02:33 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:35874 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232870AbhKCRCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 13:01:23 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B35CC061714;
-        Wed,  3 Nov 2021 09:58:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=5/Oh1CS9h71CIsJQovdYgXMSqtjiHo7nIH5ykNGJtKs=; b=ynjSlN6AFWr6IdwjHSC6Q/CWRL
-        +7F70cvZLbDS+Dmwx6n96R78bNWdSaN4Z1tcOcrrhLzx/XpjEjjp/TLpHSGH7unZM7mxi83Ig88Zo
-        ifTakid922yfGkA6YGf/yoHcOXMtQQl3bLVN5XLx0ns7UAuh7/2DBEZQDD/NeKzClH4kX8kH6dbqm
-        h6Kx01Wwfq2TTT2/fgiKfta6NDek+rrjbJG5WVdFxQBCMLjOOjlqP56N3lXswLEZebHaSqouB2ru0
-        /UbGR985Qb9c5KwMp50T8qOEscMreqol4bEo5yUigigDNitjGKb0Z82NgGmGpo/A8EepRL76nVSCu
-        twPVGz8w==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1miJb2-005sm5-M8; Wed, 03 Nov 2021 16:58:44 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     axboe@kernel.dk, hch@lst.de, dan.j.williams@intel.com,
-        vishal.l.verma@intel.com, dave.jiang@intel.com,
-        ira.weiny@intel.com, mcgrof@kernel.org
-Cc:     linux-block@vger.kernel.org, nvdimm@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] nvdimm/btt: do not call del_gendisk() if not needed
-Date:   Wed,  3 Nov 2021 09:58:43 -0700
-Message-Id: <20211103165843.1402142-1-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        Wed, 3 Nov 2021 13:02:32 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 69EFC1F782;
+        Wed,  3 Nov 2021 16:59:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635958795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=CZTso4db4Dar0whtzqs3akzB0bY3rGVZ6G9gzNMkSvI=;
+        b=m+8PyeoG2r9EvepaoRjSnJhUauQo7s69RvD++FEIn8UMwIML+is4JVtNWHsifUCGI4EOAp
+        EZK6n+P42yGr8EYHTRj3zKa6U16OmB6na3SLHMU4VAD69/2ptgtGqqG9d0n39liyYw68S0
+        XMxf3jwmqkMCTZZFj4aNWh7KVmKR4j8=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5070013E87;
+        Wed,  3 Nov 2021 16:59:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id DYL7EgvAgmHZaAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Wed, 03 Nov 2021 16:59:55 +0000
+From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To:     cgroups@vger.kernel.org
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
+        Hao Sun <sunhao.th@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] cgroup: rstat: Mark benign data race to silence KCSAN
+Date:   Wed,  3 Nov 2021 17:58:45 +0100
+Message-Id: <20211103165845.38226-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-del_gendisk() should not called if the disk has not been added. Fix this.
+There is a race between updaters and flushers (flush can possibly miss
+the latest update(s)). This is expected as explained in
+cgroup_rstat_updated() comment, add also machine readable annotation so
+that KCSAN results aren't noisy.
 
-Fixes: 41cd8b70c37a ("libnvdimm, btt: add support for blk integrity")
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Reported-by: Hao Sun <sunhao.th@gmail.com>
+Link: https://lore.kernel.org/r/CACkBjsbPVdkub=e-E-p1WBOLxS515ith-53SFdmFHWV_QMo40w@mail.gmail.com
+Suggested-by: Hao Sun <sunhao.th@gmail.com>
+
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
 ---
+ kernel/cgroup/rstat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This v3 just makes it clear that this is just wrong regarless of the
-kernel, and adds Christoph's Reviewed-by tag.
+Hao was silent in the reporting mail thread, so I'm sending the
+suggested annotating patch.
 
- drivers/nvdimm/btt.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
-index f10a50ffa047..a62f23b945f1 100644
---- a/drivers/nvdimm/btt.c
-+++ b/drivers/nvdimm/btt.c
-@@ -1537,7 +1537,6 @@ static int btt_blk_init(struct btt *btt)
- 		int rc = nd_integrity_init(btt->btt_disk, btt_meta_size(btt));
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index 1486768f2318..1abe74114527 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -35,7 +35,7 @@ void cgroup_rstat_updated(struct cgroup *cgrp, int cpu)
+ 	 * instead of NULL, we can tell whether @cgrp is on the list by
+ 	 * testing the next pointer for NULL.
+ 	 */
+-	if (cgroup_rstat_cpu(cgrp, cpu)->updated_next)
++	if (data_race(cgroup_rstat_cpu(cgrp, cpu)->updated_next))
+ 		return;
  
- 		if (rc) {
--			del_gendisk(btt->btt_disk);
- 			blk_cleanup_disk(btt->btt_disk);
- 			return rc;
- 		}
+ 	raw_spin_lock_irqsave(cpu_lock, flags);
 -- 
-2.33.0
+2.33.1
 
