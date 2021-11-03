@@ -2,88 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB0E4444F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4019B4444F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231856AbhKCPyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 11:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229885AbhKCPym (ORCPT
+        id S231986AbhKCPzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 11:55:13 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11490 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229885AbhKCPzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 11:54:42 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E2CC061714;
-        Wed,  3 Nov 2021 08:52:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=QtBcDmePoYyEOlHlNKyccMMS2h7KJBCiJJZSMM3TdMk=; b=Ql2c1y3bVmcJUr6BfUuMTWbFrZ
-        dLGh2UBFXY1Io0ffarLFjF8KBV5c53d05RIFSwkjRR0YAZnjziyC79CZbiuahnx9Kt68TrEA9s7nd
-        zoqlpx+cMmIeK1uqdNkdpw0XDv80scECHhnq05Aqi6a4ABY3RRRhM1R6FqvU7Q5wYUPZWiiq9qdRr
-        1vvqzP/LR9TjGj81kl7dmSxyR7L12u00Y6Tdv4iuhQ2s3KbaySrdjGywUStsNc6ZtE0Uu44L5VGUT
-        bZv9XCsujkqIqgUxhw+8irMNPdCznMCUSnPxeq4gLIcNRUqYgc9CgagRxQpyfHFoYiOnKhVUY2Oed
-        cq4JsXnQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1miIYS-005bsf-Uo; Wed, 03 Nov 2021 15:52:01 +0000
-Subject: Re: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
-To:     Wells Lu <wellslutw@gmail.com>, davem@davemloft.net,
-        kuba@kernel.org, robh+dt@kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        p.zabel@pengutronix.de
-Cc:     Wells Lu <wells.lu@sunplus.com>
-References: <cover.1635936610.git.wells.lu@sunplus.com>
- <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d0217eed-a8b7-8eb9-7d50-4bf69cd38e03@infradead.org>
-Date:   Wed, 3 Nov 2021 08:52:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 3 Nov 2021 11:55:12 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A3FqUqv007979;
+        Wed, 3 Nov 2021 15:52:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=fm92TBvs3qYC4E7nOymJrhuSFDK74182N2yTteebE6I=;
+ b=N1BpCxvLbURxRPJUeFzpongwGcTwB+c4urtyMG0JR8IEqXe1ZnX12RvfttUatM+vv+1U
+ KueS6/AD9RGH50bBhB9hWlH1XZ3SwuMToa3kBEGzCpWcu4Y1ps1KChbx9ohLe1V/yjFW
+ JJuoZGWuMXqmeQn/V3tJptkbPM07mloves+eHMgWdx9k2ma3rwsxGmr3k9YB60oyEB9G
+ tlC9Mwzx/DMR8eeY6G33fGZCI2okn3q4lvxEYDV+MxBUO7omZEqpo03Xwyh0i84cYIlx
+ GutCJAPuvHtvWhlQlqQXH8KZIgip1Rc7NtXcM1czkN3rYpKrhx8z7SRlfeANVDDOOPRX dg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3c3vt9s31d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Nov 2021 15:52:34 +0000
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1A3FqUiR007967;
+        Wed, 3 Nov 2021 15:52:33 GMT
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3c3vt9s2yy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Nov 2021 15:52:33 +0000
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1A3FhEED024021;
+        Wed, 3 Nov 2021 15:52:31 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 3c0wp9wp4u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Nov 2021 15:52:31 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1A3FqSDk7012872
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 3 Nov 2021 15:52:28 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9DB424C044;
+        Wed,  3 Nov 2021 15:52:28 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4D4B34C040;
+        Wed,  3 Nov 2021 15:52:28 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  3 Nov 2021 15:52:28 +0000 (GMT)
+From:   Thomas Richter <tmricht@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, sumanthk@linux.ibm.com, maddy@linux.ibm.com,
+        jolsa@redhat.com
+Cc:     svens@linux.ibm.com, gor@linux.ibm.com, hca@linux.ibm.com,
+        Thomas Richter <tmricht@linux.ibm.com>
+Subject: [PATCH] perf/test: Test case 27 broken on s390 in linux-next
+Date:   Wed,  3 Nov 2021 16:52:15 +0100
+Message-Id: <20211103155215.2941895-1-tmricht@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: zKlrLdJOsV68AglyUc5K14mB3ZJL1LSZ
+X-Proofpoint-GUID: HLnGwBEJoksy2vqXj4izKM-Cxg8o_XyH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-03_05,2021-11-03_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 malwarescore=0 phishscore=0 adultscore=0 clxscore=1011
+ suspectscore=0 mlxscore=0 lowpriorityscore=0 spamscore=0 bulkscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111030089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
+Commit 10269a2ca2b08c ("perf test sample-parsing: Add endian test for struct branch_flags")
+broke the test case 27 (Sample parsing) on s390 on linux-next tree:
 
-On 11/3/21 4:02 AM, Wells Lu wrote:
-> diff --git a/drivers/net/ethernet/sunplus/Kconfig b/drivers/net/ethernet/sunplus/Kconfig
-> new file mode 100644
-> index 0000000..a9e3a4c
-> --- /dev/null
-> +++ b/drivers/net/ethernet/sunplus/Kconfig
-> @@ -0,0 +1,20 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Sunplus Ethernet device configuration
-> +#
-> +
-> +config NET_VENDOR_SUNPLUS
-> +	tristate "Sunplus Dual 10M/100M Ethernet (with L2 switch) devices"
-> +	depends on ETHERNET && SOC_SP7021
-> +	select PHYLIB
-> +	select PINCTRL_SPPCTL
-> +	select COMMON_CLK_SP7021
-> +	select RESET_SUNPLUS
-> +	select NVMEM_SUNPLUS_OCOTP
-> +	help
-> +	  If you have Sunplus dual 10M/100M Ethernet (with L2 switch)
-> +	  devices, say Y.
-> +	  The network device supports dual 10M/100M Ethernet interfaces,
-> +	  or one 10/100M Ethernet interface with two LAN ports.
-> +	  To compile this driver as a module, choose M here.  The module
-> +	  will be called sp_l2sw.
+  # ./perf test -Fv 27
+  27: Sample parsing
+  --- start ---
+  parsing failed for sample_type 0x800
+  ---- end ----
+  Sample parsing: FAILED!
+  #
 
-Please use NET_VENDOR_SUNPLUS in the same way that other
-NET_VENDOR_wyxz kconfig symbols are used. It should just enable
-or disable any specific device drivers under it.
+The cause of the failure is a wrong #define BS_EXPECTED_BE statement
+in above commit.  Correct this define and the test case runs fine.
 
+Output After:
+  # ./perf test -Fv 27
+  27: Sample parsing                                                  :
+  --- start ---
+  ---- end ----
+  Sample parsing: Ok
+  #
 
+Fixes: 10269a2ca2b08c ("perf test sample-parsing: Add endian test for struct branch_flags")
+Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+---
+ tools/perf/tests/sample-parsing.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/perf/tests/sample-parsing.c b/tools/perf/tests/sample-parsing.c
+index c83a11514129..9c7af55b74db 100644
+--- a/tools/perf/tests/sample-parsing.c
++++ b/tools/perf/tests/sample-parsing.c
+@@ -36,7 +36,7 @@
+  * These are based on the input value (213) specified
+  * in branch_stack variable.
+  */
+-#define BS_EXPECTED_BE	0xa00d000000000000
++#define BS_EXPECTED_BE	0xa000d00000000000
+ #define BS_EXPECTED_LE	0xd5000000
+ #define FLAG(s)	s->branch_stack->entries[i].flags
+ 
 -- 
-~Randy
+2.25.1
+
