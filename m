@@ -2,88 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83693444AFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 00:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8358444AFD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 00:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhKCXC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 19:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33252 "EHLO
+        id S230046AbhKCXGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 19:06:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbhKCXCz (ORCPT
+        with ESMTP id S229698AbhKCXGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 19:02:55 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BD8C06127A
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 16:00:18 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id b13so4093276plg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 16:00:18 -0700 (PDT)
+        Wed, 3 Nov 2021 19:06:32 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA03C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 16:03:55 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id m26so3941225pff.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 16:03:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QvH8jVpduU9Ry8vHYgUc5mc6i8LMFY8Z87vcMeWdv8s=;
-        b=HpGzsg0GWVHuIoEHpWXx21vyHLVCbLc88ZJKIywK1fGEW8JOlRQLGHpq6GryiL6Blx
-         QZ+zLIGdMxxNXPwH2w/NsjQjr/9g3MKIsXKJpVbhStsDyaj19uIhFr6fhwHr8W9aXvte
-         ChkWgjmHrJ7lRArSuE8WHmFv3qJjBeyOl1zPmi18qS6Fg0MUIjk2Y3BjDwqPI6svOz+1
-         Cs8S+5AKkKPi/I3c4HzIQnD+DxTqFsStS2qt7pZ3L7Qao/D1w87J3Z4j1b1xvTJj7iEx
-         Lt1qR7SqK2tiqxMqQbLOeiMhSojvH4bXaXqKh+EopnRiu2kAFR561R//AtSM2z7AjM3c
-         v/Zw==
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NS4eT639BOwvF4y/0Jri0aipGFDU+GOyeNwMYhJ1CsI=;
+        b=ty211RcINhjstR5hvJ6vOlvNuK2U2UPclVemOWPNOv+RZAnKeJopU68QRFe2L/JRUl
+         8hLDX/IT6xv6UQFfBLJEAwwvXgdwfIZg7UBEu+oqaHI1BZNUx3fnTTGpbUV3Wsf9ZUy4
+         7miviuW++N0oDU+/ilKbv3A9RXQBqTYTnJ+AHkUqMw9x4s6U7q/iWZg55uuma9Jc+AF5
+         00NRbWmxAhmnB5rJwtCEGAjFoZQkplzh0QqClwj1K5VgdpOVRTF9Cnc93VnqKj7XPVkn
+         Jq8f0PZ3taqfiQCW+kJb+B5xz35AiXMMwesxd2L1YevFsWcStkK+HPZAX5b70bGCJG/3
+         Amfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QvH8jVpduU9Ry8vHYgUc5mc6i8LMFY8Z87vcMeWdv8s=;
-        b=vlmDF+RLwrr6Gx9JB9aft2eQQjuOfWYx2SECfm4QBI956sRYkmvKRhtSyM9CXh0g0j
-         QEdSKCLSw7ht06ee1RhwrR08IXuhJbI8iAJOWzL1deM99eOrrxeU237NcdlXcHciqZt/
-         YR1vZ5MVOMo6q3cJ6NrOYGjFNeGeIL1V3+6qApQH+mfdNKR2HgLXuxlbOd4Kzx6jVd8M
-         loLHMiTh4O7WqjqmTcpauJijJY44wLqSe+qvowkQ71zijegTvEsGEXTlsUeszSv+obw6
-         TAjOD6QJZq2BpJRu73qcJWZQ/A5FstOzitV99oIL82bega6yTO1sXAZsugg+p9ZC0s+B
-         PpAA==
-X-Gm-Message-State: AOAM533DtVCW5O6aBTi5fxSTlsa6zg73Xge/V3n4+lIzERbjT0FYJxIB
-        tbfrisLxJwgPailK8g9RHlVFJQ==
-X-Google-Smtp-Source: ABdhPJw0q1ZXVogS7b+RYqM10dtu6xUCKqz0xNrOZcPtDHZjAQoVR4jb+6yXX2IgPe7UBuzpBa3FjA==
-X-Received: by 2002:a17:90b:3ec6:: with SMTP id rm6mr14073297pjb.41.1635980417597;
-        Wed, 03 Nov 2021 16:00:17 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id p2sm397906pgb.1.2021.11.03.16.00.16
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NS4eT639BOwvF4y/0Jri0aipGFDU+GOyeNwMYhJ1CsI=;
+        b=K7wRF0+4sSo/WP9Aqr2EJUyQpdJxpdbeqO6Bf8fqqLXPNRatezXgcdyaFlcyGeFOfh
+         fM6CKtNfb4qzT04HYAYzT/Ib3CcUhbkBXzDWZ4kgzBmEP9XyXCyBElV1hpU+ntOQPGrs
+         gRZHzNI6tPLcYUKuOa1OCZdLKkDtW7H7KVONy3lv8tAajFUOan7BXHMclyJv8dZQEq1i
+         pZEQiUR48zX1L4aBiMCEzfoqgxI1tu6G76eQbDKWp0cP5PGBBgdH0Qpe0HOmfs4+1oYc
+         n//3NB634XrbQQ0hnrSFddBPbRFQsQ35+3kQt3nAcJR9Lv0RpdYoQ9A8ItqVGBnHjj29
+         FWqA==
+X-Gm-Message-State: AOAM531ps3txo2mouA4KHCkpL1lKGQXBzFak5viDvWAQrxbVnATdxwoR
+        22RSrbdJ/56yM6AYt1SQWfgIeQ==
+X-Google-Smtp-Source: ABdhPJz2SB8By8BJklvuj+Exd4PWOudvGfWoAsy72NJgERh9sYTaGsqL7TUqf2f9ujv2zJAok/v6FA==
+X-Received: by 2002:a63:6f4c:: with SMTP id k73mr35716833pgc.61.1635980635076;
+        Wed, 03 Nov 2021 16:03:55 -0700 (PDT)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id r25sm2584900pge.61.2021.11.03.16.03.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 16:00:17 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 23:00:13 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     pbonzini@redhat.com, jmattson@google.com, dmatlack@google.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] KVM: VMX: Add a wrapper to read index of GPR for
- INVPCID, INVVPID, and INVEPT
-Message-ID: <YYMUfbKJYTFgyyD+@google.com>
-References: <20211103183232.1213761-1-vipinsh@google.com>
- <20211103183232.1213761-2-vipinsh@google.com>
+        Wed, 03 Nov 2021 16:03:54 -0700 (PDT)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     linux-watchdog@vger.kernel.org, linux-mediatek@lists.infradead.org
+Cc:     Fabien Parent <fparent@baylibre.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] watchdog: Kconfig: enable MTK watchdog
+Date:   Wed,  3 Nov 2021 16:03:53 -0700
+Message-Id: <20211103230354.915658-1-khilman@baylibre.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103183232.1213761-2-vipinsh@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021, Vipin Sharma wrote:
-> handle_invept(), handle_invvpid(), handle_invpcid() read the same reg2
+Enable CONFIG_MEDIATEK_WATCHDOG when ARCH_MEDIATEK is enabled.
 
-"same reg2" doesn't provide any context as to what "reg2" is, or what it's used
-for.
+On some platforms (e.g. mt8183-pumpkin), watchdog is enabled by
+bootloader, so kernel driver needs to be enabled to avoid watchdog
+firing and causing reboot part way through kernel boot.
 
-> on VM exit. Move them to a common wrapper function.
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+---
+ drivers/watchdog/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-"Move them to a common helper function" reads as if the patch is moving the
-whole handle_*() code :-)
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index bf59faeb3de1..00bebbb8f877 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -836,6 +836,7 @@ config MESON_WATCHDOG
+ config MEDIATEK_WATCHDOG
+ 	tristate "Mediatek SoCs watchdog support"
+ 	depends on ARCH_MEDIATEK || COMPILE_TEST
++	default ARCH_MEDIATEK
+ 	select WATCHDOG_CORE
+ 	select RESET_CONTROLLER
+ 	help
+-- 
+2.33.0
 
-handle_invept(), handle_invvpid(), handle_invpcid() read the same reg2
-field in vmcs.VMX_INSTRUCTION_INFO to get the index of the GPR that holds
-the invalidation type.  Add a helper to retrieve reg2 from VMX instr info
-to consolidate and document the shift+mask magic.
-
-> Signed-off-by: Vipin Sharma <vipinsh@google.com>
-
-Changelog nits aside,
-
-Reviewed-by: Sean Christopherson <seanjc@google.com> 
