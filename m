@@ -2,237 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDC8443E78
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FE4443E7A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231770AbhKCIg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 04:36:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230463AbhKCIg5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 04:36:57 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F5AC061714;
-        Wed,  3 Nov 2021 01:34:21 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id b203so1831870iof.1;
-        Wed, 03 Nov 2021 01:34:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jFave9Qo9BTxsM3PqmAtEeR+7yYOX2AlhHHLan6mN34=;
-        b=f/K/sGt8QpNUPsmYNDmfD6afH8xgXkMRBqhBMDGCoQ0OmUcWSnGQzMaypTXWXXfJg6
-         cfW/iFHEo8AkVqf32rhfCNfaQ3VONvz7j2fmdyuC4yYNcpqryDaYxGsMoibsYsdJmD6p
-         CV75BTv+KC3+AQ2w5Dr+Qqy8VPQ1k4GY4tos/f3gZsElJGrtpfaZLNDl2K9OnJ4DGRDE
-         GiEn/Gv4oRBwGFRHk/bYQcdxVMbNWNR2ZSmwJD8FshDTKAkxiP09elG3WYYRntcl78La
-         krPgOne/gUaYIZodbikHmz7A3j6Rt9a/FeOB/NpyPN9hOImkn1I4UiZYvFM9l2iNvXBr
-         /1tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jFave9Qo9BTxsM3PqmAtEeR+7yYOX2AlhHHLan6mN34=;
-        b=ztzpxg7RsJ61Pp6VFBvfyRYR0c/R71X5eZ/c5JKKEA/oMV/b/q7HIusfMwbnfFkbeE
-         B/BweNarWic3e7FWtT7vwXJgxxE9f56a3Q0wyz/0y9wKXxaFgoDRvRDKFGaN7l263v+O
-         m7I0+wwv93ca15RrdhXC5uwYRqhpkMZqkpzvXyJCoQjsFIjpZTMJBSvYYj6hhUn7Opf5
-         ftowwsjmq/7Gy2yyaACWCCcI2I08+gC23xXeRcX8Lw2R5Z4bIhoEzdnmrwD5b8QMXlQM
-         rlYOv4um61nx2WN4FksND6ub2sv2ugdb9fPCbmgHh6Jct9sRLjg3rstjUgTXYn5BiW5h
-         70ZQ==
-X-Gm-Message-State: AOAM531LrZK9kfUG7d5SNDaWxrvAFPV2QtTKFlF/rGY0MVoKvWqdH7zc
-        7NOOkQiGbuXUOIVbhOzSynQwLSg7OxmmF0Mf0aT0sj4G
-X-Google-Smtp-Source: ABdhPJwux1JlB8bk3u/JZ946VuDOdJJ+Q/8i3YbUrf++jKJblYXCHXmLZL4jYvAt7ztMKECskXVFfmjSEsWnBRwhNm8=
-X-Received: by 2002:a05:6638:12cb:: with SMTP id v11mr2652907jas.13.1635928460829;
- Wed, 03 Nov 2021 01:34:20 -0700 (PDT)
+        id S231728AbhKCIhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 04:37:38 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:58904 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230463AbhKCIhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 04:37:37 -0400
+Received: from [10.180.13.153] (unknown [10.180.13.153])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf2ulSYJhOackAA--.58098S2;
+        Wed, 03 Nov 2021 16:34:54 +0800 (CST)
+Subject: Re: [PATCH v1] usb: xhci: add LPM quirk for ensuring uPD720201 into
+ D3 state after S5
+To:     Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhuyinbo@loongson.cn, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1635751025-25906-1-git-send-email-zhuyinbo@loongson.cn>
+ <f7cfa6bc-a0f6-aaa6-aafa-b4fe2714ca40@linux.intel.com>
+From:   zhuyinbo <zhuyinbo@loongson.cn>
+Message-ID: <59c395bf-daac-9835-7063-5f8b6a9f3338@loongson.cn>
+Date:   Wed, 3 Nov 2021 16:34:45 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20211102110519.142434-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211102110519.142434-1-krzysztof.kozlowski@canonical.com>
-From:   Tomasz Figa <tomasz.figa@gmail.com>
-Date:   Wed, 3 Nov 2021 17:34:09 +0900
-Message-ID: <CA+Ln22HMFhiqqPTD+EibJ1zkd9CZb3BkrfZdsmxL1_NfKLMewA@mail.gmail.com>
-Subject: Re: [RFC PATCH] ARM: s3c: mark as deprecated and schedule removal
- after 2022
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:SAMSUNG SOC CLOCK DRIVERS" 
-        <linux-samsung-soc@vger.kernel.org>,
-        Olof Johansson <olof@lixom.net>, Kukjin Kim <kgene@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Inki Dae <inki.dae@samsung.com>, Cedric Roux <sed@free.fr>,
-        Sam Van Den Berge <sam.van.den.berge@telenet.be>,
-        Lihua Yao <ylhuajnu@outlook.com>,
-        Heiko Stuebner <heiko@sntech.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <f7cfa6bc-a0f6-aaa6-aafa-b4fe2714ca40@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: AQAAf9Dxf2ulSYJhOackAA--.58098S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7WFW3CF45KF4fZF48tF1fZwb_yoW8Ww47pa
+        yqg390gFn8GFn29r12kw10v3yfA3s5ZryDJry3A34DCrZrWr92v34UKr4DA3s7WFZavw1q
+        9F4jyr98uw4UZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CE
+        bIxvr21lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
+        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
+        xVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
+        8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2
+        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
+        UI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=E5=B9=B411=E6=9C=882=E6=97=A5(=E7=81=AB) 20:05 Krzysztof Kozlowski <kr=
-zysztof.kozlowski@canonical.com>:
->
-> The Samsung S3C24xx and S3C64xx platforms are very old designs. S3C2416
-> was introduced in 2008 and S3C6410 in 2009/2010.  They are not widely
-> available anymore - out-of-stock on FriendlyArm (one of manufacturers of
 
-FWIW, I still see mini6410 and (compatible) tiny6410 available on
-AliExpress, although it's not a good enough reason to keep a platform
-without active users.
-(and I also have one, but haven't made any use of it for 7 years or so
-and don't see myself finding time to invest into it)
+在 2021/11/1 下午5:18, Mathias Nyman 写道:
+> Hi
+>
+> On 1.11.2021 9.17, Yinbo Zhu wrote:
+>> After S5, any pci device should into D3 state that if supported, but the
+>> uPD720201 was not and it may be the cause of xhci firmware and cause
+>> OSPM power consumption is more higher that S5 than S4. I think xhci HCD
+>> can add a quirk ensure it into D3 state after S5 that is appropriate
+>> and this patch was to add LPM quirk and set PCI_D3hot to uPD720201 pmsc
+>> register in xhci_pci_shutdown to fix xhci power consumption issue.
+>>
+>> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+> I think we need a better understanding of the underlying issue before
+> adding a quirk like this.
+>
+> Is this a known issue with the uPD720201 controller firmware? or is it
+> an issue with ACPI table entries not supporting the proper D state in BIOS
+> on the tested platform, or something completely different?
 
-Acked-by: Tomasz Figa <tomasz.figa@gmail.com>
+Yes, and I notice other xhci hc doesn't encounter this power consumption 
+issue I think that xhci firmware
 
-Best regards,
-Tomasz
+may be set D3 after s5, but the xhci firmware code isn't visible,  in 
+addition I find that test platform the
 
-> boards) and only few specialist stores still offer them for quite a high
-> price.
+_PS3 method wasn't implemented in acpi table which can make device into 
+S3, Bios team didn't add it for
+
+some platform reason and I think xhci hcd to ensure device into D3 state 
+after s5 that is appropriate
+
 >
-> The community around these platforms was not very active, so I suspect
-> no one really uses them anymore. Maintenance takes precious time so
-> there is little sense in keeping them alive if there are no real users.
+> Also, LPM usually refers to "Link Power Management" in the xHCI spec.
+> This is about the U1 and U2 link states for the connected USB device.
 >
-> Let's mark all S3C24xx and S3C64xx platforms as deprecated and mention
-> possible removal in one year (after 2022).  The deprecation message will
-> be as text in Kconfig, build message (not a warning though) and runtime
-> print error.
+> If we end up needing a new xhci quirk it will need a new name.
 >
-> If there are any users, they might respond and postpone the removal.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  arch/arm/Kconfig                  | 7 ++++++-
->  arch/arm/mach-s3c/Kconfig.s3c64xx | 7 ++++++-
->  arch/arm/mach-s3c/cpu.c           | 1 +
->  arch/arm/mach-s3c/init.c          | 2 ++
->  arch/arm/mach-s3c/s3c24xx.c       | 5 +++++
->  arch/arm/mach-s3c/s3c64xx.c       | 5 +++++
->  6 files changed, 25 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index f0f9e8bec83a..bd8237c7e7f1 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -473,7 +473,7 @@ config ARCH_SA1100
->           Support for StrongARM 11x0 based boards.
->
->  config ARCH_S3C24XX
-> -       bool "Samsung S3C24XX SoCs"
-> +       bool "Samsung S3C24XX SoCs (deprecated, see help)"
->         select ATAGS
->         select CLKSRC_SAMSUNG_PWM
->         select GPIO_SAMSUNG
-> @@ -491,6 +491,11 @@ config ARCH_S3C24XX
->           (<http://www.simtec.co.uk/products/EB110ITX/>), the IPAQ 1940 o=
-r the
->           Samsung SMDK2410 development board (and derivatives).
->
-> +         The platform is deprecated and scheduled in removal. Please rea=
-ch to
-> +         the maintainers of the platform and linux-samsung-soc@vger.kern=
-el.org if
-> +         you still use it.
-> +         Without such feedback, the platform will be removed after 2022.
-> +
->  config ARCH_OMAP1
->         bool "TI OMAP1"
->         depends on MMU
-> diff --git a/arch/arm/mach-s3c/Kconfig.s3c64xx b/arch/arm/mach-s3c/Kconfi=
-g.s3c64xx
-> index f3fcb570edf5..3b090ae72bbd 100644
-> --- a/arch/arm/mach-s3c/Kconfig.s3c64xx
-> +++ b/arch/arm/mach-s3c/Kconfig.s3c64xx
-> @@ -4,7 +4,7 @@
->  #      Simtec Electronics, Ben Dooks <ben@simtec.co.uk>
->
->  menuconfig ARCH_S3C64XX
-> -       bool "Samsung S3C64XX"
-> +       bool "Samsung S3C64XX (deprecated, see help)"
->         depends on ARCH_MULTI_V6
->         select ARM_AMBA
->         select ARM_VIC
-> @@ -25,6 +25,11 @@ menuconfig ARCH_S3C64XX
->         help
->           Samsung S3C64XX series based systems
->
-> +         The platform is deprecated and scheduled in removal. Please rea=
-ch to
-> +         the maintainers of the platform and linux-samsung-soc@vger.kern=
-el.org if
-> +         you still use it.
-> +         Without such feedback, the platform will be removed after 2022.
-> +
->  if ARCH_S3C64XX
->
->  # Configuration options for the S3C6410 CPU
-> diff --git a/arch/arm/mach-s3c/cpu.c b/arch/arm/mach-s3c/cpu.c
-> index 6e9772555f0d..3b16cf42910f 100644
-> --- a/arch/arm/mach-s3c/cpu.c
-> +++ b/arch/arm/mach-s3c/cpu.c
-> @@ -28,4 +28,5 @@ void __init s3c64xx_init_cpu(void)
->         }
->
->         pr_info("Samsung CPU ID: 0x%08lx\n", samsung_cpu_id);
-> +       pr_err("The platform is deprecated and scheduled in removal. Plea=
-se reach to the maintainers of the platform and linux-samsung-soc@vger.kern=
-el.org if you still use it.  Without such feedback, the platform will be re=
-moved after 2022.\n");
->  }
-> diff --git a/arch/arm/mach-s3c/init.c b/arch/arm/mach-s3c/init.c
-> index 9d92f03e9bc1..5db7dc54340c 100644
-> --- a/arch/arm/mach-s3c/init.c
-> +++ b/arch/arm/mach-s3c/init.c
-> @@ -59,6 +59,8 @@ void __init s3c_init_cpu(unsigned long idcode,
->
->         if (cpu->map_io)
->                 cpu->map_io();
-> +
-> +       pr_err("The platform is deprecated and scheduled in removal. Plea=
-se reach to the maintainers of the platform and linux-samsung-soc@vger.kern=
-el.org if you still use it.  Without such feedback, the platform will be re=
-moved after 2022.\n");
->  }
->
->  /* s3c24xx_init_clocks
-> diff --git a/arch/arm/mach-s3c/s3c24xx.c b/arch/arm/mach-s3c/s3c24xx.c
-> index ccfed48c98aa..2ea1cb21dfbc 100644
-> --- a/arch/arm/mach-s3c/s3c24xx.c
-> +++ b/arch/arm/mach-s3c/s3c24xx.c
-> @@ -678,3 +678,8 @@ struct platform_device s3c2410_device_dclk =3D {
->         },
->  };
->  #endif
-> +
-> +#pragma message "The platform is deprecated and scheduled in removal (se=
-e platform help). " \
-> +               "Please reach to the maintainers of the platform " \
-> +               "and linux-samsung-soc@vger.kernel.org if you still use i=
-t." \
-> +               "Without such feedback, the platform will be removed afte=
-r 2022."
-> diff --git a/arch/arm/mach-s3c/s3c64xx.c b/arch/arm/mach-s3c/s3c64xx.c
-> index 4dfb648142f2..3e248f0e96a2 100644
-> --- a/arch/arm/mach-s3c/s3c64xx.c
-> +++ b/arch/arm/mach-s3c/s3c64xx.c
-> @@ -425,3 +425,8 @@ static int __init s3c64xx_init_irq_eint(void)
->         return 0;
->  }
->  arch_initcall(s3c64xx_init_irq_eint);
-> +
-> +#pragma message "The platform is deprecated and scheduled in removal (se=
-e platform help). " \
-> +               "Please reach to the maintainers of the platform " \
-> +               "and linux-samsung-soc@vger.kernel.org if you still use i=
-t." \
-> +               "Without such feedback, the platform will be removed afte=
-r 2022."
-> --
-> 2.32.0
->
+> Thanks
+> -Mathias
+
+Hi Mathias,
+
+
+I had changed the quirk that replace XHCI_LPM_QUIRK with XHCI_LWP_QUIRK 
+as v2 version patch.
+
+please view the v2 version patch.
+
+
+Thanks,
+
+Yinbo.
+
+
