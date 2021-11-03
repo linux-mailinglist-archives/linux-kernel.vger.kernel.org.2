@@ -2,101 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E28443F1E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 10:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 272E1443F21
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 10:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbhKCJUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 05:20:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230463AbhKCJUC (ORCPT
+        id S231912AbhKCJU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 05:20:59 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:19427 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230463AbhKCJU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 05:20:02 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18469C061714;
-        Wed,  3 Nov 2021 02:17:26 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id gt5so847647pjb.1;
-        Wed, 03 Nov 2021 02:17:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3aDTcyLaxlTzmld97lRKtg8oGlo6vYz73kceJptCCyg=;
-        b=meXBYcAiuUATe1TchsOkL+iwWGF4ZhfPlpPyx2mL0tbJ0kc2ItO128v1H68+26QmC/
-         GtA90sX/kENmd3CgrXitRqK5AbOhSJUS+TFyxV5Qr8CfwfAc9Dqc618h48hUTZtQ94QP
-         brIaD2hshMz5BOEcFxexpcL93rWF3dG8HZqcin42PvJE3dojownEjfXdBOAxcc1TIQY1
-         hoVVx++YcGVIz5iuc/IXSrIytYWZ/EE24TD/1Myq4y+k7GF6crtExBLI9dBZzVW+XRkJ
-         48dtGK1U1Gt5CM6+HtB+1jvOTylYXvHSKQcJzxGtr8axwSXKytWov/biJoE67V5U/Y2o
-         rWmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3aDTcyLaxlTzmld97lRKtg8oGlo6vYz73kceJptCCyg=;
-        b=GfVJnW0icl0ncDT4UD4kbJ/rMLXJkbWaQB39x1aXTALzQY3rR0sTVJmYs6qcoAtYVx
-         jmFKEMBTSdL4uKjwvzt5PGsoxuNkiYXRw12GF4wgMJG6qFLhy4ql0i/1gSjPszrr9hV0
-         tjD87teqjptbajtEyJtCEsYffjKbUXz5nBZ3N8AXrYvGUSOG/sWsxZb5TBtT+3LsmWPM
-         FCuEH+YekwwcXZiFD7vZiYB7fyxFEq24U4m0y/7t/arisslFjpHASML3kSvYpn69Eu28
-         /qzCC4i8dafDyqstRbfkAW5lDKiboGJx4uNMCugUNp/Vt+5sjrUTh9ECUjhukdeAGiqb
-         M5EA==
-X-Gm-Message-State: AOAM531QKb4w7yfVXmZn43YIN2aEhojg9ARECEeoBteUkWbnoww8tkCs
-        wFHEE3jYntw5SAshkVC248E=
-X-Google-Smtp-Source: ABdhPJy5Y4eqSoHCTp9Yr5lITYqTGJdx9GDsuD5XscDdnqm4uxCTHCk4L9+ORn6rJ+EqHTo72hsN1Q==
-X-Received: by 2002:a17:90a:e613:: with SMTP id j19mr13309561pjy.182.1635931045671;
-        Wed, 03 Nov 2021 02:17:25 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id m3sm1891037pfk.190.2021.11.03.02.17.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Nov 2021 02:17:24 -0700 (PDT)
-From:   Like Xu <like.xu.linux@gmail.com>
-X-Google-Original-From: Like Xu <likexu@tencent.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] perf/x86/vlbr: Add c->flags to vlbr event constraints
-Date:   Wed,  3 Nov 2021 17:17:16 +0800
-Message-Id: <20211103091716.59906-1-likexu@tencent.com>
+        Wed, 3 Nov 2021 05:20:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1635931101; x=1667467101;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QfHR3Cra0DJdP8QD9ujWRugo8vll6siTTDc+rrxgmn0=;
+  b=hQpe7EwOLq6AjcI3Q535itXJzGsrTvQfS/bRuH+CglHAjx7kvLfXSSa1
+   F5iEYnVCIM8+3RIYmWqLVxA4hXeptMC8vxBToepfTV9Lp2VcXHF7b4YwH
+   Lxw8ranEUcsehxUJyWkoJFUq8naO52fxfy0H1fFIdh9lupK4VOtu2Oq4Z
+   b038+rpN5syGyawyTh4F8Iy2mejj2Gta8b8LSEshXtljPLTIrPDCy7PWa
+   YD0in1SIDawl85T/RNSQlhdSVJXAfy6ddgfgkmDhuXlwKE37OS4SCVA2T
+   9z0emGT7zl+4M484TnoRSs9uGLxQSUFAwIMQXFxF7d9mJbvnGohqOjftM
+   w==;
+IronPort-SDR: H7ZdxvYVi+aC9L+jAmJ7VLnjyXwZTA6xPLPn9gRaPGJc4L9nxPTwl2M8Wf/ytgP41mdXf6B7TP
+ TVS1ouvz4gP0lZzVrIOWUM1QJKpUVzOwgU8axRV5Fwnn/mzRt3/FRSVSGMNb+ArAquSwxStsHS
+ Sddus6L05JkAlNp1PTElll9+IcyqMa6mc6oyqvr6zHsjaB2rzczUO36HmGgebcfphhL2dOG+7B
+ doEMBlpiJt8WdhH2RYaYgZpcaQiKkBuH1IZ6oXDvQD1jvGto/wSdg55ER+j6gTZ/6VQZrhvB3q
+ x2wE1mY/rCZb2nxrdyXsZvNI
+X-IronPort-AV: E=Sophos;i="5.87,205,1631602800"; 
+   d="scan'208";a="142631579"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Nov 2021 02:18:21 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Wed, 3 Nov 2021 02:18:21 -0700
+Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Wed, 3 Nov 2021 02:18:19 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <peda@axentia.se>, <robh+dt@kernel.org>,
+        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH v4 0/2] i2c-mux-gpmux: Support settle-time-us property
+Date:   Wed, 3 Nov 2021 10:18:37 +0100
+Message-ID: <20211103091839.1665672-1-horatiu.vultur@microchip.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Like Xu <likexu@tencent.com>
+Add support for settle-time-us property. If this is defined in device
+tree then add this delay to mux APIs.
 
-Just like what we do in the x86_get_event_constraints(), the
-PERF_X86_EVENT_LBR_SELECT flag should also be propagated
-to event->hw.flags so that the host lbr driver can save/restore
-MSR_LBR_SELECT for the special vlbr event created by KVM or BPF.
+v3->v4:
+ - update i2c-mux.yaml by adding required and select properties
 
-Reported-by: Wanpeng Li <wanpengli@tencent.com>
-Fixes: 097e4311cda9 ("perf/x86: Add constraint to create guest LBR event without hw counter")
-Signed-off-by: Like Xu <likexu@tencent.com>
----
- arch/x86/events/intel/core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+v2->v3:
+ - move the binding changes into i2c-mux.yaml
+ - read at a later point the DT property 'settle-time-us'
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 7011e87be6d0..30b5d1b3cb03 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -2997,8 +2997,10 @@ intel_vlbr_constraints(struct perf_event *event)
- {
- 	struct event_constraint *c = &vlbr_constraint;
- 
--	if (unlikely(constraint_match(c, event->hw.config)))
-+	if (unlikely(constraint_match(c, event->hw.config))) {
-+		event->hw.flags |= c->flags;
- 		return c;
-+	}
- 
- 	return NULL;
- }
+v1->v2:
+ - add the changes to i2c-mux-gpmux instead of i2c-mux-gpio to be able
+   to use mux_control_select_delay
+
+Horatiu Vultur (2):
+  dt-bindings: i2c-mux: Add property for settle time
+  i2c-mux-gpmux: Support settle-time-us property
+
+ Documentation/devicetree/bindings/i2c/i2c-mux.yaml | 14 ++++++++++++++
+ drivers/i2c/muxes/i2c-mux-gpmux.c                  |  4 +++-
+ 2 files changed, 17 insertions(+), 1 deletion(-)
+
 -- 
 2.33.0
 
