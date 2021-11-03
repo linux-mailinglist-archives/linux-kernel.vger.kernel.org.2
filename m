@@ -2,150 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D46FC44411E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:10:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C5E444125
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:14:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbhKCMM4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Nov 2021 08:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54608 "EHLO
+        id S231607AbhKCMQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 08:16:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbhKCMMy (ORCPT
+        with ESMTP id S230304AbhKCMQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 08:12:54 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFBCC061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 05:10:18 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1miF5l-00024e-1x; Wed, 03 Nov 2021 13:10:09 +0100
-Received: from pza by lupine with local (Exim 4.94.2)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1miF5i-000A5d-Ej; Wed, 03 Nov 2021 13:10:06 +0100
-Message-ID: <430b152167a1fdfb5ca66f1db702759f36d0ed56.camel@pengutronix.de>
-Subject: Re: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Wells Lu <wellslutw@gmail.com>, davem@davemloft.net,
-        kuba@kernel.org, robh+dt@kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Wells Lu <wells.lu@sunplus.com>
-Date:   Wed, 03 Nov 2021 13:10:06 +0100
-In-Reply-To: <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
-References: <cover.1635936610.git.wells.lu@sunplus.com>
-         <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.38.3-1 
+        Wed, 3 Nov 2021 08:16:55 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C917DC061714;
+        Wed,  3 Nov 2021 05:14:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JNglMXDv0o4Z85YFuCHofAOWBBagsgZZEOiH7CEQiMY=; b=ZrJ/d170KtEEuGGrm9d9b+zOuE
+        jbtC85M1ScAUj9cnNyHIgqqRyrVW9Fx6SVeXt5MPDcC0Ka7i9w21rw+AB6MHqkjwBxNuqC+UCqlIN
+        2l6egyIzj6laWYwXT3Y/LcKq8dTBraxWiqJnLTIq62FrA9YmJSUiPoeXqB+tgrK17TMbt6QkU1Lb6
+        NdOjt0mb5RNQRDeEX2aQ5sugPoTOGqL72GptYwPOP7fbCwFV9hcxP5TNJl6YLCWoZv2m7bd8sI+Bk
+        1JS0eV+dfAgLsb1yFH+5m2O7Bnb8QZpH5lKP/Wyo1xSwf2Jfh8KGsn4vFLCNnn7YZJQTXqF9RWLAV
+        g7E5LqOg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1miF9m-0055ZW-8p; Wed, 03 Nov 2021 12:14:18 +0000
+Date:   Wed, 3 Nov 2021 05:14:18 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     axboe@kernel.dk, linux-kernel@vger.kernel.org
+Cc:     minchan@kernel.org, ngupta@vflare.org, senozhatsky@chromium.org,
+        axboe@kernel.dk, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [PATCH] zram: use ATTRIBUTE_GROUPS
+Message-ID: <YYJ9Gks0Rmd2Uepb@bombadil.infradead.org>
+References: <20211028203600.2157356-1-mcgrof@kernel.org>
+ <520834ee-edd2-282c-017a-b7ed075bd8a0@acm.org>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <520834ee-edd2-282c-017a-b7ed075bd8a0@acm.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-11-03 at 19:02 +0800, Wells Lu wrote:
-[...]
-> diff --git a/drivers/net/ethernet/sunplus/l2sw_driver.c b/drivers/net/ethernet/sunplus/l2sw_driver.c
-> new file mode 100644
-> index 0000000..3dfd0dd
-> --- /dev/null
-> +++ b/drivers/net/ethernet/sunplus/l2sw_driver.c
-> @@ -0,0 +1,779 @@
-[...]
-> +static int l2sw_probe(struct platform_device *pdev)
-> +{
-> +	struct l2sw_common *comm;
-> +	struct resource *r_mem;
-> +	struct net_device *net_dev, *net_dev2;
-> +	struct l2sw_mac *mac, *mac2;
-> +	u32 mode;
-> +	int ret = 0;
-> +	int rc;
-> +
-> +	if (platform_get_drvdata(pdev))
-> +		return -ENODEV;
-> +
-> +	// Allocate memory for l2sw 'common' area.
-> +	comm = kmalloc(sizeof(*comm), GFP_KERNEL);
+On Thu, Oct 28, 2021 at 01:44:38PM -0700, Bart Van Assche wrote:
+> 
+> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 
-I'd use devm_kzalloc() here for initialization and to simplify the
-cleanup path.
+Just a gentle reminder.
 
-> +	if (!comm)
-> +		return -ENOMEM;
-> +	pr_debug(" comm = %p\n", comm);
-
-What is this useful for?
-
-> +	memset(comm, '\0', sizeof(struct l2sw_common));
-
-Not needed with kzalloc, See above.
-
-[...]
-> +	// Get memory resoruce 0 from dts.
-> +	r_mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (r_mem) {
-> +		pr_debug(" res->name = \"%s\", r_mem->start = %pa\n", r_mem->name, &r_mem->start);
-> +		if (l2sw_reg_base_set(devm_ioremap(&pdev->dev, r_mem->start,
-> +						   (r_mem->end - r_mem->start + 1))) != 0) {
-> +			pr_err(" ioremap failed!\n");
-> +			ret = -ENOMEM;
-> +			goto out_free_comm;
-> +		}
-> +	} else {
-> +		pr_err(" No MEM resource 0 found!\n");
-> +		ret = -ENXIO;
-> +		goto out_free_comm;
-> +	}
-> +
-> +	// Get memory resoruce 1 from dts.
-> +	r_mem = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> +	if (r_mem) {
-> +		pr_debug(" res->name = \"%s\", r_mem->start = %pa\n", r_mem->name, &r_mem->start);
-> +		if (moon5_reg_base_set(devm_ioremap(&pdev->dev, r_mem->start,
-> +						    (r_mem->end - r_mem->start + 1))) != 0) {
-> +			pr_err(" ioremap failed!\n");
-> +			ret = -ENOMEM;
-> +			goto out_free_comm;
-> +		}
-> +	} else {
-> +		pr_err(" No MEM resource 1 found!\n");
-> +		ret = -ENXIO;
-> +		goto out_free_comm;
-> +	}
-
-Using devm_ioremap_resource() would simplify both a lot.
-
-[...]
-> +	comm->rstc = devm_reset_control_get(&pdev->dev, NULL);
-
-Please use devm_reset_control_get_exclusive().
-
-> +	if (IS_ERR(comm->rstc)) {
-> +		dev_err(&pdev->dev, "Failed to retrieve reset controller!\n");
-> +		ret = PTR_ERR(comm->rstc);
-> +		goto out_free_comm;
-> +	}
-> +
-> +	// Enable clock.
-> +	clk_prepare_enable(comm->clk);
-> +	udelay(1);
-> +
-> +	ret = reset_control_assert(comm->rstc);
-
-No need to assign to ret if you ignore it anyway.
-
-> +	udelay(1);
-> +	ret = reset_control_deassert(comm->rstc);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Failed to deassert reset line (err = %d)!\n", ret);
-> +		ret = -ENODEV;
-> +		goto out_free_comm;
-> +	}
-> +	udelay(1);
-
-regards
-Philipp
+  Luis
