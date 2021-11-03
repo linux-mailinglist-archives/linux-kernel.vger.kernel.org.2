@@ -2,131 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00255443F66
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 10:29:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2C8443F6C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 10:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231939AbhKCJcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 05:32:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50212 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231278AbhKCJcA (ORCPT
+        id S231961AbhKCJeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 05:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231721AbhKCJeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 05:32:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635931763;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fIqHvaj2F37ywtGbTbgChe6nRz2xCacD+23S/GYTSiw=;
-        b=CLKBgod5zkGbfH4iC9wxtcu44v25VnBThSxnlQvtzWFKf7sh9ljZoHe0offGWO4kQ4gfXb
-        n8leDlW2Vm60kwIEWpzP2Z87pOGEijlbmqg+UHgU4sGanh9T1hwVaqK+Dz6stxGmhoiayA
-        hAl9gI7Sk71hdq2tscnQsDH9KM3Dfw4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-526-yU_l-TfjNveEGtmTnsY7Ig-1; Wed, 03 Nov 2021 05:29:20 -0400
-X-MC-Unique: yU_l-TfjNveEGtmTnsY7Ig-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 11232879500;
-        Wed,  3 Nov 2021 09:29:19 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 95BC91017E27;
-        Wed,  3 Nov 2021 09:29:13 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH] KVM: x86: inhibit APICv when KVM_GUESTDBG_BLOCKIRQ active
-Date:   Wed,  3 Nov 2021 11:29:12 +0200
-Message-Id: <20211103092912.425128-1-mlevitsk@redhat.com>
-In-Reply-To: <e508be0ecda6db330d83b954f4e4d1ad12c08c64.camel@redhat.com>
-References: <e508be0ecda6db330d83b954f4e4d1ad12c08c64.camel@redhat.com>
+        Wed, 3 Nov 2021 05:34:06 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AAFDC061205
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 02:31:30 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id g25so2318329qvf.13
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 02:31:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=oMuVFu+vUAH5bLwviuIlBRFu/VcEVaQD9t/FnaSOv4w=;
+        b=L2SRb0tt+TsbwiPGYPGAvf5vde4hd5YYf2TXagUNh/Hy0WI0JnEtU6CegLLhVjklwH
+         UkyCcAB+841l6+c4Ltg0t0DMZlpXm631yv4aCO9nINdKxIk0Lya9hGIZzHOxz1/RzXW/
+         fTk7yOuE7Xg9L5lI5ZF3suJx+XWKhpIVJnfx0J0wm3iS8OMIyg2w/rOuPOusiIT6lShH
+         MMjCojz/Sog5gO0KietRpyOfjUJC+gsbjsJApYsRoovNOzyRC2Z+bnVqsEluTtfEJsIb
+         ++oAQxZ7DebiWR4wKo2Q90xBKtgu/GyDJoMRSmmOj24A6dEgLy4nC3nojszDL5m27TFc
+         odow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=oMuVFu+vUAH5bLwviuIlBRFu/VcEVaQD9t/FnaSOv4w=;
+        b=XOQCOFhUL8wUHryoVQSQso2TsTiBZxRciwuVFsZi65h45gfMoBoB+7VzK8ENlwAj6O
+         ktUuktCII1368zKPXxqTvdpM9RTBppXOp5PGm/yPiOI5FRp0JpWZLVtxLriZecXS40tF
+         LzDIHulnMV/mXCxrF+FVBKV5niwrhcg76mx5thZ2HmRqnVAImSzJJFpCkwJ0tESqwrU4
+         6FjRQzqxS2uCcdvj9oAuplPM2xkLVdFymN9BJLi8sKVrXB/gs574icZDEAzVjc9k7XZ7
+         A1PAGR+fZLBpmVfQGUrcOheaMiLhPbk3OWTRHalKioMwSqQ0YPAUlZ7VRpc8wEO1q1zA
+         W+bQ==
+X-Gm-Message-State: AOAM532FEcDM/dAaiwxZ8oJEa8DMg/DuyGYsvPaoD4s4Z0omYq7injLF
+        lIg2GvvwEmjxeU/thd2ewf/nktB54WgYJd1w2iE=
+X-Google-Smtp-Source: ABdhPJx/poL9s1dkgalw3dQuFu5Tz+0Kz0dr/7OzpsVgLHd2tYOkWX89aVQOQHvzC9BOnTe6b5T0MM5u3x86KIq6hXQ=
+X-Received: by 2002:a05:6214:c81:: with SMTP id r1mr41929104qvr.31.1635931889283;
+ Wed, 03 Nov 2021 02:31:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Received: by 2002:a05:6214:27c4:0:0:0:0 with HTTP; Wed, 3 Nov 2021 02:31:28
+ -0700 (PDT)
+Reply-To: r_ginsburg@aol.com
+From:   Mrs Ruth Bader G <frankjonhson101o1@gmail.com>
+Date:   Wed, 3 Nov 2021 02:31:28 -0700
+Message-ID: <CADh4-9L=KzmLTreAyEvQuP8MbiAmCUi2e4kaYGVwa-BJ_QgpOg@mail.gmail.com>
+Subject: Good day my dear,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KVM_GUESTDBG_BLOCKIRQ relies on interrupts being injected using
-standard kvm's inject_pending_event, and not via APICv/AVIC.
+Good day my Dear,
 
-Since this is a debug feature, just inhibit it while it
-is in use.
-
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/include/asm/kvm_host.h | 1 +
- arch/x86/kvm/svm/avic.c         | 3 ++-
- arch/x86/kvm/vmx/vmx.c          | 3 ++-
- arch/x86/kvm/x86.c              | 3 +++
- 4 files changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 88fce6ab4bbd7..8f6e15b95a4d8 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1034,6 +1034,7 @@ struct kvm_x86_msr_filter {
- #define APICV_INHIBIT_REASON_IRQWIN     3
- #define APICV_INHIBIT_REASON_PIT_REINJ  4
- #define APICV_INHIBIT_REASON_X2APIC	5
-+#define APICV_INHIBIT_REASON_BLOCKIRQ	6
- 
- struct kvm_arch {
- 	unsigned long n_used_mmu_pages;
-diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-index 8052d92069e01..affc0ea98d302 100644
---- a/arch/x86/kvm/svm/avic.c
-+++ b/arch/x86/kvm/svm/avic.c
-@@ -904,7 +904,8 @@ bool svm_check_apicv_inhibit_reasons(ulong bit)
- 			  BIT(APICV_INHIBIT_REASON_NESTED) |
- 			  BIT(APICV_INHIBIT_REASON_IRQWIN) |
- 			  BIT(APICV_INHIBIT_REASON_PIT_REINJ) |
--			  BIT(APICV_INHIBIT_REASON_X2APIC);
-+			  BIT(APICV_INHIBIT_REASON_X2APIC) |
-+			  BIT(APICV_INHIBIT_REASON_BLOCKIRQ);
- 
- 	return supported & BIT(bit);
- }
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 71f54d85f104c..e4fc9ff7cd944 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7565,7 +7565,8 @@ static void hardware_unsetup(void)
- static bool vmx_check_apicv_inhibit_reasons(ulong bit)
- {
- 	ulong supported = BIT(APICV_INHIBIT_REASON_DISABLE) |
--			  BIT(APICV_INHIBIT_REASON_HYPERV);
-+			  BIT(APICV_INHIBIT_REASON_HYPERV) |
-+			  BIT(APICV_INHIBIT_REASON_BLOCKIRQ);
- 
- 	return supported & BIT(bit);
- }
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index ac83d873d65b0..eb3b8d2375713 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -10747,6 +10747,9 @@ int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
- 	if (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)
- 		vcpu->arch.singlestep_rip = kvm_get_linear_rip(vcpu);
- 
-+	kvm_request_apicv_update(vcpu->kvm,
-+			!(vcpu->guest_debug & KVM_GUESTDBG_BLOCKIRQ),
-+			APICV_INHIBIT_REASON_BLOCKIRQ);
- 	/*
- 	 * Trigger an rflags update that will inject or remove the trace
- 	 * flags.
--- 
-2.26.3
-
+Am Mrs. Ruth Bader Ginsburg, from one of the cancer hospitals here in
+America. Am suffering from a long-time cancer of breast and i want to
+donate my money to help the orphans, widows and handicap people
+through you because there is no more time left for me on this earth. I
+will be waiting to hear from you immediately by God grace Amen, yours
+sincerely.
