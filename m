@@ -2,66 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E0D4446B3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:09:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E38684446B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhKCRMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 13:12:32 -0400
-Received: from verein.lst.de ([213.95.11.211]:60391 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229587AbhKCRMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 13:12:30 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id AD4B368AA6; Wed,  3 Nov 2021 18:09:51 +0100 (CET)
-Date:   Wed, 3 Nov 2021 18:09:51 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Tadeusz Struk <tadeusz.struk@linaro.org>
-Cc:     Bart Van Assche <bvanassche@acm.org>, linux-scsi@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] scsi: scsi_ioctl: Validate command size
-Message-ID: <20211103170951.GA4896@lst.de>
-References: <20211103170659.22151-1-tadeusz.struk@linaro.org>
+        id S230471AbhKCRNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 13:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229928AbhKCRNs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 13:13:48 -0400
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08905C061714;
+        Wed,  3 Nov 2021 10:11:12 -0700 (PDT)
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:105:465:1:4:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4Hktb01qRSzQk9S;
+        Wed,  3 Nov 2021 18:11:08 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+From:   =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>
+To:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH v3 0/2] mwifiex: Add quirk to disable deep sleep with certain hardware revision
+Date:   Wed,  3 Nov 2021 18:10:53 +0100
+Message-Id: <20211103171055.16911-1-verdre@v0yd.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103170659.22151-1-tadeusz.struk@linaro.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 5F860130A
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 10:06:58AM -0700, Tadeusz Struk wrote:
-> Need to make sure the command size is valid before copying
-> the command from user.
-> 
-> Cc: Bart Van Assche <bvanassche@acm.org>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: James E.J. Bottomley <jejb@linux.ibm.com>
-> Cc: Martin K. Petersen <martin.petersen@oracle.com>
-> Cc: <linux-scsi@vger.kernel.org>
-> Cc: <linux-kernel@vger.kernel.org>
-> Cc: <stable@vger.kernel.org> # 5.15, 5.14, 5.10
-> Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
-> ---
-> Changes in v2:
-> - removed check for upper len limit as it is handled in sg_io()
-> ---
->  drivers/scsi/scsi_ioctl.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/scsi/scsi_ioctl.c b/drivers/scsi/scsi_ioctl.c
-> index 6ff2207bd45a..a06c61f22742 100644
-> --- a/drivers/scsi/scsi_ioctl.c
-> +++ b/drivers/scsi/scsi_ioctl.c
-> @@ -347,6 +347,8 @@ static int scsi_fill_sghdr_rq(struct scsi_device *sdev, struct request *rq,
->  {
->  	struct scsi_request *req = scsi_req(rq);
->  
-> +	if (hdr->cmd_len < 6)
-> +		return -EMSGSIZE;
+Third revision of this patch.
+v1: https://lore.kernel.org/linux-wireless/20211028073729.24408-1-verdre@v0yd.nl/T/
+v2: https://lore.kernel.org/linux-wireless/20211103135529.8537-1-verdre@v0yd.nl/T/
 
-The checks looks good, but I'd be tempted to place it next to the
-other check on hdr->cmd_len in the caller.
+Changes between v2 and v3:
+ - Remove redundant sizeof(char) in the second patch
+
+Jonas Dreßler (2):
+  mwifiex: Use a define for firmware version string length
+  mwifiex: Add quirk to disable deep sleep with certain hardware
+    revision
+
+ drivers/net/wireless/marvell/mwifiex/fw.h     |  4 ++-
+ drivers/net/wireless/marvell/mwifiex/main.c   | 18 +++++++++++++
+ drivers/net/wireless/marvell/mwifiex/main.h   |  3 ++-
+ .../wireless/marvell/mwifiex/sta_cmdresp.c    | 25 +++++++++++++++++--
+ 4 files changed, 46 insertions(+), 4 deletions(-)
+
+-- 
+2.33.1
+
