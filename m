@@ -2,139 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBFB0443DB8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:31:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6FFB443DB9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:32:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbhKCHeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 03:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
+        id S232123AbhKCHfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 03:35:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbhKCHeM (ORCPT
+        with ESMTP id S232033AbhKCHfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 03:34:12 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D449C061714;
-        Wed,  3 Nov 2021 00:31:36 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so723781pjb.4;
-        Wed, 03 Nov 2021 00:31:36 -0700 (PDT)
+        Wed, 3 Nov 2021 03:35:07 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83434C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 00:32:31 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id d13so2058668wrf.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 00:32:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=tlBDlVal1KG6zXw+Y+LdgDK2QBV75F/H10pKxwlc5xU=;
-        b=DoIqXaUgabSui7mO3St0+U75IJrVAVBvEuOv9BPHzR5GA+gnJhKEad18SN3sloRfvN
-         wVYA9SjbiIQEVyvtjMmAtTbN1m6hv6NJcGDgUPAuFRRBw9oqMKiDOLQhBlflWyeMZebV
-         LARaZ6nXbZoXya7omSoodYZtZLSkzWPxeuOzeaJG2rWj5Y6ACiUHyrpLowb1UcziB0al
-         U/zPJx/eBsXH5REwYnnZeJJrAHO5ZxMD46CyW1Ke1UVw9oFS5/tTu9aMuAcQlXp4339J
-         hNNyPDolVuyurN6ggsRzoq7aLQH1db+UxQ6B3RqRnK9bZXbBjT+C4zb/GudNfedy37Og
-         8yjA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=N8wlzTSWng30/uEuf5SuKMJUDGPCudj/Q+eFg1K128o=;
+        b=C2pgopklk/bvxgsz61fLxfgp1P3QPmJW62dGpr3Hh86vtIrMm6bsUfeUSiv8ChKCpK
+         xtCOVgDKqZ4h1wBLl7P7eoeJVZWGBWzYEvpxCiKr/4G4KU4kr+iR8xFy55ImuBO8WrGa
+         I4Pf/7P4zKs/2qOpAOSFdpKoYwXUxE9PqmXLWqiioWEzT0wzztYTHpXDGsWVndCXZbY3
+         T8xwvx27fO9SlKPyabA/bNnqAndvsPR0CYua1lcC/SRjR4FbF+jgtGSOLZzz92vOjw7F
+         KKxebMlBY9Bu15H5t0IWAXBrkZcAGJKBHDd5s5kA7iW/4mo3An6GE21CEQvprn7GKTnP
+         gQdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=tlBDlVal1KG6zXw+Y+LdgDK2QBV75F/H10pKxwlc5xU=;
-        b=qiN4irn0RFJJ0FwgJpEQi69LOsogOdF55neRUFth7m3pSJTmNiC/UlK5uC+T5EHOqK
-         DY/pOWYFyR8BeCu+IjOk/a1o9Yd/iSFMgcgjcyLLT3zRcnSARCCpmcQVCxYldWtz/vGX
-         X3DLYumwk8G6XuKq6Q//iFMMpQBmFYuYKJc14rxyWLlI5vZ9ewzAljDmn3TK1Q3a4jQW
-         C3eWtIvdR2eJPtf/QBoy+XUI+iTClQ6tt9zA+/vqkDBQ84QiVj1ZYa8xubApwCYtuD1U
-         k2McbsRs8B0Crbl7Del7EYmXo0PHsTfOdmk6hwXL5UkPOkxshekurmzHrWWcmIEdaMT7
-         tnhA==
-X-Gm-Message-State: AOAM532Hq8W982quCqOJIGUtDESD+NF1CIh2Ygd7CyVDixtp0tQU0Fku
-        uUSMt8GhhSsMnAl9bCRek2Ccw7akgs70Ow==
-X-Google-Smtp-Source: ABdhPJxDStkl0WN6KfNlIGGMahJI6wXL8tpPGOrcMt66IsojNI3Rz7HZ/LqKD3FiT6HtTdgFrowSFg==
-X-Received: by 2002:a17:90a:8c0f:: with SMTP id a15mr12954457pjo.25.1635924696053;
-        Wed, 03 Nov 2021 00:31:36 -0700 (PDT)
-Received: from raspberrypi ([49.166.114.232])
-        by smtp.gmail.com with ESMTPSA id c1sm1475326pfv.54.2021.11.03.00.31.33
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=N8wlzTSWng30/uEuf5SuKMJUDGPCudj/Q+eFg1K128o=;
+        b=HixpWTcIZIFGE66p9aJPc1c4FJ/ueyw2kjKfObOy5q6lI9MBzfDKrfS9R+OnSthdWO
+         iNuXhpQlHx4UafzPlaUffiMOwzMjEjexOA4wOxn2wHw+vQh9Vdq48urKwgz4olb8ouCN
+         sgBwR+4lb1efokiiM2pRT1/5HlvuTja/LDgZ1202Ku3Sbi2JpqfHeMw9MkL2b6EqrOxU
+         z2BWFl4Vmvykz1efQp1/42OPqFdvIuO98xX7nbjAikNZXQka8XpAo7YBfCo1tv06YPJG
+         bb8oyvorCvlcHftHqizXWSl1qfnLVQhMxZHrxBOkPO3DRJsb0ai46R6cxjoGl8UB2BeI
+         bJaQ==
+X-Gm-Message-State: AOAM532b2ntB1zOSdD2Fvp4PNUeCcNnK3vSqu5+97DwLQcHb1eaeYLyb
+        Z3j0k92Ih+fBONKQGrXC9NdMcdPXB55pQw==
+X-Google-Smtp-Source: ABdhPJx1VQXQee8DvbyFpEelUPjfzWYrq/xTC/hpARqLTIuBhYNHK8ACdZd0yM1NFFCIPqwep7V1Jw==
+X-Received: by 2002:a05:6000:168d:: with SMTP id y13mr54522869wrd.300.1635924750164;
+        Wed, 03 Nov 2021 00:32:30 -0700 (PDT)
+Received: from google.com ([95.148.6.174])
+        by smtp.gmail.com with ESMTPSA id 6sm1083903wma.48.2021.11.03.00.32.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 00:31:35 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 07:31:31 +0000
-From:   Austin Kim <austindh.kim@gmail.com>
-To:     casey@schaufler-ca.com, jmorris@namei.org, serge@hallyn.com
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@lge.com
-Subject: [PATCH] smack: clean up smack_enabled to be more readable
-Message-ID: <20211103073131.GA15173@raspberrypi>
+        Wed, 03 Nov 2021 00:32:29 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 07:32:28 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Robert Marko <robert.marko@sartura.hr>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: simple-mfd-i2c: Select MFD_CORE to fix build error
+Message-ID: <YYI7DFjoCgYMdLl5@google.com>
+References: <20211102100420.112215-1-robert.marko@sartura.hr>
+ <YYEeS8gz8TBW63X8@google.com>
+ <8b2b9e6f61107b79f93dd191c3fc2918@walle.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8b2b9e6f61107b79f93dd191c3fc2918@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The smack_enabled is only set to 0, 1. So changing type of smack_enabled 
-as bool may make relevant routine be more readable.
+On Tue, 02 Nov 2021, Michael Walle wrote:
 
-Signed-off-by: Austin Kim <austindh.kim@gmail.com>
----
- security/smack/smack.h           | 2 +-
- security/smack/smack_lsm.c       | 4 ++--
- security/smack/smack_netfilter.c | 2 +-
- security/smack/smackfs.c         | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+> Am 2021-11-02 12:17, schrieb Lee Jones:
+> > On Tue, 02 Nov 2021, Robert Marko wrote:
+> > 
+> > > MFD_SIMPLE_MFD_I2C should select the MFD_CORE to a prevent build
+> > > error:
+> > > 
+> > > aarch64-linux-ld: drivers/mfd/simple-mfd-i2c.o: in function
+> > > `simple_mfd_i2c_probe':
+> > > drivers/mfd/simple-mfd-i2c.c:55: undefined reference to
+> > > `devm_mfd_add_devices'
+> > 
+> > What is your use-case?
+> > 
+> > How are you enabling this symbol?
+> 
+> Mh? drivers/mfd/simple-mfd-i2c.c is using devm_mfd_add_devices which
+> is provided by drivers/mfd/core.c. So select MFD_CORE is clearly
+> missing here, no? I mean most of the MFD drivers do a "select MFD_CORE".
 
-diff --git a/security/smack/smack.h b/security/smack/smack.h
-index 99c3422596ab..dc1726f5953f 100644
---- a/security/smack/smack.h
-+++ b/security/smack/smack.h
-@@ -302,7 +302,7 @@ int smack_populate_secattr(struct smack_known *skp);
- /*
-  * Shared data.
-  */
--extern int smack_enabled __initdata;
-+extern bool smack_enabled __initdata;
- extern int smack_cipso_direct;
- extern int smack_cipso_mapped;
- extern struct smack_known *smack_net_ambient;
-diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index efd35b07c7f8..ba3b46bd2ceb 100644
---- a/security/smack/smack_lsm.c
-+++ b/security/smack/smack_lsm.c
-@@ -56,7 +56,7 @@ static DEFINE_MUTEX(smack_ipv6_lock);
- static LIST_HEAD(smk_ipv6_port_list);
- #endif
- struct kmem_cache *smack_rule_cache;
--int smack_enabled __initdata;
-+bool smack_enabled __initdata;
- 
- #define A(s) {"smack"#s, sizeof("smack"#s) - 1, Opt_##s}
- static struct {
-@@ -4953,7 +4953,7 @@ static __init int smack_init(void)
- 	 * Register with LSM
- 	 */
- 	security_add_hooks(smack_hooks, ARRAY_SIZE(smack_hooks), "smack");
--	smack_enabled = 1;
-+	smack_enabled = true;
- 
- 	pr_info("Smack:  Initializing.\n");
- #ifdef CONFIG_SECURITY_SMACK_NETFILTER
-diff --git a/security/smack/smack_netfilter.c b/security/smack/smack_netfilter.c
-index b945c1d3a743..82092d9387a3 100644
---- a/security/smack/smack_netfilter.c
-+++ b/security/smack/smack_netfilter.c
-@@ -70,7 +70,7 @@ static struct pernet_operations smack_net_ops = {
- 
- static int __init smack_nf_ip_init(void)
- {
--	if (smack_enabled == 0)
-+	if (smack_enabled == false)
- 		return 0;
- 
- 	printk(KERN_DEBUG "Smack: Registering netfilter hooks\n");
-diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
-index 658eab05599e..7649ad8cc335 100644
---- a/security/smack/smackfs.c
-+++ b/security/smack/smackfs.c
-@@ -2993,7 +2993,7 @@ static int __init init_smk_fs(void)
- 	int err;
- 	int rc;
- 
--	if (smack_enabled == 0)
-+	if (smack_enabled == false)
- 		return 0;
- 
- 	err = smk_init_sysfs();
+I'm not debating that.  The patch is fine.
+
+I am however, interested in how MFD_CORE is enabled for MFD_SL28CPLD.
+
 -- 
-2.20.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
