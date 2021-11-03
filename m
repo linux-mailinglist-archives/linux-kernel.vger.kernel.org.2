@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA36443DDA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7DF443DE0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:56:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbhKCHzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 03:55:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhKCHzo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 03:55:44 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8397C061203
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 00:53:07 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id z200so1219697wmc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 00:53:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VPh4Dp+YKR59+rlQQnZun9Wq0rnlFLvRuPBwa+z2RvM=;
-        b=Bvs59YztcKrQgr/3MlFXaNRvNjo3nIrK+STERsF0DOCNPqViLk7I5MkvstnEdP9yHk
-         tGarK71Fb/8M8fSU6GeJavnGlCz85SClNxIUtABsNC0Jht1of/BpWbTqduvu6Hgsafis
-         qkEbXjsFKUIyLeL2SxUDgecrCw+vEYLGOvyfN+iMHisrHMv2dfpsqjstkgiUVfThiJPF
-         5h0d8hd7b85U65GKeFfjGDLbjOB2REbRkt8VLI8UcoAp02DORXpHk/vm6CGAom9+CrQ8
-         bsRcmnxgH+SNWNbPLUGfIKvyXApSN6a86dl2+JpPI0/uJwbyJyKlAubUeaF5mmF017U5
-         j7PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VPh4Dp+YKR59+rlQQnZun9Wq0rnlFLvRuPBwa+z2RvM=;
-        b=pukeKokI7z59nnTy+xC2eqmUvV1qQdlpw1xXWRlveSInHHSCByx78ATpT1CjsS24NA
-         1nz6AUOt5WBSjlCZ+LzwZ0urAnTwQMVMIsj3wFCRpDOANUVgGWqPxisVvyFtGG4flduL
-         qylSBCfSNUUourn0wr+8mQo630Wd69BnS2DKXSIfTee8MCXvWApWuNfVWTAyLB9q1BoW
-         DED0PV1YtbKi0kbhIkYUPQpacoVN3CliXJ0Ar9jT4thm6dLpL0LjXaq9umuB9TQMj8j0
-         JwekN5zo1ipW6L+oyGjWz7RIzso3ocGBQHSEj4oZ0Ex99+64zJ30pObGJ8FTugoQX6H3
-         /SEQ==
-X-Gm-Message-State: AOAM531ZQ4MGoql3vY7v9OMmJH/hOsL8MuI8iaNHwa9yMRI15jfEoa8r
-        5k1pot7qCAzjS9xM6NRd73plULZRLeoLlQ==
-X-Google-Smtp-Source: ABdhPJypsAKICi5O+rUKAdmond76Pe0yRzhI6Its+Jwd5+oXnfb+g1mW5wvyHbF0a11pZZmnTYw4mg==
-X-Received: by 2002:a05:600c:5125:: with SMTP id o37mr12877614wms.81.1635925986247;
-        Wed, 03 Nov 2021 00:53:06 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:9646:a63d:c457:d22e? ([2a01:e34:ed2f:f020:9646:a63d:c457:d22e])
-        by smtp.googlemail.com with ESMTPSA id z11sm1190976wrt.58.2021.11.03.00.53.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 00:53:05 -0700 (PDT)
-Subject: Re: [GIT PULL] Thermal control updates for v5.16-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAJZ5v0hnj0zCXsZy0=Ukud3U_cn054GULmHmpz7Qrpg_TkLLqA@mail.gmail.com>
- <CAHk-=wijOKZNA0Ahd0fNDDa8pc6abv9wUHbxBf8giOeERHkW0g@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <60950c33-a5be-c465-cb5a-9e33b13a1ee4@linaro.org>
-Date:   Wed, 3 Nov 2021 08:53:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <CAHk-=wijOKZNA0Ahd0fNDDa8pc6abv9wUHbxBf8giOeERHkW0g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S230478AbhKCH7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 03:59:14 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:50384 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229504AbhKCH7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 03:59:12 -0400
+Received: from localhost.localdomain.localdomain (unknown [10.2.5.46])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxj2qsQIJhzaMkAA--.40857S2;
+        Wed, 03 Nov 2021 15:56:33 +0800 (CST)
+From:   Yinbo Zhu <zhuyinbo@loongson.cn>
+To:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     zhuyinbo@loongson.cn
+Subject: [PATCH v2] usb: xhci: add LWP quirk for ensuring uPD720201 into D3 state after S5
+Date:   Wed,  3 Nov 2021 15:56:26 +0800
+Message-Id: <1635926186-17743-1-git-send-email-zhuyinbo@loongson.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: AQAAf9Dxj2qsQIJhzaMkAA--.40857S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7AF1kJw4kGF4DKr1UCrWruFg_yoW8tr4DpF
+        s8Wa4a9rZ8Kr4Iqr98Ar1I9as3G3ZrCFyUKry7C3yqgrZ8trWrGa4UGFW3CrZ3W395J3Wa
+        gF4vg345WFW7XaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUka14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK6svPMxAI
+        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUywZ7UUUUU=
+X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/11/2021 01:07, Linus Torvalds wrote:
-> On Tue, Nov 2, 2021 at 12:55 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->>
->> Daniel Lezcano (3):
->>       thermal/core: Make the userspace governor deprecated
-> 
-> This one is very annoying indeed.
-> 
-> How about making that "pr_warn()" be a "pr_warn_once()"?
-> 
-> Because I don't see the point of
-> 
->     dmesg  | grep "Userspace governor deprecated" | wc -l
->     19
-> 
-> almost immediately after boot.
+After S5, any pci device should into D3 state that if supported, but the
+uPD720201 was not and cause OSPM power consumption is more higher that
+S5 than S4. Due to that uPD720201 firmware behavior was unknown and the
+_PS3 method wasn't implemented in ACPI table which can make device into
+D3, I think xhci HCD can add a quirk ensure it into D3 state after S5
+that is appropriate and this patch was to add the XHCI_LWP_QURIK and set
+PCI_D3hot to uPD720201 pmsc register in xhci_pci_shutdown to fix xhci
+power consumption issue.
 
-Is the platform with 19 thermal zones and default thermal policy set to
-userspace governor ?
+Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+---
+Change in v2:
+		1. Rework the commit information to explain the issue 
+		   reason.
+		2. Change the qurik name that replace XHCI_LPM_QUIRK 
+		   with XHCI_LWP_QUIRK.
 
 
+ drivers/usb/host/xhci-pci.c | 4 +++-
+ drivers/usb/host/xhci.h     | 1 +
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
+index 2c9f25c..9f3f7f9 100644
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -265,6 +265,7 @@ static void xhci_pci_quirks(struct device *dev, struct xhci_hcd *xhci)
+ 	    pdev->device == 0x0014) {
+ 		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
+ 		xhci->quirks |= XHCI_ZERO_64B_REGS;
++		xhci->quirks |= XHCI_LWP_QUIRK;
+ 	}
+ 	if (pdev->vendor == PCI_VENDOR_ID_RENESAS &&
+ 	    pdev->device == 0x0015) {
+@@ -608,7 +609,8 @@ static void xhci_pci_shutdown(struct usb_hcd *hcd)
+ 	xhci_shutdown(hcd);
+ 
+ 	/* Yet another workaround for spurious wakeups at shutdown with HSW */
+-	if (xhci->quirks & XHCI_SPURIOUS_WAKEUP)
++	if (xhci->quirks & XHCI_SPURIOUS_WAKEUP ||
++			xhci->quirks & XHCI_LWP_QUIRK)
+ 		pci_set_power_state(pdev, PCI_D3hot);
+ }
+ #endif /* CONFIG_PM */
+diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+index dca6181..bcd70d1 100644
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -1899,6 +1899,7 @@ struct xhci_hcd {
+ #define XHCI_SG_TRB_CACHE_SIZE_QUIRK	BIT_ULL(39)
+ #define XHCI_NO_SOFT_RETRY	BIT_ULL(40)
+ #define XHCI_BROKEN_D3COLD	BIT_ULL(41)
++#define XHCI_LWP_QUIRK		BIT_ULL(42)
+ 
+ 	unsigned int		num_active_eps;
+ 	unsigned int		limit_active_eps;
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+1.8.3.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
