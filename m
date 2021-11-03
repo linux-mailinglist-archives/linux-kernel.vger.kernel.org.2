@@ -2,118 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E973D44448C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD515444491
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231721AbhKCPWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 11:22:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41712 "EHLO
+        id S231786AbhKCPXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 11:23:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231441AbhKCPWk (ORCPT
+        with ESMTP id S231175AbhKCPXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 11:22:40 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC3CC061203
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 08:20:03 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id d27so4125880wrb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 08:20:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=W1A7MT5G15UN43PmwCA+/v/rMYKRIQlPMS3qruXpK28=;
-        b=XgejUpvqcZc72WidE/eUiGGVOpDy0lZMNKNmFEKfs637ySI3FaMOyWadTNo8UkCXDO
-         Gng/JSPeraDJoq+4DMDajWpVCDJhp6D4v8M9vecLYLnn4hYwo+zZfkI9LKeXPdJ7aAku
-         vUinTX6v8064wTIpHQNhxUr7ZTtrQprRD6Grv8VBR/DuMzryZam4gx5eIeRjKsV5aqIp
-         1ZZymBzxJUF4jjzWQd8kpvhJAQHXIFDUCHDtlv7UYKeXKv4z+JT7sMCtY3lrNxQv5+Cd
-         givgoTngKOodzd/ytudPAQjeMHXvrpTJIEvm1WkzQ14/RY46RKqAendQ7kgKs7YySXsq
-         whLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=W1A7MT5G15UN43PmwCA+/v/rMYKRIQlPMS3qruXpK28=;
-        b=RGIbEvnhBJzMWzhszuDUqsfeZaN+DAaMQKvyw61jZxxyWps7lpMm5rlzUGEcty8X2w
-         GzdNI0KtW6eZKTZ5xh02lefFtJpudX9z6Jt8dYcdQoGzXI7mn3anrd+s1JsDTMXUESvU
-         K6G+mTE9z0lI5Jz8ATVkgKYH3gwYMyhWnH3n6ZubsNzI3vWJQU6oBl6wMl+3ys9oamxn
-         xLh9PYlH5+xOtB/frzAaxiIEpThmnY4m6nMTzylOzv+Nrf+Ro4lnjZHirjySg+sMXdTx
-         YumQOPBmkkfCuQ4gvNwOWQ6dBpMxge4OviUyR+n/mP+JEynwCyibq/XN1Zeotj44vFFj
-         cCwA==
-X-Gm-Message-State: AOAM533Re2SiOYEfeN5FDrQBYnZE2srVmgz5Z7toq/3WmTVVvWXH69cE
-        RiUSGvZ6SqjkmyeZX8Pa+/X6uvCtiQ/BHA==
-X-Google-Smtp-Source: ABdhPJx+GSa10mXbUP7WX6ifh8ehXT2M+Qv3DbjtWAJDIp/IJ7HmNasEjtVAGO3ZrDVnIKBDO/3yHg==
-X-Received: by 2002:adf:ee04:: with SMTP id y4mr47249586wrn.0.1635952802040;
-        Wed, 03 Nov 2021 08:20:02 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:aaa0:cb1f:c758:aafc? ([2a01:e34:ed2f:f020:aaa0:cb1f:c758:aafc])
-        by smtp.googlemail.com with ESMTPSA id h18sm2405216wre.46.2021.11.03.08.20.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 08:20:01 -0700 (PDT)
-Subject: Re: [GIT PULL] Thermal control updates for v5.16-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAJZ5v0hnj0zCXsZy0=Ukud3U_cn054GULmHmpz7Qrpg_TkLLqA@mail.gmail.com>
- <CAHk-=wijOKZNA0Ahd0fNDDa8pc6abv9wUHbxBf8giOeERHkW0g@mail.gmail.com>
- <60950c33-a5be-c465-cb5a-9e33b13a1ee4@linaro.org>
- <CAHk-=wjf_FrwxU0mAR_27cmmmr3n35fMyuJ2D+g2baeroTCFOQ@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <52e3ba9a-6324-5d62-8327-048dd03dfc5d@linaro.org>
-Date:   Wed, 3 Nov 2021 16:20:00 +0100
+        Wed, 3 Nov 2021 11:23:43 -0400
+Received: from lb2-smtp-cloud9.xs4all.net (lb2-smtp-cloud9.xs4all.net [IPv6:2001:888:0:108::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97EEC061714;
+        Wed,  3 Nov 2021 08:21:05 -0700 (PDT)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id iI4UmXUEB030KiI4VmUuQk; Wed, 03 Nov 2021 16:21:03 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1635952863; bh=lnc+Z3B1xwnHwfUVEktMwFnDu5c5iQo3KkPktwgGScw=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=SQuJGTxJtv0/TrVwsQntTQZ6GzEoz6Tz/b2NngM+HJMNL/YyVdie7oyFoiAzy94BR
+         MZeT4/hahnGK1OQQpbes6FMTaMWoofLgf4OwJMktQjtTkMScaIBwyfCYNgteG8rR1P
+         UKB9ziYRh1MEGRxZkaGHsZUxTA33vE0FR8UPs0qLo/1awwIeHYHxPq6W636yBnbyC4
+         D42fse1RzGxOy3n4lIMBoKjhJUeW23uMEeks6j6Y0dLX/c5a9bhVPYMZbEQtboUic7
+         9BKBt7bg9S6q6e/5HPbpeYEXccQIwfsJUywhXmYmdLAjbRKDetwd9rrVEwdBqzZseC
+         WAYMSOVJVS6Gw==
+Subject: Re: [PATCH v3 00/14] staging: media: zoran: fusion in one module
+To:     Corentin Labbe <clabbe@baylibre.com>, mchehab@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
+References: <20211026193416.1176797-1-clabbe@baylibre.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <a85c93db-e118-274f-d86a-d127c7399926@xs4all.nl>
+Date:   Wed, 3 Nov 2021 16:21:02 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjf_FrwxU0mAR_27cmmmr3n35fMyuJ2D+g2baeroTCFOQ@mail.gmail.com>
+In-Reply-To: <20211026193416.1176797-1-clabbe@baylibre.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfAYBF5iuKYzq6bTEbQifCIMKSGYUbDDi6NeAPNI8NyUqweNskuDPISythn3jsDYOgKG7A7WinzwchzWV8fLmS7rNM5Kgdi0xgCpiHpV1nkZCJ/eFGNnQ
+ s4VS0gW7AU4CQ1F3KWRT9G5MPyYgoOtC/NF/u4n5p3LZyWUNKXjLwQnKb6Fjx60uT6bPeRSzKxMcNtdIbNQApfU67ve8yw/p0KzSs3kS2C26ighy2GhJ7ZQZ
+ z5mUrQR65YTtmzaNeHlmAqmRJrKfXA9wrH1rYsILIzTe0OzCDXdfTFv3tcdBIiGS3Eq0WI1mJWBBbfMr8086TaWfqqqIwKfjOsYW8IK7+1KcdMOCqv1/zLKm
+ UeIbZSaaIxLy0QZHnkuMb+4XQeX6lNA8X3zZqcEDY/0FyUzQK/ZcaPldrsxDCV47zT/+SJtKEaGaz6Gli/MV13ZC3rHQKK7aCRqpmr6zzvAgJUokREykgBte
+ YCYDTRz9chnPWKOUUwWtfc8ZfiFnlTvKR5HxKOUBrzXEkKuqwSAeROmsEnw=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/11/2021 16:03, Linus Torvalds wrote:
-> On Wed, Nov 3, 2021 at 12:53 AM Daniel Lezcano
-> <daniel.lezcano@linaro.org> wrote:
->>
->> Is the platform with 19 thermal zones and default thermal policy set to
->> userspace governor ?
+Hi Corentin,
+
+On 26/10/2021 21:34, Corentin Labbe wrote:
+> Hello
 > 
-> I think it has 11 thermal zones judging by
-> /sys/class/thermal/thermal_zone* going from 0 to 10.
+> The main change of this serie is to fusion all zoran related modules in
+> one.
+> This fixes the load order problem when everything is built-in.
+
+I've been testing this series, and while the module load/unload is now working,
+I'm running into a lot of other v4l2 compliance issues.
+
+I've fixed various issues in some follow-up patches available in my tree:
+
+https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=zoran
+
+At least some of the worst offenders are now resolved. Note that the patch
+dropping read/write support relies on this patch:
+
+https://patchwork.linuxtv.org/project/linux-media/patch/4f89b139-13b7-eee6-9662-996626b778b0@xs4all.nl/
+
+But there is one really major bug that makes me hesitant to merge this:
+
+This works:
+
+v4l2-ctl -v pixelformat=MJPG,width=768,height=576
+v4l2-ctl --stream-mmap
+
+This fails:
+
+v4l2-ctl -v pixelformat=MJPG,width=768,height=288
+v4l2-ctl --stream-mmap
+
+It's an immediate lock up with nothing to indicate what is wrong.
+As soon as the height is 288 or less, this happens.
+
+Both with my DC30 and DC30D.
+
+Do you see the same? Any idea what is going on? I would feel much happier
+if this is fixed.
+
+Note that the same problem is present without this patch series, so it's
+been there for some time.
+
+Regards,
+
+	Hans
+
 > 
-> And the kernel default seems to be
+> Regards
 > 
->    CONFIG_THERMAL_DEFAULT_GOV_STEP_WISE=y
+> Changes since v2:
+> - added the 4 latest patchs
+> - removed DEBUGFS kconfig option
+> - fixed Dan Carpenter's reported codec issues
+> - fixed kernel test robot's reported issues on vb2_dma_contig_set_max_seg_size()
 > 
-> but presumably this is F34 then setting it to 'userspace' (the kernel
-> config comes from the F34 one too, although it's been tweaked for the
-> machine).
+> Changes since v1:
+> - add missing debugfs cleaning
+> - clean some remaining module_get/put functions which made impossible to
+>   remove the zoran module
+> - added the two latest patchs
 > 
-> I suspect I could just turn off THERMAL_GOV_USER_SPACE and get rid of
-> the message, that's not the issue.
+> Corentin Labbe (14):
+>   staging: media: zoran: move module parameter checks to zoran_probe
+>   staging: media: zoran: use module_pci_driver
+>   staging: media: zoran: rename debug module parameter
+>   staging: media: zoran: add debugfs
+>   staging: media: zoran: videocode: remove procfs
+>   staging: media: zoran: fusion all modules
+>   staging: media: zoran: remove vidmem
+>   staging: media: zoran: move videodev alloc
+>   staging: media: zoran: move config select on primary kconfig
+>   staging: media: zoran: introduce zoran_i2c_init
+>   staging: media: zoran: fix usage of vb2_dma_contig_set_max_seg_size
+>   staging: media: zoran: clean unused code
+>   staging: media: zoran: fix counting buffer in reserve
+>   staging: media: zoran: DC30 encoder is not adv7175
 > 
-> The issue is "why is the kernel spewing pointlessly the same message
-> over and over again?"
+>  drivers/staging/media/zoran/Kconfig        |  38 +-
+>  drivers/staging/media/zoran/Makefile       |   8 +-
+>  drivers/staging/media/zoran/videocodec.c   |  68 +---
+>  drivers/staging/media/zoran/videocodec.h   |   4 +-
+>  drivers/staging/media/zoran/zoran.h        |  18 +-
+>  drivers/staging/media/zoran/zoran_card.c   | 400 +++++++++++++--------
+>  drivers/staging/media/zoran/zoran_device.h |   2 -
+>  drivers/staging/media/zoran/zoran_driver.c |   8 +-
+>  drivers/staging/media/zoran/zr36016.c      |  25 +-
+>  drivers/staging/media/zoran/zr36016.h      |   2 +
+>  drivers/staging/media/zoran/zr36050.c      |  24 +-
+>  drivers/staging/media/zoran/zr36050.h      |   2 +
+>  drivers/staging/media/zoran/zr36060.c      |  23 +-
+>  drivers/staging/media/zoran/zr36060.h      |   2 +
+>  14 files changed, 317 insertions(+), 307 deletions(-)
+> 
 
-Yes, I agree and I will provide a patch to convert it to pr_warn_once
-but having 19 messages sounds like the policy was set several times and
-that is surprising.
-
-This is why I asked about the configuration because the message should
-appear when one thermal zone is changing the policy to 'user_space' and
-that happens once per thermal zone, logically.
-
-I'll send a fix for that and try to figure out what f34 is doing with
-the thermal governors.
-
-Thanks
-
-  -- Daniel
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
