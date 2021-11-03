@@ -2,660 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC428443E37
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:14:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 889FD443E39
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:15:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbhKCIRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 04:17:11 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:48706 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230352AbhKCIRJ (ORCPT
+        id S231553AbhKCISB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 04:18:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230352AbhKCISA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 04:17:09 -0400
+        Wed, 3 Nov 2021 04:18:00 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0599C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 01:15:24 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id r28so1764277pga.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 01:15:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1635927273; x=1667463273;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Ox2Rw8EKFEDNw5s+iCfrTBJMmfVW7w7YGZI8QrkQzrQ=;
-  b=ihdTjEz8t1SBYnETwfqqHoOIr4eVQUgjX9nR8UZQgMrYrUxw57qucKA5
-   6QufCwW/a51UZSbJbh1xCPl6nORGjRDk2LdIQz12Ike/XeEX/jP36W9Z6
-   mkcKaEwI73nDdPALT8ZuHAtqTbec6JMVyTB3yGeksGSHe4D5b5n/83d0F
-   0=;
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 03 Nov 2021 01:14:33 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg01-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 01:14:33 -0700
-Received: from nalasex01c.na.qualcomm.com (10.47.97.35) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Wed, 3 Nov 2021 01:14:32 -0700
-Received: from taozha-gv.ap.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Wed, 3 Nov 2021 01:14:28 -0700
-Date:   Wed, 3 Nov 2021 16:14:25 +0800
-From:   Tao Zhang <quic_taozha@quicinc.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Mao Jinlong <quic_jinlmao@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>
-Subject: Re: [PATCH 10/10] ARM: dts: msm: Add TPDA and TPDM support to DTS
- for RB5
-Message-ID: <20211103081424.GA19916@taozha-gv.ap.qualcomm.com>
-References: <1634801936-15080-1-git-send-email-quic_taozha@quicinc.com>
- <1634801936-15080-11-git-send-email-quic_taozha@quicinc.com>
- <20211102180239.GB325436@p14s>
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6/g1pCDTYXPMrURdzvLf7qrNknIjaeuJnxxrL+FZ9xQ=;
+        b=O49XbIrWjvZnx0vLC9YDkreq6WhyMYf04C5NHPd8/mqQ4bDStZ7todPtLnkRY+r5kg
+         v+L+6OS3PEVr7t6vTFleAryPoRuIlCdzVXUgeWyjyRXH5/qpB5Kbtc7/vWX7PcY0p1FA
+         dy5jXs9LJmV9hD0L0UhynsLXccwkvs1d3t/DJLUnxrnAeCvI/16BHNFOIR+I2/D/EQbO
+         rZfbp/siZI4vyz28d7zt+koXRxalh+9nAt4X8d/EV1DUlllRBnznyHsiKWdtRnFCZHdl
+         KGK3OW54ucSxqbEBhkppHjZpy1V0D4vZn71QHR/rtdT6TImJsCqjbHngpQVOcOXqoNoM
+         DAXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6/g1pCDTYXPMrURdzvLf7qrNknIjaeuJnxxrL+FZ9xQ=;
+        b=VKojWKdO6D7o8NihcCcwRBu/fuyJj9FYUX9XK6A8PhzegeP9gFL1vK35OiA2zgYYxn
+         QOsPlZATrideFx8gvu4RkpEmQdBS2B8OfLyiVb2TNQRli63t6SL1lA9CGDG7mPbaFkz+
+         h4tXOapDMeawBHxvSrwZceOyoX4qiim1OKFKLV6ZlXbeZIGbEbPwRVw+XMOtYle6+ptc
+         u8nFIiRgRQMvlxDR2gfwoiv0P8D50d+L4KNY7OpLCp8jhkUiA5+iy/p0azZXLNpx42Uc
+         PVsm/euWDjT82CmbRBjehbwzsjN55lRN1KqA1SSSKT7HYfadvHs74gX4L1/fMauweDmg
+         lIuA==
+X-Gm-Message-State: AOAM5305nYPkT8LGpdgHnZSZV4iWCfNYMvVR/4eu7aAqXeS3g9hfgtes
+        gC969ix9VsiE4Lop5WSvRs26H8ZZU1Lj7tJhiNBUBPyimf1Vfg==
+X-Google-Smtp-Source: ABdhPJyn9YxhU1yLGSGKZzbhqhNMhFMhTVcsFjJ2ueKZny5pWstrpNPNRyT/P3oyAZa0qbkZTraZrRVKqjA0GKyxiUI=
+X-Received: by 2002:aa7:990e:0:b0:480:ff8f:d655 with SMTP id
+ z14-20020aa7990e000000b00480ff8fd655mr22595770pff.18.1635927324220; Wed, 03
+ Nov 2021 01:15:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20211102180239.GB325436@p14s>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+References: <20210824031847.GA23326@raspberrypi>
+In-Reply-To: <20210824031847.GA23326@raspberrypi>
+From:   Austin Kim <austindh.kim@gmail.com>
+Date:   Wed, 3 Nov 2021 17:15:13 +0900
+Message-ID: <CADLLry4fgoj5CVeZ8M+QmzzvQ=GTj2AheBJA3eMeSTZT47scNA@mail.gmail.com>
+Subject: Re: [PATCH] cachefiles: remove always false 'datalen < 0' expression
+To:     dhowells@redhat.com
+Cc:     linux-cachefs@redhat.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?6rmA64+Z7ZiE?= <austin.kim@lge.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 12:02:39PM -0600, Mathieu Poirier wrote:
-> On Thu, Oct 21, 2021 at 03:38:56PM +0800, Tao Zhang wrote:
-> > Add TPDA and TPDM support to DTS for RB5 board. This change is a
-> > sample for validating. After applying this patch, the new TPDM and
-> > TPDA nodes can be observed at the coresight devices path. TPDM and
-> > TPDA hardware can be operated by commands.
-> > 
-> > List the commands for validating this series patches as below.
-> > echo 1 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-> > echo 1 > /sys/bus/coresight/devices/tpdm0/enable_source
-> > echo 1 > /sys/bus/coresight/devices/tpdm0/integration_test
-> > echo 2 > /sys/bus/coresight/devices/tpdm0/integration_test
-> > cat /dev/tmc_etf0 > /data/etf-tpdm0.bin
-> > echo 0 > /sys/bus/coresight/devices/tpdm0/enable_source
-> > echo 0 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-> > echo 1 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-> > echo 1 > /sys/bus/coresight/devices/tpdm1/enable_source
-> > echo 1 > /sys/bus/coresight/devices/tpdm1/integration_test
-> > echo 2 > /sys/bus/coresight/devices/tpdm1/integration_test
-> > cat /dev/tmc_etf0 > /data/etf-tpdm1.bin
-> > echo 0 > /sys/bus/coresight/devices/tpdm1/enable_source
-> > echo 0 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-> > echo 1 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-> > echo 1 > /sys/bus/coresight/devices/tpdm2/enable_source
-> > echo 1 > /sys/bus/coresight/devices/tpdm2/integration_test
-> > echo 2 > /sys/bus/coresight/devices/tpdm2/integration_test
-> > cat /dev/tmc_etf0 > /data/etf-tpdm2.bin
-> > echo 0 > /sys/bus/coresight/devices/tpdm2/enable_source
-> > echo 0 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-> > 
-> > If the data from TPDMs can be obtained from the ETF, it means
-> > that the TPDMs verification is successful. At the same time,
-> > since TPDM0, TPDM1 and TPDM2 are all connected to the same
-> > funnel "funnel@6c2d000" and output via different output ports,
-> 
-> Where is "funnel@6c2d000" in this patch?
+2021=EB=85=84 8=EC=9B=94 24=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 12:18, =
+Austin Kim <austindh.kim@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
 >
-Hi Mathieu,
+> From: Austin Kim <austin.kim@lge.com>
+>
+> Since 'datalen' is declared as size_t, the 'datalen < 0' expression
+> is always false. Where size_t is defined as below;
+>
+>    typedef unsigned long __kernel_ulong_t;
+>    typedef __kernel_ulong_t __kernel_size_t;
+>    typedef __kernel_size_t size_t;
+>
+> So it had better remove unnecessary 'always false' expression.
+>
+> Signed-off-by: Austin Kim <austin.kim@lge.com>
+> ---
+>  fs/cachefiles/daemon.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/cachefiles/daemon.c b/fs/cachefiles/daemon.c
+> index 752c1e43416f..1cfed9e0812a 100644
+> --- a/fs/cachefiles/daemon.c
+> +++ b/fs/cachefiles/daemon.c
+> @@ -225,7 +225,7 @@ static ssize_t cachefiles_daemon_write(struct file *f=
+ile,
+>         if (test_bit(CACHEFILES_DEAD, &cache->flags))
+>                 return -EIO;
+>
+> -       if (datalen < 0 || datalen > PAGE_SIZE - 1)
+> +       if (datalen > PAGE_SIZE - 1)
+>                 return -EOPNOTSUPP;
+>
+>         /* drag the command string into the kernel so we can parse it */
+> --
+> 2.20.1
+>
 
-Sorry, the TPDM/TPDA related code in the device tree was omitted in this submission.
-We will add them to device tree in the next version.
-Paste this funnel configuration below for you review first. 
-funnel@6c2d000 {
-    compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
+If you are available, would you please review this patch?
+It will not take long.
 
-    reg = <0 0x6c2d000 0 0x1000>;
-    reg-names = "funnel-base";
-
-    clocks = <&aoss_qmp>;
-    clock-names = "apb_pclk";
-
-    out-ports {
-        #address-cells = <1>;
-        #size-cells = <0>;
-        port@2 {
-            reg = <2>;
-            tpdm_mm_out_tpda9: endpoint {
-                remote-endpoint =
-                    <&tpda_9_in_tpdm_mm>;
-                label = <&tpdm_mm>;
-            };
-        };
-
-        port@3 {
-            reg = <3>;
-            funnel_dl_center_out_tpda_10: endpoint {
-                remote-endpoint =
-                    <&tpda_10_in_funnel_dl_center>;
-                label = <&tpdm_lpass>;
-            };
-        };
-
-        port@7 {
-            reg = <7>;
-            tpdm_turing_out_tpda14: endpoint {
-                remote-endpoint =
-                    <&tpda_14_in_tpdm_turing>;
-                label = <&tpdm_turing>;
-            };
-        };
-    };
-
-    in-ports {
-        #address-cells = <1>;
-        #size-cells = <0>;
-
-        port@15 {
-            reg = <2>;
-            funnel_dl_center_in_funnel_dl_mm: endpoint {
-                slave-mode;
-                remote-endpoint =
-                <&funnel_dl_mm_out_funnel_dl_center>;
-            };
-        };
-
-        port@16 {
-            reg = <3>;
-            funnel_dl_center_in_funnel_lpass: endpoint {
-                slave-mode;
-                remote-endpoint =
-                <&funnel_lpass_out_funnel_dl_center>;
-            };
-        };
-
-        port@18 {
-            reg = <5>;
-            funnel_dl_center_in_funnel_compute: endpoint {
-                slave-mode;
-                remote-endpoint =
-                <&funnel_compute_out_funnel_dl_center>;
-            };
-        };
-    };
-};
-> > it also means that the following patches verification is
-> > successful.
-> > coresight: add support to enable more coresight paths
-> > coresight: funnel: add support for multiple output ports
-> > 
-> > Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
-> > ---
-> >  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 439 +++++++++++++++++++++++
-> >  1 file changed, 439 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> > index 8ac96f8e79d4..bcec8b181e11 100644
-> > --- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> > +++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> > @@ -222,6 +222,445 @@
-> >  		regulator-max-microvolt = <1800000>;
-> >  		regulator-always-on;
-> >  	};
-> > +
-> > +	stm@6002000 {
-> > +		compatible = "arm,coresight-stm", "arm,primecell";
-> > +		reg = <0 0x06002000 0 0x1000>,
-> > +		      <0 0x16280000 0 0x180000>;
-> > +		reg-names = "stm-base", "stm-stimulus-base";
-> > +
-> > +		clocks = <&aoss_qmp>;
-> > +		clock-names = "apb_pclk";
-> > +
-> > +		out-ports {
-> > +			port {
-> > +				stm_out: endpoint {
-> > +					remote-endpoint =
-> > +					  <&funnel0_in7>;
-> > +				};
-> > +			};
-> > +		};
-> > +	};
-> > +
-> > +	funnel@6041000 {
-> > +		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-> > +		reg = <0 0x06041000 0 0x1000>;
-> > +
-> > +		clocks = <&aoss_qmp>;
-> > +		clock-names = "apb_pclk";
-> > +
-> > +		out-ports {
-> > +			port {
-> > +				funnel0_out: endpoint {
-> > +					remote-endpoint =
-> > +					  <&merge_funnel_in0>;
-> > +				};
-> > +			};
-> > +		};
-> > +
-> > +		in-ports {
-> > +			#address-cells = <1>;
-> > +			#size-cells = <0>;
-> > +
-> > +			port@7 {
-> > +				reg = <7>;
-> > +				funnel0_in7: endpoint {
-> > +					remote-endpoint = <&stm_out>;
-> > +				};
-> > +			};
-> > +		};
-> > +	};
-> > +
-> > +	funnel@6042000 {
-> > +		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-> > +		reg = <0 0x06042000 0 0x1000>;
-> > +
-> > +		clocks = <&aoss_qmp>;
-> > +		clock-names = "apb_pclk";
-> > +
-> > +		out-ports {
-> > +			port {
-> > +				funnel2_out: endpoint {
-> > +					remote-endpoint =
-> > +					  <&merge_funnel_in2>;
-> > +				};
-> > +			};
-> > +		};
-> > +
-> > +		in-ports {
-> > +			#address-cells = <1>;
-> > +			#size-cells = <0>;
-> > +
-> > +			port@4 {
-> > +				reg = <4>;
-> > +				funnel2_in5: endpoint {
-> > +					remote-endpoint =
-> > +					  <&apss_merge_funnel_out>;
-> > +				};
-> > +			};
-> > +		};
-> > +	};
-> > +
-> > +	funnel@6b04000 {
-> > +		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-> > +		arm,primecell-periphid = <0x000bb908>;
-> > +
-> > +		reg = <0 0x6b04000 0 0x1000>;
-> > +		reg-names = "funnel-base";
-> > +
-> > +		clocks = <&aoss_qmp>;
-> > +		clock-names = "apb_pclk";
-> > +
-> > +		out-ports {
-> > +			port {
-> > +				merge_funnel_out: endpoint {
-> > +					remote-endpoint =
-> > +						<&etf_in>;
-> > +				};
-> > +			};
-> > +		};
-> > +
-> > +		in-ports {
-> > +			#address-cells = <1>;
-> > +			#size-cells = <0>;
-> > +
-> > +			port@7 {
-> > +				reg = <7>;
-> > +				swao_funnel_in7: endpoint {
-> > +					slave-mode;
-> > +					remote-endpoint=
-> > +						<&merg_funnel_out>;
-> > +				};
-> > +			};
-> > +		};
-> > +
-> > +	};
-> > +
-> > +	funnel@6045000 {
-> > +		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-> > +		reg = <0 0x06045000 0 0x1000>;
-> > +
-> > +		clocks = <&aoss_qmp>;
-> > +		clock-names = "apb_pclk";
-> > +
-> > +		out-ports {
-> > +			port {
-> > +				merg_funnel_out: endpoint {
-> > +					remote-endpoint = <&swao_funnel_in7>;
-> > +				};
-> > +			};
-> > +		};
-> > +
-> > +		in-ports {
-> > +			#address-cells = <1>;
-> > +			#size-cells = <0>;
-> > +
-> > +			port@0 {
-> > +				reg = <0>;
-> > +				merge_funnel_in0: endpoint {
-> > +					remote-endpoint =
-> > +					  <&funnel0_out>;
-> > +				};
-> > +			};
-> > +
-> > +			port@1 {
-> > +				reg = <1>;
-> > +				merge_funnel_in2: endpoint {
-> > +					remote-endpoint =
-> > +					  <&funnel2_out>;
-> > +				};
-> > +			};
-> > +		};
-> > +	};
-> > +
-> > +	etf@6b05000 {
-> > +		compatible = "arm,coresight-tmc", "arm,primecell";
-> > +		reg = <0 0x06b05000 0 0x1000>;
-> > +
-> > +		clocks = <&aoss_qmp>;
-> > +		clock-names = "apb_pclk";
-> > +
-> > +		in-ports {
-> > +			port {
-> > +				etf_in: endpoint {
-> > +					remote-endpoint =
-> > +					  <&merge_funnel_out>;
-> > +				};
-> > +			};
-> > +		};
-> > +	};
-> > +
-> > +	etm@7040000 {
-> > +		compatible = "arm,coresight-etm4x", "arm,primecell";
-> > +		reg = <0 0x07040000 0 0x1000>;
-> > +
-> > +		cpu = <&CPU0>;
-> > +
-> > +		clocks = <&aoss_qmp>;
-> > +		clock-names = "apb_pclk";
-> > +		arm,coresight-loses-context-with-cpu;
-> > +
-> > +		out-ports {
-> > +			port {
-> > +				etm0_out: endpoint {
-> > +					remote-endpoint =
-> > +					  <&apss_funnel_in0>;
-> > +				};
-> > +			};
-> > +		};
-> > +	};
-> > +
-> > +	etm@7140000 {
-> > +		compatible = "arm,coresight-etm4x", "arm,primecell";
-> > +		reg = <0 0x07140000 0 0x1000>;
-> > +
-> > +		cpu = <&CPU1>;
-> > +
-> > +		clocks = <&aoss_qmp>;
-> > +		clock-names = "apb_pclk";
-> > +		arm,coresight-loses-context-with-cpu;
-> > +
-> > +		out-ports {
-> > +			port {
-> > +				etm1_out: endpoint {
-> > +					remote-endpoint =
-> > +					  <&apss_funnel_in1>;
-> > +				};
-> > +			};
-> > +		};
-> > +	};
-> > +
-> > +	etm@7240000 {
-> > +		compatible = "arm,coresight-etm4x", "arm,primecell";
-> > +		reg = <0 0x07240000 0 0x1000>;
-> > +
-> > +		cpu = <&CPU2>;
-> > +
-> > +		clocks = <&aoss_qmp>;
-> > +		clock-names = "apb_pclk";
-> > +		arm,coresight-loses-context-with-cpu;
-> > +
-> > +		out-ports {
-> > +			port {
-> > +				etm2_out: endpoint {
-> > +					remote-endpoint =
-> > +					  <&apss_funnel_in2>;
-> > +				};
-> > +			};
-> > +		};
-> > +	};
-> > +
-> > +	etm@7340000 {
-> > +		compatible = "arm,coresight-etm4x", "arm,primecell";
-> > +		reg = <0 0x07340000 0 0x1000>;
-> > +
-> > +		cpu = <&CPU3>;
-> > +
-> > +		clocks = <&aoss_qmp>;
-> > +		clock-names = "apb_pclk";
-> > +		arm,coresight-loses-context-with-cpu;
-> > +
-> > +		out-ports {
-> > +			port {
-> > +				etm3_out: endpoint {
-> > +					remote-endpoint =
-> > +					  <&apss_funnel_in3>;
-> > +				};
-> > +			};
-> > +		};
-> > +	};
-> > +
-> > +	etm@7440000 {
-> > +		compatible = "arm,coresight-etm4x", "arm,primecell";
-> > +		reg = <0 0x07440000 0 0x1000>;
-> > +
-> > +		cpu = <&CPU4>;
-> > +
-> > +		clocks = <&aoss_qmp>;
-> > +		clock-names = "apb_pclk";
-> > +		arm,coresight-loses-context-with-cpu;
-> > +
-> > +		out-ports {
-> > +			port {
-> > +				etm4_out: endpoint {
-> > +					remote-endpoint =
-> > +					  <&apss_funnel_in4>;
-> > +				};
-> > +			};
-> > +		};
-> > +	};
-> > +
-> > +	etm@7540000 {
-> > +		compatible = "arm,coresight-etm4x", "arm,primecell";
-> > +		reg = <0 0x07540000 0 0x1000>;
-> > +
-> > +		cpu = <&CPU5>;
-> > +
-> > +		clocks = <&aoss_qmp>;
-> > +		clock-names = "apb_pclk";
-> > +		arm,coresight-loses-context-with-cpu;
-> > +
-> > +		out-ports {
-> > +			port {
-> > +				etm5_out: endpoint {
-> > +					remote-endpoint =
-> > +					  <&apss_funnel_in5>;
-> > +				};
-> > +			};
-> > +		};
-> > +	};
-> > +
-> > +	etm@7640000 {
-> > +		compatible = "arm,coresight-etm4x", "arm,primecell";
-> > +		reg = <0 0x07640000 0 0x1000>;
-> > +
-> > +		cpu = <&CPU6>;
-> > +
-> > +		clocks = <&aoss_qmp>;
-> > +		clock-names = "apb_pclk";
-> > +		arm,coresight-loses-context-with-cpu;
-> > +
-> > +		out-ports {
-> > +			port {
-> > +				etm6_out: endpoint {
-> > +					remote-endpoint =
-> > +					  <&apss_funnel_in6>;
-> > +				};
-> > +			};
-> > +		};
-> > +	};
-> > +
-> > +	etm@7740000 {
-> > +		compatible = "arm,coresight-etm4x", "arm,primecell";
-> > +		reg = <0 0x07740000 0 0x1000>;
-> > +
-> > +		cpu = <&CPU7>;
-> > +
-> > +		clocks = <&aoss_qmp>;
-> > +		clock-names = "apb_pclk";
-> > +		arm,coresight-loses-context-with-cpu;
-> > +
-> > +		out-ports {
-> > +			port {
-> > +				etm7_out: endpoint {
-> > +					remote-endpoint =
-> > +					  <&apss_funnel_in7>;
-> > +				};
-> > +			};
-> > +		};
-> > +	};
-> > +
-> > +	funnel@7800000 {
-> > +		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-> > +		reg = <0 0x07800000 0 0x1000>;
-> > +
-> > +		clocks = <&aoss_qmp>;
-> > +		clock-names = "apb_pclk";
-> > +
-> > +		out-ports {
-> > +			port {
-> > +				apss_funnel_out: endpoint {
-> > +					remote-endpoint =
-> > +					  <&apss_merge_funnel_in>;
-> > +				};
-> > +			};
-> > +		};
-> > +
-> > +		in-ports {
-> > +			#address-cells = <1>;
-> > +			#size-cells = <0>;
-> > +
-> > +			port@0 {
-> > +				reg = <0>;
-> > +				apss_funnel_in0: endpoint {
-> > +					remote-endpoint =
-> > +					  <&etm0_out>;
-> > +				};
-> > +			};
-> > +
-> > +			port@1 {
-> > +				reg = <1>;
-> > +				apss_funnel_in1: endpoint {
-> > +					remote-endpoint =
-> > +					  <&etm1_out>;
-> > +				};
-> > +			};
-> > +
-> > +			port@2 {
-> > +				reg = <2>;
-> > +				apss_funnel_in2: endpoint {
-> > +					remote-endpoint =
-> > +					  <&etm2_out>;
-> > +				};
-> > +			};
-> > +
-> > +			port@3 {
-> > +				reg = <3>;
-> > +				apss_funnel_in3: endpoint {
-> > +					remote-endpoint =
-> > +					  <&etm3_out>;
-> > +				};
-> > +			};
-> > +
-> > +			port@4 {
-> > +				reg = <4>;
-> > +				apss_funnel_in4: endpoint {
-> > +					remote-endpoint =
-> > +					  <&etm4_out>;
-> > +				};
-> > +			};
-> > +
-> > +			port@5 {
-> > +				reg = <5>;
-> > +				apss_funnel_in5: endpoint {
-> > +					remote-endpoint =
-> > +					  <&etm5_out>;
-> > +				};
-> > +			};
-> > +
-> > +			port@6 {
-> > +				reg = <6>;
-> > +				apss_funnel_in6: endpoint {
-> > +					remote-endpoint =
-> > +					  <&etm6_out>;
-> > +				};
-> > +			};
-> > +
-> > +			port@7 {
-> > +				reg = <7>;
-> > +				apss_funnel_in7: endpoint {
-> > +					remote-endpoint =
-> > +					  <&etm7_out>;
-> > +				};
-> > +			};
-> > +		};
-> > +	};
-> > +
-> > +	funnel@7810000 {
-> > +		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-> > +		reg = <0 0x07810000 0 0x1000>;
-> > +
-> > +		clocks = <&aoss_qmp>;
-> > +		clock-names = "apb_pclk";
-> > +
-> > +		out-ports {
-> > +			port {
-> > +				apss_merge_funnel_out: endpoint {
-> > +					remote-endpoint =
-> > +					  <&funnel2_in5>;
-> > +				};
-> > +			};
-> > +		};
-> > +
-> > +		in-ports {
-> > +			port {
-> > +				apss_merge_funnel_in: endpoint {
-> > +					remote-endpoint =
-> > +					  <&apss_funnel_out>;
-> > +				};
-> > +			};
-> > +		};
-> > +	};
-> 
-> Which of the above introduces TPDM and TPDA devices?
-> 
-> More comments to come tomorrow.
-> 
-> Thanks,
-> Mathieu
-> 
-> >  };
-Hi Mathieu,
-
-We will add TPDM/TPDA related code to the device tree in the next verison.
-
-Best,
-Tao
-> >  
-> >  &adsp {
-> > -- 
-> > 2.17.1
-> > 
+BR,
+Austin Kim
