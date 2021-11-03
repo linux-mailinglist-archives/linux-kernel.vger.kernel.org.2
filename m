@@ -2,70 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80504444499
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:23:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D7F44449D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:23:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbhKCPZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 11:25:38 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:7938 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231860AbhKCPZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 11:25:36 -0400
+        id S232481AbhKCP0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 11:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231785AbhKCP0S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 11:26:18 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64646C061203
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 08:23:42 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id az8so2650905qkb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 08:23:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1635952980;
-  x=1667488980;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=XflhCzonUdUv001fHgBVkA3+LzsDro0La3NZCHLyQtE=;
-  b=PlqxAbb+56Uk17jqizDJrmvXLvCkiVCy9v1N/fUZfXHbWoJDjSDHR2s+
-   Wj5XDwkUwdaR5M/4W73p5gkO5VrKga8wlEbx44FiEcRqioilDyHCoEtTw
-   q55Svfo4MFPpuxnS+DFI1KnqpMHEaB3eR8t2KdZCGnB1qnMumkINRYN0f
-   nPff+jn6rr5gV8o+BQFaB19DWmYrMJYyF4XmOQhD6MSpGQjpROWzXF5E7
-   eVVkZRdGpTNF1xHVmLrgIykkuXdcp7FSwr7IlG64FLbSAzsjffjZa45uW
-   Hum6pL766tD4YjuEQL0xXv6WCgOiPg8CvzrU+g+LdhUVJUrJnYwGS150E
-   Q==;
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-CC:     <kernel@axis.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        <linux-rtc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] rtc: pcf8523: fix alarm interrupt disabling
-Date:   Wed, 3 Nov 2021 16:22:52 +0100
-Message-ID: <20211103152253.22844-1-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.28.0
+        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=yNC62w+2HzH2SSJhKHtvCjiHcp3DcKu13in8YXC3L58=;
+        b=M+/I/5Hft2NlUO4i9S63IGXtD51pzlQDc0ULTbi6L/ghNtnKUooxVNq/SoYMwi/zvp
+         3ahh0cL98Kl38mypdfi39VAQKnvM/O3y38/UAns84MaTzcyyJ+7s6fg16KXNdcyRBZdT
+         FwODxzltEwj1ZghagD2B9aw/e/BwPbzu9QAVS5hZ0zT4PepwV/BfoXga0U50Xa5fQyN4
+         2hBub2Hq19bZtgvlv6/vmGGs+wyeckvmviP0QMeRRaep6xcFXm1e+zgC9ZiHl4l4Rc94
+         bNvoyhpmW60gS7MVRSnt79hvX7pZnMn8yVimbCbRD8Gq1xatvxtdtWw8ZjwfynRbIXCP
+         rhbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=yNC62w+2HzH2SSJhKHtvCjiHcp3DcKu13in8YXC3L58=;
+        b=krp/wJ4SDgIMs3j014WPulwmENzCHWGq5APojwd6DFXklldQkLAvEvDnGN8HGuPwQQ
+         Hu0lzdVK1yWln636JtuISwiSG+V+NThcFrIocoIEFN2DghtsBRaTRbCOdmR4idUWyIDW
+         ijcnBhtRnhhmag2UaH5HS6XL5CouV1xB8wPfuJekE1CsglAb1ittHGndWHVudNN1C3DO
+         IfxKoLf4uY5ryurxqr9TJicO9z43bmcH83pvaEt/v0zAix9z2yeJH2UF42NiLUDkcR09
+         m2UMFvcRATOJmD/U6/4OHRtyQ6vXzX/xudxHBbhM8h/AbkjzoVwwFbivYMWR+afp5z0k
+         f+qw==
+X-Gm-Message-State: AOAM533tiPzGhLKl36oHh5ymjD4nnaC6tQMGdA6sM992NuXKVpuUz9al
+        LvDiXocuHL0frbFG9LDGHKBslA==
+X-Google-Smtp-Source: ABdhPJy4df7FJ5jzZA9CX3XJtZc5nqiiuNWg/WwEWiY+wux4cxWLrQ/cnNXjtkeLmUJr9/v8V9RPUQ==
+X-Received: by 2002:a05:620a:2f4:: with SMTP id a20mr12095070qko.123.1635953020908;
+        Wed, 03 Nov 2021 08:23:40 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain (mtl.collabora.ca. [66.171.169.34])
+        by smtp.gmail.com with ESMTPSA id m20sm1736604qkp.57.2021.11.03.08.23.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 08:23:40 -0700 (PDT)
+Message-ID: <b398917ca0c467d83c795f02f751609a52d56edb.camel@ndufresne.ca>
+Subject: Re: [PATCH v2] media: mtk-vcodec: Align width and height to 64 bytes
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        Steve Cho <stevecho@google.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>
+Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Date:   Wed, 03 Nov 2021 11:23:38 -0400
+In-Reply-To: <20211103033708.14469-1-yunfei.dong@mediatek.com>
+References: <20211103033708.14469-1-yunfei.dong@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.0 (3.42.0-1.fc35) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the driver to actually disable the IRQ and not overwrite other bits
-in the CONTROL_1 register when it is asked to disable the alarm
-interrupt.
+Le mercredi 03 novembre 2021 à 11:37 +0800, Yunfei Dong a écrit :
+> Width and height need to 64 bytes aligned when setting the format.
+> Need to make sure all is 64 bytes align when use width and height to
+> calculate buffer size.
+> 
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> Change-Id: I39886b1a6b433c92565ddbf297eb193456eec1d2
 
-Compile-tested only.
+Perhaps avoid this tag later ? Another perhaps, there is a tag to indicate which
+patch introduce that bug, if you add this tag, the patch will be automatically
+backported into relevant stable kernel. The format is:
 
-Fixes: 13e37b7fb75dfaeb4 ("rtc: pcf8523: add alarm support")
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
- drivers/rtc/rtc-pcf8523.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Fixes: <short-hash> ("<short commit description")
 
-diff --git a/drivers/rtc/rtc-pcf8523.c b/drivers/rtc/rtc-pcf8523.c
-index 8b6fb20774bf..e26477267451 100644
---- a/drivers/rtc/rtc-pcf8523.c
-+++ b/drivers/rtc/rtc-pcf8523.c
-@@ -347,7 +347,7 @@ static int pcf8523_irq_enable(struct device *dev, unsigned int enabled)
- 	if (err < 0)
- 		return err;
- 
--	value &= PCF8523_CONTROL1_AIE;
-+	value &= ~PCF8523_CONTROL1_AIE;
- 
- 	if (enabled)
- 		value |= PCF8523_CONTROL1_AIE;
--- 
-2.28.0
+Acked-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+
+> ---
+>  drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h        | 1 +
+>  drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c | 4 ++--
+>  2 files changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h
+> index e30806c1faea..66cd6d2242c3 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h
+> @@ -11,6 +11,7 @@
+>  #include <media/videobuf2-core.h>
+>  #include <media/v4l2-mem2mem.h>
+>  
+> +#define VCODEC_DEC_ALIGNED_64 64
+>  #define VCODEC_CAPABILITY_4K_DISABLED	0x10
+>  #define VCODEC_DEC_4K_CODED_WIDTH	4096U
+>  #define VCODEC_DEC_4K_CODED_HEIGHT	2304U
+> diff --git a/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c b/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
+> index d402fc4bda69..e1a3011772a9 100644
+> --- a/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
+> +++ b/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
+> @@ -562,8 +562,8 @@ static void get_pic_info(struct vdec_h264_slice_inst *inst,
+>  {
+>  	struct mtk_vcodec_ctx *ctx = inst->ctx;
+>  
+> -	ctx->picinfo.buf_w = (ctx->picinfo.pic_w + 15) & 0xFFFFFFF0;
+> -	ctx->picinfo.buf_h = (ctx->picinfo.pic_h + 31) & 0xFFFFFFE0;
+> +	ctx->picinfo.buf_w = ALIGN(ctx->picinfo.pic_w, VCODEC_DEC_ALIGNED_64);
+> +	ctx->picinfo.buf_h = ALIGN(ctx->picinfo.pic_h, VCODEC_DEC_ALIGNED_64);
+>  	ctx->picinfo.fb_sz[0] = ctx->picinfo.buf_w * ctx->picinfo.buf_h;
+>  	ctx->picinfo.fb_sz[1] = ctx->picinfo.fb_sz[0] >> 1;
+>  	inst->vsi_ctx.dec.cap_num_planes =
 
