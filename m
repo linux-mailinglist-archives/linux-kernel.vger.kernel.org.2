@@ -2,152 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E9E4446DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:17:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BCD24446E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhKCRTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 13:19:37 -0400
-Received: from kirsty.vergenet.net ([202.4.237.240]:35546 "EHLO
-        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhKCRTg (ORCPT
+        id S231266AbhKCRU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 13:20:29 -0400
+Received: from mail-pj1-f46.google.com ([209.85.216.46]:35400 "EHLO
+        mail-pj1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhKCRU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 13:19:36 -0400
-Received: from madeliefje.horms.nl (ip-80-113-23-202.ip.prioritytelecom.net [80.113.23.202])
-        by kirsty.vergenet.net (Postfix) with ESMTPA id 7104C25AD6B;
-        Thu,  4 Nov 2021 04:16:57 +1100 (AEDT)
-Received: by madeliefje.horms.nl (Postfix, from userid 7100)
-        id 4F72D27B0; Wed,  3 Nov 2021 18:16:55 +0100 (CET)
-Date:   Wed, 3 Nov 2021 18:16:55 +0100
-From:   Simon Horman <horms@verge.net.au>
-To:     yangxingwu <xingwu.yang@gmail.com>
-Cc:     Julian Anastasov <ja@ssi.bg>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org, Chuanqi Liu <legend050709@qq.com>
-Subject: Re: [PATCH nf-next v5] netfilter: ipvs: Fix reuse connection if RS
- weight is 0
-Message-ID: <20211103171652.GA12763@vergenet.net>
-References: <20211101020416.31402-1-xingwu.yang@gmail.com>
- <ae67eb7b-a25f-57d3-195f-cdbd9247ef5b@ssi.bg>
- <CA+7U5Jumj_MwMZBmDTCvWLnvmfX28d==dbkLTq+6cOz+32GCvw@mail.gmail.com>
+        Wed, 3 Nov 2021 13:20:28 -0400
+Received: by mail-pj1-f46.google.com with SMTP id n11-20020a17090a2bcb00b001a1e7a0a6a6so1928044pje.0;
+        Wed, 03 Nov 2021 10:17:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Z5t0d+gRdOOdUtLccG4kB8aZNuMShtmwN1sAfSZJiMc=;
+        b=uHTvxAsdrQpKaVM4lj99ry8b5cz5scLkpTUEkK2FrZa6gW3OEtryNoHnSwKgtELJnW
+         glkD6V9v2iN8zH+jP3jZwCj0+VGKs3FHIqLFUooxEzHi2VlJnT+Aegw7o97+06T3MdUY
+         4TPsshlqXw+w0ORXwhvkDOYr7Vc58CSpDbAZPLuHyuFT4xINAh8vNgMgFjip7RImaz1p
+         tUfEgfj9ZBvIiCyM7ZqC1/YsjfC9IkoAuwMFm2YWpOJfts41ZrGwokrbDbUavejR31iW
+         85SnTK/ldI78PtwI5el3/dQ5j8zNArzss7hXxPoejomPntSL7xwJRDGltNmZ3WY/IvSe
+         myQw==
+X-Gm-Message-State: AOAM532sL3iFGHHyy10H/Ebr1bQTgEdZQTiMxaBWB1fwMssWWRVftA2r
+        oDknNgWIhajpQUCVCZ2oye0=
+X-Google-Smtp-Source: ABdhPJzvIOyRUzMbFtvi+f9tE2NzknrnoaAEyOYdQgHRyzdntEMFGa22GC9rcp2U2PAe9+M0tT1TRQ==
+X-Received: by 2002:a17:902:b696:b0:141:afeb:a40c with SMTP id c22-20020a170902b69600b00141afeba40cmr33144821pls.38.1635959871676;
+        Wed, 03 Nov 2021 10:17:51 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:9416:5327:a40e:e300])
+        by smtp.gmail.com with ESMTPSA id z3sm3065481pfh.79.2021.11.03.10.17.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Nov 2021 10:17:51 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] scsi: core: remove command size deduction from
+ scsi_setup_scsi_cmnd
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>,
+        linux-scsi@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        syzbot+5516b30f5401d4dcbcae@syzkaller.appspotmail.com
+References: <20211103170659.22151-1-tadeusz.struk@linaro.org>
+ <20211103170659.22151-2-tadeusz.struk@linaro.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <35006864-549a-20bd-e03e-2ab449a1cc6e@acm.org>
+Date:   Wed, 3 Nov 2021 10:17:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+7U5Jumj_MwMZBmDTCvWLnvmfX28d==dbkLTq+6cOz+32GCvw@mail.gmail.com>
-Organisation: Horms Solutions BV
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211103170659.22151-2-tadeusz.struk@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 07:40:46PM +0800, yangxingwu wrote:
-> hello Simon
-> 
-> I delete the "This will effectively disable expire_nodest_conn" section
-> from doc, and the others remain untouched. The following is how it looks
-> like after modification:
-> 
-> 0: disable any special handling on port reuse. The new
-> connection will be delivered to the same real server that was
-> servicing the previous connection.
-> 
-> Simon, pls help to check if it's necessary to replace servicing with
-> service.
+On 11/3/21 10:06 AM, Tadeusz Struk wrote:
+> diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
+> index 572673873ddf..e026da7549be 100644
+> --- a/drivers/scsi/scsi_lib.c
+> +++ b/drivers/scsi/scsi_lib.c
+> @@ -1174,8 +1174,6 @@ static blk_status_t scsi_setup_scsi_cmnd(struct scsi_device *sdev,
+>   	}
+>   
+>   	cmd->cmd_len = scsi_req(req)->cmd_len;
+> -	if (cmd->cmd_len == 0)
+> -		cmd->cmd_len = scsi_command_size(cmd->cmnd);
+>   	cmd->cmnd = scsi_req(req)->cmd;
+>   	cmd->transfersize = blk_rq_bytes(req);
+>   	cmd->allowed = scsi_req(req)->retries;
 
-Sorry, my mistake. No need to replace servicing with service.
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 
-> And I will move the conn_reuse_mode line above the bool line
-> 
-> On Tue, Nov 2, 2021 at 2:21 AM Julian Anastasov <ja@ssi.bg> wrote:
-> 
-> >
-> >         Hello,
-> >
-> > On Mon, 1 Nov 2021, yangxingwu wrote:
-> >
-> > > We are changing expire_nodest_conn to work even for reused connections
-> > when
-> > > conn_reuse_mode=0, just as what was done with commit dc7b3eb900aa ("ipvs:
-> > > Fix reuse connection if real server is dead").
-> > >
-> > > For controlled and persistent connections, the new connection will get
-> > the
-> > > needed real server depending on the rules in ip_vs_check_template().
-> > >
-> > > Fixes: d752c3645717 ("ipvs: allow rescheduling of new connections when
-> > port reuse is detected")
-> > > Co-developed-by: Chuanqi Liu <legend050709@qq.com>
-> > > Signed-off-by: Chuanqi Liu <legend050709@qq.com>
-> > > Signed-off-by: yangxingwu <xingwu.yang@gmail.com>
-> >
-> >         Looks good to me, thanks!
-> >
-> > Acked-by: Julian Anastasov <ja@ssi.bg>
-> >
-> > > ---
-> > >  Documentation/networking/ipvs-sysctl.rst | 3 +--
-> > >  net/netfilter/ipvs/ip_vs_core.c          | 8 ++++----
-> > >  2 files changed, 5 insertions(+), 6 deletions(-)
-> > >
-> > > diff --git a/Documentation/networking/ipvs-sysctl.rst
-> > b/Documentation/networking/ipvs-sysctl.rst
-> > > index 2afccc63856e..1cfbf1add2fc 100644
-> > > --- a/Documentation/networking/ipvs-sysctl.rst
-> > > +++ b/Documentation/networking/ipvs-sysctl.rst
-> > > @@ -37,8 +37,7 @@ conn_reuse_mode - INTEGER
-> > >
-> > >       0: disable any special handling on port reuse. The new
-> > >       connection will be delivered to the same real server that was
-> > > -     servicing the previous connection. This will effectively
-> > > -     disable expire_nodest_conn.
-> > > +     servicing the previous connection.
-> > >
-> > >       bit 1: enable rescheduling of new connections when it is safe.
-> > >       That is, whenever expire_nodest_conn and for TCP sockets, when
-> > > diff --git a/net/netfilter/ipvs/ip_vs_core.c
-> > b/net/netfilter/ipvs/ip_vs_core.c
-> > > index 128690c512df..f9d65d2c8da8 100644
-> > > --- a/net/netfilter/ipvs/ip_vs_core.c
-> > > +++ b/net/netfilter/ipvs/ip_vs_core.c
-> > > @@ -1964,7 +1964,6 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int
-> > hooknum, struct sk_buff *skb, int
-> > >       struct ip_vs_proto_data *pd;
-> > >       struct ip_vs_conn *cp;
-> > >       int ret, pkts;
-> > > -     int conn_reuse_mode;
-> > >       struct sock *sk;
-> > >
-> > >       /* Already marked as IPVS request or reply? */
-> > > @@ -2041,15 +2040,16 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int
-> > hooknum, struct sk_buff *skb, int
-> > >       cp = INDIRECT_CALL_1(pp->conn_in_get, ip_vs_conn_in_get_proto,
-> > >                            ipvs, af, skb, &iph);
-> > >
-> > > -     conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
-> > > -     if (conn_reuse_mode && !iph.fragoffs && is_new_conn(skb, &iph) &&
-> > cp) {
-> > > +     if (!iph.fragoffs && is_new_conn(skb, &iph) && cp) {
-> > >               bool old_ct = false, resched = false;
-> > > +             int conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
-> > >
-> > >               if (unlikely(sysctl_expire_nodest_conn(ipvs)) && cp->dest
-> > &&
-> > >                   unlikely(!atomic_read(&cp->dest->weight))) {
-> > >                       resched = true;
-> > >                       old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
-> > > -             } else if (is_new_conn_expected(cp, conn_reuse_mode)) {
-> > > +             } else if (conn_reuse_mode &&
-> > > +                        is_new_conn_expected(cp, conn_reuse_mode)) {
-> > >                       old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
-> > >                       if (!atomic_read(&cp->n_control)) {
-> > >                               resched = true;
-> > > --
-> > > 2.30.2
-> >
-> > Regards
-> >
-> > --
-> > Julian Anastasov <ja@ssi.bg>
-> >
+
