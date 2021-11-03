@@ -2,72 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC611443EB4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01830443EC7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:56:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbhKCI4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 04:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231361AbhKCI4q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 04:56:46 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA9AC061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 01:54:10 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id bp7so1568495qkb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 01:54:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=CyR5pqyBY4niv9VGfmI8UZKB1eKWqahi4tclqUo6wCc=;
-        b=Vof9GYCTt80/H55DaH1h62dVZ8hFqgNoqgN8ovaSq6K/n//R3SKC5KCh3FBFrrk/X2
-         vrTycinzExTUvUke40hZ66FeOvs9P/D5ObDUzZnUCWssv0lkH5I3U2AmWnUiRCTIv+6t
-         pHz7514cMU/8hdnYDnrpF5mp6vClcn5P1e4aANTVZfMPMta2GvUv/vUoHvg8CIVab8fG
-         RSgBbHEr5V17EG9AHdU9lM4KtMagrcvgG6oBuk4GHNvWtWSkkkprgMpL6sC5vSLuU4W9
-         z1RPAXu4iuAcP7AugdjOuBYPDtONwmr4smYByRrxYcNr8CoK5zFzTNiUQ6V4rv7+DHA/
-         rwvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=CyR5pqyBY4niv9VGfmI8UZKB1eKWqahi4tclqUo6wCc=;
-        b=RqCc0r8urWVC9rrDBnq50IVQ/jTCv6pu+g8aXHcAnRfk2yzMrYZLo5zEdAgs3itJCD
-         w5hje2HzO22K4SRbwxBpTK1dZ0Z9acjiC7kmAfYhYeLLmdt0JvXxh3Qo6ARM5cgG6qHM
-         EGq5kU1ju9eIpVG64sW2hANjHC3ER5uxxxCLHzUuDrTNDZek9PeNPBPcqP2qDJfu4GG3
-         XrNmez/R5BiMIWDPCvAL+6iCifHrHFSsZvaxV3F7/qFnKYzib3eHScbGbUvSN7M1AdmY
-         +ZzacyBhpiAdXGTCdPM9iFZx+g1ZdGG7Kzym/+GXU0S8vB1d5XbYzH4c2JbvqDsJIYnD
-         LTqg==
-X-Gm-Message-State: AOAM530dgBOoCi8eRevgXoH0VixZOY+5dJNE2sTfvmTuHmYJ6P/9mjBD
-        gICRfQQpmwHl2Rw0b/xeO/Kg0hE/6VUeMw9MvZM=
-X-Google-Smtp-Source: ABdhPJzn6snnsEXYZtSx99ywq1Lvccr3wxM36UV/SeReUaRG3cROFwH2uhzM9BGIzGPnv8Bo1vbKoYxI79px+ClvzzE=
-X-Received: by 2002:a05:620a:8da:: with SMTP id z26mr4351885qkz.362.1635929649404;
- Wed, 03 Nov 2021 01:54:09 -0700 (PDT)
+        id S231985AbhKCI70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 04:59:26 -0400
+Received: from smtpbg128.qq.com ([106.55.201.39]:38377 "EHLO smtpbg587.qq.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231979AbhKCI7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 04:59:18 -0400
+X-QQ-mid: bizesmtp41t1635929693tbvakmm4
+Received: from localhost.localdomain (unknown [125.70.163.9])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Wed, 03 Nov 2021 16:54:39 +0800 (CST)
+X-QQ-SSF: 0100000000200050B000B00A0000000
+X-QQ-FEAT: a4niRxydalHUoIDzp4wZcetK6yCNEivE+y+BoSP/43EZHsmGONz+CjZPv3JUQ
+        bQ+YwuMQkPgdUEf1hJr+KoCDXy5tQMLZIJ4RN5maSpI+SCoWrv05M+PjfXVhVgTpIlxdKHt
+        Rmd5dgh5VtOP6HQY+cl2GIJjh17WHyVFnmI+zZDfCT2+/aUENP0M5oUIGPlUbFgp22SHwQ7
+        k+1rVUnYHmVZja3bEc9ZtPduP/ivyG9oJKwN7+x5fWLVWjLVCSoufPS5iauTrr6syn4B6kD
+        UFB9ljae8ljmewDeE2AWNB7wnvFHqlGMSnZmGwZpUtz20cId9oQCb+319pYfsbIxF/3RCB7
+        IMuZJSm5n7iDoUDrxvtOIWvRbDdYw==
+X-QQ-GoodBg: 0
+From:   Jingjing Liu <liujingjing@cdjrlc.com>
+To:     linux@armlinux.org.uk
+Cc:     ira.weiny@intel.com, akpm@linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jingjing Liu <liujingjing@cdjrlc.com>
+Subject: [PATCH] mm: change 0 to false in boolean function
+Date:   Wed,  3 Nov 2021 16:54:32 +0800
+Message-Id: <20211103085432.49305-1-liujingjing@cdjrlc.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Sender: michealkevin113@gmail.com
-Received: by 2002:a05:620a:459e:0:0:0:0 with HTTP; Wed, 3 Nov 2021 01:54:09
- -0700 (PDT)
-From:   Aisha Al-Qaddafi <aisha.gdaffi24@gmail.com>
-Date:   Wed, 3 Nov 2021 09:54:09 +0100
-X-Google-Sender-Auth: ey3-CzlqPPMF4A1fHcaTEk38yvg
-Message-ID: <CAANupMjcoHV935+k7gSftWe06NUf7QXw4cZzCuMbWVusi3u4hA@mail.gmail.com>
-Subject: My Dear Friend
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I came across your e-mail contact prior to a private
-search while in need of your assistance. I am Aisha Al-Qaddafi, the
-only biological, Daughter of Former President of Libya Col. Muammar
-Al-Qaddafi. Am a single Mother and a Widow with three Children. I have
-investment funds worth Twenty Seven Million Five Hundred Thousand
-United State Dollar ($27.500.000.00 ) and i need a trusted  investment
-Manager/Partner because of my current refugee status, however, I am
-interested in you for investment project assistance in your country.
-If you are willing to handle this project on my behalf kindly reply
-urgently to enable me to provide you more information about the
-investment
-funds.
-Best Regards
+return of 0/1 in function 'security_extensions_enabled' with return type
+bool
+
+Signed-off-by: Jingjing Liu <liujingjing@cdjrlc.com>
+---
+ arch/arm/mm/nommu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/mm/nommu.c b/arch/arm/mm/nommu.c
+index 2658f52903da..7256ac159acb 100644
+--- a/arch/arm/mm/nommu.c
++++ b/arch/arm/mm/nommu.c
+@@ -56,7 +56,7 @@ static inline bool security_extensions_enabled(void)
+ 	if ((read_cpuid_id() & 0x000f0000) == 0x000f0000)
+ 		return cpuid_feature_extract(CPUID_EXT_PFR1, 4) ||
+ 			cpuid_feature_extract(CPUID_EXT_PFR1, 20);
+-	return 0;
++	return false;
+ }
+ 
+ unsigned long setup_vectors_base(void)
+-- 
+2.33.1
+
