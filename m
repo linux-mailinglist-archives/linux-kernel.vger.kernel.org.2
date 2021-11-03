@@ -2,171 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C76F4442C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:54:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AFC4442CA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:54:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbhKCN4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 09:56:38 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:49110 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232112AbhKCNz5 (ORCPT
+        id S232155AbhKCN45 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Nov 2021 09:56:57 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:33827 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232135AbhKCN4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 09:55:57 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4F9CD1FD39;
-        Wed,  3 Nov 2021 13:53:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635947599; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gM4dLBPOTeQI1BB/n11hAh/2S8YpTXPBOvo61fjPeEg=;
-        b=t25td5EGa947F7lnRYCLGnhBZy8VdQUPZHJbrstIo2PFmhbIEAHTQysMmyBsQeYRAW1t8E
-        jy6vbB8WNKTobtz/0YsQInqN0JjBwZpVusUu6on8WnDJeLd5Ltc+DzpsNvHPcub7ngrS4s
-        ZHja9rQR6QzqDbWoo6UEZYKnQiGKXhM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635947599;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gM4dLBPOTeQI1BB/n11hAh/2S8YpTXPBOvo61fjPeEg=;
-        b=t266EDuUB++mxHWrsAHY+LROHqQbgA00CrJSrWU+IeFcY4H1gZL0RItjM3aqxQjT88xVuc
-        IB4ZMkbRFkEYEpCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1BD8E13CA2;
-        Wed,  3 Nov 2021 13:53:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id v36+BU+UgmEBAwAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Wed, 03 Nov 2021 13:53:19 +0000
-Message-ID: <54aedf5a-34b1-15f6-47f1-39815b3832ae@suse.de>
-Date:   Wed, 3 Nov 2021 14:53:18 +0100
+        Wed, 3 Nov 2021 09:56:30 -0400
+Received: (Authenticated sender: clement.leger@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 060911BF207;
+        Wed,  3 Nov 2021 13:53:51 +0000 (UTC)
+Date:   Wed, 3 Nov 2021 14:53:51 +0100
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 3/6] net: ocelot: pre-compute injection frame header
+ content
+Message-ID: <20211103145351.793538c3@fixe.home>
+In-Reply-To: <20211103123811.im5ua7kirogoltm7@skbuf>
+References: <20211103091943.3878621-1-clement.leger@bootlin.com>
+        <20211103091943.3878621-4-clement.leger@bootlin.com>
+        <20211103123811.im5ua7kirogoltm7@skbuf>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [RESEND PATCH 4/5] drm: Add a drm_drv_enabled() helper function
-Content-Language: en-US
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Pekka Paalanen <pekka.paalanen@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
-        dri-devel@lists.freedesktop.org,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Neal Gompa <ngompa13@gmail.com>
-References: <20211103123206.1041442-1-javierm@redhat.com>
- <87o871bbmb.fsf@intel.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <87o871bbmb.fsf@intel.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------yhuKbyI95NPlaLrFk1VmGRle"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------yhuKbyI95NPlaLrFk1VmGRle
-Content-Type: multipart/mixed; boundary="------------cAMtqEYiWQ8Qa0oDgyZavXR8";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Jani Nikula <jani.nikula@linux.intel.com>,
- Javier Martinez Canillas <javierm@redhat.com>, linux-kernel@vger.kernel.org
-Cc: Pekka Paalanen <pekka.paalanen@collabora.com>,
- David Airlie <airlied@linux.ie>, Daniel Vetter <daniel.vetter@ffwll.ch>,
- =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
- dri-devel@lists.freedesktop.org, Peter Robinson <pbrobinson@gmail.com>,
- Neal Gompa <ngompa13@gmail.com>
-Message-ID: <54aedf5a-34b1-15f6-47f1-39815b3832ae@suse.de>
-Subject: Re: [RESEND PATCH 4/5] drm: Add a drm_drv_enabled() helper function
-References: <20211103123206.1041442-1-javierm@redhat.com>
- <87o871bbmb.fsf@intel.com>
-In-Reply-To: <87o871bbmb.fsf@intel.com>
+Le Wed, 3 Nov 2021 12:38:12 +0000,
+Vladimir Oltean <vladimir.oltean@nxp.com> a écrit :
 
---------------cAMtqEYiWQ8Qa0oDgyZavXR8
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+> On Wed, Nov 03, 2021 at 10:19:40AM +0100, Clément Léger wrote:
+> > IFH preparation can take quite some time on slow processors (up to
+> > 5% in a iperf3 test for instance). In order to reduce the cost of
+> > this preparation, pre-compute IFH since most of the parameters are
+> > fixed per port. Only rew_op and vlan tag will be set when sending
+> > if different than 0. This allows to remove entirely the calls to
+> > packing() with basic usage. In the same time, export this function
+> > that will be used by FDMA.
+> > 
+> > Signed-off-by: Clément Léger <clement.leger@bootlin.com>
+> > ---  
+> 
+> Honestly, this feels a bit cheap/gimmicky, and not really the
+> fundamental thing to address. In my testing of a similar idea (see
+> commits 67c2404922c2 ("net: dsa: felix: create a template for the DSA
+> tags on xmit") and then 7c4bb540e917 ("net: dsa: tag_ocelot: create
+> separate tagger for Seville"), the net difference is not that stark,
+> considering that now you need to access one more memory region which
+> you did not need before, do a memcpy, and then patch the IFH anyway
+> for the non-constant stuff.
 
-SGkNCg0KQW0gMDMuMTEuMjEgdW0gMTQ6NDEgc2NocmllYiBKYW5pIE5pa3VsYToNCj4gT24g
-V2VkLCAwMyBOb3YgMjAyMSwgSmF2aWVyIE1hcnRpbmV6IENhbmlsbGFzIDxqYXZpZXJtQHJl
-ZGhhdC5jb20+IHdyb3RlOg0KPj4gRFJNIGRyaXZlcnMgY2FuIHVzZSB0aGlzIHRvIGRldGVy
-bWluZSB3aGV0aGVyIHRoZXkgY2FuIGJlIGVuYWJsZWQgb3Igbm90Lg0KPj4NCj4+IEZvciBu
-b3cgaXQncyBqdXN0IGEgd3JhcHBlciBhcm91bmQgZHJtX21vZGVzZXRfZGlzYWJsZWQoKSBi
-dXQgaGF2aW5nIHRoZQ0KPj4gaW5kaXJlY3Rpb24gbGV2ZWwgd2lsbCBhbGxvdyB0byBhZGQg
-b3RoZXIgY29uZGl0aW9ucyBiZXNpZGVzICJub21vZGVzZXQiLg0KPj4NCj4+IFN1Z2dlc3Rl
-ZC1ieTogVGhvbWFzIFppbW1lcm1hbm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+DQo+PiBTaWdu
-ZWQtb2ZmLWJ5OiBKYXZpZXIgTWFydGluZXogQ2FuaWxsYXMgPGphdmllcm1AcmVkaGF0LmNv
-bT4NCj4gDQo+IENhbid0IHNlZSBpOTE1IHRyaXZpYWxseSB1c2luZyB0aGlzIGR1ZSB0byB0
-aGUgZHJtX2RyaXZlcg0KPiBwYXJhbWV0ZXIuIFBsZWFzZSBsZXQncyBub3QgbWVyZ2UgaGVs
-cGVycyBsaWtlIHRoaXMgd2l0aG91dCBhY3R1YWwNCj4gdXNlcnMuDQoNCkNhbiB5b3UgZXhw
-bGFpbj8NCg0KVGhpcyB3b3VsZCBiZSBjYWxsZWQgb24gdGhlIHRvcCBvZiB0aGUgUENJIHBy
-b2JlIGZ1bmN0aW9uLiBUaGUgcGFyYW1ldGVyIA0Kd291bGQgYWxsb3cgdG8gZGVjaWRlIG9u
-IGEgcGVyLWRyaXZlciBiYXNlIChlLmcuLCB0byBpZ25vcmUgZ2VuZXJpYyANCmRyaXZlcnMp
-Lg0KDQpCZXN0IHJlZ2FyZHMNClRob21hcw0KDQo+IA0KPiBCUiwNCj4gSmFuaS4NCj4gDQo+
-IA0KPj4gLS0tDQo+Pg0KPj4gICBkcml2ZXJzL2dwdS9kcm0vZHJtX2Rydi5jIHwgMjEgKysr
-KysrKysrKysrKysrKysrKysrDQo+PiAgIGluY2x1ZGUvZHJtL2RybV9kcnYuaCAgICAgfCAg
-MSArDQo+PiAgIDIgZmlsZXMgY2hhbmdlZCwgMjIgaW5zZXJ0aW9ucygrKQ0KPj4NCj4+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vZHJtX2Rydi5jIGIvZHJpdmVycy9ncHUvZHJt
-L2RybV9kcnYuYw0KPj4gaW5kZXggODIxNGEwYjFhYjdmLi43MGVmMDg5NDFlMDYgMTAwNjQ0
-DQo+PiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vZHJtX2Rydi5jDQo+PiArKysgYi9kcml2ZXJz
-L2dwdS9kcm0vZHJtX2Rydi5jDQo+PiBAQCAtOTc1LDYgKzk3NSwyNyBAQCBpbnQgZHJtX2Rl
-dl9zZXRfdW5pcXVlKHN0cnVjdCBkcm1fZGV2aWNlICpkZXYsIGNvbnN0IGNoYXIgKm5hbWUp
-DQo+PiAgIH0NCj4+ICAgRVhQT1JUX1NZTUJPTChkcm1fZGV2X3NldF91bmlxdWUpOw0KPj4g
-ICANCj4+ICsvKioNCj4+ICsgKiBkcm1fZHJ2X2VuYWJsZWQgLSBDaGVja3MgaWYgYSBEUk0g
-ZHJpdmVyIGNhbiBiZSBlbmFibGVkDQo+PiArICogQGRyaXZlcjogRFJNIGRyaXZlciB0byBj
-aGVjaw0KPj4gKyAqDQo+PiArICogQ2hlY2tzIHdoZXRoZXIgYSBEUk0gZHJpdmVyIGNhbiBi
-ZSBlbmFibGVkIG9yIG5vdC4gVGhpcyBtYXkgYmUgdGhlIGNhc2UNCj4+ICsgKiBpZiB0aGUg
-Im5vbW9kZXNldCIga2VybmVsIGNvbW1hbmQgbGluZSBwYXJhbWV0ZXIgaXMgdXNlZC4NCj4+
-ICsgKg0KPj4gKyAqIFJldHVybnM6DQo+PiArICogVHJ1ZSBpZiB0aGUgRFJNIGRyaXZlciBp
-cyBlbmFibGVkIGFuZCBmYWxzZSBvdGhlcndpc2UuDQo+PiArICovDQo+PiArYm9vbCBkcm1f
-ZHJ2X2VuYWJsZWQoY29uc3Qgc3RydWN0IGRybV9kcml2ZXIgKmRyaXZlcikNCj4+ICt7DQo+
-PiArCWlmIChkcm1fbW9kZXNldF9kaXNhYmxlZCgpKSB7DQo+PiArCQlEUk1fSU5GTygiJXMg
-ZHJpdmVyIGlzIGRpc2FibGVkXG4iLCBkcml2ZXItPm5hbWUpOw0KPj4gKwkJcmV0dXJuIGZh
-bHNlOw0KPj4gKwl9DQo+PiArDQo+PiArCXJldHVybiB0cnVlOw0KPj4gK30NCj4+ICtFWFBP
-UlRfU1lNQk9MKGRybV9kcnZfZW5hYmxlZCk7DQo+PiArDQo+PiAgIC8qDQo+PiAgICAqIERS
-TSBDb3JlDQo+PiAgICAqIFRoZSBEUk0gY29yZSBtb2R1bGUgaW5pdGlhbGl6ZXMgYWxsIGds
-b2JhbCBEUk0gb2JqZWN0cyBhbmQgbWFrZXMgdGhlbQ0KPj4gZGlmZiAtLWdpdCBhL2luY2x1
-ZGUvZHJtL2RybV9kcnYuaCBiL2luY2x1ZGUvZHJtL2RybV9kcnYuaA0KPj4gaW5kZXggMGNk
-OTU5NTNjZGY1Li40OGYyYjZlZWMwMTIgMTAwNjQ0DQo+PiAtLS0gYS9pbmNsdWRlL2RybS9k
-cm1fZHJ2LmgNCj4+ICsrKyBiL2luY2x1ZGUvZHJtL2RybV9kcnYuaA0KPj4gQEAgLTU5OCw1
-ICs1OTgsNiBAQCBzdGF0aWMgaW5saW5lIGJvb2wgZHJtX2Rydl91c2VzX2F0b21pY19tb2Rl
-c2V0KHN0cnVjdCBkcm1fZGV2aWNlICpkZXYpDQo+PiAgIA0KPj4gICBpbnQgZHJtX2Rldl9z
-ZXRfdW5pcXVlKHN0cnVjdCBkcm1fZGV2aWNlICpkZXYsIGNvbnN0IGNoYXIgKm5hbWUpOw0K
-Pj4gICANCj4+ICtib29sIGRybV9kcnZfZW5hYmxlZChjb25zdCBzdHJ1Y3QgZHJtX2RyaXZl
-ciAqZHJpdmVyKTsNCj4+ICAgDQo+PiAgICNlbmRpZg0KPiANCg0KLS0gDQpUaG9tYXMgWmlt
-bWVybWFubg0KR3JhcGhpY3MgRHJpdmVyIERldmVsb3Blcg0KU1VTRSBTb2Z0d2FyZSBTb2x1
-dGlvbnMgR2VybWFueSBHbWJIDQpNYXhmZWxkc3RyLiA1LCA5MDQwOSBOw7xybmJlcmcsIEdl
-cm1hbnkNCihIUkIgMzY4MDksIEFHIE7DvHJuYmVyZykNCkdlc2Now6RmdHNmw7xocmVyOiBJ
-dm8gVG90ZXYNCg==
+The memcpy is neglectable and the patching happens only in a few
+cases (at least vs the packing function call). The VSC7514 CPU is really
+slow and lead to 2.5% up to 5% time spent in packing() when using iperf3
+and depending on the use case (according to ftrace).
 
---------------cAMtqEYiWQ8Qa0oDgyZavXR8--
+> 
+> Certainly, for the calls to ocelot_port_inject_frame() from DSA, I
+> would prefer not having this pre-computed IFH.
+> 
+> Could you provide some before/after performance numbers and perf
+> counters?
 
---------------yhuKbyI95NPlaLrFk1VmGRle
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+I will make another round of measure to confirm my previous number and
+check the impact on the injection rate on ocelot.
 
------BEGIN PGP SIGNATURE-----
+> 
+> >  drivers/net/ethernet/mscc/ocelot.c | 23 ++++++++++++++++++-----
+> >  include/soc/mscc/ocelot.h          |  5 +++++
+> >  2 files changed, 23 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/mscc/ocelot.c
+> > b/drivers/net/ethernet/mscc/ocelot.c index
+> > e6c18b598d5c..97693772595b 100644 ---
+> > a/drivers/net/ethernet/mscc/ocelot.c +++
+> > b/drivers/net/ethernet/mscc/ocelot.c @@ -1076,20 +1076,29 @@ bool
+> > ocelot_can_inject(struct ocelot *ocelot, int grp) }
+> >  EXPORT_SYMBOL(ocelot_can_inject);
+> >  
+> > +void ocelot_ifh_port_set(void *ifh, struct ocelot_port *port, u32
+> > rew_op,
+> > +			 u32 vlan_tag)
+> > +{
+> > +	memcpy(ifh, port->ifh, OCELOT_TAG_LEN);
+> > +
+> > +	if (vlan_tag)
+> > +		ocelot_ifh_set_vlan_tci(ifh, vlan_tag);
+> > +	if (rew_op)
+> > +		ocelot_ifh_set_rew_op(ifh, rew_op);
+> > +}
+> > +EXPORT_SYMBOL(ocelot_ifh_port_set);
+> > +
+> >  void ocelot_port_inject_frame(struct ocelot *ocelot, int port, int
+> > grp, u32 rew_op, struct sk_buff *skb)
+> >  {
+> > +	struct ocelot_port *port_s = ocelot->ports[port];
+> >  	u32 ifh[OCELOT_TAG_LEN / 4] = {0};
+> >  	unsigned int i, count, last;
+> >  
+> >  	ocelot_write_rix(ocelot, QS_INJ_CTRL_GAP_SIZE(1) |
+> >  			 QS_INJ_CTRL_SOF, QS_INJ_CTRL, grp);
+> >  
+> > -	ocelot_ifh_set_bypass(ifh, 1);
+> > -	ocelot_ifh_set_dest(ifh, BIT_ULL(port));
+> > -	ocelot_ifh_set_tag_type(ifh, IFH_TAG_TYPE_C);
+> > -	ocelot_ifh_set_vlan_tci(ifh, skb_vlan_tag_get(skb));
+> > -	ocelot_ifh_set_rew_op(ifh, rew_op);
+> > +	ocelot_ifh_port_set(ifh, port_s, rew_op,
+> > skb_vlan_tag_get(skb)); 
+> >  	for (i = 0; i < OCELOT_TAG_LEN / 4; i++)
+> >  		ocelot_write_rix(ocelot, ifh[i], QS_INJ_WR, grp);
+> > @@ -2128,6 +2137,10 @@ void ocelot_init_port(struct ocelot *ocelot,
+> > int port) 
+> >  	skb_queue_head_init(&ocelot_port->tx_skbs);
+> >  
+> > +	ocelot_ifh_set_bypass(ocelot_port->ifh, 1);
+> > +	ocelot_ifh_set_dest(ocelot_port->ifh, BIT_ULL(port));
+> > +	ocelot_ifh_set_tag_type(ocelot_port->ifh, IFH_TAG_TYPE_C);
+> > +
+> >  	/* Basic L2 initialization */
+> >  
+> >  	/* Set MAC IFG Gaps
+> > diff --git a/include/soc/mscc/ocelot.h b/include/soc/mscc/ocelot.h
+> > index fef3a36b0210..b3381c90ff3e 100644
+> > --- a/include/soc/mscc/ocelot.h
+> > +++ b/include/soc/mscc/ocelot.h
+> > @@ -6,6 +6,7 @@
+> >  #define _SOC_MSCC_OCELOT_H
+> >  
+> >  #include <linux/ptp_clock_kernel.h>
+> > +#include <linux/dsa/ocelot.h>
+> >  #include <linux/net_tstamp.h>
+> >  #include <linux/if_vlan.h>
+> >  #include <linux/regmap.h>
+> > @@ -623,6 +624,8 @@ struct ocelot_port {
+> >  
+> >  	struct net_device		*bridge;
+> >  	u8				stp_state;
+> > +
+> > +	u8				ifh[OCELOT_TAG_LEN];
+> >  };
+> >  
+> >  struct ocelot {
+> > @@ -754,6 +757,8 @@ void __ocelot_target_write_ix(struct ocelot
+> > *ocelot, enum ocelot_target target, bool ocelot_can_inject(struct
+> > ocelot *ocelot, int grp); void ocelot_port_inject_frame(struct
+> > ocelot *ocelot, int port, int grp, u32 rew_op, struct sk_buff *skb);
+> > +void ocelot_ifh_port_set(void *ifh, struct ocelot_port *port, u32
+> > rew_op,
+> > +			 u32 vlan_tag);
+> >  int ocelot_xtr_poll_frame(struct ocelot *ocelot, int grp, struct
+> > sk_buff **skb); void ocelot_drain_cpu_queue(struct ocelot *ocelot,
+> > int grp); 
+> > -- 
+> > 2.33.0
+>   
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmGClE4FAwAAAAAACgkQlh/E3EQov+Cl
-vw//VClaxzh5jDAfegfM48i5xAcS9i++pZJXl1lcyWB5qNR7obyvwjxCrAlE/fjaZa6jxID8+VP/
-bL939ThyT8c9Nx2FXNzY4ghPf4aUgwhRvco2vbjVnn9rwuUSpDI85GWDqQMNsQ7IWYAnHAxzNnPv
-jLXuyG8IL7rFVt/JNdjQWuV4CE24WyhKN0xejkpckNCwcNZvuFeoLhRYOoWVxfoIto5Lg1nTPJGy
-ACFy8Grx8VJYYr0sRKYbXy7H2PChm6BkJqkG9TpAjjBznYC85B6i+KNEYOh2bdXS2rQXqHJq8BQq
-c9m0SCPuI3wogM1GA63x4f0DHd/sEa47DUtOUqlapZqX3P2gatp3qYPSI1aXNPZbyMIoySzCwvuL
-MeGLNKYkvZ85nTg+3LKUW6qBLGTN4ALOE2L2zr/07YN4PfwjPURZq1ZO7gBx5/Ttfg6TPKI0JIj/
-AsI1RyNvsHFn8BrpIbNyh9LJe8uC2nrQj9vIQLEg+siTAeNpmB+Uo3WTxUZtmcq94gCTBrzvCvM1
-8Pm7xfJLLrmlnPWQgIevBTLVz5UPhMKJ2Y6ZZhKuGqwH6h3ZdeFBP5/JeV6K7UrThx5xNW3O6kYy
-gS93NhXAWrgvzyHxSva7DTU9QK5evfnlJkneO7LLdkRQlu1D8kCT7/NYNGMeVm0iv1FhP05d3pJM
-Nyg=
-=qXdO
------END PGP SIGNATURE-----
 
---------------yhuKbyI95NPlaLrFk1VmGRle--
+
+-- 
+Clément Léger,
+Embedded Linux and Kernel engineer at Bootlin
+https://bootlin.com
