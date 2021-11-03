@@ -2,155 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4036E443C22
+	by mail.lfdr.de (Postfix) with ESMTP id 89ACA443C23
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 05:15:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbhKCENA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 00:13:00 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:27167 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbhKCEM7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 00:12:59 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HkYDP0GZgzTgDM;
-        Wed,  3 Nov 2021 12:08:53 +0800 (CST)
-Received: from dggpeml500024.china.huawei.com (7.185.36.10) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 3 Nov 2021 12:10:21 +0800
-Received: from [10.174.176.231] (10.174.176.231) by
- dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 3 Nov 2021 12:10:20 +0800
-From:   Yunfeng Ye <yeyunfeng@huawei.com>
-Subject: [PATCH v3] mm: emit the "free" trace report before freeing memory in
- kmem_cache_free()
-To:     <cl@linux.com>, <penberg@kernel.org>, <rientjes@google.com>,
-        <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, <vbabka@suse.cz>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-CC:     <jhubbard@nvidia.com>, <songmuchun@bytedance.com>,
-        <willy@infradead.org>, Tang Yizhou <tangyizhou@huawei.com>,
-        Vlastimil Babka <vbabka@suse.cz>, <wuxu.wu@huawei.com>,
-        <hewenliang4@huawei.com>
-Message-ID: <374eb75d-7404-8721-4e1e-65b0e5b17279@huawei.com>
-Date:   Wed, 3 Nov 2021 12:10:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S230419AbhKCERp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 00:17:45 -0400
+Received: from mga17.intel.com ([192.55.52.151]:17310 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230291AbhKCERo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 00:17:44 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10156"; a="212179212"
+X-IronPort-AV: E=Sophos;i="5.87,204,1631602800"; 
+   d="scan'208";a="212179212"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2021 21:15:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,204,1631602800"; 
+   d="scan'208";a="449648012"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 02 Nov 2021 21:15:07 -0700
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mi7g2-0005Bs-QF; Wed, 03 Nov 2021 04:15:06 +0000
+Date:   Wed, 03 Nov 2021 12:14:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:timers/urgent] BUILD SUCCESS
+ ca7752caeaa70bd31d1714af566c9809688544af
+Message-ID: <61820cb0.0C2q/qTgg/XlMcIJ%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.231]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500024.china.huawei.com (7.185.36.10)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the memory is freed, it can be immediately allocated by other
-CPUs, before the "free" trace report has been emitted. This causes
-inaccurate traces.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/urgent
+branch HEAD: ca7752caeaa70bd31d1714af566c9809688544af  posix-cpu-timers: Clear task::posix_cputimers_work in copy_process()
 
-For example, if the following sequence of events occurs:
+elapsed time: 723m
 
-    CPU 0                 CPU 1
+configs tested: 95
+configs skipped: 3
 
-  (1) alloc xxxxxx
-  (2) free  xxxxxx
-                         (3) alloc xxxxxx
-                         (4) free  xxxxxx
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Then they will be inaccurately reported via tracing, so that they appear
-to have happened in this order:
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                   sh7724_generic_defconfig
+sh                          rsk7269_defconfig
+mips                      fuloong2e_defconfig
+sh                             sh03_defconfig
+sh                        apsh4ad0a_defconfig
+arm                            zeus_defconfig
+arm                         cm_x300_defconfig
+arm                            hisi_defconfig
+arm                          collie_defconfig
+m68k                            q40_defconfig
+arm                       cns3420vb_defconfig
+csky                             alldefconfig
+arm                             ezx_defconfig
+powerpc                     ksi8560_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a012-20211101
+x86_64               randconfig-a016-20211101
+x86_64               randconfig-a013-20211101
+x86_64               randconfig-a011-20211101
+x86_64               randconfig-a014-20211101
+i386                 randconfig-a016-20211101
+i386                 randconfig-a014-20211101
+i386                 randconfig-a015-20211101
+i386                 randconfig-a013-20211101
+i386                 randconfig-a011-20211101
+i386                 randconfig-a012-20211101
+arc                  randconfig-r043-20211101
+riscv                randconfig-r042-20211101
+s390                 randconfig-r044-20211101
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
-    CPU 0                 CPU 1
+clang tested configs:
+i386                 randconfig-a005-20211101
+i386                 randconfig-a001-20211101
+i386                 randconfig-a003-20211101
+i386                 randconfig-a004-20211101
+i386                 randconfig-a006-20211101
+i386                 randconfig-a002-20211101
+x86_64               randconfig-a004-20211101
+x86_64               randconfig-a006-20211101
+x86_64               randconfig-a001-20211101
+x86_64               randconfig-a002-20211101
+x86_64               randconfig-a003-20211101
+x86_64               randconfig-a005-20211101
+hexagon              randconfig-r041-20211101
+hexagon              randconfig-r045-20211101
 
-  (1) alloc xxxxxx
-                         (2) alloc xxxxxx
-  (3) free  xxxxxx
-                         (4) free  xxxxxx
-
-This makes it look like CPU 1 somehow managed to allocate memory that
-CPU 0 still had allocated for itself.
-
-In order to avoid this, emit the "free xxxxxx" tracing report just
-before the actual call to free the memory, instead of just after it.
-
-Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 ---
-v2 -> v3:
- - Fix the typo "mmemory" to "memory"
- - Add "Reviewed-by"
- - Fix the same problem in slab/slob
-
-v1 -> v2:
- - Modify the description
- - Add "Reviewed-by"
-
- mm/slab.c | 3 +--
- mm/slob.c | 3 +--
- mm/slub.c | 2 +-
- 3 files changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/mm/slab.c b/mm/slab.c
-index da132a9ae6f8..ca4822f6b2b6 100644
---- a/mm/slab.c
-+++ b/mm/slab.c
-@@ -3733,14 +3733,13 @@ void kmem_cache_free(struct kmem_cache *cachep, void *objp)
- 	if (!cachep)
- 		return;
-
-+	trace_kmem_cache_free(_RET_IP_, objp, cachep->name);
- 	local_irq_save(flags);
- 	debug_check_no_locks_freed(objp, cachep->object_size);
- 	if (!(cachep->flags & SLAB_DEBUG_OBJECTS))
- 		debug_check_no_obj_freed(objp, cachep->object_size);
- 	__cache_free(cachep, objp, _RET_IP_);
- 	local_irq_restore(flags);
--
--	trace_kmem_cache_free(_RET_IP_, objp, cachep->name);
- }
- EXPORT_SYMBOL(kmem_cache_free);
-
-diff --git a/mm/slob.c b/mm/slob.c
-index 74d3f6e60666..03deee1e6a94 100644
---- a/mm/slob.c
-+++ b/mm/slob.c
-@@ -666,6 +666,7 @@ static void kmem_rcu_free(struct rcu_head *head)
- void kmem_cache_free(struct kmem_cache *c, void *b)
- {
- 	kmemleak_free_recursive(b, c->flags);
-+	trace_kmem_cache_free(_RET_IP_, b, c->name);
- 	if (unlikely(c->flags & SLAB_TYPESAFE_BY_RCU)) {
- 		struct slob_rcu *slob_rcu;
- 		slob_rcu = b + (c->size - sizeof(struct slob_rcu));
-@@ -674,8 +675,6 @@ void kmem_cache_free(struct kmem_cache *c, void *b)
- 	} else {
- 		__kmem_cache_free(b, c->size);
- 	}
--
--	trace_kmem_cache_free(_RET_IP_, b, c->name);
- }
- EXPORT_SYMBOL(kmem_cache_free);
-
-diff --git a/mm/slub.c b/mm/slub.c
-index 432145d7b4ec..427e62034c3f 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -3526,8 +3526,8 @@ void kmem_cache_free(struct kmem_cache *s, void *x)
- 	s = cache_from_obj(s, x);
- 	if (!s)
- 		return;
--	slab_free(s, virt_to_head_page(x), x, NULL, 1, _RET_IP_);
- 	trace_kmem_cache_free(_RET_IP_, x, s->name);
-+	slab_free(s, virt_to_head_page(x), x, NULL, 1, _RET_IP_);
- }
- EXPORT_SYMBOL(kmem_cache_free);
-
--- 
-2.27.0
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
