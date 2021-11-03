@@ -2,365 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B574441BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7766C4441C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:43:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232131AbhKCMnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 08:43:51 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45034 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230472AbhKCMnu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 08:43:50 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A52AA1FD2F;
-        Wed,  3 Nov 2021 12:41:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635943272; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cRnyTfaNhYLhs8HgDApLO7O6H73Ejpb+Xrvm1l2ew1o=;
-        b=wa1F1x6qUYfevCOynRd+GmrwdW3H+ZpVJi3kKUXiHZo1sImrfwANg9wGPktB6ftItyFfmO
-        quFMYkC3lk4flTCjCCYT6wsgoPgr3AKrS4RBpT0kXU8/bx1wWu2d1c0T9OvurPVcVS32Vo
-        mBXTImoOcEJ3YC8G1foxoebELOu8+6U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635943272;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cRnyTfaNhYLhs8HgDApLO7O6H73Ejpb+Xrvm1l2ew1o=;
-        b=hO2zdHNlxVk/ntfr5r9u3KK9PAofgASg7LskAmu8lYerJwhVcPV85YdyeoqbK6dsrdGeEl
-        TfgSRuIWJJUi3aAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0A0ED13DEB;
-        Wed,  3 Nov 2021 12:41:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id rXqBAWiDgmHKWgAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Wed, 03 Nov 2021 12:41:12 +0000
-Message-ID: <a95acef3-8647-9fb0-efa7-9c3a35524052@suse.de>
-Date:   Wed, 3 Nov 2021 13:41:11 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [RESEND PATCH 2/5] drm: Move nomodeset kernel parameter handler
- to the DRM subsystem
+        id S231993AbhKCMqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 08:46:06 -0400
+Received: from mail-eopbgr140042.outbound.protection.outlook.com ([40.107.14.42]:52781
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230304AbhKCMqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 08:46:01 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BR4DFSoyCeY0xpUHErlWi8uv2YRPS9JAddlcE3Xt9qPIX6oL2z+sUbqsxfU5Rm1OmWIUQySiTizu1rfbHOIY4cK+kDZl0kzZvzVKlququjefBn4u843vODPwqHz8niIUjyGRnUDO+TXpuLwFd/kRr+SYmQHIgUz79FlyxsQ038nvAoPpYd8k8AwL2nZr5xRd68a69AsWjPa7bdyn3O7ZLtuzlFtKvF+MUi2agUjrNj134QsZwaRDXkggmx2yEf00bVlimrtFMB0rwiw2gPsopVEOQ7to7uEeE40GF/jp7A0EUE9IF0cRHDYstjDzovoXrE0gnfLs/ntO6nwH/hW8Aw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qqXlm5W7PTNw+6E/k/OVqyeT8t3AHWRsQzym8I4zMjc=;
+ b=eTHWdKKZz1h7D6r0GahqnTShLosNikkuOntAIwvtQsLUOucesObHSkVtoYTNU/c2HmbDXk3VndDURkV2/t76X7av1K5fx2apssbNlERpwgKmzgOU1aONB7S3eIfNvOpV8G4Kka6MCDgQFkOqPtIuKOse5Cz24SHR4IVtMOJHS4DrHFuDRSxHSHEmP5MVVGnBrpbFoDLO/z2NZfUb4e+pSFdtyRxeKk/CgXmdlQW1MX9Zuy9iUXjvCqmZWXvyG6Of/WDohds3rpTxmayXdkPm+dY0G4xWvap9hemsTrw0Q/VGeQ2UM2NvCLUwq9OH4jgSYKOk9AD8SIBUvAJZ4qQ5Fg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qqXlm5W7PTNw+6E/k/OVqyeT8t3AHWRsQzym8I4zMjc=;
+ b=XHn0mD9lpDgCTuXU45sbZ0jpExAqnWT54qM3E6fpNzEEHntioW6Gg6seNWsh1nCM3kKyuNTq79e1f6Mi9vShQuyHPzUtR3gUCRzlk7khq0oAMsDEv3TB/ZL5koCRNr9UxSiaEXmprBLBaln+ZBFnAXq3glqG6ydAxYPxdIL737g=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR04MB5135.eurprd04.prod.outlook.com (2603:10a6:803:62::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.18; Wed, 3 Nov
+ 2021 12:43:20 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e157:3280:7bc3:18c4]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e157:3280:7bc3:18c4%5]) with mapi id 15.20.4649.020; Wed, 3 Nov 2021
+ 12:43:20 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 6/6] net: ocelot: add jumbo frame support for FDMA
+Thread-Topic: [PATCH v2 6/6] net: ocelot: add jumbo frame support for FDMA
+Thread-Index: AQHX0JQO6O94IOHXckmYdYvOxLwYAqvxv5mA
+Date:   Wed, 3 Nov 2021 12:43:20 +0000
+Message-ID: <20211103124319.e7th7khpsybs7zjd@skbuf>
+References: <20211103091943.3878621-1-clement.leger@bootlin.com>
+ <20211103091943.3878621-7-clement.leger@bootlin.com>
+In-Reply-To: <20211103091943.3878621-7-clement.leger@bootlin.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Peter Robinson <pbrobinson@gmail.com>,
-        =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Neal Gompa <ngompa13@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>, Chia-I Wu <olvaffe@gmail.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Zack Rusin <zackr@vmware.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, nouveau@lists.freedesktop.org,
-        spice-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org
-References: <20211103122809.1040754-1-javierm@redhat.com>
- <20211103122809.1040754-3-javierm@redhat.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <20211103122809.1040754-3-javierm@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------LZZKu0R06YlOgIKNWDXaw2Ec"
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7b38dd26-8a52-4aef-c90e-08d99ec7844e
+x-ms-traffictypediagnostic: VI1PR04MB5135:
+x-microsoft-antispam-prvs: <VI1PR04MB51359D1EF60900B1BC4A2B88E08C9@VI1PR04MB5135.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1201;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wADENNe6se2EHoAmGkq7SKbJaBLuzY00rKPklkJ9/VNcagBpT8ky0hOXDkeKXuUzq7ijEu+MQQzxZX1pmF4nDnTUC20s1SdaQS/wt4+a4ZWYUL/zGEDwObEprGvGxklGci/xNAKve/vvsHKHlcsdTaTKexdEWTb0ZMy4EUSVYSAWsbBJYAeTIT0Hc1CoEiZXgb/uS3MAadLso31kI3Vxle8LRXQROwDZxY5hIY8gpavHz9+NdtK54lbTsdT6Swtv7NaWyKc8K52DOlfWQv7e8ym5UafOZ1UknYSo5d+hMXtn1RKzksy1cED9V/pp1ow+oVUyLy+QifETX92QILrwXGYF4lkDccZwuKpdfbM7TzYUdBwFCGl4r8L0pSdk7IPYfyE3yS9u7Y/OYEdxgJ68Ze4GWBWpWjCXi2ztMSMm0ygVp1tjK5yar3MGJeqsObR/MMUHqIKPadW3arns891QhgwWtZ73cRNB2jForuQ7PBcKYrN3v1iEa98B2FCZgYKBbvJa8gvm03pMziYYVocljqbE2UZD4mtmaiYbUrSKbb1lkbt1Gw0TQbgvasfHkx0QwbmdSqWO/VxHhs0YH4hVGCeZ9kiksJ4Z2ZlP44Ga1l8dAV4G8uPV9VHrtcHnbppCYCeIfCN61YUzN/K76f3hE2DmaiTeX/zWW4nH+zKFM5hsc3xkBvk86d9jto7AK4F6cBk4RowmUIx2gmQKGv2HaA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(4326008)(44832011)(9686003)(6512007)(6916009)(316002)(5660300002)(1076003)(186003)(54906003)(6486002)(33716001)(91956017)(8936002)(122000001)(2906002)(66476007)(7416002)(508600001)(66574015)(64756008)(38070700005)(66556008)(6506007)(8676002)(38100700002)(26005)(66946007)(76116006)(86362001)(66446008)(71200400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?cruk+EXdXCmiIWxG869Yuw8A8XmFfARs/kAZSB5zrAAyj7ddldcJIZCWu9?=
+ =?iso-8859-1?Q?dBmK8j7AVQXb1vZjqJwfgNmN2xTiWZTmlXYNEafjJy2JLHj/oAaOo8w2R1?=
+ =?iso-8859-1?Q?sToDEBJukpAkswYqLuJH2kv89egA6Iz1HSR29z+DTZcyVcfEYnvtRG1Okj?=
+ =?iso-8859-1?Q?gGBS0tUMghiwfijPd58Zyd4Q5P0PTWlAKiE+drWTDWxEEQJ6Oy4V+7L3Fo?=
+ =?iso-8859-1?Q?jYIo3qMuONAo4bsPV/57qNx/IrCNwi6uYO/bmR5KUej8GB9KbnupqxcQBC?=
+ =?iso-8859-1?Q?3jYM/ygcvKUeSnFff0pcrhGYBFId088sfUkd4fzYbSBZzsRZ+5NAF1vcRX?=
+ =?iso-8859-1?Q?FTiRGHDIvZ27bCK6X9Ej7p14RUxV1Sv25Ruq0unfJCRiWviNvbg39GxRhc?=
+ =?iso-8859-1?Q?kujnC+SmzDNQUut6SyPZXUqpwgrrg1eQYpnebcjlp+/vCjoE1JHZnDMDCw?=
+ =?iso-8859-1?Q?EVWuIJxGcM4aLeMdM0d0gHOgvW8UsWs3cFUom1R39M97fwCjz0Ag26/hyi?=
+ =?iso-8859-1?Q?XIWzTKqHILxlUp2vQlYutsOe/s0FmfG0dWWuvugp87k+65pneB0T0kF2Z6?=
+ =?iso-8859-1?Q?i+X8WdU64m7I+6FlW72IGxBD+nWAr9RlvonUS8PLfmETlJjMiwYcgDJBCK?=
+ =?iso-8859-1?Q?DP0myLwgiWjk/mznuVkzbIae0U4BPfLR24woEpNfXGCqC7d6+9U9K0GUYM?=
+ =?iso-8859-1?Q?klXFZYVeI9YFTuax+8cxaJ3NjdyUjq1rM4wXlb7ZPqJ+iwWBQeWlqFL+z2?=
+ =?iso-8859-1?Q?/YVK6r+BPTkEvkN96hqlZsOnDKP+tcwfZK/zZQIxm+Pw5M9zVRO9+OhJyG?=
+ =?iso-8859-1?Q?m+jd+vWJDxm93dZX9iKqGiM9Sb39YA7oSog5N06iUlFKS6o0On4HXx7GdJ?=
+ =?iso-8859-1?Q?kY6iOt9yQEo3iLQnqqlNKy6g+Bfn+edH3w2AWN+GslUEaFQESywBhqO3j3?=
+ =?iso-8859-1?Q?FKnFW7/87f9XdYzv4Nk/vh9Bw4XEPhjEG6mIBB4akwtyl+fN6NlXtzJwhU?=
+ =?iso-8859-1?Q?7NAWmMbB557f2ixbcpQSSqAFjEZoqFzkunPIkPq1YguYWluRiheTNrRnc/?=
+ =?iso-8859-1?Q?wt4sVBF4b/2OML9YDItyVrnuMQQkt/AHtRpPLTT5BjZ6s+x0TZ27QqUX5x?=
+ =?iso-8859-1?Q?d22O4qSNG2+ajTCUDKQTaq1LEj5fL4c4HxmvwI6swOA0VFZoQY3fAH7TYW?=
+ =?iso-8859-1?Q?cHKuvIib+G2N0TDkVvaT6F5tWlmmYA1FxmxTUMYWNMmkkwSx/DGVZno1KI?=
+ =?iso-8859-1?Q?nuA/v7i6+MfmKOLLSDQeEUIVTHjXjWLd9iOoNW4atYPg+o+19yZwumHJEA?=
+ =?iso-8859-1?Q?xrRQbP2joDvC4+Prsfph3NyTTqctJb5F7aPFC64H8jYblznGaLoZr4fewt?=
+ =?iso-8859-1?Q?2ddyp7XABmXOPBlGPMhm09Xr+bbyYbv5wSWZUpYBZM01E6SRay0Y2e13m8?=
+ =?iso-8859-1?Q?6iZ2L9zLpDtcy2pzuQEwWs38hPrj/85iahQFUPlpY/UMA4zS1WTDQHYTHx?=
+ =?iso-8859-1?Q?4LTSGJDDpM2yWZemEp/L30WT6Z5LDkuDfdrh4riy3lKdlannbVDu7RB2YL?=
+ =?iso-8859-1?Q?1eqnEAYFOXeSJ0TRgVjrTP7vXbYOpwuEX9LY+7fQOwo05ZPsxHePps/v3F?=
+ =?iso-8859-1?Q?ICfRZJm/dnq8aramEkrY902l8QmnacC9WcYAnZIqHtBOxOZOfQMAC/OgHT?=
+ =?iso-8859-1?Q?K810CioZl+EVdhsdH0T9X9bCXwGRwbsc88RjzISc?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <A16CAB12C317E4449D144CB6850560DA@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b38dd26-8a52-4aef-c90e-08d99ec7844e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2021 12:43:20.4132
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5stsX60B9ObrR+RYC9vsS0kN4hLWYGMMFOfmJuGqLQarJ0DYamLvAmc5Agx7qOkWbidVBYrL3n6LIiSlNve4Fw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5135
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------LZZKu0R06YlOgIKNWDXaw2Ec
-Content-Type: multipart/mixed; boundary="------------mjKOQKKz346E0GBb5eGIho0V";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Javier Martinez Canillas <javierm@redhat.com>,
- linux-kernel@vger.kernel.org
-Cc: Peter Robinson <pbrobinson@gmail.com>, =?UTF-8?Q?Michel_D=c3=a4nzer?=
- <michel@daenzer.net>, Pekka Paalanen <pekka.paalanen@collabora.com>,
- Daniel Vetter <daniel.vetter@ffwll.ch>, Neal Gompa <ngompa13@gmail.com>,
- Alex Deucher <alexander.deucher@amd.com>, Ben Skeggs <bskeggs@redhat.com>,
- Chia-I Wu <olvaffe@gmail.com>, =?UTF-8?Q?Christian_K=c3=b6nig?=
- <christian.koenig@amd.com>, Daniel Vetter <daniel@ffwll.ch>,
- Dave Airlie <airlied@redhat.com>, David Airlie <airlied@linux.ie>,
- Gerd Hoffmann <kraxel@redhat.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Gurchetan Singh <gurchetansingh@chromium.org>,
- Hans de Goede <hdegoede@redhat.com>,
- Jani Nikula <jani.nikula@linux.intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, "Pan, Xinhui" <Xinhui.Pan@amd.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>,
- VMware Graphics <linux-graphics-maintainer@vmware.com>,
- Zack Rusin <zackr@vmware.com>, amd-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
- linux-fbdev@vger.kernel.org, nouveau@lists.freedesktop.org,
- spice-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org
-Message-ID: <a95acef3-8647-9fb0-efa7-9c3a35524052@suse.de>
-Subject: Re: [RESEND PATCH 2/5] drm: Move nomodeset kernel parameter handler
- to the DRM subsystem
-References: <20211103122809.1040754-1-javierm@redhat.com>
- <20211103122809.1040754-3-javierm@redhat.com>
-In-Reply-To: <20211103122809.1040754-3-javierm@redhat.com>
+On Wed, Nov 03, 2021 at 10:19:43AM +0100, Cl=E9ment L=E9ger wrote:
+> When using the FDMA, using jumbo frames can lead to a large performance
+> improvement. When changing the MTU, the RX buffer size must be
+> increased to be large enough to receive jumbo frame. Since the FDMA is
+> shared amongst all interfaces, all the ports must be down before
+> changing the MTU. Buffers are sized to accept the maximum MTU supported
+> by each port.
+>=20
+> Signed-off-by: Cl=E9ment L=E9ger <clement.leger@bootlin.com>
+> ---
 
---------------mjKOQKKz346E0GBb5eGIho0V
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Instead of draining buffers and refilling with a different size, which
+impacts the user experience, can you not just use scatter/gather RX
+processing for frames larger than the fixed buffer size, like a normal
+driver would?
 
-SGkNCg0KQW0gMDMuMTEuMjEgdW0gMTM6Mjggc2NocmllYiBKYXZpZXIgTWFydGluZXogQ2Fu
-aWxsYXM6DQo+IFRoZSAibm9tb2Rlc2V0IiBrZXJuZWwgY21kbGluZSBwYXJhbWV0ZXIgaXMg
-aGFuZGxlZCBieSB0aGUgdmdhY29uIGRyaXZlcg0KPiBidXQgdGhlIGV4cG9ydGVkIHZnYWNv
-bl90ZXh0X2ZvcmNlKCkgc3ltYm9sIGlzIG9ubHkgdXNlZCBieSBEUk0gZHJpdmVycy4NCj4g
-DQo+IEl0IG1ha2VzIG11Y2ggbW9yZSBzZW5zZSBmb3IgdGhlIHBhcmFtZXRlciBsb2dpYyB0
-byBiZSBpbiB0aGUgc3Vic3lzdGVtDQo+IG9mIHRoZSBkcml2ZXJzIHRoYXQgYXJlIG1ha2lu
-ZyB1c2Ugb2YgaXQuIExldCdzIG1vdmUgdGhhdCB0byBEUk0uDQo+IA0KPiBTdWdnZXN0ZWQt
-Ynk6IERhbmllbCBWZXR0ZXIgPGRhbmllbC52ZXR0ZXJAZmZ3bGwuY2g+DQo+IFNpZ25lZC1v
-ZmYtYnk6IEphdmllciBNYXJ0aW5leiBDYW5pbGxhcyA8amF2aWVybUByZWRoYXQuY29tPg0K
-PiAtLS0NCj4gDQo+ICAgZHJpdmVycy9ncHUvZHJtL01ha2VmaWxlICAgICAgICAgICAgICAg
-IHwgIDIgKysNCj4gICBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfZHJ2LmMg
-fCAgMyArLS0NCj4gICBkcml2ZXJzL2dwdS9kcm0vYXN0L2FzdF9kcnYuYyAgICAgICAgICAg
-fCAgMSAtDQo+ICAgZHJpdmVycy9ncHUvZHJtL2RybV9ub21vZGVzZXQuYyAgICAgICAgIHwg
-MjYgKysrKysrKysrKysrKysrKysrKysrKysrKw0KPiAgIGRyaXZlcnMvZ3B1L2RybS9pOTE1
-L2k5MTVfbW9kdWxlLmMgICAgICB8ICAyIC0tDQo+ICAgZHJpdmVycy9ncHUvZHJtL21nYWcy
-MDAvbWdhZzIwMF9kcnYuYyAgIHwgIDEgLQ0KPiAgIGRyaXZlcnMvZ3B1L2RybS9ub3V2ZWF1
-L25vdXZlYXVfZHJtLmMgICB8ICAxIC0NCj4gICBkcml2ZXJzL2dwdS9kcm0vcXhsL3F4bF9k
-cnYuYyAgICAgICAgICAgfCAgMSAtDQo+ICAgZHJpdmVycy9ncHUvZHJtL3JhZGVvbi9yYWRl
-b25fZHJ2LmMgICAgIHwgIDEgLQ0KPiAgIGRyaXZlcnMvZ3B1L2RybS90aW55L2JvY2hzLmMg
-ICAgICAgICAgICB8ICAxIC0NCj4gICBkcml2ZXJzL2dwdS9kcm0vdGlueS9jaXJydXMuYyAg
-ICAgICAgICAgfCAgMSAtDQo+ICAgZHJpdmVycy9ncHUvZHJtL3Zib3h2aWRlby92Ym94X2Ry
-di5jICAgIHwgIDEgLQ0KPiAgIGRyaXZlcnMvZ3B1L2RybS92aXJ0aW8vdmlydGdwdV9kcnYu
-YyAgICB8ICAxIC0NCj4gICBkcml2ZXJzL2dwdS9kcm0vdm13Z2Z4L3Ztd2dmeF9kcnYuYyAg
-ICAgfCAgMSAtDQo+ICAgZHJpdmVycy92aWRlby9jb25zb2xlL3ZnYWNvbi5jICAgICAgICAg
-IHwgMjEgLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gICBpbmNsdWRlL2RybS9kcm1fbW9kZV9j
-b25maWcuaCAgICAgICAgICAgfCAgNiArKysrKysNCj4gICBpbmNsdWRlL2xpbnV4L2NvbnNv
-bGUuaCAgICAgICAgICAgICAgICAgfCAgNiAtLS0tLS0NCj4gICAxNyBmaWxlcyBjaGFuZ2Vk
-LCAzNSBpbnNlcnRpb25zKCspLCA0MSBkZWxldGlvbnMoLSkNCj4gICBjcmVhdGUgbW9kZSAx
-MDA2NDQgZHJpdmVycy9ncHUvZHJtL2RybV9ub21vZGVzZXQuYw0KPiANCj4gZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvZ3B1L2RybS9NYWtlZmlsZSBiL2RyaXZlcnMvZ3B1L2RybS9NYWtlZmls
-ZQ0KPiBpbmRleCAxYzQxMTU2ZGViNWYuLjBlMmQ2MGVhOTNjYSAxMDA2NDQNCj4gLS0tIGEv
-ZHJpdmVycy9ncHUvZHJtL01ha2VmaWxlDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9NYWtl
-ZmlsZQ0KPiBAQCAtMzMsNiArMzMsOCBAQCBkcm0tJChDT05GSUdfRFJNX1BSSVZBQ1lfU0NS
-RUVOKSArPSBkcm1fcHJpdmFjeV9zY3JlZW4ubyBkcm1fcHJpdmFjeV9zY3JlZW5feDg2Lg0K
-PiAgIA0KPiAgIG9iai0kKENPTkZJR19EUk1fRFBfQVVYX0JVUykgKz0gZHJtX2RwX2F1eF9i
-dXMubw0KPiAgIA0KPiArb2JqLXkgKz0gZHJtX25vbW9kZXNldC5vDQoNClJlcGVhdGluZyBt
-eSBvdGhlciBjb21tZW50LCBzaG91bGQgdGhpcyByYXRoZXIgYmUgcHJvdGVjdGVkIGJ5IGEg
-DQpzZXBhcmF0ZSBjb25maWcgc3ltYm9sIHRoYXQgaXMgc2VsZWN0ZWQgYnkgQ09ORklHX0RS
-TT8NCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0KPiArDQo+ICAgZHJtX2NtYV9oZWxwZXIt
-eSA6PSBkcm1fZ2VtX2NtYV9oZWxwZXIubw0KPiAgIG9iai0kKENPTkZJR19EUk1fR0VNX0NN
-QV9IRUxQRVIpICs9IGRybV9jbWFfaGVscGVyLm8NCj4gICANCj4gZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9kcnYuYyBiL2RyaXZlcnMvZ3B1L2Ry
-bS9hbWQvYW1kZ3B1L2FtZGdwdV9kcnYuYw0KPiBpbmRleCBjNzE4ZmI1ZjNmOGEuLjI2ODBh
-MmFhYTg3NyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1k
-Z3B1X2Rydi5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9k
-cnYuYw0KPiBAQCAtMzEsNyArMzEsNiBAQA0KPiAgICNpbmNsdWRlICJhbWRncHVfZHJ2Lmgi
-DQo+ICAgDQo+ICAgI2luY2x1ZGUgPGRybS9kcm1fcGNpaWRzLmg+DQo+IC0jaW5jbHVkZSA8
-bGludXgvY29uc29sZS5oPg0KPiAgICNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCj4gICAj
-aW5jbHVkZSA8bGludXgvcG1fcnVudGltZS5oPg0KPiAgICNpbmNsdWRlIDxsaW51eC92Z2Ff
-c3dpdGNoZXJvby5oPg0KPiBAQCAtMjUxNSw3ICsyNTE0LDcgQEAgc3RhdGljIGludCBfX2lu
-aXQgYW1kZ3B1X2luaXQodm9pZCkNCj4gICAJaW50IHI7DQo+ICAgDQo+ICAgCWlmICh2Z2Fj
-b25fdGV4dF9mb3JjZSgpKSB7DQo+IC0JCURSTV9FUlJPUigiVkdBQ09OIGRpc2FibGVzIGFt
-ZGdwdSBrZXJuZWwgbW9kZXNldHRpbmcuXG4iKTsNCj4gKwkJRFJNX0VSUk9SKCJhbWRncHUg
-a2VybmVsIG1vZGVzZXR0aW5nIGRpc2FibGVkLlxuIik7DQo+ICAgCQlyZXR1cm4gLUVJTlZB
-TDsNCj4gICAJfQ0KPiAgIA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2FzdC9h
-c3RfZHJ2LmMgYi9kcml2ZXJzL2dwdS9kcm0vYXN0L2FzdF9kcnYuYw0KPiBpbmRleCA4NmQ1
-Y2Q3YjYzMTguLjA0OGJlNjA3YjE4MiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJt
-L2FzdC9hc3RfZHJ2LmMNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2FzdC9hc3RfZHJ2LmMN
-Cj4gQEAgLTI2LDcgKzI2LDYgQEANCj4gICAgKiBBdXRob3JzOiBEYXZlIEFpcmxpZSA8YWly
-bGllZEByZWRoYXQuY29tPg0KPiAgICAqLw0KPiAgIA0KPiAtI2luY2x1ZGUgPGxpbnV4L2Nv
-bnNvbGUuaD4NCj4gICAjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+DQo+ICAgI2luY2x1ZGUg
-PGxpbnV4L3BjaS5oPg0KPiAgIA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2Ry
-bV9ub21vZGVzZXQuYyBiL2RyaXZlcnMvZ3B1L2RybS9kcm1fbm9tb2Rlc2V0LmMNCj4gbmV3
-IGZpbGUgbW9kZSAxMDA2NDQNCj4gaW5kZXggMDAwMDAwMDAwMDAwLi4xYWM5YThkNWE4ZmUN
-Cj4gLS0tIC9kZXYvbnVsbA0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vZHJtX25vbW9kZXNl
-dC5jDQo+IEBAIC0wLDAgKzEsMjYgQEANCj4gKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVy
-OiBHUEwtMi4wDQo+ICsNCj4gKyNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCj4gKyNpbmNs
-dWRlIDxsaW51eC90eXBlcy5oPg0KPiArDQo+ICtzdGF0aWMgYm9vbCB2Z2Fjb25fdGV4dF9t
-b2RlX2ZvcmNlOw0KPiArDQo+ICtib29sIHZnYWNvbl90ZXh0X2ZvcmNlKHZvaWQpDQo+ICt7
-DQo+ICsJcmV0dXJuIHZnYWNvbl90ZXh0X21vZGVfZm9yY2U7DQo+ICt9DQo+ICtFWFBPUlRf
-U1lNQk9MKHZnYWNvbl90ZXh0X2ZvcmNlKTsNCj4gKw0KPiArc3RhdGljIGludCBfX2luaXQg
-dGV4dF9tb2RlKGNoYXIgKnN0cikNCj4gK3sNCj4gKwl2Z2Fjb25fdGV4dF9tb2RlX2ZvcmNl
-ID0gdHJ1ZTsNCj4gKw0KPiArCXByX3dhcm4oIllvdSBoYXZlIGJvb3RlZCB3aXRoIG5vbW9k
-ZXNldC4gVGhpcyBtZWFucyB5b3VyIEdQVSBkcml2ZXJzIGFyZSBESVNBQkxFRFxuIik7DQo+
-ICsJcHJfd2FybigiQW55IHZpZGVvIHJlbGF0ZWQgZnVuY3Rpb25hbGl0eSB3aWxsIGJlIHNl
-dmVyZWx5IGRlZ3JhZGVkLCBhbmQgeW91IG1heSBub3QgZXZlbiBiZSBhYmxlIHRvIHN1c3Bl
-bmQgdGhlIHN5c3RlbSBwcm9wZXJseVxuIik7DQo+ICsJcHJfd2FybigiVW5sZXNzIHlvdSBh
-Y3R1YWxseSB1bmRlcnN0YW5kIHdoYXQgbm9tb2Rlc2V0IGRvZXMsIHlvdSBzaG91bGQgcmVi
-b290IHdpdGhvdXQgZW5hYmxpbmcgaXRcbiIpOw0KPiArDQo+ICsJcmV0dXJuIDE7DQo+ICt9
-DQo+ICsNCj4gKy8qIGZvcmNlIHRleHQgbW9kZSAtIHVzZWQgYnkga2VybmVsIG1vZGVzZXR0
-aW5nICovDQo+ICtfX3NldHVwKCJub21vZGVzZXQiLCB0ZXh0X21vZGUpOw0KPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9tb2R1bGUuYyBiL2RyaXZlcnMvZ3B1
-L2RybS9pOTE1L2k5MTVfbW9kdWxlLmMNCj4gaW5kZXggYzc1MDcyNjZhYTgzLi4xNGE1OTIy
-NjUxOWQgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfbW9kdWxl
-LmMNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9tb2R1bGUuYw0KPiBAQCAt
-NCw4ICs0LDYgQEANCj4gICAgKiBDb3B5cmlnaHQgwqkgMjAyMSBJbnRlbCBDb3Jwb3JhdGlv
-bg0KPiAgICAqLw0KPiAgIA0KPiAtI2luY2x1ZGUgPGxpbnV4L2NvbnNvbGUuaD4NCj4gLQ0K
-PiAgICNpbmNsdWRlICJnZW0vaTkxNV9nZW1fY29udGV4dC5oIg0KPiAgICNpbmNsdWRlICJn
-ZW0vaTkxNV9nZW1fb2JqZWN0LmgiDQo+ICAgI2luY2x1ZGUgImk5MTVfYWN0aXZlLmgiDQo+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWdhZzIwMC9tZ2FnMjAwX2Rydi5jIGIv
-ZHJpdmVycy9ncHUvZHJtL21nYWcyMDAvbWdhZzIwMF9kcnYuYw0KPiBpbmRleCA2YjkyNDM3
-MTNiM2MuLjY4NWU3NjZkYjZhNCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL21n
-YWcyMDAvbWdhZzIwMF9kcnYuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vbWdhZzIwMC9t
-Z2FnMjAwX2Rydi5jDQo+IEBAIC02LDcgKzYsNiBAQA0KPiAgICAqICAgICAgICAgIERhdmUg
-QWlybGllDQo+ICAgICovDQo+ICAgDQo+IC0jaW5jbHVkZSA8bGludXgvY29uc29sZS5oPg0K
-PiAgICNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCj4gICAjaW5jbHVkZSA8bGludXgvcGNp
-Lmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L3ZtYWxsb2MuaD4NCj4gZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvZ3B1L2RybS9ub3V2ZWF1L25vdXZlYXVfZHJtLmMgYi9kcml2ZXJzL2dwdS9kcm0v
-bm91dmVhdS9ub3V2ZWF1X2RybS5jDQo+IGluZGV4IDFmODI4YzlmNjkxYy4uMDI5OTk3ZjUw
-ZDFhIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbm91dmVhdS9ub3V2ZWF1X2Ry
-bS5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9ub3V2ZWF1L25vdXZlYXVfZHJtLmMNCj4g
-QEAgLTIyLDcgKzIyLDYgQEANCj4gICAgKiBBdXRob3JzOiBCZW4gU2tlZ2dzDQo+ICAgICov
-DQo+ICAgDQo+IC0jaW5jbHVkZSA8bGludXgvY29uc29sZS5oPg0KPiAgICNpbmNsdWRlIDxs
-aW51eC9kZWxheS5oPg0KPiAgICNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCj4gICAjaW5j
-bHVkZSA8bGludXgvcGNpLmg+DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vcXhs
-L3F4bF9kcnYuYyBiL2RyaXZlcnMvZ3B1L2RybS9xeGwvcXhsX2Rydi5jDQo+IGluZGV4IGZj
-NDdiMGRlYjAyMS4uM2NkNmJkOWYwNTlkIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9k
-cm0vcXhsL3F4bF9kcnYuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vcXhsL3F4bF9kcnYu
-Yw0KPiBAQCAtMjksNyArMjksNiBAQA0KPiAgIA0KPiAgICNpbmNsdWRlICJxeGxfZHJ2Lmgi
-DQo+ICAgDQo+IC0jaW5jbHVkZSA8bGludXgvY29uc29sZS5oPg0KPiAgICNpbmNsdWRlIDxs
-aW51eC9tb2R1bGUuaD4NCj4gICAjaW5jbHVkZSA8bGludXgvcGNpLmg+DQo+ICAgI2luY2x1
-ZGUgPGxpbnV4L3ZnYWFyYi5oPg0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL3Jh
-ZGVvbi9yYWRlb25fZHJ2LmMgYi9kcml2ZXJzL2dwdS9kcm0vcmFkZW9uL3JhZGVvbl9kcnYu
-Yw0KPiBpbmRleCBiNzRjZWJjYTFmODkuLjliNjA2YzFiMTFlYyAxMDA2NDQNCj4gLS0tIGEv
-ZHJpdmVycy9ncHUvZHJtL3JhZGVvbi9yYWRlb25fZHJ2LmMNCj4gKysrIGIvZHJpdmVycy9n
-cHUvZHJtL3JhZGVvbi9yYWRlb25fZHJ2LmMNCj4gQEAgLTMxLDcgKzMxLDYgQEANCj4gICAN
-Cj4gICANCj4gICAjaW5jbHVkZSA8bGludXgvY29tcGF0Lmg+DQo+IC0jaW5jbHVkZSA8bGlu
-dXgvY29uc29sZS5oPg0KPiAgICNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCj4gICAjaW5j
-bHVkZSA8bGludXgvcG1fcnVudGltZS5oPg0KPiAgICNpbmNsdWRlIDxsaW51eC92Z2Ffc3dp
-dGNoZXJvby5oPg0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL3RpbnkvYm9jaHMu
-YyBiL2RyaXZlcnMvZ3B1L2RybS90aW55L2JvY2hzLmMNCj4gaW5kZXggMmNlM2JkOTAzYjcw
-Li4wNDMzM2Y3OGJlNTUgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS90aW55L2Jv
-Y2hzLmMNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL3RpbnkvYm9jaHMuYw0KPiBAQCAtMSw2
-ICsxLDUgQEANCj4gICAvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vci1s
-YXRlcg0KPiAgIA0KPiAtI2luY2x1ZGUgPGxpbnV4L2NvbnNvbGUuaD4NCj4gICAjaW5jbHVk
-ZSA8bGludXgvcGNpLmg+DQo+ICAgDQo+ICAgI2luY2x1ZGUgPGRybS9kcm1fYXBlcnR1cmUu
-aD4NCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS90aW55L2NpcnJ1cy5jIGIvZHJp
-dmVycy9ncHUvZHJtL3RpbnkvY2lycnVzLmMNCj4gaW5kZXggNDYxMWVjNDA4NTA2Li44YmQ2
-NzRmMGQ2ODIgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS90aW55L2NpcnJ1cy5j
-DQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS90aW55L2NpcnJ1cy5jDQo+IEBAIC0xNiw3ICsx
-Niw2IEBADQo+ICAgICogQ29weXJpZ2h0IDE5OTktMjAwMSBKZWZmIEdhcnppayA8amdhcnpp
-a0Bwb2JveC5jb20+DQo+ICAgICovDQo+ICAgDQo+IC0jaW5jbHVkZSA8bGludXgvY29uc29s
-ZS5oPg0KPiAgICNpbmNsdWRlIDxsaW51eC9kbWEtYnVmLW1hcC5oPg0KPiAgICNpbmNsdWRl
-IDxsaW51eC9tb2R1bGUuaD4NCj4gICAjaW5jbHVkZSA8bGludXgvcGNpLmg+DQo+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vdmJveHZpZGVvL3Zib3hfZHJ2LmMgYi9kcml2ZXJz
-L2dwdS9kcm0vdmJveHZpZGVvL3Zib3hfZHJ2LmMNCj4gaW5kZXggYTZjODFhZjM3MzQ1Li5l
-NmQ5ODMxMjFkMGIgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS92Ym94dmlkZW8v
-dmJveF9kcnYuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vdmJveHZpZGVvL3Zib3hfZHJ2
-LmMNCj4gQEAgLTcsNyArNyw2IEBADQo+ICAgICogICAgICAgICAgTWljaGFlbCBUaGF5ZXIg
-PG1pY2hhZWwudGhheWVyQG9yYWNsZS5jb20sDQo+ICAgICogICAgICAgICAgSGFucyBkZSBH
-b2VkZSA8aGRlZ29lZGVAcmVkaGF0LmNvbT4NCj4gICAgKi8NCj4gLSNpbmNsdWRlIDxsaW51
-eC9jb25zb2xlLmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPg0KPiAgICNpbmNs
-dWRlIDxsaW51eC9wY2kuaD4NCj4gICAjaW5jbHVkZSA8bGludXgvdnRfa2Vybi5oPg0KPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL3ZpcnRpby92aXJ0Z3B1X2Rydi5jIGIvZHJp
-dmVycy9ncHUvZHJtL3ZpcnRpby92aXJ0Z3B1X2Rydi5jDQo+IGluZGV4IDc0OWRiMThkY2Zh
-Mi4uY2Q0YzE3MDIzNmYxIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vdmlydGlv
-L3ZpcnRncHVfZHJ2LmMNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL3ZpcnRpby92aXJ0Z3B1
-X2Rydi5jDQo+IEBAIC0yNyw3ICsyNyw2IEBADQo+ICAgICovDQo+ICAgDQo+ICAgI2luY2x1
-ZGUgPGxpbnV4L21vZHVsZS5oPg0KPiAtI2luY2x1ZGUgPGxpbnV4L2NvbnNvbGUuaD4NCj4g
-ICAjaW5jbHVkZSA8bGludXgvcGNpLmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L3BvbGwuaD4N
-Cj4gICAjaW5jbHVkZSA8bGludXgvd2FpdC5oPg0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9n
-cHUvZHJtL3Ztd2dmeC92bXdnZnhfZHJ2LmMgYi9kcml2ZXJzL2dwdS9kcm0vdm13Z2Z4L3Zt
-d2dmeF9kcnYuYw0KPiBpbmRleCBhYjlhMTc1MGUxZGYuLmZjYzRiNWE3ZjYzOSAxMDA2NDQN
-Cj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL3Ztd2dmeC92bXdnZnhfZHJ2LmMNCj4gKysrIGIv
-ZHJpdmVycy9ncHUvZHJtL3Ztd2dmeC92bXdnZnhfZHJ2LmMNCj4gQEAgLTI1LDcgKzI1LDYg
-QEANCj4gICAgKg0KPiAgICAqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8NCj4gICANCj4gLSNpbmNs
-dWRlIDxsaW51eC9jb25zb2xlLmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L2RtYS1tYXBwaW5n
-Lmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPg0KPiAgICNpbmNsdWRlIDxsaW51
-eC9wY2kuaD4NCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlkZW8vY29uc29sZS92Z2Fjb24u
-YyBiL2RyaXZlcnMvdmlkZW8vY29uc29sZS92Z2Fjb24uYw0KPiBpbmRleCBlZjljNTdjZTA5
-MDYuLmQ0MzIwYjE0Nzk1NiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy92aWRlby9jb25zb2xl
-L3ZnYWNvbi5jDQo+ICsrKyBiL2RyaXZlcnMvdmlkZW8vY29uc29sZS92Z2Fjb24uYw0KPiBA
-QCAtOTcsMzAgKzk3LDkgQEAgc3RhdGljIGludCAJCXZnYV92aWRlb19mb250X2hlaWdodDsN
-Cj4gICBzdGF0aWMgaW50IAkJdmdhX3NjYW5fbGluZXMJCV9fcmVhZF9tb3N0bHk7DQo+ICAg
-c3RhdGljIHVuc2lnbmVkIGludCAJdmdhX3JvbGxlZF9vdmVyOyAvKiBsYXN0IHZjX29yaWdp
-biBvZmZzZXQgYmVmb3JlIHdyYXAgKi8NCj4gICANCj4gLXN0YXRpYyBib29sIHZnYWNvbl90
-ZXh0X21vZGVfZm9yY2U7DQo+ICAgc3RhdGljIGJvb2wgdmdhX2hhcmRzY3JvbGxfZW5hYmxl
-ZDsNCj4gICBzdGF0aWMgYm9vbCB2Z2FfaGFyZHNjcm9sbF91c2VyX2VuYWJsZSA9IHRydWU7
-DQo+ICAgDQo+IC1ib29sIHZnYWNvbl90ZXh0X2ZvcmNlKHZvaWQpDQo+IC17DQo+IC0JcmV0
-dXJuIHZnYWNvbl90ZXh0X21vZGVfZm9yY2U7DQo+IC19DQo+IC1FWFBPUlRfU1lNQk9MKHZn
-YWNvbl90ZXh0X2ZvcmNlKTsNCj4gLQ0KPiAtc3RhdGljIGludCBfX2luaXQgdGV4dF9tb2Rl
-KGNoYXIgKnN0cikNCj4gLXsNCj4gLQl2Z2Fjb25fdGV4dF9tb2RlX2ZvcmNlID0gdHJ1ZTsN
-Cj4gLQ0KPiAtCXByX3dhcm4oIllvdSBoYXZlIGJvb3RlZCB3aXRoIG5vbW9kZXNldC4gVGhp
-cyBtZWFucyB5b3VyIEdQVSBkcml2ZXJzIGFyZSBESVNBQkxFRFxuIik7DQo+IC0JcHJfd2Fy
-bigiQW55IHZpZGVvIHJlbGF0ZWQgZnVuY3Rpb25hbGl0eSB3aWxsIGJlIHNldmVyZWx5IGRl
-Z3JhZGVkLCBhbmQgeW91IG1heSBub3QgZXZlbiBiZSBhYmxlIHRvIHN1c3BlbmQgdGhlIHN5
-c3RlbSBwcm9wZXJseVxuIik7DQo+IC0JcHJfd2FybigiVW5sZXNzIHlvdSBhY3R1YWxseSB1
-bmRlcnN0YW5kIHdoYXQgbm9tb2Rlc2V0IGRvZXMsIHlvdSBzaG91bGQgcmVib290IHdpdGhv
-dXQgZW5hYmxpbmcgaXRcbiIpOw0KPiAtDQo+IC0JcmV0dXJuIDE7DQo+IC19DQo+IC0NCj4g
-LS8qIGZvcmNlIHRleHQgbW9kZSAtIHVzZWQgYnkga2VybmVsIG1vZGVzZXR0aW5nICovDQo+
-IC1fX3NldHVwKCJub21vZGVzZXQiLCB0ZXh0X21vZGUpOw0KPiAtDQo+ICAgc3RhdGljIGlu
-dCBfX2luaXQgbm9fc2Nyb2xsKGNoYXIgKnN0cikNCj4gICB7DQo+ICAgCS8qDQo+IGRpZmYg
-LS1naXQgYS9pbmNsdWRlL2RybS9kcm1fbW9kZV9jb25maWcuaCBiL2luY2x1ZGUvZHJtL2Ry
-bV9tb2RlX2NvbmZpZy5oDQo+IGluZGV4IDQ4YjdkZTgwZGFmNS4uZTFkMjA0MmE3Yjc3IDEw
-MDY0NA0KPiAtLS0gYS9pbmNsdWRlL2RybS9kcm1fbW9kZV9jb25maWcuaA0KPiArKysgYi9p
-bmNsdWRlL2RybS9kcm1fbW9kZV9jb25maWcuaA0KPiBAQCAtOTY5LDQgKzk2OSwxMCBAQCBz
-dGF0aWMgaW5saW5lIGludCBkcm1fbW9kZV9jb25maWdfaW5pdChzdHJ1Y3QgZHJtX2Rldmlj
-ZSAqZGV2KQ0KPiAgIHZvaWQgZHJtX21vZGVfY29uZmlnX3Jlc2V0KHN0cnVjdCBkcm1fZGV2
-aWNlICpkZXYpOw0KPiAgIHZvaWQgZHJtX21vZGVfY29uZmlnX2NsZWFudXAoc3RydWN0IGRy
-bV9kZXZpY2UgKmRldik7DQo+ICAgDQo+ICsjaWZkZWYgQ09ORklHX1ZHQV9DT05TT0xFDQo+
-ICtleHRlcm4gYm9vbCB2Z2Fjb25fdGV4dF9mb3JjZSh2b2lkKTsNCj4gKyNlbHNlDQo+ICtz
-dGF0aWMgaW5saW5lIGJvb2wgdmdhY29uX3RleHRfZm9yY2Uodm9pZCkgeyByZXR1cm4gZmFs
-c2U7IH0NCj4gKyNlbmRpZg0KPiArDQo+ICAgI2VuZGlmDQo+IGRpZmYgLS1naXQgYS9pbmNs
-dWRlL2xpbnV4L2NvbnNvbGUuaCBiL2luY2x1ZGUvbGludXgvY29uc29sZS5oDQo+IGluZGV4
-IDIwODc0ZGI1MGJjOC4uZDRkZDgzODQ4OThiIDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL2xp
-bnV4L2NvbnNvbGUuaA0KPiArKysgYi9pbmNsdWRlL2xpbnV4L2NvbnNvbGUuaA0KPiBAQCAt
-MjE3LDEyICsyMTcsNiBAQCBleHRlcm4gYXRvbWljX3QgaWdub3JlX2NvbnNvbGVfbG9ja193
-YXJuaW5nOw0KPiAgICNkZWZpbmUgVkVTQV9IU1lOQ19TVVNQRU5EICAgICAgMg0KPiAgICNk
-ZWZpbmUgVkVTQV9QT1dFUkRPV04gICAgICAgICAgMw0KPiAgIA0KPiAtI2lmZGVmIENPTkZJ
-R19WR0FfQ09OU09MRQ0KPiAtZXh0ZXJuIGJvb2wgdmdhY29uX3RleHRfZm9yY2Uodm9pZCk7
-DQo+IC0jZWxzZQ0KPiAtc3RhdGljIGlubGluZSBib29sIHZnYWNvbl90ZXh0X2ZvcmNlKHZv
-aWQpIHsgcmV0dXJuIGZhbHNlOyB9DQo+IC0jZW5kaWYNCj4gLQ0KPiAgIGV4dGVybiB2b2lk
-IGNvbnNvbGVfaW5pdCh2b2lkKTsNCj4gICANCj4gICAvKiBGb3IgZGVmZXJyZWQgY29uc29s
-ZSB0YWtlb3ZlciAqLw0KPiANCg0KLS0gDQpUaG9tYXMgWmltbWVybWFubg0KR3JhcGhpY3Mg
-RHJpdmVyIERldmVsb3Blcg0KU1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJI
-DQpNYXhmZWxkc3RyLiA1LCA5MDQwOSBOw7xybmJlcmcsIEdlcm1hbnkNCihIUkIgMzY4MDks
-IEFHIE7DvHJuYmVyZykNCkdlc2Now6RmdHNmw7xocmVyOiBJdm8gVG90ZXYNCg==
-
---------------mjKOQKKz346E0GBb5eGIho0V--
-
---------------LZZKu0R06YlOgIKNWDXaw2Ec
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmGCg2cFAwAAAAAACgkQlh/E3EQov+C2
-EA//fM/vJsGELDdVcUKftuIo/Y0XZ6Bajf7QA8plPLlN5+6BJuQRR4jML+uyKXhP59J0UdVqkr02
-Te1Waf0jg2qlHBfrKY7bjPjiOum9RLihcPsG6IVM+akVs9t/jOzH18zHokP3atN40wVeKCnc4hUk
-oW1tnfiTVHahvwyaXaFLkYxSuoX1Law32fEELcMmVpiWQc2+OsF+Dki1MHGQwZrz2LheMTxdFLdB
-CMfk4D3/AlQMejkM6l7eN3oShCL/V+hPWY2N1Md3K2GEDTw8TPAIiuBb3cgxbAne4B7LrOBts1r2
-7+7OWB7FJt56JvIh38+L6h3pZo6W6lt/zw4+t2qcGsMeuBMCIJWZscVeSXbMECN0kFC+v+dfc6dT
-0Dv8unWpbnL0aMapIrd9jhdPbNw21qG6kESKBckNskCZF3WPU++SYKHzq8+a+YCanFjzdruzUO4I
-vbYEyM+Z6t+7sCQpFG16OuJLR+AC4wQBm9Jc0hnSyMRpEM4E7UssK8mEoLrDa9bDmjWEAwK7qLVy
-ddTC+kb/4H6K/165SkFtzxI1rS4rChNOnu2iFGYLyUinrZBR5md9ataJwfCweKpRzfHv4TGvyYlo
-v+KElHeRmGGSCF0pZOBoaPR56cVn2ZlxDN9kNk6vvQaF2zzEGsNWmbl4y/9/cOaBjaQXGZgNQqtn
-Bv4=
-=sR6L
------END PGP SIGNATURE-----
-
---------------LZZKu0R06YlOgIKNWDXaw2Ec--
+>  drivers/net/ethernet/mscc/ocelot_fdma.c | 61 +++++++++++++++++++++++++
+>  drivers/net/ethernet/mscc/ocelot_fdma.h |  1 +
+>  drivers/net/ethernet/mscc/ocelot_net.c  |  7 +++
+>  3 files changed, 69 insertions(+)
+>=20
+> diff --git a/drivers/net/ethernet/mscc/ocelot_fdma.c b/drivers/net/ethern=
+et/mscc/ocelot_fdma.c
+> index d8cdf022bbee..bee1a310caa6 100644
+> --- a/drivers/net/ethernet/mscc/ocelot_fdma.c
+> +++ b/drivers/net/ethernet/mscc/ocelot_fdma.c
+> @@ -530,6 +530,67 @@ static void fdma_free_skbs_list(struct ocelot_fdma *=
+fdma,
+>  	}
+>  }
+> =20
+> +int ocelot_fdma_change_mtu(struct net_device *dev, int new_mtu)
+> +{
+> +	struct ocelot_port_private *priv =3D netdev_priv(dev);
+> +	struct ocelot_port *port =3D &priv->port;
+> +	struct ocelot *ocelot =3D port->ocelot;
+> +	struct ocelot_fdma *fdma =3D ocelot->fdma;
+> +	struct ocelot_fdma_dcb *dcb, *dcb_temp;
+> +	struct list_head tmp =3D LIST_HEAD_INIT(tmp);
+> +	size_t old_rx_buf_size =3D fdma->rx_buf_size;
+> +	bool all_ports_down =3D true;
+> +	u8 port_num;
+> +
+> +	/* The FDMA RX list is shared amongst all the port, get the max MTU fro=
+m
+> +	 * all of them
+> +	 */
+> +	for (port_num =3D 0; port_num < ocelot->num_phys_ports; port_num++) {
+> +		port =3D ocelot->ports[port_num];
+> +		if (!port)
+> +			continue;
+> +
+> +		priv =3D container_of(port, struct ocelot_port_private, port);
+> +
+> +		if (READ_ONCE(priv->dev->mtu) > new_mtu)
+> +			new_mtu =3D READ_ONCE(priv->dev->mtu);
+> +
+> +		/* All ports must be down to change the RX buffer length */
+> +		if (netif_running(priv->dev))
+> +			all_ports_down =3D false;
+> +	}
+> +
+> +	fdma->rx_buf_size =3D fdma_rx_compute_buffer_size(new_mtu);
+> +	if (fdma->rx_buf_size =3D=3D old_rx_buf_size)
+> +		return 0;
+> +
+> +	if (!all_ports_down)
+> +		return -EBUSY;
+> +
+> +	priv =3D netdev_priv(dev);
+> +
+> +	fdma_stop_channel(fdma, MSCC_FDMA_INJ_CHAN);
+> +
+> +	/* Discard all pending RX software and hardware descriptor */
+> +	fdma_free_skbs_list(fdma, &fdma->rx_hw, DMA_FROM_DEVICE);
+> +	fdma_free_skbs_list(fdma, &fdma->rx_sw, DMA_FROM_DEVICE);
+> +
+> +	/* Move all DCBs to a temporary list that will be injected in sw list *=
+/
+> +	if (!list_empty(&fdma->rx_hw))
+> +		list_splice_tail_init(&fdma->rx_hw, &tmp);
+> +	if (!list_empty(&fdma->rx_sw))
+> +		list_splice_tail_init(&fdma->rx_sw, &tmp);
+> +
+> +	list_for_each_entry_safe(dcb, dcb_temp, &tmp, node) {
+> +		list_del(&dcb->node);
+> +		ocelot_fdma_rx_add_dcb_sw(fdma, dcb);
+> +	}
+> +
+> +	ocelot_fdma_rx_refill(fdma);
+> +
+> +	return 0;
+> +}
+> +
+>  static int fdma_init_tx(struct ocelot_fdma *fdma)
+>  {
+>  	int i;
+> diff --git a/drivers/net/ethernet/mscc/ocelot_fdma.h b/drivers/net/ethern=
+et/mscc/ocelot_fdma.h
+> index 6c5c5872abf5..74514a0b291a 100644
+> --- a/drivers/net/ethernet/mscc/ocelot_fdma.h
+> +++ b/drivers/net/ethernet/mscc/ocelot_fdma.h
+> @@ -55,5 +55,6 @@ int ocelot_fdma_start(struct ocelot_fdma *fdma);
+>  int ocelot_fdma_stop(struct ocelot_fdma *fdma);
+>  int ocelot_fdma_inject_frame(struct ocelot_fdma *fdma, int port, u32 rew=
+_op,
+>  			     struct sk_buff *skb, struct net_device *dev);
+> +int ocelot_fdma_change_mtu(struct net_device *dev, int new_mtu);
+> =20
+>  #endif
+> diff --git a/drivers/net/ethernet/mscc/ocelot_net.c b/drivers/net/etherne=
+t/mscc/ocelot_net.c
+> index 3971b810c5b4..d5e88d7b15c7 100644
+> --- a/drivers/net/ethernet/mscc/ocelot_net.c
+> +++ b/drivers/net/ethernet/mscc/ocelot_net.c
+> @@ -492,6 +492,13 @@ static int ocelot_change_mtu(struct net_device *dev,=
+ int new_mtu)
+>  	struct ocelot_port_private *priv =3D netdev_priv(dev);
+>  	struct ocelot_port *ocelot_port =3D &priv->port;
+>  	struct ocelot *ocelot =3D ocelot_port->ocelot;
+> +	int ret;
+> +
+> +	if (ocelot->fdma) {
+> +		ret =3D ocelot_fdma_change_mtu(dev, new_mtu);
+> +		if (ret)
+> +			return ret;
+> +	}
+> =20
+>  	ocelot_port_set_maxlen(ocelot, priv->chip_port, new_mtu);
+>  	WRITE_ONCE(dev->mtu, new_mtu);
+> --=20
+> 2.33.0
+>=
