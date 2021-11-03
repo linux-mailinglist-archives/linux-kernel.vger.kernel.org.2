@@ -2,143 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729E844409D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 12:29:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FDA4440A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 12:31:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbhKCLcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 07:32:00 -0400
-Received: from mail-co1nam11on2043.outbound.protection.outlook.com ([40.107.220.43]:34400
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230112AbhKCLb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 07:31:59 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LxgccerNysvxGPwQ4ectjthfYK/wjyQzZdSL3l9XtuOPtdu4nZseoC5ci9gty0CvrzuEYuBHaNZxIKFnTh8KQYTt/hEkEacElh79p/XGzr+GuEQRnIf5TpufwXbwuLEJxb5C02zR6VcEf8iYerU7fL7+Zc4TgHy7+61Mt4nKxCFJQhflnVNgkQl/DOLhNhlgGae42trF37dEakWFw0VgOdOihlx8TsTuRUIqPAUet+7SzLSwQAJGIuDo9ATwbUkNuTS1axAS1hYVW1mPybm4zHTihf6yqBsP9lNfyOUJKjvC4SKCTnHVMtQOi0Ar/+iONGZV0JxjVXkdKi8ZQTtsUQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=L4kp8KWUwtFv2oHc3DhURiZkdCmTLCIxo7kO4TgIGNQ=;
- b=QUUMiueO+WicWqMP4BUFfmIvQv4Gmizyuw7BuBvX5Zn/rR6BTxuF+/BJWedXDvVR+csP3L+edj+tDvQDVp4jU4qxAkeRgzHFcP4X6RYOPKEI6x8PYIS8f7vHtcWWgAmk7UeqUQziVpc5fLhlcC+2xnS9+PEBDe2YRTWZ2rqFwOwM0ZqTRtj4qgpycmCoWVyIF4U47FptfgTUhJmAqFc6umYPkb9i/Fxr3jWcrx6jFJLsdU7XYe6pChYQAaz99dF3pSqOQ2D8ICd2QmzrZBxPIACtPhhfhpOpu5wO+9clD5ALLlvsyBCPdYxcASdwc4Uo+0YRdeXnHx9tW9hzC93KyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L4kp8KWUwtFv2oHc3DhURiZkdCmTLCIxo7kO4TgIGNQ=;
- b=VYv2fDqcfvpQxg+Xsw1Ss8VzhBIHBpgJP80GTiRjrre5aqDR5BMArZ+0fMYcl5ix1gRfBWP0bh1hnlTr0tPZCbvt97dueqw08ACx0GVB8PW/eJRbWGyFYDujuF8bc1jW3WU02vlMr/pIu8AxMAs6oGFn3Qet1kCZQP8Z9QYu2h+YkTj0FF+B3fcecG2fzAwYqlFIfFXiFEU2cKJMbwR+PwSIqtcaoS2WnTW/8O77TuvesSWHlCzLYCI7wICQY4iuqoh22Q4Ntjysx/oiXy95Ub1UB5kUxBvAzTTF+nq7w6nDerGB/zfhcvD2WSvBL9AIbqrU+J8PYzoKI9pYP2w+kw==
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL1PR12MB5317.namprd12.prod.outlook.com (2603:10b6:208:31f::17)
- by BL0PR12MB5507.namprd12.prod.outlook.com (2603:10b6:208:1c4::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11; Wed, 3 Nov
- 2021 11:29:21 +0000
-Received: from BL1PR12MB5317.namprd12.prod.outlook.com
- ([fe80::64ed:2ae1:6659:2878]) by BL1PR12MB5317.namprd12.prod.outlook.com
- ([fe80::64ed:2ae1:6659:2878%3]) with mapi id 15.20.4669.010; Wed, 3 Nov 2021
- 11:29:21 +0000
-Subject: Re: [PATCH 0/4] Fix kcontrol put callback in Tegra drivers
-To:     Jaroslav Kysela <perex@perex.cz>, broonie@kernel.org,
-        lgirdwood@gmail.com, tiwai@suse.com
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1635915897-32313-1-git-send-email-spujar@nvidia.com>
- <8a00ea68-4859-fbcc-6292-909a66b0a188@perex.cz>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <1b63798e-cf3f-5ef8-1950-3111273ad82d@nvidia.com>
-Date:   Wed, 3 Nov 2021 16:59:08 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-In-Reply-To: <8a00ea68-4859-fbcc-6292-909a66b0a188@perex.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-ClientProxiedBy: MAXPR01CA0114.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:5d::32) To BL1PR12MB5317.namprd12.prod.outlook.com
- (2603:10b6:208:31f::17)
+        id S231623AbhKCLeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 07:34:16 -0400
+Received: from mga11.intel.com ([192.55.52.93]:28521 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230112AbhKCLeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 07:34:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10156"; a="228929237"
+X-IronPort-AV: E=Sophos;i="5.87,205,1631602800"; 
+   d="scan'208";a="228929237"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 04:31:31 -0700
+X-IronPort-AV: E=Sophos;i="5.87,205,1631602800"; 
+   d="scan'208";a="501022434"
+Received: from bmagdala-mobl.ger.corp.intel.com (HELO localhost) ([10.251.215.42])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 04:31:27 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     "Yuan\, Perry" <Perry.Yuan@amd.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     "dri-devel\@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Huang\, Shimmer" <Xinmei.Huang@amd.com>,
+        "Huang\, Ray" <Ray.Huang@amd.com>
+Subject: RE: [PATCH v2] drm/dp: Fix aux->transfer NULL pointer dereference on drm_dp_dpcd_access
+In-Reply-To: <MWHPR12MB163124867D43AD8E19EED1D39C8C9@MWHPR12MB1631.namprd12.prod.outlook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211101061053.38173-1-Perry.Yuan@amd.com> <87a6iodnz7.fsf@intel.com> <MWHPR12MB1631610D235FCC3B47064F6B9C8B9@MWHPR12MB1631.namprd12.prod.outlook.com> <87y267c5nc.fsf@intel.com> <MWHPR12MB163124867D43AD8E19EED1D39C8C9@MWHPR12MB1631.namprd12.prod.outlook.com>
+Date:   Wed, 03 Nov 2021 13:31:25 +0200
+Message-ID: <87wnlpbhma.fsf@intel.com>
 MIME-Version: 1.0
-Received: from [10.25.98.39] (202.164.25.5) by MAXPR01CA0114.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:5d::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10 via Frontend Transport; Wed, 3 Nov 2021 11:29:17 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3df35c3c-9744-44cc-aed4-08d99ebd2df2
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5507:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB55074308C2018CEA782B2C81A78C9@BL0PR12MB5507.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7wtYFwBnECIDqRaXzobxUJuWd6JIC+lfL85WCLG5k4XCZiyYMsc3sfq47sxJSN9NcNAxpNnmVdgPAJLK7eb0+pXQ6kvwe3z7GpaYicr5KNgWw4SmhzGMmsIfCU9vhYWmjGNrhI8aw+YTuNvbieIsIcDUkrAl1ES2cseTBe4olkBvlpzwsH50FyhM2FnlUa74BFCtIdO/0WvKS69ltmb0kSm8K6qKfzXwi2Yj5efb7UZIegH+hZWlPyHAmh50M7S1KsooMsVetCJnj1QihrTtWEmLtx4P/qj/Y+/xDHNrdhrDSvaB1tFDo/DH7fhy70ryRJvm490Tj27eTovYYNdbQ5zjouoEDCWVKmfiuEN6hGs2OoB5eJMCDA2YLxTRZljpuyKrzHTreedYnG/GlqSr+RDcPFEuqSsuJtQ9ORXwcV7WZr/ca4l4VvpSIu7UrP098k6UKw+F+GjhxxZmDaXD1EI83T9uQnpC+W3uCBWWMDJHg88uLB9+259xIPpk+TBVOWvOrSC/6njVdi7locY1aJLp7fQiD3PlAiHFJekdZMvtwC50HLDILPFajgZyqFojbAEIp/pWHUQ8RzRZSk3NOq6R9ychdwKdkH2xvwaLy8l8QeX/zrIbwhFN8U4NBmyMjflF7VZ3iFlJuX+twli9oZTICATq8KTxkWFP7dUt1Q6Sge8L8VZyGzFdWNoBdgwVafCXn70fD/QrgaSM3eRq5EbsbylAxo1YrSE42BkpWCE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5317.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(6666004)(8936002)(4326008)(66476007)(66556008)(508600001)(66946007)(4744005)(316002)(6486002)(2616005)(38100700002)(956004)(186003)(36756003)(26005)(31696002)(31686004)(16576012)(5660300002)(2906002)(86362001)(53546011)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ejhYKzIyYklTYnNvQ09GV25uUUxGTUREWWdvUloxNWVPK2cxS0JZbU1DSG4w?=
- =?utf-8?B?QUV6MnFRc3RCZUN3cEZlL2h4N3A5cHBPYjFwcTRTb0ZOdWUyUXcyQ2YyVnhM?=
- =?utf-8?B?Uy82WU83SVUyd1BFZys3eWI0NVFUV3BnWHlqNHRheHZMblYxSWZwYnNWS2NY?=
- =?utf-8?B?M09sd0Q1N090dG4yRUNnaTJPd3ZYMEtlSjNmY1pqT1grazNiUlMzT3VtTGZz?=
- =?utf-8?B?bDBkSitmNjk2TkhRWXpkRkdXMVpKM21sUE5zRE11Zk1nWVNCTG5FVlVGSWV2?=
- =?utf-8?B?VGNPOEJVa0RtZ0tmN0pKekpCRnlxV3dVRk44c0YwZUpZc2tKb1VRZkpsWFdx?=
- =?utf-8?B?ZG1JalByd3I4dm5talFka281YzcxOVI1bnFwdkNxSVBEcGxLcWxEVE1qZUFH?=
- =?utf-8?B?ZURIZy94VFNPYWxrNlduQk9kZUM1K3hqbFZNc0RoUDZQRWRXNllxYWYwV205?=
- =?utf-8?B?ZVZ1eXZIT2Q4K2ZsTTNLNkdLZlVQUXVGWGl2WDdhQURKSFZkS0NZVFZaQXBT?=
- =?utf-8?B?bVBQTWtFazg0ZG80L3lFRGducjhRTjZ1RXdWSXh1cE5IT3EwaHJ4STB0QVlq?=
- =?utf-8?B?RW1obkpYbnE3WldYb1Z4eksxS0t1Q1ZwVkNXSys4QTVTNmZjUU4wVHMwQzhi?=
- =?utf-8?B?R3JIUytPa25Hekh3SUZwaVFUampXMWNuY2s1Mk9zVENheFhFYjhnVDJnL1Jq?=
- =?utf-8?B?NmNndVVsa3NTYW1iVXB6cFIrVzJhT0tHZEwxWDMxVHVtallTYlRPaUk4N1JF?=
- =?utf-8?B?Z2pIUlY1dGhlc1FBRXBGZ2ttWkpEcUVSRHRObjFmcGNDRTFKNVhNdXlEQjRs?=
- =?utf-8?B?YlVucGgyNGNPd3I1NWZzNVlDZVMvbW5iSVdKdTB4am1MdnRsekJNZ3FwNUNH?=
- =?utf-8?B?VEduSFdxeUREMjl0bEhrWjNlMmlOYXZURnFVcG90a0lIWGw3elRzR2grUEd2?=
- =?utf-8?B?K3BYS2x0OHczNnRVNnZrNGtlWUlESGxibEVzZkRuUTVzbXlGRXl4RmJDR1hj?=
- =?utf-8?B?UHVHaGQ5Ry9EczhQOWZ1dzdtQU9GdWN3UmlyU2NXQkorSHRZTHBUMGIvM0VS?=
- =?utf-8?B?TW96bkc3dnFaRnZCVWgvS3JSWXIzSzMvWjJRSVYwSmN5dEJUZ0laV1BuMzh5?=
- =?utf-8?B?eEtOUmcyUytoTENQZ09kcWQwVm5hTXlvSGZwczBFUER1cmRScUtRc1ZHak9X?=
- =?utf-8?B?WTUrM3RNeTNBeHJpdUUvNkNhbXFNb1ZOM0FlYnplS0YzSVJLcTEvUGcwYzcw?=
- =?utf-8?B?MEN3ak52anBHcWN0NDdEQlphY2E0Q2tlbFJ3VDFiVFlPdFRNeXViRXNxWEI3?=
- =?utf-8?B?ZWl3ckV0alpaV3F4NE9ldFhqV2xrN0wxRWdqU2tIZmtaUDV5NlJlM0NHdFk0?=
- =?utf-8?B?cjdmcXJ3OW5GWWFuV0xBNE8wa3o4MnhGWjdnOVRsNml0UmRqZVFPUDYxRWtY?=
- =?utf-8?B?RS9CaW80Z2s3em8yQlN4cmRkTVQ5Vk5EaDNlSHJwdjNJdnVKa2c0RXhEREVI?=
- =?utf-8?B?VG5tazVISG5HN1dKMU1DM0RNbGZrd1RhRXdPM003OEZlLzh1TU9FNkoxU1FT?=
- =?utf-8?B?T2V6bVhIV2xiZjRkVHlOOWZFNmN2Y2kzMElhYlFkR2x1OUhUdzgyQi9tRStP?=
- =?utf-8?B?UjZXd21LTktkODdvcWRIRVgwS3RNeDRQaDdqVU0vUElXckZySjl5dFNEWDlM?=
- =?utf-8?B?ZXRuQmo3bUxUKzR2cFFVa1B5ZkoyUDVMeGNRR0F5ZWJjbEtxd1NqSjNocDc5?=
- =?utf-8?B?bTB2cDdRblM5QncrZmJKQk04UUFVZzNHMXlXVWZrSUt0c2dRc2IwS1pLT2NV?=
- =?utf-8?B?NXJPeGFPR2gvME5GbTZ3anlyVXI4Q0psbUZBcU5XMkc0Q3kwb2FjMkhjMTVu?=
- =?utf-8?B?MVprUHJMOGVvc1MwbEpUQ0VrSGwyMWNkMWJBWG94QVhUZC9tejVQUW13d0xp?=
- =?utf-8?B?dTZMLzJoOEtNaGpVZWUyL1BybDdwNjlQRTJqQ0ZSZXIxWGtQRmFodHdBSldU?=
- =?utf-8?B?UEQzenFQL2VzRnRra0dKc2cxcFlBVEczVkRSYlIxQmR2VDBGN1B6NE9jbkt2?=
- =?utf-8?B?VVZSM3dhTEpRYUswRGxkTG9xb01IeTlGd2JZZlR1NExTdjlMUERJenlPeGhr?=
- =?utf-8?B?ZFRUYTV1WnpCNll2VU5ZU0k2dmlmc2ZTU2hLVTBVT3hLTUQvaGtZeCtHNlJG?=
- =?utf-8?Q?pJnTyXhdCyx7OzsuE5PVirs=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3df35c3c-9744-44cc-aed4-08d99ebd2df2
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5317.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2021 11:29:21.0246
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MT0IeejwDvE02VYMOFKg90vN91SHQO3hL3vgawG+S9asZQlPPzncaZXs7DGsX7XVMlI5bgdDtynBGTjFdqb/YQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5507
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 03 Nov 2021, "Yuan, Perry" <Perry.Yuan@amd.com> wrote:
+> [AMD Official Use Only]
+>
+> Hi Jani:
+>
+>> -----Original Message-----
+>> From: Jani Nikula <jani.nikula@linux.intel.com>
+>> Sent: Tuesday, November 2, 2021 4:40 PM
+>> To: Yuan, Perry <Perry.Yuan@amd.com>; Maarten Lankhorst
+>> <maarten.lankhorst@linux.intel.com>; Maxime Ripard <mripard@kernel.org>;
+>> Thomas Zimmermann <tzimmermann@suse.de>; David Airlie <airlied@linux.ie>;
+>> Daniel Vetter <daniel@ffwll.ch>
+>> Cc: dri-devel@lists.freedesktop.org; linux-kernel@vger.kernel.org; Huang,
+>> Shimmer <Xinmei.Huang@amd.com>; Huang, Ray <Ray.Huang@amd.com>
+>> Subject: RE: [PATCH v2] drm/dp: Fix aux->transfer NULL pointer dereference on
+>> drm_dp_dpcd_access
+>> 
+>> [CAUTION: External Email]
+>> 
+>> On Tue, 02 Nov 2021, "Yuan, Perry" <Perry.Yuan@amd.com> wrote:
+>> > [AMD Official Use Only]
+>> >
+>> > Hi Jani:
+>> > Thanks for your comments.
+>> >
+>> >> -----Original Message-----
+>> >> From: Jani Nikula <jani.nikula@linux.intel.com>
+>> >> Sent: Monday, November 1, 2021 9:07 PM
+>> >> To: Yuan, Perry <Perry.Yuan@amd.com>; Maarten Lankhorst
+>> >> <maarten.lankhorst@linux.intel.com>; Maxime Ripard
+>> >> <mripard@kernel.org>; Thomas Zimmermann <tzimmermann@suse.de>;
+>> David
+>> >> Airlie <airlied@linux.ie>; Daniel Vetter <daniel@ffwll.ch>
+>> >> Cc: Yuan, Perry <Perry.Yuan@amd.com>;
+>> >> dri-devel@lists.freedesktop.org; linux- kernel@vger.kernel.org;
+>> >> Huang, Shimmer <Xinmei.Huang@amd.com>; Huang, Ray
+>> <Ray.Huang@amd.com>
+>> >> Subject: Re: [PATCH v2] drm/dp: Fix aux->transfer NULL pointer
+>> >> dereference on drm_dp_dpcd_access
+>> >>
+>> >> [CAUTION: External Email]
+>> >>
+>> >> On Mon, 01 Nov 2021, Perry Yuan <Perry.Yuan@amd.com> wrote:
+>> >> > Fix below crash by adding a check in the drm_dp_dpcd_access which
+>> >> > ensures that aux->transfer was actually initialized earlier.
+>> >>
+>> >> Gut feeling says this is papering over a real usage issue somewhere
+>> >> else. Why is the aux being used for transfers before ->transfer has
+>> >> been set? Why should the dp helper be defensive against all kinds of
+>> misprogramming?
+>> >>
+>> >>
+>> >> BR,
+>> >> Jani.
+>> >>
+>> >
+>> > The issue was found by Intel IGT test suite, graphic by pass test case.
+>> > https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgitl
+>> > ab.freedesktop.org%2Fdrm%2Figt-gpu-
+>> tools&amp;data=04%7C01%7CPerry.Yuan
+>> > %40amd.com%7C83d011acfe65437c0fa808d99ddc65b0%7C3dd8961fe4884e6
+>> 08e11a8
+>> >
+>> 2d994e183d%7C0%7C0%7C637714392203200313%7CUnknown%7CTWFpbGZsb
+>> 3d8eyJWIj
+>> >
+>> oiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C100
+>> 0&am
+>> >
+>> p;sdata=snPpRYLGeJtTpNGle1YHZAvevcABbgLkgOsffiNzQPw%3D&amp;reserved
+>> =0
+>> > normally use case will not see the issue.
+>> > To avoid this issue happy again when we run the test case , it will be nice to
+>> add a check before the transfer is called.
+>> > And we can see that it really needs to have a check here to make ITG &kernel
+>> happy.
+>> 
+>> You're missing my point. What is the root cause? Why do you have the aux
+>> device or connector registered before ->transfer function is initialized. I don't
+>> think you should do that.
+>> 
+>> BR,
+>> Jani.
+>> 
+>
+> One potential IGT fix patch to resolve the test case failure is:
+>
+> tests/amdgpu/amd_bypass.c
+> 	data->pipe_crc = igt_pipe_crc_new(data->drm_fd, data->pipe_id,
+> 					 - AMDGPU_PIPE_CRC_SOURCE_DPRX);
+> 					 + INTEL_PIPE_CRC_SOURCE_AUTO);
+> The kernel panic error gone after change  "dprx" to "auto" in the IGT test.
+>
+> In my view ,the IGT amdgpu bypass test will do some common setup work including crc piple, source. 
+> When the IGT sets up a new CRC pipe capture source for amdgpu bypass test,  the SOURCE was set as "dprx" instead of "auto" 
+> It makes "amdgpu_dm_crtc_set_crc_source()"  failed to set correct  AUX and it's  transfer function invalid .
+> The system I tested use HDMI port connected to monitor .
+>
+> amdgpu_dm_crtc_set_crc_source->    (aux = (aconn->port) ? &aconn->port->aux : &aconn->dm_dp_aux.aux;)
+> 	 drm_dp_start_crc ->   
+> 		drm_dp_dpcd_readb->   aux->transfer is NULL, issue here. 
+> The fix will  use the "auto" keyword, which will let the driver select a default source of frame CRCs for this CRTC.
+>
+> Correct me if have some wrong points. 
+
+Apparently I'm completely failing to communicate my POV to you.
+
+If you have a kernel oops, the fix needs to be in the kernel, not IGT.
+
+The question is, why is it possible for IGT (or any userspace) to
+trigger AUX communication when the ->transfer function is not set? In my
+opinion, the kernel driver should not have exposed the interface at all
+if the ->transfer function is not set. The interface is useless without
+the ->transfer function. IMO, that's the bug.
 
 
-On 11/3/2021 2:20 PM, Jaroslav Kysela wrote:
-> External email: Use caution opening links or attachments
->
->
-> On 03. 11. 21 6:04, Sameer Pujar wrote:
->> This series fixes kcontrol put callback in some of the Tegra drivers
->> which are used on platforms based on Tegra210 and later. The callback
->> is expected to return 1 whenever the HW update is done.
->
-> The logic is a little bit another. The 1 means change, so you should 
-> compare
-> the register / cached value and return 1 only when a different value 
-> is set.
-> Your implementation invokes the change events for duplicate updates.
+BR,
+Jani.
 
-Sorry, I did not think the about duplicate updates. Thanks for the 
-suggestion.
+>
+> Thank you!
+> Perry.
+>
+>> 
+>> >
+>> > Perry.
+>> >
+>> >>
+>> >> >
+>> >> > BUG: kernel NULL pointer dereference, address: 0000000000000000 PGD
+>> >> > 0 P4D 0
+>> >> > Oops: 0010 [#1] SMP NOPTI
+>> >> > RIP: 0010:0x0
+>> >> > Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+>> >> > RSP: 0018:ffffa8d64225bab8 EFLAGS: 00010246
+>> >> > RAX: 0000000000000000 RBX: 0000000000000020 RCX: ffffa8d64225bb5e
+>> >> > RDX: ffff93151d921880 RSI: ffffa8d64225bac8 RDI: ffff931511a1a9d8
+>> >> > RBP: ffffa8d64225bb10 R08: 0000000000000001 R09: ffffa8d64225ba60
+>> >> > R10: 0000000000000002 R11: 000000000000000d R12: 0000000000000001
+>> >> > R13: 0000000000000000 R14: ffffa8d64225bb5e R15: ffff931511a1a9d8
+>> >> > FS: 00007ff8ea7fa9c0(0000) GS:ffff9317fe6c0000(0000)
+>> >> > knlGS:0000000000000000
+>> >> > CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> >> > CR2: ffffffffffffffd6 CR3: 000000010d5a4000 CR4: 0000000000750ee0
+>> >> > PKRU: 55555554
+>> >> > Call Trace:
+>> >> > drm_dp_dpcd_access+0x72/0x110 [drm_kms_helper]
+>> >> > drm_dp_dpcd_read+0xb7/0xf0 [drm_kms_helper]
+>> >> > drm_dp_start_crc+0x38/0xb0 [drm_kms_helper]
+>> >> > amdgpu_dm_crtc_set_crc_source+0x1ae/0x3e0 [amdgpu]
+>> >> > crtc_crc_open+0x174/0x220 [drm]
+>> >> > full_proxy_open+0x168/0x1f0
+>> >> > ? open_proxy_open+0x100/0x100
+>> >> > do_dentry_open+0x156/0x370
+>> >> > vfs_open+0x2d/0x30
+>> >> >
+>> >> > v2: fix some typo
+>> >> >
+>> >> > Signed-off-by: Perry Yuan <Perry.Yuan@amd.com>
+>> >> > ---
+>> >> >  drivers/gpu/drm/drm_dp_helper.c | 4 ++++
+>> >> >  1 file changed, 4 insertions(+)
+>> >> >
+>> >> > diff --git a/drivers/gpu/drm/drm_dp_helper.c
+>> >> > b/drivers/gpu/drm/drm_dp_helper.c index 6d0f2c447f3b..76b28396001a
+>> >> > 100644
+>> >> > --- a/drivers/gpu/drm/drm_dp_helper.c
+>> >> > +++ b/drivers/gpu/drm/drm_dp_helper.c
+>> >> > @@ -260,6 +260,10 @@ static int drm_dp_dpcd_access(struct
+>> >> > drm_dp_aux
+>> >> *aux, u8 request,
+>> >> >       msg.buffer = buffer;
+>> >> >       msg.size = size;
+>> >> >
+>> >> > +     /* No transfer function is set, so not an available DP connector */
+>> >> > +     if (!aux->transfer)
+>> >> > +             return -EINVAL;
+>> >> > +
+>> >> >       mutex_lock(&aux->hw_mutex);
+>> >> >
+>> >> >       /*
+>> >>
+>> >> --
+>> >> Jani Nikula, Intel Open Source Graphics Center
+>> 
+>> --
+>> Jani Nikula, Intel Open Source Graphics Center
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
