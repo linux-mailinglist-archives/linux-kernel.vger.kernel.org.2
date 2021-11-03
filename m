@@ -2,145 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7554444FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:54:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6A8444501
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:55:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231921AbhKCP5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 11:57:24 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:46742 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231804AbhKCP5V (ORCPT
+        id S232470AbhKCP5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 11:57:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232102AbhKCP5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 11:57:21 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id AC7971F459B4
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-To:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        kernel@collabora.com
-Subject: [RFC] tty/sysrq: Add alternative SysRq key
-Date:   Wed,  3 Nov 2021 16:54:38 +0100
-Message-Id: <20211103155438.11167-1-andrzej.p@collabora.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 3 Nov 2021 11:57:32 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6702C061714;
+        Wed,  3 Nov 2021 08:54:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OrHZfcODQam8SYKtC3Lj9MXWr83XzejExt/jJ8/GaiA=; b=kIf1jB08vxK2+2uoEHR3BYtha+
+        2o8bvNTvMsNJM16+W18FdOTHBPzWFBQL7XA9Fq9Kq7zQPai8jwq1oEIXPTDP4Akf+zpRKCJ4/2SrF
+        C3bOlxB27VecrXKlkZk8Yt53OtwohVG+PNM8znTpcwwRG+NR8rmjPUUy9jpE/GBusVUZSsz1sT6py
+        7n0bpx4CPLuvcsTr9r8/nNA47g6Ufniwbgt52lgdGr+Lv0JMiYGlJxRDFQ/C01VrkOOHcM0obKMgW
+        iF3fCoqq8pTju8mm3WHLy64p3YzZ4JLfBpvRUmHTwQ1m2PxKSjogq2aMRqBxgKiclM95b9y1sDorC
+        zYLHPfAg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1miIbC-005c6F-1n; Wed, 03 Nov 2021 15:54:50 +0000
+Date:   Wed, 3 Nov 2021 08:54:50 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH 18/21] iomap: Convert iomap_add_to_ioend to take a folio
+Message-ID: <YYKwyudsHOmPthUP@infradead.org>
+References: <20211101203929.954622-1-willy@infradead.org>
+ <20211101203929.954622-19-willy@infradead.org>
+ <YYDoMltwjNKtJaWR@infradead.org>
+ <YYGfUuItAyTNax5V@casper.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYGfUuItAyTNax5V@casper.infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There exist machines which don't have SysRq key at all, e.g. chromebooks.
+On Tue, Nov 02, 2021 at 08:28:02PM +0000, Matthew Wilcox wrote:
+> On Tue, Nov 02, 2021 at 12:26:42AM -0700, Christoph Hellwig wrote:
+> > Looking at the code not part of the context this looks fine.  But I
+> > really wonder if this (and also the blocks change above) would be
+> > better off being split into separate, clearly documented patches.
+> 
+> How do these three patches look?  I retained your R-b on all three since
+> I figured the one you offered below was good for all of them.
 
-This patch allows configuring an alternative key to act as SysRq. Devices
-which declare KEY_SYSRQ in their 'keybit' bitmap continue using KEY_SYSRQ,
-but other devices use the alternative SysRq key instead, by default F10.
-Which key is actually used can be modified with sysrq's module parameter.
+Sounds good, and the patches looks good. Minor nitpicks below:
 
-Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
----
-I'd like to resurrect an old thread regarding supporting alternative SysRq
-key for machines which don't have a physical SysRq key at all.
+> Rename end_offset to end_pos and file_offset to pos to match the
+> rest of the file.  Simplify the loop by calculating nblocks
+> up front instead of each time around the loop.
 
-The old thread:
+Might be worth mentioning why it changes the types from u64 to loff_t.
 
-https://www.spinics.net/lists/linux-input/msg67982.html
+>  	/*
+> -	 * Walk through the page to find areas to write back. If we run off the
+> -	 * end of the current map or find the current map invalid, grab a new
+> -	 * one.
+> +	 * Walk through the folio to find areas to write back. If we
+> +	 * run off the end of the current map or find the current map
+> +	 * invalid, grab a new one.
 
-I'm resending this patch, rebased onto v5.15.
+No real need for reflowing the comment, it still fits just fine even
+with the folio change.
 
-Any (new) thoughts about it?
+> Rename end_offset to end_pos and offset_into_page to poff to match the
+> rest of the file.  Simplify the handling of the last page straddling
+> i_size.
 
+... by doing the EOF check purely based on the byte granularity i_size
+instead of converting to a pgoff prematurely.
 
- drivers/tty/sysrq.c | 28 +++++++++++++++++++++++++---
- 1 file changed, 25 insertions(+), 3 deletions(-)
+> +	isize = i_size_read(inode);
+> +	end_pos = page_offset(page) + PAGE_SIZE;
+> +	if (end_pos - 1 >= isize) {
 
-diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index c911196ac893..6dd288e53ce9 100644
---- a/drivers/tty/sysrq.c
-+++ b/drivers/tty/sysrq.c
-@@ -634,6 +634,7 @@ EXPORT_SYMBOL(handle_sysrq);
- 
- #ifdef CONFIG_INPUT
- static int sysrq_reset_downtime_ms;
-+static unsigned short alternative_sysrq_key = KEY_F10;
- 
- /* Simple translation table for the SysRq keys */
- static const unsigned char sysrq_xlate[KEY_CNT] =
-@@ -653,6 +654,7 @@ struct sysrq_state {
- 	unsigned int alt_use;
- 	unsigned int shift;
- 	unsigned int shift_use;
-+	unsigned short sys
- 	bool active;
- 	bool need_reinject;
- 	bool reinjecting;
-@@ -802,10 +804,10 @@ static void sysrq_reinject_alt_sysrq(struct work_struct *work)
- 
- 		/* Simulate press and release of Alt + SysRq */
- 		input_inject_event(handle, EV_KEY, alt_code, 1);
--		input_inject_event(handle, EV_KEY, KEY_SYSRQ, 1);
-+		input_inject_event(handle, EV_KEY, sysrq->sysrq_key, 1);
- 		input_inject_event(handle, EV_SYN, SYN_REPORT, 1);
- 
--		input_inject_event(handle, EV_KEY, KEY_SYSRQ, 0);
-+		input_inject_event(handle, EV_KEY, sysrq->sysrq_key, 0);
- 		input_inject_event(handle, EV_KEY, alt_code, 0);
- 		input_inject_event(handle, EV_SYN, SYN_REPORT, 1);
- 
-@@ -845,6 +847,7 @@ static bool sysrq_handle_keypress(struct sysrq_state *sysrq,
- 			sysrq->shift = code;
- 		break;
- 
-+key_sysrq:
- 	case KEY_SYSRQ:
- 		if (value == 1 && sysrq->alt != KEY_RESERVED) {
- 			sysrq->active = true;
-@@ -867,11 +870,15 @@ static bool sysrq_handle_keypress(struct sysrq_state *sysrq,
- 		 * triggering print screen function.
- 		 */
- 		if (sysrq->active)
--			clear_bit(KEY_SYSRQ, sysrq->handle.dev->key);
-+			clear_bit(sysrq->sysrq_key, sysrq->handle.dev->key);
- 
- 		break;
- 
- 	default:
-+		/* handle non-default sysrq key */
-+		if (code == sysrq->sysrq_key)
-+			goto key_sysrq;
-+
- 		if (sysrq->active && value && value != 2) {
- 			unsigned char c = sysrq_xlate[code];
- 
-@@ -970,6 +977,14 @@ static int sysrq_connect(struct input_handler *handler,
- 	sysrq->handle.private = sysrq;
- 	timer_setup(&sysrq->keyreset_timer, sysrq_do_reset, 0);
- 
-+	if (test_bit(KEY_SYSRQ, dev->keybit)) {
-+		sysrq->sysrq_key = KEY_SYSRQ;
-+		pr_info("%s: using default sysrq key [%x]\n", dev->name, KEY_SYSRQ);
-+	} else {
-+		sysrq->sysrq_key = alternative_sysrq_key;
-+		pr_info("%s: Using alternative sysrq key: [%x]\n", dev->name, sysrq->sysrq_key);
-+	}
-+
- 	error = input_register_handle(&sysrq->handle);
- 	if (error) {
- 		pr_err("Failed to register input sysrq handler, error %d\n",
-@@ -1078,6 +1093,13 @@ module_param_array_named(reset_seq, sysrq_reset_seq, sysrq_reset_seq,
- 
- module_param_named(sysrq_downtime_ms, sysrq_reset_downtime_ms, int, 0644);
- 
-+module_param(alternative_sysrq_key, ushort, 0644);
-+MODULE_PARM_DESC(alternative_sysrq_key,
-+	"Alternative SysRq key for input devices that don't have SysRq key. F10 by default.\n"
-+	"Example\n"
-+	"Using F9 as SysRq:\n"
-+	"sysrq.alternative_sysrq_key=0x43\n");
-+
- #else
- 
- static inline void sysrq_register_handler(void)
--- 
-2.17.1
+Wouldn't this check be more obvious as:
+
+	if (end_pos > i_size) {
 
