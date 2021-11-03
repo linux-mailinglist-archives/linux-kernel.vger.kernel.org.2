@@ -2,128 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A98444A01
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 21:59:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0884449F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 21:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbhKCVCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 17:02:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
+        id S231573AbhKCVBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 17:01:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231754AbhKCVCJ (ORCPT
+        with ESMTP id S230172AbhKCVBo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 17:02:09 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2474FC061203
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 13:59:33 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id x25-20020aa79199000000b0044caf0d1ba8so2064872pfa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 13:59:33 -0700 (PDT)
+        Wed, 3 Nov 2021 17:01:44 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5301C061714;
+        Wed,  3 Nov 2021 13:59:07 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id b4so3432018pgh.10;
+        Wed, 03 Nov 2021 13:59:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=xTgBZ3aUkpRjLHk3ctQL2ILDV64FYMM7zW30pwE3cJ4=;
-        b=akVDgMvsxMWbhi2B6U5W1JyAWvr80b+nKmtmYh5ddBldjbXn8pnR93MRgqfbl/Yg8u
-         h9qAqfO9WuvAoeO2QRYK2BVdYQcVfoswThLyt49bpjeC7pYqDjBgF71Zn02G1HisLjjN
-         pnCaK7fwqUKZJjPUqQvM4OqcHWX0E2FXtUwslz/iqo846vesan85vRlxyCWHrVbFaKnf
-         T/R9hHv0w09wLdqreki5TMGUZuNnjOBAjQ03xEFl0WI+BzsVz3oCQ1a84UDB8/1zS+kp
-         6yeSfBZNhfddafNng5JrMYuXFke4Y0L0BdJYNfbOG9b21DqWNrP/eybE+D14baad7gWw
-         biFw==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9pcxuBvGjhUEmKd0khQGqkYMjXGdoop0TDNGStK9eQI=;
+        b=JKYKg8toBVT2byo8HteiLk3miwnA0QtFnEzJyBw8Gt5NkhxvEcMoZlCllzPOB63NgM
+         LmXj6EZNpMOr4Nflimx4AjPQ8dAX6PhGTwWHTGXvU1cQtCrncUGh+rmYpxowYl7R1kBJ
+         0WWPlwL/9I5wah2sPkFQSonsLi+6lZRgF/yY7nhYKqYQRcsciQnajyIvMxOySLkU9I+u
+         0V3MWRGtTK1Z0MutzTCze+QR+rG211g+zhUTe3lJnFt6FjKdixFdZXOaCgsF5tqPcyLv
+         Gw5b2mpD3H5rxn1IFm/N4ej4ULs9afxgkakSTxMb7FOsGmHvd3JIpyr6xyFKQnzN4C7R
+         2kMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=xTgBZ3aUkpRjLHk3ctQL2ILDV64FYMM7zW30pwE3cJ4=;
-        b=ybNZ/niXjPL4yzgNrTtOZT3ZWorYAffw7Q7M26oa1N4+N+QrK2ECFOPM0TmuKCjqDi
-         INsuhvVUGmNMnfAn0zKVr5HzaOANIm72OhaiFqIEMuOC+EBX1leSi9fC7YbZEE5gUFWV
-         NM1Y/wHI7oi1AICGE1i1G9z9m3VmzcAYKD0bl2tsfR6QqVDgfSHNn2Nm/DMDhnoCk0Od
-         IknVqwArQepeAY6fAkZP81bVjZgffrxrPdS6UEjA6XjAyWPJ9xop7WGTj5MNtDJ2DuPr
-         dzGJMdH2nIhfo4NFUpsNgp7dRZAmNCx0BvUHyg0erXnP1z1j7R1PQ2YCyxJPGhKr41JF
-         On2A==
-X-Gm-Message-State: AOAM530WfBQCNrXbKluFDPlkuz+X3x2z4kj4+Xmnuz1E6aVPhZ0W9lzs
-        lUYaMl6o9HPYwON05yQ98b7mE6IiXKP4
-X-Google-Smtp-Source: ABdhPJyTV8gcbr2Lf09n0IS6Yj/Yf1afXvJLecmCPatiOLW0UNzAlWHpj7qhGhk6iHCvsNEjw7LRood0Rm14
-X-Received: from vipinsh.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:36b0])
- (user=vipinsh job=sendgmr) by 2002:a17:902:6b0c:b0:13f:aaf4:3df3 with SMTP id
- o12-20020a1709026b0c00b0013faaf43df3mr41217391plk.75.1635973172641; Wed, 03
- Nov 2021 13:59:32 -0700 (PDT)
-Date:   Wed,  3 Nov 2021 20:59:11 +0000
-In-Reply-To: <20211103205911.1253463-1-vipinsh@google.com>
-Message-Id: <20211103205911.1253463-3-vipinsh@google.com>
-Mime-Version: 1.0
-References: <20211103205911.1253463-1-vipinsh@google.com>
-X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v3 2/2] KVM: Move INVPCID type check from vmx and svm to the
- common kvm_handle_invpcid()
-From:   Vipin Sharma <vipinsh@google.com>
-To:     pbonzini@redhat.com, seanjc@google.com, jmattson@google.com
-Cc:     dmatlack@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vipin Sharma <vipinsh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9pcxuBvGjhUEmKd0khQGqkYMjXGdoop0TDNGStK9eQI=;
+        b=OFHUCxGkR5nXmZLaOE95wToAcI/ot01e46Sgol1uajB/lSmGniyaYsqt93r0G1yBIt
+         zYGMidXL2zu2JuRG2kwBFTEivxKsKsG76kip9cJ+vKmyGq2ghVIw1B45eVgmrCXkwXOo
+         k9y2RJ0jU80xZCIT/e95x8vHE2OP/HFEm5E4ikPqckSS8Gq0ZgkTLJJVUvQ0k+aWC5oh
+         Cv3+WeNUQljnzMb+fj32TYVraG72kx3fayapo1iVxtiVd8TA0uPZaSA5l61JOxxqydTX
+         WZA7r+rO8obNN9jj7retQ0VDTduiO1Fcsr0Ez++FbDoeAqyRcShbaKVPR2GWHztgDEwY
+         38Qg==
+X-Gm-Message-State: AOAM531Z1PfMOwSNheEEqphwhpQ9pCgVYK1dBIiRlCOyBMkrHrcENJKT
+        3ESmNMHyFAbdeEH/+2+xxXE=
+X-Google-Smtp-Source: ABdhPJy90OawVNmed6HjBzFdRIvX8XirbPVjXZCTukl8/vQMr3evDKQWlVqaP6AANmE2qGw9WFtqtg==
+X-Received: by 2002:a62:1707:0:b0:480:f85a:f3b0 with SMTP id 7-20020a621707000000b00480f85af3b0mr30495683pfx.43.1635973147232;
+        Wed, 03 Nov 2021 13:59:07 -0700 (PDT)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id e14sm2568406pga.76.2021.11.03.13.59.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 13:59:05 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/2] drm/msm/devfreq: Add some locking asserts
+Date:   Wed,  3 Nov 2021 14:04:01 -0700
+Message-Id: <20211103210402.623099-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Handle #GP on INVPCID due to an invalid type in the common switch
-statement instead of relying on the callers (VMX and SVM) to manually
-validate the type.
+From: Rob Clark <robdclark@chromium.org>
 
-Unlike INVVPID and INVEPT, INVPCID is not explicitly documented to check
-the type before reading the operand from memory, so deferring the
-type validity check until after that point is architecturally allowed.
-
-Signed-off-by: Vipin Sharma <vipinsh@google.com>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 ---
- arch/x86/kvm/svm/svm.c | 5 -----
- arch/x86/kvm/vmx/vmx.c | 5 -----
- arch/x86/kvm/x86.c     | 3 ++-
- 3 files changed, 2 insertions(+), 11 deletions(-)
+ drivers/gpu/drm/msm/msm_gpu_devfreq.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 21bb81710e0f..ccbf96876ec6 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3119,11 +3119,6 @@ static int invpcid_interception(struct kvm_vcpu *vcpu)
- 	type = svm->vmcb->control.exit_info_2;
- 	gva = svm->vmcb->control.exit_info_1;
+diff --git a/drivers/gpu/drm/msm/msm_gpu_devfreq.c b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+index 47b3cf2df230..b24e5475cafb 100644
+--- a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
++++ b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+@@ -20,6 +20,8 @@ static int msm_devfreq_target(struct device *dev, unsigned long *freq,
+ 	struct msm_gpu *gpu = dev_to_gpu(dev);
+ 	struct dev_pm_opp *opp;
  
--	if (type > 3) {
--		kvm_inject_gp(vcpu, 0);
--		return 1;
--	}
--
- 	return kvm_handle_invpcid(vcpu, type, gva);
++	WARN_ON(!mutex_is_locked(&gpu->devfreq.devfreq->lock));
++
+ 	opp = devfreq_recommended_opp(dev, freq, flags);
+ 
+ 	/*
+@@ -63,6 +65,8 @@ static int msm_devfreq_get_dev_status(struct device *dev,
+ 	struct msm_gpu *gpu = dev_to_gpu(dev);
+ 	ktime_t time;
+ 
++	WARN_ON(!mutex_is_locked(&gpu->devfreq.devfreq->lock));
++
+ 	status->current_frequency = get_freq(gpu);
+ 	status->busy_time = gpu->funcs->gpu_busy(gpu);
+ 
+@@ -75,7 +79,11 @@ static int msm_devfreq_get_dev_status(struct device *dev,
+ 
+ static int msm_devfreq_get_cur_freq(struct device *dev, unsigned long *freq)
+ {
+-	*freq = get_freq(dev_to_gpu(dev));
++	struct msm_gpu *gpu = dev_to_gpu(dev);
++
++	WARN_ON(!mutex_is_locked(&gpu->devfreq.devfreq->lock));
++
++	*freq = get_freq(gpu);
+ 
+ 	return 0;
  }
- 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index e41d207e3298..a3bb9854f4d2 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -5505,11 +5505,6 @@ static int handle_invpcid(struct kvm_vcpu *vcpu)
- 	gpr_index = vmx_get_instr_info_reg2(vmx_instruction_info);
- 	type = kvm_register_read(vcpu, gpr_index);
- 
--	if (type > 3) {
--		kvm_inject_gp(vcpu, 0);
--		return 1;
--	}
--
- 	/* According to the Intel instruction reference, the memory operand
- 	 * is read even if it isn't needed (e.g., for type==all)
- 	 */
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index ac83d873d65b..134585027e92 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -12443,7 +12443,8 @@ int kvm_handle_invpcid(struct kvm_vcpu *vcpu, unsigned long type, gva_t gva)
- 		return kvm_skip_emulated_instruction(vcpu);
- 
- 	default:
--		BUG(); /* We have already checked above that type <= 3 */
-+		kvm_inject_gp(vcpu, 0);
-+		return 1;
- 	}
- }
- EXPORT_SYMBOL_GPL(kvm_handle_invpcid);
 -- 
-2.33.1.1089.g2158813163f-goog
+2.31.1
 
