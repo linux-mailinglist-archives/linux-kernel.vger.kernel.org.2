@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A0B443DF7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:04:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6C1443DF8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 09:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbhKCIGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 04:06:35 -0400
+        id S231542AbhKCIG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 04:06:58 -0400
 Received: from m43-7.mailgun.net ([69.72.43.7]:48157 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230025AbhKCIGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 04:06:34 -0400
+        id S230025AbhKCIG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 04:06:56 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1635926638; h=Content-Type: MIME-Version: Message-ID: Date:
- References: In-Reply-To: Subject: Cc: To: From: Sender;
- bh=/FkqchVfdJSfuR6s2AopchaoLWi2TO8wM4NLBqQNehg=; b=HWrLMsKlbp2Eljw/2/B96vcncpxtHGivIeKsvXexMQCgLCVgjx+Pn5vUmfkUjcUSpqam+U96
- XSZS4gKUVpHTSkmcm/wfi78n3ShmbEcf7AVfFmUdePic7rRsusmzkmdVcWT8YkWhqPrPC4T9
- LZQYrmrebJOUi16bWNN0Z23x5ng=
+ s=smtp; t=1635926660; h=Message-ID: Subject: Cc: To: From: Date:
+ Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
+ bh=gLabg9dnu7ENWtsjLV9PI0QK0WezW8DIKrgVSftBrfo=; b=F2FDFOwCbByzZqn7BuhSal6w1LYyt41s2oOYKJFpJsV/7NmXhO1t5Mp300hL47XLHAePIpjf
+ m9IrQz4qk7q3rUYympNOqbOIT4jWgj9Q6pP/iL5TnSDCv6LvXQNfwFtNjERKwnp6cxRHZT0J
+ Tc61BDhjD4qMBYS4Kdxplb3sRMI=
 X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 6182426d545d7d365f7cb88d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Nov 2021 08:03:57
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 61824283883b2746f7e3de8a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Nov 2021 08:04:19
  GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Sender: tjiang=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2588FC43618; Wed,  3 Nov 2021 08:03:55 +0000 (UTC)
+        id F15D9C4360D; Wed,  3 Nov 2021 08:04:18 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1893DC4338F;
-        Wed,  3 Nov 2021 08:03:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 1893DC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Benjamin Li <benl@squareup.com>, kbuild-all@lists.01.org,
-        ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [kvalo-ath:pending 53/53] drivers/net/wireless/ath/wcn36xx/txrx.c:275:42: error: variable 'sband' set but not used
-In-Reply-To: <202111022135.B8TpALyf-lkp@intel.com> (kernel test robot's
-        message of "Tue, 2 Nov 2021 21:56:46 +0800")
-References: <202111022135.B8TpALyf-lkp@intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-Date:   Wed, 03 Nov 2021 10:03:47 +0200
-Message-ID: <875yt9sm1o.fsf@codeaurora.org>
+        (Authenticated sender: tjiang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 67AC1C4360C;
+        Wed,  3 Nov 2021 08:04:18 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 03 Nov 2021 16:04:18 +0800
+From:   tjiang@codeaurora.org
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
+Subject: [PATCH v1] Bluetooth: btusb: correct nvm file name for WCN6855 btsoc
+Message-ID: <6953ba78cc31b7bc1a188b998f6c6b8c@codeaurora.org>
+X-Sender: tjiang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel test robot <lkp@intel.com> writes:
+As we name nvm file by using big-endian for boardID, so align host with 
+it.
 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-> head:   1619f62ef8c1766f887eeef36f4d03f01c16b4c9
-> commit: 1619f62ef8c1766f887eeef36f4d03f01c16b4c9 [53/53] wcn36xx: fix RX BD rate mapping for 5GHz legacy rates
-> config: arc-allyesconfig (attached as .config)
-> compiler: arceb-elf-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?id=1619f62ef8c1766f887eeef36f4d03f01c16b4c9
->         git remote add kvalo-ath https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
->         git fetch --no-tags kvalo-ath pending
->         git checkout 1619f62ef8c1766f887eeef36f4d03f01c16b4c9
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=arc 
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    drivers/net/wireless/ath/wcn36xx/txrx.c: In function 'wcn36xx_rx_skb':
->>> drivers/net/wireless/ath/wcn36xx/txrx.c:275:42: error: variable 'sband' set but not used [-Werror=unused-but-set-variable]
->      275 |         struct ieee80211_supported_band *sband;
->          |                                          ^~~~~
->    cc1: all warnings being treated as errors
+Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+---
+  drivers/bluetooth/btusb.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
-This is a warning in the pending branch. I'll drop this version,
-Benjamin please fix the warning in v2.
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 46d892bbde62..572d64524cf3 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -3072,7 +3072,7 @@ static void btusb_generate_qca_nvm_name(char 
+*fwname, size_t max_size,
+  	u16 flag = le16_to_cpu(ver->flag);
 
+  	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+-		u16 board_id = le16_to_cpu(ver->board_id);
++		u16 board_id = be16_to_cpu(ver->board_id);
+  		const char *variant;
+
+  		switch (le32_to_cpu(ver->ram_version)) {
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum, a Linux Foundation Collaborative Project
