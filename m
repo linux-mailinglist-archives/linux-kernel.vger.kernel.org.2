@@ -2,91 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8358444AFD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 00:03:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2EFB444B1F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 00:05:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhKCXGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 19:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34042 "EHLO
+        id S231293AbhKCXHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 19:07:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbhKCXGc (ORCPT
+        with ESMTP id S231305AbhKCXHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 19:06:32 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA03C061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 16:03:55 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id m26so3941225pff.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 16:03:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NS4eT639BOwvF4y/0Jri0aipGFDU+GOyeNwMYhJ1CsI=;
-        b=ty211RcINhjstR5hvJ6vOlvNuK2U2UPclVemOWPNOv+RZAnKeJopU68QRFe2L/JRUl
-         8hLDX/IT6xv6UQFfBLJEAwwvXgdwfIZg7UBEu+oqaHI1BZNUx3fnTTGpbUV3Wsf9ZUy4
-         7miviuW++N0oDU+/ilKbv3A9RXQBqTYTnJ+AHkUqMw9x4s6U7q/iWZg55uuma9Jc+AF5
-         00NRbWmxAhmnB5rJwtCEGAjFoZQkplzh0QqClwj1K5VgdpOVRTF9Cnc93VnqKj7XPVkn
-         Jq8f0PZ3taqfiQCW+kJb+B5xz35AiXMMwesxd2L1YevFsWcStkK+HPZAX5b70bGCJG/3
-         Amfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NS4eT639BOwvF4y/0Jri0aipGFDU+GOyeNwMYhJ1CsI=;
-        b=K7wRF0+4sSo/WP9Aqr2EJUyQpdJxpdbeqO6Bf8fqqLXPNRatezXgcdyaFlcyGeFOfh
-         fM6CKtNfb4qzT04HYAYzT/Ib3CcUhbkBXzDWZ4kgzBmEP9XyXCyBElV1hpU+ntOQPGrs
-         gRZHzNI6tPLcYUKuOa1OCZdLKkDtW7H7KVONy3lv8tAajFUOan7BXHMclyJv8dZQEq1i
-         pZEQiUR48zX1L4aBiMCEzfoqgxI1tu6G76eQbDKWp0cP5PGBBgdH0Qpe0HOmfs4+1oYc
-         n//3NB634XrbQQ0hnrSFddBPbRFQsQ35+3kQt3nAcJR9Lv0RpdYoQ9A8ItqVGBnHjj29
-         FWqA==
-X-Gm-Message-State: AOAM531ps3txo2mouA4KHCkpL1lKGQXBzFak5viDvWAQrxbVnATdxwoR
-        22RSrbdJ/56yM6AYt1SQWfgIeQ==
-X-Google-Smtp-Source: ABdhPJz2SB8By8BJklvuj+Exd4PWOudvGfWoAsy72NJgERh9sYTaGsqL7TUqf2f9ujv2zJAok/v6FA==
-X-Received: by 2002:a63:6f4c:: with SMTP id k73mr35716833pgc.61.1635980635076;
-        Wed, 03 Nov 2021 16:03:55 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id r25sm2584900pge.61.2021.11.03.16.03.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 16:03:54 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     linux-watchdog@vger.kernel.org, linux-mediatek@lists.infradead.org
-Cc:     Fabien Parent <fparent@baylibre.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] watchdog: Kconfig: enable MTK watchdog
-Date:   Wed,  3 Nov 2021 16:03:53 -0700
-Message-Id: <20211103230354.915658-1-khilman@baylibre.com>
-X-Mailer: git-send-email 2.33.0
+        Wed, 3 Nov 2021 19:07:36 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C3CC06127A;
+        Wed,  3 Nov 2021 16:04:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=Xd6YuCyb18cjuJyRwo9MyHD/mPo5oA5yl/m0ZXil8Xw=; b=CLzatVB7Y4MA5599zxHd7h+OOU
+        odqO2uUKW1KKAL9CO4igmOm2Q+MtV10TKt7tZy8Lrr09GscZI8U3VCnFlgcuybE4PBMl+0jmA29IV
+        6rGcpBrRuijy7HswKJBDhcBu1rNozvpu8bH2vTYt5Db0t6/yqWrzBZMlJ0nqSu9keFvg19MtXT5u+
+        1pWUciagWYdIqvtc4WYGlZYrB7PcczGEUsSPkkwTIvoJE1Cpxu6O0lV5qt5rOg+ZCLl3/QtpmSvSn
+        bGupuRWJ3IWs5YiyTXTIB/AoSyAEGGu5HNVoIIdEUoB6AFqwMeMf3SybCCNgXabBmIRNT/igJ3HN9
+        BJMApGQQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1miPJ8-006seD-EU; Wed, 03 Nov 2021 23:04:38 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
+        dan.j.williams@intel.com, vishal.l.verma@intel.com,
+        dave.jiang@intel.com, ira.weiny@intel.com, richard@nod.at,
+        miquel.raynal@bootlin.com, vigneshr@ti.com, efremov@linux.com,
+        song@kernel.org, martin.petersen@oracle.com, hare@suse.de,
+        jack@suse.cz, ming.lei@redhat.com, tj@kernel.org, mcgrof@kernel.org
+Cc:     linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 00/14] last set for add_disk() error handling
+Date:   Wed,  3 Nov 2021 16:04:23 -0700
+Message-Id: <20211103230437.1639990-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable CONFIG_MEDIATEK_WATCHDOG when ARCH_MEDIATEK is enabled.
+Jens,
 
-On some platforms (e.g. mt8183-pumpkin), watchdog is enabled by
-bootloader, so kernel driver needs to be enabled to avoid watchdog
-firing and causing reboot part way through kernel boot.
+as requested, I've folded all pending changes into this series. This
+v5 pegs on Christoph's reviewed-by tags and since I was respinning I
+modified the ataprobe and floppy driver changes as he suggested.
 
-Signed-off-by: Kevin Hilman <khilman@baylibre.com>
----
- drivers/watchdog/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+I think this is it. The world of floppy has been exciting for v5.16.
 
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index bf59faeb3de1..00bebbb8f877 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -836,6 +836,7 @@ config MESON_WATCHDOG
- config MEDIATEK_WATCHDOG
- 	tristate "Mediatek SoCs watchdog support"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
-+	default ARCH_MEDIATEK
- 	select WATCHDOG_CORE
- 	select RESET_CONTROLLER
- 	help
+This goes based on your axboe/for-next tree as of just a few minutes ago.
+
+Luis Chamberlain (13):
+  nvdimm/btt: use goto error labels on btt_blk_init()
+  nvdimm/btt: add error handling support for add_disk()
+  nvdimm/blk: avoid calling del_gendisk() on early failures
+  nvdimm/blk: add error handling support for add_disk()
+  nvdimm/pmem: cleanup the disk if pmem_release_disk() is yet assigned
+  nvdimm/pmem: use add_disk() error handling
+  z2ram: add error handling support for add_disk()
+  block/sunvdc: add error handling support for add_disk()
+  mtd/ubi/block: add error handling support for add_disk()
+  block: update __register_blkdev() probe documentation
+  ataflop: address add_disk() error handling on probe
+  floppy: address add_disk() error handling on probe
+  block: add __must_check for *add_disk*() callers
+
+Tetsuo Handa (1):
+  ataflop: remove ataflop_probe_lock mutex
+
+ block/genhd.c           | 11 +++++---
+ drivers/block/ataflop.c | 61 +++++++++++++++++++++++++----------------
+ drivers/block/floppy.c  | 17 +++++++++---
+ drivers/block/sunvdc.c  | 14 ++++++++--
+ drivers/block/z2ram.c   |  7 +++--
+ drivers/mtd/ubi/block.c |  8 +++++-
+ drivers/nvdimm/blk.c    | 21 ++++++++++----
+ drivers/nvdimm/btt.c    | 20 +++++++++-----
+ drivers/nvdimm/pmem.c   | 21 ++++++++++----
+ include/linux/genhd.h   |  6 ++--
+ 10 files changed, 127 insertions(+), 59 deletions(-)
+
 -- 
 2.33.0
 
