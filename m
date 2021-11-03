@@ -2,106 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67B8444261
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:26:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4060444267
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 14:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbhKCN26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 09:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231838AbhKCN24 (ORCPT
+        id S231598AbhKCNbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 09:31:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21439 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231151AbhKCNbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 09:28:56 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FE0C061203
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 06:26:20 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1miGHI-0002Ee-AK; Wed, 03 Nov 2021 14:26:08 +0100
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1miGHH-0005GD-Vr; Wed, 03 Nov 2021 14:26:07 +0100
-Date:   Wed, 3 Nov 2021 14:26:07 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>
-Cc:     Robin van der Gracht <robin@protonic.nl>,
-        Oleksij Rempel <linux@rempel-privat.de>, kernel@pengutronix.de,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2 3/3] can: j1939: j1939_tp_cmd_recv(): check the
- dst address of TP.CM_BAM
-Message-ID: <20211103132607.GM20681@pengutronix.de>
-References: <1635431907-15617-1-git-send-email-zhangchangzhong@huawei.com>
- <1635431907-15617-4-git-send-email-zhangchangzhong@huawei.com>
+        Wed, 3 Nov 2021 09:31:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635946123;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vMS7oHTgkCX9bZnQFpsagj1XvoC8N4CL6QUvFHOk+a8=;
+        b=i2bIqlkLnuPVdga5hr47NSrK+LSYRSo7WMsr9Dmj85BLYoz5FbDmTjkF2uJruei6NRMlsR
+        8R0xXjvpvNzzVPC9thkotC3Afz/cV2TzdcXFM9uEvgEPhZxLgfJNqilLXGQShlc7/Q0enn
+        cbzZwBjBaClTB6dhKC229uHcEq/RTZ4=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-leNfwVcoOmWFX54w5pVblg-1; Wed, 03 Nov 2021 09:28:42 -0400
+X-MC-Unique: leNfwVcoOmWFX54w5pVblg-1
+Received: by mail-wm1-f71.google.com with SMTP id v5-20020a1cac05000000b0032ccf04ba2cso2760514wme.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 06:28:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=vMS7oHTgkCX9bZnQFpsagj1XvoC8N4CL6QUvFHOk+a8=;
+        b=0lGdPjwl/spm7S29yoaw2D5ho9s+dxcVGDkxN0/7n05TOJA9ui+KpWZFoV6p+Zi5D4
+         oIT12o5Yh4jo+X1OubC3UBlSTIk4rGBdacuAASFVhuXmDP1mG+en3uHQy/OlZqqFaHVf
+         8ibyBnd1hzlAvo4UXtGZwSykeM5PULJnqUDwPbEvWCp7kJ5gdREFOzV4VwPMSQUigLLP
+         XFjFjwpE7hce2q9C4PLCt4vsVzYMM8rKLkJkpIq8+624rYN4bz1OZ20+1rWzg1FACsHn
+         xuTEluYXqpKBg7j9QBGZzbla8h2ul/FsEulPrGB0WVUV9SAu3x5LjUbb8oETfiAzAOk8
+         iz7g==
+X-Gm-Message-State: AOAM5319CRV1UvThLPf+siLv8BDQniPrQo3E5lRizONK6TWk4enRvY6U
+        jT23E+gwKiW2YtRotP/wHsfA1K9RanqoXG4ocoPOb1OmH58JcesPz8zbEB/mCpzUtdwCJgtnsuz
+        utWnl8me3uBhghssYuWWrP/vK
+X-Received: by 2002:a5d:604b:: with SMTP id j11mr33657972wrt.22.1635946121421;
+        Wed, 03 Nov 2021 06:28:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzJRal0gtOcYhkrlX+fWSK/Zij8Wr/Lzf7bKrSPyKYcdDmszMmp1xspWaMgtBwrJ5oXebJcsw==
+X-Received: by 2002:a5d:604b:: with SMTP id j11mr33657952wrt.22.1635946121250;
+        Wed, 03 Nov 2021 06:28:41 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id y7sm1917658wrw.55.2021.11.03.06.28.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 06:28:40 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [PATCH v2] KVM: x86: inhibit APICv when KVM_GUESTDBG_BLOCKIRQ
+ active
+In-Reply-To: <20211103094255.426573-1-mlevitsk@redhat.com>
+References: <20211103094255.426573-1-mlevitsk@redhat.com>
+Date:   Wed, 03 Nov 2021 14:28:39 +0100
+Message-ID: <871r3xnzaw.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1635431907-15617-4-git-send-email-zhangchangzhong@huawei.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 14:24:54 up 258 days, 16:48, 133 users,  load average: 0.03, 0.17,
- 0.25
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 10:38:27PM +0800, Zhang Changzhong wrote:
-> The TP.CM_BAM message must be sent to the global address [1], so add a
-> check to drop TP.CM_BAM sent to a non-global address.
-> 
-> Without this patch, the receiver will treat the following packets as
-> normal RTS/CTS tranport:
-> 18EC0102#20090002FF002301
-> 18EB0102#0100000000000000
-> 18EB0102#020000FFFFFFFFFF
-> 
-> [1] SAE-J1939-82 2015 A.3.3 Row 1.
-> 
-> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Maxim Levitsky <mlevitsk@redhat.com> writes:
 
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-
+> KVM_GUESTDBG_BLOCKIRQ relies on interrupts being injected using
+> standard kvm's inject_pending_event, and not via APICv/AVIC.
+>
+> Since this is a debug feature, just inhibit it while it
+> is in use.
+>
+> Fixes: 61e5f69ef0837 ("KVM: x86: implement KVM_GUESTDBG_BLOCKIRQ")
+>
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 > ---
->  net/can/j1939/transport.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index 05eb3d0..a271688 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
-> @@ -2023,6 +2023,11 @@ static void j1939_tp_cmd_recv(struct j1939_priv *priv, struct sk_buff *skb)
->  		extd = J1939_ETP;
->  		fallthrough;
->  	case J1939_TP_CMD_BAM:
-> +		if (cmd == J1939_TP_CMD_BAM && !j1939_cb_is_broadcast(skcb)) {
-> +			netdev_err_once(priv->ndev, "%s: BAM to unicast (%02x), ignoring!\n",
-> +					__func__, skcb->addr.sa);
-> +			return;
-> +		}
->  		fallthrough;
->  	case J1939_TP_CMD_RTS:
->  		if (skcb->addr.type != extd)
-> -- 
-> 2.9.5
-> 
-> 
+>  arch/x86/include/asm/kvm_host.h | 1 +
+>  arch/x86/kvm/svm/avic.c         | 3 ++-
+>  arch/x86/kvm/vmx/vmx.c          | 3 ++-
+>  arch/x86/kvm/x86.c              | 3 +++
+>  4 files changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 88fce6ab4bbd7..8f6e15b95a4d8 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1034,6 +1034,7 @@ struct kvm_x86_msr_filter {
+>  #define APICV_INHIBIT_REASON_IRQWIN     3
+>  #define APICV_INHIBIT_REASON_PIT_REINJ  4
+>  #define APICV_INHIBIT_REASON_X2APIC	5
+> +#define APICV_INHIBIT_REASON_BLOCKIRQ	6
+>  
+>  struct kvm_arch {
+>  	unsigned long n_used_mmu_pages;
+> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+> index 8052d92069e01..affc0ea98d302 100644
+> --- a/arch/x86/kvm/svm/avic.c
+> +++ b/arch/x86/kvm/svm/avic.c
+> @@ -904,7 +904,8 @@ bool svm_check_apicv_inhibit_reasons(ulong bit)
+>  			  BIT(APICV_INHIBIT_REASON_NESTED) |
+>  			  BIT(APICV_INHIBIT_REASON_IRQWIN) |
+>  			  BIT(APICV_INHIBIT_REASON_PIT_REINJ) |
+> -			  BIT(APICV_INHIBIT_REASON_X2APIC);
+> +			  BIT(APICV_INHIBIT_REASON_X2APIC) |
+> +			  BIT(APICV_INHIBIT_REASON_BLOCKIRQ);
+>  
+>  	return supported & BIT(bit);
+>  }
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 71f54d85f104c..e4fc9ff7cd944 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7565,7 +7565,8 @@ static void hardware_unsetup(void)
+>  static bool vmx_check_apicv_inhibit_reasons(ulong bit)
+>  {
+>  	ulong supported = BIT(APICV_INHIBIT_REASON_DISABLE) |
+> -			  BIT(APICV_INHIBIT_REASON_HYPERV);
+> +			  BIT(APICV_INHIBIT_REASON_HYPERV) |
+> +			  BIT(APICV_INHIBIT_REASON_BLOCKIRQ);
+>  
+>  	return supported & BIT(bit);
+>  }
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index ac83d873d65b0..dccf927baa4dd 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10747,6 +10747,9 @@ int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
+>  	if (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP)
+>  		vcpu->arch.singlestep_rip = kvm_get_linear_rip(vcpu);
+>  
+> +	kvm_request_apicv_update(vcpu->kvm,
+> +				 !(vcpu->guest_debug & KVM_GUESTDBG_BLOCKIRQ),
+> +				 APICV_INHIBIT_REASON_BLOCKIRQ);
+>  	/*
+>  	 * Trigger an rflags update that will inject or remove the trace
+>  	 * flags.
+
+This fixes the problem for me!
+
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Vitaly
+
