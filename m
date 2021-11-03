@@ -2,237 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B8944468D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:03:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66275444694
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233068AbhKCRGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 13:06:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31467 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232993AbhKCRGW (ORCPT
+        id S233092AbhKCRG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 13:06:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233061AbhKCRGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 13:06:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635959025;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iALKWz7fDkZsU62EssTnquti0Gvmi5hHXmrOsumThGI=;
-        b=K77NKgyq5X9yk31m3a+JT9UY1jUnZk0ivBSTTv29k39vliLji87DRHGp7OZYsnxuEOWBdI
-        WH32rrHmWC8DlInUE+S0/S6UmlUC7E4x+NgGUsf5JBM9992RgM4Ei7CorKSdQjHo9j7DJ1
-        r3MmaJLOP82Kg45du7ecxuv7YJ0AW1k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-339-92m5k-6BMo6Q7tz5_18yeQ-1; Wed, 03 Nov 2021 13:03:42 -0400
-X-MC-Unique: 92m5k-6BMo6Q7tz5_18yeQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 47B43EC1A2;
-        Wed,  3 Nov 2021 17:03:40 +0000 (UTC)
-Received: from starship (unknown [10.40.194.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 89A5776608;
-        Wed,  3 Nov 2021 17:03:34 +0000 (UTC)
-Message-ID: <8b5300db2a95cad42116dc5bbd05637271f31a38.camel@redhat.com>
-Subject: Re: [PATCH v5 3/7] nSVM: rename nested_load_control_from_vmcb12 in
- nested_copy_vmcb_control_to_cache
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Wed, 3 Nov 2021 13:06:51 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33EEBC061714;
+        Wed,  3 Nov 2021 10:04:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=u8Z/qqIhbDRh0Z9lXwnrC3LA7dcBQsND+N8bG1R6OJY=; b=y4OqgbyNItZScy80WmoDdm0cDF
+        Hur9oxkdvGoWlTSYEZhGzRfh8TUCRw2KlvesxH1ijn4vJrQysX66/7ncAQIRjEB3PPA08Q3jVLAyL
+        Vl2aYcsKvgiWt8J98lSUZ3hTC89wTmKEYw+YStjFwNCckDUlpOHTD3HRUgxb5Q0ybem/+K57J6QD9
+        jnz+lUXFm854hfwfO/X2yNEUkW2b/ul9t4CY2/cfytY6un/2jKt9BKcQfhRym+LGnKfkznUroDC3d
+        fTDyUjO5c+Qi3Ro58kWOo4rL/LxsnyKe5Ype/4xV2WIxGWE3qf+w4BOh6O5Gk9HpMF4x93iMXn1wu
+        oaos+0RQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1miJfy-005tqu-Dd; Wed, 03 Nov 2021 17:03:50 +0000
+Date:   Wed, 3 Nov 2021 10:03:50 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     axboe@kernel.dk, penguin-kernel@i-love.sakura.ne.jp,
+        dan.j.williams@intel.com, vishal.l.verma@intel.com,
+        dave.jiang@intel.com, ira.weiny@intel.com, richard@nod.at,
+        miquel.raynal@bootlin.com, vigneshr@ti.com, efremov@linux.com,
+        song@kernel.org, martin.petersen@oracle.com, hare@suse.de,
+        jack@suse.cz, ming.lei@redhat.com, tj@kernel.org,
+        linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Date:   Wed, 03 Nov 2021 19:03:33 +0200
-In-Reply-To: <20211103140527.752797-4-eesposit@redhat.com>
-References: <20211103140527.752797-1-eesposit@redhat.com>
-         <20211103140527.752797-4-eesposit@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+Subject: Re: [PATCH v2 12/13] block: make __register_blkdev() return an error
+Message-ID: <YYLA9g0cYBsEFZkm@bombadil.infradead.org>
+References: <20211103122157.1215783-1-mcgrof@kernel.org>
+ <20211103122157.1215783-13-mcgrof@kernel.org>
+ <20211103160933.GK31562@lst.de>
+ <YYK8hY/giSBFN8YJ@bombadil.infradead.org>
+ <20211103170049.GA4108@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211103170049.GA4108@lst.de>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-11-03 at 10:05 -0400, Emanuele Giuseppe Esposito wrote:
-> Following the same naming convention of the previous patch,
-> rename nested_load_control_from_vmcb12.
-> In addition, inline copy_vmcb_control_area as it is only called
-> by this function.
+On Wed, Nov 03, 2021 at 06:00:49PM +0100, Christoph Hellwig wrote:
+> On Wed, Nov 03, 2021 at 09:44:53AM -0700, Luis Chamberlain wrote:
+> > Here's the thing, prober call a form of add_disk(), and so do we want
+> > to always ignore the errors on probe? If so we should document why that
+> > is sane then. I think this approach is a bit more sane though.
 > 
-> _nested_copy_vmcb_control_to_cache() works with vmcb_control_area
-> parameters and it will be useful in next patches, when we use
-> local variables instead of svm cached state.
-
-Tiny nitpick: usually when we have a patch which intends to just move/rename
-things around, and should generate exact same machine code other
-that some inlining/optimizations/etc, we usually mark this with
-'No functional change intended', so that it is easier to spot
-a mistake which only slighlty changes something.
-
-
-The patch itself looks good.
-
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-
+> I suspect the right thing is to just kill of ->probe.
 > 
-> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
-> ---
->  arch/x86/kvm/svm/nested.c | 80 +++++++++++++++++++--------------------
->  arch/x86/kvm/svm/svm.c    |  2 +-
->  arch/x86/kvm/svm/svm.h    |  4 +-
->  3 files changed, 43 insertions(+), 43 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> index ea64fea371c8..162b338a6c74 100644
-> --- a/arch/x86/kvm/svm/nested.c
-> +++ b/arch/x86/kvm/svm/nested.c
-> @@ -163,37 +163,6 @@ void recalc_intercepts(struct vcpu_svm *svm)
->  	vmcb_set_intercept(c, INTERCEPT_VMSAVE);
->  }
->  
-> -static void copy_vmcb_control_area(struct vmcb_control_area *dst,
-> -				   struct vmcb_control_area *from)
-> -{
-> -	unsigned int i;
-> -
-> -	for (i = 0; i < MAX_INTERCEPT; i++)
-> -		dst->intercepts[i] = from->intercepts[i];
-> -
-> -	dst->iopm_base_pa         = from->iopm_base_pa;
-> -	dst->msrpm_base_pa        = from->msrpm_base_pa;
-> -	dst->tsc_offset           = from->tsc_offset;
-> -	/* asid not copied, it is handled manually for svm->vmcb.  */
-> -	dst->tlb_ctl              = from->tlb_ctl;
-> -	dst->int_ctl              = from->int_ctl;
-> -	dst->int_vector           = from->int_vector;
-> -	dst->int_state            = from->int_state;
-> -	dst->exit_code            = from->exit_code;
-> -	dst->exit_code_hi         = from->exit_code_hi;
-> -	dst->exit_info_1          = from->exit_info_1;
-> -	dst->exit_info_2          = from->exit_info_2;
-> -	dst->exit_int_info        = from->exit_int_info;
-> -	dst->exit_int_info_err    = from->exit_int_info_err;
-> -	dst->nested_ctl           = from->nested_ctl;
-> -	dst->event_inj            = from->event_inj;
-> -	dst->event_inj_err        = from->event_inj_err;
-> -	dst->nested_cr3           = from->nested_cr3;
-> -	dst->virt_ext              = from->virt_ext;
-> -	dst->pause_filter_count   = from->pause_filter_count;
-> -	dst->pause_filter_thresh  = from->pause_filter_thresh;
-> -}
-> -
->  static bool nested_svm_vmrun_msrpm(struct vcpu_svm *svm)
->  {
->  	/*
-> @@ -317,15 +286,46 @@ static bool nested_vmcb_valid_sregs(struct kvm_vcpu *vcpu,
->  	return true;
->  }
->  
-> -void nested_load_control_from_vmcb12(struct vcpu_svm *svm,
-> -				     struct vmcb_control_area *control)
-> +static
-> +void _nested_copy_vmcb_control_to_cache(struct vmcb_control_area *to,
-> +					struct vmcb_control_area *from)
->  {
-> -	copy_vmcb_control_area(&svm->nested.ctl, control);
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < MAX_INTERCEPT; i++)
-> +		to->intercepts[i] = from->intercepts[i];
-> +
-> +	to->iopm_base_pa        = from->iopm_base_pa;
-> +	to->msrpm_base_pa       = from->msrpm_base_pa;
-> +	to->tsc_offset          = from->tsc_offset;
-> +	to->tlb_ctl             = from->tlb_ctl;
-> +	to->int_ctl             = from->int_ctl;
-> +	to->int_vector          = from->int_vector;
-> +	to->int_state           = from->int_state;
-> +	to->exit_code           = from->exit_code;
-> +	to->exit_code_hi        = from->exit_code_hi;
-> +	to->exit_info_1         = from->exit_info_1;
-> +	to->exit_info_2         = from->exit_info_2;
-> +	to->exit_int_info       = from->exit_int_info;
-> +	to->exit_int_info_err   = from->exit_int_info_err;
-> +	to->nested_ctl          = from->nested_ctl;
-> +	to->event_inj           = from->event_inj;
-> +	to->event_inj_err       = from->event_inj_err;
-> +	to->nested_cr3          = from->nested_cr3;
-> +	to->virt_ext            = from->virt_ext;
-> +	to->pause_filter_count  = from->pause_filter_count;
-> +	to->pause_filter_thresh = from->pause_filter_thresh;
-> +
-> +	/* Copy asid here because nested_vmcb_check_controls will check it.  */
-> +	to->asid           = from->asid;
-> +	to->msrpm_base_pa &= ~0x0fffULL;
-> +	to->iopm_base_pa  &= ~0x0fffULL;
-> +}
->  
-> -	/* Copy it here because nested_svm_check_controls will check it.  */
-> -	svm->nested.ctl.asid           = control->asid;
-> -	svm->nested.ctl.msrpm_base_pa &= ~0x0fffULL;
-> -	svm->nested.ctl.iopm_base_pa  &= ~0x0fffULL;
-> +void nested_copy_vmcb_control_to_cache(struct vcpu_svm *svm,
-> +				       struct vmcb_control_area *control)
-> +{
-> +	_nested_copy_vmcb_control_to_cache(&svm->nested.ctl, control);
->  }
->  
->  static void _nested_copy_vmcb_save_to_cache(struct vmcb_save_area_cached *to,
-> @@ -691,7 +691,7 @@ int nested_svm_vmrun(struct kvm_vcpu *vcpu)
->  	if (WARN_ON_ONCE(!svm->nested.initialized))
->  		return -EINVAL;
->  
-> -	nested_load_control_from_vmcb12(svm, &vmcb12->control);
-> +	nested_copy_vmcb_control_to_cache(svm, &vmcb12->control);
->  	nested_copy_vmcb_save_to_cache(svm, &vmcb12->save);
->  
->  	if (!nested_vmcb_valid_sregs(vcpu, &vmcb12->save) ||
-> @@ -1438,7 +1438,7 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
->  	svm->nested.vmcb12_gpa = kvm_state->hdr.svm.vmcb_pa;
->  
->  	svm_copy_vmrun_state(&svm->vmcb01.ptr->save, save);
-> -	nested_load_control_from_vmcb12(svm, ctl);
-> +	nested_copy_vmcb_control_to_cache(svm, ctl);
->  
->  	svm_switch_vmcb(svm, &svm->nested.vmcb02);
->  	nested_vmcb02_prepare_control(svm);
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 6e5c2671e823..74d6db9017ea 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -4437,7 +4437,7 @@ static int svm_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
->  	 */
->  
->  	vmcb12 = map.hva;
-> -	nested_load_control_from_vmcb12(svm, &vmcb12->control);
-> +	nested_copy_vmcb_control_to_cache(svm, &vmcb12->control);
->  	nested_copy_vmcb_save_to_cache(svm, &vmcb12->save);
->  	ret = enter_svm_guest_mode(vcpu, vmcb12_gpa, vmcb12, false);
->  
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 0897551d8868..a0609fe2e68c 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -502,8 +502,8 @@ int nested_svm_check_exception(struct vcpu_svm *svm, unsigned nr,
->  int nested_svm_exit_special(struct vcpu_svm *svm);
->  void nested_svm_update_tsc_ratio_msr(struct kvm_vcpu *vcpu);
->  void svm_write_tsc_multiplier(struct kvm_vcpu *vcpu, u64 multiplier);
-> -void nested_load_control_from_vmcb12(struct vcpu_svm *svm,
-> -				     struct vmcb_control_area *control);
-> +void nested_copy_vmcb_control_to_cache(struct vcpu_svm *svm,
-> +				       struct vmcb_control_area *control);
->  void nested_copy_vmcb_save_to_cache(struct vcpu_svm *svm,
->  				    struct vmcb_save_area *save);
->  void nested_sync_control_from_vmcb02(struct vcpu_svm *svm);
+> The only thing it supports is pre-devtmpfs, pre-udev semantics that
+> want to magically create disks when their pre-created device node
+> is accesses.
 
+That sounds like a possible userspace impact? And so not for v5.16 for
+sure.
 
+> But if we don't remove it, yes I think not reporting
+> the error is best.  Just clean up whatever local resources were set
+> up in the ->probe method and let the open fail without the need of
+> passing on the actual error.
+
+Alright, I'll do that and send a final v3 for the last 2 patches.
+
+  Luis
