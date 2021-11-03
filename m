@@ -2,162 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAFA6443B7F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 03:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 282F8443B98
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 03:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231352AbhKCCrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Nov 2021 22:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhKCCrH (ORCPT
+        id S230049AbhKCCvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Nov 2021 22:51:42 -0400
+Received: from smtpcmd11117.aruba.it ([62.149.156.117]:33873 "EHLO
+        smtpcmd11117.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230008AbhKCCvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Nov 2021 22:47:07 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC69C061714;
-        Tue,  2 Nov 2021 19:44:32 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id l15so1698032oie.8;
-        Tue, 02 Nov 2021 19:44:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=cL6u9895NSZTZOeZgFQofwNy409f1x1M+KuZz4xRj4U=;
-        b=mxG1TktwRrsKRDbub3sFNRLnMExnCSubzzZ2/QIruPaEIwG9PdVLRov/5VNr6X8BD0
-         Wr/OwRzSiSjRfmW5gwiX6x3RlgL2IhHZTNGnY4UesP7cbtLAkCzqpuGli2XdFkio2CTM
-         A85yyX0R3LMsVdkawvt4BbZLDaUSMPV/vQ5sdvIrEKguEcztckHEZigOyualJ/W/1eTQ
-         7wp7VRCEb/wgvpEMtz8t6Ow1Mws1Q/t37aZLHhUcANp/J+43I7NdQoWkXufOvHmPfKBe
-         dhRKtd6VCVe4ixstfyia+BBKk2FWUonbW1JQgTzJXvspBNf7JsBoWerDjJ/x2kgtLdWx
-         2c7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=cL6u9895NSZTZOeZgFQofwNy409f1x1M+KuZz4xRj4U=;
-        b=klZm5hyzfQfp3RYe73kUUQKU7GDMLp0ay6xqeKuwBMvzSlMqoXTkzcLUn8++nABliG
-         2VzexC6NTley6qHIx+I8UTLhUwST0YJyex6CqeSWtbsu9rBmqkdHoOD0CL6aTSWP3h1X
-         nWV9moFAhau5iNFzdwjC/svUo6xelpVDm2/b5qld9rCoQVW7H1GiQk2tXWyXUzSMAg2k
-         70kiWQbjuPbc+NZmPd/ag/xO/Rk+vy0scYYapIgtu7q/kevb8bXsgvxfLcFJ5zh77/pA
-         dNIXtPq1faJBm/lKPvsPKffwnPJe1Zpn3eI5+gjIBg47hmbQ4/2QqCrOJExq/IQ45roB
-         gtXA==
-X-Gm-Message-State: AOAM53219gGew0ufETlj8/PnTqFRBHktqjRxH4hsiFkA2VtnPNwYkypK
-        BsBMzxDOP2DbtKPYP0fE0is=
-X-Google-Smtp-Source: ABdhPJzISGebWubSHi3AkRuopPQ2C+KWhyezGClxf6GuEATRD33F95in2Di213SnjnQWU7PlWk1HSA==
-X-Received: by 2002:aca:b9c5:: with SMTP id j188mr8298845oif.104.1635907471267;
-        Tue, 02 Nov 2021 19:44:31 -0700 (PDT)
-Received: from [172.16.0.2] ([8.48.134.30])
-        by smtp.googlemail.com with ESMTPSA id k26sm214615otp.42.2021.11.02.19.44.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Nov 2021 19:44:30 -0700 (PDT)
-Message-ID: <37c1a2c7-3bfa-d36d-075f-a0065b8a05c1@gmail.com>
-Date:   Tue, 2 Nov 2021 20:44:28 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH v2 12/25] tcp: ipv6: Add AO signing for
- tcp_v6_send_response
-Content-Language: en-US
-To:     Leonard Crestez <cdleonard@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yuchung Cheng <ycheng@google.com>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Christoph Paasch <cpaasch@apple.com>,
-        Ivan Delalande <colona@arista.com>,
-        Priyaranjan Jha <priyarjha@google.com>, netdev@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1635784253.git.cdleonard@gmail.com>
- <f9ff27ecc4aabd8ed89d5dfe5195c9cda1e7dc9f.1635784253.git.cdleonard@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-In-Reply-To: <f9ff27ecc4aabd8ed89d5dfe5195c9cda1e7dc9f.1635784253.git.cdleonard@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Tue, 2 Nov 2021 22:51:36 -0400
+Received: from smtpclient.apple ([146.241.216.221])
+        by Aruba Outgoing Smtp  with ESMTPA
+        id i6KdmWeslumo4i6KdmXOCm; Wed, 03 Nov 2021 03:48:58 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1635907738; bh=vn0en0EIlHgkPwPZZERx136vgq1/nmIMJ6ZT4dkZqag=;
+        h=Content-Type:From:Mime-Version:Subject:Date:To;
+        b=J9naTf+IAohR2xOuGFgEzMfooC6CT8nvH3rCcxEWgk4ynOkf9Na/5Aqb8CB1TYo6O
+         E72mOAH0K6Haxm+L3WXrEe/q9WMjDSlZd5pngARGRVwsq1+tUy5onszIqxfCDTHDSw
+         FJqY5awdjZXgfm/Z33r99rSTvYbfrSaei0yvkgo895UNDUgzzsfwvlsL4GZT5zf8g4
+         mlgBpKAQEB6xb/Nih89L56sQBD2benwgBCFHMJXdhbWd1w9XRNB2i+f+KJ5UaLAXax
+         xyAM63MAPZlAmH/xCTEiZZWeY0G7t6TrNo2hUg29dncGJPIvgBy6Z765r06VGFHqS3
+         /ZU34wbBbftfA==
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH 08/13] dt-bindings: serial: fsl-lpuart: add i.MXRT compatible
+Date:   Wed, 3 Nov 2021 03:48:54 +0100
+Message-Id: <D0A3E11F-FEDE-4B2D-90AB-63DFC245A935@benettiengineering.com>
+References: <CAL_JsqJR6EfDsmwPmXxgdaC1GB7CLGYpjmDnOkD_f53Frsq6LA@mail.gmail.com>
+Cc:     Jesse Taube <mr.bossman075@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        SoC Team <soc@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        Anson Huang <b20788@freescale.com>,
+        Fugang Duan <fugang.duan@nxp.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+In-Reply-To: <CAL_JsqJR6EfDsmwPmXxgdaC1GB7CLGYpjmDnOkD_f53Frsq6LA@mail.gmail.com>
+To:     Rob Herring <robh@kernel.org>
+X-Mailer: iPhone Mail (18H17)
+X-CMAE-Envelope: MS4wfATmIMv5GA3j34nA+iOgc1h+7L3tNW3abl9oCE6PZB8OMXI5H3mb85Frc03sGYy21FlO+oJkV4yTBbwgW5Rj/0du+RvtJQeN4d3pTWoUGmPhXXFYvLcV
+ QNuPaJZ09aPj0+mshEem7c3H/dDtmBF6Js+GbUpl3X77ZVu54p7RysYHkjD72LZmj1H9nrKMau+2FU6gAH8OfwkJcqu+K/QuRnCIGQyGPr3XRSCMWIAeXcnh
+ 14cBS5S+yv55Rx3kGkl8t/GASJe4FVaWXcwh2TmSlklGOJv0BnitVeN15pb+g3w02oFJrUgKwPJ60fOGTuEBSmuaWhDSUp0BnITKWVtU8NWjCdg22E/rK3ua
+ UvuthcK4Gt+pMHdeNuelu7OQNeUa4osFW/xmS2SqnXAjQ/zXPIoKDZ9wYTW69+lVlUjcEQaQSIL5cDlAWhgyLYe58s0lVB+PUteYTjf5XPopnlNbF4BlhSUn
+ 1703ZYebBfSnDYcMuwywTgcke/l6oZOuiSXUAER9Kw+NQDUTm6vTA1zd63V6/2mI8V6fIuErDfUgGhwidKoWGZgy8w0lMux5lnPF152l3b+t+PRXsgoo8Fup
+ vyE5oPOG87RvxafyxS+PGYtiDRSgb5g6gBK+6HKCBnCITIepAP0MxaYELLdoZIxHd2jQNXlyEXbPoapsLfCN839NHGj5xtHTF+RdCX6xRJLv7QbeBGv2lxdk
+ WQuMJJl1glCO71l/9HImQMgssA4qHKsCwrUS4eVH4UwdhuKJRRfzXYZJNepCANMb5jUUomkTVI3BMVMYPLFcPn2lylrtW6uuvCzwHaPbLJuHEchajyGi9mPy
+ cNs/j1wljxUbrkXF2DSbjxuGxED1hrUDrV4auoDE5lUYgSroodiTneWziQtrRVB/JzYl4C6iYazCH18QbLDLZc0W24SBjADnoy2c3JaRoN05Me4ZYOFsc4Lp
+ Rc/MtcuLY1/6kPE7+x4/Pu0oLxAPRi9gvMjOAn+TcU4p3/lAW2Cj8/Kzy9ZtRUlfltDpjFZJDqdxAgCh7oCj9sIreifIVrSwfCx6JcENijeCT6gpQ4OzTaxq
+ mwcnYVUpvxOA21nMdUUvMEJlVoadyglqlr9tgcp/tZNlXbX2jPakmS1Bx/8Q/gOFJTP6kTQF5NkXBVxbUWxgSoRnllcDGy2LlCt2WmbbdKWGh7d8jt98gwJD
+ czQA9XU4BZVnndLpD6YTF4YbKlfBqXsPIzN57bT3ahyvfyxxMEVyQ+no+RY503EiVcfZf3vMJa6jb/9lw3xxrA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/21 10:34 AM, Leonard Crestez wrote:
-> diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
-> index 96a29caf56c7..68f9545e4347 100644
-> --- a/net/ipv6/tcp_ipv6.c
-> +++ b/net/ipv6/tcp_ipv6.c
-> @@ -902,13 +902,37 @@ static void tcp_v6_send_response(const struct sock *sk, struct sk_buff *skb, u32
->  	struct sock *ctl_sk = net->ipv6.tcp_sk;
->  	unsigned int tot_len = sizeof(struct tcphdr);
->  	__be32 mrst = 0, *topt;
->  	struct dst_entry *dst;
->  	__u32 mark = 0;
-> +#ifdef CONFIG_TCP_AUTHOPT
-> +	struct tcp_authopt_info *authopt_info = NULL;
-> +	struct tcp_authopt_key_info *authopt_key_info = NULL;
-> +	u8 authopt_rnextkeyid;
-> +#endif
->  
->  	if (tsecr)
->  		tot_len += TCPOLEN_TSTAMP_ALIGNED;
-> +#ifdef CONFIG_TCP_AUTHOPT
+Hello Rob, Jesse, All,
 
-I realize MD5 is done this way, but new code can always strive to be
-better. Put this and the one below in helpers such that this logic is in
-the authopt.h file and the intrusion here is a one liner that either
-compiles in or out based on the config setting.
+> Il giorno 3 nov 2021, alle ore 01:49, Rob Herring <robh@kernel.org> ha scr=
+itto:
+>=20
+> =EF=BB=BFOn Mon, Nov 1, 2021 at 6:34 PM Jesse Taube <mr.bossman075@gmail.c=
+om> wrote:
+>>=20
+>>=20
+>>=20
+>>> On 11/1/21 16:13, Rob Herring wrote:
+>>> On Sun, Oct 24, 2021 at 11:40:22AM -0400, Jesse Taube wrote:
+>>>> Add i.MXRT documentation for compatible string.
+>>>>=20
+>>>> Cc: Giulio Benetti <giulio.benetti@benettiengineering.com>
+>>>> Signed-off-by: Jesse Taube <Mr.Bossman075@gmail.com>
+>>>> ---
+>>>> Documentation/devicetree/bindings/serial/fsl-lpuart.yaml | 1 +
+>>>> 1 file changed, 1 insertion(+)
+>>>>=20
+>>>> diff --git a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml b=
+/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
+>>>> index a90c971b4f1f..4b4340def2aa 100644
+>>>> --- a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
+>>>> +++ b/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
+>>>> @@ -21,6 +21,7 @@ properties:
+>>>>           - fsl,ls1028a-lpuart
+>>>>           - fsl,imx7ulp-lpuart
+>>>>           - fsl,imx8qm-lpuart
+>>>> +          - fsl,imxrt-lpuart
+>>>=20
+>>> Actually, 'rt' is not a single part is it? If the variations are same
+>>> die, but fused off then no need to distinguish. Otherwise, these should
+>>> be SoC specific.
+>>>=20
+>> I don't exactly know what "but fused off" means I would assume
+>> disconnected but on-die?
+>=20
+> Right. Or not pinned out is another possibility.
+>=20
+>> The imxrtxxx is a series that has the same UART
+>> controller across them. Should I add ACK?
+>=20
+> Looking at the errata docs briefly, there's at least 2 die as some of
+> the errata docs give the mask id. So they aren't necessarily 'the
+> same'.
 
-> +	/* Key lookup before SKB allocation */
-> +	if (static_branch_unlikely(&tcp_authopt_needed) && sk) {
-> +		if (sk->sk_state == TCP_TIME_WAIT)
-> +			authopt_info = tcp_twsk(sk)->tw_authopt_info;
-> +		else
-> +			authopt_info = rcu_dereference(tcp_sk(sk)->authopt_info);
-> +
-> +		if (authopt_info) {
-> +			authopt_key_info = __tcp_authopt_select_key(sk, authopt_info, sk,
-> +								    &authopt_rnextkeyid);
-> +			if (authopt_key_info) {
-> +				tot_len += TCPOLEN_AUTHOPT_OUTPUT;
-> +				/* Don't use MD5 */
-> +				key = NULL;
-> +			}
-> +		}
-> +	}
-> +#endif
->  #ifdef CONFIG_TCP_MD5SIG
->  	if (key)
->  		tot_len += TCPOLEN_MD5SIG_ALIGNED;
->  #endif
->  
-> @@ -961,10 +985,24 @@ static void tcp_v6_send_response(const struct sock *sk, struct sk_buff *skb, u32
->  		tcp_v6_md5_hash_hdr((__u8 *)topt, key,
->  				    &ipv6_hdr(skb)->saddr,
->  				    &ipv6_hdr(skb)->daddr, t1);
->  	}
->  #endif
-> +#ifdef CONFIG_TCP_AUTHOPT
-> +	/* Compute the TCP-AO mac. Unlike in the ipv4 case we have a real SKB */
-> +	if (static_branch_unlikely(&tcp_authopt_needed) && authopt_key_info) {
-> +		*topt++ = htonl((TCPOPT_AUTHOPT << 24) |
-> +				(TCPOLEN_AUTHOPT_OUTPUT << 16) |
-> +				(authopt_key_info->send_id << 8) |
-> +				(authopt_rnextkeyid));
-> +		tcp_authopt_hash((char *)topt,
-> +				 authopt_key_info,
-> +				 authopt_info,
-> +				 (struct sock *)sk,
-> +				 buff);
-> +	}
-> +#endif
->  
->  	memset(&fl6, 0, sizeof(fl6));
->  	fl6.daddr = ipv6_hdr(skb)->saddr;
->  	fl6.saddr = ipv6_hdr(skb)->daddr;
->  	fl6.flowlabel = label;
-> 
+Thank you for pointing, we=E2=80=99ve missed this particular.
+
+> You want the compatible strings to be specific enough to handle
+> any differences or errata. If you only care about the imxrt1050, then
+> I'd just use that and move on.
+
+We plan to add from imxrt1020 to imxrt1170 and eventual new SoC, so we defin=
+itely need separate
+.compatible strings.
+
+@Jesse, can you please update with =E2=80=98fsl,imxrt1050=E2=80=9D?
+
+> Otherwise, maybe someone from NXP wants
+> to comment?
+
+Any NXP comment is welcome!
+
+Best regards
+Giulio Benetti
+Benetti engineering sas
+
+>=20
+> Rob
 
