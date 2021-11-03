@@ -2,197 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181054448CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:15:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC08F4448D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 20:18:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231251AbhKCTSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 15:18:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhKCTSO (ORCPT
+        id S230199AbhKCTUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 15:20:43 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:37974 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229697AbhKCTUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 15:18:14 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A7FC061203
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 12:15:38 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id v65so4129798ioe.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 12:15:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zvN8Wx3cerlS5kndbX104hKLH3gFaS6msaaX+fbSIaA=;
-        b=sn/PLQIBmfI06w/WOGfSjv9Kw13j3swiXnsEhqgCbHbteMIUbCOen4UyZk0AH6wWkN
-         1IEIFq5KLrsfJ2vFFB03I0IsLZJ3JX06eusxHqxIXlIbbh2gBJB2ILDk+KUJQFyAmexf
-         uRPiqcTti8SZbHRBQPMCfp5tI16Y+UuyXeiTdP9hdG8LLMUPgUqQcmP1Afl5ijYH6dlw
-         Tt3gYdC0zn2cteKEyCdxxc0CMv7mUfSu0TAW93Y5J894XHqwomsaHv3udZdWMj48Agpx
-         d/4Pw/YNf6ct+1vVYr0RpRpk64LD/B6UHvCDqr9fdH/d82D9Jr1G1E1FR+vJlY2JQGMM
-         gc0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zvN8Wx3cerlS5kndbX104hKLH3gFaS6msaaX+fbSIaA=;
-        b=7EZg5WQ8G9DZW+0VDEVB2tFF8CHHhCMpUZsBBF8stKdwDGbIJ0WibVQDegw8JqOrrl
-         m/Air2dQvJwlr0sHV5/WJNvCtB+TD6TJ253A15wcNreEMxGHYNtG/4VSPN5bfvATrN0z
-         04fqWyE9aW7YuBngkGhLR/W51nP79E2t8Yd4cxRsRnaIpsjeMKvD+rrpDwyI/rKCnxfJ
-         Yol33cKqp/e4+7TfZlGOd/HcTAPaPu5YJ3CmYaQMouF+1l+zzR2HCttbK6JnC3etHAOP
-         SBsu3O9B8m7Nb9qIzw9duK0YUB8i30x58iqs5f/qHAbPJuqZdgzSPqXfSI/drL1AJjx9
-         Vy7g==
-X-Gm-Message-State: AOAM532bqZwBQwClz7vqfUS8lgJ5cgCjfjZjBEdbQj6CSqDBTISteZrz
-        2gZpsbpGTi07YbvXX+qtvTVVBEwV/tbPDRJpvPy0lQ==
-X-Google-Smtp-Source: ABdhPJxudaSAmjjQlGS3xDDYyZVrcKdBo6oXuNr/UTLcuIJ4p6l1tEQvNCUjaVtRr9WFf7YDMvYVtdF5ogAif4lLXsA=
-X-Received: by 2002:a05:6602:2d88:: with SMTP id k8mr22838002iow.18.1635966937329;
- Wed, 03 Nov 2021 12:15:37 -0700 (PDT)
+        Wed, 3 Nov 2021 15:20:42 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:33588)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1miLls-00DxQz-FN; Wed, 03 Nov 2021 13:18:04 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:54326 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1miLlr-00C4qx-1b; Wed, 03 Nov 2021 13:18:04 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20211103163039.2104830-1-keescook@chromium.org>
+        <87lf253x1c.fsf@disp2133> <202111031139.80CE97C532@keescook>
+Date:   Wed, 03 Nov 2021 14:17:56 -0500
+In-Reply-To: <202111031139.80CE97C532@keescook> (Kees Cook's message of "Wed,
+        3 Nov 2021 11:40:23 -0700")
+Message-ID: <871r3xyrob.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20211013174604.747276-1-irogers@google.com> <YXAINnEcHsy450zm@krava>
- <CAP-5=fVCqisvy8-Obx9TA3Zgi_BJdefYr-g4LCsuy1KKb2xtBQ@mail.gmail.com>
- <CAP-5=fXGvBY7hmvCAS7deNAYVxppYj9DZoxstJ93p68BHTSACw@mail.gmail.com> <YXvmtrBKV7eawT7h@krava>
-In-Reply-To: <YXvmtrBKV7eawT7h@krava>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 3 Nov 2021 12:15:23 -0700
-Message-ID: <CAP-5=fWLY2cF97P0oiMpnLzKjBJ-tC_jRyRNicSHjx6m73KrWg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/22] Start aligning perf test with kunit style
-To:     Jiri Olsa <jolsa@redhat.com>,
-        Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        David Gow <davidgow@google.com>, eranian@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-XM-SPF: eid=1miLlr-00C4qx-1b;;;mid=<871r3xyrob.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19nUrYSaq7CXOROhJQdhgL44ZtdIJWIAUE=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMNoVowels,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4195]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Kees Cook <keescook@chromium.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 462 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 12 (2.5%), b_tie_ro: 10 (2.2%), parse: 1.14
+        (0.2%), extract_message_metadata: 18 (3.8%), get_uri_detail_list: 1.69
+        (0.4%), tests_pri_-1000: 22 (4.8%), tests_pri_-950: 1.36 (0.3%),
+        tests_pri_-900: 1.08 (0.2%), tests_pri_-90: 177 (38.2%), check_bayes:
+        173 (37.5%), b_tokenize: 6 (1.2%), b_tok_get_all: 5 (1.1%),
+        b_comp_prob: 2.2 (0.5%), b_tok_touch_all: 157 (33.9%), b_finish: 0.94
+        (0.2%), tests_pri_0: 218 (47.2%), check_dkim_signature: 0.56 (0.1%),
+        check_dkim_adsp: 2.8 (0.6%), poll_dns_idle: 0.51 (0.1%), tests_pri_10:
+        2.0 (0.4%), tests_pri_500: 7 (1.6%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 0/2] selftests/seccomp: Report event mismatches more clearly
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 5:19 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Thu, Oct 28, 2021 at 04:52:13PM -0700, Ian Rogers wrote:
-> > On Wed, Oct 20, 2021 at 8:51 AM Ian Rogers <irogers@google.com> wrote:
-> > >
-> > > On Wed, Oct 20, 2021 at 5:14 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > >
-> > > > On Wed, Oct 13, 2021 at 10:45:42AM -0700, Ian Rogers wrote:
-> > > > > Perf test uses its own structs and code layout that differs from =
-kunit
-> > > > > that was more recently introduced to the kernel. Besides consiste=
-ncy,
-> > > > > it is hoped that moving in the direction of kunit style will enab=
-le
-> > > > > reuse of infrastructure like test output formatting for continuou=
-s
-> > > > > testing systems. For example:
-> > > > > https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn=
-6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
-> > > > >
-> > > > > The motivation for this restructuring comes from wanting to be ab=
-le to
-> > > > > tag tests with a size:
-> > > > > https://lore.kernel.org/linux-perf-users/CAP-5=3DfWmGyuqFKc-EMP3r=
-bmTkjZ3MS+YSajGZfeRMc38HS82gw@mail.gmail.com/
-> > > > > To have more exhaustive and slower running tests.  This isn't
-> > > > > something kunit currently supports, nor is the execution of pytho=
-n and
-> > > > > shell tests, but it seems sensible to work on an approach with ku=
-nit
-> > > > > rather to invent a new wheel inside of perf.
-> > > > >
-> > > > > These initial patches are just refactoring the main test suite
-> > > > > definitions to be in a more kunit style. Kunit isn't depended upo=
-n, it
-> > > > > is hoped that this can be done in later patches for the sake of
-> > > > > consistency.
-> > > > >
-> > > > > v2. Gets to a point of the perf test test suite/case structs bein=
-g
-> > > > >     close facsimiles of the kunit ones. It also addresses feedbac=
-k on
-> > > > >     the v1 RFC, in particular from Jiri Olsa <jolsa@redhat.com>.
-> > > >
-> > > > hi,
-> > > > when I compile with DEBUG=3D1 it's ok, but with just make:
-> > > >
-> > > > [root@krava perf]# ./perf test
-> > > > Segmentation fault (core dumped)
-> > > > [root@krava perf]# gdb ./perf
-> > > > GNU gdb (GDB) Fedora 10.2-4.fc33
-> > > > Copyright (C) 2021 Free Software Foundation, Inc.
-> > > > License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses=
-/gpl.html>
-> > > > This is free software: you are free to change and redistribute it.
-> > > > There is NO WARRANTY, to the extent permitted by law.
-> > > > Type "show copying" and "show warranty" for details.
-> > > > This GDB was configured as "x86_64-redhat-linux-gnu".
-> > > > Type "show configuration" for configuration details.
-> > > > For bug reporting instructions, please see:
-> > > > <https://www.gnu.org/software/gdb/bugs/>.
-> > > > Find the GDB manual and other documentation resources online at:
-> > > >     <http://www.gnu.org/software/gdb/documentation/>.
-> > > >
-> > > > For help, type "help".
-> > > > Type "apropos word" to search for commands related to "word"...
-> > > > Reading symbols from ./perf...
-> > > > (gdb) r test
-> > > > Starting program: /home/jolsa/kernel/linux-perf/tools/perf/perf tes=
-t
-> > > > [Thread debugging using libthread_db enabled]
-> > > > Using host libthread_db library "/lib64/libthread_db.so.1".
-> > > >
-> > > > Program received signal SIGSEGV, Segmentation fault.
-> > > > __strlen_avx2 () at ../sysdeps/x86_64/multiarch/strlen-avx2.S:96
-> > > > 96              VPCMPEQ (%rdi), %ymm0, %ymm1
-> > > > Missing separate debuginfos, use: dnf debuginfo-install bzip2-libs-=
-1.0.8-4.fc33.x86_64 cyrus-sasl-lib-2.1.27-6.fc33.x86_64 elfutils-debuginfod=
--client-0.185-2.fc33.x86_64 elfutils-libelf-0.185-2.fc33.x86_64 elfutils-li=
-bs-0.185-2.fc33.x86_64 keyutils-libs-1.6.1-1.fc33.x86_64 krb5-libs-1.18.2-3=
-1.fc33.x86_64 libbabeltrace-1.5.8-3.fc33.x86_64 libbrotli-1.0.9-3.fc33.x86_=
-64 libcap-2.48-2.fc33.x86_64 libcom_err-1.45.6-4.fc33.x86_64 libgcc-10.3.1-=
-1.fc33.x86_64 libidn2-2.3.2-1.fc33.x86_64 libnghttp2-1.43.0-1.fc33.x86_64 l=
-ibpsl-0.21.1-2.fc33.x86_64 libselinux-3.1-2.fc33.x86_64 libssh-0.9.6-1.fc33=
-.x86_64 libunistring-0.9.10-9.fc33.x86_64 libunwind-1.4.0-4.fc33.x86_64 lib=
-uuid-2.36.1-1.fc33.x86_64 libxcrypt-4.4.26-2.fc33.x86_64 numactl-libs-2.0.1=
-4-1.fc33.x86_64 openldap-2.4.50-5.fc33.x86_64 openssl-libs-1.1.1l-2.fc33.x8=
-6_64 pcre-8.44-2.fc33.x86_64 perl-libs-5.32.1-471.fc33.x86_64 popt-1.18-2.f=
-c33.x86_64 python2.7-2.7.18-15.fc33.x86_64 slang-2.3.2-8.fc33.x86_64 xz-lib=
-s-5.2.5-4.fc33.x86_64 zlib-1.2.11-23.fc33.x86_64
-> > > > (gdb) bt
-> > > > #0  __strlen_avx2 () at ../sysdeps/x86_64/multiarch/strlen-avx2.S:9=
-6
-> > > > #1  0x00000000004a3848 in __cmd_test (skiplist=3D0x0, argv=3D0x7fff=
-ffffd6c0, argc=3D0) at tests/builtin-test.c:150
-> > > > #2  cmd_test (argc=3D0, argv=3D0x7fffffffd6c0) at tests/builtin-tes=
-t.c:628
-> > > > #3  0x00000000004cc47b in run_builtin (p=3Dp@entry=3D0xa7cda8 <comm=
-ands+552>, argc=3Dargc@entry=3D1, argv=3Dargv@entry=3D0x7fffffffd6c0) at pe=
-rf.c:313
-> > > > #4  0x00000000004397ae in handle_internal_command (argv=3D0x7ffffff=
-fd6c0, argc=3D1) at perf.c:365
-> > > > #5  run_argv (argv=3D<synthetic pointer>, argcp=3D<synthetic pointe=
-r>) at perf.c:409
-> > > > #6  main (argc=3D1, argv=3D0x7fffffffd6c0) at perf.c:539
-> > > > (gdb)
-> > >
-> > > Thanks, I'll take a look.
-> >
-> > I wasn't able to reproduce this, I tried with gcc-10 on each patch
-> > individually, debug disabled and O3. I can send a v3 patch set, but
-> > currently it is just a rebase of v2.
->
-> ok, I'll try to debug that if I can still reproduce
->
-> jirka
+Kees Cook <keescook@chromium.org> writes:
 
-Thanks to Sohaib I have a reproduction now, and it looks like there
-are a bunch of issues to fix in v3.
+> On Wed, Nov 03, 2021 at 01:37:51PM -0500, Eric W. Biederman wrote:
+>> Kees Cook <keescook@chromium.org> writes:
+>> 
+>> > Hi,
+>> >
+>> > This expands the seccomp selftests slightly to add additional debug
+>> > reporting detail and a new "immediate fatal SIGSYS under tracing" test.
+>> > I expect to be taking these via my seccomp tree.
+>> 
+>> Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+>> 
+>> I am a little fuzzy on the details but I understand what and why
+>> you are testing (I broken it).  So this is my 10,000 foot ack.
+>
+> Thanks! Yeah, and the other tests did catch it, but it was kind of a
+> "side effect", so I added the specific "direct" case where it can be
+> seen more clearly.
 
-Thanks,
-Ian
+Hey.  Did you happen to understand the bit about racing with sigaction?
+
+As much as I care about not braking ptrace.  What really decided me was
+the on SA_IMMUTABLE was closing the race with sigaction changing the
+signal handler.  Especially for something like seccomp.
+
+It is a race so probably very fickle to write a test for, but if we can
+figure out how to write a reliable test I expect it will be a good idea.
+Do you have any ideas?
+
+I am concerned there is some threaded program somewhere using seccomp
+that is allowed to call sigaction, can use sigaction to keep from
+being killed (before I send the fix to Linus). 
+
+Eric
+
