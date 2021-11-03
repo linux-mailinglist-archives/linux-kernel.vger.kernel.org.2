@@ -2,100 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392EF443CC0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 06:33:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E832443CC5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 06:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbhKCFgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 01:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbhKCFgF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 01:36:05 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDE3C06120A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Nov 2021 22:33:29 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id s189-20020a252cc6000000b005c1f206d91eso2548186ybs.14
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Nov 2021 22:33:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=4wxVF/UA81bHWpJF1BL34JMLRn0mSFTIFUNKVwG9QEw=;
-        b=Ihx+IrzfR2aW4Ou0bbTr4U5Qrc6b3DU33j64hUzTZbKmXBZb7VIJtx0FIrIyhDWqlG
-         IEw0ijFDvKCgKMHPtyc5DysiVhYAHqDkIE7Yf7QaC5fg2QCg4VkjYhYTFX7u7GvzM4Wd
-         SM0KsvnTRNolYrWnmJ1EEGebyu9VcwzlZBWFcX4kF4590eGElny1s3tetr5boLe6BZvz
-         5DnjaTYkYrnocu5f70QxcVG9Dus42cfuwz1975+U8t/DgQw/fQqxhghILBscIHLZlCQU
-         eVfCS36EEKQZ0x0BjLjZsh+mUaDnvDEINbkOO4grMpATgEkSTBw7KmFUHfKkaIwQDN+3
-         0sQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=4wxVF/UA81bHWpJF1BL34JMLRn0mSFTIFUNKVwG9QEw=;
-        b=YVbctfz3MAzFXis3GBHPz3eJUXKiq+Xv0H/D98J6f4u7j31kNTZM/SXN9ZUUE3Y+gD
-         WPKmjtboYNF/JIuUTSjX+4X3BSBTGWdpFcZm2NA2eFWBLjD7+GFWFsHnsb7iG5wZJp8E
-         zJ3suTD7xwpFbkMeSvle9/NALZqvTS1pCx2Nx14sKcSRXEb24pfV9kI6huR9e2Wot74F
-         WYZj1FDgfmQ/ZhyJLRGmwdwigIxp384mPkvCvAP4lTeCzchPfSEbkNeX1AcCXVw6Tu2Z
-         MCi/IktU0elpBI2biWlR5h8ygKfhkSfmjsz8YxzCemZRr3WGKQJzA52Uj73AcA9WyjPM
-         6enQ==
-X-Gm-Message-State: AOAM533Yg/SsmBCbB6CC02QUVn4D6Ps6stI5nFLtXwR8SjGixe2dHzaj
-        kPJPSYiavgIUVXFIuU9IAAfbeC7AGuqO
-X-Google-Smtp-Source: ABdhPJyxMd+VMAKgNb3yje1nfRoE5XJsNYWwKr2u4DrGOxfpm6OJpKMkQz3gmxEIkptTp0PoU/Yuud9UeefO
-X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:10:7af7:a937:5810:b542])
- (user=apusaka job=sendgmr) by 2002:a25:7146:: with SMTP id
- m67mr45521192ybc.353.1635917608988; Tue, 02 Nov 2021 22:33:28 -0700 (PDT)
-Date:   Wed,  3 Nov 2021 13:33:15 +0800
-In-Reply-To: <20211103133225.v2.1.I3ba1a76d72da5a813cf6e6f219838c9ef28c5eaa@changeid>
-Message-Id: <20211103133225.v2.2.I4e34d9e5fdd7515aa15d0ee2ef94d57dcb48a927@changeid>
-Mime-Version: 1.0
-References: <20211103133225.v2.1.I3ba1a76d72da5a813cf6e6f219838c9ef28c5eaa@changeid>
-X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v2 2/2] Bluetooth: Attempt to clear HCI_LE_ADV on adv set
- terminated error event
-From:   Archie Pusaka <apusaka@google.com>
-To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>
-Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S230352AbhKCFlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 01:41:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229650AbhKCFk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 01:40:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 794E661108;
+        Wed,  3 Nov 2021 05:38:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635917903;
+        bh=F9aD5bIgPlWGSZ6Ur+nSt+x5YzmTGCwvzSjjGjg+3ag=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=YZ2Gxdv+R29/hmfSNGSH4iXQoARuL0JOkIco+Y4ynSk0Qc5po3HY69bSoy/tyUoc0
+         MSzw88/kipi05swbprEdBhyQwxl2Q+d8298wmkv2bSaH6FpBqLOpQaO8fhp6tDj460
+         u0q/daJf3gdUFv/fbduK9tOOmIIYx/tDUc2bRhgWIH8RJFj78foyDyQovzqsK9UpeL
+         qNhlSY2QWTOdmZmRVx3bfqtAOr23jcI1l/fIQcDDy7wyhL5CGwkcoOvD7uStVZ6Z9l
+         eturgo/p1OQeeDhhn52fZVFcYphdLjwOxdPxEkDwXkkctav4G3AZtW9QF/1v07sC+N
+         oz5mxO0LbfKHw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 60A5560173;
+        Wed,  3 Nov 2021 05:38:23 +0000 (UTC)
+Subject: Re: [GIT PULL] Documentation for 5.16
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <87wnlq2r7v.fsf@meer.lwn.net>
+References: <87wnlq2r7v.fsf@meer.lwn.net>
+X-PR-Tracked-List-Id: <linux-doc.vger.kernel.org>
+X-PR-Tracked-Message-Id: <87wnlq2r7v.fsf@meer.lwn.net>
+X-PR-Tracked-Remote: git://git.lwn.net/linux.git tags/docs-5.16
+X-PR-Tracked-Commit-Id: 603bdf5d6c092eb05666decd84288dfda71eee90
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 624ad333d49e136c54a342ce0009a05b439616be
+Message-Id: <163591790333.8140.6704315962931009930.pr-tracker-bot@kernel.org>
+Date:   Wed, 03 Nov 2021 05:38:23 +0000
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Archie Pusaka <apusaka@chromium.org>
+The pull request you sent on Tue, 02 Nov 2021 15:16:36 -0600:
 
-We should clear the flag if the adv instance removed due to receiving
-this error status is the last one we have.
+> git://git.lwn.net/linux.git tags/docs-5.16
 
-Signed-off-by: Archie Pusaka <apusaka@chromium.org>
----
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/624ad333d49e136c54a342ce0009a05b439616be
 
-(no changes since v1)
+Thank you!
 
- net/bluetooth/hci_event.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 7d875927c48b..d3478cdfd009 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -5558,6 +5558,10 @@ static void hci_le_ext_adv_term_evt(struct hci_dev *hdev, struct sk_buff *skb)
- 		hci_remove_adv_instance(hdev, ev->handle);
- 		mgmt_advertising_removed(NULL, hdev, ev->handle);
- 
-+		/* If we are no longer advertising, clear HCI_LE_ADV */
-+		if (list_empty(&hdev->adv_instances))
-+			hci_dev_clear_flag(hdev, HCI_LE_ADV);
-+
- 		return;
- 	}
- 
 -- 
-2.33.1.1089.g2158813163f-goog
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
