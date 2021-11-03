@@ -2,95 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69BDC444A86
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 22:54:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0897C444A89
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 22:55:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhKCV4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 17:56:49 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:62935 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbhKCV4s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 17:56:48 -0400
-Received: from [192.168.1.18] ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id iOCvmLlHeBazoiOCvmx3Yo; Wed, 03 Nov 2021 22:54:10 +0100
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Wed, 03 Nov 2021 22:54:10 +0100
-X-ME-IP: 86.243.171.122
-Subject: Re: [PATCH] mm/mremap_pages: Save a few cycles in 'get_dev_pagemap()'
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <b4a47154877853cc64be3a35dcfd594d40cc2bce.1635975283.git.christophe.jaillet@wanadoo.fr>
- <YYMCI2S03+azi7nK@casper.infradead.org>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <5da6ef93-97c6-6165-8a73-eb1050589ba7@wanadoo.fr>
-Date:   Wed, 3 Nov 2021 22:54:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230492AbhKCV5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 17:57:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229968AbhKCV5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 17:57:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D84960E08;
+        Wed,  3 Nov 2021 21:54:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635976493;
+        bh=3dU1WD3jK0GFDms72I0PUOjozVCuxCQ/CRp8xAbQb2w=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=LwLcXvGU3FEntjq529Jt9N0Oer46ORHvmXKIxizy6UkLE8rZ+paiFur98d08GQ1X1
+         LVmAUvUFx50Tu/bJFp7DfyPlmnYHRx7UhXN1Jq6t0cBEmE1kiquxOTBmL8sYF7PUn5
+         VPVfTyNsls4DC845OgiukVyP8LRtqzNuIYO/AfoNIzfk19sl+knOC1Ivs9NCD4vsgf
+         gO4/7Ce2IwxKBp227eB12Vw+xH/bDco1L6W1+NGjeJS6Iow8BUXOCqFUs+WkLfDLDQ
+         pTnymZF4r1l7WVtiABmrL1TNboKz0y6NcGAKH8cVt/cay6jR+P7688ARmlUpg2qf/A
+         jsxmJGvA8M39w==
+Message-ID: <7c859ba3feefe50fc84f5050e50465a5ffe3f572.camel@kernel.org>
+Subject: Re: [PATCH v11 2/2] x86/sgx: Add an attribute for the amount of SGX
+ memory in a NUMA node
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, reinette.chatre@intel.com,
+        tony.luck@intel.com, nathaniel@profian.com,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
+Date:   Wed, 03 Nov 2021 23:54:50 +0200
+In-Reply-To: <d3711ca7d612627bb891c10e20c3d569fa6f2bf3.camel@kernel.org>
+References: <20211103012813.670195-1-jarkko@kernel.org>
+         <20211103012813.670195-2-jarkko@kernel.org> <YYJGzgkLJs6819t8@kroah.com>
+         <d3711ca7d612627bb891c10e20c3d569fa6f2bf3.camel@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-In-Reply-To: <YYMCI2S03+azi7nK@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 03/11/2021 à 22:41, Matthew Wilcox a écrit :
-> On Wed, Nov 03, 2021 at 10:35:34PM +0100, Christophe JAILLET wrote:
->> Use 'percpu_ref_tryget_live_rcu()' instead of 'percpu_ref_tryget_live()' to
->> save a few cycles when it is known that the rcu lock is already
->> taken/released.
-> 
-> If this is really important, we can add an __xa_load() which doesn't
-> take the RCU read lock.
+On Wed, 2021-11-03 at 23:49 +0200, Jarkko Sakkinen wrote:
+> On Wed, 2021-11-03 at 09:22 +0100, Greg Kroah-Hartman wrote:
+> > That's not the proper thing to do here at all, these values should be
+> > part of the device structure that this attribute lives on, in order to
+> > properly handle all of these reference counting and locking issues
+> > automatically.
+>=20
+> The attribute group is part of the device structure, so in that sense
+> it is already like this. And I think that all NUMA node specific data
+> (most of which is unrelated to device sysfs) is best kept in the private
+> struct.
 
-There are a few:
-    rcu_read_lock();
-    mem = xa_load(...);
-    rcu_read_unlock();
-patterns here and there.
+If you are concerned that the SGX driver might go away when NUMA code
+calls it, I can address that concern too.
 
-I don't have any numbers of if saving some rcu_read_lock/rcu_read_unlock 
-would be useful in these cases.
+The memory management code if arch/x86/kernel/cpu/sgx is not associated
+with the user space facing driver. E.g. you can use memory manager with
+KVM without having the driver even enabled in the kernel.
 
-The only numbers I have are in [1].
-
-[1]: 
-https://lore.kernel.org/linux-kernel/cover.1634822969.git.asml.silence@gmail.com/
-
-CJ
+This include the numa code in the SGX subsystem. It's life-cycle is the
+same as the power-cycle. It is guaranteed that any possible time during
+the power cycle, when that sysfs callback is called, all the data is valid.
+That's why it is safe to be part of the attribute groups of the NUMA
+device.
 
 
-> 
-> I honestly think that the xarray is the wrong data structure here,
-> and we'd be better off with a simple array of (start, pointer)
-> tuples.
-> 
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   mm/memremap.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/mm/memremap.c b/mm/memremap.c
->> index 84de22c14567..012e8d23d365 100644
->> --- a/mm/memremap.c
->> +++ b/mm/memremap.c
->> @@ -506,7 +506,7 @@ struct dev_pagemap *get_dev_pagemap(unsigned long pfn,
->>   	/* fall back to slow path lookup */
->>   	rcu_read_lock();
->>   	pgmap = xa_load(&pgmap_array, PHYS_PFN(phys));
->> -	if (pgmap && !percpu_ref_tryget_live(pgmap->ref))
->> +	if (pgmap && !percpu_ref_tryget_live_rcu(pgmap->ref))
->>   		pgmap = NULL;
->>   	rcu_read_unlock();
->>   
->> -- 
->> 2.30.2
->>
->>
-> 
+/Jarkko
 
