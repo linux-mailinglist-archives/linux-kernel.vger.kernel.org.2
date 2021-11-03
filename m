@@ -2,106 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFCA44450D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABBF444450F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 16:57:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232576AbhKCP6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 11:58:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49930 "EHLO
+        id S232513AbhKCP7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 11:59:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232503AbhKCP6o (ORCPT
+        with ESMTP id S231857AbhKCP7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 11:58:44 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6AE8C061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 08:56:07 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id s136so2758900pgs.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 08:56:07 -0700 (PDT)
+        Wed, 3 Nov 2021 11:59:43 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53042C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 08:57:06 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id d13so4275508wrf.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 08:57:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=squareup.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fRKGePYlOmiVuBckenaZg2lvZOcrPTPvFy6IKWhuraA=;
-        b=YLEp/Xoz4W2xV+OI2S15NnYwPElTYeS0SpIQ8yv97vYxKejLqOInKtY/oAP/4+D8If
-         YqCq0B7Gm73oeuYX2C0270HXK+PLZp3RO2ZzViWeul/g1R166dSvbJlwbpuzaU+4oEVj
-         K/W6oadXhKmmyRx6f+L4tXrDa22NUqfA9mBAo=
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=eRvj9qYI+2l7/7aUCZ50U+44Z6UG0IqeflVK/0bEcvo=;
+        b=BZz+zyywefqfNDI4gN4GDIM0uwo+FGSPcLNoq8DH2EXoe56E32R0v4glZZpSqHvkR/
+         sbLHeTm4jmFtLgyiP5il6cidyVwnm/QcUw+cpD1tSl0vT7dMlJnK2qrC2bJvlJVSeLBz
+         mItrt4gUdMoh7jQfhyR0fMzPZnw+Slkatr5pyLYowy4Vqf9MZWbXhjXvWJHn1o7tFSBl
+         3kw7mG28mKixAVjUtYZzWipsWohjqyBC8vluMVwO+QhPb3QAcNJlAqREIe+O56MgF+Rj
+         6lSVMNXjMG0DB5I3FHvra0nW8vhSCHdLX85k5eUkA6+Fq4mpthVNJGWj1iaLSihcnUmM
+         QD/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fRKGePYlOmiVuBckenaZg2lvZOcrPTPvFy6IKWhuraA=;
-        b=PR4wbxC9IGzqLkJjgyfXQVlIBEJ2nVveNuMxDe529W+5h6YPf5rOn7rg+yaLNbV5bT
-         0ob65FevOZWAEFemzKfzImJbv7N7OUq8n07REx0MdOo/FxACiiSOdq+EwwSZbhGS1rtU
-         HaBpkvqL+BU0QenkNk2fqwtAqyU8slAYJHv8gRSlSQowq8HTPKa2vwBDPxswiWkiFvT+
-         1jRZAw1gYl6uc7cWZNpWtpIEuYaWAwj/YxPeXTR1KR5k6uaGgseskFDO0/uWJvG51sK3
-         gPzDl3piNowB0+BzP9lewOTUlmuBN8SIBLdmk9YhtmsiCefQBfbC/m0ObudjOUVdonVj
-         XrRg==
-X-Gm-Message-State: AOAM533FlOIwpVxPw5w1RMz5k+LW2SwdFL4qWVBfGFNvgQ3PHcUg7PJa
-        Sgc/f1xi891qzsSaMegKaBiLlA==
-X-Google-Smtp-Source: ABdhPJzZXUKnwm5tW5gImvnc6h54z0C6R5vHG6hKRJ120aAOl/5rSmHIVJZ0BQ68n5YA2oGHIXJoSg==
-X-Received: by 2002:a63:4d20:: with SMTP id a32mr33303288pgb.247.1635954967135;
-        Wed, 03 Nov 2021 08:56:07 -0700 (PDT)
-Received: from localhost ([2600:6c50:4d00:d401:aa7a:1484:c7d0:ae82])
-        by smtp.gmail.com with ESMTPSA id h11sm3174517pfc.131.2021.11.03.08.56.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 08:56:06 -0700 (PDT)
-From:   Benjamin Li <benl@squareup.com>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Benjamin Li <benl@squareup.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, wcn36xx@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] wcn36xx: fix RX BD rate mapping for 5GHz legacy rates
-Date:   Wed,  3 Nov 2021 08:55:42 -0700
-Message-Id: <20211103155543.1037604-3-benl@squareup.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211103155543.1037604-1-benl@squareup.com>
-References: <20211103155543.1037604-1-benl@squareup.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=eRvj9qYI+2l7/7aUCZ50U+44Z6UG0IqeflVK/0bEcvo=;
+        b=K++0PeyNKuj8BXsnNDHg2DnTqS2h7llLk2XIC5N50223vZ1HwN4dP3qJ9kMiBl5Dul
+         3uSkmtRJsXeUtg+286yYnTg9QhpHZBKTkYYAT+Bl5sb/c1SCqL5f5+6JqUNVadTZzpjh
+         /9oV+W6ODvjHrqMo4Hl3X9r+xU/e8eIWgTahjA8eucBvgKPj660tYO0DQt5JpLkfFpV1
+         UwomiMjUztLGXwxGkeCb+F8EHD/nzT12V7MVxqDJrN1MIOvqhXDLuTtfgf5+jtXX3D+Z
+         J/aSJ//OC69yRNFyW4+yTwifqJM66Bbcn96v7DxuBYCX6gmt/ebLnXiiMwKInFGdoeyP
+         baiQ==
+X-Gm-Message-State: AOAM530gm00/eyM0zlkmt+XzgNrmKzozd1FCgt9u63NvE7SWq68IvUQ8
+        L3JVvEZoiZfGJNAifrSyP+VYeMBwT3uqvA==
+X-Google-Smtp-Source: ABdhPJxvQ4B9y40EuhwiBKOvJ12HuXF5RU2mRbTh9lwg4xo6yOedTE2cuS4DHK3f5Fl5qo4ZYIHTSg==
+X-Received: by 2002:a5d:4890:: with SMTP id g16mr58678884wrq.10.1635955024911;
+        Wed, 03 Nov 2021 08:57:04 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id p13sm6470355wmi.0.2021.11.03.08.57.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 08:57:04 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 16:57:02 +0100
+From:   LABBE Corentin <clabbe@baylibre.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
+Subject: Re: [PATCH v3 00/14] staging: media: zoran: fusion in one module
+Message-ID: <YYKxTrWI299pvqo7@Red>
+References: <20211026193416.1176797-1-clabbe@baylibre.com>
+ <a85c93db-e118-274f-d86a-d127c7399926@xs4all.nl>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <a85c93db-e118-274f-d86a-d127c7399926@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The linear mapping between the BD rate field and the driver's 5GHz
-legacy rates table (wcn_5ghz_rates) does not only apply for the latter
-four rates -- it applies to all eight rates.
+Le Wed, Nov 03, 2021 at 04:21:02PM +0100, Hans Verkuil a écrit :
+> Hi Corentin,
+> 
+> On 26/10/2021 21:34, Corentin Labbe wrote:
+> > Hello
+> > 
+> > The main change of this serie is to fusion all zoran related modules in
+> > one.
+> > This fixes the load order problem when everything is built-in.
+> 
+> I've been testing this series, and while the module load/unload is now working,
+> I'm running into a lot of other v4l2 compliance issues.
+> 
+> I've fixed various issues in some follow-up patches available in my tree:
+> 
+> https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=zoran
+> 
+> At least some of the worst offenders are now resolved. Note that the patch
+> dropping read/write support relies on this patch:
+> 
+> https://patchwork.linuxtv.org/project/linux-media/patch/4f89b139-13b7-eee6-9662-996626b778b0@xs4all.nl/
 
-Fixes: 6ea131acea98 ("wcn36xx: Fix warning due to bad rate_idx")
-Signed-off-by: Benjamin Li <benl@squareup.com>
----
- drivers/net/wireless/ath/wcn36xx/txrx.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+Hello
 
-diff --git a/drivers/net/wireless/ath/wcn36xx/txrx.c b/drivers/net/wireless/ath/wcn36xx/txrx.c
-index f0a9f069a92a9..fce3a6a98f596 100644
---- a/drivers/net/wireless/ath/wcn36xx/txrx.c
-+++ b/drivers/net/wireless/ath/wcn36xx/txrx.c
-@@ -272,7 +272,6 @@ int wcn36xx_rx_skb(struct wcn36xx *wcn, struct sk_buff *skb)
- 	const struct wcn36xx_rate *rate;
- 	struct ieee80211_hdr *hdr;
- 	struct wcn36xx_rx_bd *bd;
--	struct ieee80211_supported_band *sband;
- 	u16 fc, sn;
- 
- 	/*
-@@ -350,12 +349,10 @@ int wcn36xx_rx_skb(struct wcn36xx *wcn, struct sk_buff *skb)
- 		status.enc_flags = rate->encoding_flags;
- 		status.bw = rate->bw;
- 		status.rate_idx = rate->mcs_or_legacy_index;
--		sband = wcn->hw->wiphy->bands[status.band];
- 		status.nss = 1;
- 
- 		if (status.band == NL80211_BAND_5GHZ &&
--		    status.encoding == RX_ENC_LEGACY &&
--		    status.rate_idx >= sband->n_bitrates) {
-+		    status.encoding == RX_ENC_LEGACY) {
- 			/* no dsss rates in 5Ghz rates table */
- 			status.rate_idx -= 4;
- 		}
--- 
-2.25.1
+My test branch already included your "zoran: fix various V4L2 compliance errors"
+I have quickly checked other patch and I am ok with them.
+I will add and test with them.
 
+> 
+> But there is one really major bug that makes me hesitant to merge this:
+> 
+> This works:
+> 
+> v4l2-ctl -v pixelformat=MJPG,width=768,height=576
+> v4l2-ctl --stream-mmap
+> 
+> This fails:
+> 
+> v4l2-ctl -v pixelformat=MJPG,width=768,height=288
+> v4l2-ctl --stream-mmap
+> 
+> It's an immediate lock up with nothing to indicate what is wrong.
+> As soon as the height is 288 or less, this happens.
+> 
+> Both with my DC30 and DC30D.
+
+Just for curiosity, what is the difference between thoses two ?
+
+> 
+> Do you see the same? Any idea what is going on? I would feel much happier
+> if this is fixed.
+> 
+> Note that the same problem is present without this patch series, so it's
+> been there for some time.
+> 
+
+I will start on digging this problem and add thoses commands to my CI.
+And I know there are a huge quantity of problem since origins.
+A simple example is that just setting MJPEG as default input format does not work.
+
+But since it is not related to my serie, can you please merge it.
+
+Thanks
+Regards
