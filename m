@@ -2,168 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E674443DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:50:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F1F4443DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 15:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbhKCOwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 10:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhKCOwo (ORCPT
+        id S230516AbhKCOxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 10:53:34 -0400
+Received: from mail.netline.ch ([148.251.143.180]:53040 "EHLO
+        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229832AbhKCOxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 10:52:44 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C961DC061714;
-        Wed,  3 Nov 2021 07:50:07 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id f8so10315628edy.4;
-        Wed, 03 Nov 2021 07:50:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Z6Ffr3auqY5aQvzV5hOlatJdK1wDtUKhp272cbbCL0s=;
-        b=lhSUM+kKjh5byxhg6ghIYZIUwkxQ+7/6dumA5dTZCqdf/9fRdz8Yn8RXsXPKFxwMj8
-         4H0QJq4Y33O5yGFDw6iu+vgPQkGQlrqiSm206XrsvIV4HQTyFYxcaO/WNlI9xOA3GibA
-         GbgNLjvuCawDk6K2gAnF/BxUt2j3F7Fbc09Q96JAVixFX1Zr0C4sCrG3nIdI/aMbr3yS
-         xA252AcKguMDyjTZJDUmMGd95x2J4PmA6n3ihr/fkhb5F9OeHg0l7MxIov9A92PtTS70
-         NZrTH7+TQLMt3qyxVpOVQ6UP20ZOoJETrKTgMf1/vrnVi2DRxHoPyUKcbBNCL2p8jWsf
-         BGcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Z6Ffr3auqY5aQvzV5hOlatJdK1wDtUKhp272cbbCL0s=;
-        b=zPn8YO60TBf1X2nzQCQFWEf2/nE/Idb97HrgKIRkoirZHdqE4ACjJV4yzh1D3Agw59
-         f1jnPqQD7lOOVK76oUQjjY8S8YTNzHSoH6MB+CltDOOxX98KsAv+lIwTVcyn0sDAsSCP
-         /bdsrDivnc15dEeveOdCVsoEo26HkBvPrAw7/IS85qqdcqRtVDA4FH68kxrtnOWo+o1w
-         3fH5j+uRVdYHQpYyAHIL21c1ZA7qgL3qmg9s6gZoT7yz9gXEon4uKQnt4/kgeLQxJ2t5
-         g8t+saXja1QTepxdsXQzwG1tYn75ix74thf0uWK/eXtcKygDs8aG5GV0QH9Bfq1/s1RS
-         DADA==
-X-Gm-Message-State: AOAM532+q56hMf1KDCi6do2un6uquSijVifQe74C1+QQv0pSdG9jvxpW
-        buQJ29cUELvtXlGwu7Assno=
-X-Google-Smtp-Source: ABdhPJzFfm3p+KwmX8t+yzKQvlYXrlx7PQjbJMi3mCIEHpD6IzWZqzkOnlHWTb9vAtAB0+UQCOfDjg==
-X-Received: by 2002:a05:6402:3552:: with SMTP id f18mr15452251edd.129.1635951006129;
-        Wed, 03 Nov 2021 07:50:06 -0700 (PDT)
-Received: from tom-desktop (net-188-153-110-208.cust.vodafonedsl.it. [188.153.110.208])
-        by smtp.gmail.com with ESMTPSA id i8sm1441241edq.80.2021.11.03.07.50.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 07:50:05 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 15:50:02 +0100
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Peng Fan <peng.fan@nxp.com>, Alice Guo <alice.guo@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Abel Vesa <abelvesa@kernel.org>
-Subject: Re: [PATCH] arm64: dts: imx8mm: Add NOC node
-Message-ID: <20211103145002.GA224875@tom-desktop>
-References: <20211103124329.171124-1-tomm.merciai@gmail.com>
- <CAHCN7x+MbLJ=JLLJBK1_XpW7CtP5NUqZixB0AHnDg=r83uC2Bw@mail.gmail.com>
+        Wed, 3 Nov 2021 10:53:33 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by netline-mail3.netline.ch (Postfix) with ESMTP id EA636202037;
+        Wed,  3 Nov 2021 15:50:54 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
+Received: from netline-mail3.netline.ch ([127.0.0.1])
+        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id n_YKq6VrpC2F; Wed,  3 Nov 2021 15:50:54 +0100 (CET)
+Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
+        by netline-mail3.netline.ch (Postfix) with ESMTPA id 4F7D9202033;
+        Wed,  3 Nov 2021 15:50:54 +0100 (CET)
+Received: from [127.0.0.1]
+        by thor with esmtp (Exim 4.95)
+        (envelope-from <michel@daenzer.net>)
+        id 1miHbJ-000sW6-DO;
+        Wed, 03 Nov 2021 15:50:53 +0100
+Message-ID: <20cfea36-a8cc-7bd1-9604-57efdf4710e2@daenzer.net>
+Date:   Wed, 3 Nov 2021 15:50:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHCN7x+MbLJ=JLLJBK1_XpW7CtP5NUqZixB0AHnDg=r83uC2Bw@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Content-Language: en-CA
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Cc:     linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org
+References: <20210723075857.4065-1-michel@daenzer.net>
+ <f5f37693-bfe2-e52f-172b-00f4aa94dbd9@amd.com>
+ <4cf94f59-f953-f5d7-9901-cfe5fd63bfbc@daenzer.net>
+ <884050b3-5e7d-c00b-5467-290cfc57e0ea@gmail.com>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+Subject: Re: [Linaro-mm-sig] [PATCH] dma-buf/poll: Get a file reference for
+ outstanding fence callbacks
+In-Reply-To: <884050b3-5e7d-c00b-5467-290cfc57e0ea@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 08:19:34AM -0500, Adam Ford wrote:
-> On Wed, Nov 3, 2021 at 7:43 AM Tommaso Merciai <tomm.merciai@gmail.com> wrote:
-> >
-> > Add support for dynamic frequency scaling of the main NOC configuration
-> > on imx8mm.
-> >
-> > References:
-> >  - i.MX 8M Mini Applications Processor RM, Rev. 3, 11/2020
-> >  - f18e6d573b80 arm64: dts: imx8mq: Add NOC node
-> >  - 912b9dacf3f0 arm64: dts: imx8mq: increase NOC clock to 800 MHz
-> > ---
+On 2021-07-23 10:22, Christian König wrote:
+> Am 23.07.21 um 10:19 schrieb Michel Dänzer:
+>> On 2021-07-23 10:04 a.m., Christian König wrote:
+>>> Am 23.07.21 um 09:58 schrieb Michel Dänzer:
+>>>> From: Michel Dänzer <mdaenzer@redhat.com>
+>>>>
+>>>> This makes sure we don't hit the
+>>>>
+>>>>      BUG_ON(dmabuf->cb_in.active || dmabuf->cb_out.active);
+>>>>
+>>>> in dma_buf_release, which could be triggered by user space closing the
+>>>> dma-buf file description while there are outstanding fence callbacks
+>>>> from dma_buf_poll.
+>>> I was also wondering the same thing while working on this, but then thought that the poll interface would take care of this.
+>> I was able to hit the BUG_ON with https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/1880 .
+>>
+>>
+>>>> Cc: stable@vger.kernel.org
+>>>> Signed-off-by: Michel Dänzer <mdaenzer@redhat.com>
+>>>> ---
+>>>>    drivers/dma-buf/dma-buf.c | 18 ++++++++++++------
+>>>>    1 file changed, 12 insertions(+), 6 deletions(-)
+>>>>
+>>>> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+>>>> index 6c520c9bd93c..ec25498a971f 100644
+>>>> --- a/drivers/dma-buf/dma-buf.c
+>>>> +++ b/drivers/dma-buf/dma-buf.c
+>>>> @@ -65,12 +65,9 @@ static void dma_buf_release(struct dentry *dentry)
+>>>>        BUG_ON(dmabuf->vmapping_counter);
+>>>>          /*
+>>>> -     * Any fences that a dma-buf poll can wait on should be signaled
+>>>> -     * before releasing dma-buf. This is the responsibility of each
+>>>> -     * driver that uses the reservation objects.
+>>>> -     *
+>>>> -     * If you hit this BUG() it means someone dropped their ref to the
+>>>> -     * dma-buf while still having pending operation to the buffer.
+>>>> +     * If you hit this BUG() it could mean:
+>>>> +     * * There's a file reference imbalance in dma_buf_poll / dma_buf_poll_cb or somewhere else
+>>>> +     * * dmabuf->cb_in/out.active are non-0 despite no pending fence callback
+>>>>         */
+>>>>        BUG_ON(dmabuf->cb_in.active || dmabuf->cb_out.active);
+>>>>    @@ -196,6 +193,7 @@ static loff_t dma_buf_llseek(struct file *file, loff_t offset, int whence)
+>>>>    static void dma_buf_poll_cb(struct dma_fence *fence, struct dma_fence_cb *cb)
+>>>>    {
+>>>>        struct dma_buf_poll_cb_t *dcb = (struct dma_buf_poll_cb_t *)cb;
+>>>> +    struct dma_buf *dmabuf = container_of(dcb->poll, struct dma_buf, poll);
+>>>>        unsigned long flags;
+>>>>          spin_lock_irqsave(&dcb->poll->lock, flags);
+>>>> @@ -203,6 +201,8 @@ static void dma_buf_poll_cb(struct dma_fence *fence, struct dma_fence_cb *cb)
+>>>>        dcb->active = 0;
+>>>>        spin_unlock_irqrestore(&dcb->poll->lock, flags);
+>>>>        dma_fence_put(fence);
+>>>> +    /* Paired with get_file in dma_buf_poll */
+>>>> +    fput(dmabuf->file);
+>>> Is calling fput() in interrupt context ok? IIRC that could potentially sleep.
+>> Looks fine AFAICT: It has
+>>
+>>         if (likely(!in_interrupt() && !(task->flags & PF_KTHREAD))) {
+>>
+>> and as a fallback for that, it adds the file to a lock-less delayed_fput_list which is processed by a workqueue.
 > 
-> + Abel
+> Ah, yes that makes sense.
 > 
-> >  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 25 +++++++++++++++++++++++
-> >  1 file changed, 25 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> > index c2f3f118f82e..c5f64abcecff 100644
-> > --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> > +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> > @@ -719,6 +719,31 @@ pgc_mipi: power-domain@11 {
-> >                         };
-> >                 };
-> >
-> > +               noc: interconnect@32700000 {
-> > +                       compatible = "fsl,imx8mm-noc", "fsl,imx8m-noc";
-> > +                       reg = <0x32700000 0x100000>;
-> > +                       clocks = <&clk IMX8MM_CLK_NOC>;
-> > +                       fsl,ddrc = <&ddrc>;
-> > +                       #interconnect-cells = <1>;
-> > +                       operating-points-v2 = <&noc_opp_table>;
-> > +
-> > +                       noc_opp_table: opp-table {
-> > +                               compatible = "operating-points-v2";
-> > +
-> > +                               opp-133M {
-> > +                                       opp-hz = /bits/ 64 <133333333>;
-> > +                               };
-> > +
-> > +                               opp-400M {
-> > +                                       opp-hz = /bits/ 64 <400000000>;
-> > +                               };
-> > +
-> > +                               opp-800M {
-> > +                                       opp-hz = /bits/ 64 <800000000>;
-> > +                               };
-> 
-> When I look at the opp table from the NXP's custom kernel [1] , they
-> have a different opp table with a max frequency of 750MHz instead of
-> 800MHz.  The i.MX8MM Ref manual shows there is something at 3270_0000,
-> but it doesn't go into details of the registers there. However the max
-> speed of the NOC clock does appear to be 800MHz and not the 750 MHz
-> listed in the NXP kernel.
-> 
-> However, In the clk node of imx8mm.dtsi file, the IMX8MM_CLK_NOC
-> parent is set to IMX8MM_SYS_PLL3_OUT and IMX8MM_SYS_PLL3_OUT is set to
-> 750MHz, so I think setting the IMX8MM_CLK_NOC to 800MHz is likely not
-> what we want if we're setting this clock parent and clock rate to
-> 750MHz.  However if the NOC operates correctly at 800MHz when the
-> parent is set to IMX8MM_SYS_PLL1_800M, it might make sense.  Looking
-> at the imx8mq.dtsi file, it appears that the NOC node is referencing
-> the ddrc node, and the imx8mq is able to operate the ddrc at 800MHz,
-> while I beleive the 8MM is capped at 750M.
-> 
-> Since I do not know if the NOC is tied to the processor speed, the
-> DRAM speed, or it runs independently, I can't say with any confidence
-> what it should be and/or how to test it, but I would assume that with
-> the ddrc node capped at 750MHz, the opp table in the NXP kernel is
-> probably the correct one.
-> 
-> [1] - https://source.codeaurora.org/external/imx/linux-imx/tree/arch/arm64/boot/dts/freescale/imx8mm.dtsi?h=lf-5.10.y
-> 
-> adam
-  
-  Hi Adam,
-  Thanks for your review.
+> Fell free to add Reviewed-by: Christian König <christian.koenig@amd.com>
 
-  Tommaso
+Thanks! AFAICT this fix can be merged now for 5.16?
 
-> 
-> > +                       };
-> > +               };
-> > +
-> >                 aips2: bus@30400000 {
-> >                         compatible = "fsl,aips-bus", "simple-bus";
-> >                         reg = <0x30400000 0x400000>;
-> > --
-> > 2.25.1
-> >
+
+-- 
+Earthling Michel Dänzer            |                  https://redhat.com
+Libre software enthusiast          |         Mesa and Xwayland developer
