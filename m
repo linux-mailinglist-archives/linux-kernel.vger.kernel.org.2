@@ -2,112 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E154449EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 21:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC374449FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 21:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbhKCVBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 17:01:16 -0400
-Received: from mout-p-201.mailbox.org ([80.241.56.171]:10690 "EHLO
-        mout-p-201.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbhKCVBO (ORCPT
+        id S231663AbhKCVCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 17:02:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230172AbhKCVCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 17:01:14 -0400
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [80.241.60.245])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4HkzdR6K5VzQlYP;
-        Wed,  3 Nov 2021 21:58:35 +0100 (CET)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-From:   =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>
-To:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH] mwifiex: Ignore BTCOEX events from the 88W8897 firmware
-Date:   Wed,  3 Nov 2021 21:58:27 +0100
-Message-Id: <20211103205827.14559-1-verdre@v0yd.nl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: B71D826B
+        Wed, 3 Nov 2021 17:02:01 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD650C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 13:59:24 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id k63-20020a628442000000b004812ea67c34so2054517pfd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 13:59:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=BMHD8eN/O84RgpdWn1MOyBM5EFOHI83uTO00cZyWAQg=;
+        b=bitU5eJ0Kmr+2sMFWR6KiGanApf+TfANTZ4UIqGCuZAu4cCIiFg11yEBfRTnxj1p9f
+         qTJOohwMSHAqmldQfCNXUqcpsGOKlt9Ng/ZlKXmZ7iacrqxVrgEx6UcuNY1WCdea3U4Z
+         yJNW7y4KeI8bhJBpDhCPwTfamRrs3FQdyULOP9bcG+ffz2ZMFEBSwQjb8t1rThTu5xU1
+         7tTgBIw2pWaZ8Od+4mQtRbcMJqqosp8eNt2WLXCh3yDKYGNtiqnA0YrR3KFAWHCVSLO8
+         yjr/DGC8uFS5IP22MFYLeaKRVgJs1bSG1WKijR4rG/VELDVOcEy79QE67RDlEAmdpxw2
+         VBvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=BMHD8eN/O84RgpdWn1MOyBM5EFOHI83uTO00cZyWAQg=;
+        b=cAsml2Uy/sj+2Vvrt+GfBgW8K3bCV1hodD2xpPL6zlage2YdQjzc7xMG12TCSGYyL5
+         Z4mf4kitBdSfKIbkpuCuVVzy8L8LvV6NOL2o7nVqySb1PnJY8WBcrdpq+/F9RX89qXY4
+         2X6gUmktPNm2Bnt5BAmQ9AWPfcIvN3CHYAJNy8OgRukkrzVkYeQn1VIWliR2tlZAsqsT
+         V/FmLAx5wQuY8g9/OnFWj66MejJXrPDexKAoUWJ7m6F1vHgazaOfvCWU0SgB78xkgo+S
+         6AtBvHpysNmqchMtn+8+tzjqG+b/09WpCo9n3BCP4k6zBKfCQ0Uxh+gfVwDAlZ9FRNZx
+         zTqA==
+X-Gm-Message-State: AOAM531u5PPEH7j5LGlqltWnF9NDaeR3Kr1G+Oe6DCQQ63FKtFugcl+N
+        tXMxN+34OK7AMKNd1/7mBwfXWtV4bwrA
+X-Google-Smtp-Source: ABdhPJycohYurV0YgV4j0h4Pa3cBGqvA0DposxHWAUB3TD0QVjBIO//mFQ1hqfqBPAJA+AQe+SHpkIKVD89O
+X-Received: from vipinsh.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:36b0])
+ (user=vipinsh job=sendgmr) by 2002:a05:6a00:26cd:b0:493:ff3f:8083 with SMTP
+ id p13-20020a056a0026cd00b00493ff3f8083mr1378391pfw.19.1635973164192; Wed, 03
+ Nov 2021 13:59:24 -0700 (PDT)
+Date:   Wed,  3 Nov 2021 20:59:09 +0000
+Message-Id: <20211103205911.1253463-1-vipinsh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
+Subject: [PATCH v3 0/2] Add wrapper to read GPR of INVPCID, INVVPID, and INVEPT
+From:   Vipin Sharma <vipinsh@google.com>
+To:     pbonzini@redhat.com, seanjc@google.com, jmattson@google.com
+Cc:     dmatlack@google.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vipin Sharma <vipinsh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The firmware of the 88W8897 PCIe+USB card sends those events very
-unreliably, sometimes bluetooth together with 2.4ghz-wifi is used and no
-COEX event comes in, and sometimes bluetooth is disabled but the
-coexistance mode doesn't get disabled.
+Hello,
 
-This means we sometimes end up capping the rx/tx window size while
-bluetooth is not enabled anymore, artifically limiting wifi speeds even
-though bluetooth is not being used.
+v3 is similar to v2 except that the commit message of "PATCH v3 2/2" is now
+clearer and detailed.
 
-Since we can't fix the firmware, let's just ignore those events on the
-88W8897 device. From some Wireshark capture sessions it seems that the
-Windows driver also doesn't change the rx/tx window sizes when bluetooth
-gets enabled or disabled, so this is fairly consistent with the Windows
-driver.
+VMX code to handle INVPCID, INVVPID, and INVEPT read the same GPR index
+in VM exit info. This patch series improves that handling by adding a
+common wrapper function for them.
 
-Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
----
- drivers/net/wireless/marvell/mwifiex/main.h      | 2 ++
- drivers/net/wireless/marvell/mwifiex/pcie.c      | 3 +++
- drivers/net/wireless/marvell/mwifiex/sta_event.c | 3 +++
- 3 files changed, 8 insertions(+)
+Patch 2 makes a sublte change in INVPCID type check. Unlike INVVPID and
+INVEPT, INVPCID is not explicitly documented to check the type before
+reading the operand from memory. So, this patch moves INVPCID type check
+to the common switch statement instead of VMX and SVM validating it
+individually.
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/main.h b/drivers/net/wireless/marvell/mwifiex/main.h
-index 90012cbcfd15..486315691851 100644
---- a/drivers/net/wireless/marvell/mwifiex/main.h
-+++ b/drivers/net/wireless/marvell/mwifiex/main.h
-@@ -1055,6 +1055,8 @@ struct mwifiex_adapter {
- 	void *devdump_data;
- 	int devdump_len;
- 	struct timer_list devdump_timer;
-+
-+	bool ignore_btcoex_events;
- };
- 
- void mwifiex_process_tx_queue(struct mwifiex_adapter *adapter);
-diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c b/drivers/net/wireless/marvell/mwifiex/pcie.c
-index c3f5583ea70d..d5fb29400bad 100644
---- a/drivers/net/wireless/marvell/mwifiex/pcie.c
-+++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
-@@ -3152,6 +3152,9 @@ static int mwifiex_init_pcie(struct mwifiex_adapter *adapter)
- 	if (ret)
- 		goto err_alloc_buffers;
- 
-+	if (pdev->device == PCIE_DEVICE_ID_MARVELL_88W8897)
-+		adapter->ignore_btcoex_events = true;
-+
- 	return 0;
- 
- err_alloc_buffers:
-diff --git a/drivers/net/wireless/marvell/mwifiex/sta_event.c b/drivers/net/wireless/marvell/mwifiex/sta_event.c
-index 68c63268e2e6..80e5d44bad9d 100644
---- a/drivers/net/wireless/marvell/mwifiex/sta_event.c
-+++ b/drivers/net/wireless/marvell/mwifiex/sta_event.c
-@@ -1058,6 +1058,9 @@ int mwifiex_process_sta_event(struct mwifiex_private *priv)
- 		break;
- 	case EVENT_BT_COEX_WLAN_PARA_CHANGE:
- 		dev_dbg(adapter->dev, "EVENT: BT coex wlan param update\n");
-+		if (adapter->ignore_btcoex_events)
-+			break;
-+
- 		mwifiex_bt_coex_wlan_param_update_event(priv,
- 							adapter->event_skb);
- 		break;
+Changes in v3:
+- Patch 2's commit message is more detailed now.
+
+Changes in v2:
+- Keeping the register read visible in the functions.
+- Removed INVPCID type check hardcoding and moved error condition to common 
+  function.
+
+[v2] https://lore.kernel.org/lkml/20211103183232.1213761-1-vipinsh@google.com/
+[v1] https://lore.kernel.org/lkml/20211011194615.2955791-1-vipinsh@google.com/
+
+Vipin Sharma (2):
+  KVM: VMX: Add a wrapper to read index of GPR for INVPCID, INVVPID, and
+    INVEPT
+  KVM: Move INVPCID type check from vmx and svm to the common
+    kvm_handle_invpcid()
+
+ arch/x86/kvm/svm/svm.c    |  5 -----
+ arch/x86/kvm/vmx/nested.c | 10 ++++++----
+ arch/x86/kvm/vmx/vmx.c    |  9 +++------
+ arch/x86/kvm/vmx/vmx.h    |  5 +++++
+ arch/x86/kvm/x86.c        |  3 ++-
+ 5 files changed, 16 insertions(+), 16 deletions(-)
+
 -- 
-2.33.1
+2.33.1.1089.g2158813163f-goog
 
