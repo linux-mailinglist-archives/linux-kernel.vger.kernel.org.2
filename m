@@ -2,149 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 733324441EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18CE34441F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 13:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231975AbhKCMy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 08:54:27 -0400
-Received: from mail-bn8nam11on2055.outbound.protection.outlook.com ([40.107.236.55]:54593
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231343AbhKCMyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 08:54:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HJWySGlKSKDtZpxUaX4uZeOl8NHe8wxjRcjbvbetsVze5XxAAzpCAFMPXrK9ynaNAQJQ04icmMunlI2T534iA80KiFLN+0QtH3ZJAIfpbqOzxnkKU1tSAUdV9XXLsWKhOFlIpJALmHRPqSY5dnlWp7lc/LLIhErAeKDBi7EfY4g7kIAMa10rC++AH0V0RzJ5kKQgpXr5L+IhgKyAlAo9ImaNMieO9hIe7PMOi5PvC3CD7UMT/+ah+8YMnMRIiSv4Hcm1vsFZf1a+Llhm1mxWTY4qcFOV+gXYKNt1cUQiJ3i6JTunUoJsNEtCwQG3qjq7M6fCm4azNT+6EHW3z+MwLg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=opss/6RUy2VSWWrC5gAxEUguc5TRIsXpCfVFoNfJWEs=;
- b=DZkwJtj2W0t/hCqhqny+l2xn62tknksG7x/OZhapoXoMmJvsKpB+JphadVUejOjT23yFz3gZPZk3Lz++Ni45OGoegZrlOgObL+gz8gpqr+mSsDoVwmR6nvnUiILn0IPOfo7CHzsMxUVjNbfu/eZ4Umdnln7Cwerj2PIRIoywpmRViXROiMryDdHdvqbJNy6tSpjoT8sq6YG4M2TMrpNW8eGsT9aphl/Q7OhoeZsPnEWYG7p2qVDP7/2oGHRdnRnWww47EDPCs5WGqTasKCmlAKVpvn76vI2wmjTtcKreqQxaFnMY82Z9QWtX0BFwcbJLwzYfsqlHFp150BZnnSQawQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=opss/6RUy2VSWWrC5gAxEUguc5TRIsXpCfVFoNfJWEs=;
- b=YeBsBnjRLJ5hfJmclztM6WKsJ7oPAqKODkBdHbXUE3zBFJIPadgnfOVmXCvYT0/1aO0qXU08759n68Ma3KDW4awHpDJRQXuLSdBSxQLXHyZOy8UCcWyJIODuB+ZzOLwNW/HZRifbGUjjaAHPjc4WUaIF8/RWwHdhAfQDSzV9EsS2J/MADnNCSNeAY2lpFl4UoYmcteVFgXOGMsbcJctFDMHJ81mZIaR2WSCLWA4cjmCxQa/srBR3hFCUQjmuzNY8C83T9+lsm6ai6+tFWJY+GfWTRFnei+n3cz7+SDjzqDsHu/cqsnheVKHiSrLdxgNlNUtfVMl7IIqrX5Sfp7fQXg==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB5520.namprd12.prod.outlook.com (2603:10b6:5:208::9) by
- DM4PR12MB5264.namprd12.prod.outlook.com (2603:10b6:5:39c::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4649.15; Wed, 3 Nov 2021 12:51:46 +0000
-Received: from DM6PR12MB5520.namprd12.prod.outlook.com
- ([fe80::8817:6826:b654:6944]) by DM6PR12MB5520.namprd12.prod.outlook.com
- ([fe80::8817:6826:b654:6944%6]) with mapi id 15.20.4649.020; Wed, 3 Nov 2021
- 12:51:46 +0000
-Date:   Wed, 3 Nov 2021 09:51:44 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Aharon Landau <aharonl@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next] RDMA/core: Rely on vendors to set right IOVA
-Message-ID: <20211103125144.GB1298412@nvidia.com>
-References: <4b0a31bbc372842613286a10d7a8cbb0ee6069c7.1635400472.git.leonro@nvidia.com>
+        id S231986AbhKCMzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 08:55:13 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45604 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230472AbhKCMzJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 08:55:09 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 20DFE1FD2F;
+        Wed,  3 Nov 2021 12:52:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635943952; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7LyPIXzXI53HNpm3jQLfD9DoICZ48gFa7860SvpDD4E=;
+        b=CDXTN+toc6M1hD1pAlIBAFY0SOrgILL/f1ecQgNwsPGpiBbE2W7QGr6N/0U+1XYtlYOd3s
+        d4Ojc8xa0Xf9HwEfrL6GsMoEeKfzXFBHnb2FNqwghz+BalZHIOOPzofu9iPiix54jh35+D
+        9t3bPaD6KiLyzoDiJTRliqsJR5ber68=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 308012C144;
+        Wed,  3 Nov 2021 12:52:28 +0000 (UTC)
+Date:   Wed, 3 Nov 2021 13:52:29 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>, live-patching@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>
+Subject: Re: [PATCH V4 1/3] livepatch: remove 'struct completion finish' from
+ klp_patch
+Message-ID: <YYKGDSdKwQfjs6xf@alley>
+References: <20211102145932.3623108-1-ming.lei@redhat.com>
+ <20211102145932.3623108-2-ming.lei@redhat.com>
+ <YYFfmo5/Dds7bspY@alley>
+ <YYHdFLwGry58Q16F@T590>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4b0a31bbc372842613286a10d7a8cbb0ee6069c7.1635400472.git.leonro@nvidia.com>
-X-ClientProxiedBy: MN2PR08CA0025.namprd08.prod.outlook.com
- (2603:10b6:208:239::30) To DM6PR12MB5520.namprd12.prod.outlook.com
- (2603:10b6:5:208::9)
-MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR08CA0025.namprd08.prod.outlook.com (2603:10b6:208:239::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10 via Frontend Transport; Wed, 3 Nov 2021 12:51:46 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1miFk0-005Ro5-Op; Wed, 03 Nov 2021 09:51:44 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7f2c127a-b011-4f77-7f46-08d99ec8b1c2
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5264:
-X-Microsoft-Antispam-PRVS: <DM4PR12MB52640B7056DE4BE58A6E607CC28C9@DM4PR12MB5264.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:109;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fB1+PdC6hVDwyKh4aK+0gPUxIr4f1dXIUcTMc+RYcDZbU/+wfDEAC3F/+viZKA7XLDMnZ6q5zIpJVjGWxKQ8iAWOPgL7vBkexkzOrH68i++43FDc5j0tW4nkVYCQXLr/0WZqwXzeE9/+Mdh1MGXY86smBKrcYa+mgF7N3eo1csuUv4ce0BEJZXaiyBArUIkQF9I8YX9JIQjoIzeQ0gUopG5+Lvvq3Gdwcsjf4ECfoGk7lsj1dxGu7IwZHOwFUZUpZCaok2/MvjVvX9NkNPbCTml1LCCQm9CnkU/sBsbrdrL4tvSVVFBZyG+Ht0cKQZnueTcR0Juc9/mLjgeBuMZMuYN/c3yhoUBtyQz7wHBLhtgBAu+4PgTL6/9vB5OXwqU1nHw+FI24qF+9gvHoQbu9zfwAU3lLG1V53nF3w+V5foIw/d4MGWH8uExb8FPghJGm64+gor1jp8FN9lXKd8PaXrnUd7c0IPmivLdqOX6rwr/71Gd3Q19eU1Yk8m06nV+1LcuCyto9J9/y9UHzGajzQDHCVsSpGZqetUJqjMlSGsA6ihL43saH7xbS4yQjZhZtjK7tuIBHK9dOeuU3sftItn4ARgVNTCU9/mDTZ4ufNjBYTZYdrf/KgXkmH9OPgE7Q40ETbFVZlWvaqx+GoxF+5PJwgZgooQjA+eg7vtJGrNPZYXoK5RH48lsBvEsuTq4YQFUU4Nn+bR9gnXAlykXCMy+ZdbHd7WGxS4vJ1G4J8oo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5520.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(966005)(5660300002)(36756003)(66556008)(9746002)(66476007)(26005)(186003)(508600001)(6916009)(8676002)(2906002)(426003)(86362001)(38100700002)(4326008)(8936002)(9786002)(1076003)(316002)(33656002)(83380400001)(2616005)(54906003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?e6yZ1Sc4rqb5156FU7FqynMZ/5nEpDU7c+3CMW4mlVscf73m0lrwvTwmRDXe?=
- =?us-ascii?Q?5pbhiFWZmo5uDbA9sNpdppNgv7slWwQ6ceIMT9tz1WpyPqOFQgzOgXwH+RCR?=
- =?us-ascii?Q?hYqeR+Nr2tLZlJb89EQJKBaPuanHHngND6HzveMPKbUrcvqtHEpxfKIMGQFj?=
- =?us-ascii?Q?7pd8spPOQWT0rrwmWnAQodN6JKWde+lFM7ub0ZuMrUEhM4G44OoXR5X5zHCH?=
- =?us-ascii?Q?TMGxADBDJlz6Kzq0VglmnDKiueEt7WQ/NJjb8S/c1MxNxC303MNAdugGCaFR?=
- =?us-ascii?Q?0r0ss90TbGCS7rGaNcUMwUnKoOMT7J8ejXbxoR+KKcWDVVMsero7TtzkMh2u?=
- =?us-ascii?Q?T1tlFvjmrpnt54y6jMlHyS9QqLiVKHoCKFlmYt2Z6f5SAXc4XzSflyxC3lBr?=
- =?us-ascii?Q?sAZeUUgyJyrz0cwXbHQT8TV62fYzfSLmNc6DVgoy4+Ie6OXfumjW3CojFlIj?=
- =?us-ascii?Q?03syIxY6LfHJ7YhflNBNKktvhHkpMOOnBXr/OQrO7zJheK6v1ktZ4AznXGwU?=
- =?us-ascii?Q?vC3ekGmchtMVkhE8vPi8Bk5TIpZeGyYoZPng65sDVPhRO3ggaKy5h0GDDRZ0?=
- =?us-ascii?Q?0m213CLERaoSLnddvk72ODVUfCIgyiakMatCSfCTQIP9oI9vpLJRXvyoM/7o?=
- =?us-ascii?Q?5TZY/GYVliAbINs6XvJCy+wnaQq0Vak+6c3a6tjpjCoNqKDB4ugMTAm24eTz?=
- =?us-ascii?Q?/5rUlohFIIGtjhV9nrUvtrWSsxTAY83Pi3Ztuhxq2fiUEM65IlPAJUI7iMZa?=
- =?us-ascii?Q?rswM06jRY1e9ntmwKTsYzYlFJi8DHYgMBPAv5igxv8iP0hbS8melDG7GMggD?=
- =?us-ascii?Q?bJjAnb+aDG4ly8Hr4o4NnJdqVWrPNVgi8YzjJ2dfQ92pgZdeWLtWbDHZs9Oz?=
- =?us-ascii?Q?XanYQPnmaFHAeM1nHi7Ntqgw/v37bwkaCCFiM9dTIosGOP6LgXS2jshwwkgz?=
- =?us-ascii?Q?vxBSa/hWrW6BO4IAdhOGNX9lVrCAEQq16qDYGvtbJUYj3WehRiP3ceHrhh0V?=
- =?us-ascii?Q?YNV+RVgTnArbUZTO49CgxhRmcxj+kRjYRm68owU3lOF0AvoNccUmU+UbHXJ7?=
- =?us-ascii?Q?FsWEOlkKgKnWmZjI3DW98wuLIMQhn5zZpszJ/FRdcwFYKUCJKGRd/AoDXf0A?=
- =?us-ascii?Q?9TFYxlnqeBM8uqRHMcPpup7fnDHX09k4EGC3okiXpJbB4l3VsdZw6j9J8oNq?=
- =?us-ascii?Q?laoei80w94DKnzcpIPVrwD9polah0xJhJoMgzNCZDPVEQhV5ecJmFHF+ZP5q?=
- =?us-ascii?Q?JBwrQ0XrZQR1PXhRnAjaM1eXE+Bl9bHoxKSaxyO66Ki+68smP9MrxA8NEDlR?=
- =?us-ascii?Q?TwDfeMewke84WvBomzWaZQcif89PBgkJRrdgcZ9bBi+vGS1h7st0D64+Danh?=
- =?us-ascii?Q?P7GI540AyXD1kr6UyfLnEd97ADwaPcW3WlllIZYBHm15rRidsF01fytCf5qF?=
- =?us-ascii?Q?OrLewnJhKx7AQ5XEVfgLOaB89GHCkeTg6anRgYcPXv3fFAWWPjAMNlo2PIea?=
- =?us-ascii?Q?JRyiSv9TrDCCeN00MMEN1J4zlL8HL42wRu7ALyiOblIdsv4Hl8FpcJ2g60ro?=
- =?us-ascii?Q?QVTOxdMDUMu/fhOMtTI=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f2c127a-b011-4f77-7f46-08d99ec8b1c2
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5520.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2021 12:51:46.7356
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XwV2pkFKPJx8hGRRJ3z4b2DY8W3BwAHDQbaovQ5oIsqhQrGEynfVLCx4d45ea6to
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5264
+In-Reply-To: <YYHdFLwGry58Q16F@T590>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 08:55:22AM +0300, Leon Romanovsky wrote:
-> From: Aharon Landau <aharonl@nvidia.com>
+On Wed 2021-11-03 08:51:32, Ming Lei wrote:
+> On Tue, Nov 02, 2021 at 04:56:10PM +0100, Petr Mladek wrote:
+> > On Tue 2021-11-02 22:59:30, Ming Lei wrote:
+> > > The completion finish is just for waiting release of the klp_patch
+> > > object, then releases module refcnt. We can simply drop the module
+> > > refcnt in the kobject release handler of klp_patch.
+> > > 
+> > > This way also helps to support allocating klp_patch from heap.
+
+First, I am sorry for confusion. The above description is correct.
+I does not say anything about that kobject_put() is synchronous.
+
+> > IMHO, this is wrong assumption. kobject_put() might do everyting
+> > asynchronously, see:
+
+I see that you are aware of this behavior.
+
+> >    kobject_put()
+> >      kobject_release()
+> >        INIT_DELAYED_WORK(&kobj->release, kobject_delayed_cleanup);
+> >        schedule_delayed_work(&kobj->release, delay);
+> > 
+> >    asynchronously:
+> > 
+> >      kobject_delayed_cleanup()
+> >       kobject_cleanup()
+> > 	__kobject_del()
 > 
-> The vendors set the IOVA of newly created MRs in rereg_user_mr, so don't
-> overwrite it. That ensures that this field is set only if IB_MR_REREG_TRANS
-> flag is provided.
+> OK, this is one generic kobject release vs. module unloading issue to
+> solve, not unique for klp module, and there should be lots of drivers
+> suffering from it.
+
+Yup, the problem is generic. It would be nice to have a generic
+solution. For example, add kobject_release_sync() that would return
+only when the object is really released.
+
+> > > --- a/kernel/livepatch/core.c
+> > > +++ b/kernel/livepatch/core.c
+> > > @@ -678,11 +678,6 @@ static void klp_free_patch_finish(struct klp_patch *patch)
+> > >  	 * cannot get enabled again.
+> > >  	 */
+> > >  	kobject_put(&patch->kobj);
+> > > -	wait_for_completion(&patch->finish);
+> > > -
+> > > -	/* Put the module after the last access to struct klp_patch. */
+> > > -	if (!patch->forced)
+> > > -		module_put(patch->mod);
+> > 
+> > klp_free_patch_finish() does not longer wait until the release
+> > callbacks are called.
+> > 
+> > klp_free_patch_finish() is called also in klp_enable_patch() error
+> > path.
+> > 
+> > klp_enable_patch() is called in module_init(). For example, see
+> > samples/livepatch/livepatch-sample.c
+> > 
+> > The module must not get removed until the release callbacks are called.
+> > Does the module loader check the module reference counter when
+> > module_init() fails?
 > 
-> Fixes: 6e0954b11c05 ("RDMA/uverbs: Allow drivers to create a new HW object during rereg_mr")
-> Signed-off-by: Aharon Landau <aharonl@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/core/uverbs_cmd.c | 3 ---
->  1 file changed, 3 deletions(-)
+> Good catch, that is really one corner case, in which the kobject has to
+> be cleaned up before returning from mod->init(), cause there can't be
+> module unloading in case of mod->init() failure.
 
-I rewrote the commit message:
+Just to be sure. We want to keep the safe behavior in this case.
+There are many situations when klp_enable() might fail. And the error
+handling must be safe.
 
-    RDMA/core: Require the driver to set the IOVA correctly during rereg_mr
-    
-    If the driver returns a new MR during rereg it has to fill it with the
-    IOVA from the proper source. If IB_MR_REREG_TRANS is set then the IOVA is
-    cmd.hca_va, otherwise the IOVA comes from the old MR. mlx5 for example has
-    two calls inside rereg_mr:
-    
-                    return create_real_mr(new_pd, umem, mr->ibmr.iova,
-                                          new_access_flags);
-    and
-                    return create_real_mr(new_pd, new_umem, iova, new_access_flags);
-    
-    Unconditionally overwriting the iova in the newly allocated MR will
-    corrupt the iova if the first path is used.
-    
-    Remove the redundant initializations from ib_uverbs_rereg_mr().
-    
-    Fixes: 6e0954b11c05 ("RDMA/uverbs: Allow drivers to create a new HW object during rereg_mr")
-    Link: https://lore.kernel.org/r/4b0a31bbc372842613286a10d7a8cbb0ee6069c7.1635400472.git.leonro@nvidia.com
-    Signed-off-by: Aharon Landau <aharonl@nvidia.com>
-    Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-    Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+In general, livepatch developers are very conservative.
+Livepatches are not easy to create. They are used only by people
+who really want to avoid reboot. We want to keep the livepatch kernel
+framework as safe as possible to avoid any potential damage.
 
-Jason
+> Yeah, it should be more related with async kobject_put().
+
+Yup, it would be nice to have some sychronous variant provided
+by kobject API.
+
+> Also looks it is reasonable to add check when cleaning module loading
+> failure.
+
+Which means that the completion has to stay until there is any generic
+solution. And this patch should be dropped for now.
+
+Best Regards,
+Petr
