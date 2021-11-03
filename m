@@ -2,107 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CC1443DC1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:38:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFAF443DC7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 08:41:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232112AbhKCHkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 03:40:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48676 "EHLO
+        id S232124AbhKCHnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 03:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231985AbhKCHkt (ORCPT
+        with ESMTP id S231985AbhKCHnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 03:40:49 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E3CC061203
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 00:38:13 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 71so1175325wma.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 00:38:13 -0700 (PDT)
+        Wed, 3 Nov 2021 03:43:50 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2086FC061714;
+        Wed,  3 Nov 2021 00:41:14 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id u1so2073309wru.13;
+        Wed, 03 Nov 2021 00:41:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=66uu6pMFwaoqtLUfKJfHxB8EI3iZ+Lon+COm99nenUY=;
-        b=HqJqilX/JQilM9KQgkgb6Bnwml/foCLiItRrTReaWcfjqBrlTDnshb6i6dlzTYL7lh
-         /t+dJVYNUu9ncUNo0g36PLv/a8EpQUBuaDSBLBBe8n7YrnE1r3icMXcHHXQFF+9M/0Nh
-         dtnOxBbsePavMlxkkRHudD4ouuPvLohjQvchhR0JV/fshrhsAB+I9TofAJdPuZhJZxLp
-         SJYzg895+76IsWC18Plfk2hqqk+RJ9iymFf7dS7JWxkG60vva4hKrM2UjZ20YlYfGt5o
-         KPFIYHIS+A1TpZXcuMRbBkPgYwz+J2n2gQjXileDnlwRKH6HB3BYAeuH+fnFAdHDKy3S
-         nQlA==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=rEUk3hjZbgaNLemqWe9Q44RKe4LYiJjMpeJVdUSL6cI=;
+        b=SzSEr4GzUIi1n53esxrhyzEL+hnpq51VXmuNzoRbJng2jp0GsMOv6J6G+0AUT7sKib
+         WaR12lSVZFAI5pPfRFm9i0NG3DAZEN4srkUw67DLwYHYnhu3wUCn780FuNIYfO0LzT40
+         1Nj9cfpioDcXN/7KmFeruIRM9XUofAP7KZhnQMRuqUkJhuz49XhNdRrR2FIzrb8Ah5f0
+         xSfFjOU9PBmgkriGn55A5Q6gxEwiETQJqtV1yx7WGqGX849wiHMl3lVPW3SrzN3LFSmT
+         tBrMKwDkH4oSdrSOYaHSJLP2+zRMOnlibiAZVi1+gMlRLxYDs5zu6QQoVEsDBOje/AjA
+         dS4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=66uu6pMFwaoqtLUfKJfHxB8EI3iZ+Lon+COm99nenUY=;
-        b=uqIYCrRp2NJFXL4qJkA9Ybrfdwc93MgYBh1fw7CXu/9BO7/mOpZoNUh7C2byaXKyaD
-         MUPNoiWWmxamJDH0JLwaQk03cXERJB8htFrFKM1ma29vFyAZH9BwgFV0f8vYcxgn+SO1
-         sPSb0H8orUVURiM20A/1UIOEt4PeO/4J/Z9axE/iSbZe/pQmQP6RHLh3XRIYPgnpMyDN
-         8qPy49IhwAJNwwIv/zJrtx7+G0NxjxMz6ADYBnRHzMNLGLkE2n2kM/ZDOfAKjm5WRLuA
-         0gDREGo5+c8MQvlXnIxKr/l1mu5e5TX6jFtWZeuHv10qJsMCVjFYdSJTaaE47v2tA95C
-         oP+A==
-X-Gm-Message-State: AOAM532oMQnEnbTofXFas9pv9LLOqWJYkRfl5/9rPVNOjlDTTWQ9dElf
-        ZtiiPP4p023V7eFgCKAww1R8pQ==
-X-Google-Smtp-Source: ABdhPJwpt5FRcgqWxnYtyGA/+iVpKBGh0lFBovYyOVnD0FcaaHzWWVyRsxSvVsU9OVYbHtuLoIFQaw==
-X-Received: by 2002:a1c:a711:: with SMTP id q17mr13231252wme.158.1635925092007;
-        Wed, 03 Nov 2021 00:38:12 -0700 (PDT)
-Received: from google.com ([95.148.6.174])
-        by smtp.gmail.com with ESMTPSA id l4sm1126960wrv.94.2021.11.03.00.38.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 00:38:11 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 07:38:10 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, asml.silence@gmail.com, axboe@kernel.dk,
-        linux-kernel@vger.kernel.org,
-        syzbot+b0003676644cf0d6acc4@syzkaller.appspotmail.com
-Subject: Re: [PATCH v5.10.y 1/1] Revert "io_uring: reinforce cancel on flush
- during exit"
-Message-ID: <YYI8YjbE5xTSLLn4@google.com>
-References: <20211102154930.2282421-1-lee.jones@linaro.org>
- <YYFfIk2CQaFI0Zdg@kroah.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=rEUk3hjZbgaNLemqWe9Q44RKe4LYiJjMpeJVdUSL6cI=;
+        b=F4+JdGU5/88RO+OLiI1m2zc/lDBPS1ymNR832P2tBao7fVSS4yYivFG1/VuFNhEL8G
+         E5UcQuEw+9T6tg0On+llcbwOm9nhjNy8eEqJAopTfE/OZEzIiUU1OesfcbvnhfvSFJl1
+         fENZan8r/DPEJMNgFsrFFYH/shoMjs7Qol+ssar+E7zq1OoF/ROyd3wX+0EVBspBngcE
+         5dfm4rWrFPJ6/4qIZCJ6QKSeDNX+GBZQaoSQV4xdV/Hk0fuAyNnF2nhLsbgQOYh8T7+Y
+         9Kxlm5aZb1xyb5atqdkrzv7ldmPZQ32CgZT6FsjJilodJQVaXpPnP92STomciBbtlhkJ
+         4x8Q==
+X-Gm-Message-State: AOAM5315Kj9IWAeZrlAagiRFlLYOk73lmrh914R/u2sdy0qCkT5S/byQ
+        /MJpF4AFwqL7D/1rWCpN9YyYOcOdKwj8v8FTmSQy28bgcFA2Ng==
+X-Google-Smtp-Source: ABdhPJyzngaH7X863kxwlhmnQIi8Eo36rd8szhefxmDQ/tTo5iBVuHnTW5qLSd4+auf3a1fe/uazHgl4Ex4uDlBMxLU=
+X-Received: by 2002:a05:6000:12d2:: with SMTP id l18mr42076950wrx.289.1635925272752;
+ Wed, 03 Nov 2021 00:41:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YYFfIk2CQaFI0Zdg@kroah.com>
+References: <20211102145642.724820-1-tongtiangen@huawei.com>
+ <CAJ+HfNg1Ki=1Zc+ThW-ynvtDo5=fNAUK-XV08-icz-nY9CNoUQ@mail.gmail.com>
+ <448599f5-e773-6ab5-bdaf-289f583edf01@huawei.com> <CAJ+HfNj_p36trWFzdyxVVgykrPVq=OvKcYq61w2QyKsHwa0gDw@mail.gmail.com>
+ <f3ed7e48-c565-9147-eca0-6298a36b3d61@huawei.com>
+In-Reply-To: <f3ed7e48-c565-9147-eca0-6298a36b3d61@huawei.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Wed, 3 Nov 2021 08:41:01 +0100
+Message-ID: <CAJ+HfNgze3=heV-ehvagHQFc5w6ymZ7XQMfKPzeWBo1M82+E-Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] riscv, bpf: fix some compiler error
+To:     tongtiangen <tongtiangen@huawei.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 02 Nov 2021, Greg KH wrote:
+On Wed, 3 Nov 2021 at 08:26, tongtiangen <tongtiangen@huawei.com> wrote:
+>
 
-> On Tue, Nov 02, 2021 at 03:49:30PM +0000, Lee Jones wrote:
-> > This reverts commit 88dbd085a51ec78c83dde79ad63bca8aa4272a9d.
-> > 
-> > Causes the following Syzkaller reported issue:
-> > 
-> > LINK: https://syzkaller.appspot.com/bug?extid=b0003676644cf0d6acc4
-> 
-> "Link:"?
+[...]
 
-Sure.
+>
+> Adding a function declaration in bpf_jit_comp64.c file cannot fix this co=
+mpiler error:
+>
 
-> > Reported-by: syzbot+b0003676644cf0d6acc4@syzkaller.appspotmail.com
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> 
-> Why does the patch here cause this error?  Is it due to the backport
-> being different than what went into Linus's tree, or something else?
+AFAIK, there are two issues:
 
-The patch is the same.
+1. https://lore.kernel.org/llvm/202110290334.2zdMyRq4-lkp@intel.com/
+2. https://lore.kernel.org/llvm/202111020610.9oy9Rr0G-lkp@intel.com/
 
-I need to do some more testing, but I assume it *was* also broken in
-Mainline until the whole section was rewritten.  Unfortunately, the
-patch which does that does not apply to v5.10.y.  Again, I can look
-into this, but I'm not quite sure how far the rabbit hole goes.
+1 is a warning when W=3D1 is enabled (missing prototype from -Wmissing-prot=
+otypes)
+2 is an error, since the function is not defined when building CONFIG_ARCH_=
+RV32I
 
-> The original commit did fix a real issue, what should we do now to
-> resolve that issue in 5.10.y instead?
+You are trying to address both issues in this patch.
 
-Ideally I'd like the original author and/or the domain experts to have
-a look and chime in here.
+> ....
+> when CONFIG_BPF_JIT and CONFIG_ARCH_64I is open, There is the following c=
+ompiler error (W=3D1):
+>    error: no previous prototype for 'rv_bpf_fixup_exception'
+> ....
+>
+> To fix this compiler error, you need to make a declaration in a header fi=
+le, which is also
+> the reason for introducing extable.h.
+>
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+No, you don't need the header file. The forward declaration is
+sufficient to get rid of the warning, and the adding CONFIG_ARCH_RV64I
+fixes the RV32I build.
+
+
+Bj=C3=B6rn
