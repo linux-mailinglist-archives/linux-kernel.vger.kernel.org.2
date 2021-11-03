@@ -2,93 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0044446C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2204446C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Nov 2021 18:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231359AbhKCRN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 13:13:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231211AbhKCRNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 13:13:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EC1361076;
-        Wed,  3 Nov 2021 17:11:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635959475;
-        bh=WsRWg5CcxOzuGYk3TbRj5+iaVwnIPkjCC9bWw72ciDA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qCfHjpJKYbewaAuNBwdCa9dT9LmiRfV1skX34KSobrsAEWSiiQqFGisTwJuJb8szj
-         Y6lypsMVfM64KNySmd3Z7DsJFKFILfZ8MKF2MKP3uOGVbxHcsskko5kThWsqcaCBOo
-         e5aNvioONzBbpDuW059nV8VL6AXRJ/Qt2Fd7UOYcf0wcFvy3i8h5HQjSGRiM1eM2xH
-         jxiqKy+pt8w3rwDmgEjIs3EV4VSmfsjiACNkwM7rP2qcg80MnCdBLU0yH3xB+9l2S0
-         W30FPVmnMa7l2tpfkU+JQSMpoZzqGgWTe5rcLym41agfRxoD3gj0QfLA2VnurSXCUq
-         dIK4AqmFpGs0w==
-Date:   Wed, 3 Nov 2021 19:11:08 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Kushal Kothari <kushalkothari285@gmail.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, mike.rapoport@gmail.com,
-        kushalkothari2850@gmail.com
-Subject: Re: [PATCH v2] mm: Fix ERROR:do not initialise statics to 0 or NULL
- in memblock.c
-Message-ID: <YYLCrAQnky9LM06s@kernel.org>
-References: <20211103124523.10670-1-kushalkothari285@gmail.com>
+        id S231211AbhKCRPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 13:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229698AbhKCRPC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 13:15:02 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0137DC061714;
+        Wed,  3 Nov 2021 10:12:26 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id o12so1555524qtv.4;
+        Wed, 03 Nov 2021 10:12:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9Yon/UNkvBv++0ELrNkjj8vCgTMl+XYKOntpW9f64Bw=;
+        b=HjYxBmcoWQoUGLuHCKKWEKX5kjOjXU6KFT8ycDPcR5Bas9M2mFqKPjupkNJ58t6CJB
+         YeOi0TDsj2ij/2mgqSHhaLPa8C1n/UvAYKEycX3B1WLXXUfs2FS1q27V3Lh1+/KzNkUJ
+         tD4fOQdX8uCaiQu+AFLzrgULjsdyEwAUPO+b1gryzbfrE06GL/Br9FYLcGsTzmUQKALY
+         i1kO1e/a/vNzdmNPvPA7Z2B++Fykd9xmlCCPshu342G1bF1W2XgM5F6cvNUYD71kThEJ
+         TBOzm3a11joNl4svA9qA81MH5EWs3eD0HCrR0WgDLRILc60+WDddSZ4O8SgAsAV43D+g
+         Uj7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9Yon/UNkvBv++0ELrNkjj8vCgTMl+XYKOntpW9f64Bw=;
+        b=jAVJhxj5WejsJ2zQPZqwqV80NoVoww3XbTh4SCGBIxBlZgQJNpSQ6VLbxx2HN4VaLX
+         jgcaRiMe1aG+vZALW1LnxSWHjx2S2gR+ZJ0dK+KNsbbAc6Lu06/CDSsH5h45ptIcFNL7
+         ZHbZAUYAi3Upi0qAEsco7ABYvSZPoxsa1xQZxqQgk3kNUAa/ua090UBWvrIrmOFf4mdZ
+         bPpHk/trNUkAqyqIhwtJJeiQKWnbA3bMCULiAX4onRI14PboDOCwsH/XNqDnhhNiLiCy
+         eeJiBJzgZUiqT8sb1F6XnSg+92Gwnn/5MFvohFcOWk6J98PvvEEtJiJR49ah3jxuXAnT
+         OQBw==
+X-Gm-Message-State: AOAM532gtYt9X1lh5b0LufVvFLIN/rYRqbdRK2kdJ3LwlzIVIKbHhxoP
+        mIgZjecfB/8RiQL0gWqd/izoDhiS4K6lpY9Khw==
+X-Google-Smtp-Source: ABdhPJxq2UgyOnxT41jhoN4lP4xkSptM+QHl4MmThU3e1NiJfPJjtIHydWt1Nf7ZCOHjBe91DzZk1RJ0JUxrxUpbM+M=
+X-Received: by 2002:ac8:5bd6:: with SMTP id b22mr25897430qtb.157.1635959545206;
+ Wed, 03 Nov 2021 10:12:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103124523.10670-1-kushalkothari285@gmail.com>
+References: <20211102021432.2807760-1-jevburton.kernel@gmail.com> <aa6081aa-9741-be05-8051-e01909662ff1@mojatatu.com>
+In-Reply-To: <aa6081aa-9741-be05-8051-e01909662ff1@mojatatu.com>
+From:   Joe Burton <jevburton.kernel@gmail.com>
+Date:   Wed, 3 Nov 2021 10:12:14 -0700
+Message-ID: <CAN22DihBMX=xTMeTQ2-Z8Fa6r=1ynKshbfhFJJ5Jb=-ww_9hDQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 0/3] Introduce BPF map tracing capability
+To:     Jamal Hadi Salim <jhs@mojatatu.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Petar Penkov <ppenkov@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Joe Burton <jevburton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+That's a good point. Since the probe is invoked before the update takes
+place, it would not be possible to account for the possibility that the
+update failed.
 
-On Wed, Nov 03, 2021 at 06:15:23PM +0530, Kushal Kothari wrote:
-> Subject: mm: Fix ERROR:do not initialise statics to 0 or NULL in memblock.c
+Unless someone wants the `pre update' hook, I'll simply adjust the
+existing hooks' semantics so that they are invoked after the update.
+As discussed, this better suits the intended use case.
 
-Please use mm/memblock: or just memblock: prefix for memblock patches.
-Besides, this patch does not fix a real error, it's only style fixup, so
-"Fix ERROR" should be omitted here.
-
-> The default value of static variable is zero and bool is false so
-> not need to set it here.
-> This patch fixes this ERROR in memblock.c
-> Error found with checkpatch.pl.
-
-Again, this is not a real error in the code but rather a coding style
-inconsistency. Please update the changelog text to reflect this.
- 
-> Signed-off-by: Kushal Kothari <kushalkothari285@gmail.com>
-> ---
-> 
-> Changes in v2: Correct the subject line and remove <stdbool.h> which isn't
-> necessary 
-> 
->  mm/memblock.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/memblock.c b/mm/memblock.c
-> index 5c3503c98b2f..9e2b7c1dbd03 100644
-> --- a/mm/memblock.c
-> +++ b/mm/memblock.c
-> @@ -152,10 +152,10 @@ static __refdata struct memblock_type *memblock_memory = &memblock.memory;
->  	} while (0)
->  
->  static int memblock_debug __initdata_memblock;
-> -static bool system_has_some_mirror __initdata_memblock = false;
-> +static bool system_has_some_mirror __initdata_memblock;
->  static int memblock_can_resize __initdata_memblock;
-> -static int memblock_memory_in_slab __initdata_memblock = 0;
-> -static int memblock_reserved_in_slab __initdata_memblock = 0;
-> +static int memblock_memory_in_slab __initdata_memblock;
-> +static int memblock_reserved_in_slab __initdata_memblock;
->  
->  static enum memblock_flags __init_memblock choose_memblock_flags(void)
->  {
-> -- 
-> 2.25.1
-> 
-
--- 
-Sincerely yours,
-Mike.
+On Wed, Nov 3, 2021 at 3:34 AM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
+>
+> On 2021-11-01 22:14, Joe Burton wrote:
+> > From: Joe Burton<jevburton@google.com>
+> >
+> > This is the third version of a patch series implementing map tracing.
+> >
+> > Map tracing enables executing BPF programs upon BPF map updates. This
+> > might be useful to perform upgrades of stateful programs; e.g., tracing
+> > programs can propagate changes to maps that occur during an upgrade
+> > operation.
+> >
+> > This version uses trampoline hooks to provide the capability.
+> > fentry/fexit/fmod_ret programs can attach to two new functions:
+> >          int bpf_map_trace_update_elem(struct bpf_map* map, void* key,
+> >                  void* val, u32 flags);
+> >          int bpf_map_trace_delete_elem(struct bpf_map* map, void* key);
+> >
+> > These hooks work as intended for the following map types:
+> >          BPF_MAP_TYPE_ARRAY
+> >          BPF_MAP_TYPE_PERCPU_ARRAY
+> >          BPF_MAP_TYPE_HASH
+> >          BPF_MAP_TYPE_PERCPU_HASH
+> >          BPF_MAP_TYPE_LRU_HASH
+> >          BPF_MAP_TYPE_LRU_PERCPU_HASH
+> >
+> > The only guarantee about the semantics of these hooks is that they execute
+> > before the operation takes place. We cannot call them with locks held
+> > because the hooked program might try to acquire the same locks. Thus they
+> > may be invoked in situations where the traced map is not ultimately
+> > updated.
+>
+> Sorry, I may have missed something obvious while staring at the patches,
+> but:
+> Dont you want the notification if the command actually was successful
+> on the map? If the command failed for whatever reason theres nothing
+> to synchronize? Unless you use that as an indicator to re-read the map?
+>
+> cheers,
+> jamal
