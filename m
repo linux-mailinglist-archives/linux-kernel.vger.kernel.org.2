@@ -2,147 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5FF4457F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD754457FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:08:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231964AbhKDRJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:09:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231751AbhKDRJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:09:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABFA1610D0;
-        Thu,  4 Nov 2021 17:06:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636045617;
-        bh=Q3KX2xW1zpDKC4VCay8v5kQG0LBSrEoOWXthl7qQ75M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P4QNo0A9mr/WTpiiuz3anR4j9IobduIOiuN/xQGGwGodsGglMp7u+GI4+jgH4a6Zp
-         RL3U8tfV10mmBYP03eKtftn6mE8TVeA+YO6q/DEb6BWlU2UuUql2D91YMKgYJyUy7J
-         YQsat4iwNWPuw8lpXwNBnpjj24ept6JctMfquT/l8eqyUFFzdSnqYISedKHgiZxVyv
-         GM+X2iALzm/6koRNVvQoaptIHOQkTlsB3E892euIfqhMwpVy49WC3etlfTro4w98jk
-         QwfEZ95nwWq2GGsGWSMHA4L2t3Uw+ImrMQAr6p9TYdi8UHiXQtyeISFgSlJUhXjbeZ
-         6mxCvtp5Q5h7Q==
-Date:   Thu, 4 Nov 2021 19:06:49 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Qian Cai <quic_qiancai@quicinc.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: Track no early_pgtable_alloc() for kmemleak
-Message-ID: <YYQTKRrDIJbkcplr@kernel.org>
-References: <20211104155623.11158-1-quic_qiancai@quicinc.com>
+        id S231450AbhKDRKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:10:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231186AbhKDRKj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 13:10:39 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DE9C061714;
+        Thu,  4 Nov 2021 10:08:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+        bh=5lMkOS6mdqYvX76YLp0lHMCiGc25jm9/Te+lsE56UR4=; b=lEfQifSXneL5FWvCpOeIubdwcS
+        8LeSf6tgQGAHL9mRAu5cvd46X33AckfG/Ki6acBx+9KXSYYeXBcm8o5pXvOZ5/hHnMkOVvHqKsQvE
+        jTv9nXCn2U+/3dDX8VUaKrUF6OjVo5DW+lJgPIqp4NEZGdssywtWjuSKz9ZZo4LcCTkoCfQfxu+U7
+        OPHXscK0LTmg3e3Pwh5Xo2/ioPlJpGEsBn7LHE8eFx5TSjL34xQntK/CqKlpD43+fR1OJsZJufinX
+        aqGZkGaCqZEeHjA0jYr5AMuOtILAzkCbpYAQ06RiO3CXmmL6/T5R3dmExFNTCzyP8LK2Rutb1dKCg
+        h8UztIxg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1migDJ-009ada-E1; Thu, 04 Nov 2021 17:07:45 +0000
+Date:   Thu, 4 Nov 2021 10:07:45 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>, martin.petersen@oracle.com
+Cc:     miquel.raynal@bootlin.com, hare@suse.de, jack@suse.cz, hch@lst.de,
+        song@kernel.org, dave.jiang@intel.com, richard@nod.at,
+        vishal.l.verma@intel.com, penguin-kernel@i-love.sakura.ne.jp,
+        tj@kernel.org, ira.weiny@intel.com, vigneshr@ti.com,
+        dan.j.williams@intel.com, ming.lei@redhat.com, efremov@linux.com,
+        linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Subject: Re: [PATCH v5 00/14] last set for add_disk() error handling
+Message-ID: <YYQTYctDjaxU2tkQ@bombadil.infradead.org>
+References: <20211103230437.1639990-1-mcgrof@kernel.org>
+ <163602655191.22491.10844091970007142957.b4-ty@kernel.dk>
+ <4764286a-99b4-39f7-ce5c-9e88cee1a538@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211104155623.11158-1-quic_qiancai@quicinc.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4764286a-99b4-39f7-ce5c-9e88cee1a538@kernel.dk>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 11:56:23AM -0400, Qian Cai wrote:
-> After switched page size from 64KB to 4KB on several arm64 servers here,
-> kmemleak starts to run out of early memory pool due to a huge number of
-> those early_pgtable_alloc() calls:
+On Thu, Nov 04, 2021 at 06:53:34AM -0600, Jens Axboe wrote:
+> On 11/4/21 5:49 AM, Jens Axboe wrote:
+> > On Wed, 3 Nov 2021 16:04:23 -0700, Luis Chamberlain wrote:
+> >> Jens,
+> >>
+> >> as requested, I've folded all pending changes into this series. This
+> >> v5 pegs on Christoph's reviewed-by tags and since I was respinning I
+> >> modified the ataprobe and floppy driver changes as he suggested.
+> >>
+> >> I think this is it. The world of floppy has been exciting for v5.16.
+> >>
+> >> [...]
+> > 
+> > Applied, thanks!
+> > 
+> > [01/14] nvdimm/btt: use goto error labels on btt_blk_init()
+> >         commit: 2762ff06aa49e3a13fb4b779120f4f8c12c39fd1
+> > [02/14] nvdimm/btt: add error handling support for add_disk()
+> >         commit: 16be7974ff5d0a5cd9f345571c3eac1c3f6ba6de
+> > [03/14] nvdimm/blk: avoid calling del_gendisk() on early failures
+> >         commit: b7421afcec0c77ab58633587ddc29d53e6eb95af
+> > [04/14] nvdimm/blk: add error handling support for add_disk()
+> >         commit: dc104f4bb2d0a652dee010e47bc89c1ad2ab37c9
+> > [05/14] nvdimm/pmem: cleanup the disk if pmem_release_disk() is yet assigned
+> >         commit: accf58afb689f81daadde24080ea1164ad2db75f
+> > [06/14] nvdimm/pmem: use add_disk() error handling
+> >         commit: 5a192ccc32e2981f721343c750b8cfb4c3f41007
+> > [07/14] z2ram: add error handling support for add_disk()
+> >         commit: 15733754ccf35c49d2f36a7ac51adc8b975c1c78
+> > [08/14] block/sunvdc: add error handling support for add_disk()
+> >         commit: f583eaef0af39b792d74e39721b5ba4b6948a270
+> > [09/14] mtd/ubi/block: add error handling support for add_disk()
+> >         commit: ed73919124b2e48490adbbe48ffe885a2a4c6fee
+> > [10/14] ataflop: remove ataflop_probe_lock mutex
+> >         commit: 4ddb85d36613c45bde00d368bf9f357bd0708a0c
+> > [11/14] block: update __register_blkdev() probe documentation
+> >         commit: 26e06f5b13671d194d67ae8e2b66f524ab174153
+> > [12/14] ataflop: address add_disk() error handling on probe
+> >         commit: 46a7db492e7a27408bc164cbe6424683e79529b0
+> > [13/14] floppy: address add_disk() error handling on probe
+> >         commit: ec28fcc6cfcd418d20038ad2c492e87bf3a9f026
+> > [14/14] block: add __must_check for *add_disk*() callers
+> >         commit: 1698712d85ec2f128fc7e7c5dc2018b5ed2b7cf6
 > 
->   kmemleak_alloc_phys()
->   memblock_alloc_range_nid()
->   memblock_phys_alloc_range()
->   early_pgtable_alloc()
->   init_pmd()
->   alloc_init_pud()
->   __create_pgd_mapping()
->   __map_memblock()
->   paging_init()
->   setup_arch()
->   start_kernel()
+> rivers/scsi/sd.c: In function ‘sd_probe’:
+> drivers/scsi/sd.c:3573:9: warning: ignoring return value of ‘device_add_disk’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+>  3573 |         device_add_disk(dev, gd, NULL);
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/scsi/sr.c: In function ‘sr_probe’:
+> drivers/scsi/sr.c:731:9: warning: ignoring return value of ‘device_add_disk’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+>   731 |         device_add_disk(&sdev->sdev_gendev, disk, NULL);
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > 
-> Increased the default value of DEBUG_KMEMLEAK_MEM_POOL_SIZE by 4 times
-> won't be enough for a server with 200GB+ memory. There isn't much
-> interesting to check memory leaks for those early page tables and those
-> early memory mappings should not reference to other memory. Hence, no
-> kmemleak false positives, and we can safely skip tracking those early
-> allocations from kmemleak like we did in the commit fed84c785270
-> ("mm/memblock.c: skip kmemleak for kasan_init()") without needing to
-> introduce complications to automatically scale the value depends on the
-> runtime memory size etc. After the patch, the default value of
-> DEBUG_KMEMLEAK_MEM_POOL_SIZE becomes sufficient again.
 > 
-> Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
-> ---
->  arch/arm64/mm/mmu.c      |  3 ++-
->  include/linux/memblock.h |  1 +
->  mm/memblock.c            | 10 +++++++---
->  3 files changed, 10 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index d77bf06d6a6d..4d3cfbaa92a7 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -96,7 +96,8 @@ static phys_addr_t __init early_pgtable_alloc(int shift)
->  	phys_addr_t phys;
->  	void *ptr;
->  
-> -	phys = memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
-> +	phys = memblock_phys_alloc_range(PAGE_SIZE, PAGE_SIZE, 0,
-> +					 MEMBLOCK_ALLOC_PGTABLE);
->  	if (!phys)
->  		panic("Failed to allocate page table page\n");
->  
-> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-> index 7df557b16c1e..de903055b01c 100644
-> --- a/include/linux/memblock.h
-> +++ b/include/linux/memblock.h
-> @@ -390,6 +390,7 @@ static inline int memblock_get_region_node(const struct memblock_region *r)
->  #define MEMBLOCK_ALLOC_ANYWHERE	(~(phys_addr_t)0)
->  #define MEMBLOCK_ALLOC_ACCESSIBLE	0
->  #define MEMBLOCK_ALLOC_KASAN		1
-> +#define MEMBLOCK_ALLOC_PGTABLE		2
->  
->  /* We are using top down, so it is safe to use 0 here */
->  #define MEMBLOCK_LOW_LIMIT 0
-> diff --git a/mm/memblock.c b/mm/memblock.c
-> index 659bf0ffb086..13bc56a641c0 100644
-> --- a/mm/memblock.c
-> +++ b/mm/memblock.c
-> @@ -287,7 +287,8 @@ static phys_addr_t __init_memblock memblock_find_in_range_node(phys_addr_t size,
->  {
->  	/* pump up @end */
->  	if (end == MEMBLOCK_ALLOC_ACCESSIBLE ||
-> -	    end == MEMBLOCK_ALLOC_KASAN)
-> +	    end == MEMBLOCK_ALLOC_KASAN ||
-> +	    end == MEMBLOCK_ALLOC_PGTABLE)
+> Dropping the last two patches...
 
-I think I'll be better to rename MEMBLOCK_ALLOC_KASAN to, say,
-MEMBLOCK_ALLOC_NOKMEMLEAK and use that for both KASAN and page table cases.
+Martin K Peterson has the respective patches needed queued up on his tree
+for v5.16:
 
-But more generally, we are going to hit this again and again.
-Couldn't we add a memblock allocation as a mean to get more memory to
-kmemleak::mem_pool_alloc()?
+https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git/commit/?h=5.16/scsi-staging&id=e9d658c2175b95a8f091b12ddefb271683aeacd9
+https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git/commit/?h=5.16/scsi-staging&id=2a7a891f4c406822801ecd676b076c64de072c9e
 
->  		end = memblock.current_limit;
->  
->  	/* avoid allocating the first page */
-> @@ -1387,8 +1388,11 @@ phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
->  	return 0;
->  
->  done:
-> -	/* Skip kmemleak for kasan_init() due to high volume. */
-> -	if (end != MEMBLOCK_ALLOC_KASAN)
-> +	/*
-> +	 * Skip kmemleak for kasan_init() and early_pgtable_alloc() due to high
-> +	 * volume.
-> +	 */
-> +	if (end != MEMBLOCK_ALLOC_KASAN && end != MEMBLOCK_ALLOC_PGTABLE)
->  		/*
->  		 * The min_count is set to 0 so that memblock allocated
->  		 * blocks are never reported as leaks. This is because many
-> -- 
-> 2.30.2
-> 
+Would the last patch be sent once that gets to Linus?
 
--- 
-Sincerely yours,
-Mike.
+Also curious why drop the last two patches instead just the last one for
+now?
+
+  Luis
