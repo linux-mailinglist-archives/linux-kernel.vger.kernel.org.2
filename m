@@ -2,42 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3224A4454EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:16:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9204454C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232110AbhKDOSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 10:18:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46648 "EHLO mail.kernel.org"
+        id S231808AbhKDORf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 10:17:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232096AbhKDORy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 10:17:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86D1661216;
-        Thu,  4 Nov 2021 14:15:15 +0000 (UTC)
+        id S231804AbhKDORN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 10:17:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B977610FD;
+        Thu,  4 Nov 2021 14:14:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636035316;
-        bh=U0IExnnfiuYi+y4qXSWvUTYEEwdL4LbmRpRLE+yGbxc=;
+        s=korg; t=1636035275;
+        bh=77wi4y/lbMM1urKFvGO8y+WMJbAl1RX+grqrk/Rarng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A96WGlXRh+ZFcdVtrO965N/N/7df00VGcg1EfPTx3YlDILRvbGEBtge7+m7niICbA
-         RYOb0si5sk4KA0rvuNIRaT+y/tjjSuK/ODt0CzEYCkWXQB+gVFfbioRNSPUo33PjaL
-         motmf6G+0EAAqdOumlDU6DQKE39oeupS9coss3MA=
+        b=U9zuRpAoMJvlk4Jmp51uo5acxsrWcwUxfUZoAIVK3Ml7yiS/3DiSwkarhU/cD4+ba
+         oYygJ4ozJ3gi0xL2Vi95ymoINlinSrjE7CLSoaSxBT9p7pmNEfld+624UxQ4yYcUjM
+         u/6KgvPY0EqbjeUdrpaNWCXa+dAS4rTXCDlkm7to=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Shi <shy828301@gmail.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Xu <peterx@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 07/16] mm: filemap: check if THP has hwpoisoned subpage for PMD page fault
-Date:   Thu,  4 Nov 2021 15:12:46 +0100
-Message-Id: <20211104141159.837426640@linuxfoundation.org>
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.14 16/16] ALSA: usb-audio: Add Audient iD14 to mixer map quirk table
+Date:   Thu,  4 Nov 2021 15:12:47 +0100
+Message-Id: <20211104141200.406373240@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211104141159.561284732@linuxfoundation.org>
-References: <20211104141159.561284732@linuxfoundation.org>
+In-Reply-To: <20211104141159.863820939@linuxfoundation.org>
+References: <20211104141159.863820939@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,165 +38,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Shi <shy828301@gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit eac96c3efdb593df1a57bb5b95dbe037bfa9a522 upstream.
+commit df0380b9539b04c1ae8854a984098da06d5f1e67 upstream.
 
-When handling shmem page fault the THP with corrupted subpage could be
-PMD mapped if certain conditions are satisfied.  But kernel is supposed
-to send SIGBUS when trying to map hwpoisoned page.
+This is a fix equivalent with the upstream commit df0380b9539b ("ALSA:
+usb-audio: Add quirk for Audient iD14"), adapted to the earlier
+kernels up to 5.14.y.  It adds the quirk entry with the old
+ignore_ctl_error flag to the usbmix_ctl_maps, instead.
 
-There are two paths which may do PMD map: fault around and regular
-fault.
+The original commit description says:
+    Audient iD14 (2708:0002) may get a control message error that
+    interferes the operation e.g. with alsactl.  Add the quirk to ignore
+    such errors like other devices.
 
-Before commit f9ce0be71d1f ("mm: Cleanup faultaround and finish_fault()
-codepaths") the thing was even worse in fault around path.  The THP
-could be PMD mapped as long as the VMA fits regardless what subpage is
-accessed and corrupted.  After this commit as long as head page is not
-corrupted the THP could be PMD mapped.
-
-In the regular fault path the THP could be PMD mapped as long as the
-corrupted page is not accessed and the VMA fits.
-
-This loophole could be fixed by iterating every subpage to check if any
-of them is hwpoisoned or not, but it is somewhat costly in page fault
-path.
-
-So introduce a new page flag called HasHWPoisoned on the first tail
-page.  It indicates the THP has hwpoisoned subpage(s).  It is set if any
-subpage of THP is found hwpoisoned by memory failure and after the
-refcount is bumped successfully, then cleared when the THP is freed or
-split.
-
-The soft offline path doesn't need this since soft offline handler just
-marks a subpage hwpoisoned when the subpage is migrated successfully.
-But shmem THP didn't get split then migrated at all.
-
-Link: https://lkml.kernel.org/r/20211020210755.23964-3-shy828301@gmail.com
-Fixes: 800d8c63b2e9 ("shmem: add huge pages support")
-Signed-off-by: Yang Shi <shy828301@gmail.com>
-Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Suggested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Peter Xu <peterx@redhat.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/page-flags.h |   23 +++++++++++++++++++++++
- mm/huge_memory.c           |    2 ++
- mm/memory-failure.c        |   14 ++++++++++++++
- mm/memory.c                |    9 +++++++++
- mm/page_alloc.c            |    4 +++-
- 5 files changed, 51 insertions(+), 1 deletion(-)
+ sound/usb/mixer_maps.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -169,6 +169,15 @@ enum pageflags {
- 	/* Compound pages. Stored in first tail page's flags */
- 	PG_double_map = PG_workingset,
- 
-+#ifdef CONFIG_MEMORY_FAILURE
-+	/*
-+	 * Compound pages. Stored in first tail page's flags.
-+	 * Indicates that at least one subpage is hwpoisoned in the
-+	 * THP.
-+	 */
-+	PG_has_hwpoisoned = PG_mappedtodisk,
-+#endif
-+
- 	/* non-lru isolated movable page */
- 	PG_isolated = PG_reclaim,
- 
-@@ -667,6 +676,20 @@ static inline int PageTransCompoundMap(s
- 	       atomic_read(compound_mapcount_ptr(head));
- }
- 
-+#if defined(CONFIG_MEMORY_FAILURE) && defined(CONFIG_TRANSPARENT_HUGEPAGE)
-+/*
-+ * PageHasHWPoisoned indicates that at least one subpage is hwpoisoned in the
-+ * compound page.
-+ *
-+ * This flag is set by hwpoison handler.  Cleared by THP split or free page.
-+ */
-+PAGEFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
-+	TESTSCFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
-+#else
-+PAGEFLAG_FALSE(HasHWPoisoned)
-+	TESTSCFLAG_FALSE(HasHWPoisoned)
-+#endif
-+
- /*
-  * PageTransTail returns true for both transparent huge pages
-  * and hugetlbfs pages, so it should only be called when it's known
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2464,6 +2464,8 @@ static void __split_huge_page(struct pag
- 		xa_lock(&swap_cache->i_pages);
- 	}
- 
-+	ClearPageHasHWPoisoned(head);
-+
- 	for (i = nr - 1; i >= 1; i--) {
- 		__split_huge_page_tail(head, i, lruvec, list);
- 		/* Some pages can be beyond i_size: drop them from page cache */
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1367,6 +1367,20 @@ int memory_failure(unsigned long pfn, in
- 	}
- 
- 	if (PageTransHuge(hpage)) {
-+		/*
-+		 * The flag must be set after the refcount is bumped
-+		 * otherwise it may race with THP split.
-+		 * And the flag can't be set in get_hwpoison_page() since
-+		 * it is called by soft offline too and it is just called
-+		 * for !MF_COUNT_INCREASE.  So here seems to be the best
-+		 * place.
-+		 *
-+		 * Don't need care about the above error handling paths for
-+		 * get_hwpoison_page() since they handle either free page
-+		 * or unhandlable page.  The refcount is bumped iff the
-+		 * page is a valid handlable page.
-+		 */
-+		SetPageHasHWPoisoned(hpage);
- 		if (try_to_split_thp_page(p, "Memory Failure") < 0) {
- 			action_result(pfn, MF_MSG_UNSPLIT_THP, MF_IGNORED);
- 			return -EBUSY;
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3921,6 +3921,15 @@ vm_fault_t finish_fault(struct vm_fault
- 		page = vmf->page;
- 
- 	/*
-+	 * Just backoff if any subpage of a THP is corrupted otherwise
-+	 * the corrupted page may mapped by PMD silently to escape the
-+	 * check.  This kind of THP just can be PTE mapped.  Access to
-+	 * the corrupted subpage should trigger SIGBUS as expected.
-+	 */
-+	if (unlikely(PageHasHWPoisoned(page)))
-+		return ret;
-+
-+	/*
- 	 * check even for read faults because we might have lost our CoWed
- 	 * page
- 	 */
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1232,8 +1232,10 @@ static __always_inline bool free_pages_p
- 
- 		VM_BUG_ON_PAGE(compound && compound_order(page) != order, page);
- 
--		if (compound)
-+		if (compound) {
- 			ClearPageDoubleMap(page);
-+			ClearPageHasHWPoisoned(page);
-+		}
- 		for (i = 1; i < (1 << order); i++) {
- 			if (compound)
- 				bad += free_tail_pages_check(page, page + i);
+--- a/sound/usb/mixer_maps.c
++++ b/sound/usb/mixer_maps.c
+@@ -529,6 +529,10 @@ static const struct usbmix_ctl_map usbmi
+ 		.map = maya44_map,
+ 	},
+ 	{
++		.id = USB_ID(0x2708, 0x0002), /* Audient iD14 */
++		.ignore_ctl_error = 1,
++	},
++	{
+ 		/* KEF X300A */
+ 		.id = USB_ID(0x27ac, 0x1000),
+ 		.map = scms_usb3318_map,
 
 
