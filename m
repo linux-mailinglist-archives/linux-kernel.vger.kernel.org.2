@@ -2,119 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF9C444EAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:14:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EC97444EAE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:16:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbhKDGRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:17:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44482 "EHLO
+        id S230084AbhKDGTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:19:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbhKDGQ5 (ORCPT
+        with ESMTP id S230087AbhKDGS6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:16:57 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D264FC061714;
-        Wed,  3 Nov 2021 23:14:19 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id s24so5633506plp.0;
-        Wed, 03 Nov 2021 23:14:19 -0700 (PDT)
+        Thu, 4 Nov 2021 02:18:58 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80AC5C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:16:21 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id p8so3224066pgh.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 23:16:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=CY0g4bler+redJ2KBxth7Hep1EHLAUy4HJiTBP93euQ=;
-        b=TLADRbDEwJMELEE5PRnFFOR0GmsRkvuI9eTwDfiwKSvjbApsHtjg6qPmAM/N/OyTLB
-         vnKMWV2IlVfFBbgA0AulJs4I3qJJhjnf1AQeMlHEadNSDv1gHiTGEFP9ApepPbivyArv
-         081EHncKrikTKfMp0AubA/snl2q/mjeJzB5vviLbeGtSjs5oVt74v++TiX8nmqNIrEYc
-         ZlAjkvs4ZMc0XuXQGDWFj42W5qxxzJJCWm9pND67MEYIc/uiM5KpjcesD82Vtp4BehVY
-         0YUX5CXTMw563Fdd6ZTcXYLOoqJQYAQfojxV2kl4wGhNjWk4+VDAbawRmRJU4+valNZ4
-         116g==
+        bh=ZbXeBeFVIbJL0zVsHbJWS69VKZbvaHQJ1NJ1nNYzH5o=;
+        b=K7cY9L7BZ4EijItlsj5l8Wfek38LgcdaLzP68W4+UDaN1Vaq9b+auzJGcap4hOKuEi
+         Js3kd/FczL7O0+x+VP+H1BKlQc5P25GB9Cm+TRR3qoXANn0M63eH8hoHHN1Bk35d4yCS
+         Jq2SG6NdnKxEOLf/T40PgdXmJBUdVIAHNujH4WG3YnEY1wZlCe4gEG6vE/vupuJys4//
+         N2ZMleW6W9Pr1hSHjKjg6V4Ru0SZm6QHdSUmXc/a5g3Dgcn72sSYSjlBIc3D+ae3JSl6
+         EDPRhGjvmSta6afufqTZ+XiySZH/1Hej9yV7JTRuxAehTraN8QNncxD/Uct08DWO/Ohh
+         LXPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=CY0g4bler+redJ2KBxth7Hep1EHLAUy4HJiTBP93euQ=;
-        b=zvjBCzlm8mLbtLz95XAI3CLjNo2Hcb3xT899fDv2ZA5zSi3JYh6G9WtteUt7gVcH8S
-         fUXx2osRm0b8G+HhSdIJYaPgZ49+RGsE3kaNHuzVqM9hcteVMOMwOKuJwUhIgXMZTPpW
-         xFprBPOKZ1l8SKz/PiEfmuf5kEbg9/pP3OsbROpc8kZYiuX9I2ZCoqmi+ZEUicn3yF8X
-         RydBjdTR34Nf18e+QWRquV6UvSPvzwONQ51UCbgqhxolfNw1ZsIK0Wd6LmAeVoSH8KuH
-         58rLanh5/eUr8cvQHkvIB65Q1cpuaxJXEBn5sbD22YJfFJoa+PK+lRbCBJLlsxxV6uJL
-         QZwQ==
-X-Gm-Message-State: AOAM533LlsyNpX/vvnfR6rPhtNOGOaz06GiAS5b16HtJSEnkxMs+ZRdJ
-        uCmFaCE7srRZY3g6iFjSHIM=
-X-Google-Smtp-Source: ABdhPJx+n5bvNcg2GHxRzhM+4VzxoL0ifwYnNMCzkEOD29PyVMAaGBLR4vEabpypiksyW4I348UMCQ==
-X-Received: by 2002:a17:90b:33d0:: with SMTP id lk16mr15661261pjb.66.1636006459401;
-        Wed, 03 Nov 2021 23:14:19 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id fw21sm6588312pjb.25.2021.11.03.23.14.17
+        bh=ZbXeBeFVIbJL0zVsHbJWS69VKZbvaHQJ1NJ1nNYzH5o=;
+        b=aWDQXe9ZJa/f8TowAArQpPYF2EpnFVKRMlj9CEwefQMWrWAWZv3VYrORNEe0WbiD45
+         8s/6rLA1ByZhe0KqzMa7l7WoVsDjPsbDhCgREeWYxpq6/I9hec94zSN3uDgkKQkdzSha
+         62yCv9dvgWvGSpSDKKqxlLRHD7iX4xyP/BL6lSp43yMpUpdTXQmlk0+Y2BD5ajbzq7d3
+         iqBEtnsX6RNSoashYcOE8Sotm7A9Ol/AiTIw/3NwsAdRT9a//QMF7v/ktJLMLgwds+JD
+         wRrpvBv8PoJ7491gnqxldur3dewoDNAuXSmBEpZQ0Tn/945ABVj7ajdHc0Kp0tMr0nSW
+         QM/w==
+X-Gm-Message-State: AOAM530xM1E9H20iUdaHGo4mnKpyxP1+INMGImrsr0ADr0bYEbMEBxQK
+        hLNQeV+qDf+kKWcDYOUSBuk=
+X-Google-Smtp-Source: ABdhPJzhSB0snaFT7es3crYVFnnajooOY3O+Pcbo0ctPmgnoA16RmNZ+1vxXkIEoNPwFaNclz8/ceQ==
+X-Received: by 2002:a62:30c7:0:b0:44c:1ec3:bc31 with SMTP id w190-20020a6230c7000000b0044c1ec3bc31mr50673921pfw.21.1636006581002;
+        Wed, 03 Nov 2021 23:16:21 -0700 (PDT)
+Received: from debian11-dev-61.localdomain (192.243.120.180.16clouds.com. [192.243.120.180])
+        by smtp.gmail.com with ESMTPSA id k4sm3235258pjl.20.2021.11.03.23.16.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 23:14:19 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: luo.penghao@zte.com.cn
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] mac80211: Remove unused assignment statements
-Date:   Thu,  4 Nov 2021 06:14:11 +0000
-Message-Id: <20211104061411.1744-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Wed, 03 Nov 2021 23:16:20 -0700 (PDT)
+From:   davidcomponentone@gmail.com
+X-Google-Original-From: yang.guang5@zte.com.cn
+To:     jdike@addtoit.com
+Cc:     davidcomponentone@gmail.com, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes.berg@intel.com,
+        yang.guang5@zte.com.cn, linux-um@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] um: use swap() to make code cleaner
+Date:   Thu,  4 Nov 2021 14:16:08 +0800
+Message-Id: <20211104061609.1496503-1-yang.guang5@zte.com.cn>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: luo penghao <luo.penghao@zte.com.cn>
+From: Yang Guang <yang.guang5@zte.com.cn>
 
-The assignment of these three local variables in the file will not
-be used in the corresponding functions, so they should be deleted.
-
-The clang_analyzer complains as follows:
-
-net/mac80211/wpa.c:689:2 warning:
-net/mac80211/wpa.c:883:2 warning:
-net/mac80211/wpa.c:452:2 warning:
-
-Value stored to 'hdr' is never read
+Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
+opencoding it.
 
 Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
+Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
 ---
- net/mac80211/wpa.c | 4 ----
- 1 file changed, 4 deletions(-)
+ arch/um/os-Linux/sigio.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/net/mac80211/wpa.c b/net/mac80211/wpa.c
-index 4eed23e..7ed0d26 100644
---- a/net/mac80211/wpa.c
-+++ b/net/mac80211/wpa.c
-@@ -449,7 +449,6 @@ static int ccmp_encrypt_skb(struct ieee80211_tx_data *tx, struct sk_buff *skb,
- 	    (info->control.hw_key->flags & IEEE80211_KEY_FLAG_PUT_IV_SPACE))
- 		return 0;
+diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
+index 9e71794839e8..1eb15f3cfdc8 100644
+--- a/arch/um/os-Linux/sigio.c
++++ b/arch/um/os-Linux/sigio.c
+@@ -50,7 +50,7 @@ static struct pollfds all_sigio_fds;
  
--	hdr = (struct ieee80211_hdr *) pos;
- 	pos += hdrlen;
- 
- 	pn64 = atomic64_inc_return(&key->conf.tx_pn);
-@@ -686,7 +685,6 @@ static int gcmp_encrypt_skb(struct ieee80211_tx_data *tx, struct sk_buff *skb)
- 	    (info->control.hw_key->flags & IEEE80211_KEY_FLAG_PUT_IV_SPACE))
- 		return 0;
- 
--	hdr = (struct ieee80211_hdr *)pos;
- 	pos += hdrlen;
- 
- 	pn64 = atomic64_inc_return(&key->conf.tx_pn);
-@@ -881,8 +879,6 @@ ieee80211_crypto_cs_decrypt(struct ieee80211_rx_data *rx)
- 	if (skb_linearize(rx->skb))
- 		return RX_DROP_UNUSABLE;
- 
--	hdr = (struct ieee80211_hdr *)rx->skb->data;
--
- 	rx_pn = key->u.gen.rx_pn[qos_tid];
- 	skb_pn = rx->skb->data + hdrlen + cs->pn_off;
- 
+ static int write_sigio_thread(void *unused)
+ {
+-	struct pollfds *fds, tmp;
++	struct pollfds *fds;
+ 	struct pollfd *p;
+ 	int i, n, respond_fd;
+ 	char c;
+@@ -77,9 +77,7 @@ static int write_sigio_thread(void *unused)
+ 					       "write_sigio_thread : "
+ 					       "read on socket failed, "
+ 					       "err = %d\n", errno);
+-				tmp = current_poll;
+-				current_poll = next_poll;
+-				next_poll = tmp;
++				swap(current_poll, next_poll);
+ 				respond_fd = sigio_private[1];
+ 			}
+ 			else {
 -- 
-2.15.2
-
+2.30.2
 
