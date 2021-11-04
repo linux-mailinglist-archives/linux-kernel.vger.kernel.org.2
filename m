@@ -2,32 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 670AF4454E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72FAB4454E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:16:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbhKDOSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 10:18:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46008 "EHLO mail.kernel.org"
+        id S232079AbhKDOSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 10:18:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231848AbhKDORt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 10:17:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B925A611EF;
-        Thu,  4 Nov 2021 14:15:10 +0000 (UTC)
+        id S232073AbhKDORv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 10:17:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D9AA6120E;
+        Thu,  4 Nov 2021 14:15:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636035311;
-        bh=aJwTCCsV8Trl17W6V1f2HGrRqnHcLj2QEYuk5S0JB30=;
+        s=korg; t=1636035313;
+        bh=ujny/hXFp3AvZh0QyayQ+Hh5MkuhK45jjzRAg3IQCKY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P9OM43WMFnRAFghVhojgTcui0h/6SCjSR3tuiIbB/0Tb2vCJYxKCNWI77ccnSWgLN
-         VPjyURwQkSbiNFZVPLIRBeoSpInPCpOAdnlekty5bzxOTU1NZF5jTLlZ+cqw6QS2f/
-         Igp/eP6xSi3aAglS8x96AGTrtAPY/uXRvB+EF9H8=
+        b=DOZ2nKdZSbnxjNQM4v/NBja4FZ9M2B9AZzU2AvNPLvHdeqP7KdUmVIgLzWp1Qz8CM
+         P3tyHpEUR3/K2u58O0RhRXnEbyv8QdLVDirgnBemD+1OUUJvxuOdHyGm+yYrEentQ7
+         d/dM6cyGZYLIjb0Vf4LKu7a/+h9bzXoJJciZZD4A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yuiko Oshino <yuiko.oshino@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 05/16] net: ethernet: microchip: lan743x: Fix skb allocation failure
-Date:   Thu,  4 Nov 2021 15:12:44 +0100
-Message-Id: <20211104141159.748367268@linuxfoundation.org>
+        stable@vger.kernel.org, Yang Shi <shy828301@gmail.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 06/16] mm: hwpoison: remove the unnecessary THP check
+Date:   Thu,  4 Nov 2021 15:12:45 +0100
+Message-Id: <20211104141159.791436498@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211104141159.561284732@linuxfoundation.org>
 References: <20211104141159.561284732@linuxfoundation.org>
@@ -39,59 +46,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuiko Oshino <yuiko.oshino@microchip.com>
+From: Yang Shi <shy828301@gmail.com>
 
-commit e8684db191e4164f3f5f3ad7dec04a6734c25f1c upstream.
+commit c7cb42e94473aafe553c0f2a3d8ca904599399ed upstream.
 
-The driver allocates skb during ndo_open with GFP_ATOMIC which has high chance of failure when there are multiple instances.
-GFP_KERNEL is enough while open and use GFP_ATOMIC only from interrupt context.
+When handling THP hwpoison checked if the THP is in allocation or free
+stage since hwpoison may mistreat it as hugetlb page.  After commit
+415c64c1453a ("mm/memory-failure: split thp earlier in memory error
+handling") the problem has been fixed, so this check is no longer
+needed.  Remove it.  The side effect of the removal is hwpoison may
+report unsplit THP instead of unknown error for shmem THP.  It seems not
+like a big deal.
 
-Fixes: 23f0703c125b ("lan743x: Add main source files for new lan743x driver")
-Signed-off-by: Yuiko Oshino <yuiko.oshino@microchip.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+The following patch "mm: filemap: check if THP has hwpoisoned subpage
+for PMD page fault" depends on this, which fixes shmem THP with
+hwpoisoned subpage(s) are mapped PMD wrongly.  So this patch needs to be
+backported to -stable as well.
+
+Link: https://lkml.kernel.org/r/20211020210755.23964-2-shy828301@gmail.com
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+Suggested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/microchip/lan743x_main.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ mm/memory-failure.c |   14 --------------
+ 1 file changed, 14 deletions(-)
 
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -1963,13 +1963,13 @@ static int lan743x_rx_next_index(struct
- 	return ((++index) % rx->ring_size);
- }
- 
--static struct sk_buff *lan743x_rx_allocate_skb(struct lan743x_rx *rx)
-+static struct sk_buff *lan743x_rx_allocate_skb(struct lan743x_rx *rx, gfp_t gfp)
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -956,20 +956,6 @@ static int get_hwpoison_page(struct page
  {
- 	int length = 0;
+ 	struct page *head = compound_head(page);
  
- 	length = (LAN743X_MAX_FRAME_SIZE + ETH_HLEN + 4 + RX_HEAD_PADDING);
- 	return __netdev_alloc_skb(rx->adapter->netdev,
--				  length, GFP_ATOMIC | GFP_DMA);
-+				  length, gfp);
- }
- 
- static void lan743x_rx_update_tail(struct lan743x_rx *rx, int index)
-@@ -2141,7 +2141,8 @@ static int lan743x_rx_process_packet(str
- 			struct sk_buff *new_skb = NULL;
- 			int packet_length;
- 
--			new_skb = lan743x_rx_allocate_skb(rx);
-+			new_skb = lan743x_rx_allocate_skb(rx,
-+							  GFP_ATOMIC | GFP_DMA);
- 			if (!new_skb) {
- 				/* failed to allocate next skb.
- 				 * Memory is very low.
-@@ -2377,7 +2378,8 @@ static int lan743x_rx_ring_init(struct l
- 
- 	rx->last_head = 0;
- 	for (index = 0; index < rx->ring_size; index++) {
--		struct sk_buff *new_skb = lan743x_rx_allocate_skb(rx);
-+		struct sk_buff *new_skb = lan743x_rx_allocate_skb(rx,
-+								   GFP_KERNEL);
- 
- 		ret = lan743x_rx_init_ring_element(rx, index, new_skb);
- 		if (ret)
+-	if (!PageHuge(head) && PageTransHuge(head)) {
+-		/*
+-		 * Non anonymous thp exists only in allocation/free time. We
+-		 * can't handle such a case correctly, so let's give it up.
+-		 * This should be better than triggering BUG_ON when kernel
+-		 * tries to touch the "partially handled" page.
+-		 */
+-		if (!PageAnon(head)) {
+-			pr_err("Memory failure: %#lx: non anonymous thp\n",
+-				page_to_pfn(page));
+-			return 0;
+-		}
+-	}
+-
+ 	if (get_page_unless_zero(head)) {
+ 		if (head == compound_head(page))
+ 			return 1;
 
 
