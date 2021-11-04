@@ -2,63 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BCCB4451E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1A24451FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbhKDLDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 07:03:30 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:40686 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230148AbhKDLD3 (ORCPT
+        id S231305AbhKDLLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 07:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231237AbhKDLLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 07:03:29 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0Uv1XgE-_1636023647;
-Received: from localhost.localdomain(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0Uv1XgE-_1636023647)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 04 Nov 2021 19:00:48 +0800
-From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
-To:     helgaas@kernel.org
-Cc:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
-        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
-        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
-        bhelgaas@google.com, ying.huang@intel.com,
-        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        xuesong.chen@linux.alibaba.com
-Subject: [PATCH v5 4/4] PCI: MCFG: Add the MCFG entry parse log message
-Date:   Thu,  4 Nov 2021 19:00:40 +0800
-Message-Id: <20211104110040.47815-1-xuesong.chen@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20211104105715.47396-1-xuesong.chen@linux.alibaba.com>
-References: <20211104105715.47396-1-xuesong.chen@linux.alibaba.com>
+        Thu, 4 Nov 2021 07:11:30 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A073C06127A
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 04:08:52 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id bk22so5222196qkb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 04:08:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language
+         :from:to:cc:references:in-reply-to:content-transfer-encoding;
+        bh=vkv7mK8GC9ZbiF8Xd4Fzv7sfP3E/qraN1xOduxBglDQ=;
+        b=vf6V+2/Wx6uIJEQ8LHVUXCyk5sHw1cOUa/yE1AM3Ct4X10Y/JaDfphVWsXJeGEeo2D
+         kPfS8EPiq8NgME3H6IRmFi9rA5Kxe/JIvw8bQbraXnWF5eIhK5z30N1wu4quMaFo6PU5
+         pMf050tSAK6OYLTNNQF4BHgsdijrzyOY0vgjO2LGja3v9npFTSPig6tQOOoSPcFgUejy
+         k+j+JaS4wdIgewgtcWAXKZJqAj0wGjHDuJ27OQnOdg5i4tdj0KQd6uObpRpJS6aViaxt
+         E1KK4xLUuW1J9ykrktmK9Y09s+skZ1q8eyPlDuUav4nJTxGsJd0PcJqEZstX+vyygQ93
+         eioQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=vkv7mK8GC9ZbiF8Xd4Fzv7sfP3E/qraN1xOduxBglDQ=;
+        b=MkSxbgW7KgMAcE3zRU+GD28kdTuBsXLjHimN3WsFn5gREJQzlJfyHfDt0jT7okjs1N
+         t8I7Nq5QTyDUgs3tqrCztJIWcqgxavK8Jg2W9kRf64UgDM/elKV82PXgEiXXACAud10b
+         UIV+SZGeiuo6yIdsE4g05xdzR/m986/zjPl0rvkbUVjmktzGhkRvqd+cEQzxe/4+Vhl9
+         oDobzTwK+sM00F7rLMcIIpVAp8rLSom4Fpj39K2bu9/5fsQsn2pNtoGE1ojI5vIxY/WP
+         +yAIAX28lDDZAX8NyWfO05yT2ygpBRjnQaCD/3ERxOBGQ/7VshDdwE1imhJHB37hBj+F
+         ZGYw==
+X-Gm-Message-State: AOAM53294+MDdT1czUVlGSTvOsa7/EmRRtI7a5k4cgPI6uOZEI7b/OXp
+        Dx4BYtSRcGLJTDkyr1kvduF3CA==
+X-Google-Smtp-Source: ABdhPJxmZ/u/zmRjb0jSoonPklzAsyVXDqZ7EMkfkReN3YuzatPtRe+HIhZDcW2aKNE2Jw4JN6q2RA==
+X-Received: by 2002:a05:620a:430b:: with SMTP id u11mr40142573qko.473.1636024131797;
+        Thu, 04 Nov 2021 04:08:51 -0700 (PDT)
+Received: from [192.168.1.173] (bras-base-kntaon1617w-grc-33-142-112-185-132.dsl.bell.ca. [142.112.185.132])
+        by smtp.googlemail.com with ESMTPSA id o14sm3735117qtv.34.2021.11.04.04.08.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Nov 2021 04:08:50 -0700 (PDT)
+Message-ID: <1376ab2d-f412-f001-a173-75af12f4ce98@mojatatu.com>
+Date:   Thu, 4 Nov 2021 07:08:49 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [RFC PATCH v3 0/3] Introduce BPF map tracing capability
+Content-Language: en-US
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+To:     Joe Burton <jevburton.kernel@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Petar Penkov <ppenkov@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Joe Burton <jevburton@google.com>
+References: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
+ <aa6081aa-9741-be05-8051-e01909662ff1@mojatatu.com>
+ <CAN22DihBMX=xTMeTQ2-Z8Fa6r=1ynKshbfhFJJ5Jb=-ww_9hDQ@mail.gmail.com>
+ <4e602c87-9764-829c-4763-38f4ac057b7c@mojatatu.com>
+In-Reply-To: <4e602c87-9764-829c-4763-38f4ac057b7c@mojatatu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To make it to be consistent with x86's MMCONFIG and ease the
-disection of PCI MCFG entry parse process.
+On 2021-11-04 06:59, Jamal Hadi Salim wrote:
+> On 2021-11-03 13:12, Joe Burton wrote:
+>> That's a good point. Since the probe is invoked before the update takes
+>> place, it would not be possible to account for the possibility that the
+>> update failed.
+>>
+>> Unless someone wants the `pre update' hook, I'll simply adjust the
+>> existing hooks' semantics so that they are invoked after the update.
+>> As discussed, this better suits the intended use case.
+>>
+> 
+> If the goal is to synchronize state between two maps (if i understood
+> correctly the intent) then it is more useful to go post-update.
+> 
 
-Signed-off-by: Xuesong Chen <xuesong.chen@linux.alibaba.com>
----
- drivers/acpi/pci_mcfg.c | 3 +++
- 1 file changed, 3 insertions(+)
+To complete that thought: Only positive results are interesting.
+For example if the command was to delete an entry which doesnt
+exist there is no point in reporting that (or is there?).
+OTOH, a successful delete is useful...
 
-diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
-index b5ab866..99c9bf5 100644
---- a/drivers/acpi/pci_mcfg.c
-+++ b/drivers/acpi/pci_mcfg.c
-@@ -290,6 +290,9 @@ static __init int pci_mcfg_parse(struct acpi_table_header *header)
- 		e->res.end = e->address + PCI_MMCFG_BUS_OFFSET(e->end_bus + 1) - 1;
- 		e->res.flags = IORESOURCE_MEM | IORESOURCE_BUSY;
- 		list_add(&e->list, &pci_mmcfg_list);
-+		pr_info("MCFG entry for domain %04x [bus %02x-%02x] at %pR "
-+			"(base %#lx)\n", e->segment, e->start_bus,
-+			e->end_bus, &e->res, (unsigned long)e->address);
- 	}
- 
- #ifdef CONFIG_PCI_QUIRKS
--- 
-2.9.5
-
+cheers,
+jamal
