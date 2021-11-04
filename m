@@ -2,278 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535BF445730
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:22:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2900445732
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231804AbhKDQYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 12:24:34 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37214 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231751AbhKDQYd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 12:24:33 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 084071FD3F;
-        Thu,  4 Nov 2021 16:21:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636042914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RyW5Wt/bfDet9n989u3PUHzkl4L+NrHrgmkaQ6ot2hU=;
-        b=L92SKm06c/K/noNaQ0Z0+pat7K6xDrEy2Wn9WB8070x+MZT2MLOxJpTacYZxt8NfGexzWd
-        mr+KdTjauTiBwOu6ApzjX9WyAtBPGFzBQBz+5/M3GAmli8x9F98uY/+4AEdeNQMQuvETvz
-        YdWmVfKh3SSIYoL1FmIeHNaJ0fnoQ84=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C88EF13DA2;
-        Thu,  4 Nov 2021 16:21:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 5+7UL6EIhGEJDAAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 04 Nov 2021 16:21:53 +0000
-Subject: Re: [PATCH v4] xen/balloon: add late_initcall_sync() for initial
- ballooning done
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        xen-devel@lists.xenproject.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?= 
-        <marmarek@invisiblethingslab.com>
-References: <20211102091944.17487-1-jgross@suse.com>
- <f986a7c4-3032-fecd-2e19-4d63a2ee10c7@oracle.com>
- <f8e52acc-2566-1ed0-d2a3-21e2d468fab7@oracle.com>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <3b1f1771-0a96-1f71-9c9d-9fb1a53a266e@suse.com>
-Date:   Thu, 4 Nov 2021 17:21:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S231825AbhKDQZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 12:25:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231689AbhKDQZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 12:25:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3BAF61244
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 16:22:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636042959;
+        bh=P3rnnoNdYJk+6i+LZOXAgcPbirulOacewaSkMDXsPs8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tpsZ8hOvhbnElC8qkOuCbY6ub2S+0VZPb5Z9ZLo6MhNuTAypmrJ2wGteYG8Vvb2ya
+         GOUBrhoF08ZLaB+mD9/2DFF9t8kyc9vgFCtWXSZoOX1XPXykxc0kXJPP7cemZpwpsd
+         WDraozpTmJ2+2mbUE+WENVKQ+4Cz9BtNrpBUFq8dYUgEnKM/BAE7yesEIvjf/QnLjB
+         6VDwYBBwNwPHq7ReGZKl6goBT9l/7u7Ixk7/b4m0+0wg6yeWJ0ySixhuI9QsuzIfwy
+         vTXNwwfVJEl1VyuG0x+XTp0IRV5SfA8QkRoa2iHDbb8KZ0t8fTmKVjHcp0u19xdpyE
+         vswS0lx3zynpw==
+Received: by mail-oi1-f173.google.com with SMTP id l15so10062113oie.8
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 09:22:39 -0700 (PDT)
+X-Gm-Message-State: AOAM533MKIufWN5UuYco3plz7E+UTky+8G/G0WzP5SczgBgNr/5sEBNU
+        I1mQ+fHZaLiHlEMAxp3nXqW4pOHha/3I9MjTNcs=
+X-Google-Smtp-Source: ABdhPJxsY85yy3v6ZutAz3NirxoHWcEYpbh3E2JXSFxjxTMgcKXQkwTDTl2c3zzTDK6ObyR4H61EG3aXz2evOvt6DgQ=
+X-Received: by 2002:a05:6808:b2b:: with SMTP id t11mr12272034oij.47.1636042958945;
+ Thu, 04 Nov 2021 09:22:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f8e52acc-2566-1ed0-d2a3-21e2d468fab7@oracle.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="JzKPLG1VYmIxPCVCcWc1VenFHq5kAdOeC"
+References: <20211104023221.16391-1-walter-zh.wu@mediatek.com>
+ <20211104085336.GA24260@lst.de> <CAMj1kXHjjmhCVzKFhAseMGOdnidmFT=+o+vwKLTCGFkpwHmcfQ@mail.gmail.com>
+ <cc893162f0e2c81a1d64bf85794cc77ae76cadce.camel@mediatek.com>
+ <CAMj1kXG0DmLXQgfv2N1nhNdXgnXOiK2Rv7D+boSdW9_C=wsowA@mail.gmail.com> <9da413e95727a3b48ea35ec576aa1b1b57ffc9b9.camel@mediatek.com>
+In-Reply-To: <9da413e95727a3b48ea35ec576aa1b1b57ffc9b9.camel@mediatek.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 4 Nov 2021 17:22:27 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXFtdS5-b_XyDyP_V9jkYDfRZdUpHXZgvWfXE=1rJK019A@mail.gmail.com>
+Message-ID: <CAMj1kXFtdS5-b_XyDyP_V9jkYDfRZdUpHXZgvWfXE=1rJK019A@mail.gmail.com>
+Subject: Re: [PATCH v2] dma-direct: improve DMA_ATTR_NO_KERNEL_MAPPING
+To:     Walter Wu <walter-zh.wu@mediatek.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---JzKPLG1VYmIxPCVCcWc1VenFHq5kAdOeC
-Content-Type: multipart/mixed; boundary="2vIdrc1xpWVHwJMCuVJCcJZ1hc8yPTd8m";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- xen-devel@lists.xenproject.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Jonathan Corbet <corbet@lwn.net>,
- Stefano Stabellini <sstabellini@kernel.org>, stable@vger.kernel.org,
- =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?= <marmarek@invisiblethingslab.com>
-Message-ID: <3b1f1771-0a96-1f71-9c9d-9fb1a53a266e@suse.com>
-Subject: Re: [PATCH v4] xen/balloon: add late_initcall_sync() for initial
- ballooning done
-References: <20211102091944.17487-1-jgross@suse.com>
- <f986a7c4-3032-fecd-2e19-4d63a2ee10c7@oracle.com>
- <f8e52acc-2566-1ed0-d2a3-21e2d468fab7@oracle.com>
-In-Reply-To: <f8e52acc-2566-1ed0-d2a3-21e2d468fab7@oracle.com>
+On Thu, 4 Nov 2021 at 14:40, Walter Wu <walter-zh.wu@mediatek.com> wrote:
+>
+> On Thu, 2021-11-04 at 13:47 +0100, Ard Biesheuvel wrote:
+> > On Thu, 4 Nov 2021 at 13:31, Walter Wu <walter-zh.wu@mediatek.com>
+> > wrote:
+> > >
+> > > On Thu, 2021-11-04 at 09:57 +0100, Ard Biesheuvel wrote:
+> > > > On Thu, 4 Nov 2021 at 09:53, Christoph Hellwig <hch@lst.de>
+> > > > wrote:
+> > > > >
+> > > > > On Thu, Nov 04, 2021 at 10:32:21AM +0800, Walter Wu wrote:
+> > > > > > diff --git a/include/linux/set_memory.h
+> > > > > > b/include/linux/set_memory.h
+> > > > > > index f36be5166c19..6c7d1683339c 100644
+> > > > > > --- a/include/linux/set_memory.h
+> > > > > > +++ b/include/linux/set_memory.h
+> > > > > > @@ -7,11 +7,16 @@
+> > > > > >
+> > > > > >  #ifdef CONFIG_ARCH_HAS_SET_MEMORY
+> > > > > >  #include <asm/set_memory.h>
+> > > > > > +
+> > > > > > +#ifndef CONFIG_RODATA_FULL_DEFAULT_ENABLED
+> > > > >
+> > > > > This is an arm64-specific symbol, and one that only controls a
+> > > > > default.  I don't think it is suitable to key off stubs in
+> > > > > common
+> > > > > code.
+> > > > >
+> > > > > > +static inline int set_memory_valid(unsigned long addr, int
+> > > > > > numpages, int enable) { return 0; }
+> > > > >
+> > > > > Pleae avoid overly long lines.
+> > > > >
+> > > > > > +             if
+> > > > > > (IS_ENABLED(CONFIG_RODATA_FULL_DEFAULT_ENABLED))
+> > > > > > {
+> > > > > > +                     kaddr = (unsigned
+> > > > > > long)phys_to_virt(dma_to_phys(dev, *dma_handle));
+> > > > >
+> > > > > This can just use page_address.
+> > > > >
+> > > > > > +                     /* page remove kernel mapping for arm64
+> > > > > > */
+> > > > > > +                     set_memory_valid(kaddr, size >>
+> > > > > > PAGE_SHIFT,
+> > > > > > 0);
+> > > > > > +             }
+> > > > >
+> > > > > But more importantly:  set_memory_valid only exists on arm64,
+> > > > > this
+> > > > > will break compile everywhere else.  And this API is complete
+> > > > > crap.
+> > > > > Passing kernel virtual addresses as unsigned long just sucks,
+> > > > > and
+> > > > > passing an integer argument for valid/non-valid also is a
+> > > > > horrible
+> > > > > API.
+> > > > >
+> > > >
+> > > > ... and as I pointed out before, you can still pass rodata=off on
+> > > > arm64, and get the old behavior, in which case bad things will
+> > > > happen
+> > > > if you try to use an API that expects to operate on page mappings
+> > > > with
+> > > > a 1 GB block mapping.
+> > > >
+> > >
+> > > Thanks for your suggestion.
+> > >
+> > >
+> > > > And you still haven't explained what the actual problem is: is
+> > > > this
+> > > > about CPU speculation corrupting non-cache coherent inbound DMA?
+> > >
+> > > No corrupiton, only cpu read it, we hope to fix the behavior.
+> > >
+> >
+> > Fix which behavior? Please explain
+> >
+> > 1) the current behavior
+> We call dma_direct_alloc() with DMA_ATTR_NO_KERNEL_MAPPING to get the
+> allocated buffer and the kernel mapping is exist. Our goal is this
+> buffer doesn't allow to be accessed by cpu. Unfortunately, we see cpu
+> speculation to read it. So we need to fix it and don't use no-map the
+> way.
+>
+> > 2) why the current behavior is problematic for you
+> dma_direct_alloc() with DMA_ATTR_NO_KERNEL_MAPPING have kernel mapping,
+> so it still has cpu speculation read the buffer. Although we have
+> hardware to protect the buffer, we still hope use software to fix it.
+>
 
---2vIdrc1xpWVHwJMCuVJCcJZ1hc8yPTd8m
-Content-Type: multipart/mixed;
- boundary="------------EA8676FA21E0F3DD37BD799B"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------EA8676FA21E0F3DD37BD799B
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 04.11.21 16:55, Boris Ostrovsky wrote:
->=20
-> On 11/3/21 9:55 PM, Boris Ostrovsky wrote:
->>
->> On 11/2/21 5:19 AM, Juergen Gross wrote:
->>> When running as PVH or HVM guest with actual memory < max memory the
->>> hypervisor is using "populate on demand" in order to allow the guest
->>> to balloon down from its maximum memory size. For this to work
->>> correctly the guest must not touch more memory pages than its target
->>> memory size as otherwise the PoD cache will be exhausted and the gues=
-t
->>> is crashed as a result of that.
->>>
->>> In extreme cases ballooning down might not be finished today before
->>> the init process is started, which can consume lots of memory.
->>>
->>> In order to avoid random boot crashes in such cases, add a late init
->>> call to wait for ballooning down having finished for PVH/HVM guests.
->>>
->>> Warn on console if initial ballooning fails, panic() after stalling
->>> for more than 3 minutes per default. Add a module parameter for
->>> changing this timeout.
->>>
->>> Cc: <stable@vger.kernel.org>
->>> Reported-by: Marek Marczykowski-G=C3=B3recki=20
->>> <marmarek@invisiblethingslab.com>
->>> Signed-off-by: Juergen Gross <jgross@suse.com>
->>
->>
->>
->> Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
->=20
->=20
-> This appears to have noticeable effect on boot time (and boot experienc=
-e=20
-> in general).
->=20
->=20
-> I have
->=20
->=20
->  =C2=A0 memory=3D1024
->  =C2=A0 maxmem=3D8192
->=20
->=20
-> And my boot time (on an admittedly slow box) went from 33 to 45 seconds=
-=2E=20
-> And boot pauses in the middle while it is waiting for ballooning to=20
-> complete.
->=20
->=20
-> [=C2=A0=C2=A0=C2=A0 5.062714] xen:balloon: Waiting for initial ballooni=
-ng down having=20
-> finished.
-> [=C2=A0=C2=A0=C2=A0 5.449696] random: crng init done
-> [=C2=A0=C2=A0 34.613050] xen:balloon: Initial ballooning down finished.=
-
-
-This shows that before it was just by chance that the PoD cache wasn't
-exhausted.
-
-> So at least I think we should consider bumping log level down from info=
-=2E
-
-Which level would you prefer? warn?
-
-And if so, would you mind doing this while committing (I have one day
-off tomorrow)?
+But *why* is this a problem? You are saying that the speculative
+accesses are not causing corruption, so they are causing other issues
+that you want to address. So which issues are we talking about here?
 
 
-Juergen
-
---------------EA8676FA21E0F3DD37BD799B
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------EA8676FA21E0F3DD37BD799B--
-
---2vIdrc1xpWVHwJMCuVJCcJZ1hc8yPTd8m--
-
---JzKPLG1VYmIxPCVCcWc1VenFHq5kAdOeC
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmGECKEFAwAAAAAACgkQsN6d1ii/Ey+P
-BggAh6jDDygwPd1B1MxUqCUOGK7SQYdbqJnusvOH0yW8JyzIZXMriK8FS9A2KIaUTGoVZal7LsqD
-L241gvpZq4mIP+QJR088u2IOzfYNJ3VoWRqAn4SZFw4EFMu/DIVi5CZem0Lu0fCwn0SqBjdYwhCX
-4aHeSlOQi9nigZbA+VJRGPZfg+u4tq60OwyJT62ZyWzn7QveDHCpia0Bg8scrF/ClMF1QRtWG8en
-QHvYw9aIfmuCDHP1rojzjiMMvqanZyUOFLNXwmnfxmORJXFB9pfytBWkxhGA6DU0pRtPTsdb1gwQ
-a1x3VdrfLEtLQ7MJZOqcYKENNMxby6ovMdA9uWpCEg==
-=saKu
------END PGP SIGNATURE-----
-
---JzKPLG1VYmIxPCVCcWc1VenFHq5kAdOeC--
+> > 3) how this patch changes the current behavior
+> When call dma_direct_alloc() with DMA_ATTR_NO_KERNEL_MAPPING, then
+> remove the kernel mapping which belong to the buffer.
+>
+> > 4) why the new behavior fixes your problem.
+> If I understand correctly, want to block cpu speculation, then need
+> unmap the buffer at stage 1 and stage 2 page table and tlb invalidate.
+> This patch is to do stage 1 unmap at EL1.
+>
+> >
+> > There is no penalty for using too many words.
+>
+> Thanks.
+> Walter
+>
