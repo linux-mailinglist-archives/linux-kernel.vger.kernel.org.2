@@ -2,137 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7A4445303
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:30:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9446445306
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:31:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbhKDMdJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 4 Nov 2021 08:33:09 -0400
-Received: from mga12.intel.com ([192.55.52.136]:30924 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229809AbhKDMdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 08:33:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10157"; a="211745601"
-X-IronPort-AV: E=Sophos;i="5.87,208,1631602800"; 
-   d="scan'208";a="211745601"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 05:30:25 -0700
-X-IronPort-AV: E=Sophos;i="5.87,208,1631602800"; 
-   d="scan'208";a="667884307"
-Received: from agilev-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.254.157])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 05:30:22 -0700
-Content-Type: text/plain; charset="utf-8"
+        id S231178AbhKDMdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 08:33:42 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:49214 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229809AbhKDMdl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 08:33:41 -0400
+X-UUID: c651f2c855144886b83e0c995d128bea-20211104
+X-UUID: c651f2c855144886b83e0c995d128bea-20211104
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
+        (envelope-from <walter-zh.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1029824007; Thu, 04 Nov 2021 20:31:01 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3;
+ Thu, 4 Nov 2021 20:31:00 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkmbs10n1.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
+ Transport; Thu, 4 Nov 2021 20:31:00 +0800
+Message-ID: <cc893162f0e2c81a1d64bf85794cc77ae76cadce.camel@mediatek.com>
+Subject: Re: [PATCH v2] dma-direct: improve DMA_ATTR_NO_KERNEL_MAPPING
+From:   Walter Wu <walter-zh.wu@mediatek.com>
+To:     Ard Biesheuvel <ardb@kernel.org>, Christoph Hellwig <hch@lst.de>
+CC:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>
+Date:   Thu, 4 Nov 2021 20:31:00 +0800
+In-Reply-To: <CAMj1kXHjjmhCVzKFhAseMGOdnidmFT=+o+vwKLTCGFkpwHmcfQ@mail.gmail.com>
+References: <20211104023221.16391-1-walter-zh.wu@mediatek.com>
+         <20211104085336.GA24260@lst.de>
+         <CAMj1kXHjjmhCVzKFhAseMGOdnidmFT=+o+vwKLTCGFkpwHmcfQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20211102070601.155501-3-hch@lst.de>
-References: <20211102070601.155501-1-hch@lst.de> <20211102070601.155501-3-hch@lst.de>
-To:     Christoph Hellwig <hch@lst.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>
-Subject: Re: [PATCH 02/29] drm/i915/gvt: integrate into the main Makefile
-From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID: <163602902009.4807.3745093259631583283@jlahtine-mobl.ger.corp.intel.com>
-User-Agent: alot/0.8.1
-Date:   Thu, 04 Nov 2021 14:30:20 +0200
+Content-Transfer-Encoding: 7bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Christoph Hellwig (2021-11-02 09:05:34)
-> Remove the separately included Makefile and just use the relative
-> reference from the main i915 Makefile as for source files in other
-> subdirectories.
-
-The thinking behind the split is to avoid any merge conflicts as the
-gvt/ subdirectory is handled through separate pull request flow and
-are note part of drm-tip.
-
-The other subdirectories are part of drm-intel-next/drm-intel-gt-next
-and are part of drm-tip.
-
-So I would rather still see the Makefile live in gvt/ directory.
-
-Regards, Joonas
-
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/gpu/drm/i915/Makefile     | 29 ++++++++++++++++++++++++-----
->  drivers/gpu/drm/i915/gvt/Makefile |  9 ---------
->  drivers/gpu/drm/i915/gvt/trace.h  |  2 +-
->  3 files changed, 25 insertions(+), 15 deletions(-)
->  delete mode 100644 drivers/gpu/drm/i915/gvt/Makefile
+On Thu, 2021-11-04 at 09:57 +0100, Ard Biesheuvel wrote:
+> On Thu, 4 Nov 2021 at 09:53, Christoph Hellwig <hch@lst.de> wrote:
+> > 
+> > On Thu, Nov 04, 2021 at 10:32:21AM +0800, Walter Wu wrote:
+> > > diff --git a/include/linux/set_memory.h
+> > > b/include/linux/set_memory.h
+> > > index f36be5166c19..6c7d1683339c 100644
+> > > --- a/include/linux/set_memory.h
+> > > +++ b/include/linux/set_memory.h
+> > > @@ -7,11 +7,16 @@
+> > > 
+> > >  #ifdef CONFIG_ARCH_HAS_SET_MEMORY
+> > >  #include <asm/set_memory.h>
+> > > +
+> > > +#ifndef CONFIG_RODATA_FULL_DEFAULT_ENABLED
+> > 
+> > This is an arm64-specific symbol, and one that only controls a
+> > default.  I don't think it is suitable to key off stubs in common
+> > code.
+> > 
+> > > +static inline int set_memory_valid(unsigned long addr, int
+> > > numpages, int enable) { return 0; }
+> > 
+> > Pleae avoid overly long lines.
+> > 
+> > > +             if (IS_ENABLED(CONFIG_RODATA_FULL_DEFAULT_ENABLED))
+> > > {
+> > > +                     kaddr = (unsigned
+> > > long)phys_to_virt(dma_to_phys(dev, *dma_handle));
+> > 
+> > This can just use page_address.
+> > 
+> > > +                     /* page remove kernel mapping for arm64 */
+> > > +                     set_memory_valid(kaddr, size >> PAGE_SHIFT,
+> > > 0);
+> > > +             }
+> > 
+> > But more importantly:  set_memory_valid only exists on arm64, this
+> > will break compile everywhere else.  And this API is complete crap.
+> > Passing kernel virtual addresses as unsigned long just sucks, and
+> > passing an integer argument for valid/non-valid also is a horrible
+> > API.
+> > 
 > 
-> diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
-> index 335ba9f43d8f7..63523032eea26 100644
-> --- a/drivers/gpu/drm/i915/Makefile
-> +++ b/drivers/gpu/drm/i915/Makefile
-> @@ -295,11 +295,30 @@ i915-$(CONFIG_DRM_I915_SELFTEST) += \
->  
->  # virtual gpu code
->  i915-y += i915_vgpu.o
-> -
-> -ifeq ($(CONFIG_DRM_I915_GVT),y)
-> -i915-y += intel_gvt.o
-> -include $(src)/gvt/Makefile
-> -endif
-> +i915-$(CONFIG_DRM_I915_GVT) += \
-> +       intel_gvt.o \
-> +       gvt/gvt.o \
-> +       gvt/aperture_gm.o \
-> +       gvt/handlers.o \
-> +       gvt/vgpu.o \
-> +       gvt/trace_points.o \
-> +       gvt/firmware.o \
-> +       gvt/interrupt.o \
-> +       gvt/gtt.o \
-> +       gvt/cfg_space.o \
-> +       gvt/opregion.o \
-> +       gvt/mmio.o \
-> +       gvt/display.o \
-> +       gvt/edid.o \
-> +       gvt/execlist.o \
-> +       gvt/scheduler.o \
-> +       gvt/sched_policy.o \
-> +       gvt/mmio_context.o \
-> +       gvt/cmd_parser.o \
-> +       gvt/debugfs.o \
-> +       gvt/fb_decoder.o \
-> +       gvt/dmabuf.o \
-> +       gvt/page_track.o
->  
->  obj-$(CONFIG_DRM_I915) += i915.o
->  obj-$(CONFIG_DRM_I915_GVT_KVMGT) += gvt/kvmgt.o
-> diff --git a/drivers/gpu/drm/i915/gvt/Makefile b/drivers/gpu/drm/i915/gvt/Makefile
-> deleted file mode 100644
-> index ea8324abc784a..0000000000000
-> --- a/drivers/gpu/drm/i915/gvt/Makefile
-> +++ /dev/null
-> @@ -1,9 +0,0 @@
-> -# SPDX-License-Identifier: GPL-2.0
-> -GVT_DIR := gvt
-> -GVT_SOURCE := gvt.o aperture_gm.o handlers.o vgpu.o trace_points.o firmware.o \
-> -       interrupt.o gtt.o cfg_space.o opregion.o mmio.o display.o edid.o \
-> -       execlist.o scheduler.o sched_policy.o mmio_context.o cmd_parser.o debugfs.o \
-> -       fb_decoder.o dmabuf.o page_track.o
-> -
-> -ccflags-y                              += -I $(srctree)/$(src) -I $(srctree)/$(src)/$(GVT_DIR)/
-> -i915-y                                 += $(addprefix $(GVT_DIR)/, $(GVT_SOURCE))
-> diff --git a/drivers/gpu/drm/i915/gvt/trace.h b/drivers/gpu/drm/i915/gvt/trace.h
-> index 6d787750d279f..348f57f8301db 100644
-> --- a/drivers/gpu/drm/i915/gvt/trace.h
-> +++ b/drivers/gpu/drm/i915/gvt/trace.h
-> @@ -379,5 +379,5 @@ TRACE_EVENT(render_mmio,
->  #undef TRACE_INCLUDE_PATH
->  #define TRACE_INCLUDE_PATH .
->  #undef TRACE_INCLUDE_FILE
-> -#define TRACE_INCLUDE_FILE trace
-> +#define TRACE_INCLUDE_FILE gvt/trace
->  #include <trace/define_trace.h>
-> -- 
-> 2.30.2
+> ... and as I pointed out before, you can still pass rodata=off on
+> arm64, and get the old behavior, in which case bad things will happen
+> if you try to use an API that expects to operate on page mappings
+> with
+> a 1 GB block mapping.
 > 
+
+Thanks for your suggestion.
+
+
+> And you still haven't explained what the actual problem is: is this
+> about CPU speculation corrupting non-cache coherent inbound DMA?
+
+No corrupiton, only cpu read it, we hope to fix the behavior.
+
+
+Thanks.
+Walter
+
