@@ -2,118 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633974458F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A70014458FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbhKDRxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:53:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232048AbhKDRxm (ORCPT
+        id S234005AbhKDRyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:54:07 -0400
+Received: from mswedge1.sunplus.com ([60.248.182.113]:36518 "EHLO
+        mg.sunplus.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232048AbhKDRyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:53:42 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11194C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 10:51:04 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id y1so8468183plk.10
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 10:51:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=osVboQFSwbicbFoOXZ5IiYDe0f9yAlRkYm3/vpZd7R0=;
-        b=k+wb762Bm6uC7nUGAIuXLPDquhbuJKeXB+otFAdYX3MKsbmwebAEGVbzhgsoHazR+0
-         Ah7TZuenZJ/K+gr0gYZXqoPZQ3SFVjLV01XHhZtNeeMWkjTZdEd2ai1kK3CWe1/tSfzu
-         GZFhWCJOT8ZqQKYrbOK1z7uO28zkUcqMzq4v7XMuD3FHrh2x5mBtzwWHDP0v7syTN0YT
-         pCZgH4E3aAjbxZnefImOL2vFspqQ1iGDc/8c46jCDvXX3941fIUYn83Kgi45IaacRmhX
-         5Rr48Sg9pDWJbXKJWcGFZqbKoQHcL70v9ZGL+TtN4tPvDBtjyst680AtscaCxLsJ+FE5
-         Q+Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=osVboQFSwbicbFoOXZ5IiYDe0f9yAlRkYm3/vpZd7R0=;
-        b=H73Ztaw7n7zuFH77eut7CCSIPKmMfY9j5wrfW5fCTs2len/ED1YlWnLjf0tb662GLp
-         XP6xHSMExjBjL4sQH3umpczOr/iYQb+HvDllZIkg258NABa89RMMAKs4/vo7O1RWZbLR
-         SfYUoeJHjcmHE7NOLaSGBsWMLZUoBoYfN10w6/33Y07RFqtdN7oxRPD5QQgQGfV4M0Wj
-         B8UCuFqdh45tnnU/ztAiMRseValdLBicqch8eLLva0ZiPadfUqaiqXQUtiWbID3Rqq70
-         5lzn3Zmcec2jaGfhjZ6eGw4xbKPulvHVSdPwYgYiiCvIfJMhTI3ViTiwduPXVTYv9Va/
-         NZjA==
-X-Gm-Message-State: AOAM533sIqfn/ROz17YB5QHkTLXHvbEfEWWqDuYn0b39/Uj+/zBSfsPF
-        FFWaozbSdLLAuIbEwe0Q+sftxcsSPNIdhPwDcOmfFA==
-X-Google-Smtp-Source: ABdhPJzsfQp7zXod4oYdR7XV24jnJGfSVoHwbXv6Lmce3hecH1HMhLjovNQVYDTCF5q5Ti3Rxzt9aFXy52omn+Jgp9E=
-X-Received: by 2002:a17:90a:6c47:: with SMTP id x65mr7439629pjj.8.1636048263654;
- Thu, 04 Nov 2021 10:51:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <YXJN4s1HC/Y+KKg1@infradead.org> <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
- <YXj2lwrxRxHdr4hb@infradead.org> <20211028002451.GB2237511@magnolia>
- <YYDYUCCiEPXhZEw0@infradead.org> <CAPcyv4j8snuGpy=z6BAXogQkP5HmTbqzd6e22qyERoNBvFKROw@mail.gmail.com>
- <YYK/tGfpG0CnVIO4@infradead.org> <CAPcyv4it2_PVaM8z216AXm6+h93frg79WM-ziS9To59UtEQJTA@mail.gmail.com>
- <YYOaOBKgFQYzT/s/@infradead.org> <CAPcyv4jKHH7H+PmcsGDxsWA5CS_U3USHM8cT1MhoLk72fa9z8Q@mail.gmail.com>
- <YYQbu6dOCVB7yS02@infradead.org>
-In-Reply-To: <YYQbu6dOCVB7yS02@infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 4 Nov 2021 10:50:53 -0700
-Message-ID: <CAPcyv4gSESYBpd_9qtnZNFKBsVZY21VsZ2MxN10BHhcT1g_iQA@mail.gmail.com>
-Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with RWF_RECOVERY_DATA flag
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Jane Chu <jane.chu@oracle.com>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        Thu, 4 Nov 2021 13:54:05 -0400
+X-MailGates: (flag:3,DYNAMIC,RELAY,NOHOST:PASS)(compute_score:DELIVER,40
+        ,3)
+Received: from 172.17.9.202
+        by mg01.sunplus.com with MailGates ESMTP Server V5.0(13483:0:AUTH_RELAY)
+        (envelope-from <wells.lu@sunplus.com>); Fri, 05 Nov 2021 01:51:11 +0800 (CST)
+Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
+ sphcmbx01.sunplus.com.tw (172.17.9.202) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Fri, 5 Nov 2021 01:51:11 +0800
+Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
+ ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Fri, 5 Nov 2021
+ 01:51:11 +0800
+From:   =?utf-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
+To:     Randy Dunlap <rdunlap@infradead.org>, Andrew Lunn <andrew@lunn.ch>
+CC:     Wells Lu <wellslutw@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
+Subject: RE: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+Thread-Topic: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+Thread-Index: AQHX0KKBcebTINBXKk6D/f7Frpi9sKvxbhgAgAClKgD//5f5gIABJz+w///9xoCAACBhAIAAtknA
+Date:   Thu, 4 Nov 2021 17:51:11 +0000
+Message-ID: <22012af032f04f2684f2d9bf64ed7028@sphcmbx02.sunplus.com.tw>
+References: <cover.1635936610.git.wells.lu@sunplus.com>
+ <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
+ <d0217eed-a8b7-8eb9-7d50-4bf69cd38e03@infradead.org>
+ <159ab76ac7114da983332aadc6056c08@sphcmbx02.sunplus.com.tw>
+ <YYLjaYCQHzqBzN1l@lunn.ch>
+ <36d5bc6d40734ae0a9c1fb26d258f49f@sphcmbx02.sunplus.com.tw>
+ <YYPZN9hPBJTBzVUl@lunn.ch>
+ <3209bc4b-bde5-2e7e-4a91-429d2e83905e@infradead.org>
+In-Reply-To: <3209bc4b-bde5-2e7e-4a91-429d2e83905e@infradead.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.25.108.39]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 10:43 AM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Thu, Nov 04, 2021 at 09:24:15AM -0700, Dan Williams wrote:
-> > No, the big difference with every other modern storage device is
-> > access to byte-addressable storage. Storage devices get to "cheat"
-> > with guaranteed minimum 512-byte accesses. So you can arrange for
-> > writes to always be large enough to scrub the ECC bits along with the
-> > data. For PMEM and byte-granularity DAX accesses the "sector size" is
-> > a cacheline and it needed a new CPU instruction before software could
-> > atomically update data + ECC. Otherwise, with sub-cacheline accesses,
-> > a RMW cycle can't always be avoided. Such a cycle pulls poison from
-> > the device on the read and pushes it back out to the media on the
-> > cacheline writeback.
->
-> Indeed.  The fake byte addressability is indeed the problem, and the
-> fix is to not do that, at least on the second attempt.
-
-Fair enough.
-
-> > I don't understand what overprovisioning has to do with better error
-> > management? No other storage device has seen fit to be as transparent
-> > with communicating the error list and offering ways to proactively
-> > scrub it. Dave and Darrick rightly saw this and said "hey, the FS
-> > could do a much better job for the user if it knew about this error
-> > list". So I don't get what this argument about spare blocks has to do
-> > with what XFS wants? I.e. an rmap facility to communicate files that
-> > have been clobbered by cosmic rays and other calamities.
->
-> Well, the answer for other interfaces (at least at the gold plated
-> cost option) is so strong internal CRCs that user visible bits clobbered
-> by cosmic rays don't realisticly happen.  But it is a problem with the
-> cheaper ones, and at least SCSI and NVMe offer the error list through
-> the Get LBA status command (and I bet ATA too, but I haven't looked into
-> that).  Oddly enough there has never been much interested from the
-> fs community for those.
-
-It seems the entanglement with 'struct page', error handling, and
-reflink made people take notice. Hopefully someone could follow the
-same plumbing we're doing for pmem to offer error-rmap help for NVME
-badblocks.
+PiBPbiAxMS80LzIxIDU6NTkgQU0sIEFuZHJldyBMdW5uIHdyb3RlOg0KPiA+IE9uIFRodSwgTm92
+IDA0LCAyMDIxIGF0IDA1OjMxOjU3QU0gKzAwMDAsIFdlbGxzIEx1IOWRguiKs+mosCB3cm90ZToN
+Cj4gPj4gSGksDQo+ID4+DQo+ID4+IFRoYW5rcyBhIGxvdCBmb3IgcmV2aWV3Lg0KPiA+Pg0KPiA+
+Pj4NCj4gPj4+PiBjb25maWcgTkVUX1ZFTkRPUl9TVU5QTFVTDQo+ID4+Pj4gCWJvb2wgIlN1bnBs
+dXMgZGV2aWNlcyINCj4gPj4+PiAJZGVmYXVsdCB5DQo+ID4+Pj4gCWRlcGVuZHMgb24gQVJDSF9T
+VU5QTFVTDQo+ID4+Pg0KPiA+Pj4gRG9lcyBpdCBhY3R1YWxseSBkZXBlbmQgb24gQVJDSF9TVU5Q
+TFVTPyBXaGF0IGRvIHlvdSBtYWtlIHVzZSBvZj8NCj4gPj4NCj4gPj4gQVJDSF9TVU5QTFVTIHdp
+bGwgYmUgZGVmaW5lZCBmb3IgU3VucGx1cyBmYW1pbHkgc2VyaWVzIFNvQy4NCj4gPj4gRXRoZXJu
+ZXQgZGV2aWNlcyBvZiBTdW5wbHVzIGFyZSBkZXNpZ25lZCBhbmQgdXNlZCBmb3IgU3VucGx1cyBT
+b0MuDQo+ID4+IFNvIGZhciwgb25seSB0d28gU29DIG9mIFN1bnBsdXMgaGF2ZSB0aGUgbmV0d29y
+ayBkZXZpY2UuDQo+ID4+IEknZCBsaWtlIHRvIHNob3cgdXAgdGhlIHNlbGVjdGlvbiBvbmx5IGZv
+ciBTdW5wbHVzIFNvQy4NCj4gPg0KPiA+IFNvIGl0IGRvZXMgbm90IGFjdHVhbGx5IGRlcGVuZCBv
+biBBUkNIX1NVTlBMVVMuIFRoZXJlIGFyZSBhIGZldyBjYXNlcw0KPiA+IHdoZXJlIGRyaXZlcnMg
+aGF2ZSBuZWVkZWQgdG8gY2FsbCBpbnRvIGFyY2ggc3BlY2lmaWMgY29kZSwgd2hpY2ggc3RvcHMN
+Cj4gPiB0aGVtIGJ1aWxkaW5nIGZvciBhbnkgb3RoZXIgYXJjaC4NCj4gPg0KPiA+Pj4gSWRlYWxs
+eSwgeW91IHdhbnQgaXQgdG8gYWxzbyBidWlsZCB3aXRoIENPTVBJTEVfVEVTVCwgc28gdGhhdCB0
+aGUNCj4gPj4+IGRyaXZlciBnZXRzIGJ1aWxkIGJ5IDAtZGF5IGFuZCBhbGwgdGhlIG90aGVyIGJ1
+aWxkIGJvdHMuDQo+ID4+DQo+ID4+IEkgYW0gbm90IHN1cmUgaWYgdGhpcyBpcyBtYW5kYXRvcnkg
+b3Igbm90Lg0KPiA+PiBTaG91bGQgSSBhZGQgQ09NUElMRV9URVNUIGFzIGJlbG93Pw0KPiA+Pg0K
+PiA+PiAJZGVwZW5kcyBvbiBBUkNIX1NVTlBMVVMgfCBDT01QSUxFX1RFU1QNCj4gPg0KPiA+IFll
+cy4NCj4gDQo+IFllcywgYnV0IHVzZSAifHwiIGluc3RlYWQgb2Ygb25lICJ8Ii4NCj4gDQo+ID4N
+Cj4gPj4gWWVzLCB0aGUgZGV2aWNlIGlzIG5vdyBvbmx5IGZvciBTdW5wbHVzIFNQNzAyMSBTb0Mu
+DQo+ID4+IERldmljZXMgaW4gZWFjaCBTb0MgbWF5IGhhdmUgYSBiaXQgZGlmZmVyZW5jZSBiZWNh
+dXNlIG9mIGFkZGluZyBuZXcNCj4gPj4gZnVuY3Rpb24gb3IgaW1wcm92aW5nIHNvbWV0aGluZy4N
+Cj4gPg0KPiA+IElmIGl0IHdpbGwgY29tcGlsZSB3aXRoIENPTVBJTEVfVEVTVCBvbiB4ODYsIG1p
+cHMsIGV0YywgeW91IHNob3VsZA0KPiA+IGFsbG93IGl0IHRvIGNvbXBpbGUgd2l0aCBDT01QSUxF
+X1RFU1QuIFlvdSBnZXQgYmV0dGVyIGNvbXBpbGUgdGVzdGluZw0KPiA+IHRoYXQgd2F5Lg0KPiA+
+DQo+ID4gICAgICAgQW5kcmV3DQo+ID4NCj4gDQo+IA0KPiAtLQ0KPiB+UmFuZHkNCg0KSSB3aWxs
+IGRvIGl0IGluIFBBVENIIHYyLg0KDQpUaGFua3MsDQo=
