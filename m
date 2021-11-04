@@ -2,244 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D863C444D8A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 04:05:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B85C9444D73
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 04:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbhKDDHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 23:07:20 -0400
-Received: from [113.204.237.245] ([113.204.237.245]:53820 "EHLO
-        test.cqplus1.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230252AbhKDDHG (ORCPT
+        id S229918AbhKDDFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 23:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229561AbhKDDFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 23:07:06 -0400
-X-MailGates: (flag:4,DYNAMIC,BADHELO,RELAY,NOHOST:PASS)(compute_score:DE
-        LIVER,40,3)
-Received: from 172.28.114.216
-        by cqmailgates with MailGates ESMTP Server V5.0(16723:0:AUTH_RELAY)
-        (envelope-from <qinjian@cqplus1.com>); Thu, 04 Nov 2021 10:58:10 +0800 (CST)
-From:   Qin Jian <qinjian@cqplus1.com>
-To:     robh+dt@kernel.org
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, maz@kernel.org,
-        p.zabel@pengutronix.de, linux@armlinux.org.uk, broonie@kernel.org,
-        arnd@arndb.de, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, wells.lu@sunplus.com,
-        Qin Jian <qinjian@cqplus1.com>
-Subject: [PATCH v4 10/10] ARM: sp7021_defconfig: Add Sunplus SP7021 defconfig
-Date:   Thu,  4 Nov 2021 10:57:07 +0800
-Message-Id: <69c70b8b036415e4f4ed15466e51caddaf34ca11.1635993377.git.qinjian@cqplus1.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <cover.1635993377.git.qinjian@cqplus1.com>
-References: <cover.1635993377.git.qinjian@cqplus1.com>
+        Wed, 3 Nov 2021 23:05:33 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47EF1C061714;
+        Wed,  3 Nov 2021 20:02:56 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id u17so4896804plg.9;
+        Wed, 03 Nov 2021 20:02:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8TcziieSeJt2XzZbAoNFqSo9KPYA6B681Bs/Zj9nsrk=;
+        b=GqWwdjaPX9g1LbZMFrN9/ZUb+6tXZyrRrc5BMW2Lz+on6zAAqJomTgqsNC0wVyM8O2
+         Y4J2MZs5v9uCc6IUqIxDYk327HQ2pN3whrwn19UQ1Gs6rB1eTzW5y4X5ZnHOUtQoYDf/
+         eD3hUfLjHZp+0nGKG25leI6XzZEvdIYZ4oPOReFybMKInGL9AwNw8CKsjGNG9BWRZE83
+         Rsj87W5FnI0R1k6aFQLU8BaoZcfjU/1fpaohWQpkaaY+td+7qguy/3xFlBoOmlBr7t4e
+         G9WPPOvusAismJZ6jghViwwsXGif9n+BgJunQsoLRGwKkrm3lA210sL/9iDEr99eJ1sI
+         tkMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8TcziieSeJt2XzZbAoNFqSo9KPYA6B681Bs/Zj9nsrk=;
+        b=VQgNh7dYtLrnRQlsGK8a7TqlNOYbOZZUotEZxOfChxAx/i3cR0jSYKRMPEoeYsBsd0
+         rOgFR6tIGOfl9H+jwqYU+DZ5l3qmhWZPOq8FXgoWKk1Piwt8+5981Sv3O2g1hEtfNcLK
+         1ToiyCerp/XWBlwXcoXBYrGQUaTzFdIk4CZKlhKpRowOZ5KrVsO0qLg+yHV0Po1gT3EW
+         Tar5HOyov/Jw1Z/WrxooUGbJzbPygUAJDuvb1NUPScHVu0SIOjjrL6Rvuu+Pf+yB3FBR
+         y5nl5C3i5UYtgvoq9GxuMN6ZCgTLdvN0DCshU+cIU40gejpSsVXpgYMmHOhM0Y8y2f4F
+         aQUg==
+X-Gm-Message-State: AOAM532Coja7v9RpQvdkYcxklLwfYVCQN/K3Stz/510+qrQVG1B7BrwM
+        UCIIcfa1C+gd/GANi2Xj3LYWdYLsvd0=
+X-Google-Smtp-Source: ABdhPJy6Z/KboUdfCUyfnYDryfgHTkZx3YMOYC6uN8AvX7aAJ4jSxhO+Sltxv6NZwElAyrn66kbv5w==
+X-Received: by 2002:a17:902:bf07:b0:138:e32d:9f2e with SMTP id bi7-20020a170902bf0700b00138e32d9f2emr41283567plb.59.1635994975742;
+        Wed, 03 Nov 2021 20:02:55 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id h3sm6259078pjz.43.2021.11.03.20.02.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 20:02:54 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: luo.penghao@zte.com.cn
+To:     "David S . Miller" <davem@davemloft.net>
+Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH v2] ipv4: Remove useless assignments
+Date:   Thu,  4 Nov 2021 03:02:22 +0000
+Message-Id: <20211104030222.30580-1-luo.penghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add generic Sunplus SP7021 based board defconfig
+From: luo penghao <luo.penghao@zte.com.cn>
 
-Signed-off-by: Qin Jian <qinjian@cqplus1.com>
+From: luo penghao <luo.penghao@zte.com.cn>
+
+The assigned local variables will not be used next, so this statement
+should be deleted.
+
+The clang_analyzer complains as follows:
+
+net/ipv4/ipconfig.c:1037:2 warning:
+
+Value stored to 'h' is never read
+
+Changes in v2:
+
+Repair sending email box
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
 ---
- MAINTAINERS                       |   1 +
- arch/arm/configs/sp7021_defconfig | 176 ++++++++++++++++++++++++++++++
- 2 files changed, 177 insertions(+)
- create mode 100644 arch/arm/configs/sp7021_defconfig
+ net/ipv4/ipconfig.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0ae537a41..9340f8760 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2664,6 +2664,7 @@ F:	Documentation/devicetree/bindings/arm/sunplus,sp7021.yaml
- F:	Documentation/devicetree/bindings/clock/sunplus,sp7021-clkc.yaml
- F:	Documentation/devicetree/bindings/interrupt-controller/sunplus,sp7021-intc.yaml
- F:	Documentation/devicetree/bindings/reset/sunplus,reset.yaml
-+F:	arch/arm/configs/sp7021_*defconfig
- F:	arch/arm/mach-sunplus/
- F:	drivers/clk/clk-sp7021.c
- F:	drivers/irqchip/irq-sp7021-intc.c
-diff --git a/arch/arm/configs/sp7021_defconfig b/arch/arm/configs/sp7021_defconfig
-new file mode 100644
-index 000000000..f337a3304
---- /dev/null
-+++ b/arch/arm/configs/sp7021_defconfig
-@@ -0,0 +1,176 @@
-+CONFIG_DEFAULT_HOSTNAME="SP7021-Ev"
-+CONFIG_SYSVIPC=y
-+CONFIG_USELIB=y
-+CONFIG_NO_HZ_IDLE=y
-+CONFIG_HIGH_RES_TIMERS=y
-+CONFIG_PREEMPT=y
-+CONFIG_IKCONFIG=y
-+CONFIG_IKCONFIG_PROC=y
-+CONFIG_LOG_BUF_SHIFT=14
-+CONFIG_BLK_DEV_INITRD=y
-+CONFIG_INITRAMFS_SOURCE="../rootfs/initramfs/disk/ ../rootfs/initramfs/initramfs.devnodes"
-+CONFIG_INITRAMFS_ROOT_UID=-1
-+CONFIG_INITRAMFS_ROOT_GID=-1
-+# CONFIG_RD_GZIP is not set
-+# CONFIG_RD_BZIP2 is not set
-+# CONFIG_RD_LZMA is not set
-+# CONFIG_RD_XZ is not set
-+# CONFIG_RD_LZO is not set
-+# CONFIG_RD_LZ4 is not set
-+CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-+# CONFIG_FHANDLE is not set
-+CONFIG_KALLSYMS_ALL=y
-+CONFIG_EMBEDDED=y
-+CONFIG_PERF_EVENTS=y
-+CONFIG_SLAB=y
-+CONFIG_ARCH_SUNPLUS=y
-+# CONFIG_VDSO is not set
-+CONFIG_SMP=y
-+CONFIG_HAVE_ARM_ARCH_TIMER=y
-+CONFIG_THUMB2_KERNEL=y
-+CONFIG_HIGHMEM=y
-+# CONFIG_HIGHPTE is not set
-+CONFIG_FORCE_MAX_ZONEORDER=12
-+CONFIG_ZBOOT_ROM_TEXT=0x98307000
-+CONFIG_ZBOOT_ROM_BSS=0x03400000
-+CONFIG_CMDLINE="root=/dev/ram rw init=/init console=ttyS0,115200 earlyprintk mem=512M@0x0"
-+CONFIG_AUTO_ZRELADDR=y
-+CONFIG_VFP=y
-+CONFIG_NEON=y
-+CONFIG_MODULES=y
-+CONFIG_MODULE_UNLOAD=y
-+CONFIG_MODVERSIONS=y
-+# CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
-+CONFIG_NET=y
-+CONFIG_PACKET=y
-+CONFIG_PACKET_DIAG=y
-+CONFIG_UNIX=y
-+CONFIG_INET=y
-+CONFIG_IP_MULTICAST=y
-+CONFIG_IP_PNP=y
-+CONFIG_IP_PNP_DHCP=y
-+CONFIG_IP_PNP_BOOTP=y
-+CONFIG_IP_PNP_RARP=y
-+CONFIG_NET_IPIP=m
-+CONFIG_BRIDGE=m
-+CONFIG_VLAN_8021Q=m
-+CONFIG_NETLINK_DIAG=y
-+CONFIG_CAN=y
-+CONFIG_CFG80211=m
-+CONFIG_CFG80211_WEXT=y
-+CONFIG_MAC80211=m
-+CONFIG_CAIF=y
-+CONFIG_CEPH_LIB=y
-+CONFIG_CEPH_LIB_USE_DNS_RESOLVER=y
-+CONFIG_UEVENT_HELPER=y
-+CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
-+CONFIG_DEVTMPFS=y
-+CONFIG_DEVTMPFS_MOUNT=y
-+CONFIG_BLK_DEV_LOOP=y
-+CONFIG_NETDEVICES=y
-+# CONFIG_NET_VENDOR_ALACRITECH is not set
-+# CONFIG_NET_VENDOR_AMAZON is not set
-+# CONFIG_NET_VENDOR_AQUANTIA is not set
-+# CONFIG_NET_VENDOR_ARC is not set
-+# CONFIG_NET_VENDOR_BROADCOM is not set
-+# CONFIG_NET_VENDOR_CADENCE is not set
-+# CONFIG_NET_VENDOR_CAVIUM is not set
-+# CONFIG_NET_VENDOR_CIRRUS is not set
-+# CONFIG_NET_VENDOR_CORTINA is not set
-+# CONFIG_NET_VENDOR_EZCHIP is not set
-+# CONFIG_NET_VENDOR_FARADAY is not set
-+# CONFIG_NET_VENDOR_GOOGLE is not set
-+# CONFIG_NET_VENDOR_HISILICON is not set
-+# CONFIG_NET_VENDOR_HUAWEI is not set
-+# CONFIG_NET_VENDOR_INTEL is not set
-+# CONFIG_NET_VENDOR_MARVELL is not set
-+# CONFIG_NET_VENDOR_MICREL is not set
-+# CONFIG_NET_VENDOR_MICROCHIP is not set
-+# CONFIG_NET_VENDOR_MICROSEMI is not set
-+# CONFIG_NET_VENDOR_NATSEMI is not set
-+# CONFIG_NET_VENDOR_NETRONOME is not set
-+# CONFIG_NET_VENDOR_NI is not set
-+# CONFIG_NET_VENDOR_PENSANDO is not set
-+# CONFIG_NET_VENDOR_QUALCOMM is not set
-+# CONFIG_NET_VENDOR_RENESAS is not set
-+# CONFIG_NET_VENDOR_ROCKER is not set
-+# CONFIG_NET_VENDOR_SAMSUNG is not set
-+# CONFIG_NET_VENDOR_SEEQ is not set
-+# CONFIG_NET_VENDOR_SOLARFLARE is not set
-+# CONFIG_NET_VENDOR_SMSC is not set
-+# CONFIG_NET_VENDOR_SOCIONEXT is not set
-+# CONFIG_NET_VENDOR_STMICRO is not set
-+# CONFIG_NET_VENDOR_SYNOPSYS is not set
-+# CONFIG_NET_VENDOR_VIA is not set
-+# CONFIG_NET_VENDOR_WIZNET is not set
-+# CONFIG_NET_VENDOR_XILINX is not set
-+CONFIG_NET_VENDOR_SUNPLUS=y
-+CONFIG_INPUT_POLLDEV=y
-+CONFIG_INPUT_SPARSEKMAP=y
-+CONFIG_INPUT_MOUSEDEV=y
-+CONFIG_INPUT_EVDEV=y
-+# CONFIG_INPUT_KEYBOARD is not set
-+# CONFIG_INPUT_MOUSE is not set
-+CONFIG_INPUT_MISC=y
-+CONFIG_INPUT_UINPUT=y
-+CONFIG_SERIO_LIBPS2=y
-+# CONFIG_LEGACY_PTYS is not set
-+# CONFIG_HW_RANDOM is not set
-+# CONFIG_HWMON is not set
-+CONFIG_MEDIA_SUPPORT=y
-+CONFIG_MEDIA_SUPPORT_FILTER=y
-+CONFIG_MEDIA_CAMERA_SUPPORT=y
-+CONFIG_MEDIA_PLATFORM_SUPPORT=y
-+CONFIG_MEDIA_USB_SUPPORT=y
-+CONFIG_USB_VIDEO_CLASS=y
-+CONFIG_FB=y
-+CONFIG_FB_SP7021=y
-+CONFIG_FRAMEBUFFER_CONSOLE=y
-+CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER=y
-+CONFIG_HIDRAW=y
-+CONFIG_GEMINI_USB=y
-+CONFIG_USB_USE_PLATFORM_RESOURCE=y
-+CONFIG_USB_EHCI_HCD=y
-+CONFIG_USB_EHCI_HCD_PLATFORM=y
-+CONFIG_USB_OHCI_HCD=y
-+CONFIG_USB_OHCI_HCD_PLATFORM=y
-+CONFIG_SUNPLUS_USB_PHY=y
-+CONFIG_USB_SUNPLUS_OTG=y
-+CONFIG_USB_GADGET=y
-+CONFIG_USB_DEVICE_LOSE_PACKET_AFTER_SET_INTERFACE_WORKAROUND=y
-+CONFIG_USB_DEVICE_EP11_NOT_AUTO_SWITCH_WORKAROUND=y
-+CONFIG_USB_GADGET_SUNPLUS=y
-+CONFIG_USB_ZERO=y
-+CONFIG_MMC=y
-+CONFIG_SP_EMMC=m
-+CONFIG_STAGING=y
-+# CONFIG_IOMMU_SUPPORT is not set
-+CONFIG_PWM=y
-+CONFIG_PWM_SP7021=y
-+CONFIG_RESET_CONTROLLER=y
-+CONFIG_EXT2_FS=y
-+# CONFIG_DNOTIFY is not set
-+CONFIG_FANOTIFY=y
-+CONFIG_VFAT_FS=y
-+CONFIG_FAT_DEFAULT_IOCHARSET="utf8"
-+CONFIG_EXFAT_FS=y
-+CONFIG_TMPFS=y
-+CONFIG_TMPFS_POSIX_ACL=y
-+# CONFIG_MISC_FILESYSTEMS is not set
-+CONFIG_NFS_FS=y
-+CONFIG_NFS_V4=y
-+CONFIG_ROOT_NFS=y
-+CONFIG_NLS_CODEPAGE_437=y
-+CONFIG_NLS_ASCII=y
-+CONFIG_NLS_ISO8859_1=y
-+CONFIG_NLS_UTF8=y
-+CONFIG_CRC16=y
-+CONFIG_PRINTK_TIME=y
-+CONFIG_DYNAMIC_DEBUG=y
-+CONFIG_MAGIC_SYSRQ=y
-+CONFIG_DEBUG_FS=y
-+# CONFIG_SCHED_DEBUG is not set
-+CONFIG_SCHEDSTATS=y
-+# CONFIG_DEBUG_PREEMPT is not set
-+# CONFIG_FTRACE is not set
-+CONFIG_DEBUG_USER=y
+diff --git a/net/ipv4/ipconfig.c b/net/ipv4/ipconfig.c
+index 816d8aa..fe2c8e9 100644
+--- a/net/ipv4/ipconfig.c
++++ b/net/ipv4/ipconfig.c
+@@ -1034,7 +1034,6 @@ static int __init ic_bootp_recv(struct sk_buff *skb, struct net_device *dev, str
+ 		goto drop;
+ 
+ 	b = (struct bootp_pkt *)skb_network_header(skb);
+-	h = &b->iph;
+ 
+ 	/* One reply at a time, please. */
+ 	spin_lock(&ic_recv_lock);
 -- 
-2.33.1
+2.15.2
+
 
