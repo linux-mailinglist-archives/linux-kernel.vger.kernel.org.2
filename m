@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7B04457E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3B34457E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:04:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232157AbhKDRH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:07:27 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:54228 "EHLO
+        id S232101AbhKDRH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:07:29 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:54218 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231844AbhKDRHQ (ORCPT
+        with ESMTP id S231855AbhKDRHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Nov 2021 13:07:16 -0400
 Received: from localhost.localdomain (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 26E4020B9D55;
+        by linux.microsoft.com (Postfix) with ESMTPSA id 58A0420B9D56;
         Thu,  4 Nov 2021 10:04:38 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 26E4020B9D55
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 58A0420B9D56
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
         s=default; t=1636045478;
-        bh=u0Kk1SK7VFx8h82jgK7DUE3vAjNt9dA4ghfQF6nvzo4=;
+        bh=NTGnw12ZWarE2jLGXYX05L387yaE4HHNvnnd9F3t9/c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oOV6e2c14hkCAOBPian+JWrOtcRebVjDSTjvBn/JrqVhjxSeK9ywpaSs7c0O1DJrI
-         9VapVU6c/u/LSPhlDOyMJi3kwBCe9bFnvyc3Zb330Nk09u7B3qbdFCWM56lfPuDMVt
-         sTmZBTdJH3zADnjWhw6MRbJyBXDsDRXCVBY+kLmA=
+        b=PLNOHz48eIX6tC8uMhjv5zKjExf/sHaG8QBx1feIQFVrQoiwFkZ3jQwBvFKTAPNog
+         E0oSx+07dJgHKVz5Hq74AzoH2Ck+Zxa9xj47gyh5fyifz+EYg/kw1a1yuqMyXgTeMZ
+         PyUzH9KzHPBR98lAMxWYxcd9/1Av7alGNIZ2qsfo=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org
 Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
         beaub@linux.microsoft.com
-Subject: [PATCH v4 04/10] user_events: Handle matching arguments from dyn_events
-Date:   Thu,  4 Nov 2021 10:04:27 -0700
-Message-Id: <20211104170433.2206-5-beaub@linux.microsoft.com>
+Subject: [PATCH v4 05/10] user_events: Add basic perf and eBPF support
+Date:   Thu,  4 Nov 2021 10:04:28 -0700
+Message-Id: <20211104170433.2206-6-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211104170433.2206-1-beaub@linux.microsoft.com>
 References: <20211104170433.2206-1-beaub@linux.microsoft.com>
@@ -37,98 +37,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ensures that when dynamic events requests a match with arguments that
-they match what is in the user_event.
+Adds support to write out user_event data to perf_probe/perf files as
+well as to any attached eBPF program.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- kernel/trace/trace_events_user.c | 67 +++++++++++++++++++++++++++++++-
- 1 file changed, 66 insertions(+), 1 deletion(-)
+ kernel/trace/trace_events_user.c | 63 ++++++++++++++++++++++++++++++++
+ 1 file changed, 63 insertions(+)
 
 diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 479a9ced3281..cd78cc481557 100644
+index cd78cc481557..b5fe0550b489 100644
 --- a/kernel/trace/trace_events_user.c
 +++ b/kernel/trace/trace_events_user.c
-@@ -662,13 +662,78 @@ static int user_event_free(struct dyn_event *ev)
- 	return destroy_user_event(user);
+@@ -516,6 +516,50 @@ static void user_event_ftrace(struct user_event *user, void *data, u32 datalen,
+ 	trace_event_buffer_commit(&event_buffer);
  }
  
-+static int user_field_match(struct ftrace_event_field *field, int argc,
-+			    const char **argv, int *iout)
++#ifdef CONFIG_PERF_EVENTS
++/*
++ * Writes the user supplied payload out to perf ring buffer or eBPF program.
++ */
++static void user_event_perf(struct user_event *user, void *data, u32 datalen,
++			    void *tpdata)
 +{
-+	char field_name[256];
-+	char arg_name[256];
-+	int len, pos, i = *iout;
-+	bool colon = false;
++	struct hlist_head *perf_head;
 +
-+	if (i >= argc)
-+		return false;
++	if (bpf_prog_array_valid(&user->call)) {
++		struct user_bpf_context context = {0};
 +
-+	len = sizeof(arg_name);
-+	pos = 0;
++		context.data_len = datalen;
++		context.data_type = USER_BPF_DATA_KERNEL;
++		context.kdata = data;
 +
-+	for (; i < argc; ++i) {
-+		if (i != *iout)
-+			pos += snprintf(arg_name + pos, len - pos, " ");
-+
-+		pos += snprintf(arg_name + pos, len - pos, argv[i]);
-+
-+		if (strchr(argv[i], ';')) {
-+			++i;
-+			colon = true;
-+			break;
-+		}
++		trace_call_bpf(&user->call, &context);
 +	}
 +
-+	len = sizeof(field_name);
-+	pos = 0;
++	perf_head = this_cpu_ptr(user->call.perf_events);
 +
-+	pos += snprintf(field_name + pos, len - pos, field->type);
-+	pos += snprintf(field_name + pos, len - pos, " ");
-+	pos += snprintf(field_name + pos, len - pos, field->name);
++	if (perf_head && !hlist_empty(perf_head)) {
++		struct trace_entry *perf_entry;
++		struct pt_regs *regs;
++		size_t size = sizeof(*perf_entry) + datalen;
++		int context;
 +
-+	if (colon)
-+		pos += snprintf(field_name + pos, len - pos, ";");
++		perf_entry = perf_trace_buf_alloc(ALIGN(size, 8),
++						  &regs, &context);
 +
-+	*iout = i;
++		if (unlikely(!perf_entry))
++			return;
 +
-+	return strcmp(arg_name, field_name) == 0;
++		perf_fetch_caller_regs(regs);
++
++		memcpy(perf_entry + 1, data, datalen);
++
++		perf_trace_buf_submit(perf_entry, size, context,
++				      user->call.event.type, 1, regs,
++				      perf_head, NULL);
++	}
 +}
++#endif
 +
-+static bool user_fields_match(struct user_event *user, int argc,
-+			      const char **argv)
-+{
-+	struct ftrace_event_field *field, *next;
-+	struct list_head *head = &user->fields;
-+	int i = 0;
-+
-+	list_for_each_entry_safe_reverse(field, next, head, link)
-+		if (!user_field_match(field, argc, argv, &i))
-+			return false;
-+
-+	if (i != argc)
-+		return false;
-+
-+	return true;
-+}
-+
- static bool user_event_match(const char *system, const char *event,
- 			     int argc, const char **argv, struct dyn_event *ev)
- {
- 	struct user_event *user = container_of(ev, struct user_event, devent);
-+	bool match;
+ /*
+  * Update the register page that is shared between user processes.
+  */
+@@ -538,6 +582,10 @@ static void update_reg_page_for(struct user_event *user)
  
--	return strcmp(EVENT_NAME(user), event) == 0 &&
-+	match = strcmp(EVENT_NAME(user), event) == 0 &&
- 		(!system || strcmp(system, USER_EVENTS_SYSTEM) == 0);
-+
-+	if (match && argc > 0)
-+		match = user_fields_match(user, argc, argv);
-+
-+	return match;
- }
+ 				if (probe_func == user_event_ftrace)
+ 					status |= EVENT_STATUS_FTRACE;
++#ifdef CONFIG_PERF_EVENTS
++				else if (probe_func == user_event_perf)
++					status |= EVENT_STATUS_PERF;
++#endif
+ 				else
+ 					status |= EVENT_STATUS_OTHER;
+ 			} while ((++probe_func_ptr)->func);
+@@ -579,7 +627,19 @@ static int user_event_reg(struct trace_event_call *call,
  
- static struct dyn_event_operations user_event_dops = {
+ #ifdef CONFIG_PERF_EVENTS
+ 	case TRACE_REG_PERF_REGISTER:
++		ret = tracepoint_probe_register(call->tp,
++						call->class->perf_probe,
++						data);
++		if (!ret)
++			goto inc;
++		break;
++
+ 	case TRACE_REG_PERF_UNREGISTER:
++		tracepoint_probe_unregister(call->tp,
++					    call->class->perf_probe,
++					    data);
++		goto dec;
++
+ 	case TRACE_REG_PERF_OPEN:
+ 	case TRACE_REG_PERF_CLOSE:
+ 	case TRACE_REG_PERF_ADD:
+@@ -821,6 +881,9 @@ static int user_event_parse(char *name, char *args, char *flags,
+ 	user->class.get_fields = user_event_get_fields;
+ 	user->class.reg = user_event_reg;
+ 	user->class.probe = user_event_ftrace;
++#ifdef CONFIG_PERF_EVENTS
++	user->class.perf_probe = user_event_perf;
++#endif
+ 
+ 	mutex_lock(&event_mutex);
+ 	ret = user_event_trace_register(user);
 -- 
 2.17.1
 
