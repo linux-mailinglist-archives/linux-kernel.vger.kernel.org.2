@@ -2,80 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E322A444DD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 04:44:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1940F444DDA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 04:48:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhKDDrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 23:47:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40084 "EHLO
+        id S230213AbhKDDuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 23:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhKDDrE (ORCPT
+        with ESMTP id S229913AbhKDDut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 23:47:04 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879ABC061714;
-        Wed,  3 Nov 2021 20:44:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cnhGo81+/Ft3W318LxOJ86hyjf+30Zc+kGoqFQuytcs=; b=Vx/zAxB+JeDPoimpTG7jtXsasE
-        HC05BdpaUL3S+bzRlf9/foDJ4xpkfkF8aaN1uji8zCwY5rr2l6KnuawISqxz6I1X8bwq1KtN3QbN8
-        tM7v3iSm0+qzSpMkm8A3/S83siOGhCJbLTdWniVREHn2Fk0FBzntbqyY8zeEN2Ew/+24WDKK5DuCh
-        OSmXYGrJ40Wwbdb5kOq/qIgHR0UE9UOtFzFZPbfd4Le0RGGmtyXzr12DPyitNWZRBo9e/TTcSGX+y
-        TiCNsbmqZwvXWdnjVE9iAt1WdHebh7wXT72p986IUJgTwUw1GPemdGfBpLILYcYFEvd4G5WTudUBG
-        SCgfrLjQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1miTeA-005duZ-0r; Thu, 04 Nov 2021 03:43:05 +0000
-Date:   Thu, 4 Nov 2021 03:42:37 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 18/21] iomap: Convert iomap_add_to_ioend to take a folio
-Message-ID: <YYNWrSyPCabrcRfr@casper.infradead.org>
-References: <20211101203929.954622-1-willy@infradead.org>
- <20211101203929.954622-19-willy@infradead.org>
- <YYDoMltwjNKtJaWR@infradead.org>
- <YYGfUuItAyTNax5V@casper.infradead.org>
- <20211103160057.GH24333@magnolia>
+        Wed, 3 Nov 2021 23:50:49 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D22C061714;
+        Wed,  3 Nov 2021 20:48:11 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hl8k155qdz4xcJ;
+        Thu,  4 Nov 2021 14:48:09 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1635997690;
+        bh=e0uKO/0bDXQPvox4UoHbpVSHa5HOliGsr11A8JCD1vo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tpQSWSfh3Qwd8iSCHU92fRsos2LuKds/iSvQ1mw39GCxMaN5qEbH81L9VdX+iqyJR
+         bvmbmPPsoYSCyxIRRh9hvgMbVG7mqXAJKND8ABB39aiKH/tgbzdmmHlmB7a4oplZNd
+         QRkqYRpfBH0Zx9IKRkFhLA4BVx7w9sNE+Fl37mcLVtppeto35JL0DeZgIIp0PobXjp
+         3DceNQLAUhvn1szBRR68uMyhMRyzlxvpm8BG22DCTVtfTQysgtFN5oa9WmkFc9lqwK
+         tczLNtky8sL2YnGjawUaeMU2BpGb71IhNY2ucQRZ30o7we3JxdiPZtBWLuT9kwojcQ
+         pp/VTWUDCyRjg==
+Date:   Thu, 4 Nov 2021 14:48:05 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Xin Long <lucien.xin@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warnings after merge of the net tree
+Message-ID: <20211104144805.72934736@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103160057.GH24333@magnolia>
+Content-Type: multipart/signed; boundary="Sig_/waQ587_YUdS8C+r+L6eviwk";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 09:00:57AM -0700, Darrick J. Wong wrote:
-> > -			wpc->ops->discard_folio(page_folio(page), file_offset);
-> > +			wpc->ops->discard_folio(folio, pos);
-> 
-> /me wonders why this wouldn't have been done in whichever patch added
-> folio as a local variable, but fmeh, the end result is the same:
+--Sig_/waQ587_YUdS8C+r+L6eviwk
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Found it and fixed it.
+Hi all,
 
-> > @@ -1474,17 +1474,15 @@ iomap_do_writepage(struct page *page, struct writeback_control *wbc, void *data)
-> >  		 * memory is zeroed when mapped, and writes to that region are
-> >  		 * not written out to the file."
-> >  		 */
-> > -		zero_user_segment(page, poff, PAGE_SIZE);
-> > -
-> > -		/* Adjust the end_offset to the end of file */
-> > +		zero_user_segment(&folio->page, poff, folio_size(folio));
-> 
-> Question: is &folio->page != page here?  I guess the idea is that we
-> have a (potentially multi-page) folio straddling i_size, and we need to
-> zero everything in the whole folio after i_size.  But then why not pass
-> the whole folio?
+After merging the net tree, today's linux-next build (htmldocs)
+produced these warnings:
 
-Ugh, thanks.  You made me realise that zero_user_segments() is still
-conditional on CONFIG_TRANSPARENT_HUGEPAGE.  It's a relic of when I
-was going to do all of this with THP; before I switched to the folio
-mental model.
+/home/sfr/next/next/Documentation/security/SCTP.rst:123: WARNING: Title und=
+erline too short.
 
-So now we're going to get folio_zero_segments(), folio_zero_segment()
-and folio_zero_range().
+security_sctp_assoc_established()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/sfr/next/next/Documentation/security/SCTP.rst:273: WARNING: Title und=
+erline too short.
 
+security_sctp_assoc_established()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Introduced by commit
+
+  7c2ef0240e6a ("security: add sctp_assoc_established hook")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/waQ587_YUdS8C+r+L6eviwk
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGDV/UACgkQAVBC80lX
+0Gy0ZwgAhvk5C70rYs1KiqrWw36kBrP4RLUM52WtzSRhtR9TjzAJwBZXBAwoQLwC
+g5Sn8HOTM5U9txTLvdjUWABBrRbdH9bEZ28Rh9Ty/yuY9G5UdWo3+cYJZOLxMrz1
+KuQUBCLQyFp4MaLQtXL83aWNJcAisBO+9DKgI27SsP3sxspGgXO17EP1HqLpnqJM
+7P/bf3D9iq98Cg48rlF6gMxUYrKESOWycgb2nEEK29kj76vDGdyAou00fdmsPBMW
+v725JQjR2gEzRKWqKAlvCX6taiv5pXNKqHoZTGXg40l30YJJ1DDZlLfhwgXYqjMp
+q2BW+TN8XpypA28+vPQ1LoXRSt2+jA==
+=0UcW
+-----END PGP SIGNATURE-----
+
+--Sig_/waQ587_YUdS8C+r+L6eviwk--
