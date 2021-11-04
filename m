@@ -2,151 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F33445A23
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 20:01:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C5B445A71
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 20:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234014AbhKDTEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 15:04:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbhKDTEI (ORCPT
+        id S234128AbhKDTLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 15:11:00 -0400
+Received: from mail.xenproject.org ([104.130.215.37]:54986 "EHLO
+        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232340AbhKDTK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 15:04:08 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4042DC061203
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 12:01:30 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 67-20020a1c1946000000b0030d4c90fa87so4977582wmz.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 12:01:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x+uX5Ns056I9tnFIVcNyuYzIDAX+5rS74jXcNO8ZZKU=;
-        b=emBNHheP8B0mR8OzksZJqloYZOJk0nyjriKh4F2bzGPy75wwbbA3JKL5fiQuzGd0DA
-         ZEiwhvGaPXtzQocFdGEa5p/FntQ//GcNErwJqh0YvaO2U0Fy42flzGTP7+dbJPcfrwfo
-         XeIQJSjB0X3hTMnA3Ta7r2lDlq0H4IsbNjGRaDDNlI5YfvwdfqaGw7AByTUgvnAnlmru
-         gJTLXunmjBxJ0KoRTGqsLH+N0HVeEYR3/LBmyfYAKs+e/KTvO2UCqvrMzUzcEOnshD/c
-         zvM+hhmCtZU65t0KsC0U9VMO2Vt7GALek4gMzRwTjFKHskTzsQQZ+tb1rFmRvwQ0QZD/
-         z+2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x+uX5Ns056I9tnFIVcNyuYzIDAX+5rS74jXcNO8ZZKU=;
-        b=zE2rofvuC019RnYh3d2VEjThq+5CxQwOmzCoQHJcwfwPTKOtYC8Pe+ct8K506gkMkd
-         soIt54gtn2RYvKGDx84/Cyu83STp4hivW2DcC8DNmk9/sf9DA12yHpizS8eFCBSRNdb2
-         wWYZsScHpFXZdvgy1P6Vj2VTSQdNrIyoFon5k5XZk0f3Ha+Sb8C0ZRqN/GUqrazCxmc+
-         CDR0aj8UuThQ0/4j1aFd/msFoADkyct4oxJsCuJVDK4Jy8MrfR1oapQryraErDiGsp1S
-         WQ2xUZPEMHikwEY/n9HrNLt+uvtOdwELZQIgstDRFHj54lZVkv7zpKa1uuyLr4vFX6Mp
-         uTCg==
-X-Gm-Message-State: AOAM531fUBdZzqmb92qNkjj9qyXdTwibnhdFccr+g/RoGo05WL7ehxAh
-        OzXIpbCh2fxjvW0CrzOWYe4wsg==
-X-Google-Smtp-Source: ABdhPJyoy6Zj81c/FZxLpOTVEnDQY4I0ACJcBtfBpoJoM1HZy0OMGDZXc7tiSYsTwIdMqlOkcbn2ZQ==
-X-Received: by 2002:a05:600c:1914:: with SMTP id j20mr25597303wmq.26.1636052488813;
-        Thu, 04 Nov 2021 12:01:28 -0700 (PDT)
-Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
-        by smtp.gmail.com with ESMTPSA id n1sm3986245wmq.6.2021.11.04.12.01.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 12:01:27 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Kent Gibson <warthog618@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [GIT PULL] configfs-based GPIO simulator for v5.16
-Date:   Thu,  4 Nov 2021 20:00:30 +0100
-Message-Id: <20211104190030.20660-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.30.1
+        Thu, 4 Nov 2021 15:10:59 -0400
+X-Greylist: delayed 2243 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Nov 2021 15:10:58 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
+        Subject:Cc:To:From; bh=VV56b86sER65QVEVQ0sGmEBrBOeAbsDWmGNCpdGcDkg=; b=eVusLe
+        hXkUIGnaOP5FUhQF8OV7IBTqULrJzB/kXhALbSrGXdCxlfjz+zaUjgJo0I+WlI4q2C5/fi3z3NH2x
+        //riluIZTYKkwympILrIU1Djav+yJNhfNCTQsQ15W58csbpRVrP0H/yGHOaCz3mZu9zSKi/T+xN4V
+        LCmR6X0K+Ys=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1mihVY-0001zT-7F; Thu, 04 Nov 2021 18:30:40 +0000
+Received: from host86-165-42-146.range86-165.btcentralplus.com ([86.165.42.146] helo=debian.home)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1mihVX-0001RA-Ul; Thu, 04 Nov 2021 18:30:40 +0000
+From:   Paul Durrant <paul@xen.org>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: [PATCH] KVM: x86: Make sure KVM_CPUID_FEATURES really are KVM_CPUID_FEATURES
+Date:   Thu,  4 Nov 2021 18:30:20 +0000
+Message-Id: <20211104183020.4341-1-paul@xen.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+From: Paul Durrant <pdurrant@amazon.com>
 
-A while ago I sent you a pull-request for the GPIO subsystem which, in addition
-to regular GPIO updates, contained a new GPIO simulator module based on
-configfs that we want to use to test the uAPI and its main user-space user -
-libgpiod. The PR included changes to configfs itself in the form of an
-implementation of the concept of committable items. The changes had been in
-development for several months and the maintainers had been largely
-unresponsive which made me send it directly to you eventually after gathering
-some reviews on the linux-gpio mailing list. You then Cc'ed Al who raised some
-concerns and the patches were pulled out.
+Currently when kvm_update_cpuid_runtime() runs, it assumes that the
+KVM_CPUID_FEATURES leaf is located at 0x40000001. This is not true,
+however, if Hyper-V support is enabled. In this case the KVM leaves will
+be offset.
 
-A couple months have passed with a few more iterations and I still can't get
-any meaningful reviews from the configfs maintainers (nor NAKs for that
-matter). I decided to give it another try and send it to you directly again.
+This patch introdues as new 'kvm_cpuid_base' field into struct
+kvm_vcpu_arch to track the location of the KVM leaves and function
+kvm_update_cpuid_base() (called from kvm_update_cpuid_runtime()) to locate
+the leaves using the 'KVMKVMKVM\0\0\0' signature. Adjustment of
+KVM_CPUID_FEATURES will hence now target the correct leaf.
 
-Since last time I've addressed issues raised by Al (to the best of my ability
-anyway) and made sure all references are counted correctly (including error
-paths) and all resources freed. This code has been tested a lot with
-a development version of libgpiod. The branch I've tagged spent some time in
-next too with a single issue reported and fixed.
+Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+---
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Wanpeng Li <wanpengli@tencent.com>
+Cc: Jim Mattson <jmattson@google.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+---
+ arch/x86/include/asm/kvm_host.h |  1 +
+ arch/x86/kvm/cpuid.c            | 50 +++++++++++++++++++++++++++++----
+ 2 files changed, 46 insertions(+), 5 deletions(-)
 
-Please consider pulling.
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 88fce6ab4bbd..21133ffa23e9 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -725,6 +725,7 @@ struct kvm_vcpu_arch {
+ 
+ 	int cpuid_nent;
+ 	struct kvm_cpuid_entry2 *cpuid_entries;
++	u32 kvm_cpuid_base;
+ 
+ 	u64 reserved_gpa_bits;
+ 	int maxphyaddr;
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 2d70edb0f323..2cfb8ec4f570 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -99,11 +99,46 @@ static int kvm_check_cpuid(struct kvm_cpuid_entry2 *entries, int nent)
+ 	return 0;
+ }
+ 
++static void kvm_update_cpuid_base(struct kvm_vcpu *vcpu)
++{
++	u32 function;
++
++	for (function = 0x40000000; function < 0x40010000; function += 0x100) {
++		struct kvm_cpuid_entry2 *best = kvm_find_cpuid_entry(vcpu, function, 0);
++
++		if (best) {
++			char signature[12];
++
++			*(u32 *)&signature[0] = best->ebx;
++			*(u32 *)&signature[4] = best->ecx;
++			*(u32 *)&signature[8] = best->edx;
++
++			if (!memcmp(signature, "KVMKVMKVM\0\0\0", 12))
++				break;
++		}
++	}
++	vcpu->arch.kvm_cpuid_base = function;
++}
++
++static inline bool kvm_get_cpuid_base(struct kvm_vcpu *vcpu, u32 *function)
++{
++	if (vcpu->arch.kvm_cpuid_base < 0x40000000 ||
++	    vcpu->arch.kvm_cpuid_base >= 0x40010000)
++		return false;
++
++	*function = vcpu->arch.kvm_cpuid_base;
++	return true;
++}
++
+ void kvm_update_pv_runtime(struct kvm_vcpu *vcpu)
+ {
++	u32 base;
+ 	struct kvm_cpuid_entry2 *best;
+ 
+-	best = kvm_find_cpuid_entry(vcpu, KVM_CPUID_FEATURES, 0);
++	if (!kvm_get_cpuid_base(vcpu, &base))
++		return;
++
++	best = kvm_find_cpuid_entry(vcpu, base + KVM_CPUID_FEATURES, 0);
+ 
+ 	/*
+ 	 * save the feature bitmap to avoid cpuid lookup for every PV
+@@ -116,6 +151,7 @@ void kvm_update_pv_runtime(struct kvm_vcpu *vcpu)
+ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
+ {
+ 	struct kvm_cpuid_entry2 *best;
++	u32 base;
+ 
+ 	best = kvm_find_cpuid_entry(vcpu, 1, 0);
+ 	if (best) {
+@@ -142,10 +178,14 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
+ 		     cpuid_entry_has(best, X86_FEATURE_XSAVEC)))
+ 		best->ebx = xstate_required_size(vcpu->arch.xcr0, true);
+ 
+-	best = kvm_find_cpuid_entry(vcpu, KVM_CPUID_FEATURES, 0);
+-	if (kvm_hlt_in_guest(vcpu->kvm) && best &&
+-		(best->eax & (1 << KVM_FEATURE_PV_UNHALT)))
+-		best->eax &= ~(1 << KVM_FEATURE_PV_UNHALT);
++	kvm_update_cpuid_base(vcpu);
++
++	if (kvm_get_cpuid_base(vcpu, &base)) {
++		best = kvm_find_cpuid_entry(vcpu, base + KVM_CPUID_FEATURES, 0);
++		if (kvm_hlt_in_guest(vcpu->kvm) && best &&
++		    (best->eax & (1 << KVM_FEATURE_PV_UNHALT)))
++			best->eax &= ~(1 << KVM_FEATURE_PV_UNHALT);
++	}
+ 
+ 	if (!kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT)) {
+ 		best = kvm_find_cpuid_entry(vcpu, 0x1, 0);
+-- 
+2.20.1
 
-Best Regards,
-Bartosz Golaszewski
-
-The following changes since commit 519d81956ee277b4419c723adfb154603c2565ba:
-
-  Linux 5.15-rc6 (2021-10-17 20:00:13 -1000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-sim-for-v5.16
-
-for you to fetch changes up to 5065e08e4ef3c3fd0daf141f601de4b4d1af2333:
-
-  gpio: sim: fix missing unlock on error in gpio_sim_config_commit_item() (2021-10-30 17:10:47 +0200)
-
-----------------------------------------------------------------
-gpio simulator + configfs changes for v5.16
-
-- implement committable items in configfs
-- add sample code
-- implement the GPIO simulator based on configfs committable items
-- add tests
-
-----------------------------------------------------------------
-Bartosz Golaszewski (8):
-      configfs: increase the item name length
-      configfs: use (1UL << bit) for internal flags
-      configfs: implement committable items
-      samples: configfs: add a committable group
-      gpio: sim: new testing module
-      selftests: gpio: provide a helper for reading chip info
-      selftests: gpio: add a helper for reading GPIO line names
-      selftests: gpio: add test cases for gpio-sim
-
-Wei Yongjun (1):
-      gpio: sim: fix missing unlock on error in gpio_sim_config_commit_item()
-
- Documentation/admin-guide/gpio/gpio-sim.rst   |  72 +++
- Documentation/filesystems/configfs.rst        |   6 +-
- drivers/gpio/Kconfig                          |   8 +
- drivers/gpio/Makefile                         |   1 +
- drivers/gpio/gpio-sim.c                       | 884 ++++++++++++++++++++++++++
- fs/configfs/configfs_internal.h               |  22 +-
- fs/configfs/dir.c                             | 276 +++++++-
- include/linux/configfs.h                      |   3 +-
- samples/configfs/configfs_sample.c            | 153 +++++
- tools/testing/selftests/gpio/.gitignore       |   2 +
- tools/testing/selftests/gpio/Makefile         |   4 +-
- tools/testing/selftests/gpio/config           |   1 +
- tools/testing/selftests/gpio/gpio-chip-info.c |  57 ++
- tools/testing/selftests/gpio/gpio-line-name.c |  55 ++
- tools/testing/selftests/gpio/gpio-sim.sh      | 229 +++++++
- 15 files changed, 1750 insertions(+), 23 deletions(-)
- create mode 100644 Documentation/admin-guide/gpio/gpio-sim.rst
- create mode 100644 drivers/gpio/gpio-sim.c
- create mode 100644 tools/testing/selftests/gpio/gpio-chip-info.c
- create mode 100644 tools/testing/selftests/gpio/gpio-line-name.c
- create mode 100755 tools/testing/selftests/gpio/gpio-sim.sh
