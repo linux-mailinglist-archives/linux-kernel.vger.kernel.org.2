@@ -2,63 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB68445B95
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 22:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 647B5445B9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 22:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232182AbhKDVVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 17:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52188 "EHLO
+        id S232040AbhKDVY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 17:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbhKDVVC (ORCPT
+        with ESMTP id S230162AbhKDVYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 17:21:02 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FA7C061714;
-        Thu,  4 Nov 2021 14:18:24 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::e2d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id C44B166B3;
-        Thu,  4 Nov 2021 21:18:23 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net C44B166B3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1636060703; bh=m04wQGZL6NYoYduVGJGOPPPUdZd6dcd+aEuYMF8QdkM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=OMAMDb52R3ZRZobeTdVD93uoZq6kmxS6osp7FCeWih+U5biyTWTI/ylEFPQ42ukus
-         rVzxQV+18NC7lHzTvGNCCT5epvWMmCUfJkP2qff+xuVwl5JsbSGM6xmVbjAQVEOJIP
-         6z/MimIMyjTGRs5pa923FyAy6S8pT8/xdWMn7XzO/rJY241EIHy1utI6mFKKY6pz5C
-         SbR+DW9IS+qFt0t+Or+rH/6iYdcuwGCOp4X28x9RkIn9JoU7vcAerfnHdX7+dbsd9b
-         PqyWEvyvQlk+0Ie13BlV42xX3SVyOM/DP7ensLxs2KiZTC8N0X9dDxUTNBSqnREGyW
-         a1doUos494WMw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     rostedt@goodmis.org, mhiramat@kernel.org,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 10/10] user_events: Add documentation file
-In-Reply-To: <20211104210809.GA2486@kbox>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
- <20211104170433.2206-11-beaub@linux.microsoft.com>
- <8735obrbao.fsf@meer.lwn.net> <20211104210809.GA2486@kbox>
-Date:   Thu, 04 Nov 2021 15:18:23 -0600
-Message-ID: <87tugrpqlc.fsf@meer.lwn.net>
+        Thu, 4 Nov 2021 17:24:25 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BBAC061714;
+        Thu,  4 Nov 2021 14:21:47 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id s136so6545206pgs.4;
+        Thu, 04 Nov 2021 14:21:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7g8kAQN1VrVCmMU4e673cekVfYf70RsaUBmQfh+Hs0E=;
+        b=gRfwycbFIvdS0XbU7E+cVUXTEMIQdWRU8a6gJeYB58TxyWesuUV5xUobQv+8KIavnT
+         QAWtUH1CTzWDakIMqugoL31FXxl5zVT/wM2XEOPCYLxdP4a6HPuppoGOyOoonVJK4qF5
+         IQCx6N5YflS7k4YJd9qJ8YLs5yyzO1/uh0WMhM3d5751XhHqBGWPAwlfjj3BEW8iEvVA
+         Bxi0eHEyMW1eT6VNWCvwKppRBYkgbhbDYFNP7EYXBA+NsxuTcIqKNwUrULhbZlcACx46
+         SjFYE7w5XPVeYaAxEEoPWn+VSFGgiCyPepeF0Lyqk7w+sag4yLS/gRlhbrypGmpkbzhm
+         ZeIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7g8kAQN1VrVCmMU4e673cekVfYf70RsaUBmQfh+Hs0E=;
+        b=wR9HakzUVS81eCPirYiFDGP8W0CaMqdKY1X98/H0VSpXRq0I/6h+zuCLsEmGPWaGO+
+         UQvCqKLGkl9WEO2fWbISQ5DsMWMcTI4G3wd7uHZMvGSYCKjXq92xcTORLc0c3cps3oa5
+         kSxBepKRZ8+LQnsfJVXJtrO9CUIoUIM2MWD3dIy5ipHSfD+yKQPPSSuu2GnJ0vz05CR7
+         ldhnHOwLM7o2oFTXdmgzmjXGCOlpifsyuyiWIoTkkADqQCxQHRW3Ye0v2+d9M7DdeofU
+         754zf/eQsCBPSjXVByCx1jPetGwaDrik1oujTKnDMjodGYj+fDJPfVmYiY3ejWpwh4P7
+         slsg==
+X-Gm-Message-State: AOAM533CAMGHJaYXrRdxgK/zgqnuYDIgqnT1O/NWf68a57RbcKuf+O/A
+        fcqv9iECSgZxWUtiM7vjPTfn0TwBbZo=
+X-Google-Smtp-Source: ABdhPJyk7e8mZiBFime9fyP5QAhVHJYRB7xH3Gl+LVz1lNXayOCRQgx2obsgIJ1zFWTPGU1K7BBkbg==
+X-Received: by 2002:a62:760a:0:b0:494:6fa0:60a2 with SMTP id r10-20020a62760a000000b004946fa060a2mr4177586pfc.39.1636060905639;
+        Thu, 04 Nov 2021 14:21:45 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id w5sm4480698pgp.79.2021.11.04.14.21.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Nov 2021 14:21:44 -0700 (PDT)
+Subject: Re: [PATCH 5.4 0/9] 5.4.158-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211104141158.384397574@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <04ceb6b8-dc91-192c-f866-5d561d014a95@gmail.com>
+Date:   Thu, 4 Nov 2021 14:21:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20211104141158.384397574@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Beau Belgrave <beaub@linux.microsoft.com> writes:
+On 11/4/21 7:12 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.158 release.
+> There are 9 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 06 Nov 2021 14:11:51 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.158-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-> On Thu, Nov 04, 2021 at 01:05:51PM -0600, Jonathan Corbet wrote:
->> Examples are great, but they are best placed under samples/ (or tools/
->> if they do something useful) where readers can build and run them.
->> 
-> Ok, sounds good. Is it fine to include user mode samples in there? I
-> quickly checked and most appear to be modules. Maybe there is a better
-> place for user mode examples?
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-User-mode stuff is fine - at least, *I* don't object to it! :)
-
-Thanks,
-
-jon
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
