@@ -2,92 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C2E445039
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C49FE445051
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhKDI3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45650 "EHLO
+        id S230451AbhKDIcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:32:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbhKDI3O (ORCPT
+        with ESMTP id S230084AbhKDIcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:29:14 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF216C06127A
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 01:26:36 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id h2so5349449ili.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 01:26:36 -0700 (PDT)
+        Thu, 4 Nov 2021 04:32:03 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2FAC061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 01:29:25 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id d24so7397733wra.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 01:29:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=NWtIycQHSeI97P9ROGWWPqnNbO7HVSDZEQKdeZMuQpc=;
-        b=IF+H6cMpaLsXseGAICdg2hy78zHqvIupKAow9uEFmuhhUBuV+pGS/BkATn0WGLNlmY
-         AqGvPAGzKl7YGCYXAETCvFy7xPzpKU60nLSTLbqzslRWpTwHc0np//J08oqTqwgRMEpC
-         +DXajit6xmqHepH1uK/bTJoQjDk17s3vCEzLhTTzRwOZ/mDLfszw0LHbvxsvXC/3xLpC
-         s/gXDdvlMIb9gl1vUYvLjGzuNFHa7klnotHVoMz57gblBo9kffi1oGaUDaGRr9mYDKrV
-         m8vdk6sPyX5eKoBOplHwergE4t0K4xa2elWHRFzkev3D/3lq/AQ+gHLaHOJEXWbEjnrg
-         GIVg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ghkyarqNnDB/Y/3YhsJn3L40yfD5gAUeaEhu3iM2NF8=;
+        b=McRL81hs7UZiC/3Lnw2W+WOYHQQZzX1+Q0DGYBYygh4eZ+1477NbnhDH/CMHbgxkQM
+         2m9Sm1M7rW/awLEglfR/wHbnVYDmoxmLGfl4cyt0niJGVn9oZbh14urSj4mLuZVJl7JB
+         NZ0xkg7nRHkdkd0w5xGlBlBeMPGn6G//AS9/HSxV8Lcuw5JjeqFPShyR00A0bBUAmD8u
+         o8mu9bTc0jBOLrJn2PH8GVHFUykkpAaKmCrofKYQDZY8K64FzydkURZpUBTR/eZpBhzH
+         bJqmWyNGr5CDQ6kgeah4UcE2LdiZS53UdM4DAi7Gt2V6iejD0nfUMRnJleYtsc7kfZth
+         OJcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=NWtIycQHSeI97P9ROGWWPqnNbO7HVSDZEQKdeZMuQpc=;
-        b=ECxTjGHkmnRYBoE4zkcMK7g8aAcgN0Z/FrjKDMI7vhRPYiozGPIR69gqljpy6BZ5N7
-         QXq68dROH27IsmZd1hostWQebVsnQj5n9T0LgdpgJhvs/2Dhj7g9odpgwXFvFWe3uw67
-         ARO1RLFr5NhmEiA3fq1hO8bcvWZ0EzwwjiqZQupfqg9+5x3unPYS9HODSYxqxGlQiu/9
-         +fep2E8nYxLeTQRQpAneUUexZ9oKUmdNVcbUhx6/Bv3aPadlRM6+Qzihhg8n85vaKmOa
-         y/jNyAPfPEdtrn40zvpK7N5WCN45jO4pIhii3vh06Bwc9eHuFrETlci0VbBw2C2iA7Ev
-         7IvQ==
-X-Gm-Message-State: AOAM531ezrdHpYd2PeChkwTglic11OF/OwXYSFRPUw+6bEnAJjXc0Asz
-        tUI9YxtnX1Zd3cYy7D2j7ROwJ9QOkM0U0MV+gls=
-X-Google-Smtp-Source: ABdhPJyKXXD5DCk3iiGd2YLUNEbEgoeW2WG84DSViDJlWlryxl0Sgv6caIWg1SYa2GpXl18LvNQUcAm7UMqlA9GmA50=
-X-Received: by 2002:a05:6e02:1c8a:: with SMTP id w10mr671967ill.4.1636014396427;
- Thu, 04 Nov 2021 01:26:36 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ghkyarqNnDB/Y/3YhsJn3L40yfD5gAUeaEhu3iM2NF8=;
+        b=ItXrTD2F7FFi4OvRFi1LyzAUb7MC8nCvUrxjmjYjGUh0ZBNBSUbCJfKScwu0csOur1
+         w6JD2aEXyhgE1ChsGU1X61CjmfnAx3f6yFSsIrl6hDpEY5195EulhCgP8knIyFalKpon
+         rXCWzI5+uPoFLn5TPgnYeIOHWUUS+oPb/aggmng0X+Wdt2N7nRbDZ1o18mBUQHnUO9tZ
+         RHSnq+rHpNWtgGdpCyyzap37/qJKrXVVnsk7n2vhedY+o8k8PSxud36u2CKdtzF2nH5e
+         BOcLub9HqJbX3+BdXfMWk//Q8AkAWjd3c+MWegtRsH9VB/yiCXxfrh1gVIq7v0fnAIMn
+         elnw==
+X-Gm-Message-State: AOAM530yVTk0uD77oYalOlTKO88aaI/fdDcn/+v9gQxIukpNcK3AWJAe
+        ydHNMAdPIVA2l73IgBM50/X+wg==
+X-Google-Smtp-Source: ABdhPJzjqTmlaB5EcPKJkTRmpsTFj1DHOMCUEW7CV7MprZs+xQjB/Ok02LX4XBkJ1vohpKd2+F1GdA==
+X-Received: by 2002:a5d:51cb:: with SMTP id n11mr40788300wrv.278.1636014563955;
+        Thu, 04 Nov 2021 01:29:23 -0700 (PDT)
+Received: from google.com ([95.148.6.174])
+        by smtp.gmail.com with ESMTPSA id h18sm4597774wre.46.2021.11.04.01.29.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 01:29:23 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 08:29:21 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] backlight: lp855x: Add support ACPI enumeration
+Message-ID: <YYOZ4TI29Oq6i6za@google.com>
+References: <20211102225504.18920-1-hdegoede@redhat.com>
+ <20211102225504.18920-3-hdegoede@redhat.com>
+ <20211103171756.wxthncse2f4syeiz@maple.lan>
+ <5d431db5-30dc-b51c-7abb-ab57a3de2f8f@redhat.com>
+ <20211103173107.xlchsysme5xzpn24@maple.lan>
 MIME-Version: 1.0
-Sender: readsghfrdfrsafxgf@gmail.com
-Received: by 2002:a05:6e02:1bee:0:0:0:0 with HTTP; Thu, 4 Nov 2021 01:26:36
- -0700 (PDT)
-From:   "mrs.sophia.robin" <mrs.sophiar.robin424@gmail.com>
-Date:   Thu, 4 Nov 2021 09:26:36 +0100
-X-Google-Sender-Auth: iJzYN5-IKy722jXOQB9TiZd0gX0
-Message-ID: <CAAbfOQyMzAr-sLX3O8O8rGnxWRJg=F28gELxbq0SRf6xoviOJQ@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211103173107.xlchsysme5xzpn24@maple.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-i'm Mrs.Sophia Robin,a citizen of the united state of America,I work
-at HSBC Bank in Milan Italy,as Telex Manager charge of wire transfer
-department,i'm contacting you personally for investment assistance and
-a long term business relationship in your Country.i'm contacting you
-for an important and  urgent business transaction,I want the bank to
-transfer the money left by Dr.Cheng Chao,a Chinese Politician who
-died,March 17th 2020,without any trace of his family members,he used
-our bank to launder money overseas through the help of their Political
-advisers.and most of the funds which they transferred out of the
-shores of China, were gold and oil money that was supposed to have
-been used to develop the continent.
+On Wed, 03 Nov 2021, Daniel Thompson wrote:
 
-Can you invest this money and also help the poor? The amount value at
-$15.5million Dollars($US15,500,000),left in his account still
-unclaimed,if you know that you are capable to invest this fund into
-any profitable business in your country kindly send me your details
-information as listed below to enable me draft you an application form
-of claim along with the deposit certificate which you are going to
-fill with your bank account detail necessary and contact the HSBC Bank
-in Italy for immediate transfer of the Amounted sum into your bank
-account direct. Percentage share will be 60,for me/40,for you.
+> On Wed, Nov 03, 2021 at 06:28:15PM +0100, Hans de Goede wrote:
+> > Hi,
+> > 
+> > On 11/3/21 18:17, Daniel Thompson wrote:
+> > > On Tue, Nov 02, 2021 at 11:55:04PM +0100, Hans de Goede wrote:
+> > >> The Xiaomi Mi Pad 2 tablet uses an ACPI enumerated LP8556 backlight
+> > >> controller for its LCD-panel, with a Xiaomi specific ACPI HID of
+> > >> "XMCC0001", add support for this.
+> > >>
+> > >> Note the new "if (id)" check also fixes a NULL pointer deref when a user
+> > >> tries to manually bind the driver from sysfs.
+> > >>
+> > >> When CONFIG_ACPI is disabled acpi_match_device() will always return NULL,
+> > >> so the lp855x_parse_acpi() call will get optimized away.
+> > >>
+> > >> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> > > 
+> > > Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+> > 
+> > Thank you.
+> > 
+> > So what is the process for upstreaming backlight patches,
+> > do these go through drm-misc-next (in that case I can push
+> > the series myself), or will you pick these up ?
+> 
+> Lee Jones gathers up the backlight patches and sends a PR (but, except
+> in exceptional cases, treats my R-b as a pre-requisite before doing so).
 
-(1) Your full name..................................................
-(2) Your address....................................................
-(3) Your Nationality.................................................
-(4) Your Age / Sex.....................................................
-(5) Your  Occupation............................................
-(6) Your marital status......................................
-(7) Your direct telephone number..................
-(8) Your photo.......................................
+Also the merge-window is open, so this is headed for v5.17.
 
-Thanks with my best regards.Mrs. Sophia Robin,
-Telex Manager Milan Italy  (H.S.B.C)
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
