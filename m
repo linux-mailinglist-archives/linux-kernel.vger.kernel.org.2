@@ -2,188 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DAE2445AE4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 21:03:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB97445AE9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 21:06:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbhKDUFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 16:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35556 "EHLO
+        id S232063AbhKDUI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 16:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231989AbhKDUFp (ORCPT
+        with ESMTP id S231826AbhKDUIz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 16:05:45 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD6BC061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 13:03:07 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id k29so6056219qve.6
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 13:03:07 -0700 (PDT)
+        Thu, 4 Nov 2021 16:08:55 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA39C061203
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 13:06:16 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id g11so6875617pfv.7
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 13:06:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=n6LDFw29hZsoKOLns/SZzto6jZDnxgAkgjGJO4dyrRY=;
-        b=T/ckcQBWOViogOXX72QJ6w3HvGmn5rL2NW06Yjte/zJcE/AB/v4oyf/SkjhFR0E227
-         pI+xYaEgHixkWOy5DgzDRBV4gQ/rKqui2oQnykhq4YenADyPYoZHwx8ZkZpTVaERR2xz
-         UduZGcSig2OE5calDBgcMjyWXIaGnoszW9veY=
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t6h33BXhPYBQBuyLFqDnFlYYuA+tbBLYs00jO/l0RTs=;
+        b=EDUGKUl8X9HnJ11lWBNwL6XuHPoMuE9NAiermUIjA02AntbYF/4QvL7Bg5qMLmlMPf
+         6VlAERivL4w0LxupEb8BX4xeUfs+l9qRymyvfBlaQBTEgdxmA+dbbwQsaIgwRkDScXWR
+         vz8rtVFgrwdPRmtbFzD61nop3ff/GnHh/ylB3vh53x+ymbECY+WpcnZ7NNUfgQ4/Owbk
+         /BaehvWlufiKJW4I68yoAceu1b04EX6Slf5yJbLalSXycjA/UM5cTWEE5XAk31g/sBJc
+         C146WdGeAGLLHIJV69oloEgsCKCXDNz4NznUBTaHbysA6toSggF4UxT2IezqKEFWiBEr
+         7qwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=n6LDFw29hZsoKOLns/SZzto6jZDnxgAkgjGJO4dyrRY=;
-        b=uZdXDjoZCbbdt7w4PeoNlyMYBtfm1kRorsnqI6d4OYgFN1uh/rqfCBWxYOazPIgYh+
-         SDLlNcIbiIdMPb/I8/EDAcTu2eSJ5trvWqclkjJkbyORevTahN5jZSuEQ3kv3cYn0wP3
-         maR63XPg4rBKIAjpvobyo23aXvp2Si1ha6vJ9IfaWxNzM97J1Jnm710YS+4RTcQvp2U7
-         ADVoqYCtlSYqQQxK+5I7WW+XZ9ed+CI8hpULsassnIYFkXocW15gA681AoC1A85kENFY
-         ALNOQBWAMm2/g1akB84khUKlnPOIk7jarCvCpgDSWLm9ve3qwHjWvM66ho2iyE93bJUc
-         Y3Eg==
-X-Gm-Message-State: AOAM531foXwsVPxgPkWiOVInW0XZVKYLCwUNOEI1WDID27P/QKSLvf7x
-        X7QjIIJXjw3U1gUYetLEYJE/dg==
-X-Google-Smtp-Source: ABdhPJxLZ+5Oy62QzLHHu/KSvILvzeCBEI0UAESxsEUKEIxTcMhOTMEEJsV+Day34F+jzG9/rBb/yA==
-X-Received: by 2002:a05:6214:240c:: with SMTP id fv12mr3237449qvb.58.1636056186439;
-        Thu, 04 Nov 2021 13:03:06 -0700 (PDT)
-Received: from markyacoub.nyc.corp.google.com ([2620:0:1003:314:1118:14fe:72e3:f013])
-        by smtp.gmail.com with ESMTPSA id j22sm4577411qko.121.2021.11.04.13.03.05
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t6h33BXhPYBQBuyLFqDnFlYYuA+tbBLYs00jO/l0RTs=;
+        b=K4ERoJOTOgDOIG2vV9JlWC625Z/4h7km7kA51WYp2gzPQep8V0rOxq3XjwPrD54Yr6
+         hTA39oW4X5A0kN6917HA3s5NzqD/3K446zsAbOonKNa3qpoOwn+tKHon6EDd0KyIKLuw
+         cgnnBneuUVv0ehBR4NXctAmqbqujBaR9RBw5hvpGU3Aas2dPQkwKBLqoyKjItgIV4WCi
+         eg2uWy0YOSm3HxfHlF2N49Y0byM8bUWWoqElK9CnMRTw/M5nT+S27O/P3+mH5kc4ureM
+         YI/t8IjPLODzf6+P3L5TpidOYSkLSSjb97xLNhy2Y24zbYEmSRtGBUjHfeYilpt2aOMF
+         zaxg==
+X-Gm-Message-State: AOAM533s7gRkdXm3LkPjIoF1MW0cZn3VUwDhL66Z2LJaBQH1KajmyJz2
+        ECWLlc23BsByl8/s2+BBM3CC0g==
+X-Google-Smtp-Source: ABdhPJxxCrq3QnNSwlhxw81TlebGccY4p2RbgJZ5JGpCjQ0T1d1qQfXg1S1BEetHdzGTc8722YVBtQ==
+X-Received: by 2002:a05:6a00:887:b0:44b:dee9:b7b1 with SMTP id q7-20020a056a00088700b0044bdee9b7b1mr55414337pfj.84.1636056376002;
+        Thu, 04 Nov 2021 13:06:16 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id c3sm5701341pfv.25.2021.11.04.13.06.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 13:03:05 -0700 (PDT)
-From:   Mark Yacoub <markyacoub@chromium.org>
-Cc:     seanpaul@chromium.org, pmenzel@molgen.mpg.de,
-        jani.nikula@linux.intel.com, Mark Yacoub <markyacoub@google.com>,
-        Mark Yacoub <markyacoub@chromium.org>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 3/3] amd/amdgpu_dm: Verify Gamma and Degamma LUT sizes using DRM Core check
-Date:   Thu,  4 Nov 2021 16:02:52 -0400
-Message-Id: <20211104200255.63499-3-markyacoub@chromium.org>
-X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
-In-Reply-To: <20211104200255.63499-1-markyacoub@chromium.org>
-References: <20211104200255.63499-1-markyacoub@chromium.org>
+        Thu, 04 Nov 2021 13:06:15 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 20:06:11 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Marc Orr <marcorr@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5 V11] KVM: SEV: Refactor out sev_es_state struct
+Message-ID: <YYQ9MzKKF9dt8Wbk@google.com>
+References: <20211021174303.385706-1-pgonda@google.com>
+ <20211021174303.385706-2-pgonda@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021174303.385706-2-pgonda@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Yacoub <markyacoub@google.com>
+FWIW, "git format-patch -v $version" will generate the version info for you.
+Based on the weird ordering of the shortlog and the cover letter subject
 
-[Why]
-drm_atomic_helper_check_crtc now verifies both legacy and non-legacy LUT
-sizes. There is no need to check it within amdgpu_dm_atomic_check.
+   [PATCH 1/5 V11] KVM: SEV: Refactor out sev_es_state struct
 
-[How]
-Remove the local call to verify LUT sizes and use DRM Core function
-instead.
+vs.
 
-Tested on ChromeOS Zork.
+   [PATCH V11 2/5] KVM: SEV: Add support for SEV intra host migration
 
-v1:
-Remove amdgpu_dm_verify_lut_sizes everywhere.
+it looks like you might be hand-editing these?
 
-Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
-Reviewed-by: Sean Paul <seanpaul@chromium.org>
----
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  8 ++---
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h |  1 -
- .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 35 -------------------
- 3 files changed, 4 insertions(+), 40 deletions(-)
+Note, format-patch also takes --rfc, and you can override the entire thing for a
+free form prefixes in --subject-prefix, e.g. I use it to call out "[kvm-unit-tests PATCH ...].
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index f74663b6b046e..47f8de1cfc3a5 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -10244,6 +10244,10 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
- 		}
- 	}
- #endif
-+	ret = drm_atomic_helper_check_crtcs(state);
-+	if (ret)
-+		return ret;
-+
- 	for_each_oldnew_crtc_in_state(state, crtc, old_crtc_state, new_crtc_state, i) {
- 		dm_old_crtc_state = to_dm_crtc_state(old_crtc_state);
- 
-@@ -10253,10 +10257,6 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
- 			dm_old_crtc_state->dsc_force_changed == false)
- 			continue;
- 
--		ret = amdgpu_dm_verify_lut_sizes(new_crtc_state);
--		if (ret)
--			goto fail;
--
- 		if (!new_crtc_state->enable)
- 			continue;
- 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-index fcb9c4a629c32..22730e5542092 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-@@ -617,7 +617,6 @@ void amdgpu_dm_trigger_timing_sync(struct drm_device *dev);
- #define MAX_COLOR_LEGACY_LUT_ENTRIES 256
- 
- void amdgpu_dm_init_color_mod(void);
--int amdgpu_dm_verify_lut_sizes(const struct drm_crtc_state *crtc_state);
- int amdgpu_dm_update_crtc_color_mgmt(struct dm_crtc_state *crtc);
- int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
- 				      struct dc_plane_state *dc_plane_state);
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-index a022e5bb30a5c..319f8a8a89835 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-@@ -284,37 +284,6 @@ static int __set_input_tf(struct dc_transfer_func *func,
- 	return res ? 0 : -ENOMEM;
- }
- 
--/**
-- * Verifies that the Degamma and Gamma LUTs attached to the |crtc_state| are of
-- * the expected size.
-- * Returns 0 on success.
-- */
--int amdgpu_dm_verify_lut_sizes(const struct drm_crtc_state *crtc_state)
--{
--	const struct drm_color_lut *lut = NULL;
--	uint32_t size = 0;
--
--	lut = __extract_blob_lut(crtc_state->degamma_lut, &size);
--	if (lut && size != MAX_COLOR_LUT_ENTRIES) {
--		DRM_DEBUG_DRIVER(
--			"Invalid Degamma LUT size. Should be %u but got %u.\n",
--			MAX_COLOR_LUT_ENTRIES, size);
--		return -EINVAL;
--	}
--
--	lut = __extract_blob_lut(crtc_state->gamma_lut, &size);
--	if (lut && size != MAX_COLOR_LUT_ENTRIES &&
--	    size != MAX_COLOR_LEGACY_LUT_ENTRIES) {
--		DRM_DEBUG_DRIVER(
--			"Invalid Gamma LUT size. Should be %u (or %u for legacy) but got %u.\n",
--			MAX_COLOR_LUT_ENTRIES, MAX_COLOR_LEGACY_LUT_ENTRIES,
--			size);
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
- /**
-  * amdgpu_dm_update_crtc_color_mgmt: Maps DRM color management to DC stream.
-  * @crtc: amdgpu_dm crtc state
-@@ -348,10 +317,6 @@ int amdgpu_dm_update_crtc_color_mgmt(struct dm_crtc_state *crtc)
- 	bool is_legacy;
- 	int r;
- 
--	r = amdgpu_dm_verify_lut_sizes(&crtc->base);
--	if (r)
--		return r;
--
- 	degamma_lut = __extract_blob_lut(crtc->base.degamma_lut, &degamma_size);
- 	regamma_lut = __extract_blob_lut(crtc->base.gamma_lut, &regamma_size);
- 
--- 
-2.34.0.rc0.344.g81b53c2807-goog
+The PATCH part of the "prefix" needs to be provided manually, but then you do fun
+things like replace PATCH with something else entirely, append an incremental
+version, e.g. v2.1, which some people do if they need to make a small change to
+one patch in a large series.
 
+On Thu, Oct 21, 2021, Peter Gonda wrote:
+> Move SEV-ES vCPU metadata into new sev_es_state struct from vcpu_svm.
+> 
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Suggested-by: Tom Lendacky <thomas.lendacky@amd.com>
+> Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Marc Orr <marcorr@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Cc: Wanpeng Li <wanpengli@tencent.com>
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+
+At some point in the future we really need to do some cleanup to reduce the
+"depth" of things like svm->sev_es... and svm->vcpu.arch..., but for now,
+
+Reviewed-by: Sean Christopherson <seanjc@google.com>
