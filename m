@@ -2,143 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC06444EE6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5524444EEB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:32:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbhKDGfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbhKDGfD (ORCPT
+        id S230489AbhKDGf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:35:29 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:32935 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230363AbhKDGf0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:35:03 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC079C061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:32:25 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id l43so8970660uad.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 23:32:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KXnPAB3AiBWrY7SU8k+mx2QdDTS+Fxkn/CtfTF2GojQ=;
-        b=eczselLNEhFBMle12JjPVn4CXc0ejYxMnkpeCQWhy2+uu85TAv5xBPI5w7Sg6KM2v5
-         aeJmwjLhWaJcDh8QLY+lAOxBC34RugJQgrPcvPuCXlzhJNDtPdMaY+piD19HHRPFMPhd
-         ZDz9C2NmtqaKAzs9A0IBA8ib5nrh19O8rUar/2jeovtwfW8J6NJA2hADuM05Mv2rIPKK
-         JXZZObJ5btcIu3rCHrksGMCWtFQFrN+BjxcbNvHvm7WP/s8TRKtEZfUiEvL9drvDcNq1
-         +rtm3993TkKiBMe3dcwZkFgV1Ge7hf/s1P7xaPfDaasHx+LvRgdvh/lqQthyxlz9wM2s
-         PFyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KXnPAB3AiBWrY7SU8k+mx2QdDTS+Fxkn/CtfTF2GojQ=;
-        b=0Rqn6WOVpw4FNmmA84YX2x0lOAFZqXsYYYci+YHvw1fKbAfszctYdXwGL1kfo6o4Wq
-         oPhDzjXuPADAPUTwIIiPkvZR38IYqO3NDLhdbRFPl7i+vC6NJ79Qtkw0mKaocX5lSZL4
-         WKp5JrAW5PQgq/XKzupeuvnXOA1oy8xhCReKHm5fE5/iy9uUCz3SAeJwButo7IOTNQLU
-         vjOQmImHEIeHGa5RG/h1OE2/uJmo+e7oL7SgCcEwrMMCwOmfKp5tQpyuuzy6P0It0J6b
-         VMO2MdCO/tal6N77peWpeeUeTQeGti0Hixr5uoxCqn/s4W7LxUOBK9QNiJLCMdk64jvZ
-         IM5A==
-X-Gm-Message-State: AOAM531V8WygLRs1de5nV8gvWlKKA0DLQy6venysOuwFLu3xQ8yNa48G
-        DTiPdLYbtCgl11aDue2Q49qbVVyFanSojWWbJq4=
-X-Google-Smtp-Source: ABdhPJwnwimOYTTmodrLByGFncVyeNmazEftmcNcyXiRSrc+/9K5LypExo+SZI7+7QlNp8TCpTBhp8bDClQJYErw360=
-X-Received: by 2002:a9f:234a:: with SMTP id 68mr54022717uae.13.1636007544779;
- Wed, 03 Nov 2021 23:32:24 -0700 (PDT)
+        Thu, 4 Nov 2021 02:35:26 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20211104063246epoutp03a1c3ae4c79863c0a3318cd5b1a0cf12d~0RDbCg5NJ0489804898epoutp03B
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 06:32:46 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20211104063246epoutp03a1c3ae4c79863c0a3318cd5b1a0cf12d~0RDbCg5NJ0489804898epoutp03B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1636007566;
+        bh=XQ82X6xPFxlA23GhyUFqTKX41dSNvOuOx32KdybUn1c=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=F/ZTwDYaIr2OtIw3fHPNqVmTyeREQFjC/SE1LU5Z5BoKm5uZWWHHTEx+QnM+pFDqQ
+         uGf5qJvPGFGuKlXF5B+MrRm6/1uXc9XGioAbLsR7d92kjeAZTaEYHtzybqnIc35KJO
+         Vn+MgvlFgiK4AEpDzeC3iJdW0xIboCVbpd6wh7m4=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20211104063246epcas1p3b6855d69870811311cf5e3649731bfd3~0RDawkgZ-0545405454epcas1p31;
+        Thu,  4 Nov 2021 06:32:46 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.38.247]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4HlDMw2wgKz4x9Q8; Thu,  4 Nov
+        2021 06:32:44 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        23.D8.64085.C8E73816; Thu,  4 Nov 2021 15:32:44 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20211104063243epcas1p4526b49feac019f3eadb33a23dc132976~0RDYjQpBR2528025280epcas1p4x;
+        Thu,  4 Nov 2021 06:32:43 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20211104063243epsmtrp2af96d8ca02daefd99b095a730c64a2ee~0RDYilWqk2025420254epsmtrp2e;
+        Thu,  4 Nov 2021 06:32:43 +0000 (GMT)
+X-AuditID: b6c32a35-9c3ff7000000fa55-5c-61837e8c9c8f
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        55.19.29871.B8E73816; Thu,  4 Nov 2021 15:32:43 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.88.98.193]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20211104063243epsmtip22d1d87717fd7119effbcf8082bd3396f~0RDYaryWr1646816468epsmtip2j;
+        Thu,  4 Nov 2021 06:32:43 +0000 (GMT)
+From:   Huijin Park <huijin.park@samsung.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Huijin Park <bbanghj.park@gmail.com>,
+        Huijin Park <huijin.park@samsung.com>
+Subject: [PATCH v2 0/2] mmc: core: adjust polling interval for CMD1
+Date:   Thu,  4 Nov 2021 15:32:29 +0900
+Message-Id: <20211104063231.2115-1-huijin.park@samsung.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211027043645.153133-1-jim.cromie@gmail.com> <20211027043645.153133-11-jim.cromie@gmail.com>
- <3a55ab9c-8109-8025-21e3-e3635bd891b2@akamai.com>
-In-Reply-To: <3a55ab9c-8109-8025-21e3-e3635bd891b2@akamai.com>
-From:   jim.cromie@gmail.com
-Date:   Thu, 4 Nov 2021 00:31:58 -0600
-Message-ID: <CAJfuBxyMeC5_H-RakOpqH9jDuh07gn4cjCuJ=ebQ8tLQVOTGrg@mail.gmail.com>
-Subject: Re: [PATCH v9 10/10] drm: use DEFINE_DYNAMIC_DEBUG_TRACE_CATEGORIES
- bitmap to tracefs
-To:     Jason Baron <jbaron@akamai.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Sean Paul <seanpaul@chromium.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        intel-gvt-dev@lists.freedesktop.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNKsWRmVeSWpSXmKPExsWy7bCmvm5PXXOiwestEhYv9x5itui46GJx
+        edccNosj//sZLY6vDXdg9dg56y67x51re9g8+rasYvT4vEkugCUq2yYjNTEltUghNS85PyUz
+        L91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMHaKuSQlliTilQKCCxuFhJ386mKL+0
+        JFUhI7+4xFYptSAlp8CsQK84Mbe4NC9dLy+1xMrQwMDIFKgwITvj5K3l7AUXWCt63j5ibWA8
+        ztLFyMkhIWAi8XnFHSCbi0NIYAejROumo2wQzidGiY+dV1ghnG+MEtsP/4ZrOT9/M5gtJLCX
+        UWL5yWQIG6hj+U49EJtNQFvi+tqtjCC2iICGxJ6H51lBbGaBLkaJm7ccQGxhAWeJb1u2AcU5
+        OFgEVCV+rJIDCfMKWEvsfLaGHWKVvMTMS9/ZIeKCEidnPmGBGCMv0bx1NjPIbRIC29glvj65
+        ygwyR0LARWLhciuIXmGJV8e3QM2Rkvj8bi8bhF0usWvCVajeBkaJvrXfWSESxhLv3q4Fm8Ms
+        oCmxfpc+RFhRYufvuYwQe/kk3n3tYYVYxSvR0SYEUaIqsfjqR6gp0hKHHtxlhLA9JBZtPgVW
+        LiQQK/HhS+kERvlZSJ6ZheSZWQh7FzAyr2IUSy0ozk1PLTYsMITHaHJ+7iZGcKrTMt3BOPHt
+        B71DjEwcjIcYJTiYlUR4n29oShTiTUmsrEotyo8vKs1JLT7EaAoM3YnMUqLJ+cBkm1cSb2hi
+        aWBiZmRiYWxpbKYkzvtZrjBRSCA9sSQ1OzW1ILUIpo+Jg1OqgSmA/8nCbTMOa2wL/Lq4vU+s
+        Ju7NsROsL7ytL/lFRTMU9Fnc+PBi8YYDC/Lrjxo8WOly87/hsYOzZrVlWU532mET0xDcd5c3
+        M0vmn7BvBq//rClrl70xEjdQ2flc4Yvk1ieX31eV78vI3VeX8sEluWKt/Lpp6v1zXYubt6xN
+        0PYT/13VPI/Ha2ffdO2l+i3vm3sZCydd9A0//OqSocWWjbERTO08XR2LzlmfXfVEbravbxJf
+        ru2n9T2at59dOcpge2nZea37ohnbLHZ4/Vhw8IzPmfdPVPJt67zc/jLNzvDi3MSvy+f6YdZS
+        Ts6DC2/NWzr/6bLElIXuz5c4r++4v4m9bbFUw3Nd+f1Bef/59M4osRRnJBpqMRcVJwIANQO8
+        L/4DAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDLMWRmVeSWpSXmKPExsWy7bCSvG53XXOiQdt/M4uXew8xW3RcdLG4
+        vGsOm8WR//2MFsfXhjuweuycdZfd4861PWwefVtWMXp83iQXwBLFZZOSmpNZllqkb5fAlXHy
+        1nL2ggusFT1vH7E2MB5n6WLk5JAQMJE4P38zkM3FISSwm1Fix4ZT7BAJaYl3O6+zdjFyANnC
+        EocPF0PUfGCUeNrxHayGTUBb4vrarYwgtoiAhsSeh+dZQWxmgT5Gic5fWSC2sICzxLct28Dm
+        sAioSvxYJQcS5hWwltj5bA3UKnmJmZcgRvIKCEqcnPmEBWKMvETz1tnMExj5ZiFJzUKSWsDI
+        tIpRMrWgODc9t9iwwDAvtVyvODG3uDQvXS85P3cTIzgAtTR3MG5f9UHvECMTB+MhRgkOZiUR
+        3ucbmhKFeFMSK6tSi/Lji0pzUosPMUpzsCiJ817oOhkvJJCeWJKanZpakFoEk2Xi4JRqYPIu
+        9jR0/Ldb9CNnaHPapC070+5PPlRbGVxxR6hlwd/nuWqHW5WzrOfGpbPcL31X9GOHQ3BVgOws
+        Va33j1lPKfzYJv7AU6/s3bSjp56+3bD0+v8X5lXB9c9unT4Skyn96MyXoAMLqteZavy/VL7n
+        T03WmxUH+q9OTJPTPtYw499Mtmx1Z4U9YtnNjyK+/dBucFC31Vc1K1tsUWJlNUHG2nRveXg1
+        r0tFidu3bucbWrPi753bHThrw0+PqT5LX9/yX8i8/TAbS+qUnv1CD76ecKjlZVdwD/p54nRb
+        xp3GffmXnWdPbd0jd36CgtKDgLwLGlzJkl+b5lpWFdzcvNRrWZFz6JFgttTz0td/a1e2+Sqx
+        FGckGmoxFxUnAgBmCLlzrwIAAA==
+X-CMS-MailID: 20211104063243epcas1p4526b49feac019f3eadb33a23dc132976
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20211104063243epcas1p4526b49feac019f3eadb33a23dc132976
+References: <CGME20211104063243epcas1p4526b49feac019f3eadb33a23dc132976@epcas1p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 9:58 AM Jason Baron <jbaron@akamai.com> wrote:
->
->
->
-> On 10/27/21 12:36 AM, Jim Cromie wrote:
-> > Use new macro to create a sysfs control bitmap knob to control
-> > print-to-trace in: /sys/module/drm/parameters/trace
-> >
-> > todo: reconsider this api, ie a single macro expecting both debug &
-> > trace terms (2 each), followed by a single description and the
-> > bitmap-spec::
-> >
-> > Good: declares bitmap once for both interfaces
-> >
-> > Bad: arg-type/count handling (expecting 4 args) is ugly,
-> >      especially preceding the bitmap-init var-args.
-> >
->
-> Hi Jim,
->
-> I agree having the bitmap declared twice seems redundant. But I like having fewer args and not necessarily combining the trace/log variants of
-> DEBUG_CATEGORIES. hmmm...what if the DEFINE_DYNAMIC_DEBUG_CATEGORIES() took a pointer to the array of struct dyndbg_bitdesc map[] directly as the
-> final argument instead of the __VA_ARGS__? Then, we could just declare the map once?
->
+This series is for adjusting polling interval for CMD1 using
+__mmc_poll_for_busy() common function which provides a stricter
+timeout checking and a throttling mechanism.
 
-indeed. that seems obvious in retrospect,
-thanks for the nudge.
+v1...v2:
+ - Change __mmc_poll_for_busy() first parameter type to 'mmc_host*'.
+ - Use __mmc_poll_for_busy() common function.
 
-also, Im inclined to (uhm, have now done) bikeshed the API in patch 1,
-and  change _CATEGORIES to something else,
-maybe  _FMTGRPS
-or  _BITGRPS  < -- this one
+Huijin Park (2):
+  mmc: core: change __mmc_poll_for_busy() parameter type
+  mmc: core: adjust polling interval for CMD1
 
-ISTM better to be explicit wrt the underlying mechanisms, (least surprise)
-let users decide the meaning of "CATEGORIES"
+ drivers/mmc/core/block.c   |  4 +-
+ drivers/mmc/core/mmc.c     |  2 +-
+ drivers/mmc/core/mmc_ops.c | 89 ++++++++++++++++++++++++--------------
+ drivers/mmc/core/mmc_ops.h |  2 +-
+ drivers/mmc/core/sd.c      |  2 +-
+ 5 files changed, 62 insertions(+), 37 deletions(-)
 
-also, HEAD~1  added DEFINE_DYNAMIC_DEBUG_CATEGORIES_FLAGS
-which could be used directly for both purposes (after a rename).
-TLDR: flags exposes the shared nature of the decorator flags,
-the trace and syslog customers of pr_debug traffic should agree on their use.
+-- 
+2.17.1
 
-redoing now...
-
-
-
-
-> Thanks,
->
-> -Jason
->
-> > Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
-> > ---
-> >  drivers/gpu/drm/drm_print.c | 19 +++++++++++++++++++
-> >  1 file changed, 19 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/drm_print.c b/drivers/gpu/drm/drm_print.c
-> > index ce662d0f339b..7b49fbc5e21d 100644
-> > --- a/drivers/gpu/drm/drm_print.c
-> > +++ b/drivers/gpu/drm/drm_print.c
-> > @@ -73,6 +73,25 @@ DEFINE_DYNAMIC_DEBUG_CATEGORIES(debug, __drm_debug,
-
-
-static mumble-map
-> >                               [7] = { DRM_DBG_CAT_LEASE },
-> >                               [8] = { DRM_DBG_CAT_DP },
-> >                               [9] = { DRM_DBG_CAT_DRMRES });
-> > +
-> > +#ifdef CONFIG_TRACING
-> > +unsigned long __drm_trace;
-> > +EXPORT_SYMBOL(__drm_trace);
-> > +DEFINE_DYNAMIC_DEBUG_TRACE_CATEGORIES(trace, __drm_trace,
-> > +                                   DRM_DEBUG_DESC,
-
-                                mumble-map)
