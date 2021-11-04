@@ -2,177 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E2C4459E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A6BE4459E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234062AbhKDSme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 14:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44998 "EHLO
+        id S231964AbhKDSqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 14:46:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbhKDSmc (ORCPT
+        with ESMTP id S231748AbhKDSqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 14:42:32 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0E4C061714;
-        Thu,  4 Nov 2021 11:39:54 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id d12so7301953oij.5;
-        Thu, 04 Nov 2021 11:39:54 -0700 (PDT)
+        Thu, 4 Nov 2021 14:46:44 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF306C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 11:44:05 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id c8so8044568ede.13
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 11:44:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=y9Efx+J0DfgYNexjEZQcHJbnOqe+k5YWBbpHhhOQDTM=;
-        b=Wl/7qGL5cCeNtI9eWKQHiX0Kk+ZiVRNexsoF4RQfzyDvYZ0X4ZHLrjr0b44PrVRUk7
-         Tx0SYoWTFmUI7ikv0DAp83GyL8EA2oqKUzTdGeVi4po5bDZrqD3/jBepQaAs6cHHHiND
-         T0YQ2Yz/3NpNP4vxVqstDLBKAFTSdJ57bZ0/etr9bThL01tqX2IoYkOROYnvt0n2J7IY
-         COl1wxoVfcTDf528Nc49NPQYbko89GuAF/2ZvNUJwl9F96Wx0aVRnuygPUKlmgZq+5x5
-         tp+fXHA85KmecOZY8UPO8zyTrhUSwsX67NCgvaXCxWDea6lm17k3n16IKCShlKNogqyl
-         9CWw==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=11NI8rJSPz43D1gV7A+JL1F9+LdB46OYj4gEDUOX0Xg=;
+        b=iumzW8BTaNQYkkkMQ0woFf++H4oaz+A1MWhkZMjsIutX3VvVJwEWijP7i34ticrJvb
+         YVc83dCNB9XLdF0oNQ70aagMh/3pqBN5sfftcjfF/Q8SfoxJrr/g9Ftxy4cIvzsSCzi5
+         G2vU+3uscxpPVrZNgDk5AoyW3y6V6XT0UXvVPkG26AVjZKt1BrfmRWOFPLPN2NFJ6Dvw
+         +2ZvNzGdCJ6xU7nruE5ZOHFxcpzeNzVcMYkjQON4icdPyHIFc3sTVLgzSGm33Bt30L8F
+         7N77t+0QgnON7R8gT6bXBi42fWpS3mnJkC8Ldw+XNd3BlH5oSRs31YT9cXDKfyWluuwy
+         GXDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=y9Efx+J0DfgYNexjEZQcHJbnOqe+k5YWBbpHhhOQDTM=;
-        b=iAhaqLGBrdFjC4eREoKgJgTXOeVMdnP2l3cmJ2B7CcIodK5xKvH4AewevRXG94Z2UU
-         KqrIb5bgNgxataNSaY27J6VKpLgGZIWvmZQyWrpilapIsSRJs+trGNtxD0dRg9wC9gWN
-         5Vz6joadqLF+7T95xVvba/PfI5C6TYvCN74XmDcRiT3IBUYfljAD1cTmjAhlDz9jIeEY
-         1upQ1MVXtlisPQqQ6jS2OlB0gS7dYRfBxBuZUPebAzEIEnsYtWQRRH6dakZ2V328/bcx
-         wfXP6lsgJ+/AS8H6dizAw70Zslmfl9Vfn0CPPnb6GrispSsh93ggJlIYVMyVX8jcum1r
-         eN/A==
-X-Gm-Message-State: AOAM533xJyCgSzbVWzcIuNSzhrjgTwEDs3N/8PvIaGueDXqiBy12Ikpv
-        bh+L5NLR6W27AoQeGqNsGY0=
-X-Google-Smtp-Source: ABdhPJwVqQdcn5Wa5xbrJ8uTj6JC2mtBJeHifXkXNvXMry28cLMDi8b2qbKQiF+berR532peOHZ/Qw==
-X-Received: by 2002:aca:4405:: with SMTP id r5mr17698488oia.4.1636051192751;
-        Thu, 04 Nov 2021 11:39:52 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t12sm1807386oiw.39.2021.11.04.11.39.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 11:39:52 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v3 1/7] dt-bindings: watchdog: convert Broadcom's WDT to
- the json-schema
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "maintainer:BROADCOM BCM63XX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Justin Chen <justinpopo6@gmail.com>,
-        "open list:WATCHDOG DEVICE DRIVERS" <linux-watchdog@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "moderated list:BROADCOM BCM63XX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20211103231327.385186-1-f.fainelli@gmail.com>
- <20211103231327.385186-2-f.fainelli@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <22e6f9b0-8d2e-14ee-12f1-0f911a72a467@roeck-us.net>
-Date:   Thu, 4 Nov 2021 11:39:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=11NI8rJSPz43D1gV7A+JL1F9+LdB46OYj4gEDUOX0Xg=;
+        b=KBxag1vEig4lI1aBQAMNkeS8HeS74ymq5mFnhYza/b6Pmd9Ia6jBv0iJcAwmeYZK+K
+         7jjI/wc4ewfI+nTihVPnbfUjA4a9sv0OQ6cdfEmlVccVDIzLU7CbEGagv4Mys8mcogdB
+         DSQC4gQINpi7D918ZaU7Pbb1KXGrcea0xp0AgAP6qFJtBlEab3ErB9LgdQJGELlOXJ9g
+         yQkUE1SL4xc/pZLA13zpacDsQRKMUnyE/hL2h3rZt2cV7ZzmbPwLg2n3bCi3SG8JuFoB
+         lnj8YVl3RmxzP6TSboNaHH95EXkYUG6JNsYjk2k/6tfuA+jGpDS+J4TcikIb3fdU8JRY
+         xr9g==
+X-Gm-Message-State: AOAM531pD76//r3Rm4+V3v0RVLts0iuf6YaHqm3+suihiG1KFru7uNFr
+        7mZRj99tPnatWbyQxaLeegAjcbr8HuxejB5XVQs=
+X-Google-Smtp-Source: ABdhPJwV43Mgg2iOchFBzqDyWSZOUYBzWK8R4KY6jxOb4xeWnpvS4Q382sVlvZYmEfFy66ayWQOR3olDyrlF6NvI+ho=
+X-Received: by 2002:a17:907:9908:: with SMTP id ka8mr68078574ejc.164.1636051444436;
+ Thu, 04 Nov 2021 11:44:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211103231327.385186-2-f.fainelli@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a50:7e92:0:0:0:0:0 with HTTP; Thu, 4 Nov 2021 11:44:03 -0700 (PDT)
+Reply-To: lisshuuu1@gmail.com
+From:   MS LISA HUGH <dkoure73@gmail.com>
+Date:   Thu, 4 Nov 2021 19:44:03 +0100
+Message-ID: <CABn=45whDg8EP0mw8rcq-Xs190xBPTe8ufJMdPshVKyTprZOTA@mail.gmail.com>
+Subject: YOU UNDERSTAND ? DETAILS LATER >>MS LISA HUGH.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/21 4:13 PM, Florian Fainelli wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> This helps validating DTS files.
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> ---
->   .../bindings/watchdog/brcm,bcm7038-wdt.txt    | 19 ---------
->   .../bindings/watchdog/brcm,bcm7038-wdt.yaml   | 40 +++++++++++++++++++
->   2 files changed, 40 insertions(+), 19 deletions(-)
->   delete mode 100644 Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.txt
->   create mode 100644 Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.txt b/Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.txt
-> deleted file mode 100644
-> index 84122270be8f..000000000000
-> --- a/Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.txt
-> +++ /dev/null
-> @@ -1,19 +0,0 @@
-> -BCM7038 Watchdog timer
-> -
-> -Required properties:
-> -
-> -- compatible : should be "brcm,bcm7038-wdt"
-> -- reg : Specifies base physical address and size of the registers.
-> -
-> -Optional properties:
-> -
-> -- clocks: The clock running the watchdog. If no clock is found the
-> -	  driver will default to 27000000 Hz.
-> -
-> -Example:
-> -
-> -watchdog@f040a7e8 {
-> -	compatible = "brcm,bcm7038-wdt";
-> -	clocks = <&upg_fixed>;
-> -	reg = <0xf040a7e8 0x16>;
-> -};
-> diff --git a/Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.yaml b/Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.yaml
-> new file mode 100644
-> index 000000000000..69e5a1ef6a1f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.yaml
-> @@ -0,0 +1,40 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/watchdog/brcm,bcm63xx-wdt.yaml#
+Dear Friend,
 
-Looks like this requires
+I am Ms Lisa Hugh accountant and files keeping by profession with the bank.
 
-s/63xx/7038/
+I need Your help for this transfer($4,500,000,00 ,U.S.DOLLARS)to your
+bank account with your co-operation for both of us benefit.
 
-Guenter
-
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: BCM7038 watchdog timer
-> +
-> +allOf:
-> +  - $ref: "watchdog.yaml#"
-> +
-> +maintainers:
-> +  - Florian Fainelli <f.fainelli@gmail.com>
-> +  - Justin Chen <justinpopo6@gmail.com>
-> +  - Rafał Miłecki <rafal@milecki.pl>
-> +
-> +properties:
-> +  compatible:
-> +    const: brcm,bcm7038-wdt
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    description: >
-> +      The clock running the watchdog. If no clock is found the driver will
-> +      default to 27000000 Hz.
-> +
-> +unevaluatedProperties: false
-> +
-> +required:
-> +  - reg
-> +
-> +examples:
-> +  - |
-> +    watchdog@f040a7e8 {
-> +      compatible = "brcm,bcm7038-wdt";
-> +      reg = <0xf040a7e8 0x16>;
-> +      clocks = <&upg_fixed>;
-> +    };
-> 
-
+Please send the follow below,
+1)AGE....2)TELEPHONE NUMBER,,,,,...,3)COUNTRY.....4)OCCUPATION......
+Thanks.
+Ms Lisa Hugh
