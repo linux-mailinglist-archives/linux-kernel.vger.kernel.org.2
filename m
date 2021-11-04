@@ -2,75 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231D74450A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 376CD4450A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:56:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhKDI4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:56:18 -0400
-Received: from verein.lst.de ([213.95.11.211]:34363 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230084AbhKDI4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:56:17 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 89EB968AA6; Thu,  4 Nov 2021 09:53:36 +0100 (CET)
-Date:   Thu, 4 Nov 2021 09:53:36 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Walter Wu <walter-zh.wu@mediatek.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v2] dma-direct: improve DMA_ATTR_NO_KERNEL_MAPPING
-Message-ID: <20211104085336.GA24260@lst.de>
-References: <20211104023221.16391-1-walter-zh.wu@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211104023221.16391-1-walter-zh.wu@mediatek.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S230401AbhKDI6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:58:47 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:50618 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230229AbhKDI6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 04:58:43 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-05 (Coremail) with SMTP id zQCowAA3+PQOoINhj9xCBg--.35075S2;
+        Thu, 04 Nov 2021 16:55:42 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     krzysztof.kozlowski@canonical.com, yashsri421@gmail.com,
+        davem@davemloft.net, rdunlap@infradead.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] NFC: nfcmrvl: add unanchor after anchor
+Date:   Thu,  4 Nov 2021 08:55:41 +0000
+Message-Id: <1636016141-3645490-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: zQCowAA3+PQOoINhj9xCBg--.35075S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jry8Jry3JFyfKr1DtF48Xrb_yoWfXwb_KF
+        WDJFy3Xrs5urZYyr1UKa4Fvry0kF1Iqrn7uFySqryaqrZ5KF429w4qyrZ3Jws8Gr4Dt3W3
+        Ga4qq34rArWkKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbckFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8ZwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUhdbbUUUUU=
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 10:32:21AM +0800, Walter Wu wrote:
-> diff --git a/include/linux/set_memory.h b/include/linux/set_memory.h
-> index f36be5166c19..6c7d1683339c 100644
-> --- a/include/linux/set_memory.h
-> +++ b/include/linux/set_memory.h
-> @@ -7,11 +7,16 @@
->  
->  #ifdef CONFIG_ARCH_HAS_SET_MEMORY
->  #include <asm/set_memory.h>
-> +
-> +#ifndef CONFIG_RODATA_FULL_DEFAULT_ENABLED
+In the error path, the anchored urb is unanchored.
+But in the successful path, the anchored urb is not.
+Therefore, it might be better to add unanchor().
 
-This is an arm64-specific symbol, and one that only controls a
-default.  I don't think it is suitable to key off stubs in common
-code.
+Fixes: f26e30c ("NFC: nfcmrvl: Initial commit for Marvell NFC driver")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ drivers/nfc/nfcmrvl/usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +static inline int set_memory_valid(unsigned long addr, int numpages, int enable) { return 0; }
+diff --git a/drivers/nfc/nfcmrvl/usb.c b/drivers/nfc/nfcmrvl/usb.c
+index bcd563c..f8ae517 100644
+--- a/drivers/nfc/nfcmrvl/usb.c
++++ b/drivers/nfc/nfcmrvl/usb.c
+@@ -146,9 +146,9 @@ nfcmrvl_submit_bulk_urb(struct nfcmrvl_usb_drv_data *drv_data, gfp_t mem_flags)
+ 		if (err != -EPERM && err != -ENODEV)
+ 			nfc_err(&drv_data->udev->dev,
+ 				"urb %p submission failed (%d)\n", urb, -err);
+-		usb_unanchor_urb(urb);
+ 	}
+ 
++	usb_unanchor_urb(urb);
+ 	usb_free_urb(urb);
+ 
+ 	return err;
+-- 
+2.7.4
 
-Pleae avoid overly long lines.
-
-> +		if (IS_ENABLED(CONFIG_RODATA_FULL_DEFAULT_ENABLED)) {
-> +			kaddr = (unsigned long)phys_to_virt(dma_to_phys(dev, *dma_handle));
-
-This can just use page_address.
-
-> +			/* page remove kernel mapping for arm64 */
-> +			set_memory_valid(kaddr, size >> PAGE_SHIFT, 0);
-> +		}
-
-But more importantly:  set_memory_valid only exists on arm64, this
-will break compile everywhere else.  And this API is complete crap.
-Passing kernel virtual addresses as unsigned long just sucks, and
-passing an integer argument for valid/non-valid also is a horrible
-API.
-
-Not to mention the overly long line.  Same on the free side.
