@@ -2,84 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F6644501A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:22:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBD344501C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhKDIYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44562 "EHLO
+        id S230492AbhKDIY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:24:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhKDIYg (ORCPT
+        with ESMTP id S230084AbhKDIY4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:24:36 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FE3C061714;
-        Thu,  4 Nov 2021 01:21:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NUHSkPZKdCeYjtK4gysRgJLuWX7RQNT/5Sx0eDpMchA=; b=4xLVQ8osQ9u7MwgQvsr3sqrJeD
-        9TeLt91+NwT0iLut4BXjRJBcxw0lMeMSqiRjYh4XgkE1PQrRNl08jVT9JyFpmlQhBpgZwpNzC7xMI
-        hiC6iZUM3mkSSQST7ZxjYHy/5jXDxo6QvvmqFEvKsvTfyAex0tERVVtpRaOXUU61g/oG5RkjZoFeB
-        TZrKDRAjsajsqkt0olW0LX+JQ39We/7NFqZyULyX2fndDMXdWifE2lk1vC5WUjxhfmhGKc/1zjGn3
-        QYyApkpEieQ+jUMzVI3qcKfDa/jRt9Z2WGjepJzjmpfamFUU+6n6un4hPFOb/Yv5OXa76e+SB76Db
-        LPxk7IwQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1miY00-008HaJ-Ih; Thu, 04 Nov 2021 08:21:28 +0000
-Date:   Thu, 4 Nov 2021 01:21:28 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jane Chu <jane.chu@oracle.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
- RWF_RECOVERY_DATA flag
-Message-ID: <YYOYCMqc5kOoRvcE@infradead.org>
-References: <20211021001059.438843-1-jane.chu@oracle.com>
- <YXFPfEGjoUaajjL4@infradead.org>
- <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
- <YXJN4s1HC/Y+KKg1@infradead.org>
- <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
- <YXj2lwrxRxHdr4hb@infradead.org>
- <20211028002451.GB2237511@magnolia>
- <YYDYUCCiEPXhZEw0@infradead.org>
- <dfca8558-ad70-41d5-1131-63db66b70542@oracle.com>
+        Thu, 4 Nov 2021 04:24:56 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009AAC061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 01:22:19 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id u11so6014372plf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 01:22:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CyUgf+E27izz8eZXu5EdO3onvde6cXVaxrtlTel0Gjk=;
+        b=T4HeVGgFFrZdkuI85Bv3La9ebDCcKARia1U8w6+C7sAJH4G3+09PgbpTXs/lka+buB
+         OF5J3MhrtOZsgBA2oihZSiHfOBA6gqBVW2+ANchQrjtPDzICz0bnwT0GoYxXn2S3Eei7
+         eUlrhQCzE34Dm7ZJJ1b00zu4NLxaYmYoV3t49stkPfwhxvUbcqNBY311qyOYNOFv+Yud
+         ljH38voo6ORAJ9v5mZmC+qVhPd5p+wiy4A4THXrZ7Whnm6w8iHMrzPzESRpbhnHxAULb
+         ab19THiXMDgDbFks9w4XGqOlum4stt5ChV09IIOL2ZuGJnMWdPPoE9Vnv4XxixfwEsPv
+         oG/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CyUgf+E27izz8eZXu5EdO3onvde6cXVaxrtlTel0Gjk=;
+        b=2VINZOyO9RziDtfO7PodLazwlRrNNmUx5VsljNX5cueH0JJmJS045Ev9gD1MhTDFt8
+         gZlb2Jbg9mN5oB7dOBQRAZYnvO79+0f0yr1VXtLr4ZbBkxX63zUNV7LrpDsaKRVFGzf3
+         zj/ItUpUYpkzXCec2JYlO6iLU3V9GXZ8ruMAlqXePJUAnCM7Q93U+s2CJCFMy7UE4KRJ
+         ZlWckILa0fXaIoMjGYS2WDOJklrHmCxYe29BamdnSlI5ZAHXSch287GimJ1XBwzz90sj
+         hDp64VMV8TGmcMhQkOfAXTApp7JMopCUmbK7qZNuf/LDxHnCgzfIlZWKgM5Ye+thiyiw
+         BPjQ==
+X-Gm-Message-State: AOAM530fevRjG8SkJpKAIpIoO9+mt6G28DNKVjcetrK/DJyd302lLR3E
+        OMIHqvGqOZxD3C/6jTsNJoU=
+X-Google-Smtp-Source: ABdhPJzIGhrUoaVah+gozgNMaDDVh94KHE4PVsAecpIA5T1RBgEXLmZSdPSO6V1LraPH7O2zGbWk4w==
+X-Received: by 2002:a17:90b:155:: with SMTP id em21mr20866570pjb.12.1636014138415;
+        Thu, 04 Nov 2021 01:22:18 -0700 (PDT)
+Received: from localhost.localdomain ([94.177.118.123])
+        by smtp.gmail.com with ESMTPSA id m3sm4826985pfk.190.2021.11.04.01.22.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 01:22:17 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Sahitya Tummala <stummala@codeaurora.org>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] fs: f2fs: fix UAF in f2fs_available_free_memory
+Date:   Thu,  4 Nov 2021 16:22:01 +0800
+Message-Id: <20211104082202.1286551-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dfca8558-ad70-41d5-1131-63db66b70542@oracle.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 06:09:57PM +0000, Jane Chu wrote:
-> This is clearer, I've looked at your 'dax-devirtualize' patch which 
-> removes pmem_copy_to/from_iter, and as you mentioned before,
-> a separate API for poison-clearing is needed. So how about I go ahead
-> rebase my earlier patch
->  
-> https://lore.kernel.org/lkml/20210914233132.3680546-2-jane.chu@oracle.com/
-> on 'dax-devirtualize', provide dm support for clear-poison?
-> That way, the non-dax 99% of the pwrite use-cases aren't impacted at all
-> and we resolve the urgent pmem poison-clearing issue?
+if2fs_fill_super
+-> f2fs_build_segment_manager
+   -> create_discard_cmd_control
+      -> f2fs_start_discard_thread
 
-FYI, I really do like the in-kernel interface in that series.  And
-now that we discussed all the effects I also think that automatically
-doing the clear on EIO is a good idea.
+It invokes kthread_run to create a thread and run issue_discard_thread.
 
-I'll go back to the series and will reply with a few nitpicks.
+However, if f2fs_build_node_manager fails, the control flow goes to
+free_nm and calls f2fs_destroy_node_manager. This function will free
+sbi->nm_info. However, if issue_discard_thread accesses sbi->nm_info
+after the deallocation, but before the f2fs_stop_discard_thread, it will
+cause UAF(Use-after-free).
+
+-> f2fs_destroy_segment_manager
+   -> destroy_discard_cmd_control
+      -> f2fs_stop_discard_thread
+
+Fix this by stopping discard thread before f2fs_destroy_node_manager.
+
+Note that, the commit d6d2b491a82e1 introduces the call of
+f2fs_available_free_memory into issue_discard_thread.
+
+Fixes: d6d2b491a82e ("f2fs: allow to change discard policy based on cached discard cmds")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ fs/f2fs/super.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 78ebc306ee2b..dbe040b66802 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -4352,6 +4352,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ free_stats:
+ 	f2fs_destroy_stats(sbi);
+ free_nm:
++	/* stop discard thread before destroying node manager */
++	f2fs_stop_discard_thread(sbi);
+ 	f2fs_destroy_node_manager(sbi);
+ free_sm:
+ 	f2fs_destroy_segment_manager(sbi);
+-- 
+2.25.1
+
