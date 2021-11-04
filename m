@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F728444F0C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 374A5444F0D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:44:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhKDGqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50942 "EHLO
+        id S231171AbhKDGqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:46:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231166AbhKDGpS (ORCPT
+        with ESMTP id S230468AbhKDGpm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:45:18 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECABDC06122E
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:42:39 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id t24-20020a252d18000000b005c225ae9e16so7504668ybt.15
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 23:42:39 -0700 (PDT)
+        Thu, 4 Nov 2021 02:45:42 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D0AC061203
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:42:42 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id b5-20020a25a205000000b005c2150fc181so7468492ybi.6
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 23:42:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=qnFYYK7h/c1igs5tdI3kMiUJ6Hx680HhSyVDm1AaQaA=;
-        b=fWPVrzjLiBMcc16C6/V64pohYCNREA+KxPx+n4qD+JQA7JQh2P52C1PNH/1aN3vBs/
-         lkjG5yr1aaIUvZRGvgGPiSsBvSsDBxoVOOVGIC24Ni+iaxNJmK/vTFCJEbTYvxGsFhIZ
-         CYTMv9P4st0jX4qmyiGGVazCt7zwEo1DPXZnI0Boy2T0GfAZlp7+CQp88jV15URL/k2q
-         /nT9+Wc+TQ/W58YJ5f86RH3QlP7YRn1srNRP/AzI2UmbD8el5x8mKfMKaW5ZK7Wdw9OA
-         Xj3ecaAOSAVliicPU9F6DxBv7NMZh+smPuJ1/kb6qzX4ptZUvPg0uDkc58cVY3l4Aj/n
-         AI4Q==
+        bh=AF5vHpQI2c2Dq8nnplPMxcjTfbyxpd4dSxsdmi2d+As=;
+        b=cEsZMNPLDp1wTLSl+gdXQ5IU/4Y3Pay1ufBsdvQTCGsFatC1SszW0r7zxksEOaIr1S
+         WzFQwhfEPFJeLy2st3uxYZPBgN/hE/oFl2TEtKCj4TRLM41GhLhx8Ke+K0uSXnoLnZ7y
+         vwRj0h9GYHIy4EVzmEr8hLGg7zisJ76nfnEPErT68UA9p2OBGtqFabb5nM1bvEjBxIZm
+         ltj+LyAGbSdHKa6D8ZxiSHviebOjaxpAfH7vhgugqGLn9ahBc60W6wg2NZRm2Pv+4QKf
+         wUmlu1rOIz/vmHsuUZGpa3cpEkAVQv/LDGZHvHuXIMpnaapapFxkUitKDddWfCsnFiA2
+         OeAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=qnFYYK7h/c1igs5tdI3kMiUJ6Hx680HhSyVDm1AaQaA=;
-        b=TQO6Y4TOL1ob2N3K9Uf3+yyH1cBggq5dvwapt0/JfBVuTuBFanhuiNYhLQVISKbNrK
-         oWcHrV5P3fjceaDZZ6RIgE5jVNylENKuOUY0OWG3MdXAgCQK1BKLCttfA+6OcsmIwYB8
-         zWHEpTk+RiESSp9CKTnxM1M5TERLF4/lk68ZHrFglTMhuOnqYoY1bv0IgR7nh8b8LdGg
-         exF3Q+iOQQ26w5mfv9hHwkbd+ErQPAVh3nXciAsCpLx7m33K3yGG0UI4AY9rBwvlXW1v
-         wpg99zVWreWYwQJpL6tgN4gfXqvfoBCosctvMUkjw3w1pxZ7bL2QUwOxyCfOmvvpg2Cv
-         tCIA==
-X-Gm-Message-State: AOAM532Nrb6ZRcP0CkcvigYjKarGmd3AMtTL+ugIT6rdRcp4LIyzt6XE
-        +Lxn0RWJKf1UOklymMrQ9eGsgvlaa9BE
-X-Google-Smtp-Source: ABdhPJxdev99AB3uQgaZnet7SwloRxNUURFK8tJjR60YR/v3H4Ax91xdwmBeFsIwQFdARE9Hrx+acmCYRwDp
+        bh=AF5vHpQI2c2Dq8nnplPMxcjTfbyxpd4dSxsdmi2d+As=;
+        b=broN9McIZA6KexcTew5kR2Tuqyn2zX88S7e6tIlHwfIPd+T873W/ON2qSlFrXD236d
+         twtia5lm/l/Hh12kUdw/Wb/0Blq7beRJlapBwhUMezos84hIjvD1rX3n+SS/ENlCIy96
+         N4TLyJt5vablDHJPogASbQbYkzPk4YfwlSEVUN8G3ZggDzu5baiTkoAjNzAzh9vHCLpl
+         WZQDsdjf3V0Pmd9Z9vq0W4qFBt9RwMb/8pfXZcxuutUxR86vWcplNUOk7e7msCebqK7b
+         +naFcsv+KE4QAR0Nqo8hvugCHZypGYJU4cRz4aC7TPFbF/TcxsDTERn+AsI48qsGhZ9+
+         7yZQ==
+X-Gm-Message-State: AOAM5325TKHNePMHxBPQjuQC/eqPh9heQcJiiWiDnD99jVAiM2yeE0kJ
+        4SaSe2PWL/gzNrcSmbQZv2ck7BKqaMhy
+X-Google-Smtp-Source: ABdhPJxBNmexOoSdVojXdLxzIFWksb1eU19/TUaB8IzrMEREP0kYzjB3YPMn9YKaqHA+9t/nv+sWsrduzsIq
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:8ce:af84:2510:3f29])
- (user=irogers job=sendgmr) by 2002:a25:bdce:: with SMTP id
- g14mr51808732ybk.352.1636008159192; Wed, 03 Nov 2021 23:42:39 -0700 (PDT)
-Date:   Wed,  3 Nov 2021 23:41:56 -0700
+ (user=irogers job=sendgmr) by 2002:a25:4f41:: with SMTP id
+ d62mr51612259ybb.13.1636008161746; Wed, 03 Nov 2021 23:42:41 -0700 (PDT)
+Date:   Wed,  3 Nov 2021 23:41:57 -0700
 In-Reply-To: <20211104064208.3156807-1-irogers@google.com>
-Message-Id: <20211104064208.3156807-11-irogers@google.com>
+Message-Id: <20211104064208.3156807-12-irogers@google.com>
 Mime-Version: 1.0
 References: <20211104064208.3156807-1-irogers@google.com>
 X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v3 10/22] perf test: Convert pmu event tests to test cases.
+Subject: [PATCH v3 11/22] perf test: Convert watch point tests to test cases.
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -79,127 +79,190 @@ test functions.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/pmu-events.c | 78 +++++++----------------------------
- 1 file changed, 16 insertions(+), 62 deletions(-)
+ tools/perf/tests/wp.c | 128 ++++++++++--------------------------------
+ 1 file changed, 30 insertions(+), 98 deletions(-)
 
-diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-index 669eea831793..104de7ba1a93 100644
---- a/tools/perf/tests/pmu-events.c
-+++ b/tools/perf/tests/pmu-events.c
-@@ -418,7 +418,8 @@ static int compare_alias_to_test_event(struct perf_pmu_alias *alias,
+diff --git a/tools/perf/tests/wp.c b/tools/perf/tests/wp.c
+index 904bdf2dcf81..2c0513257b15 100644
+--- a/tools/perf/tests/wp.c
++++ b/tools/perf/tests/wp.c
+@@ -62,8 +62,12 @@ static int __event(int wp_type, void *wp_addr, unsigned long wp_len)
+ 	return fd;
  }
  
- /* Verify generated events from pmu-events.c are as expected */
--static int test_pmu_event_table(void)
-+static int test__pmu_event_table(struct test_suite *test __maybe_unused,
-+				 int subtest __maybe_unused)
+-static int wp_ro_test(void)
++static int test__wp_ro(struct test_suite *test __maybe_unused,
++		       int subtest __maybe_unused)
  {
- 	const struct pmu_event *sys_event_tables = __test_pmu_get_sys_events_table();
- 	const struct pmu_events_map *map = __test_pmu_get_events_map();
-@@ -705,7 +706,8 @@ static struct perf_pmu_test_pmu test_pmus[] = {
- };
++#if defined(__s390x__) || defined(__x86_64__) || defined(__i386__)
++	return TEST_SKIP;
++#else
+ 	int fd;
+ 	unsigned long tmp, tmp1 = rand();
  
- /* Test that aliases generated are as expected */
--static int test_aliases(void)
-+static int test__aliases(struct test_suite *test __maybe_unused,
-+			int subtest __maybe_unused)
- {
- 	struct perf_pmu *pmu = NULL;
- 	unsigned long i;
-@@ -894,7 +896,8 @@ static int resolve_metric_simple(struct expr_parse_ctx *pctx,
+@@ -79,10 +83,15 @@ static int wp_ro_test(void)
  
- }
- 
--static int test_parsing(void)
-+static int test__parsing(struct test_suite *test __maybe_unused,
-+			 int subtest __maybe_unused)
- {
- 	const struct pmu_events_map *cpus_map = pmu_events_map__find();
- 	const struct pmu_events_map *map;
-@@ -1036,7 +1039,8 @@ static int metric_parse_fake(const char *str)
-  * or all defined cpus via the 'fake_pmu'
-  * in parse_events.
-  */
--static int test_parsing_fake(void)
-+static int test__parsing_fake(struct test_suite *test __maybe_unused,
-+			      int subtest __maybe_unused)
- {
- 	const struct pmu_events_map *map;
- 	const struct pmu_event *pe;
-@@ -1070,66 +1074,16 @@ static int test_parsing_fake(void)
+ 	close(fd);
  	return 0;
++#endif
  }
  
--static const struct {
--	int (*func)(void);
+-static int wp_wo_test(void)
++static int test__wp_wo(struct test_suite *test __maybe_unused,
++		       int subtest __maybe_unused)
+ {
++#if defined(__s390x__)
++	return TEST_SKIP;
++#else
+ 	int fd;
+ 	unsigned long tmp, tmp1 = rand();
+ 
+@@ -98,10 +107,15 @@ static int wp_wo_test(void)
+ 
+ 	close(fd);
+ 	return 0;
++#endif
+ }
+ 
+-static int wp_rw_test(void)
++static int test__wp_rw(struct test_suite *test __maybe_unused,
++		       int subtest __maybe_unused)
+ {
++#if defined(__s390x__)
++	return TEST_SKIP;
++#else
+ 	int fd;
+ 	unsigned long tmp, tmp1 = rand();
+ 
+@@ -118,10 +132,15 @@ static int wp_rw_test(void)
+ 
+ 	close(fd);
+ 	return 0;
++#endif
+ }
+ 
+-static int wp_modify_test(void)
++static int test__wp_modify(struct test_suite *test __maybe_unused,
++			   int subtest __maybe_unused)
+ {
++#if defined(__s390x__)
++	return TEST_SKIP;
++#else
+ 	int fd, ret;
+ 	unsigned long tmp = rand();
+ 	struct perf_event_attr new_attr;
+@@ -163,105 +182,18 @@ static int wp_modify_test(void)
+ 
+ 	close(fd);
+ 	return 0;
+-}
+-
+-static bool wp_ro_supported(void)
+-{
+-#if defined (__x86_64__) || defined (__i386__)
+-	return false;
+-#else
+-	return true;
+-#endif
+-}
+-
+-static const char *wp_ro_skip_msg(void)
+-{
+-#if defined (__x86_64__) || defined (__i386__)
+-	return "missing hardware support";
+-#else
+-	return NULL;
+ #endif
+ }
+ 
+-static struct {
 -	const char *desc;
--} pmu_events_testcase_table[] = {
+-	int (*target_func)(void);
+-	bool (*is_supported)(void);
+-	const char *(*skip_msg)(void);
+-} wp_testcase_table[] = {
 -	{
--		.func = test_pmu_event_table,
--		.desc = "PMU event table sanity",
+-		.desc = "Read Only Watchpoint",
+-		.target_func = &wp_ro_test,
+-		.is_supported = &wp_ro_supported,
+-		.skip_msg = &wp_ro_skip_msg,
 -	},
 -	{
--		.func = test_aliases,
--		.desc = "PMU event map aliases",
+-		.desc = "Write Only Watchpoint",
+-		.target_func = &wp_wo_test,
 -	},
 -	{
--		.func = test_parsing,
--		.desc = "Parsing of PMU event table metrics",
+-		.desc = "Read / Write Watchpoint",
+-		.target_func = &wp_rw_test,
 -	},
 -	{
--		.func = test_parsing_fake,
--		.desc = "Parsing of PMU event table metrics with fake PMUs",
+-		.desc = "Modify Watchpoint",
+-		.target_func = &wp_modify_test,
 -	},
-+static struct test_case pmu_events_tests[] = {
-+	TEST_CASE("PMU event table sanity", pmu_event_table),
-+	TEST_CASE("PMU event map aliases", aliases),
-+	TEST_CASE_REASON("Parsing of PMU event table metrics", parsing,
-+			 "some metrics failed"),
-+	TEST_CASE("Parsing of PMU event table metrics with fake PMUs", parsing_fake),
++static struct test_case wp_tests[] = {
++	TEST_CASE_REASON("Read Only Watchpoint", wp_ro, "missing hardware support"),
++	TEST_CASE_REASON("Write Only Watchpoint", wp_wo, "missing hardware support"),
++	TEST_CASE_REASON("Read / Write Watchpoint", wp_rw, "missing hardware support"),
++	TEST_CASE_REASON("Modify Watchpoint", wp_modify, "missing hardware support"),
 +	{ .name = NULL, }
  };
  
--static const char *test__pmu_events_subtest_get_desc(int subtest)
+-static int test__wp_subtest_get_nr(void)
 -{
--	if (subtest < 0 ||
--	    subtest >= (int)ARRAY_SIZE(pmu_events_testcase_table))
--		return NULL;
--	return pmu_events_testcase_table[subtest].desc;
+-	return (int)ARRAY_SIZE(wp_testcase_table);
 -}
 -
--static const char *test__pmu_events_subtest_skip_reason(int subtest)
+-static const char *test__wp_subtest_get_desc(int i)
 -{
--	if (subtest < 0 ||
--	    subtest >= (int)ARRAY_SIZE(pmu_events_testcase_table))
+-	if (i < 0 || i >= (int)ARRAY_SIZE(wp_testcase_table))
 -		return NULL;
--	if (pmu_events_testcase_table[subtest].func != test_parsing)
--		return NULL;
--	return "some metrics failed";
+-	return wp_testcase_table[i].desc;
 -}
 -
--static int test__pmu_events_subtest_get_nr(void)
+-static const char *test__wp_subtest_skip_reason(int i)
 -{
--	return (int)ARRAY_SIZE(pmu_events_testcase_table);
+-	if (i < 0 || i >= (int)ARRAY_SIZE(wp_testcase_table))
+-		return NULL;
+-	if (!wp_testcase_table[i].skip_msg)
+-		return NULL;
+-	return wp_testcase_table[i].skip_msg();
 -}
 -
--static int test__pmu_events(struct test_suite *test __maybe_unused, int subtest)
+-static int test__wp(struct test_suite *test __maybe_unused, int i)
 -{
--	if (subtest < 0 ||
--	    subtest >= (int)ARRAY_SIZE(pmu_events_testcase_table))
+-	if (i < 0 || i >= (int)ARRAY_SIZE(wp_testcase_table))
 -		return TEST_FAIL;
--	return pmu_events_testcase_table[subtest].func();
+-
+-	if (wp_testcase_table[i].is_supported &&
+-	    !wp_testcase_table[i].is_supported())
+-		return TEST_SKIP;
+-
+-	return !wp_testcase_table[i].target_func() ? TEST_OK : TEST_FAIL;
 -}
 -
- struct test_suite suite__pmu_events = {
- 	.desc = "PMU events",
--	.func = test__pmu_events,
+-/* The s390 so far does not have support for
+- * instruction breakpoint using the perf_event_open() system call.
+- */
+-static bool test__wp_is_supported(void)
+-{
+-#if defined(__s390x__)
+-	return false;
+-#else
+-	return true;
+-#endif
+-}
+-
+ struct test_suite suite__wp = {
+ 	.desc = "Watchpoint",
+-	.func = test__wp,
+-	.is_supported = test__wp_is_supported,
 -	.subtest = {
 -		.skip_if_fail	= false,
--		.get_nr		= test__pmu_events_subtest_get_nr,
--		.get_desc	= test__pmu_events_subtest_get_desc,
--		.skip_reason	= test__pmu_events_subtest_skip_reason,
+-		.get_nr		= test__wp_subtest_get_nr,
+-		.get_desc	= test__wp_subtest_get_desc,
+-		.skip_reason    = test__wp_subtest_skip_reason,
 -	},
-+	.test_cases = pmu_events_tests,
++	.test_cases = wp_tests,
  };
 -- 
 2.33.1.1089.g2158813163f-goog
