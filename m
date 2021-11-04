@@ -2,73 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F88344593F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:02:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C5D445945
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:04:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234072AbhKDSFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 14:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbhKDSFS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 14:05:18 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711AAC061714;
-        Thu,  4 Nov 2021 11:02:40 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0f2b00d41ed3305b1ea114.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:2b00:d41e:d330:5b1e:a114])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CF41C1EC0521;
-        Thu,  4 Nov 2021 19:02:38 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636048958;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=3GlHDVXRFAhTXXRXq8rqot+hoEQwnQw4uojRIafFclo=;
-        b=TE7I5Cfivl/k3UtF47A+2Z5FBAoyBm5byQpGzXfBHWByRXzgLsxnBrXgDO3YC4Hl/foy1d
-        EdmjOLr4E967rfO6eqekYzxWl4WBOjtpTL5ZNUt1ABp1t/AxnLuMefIWgFxN2xNESPLYSY
-        2NMCWb3BR/SPbf1P7WXo3tVI9/wu4hY=
-Date:   Thu, 4 Nov 2021 19:02:36 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Zhaolong Zhang <zhangzl2013@126.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/mce: correct cpu_missing reporting in mce_timed_out
-Message-ID: <YYQgPGVxP0R9hfYx@zn.tnic>
-References: <20211104074431.1091525-1-zhangzl2013@126.com>
- <YYOkKm8UmmIxSdXF@zn.tnic>
- <442373b1384e4607ba743de4c09df670@intel.com>
+        id S234031AbhKDSH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 14:07:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232102AbhKDSH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 14:07:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1366F610E7;
+        Thu,  4 Nov 2021 18:04:47 +0000 (UTC)
+Date:   Thu, 4 Nov 2021 18:04:45 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Russell King <linux@armlinux.org.uk>
+Subject: Re: flush_dcache_page vs kunmap_local
+Message-ID: <YYQgvTn2NQdZK2Ku@arm.com>
+References: <YYP1lAq46NWzhOf0@casper.infradead.org>
+ <CAHk-=wiKac4t-fOP_3fAf7nETfFLhT3ShmRmBq2J96y6jAr56Q@mail.gmail.com>
+ <YYQQPuhVUHqfldDg@arm.com>
+ <CAHk-=wiDjjL50BBU=i8BFz3Rv5+-pGysEyCD+mcc_K_g0140oQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <442373b1384e4607ba743de4c09df670@intel.com>
+In-Reply-To: <CAHk-=wiDjjL50BBU=i8BFz3Rv5+-pGysEyCD+mcc_K_g0140oQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 03:47:36PM +0000, Luck, Tony wrote:
-> > Frankly, we might just as well kill that cpu_missing thing because we
-> > already say that some CPUs are not responding.
++ rmk
+
+On Thu, Nov 04, 2021 at 10:08:40AM -0700, Linus Torvalds wrote:
+> On Thu, Nov 4, 2021 at 9:54 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > We do. flush_dcache_page() is not just about virtual caches. On arm32/64
+> > (and powerpc), even with PIPT-like caches, we use it to flag a page's
+> > D-cache as no longer clean. Subsequently in set_pte_at(), if the mapping
+> > is executable, we do the cache maintenance to ensure the I and D caches
+> > are coherent with each other.
 > 
-> Yes. The more recent commit:
+> Ugh,. ok, so we have two very different use-cases for that function.
 > 
-> 7bb39313cd62 ("x86/mce: Make mce_timed_out() identify holdout CPUs")
+> Perhaps more importantly, they have hugely different semantics. For
+> you, it's about pages that can be mapped executable, so it's only
+> relevant for mappable pages.
 > 
-> tries to provide the more detailed message about *which* CPUs are missing
+> For the traditional broken pure virtual cache case, it's not about
+> user mappings at all, it's about any data structure that we might have
+> in highmem.
+> 
+> Of course, I think we got rid of most of the other uses of highmem,
+> and we no longer put any "normal" kernel data in highmem pages. There
+> used to be patches that did inodes and things like that in highmem,
+> and they actually depended on the "cache the virtual address so that
+> it's always the same" behavior.
 
-Exactly.
+We can still have ptes in highmem.
 
-> I think cpu_missing can be dropped.
+> > I wouldn't add this call to kmap/kunmap_local(), it would be a slight
+> > unnecessary overhead (we had a customer complaining about kmap_atomic()
+> > breaking write-streaming, I think the new kmap_local() solved this
+> > problem, if in the right context).
+> 
+> kmap_local() ends up being (I think) fundamentally broken for virtual
+> cache coherency anyway, because two different CPU's can see two
+> different virtual addresses at the same time for the same page (in
+> ways that the old kmap interfaces could not).
 
-Zhaolong, you could send a patch doing that, instead.
+Luckily I don't think we have a (working) SMP system with VIVT caches.
+On UP, looking at arm, for VIVT caches it flushes the D-cache before
+kunmap_local() (arch_kmap_local_pre_unmap()). So any new kmap_local()
+would see the correct data even if it's in a different location.
 
-Thx.
+> So maybe the answer is "let's forget about the old virtual cache
+> coherence issue, and make it purely about the I$ mapping case".
+
+We still have VIVT processors supported in the kernel and a few where
+the VIPT cache is aliasing (some ARMv6 CPUs). On these,
+flush_dcache_page() is still used to ensure the user aliases are
+coherent with the kernel one, so it's not just about the I/D-cache
+coherency.
+
+> At that point, kmap is irrelevant from a virtual address standpoint
+> and so it doesn't make much sense to fliush on kunmap - but anybody
+> who writes to a page still needs that flush_dcache_page() thing.
+
+The cachetlb.rst doc states the two cases where flush_dcache_page()
+should be called:
+
+1. After writing to a page cache page (that's what we need on arm64 for
+   the I-cache).
+
+2. Before reading from a page cache page and user mappings potentially
+   exist. I think arm32 ensures the D-cache user aliases are coherent
+   with the kernel one (added rmk to confirm).
+
+Now, whether the kernel code does call flush_dcache_page() in the above
+scenarios is another matter. But if we are to remove the 2nd case, for
+VIVT/aliasing-VIPT hardware we'd need kmap() to perform some cache
+maintenance even if the page is not in highmem.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Catalin
