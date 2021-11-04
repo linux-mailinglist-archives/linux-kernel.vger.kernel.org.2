@@ -2,90 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70014458FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:51:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EBE445903
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234005AbhKDRyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:54:07 -0400
-Received: from mswedge1.sunplus.com ([60.248.182.113]:36518 "EHLO
-        mg.sunplus.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232048AbhKDRyF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:54:05 -0400
-X-MailGates: (flag:3,DYNAMIC,RELAY,NOHOST:PASS)(compute_score:DELIVER,40
-        ,3)
-Received: from 172.17.9.202
-        by mg01.sunplus.com with MailGates ESMTP Server V5.0(13483:0:AUTH_RELAY)
-        (envelope-from <wells.lu@sunplus.com>); Fri, 05 Nov 2021 01:51:11 +0800 (CST)
-Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
- sphcmbx01.sunplus.com.tw (172.17.9.202) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Fri, 5 Nov 2021 01:51:11 +0800
-Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
- ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Fri, 5 Nov 2021
- 01:51:11 +0800
-From:   =?utf-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
-To:     Randy Dunlap <rdunlap@infradead.org>, Andrew Lunn <andrew@lunn.ch>
-CC:     Wells Lu <wellslutw@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
-Subject: RE: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
-Thread-Topic: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
-Thread-Index: AQHX0KKBcebTINBXKk6D/f7Frpi9sKvxbhgAgAClKgD//5f5gIABJz+w///9xoCAACBhAIAAtknA
-Date:   Thu, 4 Nov 2021 17:51:11 +0000
-Message-ID: <22012af032f04f2684f2d9bf64ed7028@sphcmbx02.sunplus.com.tw>
-References: <cover.1635936610.git.wells.lu@sunplus.com>
- <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
- <d0217eed-a8b7-8eb9-7d50-4bf69cd38e03@infradead.org>
- <159ab76ac7114da983332aadc6056c08@sphcmbx02.sunplus.com.tw>
- <YYLjaYCQHzqBzN1l@lunn.ch>
- <36d5bc6d40734ae0a9c1fb26d258f49f@sphcmbx02.sunplus.com.tw>
- <YYPZN9hPBJTBzVUl@lunn.ch>
- <3209bc4b-bde5-2e7e-4a91-429d2e83905e@infradead.org>
-In-Reply-To: <3209bc4b-bde5-2e7e-4a91-429d2e83905e@infradead.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [172.25.108.39]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S230471AbhKDRzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:55:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:50404 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229804AbhKDRza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 13:55:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3274012FC;
+        Thu,  4 Nov 2021 10:52:52 -0700 (PDT)
+Received: from localhost.localdomain (unknown [10.57.47.199])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0742C3F719;
+        Thu,  4 Nov 2021 10:52:50 -0700 (PDT)
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org
+Cc:     linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        valentin.schneider@arm.com, jing-ting.wu@mediatek.com,
+        Vincent Donnefort <vincent.donnefort@arm.com>
+Subject: [PATCH] sched/core: Mitigate race cpus_share_cache()/update_top_cache_domain()
+Date:   Thu,  4 Nov 2021 17:51:20 +0000
+Message-Id: <20211104175120.857087-1-vincent.donnefort@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiAxMS80LzIxIDU6NTkgQU0sIEFuZHJldyBMdW5uIHdyb3RlOg0KPiA+IE9uIFRodSwgTm92
-IDA0LCAyMDIxIGF0IDA1OjMxOjU3QU0gKzAwMDAsIFdlbGxzIEx1IOWRguiKs+mosCB3cm90ZToN
-Cj4gPj4gSGksDQo+ID4+DQo+ID4+IFRoYW5rcyBhIGxvdCBmb3IgcmV2aWV3Lg0KPiA+Pg0KPiA+
-Pj4NCj4gPj4+PiBjb25maWcgTkVUX1ZFTkRPUl9TVU5QTFVTDQo+ID4+Pj4gCWJvb2wgIlN1bnBs
-dXMgZGV2aWNlcyINCj4gPj4+PiAJZGVmYXVsdCB5DQo+ID4+Pj4gCWRlcGVuZHMgb24gQVJDSF9T
-VU5QTFVTDQo+ID4+Pg0KPiA+Pj4gRG9lcyBpdCBhY3R1YWxseSBkZXBlbmQgb24gQVJDSF9TVU5Q
-TFVTPyBXaGF0IGRvIHlvdSBtYWtlIHVzZSBvZj8NCj4gPj4NCj4gPj4gQVJDSF9TVU5QTFVTIHdp
-bGwgYmUgZGVmaW5lZCBmb3IgU3VucGx1cyBmYW1pbHkgc2VyaWVzIFNvQy4NCj4gPj4gRXRoZXJu
-ZXQgZGV2aWNlcyBvZiBTdW5wbHVzIGFyZSBkZXNpZ25lZCBhbmQgdXNlZCBmb3IgU3VucGx1cyBT
-b0MuDQo+ID4+IFNvIGZhciwgb25seSB0d28gU29DIG9mIFN1bnBsdXMgaGF2ZSB0aGUgbmV0d29y
-ayBkZXZpY2UuDQo+ID4+IEknZCBsaWtlIHRvIHNob3cgdXAgdGhlIHNlbGVjdGlvbiBvbmx5IGZv
-ciBTdW5wbHVzIFNvQy4NCj4gPg0KPiA+IFNvIGl0IGRvZXMgbm90IGFjdHVhbGx5IGRlcGVuZCBv
-biBBUkNIX1NVTlBMVVMuIFRoZXJlIGFyZSBhIGZldyBjYXNlcw0KPiA+IHdoZXJlIGRyaXZlcnMg
-aGF2ZSBuZWVkZWQgdG8gY2FsbCBpbnRvIGFyY2ggc3BlY2lmaWMgY29kZSwgd2hpY2ggc3RvcHMN
-Cj4gPiB0aGVtIGJ1aWxkaW5nIGZvciBhbnkgb3RoZXIgYXJjaC4NCj4gPg0KPiA+Pj4gSWRlYWxs
-eSwgeW91IHdhbnQgaXQgdG8gYWxzbyBidWlsZCB3aXRoIENPTVBJTEVfVEVTVCwgc28gdGhhdCB0
-aGUNCj4gPj4+IGRyaXZlciBnZXRzIGJ1aWxkIGJ5IDAtZGF5IGFuZCBhbGwgdGhlIG90aGVyIGJ1
-aWxkIGJvdHMuDQo+ID4+DQo+ID4+IEkgYW0gbm90IHN1cmUgaWYgdGhpcyBpcyBtYW5kYXRvcnkg
-b3Igbm90Lg0KPiA+PiBTaG91bGQgSSBhZGQgQ09NUElMRV9URVNUIGFzIGJlbG93Pw0KPiA+Pg0K
-PiA+PiAJZGVwZW5kcyBvbiBBUkNIX1NVTlBMVVMgfCBDT01QSUxFX1RFU1QNCj4gPg0KPiA+IFll
-cy4NCj4gDQo+IFllcywgYnV0IHVzZSAifHwiIGluc3RlYWQgb2Ygb25lICJ8Ii4NCj4gDQo+ID4N
-Cj4gPj4gWWVzLCB0aGUgZGV2aWNlIGlzIG5vdyBvbmx5IGZvciBTdW5wbHVzIFNQNzAyMSBTb0Mu
-DQo+ID4+IERldmljZXMgaW4gZWFjaCBTb0MgbWF5IGhhdmUgYSBiaXQgZGlmZmVyZW5jZSBiZWNh
-dXNlIG9mIGFkZGluZyBuZXcNCj4gPj4gZnVuY3Rpb24gb3IgaW1wcm92aW5nIHNvbWV0aGluZy4N
-Cj4gPg0KPiA+IElmIGl0IHdpbGwgY29tcGlsZSB3aXRoIENPTVBJTEVfVEVTVCBvbiB4ODYsIG1p
-cHMsIGV0YywgeW91IHNob3VsZA0KPiA+IGFsbG93IGl0IHRvIGNvbXBpbGUgd2l0aCBDT01QSUxF
-X1RFU1QuIFlvdSBnZXQgYmV0dGVyIGNvbXBpbGUgdGVzdGluZw0KPiA+IHRoYXQgd2F5Lg0KPiA+
-DQo+ID4gICAgICAgQW5kcmV3DQo+ID4NCj4gDQo+IA0KPiAtLQ0KPiB+UmFuZHkNCg0KSSB3aWxs
-IGRvIGl0IGluIFBBVENIIHYyLg0KDQpUaGFua3MsDQo=
+Nothing protects the access to the per_cpu variable sd_llc_id. When testing
+the same CPU (i.e. this_cpu == that_cpu), a race condition exists with
+update_top_cache_domain(). One scenario being:
+
+              CPU1                            CPU2
+  ==================================================================
+
+  per_cpu(sd_llc_id, CPUX) => 0
+                                    partition_sched_domains_locked()
+      				      detach_destroy_domains()
+  cpus_share_cache(CPUX, CPUX)          update_top_cache_domain(CPUX)
+    per_cpu(sd_llc_id, CPUX) => 0
+                                          per_cpu(sd_llc_id, CPUX) = CPUX
+    per_cpu(sd_llc_id, CPUX) => CPUX
+    return false
+
+ttwu_queue_cond() wouldn't catch smp_processor_id() == cpu and the result
+is a warning triggered from ttwu_queue_wakelist().
+
+Avoid a such race in cpus_share_cache() by always returning true when
+this_cpu == that_cpu.
+
+Fixes: 518cd6234178 ("sched: Only queue remote wakeups when crossing cache boundaries")
+Reported-by: Jing-Ting Wu <jing-ting.wu@mediatek.com>
+Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index f2611b9cf503..f5ca15cdcff4 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3726,6 +3726,9 @@ void wake_up_if_idle(int cpu)
+ 
+ bool cpus_share_cache(int this_cpu, int that_cpu)
+ {
++	if (this_cpu == that_cpu)
++		return true;
++
+ 	return per_cpu(sd_llc_id, this_cpu) == per_cpu(sd_llc_id, that_cpu);
+ }
+ 
+-- 
+2.25.1
+
