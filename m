@@ -2,127 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D290744534B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECEAA445352
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:49:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbhKDMuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 08:50:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229809AbhKDMuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 08:50:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3FBD60EE9
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 12:47:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636030056;
-        bh=O89SG59ERFkapOwq86PzKcmSXMmROh38ILRsxSPw7zc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FUvx4DVOJMgsgc8Dclim6uiPNanlCw5L3gLp5PVRYWaoNB9rczDaMyOu74b5oF1d4
-         AHQF0P2QUe/aKt1at2I3AWfbFZ99fftU7/5wpYdVqsnnHuI/KpFI/ENXZez8TbJFb4
-         5TS6iTqKetd4Skk5at9pKxYakuM5yK4ng3Jdk71JGqsTnKlLuGhsWwFWtNfIFAKjFQ
-         cyJuzZCeLF6on0nF5PCFzmBT7h8dRN7nAbyXaHB8drhluEVwshEhKQjWhhuHXt15VG
-         d3Qzpw5oaHVDaArQs6B3Z7jd2EO/RgHBiPRqHM1jWw/Z0bJql4Pe26pacZ0L+oNTgI
-         3MfAezPvDs5Sg==
-Received: by mail-ot1-f42.google.com with SMTP id l7-20020a0568302b0700b0055ae988dcc8so4893139otv.12
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 05:47:36 -0700 (PDT)
-X-Gm-Message-State: AOAM5315eAcQf593qWBAT3fl1daBLIeAt3yQTMuuroQEdcm2FDfenUNl
-        teqZ7oCp72jRrcRUtmnzPOu5hn/UtUr4yaDR5E8=
-X-Google-Smtp-Source: ABdhPJxhWjJHaSYxFkhh2iWefDx6Z+2GQYHsj7ZwDXxYFvelaU3rJtXffw/e5rsmEHaDNyuzdbd+XCXcawBw+m5Y8K0=
-X-Received: by 2002:a9d:5911:: with SMTP id t17mr39447582oth.30.1636030056196;
- Thu, 04 Nov 2021 05:47:36 -0700 (PDT)
+        id S231270AbhKDMwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 08:52:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhKDMwN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 08:52:13 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23011C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 05:49:35 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id w1so21100376edd.10
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 05:49:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TeIP1bg1nWHRvXywBIkPh57uX1vDbH3a6UVlj7rXquc=;
+        b=dxy2RvSOtGGojyBOY1BA/K+J75Ev1g5AtRy5gjPrGY1SBf9C4F/2UQvw1c5DG0XN9V
+         OawVBcEbTkqTyWvJx59CO47gthqHCNwQYnAOj5yfPdnlSdTMoUNc12jsepuv0/rsxcRB
+         PX0ilCOeE/Ru/ZJdjh2zRDaB4O9F9k+KSAAhD6F+ajtJpL1Gb5QGHHnWAhR4mcrL6aWK
+         V25UC8KQiQ89SMjGi5kTIKRIdIMKZM60gdo6jK32tXpXNUbHCQNxw+VYCLnrAeV9mwwF
+         u+yyO2BfR27nt2ehWWvNKAKIf01tAT+X9nrRXaDXxNH/w8lWAEUC4XHzc+vXGzMJmqk4
+         Rozw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TeIP1bg1nWHRvXywBIkPh57uX1vDbH3a6UVlj7rXquc=;
+        b=B8/7Ctm2UnzmPw+fkxCNPvmoHbOTgMPBmwuDRqizne9RqBpbURYPVCcsdhOHqV0hLZ
+         gtj8YCUaRZqbyQP5XvZrloPL9HgSq9Gra23Xby+penPW4O3GJL9Fp9detWVLRxe540px
+         6cn3EQO8tV2NT8ZpwfLhh4uILQ9xWJHZcc8shBUyUzjO49YSCoHjfnasA4xcuhKXX806
+         NJMIbnMLGfZuFSRhOvknVCuySfYfdu3UDjDzvLbfAJ69jSy9E1o+83Dbgl9GggixZUCm
+         1YX7K209cEgoj+DC2CAw0KXME8OacyiJQZjOLdqM0tpU3R+2iHmVztTuCwOiXFwUstFB
+         EcUQ==
+X-Gm-Message-State: AOAM531qba+RRfRM45Sw0womkQ9mMch16WBxNscWwEqjRmCosIzvhGU4
+        t5GSd1zxNEBZw8LNyuvEY85z5SAd4Xdqow==
+X-Google-Smtp-Source: ABdhPJxEx17h6r1dqFFx8yhuTLUlvsaYjBMRd793XG8IBVIl8PNGOwxm8DM4LI9TLvpLhg1gY6r8KQ==
+X-Received: by 2002:a17:906:76d4:: with SMTP id q20mr7196983ejn.380.1636030173682;
+        Thu, 04 Nov 2021 05:49:33 -0700 (PDT)
+Received: from fedora.. (dh207-99-83.xnet.hr. [88.207.99.83])
+        by smtp.googlemail.com with ESMTPSA id gb3sm2555432ejc.81.2021.11.04.05.49.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 05:49:33 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Gabor Juhos <j4g8y7@gmail.com>,
+        Robert Marko <robert.marko@sartura.hr>
+Subject: [net-next] net: dsa: qca8k: only change the MIB_EN bit in MODULE_EN register
+Date:   Thu,  4 Nov 2021 13:49:27 +0100
+Message-Id: <20211104124927.364683-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-References: <20211104023221.16391-1-walter-zh.wu@mediatek.com>
- <20211104085336.GA24260@lst.de> <CAMj1kXHjjmhCVzKFhAseMGOdnidmFT=+o+vwKLTCGFkpwHmcfQ@mail.gmail.com>
- <cc893162f0e2c81a1d64bf85794cc77ae76cadce.camel@mediatek.com>
-In-Reply-To: <cc893162f0e2c81a1d64bf85794cc77ae76cadce.camel@mediatek.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 4 Nov 2021 13:47:24 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXG0DmLXQgfv2N1nhNdXgnXOiK2Rv7D+boSdW9_C=wsowA@mail.gmail.com>
-Message-ID: <CAMj1kXG0DmLXQgfv2N1nhNdXgnXOiK2Rv7D+boSdW9_C=wsowA@mail.gmail.com>
-Subject: Re: [PATCH v2] dma-direct: improve DMA_ATTR_NO_KERNEL_MAPPING
-To:     Walter Wu <walter-zh.wu@mediatek.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Nov 2021 at 13:31, Walter Wu <walter-zh.wu@mediatek.com> wrote:
->
-> On Thu, 2021-11-04 at 09:57 +0100, Ard Biesheuvel wrote:
-> > On Thu, 4 Nov 2021 at 09:53, Christoph Hellwig <hch@lst.de> wrote:
-> > >
-> > > On Thu, Nov 04, 2021 at 10:32:21AM +0800, Walter Wu wrote:
-> > > > diff --git a/include/linux/set_memory.h
-> > > > b/include/linux/set_memory.h
-> > > > index f36be5166c19..6c7d1683339c 100644
-> > > > --- a/include/linux/set_memory.h
-> > > > +++ b/include/linux/set_memory.h
-> > > > @@ -7,11 +7,16 @@
-> > > >
-> > > >  #ifdef CONFIG_ARCH_HAS_SET_MEMORY
-> > > >  #include <asm/set_memory.h>
-> > > > +
-> > > > +#ifndef CONFIG_RODATA_FULL_DEFAULT_ENABLED
-> > >
-> > > This is an arm64-specific symbol, and one that only controls a
-> > > default.  I don't think it is suitable to key off stubs in common
-> > > code.
-> > >
-> > > > +static inline int set_memory_valid(unsigned long addr, int
-> > > > numpages, int enable) { return 0; }
-> > >
-> > > Pleae avoid overly long lines.
-> > >
-> > > > +             if (IS_ENABLED(CONFIG_RODATA_FULL_DEFAULT_ENABLED))
-> > > > {
-> > > > +                     kaddr = (unsigned
-> > > > long)phys_to_virt(dma_to_phys(dev, *dma_handle));
-> > >
-> > > This can just use page_address.
-> > >
-> > > > +                     /* page remove kernel mapping for arm64 */
-> > > > +                     set_memory_valid(kaddr, size >> PAGE_SHIFT,
-> > > > 0);
-> > > > +             }
-> > >
-> > > But more importantly:  set_memory_valid only exists on arm64, this
-> > > will break compile everywhere else.  And this API is complete crap.
-> > > Passing kernel virtual addresses as unsigned long just sucks, and
-> > > passing an integer argument for valid/non-valid also is a horrible
-> > > API.
-> > >
-> >
-> > ... and as I pointed out before, you can still pass rodata=off on
-> > arm64, and get the old behavior, in which case bad things will happen
-> > if you try to use an API that expects to operate on page mappings
-> > with
-> > a 1 GB block mapping.
-> >
->
-> Thanks for your suggestion.
->
->
-> > And you still haven't explained what the actual problem is: is this
-> > about CPU speculation corrupting non-cache coherent inbound DMA?
->
-> No corrupiton, only cpu read it, we hope to fix the behavior.
->
+From: Gabor Juhos <j4g8y7@gmail.com>
 
-Fix which behavior? Please explain
+The MIB module needs to be enabled in the MODULE_EN register in
+order to make it to counting. This is done in the qca8k_mib_init()
+function. However instead of only changing the MIB module enable
+bit, the function writes the whole register. As a side effect other
+internal modules gets disabled.
 
-1) the current behavior
-2) why the current behavior is problematic for you
-3) how this patch changes the current behavior
-4) why the new behavior fixes your problem.
+Fix up the code to only change the MIB module specific bit.
 
-There is no penalty for using too many words.
+Fixes: 6b93fb46480a ("net-next: dsa: add new driver for qca8xxx family")
+Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+---
+ drivers/net/dsa/qca8k.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+index a984f06f6f04..a229776924f8 100644
+--- a/drivers/net/dsa/qca8k.c
++++ b/drivers/net/dsa/qca8k.c
+@@ -583,7 +583,7 @@ qca8k_mib_init(struct qca8k_priv *priv)
+ 	if (ret)
+ 		goto exit;
+ 
+-	ret = qca8k_write(priv, QCA8K_REG_MODULE_EN, QCA8K_MODULE_EN_MIB);
++	ret = qca8k_reg_set(priv, QCA8K_REG_MODULE_EN, QCA8K_MODULE_EN_MIB);
+ 
+ exit:
+ 	mutex_unlock(&priv->reg_mutex);
+-- 
+2.33.1
+
