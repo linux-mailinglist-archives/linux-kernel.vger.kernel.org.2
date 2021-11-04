@@ -2,102 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8A1444F2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:48:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6F4444F5C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:51:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhKDGus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:50:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50930 "EHLO
+        id S230329AbhKDGyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231253AbhKDGuF (ORCPT
+        with ESMTP id S230087AbhKDGyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:50:05 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC90C0432E5;
-        Wed,  3 Nov 2021 23:45:50 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id f5so4583090pgc.12;
-        Wed, 03 Nov 2021 23:45:50 -0700 (PDT)
+        Thu, 4 Nov 2021 02:54:18 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D6DC061714;
+        Wed,  3 Nov 2021 23:51:41 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id s24so5757005plp.0;
+        Wed, 03 Nov 2021 23:51:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=E7Lb39v8JgwIKFwWNwZqrpLx/viQ/ss7YEIY/nQme7w=;
-        b=gugSXww73OmmqMpEsCtSDZM8HVRRBRxmWRe9oJkR23JO0J3vA1DTW4wgBsp0/lp/Zd
-         TYAnDN89AYVcOS5zkTIyntZC6yqVJZ4eITwgNPGafaCZ4kO0maZisXQQBHu4rM5fFq1h
-         i1+yDPEBfS8+ZDOR6NQhPmY79GH1EYiEcxt4F391CJiVvTLuCM8N5Ey0mw6xuvjN3aaw
-         6WIX0FPlEl0APw//zhtlbGxghcc7BeiLCyNaelxj8TQZKq2jAzn3QQmH/cl8UJZ//SY8
-         yapaQVfo1ieYYR4bgQ/c8Qr50oTaefS5OlNj+5HZHmM2vSUkago9Gs0LJLuEUFxX20wa
-         RbEw==
+        bh=3h+irhGayDiswcx7a1bXBLxDjkUlVsPyCqdz/tgrKlI=;
+        b=AQCOglP/FxgO9OL2dOh5ti8PZVoG0NtH+eGDizLJAmEOZyG0rGPNyKVALrL2NZQlN9
+         aPwtan6ahyG1uMYuUhgxngw1Y0kZBNsKrTU/UogAR1LiZM6jTGjV4k0tzykF73j6JUDH
+         YGqlgEo/40sBhV/PI48HjHa3DoiPliUwuDnqghXozVSQ1Da+Spn3s4dayZxQC9jnhTVB
+         MZB4qOEkKjTBDM3qntK0Ss/A4sqCtziVNw6m2tzTjqiUErTMH8q6bCieJCfF0TJy+zu1
+         S6nX9XKjNEGS49gqt/XxKftkIlMHXx5jyuU7aWdbKvKuDr33aPMLDCef4eXXLwYrUSd6
+         tPEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=E7Lb39v8JgwIKFwWNwZqrpLx/viQ/ss7YEIY/nQme7w=;
-        b=soLPNQaJdoReX8ojCRN5Go/frIb58X2dGsMlUOmYNa75bNob3ZDbX6SxqzXQO6nFJD
-         Iw2SygVNGmxFtnQIsUWaON9Ki+P2GHHZgchAOwGQGZ3hmAvc+pxF5KQh5ruMAUqBbMjz
-         75+J1z+OvwghaTdfCnK6Gaahve3aIuf0UKcMm2nQ+mDtlozpeszOW2UeclW+2ZUFoxQ3
-         1SjmX11TI2Vwih9cKsUG2ChfNbvAmFxSptWbrJURe+VT1FD3B4YBcLqlAvuhUMkEykqA
-         xLn1mNSHKHtbH7ekDmzUSqVltpHUaMdBmEodqdnVOgipqxrG2ChaQ+jJVUlKQED7iIIm
-         jhrA==
-X-Gm-Message-State: AOAM533/ri+jnzZgVPRndL1DvYI/CuuE4JnM9MduMHI7oegJMGFtlynA
-        WntC4ExTCdKx8LCWp8r97ww=
-X-Google-Smtp-Source: ABdhPJyA/GoGVwuBCfGdyyVh881wkybitfSFS9R9yp1OxsScVtwixpX63gcN7eiXhuLSyKj8gkBAPg==
-X-Received: by 2002:a05:6a00:b82:b0:494:63ab:d61b with SMTP id g2-20020a056a000b8200b0049463abd61bmr2073779pfj.30.1636008350589;
-        Wed, 03 Nov 2021 23:45:50 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id d20sm4502359pfl.173.2021.11.03.23.45.49
+        bh=3h+irhGayDiswcx7a1bXBLxDjkUlVsPyCqdz/tgrKlI=;
+        b=LuAq2H+ssbKunjMK5bGVOz6e18dqKrgpfdOqNoX6qDNdX7+zBWgZGlznTMx3Zkb8ss
+         beNbdv1zVHQS1+R4whz2/to4HvCNy+TLpKG9tV5Dcju5LGbbjJXLTvun0GgFRQBMTru2
+         Dao+2Qt6qflU3LdShvUcYevniZLNjzox0FhBN3875XjhQ0KIBa96icNq8xO9HABA69Nl
+         Ud0gdTikhWpXizEj6+w8rtnLr1Kq6v9OtYDO1HqOc4EuR5/JvdVkpPKEGZs7osog/3fD
+         aO54wU4ezpfD4ZTr/phsE/T8Gk9+1N11REbTVD5Mgpz7U9wxdjnt4n3qR3O/SAc6ZaM8
+         uvww==
+X-Gm-Message-State: AOAM531oha2tOE6GgTZdlRTpz+pE3J0rmpBlwIRn7F3nYRB21nG9eaWq
+        wfQyPyoOrm1tUMucpm9nIbo=
+X-Google-Smtp-Source: ABdhPJxHmbUVPftUW7Kpr//QrcR95MmE/TdmYbfckjm6fjP1lQc1O7BJqzYRup4KY7CEplMwMwMSmA==
+X-Received: by 2002:a17:902:9348:b0:141:5862:28b4 with SMTP id g8-20020a170902934800b00141586228b4mr42856976plp.17.1636008700796;
+        Wed, 03 Nov 2021 23:51:40 -0700 (PDT)
+Received: from debian11-dev-61.localdomain (192.243.120.180.16clouds.com. [192.243.120.180])
+        by smtp.gmail.com with ESMTPSA id v14sm4927823pfu.171.2021.11.03.23.51.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 23:45:50 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: luo.penghao@zte.com.cn
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luo penghao <luo.penghao@zte.com.cn>,
+        Wed, 03 Nov 2021 23:51:40 -0700 (PDT)
+From:   davidcomponentone@gmail.com
+X-Google-Original-From: yang.guang5@zte.com.cn
+To:     steffen.klassert@secunet.com
+Cc:     davidcomponentone@gmail.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yang Guang <yang.guang5@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH v2] loop: Remove duplicate assignments
-Date:   Thu,  4 Nov 2021 06:45:46 +0000
-Message-Id: <20211104064546.3074-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+Subject: [PATCH] xfrm: use swap() to make code cleaner
+Date:   Thu,  4 Nov 2021 14:51:28 +0800
+Message-Id: <20211104065129.1817139-1-yang.guang5@zte.com.cn>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: luo penghao <luo.penghao@zte.com.cn>
+From: Yang Guang <yang.guang5@zte.com.cn>
 
-The assignment and operation there will be overwritten later, so
-it should be deleted.
-
-The clang_analyzer complains as follows:
-
-drivers/block/loop.c:2330:2 warning:
-
-Value stored to 'err' is never read
-
-change in v2:
-
-Repair the sending email box
+Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
+opencoding it.
 
 Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
+Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
 ---
- drivers/block/loop.c | 1 -
- 1 file changed, 1 deletion(-)
+ net/ipv6/ah6.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index 1f91bd4..941b482 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -2329,7 +2329,6 @@ static int loop_add(int i)
- 		goto out_free_dev;
- 	i = err;
+diff --git a/net/ipv6/ah6.c b/net/ipv6/ah6.c
+index 828e62514260..b5995c1f4d7a 100644
+--- a/net/ipv6/ah6.c
++++ b/net/ipv6/ah6.c
+@@ -175,7 +175,6 @@ static void ipv6_rearrange_destopt(struct ipv6hdr *iph, struct ipv6_opt_hdr *des
+ 			 * See 11.3.2 of RFC 3775 for details.
+ 			 */
+ 			if (opt[off] == IPV6_TLV_HAO) {
+-				struct in6_addr final_addr;
+ 				struct ipv6_destopt_hao *hao;
  
--	err = -ENOMEM;
- 	lo->tag_set.ops = &loop_mq_ops;
- 	lo->tag_set.nr_hw_queues = 1;
- 	lo->tag_set.queue_depth = 128;
+ 				hao = (struct ipv6_destopt_hao *)&opt[off];
+@@ -184,9 +183,7 @@ static void ipv6_rearrange_destopt(struct ipv6hdr *iph, struct ipv6_opt_hdr *des
+ 							     hao->length);
+ 					goto bad;
+ 				}
+-				final_addr = hao->addr;
+-				hao->addr = iph->saddr;
+-				iph->saddr = final_addr;
++				swap(hao->addr, iph->saddr);
+ 			}
+ 			break;
+ 		}
 -- 
-2.15.2
-
+2.30.2
 
