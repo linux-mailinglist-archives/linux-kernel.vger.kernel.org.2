@@ -2,117 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D896444DAB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 04:19:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E86B2444DAF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 04:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhKDDWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 23:22:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34592 "EHLO
+        id S230119AbhKDD2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 23:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbhKDDWP (ORCPT
+        with ESMTP id S229894AbhKDD2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 23:22:15 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA778C061714;
-        Wed,  3 Nov 2021 20:19:37 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id a9so4197584pgg.7;
-        Wed, 03 Nov 2021 20:19:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0jotiKljItHe5KgItLDS/7t02O1VaAIiEGP4SN4vD0A=;
-        b=Ae0J45PtFmTsz/n9+bQcdzImbY6wZpCljFrXFrFOz0P0M/D+WEDSX/ETnHcFeu5Gkw
-         V1UGUBwmXkeLjdd5cqHHThtCZmLMkn0N9e/TUsHOt/YIC4S3ttTChIt8gpoidCQI4u6x
-         sUzMoIE1jN488QIyWNk3766RQkpka4mn8LerIc5wBXEr4TQ3v4PMaa262ytRlxTyd2MV
-         BXcWCqhMKlPqZHH7V91Tw4yabcNMe4CDxBLMpRw73fusMtzWi2PWEPM2RfYoIgOHa/+k
-         amhUNHeIslQ4oKaSNcA67TXOkXt1TWAcK+qDf1PylilOt4hiu9UoXspUCGuqMwlGyK8m
-         Y++w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0jotiKljItHe5KgItLDS/7t02O1VaAIiEGP4SN4vD0A=;
-        b=wdFbxBXDl6od3XdGiS1VGlV7SeEnccf8WJM6pYb5v/eHTe1wMTdYm2FZ3tIqIrpYZS
-         mpXs+Lcw7zDS3mOyBhFnj0S5ubKsR+Z7fxaI0TvqOMjvUaMHYTb6qkZ914T8oHxqCCAs
-         +hx6DVkQ+8JjQXWA/Soy0mfOYJ5FamcgrwTzUqMSxw4qayNppHMPeqvFEyEvQlS4B7Vu
-         R9etvzgJOa0SV4QHjO77vITu0IvLpdlkKDGpuCg9xbCWH+RvbqJLkiYxpxZirdk0Brny
-         xnsKtGZhpXh+7JsPnrFfTQw5voqT6pL0fElIsIV0r8FJAttWarxqvbPReH1CXkzfcdZe
-         veig==
-X-Gm-Message-State: AOAM533cOWf4ATZPbwoY8HmGuVjlAFazPHGlBsGkrYu6L0x+/6tpKMjK
-        PDVxtziJd7NfsqyHeroLPMc=
-X-Google-Smtp-Source: ABdhPJwLkxgdPLlD4j/8jjjxbqhFexTDqobdydGwsrnE5lYvvhxVggXJcYALm3you5jh/nImxJX8ZA==
-X-Received: by 2002:a62:1b8e:0:b0:44c:9318:f6e1 with SMTP id b136-20020a621b8e000000b0044c9318f6e1mr49400314pfb.84.1635995977415;
-        Wed, 03 Nov 2021 20:19:37 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id md6sm2931005pjb.22.2021.11.03.20.19.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 20:19:37 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: luo.penghao@zte.com.cn
-To:     Steffen Klassert <steffen.klassert@secunet.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] ipv6/esp6: Remove structure variables and alignment statements
-Date:   Thu,  4 Nov 2021 03:19:31 +0000
-Message-Id: <20211104031931.30714-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Wed, 3 Nov 2021 23:28:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B752DC061714;
+        Wed,  3 Nov 2021 20:25:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9i73/6SdJ1N1Ck8Ld5HrqcvwEwZRwzBBD8DWT4Y6rxE=; b=Dazl8Z3ANUaz5rfl60/hjAKu18
+        w+jsFb/x6+dTJk5XjF407tuILdWfuMn49x5KrkGWbhUpSIjBObeF1ioJ100baLXKVHWbnzZLdHP8x
+        FfRboGC/hLir+sSejNvq+OYwCSWx1myCYFHQEU4fEmp21/iOvFLTUS7hdo3z/oZDsry+s4ojtXQzu
+        6qKYWFM9SMwDYZGmSGAB0pNHEKBiunFaaHrdbjAG2M567HB+zTT9KQPzqzHvUfajB+h7HrVMwDQSY
+        wsPeSX25njmiBUgfVCqZRlXvLH/wnOraUy9OJVd21ARoyv/QpTqP2Z9ayt+cizM1+OuCQBxrH97Xt
+        LvSgeJPw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1miTKE-005dMm-G7; Thu, 04 Nov 2021 03:22:46 +0000
+Date:   Thu, 4 Nov 2021 03:22:02 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     marc.dionne@auristor.com, Jeffrey E Altman <jaltman@auristor.com>,
+        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH] afs: Fix ENOSPC, EDQUOT and other errors to fail a write
+ rather than retrying
+Message-ID: <YYNR2t+RmtFd+bT/@casper.infradead.org>
+References: <163598300034.1327800.8060660349996331911.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163598300034.1327800.8060660349996331911.stgit@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: luo penghao <luo.penghao@zte.com.cn>
+On Wed, Nov 03, 2021 at 11:43:20PM +0000, David Howells wrote:
+> Currently, at the completion of a storage RPC from writepages, the errors
+> ENOSPC, EDQUOT, ENOKEY, EACCES, EPERM, EKEYREJECTED and EKEYREVOKED cause
+> the pages involved to be redirtied and the write to be retried by the VM at
+> a future time.
+> 
+> However, this is probably not the right thing to do, and, instead, the
+> writes should be discarded so that the system doesn't get blocked (though
+> unmounting will discard the uncommitted writes anyway).
 
-The definition of this variable is just to find the length of the
-structure after aligning the structure. The PTR alignment function
-is to optimize the size of the structure. In fact, it doesn't seem
-to be of much use, because both members of the structure are of
-type u32.
-So I think that the definition of the variable and the
-corresponding alignment can be deleted, the value of extralen can
-be directly passed in the size of the structure.
+umm.  I'm not sure that throwing away the write is the best answer
+for some of these errors.  Our whole story around error handling in
+filesystems, the page cache and the VFS is pretty sad, but I don't think
+that this is the right approach.
 
-The clang_analyzer complains as follows:
+Ideally, we'd hold onto the writes in the page cache until (eg for ENOSPC
+/ EDQUOT), the user has deleted some files, then retry the writes.
 
-net/ipv6/esp6.c:117:27 warning:
-
-Value stored to 'extra' during its initialization is never read
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
----
- net/ipv6/esp6.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/net/ipv6/esp6.c b/net/ipv6/esp6.c
-index ed2f061..c35c211 100644
---- a/net/ipv6/esp6.c
-+++ b/net/ipv6/esp6.c
-@@ -114,7 +114,6 @@ static inline struct scatterlist *esp_req_sg(struct crypto_aead *aead,
- 
- static void esp_ssg_unref(struct xfrm_state *x, void *tmp)
- {
--	struct esp_output_extra *extra = esp_tmp_extra(tmp);
- 	struct crypto_aead *aead = x->data;
- 	int extralen = 0;
- 	u8 *iv;
-@@ -122,7 +121,7 @@ static void esp_ssg_unref(struct xfrm_state *x, void *tmp)
- 	struct scatterlist *sg;
- 
- 	if (x->props.flags & XFRM_STATE_ESN)
--		extralen += sizeof(*extra);
-+		extralen += sizeof(struct esp_output_extra);
- 
- 	iv = esp_tmp_iv(aead, tmp, extralen);
- 	req = esp_tmp_req(aead, iv);
--- 
-2.15.2
-
-
+We should definitely stop the user dirtying more pages on this mount,
+or at least throttle processes which are dirtying new pages (eg in
+folio_mark_dirty()), which implies a check of the superblock.  Until the
+ENOSPC is cleared up, at which time writeback can resume ... of course,
+the server won't necessarily notify us when it is cleared up (because
+it might be due to a different client filling the storage), so we might
+need to peridically re-attempt writeback so that we know whether ENOSPC
+has been resolved.
