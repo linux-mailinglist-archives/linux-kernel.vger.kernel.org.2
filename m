@@ -2,92 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD774452F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B9F4452FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231584AbhKDM1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 08:27:31 -0400
-Received: from mail-wm1-f53.google.com ([209.85.128.53]:51797 "EHLO
-        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbhKDM12 (ORCPT
+        id S230494AbhKDM3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 08:29:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhKDM3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 08:27:28 -0400
-Received: by mail-wm1-f53.google.com with SMTP id z200so4375723wmc.1;
-        Thu, 04 Nov 2021 05:24:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UKlTQegofiRIXde3I+n3/kYwmsLXXUXy5fuu78XfdFI=;
-        b=pw+RBR7dYljLmulDrBk/DEJHf4AdkbLah5jQmYUUWlhUhRDk091nncQx7VLyBKx50W
-         OUd96pXohMjpFJ/5Lwgzkc6r79ZBUZRNrnD4Dh215eTaAUzzKGwqFDpFXUR3OBWxF436
-         hqTIXSCMW/kpdwFNGS7FfAjM48r4rVP8rn0tkE5/XqpDjOweHGlUPdz1Ter5lYE8yP2O
-         wN5kKSyg/0V8xE5dRoK/adgvQQpqlvREt4f0y6vnKO4gdD4eqJsgtoF1jNhyd94iPjjO
-         j7xGMwNc9RsV8evWIJ5RYOWMUmMyzphVJ3WttXSQAVQOHBSvjQl5q7kYWwgRH6HmftZO
-         uwyg==
-X-Gm-Message-State: AOAM531QDrV6a7u5mygTbrdTlEeYL3Szbw15IGAuFu6tGjZ3BWyync+c
-        eYrlIkjJya5tzLAugfb/Xh4=
-X-Google-Smtp-Source: ABdhPJytqW8mp8sofqo3RsrlVEU6eDTBNT7gv0jXtAPrvKOhdDG/CKvaQ/mGTzSRrbeQfSXnknRfBA==
-X-Received: by 2002:a1c:7201:: with SMTP id n1mr22946882wmc.176.1636028689497;
-        Thu, 04 Nov 2021 05:24:49 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id l2sm4632303wmq.42.2021.11.04.05.24.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 05:24:49 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 12:24:47 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Subject: Re: [PATCH 1/2] x86/hyperv: Fix NULL deref in set_hv_tscchange_cb()
- if Hyper-V setup fails
-Message-ID: <20211104122447.tfeyzlu5oyv6fzpc@liuwe-devbox-debian-v2>
-References: <20211028222148.2924457-1-seanjc@google.com>
- <20211028222148.2924457-2-seanjc@google.com>
- <87tuh0ry3w.fsf@vitty.brq.redhat.com>
- <20211102121731.rveppetxyzttd26c@liuwe-devbox-debian-v2>
- <YYFL3ZElxEBDMudH@google.com>
- <20211104121030.sfmmmum3ljant3wg@liuwe-devbox-debian-v2>
+        Thu, 4 Nov 2021 08:29:48 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2187AC061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 05:27:10 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 13:27:06 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636028827;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=M6NqONrvOq66l/QYoFSVwjLleMhO22wOW4bvAS2dEVY=;
+        b=NKcXU5k15e0NQfoYe+CBkb6tOMToV22terwbv/9kO1t2Hfha8/qkxJ/zExQbtnpZH6X93R
+        PzUnSXkvFDDG4FGUDum9qM+EwYxcn1y3mHBpsqzfo78UwuhOMQnzSWJnuN9ymEjyhPB0k3
+        AefuaLV6UO9aOVpis7RwqDu/UgVR67ETUdoRO0NhQxLoM6MVMWotVASNcy8fd7hzrzAM6R
+        +TrBo/IxiK/WebTFrVh66GvhN4Co2P/OZaJ84k0RJPH5itXdwBUKVoXqoS0OKpo3JoF47H
+        da8loeWJNeAPrCXC3Gz8VGEqqoKnHOQgG6VcKchkscWZWTFT5T9/8LN9iYE8RA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636028827;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=M6NqONrvOq66l/QYoFSVwjLleMhO22wOW4bvAS2dEVY=;
+        b=UyK9WVi/iF5JBJwpnzicusVrisGdl3Ncs9v/wBkhufwv8oLWvxDPOnxbS1NFB81TKyuj4q
+        TQLBdzJcUcjgwHAg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH] kernel/locking: Use a pointer in ww_mutex_trylock().
+Message-ID: <20211104122706.frk52zxbjorso2kv@linutronix.de>
+References: <20210907132044.157225-1-maarten.lankhorst@linux.intel.com>
+ <YTiM/zf8BuNw7wes@hirez.programming.kicks-ass.net>
+ <96ab9cf1-250a-8f34-51ec-4a7f66a87b39@linux.intel.com>
+ <YTnETRSy9H0CRdpc@hirez.programming.kicks-ass.net>
+ <a7e5d99d-39c4-6d27-3029-4689a2a1a17a@linux.intel.com>
+ <YTtznr85mg5xXouP@hirez.programming.kicks-ass.net>
+ <e8a7754e-23e7-0250-5718-101a56d008f0@linux.intel.com>
+ <YUBGPdDDjKlxAuXJ@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211104121030.sfmmmum3ljant3wg@liuwe-devbox-debian-v2>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YUBGPdDDjKlxAuXJ@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 12:10:30PM +0000, Wei Liu wrote:
-> On Tue, Nov 02, 2021 at 02:31:57PM +0000, Sean Christopherson wrote:
-> > On Tue, Nov 02, 2021, Wei Liu wrote:
-> > > On Fri, Oct 29, 2021 at 11:14:59AM +0200, Vitaly Kuznetsov wrote:
-> > > > Sean Christopherson <seanjc@google.com> writes:
-> > > > The patch looks good, however, it needs to be applied on top of the
-> > > > already merged:
-> > > > 
-> > > > https://lore.kernel.org/linux-hyperv/20211012155005.1613352-1-vkuznets@redhat.com/
-> > > 
-> > > Sean, are you going to rebase?
-> > 
-> > Yep, I'll rebase.
-> 
-> Thank you!
+mutex_acquire_nest() expects a pointer, pass the pointer.
 
-One further note: Vitaly's patch just hit mainline two days ago, but
-v5.16-rc1 is not tagged yet. Feel free to base you new patches on
-hyperv-next or linux-next. I will handle the rest.  Or you can wait
-until v5.16-rc1 is tagged and base your patches on that. Your call.
+Fixes: 12235da8c80a1 ("kernel/locking: Add context to ww_mutex_trylock()")
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
 
-Thanks,
-Wei.
+Not sure why I haven't seen this earlier=E2=80=A6
 
-> 
-> Wei.
+ kernel/locking/ww_rt_mutex.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/locking/ww_rt_mutex.c b/kernel/locking/ww_rt_mutex.c
+index 0e00205cf467a..d1473c624105c 100644
+--- a/kernel/locking/ww_rt_mutex.c
++++ b/kernel/locking/ww_rt_mutex.c
+@@ -26,7 +26,7 @@ int ww_mutex_trylock(struct ww_mutex *lock, struct ww_acq=
+uire_ctx *ww_ctx)
+=20
+ 	if (__rt_mutex_trylock(&rtm->rtmutex)) {
+ 		ww_mutex_set_context_fastpath(lock, ww_ctx);
+-		mutex_acquire_nest(&rtm->dep_map, 0, 1, ww_ctx->dep_map, _RET_IP_);
++		mutex_acquire_nest(&rtm->dep_map, 0, 1, &ww_ctx->dep_map, _RET_IP_);
+ 		return 1;
+ 	}
+=20
+--=20
+2.33.1
+
