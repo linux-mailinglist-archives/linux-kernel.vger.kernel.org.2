@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A465F445149
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 10:44:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFECF44514E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 10:45:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhKDJqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 05:46:44 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:49287 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230467AbhKDJqm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 05:46:42 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id 9342F2B011C7;
-        Thu,  4 Nov 2021 05:44:03 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 04 Nov 2021 05:44:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-type:content-transfer-encoding; s=fm1; bh=
-        q/9iXf3ciu+VeUFm5cUHAnh7DoJwxpfRzI/3c5qqS9g=; b=fF6Blyy7r8z2gmts
-        wETVIusgFJ5tynfFW9BwteYSb8L1vHxtQRm06Srd7RzmZCfmNQBZarvy+mWjjZnt
-        NzlweCx/25Sl5BNFWEAaKew93/f7nOIUsbwnG6OZVjOJmHYbVoOzHN0vdbWh0/HZ
-        BdsZ4G5VN5G+WAy3a8ChXximTZKTXGqtFh82XeEqcRqLVr+MhC5ykMopfzXCdh/2
-        FEOx3m+85uiU56HHGmigxh30MwM7EOSterGs4H8QVDDOpQ1hkzcTkfV1zidYNTnn
-        2VnlMz4xmFnZkodkHm7XFTdng8RCX2dYuA/dnTTAlY0ZamtiEAUSw0eF/yRUfi6S
-        qLII5w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=q/9iXf3ciu+VeUFm5cUHAnh7DoJwxpfRzI/3c5qqS
-        9g=; b=SXy3HQ1Ez+8mHUVQSyregBXb9+wzJqMTGoKZUEujweJAtUqAR2z8HRQd/
-        l1HdH3ZJVSoNpF1cLyQFf8GhU0oWCCHUJwxOY2wvogjp3rEMoJjMsQAWYduhxWkz
-        5vdvYOQ1GNvCtQyrGxZVCckGClcaNQVoVaewIgz0b0QnqCW2X7hQYvLUNo6cObvQ
-        orHvqXUsvRrT69XMs0h74PcFFFS0MewjVqUxQwJFVltOgDXP0BwK0G4c0un23zGN
-        PXnPFEh3sAwy/VFpeL0EgAP3D+2H37KTw01HzYMg4k+AuFFQvnRiNS+EwULPAd0O
-        vdsAS9wB7Fzu330f2o7iGjEyLKrLA==
-X-ME-Sender: <xms:YquDYZ1jf2pFF0SHV8Tnbbhlju5hY5cIpmtaQtwl93V0JIQCQN_Mfw>
-    <xme:YquDYQGUbg6lgL_ABvXigY78DgtlUjxzNFTbxlqXM0GyVfS_cfnfiaYX6xgMjo6w_
-    J60ZntZ_Mu3U6fD46Q>
-X-ME-Received: <xmr:YquDYZ5CWsT5wmE8iYr05LfSdpvbMvZuDYXJZtnzZpg8dxVK1-52DjvEmpwAS0J2HbDyzj9o972tHQ6a-EgmPwT0F2GPCadWWaRbgKI_>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrtdeggddtfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhggtgfgsehtkeertdertdejnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepjeeugfegkeffgfeuvedtvddufffhjeffjeejvddvudduteehhfefhfefgeei
-    keeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:YquDYW2902SOQjwRWGRtyVfyWGuNrEYVAPYxGF5Npn7vvxci3owYsA>
-    <xmx:YquDYcFZF43BKffCCr1YxbcXw_m17FnwBgAy6IJ3gDEqw6ZiUVeBxw>
-    <xmx:YquDYX85Z6rh-Q8GFC8wtfzUQG5rVFS-83e6ReDkOAxGXRY0KzlSng>
-    <xmx:Y6uDYZe3fzVtDEY7F2BDhAfj_x7DWR_vC1naAg8M-aYYTSHM--z-dFYHmdw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 4 Nov 2021 05:44:02 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Cc:     Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Dom Cobley <dom@raspberrypi.com>, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Phil Elwell <phil@raspberrypi.com>,
-        Emma Anholt <emma@anholt.net>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Tim Gover <tim.gover@raspberrypi.com>
-Subject: Re: [PATCH v8 00/10] drm/vc4: hdmi: Support the 4k @ 60Hz modes
-Date:   Thu,  4 Nov 2021 10:43:58 +0100
-Message-Id: <163601902673.143658.11078290700352959058.b4-ty@cerno.tech>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025152903.1088803-1-maxime@cerno.tech>
-References: <20211025152903.1088803-1-maxime@cerno.tech>
+        id S231283AbhKDJrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 05:47:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:45546 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231215AbhKDJrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 05:47:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DDD441063;
+        Thu,  4 Nov 2021 02:45:02 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 452CC3F719;
+        Thu,  4 Nov 2021 02:45:00 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 09:44:53 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Youngmin Nam <youngmin.nam@samsung.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        will@kernel.org, daniel.lezcano@linaro.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, pullip.cho@samsung.com,
+        hoony.yu@samsung.com, hajun.sung@samsung.com,
+        myung-su.cha@samsung.com, kgene@kernel.org
+Subject: Re: [PATCH v2 1/2] clocksource/drivers/exynos_mct_v2: introduce
+ Exynos MCT version 2 driver for next Exynos SoC
+Message-ID: <20211104094453.GA58798@C02TD0UTHF1T.local>
+References: <CGME20211101234500epcas2p2d0e5bc54615b635f6694bc1be4c89fb5@epcas2p2.samsung.com>
+ <20211102001122.27516-2-youngmin.nam@samsung.com>
+ <20211102102802.GA16545@C02TD0UTHF1T.local>
+ <20211103000945.GA48132@perf>
+ <83f6574b-bbab-f0c3-7198-f773c3dcfc63@canonical.com>
+ <20211103092444.GA7013@perf>
+ <f7871718-f244-8a9e-9302-c27bdb2d3cc1@canonical.com>
+ <20211103095727.GA19093@perf>
+ <20211103100407.GA35817@C02TD0UTHF1T.local>
+ <20211104002102.GA29618@perf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211104002102.GA29618@perf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Oct 2021 17:28:53 +0200, Maxime Ripard wrote:
-> Here is a series that enables the higher resolutions on the HDMI0 Controller
-> found in the BCM2711 (RPi4).
-> 
-> In order to work it needs a few adjustments to config.txt, most notably to
-> enable the enable_hdmi_4kp60 option.
-> 
-> Let me know what you think,
-> Maxime
-> 
-> [...]
+Hi,
 
-Applied to drm/drm-misc (drm-misc-next).
+On Thu, Nov 04, 2021 at 09:21:02AM +0900, Youngmin Nam wrote:
+> On Wed, Nov 03, 2021 at 10:04:18AM +0000, Mark Rutland wrote:
+> > On Wed, Nov 03, 2021 at 06:57:28PM +0900, Youngmin Nam wrote:
+> > > On Wed, Nov 03, 2021 at 10:04:36AM +0100, Krzysztof Kozlowski wrote:
+> > > > On 03/11/2021 10:24, Youngmin Nam wrote:
+> > > > > On Wed, Nov 03, 2021 at 09:18:07AM +0100, Krzysztof Kozlowski wrote:
+> > > > >> On 03/11/2021 01:09, Youngmin Nam wrote:
+> > > > >>> On Tue, Nov 02, 2021 at 10:28:10AM +0000, Mark Rutland wrote:
 
-Thanks!
-Maxime
+> > > > >>>> Previously Will asked you to try CLOCK_EVT_FEAT_PERCPU here, and to set
+> > > > >>>> the C3STOP flag on the arch timer via the DT when necessary, rather than
+> > > > >>>> trying to override the arch timer like this:
+
+> > > > >>> Yes, I believe Will's suggestion definitely will work.
+
+> > > So, how about we control timer rating value with DT ?
+> > > Of course the default rating value should be lower than arm arch timer's.
+> > > Do you agree with this?
+> > 
+> > No; placing a rating value in the DT is a hack. That should *not* live
+> > in the DT because it's linux-internal detail and not a description of
+> > the HW.
+> 
+> So, how do we use MCTv2 only for clock event device if there are some
+> limitations caused by SoC design implemention ?
+
+What limitations? Are you thinking of a known issue, or just in case
+there is a bug in future HW?
+
+If there is a problem, we'll need to describe that in the DT somehow,
+and we need to know speciifcally what that limitation is.
+
+Above you said that Will's suggestion will definitely work, which
+implies no such limitations.
+
+Thanks,
+Mark.
