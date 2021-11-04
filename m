@@ -2,181 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF32444E9F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:07:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F1A444EA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbhKDGJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:09:46 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:25358 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhKDGJp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:09:45 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HlChm6lMnzbhch;
-        Thu,  4 Nov 2021 14:02:16 +0800 (CST)
-Received: from dggpeml100010.china.huawei.com (7.185.36.14) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 4 Nov 2021 14:07:02 +0800
-Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
- dggpeml100010.china.huawei.com (7.185.36.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 4 Nov 2021 14:07:01 +0800
-Received: from dggpeml500011.china.huawei.com ([7.185.36.84]) by
- dggpeml500011.china.huawei.com ([7.185.36.84]) with mapi id 15.01.2308.015;
- Thu, 4 Nov 2021 14:07:01 +0800
-From:   "zhudi (E)" <zhudi2@huawei.com>
-To:     Yonghong Song <yhs@fb.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "jakub@cloudflare.com" <jakub@cloudflare.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v5 1/2] bpf: support BPF_PROG_QUERY for progs
- attached to sockmap
-Thread-Topic: [PATCH bpf-next v5 1/2] bpf: support BPF_PROG_QUERY for progs
- attached to sockmap
-Thread-Index: AdfRQDlTuQNdKdpDRlSX5CRlTm0Axg==
-Date:   Thu, 4 Nov 2021 06:07:01 +0000
-Message-ID: <a65e2f2b9aa441518000b4741bc29a90@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.136.114.155]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S230261AbhKDGKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:10:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229912AbhKDGKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 02:10:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7521610FC;
+        Thu,  4 Nov 2021 06:08:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636006087;
+        bh=u78YSZDJYfigsy7GL5G4yNXKMBMaWKzma9S8XVynMwU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IfwmvxhgW5ygKsNG9ghm67gSI+9in4oE7VZi3M9NdBRTc7q7OKEc/v9JxqqreH519
+         2FgObB627O+Vd4jwdfJjO+vKq6HIQ1097QFpWEgz7T3mJtq1yn/zcLC5L3r7oFb0uY
+         i0K9/lkCxsDNYzEy/5aKapx0UOzDqPa2MKAwCWPKaupiAxQzmJVXPaGAe0fl/HATd6
+         XTeA4CgrxElzaF7mL/u2mVC3dk8EwlFUf1IvUrIxBoD8M9b81zZU21V2OdgCHVricw
+         DQwL36KZEUr2jTz3eD2ZHvydn6x7uzu633WI34AZjYV38KfCuGkm5syr1MYN23ozmH
+         h8vxWyWrUh1hg==
+Received: by mail-ed1-f52.google.com with SMTP id f8so17633091edy.4;
+        Wed, 03 Nov 2021 23:08:07 -0700 (PDT)
+X-Gm-Message-State: AOAM532I4UpweDp5D1l87q2x5FY6F25ofghiOrm355o9QLPvC3l89Bhk
+        Irtm4xwvx8uG3n6mMcoW1tGyuoJPUkyd/LG1ryg=
+X-Google-Smtp-Source: ABdhPJyBVxTLTZ4b6DuU6NgWddxlcUlTiORn1PjxDqGqHxAT4Fs7BTZ9YjXfyqWgfOtH18SsScYUNl5vcRMqFHPTJCI=
+X-Received: by 2002:a50:bf48:: with SMTP id g8mr67634296edk.10.1636006086162;
+ Wed, 03 Nov 2021 23:08:06 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20211104014039.26772-1-zhiyong.tao@mediatek.com> <20211104014039.26772-2-zhiyong.tao@mediatek.com>
+In-Reply-To: <20211104014039.26772-2-zhiyong.tao@mediatek.com>
+From:   Sean Wang <sean.wang@kernel.org>
+Date:   Wed, 3 Nov 2021 23:07:55 -0700
+X-Gmail-Original-Message-ID: <CAGp9LzpEG_6w6fvmjaBAW3ihKQZm4uMEy9-5MaLLWkeu+QFqeQ@mail.gmail.com>
+Message-ID: <CAGp9LzpEG_6w6fvmjaBAW3ihKQZm4uMEy9-5MaLLWkeu+QFqeQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: mediatek: fix global-out-of-bounds issue
+To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Light Hsieh <light.hsieh@mediatek.com>,
+        =?UTF-8?B?U2VhbiBXYW5nICjnjovlv5fkupgp?= <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>, rex-bc.chen@mediatek.com,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Guodong Liu <guodong.liu@mediatek.corp-partner.google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ID4gT24gMTEvMy8yMSA2OjA3IFBNLCBEaSBaaHUgd3JvdGU6DQo+ID4gUmlnaHQgbm93IHRoZXJl
-IGlzIG5vIHdheSB0byBxdWVyeSB3aGV0aGVyIEJQRiBwcm9ncmFtcyBhcmUNCj4gPiBhdHRhY2hl
-ZCB0byBhIHNvY2ttYXAgb3Igbm90Lg0KPiA+DQo+ID4gd2UgY2FuIHVzZSB0aGUgc3RhbmRhcmQg
-aW50ZXJmYWNlIGluIGxpYmJwZiB0byBxdWVyeSwgc3VjaCBhczoNCj4gPiBicGZfcHJvZ19xdWVy
-eShtYXBGZCwgQlBGX1NLX1NLQl9TVFJFQU1fUEFSU0VSLCAwLCBOVUxMLCAuLi4pOw0KPiA+IHRo
-ZSBtYXBGZCBpcyB0aGUgZmQgb2Ygc29ja21hcC4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IERp
-IFpodSA8emh1ZGkyQGh1YXdlaS5jb20+DQo+ID4gLS0tDQo+ID4gLyogdjIgKi8NCj4gPiAtIEpv
-aG4gRmFzdGFiZW5kIDxqb2huLmZhc3RhYmVuZEBnbWFpbC5jb20+DQo+ID4gICAgLSBhZGQgc2Vs
-ZnRlc3QgY29kZQ0KPiA+DQo+ID4gLyogdjMgKi8NCj4gPiAgIC0gYXZvaWQgc2xlZXBpbmcgY2F1
-c2VkIGJ5IGNvcHlfdG9fdXNlcigpIGluIHJjdSBjcml0aWNhbCB6b25lDQo+ID4NCj4gPiAvKiB2
-NCAqLw0KPiA+ICAgLSBBbGV4ZWkgU3Rhcm92b2l0b3YgPGFsZXhlaS5zdGFyb3ZvaXRvdkBnbWFp
-bC5jb20+DQo+ID4gICAgLXNwbGl0IGludG8gdHdvIHBhdGNoZXMsIG9uZSBmb3IgY29yZSBjb2Rl
-IGFuZCBvbmUgZm9yIHNlbGZ0ZXN0Lg0KPiA+DQo+ID4gLyogdjUgKi8NCj4gPiAgIC0gWW9uZ2hv
-bmcgU29uZyA8eWhzQGZiLmNvbT4NCj4gPiAgICAtU29tZSBuYW1pbmcgYW5kIGZvcm1hdHRpbmcg
-Y2hhbmdlcw0KPiA+IC0tLQ0KPiA+ICAgaW5jbHVkZS9saW51eC9icGYuaCAgfCAgOSArKysrKysN
-Cj4gPiAgIGtlcm5lbC9icGYvc3lzY2FsbC5jIHwgIDUgKysrDQo+ID4gICBuZXQvY29yZS9zb2Nr
-X21hcC5jICB8IDc0DQo+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0t
-LS0tDQo+ID4gICAzIGZpbGVzIGNoYW5nZWQsIDgxIGluc2VydGlvbnMoKyksIDcgZGVsZXRpb25z
-KC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9icGYuaCBiL2luY2x1ZGUv
-bGludXgvYnBmLmgNCj4gPiBpbmRleCBkNjA0YzgyNTFkODguLjIzNWVhN2ZjNWZkOCAxMDA2NDQN
-Cj4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L2JwZi5oDQo+ID4gKysrIGIvaW5jbHVkZS9saW51eC9i
-cGYuaA0KPiA+IEBAIC0xOTYxLDYgKzE5NjEsOSBAQCBpbnQgYnBmX3Byb2dfdGVzdF9ydW5fc3lz
-Y2FsbChzdHJ1Y3QgYnBmX3Byb2cNCj4gKnByb2csDQo+ID4gICBpbnQgc29ja19tYXBfZ2V0X2Zy
-b21fZmQoY29uc3QgdW5pb24gYnBmX2F0dHIgKmF0dHIsIHN0cnVjdCBicGZfcHJvZw0KPiAqcHJv
-Zyk7DQo+ID4gICBpbnQgc29ja19tYXBfcHJvZ19kZXRhY2goY29uc3QgdW5pb24gYnBmX2F0dHIg
-KmF0dHIsIGVudW0gYnBmX3Byb2dfdHlwZQ0KPiBwdHlwZSk7DQo+ID4gICBpbnQgc29ja19tYXBf
-dXBkYXRlX2VsZW1fc3lzKHN0cnVjdCBicGZfbWFwICptYXAsIHZvaWQgKmtleSwgdm9pZA0KPiAq
-dmFsdWUsIHU2NCBmbGFncyk7DQo+ID4gK2ludCBzb2NrX21hcF9icGZfcHJvZ19xdWVyeShjb25z
-dCB1bmlvbiBicGZfYXR0ciAqYXR0ciwNCj4gPiArCQkJICAgIHVuaW9uIGJwZl9hdHRyIF9fdXNl
-ciAqdWF0dHIpOw0KPiA+ICsNCj4gPiAgIHZvaWQgc29ja19tYXBfdW5oYXNoKHN0cnVjdCBzb2Nr
-ICpzayk7DQo+ID4gICB2b2lkIHNvY2tfbWFwX2Nsb3NlKHN0cnVjdCBzb2NrICpzaywgbG9uZyB0
-aW1lb3V0KTsNCj4gPiAgICNlbHNlDQo+ID4gQEAgLTIwMTQsNiArMjAxNywxMiBAQCBzdGF0aWMg
-aW5saW5lIGludCBzb2NrX21hcF91cGRhdGVfZWxlbV9zeXMoc3RydWN0DQo+IGJwZl9tYXAgKm1h
-cCwgdm9pZCAqa2V5LCB2b2lkDQo+ID4gICB7DQo+ID4gICAJcmV0dXJuIC1FT1BOT1RTVVBQOw0K
-PiA+ICAgfQ0KPiA+ICsNCj4gPiArc3RhdGljIGlubGluZSBpbnQgc29ja19tYXBfYnBmX3Byb2df
-cXVlcnkoY29uc3QgdW5pb24gYnBmX2F0dHIgKmF0dHIsDQo+ID4gKwkJCQkJICB1bmlvbiBicGZf
-YXR0ciBfX3VzZXIgKnVhdHRyKQ0KPiA+ICt7DQo+ID4gKwlyZXR1cm4gLUVJTlZBTDsNCj4gPiAr
-fQ0KPiA+ICAgI2VuZGlmIC8qIENPTkZJR19CUEZfU1lTQ0FMTCAqLw0KPiA+ICAgI2VuZGlmIC8q
-IENPTkZJR19ORVQgJiYgQ09ORklHX0JQRl9TWVNDQUxMICovDQo+ID4NCj4gPiBkaWZmIC0tZ2l0
-IGEva2VybmVsL2JwZi9zeXNjYWxsLmMgYi9rZXJuZWwvYnBmL3N5c2NhbGwuYw0KPiA+IGluZGV4
-IDRlNTBjMGJmZGI3ZC4uNzQ4MTAyYzNlMGM5IDEwMDY0NA0KPiA+IC0tLSBhL2tlcm5lbC9icGYv
-c3lzY2FsbC5jDQo+ID4gKysrIGIva2VybmVsL2JwZi9zeXNjYWxsLmMNCj4gPiBAQCAtMzI3NSw2
-ICszMjc1LDExIEBAIHN0YXRpYyBpbnQgYnBmX3Byb2dfcXVlcnkoY29uc3QgdW5pb24gYnBmX2F0
-dHINCj4gKmF0dHIsDQo+ID4gICAJY2FzZSBCUEZfRkxPV19ESVNTRUNUT1I6DQo+ID4gICAJY2Fz
-ZSBCUEZfU0tfTE9PS1VQOg0KPiA+ICAgCQlyZXR1cm4gbmV0bnNfYnBmX3Byb2dfcXVlcnkoYXR0
-ciwgdWF0dHIpOw0KPiA+ICsJY2FzZSBCUEZfU0tfU0tCX1NUUkVBTV9QQVJTRVI6DQo+ID4gKwlj
-YXNlIEJQRl9TS19TS0JfU1RSRUFNX1ZFUkRJQ1Q6DQo+ID4gKwljYXNlIEJQRl9TS19NU0dfVkVS
-RElDVDoNCj4gPiArCWNhc2UgQlBGX1NLX1NLQl9WRVJESUNUOg0KPiA+ICsJCXJldHVybiBzb2Nr
-X21hcF9icGZfcHJvZ19xdWVyeShhdHRyLCB1YXR0cik7DQo+ID4gICAJZGVmYXVsdDoNCj4gPiAg
-IAkJcmV0dXJuIC1FSU5WQUw7DQo+ID4gICAJfQ0KPiA+IGRpZmYgLS1naXQgYS9uZXQvY29yZS9z
-b2NrX21hcC5jIGIvbmV0L2NvcmUvc29ja19tYXAuYw0KPiA+IGluZGV4IGUyNTJiOGVjMmI4NS4u
-MDMyMGQyNzU1MGZlIDEwMDY0NA0KPiA+IC0tLSBhL25ldC9jb3JlL3NvY2tfbWFwLmMNCj4gPiAr
-KysgYi9uZXQvY29yZS9zb2NrX21hcC5jDQo+ID4gQEAgLTE0MTIsMzggKzE0MTIsNTAgQEAgc3Rh
-dGljIHN0cnVjdCBza19wc29ja19wcm9ncw0KPiAqc29ja19tYXBfcHJvZ3Moc3RydWN0IGJwZl9t
-YXAgKm1hcCkNCj4gPiAgIAlyZXR1cm4gTlVMTDsNCj4gPiAgIH0NCj4gPg0KPiA+IC1zdGF0aWMg
-aW50IHNvY2tfbWFwX3Byb2dfdXBkYXRlKHN0cnVjdCBicGZfbWFwICptYXAsIHN0cnVjdCBicGZf
-cHJvZw0KPiAqcHJvZywNCj4gPiAtCQkJCXN0cnVjdCBicGZfcHJvZyAqb2xkLCB1MzIgd2hpY2gp
-DQo+ID4gK3N0YXRpYyBpbnQgc29ja19tYXBfcHJvZ19sb29rdXAoc3RydWN0IGJwZl9tYXAgKm1h
-cCwgc3RydWN0IGJwZl9wcm9nDQo+ICoqKnBwcm9nLA0KPiA+ICsJCQkJdTMyIHdoaWNoKQ0KPiA+
-ICAgew0KPiA+ICAgCXN0cnVjdCBza19wc29ja19wcm9ncyAqcHJvZ3MgPSBzb2NrX21hcF9wcm9n
-cyhtYXApOw0KPiA+IC0Jc3RydWN0IGJwZl9wcm9nICoqcHByb2c7DQo+ID4NCj4gPiAgIAlpZiAo
-IXByb2dzKQ0KPiA+ICAgCQlyZXR1cm4gLUVPUE5PVFNVUFA7DQo+ID4NCj4gPiAgIAlzd2l0Y2gg
-KHdoaWNoKSB7DQo+ID4gICAJY2FzZSBCUEZfU0tfTVNHX1ZFUkRJQ1Q6DQo+ID4gLQkJcHByb2cg
-PSAmcHJvZ3MtPm1zZ19wYXJzZXI7DQo+ID4gKwkJKnBwcm9nID0gJnByb2dzLT5tc2dfcGFyc2Vy
-Ow0KPiA+ICAgCQlicmVhazsNCj4gPiAgICNpZiBJU19FTkFCTEVEKENPTkZJR19CUEZfU1RSRUFN
-X1BBUlNFUikNCj4gPiAgIAljYXNlIEJQRl9TS19TS0JfU1RSRUFNX1BBUlNFUjoNCj4gPiAtCQlw
-cHJvZyA9ICZwcm9ncy0+c3RyZWFtX3BhcnNlcjsNCj4gPiArCQkqcHByb2cgPSAmcHJvZ3MtPnN0
-cmVhbV9wYXJzZXI7DQo+ID4gICAJCWJyZWFrOw0KPiA+ICAgI2VuZGlmDQo+ID4gICAJY2FzZSBC
-UEZfU0tfU0tCX1NUUkVBTV9WRVJESUNUOg0KPiA+ICAgCQlpZiAocHJvZ3MtPnNrYl92ZXJkaWN0
-KQ0KPiA+ICAgCQkJcmV0dXJuIC1FQlVTWTsNCj4gPiAtCQlwcHJvZyA9ICZwcm9ncy0+c3RyZWFt
-X3ZlcmRpY3Q7DQo+ID4gKwkJKnBwcm9nID0gJnByb2dzLT5zdHJlYW1fdmVyZGljdDsNCj4gPiAg
-IAkJYnJlYWs7DQo+ID4gICAJY2FzZSBCUEZfU0tfU0tCX1ZFUkRJQ1Q6DQo+ID4gICAJCWlmIChw
-cm9ncy0+c3RyZWFtX3ZlcmRpY3QpDQo+ID4gICAJCQlyZXR1cm4gLUVCVVNZOw0KPiA+IC0JCXBw
-cm9nID0gJnByb2dzLT5za2JfdmVyZGljdDsNCj4gPiArCQkqcHByb2cgPSAmcHJvZ3MtPnNrYl92
-ZXJkaWN0Ow0KPiA+ICAgCQlicmVhazsNCj4gPiAgIAlkZWZhdWx0Og0KPiA+ICAgCQlyZXR1cm4g
-LUVPUE5PVFNVUFA7DQo+ID4gICAJfQ0KPiA+DQo+ID4gKwlyZXR1cm4gMDsNCj4gPiArfQ0KPiA+
-ICsNCj4gPiArc3RhdGljIGludCBzb2NrX21hcF9wcm9nX3VwZGF0ZShzdHJ1Y3QgYnBmX21hcCAq
-bWFwLCBzdHJ1Y3QgYnBmX3Byb2cNCj4gKnByb2csDQo+ID4gKwkJCQlzdHJ1Y3QgYnBmX3Byb2cg
-Km9sZCwgdTMyIHdoaWNoKQ0KPiA+ICt7DQo+ID4gKwlzdHJ1Y3QgYnBmX3Byb2cgKipwcHJvZzsN
-Cj4gPiArCWludCByZXQ7DQo+ID4gKw0KPiA+ICsJcmV0ID0gc29ja19tYXBfcHJvZ19sb29rdXAo
-bWFwLCAmcHByb2csIHdoaWNoKTsNCj4gPiArCWlmIChyZXQpDQo+ID4gKwkJcmV0dXJuIHJldDsN
-Cj4gPiArDQo+ID4gICAJaWYgKG9sZCkNCj4gPiAgIAkJcmV0dXJuIHBzb2NrX3JlcGxhY2VfcHJv
-ZyhwcHJvZywgcHJvZywgb2xkKTsNCj4gPg0KPiA+IEBAIC0xNDUxLDYgKzE0NjMsNTQgQEAgc3Rh
-dGljIGludCBzb2NrX21hcF9wcm9nX3VwZGF0ZShzdHJ1Y3QgYnBmX21hcA0KPiAqbWFwLCBzdHJ1
-Y3QgYnBmX3Byb2cgKnByb2csDQo+ID4gICAJcmV0dXJuIDA7DQo+ID4gICB9DQo+ID4NCj4gPiAr
-aW50IHNvY2tfbWFwX2JwZl9wcm9nX3F1ZXJ5KGNvbnN0IHVuaW9uIGJwZl9hdHRyICphdHRyLA0K
-PiA+ICsJCQkgICAgdW5pb24gYnBmX2F0dHIgX191c2VyICp1YXR0cikNCj4gPiArew0KPiA+ICsJ
-X191MzIgX191c2VyICpwcm9nX2lkcyA9IHU2NF90b191c2VyX3B0cihhdHRyLT5xdWVyeS5wcm9n
-X2lkcyk7DQo+ID4gKwl1MzIgcHJvZ19jbnQgPSAwLCBmbGFncyA9IDAsIHVmZCA9IGF0dHItPnRh
-cmdldF9mZDsNCj4gPiArCXN0cnVjdCBicGZfcHJvZyAqKnBwcm9nOw0KPiA+ICsJc3RydWN0IGJw
-Zl9wcm9nICpwcm9nOw0KPiA+ICsJc3RydWN0IGJwZl9tYXAgKm1hcDsNCj4gPiArCXN0cnVjdCBm
-ZCBmOw0KPiA+ICsJdTMyIGlkID0gMDsNCj4gDQo+IFRoZXJlIGlzIG5vIG5lZWQgdG8gaW5pdGlh
-bGl6ZSAnaWQgPSAwJy4gaWQgd2lsbCBiZSBhc3NpZ25lZCBsYXRlci4NCg0KDQppZiAoIWF0dHIt
-PnF1ZXJ5LnByb2dfY250IHx8ICFwcm9nX2lkcyB8fCAhcHJvZ19jbnQpIGlzIG1ldCwgdGhlIGlk
-IHdpbGwgbm90IGJlIGFzc2lnbmVkIGxhdGVyLg0KQXQgdGhlIGVuZCBvZiB0aGUgZnVuY3Rpb24s
-IHdlIGp1ZGdlIHdoZXRoZXIgdG8gY29weSB0aGUgcHJvZ3JhbSBJRCBieSB0aGUgdmFsdWUgb2Yg
-dGhlIGlkLiANCg0KDQo+IA0KPiA+ICsJaW50IHJldDsNCj4gPiArDQo+ID4gKwlpZiAoYXR0ci0+
-cXVlcnkucXVlcnlfZmxhZ3MpDQo+ID4gKwkJcmV0dXJuIC1FSU5WQUw7DQo+ID4gKw0KPiA+ICsJ
-ZiA9IGZkZ2V0KHVmZCk7DQo+ID4gKwltYXAgPSBfX2JwZl9tYXBfZ2V0KGYpOw0KPiA+ICsJaWYg
-KElTX0VSUihtYXApKQ0KPiA+ICsJCXJldHVybiBQVFJfRVJSKG1hcCk7DQo+ID4gKw0KPiA+ICsJ
-cmN1X3JlYWRfbG9jaygpOw0KPiA+ICsNCj4gPiArCXJldCA9IHNvY2tfbWFwX3Byb2dfbG9va3Vw
-KG1hcCwgJnBwcm9nLCBhdHRyLT5xdWVyeS5hdHRhY2hfdHlwZSk7DQo+ID4gKwlpZiAocmV0KQ0K
-PiA+ICsJCWdvdG8gZW5kOw0KPiA+ICsNCj4gPiArCXByb2cgPSAqcHByb2c7DQo+ID4gKwlwcm9n
-X2NudCA9ICghcHJvZykgPyAwIDogMTsNCj4gDQo+ICghcHJvZykgPT4gIXByb2cgPw0KDQpZZXMs
-IEl0J3MganVzdCBteSBoYWJpdA0KDQo+IA0KPiA+ICsNCj4gPiArCWlmICghYXR0ci0+cXVlcnku
-cHJvZ19jbnQgfHwgIXByb2dfaWRzIHx8ICFwcm9nX2NudCkNCj4gPiArCQlnb3RvIGVuZDsNCj4g
-PiArDQo+ID4gKwlpZCA9IHByb2ctPmF1eC0+aWQ7DQo+ID4gKwlpZiAoaWQgPT0gMCkNCj4gPiAr
-CQlwcm9nX2NudCA9IDA7DQo+IA0KPiANCj4gaWQgd2lsbCBuZXZlciBiZSAwLCBzZWUgZnVuY3Rp
-b24gYnBmX3Byb2dfYWxsb2NfaWQoKSBpcyBzeXNjYWxsLmMuDQo+IFNvICdpZiAoaWQgPT0gMCkn
-IGNoZWNrIGlzIG5vdCBuZWVkZWQuDQoNCg0KQmVjYXVzZSB3ZSBkbyBub3QgaG9sZCB0aGUgcmVm
-ZXJlbmNlIGNvdW50LCB0aGUgcHJvZ3JhbSBtYXkgYmUgcmVsZWFzZWQgc3luY2hyb25vdXNseSAN
-CmFuZCBpdHMgSUQgd2lsbCBiZSBzZXQgdG8gMCBpbiBicGZfcHJvZ19mcmVlX2lkKCkuDQoNCklz
-IHRoYXQgcmlnaHQ/DQoNCg0KPiANCj4gPiArDQo+ID4gK2VuZDoNCj4gPiArCXJjdV9yZWFkX3Vu
-bG9jaygpOw0KPiA+ICsNCj4gPiArCWlmIChjb3B5X3RvX3VzZXIoJnVhdHRyLT5xdWVyeS5hdHRh
-Y2hfZmxhZ3MsICZmbGFncywgc2l6ZW9mKGZsYWdzKSkgfHwNCj4gPiArCSAgICAoaWQgIT0gMCAm
-JiBjb3B5X3RvX3VzZXIocHJvZ19pZHMsICZpZCwgc2l6ZW9mKHUzMikpKSB8fA0KPiA+ICsJICAg
-IGNvcHlfdG9fdXNlcigmdWF0dHItPnF1ZXJ5LnByb2dfY250LCAmcHJvZ19jbnQsIHNpemVvZihw
-cm9nX2NudCkpKQ0KPiA+ICsJCXJldCA9IC1FRkFVTFQ7DQo+ID4gKw0KPiA+ICsJZmRwdXQoZik7
-DQo+ID4gKwlyZXR1cm4gcmV0Ow0KPiA+ICt9DQo+ID4gKw0KPiA+ICAgc3RhdGljIHZvaWQgc29j
-a19tYXBfdW5saW5rKHN0cnVjdCBzb2NrICpzaywgc3RydWN0IHNrX3Bzb2NrX2xpbmsgKmxpbmsp
-DQo+ID4gICB7DQo+ID4gICAJc3dpdGNoIChsaW5rLT5tYXAtPm1hcF90eXBlKSB7DQo+ID4NCg==
+HI, Zhiyong
+
+On Wed, Nov 3, 2021 at 6:40 PM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
+>
+> From: Guodong Liu <guodong.liu@mediatek.corp-partner.google.com>
+>
+> When eint virtual eint number is greater than gpio number,
+> it maybe produce 'desc[eint_n]' size globle-out-of-bounds issue.
+>
+> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+> Signed-off-by: Guodong Liu <guodong.liu@mediatek.corp-partner.google.com>
+> ---
+>  drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> index 45ebdeba985a..9d57c897835c 100644
+> --- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> +++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> @@ -286,7 +286,8 @@ static int mtk_xt_get_gpio_n(void *data, unsigned long eint_n,
+>         *gpio_chip = &hw->chip;
+>
+>         /* Be greedy to guess first gpio_n is equal to eint_n */
+> -       if (desc[eint_n].eint.eint_n == eint_n)
+> +       if (((*gpio_chip)->ngpio > eint_n) &&
+
+please use "hw->soc->npins > eint_n" to perform the boundary check to
+be consistent with the other places for the same purpose
+
+> +           desc[eint_n].eint.eint_n == eint_n)
+>                 *gpio_n = eint_n;
+>         else
+>                 *gpio_n = mtk_xt_find_eint_num(hw, eint_n);
+> --
+> 2.25.1
+>
