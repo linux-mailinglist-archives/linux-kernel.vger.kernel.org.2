@@ -2,83 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3938A4457D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5211A4457BE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbhKDREH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:04:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231934AbhKDRDq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:03:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F2BC06120C
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 10:01:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=kVMOqUFd8zhddZKtKxfw+bZhetOcDaUD8823IFBPVTs=; b=Y+n7C3swOWYzDGRMlyLnkCLnnY
-        W1Ys4LTqEmDJ9IriKXTJOKM9BeeShdx4QBBC33UAw54DW4gqw4dLIqdESr0S+yfFh5nd/F+0k6YIJ
-        IekRsC8Pcxh5+Sw9PM6hkWnBswHAzrNS/qZlkP4b6MxuZbg3aA0I/eh4pgvgLJ6FxP6nTh1rhr+Qc
-        s5wGjJurIcH4cRAq4NvmsDWBFcQBxKoVoSxEyVSJhKhDZ1kxQvqS9FCVc3icLEhEXJGJurQ7diUm/
-        oEIRqutC5ZXzd8aWA2B7mOrOpwwJ1LsEur/On8GSh+lfF1LzNe5wDx2nr/zrTcBleWjtPhrdeTEvB
-        ffDRStdQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mig2Z-0060Fw-Pv; Thu, 04 Nov 2021 16:57:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7C26E302A1F;
-        Thu,  4 Nov 2021 17:56:35 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 6A0E52DD49FB3; Thu,  4 Nov 2021 17:56:35 +0100 (CET)
-Message-ID: <20211104165525.827837876@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 04 Nov 2021 17:47:51 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        jpoimboe@redhat.com, mark.rutland@arm.com, dvyukov@google.com,
-        seanjc@google.com, pbonzini@redhat.com, mbenes@suse.cz
-Subject: [RFC][PATCH 22/22] x86: Remove .fixup section
-References: <20211104164729.226550532@infradead.org>
+        id S232202AbhKDRAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:00:04 -0400
+Received: from mg.ssi.bg ([193.238.174.37]:44958 "EHLO mg.ssi.bg"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232134AbhKDQ7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 12:59:45 -0400
+X-Greylist: delayed 542 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Nov 2021 12:59:42 EDT
+Received: from mg.ssi.bg (localhost [127.0.0.1])
+        by mg.ssi.bg (Proxmox) with ESMTP id DF8402883C;
+        Thu,  4 Nov 2021 18:48:01 +0200 (EET)
+Received: from ink.ssi.bg (unknown [193.238.174.40])
+        by mg.ssi.bg (Proxmox) with ESMTP id 2593F287A6;
+        Thu,  4 Nov 2021 18:48:00 +0200 (EET)
+Received: from ja.ssi.bg (unknown [178.16.129.10])
+        by ink.ssi.bg (Postfix) with ESMTPS id 290F93C0325;
+        Thu,  4 Nov 2021 18:47:56 +0200 (EET)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+        by ja.ssi.bg (8.16.1/8.16.1) with ESMTP id 1A4GlsFT007224;
+        Thu, 4 Nov 2021 18:47:55 +0200
+Date:   Thu, 4 Nov 2021 18:47:54 +0200 (EET)
+From:   Julian Anastasov <ja@ssi.bg>
+To:     yangxingwu <xingwu.yang@gmail.com>
+cc:     Simon Horman <horms@verge.net.au>, pablo@netfilter.org,
+        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, Chuanqi Liu <legend050709@qq.com>
+Subject: Re: [PATCH nf-next v6] netfilter: ipvs: Fix reuse connection if RS
+ weight is 0
+In-Reply-To: <20211104031029.157366-1-xingwu.yang@gmail.com>
+Message-ID: <72d07ec2-ec1-9024-ca98-c923f5d8f74@ssi.bg>
+References: <20211104031029.157366-1-xingwu.yang@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No moar user, kill it dead.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/entry/vdso/vdso-layout.lds.S |    1 -
- arch/x86/kernel/vmlinux.lds.S         |    1 -
- 2 files changed, 2 deletions(-)
+	Hello,
 
---- a/arch/x86/entry/vdso/vdso-layout.lds.S
-+++ b/arch/x86/entry/vdso/vdso-layout.lds.S
-@@ -77,7 +77,6 @@ SECTIONS
- 
- 	.text		: {
- 		*(.text*)
--		*(.fixup)
- 	}						:text	=0x90909090,
- 
- 
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -137,7 +137,6 @@ SECTIONS
- 		ALIGN_ENTRY_TEXT_END
- 		SOFTIRQENTRY_TEXT
- 		STATIC_CALL_TEXT
--		*(.fixup)
- 		*(.gnu.warning)
- 
- #ifdef CONFIG_RETPOLINE
+On Thu, 4 Nov 2021, yangxingwu wrote:
 
+> We are changing expire_nodest_conn to work even for reused connections when
+> conn_reuse_mode=0, just as what was done with commit dc7b3eb900aa ("ipvs:
+> Fix reuse connection if real server is dead").
+> 
+> For controlled and persistent connections, the new connection will get the
+> needed real server depending on the rules in ip_vs_check_template().
+> 
+> Fixes: d752c3645717 ("ipvs: allow rescheduling of new connections when port reuse is detected")
+> Co-developed-by: Chuanqi Liu <legend050709@qq.com>
+> Signed-off-by: Chuanqi Liu <legend050709@qq.com>
+> Signed-off-by: yangxingwu <xingwu.yang@gmail.com>
+
+Acked-by: Julian Anastasov <ja@ssi.bg>
+
+> ---
+>  Documentation/networking/ipvs-sysctl.rst | 3 +--
+>  net/netfilter/ipvs/ip_vs_core.c          | 8 ++++----
+>  2 files changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/networking/ipvs-sysctl.rst b/Documentation/networking/ipvs-sysctl.rst
+> index 2afccc63856e..1cfbf1add2fc 100644
+> --- a/Documentation/networking/ipvs-sysctl.rst
+> +++ b/Documentation/networking/ipvs-sysctl.rst
+> @@ -37,8 +37,7 @@ conn_reuse_mode - INTEGER
+>  
+>  	0: disable any special handling on port reuse. The new
+>  	connection will be delivered to the same real server that was
+> -	servicing the previous connection. This will effectively
+> -	disable expire_nodest_conn.
+> +	servicing the previous connection.
+>  
+>  	bit 1: enable rescheduling of new connections when it is safe.
+>  	That is, whenever expire_nodest_conn and for TCP sockets, when
+> diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
+> index 128690c512df..393058a43aa7 100644
+> --- a/net/netfilter/ipvs/ip_vs_core.c
+> +++ b/net/netfilter/ipvs/ip_vs_core.c
+> @@ -1964,7 +1964,6 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
+>  	struct ip_vs_proto_data *pd;
+>  	struct ip_vs_conn *cp;
+>  	int ret, pkts;
+> -	int conn_reuse_mode;
+>  	struct sock *sk;
+>  
+>  	/* Already marked as IPVS request or reply? */
+> @@ -2041,15 +2040,16 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
+>  	cp = INDIRECT_CALL_1(pp->conn_in_get, ip_vs_conn_in_get_proto,
+>  			     ipvs, af, skb, &iph);
+>  
+> -	conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
+> -	if (conn_reuse_mode && !iph.fragoffs && is_new_conn(skb, &iph) && cp) {
+> +	if (!iph.fragoffs && is_new_conn(skb, &iph) && cp) {
+> +		int conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
+>  		bool old_ct = false, resched = false;
+>  
+>  		if (unlikely(sysctl_expire_nodest_conn(ipvs)) && cp->dest &&
+>  		    unlikely(!atomic_read(&cp->dest->weight))) {
+>  			resched = true;
+>  			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
+> -		} else if (is_new_conn_expected(cp, conn_reuse_mode)) {
+> +		} else if (conn_reuse_mode &&
+> +			   is_new_conn_expected(cp, conn_reuse_mode)) {
+>  			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
+>  			if (!atomic_read(&cp->n_control)) {
+>  				resched = true;
+> -- 
+> 2.30.2
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
 
