@@ -2,91 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D329D44590D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:54:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFEBD445910
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233988AbhKDR4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:56:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34474 "EHLO
+        id S231825AbhKDR5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231742AbhKDR4g (ORCPT
+        with ESMTP id S232102AbhKDR4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:56:36 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A47F4C061714;
-        Thu,  4 Nov 2021 10:53:58 -0700 (PDT)
-Received: from Monstersaurus.ksquared.org.uk.beta.tailscale.net (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A11F91C18;
-        Thu,  4 Nov 2021 18:53:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1636048435;
-        bh=qGSuuTnM3mb4rnj/RSz/PrRrWVygP1aCNwH3RPQW22E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=epZS5N3bJxC9UzAyp64zLc0C1SJD8BQA06Sg6cSngLDnFsloHxIq8pw7ZkbPdHx1/
-         2/s2n9i42K/6NX7TYeyDj3UQyNHWloGHH0N7TQiSCN+0jRT4a3x9IdZEIBvn2hnvsI
-         FOOHfYE48SXTEA5MUbgldcLLBc7dm8fLTBctqW9c=
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-To:     linux-input@vger.kernel.org, Geert Uytterhoeven <geert@glider.be>,
-        linux-renesas-soc@vger.kernel.org
-Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] Input: add 'safe' user switch codes
-Date:   Thu,  4 Nov 2021 17:53:39 +0000
-Message-Id: <20211104175339.3906851-1-kieran.bingham+renesas@ideasonboard.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211025130457.935122-1-kieran.bingham+renesas@ideasonboard.com>
-References: <20211025130457.935122-1-kieran.bingham+renesas@ideasonboard.com>
+        Thu, 4 Nov 2021 13:56:52 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81CEC06120B;
+        Thu,  4 Nov 2021 10:54:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wTE0pUvAy2SS7XIPVFk47lEu8RHkWpmW/KaM1nPJ460=; b=nGx1gBZldH+s/qsgyKfbHwWNXg
+        50DXz1YBwxTRvfUi5UmXEXSn8BUfgTNmeRoWmDK8iDaM+WpTWFNoFaSw+DaNvaFxT/Z+ZLVknHAgB
+        xLTdxY/HFyieIJMqUAnK87tF4q5wToZ3bcY0V1WFDP4OBh7Y7h0gWg7KV+9aFdRordrJEy2/eFkxw
+        IEw2RuJoAfDQkR9Oo1ErkY+3W5qCWhus//8Iwz38nvOKHHA7Btxe2tdmGMnAhuuWcAGXjlOgyU+MW
+        vKJZV4viv4Nu8SXXFYvqLi3pqSjlbu7oP+uk9hDhAfDtOpx3Z2O9TAVvExTXpryu8BP2jojaSzONA
+        OEthPTHg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1migvz-009j2r-Mv; Thu, 04 Nov 2021 17:53:55 +0000
+Date:   Thu, 4 Nov 2021 10:53:55 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jane Chu <jane.chu@oracle.com>
+Cc:     dan.j.williams@intel.com, vishal.l.verma@intel.com,
+        dave.jiang@intel.com, ira.weiny@intel.com, viro@zeniv.linux.org.uk,
+        willy@infradead.org, jack@suse.cz, nvdimm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 2/3] dax: introduce dax_clear_poison to dax pwrite
+ operation
+Message-ID: <YYQeM+1f7JgDY/QP@infradead.org>
+References: <20210914233132.3680546-1-jane.chu@oracle.com>
+ <20210914233132.3680546-3-jane.chu@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914233132.3680546-3-jane.chu@oracle.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All existing SW input codes define an action which can be interpreted by
-a user environment to adapt to the condition of the switch.
+On Tue, Sep 14, 2021 at 05:31:30PM -0600, Jane Chu wrote:
+> +		if ((map_len == -EIO) && (iov_iter_rw(iter) == WRITE)) {
 
-For example, switches to define the audio mute, will prevent audio
-playback, and switches to indicate lid and covers being closed may
-disable displays.
+No need for the inner braces.
 
-Many evaluation platforms provide switches which can be connected to the
-input system but associating these to an action incorrectly could
-provide inconsistent end user experiences due to unmarked switch
-positions.
+> +			if (dax_clear_poison(dax_dev, pgoff, PHYS_PFN(size)) == 0)
 
-Define two custom user defined switches allowing hardware descriptions
-to be created whereby the position of the switch is not interpreted as
-any standard condition that will affect a user experience.
+Overly long line.
 
-This allows wiring up custom generic switches in a way that will allow
-them to be read and processed, without incurring undesired or otherwise
-undocumented (by the hardware) 'default' behaviours.
-
-Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
----
-I'd like to hear feedback from linux-input on this of course, and if
-accepted I'll submit updates to the evtest utility too.
-
-
- include/uapi/linux/input-event-codes.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/linux/input-event-codes.h
-index 225ec87d4f22..84a7b3debcb3 100644
---- a/include/uapi/linux/input-event-codes.h
-+++ b/include/uapi/linux/input-event-codes.h
-@@ -894,7 +894,9 @@
- #define SW_MUTE_DEVICE		0x0e  /* set = device disabled */
- #define SW_PEN_INSERTED		0x0f  /* set = pen inserted */
- #define SW_MACHINE_COVER	0x10  /* set = cover closed */
--#define SW_MAX			0x10
-+#define SW_1			0x11  /* set = user defined */
-+#define SW_2			0x12  /* set = user defined */
-+#define SW_MAX			0x12
- #define SW_CNT			(SW_MAX+1)
- 
- /*
--- 
-2.30.2
+Otherwise looks good, but it might need a rebase to the iomap_iter
+changes.
 
