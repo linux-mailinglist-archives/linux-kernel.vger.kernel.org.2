@@ -2,107 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2184451A5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 11:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55ED54451AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 11:44:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhKDKob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 06:44:31 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:51070
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230148AbhKDKo3 (ORCPT
+        id S231171AbhKDKqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 06:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhKDKqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 06:44:29 -0400
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 9BE733F19B
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 10:41:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1636022510;
-        bh=XjP2fjC2CP79thMtnxT/89+k8c9p5tf/Yx8zYwVAgZc=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=YZNnDs+C+n0Wmpc+ymUKUzMejyfWzHnedokl1kbSEoOqVN34r+gMcXsfDJXcEZrQg
-         SHpQ5I4J3HshOwMR4NlYwxoI0UlRakAmi5+4pYLR+VPdodTDK8G/Up+U+NErB2GokM
-         daSh5iPeEqIqaAKcAKu1yQhCQJY6v0dkM19br6CkgdyQLs6iwsvXntnJZeQDTmQk+Y
-         PB6PxTR1ILZZxqIqPDlGEGTMtKU/jB930P8nB+2hh6PcocojfxhtdwNbp4OH99NwSn
-         Qa7Rkn0P9v0BVAB/7yfkBVDIi6OfKMC4SQVtunwzAYnapYM3290wik/NgaIldeSWgB
-         NUFB8Z6HUHh7Q==
-Received: by mail-lj1-f198.google.com with SMTP id s18-20020a2e98d2000000b00218ab148976so237141ljj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 03:41:50 -0700 (PDT)
+        Thu, 4 Nov 2021 06:46:50 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA3CC061714;
+        Thu,  4 Nov 2021 03:44:12 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id b15so469942edd.7;
+        Thu, 04 Nov 2021 03:44:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xkDBHnMYJ6iDT5g1nlO8at1+WyWlzlz85OsTSxEVvzM=;
+        b=AlI02xwYo8DFhlhGbqyW2zNsV2RGiNjJlStiRhG3QdMwFW7ySI/1CNNoMR9FR9wJyt
+         URVjE0yxnWYSVUhFsUZqy7T3GtCJKUUHdUW/hH/tzYjfdFC6ms9WYiJhCBdHSIoMAvvy
+         2z0EYn4aPfTS9TVxvuFSNP5v5IQJoDyIPd9OOyb7t+LKGsY8FvoJbdEw9G0PIVTheT6v
+         BhpE+pqmte+5QVa5ht8G0lw1t5jeWlyVO/Rx//Z/KncMlzz5HGAxwI5f7dMwiFVXlqwH
+         0LczcH7OQGIiBxa7Ujwokzuhijdod2n8s63LK4+7TIsfx9ll3Hr6UdFTVIeaMFzJ+qqG
+         p8zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=XjP2fjC2CP79thMtnxT/89+k8c9p5tf/Yx8zYwVAgZc=;
-        b=sR0geUdtVHR8h0oDZMFurbAngXSS6I2RdI73xMgfICAYpv2wuF5OjKTD0UAPf6uhnQ
-         xgs+ZtW5/uoB591GFoZyAb4YG3wamcVdcl9YD47OOhYyHHnWuzBTK8nTj4pzDJxdHmAD
-         xSVGV2JT37oafi/HRsW2f09y782rMnvrdpctYXMsYMwcW6JUWi7pL+ZTqf3TKI7qDpTt
-         BWH1Gy6GhrIDya7MKPUlaoqaLpEFNcE6RFDf9XcGxO8s8yuQzq1TTLM/9HuQLPZQWBDA
-         I692gq0iVljZZKNoR+X2MrI+lkYbUoImRIlX1NnBuedxSHzXTR3lSf9q2A8wkqwJoGkb
-         8ODg==
-X-Gm-Message-State: AOAM533GhWhrajGb8hhveajK9SV3jo4zlwObWyDeCyWI/D2jjVST7qDk
-        u4o7DtvcIIKir54en7lRTVtZwooA96fCU8DqZGbISvny+7563pqZQlCMeMYpVSUt0lZ/YKO4yYR
-        INOspHBIi9QI85ToIKa60DJHnwUeWblNkmfZo0zdT6g==
-X-Received: by 2002:a05:6512:ba8:: with SMTP id b40mr31165416lfv.99.1636022509896;
-        Thu, 04 Nov 2021 03:41:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxcVWZxpRCqlVKEY8+Aih2rcHGC1hTIGNYIka2Po6zcVgWIe7d32Gc0CzoCU1OvDBCt80C9hw==
-X-Received: by 2002:a05:6512:ba8:: with SMTP id b40mr31165404lfv.99.1636022509686;
-        Thu, 04 Nov 2021 03:41:49 -0700 (PDT)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id z3sm431731lfh.17.2021.11.04.03.41.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 03:41:48 -0700 (PDT)
-Message-ID: <5b05ff2e-953c-d1a3-8347-4d3f9911cc49@canonical.com>
-Date:   Thu, 4 Nov 2021 11:41:47 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xkDBHnMYJ6iDT5g1nlO8at1+WyWlzlz85OsTSxEVvzM=;
+        b=iD6dwhEh8DfpcyvaM+5IdeKv/CmHsY7DpGXV7OR+rs50d/Uiq6H1zu4fG3W0CnJP0r
+         GbD2nV92qZUrZjCgvwvxPDqT3gUZfxaiFuvMieWpHNJ5uhv5/DWUvqOAhEcWvptNC3K8
+         H7FarYr4zYCKQZfudyyvdIDL9SYUy0HxCKdJFfhLyhBwif9pOOvj8LPcPbdu0NnaGEhd
+         KzRM1tmDfrlzT381ViDgUMfV9d/LscOADvOjumDrVhExR6ZVY1zTpY6cwH49079FQfly
+         YMz4SBjCJN+g4KF+ALQBZt1tVOYqRrOB+16b5Az21LcmusVSVGmI1K7A47a/vvhxhUWj
+         +D+Q==
+X-Gm-Message-State: AOAM531aDFVQrBzQ8JyrK7Lc+IJyUOWgBrKaWGvdq6I6awRqtuMK/GHf
+        ztesD0ykebmwhCQB3ClFkJWy+cj058s3RTrn7Wc=
+X-Google-Smtp-Source: ABdhPJwDDWLhQsNsoTOxXL8P3Td/iS+592b0dsuIPQ/M4thnBT8d4vlLMvsKBZL1fh7E3lBy+HacFhGhXZ9fZNFOZKY=
+X-Received: by 2002:a17:906:d553:: with SMTP id cr19mr59904770ejc.128.1636022651440;
+ Thu, 04 Nov 2021 03:44:11 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH 1/2] i2c: exynos5: support USI(Universal Serial Interface)
-Content-Language: en-US
-To:     Jaewon Kim <jaewon02.kim@samsung.com>,
-        'Wolfram Sang' <wsa@kernel.org>,
-        'Rob Herring' <robh+dt@kernel.org>
-Cc:     'Chanho Park' <chanho61.park@samsung.com>,
-        linux-i2c@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <CGME20211101114158epcas2p1d0762d52029b1b09912fd99665dd66f5@epcas2p1.samsung.com>
- <20211101113819.50651-1-jaewon02.kim@samsung.com>
- <a571af00-8ac1-f1a5-3240-2c93f823c995@canonical.com>
- <001001d7d153$5fb18840$1f1498c0$@samsung.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <001001d7d153$5fb18840$1f1498c0$@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211103083337.387083-1-yang.guang5@zte.com.cn>
+In-Reply-To: <20211103083337.387083-1-yang.guang5@zte.com.cn>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 4 Nov 2021 12:43:23 +0200
+Message-ID: <CAHp75VdZLdJS2SLijO+Ff-8OM+fBvS-R1er5ByYuw38qrRXRwA@mail.gmail.com>
+Subject: Re: [PATCH] media: use swap() to make code cleaner
+To:     davidcomponentone@gmail.com
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Julia Lawall <Julia.Lawall@inria.fr>,
+        Yang Guang <yang.guang5@zte.com.cn>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/11/2021 09:10, Jaewon Kim wrote:
-> 
->>> +	if (ret) {
->>> +		dev_err(dev, "usi-sysreg offset is not specified\n");
->>> +		return ret;
->>> +	}
->>> +
->>> +	regmap_update_bits(i2c->usi_sysreg, i2c->usi_offset,
->>> +			SYSREG_USI_SW_CONF_MASK, SYSREG_I2C_SW_CONF);
->>> +
->>> +	exynos_usi_reset(i2c);
->>
->> You are clearing the reset flag, but not setting it back on probe failure. What happens if the probe
->> fails after this clear()? E.g.
->> because of deferred probe? The next probe try will start on a not-reset controller. Will it work?
->>
-> 
-> The user manual guides USI_RESET to be done after changing the system register.
-> For clarity, we will change not only to clear reset, but to clear after reset.
-> 
+On Wed, Nov 3, 2021 at 10:34 AM <davidcomponentone@gmail.com> wrote:
+> Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
+> opencoding it.
 
-What I meant, is do you handle probe failure correctly (e.g. probe
-deferral)? It's fine to leave the reset cleared after deferred probe?
+Same comments as per all your valuable contributions: just think more
+about the code that you are dealing with!
 
-Best regards,
-Krzysztof
+>                 if (dev->fmt->uvswap) {
+> -                       tmp = base2;
+> -                       base2 = base3;
+> -                       base3 = tmp;
+> +                       swap(base2, base3);
+>                 }
+
+Have you run checkpatch? What did it say?
+
+-- 
+With Best Regards,
+Andy Shevchenko
