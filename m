@@ -2,120 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22470445C21
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 23:28:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88651445C1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 23:23:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhKDWbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 18:31:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23663 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229587AbhKDWbI (ORCPT
+        id S232324AbhKDW01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 18:26:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232221AbhKDW00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 18:31:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636064909;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BBUCmnZZOWE/jDTqU1ME8sp8ZxzHFTRDA93jrM3MF8o=;
-        b=hxovmBenKE7Ft5JeNFePn+k7PBS3HU6b6ZnQkFEYB8ZzFYskINCARAMLgkQZhZMfR6zIH/
-        8cYBICVRIZ6H6zekEN+eEa2gu4nZ+0cZL8upz+OTexIUbHIQlZCHMyKHNlwmuxgJHE44o8
-        8WRL6ZLpZeoMxUCbzgMSsTsJSBbf7Qg=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-292-p9HpsNfvNYOAe6MvgnEqZA-1; Thu, 04 Nov 2021 18:28:28 -0400
-X-MC-Unique: p9HpsNfvNYOAe6MvgnEqZA-1
-Received: by mail-ot1-f70.google.com with SMTP id c94-20020a9d27e7000000b0055addf8efc1so2875640otb.15
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 15:28:27 -0700 (PDT)
+        Thu, 4 Nov 2021 18:26:26 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EAFFC061714;
+        Thu,  4 Nov 2021 15:23:47 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id p18so9589445plf.13;
+        Thu, 04 Nov 2021 15:23:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SAjJe0L8rahemkypYUehC21SFtz7mEZThWWLPiWL/ro=;
+        b=NzCVs6lNdX69wDrb2nMBBzD34Y/tsJPVI6tZWsiJCOxvoDvtDSENn/huD6z7kv+08l
+         G9iOj0TeqIBrea+YwDGMeZ6jbbr6sTnh9mgSUQMWl+dW/IdmeFiNEmCgQ8Pqt1R0hQpq
+         3O7JgIBvUhfdd1u1H5GDMGH2lCWjEGfPO5IJ/juwztKXa1cTmKsq9t2Xi3PsbeTpQn7G
+         PBFafU3TixWAtSjq2EPHFSGH+7VcbMguCFwyUrOqDSYKOWOBKq1+Vby130DqEsBYIQZ2
+         BpFco6dKebNmDvklIAwbsYFRHGbf+QtFcJ0aNpdIKY1WTAgxy2h73o3bAx2X5ZgjbPuL
+         SZlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BBUCmnZZOWE/jDTqU1ME8sp8ZxzHFTRDA93jrM3MF8o=;
-        b=U6NqLXi076Tt8FaXi2mq2cvclb5VCFhaEr3NoZbFOaBgBm0/5nSlt7PplC7+qKn6v7
-         JGIxQSYDLS9DzIxygbMVaiUj+h+LNdtPGyDp42/P6W9Nmy9P0DsoHUyAD0R9JcZEpMLG
-         Ubnkzzsg6di5Xinw0/ZOlQNlgP7p0cDzb/ZxdNkoBABWkGQ7L28SUtdvSajZ2OYcs6KM
-         fYlWYG9vyTmS05Vi1plxYYdmyNEmtI+TM21iZ96XFFEFesxTu8/NgIl/5lv2lhKKcKAc
-         vawLS7OpVE9YXe6u+FR0Akoq5Y0KF5LtVYmXZFpKvcTfUccdMEEOL5Ctb2p5/IuO+XLU
-         qS3Q==
-X-Gm-Message-State: AOAM533kYXUIr7/a4/+mHMXxqh6sLRh5euSnn6TUwGIv6AQPoS0pBTIz
-        WeRjdDTxoAfLO10z1VowaFBVJUHcOqqmC9ZYIs2nSpSMcFKuQX+iBwqY5YS7KRgGPWj/+/gegW8
-        y4jQ6SZdsgqi5jmarz/CHn7Kc
-X-Received: by 2002:a05:6808:20a6:: with SMTP id s38mr14434477oiw.152.1636064907262;
-        Thu, 04 Nov 2021 15:28:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwZ58Bb3s1g6cUckMhPPxeyJ11sCdryZpkF2c2XfnbTE7r1BbvMXQZBNMr45RR+4q0xKqzpBQ==
-X-Received: by 2002:a05:6808:20a6:: with SMTP id s38mr14434461oiw.152.1636064907044;
-        Thu, 04 Nov 2021 15:28:27 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::35])
-        by smtp.gmail.com with ESMTPSA id n23sm652953oop.32.2021.11.04.15.28.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SAjJe0L8rahemkypYUehC21SFtz7mEZThWWLPiWL/ro=;
+        b=7+ve0Hl4duImEZLKOym26riL+dKyztpzF+aCu6YEXAjJp/sfvS2NeumCOqES9Cro8u
+         MoXYa0GfaxYrNFoJvmYVBYrBdlci9qk2ph0LJ01gHEoRCbFr/+P51L4gbLj8PI4NIVte
+         gpSH1uChxXriDzhvD7Qm3JYOTMxPQ6DV6i6C3zDZpyMf8ryZMMtnKo/ySZpCHWUvFLAk
+         RFDNc6exVJkK+aUleyznDzie4tt0D6KU5igrYRWNQ63P2pdZkNWOtM5xJxwoveamwI+T
+         //xLrzODchVpVA3uZLYcW3X8oB4Q6hZRUIPTdvI0wW6VH2GM5eUfvoPo1phUtuwD9z3j
+         oUcA==
+X-Gm-Message-State: AOAM531SZueqmx09NtOCWdnao7cafVHO84qMOH9st4MBm8/S/E2dGMIi
+        /Nnow2b8ZtnyYaYiHdWrkxk=
+X-Google-Smtp-Source: ABdhPJywWwxxya+abTTKcjBAKn/zhPdhspjq0C6veBnXpocuNuoJ+miPacjiMb70eXIDSP4U7I+1qA==
+X-Received: by 2002:a17:902:db01:b0:141:ea12:2176 with SMTP id m1-20020a170902db0100b00141ea122176mr28246520plx.44.1636064627091;
+        Thu, 04 Nov 2021 15:23:47 -0700 (PDT)
+Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
+        by smtp.gmail.com with ESMTPSA id hg4sm8148128pjb.1.2021.11.04.15.23.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 15:28:26 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 15:28:23 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        dvyukov@google.com, seanjc@google.com, pbonzini@redhat.com,
-        mbenes@suse.cz
-Subject: Re: [RFC][PATCH 10/22] x86,uaccess: Remove .fixup usage
-Message-ID: <20211104222823.wbhdhuuhu7vmiyv2@treble>
-References: <20211104164729.226550532@infradead.org>
- <20211104165525.107322937@infradead.org>
+        Thu, 04 Nov 2021 15:23:45 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/msm/devfreq: Fix OPP refcnt leak
+Date:   Thu,  4 Nov 2021 15:28:40 -0700
+Message-Id: <20211104222840.781314-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211104165525.107322937@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 05:47:39PM +0100, Peter Zijlstra wrote:
->  #define __get_user_asm_u64(x, ptr, retval) \
-> -	 __get_user_asm(x, ptr, retval, "q", "=r")
-> +	 __get_user_asm(x, ptr, retval, "q", "=a")
->  #endif
->  
->  #define __get_user_size(x, ptr, size, retval)				\
-> @@ -379,14 +377,14 @@ do {									\
->  	__chk_user_ptr(ptr);						\
->  	switch (size) {							\
->  	case 1:								\
-> -		__get_user_asm(x_u8__, ptr, retval, "b", "=q");		\
-> +		__get_user_asm(x_u8__, ptr, retval, "b", "=a");		\
->  		(x) = x_u8__;						\
->  		break;							\
->  	case 2:								\
-> -		__get_user_asm(x, ptr, retval, "w", "=r");		\
-> +		__get_user_asm(x, ptr, retval, "w", "=a");		\
->  		break;							\
->  	case 4:								\
-> -		__get_user_asm(x, ptr, retval, "l", "=r");		\
-> +		__get_user_asm(x, ptr, retval, "l", "=a");		\
->  		break;							\
->  	case 8:								\
->  		__get_user_asm_u64(x, ptr, retval);			\
-> @@ -400,16 +398,13 @@ do {									\
->  	asm volatile("\n"						\
->  		     "1:	mov"itype" %[umem],%[output]\n"		\
->  		     "2:\n"						\
-> -		     ".section .fixup,\"ax\"\n"				\
-> -		     "3:	mov %[efault],%[errout]\n"		\
-> -		     "	xorl %k[output],%k[output]\n"			\
-> -		     "	jmp 2b\n"					\
-> -		     ".previous\n"					\
-> -		     _ASM_EXTABLE_UA(1b, 3b)				\
-> +		     _ASM_EXTABLE_TYPE_REG(1b, 2b, EX_TYPE_EFAULT_REG | \
-> +					   EX_FLAG_CLR_AX,		\
-> +					   %[errout])			\
->  		     : [errout] "=r" (err),				\
->  		       [output] ltype(x)				\
->  		     : [umem] "m" (__m(addr)),				\
-> -		       [efault] "i" (-EFAULT), "0" (err))
-> +		       "0" (err))
+From: Rob Clark <robdclark@chromium.org>
 
-Since this legacy __get_user_asm() now has a hard dependency on "=a",
-might as well just make that explicit by hard-coding the constraint here
-and removing the 'ltype' arg.
+Reported-by: Douglas Anderson <dianders@chromium.org>
+Fixes: 9bc95570175a ("drm/msm: Devfreq tuning")
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/msm_gpu_devfreq.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/gpu/drm/msm/msm_gpu_devfreq.c b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+index d32b729b4616..9bf8600b6eea 100644
+--- a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
++++ b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+@@ -20,8 +20,6 @@ static int msm_devfreq_target(struct device *dev, unsigned long *freq,
+ 	struct msm_gpu *gpu = dev_to_gpu(dev);
+ 	struct dev_pm_opp *opp;
+ 
+-	opp = devfreq_recommended_opp(dev, freq, flags);
+-
+ 	/*
+ 	 * If the GPU is idle, devfreq is not aware, so just ignore
+ 	 * it's requests
+@@ -31,6 +29,8 @@ static int msm_devfreq_target(struct device *dev, unsigned long *freq,
+ 		return 0;
+ 	}
+ 
++	opp = devfreq_recommended_opp(dev, freq, flags);
++
+ 	if (IS_ERR(opp))
+ 		return PTR_ERR(opp);
+ 
 -- 
-Josh
+2.31.1
 
