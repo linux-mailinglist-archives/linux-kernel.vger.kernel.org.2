@@ -2,104 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF82445357
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D2C44535E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:53:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229505AbhKDMzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 08:55:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49650 "EHLO
+        id S231626AbhKDM4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 08:56:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbhKDMzV (ORCPT
+        with ESMTP id S229809AbhKDM4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 08:55:21 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71059C061714;
-        Thu,  4 Nov 2021 05:52:43 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id f8so21111059edy.4;
-        Thu, 04 Nov 2021 05:52:43 -0700 (PDT)
+        Thu, 4 Nov 2021 08:56:15 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB4F8C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 05:53:37 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id n128so6721169iod.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 05:53:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DpYzPiVrlxZpQKVyCCJ8zj4zAgXSuVUmCZXLOiQD4c4=;
-        b=MxQK9t7Xs9iYEYRHXQZdDHduOCmEaggH8LQAUmUKbjQydjgzmWcPXjvRBpksckLQQK
-         snV8IcV33XkIrXIO6E1qLzUfSUvYP49MKd9LZ8lvVhbWUbx3s7fhzoHB6bWq2eVzIPz6
-         WU6vBIOUkVbhrqpIsZkyTLKj98aXTbS0VS6b0mMWqPVJm9uqqLCrF76bdpboeDX6EdF/
-         LYsLgLx1YIVof/9yxtryPMPMl7eQQfFhOqXa5sbbzvrZLZxVYW3rwlRlYPLDsleNSOEm
-         BTH0KVZZ9s3fihX4hWR61hwX3XYtilIlGdWB5Un1BbEKuGxQ3qe2GTT3aRjklsIH8VHq
-         qfsA==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6w8o3WS6DFFpTMjQXm5psT4Qx5D68tU62B92Jeja+Zo=;
+        b=ldR/C8KEc7oOIEzM0/TFcM+FBsb189UFzrCibuqX+cslz918BHC2riRxUFvjgu3Op3
+         ikmUUyMutn1eSuL9G5N2lLZxG8k2vK5myYOonRec81EiqQbvekpeNsBa00jPZgMx4WiX
+         3IBl0MQku2Y2p144oqcG64Z2mnfjktMCkwmWF9dAIhQ4W2IBbUCW+4YHb9o/2Jmv/9Tw
+         hGpikCSQpN9z6DeavUQECTDqikd99/o3mkqfEVu6mqpz9Gx9jkEiZpwANAqmZkd85B0/
+         m/Ianql51H9Jy/J/1kxUhwHF1US2q9kDGNvXpdnMpDKlINUqn69dt106HpLPNNOU8ar4
+         D8sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DpYzPiVrlxZpQKVyCCJ8zj4zAgXSuVUmCZXLOiQD4c4=;
-        b=zq7taLD9hWv4JNPnhS3edK0bvV8UeVfl2eiUVJYNGHYFEICDT0l5orXp2GeEIozeeO
-         IXgjq9h2nYl76u8554Vkyc38/9q0hhrF1/EwM6rBODGaWXrCyHXjYBRYZcXjcp5ACFGt
-         m84My+mE7M4UWI8FvPGMyJZCjinb+hIfN42rO6iuEu0qNxVE6HL74OT28UNg7o6eo3iW
-         VSNiTrvDymMlKHORcBKhjl0MaaafT6VJXMibnkiMWbPTfLef6PNFjifc1oIr7Pnn4feo
-         SrizPZjHGGAxxXnXCnE20Iu+xSLIelnwQ/ILRnn++G0k2r+OCIiJY3Nsfxrtg2sHi/Oj
-         odBA==
-X-Gm-Message-State: AOAM530keRYnd5a9Xy+se0W2VvpUPz9OIsyDLTcXeD0VJkdUUgC7AkkC
-        MbAvr8fqBxgHDw7wWIssLvkw/GGJKxc=
-X-Google-Smtp-Source: ABdhPJyz7BQ7BD+SGOq8UW0TkjQkBuhLtuQQ2StrBiA9UvOm6qs9skdBWhKUG0k8+wAKyeQI0prG9A==
-X-Received: by 2002:a05:6402:3508:: with SMTP id b8mr10593465edd.347.1636030361939;
-        Thu, 04 Nov 2021 05:52:41 -0700 (PDT)
-Received: from skbuf ([188.25.175.102])
-        by smtp.gmail.com with ESMTPSA id t22sm2759571eds.65.2021.11.04.05.52.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 05:52:41 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 14:52:39 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Robert Marko <robert.marko@sartura.hr>,
-        John Crispin <john@phrozen.org>
-Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
-Subject: Re: [net-next] net: dsa: qca8k: only change the MIB_EN bit in
- MODULE_EN register
-Message-ID: <20211104125239.n4a4w5maodygpe4n@skbuf>
-References: <20211104124927.364683-1-robert.marko@sartura.hr>
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6w8o3WS6DFFpTMjQXm5psT4Qx5D68tU62B92Jeja+Zo=;
+        b=XvcgO71cQPUryPjmY7gK8tY8h5AxXicTo6rz002dS37b4qqW8drqg0Gj+PjQ27+/yA
+         pF3oMMYzd4qgLzpLAE4ZGDZaaI8KabZyBQbso2Shb2sqznavM9RcGe6G7V00MPv4FHht
+         SlexstK8KQWk5BJ8Gtq6UwtmRCPVozUSN+IPi2ffSM03aYmzk+oqbCXFORSIRWq0t3kv
+         Km0NeGDZ1m7sPgnGDyqhpLTW7UmBJAZGJF4b79gDSmgvPCuPqtlQQRzsyER0hGkqp/wx
+         MEo+Um4Y055JLtprnQwCTj3K9fRG7uTK8864CLY01aM9jRcwRQxFCyTjf/zyNt6458a/
+         m1sQ==
+X-Gm-Message-State: AOAM531oEClcEXbHcCFSnGhoqWsGBSJKYjkkjsKjnbcXMwrpEFaV2WYQ
+        7831sCrgCeyjCGCFzRYYVi0kCA==
+X-Google-Smtp-Source: ABdhPJwH6c+P5mnSghF2qajSekhAmW/D+2dMZvQnCwkU8gTuNOoExbbBh3PXxAXNBqTnJ4DFVPx/Yw==
+X-Received: by 2002:a05:6602:2c07:: with SMTP id w7mr36082747iov.122.1636030416900;
+        Thu, 04 Nov 2021 05:53:36 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id d14sm2967722ilv.2.2021.11.04.05.53.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Nov 2021 05:53:36 -0700 (PDT)
+Subject: Re: [PATCH v5 00/14] last set for add_disk() error handling
+From:   Jens Axboe <axboe@kernel.dk>
+To:     miquel.raynal@bootlin.com, martin.petersen@oracle.com,
+        hare@suse.de, Luis Chamberlain <mcgrof@kernel.org>, jack@suse.cz,
+        hch@lst.de, song@kernel.org, dave.jiang@intel.com, richard@nod.at,
+        vishal.l.verma@intel.com, penguin-kernel@i-love.sakura.ne.jp,
+        tj@kernel.org, ira.weiny@intel.com, vigneshr@ti.com,
+        dan.j.williams@intel.com, ming.lei@redhat.com, efremov@linux.com
+Cc:     linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+References: <20211103230437.1639990-1-mcgrof@kernel.org>
+ <163602655191.22491.10844091970007142957.b4-ty@kernel.dk>
+Message-ID: <4764286a-99b4-39f7-ce5c-9e88cee1a538@kernel.dk>
+Date:   Thu, 4 Nov 2021 06:53:34 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211104124927.364683-1-robert.marko@sartura.hr>
+In-Reply-To: <163602655191.22491.10844091970007142957.b4-ty@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 01:49:27PM +0100, Robert Marko wrote:
-> From: Gabor Juhos <j4g8y7@gmail.com>
+On 11/4/21 5:49 AM, Jens Axboe wrote:
+> On Wed, 3 Nov 2021 16:04:23 -0700, Luis Chamberlain wrote:
+>> Jens,
+>>
+>> as requested, I've folded all pending changes into this series. This
+>> v5 pegs on Christoph's reviewed-by tags and since I was respinning I
+>> modified the ataprobe and floppy driver changes as he suggested.
+>>
+>> I think this is it. The world of floppy has been exciting for v5.16.
+>>
+>> [...]
 > 
-> The MIB module needs to be enabled in the MODULE_EN register in
-> order to make it to counting. This is done in the qca8k_mib_init()
-> function. However instead of only changing the MIB module enable
-> bit, the function writes the whole register. As a side effect other
-> internal modules gets disabled.
+> Applied, thanks!
 > 
-> Fix up the code to only change the MIB module specific bit.
-> 
-> Fixes: 6b93fb46480a ("net-next: dsa: add new driver for qca8xxx family")
-> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> ---
->  drivers/net/dsa/qca8k.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-> index a984f06f6f04..a229776924f8 100644
-> --- a/drivers/net/dsa/qca8k.c
-> +++ b/drivers/net/dsa/qca8k.c
-> @@ -583,7 +583,7 @@ qca8k_mib_init(struct qca8k_priv *priv)
->  	if (ret)
->  		goto exit;
->  
-> -	ret = qca8k_write(priv, QCA8K_REG_MODULE_EN, QCA8K_MODULE_EN_MIB);
-> +	ret = qca8k_reg_set(priv, QCA8K_REG_MODULE_EN, QCA8K_MODULE_EN_MIB);
->  
->  exit:
->  	mutex_unlock(&priv->reg_mutex);
-> -- 
-> 2.33.1
-> 
+> [01/14] nvdimm/btt: use goto error labels on btt_blk_init()
+>         commit: 2762ff06aa49e3a13fb4b779120f4f8c12c39fd1
+> [02/14] nvdimm/btt: add error handling support for add_disk()
+>         commit: 16be7974ff5d0a5cd9f345571c3eac1c3f6ba6de
+> [03/14] nvdimm/blk: avoid calling del_gendisk() on early failures
+>         commit: b7421afcec0c77ab58633587ddc29d53e6eb95af
+> [04/14] nvdimm/blk: add error handling support for add_disk()
+>         commit: dc104f4bb2d0a652dee010e47bc89c1ad2ab37c9
+> [05/14] nvdimm/pmem: cleanup the disk if pmem_release_disk() is yet assigned
+>         commit: accf58afb689f81daadde24080ea1164ad2db75f
+> [06/14] nvdimm/pmem: use add_disk() error handling
+>         commit: 5a192ccc32e2981f721343c750b8cfb4c3f41007
+> [07/14] z2ram: add error handling support for add_disk()
+>         commit: 15733754ccf35c49d2f36a7ac51adc8b975c1c78
+> [08/14] block/sunvdc: add error handling support for add_disk()
+>         commit: f583eaef0af39b792d74e39721b5ba4b6948a270
+> [09/14] mtd/ubi/block: add error handling support for add_disk()
+>         commit: ed73919124b2e48490adbbe48ffe885a2a4c6fee
+> [10/14] ataflop: remove ataflop_probe_lock mutex
+>         commit: 4ddb85d36613c45bde00d368bf9f357bd0708a0c
+> [11/14] block: update __register_blkdev() probe documentation
+>         commit: 26e06f5b13671d194d67ae8e2b66f524ab174153
+> [12/14] ataflop: address add_disk() error handling on probe
+>         commit: 46a7db492e7a27408bc164cbe6424683e79529b0
+> [13/14] floppy: address add_disk() error handling on probe
+>         commit: ec28fcc6cfcd418d20038ad2c492e87bf3a9f026
+> [14/14] block: add __must_check for *add_disk*() callers
+>         commit: 1698712d85ec2f128fc7e7c5dc2018b5ed2b7cf6
 
-You should have copied the original patch author too. Adding him now.
+rivers/scsi/sd.c: In function ‘sd_probe’:
+drivers/scsi/sd.c:3573:9: warning: ignoring return value of ‘device_add_disk’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+ 3573 |         device_add_disk(dev, gd, NULL);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/scsi/sr.c: In function ‘sr_probe’:
+drivers/scsi/sr.c:731:9: warning: ignoring return value of ‘device_add_disk’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  731 |         device_add_disk(&sdev->sdev_gendev, disk, NULL);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Dropping the last two patches...
+
+-- 
+Jens Axboe
+
