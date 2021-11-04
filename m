@@ -2,138 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE15445387
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1FD44538C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbhKDNJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 09:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52842 "EHLO
+        id S231706AbhKDNKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 09:10:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231217AbhKDNJi (ORCPT
+        with ESMTP id S231217AbhKDNKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 09:09:38 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2634EC06127A
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 06:07:00 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id s13so8568913wrb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 06:07:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=waldekranz-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=YI7bEsvaa9P6T1BxeXDJHD35omyehNZNvxDjHcofyQw=;
-        b=KwUcpwdgzLUwVUY0mx23TgErTco3/7RgudpLX6qNtHIqZnEnQ2Xuy4ErChUaoHWZlR
-         xed32y97cITsBTH6bQ19SQ4BgvzB2Nyp4HUGGJeMEapL/82gXWy5qI6pHHtOREZFeNr3
-         naAa4lNAmFH95Pt9HyqUkNGeAz1Fal+sZr8L+soMlJ0KdGBNVtG294YQgejE/hBhtxTh
-         hxFbhFosyCo+BkpGj2BVOxHHfGb9EUG2bYNue+zYP6QMzZr7WctsVPxElRk2gJFjedJM
-         RUE7pxQPcF3nCvoHfgbY+ot7nlFGaCU3cZfco6s1R+hguDmEUAuv6CZ4LfMhj3ECLPss
-         tlNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=YI7bEsvaa9P6T1BxeXDJHD35omyehNZNvxDjHcofyQw=;
-        b=mzDQakE7QayYXt2+jSaZoe+ARpDPM8X7FPKvBGr0RJshvKIPNjqk05iGPXtUUGC1Wj
-         Nwf/ZINs5vWOaFnQ2pd2+pH41SWTeF3/sxvWH8O26/1rtPFf/t4BtDKi1+z6MEpWGxoz
-         sp/mn7sjKpM+PgoXotrOpDEUlyQESxPJOHN6ZgBe87ufMldSdOUCN7dUV/BR6vVoQWX+
-         SRaYsgrKC0Q/fygcfhqqZ+YeKXzTjcNP3ffc4TvSkttgaLmbOc1Vmohpun7S8qKOnxjl
-         dpLxQ6DhVsK59Hq3jxcPWsyXjWHVn38VaEFxnHTEaZCA2VuzQ9eoaHLpvo47xeMJXE8T
-         FkPA==
-X-Gm-Message-State: AOAM5330SPGNH5F2UPB78IjxZoo0JY4ZMLNXn06XwIHi+h5lO5MNhQQv
-        S6Ww7xxRLVM7YWU6a92kb8+gvQ==
-X-Google-Smtp-Source: ABdhPJxVMfGVWbafZX1bgK5ZoYDR+E8GoSoH6bkQ+vwnRA2v3fjhltw7Qgclh5ItbpFPkQH38dbdjw==
-X-Received: by 2002:a05:6000:52:: with SMTP id k18mr51590433wrx.192.1636031218581;
-        Thu, 04 Nov 2021 06:06:58 -0700 (PDT)
-Received: from wkz-x280 (static-193-12-47-89.cust.tele2.se. [193.12.47.89])
-        by smtp.gmail.com with ESMTPSA id c15sm4915251wrs.19.2021.11.04.06.06.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 06:06:58 -0700 (PDT)
-From:   Tobias Waldekranz <tobias@waldekranz.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Sean Anderson <sean.anderson@seco.com>
-Subject: Re: [RFC PATCH] net: phy/mdio: enable mmd indirect access through
- phy_mii_ioctl()
-In-Reply-To: <YYPThd7aX+TBWslz@shell.armlinux.org.uk>
-References: <bc9df441-49bf-5c8a-891c-cc3f0db00aba@ti.com>
- <YYF4ZQHqc1jJsE/+@shell.armlinux.org.uk>
- <e18f17bd-9e77-d3ef-cc1e-30adccb7cdd5@ti.com>
- <828e2d69-be15-fe69-48d8-9cfc29c4e76e@ti.com> <YYGxvomL/0tiPzvV@lunn.ch>
- <8d24c421-064c-9fee-577a-cbbf089cdf33@ti.com> <YYHXcyCOPiUkk8Tz@lunn.ch>
- <01a0ebf9-5d3f-e886-4072-acb9bf418b12@ti.com> <YYLk0dEKX2Jlq0Se@lunn.ch>
- <87pmrgjhk4.fsf@waldekranz.com> <YYPThd7aX+TBWslz@shell.armlinux.org.uk>
-Date:   Thu, 04 Nov 2021 14:06:54 +0100
-Message-ID: <87k0hojci9.fsf@waldekranz.com>
+        Thu, 4 Nov 2021 09:10:31 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A3876C061714;
+        Thu,  4 Nov 2021 06:07:53 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id CB5D792009D; Thu,  4 Nov 2021 14:07:52 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id C555092009B;
+        Thu,  4 Nov 2021 13:07:52 +0000 (GMT)
+Date:   Thu, 4 Nov 2021 13:07:52 +0000 (GMT)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+cc:     Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
+        linux-input@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Slaby <jirislaby@kernel.org>, kernel@collabora.com
+Subject: Re: [RFC] tty/sysrq: Add alternative SysRq key
+In-Reply-To: <17ccc35d-441c-70c1-a80a-28a4ff824535@collabora.com>
+Message-ID: <alpine.DEB.2.21.2111041227510.57165@angie.orcam.me.uk>
+References: <20211103155438.11167-1-andrzej.p@collabora.com> <20211104120111.GB23122@duo.ucw.cz> <17ccc35d-441c-70c1-a80a-28a4ff824535@collabora.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 12:35, "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
-> On Thu, Nov 04, 2021 at 12:17:47PM +0100, Tobias Waldekranz wrote:
->> On Wed, Nov 03, 2021 at 20:36, Andrew Lunn <andrew@lunn.ch> wrote:
->> > On Wed, Nov 03, 2021 at 08:42:07PM +0200, Grygorii Strashko wrote:
->> >> 
->> >> 
->> >> On 03/11/2021 02:27, Andrew Lunn wrote:
->> >> > > > What i find interesting is that you and the other resent requester are
->> >> > > > using the same user space tool. If you implement C45 over C22 in that
->> >> > > > tool, you get your solution, and it will work for older kernels as
->> >> > > > well. Also, given the diverse implementations of this IOTCL, it
->> >> > > > probably works for more drivers than just those using phy_mii_ioctl().
->> >> > > 
->> >> > > Do you mean change uapi, like
->> >> > >   add mdio_phy_id_is_c45_over_c22() and
->> >> > >   flag #define MDIO_PHY_ID_C45_OVER_C22 0x4000?
->> >> > 
->> >> > No, i mean user space implements C45 over C22. Make phytool write
->> >> > MII_MMD_CTRL and MII_MMD_DATA to perform a C45 over C22.
->> >> 
->> >> Now I give up - as mentioned there is now way to sync User space vs Kernel
->> >> MMD transactions and so no way to get trusted results.
->> 
->> Except that there is a way: https://github.com/wkz/mdio-tools
->
-> I'm guessing that this hasn't had much in the way of review, as it has
-> a nice exploitable bug - you really want "pc" to be unsigned in
-> mdio_nl_eval(), otherwise one can write a branch instruction that makes
-> "pc" negative.
+On Thu, 4 Nov 2021, Andrzej Pietrasiewicz wrote:
 
-You are quite right, it never got that far as it was NAKed on principle
-before that. I welcome the review, this is one of the reasons why I
-would love to have it in mainline. Alternatively, if someone has a
-better idea, I wouldn't mind adapting mdio-tools to whatever that
-interface would be.
+> > Is F10 sensible default? Would it make sense to use something like
+> > alt-shift-esc so that this can be enabled by default?
+> 
+> Why "alt-shift-esc" could be enabled by default? Do you mean to enable it for
+> all systems regardless of whether they declare or don't declare KEY_SYSRQ
+> in their 'keybit' bitmap?
 
-I agree that there should be much more rigorous checks around the
-modification of the PC. I will get on that.
+ FWIW from my perspective it'll work better as a replacement rather than 
+additional key combination.
 
-> Also it looks like one can easily exploit this to trigger any of your
-> BUG_ON()/BUG() statements, thereby crashing while holding the MDIO bus
-> lock causing a denial of service attack.
+ The reason for this is with their more recent laptops Lenovo in their 
+infinite wisdom have placed the <PrintScreen> key (which in a traditional 
+PS/2-keyboard manner produces <SysRq> when combined with <Alt>) in their 
+keyboards between the right <Alt> and <Ctrl> keys.  With thumbs not being 
+as accurate as other fingers (and the overall misdesign of the keyboard 
+and touchpad interface) you can imagine how often I have inadvertently hit 
+<SysRq> combined with a letter key, wreaking havoc to my system (and of 
+course I want to keep the key enabled for times when I do need it).
 
-The idea is that this is pre-validated in mdio_nl_validate_insn. Each
-instruction lists their acceptable argument types in mdio_nl_op_protos.
+ Also Documentation/admin-guide/sysrq.rst mentions that you can set an 
+alternative keycode sequence for KEY_SYSRQ with `setkeycodes <sequence> 
+99' already, but I find this pretty limiting as this only works for single 
+keypresses rather than combinations of keys, because <sequence> actually 
+refers to a single scancode (possibly 0xe0-prefixed).
 
-> I also see nothing that protects against any user on a system being
-> able to use this interface, so the exploits above can be triggered by
-> any user. Moreover, this lack of protection means any user on the
-> system can use this interface to write to a PHY.
-
-I was under the impression that specifying GENL_ADMIN_PERM in the
-`struct genl_ops` would require the caller to hold CAP_NET_ADMIN?
-
-> Given that some PHYs today contain firmware, this gives anyone access
-> to reprogram the PHY firmware, possibly introducing malicious firmware.
->
-> I hope no one is using this module in a production environment.
-
-Thanks for your review.
+  Maciej
