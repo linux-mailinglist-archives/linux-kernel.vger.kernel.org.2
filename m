@@ -2,243 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339AC44572D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 535BF445730
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:22:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231725AbhKDQYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 12:24:16 -0400
-Received: from mail-am6eur05on2098.outbound.protection.outlook.com ([40.107.22.98]:26849
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231419AbhKDQYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 12:24:15 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O/+qo0OybLRIiF6S/1nvYbJZt6Ojd54t/SUjcCthZ4fLFXt5H7aPWSbgekn/g2s3bfBof4IT5sUfZotrc7B1twl90Xb8Jl59rpq3Hzl0QqNrHs2mEwwPMSCCieht7YQktBwCsEbDomkVyKI4zqjTTS45PrURGuHo4/IyC3vh49uU8YukVeAX3y6c8tLcqwXSk2lhDfM8+Al6IneEupuOd1Dd/Zusn2GUoLj0o0snlWmqJSeh8o2YHj5GHnFDKsR6Iebh5GoYmALrq+ixe0o6KBYxmQ/M4JHYovb6Ssqo17rlV0WheN+mSefFAU4ybyEX4TKoyKrwoKNCs3glUJ0eTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TVSJJWK/za4W1Kul68/8iQQ94gYgi9MDP1P18bYlg1A=;
- b=dwaYfMj2/BbhBBjUOVPo1FK0hhzMY1UEK67oHqOC/NCJFtWFOFydFD1V2FdSmrnDVNIIhOyixNN25IlDLDaHPvjgMQ5scJ8aUxSUlGS+72aK1YdwWMimcf1MlRprWpjC/1ujLV32kgCSkQR6Ks+/cEBtMQoqcELJ+Q3tkLJ49y3m8eepNFNdQ90fxagUlKEaMqExl2EnkXBM3s+Kbsx7VIrh24fe+SeIEfKDYZciU+R6JFXUMW5URFN5b3lyigsckRU9Yr9sbuutjjzyk17G6I1MhqiiCbO4Qe5tTQFs58NJjiKa3LXX3dC6Iao7g+erq20ecgfpJH/30StROwpU+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=leica-geosystems.com; dmarc=pass action=none
- header.from=leica-geosystems.com; dkim=pass header.d=leica-geosystems.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TVSJJWK/za4W1Kul68/8iQQ94gYgi9MDP1P18bYlg1A=;
- b=mMPC4tErxHTA+N9WBuxHGrh0IeE4UGz047GqOOBCRwNaerV78UUGcbGL9R90BLLgyQzNiJ9GPu86OvFvnu5mqKNdbgsvzDMo/dB7VBWuxPxl+qV+WwSE/39NJRJiQBYoTm8v8YPR5QKoD6Z/aeOQSr8p/7rrgFUL14IeV/XpS8A=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=leica-geosystems.com;
-Received: from VI1PR06MB3102.eurprd06.prod.outlook.com (2603:10a6:802:c::17)
- by VI1PR06MB3103.eurprd06.prod.outlook.com (2603:10a6:802:5::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11; Thu, 4 Nov
- 2021 16:21:34 +0000
-Received: from VI1PR06MB3102.eurprd06.prod.outlook.com
- ([fe80::5420:b387:e6b8:9e22]) by VI1PR06MB3102.eurprd06.prod.outlook.com
- ([fe80::5420:b387:e6b8:9e22%4]) with mapi id 15.20.4669.011; Thu, 4 Nov 2021
- 16:21:34 +0000
-From:   Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-To:     horia.geanta@nxp.com, pankaj.gupta@nxp.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        iuliana.prodan@nxp.com, michael@walle.cc,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-Subject: [PATCH] crypto: caam - check jr permissions before probing
-Date:   Thu,  4 Nov 2021 16:21:14 +0000
-Message-Id: <20211104162114.2019509-1-andrey.zhizhikin@leica-geosystems.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ZRAP278CA0005.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:10::15) To VI1PR06MB3102.eurprd06.prod.outlook.com
- (2603:10a6:802:c::17)
+        id S231804AbhKDQYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 12:24:34 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:37214 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231751AbhKDQYd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 12:24:33 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 084071FD3F;
+        Thu,  4 Nov 2021 16:21:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636042914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RyW5Wt/bfDet9n989u3PUHzkl4L+NrHrgmkaQ6ot2hU=;
+        b=L92SKm06c/K/noNaQ0Z0+pat7K6xDrEy2Wn9WB8070x+MZT2MLOxJpTacYZxt8NfGexzWd
+        mr+KdTjauTiBwOu6ApzjX9WyAtBPGFzBQBz+5/M3GAmli8x9F98uY/+4AEdeNQMQuvETvz
+        YdWmVfKh3SSIYoL1FmIeHNaJ0fnoQ84=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C88EF13DA2;
+        Thu,  4 Nov 2021 16:21:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 5+7UL6EIhGEJDAAAMHmgww
+        (envelope-from <jgross@suse.com>); Thu, 04 Nov 2021 16:21:53 +0000
+Subject: Re: [PATCH v4] xen/balloon: add late_initcall_sync() for initial
+ ballooning done
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        xen-devel@lists.xenproject.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?= 
+        <marmarek@invisiblethingslab.com>
+References: <20211102091944.17487-1-jgross@suse.com>
+ <f986a7c4-3032-fecd-2e19-4d63a2ee10c7@oracle.com>
+ <f8e52acc-2566-1ed0-d2a3-21e2d468fab7@oracle.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <3b1f1771-0a96-1f71-9c9d-9fb1a53a266e@suse.com>
+Date:   Thu, 4 Nov 2021 17:21:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from aherlnxbspsrv02.lgs-net.com (193.8.40.112) by ZRAP278CA0005.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:10::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10 via Frontend Transport; Thu, 4 Nov 2021 16:21:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 31bdc0e7-9938-4b17-0f7f-08d99faf2b35
-X-MS-TrafficTypeDiagnostic: VI1PR06MB3103:
-X-Microsoft-Antispam-PRVS: <VI1PR06MB3103A842DB3FF4AA704F125AA68D9@VI1PR06MB3103.eurprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: g5UmNT4E8qw1yUoAcRdsPjlx7p6MV2BLBwmCYRHYBC+3hU+V0ZMiTBk7aCPjOuVxnpl9qSK95Y5liBVcX4n/pj+wQwcCdcvW8r0834NhajzvSrgV4PLxrrONrmgsSsHwKInnKfN8NEdg3OBK/mUt5mclhO61vz2ljLNQ0/+YtpKPynWqCJ9pnGcDs+7iP7yXOKQ36Om/XtVP+N1AmeXGsQouv6s3n5FGlhs4ZBWi++f/2aWvw1/ni1V5RPWox+75ltsagH2uDxQMMkRC/puiabvoL0IaIIDHnKYm35AazYXmbUlqAHwrQLSuPSbjyc/1yRldAvqVNAK9YxvBmK9NnSwx9xLkf1Y/KsHhDrIYGz6S8b0pfkxrVeXbBiEkF0KzrF98eLwLk7psacgE+8xWZ1fskxtjmIepmf1IvlO7i4UjVIMAbRbXxbZSJcx10lvkXkZQCagCYp+/VlWulUYronA9ZqKZY0NvdAuLvTMa+2ySWTEa2R6VHs0NRzxQIor2MnYwhce+IvFetY2xNMVHzmb1sa1zdZ9PoUnfi8FUvV8ptcpmSy1G1DN0Gv3VMto+b5+sCYrJA1OFSZdhIdeXFiK83YFAWddS1IQm25Qa2w78GNR7MdI49ZpzfV+/Bp2BoKh6G3ADPfkTQMY8DcSGMvgl2r+ExV5Au/E5USCvbK0YHVbImPPOt5CuR5FeR37ZCTVzqKNyjo/c03CvoottXw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR06MB3102.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6512007)(83380400001)(86362001)(38100700002)(38350700002)(26005)(66476007)(508600001)(956004)(6666004)(2616005)(2906002)(186003)(5660300002)(107886003)(36756003)(52116002)(66946007)(66556008)(44832011)(6506007)(4326008)(8936002)(1076003)(6486002)(8676002)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JrmRjR1yaoN0nYZ/XIpnaIzsGGgGkICVaqe43TSKeK9TQTfMU/BuXCTasrh4?=
- =?us-ascii?Q?lKzMIc6RGtjEebyUGow8EAecYKJ0T4Kxea8zNo6ygbdIl01R4iV7hYGnA5en?=
- =?us-ascii?Q?0U8ZCvdxVAg49yi3XOwjIKHVkliDZMmd8c9BKXM8IeT0vnCv8wiErdxhBX7D?=
- =?us-ascii?Q?3BIEgg0Zh67hlxXmIEe5ooM7T5JIeJPEkAycJgQDw8LEljPb/5fXyJyZqiLC?=
- =?us-ascii?Q?isQKVaIOb2Ig1BUQDJbzH9kKz8yZ7wnTEdgDVQ4m78UzJ2CPqeLwodVun2IX?=
- =?us-ascii?Q?GDO58h1tah5qKwXkBGNa+188sS8WrvBLsxuTuoBLZ3hqCMu9txx18jBt2k4y?=
- =?us-ascii?Q?7ReEmnbDQ/Z/9RaEbO6NgsyKRmMh5NO87sRZqK1k/GgCkP00G/hmJSKW7Bwo?=
- =?us-ascii?Q?N+xiN+DDnRxfYK8Yyh+t63VVJpyunDK4kypr6IDyX/oBxMwCJourrJwR2fdZ?=
- =?us-ascii?Q?i8JfYPXWoVG96/IAYS7n7mYuNmLZRFhLdUx4TZijMkiV6X7arR/f5q2aNZQ3?=
- =?us-ascii?Q?1AwN9t4CEj9iUEN3p2c3+QDBlI4zZL+VVNrTSMvUeQbzvsBcE/cRQwHb74RW?=
- =?us-ascii?Q?UCa1CqoUTQgVBv9U9EPiVu9/S8L+Rw0bsuC9jLBuCVCLFjdtGMtSw3dMuijp?=
- =?us-ascii?Q?J7pFhigQSWaNaKQKXRl42d6x4BtjWjOtx9zHGbeHkiR7JM58dydG8V37APR3?=
- =?us-ascii?Q?UQuM6i2q9Qx8trSMvlUYZXm8VAKTGOvTCUzSbDvfTVHgceTe4k3CS7oDXOPL?=
- =?us-ascii?Q?KlnDzK5l/V3/QU1Ij3S+G+uJ7bK8LoapOOPs5KO+ncDLwedyew8tLJBOgEKm?=
- =?us-ascii?Q?iZOGF5CdkTQC2ZC29cesbzstKlrtkwe1MGnkXstd1GUDbUiAzIMIzbRWPSp5?=
- =?us-ascii?Q?Uq9MnsqYldRq+XpN7ckZDtJksYtlryPEixvpgFM4Kds9lGeZVaZU1QmzFECE?=
- =?us-ascii?Q?Tkjxf4l+jjOBcLye5+Xd+/IoWTOR6DuZ9g3X2MSnbExX/diTp2vRJdlaDhmv?=
- =?us-ascii?Q?aDndjQmme6fUhECCsL5iyiGz/m1FHgR3A97P/qJd6Y5xzc4sQM2whHJPa7Dn?=
- =?us-ascii?Q?HYxRyCMxOf7r+/42CFTOaaNqolx1q8lIyIYtEXSvV7sTuyJj+BO1YD2pWcej?=
- =?us-ascii?Q?29TRswAiCn23eMyh2m0bsSod4jAg/VSOyTMBvFSyr6St0pfQCpmpr13dqLXM?=
- =?us-ascii?Q?Rr3SY4Ool+bzArax1H9FJdIQgeuJhAFfIQzskbEUeIg2okazzCFy4xiZoBUb?=
- =?us-ascii?Q?2bU1Cs1daYjMxLRye+NzQzPwt6vxoAc71YV4gIPsmmjDSMNS+uzheqElW1oL?=
- =?us-ascii?Q?BzzpxHYEga7c7J9MNBmDWAzBAVPtX7DVJkd2CKRSRUJMmfKadC9xGellWZQM?=
- =?us-ascii?Q?H2nWrkNDMLODx6JNZPgSUMihflK0VbKMvymA54Q4mgjJFSI9JBXEF0MG7mzn?=
- =?us-ascii?Q?3hnJjF4k+BoIQLmA3T/7AC3Bkne0+kGW7GUu2yGyYcaWazUqDB6bj7oFx3PI?=
- =?us-ascii?Q?NSCoD+nFdl44oNwhlbgTxwydYEjAFVD9cFUrZk4lWt/1wNhphpEdluK1v0le?=
- =?us-ascii?Q?BT1BzsBkjgq8gRLSlE5TW2Kw19at+zd3DC42L13Aqx52Hl+r2Xq0zQgOmBzd?=
- =?us-ascii?Q?YnWxjB675ZFaI47w3L8F01drVIrFtLI6RE/3+nkiwxbPlPLv8gYQ4rQuB4Rc?=
- =?us-ascii?Q?gOhik1o2qz6C2UqCNFfagAhyX30=3D?=
-X-OriginatorOrg: leica-geosystems.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 31bdc0e7-9938-4b17-0f7f-08d99faf2b35
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR06MB3102.eurprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2021 16:21:34.6514
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EvLcFfrujDabGh9Zi0YtO6gaVeKz244TqIu6/icsunJmyGijfra9SLe/vMms0E5eoZI7H7JfYIUnNxGTnCZnKfR3dvbzqTAZpPKKO/QPpoE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR06MB3103
+In-Reply-To: <f8e52acc-2566-1ed0-d2a3-21e2d468fab7@oracle.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="JzKPLG1VYmIxPCVCcWc1VenFHq5kAdOeC"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Job Rings can be set to be exclusively used by TrustZone which makes the
-access to those rings only possible from Secure World. This access
-separation is defined by setting bits in CAAM JRxDID_MS register. Once
-reserved to be owned by TrustZone, this Job Ring becomes unavailable for
-the Kernel. This reservation is performed early in the boot process,
-even before the Kernel starts, which leads to unavailability of the HW
-at the probing stage. Moreover, the reservation can be done for any Job
-Ring and is not under control of the Kernel. The only condition that
-remains is: at least one Job Ring should be made available for the NS
-world.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--JzKPLG1VYmIxPCVCcWc1VenFHq5kAdOeC
+Content-Type: multipart/mixed; boundary="2vIdrc1xpWVHwJMCuVJCcJZ1hc8yPTd8m";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ xen-devel@lists.xenproject.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Jonathan Corbet <corbet@lwn.net>,
+ Stefano Stabellini <sstabellini@kernel.org>, stable@vger.kernel.org,
+ =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?= <marmarek@invisiblethingslab.com>
+Message-ID: <3b1f1771-0a96-1f71-9c9d-9fb1a53a266e@suse.com>
+Subject: Re: [PATCH v4] xen/balloon: add late_initcall_sync() for initial
+ ballooning done
+References: <20211102091944.17487-1-jgross@suse.com>
+ <f986a7c4-3032-fecd-2e19-4d63a2ee10c7@oracle.com>
+ <f8e52acc-2566-1ed0-d2a3-21e2d468fab7@oracle.com>
+In-Reply-To: <f8e52acc-2566-1ed0-d2a3-21e2d468fab7@oracle.com>
 
-Current implementation lists Job Rings as child nodes of CAAM driver,
-and tries to perform probing on those regardless of whether JR HW is
-accessible or not.
+--2vIdrc1xpWVHwJMCuVJCcJZ1hc8yPTd8m
+Content-Type: multipart/mixed;
+ boundary="------------EA8676FA21E0F3DD37BD799B"
+Content-Language: en-US
 
-This leads to the following error while probing:
-[    1.509894] caam 30900000.crypto: job rings = 3, qi = 0
-[    1.525201] caam_jr 30901000.jr: failed to flush job ring 0
-[    1.525214] caam_jr: probe of 30901000.jr failed with error -5
+This is a multi-part message in MIME format.
+--------------EA8676FA21E0F3DD37BD799B
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Implement a dynamic mechanism to identify which Job Ring is actually
-marked as owned by TrustZone, and fail the probing of those child nodes
-with -ENODEV.
+On 04.11.21 16:55, Boris Ostrovsky wrote:
+>=20
+> On 11/3/21 9:55 PM, Boris Ostrovsky wrote:
+>>
+>> On 11/2/21 5:19 AM, Juergen Gross wrote:
+>>> When running as PVH or HVM guest with actual memory < max memory the
+>>> hypervisor is using "populate on demand" in order to allow the guest
+>>> to balloon down from its maximum memory size. For this to work
+>>> correctly the guest must not touch more memory pages than its target
+>>> memory size as otherwise the PoD cache will be exhausted and the gues=
+t
+>>> is crashed as a result of that.
+>>>
+>>> In extreme cases ballooning down might not be finished today before
+>>> the init process is started, which can consume lots of memory.
+>>>
+>>> In order to avoid random boot crashes in such cases, add a late init
+>>> call to wait for ballooning down having finished for PVH/HVM guests.
+>>>
+>>> Warn on console if initial ballooning fails, panic() after stalling
+>>> for more than 3 minutes per default. Add a module parameter for
+>>> changing this timeout.
+>>>
+>>> Cc: <stable@vger.kernel.org>
+>>> Reported-by: Marek Marczykowski-G=C3=B3recki=20
+>>> <marmarek@invisiblethingslab.com>
+>>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>>
+>>
+>>
+>> Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+>=20
+>=20
+> This appears to have noticeable effect on boot time (and boot experienc=
+e=20
+> in general).
+>=20
+>=20
+> I have
+>=20
+>=20
+>  =C2=A0 memory=3D1024
+>  =C2=A0 maxmem=3D8192
+>=20
+>=20
+> And my boot time (on an admittedly slow box) went from 33 to 45 seconds=
+=2E=20
+> And boot pauses in the middle while it is waiting for ballooning to=20
+> complete.
+>=20
+>=20
+> [=C2=A0=C2=A0=C2=A0 5.062714] xen:balloon: Waiting for initial ballooni=
+ng down having=20
+> finished.
+> [=C2=A0=C2=A0=C2=A0 5.449696] random: crng init done
+> [=C2=A0=C2=A0 34.613050] xen:balloon: Initial ballooning down finished.=
 
-Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
----
- drivers/crypto/caam/ctrl.c   | 18 ++++++++++++------
- drivers/crypto/caam/intern.h |  1 +
- drivers/crypto/caam/jr.c     | 17 +++++++++++++++++
- drivers/crypto/caam/regs.h   |  8 +++++---
- 4 files changed, 35 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
-index ca0361b2dbb0..c48506a02340 100644
---- a/drivers/crypto/caam/ctrl.c
-+++ b/drivers/crypto/caam/ctrl.c
-@@ -805,12 +805,18 @@ static int caam_probe(struct platform_device *pdev)
- 	for_each_available_child_of_node(nprop, np)
- 		if (of_device_is_compatible(np, "fsl,sec-v4.0-job-ring") ||
- 		    of_device_is_compatible(np, "fsl,sec4.0-job-ring")) {
--			ctrlpriv->jr[ring] = (struct caam_job_ring __iomem __force *)
--					     ((__force uint8_t *)ctrl +
--					     (ring + JR_BLOCK_NUMBER) *
--					      BLOCK_OFFSET
--					     );
--			ctrlpriv->total_jobrs++;
-+			/* Check if the JR is not owned exclusively by TZ */
-+			if (!((rd_reg32(&ctrl->jr_mid[ring].liodn_ms)) &
-+				(MSTRID_LOCK_TZ_OWN | MSTRID_LOCK_PRIM_TZ))) {
-+				ctrlpriv->jr[ring] = (struct caam_job_ring __iomem __force *)
-+						     ((__force uint8_t *)ctrl +
-+						     (ring + JR_BLOCK_NUMBER) *
-+						      BLOCK_OFFSET
-+						     );
-+				/* Indicate that this JR is available for NS */
-+				ctrlpriv->jobr_ns_flags |= BIT(ring);
-+				ctrlpriv->total_jobrs++;
-+			}
- 			ring++;
- 		}
- 
-diff --git a/drivers/crypto/caam/intern.h b/drivers/crypto/caam/intern.h
-index 7d45b21bd55a..2919af55dbfe 100644
---- a/drivers/crypto/caam/intern.h
-+++ b/drivers/crypto/caam/intern.h
-@@ -91,6 +91,7 @@ struct caam_drv_private {
- 	 * or from register-based version detection code
- 	 */
- 	u8 total_jobrs;		/* Total Job Rings in device */
-+	u8 jobr_ns_flags;	/* Flags for each Job Ring if it is not owned by TZ*/
- 	u8 qi_present;		/* Nonzero if QI present in device */
- 	u8 mc_en;		/* Nonzero if MC f/w is active */
- 	int secvio_irq;		/* Security violation interrupt number */
-diff --git a/drivers/crypto/caam/jr.c b/drivers/crypto/caam/jr.c
-index 7f2b1101f567..a260981e0843 100644
---- a/drivers/crypto/caam/jr.c
-+++ b/drivers/crypto/caam/jr.c
-@@ -511,10 +511,27 @@ static int caam_jr_probe(struct platform_device *pdev)
- 	struct device_node *nprop;
- 	struct caam_job_ring __iomem *ctrl;
- 	struct caam_drv_private_jr *jrpriv;
-+	struct caam_drv_private *caamctrlpriv;
- 	static int total_jobrs;
- 	struct resource *r;
- 	int error;
- 
-+	/* Before we proceed with the JR device probing, verify
-+	 * that the job ring itself is available to Non-Secure world.
-+	 * If the JR is owned exclusively by TZ - we should not even
-+	 * process it further.
-+	 */
-+	caamctrlpriv = dev_get_drvdata(pdev->dev.parent);
-+	if (!(caamctrlpriv->jobr_ns_flags & BIT(total_jobrs))) {
-+		/* This job ring is marked to be exclusively used by TZ,
-+		 * do not proceed with probing as the HW block is inaccessible.
-+		 * Increment total seen JR devices since it is used as the index
-+		 * into verification and fail probing for this node.
-+		 */
-+		total_jobrs++;
-+		return -ENODEV;
-+	}
-+
- 	jrdev = &pdev->dev;
- 	jrpriv = devm_kzalloc(jrdev, sizeof(*jrpriv), GFP_KERNEL);
- 	if (!jrpriv)
-diff --git a/drivers/crypto/caam/regs.h b/drivers/crypto/caam/regs.h
-index 3738625c0250..8ade617f9e65 100644
---- a/drivers/crypto/caam/regs.h
-+++ b/drivers/crypto/caam/regs.h
-@@ -445,10 +445,12 @@ struct caam_perfmon {
- };
- 
- /* LIODN programming for DMA configuration */
--#define MSTRID_LOCK_LIODN	0x80000000
--#define MSTRID_LOCK_MAKETRUSTED	0x00010000	/* only for JR masterid */
-+#define MSTRID_LOCK_LIODN		BIT(31)
-+#define MSTRID_LOCK_MAKETRUSTED	BIT(16)	/* only for JR: masterid */
-+#define MSTRID_LOCK_TZ_OWN		BIT(15)	/* only for JR: owned by TZ */
-+#define MSTRID_LOCK_PRIM_TZ		BIT(4)	/* only for JR: Primary TZ */
- 
--#define MSTRID_LIODN_MASK	0x0fff
-+#define MSTRID_LIODN_MASK		GENMASK(11, 0)
- struct masterid {
- 	u32 liodn_ms;	/* lock and make-trusted control bits */
- 	u32 liodn_ls;	/* LIODN for non-sequence and seq access */
+This shows that before it was just by chance that the PoD cache wasn't
+exhausted.
 
-base-commit: 8a796a1dfca2780321755033a74bca2bbe651680
--- 
-2.25.1
+> So at least I think we should consider bumping log level down from info=
+=2E
 
+Which level would you prefer? warn?
+
+And if so, would you mind doing this while committing (I have one day
+off tomorrow)?
+
+
+Juergen
+
+--------------EA8676FA21E0F3DD37BD799B
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------EA8676FA21E0F3DD37BD799B--
+
+--2vIdrc1xpWVHwJMCuVJCcJZ1hc8yPTd8m--
+
+--JzKPLG1VYmIxPCVCcWc1VenFHq5kAdOeC
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmGECKEFAwAAAAAACgkQsN6d1ii/Ey+P
+BggAh6jDDygwPd1B1MxUqCUOGK7SQYdbqJnusvOH0yW8JyzIZXMriK8FS9A2KIaUTGoVZal7LsqD
+L241gvpZq4mIP+QJR088u2IOzfYNJ3VoWRqAn4SZFw4EFMu/DIVi5CZem0Lu0fCwn0SqBjdYwhCX
+4aHeSlOQi9nigZbA+VJRGPZfg+u4tq60OwyJT62ZyWzn7QveDHCpia0Bg8scrF/ClMF1QRtWG8en
+QHvYw9aIfmuCDHP1rojzjiMMvqanZyUOFLNXwmnfxmORJXFB9pfytBWkxhGA6DU0pRtPTsdb1gwQ
+a1x3VdrfLEtLQ7MJZOqcYKENNMxby6ovMdA9uWpCEg==
+=saKu
+-----END PGP SIGNATURE-----
+
+--JzKPLG1VYmIxPCVCcWc1VenFHq5kAdOeC--
