@@ -2,109 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBD344501C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:22:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 412EC445020
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230492AbhKDIY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhKDIY4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:24:56 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009AAC061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 01:22:19 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id u11so6014372plf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 01:22:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CyUgf+E27izz8eZXu5EdO3onvde6cXVaxrtlTel0Gjk=;
-        b=T4HeVGgFFrZdkuI85Bv3La9ebDCcKARia1U8w6+C7sAJH4G3+09PgbpTXs/lka+buB
-         OF5J3MhrtOZsgBA2oihZSiHfOBA6gqBVW2+ANchQrjtPDzICz0bnwT0GoYxXn2S3Eei7
-         eUlrhQCzE34Dm7ZJJ1b00zu4NLxaYmYoV3t49stkPfwhxvUbcqNBY311qyOYNOFv+Yud
-         ljH38voo6ORAJ9v5mZmC+qVhPd5p+wiy4A4THXrZ7Whnm6w8iHMrzPzESRpbhnHxAULb
-         ab19THiXMDgDbFks9w4XGqOlum4stt5ChV09IIOL2ZuGJnMWdPPoE9Vnv4XxixfwEsPv
-         oG/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CyUgf+E27izz8eZXu5EdO3onvde6cXVaxrtlTel0Gjk=;
-        b=2VINZOyO9RziDtfO7PodLazwlRrNNmUx5VsljNX5cueH0JJmJS045Ev9gD1MhTDFt8
-         gZlb2Jbg9mN5oB7dOBQRAZYnvO79+0f0yr1VXtLr4ZbBkxX63zUNV7LrpDsaKRVFGzf3
-         zj/ItUpUYpkzXCec2JYlO6iLU3V9GXZ8ruMAlqXePJUAnCM7Q93U+s2CJCFMy7UE4KRJ
-         ZlWckILa0fXaIoMjGYS2WDOJklrHmCxYe29BamdnSlI5ZAHXSch287GimJ1XBwzz90sj
-         hDp64VMV8TGmcMhQkOfAXTApp7JMopCUmbK7qZNuf/LDxHnCgzfIlZWKgM5Ye+thiyiw
-         BPjQ==
-X-Gm-Message-State: AOAM530fevRjG8SkJpKAIpIoO9+mt6G28DNKVjcetrK/DJyd302lLR3E
-        OMIHqvGqOZxD3C/6jTsNJoU=
-X-Google-Smtp-Source: ABdhPJzIGhrUoaVah+gozgNMaDDVh94KHE4PVsAecpIA5T1RBgEXLmZSdPSO6V1LraPH7O2zGbWk4w==
-X-Received: by 2002:a17:90b:155:: with SMTP id em21mr20866570pjb.12.1636014138415;
-        Thu, 04 Nov 2021 01:22:18 -0700 (PDT)
-Received: from localhost.localdomain ([94.177.118.123])
-        by smtp.gmail.com with ESMTPSA id m3sm4826985pfk.190.2021.11.04.01.22.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 01:22:17 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Sahitya Tummala <stummala@codeaurora.org>
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] fs: f2fs: fix UAF in f2fs_available_free_memory
-Date:   Thu,  4 Nov 2021 16:22:01 +0800
-Message-Id: <20211104082202.1286551-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230511AbhKDIZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:25:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230084AbhKDIZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 04:25:17 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A72C610D0;
+        Thu,  4 Nov 2021 08:22:40 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1miY17-003QcM-QF; Thu, 04 Nov 2021 08:22:37 +0000
+Date:   Thu, 04 Nov 2021 08:22:37 +0000
+Message-ID: <8735oc9voy.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Qin Jian <qinjian@cqplus1.com>
+Cc:     robh+dt@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
+        p.zabel@pengutronix.de, linux@armlinux.org.uk, broonie@kernel.org,
+        arnd@arndb.de, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, wells.lu@sunplus.com
+Subject: Re: [PATCH v4 00/10] Add Sunplus SP7021 SoC Support
+In-Reply-To: <cover.1635993377.git.qinjian@cqplus1.com>
+References: <cover.1635496594.git.qinjian@cqplus1.com>
+        <cover.1635993377.git.qinjian@cqplus1.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: qinjian@cqplus1.com, robh+dt@kernel.org, mturquette@baylibre.com, sboyd@kernel.org, p.zabel@pengutronix.de, linux@armlinux.org.uk, broonie@kernel.org, arnd@arndb.de, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, wells.lu@sunplus.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-if2fs_fill_super
--> f2fs_build_segment_manager
-   -> create_discard_cmd_control
-      -> f2fs_start_discard_thread
+Qin,
 
-It invokes kthread_run to create a thread and run issue_discard_thread.
+On Thu, 04 Nov 2021 02:56:57 +0000,
+Qin Jian <qinjian@cqplus1.com> wrote:
+> 
+> This patch series add Sunplus SP7021 SoC support.
+> 
+> Sunplus SP7021 is an ARM Cortex A7 (4 cores) based SoC. It integrates many
+> peripherals (ex: UART, I2C, SPI, SDIO, eMMC, USB, SD card and etc.) into a
+> single chip. It is designed for industrial control.
+> 
+> SP7021 consists of two chips (dies) in a package. One is called C-chip
+> (computing chip). It is a 4-core ARM Cortex A7 CPU. It adopts high-level
+> process (22 nm) for high performance computing. The other is called P-
+> chip (peripheral chip). It has many peripherals and an ARM A926 added
+> especially for real-time control. P-chip is made for customers. It adopts
+> low-level process (ex: 0.11 um) to reduce cost.
 
-However, if f2fs_build_node_manager fails, the control flow goes to
-free_nm and calls f2fs_destroy_node_manager. This function will free
-sbi->nm_info. However, if issue_discard_thread accesses sbi->nm_info
-after the deallocation, but before the f2fs_stop_discard_thread, it will
-cause UAF(Use-after-free).
+That's the 3rd version of this series since Friday, two of them during
+the merge window. All you are achieving is to actually *delay* the
+review process (at this rate, I'll probably wait until v11 before I
+take another look at it).
 
--> f2fs_destroy_segment_manager
-   -> destroy_discard_cmd_control
-      -> f2fs_stop_discard_thread
+Documentation/process/submitting-patches.rst states it clearly:
 
-Fix this by stopping discard thread before f2fs_destroy_node_manager.
+<quote>
+Wait for a minimum of one week before resubmitting
+</quote>
 
-Note that, the commit d6d2b491a82e1 introduces the call of
-f2fs_available_free_memory into issue_discard_thread.
+So please leave people the time to actually do a good review job, and
+take the opportunity to review your own patches before posting them
+again.
 
-Fixes: d6d2b491a82e ("f2fs: allow to change discard policy based on cached discard cmds")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
- fs/f2fs/super.c | 2 ++
- 1 file changed, 2 insertions(+)
+Thanks,
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 78ebc306ee2b..dbe040b66802 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -4352,6 +4352,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
- free_stats:
- 	f2fs_destroy_stats(sbi);
- free_nm:
-+	/* stop discard thread before destroying node manager */
-+	f2fs_stop_discard_thread(sbi);
- 	f2fs_destroy_node_manager(sbi);
- free_sm:
- 	f2fs_destroy_segment_manager(sbi);
+	M.
+
 -- 
-2.25.1
-
+Without deviation from the norm, progress is not possible.
