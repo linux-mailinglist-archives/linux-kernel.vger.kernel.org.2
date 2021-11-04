@@ -2,50 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111A84455FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 437934455FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:03:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbhKDPGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 11:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
+        id S231450AbhKDPGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 11:06:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbhKDPGN (ORCPT
+        with ESMTP id S231388AbhKDPGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 11:06:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8EFC061714;
-        Thu,  4 Nov 2021 08:03:35 -0700 (PDT)
+        Thu, 4 Nov 2021 11:06:24 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BC2C06127A;
+        Thu,  4 Nov 2021 08:03:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=ZTxXopUmkY1B4mLUzgPVJBNJwKWxxnzj2Sovw24wOoc=; b=kNcXKRBS3xPEMduGlZBk7OiC4l
-        UlIRsZ/HYitqc0YSiAfQiNxmg89EqIttpiT4eJHxAwffCnNTDbdaFkJGrikp/c3XYgyP6QljYld9i
-        ug6w9H7556vzkvMcfygGkzj7e/bu+NrZp3lAfE1+uYuu0Mvi9ufMbsIQinP27Eku2KLVso0p6iEyH
-        ePyJ/CBi62bJq+w0JafU4jyLi1dzE4Kq7meWAr/gJfozu9XcRfmP3N3Dxe1Jh3HtKbiTDz52XX/Ws
-        I5vinVxtKVg8mj/F7GpI9NncAd11fTK2HS3pF65G5TgeQBoAqwdmCJ5cpi1CIinZWC6n82yRSRz/M
-        SD0hvNyQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mieEG-005wYd-CL; Thu, 04 Nov 2021 15:01:40 +0000
-Date:   Thu, 4 Nov 2021 15:00:36 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     linux-arch@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: flush_dcache_page vs kunmap_local
-Message-ID: <YYP1lAq46NWzhOf0@casper.infradead.org>
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=qwvXqK9WfpABlnYLs1rz4OW/XX0gy0Uke4TaHG9ErAQ=; b=QMhaydoA8wa3AMFKH7QOCRC+bX
+        rmAI1iGz0bvAWpEpXbo/BpwSRs3rylndY+kuB0KIpxe0Oow2cKvi8xLfWi2QlCaKFBvsCG7rWVYT+
+        OssYjZeXdwk3lA2o8z54FrdJqUB1YbDIzEMLo+kEaBzVtcYZjLCv0x/SNY2A25LSgI7TBhnNd2TYm
+        c/lK/KOR1Y4sNGMJxzlyLJXK403kbHlb1O/ZmqARBVzjbTnJZqd9bsQJevaBRrG8tbkmGHGGnKySu
+        ARa/DTNSzjN9Z6BQWmWA++gqHFFoxSxVmQcT5A5C25JxmcWjvLRWRXFGJHaTxawon48V/S66EbgKt
+        s4cUrhKQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mieHK-009C76-B4; Thu, 04 Nov 2021 15:03:46 +0000
+Subject: Re: [RFC 6/8] HID: usi: Add driver for Universal Stylus Interface
+ (USI)
+To:     Tero Kristo <tero.kristo@linux.intel.com>, jikos@kernel.org,
+        benjamin.tissoires@redhat.com, mika.westerberg@linux.intel.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211104133701.1733551-1-tero.kristo@linux.intel.com>
+ <20211104133701.1733551-7-tero.kristo@linux.intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <07757860-06bd-b47a-51ff-24cf31a7b28b@infradead.org>
+Date:   Thu, 4 Nov 2021 08:03:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20211104133701.1733551-7-tero.kristo@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In https://lore.kernel.org/lkml/CAHk-=wijdojzo56FzYqE5TOYw2Vws7ik3LEMGj9SPQaJJ+Z73Q@mail.gmail.com/
-Linus offers the opinion that kunmap calls should imply a
-flush_dcache_page().  Christoph added calls to flush_dcache_page()
-in commit 8dad53a11f8d.  Was this "voodoo programming", or was there
-a real problem being addressed?
+On 11/4/21 6:36 AM, Tero Kristo wrote:
+> diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
+> index 3c33bf572d6d..c235ecb8f037 100644
+> --- a/drivers/hid/Kconfig
+> +++ b/drivers/hid/Kconfig
+> @@ -1222,6 +1222,11 @@ config HID_MCP2221
+>   	To compile this driver as a module, choose M here: the module
+>   	will be called hid-mcp2221.ko.
+>   
+> +config HID_USI
+> +	tristate "USI (Universal Stylus Interface) support"
+> +	help
+> +	Provides USI support over I2C HID interface.
 
+Indent help text "Provides ..." with 2 additional spaces, please,
+per coding-style.rst.
+
+-- 
+~Randy
