@@ -2,248 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13FB445054
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:29:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9A744505C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:31:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhKDIcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:32:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
+        id S231129AbhKDIdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:33:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhKDIcV (ORCPT
+        with ESMTP id S230152AbhKDIdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:32:21 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E404C061714;
-        Thu,  4 Nov 2021 01:29:43 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id b12so7359409wrh.4;
-        Thu, 04 Nov 2021 01:29:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pcwd8GDYliHD4EuN9qh2enVI/ZU5CIFHUNJvQUBYilI=;
-        b=dGUbbax9kMiAJm1Pwhzjm3VGm1knzly+h1/Fephby+5bqqt/Mz30E5nEmcI7IvpB+B
-         1zb44ty9JLoyAnBs+DN9Gr8pkW7lHwmJdcUmptUo3MNcK7kmoVzGeSD1uZtVBHW661sY
-         kGuWRij3/l5fQQ5nY8b/XbRMHUdRwxNa4cCqWFdTXK6gb1lDSyzcM97Gjk1JAUHrjfjU
-         CJfaOgncKZfgsy5khYD5YZcrLtWOmMrUEmrVNlrt/gK59gge9568416eaeUBfLdRXq40
-         YErhxvGgcSFLTH06z+eYOHaO7A9pZZ9sHrpXlWGZydQjBnLGUhOS2eR9i8Sdb9rsVK01
-         X0Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pcwd8GDYliHD4EuN9qh2enVI/ZU5CIFHUNJvQUBYilI=;
-        b=Qd8zezkBeU6WfW57TaEG47dj5BRIlB6lf6d7IXTRPTD/lbeUy4PeZnDDV/F0SH4IkV
-         le5p16OuIOzlZtWb+MztE9xksosueZYQTZlqw2GhTKodqrMxwXqLFLZyX1y92lbLQBg/
-         aENSIY0Xf/0S8WLDHN+caRteQlBkQe7HjYIMHoBKNdskzlFukFPS1bUk2fH1/PKOth8w
-         ff14M6jMcnozl4wob+coqitB2lihOZAfg5lH/TT1Gqa1LBlpcLX6xGYP+1jFIcfY8zvd
-         dbhPx4OV0JETpSls9xU6hDsyZAqGCFTvdWjuBRvWFPtEKBOu10gcvjHKrLHMJWIaL/qo
-         DIJA==
-X-Gm-Message-State: AOAM533DpsihJ2ecUn5UxQHxV00F6o38EpuAJGHiWdWO1CTYn7l1AULl
-        soUdz2v0E/JMi526+rv1EaE=
-X-Google-Smtp-Source: ABdhPJwDLiXTSPiambILjtqwczoTMpJV8US3YrI7+PEySnF9sH1GZDt1S0qfQU+l3YSZ3lAZr5uj+w==
-X-Received: by 2002:adf:f551:: with SMTP id j17mr61148688wrp.392.1636014581916;
-        Thu, 04 Nov 2021 01:29:41 -0700 (PDT)
-Received: from orome.fritz.box ([193.209.96.43])
-        by smtp.gmail.com with ESMTPSA id e3sm4242898wrp.8.2021.11.04.01.29.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 01:29:41 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 09:29:38 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        JC Kuo <jckuo@nvidia.com>, Nicolas Chauvet <kwizart@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2] usb: xhci: tegra: Check padctrl interrupt presence in
- device tree
-Message-ID: <YYOZ8sYB94hZlncn@orome.fritz.box>
-References: <20211102184801.7229-1-digetx@gmail.com>
+        Thu, 4 Nov 2021 04:33:38 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E03C061714;
+        Thu,  4 Nov 2021 01:31:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HvPPZaYKI38YNmuRJM5hzuQ/Myh4zSSZv1Dpza7E2EE=; b=rgd2aQd0E7KFmWYzh6XuxmWQ/a
+        2nuIGl6b/tYqHs5nx2qXDFOkr2opwjn+i9gckjBg5UHQTZ1wLWMn54rmp0o9V/6SoOFS4Wpn7c5FA
+        urGoX7G3JA8sqCmiKKl64pSiZ5yu2jvosA35R8rXyjj5LB+3mGc4/wXLwfXkKycwRjOCsLdHgWbUO
+        y+xfWQF9xGg6NgJN+PqeACSXXuDQ7QJZiZ8TL6lJtSaShXTB7Yu7tMZ6Kjke02kAY7Xipc91PRVI1
+        ravx8elM5ndKgTlYyl6yD664dIe4upAG3HBbVrcmT3YQYEB5lQPQZ4SvvEXl6JggIkmrKH7ZpY1EC
+        MYz7JaFA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1miY92-008IOw-BM; Thu, 04 Nov 2021 08:30:48 +0000
+Date:   Thu, 4 Nov 2021 01:30:48 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jane Chu <jane.chu@oracle.com>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
+ RWF_RECOVERY_DATA flag
+Message-ID: <YYOaOBKgFQYzT/s/@infradead.org>
+References: <YXFPfEGjoUaajjL4@infradead.org>
+ <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
+ <YXJN4s1HC/Y+KKg1@infradead.org>
+ <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
+ <YXj2lwrxRxHdr4hb@infradead.org>
+ <20211028002451.GB2237511@magnolia>
+ <YYDYUCCiEPXhZEw0@infradead.org>
+ <CAPcyv4j8snuGpy=z6BAXogQkP5HmTbqzd6e22qyERoNBvFKROw@mail.gmail.com>
+ <YYK/tGfpG0CnVIO4@infradead.org>
+ <CAPcyv4it2_PVaM8z216AXm6+h93frg79WM-ziS9To59UtEQJTA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Qycldy+Ti1hSw7yP"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211102184801.7229-1-digetx@gmail.com>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+In-Reply-To: <CAPcyv4it2_PVaM8z216AXm6+h93frg79WM-ziS9To59UtEQJTA@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 03, 2021 at 01:33:58PM -0700, Dan Williams wrote:
+> Is the exception table requirement not already fulfilled by:
+> 
+> sigaction(SIGBUS, &act, 0);
+> ...
+> if (sigsetjmp(sj_env, 1)) {
+> ...
+> 
+> ...but yes, that's awkward when all you want is an error return from a
+> copy operation.
 
---Qycldy+Ti1hSw7yP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yeah.  The nice thing about the kernel uaccess / _nofault helpers is
+that they allow normal error handling flows.
 
-On Tue, Nov 02, 2021 at 09:48:01PM +0300, Dmitry Osipenko wrote:
-> Older device-trees don't specify padctrl interrupt and xhci-tegra driver
-> now fails to probe with -EINVAL using those device-trees. Check interrupt
-> presence and keep runtime PM disabled if it's missing to fix the trouble.
->=20
-> Fixes: 971ee247060d ("usb: xhci: tegra: Enable ELPG for runtime/system PM=
-")
-> Cc: <stable@vger.kernel.org> # 5.14+
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Reported-by: Nicolas Chauvet <kwizart@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->=20
-> Changelog:
->=20
-> v2: - Use of_irq_parse_one() to check interrupt presence status in device=
--tree,
->       instead of checking interrupt properties directly.
->=20
->     - USB wakeup and runtime PM are kept disabled if interrupt is missing,
->       instead of returning -EOPNOTSUPP from RPM-suspend callback.
->=20
->     - Added debug message, telling about the missing interrupt.
->=20
->  drivers/usb/host/xhci-tegra.c | 40 ++++++++++++++++++++++++-----------
->  1 file changed, 28 insertions(+), 12 deletions(-)
+> For _nofault I'll note that on the kernel side Linus was explicit
+> about not mixing fault handling and memory error exception handling in
+> the same accessor. That's why copy_mc_to_kernel() and
+> copy_{to,from}_kernel_nofault() are distinct.
 
-I like this version much better. Two minor nits:
+I've always wondered why we need all this mess.  But if the head
+penguin wants it..
 
->=20
-> diff --git a/drivers/usb/host/xhci-tegra.c b/drivers/usb/host/xhci-tegra.c
-> index 1bf494b649bd..0a7ab596be85 100644
-> --- a/drivers/usb/host/xhci-tegra.c
-> +++ b/drivers/usb/host/xhci-tegra.c
-> @@ -1400,6 +1400,7 @@ static void tegra_xusb_deinit_usb_phy(struct tegra_=
-xusb *tegra)
-> =20
->  static int tegra_xusb_probe(struct platform_device *pdev)
->  {
-> +	struct of_phandle_args irq_arg;
+> I only say that to probe
+> deeper about what a "copy_mc()" looks like in userspace? Perhaps an
+> interface to suppress SIGBUS generation and register a ring buffer
+> that gets filled with error-event records encountered over a given
+> MMAP I/O code sequence?
 
-Could've been just "args". There's no other "arg" variable here, so no
-need for an irq_ prefix to differentiate.
+Well, the equivalent to the kernel uaccess model would be to register
+a SIGBUS handler that uses an exception table like the kernel, and then
+if you use the right helpers to load/store they can return errors.
 
->  	struct tegra_xusb *tegra;
->  	struct device_node *np;
->  	struct resource *regs;
-> @@ -1454,10 +1455,16 @@ static int tegra_xusb_probe(struct platform_devic=
-e *pdev)
->  		goto put_padctl;
->  	}
-> =20
-> -	tegra->padctl_irq =3D of_irq_get(np, 0);
-> -	if (tegra->padctl_irq <=3D 0) {
-> -		err =3D (tegra->padctl_irq =3D=3D 0) ? -ENODEV : tegra->padctl_irq;
-> -		goto put_padctl;
-> +	/* Older device-trees don't have padctrl interrupt */
-> +	err =3D of_irq_parse_one(np, 0, &irq_arg);
-> +	if (!err) {
-> +		tegra->padctl_irq =3D of_irq_get(np, 0);
-> +		if (tegra->padctl_irq <=3D 0) {
-> +			err =3D (tegra->padctl_irq =3D=3D 0) ? -ENODEV : tegra->padctl_irq;
-> +			goto put_padctl;
-> +		}
-> +	} else {
-> +		dev_dbg(&pdev->dev, "%pOF doesn't have interrupt\n", np);
+The other option would be something more like the Windows Structured
+Exception Handling:
 
-This seems a bit vague. I think it'd be better to include information
-about the consequence of this interrupt being missing and/or some hint
-about what should be done about it. Perhaps something like:
-
-		dev_dbg(&pdev->dev, "%pOF is missing an interrupt, disabling PM support\n=
-", np);
-
-With that fixed:
-
-Acked-by: Thierry Reding <treding@nvidia.com>
+https://docs.microsoft.com/en-us/cpp/cpp/structured-exception-handling-c-cpp?view=msvc-160
 
 
-I've also run this through our GVS test farm, and didn't spot any
-regressions, so:
+> > I think you misunderstood me.  I don't think pmem needs to be
+> > decoupled from the read/write path.  But I'm very skeptical of adding
+> > a new flag to the common read/write path for the special workaround
+> > that a plain old write will not actually clear errors unlike every
+> > other store interfac.
+> 
+> Ah, ok, yes, I agree with you there that needing to redirect writes to
+> a platform firmware call to clear errors, and notify the device that
+> its error-list has changed is exceedingly awkward.
 
-Tested-by: Thierry Reding <treding@nvidia.com>
+Yes.  And that is the big difference to every other modern storage
+device.  SSDs always write out of place and will just not reuse bad
+blocks, and all drivers built in the last 25-30 years will also do
+internal bad block remapping.
 
-Thierry
+> That said, even if
+> the device-side error-list auto-updated on write (like the promise of
+> MOVDIR64B) there's still the question about when to do management on
+> the software error lists in the driver and/or filesytem. I.e. given
+> that XFS at least wants to be aware of the error lists for block
+> allocation and "list errors" type features. More below...
 
->  	}
-> =20
->  	tegra->host_clk =3D devm_clk_get(&pdev->dev, "xusb_host");
-> @@ -1696,11 +1703,15 @@ static int tegra_xusb_probe(struct platform_devic=
-e *pdev)
->  		goto remove_usb3;
->  	}
-> =20
-> -	err =3D devm_request_threaded_irq(&pdev->dev, tegra->padctl_irq, NULL, =
-tegra_xusb_padctl_irq,
-> -					IRQF_ONESHOT, dev_name(&pdev->dev), tegra);
-> -	if (err < 0) {
-> -		dev_err(&pdev->dev, "failed to request padctl IRQ: %d\n", err);
-> -		goto remove_usb3;
-> +	if (tegra->padctl_irq) {
-> +		err =3D devm_request_threaded_irq(&pdev->dev, tegra->padctl_irq,
-> +						NULL, tegra_xusb_padctl_irq,
-> +						IRQF_ONESHOT, dev_name(&pdev->dev),
-> +						tegra);
-> +		if (err < 0) {
-> +			dev_err(&pdev->dev, "failed to request padctl IRQ: %d\n", err);
-> +			goto remove_usb3;
-> +		}
->  	}
-> =20
->  	err =3D tegra_xusb_enable_firmware_messages(tegra);
-> @@ -1718,13 +1729,16 @@ static int tegra_xusb_probe(struct platform_devic=
-e *pdev)
->  	/* Enable wake for both USB 2.0 and USB 3.0 roothubs */
->  	device_init_wakeup(&tegra->hcd->self.root_hub->dev, true);
->  	device_init_wakeup(&xhci->shared_hcd->self.root_hub->dev, true);
-> -	device_init_wakeup(tegra->dev, true);
-> =20
->  	pm_runtime_use_autosuspend(tegra->dev);
->  	pm_runtime_set_autosuspend_delay(tegra->dev, 2000);
->  	pm_runtime_mark_last_busy(tegra->dev);
->  	pm_runtime_set_active(tegra->dev);
-> -	pm_runtime_enable(tegra->dev);
-> +
-> +	if (tegra->padctl_irq) {
-> +		device_init_wakeup(tegra->dev, true);
-> +		pm_runtime_enable(tegra->dev);
-> +	}
-> =20
->  	return 0;
-> =20
-> @@ -1772,7 +1786,9 @@ static int tegra_xusb_remove(struct platform_device=
- *pdev)
->  	dma_free_coherent(&pdev->dev, tegra->fw.size, tegra->fw.virt,
->  			  tegra->fw.phys);
-> =20
-> -	pm_runtime_disable(&pdev->dev);
-> +	if (tegra->padctl_irq)
-> +		pm_runtime_disable(&pdev->dev);
-> +
->  	pm_runtime_put(&pdev->dev);
-> =20
->  	tegra_xusb_powergate_partitions(tegra);
-> --=20
-> 2.33.1
->=20
+Well, the whole problem is that we should not have to manage this at
+all, and this is where I blame Intel.  There is no good reason to not
+slightly overprovision the nvdimms and just do internal bad page
+remapping like every other modern storage device.
 
---Qycldy+Ti1hSw7yP
-Content-Type: application/pgp-signature; name="signature.asc"
+> Hasn't this been a perennial topic at LSF/MM, i.e. how to get an
+> interface for the filesystem to request "try harder" to return data?
 
------BEGIN PGP SIGNATURE-----
+Trying harder to _get_ data or to _store_ data?  All the discussion
+here seems to be able about actually writing data.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmGDme8ACgkQ3SOs138+
-s6GevxAAvkTTp7npOtsuFJy7thXLlayo+hsSGRMPEEatIEM8UPncC9OM4ljiBVWY
-3nCRClCxbxrr+FS6ChXsDwh1QOKZuYJdLQk5Hwny3prfp2mH7Ibzgp+vU4RXQlKw
-zByURJ4FdwFUk+avxtT/N20jzgkEy0gaVPm7aLajInXeRXcmZ9wQZY0TmTadcB5p
-cRj1czJDa7tWmkIEvSjLUHb1X+yyMiEq151VUxI8/NzWcXSQmnCN16hV6d0D6MZ9
-eK89pk3/RiBoRDK2yfv33I1tIwdRLvXi9gOQuN/4tSbf1Y94a8+Zq2FuRKfWGSB4
-XSasfrDxdpUchELjlapcHjV8JEF5EyGhaVCOByv6k2QtBjG/SU+S+LpDQPY4KwzO
-mJqRJdvgSSJDRp0A6629p/ciyiey30CJN24WIMMnTXpjefn53/stQVlSlfT3vnq3
-4hsCm3l508oAqqohdnFaThWjF5KqM5wWAO7FQqBLi2xPW5LvHeve6METUlQA+SFm
-nSwafHVqrbtoPGWBBUAZZaQjpLdVWIC5mXfsVfvtAj3po7gwf7z7tAuUEHpEjfrS
-pR+UD/qtgedI8VTKo2eaO0eIqnzI+ZCA2hL0iDB+F+2q5iXOPqdI5Wji9FDwMD5d
-SXK60cUYla7TUnCsXwLHzL4Es4CQv1aXPgdSBQVMc5BMmOJdIlk=
-=NQzK
------END PGP SIGNATURE-----
+> If the device has a recovery slow-path, or error tracking granularity
+> is smaller than the I/O size, then RWF_RECOVER_DATA gives the
+> device/driver leeway to do better than the typical fast path. For
+> writes though, I can only come up with the use case of this being a
+> signal to the driver to take the opportunity to do error-list
+> management relative to the incoming write data.
 
---Qycldy+Ti1hSw7yP--
+Well, while devices have data recovery slow path they tend to use those
+automatically.  What I'm actually seeing in practice is flags in the
+storage interfaces to skip this slow path recovery because the higher
+level software would prefer to instead recover e.g. from remote copies.
+
+> However, if signaling that "now is the time to update error-lists" is
+> the requirement, I imagine the @kaddr returned from
+> dax_direct_access() could be made to point to an unmapped address
+> representing the poisoned page. Then, arrange for a pmem-driver fault
+> handler to emulate the copy operation and do the slow path updates
+> that would otherwise have been gated by RWF_RECOVER_DATA.
+
+That does sound like a much better interface than most of what we've
+discussed so far. 
+
+> Although, I'm not excited about teaching every PMEM arch's fault
+> handler about this new source of kernel faults. Other ideas?
+> RWF_RECOVER_DATA still seems the most viable / cleanest option, but
+> I'm willing to do what it takes to move this error management
+> capability forward.
+
+So far out of the low instrusiveness options Janes' previous series
+to automatically retry after calling a clear_poison operation seems
+like the best idea so far.  We just need to also think about what
+we want to do for direct users of ->direct_access that do not use
+the mcsafe iov_iter helpers.
