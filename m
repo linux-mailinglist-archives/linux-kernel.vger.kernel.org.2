@@ -2,111 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71044458D7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 341374458D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:43:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232300AbhKDRqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:46:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60282 "EHLO
+        id S232347AbhKDRqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232255AbhKDRqQ (ORCPT
+        with ESMTP id S232286AbhKDRqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:46:16 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CEC5C061203;
-        Thu,  4 Nov 2021 10:43:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tpfTM33t7i1Dy0/MirwuyrZHtl/M5zJb53zksLaIaww=; b=izhOhuQ7+o/FPLVHvFRYe7dOmO
-        EKtpQ0CBDnMKmuXKOe/Zlh3NIONEezpxzTNpDKYTwr2pABanbXIUtTny/VMaNObE/41bPRgqEE1uC
-        cJRKfVaWHcbVX0BuZoBaOgRR/QHe11HLcQ1i7+xflfuFOu2PIxtSyoHEzWKTqfAypcc0omMUWaqIi
-        wkJHvA25mPsBegAiAH8kwFuGnFD2JvXc+tPH335MDjyWcR+/l22fT7b3i51K+5SAj73ghFlbVcP7g
-        vB5RMzB4fuLnjRRi8+4CN9cEcAaZrhSCOTkqBD6gjg+TXUwTbfhTswKMHe6JQ4Skm4Kb2uT9qmp78
-        l/43M2oQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1migln-009hiW-DT; Thu, 04 Nov 2021 17:43:23 +0000
-Date:   Thu, 4 Nov 2021 10:43:23 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Jane Chu <jane.chu@oracle.com>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
- RWF_RECOVERY_DATA flag
-Message-ID: <YYQbu6dOCVB7yS02@infradead.org>
-References: <YXJN4s1HC/Y+KKg1@infradead.org>
- <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
- <YXj2lwrxRxHdr4hb@infradead.org>
- <20211028002451.GB2237511@magnolia>
- <YYDYUCCiEPXhZEw0@infradead.org>
- <CAPcyv4j8snuGpy=z6BAXogQkP5HmTbqzd6e22qyERoNBvFKROw@mail.gmail.com>
- <YYK/tGfpG0CnVIO4@infradead.org>
- <CAPcyv4it2_PVaM8z216AXm6+h93frg79WM-ziS9To59UtEQJTA@mail.gmail.com>
- <YYOaOBKgFQYzT/s/@infradead.org>
- <CAPcyv4jKHH7H+PmcsGDxsWA5CS_U3USHM8cT1MhoLk72fa9z8Q@mail.gmail.com>
+        Thu, 4 Nov 2021 13:46:17 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B4EC061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 10:43:38 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1miglx-00078L-TN; Thu, 04 Nov 2021 18:43:33 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1miglw-0005cC-3C; Thu, 04 Nov 2021 18:43:32 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1miglw-0008JO-1y; Thu, 04 Nov 2021 18:43:32 +0100
+Date:   Thu, 4 Nov 2021 18:43:25 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     =?utf-8?B?TWHDrXJh?= Canal <maira.canal@usp.br>
+Cc:     sean@mess.org, mchehab@kernel.org, thierry.reding@gmail.com,
+        lee.jones@linaro.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v2] media: ir-rx51: Switch to atomic PWM API
+Message-ID: <20211104174325.babrgtoowddzlwtj@pengutronix.de>
+References: <YX8VkdCAe6coHC4w@fedora>
+ <20211104152913.uqmmk6z7vppu5pxk@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lgsivpieqjcjq3ja"
 Content-Disposition: inline
-In-Reply-To: <CAPcyv4jKHH7H+PmcsGDxsWA5CS_U3USHM8cT1MhoLk72fa9z8Q@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20211104152913.uqmmk6z7vppu5pxk@pengutronix.de>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 09:24:15AM -0700, Dan Williams wrote:
-> No, the big difference with every other modern storage device is
-> access to byte-addressable storage. Storage devices get to "cheat"
-> with guaranteed minimum 512-byte accesses. So you can arrange for
-> writes to always be large enough to scrub the ECC bits along with the
-> data. For PMEM and byte-granularity DAX accesses the "sector size" is
-> a cacheline and it needed a new CPU instruction before software could
-> atomically update data + ECC. Otherwise, with sub-cacheline accesses,
-> a RMW cycle can't always be avoided. Such a cycle pulls poison from
-> the device on the read and pushes it back out to the media on the
-> cacheline writeback.
 
-Indeed.  The fake byte addressability is indeed the problem, and the
-fix is to not do that, at least on the second attempt.
+--lgsivpieqjcjq3ja
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I don't understand what overprovisioning has to do with better error
-> management? No other storage device has seen fit to be as transparent
-> with communicating the error list and offering ways to proactively
-> scrub it. Dave and Darrick rightly saw this and said "hey, the FS
-> could do a much better job for the user if it knew about this error
-> list". So I don't get what this argument about spare blocks has to do
-> with what XFS wants? I.e. an rmap facility to communicate files that
-> have been clobbered by cosmic rays and other calamities.
+On Thu, Nov 04, 2021 at 04:29:13PM +0100, Uwe Kleine-K=F6nig wrote:
+> On Sun, Oct 31, 2021 at 07:15:45PM -0300, Ma=EDra Canal wrote:
+> > Remove legacy PWM interface (pwm_config, pwm_enable, pwm_disable) and
+> > replace it for the atomic PWM API.
+> >=20
+> > Signed-off-by: Ma=EDra Canal <maira.canal@usp.br>
+> > ---
+> > V1 -> V2: remove conceptually wrong chunk of code and correct the posit=
+ion
+> > of pwm_init_state function
+> > ---
+> >  drivers/media/rc/ir-rx51.c | 16 +++++++++-------
+> >  1 file changed, 9 insertions(+), 7 deletions(-)
+> >=20
+> > diff --git a/drivers/media/rc/ir-rx51.c b/drivers/media/rc/ir-rx51.c
+> > index a0d9c02a7588..41d4a4338072 100644
+> > --- a/drivers/media/rc/ir-rx51.c
+> > +++ b/drivers/media/rc/ir-rx51.c
+> > @@ -19,6 +19,7 @@
+> >  struct ir_rx51 {
+> >  	struct rc_dev *rcdev;
+> >  	struct pwm_device *pwm;
+> > +	struct pwm_state *state;
+> >  	struct hrtimer timer;
+> >  	struct device	     *dev;
+> >  	wait_queue_head_t     wqueue;
+> > @@ -32,22 +33,22 @@ struct ir_rx51 {
+> > =20
+> >  static inline void ir_rx51_on(struct ir_rx51 *ir_rx51)
+> >  {
+> > -	pwm_enable(ir_rx51->pwm);
+> > +	ir_rx51->state->enabled =3D true;
+> > +	pwm_apply_state(ir_rx51->pwm, ir_rx51->state);
+> >  }
+> > =20
+> >  static inline void ir_rx51_off(struct ir_rx51 *ir_rx51)
+> >  {
+> > -	pwm_disable(ir_rx51->pwm);
+> > +	ir_rx51->state->enabled =3D false;
+> > +	pwm_apply_state(ir_rx51->pwm, ir_rx51->state);
+> >  }
+> > =20
+> >  static int init_timing_params(struct ir_rx51 *ir_rx51)
+> >  {
+> > -	struct pwm_device *pwm =3D ir_rx51->pwm;
+> > -	int duty, period =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC, ir_rx51->freq);
+> > +	struct pwm_state *state =3D ir_rx51->state;
+> > =20
+> > -	duty =3D DIV_ROUND_CLOSEST(ir_rx51->duty_cycle * period, 100);
+> > -
+> > -	pwm_config(pwm, duty, period);
+> > +	state->period =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC, ir_rx51->freq);
+> > +	pwm_set_relative_duty_cycle(state, ir_rx51->duty_cycle, 100);
+> > =20
+> >  	return 0;
+> >  }
+> > @@ -242,6 +243,7 @@ static int ir_rx51_probe(struct platform_device *de=
+v)
+> > =20
+> >  	/* Use default, in case userspace does not set the carrier */
+> >  	ir_rx51.freq =3D DIV_ROUND_CLOSEST_ULL(pwm_get_period(pwm), NSEC_PER_=
+SEC);
+> > +	pwm_init_state(pwm, ir_rx51.state);
+> >  	pwm_put(pwm);
+> > =20
+>=20
+> Orthogonal to this patch I wonder why probe calls pwm_get() and
+> pwm_put(), just to have another call to pwm_get() in the open callback.
+>=20
+> Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
-Well, the answer for other interfaces (at least at the gold plated
-cost option) is so strong internal CRCs that user visible bits clobbered
-by cosmic rays don't realisticly happen.  But it is a problem with the
-cheaper ones, and at least SCSI and NVMe offer the error list through
-the Get LBA status command (and I bet ATA too, but I haven't looked into
-that).  Oddly enough there has never been much interested from the
-fs community for those.
+Oh, I missed something: the member added to struct ir_rx51 must be a
+plain struct pwm_state, not a pointer to it. As suggested here the
+driver runs into a NULL pointer exception.
 
-> > So far out of the low instrusiveness options Janes' previous series
-> > to automatically retry after calling a clear_poison operation seems
-> > like the best idea so far.  We just need to also think about what
-> > we want to do for direct users of ->direct_access that do not use
-> > the mcsafe iov_iter helpers.
-> 
-> Those exist? Even dm-writecache uses copy_mc_to_kernel().
+Best regards
+Uwe
 
-I'm sorry, I have completely missed that it has been added.  And it's
-been in for a whole year..
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--lgsivpieqjcjq3ja
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGEG7UACgkQwfwUeK3K
+7AlcgQf/bxCZICjRu36Hjj9cWcps6tWIvZuB3ts1H0nC3STTjPgR/C3GkIuVTA2h
+ICSO7IC91CE969WztomoGUw8PljoJi5xAXmkKa6ciWqsloGGfJAkCnHh1sdE+lq5
+LdBed/h/F00LXHz4mo1tACga31mSmZ7yUsLRu9107QHDhZxrpD+GFTeIr9gih41Q
+AAEy+T5G/m4Scbicpkj/R4wjfedMMCfFCsr3t0ldmsPiXGVibbad4tj+MM2SCBRp
+6d+HXLqfpCvUMZwY4c9x5URpp7jstuZNLRi4GtsaY1hyBIluiSGMcJwhNu2eLLu3
+xCcL2ThTR3C+mmYyjCHn4ByaCVsTJA==
+=uV7a
+-----END PGP SIGNATURE-----
+
+--lgsivpieqjcjq3ja--
