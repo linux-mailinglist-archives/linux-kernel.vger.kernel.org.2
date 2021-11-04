@@ -2,112 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C5D445945
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFBA445956
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:09:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234031AbhKDSH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 14:07:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54762 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232102AbhKDSH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 14:07:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1366F610E7;
-        Thu,  4 Nov 2021 18:04:47 +0000 (UTC)
-Date:   Thu, 4 Nov 2021 18:04:45 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: flush_dcache_page vs kunmap_local
-Message-ID: <YYQgvTn2NQdZK2Ku@arm.com>
-References: <YYP1lAq46NWzhOf0@casper.infradead.org>
- <CAHk-=wiKac4t-fOP_3fAf7nETfFLhT3ShmRmBq2J96y6jAr56Q@mail.gmail.com>
- <YYQQPuhVUHqfldDg@arm.com>
- <CAHk-=wiDjjL50BBU=i8BFz3Rv5+-pGysEyCD+mcc_K_g0140oQ@mail.gmail.com>
+        id S234087AbhKDSM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 14:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232152AbhKDSM0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 14:12:26 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1328C061714;
+        Thu,  4 Nov 2021 11:09:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=X/zx02lrok+YXE3fHYCnesmy30oZEd5gQFjWswEssO8=; b=Sbg76vqBUrKRwSH8VKRkJgiUCC
+        r1oyKJ79d1QE9fOCCZaLTLXMc2ew6uKuULTjgBflx8d78VPVr2homn7rL3kQVHvP7Ak9/wM0MbpSy
+        YSrJUXTFHpxtX4i3XpHfoy8u4fm08G+Cx16cTwYn/LBCFS7Lv3f39xVI6zKCrHqps5FJzI6XW50qi
+        8xgjF5t15JvLZTKg6czUDnDkLd8NyrCoKV5fYiMDj6WPdVlgUuSxgdjCS10DIR/kWUthyM54DNI3M
+        3ulIl7eI4ED25BAW7Mc3MlXqYoWF5f6UgyROaM1IDdmMYVmXaRrN/V/m7JIC73SF58NYKDj27R5M0
+        Cc4GufhA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mih7J-0062bO-LC; Thu, 04 Nov 2021 18:06:22 +0000
+Date:   Thu, 4 Nov 2021 18:05:37 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jane Chu <jane.chu@oracle.com>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
+ RWF_RECOVERY_DATA flag
+Message-ID: <YYQg8X9VAuWYekD4@casper.infradead.org>
+References: <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
+ <YXj2lwrxRxHdr4hb@infradead.org>
+ <20211028002451.GB2237511@magnolia>
+ <YYDYUCCiEPXhZEw0@infradead.org>
+ <CAPcyv4j8snuGpy=z6BAXogQkP5HmTbqzd6e22qyERoNBvFKROw@mail.gmail.com>
+ <YYK/tGfpG0CnVIO4@infradead.org>
+ <CAPcyv4it2_PVaM8z216AXm6+h93frg79WM-ziS9To59UtEQJTA@mail.gmail.com>
+ <YYOaOBKgFQYzT/s/@infradead.org>
+ <CAPcyv4jKHH7H+PmcsGDxsWA5CS_U3USHM8cT1MhoLk72fa9z8Q@mail.gmail.com>
+ <YYQbu6dOCVB7yS02@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wiDjjL50BBU=i8BFz3Rv5+-pGysEyCD+mcc_K_g0140oQ@mail.gmail.com>
+In-Reply-To: <YYQbu6dOCVB7yS02@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ rmk
+On Thu, Nov 04, 2021 at 10:43:23AM -0700, Christoph Hellwig wrote:
+> Well, the answer for other interfaces (at least at the gold plated
+> cost option) is so strong internal CRCs that user visible bits clobbered
+> by cosmic rays don't realisticly happen.  But it is a problem with the
+> cheaper ones, and at least SCSI and NVMe offer the error list through
+> the Get LBA status command (and I bet ATA too, but I haven't looked into
+> that).  Oddly enough there has never been much interested from the
+> fs community for those.
 
-On Thu, Nov 04, 2021 at 10:08:40AM -0700, Linus Torvalds wrote:
-> On Thu, Nov 4, 2021 at 9:54 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > We do. flush_dcache_page() is not just about virtual caches. On arm32/64
-> > (and powerpc), even with PIPT-like caches, we use it to flag a page's
-> > D-cache as no longer clean. Subsequently in set_pte_at(), if the mapping
-> > is executable, we do the cache maintenance to ensure the I and D caches
-> > are coherent with each other.
-> 
-> Ugh,. ok, so we have two very different use-cases for that function.
-> 
-> Perhaps more importantly, they have hugely different semantics. For
-> you, it's about pages that can be mapped executable, so it's only
-> relevant for mappable pages.
-> 
-> For the traditional broken pure virtual cache case, it's not about
-> user mappings at all, it's about any data structure that we might have
-> in highmem.
-> 
-> Of course, I think we got rid of most of the other uses of highmem,
-> and we no longer put any "normal" kernel data in highmem pages. There
-> used to be patches that did inodes and things like that in highmem,
-> and they actually depended on the "cache the virtual address so that
-> it's always the same" behavior.
-
-We can still have ptes in highmem.
-
-> > I wouldn't add this call to kmap/kunmap_local(), it would be a slight
-> > unnecessary overhead (we had a customer complaining about kmap_atomic()
-> > breaking write-streaming, I think the new kmap_local() solved this
-> > problem, if in the right context).
-> 
-> kmap_local() ends up being (I think) fundamentally broken for virtual
-> cache coherency anyway, because two different CPU's can see two
-> different virtual addresses at the same time for the same page (in
-> ways that the old kmap interfaces could not).
-
-Luckily I don't think we have a (working) SMP system with VIVT caches.
-On UP, looking at arm, for VIVT caches it flushes the D-cache before
-kunmap_local() (arch_kmap_local_pre_unmap()). So any new kmap_local()
-would see the correct data even if it's in a different location.
-
-> So maybe the answer is "let's forget about the old virtual cache
-> coherence issue, and make it purely about the I$ mapping case".
-
-We still have VIVT processors supported in the kernel and a few where
-the VIPT cache is aliasing (some ARMv6 CPUs). On these,
-flush_dcache_page() is still used to ensure the user aliases are
-coherent with the kernel one, so it's not just about the I/D-cache
-coherency.
-
-> At that point, kmap is irrelevant from a virtual address standpoint
-> and so it doesn't make much sense to fliush on kunmap - but anybody
-> who writes to a page still needs that flush_dcache_page() thing.
-
-The cachetlb.rst doc states the two cases where flush_dcache_page()
-should be called:
-
-1. After writing to a page cache page (that's what we need on arm64 for
-   the I-cache).
-
-2. Before reading from a page cache page and user mappings potentially
-   exist. I think arm32 ensures the D-cache user aliases are coherent
-   with the kernel one (added rmk to confirm).
-
-Now, whether the kernel code does call flush_dcache_page() in the above
-scenarios is another matter. But if we are to remove the 2nd case, for
-VIVT/aliasing-VIPT hardware we'd need kmap() to perform some cache
-maintenance even if the page is not in highmem.
-
--- 
-Catalin
+"don't realistically happen" is different when you're talking about
+"doesn't happen within the warranty period of my laptop's SSD" and
+"doesn't happen on my fleet of 10k servers before they're taken out of
+service".  There's also a big difference in speeds between an NVMe drive
+(7GB/s) and a memory device (20-50GB/s).  The UBER being talked about
+when I was still at Intel was similar to / slightly better than DRAM,
+but that's still several failures per year across an entire data centre
+that's using pmem flat-out.
