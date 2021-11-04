@@ -2,121 +2,380 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74142445736
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:23:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62313445738
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:24:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbhKDQZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 12:25:54 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:37093 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231642AbhKDQZt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 12:25:49 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 4A01A5C00EB;
-        Thu,  4 Nov 2021 12:23:11 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 04 Nov 2021 12:23:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=F7ThL3
-        bEF0AwmWK+5lDaywNOm4dgdIO3a3tYFPwmG3o=; b=NpcSFCK0fMEOT44lm2kABk
-        7iIBZ1uXApevFBQirHZtrK+BmmBviHHZrxe73HV5x6R29UM6SCFu1nh6mUNYWGEj
-        v8D1Ei95G900i3Ga00+cC1zz7Oy+WdOsor199CfoiDmSN21Ou1cMIkz/l5Rb3Ixd
-        +C4ESfHMyYfZBEE3dhkCW2GzEe0XlrR1xkWU3T9LRSMzgjhgpRuVjciVlT8V0pkn
-        UoUe1qP38PxukvedPDS1Ja3CO66Vb73QjaG22rfkkmW6t6Zd/rrharXZFMi47tSe
-        /LHLZZPKkeXI5divGR5geziI4u0edTHd/N6ZqGVF40NC4a/egzjUWP2LuDZ3IoHw
-        ==
-X-ME-Sender: <xms:7giEYXtTGKBg46bj0NiKjQLb_pTUQD06onODoDchEvEPrh8hAIiLKA>
-    <xme:7giEYYcptuxe-WkF6F8FYbqOmdbEtQNLWbvdgAiuYWDqVQYoEvHll7sKxGGNkv8Ui
-    s_nncOgmKamrQ>
-X-ME-Received: <xmr:7giEYaxQs8ShRJ3wFK71sc000w3z1UkD4cNkI3Qa3WthAN5c6DSHuOFRwSfjj4EDCilcTr3sMFJg4dFkJooujj5BkLgw9tPFOxioLXeOgyI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrtdeggdekfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtjeenucfhrhhomhepofgrrhgvkhcu
-    ofgrrhgtiiihkhhofihskhhiqdfikphrvggtkhhiuceomhgrrhhmrghrvghksehinhhvih
-    hsihgslhgvthhhihhnghhslhgrsgdrtghomheqnecuggftrfgrthhtvghrnhepheevvdeu
-    veehkeehhfevgffggfevudegteeugfeliedvhefgueeiuefgteetieffnecuffhomhgrih
-    hnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
-    mhgrihhlfhhrohhmpehmrghrmhgrrhgvkhesihhnvhhishhisghlvghthhhinhhgshhlrg
-    gsrdgtohhm
-X-ME-Proxy: <xmx:7giEYWNNR6bp5iMup-zWeU3tfEHv0px9rWnJLruuJGRPrfubcInArQ>
-    <xmx:7giEYX-pakkpVKZ0ZNINGW-J0vemCjtPNOaC1po2nK9XJYuE5pafWg>
-    <xmx:7giEYWXhrPqnb9AZo255Mb7y_EIyEpD5oDCo-9y5_Eocxq9yZz2e_g>
-    <xmx:7wiEYSmxxVEEIgGKUDeGGiM2mmHnV1p7zMzYVFKhPSxtQRjK-enDDw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 4 Nov 2021 12:23:08 -0400 (EDT)
-Date:   Thu, 4 Nov 2021 17:23:04 +0100
-From:   Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= 
-        <marmarek@invisiblethingslab.com>
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v4] xen/balloon: add late_initcall_sync() for initial
- ballooning done
-Message-ID: <YYQI6NQ8eY9XtSI4@mail-itl>
-References: <20211102091944.17487-1-jgross@suse.com>
- <f986a7c4-3032-fecd-2e19-4d63a2ee10c7@oracle.com>
- <f8e52acc-2566-1ed0-d2a3-21e2d468fab7@oracle.com>
+        id S231795AbhKDQ0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 12:26:50 -0400
+Received: from mga07.intel.com ([134.134.136.100]:30579 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231419AbhKDQ0t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 12:26:49 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10157"; a="295184421"
+X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
+   d="scan'208";a="295184421"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 09:24:11 -0700
+X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
+   d="scan'208";a="501602671"
+Received: from mihaelac-mobl.ger.corp.intel.com (HELO localhost) ([10.249.32.21])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 09:24:03 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Michel =?utf-8?Q?D=C3=A4nzer?= <michel@daenzer.net>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>, Chia-I Wu <olvaffe@gmail.com>,
+        Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        "Pan\, Xinhui" <Xinhui.Pan@amd.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Zack Rusin <zackr@vmware.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, spice-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 1/2] drm: Add a drm_drv_enabled() to check if drivers should be enabled
+In-Reply-To: <20211104160707.1407052-2-javierm@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211104160707.1407052-1-javierm@redhat.com> <20211104160707.1407052-2-javierm@redhat.com>
+Date:   Thu, 04 Nov 2021 18:24:01 +0200
+Message-ID: <87zgqjanz2.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="dtfzIy7fiid+QMXP"
-Content-Disposition: inline
-In-Reply-To: <f8e52acc-2566-1ed0-d2a3-21e2d468fab7@oracle.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 04 Nov 2021, Javier Martinez Canillas <javierm@redhat.com> wrote:
+> Some DRM drivers check the vgacon_text_force() function return value as an
+> indication on whether they should be allowed to be enabled or not.
+>
+> This function returns true if the nomodeset kernel command line parameter
+> was set. But there may be other conditions besides this to determine if a
+> driver should be enabled.
+>
+> Let's add a drm_drv_enabled() helper function to encapsulate that logic so
+> can be later extended if needed, without having to modify all the drivers.
+>
+> Also, while being there do some cleanup. The vgacon_text_force() function
+> is guarded by CONFIG_VGA_CONSOLE and there's no need for callers to do it.
+>
+> Suggested-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> ---
+>
+> Changes in v2:
+> - Squash patch to add drm_drv_enabled() and make drivers use it.
+> - Make the drivers changes before moving nomodeset logic to DRM.
+> - Make drm_drv_enabled() return an errno and -ENODEV if nomodeset.
+> - Remove debug and error messages in drivers.
+>
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c |  7 +++----
+>  drivers/gpu/drm/ast/ast_drv.c           |  7 +++++--
+>  drivers/gpu/drm/drm_drv.c               | 20 ++++++++++++++++++++
+>  drivers/gpu/drm/i915/i915_module.c      |  6 +++++-
+>  drivers/gpu/drm/mgag200/mgag200_drv.c   |  7 +++++--
+>  drivers/gpu/drm/nouveau/nouveau_drm.c   |  5 ++++-
+>  drivers/gpu/drm/qxl/qxl_drv.c           |  7 +++++--
+>  drivers/gpu/drm/radeon/radeon_drv.c     |  6 ++++--
+>  drivers/gpu/drm/tiny/bochs.c            |  7 +++++--
+>  drivers/gpu/drm/tiny/cirrus.c           |  8 ++++++--
+>  drivers/gpu/drm/vboxvideo/vbox_drv.c    |  9 +++++----
+>  drivers/gpu/drm/virtio/virtgpu_drv.c    |  5 +++--
+>  drivers/gpu/drm/vmwgfx/vmwgfx_drv.c     |  5 +++--
+>  include/drm/drm_drv.h                   |  1 +
+>  14 files changed, 74 insertions(+), 26 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+> index c718fb5f3f8a..7fde40d06181 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+> @@ -2514,10 +2514,9 @@ static int __init amdgpu_init(void)
+>  {
+>  	int r;
+>  
+> -	if (vgacon_text_force()) {
+> -		DRM_ERROR("VGACON disables amdgpu kernel modesetting.\n");
+> -		return -EINVAL;
+> -	}
+> +	r = drm_drv_enabled(&amdgpu_kms_driver)
+> +	if (r)
+> +		return r;
+>  
+>  	r = amdgpu_sync_init();
+>  	if (r)
+> diff --git a/drivers/gpu/drm/ast/ast_drv.c b/drivers/gpu/drm/ast/ast_drv.c
+> index 86d5cd7b6318..802063279b86 100644
+> --- a/drivers/gpu/drm/ast/ast_drv.c
+> +++ b/drivers/gpu/drm/ast/ast_drv.c
+> @@ -233,8 +233,11 @@ static struct pci_driver ast_pci_driver = {
+>  
+>  static int __init ast_init(void)
+>  {
+> -	if (vgacon_text_force() && ast_modeset == -1)
+> -		return -EINVAL;
+> +	int ret;
+> +
+> +	ret = drm_drv_enabled(&ast_driver);
+> +	if (ret && ast_modeset == -1)
+> +		return ret;
+>  
+>  	if (ast_modeset == 0)
+>  		return -EINVAL;
+> diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
+> index 8214a0b1ab7f..3fb567d62881 100644
+> --- a/drivers/gpu/drm/drm_drv.c
+> +++ b/drivers/gpu/drm/drm_drv.c
+> @@ -975,6 +975,26 @@ int drm_dev_set_unique(struct drm_device *dev, const char *name)
+>  }
+>  EXPORT_SYMBOL(drm_dev_set_unique);
+>  
+> +/**
+> + * drm_drv_enabled - Checks if a DRM driver can be enabled
+> + * @driver: DRM driver to check
+> + *
+> + * Checks whether a DRM driver can be enabled or not. This may be the case
+> + * if the "nomodeset" kernel command line parameter is used.
+> + *
+> + * Return: 0 on success or a negative error code on failure.
+> + */
+> +int drm_drv_enabled(const struct drm_driver *driver)
+> +{
+> +	if (vgacon_text_force()) {
+> +		DRM_INFO("%s driver is disabled\n", driver->name);
+> +		return -ENODEV;
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(drm_drv_enabled);
+> +
+>  /*
+>   * DRM Core
+>   * The DRM core module initializes all global DRM objects and makes them
+> diff --git a/drivers/gpu/drm/i915/i915_module.c b/drivers/gpu/drm/i915/i915_module.c
+> index ab2295dd4500..45cb3e540eff 100644
+> --- a/drivers/gpu/drm/i915/i915_module.c
+> +++ b/drivers/gpu/drm/i915/i915_module.c
+> @@ -18,9 +18,12 @@
+>  #include "i915_selftest.h"
+>  #include "i915_vma.h"
+>  
+> +static const struct drm_driver driver;
+> +
 
---dtfzIy7fiid+QMXP
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 4 Nov 2021 17:23:04 +0100
-From: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>
-To: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Jonathan Corbet <corbet@lwn.net>,
-	Stefano Stabellini <sstabellini@kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH v4] xen/balloon: add late_initcall_sync() for initial
- ballooning done
+No, this makes absolutely no sense, and will also oops on nomodeset.
 
-On Thu, Nov 04, 2021 at 11:55:34AM -0400, Boris Ostrovsky wrote:
-> This appears to have noticeable effect on boot time (and boot experience =
-in general).
+BR,
+Jani.
 
-Yes, this is kind of intentional. It avoids killing the domain ("out of
-PoD memory") for the price of increased boot time. I still wonder why it
-wasn't an issue before, although it could just be a race that was less
-likely to loose before.
 
-You can find some analysis of mine here:
-https://lore.kernel.org/xen-devel/YXFxKC4shCATB913@mail-itl/
+>  static int i915_check_nomodeset(void)
+>  {
+>  	bool use_kms = true;
+> +	int ret;
+>  
+>  	/*
+>  	 * Enable KMS by default, unless explicitly overriden by
+> @@ -31,7 +34,8 @@ static int i915_check_nomodeset(void)
+>  	if (i915_modparams.modeset == 0)
+>  		use_kms = false;
+>  
+> -	if (vgacon_text_force() && i915_modparams.modeset == -1)
+> +	ret = drm_drv_enabled(&driver);
+> +	if (ret && i915_modparams.modeset == -1)
+>  		use_kms = false;
+>  
+>  	if (!use_kms) {
+> diff --git a/drivers/gpu/drm/mgag200/mgag200_drv.c b/drivers/gpu/drm/mgag200/mgag200_drv.c
+> index 6b9243713b3c..2a581094ba2b 100644
+> --- a/drivers/gpu/drm/mgag200/mgag200_drv.c
+> +++ b/drivers/gpu/drm/mgag200/mgag200_drv.c
+> @@ -378,8 +378,11 @@ static struct pci_driver mgag200_pci_driver = {
+>  
+>  static int __init mgag200_init(void)
+>  {
+> -	if (vgacon_text_force() && mgag200_modeset == -1)
+> -		return -EINVAL;
+> +	int ret;
+> +
+> +	ret = drm_drv_enabled(&mgag200_driver);
+> +	if (ret && mgag200_modeset == -1)
+> +		return ret;
+>  
+>  	if (mgag200_modeset == 0)
+>  		return -EINVAL;
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_drm.c b/drivers/gpu/drm/nouveau/nouveau_drm.c
+> index 1f828c9f691c..8844d3602d87 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_drm.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_drm.c
+> @@ -1316,13 +1316,16 @@ nouveau_platform_device_create(const struct nvkm_device_tegra_func *func,
+>  static int __init
+>  nouveau_drm_init(void)
+>  {
+> +	int ret;
+> +
+>  	driver_pci = driver_stub;
+>  	driver_platform = driver_stub;
+>  
+>  	nouveau_display_options();
+>  
+>  	if (nouveau_modeset == -1) {
+> -		if (vgacon_text_force())
+> +		ret = drm_drv_enabled(&driver_stub);
+> +		if (ret)
+>  			nouveau_modeset = 0;
+>  	}
+>  
+> diff --git a/drivers/gpu/drm/qxl/qxl_drv.c b/drivers/gpu/drm/qxl/qxl_drv.c
+> index fc47b0deb021..3ac2ef2bf545 100644
+> --- a/drivers/gpu/drm/qxl/qxl_drv.c
+> +++ b/drivers/gpu/drm/qxl/qxl_drv.c
+> @@ -295,8 +295,11 @@ static struct drm_driver qxl_driver = {
+>  
+>  static int __init qxl_init(void)
+>  {
+> -	if (vgacon_text_force() && qxl_modeset == -1)
+> -		return -EINVAL;
+> +	int ret;
+> +
+> +	ret = drm_drv_enabled(&qxl_driver);
+> +	if (ret && qxl_modeset == -1)
+> +		return ret;
+>  
+>  	if (qxl_modeset == 0)
+>  		return -EINVAL;
+> diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon/radeon_drv.c
+> index b74cebca1f89..56d688c04346 100644
+> --- a/drivers/gpu/drm/radeon/radeon_drv.c
+> +++ b/drivers/gpu/drm/radeon/radeon_drv.c
+> @@ -637,8 +637,10 @@ static struct pci_driver radeon_kms_pci_driver = {
+>  
+>  static int __init radeon_module_init(void)
+>  {
+> -	if (vgacon_text_force() && radeon_modeset == -1) {
+> -		DRM_INFO("VGACON disable radeon kernel modesetting.\n");
+> +	int ret;
+> +
+> +	ret = drm_drv_enabled(&kms_driver)
+> +	if (ret && radeon_modeset == -1) {
+>  		radeon_modeset = 0;
+>  	}
+>  
+> diff --git a/drivers/gpu/drm/tiny/bochs.c b/drivers/gpu/drm/tiny/bochs.c
+> index 2ce3bd903b70..ee6b1ff9128b 100644
+> --- a/drivers/gpu/drm/tiny/bochs.c
+> +++ b/drivers/gpu/drm/tiny/bochs.c
+> @@ -719,8 +719,11 @@ static struct pci_driver bochs_pci_driver = {
+>  
+>  static int __init bochs_init(void)
+>  {
+> -	if (vgacon_text_force() && bochs_modeset == -1)
+> -		return -EINVAL;
+> +	int ret;
+> +
+> +	ret = drm_drv_enabled(&bochs_driver);
+> +	if (ret && bochs_modeset == -1)
+> +		return ret;
+>  
+>  	if (bochs_modeset == 0)
+>  		return -EINVAL;
+> diff --git a/drivers/gpu/drm/tiny/cirrus.c b/drivers/gpu/drm/tiny/cirrus.c
+> index 4611ec408506..4706c5bc3067 100644
+> --- a/drivers/gpu/drm/tiny/cirrus.c
+> +++ b/drivers/gpu/drm/tiny/cirrus.c
+> @@ -636,8 +636,12 @@ static struct pci_driver cirrus_pci_driver = {
+>  
+>  static int __init cirrus_init(void)
+>  {
+> -	if (vgacon_text_force())
+> -		return -EINVAL;
+> +	int ret;
+> +
+> +	ret = drm_drv_enabled(&cirrus_driver);
+> +	if (ret)
+> +		return ret;
+> +
+>  	return pci_register_driver(&cirrus_pci_driver);
+>  }
+>  
+> diff --git a/drivers/gpu/drm/vboxvideo/vbox_drv.c b/drivers/gpu/drm/vboxvideo/vbox_drv.c
+> index a6c81af37345..e4377c37cf33 100644
+> --- a/drivers/gpu/drm/vboxvideo/vbox_drv.c
+> +++ b/drivers/gpu/drm/vboxvideo/vbox_drv.c
+> @@ -193,10 +193,11 @@ static const struct drm_driver driver = {
+>  
+>  static int __init vbox_init(void)
+>  {
+> -#ifdef CONFIG_VGA_CONSOLE
+> -	if (vgacon_text_force() && vbox_modeset == -1)
+> -		return -EINVAL;
+> -#endif
+> +	int ret;
+> +
+> +	ret = drm_drv_enabled(&driver);
+> +	if (ret && vbox_modeset == -1)
+> +		return ret;
+>  
+>  	if (vbox_modeset == 0)
+>  		return -EINVAL;
+> diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.c b/drivers/gpu/drm/virtio/virtgpu_drv.c
+> index 749db18dcfa2..28200dfba2d1 100644
+> --- a/drivers/gpu/drm/virtio/virtgpu_drv.c
+> +++ b/drivers/gpu/drm/virtio/virtgpu_drv.c
+> @@ -104,8 +104,9 @@ static int virtio_gpu_probe(struct virtio_device *vdev)
+>  	struct drm_device *dev;
+>  	int ret;
+>  
+> -	if (vgacon_text_force() && virtio_gpu_modeset == -1)
+> -		return -EINVAL;
+> +	ret = drm_drv_enabled(&driver);
+> +	if (ret && virtio_gpu_modeset == -1)
+> +		return ret;
+>  
+>  	if (virtio_gpu_modeset == 0)
+>  		return -EINVAL;
+> diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
+> index ab9a1750e1df..05e9949293d5 100644
+> --- a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
+> +++ b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
+> @@ -1651,8 +1651,9 @@ static int __init vmwgfx_init(void)
+>  {
+>  	int ret;
+>  
+> -	if (vgacon_text_force())
+> -		return -EINVAL;
+> +	ret = drm_drv_enabled(&driver);
+> +	if (ret)
+> +		return ret;
+>  
+>  	ret = pci_register_driver(&vmw_pci_driver);
+>  	if (ret)
+> diff --git a/include/drm/drm_drv.h b/include/drm/drm_drv.h
+> index 0cd95953cdf5..77abfc7e078b 100644
+> --- a/include/drm/drm_drv.h
+> +++ b/include/drm/drm_drv.h
+> @@ -598,5 +598,6 @@ static inline bool drm_drv_uses_atomic_modeset(struct drm_device *dev)
+>  
+>  int drm_dev_set_unique(struct drm_device *dev, const char *name);
+>  
+> +int drm_drv_enabled(const struct drm_driver *driver);
+>  
+>  #endif
 
---=20
-Best Regards,
-Marek Marczykowski-G=C3=B3recki
-Invisible Things Lab
-
---dtfzIy7fiid+QMXP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhrpukzGPukRmQqkK24/THMrX1ywFAmGECOgACgkQ24/THMrX
-1yyYIQf+PK+WvewHZdnNVSkmaod5zSxBqVeO47i4A1ZdTACkgC6EgUbGDQtW3KtD
-DARSfTbbDwto5VbzM13WfSiY9/0dNCSS79La3iYcIpML6q4jTGDC1/bu0mWlPFSN
-GAn+RdG5XUN3c/YYlcqt/T+I/KGlEqazXo9P0q/704xDs6NQ3KFQB8bPq5cs9lp4
-kpavY28wk2cSHT7c1LTiMkNQQRDM5VHdrH+NAf6sqZIj8GxJDk7v/FKki4sUxa7R
-FdjiI0dgFGISxy48+6HXnw0mZHKNZXdA8pa0P7Lyw71AGq4PRmMzPjc36Zp0x8Om
-RAeCy9mXJL2bbd17vEoH11N+53Eh3A==
-=Vps0
------END PGP SIGNATURE-----
-
---dtfzIy7fiid+QMXP--
+-- 
+Jani Nikula, Intel Open Source Graphics Center
