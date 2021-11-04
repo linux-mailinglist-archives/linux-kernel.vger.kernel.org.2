@@ -2,59 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59FFC445B78
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 22:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFEA9445B7F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 22:08:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbhKDVFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 17:05:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48696 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232310AbhKDVFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 17:05:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 53C7661106;
-        Thu,  4 Nov 2021 21:03:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636059784;
-        bh=Omr6diHzMQRwB9Wk20h/U0FXQ5PJgcUSGlECIuUsaYg=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=nE69weyCc3Fcmgb20c+gHLdVB5qxYWataMW6HCOuOarSKJl9H9YPs4gZZfAwf4IWi
-         Mr8maVorMG8Sc+mogcxHbW9Ra4paFabY1e1kHoPX+oCnYrRqF8I4Ub99TpVUvOuWpD
-         ppcjBe9u1WPDrZPmj73uJUar8XSowRjeYFzUFkmAmxxzVD940hDeL/+pBzjCJMBZAs
-         A3XYplaDnu9nWx+zRrCr1JWIbdHcs2XIMOSweit/Qjc5IGdBNFYX4e9fGJ2C4JQGW7
-         C8zcDVKNK1WJLUNfmbtCbucliwdP1nx6JmK2sCQBgaaDRGNJsugFhuOwM5mJ8/88ms
-         vsGq1Msc+iaLw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3EFCE60173;
-        Thu,  4 Nov 2021 21:03:04 +0000 (UTC)
-Subject: Re: [GIT PULL] power-supply changes for 5.16
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211104182918.nqvaukg6y6qq6mbp@earth.universe>
-References: <20211104182918.nqvaukg6y6qq6mbp@earth.universe>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211104182918.nqvaukg6y6qq6mbp@earth.universe>
-X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git tags/for-v5.16
-X-PR-Tracked-Commit-Id: 22ad4f99f63fc892412cde5a45d43b2288a60b88
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 72e65f7e525fe1ed399c0c5f4adda562602d025a
-Message-Id: <163605978419.14865.13002408388854976718.pr-tracker-bot@kernel.org>
-Date:   Thu, 04 Nov 2021 21:03:04 +0000
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+        id S231916AbhKDVKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 17:10:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230162AbhKDVKe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 17:10:34 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F37C061714;
+        Thu,  4 Nov 2021 14:07:55 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id l3so5077852pfu.13;
+        Thu, 04 Nov 2021 14:07:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9BiJt54qFZ/VuFOPoUw2HvY4OErYWaH/g0QELRHYaEM=;
+        b=JR2B77A7w9AxNwZiwRneH3U+LDgO7FF6to59gQG7raqqjhoqQaITMu1qzPmDRxdQ1e
+         HkM5PZsZZjGaSa5A4x03k5PzwVqNfTluN5kCPt/LHWA/+bnTDiLKzoutgfmfRiOO7OBi
+         3779F30Gzg9jNMvKNqo7IDTzrryKU/Wb4nxdSMkuW7Ga2wQAAMxb5mrowJtGyuEtiXqs
+         32kh0w+PYo/X9QHiehvQ5HNlxhCZWNo3HJntQsU+49r7PWh4LRpPFlMCKEsyR5cz4/v8
+         aLX5xkCun5dKl184rAsaLUawLTit6+7yG8rhTwRn26uqCAKeFkyMaPKad7jMSi4ntbw9
+         Ulng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9BiJt54qFZ/VuFOPoUw2HvY4OErYWaH/g0QELRHYaEM=;
+        b=bvRZAzV2a8Ikz9NzMc689wFTBBulfMxQ8hoeMh+kPfPc4K+e7z3y91x4vW8haZmTnK
+         Wyd/R6uHHl8/qGHnAI8SSpyCfgjsViA4WHuam28LZ/CATqtYf1mliXkEZlhgU1+sfNKt
+         Hoqhdlj4NcF2EtvZ8MEXeLqF6z2gakQTNc8ghj9QYZdOm3dc/JnoMyH3poRaBfTo8Gse
+         7H5jvigjoH7sx1giHM6pN/o2aWvXLqRCgkDnX6JP09Y79uRIK50WW5VUO2jWZyneeQ9V
+         NyFSCRpYR+SAE0MUt0W2jvVog+3c9POgGHvCbUcM6fdcjmBuErAi5EFqu9imR0afjDwL
+         0WnQ==
+X-Gm-Message-State: AOAM533IQMbj5gNzHGXx4+7fwy+oyju5/FTs8ScY9aclLjFvrL+O9X6M
+        kW8Pl3n02K/ZOR56rJ1MPPQ=
+X-Google-Smtp-Source: ABdhPJzL5YjCBbrnkOB2UCcpqKtJy28zI2Io3AbzarVO6TBw75pVAsBTv/HqC8QT0vlEL6Drk+j7sw==
+X-Received: by 2002:a65:4bca:: with SMTP id p10mr26097982pgr.391.1636060075178;
+        Thu, 04 Nov 2021 14:07:55 -0700 (PDT)
+Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
+        by smtp.gmail.com with ESMTPSA id s69sm4523688pgc.43.2021.11.04.14.07.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 14:07:54 -0700 (PDT)
+From:   Yang Shi <shy828301@gmail.com>
+To:     gregkh@linuxfoundation.org, naoya.horiguchi@nec.com,
+        hughd@google.com, kirill.shutemov@linux.intel.com,
+        willy@infradead.org, osalvador@suse.de, peterx@redhat.com,
+        akpm@linux-foundation.org
+Cc:     shy828301@gmail.com, stable@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [stable 5.10 v2 PATCH 1/2] mm: hwpoison: remove the unnecessary THP check
+Date:   Thu,  4 Nov 2021 14:07:51 -0700
+Message-Id: <20211104210752.390351-1-shy828301@gmail.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 4 Nov 2021 19:29:18 +0100:
+commit c7cb42e94473aafe553c0f2a3d8ca904599399ed upstream.
 
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git tags/for-v5.16
+When handling THP hwpoison checked if the THP is in allocation or free
+stage since hwpoison may mistreat it as hugetlb page.  After commit
+415c64c1453a ("mm/memory-failure: split thp earlier in memory error
+handling") the problem has been fixed, so this check is no longer
+needed.  Remove it.  The side effect of the removal is hwpoison may
+report unsplit THP instead of unknown error for shmem THP.  It seems not
+like a big deal.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/72e65f7e525fe1ed399c0c5f4adda562602d025a
+The following patch "mm: filemap: check if THP has hwpoisoned subpage
+for PMD page fault" depends on this, which fixes shmem THP with
+hwpoisoned subpage(s) are mapped PMD wrongly.  So this patch needs to be
+backported to -stable as well.
 
-Thank you!
+Link: https://lkml.kernel.org/r/20211020210755.23964-2-shy828301@gmail.com
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+Suggested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+---
+ mm/memory-failure.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 01445ddff58d..bd2cd4dd59b6 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -956,20 +956,6 @@ static int get_hwpoison_page(struct page *page)
+ {
+ 	struct page *head = compound_head(page);
+ 
+-	if (!PageHuge(head) && PageTransHuge(head)) {
+-		/*
+-		 * Non anonymous thp exists only in allocation/free time. We
+-		 * can't handle such a case correctly, so let's give it up.
+-		 * This should be better than triggering BUG_ON when kernel
+-		 * tries to touch the "partially handled" page.
+-		 */
+-		if (!PageAnon(head)) {
+-			pr_err("Memory failure: %#lx: non anonymous thp\n",
+-				page_to_pfn(page));
+-			return 0;
+-		}
+-	}
+-
+ 	if (get_page_unless_zero(head)) {
+ 		if (head == compound_head(page))
+ 			return 1;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.26.2
+
