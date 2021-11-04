@@ -2,186 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7D44452ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA894452F6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231620AbhKDM0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 08:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231571AbhKDM0M (ORCPT
+        id S231500AbhKDM1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 08:27:18 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:41678 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231137AbhKDM1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 08:26:12 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59E8C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 05:23:32 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id b184-20020a1c1bc1000000b0033140bf8dd5so4103651wmb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 05:23:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DbdddvL3v1nKg0sWX7VozKa+Fy24SlndwT2dHYiunUc=;
-        b=Y1NZqfG2WZeoFgUOeBVL3uxtDdgUxoYu61tz/ya9iSTTtDPS/up2RrnH14i5S7soGP
-         XZKJWXhM7MLPtrbP0iTxmzw5SppG8O8RvuxZJG5oZtgQub/NM6IioDpuOdGSIvC8nfWH
-         91miaDB4lDiOA50K0Ai4pNr8Am7zM1VU9mcps=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DbdddvL3v1nKg0sWX7VozKa+Fy24SlndwT2dHYiunUc=;
-        b=dsD2C3HRshIV4hBqUnLq5T/uLtb6CUJ+el60SrqZNDa0p+P28IgOl3pK5iGUxX9Ihb
-         gTVoo8eOJrEnk5Yb2xNJL16AIS+RE5miCjfPkN+w1VAr//QMBRUzAKmx5j9MhTYp7erV
-         Rk9CS+66EkARcFcTn7ppWOOxfNXbhxVDxUAu9Dpl+egkGZOs2oFfI/4LIy8IWLC2q5zD
-         p44+qwzwOZUJZID/imMDAJkirdzab2CJWf2uJFTk7Nl1Upa1ssDQkK9EFKe58w6nOXf3
-         a7Ml1Flhy1rhWdHzlKYNTX7vO3jnNY7JCl6hTI3LxMQy0rrBqmucOPDCLmZ0D0HbdD9V
-         Cyyw==
-X-Gm-Message-State: AOAM5335KUYumQsLoIQxj3u6adL4TfKPUv6abxTJk5DWsQaY+lUCmajp
-        iZpBv4vaK11Tv8EUg1cOlEdYZA==
-X-Google-Smtp-Source: ABdhPJyjdBYDj2sx912EDhl0izenDXlzZg7gy6atekwsa7xhY81ByQunOX+VtBvujXfBr8u1iCMuKQ==
-X-Received: by 2002:a1c:448b:: with SMTP id r133mr10372348wma.85.1636028611422;
-        Thu, 04 Nov 2021 05:23:31 -0700 (PDT)
-Received: from kharboze.dr-pashinator-m-d.gmail.com.beta.tailscale.net (cust97-dsl60.idnet.net. [212.69.60.97])
-        by smtp.gmail.com with ESMTPSA id a4sm4797535wmb.39.2021.11.04.05.23.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 05:23:31 -0700 (PDT)
-From:   Mark Pashmfouroush <markpash@cloudflare.com>
-To:     markpash@cloudflare.com, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     kernel-team@cloudflare.com, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Add tests for accessing ifindex in bpf_sk_lookup
-Date:   Thu,  4 Nov 2021 12:23:04 +0000
-Message-Id: <20211104122304.962104-3-markpash@cloudflare.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211104122304.962104-1-markpash@cloudflare.com>
-References: <20211104122304.962104-1-markpash@cloudflare.com>
+        Thu, 4 Nov 2021 08:27:17 -0400
+X-UUID: 06b80ee489ee47bdbc4de284346ce807-20211104
+X-UUID: 06b80ee489ee47bdbc4de284346ce807-20211104
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
+        (envelope-from <yunfei.dong@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 80758421; Thu, 04 Nov 2021 20:24:31 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.792.15; Thu, 4 Nov 2021 20:24:29 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkmbs10n2.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.792.3 via Frontend
+ Transport; Thu, 4 Nov 2021 20:24:28 +0800
+From:   Yunfei Dong <yunfei.dong@mediatek.com>
+To:     Steve Cho <stevecho@google.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>
+CC:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Steve Cho <stevecho@chromium.org>
+Subject: [PATCH v3] media: mtk-vcodec: Align width and height to 64 bytes
+Date:   Thu, 4 Nov 2021 20:24:26 +0800
+Message-ID: <20211104122426.9597-1-yunfei.dong@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A new field was added to the bpf_sk_lookup data that users can access.
-Add tests that validate that the new ifindex field contains the right
-data.
+Width and height need to 64 bytes aligned when setting the format.
+Need to make sure all is 64 bytes align when use width and height to
+calculate buffer size.
 
-Signed-off-by: Mark Pashmfouroush <markpash@cloudflare.com>
+Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+Acked-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Tested-by: Steve Cho <stevecho@chromium.org>
+---
+ drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h        | 1 +
+ drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-index 6db07401bc49..57846cc7ce36 100644
---- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-@@ -937,6 +937,37 @@ static void test_drop_on_lookup(struct test_sk_lookup *skel)
- 			.connect_to	= { EXT_IP6, EXT_PORT },
- 			.listen_at	= { EXT_IP6, INT_PORT },
- 		},
-+		/* The program will drop on success, meaning that the ifindex
-+		 * was 1.
-+		 */
-+		{
-+			.desc		= "TCP IPv4 drop on valid ifindex",
-+			.lookup_prog	= skel->progs.check_ifindex,
-+			.sotype		= SOCK_STREAM,
-+			.connect_to	= { EXT_IP4, EXT_PORT },
-+			.listen_at	= { EXT_IP4, EXT_PORT },
-+		},
-+		{
-+			.desc		= "TCP IPv6 drop on valid ifindex",
-+			.lookup_prog	= skel->progs.check_ifindex,
-+			.sotype		= SOCK_STREAM,
-+			.connect_to	= { EXT_IP6, EXT_PORT },
-+			.listen_at	= { EXT_IP6, EXT_PORT },
-+		},
-+		{
-+			.desc		= "UDP IPv4 drop on valid ifindex",
-+			.lookup_prog	= skel->progs.check_ifindex,
-+			.sotype		= SOCK_DGRAM,
-+			.connect_to	= { EXT_IP4, EXT_PORT },
-+			.listen_at	= { EXT_IP4, EXT_PORT },
-+		},
-+		{
-+			.desc		= "UDP IPv6 drop on valid ifindex",
-+			.lookup_prog	= skel->progs.check_ifindex,
-+			.sotype		= SOCK_DGRAM,
-+			.connect_to	= { EXT_IP6, EXT_PORT },
-+			.listen_at	= { EXT_IP6, EXT_PORT },
-+		},
- 	};
- 	const struct test *t;
+diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h
+index e30806c1faea..66cd6d2242c3 100644
+--- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h
++++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h
+@@ -11,6 +11,7 @@
+ #include <media/videobuf2-core.h>
+ #include <media/v4l2-mem2mem.h>
  
-diff --git a/tools/testing/selftests/bpf/progs/test_sk_lookup.c b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-index 19d2465d9442..0f3283bfe3b6 100644
---- a/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-+++ b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-@@ -84,6 +84,14 @@ int lookup_drop(struct bpf_sk_lookup *ctx)
- 	return SK_DROP;
- }
- 
-+SEC("sk_lookup")
-+int check_ifindex(struct bpf_sk_lookup *ctx)
-+{
-+	if (ctx->ifindex == 1)
-+		return SK_DROP;
-+	return SK_PASS;
-+}
-+
- SEC("sk_reuseport")
- int reuseport_pass(struct sk_reuseport_md *ctx)
++#define VCODEC_DEC_ALIGNED_64 64
+ #define VCODEC_CAPABILITY_4K_DISABLED	0x10
+ #define VCODEC_DEC_4K_CODED_WIDTH	4096U
+ #define VCODEC_DEC_4K_CODED_HEIGHT	2304U
+diff --git a/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c b/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
+index d402fc4bda69..e1a3011772a9 100644
+--- a/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
++++ b/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
+@@ -562,8 +562,8 @@ static void get_pic_info(struct vdec_h264_slice_inst *inst,
  {
-diff --git a/tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c b/tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c
-index d78627be060f..0b3088da1e89 100644
---- a/tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c
-+++ b/tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c
-@@ -229,6 +229,24 @@
- 		BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_1,
- 			    offsetof(struct bpf_sk_lookup, local_port)),
+ 	struct mtk_vcodec_ctx *ctx = inst->ctx;
  
-+		/* 1-byte read from ifindex field */
-+		BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ifindex)),
-+		BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ifindex) + 1),
-+		BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ifindex) + 2),
-+		BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ifindex) + 3),
-+		/* 2-byte read from ifindex field */
-+		BPF_LDX_MEM(BPF_H, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ifindex)),
-+		BPF_LDX_MEM(BPF_H, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ifindex) + 2),
-+		/* 4-byte read from ifindex field */
-+		BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ifindex)),
-+
- 		/* 8-byte read from sk field */
- 		BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1,
- 			    offsetof(struct bpf_sk_lookup, sk)),
-@@ -351,6 +369,20 @@
- 	.expected_attach_type = BPF_SK_LOOKUP,
- 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
- },
-+{
-+	"invalid 8-byte read from bpf_sk_lookup ifindex field",
-+	.insns = {
-+		BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1,
-+			    offsetof(struct bpf_sk_lookup, ifindex)),
-+		BPF_MOV32_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.errstr = "invalid bpf_context access",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_SK_LOOKUP,
-+	.expected_attach_type = BPF_SK_LOOKUP,
-+	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
-+},
- /* invalid 1,2,4-byte reads from 8-byte fields in bpf_sk_lookup */
- {
- 	"invalid 4-byte read from bpf_sk_lookup sk field",
+-	ctx->picinfo.buf_w = (ctx->picinfo.pic_w + 15) & 0xFFFFFFF0;
+-	ctx->picinfo.buf_h = (ctx->picinfo.pic_h + 31) & 0xFFFFFFE0;
++	ctx->picinfo.buf_w = ALIGN(ctx->picinfo.pic_w, VCODEC_DEC_ALIGNED_64);
++	ctx->picinfo.buf_h = ALIGN(ctx->picinfo.pic_h, VCODEC_DEC_ALIGNED_64);
+ 	ctx->picinfo.fb_sz[0] = ctx->picinfo.buf_w * ctx->picinfo.buf_h;
+ 	ctx->picinfo.fb_sz[1] = ctx->picinfo.fb_sz[0] >> 1;
+ 	inst->vsi_ctx.dec.cap_num_planes =
 -- 
-2.31.1
+2.25.1
 
