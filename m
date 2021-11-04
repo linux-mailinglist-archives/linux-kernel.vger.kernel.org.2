@@ -2,125 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F31444EA4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCCA5444EA9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbhKDGML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:12:11 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14714 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhKDGMK (ORCPT
+        id S230361AbhKDGOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229994AbhKDGOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:12:10 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HlCpc1B5VzZcmP;
-        Thu,  4 Nov 2021 14:07:20 +0800 (CST)
-Received: from dggpeml100009.china.huawei.com (7.185.36.95) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 4 Nov 2021 14:09:20 +0800
-Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
- dggpeml100009.china.huawei.com (7.185.36.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 4 Nov 2021 14:09:20 +0800
-Received: from dggpeml500011.china.huawei.com ([7.185.36.84]) by
- dggpeml500011.china.huawei.com ([7.185.36.84]) with mapi id 15.01.2308.015;
- Thu, 4 Nov 2021 14:09:20 +0800
-From:   "zhudi (E)" <zhudi2@huawei.com>
-To:     Yonghong Song <yhs@fb.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "jakub@cloudflare.com" <jakub@cloudflare.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v5 2/2] selftests: bpf: test BPF_PROG_QUERY for
- progs attached to sockmap
-Thread-Topic: [PATCH bpf-next v5 2/2] selftests: bpf: test BPF_PROG_QUERY for
- progs attached to sockmap
-Thread-Index: AdfRQjV0VZ4AJAhNDki/kj/1FpZ/Zw==
-Date:   Thu, 4 Nov 2021 06:09:19 +0000
-Message-ID: <3e98a5f5cd9a482fa95acc052484914d@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.136.114.155]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 4 Nov 2021 02:14:06 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 343DAC061714;
+        Wed,  3 Nov 2021 23:11:29 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id p18so5478501plf.13;
+        Wed, 03 Nov 2021 23:11:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OjnEPOzUPFVGMCkVUBCfucHinXUbvfA4ZiPiZdFe5fE=;
+        b=XmkgLy9WF+XWPTfg+VhTS0tA2at/XszKlLy7PvInlpvfaviSpNRiQ2uT2WEG+hi1cs
+         CfhlaWYG4Q/CoLxyrOTRDVvPyacema2lYk2Yi5IOJUF48QQl7JHrcuqbikbRnYXm6QQ0
+         igaNyTENS5uDlZvaCbal1HLqr1D/JtU0ikCA1ctWsWYGyNHTRjjXuT6o60qNW/DAnpdp
+         YwjHXFh/1jZHAttkv0n3HX7q3Wlyrpk1KVyoLNzWRd0/OymMJLGHTMBPi2sT4qKNkBh1
+         br7rhuT9HjxUBDL9EdM7YokSqvQIlS0U5tbqkNql7duKCZqrDUjZQRzBelHxPUscsLhm
+         lr7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OjnEPOzUPFVGMCkVUBCfucHinXUbvfA4ZiPiZdFe5fE=;
+        b=oVeu51dsKaS9hlPe322R4MQy0H3QncJoRLvWwksBJ33HoHNYCcF6ZG3p0d5erZ8DfM
+         S5MFpMMhpe5EQhwsPr/Z4BxUtgcm/TACtZ4zwG03pBLllZvu0jgI42646exPURcWbkHI
+         BzlEa2AfZJVgXnxi4vuj774xDeS+uSN5Xa8nNm0HQt27qztD+kPJ9CCcR9zBn52ccu9G
+         H44kUyaB7LwmnA90yrrKeqMgT1aaYhVbw9DZDaOCU956vcqMMmE4PJmXqWIe4hYD4m+4
+         +HhCCJlGKyOPUClP8gXd5MDFSImqTOcDbTd6B44jgWeE4lRXStzfabzTlgA10tUeUa/q
+         Xlqg==
+X-Gm-Message-State: AOAM5319D2SDsnu0Xq86n3ys28G1v/UXW9Nvmec0lNIO9/Bq0Or3vSh2
+        UbXjJ3LOgHzG8/6v4ym+hRw=
+X-Google-Smtp-Source: ABdhPJzyBGLpaLsRqTMYZCDVSew0TVLrzxI1xxC1OR5kuon+oe5k3/id6FRd9dZ0cZuq6Hxt/cq0kg==
+X-Received: by 2002:a17:90b:124d:: with SMTP id gx13mr19936360pjb.106.1636006288575;
+        Wed, 03 Nov 2021 23:11:28 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id s7sm4242655pfu.139.2021.11.03.23.11.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 23:11:28 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: ye.guojin@zte.com.cn
+To:     pkshih@realtek.com
+Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ye Guojin <ye.guojin@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] rtw89: remove unnecessary conditional operators
+Date:   Thu,  4 Nov 2021 06:11:19 +0000
+Message-Id: <20211104061119.1685-1-ye.guojin@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiAxMS8zLzIxIDY6MDcgUE0sIERpIFpodSB3cm90ZToNCj4gPiBBZGQgdGVzdCBmb3IgcXVl
-cnlpbmcgcHJvZ3MgYXR0YWNoZWQgdG8gc29ja21hcC4gd2UgdXNlIGFuIGV4aXN0aW5nDQo+ID4g
-bGliYnBmIHF1ZXJ5IGludGVyZmFjZSB0byBxdWVyeSBwcm9nIGNudCBiZWZvcmUgYW5kIGFmdGVy
-IHByb2dzDQo+ID4gYXR0YWNoaW5nIHRvIHNvY2ttYXAgYW5kIGNoZWNrIHdoZXRoZXIgdGhlIHF1
-ZXJpZWQgcHJvZyBpZCBpcyByaWdodC4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IERpIFpodSA8
-emh1ZGkyQGh1YXdlaS5jb20+DQo+ID4gLS0tDQo+ID4gICAuLi4vc2VsZnRlc3RzL2JwZi9wcm9n
-X3Rlc3RzL3NvY2ttYXBfYmFzaWMuYyAgfCA3NSArKysrKysrKysrKysrKysrKysrDQo+ID4gICAu
-Li4vYnBmL3Byb2dzL3Rlc3Rfc29ja21hcF9wcm9nc19xdWVyeS5jICAgICAgfCAyNCArKysrKysN
-Cj4gPiAgIDIgZmlsZXMgY2hhbmdlZCwgOTkgaW5zZXJ0aW9ucygrKQ0KPiA+ICAgY3JlYXRlIG1v
-ZGUgMTAwNjQ0DQo+IHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9ncy90ZXN0X3NvY2tt
-YXBfcHJvZ3NfcXVlcnkuYw0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2Vs
-ZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL3NvY2ttYXBfYmFzaWMuYw0KPiBiL3Rvb2xzL3Rlc3Rpbmcv
-c2VsZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL3NvY2ttYXBfYmFzaWMuYw0KPiA+IGluZGV4IDEzNTJl
-YzEwNDE0OS4uZGU4ZjkxZDkxMjQwIDEwMDY0NA0KPiA+IC0tLSBhL3Rvb2xzL3Rlc3Rpbmcvc2Vs
-ZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL3NvY2ttYXBfYmFzaWMuYw0KPiA+ICsrKyBiL3Rvb2xzL3Rl
-c3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL3NvY2ttYXBfYmFzaWMuYw0KPiA+IEBAIC04
-LDYgKzgsNyBAQA0KPiA+ICAgI2luY2x1ZGUgInRlc3Rfc29ja21hcF91cGRhdGUuc2tlbC5oIg0K
-PiA+ICAgI2luY2x1ZGUgInRlc3Rfc29ja21hcF9pbnZhbGlkX3VwZGF0ZS5za2VsLmgiDQo+ID4g
-ICAjaW5jbHVkZSAidGVzdF9zb2NrbWFwX3NrYl92ZXJkaWN0X2F0dGFjaC5za2VsLmgiDQo+ID4g
-KyNpbmNsdWRlICJ0ZXN0X3NvY2ttYXBfcHJvZ3NfcXVlcnkuc2tlbC5oIg0KPiA+ICAgI2luY2x1
-ZGUgImJwZl9pdGVyX3NvY2ttYXAuc2tlbC5oIg0KPiA+DQo+ID4gICAjZGVmaW5lIFRDUF9SRVBB
-SVIJCTE5CS8qIFRDUCBzb2NrIGlzIHVuZGVyIHJlcGFpciByaWdodCBub3cgKi8NCj4gPiBAQCAt
-MzE1LDYgKzMxNiw3NCBAQCBzdGF0aWMgdm9pZCB0ZXN0X3NvY2ttYXBfc2tiX3ZlcmRpY3RfYXR0
-YWNoKGVudW0NCj4gYnBmX2F0dGFjaF90eXBlIGZpcnN0LA0KPiA+ICAgCXRlc3Rfc29ja21hcF9z
-a2JfdmVyZGljdF9hdHRhY2hfX2Rlc3Ryb3koc2tlbCk7DQo+ID4gICB9DQo+ID4NCj4gPiArc3Rh
-dGljIF9fdTMyIHF1ZXJ5X3Byb2dfaWQoaW50IHByb2dfZmQpDQo+ID4gK3sNCj4gPiArCXN0cnVj
-dCBicGZfcHJvZ19pbmZvIGluZm8gPSB7fTsNCj4gPiArCV9fdTMyIGluZm9fbGVuID0gc2l6ZW9m
-KGluZm8pOw0KPiA+ICsJaW50IGVycjsNCj4gPiArDQo+ID4gKwllcnIgPSBicGZfb2JqX2dldF9p
-bmZvX2J5X2ZkKHByb2dfZmQsICZpbmZvLCAmaW5mb19sZW4pOw0KPiA+ICsJaWYgKENIRUNLX0ZB
-SUwoZXJyIHx8IGluZm9fbGVuICE9IHNpemVvZihpbmZvKSkpIHsNCj4gPiArCQlwZXJyb3IoImJw
-Zl9vYmpfZ2V0X2luZm9fYnlfZmQiKTsNCj4gDQo+IFBsZWFzZSB1c2UgQVNTRVJUXyogbWFjcm9z
-LiBUaGVzZSBtYWNyb3MgYXJlIGRlZmluZWQgaW4gdGVzdF9wcm9ncy5oLg0KPiBXZSBtYXkgaGF2
-ZSBzb21lIG9sZCBmaWxlcyBzdGlsbCB1c2luZyBDSEVDSyogd2hpY2ggYXJlIG5vdCBjb252ZXJ0
-ZWQNCj4gdG8gQVNTRVJUKiB5ZXQuIEJ1dCBmb3IgbmV3IGNvbnRyaWJ1dGlvbnMsIHdlIHdvdWxk
-IGxpa2UgdG8gdXNlDQo+IEFTU0VSVCogZnJvbSBzdGFydC4gWW91IGNhbiBjaGVjayBvdGhlciBw
-cm9nX3Rlc3RzLyouYyBmaWxlcyBmb3INCj4gZXhhbXBsZXMuDQo+IA0KPiBGb3IgdGhlIGFib3Zl
-IGV4YW1wbGUsIHlvdSBjYW4gZG8NCj4gCWlmICghQVNTRVJUX09LKGVyciwgImJwZl9vYmpfZ2V0
-X2luZm9fYnlfZmQiKSB8fA0KPiAJICAgICFBU1NFUlRfRVEoaW5mb19sZW4sIHNpemVvZihpbmZv
-KSwgImJwZl9vYmpfZ2V0X2luZm9fYnlfZmQiKSkNCj4gCQlyZXR1cm4gMDsNCg0KSSByZWZlciB0
-byB0aGUgaW1wbGVtZW50YXRpb24gb2YgdGhlIG9sZCBjb2RlcywgSSB3aWxsIG1vZGlmeSBpdA0K
-VGhhbmtzLA0KDQoNCj4gPiArCQlyZXR1cm4gMDsNCj4gPiArCX0NCj4gPiArDQo+ID4gKwlyZXR1
-cm4gaW5mby5pZDsNCj4gWy4uLl0NCj4gPiArCWVyciA9IGJwZl9wcm9nX3F1ZXJ5KG1hcF9mZCwg
-YXR0YWNoX3R5cGUsIDAgLyogcXVlcnkgZmxhZ3MgKi8sDQo+ID4gKwkJCSAgICAgJmF0dGFjaF9m
-bGFncywgcHJvZ19pZHMsICZwcm9nX2NudCk7DQo+ID4gKwlpZiAoQ0hFQ0soZXJyLCAiYnBmX3By
-b2dfcXVlcnkiLCAiZmFpbGVkXG4iKSkNCj4gPiArCQlnb3RvIG91dDsNCj4gDQo+IEluIHRoaXMg
-Y2FzZSwgeW91IGNhbiB1c2UNCj4gCWlmICghQVNTRVJUX09LKGVyciwgImJwZl9wcm9nX3F1ZXJ5
-IikpDQo+IAkJZ290byBvdXQ7DQo+IA0KPiBQbGVhc2UgYWxzbyBjaGFuZ2UgYmVsb3cgb3RoZXIg
-Q0hFQ0sgdXNhZ2VzLg0KPiANCj4gPiArDQo+ID4gKwlpZiAoQ0hFQ0soYXR0YWNoX2ZsYWdzICE9
-IDAsICJicGZfcHJvZ19xdWVyeSIsDQo+ID4gKwkJICAid3JvbmcgYXR0YWNoX2ZsYWdzIG9uIHF1
-ZXJ5OiAldSIsIGF0dGFjaF9mbGFncykpDQo+ID4gKwkJZ290byBvdXQ7DQo+ID4gKw0KPiA+ICsJ
-aWYgKENIRUNLKHByb2dfY250ICE9IDAsICJicGZfcHJvZ19xdWVyeSIsDQo+ID4gKwkJICAid3Jv
-bmcgcHJvZ3JhbSBjb3VudCBvbiBxdWVyeTogJXUiLCBwcm9nX2NudCkpDQo+ID4gKwkJZ290byBv
-dXQ7DQo+ID4gKw0KPiA+ICsJZXJyID0gYnBmX3Byb2dfYXR0YWNoKHZlcmRpY3RfZmQsIG1hcF9m
-ZCwgYXR0YWNoX3R5cGUsIDApOw0KPiA+ICsJaWYgKENIRUNLKGVyciwgImJwZl9wcm9nX2F0dGFj
-aCIsICJmYWlsZWRcbiIpKQ0KPiA+ICsJCWdvdG8gb3V0Ow0KPiA+ICsNCj4gPiArCXByb2dfY250
-ID0gMTsNCj4gPiArCWVyciA9IGJwZl9wcm9nX3F1ZXJ5KG1hcF9mZCwgYXR0YWNoX3R5cGUsIDAg
-LyogcXVlcnkgZmxhZ3MgKi8sDQo+ID4gKwkJCSAgICAgJmF0dGFjaF9mbGFncywgcHJvZ19pZHMs
-ICZwcm9nX2NudCk7DQo+ID4gKw0KPiA+ICsJQ0hFQ0soZXJyLCAiYnBmX3Byb2dfcXVlcnkiLCAi
-ZmFpbGVkXG4iKTsNCj4gPiArCUNIRUNLKGF0dGFjaF9mbGFncyAhPSAwLCAiYnBmX3Byb2dfcXVl
-cnkgYXR0YWNoX2ZsYWdzIiwNCj4gPiArCSAgICAgICJ3cm9uZyBhdHRhY2hfZmxhZ3Mgb24gcXVl
-cnk6ICV1IiwgYXR0YWNoX2ZsYWdzKTsNCj4gPiArCUNIRUNLKHByb2dfY250ICE9IDEsICJicGZf
-cHJvZ19xdWVyeSBwcm9nX2NudCIsDQo+ID4gKwkgICAgICAid3JvbmcgcHJvZ3JhbSBjb3VudCBv
-biBxdWVyeTogJXUiLCBwcm9nX2NudCk7DQo+ID4gKwlDSEVDSyhwcm9nX2lkc1swXSAhPSBxdWVy
-eV9wcm9nX2lkKHZlcmRpY3RfZmQpLCAiYnBmX3Byb2dfcXVlcnkiLA0KPiA+ICsJICAgICAgIndy
-b25nIHByb2dfaWRzIG9uIHF1ZXJ5OiAldSIsIHByb2dfaWRzWzBdKTsNCj4gWy4uLl0NCg==
+From: Ye Guojin <ye.guojin@zte.com.cn>
+
+The conditional operator is unnecessary while assigning values to the
+bool variables.
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
+---
+ drivers/net/wireless/realtek/rtw89/debug.c    | 2 +-
+ drivers/net/wireless/realtek/rtw89/mac.c      | 2 +-
+ drivers/net/wireless/realtek/rtw89/phy.c      | 2 +-
+ drivers/net/wireless/realtek/rtw89/rtw8852a.c | 4 ++--
+ 4 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/wireless/realtek/rtw89/debug.c b/drivers/net/wireless/realtek/rtw89/debug.c
+index 29eb188c888c..75f10627585b 100644
+--- a/drivers/net/wireless/realtek/rtw89/debug.c
++++ b/drivers/net/wireless/realtek/rtw89/debug.c
+@@ -814,7 +814,7 @@ rtw89_debug_priv_mac_dbg_port_dump_select(struct file *filp,
+ 		return -EINVAL;
+ 	}
+ 
+-	enable = set == 0 ? false : true;
++	enable = set != 0;
+ 	switch (sel) {
+ 	case 0:
+ 		debugfs_priv->dbgpkg_en.ss_dbg = enable;
+diff --git a/drivers/net/wireless/realtek/rtw89/mac.c b/drivers/net/wireless/realtek/rtw89/mac.c
+index afcd07ab1de7..944c23293cb9 100644
+--- a/drivers/net/wireless/realtek/rtw89/mac.c
++++ b/drivers/net/wireless/realtek/rtw89/mac.c
+@@ -3695,7 +3695,7 @@ void _rtw89_mac_bf_monitor_track(struct rtw89_dev *rtwdev)
+ {
+ 	struct rtw89_traffic_stats *stats = &rtwdev->stats;
+ 	struct rtw89_vif *rtwvif;
+-	bool en = stats->tx_tfc_lv > stats->rx_tfc_lv ? false : true;
++	bool en = stats->tx_tfc_lv <= stats->rx_tfc_lv;
+ 	bool old = test_bit(RTW89_FLAG_BFEE_EN, rtwdev->flags);
+ 
+ 	if (en == old)
+diff --git a/drivers/net/wireless/realtek/rtw89/phy.c b/drivers/net/wireless/realtek/rtw89/phy.c
+index ab134856baac..b7107eff9edc 100644
+--- a/drivers/net/wireless/realtek/rtw89/phy.c
++++ b/drivers/net/wireless/realtek/rtw89/phy.c
+@@ -1767,7 +1767,7 @@ static void rtw89_phy_cfo_dm(struct rtw89_dev *rtwdev)
+ 	}
+ 	rtw89_phy_cfo_crystal_cap_adjust(rtwdev, new_cfo);
+ 	cfo->cfo_avg_pre = new_cfo;
+-	x_cap_update =  cfo->crystal_cap == pre_x_cap ? false : true;
++	x_cap_update =  cfo->crystal_cap != pre_x_cap;
+ 	rtw89_debug(rtwdev, RTW89_DBG_CFO, "Xcap_up=%d\n", x_cap_update);
+ 	rtw89_debug(rtwdev, RTW89_DBG_CFO, "Xcap: D:%x C:%x->%x, ofst=%d\n",
+ 		    cfo->def_x_cap, pre_x_cap, cfo->crystal_cap,
+diff --git a/drivers/net/wireless/realtek/rtw89/rtw8852a.c b/drivers/net/wireless/realtek/rtw89/rtw8852a.c
+index 5c6ffca3a324..9e25e53f6c4a 100644
+--- a/drivers/net/wireless/realtek/rtw89/rtw8852a.c
++++ b/drivers/net/wireless/realtek/rtw89/rtw8852a.c
+@@ -1053,10 +1053,10 @@ static void rtw8852a_set_channel_bb(struct rtw89_dev *rtwdev,
+ 				    struct rtw89_channel_params *param,
+ 				    enum rtw89_phy_idx phy_idx)
+ {
+-	bool cck_en = param->center_chan > 14 ? false : true;
++	bool cck_en = param->center_chan <= 14;
+ 	u8 pri_ch_idx = param->pri_ch_idx;
+ 
+-	if (param->center_chan <= 14)
++	if (cck_en)
+ 		rtw8852a_ctrl_sco_cck(rtwdev, param->center_chan,
+ 				      param->primary_chan, param->bandwidth);
+ 
+-- 
+2.25.1
+
