@@ -2,271 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2DC4458EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:47:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2D84458EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:48:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232384AbhKDRuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
+        id S234006AbhKDRuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230100AbhKDRuC (ORCPT
+        with ESMTP id S230100AbhKDRug (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:50:02 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC68CC061714;
-        Thu,  4 Nov 2021 10:47:23 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id o12so16383697ybk.1;
-        Thu, 04 Nov 2021 10:47:23 -0700 (PDT)
+        Thu, 4 Nov 2021 13:50:36 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FCA7C061203
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 10:47:58 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id t7so6059873pgl.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 10:47:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EnloO58hBnVw7b0fHzcjnyEvTAEh2MgNxjIqozqohqE=;
-        b=Zkkp8BEQkhBaksVN4tZcXVGOzR09Aj7T5Tw93NgEJzvCO2WTZr1+APBsEbMdWdztY7
-         Z/Y5MAFZOEDZWf3A3261WqMfRY102pLc4/x+lEXXhOxtBOpzfTj974ZAjPpLzd0Qe+2W
-         eHbyvCCVabwX4jbt/T2WP6VMtlmJceyXZeQnbzJOgQyamXICO4EZcoP/QZRL/ehELM7t
-         E8JQNuxuwUli2N6JDd34y7OU0FZePJnKQKR4ycciyRQ5T3rgO8QZpcR7Z2dQt5JlGKI/
-         V/vGs+BZwNjSgefYxG5z43aBhKLZZlOHQ2hPLgZRzbRES9MK53pc2Hl9arvbQnobonHh
-         rVZQ==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CRX1JnII6cf5ITH/Jx7bQ6CXI3KNmsN3e/xj+NX8tLs=;
+        b=DRa/4CE2xbSxUb4DTb/SaciEp90VRfojqjaz5rVMI81JCzV5hpLdlzifgZLEqJw9nc
+         xO6Lg6yaSYgA/BgZZpcFyPaiXTIhKEy7GKslGtonCJXhOtp8Dpxnw++vaLN+59NOhNwq
+         5qQNAKHon8CinY1uJv/3GB3e0yk9a6RbaYP+G7dhSrygQS2Z8Pev+CIFYeIE4hCNx+6/
+         nHaL6V7WDVHBKKCoUl4chm5YkHsdH+ImZaJSKRJ74xl4F/A0Obpu30S9UnOMdePpMI07
+         klwYnFkq9pOivk2p1dSlNRb83vXXCPsZfZ+XzAtj4UKswAC4DcgB7u4qlBFbBcp5TZmO
+         JBKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EnloO58hBnVw7b0fHzcjnyEvTAEh2MgNxjIqozqohqE=;
-        b=WbjGn0lrLlg7Y92YLFlPnA5YqjhDSFULMMi2KeUwTh+p1r8qrhr2M2H0aRqQL9g/s7
-         1NpzWwBlP4GPDMqQkcE87+bFZqXcCQjBzG8BeHOSd8NRTddFhau2MzeqPHjLwbvc0y1R
-         l5fCu08eTQXwp/qhd57EvL4WGK5sCdklgUQ7dH2RTdxI9g+Q94wln8d2va0YFBEnmvos
-         43XGg9N1fntN87MOJ3E+Lch4kBpF0C4kOGs2ocPveRuqqv+YH05ZB+y/EGedbsf8vXxB
-         M6ZuyYjOFHMCYe92goG+cwl1qMcWXppFQs3p2gsdt86ErPFPEHbSO+I9e/L3kvaUnoTR
-         wF2A==
-X-Gm-Message-State: AOAM5334wC82wh4CJtyl3Rz0IutwnxV+Gp+N/ugDuW7hclVfZJZb4bjb
-        xoJ3x14ffQunNyCGFng4DoZZEzM7OQfWIfeb2yI=
-X-Google-Smtp-Source: ABdhPJz/pi1IN+P/M+j20x2q0rFDMs3igugLLJAT+WeKpaW/EuhBfTM42uyOBD8EBjyMWf57a6eIg8chAGQ6yfyC6rY=
-X-Received: by 2002:a25:d187:: with SMTP id i129mr45116599ybg.2.1636048043146;
- Thu, 04 Nov 2021 10:47:23 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CRX1JnII6cf5ITH/Jx7bQ6CXI3KNmsN3e/xj+NX8tLs=;
+        b=CEHti+qrxtiDnbrSkmde3t7pSzrfye5YmUwZpnSDfjU0ohxweAY6EgG/85Syjx3SAG
+         XecZevpeL+HIg3UPUV6WYGC6+0wwPULEFqEP3I8z/Js9x1WDyXstjrXe+Sx/qiAUGo6Y
+         8u6IHmdH7D4hycC7+w9u9Afp97XbaxqxM9rOCQ+6FNO+yItlyhKHVKXCphWv0YIr73r3
+         a/2Cy+LxwgXdPZ3u80fchckSNO2CfVtO4dqsSDfKTfo21F9V9z2h0QpysWM3YKHSWskO
+         NIbb4pTu2h61NdOx3g8gi3IODp165fxQncvCb62HVwoHbcersI+YKLuH07IqGzEc1dp6
+         Yhvw==
+X-Gm-Message-State: AOAM530HYxD+u9kE9nazU+2UUOLthEoEQPc0ERTMNOW/DKk3oHmc+dXZ
+        lnKyxNpP4HxaSH3KyZlY0pVBjw==
+X-Google-Smtp-Source: ABdhPJx+JTRHhER8zYwwTZ9ujmlUrIKuGaiF0GSqUl7D3R+EJvn/J+CQG6deXJYOtSai0cpXoz6LUA==
+X-Received: by 2002:a05:6a00:181a:b0:47c:1057:52e with SMTP id y26-20020a056a00181a00b0047c1057052emr53703965pfa.76.1636048077649;
+        Thu, 04 Nov 2021 10:47:57 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id z3sm5554510pfh.79.2021.11.04.10.47.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 10:47:56 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 17:47:53 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ben Gardon <bgardon@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Liran Alon <liran.alon@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        John Haxby <john.haxby@oracle.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH v3 23/37] KVM: nVMX: Add helper to handle TLB flushes on
+ nested VM-Enter/VM-Exit
+Message-ID: <YYQcyVyD4qY3aCqh@google.com>
+References: <20200320212833.3507-1-sean.j.christopherson@intel.com>
+ <20200320212833.3507-24-sean.j.christopherson@intel.com>
+ <CAJhGHyD=S6pVB+OxM7zF0_6LnMUCLqyTfMK4x9GZsdRHZmgN7Q@mail.gmail.com>
+ <YXrAM9MNqgLTU6+m@google.com>
+ <CAJhGHyBKVUsuKdvfaART6NWF7Axk5=eFQLidhGrM=mUO2cv2vw@mail.gmail.com>
+ <YXwq+Q3+I81jwv7G@google.com>
+ <CAJhGHyBNazRUiwPT5nGC=JNYX96J1dP9Y+KWFz7TeYuT3teYZg@mail.gmail.com>
 MIME-Version: 1.0
-References: <YYQadWbtdZ9Ff9N4@kernel.org>
-In-Reply-To: <YYQadWbtdZ9Ff9N4@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 4 Nov 2021 10:47:12 -0700
-Message-ID: <CAEf4Bzaj4_hXDxk18aJvk2bxJ-rPb++DpPVEeUw0pN-tJuiy0Q@mail.gmail.com>
-Subject: Re: perf build broken looking for bpf/{libbpf,bpf}.h after merge with upstream
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Cc:     Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJhGHyBNazRUiwPT5nGC=JNYX96J1dP9Y+KWFz7TeYuT3teYZg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 10:38 AM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
->
->
-> Hi Song,
->
+On Sat, Oct 30, 2021, Lai Jiangshan wrote:
+> A small comment in your proposal: I found that KVM_REQ_TLB_FLUSH_CURRENT
+> and KVM_REQ_TLB_FLUSH_GUEST is to flush "current" vpid only, some special
+> work needs to be added when switching mmu from L1 to L2 and vice versa:
+> handle the requests before switching.
 
-cc Quentin as well, might be related to recent Makefiles revamp for
-users of libbpf. But in bpf-next perf builds perfectly fine, so not
-sure.
+Oh, yeah, that's this snippet of my pseudo patch, but I didn't provide the
+kvm_service_pending_tlb_flush_on_nested_transition() implementation so it's not
+exactly obvious what I intended.  The current code handles CURRENT, but not GUEST,
+the idea is to shove those into a helper that can be shared between nVMX and nSVM.
 
->         I just did a merge with upstream and I'm getting this:
->
->   LINK    /tmp/build/perf/plugins/plugin_scsi.so
->   INSTALL trace_plugins
->
-> Auto-detecting system features:
-> ...                        libbfd: [ on  ]
-> ...        disassembler-four-args: [ on  ]
-> ...                          zlib: [ on  ]
-> ...                        libcap: [ on  ]
-> ...               clang-bpf-co-re: [ on  ]
->
->
->   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//libbpf//include/bpf
->   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/
->   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/
->   INSTALL /tmp/build/perf/util/bpf_skel/.tmp//libbpf//include/bpf/hashmap=
-.h
->   INSTALL /tmp/build/perf/util/bpf_skel/.tmp//libbpf//include/bpf/nlattr.=
-h
->   GEN     /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/bpf_helper=
-_defs.h
->   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/
->   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/
->   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/
->   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/
->   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/
->   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/
->   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/
->   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/libbpf.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/libbpf_probes.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/xsk.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/bpf.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/nlattr.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/btf.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/libbpf_errno.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/hashmap.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/str_error.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/netlink.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/btf_dump.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/bpf_prog_linfo.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/ringbuf.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/strset.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/linker.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/gen_loader.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/relo_core.o
->   LD      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs=
-/libbpf-in.o
->   LINK    /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/libbpf.a
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/main.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/common.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/gen.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/json_writer.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/btf.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/xlated_dumper.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/btf_dumper.o
->   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/disasm.o
-> gen.c:15:10: fatal error: bpf/bpf.h: No such file or directory
->    15 | #include <bpf/bpf.h>
->       |          ^~~~~~~~~~~
-> compilation terminated.
-> make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap=
-/gen.o] Error 1
-> make[3]: *** Waiting for unfinished jobs....
-> xlated_dumper.c:10:10: fatal error: bpf/libbpf.h: No such file or directo=
-ry
->    10 | #include <bpf/libbpf.h>
->       |          ^~~~~~~~~~~~~~
-> compilation terminated.
-> btf.c:15:10: fatal error: bpf/bpf.h: No such file or directory
->    15 | #include <bpf/bpf.h>
->       |          ^~~~~~~~~~~
-> compilation terminated.
-> make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap=
-/xlated_dumper.o] Error 1
-> make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap=
-/btf.o] Error 1
-> main.c:12:10: fatal error: bpf/bpf.h: No such file or directory
->    12 | #include <bpf/bpf.h>
->       |          ^~~~~~~~~~~
-> compilation terminated.
-> make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap=
-/main.o] Error 1
-> btf_dumper.c:12:10: fatal error: bpf/btf.h: No such file or directory
->    12 | #include <bpf/btf.h>
->       |          ^~~~~~~~~~~
-> compilation terminated.
-> make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap=
-/btf_dumper.o] Error 1
-> common.c:24:10: fatal error: bpf/bpf.h: No such file or directory
->    24 | #include <bpf/bpf.h>
->       |          ^~~~~~~~~~~
-> compilation terminated.
-> make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap=
-/common.o] Error 1
-> make[2]: *** [Makefile.perf:1048: /tmp/build/perf/util/bpf_skel/.tmp/boot=
-strap/bpftool] Error 2
-> make[1]: *** [Makefile.perf:240: sub-make] Error 2
-> make: *** [Makefile:113: install-bin] Error 2
-> make: Leaving directory '/var/home/acme/git/perf/tools/perf'
->
->  Performance counter stats for 'make -k BUILD_BPF_SKEL=3D1 CORESIGHT=3D1 =
-PYTHON=3Dpython3 O=3D/tmp/build/perf -C tools/perf install-bin':
->
->           6,965.78 msec task-clock:u              #    1.492 CPUs utilize=
-d
->           6,937.93 msec cpu-clock:u               #    1.486 CPUs utilize=
-d
->
->        4.669198336 seconds time elapsed
->
->        4.015978000 seconds user
->        3.202660000 seconds sys
->
->
-> 70: Event expansion for cgroups                                     : Ok
-> 88: perf all metricgroups test                                      : FAI=
-LED!
-> =E2=AC=A2[acme@toolbox perf]$ find tools/ -name bpf.h
-> tools/include/uapi/linux/bpf.h
-> tools/lib/bpf/bpf.h
-> tools/perf/include/bpf/bpf.h
-> =E2=AC=A2[acme@toolbox perf]$ find tools/ -name libbpf.h
-> tools/lib/bpf/libbpf.h
-> =E2=AC=A2[acme@toolbox perf]$ find tools/perf/ -name gen.c
-> =E2=AC=A2[acme@toolbox perf]$
->
-> Before the merge, with pristine sources I wasn't getting this,
-> investigating now.
->
-> =E2=AC=A2[acme@toolbox perf]$ git show HEAD
-> commit e1498f18537a1639963370a4635c6fb99e7d672b (HEAD -> perf/core)
-> Merge: 32f7aa2731b24ad8 abfecb39092029c4
-> Author: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Date:   Thu Nov 4 14:32:11 2021 -0300
->
->     Merge remote-tracking branch 'torvalds/master' into perf/core
->
->     To pick up some tools/perf/ patches that went via tip/perf/core, such
->     as:
->
->       tools/perf: Add mem_hops field in perf_mem_data_src structure
->
->     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
->
-> =E2=AC=A2[acme@toolbox perf]$
->
-> =E2=AC=A2[acme@toolbox perf]$ git log --oneline -10 torvalds/master
-> abfecb39092029c4 (torvalds/master) Merge tag 'tty-5.16-rc1' of git://git.=
-kernel.org/pub/scm/linux/kernel/git/gregkh/tty
-> 95faf6ba654dd334 Merge tag 'driver-core-5.16-rc1' of git://git.kernel.org=
-/pub/scm/linux/kernel/git/gregkh/driver-core
-> 5c904c66ed4e86c3 Merge tag 'char-misc-5.16-rc1' of git://git.kernel.org/p=
-ub/scm/linux/kernel/git/gregkh/char-misc
-> 5cd4dc44b8a0f656 Merge tag 'staging-5.16-rc1' of git://git.kernel.org/pub=
-/scm/linux/kernel/git/gregkh/staging
-> 048ff8629e117d84 Merge tag 'usb-5.16-rc1' of git://git.kernel.org/pub/scm=
-/linux/kernel/git/gregkh/usb
-> 7ddb58cb0ecae8e8 Merge tag 'clk-for-linus' of git://git.kernel.org/pub/sc=
-m/linux/kernel/git/clk/linux
-> ce840177930f591a Merge tag 'defconfig-5.16' of git://git.kernel.org/pub/s=
-cm/linux/kernel/git/soc/soc
-> d461e96cd22b5aeb Merge tag 'drivers-5.16' of git://git.kernel.org/pub/scm=
-/linux/kernel/git/soc/soc
-> ae45d84fc36d01dc Merge tag 'dt-5.16' of git://git.kernel.org/pub/scm/linu=
-x/kernel/git/soc/soc
-> 2219b0ceefe835b9 Merge tag 'soc-5.16' of git://git.kernel.org/pub/scm/lin=
-ux/kernel/git/soc/soc
-> =E2=AC=A2[acme@toolbox perf]$
->
-> - Arnaldo
+And I believe the "flush" also needs to service KVM_REQ_MMU_SYNC.  For L1=>L2 it
+should be irrelevant/impossible, since L1 can only be unsync if L1 and L2 share
+an MMU, but the L2=>L1 path could result in a lost sync if something, e.g. an IRQ,
+prompted a nested VM-Exit before re-entering L2.
+
+Let me know if I misunderstood your comment.  Thanks!
+
+@@ -3361,8 +3358,7 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
+        };
+        u32 failed_index;
+
+-       if (kvm_check_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu))
+-               kvm_vcpu_flush_tlb_current(vcpu);
++       kvm_service_pending_tlb_flush_on_nested_transition(vcpu);
+
+        evaluate_pending_interrupts = exec_controls_get(vmx) &
+                (CPU_BASED_INTR_WINDOW_EXITING | CPU_BASED_NMI_WINDOW_EXITING);
