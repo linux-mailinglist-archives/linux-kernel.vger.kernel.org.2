@@ -2,104 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6502C445694
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:50:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A67D44569B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231556AbhKDPxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 11:53:16 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57686 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231526AbhKDPxO (ORCPT
+        id S231538AbhKDP4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 11:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231396AbhKDP4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 11:53:14 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A4ElRta038690;
-        Thu, 4 Nov 2021 15:50:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=x0KUkG6BcdlagTXstLcAl3xTTJoNQ1kCQFucy1bxlGE=;
- b=PRJcdujkNXB4Inohk05l9D001lE34tjMwVYsS/as5TxODTnyK/f3TDNtmBu1s+Hgp7A2
- hFZGpO5jy9P1QYRfwbkuTCCUrq3E2OYIFuDYHk/8KzIruBYYB6JCoyEGgO+XGNsuwWNd
- V376HmfrjhMjspOn7Ot7z7nfYFYjVHMNxCMOjeFgWAisCPhIKDLU73SjWorxKRlGCB8G
- vANxQMo3+d2o47C/QblFfbUg2mj0opIRzj1UpWc/iuFdKj6H9IJ5GZrb8dKZLMjGjrDI
- Zt+FnzEUyv4sAENmHWYSH5A3jj0EVTJhmRYF40+RrQG6zVal9HcM0NTbcPYrNiEP1E8n yw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3c4hke1dkm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Nov 2021 15:50:34 +0000
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1A4EmBZ6002377;
-        Thu, 4 Nov 2021 15:50:33 GMT
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3c4hke1dju-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Nov 2021 15:50:33 +0000
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1A4FWO7Z030336;
-        Thu, 4 Nov 2021 15:50:32 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma02wdc.us.ibm.com with ESMTP id 3c0wpcm0fv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Nov 2021 15:50:32 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1A4FoVOg22479252
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 4 Nov 2021 15:50:31 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F103B6E054;
-        Thu,  4 Nov 2021 15:50:30 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 86E8F6E058;
-        Thu,  4 Nov 2021 15:50:28 +0000 (GMT)
-Received: from cpe-172-100-181-211.stny.res.rr.com (unknown [9.160.110.109])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  4 Nov 2021 15:50:28 +0000 (GMT)
-Subject: Re: [PATCH v17 14/15] s390/ap: notify drivers on config changed and
- scan complete callbacks
-To:     Harald Freudenberger <freude@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     jjherne@linux.ibm.com, borntraeger@de.ibm.com, cohuck@redhat.com,
-        mjrosato@linux.ibm.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com
-References: <20211021152332.70455-1-akrowiak@linux.ibm.com>
- <20211021152332.70455-15-akrowiak@linux.ibm.com>
- <11b72236-34fe-4d65-0da1-033050c75a87@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <77a4b43b-940e-0321-9ebf-3249a8d8513a@linux.ibm.com>
-Date:   Thu, 4 Nov 2021 11:50:26 -0400
+        Thu, 4 Nov 2021 11:56:37 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6234C06127A
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 08:53:59 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id r10-20020a056830448a00b0055ac7767f5eso8871225otv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 08:53:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=57ktjFEtesdLi+1z8hbOyPWZtwGeamLgAiEVc1UH7SI=;
+        b=hvQniKKj9i6+dl6JNccGuh2PvpCpsDuoVFrCnvGilJu8SYU9eBOcuD9lh3Cc7Y6KTD
+         0CQ89U+sfMehs2LPTWE813UzweLDzS1N2iXmIhbUYDpJt8jfXfNWYgIVSAV18vlHJnLb
+         C8exfXMDAylDbwllx/DaHJm+2nRmxmzXza6jZXXUQyfKotZKv3Gswmux2bRp4THBka11
+         d98qdzU4mkZPVpX+UhV/1za5+VBkiRqn2iTAXt4RsfTOTNwwQapGlOzt2sS7HCSuBEUJ
+         brZK4nM/ijzoFclXVD28MfaPqRR32WrQHLHxKGFbnX6XMIHhyYkaFI8zzdpcuGSlBzdl
+         0Vfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=57ktjFEtesdLi+1z8hbOyPWZtwGeamLgAiEVc1UH7SI=;
+        b=X2Nc14Y1szSW4/MRP5O/9k/KGBRc3yvcbpfiMzA+ntzMrgePrzrc5V7hd5+z602B3m
+         j7yRIHGmosKWF4qXkIbtDwbWGbM8jeGNQM2PS/rw/obsxx6171GrHWSqnnPbX/pN9Z67
+         vz/u4X/trL7OYJHV5kBy/PgT6KnEisgAI9pdWuymM//Nub15iDhZMGMC2P/onAN2AqaQ
+         NO0DdPylyy93ZuG2KYGJCkj0WFUqceIZXsTZaUKcA9E2qPs//oNoFqhzZEgQhkDxu1aN
+         P34pwWr1koVHmSEag+1nTF8zKz5wVMJpYsE/nVqGIJDHYFPwvuFvgAeFau2Gd3AIG73n
+         1Akw==
+X-Gm-Message-State: AOAM532b/hv63uj1aAs41LakWgXRRIl+QDPDwTyX+MWcvagU0kf79Ba+
+        d05cKRh5zP9L03ggnhjQ1ETbcNOX1YV0jxOu
+X-Google-Smtp-Source: ABdhPJwNEREUFoRziBuC9TC46+Lk+CuVVn9ESUk41WEdsVUDos1AKVw2RANG141JlLfGmQJPM14Aag==
+X-Received: by 2002:a05:6830:22ef:: with SMTP id t15mr37489047otc.368.1636041238980;
+        Thu, 04 Nov 2021 08:53:58 -0700 (PDT)
+Received: from [192.168.17.16] ([189.219.75.83])
+        by smtp.gmail.com with ESMTPSA id x8sm1471617otg.31.2021.11.04.08.53.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Nov 2021 08:53:58 -0700 (PDT)
+Subject: Re: [PATCH 5.10 00/16] 5.10.78-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     shuah@kernel.org, f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+References: <20211104141159.561284732@linuxfoundation.org>
+From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Message-ID: <3971a9b4-ebb6-a789-2143-31cf257d0d38@linaro.org>
+Date:   Thu, 4 Nov 2021 09:53:57 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <11b72236-34fe-4d65-0da1-033050c75a87@linux.ibm.com>
+In-Reply-To: <20211104141159.561284732@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: fssJIPGgbUAiG7Ev8jZxHKGf-HSvAkJO
-X-Proofpoint-ORIG-GUID: uUj2cZqf8EMAe-3rXiaKhSBi1XuYfvos
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-04_04,2021-11-03_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- adultscore=0 spamscore=0 bulkscore=0 phishscore=0 priorityscore=1501
- mlxlogscore=999 lowpriorityscore=0 impostorscore=0 mlxscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111040058
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello!
+
+On 11/4/21 8:12 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.78 release.
+> There are 16 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 06 Nov 2021 14:11:51 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.78-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+Regressions detected.
+
+Build failures on all architectures and all toolchains (GCC 8, 9, 10, 11; Clang 10, 11, 12, 13, nightly):
+- arc
+- arm (32-bits)
+- arm (64-bits)
+- i386
+- mips
+- parisc
+- ppc
+- riscv
+- s390
+- sh
+- sparc
+- x86
+
+Failures look like this:
+
+   In file included from /builds/linux/include/linux/kernel.h:11,
+                    from /builds/linux/include/linux/list.h:9,
+                    from /builds/linux/include/linux/smp.h:12,
+                    from /builds/linux/include/linux/kernel_stat.h:5,
+                    from /builds/linux/mm/memory.c:42:
+   /builds/linux/mm/memory.c: In function 'finish_fault':
+   /builds/linux/mm/memory.c:3929:15: error: implicit declaration of function 'PageHasHWPoisoned'; did you mean 'PageHWPoison'? [-Werror=implicit-function-declaration]
+    3929 |  if (unlikely(PageHasHWPoisoned(page)))
+         |               ^~~~~~~~~~~~~~~~~
+   /builds/linux/include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+      78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+         |                                          ^
+   cc1: some warnings being treated as errors
+
+and this:
+
+   /builds/linux/mm/memory.c:3929:15: error: implicit declaration of function 'PageHasHWPoisoned' [-Werror,-Wimplicit-function-declaration]
+           if (unlikely(PageHasHWPoisoned(page)))
+                        ^
+
+   /builds/linux/mm/page_alloc.c:1237:4: error: implicit declaration of function 'ClearPageHasHWPoisoned' [-Werror,-Wimplicit-function-declaration]
+                           ClearPageHasHWPoisoned(page);
+                           ^
+   /builds/linux/mm/page_alloc.c:1237:4: note: did you mean 'ClearPageHWPoison'?
 
 
-On 11/4/21 8:06 AM, Harald Freudenberger wrote:
->
-> Tony as this is v17, if you may do jet another loop, I would pick the ap parts of your patch series and
-> apply them to the devel branch as separate patches.
+Greetings!
 
-Are you suggesting I do this now, or when this is finally ready to go 
-upstream?
-
-
+Daniel Díaz
+daniel.diaz@linaro.org
