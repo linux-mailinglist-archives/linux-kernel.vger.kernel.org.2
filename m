@@ -2,423 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1639444FF4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:10:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C070444FF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:11:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbhKDIND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:13:03 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:30270 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhKDINC (ORCPT
+        id S230404AbhKDINz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:13:55 -0400
+Received: from mx0b-00128a01.pphosted.com ([148.163.139.77]:47000 "EHLO
+        mx0b-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230229AbhKDINy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:13:02 -0400
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20211104081022epoutp024bec4a17a3a3c08ab1e87675bfe733a8~0SYpBGWk50186101861epoutp02x
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 08:10:22 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20211104081022epoutp024bec4a17a3a3c08ab1e87675bfe733a8~0SYpBGWk50186101861epoutp02x
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1636013422;
-        bh=mv+88NaXb2u4t4gOusIKlJdbzRvEYdcpyOEY7QsQnA8=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=OimtIXUXT9nx3kDG+7zbW0l5lYOXziJA+Oj7UnaipaZRivk8FegR7BRtTiA7QCFaO
-         og0/fQm4N3Y0cYqicMP8dS5i9jydkbUYDV1XSCnCUmdHdme3eQvtLDs1ZevsXZuo6z
-         80ZHDIrYICIXUbU/o/2PdlEgRSok2JQY4rUudQDI=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20211104081021epcas2p25ea9f11f5c66c7293f8b3c424e6cd8ce~0SYoPLgQt2375923759epcas2p2H;
-        Thu,  4 Nov 2021 08:10:21 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.36.98]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4HlGXL2PrQz4x9QY; Thu,  4 Nov
-        2021 08:10:10 +0000 (GMT)
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        76.45.12141.D5593816; Thu,  4 Nov 2021 17:10:05 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
-        20211104081004epcas2p17bace0d1999b8ed273dba361b58b3cfb~0SYYbMjg71673516735epcas2p1J;
-        Thu,  4 Nov 2021 08:10:04 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20211104081004epsmtrp2313cc3fa22b556195b6be548672cd99e~0SYYacJ-P1651316513epsmtrp2m;
-        Thu,  4 Nov 2021 08:10:04 +0000 (GMT)
-X-AuditID: b6c32a48-d73ff70000002f6d-dc-6183955d6c85
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        FC.F2.29871.D5593816; Thu,  4 Nov 2021 17:10:05 +0900 (KST)
-Received: from KORCO006858 (unknown [10.229.8.71]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20211104081004epsmtip25fed3afa642850e82de05f386f0bfbb3~0SYYQf1Y71931819318epsmtip2N;
-        Thu,  4 Nov 2021 08:10:04 +0000 (GMT)
-From:   "Jaewon Kim" <jaewon02.kim@samsung.com>
-To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@canonical.com>,
-        "'Wolfram Sang'" <wsa@kernel.org>,
-        "'Rob Herring'" <robh+dt@kernel.org>
-Cc:     "'Chanho Park'" <chanho61.park@samsung.com>,
-        <linux-i2c@vger.kernel.org>, <linux-samsung-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-In-Reply-To: <a571af00-8ac1-f1a5-3240-2c93f823c995@canonical.com>
-Subject: RE: [PATCH 1/2] i2c: exynos5: support USI(Universal Serial
- Interface)
-Date:   Thu, 4 Nov 2021 17:10:04 +0900
-Message-ID: <001001d7d153$5fb18840$1f1498c0$@samsung.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQH9TS3Ubwx9WhvNqO8Onnoqn/bWugGADPusApYBWVmrh1r0gA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupjk+LIzCtJLcpLzFFi42LZdljTVDd2anOiwbI7ShaX92tbbHz7g8mi
-        4+8XRovLu+awWcw4v4/JonXvEXaLu/vnMjqwe8xq6GXz2LSqk82jb8sqRo/Pm+QCWKKybTJS
-        E1NSixRS85LzUzLz0m2VvIPjneNNzQwMdQ0tLcyVFPISc1NtlVx8AnTdMnOADlBSKEvMKQUK
-        BSQWFyvp29kU5ZeWpCpk5BeX2CqlFqTkFJgX6BUn5haX5qXr5aWWWBkaGBiZAhUmZGd0P77J
-        UrDXu2LaA84Gxt+WXYycHBICJhJH/71k7GLk4hAS2MEosf/ND3YI5xOjxJkra6Ccb4wSs5v/
-        MMK0TOhbxARiCwnsZZTo2sAIYT9nlJj3IR7EZhPQldi58RVYs4hAF6PEpS872EAcZoGpjBI3
-        bnQxg1RxCjhKLPr5lqWLkYNDWCBA4tcKD5Awi4CKxN0bp8AW8ApYSlydt5YNwhaUODnzCQuI
-        zSwgL7H97RxmiIMUJH4+XcYKYosIOEksutTBDFEjIjG7sw2qppNDYk8LE4TtInH9wQYoW1ji
-        1fEt7BC2lMTnd3vZQM6REKiX+HrDAeRkCYEeRok1Xb+g6u0lfk3fwgpSwyygKbF+lz5EubLE
-        kVtQl/FJdBz+yw4R5pXoaBOCaFSTuD/1HBuELSMx6chKpgmMSrOQ/DULyV+zkNw/C2HXAkaW
-        VYxiqQXFuempxUYFJvCYTs7P3cQITphaHjsYZ7/9oHeIkYmD8RCjBAezkgjv8w1NiUK8KYmV
-        ValF+fFFpTmpxYcYTYEhPZFZSjQ5H5iy80riDU0sDUzMzAzNjUwNzJXEeS1FsxOFBNITS1Kz
-        U1MLUotg+pg4OKUamBbseZzztGfP+4ig+VKz5lasWjiX//EaSbeYmM8p6Usu/eR6elJS0vHm
-        1mw2hv/vmdZJKp50+zCvfY2oQcGdh4rXjkf9VVVjKDnxafV+sfy2/QeDhQ1DOzbMaLi8X21/
-        0bmZZ5K+eWc0mYY1/z0T4GNttyrm28f159Sqzs3naf/m+o1nwRPBucdWv9kaMldXtE7bxWm+
-        3qz2Bdc3N9/zePPtxEWOyuNfNPwDp0+9reH99NCBuVdWnrOfv2zL1K1z7D/8i5ze0BEmJvWY
-        +1TY/LUvdoQKypY57W28VZ0XHPtJskH5XMTWIMdFfsIpD6yPfhTNPWafvv3wtPMrBW1yZk9/
-        EG0RfP6eu/fzE4IhGvlblFiKMxINtZiLihMBWs1wjCEEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHLMWRmVeSWpSXmKPExsWy7bCSvG7s1OZEg4VTeCwu79e22Pj2B5NF
-        x98vjBaXd81hs5hxfh+TReveI+wWd/fPZXRg95jV0MvmsWlVJ5tH35ZVjB6fN8kFsERx2aSk
-        5mSWpRbp2yVwZXQ/vslSsNe7YtoDzgbG35ZdjJwcEgImEhP6FjF1MXJxCAnsZpR4/uslG0RC
-        RmL5sz4oW1jifssRVoiip4wSC0+9ZAVJsAnoSuzc+IodxBYR6GGUONcjBFLELDAdqGh1IwtE
-        xxGgsVd2soBUcQo4Siz6+RbMFhbwk9izuAFsBYuAisTdG6eYQGxeAUuJq/PWskHYghInZz4B
-        q2cW0JbofdjKCGHLS2x/O4cZ4jwFiZ9Pl7FCXOEksehSBzNEjYjE7M425gmMwrOQjJqFZNQs
-        JKNmIWlZwMiyilEytaA4Nz232LDAMC+1XK84Mbe4NC9dLzk/dxMjOIq0NHcwbl/1Qe8QIxMH
-        4yFGCQ5mJRHe5xuaEoV4UxIrq1KL8uOLSnNSiw8xSnOwKInzXug6GS8kkJ5YkpqdmlqQWgST
-        ZeLglGpgMt2xKvG0UCP7j3m/OthKDx1o7+A5LWW4bsVuhcc8Ckyvi4PtspMM+3TiLOZea2p+
-        flX1sPqOsnsZxdcPn6w8XX1S1qQ87c5MkR0mEUwHTl2eXOP8rNKyVSGsJ1RlWYigzeFv2gdf
-        vjcuvyV39cHG4vjuvtCvJ/bG/oxVK2VJvf7He6v7ffXV31ISuRzjjk3afWZ1ptb7+MvmUx4H
-        buWq4xXkq/yrOZe9R3Cq5KKangczlj0/yh27eOcZ/sfaapFCfybu/5985//3dV/ORJ76JBH9
-        t/jzu1eTfe4p35G87XS47HqjVlj82bT0eZqbd5Xf5opcLLNlfQRb86GvomE7Uw1XmDf2HqpY
-        M/26x+QjfkosxRmJhlrMRcWJAJlc+KYRAwAA
-X-CMS-MailID: 20211104081004epcas2p17bace0d1999b8ed273dba361b58b3cfb
-X-Msg-Generator: CA
+        Thu, 4 Nov 2021 04:13:54 -0400
+Received: from pps.filterd (m0167091.ppops.net [127.0.0.1])
+        by mx0b-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A42KRWk003246;
+        Thu, 4 Nov 2021 04:11:14 -0400
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
+        by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3c3e2pea04-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Nov 2021 04:11:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VWy5/OvFfh8MStURcDJ3HF2VuLSsUNgX7p5LoIw6eCZHOWV8ZmwlsKj22Xj2YjYYg8j7La8rKEFX1N4CP165CYdiUmV8OLM1hNOB5U3YB2tW1KtV2LDb6JQoemO6GQ6zJCGG8kshqPYr+gMTp1LMVxbF1hwfKuK6g9kTz73tcjim12Sg9bZ8SJlpDqYeX01s7ToddAscRdwyrStN2ad8rr/wEeYn6fJYZg+9m3tuFInbf3+HcZAWCYU6JaAyz5k9AA0TpIUQGfc94SquGadq4C6p2BmcOSemB2JlLneJ+/Kq73iEG0DKj9T5f/QfWy4RW1/ODPQ3AWgaqtfdegDmTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ycCe+zQGyk2skRUAzD6fV08rY7WtRYDhMIwV4gW94EQ=;
+ b=Oz1OSPKunuiZ1z8kHuAHDeGovWRx0noAZnhddAkIYYXR0W0yTpg9lWqo+x6BUES/ogooif/4xH5lCYtuQ7J9Yb1HJLRrTOv8Ap86KYJ57YomzAnl/rGrDUZGUbT2hiJVjEUaH3bNe98igmvm1mQVEUE7eq5s1F7+h4VHUiMCBWdJXjUdyX3LtbCDh7gA3gFS6O+PpurT5wWf3YRqrovjpFUvgx+F9v9o2qZTlmqcKvhoYagNbulfjxNT2qXVzpfKiBAAxB+Fd5dEH+ejeVQeMKfkds0Fh5qqKcTTZQI61RZriobYdXYOQzvjpSjTNHGRJOlSs+fI5/zp6iaS1pFm7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
+ dkim=pass header.d=analog.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ycCe+zQGyk2skRUAzD6fV08rY7WtRYDhMIwV4gW94EQ=;
+ b=oaHk98+vvMouasiHTxhdoegU9lavTfQZjHKFvXvFdmW1EERLALWnFqIeSBhM+sSVyO4h0gsqg5cfZdJlV/ODwQhvg1iFTX4eyZoIMNElTEilJ9WBGR806YHaNjDznkHeLQdVmqvzkpaiR/P6L4a86IoK+Qe/2a461/UV75E8NAU=
+Received: from SJ0PR03MB6359.namprd03.prod.outlook.com (2603:10b6:a03:399::5)
+ by BYAPR03MB4631.namprd03.prod.outlook.com (2603:10b6:a03:12e::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Thu, 4 Nov
+ 2021 08:11:12 +0000
+Received: from SJ0PR03MB6359.namprd03.prod.outlook.com
+ ([fe80::3523:ea80:f2cf:48c8]) by SJ0PR03MB6359.namprd03.prod.outlook.com
+ ([fe80::3523:ea80:f2cf:48c8%9]) with mapi id 15.20.4608.025; Thu, 4 Nov 2021
+ 08:11:12 +0000
+From:   "Sa, Nuno" <Nuno.Sa@analog.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+CC:     "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 1/2] iio: frequency: admv1013: add support for ADMV1013
+Thread-Topic: [PATCH v3 1/2] iio: frequency: admv1013: add support for
+ ADMV1013
+Thread-Index: AQHXzwfgGHROvFVBxUSS1cWk9SZT/6vwAwkggAI6uACAAMOZ0A==
+Date:   Thu, 4 Nov 2021 08:11:12 +0000
+Message-ID: <SJ0PR03MB6359234D6DA5D0CC58DB1113998D9@SJ0PR03MB6359.namprd03.prod.outlook.com>
+References: <20211101100420.70304-1-antoniu.miclaus@analog.com>
+        <PH0PR03MB6366548C1CE5476989662F74998B9@PH0PR03MB6366.namprd03.prod.outlook.com>
+ <20211103200325.3416988c@jic23-huawei>
+In-Reply-To: <20211103200325.3416988c@jic23-huawei>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
+ =?utf-8?B?bk5jYm5OaFhHRndjR1JoZEdGY2NtOWhiV2x1WjF3d09XUTRORGxpTmkwek1t?=
+ =?utf-8?B?UXpMVFJoTkRBdE9EVmxaUzAyWWpnMFltRXlPV1V6TldKY2JYTm5jMXh0YzJj?=
+ =?utf-8?B?dFl6UXpaR000T1RRdE0yUTBOaTB4TVdWakxUaGlPVGN0WlRSaU9UZGhOMk5q?=
+ =?utf-8?B?TnpFd1hHRnRaUzEwWlhOMFhHTTBNMlJqT0RrMUxUTmtORFl0TVRGbFl5MDRZ?=
+ =?utf-8?B?amszTFdVMFlqazNZVGRqWXpjeE1HSnZaSGt1ZEhoMElpQnplajBpTkRZMk55?=
+ =?utf-8?B?SWdkRDBpTVRNeU9EQTBPRGN3TnpBeU5UYzROamswSWlCb1BTSnJUVloyZDFW?=
+ =?utf-8?B?dFRGZHNTa0ZrYzNGYVJFRjZSVFZIWVdNMGRHTTlJaUJwWkQwaUlpQmliRDBp?=
+ =?utf-8?B?TUNJZ1ltODlJakVpSUdOcFBTSmpRVUZCUVVWU1NGVXhVbE5TVlVaT1EyZFZR?=
+ =?utf-8?B?VUZGYjBOQlFVRkhVRXQxUjFVNVNGaEJXVTFFVUhkdVNqRTNVV1ZuZDAwdlEy?=
+ =?utf-8?B?TnVXSFJDTkVSQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCU0VG?=
+ =?utf-8?B?QlFVRkVZVUZSUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJSVUZC?=
+ =?utf-8?B?VVVGQ1FVRkJRVlpKUlhadlVVRkJRVUZCUVVGQlFVRkJRVUZCUVVvMFFVRkJR?=
+ =?utf-8?B?bWhCUjFGQllWRkNaa0ZJVFVGYVVVSnFRVWhWUVdOblFteEJSamhCWTBGQ2VV?=
+ =?utf-8?B?RkhPRUZoWjBKc1FVZE5RV1JCUW5wQlJqaEJXbWRDYUVGSGQwRmpkMEpzUVVZ?=
+ =?utf-8?B?NFFWcG5RblpCU0UxQllWRkNNRUZIYTBGa1owSnNRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkZRVUZCUVVGQlFVRkJRV2RCUVVG?=
+ =?utf-8?B?QlFVRnVaMEZCUVVkRlFWcEJRbkJCUmpoQlkzZENiRUZIVFVGa1VVSjVRVWRW?=
+ =?utf-8?B?UVZoM1FuZEJTRWxCWW5kQ2NVRkhWVUZaZDBJd1FVaE5RVmgzUWpCQlIydEJX?=
+ =?utf-8?B?bEZDZVVGRVJVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCVVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVOQlFVRkJRVUZEWlVGQlFVRlpVVUpyUVVkclFWaDNRbnBCUjFWQldY?=
+ =?utf-8?B?ZENNVUZJU1VGYVVVSm1RVWhCUVdOblFuWkJSMjlCV2xGQ2FrRklVVUZqZDBK?=
+ =?utf-8?B?bVFVaFJRV0ZSUW14QlNFbEJUV2RCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFrRkJRVUZCUVVGQlFVRkpRVUZCUVVGQlFUMDlJaTgrUEM5dFpYUmhQZz09?=
+x-dg-rorf: true
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=analog.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4ac6afea-7dfb-4250-f644-08d99f6aaa9a
+x-ms-traffictypediagnostic: BYAPR03MB4631:
+x-microsoft-antispam-prvs: <BYAPR03MB46310558288D555FC33C5E55998D9@BYAPR03MB4631.namprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1GWn2LKCARLm+4L4iVQtECsOWeAr8+vAadsdtAo0iuiKgSz/quyFyQ9tN2Rh9URkUkT3IZLc65R7JI8O8arOav56S22uFgGkU3AZFvJwNSV3iuPKZhH6uw7fcO6qgK5IfOOVlweGQaxX4iEmWrgr5UEg4MQDCMNTQD1o/qjGhVAnqkamb0a8ZscXGJx1fwc695fVyY+Rcg+M8B5EG4yfBiWB1wo/rvjMiZ4PnUllG+ukXd0ul3EODPOOknUAwBwfc+MlEfkFXQbmp5AUquoKq229j5Vjrt7OqV1dvbInAkbLSkwssyS+jKVNzhJ+QOa4qakymYPDVVdDnrzLgcs1lV1eO+rCJ821h0YrjO80FNZ8j2hTYbSYa2QPZnEie1KBXv5MToCJCNNja2uOyOUlODyzpUjolkzWe2/UDaYpnzHohJQ8+BiWPXy0T7U0OwxGWcnUAzczFgQVcn3626UYdoLZCYnBdv9L9hQ8NRfg2zRxygC94TqIopaa5bakiruLMH3Wde3oGkjjyYb5j6P9pZsI5/9p+iLPcuYbx+1V7j5Ms7H840+oE2cIqwpMf3PUF+1p0Ix+ZfpMmuiIIVK7l+plclAE5wZOlsuijD0ydyAVK0gnJw/DcF4wUIhgmNSwysVbl17DwbXy7uLW1qeJcugrA34gnmvYJ08I4o6bOJo9WlwXyuMtelFQTzhog552XXlKu1jHDgLZ8CC0YErl2w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR03MB6359.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(26005)(52536014)(66446008)(83380400001)(316002)(66946007)(7696005)(8676002)(66476007)(55016002)(186003)(8936002)(86362001)(76116006)(5660300002)(38070700005)(54906003)(122000001)(2906002)(4326008)(64756008)(38100700002)(66556008)(71200400001)(6506007)(33656002)(6916009)(53546011)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NkJUTkE5THhCQndINml3TEtIclFwK1BGa2hyR0pYZ21qVXlLNnRyNDV4T3dF?=
+ =?utf-8?B?VnhOUm9DY09LNHpVbEpKU1lER015dkdRYkpnTXVaRE55OW5JT0s1S3pFa0Ns?=
+ =?utf-8?B?M3VyZU5uKzRuRUIreS9kUVowak9jendibnRyMXlhL1dSVUhEYVpiMDdXL1hN?=
+ =?utf-8?B?dGcwMjRjZEgwSGVPb1VQRWdRakhMdTQ3RGdvZnZURjlSeDdETWErMGx5M0E3?=
+ =?utf-8?B?STBLMGVwajdzNzZlVjZTNnFRR1ZDNXNYK1dLME9hTFcxcEpBR2ZkbUFOSGdu?=
+ =?utf-8?B?clI5dWRlRzNDektPbEVFNHBrVHRHa2VtZUNqSWZFSDA2akhXZE10V2xjK01r?=
+ =?utf-8?B?b3NDcEprQ3pOeXJvSWtMbDIyYWtDTkRYcmpGOUVXVkFPL2xpNU52a3RrZ25Z?=
+ =?utf-8?B?M214SCtkOFJhMGpGa1VoYnhpd3ZhRElGQ1FzQWxpU3BaK3NmVHlJN1ppYmp0?=
+ =?utf-8?B?TUtneldIdUVub3d6QUcvZHZ0Q0wzZFFQVkRRTGNWQVB1NUQ5anNtNE1kaXhK?=
+ =?utf-8?B?LzRsZk80d0FVejIvZEtLZW03U084MzNYVGVYakJpQXRoS1Z0S3ZyNkhZTEZv?=
+ =?utf-8?B?WlNDcEUySjlLeHovWkV2eWZULzRPSTlFamM3SS9LelNKbVJySzA4eEt2ZUd1?=
+ =?utf-8?B?ckhlU3RDdmpkcVJyY1JBK3F6eDRoZFFVekhKZWRPV1QrT2ZVeGZmUXJPVEZG?=
+ =?utf-8?B?M2QvRjkrdHdlNVdZMlAwSHpVRG8xVUtmM2tXbVVvbjc4S2NDcE0vL25INklN?=
+ =?utf-8?B?eS9zMUxhWVpkR3BFcitBcnkrWkZTa0x6VmZnZmYyejE5TW5OWHNsSkJkRW1n?=
+ =?utf-8?B?eEFub1NWVmd1VTJUaHd5a2g3eGJyM3d1cHQwYnI2MEtZSW9BNzRtNkwxbjAz?=
+ =?utf-8?B?cWV0Vkc0K0w4bWkxMTdOS1F2dG94ZXdabmkzRDJMVFJnbU1hYWhMeVZuRnp5?=
+ =?utf-8?B?VmdaMXlaaXBpckRyWThuZTNNLzdOS0t2WG1RNEJ3V3R0eWR2QldGKzhqR2xE?=
+ =?utf-8?B?aGh3YlBaaHhTcjV6TWZiSGI1dThpV0Rlc3pDcnZTS3hlazN0RldBa1JmS3px?=
+ =?utf-8?B?WlZjbVMzRTZaMEtacnhoUm9aZVR1ZmdzZ0ZJbWF6R0tEOUdOL3V3UUNFcG9n?=
+ =?utf-8?B?R3VQYlA5UUhiOGk5cklMU3FNV2VVcExsaWZFNnFSM1NHbDdtUTdkQS9ITFRG?=
+ =?utf-8?B?WmFUNjRzM0dTQTVVSVZDcU5rUjBEZ1Q3Ynp3NkhXNEdEZ3I3RnB1USs0NU9Y?=
+ =?utf-8?B?U3ZYZ3o4NXg2U1dOU3JxTDRndHh6STlpTFBhclFDa1BXMzBKa0F6NlR5cnA3?=
+ =?utf-8?B?UkllaU9GRHcrSmxBT2E5cUt3NXg5TWd6S3I5dWRiLzFwTnR2d0c3VTBuU1pF?=
+ =?utf-8?B?SHJwUkRidTM2elNCMnZHdi9MTVFhM29wOXJzQzlqbEFPa2J4UnlOTXBMc3Av?=
+ =?utf-8?B?Qk1nWTdSTC9MRjEwMVMrakxVNFpycUtyQWJXUE4reHhhelo4ak44Um1qWXdm?=
+ =?utf-8?B?V1d6U2l1SE43dEpNeVNXeXBvWnpSYk5tQzY3S1BXQlhnWVNmRjlPN0hMN0ky?=
+ =?utf-8?B?MEtZZitlVEtxNjd6cTFMOHdvTDU5NzNta0pRRzNYM2lMeDcyTmFaWkVJYnY3?=
+ =?utf-8?B?ZEJSZVZ2OVFjeVA5ZzR0L3ZJTnlLaHJtQVFUWVhYRi9mYVBGU2NmWUQ3K2d5?=
+ =?utf-8?B?V1VCMTI1WFBJTUkvVnM4akdRUXZlcFU1clhZbnBPaDdwQms2N0xCRVF3NzBS?=
+ =?utf-8?B?ZWxGTGs1aFJYNTlKS1h4d1dnQUI0d1lmSTJTVWVQOHR5Mk9zSzhRQ3VkZVBj?=
+ =?utf-8?B?ZzJPUzFmdWFyMEV6Ty9jeWwreEJibWZGdTl1eFZSZXU3UkJSOFNkREJvUURP?=
+ =?utf-8?B?eHF3QW1tKzFhSXQ3TlFGR1JPYVF0d3dnNXlEZ2pkSDNVU3pJWU1oODNvS2FB?=
+ =?utf-8?B?UmVGVjdJR3hnWEMwWlpqak9McnR1Vzg5Wms1Q0FQL0hNbUVXNm50RTF1ZVpO?=
+ =?utf-8?B?U0ZXaklGWHpteU11aUxZV1JoU2x5dHI4eXBaQkRXOEhINkxTbDhjUUtuR3N6?=
+ =?utf-8?B?TTNVWFJVbWJxYnQ5ZWhrQzloOTFmQVdtYWxRL3BITXUwM21zdk9tSk1oZDlO?=
+ =?utf-8?B?RVpKbU1NejdFbWwwMEdXaUdLczI3TzZnRVczZDNKTDh1UG5hekMvOHFQbHc5?=
+ =?utf-8?B?a0E9PQ==?=
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20211101114158epcas2p1d0762d52029b1b09912fd99665dd66f5
-References: <CGME20211101114158epcas2p1d0762d52029b1b09912fd99665dd66f5@epcas2p1.samsung.com>
-        <20211101113819.50651-1-jaewon02.kim@samsung.com>
-        <a571af00-8ac1-f1a5-3240-2c93f823c995@canonical.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: analog.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR03MB6359.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4ac6afea-7dfb-4250-f644-08d99f6aaa9a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Nov 2021 08:11:12.4619
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +DW5qAXy8CxrPy91WAnQI5B3Kx8/vq6RNn613VcPKx0OsCGVr5QqGRzdMyzjb84XHzt5O/4TJ8FQOJ8inPV6pg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB4631
+X-Proofpoint-ORIG-GUID: 1gDjnER_gB67ALW80kX79XEsn__kisfl
+X-Proofpoint-GUID: 1gDjnER_gB67ALW80kX79XEsn__kisfl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-04_02,2021-11-03_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 spamscore=0 malwarescore=0
+ adultscore=0 mlxlogscore=999 phishscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111040033
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Krzysztof
-
-> On 01/11/2021 12:38, Jaewon Kim wrote:
-> > Serial IPs(UART, I2C, SPI) are integrated into New IP-Core called
-> > USI(Universal Serial Interface).
-> >
-> > As it is integrated into USI, there are additinal HW changes.
-> > Registers to control USI and sysreg to set serial IPs have been added.
-> > Also, some timing registres have been changed.
-> >
-> > Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
-> > ---
-> >  drivers/i2c/busses/i2c-exynos5.c | 120
-> > ++++++++++++++++++++++++++++---
-> >  1 file changed, 110 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/drivers/i2c/busses/i2c-exynos5.c
-> > b/drivers/i2c/busses/i2c-exynos5.c
-> > index 97d4f3ac0abd..f2dc7848f840 100644
-> > --- a/drivers/i2c/busses/i2c-exynos5.c
-> > +++ b/drivers/i2c/busses/i2c-exynos5.c
-> > @@ -22,6 +22,8 @@
-> >  #include <linux/of_device.h>
-> >  #include <linux/of_irq.h>
-> >  #include <linux/spinlock.h>
-> > +#include <linux/mfd/syscon.h>
-> > +#include <linux/regmap.h>
-> >
-> >  /*
-> >   * HSI2C controller from Samsung supports 2 modes of operation @@
-> > -166,9 +168,21 @@
-> >
-> >  #define EXYNOS5_I2C_TIMEOUT (msecs_to_jiffies(100))
-> >
-> > +/* USI(Universal Serial Interface) Register map */
-> > +#define USI_CON					0xc4
-> > +#define USI_OPTION				0xc8
-> > +
-> > +/* USI(Universal Serial Interface) Register bits */
-> > +#define USI_CON_RESET				(1 << 0)
-> 
-> BIT()
-> 
-
-Okay, I will change it to BIT()
-
-> > +
-> > +/* SYSREG Register bit */
-> > +#define SYSREG_USI_SW_CONF_MASK			(0x7 << 0)
-> > +#define SYSREG_I2C_SW_CONF			(1u << 2)
-> 
-> BIT()
-> 
-
-Okay, I will change it to BIT()
-
-> > +
-> >  enum i2c_type_exynos {
-> >  	I2C_TYPE_EXYNOS5,
-> >  	I2C_TYPE_EXYNOS7,
-> > +	I2C_TYPE_USI,
-> >  };
-> >
-> >  struct exynos5_i2c {
-> > @@ -199,6 +213,10 @@ struct exynos5_i2c {
-> >
-> >  	/* Version of HS-I2C Hardware */
-> >  	const struct exynos_hsi2c_variant *variant;
-> > +
-> > +	/* USI sysreg info */
-> > +	struct regmap		*usi_sysreg;
-> > +	unsigned int		usi_offset;
-> >  };
-> >
-> >  /**
-> > @@ -230,6 +248,11 @@ static const struct exynos_hsi2c_variant exynos7_hsi2c_data = {
-> >  	.hw		= I2C_TYPE_EXYNOS7,
-> >  };
-> >
-> > +static const struct exynos_hsi2c_variant exynos_usi_hsi2c_data = {
-> > +	.fifo_depth	= 64,
-> > +	.hw		= I2C_TYPE_USI,
-> > +};
-> > +
-> >  static const struct of_device_id exynos5_i2c_match[] = {
-> >  	{
-> >  		.compatible = "samsung,exynos5-hsi2c", @@ -243,6 +266,9 @@ static
-> > const struct of_device_id exynos5_i2c_match[] = {
-> >  	}, {
-> >  		.compatible = "samsung,exynos7-hsi2c",
-> >  		.data = &exynos7_hsi2c_data
-> > +	}, {
-> > +		.compatible = "samsung,exynos-usi-hsi2c",
-> > +		.data = &exynos_usi_hsi2c_data
-> >  	}, {},
-> >  };
-> >  MODULE_DEVICE_TABLE(of, exynos5_i2c_match); @@ -281,6 +307,31 @@
-> > static int exynos5_i2c_set_timing(struct exynos5_i2c *i2c, bool hs_timings)
-> >  		i2c->op_clock;
-> >  	int div, clk_cycle, temp;
-> >
-> > +	/* In case of HSI2C controllers in USI
-> > +	 * timing control formula changed.
-> > +	 *
-> > +	 * FSCL = IPCLK / ((CLK_DIV + 1) * 16)
-> > +	 * T_SCL_LOW = IPCLK * (CLK_DIV + 1) * (N + M)
-> > +	 *  [N : number of 0's in the TSCL_H_HS]
-> > +	 *  [M : number of 0's in the TSCL_L_HS]
-> > +	 * T_SCL_HIGH = IPCLK * (CLK_DIV + 1) * (N + M)
-> > +	 *  [N : number of 1's in the TSCL_H_HS]
-> > +	 *  [M : number of 1's in the TSCL_L_HS]
-> > +	 *
-> > +	 *  result of (N + M) is always 8.
-> > +	 *  In genaral case, we don`t need to control timing_s1, timing_s2.
-> 
-> s/genaral/general/
-> (please run spellcheck)
-> s/don`t/don't/
-> 
-
-Sorry, I will run spellcheck in next.
-
-> > +	 */
-> > +	if (i2c->variant->hw == I2C_TYPE_USI) {
-> > +		div = ((clkin / (16 * i2c->op_clock)) - 1);
-> > +		i2c_timing_s3 = div << 16;
-> > +		if (hs_timings)
-> > +			writel(i2c_timing_s3, i2c->regs + HSI2C_TIMING_HS3);
-> > +		else
-> > +			writel(i2c_timing_s3, i2c->regs + HSI2C_TIMING_FS3);
-> > +
-> > +		return 0;
-> > +	}
-> > +
-> >  	/*
-> >  	 * In case of HSI2C controller in Exynos5 series
-> >  	 * FPCLK / FI2C =
-> > @@ -355,6 +406,16 @@ static int exynos5_hsi2c_clock_setup(struct exynos5_i2c *i2c)
-> >  	return exynos5_i2c_set_timing(i2c, true);  }
-> >
-> > +static void exynos_usi_reset(struct exynos5_i2c *i2c)
-> 
-> The name of function suggests you are performing a reset but the code looks like it is only clearing
-> the reset flag. How about calling the function exynos_usi_clear_reset()?
-> 
-
-Accroding to below review, I will add reset and clear code.
-
-> > +{
-> > +	u32 val;
-> > +
-> > +	/* Clear the software reset of USI block (it's set at startup) */
-> > +	val = readl(i2c->regs + USI_CON);
-> > +	val &= ~USI_CON_RESET;
-> > +	writel(val, i2c->regs + USI_CON);
-> > +}
-> > +
-> >  /*
-> >   * exynos5_i2c_init: configures the controller for I2C functionality
-> >   * Programs I2C controller for Master mode operation @@ -385,6 +446,9
-> > @@ static void exynos5_i2c_reset(struct exynos5_i2c *i2c)  {
-> >  	u32 i2c_ctl;
-> >
-> > +	if (i2c->variant->hw == I2C_TYPE_USI)
-> > +		exynos_usi_reset(i2c);
-> > +
-> >  	/* Set and clear the bit for reset */
-> >  	i2c_ctl = readl(i2c->regs + HSI2C_CTL);
-> >  	i2c_ctl |= HSI2C_SW_RST;
-> > @@ -422,7 +486,8 @@ static irqreturn_t exynos5_i2c_irq(int irqno, void *dev_id)
-> >  	writel(int_status, i2c->regs + HSI2C_INT_STATUS);
-> >
-> >  	/* handle interrupt related to the transfer status */
-> > -	if (i2c->variant->hw == I2C_TYPE_EXYNOS7) {
-> > +	if (i2c->variant->hw == I2C_TYPE_EXYNOS7 ||
-> > +			i2c->variant->hw == I2C_TYPE_USI) {
-> >  		if (int_status & HSI2C_INT_TRANS_DONE) {
-> >  			i2c->trans_done = 1;
-> >  			i2c->state = 0;
-> > @@ -569,13 +634,13 @@ static void exynos5_i2c_bus_check(struct
-> > exynos5_i2c *i2c)  {
-> >  	unsigned long timeout;
-> >
-> > -	if (i2c->variant->hw != I2C_TYPE_EXYNOS7)
-> > +	if (i2c->variant->hw == I2C_TYPE_EXYNOS5)
-> >  		return;
-> >
-> >  	/*
-> > -	 * HSI2C_MASTER_ST_LOSE state in EXYNOS7 variant before transaction
-> > -	 * indicates that bus is stuck (SDA is low). In such case bus recovery
-> > -	 * can be performed.
-> > +	 * HSI2C_MASTER_ST_LOSE state in EXYNOS7 or EXYNOS_USI variant before
-> > +	 * transaction indicates that bus is stuck (SDA is low).
-> > +	 * In such case bus recovery can be performed.
-> >  	 */
-> >  	timeout = jiffies + msecs_to_jiffies(100);
-> >  	for (;;) {
-> > @@ -611,10 +676,10 @@ static void exynos5_i2c_message_start(struct exynos5_i2c *i2c, int stop)
-> >  	unsigned long flags;
-> >  	unsigned short trig_lvl;
-> >
-> > -	if (i2c->variant->hw == I2C_TYPE_EXYNOS7)
-> > -		int_en |= HSI2C_INT_I2C_TRANS;
-> > -	else
-> > +	if (i2c->variant->hw == I2C_TYPE_EXYNOS5)
-> >  		int_en |= HSI2C_INT_I2C;
-> > +	else
-> > +		int_en |= HSI2C_INT_I2C_TRANS;
-> >
-> >  	i2c_ctl = readl(i2c->regs + HSI2C_CTL);
-> >  	i2c_ctl &= ~(HSI2C_TXCHON | HSI2C_RXCHON); @@ -738,6 +803,37 @@
-> > static const struct i2c_algorithm exynos5_i2c_algorithm = {
-> >  	.functionality		= exynos5_i2c_func,
-> >  };
-> >
-> > +static int exynos_usi_init(struct exynos5_i2c *i2c) {
-> > +	struct device *dev = i2c->dev;
-> > +	int ret;
-> > +
-> > +	if (i2c->variant->hw != I2C_TYPE_USI)
-> > +		return 0;
-> > +
-> > +	/* USI regmap control */
-> 
-> Drop the comment, it's obvious. What is missing here, is a comment explaining what are you
-> initializing exactly in the USI. Please add it.
-> 
-
-Okay, I will add detailed information.
-
-> > +	i2c->usi_sysreg = syscon_regmap_lookup_by_phandle(
-> > +			dev->of_node, "samsung,usi-sysreg");
-> 
-> Align the lines to opening parenthesis.
-> 
-> > +	if (IS_ERR(i2c->usi_sysreg)) {
-> > +		dev_err(dev, "Cannot find usi-sysreg\n");
-> > +		return PTR_ERR(i2c->usi_sysreg);
-> > +	}
-> > +
-> > +	ret = of_property_read_u32_index(dev->of_node,
-> > +				"samsung,usi-sysreg", 1, &i2c->usi_offset);
-> 
-> Align the lines to opening parenthesis.
-> 
-
-Okay.
-
-> Offset is not described in the bindings.
-> 
-
-Okay, I will add offset description in bindings docs.
-
-> > +	if (ret) {
-> > +		dev_err(dev, "usi-sysreg offset is not specified\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	regmap_update_bits(i2c->usi_sysreg, i2c->usi_offset,
-> > +			SYSREG_USI_SW_CONF_MASK, SYSREG_I2C_SW_CONF);
-> > +
-> > +	exynos_usi_reset(i2c);
-> 
-> You are clearing the reset flag, but not setting it back on probe failure. What happens if the probe
-> fails after this clear()? E.g.
-> because of deferred probe? The next probe try will start on a not-reset controller. Will it work?
-> 
-
-The user manual guides USI_RESET to be done after changing the system register.
-For clarity, we will change not only to clear reset, but to clear after reset.
-
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static int exynos5_i2c_probe(struct platform_device *pdev)  {
-> >  	struct device_node *np = pdev->dev.of_node; @@ -777,6 +873,12 @@
-> > static int exynos5_i2c_probe(struct platform_device *pdev)
-> >  	i2c->adap.algo_data = i2c;
-> >  	i2c->adap.dev.parent = &pdev->dev;
-> >
-> > +	i2c->variant = of_device_get_match_data(&pdev->dev);
-> > +
-> > +	ret = exynos_usi_init(i2c);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> >  	/* Clear pending interrupts from u-boot or misc causes */
-> >  	exynos5_i2c_clr_pend_irq(i2c);
-> >
-> > @@ -794,8 +896,6 @@ static int exynos5_i2c_probe(struct platform_device *pdev)
-> >  		goto err_clk;
-> >  	}
-> >
-> > -	i2c->variant = of_device_get_match_data(&pdev->dev);
-> > -
-> >  	ret = exynos5_hsi2c_clock_setup(i2c);
-> >  	if (ret)
-> >  		goto err_clk;
-> >
-> 
-> 
-> Best regards,
-> Krzysztof
-
-
-Thanks
-Jaewon Kim
-
+DQo+IEZyb206IEpvbmF0aGFuIENhbWVyb24gPGppYzIzQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IFdl
+ZG5lc2RheSwgTm92ZW1iZXIgMywgMjAyMSA5OjA0IFBNDQo+IFRvOiBTYSwgTnVubyA8TnVuby5T
+YUBhbmFsb2cuY29tPg0KPiBDYzogTWljbGF1cywgQW50b25pdSA8QW50b25pdS5NaWNsYXVzQGFu
+YWxvZy5jb20+Ow0KPiByb2JoK2R0QGtlcm5lbC5vcmc7IGxpbnV4LWlpb0B2Z2VyLmtlcm5lbC5v
+cmc7DQo+IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJu
+ZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjMgMS8yXSBpaW86IGZyZXF1ZW5jeTogYWRt
+djEwMTM6IGFkZCBzdXBwb3J0IGZvcg0KPiBBRE1WMTAxMw0KPiANCj4gW0V4dGVybmFsXQ0KPiAN
+Cj4gT24gVHVlLCAyIE5vdiAyMDIxIDEwOjA5OjE1ICswMDAwDQo+ICJTYSwgTnVubyIgPE51bm8u
+U2FAYW5hbG9nLmNvbT4gd3JvdGU6DQo+IA0KPiA+ID4gKyNkZWZpbmUgQURNVjEwMTNfQ0hBTl9Q
+SEFTRShfY2hhbm5lbCwgcmZfY29tcCkgewkJXA0KPiA+ID4gKwkudHlwZSA9IElJT19BTFRWT0xU
+QUdFLAkJCQkJXA0KPiA+ID4gKwkubW9kaWZpZWQgPSAxLAkJCQkJCVwNCj4gPiA+ICsJLm91dHB1
+dCA9IDEsCQkJCQkJXA0KPiA+ID4gKwkuaW5kZXhlZCA9IDEsCQkJCQkJXA0KPiA+ID4gKwkuY2hh
+bm5lbDIgPSBJSU9fTU9EXyMjcmZfY29tcCwJCQkJXA0KPiA+ID4gKwkuY2hhbm5lbCA9IF9jaGFu
+bmVsLAkJCQkJXA0KPiA+ID4gKwkuaW5mb19tYXNrX3NlcGFyYXRlID0gQklUKElJT19DSEFOX0lO
+Rk9fUEhBU0UpCQlcDQo+ID4gPiArCX0NCj4gPiA+ICsNCj4gPiA+ICsjZGVmaW5lIEFETVYxMDEz
+X0NIQU5fQ0FMSUIoX2NoYW5uZWwsIHJmX2NvbXApIHsJCVwNCj4gPiA+ICsJLnR5cGUgPSBJSU9f
+QUxUVk9MVEFHRSwJCQkJCVwNCj4gPiA+ICsJLm1vZGlmaWVkID0gMSwJCQkJCQlcDQo+ID4gPiAr
+CS5vdXRwdXQgPSAxLAkJCQkJCVwNCj4gPiA+ICsJLmluZGV4ZWQgPSAxLAkJCQkJCVwNCj4gPiA+
+ICsJLmNoYW5uZWwyID0gSUlPX01PRF8jI3JmX2NvbXAsCQkJCVwNCj4gPiA+ICsJLmNoYW5uZWwg
+PSBfY2hhbm5lbCwJCQkJCVwNCj4gPiA+ICsJLmluZm9fbWFza19zZXBhcmF0ZSA9IEJJVChJSU9f
+Q0hBTl9JTkZPX0NBTElCQklBUykJXA0KPiA+ID4gKwl9DQo+ID4gPiArDQo+ID4gPiArc3RhdGlj
+IGNvbnN0IHN0cnVjdCBpaW9fY2hhbl9zcGVjIGFkbXYxMDEzX2NoYW5uZWxzW10gPSB7DQo+ID4g
+PiArCUFETVYxMDEzX0NIQU5fUEhBU0UoMCwgSSksDQo+ID4gPiArCUFETVYxMDEzX0NIQU5fUEhB
+U0UoMCwgUSksDQo+ID4gPiArCUFETVYxMDEzX0NIQU5fQ0FMSUIoMCwgSSksDQo+ID4gPiArCUFE
+TVYxMDEzX0NIQU5fQ0FMSUIoMCwgUSksDQo+ID4gPiArCUFETVYxMDEzX0NIQU5fQ0FMSUIoMSwg
+SSksDQo+ID4gPiArCUFETVYxMDEzX0NIQU5fQ0FMSUIoMSwgUSksDQo+ID4gPiArfTsNCj4gPiA+
+ICsNCj4gPg0KPiA+IEhtbSwgSWYgSSdtIG5vdCBtaXNzaW5nIG5vdGhpbmcgdGhpcyBsZWFkcyB0
+byBzb21ldGhpbmcgbGlrZToNCj4gPg0KPiA+IG91dF9hbHR2b2x0YWdlMF9pX3BoYXNlDQo+ID4g
+b3V0X2FsdHZvbHRhZ2UwX3FfcGhhc2UNCj4gPiBvdXRfYWx0dm9sdGFnZTBfaV9jYWxpYmJpYXMN
+Cj4gPiBvdXRfYWx0dm9sdGFnZTBfcV9jYWxpYmJpYXMNCj4gPiBvdXRfYWx0dm9sdGFnZTFfaV9j
+YWxpYmJpYXMNCj4gPiBvdXRfYWx0dm9sdGFnZTFfcV9jYWxpYmJpYXMNCj4gPg0KPiA+IFRvIG1l
+IGl0IGlzIHJlYWxseSBub24gb2J2aW91cyB0aGF0IGluZGV4IDEgYWxzbyBhcHBsaWVzIHRvIHRo
+ZSBzYW1lDQo+ID4gY2hhbm5lbC4gSSBzZWUgdGhhdCB3ZSBoYXZlIHRoaXMgbGlrZSB0aGlzIHBy
+b2JhYmx5IGJlY2F1c2Ugd2UNCj4gPiBjYW4ndCB1c2UgbW9kaWZpZWQgYW5kIGRpZmZlcmVudGlh
+bCBhdCB0aGUgc2FtZSB0aW1lLCByaWdodD8NCj4gPg0KPiANCj4gSW5kZWVkLCB0aGlzIGlzIHRo
+ZSBwcm9ibGVtIHlvdSBtZW50aW9uZWQgaW4gdGhlIGRpc2N1c3Npb24gb24gdjINCj4gTXkgc3Vn
+Z2VzdGlvbiBvZiBtYWtpbmcgaXQgY2xlYXIgaXQgaXMgYSBkaWZmZXJlbnRpYWwgY2hhbm5lbCBh
+bmQgdGhlbg0KPiBhcHBseWluZyBjYWxpYmJpYXMgdG8gdGhlIHBhcnRzIGRvZXNuJ3Qgd29yayBh
+cyBpdCB3b3VsZCBuZWVkIHRvDQo+IGhhdmUgYm90aCBtb2RpZmllcnMgYW5kIGEgc2Vjb25kIGNo
+YW5uZWwgaW5kZXguDQo+IEFzIGZvciB3aHkgdGhhdCBpcyBhbiBpc3N1ZSwgaXQgY29tZXMgZG93
+biB0byB0cnlpbmcgdG8ga2VlcCB0aGUNCj4gZXZlbnQgaW50ZXJmYWNlIGRlc2NyaXB0aXZlLCBi
+dXQgc3RpbGwgbWluaW1hbC4gIFdlIGJhc2ljYWxseSByYW4NCj4gb3V0IG9mIGJpdHMgYW5kIGF0
+IHRoZSB0aW1lIEkgY291bGRuJ3QgdGhpbmsgb2YgYSByZWFzb24gd2UnZCB3YW50DQo+IGJvdGgg
+ZGlmZmVyZW50aWFsIGFuZCBhIG1vZGlmaWVyLi4uDQoNCkknbSBub3QgcmVhbGx5IHNlZWluZyB0
+aGUgaXNzdWUgd2l0aCB0aGUgZXZlbnQgaW50ZXJmYWNlIGJ1dCB0aGF0IGlzIG1vc3RseQ0KYmVj
+YXVzZSBJIHN0aWxsIG5ldmVyIGhhZCB0byBkZWFsIHdpdGggaXQsIHNvIEkgbmV2ZXIgbG9va2Vk
+IHRoYXQgZGVlcGx5IGludG8NCnRoZSBjb2RlLiBNaWdodCBiZSBhIGdvb2QgdGltZSBrbm93IDop
+DQoNCj4gPiBKb25hdGhhbiwgSSdtIG5vdCBzdXJlIHdoYXQgc2hvdWxkIGJlIHRoZSBkb25lIGhl
+cmUuLi4gRnJvbSB0aGUgdG9wDQo+IG9mIG15DQo+ID4gaGVhZCAgSSBndWVzcyB3ZSBjYW4gZWl0
+aGVyOg0KPiA+DQo+ID4gKiBkcm9wIHRoZSBtb2RpZmllcnMgKG5vdCBwZXJmZWN0IGJ1dCBhbHNv
+IG5vdCB0aGF0IGJhZCBJTU8pDQo+ID4gKiB0d2VhayBzb21ldGhpbmcgYWRkaW5nIGV4dGVuZGVk
+IGluZm8gKG5vdCByZWFsbHkgbmVhdCkNCj4gVHJ1ZSwgaXQncyBub3QgbmVhdCBidXQgbWlnaHQg
+YmUgdGhlIHdheSBmb3J3YXJkcyBmb3IgJ25vdycuLiBXZSBkb24ndA0KPiBoYXZlDQo+IGV2ZW50
+cyBvciBhbnl0aGluZyBvbiB0aGlzIGRyaXZlciwgc28gd2UgY291bGQgbWFrZSBpdCBsb29rIHJp
+Z2h0DQo+IHdpdGhvdXQgYW55DQo+IHJpc2sgb2Ygbm90IGJlaW5nIGFibGUgdG8gZXh0ZW5kIGl0
+LiAgSG93ZXZlciBpdCB3aWxsIHByb2JhYmx5IGNvbWUgYmFjaw0KPiB0byBiaXRlDQo+IHVzIGFu
+ZCB1c2Vyc3BhY2UgbWF5IG5vdCBleHBlY3Qgd2hhdGV2ZXIgd2UgZG8uDQo+IEhvcnJpYmxlIHRo
+b3VnaCBpdCBpcyB5b3UgY291bGQgdXNlIGV4dGVuZF9uYW1lIC0gd2hpY2ggd2FzIG9yaWdpbmFs
+bHkNCj4gaW50ZW5kZWQNCj4gdG8gbGV0IHVzICdsYWJlbCBzcGVjaWFsIHB1cnBvc2UgY2hhbm5l
+bHMnLiAgSXQgd2FzIGEgYmFkIGlkZWEsIGJ1dCBpcyB0aGVyZQ0KPiBhbmQNCj4gbm90IGdvaW5n
+IHdheSBhbnkgdGltZSBzb29uLg0KPiANCj4gSWYgeW91IGRpZCB0aGUgZGlmZmVyZW50aWFsIHRo
+aW5nIGFuZCBzZXQgZXh0ZW5kX25hbWUgPSAiaSIgZXRjIHRoYXQNCj4gbWlnaHQgZ2V0IHVzIGFy
+b3VuZCB0aGUgaW50ZXJuYWwgaXNzdWUgb2YgcmV1c2luZyBjaGFubmVsMiBmb3IgbW9kIGFuZA0K
+PiBkaWZmZXJlbnRpYWwNCj4gY2hhbm5lbC4NCg0KQ291bGRuJ3Qgd2UgdXNlIHRoZSBsYWJlbCB0
+byBhY2hpZXZlIGtpbmQgb2YgdGhlIHNhbWU/IE9yIGRvIHlvdSB0aGluaw0KdGhhdCBoYXZpbmcg
+dGhlICJpIiBhbmQgInEiIGluIHRoZSBmaWxlbmFtZXMgaXMgcmVhbGx5IG1hbmRhdG9yeT8gSSBj
+YW4NCnVuZGVyc3RhbmQgaWYgeW91IHRoaW5rIHRoZXkgYXJlIGFzIHRoZXkgYXJlIHZhbGlkIG1v
+ZGlmaWVycy4gT1RPSCwNCklJUkMsIHdpdGggdGhlIGxhdGVzdCBwYXRjaGVzIGZyb20gUGF1bCwg
+YWRkaW5nIHRoZSBleHRlbmRlZF9uYW1lIHdpbGwNCmF1dG9tYXRpY2FsbHkgZ2V0IHVzIHRoZSBs
+YWJlbCBzeXNmcyBmaWxlIHdoaWNoIG1pZ2h0IGJlIGEgbGl0dGxlIG9kZCBidXQgSQ0KZ3Vlc3Mg
+dGhhdCdzIGFscmVhZHkgdHJ1ZSBmb3IgYWxsIHRoZSBsZWdhY3kgZHJpdmVycyB1c2luZyBpdC4u
+LiBTbyB5ZWFoLA0KYmV0d2VlbiB0aGlzIG9yIGV4dGVuZGVkIGluZm8sIHdlIG1pZ2h0IGhhdmUg
+b3VyICJiYW5kIGFpZCIgZm9yIHRoaXMuDQoNCj4gPiAqIG9yIGhhbmRsaW5nIHRoaXMgaW4gdGhl
+IGNvcmUgd2l0aCBhIG5ldyB2YXJpYWJsZS4gT2YgY291cnNlLCB3ZQ0KPiB3b3VsZCBuZWVkDQo+
+ID4gdG8gYmUgY2FyZWZ1bCB0byBub3QgYnJlYWsgZXhpc3RpbmcgZHJpdmVycy4uLg0KPiANCj4g
+V2Ugd291bGQgZW5kIHVwIHNvbWV0aGluZyBoYXJkbHkgZXZlciB1c2VkIHNvIEknbSBkb3VidGZ1
+bCB0aGF0J3MgYQ0KPiBnb29kDQo+IGlkZWEgdW50aWwgd2UgaGF2ZSBzb21lIHZpc2liaWxpdHkg
+b2YgaG93IGNvbW1vbiBpdCB3b3VsZCBiZS4NCg0KVHJ1ZSwgbW9zdCBsaWtlbHkgd2Ugd291bGQg
+ZW5kIHVwIHdpdGggYSBwdWJsaWMgdmFyaWFibGUgb25seSB1c2VkIGluDQp0aGlzIHVzZSBjYXNl
+Li4uIEJldHRlciB0byB3YWl0IGlmIHNvbWUgdXNlcnMgbGlrZSB0aGlzIHBvcCB1cC4NCg0KLSBO
+dW5vIFPDoQ0K
