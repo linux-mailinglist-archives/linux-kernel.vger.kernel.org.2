@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014B8444F10
+	by mail.lfdr.de (Postfix) with ESMTP id E4026444F11
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231447AbhKDGrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50970 "EHLO
+        id S230497AbhKDGra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231523AbhKDGpo (ORCPT
+        with ESMTP id S231563AbhKDGpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:45:44 -0400
+        Thu, 4 Nov 2021 02:45:53 -0400
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAAE3C061234
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:42:44 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id x16-20020a25b910000000b005b6b7f2f91cso7614644ybj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 23:42:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68EFEC061195
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:42:47 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id v133-20020a25c58b000000b005c20153475dso7434473ybe.17
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 23:42:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=GKJf8Yw6nAvyH7L7LWtVnPqoYfvwfYxKaTQQ4i15vnw=;
-        b=G38y6tdBeOqfNqLclHL6MJStzEFiBNg203t3YGe7yEATwZ/h8UQndsBxusWTDTDzT/
-         rVpdbXa5xnOF3exP0inMxehyxgoAnWJAGFTbmQC8Hc30Jg9SGCk2gbEqc0hADgQc9Jby
-         1D5Pqr94JLEk22lvIg0b8TInDXiOdTU3sLwz2GAPFtuq6y4N4nmkcykY1ehRwu+I19Bl
-         IYWZvBt4pc39f+ghkPfbbtIFBA52GN2lopwfXSajKFd67a7uf48DZxzqUd2biroqOE+Q
-         2RDPNZcbp0SDTVuNdcZAkY6LrcRxG2w9mvn6MM4FTTK9F9/Cjh7JtKYmvdzoL+b4lZcE
-         ga6A==
+        bh=QUI3hZYXvI78WFqblkOEI4nv4sPjthYOTOzOfWXxRnY=;
+        b=gMdJnD3ST5xjfe0CI8qXeeg9elYjEdLqBZYfWTL02umiR2CtMMBFL/evjfoJWrpzox
+         mXWpXTJX0a6RkTACmMVY6v+1C7iMNk+cZ1o46CNN0hl3P79/Bo6k0cgpbwOTKVZN1Ant
+         tB4WmQilyPISpndzkW11YZTWp4yL7epA4S52dlcTUGn85rZsivYoW1JD7QErzb0PXvqT
+         yMMO1TAU6mYQxs5mBcu2kRJ6zPAJGXqLs43mmn+xSgiZynvJ6nzrRHU59QPel1c3Ds4N
+         XmFEGmaRnaVj9Ign2j5XdkAnSgv5p2BZfF4khKRCrN0qXGvrbvp+/eTEYRzWW9Szp6Ds
+         yFww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=GKJf8Yw6nAvyH7L7LWtVnPqoYfvwfYxKaTQQ4i15vnw=;
-        b=QoJiLiTY/PdN4Qpos48Y3wDD94eU8Yj8ovcQGZVFaYgUW2QReUODRlk/QLF0atSIJf
-         mV6uF1zHVFY9QnHXt+EC2rTcrS/ZzfqElMIHQFHGjAo1qdlqnCS/n5LIpzg0C5guAI4A
-         XJ6R9Uym6vYKCyqFVwlON6l2iy0+9RBnqlysgfasIx9j1qfy6fuAOAiGJLvdRoM70OSv
-         v/evtQ34HMJIbrsATucTSxpiAj4S+arprQ0Ssg/Piz6+P1xBMJqE0LuXiVGYdEMF764q
-         YLb6PuFTwpBYC89rIbicRQpIP4knFDK91vLXska12uhPU4tSS2vAqmq4AfFIXpIuw/oK
-         RE1g==
-X-Gm-Message-State: AOAM533PHEiyFny+o/PK6zE2JSyTaU19e+1NHvFmu8yGnhN2KcgeE58Q
-        cWXUebn868HvKCKKoQmlAcC+5yLpOeoo
-X-Google-Smtp-Source: ABdhPJwvxhGUs8qT6o1qXj0hFaxADubdJNS3RcNfw6stMxv0lpgPwWe9znpjjDYLclDuTHnjp/NX48k5FfFX
+        bh=QUI3hZYXvI78WFqblkOEI4nv4sPjthYOTOzOfWXxRnY=;
+        b=cRFrp5pS8isoGg+PLxVco99oaOS8Kf2NlbtH+GrwpH91Qd/4Z7qEDwUfTvYFeRWsMb
+         bx4bpXIsKANWtBySOF5W2aYt/Byiw7chCCGx5tFi7v5i5KwDTGLDUm263mbaZ2hYOFjf
+         N7jQQZBX6O3l+ZPUz3GilfWisRqNiM78MLpulGKosLSQfRjYz+IjYRYmwkthJmU+x7LF
+         Mvt816DHLvhszCLWsoYmPr7IxDNHWmLjrsUkDiRTS3nZVPlKCfiZBmyWC35bdUSVES67
+         i6e9JCIUAyJS/Og8HBr5NQg9h7iAuLW2XgBAwPrtP9OJX9U08zD/BwDvfHfrMeaAzi8B
+         Wh2w==
+X-Gm-Message-State: AOAM530qh/v4RVmgZbjcS1ASU6pJH0obMW7du6oCyn5O6mJdRlKMcciY
+        ttjcG2m0MUZbZZaWCNBkYQct+jI00W8f
+X-Google-Smtp-Source: ABdhPJxOoyt8KvgNv9Gie8FpeQbl88z6WFavgeTCKCDAyPvf2+ZKg8TSn6T3DbyQZMrB8dGAG0HuTB1/ztq6
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:8ce:af84:2510:3f29])
- (user=irogers job=sendgmr) by 2002:a5b:145:: with SMTP id c5mr51349264ybp.60.1636008164141;
- Wed, 03 Nov 2021 23:42:44 -0700 (PDT)
-Date:   Wed,  3 Nov 2021 23:41:58 -0700
+ (user=irogers job=sendgmr) by 2002:a5b:98e:: with SMTP id c14mr34614779ybq.458.1636008166642;
+ Wed, 03 Nov 2021 23:42:46 -0700 (PDT)
+Date:   Wed,  3 Nov 2021 23:41:59 -0700
 In-Reply-To: <20211104064208.3156807-1-irogers@google.com>
-Message-Id: <20211104064208.3156807-13-irogers@google.com>
+Message-Id: <20211104064208.3156807-14-irogers@google.com>
 Mime-Version: 1.0
 References: <20211104064208.3156807-1-irogers@google.com>
 X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v3 12/22] perf test: Convert clang tests to test cases.
+Subject: [PATCH v3 13/22] perf test: Convert bpf tests to test cases.
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -79,137 +79,147 @@ test functions.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/clang.c           | 57 +++++++++---------------------
- tools/perf/util/c++/clang-c.h      |  8 ++---
- tools/perf/util/c++/clang-test.cpp |  6 ++--
- 3 files changed, 24 insertions(+), 47 deletions(-)
+ tools/perf/tests/bpf.c | 72 +++++++++++++++++++++++++-----------------
+ 1 file changed, 43 insertions(+), 29 deletions(-)
 
-diff --git a/tools/perf/tests/clang.c b/tools/perf/tests/clang.c
-index a499fcf37bf9..ba06a2257574 100644
---- a/tools/perf/tests/clang.c
-+++ b/tools/perf/tests/clang.c
-@@ -3,54 +3,31 @@
- #include "c++/clang-c.h"
- #include <linux/kernel.h>
+diff --git a/tools/perf/tests/bpf.c b/tools/perf/tests/bpf.c
+index 274fdd5318a5..e86a77ce93ef 100644
+--- a/tools/perf/tests/bpf.c
++++ b/tools/perf/tests/bpf.c
+@@ -62,7 +62,6 @@ static int llseek_loop(void)
  
--static struct {
--	int (*func)(void);
+ static struct {
+ 	enum test_llvm__testcase prog_id;
 -	const char *desc;
--} clang_testcase_table[] = {
--#ifdef HAVE_LIBCLANGLLVM_SUPPORT
--	{
--		.func = test__clang_to_IR,
--		.desc = "builtin clang compile C source to IR",
--	},
--	{
--		.func = test__clang_to_obj,
--		.desc = "builtin clang compile C source to ELF object",
--	},
--#endif
--};
--
--static int test__clang_subtest_get_nr(void)
+ 	const char *name;
+ 	const char *msg_compile_fail;
+ 	const char *msg_load_fail;
+@@ -72,7 +71,6 @@ static struct {
+ } bpf_testcase_table[] = {
+ 	{
+ 		.prog_id	  = LLVM_TESTCASE_BASE,
+-		.desc		  = "Basic BPF filtering",
+ 		.name		  = "[basic_bpf_test]",
+ 		.msg_compile_fail = "fix 'perf test LLVM' first",
+ 		.msg_load_fail	  = "load bpf object failed",
+@@ -81,7 +79,6 @@ static struct {
+ 	},
+ 	{
+ 		.prog_id	  = LLVM_TESTCASE_BASE,
+-		.desc		  = "BPF pinning",
+ 		.name		  = "[bpf_pinning]",
+ 		.msg_compile_fail = "fix kbuild first",
+ 		.msg_load_fail	  = "check your vmlinux setting?",
+@@ -92,7 +89,6 @@ static struct {
+ #ifdef HAVE_BPF_PROLOGUE
+ 	{
+ 		.prog_id	  = LLVM_TESTCASE_BPF_PROLOGUE,
+-		.desc		  = "BPF prologue generation",
+ 		.name		  = "[bpf_prologue_test]",
+ 		.msg_compile_fail = "fix kbuild first",
+ 		.msg_load_fail	  = "check your vmlinux setting?",
+@@ -282,18 +278,6 @@ static int __test__bpf(int idx)
+ 	return ret;
+ }
+ 
+-static int test__bpf_subtest_get_nr(void)
 -{
--	return (int)ARRAY_SIZE(clang_testcase_table);
+-	return (int)ARRAY_SIZE(bpf_testcase_table);
 -}
 -
--static const char *test__clang_subtest_get_desc(int i)
+-static const char *test__bpf_subtest_get_desc(int i)
 -{
--	if (i < 0 || i >= (int)ARRAY_SIZE(clang_testcase_table))
+-	if (i < 0 || i >= (int)ARRAY_SIZE(bpf_testcase_table))
 -		return NULL;
--	return clang_testcase_table[i].desc;
+-	return bpf_testcase_table[i].desc;
 -}
 -
- #ifndef HAVE_LIBCLANGLLVM_SUPPORT
--static int test__clang(struct test_suite *test __maybe_unused, int i __maybe_unused)
-+static int test__clang_to_IR(struct test_suite *test __maybe_unused,
+ static int check_env(void)
+ {
+ 	int err;
+@@ -324,7 +308,7 @@ static int check_env(void)
+ 	return 0;
+ }
+ 
+-static int test__bpf(struct test_suite *test __maybe_unused, int i)
++static int test__bpf(int i)
+ {
+ 	int err;
+ 
+@@ -342,31 +326,61 @@ static int test__bpf(struct test_suite *test __maybe_unused, int i)
+ 	err = __test__bpf(i);
+ 	return err;
+ }
++#endif
+ 
+-#else
+-static int test__bpf_subtest_get_nr(void)
++static int test__basic_bpf_test(struct test_suite *test __maybe_unused,
++				int subtest __maybe_unused)
+ {
+-	return 0;
++#ifdef HAVE_LIBBPF_SUPPORT
++	return test__bpf(0);
++#else
++	pr_debug("Skip BPF test because BPF support is not compiled\n");
++	return TEST_SKIP;
++#endif
+ }
+ 
+-static const char *test__bpf_subtest_get_desc(int i __maybe_unused)
++static int test__bpf_pinning(struct test_suite *test __maybe_unused,
 +			     int subtest __maybe_unused)
  {
- 	return TEST_SKIP;
- }
--#else
--static int test__clang(struct test_suite *test __maybe_unused, int i)
-+
-+static int test__clang_to_obj(struct test_suite *test __maybe_unused,
-+			      int subtest __maybe_unused)
- {
--	if (i < 0 || i >= (int)ARRAY_SIZE(clang_testcase_table))
--		return TEST_FAIL;
--	return clang_testcase_table[i].func();
+-	return NULL;
++#ifdef HAVE_LIBBPF_SUPPORT
++	return test__bpf(1);
++#else
++	pr_debug("Skip BPF test because BPF support is not compiled\n");
 +	return TEST_SKIP;
++#endif
  }
- #endif
  
-+static struct test_case clang_tests[] = {
-+	TEST_CASE_REASON("builtin clang compile C source to IR", clang_to_IR,
-+			 "not compiled in"),
-+	TEST_CASE_REASON("builtin clang compile C source to ELF object",
-+			 clang_to_obj,
-+			 "not compiled in"),
+-static int test__bpf(struct test_suite *test __maybe_unused, int i __maybe_unused)
++static int test__bpf_prologue_test(struct test_suite *test __maybe_unused,
++				   int subtest __maybe_unused)
+ {
++#if defined(HAVE_LIBBPF_SUPPORT) && defined(HAVE_BPF_PROLOGUE)
++	return test__bpf(2);
++#else
+ 	pr_debug("Skip BPF test because BPF support is not compiled\n");
+ 	return TEST_SKIP;
++#endif
+ }
++
++
++static struct test_case bpf_tests[] = {
++#ifdef HAVE_LIBBPF_SUPPORT
++	TEST_CASE("Basic BPF filtering", basic_bpf_test),
++	TEST_CASE("BPF pinning", bpf_pinning),
++#ifdef HAVE_BPF_PROLOGUE
++	TEST_CASE("BPF prologue generation", bpf_prologue_test),
++#else
++	TEST_CASE_REASON("BPF prologue generation", bpf_prologue_test, "not compiled in"),
+ #endif
++#else
++	TEST_CASE_REASON("Basic BPF filtering", basic_bpf_test, "not compiled in"),
++	TEST_CASE_REASON("BPF pinning", bpf_pinning, "not compiled in"),
++	TEST_CASE_REASON("BPF prologue generation", bpf_prologue_test, "not compiled in"),
++#endif
 +	{ .name = NULL, }
 +};
-+
- struct test_suite suite__clang = {
- 	.desc = "builtin clang support",
--	.func = test__clang,
+ 
+ struct test_suite suite__bpf = {
+ 	.desc = "BPF filter",
+-	.func = test__bpf,
 -	.subtest = {
 -		.skip_if_fail	= true,
--		.get_nr		= test__clang_subtest_get_nr,
--		.get_desc	= test__clang_subtest_get_desc,
--	}
-+	.test_cases = clang_tests,
+-		.get_nr		= test__bpf_subtest_get_nr,
+-		.get_desc	= test__bpf_subtest_get_desc,
+-	},
++	.test_cases = bpf_tests,
 +	.subtest = { .skip_if_fail = true, },
  };
-diff --git a/tools/perf/util/c++/clang-c.h b/tools/perf/util/c++/clang-c.h
-index 2df8a45bd088..d3731a876b6c 100644
---- a/tools/perf/util/c++/clang-c.h
-+++ b/tools/perf/util/c++/clang-c.h
-@@ -12,8 +12,9 @@ extern "C" {
- extern void perf_clang__init(void);
- extern void perf_clang__cleanup(void);
- 
--extern int test__clang_to_IR(void);
--extern int test__clang_to_obj(void);
-+struct test_suite;
-+extern int test__clang_to_IR(struct test_suite *test, int subtest);
-+extern int test__clang_to_obj(struct test_suite *test, int subtest);
- 
- extern int perf_clang__compile_bpf(const char *filename,
- 				   void **p_obj_buf,
-@@ -26,9 +27,6 @@ extern int perf_clang__compile_bpf(const char *filename,
- static inline void perf_clang__init(void) { }
- static inline void perf_clang__cleanup(void) { }
- 
--static inline int test__clang_to_IR(void) { return -1; }
--static inline int test__clang_to_obj(void) { return -1;}
--
- static inline int
- perf_clang__compile_bpf(const char *filename __maybe_unused,
- 			void **p_obj_buf __maybe_unused,
-diff --git a/tools/perf/util/c++/clang-test.cpp b/tools/perf/util/c++/clang-test.cpp
-index 21b23605f78b..a4683ca53697 100644
---- a/tools/perf/util/c++/clang-test.cpp
-+++ b/tools/perf/util/c++/clang-test.cpp
-@@ -35,7 +35,8 @@ __test__clang_to_IR(void)
- }
- 
- extern "C" {
--int test__clang_to_IR(void)
-+int test__clang_to_IR(struct test_suite *test __maybe_unused,
-+                      int subtest __maybe_unused)
- {
- 	perf_clang_scope _scope;
- 
-@@ -48,7 +49,8 @@ int test__clang_to_IR(void)
- 	return -1;
- }
- 
--int test__clang_to_obj(void)
-+int test__clang_to_obj(struct test_suite *test __maybe_unused,
-+                       int subtest __maybe_unused)
- {
- 	perf_clang_scope _scope;
- 
 -- 
 2.33.1.1089.g2158813163f-goog
 
