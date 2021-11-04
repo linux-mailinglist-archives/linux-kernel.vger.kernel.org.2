@@ -2,124 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086C7445C73
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 23:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C09445C81
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 00:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbhKDW7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 18:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232025AbhKDW67 (ORCPT
+        id S232346AbhKDXDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 19:03:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52948 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231467AbhKDXDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 18:58:59 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CFEC061714;
-        Thu,  4 Nov 2021 15:56:20 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HlfBl1gqGz4xd8;
-        Fri,  5 Nov 2021 09:56:15 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1636066576;
-        bh=grcmNFBX6Zg8EjXAyRbS7cvifulEVMPhW4wGYPqFZpo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=FpJBo9U2tgsR3Gxadiz2PIAO1+/NOW7HC0GSYz9svyzJx4iih7DHRgNc+IaUnwjZg
-         UZOcL2DBZDNJoK8ovwUc3hSGiS7d6dMORrMem261SnZl1FiuAx4r1zV524RgcC8Xk1
-         didyKvcdoWknhV9kR1Jf3wlFweCqapNSDlKQ3tBa2vEZWU1iMh9nS5jw238HBTk1kl
-         sDTBqnRBtNImyVw86OssrDTjE7ZETZ5LsmTRZnm6XC/YGhqfQLlFoC3b2wX8GojUxo
-         8jTl0wLJ2s8vvCumS1ksNGuvcJBltCDNX8VVBtEaXxTycmIcYSAkdEAkjKnWpbnb7Q
-         aqBFGXe2UGwYA==
-Date:   Fri, 5 Nov 2021 09:56:14 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Joerg Roedel <jroedel@suse.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the pci tree
-Message-ID: <20211105095614.6bc6fc96@canb.auug.org.au>
+        Thu, 4 Nov 2021 19:03:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636066855;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kz5D2XrHzkGR6eEE3P3Wd4HduoWd/VhEom0C06kpEaU=;
+        b=GYha42M0jsZs/IFp6W6ClSeqWP2U3wdP3vtjysZUgAiSnL+HI4xXZtc82cniZmvFxTEALM
+        2FG8CHl2NUxExCeEE7/gQbuDqkW7cUpC4hGN5Mo1qT/6r5dfCxVnEDQutmdVuB2zYGvZ4b
+        quTHrey7BrXo2DUmFhXZs+IcFgesH+4=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-523-ewMRqjUwMn-6CyTiTifcJg-1; Thu, 04 Nov 2021 19:00:54 -0400
+X-MC-Unique: ewMRqjUwMn-6CyTiTifcJg-1
+Received: by mail-oi1-f200.google.com with SMTP id t68-20020acaaa47000000b002a7a66ef1a2so4294535oie.15
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 16:00:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kz5D2XrHzkGR6eEE3P3Wd4HduoWd/VhEom0C06kpEaU=;
+        b=wgU7eZqcJjVitXCtsaCdn5Mu7+JaGh5VrxFbRO48/gvMCOqypObpuf1hfnHvlJ52AU
+         cZKikWncwt0PsW/SinL4/8hPwljsfDdrdd818s227ZCWVB6bgaDwebMXCq9rkUshLhxC
+         tIYOmRyFZ+IABypvynb2iRB6OpDLQ68GGnrpQy3melHtMfYnpS+j/g8XyRSwcUr3Q6DN
+         PxKO7vXqr0fMXmoaYYaIOCAR8HvYUytJR8zSdiHe322ojOkwEj6+IA+MNyjehkEnG1x8
+         ThYqjnxdmLCSP2WYOnnVphbrdUbSfURNwOuuZJ/ekL6VkHU2ooUv2rrfOkiBGa+3Cypc
+         cwcg==
+X-Gm-Message-State: AOAM5329eejHruebOuZBAlfLkXZmU15OO8yWiiUVYY5OdNFvPd26zgfZ
+        YgQtIBuEUrq7gWk/ONK5kfjxAnJTfuk8l5iRqm8T8yl9ttFNkyYJ0MjCAcskPtz39AgypMtdXdh
+        p73K24+jCpHOmTCcyhqKi+OWb
+X-Received: by 2002:a05:6808:2017:: with SMTP id q23mr19157875oiw.122.1636066853643;
+        Thu, 04 Nov 2021 16:00:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwb4NVKVJlrZ8V/TzBQLSKVmPq1vB0KWvsDxX35DYZ/1IbzNqCAJPkUoA4YPrf+Gnd3I+cLeg==
+X-Received: by 2002:a05:6808:2017:: with SMTP id q23mr19157851oiw.122.1636066853384;
+        Thu, 04 Nov 2021 16:00:53 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::35])
+        by smtp.gmail.com with ESMTPSA id bb39sm1965018oib.28.2021.11.04.16.00.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 16:00:53 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 16:00:50 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com,
+        dvyukov@google.com, seanjc@google.com, pbonzini@redhat.com,
+        mbenes@suse.cz
+Subject: Re: [RFC][PATCH 22/22] x86: Remove .fixup section
+Message-ID: <20211104230050.nltxx3vjje72hc2c@treble>
+References: <20211104164729.226550532@infradead.org>
+ <20211104165525.827837876@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qdt613cmfmMZgU7Svgtyos_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211104165525.827837876@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/qdt613cmfmMZgU7Svgtyos_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Nov 04, 2021 at 05:47:51PM +0100, Peter Zijlstra wrote:
+> No moar user, kill it dead.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/x86/entry/vdso/vdso-layout.lds.S |    1 -
+>  arch/x86/kernel/vmlinux.lds.S         |    1 -
+>  2 files changed, 2 deletions(-)
+> 
+> --- a/arch/x86/entry/vdso/vdso-layout.lds.S
+> +++ b/arch/x86/entry/vdso/vdso-layout.lds.S
+> @@ -77,7 +77,6 @@ SECTIONS
+>  
+>  	.text		: {
+>  		*(.text*)
+> -		*(.fixup)
+>  	}						:text	=0x90909090,
+>  
+>  
+> --- a/arch/x86/kernel/vmlinux.lds.S
+> +++ b/arch/x86/kernel/vmlinux.lds.S
+> @@ -137,7 +137,6 @@ SECTIONS
+>  		ALIGN_ENTRY_TEXT_END
+>  		SOFTIRQENTRY_TEXT
+>  		STATIC_CALL_TEXT
+> -		*(.fixup)
+>  		*(.gnu.warning)
+>  
+>  #ifdef CONFIG_RETPOLINE
 
-Hi all,
+Objtool also has a reference to .fixup.
 
-After merging the pci tree, today's linux-next build (x86_64 allmodconfig)
-failed like this:
+-- 
+Josh
 
-drivers/iommu/apple-dart.c: In function 'apple_dart_get_resv_regions':
-drivers/iommu/apple-dart.c:762:2: error: implicit declaration of function '=
-iommu_dma_get_resv_regions'; did you mean 'iommu_get_resv_regions'? [-Werro=
-r=3Dimplicit-function-declaration]
-  762 |  iommu_dma_get_resv_regions(dev, head);
-      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~
-      |  iommu_get_resv_regions
-
-Caused by commit
-
-  946d619fa25f ("iommu/dart: Exclude MSI doorbell from PCIe device IOVA ran=
-ge")
-
-Unfortunately, the linux/dma-iommu.h include was removed by commit
-
-  b2b2781a9755 ("iommu/dart: Clean up IOVA cookie crumbs")
-
-which is now in Linus' tree.
-
-I have added this merge fixup for today:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 5 Nov 2021 09:51:19 +1100
-Subject: [PATCH] iommu/dart: restore include of linux/dma-iommu.h
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/iommu/apple-dart.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/iommu/apple-dart.c b/drivers/iommu/apple-dart.c
-index b7265a8e9540..565ef5598811 100644
---- a/drivers/iommu/apple-dart.c
-+++ b/drivers/iommu/apple-dart.c
-@@ -15,6 +15,7 @@
- #include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/dev_printk.h>
-+#include <linux/dma-iommu.h>
- #include <linux/dma-mapping.h>
- #include <linux/err.h>
- #include <linux/interrupt.h>
---=20
-2.33.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/qdt613cmfmMZgU7Svgtyos_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGEZQ4ACgkQAVBC80lX
-0Gy78AgAhesX5qd981QechtQbh6vkMpBaEJTO6DBC23V9UXnZUbqcs/wbP/0Jtlz
-YSWkhU6cHhS8FWnr591+T/fB9lq/lE5TmOisUWC5WlwkXBiEXnEVFZ/vYLR1iIh0
-4OPpgBOSbZu4efKENIBwb9p7E7Mh7Ldc9nc14BWIbdd3e47DKs7qjJbvO/bx+/nM
-qnEDqs418R5XiLqdqpfhHkeT2lVlEYXsoFZHsb2FRQO3cgtc+vPDk8/zshQdg7Jl
-Lh37uTUszSlg86XKdG9b762gowadLnLzxEbf4L5seUPD4+f3Z5MJD0+Y2msbekbl
-wX3dy8H5JEJukE5URb2f5Bh6vp/SYw==
-=yQqQ
------END PGP SIGNATURE-----
-
---Sig_/qdt613cmfmMZgU7Svgtyos_--
