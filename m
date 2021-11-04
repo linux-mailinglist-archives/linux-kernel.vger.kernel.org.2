@@ -2,101 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0EE444ED2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:24:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D791F444ED4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhKDG0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:26:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46742 "EHLO
+        id S230472AbhKDG1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:27:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbhKDG0t (ORCPT
+        with ESMTP id S230150AbhKDG1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:26:49 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DDEC061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:24:12 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id s24so5665603plp.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 23:24:12 -0700 (PDT)
+        Thu, 4 Nov 2021 02:27:16 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E04C061714;
+        Wed,  3 Nov 2021 23:24:38 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id 127so4880387pfu.1;
+        Wed, 03 Nov 2021 23:24:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ITNpx/7v1kdW2PebNDx55PzumFTIDCyKv4vKp0sRsX4=;
-        b=aY7BJfVj4tZDlqOswU4WWN4EZgUAhNQC3dq4mQY+2YrEPqjfJLsGvZGFa5WCqpF+kB
-         qsj49TWcdT91W+N7ECk1sHjdYgr2fdaYK2Nys9Qj0GO2sNvA5+OdZEwGE2/6NrxgVtQq
-         foLMdeUJUubpyUNEk58dcUWQQIGzrPRFiwcrJjob+PmiNOB0EKonAPXHrj76q9Ay67yx
-         CPx+M9fB10GowPa+ghaiBbdwPMIO9Ypuk8s80c6Ea4ojmbvx3U8pViBY96Pq6wlixfJO
-         EY32XhTAR3EBXCfrsokaM+CkOIr9oq0zZy+Gb12jC6hvT4r96rQc/eJ8p3jjCB26jEUK
-         79SA==
+        bh=GczOOZ819CBVgyrUgEiQpSFxZ9oaI7CSNNwrM6gcDi4=;
+        b=Hu35XFzFsKri1uUtqJXkVeckJpsGM+72fM9nRGmwsmGKva2zZiiphwLe4A9jZ+8JtD
+         Kw1zFBfRAPLGrBT+z0EXyEZnEFJjfOjig1FEAfUTMQpNjzgFp4EIFD+zEbsPiEhMTOFb
+         JdcrER+e7ACeY4Bvx25gGPy/ncmt1vVnYGX4cPeFK7uY3TFv0z56krh0NkPdygBcjFpr
+         NKtSJbz/6sWCN0a1NkDg6/cuYc6xgPPo+Jh7fwRPYPBRka1V51GNCVDLQHEq0zVyv8n0
+         yyRcj+R/FYrPKKAQHXvUqRKXMoYB20tThH80cM1JIK2EAS8oRM78+6ARrSP//HG/Aagc
+         1KRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ITNpx/7v1kdW2PebNDx55PzumFTIDCyKv4vKp0sRsX4=;
-        b=dxaoBd6c2njRp3RMhXnQ2J9j+R5rsfYGmU3cNrzSF5gy21uVxfjFhQ7hSS+0LCWyjs
-         myyIRs5Kh8NOPwF7Jwxkejp9roG8OSIEXSKWWN/q826UB1tHkGdpBhqELtvbWNv4K/TX
-         Ufl+oipUM/KJlZ909MhczcG5VFcg+00fYGY5S2/47wxfE9l7rXusxJ8OewLtipxPJRVs
-         XpeNS9uuyopuKYdNZVOJ2Naj/qW2TuAzlvffWBX3aCyf17rwfhrtIkHbDHJKmIyu2YV8
-         7Zy7zWuzTcJPaSPe50FS8PYD0neQUh06q8GCY5ofpXaOAFjgzTHUZzh7jtLKW1teytGN
-         TTAw==
-X-Gm-Message-State: AOAM530XQwXf10VkHhgneuWzaMCAwY/OSRZUQ4vpkV2grfTYkSMV+wH4
-        xddrmMVax76SlKH7YuTPoUfu4aNUrBQ=
-X-Google-Smtp-Source: ABdhPJzjO8cPS2Fm5mDFGJYJdIta8DjCG4zDUiL4XonrPFZMC1kmVD49NM7AuRRG36Bx7qMkPSvmOA==
-X-Received: by 2002:a17:902:e405:b0:141:b2fa:b00 with SMTP id m5-20020a170902e40500b00141b2fa0b00mr35537165ple.22.1636007052170;
-        Wed, 03 Nov 2021 23:24:12 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id p6sm4395781pfo.96.2021.11.03.23.24.10
+        bh=GczOOZ819CBVgyrUgEiQpSFxZ9oaI7CSNNwrM6gcDi4=;
+        b=MCM1ezX5PLcyxpByBdgeCRMr+MieUk7F9NKb+Y4hOo2VXAhge15efId8H7rPZe/NgW
+         X6r27NTMbeKjRiv9zW/HU6hpPtWScmqlH4eJXLl8aVZY1uaeNEczJUJxn2MvOaVINHJ8
+         LAfUi+qILvLvPwSWJzdWe7071NHs9enN7H/x2YiMqlKPjru9fRLWhERG/y6S5eySY/s/
+         leQb784CR/4x7G0/cqr8wxq2YnkNJR8AqEsTgNl1Zm9I6tw/G4wKSRfTlfBS6kXDbd6g
+         bk9oVNtJloZLrn0zpmLL8NfURvGUr0a4uJNkZW8bSBP0tN2cu7XH8fs6eSey8oA73TJM
+         hfIw==
+X-Gm-Message-State: AOAM530BOUVZCPWEzP1WCpgaWWyR1MuzzHut0PXvYky6SG2Fzi5LSg4k
+        CGxLQ/k0xIqsZCWFA54gyQU=
+X-Google-Smtp-Source: ABdhPJx2kCDWjn3aW8xNGJEIMKL7cFbznv7TIOcrXCtTgu4rDAqzfybLYZNq4KC75JGG5WTFZNuvRQ==
+X-Received: by 2002:a05:6a00:a02:b0:47b:f59a:2c80 with SMTP id p2-20020a056a000a0200b0047bf59a2c80mr49662649pfh.41.1636007078227;
+        Wed, 03 Nov 2021 23:24:38 -0700 (PDT)
+Received: from debian11-dev-61.localdomain (192.243.120.180.16clouds.com. [192.243.120.180])
+        by smtp.gmail.com with ESMTPSA id h12sm3861462pfh.75.2021.11.03.23.24.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 23:24:11 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: luo.penghao@zte.com.cn
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] x86/mtrr: Remove the if statement
-Date:   Thu,  4 Nov 2021 06:24:05 +0000
-Message-Id: <20211104062405.2463-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Wed, 03 Nov 2021 23:24:38 -0700 (PDT)
+From:   davidcomponentone@gmail.com
+X-Google-Original-From: yang.guang5@zte.com.cn
+To:     djwong@kernel.org
+Cc:     davidcomponentone@gmail.com, linux-xfs@vger.kernel.org,
+        dchinner@redhat.com, chandan.babu@oracle.com,
+        gustavoars@kernel.org, yang.guang5@zte.com.cn,
+        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] xfs: use swap() to make code cleaner
+Date:   Thu,  4 Nov 2021 14:24:27 +0800
+Message-Id: <20211104062427.1506328-1-yang.guang5@zte.com.cn>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: luo penghao <luo.penghao@zte.com.cn>
+From: Yang Guang <yang.guang5@zte.com.cn>
 
-The "if" here is only for assigning the highest_pfn, but the variable
-will not be used later. So this if statement should be deleted.
-
-The clang_analyzer complains as follows:
-
-arch/x86/kernel/cpu/mtrr/cleanup.c:950:4 warning:
-
-Value stored to 'highest_pfn' is never read
+Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
+opencoding it.
 
 Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
+Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
 ---
- arch/x86/kernel/cpu/mtrr/cleanup.c | 2 --
- 1 file changed, 2 deletions(-)
+ fs/xfs/libxfs/xfs_da_btree.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/mtrr/cleanup.c b/arch/x86/kernel/cpu/mtrr/cleanup.c
-index b5f4304..2c896b4 100644
---- a/arch/x86/kernel/cpu/mtrr/cleanup.c
-+++ b/arch/x86/kernel/cpu/mtrr/cleanup.c
-@@ -946,8 +946,6 @@ int __init mtrr_trim_uncached_memory(unsigned long end_pfn)
- 	if (mtrr_tom2) {
- 		range[nr_range].start = (1ULL<<(32 - PAGE_SHIFT));
- 		range[nr_range].end = mtrr_tom2 >> PAGE_SHIFT;
--		if (highest_pfn < range[nr_range].end)
--			highest_pfn = range[nr_range].end;
- 		nr_range++;
- 	}
- 	nr_range = x86_get_mtrr_mem_range(range, nr_range, 0, 0);
+diff --git a/fs/xfs/libxfs/xfs_da_btree.c b/fs/xfs/libxfs/xfs_da_btree.c
+index dd7a2dbce1d1..9dc1ecb9713d 100644
+--- a/fs/xfs/libxfs/xfs_da_btree.c
++++ b/fs/xfs/libxfs/xfs_da_btree.c
+@@ -864,7 +864,6 @@ xfs_da3_node_rebalance(
+ {
+ 	struct xfs_da_intnode	*node1;
+ 	struct xfs_da_intnode	*node2;
+-	struct xfs_da_intnode	*tmpnode;
+ 	struct xfs_da_node_entry *btree1;
+ 	struct xfs_da_node_entry *btree2;
+ 	struct xfs_da_node_entry *btree_s;
+@@ -894,9 +893,7 @@ xfs_da3_node_rebalance(
+ 	    ((be32_to_cpu(btree2[0].hashval) < be32_to_cpu(btree1[0].hashval)) ||
+ 	     (be32_to_cpu(btree2[nodehdr2.count - 1].hashval) <
+ 			be32_to_cpu(btree1[nodehdr1.count - 1].hashval)))) {
+-		tmpnode = node1;
+-		node1 = node2;
+-		node2 = tmpnode;
++		swap(node1, node2);
+ 		xfs_da3_node_hdr_from_disk(dp->i_mount, &nodehdr1, node1);
+ 		xfs_da3_node_hdr_from_disk(dp->i_mount, &nodehdr2, node2);
+ 		btree1 = nodehdr1.btree;
 -- 
-2.15.2
-
+2.30.2
 
