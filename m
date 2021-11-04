@@ -2,78 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D033C4453DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E984453E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:31:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbhKDNdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 09:33:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37682 "EHLO mail.kernel.org"
+        id S231311AbhKDNdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 09:33:42 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:56544 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231185AbhKDNc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 09:32:59 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E60DC61106;
-        Thu,  4 Nov 2021 13:30:20 +0000 (UTC)
-Date:   Thu, 4 Nov 2021 09:30:19 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     rafael@kernel.org, viresh.kumar@linaro.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, lenb@kernel.org
-Subject: Re: [PATCH] cpufreq: intel_pstate: Fix unchecked MSR 0x773 access
-Message-ID: <20211104093019.60c0e157@gandalf.local.home>
-In-Reply-To: <20211104051925.119941-1-srinivas.pandruvada@linux.intel.com>
-References: <20211104051925.119941-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230401AbhKDNdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 09:33:40 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1micpP-00045L-9M; Thu, 04 Nov 2021 21:30:51 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1micpI-0002Ef-4i; Thu, 04 Nov 2021 21:30:44 +0800
+Date:   Thu, 4 Nov 2021 21:30:44 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Vladis Dronov <vdronov@redhat.com>,
+        Simo Sorce <ssorce@redhat.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        kernel test robot <lkp@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] crypto: api - Do not create test larvals if manager is
+ disabled
+Message-ID: <20211104133044.GA8563@gondor.apana.org.au>
+References: <20211001055058.GA6081@gondor.apana.org.au>
+ <YVdNFzs8HUQwHa54@archlinux-ax161>
+ <20211003002801.GA5435@gondor.apana.org.au>
+ <YV0K+EbrAqDdw2vp@archlinux-ax161>
+ <20211019132802.GA14233@gondor.apana.org.au>
+ <alpine.DEB.2.22.394.2111021636040.2330984@ramsan.of.borg>
+ <DM6PR04MB708155E447FD9A79AB89686DE78D9@DM6PR04MB7081.namprd04.prod.outlook.com>
+ <CAMuHMdW1wLAt9Y=-GMMuk8HWE3UnRgKNMmD9fq34Rq8J7QyrzQ@mail.gmail.com>
+ <20211104121612.GA8044@gondor.apana.org.au>
+ <CAMuHMdWAAWWS+TgeN1AajHBS5w9-datMEeXqAN8RjxRd9bX63Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWAAWWS+TgeN1AajHBS5w9-datMEeXqAN8RjxRd9bX63Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  3 Nov 2021 22:19:25 -0700
-Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> wrote:
+On Thu, Nov 04, 2021 at 02:11:34PM +0100, Geert Uytterhoeven wrote:
+>
+> My config is nommu_k210_sdcard_defconfig with the changes below:
 
-> It is possible that on some platforms HWP interrupts are disabled. In
-> that case accessing MSR 0x773 will result in warning.
-> 
-> So check X86_FEATURE_HWP_NOTIFY feature to access MSR 0x773. The other
-> places in code where this MSR is accessed, already checks this feature
-> except during disable path called during cpufreq offline and suspend
-> callbacks.
-> 
-> Fixes: 57577c996d73 ("cpufreq: intel_pstate: Process HWP Guaranteed change notification")
-> Reported-by: Steven Rostedt <rostedt@goodmis.org>
+Could you send me the actual config? Just in case something weird
+happened during the kconfig process and options got flipped from
+their default values.
 
-I added this patch on top of the above commit and I verified that the issue
-goes away. And just to confirm, I removed the patch, and the issue
-reappeared.
-
-Tested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
--- Steve
-
-
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> ---
->  drivers/cpufreq/intel_pstate.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-> index 349ddbaef796..1e6898dc76b6 100644
-> --- a/drivers/cpufreq/intel_pstate.c
-> +++ b/drivers/cpufreq/intel_pstate.c
-> @@ -1620,6 +1620,9 @@ static void intel_pstate_disable_hwp_interrupt(struct cpudata *cpudata)
->  {
->  	unsigned long flags;
->  
-> +	if (!boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
-> +		return;
-> +
->  	/* wrmsrl_on_cpu has to be outside spinlock as this can result in IPC */
->  	wrmsrl_on_cpu(cpudata->cpu, MSR_HWP_INTERRUPT, 0x00);
->  
-
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
