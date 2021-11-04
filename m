@@ -2,97 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4BC444D75
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 04:03:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F807444D9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 04:07:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhKDDFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 23:05:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59082 "EHLO
+        id S230495AbhKDDKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 23:10:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhKDDFn (ORCPT
+        with ESMTP id S230084AbhKDDKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 23:05:43 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C43C061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 20:03:05 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id q126so213936pgq.13
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 20:03:05 -0700 (PDT)
+        Wed, 3 Nov 2021 23:10:05 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F7CC06127A;
+        Wed,  3 Nov 2021 20:07:27 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id t127so11150780ybf.13;
+        Wed, 03 Nov 2021 20:07:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=3TbuVrqIHgoJItA0iZIsVPVT8KU30Jz3Smu+Nxso5mw=;
-        b=X3Up2YGaJ2EQyVHNyGp+Md+8unbD3tz2EwR8DJc0mDIncnRmdMumaTj17ZZWskrz19
-         uwPnu0WQ1JNIJH8NAmj4CKtrhISKBuyJZRjC82gln8gd7O6qQ9npyAZE97/1MzSoqyM+
-         hN958CQo1eND3gnqpM5S+QwGGZ9DfWjgusVGU+cm9oP6RBAPR+7PNojDZulTfzQEd+a5
-         3XQPmx2goitRYohc45ZKh3H7o4Byf8ofCiEvBDCSZMEe+EQMIYLfEpoGTjsVuAzoCEji
-         PcoKHdU3StS2gvjY5RLSGnXY9L7GUCSAxHGRYSyWxS6GV4xR809MAPSQaJSWgpys/GjV
-         XEsQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0WKPz/ZeRoXF3sQd10dP+NWHOO9HPyrJzM/t8aB8TmY=;
+        b=Wjd9fo6bCdElVb1YXBrSNg3JCK1xq0lb12EgVc75FhmqjnhmHTbJ/jtsw3PYsZDlZm
+         kYsh2SexP2mUIbZYwgzdxbZBrfuezC7qcE4cJ8WuUbJ1n7/z+TlETrbXjoc/xkNeYAq3
+         T34zIMeOPZUBivg7aZdSIWsRTW8yFpW49O59x79jmgEDZ27Fzg6sN6+7l/lRTdaVKYWV
+         SjAgsqe1JQRc57N6Tv0WKR4TFK8XvTJFgdwsCvww6mKCWbqDIkgnLbioKe6zBfiL7poY
+         mXcjJwGjhXhM6JUWr18wjFJvZTaV/uePkP00x03kdkpTXGsMzVamHVgM8Y0yxw5D7RlH
+         lx7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=3TbuVrqIHgoJItA0iZIsVPVT8KU30Jz3Smu+Nxso5mw=;
-        b=ohjXaG0o/zopf83OjIanMiygJV0v/G+qernxfPibmluQDFtHcVWJqTHSZDoKLPgFFk
-         0fbDggFO4b+dOn2/xxVX1nYcf7jqQoP0VrMw8gt9OUOmkCQpWIQpRtp4eGGttvOhhSl8
-         nyk2f2Nv/1Z8LQvA22I6HH0godnu6uaRAq8Z22vcJ7A0Z8iJG/dZltk7lxUWlFzcFnqu
-         dyWsI8s9wiarhqPRIYpgiUZMkij+OTgt6RWS0DaTSjx9F6QTQpoJ8dweaIf5zmkWASKp
-         g5iSK0eb5R30wfYhWjRngC1g0mWKGMVpRwNDqGeg3pEOTJoTCBxmKuMLeVwqkYinKGuE
-         WwzQ==
-X-Gm-Message-State: AOAM533JuRJtUjUPYF+A0KahYOsALfaqRH77zmNTy43cQa4lbAOCvq9u
-        WwMZlY2Q+aiCDZWk56iEDd8=
-X-Google-Smtp-Source: ABdhPJy1HKFE4qWdl7sA91g3enosuIJfnU1FFZH9a5c+8iIl+dTuaSsEcf/W8BQSIezcA3K7Bo09rQ==
-X-Received: by 2002:a63:cf48:: with SMTP id b8mr15940318pgj.434.1635994985308;
-        Wed, 03 Nov 2021 20:03:05 -0700 (PDT)
-Received: from Sauravs-MacBook-Air.local ([59.95.84.218])
-        by smtp.gmail.com with ESMTPSA id z10sm3665213pfh.106.2021.11.03.20.03.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 20:03:05 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 08:32:58 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, straube.linux@gmail.com,
-        saurav.girepunje@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] staging: r8188eu: core: remove unused variable sz
-Message-ID: <YYNNDXtkICWpk6qj@Sauravs-MacBook-Air.local>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0WKPz/ZeRoXF3sQd10dP+NWHOO9HPyrJzM/t8aB8TmY=;
+        b=V7DQJ9siVWzmnOGYmSNtpTOWlTjhtOCL+lXybPeHn2p881uTwN7CyRzv3ZKN6DG5E3
+         RxLDmXpEAwZWYwe9IUl5dl4gLv2aeW7KAWh3GKQBvVLnYiGjMD1wrPk69EpiKdEkZQRI
+         4WFzx6p/JStuGLCD9ci1aa4L/4NJiHVJq5ZThoBuDSz508EGPiAUi/I0L++R9WO2uA2W
+         wXENnRRvO3vZH/zZJ7FaZ+c8JPQAwoyJeWfj3sKdrJLh4wE/DVd1+SKb6fCdv8oNI8WK
+         f54Vxos0cj2M0G1SqPWlKRv5teDY1LW2u596DQSymWcvj8T8tRF8gZ0O05bpfYyBD7U2
+         36Hw==
+X-Gm-Message-State: AOAM530fyQRTuib4yehYLC+kekaggDBRjAIC9TsUb3JKH8g4LopUKF+Q
+        iQvGLQzwTHCRmR0re/vRWDXvEufTpJKtQajJpIo=
+X-Google-Smtp-Source: ABdhPJxWi84Hxm87iRlfOMCXUAAUhHWSPnwgeuEl2u0peU86R5XsuHbk9+iUtB5TvFzOmqRa537B05jdrdvCxWeoh+g=
+X-Received: by 2002:a25:bb0c:: with SMTP id z12mr54482892ybg.181.1635995246618;
+ Wed, 03 Nov 2021 20:07:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <CAFcO6XMgwuz97EJN+8jh9PJ9seaUbousDBOh9sduM6MZ6MRHxA@mail.gmail.com>
+ <20211103095308.7ff68a7f@kicinski-fedora-PC1C0HJN>
+In-Reply-To: <20211103095308.7ff68a7f@kicinski-fedora-PC1C0HJN>
+From:   butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Date:   Thu, 4 Nov 2021 11:07:16 +0800
+Message-ID: <CAFcO6XPA5uR6PLqRYxNmie6jZkkZxpkyTzJmB7pyNNf17gg3Wg@mail.gmail.com>
+Subject: Re: A kernel-infoleak bug in pppoe_getname() in drivers/net/ppp/pppoe.c
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     mostrows@earthlink.net, "David S. Miller" <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Guillaume Nault <gnault@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the unused variable sz from function dynamic_chk_wk_hdl.
-This variable is not used on function.
+Ok, I will check. Oh, you are right.
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_cmd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
-index e17332677daa..d456c7e8089d 100644
---- a/drivers/staging/r8188eu/core/rtw_cmd.c
-+++ b/drivers/staging/r8188eu/core/rtw_cmd.c
-@@ -961,7 +961,7 @@ static void traffic_status_watchdog(struct adapter *padapter)
- 	pmlmepriv->LinkDetectInfo.bHigherBusyTxTraffic = bHigherBusyTxTraffic;
- }
 
--static void dynamic_chk_wk_hdl(struct adapter *padapter, u8 *pbuf, int sz)
-+static void dynamic_chk_wk_hdl(struct adapter *padapter, u8 *pbuf)
- {
- 	struct mlme_priv *pmlmepriv;
+On Thu, Nov 4, 2021 at 12:53 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Thu, 4 Nov 2021 00:14:31 +0800 butt3rflyh4ck wrote:
+> > Hi, I report a kernel-infoleak bug in pppoe_getname()) in
+> > drivers/net/ppp/pppoe.c.
+> > And we can call getname ioctl to invoke pppoe_getname().
+> >
+> > ###anaylze
+> > ```
+> > static int pppoe_getname(struct socket *sock, struct sockaddr *uaddr,
+> >   int peer)
+> > {
+> > int len = sizeof(struct sockaddr_pppox);
+> > struct sockaddr_pppox sp;    ///--->  define a 'sp' in stack but does
+> > not clear it
+> >
+> > sp.sa_family = AF_PPPOX;   ///---> sp.sa_family is a short type, just
+>
+> But the structure is marked as __packed.
+>
+> > 2 byte sizes.
+> > sp.sa_protocol = PX_PROTO_OE;
+> > memcpy(&sp.sa_addr.pppoe, &pppox_sk(sock->sk)->pppoe_pa,
+> >        sizeof(struct pppoe_addr));
+> >
+> > memcpy(uaddr, &sp, len);
+> >
+> > return len;
+> > }
+> > ```
+> > There is an anonymous 2-byte hole after sa_family, make sure to clear it.
+> >
+> > ###fix
+> > use memset() to clear the struct sockaddr_pppox sp.
+> > ```
+> > diff --git a/drivers/net/ppp/pppoe.c b/drivers/net/ppp/pppoe.c
+> > index 3619520340b7..fec328ad7202 100644
+> > --- a/drivers/net/ppp/pppoe.c
+> > +++ b/drivers/net/ppp/pppoe.c
+> > @@ -723,6 +723,11 @@ static int pppoe_getname(struct socket *sock,
+> > struct sockaddr *uaddr,
+> >         int len = sizeof(struct sockaddr_pppox);
+> >         struct sockaddr_pppox sp;
+> >
+> > +       /* There is an anonymous 2-byte hole after sa_family,
+> > +        * make sure to clear it.
+> > +        */
+> > +       memset(&sp, 0, len);
+> > +
+> >         sp.sa_family    = AF_PPPOX;
+> >         sp.sa_protocol  = PX_PROTO_OE;
+> >         memcpy(&sp.sa_addr.pppoe, &pppox_sk(sock->sk)->pppoe_pa,
+> > ```
+> > The attachment is a patch.
+>
 
-@@ -1382,7 +1382,7 @@ u8 rtw_drvextra_cmd_hdl(struct adapter *padapter, unsigned char *pbuf)
 
- 	switch (pdrvextra_cmd->ec_id) {
- 	case DYNAMIC_CHK_WK_CID:
--		dynamic_chk_wk_hdl(padapter, pdrvextra_cmd->pbuf, pdrvextra_cmd->type_size);
-+		dynamic_chk_wk_hdl(padapter, pdrvextra_cmd->pbuf);
- 		break;
- 	case POWER_SAVING_CTRL_WK_CID:
- 		rtw_ps_processor(padapter);
 --
-2.33.0
-
+Active Defense Lab of Venustech
