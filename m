@@ -2,72 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9922445337
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:41:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2EA445345
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231562AbhKDMoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 08:44:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50688 "EHLO mail.kernel.org"
+        id S231243AbhKDMtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 08:49:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229809AbhKDMoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 08:44:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9155661076;
-        Thu,  4 Nov 2021 12:41:35 +0000 (UTC)
+        id S229809AbhKDMtX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 08:49:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DBA460EBD;
+        Thu,  4 Nov 2021 12:46:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636029695;
-        bh=tm1jxyM2CruVcvCN1+NzNrnNVK1F1pL507EKiIPEzIQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qYJ4oniK6iE1s8+hO6DmN+xJm6fDga/eERAcDPf5cm/OOsfEYG5wkdR/LYzGUDoEu
-         +m8Ysf7lUJamQGPNZTb3OlgJ3zKaeib19dPwosjO1cOao8Y7WOg6Z4wcJz8jvah3c+
-         zf0P+NCSjlWu2d0T9KoGZpRLvGLwOjjqqQqgb6MDUmYqMkzjPLrfkc36j7OZ2hWJ7i
-         UeQNeeGZmand9iG8RUB4JiIQYE2u20zcQ3wRwJfhyVxav+w8ROa76tgD2nlkPdnOiD
-         mE8rG2ecYlae/aK/PTSuYYvyZze/VaK1nPQNxxqGfFaNskZG7KkE5yVmgUgq8eu3Pw
-         4CVMPfuqwjdkA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 35BD2410A1; Thu,  4 Nov 2021 09:41:33 -0300 (-03)
-Date:   Thu, 4 Nov 2021 09:41:33 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Cc:     Ian Rogers <irogers@google.com>,
+        s=k20201202; t=1636030005;
+        bh=j6d+mfoGeq/ZXtGuM8aOGWbKAQdD8PgJj7rgs7IUvAQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ojjipDXu6cxUAoJYz2IVypfJxoGmrO4mZh5r1rFs42gRv/7FxJ4YHSFTQ2/20Jkmu
+         p5fBDsdr7Kf3GZEyjd1eIEzLBXbvTl28RM1JxQ9ly2s8P+SnMtbdsxCXQHpKX0xRzC
+         1J552xVynp54qLhZey5EsXFBRI+JzklIGLgWnUVu2I6HfSjbTG7yrb7aQHHkzsZYs+
+         Z58kV5F1J+sRVcv/wWQFIeHKcsjG7xv4S3O9s170Th3ot0hNvFYzkAX0AqLPxexB9a
+         d4kOWTKsIBgX9iedfiHKy7wmhbjElOVAWVAONrH4X5QspxJgIY7Tf1WEdca0OB5QLi
+         OwPXk5Lpnrw7w==
+Date:   Thu, 4 Nov 2021 12:46:39 +0000
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Kaixu Xia <kaixuxia@tencent.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Yang Li <abaci-bugfix@linux.alibaba.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Alan <alan@linux.intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Leo Yan <leo.yan@linaro.org>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v2 1/2] tools: Bump minimum LLVM C++ std to GNU++14
-Message-ID: <YYPU/Yol/KlVvDH6@kernel.org>
-References: <20211012021321.291635-1-irogers@google.com>
- <CAFP8O3L_Oi916yOAuPB7MFpa3QoDQtreRbV7oNt2Yh6h1Coq9A@mail.gmail.com>
+        Ingo Molnar <mingo@kernel.org>, linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: atomisp current issues
+Message-ID: <20211104124639.38652387@sal.lan>
+In-Reply-To: <20211103135418.496f75d5@sal.lan>
+References: <20211103135418.496f75d5@sal.lan>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFP8O3L_Oi916yOAuPB7MFpa3QoDQtreRbV7oNt2Yh6h1Coq9A@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Oct 11, 2021 at 08:09:01PM -0700, Fāng-ruì Sòng escreveu:
-> On Mon, Oct 11, 2021 at 7:13 PM Ian Rogers <irogers@google.com> wrote:
-> >
-> > LLVM 9 (current release is LLVM 13) moved the minimum C++ version to
-> > GNU++14. Bump the version numbers in the feature test and perf build.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> 
-> 
-> Reviewed-by: Fangrui Song <maskray@google.com>
+As an update on that:
 
-Thanks, applied both patches.
+Em Wed, 3 Nov 2021 13:54:18 +0000
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
 
-- Arnaldo
+> Hi,
+> 
+> From what I've seen so far, those are the main issues with regards to V4L2 API,
+> in order to allow a generic V4L2 application to work with it.
+> 
+> MMAP support
+
+This issue still needs to be addressed...
+
+> From my side, I opted to add support for USERPTR on camorama:
+> 
+> 	https://github.com/alessio/camorama
+
+...
+
+> In time:
+> --------
+> 
+>  Camorama currently doesn't work due to some other API bugs. See below.
+
+But now camorama has gained support for autodetecting problems with
+MMAP support.
+
+At least for Asus T101HA, camorama is now working with atomisp.
+
+> VIDIOC_G_FMT/VIDIOC_S_FMT/VIDIOC_TRY_FMT issues
+> ===============================================
+
+I addressed those issues. The implementation is not 100%, but it is good
+enough for camorama to start working.
+
+> 
+> Video devices
+> =============
+> 
+> Currently, 10 video? devices are created:
+
+I didn't touch it. So, camorama should be called the first time with:
+
+	camorama -d /dev/video2
+
+in order for it to work. As camorama memorizes the last used camera,
+it will pick /dev/video2 if called later without any parameters.
+
+Regards,
+Mauro
