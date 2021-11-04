@@ -2,123 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9DD445468
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:59:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3E044546B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhKDOBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 10:01:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36768 "EHLO
+        id S231206AbhKDODa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 10:03:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230511AbhKDOBk (ORCPT
+        with ESMTP id S229869AbhKDOD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 10:01:40 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD1EC061714;
-        Thu,  4 Nov 2021 06:59:02 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0f2b00292987ac0c06fcda.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:2b00:2929:87ac:c06:fcda])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 07B031EC0570;
-        Thu,  4 Nov 2021 14:59:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636034341;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=7LX03mAYK04otWZOoY71ALabwci0dk1MWKslK4zWu2I=;
-        b=KR+lLKKLVG+OimGX0G+TVfeAzPp3+DAiK71o99+TN8MKguX6+YMASSnyMiA33sWx6z9RXk
-        PtVWl2Hv+ntT4D5AF+ZUH0n29RNRaoDCwwzmVLEOIeXtzSFlfK82CoRS/vUfvkp7K/I00A
-        cmZCFAiEROjuNQ7+z/kvpv4vyBBOcTY=
-Date:   Thu, 4 Nov 2021 14:58:49 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH v6 14/42] x86/sev: Register GHCB memory when SEV-SNP is
- active
-Message-ID: <YYPnGeW+8tlNgW34@zn.tnic>
-References: <20211008180453.462291-1-brijesh.singh@amd.com>
- <20211008180453.462291-15-brijesh.singh@amd.com>
- <YYFs+5UUMfyDgh/a@zn.tnic>
- <aea0e0c8-7f03-b9db-3084-f487a233c50b@amd.com>
- <YYGGv6EtWrw7cnLA@zn.tnic>
- <a975dfbf-f9bb-982e-9814-7259bc075b71@amd.com>
+        Thu, 4 Nov 2021 10:03:29 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92EA7C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 07:00:51 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id b203so3510261iof.10
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 07:00:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KJZSc1C/C2VIQ/P2PrKNaWRPpHJaj9Cr0StcpQfS/Zc=;
+        b=XElEUZHbKeNnKsbty0cOq3o5zuq3C1Zr3xTa7jBfKJXHuXydgKXgHxg4s+EORp6CNc
+         6l5VrFKJhqBfJ3ecnpeo/wYePf9tHAR238INSSW2mluqljIGYUBWhWgbBhgEiQdNR60q
+         3IOEu/90JXk7bk/ymjoEbZ3f4T/113XlYqGY3ohu6mCV8cmOhs+GlarHyOYMKCdhZkhn
+         ueaNR3U7aPHBR808k59FcAvAxy9d/w5Sq6sicH5q87DkvG4ty9CjCrBY/KbQVPyR/46H
+         RiON3Aeg7z4XkHb+LovYeNADiR4LUZPv/7toISTUakJ2bblwkmtTpfhOVp/5FJZnHqI2
+         foPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KJZSc1C/C2VIQ/P2PrKNaWRPpHJaj9Cr0StcpQfS/Zc=;
+        b=BiYNViGrhCPlv+0d+Sc9CC949549shDuxBtjAX8LGMC3A8reJCtnsFH/atZuGC6pqY
+         Y2VaoknO+5FiSA6QVYos63tJpEt7/uIven/7wPHxJ3afNkirr7kRFsH3qYSUpfuYdudU
+         Lj44UUe6CmOM9Tc7I9oJjqjorMCW7UlY/X/glYdDeNylWdpBUUtRusbR7MUEjC9YkbZ6
+         AAz6g0eKw4ST6PGr2yaAk8k6GdT0zsreqipkPwkLDeapEJ85Sj4ChpnHZ57IqWQRj5t+
+         Mvp16dBgTeRcGjT160j4KdgtcH7I+9dWQk7lkqYyPyjfo0chFDUE2kg1YW9fOoeYz9+U
+         GKYA==
+X-Gm-Message-State: AOAM533QneMmvHBphCvgvXs+HYN1D1iCbuqdINt2PVksmUuq5cP12E2h
+        vWDxTW0Z0qwXfRlSFhE3gAjVSaLDJhx2KAXel5sp+/qaMKdp6g==
+X-Google-Smtp-Source: ABdhPJwoP1SsCFjnrX5csF0o7nZrKpBmngcuQ++KwJQVfyX69vI93jO/N9TSvj9DrtRzR/9Wq/g0USy9lBok4J8TJec=
+X-Received: by 2002:a05:6602:140d:: with SMTP id t13mr35923239iov.176.1636034451030;
+ Thu, 04 Nov 2021 07:00:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <a975dfbf-f9bb-982e-9814-7259bc075b71@amd.com>
+References: <20211103190426.1511507-1-tyhicks@linux.microsoft.com>
+ <YYOYvDnX7yA932re@google.com> <20211104135347.GD3600@sequoia>
+In-Reply-To: <20211104135347.GD3600@sequoia>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Thu, 4 Nov 2021 15:00:40 +0100
+Message-ID: <CA+HBbNFPN91SF8CGVHt1bLptj4rbD7MDFgHNWQ+ry_y_wR+-NA@mail.gmail.com>
+Subject: Re: [PATCH] mfd: simple-mfd-i2c: Fix linker error due to new mfd-core dependency
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Alistair Francis <alistair@alistair23.me>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 03:10:16PM -0500, Brijesh Singh wrote:
-> Looking at the secondary CPU bring up path it seems that we will not be
-> getting #VC until the early_setup_idt() is called. I am thinking to add
-> function to register the GHCB from the early_setup_idt()
-> 
-> early_setup_idt()
-> {
->   ...
->   if (IS_ENABLED(CONFIG_MEM_ENCRYPT))
->     sev_snp_register_ghcb()
->   ...
-> }
-> 
-> The above will cover the APs
+On Thu, Nov 4, 2021 at 2:53 PM Tyler Hicks <tyhicks@linux.microsoft.com> wr=
+ote:
+>
+> On 2021-11-04 08:24:28, Lee Jones wrote:
+> > On Wed, 03 Nov 2021, Tyler Hicks wrote:
+> >
+> > > Select CONFIG_MFD_CORE from CONFIG_MFD_SIMPLE_MFD_I2C, now that
+> > > simple-mfd-i2c.c calls devm_mfd_add_devices(), to fix the following
+> > > linker error:
+> > >
+> > >  ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_probe'=
+:
+> > >  simple-mfd-i2c.c:(.text+0x62): undefined reference to `devm_mfd_add_=
+devices'
+> > >  make: *** [Makefile:1187: vmlinux] Error 1
+> > >
+> > > Fixes: c753ea31781a ("mfd: simple-mfd-i2c: Add support for registerin=
+g devices via MFD cells")
+> > > Cc: stable@vger.kernel.org # 5.15.x
+> > > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> > > ---
+> > >  drivers/mfd/Kconfig | 1 +
+> > >  1 file changed, 1 insertion(+)
+> >
+> > Looks like the same change that has already been applied.
+> >
+> > Could you rebase on top of the MFD tree please?
+>
+> Ah, that commit wasn't in for-mfd-next when I wrote up this patch
+> yesterday.
+>
+> I think that the Fixes line in that patch is wrong as I didn't see this
+> issue in 5.10 and reverting c753ea31781a fixes the build failure.
 
-That will cover the APs during early boot as that is being called from
-asm.
+Hi Tyler, I would agree with you on the fixes tag.
+I messed that one up, c753ea31781a is the correct one.
 
-> and for BSP case I can call the same function just after the final IDT
-> is loaded
+Regards,
+Robert
+>
+> Tyler
+>
+> >
+> > --
+> > Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> > Senior Technical Lead - Developer Services
+> > Linaro.org =E2=94=82 Open source software for Arm SoCs
+> > Follow Linaro: Facebook | Twitter | Blog
+> >
 
-Why after and not before?
 
-> cpu_init_exception_handling()
-> {
->    ...
->    ...
->    /* Finally load the IDT */
->    load_current_idt();
-> 
->    if (IS_ENABLED(CONFIG_MEM_ENCRYPT))
->      sev_snp_register_ghcb()
-> 
-> }
 
-That is also called on the APs - not only the BSP. trap_init() calls it
-from start_kernel() which is the BSP and cpu_init_secondary() calls it
-too, which is ofc the APs.
-
-I guess that should be ok since you're calling the same function from
-both but WTH do I know...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--=20
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
