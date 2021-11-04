@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB31444525B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:41:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 191C644525D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbhKDLnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 07:43:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37734 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229843AbhKDLnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 07:43:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE6BB611EF;
-        Thu,  4 Nov 2021 11:41:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636026071;
-        bh=w4EJu5XJxSHpNU33OdK4OD1pgxNRI63+7YIulSPgqTA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nY3bp1C1iEUAgTkKHfaCeYAYC4rUcxlNvEa8hB1iU+Rxcst30p9ZVvmd5uaUXsO7t
-         r/zSPFt7kZc5dvxsWd/RFVUdbUScmWNZCM3tXx5mPQ2BB6Txfn6ab49ftUhCyVceZY
-         RBGUUdpd9K/tA2ci3FAFr5Bky7hm8hBdNKodHH7vKXghnjUtF5LIbzl6a4P3qF0/Gn
-         4weR3k6xlCVPinWW0h66aYkPPGQpxGW8yscR/SJ5+LTFADWq2ykMRNXn/rqkLvI+Rh
-         Fe2zMRlrHs9SOrORLyxVxuG52pFj5GPgfNOC2mR9w0SvXIu/dh6lBWEy7MlQEHmimj
-         zeTuwUOZUITIQ==
-Received: by pali.im (Postfix)
-        id 19858990; Thu,  4 Nov 2021 12:41:09 +0100 (CET)
-Date:   Thu, 4 Nov 2021 12:41:08 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     qizhong cheng <qizhong.cheng@mediatek.com>
-Cc:     Ryder Lee <ryder.lee@mediatek.com>,
-        Jianjun Wang <jianjun.wang@mediatek.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Krzysztof =?utf-8?Q?Wilczyi=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Chuanjia Liu <chuanjia.liu@mediatek.com>,
-        Jiey Yang <ot_jiey.yang@mediatek.com>
-Subject: Re: [PATCH] PCI: mediatek: Delay 100ms to wait power and clock to
- become stable
-Message-ID: <20211104114108.mvhm5nhbc7hn2yld@pali>
-References: <20211104062144.31453-1-qizhong.cheng@mediatek.com>
+        id S231434AbhKDLn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 07:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230344AbhKDLn5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 07:43:57 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3828EC061714;
+        Thu,  4 Nov 2021 04:41:20 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id k4so6738028plx.8;
+        Thu, 04 Nov 2021 04:41:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=n1KhtkqwaiQeXN8wz3FjznNjYcnDj30fnMJ2MENI/bM=;
+        b=KQNGVR1HjSVGE5tz7qTLIvpjqQmLLIXvMhmUIX1v/H8T4POwg3YJlXuwBujn9osnWj
+         zwUKG4bSbCO9BgN1ndXpwTOC4ZGshqEWCg2lUGB8mwheuuw3MsSD+l7jKUhCldT36KXy
+         /k+r2TbeILGTORLc1FUyD7r1XJfAkLjs7d8jJLNGKjtvgQKr3is4JqDwRGIGopEq0+jX
+         +hS5vJlUKgC6+8uTX9zIdpyTV+t1BCtqKYmSLRGeB2mg6auVXh9QJsVu2smc//mJfXY5
+         7l57qf1pd8uhCGqTG2XK/ogtCeD6SniUuGi1iWTUJbGpIuUuHxZeotOqwczi6Jm3sVPt
+         /yGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=n1KhtkqwaiQeXN8wz3FjznNjYcnDj30fnMJ2MENI/bM=;
+        b=1PkcShVkJHCCSzj+Dq+FSuRE5QAeMxV+F6ORLUi2HKqC/ebSqHCl2mTKrdYZCkJzSs
+         uHMZMB224t271JpvfL9a8ZWAeUFI0NWrtIag9JQE9pqeAGi2WAZpPhyp6diU2c0+ch6k
+         QG61p4CSG4PtLgstVmAN2CH4mJljkBtLiTcz6WYmauhYlzrmmjarqFqenWHR14aFrTVA
+         xWPKemo7Y5Zmxu/1qtV53e68+2YRRuwopyVMhQtrVR/NBdtcIsnUeQCjdgvarecDBgMM
+         vZchyMXEc0n+HldeBnLYuQ92iE4E9idGgKcF2dlAxdJJnGcv/syj0KqNwbPtaIlSs4yj
+         huHA==
+X-Gm-Message-State: AOAM530iRUAVxkt8uYLv/DwdmyZi+eb1hCrhiuMGfY6piAZgjbBxD0ij
+        H52O6/vOQoixRmhgFVA2aEkNLEke+2MHEgqZ8t+/SLoSTQ///w==
+X-Google-Smtp-Source: ABdhPJwOv4LPU3RKWOoS5+kuHDOdoN+7OnHiHrrn/6kVi403ziyQaRqP7FjghbHi7bOfN/2po0nV/z/t/BWcZAqGON0=
+X-Received: by 2002:a17:90a:b296:: with SMTP id c22mr21364719pjr.13.1636026079704;
+ Thu, 04 Nov 2021 04:41:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211104062144.31453-1-qizhong.cheng@mediatek.com>
-User-Agent: NeoMutt/20180716
+References: <20211103071427.GA13854@raspberrypi> <7a71215c-58f4-081b-6a2e-030073f2737e@digikod.net>
+In-Reply-To: <7a71215c-58f4-081b-6a2e-030073f2737e@digikod.net>
+From:   Austin Kim <austindh.kim@gmail.com>
+Date:   Thu, 4 Nov 2021 20:41:10 +0900
+Message-ID: <CADLLry4zYn-NZBtC3pdQpb4c_3vvzNfc71rBrXc-oXqgSZNHaQ@mail.gmail.com>
+Subject: Re: [PATCH] landlock: Initialize kernel stack variables properly
+To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 04 November 2021 14:21:44 qizhong cheng wrote:
-> Described in PCIe CEM specification setctions 2.2 (PERST# Signal) and
-> 2.2.1 (Initial Power-Up (G3 to S0)). The deassertion of PERST# should
-> be delayed 100ms (TPVPERL) for the power and clock to become stable.
-> 
-> Signed-off-by: qizhong cheng <qizhong.cheng@mediatek.com>
+2021=EB=85=84 11=EC=9B=94 3=EC=9D=BC (=EC=88=98) =EC=98=A4=ED=9B=84 9:14, M=
+icka=C3=ABl Sala=C3=BCn <mic@digikod.net>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
+=B1:
+>
+> Hi Austin,
+>
+> On 03/11/2021 08:14, Austin Kim wrote:
+> > In case kernel stack variables are not initialized properly, there migh=
+t
+> > be a little chance of kernel information disclosure. So it is better fo=
+r
+> > kernel stack variables to be initialized with null characters.
+> >
+> > Signed-off-by: Austin Kim <austindh.kim@gmail.com>
+> > ---
+> >  security/landlock/syscalls.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/security/landlock/syscalls.c b/security/landlock/syscalls.=
+c
+> > index 32396962f04d..50a6f7091428 100644
+> > --- a/security/landlock/syscalls.c
+> > +++ b/security/landlock/syscalls.c
+> > @@ -320,6 +320,8 @@ SYSCALL_DEFINE4(landlock_add_rule,
+> >       if (rule_type !=3D LANDLOCK_RULE_PATH_BENEATH)
+> >               return -EINVAL;
+> >
+> > +     memset(&path_beneath_attr, 0, sizeof(path_beneath_attr));
+> > +
+>
+> This memset is already done with the copy_from_user() call just below.
+>
 
-Acked-by: Pali Rohár <pali@kernel.org>
+It seems that memset() is done inside copy_from_user().
+Thanks for feedback.
 
-> ---
->  drivers/pci/controller/pcie-mediatek.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
-> index 2f3f974977a3..b32acbac8084 100644
-> --- a/drivers/pci/controller/pcie-mediatek.c
-> +++ b/drivers/pci/controller/pcie-mediatek.c
-> @@ -702,6 +702,14 @@ static int mtk_pcie_startup_port_v2(struct mtk_pcie_port *port)
->  	 */
->  	writel(PCIE_LINKDOWN_RST_EN, port->base + PCIE_RST_CTRL);
->  
-> +	/*
-> +	 * Described in PCIe CEM specification setctions 2.2 (PERST# Signal)
-> +	 * and 2.2.1 (Initial Power-Up (G3 to S0)).
-> +	 * The deassertion of PERST# should be delayed 100ms (TPVPERL)
-> +	 * for the power and clock to become stable.
-> +	 */
-> +	msleep(100);
-> +
+BR,
+Austin Kim
 
-I guess that this change is fixing detection of some PCIe cards, right?
-
-This ad-hoc driver change is really required as kernel pci code does not
-contain this delay functionality.
-
-Note that this delay is required in every native pci controller driver
-(not only mediatek), otherwise some PCIe cards may not be detected.
-
-For future direction, some more general solution for these issues is
-needed. I proposed something in following email:
-https://lore.kernel.org/linux-pci/20211022183808.jdeo7vntnagqkg7g@pali/
-If you have a time, I would like to hear some feedback...
-
->  	/* De-assert PHY, PE, PIPE, MAC and configuration reset	*/
->  	val = readl(port->base + PCIE_RST_CTRL);
->  	val |= PCIE_PHY_RSTB | PCIE_PERSTB | PCIE_PIPE_SRSTB |
-> -- 
-> 2.25.1
-> 
+> >       /* Copies raw user space buffer, only one type for now. */
+> >       res =3D copy_from_user(&path_beneath_attr, rule_attr,
+> >                       sizeof(path_beneath_attr));
+> >
