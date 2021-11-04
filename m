@@ -2,68 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1FD44538C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B58F445390
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbhKDNKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 09:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231217AbhKDNKb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 09:10:31 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A3876C061714;
-        Thu,  4 Nov 2021 06:07:53 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id CB5D792009D; Thu,  4 Nov 2021 14:07:52 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id C555092009B;
-        Thu,  4 Nov 2021 13:07:52 +0000 (GMT)
-Date:   Thu, 4 Nov 2021 13:07:52 +0000 (GMT)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-cc:     Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Slaby <jirislaby@kernel.org>, kernel@collabora.com
-Subject: Re: [RFC] tty/sysrq: Add alternative SysRq key
-In-Reply-To: <17ccc35d-441c-70c1-a80a-28a4ff824535@collabora.com>
-Message-ID: <alpine.DEB.2.21.2111041227510.57165@angie.orcam.me.uk>
-References: <20211103155438.11167-1-andrzej.p@collabora.com> <20211104120111.GB23122@duo.ucw.cz> <17ccc35d-441c-70c1-a80a-28a4ff824535@collabora.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S231623AbhKDNME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 09:12:04 -0400
+Received: from phobos.denx.de ([85.214.62.61]:41500 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231210AbhKDNMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 09:12:00 -0400
+Received: from maia.denx.de (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: hws@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 6DBBE836A7;
+        Thu,  4 Nov 2021 14:09:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1636031361;
+        bh=YVW1gzpF3RR5awNQMuSHVPGPJkaahpVca7CxadlYKWA=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=JN1vVd1NZ/EnoLwaY9WjZadN/d28IlHyM4Y0/pVceKSRtBVNFH4E7nEfSbY1tAHay
+         aSfLytelWChXaTukm6C1vUgS0Uy12WoValUqMi0sTUnAh/XHaBjcJzXQBNvfyLLdPb
+         IGavmmxnGH6XF7TkfsD+YIaeY63owD0g5h7Pff4pv1kMne2jnWaY5zf7R7jrecUGIT
+         SVfYg64czmh/QB+E9aoIUNuJ58JSH+vVkgYGLihq/1ZuFHHGtb9m7nZtf1igN/zYI5
+         7v7Zp6P432VkM9xT/qLDHOZzud7rwG3cop2VhmHo1JnMR3ExEPWfsR1BtQWix+Pm/h
+         zm39nZITQUSTA==
+Message-ID: <f03bf00b8d0e8f640379016f3bf6ba5a8b1af456.camel@denx.de>
+Subject: Re: [PATCH] leds: gpio: Always provide
+ cdev->brightness_set_blocking()
+From:   Harald Seiler <hws@denx.de>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jacek Anaszewski <j.anaszewski@samsung.com>
+Date:   Thu, 04 Nov 2021 14:09:21 +0100
+In-Reply-To: <20210922172133.2257467-1-hws@denx.de>
+References: <20210922172133.2257467-1-hws@denx.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Nov 2021, Andrzej Pietrasiewicz wrote:
+Hi Pavel,
 
-> > Is F10 sensible default? Would it make sense to use something like
-> > alt-shift-esc so that this can be enabled by default?
+On Wed, 2021-09-22 at 19:21 +0200, Harald Seiler wrote:
+> Even if the GPIO driver will never sleep, setting
+> cdev->brightness_set_blocking() makes sense so
+> led_set_brightness_sync() can be used with such LEDs.
 > 
-> Why "alt-shift-esc" could be enabled by default? Do you mean to enable it for
-> all systems regardless of whether they declare or don't declare KEY_SYSRQ
-> in their 'keybit' bitmap?
+> Internally, both gpio_led_set_blocking() and gpio_led_set() call
+> the same implementation anyway.
+> 
+> Cc: Jacek Anaszewski <j.anaszewski@samsung.com>
+> Signed-off-by: Harald Seiler <hws@denx.de>
+> ---
 
- FWIW from my perspective it'll work better as a replacement rather than 
-additional key combination.
+Any chance you can pick this up?  This fix is needed to use gpio leds
+with, for example, the tty trigger.
 
- The reason for this is with their more recent laptops Lenovo in their 
-infinite wisdom have placed the <PrintScreen> key (which in a traditional 
-PS/2-keyboard manner produces <SysRq> when combined with <Alt>) in their 
-keyboards between the right <Alt> and <Ctrl> keys.  With thumbs not being 
-as accurate as other fingers (and the overall misdesign of the keyboard 
-and touchpad interface) you can imagine how often I have inadvertently hit 
-<SysRq> combined with a letter key, wreaking havoc to my system (and of 
-course I want to keep the key enabled for times when I do need it).
+-- 
+Harald
 
- Also Documentation/admin-guide/sysrq.rst mentions that you can set an 
-alternative keycode sequence for KEY_SYSRQ with `setkeycodes <sequence> 
-99' already, but I find this pretty limiting as this only works for single 
-keypresses rather than combinations of keys, because <sequence> actually 
-refers to a single scancode (possibly 0xe0-prefixed).
+>  drivers/leds/leds-gpio.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/leds/leds-gpio.c b/drivers/leds/leds-gpio.c
+> index b5d5e22d2d1e..bbe582e47607 100644
+> --- a/drivers/leds/leds-gpio.c
+> +++ b/drivers/leds/leds-gpio.c
+> @@ -79,11 +79,12 @@ static int create_gpio_led(const struct gpio_led *template,
+>  	int ret, state;
+>  
+>  	led_dat->cdev.default_trigger = template->default_trigger;
+> +	led_dat->cdev.brightness_set_blocking = gpio_led_set_blocking;
+> +
+>  	led_dat->can_sleep = gpiod_cansleep(led_dat->gpiod);
+>  	if (!led_dat->can_sleep)
+>  		led_dat->cdev.brightness_set = gpio_led_set;
+> -	else
+> -		led_dat->cdev.brightness_set_blocking = gpio_led_set_blocking;
+> +
+>  	led_dat->blinking = 0;
+>  	if (blink_set) {
+>  		led_dat->platform_gpio_blink_set = blink_set;
 
-  Maciej
