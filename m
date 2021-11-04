@@ -2,201 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586B3444CFC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 02:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B5F444D04
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 02:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231806AbhKDBbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 21:31:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49320 "EHLO mail.kernel.org"
+        id S232746AbhKDBj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 21:39:59 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:27339 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230198AbhKDBbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 21:31:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDDE1611CA;
-        Thu,  4 Nov 2021 01:28:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635989323;
-        bh=S8V0kVV7BiWrn5rnLfOBkOmpnHRFMRQ9gXVIkTjhDaM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=QTKsJdfBtH5M7ITgTQJ8/xefv50yJ4Qcyyb1t61ZcWx/mxKYYN+c2Wa37BX5X3DmB
-         12EbJ7DryhyFPGLGZ7/AiOafgqstfyc8uYD65BwPVWK46Kbjey7Qu4XS3c+nb1LnGq
-         emTN5H1rUhUjX1WQV1rYF4J5Y2fsHjJIF6jqaZmn+bv8s4brxHfYsnruO4nkG19t9H
-         MF+9vBNk2s54CgAQ6NndvNEHN148AUzFpLnjngE+2HLeXdUfjsPBVMh0c0W8LdFjpq
-         Y29OFW4UrL7E4k7umxUXYE56sphSUVgxI4R/TBHBveok0+HYUOgRhRdW+hIa4Fay7y
-         qQ141pH5lpGGQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8C34D5C0848; Wed,  3 Nov 2021 18:28:43 -0700 (PDT)
-Date:   Wed, 3 Nov 2021 18:28:43 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jun Miao <jun.miao@windriver.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Dmitry Vyukov <dvyukov@google.com>, qiang.zhang1211@gmail.com,
-        RCU <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        miaojun0823@163.com, ryabinin.a.a@gmail.com,
-        Alexander Potapenko <glider@google.com>,
-        jianwei.hu@windriver.com, melver@google.com
-Subject: Re: [PATCH] rcu: avoid alloc_pages() when recording stack
-Message-ID: <20211104012843.GD641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211101103158.3725704-1-jun.miao@windriver.com>
- <96f9d669-b9da-f387-199e-e6bf36081fbd@windriver.com>
- <CA+KHdyU98uHkf1VKbvFs0wcXz7SaizENRXn4BEpKJhe+KmXZuw@mail.gmail.com>
- <baa768a3-aacf-ba3a-8d20-0abc78eca2f7@windriver.com>
- <CA+KHdyUEtBQjh61Xx+4a-AS0+z18CW1W5GzaRVsihuy=PUpUxA@mail.gmail.com>
- <20211103181315.GT880162@paulmck-ThinkPad-P17-Gen-1>
- <20211103212117.GA631708@paulmck-ThinkPad-P17-Gen-1>
- <309b8284-1c31-7cc4-eb40-ba6d8d136c09@windriver.com>
+        id S231220AbhKDBjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 21:39:55 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Hl5pw63sZz8K;
+        Thu,  4 Nov 2021 02:37:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1635989836; bh=h/WnKEaJ3r2sYaIw5151DIcICUXY5nyCeVGfTKIhiyc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aAyK08Skdngle/aZhEk4p1aBOceovedKWY0KoFevgu2z0x9XhaoO5qceg/r0sK28t
+         4Q+9ZFAdKRxwGGr/kgEGBtwejq3ifmrb448bfl3djxaXNd88d7JjOmHR22MgFzq7Pw
+         mLdKR/sdEmw+2eLgGqcbf8CeStJTfTmNqfPDbhvLVrvoolyB4MuyTH1yRGFefAHmNc
+         vT63DiKND7k/NuRfcVItyV9IvKgyyTcFuqRQm12dfzVUGd7df0bNu6Od/QKsMuw1On
+         XE4JHDnimlcNX1KjPW3lZemUgYTsmCXM4yypJ9bFWILvqNTxNoygYyvoezsQ05cMoS
+         896bcst1V7bxA==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.3 at mail
+Date:   Thu, 4 Nov 2021 02:37:11 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     akpm@linux-foundation.org, keescook@chromium.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        arnaldo.melo@gmail.com, pmladek@suse.com, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, valentin.schneider@arm.com,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        christian@brauner.io, dietmar.eggemann@arm.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com
+Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
+Message-ID: <YYM5R95a7jgB2TPO@qmqm.qmqm.pl>
+References: <20211101060419.4682-1-laoar.shao@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <309b8284-1c31-7cc4-eb40-ba6d8d136c09@windriver.com>
+In-Reply-To: <20211101060419.4682-1-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 09:09:24AM +0800, Jun Miao wrote:
+On Mon, Nov 01, 2021 at 06:04:08AM +0000, Yafang Shao wrote:
+> There're many truncated kthreads in the kernel, which may make trouble
+> for the user, for example, the user can't get detailed device
+> information from the task comm.
 > 
-> On 11/4/21 5:21 AM, Paul E. McKenney wrote:
-> > [Please note: This e-mail is from an EXTERNAL e-mail address]
-> > 
-> > On Wed, Nov 03, 2021 at 11:13:15AM -0700, Paul E. McKenney wrote:
-> > > On Wed, Nov 03, 2021 at 02:55:48PM +0100, Uladzislau Rezki wrote:
-> > > > On Wed, Nov 3, 2021 at 7:51 AM Jun Miao <jun.miao@windriver.com> wrote:
-> > > > > 
-> > > > > On 11/2/21 10:53 PM, Uladzislau Rezki wrote:
-> > > > > > [Please note: This e-mail is from an EXTERNAL e-mail address]
-> > > > > > 
-> > > > > > > Add KASAN maintainers
-> > > > > > > 
-> > > > > > > On 11/1/21 6:31 PM, Jun Miao wrote:
-> > > > > > > > The default kasan_record_aux_stack() calls stack_depot_save() with GFP_NOWAIT,
-> > > > > > > > which in turn can then call alloc_pages(GFP_NOWAIT, ...).  In general, however,
-> > > > > > > > it is not even possible to use either GFP_ATOMIC nor GFP_NOWAIT in certain
-> > > > > > > > non-preemptive contexts/RT kernel including raw_spin_locks (see gfp.h and ab00db216c9c7).
-> > > > > > > > 
-> > > > > > > > Fix it by instructing stackdepot to not expand stack storage via alloc_pages()
-> > > > > > > > in case it runs out by using kasan_record_aux_stack_noalloc().
-> > > > > > > > 
-> > > > > > > > Jianwei Hu reported:
-> > > > > > > >     BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:969
-> > > > > > > >     in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 15319, name: python3
-> > > > > > > >     INFO: lockdep is turned off.
-> > > > > > > >     irq event stamp: 0
-> > > > > > > >     hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-> > > > > > > >     hardirqs last disabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
-> > > > > > > >     softirqs last  enabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
-> > > > > > > >     softirqs last disabled at (0): [<0000000000000000>] 0x0
-> > > > > > > >     CPU: 6 PID: 15319 Comm: python3 Tainted: G        W  O 5.15-rc7-preempt-rt #1
-> > > > > > > >     Hardware name: Supermicro SYS-E300-9A-8C/A2SDi-8C-HLN4F, BIOS 1.1b 12/17/2018
-> > > > > > > >     Call Trace:
-> > > > > > > >      show_stack+0x52/0x58
-> > > > > > > >      dump_stack+0xa1/0xd6
-> > > > > > > >      ___might_sleep.cold+0x11c/0x12d
-> > > > > > > >      rt_spin_lock+0x3f/0xc0
-> > > > > > > >      rmqueue+0x100/0x1460
-> > > > > > > >      rmqueue+0x100/0x1460
-> > > > > > > >      mark_usage+0x1a0/0x1a0
-> > > > > > > >      ftrace_graph_ret_addr+0x2a/0xb0
-> > > > > > > >      rmqueue_pcplist.constprop.0+0x6a0/0x6a0
-> > > > > > > >       __kasan_check_read+0x11/0x20
-> > > > > > > >       __zone_watermark_ok+0x114/0x270
-> > > > > > > >       get_page_from_freelist+0x148/0x630
-> > > > > > > >       is_module_text_address+0x32/0xa0
-> > > > > > > >       __alloc_pages_nodemask+0x2f6/0x790
-> > > > > > > >       __alloc_pages_slowpath.constprop.0+0x12d0/0x12d0
-> > > > > > > >       create_prof_cpu_mask+0x30/0x30
-> > > > > > > >       alloc_pages_current+0xb1/0x150
-> > > > > > > >       stack_depot_save+0x39f/0x490
-> > > > > > > >       kasan_save_stack+0x42/0x50
-> > > > > > > >       kasan_save_stack+0x23/0x50
-> > > > > > > >       kasan_record_aux_stack+0xa9/0xc0
-> > > > > > > >       __call_rcu+0xff/0x9c0
-> > > > > > > >       call_rcu+0xe/0x10
-> > > > > > > >       put_object+0x53/0x70
-> > > > > > > >       __delete_object+0x7b/0x90
-> > > > > > > >       kmemleak_free+0x46/0x70
-> > > > > > > >       slab_free_freelist_hook+0xb4/0x160
-> > > > > > > >       kfree+0xe5/0x420
-> > > > > > > >       kfree_const+0x17/0x30
-> > > > > > > >       kobject_cleanup+0xaa/0x230
-> > > > > > > >       kobject_put+0x76/0x90
-> > > > > > > >       netdev_queue_update_kobjects+0x17d/0x1f0
-> > > > > > > >       ... ...
-> > > > > > > >       ksys_write+0xd9/0x180
-> > > > > > > >       __x64_sys_write+0x42/0x50
-> > > > > > > >       do_syscall_64+0x38/0x50
-> > > > > > > >       entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > > > > > > 
-> > > > > > > > Fixes: 84109ab58590 ("rcu: Record kvfree_call_rcu() call stack for KASAN")
-> > > > > > > > Fixes: 26e760c9a7c8 ("rcu: kasan: record and print call_rcu() call stack")
-> > > > > > > > Reported-by: Jianwei Hu <jianwei.hu@windriver.com>
-> > > > > > > > Signed-off-by: Jun Miao <jun.miao@windriver.com>
-> > > > > > > > ---
-> > > > > > > >     kernel/rcu/tree.c | 4 ++--
-> > > > > > > >     1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > > > > > 
-> > > > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > > > > index 8270e58cd0f3..2c1034580f15 100644
-> > > > > > > > --- a/kernel/rcu/tree.c
-> > > > > > > > +++ b/kernel/rcu/tree.c
-> > > > > > > > @@ -3026,7 +3026,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > > > > > > >         head->func = func;
-> > > > > > > >         head->next = NULL;
-> > > > > > > >         local_irq_save(flags);
-> > > > > > > > -     kasan_record_aux_stack(head);
-> > > > > > > > +     kasan_record_aux_stack_noalloc(head);
-> > > > > > > >         rdp = this_cpu_ptr(&rcu_data);
-> > > > > > > > 
-> > > > > > > >         /* Add the callback to our list. */
-> > > > > > > > @@ -3591,7 +3591,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > > > > > > >                 return;
-> > > > > > > >         }
-> > > > > > > > 
-> > > > > > > > -     kasan_record_aux_stack(ptr);
-> > > > > > > > +     kasan_record_aux_stack_noalloc(ptr);
-> > > > > > > >         success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
-> > > > > > > >         if (!success) {
-> > > > > > > >                 run_page_cache_worker(krcp);
-> > > > > > Yep an allocation is tricky here. This change looks correct to me at
-> > > > > > least from the point that it does not allocate.
-> > > > > > 
-> > > > > > --
-> > > > > > Uladzislau Rezki
-> > > > > Thanks your approval. Could you like to give me a review?
-> > > > > 
-> > > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > I have queued it for review and testing, thank you both!  I do have
-> > > some remaining concerns about this code being starved for memory.  I am
-> > > wondering if the code needs to check the interrupt state.  And perhaps
-> > > also whether locks are held.  I of course will refrain from sending
-> > > this to mainline until these concerns are resolved.
-> > > 
-> > > Marco, Dmitry, thoughts?
-> > Well, the compiler does have an opinion:
-> > 
-> > kernel/rcu/tree.c: In function ‘__call_rcu’:
-> > kernel/rcu/tree.c:3029:2: error: implicit declaration of function ‘kasan_record_aux_stack_noalloc’; did you mean ‘kasan_record_aux_stack’? [-Werror=implicit-function-declaration]
-> >   3029 |  kasan_record_aux_stack_noalloc(head);
-> >        |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >        |  kasan_record_aux_stack
-> > 
-> > I get the same message after merging in current mainline.
-> > 
-> > I have therefore dropped this patch for the time being.
-> > 
-> >                                                          Thanx, Paul
-> Hi Paul E,
-> The kasan_record_aux_stack_noalloc() is just introduce to linux-next now,
-> and marking "Notice: this object is not reachable from any branch." in
-> commit.
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/include/linux/kasan.h?h=next-20211029&id=2f64acf6b653d01fbdc92a693f12bbf71a205926
+> This patchset tries to improve this problem fundamentally by extending
+> the task comm size from 16 to 24, which is a very simple way. 
+[...]
 
-That would explain it!  Feel free to resend once the functionality is
-more generally available.
+Hi,
 
-							Thanx, Paul
+I've tried something like this a few years back. My attempt got mostly
+lost in the mailing lists, but I'm still carrying the patches in my
+tree [1]. My target was userspace thread names, and it turned out more
+involved than I had time for.
+
+[1] https://rere.qmqm.pl/git/?p=linux;a=commit;h=2c3814268caf2b1fee6d1a0b61fd1730ce135d4a
+    and its parents
+
+Best Regards
+Micha��Miros�aw
