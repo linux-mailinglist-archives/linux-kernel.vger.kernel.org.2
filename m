@@ -2,192 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02837445CAF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 00:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46369445CB0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 00:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232115AbhKDXfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 19:35:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbhKDXfr (ORCPT
+        id S232314AbhKDXf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 19:35:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:24522 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229725AbhKDXfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 19:35:47 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8721CC061203
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 16:33:08 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id g11so7278122pfv.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 16:33:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xQkHlczowz4cF3xI4LESyMCdXvvGR6+A+FIhCOCB1Qk=;
-        b=slfdqPT2pINyOKYu5hfJ7xLmo/sMMgsrcuZVf3VWRxJCGqba5c+hHPczMaqRFa8wAn
-         wMi+Aff68kV6fg+VOuuiioeBUWPhhFwBy0KIwdKFlt/A/zN3RT3ijw+ybgmWnBKPGrei
-         PrC9xqE8tk0O/oJe4KGyJzFt7jA3WZYlwCGLVXYy9NSP+8MedyG3e91mGDr+z4IYYd0F
-         s/JaL+do4BHNmMwR9/sOPoqQ3CW0B/dX40XijSj4A0amVgr+GmXz/HEb6XjcXxXRdAZb
-         qRLr1Q8GQzIVfWicDe/6HpLCD+seEuGgYn+7rAMjSOt4jDvkG+0N+J0sFFyIZvxhR/da
-         Ek9g==
+        Thu, 4 Nov 2021 19:35:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636068796;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fqhHBz59/iwQuP4BMAGmYoEMMES572wzwwy/Ee8c8WQ=;
+        b=PNR8dk3BLxr9+3t8ywc32J8GxiP7u/Pge18otmDNP6FabBN/4sMZQORgiBQkichZkHxIrf
+        mtBtNYQLQAFiy3x05eWyTqYy0Jm8gwUPQ1UCx7cG29PxEQ9ycjTAAqgD9DBqsOMbNPDy5P
+        CGx4Vg3XK7mZlUNuxmV8Wjpf+l7K/NM=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-181-ET6_OTcwNzC2HcYomKtYGA-1; Thu, 04 Nov 2021 19:33:14 -0400
+X-MC-Unique: ET6_OTcwNzC2HcYomKtYGA-1
+Received: by mail-ot1-f71.google.com with SMTP id o24-20020a9d5c18000000b0055bd38a039eso969511otk.12
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 16:33:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=xQkHlczowz4cF3xI4LESyMCdXvvGR6+A+FIhCOCB1Qk=;
-        b=f5NBURJANsLBXqjW87HQ4rtWv6Ips2Kg/O0jHtOdkFBZwS20YshfGmr9SK8+ETenQp
-         lVgEjS0alf4Z2i+KLVlW3H4uatwV7W9WDsW+1yz5gCdJrzaHrfishTnWWniW8E/Ko/Cc
-         DterFbcL0Wi3leU65jt5wmOJmeCwlBFt8r5f2DgRlqkhvUi82cjQoVxyKIuE34cNZqyy
-         /kMTnOA0Af7lDHjzVQNZiSsVc12jDEsD/FKaQW2I1EbjxJry+gEE3PNWQ3b+w+nyAYXr
-         k/WlAXMB/Y9lYDoX+1gyHJQ2clDadfWlAGWYnhKty2vP0UwAkmSdyiWmzP2DR3Zc0Ohu
-         HrRg==
-X-Gm-Message-State: AOAM532SDVAD7tIhA3byxkyUPSXsTUvmg3An1zTwbHvR+0HGQLXMlH2B
-        41MIDXQQLoHDqv3zLnGJBHyIKg==
-X-Google-Smtp-Source: ABdhPJzGtaANm9Q0WaXKWxinP2q1eK7Jl4ZKqm13nWxG+ytoiJ4ZwXPRWA9HtgQr8rsApra+7sHzUw==
-X-Received: by 2002:a65:6a0a:: with SMTP id m10mr40722253pgu.82.1636068787912;
-        Thu, 04 Nov 2021 16:33:07 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id h11sm6349160pfc.131.2021.11.04.16.33.07
+        bh=fqhHBz59/iwQuP4BMAGmYoEMMES572wzwwy/Ee8c8WQ=;
+        b=JOGDaG+lMMzy19Fv2dCSpttPaSfycmhey6H6iEanatzHr8+aeT8DfIp+uxPPaPhWQa
+         5EtgNi45sEtEuNZvQhxlqTHKWnuTnraZ2apUBwAtRGiYpbUmJjsvkBoMZQVJ0aFCgo9W
+         br/RqhdUe0MJq0KUo1B/VhmoIdzXvK8LyzCbZzFOu68BV3gaprFDreerZIHLmxAgqtzw
+         M2oPKAENv+SFaP3zG+Z0Z3ncXFUp73KKUCjFKCHyFN7udSVY/k2htVWBUPcWJPoxhP1W
+         QTzMRU0IT6XdQizoRAgvHONefqc0iwyfUMJldZa43MZp8K0qb/v+Nj2RYNkf6FHqB2ZI
+         wyrg==
+X-Gm-Message-State: AOAM530bmxcEnwTHLmgYl4CAqh0lld0eZ52wPes68uIFMOq/cD//2A68
+        jlTG5j5cqbTFVQabLnmv3aN3fIYVVCFmdK258SRJcMZCXvKFfn2hrRMs+906pzcYFjpyW3WUSkE
+        FJzPYKV4z+kg9crVRluuvjp/l
+X-Received: by 2002:a9d:6a50:: with SMTP id h16mr7198257otn.128.1636068793840;
+        Thu, 04 Nov 2021 16:33:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw4pJxBap7rL5RdB+K2YoiSlZclZZRDIU6cnDR6Kr+jxWhHiI2qcJYxYqGLfE/FxPJQEb3dow==
+X-Received: by 2002:a9d:6a50:: with SMTP id h16mr7198235otn.128.1636068793669;
+        Thu, 04 Nov 2021 16:33:13 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::35])
+        by smtp.gmail.com with ESMTPSA id l2sm1796868otl.61.2021.11.04.16.33.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 16:33:07 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 23:33:03 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Gonda <pgonda@google.com>
-Cc:     kvm@vger.kernel.org, Marc Orr <marcorr@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V11 3/5] KVM: SEV: Add support for SEV-ES intra host
- migration
-Message-ID: <YYRtr4xINL4MkwGx@google.com>
-References: <20211021174303.385706-1-pgonda@google.com>
- <20211021174303.385706-4-pgonda@google.com>
+        Thu, 04 Nov 2021 16:33:12 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 16:33:10 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com,
+        dvyukov@google.com, seanjc@google.com, pbonzini@redhat.com,
+        mbenes@suse.cz
+Subject: Re: [RFC][PATCH 21/22] x86,word-at-a-time: Remove .fixup usage
+Message-ID: <20211104233310.2dg2gilae27l75a3@treble>
+References: <20211104164729.226550532@infradead.org>
+ <20211104165525.767986267@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211021174303.385706-4-pgonda@google.com>
+In-Reply-To: <20211104165525.767986267@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 21, 2021, Peter Gonda wrote:
-> ---
->  arch/x86/kvm/svm/sev.c | 50 +++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 49 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 2c2f724c9096..d8ce93fd1129 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1605,6 +1605,48 @@ static void sev_migrate_from(struct kvm_sev_info *dst,
->  	list_replace_init(&src->regions_list, &dst->regions_list);
->  }
->  
-> +static int sev_es_migrate_from(struct kvm *dst, struct kvm *src)
-> +{
-> +	int i;
-> +	struct kvm_vcpu *dst_vcpu, *src_vcpu;
-> +	struct vcpu_svm *dst_svm, *src_svm;
-
-What do you think about following the style of svm_vm_migrate_from(), where the
-"dst" is simply "kvm"?  I like that because (a) it shortens all of these lines,
-and (b) conveys the idea that the functions are running in the context of "this"
-kvm, as opposed to being a third party that operates on an unrelated source and
-destination.
-
-> +
-> +	if (atomic_read(&src->online_vcpus) != atomic_read(&dst->online_vcpus))
-> +		return -EINVAL;
-> +
-> +	kvm_for_each_vcpu(i, src_vcpu, src) {
-> +		if (!src_vcpu->arch.guest_state_protected)
-> +			return -EINVAL;
-> +	}
-> +
-> +	kvm_for_each_vcpu(i, src_vcpu, src) {
-> +		src_svm = to_svm(src_vcpu);
-> +		dst_vcpu = kvm_get_vcpu(dst, i);
-> +		dst_svm = to_svm(dst_vcpu);
-> +
-> +		/*
-> +		 * Transfer VMSA and GHCB state to the destination.  Nullify and
-> +		 * clear source fields as appropriate, the state now belongs to
-> +		 * the destination.
-> +		 */
-> +		dst_vcpu->vcpu_id = src_vcpu->vcpu_id;
-
-vcpu_id is an odd thing to copy over.  That's fully controlled by userspace, and
-is effectively immutable in KVM.  I don't think SEV-ES should be touching anything
-besides SEV-ES state.
-
-> +		dst_svm->sev_es = src_svm->sev_es;
-
-Uber nit, maybe use memcpy() to "pair" with the memset() below?
-
-> +		dst_svm->vmcb->control.ghcb_gpa =
-> +			src_svm->vmcb->control.ghcb_gpa;
-> +		dst_svm->vmcb->control.vmsa_pa = __pa(dst_svm->sev_es.vmsa);
-
-Oof!  This _looks_ wrong, but it's not because dst_svm->sev_es.vmsa is copied
-from the source in that subtle not-memcpy()-memcpy above.  The result of __pa()
-absolutely will not change, so I would say just do the obvious
-
-		dst_svm->vmcb->control.vmsa_pa = src_svm->vmcb->control.vmsa_pa;
-
-and not force readers to think too hard.  That also avoids breakage if the order
-is changed.
-
-> +		dst_vcpu->arch.guest_state_protected = true;
-> +
-> +		memset(&src_svm->sev_es, 0, sizeof(src_svm->sev_es));
-> +		src_svm->vmcb->control.ghcb_gpa = 0;
-> +		src_svm->vmcb->control.vmsa_pa = 0;
-
-'0' is not an invalid (G)PA.  INVALID_PAGE would be the most appropriate.
-
-> +		src_vcpu->arch.guest_state_protected = false;
-> +	}
-> +	to_kvm_svm(src)->sev_info.es_active = false;
-> +	to_kvm_svm(dst)->sev_info.es_active = true;
-> +
-> +	return 0;
-> +}
-> +
->  int svm_vm_migrate_from(struct kvm *kvm, unsigned int source_fd)
+On Thu, Nov 04, 2021 at 05:47:50PM +0100, Peter Zijlstra wrote:
+> XXX: I'm not really happy with this patch
+>
+>  static inline unsigned long load_unaligned_zeropad(const void *addr)
 >  {
->  	struct kvm_sev_info *dst_sev = &to_kvm_svm(kvm)->sev_info;
-
-And if we do the above s/dst_//, do it here as well.
-
-> @@ -1633,7 +1675,7 @@ int svm_vm_migrate_from(struct kvm *kvm, unsigned int source_fd)
->  	if (ret)
->  		goto out_fput;
->  
-> -	if (!sev_guest(source_kvm) || sev_es_guest(source_kvm)) {
-> +	if (!sev_guest(source_kvm)) {
->  		ret = -EINVAL;
->  		goto out_source;
->  	}
-> @@ -1644,6 +1686,12 @@ int svm_vm_migrate_from(struct kvm *kvm, unsigned int source_fd)
->  	if (ret)
->  		goto out_source_vcpu;
->  
-> +	if (sev_es_guest(source_kvm)) {
-> +		ret = sev_es_migrate_from(kvm, source_kvm);
-> +		if (ret)
-> +			goto out_source_vcpu;
-> +	}
+> -	unsigned long ret, dummy;
+> +	unsigned long ret;
 > +
->  	sev_migrate_from(dst_sev, &to_kvm_svm(source_kvm)->sev_info);
->  	kvm_for_each_vcpu (i, vcpu, source_kvm) {
->  		kvm_vcpu_reset(vcpu, /* init_event= */ false);
-> -- 
-> 2.33.0.1079.g6e70778dc9-goog
-> 
+> +	asm("1:\tmov (%0),%0\n"
+> +	    "2:\n"
+> +	    _ASM_EXTABLE_TYPE_REG(1b, 2b, EX_TYPE_LOAD_UNALIGNED, %0)
+> +	    : "=&r" (ret)
+> +	    : "0" ((unsigned long)addr));
+>  
+> -	asm(
+> -		"1:\tmov %2,%0\n"
+> -		"2:\n"
+> -		".section .fixup,\"ax\"\n"
+> -		"3:\t"
+> -		"lea %2,%1\n\t"
+> -		"and %3,%1\n\t"
+> -		"mov (%1),%0\n\t"
+> -		"leal %2,%%ecx\n\t"
+> -		"andl %4,%%ecx\n\t"
+> -		"shll $3,%%ecx\n\t"
+> -		"shr %%cl,%0\n\t"
+> -		"jmp 2b\n"
+> -		".previous\n"
+> -		_ASM_EXTABLE(1b, 3b)
+> -		:"=&r" (ret),"=&c" (dummy)
+> -		:"m" (*(unsigned long *)addr),
+> -		 "i" (-sizeof(unsigned long)),
+> -		 "i" (sizeof(unsigned long)-1));
+>  	return ret;
+>  }
+
+Yeah, it hurts code generation and I guess it's a hot path.
+
+Maybe put the fixup code in the function.  In case of
+CONFIG_CC_HAS_ASM_GOTO_OUTPUT, it could be at a label at the end of the
+function.  Otherwise it'd have to be inline.
+
+-- 
+Josh
+
