@@ -2,129 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F95444C7F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 01:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78352444CA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 01:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233354AbhKDAay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 20:30:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52664 "EHLO
+        id S233056AbhKDAgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 20:36:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233291AbhKDA27 (ORCPT
+        with ESMTP id S232983AbhKDAgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 20:28:59 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA33C061714;
-        Wed,  3 Nov 2021 17:26:22 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id o14so4363026plg.5;
-        Wed, 03 Nov 2021 17:26:22 -0700 (PDT)
+        Wed, 3 Nov 2021 20:36:48 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D470AC0432CC;
+        Wed,  3 Nov 2021 17:33:41 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id bg25so5767515oib.1;
+        Wed, 03 Nov 2021 17:33:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zJhhNHUtBhwKhBVpXZmDfOMnWU5zQQpTCdKvHZDPlWM=;
-        b=NdFJfz8I3RJgi3AouNFrVkE+sZoJK6b2NqzyRZsNB6+CL/SwjC4RLtXaFGVHLrJtwZ
-         /aXo89WC8NV/tzs35FUDalbmsE/y5OVRea6zwbN9IKOIsH1puCxHTIscAJUdZ3zX2d3P
-         ZbvJFfjTjoA5BvHLlfbwyBembd8IFqZwLvhzue3kJfWfioW8MRPNsAD2pzl6kethS1iq
-         m3TGy0qLDEC67DQ6Mp3kesPd6ji4VUz7+iU/9ZKI6w0PdwLHg8Yzu/yh/nA/DIau3aIZ
-         u4YOk1tF0SdQsQfKR/ciyD4o2Sx1x+bq3rqSfV5QWT783jlFbd5Ig1O648egoJg9FwV/
-         zxCA==
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=V213yynwIxju7l3q8g0MgtsXu2d7h87vyCf36TZFlqs=;
+        b=PrpMHkrvenNfhrdEz1KKjNM/RFbi0sE9kHYHEJcEmZwLPeIIH9P5xBhYaQAv0iSawk
+         8BW76pRAjUq17KgEWmUKi8rxcHwNlhrOkmCCU0cpXwHAvgNa6v2Zy526L3v5ImeXEuTi
+         YGATS4n5LFSXiV0ELBgR0JIoO4JCfOJFQi/qmvYu9IQORP5OSu6dCFj+F4UfDnsjvvwL
+         H0E0ChuYBwCqnH53fYRFofgNe+GQ3FNpSjFiQu6UL4vCL8TsQK6mZFic4glCDgB0iBZr
+         GBOhPydpD0hOmd0mkcU1fIQPl9kwzhEOU9mXE07TKKjMdPPdkn/NWPkp3RONweqvHXNu
+         gojg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zJhhNHUtBhwKhBVpXZmDfOMnWU5zQQpTCdKvHZDPlWM=;
-        b=rL/d7SnLeGgI/WmZev40Hg07cqoi1USuGcQCe7aK0MtbQ1pVZDt4ctS1bJifrCmLoF
-         2G19C61bcVtCbRX9o3fJjL9E9uPlV5oeSLHrjWDSYOXn3X5q1K2xO/Q5KrgWQy3nst7Y
-         WlmSDPfE0oudbDuQo1ha5byBT9IoYg3i/KCiXnlNci3JOkGhDFmSM/3W+P6+CGmbNP8p
-         /1tkJ5Wfx4AdUxZAAxw9hUKr3nJmWxPNWebbaCoemG3EeR3WYl6yHegihUGXWgkQUXbd
-         Pf0DDPf5d1NgAzhwyeo0uaVak0BR/d8uViiH544nK6/wpUw58Kae9WhM0ekCShGKDOcA
-         7Yyw==
-X-Gm-Message-State: AOAM533Ke8mgc2Kt6U1q8X64f7Ix6t3zfCCSMANhBMVE7caQVUVYZ0yl
-        JQjondzGVQlrHAap+fNHMuA=
-X-Google-Smtp-Source: ABdhPJwCAYi4kjhXkyE0ARnvfwQdO6eowBCdh5Zb9YBofFr3jGlWoSnb4/TpFx5hnxYX2Tnj+tQ94A==
-X-Received: by 2002:a17:90b:1bd2:: with SMTP id oa18mr18052866pjb.164.1635985582248;
-        Wed, 03 Nov 2021 17:26:22 -0700 (PDT)
-Received: from postoffice.intern (192.243.120.180.16clouds.com. [192.243.120.180])
-        by smtp.gmail.com with ESMTPSA id n29sm3541291pfv.77.2021.11.03.17.26.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 17:26:21 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 08:26:13 +0800
-From:   David Yang <davidcomponentone@gmail.com>
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl, arnd@arndb.de,
-        laurent.pinchart@ideasonboard.com, Julia.Lawall@inria.fr,
-        yang.guang5@zte.com.cn, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: use swap() to make code cleaner
-Message-ID: <YYMopfFhgEiY0V7e@postoffice.intern>
-References: <20211103083337.387083-1-yang.guang5@zte.com.cn>
- <163595245449.275423.13730372490445199703@Monstersaurus>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V213yynwIxju7l3q8g0MgtsXu2d7h87vyCf36TZFlqs=;
+        b=CIccKOdF5LDa8jABNJdDp1L5U2a5/IYQoV8YBdId4vw9/jh+kgmz+66SPoccbRC7Do
+         iKMlrY9N2T7CXJ9z6Zys9/QRll9TmzvjTfj6IDoLtOwM6xX4qg+ys5Bol3Fwz5p+E3mY
+         YuViFAn5kgtnrO5EsJT1c/3yYzHqWSoq98WxwfUCiOh4+6yrRLfEaraqwWMCdCbFpEGg
+         CZL65wKAA1ADFqXD/NUaaSqRYGTyBQ69OxmgTCFE1vIZrSoaAwhNENl0pCOUoIPXyqcG
+         ntEg5NUrHQ2BOgmAmndHyVBT+CyltBAxFOkX9RYaG7arxp9GBREz/W0mCwEQ5+gcmBoy
+         xGLg==
+X-Gm-Message-State: AOAM533pRuG/IeDzVjnDwM20nXDNpP30jhK0UrRbUfg/ZWFqANn1q5mq
+        DiLbDxQ1Mxp1xOhkl6GFz0MMn1g5fq4=
+X-Google-Smtp-Source: ABdhPJzdgacPXftu/R6dwrdkM/3Ju3cAtk67FoEaiVAG22wqfWUC8GRXLT16+yld4B3HfQGKHGBEqQ==
+X-Received: by 2002:a05:6808:f92:: with SMTP id o18mr11594807oiw.46.1635986019434;
+        Wed, 03 Nov 2021 17:33:39 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q33sm935221ooh.16.2021.11.03.17.33.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Nov 2021 17:33:38 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] watchdog: Kconfig: enable MTK watchdog
+To:     Kevin Hilman <khilman@baylibre.com>,
+        linux-watchdog@vger.kernel.org, linux-mediatek@lists.infradead.org
+Cc:     Fabien Parent <fparent@baylibre.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20211103230354.915658-1-khilman@baylibre.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <fa77f716-a7c4-5926-3f21-418dc4c37fc5@roeck-us.net>
+Date:   Wed, 3 Nov 2021 17:33:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163595245449.275423.13730372490445199703@Monstersaurus>
+In-Reply-To: <20211103230354.915658-1-khilman@baylibre.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran,
+On 11/3/21 4:03 PM, Kevin Hilman wrote:
+> Enable CONFIG_MEDIATEK_WATCHDOG when ARCH_MEDIATEK is enabled.
+> 
+> On some platforms (e.g. mt8183-pumpkin), watchdog is enabled by
+> bootloader, so kernel driver needs to be enabled to avoid watchdog
+> firing and causing reboot part way through kernel boot.
+> 
+> Signed-off-by: Kevin Hilman <khilman@baylibre.com>
 
-Both of  yang.guang5@zte.com.cn and davidcomponentone@gmail.com are
-mine.
-Because the yang.guang5@zte.com.cn can't send email out. So I use the
-gmail to send.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Thanks.
+> ---
+>   drivers/watchdog/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index bf59faeb3de1..00bebbb8f877 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -836,6 +836,7 @@ config MESON_WATCHDOG
+>   config MEDIATEK_WATCHDOG
+>   	tristate "Mediatek SoCs watchdog support"
+>   	depends on ARCH_MEDIATEK || COMPILE_TEST
+> +	default ARCH_MEDIATEK
+>   	select WATCHDOG_CORE
+>   	select RESET_CONTROLLER
+>   	help
+> 
 
-On Wed, Nov 03, 2021 at 03:14:14PM +0000, Kieran Bingham wrote:
-> Hi David,
-> 
-> Is this patch something you discovered somewhere and have posted on
-> behalf of Yang Guang?
-> 
-> Have you made any modifications to it that would require your sign off?
-> or is it simply a repost of a patch you came across?
-> 
-> Quoting davidcomponentone@gmail.com (2021-11-03 08:33:37)
-> > From: Yang Guang <yang.guang5@zte.com.cn>
-> > 
-> > Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
-> > opencoding it.
-> > 
-> > Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
-> 
-> The change itself looks fine to me though.
-> 
-> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> 
-> > ---
-> >  drivers/media/pci/saa7134/saa7134-video.c | 6 ++----
-> >  1 file changed, 2 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/media/pci/saa7134/saa7134-video.c b/drivers/media/pci/saa7134/saa7134-video.c
-> > index 374c8e1087de..6f4132058c35 100644
-> > --- a/drivers/media/pci/saa7134/saa7134-video.c
-> > +++ b/drivers/media/pci/saa7134/saa7134-video.c
-> > @@ -823,7 +823,7 @@ static int buffer_activate(struct saa7134_dev *dev,
-> >  {
-> >         struct saa7134_dmaqueue *dmaq = buf->vb2.vb2_buf.vb2_queue->drv_priv;
-> >         unsigned long base,control,bpl;
-> > -       unsigned long bpl_uv,lines_uv,base2,base3,tmp; /* planar */
-> > +       unsigned long bpl_uv, lines_uv, base2, base3; /* planar */
-> >  
-> >         video_dbg("buffer_activate buf=%p\n", buf);
-> >         buf->top_seen = 0;
-> > @@ -869,9 +869,7 @@ static int buffer_activate(struct saa7134_dev *dev,
-> >                 base2    = base + bpl * dev->height;
-> >                 base3    = base2 + bpl_uv * lines_uv;
-> >                 if (dev->fmt->uvswap) {
-> > -                       tmp = base2;
-> > -                       base2 = base3;
-> > -                       base3 = tmp;
-> > +                       swap(base2, base3);
-> >                 }
-> >                 video_dbg("uv: bpl=%ld lines=%ld base2/3=%ld/%ld\n",
-> >                         bpl_uv,lines_uv,base2,base3);
-> > -- 
-> > 2.30.2
-> >
