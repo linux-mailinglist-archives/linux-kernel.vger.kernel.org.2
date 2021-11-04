@@ -2,129 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 761F9445C57
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 23:42:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DBD445C60
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 23:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbhKDWoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 18:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42574 "EHLO
+        id S232239AbhKDWsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 18:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230415AbhKDWoh (ORCPT
+        with ESMTP id S232180AbhKDWr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 18:44:37 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897DAC061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 15:41:58 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id p8so5360366pgh.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 15:41:58 -0700 (PDT)
+        Thu, 4 Nov 2021 18:47:58 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCBD9C061203
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 15:45:19 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id r28so6721674pga.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 15:45:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2cM+pc7RJOlLXf/kESM57DsH9Y+7ss4v2ISlVrw0au4=;
-        b=ooE6FbC1dphlseVcXYf6E54FhDQXALDT9cp9rkFbPJ4y3391PeZbY42Xq5zYAiM2X0
-         NdOPtJ6lkjBowxQXuPPYzsk/ImWUzRx84xa98kqJsQVBicjU2eDc5DVULiWpqnCKqxed
-         Ey2Ctp6iCrEN8zCtRphZ24isIw03JAvk0SfSWM0DA/73Pbf0h/QRbrwYHZfhgAzS25J9
-         xoJiSowrT7yhbflDyi/bGTCX/rlcA7okzQ8gpsTNHWowkIpirAi9P+owp8DITCHO+0RI
-         qztHqyk6DNOgAHnulQogAsMkvqtleYWLZNf20k/P+g9/YJ3n7yTI2IPueMQnaW5/KaTr
-         oILQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ez2Kc0qXfdZyVoueN+pRzSOTizwvVrWSdL7MhI68c/Y=;
+        b=Nc5Ztqd9MT0ZUdLObZFAeRL2+SQYPyGlV4Sarkhyd9wRLOOShAuNS1GkpBUPRmdOOd
+         RoESPqO/cJ9pKhy4ylZ6iQ6OPwTbZ59cKJPiceR2v/IjjCoEK/qHC6YuIgQHW/646zvB
+         pTVMgjhR61eVK/HSdy/hDG07731O6d4qkxk87l31AN3nEHU0nYr8y0RoG5P9moF3KQZP
+         216NP565fi5Fxy+ffK3IjZr/furTG0zHEtzabwmGV9VeTwvsRJQ6fN9CHXgv42XpPUSJ
+         b+X5cHlQEKE9qvf6xVJqm8Vw47LAaYS0E6zaLZZBX5hhvc59cs6AJfoKBh92BvtsuDNB
+         WrFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2cM+pc7RJOlLXf/kESM57DsH9Y+7ss4v2ISlVrw0au4=;
-        b=Ab3G6Uj9Yt7RUzqQ2ZVv5OSu6NPCfrvIeZ1I6wkOn18KnufXdYaqur0xXaBbJWK6KH
-         rdZOIlr6ayzaBzE52vJHjAthspvD1pjNyzjVcmgCx80+kfWnDW6MXa/Cs1o0tkt8fvDl
-         KcUI1CcfTI/Ti4nySKHLpi8my6FCwU+dX8AwpOjM8lIw03Yvqqkjxvg/eR7AJHOzFXnY
-         QqJ/N78devwrtrxJElFQu7UHdIPFvdqn6iSS076wKDBK8MOU11GIv3iCTvHmV6adN/Lg
-         DifxJb5vrVAfKS7yiBKtKrnL/m4fa0Vkf4/akA4u22Yf63k3l2l6WXc0KLAn+A0aZelB
-         fiJw==
-X-Gm-Message-State: AOAM533XZ7QzZnsN8WdQkPfXDqZsP5o3IvXuORR+wsih9Zh+jdmxSpVL
-        0DtJLNSANHvVdooTXmfmuEO8Vg==
-X-Google-Smtp-Source: ABdhPJxxNMKGv/NhLtIdMl/BRJOCT+zMUUqyt4AWTJHdlm9O9AHyBiNnpE4YQWobAiLulE4sZ0UvKQ==
-X-Received: by 2002:a05:6a00:21c2:b0:44c:fa0b:f72 with SMTP id t2-20020a056a0021c200b0044cfa0b0f72mr54948884pfj.13.1636065717795;
-        Thu, 04 Nov 2021 15:41:57 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id h2sm4707798pjk.44.2021.11.04.15.41.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 15:41:57 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 22:41:53 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        "Maciej S . Szmigiero" <maciej.szmigiero@oracle.com>
-Subject: Re: [PATCH v5.5 01/30] KVM: Ensure local memslot copies operate on
- up-to-date arch-specific data
-Message-ID: <YYRhsclZpZwilkE5@google.com>
-References: <20211104002531.1176691-1-seanjc@google.com>
- <20211104002531.1176691-2-seanjc@google.com>
- <CANgfPd-uuPFjAHk5kVNom2Qs=UU_GX6CQ0xDLg1h_iL8t8S2aQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ez2Kc0qXfdZyVoueN+pRzSOTizwvVrWSdL7MhI68c/Y=;
+        b=H7GhHlzV6IQvIRMsdm/AH7d9xd1aUabTooNzzTGfQXOadfvFp4PS+mPY6QgbdLXkXp
+         xtVsYhuHuiQSYIDJhzJ2SA01qRGAjR+VM6l3PKoD90qdpgdbSYBOVNe//7S7ttPqSIFM
+         +nW4qCs6OjC0wjWriQJwyIE+A9uWsupb92oSXp5WDYdUYaWmx3PB3s+/uHwM/CBUAQpa
+         oS3/A73mlhJpEG+tQCQTg4LYnH2xtBFo+9UUL5+bD8bDPcEVyONtUBI6SMzouYPC1VZK
+         oLYVG6r0W82u4N6Hx9CQWZUehN+7jt5qnGIdl3kZ7YFX2jVnXHA5DIqWaCLPDUrvTfXF
+         w+ag==
+X-Gm-Message-State: AOAM531nPFXiSsq10Y2+dzKBG3LXztwy3/jxb4XJwvBVHYRsTkdaFHoN
+        1+BQn6uRyh+yvP4NFm72y0RCs8L0w36e1e4Nf3CSUg==
+X-Google-Smtp-Source: ABdhPJyyaBvoljTK7Xrm6XhzgfUQ/jdbwXvs/7ewAf+ELaJzbp6FekSKyfbkoStxKxUZyf/31byNV+ks+CYodyeVKYM=
+X-Received: by 2002:a05:6a00:1484:b0:48c:2e58:8d39 with SMTP id
+ v4-20020a056a00148400b0048c2e588d39mr18010577pfu.13.1636065919224; Thu, 04
+ Nov 2021 15:45:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANgfPd-uuPFjAHk5kVNom2Qs=UU_GX6CQ0xDLg1h_iL8t8S2aQ@mail.gmail.com>
+References: <20211104214636.450782-1-almasrymina@google.com> <YYRZNWZqHy9+11KW@casper.infradead.org>
+In-Reply-To: <YYRZNWZqHy9+11KW@casper.infradead.org>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Thu, 4 Nov 2021 15:45:07 -0700
+Message-ID: <CAHS8izPisLXTmAsvZR6w2piSXPidVvJMHfQR7oikJgkuTJyRQA@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: Add PM_THP to /proc/pid/pagemap
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Paul E . McKenney" <paulmckrcu@fb.com>,
+        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        David Hildenbrand <david@redhat.com>,
+        Florian Schmidt <florian.schmidt@nutanix.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021, Ben Gardon wrote:
-> > @@ -1597,6 +1596,26 @@ static int kvm_set_memslot(struct kvm *kvm,
-> >                 kvm_copy_memslots(slots, __kvm_memslots(kvm, as_id));
-> >         }
-> >
-> > +       /*
-> > +        * Make a full copy of the old memslot, the pointer will become stale
-> > +        * when the memslots are re-sorted by update_memslots(), and the old
-> > +        * memslot needs to be referenced after calling update_memslots(), e.g.
-> > +        * to free its resources and for arch specific behavior.  This needs to
-> > +        * happen *after* (re)acquiring slots_arch_lock.
-> > +        */
-> > +       slot = id_to_memslot(slots, new->id);
-> > +       if (slot) {
-> > +               old = *slot;
-> > +       } else {
-> > +               WARN_ON_ONCE(change != KVM_MR_CREATE);
-> > +               memset(&old, 0, sizeof(old));
-> > +               old.id = new->id;
-> > +               old.as_id = as_id;
-> > +       }
-> > +
-> > +       /* Copy the arch-specific data, again after (re)acquiring slots_arch_lock. */
-> > +       memcpy(&new->arch, &old.arch, sizeof(old.arch));
-> > +
-> 
-> Is new->arch not initialized before this function is called? Does this
-> need to be here, or could it be moved above into the first branch of
-> the if statement?
-> Oh I see you removed the memset below and replaced it with this. I
-> think this is fine, but it might be easier to reason about if we left
-> the memset and moved the memcopy into the if.
-> No point in doing a memcpy of zeros here.
+On Thu, Nov 4, 2021 at 3:08 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Thu, Nov 04, 2021 at 02:46:35PM -0700, Mina Almasry wrote:
+> > Add PM_THP to allow userspace to detect whether a given virt address is
+> > currently mapped by a hugepage or not.
+>
+> Well, no, that's not what that means.
+>
 
-Hmm, good point.  I wrote it like this so that the "arch" part is more identifiable
-since that's what needs to be protected by the lock, but I completely agree that
-it's odd when viewed without that lens.
+Sorry, that was the intention, but I didn't implement the intention correctly.
+
+> > @@ -1396,6 +1397,8 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
+> >               flags |= PM_FILE;
+> >       if (page && page_mapcount(page) == 1)
+> >               flags |= PM_MMAP_EXCLUSIVE;
+> > +     if (page && PageTransCompound(page))
+> > +             flags |= PM_THP;
+>
+> All that PageTransCompound() does is call PageCompound().  It doesn't
+> tell you if the underlying allocation is PMD sized, nor properly aligned.
+>
+> And you didn't answer my question about whether you want information about
+> whether a large page is being used that's not quite as large as a PMD.
+>
+
+Sorry, I thought the implementation would make it clear but I didn't
+do that correctly. Right now and for the foreseeable future what I
+want to know is whether the page is mapped by a PMD. All the below
+work for me:
+
+1. Flag is set if the page is either a PMD size THP page.
+2. Flag is set if the page is either a PMD size THP page or PMD size
+hugetlbfs page.
+3. Flag is set if the page is either a PMD size THP page or PMD size
+hugetlbfs page or contig PTE size hugetlbfs page.
+
+I prefer #2 and I think it's maybe most extensible for future use
+cases that 1 flag tells whether the page is PMD hugepage and another
+flag is a large cont PTE page.
