@@ -2,114 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46369445CB0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 00:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC47445CB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 00:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232314AbhKDXf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 19:35:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:24522 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229725AbhKDXfz (ORCPT
+        id S232388AbhKDXgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 19:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231371AbhKDXge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 19:35:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636068796;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fqhHBz59/iwQuP4BMAGmYoEMMES572wzwwy/Ee8c8WQ=;
-        b=PNR8dk3BLxr9+3t8ywc32J8GxiP7u/Pge18otmDNP6FabBN/4sMZQORgiBQkichZkHxIrf
-        mtBtNYQLQAFiy3x05eWyTqYy0Jm8gwUPQ1UCx7cG29PxEQ9ycjTAAqgD9DBqsOMbNPDy5P
-        CGx4Vg3XK7mZlUNuxmV8Wjpf+l7K/NM=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-ET6_OTcwNzC2HcYomKtYGA-1; Thu, 04 Nov 2021 19:33:14 -0400
-X-MC-Unique: ET6_OTcwNzC2HcYomKtYGA-1
-Received: by mail-ot1-f71.google.com with SMTP id o24-20020a9d5c18000000b0055bd38a039eso969511otk.12
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 16:33:14 -0700 (PDT)
+        Thu, 4 Nov 2021 19:36:34 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD07C061203
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 16:33:56 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id i26so12126298ljg.7
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 16:33:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5YHWjfEzEUlI15fmSiy3xzKrJn7mQJQGzSin37p/zTk=;
+        b=CvtV2Tkmfqnw3iB0ti453wduQf9J815vdPuD2gn2uwxLOS+vPOA3js/Qsk5bdh6r3T
+         4FESQt8eM3Z/p/zIMVQY4vaDPDzfZZAXCwJfe4X4ElNnjtzajYrL6v1IPbIVIKKMPou3
+         emE9QvOJTxJY23ByN4Xl9h4PCZlOnHbLu5jel077eyXbZpjurcLz6gRfzbd0PZg0nLKl
+         /saDQNPDBf3qcai7ml5v7DZvI7T3bsy4CUc8qXLA0Rtl+rIi6jUA+NbLtA5ZzHSSw4J0
+         sZYoSQ8Qn3jmZLlnhYvk2akRnNC35BIxh9PNVnFI+WNc2xoXMnF3+wLNWBqwJlVHfLea
+         Rmrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fqhHBz59/iwQuP4BMAGmYoEMMES572wzwwy/Ee8c8WQ=;
-        b=JOGDaG+lMMzy19Fv2dCSpttPaSfycmhey6H6iEanatzHr8+aeT8DfIp+uxPPaPhWQa
-         5EtgNi45sEtEuNZvQhxlqTHKWnuTnraZ2apUBwAtRGiYpbUmJjsvkBoMZQVJ0aFCgo9W
-         br/RqhdUe0MJq0KUo1B/VhmoIdzXvK8LyzCbZzFOu68BV3gaprFDreerZIHLmxAgqtzw
-         M2oPKAENv+SFaP3zG+Z0Z3ncXFUp73KKUCjFKCHyFN7udSVY/k2htVWBUPcWJPoxhP1W
-         QTzMRU0IT6XdQizoRAgvHONefqc0iwyfUMJldZa43MZp8K0qb/v+Nj2RYNkf6FHqB2ZI
-         wyrg==
-X-Gm-Message-State: AOAM530bmxcEnwTHLmgYl4CAqh0lld0eZ52wPes68uIFMOq/cD//2A68
-        jlTG5j5cqbTFVQabLnmv3aN3fIYVVCFmdK258SRJcMZCXvKFfn2hrRMs+906pzcYFjpyW3WUSkE
-        FJzPYKV4z+kg9crVRluuvjp/l
-X-Received: by 2002:a9d:6a50:: with SMTP id h16mr7198257otn.128.1636068793840;
-        Thu, 04 Nov 2021 16:33:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw4pJxBap7rL5RdB+K2YoiSlZclZZRDIU6cnDR6Kr+jxWhHiI2qcJYxYqGLfE/FxPJQEb3dow==
-X-Received: by 2002:a9d:6a50:: with SMTP id h16mr7198235otn.128.1636068793669;
-        Thu, 04 Nov 2021 16:33:13 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::35])
-        by smtp.gmail.com with ESMTPSA id l2sm1796868otl.61.2021.11.04.16.33.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 16:33:12 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 16:33:10 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        dvyukov@google.com, seanjc@google.com, pbonzini@redhat.com,
-        mbenes@suse.cz
-Subject: Re: [RFC][PATCH 21/22] x86,word-at-a-time: Remove .fixup usage
-Message-ID: <20211104233310.2dg2gilae27l75a3@treble>
-References: <20211104164729.226550532@infradead.org>
- <20211104165525.767986267@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5YHWjfEzEUlI15fmSiy3xzKrJn7mQJQGzSin37p/zTk=;
+        b=yD+3GTlCRnGjKD7wBrL9gufGYatdKlSl0dSQ3l6iPMeA7tjdNB3pMmIeDxb+Wbp6mi
+         NYd/zZTZIlQL5oQJvZ+JrtRkXcrndBxo5xWnlBJbnssdu4szL+cj9NQylE5UaCkKofI6
+         qgSxWtOsrdI0lM6I7ZQNvCq/CC5PhmJXT9rveXzei+tbFs2+P8evu9tNGvwdwgVNJqDR
+         jwktiRjDAx8q1L+M+6Es8zws5e41KmIUrSc5PTHZXmB3UrCuQwoEqoxfcru52npnYsJB
+         oCV/EWbm6cngtlkoW2BAcGRKOlE0qZnOeIPTCsNHnbuW0DsT2ut/6oUbxOwGmBEmtrD8
+         kFNg==
+X-Gm-Message-State: AOAM533OXHkME4LrqV1eCA4VJjrRLV+ymjFF2ryzQ5NPK3t6jQd28iAS
+        FRTMbKCjCcslSAOa+2e2SfAo2OCgtm63z4Op5bf2UQ==
+X-Google-Smtp-Source: ABdhPJzhHzzGFHbxGiRdlTZGMQRn1x2xEteO9H/lwhLLeeOMaoer/u6Pv260j74SOmzVet+aIpbZ0TPBx0YB3u3JsDg=
+X-Received: by 2002:a05:651c:1504:: with SMTP id e4mr18448176ljf.128.1636068834198;
+ Thu, 04 Nov 2021 16:33:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211104165525.767986267@infradead.org>
+References: <20211104215923.719785-1-nathan@kernel.org> <CAKwvOdnBv8LcxvVYJKacL7eUXAoGVfnQp7TAL_r+P8V0WcOq1Q@mail.gmail.com>
+In-Reply-To: <CAKwvOdnBv8LcxvVYJKacL7eUXAoGVfnQp7TAL_r+P8V0WcOq1Q@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 4 Nov 2021 16:33:41 -0700
+Message-ID: <CAKwvOdkp99t4ZvVgMLCzKjRq+AwM2-t+JRJeh8vs3vGq=kMoQg@mail.gmail.com>
+Subject: Re: [PATCH] usb: dwc2: hcd_queue: Fix use of floating point literal
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Minas Harutyunyan <hminas@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 05:47:50PM +0100, Peter Zijlstra wrote:
-> XXX: I'm not really happy with this patch
+On Thu, Nov 4, 2021 at 4:29 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
 >
->  static inline unsigned long load_unaligned_zeropad(const void *addr)
->  {
-> -	unsigned long ret, dummy;
-> +	unsigned long ret;
-> +
-> +	asm("1:\tmov (%0),%0\n"
-> +	    "2:\n"
-> +	    _ASM_EXTABLE_TYPE_REG(1b, 2b, EX_TYPE_LOAD_UNALIGNED, %0)
-> +	    : "=&r" (ret)
-> +	    : "0" ((unsigned long)addr));
->  
-> -	asm(
-> -		"1:\tmov %2,%0\n"
-> -		"2:\n"
-> -		".section .fixup,\"ax\"\n"
-> -		"3:\t"
-> -		"lea %2,%1\n\t"
-> -		"and %3,%1\n\t"
-> -		"mov (%1),%0\n\t"
-> -		"leal %2,%%ecx\n\t"
-> -		"andl %4,%%ecx\n\t"
-> -		"shll $3,%%ecx\n\t"
-> -		"shr %%cl,%0\n\t"
-> -		"jmp 2b\n"
-> -		".previous\n"
-> -		_ASM_EXTABLE(1b, 3b)
-> -		:"=&r" (ret),"=&c" (dummy)
-> -		:"m" (*(unsigned long *)addr),
-> -		 "i" (-sizeof(unsigned long)),
-> -		 "i" (sizeof(unsigned long)-1));
->  	return ret;
->  }
+> On Thu, Nov 4, 2021 at 2:59 PM Nathan Chancellor <nathan@kernel.org> wrote:
+> >
+> > A new commit in LLVM causes an error on the use of 'long double' when
+> > '-mno-x87' is used, which the kernel does through an alias,
+> > '-mno-80387' (see the LLVM commit below for more details around why it
+> > does this).
+> >
+> >  drivers/usb/dwc2/hcd_queue.c:1744:25: error: expression requires  'long double' type support, but target 'x86_64-unknown-linux-gnu' does not support it
+> >                          delay = ktime_set(0, DWC2_RETRY_WAIT_DELAY);
+> >                                              ^
+> >  drivers/usb/dwc2/hcd_queue.c:62:34: note: expanded from macro 'DWC2_RETRY_WAIT_DELAY'
+> >  #define DWC2_RETRY_WAIT_DELAY (1 * 1E6L)
+> >                                  ^
+> >  1 error generated.
+> >
+> > This happens due to the use of a 'long double' literal. The 'E6' part of
+> > '1E6L' causes the literal to be a 'double' then the 'L' suffix promotes
+> > it to 'long double'.
+> >
+> > There is no visible reason for a floating point value in this driver, as
+> > the value is only used as a parameter to a function that expects an
+> > integer type.  Use USEC_PER_SEC, which is the same integer value as
+> > '1E6L', to avoid changing functionality but fix the error.
+> >
+> > Fixes: 6ed30a7d8ec2 ("usb: dwc2: host: use hrtimer for NAK retries")
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/1497
+> > Link: https://github.com/llvm/llvm-project/commit/a8083d42b1c346e21623a1d36d1f0cadd7801d83
+> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+>
+> Thanks for the patch!
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Yeah, it hurts code generation and I guess it's a hot path.
+hmm...should we explicitly #include <vdso/time.h> for this
+declaration?  It may work due to transitive includes, but that's
+generally considered brittle should those transitive includes change
+in the future.
 
-Maybe put the fixup code in the function.  In case of
-CONFIG_CC_HAS_ASM_GOTO_OUTPUT, it could be at a label at the end of the
-function.  Otherwise it'd have to be inline.
+>
+> > ---
+> >  drivers/usb/dwc2/hcd_queue.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/usb/dwc2/hcd_queue.c b/drivers/usb/dwc2/hcd_queue.c
+> > index 89a788326c56..bdf1927e1be1 100644
+> > --- a/drivers/usb/dwc2/hcd_queue.c
+> > +++ b/drivers/usb/dwc2/hcd_queue.c
+> > @@ -59,7 +59,7 @@
+> >  #define DWC2_UNRESERVE_DELAY (msecs_to_jiffies(5))
+> >
+> >  /* If we get a NAK, wait this long before retrying */
+> > -#define DWC2_RETRY_WAIT_DELAY (1 * 1E6L)
+> > +#define DWC2_RETRY_WAIT_DELAY (1 * USEC_PER_SEC)
+> >
+> >  /**
+> >   * dwc2_periodic_channel_available() - Checks that a channel is available for a
+> >
+> > base-commit: d4439a1189f93d0ac1eaf0197db8e6b3e197d5c7
+> > --
+> > 2.34.0.rc0
+> >
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
+
+
 
 -- 
-Josh
-
+Thanks,
+~Nick Desaulniers
