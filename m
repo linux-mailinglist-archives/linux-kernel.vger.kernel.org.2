@@ -2,513 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FB44450CE
+	by mail.lfdr.de (Postfix) with ESMTP id 97F5C4450CF
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 10:00:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbhKDJDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 05:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230511AbhKDJC6 (ORCPT
+        id S231211AbhKDJDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 05:03:09 -0400
+Received: from office.oderland.com ([91.201.60.5]:38808 "EHLO
+        office.oderland.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231135AbhKDJDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 05:02:58 -0400
-Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953E2C06120A
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 02:00:17 -0700 (PDT)
-Received: from terra.local.svanheule.net (unknown [IPv6:2a02:a03f:eafe:c901:bf08:f0c1:3ec1:1bfc])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id E0CB226C25E;
-        Thu,  4 Nov 2021 10:00:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1636016416;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kI6YiyiGSL3bd8Sb7D9TXbgNaZKY3yVuJCKadfuu66Y=;
-        b=2PhGBcoP0Qy+qvXys6tijoWXCSBCVAlHdepqjAxLnepDUwvXeAKHwRj4jMLFrCfEA6J3UF
-        gEOSbitOlShGi937WWkZnig8t87UxGNZv26JGvJYBxF44KdA/Ned7S1m++tuaF3W+5l55f
-        54pAiSSzDO7+dK38OSz9EE1wAG4MSeHdZLqhEL3MQQwNCvpzvqYMsrgtdzRnlbctPasi/M
-        /vMRhP31PSblEfiFrnGFEc/WKjAxoJ7MavjwGQj7tGIcCL6VvbNdcQR4pINxu9EvAnyp/R
-        bX3UCTCd/RPg56y68CxKMHhqUWRYmoFopBL6JkE3RMrpmAOLzSGh3j7+LGLIYw==
-From:   Sander Vanheule <sander@svanheule.net>
-To:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Sander Vanheule <sander@svanheule.net>
-Subject: [PATCH v2 2/2] watchdog: Add Realtek Otto watchdog timer
-Date:   Thu,  4 Nov 2021 09:59:53 +0100
-Message-Id: <20211104085952.13572-3-sander@svanheule.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211104085952.13572-1-sander@svanheule.net>
-References: <20211104085952.13572-1-sander@svanheule.net>
+        Thu, 4 Nov 2021 05:03:04 -0400
+Received: from [193.180.18.161] (port=59860 helo=[10.137.0.14])
+        by office.oderland.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <josef@oderland.se>)
+        id 1miYbf-00DxwI-0N; Thu, 04 Nov 2021 10:00:23 +0100
+Message-ID: <4ae69258-524c-8349-1dbd-147e96f90138@oderland.se>
+Date:   Thu, 4 Nov 2021 10:00:18 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:93.0) Gecko/20100101
+ Thunderbird/93.0
+Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     boris.ostrovsky@oracle.com, helgaas@kernel.org, jgross@suse.com,
+        linux-pci@vger.kernel.org, maz@kernel.org,
+        xen-devel@lists.xenproject.org, Jason Andryuk <jandryuk@gmail.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Peter Jones <pjones@redhat.com>, linux-fbdev@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org
+References: <90277228-cf14-0cfa-c95e-d42e7d533353@oderland.se>
+ <20211025012503.33172-1-jandryuk@gmail.com> <87fssmg8k4.ffs@tglx>
+ <87cznqg5k8.ffs@tglx> <d1cc20aa-5c5c-6c7b-2e5d-bc31362ad891@oderland.se>
+ <89d6c2f4-4d00-972f-e434-cb1839e78598@oderland.se>
+ <5b3d4653-0cdf-e098-0a4a-3c5c3ae3977b@oderland.se> <87ee7w6bxi.ffs@tglx>
+From:   Josef Johansson <josef@oderland.se>
+Subject: Re: [PATCH] PCI/MSI: Move non-mask check back into low level
+ accessors
+In-Reply-To: <87ee7w6bxi.ffs@tglx>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - office.oderland.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - oderland.se
+X-Get-Message-Sender-Via: office.oderland.com: authenticated_id: josjoh@oderland.se
+X-Authenticated-Sender: office.oderland.com: josjoh@oderland.se
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Realtek MIPS SoCs (platform name Otto) have a watchdog timer with
-pretimeout notifitication support. The WDT can (partially) hard reset,
-or soft reset the SoC.
-
-This driver implements all features as described in the devicetree
-binding, except the phase2 interrupt, and also functions as a restart
-handler. The cpu reset mode is considered to be a "warm" restart, since
-this mode does not reset all peripherals. Being an embedded system
-though, the "cpu" and "software" modes will still cause the bootloader
-to run on restart.
-
-It is not known how a forced system reset can be disabled on the
-supported platforms. This means that the phase2 interrupt will only fire
-at the same time as reset, so implementing phase2 is of little use.
-
-Signed-off-by: Sander Vanheule <sander@svanheule.net>
-
---
-v2 -> v1:
-- drop raw_spinlock, locking is not required
-- replace devm_free_irq with disable_irq
-- use max_hw_heartbeat_ms instead of max_timeout
-- drop redundant timeout value checks
-- replace ROUND_CLOSEST by ROUND_UP for tick counts, and flooring
-  division for timeout values
-- change COMMON_CLK 'select' into 'depends on'
-- add MODULE_DEVICE_TABLE for OF ID table
-- add realtek,rtl9300 compatible
-- drop phase2 irq
----
- MAINTAINERS                         |   7 +
- drivers/watchdog/Kconfig            |  13 +
- drivers/watchdog/Makefile           |   1 +
- drivers/watchdog/realtek_otto_wdt.c | 359 ++++++++++++++++++++++++++++
- 4 files changed, 380 insertions(+)
- create mode 100644 drivers/watchdog/realtek_otto_wdt.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2c9070aeba2a..54c8f788d3e5 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15991,6 +15991,13 @@ S:	Maintained
- F:	include/sound/rt*.h
- F:	sound/soc/codecs/rt*
- 
-+REALTEK OTTO WATCHDOG
-+M:	Sander Vanheule <sander@svanheule.net>
-+L:	linux-watchdog@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/watchdog/realtek,otto-wdt.yaml
-+F:	driver/watchdog/realtek_otto_wdt.c
-+
- REALTEK RTL83xx SMI DSA ROUTER CHIPS
- M:	Linus Walleij <linus.walleij@linaro.org>
- S:	Maintained
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index bf59faeb3de1..d308e13a9aa1 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -954,6 +954,19 @@ config RTD119X_WATCHDOG
- 	  Say Y here to include support for the watchdog timer in
- 	  Realtek RTD1295 SoCs.
- 
-+config REALTEK_OTTO_WDT
-+	tristate "Realtek Otto MIPS watchdog support"
-+	depends on MACH_REALTEK_RTL || COMPILE_TEST
-+	depends on COMMON_CLK
-+	select WATCHDOG_CORE
-+	default MACH_REALTEK_RTL
-+	help
-+	  Say Y here to include support for the watchdog timer on Realtek
-+	  RTL838x, RTL839x, RTL930x SoCs. This watchdog has pretimeout
-+	  notifications and system reset on timeout.
-+
-+	  When built as a module this will be called realtek_otto_wdt.
-+
- config SPRD_WATCHDOG
- 	tristate "Spreadtrum watchdog support"
- 	depends on ARCH_SPRD || COMPILE_TEST
-diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
-index 1bd2d6f37c53..a8dccf819163 100644
---- a/drivers/watchdog/Makefile
-+++ b/drivers/watchdog/Makefile
-@@ -171,6 +171,7 @@ obj-$(CONFIG_IMGPDC_WDT) += imgpdc_wdt.o
- obj-$(CONFIG_MT7621_WDT) += mt7621_wdt.o
- obj-$(CONFIG_PIC32_WDT) += pic32-wdt.o
- obj-$(CONFIG_PIC32_DMT) += pic32-dmt.o
-+obj-$(CONFIG_REALTEK_OTTO_WDT) += realtek_otto_wdt.o
- 
- # PARISC Architecture
- 
-diff --git a/drivers/watchdog/realtek_otto_wdt.c b/drivers/watchdog/realtek_otto_wdt.c
-new file mode 100644
-index 000000000000..ba12e0181081
---- /dev/null
-+++ b/drivers/watchdog/realtek_otto_wdt.c
-@@ -0,0 +1,359 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/*
-+ * Realtek Otto MIPS platform watchdog
-+ *
-+ * Watchdog timer that will reset the system after timeout, using the selected
-+ * reset mode.
-+ *
-+ * Counter scaling and timeouts:
-+ * - Base prescale of (2 << 25), providing tick duration T_0: 168ms @ 200MHz
-+ * - PRESCALE: logarithmic prescaler adding a factor of {1, 2, 4, 8}
-+ * - Phase 1: Times out after (PHASE1 + 1) × PRESCALE × T_0
-+ *   Generates an interrupt, WDT cannot be stopped after phase 1
-+ * - Phase 2: starts after phase 1, times out after (PHASE2 + 1) × PRESCALE × T_0
-+ *   Resets the system according to RST_MODE
-+ */
-+
-+#include <linux/bits.h>
-+#include <linux/bitfield.h>
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
-+#include <linux/math.h>
-+#include <linux/minmax.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/platform_device.h>
-+#include <linux/property.h>
-+#include <linux/reboot.h>
-+#include <linux/watchdog.h>
-+
-+#define OTTO_WDT_REG_CNTR		0x0
-+#define OTTO_WDT_CNTR_PING		BIT(31)
-+
-+#define OTTO_WDT_REG_INTR		0x4
-+#define OTTO_WDT_INTR_PHASE_1		BIT(31)
-+#define OTTO_WDT_INTR_PHASE_2		BIT(30)
-+
-+#define OTTO_WDT_REG_CTRL		0x8
-+#define OTTO_WDT_CTRL_ENABLE		BIT(31)
-+#define OTTO_WDT_CTRL_PRESCALE		GENMASK(30, 29)
-+#define OTTO_WDT_CTRL_PHASE1		GENMASK(26, 22)
-+#define OTTO_WDT_CTRL_PHASE2		GENMASK(19, 15)
-+#define OTTO_WDT_CTRL_RST_MODE		GENMASK(1, 0)
-+#define OTTO_WDT_MODE_SOC		0
-+#define OTTO_WDT_MODE_CPU		1
-+#define OTTO_WDT_MODE_SOFTWARE		2
-+#define OTTO_WDT_CTRL_DEFAULT		OTTO_WDT_MODE_CPU
-+
-+#define OTTO_WDT_PRESCALE_MAX		3
-+
-+/*
-+ * One higher than the max values contained in PHASE{1,2}, since a value of 0
-+ * corresponds to one tick.
-+ */
-+#define OTTO_WDT_PHASE_TICKS_MAX	32
-+
-+/*
-+ * The maximum reset delay is actually 2×32 ticks, but that would require large
-+ * pretimeout values for timeouts longer than 32 ticks. Limit the maximum timeout
-+ * to 32 + 1 to ensure small pretimeout values can be configured as expected.
-+ */
-+#define OTTO_WDT_TIMEOUT_TICKS_MAX	(OTTO_WDT_PHASE_TICKS_MAX + 1)
-+
-+struct otto_wdt_ctrl {
-+	struct watchdog_device wdev;
-+	struct device *dev;
-+	void __iomem *base;
-+	struct clk *clk;
-+	int irq_phase1;
-+};
-+
-+static int otto_wdt_start(struct watchdog_device *wdev)
-+{
-+	struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-+	u32 v;
-+
-+	v = ioread32(ctrl->base + OTTO_WDT_REG_CTRL);
-+	v |= OTTO_WDT_CTRL_ENABLE;
-+	iowrite32(v, ctrl->base + OTTO_WDT_REG_CTRL);
-+
-+	return 0;
-+}
-+
-+static int otto_wdt_stop(struct watchdog_device *wdev)
-+{
-+	struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-+	u32 v;
-+
-+	v = ioread32(ctrl->base + OTTO_WDT_REG_CTRL);
-+	v &= ~OTTO_WDT_CTRL_ENABLE;
-+	iowrite32(v, ctrl->base + OTTO_WDT_REG_CTRL);
-+
-+	return 0;
-+}
-+
-+static int otto_wdt_ping(struct watchdog_device *wdev)
-+{
-+	struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-+
-+	iowrite32(OTTO_WDT_CNTR_PING, ctrl->base + OTTO_WDT_REG_CNTR);
-+
-+	return 0;
-+}
-+
-+static int otto_wdt_tick_ms(struct otto_wdt_ctrl *ctrl, int prescale)
-+{
-+	unsigned int rate_khz = clk_get_rate(ctrl->clk) / 1000;
-+
-+	if (!rate_khz)
-+		return 0;
-+
-+	return DIV_ROUND_CLOSEST(1 << (25 + prescale), rate_khz);
-+}
-+
-+/*
-+ * The timer asserts the PHASE1/PHASE2 IRQs when the number of ticks exceeds
-+ * the value stored in those fields. This means each phase will run for at least
-+ * one tick, so small values need to be clamped to correctly reflect the timeout.
-+ */
-+static inline unsigned int div_round_ticks(unsigned int val, unsigned int tick_duration,
-+		unsigned int min_ticks)
-+{
-+	return max(min_ticks, DIV_ROUND_UP(val, tick_duration));
-+}
-+
-+static int otto_wdt_determine_timeouts(struct watchdog_device *wdev, unsigned int timeout,
-+		unsigned int pretimeout)
-+{
-+	struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-+	unsigned int pretimeout_ms = pretimeout * 1000;
-+	unsigned int timeout_ms = timeout * 1000;
-+	unsigned int prescale = 0;
-+	unsigned int phase1_ticks;
-+	unsigned int phase2_ticks;
-+	unsigned int total_ticks;
-+	unsigned int tick_ms;
-+	u32 v;
-+
-+	do {
-+		if (prescale > OTTO_WDT_PRESCALE_MAX)
-+			return -EINVAL;
-+
-+		tick_ms = otto_wdt_tick_ms(ctrl, prescale);
-+		total_ticks = div_round_ticks(timeout_ms, tick_ms, 2);
-+		phase1_ticks = div_round_ticks(timeout_ms - pretimeout_ms, tick_ms, 1);
-+		phase2_ticks = total_ticks - phase1_ticks;
-+
-+		prescale++;
-+	} while (phase1_ticks > OTTO_WDT_PHASE_TICKS_MAX
-+		|| phase2_ticks > OTTO_WDT_PHASE_TICKS_MAX);
-+
-+	v = ioread32(ctrl->base + OTTO_WDT_REG_CTRL);
-+
-+	v &= ~(OTTO_WDT_CTRL_PRESCALE | OTTO_WDT_CTRL_PHASE1 | OTTO_WDT_CTRL_PHASE2);
-+	v |= FIELD_PREP(OTTO_WDT_CTRL_PHASE1, phase1_ticks - 1);
-+	v |= FIELD_PREP(OTTO_WDT_CTRL_PHASE2, phase2_ticks - 1);
-+	v |= FIELD_PREP(OTTO_WDT_CTRL_PRESCALE, prescale);
-+
-+	iowrite32(v, ctrl->base + OTTO_WDT_REG_CTRL);
-+
-+	timeout_ms = total_ticks * tick_ms;
-+	ctrl->wdev.timeout = timeout_ms / 1000;
-+
-+	pretimeout_ms = phase2_ticks * tick_ms;
-+	ctrl->wdev.pretimeout = pretimeout_ms / 1000;
-+
-+	return 0;
-+}
-+
-+static int otto_wdt_set_timeout(struct watchdog_device *wdev, unsigned int val)
-+{
-+	return otto_wdt_determine_timeouts(wdev, val, min(wdev->pretimeout, val - 1));
-+}
-+
-+static int otto_wdt_set_pretimeout(struct watchdog_device *wdev, unsigned int val)
-+{
-+	return otto_wdt_determine_timeouts(wdev, wdev->timeout, val);
-+}
-+
-+static int otto_wdt_restart(struct watchdog_device *wdev, unsigned long reboot_mode,
-+		void *data)
-+{
-+	struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-+	u32 reset_mode;
-+	u32 v;
-+
-+	disable_irq(ctrl->irq_phase1);
-+
-+	switch (reboot_mode) {
-+	case REBOOT_SOFT:
-+		reset_mode = OTTO_WDT_MODE_SOFTWARE;
-+		break;
-+	case REBOOT_WARM:
-+		reset_mode = OTTO_WDT_MODE_CPU;
-+		break;
-+	default:
-+		reset_mode = OTTO_WDT_MODE_SOC;
-+		break;
-+	}
-+
-+	/* Configure for shortest timeout and wait for reset to occur */
-+	v = FIELD_PREP(OTTO_WDT_CTRL_RST_MODE, reset_mode) | OTTO_WDT_CTRL_ENABLE;
-+	iowrite32(v, ctrl->base + OTTO_WDT_REG_CTRL);
-+
-+	mdelay(3 * otto_wdt_tick_ms(ctrl, 0));
-+
-+	return 0;
-+}
-+
-+static irqreturn_t otto_wdt_phase1_isr(int irq, void *dev_id)
-+{
-+	struct otto_wdt_ctrl *ctrl = dev_id;
-+
-+	iowrite32(OTTO_WDT_INTR_PHASE_1, ctrl->base + OTTO_WDT_REG_INTR);
-+	dev_crit(ctrl->dev, "phase 1 timeout\n");
-+	watchdog_notify_pretimeout(&ctrl->wdev);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static const struct watchdog_ops otto_wdt_ops = {
-+	.owner = THIS_MODULE,
-+	.start = otto_wdt_start,
-+	.stop = otto_wdt_stop,
-+	.ping = otto_wdt_ping,
-+	.set_timeout = otto_wdt_set_timeout,
-+	.set_pretimeout = otto_wdt_set_pretimeout,
-+	.restart = otto_wdt_restart,
-+};
-+
-+static const struct watchdog_info otto_wdt_info = {
-+	.identity = "Realtek Otto watchdog timer",
-+	.options = WDIOF_KEEPALIVEPING |
-+		WDIOF_MAGICCLOSE |
-+		WDIOF_SETTIMEOUT |
-+		WDIOF_PRETIMEOUT,
-+};
-+
-+static int otto_wdt_probe_reset_mode(struct otto_wdt_ctrl *ctrl)
-+{
-+	static const char *mode_property = "realtek,reset-mode";
-+	const struct fwnode_handle *node = ctrl->dev->fwnode;
-+	int mode_count;
-+	u32 mode;
-+	u32 v;
-+
-+	if (!node)
-+		return -ENXIO;
-+
-+	mode_count = fwnode_property_string_array_count(node, mode_property);
-+	if (mode_count < 0)
-+		return mode_count;
-+	else if (mode_count == 0)
-+		return 0;
-+	else if (mode_count != 1)
-+		return -EINVAL;
-+
-+	if (fwnode_property_match_string(node, mode_property, "soc") == 0)
-+		mode = OTTO_WDT_MODE_SOC;
-+	else if (fwnode_property_match_string(node, mode_property, "cpu") == 0)
-+		mode = OTTO_WDT_MODE_CPU;
-+	else if (fwnode_property_match_string(node, mode_property, "software") == 0)
-+		mode = OTTO_WDT_MODE_SOFTWARE;
-+	else
-+		return -EINVAL;
-+
-+	v = ioread32(ctrl->base + OTTO_WDT_REG_CTRL);
-+	v &= ~OTTO_WDT_CTRL_RST_MODE;
-+	v |= FIELD_PREP(OTTO_WDT_CTRL_RST_MODE, mode);
-+	iowrite32(v, ctrl->base + OTTO_WDT_REG_CTRL);
-+
-+	return 0;
-+}
-+
-+static int otto_wdt_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct otto_wdt_ctrl *ctrl;
-+	unsigned int max_tick_ms;
-+	int ret;
-+
-+	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
-+	if (!ctrl)
-+		return -ENOMEM;
-+
-+	ctrl->dev = dev;
-+	ctrl->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(ctrl->base))
-+		return PTR_ERR(ctrl->base);
-+
-+	/* Clear any old interrupts and reset initial state */
-+	iowrite32(OTTO_WDT_INTR_PHASE_1 | OTTO_WDT_INTR_PHASE_2,
-+			ctrl->base + OTTO_WDT_REG_INTR);
-+	iowrite32(OTTO_WDT_CTRL_DEFAULT, ctrl->base + OTTO_WDT_REG_CTRL);
-+
-+	ctrl->clk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(ctrl->clk))
-+		return dev_err_probe(dev, PTR_ERR(ctrl->clk), "Failed to get clock\n");
-+
-+	ctrl->irq_phase1 = platform_get_irq_byname(pdev, "phase1");
-+	if (ctrl->irq_phase1 < 0)
-+		return dev_err_probe(dev, ctrl->irq_phase1, "phase1 IRQ not found\n");
-+
-+	ret = devm_request_irq(dev, ctrl->irq_phase1, otto_wdt_phase1_isr, 0,
-+			"realtek-otto-wdt", ctrl);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to get IRQ for phase1\n");
-+
-+	ret = otto_wdt_probe_reset_mode(ctrl);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Invalid reset mode specified\n");
-+
-+	ctrl->wdev.parent = dev;
-+	ctrl->wdev.info = &otto_wdt_info;
-+	ctrl->wdev.ops = &otto_wdt_ops;
-+
-+	/*
-+	 * Since pretimeout cannot be disabled, min. timeout is twice the
-+	 * subsystem resolution. max. timeout is ca. 43s at a bus clock of 200MHz.
-+	 */
-+	ctrl->wdev.min_timeout = 2;
-+	max_tick_ms = otto_wdt_tick_ms(ctrl, OTTO_WDT_PRESCALE_MAX);
-+	ctrl->wdev.max_hw_heartbeat_ms = max_tick_ms * OTTO_WDT_TIMEOUT_TICKS_MAX;
-+	ctrl->wdev.timeout = min(30U, ctrl->wdev.max_hw_heartbeat_ms / 1000);
-+
-+	watchdog_set_drvdata(&ctrl->wdev, ctrl);
-+	watchdog_init_timeout(&ctrl->wdev, 0, dev);
-+	watchdog_stop_on_reboot(&ctrl->wdev);
-+	watchdog_set_restart_priority(&ctrl->wdev, 128);
-+
-+	ret = otto_wdt_determine_timeouts(&ctrl->wdev, ctrl->wdev.timeout, 1);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to set timeout\n");
-+
-+	return devm_watchdog_register_device(dev, &ctrl->wdev);
-+}
-+
-+static const struct of_device_id otto_wdt_ids[] = {
-+	{ .compatible = "realtek,rtl8380-wdt" },
-+	{ .compatible = "realtek,rtl8390-wdt" },
-+	{ .compatible = "realtek,rtl9300-wdt" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, otto_wdt_ids);
-+
-+static struct platform_driver otto_wdt_driver = {
-+	.probe = otto_wdt_probe,
-+	.driver = {
-+		.name = "realtek-otto-watchdog",
-+		.of_match_table	= otto_wdt_ids,
-+	},
-+};
-+module_platform_driver(otto_wdt_driver);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Sander Vanheule <sander@svanheule.net>");
-+MODULE_DESCRIPTION("Realtek Otto watchdog timer driver");
--- 
-2.31.1
+On 11/4/21 00:45, Thomas Gleixner wrote:
+> On Wed, Oct 27 2021 at 17:29, Josef Johansson wrote:
+>
+> CC+: EFIFB and scheduler folks
+>
+>> On 10/27/21 14:01, Josef Johansson wrote:
+>> When I suspend I get errors from Xen, including stacktraces below
+>> if anyone has any clue, if this might be related. I get one each time I
+>> suspend
+>> and the third time amdgpu gives up.
+>>
+>> rtc_cmos 00:01: registered as rtc0
+>> rtc_cmos 00:01: setting system clock to 2021-10-27T15:04:35 UTC (1635347075)
+>> rtc_cmos 00:01: no alarms, y3k, 114 bytes nvram
+>> device-mapper: core: CONFIG_IMA_DISABLE_HTABLE is disabled. Duplicate IMA measurements will not be recorded in the IMA log.
+>> device-mapper: uevent: version 1.0.3
+>> device-mapper: ioctl: 4.45.0-ioctl (2021-03-22) initialised: dm-devel@redhat.com
+>> efifb: probing for efifb
+>> efifb: cannot reserve video memory at 0x60000000
+>> ------------[ cut here ]------------
+>> ioremap on RAM at 0x0000000060000000 - 0x00000000607e8fff
+>> WARNING: CPU: 7 PID: 1 at arch/x86/mm/ioremap.c:210 __ioremap_caller+0x332/0x350
+> That's this warning:
+>
+> 	/*
+> 	 * Don't allow anybody to remap normal RAM that we're using..
+> 	 */
+> 	if (io_desc.flags & IORES_MAP_SYSTEM_RAM) {
+> 		WARN_ONCE(1, "ioremap on RAM at %pa - %pa\n",
+> 			  &phys_addr, &last_addr);
+> 		return NULL;
+> 	}
+>
+>
+>> Modules linked in:
+>> CPU: 7 PID: 1 Comm: swapper/0 Not tainted 5.15.0-0.rc7.0.fc32.qubes.x86_64 #1
+>> Hardware name: LENOVO 20Y1S02400/20Y1S02400, BIOS R1BET65W(1.34 ) 06/17/2021
+>> RIP: e030:__ioremap_caller+0x332/0x350
+>> Code: e8 c3 ca ff ff 49 09 c6 e9 32 fe ff ff 48 8d 54 24 28 48 8d 74 24 18 48 c7 c7 35 f2 5d 82 c6 05 e8 7b a9 01 01 e8 48 39 be 00 <0f> 0b 45 31 e4 e9 ac fe ff ff e8 ff f5 c3 00 66 66 2e 0f 1f 84 00
+>> RSP: e02b:ffffc9004007bb00 EFLAGS: 00010286
+>> RAX: 0000000000000000 RBX: 00000000007e9000 RCX: ffffffff82915ca8
+>> RDX: c0000000ffffdfff RSI: 0000000000000000 RDI: ffffffff82865ca0
+>> RBP: 0000000060000000 R08: 0000000000000000 R09: ffffc9004007b948
+>> R10: ffffc9004007b940 R11: ffffffff82945ce8 R12: 0000000000000001
+>> R13: 00000000007e9000 R14: 00000000007e9000 R15: ffffffff81c8f772
+>> FS:  0000000000000000(0000) GS:ffff8881407c0000(0000) knlGS:0000000000000000
+>> CS:  e030 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 0000000000000000 CR3: 0000000002810000 CR4: 0000000000050660
+>> Call Trace:
+>>  efifb_probe.cold+0x2e6/0x688
+> Why is this probing EFIFB at resume? Josef is that hibernate or suspend
+> to RAM?
+This is actually on boot, might be a totally ignore able warning though.
+Would be nice to actually get rid of!
+>
+>>  platform_probe+0x3f/0x90
+>>  call_driver_probe+0x24/0xc0
+>>  really_probe+0x1e7/0x310
+>>  __driver_probe_device+0xfe/0x180
+>>  driver_probe_device+0x1e/0x90
+>>  __device_attach_driver+0x72/0xe0
+>>  ? driver_allows_async_probing+0x50/0x50
+>>  ? driver_allows_async_probing+0x50/0x50
+>>  bus_for_each_drv+0x8f/0xd0
+>>  __device_attach+0xe9/0x1f0
+>>  bus_probe_device+0x8e/0xa0
+>>  device_add+0x3fb/0x630
+>>  platform_device_add+0x102/0x230
+>>  sysfb_init+0xea/0x141
+>>  ? firmware_map_add_early+0xb8/0xb8
+>>  do_one_initcall+0x57/0x200
+>>  do_initcalls+0x109/0x166
+>>  kernel_init_freeable+0x23c/0x2bd
+>>  ? rest_init+0xc0/0xc0
+>>  kernel_init+0x16/0x120
+>>  ret_from_fork+0x22/0x30
+>> ---[ end trace b068d3cd1b7f5f49 ]---
+>> efifb: abort, cannot remap video memory 0x7e9000 @ 0x60000000
+>> efi-framebuffer: probe of efi-framebuffer.0 failed with error -5
+>> --
+>> printk: Suspending console(s) (use no_console_suspend to debug)
+>> [drm] free PSP TMR buffer
+>> PM: suspend devices took 0.428 seconds
+>> ACPI: EC: interrupt blocked
+>> ACPI: PM: Preparing to enter system sleep state S3
+>> ACPI: EC: event blocked
+>> ACPI: EC: EC stopped
+>> ACPI: PM: Saving platform NVS memory
+>> Disabling non-boot CPUs ...
+>> ------------[ cut here ]------------
+>> WARNING: CPU: 1 PID: 0 at arch/x86/mm/tlb.c:522  switch_mm_irqs_off+0x3c5/0x400
+> 	if (WARN_ON_ONCE(__read_cr3() != build_cr3(real_prev->pgd, prev_asid))) {
+>
+>> Modules linked in: snd_seq_dummy snd_hrtimer snd_seq snd_seq_device snd_timer nf_tables nfnetlink vfat fat intel_rapl_msr think_lmi firmware_attributes_class wmi_bmof intel_rapl_common pcspkr uvcvideo videobuf2_vmalloc videobuf2_memops joydev videobuf2_v4l2 sp5100_tco k10temp videobuf2_common i2c_piix4 iwlwifi videodev mc cfg80211 thinkpad_acpi ipmi_devintf ucsi_acpi platform_profile typec_ucsi ledtrig_audio ipmi_msghandler r8169 rfkill typec snd wmi soundcore video i2c_scmi fuse xenfs ip_tables dm_thin_pool dm_persistent_data dm_bio_prison dm_crypt trusted asn1_encoder hid_multitouch amdgpu crct10dif_pclmul crc32_pclmul crc32c_intel gpu_sched i2c_algo_bit drm_ttm_helper ghash_clmulni_intel ttm serio_raw drm_kms_helper cec sdhci_pci cqhci sdhci xhci_pci drm xhci_pci_renesas nvme xhci_hcd ehci_pci mmc_core ehci_hcd nvme_core xen_acpi_processor xen_privcmd xen_pciback xen_blkback xen_gntalloc xen_gntdev xen_evtchn uinput
+>> CPU: 1 PID: 0 Comm: swapper/1 Tainted: G        W        --------- ---  5.15.0-0.rc7.0.fc32.qubes.x86_64 #1
+>> Hardware name: LENOVO 20Y1S02400/20Y1S02400, BIOS R1BET65W(1.34 ) 06/17/2021
+>> RIP: e030:switch_mm_irqs_off+0x3c5/0x400
+>> Code: f0 41 80 65 01 fb ba 01 00 00 00 49 8d b5 60 23 00 00 4c 89 ef 49 c7 85 68 23 00 00 60 1d 08 81 e8 a0 f3 08 00 e9 15 fd ff ff <0f> 0b e8 34 fa ff ff e9 ad fc ff ff 0f 0b e9 31 fe ff ff 0f 0b e9
+>> RSP: e02b:ffffc900400f3eb0 EFLAGS: 00010006
+>> RAX: 00000001336c6000 RBX: ffff888140660000 RCX: 0000000000000040
+>> RDX: ffff8881003027c0 RSI: 0000000000000000 RDI: ffff8881b36c6000
+>> RBP: ffffffff829d91c0 R08: 0000000000000000 R09: 0000000000000000
+>> R10: 0000000000000008 R11: 0000000000000000 R12: ffff888104e88440
+>> R13: ffff8881003027c0 R14: 0000000000000000 R15: 0000000000000001
+>> FS:  0000000000000000(0000) GS:ffff888140640000(0000) knlGS:0000000000000000
+>> CS:  10000e030 DS: 002b ES: 002b CR0: 0000000080050033
+>> CR2: 000060b7d78bf198 CR3: 0000000002810000 CR4: 0000000000050660
+>> Call Trace:
+>>  switch_mm+0x1c/0x30
+>>  idle_task_exit+0x55/0x60
+>>  play_dead_common+0xa/0x20
+>>  xen_pv_play_dead+0xa/0x60
+> So this is when bringing the non boot CPUs down and the switch_mm() code
+> discovers inconsistency between CR3 and the expected value.
+>
+> Would probably be interesting to print the actual values, but XEN folks
+> might have an idea.
+My guess here after digging through the code is that XEN is just (as the
+comment above this warn
+says), just doing a load_cr3(swapper_pg_dir) without going through
+switch_mm first.
+I could add a BUG_ON somewhere, or maybe printk, but I'm very unsure to
+where I should put them.
+Assistance here would be great.
+>
+>>  do_idle+0xd1/0xe0
+>>  cpu_startup_entry+0x19/0x20
+>>  asm_cpu_bringup_and_idle+0x5/0x1000
+>> ---[ end trace b068d3cd1b7f5f4b ]---
+>> smpboot: CPU 1 is now offline
+>> smpboot: CPU 2 is now offline
+>> smpboot: CPU 3 is now offline
+>> smpboot: CPU 4 is now offline
+>> smpboot: CPU 5 is now offline
+>> smpboot: CPU 6 is now offline
+>> smpboot: CPU 7 is now offline
+>> ACPI: PM: Low-level resume complete
+>> ACPI: EC: EC started
+>> ACPI: PM: Restoring platform NVS memory
+>> xen_acpi_processor: Uploading Xen processor PM info
+>> xen_acpi_processor: (_PXX): Hypervisor error (-19) for ACPI CPU1
+>> xen_acpi_processor: (_PXX): Hypervisor error (-19) for ACPI CPU3
+>> xen_acpi_processor: (_PXX): Hypervisor error (-19) for ACPI CPU5
+>> xen_acpi_processor: (_PXX): Hypervisor error (-19) for ACPI CPU7
+>> xen_acpi_processor: (_PXX): Hypervisor error (-19) for ACPI CPU9
+>> xen_acpi_processor: (_PXX): Hypervisor error (-19) for ACPI CPU11
+>> --
+>> CPU2 is up
+>> installing Xen timer for CPU 3
+>> cpu 3 spinlock event irq 79
+>> [Firmware Bug]: ACPI MWAIT C-state 0x0 not supported by HW (0x0)
+>> ACPI: \_SB_.PLTF.C003: Found 3 idle states
+>> ACPI: FW issue: working around C-state latencies out of order
+>> CPU3 is up
+>> ------------[ cut here ]------------
+>> cfs_rq->avg.load_avg || cfs_rq->avg.util_avg || cfs_rq->avg.runnable_avg
+>> installing Xen timer for CPU 4
+>> WARNING: CPU: 3 PID: 455 at kernel/sched/fair.c:3339  __update_blocked_fair+0x49b/0x4b0
+> 	/*
+> 	 * _avg must be null when _sum are null because _avg = _sum / divider
+> 	 * Make sure that rounding and/or propagation of PELT values never
+> 	 * break this.
+> 	 */
+> 	SCHED_WARN_ON(cfs_rq->avg.load_avg ||
+> 		      cfs_rq->avg.util_avg ||
+> 		      cfs_rq->avg.runnable_avg);
+>
+> PeterZ, does that ring any bell?
+I also assume that the first BUG triggers this one.
+>
+>> Modules linked in: snd_seq_dummy snd_hrtimer snd_seq snd_seq_device snd_timer nf_tables nfnetlink vfat fat intel_rapl_msr think_lmi firmware_attributes_class wmi_bmof intel_rapl_common pcspkr uvcvideo videobuf2_vmalloc videobuf2_memops joydev videobuf2_v4l2 sp5100_tco k10temp videobuf2_common i2c_piix4 iwlwifi videodev mc cfg80211 thinkpad_acpi ipmi_devintf ucsi_acpi platform_profile typec_ucsi ledtrig_audio ipmi_msghandler r8169 rfkill typec snd wmi soundcore video i2c_scmi fuse xenfs ip_tables dm_thin_pool dm_persistent_data dm_bio_prison dm_crypt trusted asn1_encoder hid_multitouch amdgpu crct10dif_pclmul crc32_pclmul crc32c_intel gpu_sched i2c_algo_bit drm_ttm_helper ghash_clmulni_intel ttm serio_raw drm_kms_helper cec sdhci_pci cqhci sdhci xhci_pci drm xhci_pci_renesas nvme xhci_hcd ehci_pci mmc_core ehci_hcd nvme_core xen_acpi_processor xen_privcmd xen_pciback xen_blkback xen_gntalloc xen_gntdev xen_evtchn uinput
+>> CPU: 3 PID: 455 Comm: kworker/3:2 Tainted: G        W        --------- ---  5.15.0-0.rc7.0.fc32.qubes.x86_64 #1
+>> Hardware name: LENOVO 20Y1S02400/20Y1S02400, BIOS R1BET65W(1.34 ) 06/17/2021
+>> Workqueue:  0x0 (events)
+>> RIP: e030:__update_blocked_fair+0x49b/0x4b0
+>> Code: 6b fd ff ff 49 8b 96 48 01 00 00 48 89 90 50 09 00 00 e9 ff fc ff ff 48 c7 c7 10 7a 5e 82 c6 05 f3 35 9e 01 01 e8 1f f3 b2 00 <0f> 0b 41 8b 86 38 01 00 00 e9 c6 fc ff ff 0f 1f 80 00 00 00 00 0f
+>> RSP: e02b:ffffc900410d7ce0 EFLAGS: 00010082
+>> RAX: 0000000000000000 RBX: 0000000000000018 RCX: ffff8881406d8a08
+>> RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI: ffff8881406d8a00
+>> RBP: ffff8881406e9800 R08: 0000000000000048 R09: ffffc900410d7c78
+>> R10: 0000000000000049 R11: 000000002d2d2d2d R12: ffff8881406e9f80
+>> R13: ffff8881406e9e40 R14: ffff8881406e96c0 R15: 0000000000000000
+>> FS:  0000000000000000(0000) GS:ffff8881406c0000(0000) knlGS:0000000000000000
+>> CS:  10000e030 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 0000782e51820000 CR3: 0000000002810000 CR4: 0000000000050660
+>> Call Trace:
+>>  update_blocked_averages+0xa8/0x180
+>>  newidle_balance+0x175/0x380
+>>  pick_next_task_fair+0x39/0x3e0
+>>  pick_next_task+0x4c/0xbd0
+>>  ? dequeue_task_fair+0xba/0x390
+>>  __schedule+0x13a/0x570
+>>  schedule+0x44/0xa0
+>>  worker_thread+0xc0/0x320
+>>  ? process_one_work+0x390/0x390
+>>  kthread+0x10f/0x130
+>>  ? set_kthread_struct+0x40/0x40
+>>  ret_from_fork+0x22/0x30
+>> ---[ end trace b068d3cd1b7f5f4c ]---
+>> cpu 4 spinlock event irq 85
+>> [Firmware Bug]: ACPI MWAIT C-state 0x0 not supported by HW (0x0)
+>> ACPI: \_SB_.PLTF.C004: Found 3 idle states
+>> ACPI: FW issue: working around C-state latencies out of order
+>> CPU4 is up
+>> installing Xen timer for CPU 5
+>> cpu 5 spinlock event irq 91
+>> [Firmware Bug]: ACPI MWAIT C-state 0x0 not supported by HW (0x0)
+>> ACPI: \_SB_.PLTF.C005: Found 3 idle states
+>> ACPI: FW issue: working around C-state latencies out of order
+>> CPU5 is up
 
