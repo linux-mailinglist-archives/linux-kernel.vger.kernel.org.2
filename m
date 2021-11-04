@@ -2,304 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814D84457DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:02:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 649234457E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbhKDRFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231684AbhKDRFI (ORCPT
+        id S231890AbhKDRHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:07:17 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:54206 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231684AbhKDRHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:05:08 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11385C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 10:02:30 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id n85so1952221pfd.10
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 10:02:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kyrDUfuVkXm+XYvJWKWEhg86DR2JDBASsY+NzkY4H5M=;
-        b=FyM3fY5C+tQ/SrtcxhYUoh4Yf4COR8b9eQliX++1pz8SkK90IMEieuA2EQzrzRJa0T
-         uykM6vcEUoc6MCroY9fmR9lJBAWDELZ7BP1qnWzMcpwuN4Q0gtAnpb8ok+/2JFy+fs7+
-         PDcKfowhz5rc6IQjGT9jolEBgUb+z3rY8MisEeJX/SM3hgsD/lhs2UrapTcSDQgOvIM+
-         YSfFDhmT4ZZDHeuxNozcoUtg5E2VQea269+x+iMf1YiVbHruxKHFJtGIiJeHfF8y9Zg1
-         s4qq8h9xOjiPAj18g+6ON90taHVQ4s137lCi4Q7SyZoTvJe80an/gMhaQe9tlI0l+vT1
-         N1NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kyrDUfuVkXm+XYvJWKWEhg86DR2JDBASsY+NzkY4H5M=;
-        b=P2Y11+A2R0cJOH5DUI2dxaBXeamhtAz4GmwpBWvuNcVOoAYLtnuIg7PI8bTTe4Mob5
-         FxNuzFhE850corE1hPtJOpWT8lN56/6HRaeYeovxpvA50+y/riz89++xEekJHXYBXcVk
-         CLundkMim+/ROpyqZ3696fhSCWqTfZu/up2GR71+O5vrsXl2vIvvJhVb+hZ6G1iC86CX
-         1rxv59sigBFRfVlh3DS3sjRvqMAR0CIW8+T3sGp8xICZ0lIu2kJtiYzXsyp8rLdCgo2l
-         Iwf4AncCTf0tRnuY0axHdRCdkkRlX4Dc8LL99Fhoi8uKk8Ai2xQ+dTZRHt8HAnYa3Ffw
-         6etw==
-X-Gm-Message-State: AOAM532xBvQPIGZVWXlnPIMgWgchTsqJJJoKTMr5vGbuCqwdEwDiRhpq
-        Iyway2v+92tbTyiDJIq9XnMuLw==
-X-Google-Smtp-Source: ABdhPJzm+gz3+BU+45kA+pAFzkwjDU4S1W55FonrLk4cJP2ws02a+5SqS34Q3gMI106h6N8dqsFZQg==
-X-Received: by 2002:a05:6a00:2405:b0:3e1:9f65:9703 with SMTP id z5-20020a056a00240500b003e19f659703mr54051327pfh.6.1636045349432;
-        Thu, 04 Nov 2021 10:02:29 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id p3sm5267413pfb.205.2021.11.04.10.02.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 10:02:26 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 11:02:24 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Jinlong <quic_jinlmao@quicinc.com>
-Cc:     Tao Zhang <quic_taozha@quicinc.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>
-Subject: Re: [PATCH 04/10] Coresight: Enable BC and GPR for TPDM driver
-Message-ID: <20211104170224.GC491267@p14s>
-References: <1634801936-15080-1-git-send-email-quic_taozha@quicinc.com>
- <1634801936-15080-5-git-send-email-quic_taozha@quicinc.com>
- <20211103194300.GA383984@p14s>
- <20211104111323.GA14135@jinlmao-gv.ap.qualcomm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211104111323.GA14135@jinlmao-gv.ap.qualcomm.com>
+        Thu, 4 Nov 2021 13:07:15 -0400
+Received: from localhost.localdomain (unknown [24.17.193.74])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4DCDF20ABA8A;
+        Thu,  4 Nov 2021 10:04:37 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4DCDF20ABA8A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1636045477;
+        bh=S+wMjnUVLHS7XpWKlRH2AepC6ArF8tL3CXaF2obygzc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=e1MYBJs4smXhKvKgc6M1aYrmFYqRgUMmXRhYlWZmkVRdeJVs+SYDdxcWyePGQCN9k
+         Web55pzBi1sltbYvueV6oB7YA91ZtWLGCKTM+XPCmfTCseKuJTQgucZ+WMDA7QEqBK
+         iOoRt4C0uxP6XWraUWLDnKRevs+xun/SWilG1Lck=
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     rostedt@goodmis.org, mhiramat@kernel.org
+Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        beaub@linux.microsoft.com
+Subject: [PATCH v4 00/10] user_events: Enable user processes to create and write to trace events
+Date:   Thu,  4 Nov 2021 10:04:23 -0700
+Message-Id: <20211104170433.2206-1-beaub@linux.microsoft.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
+User mode processes that wish to use trace events to get data into
+ftrace, perf, eBPF, etc are limited to uprobes today. The user events
+features enables an ABI for user mode processes to create and write to
+trace events that are isolated from kernel level trace events. This
+enables a faster path for tracing from user mode data as well as opens
+managed code to participate in trace events, where stub locations are
+dynamic.
 
-> > > +
-> > > +static ssize_t reset_store(struct device *dev,
-> > > +					  struct device_attribute *attr,
-> > > +					  const char *buf,
-> > > +					  size_t size)
-> > > +{
-> > > +	int ret = 0;
-> > > +	unsigned long val;
-> > > +	struct mcmb_dataset *mcmb_temp = NULL;
-> > > +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-> > > +
-> > > +	ret = kstrtoul(buf, 10, &val);
-> > 
-> > The coresight subsystem normally uses the hexadecimal base.
-> > 
-> 
-> We will address you comments.
-> 
-> > > +	if (ret)
-> > > +		return ret;
-> > 
-> > Shouldn't this be "if (!ret)" ? 
-> >
-> 
-> When ret is not 0, it need to return.
+User processes often want to trace only when it's useful. To enable this
+a set of pages are mapped into the user process space that indicate the
+current state of the user events that have been registered. User
+processes can check if their event is hooked to a trace/probe, and if it
+is, emit the event data out via the write() syscall.
 
-I would expect something like this:
+Two new files are introduced into tracefs to accomplish this:
+user_events_status - This file is mmap'd into participating user mode
+processes to indicate event status.
 
-$ echo 1 > /sys/path/to/tpdm/device/reset
+user_events_data - This file is opened and register/delete ioctl's are
+issued to create/open/delete trace events that can be used for tracing.
 
-and not
+The typical scenario is on process start to mmap user_events_status. Processes
+then register the events they plan to use via the REG ioctl. The ioctl reads
+and updates the passed in user_reg struct. The status_index of the struct is
+used to know the byte in the status page to check for that event. The
+write_index of the struct is used to describe that event when writing out to
+the fd that was used for the ioctl call. The data must always include this
+index first when writing out data for an event. Data can be written either by
+write() or by writev().
 
-$ echo 0 > /sys/path/to/tpdm/device/reset
+For example, in memory:
+int index;
+char data[];
 
-The latter is what the code does.
+Psuedo code example of typical usage:
+struct user_reg reg;
 
-Thanks,
-Mathieu
+int page_fd = open("user_events_status", O_RDWR);
+char *page_data = mmap(NULL, PAGE_SIZE, PROT_READ, MAP_SHARED, page_fd, 0);
+close(page_fd);
 
->  
-> > > +
-> > > +	mutex_lock(&drvdata->lock);
-> > > +	/* Reset all datasets to ZERO */
-> > > +	if (drvdata->gpr != NULL)
-> > > +		memset(drvdata->gpr, 0, sizeof(struct gpr_dataset));
-> > > +
-> > > +	if (drvdata->bc != NULL)
-> > > +		memset(drvdata->bc, 0, sizeof(struct bc_dataset));
-> > > +
-> > > +	if (drvdata->tc != NULL)
-> > > +		memset(drvdata->tc, 0, sizeof(struct tc_dataset));
-> > > +
-> > > +	if (drvdata->dsb != NULL)
-> > > +		memset(drvdata->dsb, 0, sizeof(struct dsb_dataset));
-> > > +
-> > > +	if (drvdata->cmb != NULL) {
-> > > +		if (drvdata->cmb->mcmb != NULL) {
-> > > +			mcmb_temp = drvdata->cmb->mcmb;
-> > > +			memset(drvdata->cmb->mcmb, 0,
-> > > +				sizeof(struct mcmb_dataset));
-> > > +			}
-> > > +
-> > > +		memset(drvdata->cmb, 0, sizeof(struct cmb_dataset));
-> > > +		drvdata->cmb->mcmb = mcmb_temp;
-> > > +	}
-> > > +	/* Init the default data */
-> > > +	tpdm_init_default_data(drvdata);
-> > > +
-> > > +	mutex_unlock(&drvdata->lock);
-> > > +
-> > > +	/* Disable tpdm if enabled */
-> > > +	if (drvdata->enable)
-> > > +		coresight_disable(drvdata->csdev);
-> > 
-> > Why is this done out of the lock?
-> > 
-> 
-> When call coresight_disable, tpdm_disable will be called. There is lock in tpdm_disable.
-> If add it into the lock, there will be dead lock.
-> 
-> > > +
-> > > +	return size;
-> > > +}
-> > > +static DEVICE_ATTR_WO(reset);
-> > > +
-> > > +static ssize_t integration_test_store(struct device *dev,
-> > > +					  struct device_attribute *attr,
-> > > +					  const char *buf,
-> > > +					  size_t size)
-> > > +{
-> > > +	int i, ret = 0;
-> > > +	unsigned long val;
-> > > +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-> > > +
-> > > +	ret = kstrtoul(buf, 10, &val);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	if (val != 1 && val != 2)
-> > > +		return -EINVAL;
-> > > +
-> > > +	if (!drvdata->enable)
-> > > +		return -EINVAL;
-> > > +
-> > > +	if (val == 1)
-> > > +		val = ATBCNTRL_VAL_64;
-> > > +	else
-> > > +		val = ATBCNTRL_VAL_32;
-> > > +	TPDM_UNLOCK(drvdata);
-> > > +	tpdm_writel(drvdata, 0x1, TPDM_ITCNTRL);
-> > > +
-> > > +	for (i = 1; i < 5; i++)
-> > > +		tpdm_writel(drvdata, val, TPDM_ITATBCNTRL);
-> > > +
-> > > +	tpdm_writel(drvdata, 0, TPDM_ITCNTRL);
-> > > +	TPDM_LOCK(drvdata);
-> > > +	return size;
-> > > +}
-> > > +static DEVICE_ATTR_WO(integration_test);
-> > 
-> > Integration test interface should be conditional to a compile time option.  Have
-> > a look at what was done for CTIs.
-> > 
-> 
-> We will check and update.
-> 
-> > > +
-> > > +static ssize_t gp_regs_show(struct device *dev,
-> > > +				 struct device_attribute *attr,
-> > > +				 char *buf)
-> > > +{
-> > > +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-> > > +	ssize_t size = 0;
-> > > +	int i = 0;
-> > > +
-> > > +	if (!test_bit(TPDM_DS_GPR, drvdata->datasets))
-> > > +		return -EPERM;
-> > 
-> >                 return -EINVAL;
-> > 
-> > > +
-> > > +	mutex_lock(&drvdata->lock);
-> > > +	for (i = 0; i < TPDM_GPR_REGS_MAX; i++) {
-> > > +		if (!test_bit(i, drvdata->gpr->gpr_dirty))
-> > > +			continue;
-> > > +		size += scnprintf(buf + size, PAGE_SIZE - size,
-> > > +				  "Index: 0x%x Value: 0x%x\n", i,
-> > > +				  drvdata->gpr->gp_regs[i]);
-> > 
-> > This should not be - the sysfs interface requires outputs of a single line.
-> > 
-> 
-> We will check and update.
-> 
-> > > +	}
-> > > +	mutex_unlock(&drvdata->lock);
-> > > +	return size;
-> > > +}
-> > > +
-> > > +static ssize_t gp_regs_store(struct device *dev,
-> > > +				  struct device_attribute *attr,
-> > > +				  const char *buf,
-> > > +				  size_t size)
-> > > +{
-> > > +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-> > > +	unsigned long index, val;
-> > > +
-> > > +	if (sscanf(buf, "%lx %lx", &index, &val) != 2)
-> > > +		return -EINVAL;
-> > > +	if (!test_bit(TPDM_DS_GPR, drvdata->datasets) ||
-> > > +	    index >= TPDM_GPR_REGS_MAX)
-> > > +		return -EPERM;
-> > > +
-> > > +	mutex_lock(&drvdata->lock);
-> > > +	drvdata->gpr->gp_regs[index] = val;
-> > > +	__set_bit(index, drvdata->gpr->gpr_dirty);
-> > > +	mutex_unlock(&drvdata->lock);
-> > > +	return size;
-> > > +}
-> > > +static DEVICE_ATTR_RW(gp_regs);
-> > > +
-> > > +static struct attribute *tpdm_attrs[] = {
-> > > +	&dev_attr_available_datasets.attr,
-> > > +	&dev_attr_enable_datasets.attr,
-> > > +	&dev_attr_reset.attr,
-> > > +	&dev_attr_integration_test.attr,
-> > > +	&dev_attr_gp_regs.attr,
-> > > +	NULL,
-> > > +};
-> > 
-> > All new sysfs interface need to be documented.  See here:
-> > 
-> > Documentation/ABI/testing/sysfs-bus-coresight-devices-xyz
-> > 
-> > More comments to come...
-> > 
-> 
-> We will add the comments. 
-> 
-> > Thanks,
-> > Mathieu
-> > 
-> > > +
-> > > +static struct attribute_group tpdm_attr_grp = {
-> > > +	.attrs = tpdm_attrs,
-> > > +};
-> > > +static const struct attribute_group *tpdm_attr_grps[] = {
-> > > +	&tpdm_attr_grp,
-> > > +	NULL,
-> > > +};
-> > > +
-> > >  static int tpdm_datasets_alloc(struct tpdm_drvdata *drvdata)
-> > >  {
-> > >  	if (test_bit(TPDM_DS_GPR, drvdata->datasets)) {
-> > > @@ -513,6 +846,7 @@ static int tpdm_probe(struct amba_device *adev, const struct amba_id *id)
-> > >  	desc.ops = &tpdm_cs_ops;
-> > >  	desc.pdata = adev->dev.platform_data;
-> > >  	desc.dev = &adev->dev;
-> > > +	desc.groups = tpdm_attr_grps;
-> > >  	drvdata->csdev = coresight_register(&desc);
-> > >  	if (IS_ERR(drvdata->csdev))
-> > >  		return PTR_ERR(drvdata->csdev);
-> > > -- 
-> > > 2.17.1
-> > > 
+int data_fd = open("user_events_data", O_RDWR);
+
+reg.size = sizeof(reg);
+reg.name_args = (__u64)"test";
+
+ioctl(data_fd, DIAG_IOCSREG, &reg);
+int status_id = reg.status_index;
+int write_id = reg.write_index;
+
+struct iovec io[2];
+io[0].iov_base = &write_id;
+io[0].iov_len = sizeof(write_id);
+io[1].iov_base = payload;
+io[1].iov_len = sizeof(payload);
+
+if (page_data[status_id])
+	writev(data_fd, io, 2);
+
+User events are also exposed via the dynamic_events tracefs file for
+both create and delete. Current status is exposed via the user_events_status
+tracefs file.
+
+Simple example to register a user event via dynamic_events:
+	echo u:test >> dynamic_events
+	cat dynamic_events
+	u:test
+
+If an event is hooked to a probe, the probe hooked shows up:
+	echo 1 > events/user_events/test/enable
+	cat user_events_status
+	1:test # Used by ftrace
+
+	Active: 1
+	Busy: 1
+	Max: 4096
+
+If an event is not hooked to a probe, no probe status shows up:
+	echo 0 > events/user_events/test/enable
+	cat user_events_status
+	1:test
+
+	Active: 1
+	Busy: 0
+	Max: 4096
+
+Users can describe the trace event format via the following format:
+	name[:FLAG1[,FLAG2...] [field1[;field2...]]
+
+Each field has the following format:
+	type name
+
+Example for char array with a size of 20 named msg:
+	echo 'u:detailed char[20] msg' >> dynamic_events
+	cat dynamic_events
+	u:detailed char[20] msg
+
+Data offsets are based on the data written out via write() and will be
+updated to reflect the correct offset in the trace_event fields. For dynamic
+data it is recommended to use the new __rel_loc data type. This type will be
+the same as __data_loc, but the offset is relative to this entry. This allows
+user_events to not worry about what common fields are being inserted before
+the data.
+
+The above format is valid for both the ioctl and the dynamic_events file.
+
+V2:
+Fixed kmalloc vs kzalloc for register_page.
+Renamed user_event_mmap to user_event_status.
+Renamed user_event prefix from ue to u.
+Added seq_* operations to user_event_status to enable cat output.
+Aligned field parsing to synth_events format (+ size specifier for
+custom/user types).
+Added uapi header user_events.h to align kernel and user ABI definitions.
+
+V3:
+Updated ABI to handle single FD into many events via an int header.
+Added iovec/writev support to enable int header without payload changes.
+Updated bpf context to describe if data is coming from user, kernel or
+raw iovec.
+Added flag support for registering event, allows forcing BPF to always
+recieve the direct iovecs for sensitive code paths that do not want
+copies.
+
+V4:
+Moved to struct user_reg for registering events via ioctl.
+Added unit tests for ftrace, dyn_events and perf integration.
+Added print_fmt generation and proper dyn_events matching statements.
+Reduced time in preemption disabled paths.
+Added documentation file.
+Pre-fault in data when preemption is enabled and use no-fault copy in probes.
+Fixed MIPs missing PAGE_READONLY define.
+
+Beau Belgrave (10):
+  user_events: Add UABI header for user access to user_events
+  user_events: Add minimal support for trace_event into ftrace
+  user_events: Add print_fmt generation support for basic types
+  user_events: Handle matching arguments from dyn_events
+  user_events: Add basic perf and eBPF support
+  user_events: Add self-test for ftrace integration
+  user_events: Add self-test for dynamic_events integration
+  user_events: Add self-test for perf_event integration
+  user_events: Optimize writing events by only copying data once
+  user_events: Add documentation file
+
+ Documentation/trace/user_events.rst           |  298 ++++
+ include/uapi/linux/user_events.h              |   68 +
+ kernel/trace/Kconfig                          |   15 +
+ kernel/trace/Makefile                         |    1 +
+ kernel/trace/trace_events_user.c              | 1413 +++++++++++++++++
+ tools/testing/selftests/user_events/Makefile  |    9 +
+ .../testing/selftests/user_events/dyn_test.c  |  122 ++
+ .../selftests/user_events/ftrace_test.c       |  205 +++
+ .../testing/selftests/user_events/perf_test.c |  168 ++
+ tools/testing/selftests/user_events/settings  |    1 +
+ 10 files changed, 2300 insertions(+)
+ create mode 100644 Documentation/trace/user_events.rst
+ create mode 100644 include/uapi/linux/user_events.h
+ create mode 100644 kernel/trace/trace_events_user.c
+ create mode 100644 tools/testing/selftests/user_events/Makefile
+ create mode 100644 tools/testing/selftests/user_events/dyn_test.c
+ create mode 100644 tools/testing/selftests/user_events/ftrace_test.c
+ create mode 100644 tools/testing/selftests/user_events/perf_test.c
+ create mode 100644 tools/testing/selftests/user_events/settings
+
+-- 
+2.17.1
+
