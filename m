@@ -2,168 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C5B445A71
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 20:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6066445A2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 20:02:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234128AbhKDTLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 15:11:00 -0400
-Received: from mail.xenproject.org ([104.130.215.37]:54986 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232340AbhKDTK7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 15:10:59 -0400
-X-Greylist: delayed 2243 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Nov 2021 15:10:58 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
-        Subject:Cc:To:From; bh=VV56b86sER65QVEVQ0sGmEBrBOeAbsDWmGNCpdGcDkg=; b=eVusLe
-        hXkUIGnaOP5FUhQF8OV7IBTqULrJzB/kXhALbSrGXdCxlfjz+zaUjgJo0I+WlI4q2C5/fi3z3NH2x
-        //riluIZTYKkwympILrIU1Djav+yJNhfNCTQsQ15W58csbpRVrP0H/yGHOaCz3mZu9zSKi/T+xN4V
-        LCmR6X0K+Ys=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <paul@xen.org>)
-        id 1mihVY-0001zT-7F; Thu, 04 Nov 2021 18:30:40 +0000
-Received: from host86-165-42-146.range86-165.btcentralplus.com ([86.165.42.146] helo=debian.home)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <paul@xen.org>)
-        id 1mihVX-0001RA-Ul; Thu, 04 Nov 2021 18:30:40 +0000
-From:   Paul Durrant <paul@xen.org>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Paul Durrant <pdurrant@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH] KVM: x86: Make sure KVM_CPUID_FEATURES really are KVM_CPUID_FEATURES
-Date:   Thu,  4 Nov 2021 18:30:20 +0000
-Message-Id: <20211104183020.4341-1-paul@xen.org>
-X-Mailer: git-send-email 2.20.1
+        id S234191AbhKDTE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 15:04:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234113AbhKDTEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 15:04:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E074161241;
+        Thu,  4 Nov 2021 19:02:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636052531;
+        bh=1EZx2skIv3gidB+okmu2aSt5UCRLWsBkMqEWZ/9Pu8Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cpArnTU3+eEIP9kQwQgEmnLBzcLgOcL4NrFIQvI9itG9DZT9st/yQzaEFSS+aDusn
+         VMqI2MI1bB15r9d1UntF2Q8KwElLNa3I+LmjuMWXCe14w9+Vna1MQ6m06joLk21ehB
+         NwTyskkU7273ZbxxpuMcNSsVVrfqDrsYpvy6ozme9xLKsVBZbrhruWbEh0/yoRlJHR
+         +B+rHp1xeeE+EfjquQy82xtlSZPc/FvRKogLk1t/4kIG3siqGTysAXoDDJ6uTrtmSe
+         Z82Mzwu86meYjKwo0i6xZHpUOM+ZT4NUJenJ8SdNH4hMZaxNPR5YNdKw6p/xofHts6
+         xOO/+5Fu+RguA==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mihzw-006bKE-DH; Thu, 04 Nov 2021 19:02:04 +0000
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Filip Kolev <fil.kolev@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Martiros Shakhzadyan <vrzh@vrzh.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: [PATCH 1/4] media: atomisp-ov2722: use v4l2_find_nearest_size()
+Date:   Thu,  4 Nov 2021 19:02:00 +0000
+Message-Id: <e7aebe347f3878d54bceeb48d8d0574e944c5608.1636052511.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Durrant <pdurrant@amazon.com>
+Instead of reinventing the wheel, use v4l2_find_nearest_size()
+in order to get the closest resolution.
 
-Currently when kvm_update_cpuid_runtime() runs, it assumes that the
-KVM_CPUID_FEATURES leaf is located at 0x40000001. This is not true,
-however, if Hyper-V support is enabled. In this case the KVM leaves will
-be offset.
+This should address a bug where the wrong resolution was
+selected.
 
-This patch introdues as new 'kvm_cpuid_base' field into struct
-kvm_vcpu_arch to track the location of the KVM leaves and function
-kvm_update_cpuid_base() (called from kvm_update_cpuid_runtime()) to locate
-the leaves using the 'KVMKVMKVM\0\0\0' signature. Adjustment of
-KVM_CPUID_FEATURES will hence now target the correct leaf.
-
-Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: Wanpeng Li <wanpengli@tencent.com>
-Cc: Jim Mattson <jmattson@google.com>
-Cc: Joerg Roedel <joro@8bytes.org>
----
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/cpuid.c            | 50 +++++++++++++++++++++++++++++----
- 2 files changed, 46 insertions(+), 5 deletions(-)
+ .../media/atomisp/i2c/atomisp-ov2722.c        | 118 ++++--------------
+ drivers/staging/media/atomisp/i2c/ov2722.h    |   3 +-
+ 2 files changed, 22 insertions(+), 99 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 88fce6ab4bbd..21133ffa23e9 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -725,6 +725,7 @@ struct kvm_vcpu_arch {
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+index 90d0871a78a3..da98094d7094 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+@@ -557,7 +557,7 @@ static int ov2722_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
+ 		ret = ov2722_g_fnumber_range(&dev->sd, &ctrl->val);
+ 		break;
+ 	case V4L2_CID_LINK_FREQ:
+-		val = ov2722_res[dev->fmt_idx].mipi_freq;
++		val = dev->res->mipi_freq;
+ 		if (val == 0)
+ 			return -EINVAL;
  
- 	int cpuid_nent;
- 	struct kvm_cpuid_entry2 *cpuid_entries;
-+	u32 kvm_cpuid_base;
- 
- 	u64 reserved_gpa_bits;
- 	int maxphyaddr;
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 2d70edb0f323..2cfb8ec4f570 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -99,11 +99,46 @@ static int kvm_check_cpuid(struct kvm_cpuid_entry2 *entries, int nent)
- 	return 0;
+@@ -782,76 +782,6 @@ static int ov2722_s_power(struct v4l2_subdev *sd, int on)
+ 	return ret;
  }
  
-+static void kvm_update_cpuid_base(struct kvm_vcpu *vcpu)
-+{
-+	u32 function;
-+
-+	for (function = 0x40000000; function < 0x40010000; function += 0x100) {
-+		struct kvm_cpuid_entry2 *best = kvm_find_cpuid_entry(vcpu, function, 0);
-+
-+		if (best) {
-+			char signature[12];
-+
-+			*(u32 *)&signature[0] = best->ebx;
-+			*(u32 *)&signature[4] = best->ecx;
-+			*(u32 *)&signature[8] = best->edx;
-+
-+			if (!memcmp(signature, "KVMKVMKVM\0\0\0", 12))
-+				break;
-+		}
-+	}
-+	vcpu->arch.kvm_cpuid_base = function;
-+}
-+
-+static inline bool kvm_get_cpuid_base(struct kvm_vcpu *vcpu, u32 *function)
-+{
-+	if (vcpu->arch.kvm_cpuid_base < 0x40000000 ||
-+	    vcpu->arch.kvm_cpuid_base >= 0x40010000)
-+		return false;
-+
-+	*function = vcpu->arch.kvm_cpuid_base;
-+	return true;
-+}
-+
- void kvm_update_pv_runtime(struct kvm_vcpu *vcpu)
+-/*
+- * distance - calculate the distance
+- * @res: resolution
+- * @w: width
+- * @h: height
+- *
+- * Get the gap between resolution and w/h.
+- * res->width/height smaller than w/h wouldn't be considered.
+- * Returns the value of gap or -1 if fail.
+- */
+-#define LARGEST_ALLOWED_RATIO_MISMATCH 800
+-static int distance(struct ov2722_resolution *res, u32 w, u32 h)
+-{
+-	unsigned int w_ratio = (res->width << 13) / w;
+-	unsigned int h_ratio;
+-	int match;
+-
+-	if (h == 0)
+-		return -1;
+-	h_ratio = (res->height << 13) / h;
+-	if (h_ratio == 0)
+-		return -1;
+-	match   = abs(((w_ratio << 13) / h_ratio) - 8192);
+-
+-	if ((w_ratio < 8192) || (h_ratio < 8192) ||
+-	    (match > LARGEST_ALLOWED_RATIO_MISMATCH))
+-		return -1;
+-
+-	return w_ratio + h_ratio;
+-}
+-
+-/* Return the nearest higher resolution index */
+-static int nearest_resolution_index(int w, int h)
+-{
+-	int i;
+-	int idx = -1;
+-	int dist;
+-	int min_dist = INT_MAX;
+-	struct ov2722_resolution *tmp_res = NULL;
+-
+-	for (i = 0; i < N_RES; i++) {
+-		tmp_res = &ov2722_res[i];
+-		dist = distance(tmp_res, w, h);
+-		if (dist == -1)
+-			continue;
+-		if (dist < min_dist) {
+-			min_dist = dist;
+-			idx = i;
+-		}
+-	}
+-
+-	return idx;
+-}
+-
+-static int get_resolution_index(int w, int h)
+-{
+-	int i;
+-
+-	for (i = 0; i < N_RES; i++) {
+-		if (w != ov2722_res[i].width)
+-			continue;
+-		if (h != ov2722_res[i].height)
+-			continue;
+-
+-		return i;
+-	}
+-
+-	return -1;
+-}
+-
+ /* TODO: remove it. */
+ static int startup(struct v4l2_subdev *sd)
  {
-+	u32 base;
- 	struct kvm_cpuid_entry2 *best;
+@@ -866,7 +796,7 @@ static int startup(struct v4l2_subdev *sd)
+ 		return ret;
+ 	}
  
--	best = kvm_find_cpuid_entry(vcpu, KVM_CPUID_FEATURES, 0);
-+	if (!kvm_get_cpuid_base(vcpu, &base))
-+		return;
+-	ret = ov2722_write_reg_array(client, ov2722_res[dev->fmt_idx].regs);
++	ret = ov2722_write_reg_array(client, dev->res->regs);
+ 	if (ret) {
+ 		dev_err(&client->dev, "ov2722 write register err.\n");
+ 		return ret;
+@@ -882,9 +812,9 @@ static int ov2722_set_fmt(struct v4l2_subdev *sd,
+ 	struct v4l2_mbus_framefmt *fmt = &format->format;
+ 	struct ov2722_device *dev = to_ov2722_sensor(sd);
+ 	struct i2c_client *client = v4l2_get_subdevdata(sd);
++	struct ov2722_resolution *res;
+ 	struct camera_mipi_info *ov2722_info = NULL;
+ 	int ret = 0;
+-	int idx;
+ 
+ 	if (format->pad)
+ 		return -EINVAL;
+@@ -895,15 +825,16 @@ static int ov2722_set_fmt(struct v4l2_subdev *sd,
+ 		return -EINVAL;
+ 
+ 	mutex_lock(&dev->input_lock);
+-	idx = nearest_resolution_index(fmt->width, fmt->height);
+-	if (idx == -1) {
+-		/* return the largest resolution */
+-		fmt->width = ov2722_res[N_RES - 1].width;
+-		fmt->height = ov2722_res[N_RES - 1].height;
+-	} else {
+-		fmt->width = ov2722_res[idx].width;
+-		fmt->height = ov2722_res[idx].height;
+-	}
++	res = v4l2_find_nearest_size(ov2722_res_preview,
++				     ARRAY_SIZE(ov2722_res_preview), width,
++				     height, fmt->width, fmt->height);
++	if (!res)
++		res = &ov2722_res_preview[N_RES - 1];
 +
-+	best = kvm_find_cpuid_entry(vcpu, base + KVM_CPUID_FEATURES, 0);
- 
- 	/*
- 	 * save the feature bitmap to avoid cpuid lookup for every PV
-@@ -116,6 +151,7 @@ void kvm_update_pv_runtime(struct kvm_vcpu *vcpu)
- void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
- {
- 	struct kvm_cpuid_entry2 *best;
-+	u32 base;
- 
- 	best = kvm_find_cpuid_entry(vcpu, 1, 0);
- 	if (best) {
-@@ -142,10 +178,14 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
- 		     cpuid_entry_has(best, X86_FEATURE_XSAVEC)))
- 		best->ebx = xstate_required_size(vcpu->arch.xcr0, true);
- 
--	best = kvm_find_cpuid_entry(vcpu, KVM_CPUID_FEATURES, 0);
--	if (kvm_hlt_in_guest(vcpu->kvm) && best &&
--		(best->eax & (1 << KVM_FEATURE_PV_UNHALT)))
--		best->eax &= ~(1 << KVM_FEATURE_PV_UNHALT);
-+	kvm_update_cpuid_base(vcpu);
++	fmt->width = res->width;
++	fmt->height = res->height;
++	dev->res = res;
 +
-+	if (kvm_get_cpuid_base(vcpu, &base)) {
-+		best = kvm_find_cpuid_entry(vcpu, base + KVM_CPUID_FEATURES, 0);
-+		if (kvm_hlt_in_guest(vcpu->kvm) && best &&
-+		    (best->eax & (1 << KVM_FEATURE_PV_UNHALT)))
-+			best->eax &= ~(1 << KVM_FEATURE_PV_UNHALT);
-+	}
+ 	fmt->code = MEDIA_BUS_FMT_SGRBG10_1X10;
+ 	if (format->which == V4L2_SUBDEV_FORMAT_TRY) {
+ 		sd_state->pads->try_fmt = *fmt;
+@@ -911,15 +842,9 @@ static int ov2722_set_fmt(struct v4l2_subdev *sd,
+ 		return 0;
+ 	}
  
- 	if (!kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT)) {
- 		best = kvm_find_cpuid_entry(vcpu, 0x1, 0);
+-	dev->fmt_idx = get_resolution_index(fmt->width, fmt->height);
+-	if (dev->fmt_idx == -1) {
+-		dev_err(&client->dev, "get resolution fail\n");
+-		mutex_unlock(&dev->input_lock);
+-		return -EINVAL;
+-	}
+ 
+-	dev->pixels_per_line = ov2722_res[dev->fmt_idx].pixels_per_line;
+-	dev->lines_per_frame = ov2722_res[dev->fmt_idx].lines_per_frame;
++	dev->pixels_per_line = dev->res->pixels_per_line;
++	dev->lines_per_frame = dev->res->lines_per_frame;
+ 
+ 	ret = startup(sd);
+ 	if (ret) {
+@@ -950,8 +875,7 @@ static int ov2722_set_fmt(struct v4l2_subdev *sd,
+ 		}
+ 	}
+ 
+-	ret = ov2722_get_intg_factor(client, ov2722_info,
+-				     &ov2722_res[dev->fmt_idx]);
++	ret = ov2722_get_intg_factor(client, ov2722_info, dev->res);
+ 	if (ret)
+ 		dev_err(&client->dev, "failed to get integration_factor\n");
+ 
+@@ -972,8 +896,8 @@ static int ov2722_get_fmt(struct v4l2_subdev *sd,
+ 	if (!fmt)
+ 		return -EINVAL;
+ 
+-	fmt->width = ov2722_res[dev->fmt_idx].width;
+-	fmt->height = ov2722_res[dev->fmt_idx].height;
++	fmt->width = dev->res->width;
++	fmt->height = dev->res->height;
+ 	fmt->code = MEDIA_BUS_FMT_SBGGR10_1X10;
+ 
+ 	return 0;
+@@ -1098,7 +1022,7 @@ static int ov2722_g_frame_interval(struct v4l2_subdev *sd,
+ 	struct ov2722_device *dev = to_ov2722_sensor(sd);
+ 
+ 	interval->interval.numerator = 1;
+-	interval->interval.denominator = ov2722_res[dev->fmt_idx].fps;
++	interval->interval.denominator = dev->res->fps;
+ 
+ 	return 0;
+ }
+@@ -1136,7 +1060,7 @@ static int ov2722_g_skip_frames(struct v4l2_subdev *sd, u32 *frames)
+ 	struct ov2722_device *dev = to_ov2722_sensor(sd);
+ 
+ 	mutex_lock(&dev->input_lock);
+-	*frames = ov2722_res[dev->fmt_idx].skip_frames;
++	*frames = dev->res->skip_frames;
+ 	mutex_unlock(&dev->input_lock);
+ 
+ 	return 0;
+@@ -1220,7 +1144,7 @@ static int ov2722_probe(struct i2c_client *client)
+ 
+ 	mutex_init(&dev->input_lock);
+ 
+-	dev->fmt_idx = 0;
++	dev->res = &ov2722_res_preview[0];
+ 	v4l2_i2c_subdev_init(&dev->sd, client, &ov2722_ops);
+ 
+ 	ovpdev = gmin_camera_platform_data(&dev->sd,
+diff --git a/drivers/staging/media/atomisp/i2c/ov2722.h b/drivers/staging/media/atomisp/i2c/ov2722.h
+index 7b0debb6c53d..d6e2510bc01c 100644
+--- a/drivers/staging/media/atomisp/i2c/ov2722.h
++++ b/drivers/staging/media/atomisp/i2c/ov2722.h
+@@ -201,14 +201,13 @@ struct ov2722_device {
+ 	struct media_pad pad;
+ 	struct v4l2_mbus_framefmt format;
+ 	struct mutex input_lock;
++	struct ov2722_resolution *res;
+ 
+ 	struct camera_sensor_platform_data *platform_data;
+ 	int vt_pix_clk_freq_mhz;
+-	int fmt_idx;
+ 	int run_mode;
+ 	u16 pixels_per_line;
+ 	u16 lines_per_frame;
+-	u8 res;
+ 	u8 type;
+ 
+ 	struct v4l2_ctrl_handler ctrl_handler;
 -- 
-2.20.1
+2.31.1
 
