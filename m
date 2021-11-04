@@ -2,169 +2,490 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB367444D18
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 02:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB78F444D1F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 02:50:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232931AbhKDBvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 21:51:21 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:3652 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232912AbhKDBvU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 21:51:20 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A40aX2c001806;
-        Thu, 4 Nov 2021 01:48:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=NQdb3wpLkT+ZOd6PhVs5iJNG5n4zFSvhqoGFFDHbzKo=;
- b=YivDU0iN72437ci+gxyfn4sDqHEPGzgVvVLUMJdBgn9mek1YvrpcgWxUjxea5MHYCO6Q
- /EbGEsErf3opvth1qk0rHYZ0ffjdwvLhCanuAGwBEnJqurCEEzcRI7OaBa3Xkv/03uS9
- QVNfp1rdgKls1WteNNanWt5DqmCU2fEy+vo7WK4lRdVI7lkoD7JYEeZvHIQp41/qg7wF
- SrnBhnKsYOXHX1LavcgtnyBpbSK2mZ7m4n3IhBExnUEX+QZgjTqwVJjPCYbSVy1jUO+j
- hR3UiWjTBnr0ORLxxV66hhgoGKcxABGNEVCmgnj3SHKb/S+/mKo7sKsWMywD0RKVqZ4U 1g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3c3n8p5nap-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 Nov 2021 01:48:35 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1A41eL4E056728;
-        Thu, 4 Nov 2021 01:48:34 GMT
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2171.outbound.protection.outlook.com [104.47.73.171])
-        by userp3020.oracle.com with ESMTP id 3c1khwhwcs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 Nov 2021 01:48:34 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wl6MFbu4HgjJG+BMJMtkVSjnXXRLyW2aaIfWBcjPokGUsjDyUNgeOEIWodBJERXiajjnP5DNk47nrOWCdqYde7/Gu1K5L4lL08qnbPDUCDYPmeGxtRTwdjkFk6l/Dfw2Wpm9tA9aNN+Kr/i1Xw1PSKFiKVhzy41WkjiVPFuzzKGDsy3dGBvsNzdV+Ju27cBYGQRpf2N63aUQvVee3pTSYLCQlL8n3Gd3Drl1fJdeEXYsIS3i+ZR9nANZlJ6KF8jh7rK/iDg8d7b2/AY0GMKnSJ/JV8rJLRzG/t1pyZSKePWQsNRci5ThHBMwfDP46Vo3dfebmzRjRd9ujJ9qiahPKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NQdb3wpLkT+ZOd6PhVs5iJNG5n4zFSvhqoGFFDHbzKo=;
- b=lKQjhQy4UvVllFA5m1EdEJebIRXp1R1AoCK3/wzKfOEyb6tZYHLJfsCV6blRprTkIj7v8DAKEKdtJQ9JfVR67MxK+iFPYlnl6q0dRJ7iCeo52Pu4abU6KreZw8yu+XUT4Thzi11A4upJhPrhyRBiZrT3kxthMAEYjqJxjZ4raNgQ4Zt3dj7j7WO9QLccf0OAbD+Psv2t1W+YHZ5O/iU7V3px7LC+cuVsFjLT7bDYx3yqlJencDAig3sw9WohJrB5lm2DYV2XCgtiEg6RdzVJ+52m0aZvi5G4xcQxPlMroJ4kefAS//t6WnrmX4vIrpdNGBCAXZWuhGbYy0XkWjI8ZQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NQdb3wpLkT+ZOd6PhVs5iJNG5n4zFSvhqoGFFDHbzKo=;
- b=xlFkK6VrsG/hFQ07YXpXoveQHYrDVm4NvScHwptR7Bq09WDKbp96eoa3Ee4Br/1gvmAh9vXatLwO/ZjrX3vekFxncTSdIFWTBGeBd2AfHaZMf4Rw5DH/2ai5jOH77cUX341FOJTW12vrUnRsBUM0ELAbq8MIbm8QHxFQKMFaTLI=
-Authentication-Results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
- by MN2PR10MB4061.namprd10.prod.outlook.com (2603:10b6:208:182::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11; Thu, 4 Nov
- 2021 01:48:32 +0000
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::3c49:46aa:83e1:a329]) by BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::3c49:46aa:83e1:a329%5]) with mapi id 15.20.4669.011; Thu, 4 Nov 2021
- 01:48:32 +0000
-Message-ID: <ad39f8e8-b377-dfef-b977-1afe4e6d2efb@oracle.com>
-Date:   Wed, 3 Nov 2021 21:48:27 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH v2] xen/balloon: rename alloc/free_xenballooned_pages
-Content-Language: en-US
-To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org
-Cc:     Stefano Stabellini <sstabellini@kernel.org>
-References: <20211102092234.17852-1-jgross@suse.com>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-In-Reply-To: <20211102092234.17852-1-jgross@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR04CA0006.namprd04.prod.outlook.com
- (2603:10b6:a03:1d0::16) To BLAPR10MB5009.namprd10.prod.outlook.com
- (2603:10b6:208:321::10)
+        id S232951AbhKDBxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 21:53:13 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:59068 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230198AbhKDBxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 21:53:10 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx72pVPINh2_EkAA--.41908S2;
+        Thu, 04 Nov 2021 09:50:14 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, illusionist.neo@gmail.com,
+        zlim.lnx@gmail.com, naveen.n.rao@linux.ibm.com,
+        luke.r.nels@gmail.com, xi.wang@gmail.com, bjorn@kernel.org,
+        iii@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        udknight@gmail.com, davem@davemloft.net
+Subject: [PATCH bpf-next v5] bpf: Change value of MAX_TAIL_CALL_CNT from 32 to 33
+Date:   Thu,  4 Nov 2021 09:50:10 +0800
+Message-Id: <1635990610-4448-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
 MIME-Version: 1.0
-Received: from [10.74.107.153] (138.3.200.25) by BY5PR04CA0006.namprd04.prod.outlook.com (2603:10b6:a03:1d0::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.17 via Frontend Transport; Thu, 4 Nov 2021 01:48:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 28a35a24-133f-4f62-0058-08d99f353515
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4061:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB40610CEDB88B65C8187E9EA98A8D9@MN2PR10MB4061.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nY7lVVcwSQagOAxyLdxmZyp/v1hrbK+Q3bCWhbAKA3BhuMVAwhP92SSfa+hO4eQND+kl9zZqOLYax/X73VwzdaRS3u/5Gfq/bERZQRvzjykj2O0/A9wY4QX2jBzooAwik7UtkuTIxPWdb3m2M51lFe59ikKKgNgQVHjZsJEcM5qndmCydpR56vekbipxb3JuHv1MMSxRp21Pag2eSEpf1sKh0XRUcpqshpyH0QNOJKIk9yVkDDhKezFDSsLfXDhFz1ky4v8tK2Mf/UWCTDXaTD/nwj7Fnd9tCDrLRJCBBz0UdklF201jE9clDfXngLkBEanNwqfaanrpwUBcfumkz/nPT2l20klR1nux6rmT+18xPTjg4ZkhanVFuSwmdO0umRSQ/zpA+KG+e8GZyKyqqHDLUgwhZlMNLBLOJZ+Ht2Y+xF9B1IJARP5HZOKA8dbvEC7rKih8qM3POq1hT5uG6mijG+LwamyIbJeiwbnMJ30P64MnD9hOSQT9i3S4AhBVAnck4bgzrkMKgDEpLXbovK2Ja20+IXXCgNmTt4BT9kjIK2/9OiPBxqLbeQWvgia8pV9D/0got57upj4qD35z8r/nQsGXtxIBS9l+FRDyy3KUD9I3NS2s5D7NsGvdZLVKrkuYLM8W8vg+A58LGxx351khrT7hZF5CBIOvzLIfnDCxNoYRsvsN/TwLH8oZsgkEQSnT6S1ehoomscfQbYhUlllgGVshnezzB8nCg06RkDel94HzF70lDEIjm/R6I+8b
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6666004)(6486002)(66946007)(316002)(38100700002)(8676002)(5660300002)(86362001)(53546011)(16576012)(186003)(508600001)(4744005)(2906002)(2616005)(31696002)(956004)(26005)(66476007)(31686004)(66556008)(44832011)(4326008)(8936002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cnNwNkVOUmZGNjhkWmZGd0hEaVYxMHhFNnIxdjZhbUJEdFlwN1VvTHdLSENL?=
- =?utf-8?B?Yld4NnJDS2o5Rnk0YXlEdDl0WXdXME1HaDU4VzhBK1Frek80dEZHem9kLzNV?=
- =?utf-8?B?bEZvT3FFSXhIdmcxUDFjQUtVWHA3anBOVDJFUStPaHQzQVJrTlU5MitaS28z?=
- =?utf-8?B?bHlaYmkwWDZsSjM0eUFXSUFSRmpKbndqMnRyQ0JCR1NXaEIvRTJwVTFwSTBW?=
- =?utf-8?B?Qm5Mcm5QSDcvc2ZFakkyQ2R2eTVacFBKbFMxM0crWHNBVi9ZWEZUT2N6Y0Qz?=
- =?utf-8?B?UTZOUTBPYjNsUUVTa05xSzI4dHgva1hHOVYvOUNFa1QzQmovdGlzc2FzdXN4?=
- =?utf-8?B?UlBwajVUZmRuaGxvMnpaS0ttSmwxT0xmNEpLODlRQ05MN050M3JRZTBkZGJO?=
- =?utf-8?B?U1RxaGdXWkt2V2xSS0syaW0vMWRJQ1FJb1JRNTQrUkhuRzd5d3R0b3dnQXRz?=
- =?utf-8?B?bDdXZW5WK21JL3VYOHBGVVlqTm42bkFoUWpxOWZtRmlSTFg2c2hYb0g4WjZZ?=
- =?utf-8?B?NC9yZ281bDk3SXVzV1FsWVl2eXVtamdvMjBheXl2aWdkZWFjRml5NFp5V1cv?=
- =?utf-8?B?SWJQT0UrYjFBMUNURUpMbnlEcThEUlJLRm5HMUU4U1M0MFJaUzltMkV6STha?=
- =?utf-8?B?dmM1Y1didmdpUVR5MXMyQnZKV0FXSFFvVmx1QXhLcjBmTkJtTURmTEc4ejR1?=
- =?utf-8?B?K1RNY294MW5oZmRDNDJITzYzOWFoS3Fob0F2MkVkTTVrNUJmSXZKaTN2UnIz?=
- =?utf-8?B?eUVKY25uN3pieURKeC9HaE5uUXpvdVVCSk9lQkhTUEQ2K0xvbmtSMDVnWENL?=
- =?utf-8?B?UUxoWEVmaVFhclVGOTJXWDlNOXg5OVIxSC94Mmh6TDNHZ2t6eFhqSnF6Szhu?=
- =?utf-8?B?OFExRS9ZV0RiT2ZlY0Y5V2NoY0UxNkplU0ZiWkJqanJkM0V6RDRFZ2ZLTmtZ?=
- =?utf-8?B?d01jVDlvVExoKzlhTk1kdS9tR0ZyTFhiczBwTTB4WDFKaEZpTG5hcCtvTnhv?=
- =?utf-8?B?YlpiTGpoeko2R2dUUmJQZnBlYi9XOEJsT2tHNm8zdVp3T2x2SThvL2pPbEFo?=
- =?utf-8?B?NnB1ZDhiRWNkbWxhUGdRQWhoVlBZL05ZQ3ozZ0d0bHl6T1FKeVB6dHFTU0Vu?=
- =?utf-8?B?NzhYNEtrMXM0R2VDTTJoREdZTmhDazl3TmtZMTZMWWRVK1ltODNxQVUvcjZL?=
- =?utf-8?B?K3dkVmYyTHMzYnA4NXNvdXhiQTQ2SFA5WWYxc3pqSnRONmtJbjk2cGNSYWp2?=
- =?utf-8?B?UzI0WTlSYWVPSHRXc1ordXpUT0dYQU5BVGFrNnVzSjZIK0VEV01ENVY5T3hW?=
- =?utf-8?B?aDk1UGgzVStnWEZuZ1ViaEczR1g1UGd2NGdlUDhLRzQySkM2RW1DNFJTZHVN?=
- =?utf-8?B?bGlacFFNWjRvQVVQN3BxQ29JTWQybkZoQ0syRys3VVR6WjUwSzlPbSs1NGxO?=
- =?utf-8?B?QTRnOXBQNExIL2RrMXRWSmVGeFBjOUFKRmhNUk5LcndURkp1UXZjNld3d2Ry?=
- =?utf-8?B?T1RzVGxWK2Q5YUFaeEtFbDkyUzM0VWxtUGIwVjlKZElnZTZKbFF3R3k0eklB?=
- =?utf-8?B?bkYrS2ovRDFCeVZobG9LWGJUVW81T3RZS2xPWGFHeHRmS2NONHo5MlFyQllL?=
- =?utf-8?B?NktlbXMvUVNxQjV3M2pra3JQSlN2aGwweFNMZDRQSHVHMmlEOW9CYkJWK1BZ?=
- =?utf-8?B?ZDRqQitEVHFNNHRZR21iSTMyNFRrVEhLeisvSGJxVHprUzVCdDEwY0p3VzRi?=
- =?utf-8?B?NnNhWW1SOWo2WVNObk9rYnk5akp0aS9CcnFicjJjMFh2ZDVIUHlubnptWlFD?=
- =?utf-8?B?RElxWWxBQ1I2R3pPSzN5VUJ5Z3pEcVNCeUg3OERZRHNaZFE1TUx5R294MUNP?=
- =?utf-8?B?dkQ3UWI4a1dLSkVPaUs2aytPRE9uYzZEZDM3QXRFa1R3bVR1bUJkUDJ0Nkw4?=
- =?utf-8?B?cXArMUlLcUFIL2R1SHpIajlIMW5QM0VMbVBrMUpDSmdGRzMrLzFNbmJBVVVI?=
- =?utf-8?B?bEIvQmE3VjFTam0wSTNvOVpCNEFYMTYxV1NhT2R5d2t5R01GME9ROWRQS0wr?=
- =?utf-8?B?TTNzcXpmbWRjUXRNU1llR2ljeVVxVWwvV01LUm9ETXh0MFJLL3I3TmE0dkJS?=
- =?utf-8?B?c3BJandSMlJZcnQxcnAzVEE5N0JuKzJrYVQ3ekg4QlFxRWJtQ0tNWlRKdDhP?=
- =?utf-8?B?aGMxeEhFWC9DMG56aERwb2N4cWlDdGR0WWRKbUJ5TE0rUTloNy9RazI2RGRy?=
- =?utf-8?Q?5xXHwVGGmbL2+OFk/wOWza7ftyWhAn+2bV/eNViFz4=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 28a35a24-133f-4f62-0058-08d99f353515
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2021 01:48:32.4776
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tWqA+ola3/7Q+Xd9AiE+6xiQ/Yiay2cgn3kmiR2TIWnsuLLBJ+bRZLlVakvQNoKtipN7sDkRA3+txi9JWzcZPR+jKsrJt61F0nnSGPJfCsI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4061
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10157 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 bulkscore=0
- spamscore=0 adultscore=0 suspectscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111040006
-X-Proofpoint-ORIG-GUID: 9RDw6VqlBx2VvRa3rthxBVCrolH9atBA
-X-Proofpoint-GUID: 9RDw6VqlBx2VvRa3rthxBVCrolH9atBA
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dx72pVPINh2_EkAA--.41908S2
+X-Coremail-Antispam: 1UD129KBjvAXoW3tFy3XF15Cw17Gw47GryfWFg_yoW8Wry7to
+        W8tr1v9a1rK34UWF1akwn3GryDJ3WxKayfAw4IgF4ru3ZFva4YyrW7Xa1DXFyFqa45Gr1D
+        Wryfta1UXFsxKFyDn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUUYg7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20EY4v20xva
+        j40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2
+        x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8
+        Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI
+        0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80
+        ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4
+        AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY
+        1x02628vn2kIc2xKxwCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+        sGvfC2KfnxnUUI43ZEXa7VUbl4EtUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In the current code, the actual max tail call count is 33 which is greater
+than MAX_TAIL_CALL_CNT (defined as 32), the actual limit is not consistent
+with the meaning of MAX_TAIL_CALL_CNT, there is some confusion and need to
+spend some time to think about the reason at the first glance.
 
-On 11/2/21 5:22 AM, Juergen Gross wrote:
-> alloc_xenballooned_pages() and free_xenballooned_pages() are used as
-> direct replacements of xen_alloc_unpopulated_pages() and
-> xen_free_unpopulated_pages() in case CONFIG_XEN_UNPOPULATED_ALLOC isn't
-> defined.
->
-> Guard both functions with !CONFIG_XEN_UNPOPULATED_ALLOC and rename them
-> to the xen_*() variants they are replacing. This allows to remove some
-> ifdeffery from the xen.h header file. Adapt the prototype of the
-> functions to match.
->
-> Signed-off-by: Juergen Gross <jgross@suse.com>
+We can see the historical evolution from commit 04fd61ab36ec ("bpf: allow
+bpf programs to tail-call other bpf programs") and commit f9dabe016b63
+("bpf: Undo off-by-one in interpreter tail call count limit").
 
+In order to avoid changing existing behavior, the actual limit is 33 now,
+this is reasonable.
 
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+After commit 874be05f525e ("bpf, tests: Add tail call test suite"), we can
+see there exists failed testcase.
+
+On all archs when CONFIG_BPF_JIT_ALWAYS_ON is not set:
+ # echo 0 > /proc/sys/net/core/bpf_jit_enable
+ # modprobe test_bpf
+ # dmesg | grep -w FAIL
+ Tail call error path, max count reached jited:0 ret 34 != 33 FAIL
+
+On some archs:
+ # echo 1 > /proc/sys/net/core/bpf_jit_enable
+ # modprobe test_bpf
+ # dmesg | grep -w FAIL
+ Tail call error path, max count reached jited:1 ret 34 != 33 FAIL
+
+Although the above failed testcase has been fixed in commit 18935a72eb25
+("bpf/tests: Fix error in tail call limit tests"), it is still necessary
+to change the value of MAX_TAIL_CALL_CNT from 32 to 33 to make the code
+more readable, then do some small changes of the related code.
+
+With this patch, it does not change the current limit 33, MAX_TAIL_CALL_CNT
+can reflect the actual max tail call count, the related tailcall testcases
+in test_bpf and selftests can work well for the interpreter and the JIT.
+
+Here are the test results on x86_64:
+
+ # uname -m
+ x86_64
+ # echo 0 > /proc/sys/net/core/bpf_jit_enable
+ # modprobe test_bpf test_suite=test_tail_calls
+ # dmesg | tail -1
+ test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
+ # rmmod test_bpf
+ # echo 1 > /proc/sys/net/core/bpf_jit_enable
+ # modprobe test_bpf test_suite=test_tail_calls
+ # dmesg | tail -1
+ test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [8/8 JIT'ed]
+ # rmmod test_bpf
+ # ./test_progs -t tailcalls
+ #142 tailcalls:OK
+ Summary: 1/11 PASSED, 0 SKIPPED, 0 FAILED
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Acked-by: Björn Töpel <bjorn@kernel.org>
+---
+
+v5: Use RV_REG_TCC directly to save one move for RISC-V,
+    suggested by Björn Töpel, thank you.
+
+v4: Use >= as check condition,
+    suggested by Daniel Borkmann, thank you.
+
+ arch/arm/net/bpf_jit_32.c         |  5 +++--
+ arch/arm64/net/bpf_jit_comp.c     |  5 +++--
+ arch/mips/net/bpf_jit_comp32.c    |  2 +-
+ arch/mips/net/bpf_jit_comp64.c    |  2 +-
+ arch/powerpc/net/bpf_jit_comp32.c |  4 ++--
+ arch/powerpc/net/bpf_jit_comp64.c |  4 ++--
+ arch/riscv/net/bpf_jit_comp32.c   |  6 ++----
+ arch/riscv/net/bpf_jit_comp64.c   |  7 +++----
+ arch/s390/net/bpf_jit_comp.c      |  6 +++---
+ arch/sparc/net/bpf_jit_comp_64.c  |  2 +-
+ arch/x86/net/bpf_jit_comp.c       | 10 +++++-----
+ arch/x86/net/bpf_jit_comp32.c     |  4 ++--
+ include/linux/bpf.h               |  2 +-
+ include/uapi/linux/bpf.h          |  2 +-
+ kernel/bpf/core.c                 |  3 ++-
+ lib/test_bpf.c                    |  4 ++--
+ tools/include/uapi/linux/bpf.h    |  2 +-
+ 17 files changed, 35 insertions(+), 35 deletions(-)
+
+diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
+index eeb6dc0..e59b41e 100644
+--- a/arch/arm/net/bpf_jit_32.c
++++ b/arch/arm/net/bpf_jit_32.c
+@@ -1199,7 +1199,8 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+ 
+ 	/* tmp2[0] = array, tmp2[1] = index */
+ 
+-	/* if (tail_call_cnt > MAX_TAIL_CALL_CNT)
++	/*
++	 * if (tail_call_cnt >= MAX_TAIL_CALL_CNT)
+ 	 *	goto out;
+ 	 * tail_call_cnt++;
+ 	 */
+@@ -1208,7 +1209,7 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+ 	tc = arm_bpf_get_reg64(tcc, tmp, ctx);
+ 	emit(ARM_CMP_I(tc[0], hi), ctx);
+ 	_emit(ARM_COND_EQ, ARM_CMP_I(tc[1], lo), ctx);
+-	_emit(ARM_COND_HI, ARM_B(jmp_offset), ctx);
++	_emit(ARM_COND_CS, ARM_B(jmp_offset), ctx);
+ 	emit(ARM_ADDS_I(tc[1], tc[1], 1), ctx);
+ 	emit(ARM_ADC_I(tc[0], tc[0], 0), ctx);
+ 	arm_bpf_put_reg64(tcc, tmp, ctx);
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 3a8a714..356fb21 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -287,13 +287,14 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+ 	emit(A64_CMP(0, r3, tmp), ctx);
+ 	emit(A64_B_(A64_COND_CS, jmp_offset), ctx);
+ 
+-	/* if (tail_call_cnt > MAX_TAIL_CALL_CNT)
++	/*
++	 * if (tail_call_cnt >= MAX_TAIL_CALL_CNT)
+ 	 *     goto out;
+ 	 * tail_call_cnt++;
+ 	 */
+ 	emit_a64_mov_i64(tmp, MAX_TAIL_CALL_CNT, ctx);
+ 	emit(A64_CMP(1, tcc, tmp), ctx);
+-	emit(A64_B_(A64_COND_HI, jmp_offset), ctx);
++	emit(A64_B_(A64_COND_CS, jmp_offset), ctx);
+ 	emit(A64_ADD_I(1, tcc, tcc, 1), ctx);
+ 
+ 	/* prog = array->ptrs[index];
+diff --git a/arch/mips/net/bpf_jit_comp32.c b/arch/mips/net/bpf_jit_comp32.c
+index bd996ed..a7b424f 100644
+--- a/arch/mips/net/bpf_jit_comp32.c
++++ b/arch/mips/net/bpf_jit_comp32.c
+@@ -1382,7 +1382,7 @@ void build_prologue(struct jit_context *ctx)
+ 	 * calling function jumps into the prologue after these instructions.
+ 	 */
+ 	emit(ctx, ori, MIPS_R_T9, MIPS_R_ZERO,
+-	     min(MAX_TAIL_CALL_CNT + 1, 0xffff));
++	     min(MAX_TAIL_CALL_CNT, 0xffff));
+ 	emit(ctx, sw, MIPS_R_T9, 0, MIPS_R_SP);
+ 
+ 	/*
+diff --git a/arch/mips/net/bpf_jit_comp64.c b/arch/mips/net/bpf_jit_comp64.c
+index 815ade7..5ef8778 100644
+--- a/arch/mips/net/bpf_jit_comp64.c
++++ b/arch/mips/net/bpf_jit_comp64.c
+@@ -552,7 +552,7 @@ void build_prologue(struct jit_context *ctx)
+ 	 * On a tail call, the calling function jumps into the prologue
+ 	 * after this instruction.
+ 	 */
+-	emit(ctx, addiu, tc, MIPS_R_ZERO, min(MAX_TAIL_CALL_CNT + 1, 0xffff));
++	emit(ctx, addiu, tc, MIPS_R_ZERO, min(MAX_TAIL_CALL_CNT, 0xffff));
+ 
+ 	/* === Entry-point for tail calls === */
+ 
+diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
+index 0da31d4..8a4faa0 100644
+--- a/arch/powerpc/net/bpf_jit_comp32.c
++++ b/arch/powerpc/net/bpf_jit_comp32.c
+@@ -221,13 +221,13 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
+ 	PPC_BCC(COND_GE, out);
+ 
+ 	/*
+-	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
++	 * if (tail_call_cnt >= MAX_TAIL_CALL_CNT)
+ 	 *   goto out;
+ 	 */
+ 	EMIT(PPC_RAW_CMPLWI(_R0, MAX_TAIL_CALL_CNT));
+ 	/* tail_call_cnt++; */
+ 	EMIT(PPC_RAW_ADDIC(_R0, _R0, 1));
+-	PPC_BCC(COND_GT, out);
++	PPC_BCC(COND_GE, out);
+ 
+ 	/* prog = array->ptrs[index]; */
+ 	EMIT(PPC_RAW_RLWINM(_R3, b2p_index, 2, 0, 29));
+diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+index 8b5157c..8571aaf 100644
+--- a/arch/powerpc/net/bpf_jit_comp64.c
++++ b/arch/powerpc/net/bpf_jit_comp64.c
+@@ -228,12 +228,12 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
+ 	PPC_BCC(COND_GE, out);
+ 
+ 	/*
+-	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
++	 * if (tail_call_cnt >= MAX_TAIL_CALL_CNT)
+ 	 *   goto out;
+ 	 */
+ 	PPC_BPF_LL(b2p[TMP_REG_1], 1, bpf_jit_stack_tailcallcnt(ctx));
+ 	EMIT(PPC_RAW_CMPLWI(b2p[TMP_REG_1], MAX_TAIL_CALL_CNT));
+-	PPC_BCC(COND_GT, out);
++	PPC_BCC(COND_GE, out);
+ 
+ 	/*
+ 	 * tail_call_cnt++;
+diff --git a/arch/riscv/net/bpf_jit_comp32.c b/arch/riscv/net/bpf_jit_comp32.c
+index e649742..529a83b 100644
+--- a/arch/riscv/net/bpf_jit_comp32.c
++++ b/arch/riscv/net/bpf_jit_comp32.c
+@@ -799,11 +799,10 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
+ 	emit_bcc(BPF_JGE, lo(idx_reg), RV_REG_T1, off, ctx);
+ 
+ 	/*
+-	 * temp_tcc = tcc - 1;
+-	 * if (tcc < 0)
++	 * if (--tcc < 0)
+ 	 *   goto out;
+ 	 */
+-	emit(rv_addi(RV_REG_T1, RV_REG_TCC, -1), ctx);
++	emit(rv_addi(RV_REG_TCC, RV_REG_TCC, -1), ctx);
+ 	off = ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
+ 	emit_bcc(BPF_JSLT, RV_REG_TCC, RV_REG_ZERO, off, ctx);
+ 
+@@ -829,7 +828,6 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
+ 	if (is_12b_check(off, insn))
+ 		return -1;
+ 	emit(rv_lw(RV_REG_T0, off, RV_REG_T0), ctx);
+-	emit(rv_addi(RV_REG_TCC, RV_REG_T1, 0), ctx);
+ 	/* Epilogue jumps to *(t0 + 4). */
+ 	__build_epilogue(true, ctx);
+ 	return 0;
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index 2ca345c..f4466b7 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -327,12 +327,12 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
+ 	off = ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
+ 	emit_branch(BPF_JGE, RV_REG_A2, RV_REG_T1, off, ctx);
+ 
+-	/* if (TCC-- < 0)
++	/* if (--TCC < 0)
+ 	 *     goto out;
+ 	 */
+-	emit_addi(RV_REG_T1, tcc, -1, ctx);
++	emit_addi(RV_REG_TCC, tcc, -1, ctx);
+ 	off = ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
+-	emit_branch(BPF_JSLT, tcc, RV_REG_ZERO, off, ctx);
++	emit_branch(BPF_JSLT, RV_REG_TCC, RV_REG_ZERO, off, ctx);
+ 
+ 	/* prog = array->ptrs[index];
+ 	 * if (!prog)
+@@ -352,7 +352,6 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
+ 	if (is_12b_check(off, insn))
+ 		return -1;
+ 	emit_ld(RV_REG_T3, off, RV_REG_T2, ctx);
+-	emit_mv(RV_REG_TCC, RV_REG_T1, ctx);
+ 	__build_epilogue(true, ctx);
+ 	return 0;
+ }
+diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
+index 1a374d0..3553cfc 100644
+--- a/arch/s390/net/bpf_jit_comp.c
++++ b/arch/s390/net/bpf_jit_comp.c
+@@ -1369,7 +1369,7 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
+ 				 jit->prg);
+ 
+ 		/*
+-		 * if (tail_call_cnt++ > MAX_TAIL_CALL_CNT)
++		 * if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
+ 		 *         goto out;
+ 		 */
+ 
+@@ -1381,9 +1381,9 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
+ 		EMIT4_IMM(0xa7080000, REG_W0, 1);
+ 		/* laal %w1,%w0,off(%r15) */
+ 		EMIT6_DISP_LH(0xeb000000, 0x00fa, REG_W1, REG_W0, REG_15, off);
+-		/* clij %w1,MAX_TAIL_CALL_CNT,0x2,out */
++		/* clij %w1,MAX_TAIL_CALL_CNT-1,0x2,out */
+ 		patch_2_clij = jit->prg;
+-		EMIT6_PCREL_RIEC(0xec000000, 0x007f, REG_W1, MAX_TAIL_CALL_CNT,
++		EMIT6_PCREL_RIEC(0xec000000, 0x007f, REG_W1, MAX_TAIL_CALL_CNT - 1,
+ 				 2, jit->prg);
+ 
+ 		/*
+diff --git a/arch/sparc/net/bpf_jit_comp_64.c b/arch/sparc/net/bpf_jit_comp_64.c
+index 9a2f20c..0bfe1c7 100644
+--- a/arch/sparc/net/bpf_jit_comp_64.c
++++ b/arch/sparc/net/bpf_jit_comp_64.c
+@@ -867,7 +867,7 @@ static void emit_tail_call(struct jit_ctx *ctx)
+ 	emit(LD32 | IMMED | RS1(SP) | S13(off) | RD(tmp), ctx);
+ 	emit_cmpi(tmp, MAX_TAIL_CALL_CNT, ctx);
+ #define OFFSET2 13
+-	emit_branch(BGU, ctx->idx, ctx->idx + OFFSET2, ctx);
++	emit_branch(BGEU, ctx->idx, ctx->idx + OFFSET2, ctx);
+ 	emit_nop(ctx);
+ 
+ 	emit_alu_K(ADD, tmp, 1, ctx);
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 726700f..6318479 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -412,7 +412,7 @@ static void emit_indirect_jump(u8 **pprog, int reg, u8 *ip)
+  * ... bpf_tail_call(void *ctx, struct bpf_array *array, u64 index) ...
+  *   if (index >= array->map.max_entries)
+  *     goto out;
+- *   if (++tail_call_cnt > MAX_TAIL_CALL_CNT)
++ *   if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
+  *     goto out;
+  *   prog = array->ptrs[index];
+  *   if (prog == NULL)
+@@ -446,14 +446,14 @@ static void emit_bpf_tail_call_indirect(u8 **pprog, bool *callee_regs_used,
+ 	EMIT2(X86_JBE, offset);                   /* jbe out */
+ 
+ 	/*
+-	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
++	 * if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
+ 	 *	goto out;
+ 	 */
+ 	EMIT2_off32(0x8B, 0x85, tcc_off);         /* mov eax, dword ptr [rbp - tcc_off] */
+ 	EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);     /* cmp eax, MAX_TAIL_CALL_CNT */
+ 
+ 	offset = ctx->tail_call_indirect_label - (prog + 2 - start);
+-	EMIT2(X86_JA, offset);                    /* ja out */
++	EMIT2(X86_JAE, offset);                   /* jae out */
+ 	EMIT3(0x83, 0xC0, 0x01);                  /* add eax, 1 */
+ 	EMIT2_off32(0x89, 0x85, tcc_off);         /* mov dword ptr [rbp - tcc_off], eax */
+ 
+@@ -504,14 +504,14 @@ static void emit_bpf_tail_call_direct(struct bpf_jit_poke_descriptor *poke,
+ 	int offset;
+ 
+ 	/*
+-	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
++	 * if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
+ 	 *	goto out;
+ 	 */
+ 	EMIT2_off32(0x8B, 0x85, tcc_off);             /* mov eax, dword ptr [rbp - tcc_off] */
+ 	EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);         /* cmp eax, MAX_TAIL_CALL_CNT */
+ 
+ 	offset = ctx->tail_call_direct_label - (prog + 2 - start);
+-	EMIT2(X86_JA, offset);                        /* ja out */
++	EMIT2(X86_JAE, offset);                       /* jae out */
+ 	EMIT3(0x83, 0xC0, 0x01);                      /* add eax, 1 */
+ 	EMIT2_off32(0x89, 0x85, tcc_off);             /* mov dword ptr [rbp - tcc_off], eax */
+ 
+diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
+index da9b7cf..429a89c 100644
+--- a/arch/x86/net/bpf_jit_comp32.c
++++ b/arch/x86/net/bpf_jit_comp32.c
+@@ -1323,7 +1323,7 @@ static void emit_bpf_tail_call(u8 **pprog, u8 *ip)
+ 	EMIT2(IA32_JBE, jmp_label(jmp_label1, 2));
+ 
+ 	/*
+-	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
++	 * if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
+ 	 *     goto out;
+ 	 */
+ 	lo = (u32)MAX_TAIL_CALL_CNT;
+@@ -1337,7 +1337,7 @@ static void emit_bpf_tail_call(u8 **pprog, u8 *ip)
+ 	/* cmp ecx,lo */
+ 	EMIT3(0x83, add_1reg(0xF8, IA32_ECX), lo);
+ 
+-	/* ja out */
++	/* jae out */
+ 	EMIT2(IA32_JAE, jmp_label(jmp_label1, 2));
+ 
+ 	/* add eax,0x1 */
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 2be6dfd..4bce7ee 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1075,7 +1075,7 @@ struct bpf_array {
+ };
+ 
+ #define BPF_COMPLEXITY_LIMIT_INSNS      1000000 /* yes. 1M insns */
+-#define MAX_TAIL_CALL_CNT 32
++#define MAX_TAIL_CALL_CNT 33
+ 
+ #define BPF_F_ACCESS_MASK	(BPF_F_RDONLY |		\
+ 				 BPF_F_RDONLY_PROG |	\
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index ba5af15..b12cfce 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1744,7 +1744,7 @@ union bpf_attr {
+  * 		if the maximum number of tail calls has been reached for this
+  * 		chain of programs. This limit is defined in the kernel by the
+  * 		macro **MAX_TAIL_CALL_CNT** (not accessible to user space),
+- * 		which is currently set to 32.
++ *		which is currently set to 33.
+  * 	Return
+  * 		0 on success, or a negative error in case of failure.
+  *
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 327e399..870881d 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1567,7 +1567,8 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
+ 
+ 		if (unlikely(index >= array->map.max_entries))
+ 			goto out;
+-		if (unlikely(tail_call_cnt > MAX_TAIL_CALL_CNT))
++
++		if (unlikely(tail_call_cnt >= MAX_TAIL_CALL_CNT))
+ 			goto out;
+ 
+ 		tail_call_cnt++;
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index adae395..0c5cb2d 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -14683,7 +14683,7 @@ static struct tail_call_test tail_call_tests[] = {
+ 			BPF_EXIT_INSN(),
+ 		},
+ 		.flags = FLAG_NEED_STATE | FLAG_RESULT_IN_STATE,
+-		.result = (MAX_TAIL_CALL_CNT + 1 + 1) * MAX_TESTRUNS,
++		.result = (MAX_TAIL_CALL_CNT + 1) * MAX_TESTRUNS,
+ 	},
+ 	{
+ 		"Tail call count preserved across function calls",
+@@ -14705,7 +14705,7 @@ static struct tail_call_test tail_call_tests[] = {
+ 		},
+ 		.stack_depth = 8,
+ 		.flags = FLAG_NEED_STATE | FLAG_RESULT_IN_STATE,
+-		.result = (MAX_TAIL_CALL_CNT + 1 + 1) * MAX_TESTRUNS,
++		.result = (MAX_TAIL_CALL_CNT + 1) * MAX_TESTRUNS,
+ 	},
+ 	{
+ 		"Tail call error path, NULL target",
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index ba5af15..b12cfce 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1744,7 +1744,7 @@ union bpf_attr {
+  * 		if the maximum number of tail calls has been reached for this
+  * 		chain of programs. This limit is defined in the kernel by the
+  * 		macro **MAX_TAIL_CALL_CNT** (not accessible to user space),
+- * 		which is currently set to 32.
++ *		which is currently set to 33.
+  * 	Return
+  * 		0 on success, or a negative error in case of failure.
+  *
+-- 
+2.1.0
 
