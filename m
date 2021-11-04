@@ -2,88 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 422CF445222
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9A6445228
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:23:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbhKDL0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 07:26:06 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:42170 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbhKDLZ6 (ORCPT
+        id S231484AbhKDL0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 07:26:20 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:35026 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230401AbhKDL0O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 07:25:58 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B66C9218D5;
-        Thu,  4 Nov 2021 11:23:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1636024999; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AGcDwxcHZ6yQzaHKGpzVjXWKCYv1lwlcl1SeEbfptKk=;
-        b=e46N58s7jtPgQ2XIcSNKY8WrNYRNp2/tVsrxtaJ5Tpm66qeYMEA7hf111yUOjRhZhPsV++
-        S9ZHj9RzmkBZ+c2/AX+RRt6ofQJ7mAwTkVD42WruRdTeXly1hZulNK09PI5ikO66VCS6gz
-        6OgrlW7dBkXBYKC10X+A3XcLd5xYuN4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1636024999;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AGcDwxcHZ6yQzaHKGpzVjXWKCYv1lwlcl1SeEbfptKk=;
-        b=iTrcKe/kDuWt536xoYI6f0yBb3mohMwyFY/Kieu0CIb4jIADbfhBGpGPujHi7kisYdXLO8
-        /3kM9HaECRk2jSBg==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id A4AAD2C154;
-        Thu,  4 Nov 2021 11:23:19 +0000 (UTC)
-From:   Takashi Iwai <tiwai@suse.de>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 5.14.y 2/2] ALSA: usb-audio: Add Audient iD14 to mixer map quirk table
-Date:   Thu,  4 Nov 2021 12:23:09 +0100
-Message-Id: <20211104112309.30984-3-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20211104112309.30984-1-tiwai@suse.de>
-References: <20211104112309.30984-1-tiwai@suse.de>
+        Thu, 4 Nov 2021 07:26:14 -0400
+X-UUID: cba8ff7de2e743fe8bfd9afaedeff196-20211104
+X-UUID: cba8ff7de2e743fe8bfd9afaedeff196-20211104
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <zhiyong.tao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 94376343; Thu, 04 Nov 2021 19:23:33 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.792.15; Thu, 4 Nov 2021 19:23:31 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkmbs10n1.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
+ Transport; Thu, 4 Nov 2021 19:23:31 +0800
+From:   Zhiyong Tao <zhiyong.tao@mediatek.com>
+To:     <robh+dt@kernel.org>, <linus.walleij@linaro.org>,
+        <mark.rutland@arm.com>, <matthias.bgg@gmail.com>,
+        <sean.wang@kernel.org>
+CC:     <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
+        <hui.liu@mediatek.com>, <light.hsieh@mediatek.com>,
+        <sean.wang@mediatek.com>, <seiya.wang@mediatek.com>,
+        <rex-bc.chen@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>
+Subject: [PATCH v1 0/1]  Mediatek pinctrl patch 
+Date:   Thu, 4 Nov 2021 19:23:28 +0800
+Message-ID: <20211104112329.8446-1-zhiyong.tao@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit df0380b9539b04c1ae8854a984098da06d5f1e67 upstream.
+This series includes 1 patches:
+1. fix global-out-of-bounds issue.
 
-This is a fix equivalent with the upstream commit df0380b9539b ("ALSA:
-usb-audio: Add quirk for Audient iD14"), adapted to the earlier
-kernels up to 5.14.y.  It adds the quirk entry with the old
-ignore_ctl_error flag to the usbmix_ctl_maps, instead.
+Changes in patch v1:
+1. change check eint number boundary condition.
 
-The original commit description says:
-    Audient iD14 (2708:0002) may get a control message error that
-    interferes the operation e.g. with alsactl.  Add the quirk to ignore
-    such errors like other devices.
+Zhiyong Tao (1):
+  pinctrl: mediatek: fix global-out-of-bounds issue
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/mixer_maps.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
-index 809ac6d18d2b..8f6823df944f 100644
---- a/sound/usb/mixer_maps.c
-+++ b/sound/usb/mixer_maps.c
-@@ -528,6 +528,10 @@ static const struct usbmix_ctl_map usbmix_ctl_maps[] = {
- 		.id = USB_ID(0x2573, 0x0008),
- 		.map = maya44_map,
- 	},
-+	{
-+		.id = USB_ID(0x2708, 0x0002), /* Audient iD14 */
-+		.ignore_ctl_error = 1,
-+	},
- 	{
- 		/* KEF X300A */
- 		.id = USB_ID(0x27ac, 0x1000),
--- 
-2.31.1
+--
+2.18.0
+
 
