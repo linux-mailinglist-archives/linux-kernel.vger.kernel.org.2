@@ -2,160 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA5244580C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:10:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CAC445812
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:12:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231898AbhKDRNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231927AbhKDRN3 (ORCPT
+        id S232536AbhKDROd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:14:33 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:51264 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232504AbhKDROb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:13:29 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC30BC061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 10:10:50 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id bg25so9611894oib.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 10:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SevfzmLSoiSwyaqVR0wq8id+v0W8G6ODuu7UIBW98Ck=;
-        b=FI/9ZNYr6/fAExz91u+4IwEk/Sxb4E3n6n+OTpB6yV1R775Z6Rzn9wDuRKyhtHW7Yh
-         l0iXs/DRJdBCFSmFd1drvVOSND9tg7xbhdWhPlV+E7agORgDq700oVfwOrZafut+uTjL
-         wZsxQZh6zgZB+DNENjftVxGc9YpUsDAGiRyi//LUZnHzRHIRnbOFxBpPg8XrR9F7ikSf
-         UDIo8ruFN9iOwT6B1ti3FGya6rHDXaX1OIjfzbF69TkBR2jACv9yQMF30HkEsRnr62o1
-         dHzC2TUCo67saJOtouCkKq8r/H4VDxeLV8YfMGOr2rul3DM4MH9og7FmH1N3/1TnIjKp
-         FZGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SevfzmLSoiSwyaqVR0wq8id+v0W8G6ODuu7UIBW98Ck=;
-        b=VIKhrJHesfXaiYz0gT9OFOoZ7tQ2H5gmKXc2i9bBCe5/ClQcI3YMpniEqNvnSOIVt9
-         1VQfk5ZYfKxr2/rDlB4iwPmTbXHhM3UHn2BCtOXdLbzAOYC34YELyO94Mec3XKsEXgFs
-         QQ7LAWkqp5KzF+ZIt9KAZ+naXokaH2BaBZnAIEGHDyvq7MO7SYU4NE5laRkZ6ud0DLFt
-         L3BoSorsiF6SA1PLohY5GL9kr6WovpHlVPcrn+WnRjQY/da1LU6w+UvigG1WIS09gnzj
-         gadHBfx9Cv8XKkhfBiedDWm+p2ZCAB+iz21wzJ13IRXPjxncbbJqqWJz5qnf7I7/1LGN
-         XFLA==
-X-Gm-Message-State: AOAM530og/Uy5UxgTXgEvLvgEjgFYIXlw5jj8TdkY3uBB8RjGWoFJRPo
-        gIRIgXUh9yvuxwBY3DbEObeuQg==
-X-Google-Smtp-Source: ABdhPJwKmmjP4pd9sA9tjR2/ScYq3sGmtX9vWhgQjNflbjsCxPsKiictYttp6KRG05oAopieT+rW4g==
-X-Received: by 2002:aca:3fd7:: with SMTP id m206mr16918071oia.162.1636045850000;
-        Thu, 04 Nov 2021 10:10:50 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id a13sm1599171oiy.9.2021.11.04.10.10.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 10:10:49 -0700 (PDT)
-Subject: Re: [PATCH v5 00/14] last set for add_disk() error handling
-To:     Luis Chamberlain <mcgrof@kernel.org>, martin.petersen@oracle.com
-Cc:     miquel.raynal@bootlin.com, hare@suse.de, jack@suse.cz, hch@lst.de,
-        song@kernel.org, dave.jiang@intel.com, richard@nod.at,
-        vishal.l.verma@intel.com, penguin-kernel@i-love.sakura.ne.jp,
-        tj@kernel.org, ira.weiny@intel.com, vigneshr@ti.com,
-        dan.j.williams@intel.com, ming.lei@redhat.com, efremov@linux.com,
-        linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-References: <20211103230437.1639990-1-mcgrof@kernel.org>
- <163602655191.22491.10844091970007142957.b4-ty@kernel.dk>
- <4764286a-99b4-39f7-ce5c-9e88cee1a538@kernel.dk>
- <YYQTYctDjaxU2tkQ@bombadil.infradead.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <377b472e-b788-df12-f9cd-7fc7b0887dc0@kernel.dk>
-Date:   Thu, 4 Nov 2021 11:10:48 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <YYQTYctDjaxU2tkQ@bombadil.infradead.org>
-Content-Type: text/plain; charset=utf-8
+        Thu, 4 Nov 2021 13:14:31 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A4Gge00021958;
+        Thu, 4 Nov 2021 10:11:38 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=ZLUQTW5BGL+ViybwR8l1N5k7HApSMVT5s5NPj2Qd/6o=;
+ b=BsgOJ9t6MX713aZwQA1LsKjygWDCAq/nvJhbxL/P7e5m9VVqH2vO/WRTQ9rWfZyvQBsU
+ x7jjf9UZDDfp91ML9CaEM/WYGxyO5L8O9ZCvSCjPVQfLyaj9/pmUseHSLiryBYqAJHbB
+ zNFpUHT5nQsH5/W56uUAdnXJR4IwH+AlrKw= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3c43a4puuq-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 04 Nov 2021 10:11:38 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Thu, 4 Nov 2021 10:11:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Rd5cXOxhxr/I3vKQHliQ2RqRQTmZpLZGLSi+KMcw+bapAAnW94Ex2ERrVpZjv57v4Dona+mn7XNpyOHUXmhvyVUSwGjIGHtqs6E1OPanUUlAu1FmYTpmidkIdB9CKMoRPOfpbN2DM/bJvSivOZsYeHWmG4EiWZ4pIMGA7xX4tdmuL6utvLtHTkLViXgDevbY7lHTBHJXb4U+LlOQ0i14mrzFpK/br18nLOuaPqUCOA801crUi51d/C64n4MlQsEd+QzAhb3igSxR9VFSw2zaxy0mFPeUQF2vwCrg83qZ+abEE0RUX3hsaxKQN28rQr/oGG86UtUAqj7n2UiNPXhKxQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZLUQTW5BGL+ViybwR8l1N5k7HApSMVT5s5NPj2Qd/6o=;
+ b=PgHpWf61CJLZ28M7SeTZMkusrbwZYM9yoG0NEnm7haVxt92Mb9DvvcLq6ETYbhRTXyeOoHcJNKAR63FJR+CYgSD060ZAdWixOuAsvgnrHeJ/B8+48LDYRxl/P9FNbtOiEOnar4DdG7392NTcW44VIZ276xJ3DyjvFIHGcjG1JbKiAVtE9F/Hjd6Tg/BueXdIv+dRjR2dF1p6jA1GJOSR4vD3wgIqoDldtHra4SLASbYOsFKFZAeRxepT4b8690iWjfLxdCohY3geWrFpd2G56p37eUxFk5kHWCyN7hHdjK3kHDy/dZFzeETj7ULM1viWcl/W4kVEE34CvzyVLFHrFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA1PR15MB4660.namprd15.prod.outlook.com (2603:10b6:806:19f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Thu, 4 Nov
+ 2021 17:11:35 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::51ef:4b41:5aea:3f75]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::51ef:4b41:5aea:3f75%6]) with mapi id 15.20.4669.011; Thu, 4 Nov 2021
+ 17:11:35 +0000
+Message-ID: <71771c37-5e97-54e6-0d98-73878f3b74d5@fb.com>
+Date:   Thu, 4 Nov 2021 10:11:31 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [RFC PATCH v3 0/3] Introduce BPF map tracing capability
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Joe Burton <jevburton.kernel@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Petar Penkov <ppenkov@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Joe Burton <jevburton@google.com>
+References: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
+ <20211103001245.muyte7exph23tmco@ast-mbp.dhcp.thefacebook.com>
+ <fcec81dd-3bb9-7dcf-139d-847538b6ad20@fb.com>
+ <CAN22DihwJ7YDFSPk+8CCs0RcSWvZOpNV=D1u+42XabztS6hcKQ@mail.gmail.com>
+ <CAADnVQJ_ger=Tjn=9SuUTES6Tt5k_G0M+6T_ELzFtw_cSVs83A@mail.gmail.com>
+ <55c95c15-ccad-bb31-be87-ad17db7cb02a@fb.com>
+ <CAADnVQK6kMbX379dy5XOo1s7DricX1z9WZ04PhUD6DoEPO+jsg@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <CAADnVQK6kMbX379dy5XOo1s7DricX1z9WZ04PhUD6DoEPO+jsg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR02CA0007.namprd02.prod.outlook.com
+ (2603:10b6:300:4b::17) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+MIME-Version: 1.0
+Received: from [IPV6:2620:10d:c085:21e8::1253] (2620:10d:c090:400::5:e407) by MWHPR02CA0007.namprd02.prod.outlook.com (2603:10b6:300:4b::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11 via Frontend Transport; Thu, 4 Nov 2021 17:11:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3d089b27-7258-4f02-53e5-08d99fb62822
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4660:
+X-Microsoft-Antispam-PRVS: <SA1PR15MB4660A3A8B850EB2F2B760B93D38D9@SA1PR15MB4660.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +/9CWkRQdHBM4ien8H+vSmRCTvicGAfGoMTJS6UXZLSxgIz++gNCt2wqy1tCDpIdTECmKrNomqaNybIrGV1YAUiPDG0CocuoiQJj7UwLUs7m992U8BfLZv5Yi0BbIXtkroiEVOZdmy4fnMZ137z+iTf6vEzoPDe90lSr28vBamhqph+rgBJKDG6rrp7qeVdi9yO323eG4/pHwBkcbgqJ9uoYsqIRGtdxt0rvYNKWzVFtRydf3XUmZ/zFNshOg4z6kh189YuJbHdLVLHpTN73gyTglIHtFocDYLd2yFolbQeZB81OHbtNO5Feb44itD8XfPx22pB6Ud0LXOfcPda2ROtTf/4U0tAzxa6OfYVGVZyqHy+nJWyUotsuugs6WUp/p6wA+4No/Bgf6bY96USgk+i46MPRozeVs8jXqhe0kf4lMjuVDJZbWREppvPBYiJX2sbc5f4REDtVbFMKwERQyyjpFdDD2Vix6LAc9v8/9jnBjauOcX8musoRQIbzDGJ2YHfGK/Mr49EThlD2aLcmSslW7Sd+Ym8frTwIB83I6DuznMaTYEJPBHLaZPLIhC2VfYAdATSNnzP43rEWBV2cUxSY6RC4QsQwyJRVlzoVy+S0iXVvil5ZlhdEyeDYm2MPuykjAEVO5etDqTTgANue6x1ZsgmBmOF6V9YgvjV0BDP1BARssUhITH1bc7EER/phUhoqbtPetEUXGCOALVAxFT8IXiTbqC4XAZYvhjLICVY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(53546011)(2906002)(31686004)(186003)(8676002)(66556008)(508600001)(4326008)(66476007)(86362001)(66946007)(7416002)(316002)(2616005)(31696002)(38100700002)(8936002)(6486002)(54906003)(6916009)(52116002)(36756003)(6666004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K1ZrQjR3WFduZEdQNEkwaUl0OVFYcWFVbm05Syt6b1FNMHY5dzdmOUhvMTVy?=
+ =?utf-8?B?bEQyUGhzbEh1T3U0RHI3VmQ5RGI4anJLcUMycFNhZDIvcElyN2lYNUJ2MGJJ?=
+ =?utf-8?B?Y3VrTzJUQzFVejZuMkxVcENPMkNqNTJseWNFYUw3QlJRSmh1YVNCZ2JYNmdw?=
+ =?utf-8?B?NU1tQi93UEZDT096dXlDL2FOS3Q0anBPWlVVam4rb252dmMrcy9FYzUwOEk2?=
+ =?utf-8?B?TEUwblUxRG5BdE1wMzJ5cFREMENnSjRIbEUzb1J3UGpyN0xNTDVTMU5jSVZB?=
+ =?utf-8?B?cXN2SXgvZXpFL1h6MUxqQVZqK3A5NmJ0Wm92SHZpTS9wUFh6MmU2MWVLcnl0?=
+ =?utf-8?B?RldhMzlkcklzVUQ0MmlVWCt3d1dGTy9JdTN6TFEzY1FzT3FhdUFrZno5Q0RY?=
+ =?utf-8?B?MGkzd1dkSkJqN2dudlMrc052K0NMbmhkOUZqaEEybWRsVHdNem45c2loNkkw?=
+ =?utf-8?B?UGJhekhGNnpaT25sU0plMitjcGRTN01DZG40Z0F6c3MyQWVxbzRKOTVIOVNL?=
+ =?utf-8?B?SU50cEdrYkNsb1N2RW5jY2ZScDFsTjBESXpzYlc3YlRNazVYRk9iOGZ6b2FB?=
+ =?utf-8?B?T0N6OTE3bDlsRlZZT0ZNN3dnaEVzQUJpTmVVSW5PU2c3YWt3VGE4dDdLamRF?=
+ =?utf-8?B?U2FiaXhibGRQdDRacGwxR3hrQktQdld4dkZmUnlMMHc4ZmYxQTF2UkpZZ2RH?=
+ =?utf-8?B?OGVhMTVWNTdvTm1CMTdBNy9tV0F6QzhwalphWGF4dXZoTjJTaDBJbjEyTlB6?=
+ =?utf-8?B?TDk1eGM0d09jK0U4QXRXTGQ0N0NBd1YwRDcwVkFPSTVZVDJOM1JQNm1uZytR?=
+ =?utf-8?B?T1U0U1NzbkkxOFM3QldRLzhQYmcwZzFteVRBaGxxNHRsYkNFNmNnYVlXNXZV?=
+ =?utf-8?B?dGFNenVjK2JzSjJxc0dHeS84ZWNWT0VOY25SQlplajN2TmxFNWdJQ1JQWWhM?=
+ =?utf-8?B?M1grL0ZqTFZWWlV1WWtnSXZtbXFOZ0lzeHRjeE41dGV1ajRSZTFjUDdaMjdV?=
+ =?utf-8?B?cWxlLzR1OHk4TDdrOWQyU2orSEhxY2hiYWFBLytERlJXZU1jSG1ud1Zhakdo?=
+ =?utf-8?B?NFJwdTQyR3k0ZCtVK3VnY0NEMm5rWG1QY3FUODZNbUxHdGt3Wkt3YmZ0V0w2?=
+ =?utf-8?B?UmFSZW9XQ1ZYK3VaSnpPZ041M0h4UnpXSjIrUTN1OGNwbzFUdS9MUEljb1pX?=
+ =?utf-8?B?VGNaTGgvOE9vYXIvcnBGWDVmWG9nWjVxOE1yb3FqcU1HazZUelFUQnNXNGJj?=
+ =?utf-8?B?cmx3SzhkeXBaeDFjcTFGVDVLVDdNRG1COXdTQnA2czlOWmt6QkgydEdsUHo0?=
+ =?utf-8?B?dVQ1cG5xMDNNcVNWVStWSVZrZ3M4RkZzNmlXZUxKMkJ5WHMzTWhOWThUdFh6?=
+ =?utf-8?B?YUtxK1hWYkxJcXcvbDM5QWV1Q0UxWC9Tbnk1T0Z6T0poaWsyaUdhVmxOY3Vp?=
+ =?utf-8?B?RW9aZjVYeEZHQVBGbVlPZzdBYkN0bnBVM1kzU0NnbDJ4bVJKTm1HclVENjhu?=
+ =?utf-8?B?N1Q3Uko0dkdHNmFab1ZMSm15b1lnVzdqZXZDR2F2aStDM2hXQllWSVJTU1dC?=
+ =?utf-8?B?VU9JS1c3M3B0M2UzT0ozMWpUbC8yTzVpeXVyK2pibE5VdE5OWnRtTkhOSlYr?=
+ =?utf-8?B?VVBWazA2UGVvUUJ0enVuY1dncFRxM2JnMS9QajU2cVJYRHJ1TnNJVC8zV3hz?=
+ =?utf-8?B?VU1qN3o3SFBONUU0MmpXRlhJNkt2WTZ5RlYrcjBzOGdmYUF4MW9IdE1hTm1s?=
+ =?utf-8?B?YWI4RmJRZWNUQk9mbkdDd05TaUNVdDlOOU40QWlhL0VjdWZKRktEdVRWY2hT?=
+ =?utf-8?B?VUVWbHJrS0NJM2xLZEl0MzFXeCtDOUlNVnZRR3NraTJJM3dqUTNyd0VZVkxF?=
+ =?utf-8?B?V3BQWVRXcC9jUlljWWZBeGtFWnNtUzZlbk9meXV5MmNnc0lyU2FtUXBxNDJK?=
+ =?utf-8?B?VnZEQmQrYndGaU54T0lHWUhEZi9XcWtLSUh4djlzYjdqcll5V003VmE5TmRC?=
+ =?utf-8?B?OUxQbjd2V1ZBcUZMOE9ZcnFCVlp5QTk0RFFxV2NuS2VMNzEwQUFOa2lKdWtC?=
+ =?utf-8?B?QWZTaklQM1lpU3Yxb0srNjBLblQ3SHV2UnlVM2xoUnRYN0ZudHpjSzdBdE0x?=
+ =?utf-8?B?eTc4bU5aUGZqNFdpWGhneVRjblVBaktyd2ZpMEN4V2VhY0Q1U3ZhWXNpMmtW?=
+ =?utf-8?B?VWc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d089b27-7258-4f02-53e5-08d99fb62822
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2021 17:11:35.6757
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0UD6+2Ycwem9ZxvgQ9VTrvY3EgyHQvcpqGrBxgiBa8SuOkmrI2wZgdRA7rAksXK8
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4660
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: ATIhmelw1AUcnIBitqLCVY9VaIa7sw9v
+X-Proofpoint-GUID: ATIhmelw1AUcnIBitqLCVY9VaIa7sw9v
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-04_05,2021-11-03_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 bulkscore=0 mlxscore=0 mlxlogscore=913
+ impostorscore=0 clxscore=1015 priorityscore=1501 adultscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111040065
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/4/21 11:07 AM, Luis Chamberlain wrote:
-> On Thu, Nov 04, 2021 at 06:53:34AM -0600, Jens Axboe wrote:
->> On 11/4/21 5:49 AM, Jens Axboe wrote:
->>> On Wed, 3 Nov 2021 16:04:23 -0700, Luis Chamberlain wrote:
->>>> Jens,
->>>>
->>>> as requested, I've folded all pending changes into this series. This
->>>> v5 pegs on Christoph's reviewed-by tags and since I was respinning I
->>>> modified the ataprobe and floppy driver changes as he suggested.
->>>>
->>>> I think this is it. The world of floppy has been exciting for v5.16.
->>>>
->>>> [...]
->>>
->>> Applied, thanks!
->>>
->>> [01/14] nvdimm/btt: use goto error labels on btt_blk_init()
->>>         commit: 2762ff06aa49e3a13fb4b779120f4f8c12c39fd1
->>> [02/14] nvdimm/btt: add error handling support for add_disk()
->>>         commit: 16be7974ff5d0a5cd9f345571c3eac1c3f6ba6de
->>> [03/14] nvdimm/blk: avoid calling del_gendisk() on early failures
->>>         commit: b7421afcec0c77ab58633587ddc29d53e6eb95af
->>> [04/14] nvdimm/blk: add error handling support for add_disk()
->>>         commit: dc104f4bb2d0a652dee010e47bc89c1ad2ab37c9
->>> [05/14] nvdimm/pmem: cleanup the disk if pmem_release_disk() is yet assigned
->>>         commit: accf58afb689f81daadde24080ea1164ad2db75f
->>> [06/14] nvdimm/pmem: use add_disk() error handling
->>>         commit: 5a192ccc32e2981f721343c750b8cfb4c3f41007
->>> [07/14] z2ram: add error handling support for add_disk()
->>>         commit: 15733754ccf35c49d2f36a7ac51adc8b975c1c78
->>> [08/14] block/sunvdc: add error handling support for add_disk()
->>>         commit: f583eaef0af39b792d74e39721b5ba4b6948a270
->>> [09/14] mtd/ubi/block: add error handling support for add_disk()
->>>         commit: ed73919124b2e48490adbbe48ffe885a2a4c6fee
->>> [10/14] ataflop: remove ataflop_probe_lock mutex
->>>         commit: 4ddb85d36613c45bde00d368bf9f357bd0708a0c
->>> [11/14] block: update __register_blkdev() probe documentation
->>>         commit: 26e06f5b13671d194d67ae8e2b66f524ab174153
->>> [12/14] ataflop: address add_disk() error handling on probe
->>>         commit: 46a7db492e7a27408bc164cbe6424683e79529b0
->>> [13/14] floppy: address add_disk() error handling on probe
->>>         commit: ec28fcc6cfcd418d20038ad2c492e87bf3a9f026
->>> [14/14] block: add __must_check for *add_disk*() callers
->>>         commit: 1698712d85ec2f128fc7e7c5dc2018b5ed2b7cf6
+
+
+On 11/4/21 9:14 AM, Alexei Starovoitov wrote:
+> On Wed, Nov 3, 2021 at 9:23 PM Yonghong Song <yhs@fb.com> wrote:
 >>
->> rivers/scsi/sd.c: In function ‘sd_probe’:
->> drivers/scsi/sd.c:3573:9: warning: ignoring return value of ‘device_add_disk’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
->>  3573 |         device_add_disk(dev, gd, NULL);
->>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/scsi/sr.c: In function ‘sr_probe’:
->> drivers/scsi/sr.c:731:9: warning: ignoring return value of ‘device_add_disk’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
->>   731 |         device_add_disk(&sdev->sdev_gendev, disk, NULL);
->>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> asm("") indeed helped preserve the call.
 >>
+>> [$ ~/tmp2] cat t.c
+>> int __attribute__((noinline)) foo() { asm(""); return 1; }
+>> int bar() { return foo() + foo(); }
+>> [$ ~/tmp2] clang -O2 -c t.c
+>> [$ ~/tmp2] llvm-objdump -d t.o
 >>
->> Dropping the last two patches...
+>> t.o:    file format elf64-x86-64
+>>
+>> Disassembly of section .text:
+>>
+>> 0000000000000000 <foo>:
+>>          0: b8 01 00 00 00                movl    $1, %eax
+>>          5: c3                            retq
+>>          6: 66 2e 0f 1f 84 00 00 00 00 00 nopw    %cs:(%rax,%rax)
+>>
+>> 0000000000000010 <bar>:
+>>         10: 50                            pushq   %rax
+>>         11: e8 00 00 00 00                callq   0x16 <bar+0x6>
+>>         16: e8 00 00 00 00                callq   0x1b <bar+0xb>
+>>         1b: b8 02 00 00 00                movl    $2, %eax
+>>         20: 59                            popq    %rcx
+>>         21: c3                            retq
+>> [$ ~/tmp2]
+>>
+>> Note with asm(""), foo() is called twice, but the compiler optimization
+>> knows foo()'s return value is 1 so it did calculation at compiler time,
+>> assign the 2 to %eax and returns.
 > 
-> Martin K Peterson has the respective patches needed queued up on his tree
-> for v5.16:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git/commit/?h=5.16/scsi-staging&id=e9d658c2175b95a8f091b12ddefb271683aeacd9
-> https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git/commit/?h=5.16/scsi-staging&id=2a7a891f4c406822801ecd676b076c64de072c9e
-> 
-> Would the last patch be sent once that gets to Linus?
+> Missed %eax=2 part...
+> That means that asm("") is not enough.
+> Maybe something like:
+> int __attribute__((noinline)) foo()
+> {
+>    int ret = 0;
+>    asm volatile("" : "=r"(var) : "0"(var));
 
-But that dependency wasn't clear in the patches posted, and it leaves me
-wondering if there are others? I obviously can't queue up a patch that
-adds a must_check to a function, when we still have callers that don't
-properly check it.
+asm volatile("" : "=r"(ret) : "0"(ret));
 
-That should have been made clear, and that last patch never should've
-been part of the series. Please send it once Linus's tree has all
-callers checking the result.
+>    return ret;
+> }
 
-> Also curious why drop the last two patches instead just the last one for
-> now?
-
-Sorry, meant just the last one.
-
--- 
-Jens Axboe
-
+Right. We should prevent compilers from "inlining" return values.
