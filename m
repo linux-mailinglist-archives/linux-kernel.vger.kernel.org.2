@@ -2,96 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A4F445917
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:56:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E69445919
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:57:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232267AbhKDR7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:59:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbhKDR7R (ORCPT
+        id S233820AbhKDR7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:59:48 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:37746 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229850AbhKDR7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:59:17 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422F5C061714;
-        Thu,  4 Nov 2021 10:56:39 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id y3so16424893ybf.2;
-        Thu, 04 Nov 2021 10:56:39 -0700 (PDT)
+        Thu, 4 Nov 2021 13:59:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DPStDFw2+0Lg1MlhJeEQxDNPEkzqlTJMn986ZZm8lCI=;
-        b=R1JRU1dkj1w1IkWHjbEg9yW6MSnPMZbaCvsFkQDqHVKxvueaG2XyfoMU5DcuqsXpeC
-         HOKAvCBqZvSaLMr9SlfoAOQFUIG4ayd2Lw6xeYrsSugSQjV6mHvbFUrx6cJCeAqTln86
-         MREFbbBslBCSNwBTPOnzWMru5sI/d5TDHhSdcSc6w/ZdaQkbkmWj6HK0jh0/fZ8A+J4H
-         FIOPeuQMtjlRvT6s2xac0DQzeTJ8lUq0DGJuUfdscWDb62un0+P7g/AA+x5FsDT70BAW
-         8Fvy1NdmlIaAZx9MYiiFenQqvPvl5L7gzksNjlX+Vmj/bc/ehc9fMswQLVzaq8JKDV0s
-         DHEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DPStDFw2+0Lg1MlhJeEQxDNPEkzqlTJMn986ZZm8lCI=;
-        b=S0Vmn476Yny+5oQkxQ3zMk/wdPupe9KKGpsjx7bP8ZE2XosoE1uBecffLMGfuxCwxY
-         WbV1Vm6Lo57irT7oZzgkhzJ16pRqsWmh8Brce2WO8p+j73NSTJLijDsrsOl9p3VIg94r
-         S3HxlEtQ+Ennr2cE8vgZieC6KvDCbeFNSyzcfx/PzUMhnWwNkvico1vWZlJexFbwSaWb
-         fNbMlwReqhGUWt+w1zHej7/WiLMQBGnpMBaaZVyMvlrE+qqPtAwY9e0BK/YULhueVttP
-         DjFliQ5g+hFlfe4gwJvyxMGtPMU6fsbwrpX6JWGPE+KfhitcHNgTE/R8mLF+jbfyuxUJ
-         kZEQ==
-X-Gm-Message-State: AOAM531b8rY7HAw/SxBFBzLHP5Mt7KUVICuAZ7i7rvUEcJK20m5h9n29
-        pXc08qKtWvEBfzMVafDgUzw201crCPnmn4NwU9Q=
-X-Google-Smtp-Source: ABdhPJyoUTC6m0SVMW0LmcU8OPfPkyCsQ/bryAweQHZwjiqWdl052MN6XoC0o9UFkY6soBsuhHTaziQ2blBSHf7Fs38=
-X-Received: by 2002:a25:cc4c:: with SMTP id l73mr55747145ybf.114.1636048597996;
- Thu, 04 Nov 2021 10:56:37 -0700 (PDT)
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1636048629; x=1667584629;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=rDfcmeXr06UuyuIkrSpDVVQCX//kJb88o/BxKjLn2GQ=;
+  b=vG+RYCi6skA19zO5fPmuxnlGJYUqQjX8xULJxw2iCbDMY4LImycB4fbt
+   R6AcOs0PX3bh+IUUC9mioDLinEK4iHZ1AnXKzP4q8b5zNtB1C9mB4w8OB
+   z8YuFo+sFbj/6ccwJFB35FDPaRKQfs/FfIQ+7K/04JuLqA8ZEyeJXzuel
+   0=;
+Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 04 Nov 2021 10:57:08 -0700
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 10:57:07 -0700
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Thu, 4 Nov 2021 10:57:06 -0700
+Received: from [10.110.50.149] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Thu, 4 Nov 2021
+ 10:57:04 -0700
+Subject: Re: [PATCH] arm64: Track no early_pgtable_alloc() for kmemleak
+To:     Mike Rapoport <rppt@kernel.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20211104155623.11158-1-quic_qiancai@quicinc.com>
+ <YYQTKRrDIJbkcplr@kernel.org>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <9bb6fe11-c10a-a373-9288-d44a5ba976fa@quicinc.com>
+Date:   Thu, 4 Nov 2021 13:57:03 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <YYQadWbtdZ9Ff9N4@kernel.org> <YYQdKijyt20cBQik@kernel.org>
-In-Reply-To: <YYQdKijyt20cBQik@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 4 Nov 2021 10:56:26 -0700
-Message-ID: <CAEf4BzYtq5Fru0_=Stih+Tjya3i29xG+RSF=4oOT7GbUwVRQaQ@mail.gmail.com>
-Subject: Re: perf build broken looking for bpf/{libbpf,bpf}.h after merge with upstream
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YYQTKRrDIJbkcplr@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 10:49 AM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
->
-> Em Thu, Nov 04, 2021 at 02:37:57PM -0300, Arnaldo Carvalho de Melo escreveu:
-> >
-> > Hi Song,
-> >
-> >       I just did a merge with upstream and I'm getting this:
-> >
-> >   LINK    /tmp/build/perf/plugins/plugin_scsi.so
-> >   INSTALL trace_plugins
->
-> To clarify, the command line to build perf that results in this problem
-> is:
->
->   make -k BUILD_BPF_SKEL=1 CORESIGHT=1 PYTHON=python3 O=/tmp/build/perf -C tools/perf install-bin
 
-Oh, I dropped CORESIGN and left BUILD_BPF_SKEL=1 and yeah, I see the
-build failure. I do think now that it's related to the recent Makefile
-revamp effort. Quentin, PTAL.
 
-On the side note, why BUILD_BPF_SKEL=1 is not a default, we might have
-caught this sooner. Is there any reason not to flip the default?
+On 11/4/21 1:06 PM, Mike Rapoport wrote:
+> I think I'll be better to rename MEMBLOCK_ALLOC_KASAN to, say,
+> MEMBLOCK_ALLOC_NOKMEMLEAK and use that for both KASAN and page table cases.
 
->
-> > Auto-detecting system features:
-> > ...                        libbfd: [ on  ]
-> > ...        disassembler-four-args: [ on  ]
-> > ...                          zlib: [ on  ]
-> > ...                        libcap: [ on  ]
-> > ...               clang-bpf-co-re: [ on  ]
-> >
-> >
+Okay, that would look a bit nicer.
 
-[...]
+> But more generally, we are going to hit this again and again.
+> Couldn't we add a memblock allocation as a mean to get more memory to
+> kmemleak::mem_pool_alloc()?
+
+For the last 5 years, this is the second time I am ware of this kind of
+issue just because of the 64KB->4KB switch on those servers, although I
+agree it could happen again in the future due to some new debugging
+features etc. I don't feel a strong need to rewrite it now though. Not
+sure if Catalin saw things differently. Anyway, Mike, do you agree that
+we could rewrite that separately in the future?
