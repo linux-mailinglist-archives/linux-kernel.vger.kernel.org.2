@@ -2,106 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C69B444CDB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 02:06:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF79444CDD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 02:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232958AbhKDBIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 21:08:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbhKDBIl (ORCPT
+        id S232576AbhKDBJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 21:09:10 -0400
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:45772 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231229AbhKDBJI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 21:08:41 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA04C06127A
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 18:06:04 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id y1so4455401plk.10
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 18:06:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=squareup.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=l0NodXMiXOc4ZwZnRHBZa9k+oUne0ZC0/wZzXhkZmZI=;
-        b=LnBaFBJxFiio4rB+3EcY9+ZKc8yrYBVGpc+8LUEODOn6EkbjC9Rd1SS0DAZO4C8/kz
-         roZT/aniOYMHrJwMTfF3MH53guYKahKXW0cs4dFF7Kaimzde79Kl19xAmaO5Tt48kQoh
-         LxWHEb1fQOkRdPpnevfIX9bo+wT2Be7rWIKP4=
+        Wed, 3 Nov 2021 21:09:08 -0400
+Received: by mail-oi1-f169.google.com with SMTP id u2so6518839oiu.12;
+        Wed, 03 Nov 2021 18:06:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=l0NodXMiXOc4ZwZnRHBZa9k+oUne0ZC0/wZzXhkZmZI=;
-        b=erDBMDfP54GCH4Sa3kVxj/k7633H1bGXR8MrKrYxJqDRf1pGLu06N90wM+96hH6Eq5
-         /D4svVZSlNC4yxp55xkodxrTV0oGBdqLfeiMsRjitqi5UoQv7ye3lb9CdX4UDg0Z/x81
-         1NDmxFYsLHY3gmqDvqrhGPm4hVpsOhLMqIaBC81NPqT40fTjD89zK3xcsGNwD0aMn+To
-         0YTDrYTE+mDUlJL8DKMgz+RfNwaeq4idMFwvRyqrTyqJCP2ht8LcQKIu2m4rCj7IuQn5
-         2AYddvFUQ+1w4dHJIrraqex4cPhU2OTUta3juo5NievXR2CbsdIYwYf+bUyMOUbeqFPw
-         9HkA==
-X-Gm-Message-State: AOAM5335NcR8sHQCzJLYxEpvaHQ9NqrKeIIGMmcqw58V2z7AL0aTdXC9
-        I1Mu8FYKOYjUkx+t87p/zuihsg==
-X-Google-Smtp-Source: ABdhPJw0acps+6sDCj/mXAWZyD90NnhnpiPfxAq1ztrvINgsCTh1aK2pVCUnS8RD2wT02f5+3ngXkg==
-X-Received: by 2002:a17:90a:e506:: with SMTP id t6mr16698467pjy.9.1635987963550;
-        Wed, 03 Nov 2021 18:06:03 -0700 (PDT)
-Received: from localhost ([2600:6c50:4d00:d401:aa7a:1484:c7d0:ae82])
-        by smtp.gmail.com with ESMTPSA id e8sm3667882pfn.45.2021.11.03.18.06.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 18:06:03 -0700 (PDT)
-From:   Benjamin Li <benl@squareup.com>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Benjamin Li <benl@squareup.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, wcn36xx@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] wcn36xx: fix RX BD rate mapping for 5GHz legacy rates
-Date:   Wed,  3 Nov 2021 18:05:48 -0700
-Message-Id: <20211104010548.1107405-3-benl@squareup.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211104010548.1107405-1-benl@squareup.com>
-References: <20211104010548.1107405-1-benl@squareup.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YocbHtB0WKCVpaPIwIN4Bz/405kKtFB5GzeTgkMKUbU=;
+        b=1VkAe1HtunpbGuHkSr+bAYcm482cbSV0LJnwqLrm656WOnCmcuKvvIuj/PweOOmypb
+         VYZdi2C4Gy9qBpviT5+ConHJY0GSKdsZwSe71hFEYJ4hOwbS2tTgOpDAg0lBvrOha4yq
+         3P6mlAbTWY7EuvlRMoGJEoQK/pz8CjBrqHtS+MFvueiVjCHeLEfOFza26ARf2NIeAQyM
+         hSjMO+7HDqFebpUSf2AeSG9q+gQWofKVy2jyHCEs+2qzAMmXrpMQ0MWlYq4GZeST3sVs
+         Bogu5DcPrG/1irEANyd2Ju5Yrzw59AxywPl/7PIqFcmWXAMlGozcBZRpkVUyWyXcMc3B
+         jtww==
+X-Gm-Message-State: AOAM531ZIn1wtfaUGmh7RATAymsywHDooSM40y8jSvftoF0CrH2iI7NM
+        vDbC4imQo3U59LyyIQGEgQ==
+X-Google-Smtp-Source: ABdhPJxGo+5iN/O5yvgisGFrxVAxyW+CSOOK9/Uinje5TIMZuC9rnFykfXySd0UhCxBTW5qolr+fcQ==
+X-Received: by 2002:aca:280d:: with SMTP id 13mr11393821oix.116.1635987991262;
+        Wed, 03 Nov 2021 18:06:31 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id r24sm524554otc.12.2021.11.03.18.06.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 18:06:30 -0700 (PDT)
+Received: (nullmailer pid 2116973 invoked by uid 1000);
+        Thu, 04 Nov 2021 01:06:29 -0000
+Date:   Wed, 3 Nov 2021 20:06:29 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     James Lo <james.lo@mediatek.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Subject: Re: [RESEND, v13 2/4] dt-bindings: spmi: document binding for the
+ Mediatek SPMI controller
+Message-ID: <YYMyFT94l56iuEbo@robh.at.kernel.org>
+References: <20211103081021.9917-1-james.lo@mediatek.com>
+ <20211103081021.9917-3-james.lo@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211103081021.9917-3-james.lo@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The linear mapping between the BD rate field and the driver's 5GHz
-legacy rates table (wcn_5ghz_rates) does not only apply for the latter
-four rates -- it applies to all eight rates.
+On Wed, Nov 03, 2021 at 04:10:19PM +0800, James Lo wrote:
+> This adds documentation for the SPMI controller found on Mediatek SoCs.
+> 
+> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
 
-Fixes: 6ea131acea98 ("wcn36xx: Fix warning due to bad rate_idx")
-Signed-off-by: Benjamin Li <benl@squareup.com>
----
- drivers/net/wireless/ath/wcn36xx/txrx.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Missing author S-o-b. checkpatch.pl will tell you this.
 
-diff --git a/drivers/net/wireless/ath/wcn36xx/txrx.c b/drivers/net/wireless/ath/wcn36xx/txrx.c
-index f0a9f069a92a9..dd58dde8c8363 100644
---- a/drivers/net/wireless/ath/wcn36xx/txrx.c
-+++ b/drivers/net/wireless/ath/wcn36xx/txrx.c
-@@ -272,7 +272,6 @@ int wcn36xx_rx_skb(struct wcn36xx *wcn, struct sk_buff *skb)
- 	const struct wcn36xx_rate *rate;
- 	struct ieee80211_hdr *hdr;
- 	struct wcn36xx_rx_bd *bd;
--	struct ieee80211_supported_band *sband;
- 	u16 fc, sn;
- 
- 	/*
-@@ -350,12 +349,11 @@ int wcn36xx_rx_skb(struct wcn36xx *wcn, struct sk_buff *skb)
- 		status.enc_flags = rate->encoding_flags;
- 		status.bw = rate->bw;
- 		status.rate_idx = rate->mcs_or_legacy_index;
--		sband = wcn->hw->wiphy->bands[status.band];
- 		status.nss = 1;
- 
- 		if (status.band == NL80211_BAND_5GHZ &&
- 		    status.encoding == RX_ENC_LEGACY &&
--		    status.rate_idx >= sband->n_bitrates) {
-+		    status.rate_idx >= 4) {
- 			/* no dsss rates in 5Ghz rates table */
- 			status.rate_idx -= 4;
- 		}
--- 
-2.25.1
-
+> ---
+>  .../bindings/spmi/mtk,spmi-mtk-pmif.yaml      | 76 +++++++++++++++++++
+>  1 file changed, 76 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml b/Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
+> new file mode 100644
+> index 000000000000..2445c5e0b0ef
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
+> @@ -0,0 +1,76 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spmi/mtk,spmi-mtk-pmif.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mediatek SPMI Controller Device Tree Bindings
+> +
+> +maintainers:
+> +  - Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+> +
+> +description: |+
+> +  On MediaTek SoCs the PMIC is connected via SPMI and the controller allows
+> +  for multiple SoCs to control a single SPMI master.
+> +
+> +allOf:
+> +  - $ref: "spmi.yaml"
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - mediatek,mt6873-spmi
+> +      - mediatek,mt8195-spmi
+> +
+> +  reg:
+> +    maxItems: 2
+> +
+> +  reg-names:
+> +    items:
+> +      - const: pmif
+> +      - const: spmimst
+> +
+> +  clocks:
+> +    minItems: 3
+> +    maxItems: 3
+> +
+> +  clock-names:
+> +    items:
+> +      - const: pmif_sys_ck
+> +      - const: pmif_tmr_ck
+> +      - const: spmimst_clk_mux
+> +
+> +  assigned-clocks:
+> +    maxItems: 1
+> +
+> +  assigned-clock-parents:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - clocks
+> +  - clock-names
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/mt8192-clk.h>
+> +
+> +    spmi: spmi@10027000 {
+> +        compatible = "mediatek,mt6873-spmi";
+> +        reg = <0x10027000 0xe00>,
+> +              <0x10029000 0x100>;
+> +        reg-names = "pmif", "spmimst";
+> +        clocks = <&infracfg CLK_INFRA_PMIC_AP>,
+> +                 <&infracfg CLK_INFRA_PMIC_TMR>,
+> +                 <&topckgen CLK_TOP_SPMI_MST_SEL>;
+> +        clock-names = "pmif_sys_ck",
+> +                      "pmif_tmr_ck",
+> +                      "spmimst_clk_mux";
+> +        assigned-clocks = <&topckgen CLK_TOP_PWRAP_ULPOSC_SEL>;
+> +        assigned-clock-parents = <&topckgen CLK_TOP_OSC_D10>;
+> +    };
+> +...
+> -- 
+> 2.18.0
+> 
+> 
