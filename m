@@ -2,153 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEEE444D4F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 03:32:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5645444D56
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 03:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbhKDCfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 22:35:06 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:59016 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229541AbhKDCfC (ORCPT
+        id S230011AbhKDCiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 22:38:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhKDCiX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 22:35:02 -0400
-X-UUID: b5a848c057d7456daea1530d568a627c-20211104
-X-UUID: b5a848c057d7456daea1530d568a627c-20211104
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <walter-zh.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 541227360; Thu, 04 Nov 2021 10:32:23 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3;
- Thu, 4 Nov 2021 10:32:22 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs10n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.792.3 via Frontend Transport; Thu, 4 Nov 2021 10:32:22 +0800
-From:   Walter Wu <walter-zh.wu@mediatek.com>
-To:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>
-CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        Walter Wu <walter-zh.wu@mediatek.com>
-Subject: [PATCH v2] dma-direct: improve DMA_ATTR_NO_KERNEL_MAPPING
-Date:   Thu, 4 Nov 2021 10:32:21 +0800
-Message-ID: <20211104023221.16391-1-walter-zh.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Wed, 3 Nov 2021 22:38:23 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A595AC061714;
+        Wed,  3 Nov 2021 19:35:46 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id w23-20020a4a9d17000000b002bb72fd39f3so1454231ooj.11;
+        Wed, 03 Nov 2021 19:35:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JrSbi7yceXbT6d12EbYqGSwgkyXAE5np80NJ5omtIzY=;
+        b=FBmJZadqmgv8CsvnpS397JTFeBF1CXthSjScp+YLDLuxD+s+4jVwabBG0dyb7YU+KZ
+         CLjkwQVc+WtfXFk660gXTDwuvHvGNXfxQlgVhTSgBA0m29ksEAzulUyoCRwaOIfaBQMK
+         JZqMtKl4h/dHGmddnLFu+qjJdN1cBrw6H10zJlwkzL61O9H8RZMpeN5g0sG8EuhwF8Nz
+         SkU2abBtZq1ZN/uDWZFH65XjF3eGpcOtvB/ptF0uvvB29u9ptXrUgmaBxOk3O+Q64E+r
+         Rky90+97vGfhjxa05Nx5SGqoyDceVKf/9awqrD8oj03EEkEPYVE8Xpkzz8XCE9X0oPJ9
+         P/EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JrSbi7yceXbT6d12EbYqGSwgkyXAE5np80NJ5omtIzY=;
+        b=mcSdAq/Ud34KTUC/9mq0f6T+p0Dt6n5gxO3zNDPb/O4lhjKZZ+IKx3OFgvgUurbklh
+         SG95RofQAJa1uvkErWTA6sw8+4qmMwHDCHIOijZmleqpMCE4qtvzyj4/1s031IS7gWRw
+         1nlP59LR+SlT/d1O49974oclpZwZB1fqmGcR1c7aWOtuVyPIe4SUVSGLpaXvTwoxTZih
+         GzcZ5I0WsqRjYRPZPbL6J+QkjaY6k4W7ukyigRxDjgf/gcheiOX9NZW8PPWC/CPbwZ2M
+         3v6M8BkjA+y4maNC2GNu9ZJaxHfeA5NgvKs+uULqyR/dNhtRT2LqZDxFrelP8LkvVFPK
+         V8ew==
+X-Gm-Message-State: AOAM531/hPgWJFbWbgNR43qFULdrRWUViguFNYcXq5m0uo0Obczg/cHs
+        ozU2obE7oyT6tNs17dK7lGY8cZJKLOpAqjzQQlM=
+X-Google-Smtp-Source: ABdhPJwgC6GERXI+T4b953pOq7So1ExoKH10nLhGYakrJWCbFOOc9lrR2lKgIC4ZLvmlYOYIq5JRbdAulpzjFql0NXA=
+X-Received: by 2002:a4a:b307:: with SMTP id m7mr1625105ooo.83.1635993346065;
+ Wed, 03 Nov 2021 19:35:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20211103091716.59906-1-likexu@tencent.com>
+In-Reply-To: <20211103091716.59906-1-likexu@tencent.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Thu, 4 Nov 2021 10:35:35 +0800
+Message-ID: <CANRm+Cwo+oEoA4pCy-r5FnUdvY+oxAys0FNm7JHVHCCHW1rxWA@mail.gmail.com>
+Subject: Re: [PATCH] perf/x86/vlbr: Add c->flags to vlbr event constraints
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-perf-users@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the allocated buffers use dma coherent memory with
-DMA_ATTR_NO_KERNEL_MAPPING, then its kernel mapping is exist.
-The caller use that DMA_ATTR_NO_KERNEL_MAPPING mean they can't
-rely on kernel mapping, but removing kernel mapping have
-some improvements.
+On Wed, 3 Nov 2021 at 17:17, Like Xu <like.xu.linux@gmail.com> wrote:
+>
+> From: Like Xu <likexu@tencent.com>
+>
+> Just like what we do in the x86_get_event_constraints(), the
+> PERF_X86_EVENT_LBR_SELECT flag should also be propagated
+> to event->hw.flags so that the host lbr driver can save/restore
+> MSR_LBR_SELECT for the special vlbr event created by KVM or BPF.
+>
+> Reported-by: Wanpeng Li <wanpengli@tencent.com>
+> Fixes: 097e4311cda9 ("perf/x86: Add constraint to create guest LBR event without hw counter")
+> Signed-off-by: Like Xu <likexu@tencent.com>
 
-The improvements are:
-a) Security improvement. In some cases, we don't hope the allocated
-   buffer to be read by cpu speculative execution. Therefore, it
-   need to remove kernel mapping, this patch improve
-   DMA_ATTR_NO_KERNEL_MAPPING to remove a page from kernel mapping
-   in order that cpu doesn't read it.
-b) Debugging improvement. If the allocated buffer map into user space,
-   only access it in user space, nobody can access it in kernel space,
-   so we can use this patch to see who try to access it in kernel space.
-
-This patch only works if the memory is mapping at page granularity
-in the linear region, so that current only support for ARM64.
-
-Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
-Suggested-by: Christoph Hellwig <hch@lst.de>
-Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
----
-
-v2:
-1. modify commit message and fix the removing mapping for arm64
-2. fix build error for x86
-
----
- include/linux/set_memory.h |  5 +++++
- kernel/dma/direct.c        | 13 +++++++++++++
- 2 files changed, 18 insertions(+)
-
-diff --git a/include/linux/set_memory.h b/include/linux/set_memory.h
-index f36be5166c19..6c7d1683339c 100644
---- a/include/linux/set_memory.h
-+++ b/include/linux/set_memory.h
-@@ -7,11 +7,16 @@
- 
- #ifdef CONFIG_ARCH_HAS_SET_MEMORY
- #include <asm/set_memory.h>
-+
-+#ifndef CONFIG_RODATA_FULL_DEFAULT_ENABLED
-+static inline int set_memory_valid(unsigned long addr, int numpages, int enable) { return 0; }
-+#endif
- #else
- static inline int set_memory_ro(unsigned long addr, int numpages) { return 0; }
- static inline int set_memory_rw(unsigned long addr, int numpages) { return 0; }
- static inline int set_memory_x(unsigned long addr,  int numpages) { return 0; }
- static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
-+static inline int set_memory_valid(unsigned long addr, int numpages, int enable) { return 0; }
- #endif
- 
- #ifndef CONFIG_ARCH_HAS_SET_DIRECT_MAP
-diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-index 4c6c5e0635e3..d5d03b51b708 100644
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@ -155,6 +155,7 @@ void *dma_direct_alloc(struct device *dev, size_t size,
- 	struct page *page;
- 	void *ret;
- 	int err;
-+	unsigned long kaddr;
- 
- 	size = PAGE_ALIGN(size);
- 	if (attrs & DMA_ATTR_NO_WARN)
-@@ -169,6 +170,11 @@ void *dma_direct_alloc(struct device *dev, size_t size,
- 		if (!PageHighMem(page))
- 			arch_dma_prep_coherent(page, size);
- 		*dma_handle = phys_to_dma_direct(dev, page_to_phys(page));
-+		if (IS_ENABLED(CONFIG_RODATA_FULL_DEFAULT_ENABLED)) {
-+			kaddr = (unsigned long)phys_to_virt(dma_to_phys(dev, *dma_handle));
-+			/* page remove kernel mapping for arm64 */
-+			set_memory_valid(kaddr, size >> PAGE_SHIFT, 0);
-+		}
- 		/* return the page pointer as the opaque cookie */
- 		return page;
- 	}
-@@ -275,9 +281,16 @@ void dma_direct_free(struct device *dev, size_t size,
- 		void *cpu_addr, dma_addr_t dma_addr, unsigned long attrs)
- {
- 	unsigned int page_order = get_order(size);
-+	unsigned long kaddr;
- 
- 	if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
- 	    !force_dma_unencrypted(dev) && !is_swiotlb_for_alloc(dev)) {
-+		if (IS_ENABLED(CONFIG_RODATA_FULL_DEFAULT_ENABLED)) {
-+			size = PAGE_ALIGN(size);
-+			kaddr = (unsigned long)phys_to_virt(dma_to_phys(dev, dma_addr));
-+			/* page create kernel mapping for arm64 */
-+			set_memory_valid(kaddr, size >> PAGE_SHIFT, 1);
-+		}
- 		/* cpu_addr is a struct page cookie, not a kernel address */
- 		dma_free_contiguous(dev, cpu_addr, size);
- 		return;
--- 
-2.18.0
-
+Tested-by: Wanpeng Li <wanpengli@tencent.com>
