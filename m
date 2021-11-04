@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76084454D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:15:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 670AF4454E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:15:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231714AbhKDOSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 10:18:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46060 "EHLO mail.kernel.org"
+        id S230420AbhKDOSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 10:18:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231880AbhKDOR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 10:17:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8FFC611C4;
-        Thu,  4 Nov 2021 14:14:49 +0000 (UTC)
+        id S231848AbhKDORt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 10:17:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B925A611EF;
+        Thu,  4 Nov 2021 14:15:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636035290;
-        bh=7GVP9ZmEGVTpLLR+MX++U7nu19yZXc1jomRbUneDCYE=;
+        s=korg; t=1636035311;
+        bh=aJwTCCsV8Trl17W6V1f2HGrRqnHcLj2QEYuk5S0JB30=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lDtMeLlyZGJlGX5iF/fChQthNdv3j0uhJXjWrP+2KlH3OYNE1rU0KQyEG+9nMoB4o
-         Hauv2+lk4we4VXPYpVWC+6EDeTSWGB66kWqxrvcjJggyYjXWItRtScnsCtuaQWp/fr
-         WD5TSO5Z4zUMhEbgEtf6Dz2LZPPoeX+zD9jpoftw=
+        b=P9OM43WMFnRAFghVhojgTcui0h/6SCjSR3tuiIbB/0Tb2vCJYxKCNWI77ccnSWgLN
+         VPjyURwQkSbiNFZVPLIRBeoSpInPCpOAdnlekty5bzxOTU1NZF5jTLlZ+cqw6QS2f/
+         Igp/eP6xSi3aAglS8x96AGTrtAPY/uXRvB+EF9H8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikita Lipski <mikita.lipski@amd.com>,
-        Anson Jacob <Anson.Jacob@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.14 13/16] drm/amd/display: Revert "Directly retrain link from debugfs"
+        stable@vger.kernel.org, Yuiko Oshino <yuiko.oshino@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 05/16] net: ethernet: microchip: lan743x: Fix skb allocation failure
 Date:   Thu,  4 Nov 2021 15:12:44 +0100
-Message-Id: <20211104141200.291316186@linuxfoundation.org>
+Message-Id: <20211104141159.748367268@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211104141159.863820939@linuxfoundation.org>
-References: <20211104141159.863820939@linuxfoundation.org>
+In-Reply-To: <20211104141159.561284732@linuxfoundation.org>
+References: <20211104141159.561284732@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anson Jacob <Anson.Jacob@amd.com>
+From: Yuiko Oshino <yuiko.oshino@microchip.com>
 
-commit 1131cadfd7563975f3a4efcc6f7c1fdc872db38b upstream.
+commit e8684db191e4164f3f5f3ad7dec04a6734c25f1c upstream.
 
-This reverts commit f5b6a20c7ef40599095c796b0500d842ffdbc639.
+The driver allocates skb during ndo_open with GFP_ATOMIC which has high chance of failure when there are multiple instances.
+GFP_KERNEL is enough while open and use GFP_ATOMIC only from interrupt context.
 
-This patch broke new settings from taking effect. Hotplug is
-required for new settings to take effect.
-
-Reviewed-by: Mikita Lipski <mikita.lipski@amd.com>
-Acked-by: Mikita Lipski <mikita.lipski@amd.com>
-Signed-off-by: Anson Jacob <Anson.Jacob@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 23f0703c125b ("lan743x: Add main source files for new lan743x driver")
+Signed-off-by: Yuiko Oshino <yuiko.oshino@microchip.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-@@ -247,6 +247,7 @@ static ssize_t dp_link_settings_write(st
+---
+ drivers/net/ethernet/microchip/lan743x_main.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -1963,13 +1963,13 @@ static int lan743x_rx_next_index(struct
+ 	return ((++index) % rx->ring_size);
+ }
+ 
+-static struct sk_buff *lan743x_rx_allocate_skb(struct lan743x_rx *rx)
++static struct sk_buff *lan743x_rx_allocate_skb(struct lan743x_rx *rx, gfp_t gfp)
  {
- 	struct amdgpu_dm_connector *connector = file_inode(f)->i_private;
- 	struct dc_link *link = connector->dc_link;
-+	struct dc *dc = (struct dc *)link->dc;
- 	struct dc_link_settings prefer_link_settings;
- 	char *wr_buf = NULL;
- 	const uint32_t wr_buf_size = 40;
-@@ -313,7 +314,7 @@ static ssize_t dp_link_settings_write(st
- 	prefer_link_settings.lane_count = param[0];
- 	prefer_link_settings.link_rate = param[1];
+ 	int length = 0;
  
--	dp_retrain_link_dp_test(link, &prefer_link_settings, false);
-+	dc_link_set_preferred_training_settings(dc, &prefer_link_settings, NULL, link, true);
+ 	length = (LAN743X_MAX_FRAME_SIZE + ETH_HLEN + 4 + RX_HEAD_PADDING);
+ 	return __netdev_alloc_skb(rx->adapter->netdev,
+-				  length, GFP_ATOMIC | GFP_DMA);
++				  length, gfp);
+ }
  
- 	kfree(wr_buf);
- 	return size;
+ static void lan743x_rx_update_tail(struct lan743x_rx *rx, int index)
+@@ -2141,7 +2141,8 @@ static int lan743x_rx_process_packet(str
+ 			struct sk_buff *new_skb = NULL;
+ 			int packet_length;
+ 
+-			new_skb = lan743x_rx_allocate_skb(rx);
++			new_skb = lan743x_rx_allocate_skb(rx,
++							  GFP_ATOMIC | GFP_DMA);
+ 			if (!new_skb) {
+ 				/* failed to allocate next skb.
+ 				 * Memory is very low.
+@@ -2377,7 +2378,8 @@ static int lan743x_rx_ring_init(struct l
+ 
+ 	rx->last_head = 0;
+ 	for (index = 0; index < rx->ring_size; index++) {
+-		struct sk_buff *new_skb = lan743x_rx_allocate_skb(rx);
++		struct sk_buff *new_skb = lan743x_rx_allocate_skb(rx,
++								   GFP_KERNEL);
+ 
+ 		ret = lan743x_rx_init_ring_element(rx, index, new_skb);
+ 		if (ret)
 
 
