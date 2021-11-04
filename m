@@ -2,75 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789BC4459F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B07445A17
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:58:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhKDSt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 14:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46554 "EHLO
+        id S231989AbhKDTBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 15:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233780AbhKDStY (ORCPT
+        with ESMTP id S230442AbhKDTBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 14:49:24 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509DAC061208
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 11:46:46 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id r5so8797408pls.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 11:46:46 -0700 (PDT)
+        Thu, 4 Nov 2021 15:01:07 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C632DC061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 11:58:28 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id t127so16734141ybf.13
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 11:58:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PorSLppZT3IedQU0Aiir1xp4SHeSb1PGuZKovfWyfMo=;
-        b=C6AYOPXp7GDQstXKhfY+qqe7bihiJvlo46H/bBrDRr5nb2tlWh1oLFYNUaUXAySyQI
-         MQ2Mb+ynV83Kl5cwf5b42/IzSP+02VBbsrN4e0K4G7L5A5b2JDxoAP0noBYBjWHlyuaJ
-         4mIf7A/jxmo15PFNXR/Gv7eDzmpnRBdsp9Xm4lo8fUx1gm8eg2PZ/4ho/zMa0WLdZYxP
-         6RfJMV2kWKj5kbtsqm7txzYlJU1v8HQLboR7DWx7zmr8uX7LfiKT+5cWcBS+ViGhjgH/
-         0wrSRn2HE1tnIbq9taGm+kFwx2u/3ZCt5ERDrsOLq1IvB3/iXodMRbHoKldR2olwjuRG
-         Pf8g==
+        bh=nUmCcM2R27aOSL47pzbGyQqJ7fyPEFQW3dQWmWZEKC0=;
+        b=oQjhMPhYfnVcGc5KK9SCmA092z/fwG+34NzH0Wc9ooFbdCywDFlYcfLZsnjMMsT6wA
+         UP7MYfCuyqdjsgF1ngXeQtwctBnTPnm3DAoPKWSubBQUVit3MSIN1oqZJGdcivz0ZMA2
+         bf9zIa941ohwL40/4HeiHvsJYLpVvUdObfiBS9tDj4l8mzXhDOryCBTaDhkCS6ZMBL05
+         wnkLbO2+6f3CNLWKslMFDqkVtyOw3f65Qmuz8TEmJEKSxtCjYvUlT3z2U7fo7bf8d4JR
+         Lj+PdinXblZI0ySHphrkl8/9Avk12Y+rkrvka9L3n1cO3iUGqIeNU6rxVsxa5+rC/I1p
+         14jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PorSLppZT3IedQU0Aiir1xp4SHeSb1PGuZKovfWyfMo=;
-        b=Zy3yK2OUua/ZSgMSAJv9iKzJF7bTM0VZcP/b+adtkInhD6fA+INBu1aHalni4ceG5Z
-         gissCHyyIa41E6IFdte/BibQ0dNADrV4uDGwSHm363rfcXCSDkbkt/hkDWBgW6LxiIcC
-         Olo2Kz2nG1Gl7atL8rnl0uX9NUMG+EGQyJ39Dj3DgqDd17sqDp7g/RGtj04rCVeP0ZQL
-         3xKHboJePXDWkDrs6cviFRJB53FOgt7pW9QbBbKIJhmCFV0yMdpi3HHE3o1AtzLzqhpx
-         HmVD1AfQ7xaZtOD9oxpONsTwfLcVoDMhleHunwuS4A3NzqeOsJ0p/j/cjxRj3D9VQ2ct
-         Sm6g==
-X-Gm-Message-State: AOAM53162w5uvS1I7yQJ3feB0+p+amP7dcgZiNUYh3hO2mQEA8vB3yc5
-        PwIxWKgS0R26iHnU6UIGnmkV1KexzbWXrLrpu6dAuQ==
-X-Google-Smtp-Source: ABdhPJwVT/QSowoDtWEN2jsATxofev3CtcyomsTIjU0EabHehx7QAl/wAGopkNPrEbIm1a3otSFjmLDNu8h0dJBepJ8=
-X-Received: by 2002:a17:90a:3b02:: with SMTP id d2mr23648066pjc.159.1636051605807;
- Thu, 04 Nov 2021 11:46:45 -0700 (PDT)
+        bh=nUmCcM2R27aOSL47pzbGyQqJ7fyPEFQW3dQWmWZEKC0=;
+        b=GxZaD0xLARq0fUH7fA12OSACJtkjqPzkNGnsGgdNbNuwcI1f/fkvddq43HMssC01dw
+         9xqPen591x79pUFE2mmqQJYFjW+yFfaSSC+ij1vgkrVPKZNTDPJ0jtIaVcQV6AqRuAg7
+         l/76D+sL3e/QHK2f4MWRaeF2JEMzl+ta48GqgA0UhzcMLEITnx8omnEhD5f0tr3NANIo
+         sSaRrg9ZOK4fZa4twVOCOncNtaASxhaJHSafMyPhGBrwM7Hj+V6sKrcNuYuw11FNlCEs
+         xaEuk5H5gUb3899aUvrZN1eRDFOnA1rF3t2IeM3neCTPukp6AaNLleBTBmSsR1xlNDty
+         M3xw==
+X-Gm-Message-State: AOAM533OMETGiKkt+s9CIoa0VD+mvODRBynLFeigZ7UT8+Ecg17l+OMV
+        ler7wRkkWJWDceh1Nb1XN/VxXWaz8zz3p7np1vK6kg==
+X-Google-Smtp-Source: ABdhPJw9+in7+jK3BzPJrRdvOhUL2WxBB20G1qO5j2AUIeI2ZbWx1/3MaBBORni/qhRE4xF3hhcxbWt21DUg28bKgAM=
+X-Received: by 2002:a05:6902:10c4:: with SMTP id w4mr39840645ybu.439.1636052307853;
+ Thu, 04 Nov 2021 11:58:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211104010548.1107405-1-benl@squareup.com> <20211104010548.1107405-3-benl@squareup.com>
-In-Reply-To: <20211104010548.1107405-3-benl@squareup.com>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Thu, 4 Nov 2021 19:57:27 +0100
-Message-ID: <CAMZdPi_piZp8nTP+TwxTw8_AE7F53st3X3d-gY2rvnN9-81D5Q@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] wcn36xx: fix RX BD rate mapping for 5GHz legacy rates
-To:     Benjamin Li <benl@squareup.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
-        linux-arm-msm@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, wcn36xx@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20211102002203.1046069-1-rananta@google.com> <20211102002203.1046069-7-rananta@google.com>
+ <YYMoEYzBvEqN5MD7@google.com>
+In-Reply-To: <YYMoEYzBvEqN5MD7@google.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Thu, 4 Nov 2021 11:58:16 -0700
+Message-ID: <CAJHc60yGpDR3denxfTUs_TxKcNWaPLChkVEgEXpNkGvkRS=KEg@mail.gmail.com>
+Subject: Re: [RFC PATCH 6/8] tools: Import the firmware registers
+To:     Oliver Upton <oupton@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Nov 2021 at 02:06, Benjamin Li <benl@squareup.com> wrote:
+On Wed, Nov 3, 2021 at 5:23 PM Oliver Upton <oupton@google.com> wrote:
 >
-> The linear mapping between the BD rate field and the driver's 5GHz
-> legacy rates table (wcn_5ghz_rates) does not only apply for the latter
-> four rates -- it applies to all eight rates.
+> On Tue, Nov 02, 2021 at 12:22:01AM +0000, Raghavendra Rao Ananta wrote:
+> > Import the firmware definitions for the firmware registers,
+> > KVM_REG_ARM_STD, KVM_REG_ARM_STD_HYP, and KVM_REG_ARM_VENDOR_HYP.
+> >
+> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> >
+> > ---
+> >  tools/arch/arm64/include/uapi/asm/kvm.h | 18 ++++++++++++++++++
+> >  1 file changed, 18 insertions(+)
 >
-> Fixes: 6ea131acea98 ("wcn36xx: Fix warning due to bad rate_idx")
-> Signed-off-by: Benjamin Li <benl@squareup.com>
+> Won't we have the latest UAPI headers available in usr/include/ at build
+> time?
+>
+I think we do. Wasn't aware of this. I'll delete the patch.
 
-Tested-by: Loic Poulain <loic.poulain@linaro.org>
+Regards,
+Raghavendra
+> --
+> Oliver
+>
+> > diff --git a/tools/arch/arm64/include/uapi/asm/kvm.h b/tools/arch/arm64/include/uapi/asm/kvm.h
+> > index b3edde68bc3e..a1d0e8e69eed 100644
+> > --- a/tools/arch/arm64/include/uapi/asm/kvm.h
+> > +++ b/tools/arch/arm64/include/uapi/asm/kvm.h
+> > @@ -281,6 +281,24 @@ struct kvm_arm_copy_mte_tags {
+> >  #define KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_REQUIRED     3
+> >  #define KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_ENABLED          (1U << 4)
+> >
+> > +#define KVM_REG_ARM_STD                      KVM_REG_ARM_FW_REG(3)
+> > +enum kvm_reg_arm_std_bmap {
+> > +     KVM_REG_ARM_STD_TRNG_V1_0,
+> > +     KVM_REG_ARM_STD_BMAP_MAX,
+> > +};
+> > +
+> > +#define KVM_REG_ARM_STD_HYP          KVM_REG_ARM_FW_REG(4)
+> > +enum kvm_reg_arm_std_hyp_bmap {
+> > +     KVM_REG_ARM_STD_HYP_PV_TIME_ST,
+> > +     KVM_REG_ARM_STD_HYP_BMAP_MAX,
+> > +};
+> > +
+> > +#define KVM_REG_ARM_VENDOR_HYP               KVM_REG_ARM_FW_REG(5)
+> > +enum kvm_reg_arm_vendor_hyp_bmap {
+> > +     KVM_REG_ARM_VENDOR_HYP_PTP,
+> > +     KVM_REG_ARM_VENDOR_HYP_BMAP_MAX,
+> > +};
+> > +
+> >  /* SVE registers */
+> >  #define KVM_REG_ARM64_SVE            (0x15 << KVM_REG_ARM_COPROC_SHIFT)
+> >
+> > --
+> > 2.33.1.1089.g2158813163f-goog
+> >
