@@ -2,147 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9254B445BC4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 22:41:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A56E445BC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 22:44:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232204AbhKDVoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 17:44:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231643AbhKDVoP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 17:44:15 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4663C061714;
-        Thu,  4 Nov 2021 14:41:36 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id g18so2310758pfk.5;
-        Thu, 04 Nov 2021 14:41:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kmLtEtmTHK7GcZwFr4QBZiF7wAp8VtcoID96wW3kINQ=;
-        b=UQtzFOD8KneDPlCIMrINbLuUKJCexhBDs3tvxvcUO+5CtGeGVRjX5nKg8sU6EbwY65
-         94HCFl1TBp7dyLt/gO5G8MtVYIC2xHSaKXItWFF9vz3oLo6MjO0gRuSuEfJcZex+awjj
-         k5twdLkXZcZdYDQGnxiocZAQJ+qIcW9Dk8zD56hsz1cRgrcRYV1IvGG6de2A7//7+S+4
-         CLwf++mq1A0kMOmskWMDb9FAbp3jIrCeQ1O9FFj8NVofNZsrVGXSfPLmzgLv46TbXicx
-         9ndffZQltleo3qCK6Cbo6rOlQzhE3pWBuMYkiQgFkBl9KyRyyiTtXtSJrmTa6exEi9dC
-         H8Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kmLtEtmTHK7GcZwFr4QBZiF7wAp8VtcoID96wW3kINQ=;
-        b=5yUXuI4Zn+QUCWcdYqj0kKUbaBZ4kaQcbf5/djvslxabplC1F30Rc+vTxfr9j2Y32V
-         Joehr+Azh3LtypXr5keqMuu6heYdJShTMTzFDTj1Noe4FSn3ZtUiAr+N/vKlZMRb8AHv
-         hY3LWyGupt0GE9WLoaHtAhpQNTI8D0pBeFBWxcdeEC/8mmp2EJUl72GPEHybeXWcRPhW
-         ZPwrO24rUa5dYAg1bb37bzwzpMDRYaV0VXAyOm+rP4pHEdznJnstuDNV3ApDQ9n+LVjn
-         2rFzL7ATZdTrS0kS63m0HUZ7VPJN5UTBrUJ7sTwfwN/2W1NUzm6QLzUO5eeuTJM4kZSZ
-         jd2g==
-X-Gm-Message-State: AOAM5313Fy8O58RWD4jq/gWg44USrLwWoH+ATlIKTsStl5S1MUVuvqc0
-        Yp5LTr/94jOgJ48DPMQYcDxF1xUsePk=
-X-Google-Smtp-Source: ABdhPJzFnrxEWns8jSggv6HwnscgTf+IqwOAEgkEUTV8Lo7N9bnLkcCtRvbcUZ5yAThw3/UJIRYnYw==
-X-Received: by 2002:a05:6a00:1254:b0:481:29f7:398 with SMTP id u20-20020a056a00125400b0048129f70398mr21227942pfi.33.1636062095723;
-        Thu, 04 Nov 2021 14:41:35 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id mr2sm4768731pjb.25.2021.11.04.14.41.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 14:41:35 -0700 (PDT)
-Subject: Re: [PATCH 5.10 00/14] 5.10.78-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20211104170112.899181800@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <0348f327-5b57-cc76-575e-c509ad8f734c@gmail.com>
-Date:   Thu, 4 Nov 2021 14:41:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20211104170112.899181800@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S232222AbhKDVr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 17:47:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231154AbhKDVrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 17:47:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E73D6120F;
+        Thu,  4 Nov 2021 21:44:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1636062286;
+        bh=j99yLbawhP8nS65VSNwoVEG61+ELDW3rr3unGR3UBCg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xYAjZ8zs9+oJOMxv1KXwonQ+aKbWfMmO7HfIsxDFjLoqTAj3LyGtnvu5GAHO6i8F6
+         tTLnvU37UqoYDFqxPz0RM33U6DPFdsgJFgmUGeovTBXOeZZ1uqUtmKClxR9BsD+2R8
+         BoNWN1J1HRZWj563lpDBMFRDadPRbxs05FsdJ6oM=
+Date:   Thu, 4 Nov 2021 14:44:42 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Daniel Axtens <dja@axtens.net>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>, arnd@arndb.de,
+        linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v3 2/4] mm: Make generic arch_is_kernel_initmem_freed()
+ do what it says
+Message-Id: <20211104144442.7130ae4a104fca70623a2d1a@linux-foundation.org>
+In-Reply-To: <87ilyhmd26.fsf@linkitivity.dja.id.au>
+References: <9ecfdee7dd4d741d172cb93ff1d87f1c58127c9a.1633001016.git.christophe.leroy@csgroup.eu>
+        <1d40783e676e07858be97d881f449ee7ea8adfb1.1633001016.git.christophe.leroy@csgroup.eu>
+        <87ilyhmd26.fsf@linkitivity.dja.id.au>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/4/21 10:01 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.78 release.
-> There are 14 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 06 Nov 2021 17:01:02 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.78-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
-> -------------
-> Pseudo-Shortlog of commits:
-> 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Linux 5.10.78-rc2
-> 
-> Takashi Iwai <tiwai@suse.de>
->     ALSA: usb-audio: Add Audient iD14 to mixer map quirk table
-> 
-> Takashi Iwai <tiwai@suse.de>
->     ALSA: usb-audio: Add Schiit Hel device to mixer map quirk table
-> 
-> Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->     Revert "wcn36xx: Disable bmps when encryption is disabled"
-> 
-> Wang Kefeng <wangkefeng.wang@huawei.com>
->     ARM: 9120/1: Revert "amba: make use of -1 IRQs warn"
-> 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Revert "drm/ttm: fix memleak in ttm_transfered_destroy"
-> 
-> Yang Shi <shy828301@gmail.com>
->     mm: khugepaged: skip huge page collapse for special files
-> 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Revert "usb: core: hcd: Add support for deferring roothub registration"
-> 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Revert "xhci: Set HCD flag to defer primary roothub registration"
-> 
-> Dan Carpenter <dan.carpenter@oracle.com>
->     media: firewire: firedtv-avc: fix a buffer overflow in avc_ca_pmt()
-> 
-> Yuiko Oshino <yuiko.oshino@microchip.com>
->     net: ethernet: microchip: lan743x: Fix skb allocation failure
-> 
-> Eugene Crosser <crosser@average.org>
->     vrf: Revert "Reset skb conntrack connection..."
-> 
-> Erik Ekman <erik@kryo.se>
->     sfc: Fix reading non-legacy supported link modes
-> 
-> Lee Jones <lee.jones@linaro.org>
->     Revert "io_uring: reinforce cancel on flush during exit"
-> 
-> Ming Lei <ming.lei@redhat.com>
->     scsi: core: Put LLD module refcnt after SCSI device is released
-> 
-> 
-> -------------
+On Fri, 01 Oct 2021 17:14:41 +1000 Daniel Axtens <dja@axtens.net> wrote:
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+> >  #ifdef __KERNEL__
+> > +/*
+> > + * Check if an address is part of freed initmem. After initmem is freed,
+> > + * memory can be allocated from it, and such allocations would then have
+> > + * addresses within the range [_stext, _end].
+> > + */
+> > +#ifndef arch_is_kernel_initmem_freed
+> > +static int arch_is_kernel_initmem_freed(unsigned long addr)
+> > +{
+> > +	if (system_state < SYSTEM_FREEING_INITMEM)
+> > +		return 0;
+> > +
+> > +	return init_section_contains((void *)addr, 1);
+> 
+> Is init_section_contains sufficient here?
+> 
+> include/asm-generic/sections.h says:
+>  * [__init_begin, __init_end]: contains .init.* sections, but .init.text.*
+>  *                   may be out of this range on some architectures.
+>  * [_sinittext, _einittext]: contains .init.text.* sections
+> 
+> init_section_contains only checks __init_*:
+> static inline bool init_section_contains(void *virt, size_t size)
+> {
+> 	return memory_contains(__init_begin, __init_end, virt, size);
+> }
+> 
+> Do we need to check against _sinittext and _einittext?
+> 
+> Your proposed generic code will work for powerpc and s390 because those
+> archs only test against __init_* anyway. I don't know if any platform
+> actually does place .init.text outside of __init_begin=>__init_end, but
+> the comment seems to suggest that they could.
+> 
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
---
-Florian
+Christophe?
