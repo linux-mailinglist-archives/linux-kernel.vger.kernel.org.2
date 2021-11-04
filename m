@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D00445285
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C692445289
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbhKDLyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 07:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35558 "EHLO
+        id S231230AbhKDLzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 07:55:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbhKDLyA (ORCPT
+        with ESMTP id S229505AbhKDLzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 07:54:00 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648B7C061714;
-        Thu,  4 Nov 2021 04:51:22 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id h14so3797621qtb.3;
-        Thu, 04 Nov 2021 04:51:22 -0700 (PDT)
+        Thu, 4 Nov 2021 07:55:14 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B40C061714;
+        Thu,  4 Nov 2021 04:52:36 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id bq14so5349853qkb.1;
+        Thu, 04 Nov 2021 04:52:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=kTZizCF4mBzhoH1k9EfuDvzGzYpsqOCj8H44w+5svOs=;
-        b=Jp2HDF8/rednlErqLr1ha/jD2dq+q3UTPtT/PC2s35D2KUFGMj3xBgIm6lcv3DiN5m
-         3Hekd8JP32s1Mtp/bfjPVAfeu+HA5gkyxfpgVajnbLXMMMChsHMGAsUPO1HipLPxJnZv
-         grPqlzmJzn+4qglHiYj8+6EcQmR/YoSBb/NGbwjmo0i5YFV+LBRZmnQ2SnaiuEAFVzko
-         dz/RPoXd/iHaeN6msSlNL6lOYC/rgEZ2WZ9Ocl8xX0pKIn5FsljrsleIkj5xEFOU+xRf
-         G6u25d/RxiVQut94ixBnNdZAERSXvIWpY9rejhfPv3veyFTpHoLSHwqx8sm/6njvTO0c
-         lzUA==
+        bh=iEj6bCr3w4Ms+m1RU60Hcm+FAOJ4d8yd2N73VNFTfd0=;
+        b=mrQ6Of4s3v6Ccg2apzzdjspvbk4NPScYzDtabmQaAxEJC4iNw07qwda1qNANqY7KAP
+         190e52AZEmBu6AEgJ3Z+CjLLNUkXu165GhxjZYEhrA0YQXcs82bQTLA9EaC+h0W5BkKi
+         gxvo+nAxW+5GydXQjsDCm9VWwaPlx+VHVBW5AAKLyutWREknBPPCwjM8g8qIYvVTJzNr
+         CdUdoGuZZtLKhoXvxZsDrG4DJsq4sCGMrlP2y0/jJF0G2xHl7sSUs2995xWilz7vf2EP
+         tglOuG4jFfnp4TxHjnxUeFZbm6HzBSJXjMjhvh/E5+o610CgLRAwB8U+3LBFz7lvdKtt
+         64Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=kTZizCF4mBzhoH1k9EfuDvzGzYpsqOCj8H44w+5svOs=;
-        b=B73E1drhwyFemaBLhb2ZQRb/ewJloNQ5yKfYq8Yibo+kHZyaTKK6G9Ip77nInk890+
-         Wk9fibaebu/laAW9ZTwZTGAMpGD3wf6qmqM78xWMBJwpE+ht0uIsN81luQIE6YlaonsA
-         pmrbUjQUQLLAM+L0d34HcocIwiMvHnI6CTQzEOo4j13eEk0FTgca/9q67n6Dosk4TpkH
-         P0GlpXH4k2eynCpyFU8HEIvxD2llYdZhhdb4sxRNblr4xYa+xrKH/g8oonshApcnon99
-         HrP2vk8txXKKPe+MGkLfnu7cew17AOs/EFF1BdxRMw0/UWzhRQkcYSHycVgwiXqiIV3B
-         5wEw==
-X-Gm-Message-State: AOAM530aZZwQuUM6QJgBGcD72n4PBxEph5wG7PjG5NAb7bBr9cfktnUs
-        8+eUescMOtWQRUd8RMl4Np0=
-X-Google-Smtp-Source: ABdhPJwEJI9R/kdA70qLf3Wjb3LePRTJks2aScW6zJtEhy48MG5H637QI65fCiApAbktKLC+Dwl0Rg==
-X-Received: by 2002:a05:622a:254:: with SMTP id c20mr43607511qtx.31.1636026681695;
-        Thu, 04 Nov 2021 04:51:21 -0700 (PDT)
+        bh=iEj6bCr3w4Ms+m1RU60Hcm+FAOJ4d8yd2N73VNFTfd0=;
+        b=jnlbyoOvmaW0BLSAAjm7R16Zs5n88tUG9sdDF6dLctvg1vgAfLBGX0GulV12ny6UB9
+         /ZI/nJNkfbW+SOrda0AtWHLyADL7xDS+7cMw4uzZqVC/5a5frxlAU2hycPEy4mMHMVm8
+         BM+OFy3PSUUwwu16eylFPOArSY7j53zI2xU/M/zKkuch0ooMFVMUiOSnV7eu2keZIv8J
+         rJocNwpyhpTQbaBLhvFPrjdKJJrExpcKAbOfmdCpBI9eNxAzDyr7anK0fPFshuNz6NAa
+         qQO4v1EfGPRt+1hzKiMyKmyQIaYuSyYNsI5nXP6jF+I3THfZIpM1q65owoiShFNQ5ZuO
+         oOnA==
+X-Gm-Message-State: AOAM530LGgLaKwaYBm40Nc87g+hLnVg9GxGwLhIIe3HMK+uEu7hlpS28
+        V/XGGNsZpnjaWP4E9jKbt/e1TOg/S2w=
+X-Google-Smtp-Source: ABdhPJwNewhxjYRmZA4neTjQcNtlBxYfKrJlI3qVWNpGxig3My1dBO3r00nsSgxuR5nIx8p0PRZhSA==
+X-Received: by 2002:a05:620a:4411:: with SMTP id v17mr39322514qkp.431.1636026755561;
+        Thu, 04 Nov 2021 04:52:35 -0700 (PDT)
 Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id x7sm3448159qko.109.2021.11.04.04.51.17
+        by smtp.gmail.com with ESMTPSA id o20sm3532718qkp.100.2021.11.04.04.52.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 04:51:21 -0700 (PDT)
+        Thu, 04 Nov 2021 04:52:35 -0700 (PDT)
 From:   cgel.zte@gmail.com
 X-Google-Original-From: yao.jing2@zte.com.cn
-To:     peterz@infradead.org
-Cc:     mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, tglx@linutronix.de, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Yao <yao.jing2@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] x86/events/intel: replace snprintf in show functions with sysfs_emit
-Date:   Thu,  4 Nov 2021 11:51:00 +0000
-Message-Id: <20211104115100.31547-1-yao.jing2@zte.com.cn>
+To:     bernie@plugable.com
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Jing Yao <yao.jing2@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] video: udlfb: replace snprintf in show functions with  sysfs_emit
+Date:   Thu,  4 Nov 2021 11:52:29 +0000
+Message-Id: <20211104115229.31821-1-yao.jing2@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -79,40 +76,49 @@ sense.
 Reported-by: Zeal Robot <zealci@zte.com.cn>
 Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
 ---
- arch/x86/events/intel/core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/video/fbdev/udlfb.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 603964408d2d..687e15473feb 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -5116,7 +5116,7 @@ static ssize_t show_sysctl_tfa(struct device *cdev,
- 			      struct device_attribute *attr,
- 			      char *buf)
- {
--	return snprintf(buf, 40, "%d\n", allow_tsx_force_abort);
-+	return sysfs_emit(buf, "%d\n", allow_tsx_force_abort);
+diff --git a/drivers/video/fbdev/udlfb.c b/drivers/video/fbdev/udlfb.c
+index b9cdd02c1000..90f48b71fd8f 100644
+--- a/drivers/video/fbdev/udlfb.c
++++ b/drivers/video/fbdev/udlfb.c
+@@ -1426,7 +1426,7 @@ static ssize_t metrics_bytes_rendered_show(struct device *fbdev,
+ 				   struct device_attribute *a, char *buf) {
+ 	struct fb_info *fb_info = dev_get_drvdata(fbdev);
+ 	struct dlfb_data *dlfb = fb_info->par;
+-	return snprintf(buf, PAGE_SIZE, "%u\n",
++	return sysfs_emit(buf, "%u\n",
+ 			atomic_read(&dlfb->bytes_rendered));
  }
  
- static ssize_t set_sysctl_tfa(struct device *cdev,
-@@ -5150,7 +5150,7 @@ static ssize_t branches_show(struct device *cdev,
- 			     struct device_attribute *attr,
- 			     char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d\n", x86_pmu.lbr_nr);
-+	return sysfs_emit(buf, "%d\n", x86_pmu.lbr_nr);
+@@ -1434,7 +1434,7 @@ static ssize_t metrics_bytes_identical_show(struct device *fbdev,
+ 				   struct device_attribute *a, char *buf) {
+ 	struct fb_info *fb_info = dev_get_drvdata(fbdev);
+ 	struct dlfb_data *dlfb = fb_info->par;
+-	return snprintf(buf, PAGE_SIZE, "%u\n",
++	return sysfs_emit(buf, "%u\n",
+ 			atomic_read(&dlfb->bytes_identical));
  }
  
- static DEVICE_ATTR_RO(branches);
-@@ -5166,7 +5166,7 @@ static ssize_t pmu_name_show(struct device *cdev,
- 			     struct device_attribute *attr,
- 			     char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%s\n", pmu_name_str);
-+	return sysfs_emit(buf, "%s\n", pmu_name_str);
+@@ -1442,7 +1442,7 @@ static ssize_t metrics_bytes_sent_show(struct device *fbdev,
+ 				   struct device_attribute *a, char *buf) {
+ 	struct fb_info *fb_info = dev_get_drvdata(fbdev);
+ 	struct dlfb_data *dlfb = fb_info->par;
+-	return snprintf(buf, PAGE_SIZE, "%u\n",
++	return sysfs_emit(buf, "%u\n",
+ 			atomic_read(&dlfb->bytes_sent));
  }
  
- static DEVICE_ATTR_RO(pmu_name);
+@@ -1450,7 +1450,7 @@ static ssize_t metrics_cpu_kcycles_used_show(struct device *fbdev,
+ 				   struct device_attribute *a, char *buf) {
+ 	struct fb_info *fb_info = dev_get_drvdata(fbdev);
+ 	struct dlfb_data *dlfb = fb_info->par;
+-	return snprintf(buf, PAGE_SIZE, "%u\n",
++	return sysfs_emit(buf, "%u\n",
+ 			atomic_read(&dlfb->cpu_kcycles_used));
+ }
+ 
 -- 
 2.25.1
 
