@@ -2,136 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE884450AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1634450B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhKDI7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbhKDI7X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:59:23 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B269C061714;
-        Thu,  4 Nov 2021 01:56:45 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id m14so18335100edd.0;
-        Thu, 04 Nov 2021 01:56:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pVKKVOY8NO+dksMBPuUmTHd9F3MhTNHBaA8ZGUBvIsE=;
-        b=ePw9SbEQmydKhkGRQnzd5dMcFnGihRyF6TUTYBb78WBqUiqHD41qxHbHrKcmgCBXeE
-         alBVmD/WqQeeOCR+/4mQd4kkPsa1s+EL40vOYlz1aVQg3GPl0foJTL7BNQxu+/gt9Ogq
-         YI1nYZuqROuiJC+xKiAbZMhrV27Iqr1c2CPUyG5jgvVp/rRv/8yXjAXibkmlki/8nPzd
-         2RjcNg6ijW7hJdAZ6uS6GD7J8ZNo8EEM5xQH/tsZUKezKyPPgiQR3AouvP2MCiQgwuxB
-         4ZzzucqzsdrJl91h4wFVO1e0w7gYnbCw6b7AWc0BDmE9pgPhRrvVDWE942aoIRUI/mC8
-         1jaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pVKKVOY8NO+dksMBPuUmTHd9F3MhTNHBaA8ZGUBvIsE=;
-        b=2Rhi6wp3Ipm52rv80zHFFr2KZ5T09EgpIi+VmDVTcHjDkLVhl7zOF15kyCaa59jts7
-         tAoY0Xy6MHTaKv4r7m/mPLloCuTuFlbBNTNgYLnkrr9Vuv0/TLl2JADCqfJkY6N+gx9d
-         b0xd1v7rtQXNuKxyyN85UwIXTbydFuNeCAAB/vJMFO3bcCmR+QnN6mgUR42yJiqkbq/6
-         aZMGTJHfdlnbFYHkcwACajrvYPnykx5Zs2HNtGhbq4e9vzNcpcCW8GcIVvbdXWj0fMct
-         JNd3aXarnMSVu7A+jRl6fk4Cgr8fCDyX6AY6FZMc09I85kRy6bRFhGIadpWzFu25xUdX
-         CbHg==
-X-Gm-Message-State: AOAM531qjEC7wDWaiH2D/NbwERMO2g/cScjDXTe1vRK2HIqTHEy1ws1E
-        za2enx63obg+PGBddmYqx0Y=
-X-Google-Smtp-Source: ABdhPJwUmmZnpPOMtvLLQ4kgiyIKN0WRmq2IFjg3vGd3qXOTP5qbyWv6+FmKDXcF5hLdaxLibCDkxA==
-X-Received: by 2002:a17:907:6e1c:: with SMTP id sd28mr28734479ejc.28.1636016204095;
-        Thu, 04 Nov 2021 01:56:44 -0700 (PDT)
-Received: from tom-desktop.station (net-188-153-110-208.cust.vodafonedsl.it. [188.153.110.208])
-        by smtp.gmail.com with ESMTPSA id dt4sm2360756ejb.27.2021.11.04.01.56.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 01:56:43 -0700 (PDT)
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     tomm.merciai@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Alice Guo <alice.guo@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        Marek Vasut <marex@denx.de>, Adam Ford <aford173@gmail.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] arm64: dts: imx8mm: Add NOC node
-Date:   Thu,  4 Nov 2021 09:56:17 +0100
-Message-Id: <20211104085620.6048-1-tomm.merciai@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S231215AbhKDI76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:59:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231147AbhKDI7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 04:59:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F65061168
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 08:57:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636016235;
+        bh=9GnYflMSk1zGFDWqohvW6i+zYCvs8Ks+GwVIYMqi16Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TBjb9Yu61yn/io080EO5vexYHENH6T7Lc7zLulpV4rVCAMEzD+5IYIl9FCopcoxGX
+         hLn1N6Kl9HU56L3Kt5pg8tWCJyZLVItmlLVmFQVeKtAsPg4qTTpJzGki/i7C/CB/JX
+         l4F5cpuY8O4obR0uYFU7oKhS4gB2gTOzbUBRI/KYHRdABd9wWNZKqHl0l+k6zHnv9J
+         EqYXt6LB0IVoLQuFoepOMNsuCafp6++z218lKGjaczRzHb8M23EA6+XeGwbtF4L70b
+         K4BULyibwTZfQh8ApaDsqsULqUzVX9FwzPNN1jsUPHDlLIj89R9Vw7CbywbjAmW4PJ
+         xGG7TO/NgsioQ==
+Received: by mail-oo1-f41.google.com with SMTP id j6-20020a4aab46000000b002bb88bfb594so1709630oon.4
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 01:57:15 -0700 (PDT)
+X-Gm-Message-State: AOAM530tfZC+paMpCv/9dMzimknQVxTm3SuSShP6mKC4Ei4TIoCCnJOA
+        JoHEpGqMCgwN9lYnF9L0UWgCN1Ti1pcatjUSBHE=
+X-Google-Smtp-Source: ABdhPJydgSUDDybkK0rHy627UMULvyYtlQWf9i2EfDmp2/C1uqN/3mY4roW+glGzK3Rt8ZzaI1IEXHbY8JpIAFCo8f4=
+X-Received: by 2002:a4a:e1a3:: with SMTP id 3mr2689882ooy.32.1636016234879;
+ Thu, 04 Nov 2021 01:57:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20211104023221.16391-1-walter-zh.wu@mediatek.com> <20211104085336.GA24260@lst.de>
+In-Reply-To: <20211104085336.GA24260@lst.de>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 4 Nov 2021 09:57:04 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHjjmhCVzKFhAseMGOdnidmFT=+o+vwKLTCGFkpwHmcfQ@mail.gmail.com>
+Message-ID: <CAMj1kXHjjmhCVzKFhAseMGOdnidmFT=+o+vwKLTCGFkpwHmcfQ@mail.gmail.com>
+Subject: Re: [PATCH v2] dma-direct: improve DMA_ATTR_NO_KERNEL_MAPPING
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Walter Wu <walter-zh.wu@mediatek.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for dynamic frequency scaling of the main NOC configuration
-on imx8mm.
+On Thu, 4 Nov 2021 at 09:53, Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Thu, Nov 04, 2021 at 10:32:21AM +0800, Walter Wu wrote:
+> > diff --git a/include/linux/set_memory.h b/include/linux/set_memory.h
+> > index f36be5166c19..6c7d1683339c 100644
+> > --- a/include/linux/set_memory.h
+> > +++ b/include/linux/set_memory.h
+> > @@ -7,11 +7,16 @@
+> >
+> >  #ifdef CONFIG_ARCH_HAS_SET_MEMORY
+> >  #include <asm/set_memory.h>
+> > +
+> > +#ifndef CONFIG_RODATA_FULL_DEFAULT_ENABLED
+>
+> This is an arm64-specific symbol, and one that only controls a
+> default.  I don't think it is suitable to key off stubs in common
+> code.
+>
+> > +static inline int set_memory_valid(unsigned long addr, int numpages, int enable) { return 0; }
+>
+> Pleae avoid overly long lines.
+>
+> > +             if (IS_ENABLED(CONFIG_RODATA_FULL_DEFAULT_ENABLED)) {
+> > +                     kaddr = (unsigned long)phys_to_virt(dma_to_phys(dev, *dma_handle));
+>
+> This can just use page_address.
+>
+> > +                     /* page remove kernel mapping for arm64 */
+> > +                     set_memory_valid(kaddr, size >> PAGE_SHIFT, 0);
+> > +             }
+>
+> But more importantly:  set_memory_valid only exists on arm64, this
+> will break compile everywhere else.  And this API is complete crap.
+> Passing kernel virtual addresses as unsigned long just sucks, and
+> passing an integer argument for valid/non-valid also is a horrible
+> API.
+>
 
-References:
- - i.MX 8M Mini Applications Processor RM, Rev. 3, 11/2020
- - f18e6d573b80 arm64: dts: imx8mq: Add NOC node
- - 912b9dacf3f0 arm64: dts: imx8mq: increase NOC clock to 800 MHz
- - https://source.codeaurora.org/external/imx/linux-imx/tree/arch/ \
-   arm64/boot/dts/freescale/imx8mm.dtsi?h=lf-5.10.y
+... and as I pointed out before, you can still pass rodata=off on
+arm64, and get the old behavior, in which case bad things will happen
+if you try to use an API that expects to operate on page mappings with
+a 1 GB block mapping.
 
-Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
----
-Changes since v1:
- - Fix noc_opp_table frequencies taking NXP bsp as reference
- - Add reference link to nxp imx8mm dtsi on commit body
-
- Changes since v2:
- - Add missing signed-off line
-
- arch/arm64/boot/dts/freescale/imx8mm.dtsi | 25 +++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-index c2f3f118f82e..1bcc5e361ca3 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-@@ -719,6 +719,31 @@ pgc_mipi: power-domain@11 {
- 			};
- 		};
- 
-+		noc: interconnect@32700000 {
-+			compatible = "fsl,imx8mm-noc", "fsl,imx8m-noc";
-+			reg = <0x32700000 0x100000>;
-+			clocks = <&clk IMX8MM_CLK_NOC>;
-+			fsl,ddrc = <&ddrc>;
-+			#interconnect-cells = <1>;
-+			operating-points-v2 = <&noc_opp_table>;
-+
-+			noc_opp_table: opp-table {
-+				compatible = "operating-points-v2";
-+
-+				opp-150M {
-+					opp-hz = /bits/ 64 <150000000>;
-+				};
-+
-+				opp-375M {
-+					opp-hz = /bits/ 64 <375000000>;
-+				};
-+
-+				opp-750M {
-+					opp-hz = /bits/ 64 <750000000>;
-+				};
-+			};
-+		};
-+
- 		aips2: bus@30400000 {
- 			compatible = "fsl,aips-bus", "simple-bus";
- 			reg = <0x30400000 0x400000>;
--- 
-2.25.1
-
+And you still haven't explained what the actual problem is: is this
+about CPU speculation corrupting non-cache coherent inbound DMA?
