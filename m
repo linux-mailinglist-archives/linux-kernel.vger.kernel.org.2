@@ -2,146 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7D0445539
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4063E44554B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:27:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231869AbhKDOYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 10:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231863AbhKDOYI (ORCPT
+        id S231243AbhKDOaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 10:30:22 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56400 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230409AbhKDOaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 10:24:08 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A38FC061225
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 07:18:31 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id g11so5992632pfv.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 07:18:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GgU1oUsck/kv7V8rA9YPXtLGsU5UGF/lzeg6fggjKVY=;
-        b=RTR1r+Ui0w7nUSHbbKl234uth/uzF1T7qF0sliOvvfsRTTb+Ux1LBt/ffQdTAY+/ec
-         E1O0cYaxUcP9JJO91gsHWRMciPl/F1cyjYk822jBCR9TBPiuByHH3wQyg8CO0RsG69s3
-         xxzxbxhqtVhFtR1IL3PwpUwYtMOSHDPFnwjUBiz3EACBzoEuXHLTOpHAkW6OfrqPvopQ
-         XlcXyGEUw7b6wzkLr4K8OvDzbhOksbBNbi3EmpkiMJmFBXoGv87f+9auU+g0UJJslfkq
-         YHd6yOra6jxs1gpwYkmD3+RM+zmhPNdO2qhY5Blp/Ql4/z42+YEAbgjAkELLYFLa2Wdb
-         1tBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GgU1oUsck/kv7V8rA9YPXtLGsU5UGF/lzeg6fggjKVY=;
-        b=xUC4kKMs2I9seW0E6RVKLCN9Z9ZmTAIqVTZHRD8TiFHH7M380NLKDd41O0/w2jDiwG
-         DctVWj9o8zg9CcQW0Qf8vOV1udoT7nzdmM01y68HrJHEonzTRQDDaeLGY9H1+3h3MXGH
-         5is0qPH8lP23Kk+UWbRCiuuL0CVPwq2mODnr21UqZxx8W/pfp7ZWqqS5c1Te8L2chTik
-         587XRlxiOmxKLISQBhTU281LmPsIj1WQHBxTJlJYdOipjGN9x6fi+kRSpg2Dz0ZiuFt2
-         hA/vxRN3LgmvVaUtMs918u6u8HHJyb6aChYZ/UvvqaN5NjuY5byPWxRXLTN1+lWK7JcS
-         CIEw==
-X-Gm-Message-State: AOAM531AEsyfPG4MJi7MgAiwuVbfRledwrcTiKMP5OZ/H4tgSwWu2Vp+
-        9qHges40/Sdqf4IYcDM/Wo3Kkg==
-X-Google-Smtp-Source: ABdhPJxdt1yraCn5ATAvpc1jCPrfM/2fIu0pWDknNbK+x2XDbxsbKhM1gzBOeaAuduFP4pk+NDgWGQ==
-X-Received: by 2002:a65:5b01:: with SMTP id y1mr22260090pgq.451.1636035510920;
-        Thu, 04 Nov 2021 07:18:30 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id c9sm4061004pgq.58.2021.11.04.07.18.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 07:18:30 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 14:18:26 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, linux-csky@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Marc Zyngier <maz@kernel.org>, Nick Hu <nickhu@andestech.com>,
-        Guo Ren <guoren@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH v3 01/16] perf: Ensure perf_guest_cbs aren't reloaded
- between !NULL check and deref
-Message-ID: <YYPrst2CUBXLYc9h@google.com>
-References: <20210922000533.713300-1-seanjc@google.com>
- <20210922000533.713300-2-seanjc@google.com>
- <77e3a76a-016b-8945-a1d5-aae4075e2147@gmail.com>
+        Thu, 4 Nov 2021 10:30:21 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EE26E212C0;
+        Thu,  4 Nov 2021 14:27:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1636036061; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AthaTNwsWhomj4CQfeFfXNvryAZHBE+ttAigqWJELZ8=;
+        b=Zpi2sSr3zc7coy+kFgUoMlTkQCgsnC715jzM/5jmMXYG/Sq82yypiXPgvIjaOQkCJ91dqX
+        P3tGUZOAmlrKHUTArkOSrYFmQ64/XFKgOmm3cq6x03HeaLFtdisFXs+wPiN1HS+F/t7UEP
+        JLMQ37GxOac31JZeHY8cTQgsVWmrUyk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1636036061;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AthaTNwsWhomj4CQfeFfXNvryAZHBE+ttAigqWJELZ8=;
+        b=NhFnKZZJtHkXF4aRTfwvipQQhUoWn5TpVEhK/YVKeBNP28C1AONZvzrOitda6nYc+EQCp+
+        2x+3Uodke2J2E1Cg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DAEF613BD9;
+        Thu,  4 Nov 2021 14:27:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 7QWcM93tg2EbUAAAMHmgww
+        (envelope-from <chrubis@suse.cz>); Thu, 04 Nov 2021 14:27:41 +0000
+Date:   Thu, 4 Nov 2021 15:27:32 +0100
+From:   Cyril Hrubis <chrubis@suse.cz>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Drew DeVault <sir@cmpwn.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, io-uring@vger.kernel.org,
+        Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+Message-ID: <YYPt1PaGtiSLvyKw@rei>
+References: <20211028080813.15966-1-sir@cmpwn.com>
+ <cc3d7fac-62e9-fe11-0cf1-3d9528d191a0@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <77e3a76a-016b-8945-a1d5-aae4075e2147@gmail.com>
+In-Reply-To: <cc3d7fac-62e9-fe11-0cf1-3d9528d191a0@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021, Like Xu wrote:
-> On 22/9/2021 8:05 am, Sean Christopherson wrote:
-> > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > index 464917096e73..80ff050a7b55 100644
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-> > @@ -6491,14 +6491,21 @@ struct perf_guest_info_callbacks *perf_guest_cbs;
-> >   int perf_register_guest_info_callbacks(struct perf_guest_info_callbacks *cbs)
-> >   {
-> > -	perf_guest_cbs = cbs;
-> > +	if (WARN_ON_ONCE(perf_guest_cbs))
-> > +		return -EBUSY;
-> > +
-> > +	WRITE_ONCE(perf_guest_cbs, cbs);
-> 
-> So per Paolo's comment [1], does it help to use
-> 	smp_store_release(perf_guest_cbs, cbs)
-> or
-> 	rcu_assign_pointer(perf_guest_cbs, cbs)
-> here?
-
-Heh, if by "help" you mean "required to prevent bad things on weakly ordered
-architectures", then yes, it helps :-)  If I'm interpeting Paolo's suggestion
-correctly, he's pointing out that oustanding stores to the function pointers in
-@cbs need to complete before assigning a non-NULL pointer to perf_guest_cbs,
-otherwise a perf event handler may see a valid pointer with half-baked callbacks.
-
-I think smp_store_release() with a comment would be appropriate, assuming my
-above interpretation is correct.
-
-> [1] https://lore.kernel.org/kvm/37afc465-c12f-01b9-f3b6-c2573e112d76@redhat.com/
-> 
-> >   	return 0;
-> >   }
-> >   EXPORT_SYMBOL_GPL(perf_register_guest_info_callbacks);
-> >   int perf_unregister_guest_info_callbacks(struct perf_guest_info_callbacks *cbs)
-> >   {
-> > -	perf_guest_cbs = NULL;
-> > +	if (WARN_ON_ONCE(perf_guest_cbs != cbs))
-> > +		return -EINVAL;
-> > +
-> > +	WRITE_ONCE(perf_guest_cbs, NULL);
-> > +	synchronize_rcu();
-> >   	return 0;
-> >   }
-> >   EXPORT_SYMBOL_GPL(perf_unregister_guest_info_callbacks);
+Hi!
+> > This limit has not been updated since 2008, when it was increased to 64
+> > KiB at the request of GnuPG. Until recently, the main use-cases for this
+> > feature were (1) preventing sensitive memory from being swapped, as in
+> > GnuPG's use-case; and (2) real-time use-cases. In the first case, little
+> > memory is called for, and in the second case, the user is generally in a
+> > position to increase it if they need more.
 > > 
+> > The introduction of IOURING_REGISTER_BUFFERS adds a third use-case:
+> > preparing fixed buffers for high-performance I/O. This use-case will
+> > take as much of this memory as it can get, but is still limited to 64
+> > KiB by default, which is very little. This increases the limit to 8 MB,
+> > which was chosen fairly arbitrarily as a more generous, but still
+> > conservative, default value.
+> > ---
+> > It is also possible to raise this limit in userspace. This is easily
+> > done, for example, in the use-case of a network daemon: systemd, for
+> > instance, provides for this via LimitMEMLOCK in the service file; OpenRC
+> > via the rc_ulimit variables. However, there is no established userspace
+> > facility for configuring this outside of daemons: end-user applications
+> > do not presently have access to a convenient means of raising their
+> > limits.
+> > 
+> > The buck, as it were, stops with the kernel. It's much easier to address
+> > it here than it is to bring it to hundreds of distributions, and it can
+> > only realistically be relied upon to be high-enough by end-user software
+> > if it is more-or-less ubiquitous. Most distros don't change this
+> > particular rlimit from the kernel-supplied default value, so a change
+> > here will easily provide that ubiquity.
+> 
+> Agree with raising this limit, it is ridiculously low and we often get
+> reports from people that can't even do basic rings with it. Particularly
+> when bpf is involved as well, as it also dips into this pool.
+> 
+> On the production side at facebook, we do raise this limit as well.
+
+We are raising this limit to 2MB for LTP testcases as well, otherwise we
+get failures when we run a few bpf tests in quick succession.
+
+Acked-by: Cyril Hrubis <chrubis@suse.cz>
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
