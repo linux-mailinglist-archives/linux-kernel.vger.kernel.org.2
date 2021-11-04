@@ -2,105 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191C644525D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D817445261
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:43:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbhKDLn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 07:43:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbhKDLn5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 07:43:57 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3828EC061714;
-        Thu,  4 Nov 2021 04:41:20 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id k4so6738028plx.8;
-        Thu, 04 Nov 2021 04:41:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=n1KhtkqwaiQeXN8wz3FjznNjYcnDj30fnMJ2MENI/bM=;
-        b=KQNGVR1HjSVGE5tz7qTLIvpjqQmLLIXvMhmUIX1v/H8T4POwg3YJlXuwBujn9osnWj
-         zwUKG4bSbCO9BgN1ndXpwTOC4ZGshqEWCg2lUGB8mwheuuw3MsSD+l7jKUhCldT36KXy
-         /k+r2TbeILGTORLc1FUyD7r1XJfAkLjs7d8jJLNGKjtvgQKr3is4JqDwRGIGopEq0+jX
-         +hS5vJlUKgC6+8uTX9zIdpyTV+t1BCtqKYmSLRGeB2mg6auVXh9QJsVu2smc//mJfXY5
-         7l57qf1pd8uhCGqTG2XK/ogtCeD6SniUuGi1iWTUJbGpIuUuHxZeotOqwczi6Jm3sVPt
-         /yGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=n1KhtkqwaiQeXN8wz3FjznNjYcnDj30fnMJ2MENI/bM=;
-        b=1PkcShVkJHCCSzj+Dq+FSuRE5QAeMxV+F6ORLUi2HKqC/ebSqHCl2mTKrdYZCkJzSs
-         uHMZMB224t271JpvfL9a8ZWAeUFI0NWrtIag9JQE9pqeAGi2WAZpPhyp6diU2c0+ch6k
-         QG61p4CSG4PtLgstVmAN2CH4mJljkBtLiTcz6WYmauhYlzrmmjarqFqenWHR14aFrTVA
-         xWPKemo7Y5Zmxu/1qtV53e68+2YRRuwopyVMhQtrVR/NBdtcIsnUeQCjdgvarecDBgMM
-         vZchyMXEc0n+HldeBnLYuQ92iE4E9idGgKcF2dlAxdJJnGcv/syj0KqNwbPtaIlSs4yj
-         huHA==
-X-Gm-Message-State: AOAM530iRUAVxkt8uYLv/DwdmyZi+eb1hCrhiuMGfY6piAZgjbBxD0ij
-        H52O6/vOQoixRmhgFVA2aEkNLEke+2MHEgqZ8t+/SLoSTQ///w==
-X-Google-Smtp-Source: ABdhPJwOv4LPU3RKWOoS5+kuHDOdoN+7OnHiHrrn/6kVi403ziyQaRqP7FjghbHi7bOfN/2po0nV/z/t/BWcZAqGON0=
-X-Received: by 2002:a17:90a:b296:: with SMTP id c22mr21364719pjr.13.1636026079704;
- Thu, 04 Nov 2021 04:41:19 -0700 (PDT)
+        id S231286AbhKDLpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 07:45:50 -0400
+Received: from comms.puri.sm ([159.203.221.185]:36872 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229505AbhKDLpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 07:45:49 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id AE546DFE2F;
+        Thu,  4 Nov 2021 04:43:11 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id mES61NqjuTj8; Thu,  4 Nov 2021 04:43:11 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 12:41:53 +0100
+From:   Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
+To:     Steve Longerbeam <slongerbeam@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@puri.sm, phone-devel@vger.kernel.org
+Subject: [PATCH v4 1/5] media: imx: Remove unused functions
+Message-ID: <20211104113631.206899-1-dorota.czaplejewicz@puri.sm>
+Organization: Purism
 MIME-Version: 1.0
-References: <20211103071427.GA13854@raspberrypi> <7a71215c-58f4-081b-6a2e-030073f2737e@digikod.net>
-In-Reply-To: <7a71215c-58f4-081b-6a2e-030073f2737e@digikod.net>
-From:   Austin Kim <austindh.kim@gmail.com>
-Date:   Thu, 4 Nov 2021 20:41:10 +0900
-Message-ID: <CADLLry4zYn-NZBtC3pdQpb4c_3vvzNfc71rBrXc-oXqgSZNHaQ@mail.gmail.com>
-Subject: Re: [PATCH] landlock: Initialize kernel stack variables properly
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/FosWe/py5YeTF16MIhH8wU1";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=EB=85=84 11=EC=9B=94 3=EC=9D=BC (=EC=88=98) =EC=98=A4=ED=9B=84 9:14, M=
-icka=C3=ABl Sala=C3=BCn <mic@digikod.net>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
-=B1:
->
-> Hi Austin,
->
-> On 03/11/2021 08:14, Austin Kim wrote:
-> > In case kernel stack variables are not initialized properly, there migh=
-t
-> > be a little chance of kernel information disclosure. So it is better fo=
-r
-> > kernel stack variables to be initialized with null characters.
-> >
-> > Signed-off-by: Austin Kim <austindh.kim@gmail.com>
-> > ---
-> >  security/landlock/syscalls.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/security/landlock/syscalls.c b/security/landlock/syscalls.=
-c
-> > index 32396962f04d..50a6f7091428 100644
-> > --- a/security/landlock/syscalls.c
-> > +++ b/security/landlock/syscalls.c
-> > @@ -320,6 +320,8 @@ SYSCALL_DEFINE4(landlock_add_rule,
-> >       if (rule_type !=3D LANDLOCK_RULE_PATH_BENEATH)
-> >               return -EINVAL;
-> >
-> > +     memset(&path_beneath_attr, 0, sizeof(path_beneath_attr));
-> > +
->
-> This memset is already done with the copy_from_user() call just below.
->
+--Sig_/FosWe/py5YeTF16MIhH8wU1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-It seems that memset() is done inside copy_from_user().
-Thanks for feedback.
+Neither imx_media_mbus_fmt_to_ipu_image nor imx_media_ipu_image_to_mbus_fmt
+were used anywhere.
 
-BR,
-Austin Kim
+Signed-off-by: Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
+---
 
-> >       /* Copies raw user space buffer, only one type for now. */
-> >       res =3D copy_from_user(&path_beneath_attr, rule_attr,
-> >                       sizeof(path_beneath_attr));
-> >
+Hi,
+
+Compared to v3, this patch series introduces the checks of imx_media_find_m=
+bus_format return values in patch 4 and 5.
+
+Cheers,
+Dorota
+
+ drivers/staging/media/imx/imx-media-utils.c | 42 ---------------------
+ drivers/staging/media/imx/imx-media.h       |  4 --
+ 2 files changed, 46 deletions(-)
+
+diff --git a/drivers/staging/media/imx/imx-media-utils.c b/drivers/staging/=
+media/imx/imx-media-utils.c
+index 5128915a5d6f..afa96e05ea7f 100644
+--- a/drivers/staging/media/imx/imx-media-utils.c
++++ b/drivers/staging/media/imx/imx-media-utils.c
+@@ -569,48 +569,6 @@ int imx_media_mbus_fmt_to_pix_fmt(struct v4l2_pix_form=
+at *pix,
+ }
+ EXPORT_SYMBOL_GPL(imx_media_mbus_fmt_to_pix_fmt);
+=20
+-int imx_media_mbus_fmt_to_ipu_image(struct ipu_image *image,
+-				    const struct v4l2_mbus_framefmt *mbus)
+-{
+-	int ret;
+-
+-	memset(image, 0, sizeof(*image));
+-
+-	ret =3D imx_media_mbus_fmt_to_pix_fmt(&image->pix, mbus, NULL);
+-	if (ret)
+-		return ret;
+-
+-	image->rect.width =3D mbus->width;
+-	image->rect.height =3D mbus->height;
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(imx_media_mbus_fmt_to_ipu_image);
+-
+-int imx_media_ipu_image_to_mbus_fmt(struct v4l2_mbus_framefmt *mbus,
+-				    const struct ipu_image *image)
+-{
+-	const struct imx_media_pixfmt *fmt;
+-
+-	fmt =3D imx_media_find_pixel_format(image->pix.pixelformat,
+-					  PIXFMT_SEL_ANY);
+-	if (!fmt || !fmt->codes || !fmt->codes[0])
+-		return -EINVAL;
+-
+-	memset(mbus, 0, sizeof(*mbus));
+-	mbus->width =3D image->pix.width;
+-	mbus->height =3D image->pix.height;
+-	mbus->code =3D fmt->codes[0];
+-	mbus->field =3D image->pix.field;
+-	mbus->colorspace =3D image->pix.colorspace;
+-	mbus->xfer_func =3D image->pix.xfer_func;
+-	mbus->ycbcr_enc =3D image->pix.ycbcr_enc;
+-	mbus->quantization =3D image->pix.quantization;
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(imx_media_ipu_image_to_mbus_fmt);
+-
+ void imx_media_free_dma_buf(struct device *dev,
+ 			    struct imx_media_dma_buf *buf)
+ {
+diff --git a/drivers/staging/media/imx/imx-media.h b/drivers/staging/media/=
+imx/imx-media.h
+index 492d9a64e704..d2a150aac6cd 100644
+--- a/drivers/staging/media/imx/imx-media.h
++++ b/drivers/staging/media/imx/imx-media.h
+@@ -199,10 +199,6 @@ void imx_media_try_colorimetry(struct v4l2_mbus_framef=
+mt *tryfmt,
+ int imx_media_mbus_fmt_to_pix_fmt(struct v4l2_pix_format *pix,
+ 				  const struct v4l2_mbus_framefmt *mbus,
+ 				  const struct imx_media_pixfmt *cc);
+-int imx_media_mbus_fmt_to_ipu_image(struct ipu_image *image,
+-				    const struct v4l2_mbus_framefmt *mbus);
+-int imx_media_ipu_image_to_mbus_fmt(struct v4l2_mbus_framefmt *mbus,
+-				    const struct ipu_image *image);
+ void imx_media_grp_id_to_sd_name(char *sd_name, int sz,
+ 				 u32 grp_id, int ipu_id);
+ struct v4l2_subdev *
+--=20
+2.31.1
+
+
+--Sig_/FosWe/py5YeTF16MIhH8wU1
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEExKRqtqfFqmh+lu1oADBpX4S8ZncFAmGDxwEACgkQADBpX4S8
+Znd5oQ/9HejktqulgSMWb/IIotetpDnUoWOCt8OLHAjOg9Cqtuf1rXtrezAATMNR
+2MBpQSax2ajkQtl18pbpfWZvxpSVyU6o9Ntr/AZKUGzSH3spZTkivKn0P04+3lNN
+GUoKVJa4bCmZCrQsBcQs88aibLV3L15ZrAuQw2qfe8geMQbwkQPMrRaKzxXeTU2s
+igOmaxhEabV/iZJgTuDQHj5HSdjNEPzd46alpbB7DQxp+aU4fWPzpObV5YNuQgqC
+Bh3ErPyKNn2tmspuZ56CnyZqYXqm/fTrwY4bQZ5EQ7aVuYzU88rf7FhE+uO+iIA0
+2FNWSYqpCHCeUQLw5fsERGE/ukqnCmsSnDHsfnEKKqcQOabjDmwibs6GK904dshO
+HTH8FZO5m7gkHFbwjuxNEbUuQ7NynhWXaU7r0RSHZHP6Angegf3UlBwHww2EHQ56
+E49CqKJ1RhI0IE3rheLAJb/6SX1DhKIXUGwmHebP7W3LZyRtJ3LrHy0RCG1aV2oF
+tNre+TbvwxZfwgo62cK2JtMIYZSn8ZkiiHX7tf5W4HxlXRvO1TvcaS64jjOtp4ts
+V1AzHf2CRkug2Ip7boxZUbF+0kSms+UlmfuRHz9Xi3cMDdxe7VrDiC5FIHUK9tbt
+UR8v8yQzmiFO6ghedJ+ARRwd8ZD1dDCmhGPpz4tyhoBYKjxDnGI=
+=T6CZ
+-----END PGP SIGNATURE-----
+
+--Sig_/FosWe/py5YeTF16MIhH8wU1--
