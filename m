@@ -2,85 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83751445299
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:03:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A06834452A8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231371AbhKDMGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 08:06:13 -0400
-Received: from nautica.notk.org ([91.121.71.147]:34255 "EHLO nautica.notk.org"
+        id S231523AbhKDMIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 08:08:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229505AbhKDMGM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 08:06:12 -0400
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 94EECC01B; Thu,  4 Nov 2021 13:03:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1636027413; bh=xEp8eFxtEqQ43xgpMlcvKwbaMDG5dHvhWTnvg8NkLBw=;
+        id S229505AbhKDMIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 08:08:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9546061213;
+        Thu,  4 Nov 2021 12:06:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636027560;
+        bh=SnYYpxSRUg67hd+Xit15R1TqiZu+34ZFEvrRwplYLzo=;
         h=From:To:Cc:Subject:Date:From;
-        b=DBioh2kBx6je4xU5+OgqXNFWzSjw79Xsx0zjPANwMBeA2Ng2KvVEf62E3GRbKHMYn
-         aZgPaHFw/JJxOUfwpqdhrSJTEg7KC0K3tarzpjrwU9W9u//kTXKR6+wJ5IabYj9c05
-         KFHm87wASIlDv+SNer4blwYIbBudpRnRYKGwiIngpQnyq0+xxToiXCBrL9dc66JGFI
-         OeLCuZpUifIGL7IfkG8bt+L/BLT4YsXDdpR6HdBnuT/qydd7HfoNLwz1rTSQhD09ft
-         s3q4Pc0GCiyEHq5sRz7h6Tq+Mu6BJrGEBEJBbrYSMyugLkaA8PxHpXnlaSTmBKqnMg
-         d6igRQkCvyg3w==
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
-        autolearn=unavailable version=3.3.2
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 2F842C009;
-        Thu,  4 Nov 2021 13:03:30 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1636027412; bh=xEp8eFxtEqQ43xgpMlcvKwbaMDG5dHvhWTnvg8NkLBw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HiYHZzGwd0llRNmCIWnxzCGSuip8RAMEY2pKPvXvtE+nHShoQBGO5TKng2Ls+KWhA
-         nj10x0d4LTLtGvpn819JD3JVlB6OXovKoZAUCueEY784x168gwJPX/mU2YIBO37MDb
-         d8WOarI02Pb2G7lS6AgAOzAbU0lLss1aoxNh6r6rBA6Ph+2sN5Nrm6Ci9GJQ9QnH0X
-         z0bmYtkRiZkcscOOwXx/n5eurvXu3kIptQaCxY9UwPFW4dcIqPeDjhnCNGTcDmwqJy
-         ygqbmWKT5KyA8aXhbwyf6zRej+Hsi6w+goOCNv4oxN7QWNfor3poDIBcYLp4pBbM9t
-         /HNuxPGK59LGg==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id ffda33dd;
-        Thu, 4 Nov 2021 12:03:27 +0000 (UTC)
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     v9fs-developer@lists.sourceforge.net
-Cc:     linux-kernel@vger.kernel.org, Latchesar Ionkov <lucho@ionkov.net>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Subject: [PATCH] 9p: set readahead and io size according to maxsize
-Date:   Thu,  4 Nov 2021 21:03:23 +0900
-Message-Id: <20211104120323.2189376-1-asmadeus@codewreck.org>
-X-Mailer: git-send-email 2.32.0
+        b=o3GORacJsT9uLQpEl5H7J02DV7zs2O5f3Gq0Wfc8n3hSuXy+b+lGaWwj6tm0S0GHn
+         eX1NgSOjkHOB1U/Hl12sAeXkVVoq3nBqpHwRNb8LLUvRmblbv2sY81Rv3szoOzKO/B
+         +5qeVq5kRPcYyBLJ7N9oZPnahJq+gfLep4pRu7E0d8SbwXZ2Da7+0vGWyzDH0KBFdI
+         Yjepfp3EVHet33eUWMKQ2Swi+NQdwTH4/waYOmZjPxrGcMjupg6Oni2WzROXPu/z/d
+         ITQkALbn/Ff1fkqcMsiRfVS8xu12k9LyHch7/YNE/p2X4hD5biS82kG+KrkyJzraHF
+         fFa/p8mdtVL+Q==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mibVG-005nHb-47; Thu, 04 Nov 2021 12:05:58 +0000
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: [PATCH 0/7] Address issues preventing camorama to work with atomisp
+Date:   Thu,  4 Nov 2021 12:05:49 +0000
+Message-Id: <cover.1636026959.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-having a readahead of 128k with a msize of 128k (with overhead) lead to
-reading 124+4k everytime, making two roundtrips needlessly.
+This patch series address some issues at atomisp that are preventing camorama
+to work with atomisp driver.
 
-tune readahead according to msize when cache is enabled for better
-performance
+After this series, I can use camorama just like on any other device. The frame
+rate is slow (~7fps), though. Not sure if this is due to some sensor limitation or
+because of some other issue.
 
-Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
----
- fs/9p/vfs_super.c | 3 +++
- 1 file changed, 3 insertions(+)
+Anyway this is a start :-)
 
-diff --git a/fs/9p/vfs_super.c b/fs/9p/vfs_super.c
-index c6028af51925..b0632f4e337f 100644
---- a/fs/9p/vfs_super.c
-+++ b/fs/9p/vfs_super.c
-@@ -79,6 +79,9 @@ v9fs_fill_super(struct super_block *sb, struct v9fs_session_info *v9ses,
- 	if (!v9ses->cache) {
- 		sb->s_bdi->ra_pages = 0;
- 		sb->s_bdi->io_pages = 0;
-+	} else {
-+		sb->s_bdi->ra_pages = v9ses->maxdata >> PAGE_SHIFT;
-+		sb->s_bdi->io_pages = v9ses->maxdata >> PAGE_SHIFT;
- 	}
- 
- 	sb->s_flags |= SB_ACTIVE | SB_DIRSYNC;
+Some notes:
+
+1. Patch 1 fixes an issue at ov2680 logic. It probably needs to be reflected at the
+   other supported sensors;
+
+2. MMAP is not working. So, it requires a newer version of camorama that has
+   support for USERPTR.
+
+3. There's nothing special on Camorama for atomisp, except that it has support
+   for USERPTR.
+
+4. Camorama currently doesn't allow changing the resolution of the camera.
+   That's because of several things:
+
+   a. The driver has a scaler, supporting resolutions from 32x16 to 1600x1200
+      on Asus T101HA.
+   b. The atomisp driver doesn't implement ENUM_FRAMEINTERVALS;
+   c. camorama is not prepared for cameras with scalers on it. It just lets one to
+      select the resolutions enumerated by  ENUM_FRAMEINTERVALS.
+
+Mauro Carvalho Chehab (7):
+  media: atomisp-ov2680: use v4l2_find_nearest_size()
+  media: atomisp: move a debug printf to a better place
+  media: atomisp: fix VIDIOC_S_FMT logic
+  media: atomisp: fix enum_fmt logic
+  media: atomisp: move atomisp_g_fmt_cap()
+  media: atomisp: fix try_fmt logic
+  media: atomisp: fix g_fmt logic
+
+ .../media/atomisp/i2c/atomisp-ov2680.c        | 127 +++-----------
+ drivers/staging/media/atomisp/i2c/ov2680.h    |   3 +-
+ .../staging/media/atomisp/pci/atomisp_cmd.c   |  59 +++++--
+ .../staging/media/atomisp/pci/atomisp_ioctl.c | 157 ++++++++++--------
+ 4 files changed, 162 insertions(+), 184 deletions(-)
+
 -- 
 2.31.1
+
 
