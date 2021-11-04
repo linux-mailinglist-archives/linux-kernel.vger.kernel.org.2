@@ -2,89 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C18A4452F2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:24:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B67824452EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:23:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231230AbhKDM0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 08:26:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43268 "EHLO
+        id S231510AbhKDM0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 08:26:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230148AbhKDM0p (ORCPT
+        with ESMTP id S230390AbhKDM0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 08:26:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D1EC061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 05:24:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kvPhcl8s+fMEqS/cULaE6wmnEx5WH+3Y6yjBqC86VnA=; b=scbFgVK7CaJK9pBBTNZP3VS7Dr
-        Je5lwmD2hXfS2o/ckGm9yYsYKDxHT9R7NINusm+P7s51+WjacR697MYsYKzGQiJdoewlWfX6iMMq4
-        LVMfW+mHSFqhtf66Hz9vQBjp7ArM7VokDVWE7sPuXEPhEOtQSw4DXYujEN4zj2Gmt9PVR7N8t/NdV
-        N/UTRd8fU69+vOmBCW6TQ8eKZOicv2sBejeLCgZvhha7uYO4fkIBWe0WrSUoZmm5ocgWd2Cl8zk8/
-        nJkrlwIPRMRkjJi20BVa/ER0xfWco665pMZUTox/zw0f5u2i68u/h1QgyhF1gTo1NqW6HkhANTb8J
-        5/zgY5tQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mibkd-005rNG-CC; Thu, 04 Nov 2021 12:22:07 +0000
-Date:   Thu, 4 Nov 2021 12:21:51 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     akpm@linux-foundation.org, dhowells@redhat.com, hughd@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        jglisse@redhat.com, jgg@nvidia.com, rcampbell@nvidia.com,
-        jhubbard@nvidia.com
-Subject: Re: [PATCH] mm/migrate.c: Rework migration_entry_wait() to not take
- a pageref
-Message-ID: <YYPQX2Y5u+ujrAOv@casper.infradead.org>
-References: <20211104103338.891258-1-apopple@nvidia.com>
+        Thu, 4 Nov 2021 08:26:07 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6699BC061203
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 05:23:29 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id d13so8312639wrf.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 05:23:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=spmYJipK+FPsViFDUmLlWUTbhxKUZWrNxSbmuoJB78Y=;
+        b=Ar8twA72/AObNEpxn7NZGBTVAVR4k4arwM+1FYFxbn9YLRQv+32PaFVMMEsDrkzeJ+
+         Yq3c33oxzpkNdcwZ2XkjXt05TZ8Lw0rX6tyjRc+0DG/TdXVqcVspeJWJzpapj2X57mEu
+         GMRqsoIP0ui/vbm7ipiferM9im/aKaNDIUHVI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=spmYJipK+FPsViFDUmLlWUTbhxKUZWrNxSbmuoJB78Y=;
+        b=Eefq9YJwAmyVIFdyCRqOrQsXWwEFQptG1q/KWo5kt29LzKsYgUzLOY1ZDfu1QGd28M
+         6b3+kkZ8wWO4ASvt0PIjismAfL9SuxxFNx8jRmX9QiWw4UpwfhUmgr3k3g7FtJaOyWYj
+         YD4/u5G5AIxLXGb1VwaW0m7/fJZv8RYzvERXGkINXXIOP6FLrmcvrsMFzNVEY5zWMKUw
+         DZnxpJVrfZ+6QCR5OeveHQ39Lqo+WOU8Ofx6PegxkGtWWB9Is1zfs12qqXcZju+Xvxdd
+         EC4sh6uWGjyzJ1CnJ2UJNwY8PeSYBq8eq2TWekYWLA/k+kxBPIPqdT6VKRMsZyU5P2If
+         ZNcQ==
+X-Gm-Message-State: AOAM532QC7neLYircGfaIxKKPJYwb6IVNCkHeFOBsi+gu32HBKxcQRNm
+        UiRQqMbpJ4o0fT/3O/VstIaYAA==
+X-Google-Smtp-Source: ABdhPJyXRo8qqreJlFh+XGlDreWO0GO+exI8jbbbQxg3kaLUVbpXKFSXi5HOdyE5lWutmgMqqceamA==
+X-Received: by 2002:a5d:6e91:: with SMTP id k17mr64180890wrz.260.1636028607883;
+        Thu, 04 Nov 2021 05:23:27 -0700 (PDT)
+Received: from kharboze.dr-pashinator-m-d.gmail.com.beta.tailscale.net (cust97-dsl60.idnet.net. [212.69.60.97])
+        by smtp.gmail.com with ESMTPSA id a4sm4797535wmb.39.2021.11.04.05.23.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 05:23:27 -0700 (PDT)
+From:   Mark Pashmfouroush <markpash@cloudflare.com>
+To:     markpash@cloudflare.com, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>
+Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2 1/2] bpf: Add ifindex to bpf_sk_lookup
+Date:   Thu,  4 Nov 2021 12:23:03 +0000
+Message-Id: <20211104122304.962104-2-markpash@cloudflare.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211104122304.962104-1-markpash@cloudflare.com>
+References: <20211104122304.962104-1-markpash@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211104103338.891258-1-apopple@nvidia.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 09:33:38PM +1100, Alistair Popple wrote:
-> +++ b/mm/filemap.c
-> @@ -1356,6 +1356,88 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
->  	return wait->flags & WQ_FLAG_WOKEN ? 0 : -EINTR;
->  }
->  
-> +/**
-> + * migration_entry_wait_on_locked - Wait for a migration entry to be removed
-> + * @page: page referenced by the migration entry.
-> + * @ptep: mapped pte pointer. This function will return with the ptep unmapped.
-> + * @ptl: already locked ptl. This function will drop the lock.
-> + *
-> + * Wait for a migration entry referencing the given page to be removed. This is
-> + * equivalent to put_and_wait_on_page_locked(page, TASK_UNINTERRUPTIBLE) except
-> + * this can be called without taking a reference on the page. Instead this
-> + * should be called while holding the ptl for the migration entry referencing
-> + * the page.
-> + *
-> + * Returns after unmapping and unlocking the pte/ptl with pte_unmap_unlock().
-> + *
-> + * This follows the same logic as wait_on_page_bit_common() so see the comments
-> + * there.
-> + */
-> +void migration_entry_wait_on_locked(struct page *page, pte_t *ptep,
-> +				spinlock_t *ptl)
-> +{
-> +	struct wait_page_queue wait_page;
-> +	wait_queue_entry_t *wait = &wait_page.wait;
-> +	bool thrashing = false;
-> +	bool delayacct = false;
-> +	unsigned long pflags;
-> +	wait_queue_head_t *q;
-> +
-> +	q = page_waitqueue(page);
+It may be helpful to have access to the ifindex during bpf socket
+lookup. An example may be to scope certain socket lookup logic to
+specific interfaces, i.e. an interface may be made exempt from custom
+lookup code.
 
-You're going to need to update this patch to apply to Linus' current
-tree; page_waitqueue() went away in favour of folio_waitqueue().
+Add the ifindex of the arriving connection to the bpf_sk_lookup API.
 
-It seems like it would look simpler if this were a patch which modified
-folio_wait_bit_common() instead of doing a manual inline of it into
-this function.
+Signed-off-by: Mark Pashmfouroush <markpash@cloudflare.com>
+
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 24b7ed2677af..0012a5176a32 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1374,6 +1374,7 @@ struct bpf_sk_lookup_kern {
+ 		const struct in6_addr *daddr;
+ 	} v6;
+ 	struct sock	*selected_sk;
++	u32		ifindex;
+ 	bool		no_reuseport;
+ };
+ 
+@@ -1436,7 +1437,7 @@ extern struct static_key_false bpf_sk_lookup_enabled;
+ static inline bool bpf_sk_lookup_run_v4(struct net *net, int protocol,
+ 					const __be32 saddr, const __be16 sport,
+ 					const __be32 daddr, const u16 dport,
+-					struct sock **psk)
++					const int ifindex, struct sock **psk)
+ {
+ 	struct bpf_prog_array *run_array;
+ 	struct sock *selected_sk = NULL;
+@@ -1452,6 +1453,7 @@ static inline bool bpf_sk_lookup_run_v4(struct net *net, int protocol,
+ 			.v4.daddr	= daddr,
+ 			.sport		= sport,
+ 			.dport		= dport,
++			.ifindex	= ifindex,
+ 		};
+ 		u32 act;
+ 
+@@ -1474,7 +1476,7 @@ static inline bool bpf_sk_lookup_run_v6(struct net *net, int protocol,
+ 					const __be16 sport,
+ 					const struct in6_addr *daddr,
+ 					const u16 dport,
+-					struct sock **psk)
++					const int ifindex, struct sock **psk)
+ {
+ 	struct bpf_prog_array *run_array;
+ 	struct sock *selected_sk = NULL;
+@@ -1490,6 +1492,7 @@ static inline bool bpf_sk_lookup_run_v6(struct net *net, int protocol,
+ 			.v6.daddr	= daddr,
+ 			.sport		= sport,
+ 			.dport		= dport,
++			.ifindex	= ifindex,
+ 		};
+ 		u32 act;
+ 
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index ba5af15e25f5..5b8618a4d485 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -6296,6 +6296,7 @@ struct bpf_sk_lookup {
+ 	__u32 local_ip4;	/* Network byte order */
+ 	__u32 local_ip6[4];	/* Network byte order */
+ 	__u32 local_port;	/* Host byte order */
++	__u32 ifindex;		/* The arriving interface. Determined by inet_iif. */
+ };
+ 
+ /*
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 8e8d3b49c297..1b83111a996f 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -10491,6 +10491,7 @@ static bool sk_lookup_is_valid_access(int off, int size,
+ 	case bpf_ctx_range_till(struct bpf_sk_lookup, local_ip6[0], local_ip6[3]):
+ 	case bpf_ctx_range(struct bpf_sk_lookup, remote_port):
+ 	case bpf_ctx_range(struct bpf_sk_lookup, local_port):
++	case bpf_ctx_range(struct bpf_sk_lookup, ifindex):
+ 		bpf_ctx_record_field_size(info, sizeof(__u32));
+ 		return bpf_ctx_narrow_access_ok(off, size, sizeof(__u32));
+ 
+@@ -10580,6 +10581,12 @@ static u32 sk_lookup_convert_ctx_access(enum bpf_access_type type,
+ 				      bpf_target_off(struct bpf_sk_lookup_kern,
+ 						     dport, 2, target_size));
+ 		break;
++
++	case offsetof(struct bpf_sk_lookup, ifindex):
++		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->src_reg,
++				      bpf_target_off(struct bpf_sk_lookup_kern,
++						     ifindex, 4, target_size));
++		break;
+ 	}
+ 
+ 	return insn - insn_buf;
+diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
+index 75737267746f..30ab717ff1b8 100644
+--- a/net/ipv4/inet_hashtables.c
++++ b/net/ipv4/inet_hashtables.c
+@@ -307,7 +307,7 @@ static inline struct sock *inet_lookup_run_bpf(struct net *net,
+ 					       struct inet_hashinfo *hashinfo,
+ 					       struct sk_buff *skb, int doff,
+ 					       __be32 saddr, __be16 sport,
+-					       __be32 daddr, u16 hnum)
++					       __be32 daddr, u16 hnum, const int dif)
+ {
+ 	struct sock *sk, *reuse_sk;
+ 	bool no_reuseport;
+@@ -315,8 +315,8 @@ static inline struct sock *inet_lookup_run_bpf(struct net *net,
+ 	if (hashinfo != &tcp_hashinfo)
+ 		return NULL; /* only TCP is supported */
+ 
+-	no_reuseport = bpf_sk_lookup_run_v4(net, IPPROTO_TCP,
+-					    saddr, sport, daddr, hnum, &sk);
++	no_reuseport = bpf_sk_lookup_run_v4(net, IPPROTO_TCP, saddr, sport,
++					    daddr, hnum, dif, &sk);
+ 	if (no_reuseport || IS_ERR_OR_NULL(sk))
+ 		return sk;
+ 
+@@ -340,7 +340,7 @@ struct sock *__inet_lookup_listener(struct net *net,
+ 	/* Lookup redirect from BPF */
+ 	if (static_branch_unlikely(&bpf_sk_lookup_enabled)) {
+ 		result = inet_lookup_run_bpf(net, hashinfo, skb, doff,
+-					     saddr, sport, daddr, hnum);
++					     saddr, sport, daddr, hnum, dif);
+ 		if (result)
+ 			goto done;
+ 	}
+diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+index 2fffcf2b54f3..5fceee3de65d 100644
+--- a/net/ipv4/udp.c
++++ b/net/ipv4/udp.c
+@@ -460,7 +460,7 @@ static struct sock *udp4_lookup_run_bpf(struct net *net,
+ 					struct udp_table *udptable,
+ 					struct sk_buff *skb,
+ 					__be32 saddr, __be16 sport,
+-					__be32 daddr, u16 hnum)
++					__be32 daddr, u16 hnum, const int dif)
+ {
+ 	struct sock *sk, *reuse_sk;
+ 	bool no_reuseport;
+@@ -468,8 +468,8 @@ static struct sock *udp4_lookup_run_bpf(struct net *net,
+ 	if (udptable != &udp_table)
+ 		return NULL; /* only UDP is supported */
+ 
+-	no_reuseport = bpf_sk_lookup_run_v4(net, IPPROTO_UDP,
+-					    saddr, sport, daddr, hnum, &sk);
++	no_reuseport = bpf_sk_lookup_run_v4(net, IPPROTO_UDP, saddr, sport,
++					    daddr, hnum, dif, &sk);
+ 	if (no_reuseport || IS_ERR_OR_NULL(sk))
+ 		return sk;
+ 
+@@ -505,7 +505,7 @@ struct sock *__udp4_lib_lookup(struct net *net, __be32 saddr,
+ 	/* Lookup redirect from BPF */
+ 	if (static_branch_unlikely(&bpf_sk_lookup_enabled)) {
+ 		sk = udp4_lookup_run_bpf(net, udptable, skb,
+-					 saddr, sport, daddr, hnum);
++					 saddr, sport, daddr, hnum, dif);
+ 		if (sk) {
+ 			result = sk;
+ 			goto done;
+diff --git a/net/ipv6/inet6_hashtables.c b/net/ipv6/inet6_hashtables.c
+index 67c9114835c8..4514444e96c8 100644
+--- a/net/ipv6/inet6_hashtables.c
++++ b/net/ipv6/inet6_hashtables.c
+@@ -165,7 +165,7 @@ static inline struct sock *inet6_lookup_run_bpf(struct net *net,
+ 						const struct in6_addr *saddr,
+ 						const __be16 sport,
+ 						const struct in6_addr *daddr,
+-						const u16 hnum)
++						const u16 hnum, const int dif)
+ {
+ 	struct sock *sk, *reuse_sk;
+ 	bool no_reuseport;
+@@ -173,8 +173,8 @@ static inline struct sock *inet6_lookup_run_bpf(struct net *net,
+ 	if (hashinfo != &tcp_hashinfo)
+ 		return NULL; /* only TCP is supported */
+ 
+-	no_reuseport = bpf_sk_lookup_run_v6(net, IPPROTO_TCP,
+-					    saddr, sport, daddr, hnum, &sk);
++	no_reuseport = bpf_sk_lookup_run_v6(net, IPPROTO_TCP, saddr, sport,
++					    daddr, hnum, dif, &sk);
+ 	if (no_reuseport || IS_ERR_OR_NULL(sk))
+ 		return sk;
+ 
+@@ -198,7 +198,7 @@ struct sock *inet6_lookup_listener(struct net *net,
+ 	/* Lookup redirect from BPF */
+ 	if (static_branch_unlikely(&bpf_sk_lookup_enabled)) {
+ 		result = inet6_lookup_run_bpf(net, hashinfo, skb, doff,
+-					      saddr, sport, daddr, hnum);
++					      saddr, sport, daddr, hnum, dif);
+ 		if (result)
+ 			goto done;
+ 	}
+diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
+index 12c12619ee35..ea4ea525f94a 100644
+--- a/net/ipv6/udp.c
++++ b/net/ipv6/udp.c
+@@ -195,7 +195,7 @@ static inline struct sock *udp6_lookup_run_bpf(struct net *net,
+ 					       const struct in6_addr *saddr,
+ 					       __be16 sport,
+ 					       const struct in6_addr *daddr,
+-					       u16 hnum)
++					       u16 hnum, const int dif)
+ {
+ 	struct sock *sk, *reuse_sk;
+ 	bool no_reuseport;
+@@ -203,8 +203,8 @@ static inline struct sock *udp6_lookup_run_bpf(struct net *net,
+ 	if (udptable != &udp_table)
+ 		return NULL; /* only UDP is supported */
+ 
+-	no_reuseport = bpf_sk_lookup_run_v6(net, IPPROTO_UDP,
+-					    saddr, sport, daddr, hnum, &sk);
++	no_reuseport = bpf_sk_lookup_run_v6(net, IPPROTO_UDP, saddr, sport,
++					    daddr, hnum, dif, &sk);
+ 	if (no_reuseport || IS_ERR_OR_NULL(sk))
+ 		return sk;
+ 
+@@ -240,7 +240,7 @@ struct sock *__udp6_lib_lookup(struct net *net,
+ 	/* Lookup redirect from BPF */
+ 	if (static_branch_unlikely(&bpf_sk_lookup_enabled)) {
+ 		sk = udp6_lookup_run_bpf(net, udptable, skb,
+-					 saddr, sport, daddr, hnum);
++					 saddr, sport, daddr, hnum, dif);
+ 		if (sk) {
+ 			result = sk;
+ 			goto done;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index ba5af15e25f5..5b8618a4d485 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -6296,6 +6296,7 @@ struct bpf_sk_lookup {
+ 	__u32 local_ip4;	/* Network byte order */
+ 	__u32 local_ip6[4];	/* Network byte order */
+ 	__u32 local_port;	/* Host byte order */
++	__u32 ifindex;		/* The arriving interface. Determined by inet_iif. */
+ };
+ 
+ /*
+-- 
+2.31.1
 
