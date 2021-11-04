@@ -2,150 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CFE44577C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B524457D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:01:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231822AbhKDQtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 12:49:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46898 "EHLO
+        id S232062AbhKDRD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:03:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231679AbhKDQta (ORCPT
+        with ESMTP id S231837AbhKDRDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 12:49:30 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2621C061714;
-        Thu,  4 Nov 2021 09:46:52 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id t21-20020a9d7295000000b0055bf1807972so981727otj.8;
-        Thu, 04 Nov 2021 09:46:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ber1qlGVd008H185TP4+K3fHV/Oq9soyax8B6EZJHNA=;
-        b=kLqLKPWJwOJmaAV0iceRXCMVGxpqLI0YmUCs8HPHaA2kqA47oAFiTGPyQgtl6Trkjm
-         K41b/SOgd21OwdWbFDbzl9Sv9tOtmGzesDyOlVVOGQVYlcxAMBNU56uq+OYfHkeQSh8U
-         Jg3dvXO1fDBMs9pui+nammWmn19Nnon28aRw19Qnl2UkdWkwHjvtrskFx09JSvnNbqBP
-         RL2FfrqYsiDLN53Bw5sDdFf2aN6fokKmZohqxKkoVKlRzAOj8TWQo3X4vOQOu6fdDV3D
-         8PY5HHNZYMMQPWPo42JVnPYEnWQH6ljavceryGpTS3QvddqVXY0+1oj57nT/FCLiikiN
-         EDpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ber1qlGVd008H185TP4+K3fHV/Oq9soyax8B6EZJHNA=;
-        b=7KLU8qZEJYHsTV4K4xCN16FDbZoBknxdlGZQXmCTWiAOtfsTAptfcQZx5+deA1CZB2
-         d1EjILn7jyX2T53IbaK1d4awIHjXscXYDy3zd8GmCexFcwFvBk3gKiQ6eMyXraXo5rH9
-         vVG61I2DWTyOAts2qZ5N0kAVL/FDf+kBz0TGx5AOtn5PDfj5NHeaRAHZKjH5b5JNTC5t
-         4ugYEb3OLsYN9L/snfqm4FoDUaDsP97qemKLJOKmV2XqcAUqT31NoBMDEpwZNIWcD2nt
-         7A498k2Ujq1q0FJ24OiRC4M9NRI7qDrHT7/gYBh14JvXY3jOLwAhi+aSkl9JyC7sExwa
-         iXDw==
-X-Gm-Message-State: AOAM5330hdp2nTiMCqMEd+lD4L+TcEII8WeaHg/4MEW4IR3iHzP65F4D
-        BLPrZ/5eOCzdCtJs+RV1CbA=
-X-Google-Smtp-Source: ABdhPJxZ6/ISeuRXTS0rkJKnH2vz4fbtsA500jEePP5hed6zb8uaGi3Nj6xDD9M5ZNw178y7xd8a2g==
-X-Received: by 2002:a9d:2aca:: with SMTP id e68mr39507329otb.216.1636044412059;
-        Thu, 04 Nov 2021 09:46:52 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z20sm1102887oto.14.2021.11.04.09.46.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 09:46:51 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 5.10 00/16] 5.10.78-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org
-References: <20211104141159.561284732@linuxfoundation.org>
- <3971a9b4-ebb6-a789-2143-31cf257d0d38@linaro.org>
- <YYQIUhHkv3kUY+UC@kroah.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <acabc414-164b-cd65-6a1a-cf912d8621d7@roeck-us.net>
-Date:   Thu, 4 Nov 2021 09:46:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <YYQIUhHkv3kUY+UC@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Thu, 4 Nov 2021 13:03:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6126C061205
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 10:01:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=DwoMpHGjdQb598azbBWqeqDTuF2F/75/Ij32BwQVCmI=; b=tcXPvIlgpcKWyPQRsILeGpmBUa
+        ul9/AYUOZZfUjMyjAE5CI8h1lzQ9WAkhxdhz8B5K+18acxNG13q6fUyaTciLfBvwUECtJLlUAb1PI
+        cw1VHjNzvQVLLJwnABWpPnKN0ywM3NQRnOgEl1tQDWpV41nVCYCNtk++LgxPsCNZxN7Q1nFfOgHsU
+        FhU9joyqvAkMUCBCy4oOgdp6+aQpJNjmb1l0xI2no7I9sKMEpwJdPf4wRLftiVVMFfwC888wq02tK
+        xXjjsVliUKTEyIZ9R8MoTCGecALAMzcVrar62K90vpGREmeQvFcR11wAYnRjSMppF7N7bQwGo7qC1
+        6Ls1lYCQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mig2V-0060FF-LR; Thu, 04 Nov 2021 16:57:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 32D633005CB;
+        Thu,  4 Nov 2021 17:56:35 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 0C28A2DD49FB3; Thu,  4 Nov 2021 17:56:35 +0100 (CET)
+Message-ID: <20211104164729.226550532@infradead.org>
+User-Agent: quilt/0.66
+Date:   Thu, 04 Nov 2021 17:47:29 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        jpoimboe@redhat.com, mark.rutland@arm.com, dvyukov@google.com,
+        seanjc@google.com, pbonzini@redhat.com, mbenes@suse.cz
+Subject: [RFC][PATCH 00/22] x86: Remove anonymous out-of-line fixups
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/4/21 9:20 AM, Greg Kroah-Hartman wrote:
-> On Thu, Nov 04, 2021 at 09:53:57AM -0600, Daniel Díaz wrote:
->> Hello!
->>
->> On 11/4/21 8:12 AM, Greg Kroah-Hartman wrote:
->>> This is the start of the stable review cycle for the 5.10.78 release.
->>> There are 16 patches in this series, all will be posted as a response
->>> to this one.  If anyone has any issues with these being applied, please
->>> let me know.
->>>
->>> Responses should be made by Sat, 06 Nov 2021 14:11:51 +0000.
->>> Anything received after that time might be too late.
->>>
->>> The whole patch series can be found in one patch at:
->>> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.78-rc1.gz
->>> or in the git tree and branch at:
->>> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
->>> and the diffstat can be found below.
->>>
->>> thanks,
->>>
->>> greg k-h
->>
->> Regressions detected.
->>
->> Build failures on all architectures and all toolchains (GCC 8, 9, 10, 11; Clang 10, 11, 12, 13, nightly):
->> - arc
->> - arm (32-bits)
->> - arm (64-bits)
->> - i386
->> - mips
->> - parisc
->> - ppc
->> - riscv
->> - s390
->> - sh
->> - sparc
->> - x86
->>
->> Failures look like this:
->>
->>    In file included from /builds/linux/include/linux/kernel.h:11,
->>                     from /builds/linux/include/linux/list.h:9,
->>                     from /builds/linux/include/linux/smp.h:12,
->>                     from /builds/linux/include/linux/kernel_stat.h:5,
->>                     from /builds/linux/mm/memory.c:42:
->>    /builds/linux/mm/memory.c: In function 'finish_fault':
->>    /builds/linux/mm/memory.c:3929:15: error: implicit declaration of function 'PageHasHWPoisoned'; did you mean 'PageHWPoison'? [-Werror=implicit-function-declaration]
->>     3929 |  if (unlikely(PageHasHWPoisoned(page)))
->>          |               ^~~~~~~~~~~~~~~~~
->>    /builds/linux/include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
->>       78 | # define unlikely(x) __builtin_expect(!!(x), 0)
->>          |                                          ^
->>    cc1: some warnings being treated as errors
->>
->> and this:
->>
->>    /builds/linux/mm/memory.c:3929:15: error: implicit declaration of function 'PageHasHWPoisoned' [-Werror,-Wimplicit-function-declaration]
->>            if (unlikely(PageHasHWPoisoned(page)))
->>                         ^
->>
->>    /builds/linux/mm/page_alloc.c:1237:4: error: implicit declaration of function 'ClearPageHasHWPoisoned' [-Werror,-Wimplicit-function-declaration]
->>                            ClearPageHasHWPoisoned(page);
->>                            ^
->>    /builds/linux/mm/page_alloc.c:1237:4: note: did you mean 'ClearPageHWPoison'?
->>
-> 
-> What configuration?  This builds for me on x86 here on allmodconfig.
-> 
+Hi,
 
-defconfig, and anything with CONFIG_MEMORY_FAILURE=n or CONFIG_TRANSPARENT_HUGEPAGE=n.
-Fix needs upstream commit e66435936756d (presumably, I did not check).
+Direct counterpart to the arm64 series from Mark:
 
-Guenter
+  https://lkml.kernel.org/r/20211019160219.5202-1-mark.rutland@arm.com
+
+Since he already put it rather well:
+
+"We recently realised that out-of-line extable fixups cause a number of problems
+for backtracing (mattering both for developers and for RELIABLE_STACKTRACE and
+LIVEPATCH). Dmitry spotted a confusing backtrace, which we identified was due
+to problems with unwinding fixups, as summarized in:
+
+  https://lore.kernel.org/linux-arm-kernel/20210927171812.GB9201@C02TD0UTHF1T.local/
+
+The gist is that while backtracing through a fixup, the fixup gets symbolized
+as an offset from the nearest prior symbol (which happens to be
+`__entry_tramp_text_end`), and we the backtrace misses the function that was
+being fixed up (because the fixup handling adjusts the PC, then the fixup does
+a direct branch back to the original function). We can't reliably map from an
+arbitrary PC in the fixup text back to the original function.
+
+The way we create fixups is a bit unfortunate: most fixups are generated from
+common templates, and only differ in register to be poked and the address to
+branch back to, leading to redundant copies of the same logic that must pollute
+Since the fixups are all written in assembly, and duplicated for each fixup
+site, we can only perform very simple fixups, and can't handle any complex
+triage that we might need for some exceptions (e.g. MTE faults)."
+
+
+
+So far these patches have only been compile tested on x86_64
+(defconfig,allyesconfig) and boot tested in kvm (defconfig) -- realy early
+days.
+
+Enjoy..
+
+---
+ arch/x86/entry/entry_32.S                  |  28 ++---
+ arch/x86/entry/entry_64.S                  |  13 ++-
+ arch/x86/entry/vdso/vdso-layout.lds.S      |   1 -
+ arch/x86/include/asm/asm.h                 |  27 +++++
+ arch/x86/include/asm/extable_fixup_types.h |  44 ++++++--
+ arch/x86/include/asm/futex.h               |  28 ++---
+ arch/x86/include/asm/msr.h                 |  26 ++---
+ arch/x86/include/asm/segment.h             |   9 +-
+ arch/x86/include/asm/sgx.h                 |  18 ++++
+ arch/x86/include/asm/uaccess.h             |  35 +++---
+ arch/x86/include/asm/word-at-a-time.h      |  29 ++---
+ arch/x86/include/asm/xen/page.h            |  12 +--
+ arch/x86/kernel/cpu/sgx/encls.h            |  36 +------
+ arch/x86/kernel/fpu/legacy.h               |   6 +-
+ arch/x86/kernel/fpu/xstate.h               |   6 +-
+ arch/x86/kernel/ftrace.c                   |   9 +-
+ arch/x86/kernel/vmlinux.lds.S              |   1 -
+ arch/x86/kvm/emulate.c                     |  14 +--
+ arch/x86/kvm/vmx/vmx_ops.h                 |  14 ++-
+ arch/x86/lib/checksum_32.S                 |  19 +---
+ arch/x86/lib/copy_mc_64.S                  |  12 +--
+ arch/x86/lib/copy_user_64.S                |  32 ++----
+ arch/x86/lib/mmx_32.c                      |  83 +++++----------
+ arch/x86/lib/usercopy_32.c                 |  66 +++++-------
+ arch/x86/lib/usercopy_64.c                 |   8 +-
+ arch/x86/mm/extable.c                      | 166 ++++++++++++++++++++++++-----
+ include/linux/bitfield.h                   |  19 +++-
+ 27 files changed, 385 insertions(+), 376 deletions(-)
+
