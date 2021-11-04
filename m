@@ -2,422 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59DE044579D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:52:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7624457A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231827AbhKDQzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 12:55:15 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:52558 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231616AbhKDQzO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 12:55:14 -0400
-Received: from [10.137.106.139] (unknown [131.107.159.11])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 65FFE20ABA8A;
-        Thu,  4 Nov 2021 09:52:35 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 65FFE20ABA8A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1636044755;
-        bh=gVjYOmqakaCBm33SjcaX622aYmR7Eb5QVNqywVzkR1A=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=gyEKumgIdpc7ysbgRnLAYxnXTPpxkFXPp6NSz27VXnlnlcbgCMYPXyp7Lh+9ujL7c
-         Mrg63flAg85A8iz8O4qzXtvZwPimtanwvLI47n8etgA4TWIsGnMiRCNra7cY2J8Dob
-         F1KFn66qhrEK7wfrbRMw7pItdxnESdpr9OfKn1xA=
-Message-ID: <81c57884-8a57-ae1f-1d85-929c3cb5bd58@linux.microsoft.com>
-Date:   Thu, 4 Nov 2021 09:52:35 -0700
+        id S231925AbhKDQzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 12:55:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231877AbhKDQzW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 12:55:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3795261216;
+        Thu,  4 Nov 2021 16:52:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636044764;
+        bh=yRVr9keMGKNSa+th5PoR/sf/KzW0RShCR838UP56c10=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dqRK/3xxaVyETPIofpyT8Oo+Q4pnqtyXmiF1KEObnxUnuojTcya0U+tl3tsdSj9k2
+         hboScg7Kj2MAhhp3Vqd/5Kdpeif3MA7eCWjLQ5s7W3kNJ38/m+Ppp3e8Mm0fyVTIJQ
+         4on4ufcheSgi8TlkCdBWqqUv10YSSwQ4HlqpXuFo=
+Date:   Thu, 4 Nov 2021 17:52:42 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
+        linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org
+Subject: Re: [PATCH 5.10 00/16] 5.10.78-rc1 review
+Message-ID: <YYQP2jGVxhMUlcMH@kroah.com>
+References: <20211104141159.561284732@linuxfoundation.org>
+ <3971a9b4-ebb6-a789-2143-31cf257d0d38@linaro.org>
+ <YYQIUhHkv3kUY+UC@kroah.com>
+ <acabc414-164b-cd65-6a1a-cf912d8621d7@roeck-us.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [RFC PATCH v7 14/16] scripts: add boot policy generation program
-Content-Language: en-US
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "paul@paul-moore.com" <paul@paul-moore.com>,
-        "eparis@redhat.com" <eparis@redhat.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>
-Cc:     "jannh@google.com" <jannh@google.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-        "linux-audit@redhat.com" <linux-audit@redhat.com>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>
-References: <1634151995-16266-1-git-send-email-deven.desai@linux.microsoft.com>
- <1634151995-16266-15-git-send-email-deven.desai@linux.microsoft.com>
- <12aec559d6df4191a39ecaec7a0a378e@huawei.com>
- <5b4cdc3c3dba4fe68dfc9590b7d12e48@huawei.com>
-From:   Deven Bowers <deven.desai@linux.microsoft.com>
-In-Reply-To: <5b4cdc3c3dba4fe68dfc9590b7d12e48@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <acabc414-164b-cd65-6a1a-cf912d8621d7@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 04, 2021 at 09:46:49AM -0700, Guenter Roeck wrote:
+> On 11/4/21 9:20 AM, Greg Kroah-Hartman wrote:
+> > On Thu, Nov 04, 2021 at 09:53:57AM -0600, Daniel Díaz wrote:
+> > > Hello!
+> > > 
+> > > On 11/4/21 8:12 AM, Greg Kroah-Hartman wrote:
+> > > > This is the start of the stable review cycle for the 5.10.78 release.
+> > > > There are 16 patches in this series, all will be posted as a response
+> > > > to this one.  If anyone has any issues with these being applied, please
+> > > > let me know.
+> > > > 
+> > > > Responses should be made by Sat, 06 Nov 2021 14:11:51 +0000.
+> > > > Anything received after that time might be too late.
+> > > > 
+> > > > The whole patch series can be found in one patch at:
+> > > > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.78-rc1.gz
+> > > > or in the git tree and branch at:
+> > > > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> > > > and the diffstat can be found below.
+> > > > 
+> > > > thanks,
+> > > > 
+> > > > greg k-h
+> > > 
+> > > Regressions detected.
+> > > 
+> > > Build failures on all architectures and all toolchains (GCC 8, 9, 10, 11; Clang 10, 11, 12, 13, nightly):
+> > > - arc
+> > > - arm (32-bits)
+> > > - arm (64-bits)
+> > > - i386
+> > > - mips
+> > > - parisc
+> > > - ppc
+> > > - riscv
+> > > - s390
+> > > - sh
+> > > - sparc
+> > > - x86
+> > > 
+> > > Failures look like this:
+> > > 
+> > >    In file included from /builds/linux/include/linux/kernel.h:11,
+> > >                     from /builds/linux/include/linux/list.h:9,
+> > >                     from /builds/linux/include/linux/smp.h:12,
+> > >                     from /builds/linux/include/linux/kernel_stat.h:5,
+> > >                     from /builds/linux/mm/memory.c:42:
+> > >    /builds/linux/mm/memory.c: In function 'finish_fault':
+> > >    /builds/linux/mm/memory.c:3929:15: error: implicit declaration of function 'PageHasHWPoisoned'; did you mean 'PageHWPoison'? [-Werror=implicit-function-declaration]
+> > >     3929 |  if (unlikely(PageHasHWPoisoned(page)))
+> > >          |               ^~~~~~~~~~~~~~~~~
+> > >    /builds/linux/include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+> > >       78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+> > >          |                                          ^
+> > >    cc1: some warnings being treated as errors
+> > > 
+> > > and this:
+> > > 
+> > >    /builds/linux/mm/memory.c:3929:15: error: implicit declaration of function 'PageHasHWPoisoned' [-Werror,-Wimplicit-function-declaration]
+> > >            if (unlikely(PageHasHWPoisoned(page)))
+> > >                         ^
+> > > 
+> > >    /builds/linux/mm/page_alloc.c:1237:4: error: implicit declaration of function 'ClearPageHasHWPoisoned' [-Werror,-Wimplicit-function-declaration]
+> > >                            ClearPageHasHWPoisoned(page);
+> > >                            ^
+> > >    /builds/linux/mm/page_alloc.c:1237:4: note: did you mean 'ClearPageHWPoison'?
+> > > 
+> > 
+> > What configuration?  This builds for me on x86 here on allmodconfig.
+> > 
+> 
+> defconfig, and anything with CONFIG_MEMORY_FAILURE=n or CONFIG_TRANSPARENT_HUGEPAGE=n.
+> Fix needs upstream commit e66435936756d (presumably, I did not check).
 
-On 11/3/2021 9:53 AM, Roberto Sassu wrote:
->> From: Roberto Sassu [mailto:roberto.sassu@huawei.com]
->> Sent: Wednesday, November 3, 2021 5:43 PM
->>> From: deven.desai@linux.microsoft.com
->>> [mailto:deven.desai@linux.microsoft.com]
->>> From: Deven Bowers <deven.desai@linux.microsoft.com>
->>>
->>> Enables an IPE policy to be enforced from kernel start, enabling access
->>> control based on trust from kernel startup. This is accomplished by
->>> transforming an IPE policy indicated by CONFIG_IPE_BOOT_POLICY into a
->>> c-string literal that is parsed at kernel startup as an unsigned policy.
->>>
->>> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
->>> ---
->>>
->>> Relevant changes since v6:
->>>    * Move patch 01/12 to [14/16] of the series
->>>
->>> ---
->>>   MAINTAINERS                   |   1 +
->>>   scripts/Makefile              |   1 +
->>>   scripts/ipe/Makefile          |   2 +
->>>   scripts/ipe/polgen/.gitignore |   1 +
->>>   scripts/ipe/polgen/Makefile   |   6 ++
->>>   scripts/ipe/polgen/polgen.c   | 145 ++++++++++++++++++++++++++++++++++
->>>   security/ipe/.gitignore       |   1 +
->>>   security/ipe/Kconfig          |  10 +++
->>>   security/ipe/Makefile         |  13 +++
->>>   security/ipe/ctx.c            |  18 +++++
->>>   10 files changed, 198 insertions(+)
->>>   create mode 100644 scripts/ipe/Makefile
->>>   create mode 100644 scripts/ipe/polgen/.gitignore
->>>   create mode 100644 scripts/ipe/polgen/Makefile
->>>   create mode 100644 scripts/ipe/polgen/polgen.c
->>>   create mode 100644 security/ipe/.gitignore
->>>
->>> diff --git a/MAINTAINERS b/MAINTAINERS
->>> index f1e76f791d47..a84ca781199b 100644
->>> --- a/MAINTAINERS
->>> +++ b/MAINTAINERS
->>> @@ -9283,6 +9283,7 @@ INTEGRITY POLICY ENFORCEMENT (IPE)
->>>   M:	Deven Bowers <deven.desai@linux.microsoft.com>
->>>   M:	Fan Wu <wufan@linux.microsoft.com>
->>>   S:	Supported
->>> +F:	scripts/ipe/
->>>   F:	security/ipe/
->>>
->>>   INTEL 810/815 FRAMEBUFFER DRIVER
->>> diff --git a/scripts/Makefile b/scripts/Makefile
->>> index 9adb6d247818..a31da6d57a36 100644
->>> --- a/scripts/Makefile
->>> +++ b/scripts/Makefile
->>> @@ -41,6 +41,7 @@ targets += module.lds
->>>   subdir-$(CONFIG_GCC_PLUGINS) += gcc-plugins
->>>   subdir-$(CONFIG_MODVERSIONS) += genksyms
->>>   subdir-$(CONFIG_SECURITY_SELINUX) += selinux
->>> +subdir-$(CONFIG_SECURITY_IPE) += ipe
->>>
->>>   # Let clean descend into subdirs
->>>   subdir-	+= basic dtc gdb kconfig mod
->>> diff --git a/scripts/ipe/Makefile b/scripts/ipe/Makefile
->>> new file mode 100644
->>> index 000000000000..e87553fbb8d6
->>> --- /dev/null
->>> +++ b/scripts/ipe/Makefile
->>> @@ -0,0 +1,2 @@
->>> +# SPDX-License-Identifier: GPL-2.0-only
->>> +subdir-y := polgen
->>> diff --git a/scripts/ipe/polgen/.gitignore b/scripts/ipe/polgen/.gitignore
->>> new file mode 100644
->>> index 000000000000..80f32f25d200
->>> --- /dev/null
->>> +++ b/scripts/ipe/polgen/.gitignore
->>> @@ -0,0 +1 @@
->>> +polgen
->>> diff --git a/scripts/ipe/polgen/Makefile b/scripts/ipe/polgen/Makefile
->>> new file mode 100644
->>> index 000000000000..066060c22b4a
->>> --- /dev/null
->>> +++ b/scripts/ipe/polgen/Makefile
->>> @@ -0,0 +1,6 @@
->>> +# SPDX-License-Identifier: GPL-2.0
->>> +hostprogs-always-y	:= polgen
->>> +HOST_EXTRACFLAGS += \
->>> +	-I$(srctree)/include \
->>> +	-I$(srctree)/include/uapi \
->>> +
->>> diff --git a/scripts/ipe/polgen/polgen.c b/scripts/ipe/polgen/polgen.c
->>> new file mode 100644
->>> index 000000000000..73cf13e743f7
->>> --- /dev/null
->>> +++ b/scripts/ipe/polgen/polgen.c
->>> @@ -0,0 +1,145 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/*
->>> + * Copyright (C) Microsoft Corporation. All rights reserved.
->>> + */
->>> +
->>> +#include <stdlib.h>
->>> +#include <stddef.h>
->>> +#include <stdio.h>
->>> +#include <unistd.h>
->>> +#include <errno.h>
->>> +
->>> +static void usage(const char *const name)
->>> +{
->>> +	printf("Usage: %s OutputFile (PolicyFile)\n", name);
->>> +	exit(EINVAL);
->>> +}
->>> +
->>> +static int policy_to_buffer(const char *pathname, char **buffer, size_t *size)
->>> +{
->>> +	int rc = 0;
->>> +	FILE *fd;
->>> +	char *lbuf;
->>> +	size_t fsize;
->>> +	size_t read;
->>> +
->>> +	fd = fopen(pathname, "r");
->>> +	if (!fd) {
->>> +		rc = errno;
->>> +		goto out;
->>> +	}
->>> +
->>> +	fseek(fd, 0, SEEK_END);
->>> +	fsize = ftell(fd);
->>> +	rewind(fd);
->>> +
->>> +	lbuf = malloc(fsize);
->>> +	if (!lbuf) {
->>> +		rc = ENOMEM;
->>> +		goto out_close;
->>> +	}
->>> +
->>> +	read = fread((void *)lbuf, sizeof(*lbuf), fsize, fd);
->>> +	if (read != fsize) {
->>> +		rc = -1;
->>> +		goto out_free;
->>> +	}
->>> +
->>> +	*buffer = lbuf;
->>> +	*size = fsize;
->>> +	fclose(fd);
->>> +
->>> +	return rc;
->>> +
->>> +out_free:
->>> +	free(lbuf);
->>> +out_close:
->>> +	fclose(fd);
->>> +out:
->>> +	return rc;
->>> +}
->>> +
->>> +static int write_boot_policy(const char *pathname, const char *buf, size_t
->> size)
->>> +{
->>> +	int rc = 0;
->>> +	FILE *fd;
->>> +	size_t i;
->>> +
->>> +	fd = fopen(pathname, "w");
->>> +	if (!fd) {
->>> +		rc = errno;
->>> +		goto err;
->>> +	}
->>> +
->>> +	fprintf(fd, "/* This file is automatically generated.");
->>> +	fprintf(fd, " Do not edit. */\n");
->>> +	fprintf(fd, "#include <stddef.h>\n");
->>> +	fprintf(fd, "\nextern const char *const ipe_boot_policy;\n\n");
->>> +	fprintf(fd, "const char *const ipe_boot_policy =\n");
->>> +
->>> +	if (!buf || size == 0) {
->>> +		fprintf(fd, "\tNULL;\n");
->>> +		fclose(fd);
->>> +		return 0;
->>> +	}
->>> +
->>> +	fprintf(fd, "\t\"");
->>> +
->>> +	for (i = 0; i < size; ++i) {
->>> +		switch (buf[i]) {
->>> +		case '"':
->>> +			fprintf(fd, "\\\"");
->>> +			break;
->>> +		case '\'':
->>> +			fprintf(fd, "'");
->>> +			break;
->>> +		case '\n':
->>> +			fprintf(fd, "\\n\"\n\t\"");
->>> +			break;
->>> +		case '\\':
->>> +			fprintf(fd, "\\\\");
->>> +			break;
->>> +		case '\t':
->>> +			fprintf(fd, "\\t");
->>> +			break;
->>> +		case '\?':
->>> +			fprintf(fd, "\\?");
->>> +			break;
->>> +		default:
->>> +			fprintf(fd, "%c", buf[i]);
->>> +		}
->>> +	}
->>> +	fprintf(fd, "\";\n");
->>> +	fclose(fd);
->>> +
->>> +	return 0;
->>> +
->>> +err:
->>> +	if (fd)
->>> +		fclose(fd);
->>> +	return rc;
->>> +}
->>> +
->>> +int main(int argc, const char *const argv[])
->>> +{
->>> +	int rc = 0;
->>> +	size_t len = 0;
->>> +	char *policy = NULL;
->>> +
->>> +	if (argc < 2)
->>> +		usage(argv[0]);
->>> +
->>> +	if (argc > 2) {
->>> +		rc = policy_to_buffer(argv[2], &policy, &len);
->>> +		if (rc != 0)
->>> +			goto cleanup;
->>> +	}
->>> +
->>> +	rc = write_boot_policy(argv[1], policy, len);
->>> +cleanup:
->>> +	if (policy)
->>> +		free(policy);
->>> +	if (rc != 0)
->>> +		perror("An error occurred during policy conversion: ");
->>> +	return rc;
->>> +}
->>> diff --git a/security/ipe/.gitignore b/security/ipe/.gitignore
->>> new file mode 100644
->>> index 000000000000..eca22ad5ed22
->>> --- /dev/null
->>> +++ b/security/ipe/.gitignore
->>> @@ -0,0 +1 @@
->>> +boot-policy.c
->>> \ No newline at end of file
->>> diff --git a/security/ipe/Kconfig b/security/ipe/Kconfig
->>> index fcf82a8152ec..39df680b67a2 100644
->>> --- a/security/ipe/Kconfig
->>> +++ b/security/ipe/Kconfig
->>> @@ -20,6 +20,16 @@ menuconfig SECURITY_IPE
->>>
->>>   if SECURITY_IPE
->>>
->>> +config IPE_BOOT_POLICY
->>> +	string "Integrity policy to apply on system startup"
->>> +	help
->>> +	  This option specifies a filepath to a IPE policy that is compiled
->>> +	  into the kernel. This policy will be enforced until a policy update
->>> +	  is deployed via the $securityfs/ipe/policies/$policy_name/active
->>> +	  interface.
->>> +
->>> +	  If unsure, leave blank.
->>> +
->>>   choice
->>>   	prompt "Hash algorithm used in auditing policies"
->>>   	default IPE_AUDIT_HASH_SHA1
->>> diff --git a/security/ipe/Makefile b/security/ipe/Makefile
->>> index 1e7b2d7fcd9e..89fec670f954 100644
->>> --- a/security/ipe/Makefile
->>> +++ b/security/ipe/Makefile
->>> @@ -7,7 +7,18 @@
->>>
->>>   ccflags-y := -I$(srctree)/security/ipe/modules
->>>
->>> +quiet_cmd_polgen = IPE_POL $(2)
->>> +      cmd_polgen = scripts/ipe/polgen/polgen security/ipe/boot-policy.c $(2)
->>> +
->>> +$(eval $(call config_filename,IPE_BOOT_POLICY))
->>> +
->>> +targets += boot-policy.c
->>> +
->>> +$(obj)/boot-policy.c: scripts/ipe/polgen/polgen
->>> $(IPE_BOOT_POLICY_FILENAME) FORCE
->>> +	$(call if_changed,polgen,$(IPE_BOOT_POLICY_FILENAME))
->>> +
->>>   obj-$(CONFIG_SECURITY_IPE) += \
->>> +	boot-policy.o \
->>>   	ctx.o \
->>>   	eval.o \
->>>   	fs.o \
->>> @@ -21,3 +32,5 @@ obj-$(CONFIG_SECURITY_IPE) += \
->>>   	policyfs.o \
->>>
->>>   obj-$(CONFIG_AUDIT) += audit.o
->>> +
->>> +clean-files := boot-policy.c \
->>> diff --git a/security/ipe/ctx.c b/security/ipe/ctx.c
->>> index fc9b8e467bc9..879acf4ceac5 100644
->>> --- a/security/ipe/ctx.c
->>> +++ b/security/ipe/ctx.c
->>> @@ -15,6 +15,7 @@
->>>   #include <linux/spinlock.h>
->>>   #include <linux/moduleparam.h>
->>>
->>> +extern const char *const ipe_boot_policy;
->>>   static bool success_audit;
->>>   static bool enforce = true;
->>>
->>> @@ -329,6 +330,7 @@ void ipe_put_ctx(struct ipe_context *ctx)
->>>   int __init ipe_init_ctx(void)
->>>   {
->>>   	int rc = 0;
->>> +	struct ipe_policy *p = NULL;
->>>   	struct ipe_context *lns = NULL;
->>>
->>>   	lns = create_ctx();
->>> @@ -342,10 +344,26 @@ int __init ipe_init_ctx(void)
->>>   	WRITE_ONCE(lns->enforce, enforce);
->>>   	spin_unlock(&lns->lock);
->>>
->>> +	if (ipe_boot_policy) {
->>> +		p = ipe_new_policy(ipe_boot_policy, strlen(ipe_boot_policy),
->>> +				   NULL, 0);
->>> +		if (IS_ERR(p)) {
->>> +			rc = PTR_ERR(lns);
->> This should be:
->>
->> 	rc = PTR_ERR(p);
->>
->>> +			goto err;
->>> +		}
->>> +
->>> +		ipe_add_policy(lns, p);
->>> +		rc = ipe_set_active_pol(p);
->>> +		if (!rc)
->> Here you need to set a non-zero value, so that ipe_init()
->> does not enable the LSM.
-> Actually you probably should just check that rc is not zero
-> and goto err.
->
-> Roberto
->
-Yeah, I actually noticed these two mistakes myself fairly recently.
+Odd, no, I don't think that commit will help.
 
-Changes will be applied in v8.
->
->> I would set to 1 a new global variable, like ipe_lsm_enabled,
->> in ipe_init() just before security_add_hooks().
->>
->> Then, I would add a check of this variable in ipe_init_securityfs()
->> to avoid the kernel panic.
+I'll go drop the offending commit now and push out a -rc2.
 
-That's my plan.
+thanks,
 
--Deven
+greg k-h
