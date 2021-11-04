@@ -2,145 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58483445A1F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 20:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F33445A23
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 20:01:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233974AbhKDTDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 15:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49662 "EHLO
+        id S234014AbhKDTEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 15:04:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231823AbhKDTDC (ORCPT
+        with ESMTP id S231732AbhKDTEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 15:03:02 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDA8C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 12:00:24 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id o14so8831244plg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 12:00:24 -0700 (PDT)
+        Thu, 4 Nov 2021 15:04:08 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4042DC061203
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 12:01:30 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 67-20020a1c1946000000b0030d4c90fa87so4977582wmz.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 12:01:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m2k2ICcLxOkYpmYgks+aaOogS3Up01M0dUCMOamz1iE=;
-        b=qztWzrOTLAIveH0jJT+My1lV60S9NBBuoZGvf3bT2cCiy1amPUVAOa8U4/K7xanNV1
-         YhcFxVjtQd99EYpqKdvI2mpDLpo+IvoLQgmSfd36JPAmmGu0GSgIsg2c1k9wjL6Aw7IP
-         v1+p7NJ2mn9mi1aSVMCmwnvf4Fvyss5eFxhoctfmhjUwls1GCBfLPg70Z6rCNN1KO8Vu
-         UvcWJhXZOeNfxNXqMEDF+7ZbG4T8H2agXRtokUhs6BkR1P2QmLirhzwnP4wYxDFRiLXX
-         uwbk3uQPR7MTMgd6i+sYQ0CN2HEBqUy40NqhvSGBIyc3xJ4NHnjlDR1x0j7rKg4WON2B
-         OhSQ==
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x+uX5Ns056I9tnFIVcNyuYzIDAX+5rS74jXcNO8ZZKU=;
+        b=emBNHheP8B0mR8OzksZJqloYZOJk0nyjriKh4F2bzGPy75wwbbA3JKL5fiQuzGd0DA
+         ZEiwhvGaPXtzQocFdGEa5p/FntQ//GcNErwJqh0YvaO2U0Fy42flzGTP7+dbJPcfrwfo
+         XeIQJSjB0X3hTMnA3Ta7r2lDlq0H4IsbNjGRaDDNlI5YfvwdfqaGw7AByTUgvnAnlmru
+         gJTLXunmjBxJ0KoRTGqsLH+N0HVeEYR3/LBmyfYAKs+e/KTvO2UCqvrMzUzcEOnshD/c
+         zvM+hhmCtZU65t0KsC0U9VMO2Vt7GALek4gMzRwTjFKHskTzsQQZ+tb1rFmRvwQ0QZD/
+         z+2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m2k2ICcLxOkYpmYgks+aaOogS3Up01M0dUCMOamz1iE=;
-        b=0csavU30lSUs6bqayrTAVPb8NM3CLUsigFBd0qBC2ijRmiRi7Zf0kD+pFo++vm2nw7
-         xy21JZSNypLXQ8Lhbsx4tmSRPlV7d+X1yoNl/B0nRGjX5PUwGA57UZLfqpXT3ecQTVTi
-         h36k+nzJsbSG8B1ozVwL891UFYtSxcY3liU9etQSacDgwq08NBRIBAhwsIQ37SdLcipP
-         6B+Ajs97kkd1EoF4jIOEiew4FMCFEQS6esHo/9ei1Qs+jde3rb+E+G1VW6z0ZjMIGyKk
-         6aojt7mNCtZxINqupxlwCoW80mq/6KVYvQg9fNVSdXQ+0nfVCClpJ+bzj+rErcYPhNLH
-         hD0w==
-X-Gm-Message-State: AOAM530kkeACmT2kfBJofvHFLrhfLveqodZRgvEEaXwMkxYhQ6f6TOiL
-        b95/KrWtQ9nVlZKeWxVQjxd3IdLvcreIUX+UImVdMg==
-X-Google-Smtp-Source: ABdhPJwQym6Y7uH09wOtDHKQhWIGrrYFIdBGyf7hiTeaJPAQpu4wAVAeAWHgNrP0Q55EM48GJgoNm4KYD5+8BlLUEcA=
-X-Received: by 2002:a17:90b:1e49:: with SMTP id pi9mr1444333pjb.220.1636052423615;
- Thu, 04 Nov 2021 12:00:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x+uX5Ns056I9tnFIVcNyuYzIDAX+5rS74jXcNO8ZZKU=;
+        b=zE2rofvuC019RnYh3d2VEjThq+5CxQwOmzCoQHJcwfwPTKOtYC8Pe+ct8K506gkMkd
+         soIt54gtn2RYvKGDx84/Cyu83STp4hivW2DcC8DNmk9/sf9DA12yHpizS8eFCBSRNdb2
+         wWYZsScHpFXZdvgy1P6Vj2VTSQdNrIyoFon5k5XZk0f3Ha+Sb8C0ZRqN/GUqrazCxmc+
+         CDR0aj8UuThQ0/4j1aFd/msFoADkyct4oxJsCuJVDK4Jy8MrfR1oapQryraErDiGsp1S
+         WQ2xUZPEMHikwEY/n9HrNLt+uvtOdwELZQIgstDRFHj54lZVkv7zpKa1uuyLr4vFX6Mp
+         uTCg==
+X-Gm-Message-State: AOAM531fUBdZzqmb92qNkjj9qyXdTwibnhdFccr+g/RoGo05WL7ehxAh
+        OzXIpbCh2fxjvW0CrzOWYe4wsg==
+X-Google-Smtp-Source: ABdhPJyoy6Zj81c/FZxLpOTVEnDQY4I0ACJcBtfBpoJoM1HZy0OMGDZXc7tiSYsTwIdMqlOkcbn2ZQ==
+X-Received: by 2002:a05:600c:1914:: with SMTP id j20mr25597303wmq.26.1636052488813;
+        Thu, 04 Nov 2021 12:01:28 -0700 (PDT)
+Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
+        by smtp.gmail.com with ESMTPSA id n1sm3986245wmq.6.2021.11.04.12.01.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 12:01:27 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Kent Gibson <warthog618@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [GIT PULL] configfs-based GPIO simulator for v5.16
+Date:   Thu,  4 Nov 2021 20:00:30 +0100
+Message-Id: <20211104190030.20660-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <YXFPfEGjoUaajjL4@infradead.org> <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
- <YXJN4s1HC/Y+KKg1@infradead.org> <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
- <YXj2lwrxRxHdr4hb@infradead.org> <20211028002451.GB2237511@magnolia>
- <YYDYUCCiEPXhZEw0@infradead.org> <CAPcyv4j8snuGpy=z6BAXogQkP5HmTbqzd6e22qyERoNBvFKROw@mail.gmail.com>
- <YYK/tGfpG0CnVIO4@infradead.org> <CAPcyv4it2_PVaM8z216AXm6+h93frg79WM-ziS9To59UtEQJTA@mail.gmail.com>
- <YYOaOBKgFQYzT/s/@infradead.org> <CAPcyv4jKHH7H+PmcsGDxsWA5CS_U3USHM8cT1MhoLk72fa9z8Q@mail.gmail.com>
- <6d21ece1-0201-54f2-ec5a-ae2f873d46a3@oracle.com>
-In-Reply-To: <6d21ece1-0201-54f2-ec5a-ae2f873d46a3@oracle.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 4 Nov 2021 12:00:12 -0700
-Message-ID: <CAPcyv4hJjcy2TnOv-Y5=MUMHeDdN-BCH4d0xC-pFGcHXEU_ZEw@mail.gmail.com>
-Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with RWF_RECOVERY_DATA flag
-To:     Jane Chu <jane.chu@oracle.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 11:34 AM Jane Chu <jane.chu@oracle.com> wrote:
->
-> Thanks for the enlightening discussion here, it's so helpful!
->
-> Please allow me to recap what I've caught up so far -
->
-> 1. recovery write at page boundary due to NP setting in poisoned
->     page to prevent undesirable prefetching
-> 2. single interface to perform 3 tasks:
->       { clear-poison, update error-list, write }
->     such as an API in pmem driver.
->     For CPUs that support MOVEDIR64B, the 'clear-poison' and 'write'
->     task can be combined (would need something different from the
->     existing _copy_mcsafe though) and 'update error-list' follows
->     closely behind;
->     For CPUs that rely on firmware call to clear posion, the existing
->     pmem_clear_poison() can be used, followed by the 'write' task.
-> 3. if user isn't given RWF_RECOVERY_FLAG flag, then dax recovery
->     would be automatic for a write if range is page aligned;
->     otherwise, the write fails with EIO as usual.
->     Also, user mustn't have punched out the poisoned page in which
->     case poison repairing will be a lot more complicated.
-> 4. desirable to fetch as much data as possible from a poisoned range.
->
-> If this understanding is in the right direction, then I'd like to
-> propose below changes to
->    dax_direct_access(), dax_copy_to/from_iter(), pmem_copy_to/from_iter()
->    and the dm layer copy_to/from_iter, dax_iomap_iter().
->
-> 1. dax_iomap_iter() rely on dax_direct_access() to decide whether there
->     is likely media error: if the API without DAX_F_RECOVERY returns
->     -EIO, then switch to recovery-read/write code.  In recovery code,
->     supply DAX_F_RECOVERY to dax_direct_access() in order to obtain
->     'kaddr', and then call dax_copy_to/from_iter() with DAX_F_RECOVERY.
+Linus,
 
-I like it. It allows for an atomic write+clear implementation on
-capable platforms and coordinates with potentially unmapped pages. The
-best of both worlds from the dax_clear_poison() proposal and my "take
-a fault and do a slow-path copy".
+A while ago I sent you a pull-request for the GPIO subsystem which, in addition
+to regular GPIO updates, contained a new GPIO simulator module based on
+configfs that we want to use to test the uAPI and its main user-space user -
+libgpiod. The PR included changes to configfs itself in the form of an
+implementation of the concept of committable items. The changes had been in
+development for several months and the maintainers had been largely
+unresponsive which made me send it directly to you eventually after gathering
+some reviews on the linux-gpio mailing list. You then Cc'ed Al who raised some
+concerns and the patches were pulled out.
 
-> 2. the _copy_to/from_iter implementation would be largely the same
->     as in my recent patch, but some changes in Christoph's
->     'dax-devirtualize' maybe kept, such as DAX_F_VIRTUAL, obviously
->     virtual devices don't have the ability to clear poison, so no need
->     to complicate them.  And this also means that not every endpoint
->     dax device has to provide dax_op.copy_to/from_iter, they may use the
->     default.
+A couple months have passed with a few more iterations and I still can't get
+any meaningful reviews from the configfs maintainers (nor NAKs for that
+matter). I decided to give it another try and send it to you directly again.
 
-Did I miss this series or are you talking about this one?
-https://lore.kernel.org/all/20211018044054.1779424-1-hch@lst.de/
+Since last time I've addressed issues raised by Al (to the best of my ability
+anyway) and made sure all references are counted correctly (including error
+paths) and all resources freed. This code has been tested a lot with
+a development version of libgpiod. The branch I've tagged spent some time in
+next too with a single issue reported and fixed.
 
-> I'm not sure about nova and others, if they use different 'write' other
-> than via iomap, does that mean there will be need for a new set of
-> dax_op for their read/write?
+Please consider pulling.
 
-No, they're out-of-tree they'll adjust to the same interface that xfs
-and ext4 are using when/if they go upstream.
+Best Regards,
+Bartosz Golaszewski
 
-> the 3-in-1 binding would always be
-> required though. Maybe that'll be an ongoing discussion?
+The following changes since commit 519d81956ee277b4419c723adfb154603c2565ba:
 
-Yeah, let's cross that bridge when we come to it.
+  Linux 5.15-rc6 (2021-10-17 20:00:13 -1000)
 
-> Comments? Suggestions?
+are available in the Git repository at:
 
-It sounds great to me!
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-sim-for-v5.16
+
+for you to fetch changes up to 5065e08e4ef3c3fd0daf141f601de4b4d1af2333:
+
+  gpio: sim: fix missing unlock on error in gpio_sim_config_commit_item() (2021-10-30 17:10:47 +0200)
+
+----------------------------------------------------------------
+gpio simulator + configfs changes for v5.16
+
+- implement committable items in configfs
+- add sample code
+- implement the GPIO simulator based on configfs committable items
+- add tests
+
+----------------------------------------------------------------
+Bartosz Golaszewski (8):
+      configfs: increase the item name length
+      configfs: use (1UL << bit) for internal flags
+      configfs: implement committable items
+      samples: configfs: add a committable group
+      gpio: sim: new testing module
+      selftests: gpio: provide a helper for reading chip info
+      selftests: gpio: add a helper for reading GPIO line names
+      selftests: gpio: add test cases for gpio-sim
+
+Wei Yongjun (1):
+      gpio: sim: fix missing unlock on error in gpio_sim_config_commit_item()
+
+ Documentation/admin-guide/gpio/gpio-sim.rst   |  72 +++
+ Documentation/filesystems/configfs.rst        |   6 +-
+ drivers/gpio/Kconfig                          |   8 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-sim.c                       | 884 ++++++++++++++++++++++++++
+ fs/configfs/configfs_internal.h               |  22 +-
+ fs/configfs/dir.c                             | 276 +++++++-
+ include/linux/configfs.h                      |   3 +-
+ samples/configfs/configfs_sample.c            | 153 +++++
+ tools/testing/selftests/gpio/.gitignore       |   2 +
+ tools/testing/selftests/gpio/Makefile         |   4 +-
+ tools/testing/selftests/gpio/config           |   1 +
+ tools/testing/selftests/gpio/gpio-chip-info.c |  57 ++
+ tools/testing/selftests/gpio/gpio-line-name.c |  55 ++
+ tools/testing/selftests/gpio/gpio-sim.sh      | 229 +++++++
+ 15 files changed, 1750 insertions(+), 23 deletions(-)
+ create mode 100644 Documentation/admin-guide/gpio/gpio-sim.rst
+ create mode 100644 drivers/gpio/gpio-sim.c
+ create mode 100644 tools/testing/selftests/gpio/gpio-chip-info.c
+ create mode 100644 tools/testing/selftests/gpio/gpio-line-name.c
+ create mode 100755 tools/testing/selftests/gpio/gpio-sim.sh
