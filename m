@@ -2,121 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42EC445076
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD78E445074
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:37:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhKDIk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:40:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54078 "EHLO mail.kernel.org"
+        id S230511AbhKDIkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:40:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230084AbhKDIkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:40:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F40096112D;
-        Thu,  4 Nov 2021 08:37:42 +0000 (UTC)
+        id S230344AbhKDIkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 04:40:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 103906103C;
+        Thu,  4 Nov 2021 08:37:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636015068;
-        bh=E+go/jlwcXH60auQtP/uEyLMcbdgde64C/RHs6+jrR0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Mni8B+Er6MbxMus1Wobyx1zTlOT9FFbfE6ehLHBeU7OdCb4//ZFIeMTfDDTqjTWeg
-         qDcM8wpgXvHUoGCeyPjicomCK3S8n9M6H6uPIhVtOnkgnI6i7AMTp0cR9EcEB2guAA
-         7PofpQ36+NPMEoJM+vnfk+9o5ZK1KDbte47nrQCLYLh9c4PGEbnC0fVh6QglB08SJ8
-         LqmhXkogRC8WLsEeWT52R9FJw+bnB+jg56+FnJs/m+KbelH7vUrcL3OyntxIxbu89Y
-         KMU+h+BX9V7A7e7Rp5uHzuFKynzGLjq/NC2tb0XtTlXha5b41oze5+ioveRBlvhnK0
-         2z5P4baPHdxKQ==
-Date:   Thu, 4 Nov 2021 08:37:37 +0000
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Yang Li <abaci-bugfix@linux.alibaba.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Alan <alan@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: atomisp current issues
-Message-ID: <20211104083737.55b88011@sal.lan>
-In-Reply-To: <20211103165424.67296e13@sal.lan>
-References: <20211103135418.496f75d5@sal.lan>
-        <c39cac68-73ab-4ab0-a701-e92f01c92774@xs4all.nl>
-        <20211103165424.67296e13@sal.lan>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        s=k20201202; t=1636015065;
+        bh=UUdsOFrh+rc0mbbv6xSMpXFRcvxooFtztvPg94FpMFE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=QQLDiPwlKQK00b9DSYsRq7gSj8PMyS3nylqUaUcN76Gr3L5cBeJSdjUST+tZh893v
+         ymAlIbeZWF9IP0qwkbwuFDHDW/CAOk84T1sYPKDCeEpIkuMBog44bthgp3kpMT31dr
+         OnIKDcYyjNcaPHGbpGQiZnaX9D0IWB0Gcr5MCFzYxzqkpj1EdZOyimb1K7/A+14gJK
+         /M/dyBlubYu18/KMIszhn8//iAsx5Xb5cBa5ebNrr3wKfLwBbcppY9IZs8oacP2Mja
+         +TxDDaz7dBMInLIKffffcrKxu0icseAfV6IG1x0zJreU3GS7acuH5dfm7O/0H5GzbW
+         ZUeuMIKtEb7SA==
+Message-ID: <b071e877-334e-b669-e2df-abe4d5927418@kernel.org>
+Date:   Thu, 4 Nov 2021 16:37:41 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v2] fs: f2fs: fix UAF in f2fs_available_free_memory
+Content-Language: en-US
+To:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Sahitya Tummala <stummala@codeaurora.org>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <20211104082202.1286551-1-mudongliangabcd@gmail.com>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <20211104082202.1286551-1-mudongliangabcd@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 3 Nov 2021 16:54:24 +0000
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
-
-> Em Wed, 3 Nov 2021 15:41:05 +0100
-> Hans Verkuil <hverkuil-cisco@xs4all.nl> escreveu:
+On 2021/11/4 16:22, Dongliang Mu wrote:
+> if2fs_fill_super
+> -> f2fs_build_segment_manager
+>     -> create_discard_cmd_control
+>        -> f2fs_start_discard_thread
 > 
-> > On 03/11/2021 14:54, Mauro Carvalho Chehab wrote:  
-> > > Hi,
-> > > 
-> > > From what I've seen so far, those are the main issues with regards to V4L2 API,
-> > > in order to allow a generic V4L2 application to work with it.
-> > > 
-> > > MMAP support
-> > > ============
-> > > 
-> > > Despite having some MMAP code on it, the current implementation is broken. 
-> > > Fixing it is not trivial, as it would require fixing the HMM support on it, 
-> > > which does several tricks.
-> > > 
-> > > The best would be to replace it by something simpler. If this is similar
-> > > enough to IPU3, perhaps one idea would be to replace the HMM code on it by 
-> > > videodev2 + IPU3 HMM code.
-> > > 
-> > > As this is not trivial, I'm postponing such task. If someone has enough
-> > > time, it would be great to have this fixed.
-> > > 
-> > > From my side, I opted to add support for USERPTR on camorama:
-> > > 
-> > > 	https://github.com/alessio/camorama
-> > > 
-> > > As this is something I wanted to do anyway, and it allowed me to cleanup
-> > > several things in camorama's code.
-> > > 
-> > > Support for USERPTR is not autodetected. So, this should be selected    
-> > 
-> > You can autodetect this: the capabilities field returned by VIDIOC_REQBUFS
-> > or VIDIOC_CREATE_BUFS will indicate support for this. This works with any
-> > vb2-based driver.
-> > 
-> > Just thought I should mention this...  
+> It invokes kthread_run to create a thread and run issue_discard_thread.
 > 
-> Yeah, surely the app could try it, but:
+> However, if f2fs_build_node_manager fails, the control flow goes to
+> free_nm and calls f2fs_destroy_node_manager. This function will free
+> sbi->nm_info. However, if issue_discard_thread accesses sbi->nm_info
+> after the deallocation, but before the f2fs_stop_discard_thread, it will
+> cause UAF(Use-after-free).
 > 
-> 1. As libv4l doesn't support USERPTR, such detection should happen
->    early inside camorama code;
+> -> f2fs_destroy_segment_manager
+>     -> destroy_discard_cmd_control
+>        -> f2fs_stop_discard_thread
+> 
+> Fix this by stopping discard thread before f2fs_destroy_node_manager.
+> 
+> Note that, the commit d6d2b491a82e1 introduces the call of
+> f2fs_available_free_memory into issue_discard_thread.
+> 
+> Fixes: d6d2b491a82e ("f2fs: allow to change discard policy based on cached discard cmds")
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 
-I ended adding auto-detection support for USERPTR inside camorama,
-for completeness.
+Reviewed-by: Chao Yu <chao@kernel.org>
 
-The "-U" command line option remains, so one could use it to force USERPTR
-mode.
-
-As the way I implemented it is that camorama checks if REQBUFS doesn't
-return any error, it means that it will automatically fallback to USERPTR
-with atomisp driver (while MMAP support is not fixed there).
-
-So, once I fix the issues with S_FMT/G_FMT, camorama will likely work
-out of the box with it.
-
-Regards,
-Mauro
-
+Thanks,
