@@ -2,153 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A27444D49
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 03:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AEEE444D4F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 03:32:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbhKDCdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 22:33:18 -0400
-Received: from smtpcmd11116.aruba.it ([62.149.156.116]:38823 "EHLO
-        smtpcmd11116.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhKDCdQ (ORCPT
+        id S230000AbhKDCfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 22:35:06 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:59016 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229541AbhKDCfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 22:33:16 -0400
-Received: from smtpclient.apple ([146.241.216.221])
-        by Aruba Outgoing Smtp  with ESMTPA
-        id iSWPmxR5yumo4iSWQmmgHU; Thu, 04 Nov 2021 03:30:37 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1635993037; bh=DZRFcy1A7pDPfjI/xc1yZ9deWpS/ap+fHvhGYQj6qt8=;
-        h=Content-Type:From:Mime-Version:Subject:Date:To;
-        b=N8Q8E/6Lo/V5C07x9Zz6934M8WwsfhWu8eM5yC4g709131ZDfKQ+D2c5MBrLa7p8x
-         ru3wUQY9WIsXCbt/L2HiBHbiQGWmNkrQ2mWW0vwk8VXfTuQrwLsgXeT195gWsUWpov
-         p5zFaVPIfEUSAGvculvT1gtSBlOeQk96cGl9ilrpLS2B8aF1nxxbK01xJlW+7xnLOT
-         2UPvC5XV3ecGPXATf3UDklKW0SAkWIVa3mZKJ1keCBTn8Ps60mWQzWRHT+8F3Ky78r
-         pA6IcEVkF4LDaFay0QoPvnCvQQjDNS6/yFtI72vD1ggnsBccLyiEgan2HHuiryO3cT
-         AVHBkNzusU5dQ==
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 11/13] mmc: sdhci-esdhc-imx: Add sdhc support for i.MXRT series
-Date:   Thu, 4 Nov 2021 03:30:33 +0100
-Message-Id: <B67A91BD-DAE9-468B-8731-251DE86E6B5B@benettiengineering.com>
-References: <YYMx28VvhR7nvMlt@robh.at.kernel.org>
-Cc:     Jesse Taube <mr.bossman075@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Stefan Agner <stefan@agner.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Abel Vesa <abel.vesa@nxp.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        Wed, 3 Nov 2021 22:35:02 -0400
+X-UUID: b5a848c057d7456daea1530d568a627c-20211104
+X-UUID: b5a848c057d7456daea1530d568a627c-20211104
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <walter-zh.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 541227360; Thu, 04 Nov 2021 10:32:23 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3;
+ Thu, 4 Nov 2021 10:32:22 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs10n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.792.3 via Frontend Transport; Thu, 4 Nov 2021 10:32:22 +0800
+From:   Walter Wu <walter-zh.wu@mediatek.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>
+CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-serial@vger.kernel.org
-In-Reply-To: <YYMx28VvhR7nvMlt@robh.at.kernel.org>
-To:     Rob Herring <robh@kernel.org>
-X-Mailer: iPhone Mail (18H107)
-X-CMAE-Envelope: MS4wfA6GKfpXsRSNdwkIFTYQmUTZuqvvSqJg+QZ+U7tg2NH81o4pATFmJwAt9hr+3r2mNiS/sSK61vhtevF2cYqatJs6yFEDZMD5XAiD/Unil39uyjcDlR+E
- BcLXaIVZu4wKmq7xHmquyZQ9nQ3yxwcQ9iSgSki4StzrrvVTODPwjlAoDCbWXg3JeXCnJwf3N31U3quzLH0FFn7keK841utBPTSj8wFLVizEXBcybktsurWu
- vSAWrJVMfzQJqsZjAI+23fH9DD1GDdIZHmy8iAaNO/xA2EsVETe3uYkP9zIQ/2BrIcFaspiY7pBtb7q/CxnBA6dW4FakqGWyck2+HEEgVE6IyxDF4EA5AgX4
- vRQ4K7lOSHYLeJzs/ufxTJ/mMseghKr4wcjElkIZ7eP2XiQdLMNJJVZo0/OefdLTDhZY1+/rnybjvoSWOVgxCGmHfL9yn8FTO9pUA5hNE6JPVQ2MDMweeWb0
- G+5dsKEqJMQ4Mum9W+ibAj27IXt7E1u94i+Saple09dGbLXkIYWuDasXHmdEJdJobZ0xw4TF993iGYYhmRF1XYqJ9EfAU2t+X1Zrhw8KR7r2+1zASXyJhIyM
- vFn0oMrkO3YrgpxLciN1aigouwRBienWmrH22H404ZC2j5dCWnGRWg81fZE/F3hTFmCade+L94a9w45sR8gUGR6zdYeYndCEy9mlCsPRM0FoMiHqmoquhS/4
- 7H1mmZz/dkqjG0dTNCLwDTR5d36gxqYxBWJb7N4W16x9E3tpaIxefOBUddegq0TPjAOla3W5UsdCMojSjykEsi4aOj57KIpNDgE7kMNRSsU3F37BESUaPTh9
- K3NgAhha3vddkCcY3pZ1YQ0QdxIrxSxM3K1ghN1U0pGG7/1T2cJ7Llfyva+k7TeMnDBBs0OV4f27BaCakDrK0CxFN1WjJmWUvm2+dBfQzwlxEANSxS9Urs3E
- RMhlMRxuU/4Ua8NvOM98GwPGVJF0No5AZb+M3grJE22WMJIFMw9RfciVdeleM15p9AcbsN6JdtHOaELVhDCxubtWKXnENjFT/Yg+Ju2qq6LUk0KtwtBnQr8N
- BCSy73MRVwLhTUucDQcoIUon2spbaJDehjTz12VXFJ+PYw7RSXKGvdT/t3XmqQiiXvoRt71Z4lN5yuyulmkB5laNulworHZJU94=
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        Walter Wu <walter-zh.wu@mediatek.com>
+Subject: [PATCH v2] dma-direct: improve DMA_ATTR_NO_KERNEL_MAPPING
+Date:   Thu, 4 Nov 2021 10:32:21 +0800
+Message-ID: <20211104023221.16391-1-walter-zh.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rob, Jesse, All,
+When the allocated buffers use dma coherent memory with
+DMA_ATTR_NO_KERNEL_MAPPING, then its kernel mapping is exist.
+The caller use that DMA_ATTR_NO_KERNEL_MAPPING mean they can't
+rely on kernel mapping, but removing kernel mapping have
+some improvements.
 
-> Il giorno 4 nov 2021, alle ore 02:05, Rob Herring <robh@kernel.org> ha scr=
-itto:
->=20
-> =EF=BB=BFOn Wed, Nov 03, 2021 at 12:30:17AM +0100, Giulio Benetti wrote:
->> Hi Fabio, Jesse, All,
->>=20
->>> On 11/3/21 12:25 AM, Jesse Taube wrote:
->>>=20
->>>=20
->>> On 11/2/21 19:17, Fabio Estevam wrote:
->>>> On Tue, Nov 2, 2021 at 7:57 PM Jesse Taube <mr.bossman075@gmail.com> wr=
-ote:
->>>>=20
->>>>>   static struct esdhc_soc_data usdhc_imx8qxp_data =3D {
->>>>>          .flags =3D ESDHC_FLAG_USDHC | ESDHC_FLAG_STD_TUNING
->>>>> @@ -357,6 +363,7 @@ static const struct of_device_id imx_esdhc_dt_ids[=
-] =3D {
->>>>>          { .compatible =3D "fsl,imx7ulp-usdhc", .data =3D &usdhc_imx7u=
-lp_data, },
->>>>>          { .compatible =3D "fsl,imx8qxp-usdhc", .data =3D &usdhc_imx8q=
-xp_data, },
->>>>>          { .compatible =3D "fsl,imx8mm-usdhc", .data =3D &usdhc_imx8mm=
-_data, },
->>>>> +       { .compatible =3D "fsl,imxrt-usdhc", .data =3D &usdhc_imxrt_da=
-ta, },
->>>>=20
->>>> I thought Rob suggested to use the SoC name, so this would be:
->>>>=20
->>> Uh i think that may have been for the UART.
->>>> { .compatible =3D "fsl,imxrt1050-usdhc", .data =3D &usdhc_imxrt1050_dat=
-a, },
->>>>=20
->>>> The same applies to the other bindings in the series.
->>>>=20
->>>> This way it would be possible to differentiate between future
->>>> supported i.MX RT devices.
->>>>=20
->>> This makes sense will do in V3.
->>>=20
->>=20
->> If we add every SoC we will end up having a long list for every device
->> driver. At the moment it would be 7 parts:
->> 1) imxrt1020
->> 2) imxrt1024
->> .
->> .
->> .
->> 7) imxrt1170
->=20
-> You don't need a driver update if you use a fallback. When you add=20
-> the 2nd chip, if you think it is 'the same', then you do:
->=20
-> compatible =3D "fsl,imxrt1024-usdhc", "fsl,imxrt1050-usdhc";
->=20
-> That requires no driver update until the driver needs to handle some=20
-> difference. And when there is a difference, you don't need a DT update.
+The improvements are:
+a) Security improvement. In some cases, we don't hope the allocated
+   buffer to be read by cpu speculative execution. Therefore, it
+   need to remove kernel mapping, this patch improve
+   DMA_ATTR_NO_KERNEL_MAPPING to remove a page from kernel mapping
+   in order that cpu doesn't read it.
+b) Debugging improvement. If the allocated buffer map into user space,
+   only access it in user space, nobody can access it in kernel space,
+   so we can use this patch to see who try to access it in kernel space.
 
-This solution is pretty fine, we=E2=80=99re going with that then, for this a=
-nd every driver involved.
+This patch only works if the memory is mapping at page granularity
+in the linear region, so that current only support for ARM64.
 
-Thank you for pointing us.
+Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
+Suggested-by: Christoph Hellwig <hch@lst.de>
+Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+---
 
-Best regards
-Giulio Benetti
-Benetti Engineering sas
+v2:
+1. modify commit message and fix the removing mapping for arm64
+2. fix build error for x86
 
->=20
-> You could make "fsl,imxrt-usdhc" the fallback from the start if you are=20=
+---
+ include/linux/set_memory.h |  5 +++++
+ kernel/dma/direct.c        | 13 +++++++++++++
+ 2 files changed, 18 insertions(+)
 
-> adverse to the first way.
->=20
-> Rob
+diff --git a/include/linux/set_memory.h b/include/linux/set_memory.h
+index f36be5166c19..6c7d1683339c 100644
+--- a/include/linux/set_memory.h
++++ b/include/linux/set_memory.h
+@@ -7,11 +7,16 @@
+ 
+ #ifdef CONFIG_ARCH_HAS_SET_MEMORY
+ #include <asm/set_memory.h>
++
++#ifndef CONFIG_RODATA_FULL_DEFAULT_ENABLED
++static inline int set_memory_valid(unsigned long addr, int numpages, int enable) { return 0; }
++#endif
+ #else
+ static inline int set_memory_ro(unsigned long addr, int numpages) { return 0; }
+ static inline int set_memory_rw(unsigned long addr, int numpages) { return 0; }
+ static inline int set_memory_x(unsigned long addr,  int numpages) { return 0; }
+ static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
++static inline int set_memory_valid(unsigned long addr, int numpages, int enable) { return 0; }
+ #endif
+ 
+ #ifndef CONFIG_ARCH_HAS_SET_DIRECT_MAP
+diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+index 4c6c5e0635e3..d5d03b51b708 100644
+--- a/kernel/dma/direct.c
++++ b/kernel/dma/direct.c
+@@ -155,6 +155,7 @@ void *dma_direct_alloc(struct device *dev, size_t size,
+ 	struct page *page;
+ 	void *ret;
+ 	int err;
++	unsigned long kaddr;
+ 
+ 	size = PAGE_ALIGN(size);
+ 	if (attrs & DMA_ATTR_NO_WARN)
+@@ -169,6 +170,11 @@ void *dma_direct_alloc(struct device *dev, size_t size,
+ 		if (!PageHighMem(page))
+ 			arch_dma_prep_coherent(page, size);
+ 		*dma_handle = phys_to_dma_direct(dev, page_to_phys(page));
++		if (IS_ENABLED(CONFIG_RODATA_FULL_DEFAULT_ENABLED)) {
++			kaddr = (unsigned long)phys_to_virt(dma_to_phys(dev, *dma_handle));
++			/* page remove kernel mapping for arm64 */
++			set_memory_valid(kaddr, size >> PAGE_SHIFT, 0);
++		}
+ 		/* return the page pointer as the opaque cookie */
+ 		return page;
+ 	}
+@@ -275,9 +281,16 @@ void dma_direct_free(struct device *dev, size_t size,
+ 		void *cpu_addr, dma_addr_t dma_addr, unsigned long attrs)
+ {
+ 	unsigned int page_order = get_order(size);
++	unsigned long kaddr;
+ 
+ 	if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
+ 	    !force_dma_unencrypted(dev) && !is_swiotlb_for_alloc(dev)) {
++		if (IS_ENABLED(CONFIG_RODATA_FULL_DEFAULT_ENABLED)) {
++			size = PAGE_ALIGN(size);
++			kaddr = (unsigned long)phys_to_virt(dma_to_phys(dev, dma_addr));
++			/* page create kernel mapping for arm64 */
++			set_memory_valid(kaddr, size >> PAGE_SHIFT, 1);
++		}
+ 		/* cpu_addr is a struct page cookie, not a kernel address */
+ 		dma_free_contiguous(dev, cpu_addr, size);
+ 		return;
+-- 
+2.18.0
 
