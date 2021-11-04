@@ -2,96 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B9F4452FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:27:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F0244530A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhKDM3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 08:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43950 "EHLO
+        id S231286AbhKDMeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 08:34:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbhKDM3s (ORCPT
+        with ESMTP id S229809AbhKDMeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 08:29:48 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2187AC061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 05:27:10 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 13:27:06 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1636028827;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M6NqONrvOq66l/QYoFSVwjLleMhO22wOW4bvAS2dEVY=;
-        b=NKcXU5k15e0NQfoYe+CBkb6tOMToV22terwbv/9kO1t2Hfha8/qkxJ/zExQbtnpZH6X93R
-        PzUnSXkvFDDG4FGUDum9qM+EwYxcn1y3mHBpsqzfo78UwuhOMQnzSWJnuN9ymEjyhPB0k3
-        AefuaLV6UO9aOVpis7RwqDu/UgVR67ETUdoRO0NhQxLoM6MVMWotVASNcy8fd7hzrzAM6R
-        +TrBo/IxiK/WebTFrVh66GvhN4Co2P/OZaJ84k0RJPH5itXdwBUKVoXqoS0OKpo3JoF47H
-        da8loeWJNeAPrCXC3Gz8VGEqqoKnHOQgG6VcKchkscWZWTFT5T9/8LN9iYE8RA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1636028827;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M6NqONrvOq66l/QYoFSVwjLleMhO22wOW4bvAS2dEVY=;
-        b=UyK9WVi/iF5JBJwpnzicusVrisGdl3Ncs9v/wBkhufwv8oLWvxDPOnxbS1NFB81TKyuj4q
-        TQLBdzJcUcjgwHAg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH] kernel/locking: Use a pointer in ww_mutex_trylock().
-Message-ID: <20211104122706.frk52zxbjorso2kv@linutronix.de>
-References: <20210907132044.157225-1-maarten.lankhorst@linux.intel.com>
- <YTiM/zf8BuNw7wes@hirez.programming.kicks-ass.net>
- <96ab9cf1-250a-8f34-51ec-4a7f66a87b39@linux.intel.com>
- <YTnETRSy9H0CRdpc@hirez.programming.kicks-ass.net>
- <a7e5d99d-39c4-6d27-3029-4689a2a1a17a@linux.intel.com>
- <YTtznr85mg5xXouP@hirez.programming.kicks-ass.net>
- <e8a7754e-23e7-0250-5718-101a56d008f0@linux.intel.com>
- <YUBGPdDDjKlxAuXJ@hirez.programming.kicks-ass.net>
+        Thu, 4 Nov 2021 08:34:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B3FC061714;
+        Thu,  4 Nov 2021 05:31:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iQDesZV5L2mroTI3Kp4Q9Tkxn1uaR3bTz2ke0CiK9wE=; b=l05sE+7qLWw6hasWyI/n0sgCrx
+        1gk2a/tDTo4hfhxCY2tx9KEeS3Me3gh5TO/MYJsvwrTQ7Uk2XzOQGVGEMRKLI0tl9ouAAsajZAYQQ
+        qScYChjvl1Mx+k3w3OHPSsjy5wz1TeQFTAVbPl7mJTLC5cHnGIhKhN5wdbQ3QGtSMGeCl+zqA7hp2
+        NUJ72xXrPItCUBAWEQGuvyeMknqkRWwyQVRjCFS2B/hFsjoTkXs0Y5uFTY1Z1L03Sl+V6x8ko9F25
+        HEy9RYwqNe19PXKLzMA3IoGWaMQYYlH6x+koORZ53RoCD2TIuFZVTG2orIoah0SlzuiAe3oRIVf0i
+        7wQ3cDPA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mibrf-005rYi-P5; Thu, 04 Nov 2021 12:29:31 +0000
+Date:   Thu, 4 Nov 2021 12:29:07 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jane Chu <jane.chu@oracle.com>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
+ RWF_RECOVERY_DATA flag
+Message-ID: <YYPSE4XACpqs21Yl@casper.infradead.org>
+References: <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
+ <YXJN4s1HC/Y+KKg1@infradead.org>
+ <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
+ <YXj2lwrxRxHdr4hb@infradead.org>
+ <20211028002451.GB2237511@magnolia>
+ <YYDYUCCiEPXhZEw0@infradead.org>
+ <CAPcyv4j8snuGpy=z6BAXogQkP5HmTbqzd6e22qyERoNBvFKROw@mail.gmail.com>
+ <YYK/tGfpG0CnVIO4@infradead.org>
+ <CAPcyv4it2_PVaM8z216AXm6+h93frg79WM-ziS9To59UtEQJTA@mail.gmail.com>
+ <YYOaOBKgFQYzT/s/@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YUBGPdDDjKlxAuXJ@hirez.programming.kicks-ass.net>
+In-Reply-To: <YYOaOBKgFQYzT/s/@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mutex_acquire_nest() expects a pointer, pass the pointer.
+On Thu, Nov 04, 2021 at 01:30:48AM -0700, Christoph Hellwig wrote:
+> Well, the whole problem is that we should not have to manage this at
+> all, and this is where I blame Intel.  There is no good reason to not
+> slightly overprovision the nvdimms and just do internal bad page
+> remapping like every other modern storage device.
 
-Fixes: 12235da8c80a1 ("kernel/locking: Add context to ww_mutex_trylock()")
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
+What makes you think they don't?
 
-Not sure why I haven't seen this earlier=E2=80=A6
-
- kernel/locking/ww_rt_mutex.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/locking/ww_rt_mutex.c b/kernel/locking/ww_rt_mutex.c
-index 0e00205cf467a..d1473c624105c 100644
---- a/kernel/locking/ww_rt_mutex.c
-+++ b/kernel/locking/ww_rt_mutex.c
-@@ -26,7 +26,7 @@ int ww_mutex_trylock(struct ww_mutex *lock, struct ww_acq=
-uire_ctx *ww_ctx)
-=20
- 	if (__rt_mutex_trylock(&rtm->rtmutex)) {
- 		ww_mutex_set_context_fastpath(lock, ww_ctx);
--		mutex_acquire_nest(&rtm->dep_map, 0, 1, ww_ctx->dep_map, _RET_IP_);
-+		mutex_acquire_nest(&rtm->dep_map, 0, 1, &ww_ctx->dep_map, _RET_IP_);
- 		return 1;
- 	}
-=20
---=20
-2.33.1
-
+The problem is persuading the CPU to do writes without doing reads.
+That's where magic instructions or out of band IO is needed.
