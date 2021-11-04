@@ -2,107 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9774450EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 10:12:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E7F4450F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 10:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhKDJPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 05:15:18 -0400
-Received: from mail-ua1-f48.google.com ([209.85.222.48]:43682 "EHLO
-        mail-ua1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbhKDJPR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 05:15:17 -0400
-Received: by mail-ua1-f48.google.com with SMTP id v3so9529967uam.10;
-        Thu, 04 Nov 2021 02:12:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VwSciq2dX0/2ZCTgtxnNVSoNv/2aephQkEPPnAPTvsc=;
-        b=lB4bGups8iJWGDK4ghBf1Kx2SoM+yjFMVmeIs5lMctPhFLmm6gIaqBmM71hGZ7b59c
-         hC0xvnDLZ0cmsG4AKEJCus+4IGm/kXCpRfqcXYJfA3V0U5H5H26Gyq98xaYLHH2jIpCN
-         VXRD++thtaI5K1fNp44YJwvMQ1NfmxHYjVagI1opeBFVIIEQkmAK+KTHOpa9dbu2w1fO
-         ZnZWv0+KwMFaCR3ft/R2ZuAj8z310cwkaapFyBMSiGSSgHRRpV0MSxofk9a+y5MoEUEJ
-         oofyLGPWxeBeX5KJSpgMzv+1LnHOfMLBQnfEshJ4dERbUECnQDFMh6MclkavxFrnt2ou
-         KjKA==
-X-Gm-Message-State: AOAM5315b+dGv3zCyptdk0kP3ifDHRHvC+CsvVfX51uDvOV2sC4Thh2i
-        tIm6szSl/Nh9gNbb5/0whG2efZWaNl9zXw==
-X-Google-Smtp-Source: ABdhPJyrEmhcIuHvV8xSEsTcfM+f39xbkRZofS8VDaOpFnZ7cTN+grRoPYC9eRxAZwJLlXfvOF80KA==
-X-Received: by 2002:a67:2fd0:: with SMTP id v199mr46128793vsv.35.1636017159382;
-        Thu, 04 Nov 2021 02:12:39 -0700 (PDT)
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
-        by smtp.gmail.com with ESMTPSA id v4sm757393vsq.7.2021.11.04.02.12.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 02:12:38 -0700 (PDT)
-Received: by mail-ua1-f50.google.com with SMTP id v3so9529827uam.10;
-        Thu, 04 Nov 2021 02:12:38 -0700 (PDT)
-X-Received: by 2002:ab0:2bd2:: with SMTP id s18mr54221819uar.78.1636017158102;
- Thu, 04 Nov 2021 02:12:38 -0700 (PDT)
+        id S230509AbhKDJQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 05:16:01 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:55704 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230344AbhKDJQA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 05:16:00 -0400
+Received: from zn.tnic (p200300ec2f0f2b00be75243ef2b4b032.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:2b00:be75:243e:f2b4:b032])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E10741EC03AD;
+        Thu,  4 Nov 2021 10:13:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1636017202;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=e+bRCE0bEiDfnPvVhMBEe7oNINpfGFQpszyM3GzJe2k=;
+        b=MJIstnRzAtZAnNOaiM1WQgZPBRsd8uHnYzSjr8wVgkp1rOxXYsCQ2PJy1ycbJz6cDaw+Gn
+        CWveqcASyuQZYj0C8eh9gSnaGkU4LSNLIm130e/Zj1EE5lOXRPzEE9DrGcDrBiuE1IZ3x1
+        cMaaQQwIuq+lPOn7Grm+ij4kvTof0zQ=
+Date:   Thu, 4 Nov 2021 10:13:14 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Zhaolong Zhang <zhangzl2013@126.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/mce: correct cpu_missing reporting in mce_timed_out
+Message-ID: <YYOkKm8UmmIxSdXF@zn.tnic>
+References: <20211104074431.1091525-1-zhangzl2013@126.com>
 MIME-Version: 1.0
-References: <1635933244-6553-1-git-send-email-volodymyr.mytnyk@plvision.eu>
-In-Reply-To: <1635933244-6553-1-git-send-email-volodymyr.mytnyk@plvision.eu>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 4 Nov 2021 10:12:26 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdU9jRtsQhHHVDrJ8ZBLO1bSOuEo-haJ2PwMcYmMfnOXgA@mail.gmail.com>
-Message-ID: <CAMuHMdU9jRtsQhHHVDrJ8ZBLO1bSOuEo-haJ2PwMcYmMfnOXgA@mail.gmail.com>
-Subject: Re: [PATCH net v2] net: marvell: prestera: fix hw structure laid out
-To:     Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        mickeyr@marvell.com, serhiy.pshyk@plvision.eu,
-        taras.chornyi@plvision.eu, Volodymyr Mytnyk <vmytnyk@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Vadym Kochan <vkochan@marvell.com>,
-        Yevhen Orlov <yevhen.orlov@plvision.eu>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211104074431.1091525-1-zhangzl2013@126.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Volodymyr,
+On Thu, Nov 04, 2021 at 03:44:31PM +0800, Zhaolong Zhang wrote:
+> set cpu_missing before mce_panic() so that it prints correct msg.
+> 
+> Signed-off-by: Zhaolong Zhang <zhangzl2013@126.com>
+> ---
+>  arch/x86/kernel/cpu/mce/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+> index 50a3e455cded..ccefe131ab55 100644
+> --- a/arch/x86/kernel/cpu/mce/core.c
+> +++ b/arch/x86/kernel/cpu/mce/core.c
+> @@ -903,13 +903,13 @@ static int mce_timed_out(u64 *t, const char *msg)
+>  	if (!mca_cfg.monarch_timeout)
+>  		goto out;
+>  	if ((s64)*t < SPINUNIT) {
+> +		cpu_missing = 1;
+>  		if (mca_cfg.tolerant <= 1) {
+>  			if (cpumask_and(&mce_missing_cpus, cpu_online_mask, &mce_missing_cpus))
+>  				pr_emerg("CPUs not responding to MCE broadcast (may include false positives): %*pbl\n",
+>  					 cpumask_pr_args(&mce_missing_cpus));
+>  			mce_panic(msg, NULL, NULL);
+>  		}
+> -		cpu_missing = 1;
+>  		return 1;
+>  	}
+>  	*t -= SPINUNIT;
+> -- 
 
-On Wed, Nov 3, 2021 at 10:56 AM Volodymyr Mytnyk
-<volodymyr.mytnyk@plvision.eu> wrote:
-> From: Volodymyr Mytnyk <vmytnyk@marvell.com>
->
-> - fix structure laid out discussed in:
->     [PATCH net-next v4] net: marvell: prestera: add firmware v4.0 support
->     https://www.spinics.net/lists/kernel/msg4127689.html
->
-> - fix review comments discussed in:
->     [PATCH] [-next] net: marvell: prestera: Add explicit padding
->     https://www.spinics.net/lists/kernel/msg4130293.html
->
-> - fix patchwork issues
-> - rebase on net master
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: bb5dbf2cc64d ("net: marvell: prestera: add firmware v4.0 support")
-> Signed-off-by: Volodymyr Mytnyk <vmytnyk@marvell.com>
+Frankly, we might just as well kill that cpu_missing thing because we
+already say that some CPUs are not responding.
 
-Thanks for your patch!
+And that "Some CPUs didn't answer in synchronization" is not really
+telling me a whole lot.
 
-> --- a/drivers/net/ethernet/marvell/prestera/prestera_hw.c
-> +++ b/drivers/net/ethernet/marvell/prestera/prestera_hw.c
+Tony, do you see any real need to keep it?
 
->  struct prestera_msg_port_flood_param {
->         u8 type;
->         u8 enable;
-> -};
-> +       u8 __pad[2];
-> +} __packed;
+Thx.
 
-What's the point of having __packed on a struct of bytes?
+-- 
+Regards/Gruss,
+    Boris.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+https://people.kernel.org/tglx/notes-about-netiquette
