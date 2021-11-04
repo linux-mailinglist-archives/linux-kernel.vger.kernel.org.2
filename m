@@ -2,125 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2E54450B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5BC4450C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhKDI7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:59:49 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:16453 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbhKDI7s (ORCPT
+        id S230467AbhKDJCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 05:02:34 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33112 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230252AbhKDJCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:59:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1636016230; x=1667552230;
-  h=date:from:to:subject:message-id:references:mime-version:
-   in-reply-to;
-  bh=uYP98T1lWdkr5+qrsVnyqqWos9v2lmU4T/cfxWtY65g=;
-  b=ldbKJDQvVRrSuaDyGG4T2GIqusnZThjZDFE4MWxKr+9tQV0JjemSBESK
-   hTTwcvxFXF5X2/43AeeEyWezc5kknKs38mK8shspYnr0mGffgwSbzu+C9
-   mhLds/jindLSJfzxNHq994Ei9qlGwhjorT6McqfeU/zThIaCYHlG3otm0
-   m+kS9S1ORgQqRb6dX0BbPpQ+mZsUpwOmxO+14OSzNYu8R9UD7auN1uVwI
-   0cc5xgkL+SPreClgwfoeK6HAaTe0UzCc91wznhddtYkY5GLjWcVUpIQPV
-   hoWCf5OrvK3p5kAn0pX57nnjz/orRk4WGptflas6XuH6OWAlxDGb95BAg
-   A==;
-IronPort-SDR: Zu/2WzzgZHxh5zmp4AQdIS+JXQvZxh1va+aIBdVN/FDUwh5kAFORlUYQlk7a4+lmgyHsNj8Oud
- 1V2eoNF62rhpsPDfiUZ3fWs4vb81nMZ50Zx910+QOG/GK3w37JZ4a4W83o9ARlW5NZIVDlN5j0
- mQ3f5DALmXxXZWh2AR22KsVgYFG0dE3AIh/q7KiQQQSeWWxBnuiO+RaC2fcQBElRHcbMrue3S+
- ZrDQW5TPNNDb3wUP60YGnJXDz0hp0XO5K0QeD+omiFLJqBOIjQPMynyuUHsGT4ihPHK5e18qYL
- zwZ4MbV6bYk1nEC76D3tZ17P
-X-IronPort-AV: E=Sophos;i="5.87,208,1631602800"; 
-   d="scan'208";a="150696948"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Nov 2021 01:57:10 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 4 Nov 2021 01:57:10 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Thu, 4 Nov 2021 01:57:09 -0700
-Date:   Thu, 4 Nov 2021 09:58:56 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <kishon@ti.com>, <vkoul@kernel.org>, <robh+dt@kernel.org>,
-        <andrew@lunn.ch>, <alexandre.belloni@bootlin.com>,
-        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 0/3] phy: Add driver for lan966x Serdes driver
-Message-ID: <20211104085856.tlvwwbpgyv2djdyz@soft-dev3-1.localhost>
-References: <20211020094229.1760793-1-horatiu.vultur@microchip.com>
+        Thu, 4 Nov 2021 05:02:32 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 34582212BD;
+        Thu,  4 Nov 2021 08:59:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636016394; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JHgMSLSsZciqyDKovNJpJOLLyUz2f8yCrBxcbv99D2w=;
+        b=P2VDLgHyqRtFyYFgUXtLqQcQJXO8Kl7PKzqj/1htCo3lXHnEtHDFbBqh96wV/73AEyKFsf
+        j2J4FVJ/oKvDizQxfwEMMG8FZiIG9nm6bIxy0QhprMaV7NVtPKoqUBYhgMu5b0BakBIHfu
+        LrXC4SL4e/HVywXwtwb58qyNCASWd/c=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 76082A3BF2;
+        Thu,  4 Nov 2021 08:59:53 +0000 (UTC)
+Date:   Thu, 4 Nov 2021 09:59:48 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vasily Averin <vvs@virtuozzo.com>
+Subject: Re: [PATCH] mm/vmalloc: Eliminate an extra orig_gfp_mask
+Message-ID: <YYOhBGACLb+p1jl0@dhcp22.suse.cz>
+References: <20211103200703.2265-1-urezki@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211020094229.1760793-1-horatiu.vultur@microchip.com>
+In-Reply-To: <20211103200703.2265-1-urezki@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon, Vinod,
+[Cc Vasily]
 
-Please let me know if you have more comments to this patch series.
-Do you think it would be possible to get it in 5.16?
+On Wed 03-11-21 21:07:03, Uladzislau Rezki wrote:
+> That extra variable has been introduced just for keeping an original
+> passed gfp_mask because it is updated with __GFP_NOWARN on entry, thus
+> error handling messages were broken.
 
-The 10/20/2021 11:42, Horatiu Vultur wrote:
-> This patch serie adds support for Microchip lan966x serdes. The lan966x
-> device contains has 7 interfaces, consisting of 2 copper transceivers,
-> 3 Serdes and 2 RGMII interfaces. Two of the Serdes support QSGMII.
-> The driver also adds the functionality of "muxing" the interfaces to
-> different logical ports.
+I am not sure what you mean by "error handling messages were broken"
+part.
+
+It is true that the current Linus tree has a broken allocation failure
+reporting but that is not a fault of orig_gfp_mask. In fact patch which
+is fixing that "mm/vmalloc: repair warn_alloc()s in
+__vmalloc_area_node()" currently in akpm tree is adding the additional
+mask.
+ 
+> Instead we can keep an original gfp_mask without modifying it and add
+> an extra __GFP_NOWARN flag together with gfp_mask as a parameter to
+> the vm_area_alloc_pages() function. It will make it less confused.
+
+I would tend to agree that this is a better approach. There is already
+nested_gfp mask and one more doesn't add to the readbility.
+
+Maybe we should just drop the above patch and just go with one which
+doesn't introduce the intermediate step and an additional gfp mask.
+
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+>  mm/vmalloc.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
 > 
-> The following table shows which interfaces can be supported by the port.
-> 
-> PortNumber    Max Speed    Ethernet interface options
->     0            1Gbps       CuPHY, 1G SGMII or QSGMII
->     1            1Gbps       CuPHY, 1G SGMII or QSGMII
->     2          2.5Gbps       2.5G SGMII, QSGMII, RGMII
->     3          2.5Gbps       2.5G SGMII, QSGMII, RGMII
->     4          2.5Gbps       2.5G SGMII, QSGMII
->     5            1Gbps       QSGMII, RGMII
->     6            1Gbps       QSGMII, RGMII
->     7            1Gbps       QSGMII
-> 
-> v3->v4:
-> - update description of the driver
-> - removed unused registers
-> - use bitfield operations in the registers
-> - add macros for PLL configuration
-> - move macros and structs at the top of the file
-> 
-> v2->v3:
-> - remove unused includes
-> - add missing '...' in microchip,lan966x-serdes.yaml
-> - rename lan966x-serdes.h to phy-lan966x-serdes.h
-> - Rename CU->PHY and RG->RGMII
-> - update commit message for PATCH 2
-> 
-> v1->v2:
-> - replace the regmap with iomem
-> - update DT bindings
-> 
-> 
-> Horatiu Vultur (3):
->   dt-bindings: phy: Add lan966x-serdes binding
->   dt-bindings: phy: Add constants for lan966x serdes
->   phy: Add lan966x ethernet serdes PHY driver
-> 
->  .../phy/microchip,lan966x-serdes.yaml         |  59 ++
->  drivers/phy/microchip/Kconfig                 |   8 +
->  drivers/phy/microchip/Makefile                |   1 +
->  drivers/phy/microchip/lan966x_serdes.c        | 548 ++++++++++++++++++
->  drivers/phy/microchip/lan966x_serdes_regs.h   | 209 +++++++
->  include/dt-bindings/phy/phy-lan966x-serdes.h  |  14 +
->  6 files changed, 839 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/microchip,lan966x-serdes.yaml
->  create mode 100644 drivers/phy/microchip/lan966x_serdes.c
->  create mode 100644 drivers/phy/microchip/lan966x_serdes_regs.h
->  create mode 100644 include/dt-bindings/phy/phy-lan966x-serdes.h
-> 
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index d2a00ad4e1dd..3b549ff5c95e 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -2920,7 +2920,6 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>  				 int node)
+>  {
+>  	const gfp_t nested_gfp = (gfp_mask & GFP_RECLAIM_MASK) | __GFP_ZERO;
+> -	const gfp_t orig_gfp_mask = gfp_mask;
+>  	unsigned long addr = (unsigned long)area->addr;
+>  	unsigned long size = get_vm_area_size(area);
+>  	unsigned long array_size;
+> @@ -2928,7 +2927,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>  	unsigned int page_order;
+>  
+>  	array_size = (unsigned long)nr_small_pages * sizeof(struct page *);
+> -	gfp_mask |= __GFP_NOWARN;
+> +
+>  	if (!(gfp_mask & (GFP_DMA | GFP_DMA32)))
+>  		gfp_mask |= __GFP_HIGHMEM;
+>  
+> @@ -2941,7 +2940,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>  	}
+>  
+>  	if (!area->pages) {
+> -		warn_alloc(orig_gfp_mask, NULL,
+> +		warn_alloc(gfp_mask, NULL,
+>  			"vmalloc error: size %lu, failed to allocated page array size %lu",
+>  			nr_small_pages * PAGE_SIZE, array_size);
+>  		free_vm_area(area);
+> @@ -2951,8 +2950,8 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>  	set_vm_area_page_order(area, page_shift - PAGE_SHIFT);
+>  	page_order = vm_area_page_order(area);
+>  
+> -	area->nr_pages = vm_area_alloc_pages(gfp_mask, node,
+> -		page_order, nr_small_pages, area->pages);
+> +	area->nr_pages = vm_area_alloc_pages(gfp_mask | __GFP_NOWARN,
+> +		node, page_order, nr_small_pages, area->pages);
+>  
+>  	atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
+>  
+> @@ -2961,7 +2960,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>  	 * allocation request, free them via __vfree() if any.
+>  	 */
+>  	if (area->nr_pages != nr_small_pages) {
+> -		warn_alloc(orig_gfp_mask, NULL,
+> +		warn_alloc(gfp_mask, NULL,
+>  			"vmalloc error: size %lu, page order %u, failed to allocate pages",
+>  			area->nr_pages * PAGE_SIZE, page_order);
+>  		goto fail;
+> @@ -2969,7 +2968,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>  
+>  	if (vmap_pages_range(addr, addr + size, prot, area->pages,
+>  			page_shift) < 0) {
+> -		warn_alloc(orig_gfp_mask, NULL,
+> +		warn_alloc(gfp_mask, NULL,
+>  			"vmalloc error: size %lu, failed to map pages",
+>  			area->nr_pages * PAGE_SIZE);
+>  		goto fail;
 > -- 
-> 2.33.0
-> 
+> 2.17.1
 
 -- 
-/Horatiu
+Michal Hocko
+SUSE Labs
