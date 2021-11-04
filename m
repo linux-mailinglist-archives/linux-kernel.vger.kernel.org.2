@@ -2,204 +2,492 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3779144539A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B6144539C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbhKDNO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 09:14:26 -0400
-Received: from mail-ua1-f52.google.com ([209.85.222.52]:39428 "EHLO
-        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231160AbhKDNOZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 09:14:25 -0400
-Received: by mail-ua1-f52.google.com with SMTP id i6so10673425uae.6;
-        Thu, 04 Nov 2021 06:11:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u+7NH5Idjgn9ApVYVFSqCN4puKLgEB+Ku+KsXDT2oU8=;
-        b=YV797P99uXfASCQlNya5VSo7PuM9Q9rrJOOJFRR6yB8CzP/gUUScUJnMGg7L4RLjnF
-         8R1VsEUEy+Kt+BMSBtSeILOj0nSBfyXywNSuzYmeUiioOiscmOzCGf7XbCdvtcOWZUgD
-         8VckdX9lW/zPRCK8PcvCvQT/XA76M2uiRfMTXZ77a2IUvWufXPuxhTKb9yltjhZsLmxk
-         KwjMtJC3maXVUisl/kIuuYmrusxCbfTUy5bANwqJMUYTUi5xKryKPj0pFkFcJXt2MtBv
-         8p8lP52q0V4UCqoD+rZhur6uQgZ7NvNl69CPEqeAhh9WNHAG4GkEuWp4325YdBL1Kh0M
-         Gp3g==
-X-Gm-Message-State: AOAM531baYkmJUIJRgoCf1BBtvq+4IBoViuWbIFidzle3+Raql+m2dev
-        OQyMP04zHKZrReadMPlU4IyuaBdjkXOOeA==
-X-Google-Smtp-Source: ABdhPJxCJpbuc9oROzhu0VYH8aGbbsBvkyVbZfVwd2XSjqQkVASVgpmOfG+r5k0akoV6yb0aPIh0dA==
-X-Received: by 2002:a05:6102:e83:: with SMTP id l3mr43279947vst.7.1636031506637;
-        Thu, 04 Nov 2021 06:11:46 -0700 (PDT)
-Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
-        by smtp.gmail.com with ESMTPSA id u17sm821617vsk.25.2021.11.04.06.11.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 06:11:46 -0700 (PDT)
-Received: by mail-ua1-f43.google.com with SMTP id q13so10717811uaq.2;
-        Thu, 04 Nov 2021 06:11:46 -0700 (PDT)
-X-Received: by 2002:a9f:2584:: with SMTP id 4mr56157206uaf.114.1636031505720;
- Thu, 04 Nov 2021 06:11:45 -0700 (PDT)
+        id S231761AbhKDNPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 09:15:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231160AbhKDNOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 09:14:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C8C4611C9;
+        Thu,  4 Nov 2021 13:12:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636031537;
+        bh=ddKC8S0i1egpYumRpyaHNlPsaCGsGzRYeJua0ZYi2KQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=KBCc5DU2psaLVpPGP6RugtNbNoDa1mRC0je23jmsiZamDIL5KYsh4ddbQQRSAUOoo
+         czYOuWKK1RyPdKxf/jSAr1G20SoM25p9d2iMcJUk5wEMbCey8ym2WkXMT31Uo9CkYC
+         fTkz8gGHdrjE++ToDrcCL7LAxOxCFXA2dVEfOFRoOMyZp9ns2Q+afIw8NbUCdHIKny
+         oQKLlzea3H+9ijCIcioBJaglTly8SUax9aJOub34ScYXtkyCdkMbPCALVVma8gCQv8
+         uya7BsHYbu5c18su7XZrYm5AwPmie/S+QmQlaW6bU4Py/1i1flZ/AGDpGH7M7y7ZN0
+         s49G8ipXSp3vg==
+Message-ID: <52703e4842dfcb33550c9c958b660fbcfe0d2681.camel@kernel.org>
+Subject: Re: [PATCH] ceph: clean-up metrics data structures to reduce code
+ duplication
+From:   Jeff Layton <jlayton@kernel.org>
+To:     =?ISO-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>,
+        Ilya Dryomov <idryomov@gmail.com>, Xiubo Li <xiubli@redhat.com>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 04 Nov 2021 09:12:16 -0400
+In-Reply-To: <ba3f01dc18b211ddd0f8d4337d4faef1622a50ba.camel@kernel.org>
+References: <20211029140928.10514-1-lhenriques@suse.de>
+         <ba3f01dc18b211ddd0f8d4337d4faef1622a50ba.camel@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.42.0 (3.42.0-1.fc35) 
 MIME-Version: 1.0
-References: <20210917002619.GA6407@gondor.apana.org.au> <YVNfqUVJ7w4Z3WXK@archlinux-ax161>
- <20211001055058.GA6081@gondor.apana.org.au> <YVdNFzs8HUQwHa54@archlinux-ax161>
- <20211003002801.GA5435@gondor.apana.org.au> <YV0K+EbrAqDdw2vp@archlinux-ax161>
- <20211019132802.GA14233@gondor.apana.org.au> <alpine.DEB.2.22.394.2111021636040.2330984@ramsan.of.borg>
- <DM6PR04MB708155E447FD9A79AB89686DE78D9@DM6PR04MB7081.namprd04.prod.outlook.com>
- <CAMuHMdW1wLAt9Y=-GMMuk8HWE3UnRgKNMmD9fq34Rq8J7QyrzQ@mail.gmail.com> <20211104121612.GA8044@gondor.apana.org.au>
-In-Reply-To: <20211104121612.GA8044@gondor.apana.org.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 4 Nov 2021 14:11:34 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWAAWWS+TgeN1AajHBS5w9-datMEeXqAN8RjxRd9bX63Q@mail.gmail.com>
-Message-ID: <CAMuHMdWAAWWS+TgeN1AajHBS5w9-datMEeXqAN8RjxRd9bX63Q@mail.gmail.com>
-Subject: Re: [PATCH] crypto: api - Do not create test larvals if manager is disabled
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Vladis Dronov <vdronov@redhat.com>,
-        Simo Sorce <ssorce@redhat.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        kernel test robot <lkp@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Herbert,
+On Thu, 2021-11-04 at 09:10 -0400, Jeff Layton wrote:
+> On Fri, 2021-10-29 at 15:09 +0100, Luís Henriques wrote:
+> > This patch modifies struct ceph_client_metric so that each metric block
+> > (read, write and metadata) becomes an element in a array.  This allows to
+> > also re-write the helper functions that handle these blocks, making them
+> > simpler and, above all, reduce the amount of copy&paste every time a new
+> > metric is added.
+> > 
+> > Thus, for each of these metrics there will be a new struct ceph_metric
+> > entry that'll will contain all the sizes and latencies fields (and a lock).
+> > Note however that the metadata metric doesn't really use the size_fields,
+> > and thus this metric won't be shown in the debugfs '../metrics/size' file.
+> > 
+> > Signed-off-by: Luís Henriques <lhenriques@suse.de>
+> > ---
+> >  fs/ceph/debugfs.c |  87 ++++++++++++++-----------------
+> >  fs/ceph/metric.c  | 128 ++++++++++++----------------------------------
+> >  fs/ceph/metric.h  |  80 ++++++++++++++++-------------
+> >  3 files changed, 115 insertions(+), 180 deletions(-)
+> > 
+> > diff --git a/fs/ceph/debugfs.c b/fs/ceph/debugfs.c
+> > index 55426514491b..72825ed3a0b8 100644
+> > --- a/fs/ceph/debugfs.c
+> > +++ b/fs/ceph/debugfs.c
+> > @@ -164,44 +164,34 @@ static int metrics_file_show(struct seq_file *s, void *p)
+> >  	return 0;
+> >  }
+> >  
+> > +static const char * const metric_str[] = {
+> > +	"read",
+> > +	"write",
+> > +	"metadata"
+> > +};
+> >  static int metrics_latency_show(struct seq_file *s, void *p)
+> >  {
+> >  	struct ceph_fs_client *fsc = s->private;
+> > -	struct ceph_client_metric *m = &fsc->mdsc->metric;
+> > +	struct ceph_client_metric *cm = &fsc->mdsc->metric;
+> > +	struct ceph_metric *m;
+> >  	s64 total, sum, avg, min, max, sq;
+> > +	int i;
+> >  
+> >  	seq_printf(s, "item          total       avg_lat(us)     min_lat(us)     max_lat(us)     stdev(us)\n");
+> >  	seq_printf(s, "-----------------------------------------------------------------------------------\n");
+> >  
+> > -	spin_lock(&m->read_metric_lock);
+> > -	total = m->total_reads;
+> > -	sum = m->read_latency_sum;
+> > -	avg = total > 0 ? DIV64_U64_ROUND_CLOSEST(sum, total) : 0;
+> > -	min = m->read_latency_min;
+> > -	max = m->read_latency_max;
+> > -	sq = m->read_latency_sq_sum;
+> > -	spin_unlock(&m->read_metric_lock);
+> > -	CEPH_LAT_METRIC_SHOW("read", total, avg, min, max, sq);
+> > -
+> > -	spin_lock(&m->write_metric_lock);
+> > -	total = m->total_writes;
+> > -	sum = m->write_latency_sum;
+> > -	avg = total > 0 ? DIV64_U64_ROUND_CLOSEST(sum, total) : 0;
+> > -	min = m->write_latency_min;
+> > -	max = m->write_latency_max;
+> > -	sq = m->write_latency_sq_sum;
+> > -	spin_unlock(&m->write_metric_lock);
+> > -	CEPH_LAT_METRIC_SHOW("write", total, avg, min, max, sq);
+> > -
+> > -	spin_lock(&m->metadata_metric_lock);
+> > -	total = m->total_metadatas;
+> > -	sum = m->metadata_latency_sum;
+> > -	avg = total > 0 ? DIV64_U64_ROUND_CLOSEST(sum, total) : 0;
+> > -	min = m->metadata_latency_min;
+> > -	max = m->metadata_latency_max;
+> > -	sq = m->metadata_latency_sq_sum;
+> > -	spin_unlock(&m->metadata_metric_lock);
+> > -	CEPH_LAT_METRIC_SHOW("metadata", total, avg, min, max, sq);
+> > +	for (i = 0; i < METRIC_MAX; i++) {
+> > +		m = &cm->metric[i];
+> > +		spin_lock(&m->lock);
+> > +		total = m->total;
+> > +		sum = m->latency_sum;
+> > +		avg = total > 0 ? DIV64_U64_ROUND_CLOSEST(sum, total) : 0;
+> > +		min = m->latency_min;
+> > +		max = m->latency_max;
+> > +		sq = m->latency_sq_sum;
+> > +		spin_unlock(&m->lock);
+> > +		CEPH_LAT_METRIC_SHOW(metric_str[i], total, avg, min, max, sq);
+> > +	}
+> >  
+> >  	return 0;
+> >  }
+> > @@ -209,30 +199,29 @@ static int metrics_latency_show(struct seq_file *s, void *p)
+> >  static int metrics_size_show(struct seq_file *s, void *p)
+> >  {
+> >  	struct ceph_fs_client *fsc = s->private;
+> > -	struct ceph_client_metric *m = &fsc->mdsc->metric;
+> > +	struct ceph_client_metric *cm = &fsc->mdsc->metric;
+> > +	struct ceph_metric *m;
+> >  	s64 total;
+> > -	u64 sum_sz, avg_sz, min_sz, max_sz;
+> > +	u64 sum, avg, min, max;
+> > +	int i;
+> >  
+> >  	seq_printf(s, "item          total       avg_sz(bytes)   min_sz(bytes)   max_sz(bytes)  total_sz(bytes)\n");
+> >  	seq_printf(s, "----------------------------------------------------------------------------------------\n");
+> >  
+> > -	spin_lock(&m->read_metric_lock);
+> > -	total = m->total_reads;
+> > -	sum_sz = m->read_size_sum;
+> > -	avg_sz = total > 0 ? DIV64_U64_ROUND_CLOSEST(sum_sz, total) : 0;
+> > -	min_sz = m->read_size_min;
+> > -	max_sz = m->read_size_max;
+> > -	spin_unlock(&m->read_metric_lock);
+> > -	CEPH_SZ_METRIC_SHOW("read", total, avg_sz, min_sz, max_sz, sum_sz);
+> > -
+> > -	spin_lock(&m->write_metric_lock);
+> > -	total = m->total_writes;
+> > -	sum_sz = m->write_size_sum;
+> > -	avg_sz = total > 0 ? DIV64_U64_ROUND_CLOSEST(sum_sz, total) : 0;
+> > -	min_sz = m->write_size_min;
+> > -	max_sz = m->write_size_max;
+> > -	spin_unlock(&m->write_metric_lock);
+> > -	CEPH_SZ_METRIC_SHOW("write", total, avg_sz, min_sz, max_sz, sum_sz);
+> > +	for (i = 0; i < METRIC_MAX; i++) {
+> > +		/* skip 'metadata' as it doesn't use the size metric */
+> > +		if (i == METRIC_METADATA)
+> > +			continue;
+> > +		m = &cm->metric[i];
+> > +		spin_lock(&m->lock);
+> > +		total = m->total;
+> > +		sum = m->size_sum;
+> > +		avg = total > 0 ? DIV64_U64_ROUND_CLOSEST(sum, total) : 0;
+> > +		min = m->size_min;
+> > +		max = m->size_max;
+> > +		spin_unlock(&m->lock);
+> > +		CEPH_SZ_METRIC_SHOW(metric_str[i], total, avg, min, max, sum);
+> > +	}
+> >  
+> >  	return 0;
+> >  }
+> > diff --git a/fs/ceph/metric.c b/fs/ceph/metric.c
+> > index 04d5df29bbbf..c57699d8408d 100644
+> > --- a/fs/ceph/metric.c
+> > +++ b/fs/ceph/metric.c
+> > @@ -62,7 +62,7 @@ static bool ceph_mdsc_send_metrics(struct ceph_mds_client *mdsc,
+> >  	read->header.ver = 1;
+> >  	read->header.compat = 1;
+> >  	read->header.data_len = cpu_to_le32(sizeof(*read) - header_len);
+> > -	sum = m->read_latency_sum;
+> > +	sum = m->metric[METRIC_READ].latency_sum;
+> >  	jiffies_to_timespec64(sum, &ts);
+> >  	read->sec = cpu_to_le32(ts.tv_sec);
+> >  	read->nsec = cpu_to_le32(ts.tv_nsec);
+> > @@ -74,7 +74,7 @@ static bool ceph_mdsc_send_metrics(struct ceph_mds_client *mdsc,
+> >  	write->header.ver = 1;
+> >  	write->header.compat = 1;
+> >  	write->header.data_len = cpu_to_le32(sizeof(*write) - header_len);
+> > -	sum = m->write_latency_sum;
+> > +	sum = m->metric[METRIC_WRITE].latency_sum;
+> >  	jiffies_to_timespec64(sum, &ts);
+> >  	write->sec = cpu_to_le32(ts.tv_sec);
+> >  	write->nsec = cpu_to_le32(ts.tv_nsec);
+> > @@ -86,7 +86,7 @@ static bool ceph_mdsc_send_metrics(struct ceph_mds_client *mdsc,
+> >  	meta->header.ver = 1;
+> >  	meta->header.compat = 1;
+> >  	meta->header.data_len = cpu_to_le32(sizeof(*meta) - header_len);
+> > -	sum = m->metadata_latency_sum;
+> > +	sum = m->metric[METRIC_METADATA].latency_sum;
+> >  	jiffies_to_timespec64(sum, &ts);
+> >  	meta->sec = cpu_to_le32(ts.tv_sec);
+> >  	meta->nsec = cpu_to_le32(ts.tv_nsec);
+> > @@ -141,8 +141,8 @@ static bool ceph_mdsc_send_metrics(struct ceph_mds_client *mdsc,
+> >  	rsize->header.ver = 1;
+> >  	rsize->header.compat = 1;
+> >  	rsize->header.data_len = cpu_to_le32(sizeof(*rsize) - header_len);
+> > -	rsize->total_ops = cpu_to_le64(m->total_reads);
+> > -	rsize->total_size = cpu_to_le64(m->read_size_sum);
+> > +	rsize->total_ops = cpu_to_le64(m->metric[METRIC_READ].total);
+> > +	rsize->total_size = cpu_to_le64(m->metric[METRIC_READ].size_sum);
+> >  	items++;
+> >  
+> >  	/* encode the write io size metric */
+> > @@ -151,8 +151,8 @@ static bool ceph_mdsc_send_metrics(struct ceph_mds_client *mdsc,
+> >  	wsize->header.ver = 1;
+> >  	wsize->header.compat = 1;
+> >  	wsize->header.data_len = cpu_to_le32(sizeof(*wsize) - header_len);
+> > -	wsize->total_ops = cpu_to_le64(m->total_writes);
+> > -	wsize->total_size = cpu_to_le64(m->write_size_sum);
+> > +	wsize->total_ops = cpu_to_le64(m->metric[METRIC_WRITE].total);
+> > +	wsize->total_size = cpu_to_le64(m->metric[METRIC_WRITE].size_sum);
+> >  	items++;
+> >  
+> >  	put_unaligned_le32(items, &head->num);
+> > @@ -220,7 +220,8 @@ static void metric_delayed_work(struct work_struct *work)
+> >  
+> >  int ceph_metric_init(struct ceph_client_metric *m)
+> >  {
+> > -	int ret;
+> > +	struct ceph_metric *metric;
+> > +	int ret, i;
+> >  
+> >  	if (!m)
+> >  		return -EINVAL;
+> > @@ -243,32 +244,18 @@ int ceph_metric_init(struct ceph_client_metric *m)
+> >  	if (ret)
+> >  		goto err_i_caps_mis;
+> >  
+> > -	spin_lock_init(&m->read_metric_lock);
+> > -	m->read_latency_sq_sum = 0;
+> > -	m->read_latency_min = KTIME_MAX;
+> > -	m->read_latency_max = 0;
+> > -	m->total_reads = 0;
+> > -	m->read_latency_sum = 0;
+> > -	m->read_size_min = U64_MAX;
+> > -	m->read_size_max = 0;
+> > -	m->read_size_sum = 0;
+> > -
+> > -	spin_lock_init(&m->write_metric_lock);
+> > -	m->write_latency_sq_sum = 0;
+> > -	m->write_latency_min = KTIME_MAX;
+> > -	m->write_latency_max = 0;
+> > -	m->total_writes = 0;
+> > -	m->write_latency_sum = 0;
+> > -	m->write_size_min = U64_MAX;
+> > -	m->write_size_max = 0;
+> > -	m->write_size_sum = 0;
+> > -
+> > -	spin_lock_init(&m->metadata_metric_lock);
+> > -	m->metadata_latency_sq_sum = 0;
+> > -	m->metadata_latency_min = KTIME_MAX;
+> > -	m->metadata_latency_max = 0;
+> > -	m->total_metadatas = 0;
+> > -	m->metadata_latency_sum = 0;
+> > +	for (i = 0; i < METRIC_MAX; i++) {
+> > +		metric = &m->metric[i];
+> > +		spin_lock_init(&metric->lock);
+> > +		metric->size_sum = 0;
+> > +		metric->size_min = U64_MAX;
+> > +		metric->size_max = 0;
+> > +		metric->total = 0;
+> > +		metric->latency_sum = 0;
+> > +		metric->latency_sq_sum = 0;
+> > +		metric->latency_min = KTIME_MAX;
+> > +		metric->latency_max = 0;
+> > +	}
+> >  
+> >  	atomic64_set(&m->opened_files, 0);
+> >  	ret = percpu_counter_init(&m->opened_inodes, 0, GFP_KERNEL);
+> > @@ -338,9 +325,9 @@ static inline void __update_stdev(ktime_t total, ktime_t lsum,
+> >  	*sq_sump += sq;
+> >  }
+> >  
+> > -void ceph_update_read_metrics(struct ceph_client_metric *m,
+> > -			      ktime_t r_start, ktime_t r_end,
+> > -			      unsigned int size, int rc)
+> > +void ceph_update_metrics(struct ceph_metric *m,
+> > +			 ktime_t r_start, ktime_t r_end,
+> > +			 unsigned int size, int rc)
+> >  {
+> >  	ktime_t lat = ktime_sub(r_end, r_start);
+> >  	ktime_t total;
+> > @@ -348,63 +335,12 @@ void ceph_update_read_metrics(struct ceph_client_metric *m,
+> >  	if (unlikely(rc < 0 && rc != -ENOENT && rc != -ETIMEDOUT))
+> >  		return;
+> >  
+> > -	spin_lock(&m->read_metric_lock);
+> > -	total = ++m->total_reads;
+> > -	m->read_size_sum += size;
+> > -	m->read_latency_sum += lat;
+> > -	METRIC_UPDATE_MIN_MAX(m->read_size_min,
+> > -			      m->read_size_max,
+> > -			      size);
+> > -	METRIC_UPDATE_MIN_MAX(m->read_latency_min,
+> > -			      m->read_latency_max,
+> > -			      lat);
+> > -	__update_stdev(total, m->read_latency_sum,
+> > -		       &m->read_latency_sq_sum, lat);
+> > -	spin_unlock(&m->read_metric_lock);
+> > -}
+> > -
+> > -void ceph_update_write_metrics(struct ceph_client_metric *m,
+> > -			       ktime_t r_start, ktime_t r_end,
+> > -			       unsigned int size, int rc)
+> > -{
+> > -	ktime_t lat = ktime_sub(r_end, r_start);
+> > -	ktime_t total;
+> > -
+> > -	if (unlikely(rc && rc != -ETIMEDOUT))
+> > -		return;
+> > -
+> > -	spin_lock(&m->write_metric_lock);
+> > -	total = ++m->total_writes;
+> > -	m->write_size_sum += size;
+> > -	m->write_latency_sum += lat;
+> > -	METRIC_UPDATE_MIN_MAX(m->write_size_min,
+> > -			      m->write_size_max,
+> > -			      size);
+> > -	METRIC_UPDATE_MIN_MAX(m->write_latency_min,
+> > -			      m->write_latency_max,
+> > -			      lat);
+> > -	__update_stdev(total, m->write_latency_sum,
+> > -		       &m->write_latency_sq_sum, lat);
+> > -	spin_unlock(&m->write_metric_lock);
+> > -}
+> > -
+> > -void ceph_update_metadata_metrics(struct ceph_client_metric *m,
+> > -				  ktime_t r_start, ktime_t r_end,
+> > -				  int rc)
+> > -{
+> > -	ktime_t lat = ktime_sub(r_end, r_start);
+> > -	ktime_t total;
+> > -
+> > -	if (unlikely(rc && rc != -ENOENT))
+> > -		return;
+> > -
+> > -	spin_lock(&m->metadata_metric_lock);
+> > -	total = ++m->total_metadatas;
+> > -	m->metadata_latency_sum += lat;
+> > -	METRIC_UPDATE_MIN_MAX(m->metadata_latency_min,
+> > -			      m->metadata_latency_max,
+> > -			      lat);
+> > -	__update_stdev(total, m->metadata_latency_sum,
+> > -		       &m->metadata_latency_sq_sum, lat);
+> > -	spin_unlock(&m->metadata_metric_lock);
+> > +	spin_lock(&m->lock);
+> > +	total = ++m->total;
+> > +	m->size_sum += size;
+> > +	METRIC_UPDATE_MIN_MAX(m->size_min, m->size_max, size);
+> > +	m->latency_sum += lat;
+> > +	METRIC_UPDATE_MIN_MAX(m->latency_min, m->latency_max, lat);
+> > +	__update_stdev(total, m->latency_sum, &m->latency_sq_sum, lat);
+> > +	spin_unlock(&m->lock);
+> >  }
+> > diff --git a/fs/ceph/metric.h b/fs/ceph/metric.h
+> > index 0133955a3c6a..e67fc997760b 100644
+> > --- a/fs/ceph/metric.h
+> > +++ b/fs/ceph/metric.h
+> > @@ -125,6 +125,25 @@ struct ceph_metric_head {
+> >  	__le32 num;	/* the number of metrics that will be sent */
+> >  } __packed;
+> >  
+> > +enum metric_type {
+> > +	METRIC_READ,
+> > +	METRIC_WRITE,
+> > +	METRIC_METADATA,
+> > +	METRIC_MAX
+> > +};
+> > +
+> > +struct ceph_metric {
+> > +	spinlock_t lock;
+> > +	u64 total;
+> > +	u64 size_sum;
+> > +	u64 size_min;
+> > +	u64 size_max;
+> > +	ktime_t latency_sum;
+> > +	ktime_t latency_sq_sum;
+> > +	ktime_t latency_min;
+> > +	ktime_t latency_max;
+> > +};
+> > +
+> >  /* This is the global metrics */
+> >  struct ceph_client_metric {
+> >  	atomic64_t            total_dentries;
+> > @@ -135,32 +154,7 @@ struct ceph_client_metric {
+> >  	struct percpu_counter i_caps_hit;
+> >  	struct percpu_counter i_caps_mis;
+> >  
+> > -	spinlock_t read_metric_lock;
+> > -	u64 total_reads;
+> > -	u64 read_size_sum;
+> > -	u64 read_size_min;
+> > -	u64 read_size_max;
+> > -	ktime_t read_latency_sum;
+> > -	ktime_t read_latency_sq_sum;
+> > -	ktime_t read_latency_min;
+> > -	ktime_t read_latency_max;
+> > -
+> > -	spinlock_t write_metric_lock;
+> > -	u64 total_writes;
+> > -	u64 write_size_sum;
+> > -	u64 write_size_min;
+> > -	u64 write_size_max;
+> > -	ktime_t write_latency_sum;
+> > -	ktime_t write_latency_sq_sum;
+> > -	ktime_t write_latency_min;
+> > -	ktime_t write_latency_max;
+> > -
+> > -	spinlock_t metadata_metric_lock;
+> > -	u64 total_metadatas;
+> > -	ktime_t metadata_latency_sum;
+> > -	ktime_t metadata_latency_sq_sum;
+> > -	ktime_t metadata_latency_min;
+> > -	ktime_t metadata_latency_max;
+> > +	struct ceph_metric metric[METRIC_MAX];
+> >  
+> 
+> Shouldn't this be:
+> 
+>     struct ceph_metric metric[METRIC_MAX - 1];
+> 
+> We want an array of 3 fields at this point, but METRIC_MAX == 4.
+> 
 
-On Thu, Nov 4, 2021 at 1:16 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
-> On Thu, Nov 04, 2021 at 08:58:16AM +0100, Geert Uytterhoeven wrote:
-> > On Thu, Nov 4, 2021 at 8:29 AM Damien Le Moal <Damien.LeMoal@wdc.com> wrote:
-> > > On 2021/11/03 0:41, Geert Uytterhoeven wrote:
-> >
-> > > > Thanks for your patch, which is now commit cad439fc040efe5f
-> > > > ("crypto: api - Do not create test larvals if manager is disabled").
-> > > >
-> > > > I have bisected a failure to mount the root file system on k210 to this
-> > > > commit.
-> > > >
-> > > > Dmesg before/after:
-> > > >
-> > > >       mmcblk0: mmc0:0000 SA04G 3.68 GiB
-> > > >       random: fast init done
-> > > >        mmcblk0: p1
-> > > >      -EXT4-fs (mmcblk0p1): mounted filesystem with ordered data mode. Opts: (null). Quota mode: disabled.
-> > > >      -VFS: Mounted root (ext4 filesystem) readonly on device 179:1.
-> > > >      +EXT4-fs (mmcblk0p1): Cannot load crc32c driver.
-> > > >      +VFS: Cannot open root device "mmcblk0p1" or unknown-block(179,1): error -80
-> > >
-> > > p1 exist as the message 2 lines above shows. And since the mount error is -80
-> > > (ELIBBAD), it is really all about crypto. Since the default k210 config compile
-> > > everything in-kernel (no modules), it should work. Was crc32c compiled as a
-> > > module ? If yes, then the k210 will need to be booted with U-Boot and use a real
-> > > initrd, which likely will all end-up in a no memory situation. ext4 in itself
-> > > will consume way too much memory...
-> >
-> > Everything is built-in, including crc32c. It worked fine, until the commit
-> > referenced.
->
-> Can someone please send me the Kconfig used in this case?
+Duh...disregard. I temporarily forgot that enums start at 0.
+METRIC_MAX == 3 here.
 
-My config is nommu_k210_sdcard_defconfig with the changes below:
+> >  	/* The total number of directories and files that are opened */
+> >  	atomic64_t opened_files;
+> > @@ -195,13 +189,29 @@ static inline void ceph_update_cap_mis(struct ceph_client_metric *m)
+> >  	percpu_counter_inc(&m->i_caps_mis);
+> >  }
+> >  
+> > -extern void ceph_update_read_metrics(struct ceph_client_metric *m,
+> > -				     ktime_t r_start, ktime_t r_end,
+> > -				     unsigned int size, int rc);
+> > -extern void ceph_update_write_metrics(struct ceph_client_metric *m,
+> > -				      ktime_t r_start, ktime_t r_end,
+> > -				      unsigned int size, int rc);
+> > -extern void ceph_update_metadata_metrics(struct ceph_client_metric *m,
+> > -				         ktime_t r_start, ktime_t r_end,
+> > -					 int rc);
+> > +extern void ceph_update_metrics(struct ceph_metric *m,
+> > +				ktime_t r_start, ktime_t r_end,
+> > +				unsigned int size, int rc);
+> > +
+> > +static inline void ceph_update_read_metrics(struct ceph_client_metric *m,
+> > +					    ktime_t r_start, ktime_t r_end,
+> > +					    unsigned int size, int rc)
+> > +{
+> > +	ceph_update_metrics(&m->metric[METRIC_READ],
+> > +			    r_start, r_end, size, rc);
+> > +}
+> > +static inline void ceph_update_write_metrics(struct ceph_client_metric *m,
+> > +					     ktime_t r_start, ktime_t r_end,
+> > +					     unsigned int size, int rc)
+> > +{
+> > +	ceph_update_metrics(&m->metric[METRIC_WRITE],
+> > +			    r_start, r_end, size, rc);
+> > +}
+> > +static inline void ceph_update_metadata_metrics(struct ceph_client_metric *m,
+> > +						ktime_t r_start, ktime_t r_end,
+> > +						int rc)
+> > +{
+> > +	ceph_update_metrics(&m->metric[METRIC_METADATA],
+> > +			    r_start, r_end, 0, rc);
+> > +}
+> >  #endif /* _FS_CEPH_MDS_METRIC_H */
+> 
 
-diff --git a/arch/riscv/configs/nommu_k210_sdcard_defconfig.orig
-b/arch/riscv/configs/nommu_k210_sdcard_defconfig
-index 61f887f65419950c..f14ea3803cea5f3d 100644
---- a/arch/riscv/configs/nommu_k210_sdcard_defconfig.orig
-+++ b/arch/riscv/configs/nommu_k210_sdcard_defconfig
-@@ -1,3 +1,5 @@
-+CONFIG_WERROR=y
-+CONFIG_LOCALVERSION="-k210"
- # CONFIG_CPU_ISOLATION is not set
- CONFIG_LOG_BUF_SHIFT=13
- CONFIG_PRINTK_SAFE_LOG_BUF_SHIFT=12
-@@ -21,16 +23,15 @@ CONFIG_EMBEDDED=y
- CONFIG_SLOB=y
- # CONFIG_MMU is not set
- CONFIG_SOC_CANAAN=y
--CONFIG_SOC_CANAAN_K210_DTB_SOURCE="k210_generic"
--CONFIG_MAXPHYSMEM_2GB=y
-+CONFIG_SOC_CANAAN_K210_DTB_SOURCE="sipeed_maix_bit"
- CONFIG_SMP=y
- CONFIG_NR_CPUS=2
- CONFIG_CMDLINE="earlycon console=ttySIF0 rootdelay=2 root=/dev/mmcblk0p1 ro"
- CONFIG_CMDLINE_FORCE=y
- # CONFIG_SECCOMP is not set
- # CONFIG_STACKPROTECTOR is not set
--# CONFIG_GCC_PLUGINS is not set
--# CONFIG_BLK_DEV_BSG is not set
-+CONFIG_PARTITION_ADVANCED=y
-+# CONFIG_EFI_PARTITION is not set
- # CONFIG_MQ_IOSCHED_DEADLINE is not set
- # CONFIG_MQ_IOSCHED_KYBER is not set
- CONFIG_BINFMT_FLAT=y
-@@ -39,10 +40,16 @@ CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
- # CONFIG_FW_LOADER is not set
- # CONFIG_ALLOW_DEV_COREDUMP is not set
-+CONFIG_MTD=y
-+# CONFIG_MTD_OF_PARTS is not set
-+CONFIG_MTD_SPI_NOR=y
- # CONFIG_BLK_DEV is not set
--# CONFIG_INPUT is not set
-+# CONFIG_INPUT_LEDS is not set
-+# CONFIG_INPUT_KEYBOARD is not set
-+# CONFIG_INPUT_MOUSE is not set
- # CONFIG_SERIO is not set
- # CONFIG_VT is not set
-+# CONFIG_UNIX98_PTYS is not set
- # CONFIG_LEGACY_PTYS is not set
- # CONFIG_LDISC_AUTOLOAD is not set
- # CONFIG_HW_RANDOM is not set
-@@ -52,7 +59,6 @@ CONFIG_I2C_CHARDEV=y
- # CONFIG_I2C_HELPER_AUTO is not set
- CONFIG_I2C_DESIGNWARE_PLATFORM=y
- CONFIG_SPI=y
--# CONFIG_SPI_MEM is not set
- CONFIG_SPI_DESIGNWARE=y
- CONFIG_SPI_DW_MMIO=y
- # CONFIG_GPIO_CDEV_V1 is not set
-@@ -61,6 +67,7 @@ CONFIG_GPIO_SIFIVE=y
- CONFIG_POWER_RESET=y
- CONFIG_POWER_RESET_SYSCON=y
- # CONFIG_HWMON is not set
-+# CONFIG_HID is not set
- # CONFIG_USB_SUPPORT is not set
- CONFIG_MMC=y
- # CONFIG_PWRSEQ_EMMC is not set
-@@ -72,8 +79,9 @@ CONFIG_LEDS_GPIO=y
- CONFIG_LEDS_USER=y
- # CONFIG_VIRTIO_MENU is not set
- # CONFIG_VHOST_MENU is not set
--# CONFIG_SURFACE_PLATFORMS is not set
--CONFIG_EXT2_FS=y
-+# CONFIG_NVMEM is not set
-+CONFIG_EXT4_FS=y
-+# CONFIG_EXT4_USE_FOR_EXT2 is not set
- # CONFIG_FILE_LOCKING is not set
- # CONFIG_DNOTIFY is not set
- # CONFIG_INOTIFY_USER is not set
-@@ -82,8 +90,8 @@ CONFIG_LSM="[]"
- CONFIG_PRINTK_TIME=y
- # CONFIG_SYMBOLIC_ERRNAME is not set
- # CONFIG_DEBUG_BUGVERBOSE is not set
--# CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- # CONFIG_FRAME_POINTER is not set
-+CONFIG_VMLINUX_MAP=y
- # CONFIG_DEBUG_MISC is not set
- CONFIG_PANIC_ON_OOPS=y
- # CONFIG_SCHED_DEBUG is not set
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Jeff Layton <jlayton@kernel.org>
