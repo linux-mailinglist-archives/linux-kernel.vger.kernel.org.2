@@ -2,91 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9364452D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:16:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42EA14452CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:16:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231603AbhKDMT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 08:19:26 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:56542 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231563AbhKDMTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 08:19:22 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mibfR-0002ie-Nn; Thu, 04 Nov 2021 20:16:29 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mibfA-00026K-MG; Thu, 04 Nov 2021 20:16:12 +0800
-Date:   Thu, 4 Nov 2021 20:16:12 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Vladis Dronov <vdronov@redhat.com>,
-        Simo Sorce <ssorce@redhat.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        kernel test robot <lkp@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] crypto: api - Do not create test larvals if manager is
- disabled
-Message-ID: <20211104121612.GA8044@gondor.apana.org.au>
-References: <20210917002619.GA6407@gondor.apana.org.au>
- <YVNfqUVJ7w4Z3WXK@archlinux-ax161>
- <20211001055058.GA6081@gondor.apana.org.au>
- <YVdNFzs8HUQwHa54@archlinux-ax161>
- <20211003002801.GA5435@gondor.apana.org.au>
- <YV0K+EbrAqDdw2vp@archlinux-ax161>
- <20211019132802.GA14233@gondor.apana.org.au>
- <alpine.DEB.2.22.394.2111021636040.2330984@ramsan.of.borg>
- <DM6PR04MB708155E447FD9A79AB89686DE78D9@DM6PR04MB7081.namprd04.prod.outlook.com>
- <CAMuHMdW1wLAt9Y=-GMMuk8HWE3UnRgKNMmD9fq34Rq8J7QyrzQ@mail.gmail.com>
+        id S231533AbhKDMTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 08:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231230AbhKDMTO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 08:19:14 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96552C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 05:16:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=O+Qxm2sTsf748cbw2uJnyaNmoAjGx59jmTwMD7TBqa4=; b=wT6Go5EEJp6k32JUs+xycY0uMK
+        DtQTQfl8uxH7y98wSY+MLjgpOsjrNupM41o3vKTFMovE4F59g8JZBSrsXt3IbqIVfn4NsZhTnqdIL
+        2Xy5vdhlzNdPsYspX4XuXqNGDbKyWz3TSWLC0QolOAJ1L/dJcR0AlHsPl+Et2choR/5Gkpph8d7YR
+        HSSJZzGTAzjCxciDeiYkGNVpa7C2JYataGNgdS4jONSbRfKpnAVmqXHZTOBmDjrqVnnLH8rs3LudY
+        sKJYytvRlpkrEiOu6ubwA9/Nm4Ky6OxJ6vtOhb2KWVETCUKAfWjwwh4FFFcFZK2IXK6rjuTanKjI/
+        WVlab7Qw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55474)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mibfU-0005wI-G3; Thu, 04 Nov 2021 12:16:32 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mibfT-0007K0-Tp; Thu, 04 Nov 2021 12:16:31 +0000
+Date:   Thu, 4 Nov 2021 12:16:31 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Jon Medhurst <tixy@linaro.org>, Ard Biesheuvel <ardb@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: fix early early_iounmap()
+Message-ID: <YYPPH7E/s/SWdM4m@shell.armlinux.org.uk>
+References: <990f4427968071d59bcbb7411da73acc379d3ac4.1635986046.git.mirq-linux@rere.qmqm.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdW1wLAt9Y=-GMMuk8HWE3UnRgKNMmD9fq34Rq8J7QyrzQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <990f4427968071d59bcbb7411da73acc379d3ac4.1635986046.git.mirq-linux@rere.qmqm.pl>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 08:58:16AM +0100, Geert Uytterhoeven wrote:
-> Hi Damien,
+On Thu, Nov 04, 2021 at 01:37:15AM +0100, Michał Mirosław wrote:
+> Currently __set_fixmap() bails out with a warning when called in early boot
+> from early_iounmap(). Fix it, and while at it, make the comment a bit easier
+> to understand.
 > 
-> On Thu, Nov 4, 2021 at 8:29 AM Damien Le Moal <Damien.LeMoal@wdc.com> wrote:
-> > On 2021/11/03 0:41, Geert Uytterhoeven wrote:
->
-> > > Thanks for your patch, which is now commit cad439fc040efe5f
-> > > ("crypto: api - Do not create test larvals if manager is disabled").
-> > >
-> > > I have bisected a failure to mount the root file system on k210 to this
-> > > commit.
-> > >
-> > > Dmesg before/after:
-> > >
-> > >       mmcblk0: mmc0:0000 SA04G 3.68 GiB
-> > >       random: fast init done
-> > >        mmcblk0: p1
-> > >      -EXT4-fs (mmcblk0p1): mounted filesystem with ordered data mode. Opts: (null). Quota mode: disabled.
-> > >      -VFS: Mounted root (ext4 filesystem) readonly on device 179:1.
-> > >      +EXT4-fs (mmcblk0p1): Cannot load crc32c driver.
-> > >      +VFS: Cannot open root device "mmcblk0p1" or unknown-block(179,1): error -80
-> >
-> > p1 exist as the message 2 lines above shows. And since the mount error is -80
-> > (ELIBBAD), it is really all about crypto. Since the default k210 config compile
-> > everything in-kernel (no modules), it should work. Was crc32c compiled as a
-> > module ? If yes, then the k210 will need to be booted with U-Boot and use a real
-> > initrd, which likely will all end-up in a no memory situation. ext4 in itself
-> > will consume way too much memory...
-> 
-> Everything is built-in, including crc32c. It worked fine, until the commit
-> referenced.
+> Cc: <stable@vger.kernel.org>
+> Fixes: b089c31c519c ("ARM: 8667/3: Fix memory attribute inconsistencies when using fixmap")
+> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 
-Can someone please send me the Kconfig used in this case?
+LGTM. Please drop it into the patch system, thanks.
 
-Thanks,
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
