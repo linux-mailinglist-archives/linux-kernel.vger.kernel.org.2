@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF42445120
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 10:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A1244512B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 10:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbhKDJdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 05:33:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231160AbhKDJc7 (ORCPT
+        id S230472AbhKDJe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 05:34:58 -0400
+Received: from polaris.svanheule.net ([84.16.241.116]:37904 "EHLO
+        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230410AbhKDJe5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 05:32:59 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41EF2C061205
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 02:30:21 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1miZ4a-00026b-Af; Thu, 04 Nov 2021 10:30:16 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1miZ4Z-0004wE-EV; Thu, 04 Nov 2021 10:30:15 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1miZ4Z-0006cE-Db; Thu, 04 Nov 2021 10:30:15 +0100
-Date:   Thu, 4 Nov 2021 10:30:15 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH] pwm: samsung: describe driver in KConfig
-Message-ID: <20211104093015.url6pu2pj6yqqd4e@pengutronix.de>
-References: <20210924133148.111845-1-krzysztof.kozlowski@canonical.com>
+        Thu, 4 Nov 2021 05:34:57 -0400
+Received: from terra.local.svanheule.net (unknown [IPv6:2a02:a03f:eafe:c901:bf08:f0c1:3ec1:1bfc])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 6134526C287;
+        Thu,  4 Nov 2021 10:32:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1636018338;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=pZ9EPizzeFSRkpDwLY7KKXOLEcwi0h5Q4Ss1gsnf82g=;
+        b=eu4iXdZIECc3KclIIqRZazL25WAloEDARH0YZjjJllm/cHBWOTUQfmK/l8E6f8bVK01ClX
+        QKG3X/6FaYiAyv9Nockdu78lS5U1+NtcwNvY0EzBAslf6l7fUqmF0ekdVCMKPn2bn/pmaq
+        8CuwWmVp++foRGTLzAiX1TMfzYYzSbzfziJfHihErdf1vj9sv4zsvJLZFJvmSmeJVr/rM/
+        KIFGmn1BmksOsdPXOYNn6l2FD0GChJj9XoJjV+MCx+FQowsd6I8f92KzqbCWGYPwhn3IMR
+        VDV944rniuFr4czB7QK3Zad0tUYhMFAsVv2HfHjXuuhwiXJsOr+6VXApYeA3SA==
+From:   Sander Vanheule <sander@svanheule.net>
+To:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Sander Vanheule <sander@svanheule.net>
+Subject: [PATCH v3 0/2] Add Realtek Otto WDT support
+Date:   Thu,  4 Nov 2021 10:32:11 +0100
+Message-Id: <cover.1636018117.git.sander@svanheule.net>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dia4e4xjw5wmpq6c"
-Content-Disposition: inline
-In-Reply-To: <20210924133148.111845-1-krzysztof.kozlowski@canonical.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This watchdog timer is found on Realtek's Otto MIPS platforms, including the
+RTL838x, RTL839x, and RTL930x series of ethernet switch SoCs. It has a number
+of reset modes (SoC, CPU, software), and can provide pretimeout interrupts.
 
---dia4e4xjw5wmpq6c
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The timer has two timeout phases. Both phases have a maximum duration of 32
+prescaled clock ticks, which is ca. 43s with a clock of 200MHz:
+- Phase 1: During this phase, the WDT can be pinged to reset the timeout.
+- Phase 2: Starts after phase 1 has timed out, and only serves to give the
+  system some time to clean up, or notify others that it's going to reset.
+  During this phase, pinging the WDT has no effect, and a reset is unavoidable.
 
-On Fri, Sep 24, 2021 at 03:31:48PM +0200, Krzysztof Kozlowski wrote:
-> Describe better which driver applies to which SoC, to make configuring
-> kernel for Samsung SoC easier.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  drivers/pwm/Kconfig | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-> index aa29841bbb79..21e3b05a5153 100644
-> --- a/drivers/pwm/Kconfig
-> +++ b/drivers/pwm/Kconfig
-> @@ -476,7 +476,9 @@ config PWM_SAMSUNG
->  	depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
->  	depends on HAS_IOMEM
->  	help
-> -	  Generic PWM framework driver for Samsung.
-> +	  Generic PWM framework driver for Samsung S3C24xx, S3C64xx, S5Pv210
-> +	  and Exynos SoCs.
-> +	  Choose Y here only if you build for such Samsung SoC.
+The driver has been tested on a Zyxel GS1900-8 (RTL8380, mainline kernel and
+OpenWrt), a Zyxel GS1900-48 (RTL8393, mainline), a Netgear GS110TPPv1
+(RTL8381, mainline), and a Zyxel XGS1250-12 (RTL9203B, Openwrt).
 
-Assuming this list is complete, I think this is a nice improvement.
+Changes since v2:
+Link: https://lore.kernel.org/all/20211104085952.13572-1-sander@svanheule.net/
+- Fix off-by-one error in prescale assignment
 
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+Main changes since v1:
+Link: https://lore.kernel.org/all/cover.1634131707.git.sander@svanheule.net/
+- Drop implementation of phase2 irq, since it is only triggered on system reset
+- Drop redundant value checks and lock
+- Add RTL930x compatibility
 
-thanks
-Uwe
+Sander Vanheule (2):
+  dt-bindings: watchdog: Realtek Otto WDT binding
+  watchdog: Add Realtek Otto watchdog timer
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+ .../bindings/watchdog/realtek,otto-wdt.yaml   |  91 +++++
+ MAINTAINERS                                   |   7 +
+ drivers/watchdog/Kconfig                      |  13 +
+ drivers/watchdog/Makefile                     |   1 +
+ drivers/watchdog/realtek_otto_wdt.c           | 361 ++++++++++++++++++
+ 5 files changed, 473 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/watchdog/realtek,otto-wdt.yaml
+ create mode 100644 drivers/watchdog/realtek_otto_wdt.c
 
---dia4e4xjw5wmpq6c
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.31.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGDqCQACgkQwfwUeK3K
-7AmbUQgAlMzCYfheBhJ9/DkHV0OReAztbiZh7PdQKsIyeqdzFZ795A857eAOEHGD
-a8W5ZqlJ9/Tqy2j99BO1nKpExjl2Nb8pxGVhikPS0NuwZZ0V9pGRukCPBNOU+7XK
-A+hPW0F78EK+Chxhk9WTraTORaH0lqbGIWwXGhfoHKEpb7Flu/g5wBroqsbc7wWA
-nxBhRy73JIlGoT9aCx3XGstsbsgbbkb44wEj8by3A9UyTcTY8AAWomyPqbGWKaXM
-20UG/QVQ7F1C/9OlmzxRRtnlPoIXiLZAimk60GAI/XyUeS3Oy1ziTV31jvgyITmm
-pUvpeUR/oV0p2APnfWVS3pdtzLnB2A==
-=GQCW
------END PGP SIGNATURE-----
-
---dia4e4xjw5wmpq6c--
