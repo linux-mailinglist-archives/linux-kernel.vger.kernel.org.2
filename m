@@ -2,82 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28534445711
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:18:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA6944572B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbhKDQVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 12:21:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231748AbhKDQVJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 12:21:09 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F93DC06127A
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 09:18:31 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1636042709;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lSqcLy+DUHQRd9FuNWlvzSLgx+Fm62O+vLwxzUq6H/M=;
-        b=bD7pBJSO/BC18bv/zf4ftodRlJ1yAKpX3XY+ICZVolh2cC3E7JeUR0B9MpAOY7r/eOZsoU
-        S8LWjW9pwpp3CFRSe/Tt57xSb9on9cAggmUvvVqx5stF0QODXEDoK4Y4CC5mTgBG1tivlM
-        7BCfABCOX8FtUJmOQjOkN3O2jF74G0ReyqRdxhu+nZovLNPKD65Gr9GU4sVYKfMzpwOwJ5
-        7J0uruyU16uS6SLJNjay0jcoUmlc0lssk9Fz1Jy2SVmNzmzdLvTdCaRZUIaX8O72SWy+KW
-        1VEdRzG39SEwkQR4tP4yIbXvykcE17jv/GuDdQfD3Y0pxDedTcQbNSS3dugsFQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1636042709;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lSqcLy+DUHQRd9FuNWlvzSLgx+Fm62O+vLwxzUq6H/M=;
-        b=x652L11rOgwIvWYYS5x79GbxANiBef1U4bQTqIu1H1skRsctsncZG5CQcE1kpNVGEAKkkF
-        GLUQmXHvEpjclxBA==
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org
-Subject: Re: Removal of printk safe buffers delays NMI context printk
-In-Reply-To: <1636039236.y415994wfa.astroid@bobo.none>
-References: <1636039236.y415994wfa.astroid@bobo.none>
-Date:   Thu, 04 Nov 2021 17:24:28 +0106
-Message-ID: <87ee7vki7f.fsf@jogness.linutronix.de>
+        id S231709AbhKDQXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 12:23:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42960 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231586AbhKDQXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 12:23:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8DA261139;
+        Thu,  4 Nov 2021 16:20:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636042837;
+        bh=cuc2mHzEfr1O4iWbeSX9KkIIt0iUpCLMEbZV0m/30qk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qUhuMbbpxlVeRRv12SoOd/ozvZx+isKZGzi0uJwTCrxuAnCP5Hx/9iTTQ+EipAA62
+         5sjNTc5YvI4m5nJ0Xll9zP7OQjOuwBs3aPL7ivIro3ZbBXGVv2yVuBdwHyojhX2BOw
+         j/dlYyfqMVydSQco1rnRBAf3Fc17CuGYjCbykJWc=
+Date:   Thu, 4 Nov 2021 17:20:34 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Subject: Re: [PATCH 5.10 00/16] 5.10.78-rc1 review
+Message-ID: <YYQIUhHkv3kUY+UC@kroah.com>
+References: <20211104141159.561284732@linuxfoundation.org>
+ <3971a9b4-ebb6-a789-2143-31cf257d0d38@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3971a9b4-ebb6-a789-2143-31cf257d0d38@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
+On Thu, Nov 04, 2021 at 09:53:57AM -0600, Daniel Díaz wrote:
+> Hello!
+> 
+> On 11/4/21 8:12 AM, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.10.78 release.
+> > There are 16 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Sat, 06 Nov 2021 14:11:51 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.78-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> Regressions detected.
+> 
+> Build failures on all architectures and all toolchains (GCC 8, 9, 10, 11; Clang 10, 11, 12, 13, nightly):
+> - arc
+> - arm (32-bits)
+> - arm (64-bits)
+> - i386
+> - mips
+> - parisc
+> - ppc
+> - riscv
+> - s390
+> - sh
+> - sparc
+> - x86
+> 
+> Failures look like this:
+> 
+>   In file included from /builds/linux/include/linux/kernel.h:11,
+>                    from /builds/linux/include/linux/list.h:9,
+>                    from /builds/linux/include/linux/smp.h:12,
+>                    from /builds/linux/include/linux/kernel_stat.h:5,
+>                    from /builds/linux/mm/memory.c:42:
+>   /builds/linux/mm/memory.c: In function 'finish_fault':
+>   /builds/linux/mm/memory.c:3929:15: error: implicit declaration of function 'PageHasHWPoisoned'; did you mean 'PageHWPoison'? [-Werror=implicit-function-declaration]
+>    3929 |  if (unlikely(PageHasHWPoisoned(page)))
+>         |               ^~~~~~~~~~~~~~~~~
+>   /builds/linux/include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+>      78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+>         |                                          ^
+>   cc1: some warnings being treated as errors
+> 
+> and this:
+> 
+>   /builds/linux/mm/memory.c:3929:15: error: implicit declaration of function 'PageHasHWPoisoned' [-Werror,-Wimplicit-function-declaration]
+>           if (unlikely(PageHasHWPoisoned(page)))
+>                        ^
+> 
+>   /builds/linux/mm/page_alloc.c:1237:4: error: implicit declaration of function 'ClearPageHasHWPoisoned' [-Werror,-Wimplicit-function-declaration]
+>                           ClearPageHasHWPoisoned(page);
+>                           ^
+>   /builds/linux/mm/page_alloc.c:1237:4: note: did you mean 'ClearPageHWPoison'?
+> 
 
-On 2021-11-05, Nicholas Piggin <npiggin@gmail.com> wrote:
-> It seems printk from NMI context is now delayed indefinitely and
-> there is no printk_safe_flush equivalent (or I can't see one) to
-> allow a NMI buffer to be flushed by a different CPU.
+What configuration?  This builds for me on x86 here on allmodconfig.
 
-NMI flushing is triggered using irq work (for the same CPU). This should
-not have changed recently. Are you reporting a new issue?
+thanks,
 
-> This causes hard lockup watchdog messages to not get shown on the
-> console. I can call printk from a different CPU and that seems to
-> flush the stuck CPU's NMI buffer immediately.
-
-Perhaps we should be triggering the irq work on multiple CPUs if from
-NMI context?
-
-> What's the best way to expose this? Can we have something like tihs?
->
-> void printk_flush(void)
-> {
-> 	preempt_disable();
-> 	if (console_trylock_spinning())
-> 		console_unlock();
-> 	preempt_enable();
->         wake_up_klogd();
-> }
-
-We are planning on implementing a pr_flush() that will do something
-similar. But I am wondering how you are planning on triggering a CPU to
-call that function.
-
-John Ogness
+greg k-h
