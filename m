@@ -2,192 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D3E445BD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 22:49:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59DC4445BD7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 22:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232133AbhKDVwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 17:52:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54644 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229924AbhKDVwU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 17:52:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636062581;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l8Pir9d0D1XiHMiSpLu7fjdsjPxWz4KvgEb7x8RaGAE=;
-        b=BlAk10UkhMRXbTrFV0qkOt2AraqamHIkwLqDL53oeOXRN5wximEbpiz+Wl0AwUXRPYaPOf
-        hHMH4zJpYtBZCH4Qkt0wtQEbhsYkvTwjSffbh1XcNOipZJX2TKc8KK5E/0jCK4snnz5U6a
-        TSG8/PMa5XdhhTkK24P3wNLOG+XivPk=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-360-gXGCfL58OhaO43lXCNBnOg-1; Thu, 04 Nov 2021 17:49:40 -0400
-X-MC-Unique: gXGCfL58OhaO43lXCNBnOg-1
-Received: by mail-qt1-f197.google.com with SMTP id c14-20020ac87d8e000000b002ac69908b09so4222402qtd.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 14:49:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=l8Pir9d0D1XiHMiSpLu7fjdsjPxWz4KvgEb7x8RaGAE=;
-        b=m5TBLWKR1l0NSaQAPRyOSTjHWswbf4G3IAqdlKr6rju88rNBZ8fFtwNvzIq3mnKd/G
-         tz837/T5Vw5t3YGmCfbgR9G0GcXGih//wPE3HeGyvCNfuzkq3PlkQ+/cWBKuYqkbMGot
-         2gOjf3BvI9VFtLCYriCI6HY39MU+4/MxvnEeNRfHQYHRr0RawqiN/oT3GIFJXo6pHK5M
-         9aaihmRzZ/ZWbRPUysTaRd2rBSqvJs3BDl/GQfJReTongXZ0EF+llMV9scUCBV1lWD/l
-         6243EXntweHbeZPXLU229g4YFlxSuS8keHVTUTsxuAWwbwQ9T2pxxGjFOiMCrLtnyBam
-         WnoA==
-X-Gm-Message-State: AOAM533Do2Sk9UKV4ePrhrKnVkviKogzjjy9wo3XBUYf4GkMYX81Mq5q
-        07Uf9SH57asU0Ruf5H8czctjNJJTDyACl9Sr6q7l5XE9iQmPOIRJir19JmY4kQhv1zP+1Edavtl
-        mlEc0w94Xu6OfXWRiRHo1UsmG
-X-Received: by 2002:ac8:7fd5:: with SMTP id b21mr58580165qtk.101.1636062580360;
-        Thu, 04 Nov 2021 14:49:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxO8UIEW8GX5tvoU+NJae00fBrRukDL3cHYfv1js8ka3IAAGLac31JObIaY556X4QD3qjU3tw==
-X-Received: by 2002:ac8:7fd5:: with SMTP id b21mr58580148qtk.101.1636062580152;
-        Thu, 04 Nov 2021 14:49:40 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::35])
-        by smtp.gmail.com with ESMTPSA id o10sm4937023qtx.43.2021.11.04.14.49.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 14:49:39 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 14:49:35 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        dvyukov@google.com, seanjc@google.com, pbonzini@redhat.com,
-        mbenes@suse.cz
-Subject: Re: [RFC][PATCH 07/22] x86,extable: Extend extable functionality
-Message-ID: <20211104214935.xl54xlr3snwmtyna@treble>
-References: <20211104164729.226550532@infradead.org>
- <20211104165524.925401847@infradead.org>
+        id S232202AbhKDVxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 17:53:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229924AbhKDVxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 17:53:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DF326120F;
+        Thu,  4 Nov 2021 21:51:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636062664;
+        bh=6uuCq/8CRIGP5S2X4KNwjbkO0sLcSxEB9M1bRzRr0Jw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jKIx20F9VIZOcXYRmgZ/fRP2fOI/XUnk8COssMZ9rzEH9bfn3hpSbinHPXI4Ilhla
+         7g0Ch6HurzKkOCn58RPpWYvgz4+3YEYLEIwqHYohb8reAtIYiBClFZJVkntCR2SeNe
+         JNnP5jh8GOerf6sOXg4cbn0HesbvRnVIsY0MIEbX2W4O/Ko7fZY1G4acj47wZzQc+Y
+         BwHy4TNb0M/79qDy4T74tWYrEzx6ZZtd0mxqMPKqUXhwe8Ur16Y+OWsjy3cGZZ1Wxd
+         PqdvHQY9kwZPTdt9uibFgPpbmLa1zUjwsk+PZc8Z/ZDr6bJH2IcGrDVBQm3lWKZ6i+
+         Ai7V0Z5M6rmCA==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] power: reset: ltc2952: Fix use of floating point literals
+Date:   Thu,  4 Nov 2021 14:50:47 -0700
+Message-Id: <20211104215047.663411-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.34.0.rc0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211104165524.925401847@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 05:47:36PM +0100, Peter Zijlstra wrote:
-> +asm(
-> +"	.macro extable_type_reg type:req reg:req\n"
-> +"	.set regnr, 0\n"
-> +"	.irp rs,rax,rcx,rdx,rbx,rsp,rbp,rsi,rdi,r8,r9,r10,r11,r12,r13,r14,r15\n"
-> +"	.ifc \\reg, %\\rs\n"
-> +"	.long \\type + (regnr << 8)\n"
-> +"	.endif\n"
-> +"	.set regnr, regnr+1\n"
-> +"	.endr\n"
-> +"	.set regnr, 0\n"
-> +"	.irp rs,eax,ecx,edx,ebx,esp,ebp,esi,edi,r8d,r9d,r10d,r11d,r12d,r13d,r14d,r15d\n"
-> +"	.ifc \\reg, %\\rs\n"
-> +"	.long \\type + (regnr << 8)\n"
-> +"	.endif\n"
-> +"	.set regnr, regnr+1\n"
-> +"	.endr\n"
-> +"	.endm\n"
-> +);
+A new commit in LLVM causes an error on the use of 'long double' when
+'-mno-x87' is used, which the kernel does through an alias,
+'-mno-80387' (see the LLVM commit below for more details around why it
+does this).
 
-How about some error checking to detect a typo, or a forgotten '%':
+drivers/power/reset/ltc2952-poweroff.c:162:28: error: expression requires  'long double' type support, but target 'x86_64-unknown-linux-gnu' does not support it
+        data->wde_interval = 300L * 1E6L;
+                                  ^
+drivers/power/reset/ltc2952-poweroff.c:162:21: error: expression requires  'long double' type support, but target 'x86_64-unknown-linux-gnu' does not support it
+        data->wde_interval = 300L * 1E6L;
+                           ^
+drivers/power/reset/ltc2952-poweroff.c:163:41: error: expression requires  'long double' type support, but target 'x86_64-unknown-linux-gnu' does not support it
+        data->trigger_delay = ktime_set(2, 500L*1E6L);
+                                               ^
+3 errors generated.
 
-diff --git a/arch/x86/include/asm/asm.h b/arch/x86/include/asm/asm.h
-index 5d0ff8c60983..95bb23082b87 100644
---- a/arch/x86/include/asm/asm.h
-+++ b/arch/x86/include/asm/asm.h
-@@ -154,9 +154,11 @@
+This happens due to the use of a 'long double' literal. The 'E6' part of
+'1E6L' causes the literal to be a 'double' then the 'L' suffix promotes
+it to 'long double'.
+
+There is no visible reason for floating point values in this driver, as
+the values are only assigned to integer types. Use USEC_PER_SEC, which
+is the same integer value as '1E6L', to avoid changing functionality but
+fix the error.
+
+Fixes: 6647156c00cc ("power: reset: add LTC2952 poweroff driver")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1497
+Link: https://github.com/llvm/llvm-project/commit/a8083d42b1c346e21623a1d36d1f0cadd7801d83
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ drivers/power/reset/ltc2952-poweroff.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/power/reset/ltc2952-poweroff.c b/drivers/power/reset/ltc2952-poweroff.c
+index fbb344353fe4..ebe3f2bed4c5 100644
+--- a/drivers/power/reset/ltc2952-poweroff.c
++++ b/drivers/power/reset/ltc2952-poweroff.c
+@@ -159,8 +159,8 @@ static void ltc2952_poweroff_kill(void)
  
- asm(
- "	.macro extable_type_reg type:req reg:req\n"
-+"	.set found, 0\n"
- "	.set regnr, 0\n"
- "	.irp rs,rax,rcx,rdx,rbx,rsp,rbp,rsi,rdi,r8,r9,r10,r11,r12,r13,r14,r15\n"
- "	.ifc \\reg, %\\rs\n"
-+"	.set found, found+1\n"
- "	.long \\type + (regnr << 8)\n"
- "	.endif\n"
- "	.set regnr, regnr+1\n"
-@@ -164,10 +166,14 @@ asm(
- "	.set regnr, 0\n"
- "	.irp rs,eax,ecx,edx,ebx,esp,ebp,esi,edi,r8d,r9d,r10d,r11d,r12d,r13d,r14d,r15d\n"
- "	.ifc \\reg, %\\rs\n"
-+"	.set found, found+1\n"
- "	.long \\type + (regnr << 8)\n"
- "	.endif\n"
- "	.set regnr, regnr+1\n"
- "	.endr\n"
-+"	.if (found != 1)\n"
-+"	.error \"extable_type_reg: bad register argument\"\n"
-+"	.endif\n"
- "	.endm\n"
- );
+ static void ltc2952_poweroff_default(struct ltc2952_poweroff *data)
+ {
+-	data->wde_interval = 300L * 1E6L;
+-	data->trigger_delay = ktime_set(2, 500L*1E6L);
++	data->wde_interval = 300L * USEC_PER_SEC;
++	data->trigger_delay = ktime_set(2, 500L * USEC_PER_SEC);
  
-> +#define EX_FLAG_CLR_AX			EX_TYPE_FLAG(1)
-> +#define EX_FLAG_CLR_DX			EX_TYPE_FLAG(2)
-> +#define EX_FLAG_CLR_AX_DX		EX_TYPE_FLAG(3)
+ 	hrtimer_init(&data->timer_trigger, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+ 	data->timer_trigger.function = ltc2952_poweroff_timer_trigger;
 
-I'd like to buy two vowels: CL̲E̲AR
-
-(I hope that Wheel of Fortune reference isn't too US-centric.)
-
-> +static inline unsigned long *pt_regs_nr(struct pt_regs *regs, int nr)
-> +{
-> +	/* because having pt_regs in machine order was too much to ask */
-> +	switch (nr) {
-> +	case 0:		return &regs->ax;
-> +	case 1:		return &regs->cx;
-> +	case 2:		return &regs->dx;
-> +	case 3:		return &regs->bx;
-> +	case 4:		return &regs->sp;
-> +	case 5:		return &regs->bp;
-> +	case 6:		return &regs->si;
-> +	case 7:		return &regs->di;
-> +#ifdef CONFIG_X86_64
-> +	case 8:		return &regs->r8;
-> +	case 9:		return &regs->r9;
-> +	case 10:	return &regs->r10;
-> +	case 11:	return &regs->r11;
-> +	case 12:	return &regs->r12;
-> +	case 13:	return &regs->r13;
-> +	case 14:	return &regs->r14;
-> +	case 15:	return &regs->r15;
-> +#endif
-> +	default:	return NULL;
-> +	}
-> +}
-
-Instead of all this craziness, why not just admit defeat and put them in
-pt_regs order in the 'extable_type_reg' macro?
-
-> +static bool ex_handler_imm_reg(const struct exception_table_entry *fixup,
-> +			       struct pt_regs *regs, int reg, int imm)
-> +{
-> +	*pt_regs_nr(regs, reg) = (long)imm;
-> +	return ex_handler_default(fixup, regs);
-> +}
-> +
-> +#define EX_TYPE_MASK	0x000000FF
-> +#define EX_REG_MASK	0x00000F00
-> +#define EX_FLAG_MASK	0x0000F000
-> +#define EX_IMM_MASK	0xFFFF0000
-
-To avoid mismatches these should probably be in the header file next to
-EX_TYPE_*_SHIFT?
-
-> +
->  int ex_get_fixup_type(unsigned long ip)
->  {
->  	const struct exception_table_entry *e = search_exception_tables(ip);
->  
-> -	return e ? e->type : EX_TYPE_NONE;
-> +	return e ? FIELD_GET(EX_TYPE_MASK, e->type) : EX_TYPE_NONE;
-
-Maybe the 'type' field should be renamed, to better represent its new
-use, and to try to discourage direct access.  Not that I have any good
-ideas.  Some not-so-good ideas: "handler", "flags", "_type".
-
+base-commit: d4439a1189f93d0ac1eaf0197db8e6b3e197d5c7
 -- 
-Josh
+2.34.0.rc0
 
