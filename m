@@ -2,89 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9A1445267
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0542E44526D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbhKDLrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 07:47:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhKDLrP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 07:47:15 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87AF8C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 04:44:37 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id v65so6518478ioe.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 04:44:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+xa/K8iZ5H3AOccYQXVWQN+Tt4/PRKVQipZvC6SEJMo=;
-        b=S5G5jDlYdCg+ae++459nbhcVQp5WWC/qgUP4SZQLqLM+GY5UcuiNc54H0/RoRxvNXe
-         y6hG3p65YdNdivQz2Z21T5OtvrYphfNpdZRKFf+wOEtlc7YPjPYtv7I+LIoDsu9yu/xP
-         9WlB6F930p8csoZtf9HAHSM6k04/+2JlyBZdJy/4VXnc2LE8TMizbnvgOeb1ir0wRXs3
-         ohhF/qchfe2+UGKmSGEapya64vtRyhbGGFNbilTrk7gKaYxyJXSY/F4mW8g+xaXWqGM+
-         wrbh7armt8VraR6hKxRxY2CgFsEG3OOrA/YRaX3HiTgDxD0bfnP0IR0EK5TugKuTsXCZ
-         6xhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+xa/K8iZ5H3AOccYQXVWQN+Tt4/PRKVQipZvC6SEJMo=;
-        b=w0/SgpsTjlKUEvRMbFYrdbcTisprzDETpJ+d0PrZtPaUwXnIm7c5Y1LojJ9i9tDBq4
-         23hnc9sskMFCrVFgTYKlBF1WSFX4VTGdP+ITA2AMOY9drLANHoBi5tlGxPRw+SMkYv2W
-         pYdjHlnSXbANVut6XG24JMDo0/QI4K0ZJ2uT2ww9PvNoc9CN5RtNaEMcJW45+It7UxlN
-         Twyzr9hN2MnwMXF1Nkngn0gWVdjiJJcIefFYdkXdwPii2QIvh8sb4qHIp0kUTzfQL5tP
-         /6BgB/P+Oms4hJhWvOOxFNhLR28bNJbTfAY0/N/QH/pT2zxZb3Yy0/y8zkmxhSLixLfa
-         1hOg==
-X-Gm-Message-State: AOAM533vFhRJkwp36n5Rr+CtAQDATB+97Axc0zWZzBI69uM6VscZZ+Js
-        CfbkSxEH1Rlqx5qklu4xAC67+A==
-X-Google-Smtp-Source: ABdhPJx7p2YYv77/7wwcpEx5ePCK2GPcv203PdvCaEh+RL+mwkU9eA/eT5AgNn7HskkQ8yfJ7ezySQ==
-X-Received: by 2002:a5d:9751:: with SMTP id c17mr35566441ioo.61.1636026276916;
-        Thu, 04 Nov 2021 04:44:36 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id v4sm2524632ilq.57.2021.11.04.04.44.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 04:44:36 -0700 (PDT)
-Subject: Re: [syzbot] WARNING in io_poll_task_func (2)
-To:     Aleksandr Nogikh <nogikh@google.com>
-Cc:     syzbot <syzbot+804709f40ea66018e544@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        xiaoguang.wang@linux.alibaba.com
-References: <0000000000007a0d5705cfea99b2@google.com>
- <0935df19-f813-8840-fa35-43c5558b90e7@kernel.dk>
- <CANp29Y4hi=iFti=BzZxEEPgnn74L80fr3WXDR8OVkGNqR9BOLw@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <97328832-70de-92d9-bf42-c2d1c9d5a2d6@kernel.dk>
-Date:   Thu, 4 Nov 2021 05:44:35 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231538AbhKDLrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 07:47:52 -0400
+Received: from comms.puri.sm ([159.203.221.185]:37274 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230494AbhKDLru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 07:47:50 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 2715CDFE2A;
+        Thu,  4 Nov 2021 04:45:13 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id HJPM6ySCSBuD; Thu,  4 Nov 2021 04:45:12 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 12:45:05 +0100
+From:   Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Steve Longerbeam <slongerbeam@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@puri.sm, phone-devel@vger.kernel.org
+Subject: Re: [PATCHv2 4/4] media: imx: Use dedicated format handler for
+ i.MX7/8
+Message-ID: <20211104124505.2e0f655d.dorota.czaplejewicz@puri.sm>
+In-Reply-To: <20211103104100.GM2794@kadam>
+References: <20211017102904.756408-1-dorota.czaplejewicz@puri.sm>
+        <20211017102904.756408-4-dorota.czaplejewicz@puri.sm>
+        <20211103104100.GM2794@kadam>
+Organization: Purism
 MIME-Version: 1.0
-In-Reply-To: <CANp29Y4hi=iFti=BzZxEEPgnn74L80fr3WXDR8OVkGNqR9BOLw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/N4/v8hcjiT.3zfcCOpzn9O8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/4/21 4:45 AM, Aleksandr Nogikh wrote:
-> Hi Jeans,
-> 
-> We'll try to figure something out.
-> 
-> I've filed an issue to track progress on the problem.
-> https://github.com/google/syzkaller/issues/2865 
+--Sig_/N4/v8hcjiT.3zfcCOpzn9O8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Great thanks. It's annoyed me a bit in the past, but it's really
-excessive this time around. Probably because that particular patch
-caused more than its fair share of problems, but still shouldn't
-be an issue once it's dropped from the trees.
+Hi,
 
--- 
-Jens Axboe
+On Wed, 3 Nov 2021 13:41:00 +0300
+Dan Carpenter <dan.carpenter@oracle.com> wrote:
 
+> On Sun, Oct 17, 2021 at 01:08:37PM +0200, Dorota Czaplejewicz wrote:
+> > +static int imx78_media_mbus_fmt_to_pix_fmt(struct v4l2_pix_format *pix,
+> > +					   const struct v4l2_mbus_framefmt *mbus,
+> > +					   const struct imx_media_pixfmt *cc)
+> > +{
+> > +	u32 width;
+> > +	u32 stride;
+> > +	u8 divisor;
+> > +
+> > +	if (!cc) {
+> > +		cc =3D imx_media_find_ipu_format(mbus->code,
+> > +					       PIXFMT_SEL_YUV_RGB);
+> > +		if (!cc)
+> > +			cc =3D imx_media_find_mbus_format(mbus->code,
+> > +							PIXFMT_SEL_ANY);
+> > +		if (!cc)
+> > +			return -EINVAL;
+> > +	}
+> > +
+> > +	/*
+> > +	 * TODO: the IPU currently does not support the AYUV32 format,
+> > +	 * so until it does convert to a supported YUV format.
+> > +	 */
+> > +	if (cc->ipufmt && cc->cs =3D=3D IPUV3_COLORSPACE_YUV) {
+> > +		u32 code;
+> > +
+> > +		imx_media_enum_mbus_formats(&code, 0, PIXFMT_SEL_YUV);
+> > +		cc =3D imx_media_find_mbus_format(code, PIXFMT_SEL_YUV); =20
+>=20
+> Do we need a if (!cc) NULL check after this assignment?
+
+In v3 of this series, this statement is only present in the IMX56 code path=
+, which is unmodified compared to the original.
+
+However, there's a missing check in the IMX78. I'm not sure if those can fa=
+il in practice, but for the sake of correctness, I rolled out an updated v4=
+ series, where both checks are present. Message-id: 20211104113631.206899-1=
+-dorota.czaplejewicz@puri.sm
+
+Cheers,
+Dorota
+>=20
+> > +	}
+> > +
+> > +	/*
+> > +	 * The hardware can handle line lengths divisible by 4 bytes,
+> > +	 * as long as the number of lines is even.
+> > +	 * Otherwise, use the value of 8 bytes recommended in the datasheet.
+> > +	 */
+> > +	divisor =3D 4 << (mbus->height % 2);
+> > +
+> > +	width =3D round_up(mbus->width, divisor);
+> > +
+> > +	if (cc->planar)
+> > +		stride =3D round_up(width, 16);
+> > +	else
+> > +		stride =3D round_up((width * cc->bpp) >> 3, divisor);
+> > +
+> > +	pix->width =3D width;
+> > +	pix->height =3D mbus->height;
+> > +	pix->pixelformat =3D cc->fourcc;
+> > +	pix->colorspace =3D mbus->colorspace;
+> > +	pix->xfer_func =3D mbus->xfer_func;
+> > +	pix->ycbcr_enc =3D mbus->ycbcr_enc;
+> > +	pix->quantization =3D mbus->quantization;
+> > +	pix->field =3D mbus->field;
+> > +	pix->bytesperline =3D stride;
+> > +	pix->sizeimage =3D cc->planar ? ((stride * pix->height * cc->bpp) >> =
+3) :
+> > +			 stride * pix->height;
+> > +
+> > +	return 0;
+> > +} =20
+>=20
+> regards,
+> dan carpenter
+
+
+--Sig_/N4/v8hcjiT.3zfcCOpzn9O8
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEExKRqtqfFqmh+lu1oADBpX4S8ZncFAmGDx8EACgkQADBpX4S8
+ZndvfA/8CulOyvDt2hPzMe9ypnW5EvQv062bYWIlWV01qaneQE6DLHwaSB6qJa67
+rOscFWIHb7TLog5W3Gii10zpWRNBU4CPJETqbdaKiM8WsXh7iiIF7pyzyfhJQCXu
+tGg0bWq+IVyOQfO84dlT+JvVDM0X+vWrqUmv7YerRvnJsMOXX9zL2cK4x4cMPsSl
+I7zXzC79aNzJHI/oAgSSNmM7Leuyw2VuXSrEUR4aInELa/GUdjNajd55em3BBf6F
+0ZCGaYw4hRq50JbJ5jqz63kVe7BI4+Uo7Y/qtW7DJ5hoc36DV4m7rKrFpCUSbKUW
+HdIRWQCynux2UCtN11/ayc9z6w9mSL2Tee6zZSCiURyWYxQldoHDkqI540QF/kkE
+wh8Y1MC+Ymi/e8SoMLegms/fdo0LTLcYPLbkX0qeWZuXX/7VxDY8Tk5y+NB3tLcI
+jT/WQulBu0AlZNhjaGw/ZCYkvhgkPHJUf5+3Uf5oQlcAP/S+dVtTWeMJHWwH9z7E
+Wm0347mj1LXxq9EG8Sux9HAbSE7ehgbV7VH1TvKzB1I+JF1CdEYnZbEPXYbv6G3G
+W2hGL2s+IMDYjkz7ASbRky1bCmJeHPvu2gI8qxRaqZNtRRa/7CQWmNV32iki2Qzm
+cwB/lXW9QCklagjT7NCjY73DIKuOMLACUAVBS4+W3H7fSp/BW0E=
+=m0hN
+-----END PGP SIGNATURE-----
+
+--Sig_/N4/v8hcjiT.3zfcCOpzn9O8--
