@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0AE7445968
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:11:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FA644596A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:11:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234095AbhKDSNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 14:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231971AbhKDSNv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 14:13:51 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C1AC061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 11:11:13 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id d12so10155385lfv.6
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 11:11:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nf0H9x5iC2UijIAft5liiq6zHCoI2VPB3p3SeysRKEk=;
-        b=Uwu8a58w2K2ozIztcp+NlMX1tiXHAgLmZSW0tAlxr4RT7mZUZhwi9KscudA5wVqhBQ
-         VsQJjUy7lLJrCJt2TPhk0RPqqZlqt+D2WmNlO5+F1nEfD+sjD4Y3323mu1LQlMflp7TZ
-         DJe1bcPkA1lE7zcYzWvaIaphlXfZZUXqsukwE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nf0H9x5iC2UijIAft5liiq6zHCoI2VPB3p3SeysRKEk=;
-        b=JdDkxPvSEiDG4kD/p4U+W7EQh1F7xQCELJ8Neo4jyZLdBmUFcEdk0BPeeur27twMtf
-         Q7DgW2GlKOarfPbnBHT+4k5FLVSj+hmOZ2wvEYznCInf3nNW/UFuRNQgD4aWhqIjnKZW
-         4GfU87EyKzKiMtf9r1ZZ8aDHD5QgAxJSqlnwztwW8LfhTmGjq4Xk5iJVwPds5u8TCO5L
-         Kw0/smIcdL36JQv6p+WTUbeySBM0njeFH7yEgEZtmSeYbGSU9YsL6cacQqaToDQNLrgl
-         7sMj/Tzee/bgXHJexOnxeiSU88CjjxOOB3ATl3eCqB/hi/K5Gj5N5BLP+CxJvQbkOoR9
-         UGSw==
-X-Gm-Message-State: AOAM533TN+ss1um/luTBrxTHJjBwTMXTOL/u8SbPmnf0V8Bcz+DyhjIG
-        V59w1i2HHCiguVgzSquofnvDSRlud4dDkGat
-X-Google-Smtp-Source: ABdhPJx9bW2yRryYxJjCxyDnusBzsi6Tpk60AFWpSMJFpa0HtvbouYonUjkc96ZK3m02tV2X6Pr85Q==
-X-Received: by 2002:a05:6512:ace:: with SMTP id n14mr48126488lfu.460.1636049470966;
-        Thu, 04 Nov 2021 11:11:10 -0700 (PDT)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id u9sm545175lfo.87.2021.11.04.11.11.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 11:11:10 -0700 (PDT)
-Received: by mail-lf1-f48.google.com with SMTP id d12so10155200lfv.6
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 11:11:10 -0700 (PDT)
-X-Received: by 2002:ac2:4e15:: with SMTP id e21mr50379940lfr.655.1636049469724;
- Thu, 04 Nov 2021 11:11:09 -0700 (PDT)
+        id S234107AbhKDSOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 14:14:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55988 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231971AbhKDSOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 14:14:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 065F56120D;
+        Thu,  4 Nov 2021 18:11:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636049505;
+        bh=UvToKl26gPPfVl3jvr/V/GxzhNVjJVQZXBTGi0GHlRI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fIM7S5ZiCQq/i8nkammap4QpV5g2mjE1hHtqqNxH2LZ4lC7Cia3JEbE1rjnU83eco
+         2j/nCccaNCwV+JIPBw1r91/uqqOIZJWxHye4RoaspiWsgUMBb9y0ao1WVbE39ksHCk
+         JsxMqptOpfM1boB0vqkiIl3rjLyF0MtuV+VXfU8UWexjfVNbOrdJk49aQdLJvCHBWZ
+         sJ6dQamoWbZD9Jvlg0jkvG4rnYBi1NH4QH62hAMVewMBeMLcAKvKw6dWc/WxK3jsJW
+         mDqG5UsHLOE8g28IVEqFVcoH3P/DzMDr1Wuk4gy0qjKwegi8/pQuP0/FAOELNkB8NX
+         aCPgNevvAH1EQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7815A410A1; Thu,  4 Nov 2021 15:11:42 -0300 (-03)
+Date:   Thu, 4 Nov 2021 15:11:42 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: perf build broken looking for bpf/{libbpf,bpf}.h after merge
+ with upstream
+Message-ID: <YYQiXnUxlOoWMdwZ@kernel.org>
+References: <YYQadWbtdZ9Ff9N4@kernel.org>
+ <YYQdKijyt20cBQik@kernel.org>
+ <CAEf4BzYtq5Fru0_=Stih+Tjya3i29xG+RSF=4oOT7GbUwVRQaQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <YYPrNkweZahTdAbA@8bytes.org>
-In-Reply-To: <YYPrNkweZahTdAbA@8bytes.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 4 Nov 2021 11:10:53 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whX_ygSHr02mhWXO38kddFE_t7ntBHf_sehz=asFfzFKA@mail.gmail.com>
-Message-ID: <CAHk-=whX_ygSHr02mhWXO38kddFE_t7ntBHf_sehz=asFfzFKA@mail.gmail.com>
-Subject: Re: [git pull] IOMMU Updates for Linux v5.16
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        iommu <iommu@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYtq5Fru0_=Stih+Tjya3i29xG+RSF=4oOT7GbUwVRQaQ@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 7:16 AM Joerg Roedel <joro@8bytes.org> wrote:
->
-> there is a merge conflict this time between the IOMMU tree and FPU
-> changes which came from the tip tree. My conflict resolution is
-> attached.
+Em Thu, Nov 04, 2021 at 10:56:26AM -0700, Andrii Nakryiko escreveu:
+> On Thu, Nov 4, 2021 at 10:49 AM Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
 
-The conflict is trivial, no worries. But as I was resolving it, I
-looked at that PASID_DISABLED define..
+> > Em Thu, Nov 04, 2021 at 02:37:57PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > >
+> > > Hi Song,
+> > >
+> > >       I just did a merge with upstream and I'm getting this:
+> > >
+> > >   LINK    /tmp/build/perf/plugins/plugin_scsi.so
+> > >   INSTALL trace_plugins
+> >
+> > To clarify, the command line to build perf that results in this problem
+> > is:
+> >
+> >   make -k BUILD_BPF_SKEL=1 CORESIGHT=1 PYTHON=python3 O=/tmp/build/perf -C tools/perf install-bin
+> 
+> Oh, I dropped CORESIGN and left BUILD_BPF_SKEL=1 and yeah, I see the
+> build failure. I do think now that it's related to the recent Makefile
+> revamp effort. Quentin, PTAL.
+> 
+> On the side note, why BUILD_BPF_SKEL=1 is not a default, we might have
+> caught this sooner. Is there any reason not to flip the default?
 
-That too seems to be stale and unused since commit 9bfecd058339
-("x86/cpufeatures: Force disable X86_FEATURE_ENQCMD and remove
-update_pasid()")
+I asked Song in the past about this, and asked again on another reply to
+this thread, I think it should be the default.
 
-I left it alone because I didn't want to do any extra development in
-the merge commit itself, but it looks to me like there's some room for
-more cleanips. No?
+Song, Namhyung? You're the skel guys (so far) :-)
 
-              Linus
+- Arnaldo
