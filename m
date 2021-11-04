@@ -2,159 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41514452CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:16:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9364452D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:16:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbhKDMSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 08:18:36 -0400
-Received: from mail-pg1-f176.google.com ([209.85.215.176]:36458 "EHLO
-        mail-pg1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231312AbhKDMSf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 08:18:35 -0400
-Received: by mail-pg1-f176.google.com with SMTP id 75so5255429pga.3;
-        Thu, 04 Nov 2021 05:15:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BbQxkXh1kRX5txg91IzBReR7Etxrh9MaaIL5VubC4mA=;
-        b=HwaDncFOGCkngqsx9mhphaCX9kCINHoPVkIt6zwRsCF/XLC2Stu1pMzkcI+laGuggx
-         WtNWzQUf2HtiwZIfpaYVa9QyDVnnPIR+Ky9MkxgDEmCIp82Kyo36261eV3WsG8iMsCKy
-         5TCL0XWo9yi+TVJKKbpqstz22CmCChIBximeJSIGh5vJ2FMkGGBINKHcxELqzVxdCTxI
-         zEKb9sIhDT5YogiZZx/SvRUSADQKYBn/5ScV7KhC7wTRifgwlxz9f4vpPGaCMew6adsC
-         ZpyYu7d+Op6oDiH2gPau7GmWP6DWUOtIC48kROCfF0V+ItWTtAmTfdPWBEK3Ime5eJWY
-         J06w==
-X-Gm-Message-State: AOAM531W3zX6vHHFbMupsQ67P1Kpvc/B/GyqSYBooLA22s889KpCBeeX
-        EG8YRrIrekcSgxqj3hSYml4CvAHE1xoEDZYPKWM=
-X-Google-Smtp-Source: ABdhPJyU1eOL96q9aeg27rCGRB1DzlV/CdmoIQADJWmiDt4mzuQNX51WDsHXaA6t5irbMhhl52dNgltzzdGXVDztegg=
-X-Received: by 2002:a05:6a00:1354:b0:494:5227:42c7 with SMTP id
- k20-20020a056a00135400b00494522742c7mr5310054pfu.53.1636028156990; Thu, 04
- Nov 2021 05:15:56 -0700 (PDT)
+        id S231603AbhKDMT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 08:19:26 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:56542 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231563AbhKDMTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 08:19:22 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1mibfR-0002ie-Nn; Thu, 04 Nov 2021 20:16:29 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1mibfA-00026K-MG; Thu, 04 Nov 2021 20:16:12 +0800
+Date:   Thu, 4 Nov 2021 20:16:12 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Vladis Dronov <vdronov@redhat.com>,
+        Simo Sorce <ssorce@redhat.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        kernel test robot <lkp@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] crypto: api - Do not create test larvals if manager is
+ disabled
+Message-ID: <20211104121612.GA8044@gondor.apana.org.au>
+References: <20210917002619.GA6407@gondor.apana.org.au>
+ <YVNfqUVJ7w4Z3WXK@archlinux-ax161>
+ <20211001055058.GA6081@gondor.apana.org.au>
+ <YVdNFzs8HUQwHa54@archlinux-ax161>
+ <20211003002801.GA5435@gondor.apana.org.au>
+ <YV0K+EbrAqDdw2vp@archlinux-ax161>
+ <20211019132802.GA14233@gondor.apana.org.au>
+ <alpine.DEB.2.22.394.2111021636040.2330984@ramsan.of.borg>
+ <DM6PR04MB708155E447FD9A79AB89686DE78D9@DM6PR04MB7081.namprd04.prod.outlook.com>
+ <CAMuHMdW1wLAt9Y=-GMMuk8HWE3UnRgKNMmD9fq34Rq8J7QyrzQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-10-kernel@esmil.dk>
- <CAHp75Ve-P8DR00mtRP_NkrXgB4nsZ+qBkgBen94iTcPqxQYUOg@mail.gmail.com>
- <CANBLGcyb=TAP0h2WuxBAjRvpN9n7Dt1Hvh5yE8NMOwm3ixZWuA@mail.gmail.com>
- <CAHp75Vcg3En=xH+kz0GgAMGUoo5FABo2HwGoHd=7QgGVrYkYXg@mail.gmail.com> <CANBLGczrGwexRGvGxa9C+yzaSHZF_d5+AaebeLUX5BXFxipr=A@mail.gmail.com>
-In-Reply-To: <CANBLGczrGwexRGvGxa9C+yzaSHZF_d5+AaebeLUX5BXFxipr=A@mail.gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Thu, 4 Nov 2021 13:15:46 +0100
-Message-ID: <CANBLGcztx0DL=U06QPJ5XT4ra=kx2QAZxxP=0bjfgQ0skhv3Bg@mail.gmail.com>
-Subject: Re: [PATCH v3 09/16] reset: starfive-jh7100: Add StarFive JH7100
- reset driver
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdW1wLAt9Y=-GMMuk8HWE3UnRgKNMmD9fq34Rq8J7QyrzQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Nov 2021 at 22:17, Emil Renner Berthing <kernel@esmil.dk> wrote:
-> On Tue, 2 Nov 2021 at 21:14, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > On Tue, Nov 2, 2021 at 9:59 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
-> > > On Tue, 2 Nov 2021 at 20:43, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > > On Tue, Nov 2, 2021 at 6:50 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
-> >
-> > ...
-> >
-> > > > > +/*
-> > > > > + * the registers work like a 32bit bitmap, so writing a 1 to the m'th bit of
-> > > > > + * the n'th ASSERT register asserts line 32n + m, and writing a 0 deasserts the
-> > > > > + * same line.
-> > > > > + * most reset lines have their status inverted so a 0 in the STATUS register
-> > > > > + * means the line is asserted and a 1 means it's deasserted. a few lines don't
-> > > > > + * though, so store the expected value of the status registers when all lines
-> > > > > + * are asserted.
-> > > > > + */
-> > > >
-> > > > Besides missing capitalization,
+On Thu, Nov 04, 2021 at 08:58:16AM +0100, Geert Uytterhoeven wrote:
+> Hi Damien,
+> 
+> On Thu, Nov 4, 2021 at 8:29 AM Damien Le Moal <Damien.LeMoal@wdc.com> wrote:
+> > On 2021/11/03 0:41, Geert Uytterhoeven wrote:
+>
+> > > Thanks for your patch, which is now commit cad439fc040efe5f
+> > > ("crypto: api - Do not create test larvals if manager is disabled").
 > > >
-> > > I'm confused. it was you who wanted all comments to capitalized the same..
-> >
-> > Yes and there are two types of the comments, one-liners and
-> > multi-line. In multi-line you usually use proper English grammar,
-> > where capitalization means what it means. For the one-liners just
-> > choose either small letters or capital letters to start them with.
->
-> That sounds reasonable, it was just that you complained about
-> inconsistent comments in the pinctrl driver that follows the above.
->
-> > > if it sounds like bitmap, use bitmap.
-> > > > I have checked DT definitions and it seems you don't even need the
-> > > > BIT_MASK() macro,
-> > > >
-> > > > > +static const u32 jh7100_reset_asserted[4] = {
-> > > > > +       /* STATUS0 register */
-> > > > > +       BIT_MASK32(JH7100_RST_U74) |
-> > > > > +       BIT_MASK32(JH7100_RST_VP6_DRESET) |
-> > > > > +       BIT_MASK32(JH7100_RST_VP6_BRESET),
-> > > > > +       /* STATUS1 register */
-> > > > > +       BIT_MASK32(JH7100_RST_HIFI4_DRESET) |
-> > > > > +       BIT_MASK32(JH7100_RST_HIFI4_BRESET),
-> > > > > +       /* STATUS2 register */
-> > > > > +       BIT_MASK32(JH7100_RST_E24),
-> > > > > +       /* STATUS3 register */
-> > > > > +       0,
-> > > > > +};
-> > > >
-> > > > Yury, do we have any clever (clean) way to initialize a bitmap with
-> > > > particular bits so that it will be a constant from the beginning? If
-> > > > no, any suggestion what we can provide to such users?
+> > > I have bisected a failure to mount the root file system on k210 to this
+> > > commit.
 > > >
-> > > The problem is, that even if we could initialize this without the
-> > > monstrosity in our last conversation a 64bit bitmap would still
-> > > produce worse code. As it is now it's simply a 32bit load and mask
-> > > with index and mask already calculated for the registers. In the
-> > > status callback the mask can even be folded into the register read
-> > > mask. With a 64bit bitmap you'd need to calculate new 64bit index and
-> > > masks, and then conditionally shift the bits into position.
+> > > Dmesg before/after:
+> > >
+> > >       mmcblk0: mmc0:0000 SA04G 3.68 GiB
+> > >       random: fast init done
+> > >        mmcblk0: p1
+> > >      -EXT4-fs (mmcblk0p1): mounted filesystem with ordered data mode. Opts: (null). Quota mode: disabled.
+> > >      -VFS: Mounted root (ext4 filesystem) readonly on device 179:1.
+> > >      +EXT4-fs (mmcblk0p1): Cannot load crc32c driver.
+> > >      +VFS: Cannot open root device "mmcblk0p1" or unknown-block(179,1): error -80
 > >
-> > Why? You may use 8 byte IO (writeq() / readq() or their relaxed versions), no?
-> >
-> > > If this reflection of the 32bit registers bothers you that much
-> >
-> > What bothers me is hidden endianess issues (yeah, here it might be
-> > theoretical, but consider that somebody will look at your code and use
-> > it as the best example ever).
->
-> Wouldn't endian issues be a reason to make sure we read 32bit
-> registers with 32bit reads? Or do you expect a hypothetical big-endian
-> StarFive SoC to also change the order of the registers?
+> > p1 exist as the message 2 lines above shows. And since the mount error is -80
+> > (ELIBBAD), it is really all about crypto. Since the default k210 config compile
+> > everything in-kernel (no modules), it should work. Was crc32c compiled as a
+> > module ? If yes, then the k210 will need to be booted with U-Boot and use a real
+> > initrd, which likely will all end-up in a no memory situation. ext4 in itself
+> > will consume way too much memory...
+> 
+> Everything is built-in, including crc32c. It worked fine, until the commit
+> referenced.
 
-Hi Andy.
+Can someone please send me the Kconfig used in this case?
 
-I'd really like to understand your reasoning here. As far as I can
-tell reading 2 adjacent 32bit registers with a 64bit read as you're
-proposing is exactly what would cause endian issues. Eg. on little
-endian you'd get reg0 | reg1 << 32 whereas on big-endian you'd get
-reg0 << 32 | reg1.
-
-/Emil
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
