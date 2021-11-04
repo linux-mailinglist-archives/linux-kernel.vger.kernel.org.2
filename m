@@ -2,168 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1E144508A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D754344508D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhKDIrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhKDIrX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:47:23 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8425CC061714;
-        Thu,  4 Nov 2021 01:44:45 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id D75851F45E3B
-Subject: Re: [RFC] tty/sysrq: Add alternative SysRq key
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Slaby <jirislaby@kernel.org>, kernel@collabora.com
-References: <20211103155438.11167-1-andrzej.p@collabora.com>
- <b4dfb305-38d9-9a92-df76-90b72b93705a@infradead.org>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Message-ID: <f9b84557-c000-fd0e-bf74-a585c23d22e6@collabora.com>
-Date:   Thu, 4 Nov 2021 09:44:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231166AbhKDIr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:47:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55630 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231160AbhKDIr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 04:47:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 292056121E;
+        Thu,  4 Nov 2021 08:44:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636015489;
+        bh=kwiMbVSFUNrWxc9I+E615tdE1kmkiFiM6b1Af4OjufA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0YPm3BSITEzrUrHl4UtOiIRtRAZ462IMRYImpfOPmPOFL0cVUoVRJfWmIemS63AxK
+         G3bwKQWOT1/UKTv4Istd3WbOGRZZ9zMpGKaqb0Hg8DG58cfsgTRi/CANIwNNXvd/0N
+         ACNYT+DMITJKiLMPkB5wtYfQZu/f78hCFhMSsxB0=
+Date:   Thu, 4 Nov 2021 09:44:47 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Karol Herbst <kherbst@redhat.com>, Sven Joachim <svenjoac@gmx.de>,
+        "Erhard F." <erhard_f@mailbox.org>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        Huang Rui <ray.huang@amd.com>
+Subject: Re: [Nouveau] [PATCH 5.10 32/77] drm/ttm: fix memleak in
+ ttm_transfered_destroy
+Message-ID: <YYOdfzrgpD2LST88@kroah.com>
+References: <20211101082511.254155853@linuxfoundation.org>
+ <20211101082518.624936309@linuxfoundation.org>
+ <871r3x2f0y.fsf@turtle.gmx.de>
+ <CACO55tsq6DOZnyCZrg+N3m_hseJfN_6+YhjDyxVBAGq9PFJmGA@mail.gmail.com>
+ <CACO55tsQVcUHNWAkWcbJ8i-S5pgKhrin-Nb3JYswcBPDd3Wj4w@mail.gmail.com>
+ <87tugt0xx6.fsf@turtle.gmx.de>
+ <CACO55tsNKKTW6X_+Ym0oySX-iNtikyV6rgHGu01Co7_mDWkxhg@mail.gmail.com>
+ <1a1cc125-9314-f569-a6c4-40fc4509a377@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <b4dfb305-38d9-9a92-df76-90b72b93705a@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1a1cc125-9314-f569-a6c4-40fc4509a377@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+On Thu, Nov 04, 2021 at 08:39:18AM +0100, Christian K�nig wrote:
+> Am 03.11.21 um 22:25 schrieb Karol Herbst:
+> > On Wed, Nov 3, 2021 at 9:47 PM Sven Joachim <svenjoac@gmx.de> wrote:
+> > > On 2021-11-03 21:32 +0100, Karol Herbst wrote:
+> > > 
+> > > > On Wed, Nov 3, 2021 at 9:29 PM Karol Herbst <kherbst@redhat.com> wrote:
+> > > > > On Wed, Nov 3, 2021 at 8:52 PM Sven Joachim <svenjoac@gmx.de> wrote:
+> > > > > > On 2021-11-01 10:17 +0100, Greg Kroah-Hartman wrote:
+> > > > > > 
+> > > > > > > From: Christian K�nig <christian.koenig@amd.com>
+> > > > > > > 
+> > > > > > > commit 0db55f9a1bafbe3dac750ea669de9134922389b5 upstream.
+> > > > > > > 
+> > > > > > > We need to cleanup the fences for ghost objects as well.
+> > > > > > > 
+> > > > > > > Signed-off-by: Christian K�nig <christian.koenig@amd.com>
+> > > > > > > Reported-by: Erhard F. <erhard_f@mailbox.org>
+> > > > > > > Tested-by: Erhard F. <erhard_f@mailbox.org>
+> > > > > > > Reviewed-by: Huang Rui <ray.huang@amd.com>
+> > > > > > > Bug: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fbugzilla.kernel.org%2Fshow_bug.cgi%3Fid%3D214029&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C9b70f83c53c74b35fee808d99f1091b3%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637715715806624439%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=UIo0hw0OHeLlGL%2Bcj%2Fjt%2FgTwniaJoNmhgDHSFvymhCc%3D&amp;reserved=0
+> > > > > > > Bug: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fbugzilla.kernel.org%2Fshow_bug.cgi%3Fid%3D214447&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C9b70f83c53c74b35fee808d99f1091b3%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637715715806634433%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=TIAUb6AdYm2Bo0%2BvFZUFPS8yu55orjnfxMLCmUgC%2FDk%3D&amp;reserved=0
+> > > > > > > CC: <stable@vger.kernel.org>
+> > > > > > > Link: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpatchwork.freedesktop.org%2Fpatch%2Fmsgid%2F20211020173211.2247-1-christian.koenig%40amd.com&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C9b70f83c53c74b35fee808d99f1091b3%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637715715806634433%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=c9i7AR44MVUyZuXHZkLOCBx2%2BZeetq8alGtbz0Wgqzk%3D&amp;reserved=0
+> > > > > > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > > > > ---
+> > > > > > >   drivers/gpu/drm/ttm/ttm_bo_util.c |    1 +
+> > > > > > >   1 file changed, 1 insertion(+)
+> > > > > > > 
+> > > > > > > --- a/drivers/gpu/drm/ttm/ttm_bo_util.c
+> > > > > > > +++ b/drivers/gpu/drm/ttm/ttm_bo_util.c
+> > > > > > > @@ -322,6 +322,7 @@ static void ttm_transfered_destroy(struc
+> > > > > > >        struct ttm_transfer_obj *fbo;
+> > > > > > > 
+> > > > > > >        fbo = container_of(bo, struct ttm_transfer_obj, base);
+> > > > > > > +     dma_resv_fini(&fbo->base.base._resv);
+> > > > > > >        ttm_bo_put(fbo->bo);
+> > > > > > >        kfree(fbo);
+> > > > > > >   }
+> > > > > > Alas, this innocuous looking commit causes one of my systems to lock up
+> > > > > > as soon as run startx.  This happens with the nouveau driver, two other
+> > > > > > systems with radeon and intel graphics are not affected.  Also I only
+> > > > > > noticed it in 5.10.77.  Kernels 5.15 and 5.14.16 are not affected, and I
+> > > > > > do not use 5.4 anymore.
+> > > > > > 
+> > > > > > I am not familiar with nouveau's ttm management and what has changed
+> > > > > > there between 5.10 and 5.14, but maybe one of their developers can shed
+> > > > > > a light on this.
+> > > > > > 
+> > > > > > Cheers,
+> > > > > >         Sven
+> > > > > > 
+> > > > > could be related to 265ec0dd1a0d18f4114f62c0d4a794bb4e729bc1
+> > > > maybe not.. but I did remember there being a few tmm related patches
+> > > > which only hurt nouveau :/  I guess one could do a git bisect to
+> > > > figure out what change "fixes" it.
+> > > Maybe, but since the memory leaks reported by Erhard only started to
+> > > show up in 5.14 (if I read the bugzilla reports correctly), perhaps the
+> > > patch should simply be reverted on earlier kernels?
+> > > 
+> > Yeah, I think this is probably the right approach.
+> 
+> I agree. The problem is this memory leak could potentially happen with 5.10
+> as wel, just much much much less likely.
+> 
+> But my guess is that 5.10 is so buggy that when the leak does NOT happen we
+> double free and obviously causing a crash.
+> 
+> So for the sake of stability please don't apply this patch to 5.10. I'm
+> going to comment on the original bug report as well.
 
-W dniu 03.11.2021 o 17:19, Randy Dunlap pisze:
-> On 11/3/21 8:54 AM, Andrzej Pietrasiewicz wrote:
->> There exist machines which don't have SysRq key at all, e.g. chromebooks.
->>
->> This patch allows configuring an alternative key to act as SysRq. Devices
->> which declare KEY_SYSRQ in their 'keybit' bitmap continue using KEY_SYSRQ,
->> but other devices use the alternative SysRq key instead, by default F10.
->> Which key is actually used can be modified with sysrq's module parameter.
->>
->> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
->> ---
->> I'd like to resurrect an old thread regarding supporting alternative SysRq
->> key for machines which don't have a physical SysRq key at all.
->>
->> The old thread:
->>
->> https://www.spinics.net/lists/linux-input/msg67982.html
->>
->> I'm resending this patch, rebased onto v5.15.
->>
->> Any (new) thoughts about it?
->>
-> 
-> Hi,
-> Did you test it with this patch?
+Now reverted from 5.10 and 5.4 kernels, thanks,
 
-
-Thanks... I must have sent an incorrect version (with incomplete
-conflict resolution).
-
-Andrzej
-
-> 
-> 
->>
->>   drivers/tty/sysrq.c | 28 +++++++++++++++++++++++++---
->>   1 file changed, 25 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
->> index c911196ac893..6dd288e53ce9 100644
->> --- a/drivers/tty/sysrq.c
->> +++ b/drivers/tty/sysrq.c
->> @@ -634,6 +634,7 @@ EXPORT_SYMBOL(handle_sysrq);
->>   #ifdef CONFIG_INPUT
->>   static int sysrq_reset_downtime_ms;
->> +static unsigned short alternative_sysrq_key = KEY_F10;
->>   /* Simple translation table for the SysRq keys */
->>   static const unsigned char sysrq_xlate[KEY_CNT] =
->> @@ -653,6 +654,7 @@ struct sysrq_state {
->>       unsigned int alt_use;
->>       unsigned int shift;
->>       unsigned int shift_use;
->> +    unsigned short sys
-> 
-> That line appears to need an ending ';'.
-> Or maybe that line was truncated since 'sys' isn't used anywhere in this patch.
-> 
->>       bool active;
->>       bool need_reinject;
->>       bool reinjecting;
->> @@ -802,10 +804,10 @@ static void sysrq_reinject_alt_sysrq(struct work_struct 
->> *work)
->>           /* Simulate press and release of Alt + SysRq */
->>           input_inject_event(handle, EV_KEY, alt_code, 1);
->> -        input_inject_event(handle, EV_KEY, KEY_SYSRQ, 1);
->> +        input_inject_event(handle, EV_KEY, sysrq->sysrq_key, 1);
->>           input_inject_event(handle, EV_SYN, SYN_REPORT, 1);
->> -        input_inject_event(handle, EV_KEY, KEY_SYSRQ, 0);
->> +        input_inject_event(handle, EV_KEY, sysrq->sysrq_key, 0);
->>           input_inject_event(handle, EV_KEY, alt_code, 0);
->>           input_inject_event(handle, EV_SYN, SYN_REPORT, 1);
->> @@ -845,6 +847,7 @@ static bool sysrq_handle_keypress(struct sysrq_state *sysrq,
->>               sysrq->shift = code;
->>           break;
->> +key_sysrq:
->>       case KEY_SYSRQ:
->>           if (value == 1 && sysrq->alt != KEY_RESERVED) {
->>               sysrq->active = true;
->> @@ -867,11 +870,15 @@ static bool sysrq_handle_keypress(struct sysrq_state 
->> *sysrq,
->>            * triggering print screen function.
->>            */
->>           if (sysrq->active)
->> -            clear_bit(KEY_SYSRQ, sysrq->handle.dev->key);
->> +            clear_bit(sysrq->sysrq_key, sysrq->handle.dev->key);
->>           break;
->>       default:
->> +        /* handle non-default sysrq key */
->> +        if (code == sysrq->sysrq_key)
->> +            goto key_sysrq;
->> +
->>           if (sysrq->active && value && value != 2) {
->>               unsigned char c = sysrq_xlate[code];
->> @@ -970,6 +977,14 @@ static int sysrq_connect(struct input_handler *handler,
->>       sysrq->handle.private = sysrq;
->>       timer_setup(&sysrq->keyreset_timer, sysrq_do_reset, 0);
->> +    if (test_bit(KEY_SYSRQ, dev->keybit)) {
->> +        sysrq->sysrq_key = KEY_SYSRQ;
->> +        pr_info("%s: using default sysrq key [%x]\n", dev->name, KEY_SYSRQ);
->> +    } else {
->> +        sysrq->sysrq_key = alternative_sysrq_key;
->> +        pr_info("%s: Using alternative sysrq key: [%x]\n", dev->name, 
->> sysrq->sysrq_key);
->> +    }
->> +
->>       error = input_register_handle(&sysrq->handle);
->>       if (error) {
->>           pr_err("Failed to register input sysrq handler, error %d\n",
->> @@ -1078,6 +1093,13 @@ module_param_array_named(reset_seq, sysrq_reset_seq, 
->> sysrq_reset_seq,
->>   module_param_named(sysrq_downtime_ms, sysrq_reset_downtime_ms, int, 0644);
->> +module_param(alternative_sysrq_key, ushort, 0644);
->> +MODULE_PARM_DESC(alternative_sysrq_key,
->> +    "Alternative SysRq key for input devices that don't have SysRq key. F10 
->> by default.\n"
->> +    "Example\n"
->> +    "Using F9 as SysRq:\n"
->> +    "sysrq.alternative_sysrq_key=0x43\n");
->> +
->>   #else
->>   static inline void sysrq_register_handler(void)
->>
-> 
-> 
-
+greg k-h
