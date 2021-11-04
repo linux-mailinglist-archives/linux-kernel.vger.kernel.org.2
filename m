@@ -2,103 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544944459F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5F04459FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233740AbhKDStV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 14:49:21 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:43804 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhKDStS (ORCPT
+        id S231932AbhKDSwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 14:52:21 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47792 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231234AbhKDSwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 14:49:18 -0400
-Received: by mail-ot1-f49.google.com with SMTP id n13-20020a9d710d000000b005558709b70fso9543097otj.10;
-        Thu, 04 Nov 2021 11:46:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DibJrm4A9ig/vBo1EjDioFiIQk3mKd4WJjbVURulMb4=;
-        b=00mdBxoJEW9fR8XnU1n/NPoPkzeAbFAzBaKS+RQRzEp7MIKf9WUDrneiLSGm5g2jWD
-         yioFEY2MSAd5X8b8Kys44ZIOq8KHbR1bWtomHDRIMAJ5e1yD3lNI9pv/VlVD00T6a914
-         mZpYqNIWzQzKyJfiGb9oBoeM4Cfu/LoFcZ1rR/7Y6casys1ivCfPoQ3fgTNURAwRgMcj
-         0zKNKbG/+55SU+Nqn+sFVmpUQZ8PNlHND2Qk+FCTO00gAUGnmz5UlgLBk1BzhU8vSiwo
-         pBupOysB0xZIXHYQJ3cQVbO34291y+0F27mZJBig1sxmklGj6TTqsYtvyZwYUQq/baPu
-         bawA==
-X-Gm-Message-State: AOAM533z0jfPDtsONomY2UBoHxzSRfkk6SsjAy+VFU8XLjPHVnkv5Q7J
-        MntElKJqAPBxuz9fZ7+2yDmzoBIr2AyW96ktGNc=
-X-Google-Smtp-Source: ABdhPJwQnNjp3uYgBocO01tJttUYZD/1g6MMnI1UZa5kkK2HlPf3uKpAJyavXP4I/0VCGiDu5nLKWC0dOwvQGzLN8DY=
-X-Received: by 2002:a9d:a64:: with SMTP id 91mr33119161otg.198.1636051600270;
- Thu, 04 Nov 2021 11:46:40 -0700 (PDT)
+        Thu, 4 Nov 2021 14:52:20 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A5000218B8;
+        Thu,  4 Nov 2021 18:49:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636051780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cISVSjvwqDLujAz5Z+uiLWh+60f+gnszz/+vLf1ax3o=;
+        b=AbUx1NCNl9mQYLw8KKWsFyMBJKGikp9HL9ZM5MQCHrper+TA+X+34c36xTzm5+AYa/NgX8
+        xQODDLmPBPh4zOdCrPjEGCzxf4wreKJeeMvphUWzQTXp0GhVFRw3x2GllPgN4x4La5k+wc
+        6whVHU6rOyFG13tTrvNqqjPa0fL+e78=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7DFC913F28;
+        Thu,  4 Nov 2021 18:49:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id p907HkQrhGG5TAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 04 Nov 2021 18:49:40 +0000
+Date:   Thu, 4 Nov 2021 19:49:39 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Mathias Krause <minipli@grsecurity.net>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, Odin Ugedal <odin@uged.al>,
+        Kevin Tanguy <kevin.tanguy@corp.ovh.com>,
+        Brad Spengler <spender@grsecurity.net>
+Subject: Re: [PATCH] sched/fair: Prevent dead task groups from regaining
+ cfs_rq's
+Message-ID: <20211104184939.GA23576@blackbody.suse.cz>
+References: <b98e3434-67cd-34b7-9e81-148ea31a851c@grsecurity.net>
+ <20211103190613.3595047-1-minipli@grsecurity.net>
 MIME-Version: 1.0
-References: <20211029123855.80344-1-ulf.hansson@linaro.org>
-In-Reply-To: <20211029123855.80344-1-ulf.hansson@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 4 Nov 2021 19:46:29 +0100
-Message-ID: <CAJZ5v0gMNP_MLCJiZq8FCCOXxh+V31gTCx5OCNpP-__9Pq0_uA@mail.gmail.com>
-Subject: Re: [PATCH v2] PM: sleep: Fix runtime PM based cpuidle support
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Len Brown <len.brown@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-riscv@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211103190613.3595047-1-minipli@grsecurity.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 2:39 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> In the cpuidle-psci case, runtime PM in combination with the generic PM
-> domain (genpd), may be used when entering/exiting a shared idlestate. More
-> precisely, genpd relies on runtime PM to be enabled for the attached device
-> (in this case it belongs to a CPU), to properly manage the reference
-> counting of its PM domain.
->
-> This works fine most of the time, but during system suspend in
-> dpm_suspend_late(), the PM core disables runtime PM for all devices. Beyond
-> this point, calls to pm_runtime_get_sync() to runtime resume a device may
-> fail and therefore it could also mess up the reference counting in genpd.
->
-> To fix this problem, let's call wake_up_all_idle_cpus() in
-> dpm_suspend_late(), prior to disabling runtime PM. In this way a device
-> that belongs to a CPU, becomes runtime resumed through cpuidle-psci and
-> stays like that, because the runtime PM usage count has been bumped in
-> device_prepare().
->
-> Diagnosed-by: Maulik Shah <mkshah@codeaurora.org>
-> Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> ---
->
-> Changes in v2:
->         - Moved away from using cpuidle_pause|resume() to solve the problem, but
->         instead just waking up idle CPUs is suffient, due to other recent merged
->         changes.
->
-> ---
->  drivers/base/power/main.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-> index ac4dde8fdb8b..2fb08d4f1aca 100644
-> --- a/drivers/base/power/main.c
-> +++ b/drivers/base/power/main.c
-> @@ -1463,6 +1463,7 @@ int dpm_suspend_late(pm_message_t state)
->         int error = 0;
->
->         trace_suspend_resume(TPS("dpm_suspend_late"), state.event, true);
-> +       wake_up_all_idle_cpus();
->         mutex_lock(&dpm_list_mtx);
->         pm_transition = state;
->         async_error = 0;
-> --
+Hi.
 
-Applied as 5.16-rc material, thanks!
+On Wed, Nov 03, 2021 at 08:06:13PM +0100, Mathias Krause <minipli@grsecurity.net> wrote:
+> When unregister_fair_sched_group() unlinks all cfs_rq's from the dying
+> task group, it doesn't protect itself from getting interrupted. If the
+> timer interrupt triggers while we iterate over all CPUs or after
+> unregister_fair_sched_group() has finished but prior to unlinking the
+> task group, sched_cfs_period_timer() will execute and walk the list of
+> task groups, trying to unthrottle cfs_rq's, i.e. re-add them to the
+> dying task group. These will later -- in free_fair_sched_group() -- be
+> kfree()'ed while still being linked, leading to the fireworks Kevin and
+> Michal are seeing.
+
+[...]
+ 
+>     CPU1:                                      CPU2:
+>       :                                        timer IRQ:
+>       :                                          do_sched_cfs_period_timer():
+>       :                                            :
+>       :                                            distribute_cfs_runtime():
+>       :                                              rcu_read_lock();
+>       :                                              :
+>       :                                              unthrottle_cfs_rq():
+>     sched_offline_group():                             :
+>       :                                                walk_tg_tree_from(…,tg_unthrottle_up,…):
+>       list_del_rcu(&tg->list);                           :
+>  (1)  :                                                  list_for_each_entry_rcu(child, &parent->children, siblings)
+>       :                                                    :
+>  (2)  list_del_rcu(&tg->siblings);                         :
+>       :                                                    tg_unthrottle_up():
+>       unregister_fair_sched_group():                         struct cfs_rq *cfs_rq = tg->cfs_rq[cpu_of(rq)];
+>         :                                                    :
+>         list_del_leaf_cfs_rq(tg->cfs_rq[cpu]);               :
+>         :                                                    :
+>         :                                                    if (!cfs_rq_is_decayed(cfs_rq) || cfs_rq->nr_running)
+>  (3)    :                                                        list_add_leaf_cfs_rq(cfs_rq);
+>       :                                                      :
+>       :                                                    :
+>       :                                                  :
+>       :                                                :
+>       :                                              :
+>  (4)  :                                              rcu_read_unlock();
+
+The list traversal (1) may happen in some scenarios (quota on non-leaf
+task_group) but in the presented reproducer, the quota is set on the
+leaf task_group. That means it has no children and this list iteration
+is irrelevant.
+The cause is that walk_tg_tree_from includes `from` task_group and
+calls tg_unthrottle_up() on it too.
+What I mean is that the unlinking of tg->list and tg->siblings is
+irrelevant in this case.
+
+The timer can still fire after
+sched_offline_group()/unregister_fair_sched_group() finished (i.e. after
+synchronize_rcu())
+
+
+> This patch survives Michal's reproducer[2] for 8h+ now, which used to
+> trigger within minutes before.
+
+Note that the reproducer is sensitive to the sleep between last task
+exit and cgroup rmdir. I assume that the added synchronize_rcu() before
+list_del_leaf_cfs_rq() shifted the list removal after the last timer
+callback and prevented re-adding of the offlined task_group in
+unthrottle_cfs_rq().
+
+(Of course, it'd more convincing if I backed this theory by results from
+the reproducer with the increased interval to crash again. I may get
+down to that later.)
+
+Does your patch fix the crashes also in your real workload?
+
+Michal
