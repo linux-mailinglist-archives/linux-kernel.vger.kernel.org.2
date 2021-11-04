@@ -2,215 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CBA1445CBC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 00:40:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB8E445CC4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 00:48:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbhKDXmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 19:42:46 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:57367 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229725AbhKDXmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 19:42:45 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1636069206; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ClTodIMDy7GD1VDiDFYQwXhlGL0o88vwo6+goEeSxGg=;
- b=JZhXEcaa384HC3sK6KORFY9A37Hvww6eHaHwdL+0Jk/vJXjKuk0T39o2g9p68twdf8k0hqyO
- jyaisxd9BjsTByPfjcavWOKmAD9b4sI9Zb0ae+8m1J6wRk95ieNkjjwRx2PD6ADd+FjvU5R2
- p8xtDB2NFF85bIkKGtOROCpF+nU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 61846f56c19d3d1257e82deb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Nov 2021 23:40:06
- GMT
-Sender: rishabhb=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 14FC0C4360D; Thu,  4 Nov 2021 23:40:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DBDCBC4338F;
-        Thu,  4 Nov 2021 23:40:03 +0000 (UTC)
+        id S232037AbhKDXvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 19:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229725AbhKDXvR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 19:51:17 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3034C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 16:48:38 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id v23so12187241ljk.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 16:48:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=RUydRgKitS7xjl4fUt0DmUmUJFyOp4TRNw35dFlgrg8=;
+        b=MZKfUpmfymkhP20bCj4T/LQGFFD4TKWsAiGHdVXd3kwJPDnWfMcAnqxRJ08O8QT1OY
+         dwtn6D9ewzqc8BkE0xYN4gtsU2zfsNzEWhBkte4+mUewcvVfXfe3MtK2QXR9+w7RHB0i
+         80LHGxbyyxLaUEJg60P6V4UiVFSMqXREUwuG8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=RUydRgKitS7xjl4fUt0DmUmUJFyOp4TRNw35dFlgrg8=;
+        b=cBpUcgg9sGAHEikPt/opxXAdQlEaMSW9rx6wb2Rf5iocBB834KqDuriI0BmtmRa6WL
+         /PhH0SED+gYuzGdGPQ8DYVXxHkqV9xUvQWchEE4IbfVBzoQHrlSiesALgl0uzOWGeVPx
+         5R/+lTFSi4zpX0ls2QZ12eTk/WveGhyG7CJ4E4FsMM0DlP/xdRKP3CzW9DW1qHOW9Msp
+         kQdI2VpMYQpBdRvR84xhmBgfoliI2ywIXePaBWPY+hUKm/XhVjL44A6hykPaWYtfAuuP
+         CT+DxhM5wGywc7Oqrmd3ei6WUpcoUdQ9R7fYptweFvSh/VU0RnxlO6TSnQzzXpzt1g4N
+         SS9w==
+X-Gm-Message-State: AOAM532LTRkQbf40b81gCm+ovBV4BmXINjFDhE5s2laVwrtSnXL1/Dmd
+        Fn8lHl/KOFxnsdXLpAe5junFZt+rNwgYsCJE
+X-Google-Smtp-Source: ABdhPJzqhSdiZEejEYJVUbQ3BCY3gencg26ds4J+BDb+Er3LkAH//wW0ciLNYDH75b594eDGqUzT0Q==
+X-Received: by 2002:a2e:90da:: with SMTP id o26mr951677ljg.292.1636069716793;
+        Thu, 04 Nov 2021 16:48:36 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id i11sm621766lfu.269.2021.11.04.16.48.35
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Nov 2021 16:48:35 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id j5so12161877lja.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 16:48:35 -0700 (PDT)
+X-Received: by 2002:a05:651c:113:: with SMTP id a19mr11688124ljb.249.1636069714934;
+ Thu, 04 Nov 2021 16:48:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 04 Nov 2021 16:40:03 -0700
-From:   rishabhb@codeaurora.org
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Cristian Marussi <cristian.marussi@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        avajid@codeaurora.org, adharmap@codeaurora.org
-Subject: Re: [PATCH v3] firmware: arm_scmi: Free mailbox channels if probe
- fails
-In-Reply-To: <20211102113221.w7ivffssjb6jmggj@bogus>
-References: <1628111999-21595-1-git-send-email-rishabhb@codeaurora.org>
- <20210805105427.GU6592@e120937-lin>
- <51782599a01a6a22409d01e5fc1f8a50@codeaurora.org>
- <20210831054835.GJ13160@e120937-lin> <20210901093558.GL13160@e120937-lin>
- <aab71610e11c2dd293159576cc53e277@codeaurora.org>
- <20211102113221.w7ivffssjb6jmggj@bogus>
-Message-ID: <9385b2ca9b688b00735cc0b7f626f008@codeaurora.org>
-X-Sender: rishabhb@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20211104115001.GU20319@twin.jikos.cz> <CAHk-=whYQvExYESEOJoSj4Jy7t+tSZgbCWuNpdwXYh+3zq2itw@mail.gmail.com>
+ <CAHk-=whBOXM3mh-QtzK-EQtDEHQLcziAXu07KxU1crUc5jiQUg@mail.gmail.com>
+In-Reply-To: <CAHk-=whBOXM3mh-QtzK-EQtDEHQLcziAXu07KxU1crUc5jiQUg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 4 Nov 2021 16:48:19 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whGUxtcL8Z67y4A6_diSmtQdnOq1p_gyBAMzpKD9yk+gw@mail.gmail.com>
+Message-ID: <CAHk-=whGUxtcL8Z67y4A6_diSmtQdnOq1p_gyBAMzpKD9yk+gw@mail.gmail.com>
+Subject: Re: Kmap-related crashes and memory leaks on 32bit arch (5.15+)
+To:     David Sterba <dsterba@suse.cz>, Qu Wenruo <wqu@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-02 04:32, Sudeep Holla wrote:
-> On Mon, Nov 01, 2021 at 09:35:42AM -0700, rishabhb@codeaurora.org 
-> wrote:
->> On 2021-09-01 02:35, Cristian Marussi wrote:
->> > On Tue, Aug 31, 2021 at 06:48:35AM +0100, Cristian Marussi wrote:
->> > > On Mon, Aug 30, 2021 at 02:09:37PM -0700, rishabhb@codeaurora.org
->> > > wrote:
->> > > > Hi Christian
->> > >
->> > > Hi Rishabh,
->> > >
->> > > thanks for looking into this kind of bad interactions.
->> > >
->> > > > There seems to be another issue here. The response from agent can be delayed
->> > > > causing a timeout during base protocol acquire,
->> > > > which leads to the probe failure. What I have observed is sometimes the
->> > > > failure of probe and rx_callback (due to a delayed message)
->> > > > happens at the same time on different cpus.
->> > > > Because of this race, the device memory may be cleared while the
->> > > > interrupt(rx_callback) is executing on another cpu.
->> > >
->> > > You are right that concurrency was not handled properly in this kind
->> > > of
->> > > context and moreover, if you think about it, even the case of out of
->> > > order reception of responses and delayed_responses (type2 SCMI
->> > > messages)
->> > > for asynchronous SCMI commands was not handled properly.
->> > >
->> > > > How do you propose we solve this? Do you think it is better to take the
->> > > > setting up of base and other protocols out of probe and
->> > > > in some delayed work? That would imply the device memory is not released
->> > > > until remove is called. Or should we add locking to
->> > > > the interrupt handler(scmi_rx_callback) and the cleanup in probe to avoid
->> > > > the race?
->> > > >
->> > >
->> > > These issues were more easily exposed by SCMI Virtio transport, so in
->> > > the series where I introduced scmi-virtio:
->> > >
->> > > https://lore.kernel.org/linux-arm-kernel/162848483974.232214.9506203742448269364.b4-ty@arm.com/
->> > >
->> > > (which is now queued for v5.15 ...  now on -next I think...finger
->> > > crossed)
->> > >
->> > > I took the chance to rectify a couple of other things in the SCMI core
->> > > in the initial commits.
->> > > As an example, in the above series
->> > >
->> > >  [PATCH v7 05/15] firmware: arm_scmi: Handle concurrent and
->> > > out-of-order messages
->> > >
->> > > cares to add a refcount to xfers and some locking on xfers between TX
->> > > and RX path to avoid that a timed out xfer can vanish while the rx
->> > > path
->> > > is concurrently working on it (as you said); moreover I handle the
->> > > condition (rare if not unplausible anyway) in which a transport
->> > > delivers
->> > > out of order responses and delayed responses.
->> > >
->> > > I tested this scenarios on some fake emulated SCMI Virtio transport
->> > > where I could play any sort of mess and tricks to stress this limit
->> > > conditions, but you're more than welcome to verify if the race you are
->> > > seeing on Base protocol time out is solved (as I would hope :D) by
->> > > this
->> > > series of mine.
->> > >
->> > > Let me know, any feedback is welcome.
->> > >
->> > > Btw, in the series above there are also other minor changes, but there
->> > > is also another more radical change needed to ensure correctness and
->> > > protection against stale old messages which maybe could interest you
->> > > in general if you are looking into SCMI:
->> > >
->> > > [PATCH v7 04/15] firmware: arm_scmi: Introduce monotonically
->> > > increasing tokens
->> > >
->> > > Let me know if yo have other concerns.
->> > >
->> >
->> > Hi Rishabhb,
->> >
->> > just a quick remark, thinking again about your fail @probe scenario
->> > above
->> > I realized that while the concurrency patch I mentioned above could help
->> > on
->> > races against vanishing xfers when late timed-out responses are
->> > delivered,
->> > here we really are then also shutting down everything on failure, so
->> > there
->> > could be further issues between a very late invokation of
->> > scmi_rx_callback
->> > and the core devm_ helpers freeing the underlying xfer/cinfo/etc..
->> > structs
->> > used by scmi-rx-callback itself (maybe this was already what you meant
->> > and
->> > I didn't get it,...sorry)
->> >
->> > On the other side, I don't feel that delaying Base init to a deferred
->> > worker is a viable solution since we need Base protocol init to be
->> > initialized and we need to just give up if we cannot communicate with
->> > the SCMI platform fw in such early stages. (Base protocol is really the
->> > only mandatory proto is I remember correctly the spec)
->> >
->> > Currenly I'm off and only glancing at mails but I'll have a thought
->> > about
->> > these issues once back in a few weeks time.
->> >
->> > Thanks,
->> > Cristian
->> >
->> Hi Cristian
->> I hope you enjoyed your vacation. Did you get a chance to look at the 
->> issue
->> stated above and have some idea as to how to solve this?
-> 
-> Do you still see the issue with v5.15 ? Can you please check if haven't
-> already done that ?
-> 
-> Also 30ms delay we have is huge IMO and we typically expect the 
-> communication
-> with remote processor or any entity that implements SCMI to happen in 
-> terms
-> of one or few ms tops.
-> 
-> If there is a race, we need to fix that but I am interested in knowing
-> why the default time of 30ms not sufficient ? Did increasing that helps
-> and is this timeout happening only for the initial commands(guessing 
-> the
-> SCMI firmware is not yet ready) or does it happen even during run-time 
-> ?
+On Thu, Nov 4, 2021 at 4:37 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Having looked at it once more, it still looks "ObviouslyCorrect(tm)"
+> to me, but I suspect I'm just being blind to some obvious bug.
 
-Hi Sudeep
-I haven't checked on 5.15 but after glancing at the code I believe we 
-should see the same issue.
-I agree 30ms is a big enough value and should be something that remote 
-firmware should resolve. But
-if remote firmware goes into a bad state and not functioning properly at 
-least kernel should not panic.
+Oh, I was just looking at the pattern of kmap/kunmap, but there does
+seem to be a questionable pattern outside of that:
 
-The issue we see here happens during scmi probe. The response from the 
-remote agent can be delayed
-causing a timeout during base protocol acquire, which leads to the probe 
-failure.
-What I have observed is sometimes the failure of probe and rx_callback 
-(due to a delayed message)
-happens around the same time on different cpus. Because of this race, 
-the device memory may be cleared
-while the interrupt(rx_callback) is executing on another cpu.
+This pattern looks odd:
+
+        kaddr = kmap(cur_page);
+        write_compress_length(kaddr + offset_in_page(*cur_out),
+                              compressed_size);
+        ...
+
+(and then whether you kunmap immediately, or you leave it kmap'ed and
+use it again at the end is a different issue)
+
+In particular, what if "offset_in_page(*cur_out)" is very close to the
+end of the page?
+
+That write_compress_length() always writes out a word-sized length (ie
+LZO_LEN bytes), and the above pattern seems to have no model to handle
+the "oh, this 4-byte write crosses a page boundary"
+
+The other writes in that function seem to do it properly, and you have
+
+        u32 copy_len = min_t(u32, sectorsize - *cur_out % sectorsize,
+                             orig_out + compressed_size - *cur_out);
+
+so doing the memcpy() of size 'copy_len' should never cross a page
+boundary as long as sectorsize is a power-of-2 smaller or equal to a
+page size. But those 4-byte length writes seem like they could be page
+crossers.
+
+The same situation exists on the reading side, I think.
+
+Maybe there's some reason why the read/write_compress_length() can
+never cross a page boundary, but it did strike me as odd.
+
+             Linus
