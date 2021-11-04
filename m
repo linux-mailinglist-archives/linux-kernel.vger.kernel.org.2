@@ -2,116 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958A8445670
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:37:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 542AA44566D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbhKDPkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 11:40:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229770AbhKDPkD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 11:40:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF9AA610FD;
-        Thu,  4 Nov 2021 15:37:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636040245;
-        bh=gOnpVuCJ6ZQWNS7FGa/CA1COrnFPwRd/hzU3ApMGZyw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JZwFZOKmpNfhURWYZ4TQdgYUb+VQKyjRAKQmYJYhjgOe1biuhJ4YLmQ9jE6lQUsOW
-         Fv9iEEfPInWsDuj6jYkOp1A2stbcC5GuuuMae3DieEIpC6tYkqFCt1+GUhhsomtGG4
-         fkLCdUCJHYaDztHlv68bYm/JOiRe6wbe89TUX6KcpbwfvkIetYvYdj4qN3t4kXtrpj
-         n58v41z4fhUThtl9Nl5F5H43rn9ZI2PovwnRhAjt3A27mENqynIBpCLx1oWLxdmaxJ
-         UMGakn1aEWrcQrGqSA3vp0LsHXYL++M6NuXX0lNOdc/IEnYKBsvDnWCPK9/3tu2TQO
-         6BrP5zWoLPHUA==
-Received: by mail-ed1-f43.google.com with SMTP id o8so22795655edc.3;
-        Thu, 04 Nov 2021 08:37:25 -0700 (PDT)
-X-Gm-Message-State: AOAM531grwlA1v7EHkS6YluWLYzSICS/8w6ahbEN4EkaEFQWVSy4MIDD
-        GCNcJVA1kztdlmVupRD0f/oaSdlYxMh3XBxe/A==
-X-Google-Smtp-Source: ABdhPJzgf+kAjIm4iDIzrlnqYvjyg99MANJ0xmpgK/fg5fhwkRo5H2UD85PYjaLzFTaaJMbnd6k6RMV6adieRkIxfrM=
-X-Received: by 2002:a50:da06:: with SMTP id z6mr70205630edj.355.1636040224963;
- Thu, 04 Nov 2021 08:37:04 -0700 (PDT)
+        id S231533AbhKDPj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 11:39:56 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33566 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229770AbhKDPjy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 11:39:54 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BCE3D212BB;
+        Thu,  4 Nov 2021 15:37:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1636040235; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uHXKCb2m4aN3DGGo3TS/BoeovESLndRU28nc5R+Ezi4=;
+        b=q74JbwjnA8QAd8JclRaVWkB8KdUJB9SAHd64vcm2cn3kViB0IvoPBuT6usdLrE6kDFZQ48
+        gcJJZMecREa3Ov2rF5QuZLBGB6gvNe9VkHbQe65z56xbgYrl6Dgpzwohit6Z1i5d9eUoZW
+        fDRqUTksVVVyGBukIPKVE1vB5HvT284=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1636040235;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uHXKCb2m4aN3DGGo3TS/BoeovESLndRU28nc5R+Ezi4=;
+        b=ZBnnY/Sj6shJlRHAq13K4UblSQPcZWW/v96CVCvg40A/Q1QwU1G862FWhF5+GUOroeMJX0
+        T21cXxBLmFDAy7CQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5947C13BD4;
+        Thu,  4 Nov 2021 15:37:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 20THEiv+g2HScgAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Thu, 04 Nov 2021 15:37:15 +0000
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 9e2b5671;
+        Thu, 4 Nov 2021 15:37:14 +0000 (UTC)
+Date:   Thu, 4 Nov 2021 15:37:14 +0000
+From:   =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Ilya Dryomov <idryomov@gmail.com>, Xiubo Li <xiubli@redhat.com>,
+        Patrick Donnelly <pdonnell@redhat.com>,
+        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] ceph: metrics for remote object copies
+Message-ID: <YYP+KrFWyLmfKY9v@suse.de>
+References: <20211104123147.1632-1-lhenriques@suse.de>
+ <b2fcd4ff9dd84ceb90650d24b56bd704985c85b8.camel@kernel.org>
 MIME-Version: 1.0
-References: <bb391a0e0f0863b66e645048315fab1a4f63f277.1634812676.git.mchehab+huawei@kernel.org>
- <20211102160612.GA612467@bhelgaas> <20211102174415.58cd3d4f@sal.lan>
-In-Reply-To: <20211102174415.58cd3d4f@sal.lan>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 4 Nov 2021 10:36:52 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+qyf=2dSgaVKGPccNGNYXbeyKMDC_yB=G8wg0_4_06Gw@mail.gmail.com>
-Message-ID: <CAL_Jsq+qyf=2dSgaVKGPccNGNYXbeyKMDC_yB=G8wg0_4_06Gw@mail.gmail.com>
-Subject: Re: [PATCH v15 04/13] PCI: kirin: Add support for bridge slot DT schema
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b2fcd4ff9dd84ceb90650d24b56bd704985c85b8.camel@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 12:44 PM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> Hi Bjorn,
->
-> Em Tue, 2 Nov 2021 11:06:12 -0500
-> Bjorn Helgaas <helgaas@kernel.org> escreveu:
->
-> > > +
-> > > +   /* Per-slot clkreq */
-> > > +   int             n_gpio_clkreq;
-> > > +   int             gpio_id_clkreq[MAX_PCI_SLOTS];
-> > > +   const char      *clkreq_names[MAX_PCI_SLOTS];
-> >
-> > I think there's been previous discussion about this, but I didn't
-> > follow it, so I'm just double-checking that this is what we want here.
-> >
-> > IIUC, this (MAX_PCI_SLOTS, "hisilicon,clken-gpios") applies to an
-> > external PEX 8606 bridge, which seems a little strange to be
-> > hard-coded into the kirin driver this way.
-> >
-> > I see that "hisilicon,clken-gpios" is optional, but what if some
-> > platform connects all 6 lanes?  What if there's a different bridge
-> > altogether?
+On Thu, Nov 04, 2021 at 11:09:32AM -0400, Jeff Layton wrote:
+> On Thu, 2021-11-04 at 12:31 +0000, Luís Henriques wrote:
+> > Hi!
+> > 
+> > Here's v2 of this patchset.  The differences from v1:
+> > 
+> >   * Instead of changing ceph_osdc_copy_from() in libceph.ko to return an
+> >     osd request, move that function into the cephfs code instead.
+> > 
+> > Other than that, the 2nd patch is quite similar to the one from v1: it
+> > effectively hooks the 'copyfrom' metrics infrastructure.
+> > 
+> > Luís Henriques (2):
+> >   ceph: libceph: move ceph_osdc_copy_from() into cephfs code
+> >   ceph: add a new metric to keep track of remote object copies
+> > 
+> >  fs/ceph/debugfs.c               |  3 +-
+> >  fs/ceph/file.c                  | 78 ++++++++++++++++++++++++++++-----
+> >  fs/ceph/metric.h                |  8 ++++
+> >  include/linux/ceph/osd_client.h | 19 ++++----
+> >  net/ceph/osd_client.c           | 60 ++++---------------------
+> >  5 files changed, 94 insertions(+), 74 deletions(-)
+> > 
+> 
+> Looks good. Thanks, Luis. Merged into testing branch.
 
-Keep in mind this is HiKey. There's never been a 2nd board upstream
-for the SoCs, the boards have a short lifespan in terms of both
-support and availability. And yet Hikey manages to do multiple
-complicated things on the board design. I have a hard time caring...
+Awesome, thanks.  I'll wait until this is merged into mainline (which will
+take a while, of course) before I push changes to the fstests.  Adding
+further checks to the tests that use remote copies was the drive for these
+new metrics, and I've already some patches for doing that.  They'll need
+some cleanup but it doesn't make sense to push them before this is
+available upstream.
 
-> >
-> > I'll assume this is actually the way we want thing unless I hear
-> > otherwise.
->
-> Yes, there was past discussions about that with Rob, with regards
-> to how the DT would represent it, which got reflected at the code.
-
-At first I thought these were CLKREQ connections which absolutely
-should be per port/bridge like PERST, but they are not. They are
-simply enables for the refclk's and pretty specific to HiKey.
-
-> At the end, it was decided to just add a single property inside PCIe:
->
->
->                 pcie@f4000000 {
->                         compatible = "hisilicon,kirin970-pcie";
-> ...
->                         hisilicon,clken-gpios = <&gpio27 3 0>, <&gpio17 0 0>,
->                                                 <&gpio20 6 0>;
->
-> I don't think this is a problem, as, if some day another bridge would
-> need a larger number of slots, it is just a matter of changing the
-> number at the MAX_PCI_SLOTS, as this controls only the size of the array
-> (and the check for array overflow when parsing the properties).
-
-It is a problem that your host bridge driver has hardcoded board
-specifics. That's not the first time you've heard that from me. But
-given the board-to-soc ratio of Hikey is 1:1, I don't care that much.
-
-Rob
+Cheers,
+--
+Luís
