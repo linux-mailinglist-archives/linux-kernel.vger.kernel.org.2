@@ -2,100 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9091E444D60
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 03:46:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 305AD444D8B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 04:05:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhKDCtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 22:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhKDCtU (ORCPT
+        id S231594AbhKDDHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 23:07:24 -0400
+Received: from [113.204.237.245] ([113.204.237.245]:53818 "EHLO
+        test.cqplus1.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231182AbhKDDHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 22:49:20 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46011C061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 19:46:43 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id j9so4146335pgh.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 19:46:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=s8xVEJHnK8mxFBkRIjbEvPg/yF4uFDtZoStxlT1zOic=;
-        b=Lgs6paIzU01mGAH7RPWiMaEk8o0nn/ApZouOO4ovvj6fEove/OM4Yn8ns5Pf+tFcIH
-         MR58i2GiLwVrmUcfPFvUgnmasMkdWP673eswFO2OLesDVc+7Utu5SU7YoZNl0n9k1zvU
-         o9jk8n4aIYm8AzP1FJxzIb3nZ10v6eKGtta+eKtwj1TwkhavgRYy93wG4xzXPjrNCqP8
-         MNvFmEHTCtJJGGimFxJJH/O0XSXFbSIJ2E3wnSXrpm1D3QCMvYCo1T/W1ndaI35AjGrX
-         LUV9kqj3wC68ep+rAjUwiZ2NRkbrYMCs1/89jHbiEpNUERDfcWbbSHvFzidvTQzR6ZBL
-         imaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=s8xVEJHnK8mxFBkRIjbEvPg/yF4uFDtZoStxlT1zOic=;
-        b=MKVdi1ip1ZhR/KAg52gbJ7X8ZrJBZAJNpfQdYCLhsqZkVj9kw6PK+FIpKnMdiZq3Hp
-         w+4dimhrChm3taZ8z8Mk4RHIEAWeYkzQGcWCRmOSzCJUpyeKucbEvknrCD0Jz8kFBrIT
-         dbH9E0eyPttKc6q7GuG/572URRt/Q+EfiO1qzXFnJ/dnOX//iiPcOg2aal2dI4Ol4yoH
-         cY2qd4IL/IL3iDE9ZmSRcBvuxJmkXlS5/Dvx8xAWIre3k7odPUJ9N5kAN1oUyKv/g2zf
-         5dW78Hu8LTKWJb/rfXMbCJEnd8du17rfoZK0AxTYueKen7O/jlIGKGInuJEeLkR+Rpm9
-         34CQ==
-X-Gm-Message-State: AOAM532GEfCvLbu3hGMHS2AFT5D74BjU33RS3wcfvv0hxKg4GB9/tDNa
-        KZdh/ipaEk1yADtSRZvs/Kc=
-X-Google-Smtp-Source: ABdhPJyafy5NH56iOO7yoAI0vwhQrlL9iKtGWTPBBoNlVkrQWjWh1aycOnBLuNGt3QkzgBnKspDLSg==
-X-Received: by 2002:a65:684c:: with SMTP id q12mr2299545pgt.125.1635994002350;
-        Wed, 03 Nov 2021 19:46:42 -0700 (PDT)
-Received: from Sauravs-MacBook-Air.local ([59.95.84.218])
-        by smtp.gmail.com with ESMTPSA id w13sm2888687pgm.3.2021.11.03.19.46.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 19:46:42 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 08:16:35 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, fmdefrancesco@gmail.com,
-        saurav.girepunje@gmail.com, straube.linux@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] staging: r8188eu: core: remove the function __nat25_timeout
-Message-ID: <YYNJPCQ5hX8BTzwy@Sauravs-MacBook-Air.local>
+        Wed, 3 Nov 2021 23:07:06 -0400
+X-MailGates: (flag:4,DYNAMIC,BADHELO,RELAY,NOHOST:PASS)(compute_score:DE
+        LIVER,40,3)
+Received: from 172.28.114.216
+        by cqmailgates with MailGates ESMTP Server V5.0(16723:0:AUTH_RELAY)
+        (envelope-from <qinjian@cqplus1.com>); Thu, 04 Nov 2021 10:58:08 +0800 (CST)
+From:   Qin Jian <qinjian@cqplus1.com>
+To:     robh+dt@kernel.org
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, maz@kernel.org,
+        p.zabel@pengutronix.de, linux@armlinux.org.uk, broonie@kernel.org,
+        arnd@arndb.de, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, wells.lu@sunplus.com,
+        Qin Jian <qinjian@cqplus1.com>
+Subject: [PATCH v4 00/10] Add Sunplus SP7021 SoC Support
+Date:   Thu,  4 Nov 2021 10:56:57 +0800
+Message-Id: <cover.1635993377.git.qinjian@cqplus1.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <cover.1635496594.git.qinjian@cqplus1.com>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the function __nat25_timeout from rtw_br_ext.c file. This function
-can be replace by single statement jiffies - NAT25_AGEING_TIME*HZ.
+This patch series add Sunplus SP7021 SoC support.
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_br_ext.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+Sunplus SP7021 is an ARM Cortex A7 (4 cores) based SoC. It integrates many
+peripherals (ex: UART, I2C, SPI, SDIO, eMMC, USB, SD card and etc.) into a
+single chip. It is designed for industrial control.
 
-diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
-index bcd0f9dd64b1..4951f835feaf 100644
---- a/drivers/staging/r8188eu/core/rtw_br_ext.c
-+++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
-@@ -105,19 +105,10 @@ static int skb_pull_and_merge(struct sk_buff *skb, unsigned char *src, int len)
- 	return 0;
- }
+SP7021 consists of two chips (dies) in a package. One is called C-chip
+(computing chip). It is a 4-core ARM Cortex A7 CPU. It adopts high-level
+process (22 nm) for high performance computing. The other is called P-
+chip (peripheral chip). It has many peripherals and an ARM A926 added
+especially for real-time control. P-chip is made for customers. It adopts
+low-level process (ex: 0.11 um) to reduce cost.
 
--static unsigned long __nat25_timeout(struct adapter *priv)
--{
--	unsigned long timeout;
--
--	timeout = jiffies - NAT25_AGEING_TIME*HZ;
--
--	return timeout;
--}
--
- static int  __nat25_has_expired(struct adapter *priv,
- 				struct nat25_network_db_entry *fdb)
- {
--	if (time_before_eq(fdb->ageing_timer, __nat25_timeout(priv)))
-+	if (time_before_eq(fdb->ageing_timer, jiffies - NAT25_AGEING_TIME * HZ))
- 		return 1;
+Refer to (for documentations):
+https://sunplus-tibbo.atlassian.net/wiki/spaces/doc/overview
 
- 	return 0;
+Refer to (applications):
+https://tibbo.com/store/plus1.html
+
+Refer to (applications):
+http://www.sinovoip.com.cn/ecp_view.asp?id=586
+
+Changes in v4:
+- mach-sunplus: add initial support for SP7021
+- sp7021_defconfig: add generic SP7021 defconfig
+- reset-sunplus: remove Q645 support
+- reset-sunplus.c: refine code based on Philipp's review
+- clk-sp7021: clock defines add prefix, more clean up
+
+Changes in v3:
+- sp7021-intc: remove primary controller mode due to P-chip running Linux
+  not supported any more.
+- sp7021-intc.h: removed, not set ext through the DT but sp_intc_set_ext()
+- sunplus,sp7021-intc.yaml: update descriptions for above changes
+- irq-sp7021-intc.c: more cleanup based on Marc's review
+- all driver's Kconfig removed default, it's selected by platform config
+
+Changes in v2:
+- sunplus,sp7021-intc.yaml: add descrption for "#interrupt-cells", interrupts
+- sunplus,sp7021-intc.yaml: drop "ext0-mask"/"ext1-mask" from DT
+- sunplus,sp7021-intc.yaml: fix example.dt too long error
+- irq-sp7021-intc.c: major rewrite
+- all files with dual license
+
+Qin Jian (10):
+  dt-bindings: vendor-prefixes: Add Sunplus
+  dt-bindings: arm: sunplus: Add bindings for Sunplus SP7021 SoC boards
+  dt-bindings: reset: Add bindings for SP7021 reset driver
+  reset: Add Sunplus SP7021 reset driver
+  dt-bindings: clock: Add bindings for SP7021 clock driver
+  clk: Add Sunplus SP7021 clock driver
+  dt-bindings: interrupt-controller: Add bindings for SP7021 interrupt
+    controller
+  irqchip: Add Sunplus SP7021 interrupt controller driver
+  ARM: sunplus: Add initial support for Sunplus SP7021 SoC
+  ARM: sp7021_defconfig: Add Sunplus SP7021 defconfig
+
+ .../bindings/arm/sunplus,sp7021.yaml          |  27 +
+ .../bindings/clock/sunplus,sp7021-clkc.yaml   |  38 +
+ .../sunplus,sp7021-intc.yaml                  |  62 ++
+ .../bindings/reset/sunplus,reset.yaml         |  38 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |  17 +
+ arch/arm/Kconfig                              |  20 +
+ arch/arm/Makefile                             |   2 +
+ arch/arm/configs/sp7021_defconfig             | 176 +++++
+ arch/arm/mach-sunplus/Kconfig                 |  20 +
+ arch/arm/mach-sunplus/Makefile                |   9 +
+ arch/arm/mach-sunplus/Makefile.boot           |   3 +
+ arch/arm/mach-sunplus/sp7021.c                |  16 +
+ drivers/clk/Kconfig                           |   9 +
+ drivers/clk/Makefile                          |   1 +
+ drivers/clk/clk-sp7021.c                      | 725 ++++++++++++++++++
+ drivers/irqchip/Kconfig                       |   9 +
+ drivers/irqchip/Makefile                      |   1 +
+ drivers/irqchip/irq-sp7021-intc.c             | 279 +++++++
+ drivers/reset/Kconfig                         |   9 +
+ drivers/reset/Makefile                        |   1 +
+ drivers/reset/reset-sunplus.c                 | 133 ++++
+ include/dt-bindings/clock/sp-sp7021.h         | 112 +++
+ include/dt-bindings/reset/sp-sp7021.h         |  97 +++
+ 24 files changed, 1806 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/arm/sunplus,sp7021.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/sunplus,sp7021-clkc.yaml
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/sunplus,sp7021-intc.yaml
+ create mode 100644 Documentation/devicetree/bindings/reset/sunplus,reset.yaml
+ create mode 100644 arch/arm/configs/sp7021_defconfig
+ create mode 100644 arch/arm/mach-sunplus/Kconfig
+ create mode 100644 arch/arm/mach-sunplus/Makefile
+ create mode 100644 arch/arm/mach-sunplus/Makefile.boot
+ create mode 100644 arch/arm/mach-sunplus/sp7021.c
+ create mode 100644 drivers/clk/clk-sp7021.c
+ create mode 100644 drivers/irqchip/irq-sp7021-intc.c
+ create mode 100644 drivers/reset/reset-sunplus.c
+ create mode 100644 include/dt-bindings/clock/sp-sp7021.h
+ create mode 100644 include/dt-bindings/reset/sp-sp7021.h
+
 --
-2.33.0
-
+2.33.1
