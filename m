@@ -2,183 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBD444534E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D290744534B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbhKDMuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 08:50:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbhKDMuR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 08:50:17 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5F3C061714;
-        Thu,  4 Nov 2021 05:47:39 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (85-76-10-233-nat.elisa-mobile.fi [85.76.10.233])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8FAB1E52;
-        Thu,  4 Nov 2021 13:47:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1636030058;
-        bh=jqK037rTkFhq0dshtnlxaTIDkJboBkHRFVMrkuRsH8M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RE/iEdVOO1SRvcGHkoa5cnmgcfJaBDrGDXAWt4OMAbMPmLFJb9rDpm9DfXYoRBX0a
-         Sjpma+jy/aMHVCXlwab01131bNbLDYqX8LI3KnIdNwyWr051uXfCo4OxUM9MzbnUCG
-         eCnSSPA+Rsegee53v+TsNIQ8DWKQlKkb58YIMuRA=
-Date:   Thu, 4 Nov 2021 14:47:14 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Yang Li <abaci-bugfix@linux.alibaba.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Alan <alan@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: atomisp current issues
-Message-ID: <YYPWUiPT80zQ7sKo@pendragon.ideasonboard.com>
-References: <20211103135418.496f75d5@sal.lan>
- <YYOts0aoD/Quo5r6@pendragon.ideasonboard.com>
- <20211104105051.4836fafb@sal.lan>
+        id S230390AbhKDMuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 08:50:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229809AbhKDMuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 08:50:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3FBD60EE9
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 12:47:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636030056;
+        bh=O89SG59ERFkapOwq86PzKcmSXMmROh38ILRsxSPw7zc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FUvx4DVOJMgsgc8Dclim6uiPNanlCw5L3gLp5PVRYWaoNB9rczDaMyOu74b5oF1d4
+         AHQF0P2QUe/aKt1at2I3AWfbFZ99fftU7/5wpYdVqsnnHuI/KpFI/ENXZez8TbJFb4
+         5TS6iTqKetd4Skk5at9pKxYakuM5yK4ng3Jdk71JGqsTnKlLuGhsWwFWtNfIFAKjFQ
+         cyJuzZCeLF6on0nF5PCFzmBT7h8dRN7nAbyXaHB8drhluEVwshEhKQjWhhuHXt15VG
+         d3Qzpw5oaHVDaArQs6B3Z7jd2EO/RgHBiPRqHM1jWw/Z0bJql4Pe26pacZ0L+oNTgI
+         3MfAezPvDs5Sg==
+Received: by mail-ot1-f42.google.com with SMTP id l7-20020a0568302b0700b0055ae988dcc8so4893139otv.12
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 05:47:36 -0700 (PDT)
+X-Gm-Message-State: AOAM5315eAcQf593qWBAT3fl1daBLIeAt3yQTMuuroQEdcm2FDfenUNl
+        teqZ7oCp72jRrcRUtmnzPOu5hn/UtUr4yaDR5E8=
+X-Google-Smtp-Source: ABdhPJxhWjJHaSYxFkhh2iWefDx6Z+2GQYHsj7ZwDXxYFvelaU3rJtXffw/e5rsmEHaDNyuzdbd+XCXcawBw+m5Y8K0=
+X-Received: by 2002:a9d:5911:: with SMTP id t17mr39447582oth.30.1636030056196;
+ Thu, 04 Nov 2021 05:47:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211104105051.4836fafb@sal.lan>
+References: <20211104023221.16391-1-walter-zh.wu@mediatek.com>
+ <20211104085336.GA24260@lst.de> <CAMj1kXHjjmhCVzKFhAseMGOdnidmFT=+o+vwKLTCGFkpwHmcfQ@mail.gmail.com>
+ <cc893162f0e2c81a1d64bf85794cc77ae76cadce.camel@mediatek.com>
+In-Reply-To: <cc893162f0e2c81a1d64bf85794cc77ae76cadce.camel@mediatek.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 4 Nov 2021 13:47:24 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXG0DmLXQgfv2N1nhNdXgnXOiK2Rv7D+boSdW9_C=wsowA@mail.gmail.com>
+Message-ID: <CAMj1kXG0DmLXQgfv2N1nhNdXgnXOiK2Rv7D+boSdW9_C=wsowA@mail.gmail.com>
+Subject: Re: [PATCH v2] dma-direct: improve DMA_ATTR_NO_KERNEL_MAPPING
+To:     Walter Wu <walter-zh.wu@mediatek.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+On Thu, 4 Nov 2021 at 13:31, Walter Wu <walter-zh.wu@mediatek.com> wrote:
+>
+> On Thu, 2021-11-04 at 09:57 +0100, Ard Biesheuvel wrote:
+> > On Thu, 4 Nov 2021 at 09:53, Christoph Hellwig <hch@lst.de> wrote:
+> > >
+> > > On Thu, Nov 04, 2021 at 10:32:21AM +0800, Walter Wu wrote:
+> > > > diff --git a/include/linux/set_memory.h
+> > > > b/include/linux/set_memory.h
+> > > > index f36be5166c19..6c7d1683339c 100644
+> > > > --- a/include/linux/set_memory.h
+> > > > +++ b/include/linux/set_memory.h
+> > > > @@ -7,11 +7,16 @@
+> > > >
+> > > >  #ifdef CONFIG_ARCH_HAS_SET_MEMORY
+> > > >  #include <asm/set_memory.h>
+> > > > +
+> > > > +#ifndef CONFIG_RODATA_FULL_DEFAULT_ENABLED
+> > >
+> > > This is an arm64-specific symbol, and one that only controls a
+> > > default.  I don't think it is suitable to key off stubs in common
+> > > code.
+> > >
+> > > > +static inline int set_memory_valid(unsigned long addr, int
+> > > > numpages, int enable) { return 0; }
+> > >
+> > > Pleae avoid overly long lines.
+> > >
+> > > > +             if (IS_ENABLED(CONFIG_RODATA_FULL_DEFAULT_ENABLED))
+> > > > {
+> > > > +                     kaddr = (unsigned
+> > > > long)phys_to_virt(dma_to_phys(dev, *dma_handle));
+> > >
+> > > This can just use page_address.
+> > >
+> > > > +                     /* page remove kernel mapping for arm64 */
+> > > > +                     set_memory_valid(kaddr, size >> PAGE_SHIFT,
+> > > > 0);
+> > > > +             }
+> > >
+> > > But more importantly:  set_memory_valid only exists on arm64, this
+> > > will break compile everywhere else.  And this API is complete crap.
+> > > Passing kernel virtual addresses as unsigned long just sucks, and
+> > > passing an integer argument for valid/non-valid also is a horrible
+> > > API.
+> > >
+> >
+> > ... and as I pointed out before, you can still pass rodata=off on
+> > arm64, and get the old behavior, in which case bad things will happen
+> > if you try to use an API that expects to operate on page mappings
+> > with
+> > a 1 GB block mapping.
+> >
+>
+> Thanks for your suggestion.
+>
+>
+> > And you still haven't explained what the actual problem is: is this
+> > about CPU speculation corrupting non-cache coherent inbound DMA?
+>
+> No corrupiton, only cpu read it, we hope to fix the behavior.
+>
 
-On Thu, Nov 04, 2021 at 10:50:51AM +0000, Mauro Carvalho Chehab wrote:
-> Em Thu, 4 Nov 2021 11:53:55 +0200 Laurent Pinchart escreveu:
-> > On Wed, Nov 03, 2021 at 01:54:18PM +0000, Mauro Carvalho Chehab wrote:
-> > > Hi,
-> > > 
-> > > From what I've seen so far, those are the main issues with regards to V4L2 API,
-> > > in order to allow a generic V4L2 application to work with it.
-> > > 
-> > > MMAP support
-> > > ============
-> > > 
-> > > Despite having some MMAP code on it, the current implementation is broken. 
-> > > Fixing it is not trivial, as it would require fixing the HMM support on it, 
-> > > which does several tricks.
-> > > 
-> > > The best would be to replace it by something simpler. If this is similar
-> > > enough to IPU3, perhaps one idea would be to replace the HMM code on it by 
-> > > videodev2 + IPU3 HMM code.
-> > > 
-> > > As this is not trivial, I'm postponing such task. If someone has enough
-> > > time, it would be great to have this fixed.
-> > > 
-> > > From my side, I opted to add support for USERPTR on camorama:
-> > > 
-> > > 	https://github.com/alessio/camorama  
-> > 
-> > We should *really* phase out USERPTR support. 
-> 
-> I'm not a big fan of userptr, buy why do we phase it out?
+Fix which behavior? Please explain
 
-Because USERPTR is broken by design. It gives a false promise to
-userspace that a user pointer can be DMA'ed to, and this isn't generally
-true. Even if buffer are carefully allocated to be compatible with the
-device requirements, there are corner cases that prevent making a
-mechanism based on get_user_pages() a first class citizen. In any case,
-USERPTR makes life more difficult for the kernel.
+1) the current behavior
+2) why the current behavior is problematic for you
+3) how this patch changes the current behavior
+4) why the new behavior fixes your problem.
 
-There may be some use cases for which USERPTR could be an appropriate
-solution, but now that we have DMABUF (and of course MMAP), I see no
-reason to continue supporting USERPTR forever, and certainly not adding
-new users.
-
-> > Worst case you may support
-> > DMABUF only if MMAP is problematic, but I don't really see why it could
-> > be easy to map an imported buffer and difficult to map a buffer
-> > allocated by the driver. videobuf2 should be used.
-> 
-> Yeah, atomisp should be migrated to VB2, and such migration is listed at
-> its TODO file. However, this is a complex task, as its memory management
-> code is very complex.
-
-Have a look at GPU memory management, and you'll find the atomisp driver
-very simple in comparison :-)
-
-I'm also pretty sure that drivers/staging/media/atomisp/pci/hmm/ could
-be rewritten to use more of the existing kernel frameworks.
-
-> Maybe we could try to use the ISP3 code on it,
-> replacing the current HMM logic, but not sure if the implementation there 
-> would be compatible.
-
-I'd be surprised if the IPU3 was compatible.
-
-> In any case, the current priority is to make the driver to work, fixing 
-> the V4L2 API implementation, which has several issues.
-> 
-> ...
-> 
-> > > Video devices
-> > > =============
-> > > 
-> > > Currently, 10 video? devices are created:
-> > > 
-> > > 	$ for i in $(ls /dev/video*|sort -k2 -to -n); do echo -n $i:; v4l2-ctl -D -d $i|grep Name; done
-> > > 	/dev/video0:	Name             : ATOMISP ISP CAPTURE output
-> > > 	/dev/video1:	Name             : ATOMISP ISP VIEWFINDER output
-> > > 	/dev/video2:	Name             : ATOMISP ISP PREVIEW output
-> > > 	/dev/video3:	Name             : ATOMISP ISP VIDEO output
-> > > 	/dev/video4:	Name             : ATOMISP ISP ACC
-> > > 	/dev/video5:	Name             : ATOMISP ISP MEMORY input
-> > > 	/dev/video6:	Name             : ATOMISP ISP CAPTURE output
-> > > 	/dev/video7:	Name             : ATOMISP ISP VIEWFINDER output
-> > > 	/dev/video8:	Name             : ATOMISP ISP PREVIEW output
-> > > 	/dev/video9:	Name             : ATOMISP ISP VIDEO output
-> > > 	/dev/video10:	Name             : ATOMISP ISP ACC
-> > > 
-> > > That seems to be written to satisfy some Android-based app, but we don't
-> > > really need all of those.
-> > > 
-> > > I'm thinking to comment out the part of the code which creates all of those,
-> > > keeping just "ATOMISP ISP PREVIEW output", as I don't think we need all
-> > > of those.  
-> > 
-> > Why is that ? Being able to capture multiple streams in different
-> > resolutions is important for lots of applications, the viewfinder
-> > resolution is often different than the video streaming and/or still
-> > capture resolution. Scaling after capture is often expensive (and there
-> > are memory bandwidth and power constraints to take into account too). A
-> > single-stream device may be better than nothing, but it's time to move
-> > to the 21st century.
-> 
-> True, but having multiple videonodes at this moment is not helping,
-> specially since only one of such modes (PREVIEW) is actually working at
-> the moment.
-> 
-> So, this is more a strategy to help focusing on making this work
-> properly, and not a statement that those modules would be dropped.
-> 
-> I'd say that the "final" version of atomisp - once it gets 
-> fixed, cleaned up and started being MC-controlled - should support
-> all such features, and have the pipelines setup via libcamera.
-
-I have no issue with phasing development (I have few issues with the
-atomisp driver in general actually, as it's in staging), but the goal
-should be kept in mind to make sure development goes in the right
-direction.
-
--- 
-Regards,
-
-Laurent Pinchart
+There is no penalty for using too many words.
