@@ -2,104 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F35445C52
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 23:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 761F9445C57
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 23:42:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232496AbhKDWnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 18:43:41 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:49130 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232405AbhKDWn2 (ORCPT
+        id S231154AbhKDWoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 18:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230415AbhKDWoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 18:43:28 -0400
-Received: from Monstersaurus.ksquared.org.uk.beta.tailscale.net (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2565C1A38;
-        Thu,  4 Nov 2021 23:40:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1636065640;
-        bh=Ke/7jCHKY/MA2ufwzX82PXTTZCN9dB+7CWdPtDBMSWY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nYNv3QfVY05+v59ceCLwcLTQPuSqbmazfAgRjwQYUgGvdZ/MbaTEwtK7elmSgeKAk
-         KZE94Ojba/YrmmT3khzJTqvwf0wTIjzjuGiGf5ejOXZYfm1cowCziaJMUcHPr2Q7ET
-         6g4CO0atHws3t330u/SSGxi3cWRZAe0uXaMDNdao=
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-To:     linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Subject: [PATCH 9/9] arm64: dts: renesas: r8a779a0: Fix thermal bindings
-Date:   Thu,  4 Nov 2021 22:40:33 +0000
-Message-Id: <20211104224033.3997504-10-kieran.bingham+renesas@ideasonboard.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211104224033.3997504-1-kieran.bingham+renesas@ideasonboard.com>
-References: <20211104224033.3997504-1-kieran.bingham+renesas@ideasonboard.com>
+        Thu, 4 Nov 2021 18:44:37 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897DAC061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 15:41:58 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id p8so5360366pgh.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 15:41:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2cM+pc7RJOlLXf/kESM57DsH9Y+7ss4v2ISlVrw0au4=;
+        b=ooE6FbC1dphlseVcXYf6E54FhDQXALDT9cp9rkFbPJ4y3391PeZbY42Xq5zYAiM2X0
+         NdOPtJ6lkjBowxQXuPPYzsk/ImWUzRx84xa98kqJsQVBicjU2eDc5DVULiWpqnCKqxed
+         Ey2Ctp6iCrEN8zCtRphZ24isIw03JAvk0SfSWM0DA/73Pbf0h/QRbrwYHZfhgAzS25J9
+         xoJiSowrT7yhbflDyi/bGTCX/rlcA7okzQ8gpsTNHWowkIpirAi9P+owp8DITCHO+0RI
+         qztHqyk6DNOgAHnulQogAsMkvqtleYWLZNf20k/P+g9/YJ3n7yTI2IPueMQnaW5/KaTr
+         oILQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2cM+pc7RJOlLXf/kESM57DsH9Y+7ss4v2ISlVrw0au4=;
+        b=Ab3G6Uj9Yt7RUzqQ2ZVv5OSu6NPCfrvIeZ1I6wkOn18KnufXdYaqur0xXaBbJWK6KH
+         rdZOIlr6ayzaBzE52vJHjAthspvD1pjNyzjVcmgCx80+kfWnDW6MXa/Cs1o0tkt8fvDl
+         KcUI1CcfTI/Ti4nySKHLpi8my6FCwU+dX8AwpOjM8lIw03Yvqqkjxvg/eR7AJHOzFXnY
+         QqJ/N78devwrtrxJElFQu7UHdIPFvdqn6iSS076wKDBK8MOU11GIv3iCTvHmV6adN/Lg
+         DifxJb5vrVAfKS7yiBKtKrnL/m4fa0Vkf4/akA4u22Yf63k3l2l6WXc0KLAn+A0aZelB
+         fiJw==
+X-Gm-Message-State: AOAM533XZ7QzZnsN8WdQkPfXDqZsP5o3IvXuORR+wsih9Zh+jdmxSpVL
+        0DtJLNSANHvVdooTXmfmuEO8Vg==
+X-Google-Smtp-Source: ABdhPJxxNMKGv/NhLtIdMl/BRJOCT+zMUUqyt4AWTJHdlm9O9AHyBiNnpE4YQWobAiLulE4sZ0UvKQ==
+X-Received: by 2002:a05:6a00:21c2:b0:44c:fa0b:f72 with SMTP id t2-20020a056a0021c200b0044cfa0b0f72mr54948884pfj.13.1636065717795;
+        Thu, 04 Nov 2021 15:41:57 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id h2sm4707798pjk.44.2021.11.04.15.41.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 15:41:57 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 22:41:53 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        "Maciej S . Szmigiero" <maciej.szmigiero@oracle.com>
+Subject: Re: [PATCH v5.5 01/30] KVM: Ensure local memslot copies operate on
+ up-to-date arch-specific data
+Message-ID: <YYRhsclZpZwilkE5@google.com>
+References: <20211104002531.1176691-1-seanjc@google.com>
+ <20211104002531.1176691-2-seanjc@google.com>
+ <CANgfPd-uuPFjAHk5kVNom2Qs=UU_GX6CQ0xDLg1h_iL8t8S2aQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANgfPd-uuPFjAHk5kVNom2Qs=UU_GX6CQ0xDLg1h_iL8t8S2aQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The binding node names for the thermal zones are not successfully
-validated by the dt-schemas.
+On Thu, Nov 04, 2021, Ben Gardon wrote:
+> > @@ -1597,6 +1596,26 @@ static int kvm_set_memslot(struct kvm *kvm,
+> >                 kvm_copy_memslots(slots, __kvm_memslots(kvm, as_id));
+> >         }
+> >
+> > +       /*
+> > +        * Make a full copy of the old memslot, the pointer will become stale
+> > +        * when the memslots are re-sorted by update_memslots(), and the old
+> > +        * memslot needs to be referenced after calling update_memslots(), e.g.
+> > +        * to free its resources and for arch specific behavior.  This needs to
+> > +        * happen *after* (re)acquiring slots_arch_lock.
+> > +        */
+> > +       slot = id_to_memslot(slots, new->id);
+> > +       if (slot) {
+> > +               old = *slot;
+> > +       } else {
+> > +               WARN_ON_ONCE(change != KVM_MR_CREATE);
+> > +               memset(&old, 0, sizeof(old));
+> > +               old.id = new->id;
+> > +               old.as_id = as_id;
+> > +       }
+> > +
+> > +       /* Copy the arch-specific data, again after (re)acquiring slots_arch_lock. */
+> > +       memcpy(&new->arch, &old.arch, sizeof(old.arch));
+> > +
+> 
+> Is new->arch not initialized before this function is called? Does this
+> need to be here, or could it be moved above into the first branch of
+> the if statement?
+> Oh I see you removed the memset below and replaced it with this. I
+> think this is fine, but it might be easier to reason about if we left
+> the memset and moved the memcopy into the if.
+> No point in doing a memcpy of zeros here.
 
-Fix the validation by changing from sensor-thermalN to sensorN-thermal
-and sensor_thermalN to sensorN_thermal.
-
-Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
----
- arch/arm64/boot/dts/renesas/r8a779a0.dtsi | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-index e53f8b983c30..733fbeff9c13 100644
---- a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-@@ -2718,7 +2718,7 @@ prr: chipid@fff00044 {
- 	};
- 
- 	thermal-zones {
--		sensor_thermal1: sensor-thermal1 {
-+		sensor1_thermal: sensor1-thermal {
- 			polling-delay-passive = <250>;
- 			polling-delay = <1000>;
- 			thermal-sensors = <&tsc 0>;
-@@ -2732,7 +2732,7 @@ sensor1_crit: sensor1-crit {
- 			};
- 		};
- 
--		sensor_thermal2: sensor-thermal2 {
-+		sensor2_thermal: sensor2-thermal {
- 			polling-delay-passive = <250>;
- 			polling-delay = <1000>;
- 			thermal-sensors = <&tsc 1>;
-@@ -2746,7 +2746,7 @@ sensor2_crit: sensor2-crit {
- 			};
- 		};
- 
--		sensor_thermal3: sensor-thermal3 {
-+		sensor3_thermal: sensor3-thermal {
- 			polling-delay-passive = <250>;
- 			polling-delay = <1000>;
- 			thermal-sensors = <&tsc 2>;
-@@ -2760,7 +2760,7 @@ sensor3_crit: sensor3-crit {
- 			};
- 		};
- 
--		sensor_thermal4: sensor-thermal4 {
-+		sensor4_thermal: sensor4-thermal {
- 			polling-delay-passive = <250>;
- 			polling-delay = <1000>;
- 			thermal-sensors = <&tsc 3>;
-@@ -2774,7 +2774,7 @@ sensor4_crit: sensor4-crit {
- 			};
- 		};
- 
--		sensor_thermal5: sensor-thermal5 {
-+		sensor5_thermal: sensor5-thermal {
- 			polling-delay-passive = <250>;
- 			polling-delay = <1000>;
- 			thermal-sensors = <&tsc 4>;
--- 
-2.30.2
-
+Hmm, good point.  I wrote it like this so that the "arch" part is more identifiable
+since that's what needs to be protected by the lock, but I completely agree that
+it's odd when viewed without that lens.
