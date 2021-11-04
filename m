@@ -2,83 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A56E445BC8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 22:44:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76519445BCC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 22:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232222AbhKDVr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 17:47:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231154AbhKDVrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 17:47:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E73D6120F;
-        Thu,  4 Nov 2021 21:44:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1636062286;
-        bh=j99yLbawhP8nS65VSNwoVEG61+ELDW3rr3unGR3UBCg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=xYAjZ8zs9+oJOMxv1KXwonQ+aKbWfMmO7HfIsxDFjLoqTAj3LyGtnvu5GAHO6i8F6
-         tTLnvU37UqoYDFqxPz0RM33U6DPFdsgJFgmUGeovTBXOeZZ1uqUtmKClxR9BsD+2R8
-         BoNWN1J1HRZWj563lpDBMFRDadPRbxs05FsdJ6oM=
-Date:   Thu, 4 Nov 2021 14:44:42 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Daniel Axtens <dja@axtens.net>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>, arnd@arndb.de,
-        linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v3 2/4] mm: Make generic arch_is_kernel_initmem_freed()
- do what it says
-Message-Id: <20211104144442.7130ae4a104fca70623a2d1a@linux-foundation.org>
-In-Reply-To: <87ilyhmd26.fsf@linkitivity.dja.id.au>
-References: <9ecfdee7dd4d741d172cb93ff1d87f1c58127c9a.1633001016.git.christophe.leroy@csgroup.eu>
-        <1d40783e676e07858be97d881f449ee7ea8adfb1.1633001016.git.christophe.leroy@csgroup.eu>
-        <87ilyhmd26.fsf@linkitivity.dja.id.au>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232236AbhKDVsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 17:48:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232133AbhKDVsA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 17:48:00 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9F3C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 14:45:21 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id t11so9470700plq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 14:45:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JWx9ct2MbjImA6H/WvO058+827HmSCDeJJGYWZ5NWKI=;
+        b=B0nLjg/Un1RR8JO88l4pjO/r40QMXp2NKWLOT8gleROTy83KBOS+lF4w9BC+N5Ioq0
+         M8bgTpM76+k0f6GHJDCplbtrZ8g8sQxnoKAkzpFVhEiz4SpSE8yvyy+bPNe9HOBo3xzV
+         /Wz2WuZ1KL/kBkyWJd7mLDWnE9FE4GQyRtI4Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JWx9ct2MbjImA6H/WvO058+827HmSCDeJJGYWZ5NWKI=;
+        b=P4A8vnKedMgwkQUr7oCazUvmoXhVDvinucfQ658aa4hFsCK0zafEYM+7EQuCB3Fxaj
+         Gtd7z91qY10ik8NdTgL+EqdaIjsW6LLZg/K8/jp9cGI3Db8Zm3cY1LbT0PN0vr377iuM
+         Wy8QZ5x2PzMwJcu51rB0uGpGy/D0AcQtW6eV0tpQB8SVqIiSVFTwevlMOa9+ubaCc5pY
+         7rgtyD9uKsYF7JC2CS3SyNp9IfumnbrxVFzliEpxIiXQc9w3/N8t6ZLqZ6YbvHsPUf5y
+         Cui42lysYYqXq1RcooohyjpUD8s/QbRSs8oemLAMzrEm3iqiXva2SsK+rAirFvJvN6Qj
+         g4eQ==
+X-Gm-Message-State: AOAM531VMOOvVVEi3MHJp7K2OUQZbkZZW6AG8Lw3NzvrkcxZ1jqY+SyP
+        1wYZ+XYUzOwtnreu4wX/8xTc8w==
+X-Google-Smtp-Source: ABdhPJxqHMDw5YqGMlZwg7dpWo0+rcl7UStC/9wzlqsDbweCwI/3ZPYSoXpZo8EXmcankBbq9Sl1aA==
+X-Received: by 2002:a17:90b:1c06:: with SMTP id oc6mr24886431pjb.126.1636062321332;
+        Thu, 04 Nov 2021 14:45:21 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:49a7:f0ba:24b0:bc39])
+        by smtp.gmail.com with ESMTPSA id e7sm4473408pgk.90.2021.11.04.14.45.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 14:45:20 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 14:45:18 -0700
+From:   Brian Norris <briannorris@chromium.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        kbuild-all@lists.01.org, Andrzej Hajda <andrzej.hajda@intel.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        David Airlie <airlied@linux.ie>,
+        linux-rockchip@lists.infradead.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>
+Subject: Re: [PATCH 1/2] drm/input_helper: Add new input-handling helper
+Message-ID: <YYRUbhWH1MlDvSsR@google.com>
+References: <20211103164002.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
+ <202111041849.GKXf3qid-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202111041849.GKXf3qid-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 01 Oct 2021 17:14:41 +1000 Daniel Axtens <dja@axtens.net> wrote:
+On Thu, Nov 04, 2021 at 06:47:34PM +0800, kernel test robot wrote:
+> Hi Brian,
 
-> >  #ifdef __KERNEL__
-> > +/*
-> > + * Check if an address is part of freed initmem. After initmem is freed,
-> > + * memory can be allocated from it, and such allocations would then have
-> > + * addresses within the range [_stext, _end].
-> > + */
-> > +#ifndef arch_is_kernel_initmem_freed
-> > +static int arch_is_kernel_initmem_freed(unsigned long addr)
-> > +{
-> > +	if (system_state < SYSTEM_FREEING_INITMEM)
-> > +		return 0;
-> > +
-> > +	return init_section_contains((void *)addr, 1);
-> 
-> Is init_section_contains sufficient here?
-> 
-> include/asm-generic/sections.h says:
->  * [__init_begin, __init_end]: contains .init.* sections, but .init.text.*
->  *                   may be out of this range on some architectures.
->  * [_sinittext, _einittext]: contains .init.text.* sections
-> 
-> init_section_contains only checks __init_*:
-> static inline bool init_section_contains(void *virt, size_t size)
-> {
-> 	return memory_contains(__init_begin, __init_end, virt, size);
-> }
-> 
-> Do we need to check against _sinittext and _einittext?
-> 
-> Your proposed generic code will work for powerpc and s390 because those
-> archs only test against __init_* anyway. I don't know if any platform
-> actually does place .init.text outside of __init_begin=>__init_end, but
-> the comment seems to suggest that they could.
-> 
+Hi robot!
 
-Christophe?
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+
+I'm not sure how to do that in a v2 patch -- one doesn't normally credit
+"Reported-by" for every testing/review improvement on an in-development
+patch series.
+
+> All errors (new ones prefixed by >>):
+> 
+>    or1k-linux-ld: drivers/gpu/drm/drm_input_helper.o: in function `drm_input_disconnect':
+> >> drm_input_helper.c:(.text+0x48): undefined reference to `input_close_device'
+
+I've cooked a local change to separate the CONFIG_INPUT dependencies
+under another Kconfig symbol which optionally builds this stuff into the
+drm helper module, only when CONFIG_INPUT is present. That should fix
+the build issues while still leaving DRM_KMS_HELPER workable with or
+without CONFIG_INPUT.
+
+I'll wait to see if there's any other feedback before spinning though.
+
+Brian
