@@ -2,107 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33A3444F61
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5054B444F65
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:56:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbhKDG4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53546 "EHLO
+        id S230252AbhKDG6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230108AbhKDG4l (ORCPT
+        with ESMTP id S229994AbhKDG6h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:56:41 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF44C061714;
-        Wed,  3 Nov 2021 23:54:02 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id b13so5718820plg.2;
-        Wed, 03 Nov 2021 23:54:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AmqWbFtMRKjP/RYJLNtNwVoR7JKadqFB+epBPQPtrdE=;
-        b=j8q3HYWXl0/V6GEchczRjUTymFAGpd8AEm4NLL1XFtGllfhMZn+ll7hWRKjuuKcBfS
-         Yz2UEWnPILR872/9x4gocwZMDoOhl3GQEizfYBvUzX/UQt73M1k3FvlZStAEzB0JMYV+
-         UeBZG1fiOb7CWRcfEdY0wvl2G4haNN77SryH9Db5/yWgz1q/GrCbxvpxqQ+AB2FsaIEC
-         YtlwM2jn2S43PA9ccfCsQZzoMNZJ3Dhf71IFUrzop9uI6SysBPCigmsXo2D1y0mubDov
-         KpRwU+QO/PPHAZUXxXsqri/NnILV//ejQA97lu4t3V99Ra4hVAntb7RDAp+SwMMmreLt
-         DY4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AmqWbFtMRKjP/RYJLNtNwVoR7JKadqFB+epBPQPtrdE=;
-        b=28GjoCyB1fa8OkObjbf3Cbneluyyl9DnzrrF9B3hdX1DenStOfSVPA9v/dPGY5Q3BZ
-         PFUSR/JpbVmMejM+OSreU0AVe6KDGJcphItKw7ZttY8A0Cvz0rXM8V8BBpOF3rpZHOsO
-         5KLSoUzEZYq95ZBEY0U71Dtk6i8AOf1WKieQno12XLFwOfcb0Jm7k5w7PWP2j9n74b7v
-         Oca0HIQHws4MISWwKOZz7x0YhL+1ewQ9xksvprKtuyNzDZEKZoVSHehtnrCftuiwsaCB
-         xZOTvVz/11tnIzGUEBHyYrLJrgrP21mgp3mmqvPGZOUc44hbF2zX7v9GlxKMlJHXPp0q
-         V6OA==
-X-Gm-Message-State: AOAM53288Am9sw2xJUqQR05SCWz6NJGoeudwLu6GC+qudTMwvGAlsyvc
-        bfAyBDDlXYGixmMgkw4c9Xw=
-X-Google-Smtp-Source: ABdhPJzLGg5lDHAALjn0FUrZCg7vkYrG8lygeOc21XjYBZ08S7udKhTeB/ebTpGKAuqxWBj6BEFO7Q==
-X-Received: by 2002:a17:902:b597:b0:13e:9ba6:fed with SMTP id a23-20020a170902b59700b0013e9ba60fedmr43743350pls.32.1636008842559;
-        Wed, 03 Nov 2021 23:54:02 -0700 (PDT)
-Received: from debian11-dev-61.localdomain (192.243.120.180.16clouds.com. [192.243.120.180])
-        by smtp.gmail.com with ESMTPSA id o1sm6638518pjs.30.2021.11.03.23.53.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 23:54:02 -0700 (PDT)
-From:   davidcomponentone@gmail.com
-X-Google-Original-From: yang.guang5@zte.com.cn
-To:     ecree.xilinx@gmail.com
-Cc:     davidcomponentone@gmail.com, habetsm.xilinx@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, hkallweit1@gmail.com,
-        bhelgaas@google.com, yuehaibing@huawei.com, arnd@arndb.de,
-        yang.guang5@zte.com.cn, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] sfc: use swap() to make code cleaner
-Date:   Thu,  4 Nov 2021 14:53:50 +0800
-Message-Id: <20211104065350.1834911-1-yang.guang5@zte.com.cn>
-X-Mailer: git-send-email 2.30.2
+        Thu, 4 Nov 2021 02:58:37 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB780C06127A
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:55:59 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1miWf9-00025B-Eb; Thu, 04 Nov 2021 07:55:51 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1miWf7-0004jB-Mt; Thu, 04 Nov 2021 07:55:49 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1miWf7-0005vm-Ln; Thu, 04 Nov 2021 07:55:49 +0100
+Date:   Thu, 4 Nov 2021 07:55:46 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     =?utf-8?B?TWHDrXJh?= Canal <maira.canal@usp.br>
+Cc:     daniel.thompson@linaro.org, lee.jones@linaro.org,
+        jingoohan1@gmail.com, thierry.reding@gmail.com,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v5] backlight: lp855x: Switch to atomic PWM API
+Message-ID: <20211104065546.dou3gwyrvdby5zec@pengutronix.de>
+References: <YYLI/b7KcqM8wcEB@fedora>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sfleujravmqpoch7"
+Content-Disposition: inline
+In-Reply-To: <YYLI/b7KcqM8wcEB@fedora>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Guang <yang.guang5@zte.com.cn>
 
-Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
-opencoding it.
+--sfleujravmqpoch7
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
----
- drivers/net/ethernet/sfc/falcon/efx.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+On Wed, Nov 03, 2021 at 02:38:05PM -0300, Ma=EDra Canal wrote:
+> Remove legacy PWM interface (pwm_config, pwm_enable, pwm_disable) and
+> replace it for the atomic PWM API.
+>=20
+> Signed-off-by: Ma=EDra Canal <maira.canal@usp.br>
+> ---
+> V1 -> V2: Initialize variable and simplify conditional loop
+> V2 -> V3: Fix assignment of NULL variable
+> V3 -> V4: Replace division for pwm_set_relative_duty_cycle
+> V4 -> V5: Fix overwrite of state.period
+> ---
+>  drivers/video/backlight/lp855x_bl.c | 21 +++++++++------------
+>  1 file changed, 9 insertions(+), 12 deletions(-)
+>=20
+> diff --git a/drivers/video/backlight/lp855x_bl.c b/drivers/video/backligh=
+t/lp855x_bl.c
+> index e94932c69f54..e70a7b72dcf3 100644
+> --- a/drivers/video/backlight/lp855x_bl.c
+> +++ b/drivers/video/backlight/lp855x_bl.c
+> @@ -233,9 +233,8 @@ static int lp855x_configure(struct lp855x *lp)
+> =20
+>  static void lp855x_pwm_ctrl(struct lp855x *lp, int br, int max_br)
+>  {
+> -	unsigned int period =3D lp->pdata->period_ns;
+> -	unsigned int duty =3D br * period / max_br;
+>  	struct pwm_device *pwm;
+> +	struct pwm_state state;
+> =20
+>  	/* request pwm device with the consumer name */
+>  	if (!lp->pwm) {
+> @@ -245,18 +244,16 @@ static void lp855x_pwm_ctrl(struct lp855x *lp, int =
+br, int max_br)
+> =20
+>  		lp->pwm =3D pwm;
+> =20
+> -		/*
+> -		 * FIXME: pwm_apply_args() should be removed when switching to
+> -		 * the atomic PWM API.
+> -		 */
+> -		pwm_apply_args(pwm);
+> +		pwm_init_state(lp->pwm, &state);
+> +		state.period =3D lp->pdata->period_ns;
+> +	} else {
+> +		pwm_get_state(lp->pwm, &state);
+>  	}
+> =20
+> -	pwm_config(lp->pwm, duty, period);
+> -	if (duty)
+> -		pwm_enable(lp->pwm);
+> -	else
+> -		pwm_disable(lp->pwm);
+> +	pwm_set_relative_duty_cycle(&state, br, max_br);
+> +	state.enabled =3D state.duty_cycle;
+> +
+> +	pwm_apply_state(lp->pwm, &state);
 
-diff --git a/drivers/net/ethernet/sfc/falcon/efx.c b/drivers/net/ethernet/sfc/falcon/efx.c
-index c68837a951f4..314c9c69eb0e 100644
---- a/drivers/net/ethernet/sfc/falcon/efx.c
-+++ b/drivers/net/ethernet/sfc/falcon/efx.c
-@@ -817,9 +817,7 @@ ef4_realloc_channels(struct ef4_nic *efx, u32 rxq_entries, u32 txq_entries)
- 	efx->rxq_entries = rxq_entries;
- 	efx->txq_entries = txq_entries;
- 	for (i = 0; i < efx->n_channels; i++) {
--		channel = efx->channel[i];
--		efx->channel[i] = other_channel[i];
--		other_channel[i] = channel;
-+		swap(efx->channel[i], other_channel[i]);
- 	}
- 
- 	/* Restart buffer table allocation */
-@@ -863,9 +861,7 @@ ef4_realloc_channels(struct ef4_nic *efx, u32 rxq_entries, u32 txq_entries)
- 	efx->rxq_entries = old_rxq_entries;
- 	efx->txq_entries = old_txq_entries;
- 	for (i = 0; i < efx->n_channels; i++) {
--		channel = efx->channel[i];
--		efx->channel[i] = other_channel[i];
--		other_channel[i] = channel;
-+		swap(efx->channel[i], other_channel[i]);
- 	}
- 	goto out;
- }
--- 
-2.30.2
+Looks mostly right, but only on a deeper look into the driver. The
+reason is that in the unmodified code there is always explicitly
+period=3Dlp->pdata->period_ns; while after your change the period is unset
+(and so the previously set period is used).
 
+So either mention in the change log that this driver doesn't modify the
+pwm settings in other places or preferably pick an equivalent conversion
+(plus maybe an optimisation in a separate patch).
+
+If you go the "equivalent conversion" path, please note that
+pwm_set_relative_duty_cycle() isn't equivalent to br * period / max_br,
+as it implements a different rounding.
+
+Best regards
+Uwe
+
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--sfleujravmqpoch7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGDg+8ACgkQwfwUeK3K
+7AlpqwgAhJ3hLGHBwYaDtwQGm/cqztts3RbonqNohI6IhObp5RVnitTQXd8PYkob
++IDHUt5Bm+Q+0onBaFnklhZXNsBQYsQo1cJUAtl1IRLLJDGPOzcD7Yp5wJyb6LXN
+IBFxTR9CsnHweeTlVh09Fucn1ZMQc5TPFDWEE7iJc/9N5qm+IBBCSGiH/RFS34rD
+DWIajVqwkFQ8fMkrhHLb+rMwX6oaicIRYtSRBwi3mGTZveudu1w/5ZOzN/KCpBbh
+UkKEQ4oHVvcDyB9dobQqE9c/4GYbeTy6WFMgv6ROjWy88yoW8N3EtsQwHhg1Vocx
+pj2xjlI7C3iHr4CABid+ptgNTJaTng==
+=jfLr
+-----END PGP SIGNATURE-----
+
+--sfleujravmqpoch7--
