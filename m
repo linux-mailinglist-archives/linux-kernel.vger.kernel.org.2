@@ -2,104 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D7A445070
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C42EC445076
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:37:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhKDIjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:39:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhKDIjh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:39:37 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BFD9C061714;
-        Thu,  4 Nov 2021 01:37:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jS89Xj+VfQ9PYZIaAjq6KTeAlryQwX9opaWuKLVVCac=; b=IqyxG9qeLs4MByz0t7AcozirEk
-        EYPdxz1sZhknq6KqfxeHqLeZLKUaAMkU1iiGBIGsby+JVZU5MFn8LG19RFBfo/owISGeaizOBENr0
-        Pc50seqUAt4jdr7UwKiJFqyxGxyALrVnUiDLv2DNbZS3C3GZe/sylxhVxeTPWYw1ldFeGxoP/2Cnh
-        3Ji5B4aqNTmk1Cs6yClxQ4D/3nX53JqFwfCdIevbq5YxOVg9Ck8OgpzNUvOyjHJ7QJWDOcdbBGdWk
-        UNOi8nNIslv6Um16y8rr85cXqRpOcugjfENBy4+zc5n4GVWknCQgY7zTt0VeTjfGsz6mSi1yolDC3
-        6rep/UKQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1miYEp-008Jwb-Cd; Thu, 04 Nov 2021 08:36:47 +0000
-Date:   Thu, 4 Nov 2021 01:36:47 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Jane Chu <jane.chu@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
- RWF_RECOVERY_DATA flag
-Message-ID: <YYObn+0juAFvH7Fk@infradead.org>
-References: <20211021001059.438843-1-jane.chu@oracle.com>
- <YXFPfEGjoUaajjL4@infradead.org>
- <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
- <YXJN4s1HC/Y+KKg1@infradead.org>
- <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
- <YXj2lwrxRxHdr4hb@infradead.org>
- <20211028002451.GB2237511@magnolia>
- <YYDYUCCiEPXhZEw0@infradead.org>
- <dfca8558-ad70-41d5-1131-63db66b70542@oracle.com>
- <CAPcyv4jLn4_SYxLtp_cUT=mm6Y3An22BA+sqex1S-CBnAm6qGA@mail.gmail.com>
+        id S231152AbhKDIk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:40:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230084AbhKDIkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 04:40:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F40096112D;
+        Thu,  4 Nov 2021 08:37:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636015068;
+        bh=E+go/jlwcXH60auQtP/uEyLMcbdgde64C/RHs6+jrR0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Mni8B+Er6MbxMus1Wobyx1zTlOT9FFbfE6ehLHBeU7OdCb4//ZFIeMTfDDTqjTWeg
+         qDcM8wpgXvHUoGCeyPjicomCK3S8n9M6H6uPIhVtOnkgnI6i7AMTp0cR9EcEB2guAA
+         7PofpQ36+NPMEoJM+vnfk+9o5ZK1KDbte47nrQCLYLh9c4PGEbnC0fVh6QglB08SJ8
+         LqmhXkogRC8WLsEeWT52R9FJw+bnB+jg56+FnJs/m+KbelH7vUrcL3OyntxIxbu89Y
+         KMU+h+BX9V7A7e7Rp5uHzuFKynzGLjq/NC2tb0XtTlXha5b41oze5+ioveRBlvhnK0
+         2z5P4baPHdxKQ==
+Date:   Thu, 4 Nov 2021 08:37:37 +0000
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kaixu Xia <kaixuxia@tencent.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Yang Li <abaci-bugfix@linux.alibaba.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Alan <alan@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: atomisp current issues
+Message-ID: <20211104083737.55b88011@sal.lan>
+In-Reply-To: <20211103165424.67296e13@sal.lan>
+References: <20211103135418.496f75d5@sal.lan>
+        <c39cac68-73ab-4ab0-a701-e92f01c92774@xs4all.nl>
+        <20211103165424.67296e13@sal.lan>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4jLn4_SYxLtp_cUT=mm6Y3An22BA+sqex1S-CBnAm6qGA@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 11:21:39PM -0700, Dan Williams wrote:
-> The concern I have with dax_clear_poison() is that it precludes atomic
-> error clearing.
+Em Wed, 3 Nov 2021 16:54:24 +0000
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
 
-atomic as in clear poison and write the actual data?  Yes, that would
-be useful, but it is not how the Intel pmem support actually works, right?
+> Em Wed, 3 Nov 2021 15:41:05 +0100
+> Hans Verkuil <hverkuil-cisco@xs4all.nl> escreveu:
+> 
+> > On 03/11/2021 14:54, Mauro Carvalho Chehab wrote:  
+> > > Hi,
+> > > 
+> > > From what I've seen so far, those are the main issues with regards to V4L2 API,
+> > > in order to allow a generic V4L2 application to work with it.
+> > > 
+> > > MMAP support
+> > > ============
+> > > 
+> > > Despite having some MMAP code on it, the current implementation is broken. 
+> > > Fixing it is not trivial, as it would require fixing the HMM support on it, 
+> > > which does several tricks.
+> > > 
+> > > The best would be to replace it by something simpler. If this is similar
+> > > enough to IPU3, perhaps one idea would be to replace the HMM code on it by 
+> > > videodev2 + IPU3 HMM code.
+> > > 
+> > > As this is not trivial, I'm postponing such task. If someone has enough
+> > > time, it would be great to have this fixed.
+> > > 
+> > > From my side, I opted to add support for USERPTR on camorama:
+> > > 
+> > > 	https://github.com/alessio/camorama
+> > > 
+> > > As this is something I wanted to do anyway, and it allowed me to cleanup
+> > > several things in camorama's code.
+> > > 
+> > > Support for USERPTR is not autodetected. So, this should be selected    
+> > 
+> > You can autodetect this: the capabilities field returned by VIDIOC_REQBUFS
+> > or VIDIOC_CREATE_BUFS will indicate support for this. This works with any
+> > vb2-based driver.
+> > 
+> > Just thought I should mention this...  
+> 
+> Yeah, surely the app could try it, but:
+> 
+> 1. As libv4l doesn't support USERPTR, such detection should happen
+>    early inside camorama code;
 
-> Also, as Boris and I discussed, poisoned pages should
-> be marked NP (not present) rather than UC (uncacheable) [1].
+I ended adding auto-detection support for USERPTR inside camorama,
+for completeness.
 
-This would not really have an affect on the series, right?  But yes,
-that seems like the right thing to do.
+The "-U" command line option remains, so one could use it to force USERPTR
+mode.
 
-> With
-> those 2 properties combined I think that wants a custom pmem fault
-> handler that knows how to carefully write to pmem pages with poison
-> present, rather than an additional explicit dax-operation. That also
-> meets Christoph's requirement of "works with the intended direct
-> memory map use case".
+As the way I implemented it is that camorama checks if REQBUFS doesn't
+return any error, it means that it will automatically fallback to USERPTR
+with atomisp driver (while MMAP support is not fixed there).
 
-So we have 3 kinds of accesses to DAX memory:
+So, once I fix the issues with S_FMT/G_FMT, camorama will likely work
+out of the box with it.
 
- (1) user space mmap direct access. 
- (2) iov_iter based access (could be from kernel or userspace)
- (3) open coded kernel access using ->direct_access
+Regards,
+Mauro
 
-One thing I noticed:  (2) could also work with kernel memory or pages,
-but that doesn't use MC safe access.  Which seems like a major independent
-of this discussion.
-
-I suspect all kernel access could work fine with a copy_mc_to_kernel
-helper as long as everyone actually uses it, which will cover the
-missing required bits of (2) and (3) together with something like the
-->clear_poison series from Jane. We just need to think hard what we
-want to do for userspace mmap access.
