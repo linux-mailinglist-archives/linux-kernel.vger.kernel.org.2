@@ -2,113 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6CB445476
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:04:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0216144548B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:09:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231269AbhKDOGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 10:06:47 -0400
-Received: from kirsty.vergenet.net ([202.4.237.240]:36828 "EHLO
-        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhKDOGq (ORCPT
+        id S231210AbhKDOLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 10:11:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230409AbhKDOLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 10:06:46 -0400
-Received: from madeliefje.horms.nl (ip-80-113-23-202.ip.prioritytelecom.net [80.113.23.202])
-        by kirsty.vergenet.net (Postfix) with ESMTPA id CFB4925AE8A;
-        Fri,  5 Nov 2021 01:04:06 +1100 (AEDT)
-Received: by madeliefje.horms.nl (Postfix, from userid 7100)
-        id 3FF8327B5; Thu,  4 Nov 2021 15:04:04 +0100 (CET)
-Date:   Thu, 4 Nov 2021 15:04:04 +0100
-From:   Simon Horman <horms@verge.net.au>
-To:     yangxingwu <xingwu.yang@gmail.com>, pablo@netfilter.org
-Cc:     ja@ssi.bg, kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        corbet@lwn.net, Chuanqi Liu <legend050709@qq.com>
-Subject: Re: [PATCH nf-next v6] netfilter: ipvs: Fix reuse connection if RS
- weight is 0
-Message-ID: <20211104140401.GA16560@vergenet.net>
-References: <20211104031029.157366-1-xingwu.yang@gmail.com>
+        Thu, 4 Nov 2021 10:11:41 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6FE8C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 07:09:02 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id g191-20020a1c9dc8000000b0032fbf912885so4372084wme.4
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 07:09:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=dtZoDNcRK9WnLb2NTNZZwLf7tfdr2NWuYkwNvRK2mbo=;
+        b=RdSKhyiBBBduAUZ+6urJp2cqptTXf/SNHkGb7rWujq5gvI327BdIrSisVOZhuTH82X
+         L4pku0LB+dKMt8Wwy2SQrxOXS+5aK5oKDuiKTdx7YTpSQ79QJgR5PPohtR/BISPQckuo
+         q6HoxY+HEHDsFElt7FSI1yLoUVnLd0cv3YqWgvyJEhgj4Je7F0kR5RgjWBZt6jbcxEfU
+         QnXOl2M3JfT3ahUPKkkgzZtfsDUEh8cF8ESZ36qMBEzxxUGan1B5F5/z7drJI+UK/z4o
+         DVAAT67iTX5oGy8lmcmXpPUqFrJUN4xcz53WIXhspDwcB1mwcsv+dZ0AIGDbZHAag10d
+         MZNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=dtZoDNcRK9WnLb2NTNZZwLf7tfdr2NWuYkwNvRK2mbo=;
+        b=x7b7z+wNiwDRQ8P8/7czmG3NLzcxN4ZxHi2VUnoTMl9qUIyaLfdv3Pvn6hKxWFVBDa
+         Mvm+yH5RFZISrB7MEOU2vYaK+t1ljLWyZAKic5xjKe3pUK+1sV4cjTzmkUzLBwlDmqHS
+         302aDV3q3eJjdUhR3m/wp7F97x4kJXn2mfaYudGGjeJoiezt7zC6L03gvBmwD4xHKEvp
+         OVRjlMTZQDebJ/ep3L63inkWNaMy2Avr6eOgjuP+d2S9g9EDEM8+6pYt08YybC0Fm6Le
+         FKhtek668kN+EH9warZm5IBjQgGFC5WXRZWBAe0M3mTTMdSpE0J813+xFq1BFO+/Pb+e
+         Hr3g==
+X-Gm-Message-State: AOAM530eabEe92kJYYc1WdSSh9ODLUZydUxBVbOivVTWu6e8aisrKUTn
+        JTxS7CWB8zmb3pfirgfpSClv577bg2F3uQ==
+X-Google-Smtp-Source: ABdhPJxggghv6lZe+pIeL+TbfhccVq1A/vsRzF+Ccm0nsyLCXNRqfwkR+5sdHVLU7ncTmQ3ElQDk1g==
+X-Received: by 2002:a05:600c:2149:: with SMTP id v9mr23762986wml.59.1636034941399;
+        Thu, 04 Nov 2021 07:09:01 -0700 (PDT)
+Received: from google.com ([95.148.6.174])
+        by smtp.gmail.com with ESMTPSA id n32sm4953465wms.42.2021.11.04.07.09.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 07:09:00 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 14:08:59 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Alistair Francis <alistair@alistair23.me>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mfd: simple-mfd-i2c: Fix linker error due to new
+ mfd-core dependency
+Message-ID: <YYPpewMhot95DceK@google.com>
+References: <20211103190426.1511507-1-tyhicks@linux.microsoft.com>
+ <YYOYvDnX7yA932re@google.com>
+ <20211104135347.GD3600@sequoia>
+ <CA+HBbNFPN91SF8CGVHt1bLptj4rbD7MDFgHNWQ+ry_y_wR+-NA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211104031029.157366-1-xingwu.yang@gmail.com>
-Organisation: Horms Solutions BV
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+HBbNFPN91SF8CGVHt1bLptj4rbD7MDFgHNWQ+ry_y_wR+-NA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 11:10:29AM +0800, yangxingwu wrote:
-> We are changing expire_nodest_conn to work even for reused connections when
-> conn_reuse_mode=0, just as what was done with commit dc7b3eb900aa ("ipvs:
-> Fix reuse connection if real server is dead").
-> 
-> For controlled and persistent connections, the new connection will get the
-> needed real server depending on the rules in ip_vs_check_template().
-> 
-> Fixes: d752c3645717 ("ipvs: allow rescheduling of new connections when port reuse is detected")
-> Co-developed-by: Chuanqi Liu <legend050709@qq.com>
-> Signed-off-by: Chuanqi Liu <legend050709@qq.com>
-> Signed-off-by: yangxingwu <xingwu.yang@gmail.com>
+On Thu, 04 Nov 2021, Robert Marko wrote:
 
-Acked-by: Simon Horman <horms@verge.net.au>
-
-(v5 was acked by Julian, probably that can be propagated here)
-
-Pablo, please consider this for nf-next at your convenience.
-
-> ---
->  Documentation/networking/ipvs-sysctl.rst | 3 +--
->  net/netfilter/ipvs/ip_vs_core.c          | 8 ++++----
->  2 files changed, 5 insertions(+), 6 deletions(-)
+> On Thu, Nov 4, 2021 at 2:53 PM Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
+> >
+> > On 2021-11-04 08:24:28, Lee Jones wrote:
+> > > On Wed, 03 Nov 2021, Tyler Hicks wrote:
+> > >
+> > > > Select CONFIG_MFD_CORE from CONFIG_MFD_SIMPLE_MFD_I2C, now that
+> > > > simple-mfd-i2c.c calls devm_mfd_add_devices(), to fix the following
+> > > > linker error:
+> > > >
+> > > >  ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_probe':
+> > > >  simple-mfd-i2c.c:(.text+0x62): undefined reference to `devm_mfd_add_devices'
+> > > >  make: *** [Makefile:1187: vmlinux] Error 1
+> > > >
+> > > > Fixes: c753ea31781a ("mfd: simple-mfd-i2c: Add support for registering devices via MFD cells")
+> > > > Cc: stable@vger.kernel.org # 5.15.x
+> > > > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> > > > ---
+> > > >  drivers/mfd/Kconfig | 1 +
+> > > >  1 file changed, 1 insertion(+)
+> > >
+> > > Looks like the same change that has already been applied.
+> > >
+> > > Could you rebase on top of the MFD tree please?
+> >
+> > Ah, that commit wasn't in for-mfd-next when I wrote up this patch
+> > yesterday.
+> >
+> > I think that the Fixes line in that patch is wrong as I didn't see this
+> > issue in 5.10 and reverting c753ea31781a fixes the build failure.
 > 
-> diff --git a/Documentation/networking/ipvs-sysctl.rst b/Documentation/networking/ipvs-sysctl.rst
-> index 2afccc63856e..1cfbf1add2fc 100644
-> --- a/Documentation/networking/ipvs-sysctl.rst
-> +++ b/Documentation/networking/ipvs-sysctl.rst
-> @@ -37,8 +37,7 @@ conn_reuse_mode - INTEGER
->  
->  	0: disable any special handling on port reuse. The new
->  	connection will be delivered to the same real server that was
-> -	servicing the previous connection. This will effectively
-> -	disable expire_nodest_conn.
-> +	servicing the previous connection.
->  
->  	bit 1: enable rescheduling of new connections when it is safe.
->  	That is, whenever expire_nodest_conn and for TCP sockets, when
-> diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-> index 128690c512df..393058a43aa7 100644
-> --- a/net/netfilter/ipvs/ip_vs_core.c
-> +++ b/net/netfilter/ipvs/ip_vs_core.c
-> @@ -1964,7 +1964,6 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
->  	struct ip_vs_proto_data *pd;
->  	struct ip_vs_conn *cp;
->  	int ret, pkts;
-> -	int conn_reuse_mode;
->  	struct sock *sk;
->  
->  	/* Already marked as IPVS request or reply? */
-> @@ -2041,15 +2040,16 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
->  	cp = INDIRECT_CALL_1(pp->conn_in_get, ip_vs_conn_in_get_proto,
->  			     ipvs, af, skb, &iph);
->  
-> -	conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
-> -	if (conn_reuse_mode && !iph.fragoffs && is_new_conn(skb, &iph) && cp) {
-> +	if (!iph.fragoffs && is_new_conn(skb, &iph) && cp) {
-> +		int conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
->  		bool old_ct = false, resched = false;
->  
->  		if (unlikely(sysctl_expire_nodest_conn(ipvs)) && cp->dest &&
->  		    unlikely(!atomic_read(&cp->dest->weight))) {
->  			resched = true;
->  			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
-> -		} else if (is_new_conn_expected(cp, conn_reuse_mode)) {
-> +		} else if (conn_reuse_mode &&
-> +			   is_new_conn_expected(cp, conn_reuse_mode)) {
->  			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
->  			if (!atomic_read(&cp->n_control)) {
->  				resched = true;
-> -- 
-> 2.30.2
-> 
+> Hi Tyler, I would agree with you on the fixes tag.
+> I messed that one up, c753ea31781a is the correct one.
+
+All good.  I fixed it for you.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
