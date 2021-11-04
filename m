@@ -2,88 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2576D445A32
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 20:03:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DAC4445A37
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 20:04:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234140AbhKDTGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 15:06:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232376AbhKDTGV (ORCPT
+        id S234237AbhKDTHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 15:07:01 -0400
+Received: from 113.196.136.162.ll.static.sparqnet.net ([113.196.136.162]:41358
+        "EHLO mg.sunplus.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233947AbhKDTGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 15:06:21 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1D1C061203
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 12:03:42 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id 133so5350148wme.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 12:03:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=eWy2dU5vWahlnX9CGe7+FBY4krKs/BHH91QgGclzDb0=;
-        b=Fo19T/76WrwkFuRUM2AQsrbY5OPjTahKl4faoX7n/QVTIK1ql2GkJ8oBtrs61SKTae
-         oOOCSqhVMKRhneQjZFCMQc8yokPR0TF3HMJs7JtQnqDNPH7Zyd7VCGa/DNqF/VC8MNas
-         xWq2v15VkPm/diwesVfvBNA+TyCRiNT/hlw9wPo5vUpWEw15IRxsNlCwkr97w8QI9j6d
-         pPUb9/S6LYyGuMNWLaZwRDfeHpWm21X3nI9E6ZZbCZ+LoUvZQcQEjBJOV6iV0+QSUBbO
-         ivc9SWaHld7XtrUiKoDDmD/pR7M7nvYftdfL2sfBiqfEEafPsHg8U7fXnkZa7Y9r3CUu
-         44vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=eWy2dU5vWahlnX9CGe7+FBY4krKs/BHH91QgGclzDb0=;
-        b=CqijxrEm86pPEO4T2uLjD0vl7Pv4nVbWg1UMWbnDESczEsmQiVsVyWe+Ok3WmEK4NE
-         UwutI+BSTRc015v+7Xbgkwybb40Iv5ooOt6savpyjXzjjID9y9Rf5qZQSzEtg3qLX0fs
-         yJ1yNXlV4cWqDw4ythwuyPfgJSGulcd8E9ydQNWhZWnv6KfkBVSmTU0tMcQKHsQ1AqOd
-         SEqQgsKPKz6awK/UTtU1Tegdfbho2X3oZ3a+JcdVvegoSWkovzizae+FikZqyWC4DDkZ
-         CvDizSb0kCkxpsmtiBzR2eSsXFP5Rs7SItrH//y2/zEAL3/4r6fuHi5NTL/fLZU0s0tG
-         ieGQ==
-X-Gm-Message-State: AOAM533Xj1XjVLA8aIvqlQhWT/DJqXkk38yHGLKhb41tr+Po6SGaoqj1
-        Gof0SO58SMa72qscXNuGhf6nLj38l32DmwYbzUA=
-X-Google-Smtp-Source: ABdhPJzu+WcDO6uYy+EiKdXPfFAI9nUBW8gxvnMfEO5+AAE/EWc/bFyKlKdj0f6YVrSMvbZdTWGqcf+ppVzRiTWpD3s=
-X-Received: by 2002:a05:600c:2e46:: with SMTP id q6mr24788808wmf.6.1636052620934;
- Thu, 04 Nov 2021 12:03:40 -0700 (PDT)
+        Thu, 4 Nov 2021 15:06:50 -0400
+X-Greylist: delayed 104113 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Nov 2021 15:06:49 EDT
+X-MailGates: (flag:3,DYNAMIC,RELAY,NOHOST:PASS)(compute_score:DELIVER,40
+        ,3)
+Received: from 172.17.9.112
+        by mg01.sunplus.com with MailGates ESMTP Server V5.0(13488:0:AUTH_RELAY)
+        (envelope-from <wells.lu@sunplus.com>); Fri, 05 Nov 2021 03:03:42 +0800 (CST)
+Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
+ sphcmbx02.sunplus.com.tw (172.17.9.112) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Fri, 5 Nov 2021 03:03:43 +0800
+Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
+ ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Fri, 5 Nov 2021
+ 03:03:43 +0800
+From:   =?big5?B?V2VsbHMgTHUgp2aq2sTL?= <wells.lu@sunplus.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Randy Dunlap <rdunlap@infradead.org>,
+        Wells Lu <wellslutw@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
+Subject: RE: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+Thread-Topic: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+Thread-Index: AQHX0KKBcebTINBXKk6D/f7Frpi9sKvxbhgAgAClKgD//5f5gIABJz+w///9xoCAANUOEP//hOQAABHi4LA=
+Date:   Thu, 4 Nov 2021 19:03:43 +0000
+Message-ID: <72446c510f05480f9967c32df8787d46@sphcmbx02.sunplus.com.tw>
+References: <cover.1635936610.git.wells.lu@sunplus.com>
+ <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
+ <d0217eed-a8b7-8eb9-7d50-4bf69cd38e03@infradead.org>
+ <159ab76ac7114da983332aadc6056c08@sphcmbx02.sunplus.com.tw>
+ <YYLjaYCQHzqBzN1l@lunn.ch>
+ <36d5bc6d40734ae0a9c1fb26d258f49f@sphcmbx02.sunplus.com.tw>
+ <YYPZN9hPBJTBzVUl@lunn.ch>
+ <c51d2927eedb4f3999b8361a44526a07@sphcmbx02.sunplus.com.tw>
+ <YYQkqkZOwOhTa+VD@lunn.ch>
+In-Reply-To: <YYQkqkZOwOhTa+VD@lunn.ch>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.25.108.39]
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Received: by 2002:a5d:64cc:0:0:0:0:0 with HTTP; Thu, 4 Nov 2021 12:03:40 -0700 (PDT)
-Reply-To: mrsrosebanneth19@gmail.com
-From:   Mrs Rose Banneth <mr.adamsallam01@gmail.com>
-Date:   Thu, 4 Nov 2021 12:03:40 -0700
-Message-ID: <CAAch+VEsV9jYF-DkYRWpX-G3J3SnHJKjBu5kS77=S3Xj+pz82g@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear friend, I pray you will be fine and safe.
-
-I am Mrs. Rose Banneth a Norway Lady but my late husband is from
-France i live in Burkina Faso, please I want you to take this message
-very serious as I have already lost all my family by Covid.19 and now
-I am quarantine which I don=E2=80=99t also know what will happen to me
-tomorrow, I lost my only two Brothers by Covid.19 last year now it is
-my turn.
-
-Are you online? It is a really serious issue because there is
-something I want you to help me do as I don=E2=80=99t want to lost all my
-family money to the bank, my two brothers money is in my care and my
-own money in the bank, please I will like you to help me use this =E2=82=AC=
-8.2
-Million Euro for orphans in your Country, it is what my spirit direct
-me to do, Can you be able to do this for me?
-
-On your return to handle this fund I will introduce you to my Nurse to
-follow up with you and the bank.i want you to contact me here my
-private email address mrsrosebanneth19@gmail.com  to know on how the
-fund will be transferred to your bank account or online banking.
-
-I wait for your urgent respond and please this is really serious and
-urgent issue.
-
-Thanks
-My regards,
-Mrs Rose Banneth
-Written from Hospital
+PiA+IE5vLCB3ZSBvbmx5IGRldmVsb3AgYXJtLWJhc2VkIFNvQywgbmV2ZXIgZm9yIHg4NiBvciBt
+aXBzLg0KPiA+IFdlIG5ldmVyIGNvbXBpbGUgdGhlIGRyaXZlciBmb3IgeDg2IG9yIG1pcHMgbWFj
+aGluZS4NCj4gDQo+IFlvdSBkb24ndCwgYnV0IHRoZSBMaW51eCBjb21tdW5pdHkgZG9lcyBidWls
+ZCBmb3IgdGhvc2UgYXJjaGl0ZWN0dXJlcy4gTW9zdA0KPiBwZW9wbGUgZG8gdHJlZSB3aWRlIHJl
+ZmFjdG9yaW5nIHdvcmsgdXNpbmcgeDg2LiBUcmVlIHdpZGUgY2xlYW51cHMgdXNpbmcgeDg2LA0K
+PiBldGMuIEFueSBjaGFuZ2VzIGxpa2UgdGhhdCBjb3VsZCB0b3VjaCB5b3VyIGRyaXZlci4gVGhl
+IGhhcmRlciBpcyBpdCB0byBidWlsZCwgdGhlDQo+IGxlc3MgYnVpbGQgdGVzdGluZyBpdCB3aWxs
+IGdldCwgYW5kIHRyZWUgd2lkZSBjaGFuZ2VzIHdoaWNoIGJyZWFrIGl0IGFyZSBsZXNzIGxpa2Vs
+eQ0KPiB0byBnZXQgbm90aWNlZC4gIFNvIHlvdSByZWFsbHkgZG8gd2FudCBpdCB0byBjb21waWxl
+IGNsZWFubHkgZm9yIGFsbA0KPiBhcmNoaXRlY3R1cmVzLiBJZiBpdCBkb2VzIG5vdCwgaXQgbm9y
+bWFsbHkgYWN0dWFsbHkgbWVhbnMgeW91IGFyZSBkb2luZw0KPiBzb21ldGhpbmcgd3JvbmcsIHNv
+bWV0aGluZyB5b3UgbmVlZCB0byBmaXggYW55d2F5LiBTbyBwbGVhc2UgZG8gYnVpbGQgaXQgZm9y
+DQo+IHg4NiBhbmQgbWFrZSBzdXJlIGl0IGJ1aWxkcyBjbGVhbmx5Lg0KPiANCj4gCSAgQW5kcmV3
+DQoNCk9rLCBJIHVuZGVyc3RhbmQuDQpJJ2xsIGFkZCBDT01QSUxFX1RFU1QgYW5kIGNvbXBpbGUg
+ZHJpdmVyIGZvciB4ODYuDQoNClRoYW5rcywNCg==
