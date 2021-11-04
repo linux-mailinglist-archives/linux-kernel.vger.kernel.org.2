@@ -2,101 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB591444EC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5D7444EC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:21:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbhKDGY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:24:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46168 "EHLO
+        id S230525AbhKDGYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:24:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbhKDGYZ (ORCPT
+        with ESMTP id S230252AbhKDGY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:24:25 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39CA6C061714;
-        Wed,  3 Nov 2021 23:21:48 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id n23so4553492pgh.8;
-        Wed, 03 Nov 2021 23:21:48 -0700 (PDT)
+        Thu, 4 Nov 2021 02:24:28 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86A7C06127A
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:21:50 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id y1so5535958plk.10
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 23:21:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BU1vTOLCxtgz/R6wOs3WVjyoqwIRBdNGoJVHRdiND2w=;
-        b=QL5lW4MUReHLzSIJL/ZYcrYICgVbghlJ4VFBqkUkaO9NocZA5kO27dJ1eKgrRBVmFv
-         0eL083EWkk126pO8iXtLGvmxxKrUcz4Nwex1SU3XPT0PISiMskWdfVXQ/RfotT9NmsTu
-         hVMP/WRG6kk5pEYanK/9cpL8HtY1GM8JVC4iT1jFNZErMQa80IVXXpq7hU+CvG2GDor3
-         9gv3VP0kh7eDxduG88S/N2lvYtfmXG+rfeC1nG/Gworu9cTZaZQqsnknjPF1tm2W9y7s
-         OH8SBsCTepaGEFBryoIkqUOFJXUUDGQfYrw8+piNaJE8nsJ7WkYmbAm/zOgpRTNjx/yE
-         6akg==
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZyuA6ddRdNnvNpvSUsN4hZr4Uf2uGmRKXvml9zPHv3U=;
+        b=LZQMkMEgCvdpUn1y3IGr6TRctr3Q9zUor3iSBVXWEwdAP54SnFBy+WF/4Ebp9InWiZ
+         82EJ07KkJqO1IXAjeb5tQuOwY1ckueHAnmH/o6R5PLxqRYs7VaaskeCn1nugf4y2mqcY
+         E6yt7u/txZYD8jXP/DpSBx32wbdzRNzBp4YXA0WR06xzBm2Tz82m9R7MZkgsmA0yPcMZ
+         ToDGBKl9+nZ9SgaoC7yR0jgPCp3Cx6s1akPqKynUiynPbM1vR9RHDbsWDBq4+aqq/5sp
+         U+yyphazc5dywiF0swD7YL24mIehmRIY8zog0Mlsw1WKup+EjujksqX34ab7rjp8ivql
+         LdNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BU1vTOLCxtgz/R6wOs3WVjyoqwIRBdNGoJVHRdiND2w=;
-        b=ykearN7nROJvf29CfZ7qJ6xFK+NuwtPveiokzFoeth6BZfpgTnFor7HdbINUCmJZ87
-         Z2WmaB93e7c8THYYinYeTdlNDvXG1U/UO4aEzu82+m0FauNKvOCFoCKCCRyC60SKV3FB
-         73RbJcmRj1nXqAhskufkoMWJkDGZ/5jF1Xeax1B3NUAp0Cdv8JTpuwfavNgIv0mjjTHS
-         SWLzC5LUWDhBMUCbjjzTZW5EbL5w+Y0WIDyfDtRNtfOEXG5L+Nv2Bii6LzNFYwUTMdQ7
-         LgqQ7Hn3mTdTE9mn8YRmu6UNgihNrrmekWKtGtzPwnq7NuQOE1ReKW8GPcPs2+3vNH0s
-         KGKw==
-X-Gm-Message-State: AOAM5308Rw9Yi+jBYE7DOucm4kPGNfOlDhefw9ky3zisaaWGDKu5IBYk
-        sWA0Qkm25HBBAH2ERHQ2LBk=
-X-Google-Smtp-Source: ABdhPJx3RnvYexqW6YTa8PjOPjho7WENcTm5Dg9Jmr6FpZThwO+ChHZmiDNWzDJoI55KgEHgoCLK0A==
-X-Received: by 2002:a63:6945:: with SMTP id e66mr6443454pgc.9.1636006907789;
-        Wed, 03 Nov 2021 23:21:47 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id z22sm4014737pfa.214.2021.11.03.23.21.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 23:21:47 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: luo.penghao@zte.com.cn
-To:     Siva Reddy Kallam <siva.kallam@broadcom.com>
-Cc:     Prashant Sreedharan <prashant@broadcom.com>,
-        Michael Chan <mchan@broadcom.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] tg3: Remove redundant assignments
-Date:   Thu,  4 Nov 2021 06:21:38 +0000
-Message-Id: <20211104062138.2386-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZyuA6ddRdNnvNpvSUsN4hZr4Uf2uGmRKXvml9zPHv3U=;
+        b=Tivlslq8wi+FN1C6a2ZHR8+USefPiEzkp7m15IkKJZU6CVFL1rUPxvhDzopyMRYMK3
+         cXGqF6teQ6y7GoKt9LK5K9fo3vVZPLYe0KHVLQ5YuxEWy7BEDgCLqhvbTeRpNog2N/RY
+         ZU7UNmagUwmFQbM032BpQPRt6aGf9CiluiZvP4bQU9+/XkovG8x+LewCXHOhlN1vEhPC
+         ECvcQ3mEvLbx8TJs9yDmhcC0uc0KzZU1yDnZ00qkrP4TXIkU4uOnIABL+uGTg4+2EiiU
+         IyctvKQpIpXn1T8reqrul46GkI67DysQLh6isKx42OAXGPrp67kSdBAdyH2xePRuQZRq
+         1mqg==
+X-Gm-Message-State: AOAM531jwA7mFnvISy/c/2j/BO4uGf4z/fH99bIYzjUXwg+5zHBGXEk1
+        zQ2UXZgWQuoL4CW1ZxqalCyi9NCJQ9WigI24VnV25w==
+X-Google-Smtp-Source: ABdhPJx4n/3hi5QSqYsscdoJBCM1f/g8m0p4vAuABjz6+mE+bZ+8hWcuD6Y6gRvy3XYJHICi5mkaZySCeaB3JPBO+/Q=
+X-Received: by 2002:a17:90a:6c47:: with SMTP id x65mr3577541pjj.8.1636006910291;
+ Wed, 03 Nov 2021 23:21:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211021001059.438843-1-jane.chu@oracle.com> <YXFPfEGjoUaajjL4@infradead.org>
+ <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com> <YXJN4s1HC/Y+KKg1@infradead.org>
+ <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com> <YXj2lwrxRxHdr4hb@infradead.org>
+ <20211028002451.GB2237511@magnolia> <YYDYUCCiEPXhZEw0@infradead.org> <dfca8558-ad70-41d5-1131-63db66b70542@oracle.com>
+In-Reply-To: <dfca8558-ad70-41d5-1131-63db66b70542@oracle.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 3 Nov 2021 23:21:39 -0700
+Message-ID: <CAPcyv4jLn4_SYxLtp_cUT=mm6Y3An22BA+sqex1S-CBnAm6qGA@mail.gmail.com>
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with RWF_RECOVERY_DATA flag
+To:     Jane Chu <jane.chu@oracle.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: luo penghao <luo.penghao@zte.com.cn>
+On Wed, Nov 3, 2021 at 11:10 AM Jane Chu <jane.chu@oracle.com> wrote:
+>
+> On 11/1/2021 11:18 PM, Christoph Hellwig wrote:
+> > On Wed, Oct 27, 2021 at 05:24:51PM -0700, Darrick J. Wong wrote:
+> >> ...so would you happen to know if anyone's working on solving this
+> >> problem for us by putting the memory controller in charge of dealing
+> >> with media errors?
+> >
+> > The only one who could know is Intel..
+> >
+> >> The trouble is, we really /do/ want to be able to (re)write the failed
+> >> area, and we probably want to try to read whatever we can.  Those are
+> >> reads and writes, not {pre,f}allocation activities.  This is where Dave
+> >> and I arrived at a month ago.
+> >>
+> >> Unless you'd be ok with a second IO path for recovery where we're
+> >> allowed to be slow?  That would probably have the same user interface
+> >> flag, just a different path into the pmem driver.
+> >
+> > Which is fine with me.  If you look at the API here we do have the
+> > RWF_ API, which them maps to the IOMAP API, which maps to the DAX_
+> > API which then gets special casing over three methods.
+> >
+> > And while Pavel pointed out that he and Jens are now optimizing for
+> > single branches like this.  I think this actually is silly and it is
+> > not my point.
+> >
+> > The point is that the DAX in-kernel API is a mess, and before we make
+> > it even worse we need to sort it first.  What is directly relevant
+> > here is that the copy_from_iter and copy_to_iter APIs do not make
+> > sense.  Most of the DAX API is based around getting a memory mapping
+> > using ->direct_access, it is just the read/write path which is a slow
+> > path that actually uses this.  I have a very WIP patch series to try
+> > to sort this out here:
+> >
+> > http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dax-devirtualize
+> >
+> > But back to this series.  The basic DAX model is that the callers gets a
+> > memory mapping an just works on that, maybe calling a sync after a write
+> > in a few cases.  So any kind of recovery really needs to be able to
+> > work with that model as going forward the copy_to/from_iter path will
+> > be used less and less.  i.e. file systems can and should use
+> > direct_access directly instead of using the block layer implementation
+> > in the pmem driver.  As an example the dm-writecache driver, the pending
+> > bcache nvdimm support and the (horribly and out of tree) nova file systems
+> > won't even use this path.  We need to find a way to support recovery
+> > for them.  And overloading it over the read/write path which is not
+> > the main path for DAX, but the absolutely fast path for 99% of the
+> > kernel users is a horrible idea.
+> >
+> > So how can we work around the horrible nvdimm design for data recovery
+> > in a way that:
+> >
+> >     a) actually works with the intended direct memory map use case
+> >     b) doesn't really affect the normal kernel too much
+> >
+> > ?
+> >
+>
+> This is clearer, I've looked at your 'dax-devirtualize' patch which
+> removes pmem_copy_to/from_iter, and as you mentioned before,
+> a separate API for poison-clearing is needed. So how about I go ahead
+> rebase my earlier patch
+>
+> https://lore.kernel.org/lkml/20210914233132.3680546-2-jane.chu@oracle.com/
+> on 'dax-devirtualize', provide dm support for clear-poison?
+> That way, the non-dax 99% of the pwrite use-cases aren't impacted at all
+> and we resolve the urgent pmem poison-clearing issue?
+>
+> Dan, are you okay with this?  I am getting pressure from our customers
+> who are basically stuck at the moment.
 
-The assignment of err will be overwritten next, so this statement
-should be deleted.
+The concern I have with dax_clear_poison() is that it precludes atomic
+error clearing. Also, as Boris and I discussed, poisoned pages should
+be marked NP (not present) rather than UC (uncacheable) [1]. With
+those 2 properties combined I think that wants a custom pmem fault
+handler that knows how to carefully write to pmem pages with poison
+present, rather than an additional explicit dax-operation. That also
+meets Christoph's requirement of "works with the intended direct
+memory map use case".
 
-The clang_analyzer complains as follows:
-
-drivers/net/ethernet/broadcom/tg3.c:5506:2: warning:
-
-Value stored to 'expected_sg_dig_ctrl' is never read
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
----
- drivers/net/ethernet/broadcom/tg3.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
-index b0e4964..c5a5a6a 100644
---- a/drivers/net/ethernet/broadcom/tg3.c
-+++ b/drivers/net/ethernet/broadcom/tg3.c
-@@ -5502,7 +5502,6 @@ static bool tg3_setup_fiber_hw_autoneg(struct tg3 *tp, u32 mac_status)
- 	int workaround, port_a;
- 
- 	serdes_cfg = 0;
--	expected_sg_dig_ctrl = 0;
- 	workaround = 0;
- 	port_a = 1;
- 	current_link_up = false;
--- 
-2.15.2
-
-
+[1]: https://lore.kernel.org/r/CAPcyv4hrXPb1tASBZUg-GgdVs0OOFKXMXLiHmktg_kFi7YBMyQ@mail.gmail.com
