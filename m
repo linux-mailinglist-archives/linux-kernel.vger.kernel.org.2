@@ -2,508 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E4E44513E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 10:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 884BA445142
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 10:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhKDJjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 05:39:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:45448 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230335AbhKDJjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 05:39:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 64D6A1063;
-        Thu,  4 Nov 2021 02:37:09 -0700 (PDT)
-Received: from [10.57.56.48] (unknown [10.57.56.48])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 56F253F719;
-        Thu,  4 Nov 2021 02:37:07 -0700 (PDT)
-Subject: Re: [PATCH 03/10] Coresight: Add driver to support Coresight device
- TPDM
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Tao Zhang <quic_taozha@quicinc.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Mao Jinlong <quic_jinlmao@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>
-References: <1634801936-15080-1-git-send-email-quic_taozha@quicinc.com>
- <1634801936-15080-4-git-send-email-quic_taozha@quicinc.com>
- <20211102175920.GA325436@p14s>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <04110d05-ad73-2b78-e261-1531befd2683@arm.com>
-Date:   Thu, 4 Nov 2021 09:37:05 +0000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S231166AbhKDJkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 05:40:45 -0400
+Received: from mail-wm1-f54.google.com ([209.85.128.54]:37802 "EHLO
+        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230335AbhKDJko (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 05:40:44 -0400
+Received: by mail-wm1-f54.google.com with SMTP id y84-20020a1c7d57000000b00330cb84834fso6738263wmc.2;
+        Thu, 04 Nov 2021 02:38:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=86YdHPoZ6y6Ru6MbsuSkcT1lnyGjcnsjFoTTRMz3JdU=;
+        b=15M7upLe7zv2mneGPr0Ia9TyyBz3ebcEfC35BCEisrrFaS1vg6Zgw+H26+I1j4bvC+
+         htglYbKQl9IledpYKFvybZWExLNGFqj4pdvb2TgeHiATYJSIJN/oJ2dVN62IWbs69zyj
+         q6DEnEtsE1Su0UuxIXv49nul360TnZZu82yJHg8mZd2n+8leVxA10psGbFsvu68ykb92
+         DiyeKZrzAsGgKSsgmcjI9wlupz5Gp315dG9PjNxzE37K8isCTmG7pqVfjOFl0sFYN+uu
+         MVBEN7tpHOGp0klmwjB1LH8oaU4fGfriZR0xnZkU4yyivt9Acq4xc8WItt3k2qEFNH0h
+         W5pg==
+X-Gm-Message-State: AOAM5330HyOoGxfTJsp7qb+n91QpxPd/UYC4gtxGMFoFuGKGi8Rfrwuo
+        Q5wHzqstrH2F61cuZ6BWAqs=
+X-Google-Smtp-Source: ABdhPJyCNtPDsr+MRj6lhzkgTaIqgXRok9kcZ+7HLAcb9VUfiYOpDMbYuuMInuxhkeV3I9jNx9GV/Q==
+X-Received: by 2002:a7b:cf10:: with SMTP id l16mr22354509wmg.17.1636018685473;
+        Thu, 04 Nov 2021 02:38:05 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id 8sm7898790wmg.24.2021.11.04.02.38.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Nov 2021 02:38:05 -0700 (PDT)
+Message-ID: <0c3acbd4-6ab2-5cc5-6293-54e30093cce2@kernel.org>
+Date:   Thu, 4 Nov 2021 10:38:03 +0100
 MIME-Version: 1.0
-In-Reply-To: <20211102175920.GA325436@p14s>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH] ath5k: use swap() to make code cleaner
+Content-Language: en-US
+To:     davidcomponentone@gmail.com
+Cc:     mickflemm@gmail.com, mcgrof@kernel.org, kvalo@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yang Guang <yang.guang5@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+References: <20211104062317.1506183-1-yang.guang5@zte.com.cn>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <20211104062317.1506183-1-yang.guang5@zte.com.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tao,
-
-Some additional comments below.
-
-On 02/11/2021 17:59, Mathieu Poirier wrote:
-> Good morning,
+On 04. 11. 21, 7:23, davidcomponentone@gmail.com wrote:
+> From: Yang Guang <yang.guang5@zte.com.cn>
 > 
+> Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
+> opencoding it.
+
+Why not just use sort() instead of the double loop?
+
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
+> ---
+>   drivers/net/wireless/ath/ath5k/phy.c | 5 +----
+>   1 file changed, 1 insertion(+), 4 deletions(-)
 > 
-> On Thu, Oct 21, 2021 at 03:38:49PM +0800, Tao Zhang wrote:
->> Add driver to support Coresight device TPDM. This driver provides
->> support for configuring monitor. Monitors are primarily responsible
->> for data set collection and support the ability to collect any
->> permutation of data set types. Monitors are also responsible for
->> interaction with system cross triggering.
+> diff --git a/drivers/net/wireless/ath/ath5k/phy.c b/drivers/net/wireless/ath/ath5k/phy.c
+> index 00f9e347d414..08dc12611f8d 100644
+> --- a/drivers/net/wireless/ath/ath5k/phy.c
+> +++ b/drivers/net/wireless/ath/ath5k/phy.c
+> @@ -1562,16 +1562,13 @@ static s16
+>   ath5k_hw_get_median_noise_floor(struct ath5k_hw *ah)
+>   {
+>   	s16 sort[ATH5K_NF_CAL_HIST_MAX];
+> -	s16 tmp;
+>   	int i, j;
+>   
+>   	memcpy(sort, ah->ah_nfcal_hist.nfval, sizeof(sort));
+>   	for (i = 0; i < ATH5K_NF_CAL_HIST_MAX - 1; i++) {
+>   		for (j = 1; j < ATH5K_NF_CAL_HIST_MAX - i; j++) {
+>   			if (sort[j] > sort[j - 1]) {
+> -				tmp = sort[j];
+> -				sort[j] = sort[j - 1];
+> -				sort[j - 1] = tmp;
+> +				swap(sort[j], sort[j - 1]);
+>   			}
+>   		}
+>   	}
 > 
-> As far as I can tell there is nothing related to CTIs in this patch.  And if
-> there is, it is not documented.
-> 
-
-Please could you add a separate file documenting  the TPDM and
-some of the specific details (what is used by the driver, e.g
-PERPHID0/1 et) under Documentation/trace/coresight/ , in a separate
-patch
-
->>
->> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
->> ---
->>   .../bindings/arm/coresight-tpdm.yaml          |  86 +++
-> 
-> As checkpatch says, this should be in a separate file.
-> 
->>   MAINTAINERS                                   |   5 +
-> 
-> Since this is a coresight device Suzuki and I will continue the maintenance.
-> The get_maintainer script will make sure you care CC'ed on patches related to
-> the TPDM/TPDA drivers, and we would typically requried a "Reviewed-by" tag from
-> you before merging.
-> 
->>   drivers/hwtracing/coresight/Kconfig           |   9 +
->>   drivers/hwtracing/coresight/Makefile          |   1 +
->>   drivers/hwtracing/coresight/coresight-tpdm.c  | 583 ++++++++++++++++++
->>   5 files changed, 684 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/arm/coresight-tpdm.yaml
->>   create mode 100644 drivers/hwtracing/coresight/coresight-tpdm.c
->>
->> diff --git a/Documentation/devicetree/bindings/arm/coresight-tpdm.yaml b/Documentation/devicetree/bindings/arm/coresight-tpdm.yaml
->> new file mode 100644
->> index 000000000000..44541075d77f
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/arm/coresight-tpdm.yaml
->> @@ -0,0 +1,86 @@
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright (c) 2021 Qualcomm Innovation Center, Inc. All rights reserved.
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/arm/coresight-tpdm.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Trace, Profiling and Diagnostics Monitor - TPDM
->> +
->> +description: |
->> +  The TPDM or Monitor serves as data collection component for various dataset
->> +  types specified in the QPMDA spec. It covers Basic Counts (BC), Tenure
->> +  Counts (TC), Continuous Multi-Bit (CMB), and Discrete Single Bit (DSB). It
->> +  performs data collection in the data producing clock domain and transfers it
->> +  to the data collection time domain, generally ATB clock domain.
->> +
->> +  The primary use case of the TPDM is to collect data from different data
->> +  sources and send it to a TPDA for packetization, timestamping, and funneling.
->> +
->> +maintainers:
->> +  - Tao Zhang <quic_taozha@quicinc.com>
->> +
->> +properties:
->> +  $nodename:
->> +    pattern: "^tpdm(@[0-9a-f]+)$"
->> +  compatible:
->> +    items:
->> +      - const: arm,primecell
 
 
-You must have a compatible that identifies this as "tpdm", just like
-the other components, even though it is not functional.
-
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  reg-names:
->> +    items:
->> +      - const: tpdm-base
-
-Is the reg-name really necessary ?
-
->> +
->> +  atid:
->> +    maxItems: 1
->> +    description: |
->> +      The QPMDA specification repurposed the ATID field of the AMBA ATB
->> +      specification to use it to convey packetization information to the
->> +      Aggregator.
-
-Please could you describe how this affects the device in the doc
-requested above.
-
->> +
->> +  out-ports:
->> +    description: |
->> +      Output connections from the TPDM to legacy CoreSight trace bus.
->> +    $ref: /schemas/graph.yaml#/properties/ports
->> +    properties:
->> +      port:
->> +        description: Output connection from the TPDM to legacy CoreSight
->> +          Trace bus.
->> +        $ref: /schemas/graph.yaml#/properties/port
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - reg-names
->> +  - atid
->> +  - clocks
->> +  - clock-names
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  # minimum TPDM definition.
->> +  - |
->> +    tpdm@6980000 {
->> +      compatible = "arm,primecell";
-
-Like other components, we must have :
-	  compatible = "qcom,<new-compatible>", "arm,primecell";
-
->> +      reg = <0x6980000 0x1000>;
->> +      reg-names = "tpdm-base";
->> +
->> +      clocks = <&aoss_qmp>;
->> +      clock-names = "apb_pclk";
->> +
->> +      atid = <78>;
->> +      out-ports {
->> +        port {
->> +          tpdm_turing_out_funnel_turing: endpoint {
->> +            remote-endpoint =
->> +              <&funnel_turing_in_tpdm_turing>;
->> +          };
->> +        };
->> +      };
->> +    };
->> +
->> +...
-
->> diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
->> index b6c4a48140ec..e7392a0dddeb 100644
->> --- a/drivers/hwtracing/coresight/Makefile
->> +++ b/drivers/hwtracing/coresight/Makefile
->> @@ -25,5 +25,6 @@ obj-$(CONFIG_CORESIGHT_CPU_DEBUG) += coresight-cpu-debug.o
->>   obj-$(CONFIG_CORESIGHT_CATU) += coresight-catu.o
->>   obj-$(CONFIG_CORESIGHT_CTI) += coresight-cti.o
->>   obj-$(CONFIG_CORESIGHT_TRBE) += coresight-trbe.o
->> +obj-$(CONFIG_CORESIGHT_TPDM) += coresight-tpdm.o
->>   coresight-cti-y := coresight-cti-core.o	coresight-cti-platform.o \
->>   		   coresight-cti-sysfs.o
->> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
->> new file mode 100644
->> index 000000000000..906776c859d6
->> --- /dev/null
->> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
-
-...
-
->> +
->> +#ifdef CONFIG_CORESIGHT_TPDM_DEFAULT_ENABLE
->> +static int boot_enable = 1;
->> +#else
->> +static int boot_enable;
->> +#endif
-> 
-> That isn't the proper way to do this.  Look at how it is done in
-> coresight-etm4x.c
-> 
->> +
->> +struct gpr_dataset {
->> +	DECLARE_BITMAP(gpr_dirty, TPDM_GPR_REGS_MAX);
->> +	uint32_t		gp_regs[TPDM_GPR_REGS_MAX];
-> 
-> Shouldn't this be u32?
-> 
->> +};
->> +
->> +struct bc_dataset {
->> +	enum tpdm_mode		capture_mode;
->> +	enum tpdm_mode		retrieval_mode;
->> +	uint32_t		sat_mode;
->> +	uint32_t		enable_counters;
->> +	uint32_t		clear_counters;
->> +	uint32_t		enable_irq;
->> +	uint32_t		clear_irq;
->> +	uint32_t		trig_val_lo[TPDM_BC_MAX_COUNTERS];
->> +	uint32_t		trig_val_hi[TPDM_BC_MAX_COUNTERS];
->> +	uint32_t		enable_ganging;
->> +	uint32_t		overflow_val[TPDM_BC_MAX_OVERFLOW];
->> +	uint32_t		msr[TPDM_BC_MAX_MSR];
->> +};
->> +
->> +struct tc_dataset {
->> +	enum tpdm_mode		capture_mode;
->> +	enum tpdm_mode		retrieval_mode;
->> +	bool			sat_mode;
->> +	uint32_t		enable_counters;
->> +	uint32_t		clear_counters;
->> +	uint32_t		enable_irq;
->> +	uint32_t		clear_irq;
->> +	uint32_t		trig_sel[TPDM_TC_MAX_TRIG];
->> +	uint32_t		trig_val_lo[TPDM_TC_MAX_TRIG];
->> +	uint32_t		trig_val_hi[TPDM_TC_MAX_TRIG];
->> +	uint32_t		msr[TPDM_TC_MAX_MSR];
->> +};
->> +
->> +struct dsb_dataset {
->> +	uint32_t		mode;
->> +	uint32_t		edge_ctrl[TPDM_DSB_MAX_EDCR];
->> +	uint32_t		edge_ctrl_mask[TPDM_DSB_MAX_EDCR / 2];
->> +	uint32_t		patt_val[TPDM_DSB_MAX_PATT];
->> +	uint32_t		patt_mask[TPDM_DSB_MAX_PATT];
->> +	bool			patt_ts;
->> +	bool			patt_type;
->> +	uint32_t		trig_patt_val[TPDM_DSB_MAX_PATT];
->> +	uint32_t		trig_patt_mask[TPDM_DSB_MAX_PATT];
->> +	bool			trig_ts;
->> +	bool			trig_type;
->> +	uint32_t		select_val[TPDM_DSB_MAX_SELECT];
->> +	uint32_t		msr[TPDM_DSB_MAX_MSR];
->> +};
->> +
->> +struct mcmb_dataset {
->> +	uint8_t		mcmb_trig_lane;
->> +	uint8_t		mcmb_lane_select;
->> +};
->> +
->> +struct cmb_dataset {
->> +	bool			trace_mode;
->> +	uint32_t		cycle_acc;
->> +	uint32_t		patt_val[TPDM_CMB_PATT_CMP];
->> +	uint32_t		patt_mask[TPDM_CMB_PATT_CMP];
->> +	bool			patt_ts;
->> +	uint32_t		trig_patt_val[TPDM_CMB_PATT_CMP];
->> +	uint32_t		trig_patt_mask[TPDM_CMB_PATT_CMP];
->> +	bool			trig_ts;
->> +	bool			ts_all;
->> +	uint32_t		msr[TPDM_CMB_MAX_MSR];
->> +	uint8_t			read_ctl_reg;
->> +	struct mcmb_dataset	*mcmb;
->> +};
->> +
->> +DEFINE_CORESIGHT_DEVLIST(tpdm_devs, "tpdm");
->> +
->> +struct tpdm_drvdata {
->> +	void __iomem		*base;
->> +	struct device		*dev;
->> +	struct coresight_device	*csdev;
->> +	int			nr_tclk;
->> +	struct clk		**tclk;
->> +	int			nr_treg;
->> +	struct regulator	**treg;
->> +	struct mutex		lock;
->> +	bool			enable;
->> +	bool			clk_enable;
->> +	DECLARE_BITMAP(datasets, TPDM_DATASETS);
->> +	DECLARE_BITMAP(enable_ds, TPDM_DATASETS);
->> +	enum tpdm_support_type	tc_trig_type;
->> +	enum tpdm_support_type	bc_trig_type;
->> +	enum tpdm_support_type	bc_gang_type;
->> +	uint32_t		bc_counters_avail;
->> +	uint32_t		tc_counters_avail;
->> +	struct gpr_dataset	*gpr;
->> +	struct bc_dataset	*bc;
->> +	struct tc_dataset	*tc;
->> +	struct dsb_dataset	*dsb;
->> +	struct cmb_dataset	*cmb;
->> +	int			traceid;
->> +	uint32_t		version;
->> +	bool			msr_support;
->> +	bool			msr_fix_req;
->> +	bool			cmb_msr_skip;
->> +};
-> 
-> All of these should also be in a header file and properly documented.
-> 
->> +
->> +static void tpdm_init_default_data(struct tpdm_drvdata *drvdata);
-> 
-> This isn't needed.
-> 
->> +
->> +static void __tpdm_enable(struct tpdm_drvdata *drvdata)
->> +{
->> +	TPDM_UNLOCK(drvdata);
->> +
->> +	if (drvdata->clk_enable)
->> +		tpdm_writel(drvdata, 0x1, TPDM_CLK_CTRL);
->> +
->> +	TPDM_LOCK(drvdata);
->> +}
->> +
-
->> +static const struct coresight_ops_source tpdm_source_ops = {
->> +	.trace_id	= tpdm_trace_id,
->> +	.enable		= tpdm_enable,
->> +	.disable	= tpdm_disable,
->> +};
->> +
->> +static const struct coresight_ops tpdm_cs_ops = {
->> +	.source_ops	= &tpdm_source_ops,
->> +};
->> +
->> +static int tpdm_datasets_alloc(struct tpdm_drvdata *drvdata)
->> +{
->> +	if (test_bit(TPDM_DS_GPR, drvdata->datasets)) {
->> +		drvdata->gpr = devm_kzalloc(drvdata->dev, sizeof(*drvdata->gpr),
->> +					    GFP_KERNEL);
->> +		if (!drvdata->gpr)
->> +			return -ENOMEM;
->> +	}
->> +	if (test_bit(TPDM_DS_BC, drvdata->datasets)) {
->> +		drvdata->bc = devm_kzalloc(drvdata->dev, sizeof(*drvdata->bc),
->> +					   GFP_KERNEL);
->> +		if (!drvdata->bc)
->> +			return -ENOMEM;
->> +	}
->> +	if (test_bit(TPDM_DS_TC, drvdata->datasets)) {
->> +		drvdata->tc = devm_kzalloc(drvdata->dev, sizeof(*drvdata->tc),
->> +					   GFP_KERNEL);
->> +		if (!drvdata->tc)
->> +			return -ENOMEM;
->> +	}
->> +	if (test_bit(TPDM_DS_DSB, drvdata->datasets)) {
->> +		drvdata->dsb = devm_kzalloc(drvdata->dev, sizeof(*drvdata->dsb),
->> +					    GFP_KERNEL);
->> +		if (!drvdata->dsb)
->> +			return -ENOMEM;
->> +	}
->> +	if (test_bit(TPDM_DS_CMB, drvdata->datasets)) {
->> +		drvdata->cmb = devm_kzalloc(drvdata->dev, sizeof(*drvdata->cmb),
->> +					    GFP_KERNEL);
->> +		if (!drvdata->cmb)
->> +			return -ENOMEM;
->> +	} else if (test_bit(TPDM_DS_MCMB, drvdata->datasets)) {
->> +		drvdata->cmb = devm_kzalloc(drvdata->dev, sizeof(*drvdata->cmb),
->> +					    GFP_KERNEL);
->> +		if (!drvdata->cmb)
->> +			return -ENOMEM;
->> +		drvdata->cmb->mcmb = devm_kzalloc(drvdata->dev,
->> +						  sizeof(*drvdata->cmb->mcmb),
->> +						  GFP_KERNEL);
->> +		if (!drvdata->cmb->mcmb)
->> +			return -ENOMEM;
-> 
-> How can I understand what the above does when:
-> 
-> 1) There isn't a single line of comments.
-> 2) I don't know the HW.
-> 3) I don't have access to the documentation.
-
-+1
-
-> 
->> +	}
->> +	return 0;
->> +}
->> +
->> +static void tpdm_init_default_data(struct tpdm_drvdata *drvdata)
->> +{
->> +	if (test_bit(TPDM_DS_BC, drvdata->datasets))
->> +		drvdata->bc->retrieval_mode = TPDM_MODE_ATB;
->> +
->> +	if (test_bit(TPDM_DS_TC, drvdata->datasets))
->> +		drvdata->tc->retrieval_mode = TPDM_MODE_ATB;
->> +
->> +	if (test_bit(TPDM_DS_DSB, drvdata->datasets)) {
->> +		drvdata->dsb->trig_ts = true;
->> +		drvdata->dsb->trig_type = false;
->> +	}
->> +
->> +	if (test_bit(TPDM_DS_CMB, drvdata->datasets) ||
->> +	    test_bit(TPDM_DS_MCMB, drvdata->datasets))
->> +		drvdata->cmb->trig_ts = true;
->> +}
->> +
->> +static int tpdm_parse_of_data(struct tpdm_drvdata *drvdata)
->> +{
->> +	int i, ret;
->> +	const char *tclk_name, *treg_name;
->> +	struct device_node *node = drvdata->dev->of_node;
->> +
->> +	drvdata->clk_enable = of_property_read_bool(node, "qcom,clk-enable");
->> +	drvdata->msr_fix_req = of_property_read_bool(node, "qcom,msr-fix-req");
->> +	drvdata->cmb_msr_skip = of_property_read_bool(node,
->> +					"qcom,cmb-msr-skip");
->> +
-
-These properties must be listed as optional/mandatory in the DT binding
-with proper description.
-
->> +	drvdata->nr_tclk = of_property_count_strings(node, "qcom,tpdm-clks");
->> +	if (drvdata->nr_tclk > 0) {
->> +		drvdata->tclk = devm_kzalloc(drvdata->dev, drvdata->nr_tclk *
->> +					     sizeof(*drvdata->tclk),
->> +					     GFP_KERNEL);
->> +		if (!drvdata->tclk)
->> +			return -ENOMEM;
->> +
->> +		for (i = 0; i < drvdata->nr_tclk; i++) {
->> +			ret = of_property_read_string_index(node,
->> +					    "qcom,tpdm-clks", i, &tclk_name);
->> +			if (ret)
->> +				return ret;
->> +
->> +			drvdata->tclk[i] = devm_clk_get(drvdata->dev,
->> +							tclk_name);
->> +			if (IS_ERR(drvdata->tclk[i]))
->> +				return PTR_ERR(drvdata->tclk[i]);
->> +		}
->> +	}
->> +
->> +	drvdata->nr_treg = of_property_count_strings(node, "qcom,tpdm-regs");
-
-Where is this documented in the DT ?
-
->> +	if (drvdata->nr_treg > 0) {
->> +		drvdata->treg = devm_kzalloc(drvdata->dev, drvdata->nr_treg *
->> +					     sizeof(*drvdata->treg),
->> +					     GFP_KERNEL);
->> +		if (!drvdata->treg)
->> +			return -ENOMEM;
->> +
->> +		for (i = 0; i < drvdata->nr_treg; i++) {
->> +			ret = of_property_read_string_index(node,
->> +					    "qcom,tpdm-regs", i, &treg_name);
->> +			if (ret)
->> +				return ret;
->> +
->> +			drvdata->treg[i] = devm_regulator_get(drvdata->dev,
->> +							treg_name);
->> +			if (IS_ERR(drvdata->treg[i]))
->> +				return PTR_ERR(drvdata->treg[i]);
->> +		}
->> +	}
-> 
-> _None_ of the above are defined in the yaml file and/or part of the example that
-> is shown there.  Moreover they don't appear in patch 10/10 where TPDM and TPDA are
-> supposed to be introduced.  I will comment on patch 10/10 when I'm done with
-> this one.
-
-+1
-
-Suzuki
+-- 
+js
+suse labs
