@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9E4444C78
+	by mail.lfdr.de (Postfix) with ESMTP id CBEB6444C7A
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 01:29:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233210AbhKDAao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 20:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52626 "EHLO
+        id S233079AbhKDAaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 20:30:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233265AbhKDA2y (ORCPT
+        with ESMTP id S233278AbhKDA24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 20:28:54 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5352C06127A
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 17:26:17 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id j3-20020a628003000000b004811bc66186so2352826pfd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 17:26:17 -0700 (PDT)
+        Wed, 3 Nov 2021 20:28:56 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F512C06127A
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 17:26:19 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id c2-20020a63d5020000b029023ae853b72cso2357995pgg.18
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 17:26:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=kLLbpYUiVrBCCmy9Sc82r5ow03dVDTpEgLuIVlNMoOU=;
-        b=Ay0YG9JEBW9+oY2nHageNG1AdA4t7yDgBUGJkYSFHo5eFkEi8vzfRBn5r41f1wSxFg
-         HSgICUcsH+f+lzWZSrC/1+mz5xqRXkD91mzBnDo3BZYbwFr6hDST1vZCD3wSaINgurlO
-         zbuvwIYYwfswIpEP9r8XZUjhOUbrj1e1JEJE4CWqzQQsYzwNhKAy5PlY8BJTrIckkqFw
-         /WBxV8tmpZLjaeDHV2KmyUmRuJtIFaWLMoliidYs9v4yCfTtKY1d7jZJDCgZUJEa5xF2
-         wIsTmffaYibM2+7wr3G9ycxcN4Z/J+2gaNLg0QQl0/oDgNaLZZgfBR++RADooAplNPs9
-         dtjw==
+        bh=A6RNuBqUgsG4d2AkEOuVD6njvyuDvF4HW/gggxH+5XA=;
+        b=OEQtzcgzg8iUsXNKyYwVPMo1zK+4Kr5qoKxGqBuItQV2mlefdBnexzTvsQV8x7tFLB
+         DJ7N1H9zaKUjIJM9lgUrmNBtCvPaEhJRmE75YYyGNfGHftU+r7zpZ5tAJxYDGkRZ5UaN
+         eCFKKjVPfyvAv1MPQ+W3cG8F1U785VZ2TB/bCNeburay+vZTg802nta3hX92M+l5e/kY
+         v9PkejhG6TTnKgDhaZRjUpks89CX+RjAuwRAYXLN4sVhejbhHruqwLuHdy9a63l08zeG
+         UQHlhHNETrOYUd9aJ76VJnvg16EQRO47SPl2LKCIPj/pp3bTuMRIyoksJkM8yu5B2mRm
+         sSDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=kLLbpYUiVrBCCmy9Sc82r5ow03dVDTpEgLuIVlNMoOU=;
-        b=EoMOJ1bM54Mk66NQUumn3IrKNb2M7SEUoAV71mxSXqsfQgK4xWXoREr8ygnBek7zJ9
-         Q+qwpHcNEaMjYc78XSj/rpFok417oqkZxHlwoGnjSflKZxW1PEm0OIee6poa7h2uyPt/
-         YQ8vmUc844vFnIkW3Tnk8veTfA4+dXV2NjpjSRO1qnjRmC/gG22Pw7YHjUveax2XTQFu
-         nKtI/aoPh6WWBb1ozdtPv+AWpGj0wZvLF5GTQxp5s5YnKqIX9cOYZtrLMGO1rG9hGyl/
-         2t2Fu6VBNM5Z53ZRBH0ZsLTajR/Aw6GE4Ct3xa/W9ify1lIai8KAT1Ek3JxwdZUMEj+9
-         Td9A==
-X-Gm-Message-State: AOAM532CeBqTY2uC7IWXXl5usGnsV+Kr0BUTTHPfv8QX0i+u9rBLxtY+
-        f/zs0kP7iXJXeHnZjAd8GGSO+EMh3gw=
-X-Google-Smtp-Source: ABdhPJw5JY2aPJBBFAL7b1zmagPoeo9Jl9Nl1wm8mOZYtI4MVm1cgFWi1nr5hcey34/naZNPnAO1I6HTWwg=
+        bh=A6RNuBqUgsG4d2AkEOuVD6njvyuDvF4HW/gggxH+5XA=;
+        b=umqAexziJIY3k9RkikuR2gl3A3wd+uiOge+H4HiH1FJq4BqYfs4U2lyqVgoBcShlCi
+         fN2JKWltRWB/aDYlmSad9efcFdNl1lBlpyu2DSMLvLXKlpkSFwvuLNu7xmGMe9s7OI66
+         VS9semGOsuDuCRG/+4gPuGqXxq33qY04XDc+1mFtePJZlEhRdyLtAzpzpo+LbE29D3O0
+         z8ixU7R3CX7iPrfhZtszNprR3K8SlzzLaRj01qVm3L8XrtV2/jDRRmm4Staqxym2l+CF
+         BpARGodMIMKE0Gh4CyOh3dfU1YZtt4y5GTwoKOfOBwVyeMd9pFTKbsQJ1EZ3VCxa/m8/
+         /F1g==
+X-Gm-Message-State: AOAM5308h9tdVVYMp3cOtIFqV9AzsPTkH6KVSWA+jdHvdjtDnlKb9z/o
+        oPMusiDzgo5K0kpj4xItBv9Rz9+8Jr4=
+X-Google-Smtp-Source: ABdhPJwlGR9LbkwslcTVo23oQzDGM/4MShAybN51snLAMyuOhBW32wf0LbVvAKT8z91bQYBzxg51jn3JWKY=
 X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:8cd:b0:47b:b9e8:7c2e with SMTP id
- s13-20020a056a0008cd00b0047bb9e87c2emr47505781pfu.61.1635985577071; Wed, 03
- Nov 2021 17:26:17 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:2181:b0:44c:f4bc:2f74 with SMTP id
+ h1-20020a056a00218100b0044cf4bc2f74mr47624205pfi.68.1635985578784; Wed, 03
+ Nov 2021 17:26:18 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu,  4 Nov 2021 00:25:12 +0000
+Date:   Thu,  4 Nov 2021 00:25:13 +0000
 In-Reply-To: <20211104002531.1176691-1-seanjc@google.com>
-Message-Id: <20211104002531.1176691-12-seanjc@google.com>
+Message-Id: <20211104002531.1176691-13-seanjc@google.com>
 Mime-Version: 1.0
 References: <20211104002531.1176691-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v5.5 11/30] KVM: s390: Use "new" memslot instead of userspace
+Subject: [PATCH v5.5 12/30] KVM: x86: Use "new" memslot instead of userspace
  memory region
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
@@ -89,67 +89,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Get the gfn, size, and hva from the new memslot instead of the userspace
-memory region when preparing/committing memory region changes.  This will
-allow a future commit to drop the @mem param.
+Get the number of pages directly from the new memslot instead of
+computing the same from the userspace memory region when allocating
+memslot metadata.  This will allow a future patch to drop @mem.
 
-Note, this has a subtle functional change as KVM would previously reject
-DELETE if userspace provided a garbage userspace_addr or guest_phys_addr,
-whereas KVM zeros those fields in the "new" memslot when deleting an
-existing memslot.  Arguably the old behavior is more correct, but there's
-zero benefit into requiring userspace to provide sane values for hva and
-gfn.
+No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
+ arch/x86/kvm/x86.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-If we want to keep the checks for DELETE, my vote would be to add an
-arch hook that is dedicated to validated the userspace memory region
-so that the prepare/commit hooks operate only on KVM-generate objects.
-
- arch/s390/kvm/kvm-s390.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index d766d764d24c..e69ad13612d9 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -5021,18 +5021,20 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
- 				   struct kvm_memory_slot *new,
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index aa2abca47af0..c68e7de9f116 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -11646,9 +11646,9 @@ int memslot_rmap_alloc(struct kvm_memory_slot *slot, unsigned long npages)
+ }
+ 
+ static int kvm_alloc_memslot_metadata(struct kvm *kvm,
+-				      struct kvm_memory_slot *slot,
+-				      unsigned long npages)
++				      struct kvm_memory_slot *slot)
+ {
++	unsigned long npages = slot->npages;
+ 	int i, r;
+ 
+ 	/*
+@@ -11733,8 +11733,7 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
  				   enum kvm_mr_change change)
  {
-+	gpa_t size = new->npages * PAGE_SIZE;
-+
- 	/* A few sanity checks. We can have memory slots which have to be
- 	   located/ended at a segment boundary (1MB). The memory in userland is
- 	   ok to be fragmented into various different vmas. It is okay to mmap()
- 	   and munmap() stuff in this slot after doing this call at any time */
+ 	if (change == KVM_MR_CREATE || change == KVM_MR_MOVE)
+-		return kvm_alloc_memslot_metadata(kvm, new,
+-						  mem->memory_size >> PAGE_SHIFT);
++		return kvm_alloc_memslot_metadata(kvm, new);
  
--	if (mem->userspace_addr & 0xffffful)
-+	if (new->userspace_addr & 0xffffful)
- 		return -EINVAL;
- 
--	if (mem->memory_size & 0xffffful)
-+	if (size & 0xffffful)
- 		return -EINVAL;
- 
--	if (mem->guest_phys_addr + mem->memory_size > kvm->arch.mem_limit)
-+	if ((new->base_gfn * PAGE_SIZE) + size > kvm->arch.mem_limit)
- 		return -EINVAL;
- 
- 	/* When we are protected, we should not change the memory slots */
-@@ -5061,8 +5063,9 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
- 			break;
- 		fallthrough;
- 	case KVM_MR_CREATE:
--		rc = gmap_map_segment(kvm->arch.gmap, mem->userspace_addr,
--				      mem->guest_phys_addr, mem->memory_size);
-+		rc = gmap_map_segment(kvm->arch.gmap, new->userspace_addr,
-+				      new->base_gfn * PAGE_SIZE,
-+				      new->npages * PAGE_SIZE);
- 		break;
- 	case KVM_MR_FLAGS_ONLY:
- 		break;
+ 	if (change == KVM_MR_FLAGS_ONLY)
+ 		memcpy(&new->arch, &old->arch, sizeof(old->arch));
 -- 
 2.33.1.1089.g2158813163f-goog
 
