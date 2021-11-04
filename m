@@ -2,128 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E93445596
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:44:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3264455B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbhKDOr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 10:47:27 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:57084 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhKDOr0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 10:47:26 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 740981F45AE7
-Received: by earth.universe (Postfix, from userid 1000)
-        id E80963C0F95; Thu,  4 Nov 2021 15:44:44 +0100 (CET)
-Date:   Thu, 4 Nov 2021 15:44:44 +0100
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
-Cc:     patches@opensource.cirrus.com, linux-pm@vger.kernel.org,
+        id S231215AbhKDOxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 10:53:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59046 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231211AbhKDOxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 10:53:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A20861059;
+        Thu,  4 Nov 2021 14:50:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636037436;
+        bh=+ScYrs56geA+JVEvXwm+mEfwnGUOecqgGRb77uoZlF0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Kb7kWMord4vvWaLR3T4JMSkl0b0WG6aH826x1VtSG+denUnqC89wrDp9u0TXTBLJu
+         4poXElebzK+N5+QLpTd1yf1Ygp4Y7Bel6URPHSbviUKl9Vj0MrvjjMo7xhXUh0N3O+
+         fxhIPtQNzuWb0HIs4XsW+lJ+mPcCfJhB5kCzU9Po5ko+7kJ8wolh1Wr48Ie0dQ2vWe
+         G1IrWbAxVaSV7ETjAI/ohC7T4mHCi2E7yKIgxJxEUHw7Qrsc4cLEqTnG4/tDPqEitx
+         UuVMvRbaFRBYhokOl7dMJBNl/KfvLLkp+lUNuSpFD1/ZaMZx4U7vlSise9lW0u2SuL
+         WrhWuiXCgC44A==
+Date:   Thu, 4 Nov 2021 14:50:31 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] power: supply: Introduces bypass charging property
-Message-ID: <20211104144444.rulz4br3xu4qc7yh@earth.universe>
-References: <20211104135027.2352874-1-rriveram@opensource.cirrus.com>
- <20211104135027.2352874-2-rriveram@opensource.cirrus.com>
+Subject: Re: [PATCH] regmap: allow to define reg_update_bits for no bus
+ configuration
+Message-ID: <YYPzN98RdHGEkK+n@sirena.org.uk>
+References: <20211102214138.28873-1-ansuelsmth@gmail.com>
+ <YYLAXL4HjgBGuF91@sirena.org.uk>
+ <YYLnlbTFRUdLrmpW@Ansuel-xps.localdomain>
+ <YYL/JwHxKsTmGT84@sirena.org.uk>
+ <YYMEzTQhb8s31rzu@Ansuel-xps.localdomain>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="34ez465lqtj6xncn"
+        protocol="application/pgp-signature"; boundary="FKxAlgJ5d0/Mku5J"
 Content-Disposition: inline
-In-Reply-To: <20211104135027.2352874-2-rriveram@opensource.cirrus.com>
+In-Reply-To: <YYMEzTQhb8s31rzu@Ansuel-xps.localdomain>
+X-Cookie: Motorized vehicles only.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---34ez465lqtj6xncn
+--FKxAlgJ5d0/Mku5J
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Wed, Nov 03, 2021 at 10:53:17PM +0100, Ansuel Smith wrote:
+> On Wed, Nov 03, 2021 at 09:29:11PM +0000, Mark Brown wrote:
 
-On Thu, Nov 04, 2021 at 08:50:27AM -0500, Ricardo Rivera-Matos wrote:
-> Adds a POWER_SUPPLY_CHARGE_TYPE_BYPASS option to the POWER_SUPPLY_PROP_CH=
-ARGE_TYPE
-> property to facilitate bypass charging operation.
->=20
-> In bypass charging operation, the charger bypasses the charging path arou=
-nd the
-> integrated converter allowing for a "smart" wall adaptor to perform the p=
-ower
-> conversion externally.
->=20
-> This operational mode is critical for the USB PPS standard of power adapt=
-ors and is
-> becoming a common feature in modern charging ICs such as:
->=20
-> - BQ25980
-> - BQ25975
-> - BQ25960
-> - LN8000
-> - LN8410
->=20
-> Signed-off-by: Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
-> ---
+> > > > I don't understand this change.  The point of the check for volatile
+> > > > there is that if the register isn't volatile then we need to ensure that
+> > > > the cache gets updated with any change that happens so we need to go
+> > > > through paths that include cache updates.  The presence or otherwise of
+> > > > a bus does not seem at all relevant here.
 
-Please always send API changes together with a user (e.g. in this
-case you could update bq25980_charger driver to use this property).
+> I think I'm missing something. The user case is a driver that
+> have CACHE DISABLED. The !map->bus check is added just to limit this to
+> a no bus configuration not to permit this with CACHE enabled. The limit
+> I was referring was in the init function where the update_bits is
+> assigned to the map. I honestly didn't notice that anything with cache
+> disabled was flagged as volatile.
 
--- Sebastian
+In what way would the presence or absence of a bus be relevant to a
+decision about being able to safely use an _update_bits() operation?
 
->  drivers/power/supply/power_supply_sysfs.c | 1 +
->  include/linux/power_supply.h              | 1 +
->  2 files changed, 2 insertions(+)
->=20
-> diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/su=
-pply/power_supply_sysfs.c
-> index c3d7cbcd4fad..1368e13dc94b 100644
-> --- a/drivers/power/supply/power_supply_sysfs.c
-> +++ b/drivers/power/supply/power_supply_sysfs.c
-> @@ -89,6 +89,7 @@ static const char * const POWER_SUPPLY_CHARGE_TYPE_TEXT=
-[] =3D {
->  	[POWER_SUPPLY_CHARGE_TYPE_ADAPTIVE]	=3D "Adaptive",
->  	[POWER_SUPPLY_CHARGE_TYPE_CUSTOM]	=3D "Custom",
->  	[POWER_SUPPLY_CHARGE_TYPE_LONGLIFE]	=3D "Long Life",
-> +	[POWER_SUPPLY_CHARGE_TYPE_BYPASS]	=3D "Bypass",
->  };
-> =20
->  static const char * const POWER_SUPPLY_HEALTH_TEXT[] =3D {
-> diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
-> index 9ca1f120a211..9432234d7900 100644
-> --- a/include/linux/power_supply.h
-> +++ b/include/linux/power_supply.h
-> @@ -49,6 +49,7 @@ enum {
->  	POWER_SUPPLY_CHARGE_TYPE_ADAPTIVE,	/* dynamically adjusted speed */
->  	POWER_SUPPLY_CHARGE_TYPE_CUSTOM,	/* use CHARGE_CONTROL_* props */
->  	POWER_SUPPLY_CHARGE_TYPE_LONGLIFE,	/* slow speed, longer life */
-> +	POWER_SUPPLY_CHARGE_TYPE_BYPASS,	/* bypassing the charger */
->  };
-> =20
->  enum {
-> --=20
-> 2.25.1
->=20
+> So the rest of the changes permit to declare a update_bits function
+> for a no bus configuration is good?
 
---34ez465lqtj6xncn
+Probably, I'd need to look again.
+
+--FKxAlgJ5d0/Mku5J
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmGD8dYACgkQ2O7X88g7
-+ppJQA/8DzTi8cVt7JjH/Z/Z3dLN6ysXcQc37A3GB1BTeYtACC9M6v6nAmOuMzYg
-s1dX6kGQyilTUooWTSqqYmGTYKB7h2tBQzFrqHq8XwZSztQzOK/dk9iK049UslHy
-Ill0KA1SGfBtxOxLqI56q4KgR3Wqi3a1C8XvsnL/WNDbyfSJivBncZHDc/fD1Aa5
-nkXEkEvcfQrny7LDvw+DhlssYIUGLVRTHdmvTa/hVAfIt8XT//fbJdO1eS8yUn2n
-IS4Mm7wmopWgXUe9hGYSSo6FTg7spku30UZke7h7b0gdkJaSPedXyP2d9L+lHisJ
-U5fms85cQo3amTDirkhjhqfAxTHVNeNMQbDldlsrIaT65gJyqkOu8gVjTPORDdLF
-vFb9RjIl7ROJ58kM2Ld5Hw7n0jvnPqILZn4rQ2jY4V5BXmWdez1eml9IBbzJzewR
-a9KWi3202vqGsNT3TQIrgZ6Ze01QtXzwjhCdj0wRifs2UvvFwEppv/wt7aA9rk/j
-BehQyQpvLatLiIvLyBUyAiyTCAbPgDmxZNox51xywfZ9K0km8RIQcI3qCsSyC62r
-8X48pfi8EVDD/udl8Rw1ICwSQkx9SRjRCR/8JOBmIaZZwsI7tOlnlbSZTtjcjeNF
-KHx9zEyEpSMQk55AyVd9Oq4LE2Tgsa0+MHrxRropQnM/tMTYN6s=
-=PCw3
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGD8zYACgkQJNaLcl1U
+h9Dhqgf/UxMuTQmqu41Xm/7woaHbjWji4TZ0lgIVt2clcMPvj3alxTmnyXhhNICZ
+ICcOQ1drhGgmmCmG8yu+nrnm5NZmY18vjL4VmUPgewC7Zz3b/wS6BrT7LXkQkUUH
+DPmZdnoQZYv9KH5QrOXlU8c+jpZKynLpid7t06NRQ+sWX5a7rsYT2pR7HcZ6kj+S
+ecUcP14gJjMKQ7S+dZW6ZRnWBC2hGNMVmk7JlG4YzldS5iOFGINh3HdRER6dZCDJ
+JrxRa5frrKlECikRBjL3JeIFuFqoz0Clt/eu+LcihSNNxItUQ+V+TAEuwro7W4nk
+XB8Cps3RjzKFRKee7u1GPBGJZN88Sw==
+=sBPo
 -----END PGP SIGNATURE-----
 
---34ez465lqtj6xncn--
+--FKxAlgJ5d0/Mku5J--
