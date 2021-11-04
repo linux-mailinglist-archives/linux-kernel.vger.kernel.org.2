@@ -2,101 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B03445280
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:49:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F9544527D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbhKDLv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 07:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35042 "EHLO
+        id S231408AbhKDLvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 07:51:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231423AbhKDLv6 (ORCPT
+        with ESMTP id S229705AbhKDLvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 07:51:58 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6600FC061714;
-        Thu,  4 Nov 2021 04:49:20 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id g13so3352313qtk.12;
-        Thu, 04 Nov 2021 04:49:20 -0700 (PDT)
+        Thu, 4 Nov 2021 07:51:51 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89416C06127A
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 04:49:13 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id n128so6512021iod.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 04:49:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KuPFje2AUfFzNhATj0vA/YQ0MyvJDY+bIV73xrs0RvI=;
-        b=DQdZgG7ncr8s3KKVKwa3fXaIh48oz2vApeCPTJucPck1JOjSDVN7AIbtb+3uL9xUU+
-         dgDKRIDzuwYPdk5BL1T+3YnwRxfb9krTafY+lzn8rQ63YzNQrM9t3inidG4LS2xc0XaQ
-         B9aVyDN1zY0iBjvMQcfjxJP2D/Iv371r55Ycv4h7bZ5vcyDGaFn9sayuxjcNiaqpQmEl
-         ZBm1fFbW7oavXzpqqT4DW+Ym7WWpwNzEfesFf6vH1cEZUEGTWs9tWLdSTVBXn+g7EXOp
-         uxuK396/sjqZ1LDYdMJ2UYExDPfC5Olgh1SKcCTMsCrF8B9YWc1/lzDpsqbNwszJJ4wG
-         D/cA==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:in-reply-to:references:subject:message-id:date
+         :mime-version:content-transfer-encoding;
+        bh=jcCYN/Vpuq9VjyR1baSc9jmePXWBGgpQHLyfjUo1kN0=;
+        b=qFXeUbMx+fks5h4unoMKTc1LhJZqSE1NyKDAI5w83ogMKOOM0kU3purU/H33NlzPwW
+         eHVV1IidhsSGwT1O6tr2jF8Faxr9jVev093BxfP6VSI4dkQ3J3vb4BtkyS+WNvCZLafE
+         8RJ6NCGluBEgk853x+GL8iDQYteU5vl6fdQl0+ni96MIOIczYSlK45zpvMifA/kD95hg
+         rPa4O1733yq2aC4AVUSrYAMw0Vg1m8W65eUmAmMKxQpMGVCRJrPiS3bXB3M6N1UHwxhP
+         raoRViyx1obQj3jBzWassDHD8Ul/z65tEi99uP15mHMonnQSFjUH3i7iVD/2O78UIwYf
+         qCcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KuPFje2AUfFzNhATj0vA/YQ0MyvJDY+bIV73xrs0RvI=;
-        b=iPCAwOvII45UPsOdED6iv303mae1k8gsKuy08euTLWAjwodfOmwMTIyDW5vdLziMF8
-         tzu5R1nVKAN2ogGN8nSUEFQ0JzZebr+ZaYvgBqMwhjnxxkstU5gJ1MSzCPd7u8iK1vK9
-         HtkmVkZcmFPAnu7/7H/El5l04230vm7Xem5ybuok01ifgNCXvKEZ4yjT94fJXeE+dTrQ
-         cLAsGQ+Dzs4PvTcc0kpfRLT7Hygj0xvVBzGSG9nx58Xjz5cV9jMfnkCoKPgvCKQEd40Z
-         Vg3IdHybpgLuikAmanV9VxjGPvHZz3Y4bKeTmmv4eavvqYsvy7nrAm2tytkQjics6ADy
-         EAMg==
-X-Gm-Message-State: AOAM532DPaXrEteE7X9oZPpNSiEB39Ck/loeiPe42hA5YS76ngqHCkAE
-        iHf8mnv0JpqCy+BV3TOVi3w=
-X-Google-Smtp-Source: ABdhPJxWtq2g4hcFUl/W8H1C4ME4cZJ97RFASWfkbGy8eVumbGHOxsZ8yCYR1Aj8YQKSzCDtE8VALg==
-X-Received: by 2002:ac8:610b:: with SMTP id a11mr51988133qtm.182.1636026559643;
-        Thu, 04 Nov 2021 04:49:19 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id g8sm3314601qka.45.2021.11.04.04.49.16
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
+         :message-id:date:mime-version:content-transfer-encoding;
+        bh=jcCYN/Vpuq9VjyR1baSc9jmePXWBGgpQHLyfjUo1kN0=;
+        b=j3FvW8Ye+CV/jvegSNf++FkyiSafVsIT0wEPIagvTNcjNjZKicleYb4Qd5eBHpRgGn
+         CQcBi1c1+NDHSrBlu5Evp52WqVCVzD5f81zEJJR77cWcDtm3itgeD+fjNHCSl3U2i2CX
+         SPloDQVaWd71npPBIHZMuU0oUdjvtEjd+riEHdEelhYZt7lBg3yVxCKXa3i+22+bWlxV
+         nyAzeyOqPhXs7RZxREvPp/1ufXWy4MuQHOqI0k8K7Iu84u1ri7B8eh94H9pn8Xp6nna8
+         nrtZyXPIgeSFy1ITBLUDOUszbRzuM1Qg8suwykPHxB2z815OAuACh5/iMmNGcd2cqAqZ
+         c6QQ==
+X-Gm-Message-State: AOAM533K0PytdoxWg+WctnLHlOPQ5+B0GKgB6ksY9n/BDQ/9fd0N4/N+
+        h70YLCCWu5sLuW1VQiM2zXUsyQ==
+X-Google-Smtp-Source: ABdhPJzJv5ibu1rdNLJ/Ra2e9JNtbTKOYYws7eMieW7cg3crbW5dob+RRrmopP3pH67AnoqS2LtSxw==
+X-Received: by 2002:a5d:9e44:: with SMTP id i4mr700296ioi.172.1636026552990;
+        Thu, 04 Nov 2021 04:49:12 -0700 (PDT)
+Received: from [127.0.1.1] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id y3sm2877761ilv.5.2021.11.04.04.49.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 04:49:19 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: yao.jing2@zte.com.cn
-To:     pablo@netfilter.org
-Cc:     kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
-        kuba@kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jing Yao <yao.jing2@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] netfilter: xt_IDLETIMER: replace snprintf in show functions with sysfs_emit
-Date:   Thu,  4 Nov 2021 11:49:11 +0000
-Message-Id: <20211104114911.31214-1-yao.jing2@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 04 Nov 2021 04:49:12 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     miquel.raynal@bootlin.com, martin.petersen@oracle.com,
+        hare@suse.de, Luis Chamberlain <mcgrof@kernel.org>, jack@suse.cz,
+        hch@lst.de, song@kernel.org, dave.jiang@intel.com, richard@nod.at,
+        vishal.l.verma@intel.com, penguin-kernel@i-love.sakura.ne.jp,
+        tj@kernel.org, ira.weiny@intel.com, vigneshr@ti.com,
+        dan.j.williams@intel.com, ming.lei@redhat.com, efremov@linux.com
+Cc:     linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+In-Reply-To: <20211103230437.1639990-1-mcgrof@kernel.org>
+References: <20211103230437.1639990-1-mcgrof@kernel.org>
+Subject: Re: [PATCH v5 00/14] last set for add_disk() error handling
+Message-Id: <163602655191.22491.10844091970007142957.b4-ty@kernel.dk>
+Date:   Thu, 04 Nov 2021 05:49:11 -0600
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yao <yao.jing2@zte.com.cn>
+On Wed, 3 Nov 2021 16:04:23 -0700, Luis Chamberlain wrote:
+> Jens,
+> 
+> as requested, I've folded all pending changes into this series. This
+> v5 pegs on Christoph's reviewed-by tags and since I was respinning I
+> modified the ataprobe and floppy driver changes as he suggested.
+> 
+> I think this is it. The world of floppy has been exciting for v5.16.
+> 
+> [...]
 
-coccicheck complains about the use of snprintf() in sysfs show
-functions:
-WARNING use scnprintf or sprintf
+Applied, thanks!
 
-Use sysfs_emit instead of scnprintf, snprintf or sprintf makes more
-sense.
+[01/14] nvdimm/btt: use goto error labels on btt_blk_init()
+        commit: 2762ff06aa49e3a13fb4b779120f4f8c12c39fd1
+[02/14] nvdimm/btt: add error handling support for add_disk()
+        commit: 16be7974ff5d0a5cd9f345571c3eac1c3f6ba6de
+[03/14] nvdimm/blk: avoid calling del_gendisk() on early failures
+        commit: b7421afcec0c77ab58633587ddc29d53e6eb95af
+[04/14] nvdimm/blk: add error handling support for add_disk()
+        commit: dc104f4bb2d0a652dee010e47bc89c1ad2ab37c9
+[05/14] nvdimm/pmem: cleanup the disk if pmem_release_disk() is yet assigned
+        commit: accf58afb689f81daadde24080ea1164ad2db75f
+[06/14] nvdimm/pmem: use add_disk() error handling
+        commit: 5a192ccc32e2981f721343c750b8cfb4c3f41007
+[07/14] z2ram: add error handling support for add_disk()
+        commit: 15733754ccf35c49d2f36a7ac51adc8b975c1c78
+[08/14] block/sunvdc: add error handling support for add_disk()
+        commit: f583eaef0af39b792d74e39721b5ba4b6948a270
+[09/14] mtd/ubi/block: add error handling support for add_disk()
+        commit: ed73919124b2e48490adbbe48ffe885a2a4c6fee
+[10/14] ataflop: remove ataflop_probe_lock mutex
+        commit: 4ddb85d36613c45bde00d368bf9f357bd0708a0c
+[11/14] block: update __register_blkdev() probe documentation
+        commit: 26e06f5b13671d194d67ae8e2b66f524ab174153
+[12/14] ataflop: address add_disk() error handling on probe
+        commit: 46a7db492e7a27408bc164cbe6424683e79529b0
+[13/14] floppy: address add_disk() error handling on probe
+        commit: ec28fcc6cfcd418d20038ad2c492e87bf3a9f026
+[14/14] block: add __must_check for *add_disk*() callers
+        commit: 1698712d85ec2f128fc7e7c5dc2018b5ed2b7cf6
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
----
- net/netfilter/xt_IDLETIMER.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/netfilter/xt_IDLETIMER.c b/net/netfilter/xt_IDLETIMER.c
-index 2f7cf5ecebf4..0f8bb0bf558f 100644
---- a/net/netfilter/xt_IDLETIMER.c
-+++ b/net/netfilter/xt_IDLETIMER.c
-@@ -85,9 +85,9 @@ static ssize_t idletimer_tg_show(struct device *dev,
- 	mutex_unlock(&list_mutex);
- 
- 	if (time_after(expires, jiffies) || ktimespec.tv_sec > 0)
--		return snprintf(buf, PAGE_SIZE, "%ld\n", time_diff);
-+		return sysfs_emit(buf, "%ld\n", time_diff);
- 
--	return snprintf(buf, PAGE_SIZE, "0\n");
-+	return sysfs_emit(buf, "0\n");
- }
- 
- static void idletimer_tg_work(struct work_struct *work)
+Best regards,
 -- 
-2.25.1
+Jens Axboe
+
 
