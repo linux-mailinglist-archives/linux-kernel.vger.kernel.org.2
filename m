@@ -2,128 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F54445385
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:06:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE15445387
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbhKDNJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 09:09:22 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:51895 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231693AbhKDNJT (ORCPT
+        id S231701AbhKDNJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 09:09:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231217AbhKDNJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 09:09:19 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Uv1LNAc_1636031198;
-Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Uv1LNAc_1636031198)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 04 Nov 2021 21:06:39 +0800
-Subject: Re: [PATCH v12 1/2] tty: hvc: pass DMA capable memory to put_chars()
-To:     Jiri Slaby <jirislaby@kernel.org>, gregkh@linuxfoundation.org,
-        amit@kernel.org, arnd@arndb.de, osandov@fb.com
-Cc:     shile.zhang@linux.alibaba.com, sfr@canb.auug.org.au,
-        linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20211028150954.1356334-1-xianting.tian@linux.alibaba.com>
- <20211028150954.1356334-2-xianting.tian@linux.alibaba.com>
- <55b28b16-33f4-2a69-b2f1-6781d0241b99@kernel.org>
-From:   Xianting Tian <xianting.tian@linux.alibaba.com>
-Message-ID: <7dde342a-c2b7-32fe-7410-e372c82a4a68@linux.alibaba.com>
-Date:   Thu, 4 Nov 2021 21:06:38 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        Thu, 4 Nov 2021 09:09:38 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2634EC06127A
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 06:07:00 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id s13so8568913wrb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 06:07:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=waldekranz-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=YI7bEsvaa9P6T1BxeXDJHD35omyehNZNvxDjHcofyQw=;
+        b=KwUcpwdgzLUwVUY0mx23TgErTco3/7RgudpLX6qNtHIqZnEnQ2Xuy4ErChUaoHWZlR
+         xed32y97cITsBTH6bQ19SQ4BgvzB2Nyp4HUGGJeMEapL/82gXWy5qI6pHHtOREZFeNr3
+         naAa4lNAmFH95Pt9HyqUkNGeAz1Fal+sZr8L+soMlJ0KdGBNVtG294YQgejE/hBhtxTh
+         hxFbhFosyCo+BkpGj2BVOxHHfGb9EUG2bYNue+zYP6QMzZr7WctsVPxElRk2gJFjedJM
+         RUE7pxQPcF3nCvoHfgbY+ot7nlFGaCU3cZfco6s1R+hguDmEUAuv6CZ4LfMhj3ECLPss
+         tlNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=YI7bEsvaa9P6T1BxeXDJHD35omyehNZNvxDjHcofyQw=;
+        b=mzDQakE7QayYXt2+jSaZoe+ARpDPM8X7FPKvBGr0RJshvKIPNjqk05iGPXtUUGC1Wj
+         Nwf/ZINs5vWOaFnQ2pd2+pH41SWTeF3/sxvWH8O26/1rtPFf/t4BtDKi1+z6MEpWGxoz
+         sp/mn7sjKpM+PgoXotrOpDEUlyQESxPJOHN6ZgBe87ufMldSdOUCN7dUV/BR6vVoQWX+
+         SRaYsgrKC0Q/fygcfhqqZ+YeKXzTjcNP3ffc4TvSkttgaLmbOc1Vmohpun7S8qKOnxjl
+         dpLxQ6DhVsK59Hq3jxcPWsyXjWHVn38VaEFxnHTEaZCA2VuzQ9eoaHLpvo47xeMJXE8T
+         FkPA==
+X-Gm-Message-State: AOAM5330SPGNH5F2UPB78IjxZoo0JY4ZMLNXn06XwIHi+h5lO5MNhQQv
+        S6Ww7xxRLVM7YWU6a92kb8+gvQ==
+X-Google-Smtp-Source: ABdhPJxVMfGVWbafZX1bgK5ZoYDR+E8GoSoH6bkQ+vwnRA2v3fjhltw7Qgclh5ItbpFPkQH38dbdjw==
+X-Received: by 2002:a05:6000:52:: with SMTP id k18mr51590433wrx.192.1636031218581;
+        Thu, 04 Nov 2021 06:06:58 -0700 (PDT)
+Received: from wkz-x280 (static-193-12-47-89.cust.tele2.se. [193.12.47.89])
+        by smtp.gmail.com with ESMTPSA id c15sm4915251wrs.19.2021.11.04.06.06.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 06:06:58 -0700 (PDT)
+From:   Tobias Waldekranz <tobias@waldekranz.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Sean Anderson <sean.anderson@seco.com>
+Subject: Re: [RFC PATCH] net: phy/mdio: enable mmd indirect access through
+ phy_mii_ioctl()
+In-Reply-To: <YYPThd7aX+TBWslz@shell.armlinux.org.uk>
+References: <bc9df441-49bf-5c8a-891c-cc3f0db00aba@ti.com>
+ <YYF4ZQHqc1jJsE/+@shell.armlinux.org.uk>
+ <e18f17bd-9e77-d3ef-cc1e-30adccb7cdd5@ti.com>
+ <828e2d69-be15-fe69-48d8-9cfc29c4e76e@ti.com> <YYGxvomL/0tiPzvV@lunn.ch>
+ <8d24c421-064c-9fee-577a-cbbf089cdf33@ti.com> <YYHXcyCOPiUkk8Tz@lunn.ch>
+ <01a0ebf9-5d3f-e886-4072-acb9bf418b12@ti.com> <YYLk0dEKX2Jlq0Se@lunn.ch>
+ <87pmrgjhk4.fsf@waldekranz.com> <YYPThd7aX+TBWslz@shell.armlinux.org.uk>
+Date:   Thu, 04 Nov 2021 14:06:54 +0100
+Message-ID: <87k0hojci9.fsf@waldekranz.com>
 MIME-Version: 1.0
-In-Reply-To: <55b28b16-33f4-2a69-b2f1-6781d0241b99@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 04, 2021 at 12:35, "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+> On Thu, Nov 04, 2021 at 12:17:47PM +0100, Tobias Waldekranz wrote:
+>> On Wed, Nov 03, 2021 at 20:36, Andrew Lunn <andrew@lunn.ch> wrote:
+>> > On Wed, Nov 03, 2021 at 08:42:07PM +0200, Grygorii Strashko wrote:
+>> >> 
+>> >> 
+>> >> On 03/11/2021 02:27, Andrew Lunn wrote:
+>> >> > > > What i find interesting is that you and the other resent requester are
+>> >> > > > using the same user space tool. If you implement C45 over C22 in that
+>> >> > > > tool, you get your solution, and it will work for older kernels as
+>> >> > > > well. Also, given the diverse implementations of this IOTCL, it
+>> >> > > > probably works for more drivers than just those using phy_mii_ioctl().
+>> >> > > 
+>> >> > > Do you mean change uapi, like
+>> >> > >   add mdio_phy_id_is_c45_over_c22() and
+>> >> > >   flag #define MDIO_PHY_ID_C45_OVER_C22 0x4000?
+>> >> > 
+>> >> > No, i mean user space implements C45 over C22. Make phytool write
+>> >> > MII_MMD_CTRL and MII_MMD_DATA to perform a C45 over C22.
+>> >> 
+>> >> Now I give up - as mentioned there is now way to sync User space vs Kernel
+>> >> MMD transactions and so no way to get trusted results.
+>> 
+>> Except that there is a way: https://github.com/wkz/mdio-tools
+>
+> I'm guessing that this hasn't had much in the way of review, as it has
+> a nice exploitable bug - you really want "pc" to be unsigned in
+> mdio_nl_eval(), otherwise one can write a branch instruction that makes
+> "pc" negative.
 
-在 2021/11/2 下午2:33, Jiri Slaby 写道:
-> On 28. 10. 21, 17:09, Xianting Tian wrote:
->> As well known, hvc backend can register its opertions to hvc backend.
->> the operations contain put_chars(), get_chars() and so on.
->>
->> Some hvc backend may do dma in its operations. eg, put_chars() of
->> virtio-console. But in the code of hvc framework, it may pass DMA
->> incapable memory to put_chars() under a specific configuration, which
->> is explained in commit c4baad5029(virtio-console: avoid DMA from stack):
->> 1, c[] is on stack,
->>     hvc_console_print():
->>          char c[N_OUTBUF] __ALIGNED__;
->>          cons_ops[index]->put_chars(vtermnos[index], c, i);
->> 2, ch is on stack,
->>     static void hvc_poll_put_char(,,char ch)
->>     {
->>          struct tty_struct *tty = driver->ttys[0];
->>          struct hvc_struct *hp = tty->driver_data;
->>          int n;
->>
->>          do {
->>                  n = hp->ops->put_chars(hp->vtermno, &ch, 1);
->>          } while (n <= 0);
->>     }
->>
->> Commit c4baad5029 is just the fix to avoid DMA from stack memory, which
->> is passed to virtio-console by hvc framework in above code. But I think
->> the fix is aggressive, it directly uses kmemdup() to alloc new buffer
->> from kmalloc area and do memcpy no matter the memory is in kmalloc area
->> or not. But most importantly, it should better be fixed in the hvc
->> framework, by changing it to never pass stack memory to the put_chars()
->> function in the first place. Otherwise, we still face the same issue if
->> a new hvc backend using dma added in the furture.
->>
->> In this patch, add 'char cons_outbuf[]' as part of 'struct hvc_struct',
->> so hp->cons_outbuf is no longer the stack memory, we can use it in above
->> cases safely. We also add lock to protect cons_outbuf instead of using
->> the global lock of hvc.
->>
->> Introduce array cons_hvcs[] for hvc pointers next to the cons_ops[] and
->> vtermnos[] arrays. With the array, we can easily find hvc's cons_outbuf
->> and its lock.
->
-> Hi,
->
-> this is still overly complicated IMO. As I already noted in:
-> https://lore.kernel.org/all/5b728c71-a754-b3ef-4ad3-6e33db1b7647@kernel.org/ 
->
->
-> this:
-> =============
-> In fact, you need only a single char for the poll case
-> (hvc_poll_put_char), so hvc_struct needs to contain only c, not an array.
+You are quite right, it never got that far as it was NAKed on principle
+before that. I welcome the review, this is one of the reasons why I
+would love to have it in mainline. Alternatively, if someone has a
+better idea, I wouldn't mind adapting mdio-tools to whatever that
+interface would be.
 
-I ever did so in v10, and Greg suggested:
+I agree that there should be much more rigorous checks around the
+modification of the PC. I will get on that.
 
-So you have a lock for a character and a different one for a longer
-string?  Why can they not just use the same lock?  Why are 2 needed at
-all, can't you just use the first character of cons_outbuf[] instead?
-Surely you do not have 2 sends happening at the same time, right?
+> Also it looks like one can easily exploit this to trigger any of your
+> BUG_ON()/BUG() statements, thereby crashing while holding the MDIO bus
+> lock causing a denial of service attack.
 
-https://lkml.org/lkml/2021/10/9/214 <https://lkml.org/lkml/2021/10/9/214>
+The idea is that this is pre-validated in mdio_nl_validate_insn. Each
+instruction lists their acceptable argument types in mdio_nl_op_protos.
 
-So I change to use one outbuf.
+> I also see nothing that protects against any user on a system being
+> able to use this interface, so the exploits above can be triggered by
+> any user. Moreover, this lack of protection means any user on the
+> system can use this interface to write to a PHY.
 
->
-> OTOH, you need c[N_OUTBUF] in the console case (hvc_console_print), but
-> not whole hvc_struct. So cons_hvcs should be an array of structs
-> composed of only the lock and the buffer.
-It is ok for me.
-> =============
->
-> And I would do it even simpler now. One c[N_OUTBUF] buffer for all 
-> consoles and a single lock.
->
-> And "char c" in struct hvc_struct.
->
-> No need for the complex logic in hvc_console_print.
+I was under the impression that specifying GENL_ADMIN_PERM in the
+`struct genl_ops` would require the caller to hold CAP_NET_ADMIN?
 
-So you will implement this?  I don't need to send further patches?
+> Given that some PHYs today contain firmware, this gives anyone access
+> to reprogram the PHY firmware, possibly introducing malicious firmware.
+>
+> I hope no one is using this module in a production environment.
 
->
->> Introduce array cons_early_outbuf[] to ensure the mechanism of early
->> console still work normally.
->
->
-> thanks,
+Thanks for your review.
