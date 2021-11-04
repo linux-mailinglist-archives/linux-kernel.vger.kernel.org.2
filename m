@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8429D444F0A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F53A444F0B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231561AbhKDGpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:45:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
+        id S231594AbhKDGqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbhKDGpO (ORCPT
+        with ESMTP id S231243AbhKDGpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:45:14 -0400
+        Thu, 4 Nov 2021 02:45:17 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38783C06122B
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:42:35 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id d27-20020a25addb000000b005c2355d9052so7444290ybe.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 23:42:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76164C06127A
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:42:37 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id z2-20020a254c02000000b005b68ef4fe24so7457322yba.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 23:42:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=CIgm9aOYABDFacjcOgWVtMt5SOTRrDoHBgwN9MizIcI=;
-        b=OGVbBuC8tSuhNu2J9IidOZnlDgurGqAmeyH7b7kKE47xnRRjZ/LYscwDRs2XzDTfdO
-         VFhOmmGDHIb9Rll/MzC8QCR2B+ds405YW0T5ZeQSTb5fhbmoSgM7ZNTPMnWLElBCqQuH
-         LphBTMQhndB128YhgE2dIqFoKjLqvk2515LsyGyqmafvyqj1SNSBoO68mcz1ayDH5Jas
-         lGOp6jzsG1Lu5oETNNSZ6xVDMLX8IZvBbb99dHndbpHzWPyP9T7v6RXT1eCAwlk54IgO
-         OIFJob4JxiEUy8bpKiK1Hcw0vTQmW0DCxF1duVxBGHKCxy7Nx9Mx1Ra9SgqWPNs1XGwV
-         K0qg==
+        bh=0g5O3hehOKwr7XSv2DOlaGGXEdP4vxrZBtdGl60mP00=;
+        b=Z4f7o9prPhB5f5Vc20QA++cA5IC32LflgRBfprWhme4StF80NSJS2OMG8RerfW2Gc3
+         XSvEPlIeGWV1KSfS31s8qUW0/UEV2KdwK7BNMBfKol+83EtJkhAPCKFQ4TZcLzRpSovE
+         LI7+zRHTto3Qo4X5CIwpMZ5+MWt62fyKKwKaJuVwH0WZ6BArQT9NIiOVbQLSqRFcezYf
+         avG9u82uCRyJwC8EAhVIsONMZBq4+R1BxV29znjwdt1Y1tdi1kYt8cb/BgoDXF4WCWW9
+         L4JMbGa5GeihuZt984CMoMn25QZ74yePFUT8KGVYoqmWV1jQDcgFRzALfJ7j//v4Xv7t
+         LlSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=CIgm9aOYABDFacjcOgWVtMt5SOTRrDoHBgwN9MizIcI=;
-        b=0LwMnLwjsOBXe/qRmO6GbmSmNGcdpbeEr2UnZz5FKX/mklhXrmvLVvOY2gXj92ZfK6
-         TCC471gxcQy5by2T8JOnoahH8TsF/0cqGBn8VgHlOIjhTmyZAF9LZW06zuBrx+lDclL2
-         ZDpau2rXVRlZJeDbch3xlxOLCxnDPwpJ7tFhmOQD6LKdbZZhwVOLGzeGwGdgz/KJ0IYt
-         M5/rdWYTaQCbunaWYE21kMYYg4iGKKjKeKYXhsv9HMhYOG+XJE2BUeLft5tXblm9PWT1
-         3aXSzBh0jGwzRBekCaYPm6yivXA9DbBQr/at730yCmB/LvNEn6qxjjs/aT8rwuGqkZc+
-         LHEg==
-X-Gm-Message-State: AOAM5314bgSyfd1PKq99aPY/rJUr5F6mx/o2Dar/l6WOqRFIFu1WKS8S
-        GvKTXFpcgnyzatzy1FGe/t2/o3f/GS47
-X-Google-Smtp-Source: ABdhPJzNwGwarPkdI0jOxicrlMxhkS+xo6wrtcMqGFM0WNni9KjP08LBQRmq4oOnRp/Mj4eGPvdmLxlwFAbU
+        bh=0g5O3hehOKwr7XSv2DOlaGGXEdP4vxrZBtdGl60mP00=;
+        b=u0zQTw4GmM450Nan3TU5C3P5Td9txzXHotf3wsIPPnZhy9/Zm8ZFeBIFhnRDFHwRjf
+         +eoIasSrMFa0b1TLk8S250UFzSOzBdSjR2cDn7LlIPeHWkXPOJ+80RCy177FTHMt23JG
+         04ALmFBOzJj3PyLLHJUzX4Y8jBQnu365yfCJGCVj8sFng75NmWDJT4bRWBFDa613x9WT
+         bdn3lBIIiymFZ5SDtyn7ZhYcYHZ8PT6SEPVIa6IhLMfXCIv65agdx9fAenh5oHcWmHjT
+         xdJIqealt07SwX0fStDl0dGYGZrP3HE673ikuaq27f2WcVj3CJX6OuMemQCxs4KLWaen
+         dkeA==
+X-Gm-Message-State: AOAM5304sC0Hn3n9aPHX9PhCiEyDMIAL5M/2FFfFetd9Wa/T/7/OGohm
+        nu6fxmVM2Mfic6D7gjQwKR98SCc009Dp
+X-Google-Smtp-Source: ABdhPJyxWzWUi+Nzlbm+IyoZKx/hBjJG/ep/2RI4nfoYOUTDxZw9lM3RkWktVZbhkA3BkmbMFpSmuw06J+y0
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:8ce:af84:2510:3f29])
- (user=irogers job=sendgmr) by 2002:a25:2444:: with SMTP id
- k65mr29175919ybk.94.1636008154413; Wed, 03 Nov 2021 23:42:34 -0700 (PDT)
-Date:   Wed,  3 Nov 2021 23:41:54 -0700
+ (user=irogers job=sendgmr) by 2002:a25:ec06:: with SMTP id
+ j6mr36168538ybh.238.1636008156691; Wed, 03 Nov 2021 23:42:36 -0700 (PDT)
+Date:   Wed,  3 Nov 2021 23:41:55 -0700
 In-Reply-To: <20211104064208.3156807-1-irogers@google.com>
-Message-Id: <20211104064208.3156807-9-irogers@google.com>
+Message-Id: <20211104064208.3156807-10-irogers@google.com>
 Mime-Version: 1.0
 References: <20211104064208.3156807-1-irogers@google.com>
 X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v3 08/22] perf test: Add skip reason to test case.
+Subject: [PATCH v3 09/22] perf test: Convert pfm tests to use test cases.
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -74,58 +74,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This doesn't exist in kunit, but will ease the transition from perf
-tests.
+Use null terminated array of test cases rather than the previous sub
+test functions.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/builtin-test.c |  3 +++
- tools/perf/tests/tests.h        | 11 ++++++++++-
- 2 files changed, 13 insertions(+), 1 deletion(-)
+ tools/perf/tests/pfm.c | 66 ++++++++++++------------------------------
+ 1 file changed, 19 insertions(+), 47 deletions(-)
 
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index a6d84feba483..db76d7d10749 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -142,6 +142,9 @@ static const char *skip_reason(const struct test_suite *t, int subtest)
- 	if (t->subtest.skip_reason)
- 		return t->subtest.skip_reason(subtest);
+diff --git a/tools/perf/tests/pfm.c b/tools/perf/tests/pfm.c
+index f55e4ecdda71..651fee4ef819 100644
+--- a/tools/perf/tests/pfm.c
++++ b/tools/perf/tests/pfm.c
+@@ -11,27 +11,6 @@
  
-+	if (t->test_cases && subtest >= 0)
-+		return t->test_cases[subtest].skip_reason;
-+
- 	return NULL;
+ #include <linux/kernel.h>
+ 
+-#ifdef HAVE_LIBPFM
+-static int test__pfm_events(void);
+-static int test__pfm_group(void);
+-#endif
+-
+-static const struct {
+-	int (*func)(void);
+-	const char *desc;
+-} pfm_testcase_table[] = {
+-#ifdef HAVE_LIBPFM
+-	{
+-		.func = test__pfm_events,
+-		.desc = "test of individual --pfm-events",
+-	},
+-	{
+-		.func = test__pfm_group,
+-		.desc = "test groups of --pfm-events",
+-	},
+-#endif
+-};
+-
+ #ifdef HAVE_LIBPFM
+ static int count_pfm_events(struct perf_evlist *evlist)
+ {
+@@ -44,7 +23,8 @@ static int count_pfm_events(struct perf_evlist *evlist)
+ 	return count;
  }
  
-diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index 71b8d2c88e5c..f87129b63d92 100644
---- a/tools/perf/tests/tests.h
-+++ b/tools/perf/tests/tests.h
-@@ -34,6 +34,7 @@ typedef int (*test_fnptr)(struct test_suite *, int);
- struct test_case {
- 	const char *name;
- 	const char *desc;
-+	const char *skip_reason;
- 	test_fnptr run_case;
- };
+-static int test__pfm_events(void)
++static int test__pfm_events(struct test_suite *test __maybe_unused,
++			    int subtest __maybe_unused)
+ {
+ 	struct evlist *evlist;
+ 	struct option opt;
+@@ -104,7 +84,8 @@ static int test__pfm_events(void)
+ 	return 0;
+ }
  
-@@ -61,7 +62,15 @@ struct test_suite {
- 		.run_case = test__##_name,		\
+-static int test__pfm_group(void)
++static int test__pfm_group(struct test_suite *test __maybe_unused,
++			   int subtest __maybe_unused)
+ {
+ 	struct evlist *evlist;
+ 	struct option opt;
+@@ -187,37 +168,28 @@ static int test__pfm_group(void)
  	}
+ 	return 0;
+ }
+-#endif
+-
+-static const char *test__pfm_subtest_get_desc(int i)
+-{
+-	if (i < 0 || i >= (int)ARRAY_SIZE(pfm_testcase_table))
+-		return NULL;
+-	return pfm_testcase_table[i].desc;
+-}
+-
+-static int test__pfm_subtest_get_nr(void)
++#else
++static int test__pfm_events(struct test_suite *test __maybe_unused,
++			    int subtest __maybe_unused)
+ {
+-	return (int)ARRAY_SIZE(pfm_testcase_table);
++	return TEST_SKIP;
+ }
  
--#define DEFINE_SUITE(description, _name)			\
-+#define TEST_CASE_REASON(description, _name, _reason)	\
-+	{						\
-+		.name = #_name,				\
-+		.desc = description,			\
-+		.run_case = test__##_name,		\
-+		.skip_reason = _reason,			\
-+	}
+-static int test__pfm(struct test_suite *test __maybe_unused, int i __maybe_unused)
++static int test__pfm_group(struct test_suite *test __maybe_unused,
++			   int subtest __maybe_unused)
+ {
+-#ifdef HAVE_LIBPFM
+-	if (i < 0 || i >= (int)ARRAY_SIZE(pfm_testcase_table))
+-		return TEST_FAIL;
+-	return pfm_testcase_table[i].func();
+-#else
+ 	return TEST_SKIP;
+-#endif
+ }
++#endif
 +
-+#define DEFINE_SUITE(description, _name)		\
- 	struct test_case tests__##_name[] = {           \
- 		TEST_CASE(description, _name),		\
- 		{	.name = NULL, }			\
++static struct test_case pfm_tests[] = {
++	TEST_CASE_REASON("test of individual --pfm-events", pfm_events, "not compiled in"),
++	TEST_CASE_REASON("test groups of --pfm-events", pfm_group, "not compiled in"),
++	{ .name = NULL, }
++};
+ 
+ struct test_suite suite__pfm = {
+ 	.desc = "Test libpfm4 support",
+-	.func = test__pfm,
+-	.subtest = {
+-		.skip_if_fail	= true,
+-		.get_nr		= test__pfm_subtest_get_nr,
+-		.get_desc	= test__pfm_subtest_get_desc,
+-	}
++	.test_cases = pfm_tests,
++	.subtest = { .skip_if_fail   = true }
+ };
 -- 
 2.33.1.1089.g2158813163f-goog
 
