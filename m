@@ -2,85 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFEB445271
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:46:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B95D445278
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:48:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhKDLsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 07:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34172 "EHLO
+        id S231371AbhKDLun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 07:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbhKDLs3 (ORCPT
+        with ESMTP id S229843AbhKDLul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 07:48:29 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF74C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 04:45:52 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id k1so5844187ilo.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 04:45:52 -0700 (PDT)
+        Thu, 4 Nov 2021 07:50:41 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF74EC061714;
+        Thu,  4 Nov 2021 04:48:03 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id h14so3789417qtb.3;
+        Thu, 04 Nov 2021 04:48:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:in-reply-to:references:subject:message-id:date
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=S1qFS1jMjwj/T0yJQwZvrrHWJoJ7Nzy4g0iaJHKu/8U=;
-        b=Kd3s6O7ChYxD9JC6o9s9ReXrYG1jiSKr+18sYKuUvK89lUyVpf0eG7b+uSXK34Gjf7
-         h1WOCyJp3hLuBR6JE4DrkqZ+l+SJdVtnPtx7iTdRTdzeQAHoU+ZV0RuzzA/0MhcP5Lqb
-         oihE40aHorH9SIPFZQThFxbYXzQbwzfBCD9gnA4z9aXbbIMQNf/A3rG83aPprvRbGGGY
-         KCsWxxH6Jlb2I0cGChxp2trAmEFOmfDJSMH/1RGdUSh4WeQJBAZy1nVnhcmGLHUoTdnk
-         qFASVJhNjRtKqYiVmmTyVo5llX2i0tNIwn2jkZNMHA5nny/1Kb4ohSFFph+Qy1R7uvuu
-         kDtg==
+        bh=PdowUE+txHFKqxZ9G9alg9aKUaAkTecpGwT4qv6lwxw=;
+        b=WIDxbb6eQAjNWl4DFkHaw/n76DzT3eBXIwGKCuu8e8aTIDfxmL5SNS52BICHET/lAA
+         RnLfSKwidQPFryty2aV6MrLrO66zw0a5FB9cv3MGFfmH00Pd+UAliKs9X7Zw0coZBVTe
+         QON7+VnpSQBxgoUoeppC4YWJPNAb2cQIQA7/nPsSU12PnvzsKuSm1nqzpNXlzHPv9v+l
+         SdSufhSFnZ9h8g4B8lcPx+SEBvJBYfkG0G7zG/yDO0mL2ISmjL1DVT8y+M8XoefPLze/
+         TXQgf9q6P0NmVBusCHx5n3zLlO814rcjbl2f8m8r3m3tImb0mb1qZOP0+xkgdihfi/Qp
+         NWoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
-         :message-id:date:mime-version:content-transfer-encoding;
-        bh=S1qFS1jMjwj/T0yJQwZvrrHWJoJ7Nzy4g0iaJHKu/8U=;
-        b=kxpQlS0k0qNXobVVPrHjgnx/FsF4aOAENvq+XCh7c/mA9NcF7pJvnNNGuamm4XJ8h7
-         5hk3PLalC0EJcAywl4mdi2sN/xIQNg/wV//ShGj0TM7Z+Gc0pWUtxCiyD72Ax3nrttkr
-         yTPFzrp+6r00gxls1LvhCvPtvwQSHehgphpDtkRPuRJhKicdiPtW0SuzxAT7XaNNS2RN
-         ifZBJVlT04dSJqIk20yqF001vWgb/Pj+k4Nas48VUGHSMMy/fovgotVQNntAB67OSrmT
-         H0ufbEtH9wZ3Hhun8hSgud3PNY6Si6faZfTrnFE2ZlNbJ1ePzCjk38+GRWJBwHA5x5m0
-         HKKQ==
-X-Gm-Message-State: AOAM5339Pcj2qbd1VjcDCEVovNGNlEqHmkv16KdMlr0NA/7bIJe8RqBr
-        GP8NSuIAeZ+R3XedCSMSyJGGpw==
-X-Google-Smtp-Source: ABdhPJyl8OV+Jv4v6fXzPNd9zMbs4veLJQA2Z1RiJSGD2iP94vwTsc+5cbT4GjalzBM1M8ol8RVTOQ==
-X-Received: by 2002:a05:6e02:1646:: with SMTP id v6mr36447239ilu.282.1636026351484;
-        Thu, 04 Nov 2021 04:45:51 -0700 (PDT)
-Received: from [127.0.1.1] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id c4sm2395231ioo.48.2021.11.04.04.45.50
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=PdowUE+txHFKqxZ9G9alg9aKUaAkTecpGwT4qv6lwxw=;
+        b=WLkwRq6ETE6B/tubSxlRN2DKpc5kh9o1ti+2a9pmIduZAVzw00axqsuAq5XB1mno8U
+         7o9KjS6UvdUM59la8XEOOpUKSEraphWWFWpkWwzXR/ijMOX7uIpN5OkBO634bCeFyCc6
+         axX5EGqc+xz+iqRXdq1Z6HBt330ZSHAn+63UzUNAWpShWydOwgohgKnBR0TpcjOZgYi9
+         zcTHf3653QJJ6Xuj75wMfnP9EK157Vu0KXTnLKq5IaRHdtxSk4XLhRxMhgwV19mpJ3L7
+         GaiFVyTK8vrbLr+IaFQBBv6U4vKYmd7uul3ucCdySzwBuGMx/CYWHG0piq3rdTR12QhZ
+         T3qA==
+X-Gm-Message-State: AOAM530nzFS0zA2IB1gsU93BN+GsJppTYFEH/LGMswQkHFjBnGkpJQzr
+        eYB6/X9Kpi74oOVJJrHsQVU=
+X-Google-Smtp-Source: ABdhPJwXsegp2d+MOEYt0DIqyRkxSeuCvWKpyMlOGD2ks6X5oU6l7v+9mZjqMdmypPTkzG5F2i+lEQ==
+X-Received: by 2002:a05:622a:607:: with SMTP id z7mr17500336qta.237.1636026483078;
+        Thu, 04 Nov 2021 04:48:03 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id y8sm3794776qtx.0.2021.11.04.04.47.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 04:45:51 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     lars.ellenberg@linbit.com, Wu Bo <wubo40@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, mcgrof@kernel.org,
-        linfeilong@huawei.com, linux-block@vger.kernel.org
-In-Reply-To: <1636013229-26309-1-git-send-email-wubo40@huawei.com>
-References: <1636013229-26309-1-git-send-email-wubo40@huawei.com>
-Subject: Re: [PATCH] drbd: Fix double free problem in drbd_create_device
-Message-Id: <163602635079.21562.17386310945369487784.b4-ty@kernel.dk>
-Date:   Thu, 04 Nov 2021 05:45:50 -0600
+        Thu, 04 Nov 2021 04:48:02 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: yao.jing2@zte.com.cn
+To:     johan@kernel.org
+Cc:     andrew@aj.id.au, cgel.zte@gmail.com, fancer.lancer@gmail.com,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org, joe@perches.com,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        macro@orcam.me.uk, pali@kernel.org, yao.jing2@zte.com.cn,
+        zealci@zte.com.cn
+Subject: [PATCH v3] serial: 8250: replace snprintf in show functions with sysfs_emit
+Date:   Thu,  4 Nov 2021 11:47:54 +0000
+Message-Id: <20211104114754.30983-1-yao.jing2@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <YYDsU778y71byGdj@hovoldconsulting.com>
+References: <YYDsU778y71byGdj@hovoldconsulting.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Nov 2021 16:07:09 +0800, Wu Bo wrote:
-> In drbd_create_device(), the 'out_no_io_page' lable has called
-> blk_cleanup_disk() when return failed.
-> 
-> So remove the 'out_cleanup_disk' lable to avoid double free the
-> disk pointer.
-> 
-> 
-> [...]
+From: Jing Yao <yao.jing2@zte.com.cn>
 
-Applied, thanks!
+coccicheck complains about the use of snprintf() in sysfs show
+functions:
+WARNING use scnprintf or sprintf
 
-[1/1] drbd: Fix double free problem in drbd_create_device
-      commit: 27548088ac628109f70eb0b1eb521d035844dba8
+Use sysfs_emit instead of scnprintf or sprintf makes more sense.
 
-Best regards,
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
+---
+
+Changes since v1 & v2:
+ - Remove excess and wrong parameter 'PAGE_SIZE' in sysfs_emit function.
+ - Revise the wrong patch Subject.
+
+ drivers/tty/serial/8250/8250_port.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index 5775cbff8f6e..3d58f383152e 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -3099,7 +3099,7 @@ static ssize_t rx_trig_bytes_show(struct device *dev,
+ 	if (rxtrig_bytes < 0)
+ 		return rxtrig_bytes;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", rxtrig_bytes);
++	return sysfs_emit(buf, "%d\n", rxtrig_bytes);
+ }
+ 
+ static int do_set_rxtrig(struct tty_port *port, unsigned char bytes)
 -- 
-Jens Axboe
-
+2.25.1
 
