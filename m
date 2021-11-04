@@ -2,76 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CACC2445677
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:39:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6738445683
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:41:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbhKDPls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 11:41:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231341AbhKDPlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 11:41:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2109610FD;
-        Thu,  4 Nov 2021 15:39:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636040349;
-        bh=33691hjBX9cadGoNuJzUiBoacTbjKNGx8fgHdxnQIQw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NBp55FzKYxropmUNncWTfpvAEjPc/Yu8oqJK2u3YOsk5m/En/j7Bpm+EP3D7MKN3t
-         yQR8Hq7NEYxbZdyB0vj0BxYacEjwI1oT8GCQ0apH3XudV1TIhYef54Dd4q6E6MZVaW
-         gvylekx8Cts46ms8jezMX80mEeJhXX34EMUO6PNBMMiPbKlyWtjyzPq3aqDPmf4EP1
-         ityBueCMVcwFsPI0/xsXzuiTu3Lvrm2zLX5syOP/bWZ6/BbZZys0M/9Jw4U1Yt285W
-         5JqfDrYERFsWks5bOSxaXR1own0RBt5X4JfQ5gRlmqKxhSoVaVICXnUzIbNUOzpoAw
-         vvslMfivQEspg==
-Date:   Thu, 4 Nov 2021 15:39:03 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Trevor Wu <trevor.wu@mediatek.com>
-Cc:     tiwai@suse.com, robh+dt@kernel.org, matthias.bgg@gmail.com,
-        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, yc.hung@mediatek.com,
-        daniel.baluta@nxp.com
-Subject: Re: [PATCH 3/4] ASoC: mediatek: mt8195: separate the common code
- from machine driver
-Message-ID: <YYP+l7tMofYoB+aC@sirena.org.uk>
-References: <20211103100040.11933-1-trevor.wu@mediatek.com>
- <20211103100040.11933-4-trevor.wu@mediatek.com>
+        id S231500AbhKDPoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 11:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231215AbhKDPoQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 11:44:16 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E0DC061714;
+        Thu,  4 Nov 2021 08:41:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=tzR1bzDNHCL2xV55dg6t9T/nvYHiJSyDmOp1Hab1RAs=; b=OlfEnUoHiQPn2iXeER+unFtYQd
+        OFLMsPIjQGxjVUS0LlQqrzuLTz5xYaUxz86Bk49l/PnHmbkG87jrHRWTjXtLwnXOXI8INIVuz+KLp
+        6dnn4JUvTnQDZQjxk1pBme81J8XgETznFg0lY4Lx/e3h+2AgaEakEVjPorxMXJqVzab08XDJ1s032
+        EiQftayVJjDO9hswhucaNiE9+Dr20OUsIz/OuqOr8Zj48QtU1+Du1VOI1UZ3hh7ZDHOh5SgHviQBt
+        SEtS6YH21/lPQKcHsdZ7pNjUH7yVKIBlW0Db16x/DPjDZqZeIaIaAHEJ3wX4v4yIYUKJ5yy7L67Rl
+        fi3GchlQ==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mierw-009Hvk-1d; Thu, 04 Nov 2021 15:41:36 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jianqun Xu <jay.xu@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>, linux-gpio@vger.kernel.org
+Subject: [PATCH] gpio/rockchip: fix Kconfig to prevent build errors
+Date:   Thu,  4 Nov 2021 08:41:35 -0700
+Message-Id: <20211104154135.2119-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="c/fvPxmf2qWNcw9j"
-Content-Disposition: inline
-In-Reply-To: <20211103100040.11933-4-trevor.wu@mediatek.com>
-X-Cookie: Motorized vehicles only.
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+GPIO_ROCKCHIP needs to enable GENERIC_IRQ_CHIP to prevent build errors.
 
---c/fvPxmf2qWNcw9j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Eliminates these build errors:
+ld: drivers/gpio/gpio-rockchip.o: in function `rockchip_irq_disable':
+gpio-rockchip.c:(.text+0x6c9): undefined reference to `irq_gc_mask_set_bit'
+ld: drivers/gpio/gpio-rockchip.o: in function `rockchip_irq_enable':
+gpio-rockchip.c:(.text+0x709): undefined reference to `irq_gc_mask_clr_bit'
+ld: drivers/gpio/gpio-rockchip.o: in function `rockchip_gpio_probe':
+gpio-rockchip.c:(.text+0xe25): undefined reference to `irq_generic_chip_ops'
+ld: gpio-rockchip.c:(.text+0xe7e): undefined reference to `__irq_alloc_domain_generic_chips'
+ld: gpio-rockchip.c:(.text+0xeb9): undefined reference to `irq_get_domain_generic_chip'
+ld: gpio-rockchip.c:(.text+0xf04): undefined reference to `irq_gc_ack_set_bit'
+ld: gpio-rockchip.c:(.text+0xf0e): undefined reference to `irq_gc_mask_set_bit'
+ld: gpio-rockchip.c:(.text+0xf18): undefined reference to `irq_gc_mask_clr_bit'
+ld: gpio-rockchip.c:(.text+0xf36): undefined reference to `irq_gc_set_wake'
 
-On Wed, Nov 03, 2021 at 06:00:39PM +0800, Trevor Wu wrote:
-> Because we will add DSP support, an new machine driver for the same
-> board is required. BE and codec configuration will use the same code
-> when machine driver is designed for the same board.
+Fixes: 936ee2675eee ("gpio/rockchip: add driver for rockchip gpio")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jianqun Xu <jay.xu@rock-chips.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: linux-gpio@vger.kernel.org
+---
+ drivers/gpio/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
-I don't follow why the DSP support requires a new driver?  Shouldn't all
-systems with the DSP present be using it?
-
---c/fvPxmf2qWNcw9j
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGD/pYACgkQJNaLcl1U
-h9BAqgf/Us8BcF+vWFc8NQqr1anc/z5wXrFIw7io61z4wr+ALcAiqTXbLnt7KKse
-vtZMFvaxL3V/QbElufEk96G8jEXIrjYRuLAubtVQDl0a3LAtlQ8Se2ynhzu2Ib12
-Rf8pihv2OkEOM8Cj11mnLnokKBRQPj/CeloGdaE0xvVqlrO+ymOTdXZ8luP69uI5
-kCIYGzh3zlGA8G/aT88Doxmc9T5mgCoj9eu35oxN3h05bf4/h5kN77JHL6eiK5op
-h3Xb2ql5Kaok5XZ1R4ZSbc6DhTY8xtsmfBkR7wZwPkmpXyXU9H4FTQXqib55VyXA
-q5NZy4f9SyI9MoQnUgLHSiijyH5mQA==
-=N3h7
------END PGP SIGNATURE-----
-
---c/fvPxmf2qWNcw9j--
+--- linux-next-20211104.orig/drivers/gpio/Kconfig
++++ linux-next-20211104/drivers/gpio/Kconfig
+@@ -524,6 +524,7 @@ config GPIO_ROCKCHIP
+ 	tristate "Rockchip GPIO support"
+ 	depends on ARCH_ROCKCHIP || COMPILE_TEST
+ 	select GPIOLIB_IRQCHIP
++	select GENERIC_IRQ_CHIP
+ 	default ARCH_ROCKCHIP
+ 	help
+ 	  Say yes here to support GPIO on Rockchip SoCs.
