@@ -2,388 +2,1042 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F0044592C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:01:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E7444592F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:01:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234024AbhKDSDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 14:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36104 "EHLO
+        id S234039AbhKDSDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 14:03:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231705AbhKDSDo (ORCPT
+        with ESMTP id S234033AbhKDSDt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 14:03:44 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C44DDC061203
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 11:01:05 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id y3so16455070ybf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 11:01:05 -0700 (PDT)
+        Thu, 4 Nov 2021 14:03:49 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D502C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 11:01:11 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id x64so6595530pfd.6
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 11:01:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SpYujX0D3m2Fi8Kq1kJylsGxbtDjFA6JUBAoQ3BLaUQ=;
-        b=biRK3eygpTALAw4JQC+U9lAtgfTCV6OalTwkBkjTG0Zgq4bthWxwZ/PB5hWI4VX2kN
-         7xbGsAgoUP9b5PHrFeEboedD1q50So+qSYt3h6lIXaZEvNWctqOBzo9P9zhrLGyTJB0n
-         Gn69h7flxZ94LuNwLrwhaFkQysXs91iUqXUP5GFDE0DfrLFyXNgyzNMTsvm9MmS8ohN3
-         iOPRYDU8NprS0ORiDei8qY79wIlsoOlIYPkM9GeKIgNs5KxY+oNEjyoAwYRLBGdI9Q9Q
-         ZmPQI7nqsSSDN2OTkaBbAUVbYoKhAtO1Br1efRWCZhBGrvLJsq+j0Hb85z2KhNVthI9q
-         rIbA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yrFm/E0XsWR+7GqCkZ7gj/lB7VkzJ+8c3S+SCGFAF9s=;
+        b=Ipm3F903lWt+zULFRhGDVCvXc3f6DF4Qh1dJCXpgAiayiS2AZ8BfC3RyLfoMbmGBMd
+         h6X01ZAhyw4fksQFFlmLVcW3Kvq5Rxj5l78Xf+rt1//6WLzVN8FOFWGLAGf0CPNWx+Ue
+         U6TC+jBycJrHqqvXBW9hbi9mR0w6nJdmO6CO7shUkWtH8QZH9TH1x1Hia4kW30ol8xW0
+         10XL7R6iEDqxidAWnknKaz4wVRJq7yzNJL+WfKByaUXirpIEPNhXq5D1McZ5wSI105cm
+         RaskBVMQQFdfmkzvPjbEbTSuvPxhPTk6jpVrX7UueflDWjyHU190+89RZw1MnIsRauom
+         iZDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SpYujX0D3m2Fi8Kq1kJylsGxbtDjFA6JUBAoQ3BLaUQ=;
-        b=pP6GEtqQbxD6yHsYgZFvs99yLHRORdaAEqBavrIL9+rH+por2h1qVt6vokbfdtU88d
-         j/GYve58yTUL1HPYSf2lVayIltjzIeNSrzMeQeGuhHAlthppOangsXdvfSDLMaHGLsOA
-         k71l1glFUXkYUdM1Nsa6dvJBddJaZfE01s0JOzpCccrdqE7bLgmhnA94CHvJrnMDsR5r
-         t6Z+BT9Xd9SlD6n4d9ccjOmJRDuLkpOgPl6pgZ13PWBoCPydALDb7ocYqCYcbcclDyX2
-         EjoU0VjqPVwmom9QUu63dFGlkV2VwpHU5CuahQwBjQopyXKIStsMQNTN2wCg5aF+W+ap
-         3PXg==
-X-Gm-Message-State: AOAM531rEpHt3fptiNk7/H53NF36vJxqj5bCyNm7ab0+hz7tQZGw2WV0
-        YBlMycixo4mrB5D9H90UolSfsBJd+fQG7m7jOWTWdLg2RvU=
-X-Google-Smtp-Source: ABdhPJyqjnIwaJEnBXNUmOkOgM3KAdTMvYdk3YtLhZZN5m29zDvvNpYBNdJ40xfW+CMQZH4vudxlYCX6SbF3e5gld+U=
-X-Received: by 2002:a05:6902:10c4:: with SMTP id w4mr39459961ybu.439.1636048864500;
- Thu, 04 Nov 2021 11:01:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yrFm/E0XsWR+7GqCkZ7gj/lB7VkzJ+8c3S+SCGFAF9s=;
+        b=HdQiv2yfzwVPEEDtT2JGEKkIh/0F9OebaDgi1ieCqkcIcPMHHOci53GNQlXfPfJ1EH
+         3/7MPJ4WDCZwGIkU8dDFz6C9nxN0nVaRg5FC1A0PHzDBOuHnIRF3hCWlobu6fTe3Y8lk
+         GHoHDXW1b/E6IdA+Lu5N2pw3mQPRHDLaBjFLHw2mxzfUHosKBEnzyjgu9KucJfYt5hxD
+         b6PWDOUX2nseIUN3k5ar99Wkwt1BmuHUt4hlgbAERiNKsNW2a5vX6pvLjDssNwku9Chm
+         LSaF5ibd/TDvCZyNvG8sLnEB8IDRH6Q2WEPNjymMfmhjnGmbFLh+hKnZDARJirpoWm6J
+         RRLQ==
+X-Gm-Message-State: AOAM531JLQvDhCP4/83TxcMHkayp6iAcRJuMgSm7B+vmwI/ayUD5mJge
+        wDVrkzhsrOxODg/5ebTKZhoorqOju6j5Fg==
+X-Google-Smtp-Source: ABdhPJzIUxCprdqh4Pe+YbKVm/CsUA3Uay8DNvwyeTEFcDZpvROwRqtnQJGmTpxvnHO8CCcMjzZJdA==
+X-Received: by 2002:a05:6a00:24d0:b0:492:727a:8905 with SMTP id d16-20020a056a0024d000b00492727a8905mr10472683pfv.79.1636048870615;
+        Thu, 04 Nov 2021 11:01:10 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id e7sm4287214pgk.90.2021.11.04.11.01.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 11:01:09 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 12:01:06 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Tao Zhang <quic_taozha@quicinc.com>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Mao Jinlong <quic_jinlmao@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>
+Subject: Re: [PATCH 05/10] Coresight: Add interface for TPDM BC subunit
+Message-ID: <20211104180106.GD491267@p14s>
+References: <1634801936-15080-1-git-send-email-quic_taozha@quicinc.com>
+ <1634801936-15080-6-git-send-email-quic_taozha@quicinc.com>
 MIME-Version: 1.0
-References: <20211102002203.1046069-1-rananta@google.com> <20211102002203.1046069-4-rananta@google.com>
- <YYMmOTy6butWHYo+@google.com>
-In-Reply-To: <YYMmOTy6butWHYo+@google.com>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Thu, 4 Nov 2021 11:00:53 -0700
-Message-ID: <CAJHc60xuKfeq7iYx=Ufs1EqTY_zE42KwW=4-MSZm8yXu4jG2kg@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/8] KVM: arm64: Add standard secure service calls
- firmware register
-To:     Oliver Upton <oupton@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1634801936-15080-6-git-send-email-quic_taozha@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 5:15 PM Oliver Upton <oupton@google.com> wrote:
->
-> On Tue, Nov 02, 2021 at 12:21:58AM +0000, Raghavendra Rao Ananta wrote:
-> > Introduce a firmware register that encapsulates standard secure
-> > service calls (owner value 4) as a bitmap. Depending on how the
-> > user-space configures the register, the features will be enabled
-> > or disabled for the guest. Currently, this includes support only
-> > for ARM True Random Number Generator (TRNG) service, with bit-0
-> > of the register representing mandatory features of v1.0.
-> >
-> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > ---
-> >  Documentation/virt/kvm/arm/hypercalls.rst | 17 +++++
-> >  arch/arm64/include/asm/kvm_host.h         |  2 +
-> >  arch/arm64/include/uapi/asm/kvm.h         |  6 ++
-> >  arch/arm64/kvm/arm.c                      |  8 +++
-> >  arch/arm64/kvm/hypercalls.c               | 75 ++++++++++++++++++++++-
-> >  arch/arm64/kvm/trng.c                     |  9 +--
-> >  include/kvm/arm_hypercalls.h              |  5 ++
-> >  7 files changed, 113 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/Documentation/virt/kvm/arm/hypercalls.rst b/Documentation/virt/kvm/arm/hypercalls.rst
-> > index 85dfd682d811..1601919f256d 100644
-> > --- a/Documentation/virt/kvm/arm/hypercalls.rst
-> > +++ b/Documentation/virt/kvm/arm/hypercalls.rst
-> > @@ -20,6 +20,14 @@ pseudo-registers" that can be manipulated using the GET/SET_ONE_REG
-> >  interface. These registers can be saved/restored by userspace, and set
-> >  to a convenient value if required.
-> >
-> > +The firmware register KVM_REG_ARM_STD exposes the hypercall services
->
-> nit: try to cram BITMAP in the name. IMO, this will help disambiguate
-> with version-based FW regs, like KVM_REG_ARM_PSCI_VERSION.
->
-> > +in the form of a feature bitmap. Upon VM creation, by default, KVM exposes
-> > +all the features to the guest, which can be learnt using GET_ONE_REG
-> > +interface. Conversely, the features can be enabled or disabled via the
-> > +SET_ONE_REG interface. These registers allow the user-space modification
-> > +only until the VM has started running, after which they turn to read-only
-> > +registers. SET_ONE_REG in this scenario will return -EBUSY.
-> > +
-> >  The following register is defined:
-> >
-> >  * KVM_REG_ARM_PSCI_VERSION:
-> > @@ -74,4 +82,13 @@ The following register is defined:
-> >      KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_REQUIRED:
-> >        The workaround is always active on this vCPU or it is not needed.
-> >
-> > +* KVM_REG_ARM_STD:
-> > +    Controls the bitmap of the ARM Standard Secure Service Calls.
-> > +
-> > +    The following bits are accepted:
-> > +
-> > +      KVM_REG_ARM_STD_TRNG_V1_0:
->
-> state the bit position as well
->
-I was afraid of the name getting too long. But let me see.
-> > +        The bit represents the services offered under v1.0 of ARM True Random Number Generator
-> > +        (TRNG) specification (ARM DEN 0098).
-> > +
-> >  .. [1] https://developer.arm.com/-/media/developer/pdf/ARM_DEN_0070A_Firmware_interfaces_for_mitigating_CVE-2017-5715.pdf
-> > diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> > index 0b2502494a17..176d6be7b4da 100644
-> > --- a/arch/arm64/include/asm/kvm_host.h
-> > +++ b/arch/arm64/include/asm/kvm_host.h
-> > @@ -105,6 +105,8 @@ struct kvm_arch_memory_slot {
-> >  struct hvc_reg_desc {
-> >       bool write_disabled;
-> >       bool write_attempted;
-> > +
-> > +     u64 kvm_std_bmap;
-> >  };
-> >
-> >  struct kvm_arch {
-> > diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
-> > index b3edde68bc3e..6387dea5396d 100644
-> > --- a/arch/arm64/include/uapi/asm/kvm.h
-> > +++ b/arch/arm64/include/uapi/asm/kvm.h
-> > @@ -281,6 +281,12 @@ struct kvm_arm_copy_mte_tags {
-> >  #define KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_REQUIRED     3
-> >  #define KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_ENABLED          (1U << 4)
-> >
-> > +#define KVM_REG_ARM_STD                      KVM_REG_ARM_FW_REG(3)
-> > +enum kvm_reg_arm_std_bmap {
-> > +     KVM_REG_ARM_STD_TRNG_V1_0,
-> > +     KVM_REG_ARM_STD_BMAP_MAX,
-> > +};
-> > +
->
-> I would recommend just defining the bit values explicitly rather than
-> using an enumeration:
->
->   #define KVM_REG_ARM_STD_TRNG_V1_0     (1ULL << 0)
->
-> You do lose the convenience of having KVM_REG_ARM_STD_BMAP_MAX.
->
-Just curious, any particular reason for this? IMO, going an enum route
-could avoid human errors. Anything I'm missing?
-> >  /* SVE registers */
-> >  #define KVM_REG_ARM64_SVE            (0x15 << KVM_REG_ARM_COPROC_SHIFT)
-> >
-> > diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> > index f9a25e439e99..1cf58aa49222 100644
-> > --- a/arch/arm64/kvm/arm.c
-> > +++ b/arch/arm64/kvm/arm.c
-> > @@ -130,6 +130,13 @@ static void set_default_spectre(struct kvm *kvm)
-> >               kvm->arch.pfr0_csv3 = 1;
-> >  }
-> >
-> > +static void set_default_hypercalls(struct kvm *kvm)
-> > +{
-> > +     struct hvc_reg_desc *hvc_desc = &kvm->arch.hvc_desc;
-> > +
-> > +     hvc_desc->kvm_std_bmap = ARM_SMCCC_STD_FEATURES;
-> > +}
-> > +
-> >  /**
-> >   * kvm_arch_init_vm - initializes a VM data structure
-> >   * @kvm:     pointer to the KVM struct
-> > @@ -156,6 +163,7 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
-> >       kvm->arch.max_vcpus = kvm_arm_default_max_vcpus();
-> >
-> >       set_default_spectre(kvm);
-> > +     set_default_hypercalls(kvm);
-> >
-> >       return ret;
-> >  out_free_stage2_pgd:
-> > diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
-> > index 7e873206a05b..0b3006353bf6 100644
-> > --- a/arch/arm64/kvm/hypercalls.c
-> > +++ b/arch/arm64/kvm/hypercalls.c
-> > @@ -60,8 +60,64 @@ static void kvm_ptp_get_time(struct kvm_vcpu *vcpu, u64 *val)
-> >
-> >  static u64 *kvm_fw_reg_to_bmap(struct kvm *kvm, u64 fw_reg)
-> >  {
-> > -     /* No firmware registers supporting hvc bitmaps exits yet */
-> > -     return NULL;
-> > +     struct hvc_reg_desc *hvc_desc = &kvm->arch.hvc_desc;
-> > +
-> > +     switch (fw_reg) {
-> > +     case KVM_REG_ARM_STD:
-> > +             return &hvc_desc->kvm_std_bmap;
-> > +     default:
-> > +             return NULL;
-> > +     }
-> > +}
-> > +
-> > +struct kvm_hvc_func_map {
-> > +     u32 func_id;
-> > +     u64 bmap_bit;
-> > +};
-> > +
-> > +#define HVC_FUNC_MAP_DESC(func, bit) \
-> > +     {                                       \
-> > +             .func_id = func,                \
-> > +             .bmap_bit = bit,                \
-> > +     }
-> > +
-> > +static const struct kvm_hvc_func_map hvc_std_map[] = {
-> > +     HVC_FUNC_MAP_DESC(ARM_SMCCC_TRNG_GET_UUID, KVM_REG_ARM_STD_TRNG_V1_0),
-> > +     HVC_FUNC_MAP_DESC(ARM_SMCCC_TRNG_RND32, KVM_REG_ARM_STD_TRNG_V1_0),
-> > +     HVC_FUNC_MAP_DESC(ARM_SMCCC_TRNG_RND64, KVM_REG_ARM_STD_TRNG_V1_0),
-> > +};
-> > +
-> > +bool kvm_hvc_call_supported(struct kvm_vcpu *vcpu, u32 func_id)
-> > +{
-> > +     struct kvm *kvm = vcpu->kvm;
-> > +     u8 hvc_owner = ARM_SMCCC_OWNER_NUM(func_id);
-> > +     const struct kvm_hvc_func_map *hvc_func_map = NULL;
-> > +
-> > +     u64 fw_reg, *hc_bmap;
-> > +     unsigned int map_sz, i;
-> > +
-> > +     switch (hvc_owner) {
-> > +     case ARM_SMCCC_OWNER_STANDARD:
-> > +             fw_reg = KVM_REG_ARM_STD;
-> > +             hvc_func_map = hvc_std_map;
-> > +             map_sz = ARRAY_SIZE(hvc_std_map);
-> > +             break;
-> > +     default:
-> > +             /* Allow all the owners that aren't mapped */
-> > +             return true;
-> > +     }
-> > +
-> > +     hc_bmap = kvm_fw_reg_to_bmap(kvm, fw_reg);
-> > +     if (!hc_bmap)
-> > +             return true;
-> > +
-> > +     for (i = 0; i < map_sz; i++) {
-> > +             if (func_id == hvc_func_map[i].func_id)
-> > +                     return *hc_bmap & BIT(hvc_func_map[i].bmap_bit);
-> > +     }
->
-> Hrm...
->
-> Could you instead define a helper function for each service and use a
-> switch statement to ensure each function tests the correct bit? This
-> would avoid the need to loop over a map.
->
-I think so.. I guess I was trying to avoid making too many changes if
-we want to support a new func_id.
-> > +
-> > +     /* Allow all the functions of an owner that aren't mapped */
-> > +     return true;
-> >  }
-> >
-> >  int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
-> > @@ -71,6 +127,9 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
-> >       u32 feature;
-> >       gpa_t gpa;
-> >
-> > +     if (!kvm_hvc_call_supported(vcpu, func_id))
-> > +             goto out;
-> > +
-> >       switch (func_id) {
-> >       case ARM_SMCCC_VERSION_FUNC_ID:
-> >               val[0] = ARM_SMCCC_VERSION_1_1;
-> > @@ -149,6 +208,7 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
-> >               return kvm_psci_call(vcpu);
-> >       }
-> >
-> > +out:
-> >       smccc_set_retval(vcpu, val[0], val[1], val[2], val[3]);
-> >       return 1;
-> >  }
-> > @@ -157,6 +217,7 @@ static const u64 fw_reg_ids[] = {
-> >       KVM_REG_ARM_PSCI_VERSION,
-> >       KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1,
-> >       KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2,
-> > +     KVM_REG_ARM_STD,
->
-> This (and all other FW regs you add) need to be added to the
-> get-reg-list selftest. Marc/Andrew have reminded me enough times to do
-> this myself, so I'll share suggestion :-P
->
-Yes, of course. It's on my todo list. I'll try to include that in the
-next patchset.
-> >  };
-> >
-> >  int kvm_arm_get_fw_num_regs(struct kvm_vcpu *vcpu)
-> > @@ -219,6 +280,7 @@ static int get_kernel_wa_level(u64 regid)
-> >
-> >  int kvm_arm_get_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
-> >  {
-> > +     struct hvc_reg_desc *hvc_desc = &vcpu->kvm->arch.hvc_desc;
-> >       void __user *uaddr = (void __user *)(long)reg->addr;
-> >       u64 val;
-> >
-> > @@ -230,6 +292,9 @@ int kvm_arm_get_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
-> >       case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2:
-> >               val = get_kernel_wa_level(reg->id) & KVM_REG_FEATURE_LEVEL_MASK;
-> >               break;
-> > +     case KVM_REG_ARM_STD:
-> > +             val = hvc_desc->kvm_std_bmap;
-> > +             break;
-> >       default:
-> >               return -ENOENT;
-> >       }
-> > @@ -352,6 +417,12 @@ int kvm_arm_set_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
-> >               if (get_kernel_wa_level(reg->id) < wa_level)
-> >                       return -EINVAL;
-> >
-> > +             return 0;
-> > +     case KVM_REG_ARM_STD:
-> > +             if (val & ~ARM_SMCCC_STD_FEATURES)
-> > +                     return -EINVAL;
-> > +
-> > +             hvc_desc->kvm_std_bmap = val;
-> >               return 0;
-> >       default:
-> >               return -ENOENT;
-> > diff --git a/arch/arm64/kvm/trng.c b/arch/arm64/kvm/trng.c
-> > index 99bdd7103c9c..6dff765f5b9b 100644
-> > --- a/arch/arm64/kvm/trng.c
-> > +++ b/arch/arm64/kvm/trng.c
-> > @@ -60,14 +60,9 @@ int kvm_trng_call(struct kvm_vcpu *vcpu)
-> >               val = ARM_SMCCC_TRNG_VERSION_1_0;
-> >               break;
-> >       case ARM_SMCCC_TRNG_FEATURES:
-> > -             switch (smccc_get_arg1(vcpu)) {
-> > -             case ARM_SMCCC_TRNG_VERSION:
-> > -             case ARM_SMCCC_TRNG_FEATURES:
-> > -             case ARM_SMCCC_TRNG_GET_UUID:
-> > -             case ARM_SMCCC_TRNG_RND32:
-> > -             case ARM_SMCCC_TRNG_RND64:
-> > +             if (kvm_hvc_call_supported(vcpu, smccc_get_arg1(vcpu)))
-> >                       val = TRNG_SUCCESS;
-> > -             }
-> > +
-> >               break;
-> >       case ARM_SMCCC_TRNG_GET_UUID:
-> >               smccc_set_retval(vcpu, le32_to_cpu(u[0]), le32_to_cpu(u[1]),
-> > diff --git a/include/kvm/arm_hypercalls.h b/include/kvm/arm_hypercalls.h
-> > index 5d38628a8d04..5f01bb139312 100644
-> > --- a/include/kvm/arm_hypercalls.h
-> > +++ b/include/kvm/arm_hypercalls.h
-> > @@ -6,6 +6,9 @@
-> >
-> >  #include <asm/kvm_emulate.h>
-> >
-> > +#define ARM_SMCCC_STD_FEATURES \
-> > +     GENMASK_ULL(KVM_REG_ARM_STD_BMAP_MAX - 1, 0)
-> > +
-> >  int kvm_hvc_call_handler(struct kvm_vcpu *vcpu);
-> >
-> >  static inline u32 smccc_get_function(struct kvm_vcpu *vcpu)
-> > @@ -47,4 +50,6 @@ int kvm_arm_copy_fw_reg_indices(struct kvm_vcpu *vcpu, u64 __user *uindices);
-> >  int kvm_arm_get_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg);
-> >  int kvm_arm_set_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg);
-> >
-> > +bool kvm_hvc_call_supported(struct kvm_vcpu *vcpu, u32 func_id);
-> > +
-> >  #endif
-> > --
-> > 2.33.1.1089.g2158813163f-goog
-> >
+On Thu, Oct 21, 2021 at 03:38:51PM +0800, Tao Zhang wrote:
+> The BC(Basic Counters) interface has RW, WO and RO fields for
+> controlling BC dataset elements transmitted on ATB flush.
+> The BC data set subunit supports from 1-32 counter instances
+> allowing for collection of BC data sets.
+> 
+> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-tpdm.c | 873 +++++++++++++++++++
+>  1 file changed, 873 insertions(+)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
+> index c0a01979e42f..0970c69ac8e2 100644
+> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
+> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+> @@ -668,6 +668,878 @@ static ssize_t gp_regs_store(struct device *dev,
+>  }
+>  static DEVICE_ATTR_RW(gp_regs);
+>  
+> +static ssize_t bc_capture_mode_show(struct device *dev,
+> +					 struct device_attribute *attr,
+> +					 char *buf)
+
+Indentation.  I won't repeat this comment but please make sure it is fixed for
+the entire patchset.
+
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	return scnprintf(buf, PAGE_SIZE, "%s\n",
+> +			 drvdata->bc->capture_mode == TPDM_MODE_ATB ?
+> +			 "ATB" : "APB");
+> +}
+> +
+> +static ssize_t bc_capture_mode_store(struct device *dev,
+> +					  struct device_attribute *attr,
+> +					  const char *buf,
+> +					  size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	char str[20] = "";
+
+        char str[4];
+
+> +	uint32_t val;
+> +
+> +	if (size >= 20)
+> +		return -EINVAL;
+> +	if (sscanf(buf, "%s", str) != 1)
+
+        if (sscanf(buf, "%3s", str) != 1)
+
+> +		return -EINVAL;
+> +	if (!test_bit(TPDM_DS_BC, drvdata->enable_ds))
+> +		return -EPERM;
+
+                return -EINVAL;
+
+Please make sure this is fixed everywhere, except when -EINVAL is really
+the right error code.
+
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	if (!drvdata->enable) {
+> +		mutex_unlock(&drvdata->lock);
+> +		return -EPERM;
+
+Why does the device need to be enabled for this operation?  Again no comments...
+
+> +	}
+> +
+> +	if (!strcmp(str, "ATB")) {
+> +		drvdata->bc->capture_mode = TPDM_MODE_ATB;
+> +	} else if (!strcmp(str, "APB") &&
+> +		   drvdata->bc->retrieval_mode == TPDM_MODE_APB) {
+> +
+> +		TPDM_UNLOCK(drvdata);
+> +		val = tpdm_readl(drvdata, TPDM_BC_CR);
+> +		val = val | BIT(3);
+> +		tpdm_writel(drvdata, val, TPDM_BC_CR);
+> +		TPDM_LOCK(drvdata);
+> +
+> +		drvdata->bc->capture_mode = TPDM_MODE_APB;
+> +	} else {
+> +		mutex_unlock(&drvdata->lock);
+> +		return -EINVAL;
+> +	}
+> +
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(bc_capture_mode);
+> +
+> +static ssize_t bc_retrieval_mode_show(struct device *dev,
+> +					   struct device_attribute *attr,
+> +					   char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	return scnprintf(buf, PAGE_SIZE, "%s\n",
+> +			 drvdata->bc->retrieval_mode == TPDM_MODE_ATB ?
+> +			 "ATB" : "APB");
+> +}
+> +
+> +static ssize_t bc_retrieval_mode_store(struct device *dev,
+> +					    struct device_attribute *attr,
+> +					    const char *buf,
+> +					    size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	char str[20] = "";
+> +
+> +	if (size >= 20)
+> +		return -EINVAL;
+> +	if (sscanf(buf, "%s", str) != 1)
+> +		return -EINVAL;
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	if (drvdata->enable) {
+> +		mutex_unlock(&drvdata->lock);
+> +		return -EPERM;
+
+Same here, I don't know why the device needs to be enabled for this to success.
+Please fix everywhere.
+
+> +	}
+> +
+> +	if (!strcmp(str, "ATB")) {
+> +		drvdata->bc->retrieval_mode = TPDM_MODE_ATB;
+> +	} else if (!strcmp(str, "APB")) {
+> +		drvdata->bc->retrieval_mode = TPDM_MODE_APB;
+> +	} else {
+> +		mutex_unlock(&drvdata->lock);
+> +		return -EINVAL;
+> +	}
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(bc_retrieval_mode);
+> +
+> +static ssize_t bc_reset_counters_store(struct device *dev,
+> +					    struct device_attribute *attr,
+> +					    const char *buf,
+> +					    size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if (kstrtoul(buf, 16, &val))
+> +		return -EINVAL;
+> +	if (!test_bit(TPDM_DS_BC, drvdata->enable_ds))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	if (!drvdata->enable) {
+> +		mutex_unlock(&drvdata->lock);
+> +		return -EPERM;
+> +	}
+> +
+> +	if (val) {
+> +		TPDM_UNLOCK(drvdata);
+> +		val = tpdm_readl(drvdata, TPDM_BC_CR);
+> +		val = val | BIT(1);
+> +		tpdm_writel(drvdata, val, TPDM_BC_CR);
+> +		TPDM_LOCK(drvdata);
+> +	}
+> +
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_WO(bc_reset_counters);
+> +
+> +static ssize_t bc_sat_mode_show(struct device *dev,
+> +				     struct device_attribute *attr,
+> +				     char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	return scnprintf(buf, PAGE_SIZE, "%lx\n",
+> +			 (unsigned long)drvdata->bc->sat_mode);
+        
+	return scnprintf(buf, PAGE_SIZE, "%#x\n", drvdata->bc->sat_mode);
+
+And everywhere casting in used...
+
+
+> +}
+> +
+> +static ssize_t bc_sat_mode_store(struct device *dev,
+> +				      struct device_attribute *attr,
+> +				      const char *buf,
+> +				      size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if (kstrtoul(buf, 16, &val))
+> +		return -EINVAL;
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	drvdata->bc->sat_mode = val;
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(bc_sat_mode);
+> +
+> +static ssize_t bc_enable_counters_show(struct device *dev,
+> +					    struct device_attribute *attr,
+> +					    char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	return scnprintf(buf, PAGE_SIZE, "%lx\n",
+> +			 (unsigned long)drvdata->bc->enable_counters);
+> +}
+> +
+> +static ssize_t bc_enable_counters_store(struct device *dev,
+> +					     struct device_attribute *attr,
+> +					     const char *buf,
+> +					     size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if (kstrtoul(buf, 16, &val))
+> +		return -EINVAL;
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	drvdata->bc->enable_counters = val;
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(bc_enable_counters);
+> +
+> +static ssize_t bc_clear_counters_show(struct device *dev,
+> +					   struct device_attribute *attr,
+> +					   char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	return scnprintf(buf, PAGE_SIZE, "%lx\n",
+> +			 (unsigned long)drvdata->bc->clear_counters);
+> +}
+> +
+> +static ssize_t bc_clear_counters_store(struct device *dev,
+> +					    struct device_attribute *attr,
+> +					    const char *buf,
+> +					    size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if (kstrtoul(buf, 16, &val))
+> +		return -EINVAL;
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	drvdata->bc->clear_counters = val;
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(bc_clear_counters);
+> +
+> +static ssize_t bc_enable_irq_show(struct device *dev,
+> +				       struct device_attribute *attr,
+> +				       char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	return scnprintf(buf, PAGE_SIZE, "%lx\n",
+> +			 (unsigned long)drvdata->bc->enable_irq);
+> +}
+> +
+> +static ssize_t bc_enable_irq_store(struct device *dev,
+> +					struct device_attribute *attr,
+> +					const char *buf,
+> +					size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if (kstrtoul(buf, 16, &val))
+> +		return -EINVAL;
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	drvdata->bc->enable_irq = val;
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(bc_enable_irq);
+> +
+> +static ssize_t bc_clear_irq_show(struct device *dev,
+> +				      struct device_attribute *attr,
+> +				      char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	return scnprintf(buf, PAGE_SIZE, "%lx\n",
+> +			 (unsigned long)drvdata->bc->clear_irq);
+> +}
+> +
+> +static ssize_t bc_clear_irq_store(struct device *dev,
+> +				       struct device_attribute *attr,
+> +				       const char *buf,
+> +				       size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if (kstrtoul(buf, 16, &val))
+> +		return -EINVAL;
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	drvdata->bc->clear_irq = val;
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(bc_clear_irq);
+> +
+> +static ssize_t bc_trig_val_lo_show(struct device *dev,
+> +					struct device_attribute *attr,
+> +					char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	ssize_t size = 0;
+> +	int i = 0;
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	for (i = 0; i < TPDM_BC_MAX_COUNTERS; i++)
+> +		size += scnprintf(buf + size, PAGE_SIZE - size,
+> +				  "Index: 0x%x Value: 0x%x\n", i,
+> +				  drvdata->bc->trig_val_lo[i]);
+
+As previously stated, the sysfs interface should output single line and single
+values.  I won't comment on this again, please fix everywhere.
+
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +
+> +static ssize_t bc_trig_val_lo_store(struct device *dev,
+> +					 struct device_attribute *attr,
+> +					 const char *buf,
+> +					 size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long index, val;
+> +
+> +	if (sscanf(buf, "%lx %lx", &index, &val) != 2)
+> +		return -EINVAL;
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets) ||
+> +	    index >= drvdata->bc_counters_avail ||
+> +	    drvdata->bc_trig_type == TPDM_SUPPORT_TYPE_NO ||
+> +	    (drvdata->bc_trig_type == TPDM_SUPPORT_TYPE_PARTIAL && index > 0))
+> +		return -EPERM;
+> 
+
+This is hard to read and maintain.  Please break it up in multiple if()
+statements.
+
+> +	mutex_lock(&drvdata->lock);
+> +	drvdata->bc->trig_val_lo[index] = val;
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(bc_trig_val_lo);
+> +
+> +static ssize_t bc_trig_val_hi_show(struct device *dev,
+> +					struct device_attribute *attr,
+> +					char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	ssize_t size = 0;
+> +	int i = 0;
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	for (i = 0; i < TPDM_BC_MAX_COUNTERS; i++)
+> +		size += scnprintf(buf + size, PAGE_SIZE - size,
+> +				  "Index: 0x%x Value: 0x%x\n", i,
+> +				  drvdata->bc->trig_val_hi[i]);
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +
+> +static ssize_t bc_trig_val_hi_store(struct device *dev,
+> +					 struct device_attribute *attr,
+> +					 const char *buf,
+> +					 size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long index, val;
+> +
+> +	if (sscanf(buf, "%lx %lx", &index, &val) != 2)
+> +		return -EINVAL;
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets) ||
+> +	    index >= drvdata->bc_counters_avail ||
+> +	    drvdata->bc_trig_type == TPDM_SUPPORT_TYPE_NO ||
+> +	    (drvdata->bc_trig_type == TPDM_SUPPORT_TYPE_PARTIAL && index > 0))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	drvdata->bc->trig_val_hi[index] = val;
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(bc_trig_val_hi);
+> +
+> +static ssize_t bc_enable_ganging_show(struct device *dev,
+> +					   struct device_attribute *attr,
+> +					   char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	return scnprintf(buf, PAGE_SIZE, "%lx\n",
+> +			 (unsigned long)drvdata->bc->enable_ganging);
+> +}
+> +
+> +static ssize_t bc_enable_ganging_store(struct device *dev,
+> +					    struct device_attribute *attr,
+> +					    const char *buf,
+> +					    size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if (kstrtoul(buf, 16, &val))
+> +		return -EINVAL;
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	drvdata->bc->enable_ganging = val;
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(bc_enable_ganging);
+> +
+> +static ssize_t bc_overflow_val_show(struct device *dev,
+> +					 struct device_attribute *attr,
+> +					 char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	ssize_t size = 0;
+> +	int i = 0;
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	for (i = 0; i < TPDM_BC_MAX_OVERFLOW; i++)
+> +		size += scnprintf(buf + size, PAGE_SIZE - size,
+> +				  "Index: 0x%x Value: 0x%x\n", i,
+> +				  drvdata->bc->overflow_val[i]);
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +
+> +static ssize_t bc_overflow_val_store(struct device *dev,
+> +					  struct device_attribute *attr,
+> +					  const char *buf,
+> +					  size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long index, val;
+> +
+> +	if (sscanf(buf, "%lx %lx", &index, &val) != 2)
+> +		return -EINVAL;
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets) ||
+> +	    index >= TPDM_BC_MAX_OVERFLOW)
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	drvdata->bc->overflow_val[index] = val;
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(bc_overflow_val);
+> +
+> +static ssize_t bc_ovsr_show(struct device *dev,
+> +				 struct device_attribute *attr,
+> +				 char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->enable_ds))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	if (!drvdata->enable) {
+> +		mutex_unlock(&drvdata->lock);
+> +		return -EPERM;
+> +	}
+> +
+> +	TPDM_UNLOCK(drvdata);
+> +	val = tpdm_readl(drvdata, TPDM_BC_OVSR);
+> +	TPDM_LOCK(drvdata);
+> +	mutex_unlock(&drvdata->lock);
+> +	return scnprintf(buf, PAGE_SIZE, "%lx\n", val);
+> +}
+> +
+> +static ssize_t bc_ovsr_store(struct device *dev,
+> +				  struct device_attribute *attr,
+> +				  const char *buf,
+> +				  size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if (kstrtoul(buf, 16, &val))
+> +		return -EINVAL;
+> +	if (!test_bit(TPDM_DS_BC, drvdata->enable_ds))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	if (!drvdata->enable) {
+> +		mutex_unlock(&drvdata->lock);
+> +		return -EPERM;
+> +	}
+> +
+> +	if (val) {
+> +		TPDM_UNLOCK(drvdata);
+> +		tpdm_writel(drvdata, val, TPDM_BC_OVSR);
+> +		TPDM_LOCK(drvdata);
+> +	}
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(bc_ovsr);
+> +
+> +static ssize_t bc_counter_sel_show(struct device *dev,
+> +					struct device_attribute *attr,
+> +					char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->enable_ds))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	if (!drvdata->enable) {
+> +		mutex_unlock(&drvdata->lock);
+> +		return -EPERM;
+> +	}
+> +
+> +	TPDM_UNLOCK(drvdata);
+> +	val = tpdm_readl(drvdata, TPDM_BC_SELR);
+> +	TPDM_LOCK(drvdata);
+> +	mutex_unlock(&drvdata->lock);
+> +	return scnprintf(buf, PAGE_SIZE, "%lx\n", val);
+> +}
+> +
+> +static ssize_t bc_counter_sel_store(struct device *dev,
+> +					 struct device_attribute *attr,
+> +					 const char *buf,
+> +					 size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if (kstrtoul(buf, 16, &val))
+> +		return -EINVAL;
+> +	if (!test_bit(TPDM_DS_BC, drvdata->enable_ds))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	if (!drvdata->enable || val >= drvdata->bc_counters_avail) {
+> +		mutex_unlock(&drvdata->lock);
+> +		return -EPERM;
+> +	}
+> +
+> +	TPDM_UNLOCK(drvdata);
+> +	tpdm_writel(drvdata, val, TPDM_BC_SELR);
+> +	TPDM_LOCK(drvdata);
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(bc_counter_sel);
+> +
+> +static ssize_t bc_count_val_lo_show(struct device *dev,
+> +					 struct device_attribute *attr,
+> +					 char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->enable_ds))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	if (!drvdata->enable) {
+> +		mutex_unlock(&drvdata->lock);
+> +		return -EPERM;
+> +	}
+> +
+> +	TPDM_UNLOCK(drvdata);
+> +	val = tpdm_readl(drvdata, TPDM_BC_CNTR_LO);
+> +	TPDM_LOCK(drvdata);
+> +	mutex_unlock(&drvdata->lock);
+> +	return scnprintf(buf, PAGE_SIZE, "%lx\n", val);
+> +}
+> +
+> +static ssize_t bc_count_val_lo_store(struct device *dev,
+> +					  struct device_attribute *attr,
+> +					  const char *buf,
+> +					  size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val, select;
+> +
+> +	if (kstrtoul(buf, 16, &val))
+> +		return -EINVAL;
+> +	if (!test_bit(TPDM_DS_BC, drvdata->enable_ds))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	if (!drvdata->enable) {
+> +		mutex_unlock(&drvdata->lock);
+> +		return -EPERM;
+> +	}
+> +
+> +	if (val) {
+
+        if (!val) {
+                mutex_unlock(&drvdata->lock);
+                return -EINVAL;               
+        }
+
+> +		TPDM_UNLOCK(drvdata);
+> +		select = tpdm_readl(drvdata, TPDM_BC_SELR);
+> +
+> +		/* Check if selected counter is disabled */
+> +		if (BMVAL(tpdm_readl(drvdata, TPDM_BC_CNTENSET), select, select)) {
+> +			mutex_unlock(&drvdata->lock);
+> +			return -EPERM;
+> +		}
+> +
+> +		tpdm_writel(drvdata, val, TPDM_BC_CNTR_LO);
+> +		TPDM_LOCK(drvdata);
+> +	}
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(bc_count_val_lo);
+> +
+> +static ssize_t bc_count_val_hi_show(struct device *dev,
+> +					 struct device_attribute *attr,
+> +					 char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->enable_ds))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	if (!drvdata->enable) {
+> +		mutex_unlock(&drvdata->lock);
+> +		return -EPERM;
+> +	}
+> +
+> +	TPDM_UNLOCK(drvdata);
+> +	val = tpdm_readl(drvdata, TPDM_BC_CNTR_HI);
+> +	TPDM_LOCK(drvdata);
+> +	mutex_unlock(&drvdata->lock);
+> +	return scnprintf(buf, PAGE_SIZE, "%lx\n", val);
+> +}
+> +
+> +static ssize_t bc_count_val_hi_store(struct device *dev,
+> +					  struct device_attribute *attr,
+> +					  const char *buf,
+> +					  size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val, select;
+> +
+> +	if (kstrtoul(buf, 16, &val))
+> +		return -EINVAL;
+> +	if (!test_bit(TPDM_DS_BC, drvdata->enable_ds))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	if (!drvdata->enable) {
+> +		mutex_unlock(&drvdata->lock);
+> +		return -EPERM;
+> +	}
+> +
+> +	if (val) {
+
+Same
+
+> +		TPDM_UNLOCK(drvdata);
+> +		select = tpdm_readl(drvdata, TPDM_BC_SELR);
+> +
+> +		/* Check if selected counter is disabled */
+> +		if (BMVAL(tpdm_readl(drvdata, TPDM_BC_CNTENSET), select, select)) {
+> +			mutex_unlock(&drvdata->lock);
+> +			return -EPERM;
+> +		}
+> +
+> +		tpdm_writel(drvdata, val, TPDM_BC_CNTR_HI);
+> +		TPDM_LOCK(drvdata);
+> +	}
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(bc_count_val_hi);
+> +
+> +static ssize_t bc_shadow_val_lo_show(struct device *dev,
+> +					  struct device_attribute *attr,
+> +					  char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	ssize_t size = 0;
+> +	int i = 0;
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->enable_ds))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	if (!drvdata->enable) {
+> +		mutex_unlock(&drvdata->lock);
+> +		return -EPERM;
+> +	}
+> +
+> +	TPDM_UNLOCK(drvdata);
+> +	for (i = 0; i < drvdata->bc_counters_avail; i++) {
+> +		size += scnprintf(buf + size, PAGE_SIZE - size,
+> +				  "Index: 0x%x Value: 0x%x\n", i,
+> +				  tpdm_readl(drvdata, TPDM_BC_SHADOW_LO(i)));
+> +	}
+> +	TPDM_LOCK(drvdata);
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RO(bc_shadow_val_lo);
+> +
+> +static ssize_t bc_shadow_val_hi_show(struct device *dev,
+> +					  struct device_attribute *attr,
+> +					  char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	ssize_t size = 0;
+> +	int i = 0;
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->enable_ds))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	if (!drvdata->enable) {
+> +		mutex_unlock(&drvdata->lock);
+> +		return -EPERM;
+> +	}
+> +
+> +	TPDM_UNLOCK(drvdata);
+> +	for (i = 0; i < drvdata->bc_counters_avail; i++)
+> +		size += scnprintf(buf + size, PAGE_SIZE - size,
+> +				  "Index: 0x%x Value: 0x%x\n", i,
+> +				  tpdm_readl(drvdata, TPDM_BC_SHADOW_HI(i)));
+> +	TPDM_LOCK(drvdata);
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RO(bc_shadow_val_hi);
+> +
+> +static ssize_t bc_sw_inc_show(struct device *dev,
+> +				   struct device_attribute *attr,
+> +				   char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->enable_ds))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	if (!drvdata->enable) {
+> +		mutex_unlock(&drvdata->lock);
+> +		return -EPERM;
+> +	}
+> +
+> +	TPDM_UNLOCK(drvdata);
+> +	val = tpdm_readl(drvdata, TPDM_BC_SWINC);
+> +	TPDM_LOCK(drvdata);
+> +	mutex_unlock(&drvdata->lock);
+> +	return scnprintf(buf, PAGE_SIZE, "%lx\n", val);
+> +}
+> +
+> +static ssize_t bc_sw_inc_store(struct device *dev,
+> +				    struct device_attribute *attr,
+> +				    const char *buf,
+> +				    size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if (kstrtoul(buf, 16, &val))
+> +		return -EINVAL;
+> +	if (!test_bit(TPDM_DS_BC, drvdata->enable_ds))
+> +		return -EPERM;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	if (!drvdata->enable) {
+> +		mutex_unlock(&drvdata->lock);
+> +		return -EPERM;
+> +	}
+> +
+> +	if (val) {
+> +		TPDM_UNLOCK(drvdata);
+> +		tpdm_writel(drvdata, val, TPDM_BC_SWINC);
+> +		TPDM_LOCK(drvdata);
+> +	}
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(bc_sw_inc);
+> +
+> +static ssize_t bc_msr_show(struct device *dev,
+> +				struct device_attribute *attr,
+> +				char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned int i;
+> +	ssize_t len = 0;
+> +
+> +	if (!drvdata->msr_support)
+> +		return -EINVAL;
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	for (i = 0; i < TPDM_BC_MAX_MSR; i++)
+> +		len += scnprintf(buf + len, PAGE_SIZE - len, "%u 0x%x\n",
+> +				 i, drvdata->bc->msr[i]);
+> +
+> +	return len;
+> +}
+> +
+> +static ssize_t bc_msr_store(struct device *dev,
+> +				 struct device_attribute *attr,
+> +				 const char *buf,
+> +				 size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned int num, val;
+> +	int nval;
+> +
+> +	if (!drvdata->msr_support)
+> +		return -EINVAL;
+> +
+> +	if (!test_bit(TPDM_DS_BC, drvdata->datasets))
+> +		return -EPERM;
+> +
+> +	nval = sscanf(buf, "%u %x", &num, &val);
+> +	if (nval != 2)
+> +		return -EINVAL;
+> +
+> +	if (num >= TPDM_BC_MAX_MSR)
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&drvdata->lock);
+> +	drvdata->bc->msr[num] = val;
+> +	mutex_unlock(&drvdata->lock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(bc_msr);
+> +
+> +static struct attribute *tpdm_bc_attrs[] = {
+> +	&dev_attr_bc_capture_mode.attr,
+> +	&dev_attr_bc_retrieval_mode.attr,
+> +	&dev_attr_bc_reset_counters.attr,
+> +	&dev_attr_bc_sat_mode.attr,
+> +	&dev_attr_bc_enable_counters.attr,
+> +	&dev_attr_bc_clear_counters.attr,
+> +	&dev_attr_bc_enable_irq.attr,
+> +	&dev_attr_bc_clear_irq.attr,
+> +	&dev_attr_bc_trig_val_lo.attr,
+> +	&dev_attr_bc_trig_val_hi.attr,
+> +	&dev_attr_bc_enable_ganging.attr,
+> +	&dev_attr_bc_overflow_val.attr,
+> +	&dev_attr_bc_ovsr.attr,
+> +	&dev_attr_bc_counter_sel.attr,
+> +	&dev_attr_bc_count_val_lo.attr,
+> +	&dev_attr_bc_count_val_hi.attr,
+> +	&dev_attr_bc_shadow_val_lo.attr,
+> +	&dev_attr_bc_shadow_val_hi.attr,
+> +	&dev_attr_bc_sw_inc.attr,
+> +	&dev_attr_bc_msr.attr,
+> +	NULL,
+
+This will result in a very crowded directory.  Please move under a "bc"
+subdirectory.  And as I commented before, all sysfs entries need to be
+documented under Documentation/ABI/testing.
+
+> +};
+> +
+> +static struct attribute_group tpdm_bc_attr_grp = {
+> +	.attrs = tpdm_bc_attrs,
+> +};
+> +
+>  static struct attribute *tpdm_attrs[] = {
+>  	&dev_attr_available_datasets.attr,
+>  	&dev_attr_enable_datasets.attr,
+> @@ -682,6 +1554,7 @@ static struct attribute_group tpdm_attr_grp = {
+>  };
+>  static const struct attribute_group *tpdm_attr_grps[] = {
+>  	&tpdm_attr_grp,
+> +	&tpdm_bc_attr_grp,
+
+It is quite tedious to review all these options at the same time as the core
+drivers.  I suggest to concentrate on the base functionality for now.  When that
+is merged we can add configuration options such as these.
+
+I am out of time for this patchset and as such will not review the remaining
+patches - those will have to wait for another iteration.
+
+Thanks,
+Mathieu
+
+>  	NULL,
+>  };
+>  
+> -- 
+> 2.17.1
+> 
