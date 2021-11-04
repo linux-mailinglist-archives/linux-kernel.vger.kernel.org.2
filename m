@@ -2,118 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F4D445594
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:44:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E93445596
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:44:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbhKDOrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 10:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhKDOrF (ORCPT
+        id S231346AbhKDOr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 10:47:27 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:57084 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhKDOr0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 10:47:05 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6362C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 07:44:27 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id n128so7143589iod.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 07:44:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7AsHwRp7W89TDu4CaaCkCBJjXNZdEdmiMQdVy3czbNY=;
-        b=b5j9TCl/4nB3OfsBXecWlEHpNTejWrzDGHJMDjMh4rvTnH2et0rEOnFDSOpV1PujBN
-         FVuNBLWL9344adIZyFhDQ6qREQUqe1N7XWUD5a5+GSZThhUlUEQiYNHWkoTCQgjBzA9h
-         KfuJLh3ru268LY2GHUt9UHGuWZiZN6OIe5cYQ/sss2x3YHb0FtDvFBPd+umjgUt9ONUf
-         vqrsCcMDEV+LLLMidxlm7dNt5VPyip2KjBbyfEeGFPmlNvtu8H5Es1SElYki9q5vhx4A
-         uTK3WVwTydAQ3y77SsSk+MWALuKUNQHauoxQzsOYR5HD7VPpfleUt90kW1cNfppvbpi2
-         cFVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7AsHwRp7W89TDu4CaaCkCBJjXNZdEdmiMQdVy3czbNY=;
-        b=2JZaNFr3syoz0NzN2sYKEmwkUpf1QI+oKOAkXhMhv8IayOrTzl2gtTi37RSvL8dlcp
-         MXSn8nPtXCgqLE0w+5SRzzDVbcYWtwVnbFIndlmHx6PWLQdTKhANCG652tPTefn4N6WR
-         0+du2NLMm30oBbRJqCnk+XWYLLMRVRlukrz6Wnr2bXRiiT66/pv8vHfTRosdNHYztCVp
-         MIBN3RKyXC1ZKm6IsuNkFMkHl0wFSEy14rrVrC1OligO2xXQPRtNU6C1Q5QVfD4nqh92
-         K3m/DZ+EiJl/t7+Upq5bi0aLz46iZlZSxZRnqMGZeosjQBra+Qi4lvhsj0jXXeWtzRn5
-         fBTA==
-X-Gm-Message-State: AOAM531yzXlLYvxkuXcYRQTseV4qNxZoeM1PDg3xhu3y+3isxg6hbf1h
-        WLem89nUr9j2+Nc/7BIiMsFiMQ==
-X-Google-Smtp-Source: ABdhPJya0s5iJuHzAorLG6/MYzrxzuKhIBQIuXwGk2hiSyk/aD1paAV9Hp8M5wwf+dpBZEX2r5j+WA==
-X-Received: by 2002:a6b:fe11:: with SMTP id x17mr7846300ioh.131.1636037066269;
-        Thu, 04 Nov 2021 07:44:26 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id t6sm3096389iov.39.2021.11.04.07.44.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 07:44:25 -0700 (PDT)
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-To:     Cyril Hrubis <chrubis@suse.cz>
-Cc:     Drew DeVault <sir@cmpwn.com>, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, io-uring@vger.kernel.org,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20211028080813.15966-1-sir@cmpwn.com>
- <cc3d7fac-62e9-fe11-0cf1-3d9528d191a0@kernel.dk> <YYPt1PaGtiSLvyKw@rei>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <fdf1c610-6c9a-befd-a284-b8a552b4c225@kernel.dk>
-Date:   Thu, 4 Nov 2021 08:44:24 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 4 Nov 2021 10:47:26 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 740981F45AE7
+Received: by earth.universe (Postfix, from userid 1000)
+        id E80963C0F95; Thu,  4 Nov 2021 15:44:44 +0100 (CET)
+Date:   Thu, 4 Nov 2021 15:44:44 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
+Cc:     patches@opensource.cirrus.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] power: supply: Introduces bypass charging property
+Message-ID: <20211104144444.rulz4br3xu4qc7yh@earth.universe>
+References: <20211104135027.2352874-1-rriveram@opensource.cirrus.com>
+ <20211104135027.2352874-2-rriveram@opensource.cirrus.com>
 MIME-Version: 1.0
-In-Reply-To: <YYPt1PaGtiSLvyKw@rei>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="34ez465lqtj6xncn"
+Content-Disposition: inline
+In-Reply-To: <20211104135027.2352874-2-rriveram@opensource.cirrus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/4/21 8:27 AM, Cyril Hrubis wrote:
-> Hi!
->>> This limit has not been updated since 2008, when it was increased to 64
->>> KiB at the request of GnuPG. Until recently, the main use-cases for this
->>> feature were (1) preventing sensitive memory from being swapped, as in
->>> GnuPG's use-case; and (2) real-time use-cases. In the first case, little
->>> memory is called for, and in the second case, the user is generally in a
->>> position to increase it if they need more.
->>>
->>> The introduction of IOURING_REGISTER_BUFFERS adds a third use-case:
->>> preparing fixed buffers for high-performance I/O. This use-case will
->>> take as much of this memory as it can get, but is still limited to 64
->>> KiB by default, which is very little. This increases the limit to 8 MB,
->>> which was chosen fairly arbitrarily as a more generous, but still
->>> conservative, default value.
->>> ---
->>> It is also possible to raise this limit in userspace. This is easily
->>> done, for example, in the use-case of a network daemon: systemd, for
->>> instance, provides for this via LimitMEMLOCK in the service file; OpenRC
->>> via the rc_ulimit variables. However, there is no established userspace
->>> facility for configuring this outside of daemons: end-user applications
->>> do not presently have access to a convenient means of raising their
->>> limits.
->>>
->>> The buck, as it were, stops with the kernel. It's much easier to address
->>> it here than it is to bring it to hundreds of distributions, and it can
->>> only realistically be relied upon to be high-enough by end-user software
->>> if it is more-or-less ubiquitous. Most distros don't change this
->>> particular rlimit from the kernel-supplied default value, so a change
->>> here will easily provide that ubiquity.
->>
->> Agree with raising this limit, it is ridiculously low and we often get
->> reports from people that can't even do basic rings with it. Particularly
->> when bpf is involved as well, as it also dips into this pool.
->>
->> On the production side at facebook, we do raise this limit as well.
-> 
-> We are raising this limit to 2MB for LTP testcases as well, otherwise we
-> get failures when we run a few bpf tests in quick succession.> 
-> Acked-by: Cyril Hrubis <chrubis@suse.cz>
 
-Andrew, care to pick this one up for 5.16?
+--34ez465lqtj6xncn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Jens Axboe
+Hi,
 
+On Thu, Nov 04, 2021 at 08:50:27AM -0500, Ricardo Rivera-Matos wrote:
+> Adds a POWER_SUPPLY_CHARGE_TYPE_BYPASS option to the POWER_SUPPLY_PROP_CH=
+ARGE_TYPE
+> property to facilitate bypass charging operation.
+>=20
+> In bypass charging operation, the charger bypasses the charging path arou=
+nd the
+> integrated converter allowing for a "smart" wall adaptor to perform the p=
+ower
+> conversion externally.
+>=20
+> This operational mode is critical for the USB PPS standard of power adapt=
+ors and is
+> becoming a common feature in modern charging ICs such as:
+>=20
+> - BQ25980
+> - BQ25975
+> - BQ25960
+> - LN8000
+> - LN8410
+>=20
+> Signed-off-by: Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
+> ---
+
+Please always send API changes together with a user (e.g. in this
+case you could update bq25980_charger driver to use this property).
+
+-- Sebastian
+
+>  drivers/power/supply/power_supply_sysfs.c | 1 +
+>  include/linux/power_supply.h              | 1 +
+>  2 files changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/su=
+pply/power_supply_sysfs.c
+> index c3d7cbcd4fad..1368e13dc94b 100644
+> --- a/drivers/power/supply/power_supply_sysfs.c
+> +++ b/drivers/power/supply/power_supply_sysfs.c
+> @@ -89,6 +89,7 @@ static const char * const POWER_SUPPLY_CHARGE_TYPE_TEXT=
+[] =3D {
+>  	[POWER_SUPPLY_CHARGE_TYPE_ADAPTIVE]	=3D "Adaptive",
+>  	[POWER_SUPPLY_CHARGE_TYPE_CUSTOM]	=3D "Custom",
+>  	[POWER_SUPPLY_CHARGE_TYPE_LONGLIFE]	=3D "Long Life",
+> +	[POWER_SUPPLY_CHARGE_TYPE_BYPASS]	=3D "Bypass",
+>  };
+> =20
+>  static const char * const POWER_SUPPLY_HEALTH_TEXT[] =3D {
+> diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
+> index 9ca1f120a211..9432234d7900 100644
+> --- a/include/linux/power_supply.h
+> +++ b/include/linux/power_supply.h
+> @@ -49,6 +49,7 @@ enum {
+>  	POWER_SUPPLY_CHARGE_TYPE_ADAPTIVE,	/* dynamically adjusted speed */
+>  	POWER_SUPPLY_CHARGE_TYPE_CUSTOM,	/* use CHARGE_CONTROL_* props */
+>  	POWER_SUPPLY_CHARGE_TYPE_LONGLIFE,	/* slow speed, longer life */
+> +	POWER_SUPPLY_CHARGE_TYPE_BYPASS,	/* bypassing the charger */
+>  };
+> =20
+>  enum {
+> --=20
+> 2.25.1
+>=20
+
+--34ez465lqtj6xncn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmGD8dYACgkQ2O7X88g7
++ppJQA/8DzTi8cVt7JjH/Z/Z3dLN6ysXcQc37A3GB1BTeYtACC9M6v6nAmOuMzYg
+s1dX6kGQyilTUooWTSqqYmGTYKB7h2tBQzFrqHq8XwZSztQzOK/dk9iK049UslHy
+Ill0KA1SGfBtxOxLqI56q4KgR3Wqi3a1C8XvsnL/WNDbyfSJivBncZHDc/fD1Aa5
+nkXEkEvcfQrny7LDvw+DhlssYIUGLVRTHdmvTa/hVAfIt8XT//fbJdO1eS8yUn2n
+IS4Mm7wmopWgXUe9hGYSSo6FTg7spku30UZke7h7b0gdkJaSPedXyP2d9L+lHisJ
+U5fms85cQo3amTDirkhjhqfAxTHVNeNMQbDldlsrIaT65gJyqkOu8gVjTPORDdLF
+vFb9RjIl7ROJ58kM2Ld5Hw7n0jvnPqILZn4rQ2jY4V5BXmWdez1eml9IBbzJzewR
+a9KWi3202vqGsNT3TQIrgZ6Ze01QtXzwjhCdj0wRifs2UvvFwEppv/wt7aA9rk/j
+BehQyQpvLatLiIvLyBUyAiyTCAbPgDmxZNox51xywfZ9K0km8RIQcI3qCsSyC62r
+8X48pfi8EVDD/udl8Rw1ICwSQkx9SRjRCR/8JOBmIaZZwsI7tOlnlbSZTtjcjeNF
+KHx9zEyEpSMQk55AyVd9Oq4LE2Tgsa0+MHrxRropQnM/tMTYN6s=
+=PCw3
+-----END PGP SIGNATURE-----
+
+--34ez465lqtj6xncn--
