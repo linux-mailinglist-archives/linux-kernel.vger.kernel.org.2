@@ -2,64 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA52445234
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4AC8445237
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:30:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhKDLb6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 4 Nov 2021 07:31:58 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:36589 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhKDLb5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 07:31:57 -0400
-Received: by mail-ot1-f41.google.com with SMTP id r10-20020a056830448a00b0055ac7767f5eso7770333otv.3;
-        Thu, 04 Nov 2021 04:29:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=eEExj6i05wPUp1wi7tN5SgnGp5/UYcEmTl+YJODnmn4=;
-        b=TqbBZNHKT0A7m9W9ZvtflrXWy/ThBEnbpYdyPJmG79f8/5HtSHdy6L2TyonsIbv3QT
-         efvNUI6Y9e2HE6WPM7ASDn5wJsdwZy1ox2GLxehgU8ljwcGGYWSxcierNb0uFm2Zlaty
-         OmukX6TKBqBoXC0NgqAqGpIiyfWpXJ7Rvr5oi+YOahQ8TyLuPRE3puFBkozo2qi3j0Rs
-         W+o/JqbXhjdXpnXpvb2q1cgTAGpssZo5bdRpDyUfaJbuPvT24V3oW0SYHXEwD2Mf6mZf
-         3bn7+HqykOt2rs+IB0UKz6RVPD3SkIYQsBJhFy9T6SQqx6e6iPZzBIbDVc1FA2jP8NXk
-         SMaw==
-X-Gm-Message-State: AOAM5324LZQs0lpHzyEGSZVY6w+n5nAEtxaHMVdu4vpVC6cXNKe9kDWB
-        sUX8m305ra2MCoxRhgQek1IPBinpPe+iXN5CXXc=
-X-Google-Smtp-Source: ABdhPJw/YUxlhi6f3PLQdlPXIr1aQW1J1lgPjhbsPOISxNWuHm7MHufuAdZ4KOx+o8YvCtPxW1JV6UVVe6e/p2+uLLw=
-X-Received: by 2002:a05:6830:1af0:: with SMTP id c16mr36162646otd.16.1636025359375;
- Thu, 04 Nov 2021 04:29:19 -0700 (PDT)
+        id S231371AbhKDLcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 07:32:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229843AbhKDLcp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 07:32:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id EC591611F2;
+        Thu,  4 Nov 2021 11:30:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636025408;
+        bh=qNfXuu7/9CV4qCMoZEQWMVcby6LsxtebbXx/21zZX40=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=VxP0pdt8LcMVvdAwCbLqvUgM1yDD7Beb0riFOQjSYGnxX5E2+wL32HOCiJh8AOT66
+         Vq+V1/Q7WmWEJ5K8Qo5qbDcDUc1NI71syDy4YGDEgJVHYoiRDPpcnN5Qx3Croe+Iz9
+         oUGJFrRZnvdyxQZKzxae6TL2uY4Ho3x+BPEuJMmUxoxwtF/ESj/JwkA/t8GHPgOX8n
+         ywkP6PThnuDgU1jEOBKXd0A1MNfL+855ij9lL5wqMKEQ7ZFxMH4/K3p7gmVvpzqC7e
+         UAuuLRixYPIGdpN/AeNnTKTjSKbs4XFIZ3VEhqYwOh1+R4NfxkLCWlZHymod42YPUG
+         XdfnnjeQebL2w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DCA0360981;
+        Thu,  4 Nov 2021 11:30:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20211103055119.19312-1-wangzhitong@uniontech.com>
- <CAJZ5v0gS5Mo3REP-Y14gxUWge3avdiANHXi51R+mwz+EOBi_1w@mail.gmail.com> <tencent_5EE3079906D3D5211516C198@qq.com>
-In-Reply-To: <tencent_5EE3079906D3D5211516C198@qq.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 4 Nov 2021 12:29:07 +0100
-Message-ID: <CAJZ5v0h03-SpqTmX5gFvocdKTTcsjcn5oTmPmcG5FySu=Lh3jg@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: EC: fix error "do not initialise statics to false"
-To:     =?UTF-8?B?546L5b+X5qGQ?= <wangzhitong@uniontech.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] selftests: net: properly support IPv6 in GSO GRE test
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163602540789.19516.14115873582365922647.git-patchwork-notify@kernel.org>
+Date:   Thu, 04 Nov 2021 11:30:07 +0000
+References: <20211104104613.17204-1-andrea.righi@canonical.com>
+In-Reply-To: <20211104104613.17204-1-andrea.righi@canonical.com>
+To:     Andrea Righi <andrea.righi@canonical.com>
+Cc:     shuah@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 3:33 AM 王志桐 <wangzhitong@uniontech.com> wrote:
->
-> hi  Rafael J
->
->   Thank you for your reply， Forgive me for my limited level 。
->   I do't understand your means:
-> "Applied as 5.16-rc material with rewritten changelog and subject, thanks!"
-> Please help me ， Please help guide ， How do I need to modify my patch.
+Hello:
 
-You don't need to change it, I've changed it myself.
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-Basically, I've retained the code changes, but I've modified the patch
-subject and description.
+On Thu,  4 Nov 2021 11:46:13 +0100 you wrote:
+> Explicitly pass -6 to netcat when the test is using IPv6 to prevent
+> failures.
+> 
+> Also make sure to pass "-N" to netcat to close the socket after EOF on
+> the client side, otherwise we would always hit the timeout and the test
+> would fail.
+> 
+> [...]
+
+Here is the summary with links:
+  - selftests: net: properly support IPv6 in GSO GRE test
+    https://git.kernel.org/netdev/net/c/a985442fdecb
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
