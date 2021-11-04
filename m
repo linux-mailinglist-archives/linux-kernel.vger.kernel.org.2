@@ -2,93 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5244451C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 11:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 513644451C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 11:51:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbhKDKx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 06:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231230AbhKDKx5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 06:53:57 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90827C061714;
-        Thu,  4 Nov 2021 03:51:19 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id g10so19699770edj.1;
-        Thu, 04 Nov 2021 03:51:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6I2uPuxsdopu4ALUZ3B2z3XyTqYZnvpIR8bVD6Ndlx4=;
-        b=DFa+zvamwu4eDCZxp9GQD2zJtbEMx9q2ET83amQm0ealJO66LJa54CDSgRg5anyB2y
-         KaYrQyzicHV7eiRgjR6kmAX+PAbt9ZVvhrZxRc5qT8+u6hFpHd958JLjISNwvsEqJ4Wj
-         hkC5OMgANkQSgaN/ngXVFTyQ87zLCFL/j773UsXu/0rR1NSbP8i1Eymvd0myN+fji4+/
-         n66oCY8XYHNkKjYt02mt7mHiXoL5NnWzh/CrWIUnoazcjvcIR/EbXzp0C7LoeEvL7q3l
-         td1TWtrrZC81eakYOPACYrlb2deEr3WetN/r4aeW/44lI1l4mD6bXp/Gj308RvceBVmy
-         h4lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6I2uPuxsdopu4ALUZ3B2z3XyTqYZnvpIR8bVD6Ndlx4=;
-        b=XMm90YMnS2jTpo7M+ccADo2ibNAd7AToeCJM0fkx9JfXh0eQYTVSJ4Uvcj6UdzTQmg
-         Q5NHW5t4ibHT9Fai0AJLPvOEg4uE5l+ufS9eZxP4NfvejblitMFEWA/sZQ4cQAimwu3J
-         qE/G/EyYBoslm2BeXPjMJ0v6/fj8r1yG5RmujexqHyNYYuv7mAHgbw9CtduOzjWcydkf
-         hw13X2Mfrz4nxGvWHVRaoMwnoRj6lCFZZ/XcktKIRq5CiL7szRmo0WzkPxPHp8nqIy4w
-         7kTSCK4lS5wwn7xOdW9v+48uBz9WzuoP+rWOTIPNL30fXTF8sRmoZlkhYzpSc6rFJcZa
-         UrkQ==
-X-Gm-Message-State: AOAM531k/2yWRPmVFdk3ieYrYpRUl7Ksi0I+DCPN3l7pKiYFYWcpU7sp
-        98Jm0VXa6FueLE5yywhSJ4sdAGSlCmwMinKRkAk=
-X-Google-Smtp-Source: ABdhPJzmVmUGEM0uAzQyN3dBaB1GHsse/O9va7VC6T780KCn1cAeK95SJKVT1w0aeJTM5Sosh270FaYivI1YWAM6ujo=
-X-Received: by 2002:aa7:c44b:: with SMTP id n11mr47423909edr.238.1636023078205;
- Thu, 04 Nov 2021 03:51:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211104011245.1027675-1-yang.guang5@zte.com.cn>
-In-Reply-To: <20211104011245.1027675-1-yang.guang5@zte.com.cn>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 4 Nov 2021 12:50:30 +0200
-Message-ID: <CAHp75VeOJ5XwjpupboaL1DzF03no=j=1HvDrVEy-1dF754On3w@mail.gmail.com>
-Subject: Re: [PATCH] USB: UDC: use swap() to make code cleaner
-To:     davidcomponentone@gmail.com
-Cc:     Felipe Balbi <balbi@kernel.org>,
+        id S231215AbhKDKxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 06:53:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229809AbhKDKxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 06:53:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1523F61108;
+        Thu,  4 Nov 2021 10:50:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636023060;
+        bh=qjQ0ddQkxndA+aapAprmzKfzleHUEyxYbCE4SjmdBPw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=T11yYq5LylUhk07FMRyPTH/4B/cokH2cq3JnmmaxIeLQV4vKu1iplf4lhK9hMB7BQ
+         n99U3raqYtxeqs94B+kh+O7P4wD7KPUj735yp+Gn5q9pDHFewnHwIezJtgGvmSnvtW
+         oyuWcc2zhqrJfNgjX35uzTPCPEfjWAXkRh6enp++PBUL7Zz/hyT6J3w/u2INNk79UH
+         FtCII8n9a7sI+jrCXwHSnnGIAwYz68wIX0FJ4qhyw3dKLnoNUOkb7T86bCedhIw06Q
+         STm9mW5mbvTSHmOgZxo+HYPlriQ1HQzQY0EjZu7Awdu3sRoLsu8dJlT/srBCG/Yk0C
+         XemZocGpJvZlg==
+Date:   Thu, 4 Nov 2021 10:50:51 +0000
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Colin King <colin.king@canonical.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Yang Guang <yang.guang5@zte.com.cn>,
-        USB <linux-usb@vger.kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Kaixu Xia <kaixuxia@tencent.com>,
+        Yang Li <abaci-bugfix@linux.alibaba.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Alan <alan@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, linux-staging@lists.linux.dev,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Zeal Robot <zealci@zte.com.cn>
-Content-Type: text/plain; charset="UTF-8"
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: atomisp current issues
+Message-ID: <20211104105051.4836fafb@sal.lan>
+In-Reply-To: <YYOts0aoD/Quo5r6@pendragon.ideasonboard.com>
+References: <20211103135418.496f75d5@sal.lan>
+        <YYOts0aoD/Quo5r6@pendragon.ideasonboard.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 3:14 AM <davidcomponentone@gmail.com> wrote:
+Em Thu, 4 Nov 2021 11:53:55 +0200
+Laurent Pinchart <laurent.pinchart@ideasonboard.com> escreveu:
 
-> Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
-> opencoding it.
+> Hi Mauro,
+> 
+> On Wed, Nov 03, 2021 at 01:54:18PM +0000, Mauro Carvalho Chehab wrote:
+> > Hi,
+> > 
+> > From what I've seen so far, those are the main issues with regards to V4L2 API,
+> > in order to allow a generic V4L2 application to work with it.
+> > 
+> > MMAP support
+> > ============
+> > 
+> > Despite having some MMAP code on it, the current implementation is broken. 
+> > Fixing it is not trivial, as it would require fixing the HMM support on it, 
+> > which does several tricks.
+> > 
+> > The best would be to replace it by something simpler. If this is similar
+> > enough to IPU3, perhaps one idea would be to replace the HMM code on it by 
+> > videodev2 + IPU3 HMM code.
+> > 
+> > As this is not trivial, I'm postponing such task. If someone has enough
+> > time, it would be great to have this fixed.
+> > 
+> > From my side, I opted to add support for USERPTR on camorama:
+> > 
+> > 	https://github.com/alessio/camorama  
+> 
+> We should *really* phase out USERPTR support. 
 
-Same comment as per all your valuable contributions: think about the
-code you are modifying a little bit more. Okay?
+I'm not a big fan of userptr, buy why do we phase it out?
 
->         struct net2280_dma      *end;
-> -       dma_addr_t              tmp;
->
->         /* swap new dummy for old, link; fill and maybe activate */
->         end = ep->dummy;
->         ep->dummy = req->td;
->         req->td = end;
->
-> -       tmp = ep->td_dma;
-> -       ep->td_dma = req->td_dma;
-> -       req->td_dma = tmp;
-> +       swap(ep->td_dma, req->td_dma);
+> Worst case you may support
+> DMABUF only if MMAP is problematic, but I don't really see why it could
+> be easy to map an imported buffer and difficult to map a buffer
+> allocated by the driver. videobuf2 should be used.
 
-Interestingly, why the previous paragraph was not detected by you as
-an opportunity to convert as well?
+Yeah, atomisp should be migrated to VB2, and such migration is listed at
+its TODO file. However, this is a complex task, as its memory management
+code is very complex. Maybe we could try to use the ISP3 code on it,
+replacing the current HMM logic, but not sure if the implementation there 
+would be compatible.
 
--- 
-With Best Regards,
-Andy Shevchenko
+In any case, the current priority is to make the driver to work, fixing 
+the V4L2 API implementation, which has several issues.
+
+...
+
+> > Video devices
+> > =============
+> > 
+> > Currently, 10 video? devices are created:
+> > 
+> > 	$ for i in $(ls /dev/video*|sort -k2 -to -n); do echo -n $i:; v4l2-ctl -D -d $i|grep Name; done
+> > 	/dev/video0:	Name             : ATOMISP ISP CAPTURE output
+> > 	/dev/video1:	Name             : ATOMISP ISP VIEWFINDER output
+> > 	/dev/video2:	Name             : ATOMISP ISP PREVIEW output
+> > 	/dev/video3:	Name             : ATOMISP ISP VIDEO output
+> > 	/dev/video4:	Name             : ATOMISP ISP ACC
+> > 	/dev/video5:	Name             : ATOMISP ISP MEMORY input
+> > 	/dev/video6:	Name             : ATOMISP ISP CAPTURE output
+> > 	/dev/video7:	Name             : ATOMISP ISP VIEWFINDER output
+> > 	/dev/video8:	Name             : ATOMISP ISP PREVIEW output
+> > 	/dev/video9:	Name             : ATOMISP ISP VIDEO output
+> > 	/dev/video10:	Name             : ATOMISP ISP ACC
+> > 
+> > That seems to be written to satisfy some Android-based app, but we don't
+> > really need all of those.
+> > 
+> > I'm thinking to comment out the part of the code which creates all of those,
+> > keeping just "ATOMISP ISP PREVIEW output", as I don't think we need all
+> > of those.  
+> 
+> Why is that ? Being able to capture multiple streams in different
+> resolutions is important for lots of applications, the viewfinder
+> resolution is often different than the video streaming and/or still
+> capture resolution. Scaling after capture is often expensive (and there
+> are memory bandwidth and power constraints to take into account too). A
+> single-stream device may be better than nothing, but it's time to move
+> to the 21st century.
+
+True, but having multiple videonodes at this moment is not helping,
+specially since only one of such modes (PREVIEW) is actually working at
+the moment.
+
+So, this is more a strategy to help focusing on making this work
+properly, and not a statement that those modules would be dropped.
+
+I'd say that the "final" version of atomisp - once it gets 
+fixed, cleaned up and started being MC-controlled - should support
+all such features, and have the pipelines setup via libcamera.
+
+Regards,
+Mauro
