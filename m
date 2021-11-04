@@ -2,139 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B12445322
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F2A445324
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:35:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231136AbhKDMhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 08:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45630 "EHLO
+        id S231240AbhKDMiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 08:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhKDMhI (ORCPT
+        with ESMTP id S229505AbhKDMiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 08:37:08 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D949C061714;
-        Thu,  4 Nov 2021 05:34:30 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id c206so5168205iof.2;
-        Thu, 04 Nov 2021 05:34:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aSDFeDkO0qaLEtNK76O8NQimr+zDhbv1igoxk25YmPY=;
-        b=E1DVTWypHI2O3f/jSult45xc4Nyet5nYf4oCkBxkNAF3ggPghzVdYPA1jCTjFxGi+4
-         0gxaT98/tY8ziYzhlBwzJoKieroEL7j/vsFEzX2lZcYMQSJD+ymAzVbYGaa6Kcfd3ZyD
-         io3gGk3bAqSzjp1kVPH9xpBfSYXJh+Lw2k9LWIHv0fCoZLzyt5HxChxRA3aG2Tkq6+wS
-         kODFZYk9ugSw9G4IWZfyAiH6ZSnmvNOgZoXiOPuwtBaUiRxvJ/azHPABI1jsH31b8DvK
-         FCtm9m+KRoUuRPtNY3MtUMku1SSxhc7Jjgimy+RmRqfq0ks+BhjZMqRbZl0tUNb9Tt/e
-         h/Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aSDFeDkO0qaLEtNK76O8NQimr+zDhbv1igoxk25YmPY=;
-        b=Vil2qyxa+qN6SzjrVM7ectpPB8mfGe4lFahGOR0H2ZJOdDiiy5d3d2Hx28F5HsG14W
-         75MyH+9lBzXwvxf16/BkY67fuDJj/btxhDtPemEaoMZ3GhDVvM8Ajy0SV/Hx5+QXHdhx
-         QzYQN2jToc92VgjCoqMArFskzT2Eqt+vDotFYLJa+Ti8vFP3b67eAf/iIEWPP7igpkVI
-         GBsMdJIGC1g6vL+DnD2yf8H142LDfLcI2tF69qgPLlWpHl2yc2dh1MGgHyvOUqu2IU9N
-         RvspGzMCT7LFMTh1akzonUjAdsPKVvxeiLuHZRZ3T4Q7MYjhJSv9W9XdUKprnKsAYkP4
-         jRTg==
-X-Gm-Message-State: AOAM530BoCwjatOKgKoiVGeQYCaLHmkRPZ0KoTNuIZLtd/cZjymhxHKq
-        Q+QiYgX34SCNIeHsQFc0740=
-X-Google-Smtp-Source: ABdhPJw6M9RYSmqHFJvybY+a+KomOfFaWSSqh7ifj2ugVv7FmZS+hyQlTz+463uXwfx9IfqdHLDjug==
-X-Received: by 2002:a6b:6a17:: with SMTP id x23mr6170895iog.165.1636029269668;
-        Thu, 04 Nov 2021 05:34:29 -0700 (PDT)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:e81d:737a:bb84:83ba])
-        by smtp.gmail.com with ESMTPSA id o10sm2632156ilc.56.2021.11.04.05.34.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 05:34:28 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: imx8mm-beacon: Enable USB Controllers
-Date:   Thu,  4 Nov 2021 07:34:11 -0500
-Message-Id: <20211104123411.397205-1-aford173@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 4 Nov 2021 08:38:05 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BD6C061714;
+        Thu,  4 Nov 2021 05:35:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=gTvExCAIQniJoHis0zPNIcgjI2X81k00ve1hFKX54uM=; b=2DgZrVNVn0KO/S5YqvnoQeU5qI
+        5NIJjAH3MmpmUkdV/waNALRuh3hiaylM/dYIWF3aC1NHZCBXIBgqPtkBSWkvFpQ1nj/ckiXEP1j8C
+        S8dV6b3z2p+Q2arlftQHDTU6kdrhkvCwGr3Vv9nRv18lbojdO4df5z1J//gpKN/+bENpRAsKvVAU4
+        tt0Cah64EhMVhcba/nAp58tifAvp/UH1MTj8jCQsg07Dt8fnbFIic8Q447ewVdFIjaKR9c6sqRHvU
+        ZwPEZvPWhziA7GTirM5H5ciPCxj6xf3hkBXXTErDfz1/Ph8wLLIMDgtPAC76YV/aIsUdO49keAIdp
+        pWYKqVeg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55478)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mibxg-0005x4-6e; Thu, 04 Nov 2021 12:35:20 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mibxd-0007KM-7M; Thu, 04 Nov 2021 12:35:17 +0000
+Date:   Thu, 4 Nov 2021 12:35:17 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Tobias Waldekranz <tobias@waldekranz.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Sean Anderson <sean.anderson@seco.com>
+Subject: Re: [RFC PATCH] net: phy/mdio: enable mmd indirect access through
+ phy_mii_ioctl()
+Message-ID: <YYPThd7aX+TBWslz@shell.armlinux.org.uk>
+References: <bc9df441-49bf-5c8a-891c-cc3f0db00aba@ti.com>
+ <YYF4ZQHqc1jJsE/+@shell.armlinux.org.uk>
+ <e18f17bd-9e77-d3ef-cc1e-30adccb7cdd5@ti.com>
+ <828e2d69-be15-fe69-48d8-9cfc29c4e76e@ti.com>
+ <YYGxvomL/0tiPzvV@lunn.ch>
+ <8d24c421-064c-9fee-577a-cbbf089cdf33@ti.com>
+ <YYHXcyCOPiUkk8Tz@lunn.ch>
+ <01a0ebf9-5d3f-e886-4072-acb9bf418b12@ti.com>
+ <YYLk0dEKX2Jlq0Se@lunn.ch>
+ <87pmrgjhk4.fsf@waldekranz.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87pmrgjhk4.fsf@waldekranz.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i.MX8M Mini has two available USB controllers.  On the
-imx8mm-beacon board, USB1 is routed to a mini-USB port with
-OTG functionality.  USB2 is routed to a USB hub which has
-three host-only ports connected to it.
+On Thu, Nov 04, 2021 at 12:17:47PM +0100, Tobias Waldekranz wrote:
+> On Wed, Nov 03, 2021 at 20:36, Andrew Lunn <andrew@lunn.ch> wrote:
+> > On Wed, Nov 03, 2021 at 08:42:07PM +0200, Grygorii Strashko wrote:
+> >> 
+> >> 
+> >> On 03/11/2021 02:27, Andrew Lunn wrote:
+> >> > > > What i find interesting is that you and the other resent requester are
+> >> > > > using the same user space tool. If you implement C45 over C22 in that
+> >> > > > tool, you get your solution, and it will work for older kernels as
+> >> > > > well. Also, given the diverse implementations of this IOTCL, it
+> >> > > > probably works for more drivers than just those using phy_mii_ioctl().
+> >> > > 
+> >> > > Do you mean change uapi, like
+> >> > >   add mdio_phy_id_is_c45_over_c22() and
+> >> > >   flag #define MDIO_PHY_ID_C45_OVER_C22 0x4000?
+> >> > 
+> >> > No, i mean user space implements C45 over C22. Make phytool write
+> >> > MII_MMD_CTRL and MII_MMD_DATA to perform a C45 over C22.
+> >> 
+> >> Now I give up - as mentioned there is now way to sync User space vs Kernel
+> >> MMD transactions and so no way to get trusted results.
+> 
+> Except that there is a way: https://github.com/wkz/mdio-tools
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
+I'm guessing that this hasn't had much in the way of review, as it has
+a nice exploitable bug - you really want "pc" to be unsigned in
+mdio_nl_eval(), otherwise one can write a branch instruction that makes
+"pc" negative.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
-index 6f5e63696ec0..4097a66163b2 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
-@@ -43,6 +43,17 @@ reg_audio: regulator-audio {
- 		enable-active-high;
- 	};
- 
-+	reg_usbotg1: regulator-usbotg1 {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_reg_usb_otg1>;
-+		regulator-name = "usb_otg_vbus";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		gpio = <&gpio4 29 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
- 	reg_usdhc2_vmmc: regulator-usdhc2 {
- 		compatible = "regulator-fixed";
- 		regulator-name = "VSD_3V3";
-@@ -169,6 +180,24 @@ &uart3 {
- 	status = "okay";
- };
- 
-+&usbotg1 {
-+	vbus-supply = <&reg_usbotg1>;
-+	disable-over-current;
-+	dr_mode="otg";
-+	status = "okay";
-+};
-+
-+&usbotg2 {
-+	pinctrl-names = "default";
-+	disable-over-current;
-+	dr_mode="host";
-+	status = "okay";
-+};
-+
-+&usbphynop2 {
-+	reset-gpios = <&pca6416_1 7 GPIO_ACTIVE_HIGH>;
-+};
-+
- &usdhc2 {
- 	pinctrl-names = "default", "state_100mhz", "state_200mhz";
- 	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
-@@ -215,6 +244,12 @@ MX8MM_IOMUXC_SAI2_MCLK_GPIO4_IO27		0x19
- 		>;
- 	};
- 
-+	pinctrl_reg_usb_otg1: usbotg1grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SAI3_RXC_GPIO4_IO29     0x19
-+		>;
-+	};
-+
- 	pinctrl_sai3: sai3grp {
- 		fsl,pins = <
- 			MX8MM_IOMUXC_SAI3_TXFS_SAI3_TX_SYNC     0xd6
+Also it looks like one can easily exploit this to trigger any of your
+BUG_ON()/BUG() statements, thereby crashing while holding the MDIO bus
+lock causing a denial of service attack.
+
+I also see nothing that protects against any user on a system being
+able to use this interface, so the exploits above can be triggered by
+any user. Moreover, this lack of protection means any user on the
+system can use this interface to write to a PHY.
+
+Given that some PHYs today contain firmware, this gives anyone access
+to reprogram the PHY firmware, possibly introducing malicious firmware.
+
+I hope no one is using this module in a production environment.
+
 -- 
-2.32.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
