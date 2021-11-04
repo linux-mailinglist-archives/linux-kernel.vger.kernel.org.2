@@ -2,246 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9DE64451D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 11:59:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA72E4451DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 11:59:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231136AbhKDLCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 07:02:04 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:57140 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229809AbhKDLCC (ORCPT
+        id S231266AbhKDLCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 07:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231171AbhKDLCQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 07:02:02 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0Uv1Xg1-_1636023561;
-Received: from localhost.localdomain(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0Uv1Xg1-_1636023561)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 04 Nov 2021 18:59:22 +0800
-From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
-To:     helgaas@kernel.org
-Cc:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
-        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
-        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
-        bhelgaas@google.com, ying.huang@intel.com,
-        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        xuesong.chen@linux.alibaba.com
-Subject: [PATCH v5 1/4] PCI: MCFG: Consolidate the separate PCI MCFG table entry list
-Date:   Thu,  4 Nov 2021 18:59:14 +0800
-Message-Id: <20211104105914.47526-1-xuesong.chen@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20211104105715.47396-1-xuesong.chen@linux.alibaba.com>
-References: <20211104105715.47396-1-xuesong.chen@linux.alibaba.com>
+        Thu, 4 Nov 2021 07:02:16 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437C7C061203
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 03:59:38 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id bp7so5180264qkb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 03:59:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=yk5XgrdOGaW3p+sZvRRyB5VgAQCpuos1tmstcywTUC4=;
+        b=XX1YBYYHmk1cGhVONndzHMCKWuohW4I4dM1TtuQ9FZOpOuKRiNQ7W8lU0mLOfMXMln
+         tebH6GbKj86VppLGa3M9D3purC3zTa3kl4odzXyqfOMep4hmM3a0qwX/osMUd86fnJex
+         U0DIvfNePhGdPEOvHNjDsXdK5/GWVJUwXUERwJiGXk/2e2mRrXAYzCD3Qpc+LQ/sb0Gb
+         cThFB+zRxr3kmrwkLC58FnNMtAQW3aKy7QMCYwgjlB/2fidVHlkLUMDLdampm91nvXDi
+         09TcE3LMsn5DCPDnkN07mT+vT4KeTjY8hiKaOrekAU9PQlcPpsIzBdCZ4ckpq+SnY5DM
+         w6JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=yk5XgrdOGaW3p+sZvRRyB5VgAQCpuos1tmstcywTUC4=;
+        b=kQFYaZfhTO7ilNTAWjQvY1qe8UruBS1CCVptlMyQnowz9co56pfIdNKET1VAFoFWAX
+         lEhyoVsGgI5TnihgwAewAGhtI7EfAx0YyktAQaGrEpkTWdn+aFABdKwwr5IRJyDYfKwL
+         XIEDZNz5WIENcj+p/RF2YEynGt+pjQiJPhMewN3wafIvJpBSza+gdlO8NCVc8czEhwdM
+         vfOTuarUNMogKrNJCEZ/BSS1dJpa/BvHY4ytGnGhBeaYC276JLQLD3nkwbTLbgHOohZU
+         WPgEpkb02hZThHs/uWzPslOq+ILj1800DPqnte8oT+d8ZL68bi8JKuwtP7ULpo+pkoNt
+         sbrQ==
+X-Gm-Message-State: AOAM532tL4hvX0WZaRtcA8XmO/1UpVH4q/NxGoOh2T3VqjWiXis4p4K4
+        2RpN4A+o2MA2QtLAHOzIRqQNrQ==
+X-Google-Smtp-Source: ABdhPJzhUAIh65nsdBGdq1eovhwrx6kLDOIqjGAzGexR5wn7UKV0JMgWgt2ucF4Fw2LrUUBhtCqJSg==
+X-Received: by 2002:a05:620a:4086:: with SMTP id f6mr40328253qko.220.1636023577438;
+        Thu, 04 Nov 2021 03:59:37 -0700 (PDT)
+Received: from [192.168.1.173] (bras-base-kntaon1617w-grc-33-142-112-185-132.dsl.bell.ca. [142.112.185.132])
+        by smtp.googlemail.com with ESMTPSA id v14sm101547qkp.9.2021.11.04.03.59.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Nov 2021 03:59:36 -0700 (PDT)
+Message-ID: <4e602c87-9764-829c-4763-38f4ac057b7c@mojatatu.com>
+Date:   Thu, 4 Nov 2021 06:59:35 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [RFC PATCH v3 0/3] Introduce BPF map tracing capability
+Content-Language: en-US
+To:     Joe Burton <jevburton.kernel@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Petar Penkov <ppenkov@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Joe Burton <jevburton@google.com>
+References: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
+ <aa6081aa-9741-be05-8051-e01909662ff1@mojatatu.com>
+ <CAN22DihBMX=xTMeTQ2-Z8Fa6r=1ynKshbfhFJJ5Jb=-ww_9hDQ@mail.gmail.com>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+In-Reply-To: <CAN22DihBMX=xTMeTQ2-Z8Fa6r=1ynKshbfhFJJ5Jb=-ww_9hDQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PCI MCFG entry list is redundant on x86 and other arches like ARM64
-in current implementation, this list variable can be consolidated for
-unnecessary duplication and other purposes, for example, we can remove
-some of the arch-specific codes in the APEI/EINJ module and re-implement
-it in a more common arch-agnostic way.
+On 2021-11-03 13:12, Joe Burton wrote:
+> That's a good point. Since the probe is invoked before the update takes
+> place, it would not be possible to account for the possibility that the
+> update failed.
+> 
+> Unless someone wants the `pre update' hook, I'll simply adjust the
+> existing hooks' semantics so that they are invoked after the update.
+> As discussed, this better suits the intended use case.
+>
 
-To reduce the redundancy, it:
-  - Moves the "struct pci_mmcfg_region" definition from
-    arch/x86/include/asm/pci_x86.h to include/linux/pci.h, where it
-    can be shared across arches.
+If the goal is to synchronize state between two maps (if i understood
+correctly the intent) then it is more useful to go post-update.
 
-  - Moves pci_mmcfg_list (a list of pci_mmcfg_region structs) from
-    arch/x86/pci/mmconfig-shared.c to drivers/pci/pci.c, where it can
-    be shared across arches.
-
-  - On x86 (which does not enable CONFIG_ACPI_MCFG), pci_mmcfg_list is
-    built in arch/x86/pci/mmconfig-shared.c as before.
-
-  - Removes the "struct mcfg_entry" from drivers/acpi/pci_mcfg.c.
-
-  - Replaces pci_mcfg_list (previously a list of mcfg_entry structs)
-    in drivers/acpi/pci_mcfg.c with the newly-shared pci_mmcfg_list (a
-    list of pci_mmcfg_region structs).
-
-  - On ARM64 (which does enable CONFIG_ACPI_MCFG), pci_mmcfg_list is
-    built in drivers/acpi/pci_mcfg.c.
-
-Signed-off-by: Xuesong Chen <xuesong.chen@linux.alibaba.com>
----
- arch/x86/include/asm/pci_x86.h | 17 +----------------
- arch/x86/pci/mmconfig-shared.c |  2 --
- drivers/acpi/pci_mcfg.c        | 35 ++++++++++++++---------------------
- drivers/pci/pci.c              |  2 ++
- include/linux/pci.h            | 17 +++++++++++++++++
- 5 files changed, 34 insertions(+), 39 deletions(-)
-
-diff --git a/arch/x86/include/asm/pci_x86.h b/arch/x86/include/asm/pci_x86.h
-index 490411d..1f4257c 100644
---- a/arch/x86/include/asm/pci_x86.h
-+++ b/arch/x86/include/asm/pci_x86.h
-@@ -146,20 +146,7 @@ extern int pci_legacy_init(void);
- extern void pcibios_fixup_irqs(void);
- 
- /* pci-mmconfig.c */
--
--/* "PCI MMCONFIG %04x [bus %02x-%02x]" */
--#define PCI_MMCFG_RESOURCE_NAME_LEN (22 + 4 + 2 + 2)
--
--struct pci_mmcfg_region {
--	struct list_head list;
--	struct resource res;
--	u64 address;
--	char __iomem *virt;
--	u16 segment;
--	u8 start_bus;
--	u8 end_bus;
--	char name[PCI_MMCFG_RESOURCE_NAME_LEN];
--};
-+struct pci_mmcfg_region;
- 
- extern int __init pci_mmcfg_arch_init(void);
- extern void __init pci_mmcfg_arch_free(void);
-@@ -174,8 +161,6 @@ extern struct pci_mmcfg_region *__init pci_mmconfig_add(int segment, int start,
- 
- extern struct list_head pci_mmcfg_list;
- 
--#define PCI_MMCFG_BUS_OFFSET(bus)      ((bus) << 20)
--
- /*
-  * On AMD Fam10h CPUs, all PCI MMIO configuration space accesses must use
-  * %eax.  No other source or target registers may be used.  The following
-diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
-index 758cbfe..0b961fe6 100644
---- a/arch/x86/pci/mmconfig-shared.c
-+++ b/arch/x86/pci/mmconfig-shared.c
-@@ -31,8 +31,6 @@ static bool pci_mmcfg_arch_init_failed;
- static DEFINE_MUTEX(pci_mmcfg_lock);
- #define pci_mmcfg_lock_held() lock_is_held(&(pci_mmcfg_lock).dep_map)
- 
--LIST_HEAD(pci_mmcfg_list);
--
- static void __init pci_mmconfig_remove(struct pci_mmcfg_region *cfg)
- {
- 	if (cfg->res.parent)
-diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
-index 53cab97..6ce467f 100644
---- a/drivers/acpi/pci_mcfg.c
-+++ b/drivers/acpi/pci_mcfg.c
-@@ -13,14 +13,7 @@
- #include <linux/pci-acpi.h>
- #include <linux/pci-ecam.h>
- 
--/* Structure to hold entries from the MCFG table */
--struct mcfg_entry {
--	struct list_head	list;
--	phys_addr_t		addr;
--	u16			segment;
--	u8			bus_start;
--	u8			bus_end;
--};
-+extern struct list_head pci_mmcfg_list;
- 
- #ifdef CONFIG_PCI_QUIRKS
- struct mcfg_fixup {
-@@ -214,16 +207,13 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
- #endif
- }
- 
--/* List to save MCFG entries */
--static LIST_HEAD(pci_mcfg_list);
--
- int pci_mcfg_lookup(struct acpi_pci_root *root, struct resource *cfgres,
- 		    const struct pci_ecam_ops **ecam_ops)
- {
- 	const struct pci_ecam_ops *ops = &pci_generic_ecam_ops;
- 	struct resource *bus_res = &root->secondary;
- 	u16 seg = root->segment;
--	struct mcfg_entry *e;
-+	struct pci_mmcfg_region *e;
- 	struct resource res;
- 
- 	/* Use address from _CBA if present, otherwise lookup MCFG */
-@@ -233,10 +223,10 @@ int pci_mcfg_lookup(struct acpi_pci_root *root, struct resource *cfgres,
- 	/*
- 	 * We expect the range in bus_res in the coverage of MCFG bus range.
- 	 */
--	list_for_each_entry(e, &pci_mcfg_list, list) {
--		if (e->segment == seg && e->bus_start <= bus_res->start &&
--		    e->bus_end >= bus_res->end) {
--			root->mcfg_addr = e->addr;
-+	list_for_each_entry(e, &pci_mmcfg_list, list) {
-+		if (e->segment == seg && e->start_bus <= bus_res->start &&
-+		    e->end_bus >= bus_res->end) {
-+			root->mcfg_addr = e->address;
- 		}
- 
- 	}
-@@ -268,7 +258,7 @@ static __init int pci_mcfg_parse(struct acpi_table_header *header)
- {
- 	struct acpi_table_mcfg *mcfg;
- 	struct acpi_mcfg_allocation *mptr;
--	struct mcfg_entry *e, *arr;
-+	struct pci_mmcfg_region *e, *arr;
- 	int i, n;
- 
- 	if (header->length < sizeof(struct acpi_table_mcfg))
-@@ -285,10 +275,13 @@ static __init int pci_mcfg_parse(struct acpi_table_header *header)
- 
- 	for (i = 0, e = arr; i < n; i++, mptr++, e++) {
- 		e->segment = mptr->pci_segment;
--		e->addr =  mptr->address;
--		e->bus_start = mptr->start_bus_number;
--		e->bus_end = mptr->end_bus_number;
--		list_add(&e->list, &pci_mcfg_list);
-+		e->address =  mptr->address;
-+		e->start_bus = mptr->start_bus_number;
-+		e->end_bus = mptr->end_bus_number;
-+		e->res.start = e->address + PCI_MMCFG_BUS_OFFSET(e->start_bus);
-+		e->res.end = e->address + PCI_MMCFG_BUS_OFFSET(e->end_bus + 1) - 1;
-+		e->res.flags = IORESOURCE_MEM | IORESOURCE_BUSY;
-+		list_add(&e->list, &pci_mmcfg_list);
- 	}
- 
- #ifdef CONFIG_PCI_QUIRKS
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index f2cd111..29ddfdd 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -47,6 +47,8 @@ EXPORT_SYMBOL(isa_dma_bridge_buggy);
- int pci_pci_problems;
- EXPORT_SYMBOL(pci_pci_problems);
- 
-+LIST_HEAD(pci_mmcfg_list);
-+
- unsigned int pci_pm_d3hot_delay;
- 
- static void pci_pme_list_scan(struct work_struct *work);
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index c8afbee..af8dcc8 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -55,6 +55,23 @@
- #define PCI_RESET_PROBE		true
- #define PCI_RESET_DO_RESET	false
- 
-+#define PCI_MMCFG_BUS_OFFSET(bus)      ((bus) << 20)
-+
-+/* "PCI MMCONFIG %04x [bus %02x-%02x]" */
-+#define PCI_MMCFG_RESOURCE_NAME_LEN (22 + 4 + 2 + 2)
-+
-+/* pci mcfg region */
-+struct pci_mmcfg_region {
-+	struct list_head list;
-+	struct resource res;
-+	u64 address;
-+	char __iomem *virt;
-+	u16 segment;
-+	u8 start_bus;
-+	u8 end_bus;
-+	char name[PCI_MMCFG_RESOURCE_NAME_LEN];
-+};
-+
- /*
-  * The PCI interface treats multi-function devices as independent
-  * devices.  The slot/function address of each device is encoded
--- 
-2.9.5
-
+cheers,
+jamal
