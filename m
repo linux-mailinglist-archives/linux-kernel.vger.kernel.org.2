@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374A5444F0D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 014B8444F10
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbhKDGqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
+        id S231447AbhKDGrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:47:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230468AbhKDGpm (ORCPT
+        with ESMTP id S231523AbhKDGpo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:45:42 -0400
+        Thu, 4 Nov 2021 02:45:44 -0400
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D0AC061203
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:42:42 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id b5-20020a25a205000000b005c2150fc181so7468492ybi.6
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 23:42:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAAE3C061234
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:42:44 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id x16-20020a25b910000000b005b6b7f2f91cso7614644ybj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 23:42:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=AF5vHpQI2c2Dq8nnplPMxcjTfbyxpd4dSxsdmi2d+As=;
-        b=cEsZMNPLDp1wTLSl+gdXQ5IU/4Y3Pay1ufBsdvQTCGsFatC1SszW0r7zxksEOaIr1S
-         WzFQwhfEPFJeLy2st3uxYZPBgN/hE/oFl2TEtKCj4TRLM41GhLhx8Ke+K0uSXnoLnZ7y
-         vwRj0h9GYHIy4EVzmEr8hLGg7zisJ76nfnEPErT68UA9p2OBGtqFabb5nM1bvEjBxIZm
-         ltj+LyAGbSdHKa6D8ZxiSHviebOjaxpAfH7vhgugqGLn9ahBc60W6wg2NZRm2Pv+4QKf
-         wUmlu1rOIz/vmHsuUZGpa3cpEkAVQv/LDGZHvHuXIMpnaapapFxkUitKDddWfCsnFiA2
-         OeAw==
+        bh=GKJf8Yw6nAvyH7L7LWtVnPqoYfvwfYxKaTQQ4i15vnw=;
+        b=G38y6tdBeOqfNqLclHL6MJStzEFiBNg203t3YGe7yEATwZ/h8UQndsBxusWTDTDzT/
+         rVpdbXa5xnOF3exP0inMxehyxgoAnWJAGFTbmQC8Hc30Jg9SGCk2gbEqc0hADgQc9Jby
+         1D5Pqr94JLEk22lvIg0b8TInDXiOdTU3sLwz2GAPFtuq6y4N4nmkcykY1ehRwu+I19Bl
+         IYWZvBt4pc39f+ghkPfbbtIFBA52GN2lopwfXSajKFd67a7uf48DZxzqUd2biroqOE+Q
+         2RDPNZcbp0SDTVuNdcZAkY6LrcRxG2w9mvn6MM4FTTK9F9/Cjh7JtKYmvdzoL+b4lZcE
+         ga6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=AF5vHpQI2c2Dq8nnplPMxcjTfbyxpd4dSxsdmi2d+As=;
-        b=broN9McIZA6KexcTew5kR2Tuqyn2zX88S7e6tIlHwfIPd+T873W/ON2qSlFrXD236d
-         twtia5lm/l/Hh12kUdw/Wb/0Blq7beRJlapBwhUMezos84hIjvD1rX3n+SS/ENlCIy96
-         N4TLyJt5vablDHJPogASbQbYkzPk4YfwlSEVUN8G3ZggDzu5baiTkoAjNzAzh9vHCLpl
-         WZQDsdjf3V0Pmd9Z9vq0W4qFBt9RwMb/8pfXZcxuutUxR86vWcplNUOk7e7msCebqK7b
-         +naFcsv+KE4QAR0Nqo8hvugCHZypGYJU4cRz4aC7TPFbF/TcxsDTERn+AsI48qsGhZ9+
-         7yZQ==
-X-Gm-Message-State: AOAM5325TKHNePMHxBPQjuQC/eqPh9heQcJiiWiDnD99jVAiM2yeE0kJ
-        4SaSe2PWL/gzNrcSmbQZv2ck7BKqaMhy
-X-Google-Smtp-Source: ABdhPJxBNmexOoSdVojXdLxzIFWksb1eU19/TUaB8IzrMEREP0kYzjB3YPMn9YKaqHA+9t/nv+sWsrduzsIq
+        bh=GKJf8Yw6nAvyH7L7LWtVnPqoYfvwfYxKaTQQ4i15vnw=;
+        b=QoJiLiTY/PdN4Qpos48Y3wDD94eU8Yj8ovcQGZVFaYgUW2QReUODRlk/QLF0atSIJf
+         mV6uF1zHVFY9QnHXt+EC2rTcrS/ZzfqElMIHQFHGjAo1qdlqnCS/n5LIpzg0C5guAI4A
+         XJ6R9Uym6vYKCyqFVwlON6l2iy0+9RBnqlysgfasIx9j1qfy6fuAOAiGJLvdRoM70OSv
+         v/evtQ34HMJIbrsATucTSxpiAj4S+arprQ0Ssg/Piz6+P1xBMJqE0LuXiVGYdEMF764q
+         YLb6PuFTwpBYC89rIbicRQpIP4knFDK91vLXska12uhPU4tSS2vAqmq4AfFIXpIuw/oK
+         RE1g==
+X-Gm-Message-State: AOAM533PHEiyFny+o/PK6zE2JSyTaU19e+1NHvFmu8yGnhN2KcgeE58Q
+        cWXUebn868HvKCKKoQmlAcC+5yLpOeoo
+X-Google-Smtp-Source: ABdhPJwvxhGUs8qT6o1qXj0hFaxADubdJNS3RcNfw6stMxv0lpgPwWe9znpjjDYLclDuTHnjp/NX48k5FfFX
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:8ce:af84:2510:3f29])
- (user=irogers job=sendgmr) by 2002:a25:4f41:: with SMTP id
- d62mr51612259ybb.13.1636008161746; Wed, 03 Nov 2021 23:42:41 -0700 (PDT)
-Date:   Wed,  3 Nov 2021 23:41:57 -0700
+ (user=irogers job=sendgmr) by 2002:a5b:145:: with SMTP id c5mr51349264ybp.60.1636008164141;
+ Wed, 03 Nov 2021 23:42:44 -0700 (PDT)
+Date:   Wed,  3 Nov 2021 23:41:58 -0700
 In-Reply-To: <20211104064208.3156807-1-irogers@google.com>
-Message-Id: <20211104064208.3156807-12-irogers@google.com>
+Message-Id: <20211104064208.3156807-13-irogers@google.com>
 Mime-Version: 1.0
 References: <20211104064208.3156807-1-irogers@google.com>
 X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v3 11/22] perf test: Convert watch point tests to test cases.
+Subject: [PATCH v3 12/22] perf test: Convert clang tests to test cases.
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -79,191 +79,137 @@ test functions.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/wp.c | 128 ++++++++++--------------------------------
- 1 file changed, 30 insertions(+), 98 deletions(-)
+ tools/perf/tests/clang.c           | 57 +++++++++---------------------
+ tools/perf/util/c++/clang-c.h      |  8 ++---
+ tools/perf/util/c++/clang-test.cpp |  6 ++--
+ 3 files changed, 24 insertions(+), 47 deletions(-)
 
-diff --git a/tools/perf/tests/wp.c b/tools/perf/tests/wp.c
-index 904bdf2dcf81..2c0513257b15 100644
---- a/tools/perf/tests/wp.c
-+++ b/tools/perf/tests/wp.c
-@@ -62,8 +62,12 @@ static int __event(int wp_type, void *wp_addr, unsigned long wp_len)
- 	return fd;
- }
- 
--static int wp_ro_test(void)
-+static int test__wp_ro(struct test_suite *test __maybe_unused,
-+		       int subtest __maybe_unused)
- {
-+#if defined(__s390x__) || defined(__x86_64__) || defined(__i386__)
-+	return TEST_SKIP;
-+#else
- 	int fd;
- 	unsigned long tmp, tmp1 = rand();
- 
-@@ -79,10 +83,15 @@ static int wp_ro_test(void)
- 
- 	close(fd);
- 	return 0;
-+#endif
- }
- 
--static int wp_wo_test(void)
-+static int test__wp_wo(struct test_suite *test __maybe_unused,
-+		       int subtest __maybe_unused)
- {
-+#if defined(__s390x__)
-+	return TEST_SKIP;
-+#else
- 	int fd;
- 	unsigned long tmp, tmp1 = rand();
- 
-@@ -98,10 +107,15 @@ static int wp_wo_test(void)
- 
- 	close(fd);
- 	return 0;
-+#endif
- }
- 
--static int wp_rw_test(void)
-+static int test__wp_rw(struct test_suite *test __maybe_unused,
-+		       int subtest __maybe_unused)
- {
-+#if defined(__s390x__)
-+	return TEST_SKIP;
-+#else
- 	int fd;
- 	unsigned long tmp, tmp1 = rand();
- 
-@@ -118,10 +132,15 @@ static int wp_rw_test(void)
- 
- 	close(fd);
- 	return 0;
-+#endif
- }
- 
--static int wp_modify_test(void)
-+static int test__wp_modify(struct test_suite *test __maybe_unused,
-+			   int subtest __maybe_unused)
- {
-+#if defined(__s390x__)
-+	return TEST_SKIP;
-+#else
- 	int fd, ret;
- 	unsigned long tmp = rand();
- 	struct perf_event_attr new_attr;
-@@ -163,105 +182,18 @@ static int wp_modify_test(void)
- 
- 	close(fd);
- 	return 0;
--}
--
--static bool wp_ro_supported(void)
--{
--#if defined (__x86_64__) || defined (__i386__)
--	return false;
--#else
--	return true;
--#endif
--}
--
--static const char *wp_ro_skip_msg(void)
--{
--#if defined (__x86_64__) || defined (__i386__)
--	return "missing hardware support";
--#else
--	return NULL;
- #endif
- }
+diff --git a/tools/perf/tests/clang.c b/tools/perf/tests/clang.c
+index a499fcf37bf9..ba06a2257574 100644
+--- a/tools/perf/tests/clang.c
++++ b/tools/perf/tests/clang.c
+@@ -3,54 +3,31 @@
+ #include "c++/clang-c.h"
+ #include <linux/kernel.h>
  
 -static struct {
+-	int (*func)(void);
 -	const char *desc;
--	int (*target_func)(void);
--	bool (*is_supported)(void);
--	const char *(*skip_msg)(void);
--} wp_testcase_table[] = {
+-} clang_testcase_table[] = {
+-#ifdef HAVE_LIBCLANGLLVM_SUPPORT
 -	{
--		.desc = "Read Only Watchpoint",
--		.target_func = &wp_ro_test,
--		.is_supported = &wp_ro_supported,
--		.skip_msg = &wp_ro_skip_msg,
+-		.func = test__clang_to_IR,
+-		.desc = "builtin clang compile C source to IR",
 -	},
 -	{
--		.desc = "Write Only Watchpoint",
--		.target_func = &wp_wo_test,
+-		.func = test__clang_to_obj,
+-		.desc = "builtin clang compile C source to ELF object",
 -	},
--	{
--		.desc = "Read / Write Watchpoint",
--		.target_func = &wp_rw_test,
--	},
--	{
--		.desc = "Modify Watchpoint",
--		.target_func = &wp_modify_test,
--	},
-+static struct test_case wp_tests[] = {
-+	TEST_CASE_REASON("Read Only Watchpoint", wp_ro, "missing hardware support"),
-+	TEST_CASE_REASON("Write Only Watchpoint", wp_wo, "missing hardware support"),
-+	TEST_CASE_REASON("Read / Write Watchpoint", wp_rw, "missing hardware support"),
-+	TEST_CASE_REASON("Modify Watchpoint", wp_modify, "missing hardware support"),
-+	{ .name = NULL, }
- };
- 
--static int test__wp_subtest_get_nr(void)
--{
--	return (int)ARRAY_SIZE(wp_testcase_table);
--}
--
--static const char *test__wp_subtest_get_desc(int i)
--{
--	if (i < 0 || i >= (int)ARRAY_SIZE(wp_testcase_table))
--		return NULL;
--	return wp_testcase_table[i].desc;
--}
--
--static const char *test__wp_subtest_skip_reason(int i)
--{
--	if (i < 0 || i >= (int)ARRAY_SIZE(wp_testcase_table))
--		return NULL;
--	if (!wp_testcase_table[i].skip_msg)
--		return NULL;
--	return wp_testcase_table[i].skip_msg();
--}
--
--static int test__wp(struct test_suite *test __maybe_unused, int i)
--{
--	if (i < 0 || i >= (int)ARRAY_SIZE(wp_testcase_table))
--		return TEST_FAIL;
--
--	if (wp_testcase_table[i].is_supported &&
--	    !wp_testcase_table[i].is_supported())
--		return TEST_SKIP;
--
--	return !wp_testcase_table[i].target_func() ? TEST_OK : TEST_FAIL;
--}
--
--/* The s390 so far does not have support for
-- * instruction breakpoint using the perf_event_open() system call.
-- */
--static bool test__wp_is_supported(void)
--{
--#if defined(__s390x__)
--	return false;
--#else
--	return true;
 -#endif
+-};
+-
+-static int test__clang_subtest_get_nr(void)
+-{
+-	return (int)ARRAY_SIZE(clang_testcase_table);
 -}
 -
- struct test_suite suite__wp = {
- 	.desc = "Watchpoint",
--	.func = test__wp,
--	.is_supported = test__wp_is_supported,
+-static const char *test__clang_subtest_get_desc(int i)
+-{
+-	if (i < 0 || i >= (int)ARRAY_SIZE(clang_testcase_table))
+-		return NULL;
+-	return clang_testcase_table[i].desc;
+-}
+-
+ #ifndef HAVE_LIBCLANGLLVM_SUPPORT
+-static int test__clang(struct test_suite *test __maybe_unused, int i __maybe_unused)
++static int test__clang_to_IR(struct test_suite *test __maybe_unused,
++			     int subtest __maybe_unused)
+ {
+ 	return TEST_SKIP;
+ }
+-#else
+-static int test__clang(struct test_suite *test __maybe_unused, int i)
++
++static int test__clang_to_obj(struct test_suite *test __maybe_unused,
++			      int subtest __maybe_unused)
+ {
+-	if (i < 0 || i >= (int)ARRAY_SIZE(clang_testcase_table))
+-		return TEST_FAIL;
+-	return clang_testcase_table[i].func();
++	return TEST_SKIP;
+ }
+ #endif
+ 
++static struct test_case clang_tests[] = {
++	TEST_CASE_REASON("builtin clang compile C source to IR", clang_to_IR,
++			 "not compiled in"),
++	TEST_CASE_REASON("builtin clang compile C source to ELF object",
++			 clang_to_obj,
++			 "not compiled in"),
++	{ .name = NULL, }
++};
++
+ struct test_suite suite__clang = {
+ 	.desc = "builtin clang support",
+-	.func = test__clang,
 -	.subtest = {
--		.skip_if_fail	= false,
--		.get_nr		= test__wp_subtest_get_nr,
--		.get_desc	= test__wp_subtest_get_desc,
--		.skip_reason    = test__wp_subtest_skip_reason,
--	},
-+	.test_cases = wp_tests,
+-		.skip_if_fail	= true,
+-		.get_nr		= test__clang_subtest_get_nr,
+-		.get_desc	= test__clang_subtest_get_desc,
+-	}
++	.test_cases = clang_tests,
++	.subtest = { .skip_if_fail = true, },
  };
+diff --git a/tools/perf/util/c++/clang-c.h b/tools/perf/util/c++/clang-c.h
+index 2df8a45bd088..d3731a876b6c 100644
+--- a/tools/perf/util/c++/clang-c.h
++++ b/tools/perf/util/c++/clang-c.h
+@@ -12,8 +12,9 @@ extern "C" {
+ extern void perf_clang__init(void);
+ extern void perf_clang__cleanup(void);
+ 
+-extern int test__clang_to_IR(void);
+-extern int test__clang_to_obj(void);
++struct test_suite;
++extern int test__clang_to_IR(struct test_suite *test, int subtest);
++extern int test__clang_to_obj(struct test_suite *test, int subtest);
+ 
+ extern int perf_clang__compile_bpf(const char *filename,
+ 				   void **p_obj_buf,
+@@ -26,9 +27,6 @@ extern int perf_clang__compile_bpf(const char *filename,
+ static inline void perf_clang__init(void) { }
+ static inline void perf_clang__cleanup(void) { }
+ 
+-static inline int test__clang_to_IR(void) { return -1; }
+-static inline int test__clang_to_obj(void) { return -1;}
+-
+ static inline int
+ perf_clang__compile_bpf(const char *filename __maybe_unused,
+ 			void **p_obj_buf __maybe_unused,
+diff --git a/tools/perf/util/c++/clang-test.cpp b/tools/perf/util/c++/clang-test.cpp
+index 21b23605f78b..a4683ca53697 100644
+--- a/tools/perf/util/c++/clang-test.cpp
++++ b/tools/perf/util/c++/clang-test.cpp
+@@ -35,7 +35,8 @@ __test__clang_to_IR(void)
+ }
+ 
+ extern "C" {
+-int test__clang_to_IR(void)
++int test__clang_to_IR(struct test_suite *test __maybe_unused,
++                      int subtest __maybe_unused)
+ {
+ 	perf_clang_scope _scope;
+ 
+@@ -48,7 +49,8 @@ int test__clang_to_IR(void)
+ 	return -1;
+ }
+ 
+-int test__clang_to_obj(void)
++int test__clang_to_obj(struct test_suite *test __maybe_unused,
++                       int subtest __maybe_unused)
+ {
+ 	perf_clang_scope _scope;
+ 
 -- 
 2.33.1.1089.g2158813163f-goog
 
