@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85C9444D73
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 04:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4BC444D75
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 04:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbhKDDFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 23:05:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59044 "EHLO
+        id S230108AbhKDDFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 23:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbhKDDFd (ORCPT
+        with ESMTP id S230000AbhKDDFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 23:05:33 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47EF1C061714;
-        Wed,  3 Nov 2021 20:02:56 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id u17so4896804plg.9;
-        Wed, 03 Nov 2021 20:02:56 -0700 (PDT)
+        Wed, 3 Nov 2021 23:05:43 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C43C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 20:03:05 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id q126so213936pgq.13
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 20:03:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8TcziieSeJt2XzZbAoNFqSo9KPYA6B681Bs/Zj9nsrk=;
-        b=GqWwdjaPX9g1LbZMFrN9/ZUb+6tXZyrRrc5BMW2Lz+on6zAAqJomTgqsNC0wVyM8O2
-         Y4J2MZs5v9uCc6IUqIxDYk327HQ2pN3whrwn19UQ1Gs6rB1eTzW5y4X5ZnHOUtQoYDf/
-         eD3hUfLjHZp+0nGKG25leI6XzZEvdIYZ4oPOReFybMKInGL9AwNw8CKsjGNG9BWRZE83
-         Rsj87W5FnI0R1k6aFQLU8BaoZcfjU/1fpaohWQpkaaY+td+7qguy/3xFlBoOmlBr7t4e
-         G9WPPOvusAismJZ6jghViwwsXGif9n+BgJunQsoLRGwKkrm3lA210sL/9iDEr99eJ1sI
-         tkMw==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=3TbuVrqIHgoJItA0iZIsVPVT8KU30Jz3Smu+Nxso5mw=;
+        b=X3Up2YGaJ2EQyVHNyGp+Md+8unbD3tz2EwR8DJc0mDIncnRmdMumaTj17ZZWskrz19
+         uwPnu0WQ1JNIJH8NAmj4CKtrhISKBuyJZRjC82gln8gd7O6qQ9npyAZE97/1MzSoqyM+
+         hN958CQo1eND3gnqpM5S+QwGGZ9DfWjgusVGU+cm9oP6RBAPR+7PNojDZulTfzQEd+a5
+         3XQPmx2goitRYohc45ZKh3H7o4Byf8ofCiEvBDCSZMEe+EQMIYLfEpoGTjsVuAzoCEji
+         PcoKHdU3StS2gvjY5RLSGnXY9L7GUCSAxHGRYSyWxS6GV4xR809MAPSQaJSWgpys/GjV
+         XEsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8TcziieSeJt2XzZbAoNFqSo9KPYA6B681Bs/Zj9nsrk=;
-        b=VQgNh7dYtLrnRQlsGK8a7TqlNOYbOZZUotEZxOfChxAx/i3cR0jSYKRMPEoeYsBsd0
-         rOgFR6tIGOfl9H+jwqYU+DZ5l3qmhWZPOq8FXgoWKk1Piwt8+5981Sv3O2g1hEtfNcLK
-         1ToiyCerp/XWBlwXcoXBYrGQUaTzFdIk4CZKlhKpRowOZ5KrVsO0qLg+yHV0Po1gT3EW
-         Tar5HOyov/Jw1Z/WrxooUGbJzbPygUAJDuvb1NUPScHVu0SIOjjrL6Rvuu+Pf+yB3FBR
-         y5nl5C3i5UYtgvoq9GxuMN6ZCgTLdvN0DCshU+cIU40gejpSsVXpgYMmHOhM0Y8y2f4F
-         aQUg==
-X-Gm-Message-State: AOAM532Coja7v9RpQvdkYcxklLwfYVCQN/K3Stz/510+qrQVG1B7BrwM
-        UCIIcfa1C+gd/GANi2Xj3LYWdYLsvd0=
-X-Google-Smtp-Source: ABdhPJy6Z/KboUdfCUyfnYDryfgHTkZx3YMOYC6uN8AvX7aAJ4jSxhO+Sltxv6NZwElAyrn66kbv5w==
-X-Received: by 2002:a17:902:bf07:b0:138:e32d:9f2e with SMTP id bi7-20020a170902bf0700b00138e32d9f2emr41283567plb.59.1635994975742;
-        Wed, 03 Nov 2021 20:02:55 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id h3sm6259078pjz.43.2021.11.03.20.02.53
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=3TbuVrqIHgoJItA0iZIsVPVT8KU30Jz3Smu+Nxso5mw=;
+        b=ohjXaG0o/zopf83OjIanMiygJV0v/G+qernxfPibmluQDFtHcVWJqTHSZDoKLPgFFk
+         0fbDggFO4b+dOn2/xxVX1nYcf7jqQoP0VrMw8gt9OUOmkCQpWIQpRtp4eGGttvOhhSl8
+         nyk2f2Nv/1Z8LQvA22I6HH0godnu6uaRAq8Z22vcJ7A0Z8iJG/dZltk7lxUWlFzcFnqu
+         dyWsI8s9wiarhqPRIYpgiUZMkij+OTgt6RWS0DaTSjx9F6QTQpoJ8dweaIf5zmkWASKp
+         g5iSK0eb5R30wfYhWjRngC1g0mWKGMVpRwNDqGeg3pEOTJoTCBxmKuMLeVwqkYinKGuE
+         WwzQ==
+X-Gm-Message-State: AOAM533JuRJtUjUPYF+A0KahYOsALfaqRH77zmNTy43cQa4lbAOCvq9u
+        WwMZlY2Q+aiCDZWk56iEDd8=
+X-Google-Smtp-Source: ABdhPJy1HKFE4qWdl7sA91g3enosuIJfnU1FFZH9a5c+8iIl+dTuaSsEcf/W8BQSIezcA3K7Bo09rQ==
+X-Received: by 2002:a63:cf48:: with SMTP id b8mr15940318pgj.434.1635994985308;
+        Wed, 03 Nov 2021 20:03:05 -0700 (PDT)
+Received: from Sauravs-MacBook-Air.local ([59.95.84.218])
+        by smtp.gmail.com with ESMTPSA id z10sm3665213pfh.106.2021.11.03.20.03.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 20:02:54 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: luo.penghao@zte.com.cn
-To:     "David S . Miller" <davem@davemloft.net>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH v2] ipv4: Remove useless assignments
-Date:   Thu,  4 Nov 2021 03:02:22 +0000
-Message-Id: <20211104030222.30580-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Wed, 03 Nov 2021 20:03:05 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 08:32:58 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        saurav.girepunje@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: r8188eu: core: remove unused variable sz
+Message-ID: <YYNNDXtkICWpk6qj@Sauravs-MacBook-Air.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: luo penghao <luo.penghao@zte.com.cn>
+Remove the unused variable sz from function dynamic_chk_wk_hdl.
+This variable is not used on function.
 
-From: luo penghao <luo.penghao@zte.com.cn>
-
-The assigned local variables will not be used next, so this statement
-should be deleted.
-
-The clang_analyzer complains as follows:
-
-net/ipv4/ipconfig.c:1037:2 warning:
-
-Value stored to 'h' is never read
-
-Changes in v2:
-
-Repair sending email box
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
 ---
- net/ipv4/ipconfig.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/staging/r8188eu/core/rtw_cmd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/ipv4/ipconfig.c b/net/ipv4/ipconfig.c
-index 816d8aa..fe2c8e9 100644
---- a/net/ipv4/ipconfig.c
-+++ b/net/ipv4/ipconfig.c
-@@ -1034,7 +1034,6 @@ static int __init ic_bootp_recv(struct sk_buff *skb, struct net_device *dev, str
- 		goto drop;
- 
- 	b = (struct bootp_pkt *)skb_network_header(skb);
--	h = &b->iph;
- 
- 	/* One reply at a time, please. */
- 	spin_lock(&ic_recv_lock);
--- 
-2.15.2
+diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
+index e17332677daa..d456c7e8089d 100644
+--- a/drivers/staging/r8188eu/core/rtw_cmd.c
++++ b/drivers/staging/r8188eu/core/rtw_cmd.c
+@@ -961,7 +961,7 @@ static void traffic_status_watchdog(struct adapter *padapter)
+ 	pmlmepriv->LinkDetectInfo.bHigherBusyTxTraffic = bHigherBusyTxTraffic;
+ }
 
+-static void dynamic_chk_wk_hdl(struct adapter *padapter, u8 *pbuf, int sz)
++static void dynamic_chk_wk_hdl(struct adapter *padapter, u8 *pbuf)
+ {
+ 	struct mlme_priv *pmlmepriv;
+
+@@ -1382,7 +1382,7 @@ u8 rtw_drvextra_cmd_hdl(struct adapter *padapter, unsigned char *pbuf)
+
+ 	switch (pdrvextra_cmd->ec_id) {
+ 	case DYNAMIC_CHK_WK_CID:
+-		dynamic_chk_wk_hdl(padapter, pdrvextra_cmd->pbuf, pdrvextra_cmd->type_size);
++		dynamic_chk_wk_hdl(padapter, pdrvextra_cmd->pbuf);
+ 		break;
+ 	case POWER_SAVING_CTRL_WK_CID:
+ 		rtw_ps_processor(padapter);
+--
+2.33.0
 
