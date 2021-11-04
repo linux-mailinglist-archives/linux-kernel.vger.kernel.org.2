@@ -2,74 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22320445023
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:23:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 414A244502E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhKDIZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:25:52 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:27918 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhKDIZu (ORCPT
+        id S231129AbhKDI1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230404AbhKDI1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:25:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636014189;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=kKp46asF2wvqQnE/1NxxhnpyQPVN1u07p4ONMzC84Bc=;
-    b=Rp+InxvHvMTKiK4+YdGcjLXQkcCIHBhpUcD6DrQBK58OVo02QSvXSJBnTjGNJ9kuIE
-    /UJR+JvREEev4/YINk3OGCHjgagf0ftu44PkoE2VzVnMwBjii0XIpB54oZj+JF6VrWOt
-    CIFzWRynWWjSoq65egETSendpdSE745wRbt1Z4I3UqVHQo3ct7ZSiz2h/x+BCutVvT3Q
-    PppeoSH9m3wNBWc6z1HJJFBzhhbza52oPaIg/d1PWiZgyRjs6LjDmzhIrGSUmOXNRAgA
-    LAl9MnRDD0wh1MD/EyKp1bIotlbssBVMdbZ+Wr1LVdsRDIP7pT67mLvXbxWR7O1QN2Gw
-    27dA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u267FZF9PwpcNKLUrKY7lg=="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.34.1 AUTH)
-    with ESMTPSA id Q0a97bxA48N85au
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Thu, 4 Nov 2021 09:23:08 +0100 (CET)
-Date:   Thu, 4 Nov 2021 09:23:03 +0100
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: qcom_spmi: do no register unused regulators
-Message-ID: <YYOYZ1cEFFJhX2ae@gerhold.net>
-References: <20211104004351.2206578-1-dmitry.baryshkov@linaro.org>
+        Thu, 4 Nov 2021 04:27:09 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2222FC061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 01:24:32 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id d27so7326603wrb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 01:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=edti6PQbrA3HO/fwP6tU3hw7xf9JRnqSTxxIgTQdj3k=;
+        b=fYVZLmUslh+eLwgHPV5xTut4Jv2Uhr8Wwdmhv5cbvnLd1RWxwwmsqYtUomcMXYXbir
+         wij32+YvSu5QpnaZCPYonNOX1C3ULZhZEc7KdFA7mYpSvHcxsa8IlqDWDoyDBPonAI8D
+         AIkbAgDNVftal/ysAg1v5XCT0EYkhVyZV/urQqjqKa1kkxTG2+xVzLHAt+yREner/4+t
+         FOpjM+Qy5zLHmD17qQhqBGb/5+sxHBhVXrxx/tC2kALowYzPLDZi3OYLqDipPmhpedA3
+         Cv6q62SbWnLIEELsczWP8zu8zvs73MCZtry5mg3rX/j0vi14n4Goc0hx22N5Syduyr46
+         JiQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=edti6PQbrA3HO/fwP6tU3hw7xf9JRnqSTxxIgTQdj3k=;
+        b=pYmeoYFEZjJnRYM4fysWToXIfrx8ytW808qhnkY+R6Pv91Mw4kvnUZLQx/gPZmAoO8
+         pU+EMkeKz+ydshgDbzWh+SZuBktiK/57tbZTvHHFzABZe8eTu4HekfyQ2/cr1Vk/Cq1U
+         D24WCerXnTXivs0oDt8lVjexnh8DpD/q4wtzcGByU8Og9rzbEZlo9Dup+vF76LXR7tJe
+         Kn9PzXS6e+rhXdfCF6fdKrCLvoJYLCpW4mlYTqAQ6ll6h3CHCawAd+nVJ0wKWyPu3Q4j
+         Gz2HYMwh/J8dLC2Fd03StPjIxcBIZ+LS8JrORrAh2Zv0dWg7imFreBZZomC7r/aL1sw4
+         WYrA==
+X-Gm-Message-State: AOAM53318QMCxBcWQrAK7joFU1ADG6ymU/LTj0BS5PmQRMDIuCG9qR+X
+        Z8WcLmUMjrmIwskFYo88Wu7sQjQfDyHFWA==
+X-Google-Smtp-Source: ABdhPJx2iW1GS3Vwxz7RWt61oCZh21RABeyYiWwujWfFk4vfKwqHnNW/hwFqoJigjTmWKI1IMeKxuQ==
+X-Received: by 2002:a5d:648e:: with SMTP id o14mr12757706wri.141.1636014270689;
+        Thu, 04 Nov 2021 01:24:30 -0700 (PDT)
+Received: from google.com ([95.148.6.174])
+        by smtp.gmail.com with ESMTPSA id n32sm4105502wms.42.2021.11.04.01.24.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 01:24:30 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 08:24:28 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     Alistair Francis <alistair@alistair23.me>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: simple-mfd-i2c: Fix linker error due to new
+ mfd-core dependency
+Message-ID: <YYOYvDnX7yA932re@google.com>
+References: <20211103190426.1511507-1-tyhicks@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211104004351.2206578-1-dmitry.baryshkov@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211103190426.1511507-1-tyhicks@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 03:43:51AM +0300, Dmitry Baryshkov wrote:
-> Typically SPMI interface to PMIC regulators on Qualcomm platforms is
-> used to supplement RPM interface in cases where direct control is
-> required (e.g. for the APCC or GFX regulators). Registering all possible
-> regulators is thus not required and may be potentially harmfull if
-> somebody tries to setup those directly. Thus register only regulators
-> that are really used in the device tree and ignore all unused
-> regulators.
+On Wed, 03 Nov 2021, Tyler Hicks wrote:
+
+> Select CONFIG_MFD_CORE from CONFIG_MFD_SIMPLE_MFD_I2C, now that
+> simple-mfd-i2c.c calls devm_mfd_add_devices(), to fix the following
+> linker error:
 > 
+>  ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_probe':
+>  simple-mfd-i2c.c:(.text+0x62): undefined reference to `devm_mfd_add_devices'
+>  make: *** [Makefile:1187: vmlinux] Error 1
+> 
+> Fixes: c753ea31781a ("mfd: simple-mfd-i2c: Add support for registering devices via MFD cells")
+> Cc: stable@vger.kernel.org # 5.15.x
+> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> ---
+>  drivers/mfd/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
-Shouldn't the missing regulator constraints already take care of that?
-If you don't setup any voltage etc in the device tree it should
-effectively make the regulator read-only.
+Looks like the same change that has already been applied.
 
-This is useful sometimes, I have used this for debugging before because
-it lets you check the actual voltage applied by RPM (at least on MSM8916).
-The voltage that Linux believes to have set through the RPM driver is
-not necessarily the same that is really set at the end.
+Could you rebase on top of the MFD tree please?
 
-Thanks,
-Stephan
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
