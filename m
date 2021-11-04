@@ -2,125 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D97844545C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 046BC44546F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhKDN7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 09:59:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229505AbhKDN7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 09:59:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C8E060EBD;
-        Thu,  4 Nov 2021 13:57:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636034224;
-        bh=LmRim0t3JU43qMKfrhS3HrTRGgWYpquyItL1o78EZ7Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=I5QDAAVg/RBM1psXeBWNaVB41292EQwLnaZJjzwdUp4K4EU02+2rSfZUyFH0CCnqb
-         0rAG77sB/pLXdYZCtFZAX8KfqdCJLVVXJfkfpZ3Ojooqv8fxADGldBFpT3QAmwdFHN
-         I2sddnAts5Zw1x0Lc8iyDFgpgYZqH6mKc4IIdJn2cU8+pk3ZqJWrCSivX3bQr1j6DI
-         dZr3/sckDrhExp1S/daJPneBZFLhPHlqNTge162qnVkP51KOrh5F9YujznYKYs7KWo
-         rtVWexHgELkd1sTEIELiimOA09V4iTfWicofrAvMIW4G9ZdxTwrVnw15DywC6ivKjv
-         s8fvCxLDC/73g==
-Received: by mail-ed1-f53.google.com with SMTP id c8so5029356ede.13;
-        Thu, 04 Nov 2021 06:57:03 -0700 (PDT)
-X-Gm-Message-State: AOAM530cEYniUZwGNBCugt4j/GYrNpvr0qHVXehcDFx8JSCOvpu0l376
-        8WmtILZ9jGquM+U5Cwyr7uRiP+163NdDVvJ/Tg==
-X-Google-Smtp-Source: ABdhPJzP7zlHbNM1xPserEcnAkr13cJAvN5KhcVsaVPWeHPZmkLf/dh80gNoW9un31YR1oC6H9rgbdD7sjM8VvVlYxs=
-X-Received: by 2002:aa7:dc13:: with SMTP id b19mr54689320edu.145.1636034220156;
- Thu, 04 Nov 2021 06:57:00 -0700 (PDT)
+        id S231253AbhKDOEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 10:04:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230420AbhKDOEh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 10:04:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C3FC061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 07:01:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TcxeMmdf9PMM1bk2EyTfoeHBwMvJzyVyT3rTUBUqfjY=; b=f9B6oJqv03KRyTJYCdPePuVqh8
+        DfHgyDJklMqgPHS9BtUAe+6plFoVMVlW2rJdPNbWSPFSkiPky/qrZmudNiHEjitYUSKYFSwMUFHvA
+        LwGzJyky6L3T9mM+JVCF+gcHZy4IKLhyp6T5IsyfH0yqcjfHUHVxBtgeLLcWYw7n6RJvANZpejNJQ
+        biK+oP8YntFy0sAjsVHzXIy7cGZ8PisYgebbPjx0Mk7sJKGvFRTu8H2+bno/GdRNStNcMLC86R6JL
+        ESCamt9QSJ2mgI/EjZjyRmpZIPQG0+c6qU9gYVkGxLYdGiBbbywN6ppGGunP24d/rfbO1QG57CPtt
+        5HsBoIvw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1midEi-005u4V-RG; Thu, 04 Nov 2021 13:57:18 +0000
+Date:   Thu, 4 Nov 2021 13:57:00 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Chen Wandun <chenwandun@huawei.com>,
+        David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: vmap: avoid -Wsequence-point warning
+Message-ID: <YYPmrAGIBgMq2zQE@casper.infradead.org>
+References: <20211104133549.1150058-1-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20211103062518.25695-1-wanjiabing@vivo.com> <20211103143059.GA683503@bhelgaas>
-In-Reply-To: <20211103143059.GA683503@bhelgaas>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 4 Nov 2021 08:56:48 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqK4zg7+CPj_6_wRYDtgU-dqouXmrQhR7C_YyFeOe0Meww@mail.gmail.com>
-Message-ID: <CAL_JsqK4zg7+CPj_6_wRYDtgU-dqouXmrQhR7C_YyFeOe0Meww@mail.gmail.com>
-Subject: Re: [PATCH] PCI: kirin: Fix of_node_put() issue in pcie-kirin
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Wan Jiabing <wanjiabing@vivo.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        jiabing.wan@qq.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211104133549.1150058-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 9:31 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> [+to Mauro, author of code being changed,
-> Rob for "of_pci_get_devfn()" naming question]
->
-> On Wed, Nov 03, 2021 at 02:25:18AM -0400, Wan Jiabing wrote:
-> > Fix following coccicheck warning:
-> > ./drivers/pci/controller/dwc/pcie-kirin.c:414:2-34: WARNING: Function
-> > for_each_available_child_of_node should have of_node_put() before return.
-> >
-> > Early exits from for_each_available_child_of_node should decrement the
-> > node reference counter. Replace return by goto here.
-> >
-> > Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-kirin.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-> > index 06017e826832..23a2c076ce53 100644
-> > --- a/drivers/pci/controller/dwc/pcie-kirin.c
-> > +++ b/drivers/pci/controller/dwc/pcie-kirin.c
-> > @@ -422,7 +422,8 @@ static int kirin_pcie_parse_port(struct kirin_pcie *pcie,
-> >                       pcie->num_slots++;
-> >                       if (pcie->num_slots > MAX_PCI_SLOTS) {
-> >                               dev_err(dev, "Too many PCI slots!\n");
-> > -                             return -EINVAL;
-> > +                             ret = -EINVAL;
-> > +                             goto put_node;
-> >                       }
-> >
-> >                       ret = of_pci_get_devfn(child);
->
-> This is a change to the code added here:
->   https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/commit/?id=31bd24f0cfe0
->
-> This fix looks right to me; all the other early exits from the inner
-> loop drop the "child" reference.
->
-> But this is a nested loop and the *outer* loop also increments
-> refcounts, and I don't see that outer loop reference on "parent" being
-> dropped at all:
->
->     for_each_available_child_of_node(node, parent) {
->       for_each_available_child_of_node(parent, child) {
->         ...
->         if (error)
->           goto put_node;
->       }
->     }
->
->   put_node:
->     of_node_put(child);
+On Thu, Nov 04, 2021 at 02:35:40PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> gcc warns about potentially undefined behavior in an array index:
+> 
+> mm/vmalloc.c: In function 'vmap_pfn_apply':
+> mm/vmalloc.c:2800:58: error: operation on 'data->idx' may be undefined [-Werror=sequence-point]
+>  2800 |         *pte = pte_mkspecial(pfn_pte(data->pfns[data->idx++], data->prot));
+>       |                                                 ~~~~~~~~~^~
+> arch/arm64/include/asm/pgtable-types.h:25:37: note: in definition of macro '__pte'
+>    25 | #define __pte(x)        ((pte_t) { (x) } )
+>       |                                     ^
+> arch/arm64/include/asm/pgtable.h:80:15: note: in expansion of macro '__phys_to_pte_val'
+>    80 |         __pte(__phys_to_pte_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
+>       |               ^~~~~~~~~~~~~~~~~
+> mm/vmalloc.c:2800:30: note: in expansion of macro 'pfn_pte'
+>  2800 |         *pte = pte_mkspecial(pfn_pte(data->pfns[data->idx++], data->prot));
+>       |                              ^~~~~~~
+> 
+> This only appeared in one randconfig build so far, and I don't know
+> what caused it, but moving the index increment out of the expression
+> at least addresses the warning.
 
-Indeed. There should be a put on the parent.
+Would that randconfig include CONFIG_ARM64_PA_BITS_52?
 
-This whole function is less than ideal as it assumes the board has 2
-levels of PCI nodes. This might be another (like brcmstb thread) place
-to use .add_bus(). But that's a problem for another day.
+#define __phys_to_pte_val(phys) (((phys) | ((phys) >> 36)) & PTE_ADDR_MASK)
 
-> The "of_pci_get_devfn()" immediately after is unrelated, but possibly
-> a confusing name.  "Get" often suggests a reference count being
-> increased, but that's not the case with of_pci_get_devfn().
-
-I guess you have to know that only nodes are refcounted and property
-functions never are.
-
-There's also of_pci_get_max_link_speed() and of_get_pci_domain_nr().
-
-Rob
+because that's going to double-increment idx.  Or single increment.
+Or whatever else the compiler feels like doing.
