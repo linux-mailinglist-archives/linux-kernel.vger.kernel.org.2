@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647B5445B9A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 22:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D31DD445B9D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 22:24:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232040AbhKDVY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 17:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52916 "EHLO
+        id S232143AbhKDV0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 17:26:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbhKDVYZ (ORCPT
+        with ESMTP id S232040AbhKDV0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 17:24:25 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BBAC061714;
-        Thu,  4 Nov 2021 14:21:47 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id s136so6545206pgs.4;
-        Thu, 04 Nov 2021 14:21:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7g8kAQN1VrVCmMU4e673cekVfYf70RsaUBmQfh+Hs0E=;
-        b=gRfwycbFIvdS0XbU7E+cVUXTEMIQdWRU8a6gJeYB58TxyWesuUV5xUobQv+8KIavnT
-         QAWtUH1CTzWDakIMqugoL31FXxl5zVT/wM2XEOPCYLxdP4a6HPuppoGOyOoonVJK4qF5
-         IQCx6N5YflS7k4YJd9qJ8YLs5yyzO1/uh0WMhM3d5751XhHqBGWPAwlfjj3BEW8iEvVA
-         Bxi0eHEyMW1eT6VNWCvwKppRBYkgbhbDYFNP7EYXBA+NsxuTcIqKNwUrULhbZlcACx46
-         SjFYE7w5XPVeYaAxEEoPWn+VSFGgiCyPepeF0Lyqk7w+sag4yLS/gRlhbrypGmpkbzhm
-         ZeIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7g8kAQN1VrVCmMU4e673cekVfYf70RsaUBmQfh+Hs0E=;
-        b=wR9HakzUVS81eCPirYiFDGP8W0CaMqdKY1X98/H0VSpXRq0I/6h+zuCLsEmGPWaGO+
-         UQvCqKLGkl9WEO2fWbISQ5DsMWMcTI4G3wd7uHZMvGSYCKjXq92xcTORLc0c3cps3oa5
-         kSxBepKRZ8+LQnsfJVXJtrO9CUIoUIM2MWD3dIy5ipHSfD+yKQPPSSuu2GnJ0vz05CR7
-         ldhnHOwLM7o2oFTXdmgzmjXGCOlpifsyuyiWIoTkkADqQCxQHRW3Ye0v2+d9M7DdeofU
-         754zf/eQsCBPSjXVByCx1jPetGwaDrik1oujTKnDMjodGYj+fDJPfVmYiY3ejWpwh4P7
-         slsg==
-X-Gm-Message-State: AOAM533CAMGHJaYXrRdxgK/zgqnuYDIgqnT1O/NWf68a57RbcKuf+O/A
-        fcqv9iECSgZxWUtiM7vjPTfn0TwBbZo=
-X-Google-Smtp-Source: ABdhPJyk7e8mZiBFime9fyP5QAhVHJYRB7xH3Gl+LVz1lNXayOCRQgx2obsgIJ1zFWTPGU1K7BBkbg==
-X-Received: by 2002:a62:760a:0:b0:494:6fa0:60a2 with SMTP id r10-20020a62760a000000b004946fa060a2mr4177586pfc.39.1636060905639;
-        Thu, 04 Nov 2021 14:21:45 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id w5sm4480698pgp.79.2021.11.04.14.21.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 14:21:44 -0700 (PDT)
-Subject: Re: [PATCH 5.4 0/9] 5.4.158-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20211104141158.384397574@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <04ceb6b8-dc91-192c-f866-5d561d014a95@gmail.com>
-Date:   Thu, 4 Nov 2021 14:21:43 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 4 Nov 2021 17:26:50 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D31DFC061203
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 14:24:11 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mikDO-0002ig-IR; Thu, 04 Nov 2021 22:24:06 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mikDL-0005n2-VU; Thu, 04 Nov 2021 22:24:03 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mikDL-0000Zg-TO; Thu, 04 Nov 2021 22:24:03 +0100
+Date:   Thu, 4 Nov 2021 22:23:40 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     =?utf-8?B?TWHDrXJh?= Canal <maira.canal@usp.br>
+Cc:     sean@mess.org, mchehab@kernel.org, thierry.reding@gmail.com,
+        lee.jones@linaro.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v3] media: ir-rx51: Switch to atomic PWM API
+Message-ID: <20211104212340.4he7jo65ebh7tkg3@pengutronix.de>
+References: <YYQrano1G7cBDf+v@fedora>
 MIME-Version: 1.0
-In-Reply-To: <20211104141158.384397574@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="putn6n2s35znedxu"
+Content-Disposition: inline
+In-Reply-To: <YYQrano1G7cBDf+v@fedora>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/4/21 7:12 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.158 release.
-> There are 9 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 06 Nov 2021 14:11:51 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.158-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+--putn6n2s35znedxu
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Hello,
+
+On Thu, Nov 04, 2021 at 03:50:18PM -0300, Ma=EDra Canal wrote:
+> Remove legacy PWM interface (pwm_config, pwm_enable, pwm_disable) and
+> replace it for the atomic PWM API.
+>=20
+> Signed-off-by: Ma=EDra Canal <maira.canal@usp.br>
+Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+Thanks for the quick update,
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--putn6n2s35znedxu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGET1gACgkQwfwUeK3K
+7AkjNggAlTz0V2xr6wEX+jM1OgNyVO5kf6ErPj2qohxzps2qG4o+VWGJaOG9CVCB
+eG0SkNwULvsYMX2nTqGiVmjl7Imb0IWWoBWwjLKMhQiwOVxVYj/wYm1UmIWnlrlN
+S6TDerXstA0PwFf+yPWpa961ofDj7A9GO4XkvqkD99N6YVxF/7pi9SUhSYcBKOAu
+HTmfgI4yxIApqRE0LLNPZB9tsMY+Tzn71AjjHlS1Fs3wfg7ESSyzG9ttwkS/BQS1
+S9eiRHID7wl0G0pu/hEHEk/EUzvPCB6PnPDYyO8OZMj9E5CMXR0zYWhu808tUtrA
+/3Z9C8eeGExTebbv3cX6qPS9OU1oNg==
+=bTd9
+-----END PGP SIGNATURE-----
+
+--putn6n2s35znedxu--
