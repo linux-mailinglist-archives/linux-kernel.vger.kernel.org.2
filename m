@@ -2,192 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D6D44594C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E23445953
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234065AbhKDSKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 14:10:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbhKDSKA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 14:10:00 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD9C1C061714;
-        Thu,  4 Nov 2021 11:07:21 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id r4so23659721edi.5;
-        Thu, 04 Nov 2021 11:07:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0oBqiMQfPYMmT40A5DIPYcF4on4Z6w8+xYNJvWPt73g=;
-        b=eeZ2XvjYsAmlKJoAShKpm61374UX1KXky42ers2ZsOYnDO+g0eGlayb66DWtgoS72f
-         Tt/weU/uhv7E5UbNYszJmEqlUkSJ78bWk9CdoS1miD204aK2Zh6CLcBlIP3fI0iUP9o1
-         SBJrWFtAnK6+JlZdpG0482trqMHlyE4FdwWjufahsDb/1vou3AKI9bofRV9NZi96ThI6
-         3q0qmDCUMYuYeuA3His/T3eTs0I6k1JRTpTDcPZfpDX8AxEoe5xZlSDj0mKtzkfbTNAr
-         RgDaKfUkqqb3MwmxNQPuuS7uqSbcGZ7r6+2x7QAijpN4AX/5icSwglyYKPC1In2dQg3l
-         jICw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0oBqiMQfPYMmT40A5DIPYcF4on4Z6w8+xYNJvWPt73g=;
-        b=tNgAzR2/QnyMlTZ+Npex5H7MJvtr+09V+AVBrZ3JXKEIscN75bFHT608CZUV2iw41N
-         ql4KiPxZ0+bu6JzuqfsVSPn9343OjVzMPsUycBhl5pANB/7uqKbU2jCCkVUgn6EGdbu/
-         9Kc5mJlAUDyrjg7q8NSRlLqyK+EZU7tj+rxgc80CRY5DEeIRIp1C2B3UAObgxyfqgMq4
-         I1y6MOzyVez+n7GpeEVRqeAOHJQCPswErhU808D7L/AJ7m8yqBAmMvQwRbN7QFuxob+O
-         uVOBf6vLOKeOewu1VKL9kKFiAcd69g1O/HDoNCQM9HhzwNoUk7UQnHpLVq6kgMyJL+8U
-         IcgQ==
-X-Gm-Message-State: AOAM530/fKnLB4ImZ8p+j3OaiKH7RtW+YXcupJ4vFzzO6NnqXV4x4GZH
-        nc0zaTpKc6hr8l5APbMWZI0ukh3/x5Kuah9paNI=
-X-Google-Smtp-Source: ABdhPJwL5te/AV6rDZ+HrdHQbrH0/Jfel4UqGZ5KJbNZMGRUMlkoThsNHjlm3PefqNni9Etz9NHqYrl3oelK2xRaILM=
-X-Received: by 2002:a17:907:3f83:: with SMTP id hr3mr65570030ejc.555.1636049237843;
- Thu, 04 Nov 2021 11:07:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211101194856.305642-1-shy828301@gmail.com> <YYJacGTst7dceD8K@kroah.com>
- <YYQQIu6Xi/iEEb7f@kroah.com> <CAHbLzkrZKkS92St-AR-jL8HJYXKOm3EjKkbsaBY58LERh3-_qA@mail.gmail.com>
-In-Reply-To: <CAHbLzkrZKkS92St-AR-jL8HJYXKOm3EjKkbsaBY58LERh3-_qA@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 4 Nov 2021 11:07:05 -0700
-Message-ID: <CAHbLzkq6Egjv3=DYXVWC23EQH++an1QN=QtZmz88f1k9-NKODQ@mail.gmail.com>
-Subject: Re: [stable 5.10 PATCH] mm: hwpoison: remove the unnecessary THP check
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Xu <peterx@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable <stable@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        id S234081AbhKDSL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 14:11:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234066AbhKDSL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 14:11:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4961611C3;
+        Thu,  4 Nov 2021 18:09:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636049360;
+        bh=w617Qk52PmRlTRtFspvVbL+RmWBeO4qDAZ7bC45R/y4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HkOMwVCxVCO+XTNjftIZtjvpM1d+5CuFtbXWGDJ40VDer4QBN+vjJhisSkeEuk2Z/
+         QQlqfXEXbdzXgaZ4ysWAMvgki4lRsn1qQ8ZrFMJBHmk+XTgji7nxKfB2R31qGFBAG/
+         qP697JT17zOG1d4p1m2xWHlT5O2GQ4JGG9GWydj08p9qdqfc8/5vcf8OdNwoLkBmCN
+         t2J/TSQVne2YthBJDUf8GBNMGXmAnaaVmgV95fAK5r5PLfS3uT0YqLnKyIcEmYq5RM
+         m/ZMFVRkNbB44pyXhvqTEriKYxdYEmagfDfrl+qWwoes8afgr2EFsctm+6bN73EHvv
+         0uUc+sMAdMsAA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A9976410A1; Thu,  4 Nov 2021 15:09:17 -0300 (-03)
+Date:   Thu, 4 Nov 2021 15:09:17 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: perf build broken looking for bpf/{libbpf,bpf}.h after merge
+ with upstream
+Message-ID: <YYQhzbh1tL5MPgaI@kernel.org>
+References: <YYQadWbtdZ9Ff9N4@kernel.org>
+ <CAEf4Bzaj4_hXDxk18aJvk2bxJ-rPb++DpPVEeUw0pN-tJuiy0Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4Bzaj4_hXDxk18aJvk2bxJ-rPb++DpPVEeUw0pN-tJuiy0Q@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 10:43 AM Yang Shi <shy828301@gmail.com> wrote:
->
-> On Thu, Nov 4, 2021 at 9:53 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+Em Thu, Nov 04, 2021 at 10:47:12AM -0700, Andrii Nakryiko escreveu:
+> On Thu, Nov 4, 2021 at 10:38 AM Arnaldo Carvalho de Melo
+> <arnaldo.melo@gmail.com> wrote:
 > >
-> > On Wed, Nov 03, 2021 at 10:46:24AM +0100, Greg KH wrote:
-> > > On Mon, Nov 01, 2021 at 12:48:56PM -0700, Yang Shi wrote:
-> > > > commit c7cb42e94473aafe553c0f2a3d8ca904599399ed upstream.
-> > > >
-> > > > When handling THP hwpoison checked if the THP is in allocation or free
-> > > > stage since hwpoison may mistreat it as hugetlb page.  After commit
-> > > > 415c64c1453a ("mm/memory-failure: split thp earlier in memory error
-> > > > handling") the problem has been fixed, so this check is no longer
-> > > > needed.  Remove it.  The side effect of the removal is hwpoison may
-> > > > report unsplit THP instead of unknown error for shmem THP.  It seems not
-> > > > like a big deal.
-> > > >
-> > > > The following patch "mm: filemap: check if THP has hwpoisoned subpage
-> > > > for PMD page fault" depends on this, which fixes shmem THP with
-> > > > hwpoisoned subpage(s) are mapped PMD wrongly.  So this patch needs to be
-> > > > backported to -stable as well.
-> > > >
-> > > > Link: https://lkml.kernel.org/r/20211020210755.23964-2-shy828301@gmail.com
-> > > > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > > > Suggested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> > > > Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> > > > Cc: Hugh Dickins <hughd@google.com>
-> > > > Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > > > Cc: Matthew Wilcox <willy@infradead.org>
-> > > > Cc: Oscar Salvador <osalvador@suse.de>
-> > > > Cc: Peter Xu <peterx@redhat.com>
-> > > > Cc: <stable@vger.kernel.org>
-> > > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> > > > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > > > ---
-> > > > mm-filemap-check-if-thp-has-hwpoisoned-subpage-for-pmd-page-fault.patch
-> > > > depends on this one.
-> > >
-> > > Both now queued up, thanks.
 > >
-> > This breaks the build, see:
-> >         https://lore.kernel.org/r/acabc414-164b-cd65-6a1a-cf912d8621d7@roeck-us.net
+> > Hi Song,
 > >
-> > so I'm going to drop both of these now.  Please fix this up and resend a
-> > tested series.
->
-> Thanks for catching this. It is because I accidentally left the
-> PAGEFLAG_* macros into CONFIG_TRANSHUGE_PAGE section, so it is:
->
-> #ifdef CONFIG_TRANSHUGE_PAGE
-> ...
-> #if defined(CONFIG_MEMORY_FAILURE) && defined(CONFIG_TRANSHUGE_PAGE)
-> PAGEFLAG_xxx
-> #else
-> PAGEFLAG_FALSE_xxx
-> #endif
-> ...
-> #endif
->
-> So when THP is disabled the PAGEFLAG_FALSE_xxx macro is actually absent.
->
-> The upstream has the same issue, will send a patch to fix it soon, and
-> send fixes (folded the new fix in) to -stable later. Sorry for the
-> inconvenience.
+> 
+> cc Quentin as well, might be related to recent Makefiles revamp for
+> users of libbpf. But in bpf-next perf builds perfectly fine, so not
+> sure.
 
-Further looking shows the upstream is good. I did *NOT* add the code
-in CONFIG_TRANSHUGE_PAGE section. It seems the code section was moved
-around when the patch was applied to 5.10.
+This did the trick:
 
-Could you please fold the below patch into
-mm-filemap-check-if-thp-has-hwpoisoned-subpage-for-pmd-page-fault.patch?
-Or I could prepare a patch for you.
+⬢[acme@toolbox perf]$ git show
+commit 504afe6757ec646539ca3b4aa0431820e8c92b45 (HEAD -> perf/core)
+Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+Date:   Thu Nov 4 14:58:56 2021 -0300
 
- diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index 0db6d83f70c3..1e33ba465195 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -676,20 +676,6 @@ static inline int PageTransCompoundMap(struct page *page)
-         atomic_read(compound_mapcount_ptr(head));
- }
+    Revert "bpftool: Remove Makefile dep. on $(LIBBPF) for $(LIBBPF_INTERNAL_HDRS)"
 
--#if defined(CONFIG_MEMORY_FAILURE) && defined(CONFIG_TRANSPARENT_HUGEPAGE)
--/*
-- * PageHasHWPoisoned indicates that at least one subpage is hwpoisoned in the
-- * compound page.
-- *
-- * This flag is set by hwpoison handler.  Cleared by THP split or free page.
-- */
--PAGEFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
-- TESTSCFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
--#else
--PAGEFLAG_FALSE(HasHWPoisoned)
-- TESTSCFLAG_FALSE(HasHWPoisoned)
--#endif
--
- /*
-  * PageTransTail returns true for both transparent huge pages
-  * and hugetlbfs pages, so it should only be called when it's known
-@@ -724,6 +710,20 @@ PAGEFLAG_FALSE(DoubleMap)
-  TESTSCFLAG_FALSE(DoubleMap)
- #endif
+    This reverts commit 8b6c46241c774c83998092a4eafe40f054568881.
 
-+#if defined(CONFIG_MEMORY_FAILURE) && defined(CONFIG_TRANSPARENT_HUGEPAGE)
-+/*
-+ * PageHasHWPoisoned indicates that at least one subpage is hwpoisoned in the
-+ * compound page.
-+ *
-+ * This flag is set by hwpoison handler.  Cleared by THP split or free page.
-+ */
-+PAGEFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
-+ TESTSCFLAG(HasHWPoisoned, has_hwpoisoned, PF_SECOND)
-+#else
-+PAGEFLAG_FALSE(HasHWPoisoned)
-+ TESTSCFLAG_FALSE(HasHWPoisoned)
-+#endif
-+
- /*
-  * For pages that are never mapped to userspace (and aren't PageSlab),
-  * page_type may be used.  Because it is initialised to -1, we invert the
+    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
->
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index c0c30e56988f2cbe..c5ad996ee95d4e87 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -39,14 +39,14 @@ ifeq ($(BPFTOOL_VERSION),)
+ BPFTOOL_VERSION := $(shell make -rR --no-print-directory -sC ../../.. kernelversion)
+ endif
+
+-$(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBBPF_HDRS_DIR):
++$(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT):
+        $(QUIET_MKDIR)mkdir -p $@
+
+ $(LIBBPF): $(wildcard $(BPF_DIR)/*.[ch] $(BPF_DIR)/Makefile) | $(LIBBPF_OUTPUT)
+        $(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_OUTPUT) \
+                DESTDIR=$(LIBBPF_DESTDIR) prefix= $(LIBBPF) install_headers
+
+-$(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_HDRS_DIR)
++$(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h $(LIBBPF)
+        $(call QUIET_INSTALL, $@)
+        $(Q)install -m 644 -t $(LIBBPF_HDRS_DIR) $<
+
+⬢[acme@toolbox perf]$
+ 
+> >         I just did a merge with upstream and I'm getting this:
 > >
-> > thanks,
+> >   LINK    /tmp/build/perf/plugins/plugin_scsi.so
+> >   INSTALL trace_plugins
 > >
-> > greg k-h
+> > Auto-detecting system features:
+> > ...                        libbfd: [ on  ]
+> > ...        disassembler-four-args: [ on  ]
+> > ...                          zlib: [ on  ]
+> > ...                        libcap: [ on  ]
+> > ...               clang-bpf-co-re: [ on  ]
+> >
+> >
+> >   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//libbpf//include/bpf
+> >   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/
+> >   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/
+> >   INSTALL /tmp/build/perf/util/bpf_skel/.tmp//libbpf//include/bpf/hashmap.h
+> >   INSTALL /tmp/build/perf/util/bpf_skel/.tmp//libbpf//include/bpf/nlattr.h
+> >   GEN     /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/bpf_helper_defs.h
+> >   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
+> >   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
+> >   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
+> >   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
+> >   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
+> >   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
+> >   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
+> >   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/libbpf.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/libbpf_probes.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/xsk.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/bpf.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/nlattr.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/btf.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/libbpf_errno.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/hashmap.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/str_error.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/netlink.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/btf_dump.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/bpf_prog_linfo.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/ringbuf.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/strset.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/linker.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/gen_loader.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/relo_core.o
+> >   LD      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/libbpf-in.o
+> >   LINK    /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/libbpf.a
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/main.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/common.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/gen.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/json_writer.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/btf.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/xlated_dumper.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/btf_dumper.o
+> >   CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/disasm.o
+> > gen.c:15:10: fatal error: bpf/bpf.h: No such file or directory
+> >    15 | #include <bpf/bpf.h>
+> >       |          ^~~~~~~~~~~
+> > compilation terminated.
+> > make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/gen.o] Error 1
+> > make[3]: *** Waiting for unfinished jobs....
+> > xlated_dumper.c:10:10: fatal error: bpf/libbpf.h: No such file or directory
+> >    10 | #include <bpf/libbpf.h>
+> >       |          ^~~~~~~~~~~~~~
+> > compilation terminated.
+> > btf.c:15:10: fatal error: bpf/bpf.h: No such file or directory
+> >    15 | #include <bpf/bpf.h>
+> >       |          ^~~~~~~~~~~
+> > compilation terminated.
+> > make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/xlated_dumper.o] Error 1
+> > make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/btf.o] Error 1
+> > main.c:12:10: fatal error: bpf/bpf.h: No such file or directory
+> >    12 | #include <bpf/bpf.h>
+> >       |          ^~~~~~~~~~~
+> > compilation terminated.
+> > make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/main.o] Error 1
+> > btf_dumper.c:12:10: fatal error: bpf/btf.h: No such file or directory
+> >    12 | #include <bpf/btf.h>
+> >       |          ^~~~~~~~~~~
+> > compilation terminated.
+> > make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/btf_dumper.o] Error 1
+> > common.c:24:10: fatal error: bpf/bpf.h: No such file or directory
+> >    24 | #include <bpf/bpf.h>
+> >       |          ^~~~~~~~~~~
+> > compilation terminated.
+> > make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/common.o] Error 1
+> > make[2]: *** [Makefile.perf:1048: /tmp/build/perf/util/bpf_skel/.tmp/bootstrap/bpftool] Error 2
+> > make[1]: *** [Makefile.perf:240: sub-make] Error 2
+> > make: *** [Makefile:113: install-bin] Error 2
+> > make: Leaving directory '/var/home/acme/git/perf/tools/perf'
+> >
+> >  Performance counter stats for 'make -k BUILD_BPF_SKEL=1 CORESIGHT=1 PYTHON=python3 O=/tmp/build/perf -C tools/perf install-bin':
+> >
+> >           6,965.78 msec task-clock:u              #    1.492 CPUs utilized
+> >           6,937.93 msec cpu-clock:u               #    1.486 CPUs utilized
+> >
+> >        4.669198336 seconds time elapsed
+> >
+> >        4.015978000 seconds user
+> >        3.202660000 seconds sys
+> >
+> >
+> > 70: Event expansion for cgroups                                     : Ok
+> > 88: perf all metricgroups test                                      : FAILED!
+> > ⬢[acme@toolbox perf]$ find tools/ -name bpf.h
+> > tools/include/uapi/linux/bpf.h
+> > tools/lib/bpf/bpf.h
+> > tools/perf/include/bpf/bpf.h
+> > ⬢[acme@toolbox perf]$ find tools/ -name libbpf.h
+> > tools/lib/bpf/libbpf.h
+> > ⬢[acme@toolbox perf]$ find tools/perf/ -name gen.c
+> > ⬢[acme@toolbox perf]$
+> >
+> > Before the merge, with pristine sources I wasn't getting this,
+> > investigating now.
+> >
+> > ⬢[acme@toolbox perf]$ git show HEAD
+> > commit e1498f18537a1639963370a4635c6fb99e7d672b (HEAD -> perf/core)
+> > Merge: 32f7aa2731b24ad8 abfecb39092029c4
+> > Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > Date:   Thu Nov 4 14:32:11 2021 -0300
+> >
+> >     Merge remote-tracking branch 'torvalds/master' into perf/core
+> >
+> >     To pick up some tools/perf/ patches that went via tip/perf/core, such
+> >     as:
+> >
+> >       tools/perf: Add mem_hops field in perf_mem_data_src structure
+> >
+> >     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> >
+> > ⬢[acme@toolbox perf]$
+> >
+> > ⬢[acme@toolbox perf]$ git log --oneline -10 torvalds/master
+> > abfecb39092029c4 (torvalds/master) Merge tag 'tty-5.16-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty
+> > 95faf6ba654dd334 Merge tag 'driver-core-5.16-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core
+> > 5c904c66ed4e86c3 Merge tag 'char-misc-5.16-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc
+> > 5cd4dc44b8a0f656 Merge tag 'staging-5.16-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging
+> > 048ff8629e117d84 Merge tag 'usb-5.16-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb
+> > 7ddb58cb0ecae8e8 Merge tag 'clk-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/clk/linux
+> > ce840177930f591a Merge tag 'defconfig-5.16' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
+> > d461e96cd22b5aeb Merge tag 'drivers-5.16' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
+> > ae45d84fc36d01dc Merge tag 'dt-5.16' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
+> > 2219b0ceefe835b9 Merge tag 'soc-5.16' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
+> > ⬢[acme@toolbox perf]$
+> >
+> > - Arnaldo
+
+-- 
+
+- Arnaldo
