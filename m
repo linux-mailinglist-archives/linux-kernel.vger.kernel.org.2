@@ -2,124 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A01744584C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6891445852
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231993AbhKDRad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:30:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231709AbhKDRab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:30:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E67B961058;
-        Thu,  4 Nov 2021 17:27:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636046873;
-        bh=+05o/sEV+lAerK5i0XMWSi8zPzYOQpDfBy38xWvfnHI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UDmkZIwPkCgCUGQewQ40yC8kRN6D1V378iVmzuasT5rHGF/0L11gXqhlOMVOgT0Hf
-         jMOTqkkEDbkjaeaJ2N0d+14vatF3l8fWQtIWzNLWfxTMZYBM8AuAN1sdLSrDhZ9Ojh
-         RjfsZqA9IlDH8m67SQTaFZRBhnrXsDYYuAGv0tZqUMXvbNd44nM3G9IDtzinjUlIxy
-         eqLLrQDoqECcioQwMxbisohw685SdUB/qzdlHZTo1JydZv8m5Lh04Z8LuaLLVy5AK2
-         RBsumDDaHZKcrPolztUdBQveG+juBJHQHNhAFRikqow6q+igXbt/m9Lh5O4sGwguqG
-         S0Q8E5WUfLlxw==
-Date:   Thu, 4 Nov 2021 17:27:46 +0000
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
-        Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: Re: [PATCH v15 04/13] PCI: kirin: Add support for bridge slot DT
- schema
-Message-ID: <20211104172746.4cacf498@sal.lan>
-In-Reply-To: <CAL_Jsq+qyf=2dSgaVKGPccNGNYXbeyKMDC_yB=G8wg0_4_06Gw@mail.gmail.com>
-References: <bb391a0e0f0863b66e645048315fab1a4f63f277.1634812676.git.mchehab+huawei@kernel.org>
-        <20211102160612.GA612467@bhelgaas>
-        <20211102174415.58cd3d4f@sal.lan>
-        <CAL_Jsq+qyf=2dSgaVKGPccNGNYXbeyKMDC_yB=G8wg0_4_06Gw@mail.gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S232297AbhKDRb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231709AbhKDRbZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 13:31:25 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00287C061714;
+        Thu,  4 Nov 2021 10:28:46 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id g19so500473pfb.8;
+        Thu, 04 Nov 2021 10:28:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lAJP4BDcTPzY4qV1KLF604/5VVqlDPwRKJmv/Gn0qso=;
+        b=ef425mHoit6IKvhYTeqn/9uwRdFschSDwcHYppC/x/+ozF2me01Aru6LGpySNHs3/w
+         ZMazxLEDs7tOwk0SSG0Fya1Rqlb/YZ4qS6lViN7lHWdwN9KPLOIRDvaf1KOu7mDhfalR
+         ookWr5K8zoZ0pUmR9oiqza/mY7aDuNUr7i31Jj43ttErUKyQp9GhnfHHiMn/aAVIt493
+         nrcz9YTaVXnVdysCZ/qNOyukCDn6dCZzAeY48v2ECbm/4ao8BWQsKijIoazy3xqlgdSC
+         1WMN9rOwvv4xdp++DOE1WWmTN8DLxckmvVp2MrgLyB2ossN3kZUYUn5xTAvYhGQ+BGPG
+         h3YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lAJP4BDcTPzY4qV1KLF604/5VVqlDPwRKJmv/Gn0qso=;
+        b=r5L0kcfIKnAZlQ985XjbXaUJPRzx/5epnRjshvXxMvAMEDjvWPiL//Y2KJY2GjA9k1
+         GbBGvDjwiSsjmdZNot4XThPlrPLTnCTRxH9AxW8xGUHQn3eAXIVl8+CkTjaC+fR2Bz2n
+         nt2+G7AG4dX8O1nz5SQzSwQnKxrvvtmkr09xOVs70J9Fejuansn6Q5HUmNsLSnDEOiD+
+         jiZafg0x4Tx8dpf9DNDJ16knmEVwlA2wv9EcFVkez3Ao7TULZhVledZEkjnqMi4YCTFG
+         g0bvNc40/Jc4KwIuDMGvoaRe3RAfneqB9nS5y8aZwPxHZ3zDGgnAuJicMF8KpBT+oknE
+         91Kg==
+X-Gm-Message-State: AOAM5321NhRYKUfU6f3wlJ4ymAptHEwKkPES66F4zKTz6v23FufICRgr
+        IwT8qpN8avrtXXAH8OwzLVhljUrX43s=
+X-Google-Smtp-Source: ABdhPJwKUWi9rgQB00MTTR+60zoRULqYeGG82rxMm345P7hA1naAtrVB3QzV34/p/YMJgumBvAunxg==
+X-Received: by 2002:a65:62c4:: with SMTP id m4mr40480126pgv.453.1636046926464;
+        Thu, 04 Nov 2021 10:28:46 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id n126sm5428003pfn.6.2021.11.04.10.28.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 10:28:45 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 10:28:43 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Martin Kaistra <martin.kaistra@linutronix.de>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 4/7] net: dsa: b53: Add PHC clock support
+Message-ID: <20211104172843.GA32548@hoboy.vegasvil.org>
+References: <20211104133204.19757-1-martin.kaistra@linutronix.de>
+ <20211104133204.19757-5-martin.kaistra@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211104133204.19757-5-martin.kaistra@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 4 Nov 2021 10:36:52 -0500
-Rob Herring <robh@kernel.org> escreveu:
+On Thu, Nov 04, 2021 at 02:31:58PM +0100, Martin Kaistra wrote:
 
-> On Tue, Nov 2, 2021 at 12:44 PM Mauro Carvalho Chehab
-> <mchehab+huawei@kernel.org> wrote:
-> >
-> > Hi Bjorn,
-> >
-> > Em Tue, 2 Nov 2021 11:06:12 -0500
-> > Bjorn Helgaas <helgaas@kernel.org> escreveu:
-> >  
-> > > > +
-> > > > +   /* Per-slot clkreq */
-> > > > +   int             n_gpio_clkreq;
-> > > > +   int             gpio_id_clkreq[MAX_PCI_SLOTS];
-> > > > +   const char      *clkreq_names[MAX_PCI_SLOTS];  
-> > >
-> > > I think there's been previous discussion about this, but I didn't
-> > > follow it, so I'm just double-checking that this is what we want here.
-> > >
-> > > IIUC, this (MAX_PCI_SLOTS, "hisilicon,clken-gpios") applies to an
-> > > external PEX 8606 bridge, which seems a little strange to be
-> > > hard-coded into the kirin driver this way.
-> > >
-> > > I see that "hisilicon,clken-gpios" is optional, but what if some
-> > > platform connects all 6 lanes?  What if there's a different bridge
-> > > altogether?  
-> 
-> Keep in mind this is HiKey. There's never been a 2nd board upstream
-> for the SoCs, the boards have a short lifespan in terms of both
-> support and availability. And yet Hikey manages to do multiple
-> complicated things on the board design. I have a hard time caring...
-> 
-> > >
-> > > I'll assume this is actually the way we want thing unless I hear
-> > > otherwise.  
-> >
-> > Yes, there was past discussions about that with Rob, with regards
-> > to how the DT would represent it, which got reflected at the code.  
-> 
-> At first I thought these were CLKREQ connections which absolutely
-> should be per port/bridge like PERST, but they are not. They are
-> simply enables for the refclk's and pretty specific to HiKey.
-> 
-> > At the end, it was decided to just add a single property inside PCIe:
-> >
-> >
-> >                 pcie@f4000000 {
-> >                         compatible = "hisilicon,kirin970-pcie";
-> > ...
-> >                         hisilicon,clken-gpios = <&gpio27 3 0>, <&gpio17 0 0>,
-> >                                                 <&gpio20 6 0>;
-> >
-> > I don't think this is a problem, as, if some day another bridge would
-> > need a larger number of slots, it is just a matter of changing the
-> > number at the MAX_PCI_SLOTS, as this controls only the size of the array
-> > (and the check for array overflow when parsing the properties).  
-> 
-> It is a problem that your host bridge driver has hardcoded board
-> specifics. That's not the first time you've heard that from me. But
-> given the board-to-soc ratio of Hikey is 1:1, I don't care that much.
+> +static void b53_ptp_overflow_check(struct work_struct *work)
+> +{
+> +	struct delayed_work *dw = to_delayed_work(work);
+> +	struct b53_device *dev =
+> +		container_of(dw, struct b53_device, overflow_work);
+> +
+> +	mutex_lock(&dev->ptp_mutex);
+> +	timecounter_read(&dev->tc);
+> +	mutex_unlock(&dev->ptp_mutex);
+> +
+> +	schedule_delayed_work(&dev->overflow_work, B53_PTP_OVERFLOW_PERIOD);
+> +}
+> +
+> +int b53_ptp_init(struct b53_device *dev)
+> +{
+> +	mutex_init(&dev->ptp_mutex);
+> +
+> +	INIT_DELAYED_WORK(&dev->overflow_work, b53_ptp_overflow_check);
 
-Ok, understood. Yeah, it sounds unlikely that we would get more boards
-for Kirin 960/970 with PCI support, as this SoC is used for mobile phones,
-where neither USB nor PCI bridges are needed. 
+...
 
-So, AFAIKT, the only the only publicly-available boards that will be
-using this driver are HiKey 960 and HiKey 970.
+> @@ -97,4 +101,14 @@ struct b53_device {
+>  	bool vlan_enabled;
+>  	unsigned int num_ports;
+>  	struct b53_port *ports;
+> +
+> +	/* PTP */
+> +	bool broadsync_hd;
+> +	struct ptp_clock *ptp_clock;
+> +	struct ptp_clock_info ptp_clock_info;
+> +	struct cyclecounter cc;
+> +	struct timecounter tc;
+> +	struct mutex ptp_mutex;
+> +#define B53_PTP_OVERFLOW_PERIOD (HZ / 2)
+> +	struct delayed_work overflow_work;
 
-Regards,
-Mauro
+Instead of generic work, consider implementing
+ptp_clock_info::do_aux_work instead.
+
+The advantage is that you get a named kernel thread that can be given
+scheduling priority administratively.
+
+Thanks,
+Richard
