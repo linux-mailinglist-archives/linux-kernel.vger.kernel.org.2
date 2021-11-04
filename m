@@ -2,209 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D92445C9E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 00:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 461DA445CA4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 00:30:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhKDX0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 19:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51736 "EHLO
+        id S231830AbhKDXcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 19:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhKDX0C (ORCPT
+        with ESMTP id S231756AbhKDXcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 19:26:02 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA66C061714;
-        Thu,  4 Nov 2021 16:23:24 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id t127so18276647ybf.13;
-        Thu, 04 Nov 2021 16:23:24 -0700 (PDT)
+        Thu, 4 Nov 2021 19:32:39 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74B2C061203
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 16:30:00 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id d12so11622675lfv.6
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 16:30:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=w1ny6v8Ff+jiCmOKwd3n0gTTmMzBCgLS1MQy6CI2ZKk=;
-        b=Bt0kp4bGZyajR+SKx68pxZuow9kPqmiCx4ilXzCs5N6pocvL/MJiXl8ISFhXzE/ieL
-         bc8oT9Dtza3r+2OpRG0ZAkqy16Y8Dz1ROdWRlGGVphGZMpI9VokCZCmXLl+X6UZaTuGh
-         2BxSir2SGSnOG2hKll6jUZ6kYUuk1qR3O3PwRFYkDPaQTai3QFlgS/gTSXqFSJHLgij6
-         tLHxygOSF0ihG6yUVmsneKRVp+V+Ge2RYZ7z22MyZfewmE31hvy+92lD9hQg8L7RDW3f
-         0ab6LhSNPXl5dsL4/aOamsNUcLW8NzxeZjktrM/UIURJ82oeNMEu4odtOxgzeUA2VvSL
-         FsEA==
+        bh=fwKpNt7ymTVCYOYWKlB8RE2BRmpgEI+Zd0SnTr489iM=;
+        b=aeCLODg8lQVcApwUPT8C1pmcAbVwwb/el05kFi7evy79R6sHu2k++aDajKhhITDEFC
+         KuzahGktT5SEBgkJK9HRi2MNjfOSNVqv/SkTA47KIiA1RFmxhpnNRVTBCMuHNEsexeaf
+         NkRwDEBBgXLJ4BImz+E96ODpQL7Iy2+03Ewh7mD9bFQJpUG9O1++zDAmHb3Qi9JAwc1x
+         OkHsY/E+k8cO2L9acTaKJ1IyIhZguoYv+oorD+66/CLSQl+buh53vFV5tItoavsh1JY1
+         qqqpbOjrsNfOfip8THdpy+ZPLnFwWa5uV/hyxt+P6KYV+8+CsWMGRGpJx8rnG51z7RK0
+         ebFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=w1ny6v8Ff+jiCmOKwd3n0gTTmMzBCgLS1MQy6CI2ZKk=;
-        b=fNp8nRx8tskk8JYIgPgGEHwLySD52ORY78lXVn4ft9ITK6AGFHPfhrKUrrjOC5c/07
-         53KNy96ShFQgvUl7CIGRU2hatuiKaHopYhQl6GWHj2h/ZC6wonwn9ER0W7ZXw1GyoxRW
-         otIbqYxIQRhXjLi9tNF/qWH2JbbLhQIJhw5aRpc60Z1BeN4SA1NxAWbXs80qCCq92V+m
-         GDuQ8TQImURsTivOLXOLgFCP41vYtNDV5Gpv+lsRFEJSMbih7ZtwAg0PhTSXgCcOhtFE
-         hdsyyD2aoRbgoZDnDClwf8Kq+h53Fyd3ZoTpy++htIN5lqVdTJYowvTGIcQ+Vprvevt2
-         tyCA==
-X-Gm-Message-State: AOAM530WkWpQ4rK7OMKUvqis0EWGQdMHOhaF5tIsNQFI25ly0nXpN643
-        YQ/UL1sTrgvyLCyQM0/LwCuBzdAjHNHxLoepHP8=
-X-Google-Smtp-Source: ABdhPJx9lEiJykh9uI1934RoVEkE2eq4IQg8O7IREyA47sZVHk3P49V2CN2HHUnWjt8dKzEeSO27psDJEIn2ig5Cq/Q=
-X-Received: by 2002:a25:d187:: with SMTP id i129mr47046676ybg.2.1636068203465;
- Thu, 04 Nov 2021 16:23:23 -0700 (PDT)
+        bh=fwKpNt7ymTVCYOYWKlB8RE2BRmpgEI+Zd0SnTr489iM=;
+        b=wM7gCkj64QiWIHg58oAJvHoIWLfs1LbRDn1m34pmK1YrqcvvV6kUPHSFwSFxHLvysG
+         p79dC3PFJmEZ5N+kIUuZ+7Yp/K2GehJKX4wXq3o5wcNEHfwes8biQL3qj/WjyxIhnGny
+         JgKGIdFToirA0kAjOkF/1UOoxWqsTlqDQVs78rjQqii7Awd4bAA8m3pvrSwh384uiBSI
+         NnWzaY+yMvPuulMo1f/YaIlGXOSW1Of/QCOVqjBeIUhvkC7AWWGK0RKJUT1t5vDAMzEj
+         Fc1B9wyRhINVpMtcQNKrezq8wT5jBllAMPun47QylpzHFLUUSW9maaCX0yPib7whDtGM
+         YeEg==
+X-Gm-Message-State: AOAM531QXquX9h34Fanig4DUOmO41iO8U5TOS/HNrS4O39JWcdwaVhjn
+        v6nW/wnzpGZboxT4j1UaDwdfC7sKlQszDsADioV+uQ==
+X-Google-Smtp-Source: ABdhPJzXujdnfYIpOoFeoMfQqcklk8MTvBKtdbpyFrShxWjlxGSrEJuTo3PT16+HpGWZfgfDULuP9PSuDOT1t1Sih3I=
+X-Received: by 2002:a05:6512:b29:: with SMTP id w41mr49675962lfu.240.1636068598804;
+ Thu, 04 Nov 2021 16:29:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <1635932969-13149-1-git-send-email-alan.maguire@oracle.com>
- <1635932969-13149-3-git-send-email-alan.maguire@oracle.com>
- <CAEf4BzadDy006mGCZac4kySX_re7eFe6VY0cHgkpY3fQNRuASg@mail.gmail.com> <alpine.LRH.2.23.451.2111042248360.7576@localhost>
-In-Reply-To: <alpine.LRH.2.23.451.2111042248360.7576@localhost>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 4 Nov 2021 16:23:12 -0700
-Message-ID: <CAEf4BzaX65wMwEGZJ6HL+zOtAQjUk3A5ySiECYuSH5bLsPFAGg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: add exception handling
- selftests for tp_bpf program
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     ardb@kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, andreyknvl@gmail.com,
-        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>, joey.gouly@arm.com,
-        maz@kernel.org, daizhiyuan@phytium.com.cn, jthierry@redhat.com,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, rppt@kernel.org,
-        Jisheng.Zhang@synaptics.com, liu.hailong6@zte.com.cn,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20211104215923.719785-1-nathan@kernel.org>
+In-Reply-To: <20211104215923.719785-1-nathan@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 4 Nov 2021 16:29:46 -0700
+Message-ID: <CAKwvOdnBv8LcxvVYJKacL7eUXAoGVfnQp7TAL_r+P8V0WcOq1Q@mail.gmail.com>
+Subject: Re: [PATCH] usb: dwc2: hcd_queue: Fix use of floating point literal
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Minas Harutyunyan <hminas@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 3:56 PM Alan Maguire <alan.maguire@oracle.com> wrote:
+On Thu, Nov 4, 2021 at 2:59 PM Nathan Chancellor <nathan@kernel.org> wrote:
 >
+> A new commit in LLVM causes an error on the use of 'long double' when
+> '-mno-x87' is used, which the kernel does through an alias,
+> '-mno-80387' (see the LLVM commit below for more details around why it
+> does this).
 >
+>  drivers/usb/dwc2/hcd_queue.c:1744:25: error: expression requires  'long double' type support, but target 'x86_64-unknown-linux-gnu' does not support it
+>                          delay = ktime_set(0, DWC2_RETRY_WAIT_DELAY);
+>                                              ^
+>  drivers/usb/dwc2/hcd_queue.c:62:34: note: expanded from macro 'DWC2_RETRY_WAIT_DELAY'
+>  #define DWC2_RETRY_WAIT_DELAY (1 * 1E6L)
+>                                  ^
+>  1 error generated.
 >
-> On Wed, 3 Nov 2021, Andrii Nakryiko wrote:
+> This happens due to the use of a 'long double' literal. The 'E6' part of
+> '1E6L' causes the literal to be a 'double' then the 'L' suffix promotes
+> it to 'long double'.
 >
-> > On Wed, Nov 3, 2021 at 2:50 AM Alan Maguire <alan.maguire@oracle.com> wrote:
-> > >
-> > > Exception handling is triggered in BPF tracing programs when
-> > > a NULL pointer is dereferenced; the exception handler zeroes the
-> > > target register and execution of the BPF program progresses.
-> > >
-> > > To test exception handling then, we need to trigger a NULL pointer
-> > > dereference for a field which should never be zero; if it is, the
-> > > only explanation is the exception handler ran.  The skb->sk is
-> > > the NULL pointer chosen (for a ping received for 127.0.0.1 there
-> > > is no associated socket), and the sk_sndbuf size is chosen as the
-> > > "should never be 0" field.  Test verifies sk is NULL and sk_sndbuf
-> > > is zero.
-> > >
-> > > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> > > ---
-> > >  tools/testing/selftests/bpf/prog_tests/exhandler.c | 45 ++++++++++++++++++++++
-> > >  tools/testing/selftests/bpf/progs/exhandler_kern.c | 35 +++++++++++++++++
-> > >  2 files changed, 80 insertions(+)
-> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/exhandler.c
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/exhandler_kern.c
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/exhandler.c b/tools/testing/selftests/bpf/prog_tests/exhandler.c
-> > > new file mode 100644
-> > > index 0000000..5999498
-> > > --- /dev/null
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/exhandler.c
-> <snip>
-> > > +
-> > > +       bss = skel->bss;
-> >
-> > nit: you don't need to have a separate variable for that,
-> > skel->bss->exception_triggered in below check would be just as
-> > readable
-> >
+> There is no visible reason for a floating point value in this driver, as
+> the value is only used as a parameter to a function that expects an
+> integer type.  Use USEC_PER_SEC, which is the same integer value as
+> '1E6L', to avoid changing functionality but fix the error.
 >
-> sure, will do.
->
-> > > +
-> > > +       err = exhandler_kern__attach(skel);
-> > > +       if (CHECK(err, "attach", "attach failed: %d\n", err))
-> > > +               goto cleanup;
-> > > +
-> > > +       if (CHECK(SYSTEM("ping -c 1 127.0.0.1"),
-> >
-> > Is there some other tracepoint or kernel function that could be used
-> > for testing and triggered without shelling out to ping binary? This
-> > hurts test isolation and will make it or some other ping-using
-> > selftests spuriously fail when running in parallel test mode (i.e.,
-> > sudo ./test_progs -j).
->
-> I've got a new version of this working which uses a fork() in
-> combination with tp_btf/task_newtask ; the new task will have
-> a NULL task->task_works pointer, but if it wasn't NULL it
-> would have to point at a struct callback_head containing a
-> non-NULL callback function. So we can verify that
-> task->task_works and task->task_works->func are NULL to ensure
-> exception triggered instead.  That should interfere
-> less with other parallel tests hopefully?
+> Fixes: 6ed30a7d8ec2 ("usb: dwc2: host: use hrtimer for NAK retries")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1497
+> Link: https://github.com/llvm/llvm-project/commit/a8083d42b1c346e21623a1d36d1f0cadd7801d83
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-Yeah, tracing a fork would be better, thanks!. Make sure you are
-filtering by pid, to avoid accidentally tripping on some unrelated
-fork.
+Thanks for the patch!
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
+> ---
+>  drivers/usb/dwc2/hcd_queue.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> >
-> > > +                 "ping localhost",
-> > > +                 "ping localhost failed\n"))
-> > > +               goto cleanup;
-> > > +
-> > > +       if (CHECK(bss->exception_triggered == 0,
-> >
-> > please use ASSERT_EQ() instead, CHECK()s are kind of deprecated for new tests
-> >
+> diff --git a/drivers/usb/dwc2/hcd_queue.c b/drivers/usb/dwc2/hcd_queue.c
+> index 89a788326c56..bdf1927e1be1 100644
+> --- a/drivers/usb/dwc2/hcd_queue.c
+> +++ b/drivers/usb/dwc2/hcd_queue.c
+> @@ -59,7 +59,7 @@
+>  #define DWC2_UNRESERVE_DELAY (msecs_to_jiffies(5))
 >
+>  /* If we get a NAK, wait this long before retrying */
+> -#define DWC2_RETRY_WAIT_DELAY (1 * 1E6L)
+> +#define DWC2_RETRY_WAIT_DELAY (1 * USEC_PER_SEC)
 >
-> sure, will do.
+>  /**
+>   * dwc2_periodic_channel_available() - Checks that a channel is available for a
 >
-> > > diff --git a/tools/testing/selftests/bpf/progs/exhandler_kern.c b/tools/testing/selftests/bpf/progs/exhandler_kern.c
-> > > new file mode 100644
-> > > index 0000000..4049450
-> > > --- /dev/null
-> > > +++ b/tools/testing/selftests/bpf/progs/exhandler_kern.c
-> > > @@ -0,0 +1,35 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +/* Copyright (c) 2021, Oracle and/or its affiliates. */
-> > > +
-> > > +#include "vmlinux.h"
-> > > +
-> > > +#include <bpf/bpf_helpers.h>
-> > > +#include <bpf/bpf_tracing.h>
-> > > +#include <bpf/bpf_core_read.h>
-> > > +
-> > > +char _license[] SEC("license") = "GPL";
-> > > +
-> > > +unsigned int exception_triggered;
-> > > +
-> > > +/* TRACE_EVENT(netif_rx,
-> > > + *         TP_PROTO(struct sk_buff *skb),
-> > > + */
-> > > +SEC("tp_btf/netif_rx")
-> > > +int BPF_PROG(trace_netif_rx, struct sk_buff *skb)
-> > > +{
-> > > +       struct sock *sk;
-> > > +       int sndbuf;
-> > > +
-> > > +       /* To verify we hit an exception we dereference skb->sk->sk_sndbuf;
-> > > +        * sndbuf size should never be zero, so if it is we know the exception
-> > > +        * handler triggered and zeroed the destination register.
-> > > +        */
-> > > +       __builtin_preserve_access_index(({
-> > > +               sk = skb->sk;
-> > > +               sndbuf = sk->sk_sndbuf;
-> > > +       }));
-> >
-> > you don't need __builtin_preserve_access_index(({ }) region, because
-> > vmlinux.h already annotates all the types with preserve_access_index
-> > attribute
-> >
+> base-commit: d4439a1189f93d0ac1eaf0197db8e6b3e197d5c7
+> --
+> 2.34.0.rc0
 >
-> ah, great, I missed that somehow. Thanks!
->
-> Alan
+
+
+-- 
+Thanks,
+~Nick Desaulniers
