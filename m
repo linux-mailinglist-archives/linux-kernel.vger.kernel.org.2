@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5A3445717
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:18:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4B544571D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:19:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbhKDQV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 12:21:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40434 "EHLO
+        id S232001AbhKDQVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 12:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231838AbhKDQVP (ORCPT
+        with ESMTP id S231876AbhKDQVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 12:21:15 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6786FC061210;
-        Thu,  4 Nov 2021 09:18:37 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id f10so6745530ilu.5;
-        Thu, 04 Nov 2021 09:18:37 -0700 (PDT)
+        Thu, 4 Nov 2021 12:21:21 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98724C061224;
+        Thu,  4 Nov 2021 09:18:39 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id i79so7220376ioa.13;
+        Thu, 04 Nov 2021 09:18:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=V8Fc8ke3iYOumBqOlWNgqlYhlma1UuQm/49sDGNHcnE=;
-        b=BU9ivg121YwQ/viUzudfS8N488FYWmgpv4k45+ar6xwhzo1d0vjzRJv9tCAb+4JsTt
-         7K5DVTwxJv5137PcMeEyHVkDEEE2OlElJkAB/PRTICIC0lLZNBV8F+FFArezB2iWi8S/
-         XWAd8e+v7SEm3naqNdYvWWY9cs4AFIPCTkv/ZV/V4u2FVQqWQkLsyqxJ8GxB9BBj7RAg
-         nIQW3VgwW/k2LUHNeA4FEA4D9vjDNjaZW4QWsxzfePbIU+G40RC5bLWtIYEDibhzfcVH
-         dFSJSGr7ql+AzDWZdQaIMj7ebg9wL5zttgHA0EjEhtWVG/884wmFcBciMSZJ3NDr0Piy
-         Hc4Q==
+        bh=jFTXi1b35fScPQaVH64rQYOP74MFEiiFUB9mLytG3wM=;
+        b=Ha8JhqhawDsbOpvzin4j+AP/vpnM6Hi0l3LcAp7W/NE3QBgrZOTsdxDhkT3J8tz2KX
+         PjzEgIeqeroB7YVzbZngyFepjOhf1UxSBcheVDm4H8wFpundb+6b+lps+2USwil7Sqxj
+         zcfP0EOmy4V4IkWJG+NCFZ7Q47tUeFeMxbrYTCp3ELFBoCnfSkSV0znLw+84+H2wvQye
+         DLyDtv5Wti2TZnT1qzEF4hxkTn59N4+jiKXiEZgl6V+jbV7WB5RQ4P4iQFATEwO3k8TG
+         SbfbPIRkB+BX0cI3lJPftmVe8A2glHsmrPetfxDxjaOkdGkELarq57ZeunLzmQZlSGh8
+         MFig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=V8Fc8ke3iYOumBqOlWNgqlYhlma1UuQm/49sDGNHcnE=;
-        b=I2y+uivo1/q/lNX7mqNL2KT/eT5oAUFE9nKANRtqgaTXbu0R60T47VkUp7ZZ4DZp4V
-         nNfpuYgufK7859eMmAPUf0zdONi2xM5zaBMZsU85QIlrhZ4JjBdVwWZ6SHleVwv3IX22
-         PXEzQ4EjPI7L7sBMYbdEQaKpZahlQB9A0B/v7KVL2hjOuf5PH913NXuzPqnP3L2Q1OdG
-         yn2MOmVWcSK0KBzJmb+TtiLcBU1tgLD0cj6EM+Y2zoqH6hoQhPBulWEDoNverIo2W0BK
-         jf7zElTFf64BWrjj3Twq6Gg2Wu2T0SrH3sslwg5qCfv99nyLUf9rLZirv5BEFUO/MDvZ
-         XczA==
-X-Gm-Message-State: AOAM530Lf4x4I6gOUj2iNdFLH0gd1ANwE8nXtvoc5XLjEVkzSvpIYFhu
-        ohFxb12Y5dzU4E6nlKxp5+Q=
-X-Google-Smtp-Source: ABdhPJxb3gLA4v3sKw6lJ/XP1t20YrngWSaBe9t0FzVYUDsfncWtAjMnrkXDOK1nt3aMKrzUCStRHA==
-X-Received: by 2002:a05:6e02:19c8:: with SMTP id r8mr6214329ill.47.1636042716748;
-        Thu, 04 Nov 2021 09:18:36 -0700 (PDT)
+        bh=jFTXi1b35fScPQaVH64rQYOP74MFEiiFUB9mLytG3wM=;
+        b=RBDGRz9qoIhoLwq79HNzKtTIVSIW3Z877an/K9N9uJKIJpdy8d8db5o0vQ5/lIQq+6
+         kS0qBGlGjNKPLaak5tPSoRghQBKExG+5nfO978N+3xL9Hye6KzV9dz+VLORYOTmoe5ro
+         VxqvJtqh/y7Lmd2McP6cfzsj2HUiAFDuIlZqeKu7Z9Oo2iv1qmR7QwDML8N2jLZbWjuM
+         0Izvkgo5pxpjOczXmz2kqw9s82vjrSP2wgumfLM6lAZU3xEmVPKDjo9GRNoyPDkTYWfR
+         6ZMXVpPxUQvlcSXgvkqehaPY+pbY99fE1oV16bZajBMibZ6yIVhjkW02WmZQ5rBSwgrb
+         NuZg==
+X-Gm-Message-State: AOAM530qGLOue6O3K+5mNIN+T3frLj34E0Xct4eAZ5+Hvb92YIrdQwNd
+        /yuMp9umdLJYupKUKYSyTBI=
+X-Google-Smtp-Source: ABdhPJyc2LJ/npIS2vJ9C1mMZKYx8IfEJpb+VCTcvPl45VugOaPt8MJH6qwbf+e5QlF2phnYUmga2A==
+X-Received: by 2002:a6b:7705:: with SMTP id n5mr20432153iom.173.1636042718741;
+        Thu, 04 Nov 2021 09:18:38 -0700 (PDT)
 Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:e81d:737a:bb84:83ba])
-        by smtp.gmail.com with ESMTPSA id e17sm3266326iow.18.2021.11.04.09.18.35
+        by smtp.gmail.com with ESMTPSA id e17sm3266326iow.18.2021.11.04.09.18.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 09:18:36 -0700 (PDT)
+        Thu, 04 Nov 2021 09:18:38 -0700 (PDT)
 From:   Adam Ford <aford173@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     aford@beaconembedded.com, ariel.dalessandro@collabora.com,
@@ -59,9 +59,9 @@ Cc:     aford@beaconembedded.com, ariel.dalessandro@collabora.com,
         Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V3 5/9] soc: imx: imx8m-blk-ctrl: add i.MX8MN DISP blk-ctrl
-Date:   Thu,  4 Nov 2021 11:18:00 -0500
-Message-Id: <20211104161804.587250-6-aford173@gmail.com>
+Subject: [PATCH V3 6/9] arm64: dts: imx8mn: add GPC node
+Date:   Thu,  4 Nov 2021 11:18:01 -0500
+Message-Id: <20211104161804.587250-7-aford173@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211104161804.587250-1-aford173@gmail.com>
 References: <20211104161804.587250-1-aford173@gmail.com>
@@ -71,110 +71,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the description for the i.MX8MN disp blk-ctrl.
+Add the DT node for the GPC, including all the PGC power domains,
+some of them are not fully functional yet, as they require interaction
+with the blk-ctrls to properly power up/down the peripherals.
 
 Signed-off-by: Adam Ford <aford173@gmail.com>
 
-diff --git a/drivers/soc/imx/imx8m-blk-ctrl.c b/drivers/soc/imx/imx8m-blk-ctrl.c
-index 519b3651d1d9..6feeff5a3776 100644
---- a/drivers/soc/imx/imx8m-blk-ctrl.c
-+++ b/drivers/soc/imx/imx8m-blk-ctrl.c
-@@ -14,6 +14,7 @@
- #include <linux/clk.h>
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+index da6c942fb7f9..f5bafd9db673 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+@@ -4,6 +4,8 @@
+  */
  
- #include <dt-bindings/power/imx8mm-power.h>
+ #include <dt-bindings/clock/imx8mn-clock.h>
 +#include <dt-bindings/power/imx8mn-power.h>
++#include <dt-bindings/reset/imx8mq-reset.h>
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/input/input.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+@@ -612,6 +614,53 @@ src: reset-controller@30390000 {
+ 				interrupts = <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>;
+ 				#reset-cells = <1>;
+ 			};
++
++			gpc: gpc@303a0000 {
++				compatible = "fsl,imx8mn-gpc";
++				reg = <0x303a0000 0x10000>;
++				interrupt-parent = <&gic>;
++				interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
++
++				pgc {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					pgc_hsiomix: power-domain@0 {
++						#power-domain-cells = <0>;
++						reg = <IMX8MN_POWER_DOMAIN_HSIOMIX>;
++						clocks = <&clk IMX8MN_CLK_USB_BUS>;
++					};
++
++					pgc_otg1: power-domain@1 {
++						#power-domain-cells = <0>;
++						reg = <IMX8MN_POWER_DOMAIN_OTG1>;
++						power-domains = <&pgc_hsiomix>;
++					};
++
++					pgc_gpumix: power-domain@2 {
++						#power-domain-cells = <0>;
++						reg = <IMX8MN_POWER_DOMAIN_GPUMIX>;
++						clocks = <&clk IMX8MN_CLK_GPU_CORE_ROOT>,
++							 <&clk IMX8MN_CLK_GPU_SHADER>,
++							 <&clk IMX8MN_CLK_GPU_BUS_ROOT>,
++							 <&clk IMX8MN_CLK_GPU_AHB>;
++						resets = <&src IMX8MQ_RESET_GPU_RESET>;
++					};
++
++					pgc_dispmix: power-domain@3 {
++						#power-domain-cells = <0>;
++						reg = <IMX8MN_POWER_DOMAIN_DISPMIX>;
++						clocks = <&clk IMX8MN_CLK_DISP_AXI_ROOT>,
++							 <&clk IMX8MN_CLK_DISP_APB_ROOT>;
++					};
++
++					pgc_mipi: power-domain@4 {
++						#power-domain-cells = <0>;
++						reg = <IMX8MN_POWER_DOMAIN_MIPI>;
++						power-domains = <&pgc_dispmix>;
++					};
++				};
++			};
+ 		};
  
- #define BLK_SFT_RSTN	0x0
- #define BLK_CLK_EN	0x4
-@@ -498,6 +499,75 @@ static const struct imx8m_blk_ctrl_data imx8mm_disp_blk_ctl_dev_data = {
- 	.num_domains = ARRAY_SIZE(imx8mm_disp_blk_ctl_domain_data),
- };
- 
-+
-+static int imx8mn_disp_power_notifier(struct notifier_block *nb,
-+				      unsigned long action, void *data)
-+{
-+	struct imx8m_blk_ctrl *bc = container_of(nb, struct imx8m_blk_ctrl,
-+						 power_nb);
-+
-+	if (action != GENPD_NOTIFY_ON && action != GENPD_NOTIFY_PRE_OFF)
-+		return NOTIFY_OK;
-+
-+	/* Enable bus clock and deassert bus reset */
-+	regmap_set_bits(bc->regmap, BLK_CLK_EN, BIT(8));
-+	regmap_set_bits(bc->regmap, BLK_SFT_RSTN, BIT(8));
-+
-+	/*
-+	 * On power up we have no software backchannel to the GPC to
-+	 * wait for the ADB handshake to happen, so we just delay for a
-+	 * bit. On power down the GPC driver waits for the handshake.
-+	 */
-+	if (action == GENPD_NOTIFY_ON)
-+		udelay(5);
-+
-+
-+	return NOTIFY_OK;
-+}
-+
-+static const struct imx8m_blk_ctrl_domain_data imx8mn_disp_blk_ctl_domain_data[] = {
-+	[IMX8MN_DISPBLK_PD_MIPI_DSI] = {
-+		.name = "dispblk-mipi-dsi",
-+		.clk_names = (const char *[]){ "dsi-pclk", "dsi-ref", },
-+		.num_clks = 2,
-+		.gpc_name = "mipi-dsi",
-+		.rst_mask = BIT(0) | BIT(1),
-+		.clk_mask = BIT(0) | BIT(1),
-+	},
-+	[IMX8MN_DISPBLK_PD_MIPI_CSI] = {
-+		.name = "dispblk-mipi-csi",
-+		.clk_names = (const char *[]){ "csi-aclk", "csi-pclk" },
-+		.num_clks = 2,
-+		.gpc_name = "mipi-csi",
-+		.rst_mask = BIT(2) | BIT(3),
-+		.clk_mask = BIT(2) | BIT(3),
-+	},
-+	[IMX8MN_DISPBLK_PD_LCDIF] = {
-+		.name = "dispblk-lcdif",
-+		.clk_names = (const char *[]){ "lcdif-axi", "lcdif-apb", "lcdif-pix", },
-+		.num_clks = 3,
-+		.gpc_name = "lcdif",
-+		.rst_mask = BIT(4) | BIT(5),
-+		.clk_mask = BIT(4) | BIT(5),
-+	},
-+	[IMX8MN_DISPBLK_PD_ISI] = {
-+		.name = "dispblk-isi",
-+		.clk_names = (const char *[]){ "disp_axi", "disp_apb", "disp_axi_root",
-+						"disp_apb_root"},
-+		.num_clks = 4,
-+		.gpc_name = "isi",
-+		.rst_mask = BIT(6) | BIT(7),
-+		.clk_mask = BIT(6) | BIT(7),
-+	},
-+};
-+
-+static const struct imx8m_blk_ctrl_data imx8mn_disp_blk_ctl_dev_data = {
-+	.max_reg = 0x84,
-+	.power_notifier_fn = imx8mn_disp_power_notifier,
-+	.domains = imx8mn_disp_blk_ctl_domain_data,
-+	.num_domains = ARRAY_SIZE(imx8mn_disp_blk_ctl_domain_data),
-+};
-+
- static const struct of_device_id imx8m_blk_ctrl_of_match[] = {
- 	{
- 		.compatible = "fsl,imx8mm-vpu-blk-ctrl",
-@@ -505,7 +575,10 @@ static const struct of_device_id imx8m_blk_ctrl_of_match[] = {
- 	}, {
- 		.compatible = "fsl,imx8mm-disp-blk-ctrl",
- 		.data = &imx8mm_disp_blk_ctl_dev_data
--	} ,{
-+	}, {
-+		.compatible = "fsl,imx8mn-disp-blk-ctrl",
-+		.data = &imx8mn_disp_blk_ctl_dev_data
-+	}, {
- 		/* Sentinel */
- 	}
- };
+ 		aips2: bus@30400000 {
 -- 
 2.32.0
 
