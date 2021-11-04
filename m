@@ -2,380 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62313445738
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:24:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F168445740
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:24:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231795AbhKDQ0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 12:26:50 -0400
-Received: from mga07.intel.com ([134.134.136.100]:30579 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231419AbhKDQ0t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 12:26:49 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10157"; a="295184421"
-X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
-   d="scan'208";a="295184421"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 09:24:11 -0700
-X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
-   d="scan'208";a="501602671"
-Received: from mihaelac-mobl.ger.corp.intel.com (HELO localhost) ([10.249.32.21])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 09:24:03 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Michel =?utf-8?Q?D=C3=A4nzer?= <michel@daenzer.net>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>, Chia-I Wu <olvaffe@gmail.com>,
-        Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        "Pan\, Xinhui" <Xinhui.Pan@amd.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Zack Rusin <zackr@vmware.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, spice-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 1/2] drm: Add a drm_drv_enabled() to check if drivers should be enabled
-In-Reply-To: <20211104160707.1407052-2-javierm@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20211104160707.1407052-1-javierm@redhat.com> <20211104160707.1407052-2-javierm@redhat.com>
-Date:   Thu, 04 Nov 2021 18:24:01 +0200
-Message-ID: <87zgqjanz2.fsf@intel.com>
+        id S231861AbhKDQ1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 12:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231766AbhKDQ1G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 12:27:06 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 675C1C06127A
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 09:24:26 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id t21so8074746plr.6
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 09:24:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=17E90qbU5W7/llxpq3Ci8EoglXdbUk5GXT8DWrgKv7g=;
+        b=IixOukDCcm4ELNAVAqZJOzjCnk7lf/rubLWVOcE22LZa0xZSiAdpMolR6PT3OzDS8O
+         xxSwYI1rX7ktQP0XAhmwHg7GDdsMJbBO87vLYpaLkvcwsFzTpFGmXBD9dJTfeFEr1SHF
+         V+1M9t+oBfFghrhHaXrwhgKdVFerg6POaWfHnBHWtK/UL+Zc8pxxDwgno9Rcj3+Z8bQD
+         4r/c9eeLKiXP8gHsf6pqcnjjtlsq5INYEBSwpziM2AGC6KZtzWSQBd2NT2qrotdNHWYz
+         jL6HR1mv4YE/boLKmF0q2n/sOuVp/sbEG+nF2AgX9M5OQJ+cJvgMO9ZUs743sJBXcjy9
+         jBAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=17E90qbU5W7/llxpq3Ci8EoglXdbUk5GXT8DWrgKv7g=;
+        b=pc2EQ09+ImKuoxaT6smCe6NAwGZK7SXCn4Ui21Jwr95CczNwyvXfe9VSVolI4PdVLY
+         XBEpkedjk/piAYL2lO5jZ8hultQ/BzopqScL/L/1s1r36Q73VpjmYV0VuGBJ9U9WnJ2p
+         CqlMBv4m00upL1vZHbPjjJW358EIcLq4rHFVV6xzrxrT+DauzOzF6EZFVdA4c0pt/cDO
+         j5YcXDOQySZXa7b6X/miUHZm/VrOKwlgy6q+dTPMmo95+jD9C3YEOHonCzC812Wl8GHA
+         shjwM1zEksnf8LHTJxQwRNa/CMI0yuDjswtAFE8rjSeux6oy1tECyQT2l9jXqTxvw/5R
+         I/9g==
+X-Gm-Message-State: AOAM5319xaMObSBhS85Nn80rE+v+hk1zspqjVYIITfdM9G4DSpWcVz4L
+        3XVdh92rw36aaJdv+VIE/t6t5D2GKjmSLN+zMJQSwg==
+X-Google-Smtp-Source: ABdhPJz79hh1l18OCSZbTUbHDcomJJsoh+bGEXb1lR6JlCXHe3pvv2Bi88QyyGqo6h13ZG3HRQJzFRzDQ7aERKx7/AU=
+X-Received: by 2002:a17:90a:6c47:: with SMTP id x65mr6908694pjj.8.1636043065868;
+ Thu, 04 Nov 2021 09:24:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <YXFPfEGjoUaajjL4@infradead.org> <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
+ <YXJN4s1HC/Y+KKg1@infradead.org> <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
+ <YXj2lwrxRxHdr4hb@infradead.org> <20211028002451.GB2237511@magnolia>
+ <YYDYUCCiEPXhZEw0@infradead.org> <CAPcyv4j8snuGpy=z6BAXogQkP5HmTbqzd6e22qyERoNBvFKROw@mail.gmail.com>
+ <YYK/tGfpG0CnVIO4@infradead.org> <CAPcyv4it2_PVaM8z216AXm6+h93frg79WM-ziS9To59UtEQJTA@mail.gmail.com>
+ <YYOaOBKgFQYzT/s/@infradead.org>
+In-Reply-To: <YYOaOBKgFQYzT/s/@infradead.org>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 4 Nov 2021 09:24:15 -0700
+Message-ID: <CAPcyv4jKHH7H+PmcsGDxsWA5CS_U3USHM8cT1MhoLk72fa9z8Q@mail.gmail.com>
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with RWF_RECOVERY_DATA flag
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Jane Chu <jane.chu@oracle.com>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 04 Nov 2021, Javier Martinez Canillas <javierm@redhat.com> wrote:
-> Some DRM drivers check the vgacon_text_force() function return value as an
-> indication on whether they should be allowed to be enabled or not.
+On Thu, Nov 4, 2021 at 1:30 AM Christoph Hellwig <hch@infradead.org> wrote:
 >
-> This function returns true if the nomodeset kernel command line parameter
-> was set. But there may be other conditions besides this to determine if a
-> driver should be enabled.
+> On Wed, Nov 03, 2021 at 01:33:58PM -0700, Dan Williams wrote:
+> > Is the exception table requirement not already fulfilled by:
+> >
+> > sigaction(SIGBUS, &act, 0);
+> > ...
+> > if (sigsetjmp(sj_env, 1)) {
+> > ...
+> >
+> > ...but yes, that's awkward when all you want is an error return from a
+> > copy operation.
 >
-> Let's add a drm_drv_enabled() helper function to encapsulate that logic so
-> can be later extended if needed, without having to modify all the drivers.
+> Yeah.  The nice thing about the kernel uaccess / _nofault helpers is
+> that they allow normal error handling flows.
 >
-> Also, while being there do some cleanup. The vgacon_text_force() function
-> is guarded by CONFIG_VGA_CONSOLE and there's no need for callers to do it.
+> > For _nofault I'll note that on the kernel side Linus was explicit
+> > about not mixing fault handling and memory error exception handling in
+> > the same accessor. That's why copy_mc_to_kernel() and
+> > copy_{to,from}_kernel_nofault() are distinct.
 >
-> Suggested-by: Thomas Zimmermann <tzimmermann@suse.de>
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-> ---
+> I've always wondered why we need all this mess.  But if the head
+> penguin wants it..
 >
-> Changes in v2:
-> - Squash patch to add drm_drv_enabled() and make drivers use it.
-> - Make the drivers changes before moving nomodeset logic to DRM.
-> - Make drm_drv_enabled() return an errno and -ENODEV if nomodeset.
-> - Remove debug and error messages in drivers.
+> > I only say that to probe
+> > deeper about what a "copy_mc()" looks like in userspace? Perhaps an
+> > interface to suppress SIGBUS generation and register a ring buffer
+> > that gets filled with error-event records encountered over a given
+> > MMAP I/O code sequence?
 >
->  drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c |  7 +++----
->  drivers/gpu/drm/ast/ast_drv.c           |  7 +++++--
->  drivers/gpu/drm/drm_drv.c               | 20 ++++++++++++++++++++
->  drivers/gpu/drm/i915/i915_module.c      |  6 +++++-
->  drivers/gpu/drm/mgag200/mgag200_drv.c   |  7 +++++--
->  drivers/gpu/drm/nouveau/nouveau_drm.c   |  5 ++++-
->  drivers/gpu/drm/qxl/qxl_drv.c           |  7 +++++--
->  drivers/gpu/drm/radeon/radeon_drv.c     |  6 ++++--
->  drivers/gpu/drm/tiny/bochs.c            |  7 +++++--
->  drivers/gpu/drm/tiny/cirrus.c           |  8 ++++++--
->  drivers/gpu/drm/vboxvideo/vbox_drv.c    |  9 +++++----
->  drivers/gpu/drm/virtio/virtgpu_drv.c    |  5 +++--
->  drivers/gpu/drm/vmwgfx/vmwgfx_drv.c     |  5 +++--
->  include/drm/drm_drv.h                   |  1 +
->  14 files changed, 74 insertions(+), 26 deletions(-)
+> Well, the equivalent to the kernel uaccess model would be to register
+> a SIGBUS handler that uses an exception table like the kernel, and then
+> if you use the right helpers to load/store they can return errors.
 >
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> index c718fb5f3f8a..7fde40d06181 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> @@ -2514,10 +2514,9 @@ static int __init amdgpu_init(void)
->  {
->  	int r;
->  
-> -	if (vgacon_text_force()) {
-> -		DRM_ERROR("VGACON disables amdgpu kernel modesetting.\n");
-> -		return -EINVAL;
-> -	}
-> +	r = drm_drv_enabled(&amdgpu_kms_driver)
-> +	if (r)
-> +		return r;
->  
->  	r = amdgpu_sync_init();
->  	if (r)
-> diff --git a/drivers/gpu/drm/ast/ast_drv.c b/drivers/gpu/drm/ast/ast_drv.c
-> index 86d5cd7b6318..802063279b86 100644
-> --- a/drivers/gpu/drm/ast/ast_drv.c
-> +++ b/drivers/gpu/drm/ast/ast_drv.c
-> @@ -233,8 +233,11 @@ static struct pci_driver ast_pci_driver = {
->  
->  static int __init ast_init(void)
->  {
-> -	if (vgacon_text_force() && ast_modeset == -1)
-> -		return -EINVAL;
-> +	int ret;
-> +
-> +	ret = drm_drv_enabled(&ast_driver);
-> +	if (ret && ast_modeset == -1)
-> +		return ret;
->  
->  	if (ast_modeset == 0)
->  		return -EINVAL;
-> diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
-> index 8214a0b1ab7f..3fb567d62881 100644
-> --- a/drivers/gpu/drm/drm_drv.c
-> +++ b/drivers/gpu/drm/drm_drv.c
-> @@ -975,6 +975,26 @@ int drm_dev_set_unique(struct drm_device *dev, const char *name)
->  }
->  EXPORT_SYMBOL(drm_dev_set_unique);
->  
-> +/**
-> + * drm_drv_enabled - Checks if a DRM driver can be enabled
-> + * @driver: DRM driver to check
-> + *
-> + * Checks whether a DRM driver can be enabled or not. This may be the case
-> + * if the "nomodeset" kernel command line parameter is used.
-> + *
-> + * Return: 0 on success or a negative error code on failure.
-> + */
-> +int drm_drv_enabled(const struct drm_driver *driver)
-> +{
-> +	if (vgacon_text_force()) {
-> +		DRM_INFO("%s driver is disabled\n", driver->name);
-> +		return -ENODEV;
-> +	}
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(drm_drv_enabled);
-> +
->  /*
->   * DRM Core
->   * The DRM core module initializes all global DRM objects and makes them
-> diff --git a/drivers/gpu/drm/i915/i915_module.c b/drivers/gpu/drm/i915/i915_module.c
-> index ab2295dd4500..45cb3e540eff 100644
-> --- a/drivers/gpu/drm/i915/i915_module.c
-> +++ b/drivers/gpu/drm/i915/i915_module.c
-> @@ -18,9 +18,12 @@
->  #include "i915_selftest.h"
->  #include "i915_vma.h"
->  
-> +static const struct drm_driver driver;
-> +
+> The other option would be something more like the Windows Structured
+> Exception Handling:
+>
+> https://docs.microsoft.com/en-us/cpp/cpp/structured-exception-handling-c-cpp?view=msvc-160
 
-No, this makes absolutely no sense, and will also oops on nomodeset.
+Yes, try-catch blocks for PMEM is what is needed if it's not there
+already from PMDK. Searching for SIGBUS in PMDK finds things like:
 
-BR,
-Jani.
+https://github.com/pmem/pmdk/blob/26449a51a86861db17feabdfefaa5ee4d5afabc9/src/libpmem2/mcsafe_ops_posix.c
 
+>
+>
+> > > I think you misunderstood me.  I don't think pmem needs to be
+> > > decoupled from the read/write path.  But I'm very skeptical of adding
+> > > a new flag to the common read/write path for the special workaround
+> > > that a plain old write will not actually clear errors unlike every
+> > > other store interfac.
+> >
+> > Ah, ok, yes, I agree with you there that needing to redirect writes to
+> > a platform firmware call to clear errors, and notify the device that
+> > its error-list has changed is exceedingly awkward.
+>
+> Yes.  And that is the big difference to every other modern storage
+> device.  SSDs always write out of place and will just not reuse bad
+> blocks, and all drivers built in the last 25-30 years will also do
+> internal bad block remapping.
+>
 
->  static int i915_check_nomodeset(void)
->  {
->  	bool use_kms = true;
-> +	int ret;
->  
->  	/*
->  	 * Enable KMS by default, unless explicitly overriden by
-> @@ -31,7 +34,8 @@ static int i915_check_nomodeset(void)
->  	if (i915_modparams.modeset == 0)
->  		use_kms = false;
->  
-> -	if (vgacon_text_force() && i915_modparams.modeset == -1)
-> +	ret = drm_drv_enabled(&driver);
-> +	if (ret && i915_modparams.modeset == -1)
->  		use_kms = false;
->  
->  	if (!use_kms) {
-> diff --git a/drivers/gpu/drm/mgag200/mgag200_drv.c b/drivers/gpu/drm/mgag200/mgag200_drv.c
-> index 6b9243713b3c..2a581094ba2b 100644
-> --- a/drivers/gpu/drm/mgag200/mgag200_drv.c
-> +++ b/drivers/gpu/drm/mgag200/mgag200_drv.c
-> @@ -378,8 +378,11 @@ static struct pci_driver mgag200_pci_driver = {
->  
->  static int __init mgag200_init(void)
->  {
-> -	if (vgacon_text_force() && mgag200_modeset == -1)
-> -		return -EINVAL;
-> +	int ret;
-> +
-> +	ret = drm_drv_enabled(&mgag200_driver);
-> +	if (ret && mgag200_modeset == -1)
-> +		return ret;
->  
->  	if (mgag200_modeset == 0)
->  		return -EINVAL;
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_drm.c b/drivers/gpu/drm/nouveau/nouveau_drm.c
-> index 1f828c9f691c..8844d3602d87 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_drm.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_drm.c
-> @@ -1316,13 +1316,16 @@ nouveau_platform_device_create(const struct nvkm_device_tegra_func *func,
->  static int __init
->  nouveau_drm_init(void)
->  {
-> +	int ret;
-> +
->  	driver_pci = driver_stub;
->  	driver_platform = driver_stub;
->  
->  	nouveau_display_options();
->  
->  	if (nouveau_modeset == -1) {
-> -		if (vgacon_text_force())
-> +		ret = drm_drv_enabled(&driver_stub);
-> +		if (ret)
->  			nouveau_modeset = 0;
->  	}
->  
-> diff --git a/drivers/gpu/drm/qxl/qxl_drv.c b/drivers/gpu/drm/qxl/qxl_drv.c
-> index fc47b0deb021..3ac2ef2bf545 100644
-> --- a/drivers/gpu/drm/qxl/qxl_drv.c
-> +++ b/drivers/gpu/drm/qxl/qxl_drv.c
-> @@ -295,8 +295,11 @@ static struct drm_driver qxl_driver = {
->  
->  static int __init qxl_init(void)
->  {
-> -	if (vgacon_text_force() && qxl_modeset == -1)
-> -		return -EINVAL;
-> +	int ret;
-> +
-> +	ret = drm_drv_enabled(&qxl_driver);
-> +	if (ret && qxl_modeset == -1)
-> +		return ret;
->  
->  	if (qxl_modeset == 0)
->  		return -EINVAL;
-> diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon/radeon_drv.c
-> index b74cebca1f89..56d688c04346 100644
-> --- a/drivers/gpu/drm/radeon/radeon_drv.c
-> +++ b/drivers/gpu/drm/radeon/radeon_drv.c
-> @@ -637,8 +637,10 @@ static struct pci_driver radeon_kms_pci_driver = {
->  
->  static int __init radeon_module_init(void)
->  {
-> -	if (vgacon_text_force() && radeon_modeset == -1) {
-> -		DRM_INFO("VGACON disable radeon kernel modesetting.\n");
-> +	int ret;
-> +
-> +	ret = drm_drv_enabled(&kms_driver)
-> +	if (ret && radeon_modeset == -1) {
->  		radeon_modeset = 0;
->  	}
->  
-> diff --git a/drivers/gpu/drm/tiny/bochs.c b/drivers/gpu/drm/tiny/bochs.c
-> index 2ce3bd903b70..ee6b1ff9128b 100644
-> --- a/drivers/gpu/drm/tiny/bochs.c
-> +++ b/drivers/gpu/drm/tiny/bochs.c
-> @@ -719,8 +719,11 @@ static struct pci_driver bochs_pci_driver = {
->  
->  static int __init bochs_init(void)
->  {
-> -	if (vgacon_text_force() && bochs_modeset == -1)
-> -		return -EINVAL;
-> +	int ret;
-> +
-> +	ret = drm_drv_enabled(&bochs_driver);
-> +	if (ret && bochs_modeset == -1)
-> +		return ret;
->  
->  	if (bochs_modeset == 0)
->  		return -EINVAL;
-> diff --git a/drivers/gpu/drm/tiny/cirrus.c b/drivers/gpu/drm/tiny/cirrus.c
-> index 4611ec408506..4706c5bc3067 100644
-> --- a/drivers/gpu/drm/tiny/cirrus.c
-> +++ b/drivers/gpu/drm/tiny/cirrus.c
-> @@ -636,8 +636,12 @@ static struct pci_driver cirrus_pci_driver = {
->  
->  static int __init cirrus_init(void)
->  {
-> -	if (vgacon_text_force())
-> -		return -EINVAL;
-> +	int ret;
-> +
-> +	ret = drm_drv_enabled(&cirrus_driver);
-> +	if (ret)
-> +		return ret;
-> +
->  	return pci_register_driver(&cirrus_pci_driver);
->  }
->  
-> diff --git a/drivers/gpu/drm/vboxvideo/vbox_drv.c b/drivers/gpu/drm/vboxvideo/vbox_drv.c
-> index a6c81af37345..e4377c37cf33 100644
-> --- a/drivers/gpu/drm/vboxvideo/vbox_drv.c
-> +++ b/drivers/gpu/drm/vboxvideo/vbox_drv.c
-> @@ -193,10 +193,11 @@ static const struct drm_driver driver = {
->  
->  static int __init vbox_init(void)
->  {
-> -#ifdef CONFIG_VGA_CONSOLE
-> -	if (vgacon_text_force() && vbox_modeset == -1)
-> -		return -EINVAL;
-> -#endif
-> +	int ret;
-> +
-> +	ret = drm_drv_enabled(&driver);
-> +	if (ret && vbox_modeset == -1)
-> +		return ret;
->  
->  	if (vbox_modeset == 0)
->  		return -EINVAL;
-> diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.c b/drivers/gpu/drm/virtio/virtgpu_drv.c
-> index 749db18dcfa2..28200dfba2d1 100644
-> --- a/drivers/gpu/drm/virtio/virtgpu_drv.c
-> +++ b/drivers/gpu/drm/virtio/virtgpu_drv.c
-> @@ -104,8 +104,9 @@ static int virtio_gpu_probe(struct virtio_device *vdev)
->  	struct drm_device *dev;
->  	int ret;
->  
-> -	if (vgacon_text_force() && virtio_gpu_modeset == -1)
-> -		return -EINVAL;
-> +	ret = drm_drv_enabled(&driver);
-> +	if (ret && virtio_gpu_modeset == -1)
-> +		return ret;
->  
->  	if (virtio_gpu_modeset == 0)
->  		return -EINVAL;
-> diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
-> index ab9a1750e1df..05e9949293d5 100644
-> --- a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
-> +++ b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
-> @@ -1651,8 +1651,9 @@ static int __init vmwgfx_init(void)
->  {
->  	int ret;
->  
-> -	if (vgacon_text_force())
-> -		return -EINVAL;
-> +	ret = drm_drv_enabled(&driver);
-> +	if (ret)
-> +		return ret;
->  
->  	ret = pci_register_driver(&vmw_pci_driver);
->  	if (ret)
-> diff --git a/include/drm/drm_drv.h b/include/drm/drm_drv.h
-> index 0cd95953cdf5..77abfc7e078b 100644
-> --- a/include/drm/drm_drv.h
-> +++ b/include/drm/drm_drv.h
-> @@ -598,5 +598,6 @@ static inline bool drm_drv_uses_atomic_modeset(struct drm_device *dev)
->  
->  int drm_dev_set_unique(struct drm_device *dev, const char *name);
->  
-> +int drm_drv_enabled(const struct drm_driver *driver);
->  
->  #endif
+No, the big difference with every other modern storage device is
+access to byte-addressable storage. Storage devices get to "cheat"
+with guaranteed minimum 512-byte accesses. So you can arrange for
+writes to always be large enough to scrub the ECC bits along with the
+data. For PMEM and byte-granularity DAX accesses the "sector size" is
+a cacheline and it needed a new CPU instruction before software could
+atomically update data + ECC. Otherwise, with sub-cacheline accesses,
+a RMW cycle can't always be avoided. Such a cycle pulls poison from
+the device on the read and pushes it back out to the media on the
+cacheline writeback.
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+> > That said, even if
+> > the device-side error-list auto-updated on write (like the promise of
+> > MOVDIR64B) there's still the question about when to do management on
+> > the software error lists in the driver and/or filesytem. I.e. given
+> > that XFS at least wants to be aware of the error lists for block
+> > allocation and "list errors" type features. More below...
+>
+> Well, the whole problem is that we should not have to manage this at
+> all, and this is where I blame Intel.  There is no good reason to not
+> slightly overprovision the nvdimms and just do internal bad page
+> remapping like every other modern storage device.
+
+I don't understand what overprovisioning has to do with better error
+management? No other storage device has seen fit to be as transparent
+with communicating the error list and offering ways to proactively
+scrub it. Dave and Darrick rightly saw this and said "hey, the FS
+could do a much better job for the user if it knew about this error
+list". So I don't get what this argument about spare blocks has to do
+with what XFS wants? I.e. an rmap facility to communicate files that
+have been clobbered by cosmic rays and other calamities.
+
+> > Hasn't this been a perennial topic at LSF/MM, i.e. how to get an
+> > interface for the filesystem to request "try harder" to return data?
+>
+> Trying harder to _get_ data or to _store_ data?  All the discussion
+> here seems to be able about actually writing data.
+>
+> > If the device has a recovery slow-path, or error tracking granularity
+> > is smaller than the I/O size, then RWF_RECOVER_DATA gives the
+> > device/driver leeway to do better than the typical fast path. For
+> > writes though, I can only come up with the use case of this being a
+> > signal to the driver to take the opportunity to do error-list
+> > management relative to the incoming write data.
+>
+> Well, while devices have data recovery slow path they tend to use those
+> automatically.  What I'm actually seeing in practice is flags in the
+> storage interfaces to skip this slow path recovery because the higher
+> level software would prefer to instead recover e.g. from remote copies.
+
+Ok.
+
+> > However, if signaling that "now is the time to update error-lists" is
+> > the requirement, I imagine the @kaddr returned from
+> > dax_direct_access() could be made to point to an unmapped address
+> > representing the poisoned page. Then, arrange for a pmem-driver fault
+> > handler to emulate the copy operation and do the slow path updates
+> > that would otherwise have been gated by RWF_RECOVER_DATA.
+>
+> That does sound like a much better interface than most of what we've
+> discussed so far.
+>
+> > Although, I'm not excited about teaching every PMEM arch's fault
+> > handler about this new source of kernel faults. Other ideas?
+> > RWF_RECOVER_DATA still seems the most viable / cleanest option, but
+> > I'm willing to do what it takes to move this error management
+> > capability forward.
+>
+> So far out of the low instrusiveness options Janes' previous series
+> to automatically retry after calling a clear_poison operation seems
+> like the best idea so far.  We just need to also think about what
+> we want to do for direct users of ->direct_access that do not use
+> the mcsafe iov_iter helpers.
+
+Those exist? Even dm-writecache uses copy_mc_to_kernel().
