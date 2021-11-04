@@ -2,375 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82125445C03
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 23:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C7A445C06
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 23:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232319AbhKDWKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 18:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34932 "EHLO
+        id S232266AbhKDWMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 18:12:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbhKDWKX (ORCPT
+        with ESMTP id S230512AbhKDWMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 18:10:23 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00ED4C061203
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 15:07:45 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id s24so9670985plp.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 15:07:44 -0700 (PDT)
+        Thu, 4 Nov 2021 18:12:10 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E5AC061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 15:09:32 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id x27so14842448lfu.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 15:09:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PamW47+b4tMqWw+sFDfzqtrHhdS+IOv79aGoo2p8uNY=;
-        b=GED2Ehm9Zi6y79Gi5Mm1sz6hmGvAyOmP6xLjj4vPjSlv5M0Uf+U34+gNa4y59w71je
-         B3vtzx3bXczA1+Cn/8XoCoUamSjqYuIJN6qMDqhxm+nfdRk1G+ionkQE/94jjx7SdxiW
-         kiiiuUE0YmyxXyTvX6WcrFf6oVloz+hPmNzQXI6nh23f27GrEPmQZS/zuF/aMz6z8Ynk
-         dGsEuSwQRC+F86Kfomkojp8PtdFKpqrRkV49fPFTXEqmOIOQLR60/UwY+87BL3h1s9dJ
-         tK4jzB7GGx76604HPXZnxXU5Ow64iHXqCv3hO8FBSznCBxE1oF72qBsVDR6MFNdIJW4S
-         ckag==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ODhjY+JjkYpUpFv09zJB9aBghMhLyhOS/H4FgA78QU8=;
+        b=JHVS8Ow1HVeUipVMLT11yHlvnxUVD2nceGQ5AKOw+p77/NeUjmgxc/oFiHSOxrbrpy
+         Is/GwTZWZuoxrsC80rpbv/2Y8AaAq/cFI3MhtzhNbqZ2SeltjziPfSnhXJUAjXXzuneh
+         06pZbRk62NEQyFwifnDmYhpdXaj5WIbqygNh018AToErjr1rpOAMHzMlLBgBnFYYWmsM
+         n3epCtFUKoO951mcxkIQfDT2Ez/LVEgPNqs68kV3L8jvbEOgor4J5JFG089J8+xV4Vwu
+         lLYjqTpUdsD5O3nUSnHNlw2U5elxiK5a1njy2kFnY+pVVBcnd9VbIH0GJWibXuXHxCHT
+         qOTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PamW47+b4tMqWw+sFDfzqtrHhdS+IOv79aGoo2p8uNY=;
-        b=eEgj7ZjuankJdEzSwqzD9I0wAkluAWaQaR9l/Se71aFcgqwvQJBgaoePIkeUtd5FtQ
-         NFW3Vb2I9X1wGlNTxcomtRG7QOdOEUK/QdbTgWiCs7d6Ski6+6cBlmb7D6Lzca5dYqov
-         k6e9EmwSmrEFxAHiAPCxqSHCobZtnfYbvKZ13cpEv22y3qTOVao6vjCHZSy5N+0/6rO9
-         qqMX6qA5rrZySZjp3dvicUP2RNGgMFYRB7VVHg1KcnD1MPTI1+4O8hTYHatez8IglpRW
-         i9H9p9/y5LiJ/wQyNM51Yfrtjyot17xpdz/jpygc0eDHi81Q5r9PU16frWdB2n8Nk91Y
-         nZ/w==
-X-Gm-Message-State: AOAM531nfrlRj6wLtA+33eFqXH338OlL8udZxgsUeHyXiBmqFVLkyvu/
-        uz2Q/PK1a9OKTTWJY0dgul/CMg==
-X-Google-Smtp-Source: ABdhPJw3ooQFr3oV3qEUDHIIHTYPrkenU3e32atxmCM38GiIadnH0I3IhF3Z1utMudLmA3UXqUmqbw==
-X-Received: by 2002:a17:90a:de0b:: with SMTP id m11mr25179200pjv.39.1636063664152;
-        Thu, 04 Nov 2021 15:07:44 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id s2sm4485755pgd.13.2021.11.04.15.07.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 15:07:43 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 22:07:39 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Gonda <pgonda@google.com>
-Cc:     kvm@vger.kernel.org, Marc Orr <marcorr@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V11 2/5] KVM: SEV: Add support for SEV intra host
- migration
-Message-ID: <YYRZq+Zt52FSyjVW@google.com>
-References: <20211021174303.385706-1-pgonda@google.com>
- <20211021174303.385706-3-pgonda@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ODhjY+JjkYpUpFv09zJB9aBghMhLyhOS/H4FgA78QU8=;
+        b=5e1Z8+NurxWkgBl3g6dKs7tpn7g5tIfhxuQsZfx74oZF/gERNwiYTHL37v457Z3kiV
+         I1jvtWwUTTHJccO6D6IFfCg2HvQZjccm7NOzz3+sHGpz7fw1T6kF7xyg7a+HAefv7BrD
+         ZI0zhWDHOxu2I9DXWwQQFPLx03Pb7Xdmhv/QaGAPhufTE46RPC+OgmDVDhOB6hUHl4n5
+         5PXmx9KUIvXk7boBOG5+EmW1vKUuOBEinwqj0XMtvdb147nY4esc+gM/X+CuSy07DQgI
+         z1E5h5mIXSsN03eUGyzo5PJnRDeSuh86Q/7UyTc+012KRgz7Vq3HCoLrOQUpnO7SoFO6
+         vKGQ==
+X-Gm-Message-State: AOAM531lOR4OffewscL8RJvc28N1b1lErQqfGIbOoVLZ44ZHwEivmV/o
+        L+U8Zlg7j7r+xkkADg6BaJTBe63YzNpHFM7gKeQsZA==
+X-Google-Smtp-Source: ABdhPJyCySNfwv75WoGWFSPYJQ9LqbdrCPdqJpHKt8D7zE+l3mpEMxyt3SFexC6VWMES75d4HEuprj4x5ybvSm5jjD4=
+X-Received: by 2002:a19:740f:: with SMTP id v15mr29475880lfe.184.1636063770123;
+ Thu, 04 Nov 2021 15:09:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211021174303.385706-3-pgonda@google.com>
+References: <20211013180130.GB22036@blackbody.suse.cz> <20211014163146.2177266-1-shakeelb@google.com>
+ <20211104142751.5ab290d5cf4be1749c9c87ed@linux-foundation.org>
+In-Reply-To: <20211104142751.5ab290d5cf4be1749c9c87ed@linux-foundation.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 4 Nov 2021 15:09:18 -0700
+Message-ID: <CALvZod5xT2Mi2wktD-OTS0xkChNzArnMCLBNy7cg0dVupSOhXw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] memcg: flush stats only if updated
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     mkoutny@suse.com, cgroups@vger.kernel.org, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo and anyone else, any thoughts before I lead Peter on an even longer wild
-goose chase?
+On Thu, Nov 4, 2021 at 2:27 PM Andrew Morton <akpm@linux-foundation.org> wr=
+ote:
+>
+> On Thu, 14 Oct 2021 09:31:46 -0700 Shakeel Butt <shakeelb@google.com> wro=
+te:
+>
+> > Hi Michal,
+> >
+> > On Wed, Oct 13, 2021 at 11:01 AM Michal Koutn=C3=BD <mkoutny@suse.com> =
+wrote:
+> > >
+> > > On Fri, Oct 01, 2021 at 12:00:39PM -0700, Shakeel Butt <shakeelb@goog=
+le.com> wrote:
+> > > > In this patch we kept the stats update codepath very minimal and le=
+t the
+> > > > stats reader side to flush the stats only when the updates are over=
+ a
+> > > > specific threshold.  For now the threshold is (nr_cpus * CHARGE_BAT=
+CH).
+> > >
+> > > BTW, a noob question -- are the updates always single page sized?
+> > >
+> > > This is motivated by apples vs oranges comparison since the
+> > >         nr_cpus * MEMCG_CHARGE_BATCH
+> > > suggests what could the expected error be in pages (bytes). But it's =
+mostly
+> > > wrong since: a) uncertain single-page updates, b) various counter
+> > > updates summed together. I wonder whether the formula can serve to
+> > > provide at least some (upper) estimate.
+> > >
+> >
+> > Thanks for your review. This forces me to think more on this because ea=
+ch
+> > update does not necessarily be a single page sized update e.g. adding a=
+ hugepage
+> > to an LRU.
+> >
+> > Though I think the error is time bounded by 2 seconds but in those 2 se=
+conds
+> > mathematically the error can be large.
+>
+> Sounds significant?
 
-On Thu, Oct 21, 2021, Peter Gonda wrote:
-> @@ -6706,6 +6706,21 @@ MAP_SHARED mmap will result in an -EINVAL return.
->  When enabled the VMM may make use of the ``KVM_ARM_MTE_COPY_TAGS`` ioctl to
->  perform a bulk copy of tags to/from the guest.
->  
-> +7.29 KVM_CAP_VM_MIGRATE_PROTECTED_VM_FROM
-> +-------------------------------------
-> +
-> +Architectures: x86 SEV enabled
+Yes it can be.
 
-I'd drop the "SEV enabled" part.  In a way, it's technically a lie for this one
-patch since an SEV-ES VM is also an SEV VM, but doesn't support this capability.
-And AFAICT no other ioctl()/capability provides this level of granularity.
+>
+> > What do you think of the following
+> > change? It will bound the error better within the 2 seconds window.
+>
+> This didn't seem to go anywhere.  I'll send "memcg: flush stats only if
+> updated" Linuswards, but please remember to resurrect this idea soonish
+> (this month?) if you think such a change is desirable.
+>
 
-> +Type: vm
-> +Parameters: args[0] is the fd of the source vm
-> +Returns: 0 on success
-> +
-> +This capability enables userspace to migrate the encryption context from the VM
-> +indicated by the fd to the VM this is called on.
-> +
-> +This is intended to support intra-host migration of VMs between userspace VMMs.
-> +in-guest workloads scheduled by the host. This allows for upgrading the VMM
-> +process without interrupting the guest.
-> +
-
-...
-
-> +static void sev_unlock_vcpus_for_migration(struct kvm *kvm)
-> +{
-> +	struct kvm_vcpu *vcpu;
-> +	int i;
-> +
-> +	kvm_for_each_vcpu(i, vcpu, kvm) {
-
-Braces not needed.
-
-> +		mutex_unlock(&vcpu->mutex);
-> +	}
-> +}
-> +
-> +static void sev_migrate_from(struct kvm_sev_info *dst,
-> +			      struct kvm_sev_info *src)
-> +{
-> +	dst->active = true;
-> +	dst->asid = src->asid;
-> +	dst->misc_cg = src->misc_cg;
-
-Ah, this is not correct.  If @dst is in a different cgroup, then @dst needs to
-be charged and @src needs to be uncharged.
-
-That would also provide a good opportunity to more tightly couple ->asid and
-->misc_cg in the form of a helper.  Looking at the code, there's an invariant
-that misc_cg is NULL if an ASID is not assigned.  I.e. these three lines belong
-in a helper, irrespective of this code.
-
-	misc_cg_uncharge(type, sev->misc_cg, 1);
-	put_misc_cg(sev->misc_cg);
-	sev->misc_cg = NULL;
-
-> +	dst->handle = src->handle;
-> +	dst->pages_locked = src->pages_locked;
-> +
-> +	src->asid = 0;
-> +	src->active = false;
-> +	src->handle = 0;
-> +	src->pages_locked = 0;
-> +	src->misc_cg = NULL;
-> +	INIT_LIST_HEAD(&dst->regions_list);
-> +	list_replace_init(&src->regions_list, &dst->regions_list);
-> +}
-> +
-> +int svm_vm_migrate_from(struct kvm *kvm, unsigned int source_fd)
-> +{
-> +	struct kvm_sev_info *dst_sev = &to_kvm_svm(kvm)->sev_info;
-> +	struct file *source_kvm_file;
-> +	struct kvm *source_kvm;
-> +	struct kvm_vcpu *vcpu;
-> +	int i, ret;
-> +
-> +	ret = sev_lock_for_migration(kvm);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (sev_guest(kvm)) {
-> +		ret = -EINVAL;
-> +		goto out_unlock;
-> +	}
-> +
-> +	source_kvm_file = fget(source_fd);
-> +	if (!file_is_kvm(source_kvm_file)) {
-> +		ret = -EBADF;
-> +		goto out_fput;
-> +	}
-> +
-> +	source_kvm = source_kvm_file->private_data;
-> +	ret = sev_lock_for_migration(source_kvm);
-> +	if (ret)
-> +		goto out_fput;
-> +
-> +	if (!sev_guest(source_kvm) || sev_es_guest(source_kvm)) {
-> +		ret = -EINVAL;
-> +		goto out_source;
-> +	}
-> +	ret = sev_lock_vcpus_for_migration(kvm);
-> +	if (ret)
-> +		goto out_dst_vcpu;
-> +	ret = sev_lock_vcpus_for_migration(source_kvm);
-> +	if (ret)
-> +		goto out_source_vcpu;
-> +
-> +	sev_migrate_from(dst_sev, &to_kvm_svm(source_kvm)->sev_info);
-> +	kvm_for_each_vcpu(i, vcpu, source_kvm) {
-
-Braces not needed.
-
-> +		kvm_vcpu_reset(vcpu, /* init_event= */ false);
-
-Phooey.  I made this suggestion, but in hindsight, it's a bad suggestion as KVM
-doesn't currently have a true RESET path; there are quite a few blobs of code
-that assume the vCPU has never been run if init_event=false.
-
-And to go through kvm_vcpu_reset(), the vcpu needs to be loaded, not just locked.
-It won't fail as hard as VMX, where KVM would write the wrong VMCS, but odds are
-good something will eventually go sideways.
-
-Aha!  An idea.  Marking the VM bugged doesn't work because "we need to keep using
-the  source VM even after the state is transfered"[*], but the core idea is sound,
-it just needs to add a different flag to more precisely prevent kvm_vcpu_ioctl().
-
-If we rename KVM_REQ_VM_BUGGED=>KVM_REQ_VM_DEAD in a prep patch (see below), then
-this patch can add something here (can't think of a good name)
-
-	source_kvm->??? = true;
-	kvm_make_all_cpus_request(kvm, KVM_REQ_VM_DEAD);
-
-and then check it in kvm_vcpu_ioctl()
-
-	struct kvm *kvm = vcpu->kvm;
-
-	if (kvm->mm != current->mm || kvm->vm_bugged || kvm->???)
-		return -EIO;
-
-That way the source vCPUs don't need to be locked and all vCPU ioctls() are
-blocked, which I think is ideal since the vCPUs are in a frankenstate and really
-should just die.
-
-Maybe we can call the flag "zombie", or "mostly_dead" :-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index c80fa1d378c9..e3f49ca01f95 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9423,7 +9423,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
-        }
-
-        if (kvm_request_pending(vcpu)) {
--               if (kvm_check_request(KVM_REQ_VM_BUGGED, vcpu)) {
-+               if (kvm_check_request(KVM_REQ_VM_DEAD, vcpu)) {
-                        r = -EIO;
-                        goto out;
-                }
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 0f18df7fe874..de8d25cef183 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -150,7 +150,7 @@ static inline bool is_error_page(struct page *page)
- #define KVM_REQ_MMU_RELOAD        (1 | KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
- #define KVM_REQ_UNBLOCK           2
- #define KVM_REQ_UNHALT            3
--#define KVM_REQ_VM_BUGGED         (4 | KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
-+#define KVM_REQ_VM_DEAD                  (4 | KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
- #define KVM_REQUEST_ARCH_BASE     8
-
- #define KVM_ARCH_REQ_FLAGS(nr, flags) ({ \
-@@ -654,7 +654,7 @@ struct kvm {
- static inline void kvm_vm_bugged(struct kvm *kvm)
- {
-        kvm->vm_bugged = true;
--       kvm_make_all_cpus_request(kvm, KVM_REQ_VM_BUGGED);
-+       kvm_make_all_cpus_request(kvm, KVM_REQ_VM_DEAD);
- }
-
- #define KVM_BUG(cond, kvm, fmt...)
-
-
-Back when I made this bad suggestion in v7, you said "we need to keep using the
-source VM even after the state is transfered"[*].  What all do you need to do
-after the migration?  I assume it's mostly memory related per-VM ioctls?
-
-
-[*] https://lkml.kernel.org/r/CAMkAt6q3as414YMZco6UyCycY+jKbaYS5BUdC+U+8iWmBft3+A@mail.gmail.com
-
-> +	}
-> +	ret = 0;
-> +
-> +out_source_vcpu:
-> +	sev_unlock_vcpus_for_migration(source_kvm);
-> +
-> +out_dst_vcpu:
-> +	sev_unlock_vcpus_for_migration(kvm);
-> +
-> +out_source:
-> +	sev_unlock_after_migration(source_kvm);
-> +out_fput:
-> +	if (source_kvm_file)
-> +		fput(source_kvm_file);
-> +out_unlock:
-> +	sev_unlock_after_migration(kvm);
-> +	return ret;
-> +}
-> +
->  int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
->  {
->  	struct kvm_sev_cmd sev_cmd;
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 68294491c23d..c2e25ae4757f 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -4637,6 +4637,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
->  	.mem_enc_unreg_region = svm_unregister_enc_region,
->  
->  	.vm_copy_enc_context_from = svm_vm_copy_asid_from,
-> +	.vm_migrate_protected_vm_from = svm_vm_migrate_from,
->  
->  	.can_emulate_instruction = svm_can_emulate_instruction,
->  
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 6d8d762d208f..d7b44b37dfcf 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -80,6 +80,7 @@ struct kvm_sev_info {
->  	u64 ap_jump_table;	/* SEV-ES AP Jump Table address */
->  	struct kvm *enc_context_owner; /* Owner of copied encryption context */
->  	struct misc_cg *misc_cg; /* For misc cgroup accounting */
-> +	atomic_t migration_in_progress;
->  };
->  
->  struct kvm_svm {
-> @@ -557,6 +558,7 @@ int svm_register_enc_region(struct kvm *kvm,
->  int svm_unregister_enc_region(struct kvm *kvm,
->  			      struct kvm_enc_region *range);
->  int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd);
-> +int svm_vm_migrate_from(struct kvm *kvm, unsigned int source_fd);
->  void pre_sev_run(struct vcpu_svm *svm, int cpu);
->  void __init sev_set_cpu_caps(void);
->  void __init sev_hardware_setup(void);
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 0c8b5129effd..c80fa1d378c9 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -5665,6 +5665,12 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
->  		if (kvm_x86_ops.vm_copy_enc_context_from)
->  			r = kvm_x86_ops.vm_copy_enc_context_from(kvm, cap->args[0]);
->  		return r;
-> +	case KVM_CAP_VM_MIGRATE_PROTECTED_VM_FROM:
-
-I wonder... would it make sense to hedge and just call this KVM_CAP_VM_MIGRATE_VM_FROM?
-I can't think of a use case where KVM would "need" to do this for a non-protected
-VM, but I also don't see a huge naming problem if the "PROTECTED" is omitted.
-
-> +		r = -EINVAL;
-> +		if (kvm_x86_ops.vm_migrate_protected_vm_from)
-> +			r = kvm_x86_ops.vm_migrate_protected_vm_from(
-> +				kvm, cap->args[0]);
-
-Either let that poke out and/or refactor to avoid the indentation.  E.g.
-
-		r = -EINVAL;
-		if (!kvm_x86_ops.vm_migrate_protected_vm_from)
-			break;
-
-		return kvm_x86_ops.vm_migrate_protected_vm_from(kvm, cap->args[0]);
-
-		
-> +		return r;
->  	case KVM_CAP_EXIT_HYPERCALL:
->  		if (cap->args[0] & ~KVM_EXIT_HYPERCALL_VALID_MASK) {
->  			r = -EINVAL;
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index a067410ebea5..77b292ed01c1 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -1112,6 +1112,7 @@ struct kvm_ppc_resize_hpt {
->  #define KVM_CAP_BINARY_STATS_FD 203
->  #define KVM_CAP_EXIT_ON_EMULATION_FAILURE 204
->  #define KVM_CAP_ARM_MTE 205
-> +#define KVM_CAP_VM_MIGRATE_PROTECTED_VM_FROM 206
->  
->  #ifdef KVM_CAP_IRQ_ROUTING
->  
-> -- 
-> 2.33.0.1079.g6e70778dc9-goog
-> 
+Yes, I will follow up on this soon.
