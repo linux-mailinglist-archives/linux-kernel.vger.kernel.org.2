@@ -2,191 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CC7445883
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF064458A8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233892AbhKDRig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58506 "EHLO
+        id S233949AbhKDRjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231667AbhKDRif (ORCPT
+        with ESMTP id S233937AbhKDRjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:38:35 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 167F6C061714;
-        Thu,  4 Nov 2021 10:35:57 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id p17so5312760qkj.0;
-        Thu, 04 Nov 2021 10:35:57 -0700 (PDT)
+        Thu, 4 Nov 2021 13:39:21 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B32C061203
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 10:36:43 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id b13so8451024plg.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 10:36:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=RrScSAJInVUyX3m9B+p8OuvdefmlGWgtsVCND68Y7O0=;
-        b=VMT5lfUmFCy9htxTghfwPbxgAiK3Vx/kxD66hbuJYs+kWKgRJd8M5Nx/hXIXt1LvEQ
-         5HeM8cvq8ppZfNwGKSyCAt+leYK3qCx+5uVMv1uuA0JgRmnvwwbGkZ9kPUElIS5Axc9H
-         hgvRkHKM1RS4y09NGpkuUdUelOIvA1w+wfApOgYIKkodeyhVazNNBQTDSFno/nl/RnBS
-         gkPhRzkkNPJS6SHZJkIWvpXeYU2Wkq593Zj/mz6/KPlvFpdXA2mEAaD/cLsT5yqvHqFi
-         z22SajvWtjdCRCiguh3PKJP1nItL6/osoxRpZyV14beB8v8RNbtWc02fKfRiBtUSM7cQ
-         mDhg==
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JE7BWh7EPof2q1qNnDyfyKa+RjN00TLgKWFmUR6xPto=;
+        b=s4ImMsgGQUm6mPzKM3B7NN46K9mZpThq5Ex5NXxELwvAQv//gJkb4OoJtyk5iSzmpJ
+         I3mUqa9VU+FgsWW4eNq0E4V7DBBnLF25zbym4s98B02IKYUoSPfPj1BB4YzC1qo7K7e1
+         F8jpINNbsAP8yMlNfJafwBgadBd8zcPhur4Z2vkwy2W9QNtrtM7+gkb903YGkJCxe8iN
+         6KMSxmUCQVTgc+DflfDvjhll8s9mck6+NRGbQaeVC2SOY+zcKv3+9PjY4HIgqGSGD/BX
+         lQWt6XNSDiGQnx8Jy4M+Y4En33jGcYPby6DS7HsWd/4tD4V2VUNhWEuYojKIx0iN9S+0
+         XgGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=RrScSAJInVUyX3m9B+p8OuvdefmlGWgtsVCND68Y7O0=;
-        b=V5tcn9+cVc6rfCZtjL+uKBxiweSeAPGEkgTD05EF1YKJMjTbwdHMiIpITqgEuUQw4F
-         j9QLxn8A8puy4bRBKfinASW8cwck1+jNc1EPO4VA1dn5ku5MlG25krtPPWJLkZjQl80k
-         sHf48ewbunCCnQpGu/WPBypEx8ZFVJaKBLkChpLp6pOZyN4bokF1xE4caQ7q4qFl5wGR
-         4gr36vvLk2D34UAw+o3IvB7+AQXa5nMbCAsuT4DpWv1aIUUn08rFCtC9lYNqRvF6SRu3
-         XCgTmylTWxq7Y2CxhIZi5U1KEoqsUC0tZGqSpvVtaaTseaGipwgS3s4UxiGZm1MRecLZ
-         NLJw==
-X-Gm-Message-State: AOAM532Np81Dhp3LNVN7puUwXfIE3bTIsUYedLSc/cQVJE3+vTTKNYM0
-        +Hw5TlSpvox8Cdk615mCLWZzYae/qg==
-X-Google-Smtp-Source: ABdhPJxqlAEbmyh423GT+Nu5xA8dj5f1k4/LBpHgUO9h0rCjokqhfPqm37qRFzSHizJuVECbiUGzng==
-X-Received: by 2002:a05:620a:166a:: with SMTP id d10mr4152137qko.387.1636047355795;
-        Thu, 04 Nov 2021 10:35:55 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id y14sm909743qta.86.2021.11.04.10.35.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 10:35:54 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 13:35:53 -0400
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: bcachefs status update - current and future work
-Message-ID: <YYQZ+QmATIgKfzZ8@moria.home.lan>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JE7BWh7EPof2q1qNnDyfyKa+RjN00TLgKWFmUR6xPto=;
+        b=umHrYLekzvGB/m0FAA4P6Rz/WSURduJS/NkUkgsVkosL2E7j8nh8sbwAql8Cq0JZZa
+         /gvErg2xyHsg+NfQrA/bnA7cwd5roM/RttHRmAI1ZJke8hPzzcGInNEp4KWaJCtUiaY9
+         k82zyQtxsDinNR6S0bM2hpb/zSGXkNKulfptVhEaKMfpIXVUwTawdrgwo0G7X0i9WDDP
+         8lHHFN0UTV+KU2DIGAAtNQrIkZyTysblravw1uOxrPdVw0127nUdSysyXYIfdnd/rJC3
+         ODfkn5yoQkM5lT3kO25kNwIf0l1eag7DxbtObj+KYHtpuD+J3SAEqWr1P6/iJeKqe2P+
+         1RwA==
+X-Gm-Message-State: AOAM533zgDW6VFRCKmM7Z8AdyVzJLT2gEb5cFMaQGXJzHg9rTEncwfvL
+        hLPcy/8jIL1dKo7Rxf7KKxOwTUyNlm9LGnlo0mgDPA==
+X-Google-Smtp-Source: ABdhPJxhy9V27nPMVN+tx+tjsLztlj8rfRnBWeo/tBj0oVDBrpNcAk5x1jeblAAtaMT+o1c3DeS+/bIsOjJYVJqUKEA=
+X-Received: by 2002:a17:902:aa84:b0:142:36cb:2a47 with SMTP id
+ d4-20020a170902aa8400b0014236cb2a47mr4251518plr.89.1636047402658; Thu, 04 Nov
+ 2021 10:36:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210920120421.29276-1-jgross@suse.com> <163233113662.25758.10031107028271701591.tip-bot2@tip-bot2>
+ <e8dd8993c38702ee6dd73b3c11f158617e665607.camel@intel.com> <YYPGsUNm0UXcYKOA@zn.tnic>
+In-Reply-To: <YYPGsUNm0UXcYKOA@zn.tnic>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 4 Nov 2021 10:36:32 -0700
+Message-ID: <CAPcyv4jG359gnhJz=RdX_cKuh8awcBCzyRCJ1uKyfKCj-nFqvg@mail.gmail.com>
+Subject: Re: [tip: x86/urgent] x86/setup: Call early_reserve_memory() earlier
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-tip-commits@vger.kernel.org" 
+        <linux-tip-commits@vger.kernel.org>,
+        "nathan@kernel.org" <nathan@kernel.org>,
+        "Gross, Jurgen" <jgross@suse.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "marmarek@invisiblethingslab.com" <marmarek@invisiblethingslab.com>,
+        "Chagam, Anjaneya" <anjaneya.chagam@intel.com>,
+        "bp@suse.de" <bp@suse.de>, "x86@kernel.org" <x86@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Time to try and summarize everything that's been going on in bcachefs land since
-my last lkml posting, and my thoughts on what's next.
+On Thu, Nov 4, 2021 at 4:40 AM Borislav Petkov <bp@alien8.de> wrote:
+>
+> + Mike.
+>
+> On Thu, Nov 04, 2021 at 05:38:54AM +0000, Williams, Dan J wrote:
+> > By inspection, this commit looks like the source of the problem because
+> > early_reserve_memory() now runs before parse_early_param().
+>
+> Yah, I see it too:
+>
+> early_reserve_memory
+> |-> efi_memblock_x86_reserve_range
+>     |-> efi_fake_memmap_early
+>
+> which does
+>
+>         if (!efi_soft_reserve_enabled())
+>                 return;
+>
+> and that would have set EFI_MEM_NO_SOFT_RESERVE after having parsed
+> "nosoftreserve".
+>
+> And parse_early_param() happens later.
+>
+> Uuuf, that early memory reservation dance is not going to be over,
+> ever...
+>
+> Well, I guess we can do something like this below. The intent being to
+> carve out the command line preparation into a separate function which
+> does the early param parsing too. So that it all goes together.
+>
+> And then call that function before early_reserve_memory() so that the
+> params have been parsed by then.
+>
+> Looking at the changed flow, I think we should be ok but I've said that
+> a bunch of times already regarding this memory reservation early and
+> something in our house of cards called early boot order always broke.
+>
+> Damn.
 
-Core btree improvements:
- - Updates to interior btree nodes are now journalled.
+Thanks Boris!
 
- - We're now updating parent btree node pointers on every btree write. This was
-   a pretty major improvement - it means we can now always detect lost btree
-   btree writes, which was a hole in encrypted mode and also turned out to be a
-   robustness issue in RAID mode. It also means we can start to drop the journal
-   sequence number blacklist mechanism and closed some rare corner case issues.
-   And thanks to the previous item, it didn't cost us any performance.
+You can add:
 
- - We no longer have to mark every journal write as flush/fua - stole this idea
-   from XFS, it was a pretty nice performance improvement.
+Tested-by: Anjaneya Chagam <anjaneya.chagam@intel.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 
- - Lots of btree locking improvements: notably, we now have assertions that we
-   never hold btree locks while doing IO. This is really good for tail latency.
-
- - The transaction model is steadily improving and gaining more and more
-   assertions; this makes it easier to write upper level FS code without
-   worrying about locking considerations. We've started requiring every btree
-   transaction to start with bch2_trans_begin(), and in particular there's
-   asserts that this is the next thing called after a transaction restart.
-   Catching random little bugs with new assertions is a good feeling.
-
- - The btree iterator code has now been split up into btree_iter and btree_path;
-   btree_path implements the "path to a particular position in the btree" code,
-   and btree_iter sits on top of that and implements iteration over keys,
-   iteration over slots, iteration over extents, iteration for snapshots (that's
-   a whole thing), and more - this refactoring came about during the work for
-   snapshots and it turned out really nicely.
-
-Recovery:
- - All alloc info is now updated fully transactionally. Originally we'd have to
-   regenerate alloc info on every mount, then after every unclean shutdown -
-   then for a long time we only had to regenerate alloc info for metadata after
-   unclean shutdown. With updates to interior btree nodes being fully
-   journalled, that makes updates to alloc info fully transactional and our
-   mount times fast.
-
-   Currently we still have to read all alloc info into memory on mount, but that
-   too will be changing.
-
-Features:
- - Reflink: I believe all the bugs have finally been shaken out. The last bug to
-   be found was a refcount leak when we fragmented an existing indirect extent
-   (by copygc/rebalance), and a reflink pointer only pointed to part of it. 
-
- - Erasure coding - we're still popping some silly assertions, it's on my todo
-   list
-
- - Encryption: people keep wanting AES support, so at some point I'll try and
-   find the time to add AES/GCM.
-
- - SNAPSHOTS ARE DONE (mostly), and they're badass. 
-
-   I've successfully gotten up to a million snapshots (only changing a single
-   file in each snapshot) in a VM. They scale. Fsck scales. Take as many
-   snapshots as you want. Go wild.
-
-   Still todo:
-   - need to export a different st_dev for each subvolume, like btrfs, so that
-     find -xdev does what you want and skips snapshots
-
-   - we would like better atomicity w.r.t. pagecache on snapshot creation, and
-     it'd be nice if we didn't have to do a big sync when creating a snapshot -
-     we could do this by getting the subvolume's current snapshot ID at buffered
-     write time, but there's other things that make this hard
-
-   - we need per-snapshot ID disk space accounting. This is going to have to
-     wait for a giant disk space accounting rework though, which will move disk
-     space accounting out of the journal and to a dedicated btree.
-
-   - userspace interface is very minimal - e.g. still need to implement
-     recursive snapshotting.
-
-   - quota support is currently disabled, because of interactions with
-     snapshots; re-enabling that is high on my todo list.
-
-   - the btree key cache is currently disabled for inodes, also because of
-     interactions with snapshots: this is a performance regression until we get
-     this solved.
-   
-About a year of my life went into snapshots and I'm _really_ proud with how they
-turned out - in terms of algorithmic complexity, snapshots has been the biggest
-single feature tackled and when I started there were a lot of big unknowns that
-I honestly wasn't sure I was going to find solutions for. Still waiting on
-more people to start really testing with them and banging on them (and we do
-still need more tests written) but so far shaking things out has gone really
-smoothly (more smoothly than erasure coding, that's for sure!)
-   
-FUTURE WORK:
-
-I'm going to start really getting on people for review and working on
-upstreaming this beast. I intend for it to be marked EXPERIMENTAL for awhile,
-naturally - there are still on disk format changes coming that will be forced
-upgrades. But getting snapshots done was the big goal I'd set for myself, so
-it's time.
-
-Besides that, my next big focus is going to be on scalability. bcachefs was
-hitting 50 TB volumes even before it was called bcachefs - I fully intend for it
-to scale to 50 PB. To get there, we need to:
-
- - Get rid of the in-memory bucket array. We're mostly there, all allocation
-   information lives in the btree, but we need to make more improvements to the
-   btree representation before we can ditch the pure in memory representation.
-
-   - We need new persistent data structures for the allocator, so that the
-     allocator doesn't have to scan buckets. First up will be implementing a
-     persistent LRU, then probably a free space btree.
-
- - We need a backpointers btree, so that copygc doesn't have to scan the
-   extents/reflink btrees.
-
- - Online fsck. This will come in stages: first, theres's the filesystem level
-   fsck code in fs/bcachefs/fsck.c. The recent work improving the btree
-   transaction layer and adding assertions there has been forcing the fsck code
-   to change to be more rigorously correct (in the context of running
-   concurrently with other filesytem operations); a lot of that code is most of
-   the way there now. We'll need additional locking vs. other filesystem code
-   for the directory structure and inode nlinks passes, but shouldnt't for the
-   rest of the passes.
-
-   After fsck.c is running concurrently, it'll be time to bring back concurrent
-   btree gc, which regenerates alloc info. Woohoo.
-
-
--------------
-End brain dump, thank you kindly for reading :)
+>
+> ---
+> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> index 40ed44ead063..05f69e7d84dc 100644
+> --- a/arch/x86/kernel/setup.c
+> +++ b/arch/x86/kernel/setup.c
+> @@ -742,6 +742,28 @@ dump_kernel_offset(struct notifier_block *self, unsigned long v, void *p)
+>         return 0;
+>  }
+>
+> +static char *prepare_command_line(void)
+> +{
+> +#ifdef CONFIG_CMDLINE_BOOL
+> +#ifdef CONFIG_CMDLINE_OVERRIDE
+> +       strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
+> +#else
+> +       if (builtin_cmdline[0]) {
+> +               /* append boot loader cmdline to builtin */
+> +               strlcat(builtin_cmdline, " ", COMMAND_LINE_SIZE);
+> +               strlcat(builtin_cmdline, boot_command_line, COMMAND_LINE_SIZE);
+> +               strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
+> +       }
+> +#endif
+> +#endif
+> +
+> +       strlcpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
+> +
+> +       parse_early_param();
+> +
+> +       return command_line;
+> +}
+> +
+>  /*
+>   * Determine if we were loaded by an EFI loader.  If so, then we have also been
+>   * passed the efi memmap, systab, etc., so we should use these data structures
+> @@ -830,6 +852,23 @@ void __init setup_arch(char **cmdline_p)
+>
+>         x86_init.oem.arch_setup();
+>
+> +       /*
+> +        * x86_configure_nx() is called before parse_early_param() (called by
+> +        * prepare_command_line()) to detect whether hardware doesn't support
+> +        * NX (so that the early EHCI debug console setup can safely call
+> +        * set_fixmap()). It may then be called again from within noexec_setup()
+> +        * during parsing early parameters to honor the respective command line
+> +        * option.
+> +        */
+> +       x86_configure_nx();
+> +
+> +       /*
+> +        * This parses early params and it needs to run before
+> +        * early_reserve_memory() because latter relies on such settings
+> +        * supplies as early params.
+> +        */
+> +       *cmdline_p = prepare_command_line();
+> +
+>         /*
+>          * Do some memory reservations *before* memory is added to memblock, so
+>          * memblock allocations won't overwrite it.
+> @@ -863,33 +902,6 @@ void __init setup_arch(char **cmdline_p)
+>         bss_resource.start = __pa_symbol(__bss_start);
+>         bss_resource.end = __pa_symbol(__bss_stop)-1;
+>
+> -#ifdef CONFIG_CMDLINE_BOOL
+> -#ifdef CONFIG_CMDLINE_OVERRIDE
+> -       strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
+> -#else
+> -       if (builtin_cmdline[0]) {
+> -               /* append boot loader cmdline to builtin */
+> -               strlcat(builtin_cmdline, " ", COMMAND_LINE_SIZE);
+> -               strlcat(builtin_cmdline, boot_command_line, COMMAND_LINE_SIZE);
+> -               strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
+> -       }
+> -#endif
+> -#endif
+> -
+> -       strlcpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
+> -       *cmdline_p = command_line;
+> -
+> -       /*
+> -        * x86_configure_nx() is called before parse_early_param() to detect
+> -        * whether hardware doesn't support NX (so that the early EHCI debug
+> -        * console setup can safely call set_fixmap()). It may then be called
+> -        * again from within noexec_setup() during parsing early parameters
+> -        * to honor the respective command line option.
+> -        */
+> -       x86_configure_nx();
+> -
+> -       parse_early_param();
+> -
+>  #ifdef CONFIG_MEMORY_HOTPLUG
+>         /*
+>          * Memory used by the kernel cannot be hot-removed because Linux
+>
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
