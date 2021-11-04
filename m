@@ -2,80 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C91A1445210
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B76445212
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231359AbhKDLSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 07:18:12 -0400
-Received: from mail-4318.protonmail.ch ([185.70.43.18]:19975 "EHLO
-        mail-4318.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbhKDLSI (ORCPT
+        id S231346AbhKDLSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 07:18:32 -0400
+Received: from mail-wm1-f42.google.com ([209.85.128.42]:45012 "EHLO
+        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhKDLSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 07:18:08 -0400
-Date:   Thu, 04 Nov 2021 11:15:18 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1636024529;
-        bh=dxv8tLH49ZU8FUAl83ntsTkN/OPH8j/yTkPqyb84NMA=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=wqkG6uoka5TSr/C9hMgAThs5uYHqBZPcIKiyOeG6edIS0ntpI4tR85bjBPf5mBw39
-         w2OzT0jr9LG07kylB9L7XYCCzvXhWLvFKKPi9Ov9Az11SV8F/mUobnLhzOXgx8iuzF
-         i4KSjpnRdS38NHWvLo7HFvnFr3EJ1FmlW9WMBfKs=
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-From:   Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: [PATCH] arm64: dts: qcom: msm8996-xiaomi-common: Change TUSB320 to TUSB320L
-Message-ID: <20211104111454.105875-1-y.oudjana@protonmail.com>
+        Thu, 4 Nov 2021 07:18:31 -0400
+Received: by mail-wm1-f42.google.com with SMTP id c71-20020a1c9a4a000000b0032cdcc8cbafso3971737wme.3;
+        Thu, 04 Nov 2021 04:15:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NOpeRyhSrWLhm7pnKwCXx+SDhg6aZqCSyZIAd5+foKg=;
+        b=zIS2nlOPUIEz1/3FqwD9bHVYwpw3/sse5kwhM5KE/DkFfLk+nfjU86Eh3z/Rq+JzUH
+         56QBDCVwfd81Rmx7auLli7mQd6MXh+lJ8d5AuSzXjT0Blr9pZLVOqAzUebC9iER5tWDB
+         GwXUcEhBEJYVWCbc8IX0w08Zss1okBh8mybcjVbgnU7PB+NV6KQ4dX1wFixzM7G+Ni65
+         G6M01EnFjwPUf2ylx+Fnp7mSdMsH8u+qlTHvBjLsLnJuigF1pqGvj9vh41d9xQUGFq2N
+         qBuBlndBOtacILhuaAUVru4k7dF3rr5NAszC78f+Xv83bKkec4qIxfYU408xrne15bGi
+         nXPw==
+X-Gm-Message-State: AOAM532H9eaqSgkcWCzOfquzECICAEopjkUZa91yC8d7UawgMa9IToSe
+        Gb4hZ24HsGIrzD1ehXGJiRA=
+X-Google-Smtp-Source: ABdhPJwgYd/ahbGiqQu+IScVKbnJX4RZpTB9iy0joJeSCVXm8EZnzzJbn9tN2CgD43T0svvbgkHjKg==
+X-Received: by 2002:a7b:c102:: with SMTP id w2mr21194423wmi.151.1636024552847;
+        Thu, 04 Nov 2021 04:15:52 -0700 (PDT)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id u16sm7897996wmc.21.2021.11.04.04.15.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 04:15:51 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 12:15:50 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Nirmal Patel <nirmal.patel@linux.intel.com>,
+        Jonathan Derrick <jonathan.derrick@linux.dev>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jiabing.wan@qq.com
+Subject: Re: [PATCH] PCI: vmd: Remove duplicated include in vmd.c
+Message-ID: <YYPA5rFIqYBCek+u@rocinante>
+References: <20211104063720.29375-1-wanjiabing@vivo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Disposition: inline
+In-Reply-To: <20211104063720.29375-1-wanjiabing@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This platform actually doesn't have TUSB320, but rather TUSB320L.
-The TUSB320 compatible string was used due to lack of support for
-TUSB320L, and it was close enough to detect cable plug-in and
-direction, but it was limited to upstream facing port mode only.
-Now that support for TUSB320L is added[1], change node name and
-compatible to match and allow it to be properly reset and have
-its mode set to dual-role port.
+Hi,
 
-Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+[...]
+> --- a/drivers/pci/controller/vmd.c
+> +++ b/drivers/pci/controller/vmd.c
+> @@ -10,7 +10,6 @@
+>  #include <linux/irq.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+> -#include <linux/device.h>
+>  #include <linux/msi.h>
+>  #include <linux/pci.h>
+>  #include <linux/pci-acpi.h>
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/com=
-mit/?id=3Dce0320bd3872038569be360870e2d5251b975692
----
- arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Wan, thank you for reporting this!
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi b/arch/arm=
-64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
-index 01e573f0dfbf..7a9fcbe9bb31 100644
---- a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
-@@ -207,8 +207,8 @@ &blsp2_i2c3 {
- =09status =3D "okay";
- =09label =3D "TYPEC_I2C";
-=20
--=09typec: tusb320@47 {
--=09=09compatible =3D "ti,tusb320";
-+=09typec: tusb320l@47 {
-+=09=09compatible =3D "ti,tusb320l";
- =09=09reg =3D <0x47>;
- =09=09interrupt-parent =3D <&tlmm>;
- =09=09interrupts =3D <63 IRQ_TYPE_EDGE_RISING>;
---=20
-2.33.1
+Bjorn, the patch I sent earlier:
 
+  https://lore.kernel.org/all/20211013003145.1107148-1-kw@linux.com/
 
+Accidentally left the include at the top that was intended to me moved to
+be before the linux/msi.h to reflect previous order of the asm/device.h and
+asm/msi.h had.
+
+I must have forgotten to remove the one from the top later.  Sincere
+apologies!
+
+I can send an update, or we can squeeze these two patches together.  Sorry for
+adding you more work to do.
+
+	Krzysztof
