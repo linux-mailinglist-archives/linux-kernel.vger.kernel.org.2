@@ -2,65 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4932F444EC3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB591444EC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:21:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhKDGYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:24:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230084AbhKDGYT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:24:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DBB8611C9;
-        Thu,  4 Nov 2021 06:21:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636006902;
-        bh=ljBsjz769VaC8m46dh4BZTBTEtz9FbGD82T8llITUBA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZGSbvuoY2r6O26Ti7ZN30Eh46Veu4QakqFeD/trTenjvGZYwKsBnQrRNYs/BrMA2f
-         wUtlqouVUp2zwfhwDt1WP9LhSyueF4kfeFHsKwUF2v1BX1qAY5S7sWC4d4dLc57nuK
-         +eCGykLPo1FjuFJ/WtlloQwTKMs4aC1+fXRoFLSY=
-Date:   Thu, 4 Nov 2021 07:21:37 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Carlos Bilbao <bilbao@vt.edu>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        kbuild test robot <lkp@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v5] include: linux: Reorganize timekeeping and ktime
- headers
-Message-ID: <YYN78YlFrV0vFPq9@kroah.com>
-References: <b5d4536f-a096-b259-1385-3c1d32754dbf@vt.edu>
- <095645cd-ce53-a803-cb99-522545a409b8@vt.edu>
- <YSJP18Z72t0X+xsp@kroah.com>
- <1c156aca-d0ad-e7e8-2238-5c3d904d171c@vt.edu>
- <327f5c2f-b996-8aa1-cbbf-3354e01ee1f3@vt.edu>
- <fb66b935-b498-723a-1f05-f02648f8f580@vt.edu>
+        id S230261AbhKDGY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:24:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230319AbhKDGYZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 02:24:25 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39CA6C061714;
+        Wed,  3 Nov 2021 23:21:48 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id n23so4553492pgh.8;
+        Wed, 03 Nov 2021 23:21:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BU1vTOLCxtgz/R6wOs3WVjyoqwIRBdNGoJVHRdiND2w=;
+        b=QL5lW4MUReHLzSIJL/ZYcrYICgVbghlJ4VFBqkUkaO9NocZA5kO27dJ1eKgrRBVmFv
+         0eL083EWkk126pO8iXtLGvmxxKrUcz4Nwex1SU3XPT0PISiMskWdfVXQ/RfotT9NmsTu
+         hVMP/WRG6kk5pEYanK/9cpL8HtY1GM8JVC4iT1jFNZErMQa80IVXXpq7hU+CvG2GDor3
+         9gv3VP0kh7eDxduG88S/N2lvYtfmXG+rfeC1nG/Gworu9cTZaZQqsnknjPF1tm2W9y7s
+         OH8SBsCTepaGEFBryoIkqUOFJXUUDGQfYrw8+piNaJE8nsJ7WkYmbAm/zOgpRTNjx/yE
+         6akg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BU1vTOLCxtgz/R6wOs3WVjyoqwIRBdNGoJVHRdiND2w=;
+        b=ykearN7nROJvf29CfZ7qJ6xFK+NuwtPveiokzFoeth6BZfpgTnFor7HdbINUCmJZ87
+         Z2WmaB93e7c8THYYinYeTdlNDvXG1U/UO4aEzu82+m0FauNKvOCFoCKCCRyC60SKV3FB
+         73RbJcmRj1nXqAhskufkoMWJkDGZ/5jF1Xeax1B3NUAp0Cdv8JTpuwfavNgIv0mjjTHS
+         SWLzC5LUWDhBMUCbjjzTZW5EbL5w+Y0WIDyfDtRNtfOEXG5L+Nv2Bii6LzNFYwUTMdQ7
+         LgqQ7Hn3mTdTE9mn8YRmu6UNgihNrrmekWKtGtzPwnq7NuQOE1ReKW8GPcPs2+3vNH0s
+         KGKw==
+X-Gm-Message-State: AOAM5308Rw9Yi+jBYE7DOucm4kPGNfOlDhefw9ky3zisaaWGDKu5IBYk
+        sWA0Qkm25HBBAH2ERHQ2LBk=
+X-Google-Smtp-Source: ABdhPJx3RnvYexqW6YTa8PjOPjho7WENcTm5Dg9Jmr6FpZThwO+ChHZmiDNWzDJoI55KgEHgoCLK0A==
+X-Received: by 2002:a63:6945:: with SMTP id e66mr6443454pgc.9.1636006907789;
+        Wed, 03 Nov 2021 23:21:47 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id z22sm4014737pfa.214.2021.11.03.23.21.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 23:21:47 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: luo.penghao@zte.com.cn
+To:     Siva Reddy Kallam <siva.kallam@broadcom.com>
+Cc:     Prashant Sreedharan <prashant@broadcom.com>,
+        Michael Chan <mchan@broadcom.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] tg3: Remove redundant assignments
+Date:   Thu,  4 Nov 2021 06:21:38 +0000
+Message-Id: <20211104062138.2386-1-luo.penghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fb66b935-b498-723a-1f05-f02648f8f580@vt.edu>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 03:33:52PM -0400, Carlos Bilbao wrote:
-> Hello everyone,
-> 
-> Some time ago I sent a small patch to avoid implicit function declaration. 
-> In particular, timekeeping.h was using ktime_to_ns(), a static function defined 
-> in a header it does no include, ktime.h. Some maintainers saw this as an 
-> opportunity to reorganize ktime, and so I did and tested for all architectures.
-> Now, this patch has fallen into the "limbo of patches", so the original problem
-> remains unsolved. Please, either take a look at this or check the original
-> patch for the header dependencies.
+From: luo penghao <luo.penghao@zte.com.cn>
 
-Please just resend after 5.16-rc1 is out, there's nothing we can do with
-this at this point in time.
+The assignment of err will be overwritten next, so this statement
+should be deleted.
 
-thanks,
+The clang_analyzer complains as follows:
 
-greg k-h
+drivers/net/ethernet/broadcom/tg3.c:5506:2: warning:
+
+Value stored to 'expected_sg_dig_ctrl' is never read
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
+---
+ drivers/net/ethernet/broadcom/tg3.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
+index b0e4964..c5a5a6a 100644
+--- a/drivers/net/ethernet/broadcom/tg3.c
++++ b/drivers/net/ethernet/broadcom/tg3.c
+@@ -5502,7 +5502,6 @@ static bool tg3_setup_fiber_hw_autoneg(struct tg3 *tp, u32 mac_status)
+ 	int workaround, port_a;
+ 
+ 	serdes_cfg = 0;
+-	expected_sg_dig_ctrl = 0;
+ 	workaround = 0;
+ 	port_a = 1;
+ 	current_link_up = false;
+-- 
+2.15.2
+
+
