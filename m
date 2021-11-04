@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414A244502E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:24:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C2E445039
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231129AbhKDI1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
+        id S230445AbhKDI3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:29:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbhKDI1J (ORCPT
+        with ESMTP id S230202AbhKDI3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:27:09 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2222FC061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 01:24:32 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id d27so7326603wrb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 01:24:32 -0700 (PDT)
+        Thu, 4 Nov 2021 04:29:14 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF216C06127A
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 01:26:36 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id h2so5349449ili.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 01:26:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=edti6PQbrA3HO/fwP6tU3hw7xf9JRnqSTxxIgTQdj3k=;
-        b=fYVZLmUslh+eLwgHPV5xTut4Jv2Uhr8Wwdmhv5cbvnLd1RWxwwmsqYtUomcMXYXbir
-         wij32+YvSu5QpnaZCPYonNOX1C3ULZhZEc7KdFA7mYpSvHcxsa8IlqDWDoyDBPonAI8D
-         AIkbAgDNVftal/ysAg1v5XCT0EYkhVyZV/urQqjqKa1kkxTG2+xVzLHAt+yREner/4+t
-         FOpjM+Qy5zLHmD17qQhqBGb/5+sxHBhVXrxx/tC2kALowYzPLDZi3OYLqDipPmhpedA3
-         Cv6q62SbWnLIEELsczWP8zu8zvs73MCZtry5mg3rX/j0vi14n4Goc0hx22N5Syduyr46
-         JiQA==
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=NWtIycQHSeI97P9ROGWWPqnNbO7HVSDZEQKdeZMuQpc=;
+        b=IF+H6cMpaLsXseGAICdg2hy78zHqvIupKAow9uEFmuhhUBuV+pGS/BkATn0WGLNlmY
+         AqGvPAGzKl7YGCYXAETCvFy7xPzpKU60nLSTLbqzslRWpTwHc0np//J08oqTqwgRMEpC
+         +DXajit6xmqHepH1uK/bTJoQjDk17s3vCEzLhTTzRwOZ/mDLfszw0LHbvxsvXC/3xLpC
+         s/gXDdvlMIb9gl1vUYvLjGzuNFHa7klnotHVoMz57gblBo9kffi1oGaUDaGRr9mYDKrV
+         m8vdk6sPyX5eKoBOplHwergE4t0K4xa2elWHRFzkev3D/3lq/AQ+gHLaHOJEXWbEjnrg
+         GIVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=edti6PQbrA3HO/fwP6tU3hw7xf9JRnqSTxxIgTQdj3k=;
-        b=pYmeoYFEZjJnRYM4fysWToXIfrx8ytW808qhnkY+R6Pv91Mw4kvnUZLQx/gPZmAoO8
-         pU+EMkeKz+ydshgDbzWh+SZuBktiK/57tbZTvHHFzABZe8eTu4HekfyQ2/cr1Vk/Cq1U
-         D24WCerXnTXivs0oDt8lVjexnh8DpD/q4wtzcGByU8Og9rzbEZlo9Dup+vF76LXR7tJe
-         Kn9PzXS6e+rhXdfCF6fdKrCLvoJYLCpW4mlYTqAQ6ll6h3CHCawAd+nVJ0wKWyPu3Q4j
-         Gz2HYMwh/J8dLC2Fd03StPjIxcBIZ+LS8JrORrAh2Zv0dWg7imFreBZZomC7r/aL1sw4
-         WYrA==
-X-Gm-Message-State: AOAM53318QMCxBcWQrAK7joFU1ADG6ymU/LTj0BS5PmQRMDIuCG9qR+X
-        Z8WcLmUMjrmIwskFYo88Wu7sQjQfDyHFWA==
-X-Google-Smtp-Source: ABdhPJx2iW1GS3Vwxz7RWt61oCZh21RABeyYiWwujWfFk4vfKwqHnNW/hwFqoJigjTmWKI1IMeKxuQ==
-X-Received: by 2002:a5d:648e:: with SMTP id o14mr12757706wri.141.1636014270689;
-        Thu, 04 Nov 2021 01:24:30 -0700 (PDT)
-Received: from google.com ([95.148.6.174])
-        by smtp.gmail.com with ESMTPSA id n32sm4105502wms.42.2021.11.04.01.24.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 01:24:30 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 08:24:28 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Alistair Francis <alistair@alistair23.me>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mfd: simple-mfd-i2c: Fix linker error due to new
- mfd-core dependency
-Message-ID: <YYOYvDnX7yA932re@google.com>
-References: <20211103190426.1511507-1-tyhicks@linux.microsoft.com>
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=NWtIycQHSeI97P9ROGWWPqnNbO7HVSDZEQKdeZMuQpc=;
+        b=ECxTjGHkmnRYBoE4zkcMK7g8aAcgN0Z/FrjKDMI7vhRPYiozGPIR69gqljpy6BZ5N7
+         QXq68dROH27IsmZd1hostWQebVsnQj5n9T0LgdpgJhvs/2Dhj7g9odpgwXFvFWe3uw67
+         ARO1RLFr5NhmEiA3fq1hO8bcvWZ0EzwwjiqZQupfqg9+5x3unPYS9HODSYxqxGlQiu/9
+         +fep2E8nYxLeTQRQpAneUUexZ9oKUmdNVcbUhx6/Bv3aPadlRM6+Qzihhg8n85vaKmOa
+         y/jNyAPfPEdtrn40zvpK7N5WCN45jO4pIhii3vh06Bwc9eHuFrETlci0VbBw2C2iA7Ev
+         7IvQ==
+X-Gm-Message-State: AOAM531ezrdHpYd2PeChkwTglic11OF/OwXYSFRPUw+6bEnAJjXc0Asz
+        tUI9YxtnX1Zd3cYy7D2j7ROwJ9QOkM0U0MV+gls=
+X-Google-Smtp-Source: ABdhPJyKXXD5DCk3iiGd2YLUNEbEgoeW2WG84DSViDJlWlryxl0Sgv6caIWg1SYa2GpXl18LvNQUcAm7UMqlA9GmA50=
+X-Received: by 2002:a05:6e02:1c8a:: with SMTP id w10mr671967ill.4.1636014396427;
+ Thu, 04 Nov 2021 01:26:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211103190426.1511507-1-tyhicks@linux.microsoft.com>
+Sender: readsghfrdfrsafxgf@gmail.com
+Received: by 2002:a05:6e02:1bee:0:0:0:0 with HTTP; Thu, 4 Nov 2021 01:26:36
+ -0700 (PDT)
+From:   "mrs.sophia.robin" <mrs.sophiar.robin424@gmail.com>
+Date:   Thu, 4 Nov 2021 09:26:36 +0100
+X-Google-Sender-Auth: iJzYN5-IKy722jXOQB9TiZd0gX0
+Message-ID: <CAAbfOQyMzAr-sLX3O8O8rGnxWRJg=F28gELxbq0SRf6xoviOJQ@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 03 Nov 2021, Tyler Hicks wrote:
+i'm Mrs.Sophia Robin,a citizen of the united state of America,I work
+at HSBC Bank in Milan Italy,as Telex Manager charge of wire transfer
+department,i'm contacting you personally for investment assistance and
+a long term business relationship in your Country.i'm contacting you
+for an important and  urgent business transaction,I want the bank to
+transfer the money left by Dr.Cheng Chao,a Chinese Politician who
+died,March 17th 2020,without any trace of his family members,he used
+our bank to launder money overseas through the help of their Political
+advisers.and most of the funds which they transferred out of the
+shores of China, were gold and oil money that was supposed to have
+been used to develop the continent.
 
-> Select CONFIG_MFD_CORE from CONFIG_MFD_SIMPLE_MFD_I2C, now that
-> simple-mfd-i2c.c calls devm_mfd_add_devices(), to fix the following
-> linker error:
-> 
->  ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_probe':
->  simple-mfd-i2c.c:(.text+0x62): undefined reference to `devm_mfd_add_devices'
->  make: *** [Makefile:1187: vmlinux] Error 1
-> 
-> Fixes: c753ea31781a ("mfd: simple-mfd-i2c: Add support for registering devices via MFD cells")
-> Cc: stable@vger.kernel.org # 5.15.x
-> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> ---
->  drivers/mfd/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+Can you invest this money and also help the poor? The amount value at
+$15.5million Dollars($US15,500,000),left in his account still
+unclaimed,if you know that you are capable to invest this fund into
+any profitable business in your country kindly send me your details
+information as listed below to enable me draft you an application form
+of claim along with the deposit certificate which you are going to
+fill with your bank account detail necessary and contact the HSBC Bank
+in Italy for immediate transfer of the Amounted sum into your bank
+account direct. Percentage share will be 60,for me/40,for you.
 
-Looks like the same change that has already been applied.
+(1) Your full name..................................................
+(2) Your address....................................................
+(3) Your Nationality.................................................
+(4) Your Age / Sex.....................................................
+(5) Your  Occupation............................................
+(6) Your marital status......................................
+(7) Your direct telephone number..................
+(8) Your photo.......................................
 
-Could you rebase on top of the MFD tree please?
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks with my best regards.Mrs. Sophia Robin,
+Telex Manager Milan Italy  (H.S.B.C)
