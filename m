@@ -2,216 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 979DC444CF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 02:22:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 586B3444CFC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 02:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231859AbhKDBYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 21:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231206AbhKDBYr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 21:24:47 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A5DC06127A
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 18:22:09 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id p18so4490533plf.13
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 18:22:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eHqAIzV719j9lAkpwSrBfwZkYLTO2TUYbW63qRGOcw8=;
-        b=JcDp7is6r26TrSdZ0q88ZPFszRzkzCKWQuNv8lvraPDM50WH6GhwKYgOTd+Poe0Ofp
-         QiM3HSyb4VpWvdmvy9DS4EXMAwF1O98JlIHepU7K6N1uvq7ZKDEVSF6UMUH7qK0weYfj
-         Zdf9LX/SDC7/oaD+O2O6l8WzEQ8kRkgvi1+ZaxeOIO9pEyhFQizHWDo2TN7bvLisVjw/
-         8zfaxAEbz8xiKC/8jf6PcRpABdpSNl1gUW3XVc1Sw/0YercramVOWNYxhSqZPBrnMzXI
-         oA+tcKwZ3CT+uz6qG4g9D8WmSpaGxCwLLwmqfcm192cSLTDtmHCI5rhoByBpWMdoFfmJ
-         +Xkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eHqAIzV719j9lAkpwSrBfwZkYLTO2TUYbW63qRGOcw8=;
-        b=G5iF171oLHRCGKmNVc0eHiSPVD6A+yFZrmRiMsWN9W3gw3L8NQpUtmoYDV21QzQvWP
-         ARG1IORBdXCbSBIc5dF/jHKERJxfJVeWl3evbJrv/FDKBar1ATW3suN+rPVFzSACDSRF
-         ZFvRs/egLqESwWvi6aDnYwqqozmLK+QW2z2TZMVDtyYDONLeiTZlMalYD14Qve0MdXXt
-         WGh4bGW8GPMk/oqhV49K1Bs0OzUeAVa9P5vMSdE2GNST5t5tN9PkTo0TJZwtxjjVWnj2
-         r4mQDp/0BF4EKmyQ0aSCVRwPhnHXurIFLNPQV48F06hhk5VZ3wB2l0lSecUCVF6Sl19d
-         U3gQ==
-X-Gm-Message-State: AOAM53011jacNPu1BzbphP6zYwItDIf9+0oZFWc003Lz4cX/MDPdBqpN
-        F3DRcifdRNQl4EFPZ9ON+G5nJQ==
-X-Google-Smtp-Source: ABdhPJx6xhIDWyRA1hCuL+WEEewz3TJLvBAIAp/NDnCi6Iky/USsaRIUt3iyHq1gKN1wqrr1GE5tgw==
-X-Received: by 2002:a17:90a:9501:: with SMTP id t1mr18921689pjo.134.1635988929371;
-        Wed, 03 Nov 2021 18:22:09 -0700 (PDT)
-Received: from localhost.localdomain ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id jz24sm2663464pjb.19.2021.11.03.18.22.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 18:22:08 -0700 (PDT)
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Tadeusz Struk <tadeusz.struk@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        syzbot+6055980d041c8ac23307@syzkaller.appspotmail.com
-Subject: [PATCH] io_uring: prevent io_put_identity() from freeing a static identity
-Date:   Wed,  3 Nov 2021 18:21:20 -0700
-Message-Id: <20211104012120.729261-1-tadeusz.struk@linaro.org>
-X-Mailer: git-send-email 2.33.1
+        id S231806AbhKDBbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 21:31:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230198AbhKDBbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 21:31:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDDE1611CA;
+        Thu,  4 Nov 2021 01:28:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635989323;
+        bh=S8V0kVV7BiWrn5rnLfOBkOmpnHRFMRQ9gXVIkTjhDaM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=QTKsJdfBtH5M7ITgTQJ8/xefv50yJ4Qcyyb1t61ZcWx/mxKYYN+c2Wa37BX5X3DmB
+         12EbJ7DryhyFPGLGZ7/AiOafgqstfyc8uYD65BwPVWK46Kbjey7Qu4XS3c+nb1LnGq
+         emTN5H1rUhUjX1WQV1rYF4J5Y2fsHjJIF6jqaZmn+bv8s4brxHfYsnruO4nkG19t9H
+         MF+9vBNk2s54CgAQ6NndvNEHN148AUzFpLnjngE+2HLeXdUfjsPBVMh0c0W8LdFjpq
+         Y29OFW4UrL7E4k7umxUXYE56sphSUVgxI4R/TBHBveok0+HYUOgRhRdW+hIa4Fay7y
+         qQ141pH5lpGGQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 8C34D5C0848; Wed,  3 Nov 2021 18:28:43 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 18:28:43 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Jun Miao <jun.miao@windriver.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Dmitry Vyukov <dvyukov@google.com>, qiang.zhang1211@gmail.com,
+        RCU <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        miaojun0823@163.com, ryabinin.a.a@gmail.com,
+        Alexander Potapenko <glider@google.com>,
+        jianwei.hu@windriver.com, melver@google.com
+Subject: Re: [PATCH] rcu: avoid alloc_pages() when recording stack
+Message-ID: <20211104012843.GD641268@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211101103158.3725704-1-jun.miao@windriver.com>
+ <96f9d669-b9da-f387-199e-e6bf36081fbd@windriver.com>
+ <CA+KHdyU98uHkf1VKbvFs0wcXz7SaizENRXn4BEpKJhe+KmXZuw@mail.gmail.com>
+ <baa768a3-aacf-ba3a-8d20-0abc78eca2f7@windriver.com>
+ <CA+KHdyUEtBQjh61Xx+4a-AS0+z18CW1W5GzaRVsihuy=PUpUxA@mail.gmail.com>
+ <20211103181315.GT880162@paulmck-ThinkPad-P17-Gen-1>
+ <20211103212117.GA631708@paulmck-ThinkPad-P17-Gen-1>
+ <309b8284-1c31-7cc4-eb40-ba6d8d136c09@windriver.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <309b8284-1c31-7cc4-eb40-ba6d8d136c09@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Note: this applies to 5.10 stable only. It doesn't trigger on anything
-above 5.10 as the code there has been substantially reworked. This also
-doesn't apply to any stable kernel below 5.10 afaict.
+On Thu, Nov 04, 2021 at 09:09:24AM +0800, Jun Miao wrote:
+> 
+> On 11/4/21 5:21 AM, Paul E. McKenney wrote:
+> > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > 
+> > On Wed, Nov 03, 2021 at 11:13:15AM -0700, Paul E. McKenney wrote:
+> > > On Wed, Nov 03, 2021 at 02:55:48PM +0100, Uladzislau Rezki wrote:
+> > > > On Wed, Nov 3, 2021 at 7:51 AM Jun Miao <jun.miao@windriver.com> wrote:
+> > > > > 
+> > > > > On 11/2/21 10:53 PM, Uladzislau Rezki wrote:
+> > > > > > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > > > > > 
+> > > > > > > Add KASAN maintainers
+> > > > > > > 
+> > > > > > > On 11/1/21 6:31 PM, Jun Miao wrote:
+> > > > > > > > The default kasan_record_aux_stack() calls stack_depot_save() with GFP_NOWAIT,
+> > > > > > > > which in turn can then call alloc_pages(GFP_NOWAIT, ...).  In general, however,
+> > > > > > > > it is not even possible to use either GFP_ATOMIC nor GFP_NOWAIT in certain
+> > > > > > > > non-preemptive contexts/RT kernel including raw_spin_locks (see gfp.h and ab00db216c9c7).
+> > > > > > > > 
+> > > > > > > > Fix it by instructing stackdepot to not expand stack storage via alloc_pages()
+> > > > > > > > in case it runs out by using kasan_record_aux_stack_noalloc().
+> > > > > > > > 
+> > > > > > > > Jianwei Hu reported:
+> > > > > > > >     BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:969
+> > > > > > > >     in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 15319, name: python3
+> > > > > > > >     INFO: lockdep is turned off.
+> > > > > > > >     irq event stamp: 0
+> > > > > > > >     hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> > > > > > > >     hardirqs last disabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
+> > > > > > > >     softirqs last  enabled at (0): [<ffffffff856c8b13>] copy_process+0xaf3/0x2590
+> > > > > > > >     softirqs last disabled at (0): [<0000000000000000>] 0x0
+> > > > > > > >     CPU: 6 PID: 15319 Comm: python3 Tainted: G        W  O 5.15-rc7-preempt-rt #1
+> > > > > > > >     Hardware name: Supermicro SYS-E300-9A-8C/A2SDi-8C-HLN4F, BIOS 1.1b 12/17/2018
+> > > > > > > >     Call Trace:
+> > > > > > > >      show_stack+0x52/0x58
+> > > > > > > >      dump_stack+0xa1/0xd6
+> > > > > > > >      ___might_sleep.cold+0x11c/0x12d
+> > > > > > > >      rt_spin_lock+0x3f/0xc0
+> > > > > > > >      rmqueue+0x100/0x1460
+> > > > > > > >      rmqueue+0x100/0x1460
+> > > > > > > >      mark_usage+0x1a0/0x1a0
+> > > > > > > >      ftrace_graph_ret_addr+0x2a/0xb0
+> > > > > > > >      rmqueue_pcplist.constprop.0+0x6a0/0x6a0
+> > > > > > > >       __kasan_check_read+0x11/0x20
+> > > > > > > >       __zone_watermark_ok+0x114/0x270
+> > > > > > > >       get_page_from_freelist+0x148/0x630
+> > > > > > > >       is_module_text_address+0x32/0xa0
+> > > > > > > >       __alloc_pages_nodemask+0x2f6/0x790
+> > > > > > > >       __alloc_pages_slowpath.constprop.0+0x12d0/0x12d0
+> > > > > > > >       create_prof_cpu_mask+0x30/0x30
+> > > > > > > >       alloc_pages_current+0xb1/0x150
+> > > > > > > >       stack_depot_save+0x39f/0x490
+> > > > > > > >       kasan_save_stack+0x42/0x50
+> > > > > > > >       kasan_save_stack+0x23/0x50
+> > > > > > > >       kasan_record_aux_stack+0xa9/0xc0
+> > > > > > > >       __call_rcu+0xff/0x9c0
+> > > > > > > >       call_rcu+0xe/0x10
+> > > > > > > >       put_object+0x53/0x70
+> > > > > > > >       __delete_object+0x7b/0x90
+> > > > > > > >       kmemleak_free+0x46/0x70
+> > > > > > > >       slab_free_freelist_hook+0xb4/0x160
+> > > > > > > >       kfree+0xe5/0x420
+> > > > > > > >       kfree_const+0x17/0x30
+> > > > > > > >       kobject_cleanup+0xaa/0x230
+> > > > > > > >       kobject_put+0x76/0x90
+> > > > > > > >       netdev_queue_update_kobjects+0x17d/0x1f0
+> > > > > > > >       ... ...
+> > > > > > > >       ksys_write+0xd9/0x180
+> > > > > > > >       __x64_sys_write+0x42/0x50
+> > > > > > > >       do_syscall_64+0x38/0x50
+> > > > > > > >       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > > > > > > 
+> > > > > > > > Fixes: 84109ab58590 ("rcu: Record kvfree_call_rcu() call stack for KASAN")
+> > > > > > > > Fixes: 26e760c9a7c8 ("rcu: kasan: record and print call_rcu() call stack")
+> > > > > > > > Reported-by: Jianwei Hu <jianwei.hu@windriver.com>
+> > > > > > > > Signed-off-by: Jun Miao <jun.miao@windriver.com>
+> > > > > > > > ---
+> > > > > > > >     kernel/rcu/tree.c | 4 ++--
+> > > > > > > >     1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > > > > > 
+> > > > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > > > > > index 8270e58cd0f3..2c1034580f15 100644
+> > > > > > > > --- a/kernel/rcu/tree.c
+> > > > > > > > +++ b/kernel/rcu/tree.c
+> > > > > > > > @@ -3026,7 +3026,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > > > > > > >         head->func = func;
+> > > > > > > >         head->next = NULL;
+> > > > > > > >         local_irq_save(flags);
+> > > > > > > > -     kasan_record_aux_stack(head);
+> > > > > > > > +     kasan_record_aux_stack_noalloc(head);
+> > > > > > > >         rdp = this_cpu_ptr(&rcu_data);
+> > > > > > > > 
+> > > > > > > >         /* Add the callback to our list. */
+> > > > > > > > @@ -3591,7 +3591,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > > > > > > >                 return;
+> > > > > > > >         }
+> > > > > > > > 
+> > > > > > > > -     kasan_record_aux_stack(ptr);
+> > > > > > > > +     kasan_record_aux_stack_noalloc(ptr);
+> > > > > > > >         success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
+> > > > > > > >         if (!success) {
+> > > > > > > >                 run_page_cache_worker(krcp);
+> > > > > > Yep an allocation is tricky here. This change looks correct to me at
+> > > > > > least from the point that it does not allocate.
+> > > > > > 
+> > > > > > --
+> > > > > > Uladzislau Rezki
+> > > > > Thanks your approval. Could you like to give me a review?
+> > > > > 
+> > > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > I have queued it for review and testing, thank you both!  I do have
+> > > some remaining concerns about this code being starved for memory.  I am
+> > > wondering if the code needs to check the interrupt state.  And perhaps
+> > > also whether locks are held.  I of course will refrain from sending
+> > > this to mainline until these concerns are resolved.
+> > > 
+> > > Marco, Dmitry, thoughts?
+> > Well, the compiler does have an opinion:
+> > 
+> > kernel/rcu/tree.c: In function ‘__call_rcu’:
+> > kernel/rcu/tree.c:3029:2: error: implicit declaration of function ‘kasan_record_aux_stack_noalloc’; did you mean ‘kasan_record_aux_stack’? [-Werror=implicit-function-declaration]
+> >   3029 |  kasan_record_aux_stack_noalloc(head);
+> >        |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >        |  kasan_record_aux_stack
+> > 
+> > I get the same message after merging in current mainline.
+> > 
+> > I have therefore dropped this patch for the time being.
+> > 
+> >                                                          Thanx, Paul
+> Hi Paul E,
+> The kasan_record_aux_stack_noalloc() is just introduce to linux-next now,
+> and marking "Notice: this object is not reachable from any branch." in
+> commit.
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/include/linux/kasan.h?h=next-20211029&id=2f64acf6b653d01fbdc92a693f12bbf71a205926
 
-Syzbot found a bug: KASAN: invalid-free in io_dismantle_req
-https://syzkaller.appspot.com/bug?id=123d9a852fc88ba573ffcb2dbcf4f9576c3b0559
+That would explain it!  Feel free to resend once the functionality is
+more generally available.
 
-The test submits bunch of io_uring writes and exits, which then triggers
-uring_task_cancel() and io_put_identity(), which in some corner cases,
-tries to free a static identity. This causes a panic as shown in the
-trace below:
-
- BUG: KASAN: double-free or invalid-free in kfree+0xd5/0x310
- CPU: 0 PID: 4618 Comm: repro Not tainted 5.10.76-05281-g4944ec82ebb9-dirty #17
- Call Trace:
-  dump_stack_lvl+0x1b2/0x21b
-  print_address_description+0x8d/0x3b0
-  kasan_report_invalid_free+0x58/0x130
-  ____kasan_slab_free+0x14b/0x170
-  __kasan_slab_free+0x11/0x20
-  slab_free_freelist_hook+0xcc/0x1a0
-  kfree+0xd5/0x310
-  io_dismantle_req+0x9b0/0xd90
-  io_do_iopoll+0x13a4/0x23e0
-  io_iopoll_try_reap_events+0x116/0x290
-  io_uring_cancel_task_requests+0x197d/0x1ee0
-  io_uring_flush+0x170/0x6d0
-  filp_close+0xb0/0x150
-  put_files_struct+0x1d4/0x350
-  exit_files+0x80/0xa0
-  do_exit+0x6d9/0x2390
-  do_group_exit+0x16a/0x2d0
-  get_signal+0x133e/0x1f80
-  arch_do_signal+0x7b/0x610
-  exit_to_user_mode_prepare+0xaa/0xe0
-  syscall_exit_to_user_mode+0x24/0x40
-  do_syscall_64+0x3d/0x70
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
- Allocated by task 4611:
-  ____kasan_kmalloc+0xcd/0x100
-  __kasan_kmalloc+0x9/0x10
-  kmem_cache_alloc_trace+0x208/0x390
-  io_uring_alloc_task_context+0x57/0x550
-  io_uring_add_task_file+0x1f7/0x290
-  io_uring_create+0x2195/0x3490
-  __x64_sys_io_uring_setup+0x1bf/0x280
-  do_syscall_64+0x31/0x70
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
- The buggy address belongs to the object at ffff88810732b500
-  which belongs to the cache kmalloc-192 of size 192
- The buggy address is located 88 bytes inside of
-  192-byte region [ffff88810732b500, ffff88810732b5c0)
- Kernel panic - not syncing: panic_on_warn set ...
-
-This issue bisected to this commit:
-commit 186725a80c4e ("io_uring: fix skipping disabling sqo on exec")
-
-Simple reverting the offending commit doesn't work as it hits some
-other, related issues like:
-
-/* sqo_dead check is for when this happens after cancellation */
-WARN_ON_ONCE(ctx->sqo_task == current && !ctx->sqo_dead &&
-	     !xa_load(&tctx->xa, (unsigned long)file));
-
- ------------[ cut here ]------------
- WARNING: CPU: 1 PID: 5622 at fs/io_uring.c:8960 io_uring_flush+0x5bc/0x6d0
- Modules linked in:
- CPU: 1 PID: 5622 Comm: repro Not tainted 5.10.76-05281-g4944ec82ebb9-dirty #16
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-6.fc35 04/01/2014
- RIP: 0010:io_uring_flush+0x5bc/0x6d0
- Call Trace:
- filp_close+0xb0/0x150
- put_files_struct+0x1d4/0x350
- reset_files_struct+0x88/0xa0
- bprm_execve+0x7f2/0x9f0
- do_execveat_common+0x46f/0x5d0
- __x64_sys_execve+0x92/0xb0
- do_syscall_64+0x31/0x70
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Changing __io_uring_task_cancel() to call io_disable_sqo_submit() directly,
-as the comment suggests, only if __io_uring_files_cancel() is not executed
-seems to fix the issue.
-
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: <io-uring@vger.kernel.org>
-Cc: <linux-fsdevel@vger.kernel.org>
-Cc: <linux-kernel@vger.kernel.org>
-Cc: <stable@vger.kernel.org>
-Reported-by: syzbot+6055980d041c8ac23307@syzkaller.appspotmail.com
-Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
----
- fs/io_uring.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 0736487165da..fcf9ffe9b209 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -8882,20 +8882,18 @@ void __io_uring_task_cancel(void)
- 	struct io_uring_task *tctx = current->io_uring;
- 	DEFINE_WAIT(wait);
- 	s64 inflight;
-+	int canceled = 0;
- 
- 	/* make sure overflow events are dropped */
- 	atomic_inc(&tctx->in_idle);
- 
--	/* trigger io_disable_sqo_submit() */
--	if (tctx->sqpoll)
--		__io_uring_files_cancel(NULL);
--
- 	do {
- 		/* read completions before cancelations */
- 		inflight = tctx_inflight(tctx);
- 		if (!inflight)
- 			break;
- 		__io_uring_files_cancel(NULL);
-+		canceled = 1;
- 
- 		prepare_to_wait(&tctx->wait, &wait, TASK_UNINTERRUPTIBLE);
- 
-@@ -8909,6 +8907,21 @@ void __io_uring_task_cancel(void)
- 		finish_wait(&tctx->wait, &wait);
- 	} while (1);
- 
-+	/*
-+	 * trigger io_disable_sqo_submit()
-+	 * if not already done by __io_uring_files_cancel()
-+	 */
-+	if (tctx->sqpoll && !canceled) {
-+		struct file *file;
-+		unsigned long index;
-+
-+		xa_for_each(&tctx->xa, index, file) {
-+			struct io_ring_ctx *ctx = file->private_data;
-+
-+			io_disable_sqo_submit(ctx);
-+		}
-+	}
-+
- 	atomic_dec(&tctx->in_idle);
- 
- 	io_uring_remove_task_files(tctx);
--- 
-2.33.1
-
+							Thanx, Paul
