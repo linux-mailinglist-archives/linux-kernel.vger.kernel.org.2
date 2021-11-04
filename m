@@ -2,133 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219C7445068
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:35:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 944C644506B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbhKDIh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:37:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230410AbhKDIht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:37:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5E7D611CB;
-        Thu,  4 Nov 2021 08:35:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636014911;
-        bh=+UAkRrFFch22X7642iIOQo7roal4lSmXVN1jw2B0LFA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nlKmrxIcvLo9iKreFITSTsmfNMw9MhZtS/doOEhrynLCh+2S37qiw+DIAvBohsiA+
-         eWJypCbEbb1MKAJ062CqvAWWAw/SGjKjXif9Za0uKL+p+mAMraHDbqkH1tiHqTniG6
-         Tcr4xm5h6661oLizgg1SS8L7eNRaE0rEvJUwERwE=
-Date:   Thu, 4 Nov 2021 09:34:58 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Stefan Agner <stefan@agner.ch>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paul.burton@mips.com>,
-        James Hogan <jhogan@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        "open list:MIPS" <linux-mips@linux-mips.org>,
-        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH stable 4.19 1/1] arch: pgtable: define
- MAX_POSSIBLE_PHYSMEM_BITS where needed
-Message-ID: <YYObMlXLFi7pAJ83@kroah.com>
-References: <20211103205656.374678-1-f.fainelli@gmail.com>
+        id S230479AbhKDIi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:38:57 -0400
+Received: from [113.204.237.245] ([113.204.237.245]:57404 "EHLO
+        test.cqplus1.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230084AbhKDIi4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 04:38:56 -0400
+X-MailGates: (flag:1,DYNAMIC,RELAY,NOHOST,LAN:PASS)(compute_score:DELIVE
+        R,40,3)
+Received: from 172.27.96.203
+        by cqmailgates with MailGates ESMTP Server V5.0(16727:0:AUTH_RELAY)
+        (envelope-from <qinjian@cqplus1.com>); Thu, 04 Nov 2021 16:35:07 +0800 (CST)
+Received: from CQEXMAIL01.cqplus1.com (172.27.96.203) by
+ CQEXMAIL01.cqplus1.com (172.27.96.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 4 Nov 2021 16:35:00 +0800
+Received: from CQEXMAIL01.cqplus1.com ([fe80::f436:deb3:dd20:6b5]) by
+ CQEXMAIL01.cqplus1.com ([fe80::f436:deb3:dd20:6b5%4]) with mapi id
+ 15.01.2176.009; Thu, 4 Nov 2021 16:35:00 +0800
+From:   =?gb2312?B?cWluamlhblvx+72hXQ==?= <qinjian@cqplus1.com>
+To:     Marc Zyngier <maz@kernel.org>
+CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        =?gb2312?B?V2VsbHMgTHUghc63vPJ2?= <wells.lu@sunplus.com>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIIHY0IDAwLzEwXSBBZGQgU3VucGx1cyBTUDcwMjEgU29D?=
+ =?gb2312?Q?_Support?=
+Thread-Topic: [PATCH v4 00/10] Add Sunplus SP7021 SoC Support
+Thread-Index: AQHX0SjJ2ipTnH6SmUuBHDnmt6AZUKvygdKAgACJW1A=
+Date:   Thu, 4 Nov 2021 08:35:00 +0000
+Message-ID: <98b3e76029bb4d7096de462c46bca08d@cqplus1.com>
+References: <cover.1635496594.git.qinjian@cqplus1.com>
+        <cover.1635993377.git.qinjian@cqplus1.com> <8735oc9voy.wl-maz@kernel.org>
+In-Reply-To: <8735oc9voy.wl-maz@kernel.org>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.28.110.18]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103205656.374678-1-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 01:56:56PM -0700, Florian Fainelli wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> [ Upstream commit cef397038167ac15d085914493d6c86385773709 ]
-> 
-> Stefan Agner reported a bug when using zsram on 32-bit Arm machines
-> with RAM above the 4GB address boundary:
-> 
->   Unable to handle kernel NULL pointer dereference at virtual address 00000000
->   pgd = a27bd01c
->   [00000000] *pgd=236a0003, *pmd=1ffa64003
->   Internal error: Oops: 207 [#1] SMP ARM
->   Modules linked in: mdio_bcm_unimac(+) brcmfmac cfg80211 brcmutil raspberrypi_hwmon hci_uart crc32_arm_ce bcm2711_thermal phy_generic genet
->   CPU: 0 PID: 123 Comm: mkfs.ext4 Not tainted 5.9.6 #1
->   Hardware name: BCM2711
->   PC is at zs_map_object+0x94/0x338
->   LR is at zram_bvec_rw.constprop.0+0x330/0xa64
->   pc : [<c0602b38>]    lr : [<c0bda6a0>]    psr: 60000013
->   sp : e376bbe0  ip : 00000000  fp : c1e2921c
->   r10: 00000002  r9 : c1dda730  r8 : 00000000
->   r7 : e8ff7a00  r6 : 00000000  r5 : 02f9ffa0  r4 : e3710000
->   r3 : 000fdffe  r2 : c1e0ce80  r1 : ebf979a0  r0 : 00000000
->   Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
->   Control: 30c5383d  Table: 235c2a80  DAC: fffffffd
->   Process mkfs.ext4 (pid: 123, stack limit = 0x495a22e6)
->   Stack: (0xe376bbe0 to 0xe376c000)
-> 
-> As it turns out, zsram needs to know the maximum memory size, which
-> is defined in MAX_PHYSMEM_BITS when CONFIG_SPARSEMEM is set, or in
-> MAX_POSSIBLE_PHYSMEM_BITS on the x86 architecture.
-> 
-> The same problem will be hit on all 32-bit architectures that have a
-> physical address space larger than 4GB and happen to not enable sparsemem
-> and include asm/sparsemem.h from asm/pgtable.h.
-> 
-> After the initial discussion, I suggested just always defining
-> MAX_POSSIBLE_PHYSMEM_BITS whenever CONFIG_PHYS_ADDR_T_64BIT is
-> set, or provoking a build error otherwise. This addresses all
-> configurations that can currently have this runtime bug, but
-> leaves all other configurations unchanged.
-> 
-> I looked up the possible number of bits in source code and
-> datasheets, here is what I found:
-> 
->  - on ARC, CONFIG_ARC_HAS_PAE40 controls whether 32 or 40 bits are used
->  - on ARM, CONFIG_LPAE enables 40 bit addressing, without it we never
->    support more than 32 bits, even though supersections in theory allow
->    up to 40 bits as well.
->  - on MIPS, some MIPS32r1 or later chips support 36 bits, and MIPS32r5
->    XPA supports up to 60 bits in theory, but 40 bits are more than
->    anyone will ever ship
->  - On PowerPC, there are three different implementations of 36 bit
->    addressing, but 32-bit is used without CONFIG_PTE_64BIT
->  - On RISC-V, the normal page table format can support 34 bit
->    addressing. There is no highmem support on RISC-V, so anything
->    above 2GB is unused, but it might be useful to eventually support
->    CONFIG_ZRAM for high pages.
-> 
-> Fixes: 61989a80fb3a ("staging: zsmalloc: zsmalloc memory allocation library")
-> Fixes: 02390b87a945 ("mm/zsmalloc: Prepare to variable MAX_PHYSMEM_BITS")
-> Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Reviewed-by: Stefan Agner <stefan@agner.ch>
-> Tested-by: Stefan Agner <stefan@agner.ch>
-> Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-> Link: https://lore.kernel.org/linux-mm/bdfa44bf1c570b05d6c70898e2bbb0acf234ecdf.1604762181.git.stefan@agner.ch/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> [florian: patch arch/powerpc/include/asm/pte-common.h for 4.19.y]
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-
-All now queued up, thanks.
-
-greg k-h
+TWFyYywNCg0KR290IGl0LiBUaGFuayB5b3UgZm9yIHJlbWluZGluZyBtZS4NCkknbSBzb3JyeSBm
+b3IgdGhlIHByZXZpb3VzIG1pc3Rha2UuDQoNCg0KPiAtLS0tLdPKvP7Urbz+LS0tLS0NCj4gt6K8
+/sjLOiBNYXJjIFp5bmdpZXIgPG1hekBrZXJuZWwub3JnPg0KPiC3osvNyrG85DogMjAyMcTqMTHU
+wjTI1SAxNjoyMw0KPiDK1bz+yMs6IHFpbmppYW5b8fu9oV0gPHFpbmppYW5AY3FwbHVzMS5jb20+
+DQo+ILOty806IHJvYmgrZHRAa2VybmVsLm9yZzsgbXR1cnF1ZXR0ZUBiYXlsaWJyZS5jb207IHNi
+b3lkQGtlcm5lbC5vcmc7IHAuemFiZWxAcGVuZ3V0cm9uaXguZGU7IGxpbnV4QGFybWxpbnV4Lm9y
+Zy51azsNCj4gYnJvb25pZUBrZXJuZWwub3JnOyBhcm5kQGFybmRiLmRlOyBsaW51eC1hcm0ta2Vy
+bmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyBsaW51
+eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiBsaW51eC1jbGtAdmdlci5rZXJuZWwub3JnOyBX
+ZWxscyBMdSCFzre88nYgPHdlbGxzLmx1QHN1bnBsdXMuY29tPg0KPiDW98ziOiBSZTogW1BBVENI
+IHY0IDAwLzEwXSBBZGQgU3VucGx1cyBTUDcwMjEgU29DIFN1cHBvcnQNCj4gDQo+IFFpbiwNCj4g
+DQo+IE9uIFRodSwgMDQgTm92IDIwMjEgMDI6NTY6NTcgKzAwMDAsDQo+IFFpbiBKaWFuIDxxaW5q
+aWFuQGNxcGx1czEuY29tPiB3cm90ZToNCj4gPg0KPiA+IFRoaXMgcGF0Y2ggc2VyaWVzIGFkZCBT
+dW5wbHVzIFNQNzAyMSBTb0Mgc3VwcG9ydC4NCj4gPg0KPiA+IFN1bnBsdXMgU1A3MDIxIGlzIGFu
+IEFSTSBDb3J0ZXggQTcgKDQgY29yZXMpIGJhc2VkIFNvQy4gSXQgaW50ZWdyYXRlcyBtYW55DQo+
+ID4gcGVyaXBoZXJhbHMgKGV4OiBVQVJULCBJMkMsIFNQSSwgU0RJTywgZU1NQywgVVNCLCBTRCBj
+YXJkIGFuZCBldGMuKSBpbnRvIGENCj4gPiBzaW5nbGUgY2hpcC4gSXQgaXMgZGVzaWduZWQgZm9y
+IGluZHVzdHJpYWwgY29udHJvbC4NCj4gPg0KPiA+IFNQNzAyMSBjb25zaXN0cyBvZiB0d28gY2hp
+cHMgKGRpZXMpIGluIGEgcGFja2FnZS4gT25lIGlzIGNhbGxlZCBDLWNoaXANCj4gPiAoY29tcHV0
+aW5nIGNoaXApLiBJdCBpcyBhIDQtY29yZSBBUk0gQ29ydGV4IEE3IENQVS4gSXQgYWRvcHRzIGhp
+Z2gtbGV2ZWwNCj4gPiBwcm9jZXNzICgyMiBubSkgZm9yIGhpZ2ggcGVyZm9ybWFuY2UgY29tcHV0
+aW5nLiBUaGUgb3RoZXIgaXMgY2FsbGVkIFAtDQo+ID4gY2hpcCAocGVyaXBoZXJhbCBjaGlwKS4g
+SXQgaGFzIG1hbnkgcGVyaXBoZXJhbHMgYW5kIGFuIEFSTSBBOTI2IGFkZGVkDQo+ID4gZXNwZWNp
+YWxseSBmb3IgcmVhbC10aW1lIGNvbnRyb2wuIFAtY2hpcCBpcyBtYWRlIGZvciBjdXN0b21lcnMu
+IEl0IGFkb3B0cw0KPiA+IGxvdy1sZXZlbCBwcm9jZXNzIChleDogMC4xMSB1bSkgdG8gcmVkdWNl
+IGNvc3QuDQo+IA0KPiBUaGF0J3MgdGhlIDNyZCB2ZXJzaW9uIG9mIHRoaXMgc2VyaWVzIHNpbmNl
+IEZyaWRheSwgdHdvIG9mIHRoZW0gZHVyaW5nDQo+IHRoZSBtZXJnZSB3aW5kb3cuIEFsbCB5b3Ug
+YXJlIGFjaGlldmluZyBpcyB0byBhY3R1YWxseSAqZGVsYXkqIHRoZQ0KPiByZXZpZXcgcHJvY2Vz
+cyAoYXQgdGhpcyByYXRlLCBJJ2xsIHByb2JhYmx5IHdhaXQgdW50aWwgdjExIGJlZm9yZSBJDQo+
+IHRha2UgYW5vdGhlciBsb29rIGF0IGl0KS4NCj4gDQo+IERvY3VtZW50YXRpb24vcHJvY2Vzcy9z
+dWJtaXR0aW5nLXBhdGNoZXMucnN0IHN0YXRlcyBpdCBjbGVhcmx5Og0KPiANCj4gPHF1b3RlPg0K
+PiBXYWl0IGZvciBhIG1pbmltdW0gb2Ygb25lIHdlZWsgYmVmb3JlIHJlc3VibWl0dGluZw0KPiA8
+L3F1b3RlPg0KPiANCj4gU28gcGxlYXNlIGxlYXZlIHBlb3BsZSB0aGUgdGltZSB0byBhY3R1YWxs
+eSBkbyBhIGdvb2QgcmV2aWV3IGpvYiwgYW5kDQo+IHRha2UgdGhlIG9wcG9ydHVuaXR5IHRvIHJl
+dmlldyB5b3VyIG93biBwYXRjaGVzIGJlZm9yZSBwb3N0aW5nIHRoZW0NCj4gYWdhaW4uDQo+IA0K
+PiBUaGFua3MsDQo+IA0KPiAJTS4NCj4gDQo+IC0tDQo+IFdpdGhvdXQgZGV2aWF0aW9uIGZyb20g
+dGhlIG5vcm0sIHByb2dyZXNzIGlzIG5vdCBwb3NzaWJsZS4NCg==
