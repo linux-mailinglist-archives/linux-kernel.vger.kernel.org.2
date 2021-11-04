@@ -2,87 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57DEA44516A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 11:07:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8B7445173
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 11:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbhKDKJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 06:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbhKDKJp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 06:09:45 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F23C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 03:07:07 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HlK770t1Gz4xbw;
-        Thu,  4 Nov 2021 21:06:59 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1636020421;
-        bh=awT5bBlE5ynUwEEralGSrwt9ezjdXHOlQ81tJVY4khE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=isvl7dbJmKRaelsWXioQXmkjf4E7VBe87nOvKSM2A6rlPyoqNTtwQqcf287ZgGi8H
-         TFhLjw3sPDYTJL6e2ZohJjVRbBVkZZLCZDQC8XcxIb0Okb/JkQlzHswyIzekKwttgE
-         9XibYyZ9jvue+BTa2Ndb9qxKcmLlquDKBI+cLmS1IipOQpovJTRU5XSevFvvhE4C10
-         S9RzEvj7SvIxomSXbDfalToOdErzRNwvpj2kawa8oBSRckss2kMCrHYIeavbWcBlZH
-         6quyoZQzg4oGvcBQcyCb6+zw4ZrFjZi7lF0N6mRhX4qV5BqCusjTKyR3UtotIu32t1
-         tzL5isucUalcw==
-Date:   Thu, 4 Nov 2021 21:06:56 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     davidcomponentone@gmail.com
-Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        nathan@kernel.org, sfr@canb.auug.org.au, sxwjean@gmail.com,
-        aneesh.kumar@linux.ibm.com, yang.guang5@zte.com.cn,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH] powerpc: use swap() to make code cleaner
-Message-ID: <20211104210637.3c424bcc@elm.ozlabs.ibm.com>
-In-Reply-To: <20211104061709.1505592-1-yang.guang5@zte.com.cn>
-References: <20211104061709.1505592-1-yang.guang5@zte.com.cn>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/R16OcEvAD708zS6cRq.O30G";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S230410AbhKDKRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 06:17:13 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:49978 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230101AbhKDKRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 06:17:12 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-05 (Coremail) with SMTP id zQCowABnbKh2soNhA2NEBg--.46711S2;
+        Thu, 04 Nov 2021 18:14:14 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     yishaih@nvidia.com, dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] RDMA/mlx4: Fix potential memory leak
+Date:   Thu,  4 Nov 2021 10:14:12 +0000
+Message-Id: <1636020852-3951757-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: zQCowABnbKh2soNhA2NEBg--.46711S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtF1kJFy7ArWDKw1UGF15Jwb_yoWfXwc_AF
+        1jvr9rGas8Ar93CrsrWry3uFySvr4DWwn7Z3Wvgrnxury5Ga17J397tFZ5Zw4xW348KF9x
+        AryqkrWIyr4rGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcxFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8twCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUboKZJUUUUU==
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/R16OcEvAD708zS6cRq.O30G
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+In the error path, the dev->dev isn't released.
+Therefore, it might be better to fix it to avoid
+potential memory leak.
 
-Hi,
+Fixes: 9376932 ("IB/mlx4_ib: Add support for user MR re-registration")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ drivers/infiniband/hw/mlx4/mr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Thu,  4 Nov 2021 14:17:09 +0800 davidcomponentone@gmail.com wrote:
->
-> From: Yang Guang <yang.guang5@zte.com.cn>
->=20
-> Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
-> opencoding it.
+diff --git a/drivers/infiniband/hw/mlx4/mr.c b/drivers/infiniband/hw/mlx4/mr.c
+index 50becc0..d8ae92e 100644
+--- a/drivers/infiniband/hw/mlx4/mr.c
++++ b/drivers/infiniband/hw/mlx4/mr.c
+@@ -473,7 +473,7 @@ struct ib_mr *mlx4_ib_rereg_user_mr(struct ib_mr *mr, int flags, u64 start,
+ 	 */
+ 	err =  mlx4_mr_hw_get_mpt(dev->dev, &mmr->mmr, &pmpt_entry);
+ 	if (err)
+-		return ERR_PTR(err);
++		goto release_mpt_entry;
+ 
+ 	if (flags & IB_MR_REREG_PD) {
+ 		err = mlx4_mr_hw_change_pd(dev->dev, *pmpt_entry,
+-- 
+2.7.4
 
-So if swap() is in the above include file, then you should include it.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/R16OcEvAD708zS6cRq.O30G
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGDsMAACgkQAVBC80lX
-0GzJQQgAg/kH3K8D26DLC1G83icbaaUB7A770GEvFjsQW+93XumOEFQQ/PW9y9Qj
-SAWzu/UnEGWzoNcxNtrc5zB0IgOHqpg32KkwjK2R46p2h/SogfaWVXD3POrLwMMg
-w1l2V/36ORlDTbURwwBuPU/790L7ZY8q82Xhhu6AMWcB4Za7TerOrrOhi4+uVP4w
-fpCAP+6KFhUyHwIvS/uK7AH7BwEugJSjk07b4A6hGwlx/AoloQFIkdmTXZ1jLHkS
-AVEeq7x2dD18junmwjmXJe09HLEAuqNccA3uRLCS8gL+3tq4iPTc4+bg5lslznis
-sjJ0cFMBlDbJSaG9hiEwa1IqoOHMvg==
-=h+K3
------END PGP SIGNATURE-----
-
---Sig_/R16OcEvAD708zS6cRq.O30G--
