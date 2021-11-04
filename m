@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDEF444F1A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:45:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A009E444F1B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhKDGsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50976 "EHLO
+        id S231814AbhKDGsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:48:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbhKDGqw (ORCPT
+        with ESMTP id S231476AbhKDGr0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:46:52 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CEFC0797BB
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:43:04 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id m78-20020a252651000000b005c1f44d3c7bso7394106ybm.22
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 23:43:04 -0700 (PDT)
+        Thu, 4 Nov 2021 02:47:26 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44CDAC061227
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:43:07 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id r67-20020a252b46000000b005bea12c4befso7325482ybr.19
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 23:43:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=KzZeBe+O8SKYymb2H1BN3nOBX8ztzQBCRsWikxLb7wk=;
-        b=FZQUUxZNWSDvNS/BTKjZQZBIBSViNnqULGO4e40pX+85w5Sgftch/C5Q+XlgjaN+yE
-         tVk4mDPczi+6CD6z/mioI5JA+cY4GjomN4DsPvUbl4rwqzty+DXJLZVw0BMQIYMAX7q2
-         CMYIpzj9dynUgfe4RV7W7Qia+3T01gS6D3HzN2JKM2IM0aQQw7654rSCmyOt/3RpRObx
-         1HFQpxD40lPYJJtfa+yGovEnTdWSpYlVIUPBT+1Knq/BFlM9UeHJPAZXD7rTUSY2HyQf
-         xvpejjJqX5Des1veW1pBVjPjvZJzMmz+Dgp52sqPbcUOykAyiCB1/8ZUksMBJd/UWj9y
-         +zHA==
+        bh=bDa29u/ndiNsX8EwvAxzBRsCHsm6XVJUwsCYIKbSYNU=;
+        b=IeiSouheZYR16SzpZCnr7kTmgjl/G3L1ef4UnCnaz2hsyEQJh1ffEQrLq2e291JS86
+         sCLewRsA4/bjaTppf6Jhl7uuwm1Ou5F6fClQwkXUys+7NIP64vyORjrBHOq2RfzgsXiK
+         sVvX1ZPBT5txYECtczP2zjNVOMHurK/NFMWXoBJzS7tBGPU4mEMfcchIWDuz0PB1axmd
+         G7Clb6qHRm5wZRCmtXOvp0RypZVLYU/dAJwict8M9NLdCoJgCbC0RxgkRk5ZIddHN1GM
+         pubcayEHKH4+C501/7fKBhY5fBM0B9Facf0WebWhhpr/HgpHFEMOQWzhzClk+Z65atQw
+         L0Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=KzZeBe+O8SKYymb2H1BN3nOBX8ztzQBCRsWikxLb7wk=;
-        b=jZp4d362U9+Es2WzSnI7J0jAVJTCb8kyq67sdiXLiMVRIT3/RjcHpTQom06ydQW9H7
-         WzMk/w46H2yNKncGYHKln2LScmlDl8IKeJqKgsKA04mA4FRgTuCvsbS+ptGCU1+jgb1v
-         f+InvsCk/j3CZyu7ffD3GyN78ckHbBiw82n48Oex4XbnJPPjgz7ZuebrmSeN4C1M/Ch2
-         rpkY5aYfSl0lqrf+TNLUDSRwGSeD1hxLsXUJPCceBv7WiVS3r2ryTbJYeg5S8GvT6uNW
-         C/7QqVkLeXRVbBn2VodPLtRPE9L9hJIctVzVgQYQEFq5IJTPYywGhpdPeuUsH5B2G9c1
-         3XDQ==
-X-Gm-Message-State: AOAM5325Pql6CB6KqOdK/Puv1yDqygyt2LAQCfLT4jd5O/aLT9mQ+jO3
-        ofCykN4oycRCyNz3xbd7EL7FoL9xy0q4
-X-Google-Smtp-Source: ABdhPJzvzyAhGmbbAYoN8rpH+tUKmRC0oOVd9ipehXN0lpWYMc9oAjXdjOmQkYD3C3LWW2fVeNQDXfRVkmDk
+        bh=bDa29u/ndiNsX8EwvAxzBRsCHsm6XVJUwsCYIKbSYNU=;
+        b=u1fVQv7jt51+7CQjdbUbsyyzMuiAz/hd0vpJPKmp5fG0Nf3Wd2o7gGGeUP4/mgHDr9
+         bHPTFH03ZCjGv4tOg8qTsEEF4sWKe0vD2hz1l1kve/IZlNbkqwQ4kSQoQ6A4uBinqb6n
+         0iO5oRGhGLuIqlVBzm54OQFLlo0xZQEIK0ieuFic3MQBDRPBqISS1m6yYZ1xSBJGE3Jy
+         e+PqOMCATlbyKvEt05lm/q5WWfgiiQH5uumCQPlpbsKBBxiMNNN9MG8WWVBHsioqc9KS
+         5Tr449E7SjAZwuEBMbGV49lepE4igVu5AyVz85eL0uq7XKMYGJ0EkfRkWHPqTEEGBg8n
+         d44w==
+X-Gm-Message-State: AOAM532Y+DgG60WgVEP5GckFhSIsJccyI7B56Ds9KvbfnvlmIz2vgYvq
+        ZhNHv2udPwf1WO3bQo/isYG/vnkK4VSo
+X-Google-Smtp-Source: ABdhPJzndUDGPLfkemYeioDan06akCfGJJPe/2rXbIlDxIfa4XKvX4RtvrWTGD1s98JS3x6DpkbT/I2oLYKg
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:8ce:af84:2510:3f29])
- (user=irogers job=sendgmr) by 2002:a25:9c02:: with SMTP id
- c2mr32564801ybo.137.1636008183976; Wed, 03 Nov 2021 23:43:03 -0700 (PDT)
-Date:   Wed,  3 Nov 2021 23:42:06 -0700
+ (user=irogers job=sendgmr) by 2002:a25:2bc1:: with SMTP id
+ r184mr52349373ybr.44.1636008186470; Wed, 03 Nov 2021 23:43:06 -0700 (PDT)
+Date:   Wed,  3 Nov 2021 23:42:07 -0700
 In-Reply-To: <20211104064208.3156807-1-irogers@google.com>
-Message-Id: <20211104064208.3156807-21-irogers@google.com>
+Message-Id: <20211104064208.3156807-22-irogers@google.com>
 Mime-Version: 1.0
 References: <20211104064208.3156807-1-irogers@google.com>
 X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v3 20/22] perf test: TSC test, remove is_supported use
+Subject: [PATCH v3 21/22] perf test: Remove is_supported function
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -74,75 +74,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Migrate the is_supported functionality to returning TEST_SKIP.
-Motivation is kunit has no is_supported function.
+All tests now return TEST_SKIP if not supported. Removing this function
+brings perf's test_suite struct more inline with kunit.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/perf-time-to-tsc.c | 39 ++++++++++++-----------------
- 1 file changed, 16 insertions(+), 23 deletions(-)
+ tools/perf/tests/builtin-test.c | 14 +-------------
+ tools/perf/tests/tests.h        |  1 -
+ 2 files changed, 1 insertion(+), 14 deletions(-)
 
-diff --git a/tools/perf/tests/perf-time-to-tsc.c b/tools/perf/tests/perf-time-to-tsc.c
-index 594013e94ed0..d12d0ad81801 100644
---- a/tools/perf/tests/perf-time-to-tsc.c
-+++ b/tools/perf/tests/perf-time-to-tsc.c
-@@ -23,6 +23,16 @@
- #include "pmu.h"
- #include "pmu-hybrid.h"
- 
-+/*
-+ * Except x86_64/i386 and Arm64, other archs don't support TSC in perf.  Just
-+ * enable the test for x86_64/i386 and Arm64 archs.
-+ */
-+#if defined(__x86_64__) || defined(__i386__) || defined(__aarch64__)
-+#define TSC_IS_SUPPORTED 1
-+#else
-+#define TSC_IS_SUPPORTED 0
-+#endif
-+
- #define CHECK__(x) {				\
- 	while ((x) < 0) {			\
- 		pr_debug(#x " failed!\n");	\
-@@ -69,6 +79,11 @@ static int test__perf_time_to_tsc(struct test_suite *test __maybe_unused, int su
- 	u64 test_time, comm1_time = 0, comm2_time = 0;
- 	struct mmap *md;
- 
-+	if (!TSC_IS_SUPPORTED) {
-+		pr_debug("Test not supported on this architecture");
-+		return TEST_SKIP;
-+	}
-+
- 	threads = thread_map__new(-1, getpid(), UINT_MAX);
- 	CHECK_NOT_NULL__(threads);
- 
-@@ -185,26 +200,4 @@ static int test__perf_time_to_tsc(struct test_suite *test __maybe_unused, int su
- 	return err;
+diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+index 1d9c0e03b8db..19b1228dbd5d 100644
+--- a/tools/perf/tests/builtin-test.c
++++ b/tools/perf/tests/builtin-test.c
+@@ -150,11 +150,6 @@ static const char *test_description(const struct test_suite *t, int subtest)
+ 	return t->desc;
  }
  
--static bool test__tsc_is_supported(void)
+-static bool is_supported(const struct test_suite *t)
 -{
--	/*
--	 * Except x86_64/i386 and Arm64, other archs don't support TSC in perf.
--	 * Just enable the test for x86_64/i386 and Arm64 archs.
--	 */
--#if defined(__x86_64__) || defined(__i386__) || defined(__aarch64__)
--	return true;
--#else
--	return false;
--#endif
+-	return !t->is_supported || t->is_supported();
 -}
 -
--static struct test_case perf_time_to_tsc_tests[] = {
--	TEST_CASE("Convert perf time to TSC", perf_time_to_tsc),
--	{ .name = NULL, }
--};
+ static test_fnptr test_function(const struct test_suite *t, int subtest)
+ {
+ 	if (subtest <= 0)
+@@ -480,12 +475,6 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
+ 				continue;
+ 		}
+ 
+-		if (!is_supported(t)) {
+-			pr_debug("%2d: %-*s: Disabled\n", i, width,
+-				 test_description(t, -1));
+-			continue;
+-		}
 -
--struct test_suite suite__perf_time_to_tsc = {
--	.desc = "Convert perf time to TSC",
--	.test_cases = perf_time_to_tsc_tests,
--	.is_supported = test__tsc_is_supported,
--};
-+DEFINE_SUITE("Convert perf time to TSC", perf_time_to_tsc);
+ 		pr_info("%2d: %-*s:", i, width, test_description(t, -1));
+ 
+ 		if (intlist__find(skiplist, i)) {
+@@ -583,8 +572,7 @@ static int perf_test__list(int argc, const char **argv)
+ 	for_each_test(j, k, t) {
+ 		int curr = i++;
+ 
+-		if (!perf_test__matches(test_description(t, -1), curr, argc, argv) ||
+-		    !is_supported(t))
++		if (!perf_test__matches(test_description(t, -1), curr, argc, argv))
+ 			continue;
+ 
+ 		pr_info("%2d: %s\n", i, test_description(t, -1));
+diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+index 958f94dcc94c..15051801c790 100644
+--- a/tools/perf/tests/tests.h
++++ b/tools/perf/tests/tests.h
+@@ -44,7 +44,6 @@ struct test_suite {
+ 		bool skip_if_fail;
+ 	} subtest;
+ 	struct test_case *test_cases;
+-	bool (*is_supported)(void);
+ 	void *priv;
+ };
+ 
 -- 
 2.33.1.1089.g2158813163f-goog
 
