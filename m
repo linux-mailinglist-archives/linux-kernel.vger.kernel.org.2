@@ -2,140 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF0D445BF1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 22:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7AE445BF3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 22:59:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbhKDWCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 18:02:04 -0400
-Received: from mail-co1nam11on2052.outbound.protection.outlook.com ([40.107.220.52]:64778
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232318AbhKDWBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 18:01:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pgtrkz8WEq3115Tfd9ZEwQ+WgTxmHqn2fsh95Vv+Omz7eW2L+j8NZXuXk1EE6C5BGSpacE97xqAF9gJ3bLEOkbOREYTGw8lXkrnNtpAGhe6kw9mVv1SfaDmJ/2CpPLvcLHQLp0C6Of1lrGzjjSo1qppqKrm9BDw955oyPJmo9Gy+K/YaIAgQ32py+b0e9bUc4uZaPEif5RMjQv8gvRYfIp3Df410MAuk7oq3Njx/JjWNPvcHQqwHKj1giRHnxRQHBjmZF2UgCq3qJXf0fPDngupn+dpbforvfTe2R3+BGZZktjwElHUV5VYYcb9hOgHgUdiZtj1pbpz6AYwIcimMsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1/zdrYucSuwtgZKV6P8AFwtzs1S4Pjy1FDt7PgAuuWs=;
- b=jv9kpsUWYfTTqURfQvoHD2r2Ru72wBPY4BruRfg7F3SsIkgh4SbNarXhnNEr1nkcfbhov6isKyuNltBSA/Tu8Td5O5jHr5OtX+dsFNfbHp8AlyZa2mF6I3JTIimIdNMDIQvvVgwkvZS2P/vdkRmcnEJ0ycHfubixJIKr2jg9ecJMJdRBKUNe+jqZGw2HboWZdSwTHs1AXS4DrBmSYxwhh8gChDH0v1sy6tdHK7dIVyU1JQPzVZgDsNnJwvVwk1YrqtdE8vKsqvJA5JNjGkMgsstiXExvPD6QimXMuMuwXi3xx2ztY6aLcjJ3gVNYWPsiAICBjnfevRqFEjzkwoAjww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1/zdrYucSuwtgZKV6P8AFwtzs1S4Pjy1FDt7PgAuuWs=;
- b=Jei1IpiwTU6MJEtdGJZB7B5rvSdBuuZIREt7VkD5eY4Vam5q7+AuaJdmO7L5ZZOpXGia/J/PWNzDUTOQOb1MdQzpxCwo4+KVBqsCFmgI6KAGIJxVUEsbVjbiYmcVK1gjAd3uR7yAdABq6MVuwYAk7ErHskNlS+N1FWAEynKU88w=
-Received: from CO2PR04CA0114.namprd04.prod.outlook.com (2603:10b6:104:7::16)
- by DM5PR12MB1771.namprd12.prod.outlook.com (2603:10b6:3:110::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11; Thu, 4 Nov
- 2021 21:59:14 +0000
-Received: from CO1NAM11FT039.eop-nam11.prod.protection.outlook.com
- (2603:10b6:104:7:cafe::a2) by CO2PR04CA0114.outlook.office365.com
- (2603:10b6:104:7::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11 via Frontend
- Transport; Thu, 4 Nov 2021 21:59:14 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT039.mail.protection.outlook.com (10.13.174.110) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4669.10 via Frontend Transport; Thu, 4 Nov 2021 21:59:14 +0000
-Received: from ethanolx50f7host.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Thu, 4 Nov
- 2021 16:59:12 -0500
-From:   Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-To:     <x86@kernel.org>, <linux-edac@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Tony Luck <tony.luck@intel.com>, "H . Peter Anvin" <hpa@zytor.com>,
-        <yazen.ghannam@amd.com>, <Smita.KoralahalliChannabasappa@amd.com>
-Subject: [PATCH v3 6/6] x86/mce/mce-inject: Return error code to userspace from mce-inject module
-Date:   Thu, 4 Nov 2021 16:58:46 -0500
-Message-ID: <20211104215846.254012-7-Smita.KoralahalliChannabasappa@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211104215846.254012-1-Smita.KoralahalliChannabasappa@amd.com>
-References: <20211104215846.254012-1-Smita.KoralahalliChannabasappa@amd.com>
+        id S232069AbhKDWCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 18:02:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232336AbhKDWCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 18:02:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCC4E61267;
+        Thu,  4 Nov 2021 21:59:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636063175;
+        bh=dpz/Kq034PoEyMdh5IwG1YW0B9x+52MEt1VYusOTdWg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MEDhjRMWCrE9x1d4o9ANKrw8fpO/JMTKGQg/mSww83t7weUYScm8pmopyV5a86H47
+         uZLwLUhBPpSYA0BiZlBRDh4MhPSD4g/xMoP0D2t2muOYjoOUH0e2SkpaUBtqxJQttM
+         LwBW+5mBPWNXfVZTuhgxgKRg1O5N0NC+8l6o5OIWmg8dQNglkpmigiBxYQ5xCqOGxe
+         Fk+Th/9GgoATO/VqyQ60oTCRsidnU9vSjm/tE0RA4TQ2W2WNvxCDLp5N2NYcIiyy6u
+         juubWGcXBNgklrVHgVyuxPbi3EiOJcVvDQEMLJk+tEzAvIqR1TUnQEZGhVhFTUzfVa
+         uJTUVr+GxeMng==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Minas Harutyunyan <hminas@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] usb: dwc2: hcd_queue: Fix use of floating point literal
+Date:   Thu,  4 Nov 2021 14:59:23 -0700
+Message-Id: <20211104215923.719785-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.34.0.rc0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 40f66d58-da61-47f6-05be-08d99fde573d
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1771:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1771A981DFD9585AD511529D908D9@DM5PR12MB1771.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2399;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VljK5NVenoGnlFLQP2nV9v58qIOOIdlGyoK/1QGz2tLuXdDlhMxYAA/h0P/8Tf1MYrYEZETdaTwp/FIrdcIyunVTRGpI0EMj7XRfG5gm3o0PIbwKZCZYsCynKQT4KAxxvNVLswsUCMFSrCvFbXlBY4oO5zcGJzsx8ehdhRgl0r1eWeD9hGcWvZ8+5eNgDhOH3ySq3XBa1x5nrdJ5bc6eW3UivRRqZSDpYv8L2Bl24RVRGDzgKqreARJ+zonvDrv1v9MJe5EYlPSpEZ8AvuulNAKBOgjs/GhSnTA92NPnP7e90vLGGSe4g8Khprr8FneUIgyFFwJfFTVzN1X/XFduCWRQRo0OffqDGd+k8DpHqjM5BxtUA21OemwCxcDPUlrEgnYWzFwEmZWSMdJQcELpS7zhuCXj6WsO744WpyAILfnV/4wI7rS1NGSYpk8aEzzb6NLnpHGsYawlCqTAEz7CQvjE6PTnb/XYgtnMS3lTHQ0UdLPlI2m+Rvlek8d7wOxCMD2opIsjdQIMikLB9Eo19UGH0ylmCg+WFdkuRWPFQGYImnhEE44BYZ5azlIHnQfWkAC1IcYroh1rgE+nG/piYN2Q4m/cdWXxc778Kp93rJCBeuJc0Isdh1QhPdZKgLsPmTeT/paljy5oLAqPc55gG1jR8HT5QW+hqussz2KEo6NXZT1OpHkh8wsH8r9AwR27L+E6EavmSkQMmqZxD9YJKZgNyPHJsRLiZ67OLanZ2cYJ2302dPvkkeqXOklCTvDrE92ZqZnVIfeqdLYMK93bjJN23URzzDyg9pfWK8c1pr0RduSEk/P+8D0TH3ttQmb3
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(2906002)(36756003)(2616005)(8936002)(54906003)(110136005)(36860700001)(5660300002)(316002)(82310400003)(16526019)(47076005)(86362001)(336012)(83380400001)(1076003)(186003)(6666004)(81166007)(426003)(70586007)(8676002)(508600001)(966005)(26005)(356005)(4326008)(70206006)(7696005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2021 21:59:14.2989
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 40f66d58-da61-47f6-05be-08d99fde573d
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT039.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1771
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the mce-inject module fails silently and user must look for
-kernel logs to determine if the injection has succeeded.
+A new commit in LLVM causes an error on the use of 'long double' when
+'-mno-x87' is used, which the kernel does through an alias,
+'-mno-80387' (see the LLVM commit below for more details around why it
+does this).
 
-Save time for the user and return error code from the module with
-appropriate error statements if error injection fails.
+ drivers/usb/dwc2/hcd_queue.c:1744:25: error: expression requires  'long double' type support, but target 'x86_64-unknown-linux-gnu' does not support it
+                         delay = ktime_set(0, DWC2_RETRY_WAIT_DELAY);
+                                             ^
+ drivers/usb/dwc2/hcd_queue.c:62:34: note: expanded from macro 'DWC2_RETRY_WAIT_DELAY'
+ #define DWC2_RETRY_WAIT_DELAY (1 * 1E6L)
+                                 ^
+ 1 error generated.
 
-Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Link: https://lkml.kernel.org/r/20211019233641.140275-6-Smita.KoralahalliChannabasappa@amd.com
+This happens due to the use of a 'long double' literal. The 'E6' part of
+'1E6L' causes the literal to be a 'double' then the 'L' suffix promotes
+it to 'long double'.
+
+There is no visible reason for a floating point value in this driver, as
+the value is only used as a parameter to a function that expects an
+integer type.  Use USEC_PER_SEC, which is the same integer value as
+'1E6L', to avoid changing functionality but fix the error.
+
+Fixes: 6ed30a7d8ec2 ("usb: dwc2: host: use hrtimer for NAK retries")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1497
+Link: https://github.com/llvm/llvm-project/commit/a8083d42b1c346e21623a1d36d1f0cadd7801d83
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 ---
-v2:
-	Added pr_err() along with error code.
-v3:
-	Rephrased the statement: No online CPUs available for error
-	injection -> Chosen CPU is not online.
----
- arch/x86/kernel/cpu/mce/inject.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/usb/dwc2/hcd_queue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/cpu/mce/inject.c b/arch/x86/kernel/cpu/mce/inject.c
-index d4e6d753018f..09f46d213cf5 100644
---- a/arch/x86/kernel/cpu/mce/inject.c
-+++ b/arch/x86/kernel/cpu/mce/inject.c
-@@ -569,8 +569,11 @@ static void do_inject(void)
- 	}
+diff --git a/drivers/usb/dwc2/hcd_queue.c b/drivers/usb/dwc2/hcd_queue.c
+index 89a788326c56..bdf1927e1be1 100644
+--- a/drivers/usb/dwc2/hcd_queue.c
++++ b/drivers/usb/dwc2/hcd_queue.c
+@@ -59,7 +59,7 @@
+ #define DWC2_UNRESERVE_DELAY (msecs_to_jiffies(5))
  
- 	cpus_read_lock();
--	if (!cpu_online(cpu))
-+	if (!cpu_online(cpu)) {
-+		pr_err("Chosen CPU is not online\n");
-+		mce_err.err = -ENODEV;
- 		goto err;
-+	}
+ /* If we get a NAK, wait this long before retrying */
+-#define DWC2_RETRY_WAIT_DELAY (1 * 1E6L)
++#define DWC2_RETRY_WAIT_DELAY (1 * USEC_PER_SEC)
  
- 	toggle_hw_mce_inject(cpu, true);
- 
-@@ -653,7 +656,7 @@ static int inj_bank_set(void *data, u64 val)
- 	/* Reset injection struct */
- 	setup_inj_struct(&i_mce);
- 
--	return 0;
-+	return mce_err.err;
- }
- 
- MCE_INJECT_GET(bank);
+ /**
+  * dwc2_periodic_channel_available() - Checks that a channel is available for a
+
+base-commit: d4439a1189f93d0ac1eaf0197db8e6b3e197d5c7
 -- 
-2.17.1
+2.34.0.rc0
 
