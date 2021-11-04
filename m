@@ -2,96 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76519445BCC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 22:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D2A445BCF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 22:46:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232236AbhKDVsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 17:48:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58160 "EHLO
+        id S232030AbhKDVtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 17:49:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232133AbhKDVsA (ORCPT
+        with ESMTP id S231183AbhKDVtS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 17:48:00 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9F3C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 14:45:21 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id t11so9470700plq.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 14:45:21 -0700 (PDT)
+        Thu, 4 Nov 2021 17:49:18 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D05C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 14:46:40 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id s15-20020a170902b18f00b0013fb4449cecso4045475plr.19
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 14:46:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JWx9ct2MbjImA6H/WvO058+827HmSCDeJJGYWZ5NWKI=;
-        b=B0nLjg/Un1RR8JO88l4pjO/r40QMXp2NKWLOT8gleROTy83KBOS+lF4w9BC+N5Ioq0
-         M8bgTpM76+k0f6GHJDCplbtrZ8g8sQxnoKAkzpFVhEiz4SpSE8yvyy+bPNe9HOBo3xzV
-         /Wz2WuZ1KL/kBkyWJd7mLDWnE9FE4GQyRtI4Q=
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:cc;
+        bh=XbB9YGB9sL1l4LUP+NB0RzevoG1AS/xVDDgvda7S2FE=;
+        b=BahDfqNybrfQMKv8Fw5uQzouGUKWqfI06TTAjlzVF2Fm2QObOgA/NEHhVX6t9kjXLN
+         qDvLqdTvtdMNXn1yxtSpnDtJdFKcnai60aGboMQT00XA2MKropwwnQjkVc1V/EasZcSK
+         EEu9w87obvlAF8GLNZ89A4+3wFzjWABnOtcnScRq5d/dQ8AQUi+56Mr7XzsC3ONOtblG
+         2+LUDnEpFNPYUAMTE7qi7EcG2D+vU+VZs38He8kjL+CayZ1lr93fq6BYVoc5YFgwccUi
+         EPpmXaW+2qEIFxuNrFyJoFc8IEgIw1zAkp7/1RNiJ42luHYRiIN3E3N13bd4C5VqQTeC
+         LG9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JWx9ct2MbjImA6H/WvO058+827HmSCDeJJGYWZ5NWKI=;
-        b=P4A8vnKedMgwkQUr7oCazUvmoXhVDvinucfQ658aa4hFsCK0zafEYM+7EQuCB3Fxaj
-         Gtd7z91qY10ik8NdTgL+EqdaIjsW6LLZg/K8/jp9cGI3Db8Zm3cY1LbT0PN0vr377iuM
-         Wy8QZ5x2PzMwJcu51rB0uGpGy/D0AcQtW6eV0tpQB8SVqIiSVFTwevlMOa9+ubaCc5pY
-         7rgtyD9uKsYF7JC2CS3SyNp9IfumnbrxVFzliEpxIiXQc9w3/N8t6ZLqZ6YbvHsPUf5y
-         Cui42lysYYqXq1RcooohyjpUD8s/QbRSs8oemLAMzrEm3iqiXva2SsK+rAirFvJvN6Qj
-         g4eQ==
-X-Gm-Message-State: AOAM531VMOOvVVEi3MHJp7K2OUQZbkZZW6AG8Lw3NzvrkcxZ1jqY+SyP
-        1wYZ+XYUzOwtnreu4wX/8xTc8w==
-X-Google-Smtp-Source: ABdhPJxqHMDw5YqGMlZwg7dpWo0+rcl7UStC/9wzlqsDbweCwI/3ZPYSoXpZo8EXmcankBbq9Sl1aA==
-X-Received: by 2002:a17:90b:1c06:: with SMTP id oc6mr24886431pjb.126.1636062321332;
-        Thu, 04 Nov 2021 14:45:21 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:49a7:f0ba:24b0:bc39])
-        by smtp.gmail.com with ESMTPSA id e7sm4473408pgk.90.2021.11.04.14.45.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 14:45:20 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 14:45:18 -0700
-From:   Brian Norris <briannorris@chromium.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        kbuild-all@lists.01.org, Andrzej Hajda <andrzej.hajda@intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        linux-rockchip@lists.infradead.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>
-Subject: Re: [PATCH 1/2] drm/input_helper: Add new input-handling helper
-Message-ID: <YYRUbhWH1MlDvSsR@google.com>
-References: <20211103164002.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
- <202111041849.GKXf3qid-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202111041849.GKXf3qid-lkp@intel.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
+        bh=XbB9YGB9sL1l4LUP+NB0RzevoG1AS/xVDDgvda7S2FE=;
+        b=Dp/WtXKD21LAxuqNJZOEqJgaAPTC0Fh39dklCSPmmXKy8GqabK7WOcxFxKFtB60JgO
+         SDBjiTZKuldhL8jx9OFcNCXtwQ67j5/3gbqB1NvWy8xfLPlqbyF7Gny/eBVDUa6soRd5
+         iUk6dxOAqUPu86KIRvE7GH6FnHpqNeSCzc6zdAcSG3QK6FVv+Dm6LD49Q6Le45E4+sVV
+         +HKrxAZNLdXOwEPQxqYeua9BkLD1Xq7HF9Au7zXjehUOcoix18QkiRvcZcUhEiiSY/4T
+         NDaJolnHyMsbwM8qz2+pJXFYtfGk0tmpEf3ao8SD/ar1sh9XYfnMhLPRzCCNHPWRnsxn
+         jdHg==
+X-Gm-Message-State: AOAM532Ev9xNzWMZFPkExU0iNyB9wUiZrrnTMLw6EbkibCK4oegV7C6U
+        V2ijcuepYv3kLCnSm/YCynBIRNelvZLUvf5cYg==
+X-Google-Smtp-Source: ABdhPJw6ni3y7lAn9ZTVUyYmmDy/A/Is/Ee5sb+M3gLrJ9xBRI6Ytbksgo2nfO2mKbKzDvU+YDRQiHxtyDQGlDcgeA==
+X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:a75b:b6d9:b323:af05])
+ (user=almasrymina job=sendgmr) by 2002:aa7:914f:0:b0:44d:6f5e:f11a with SMTP
+ id 15-20020aa7914f000000b0044d6f5ef11amr54109373pfi.10.1636062399468; Thu, 04
+ Nov 2021 14:46:39 -0700 (PDT)
+Date:   Thu,  4 Nov 2021 14:46:35 -0700
+Message-Id: <20211104214636.450782-1-almasrymina@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
+Subject: [PATCH v2] mm: Add PM_THP to /proc/pid/pagemap
+From:   Mina Almasry <almasrymina@google.com>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        "Paul E . McKenney" <paulmckrcu@fb.com>,
+        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Florian Schmidt <florian.schmidt@nutanix.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 06:47:34PM +0800, kernel test robot wrote:
-> Hi Brian,
+Add PM_THP to allow userspace to detect whether a given virt address is
+currently mapped by a hugepage or not.
 
-Hi robot!
+Example use case is a process requesting hugepages from the kernel (via
+a huge tmpfs mount for example), for a performance critical region of
+memory.  The userspace may want to query whether the kernel is actually
+backing this memory by hugepages or not.
 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+Tested manually by adding logging into transhuge-stress.
 
-I'm not sure how to do that in a v2 patch -- one doesn't normally credit
-"Reported-by" for every testing/review improvement on an in-development
-patch series.
+Signed-off-by: Mina Almasry <almasrymina@google.com>
 
-> All errors (new ones prefixed by >>):
-> 
->    or1k-linux-ld: drivers/gpu/drm/drm_input_helper.o: in function `drm_input_disconnect':
-> >> drm_input_helper.c:(.text+0x48): undefined reference to `input_close_device'
+Cc: David Rientjes rientjes@google.com
+Cc: Paul E. McKenney <paulmckrcu@fb.com>
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Ivan Teterevkov <ivan.teterevkov@nutanix.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Florian Schmidt <florian.schmidt@nutanix.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-mm@kvack.org
 
-I've cooked a local change to separate the CONFIG_INPUT dependencies
-under another Kconfig symbol which optionally builds this stuff into the
-drm helper module, only when CONFIG_INPUT is present. That should fix
-the build issues while still leaving DRM_KMS_HELPER workable with or
-without CONFIG_INPUT.
+---
+ fs/proc/task_mmu.c                            |  5 +++++
+ tools/testing/selftests/vm/transhuge-stress.c | 21 +++++++++++++++----
+ 2 files changed, 22 insertions(+), 4 deletions(-)
 
-I'll wait to see if there's any other feedback before spinning though.
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index ad667dbc96f5c..9847514937fc7 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -1302,6 +1302,7 @@ struct pagemapread {
+ #define PM_SOFT_DIRTY		BIT_ULL(55)
+ #define PM_MMAP_EXCLUSIVE	BIT_ULL(56)
+ #define PM_UFFD_WP		BIT_ULL(57)
++#define PM_THP			BIT_ULL(58)
+ #define PM_FILE			BIT_ULL(61)
+ #define PM_SWAP			BIT_ULL(62)
+ #define PM_PRESENT		BIT_ULL(63)
+@@ -1396,6 +1397,8 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
+ 		flags |= PM_FILE;
+ 	if (page && page_mapcount(page) == 1)
+ 		flags |= PM_MMAP_EXCLUSIVE;
++	if (page && PageTransCompound(page))
++		flags |= PM_THP;
+ 	if (vma->vm_flags & VM_SOFTDIRTY)
+ 		flags |= PM_SOFT_DIRTY;
 
-Brian
+@@ -1456,6 +1459,8 @@ static int pagemap_pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
+
+ 		if (page && page_mapcount(page) == 1)
+ 			flags |= PM_MMAP_EXCLUSIVE;
++		if (page && PageTransCompound(page))
++			flags |= PM_THP;
+
+ 		for (; addr != end; addr += PAGE_SIZE) {
+ 			pagemap_entry_t pme = make_pme(frame, flags);
+diff --git a/tools/testing/selftests/vm/transhuge-stress.c b/tools/testing/selftests/vm/transhuge-stress.c
+index fd7f1b4a96f94..7dce18981fff5 100644
+--- a/tools/testing/selftests/vm/transhuge-stress.c
++++ b/tools/testing/selftests/vm/transhuge-stress.c
+@@ -16,6 +16,12 @@
+ #include <string.h>
+ #include <sys/mman.h>
+
++/*
++ * We can use /proc/pid/pagemap to detect whether the kernel was able to find
++ * hugepages or no. This can be very noisy, so is disabled by default.
++ */
++#define NO_DETECT_HUGEPAGES
++
+ #define PAGE_SHIFT 12
+ #define HPAGE_SHIFT 21
+
+@@ -23,6 +29,7 @@
+ #define HPAGE_SIZE (1 << HPAGE_SHIFT)
+
+ #define PAGEMAP_PRESENT(ent)	(((ent) & (1ull << 63)) != 0)
++#define PAGEMAP_THP(ent)	(((ent) & (1ull << 58)) != 0)
+ #define PAGEMAP_PFN(ent)	((ent) & ((1ull << 55) - 1))
+
+ int pagemap_fd;
+@@ -47,10 +54,16 @@ int64_t allocate_transhuge(void *ptr)
+ 			(uintptr_t)ptr >> (PAGE_SHIFT - 3)) != sizeof(ent))
+ 		err(2, "read pagemap");
+
+-	if (PAGEMAP_PRESENT(ent[0]) && PAGEMAP_PRESENT(ent[1]) &&
+-	    PAGEMAP_PFN(ent[0]) + 1 == PAGEMAP_PFN(ent[1]) &&
+-	    !(PAGEMAP_PFN(ent[0]) & ((1 << (HPAGE_SHIFT - PAGE_SHIFT)) - 1)))
+-		return PAGEMAP_PFN(ent[0]);
++	if (PAGEMAP_PRESENT(ent[0]) && PAGEMAP_PRESENT(ent[1])) {
++#ifndef NO_DETECT_HUGEPAGES
++		if (!PAGEMAP_THP(ent[0]))
++			fprintf(stderr, "WARNING: detected non THP page\n");
++#endif
++		if (PAGEMAP_PFN(ent[0]) + 1 == PAGEMAP_PFN(ent[1]) &&
++		    !(PAGEMAP_PFN(ent[0]) &
++		      ((1 << (HPAGE_SHIFT - PAGE_SHIFT)) - 1)))
++			return PAGEMAP_PFN(ent[0]);
++	}
+
+ 	return -1;
+ }
+--
+2.34.0.rc0.344.g81b53c2807-goog
