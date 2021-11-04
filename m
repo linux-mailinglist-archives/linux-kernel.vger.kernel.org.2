@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 944C644506B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:36:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D7A445070
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhKDIi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:38:57 -0400
-Received: from [113.204.237.245] ([113.204.237.245]:57404 "EHLO
-        test.cqplus1.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230084AbhKDIi4 (ORCPT
+        id S230500AbhKDIjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:39:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230084AbhKDIjh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:38:56 -0400
-X-MailGates: (flag:1,DYNAMIC,RELAY,NOHOST,LAN:PASS)(compute_score:DELIVE
-        R,40,3)
-Received: from 172.27.96.203
-        by cqmailgates with MailGates ESMTP Server V5.0(16727:0:AUTH_RELAY)
-        (envelope-from <qinjian@cqplus1.com>); Thu, 04 Nov 2021 16:35:07 +0800 (CST)
-Received: from CQEXMAIL01.cqplus1.com (172.27.96.203) by
- CQEXMAIL01.cqplus1.com (172.27.96.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 4 Nov 2021 16:35:00 +0800
-Received: from CQEXMAIL01.cqplus1.com ([fe80::f436:deb3:dd20:6b5]) by
- CQEXMAIL01.cqplus1.com ([fe80::f436:deb3:dd20:6b5%4]) with mapi id
- 15.01.2176.009; Thu, 4 Nov 2021 16:35:00 +0800
-From:   =?gb2312?B?cWluamlhblvx+72hXQ==?= <qinjian@cqplus1.com>
-To:     Marc Zyngier <maz@kernel.org>
-CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Thu, 4 Nov 2021 04:39:37 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BFD9C061714;
+        Thu,  4 Nov 2021 01:37:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jS89Xj+VfQ9PYZIaAjq6KTeAlryQwX9opaWuKLVVCac=; b=IqyxG9qeLs4MByz0t7AcozirEk
+        EYPdxz1sZhknq6KqfxeHqLeZLKUaAMkU1iiGBIGsby+JVZU5MFn8LG19RFBfo/owISGeaizOBENr0
+        Pc50seqUAt4jdr7UwKiJFqyxGxyALrVnUiDLv2DNbZS3C3GZe/sylxhVxeTPWYw1ldFeGxoP/2Cnh
+        3Ji5B4aqNTmk1Cs6yClxQ4D/3nX53JqFwfCdIevbq5YxOVg9Ck8OgpzNUvOyjHJ7QJWDOcdbBGdWk
+        UNOi8nNIslv6Um16y8rr85cXqRpOcugjfENBy4+zc5n4GVWknCQgY7zTt0VeTjfGsz6mSi1yolDC3
+        6rep/UKQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1miYEp-008Jwb-Cd; Thu, 04 Nov 2021 08:36:47 +0000
+Date:   Thu, 4 Nov 2021 01:36:47 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Jane Chu <jane.chu@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        =?gb2312?B?V2VsbHMgTHUghc63vPJ2?= <wells.lu@sunplus.com>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIIHY0IDAwLzEwXSBBZGQgU3VucGx1cyBTUDcwMjEgU29D?=
- =?gb2312?Q?_Support?=
-Thread-Topic: [PATCH v4 00/10] Add Sunplus SP7021 SoC Support
-Thread-Index: AQHX0SjJ2ipTnH6SmUuBHDnmt6AZUKvygdKAgACJW1A=
-Date:   Thu, 4 Nov 2021 08:35:00 +0000
-Message-ID: <98b3e76029bb4d7096de462c46bca08d@cqplus1.com>
-References: <cover.1635496594.git.qinjian@cqplus1.com>
-        <cover.1635993377.git.qinjian@cqplus1.com> <8735oc9voy.wl-maz@kernel.org>
-In-Reply-To: <8735oc9voy.wl-maz@kernel.org>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.28.110.18]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
+ RWF_RECOVERY_DATA flag
+Message-ID: <YYObn+0juAFvH7Fk@infradead.org>
+References: <20211021001059.438843-1-jane.chu@oracle.com>
+ <YXFPfEGjoUaajjL4@infradead.org>
+ <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
+ <YXJN4s1HC/Y+KKg1@infradead.org>
+ <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
+ <YXj2lwrxRxHdr4hb@infradead.org>
+ <20211028002451.GB2237511@magnolia>
+ <YYDYUCCiEPXhZEw0@infradead.org>
+ <dfca8558-ad70-41d5-1131-63db66b70542@oracle.com>
+ <CAPcyv4jLn4_SYxLtp_cUT=mm6Y3An22BA+sqex1S-CBnAm6qGA@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4jLn4_SYxLtp_cUT=mm6Y3An22BA+sqex1S-CBnAm6qGA@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TWFyYywNCg0KR290IGl0LiBUaGFuayB5b3UgZm9yIHJlbWluZGluZyBtZS4NCkknbSBzb3JyeSBm
-b3IgdGhlIHByZXZpb3VzIG1pc3Rha2UuDQoNCg0KPiAtLS0tLdPKvP7Urbz+LS0tLS0NCj4gt6K8
-/sjLOiBNYXJjIFp5bmdpZXIgPG1hekBrZXJuZWwub3JnPg0KPiC3osvNyrG85DogMjAyMcTqMTHU
-wjTI1SAxNjoyMw0KPiDK1bz+yMs6IHFpbmppYW5b8fu9oV0gPHFpbmppYW5AY3FwbHVzMS5jb20+
-DQo+ILOty806IHJvYmgrZHRAa2VybmVsLm9yZzsgbXR1cnF1ZXR0ZUBiYXlsaWJyZS5jb207IHNi
-b3lkQGtlcm5lbC5vcmc7IHAuemFiZWxAcGVuZ3V0cm9uaXguZGU7IGxpbnV4QGFybWxpbnV4Lm9y
-Zy51azsNCj4gYnJvb25pZUBrZXJuZWwub3JnOyBhcm5kQGFybmRiLmRlOyBsaW51eC1hcm0ta2Vy
-bmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyBsaW51
-eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiBsaW51eC1jbGtAdmdlci5rZXJuZWwub3JnOyBX
-ZWxscyBMdSCFzre88nYgPHdlbGxzLmx1QHN1bnBsdXMuY29tPg0KPiDW98ziOiBSZTogW1BBVENI
-IHY0IDAwLzEwXSBBZGQgU3VucGx1cyBTUDcwMjEgU29DIFN1cHBvcnQNCj4gDQo+IFFpbiwNCj4g
-DQo+IE9uIFRodSwgMDQgTm92IDIwMjEgMDI6NTY6NTcgKzAwMDAsDQo+IFFpbiBKaWFuIDxxaW5q
-aWFuQGNxcGx1czEuY29tPiB3cm90ZToNCj4gPg0KPiA+IFRoaXMgcGF0Y2ggc2VyaWVzIGFkZCBT
-dW5wbHVzIFNQNzAyMSBTb0Mgc3VwcG9ydC4NCj4gPg0KPiA+IFN1bnBsdXMgU1A3MDIxIGlzIGFu
-IEFSTSBDb3J0ZXggQTcgKDQgY29yZXMpIGJhc2VkIFNvQy4gSXQgaW50ZWdyYXRlcyBtYW55DQo+
-ID4gcGVyaXBoZXJhbHMgKGV4OiBVQVJULCBJMkMsIFNQSSwgU0RJTywgZU1NQywgVVNCLCBTRCBj
-YXJkIGFuZCBldGMuKSBpbnRvIGENCj4gPiBzaW5nbGUgY2hpcC4gSXQgaXMgZGVzaWduZWQgZm9y
-IGluZHVzdHJpYWwgY29udHJvbC4NCj4gPg0KPiA+IFNQNzAyMSBjb25zaXN0cyBvZiB0d28gY2hp
-cHMgKGRpZXMpIGluIGEgcGFja2FnZS4gT25lIGlzIGNhbGxlZCBDLWNoaXANCj4gPiAoY29tcHV0
-aW5nIGNoaXApLiBJdCBpcyBhIDQtY29yZSBBUk0gQ29ydGV4IEE3IENQVS4gSXQgYWRvcHRzIGhp
-Z2gtbGV2ZWwNCj4gPiBwcm9jZXNzICgyMiBubSkgZm9yIGhpZ2ggcGVyZm9ybWFuY2UgY29tcHV0
-aW5nLiBUaGUgb3RoZXIgaXMgY2FsbGVkIFAtDQo+ID4gY2hpcCAocGVyaXBoZXJhbCBjaGlwKS4g
-SXQgaGFzIG1hbnkgcGVyaXBoZXJhbHMgYW5kIGFuIEFSTSBBOTI2IGFkZGVkDQo+ID4gZXNwZWNp
-YWxseSBmb3IgcmVhbC10aW1lIGNvbnRyb2wuIFAtY2hpcCBpcyBtYWRlIGZvciBjdXN0b21lcnMu
-IEl0IGFkb3B0cw0KPiA+IGxvdy1sZXZlbCBwcm9jZXNzIChleDogMC4xMSB1bSkgdG8gcmVkdWNl
-IGNvc3QuDQo+IA0KPiBUaGF0J3MgdGhlIDNyZCB2ZXJzaW9uIG9mIHRoaXMgc2VyaWVzIHNpbmNl
-IEZyaWRheSwgdHdvIG9mIHRoZW0gZHVyaW5nDQo+IHRoZSBtZXJnZSB3aW5kb3cuIEFsbCB5b3Ug
-YXJlIGFjaGlldmluZyBpcyB0byBhY3R1YWxseSAqZGVsYXkqIHRoZQ0KPiByZXZpZXcgcHJvY2Vz
-cyAoYXQgdGhpcyByYXRlLCBJJ2xsIHByb2JhYmx5IHdhaXQgdW50aWwgdjExIGJlZm9yZSBJDQo+
-IHRha2UgYW5vdGhlciBsb29rIGF0IGl0KS4NCj4gDQo+IERvY3VtZW50YXRpb24vcHJvY2Vzcy9z
-dWJtaXR0aW5nLXBhdGNoZXMucnN0IHN0YXRlcyBpdCBjbGVhcmx5Og0KPiANCj4gPHF1b3RlPg0K
-PiBXYWl0IGZvciBhIG1pbmltdW0gb2Ygb25lIHdlZWsgYmVmb3JlIHJlc3VibWl0dGluZw0KPiA8
-L3F1b3RlPg0KPiANCj4gU28gcGxlYXNlIGxlYXZlIHBlb3BsZSB0aGUgdGltZSB0byBhY3R1YWxs
-eSBkbyBhIGdvb2QgcmV2aWV3IGpvYiwgYW5kDQo+IHRha2UgdGhlIG9wcG9ydHVuaXR5IHRvIHJl
-dmlldyB5b3VyIG93biBwYXRjaGVzIGJlZm9yZSBwb3N0aW5nIHRoZW0NCj4gYWdhaW4uDQo+IA0K
-PiBUaGFua3MsDQo+IA0KPiAJTS4NCj4gDQo+IC0tDQo+IFdpdGhvdXQgZGV2aWF0aW9uIGZyb20g
-dGhlIG5vcm0sIHByb2dyZXNzIGlzIG5vdCBwb3NzaWJsZS4NCg==
+On Wed, Nov 03, 2021 at 11:21:39PM -0700, Dan Williams wrote:
+> The concern I have with dax_clear_poison() is that it precludes atomic
+> error clearing.
+
+atomic as in clear poison and write the actual data?  Yes, that would
+be useful, but it is not how the Intel pmem support actually works, right?
+
+> Also, as Boris and I discussed, poisoned pages should
+> be marked NP (not present) rather than UC (uncacheable) [1].
+
+This would not really have an affect on the series, right?  But yes,
+that seems like the right thing to do.
+
+> With
+> those 2 properties combined I think that wants a custom pmem fault
+> handler that knows how to carefully write to pmem pages with poison
+> present, rather than an additional explicit dax-operation. That also
+> meets Christoph's requirement of "works with the intended direct
+> memory map use case".
+
+So we have 3 kinds of accesses to DAX memory:
+
+ (1) user space mmap direct access. 
+ (2) iov_iter based access (could be from kernel or userspace)
+ (3) open coded kernel access using ->direct_access
+
+One thing I noticed:  (2) could also work with kernel memory or pages,
+but that doesn't use MC safe access.  Which seems like a major independent
+of this discussion.
+
+I suspect all kernel access could work fine with a copy_mc_to_kernel
+helper as long as everyone actually uses it, which will cover the
+missing required bits of (2) and (3) together with something like the
+->clear_poison series from Jane. We just need to think hard what we
+want to do for userspace mmap access.
