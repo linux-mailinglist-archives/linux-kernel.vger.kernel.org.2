@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB10444F1E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:46:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71790444F14
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbhKDGrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:47:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50942 "EHLO
+        id S231584AbhKDGrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:47:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231577AbhKDGpz (ORCPT
+        with ESMTP id S231598AbhKDGqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:45:55 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5EAC079783
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:42:50 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id c19-20020ac81e93000000b002a71180fd3dso2533272qtm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 23:42:50 -0700 (PDT)
+        Thu, 4 Nov 2021 02:46:00 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9C1C079786
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:42:52 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id h14-20020a0562140dae00b003ae664126e9so4878971qvh.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 23:42:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=hcRtetVuTOoQ725MyIBgP5sReM3VS+5M9xApQA3DY+c=;
-        b=SuIWmdQZ7ZPsG2xzeoHwM0MtB7RQHLVJhWjxOBvP5oZ4ncG7/CdTvPaO2BkPDqcAuL
-         jIO899OVU/zoA7Jl/ZVOqyxec4vzIq4Y8z7Gc3Nys8VgizIW7XNostfxnTTdgLpVXibA
-         wzz6IUC/Zc4mK3GyLClR3BHzfzXpbT8uKiCXv2Bcz4mPd/cv7TZPf3cWvhdriDnoIMKr
-         4BV0bHElOXBvBD4P8tBV011klUDfaZldnaa1qnRsZlaqtqdp9ipFl7Nkr4TQNXb1w/mR
-         4rUscsTtXuf064n4ax30HpQJBXBhWGKPw7FBezwUKnb6rCVmv2+Y8KmIokBj6UhiEYs1
-         oIoA==
+        bh=uhMKrCNfPxQ2Zcf5Vkl+HNKM9vie+osD+kw0v1/wntc=;
+        b=fRD6pPnhXQjYDgk64XZQYo4g3gb7eA/+1u37deVGGWIAbtp9nAGrA+hajH3CUuaWu0
+         Im8k2jipHGJl49zo1qi4RTg2sQMqKo//rfdgSo8etlrlmKSBhcUKI226CGUargNt3EGc
+         8edyLdQwEsIPVkKkd6Jh58N9l4PhuNqhFv325rboL4zKR2mtyo/gr/R52fWAVC/DPw95
+         zsrBnYhIEys7E/ZakY9PDvtQ05e5poqXQ6zVXofgqLBU7TxwAapHy+cPqfg7Y7UG0sHQ
+         rOCc/z0FncROnfJ7OTke6XEcLA5+ZJsoO6+17NdJN/f57/gE6ftXsGRohfKiySWsRWKH
+         HuQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=hcRtetVuTOoQ725MyIBgP5sReM3VS+5M9xApQA3DY+c=;
-        b=tcZeeQKjvN4MeV/jIoSxBqL0AiIGteTNi4D0CGiJGFEkQUyKvIFoxQzE1dozzA+zjR
-         I75dW5TbpeJYWrK9FVnBxeRJrBMj7hRq5Nqno3t8z+oo/zdWqPvfk8ZZxKCcSuJ18y7i
-         g3tRlHJg4cU+37WSMWepzhlaXuCuYzzWDvsSe8LEmosakf6kH2xwzQFkkrgLze1JrSvy
-         CFcXLcshUZ+OT/Xmp/wRLK9QtZrwV1eeP8gfGNiie9746C0J3O/E2HB1F3MoAh8bEE7I
-         JIHBY8+t05QXZC9OooziTkJR18iGsfQpZhhLnAWXM5Ij7IgmziReyy6Drn31iHYVb9i8
-         F8pw==
-X-Gm-Message-State: AOAM532uER8hAAwdmNNAPdDLt50Xe7dSeTON8AN6eTr7a2UJd9o9Jw40
-        NC4WZYCnv69sEmPhfy10AARe9vB0U+ZV
-X-Google-Smtp-Source: ABdhPJzAP3ULuOJOOBBXCttLaYBlJ7IaAPEaIMz50fOzTC4v4KNHDM1NinAwMS7IWnSvuFmh839JYPlH9aMP
+        bh=uhMKrCNfPxQ2Zcf5Vkl+HNKM9vie+osD+kw0v1/wntc=;
+        b=3OBQ1O2cYcp0yaStw/JtE5RlA2hwzla4QkGEzIgQsmPL2Ph3aATKCRPtQBD6Z99dKU
+         XlSvsBN9+NetAKhVJrYAZjHaSl9X5JbUC0KWV9106tyo8s68GyKZH7GNJkJytzk93nwO
+         fmba6Pu1aEBgSXQjOuDWhYH40YCszkfwoR9StZ+fgTtKFtHNy/L+jp2yd0BwAl/NkhPM
+         CSHctGTsuFV49nMBl8en19F/uVU/IyZNiV81rpUkJGggdvbEAwDi3mG8lXq7CpSYBnjk
+         suOEIkSB1wcqVzUWb/bduI25LjnRRJol4yPrWIXDrKQ8Osyyiqvc0tyu2725KHid98R4
+         Hv/A==
+X-Gm-Message-State: AOAM530iJvCnXLp+9+gkgIGxAFX1+GmxyUFPHUFba7YdfAZEl8B0CNWC
+        LnmpaTSgCG2v05XvyRwtoU2v7lfLVBD+
+X-Google-Smtp-Source: ABdhPJwaj3qyP2mK2LcR/ElV51GawChsbXR3N0ewLz5rH02YbJX34yU3SyyaJ6tuw2uTlabymcCkRIZmMtyv
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:8ce:af84:2510:3f29])
- (user=irogers job=sendgmr) by 2002:a05:622a:593:: with SMTP id
- c19mr52225390qtb.240.1636008169248; Wed, 03 Nov 2021 23:42:49 -0700 (PDT)
-Date:   Wed,  3 Nov 2021 23:42:00 -0700
+ (user=irogers job=sendgmr) by 2002:a05:622a:50b:: with SMTP id
+ l11mr51313937qtx.415.1636008171638; Wed, 03 Nov 2021 23:42:51 -0700 (PDT)
+Date:   Wed,  3 Nov 2021 23:42:01 -0700
 In-Reply-To: <20211104064208.3156807-1-irogers@google.com>
-Message-Id: <20211104064208.3156807-15-irogers@google.com>
+Message-Id: <20211104064208.3156807-16-irogers@google.com>
 Mime-Version: 1.0
 References: <20211104064208.3156807-1-irogers@google.com>
 X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v3 14/22] perf test: Convert llvm tests to test cases.
+Subject: [PATCH v3 15/22] perf test: Remove now unused subtest helpers
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -74,123 +74,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use null terminated array of test cases rather than the previous sub
-test functions.
+Replaced by null terminated test case array.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/llvm.c | 77 +++++++++++++++++++++++++++++------------
- 1 file changed, 54 insertions(+), 23 deletions(-)
+ tools/perf/tests/builtin-test.c | 11 +----------
+ tools/perf/tests/tests.h        |  3 ---
+ 2 files changed, 1 insertion(+), 13 deletions(-)
 
-diff --git a/tools/perf/tests/llvm.c b/tools/perf/tests/llvm.c
-index 057d6a59a8ea..f27ef00d65e9 100644
---- a/tools/perf/tests/llvm.c
-+++ b/tools/perf/tests/llvm.c
-@@ -124,7 +124,7 @@ test_llvm__fetch_bpf_obj(void **p_obj_buf,
- 	return ret;
- }
- 
--static int test__llvm(struct test_suite *test __maybe_unused, int subtest)
-+static int test__llvm(int subtest)
+diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+index db76d7d10749..62e97faa90f0 100644
+--- a/tools/perf/tests/builtin-test.c
++++ b/tools/perf/tests/builtin-test.c
+@@ -119,9 +119,6 @@ static int num_subtests(const struct test_suite *t)
  {
- 	int ret;
- 	void *obj_buf = NULL;
-@@ -148,42 +148,73 @@ static int test__llvm(struct test_suite *test __maybe_unused, int subtest)
+ 	int num;
  
- 	return ret;
- }
-+#endif //HAVE_LIBBPF_SUPPORT
- 
--static int test__llvm_subtest_get_nr(void)
-+static int test__llvm__bpf_base_prog(struct test_suite *test __maybe_unused,
-+				     int subtest __maybe_unused)
- {
--	return __LLVM_TESTCASE_MAX;
-+#ifdef HAVE_LIBBPF_SUPPORT
-+	return test__llvm(LLVM_TESTCASE_BASE);
-+#else
-+	pr_debug("Skip LLVM test because BPF support is not compiled\n");
-+	return TEST_SKIP;
-+#endif
- }
- 
--static const char *test__llvm_subtest_get_desc(int subtest)
--{
--	if ((subtest < 0) || (subtest >= __LLVM_TESTCASE_MAX))
--		return NULL;
+-	if (t->subtest.get_nr)
+-		return t->subtest.get_nr();
 -
--	return bpf_source_table[subtest].desc;
--}
--#else //HAVE_LIBBPF_SUPPORT
--static int test__llvm(struct test_suite *test __maybe_unused, int subtest __maybe_unused)
-+static int test__llvm__bpf_test_kbuild_prog(struct test_suite *test __maybe_unused,
-+					    int subtest __maybe_unused)
+ 	if (!t->test_cases)
+ 		return 0;
+ 
+@@ -134,14 +131,11 @@ static int num_subtests(const struct test_suite *t)
+ 
+ static bool has_subtests(const struct test_suite *t)
  {
-+#ifdef HAVE_LIBBPF_SUPPORT
-+	return test__llvm(LLVM_TESTCASE_KBUILD);
-+#else
-+	pr_debug("Skip LLVM test because BPF support is not compiled\n");
- 	return TEST_SKIP;
-+#endif
+-	return t->subtest.get_nr || num_subtests(t) > 1;
++	return num_subtests(t) > 1;
  }
  
--static int test__llvm_subtest_get_nr(void)
-+static int test__llvm__bpf_test_prologue_prog(struct test_suite *test __maybe_unused,
-+					      int subtest __maybe_unused)
+ static const char *skip_reason(const struct test_suite *t, int subtest)
  {
--	return 0;
-+#ifdef HAVE_LIBBPF_SUPPORT
-+	return test__llvm(LLVM_TESTCASE_BPF_PROLOGUE);
-+#else
-+	pr_debug("Skip LLVM test because BPF support is not compiled\n");
-+	return TEST_SKIP;
-+#endif
+-	if (t->subtest.skip_reason)
+-		return t->subtest.skip_reason(subtest);
+-
+ 	if (t->test_cases && subtest >= 0)
+ 		return t->test_cases[subtest].skip_reason;
+ 
+@@ -153,9 +147,6 @@ static const char *test_description(const struct test_suite *t, int subtest)
+ 	if (t->test_cases && subtest >= 0)
+ 		return t->test_cases[subtest].desc;
+ 
+-	if (t->subtest.get_desc && subtest >= 0)
+-		return t->subtest.get_desc(subtest);
+-
+ 	return t->desc;
  }
  
--static const char *test__llvm_subtest_get_desc(int subtest __maybe_unused)
-+static int test__llvm__bpf_test_relocation(struct test_suite *test __maybe_unused,
-+					   int subtest __maybe_unused)
- {
--	return NULL;
-+#ifdef HAVE_LIBBPF_SUPPORT
-+	return test__llvm(LLVM_TESTCASE_BPF_RELOCATION);
-+#else
-+	pr_debug("Skip LLVM test because BPF support is not compiled\n");
-+	return TEST_SKIP;
-+#endif
- }
--#endif // HAVE_LIBBPF_SUPPORT
-+
-+
-+static struct test_case llvm_tests[] = {
-+#ifdef HAVE_LIBBPF_SUPPORT
-+	TEST_CASE("Basic BPF llvm compile", llvm__bpf_base_prog),
-+	TEST_CASE("kbuild searching", llvm__bpf_test_kbuild_prog),
-+	TEST_CASE("Compile source for BPF prologue generation",
-+		  llvm__bpf_test_prologue_prog),
-+	TEST_CASE("Compile source for BPF relocation", llvm__bpf_test_relocation),
-+#else
-+	TEST_CASE_REASON("Basic BPF llvm compile", llvm__bpf_base_prog, "not compiled in"),
-+	TEST_CASE_REASON("kbuild searching", llvm__bpf_test_kbuild_prog, "not compiled in"),
-+	TEST_CASE_REASON("Compile source for BPF prologue generation",
-+			llvm__bpf_test_prologue_prog, "not compiled in"),
-+	TEST_CASE_REASON("Compile source for BPF relocation",
-+			llvm__bpf_test_relocation, "not compiled in"),
-+#endif
-+	{ .name = NULL, }
-+};
- 
- struct test_suite suite__llvm = {
- 	.desc = "LLVM search and compile",
--	.func = test__llvm,
--	.subtest = {
--		.skip_if_fail	= true,
--		.get_nr		= test__llvm_subtest_get_nr,
--		.get_desc	= test__llvm_subtest_get_desc,
--	},
-+	.test_cases = llvm_tests,
-+	.subtest = { .skip_if_fail = true, },
- };
+diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+index f87129b63d92..9bf448f7429a 100644
+--- a/tools/perf/tests/tests.h
++++ b/tools/perf/tests/tests.h
+@@ -43,9 +43,6 @@ struct test_suite {
+ 	test_fnptr func;
+ 	struct {
+ 		bool skip_if_fail;
+-		int (*get_nr)(void);
+-		const char *(*get_desc)(int subtest);
+-		const char *(*skip_reason)(int subtest);
+ 	} subtest;
+ 	struct test_case *test_cases;
+ 	bool (*is_supported)(void);
 -- 
 2.33.1.1089.g2158813163f-goog
 
