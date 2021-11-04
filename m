@@ -2,121 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFDBA445159
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 10:52:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E94344515E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 10:54:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhKDJzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 05:55:20 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:56132 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229809AbhKDJzT (ORCPT
+        id S231185AbhKDJ5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 05:57:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhKDJ5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 05:55:19 -0400
-X-UUID: aea61afcbd5647fe98e74fb0f2433ad9-20211104
-X-UUID: aea61afcbd5647fe98e74fb0f2433ad9-20211104
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <james.lo@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1794290791; Thu, 04 Nov 2021 17:52:37 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3;
- Thu, 4 Nov 2021 17:52:36 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkmbs10n1.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
- Transport; Thu, 4 Nov 2021 17:52:36 +0800
-Message-ID: <4c3036d8181c788fbf047883e2f49172edbe3f0f.camel@mediatek.com>
-Subject: Re: [RESEND, v13 2/4] dt-bindings: spmi: document binding for the
- Mediatek SPMI controller
-From:   James Lo <james.lo@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>, <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>
-Date:   Thu, 4 Nov 2021 17:52:36 +0800
-In-Reply-To: <1635944770.215632.1040288.nullmailer@robh.at.kernel.org>
-References: <20211103081021.9917-1-james.lo@mediatek.com>
-         <20211103081021.9917-3-james.lo@mediatek.com>
-         <1635944770.215632.1040288.nullmailer@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Thu, 4 Nov 2021 05:57:03 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD15DC061714;
+        Thu,  4 Nov 2021 02:54:25 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (85-76-18-250-nat.elisa-mobile.fi [85.76.18.250])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2F3DDE52;
+        Thu,  4 Nov 2021 10:54:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1636019663;
+        bh=cnyxyJwKgZpYQGNYyEX8NACmA9xL2fbb+o3zptN/wGA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KenoUfxcvJxUYBOBtKupjEApOV0X7i723WAPvHynN2KwAtQkJRCO1rwN6cPXsAFWW
+         IRENEswlczDsGpCY0b+p2doHuAbRFyww2wQwCldv+koJMB7OPMitMXj8XiW8RuXLcI
+         pqXis+2lq9inQn7+YewLM9/izL8tdLcCUPeGlFeM=
+Date:   Thu, 4 Nov 2021 11:53:55 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Kaixu Xia <kaixuxia@tencent.com>,
+        Yang Li <abaci-bugfix@linux.alibaba.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Alan <alan@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: atomisp current issues
+Message-ID: <YYOts0aoD/Quo5r6@pendragon.ideasonboard.com>
+References: <20211103135418.496f75d5@sal.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211103135418.496f75d5@sal.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-11-03 at 08:06 -0500, Rob Herring wrote:
-> On Wed, 03 Nov 2021 16:10:19 +0800, James Lo wrote:
-> > This adds documentation for the SPMI controller found on Mediatek
-> > SoCs.
-> > 
-> > Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-> > ---
-> >  .../bindings/spmi/mtk,spmi-mtk-pmif.yaml      | 76
-> > +++++++++++++++++++
-> >  1 file changed, 76 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
-> > 
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m
-> dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> /builds/robherring/linux-dt-
-> review/Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-
-> pmif.example.dt.yaml: spmi@10027000: reg: [[268595200, 3584],
-> [268603392, 256]] is too long
-> 	From schema: /builds/robherring/linux-dt-
-> review/Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
-> /builds/robherring/linux-dt-
-> review/Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-
-> pmif.example.dt.yaml: spmi@10027000: reg: [[268595200, 3584],
-> [268603392, 256]] is too long
-> 	From schema: /builds/robherring/linux-dt-
-> review/Documentation/devicetree/bindings/spmi/spmi.yaml
-> 
-> doc reference errors (make refcheckdocs):
-> 
-> See 
-> https://urldefense.com/v3/__https://patchwork.ozlabs.org/patch/1550144__;!!CTRNKA9wMg0ARbw!yBdAIu8sF9FdGe9H9yO19pC0PvopKz_1DwYCmY0g5pqXvOC6acHZh_NfySMb2x_n$
->  
-> 
-> This check can fail if there are any dependencies. The base for a
-> patch
-> series is generally the most recent rc1.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up
-> to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit.
-> 
+Hi Mauro,
 
-Dear Rob,
+On Wed, Nov 03, 2021 at 01:54:18PM +0000, Mauro Carvalho Chehab wrote:
+> Hi,
+> 
+> From what I've seen so far, those are the main issues with regards to V4L2 API,
+> in order to allow a generic V4L2 application to work with it.
+> 
+> MMAP support
+> ============
+> 
+> Despite having some MMAP code on it, the current implementation is broken. 
+> Fixing it is not trivial, as it would require fixing the HMM support on it, 
+> which does several tricks.
+> 
+> The best would be to replace it by something simpler. If this is similar
+> enough to IPU3, perhaps one idea would be to replace the HMM code on it by 
+> videodev2 + IPU3 HMM code.
+> 
+> As this is not trivial, I'm postponing such task. If someone has enough
+> time, it would be great to have this fixed.
+> 
+> From my side, I opted to add support for USERPTR on camorama:
+> 
+> 	https://github.com/alessio/camorama
 
-Due to [RESEND,v13,2/4] depends on [RESEND,v13,1/4],
-so we local can pass yaml when apply all 4 patches,
-and fail only apply [RESEND,v13,2/4] as your bot's result.
+We should *really* phase out USERPTR support. Worst case you may support
+DMABUF only if MMAP is problematic, but I don't really see why it could
+be easy to map an imported buffer and difficult to map a buffer
+allocated by the driver. videobuf2 should be used.
 
-Should we merge [RESEND,v13,2/4] and [RESEND,v13,2/4] to one patch ?
-Or Could your bot help to run yaml check for all 4 patches applied (one
-series) ?
+> As this is something I wanted to do anyway, and it allowed me to cleanup
+> several things in camorama's code.
+> 
+> Support for USERPTR is not autodetected. So, this should be selected
+> via a command line parameter. Here (Fedora), I installed the build
+> dependencies on my test device with:
+> 
+> 	$ sudo dnf builddep camorama
+> 	$ sudo dnf install gnome-common  # for gnome-autogen.sh
+> 
+> Testing it with atomisp would be:
+> 
+> 	$ git clone https://github.com/alessio/camorama
+> 	$ cd camorama && ./autogen.sh
+> 	$ make && ./src/camorama -d /dev/video2  --debug -U -D
+> 
+> In time:
+> --------
+> 
+>  Camorama currently doesn't work due to some other API bugs. See below.
+> 
+> 
+> VIDIOC_G_FMT/VIDIOC_S_FMT/VIDIOC_TRY_FMT issues
+> ===============================================
+> 
+> The implementation for VIDIOC_G_FMT/VIDIOC_S_FMT/VIDIOC_TRY_FMT are not
+> properly implemented. It has several issues.
+> 
+> The main one is related to padding. Based on the comments inside the code,
+> the ISP 2 seems to require padding to work, both vertically an horizontally.
+> 
+> Those are controlled by two modprobe parameters: pad_h and pad_w.
+> The default for both is 16.
+> 
+> There are some other padding logic inside the function which sets the
+> video formats at atomisp_cmd: atomisp_set_fmt(). This function is quite
+> complex, being big and it calls several other atomisp kAPIs.
+> 
+> It basically queries the sensor, and then it mounts a pipeline that
+> will have the sensor + ISP blocks. Those ISP blocks convert the format
+> from Bayer into YUYV or RGB and scale down the resolution in order to
+> match the request.
+> 
+> It also adjusts the padding. The padding code there is very complex,
+> as it not only uses pad_h/pad_w, having things like:
+> 
+> 	if (!atomisp_subdev_format_conversion(asd, source_pad)) {
+> 		padding_w = 0;
+> 		padding_h = 0;
+> 	} else if (IS_BYT) {
+> 		padding_w = 12;
+> 		padding_h = 12;
+> 	}
+> 	...
+> 	atomisp_get_dis_envelop(asd, f->fmt.pix.width, f->fmt.pix.height,
+> 				&dvs_env_w, &dvs_env_h);
+> 	...
+> 	/*
+> 	 * set format info to sensor
+> 	 * In continuous mode, resolution is set only if it is higher than
+> 	 * existing value. This because preview pipe will be configured after
+> 	 * capture pipe and usually has lower resolution than capture pipe.
+> 	 */
+> 	if (!asd->continuous_mode->val ||
+> 	    isp_sink_fmt->width < (f->fmt.pix.width + padding_w + dvs_env_w) ||
+> 	    isp_sink_fmt->height < (f->fmt.pix.height + padding_h +
+> 				    dvs_env_h)) {
+> 
+> Due to that, the sensors are set to have those extra 16 columns/lines.
+> Those extra data are consumed internally at the driver, so the output
+> buffer won't contain those.
+> 
+> Yet, the buffer size to be allocated by userspace on USERPTR mode is not just
+> width x height x bpp, but it may need extra space for such pads and/or other 
+> things.
+> 
+> In practice, when VIDIOC_S_FMT asks for a 1600x1200 resolution, it
+> actually sets 1616x1216 at the sensor (at the pad source), but the
+> pad sink provides the requested resolution: 1600x1200.
+> 
+> However, the resolution returned by VIDIOC_G_FMT/VIDIOC_S_FMT/VIDIOC_TRY_FMT
+> is not always the sink resolution. Sometimes, it returns the sensor format.
+> 
+> Fixing it has been challenging.
+> 
+> -
+> 
+> Another related issue is that, when a resolution bigger than the maximum
+> resolution is requested, the driver doesn't return 1600x1200, but, instead,
+> a smaller one.
+> 
+> On other words, setting to YUYV 1600x1200 gives:
+> 
+> 	$ v4l2-ctl --set-fmt-video pixelformat=YUYV,width=1600,height=1200 -d /dev/video2 --verbose
+> 	VIDIOC_QUERYCAP: ok
+> 	VIDIOC_G_FMT: ok
+> 	VIDIOC_S_FMT: ok
+> 	Format Video Capture:
+> 		Width/Height      : 1600/1200
+> 		Pixel Format      : 'YUYV' (YUYV 4:2:2)
+> 		Field             : None
+> 		Bytes per Line    : 3200
+> 		Size Image        : 3842048
+> 		Colorspace        : Rec. 709
+> 		Transfer Function : Rec. 709
+> 		YCbCr/HSV Encoding: Rec. 709
+> 		Quantization      : Default (maps to Limited Range)
+> 		Flags             : 
+> 
+> Setting to a higher resolution (which is a method that some apps use to test
+> for the max resolution, when VIDIOC_ENUM_FRAMESIZES is not available or
+> broken) produces:
+> 
+> 	$ v4l2-ctl --set-fmt-video pixelformat=YUYV,width=10000,height=10000 -d /dev/video2 --verbose
+> 	VIDIOC_QUERYCAP: ok
+> 	VIDIOC_G_FMT: ok
+> 	VIDIOC_S_FMT: ok
+> 	Format Video Capture:
+> 		Width/Height      : 1600/900
+> 		Pixel Format      : 'YUYV' (YUYV 4:2:2)
+> 		Field             : None
+> 		Bytes per Line    : 3200
+> 		Size Image        : 2883584
+> 		Colorspace        : Rec. 709
+> 		Transfer Function : Rec. 709
+> 		YCbCr/HSV Encoding: Rec. 709
+> 		Quantization      : Default (maps to Limited Range)
+> 		Flags             : 
+> 
+> Trying to set to the sensor resolution is even worse, as it returns EINVAL:
+> 
+> 	$ v4l2-ctl --set-fmt-video pixelformat=YUYV,width=1616,height=1216 -d /dev/video2 --verbose
+> 	VIDIOC_QUERYCAP: ok
+> 	VIDIOC_G_FMT: ok
+> 	VIDIOC_S_FMT: failed: Invalid argument
+> 
+> The logs for such case are:
+> 
+> 	[ 4799.594724] atomisp-isp2 0000:00:03.0: can't create streams
+> 	[ 4799.594757] atomisp-isp2 0000:00:03.0: __get_frame_info 1616x1216 (padded to 0) returned -22
+> 	[ 4799.594781] atomisp-isp2 0000:00:03.0: Can't set format on ISP. Error -22
+> 
+> Video devices
+> =============
+> 
+> Currently, 10 video? devices are created:
+> 
+> 	$ for i in $(ls /dev/video*|sort -k2 -to -n); do echo -n $i:; v4l2-ctl -D -d $i|grep Name; done
+> 	/dev/video0:	Name             : ATOMISP ISP CAPTURE output
+> 	/dev/video1:	Name             : ATOMISP ISP VIEWFINDER output
+> 	/dev/video2:	Name             : ATOMISP ISP PREVIEW output
+> 	/dev/video3:	Name             : ATOMISP ISP VIDEO output
+> 	/dev/video4:	Name             : ATOMISP ISP ACC
+> 	/dev/video5:	Name             : ATOMISP ISP MEMORY input
+> 	/dev/video6:	Name             : ATOMISP ISP CAPTURE output
+> 	/dev/video7:	Name             : ATOMISP ISP VIEWFINDER output
+> 	/dev/video8:	Name             : ATOMISP ISP PREVIEW output
+> 	/dev/video9:	Name             : ATOMISP ISP VIDEO output
+> 	/dev/video10:	Name             : ATOMISP ISP ACC
+> 
+> That seems to be written to satisfy some Android-based app, but we don't
+> really need all of those.
+> 
+> I'm thinking to comment out the part of the code which creates all of those,
+> keeping just "ATOMISP ISP PREVIEW output", as I don't think we need all
+> of those.
 
+Why is that ? Being able to capture multiple streams in different
+resolutions is important for lots of applications, the viewfinder
+resolution is often different than the video streaming and/or still
+capture resolution. Scaling after capture is often expensive (and there
+are memory bandwidth and power constraints to take into account too). A
+single-stream device may be better than nothing, but it's time to move
+to the 21st century.
 
-Many thanks
+-- 
+Regards,
 
+Laurent Pinchart
