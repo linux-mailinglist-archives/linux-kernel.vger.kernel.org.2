@@ -2,70 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E69445913
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A4F445917
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231861AbhKDR6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34834 "EHLO
+        id S232267AbhKDR7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233989AbhKDR6M (ORCPT
+        with ESMTP id S229850AbhKDR7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:58:12 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC9DC061714;
-        Thu,  4 Nov 2021 10:55:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=S8+GvGjJAqniHYjM2Wp5vjOitbiYfVXd5DEzzMgGQcs=; b=cl00Zy7gZSJ0I2s23pCGHt0Q6X
-        Q8OT0LUd5SXoIe7fvuNwxZ+uR2NfFqjAr1lmqRjRY7MysVby4VZTVSub++9SMNi1mHMzSPsvTumjK
-        fU4/TJZZ0aaOrVT0cuznAxYACaRH0wsXg84useAnwbW66Ut3sO+SzdI9uc1abVRpHzWnCz5iUodL8
-        R+Jct1O4oQtdBIq3Es2RfNRKmwoA0aFBJaCvJKlSeyPKKba6vPk6u10I//qdSmC57tFPWyee9ZspH
-        55psKuHOFabypdipvFDLwBxbjTuKFxruc/976HfLSlC0TIfzKMHCkmhEis0hsj0M802VPWZOPyuaa
-        r08pc56w==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1migxH-009jE8-C7; Thu, 04 Nov 2021 17:55:15 +0000
-Date:   Thu, 4 Nov 2021 10:55:15 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jane Chu <jane.chu@oracle.com>
-Cc:     dan.j.williams@intel.com, vishal.l.verma@intel.com,
-        dave.jiang@intel.com, ira.weiny@intel.com, viro@zeniv.linux.org.uk,
-        willy@infradead.org, jack@suse.cz, nvdimm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 3/3] libnvdimm/pmem: Provide pmem_dax_clear_poison for
- dax operation
-Message-ID: <YYQegz3nPmbavQtK@infradead.org>
-References: <20210914233132.3680546-1-jane.chu@oracle.com>
- <20210914233132.3680546-5-jane.chu@oracle.com>
+        Thu, 4 Nov 2021 13:59:17 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422F5C061714;
+        Thu,  4 Nov 2021 10:56:39 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id y3so16424893ybf.2;
+        Thu, 04 Nov 2021 10:56:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DPStDFw2+0Lg1MlhJeEQxDNPEkzqlTJMn986ZZm8lCI=;
+        b=R1JRU1dkj1w1IkWHjbEg9yW6MSnPMZbaCvsFkQDqHVKxvueaG2XyfoMU5DcuqsXpeC
+         HOKAvCBqZvSaLMr9SlfoAOQFUIG4ayd2Lw6xeYrsSugSQjV6mHvbFUrx6cJCeAqTln86
+         MREFbbBslBCSNwBTPOnzWMru5sI/d5TDHhSdcSc6w/ZdaQkbkmWj6HK0jh0/fZ8A+J4H
+         FIOPeuQMtjlRvT6s2xac0DQzeTJ8lUq0DGJuUfdscWDb62un0+P7g/AA+x5FsDT70BAW
+         8Fvy1NdmlIaAZx9MYiiFenQqvPvl5L7gzksNjlX+Vmj/bc/ehc9fMswQLVzaq8JKDV0s
+         DHEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DPStDFw2+0Lg1MlhJeEQxDNPEkzqlTJMn986ZZm8lCI=;
+        b=S0Vmn476Yny+5oQkxQ3zMk/wdPupe9KKGpsjx7bP8ZE2XosoE1uBecffLMGfuxCwxY
+         WbV1Vm6Lo57irT7oZzgkhzJ16pRqsWmh8Brce2WO8p+j73NSTJLijDsrsOl9p3VIg94r
+         S3HxlEtQ+Ennr2cE8vgZieC6KvDCbeFNSyzcfx/PzUMhnWwNkvico1vWZlJexFbwSaWb
+         fNbMlwReqhGUWt+w1zHej7/WiLMQBGnpMBaaZVyMvlrE+qqPtAwY9e0BK/YULhueVttP
+         DjFliQ5g+hFlfe4gwJvyxMGtPMU6fsbwrpX6JWGPE+KfhitcHNgTE/R8mLF+jbfyuxUJ
+         kZEQ==
+X-Gm-Message-State: AOAM531b8rY7HAw/SxBFBzLHP5Mt7KUVICuAZ7i7rvUEcJK20m5h9n29
+        pXc08qKtWvEBfzMVafDgUzw201crCPnmn4NwU9Q=
+X-Google-Smtp-Source: ABdhPJyoUTC6m0SVMW0LmcU8OPfPkyCsQ/bryAweQHZwjiqWdl052MN6XoC0o9UFkY6soBsuhHTaziQ2blBSHf7Fs38=
+X-Received: by 2002:a25:cc4c:: with SMTP id l73mr55747145ybf.114.1636048597996;
+ Thu, 04 Nov 2021 10:56:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914233132.3680546-5-jane.chu@oracle.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <YYQadWbtdZ9Ff9N4@kernel.org> <YYQdKijyt20cBQik@kernel.org>
+In-Reply-To: <YYQdKijyt20cBQik@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 4 Nov 2021 10:56:26 -0700
+Message-ID: <CAEf4BzYtq5Fru0_=Stih+Tjya3i29xG+RSF=4oOT7GbUwVRQaQ@mail.gmail.com>
+Subject: Re: perf build broken looking for bpf/{libbpf,bpf}.h after merge with upstream
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 05:31:32PM -0600, Jane Chu wrote:
-> +static int pmem_dax_clear_poison(struct dax_device *dax_dev, pgoff_t pgoff,
-> +					size_t nr_pages)
-> +{
-> +	unsigned int len = PFN_PHYS(nr_pages);
-> +	sector_t sector = PFN_PHYS(pgoff) >> SECTOR_SHIFT;
-> +	struct pmem_device *pmem = dax_get_private(dax_dev);
-> +	phys_addr_t pmem_off = sector * 512 + pmem->data_offset;
-> +	blk_status_t ret;
-> +
-> +	if (!is_bad_pmem(&pmem->bb, sector, len))
-> +		return 0;
-> +
-> +	ret = pmem_clear_poison(pmem, pmem_off, len);
-> +	return (ret == BLK_STS_OK) ? 0 : -EIO;
+On Thu, Nov 4, 2021 at 10:49 AM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
+>
+> Em Thu, Nov 04, 2021 at 02:37:57PM -0300, Arnaldo Carvalho de Melo escreveu:
+> >
+> > Hi Song,
+> >
+> >       I just did a merge with upstream and I'm getting this:
+> >
+> >   LINK    /tmp/build/perf/plugins/plugin_scsi.so
+> >   INSTALL trace_plugins
+>
+> To clarify, the command line to build perf that results in this problem
+> is:
+>
+>   make -k BUILD_BPF_SKEL=1 CORESIGHT=1 PYTHON=python3 O=/tmp/build/perf -C tools/perf install-bin
 
-No need for the braces here (and I'd prefer a good old if anyway).
+Oh, I dropped CORESIGN and left BUILD_BPF_SKEL=1 and yeah, I see the
+build failure. I do think now that it's related to the recent Makefile
+revamp effort. Quentin, PTAL.
 
-Otherwise looks good:
+On the side note, why BUILD_BPF_SKEL=1 is not a default, we might have
+caught this sooner. Is there any reason not to flip the default?
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+>
+> > Auto-detecting system features:
+> > ...                        libbfd: [ on  ]
+> > ...        disassembler-four-args: [ on  ]
+> > ...                          zlib: [ on  ]
+> > ...                        libcap: [ on  ]
+> > ...               clang-bpf-co-re: [ on  ]
+> >
+> >
+
+[...]
