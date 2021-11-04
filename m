@@ -2,124 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B07445A17
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:58:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A0F0445A1A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231989AbhKDTBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 15:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230442AbhKDTBH (ORCPT
+        id S233873AbhKDTBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 15:01:30 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:38839 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232033AbhKDTB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 15:01:07 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C632DC061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 11:58:28 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id t127so16734141ybf.13
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 11:58:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nUmCcM2R27aOSL47pzbGyQqJ7fyPEFQW3dQWmWZEKC0=;
-        b=oQjhMPhYfnVcGc5KK9SCmA092z/fwG+34NzH0Wc9ooFbdCywDFlYcfLZsnjMMsT6wA
-         UP7MYfCuyqdjsgF1ngXeQtwctBnTPnm3DAoPKWSubBQUVit3MSIN1oqZJGdcivz0ZMA2
-         bf9zIa941ohwL40/4HeiHvsJYLpVvUdObfiBS9tDj4l8mzXhDOryCBTaDhkCS6ZMBL05
-         wnkLbO2+6f3CNLWKslMFDqkVtyOw3f65Qmuz8TEmJEKSxtCjYvUlT3z2U7fo7bf8d4JR
-         Lj+PdinXblZI0ySHphrkl8/9Avk12Y+rkrvka9L3n1cO3iUGqIeNU6rxVsxa5+rC/I1p
-         14jw==
+        Thu, 4 Nov 2021 15:01:29 -0400
+Received: by mail-ot1-f52.google.com with SMTP id c2-20020a056830348200b0055a46c889a8so9612085otu.5;
+        Thu, 04 Nov 2021 11:58:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nUmCcM2R27aOSL47pzbGyQqJ7fyPEFQW3dQWmWZEKC0=;
-        b=GxZaD0xLARq0fUH7fA12OSACJtkjqPzkNGnsGgdNbNuwcI1f/fkvddq43HMssC01dw
-         9xqPen591x79pUFE2mmqQJYFjW+yFfaSSC+ij1vgkrVPKZNTDPJ0jtIaVcQV6AqRuAg7
-         l/76D+sL3e/QHK2f4MWRaeF2JEMzl+ta48GqgA0UhzcMLEITnx8omnEhD5f0tr3NANIo
-         sSaRrg9ZOK4fZa4twVOCOncNtaASxhaJHSafMyPhGBrwM7Hj+V6sKrcNuYuw11FNlCEs
-         xaEuk5H5gUb3899aUvrZN1eRDFOnA1rF3t2IeM3neCTPukp6AaNLleBTBmSsR1xlNDty
-         M3xw==
-X-Gm-Message-State: AOAM533OMETGiKkt+s9CIoa0VD+mvODRBynLFeigZ7UT8+Ecg17l+OMV
-        ler7wRkkWJWDceh1Nb1XN/VxXWaz8zz3p7np1vK6kg==
-X-Google-Smtp-Source: ABdhPJw9+in7+jK3BzPJrRdvOhUL2WxBB20G1qO5j2AUIeI2ZbWx1/3MaBBORni/qhRE4xF3hhcxbWt21DUg28bKgAM=
-X-Received: by 2002:a05:6902:10c4:: with SMTP id w4mr39840645ybu.439.1636052307853;
- Thu, 04 Nov 2021 11:58:27 -0700 (PDT)
+        bh=lLKvPHk7AT6HIK5PlTcyCsOjSG94moArAkUSQWwW8dc=;
+        b=TImzsnRb/fqdZRqyWPF3zb8WYnkv2QoR+PPhItFuBm1Xilvk5eXOnba7KhYKqVs2Fd
+         Wx513sLlmlbL/sk0UR31c74xa1QE2QwJJjOJNJjt78/VPTZ4f7r550J8FljqouPJry70
+         VWo5sXj97WcDgdZ3fLtLJKC9ErIO1C2ZtBcsuHPid11YDq5tErW2rtXXDhO5It387Lc/
+         f3JZVsgIxRtHU4dJp+Uqo5zjrEU/plilFlDl2JiX+eYzCe6LyFUtPjphNmXkwl/TcCCh
+         /2VNXiomZ8vAlnJHABVSsKDjEGIlNVE/+rwz2Roxpy/4LbVx8FJ2iwsgRbj/M8c5F1nw
+         Z8Tw==
+X-Gm-Message-State: AOAM530nIqgLghN3tgjOuZfpEbBX7aRnaIQS9WbQDItexTw8Sc3yUy9v
+        mn8dfGWl5z+wXBMbOKGMuFE5GGAWVZgjxXmcSy/Em9to
+X-Google-Smtp-Source: ABdhPJxubP7USfbkOKPvnIa2lijf2qUx1LObrK2bcOGTG304+NIeP0+vdSeiitCBU1C4XNh/3WaFUvuQZbrXUbuIom8=
+X-Received: by 2002:a9d:a64:: with SMTP id 91mr33171895otg.198.1636052330641;
+ Thu, 04 Nov 2021 11:58:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211102002203.1046069-1-rananta@google.com> <20211102002203.1046069-7-rananta@google.com>
- <YYMoEYzBvEqN5MD7@google.com>
-In-Reply-To: <YYMoEYzBvEqN5MD7@google.com>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Thu, 4 Nov 2021 11:58:16 -0700
-Message-ID: <CAJHc60yGpDR3denxfTUs_TxKcNWaPLChkVEgEXpNkGvkRS=KEg@mail.gmail.com>
-Subject: Re: [RFC PATCH 6/8] tools: Import the firmware registers
-To:     Oliver Upton <oupton@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20211102105236.97469-1-srinivas.pandruvada@linux.intel.com>
+In-Reply-To: <20211102105236.97469-1-srinivas.pandruvada@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 4 Nov 2021 19:58:38 +0100
+Message-ID: <CAJZ5v0hRi+tFnCANDcMBkHs9nZxr8yh8afYtkvPhkBHzAaciJQ@mail.gmail.com>
+Subject: Re: [PATCH] thermal/drivers/int340x: processor_thermal: Suppot 64 bit
+ RFIM responses
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 5:23 PM Oliver Upton <oupton@google.com> wrote:
+On Tue, Nov 2, 2021 at 11:52 AM Srinivas Pandruvada
+<srinivas.pandruvada@linux.intel.com> wrote:
 >
-> On Tue, Nov 02, 2021 at 12:22:01AM +0000, Raghavendra Rao Ananta wrote:
-> > Import the firmware definitions for the firmware registers,
-> > KVM_REG_ARM_STD, KVM_REG_ARM_STD_HYP, and KVM_REG_ARM_VENDOR_HYP.
-> >
-> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> >
-> > ---
-> >  tools/arch/arm64/include/uapi/asm/kvm.h | 18 ++++++++++++++++++
-> >  1 file changed, 18 insertions(+)
+> Some of the RFIM mail box command returns 64 bit values. So enhance
+> mailbox interface to return 64 bit values and use them for RFIM
+> commands.
 >
-> Won't we have the latest UAPI headers available in usr/include/ at build
-> time?
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Fixes: 5d6fbc96bd36 ("thermal/drivers/int340x: processor_thermal: Export additional attributes")
+> ---
+>  .../processor_thermal_device.h                |  2 +-
+>  .../int340x_thermal/processor_thermal_mbox.c  | 22 +++++++++++--------
+>  .../int340x_thermal/processor_thermal_rfim.c  | 10 ++++-----
+>  3 files changed, 19 insertions(+), 15 deletions(-)
 >
-I think we do. Wasn't aware of this. I'll delete the patch.
-
-Regards,
-Raghavendra
+> diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
+> index 5a1cfe4864f1..2aae91e7b13d 100644
+> --- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
+> +++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
+> @@ -80,7 +80,7 @@ void proc_thermal_rfim_remove(struct pci_dev *pdev);
+>  int proc_thermal_mbox_add(struct pci_dev *pdev, struct proc_thermal_device *proc_priv);
+>  void proc_thermal_mbox_remove(struct pci_dev *pdev);
+>
+> -int processor_thermal_send_mbox_cmd(struct pci_dev *pdev, u16 cmd_id, u32 cmd_data, u32 *cmd_resp);
+> +int processor_thermal_send_mbox_cmd(struct pci_dev *pdev, u16 cmd_id, u32 cmd_data, u64 *cmd_resp);
+>  int proc_thermal_add(struct device *dev, struct proc_thermal_device *priv);
+>  void proc_thermal_remove(struct proc_thermal_device *proc_priv);
+>  int proc_thermal_resume(struct device *dev);
+> diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
+> index 59e93b04f0a9..a86521973dad 100644
+> --- a/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
+> +++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
+> @@ -23,7 +23,7 @@
+>
+>  static DEFINE_MUTEX(mbox_lock);
+>
+> -static int send_mbox_cmd(struct pci_dev *pdev, u16 cmd_id, u32 cmd_data, u32 *cmd_resp)
+> +static int send_mbox_cmd(struct pci_dev *pdev, u16 cmd_id, u32 cmd_data, u64 *cmd_resp)
+>  {
+>         struct proc_thermal_device *proc_priv;
+>         u32 retries, data;
+> @@ -68,12 +68,16 @@ static int send_mbox_cmd(struct pci_dev *pdev, u16 cmd_id, u32 cmd_data, u32 *cm
+>                         goto unlock_mbox;
+>                 }
+>
+> -               if (cmd_id == MBOX_CMD_WORKLOAD_TYPE_READ) {
+> -                       data = readl((void __iomem *) (proc_priv->mmio_base + MBOX_OFFSET_DATA));
+> -                       *cmd_resp = data & 0xff;
+> -               }
+> -
+>                 ret = 0;
+> +
+> +               if (!cmd_resp)
+> +                       break;
+> +
+> +               if (cmd_id == MBOX_CMD_WORKLOAD_TYPE_READ)
+> +                       *cmd_resp = readl((void __iomem *) (proc_priv->mmio_base + MBOX_OFFSET_DATA));
+> +               else
+> +                       *cmd_resp = readq((void __iomem *) (proc_priv->mmio_base + MBOX_OFFSET_DATA));
+> +
+>                 break;
+>         } while (--retries);
+>
+> @@ -82,7 +86,7 @@ static int send_mbox_cmd(struct pci_dev *pdev, u16 cmd_id, u32 cmd_data, u32 *cm
+>         return ret;
+>  }
+>
+> -int processor_thermal_send_mbox_cmd(struct pci_dev *pdev, u16 cmd_id, u32 cmd_data, u32 *cmd_resp)
+> +int processor_thermal_send_mbox_cmd(struct pci_dev *pdev, u16 cmd_id, u32 cmd_data, u64 *cmd_resp)
+>  {
+>         return send_mbox_cmd(pdev, cmd_id, cmd_data, cmd_resp);
+>  }
+> @@ -153,7 +157,7 @@ static ssize_t workload_type_show(struct device *dev,
+>                                    char *buf)
+>  {
+>         struct pci_dev *pdev = to_pci_dev(dev);
+> -       u32 cmd_resp;
+> +       u64 cmd_resp;
+>         int ret;
+>
+>         ret = send_mbox_cmd(pdev, MBOX_CMD_WORKLOAD_TYPE_READ, 0, &cmd_resp);
+> @@ -187,7 +191,7 @@ static bool workload_req_created;
+>
+>  int proc_thermal_mbox_add(struct pci_dev *pdev, struct proc_thermal_device *proc_priv)
+>  {
+> -       u32 cmd_resp;
+> +       u64 cmd_resp;
+>         int ret;
+>
+>         /* Check if there is a mailbox support, if fails return success */
+> diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_rfim.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_rfim.c
+> index 2b8a3235d518..b25b54d4bac1 100644
+> --- a/drivers/thermal/intel/int340x_thermal/processor_thermal_rfim.c
+> +++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_rfim.c
+> @@ -195,7 +195,7 @@ static ssize_t rfi_restriction_store(struct device *dev,
+>                                      const char *buf, size_t count)
+>  {
+>         u16 cmd_id = 0x0008;
+> -       u32 cmd_resp;
+> +       u64 cmd_resp;
+>         u32 input;
+>         int ret;
+>
+> @@ -215,14 +215,14 @@ static ssize_t rfi_restriction_show(struct device *dev,
+>                                     char *buf)
+>  {
+>         u16 cmd_id = 0x0007;
+> -       u32 cmd_resp;
+> +       u64 cmd_resp;
+>         int ret;
+>
+>         ret = processor_thermal_send_mbox_cmd(to_pci_dev(dev), cmd_id, 0, &cmd_resp);
+>         if (ret)
+>                 return ret;
+>
+> -       return sprintf(buf, "%u\n", cmd_resp);
+> +       return sprintf(buf, "%llu\n", cmd_resp);
+>  }
+>
+>  static ssize_t ddr_data_rate_show(struct device *dev,
+> @@ -230,14 +230,14 @@ static ssize_t ddr_data_rate_show(struct device *dev,
+>                                   char *buf)
+>  {
+>         u16 cmd_id = 0x0107;
+> -       u32 cmd_resp;
+> +       u64 cmd_resp;
+>         int ret;
+>
+>         ret = processor_thermal_send_mbox_cmd(to_pci_dev(dev), cmd_id, 0, &cmd_resp);
+>         if (ret)
+>                 return ret;
+>
+> -       return sprintf(buf, "%u\n", cmd_resp);
+> +       return sprintf(buf, "%llu\n", cmd_resp);
+>  }
+>
+>  static DEVICE_ATTR_RW(rfi_restriction);
 > --
-> Oliver
->
-> > diff --git a/tools/arch/arm64/include/uapi/asm/kvm.h b/tools/arch/arm64/include/uapi/asm/kvm.h
-> > index b3edde68bc3e..a1d0e8e69eed 100644
-> > --- a/tools/arch/arm64/include/uapi/asm/kvm.h
-> > +++ b/tools/arch/arm64/include/uapi/asm/kvm.h
-> > @@ -281,6 +281,24 @@ struct kvm_arm_copy_mte_tags {
-> >  #define KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_REQUIRED     3
-> >  #define KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_ENABLED          (1U << 4)
-> >
-> > +#define KVM_REG_ARM_STD                      KVM_REG_ARM_FW_REG(3)
-> > +enum kvm_reg_arm_std_bmap {
-> > +     KVM_REG_ARM_STD_TRNG_V1_0,
-> > +     KVM_REG_ARM_STD_BMAP_MAX,
-> > +};
-> > +
-> > +#define KVM_REG_ARM_STD_HYP          KVM_REG_ARM_FW_REG(4)
-> > +enum kvm_reg_arm_std_hyp_bmap {
-> > +     KVM_REG_ARM_STD_HYP_PV_TIME_ST,
-> > +     KVM_REG_ARM_STD_HYP_BMAP_MAX,
-> > +};
-> > +
-> > +#define KVM_REG_ARM_VENDOR_HYP               KVM_REG_ARM_FW_REG(5)
-> > +enum kvm_reg_arm_vendor_hyp_bmap {
-> > +     KVM_REG_ARM_VENDOR_HYP_PTP,
-> > +     KVM_REG_ARM_VENDOR_HYP_BMAP_MAX,
-> > +};
-> > +
-> >  /* SVE registers */
-> >  #define KVM_REG_ARM64_SVE            (0x15 << KVM_REG_ARM_COPROC_SHIFT)
-> >
-> > --
-> > 2.33.1.1089.g2158813163f-goog
-> >
+
+Applied as 5.16-rc material, thanks!
