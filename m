@@ -2,132 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C21445974
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:16:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5951144597A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234091AbhKDSSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 14:18:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39518 "EHLO
+        id S234129AbhKDSTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 14:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbhKDSSi (ORCPT
+        with ESMTP id S234102AbhKDSTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 14:18:38 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72CAEC061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 11:16:00 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id r8so9960078wra.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 11:16:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=drJ6D9Eu8FeZWkX48l8zvS8JURElK7MsF1YnD12M0PQ=;
-        b=Y1k/NacURiNHXdFDKRc4CR+sNx/XDPZRiL3EVrvfvxZy872WUyzGVx97lV04Frkgl7
-         ny54lYFUfXyglNbWp01OpWs9vybGyDEG5a89Fo9C+2chwjYrvkUPsm2GTBzaaPCovB5U
-         pxpBGEuJlOp66+JRym6XOMd551oc8yQhpKzF7oWg0TCWJwwDIURuSOdhjKH/nwVv5Dbd
-         20AajD67TTPPiVRpiouB0JxVLOBhwyQWKZZeMiD+HTLT1ZyBE1DXSkX16s9uUwh66ARz
-         bhV6+ZrIalKf1wnIzDZgvU7cb3368FzPNf36mahgGareGbWj9VR+UZdavgqdt9+y5q7G
-         PBcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=drJ6D9Eu8FeZWkX48l8zvS8JURElK7MsF1YnD12M0PQ=;
-        b=w1RJN7vFA81/9fKGfqQPp7HFc2NWTK9SyaZMs05Sfa19RzG8Jh5lQ5weg9NVHBA+ay
-         41xEw9n6ML7Y1KenbJK/TULdl46Mm5ZitI4HUw6qQ9MPm/PLWGGwKdhbX3u1ITHw7rkw
-         O7PEnCHbtC42F4Pf9f2USAdGMDsgg1X+TiJWomzgAjVXKG+8+jJvfHgoFr0g1Vi8zhki
-         zhSELdvRWEHVJYQBsFhkYz5JXiedMZNCiD3v7bf6sRe8wUwBe6U+IYAoUMSIJhyadfLg
-         pmjrRFvVC+4/ExX5G7ZSQ9cHlEpE9MPQj70eyIDkAetpqKek/NoujRiB4T1DdfmIs3XK
-         Vzig==
-X-Gm-Message-State: AOAM53223RgooRExpEAGMT+dQ61HG/LcNyL7N+76lP1/jNq1H2lFHOZQ
-        5KB0MAXu3eAfY7IoyqUD83Lto/HLn2FDiA==
-X-Google-Smtp-Source: ABdhPJyqL7ZNlq0z1H49SSwly0gaPzKraHGBi63MLkw+widVikO11Um/RXb7K2u9qn0CIxsSKkrhJw==
-X-Received: by 2002:adf:9147:: with SMTP id j65mr66481439wrj.163.1636049759040;
-        Thu, 04 Nov 2021 11:15:59 -0700 (PDT)
-Received: from [192.168.1.8] ([149.86.74.143])
-        by smtp.gmail.com with ESMTPSA id q123sm9109298wma.30.2021.11.04.11.15.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 11:15:58 -0700 (PDT)
-Message-ID: <83f48296-fa72-a27f-5acb-654b51cd848f@isovalent.com>
-Date:   Thu, 4 Nov 2021 18:15:57 +0000
+        Thu, 4 Nov 2021 14:19:01 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55EDAC061714;
+        Thu,  4 Nov 2021 11:16:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+        bh=jMahL7SwbYkHfS6SGguOr7KGl9dPM47/ttUCLw3AGB0=; b=twe5CLzmwVOGo8TkN/z/9o+80Y
+        GWAmZlPbyVYluDGb/E9lEZuV4aaUVD9E6s203thJy7xe5pLdHs7DfAws8vKcPLetTeGmQn2npwGLV
+        JQ3yu8u/1joIMLWlGeTgP3JABrqhf+xdBGDXFw5lSvzI0uDzarZ9ZNRMuVA0NQeIXCJPpUnVp0cc3
+        OQi/mwPPosC35SosglzJuos9FkMJ3vnBqlWcblkjmOkThFnCQQqll0lg8a7I9AD6UvUVlkugzZhpO
+        YxIDhKyaROdAZljC4D8ZaTkiJEI+C/TD9AY6f98a6pivgpmL81yM/wZ541BSfeVmM3iDBRNPaaSAY
+        rvmj8B8A==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mihHW-009lko-Ax; Thu, 04 Nov 2021 18:16:10 +0000
+Date:   Thu, 4 Nov 2021 11:16:10 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     martin.petersen@oracle.com, miquel.raynal@bootlin.com,
+        hare@suse.de, jack@suse.cz, hch@lst.de, song@kernel.org,
+        dave.jiang@intel.com, richard@nod.at, vishal.l.verma@intel.com,
+        penguin-kernel@i-love.sakura.ne.jp, tj@kernel.org,
+        ira.weiny@intel.com, vigneshr@ti.com, dan.j.williams@intel.com,
+        ming.lei@redhat.com, efremov@linux.com, linux-raid@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org
+Subject: Re: [PATCH v5 00/14] last set for add_disk() error handling
+Message-ID: <YYQjamPUtrq402Cr@bombadil.infradead.org>
+References: <20211103230437.1639990-1-mcgrof@kernel.org>
+ <163602655191.22491.10844091970007142957.b4-ty@kernel.dk>
+ <4764286a-99b4-39f7-ce5c-9e88cee1a538@kernel.dk>
+ <YYQTYctDjaxU2tkQ@bombadil.infradead.org>
+ <377b472e-b788-df12-f9cd-7fc7b0887dc0@kernel.dk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: perf build broken looking for bpf/{libbpf,bpf}.h after merge with
- upstream
-Content-Language: en-GB
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <YYQadWbtdZ9Ff9N4@kernel.org>
- <CAEf4Bzaj4_hXDxk18aJvk2bxJ-rPb++DpPVEeUw0pN-tJuiy0Q@mail.gmail.com>
- <YYQhzbh1tL5MPgaI@kernel.org>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <YYQhzbh1tL5MPgaI@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <377b472e-b788-df12-f9cd-7fc7b0887dc0@kernel.dk>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021-11-04 15:09 UTC-0300 ~ Arnaldo Carvalho de Melo <acme@kernel.org>
-> Em Thu, Nov 04, 2021 at 10:47:12AM -0700, Andrii Nakryiko escreveu:
->> On Thu, Nov 4, 2021 at 10:38 AM Arnaldo Carvalho de Melo
->> <arnaldo.melo@gmail.com> wrote:
->>>
->>>
->>> Hi Song,
->>>
->>
->> cc Quentin as well, might be related to recent Makefiles revamp for
->> users of libbpf. But in bpf-next perf builds perfectly fine, so not
->> sure.
+On Thu, Nov 04, 2021 at 11:10:48AM -0600, Jens Axboe wrote:
+> On 11/4/21 11:07 AM, Luis Chamberlain wrote:
+> > On Thu, Nov 04, 2021 at 06:53:34AM -0600, Jens Axboe wrote:
+> >> On 11/4/21 5:49 AM, Jens Axboe wrote:
+> >>> On Wed, 3 Nov 2021 16:04:23 -0700, Luis Chamberlain wrote:
+> >>>> Jens,
+> >>>>
+> >>>> as requested, I've folded all pending changes into this series. This
+> >>>> v5 pegs on Christoph's reviewed-by tags and since I was respinning I
+> >>>> modified the ataprobe and floppy driver changes as he suggested.
+> >>>>
+> >>>> I think this is it. The world of floppy has been exciting for v5.16.
+> >>>>
+> >>>> [...]
+> >>>
+> >>> Applied, thanks!
+> >>>
+> >>> [01/14] nvdimm/btt: use goto error labels on btt_blk_init()
+> >>>         commit: 2762ff06aa49e3a13fb4b779120f4f8c12c39fd1
+> >>> [02/14] nvdimm/btt: add error handling support for add_disk()
+> >>>         commit: 16be7974ff5d0a5cd9f345571c3eac1c3f6ba6de
+> >>> [03/14] nvdimm/blk: avoid calling del_gendisk() on early failures
+> >>>         commit: b7421afcec0c77ab58633587ddc29d53e6eb95af
+> >>> [04/14] nvdimm/blk: add error handling support for add_disk()
+> >>>         commit: dc104f4bb2d0a652dee010e47bc89c1ad2ab37c9
+> >>> [05/14] nvdimm/pmem: cleanup the disk if pmem_release_disk() is yet assigned
+> >>>         commit: accf58afb689f81daadde24080ea1164ad2db75f
+> >>> [06/14] nvdimm/pmem: use add_disk() error handling
+> >>>         commit: 5a192ccc32e2981f721343c750b8cfb4c3f41007
+> >>> [07/14] z2ram: add error handling support for add_disk()
+> >>>         commit: 15733754ccf35c49d2f36a7ac51adc8b975c1c78
+> >>> [08/14] block/sunvdc: add error handling support for add_disk()
+> >>>         commit: f583eaef0af39b792d74e39721b5ba4b6948a270
+> >>> [09/14] mtd/ubi/block: add error handling support for add_disk()
+> >>>         commit: ed73919124b2e48490adbbe48ffe885a2a4c6fee
+> >>> [10/14] ataflop: remove ataflop_probe_lock mutex
+> >>>         commit: 4ddb85d36613c45bde00d368bf9f357bd0708a0c
+> >>> [11/14] block: update __register_blkdev() probe documentation
+> >>>         commit: 26e06f5b13671d194d67ae8e2b66f524ab174153
+> >>> [12/14] ataflop: address add_disk() error handling on probe
+> >>>         commit: 46a7db492e7a27408bc164cbe6424683e79529b0
+> >>> [13/14] floppy: address add_disk() error handling on probe
+> >>>         commit: ec28fcc6cfcd418d20038ad2c492e87bf3a9f026
+> >>> [14/14] block: add __must_check for *add_disk*() callers
+> >>>         commit: 1698712d85ec2f128fc7e7c5dc2018b5ed2b7cf6
+> >>
+> >> rivers/scsi/sd.c: In function ‘sd_probe’:
+> >> drivers/scsi/sd.c:3573:9: warning: ignoring return value of ‘device_add_disk’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+> >>  3573 |         device_add_disk(dev, gd, NULL);
+> >>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >> drivers/scsi/sr.c: In function ‘sr_probe’:
+> >> drivers/scsi/sr.c:731:9: warning: ignoring return value of ‘device_add_disk’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+> >>   731 |         device_add_disk(&sdev->sdev_gendev, disk, NULL);
+> >>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >>
+> >>
+> >> Dropping the last two patches...
+> > 
+> > Martin K Peterson has the respective patches needed queued up on his tree
+> > for v5.16:
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git/commit/?h=5.16/scsi-staging&id=e9d658c2175b95a8f091b12ddefb271683aeacd9
+> > https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git/commit/?h=5.16/scsi-staging&id=2a7a891f4c406822801ecd676b076c64de072c9e
+> > 
+> > Would the last patch be sent once that gets to Linus?
 > 
-> This did the trick:
-> 
-> ⬢[acme@toolbox perf]$ git show
-> commit 504afe6757ec646539ca3b4aa0431820e8c92b45 (HEAD -> perf/core)
-> Author: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Date:   Thu Nov 4 14:58:56 2021 -0300
-> 
->     Revert "bpftool: Remove Makefile dep. on $(LIBBPF) for $(LIBBPF_INTERNAL_HDRS)"
-> 
->     This reverts commit 8b6c46241c774c83998092a4eafe40f054568881.
-> 
->     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> 
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index c0c30e56988f2cbe..c5ad996ee95d4e87 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -39,14 +39,14 @@ ifeq ($(BPFTOOL_VERSION),)
->  BPFTOOL_VERSION := $(shell make -rR --no-print-directory -sC ../../.. kernelversion)
->  endif
-> 
-> -$(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBBPF_HDRS_DIR):
-> +$(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT):
->         $(QUIET_MKDIR)mkdir -p $@
-> 
->  $(LIBBPF): $(wildcard $(BPF_DIR)/*.[ch] $(BPF_DIR)/Makefile) | $(LIBBPF_OUTPUT)
->         $(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_OUTPUT) \
->                 DESTDIR=$(LIBBPF_DESTDIR) prefix= $(LIBBPF) install_headers
-> 
-> -$(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_HDRS_DIR)
-> +$(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h $(LIBBPF)
->         $(call QUIET_INSTALL, $@)
->         $(Q)install -m 644 -t $(LIBBPF_HDRS_DIR) $<
+> But that dependency wasn't clear in the patches posted,
 
+Sorry my mistake.
 
-Interesting. I needed that patch because otherwise I'd get errors when
-compiling bpftool after the switch to libbpf's hashmap implementation.
-For the current breakage, it could be a matter of how we pass variables
-when descending into bpftool/ from perf's Makefile.perf. I'll try to
-look at this in details, and to experiment tonight, if I can. (Thanks
-Andrii for the CC!)
+> and it leaves me
+> wondering if there are others?
 
-Thanks,
-Quentin
+There should not be, becauase at least my patches on top of linux-next
+compiles fine as per 0-day builds on tons of configs.
+
+> I obviously can't queue up a patch that
+> adds a must_check to a function, when we still have callers that don't
+> properly check it.
+
+Absolutely.
+
+> That should have been made clear, and that last patch never should've
+> been part of the series. Please send it once Linus's tree has all
+> callers checking the result.
+
+Indeed. Will track and will do.
+
+> > Also curious why drop the last two patches instead just the last one for
+> > now?
+> 
+> Sorry, meant just the last one.
+
+Ah ok!
+
+  Luis
