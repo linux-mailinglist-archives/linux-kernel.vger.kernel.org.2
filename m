@@ -2,65 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E984453E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BFC4453E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:32:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbhKDNdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 09:33:42 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:56544 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230401AbhKDNdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 09:33:40 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1micpP-00045L-9M; Thu, 04 Nov 2021 21:30:51 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1micpI-0002Ef-4i; Thu, 04 Nov 2021 21:30:44 +0800
-Date:   Thu, 4 Nov 2021 21:30:44 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Vladis Dronov <vdronov@redhat.com>,
-        Simo Sorce <ssorce@redhat.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        kernel test robot <lkp@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] crypto: api - Do not create test larvals if manager is
- disabled
-Message-ID: <20211104133044.GA8563@gondor.apana.org.au>
-References: <20211001055058.GA6081@gondor.apana.org.au>
- <YVdNFzs8HUQwHa54@archlinux-ax161>
- <20211003002801.GA5435@gondor.apana.org.au>
- <YV0K+EbrAqDdw2vp@archlinux-ax161>
- <20211019132802.GA14233@gondor.apana.org.au>
- <alpine.DEB.2.22.394.2111021636040.2330984@ramsan.of.borg>
- <DM6PR04MB708155E447FD9A79AB89686DE78D9@DM6PR04MB7081.namprd04.prod.outlook.com>
- <CAMuHMdW1wLAt9Y=-GMMuk8HWE3UnRgKNMmD9fq34Rq8J7QyrzQ@mail.gmail.com>
- <20211104121612.GA8044@gondor.apana.org.au>
- <CAMuHMdWAAWWS+TgeN1AajHBS5w9-datMEeXqAN8RjxRd9bX63Q@mail.gmail.com>
+        id S231320AbhKDNfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 09:35:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229869AbhKDNfL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 09:35:11 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61B0C061714;
+        Thu,  4 Nov 2021 06:32:33 -0700 (PDT)
+From:   Martin Kaistra <martin.kaistra@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636032751;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gOrjPBeDo1Vi2nk3QHdW9LyETW9cJ6hj5K5wHyl43zs=;
+        b=xzCsRTYwoqKEQbZBNSMZnevPHviJUJw0hEK7oPm7jkVBpiZ73PTzmR3ha8hjUWKuFSiwRi
+        Oel1Iy/xb1HbgcEVNdWaSthSkz/mhl9X+UaLnAHmVSO/C0zXyjhAQUSIOAoNlgCJVkcbOs
+        gze3UFhTOosT2BTKNKousf6ou9eYXU5tWhcw0sK8PwmTEjRj8DPvY/+YIy4RWTW7DDdIC3
+        6FJEmNVkAYfP+fP/0LZfX2XaqKgmoYNy1OUjGk+gHryi9APZc2HmxdE24Kuzi9ypCv9ZCd
+        RoGRXmQysH8ecpYZQrchnYQ+V8lMyLnaNgIttUYimbxkJWF7Epfg33XzF/9IDQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636032751;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gOrjPBeDo1Vi2nk3QHdW9LyETW9cJ6hj5K5wHyl43zs=;
+        b=hP1gTNDdFVK+Cvh5bX33Ij59KvtetN2GQfEbvjKFQRVrstECHSKX5hOmudF0v8WRl8Pp1n
+        mFkl/Z2TBMv1ciDA==
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>
+Cc:     martin.kaistra@linutronix.de,
+        Richard Cochran <richardcochran@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 0/7] Add PTP support for BCM53128 switch
+Date:   Thu,  4 Nov 2021 14:31:54 +0100
+Message-Id: <20211104133204.19757-1-martin.kaistra@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWAAWWS+TgeN1AajHBS5w9-datMEeXqAN8RjxRd9bX63Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 02:11:34PM +0100, Geert Uytterhoeven wrote:
->
-> My config is nommu_k210_sdcard_defconfig with the changes below:
+Hi,
 
-Could you send me the actual config? Just in case something weird
-happened during the kconfig process and options got flipped from
-their default values.
+this series adds PTP support to the b53 DSA driver for the BCM53128
+switch using the BroadSync HD feature.
+
+As there seems to be only one filter (either by Ethertype or DA) for
+timestamping incoming packets, only L2 is supported.
+
+To be able to use the timecounter infrastructure with a counter that
+wraps around at a non-power of two point, patch 2 adds support for such
+a custom point. Alternatively I could fix up the delta every time a
+wrap-around occurs in the driver itself, but this way it can also be
+useful for other hardware.
 
 Thanks,
+Martin
+
+Kurt Kanzenbach (1):
+  net: dsa: b53: Add BroadSync HD register definitions
+
+Martin Kaistra (6):
+  net: dsa: b53: Move struct b53_device to include/linux/dsa/b53.h
+  timecounter: allow for non-power of two overflow
+  net: dsa: b53: Add PHC clock support
+  net: dsa: b53: Add logic for RX timestamping
+  net: dsa: b53: Add logic for TX timestamping
+  net: dsa: b53: Expose PTP timestamping ioctls to userspace
+
+ drivers/net/dsa/b53/Kconfig      |   7 +
+ drivers/net/dsa/b53/Makefile     |   1 +
+ drivers/net/dsa/b53/b53_common.c |  21 ++
+ drivers/net/dsa/b53/b53_priv.h   |  90 +-------
+ drivers/net/dsa/b53/b53_ptp.c    | 366 +++++++++++++++++++++++++++++++
+ drivers/net/dsa/b53/b53_ptp.h    |  68 ++++++
+ drivers/net/dsa/b53/b53_regs.h   |  38 ++++
+ include/linux/dsa/b53.h          | 144 ++++++++++++
+ include/linux/timecounter.h      |   3 +
+ kernel/time/timecounter.c        |   3 +
+ net/dsa/tag_brcm.c               |  85 ++++++-
+ 11 files changed, 727 insertions(+), 99 deletions(-)
+ create mode 100644 drivers/net/dsa/b53/b53_ptp.c
+ create mode 100644 drivers/net/dsa/b53/b53_ptp.h
+ create mode 100644 include/linux/dsa/b53.h
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.20.1
+
