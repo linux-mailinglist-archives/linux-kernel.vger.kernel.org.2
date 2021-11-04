@@ -2,134 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B45B4458DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D12EA4458E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232333AbhKDRql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:46:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232356AbhKDRqj (ORCPT
+        id S232395AbhKDRtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:49:35 -0400
+Received: from 113.196.136.146.ll.static.sparqnet.net ([113.196.136.146]:42198
+        "EHLO mg.sunplus.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232318AbhKDRtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:46:39 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7071EC061205;
-        Thu,  4 Nov 2021 10:44:01 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id f8so24382313edy.4;
-        Thu, 04 Nov 2021 10:44:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SaoNZd94jArTmVGn/jRfCzD6DEp4wsUPuwPe5TNdHKA=;
-        b=Ci5zimqbv8P1cMefPHzbCNeFUUN8LJw8Y64xtBRDBYcVGncRiKkUApmWPgiZSVOwNh
-         eEcSUytkkKxJYJuWZ8JEv1/fYRI+7ml4Gd2k3Me8jItIDOCl3Jos3+LN8nDrf+rKKy0F
-         aA6Hx2u1dvMUGB3jtkwWYzKO2jndLVJXDdwEetiMZ6/qPNmV7ESiRPzNsCKLEMR2yyKB
-         55LRGk1WD9xJ9GHmTGsfS8mFy1kVbKipwOZSGQJdIa3AFrsuccTXIu+jlZ2yVJhskbM6
-         9YCQd3w88SmPEqDRkQuXlyVF2gqf+KYAYoVVNnCn7LzDc3PDv7vjxwNYmLf5ZPoB/k00
-         Mauw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SaoNZd94jArTmVGn/jRfCzD6DEp4wsUPuwPe5TNdHKA=;
-        b=Rc7TsX7s7Jc1Gr+cIK3AROJfy8+ry7HQbRMCP29NkbZcMww1E+m6N697+ws4dirjEe
-         V5uK4pk1Kxz8PkhirUZ0dnWtIZh2QfGNwjoUEb+4qtAMSIqLMhPpwmxaA0kULSqHZHBT
-         hsG47tY10w65cccTLw9lbSYyWpyC0eYCFahCZbLGXbz7Fpopm99A4hnunLxMviQGwths
-         dfv2bmtFkSqB45GauIfyPanxxBT9t0jhvAO1bw3JjIwqEy6TZaKDyJFYk/sEuZnW6X/B
-         iGFUBoVS5M/WCEMs2jEpJonaT5t5bmDtNPaUVGr0h+bEDqcg0EKsRCHaJAz0tEFi2RsQ
-         G8aw==
-X-Gm-Message-State: AOAM533AG/uQS9IymfN1sXtnwQmfCjNkVtjm7xwu9OJ0gMd8Abt1L8fr
-        QfRULn6pHzTo4/GtL4+z51v3nOdURnmJ7F4tnJU=
-X-Google-Smtp-Source: ABdhPJxjJVjhCFczPSEV79xEXIH2iDBKSXc5wLai7n6k3tdNY0aTKGZTGE6HhigLRtDP94cd/1k3YlOAqioLJn3YXKo=
-X-Received: by 2002:a05:6402:520b:: with SMTP id s11mr28768622edd.363.1636047840071;
- Thu, 04 Nov 2021 10:44:00 -0700 (PDT)
+        Thu, 4 Nov 2021 13:49:33 -0400
+X-Greylist: delayed 44076 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Nov 2021 13:49:32 EDT
+X-MailGates: (flag:3,DYNAMIC,RELAY,NOHOST:PASS)(compute_score:DELIVER,40
+        ,3)
+Received: from 172.17.9.112
+        by mg02.sunplus.com with MailGates ESMTP Server V5.0(53130:0:AUTH_RELAY)
+        (envelope-from <wells.lu@sunplus.com>); Fri, 05 Nov 2021 01:46:36 +0800 (CST)
+Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
+ sphcmbx02.sunplus.com.tw (172.17.9.112) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Fri, 5 Nov 2021 01:46:36 +0800
+Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
+ ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Fri, 5 Nov 2021
+ 01:46:36 +0800
+From:   =?utf-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Randy Dunlap <rdunlap@infradead.org>,
+        Wells Lu <wellslutw@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
+Subject: RE: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+Thread-Topic: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+Thread-Index: AQHX0KKBcebTINBXKk6D/f7Frpi9sKvxbhgAgAClKgD//5f5gIABJz+w///9xoCAANUOEA==
+Date:   Thu, 4 Nov 2021 17:46:35 +0000
+Message-ID: <c51d2927eedb4f3999b8361a44526a07@sphcmbx02.sunplus.com.tw>
+References: <cover.1635936610.git.wells.lu@sunplus.com>
+ <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
+ <d0217eed-a8b7-8eb9-7d50-4bf69cd38e03@infradead.org>
+ <159ab76ac7114da983332aadc6056c08@sphcmbx02.sunplus.com.tw>
+ <YYLjaYCQHzqBzN1l@lunn.ch>
+ <36d5bc6d40734ae0a9c1fb26d258f49f@sphcmbx02.sunplus.com.tw>
+ <YYPZN9hPBJTBzVUl@lunn.ch>
+In-Reply-To: <YYPZN9hPBJTBzVUl@lunn.ch>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.25.108.39]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20211101194856.305642-1-shy828301@gmail.com> <YYJacGTst7dceD8K@kroah.com>
- <YYQQIu6Xi/iEEb7f@kroah.com>
-In-Reply-To: <YYQQIu6Xi/iEEb7f@kroah.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 4 Nov 2021 10:43:47 -0700
-Message-ID: <CAHbLzkrZKkS92St-AR-jL8HJYXKOm3EjKkbsaBY58LERh3-_qA@mail.gmail.com>
-Subject: Re: [stable 5.10 PATCH] mm: hwpoison: remove the unnecessary THP check
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Xu <peterx@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable <stable@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 9:53 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Nov 03, 2021 at 10:46:24AM +0100, Greg KH wrote:
-> > On Mon, Nov 01, 2021 at 12:48:56PM -0700, Yang Shi wrote:
-> > > commit c7cb42e94473aafe553c0f2a3d8ca904599399ed upstream.
-> > >
-> > > When handling THP hwpoison checked if the THP is in allocation or free
-> > > stage since hwpoison may mistreat it as hugetlb page.  After commit
-> > > 415c64c1453a ("mm/memory-failure: split thp earlier in memory error
-> > > handling") the problem has been fixed, so this check is no longer
-> > > needed.  Remove it.  The side effect of the removal is hwpoison may
-> > > report unsplit THP instead of unknown error for shmem THP.  It seems not
-> > > like a big deal.
-> > >
-> > > The following patch "mm: filemap: check if THP has hwpoisoned subpage
-> > > for PMD page fault" depends on this, which fixes shmem THP with
-> > > hwpoisoned subpage(s) are mapped PMD wrongly.  So this patch needs to be
-> > > backported to -stable as well.
-> > >
-> > > Link: https://lkml.kernel.org/r/20211020210755.23964-2-shy828301@gmail.com
-> > > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > > Suggested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> > > Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> > > Cc: Hugh Dickins <hughd@google.com>
-> > > Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > > Cc: Matthew Wilcox <willy@infradead.org>
-> > > Cc: Oscar Salvador <osalvador@suse.de>
-> > > Cc: Peter Xu <peterx@redhat.com>
-> > > Cc: <stable@vger.kernel.org>
-> > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> > > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > > ---
-> > > mm-filemap-check-if-thp-has-hwpoisoned-subpage-for-pmd-page-fault.patch
-> > > depends on this one.
-> >
-> > Both now queued up, thanks.
->
-> This breaks the build, see:
->         https://lore.kernel.org/r/acabc414-164b-cd65-6a1a-cf912d8621d7@roeck-us.net
->
-> so I'm going to drop both of these now.  Please fix this up and resend a
-> tested series.
-
-Thanks for catching this. It is because I accidentally left the
-PAGEFLAG_* macros into CONFIG_TRANSHUGE_PAGE section, so it is:
-
-#ifdef CONFIG_TRANSHUGE_PAGE
-...
-#if defined(CONFIG_MEMORY_FAILURE) && defined(CONFIG_TRANSHUGE_PAGE)
-PAGEFLAG_xxx
-#else
-PAGEFLAG_FALSE_xxx
-#endif
-...
-#endif
-
-So when THP is disabled the PAGEFLAG_FALSE_xxx macro is actually absent.
-
-The upstream has the same issue, will send a patch to fix it soon, and
-send fixes (folded the new fix in) to -stable later. Sorry for the
-inconvenience.
-
->
-> thanks,
->
-> greg k-h
+PiBPbiBUaHUsIE5vdiAwNCwgMjAyMSBhdCAwNTozMTo1N0FNICswMDAwLCBXZWxscyBMdSDlkYLo
+irPpqLAgd3JvdGU6DQo+ID4gSGksDQo+ID4NCj4gPiBUaGFua3MgYSBsb3QgZm9yIHJldmlldy4N
+Cj4gPg0KPiA+ID4NCj4gPiA+ID4gY29uZmlnIE5FVF9WRU5ET1JfU1VOUExVUw0KPiA+ID4gPiAJ
+Ym9vbCAiU3VucGx1cyBkZXZpY2VzIg0KPiA+ID4gPiAJZGVmYXVsdCB5DQo+ID4gPiA+IAlkZXBl
+bmRzIG9uIEFSQ0hfU1VOUExVUw0KPiA+ID4NCj4gPiA+IERvZXMgaXQgYWN0dWFsbHkgZGVwZW5k
+IG9uIEFSQ0hfU1VOUExVUz8gV2hhdCBkbyB5b3UgbWFrZSB1c2Ugb2Y/DQo+ID4NCj4gPiBBUkNI
+X1NVTlBMVVMgd2lsbCBiZSBkZWZpbmVkIGZvciBTdW5wbHVzIGZhbWlseSBzZXJpZXMgU29DLg0K
+PiA+IEV0aGVybmV0IGRldmljZXMgb2YgU3VucGx1cyBhcmUgZGVzaWduZWQgYW5kIHVzZWQgZm9y
+IFN1bnBsdXMgU29DLg0KPiA+IFNvIGZhciwgb25seSB0d28gU29DIG9mIFN1bnBsdXMgaGF2ZSB0
+aGUgbmV0d29yayBkZXZpY2UuDQo+ID4gSSdkIGxpa2UgdG8gc2hvdyB1cCB0aGUgc2VsZWN0aW9u
+IG9ubHkgZm9yIFN1bnBsdXMgU29DLg0KPiANCj4gU28gaXQgZG9lcyBub3QgYWN0dWFsbHkgZGVw
+ZW5kIG9uIEFSQ0hfU1VOUExVUy4gVGhlcmUgYXJlIGEgZmV3IGNhc2VzIHdoZXJlDQo+IGRyaXZl
+cnMgaGF2ZSBuZWVkZWQgdG8gY2FsbCBpbnRvIGFyY2ggc3BlY2lmaWMgY29kZSwgd2hpY2ggc3Rv
+cHMgdGhlbSBidWlsZGluZw0KPiBmb3IgYW55IG90aGVyIGFyY2guDQo+IA0KPiA+ID4gSWRlYWxs
+eSwgeW91IHdhbnQgaXQgdG8gYWxzbyBidWlsZCB3aXRoIENPTVBJTEVfVEVTVCwgc28gdGhhdCB0
+aGUNCj4gPiA+IGRyaXZlciBnZXRzIGJ1aWxkIGJ5IDAtZGF5IGFuZCBhbGwgdGhlIG90aGVyIGJ1
+aWxkIGJvdHMuDQo+ID4NCj4gPiBJIGFtIG5vdCBzdXJlIGlmIHRoaXMgaXMgbWFuZGF0b3J5IG9y
+IG5vdC4NCj4gPiBTaG91bGQgSSBhZGQgQ09NUElMRV9URVNUIGFzIGJlbG93Pw0KPiA+DQo+ID4g
+CWRlcGVuZHMgb24gQVJDSF9TVU5QTFVTIHwgQ09NUElMRV9URVNUDQo+IA0KPiBZZXMuDQo+IA0K
+PiA+IFllcywgdGhlIGRldmljZSBpcyBub3cgb25seSBmb3IgU3VucGx1cyBTUDcwMjEgU29DLg0K
+PiA+IERldmljZXMgaW4gZWFjaCBTb0MgbWF5IGhhdmUgYSBiaXQgZGlmZmVyZW5jZSBiZWNhdXNl
+IG9mIGFkZGluZyBuZXcNCj4gPiBmdW5jdGlvbiBvciBpbXByb3Zpbmcgc29tZXRoaW5nLg0KPiAN
+Cj4gSWYgaXQgd2lsbCBjb21waWxlIHdpdGggQ09NUElMRV9URVNUIG9uIHg4NiwgbWlwcywgZXRj
+LCB5b3Ugc2hvdWxkIGFsbG93IGl0IHRvDQo+IGNvbXBpbGUgd2l0aCBDT01QSUxFX1RFU1QuIFlv
+dSBnZXQgYmV0dGVyIGNvbXBpbGUgdGVzdGluZyB0aGF0IHdheS4NCj4gDQo+ICAgICAgQW5kcmV3
+DQoNCk5vLCB3ZSBvbmx5IGRldmVsb3AgYXJtLWJhc2VkIFNvQywgbmV2ZXIgZm9yIHg4NiBvciBt
+aXBzLg0KV2UgbmV2ZXIgY29tcGlsZSB0aGUgZHJpdmVyIGZvciB4ODYgb3IgbWlwcyBtYWNoaW5l
+Lg0KDQo=
