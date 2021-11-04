@@ -2,115 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B9B445A0A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5978445A10
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234082AbhKDSyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 14:54:12 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:45804 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234027AbhKDSyK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 14:54:10 -0400
-Received: by mail-ot1-f46.google.com with SMTP id l7-20020a0568302b0700b0055ae988dcc8so6423819otv.12;
-        Thu, 04 Nov 2021 11:51:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QfXq88iqQoCwEsC+U65lUOBtDnuL5rqv31DWfmQRFAQ=;
-        b=m3IVlr6011iucfOjTPSMx244nq3tFU093RvzlHNDg56dzNEJr8KHGqeE/y4qsEoD1R
-         Y3/UiIE+95g6U8vbynkG6VcQBNX7wEzFiypSPx7lmF/B61Mq7DPfzjo2h/1bDdgC73AN
-         ogxo5hH51Fn+wCN7JCVlB/T0A0VHjwlLkMW0sZd1+sxRkYwymHQxrMl1gAbpJrkk1Lpt
-         U9SCluRMpaxqXPwTBk2hKgNCa6vZnhahpc8GGEV8aOGomHYr+1Qe8jXrxCocJ3WHcn+a
-         2SzRlt/uPxAXZlj7BVKLX89ZT4EzQ3mzGRjDmIyBCDt8gOnp1loGRzS0XDze0IQWo24I
-         DBdA==
-X-Gm-Message-State: AOAM533+pvD29iefngTD0aFDyEaz3+het+wDAToRUUb2xfau+QTte1oT
-        Q0Rx2Ox/GVttBMhx7FcE2/2sdR/OdxIYre2b5ls=
-X-Google-Smtp-Source: ABdhPJxnMfhqPsepZ8zu304lrWgB+y1h040iQ6GbER2FIJGYCXtMLpgs9HVqJLgFeRdK+PRyWwHLAIQxHp/cq8d2P7A=
-X-Received: by 2002:a9d:a64:: with SMTP id 91mr33140225otg.198.1636051892077;
- Thu, 04 Nov 2021 11:51:32 -0700 (PDT)
+        id S232213AbhKDS51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 14:57:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231684AbhKDS5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 14:57:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0B9A6112E;
+        Thu,  4 Nov 2021 18:54:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636052086;
+        bh=vB1LbcttBwp8vLqGtNl7l8YpDqhiHiaThXlmJVbnig8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MNuEPS8z3TzgAIwvxTF8Kvx2xwDKkG2Rx55yw6OPp5dOY4Ft9DRuGxhd/jGPal/Y8
+         RFq+s62a4p5tfUQeLKD8NWVZeh4KsuBwwApzznZw6OjrhuQ5cJOLkpFCX2BChvHoeM
+         D4ioRwCnYElTLvZqGcxP0ZGoMbJRStcwzrDITieI=
+Date:   Thu, 4 Nov 2021 19:54:43 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     dave.hansen@linux.intel.com, jarkko@kernel.org, tglx@linutronix.de,
+        bp@alien8.de, mingo@redhat.com, linux-sgx@vger.kernel.org,
+        x86@kernel.org, seanjc@google.com, tony.luck@intel.com,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: Fix free page accounting
+Message-ID: <YYQsc0kktaOdOXb0@kroah.com>
+References: <373992d869cd356ce9e9afe43ef4934b70d604fd.1636049678.git.reinette.chatre@intel.com>
 MIME-Version: 1.0
-References: <20211104051925.119941-1-srinivas.pandruvada@linux.intel.com>
- <20211104093019.60c0e157@gandalf.local.home> <a6ed700a76a03eefceca0ce735ab6fd3cab19841.camel@linux.intel.com>
-In-Reply-To: <a6ed700a76a03eefceca0ce735ab6fd3cab19841.camel@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 4 Nov 2021 19:51:21 +0100
-Message-ID: <CAJZ5v0jxw3xXboL9oC56ZM63DBdRKhUFFzuwbQrgfEp4bLYOFA@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: intel_pstate: Fix unchecked MSR 0x773 access
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Len Brown <lenb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <373992d869cd356ce9e9afe43ef4934b70d604fd.1636049678.git.reinette.chatre@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 3:17 PM Srinivas Pandruvada
-<srinivas.pandruvada@linux.intel.com> wrote:
->
-> On Thu, 2021-11-04 at 09:30 -0400, Steven Rostedt wrote:
-> > On Wed,  3 Nov 2021 22:19:25 -0700
-> > Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> wrote:
-> >
-> > > It is possible that on some platforms HWP interrupts are disabled.
-> > > In
-> > > that case accessing MSR 0x773 will result in warning.
-> > >
-> > > So check X86_FEATURE_HWP_NOTIFY feature to access MSR 0x773. The
-> > > other
-> > > places in code where this MSR is accessed, already checks this
-> > > feature
-> > > except during disable path called during cpufreq offline and
-> > > suspend
-> > > callbacks.
-> > >
-> > > Fixes: 57577c996d73 ("cpufreq: intel_pstate: Process HWP Guaranteed
-> > > change notification")
-> > > Reported-by: Steven Rostedt <rostedt@goodmis.org>
-> >
-> > I added this patch on top of the above commit and I verified that the
-> > issue
-> > goes away. And just to confirm, I removed the patch, and the issue
-> > reappeared.
-> >
-> > Tested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> >
-> Thanks for the test.
-> Sorry again for the mess up.
->
-> -Srinivas
->
-> > -- Steve
-> >
-> >
-> > > Signed-off-by: Srinivas Pandruvada <
-> > > srinivas.pandruvada@linux.intel.com>
-> > > ---
-> > >  drivers/cpufreq/intel_pstate.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > >
-> > > diff --git a/drivers/cpufreq/intel_pstate.c
-> > > b/drivers/cpufreq/intel_pstate.c
-> > > index 349ddbaef796..1e6898dc76b6 100644
-> > > --- a/drivers/cpufreq/intel_pstate.c
-> > > +++ b/drivers/cpufreq/intel_pstate.c
-> > > @@ -1620,6 +1620,9 @@ static void
-> > > intel_pstate_disable_hwp_interrupt(struct cpudata *cpudata)
-> > >  {
-> > >         unsigned long flags;
-> > >
-> > > +       if (!boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
-> > > +               return;
-> > > +
-> > >         /* wrmsrl_on_cpu has to be outside spinlock as this can
-> > > result in IPC */
-> > >         wrmsrl_on_cpu(cpudata->cpu, MSR_HWP_INTERRUPT, 0x00);
-> > >
+On Thu, Nov 04, 2021 at 11:28:54AM -0700, Reinette Chatre wrote:
+> The SGX driver maintains a single global free page counter,
+> sgx_nr_free_pages, that reflects the number of free pages available
+> across all NUMA nodes. Correspondingly, a list of free pages is
+> associated with each NUMA node and sgx_nr_free_pages is updated
+> every time a page is added or removed from any of the free page
+> lists. The main usage of sgx_nr_free_pages is by the reclaimer
+> that will run when the total free pages go below a watermark to
+> ensure that there are always some free pages available to, for
+> example, support efficient page faults.
+> 
+> With sgx_nr_free_pages accessed and modified from a few places
+> it is essential to ensure that these accesses are done safely but
+> this is not the case. sgx_nr_free_pages is sometimes accessed
+> without any protection and when it is protected it is done
+> inconsistently with any one of the spin locks associated with the
+> individual NUMA nodes.
+> 
+> The consequence of sgx_nr_free_pages not being protected is that
+> its value may not accurately reflect the actual number of free
+> pages on the system, impacting the availability of free pages in
+> support of many flows. The problematic scenario is when the
+> reclaimer never runs because it believes there to be sufficient
+> free pages while any attempt to allocate a page fails because there
+> are no free pages available. The worst scenario observed was a
+> user space hang because of repeated page faults caused by
+> no free pages ever made available.
+> 
+> Change the global free page counter to an atomic type that
+> ensures simultaneous updates are done safely. While doing so, move
+> the updating of the variable outside of the spin lock critical
+> section to which it does not belong.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 901ddbb9ecf5 ("x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()")
+> Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
+> ---
+>  arch/x86/kernel/cpu/sgx/main.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index 63d3de02bbcc..8558d7d5f3e7 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -28,8 +28,7 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
+>  static LIST_HEAD(sgx_active_page_list);
+>  static DEFINE_SPINLOCK(sgx_reclaimer_lock);
+>  
+> -/* The free page list lock protected variables prepend the lock. */
+> -static unsigned long sgx_nr_free_pages;
+> +atomic_long_t sgx_nr_free_pages = ATOMIC_LONG_INIT(0);
+>  
+>  /* Nodes with one or more EPC sections. */
+>  static nodemask_t sgx_numa_mask;
+> @@ -403,14 +402,15 @@ static void sgx_reclaim_pages(void)
+>  
+>  		spin_lock(&node->lock);
+>  		list_add_tail(&epc_page->list, &node->free_page_list);
+> -		sgx_nr_free_pages++;
+>  		spin_unlock(&node->lock);
+> +		atomic_long_inc(&sgx_nr_free_pages);
+>  	}
+>  }
+>  
+>  static bool sgx_should_reclaim(unsigned long watermark)
+>  {
+> -	return sgx_nr_free_pages < watermark && !list_empty(&sgx_active_page_list);
+> +	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
+> +	       !list_empty(&sgx_active_page_list);
 
-Applied as 5.16-rc material, thanks!
+What prevents the value from changing right after you test this?  Why is
+an atomic value somehow solving the problem?
+
+The value changes were happening safely, it was just the reading of the
+value that was not.  You have not changed the fact that the value can
+change right after reading given that there was not going to be a
+problem with reading a stale value before.
+
+In other words, what did you really fix here?  And how did you test it
+to verify it did fix things?
+
+thanks,
+
+greg k-h
