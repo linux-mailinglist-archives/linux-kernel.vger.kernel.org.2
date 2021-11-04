@@ -2,73 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567CF445577
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:40:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8838F445578
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:40:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhKDOmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 10:42:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55224 "EHLO mail.kernel.org"
+        id S231371AbhKDOn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 10:43:29 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:49184 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229505AbhKDOms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 10:42:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4A74611C4;
-        Thu,  4 Nov 2021 14:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636036810;
-        bh=687rLpiG01Zpuh8NQUwUHtcrXN+VF8fyKRnrMJ3tyGA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=a2JSLmc3gJzL0FnCt92baFKI9KkHMhpxhUUSFTgDkUPBcAwxgWVwrWvAfsfmaLclS
-         MSIzrZkpWE9I/28UDzYhHwtUZxPPUjROOaOdeCPt7nghlHB559CSgSkvvIN0wTpTOs
-         NxwZyJyRNRRK6uBChYGomuTGHNHQeAPKNJLYYPLXLfcpQxID9BshoP1aTvuRXu0eHQ
-         u/ju63azEefFoIEPnyiVFeLxxwc1ffxHXMa49cM+yudBBsQKd/+o/tuZDeYppOgWUx
-         qiWQPbKfyXnUcozzvDM7lW2MZBH2aPEl1qgh5xuxqcxLPF5u47MAlfdVm/bEluq+rE
-         uvI5clewY44vQ==
-Date:   Thu, 4 Nov 2021 09:40:08 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Nirmal Patel <nirmal.patel@linux.intel.com>,
-        Jonathan Derrick <jonathan.derrick@linux.dev>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jiabing.wan@qq.com
-Subject: Re: [PATCH] PCI: vmd: Remove duplicated include in vmd.c
-Message-ID: <20211104144008.GA753593@bhelgaas>
+        id S229505AbhKDOnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 10:43:24 -0400
+Received: from zn.tnic (p200300ec2f0f2b00bdd517953c60a78f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:2b00:bdd5:1795:3c60:a78f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E52961EC0570;
+        Thu,  4 Nov 2021 15:40:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1636036845;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=flesgqhWHfYV9V4KhqinypZm0sHGJG8/0h3X1Cjv9HE=;
+        b=r0FldcXQhA46fGQzYTRIE9BOa49N8bgcDWdU0EZm6Yd5Fo1fFDnmvYp+HUYJfxnFkQfkCv
+        N6qNomZ8jnmxqfoFr21dz0iI5YVxEVgFS0tkovO7ggJFEMEK6XxNvQsrlTKGVexc1Kmyp4
+        4slYCYeURTkaz1DXBqVu+emRTwldz6E=
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tony Luck <tony.luck@intel.com>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH v0 00/12] x86/mce: Correct the noinstr annotation
+Date:   Thu,  4 Nov 2021 15:40:23 +0100
+Message-Id: <20211104144035.20107-1-bp@alien8.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211104063720.29375-1-wanjiabing@vivo.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 02:37:19AM -0400, Wan Jiabing wrote:
-> Fix following checkincludes.pl warning:
-> ./drivers/pci/controller/vmd.c: linux/device.h is included more than once.
-> 
-> The include is in line 7. Remove the duplicated here.
-> 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+From: Borislav Petkov <bp@suse.de>
 
-Squashed in, thanks!
+Hi,
 
-> ---
->  drivers/pci/controller/vmd.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
-> index b48d9998e324..a45e8e59d3d4 100644
-> --- a/drivers/pci/controller/vmd.c
-> +++ b/drivers/pci/controller/vmd.c
-> @@ -10,7 +10,6 @@
->  #include <linux/irq.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
-> -#include <linux/device.h>
->  #include <linux/msi.h>
->  #include <linux/pci.h>
->  #include <linux/pci-acpi.h>
-> -- 
-> 2.20.1
-> 
+here's a first preliminary (it is based on some random 5.16-rc0 commit
+and is tested only in qemu) of the series which correct all the noinstr
+annotation of the #MC handler.
+
+Since it calls a bunch of external facilities, the strategy is to mark
+mce-specific functions called by the #MC handler as noinstr and when
+they "call out" so to speak, to do a begin/end sandwich around that
+call.
+
+Please have a look and let me know if it looks ok-ish.
+
+Further testing will happen after -rc1 releases, thus the "v0" version
+here.
+
+Thx.
+
+Borislav Petkov (12):
+  x86/mce: Do not use memset to clear the banks bitmaps
+  x86/mce: Remove function-local cpus variables
+  x86/mce: Use mce_rdmsrl() in severity checking code
+  x86/mce: Remove noinstr annotation from mce_setup()
+  x86/mce: Allow instrumentation during task work queueing
+  x86/mce: Prevent severity computation from being instrumented
+  x86/mce: Mark mce_panic() noinstr
+  x86/mce: Mark mce_end() noinstr
+  x86/mce: Mark mce_read_aux() noinstr
+  x86/mce: Move the tainting outside of the noinstr region
+  x86/mce: Mark mce_timed_out() noinstr
+  x86/mce: Mark mce_start() noinstr
+
+ arch/x86/kernel/cpu/mce/core.c     | 108 +++++++++++++++++++----------
+ arch/x86/kernel/cpu/mce/internal.h |   2 +
+ arch/x86/kernel/cpu/mce/severity.c |  37 ++++++----
+ 3 files changed, 98 insertions(+), 49 deletions(-)
+
+-- 
+2.29.2
+
