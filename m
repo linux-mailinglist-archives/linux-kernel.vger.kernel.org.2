@@ -2,134 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8960445439
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B880744543C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbhKDNtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 09:49:33 -0400
-Received: from mail-eopbgr1400095.outbound.protection.outlook.com ([40.107.140.95]:62688
-        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229505AbhKDNtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 09:49:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mi4jsaxR3oVnzeOSqMqyImg4PpwxsoC3wg8q3yJCwxqg1A+OgE7oRRhCtb1q8Ph1i9Baw23eNQQyo8IJrP03gL9gUeTm/TXeIEYNlr/1FkXDnEEuOohkeZvXNPsV7W4nI2dKACor8fCUa2UfMX4/oVLsndwkyag2RN1DJAw308290yHIWrQ4YTnNNe+0MLIgjHoaAYQk6gIMZ6HoMVMsRgyMboUixEQ3zaAbFy5mDePH81MklePoiMOjeQjYoLImXb5kvcmNfEbB6CGjt3hFr6C5ePVJ1OsSktAsLcRjZuL96mZIwoz9p3dvVdvZ6ki6OLXdrcyfl86XGlrvUsJu5w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b8sPBuXOksEtoxckGnOpJ6yv1yIT2hyiVsyd73AOP/I=;
- b=n/9EjQM4zXA2tc1AFC5PD8ivknBWFstJ6eEC6tr+XWnMqGc8SGoCH4fK66mDz899ep4ZG18pVERhtPWtbp4/tEfobV1qWzMmZHDBzadH6BCN0F6gKHxBQ0u+c9cW8Hdc1UgephQ2L/gF50ZQwsY04S9Z4OzgJAJzvLn8zeXLV57Bku/EPDOFoVV8u843QQjdYFfTqXjM7/p1K7xiKcGnSCQC2PQMzNCkCyz4f50XnAwDnLFo5btSPeQnPoCwjxlllP07ZZYNs94E86Ot9KP32vLRnHrMsW9MZ+2TkdP9ahcxRMUrp6sSFxe5xoR38m8vuhH7uFhyklnCjK44GVQaHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=connect.ust.hk; dmarc=pass action=none
- header.from=connect.ust.hk; dkim=pass header.d=connect.ust.hk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connect.ust.hk;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b8sPBuXOksEtoxckGnOpJ6yv1yIT2hyiVsyd73AOP/I=;
- b=NFcvRQZeIXUACrJO44Vdmxw8psEyYI4zJNJkcT76uf0FtZVDndg/5tiCY9hUi1PBiKqChuwE5GTtQ5gxO5HfIysxDnGRCldgcmtAG0vC7JGsoaVIjXjfH6rlcLLuLJY7DbFyXQhOswhzxeLWQ1Ah1N+QEDmSsq8+VJz1ZjL3Pf4=
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=connect.ust.hk;
-Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:b7::8) by
- TYCP286MB1332.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:bf::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4669.11; Thu, 4 Nov 2021 13:46:52 +0000
-Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
- ([fe80::c0af:a534:cead:3a04]) by TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
- ([fe80::c0af:a534:cead:3a04%6]) with mapi id 15.20.4669.011; Thu, 4 Nov 2021
- 13:46:52 +0000
-From:   Chengfeng Ye <cyeaa@connect.ust.hk>
-To:     thara.gopinath@linaro.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, svarbanov@mm-sol.com
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Chengfeng Ye <cyeaa@connect.ust.hk>
-Subject: [PATCH] crypto: qce: fix uaf on qce_skcipher_register_one
-Date:   Thu,  4 Nov 2021 06:46:42 -0700
-Message-Id: <20211104134642.20638-1-cyeaa@connect.ust.hk>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR04CA0081.apcprd04.prod.outlook.com
- (2603:1096:202:15::25) To TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:b7::8)
+        id S231205AbhKDNvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 09:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230401AbhKDNvb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 09:51:31 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106C2C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 06:48:53 -0700 (PDT)
+Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 4BC0C22221;
+        Thu,  4 Nov 2021 14:48:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1636033729;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hzn7IpexuRy/8kkxG32qAgyZ+pY82Q0NyVwXVe3onQk=;
+        b=lQaeVNL3uDl1TL6fU5DXj+vyUA7hGIo4S1NzHbOKWOPC0AI8u8P7nydtrkLZWpAYEgXApI
+        35xq/DpHgQ/lfWexcu/y6RtxfVdrH8U1Vz5EHpM3u6U1CuGgaYdSk3wLIsJb2iFA1DWYvp
+        S9TcPC3W01amoupb/ePK/DG0bSTfpOY=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH] mtd: core: provide unique name for nvmem device
+Date:   Thu,  4 Nov 2021 14:48:43 +0100
+Message-Id: <20211104134843.2642800-1-michael@walle.cc>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Received: from ubuntu.localdomain (175.159.124.155) by HK2PR04CA0081.apcprd04.prod.outlook.com (2603:1096:202:15::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10 via Frontend Transport; Thu, 4 Nov 2021 13:46:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2998897c-6fe0-4773-bb2d-08d99f998e5b
-X-MS-TrafficTypeDiagnostic: TYCP286MB1332:
-X-Microsoft-Antispam-PRVS: <TYCP286MB1332DADAFB42F934D10AE2868A8D9@TYCP286MB1332.JPNP286.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:873;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r0tjG4sSEwTb+tzx1+cUP9ne6lqSjLtqahOXf3jAxavQCIhyRzfRmd91AAH0yZ9cgAMSEKmnuUa/wNQSzOcnJoS5VUN5eM/EzjUkMlQZ54bQNX0TTCyj0skNkJh4ZoyQ9CyGaMySwqFH+KwCsKL4ROu/2zCY029SSkF4q+DJJis9541uUOHgK8aHVzMR8rRTheyGsNtWzSXbGGj7hTk/uMKz5/N1kQtBPOVuvQPimj0MEa44IHYMiF7f6CR3mKhA90EE+qCn4e/PwiqOCI5QlF1ORG7YKP5iEDCaCu25BZO9ENLca6mkL9OE2bHkrv4x5yjqSXretE0n0ugpbFSorfPTs/mWUfdI/m+Wsrg7+4tSY0w6lp7q7ZADpaQ2Jv2d/Qy4M74egro3utiFac2cTKy6ab++e+ZbBK4HdWWrxv/valEf4ZfUq15x/6d8ZvzJIxUCWCd7Z197lNfyn/gudSkaSnMWFSzCH7TNrFLLo7/UZvYX5DcGjlb+itpS4ADZrLP3J4z/m2zQG0iNI34PVO8Tjic8uOA8KvXP7c6hba3/r6ggII/GO6xnrULZ3qvodG29f+k4YhoMoQ2eQTF7ERDgR/+pCB8sngxLjBNGFQKaZovfhn/Bcy4wPmLfx343s8YYHYJ74padp+Ymxa7mLe00Vvw6Fvf4CNHhpiNBydHGzxTIUOKIJu35V0eOy2EwoqwNr7MS1fJHZn3ewpDL9w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(6512007)(2616005)(83380400001)(316002)(786003)(6506007)(36756003)(2906002)(26005)(1076003)(66556008)(66476007)(956004)(4744005)(6486002)(8936002)(52116002)(5660300002)(508600001)(38100700002)(66946007)(6666004)(86362001)(107886003)(186003)(8676002)(38350700002)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?m0kcZ4zZC0KLRAq9PtFvq3kpJ363XOR5k9wcSwrUFurWbMoHDAgJmDZK9b1B?=
- =?us-ascii?Q?9uYYnm9hc6ZEbXCsBmbzcUXbB2TiSqFTMzet86pUDFQ8XO6O6ulQOeWq9cqB?=
- =?us-ascii?Q?3ZRKIpHc/UGHadctJfFxJQQY4LLNl/H8NKTAXPdBVES0R6NoKR07F3e3aRS5?=
- =?us-ascii?Q?B2b8vluepWchRbSMHRxQWWbmWT7YZl3yUlovuWz+7j4Ljkteql3XSqEHc1jd?=
- =?us-ascii?Q?wAuaZmadejay6FhqM9BCBV0nEAUooQLU8BfO7uyRCxQiPAf5lOWDVYEjmSP0?=
- =?us-ascii?Q?ucSIqw4AdxYnYMgxjXj8dEX0poxIVe633OXNj4R22fjnAAnrMii0C8iiwiCH?=
- =?us-ascii?Q?tPom3rYdGq/LZDB5U3d2CTUXs89v7Qtmy3h4XomOOtMg59yQozOFo+nQom2Y?=
- =?us-ascii?Q?zLaqozeiAujb1yyW+JF0oWLFVEU6ba/8Ic0nOtf1SxVJvpy6dtHVPA4v6Mon?=
- =?us-ascii?Q?8Fy99QN957KLiEolevSvRpa/OLxohXGf16fCNflRxJckWoS73OR1+7z5Iu4h?=
- =?us-ascii?Q?RZkoMAZ9NZTdqs/38nqBAG55+fwOeasZo0CegvJmfG0J4QaBQRDRZTRCtW65?=
- =?us-ascii?Q?lqMA7DVr/k0IsdEHMINSLSjB5wyaiveOBN/70TbI4Cg8UhtQBR0xvYmmaG+R?=
- =?us-ascii?Q?I643Uk5ZwvuBq1RiuexpoK8qKMF7vN+b9R4LSsk6fhYh7uzf3NJFbx98nakH?=
- =?us-ascii?Q?B2ou4o/+vgWGEcF5I9+rvpjBMnwtkLazrDHnGomgz3wZpNnqWdK0uf6QygGG?=
- =?us-ascii?Q?XtGkEGkG8hOFV1SRJ8bwodSLXZ+RW2VFmFsNk9hQikggqb72imuBl+DE2DAU?=
- =?us-ascii?Q?Hc7IK4bjRvpX2+ks/nV0CpmRST8OMtyVEfMlFBthloZuau+pZOxWQM8td953?=
- =?us-ascii?Q?I6TWD8GVgj5p+XupWIJShCovLukUj7Id6Hc8TmIDD5XllDwksGVQcmAPqENw?=
- =?us-ascii?Q?xSw/wH8KZUSrJQZZhx8m9cOwIWa2z4PDiEaQkPt2FAG9ZWcuCqWVnhp/eEBu?=
- =?us-ascii?Q?QnzE2HGeJfzi86aSPNH6L4drpigE84ezFCbD7gKiJaaGPr6pItCNkoOh7V0D?=
- =?us-ascii?Q?xjhgp5iugdj0+ZxJ+tuu0gKipsnWEOwfgTsLcW7dFr4p9V5ums1XmqI0r+wi?=
- =?us-ascii?Q?fs2n/yb2vn2A7Q2Kj/MF61G8OLVK5j635YtYK1nZjEDM1f2fhDbBihNuYMOG?=
- =?us-ascii?Q?fs+ZOTIec6UP59vsE61aBqreLN0OiTpfucwAqkrIlRcuII96wFsDjoIRVRVL?=
- =?us-ascii?Q?X4RKEPZ4lHmc8PLQgULaFHgGcHGK+y4CXxImhjnXnsWwhEM3ObIkD6TyajyD?=
- =?us-ascii?Q?WRmx5olZtTWoqb39ssRM/DFf1gS0iYWvfuAzy6nKUl7lf6Y2xNf/qRk23WVk?=
- =?us-ascii?Q?ikXSgs/h940dbTuDPIBDy56iwGyPzYDvrvjRxsasiPj9dEKp6RfwvUqismR+?=
- =?us-ascii?Q?cpoPupFMI2RwEumTrO1CS5ZFLHRCkNziUQHDoSGdt3XW891SBF6KduZh4zMG?=
- =?us-ascii?Q?Qg4DjxTn4BsO/bDcn/2H6OmbsMTveKEPCcrgaZ396XhZIKCzGvnrrbabo0pH?=
- =?us-ascii?Q?DaXgTLR4RABEhCnFH5ypwLbVlwlNVUoS+cdVfgzFnWQIamKQzae5pO4LUb9r?=
- =?us-ascii?Q?1g0+GLev6WgrV8Chp0BjObg=3D?=
-X-OriginatorOrg: connect.ust.hk
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2998897c-6fe0-4773-bb2d-08d99f998e5b
-X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2021 13:46:51.8218
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 6c1d4152-39d0-44ca-88d9-b8d6ddca0708
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /QaxFWc+g33POmVzAVThHU1gIKDFovP3vQOxoYvlzpjLnAWhwmsiGSoe3iyaCYFJ2aHJA2FnHm47CD1cR/aKMg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCP286MB1332
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pointer alg points to sub field of tmpl, it
-is dereferenced after tmpl is freed. Fix
-this by accessing alg before free tmpl.
+If there is more than one mtd device which supports OTP, there will
+be a kernel warning about duplicated sysfs entries and the probing will
+fail. This is because the nvmem device name is not unique. Make it
+unique by prepending the name of the mtd. E.g. before the name was
+"user-otp", now it will be "mtd0-user-otp".
 
-Fixes: ec8f5d8f ("crypto: qce - Qualcomm crypto engine driver")
-Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
+For reference the kernel splash is:
+[    4.665531] sysfs: cannot create duplicate filename '/bus/nvmem/devices/user-otp'
+[    4.673056] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.15.0-next-20211101+ #1296
+[    4.680565] Hardware name: Kontron SMARC-sAL28 (Single PHY) on SMARC Eval 2.0 carrier (DT)
+[    4.688856] Call trace:
+[    4.691303]  dump_backtrace+0x0/0x1bc
+[    4.694984]  show_stack+0x24/0x30
+[    4.698306]  dump_stack_lvl+0x68/0x84
+[    4.701980]  dump_stack+0x18/0x34
+[    4.705302]  sysfs_warn_dup+0x70/0x90
+[    4.708973]  sysfs_do_create_link_sd+0x144/0x150
+[    4.713603]  sysfs_create_link+0x2c/0x50
+[    4.717535]  bus_add_device+0x74/0x120
+[    4.721293]  device_add+0x330/0x890
+[    4.724791]  device_register+0x2c/0x40
+[    4.728550]  nvmem_register+0x240/0x9f0
+[    4.732398]  mtd_otp_nvmem_register+0xb0/0x10c
+[    4.736854]  mtd_device_parse_register+0x28c/0x2b4
+[    4.741659]  spi_nor_probe+0x20c/0x2e0
+[    4.745418]  spi_mem_probe+0x78/0xbc
+[    4.749001]  spi_probe+0x90/0xf0
+[    4.752237]  really_probe.part.0+0xa4/0x320
+..
+[    4.873936] mtd mtd1: Failed to register OTP NVMEM device
+[    4.894468] spi-nor: probe of spi0.0 failed with error -17
+
+Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
+Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- drivers/crypto/qce/skcipher.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/mtdcore.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/qce/skcipher.c b/drivers/crypto/qce/skcipher.c
-index 8ff10928f581..3d27cd5210ef 100644
---- a/drivers/crypto/qce/skcipher.c
-+++ b/drivers/crypto/qce/skcipher.c
-@@ -484,8 +484,8 @@ static int qce_skcipher_register_one(const struct qce_skcipher_def *def,
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 9186268d361b..fc0bed14bfb1 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -825,8 +825,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
  
- 	ret = crypto_register_skcipher(alg);
- 	if (ret) {
--		kfree(tmpl);
- 		dev_err(qce->dev, "%s registration failed\n", alg->base.cra_name);
-+		kfree(tmpl);
- 		return ret;
- 	}
+ 	/* OTP nvmem will be registered on the physical device */
+ 	config.dev = mtd->dev.parent;
+-	/* just reuse the compatible as name */
+-	config.name = compatible;
++	config.name = kasprintf(GFP_KERNEL, "%s-%s", dev_name(&mtd->dev), compatible);
+ 	config.id = NVMEM_DEVID_NONE;
+ 	config.owner = THIS_MODULE;
+ 	config.type = NVMEM_TYPE_OTP;
+@@ -842,6 +841,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
+ 		nvmem = NULL;
  
+ 	of_node_put(np);
++	kfree(config.name);
+ 
+ 	return nvmem;
+ }
 -- 
-2.17.1
+2.30.2
 
