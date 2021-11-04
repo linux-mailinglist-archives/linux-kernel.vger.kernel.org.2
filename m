@@ -2,304 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA286445766
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B27A445769
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:44:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231892AbhKDQoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 12:44:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231669AbhKDQn5 (ORCPT
+        id S231635AbhKDQqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 12:46:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52906 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230345AbhKDQqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 12:43:57 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA83C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 09:41:19 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id r67-20020a252b46000000b005bea12c4befso9158977ybr.19
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 09:41:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=3+BAouM7g6+xVLvJbGIZcQlEKxwCjnXeCxOVyCZl4gM=;
-        b=MbRUVDB/oQdE4tvFkK9gWgGdEtm9MPVbC5qh66UCGxPPY8N17bnUZskWbXydO17qPh
-         2bPkuGZzqHaLXjXWWzsq/GPq5d+Tw2ZJGADXYvW48T1QZ8eVMp3kZIhTcZ6QIAyY/BZ5
-         f+HHy43mWnOF6SDWx6iRXF4VJnc+rdG5LxfBAjvP6Di6nXFlvdNq3hjzN0qy3u2aOk0/
-         zonBg4AwyG+P+OFZ3MhKy5AJmGwJ7IgmYxhMKess/+6NasaMtTLBk89xv+QrhM4foo7c
-         hcoIIhIjOT6QoRvOac6X4X5IKZxT0yxsAHjQM2mVr6yFCvZxvVKeWa9K1Kqk7fOaK8VQ
-         25pg==
+        Thu, 4 Nov 2021 12:46:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636044253;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GBeSNSo+VR936LBuXFto2HVzfx/uW1FgtYIk1y3q3ig=;
+        b=CBVY3wAoy78upQNbKAT1HVlHDBpW4oEl0NbOHqlw8hz+XAM45IIsqMx9wT6FBTHERDHg6I
+        h207V7GgFIdF5o0vj424y1hfbUtdxmpIm3EE1+0uJwpm1eT+0mXEEd/T7hq/7E1t++v9zk
+        HkSLJ2SgiK0VMUli6JbyzWmnaRWXtWQ=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-30-Rb_6Xot1PQm4Yf9NA2Bl7g-1; Thu, 04 Nov 2021 12:44:11 -0400
+X-MC-Unique: Rb_6Xot1PQm4Yf9NA2Bl7g-1
+Received: by mail-wr1-f71.google.com with SMTP id d13-20020adf9b8d000000b00160a94c235aso1216810wrc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 09:44:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=3+BAouM7g6+xVLvJbGIZcQlEKxwCjnXeCxOVyCZl4gM=;
-        b=v/SJFXRaE26dj+bVRh0FC3U0H7dVxG4fpOMODqYizkydWIcD9pzTQfQCHumwSCshS+
-         Eh4GQL/XS5QXwpleQ1KJaT46AMFhJEZKWuwDlJdmsPoWMbB4KS84Aa/TbGl1Lzj7bHor
-         AermN2Xxv0RteNW7QufU0F97fdlq+c31/bVUkd3dbkYBUWI1MUFC4t3D/TbwOC7Hu2W5
-         pa+jHElJA8m9S2JL9lKwJc0yoga4NrSOlSciCqNN3ShVPB7FJXoyWt1b9dqL2uoXnbbS
-         exX1scmul/H4fqb94LlAB2CxkAWwtaI/aPHzXdgpEag9p8XAFovWH4p0nI2gSxTocdAW
-         oacg==
-X-Gm-Message-State: AOAM5331q1rmmcKVLG489Zi3uFKijnkQ+SzUnEi9gGw1KbhppM1HJqDn
-        OlBjroL8N0+B3+LcObue7GL53dD+tEA=
-X-Google-Smtp-Source: ABdhPJxGtPg2Etz1eF9Z4/3obGashEb1UcLVwSfV9KNTGTYskgFEk3V+V3t4sesBMFGXW4W3aS2YFJm1Q6s=
-X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
- (user=seanjc job=sendgmr) by 2002:a25:3104:: with SMTP id x4mr56985764ybx.512.1636044078511;
- Thu, 04 Nov 2021 09:41:18 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu,  4 Nov 2021 16:41:07 +0000
-In-Reply-To: <20211104164107.1291793-1-seanjc@google.com>
-Message-Id: <20211104164107.1291793-3-seanjc@google.com>
-Mime-Version: 1.0
-References: <20211104164107.1291793-1-seanjc@google.com>
-X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
-Subject: [PATCH 2/2] KVM: RISC-V: Use common KVM implementation of MMU memory caches
-From:   Sean Christopherson <seanjc@google.com>
-To:     Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     Atish Patra <atish.patra@wdc.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=GBeSNSo+VR936LBuXFto2HVzfx/uW1FgtYIk1y3q3ig=;
+        b=tyX2VGI+yMmoT6TVzSnDslK42vm/4SFyjmbwWxR7lc5r5U+7Gad7CJfw5GgUXBh39g
+         kfgZ3P/dy1z83MZ0TfCXluosNtykUq8lwUhuILc3FsxPzV0NTT9MUiKm5nyTTw+jaEqz
+         jGJxe34uioUo4l901HAAR/ziy5WEJJEH4r25bhu27aLFq1yZm3XmcrovhVh2ykjERkGr
+         OY+eInSSFKjR34YrLWZv3NXPG5MiRCMnub5abbPfB+h8eWk5PnKF3r1aoZoML+Sf5ebb
+         gVItvBR1Tg6Kn2Jnsm0XEIndpNu/y9Hr3bcz+9xU8SlAatUdYarfZFXcgcoAJXchGnFD
+         xwAg==
+X-Gm-Message-State: AOAM530aSN68q9L1KE6g2pmCt+XiZXhjnEopK7w9UvWjxSkL2uYBPTvE
+        HrPtdS1V4Rx+nrbRPN3ipC5EFJztVm3XTZppmvbaNs55fxno6FA71qk0zGQsOBibjrPTYmapuAx
+        yd287+3/TPKU8F1juKX3ORehr
+X-Received: by 2002:a5d:4e52:: with SMTP id r18mr39525097wrt.224.1636044250772;
+        Thu, 04 Nov 2021 09:44:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwnATpWRYfiqKo492+/czqTIzFCv7HIX437cz1EV9eI7R7UChO4l+utit2RLduHTmaqMKEFNQ==
+X-Received: by 2002:a5d:4e52:: with SMTP id r18mr39525075wrt.224.1636044250590;
+        Thu, 04 Nov 2021 09:44:10 -0700 (PDT)
+Received: from [192.168.1.128] ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id o4sm6636216wry.80.2021.11.04.09.44.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Nov 2021 09:44:10 -0700 (PDT)
+Message-ID: <3ff9fe95-9bc7-a043-78c6-d52d0ff02e23@redhat.com>
+Date:   Thu, 4 Nov 2021 17:44:08 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 1/2] drm: Add a drm_drv_enabled() to check if drivers
+ should be enabled
+Content-Language: en-US
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>, Chia-I Wu <olvaffe@gmail.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Zack Rusin <zackr@vmware.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, spice-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org
+References: <20211104160707.1407052-1-javierm@redhat.com>
+ <20211104160707.1407052-2-javierm@redhat.com> <87zgqjanz2.fsf@intel.com>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+In-Reply-To: <87zgqjanz2.fsf@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use common KVM's implementation of the MMU memory caches, which for all
-intents and purposes is semantically identical to RISC-V's version, the
-only difference being that the common implementation will fall back to an
-atomic allocation if there's a KVM bug that triggers a cache underflow.
+On 11/4/21 17:24, Jani Nikula wrote:
 
-RISC-V appears to have based its MMU code on arm64 before the conversion
-to the common caches in commit c1a33aebe91d ("KVM: arm64: Use common KVM
-implementation of MMU memory caches"), despite having also copy-pasted
-the definition of KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE in kvm_types.h.
+[snip]
 
-Opportunistically drop the superfluous wrapper
-kvm_riscv_stage2_flush_cache(), whose name is very, very confusing as
-"cache flush" in the context of MMU code almost always refers to flushing
-hardware caches, not freeing unused software objects.
+>> index ab2295dd4500..45cb3e540eff 100644
+>> --- a/drivers/gpu/drm/i915/i915_module.c
+>> +++ b/drivers/gpu/drm/i915/i915_module.c
+>> @@ -18,9 +18,12 @@
+>>  #include "i915_selftest.h"
+>>  #include "i915_vma.h"
+>>  
+>> +static const struct drm_driver driver;
+>> +
+> 
+> No, this makes absolutely no sense, and will also oops on nomodeset.
+>
 
-No functional change intended.
-
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/riscv/include/asm/kvm_host.h  | 10 +----
- arch/riscv/include/asm/kvm_types.h |  2 +-
- arch/riscv/kvm/mmu.c               | 64 +++++-------------------------
- arch/riscv/kvm/vcpu.c              |  5 ++-
- 4 files changed, 16 insertions(+), 65 deletions(-)
-
-diff --git a/arch/riscv/include/asm/kvm_host.h b/arch/riscv/include/asm/kvm_host.h
-index 25ba21f98504..37589b953bcb 100644
---- a/arch/riscv/include/asm/kvm_host.h
-+++ b/arch/riscv/include/asm/kvm_host.h
-@@ -79,13 +79,6 @@ struct kvm_sbi_context {
- 	int return_handled;
- };
+Ups, sorry about that. For some reason I thought that it was defined in
+the same compilation unit, but I noticed now that it is in i915_drv.c.
  
--#define KVM_MMU_PAGE_CACHE_NR_OBJS	32
--
--struct kvm_mmu_page_cache {
--	int nobjs;
--	void *objects[KVM_MMU_PAGE_CACHE_NR_OBJS];
--};
--
- struct kvm_cpu_trap {
- 	unsigned long sepc;
- 	unsigned long scause;
-@@ -195,7 +188,7 @@ struct kvm_vcpu_arch {
- 	struct kvm_sbi_context sbi_context;
- 
- 	/* Cache pages needed to program page tables with spinlock held */
--	struct kvm_mmu_page_cache mmu_page_cache;
-+	struct kvm_mmu_memory_cache mmu_page_cache;
- 
- 	/* VCPU power-off state */
- 	bool power_off;
-@@ -223,7 +216,6 @@ void __kvm_riscv_hfence_gvma_all(void);
- int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
- 			 struct kvm_memory_slot *memslot,
- 			 gpa_t gpa, unsigned long hva, bool is_write);
--void kvm_riscv_stage2_flush_cache(struct kvm_vcpu *vcpu);
- int kvm_riscv_stage2_alloc_pgd(struct kvm *kvm);
- void kvm_riscv_stage2_free_pgd(struct kvm *kvm);
- void kvm_riscv_stage2_update_hgatp(struct kvm_vcpu *vcpu);
-diff --git a/arch/riscv/include/asm/kvm_types.h b/arch/riscv/include/asm/kvm_types.h
-index e476b404eb67..e15765f98d7a 100644
---- a/arch/riscv/include/asm/kvm_types.h
-+++ b/arch/riscv/include/asm/kvm_types.h
-@@ -2,6 +2,6 @@
- #ifndef _ASM_RISCV_KVM_TYPES_H
- #define _ASM_RISCV_KVM_TYPES_H
- 
--#define KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE 40
-+#define KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE 32
- 
- #endif /* _ASM_RISCV_KVM_TYPES_H */
-diff --git a/arch/riscv/kvm/mmu.c b/arch/riscv/kvm/mmu.c
-index fc058ff5f4b6..b8b902b08deb 100644
---- a/arch/riscv/kvm/mmu.c
-+++ b/arch/riscv/kvm/mmu.c
-@@ -83,43 +83,6 @@ static int stage2_level_to_page_size(u32 level, unsigned long *out_pgsize)
- 	return 0;
- }
- 
--static int stage2_cache_topup(struct kvm_mmu_page_cache *pcache,
--			      int min, int max)
--{
--	void *page;
--
--	BUG_ON(max > KVM_MMU_PAGE_CACHE_NR_OBJS);
--	if (pcache->nobjs >= min)
--		return 0;
--	while (pcache->nobjs < max) {
--		page = (void *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
--		if (!page)
--			return -ENOMEM;
--		pcache->objects[pcache->nobjs++] = page;
--	}
--
--	return 0;
--}
--
--static void stage2_cache_flush(struct kvm_mmu_page_cache *pcache)
--{
--	while (pcache && pcache->nobjs)
--		free_page((unsigned long)pcache->objects[--pcache->nobjs]);
--}
--
--static void *stage2_cache_alloc(struct kvm_mmu_page_cache *pcache)
--{
--	void *p;
--
--	if (!pcache)
--		return NULL;
--
--	BUG_ON(!pcache->nobjs);
--	p = pcache->objects[--pcache->nobjs];
--
--	return p;
--}
--
- static bool stage2_get_leaf_entry(struct kvm *kvm, gpa_t addr,
- 				  pte_t **ptepp, u32 *ptep_level)
- {
-@@ -171,7 +134,7 @@ static void stage2_remote_tlb_flush(struct kvm *kvm, u32 level, gpa_t addr)
- }
- 
- static int stage2_set_pte(struct kvm *kvm, u32 level,
--			   struct kvm_mmu_page_cache *pcache,
-+			   struct kvm_mmu_memory_cache *pcache,
- 			   gpa_t addr, const pte_t *new_pte)
- {
- 	u32 current_level = stage2_pgd_levels - 1;
-@@ -186,7 +149,7 @@ static int stage2_set_pte(struct kvm *kvm, u32 level,
- 			return -EEXIST;
- 
- 		if (!pte_val(*ptep)) {
--			next_ptep = stage2_cache_alloc(pcache);
-+			next_ptep = kvm_mmu_memory_cache_alloc(pcache);
- 			if (!next_ptep)
- 				return -ENOMEM;
- 			*ptep = pfn_pte(PFN_DOWN(__pa(next_ptep)),
-@@ -209,7 +172,7 @@ static int stage2_set_pte(struct kvm *kvm, u32 level,
- }
- 
- static int stage2_map_page(struct kvm *kvm,
--			   struct kvm_mmu_page_cache *pcache,
-+			   struct kvm_mmu_memory_cache *pcache,
- 			   gpa_t gpa, phys_addr_t hpa,
- 			   unsigned long page_size,
- 			   bool page_rdonly, bool page_exec)
-@@ -384,7 +347,10 @@ static int stage2_ioremap(struct kvm *kvm, gpa_t gpa, phys_addr_t hpa,
- 	int ret = 0;
- 	unsigned long pfn;
- 	phys_addr_t addr, end;
--	struct kvm_mmu_page_cache pcache = { 0, };
-+	struct kvm_mmu_memory_cache pcache;
-+
-+	memset(&pcache, 0, sizeof(pcache));
-+	pcache.gfp_zero = __GFP_ZERO;
- 
- 	end = (gpa + size + PAGE_SIZE - 1) & PAGE_MASK;
- 	pfn = __phys_to_pfn(hpa);
-@@ -395,9 +361,7 @@ static int stage2_ioremap(struct kvm *kvm, gpa_t gpa, phys_addr_t hpa,
- 		if (!writable)
- 			pte = pte_wrprotect(pte);
- 
--		ret = stage2_cache_topup(&pcache,
--					 stage2_pgd_levels,
--					 KVM_MMU_PAGE_CACHE_NR_OBJS);
-+		ret = kvm_mmu_topup_memory_cache(&pcache, stage2_pgd_levels);
- 		if (ret)
- 			goto out;
- 
-@@ -411,7 +375,7 @@ static int stage2_ioremap(struct kvm *kvm, gpa_t gpa, phys_addr_t hpa,
- 	}
- 
- out:
--	stage2_cache_flush(&pcache);
-+	kvm_mmu_free_memory_cache(&pcache);
- 	return ret;
- }
- 
-@@ -646,7 +610,7 @@ int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
- 	gfn_t gfn = gpa >> PAGE_SHIFT;
- 	struct vm_area_struct *vma;
- 	struct kvm *kvm = vcpu->kvm;
--	struct kvm_mmu_page_cache *pcache = &vcpu->arch.mmu_page_cache;
-+	struct kvm_mmu_memory_cache *pcache = &vcpu->arch.mmu_page_cache;
- 	bool logging = (memslot->dirty_bitmap &&
- 			!(memslot->flags & KVM_MEM_READONLY)) ? true : false;
- 	unsigned long vma_pagesize, mmu_seq;
-@@ -681,8 +645,7 @@ int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
- 	}
- 
- 	/* We need minimum second+third level pages */
--	ret = stage2_cache_topup(pcache, stage2_pgd_levels,
--				 KVM_MMU_PAGE_CACHE_NR_OBJS);
-+	ret = kvm_mmu_topup_memory_cache(pcache, stage2_pgd_levels);
- 	if (ret) {
- 		kvm_err("Failed to topup stage2 cache\n");
- 		return ret;
-@@ -731,11 +694,6 @@ int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
- 	return ret;
- }
- 
--void kvm_riscv_stage2_flush_cache(struct kvm_vcpu *vcpu)
--{
--	stage2_cache_flush(&vcpu->arch.mmu_page_cache);
--}
--
- int kvm_riscv_stage2_alloc_pgd(struct kvm *kvm)
- {
- 	struct page *pgd_page;
-diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
-index e3d3aed46184..a50abe400ea8 100644
---- a/arch/riscv/kvm/vcpu.c
-+++ b/arch/riscv/kvm/vcpu.c
-@@ -77,6 +77,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
- 
- 	/* Mark this VCPU never ran */
- 	vcpu->arch.ran_atleast_once = false;
-+	vcpu->arch.mmu_page_cache.gfp_zero = __GFP_ZERO;
- 
- 	/* Setup ISA features available to VCPU */
- 	vcpu->arch.isa = riscv_isa_extension_base(NULL) & KVM_RISCV_ISA_ALLOWED;
-@@ -107,8 +108,8 @@ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
- 	/* Cleanup VCPU timer */
- 	kvm_riscv_vcpu_timer_deinit(vcpu);
- 
--	/* Flush the pages pre-allocated for Stage2 page table mappings */
--	kvm_riscv_stage2_flush_cache(vcpu);
-+	/* Free unused pages pre-allocated for Stage2 page table mappings */
-+	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_page_cache);
- }
- 
- int kvm_cpu_has_pending_timer(struct kvm_vcpu *vcpu)
+> BR,
+> Jani.
+> 
+Best regards,
 -- 
-2.34.0.rc0.344.g81b53c2807-goog
+Javier Martinez Canillas
+Linux Engineering
+Red Hat
 
