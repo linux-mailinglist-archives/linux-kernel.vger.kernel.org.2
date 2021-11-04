@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76071444C84
+	by mail.lfdr.de (Postfix) with ESMTP id E2C32444C85
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 01:29:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233362AbhKDAbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 20:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52698 "EHLO
+        id S233567AbhKDAbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 20:31:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233321AbhKDA3D (ORCPT
+        with ESMTP id S233342AbhKDA3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 20:29:03 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7085FC06127A
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 17:26:26 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id m17-20020a170902db1100b001421cb34857so1661588plx.15
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 17:26:26 -0700 (PDT)
+        Wed, 3 Nov 2021 20:29:05 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF6BC061205
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 17:26:28 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id w5-20020a654105000000b002692534afceso2391620pgp.8
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 17:26:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=Rh/p9dCBzSE6gfhoLM6qA42nAbGkMHfvz+ihOHus8Bw=;
-        b=a0LysDSixF+SvGFoYJAn+9lReuNdeuojzCYwE/5S80HnosejUJ/GB5lSTi0I0B6etw
-         PCesr77PK5UoG4qbBnDDmbOplfKjJvN0RSVwwsJ9A6TMfI9nydou7MxD9T7lOeaglEHG
-         XNiJ9e6EtswDVfj8NbPNGs3K4UVClUfWt61l+WfszqPbkc9k/eRztWPGJiIa05+786xW
-         gJ3qi2D5CO9qdvRG06/gp2Sn2Z2tyJIgyiWYmMzoSHEsDwT7XcmXrmm49tOMjj1utuxC
-         5Wr/o1J29XTmPql9v7HTGvlM7g8HATHgYxp+e4CAJr75tfOZ82uzZSP74HenxJ6CsJu8
-         wJFQ==
+        bh=IsY0WRuuTFV0eCJh4XuxLWgE9EBRjAtittkz8TMTuco=;
+        b=O7s96ScNe9nmLZhqPDRepEfehWbch5lSXwuuBFzYiqZgVQsgJRuuGd/HsCCp0bLNu4
+         cYQEx19ZWNPAdMz0HClIalz8ml2QbzjuG+kpgnfMKZafKps+5AXiFqHJNbVFhjHTioYL
+         tC1EMjtQ3yJ0X06NcpoHHSW6eMNaRj1UY0Egh3hPuOjeGtPjO4DN4XnLvAY2osT6lAMm
+         Q868Qm3pLeksx//ppWn43EQZ/TdzYIIwGOwnzwEzdl67hcCGzEJJpjoe2w8tgpCv7e+t
+         TP/XmqLrn9P33rNcE9thKpdxIqj+9MZJlkaTX8cqkFRjS/EbxZ7CKKedokkl4MG1CITB
+         FVVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=Rh/p9dCBzSE6gfhoLM6qA42nAbGkMHfvz+ihOHus8Bw=;
-        b=AcXdx3PnO7LRK58NX1hn8MT3sk1cqA5DW7KKXHCjtuNVGOrbdBbMfPeYKQB5UxeAu1
-         W3D8VsSyIySf5WxbdgnvM1FAoFzNdG7XE7AbRTia4IU5bHiopCOT7E8Jul6ygjR5q8wF
-         GCltJNS9GyIXSMJN8A5oJpDENjudwgm4rOXDGE+f8S16N/KFHGndbNFksgk88FYW580E
-         APBJ1kocksYf/QVwNONvh5pXDDNSbCAmdX2Gnor3UuDRhBygOtPDDGsAO4rHOOKHdScJ
-         tGE9ZYn1AW8ZsvdIfXcyYEd1RYWbzGLZ2lBa2Y9fPkHxqICwP5Nd9aRgqh61pXPVJFi7
-         W5Vw==
-X-Gm-Message-State: AOAM532C2OC6iN+46CMu9M8wbGApu1BD6kCLoJRx+X0bnMSTQ6L5PpE1
-        blSvWNaUSFcz0MiLRkKLl9TKQ7LQpQU=
-X-Google-Smtp-Source: ABdhPJyOWq98exFdSMvxgt0VGjIuS13MnOJ47QLgbIC6Hkpi6D0S+Boi55mGWksr+QgQdfajOLURjR0xq4c=
+        bh=IsY0WRuuTFV0eCJh4XuxLWgE9EBRjAtittkz8TMTuco=;
+        b=kv+XXRMd85AEFKX70XXp4VSsbtaYheAP8ZzH0xc5Xn4CJeLbRthRX08dNN5uSbuUCh
+         I6tb9TWDQBJxXLzDnNeo8kUan6OubNBU9xhccq2H56sXCfS04rdqYKZAXSEmOC9yRwku
+         33uDX//VZmObA6cPzlifQFm9YyFjEtjLup7LTOB0Aju4FSbNXP+trzvhOsolRPTV4tlW
+         2sDOMcKJMQTXdugxlzTXDbWVjyEiIh41O3Sz/S22D0SFX0XQ9LASU0dX904hwkGaISsQ
+         jK+8yQH5y8cQ08U/Rr8MgxbBmJ6YGpqaG4wgzX+/o1gzeTYuz9OpKhx/tRWogw3j0zIu
+         QQfw==
+X-Gm-Message-State: AOAM533mjyl12GnhbQy/GJIbNqGJqph2L03fRvxzy4BAFFmR5eYFI+nE
+        ppdXUmHob3TWPHCERXV2aBlwzgZ6OWs=
+X-Google-Smtp-Source: ABdhPJz+o3KGoFfULDwKrO6qcyTUUuzAUo3X1uvau9DDSuCs/3Lm9Kc5uh2iA0skAT+76ch/61YBaYAjQn0=
 X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
- (user=seanjc job=sendgmr) by 2002:a17:902:e8d1:b0:141:de15:f596 with SMTP id
- v17-20020a170902e8d100b00141de15f596mr25033911plg.67.1635985585858; Wed, 03
- Nov 2021 17:26:25 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:90a:5285:: with SMTP id
+ w5mr261386pjh.1.1635985587426; Wed, 03 Nov 2021 17:26:27 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu,  4 Nov 2021 00:25:17 +0000
+Date:   Thu,  4 Nov 2021 00:25:18 +0000
 In-Reply-To: <20211104002531.1176691-1-seanjc@google.com>
-Message-Id: <20211104002531.1176691-17-seanjc@google.com>
+Message-Id: <20211104002531.1176691-18-seanjc@google.com>
 Mime-Version: 1.0
 References: <20211104002531.1176691-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v5.5 16/30] KVM: x86: Don't assume old/new memslots are
- non-NULL at memslot commit
+Subject: [PATCH v5.5 17/30] KVM: s390: Skip gfn/size sanity checks on memslot
+ DELETE or FLAGS_ONLY
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
@@ -89,57 +88,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Play nice with a NULL @old or @new when handling memslot updates so that
-common KVM can pass NULL for one or the other in CREATE and DELETE cases
-instead of having to synthesize a dummy memslot.
+Sanity check the hva, gfn, and size of a userspace memory region only if
+any of those properties can change, i.e. skip the checks for DELETE and
+FLAGS_ONLY.  KVM doesn't allow moving the hva or changing the size, a gfn
+change shows up as a MOVE even if flags are being modified, and the
+checks are pointless for the DELETE case as userspace_addr and gfn_base
+are zeroed by common KVM.
 
 No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/x86.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ arch/s390/kvm/kvm-s390.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 80e726f73dd7..80183f7eadeb 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -11762,13 +11762,15 @@ static void kvm_mmu_slot_apply_flags(struct kvm *kvm,
- 				     const struct kvm_memory_slot *new,
- 				     enum kvm_mr_change change)
+diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+index 81f90891db0f..c4d0ed5f3400 100644
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -5020,7 +5020,14 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+ 				   struct kvm_memory_slot *new,
+ 				   enum kvm_mr_change change)
  {
--	bool log_dirty_pages = new->flags & KVM_MEM_LOG_DIRTY_PAGES;
-+	u32 old_flags = old ? old->flags : 0;
-+	u32 new_flags = new ? new->flags : 0;
-+	bool log_dirty_pages = new_flags & KVM_MEM_LOG_DIRTY_PAGES;
+-	gpa_t size = new->npages * PAGE_SIZE;
++	gpa_t size;
++
++	/* When we are protected, we should not change the memory slots */
++	if (kvm_s390_pv_get_handle(kvm))
++		return -EINVAL;
++
++	if (change == KVM_MR_DELETE || change == KVM_MR_FLAGS_ONLY)
++		return 0;
  
- 	/*
- 	 * Update CPU dirty logging if dirty logging is being toggled.  This
- 	 * applies to all operations.
- 	 */
--	if ((old->flags ^ new->flags) & KVM_MEM_LOG_DIRTY_PAGES)
-+	if ((old_flags ^ new_flags) & KVM_MEM_LOG_DIRTY_PAGES)
- 		kvm_mmu_update_cpu_dirty_logging(kvm, log_dirty_pages);
+ 	/* A few sanity checks. We can have memory slots which have to be
+ 	   located/ended at a segment boundary (1MB). The memory in userland is
+@@ -5030,15 +5037,13 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+ 	if (new->userspace_addr & 0xffffful)
+ 		return -EINVAL;
  
- 	/*
-@@ -11786,7 +11788,7 @@ static void kvm_mmu_slot_apply_flags(struct kvm *kvm,
- 	 * MOVE/DELETE: The old mappings will already have been cleaned up by
- 	 *		kvm_arch_flush_shadow_memslot().
- 	 */
--	if ((change != KVM_MR_FLAGS_ONLY) || (new->flags & KVM_MEM_READONLY))
-+	if ((change != KVM_MR_FLAGS_ONLY) || (new_flags & KVM_MEM_READONLY))
- 		return;
++	size = new->npages * PAGE_SIZE;
+ 	if (size & 0xffffful)
+ 		return -EINVAL;
  
- 	/*
-@@ -11794,7 +11796,7 @@ static void kvm_mmu_slot_apply_flags(struct kvm *kvm,
- 	 * other flag is LOG_DIRTY_PAGES, i.e. something is wrong if dirty
- 	 * logging isn't being toggled on or off.
- 	 */
--	if (WARN_ON_ONCE(!((old->flags ^ new->flags) & KVM_MEM_LOG_DIRTY_PAGES)))
-+	if (WARN_ON_ONCE(!((old_flags ^ new_flags) & KVM_MEM_LOG_DIRTY_PAGES)))
- 		return;
+ 	if ((new->base_gfn * PAGE_SIZE) + size > kvm->arch.mem_limit)
+ 		return -EINVAL;
  
- 	if (!log_dirty_pages) {
+-	/* When we are protected, we should not change the memory slots */
+-	if (kvm_s390_pv_get_handle(kvm))
+-		return -EINVAL;
+ 	return 0;
+ }
+ 
 -- 
 2.33.1.1089.g2158813163f-goog
 
