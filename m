@@ -2,106 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B959344565E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:31:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1EAD44565F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231489AbhKDPd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 11:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhKDPdz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 11:33:55 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C13FC061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 08:31:15 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id p16so12798227lfa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 08:31:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/QAo7m/CHBig/gC/gJf3MNUDBsTpRnbUruOTSeeBqwY=;
-        b=DaYc6Oru//OTng13euyJtXLjP+RvfN1sUp8v8a7RPiP8x+esGv2tIX5Jo2TqzJmu5o
-         P2cHfPwbTfu4VwimsMLpflnkeXymZj/6cAq0WvglsWDx90FAFzo8kBZm1TFzgPn4GsZ3
-         fkKTnJt7NIae0wBqwyykR8nNBuLUqTFHb9KrI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/QAo7m/CHBig/gC/gJf3MNUDBsTpRnbUruOTSeeBqwY=;
-        b=Ye0dYqJYvVyg5hKtsxI0IRfiFv92fwnIdMx5Q7699cNIz/pEHZDZkEueQFwqP+CdMr
-         GWMAkx9L0htyxhEsQsVvkkSSUwaG2tsg/zH73whELQXEnMgRSwJYdlOjRURSlFrnpfRu
-         w9YQysfyNoyXYy7CghN5MjxA5L5z97pgY44glXIcs9Fb4onLsHr4a7z/Y8yYklT1ybiS
-         LIEKy7GoXGHuDMd7UU4jCd8adD0ctzq8K/ro3XjvgQw+Xowi/JY90f9WB0JOY9s/kKvN
-         N2/zTwdmpG8h87j008bve4fpZgR3MayA3F22IucParWiBLnYaOaKQOaRMR12YRGRBZ2a
-         c1Gg==
-X-Gm-Message-State: AOAM533hQnbQiH5Df3i7qaQocKvKRcfUnSwCOlUTTvjBGbkFf3Je79GB
-        g6Vur3LwxSe5fzFtuRyeyIykH+q6trzoY39N
-X-Google-Smtp-Source: ABdhPJw+hhhZr11zlpbbX9feAwCDWnYvkrUa+YUsAOg/McDyooIMl5e5UaGlRAZN7gTeywV4ku3IwA==
-X-Received: by 2002:ac2:4254:: with SMTP id m20mr42377302lfl.338.1636039873481;
-        Thu, 04 Nov 2021 08:31:13 -0700 (PDT)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
-        by smtp.gmail.com with ESMTPSA id j12sm299554lfe.224.2021.11.04.08.31.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 08:31:11 -0700 (PDT)
-Received: by mail-lj1-f173.google.com with SMTP id y8so10202117ljm.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 08:31:11 -0700 (PDT)
-X-Received: by 2002:a05:651c:113:: with SMTP id a19mr9236128ljb.249.1636039871361;
- Thu, 04 Nov 2021 08:31:11 -0700 (PDT)
+        id S231381AbhKDPfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 11:35:47 -0400
+Received: from mail-eopbgr1410125.outbound.protection.outlook.com ([40.107.141.125]:19129
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229783AbhKDPfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 11:35:45 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LhuS1KFKVMqNC3S6BuxwDqQYHjdpi6akaRhpT6oIBvJC7tPzfc7QcZ/lQGITupFi6taMhibA/TQfHJOAxm/PoN1BHJNtYRZWI3GXVo93NMYxhm/gyXXN8e2zjpWmKKFTNXge6FP8NOPRg/ntAucFsAkmBmJxaNfvRqYXZPnlQxLaZLJK0ncbMmU8GppciSjboHNgC7P4bPASPZe8AcQNWU11KOPo8zn/S/UlR7qnJh9JaGJweozLndDt5DLrgN44z3fcSQIpOmtCtkRoT/AW3b0niMnEoTuz/GTD9wbgWCQGczTJLwOD7aBIyvcsFniXbTmxuA7rWUR7ZuIlHeJrkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oQ/oEACOxUg1LI0zGovFRlxNGpAXzD8DrIoF0iZlUcU=;
+ b=NQZeb+j+vk2WKeGwMSFI4dJelRRqHNSTFOZXKu99zrnMLE7DGVgw7c58fKOUW8k/F8q/JueqlmT3lWQK9J0UW4NnCEoucJCNYdByOzgRWfGxb1wN0uiSXJ5awPEhv1Wtr7gTIoO4H7IGoOcfxEIG2M3c12ShuipQRIy2fEcJl1G1HHifG2mIA6TLGwror8WtRvVLZyGNnqT7m4tsESoyuxPGtq33ua64VLJhLQNa7zPGTG3LHcewWbPdyB+ZQWwgXnCvmK25cOEwa8qUKL85sC110qLp39IYx6tWyhKLmY1Tq0orMJiUv0ZSUOxnIZfhz5CMlkJuyhpgs9H9Ar874A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=connect.ust.hk; dmarc=pass action=none
+ header.from=connect.ust.hk; dkim=pass header.d=connect.ust.hk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connect.ust.hk;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oQ/oEACOxUg1LI0zGovFRlxNGpAXzD8DrIoF0iZlUcU=;
+ b=cua1qSfqApYC+1dnkl9m2TUkn0VkeleGuxTUy/tqAuBa/2enptiNPclkEHaeUEZVawe2y6CnkZ39c8mDHvhc5QBN0F9AjWMqqZ+tCw5JrZWSdwStn/lTNO2/FKPHlyZSk9/XDap8AyPA4rdZ0WJzwQij9IjqYbu0EFyu20K3+BI=
+Authentication-Results: s5r6.in-berlin.de; dkim=none (message not signed)
+ header.d=none;s5r6.in-berlin.de; dmarc=none action=none
+ header.from=connect.ust.hk;
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM (10.242.2.232) by
+ TYAP286MB0427.JPNP286.PROD.OUTLOOK.COM (20.180.223.13) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4669.11; Thu, 4 Nov 2021 15:33:03 +0000
+Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04]) by TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::c0af:a534:cead:3a04%6]) with mapi id 15.20.4669.011; Thu, 4 Nov 2021
+ 15:33:03 +0000
+From:   Chengfeng Ye <cyeaa@connect.ust.hk>
+To:     stefanr@s5r6.in-berlin.de
+Cc:     linux1394-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chengfeng Ye <cyeaa@connect.ust.hk>
+Subject: [PATCH] firewire: fix potential uaf in outbound_phy_packet_callback()
+Date:   Thu,  4 Nov 2021 08:32:53 -0700
+Message-Id: <20211104153253.23941-1-cyeaa@connect.ust.hk>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR0401CA0001.apcprd04.prod.outlook.com
+ (2603:1096:202:2::11) To TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:b7::8)
 MIME-Version: 1.0
-References: <YYP1lAq46NWzhOf0@casper.infradead.org>
-In-Reply-To: <YYP1lAq46NWzhOf0@casper.infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 4 Nov 2021 08:30:55 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiKac4t-fOP_3fAf7nETfFLhT3ShmRmBq2J96y6jAr56Q@mail.gmail.com>
-Message-ID: <CAHk-=wiKac4t-fOP_3fAf7nETfFLhT3ShmRmBq2J96y6jAr56Q@mail.gmail.com>
-Subject: Re: flush_dcache_page vs kunmap_local
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Received: from ubuntu.localdomain (175.159.124.155) by HK2PR0401CA0001.apcprd04.prod.outlook.com (2603:1096:202:2::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.17 via Frontend Transport; Thu, 4 Nov 2021 15:33:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6c6f8ffd-faf6-4355-e411-08d99fa8640f
+X-MS-TrafficTypeDiagnostic: TYAP286MB0427:
+X-Microsoft-Antispam-PRVS: <TYAP286MB0427DF8C3CA87DFFA3E2CB4D8A8D9@TYAP286MB0427.JPNP286.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ahHeytbAcT+DeJvn84tA0/hTyg9kgKzw3WV2Q5bVsNK4ByA1dShEgxNAkrA5BQhtMTip2vf8C9/RLohFetF/QXY/BwA48clX/7E0yue8Zbr3ljpiEmH5vZGznOfmdeHIWaLBzTiBLI4S87pAHEAWPiF/ELYbTltt+mRmU2XVaPI70WjRMNkw5sx/gJBEhzxgAW1xkNNPAeb+qqJ/Syh0NFDkKmfns5i2QmtHV0qRgOH99Kk3GVPfcw40SKeVhqcrrQuTxKBKSZ0AeGsO4l4bF/qh1hDFVot5tRDmgGq+LdSNKkaaQEmilW/Z4S+FbkPYvX9u7Q2Ny91CRbvhCHpIzP202YCrdRNRftu+1/tr1BQDOv7dd4A6EiV9M2WNw0RFxAuG1CFApYgwv0FBpx2o7AdcACCIGxk8+NuJSmnGBLA+1w2SF5TB20fnc8qQ0jeJt7mzoBfUwAwuBo3RfCGjwyJH6k0xpKMFr/s+ZnWuOK8PxLts7cnQtAgODcZe/H+bsQxzDGNa9BKLOUsbyvh6kOt3R7mTUyR3M26Ty+mcU9bzyDLFZf2IRscMXSMYROgWf8jDao3+dXfjSbNk9dVR2U1+eDzrqsVDtxDBCzqz0Mw0Ybf4mYjjgS3RRE8Z+XllBGOp3+Lf3n0WeZMrKLjwFmT6N1vVswD4ZODedQO2FwsvgV7TYkf0Kh8mFs6uVN9GkGTGRGzfnEd/ORMkQFHMiw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(786003)(5660300002)(2906002)(6512007)(186003)(508600001)(66946007)(2616005)(36756003)(83380400001)(38100700002)(38350700002)(26005)(66556008)(6916009)(956004)(66476007)(8936002)(52116002)(6506007)(6486002)(4326008)(6666004)(8676002)(1076003)(86362001)(107886003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?adwzjGNpdOw2NcmSnpW876iKrb8pvtpmduvS2LBe3qKJ62OSu6MHEMSKEXzh?=
+ =?us-ascii?Q?0HzJtwmEPQw6uO3MkyAYA1V78DGxhovsUqqy1htdN9sE2D0YJKpHLXhoIc65?=
+ =?us-ascii?Q?qy36yobiWYbug6z3dwsLtL1CTjYD73T3iJAm85j001B720RgAgLYQ/5ybtKf?=
+ =?us-ascii?Q?o9JPwA0t156bd1AFXJpFmDvpqhaMKdbYCwgauS6YsC4bCFuVZpFWhqyEPbG6?=
+ =?us-ascii?Q?/cnTpZJbyzqWj63PMmoFkSEzjJNWMGTiChp/4fQjbDtmfE3pMCFOQfBQyWY7?=
+ =?us-ascii?Q?lL6rvitkDWjqWKbkf+cOmsTjDe/gLBD766To7+X/gZYMjbgem+9kLATPqHh6?=
+ =?us-ascii?Q?pEClchmXXzpttygoWHOyQpNU3ofSS4Spu5RETdjtuq/KbGtPWsJg1GnWkyc8?=
+ =?us-ascii?Q?ptNziz7l8BQAMSe7XccKSh/kCxfzmjI1bekaUWnm3DuK6RFhISmVufRTPz69?=
+ =?us-ascii?Q?oCPYAePSW4Xjcy0pcWeMLUpO2AuxvJNQSlzPN0MrBO4k7pixmppQJHx+6/LF?=
+ =?us-ascii?Q?5cffq6B4FHm6T/gSC7fd15oOFWHCBQzFyOlZkReMP6jzSDCVkVoa/kmU92q7?=
+ =?us-ascii?Q?fzh7aP532e3p8kMruP5/lD4KECwbz83XNIc3pyrKH1Za7bb9/aU2pMHiMGL4?=
+ =?us-ascii?Q?dxJYKsoNGCOfJbNinFmp8ueHc1ee8mMR9tSMsYH5tbHgV6ENGVaD8stoZQKg?=
+ =?us-ascii?Q?EGdoWH1iG2g3OfhnY1hP/RoaOBnWLOubNhvSzGiX18Bf1YETsbtVxcwvvifS?=
+ =?us-ascii?Q?P7y337nNYfR977pSH7vW14507d9qx1iKHfPxEYPMOmQmuV6uqeZdkrCFuyo3?=
+ =?us-ascii?Q?OfygGuTTgpj6FPzLs3Livdpc/VEzpGcaoFPRMr24bmt/aSvLftrdQD91Dmxh?=
+ =?us-ascii?Q?d5b/dSXBkNI0jrrkAhapJUQmq1DnubEydFmbsnDXZVdHqah4SXZs766zi8ei?=
+ =?us-ascii?Q?nIy9k++9D/9yR97+1skcYEui3lOc+md8W1mfCRDN6cNXZyv/UKK2QPwWY8Ia?=
+ =?us-ascii?Q?rP2veh013GJDq3SZyubpup4HUSJg7LuyAocNsRHuVfUY+1Ge6+s2WZcb9Zd3?=
+ =?us-ascii?Q?jP55f2t5WBAJv8zYL7ogOq7eYYPCdPSt1fXAiRErOsxOft2mOX1DkVlSTo56?=
+ =?us-ascii?Q?c5x5ILaq6uroPfKca9dteBGaDKdhgmrUW7Iw4Poa0ZMPHDJ9ycq2nuRv8AaW?=
+ =?us-ascii?Q?X8fDxyt9XNCU+Q6/DAdvrRHSXkNiKY2KPcVmYwshZhsFTTBxVlLQRz6grwJP?=
+ =?us-ascii?Q?+UdjB0ZQhhhHmwZSeS8XjV3idaEUV9PankBDkU8+3BHIuPAg2mz2DdqFhP4U?=
+ =?us-ascii?Q?UKSSkxIcMaeoKRkpCW44liwLTAaoqIbfGhNZAHRN4bY2f/V79qjHfXiJsVxQ?=
+ =?us-ascii?Q?yW13fHzP00+GU9NorYehPpV5OA68VZBG161r2z/LGqcA5u6XCpLSSlk1sumE?=
+ =?us-ascii?Q?zt4v5EskQ9/VdZr9o5qRRVWdfwv2NxhRi/Fh4/EyAhgx0vKz+nxOk5ADoFl9?=
+ =?us-ascii?Q?QkJVK1K84rrBqC6NwFhjg5URtEO/8C8TSvBDOz5b7mF7yv1p0lcBFXTHqTqK?=
+ =?us-ascii?Q?yfikE6UUMUPuzk0dvgBkK3sFQBGz8TMYAsfl1VSXb8LePAEI5Wb3yhCW3uuO?=
+ =?us-ascii?Q?d2YJfDomYDnaXcTdZvAXvQk=3D?=
+X-OriginatorOrg: connect.ust.hk
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c6f8ffd-faf6-4355-e411-08d99fa8640f
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2021 15:33:03.4538
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 6c1d4152-39d0-44ca-88d9-b8d6ddca0708
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oTIt/dIA0xrSW0i4F7J4wKesARc9a7wUrZLPUGGv09BfilFXhZ2azQimwfZcuAyKgrVIOJZrPtgeuIq6IGB/1g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAP286MB0427
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 8:03 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> Linus offers the opinion that kunmap calls should imply a
-> flush_dcache_page().  Christoph added calls to flush_dcache_page()
-> in commit 8dad53a11f8d.  Was this "voodoo programming", or was there
-> a real problem being addressed?
+&e->event and e point to the same address, and &e->event could
+be freed in queue_event. So there is a potential uaf issue if
+we dereference e after calling queue_event(). Fix this by adding
+a temporary variable to maintain e->client in advance, this can
+avoid the potential uaf issue.
 
-I don't think anybody actually uses/cares about flush_dcache_page() at
-all, and pretty much all uses are random and voodoo.
+Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
+---
+ drivers/firewire/core-cdev.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-No sane architecture uses pure virtual caches, and the insane ones
-haven't been an issue for a long time either.
+diff --git a/drivers/firewire/core-cdev.c b/drivers/firewire/core-cdev.c
+index 9f89c17730b1..2f47e31918f0 100644
+--- a/drivers/firewire/core-cdev.c
++++ b/drivers/firewire/core-cdev.c
+@@ -1516,9 +1516,10 @@ static void outbound_phy_packet_callback(struct fw_packet *packet,
+ 	}
+ 	e->phy_packet.data[0] = packet->timestamp;
+ 
++	struct client *e_client = e->client;
+ 	queue_event(e->client, &e->event, &e->phy_packet,
+ 		    sizeof(e->phy_packet) + e->phy_packet.length, NULL, 0);
+-	client_put(e->client);
++	client_put(e_client);
+ }
+ 
+ static int ioctl_send_phy_packet(struct client *client, union ioctl_arg *arg)
+-- 
+2.17.1
 
-But if there are still systems with pure virtual caches, and they need
-manual cache flushing, then I do think that kunmap is one of the
-points that needs it, since that's the "I'm done accessing this data
-through this virtual address" place.
-
-End result: I really don't think anybody cares any more (and only
-truly broken architectures ever did). I'd personally be perfectly
-happy just saying "we might as well drop support for non-coherent
-caches entirely".
-
-But as long as we have those random odd "flush dcache manually"
-things, I think kunmap() is one of the places that probably should
-continue to do them.
-
-Of course, the kunmap case is _doubly_ irrelevant, because we should
-certainly hope that not only are those noncoherent pure virtual caches
-a thing of the past, highmem itself should be going away.
-
-Why did this come up? Do you actually have some hardware or situation
-that cares?
-
-                   Linus
