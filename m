@@ -2,383 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678EF445A6E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 20:06:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5FA445AA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 20:38:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234229AbhKDTIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 15:08:37 -0400
-Received: from ms.lwn.net ([45.79.88.28]:53388 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234279AbhKDTIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 15:08:32 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::e2d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id EEAFA6696;
-        Thu,  4 Nov 2021 19:05:52 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net EEAFA6696
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1636052753; bh=o3GEWIv2f2lVZGce34tW9xNOROrD5lFoDT9Jcdu7Pbs=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=cWD2qpmPrbHlbnclKCDkNzp1o71oGX8kK0BXQGQOeeYKcjUN3p1lXbqUmt1mCFTj9
-         JU/c6b/x/zj9wAFM4r4X1sARiENDd8M9PHzmP0A5zQnPSvSnPQE6cd/Bvhc49oGRlI
-         YaLYXbeVw5BcLTUaWvokMYvpi+ffOS06TqSd+L/yRETgEjc49BAqw3Hx3rl8DzJiQZ
-         XvG6ghz8bO4LESGs0QJVBA2XfV9sowWQM2PEIpUahZ31cwEpoJmG9bTlOSTX4zVrQb
-         /NHgM0CX/9zECSoLV3W8GoQ5pRrRWes9KWY7eeDtN5dXNGlL75GT2iTb3T05rHXoVm
-         clNOdYeSgYmHA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Beau Belgrave <beaub@linux.microsoft.com>, rostedt@goodmis.org,
-        mhiramat@kernel.org
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        beaub@linux.microsoft.com
-Subject: Re: [PATCH v4 10/10] user_events: Add documentation file
-In-Reply-To: <20211104170433.2206-11-beaub@linux.microsoft.com>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
- <20211104170433.2206-11-beaub@linux.microsoft.com>
-Date:   Thu, 04 Nov 2021 13:05:51 -0600
-Message-ID: <8735obrbao.fsf@meer.lwn.net>
+        id S231671AbhKDTlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 15:41:00 -0400
+Received: from mail.xenproject.org ([104.130.215.37]:55058 "EHLO
+        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231168AbhKDTk6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 15:40:58 -0400
+X-Greylist: delayed 1578 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Nov 2021 15:40:58 EDT
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <pdurrant@amazon.com>)
+        id 1mii9I-0002gZ-11; Thu, 04 Nov 2021 19:11:44 +0000
+Received: from host86-165-42-146.range86-165.btcentralplus.com ([86.165.42.146] helo=debian.home)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <pdurrant@amazon.com>)
+        id 1mii9H-0003yn-Og; Thu, 04 Nov 2021 19:11:43 +0000
+From:   Paul Durrant <pdurrant@amazon.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: [PATCH RESEND] KVM: x86: Make sure KVM_CPUID_FEATURES really are KVM_CPUID_FEATURES
+Date:   Thu,  4 Nov 2021 19:11:37 +0000
+Message-Id: <20211104191137.4409-1-pdurrant@amazon.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Beau Belgrave <beaub@linux.microsoft.com> writes:
+Currently when kvm_update_cpuid_runtime() runs, it assumes that the
+KVM_CPUID_FEATURES leaf is located at 0x40000001. This is not true,
+however, if Hyper-V support is enabled. In this case the KVM leaves will
+be offset.
 
-> Add a documentation file about user_events with example code, etc.
-> explaining how it may be used.
+This patch introdues as new 'kvm_cpuid_base' field into struct
+kvm_vcpu_arch to track the location of the KVM leaves and function
+kvm_update_cpuid_base() (called from kvm_update_cpuid_runtime()) to locate
+the leaves using the 'KVMKVMKVM\0\0\0' signature. Adjustment of
+KVM_CPUID_FEATURES will hence now target the correct leaf.
 
-Yay documentation!  Some nits for a slow moment...
+Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+---
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Wanpeng Li <wanpengli@tencent.com>
+Cc: Jim Mattson <jmattson@google.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+---
+ arch/x86/include/asm/kvm_host.h |  1 +
+ arch/x86/kvm/cpuid.c            | 50 +++++++++++++++++++++++++++++----
+ 2 files changed, 46 insertions(+), 5 deletions(-)
 
-> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
-> ---
->  Documentation/trace/user_events.rst | 298 ++++++++++++++++++++++++++++
->  1 file changed, 298 insertions(+)
->  create mode 100644 Documentation/trace/user_events.rst
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 88fce6ab4bbd..21133ffa23e9 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -725,6 +725,7 @@ struct kvm_vcpu_arch {
+ 
+ 	int cpuid_nent;
+ 	struct kvm_cpuid_entry2 *cpuid_entries;
++	u32 kvm_cpuid_base;
+ 
+ 	u64 reserved_gpa_bits;
+ 	int maxphyaddr;
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 2d70edb0f323..2cfb8ec4f570 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -99,11 +99,46 @@ static int kvm_check_cpuid(struct kvm_cpuid_entry2 *entries, int nent)
+ 	return 0;
+ }
+ 
++static void kvm_update_cpuid_base(struct kvm_vcpu *vcpu)
++{
++	u32 function;
++
++	for (function = 0x40000000; function < 0x40010000; function += 0x100) {
++		struct kvm_cpuid_entry2 *best = kvm_find_cpuid_entry(vcpu, function, 0);
++
++		if (best) {
++			char signature[12];
++
++			*(u32 *)&signature[0] = best->ebx;
++			*(u32 *)&signature[4] = best->ecx;
++			*(u32 *)&signature[8] = best->edx;
++
++			if (!memcmp(signature, "KVMKVMKVM\0\0\0", 12))
++				break;
++		}
++	}
++	vcpu->arch.kvm_cpuid_base = function;
++}
++
++static inline bool kvm_get_cpuid_base(struct kvm_vcpu *vcpu, u32 *function)
++{
++	if (vcpu->arch.kvm_cpuid_base < 0x40000000 ||
++	    vcpu->arch.kvm_cpuid_base >= 0x40010000)
++		return false;
++
++	*function = vcpu->arch.kvm_cpuid_base;
++	return true;
++}
++
+ void kvm_update_pv_runtime(struct kvm_vcpu *vcpu)
+ {
++	u32 base;
+ 	struct kvm_cpuid_entry2 *best;
+ 
+-	best = kvm_find_cpuid_entry(vcpu, KVM_CPUID_FEATURES, 0);
++	if (!kvm_get_cpuid_base(vcpu, &base))
++		return;
++
++	best = kvm_find_cpuid_entry(vcpu, base + KVM_CPUID_FEATURES, 0);
+ 
+ 	/*
+ 	 * save the feature bitmap to avoid cpuid lookup for every PV
+@@ -116,6 +151,7 @@ void kvm_update_pv_runtime(struct kvm_vcpu *vcpu)
+ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
+ {
+ 	struct kvm_cpuid_entry2 *best;
++	u32 base;
+ 
+ 	best = kvm_find_cpuid_entry(vcpu, 1, 0);
+ 	if (best) {
+@@ -142,10 +178,14 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
+ 		     cpuid_entry_has(best, X86_FEATURE_XSAVEC)))
+ 		best->ebx = xstate_required_size(vcpu->arch.xcr0, true);
+ 
+-	best = kvm_find_cpuid_entry(vcpu, KVM_CPUID_FEATURES, 0);
+-	if (kvm_hlt_in_guest(vcpu->kvm) && best &&
+-		(best->eax & (1 << KVM_FEATURE_PV_UNHALT)))
+-		best->eax &= ~(1 << KVM_FEATURE_PV_UNHALT);
++	kvm_update_cpuid_base(vcpu);
++
++	if (kvm_get_cpuid_base(vcpu, &base)) {
++		best = kvm_find_cpuid_entry(vcpu, base + KVM_CPUID_FEATURES, 0);
++		if (kvm_hlt_in_guest(vcpu->kvm) && best &&
++		    (best->eax & (1 << KVM_FEATURE_PV_UNHALT)))
++			best->eax &= ~(1 << KVM_FEATURE_PV_UNHALT);
++	}
+ 
+ 	if (!kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT)) {
+ 		best = kvm_find_cpuid_entry(vcpu, 0x1, 0);
+-- 
+2.20.1
 
-Actually, this isn't really a nit.  When you add a new RST file, you
-need to add it to the index.rst file too so that it gets pulled into the
-docs build.  Otherwise you'll get the warning you doubtless saw when you
-tried building the docs after adding this file...:)
-
-> diff --git a/Documentation/trace/user_events.rst b/Documentation/trace/user_events.rst
-> new file mode 100644
-> index 000000000000..d79c9f07d012
-> --- /dev/null
-> +++ b/Documentation/trace/user_events.rst
-> @@ -0,0 +1,298 @@
-> +=========================================
-> +user_events: User-based Event Tracing
-> +=========================================
-> +
-> +:Author: Beau Belgrave
-> +
-> +Overview
-> +--------
-> +User based trace events allow user processes to create events and trace data
-> +that can be viewed via existing tools, such as ftrace, perf and eBPF.
-> +To enable this feature, build your kernel with CONFIG_USER_EVENTS=y.
-> +
-> +Programs can view status of the events via 
-> +/sys/kernel/debug/tracing/user_events_status and can both register and write
-> +data out via /sys/kernel/debug/tracing/user_events_data.
-> +
-> +Programs can also use /sys/kernel/debug/tracing/dynamic_events to register and
-> +delete user based events via the u: prefix. The format of the command to
-> +dynamic_events is the same as the ioctl with the u: prefix applied.
-> +
-> +Typically programs will register a set of events that they wish to expose to
-> +tools that can read trace_events (such as ftrace and perf). The registration
-> +process gives back two ints to the program for each event. The first int is the
-> +status index. This index describes which byte in the 
-> +/sys/kernel/debug/tracing/user_events_status file represents this event. The
-> +second int is the write index. This index describes the data when a write() or
-> +writev() is called on the /sys/kernel/debug/tracing/user_events_data file.
-> +
-> +The structures referenced in this document are contained with the
-> +/include/uap/linux/user_events.h file in the source tree.
-> +
-> +**NOTE:** *Both user_events_status and user_events_data are under the tracefs filesystem
-> +and may be mounted at different paths than above.*
-
-Best to stick with the 80-column guideline for docs, please.
-
-This also won't render the way you expect and may add a warning.
-
-> +Registering
-> +-----------
-> +Registering within a user process is done via ioctl() out to the
-> +/sys/kernel/debug/tracing/user_events_data file. The command to issue is
-> +DIAG_IOCSREG. This command takes a struct user_reg as an argument.
-> +
-> +The struct user_reg requires two values, the first is the size of the structure
-> +to ensure forward and backward compatibility. The second is the command string
-> +to issue for registering.
-> +
-> +User based events show up under tracefs like any other event under the subsystem
-> +named "user_events". This means tools that wish to attach to the events need to
-> +use /sys/kernel/debug/tracing/events/user_events/[name]/enable or perf record
-> +-e user_events:[name] when attaching/recording.
-> +
-> +**NOTE:** *The write_index returned is only valid for the FD that was used*
-> +
-> +Command Format
-> +^^^^^^^^^^^^^^
-> +The command string format is as follows:
-> +
-> +::
-
-You can express this more concisely (and readably) as
-
-  The command string format is as follows::
-
-(there's a bunch of these in this file)
-
-> +  name[:FLAG1[,FLAG2...]] [Field1[;Field2...]]
-> +
-> +Supported Flags
-> +^^^^^^^^^^^^^^^
-> +**BPF_ITER** - EBPF programs attached to this event will get the raw iovec
-> +struct instead of any data copies for max performance.
-> +
-> +Field Format
-> +^^^^^^^^^^^^
-> +
-> +::
-> +
-> +  type name [size]
-> +
-> +Basic types are supported (__data_loc, u32, u64, int, char, char[20]).
-> +User programs are encouraged to use clearly sized types like u32.
-> +
-> +**NOTE:** *Long is not supported since size can vary between user and kernel.*
-> +
-> +The size is only valid for types that start with a struct prefix.
-> +This allows user programs to describe custom structs out to tools, if required.
-> +
-> +For example, a struct in C that looks like this:
-> +
-> +::
-> +
-> +  struct mytype {
-> +    char data[20];
-> +  };
-> +
-> +Would be represented by the following field:
-> +
-> +::
-> +
-> +  struct mytype myname 20
-> +
-> +Status
-> +------
-> +When tools attach/record user based events the status of the event is updated
-> +in realtime. This allows user programs to only incur the cost of the write() or
-> +writev() calls when something is actively attached to the event.
-> +
-> +User programs call mmap() on /sys/kernel/debug/tracing/user_events_status to
-> +check the status for each event that is registered. The byte to check in the
-> +file is given back after the register ioctl() via user_reg.status_index.
-> +Currently the size of user_events_status is a single page, however, custom
-> +kernel configurations can change this size to allow more user based events. In
-> +all cases the size of the file is a multiple of a page size.
-> +
-> +For example, if the register ioctl() gives back a status_index of 3 you would
-> +check byte 3 of the returned mmap data to see if anything is attached to that
-> +event.
-> +
-> +Administrators can easily check the status of all registered events by reading
-> +the user_events_status file directly via a terminal. The output is as follows:
-> +
-> +::
-> +
-> +  Byte:Name [# Comments]
-> +  ...
-> +
-> +  Active: ActiveCount
-> +  Buisy: BusyCount
-> +  Max: MaxCount
-> +
-> +For example, on a system that has a single event the output looks like this:
-> +
-> +::
-> +
-> +  1:test
-> +
-> +  Active: 1
-> +  Busy: 0
-> +  Max: 4096
-> +
-> +If a user enables the user event via ftrace, the output would change to this:
-> +
-> +:: 
-> +
-> +  1:test # Used by ftrace
-> +
-> +  Active: 1
-> +  Busy: 1
-> +  Max: 4096
-> +
-> +**NOTE:** *A status index of 0 will never be returned. This allows user 
-> +programs to have an index that can be used on error cases.*
-> +
-> +Status Bits
-> +^^^^^^^^^^^
-> +The byte being checked will be non-zero if anything is attached. Programs can
-> +check specific bits in the byte to see what mechanism has been attached.
-> +
-> +The following values are defined to aid in checking what has been attached:
-> +**EVENT_STATUS_FTRACE** - Bit set if ftrace has been attached (Bit 0).
-> +
-> +**EVENT_STATUS_PERF** - Bit set if perf/eBPF has been attached (Bit 1).
-> +
-> +Writing Data
-> +------------
-> +After registering an event the same fd that was used to register can be used
-> +to write an entry for that event. The write_index returned must be at the start
-> +of the data, then the remaining data is treated as the payload of the event.
-> +
-> +For example, if write_index returned was 1 and I wanted to write out an int
-> +payload of the event. Then the data would have to be 8 bytes (2 ints) long,
-> +with the first 4 bytes being equal to 1 and the last 4 bytes being equal to the
-> +value I want as the payload.
-> +
-> +In memory this would look like this:
-> +
-> +::
-> +
-> +  int index;
-> +  int payload;
-> +
-> +User programs might have well known structs that they wish to use to emit out
-> +as payloads. In those cases writev() can be used, with the first vector being
-> +the index and the following vector(s) being the actual event payload.
-> +
-> +For example, if I have a struct like this:
-> +
-> +::
-> +
-> +  struct payload {
-> +        int src;
-> +        int dst;
-> +        int flags;
-> +  };
-> +
-> +It's advised for user programs to do the following:
-> +
-> +:: 
-> +
-> +  struct iovec io[2];
-> +  struct payload e;
-> +
-> +  io[0].iov_base = &write_index;
-> +  io[0].iov_len = sizeof(write_index);
-> +  io[1].iov_base = &e;
-> +  io[1].iov_len = sizeof(e);
-> +
-> +  writev(fd, (const struct iovec*)io, 2);
-> +
-> +**NOTE:** *The write_index is not emitted out into the trace being recorded.*
-> +
-> +EBPF
-> +----
-> +EBPF programs that attach to a user-based event tracepoint are given a pointer
-> +to a struct user_bpf_context. The bpf context contains the data type (which can
-> +be a user or kernel buffer, or can be a pointer to the iovec) and the data
-> +length that was emitted (minus the write_index).
-> +
-> +Example Code
-> +------------
-
-Examples are great, but they are best placed under samples/ (or tools/
-if they do something useful) where readers can build and run them.
-
-> +::
-> +
-> +  #include <errno.h>
-> +  #include <sys/ioctl.h>
-> +  #include <sys/mman.h>
-> +  #include <fcntl.h>
-> +  #include <stdio.h>
-> +  #include <unistd.h>
-> +  #include <linux/user_events.h>
-> +  
-> +  /* Assumes debugfs is mounted */
-> +  const char *data_file = "/sys/kernel/debug/tracing/user_events_data";
-> +  const char *status_file = "/sys/kernel/debug/tracing/user_events_status";
-> +  
-> +  static int event_status(char **status)
-> +  {
-> +  	int fd = open(status_file, O_RDONLY);
-> +  
-> +  	*status = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ,
-> +  		       MAP_SHARED, fd, 0);
-> +  
-> +  	close(fd);
-> +  
-> +  	if (*status == MAP_FAILED)
-> +  	      return -1;
-> +  
-> +  	return 0;
-> +  }
-> +  
-> +  static int event_reg(int fd, const char *command, int *status, int *write)
-> +  {
-> +  	struct user_reg reg = {0};
-> +  
-> +  	reg.size = sizeof(reg);
-> +  	reg.name_args = (__u64)command;
-> +  
-> +  	if (ioctl(fd, DIAG_IOCSREG, &reg) == -1)
-> +  		return -1;
-> +  
-> +  	*status = reg.status_index;
-> +  	*write = reg.write_index;
-> +  
-> +  	return 0;
-> +  }
-> +  
-> +  int main(int argc, char **argv)
-> +  {
-> +  	int data_fd, status, write;
-> +  	char *status_page;
-> +  	struct iovec io[2];
-> +  	__u32 count = 0;
-> +  
-> +  	if (event_status(&status_page) == -1)
-> +  		return errno;
-> +  
-> +  	data_fd = open(data_file, O_RDWR);
-> +  
-> +  	if (event_reg(data_fd, "test u32 count", &status, &write) == -1)
-> +  		return errno;
-> +  
-> +  	/* Setup iovec */
-> +  	io[0].iov_base = &status;
-> +  	io[0].iov_len = sizeof(status);
-> +  	io[1].iov_base = &count;
-> +  	io[1].iov_len = sizeof(count);
-> +  
-> +  ask:
-> +  	printf("Press enter to check status...\n");
-> +  	getchar();
-> +  
-> +  	/* Check if anyone is listening */
-> +  	if (status_page[status]) {
-> +  		/* Yep, trace out our data */
-> +  		writev(data_fd, (const struct iovec*)io, 2);
-> +  
-> +  		/* Increase the count */
-> +  		count++;
-> +  
-> +  		printf("Something was attached, wrote data\n");
-> +  	}
-> +  
-> +  	goto ask;
-> +  
-> +  	return 0;
-> +  }
-
-Thanks,
-
-jon
