@@ -2,69 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD824454A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:13:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B2A4454EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:16:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231345AbhKDOQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 10:16:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44884 "EHLO mail.kernel.org"
+        id S232308AbhKDOSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 10:18:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231365AbhKDOQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 10:16:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B46160F39;
-        Thu,  4 Nov 2021 14:13:49 +0000 (UTC)
+        id S232133AbhKDOR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 10:17:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73498611C0;
+        Thu,  4 Nov 2021 14:15:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636035230;
-        bh=aIdRTFWPkEXAjV9AmwU5Qa4tC5Ylagy1T1VHvxzCOfM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2IPFQVEkRLl8qtxOVELnJXzA8cPTSyUGveFggORG3iEkfnIjyg4UlUOMmqKzJ1V3O
-         b6rcOrktOE0YRgiHCUxDZv8+gkX/FSxpp+CywzHwkaemsJ+5VCPIDxc5dEMOyvhsS+
-         eRihuHS9C/1J32X583L3xvE8QV8y7xfPKPypBPbM=
+        s=korg; t=1636035321;
+        bh=E7RHPQ1FHJa1i1mCdpHKwZWLAtLRNIdCZNgX+jkTu9s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MuurFO6ZHmk3ViPGfrQieZ35nm/7NJkMQU4dTc6xKpr3hc5sD4aHCV3rkS61o5NFh
+         FE8lLgOau5I7XQc0EvzU0AYlYHEKvY4+37qKMte5P5w7SVU2zzEjpoXMqJTq9h/3nP
+         sdojpSghEqTEta/mC8LK41CWRgMwvZt+X2Z1nA64=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.15 12/12] ALSA: usb-audio: Add quirk for Audient iD14
-Date:   Thu,  4 Nov 2021 15:12:38 +0100
-Message-Id: <20211104141159.954361842@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 5.10 00/16] 5.10.78-rc1 review
+Date:   Thu,  4 Nov 2021 15:12:39 +0100
+Message-Id: <20211104141159.561284732@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211104141159.551636584@linuxfoundation.org>
-References: <20211104141159.551636584@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.78-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.10.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.10.78-rc1
+X-KernelTest-Deadline: 2021-11-06T14:12+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+This is the start of the stable review cycle for the 5.10.78 release.
+There are 16 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-commit df0380b9539b04c1ae8854a984098da06d5f1e67 upstream.
+Responses should be made by Sat, 06 Nov 2021 14:11:51 +0000.
+Anything received after that time might be too late.
 
-Audient iD14 (2708:0002) may get a control message error that
-interferes the operation e.g. with alsactl.  Add the quirk to ignore
-such errors like other devices.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.78-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+and the diffstat can be found below.
 
-BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1191247
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211102161859.19301-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- sound/usb/quirks.c |    2 ++
- 1 file changed, 2 insertions(+)
+thanks,
 
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1887,6 +1887,8 @@ static const struct usb_audio_quirk_flag
- 		   QUIRK_FLAG_SHARE_MEDIA_DEVICE | QUIRK_FLAG_ALIGN_TRANSFER),
- 	DEVICE_FLG(0x21b4, 0x0081, /* AudioQuest DragonFly */
- 		   QUIRK_FLAG_GET_SAMPLE_RATE),
-+	DEVICE_FLG(0x2708, 0x0002, /* Audient iD14 */
-+		   QUIRK_FLAG_IGNORE_CTL_ERROR),
- 	DEVICE_FLG(0x2912, 0x30c8, /* Audioengine D1 */
- 		   QUIRK_FLAG_GET_SAMPLE_RATE),
- 	DEVICE_FLG(0x30be, 0x0101, /* Schiit Hel */
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.10.78-rc1
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: usb-audio: Add Audient iD14 to mixer map quirk table
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: usb-audio: Add Schiit Hel device to mixer map quirk table
+
+Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+    Revert "wcn36xx: Disable bmps when encryption is disabled"
+
+Wang Kefeng <wangkefeng.wang@huawei.com>
+    ARM: 9120/1: Revert "amba: make use of -1 IRQs warn"
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Revert "drm/ttm: fix memleak in ttm_transfered_destroy"
+
+Yang Shi <shy828301@gmail.com>
+    mm: khugepaged: skip huge page collapse for special files
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Revert "usb: core: hcd: Add support for deferring roothub registration"
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Revert "xhci: Set HCD flag to defer primary roothub registration"
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    media: firewire: firedtv-avc: fix a buffer overflow in avc_ca_pmt()
+
+Yang Shi <shy828301@gmail.com>
+    mm: filemap: check if THP has hwpoisoned subpage for PMD page fault
+
+Yang Shi <shy828301@gmail.com>
+    mm: hwpoison: remove the unnecessary THP check
+
+Yuiko Oshino <yuiko.oshino@microchip.com>
+    net: ethernet: microchip: lan743x: Fix skb allocation failure
+
+Eugene Crosser <crosser@average.org>
+    vrf: Revert "Reset skb conntrack connection..."
+
+Erik Ekman <erik@kryo.se>
+    sfc: Fix reading non-legacy supported link modes
+
+Lee Jones <lee.jones@linaro.org>
+    Revert "io_uring: reinforce cancel on flush during exit"
+
+Ming Lei <ming.lei@redhat.com>
+    scsi: core: Put LLD module refcnt after SCSI device is released
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                      |  4 ++--
+ drivers/amba/bus.c                            |  3 ---
+ drivers/gpu/drm/ttm/ttm_bo_util.c             |  1 -
+ drivers/media/firewire/firedtv-avc.c          | 14 ++++++++++---
+ drivers/media/firewire/firedtv-ci.c           |  2 ++
+ drivers/net/ethernet/microchip/lan743x_main.c | 10 +++++----
+ drivers/net/ethernet/sfc/ethtool_common.c     | 10 ++-------
+ drivers/net/vrf.c                             |  4 ----
+ drivers/net/wireless/ath/wcn36xx/main.c       | 10 ---------
+ drivers/net/wireless/ath/wcn36xx/pmc.c        |  5 +----
+ drivers/net/wireless/ath/wcn36xx/wcn36xx.h    |  1 -
+ drivers/scsi/scsi.c                           |  4 +++-
+ drivers/scsi/scsi_sysfs.c                     |  9 +++++++++
+ drivers/usb/core/hcd.c                        | 29 ++++++---------------------
+ drivers/usb/host/xhci.c                       |  1 -
+ fs/io_uring.c                                 |  3 ++-
+ include/linux/page-flags.h                    | 23 +++++++++++++++++++++
+ include/linux/usb/hcd.h                       |  2 --
+ mm/huge_memory.c                              |  2 ++
+ mm/khugepaged.c                               | 17 +++++++++-------
+ mm/memory-failure.c                           | 28 +++++++++++++-------------
+ mm/memory.c                                   |  9 +++++++++
+ mm/page_alloc.c                               |  4 +++-
+ sound/usb/mixer_maps.c                        |  8 ++++++++
+ 24 files changed, 113 insertions(+), 90 deletions(-)
 
 
