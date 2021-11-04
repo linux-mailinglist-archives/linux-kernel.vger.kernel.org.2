@@ -2,95 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 206C9444E94
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:00:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93331444E9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhKDGDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:03:07 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:38207 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229968AbhKDGDG (ORCPT
+        id S230261AbhKDGGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:06:38 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:35207 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhKDGG2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:03:06 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 5F0ED5808FF;
-        Thu,  4 Nov 2021 02:00:28 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 04 Nov 2021 02:00:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.in; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=XG5SjLSIYpcUNInidXITrQIdb+
-        0tTZMc/XqazBhh2TI=; b=GQqxouLO9RdkOFxM5pkM5MYr4NEtu8TsKRpcaEsjr3
-        exBFo4BsXHr2ikzrc3mEFj783QWL1ITPWW8gaq+mr7YAQWdhb2zqmJO28JSsp40u
-        NzTTZaZKzhnO14tWd2nzHCxX2vcLXf4iEAp8IarU6beVOsuqWk63JuT5Q8jMFWdP
-        HXbaIOg6rNoXcPJPDoYqKp0Tv/L0ZeafaaiBat0Bas9MKrcle5GmHGMKW5zhJh5W
-        /Iu7kUC7loGCbLKbeOhO62KKzMY0Vffg2/6d2vTyxRlyi3XJ8YdBvghP2u3/cZUz
-        qX2VwOfCHFH28iG+24BkcA0dW3RCJerlzrClUnr8Wc2g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=XG5SjLSIYpcUNInid
-        XITrQIdb+0tTZMc/XqazBhh2TI=; b=fpOFOKoJbDNap8cIPTBMBTmXOWLbJBH9e
-        vGVfN7nJGwDstmuy/18kupQkVvm9JJGHS4heuOHu3aFFhqGsjc/yPvmdDLpKVjql
-        +zTY2EkgGFUN5H2eOh2FRwys3cNuJAixcBCz7Vn/zoenUO2lZqCgGtO0i2cmYNLP
-        RcmWGnhYLPWCl8VURh6ICRBpKIH9aFCtQnxTwKC+xSnhaKh0YL8jb8ZMarICvJV7
-        VXp5dy8NdhDXA+Ph+pRZBTpvUoa4Fdg3sbG7lR1F19KciapN80noJ5gx0V8ioaPz
-        1VAcgpdvZ1KHWDlY3+99QjUmZ6x0ef6AluHwokAKvbNlVAYX5obsg==
-X-ME-Sender: <xms:-3aDYeZaQD0ljUtINysoDfLNEToMz83l-vvBwFDQUQVl3LVQtnHa1g>
-    <xme:-3aDYRZ0D25LN1SPtNUNrKSPIc12NyHFCKGLFI4b4xOxS47v-cYALVn2h3LqhZ-q6
-    V_fh-FhkQ8Y5p4f4YI>
-X-ME-Received: <xmr:-3aDYY-JiM5VTabAV4Us7GSgJfKD8ZIscmBwp8ZGhSieWrojP3e78vZT>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrtdefgdekiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
-    dtnecuhfhrohhmpeffvggvphcuofgrjhhumhguvghruceouggvvghpsehfrghsthhmrghi
-    lhdrihhnqeenucggtffrrghtthgvrhhnpedvvedtkefhteeggfehveehgeehgeeigfekke
-    fgteejleehffffffeggfdtheetleenucffohhmrghinhepnhigphdrtghomhdpphholhho
-    lhhurdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homhepuggvvghpsehfrghsthhmrghilhdrihhn
-X-ME-Proxy: <xmx:-3aDYQp4cLKVLfZAYE49MESybtFuc1TCXT01O8WARJRsFJKkHFbwoA>
-    <xmx:-3aDYZrcN5ecFDUoekmZVYxpB15yo1D4zqXANv5GX1_k_yHUO8YXyQ>
-    <xmx:-3aDYeTl2f2B7oBbeXeaM9kRja2FM9fq8apAjMTEnSxWsja_QdEiag>
-    <xmx:_HaDYQWke8rLsCaeq5xqmY_fHqrbTNYKyxASgkoD-ygDMpGcUdpi8w>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 4 Nov 2021 02:00:26 -0400 (EDT)
-From:   Deep Majumder <deep@fastmail.in>
-To:     wsa@kernel.org
-Cc:     linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Deep Majumder <deep@fastmail.in>
-Subject: [PATCH] Docs: Fixes link to I2C specification
-Date:   Thu,  4 Nov 2021 11:30:18 +0530
-Message-Id: <20211104060018.35570-1-deep@fastmail.in>
-X-Mailer: git-send-email 2.30.2
+        Thu, 4 Nov 2021 02:06:28 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HlCkX4GkPz4xcG;
+        Thu,  4 Nov 2021 17:03:47 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1636005829;
+        bh=p/s4JP6PbvtWu7khsyF8vJ6QmABC6L59+cG94M8kDLc=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=EmbGkDhXHcKUm2lpYjR8DUXtGW9HMpO2NjVP3Q9G8oRoGvIfTQ6U1PfO0ey0OP0Xd
+         ny5VwgSYcgfRia/ufrmRTdJDeeljrp4voPBfH5YNZV09/GCFoP/KLGmUHW/H/HX7pb
+         v0YO1hbpvsqXajkmj4txxqkW9VKPyiUPR23rlm5U0qYNZfCKBs7yw4wG2u9aIH9xgF
+         Hxmo3FzPOgF0Jc18QSXTbexj0F0RJRdhXimP92F+gpmjBS04H/mbUGu4QtsGbEbMqC
+         4CAd7PFmlLbyoUpYGFDVfB+pRROSgHCIcrrwyQk8RkND8E4q/l4On9EiHHjLyX3XyJ
+         UDQrDE7+Ea4DA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        leoyang.li@nxp.com, tyreld@linux.ibm.com
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH 2/2] soc: fsl: guts: Add a missing memory allocation
+ failure check
+In-Reply-To: <4890990418ecbcfb8921efe8adb2019a03e5a1c1.1635969326.git.christophe.jaillet@wanadoo.fr>
+References: <1063e5a4738d897adcaffce2ab8e4e45f07998ff.1635969326.git.christophe.jaillet@wanadoo.fr>
+ <4890990418ecbcfb8921efe8adb2019a03e5a1c1.1635969326.git.christophe.jaillet@wanadoo.fr>
+Date:   Thu, 04 Nov 2021 17:03:47 +1100
+Message-ID: <874k8s8njw.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The link to the I2C specification is broken and is replaced in this
-patch by one that points to Rev 6 (2014) of the specification.
-Although `https://www.nxp.com" hosts the Rev 7 (2021) of this
-specification, it is behind a login-wall and thus cannot be used.
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> writes:
+> If 'devm_kstrdup()' fails, we should return -ENOMEM.
+>
+> While at it, move the 'of_node_put()' call in the error handling path and
+> after the 'machine' has been copied.
+> Better safe than sorry.
+>
+> Suggested-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> Not sure of which Fixes tag to add. Should be a6fc3b698130, but since
+> another commit needs to be reverted for this patch to make sense, I'm
+> unsure of what to do. :(
+> So, none is given.
 
-Signed-off-by: Deep Majumder <deep@fastmail.in>
----
- Documentation/i2c/summary.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think it's still correct to add:
 
-diff --git a/Documentation/i2c/summary.rst b/Documentation/i2c/summary.rst
-index 136c4e333be7..607c72425ca6 100644
---- a/Documentation/i2c/summary.rst
-+++ b/Documentation/i2c/summary.rst
-@@ -12,7 +12,7 @@ and so are not advertised as being I2C but come under different names,
- e.g. TWI (Two Wire Interface), IIC.
- 
- The official I2C specification is the `"I2C-bus specification and user
--manual" (UM10204) <https://www.nxp.com/docs/en/user-guide/UM10204.pdf>`_
-+manual" (UM10204) <https://www.pololu.com/file/0J435/UM10204.pdf>`_
- published by NXP Semiconductors.
- 
- SMBus (System Management Bus) is based on the I2C protocol, and is mostly
--- 
-2.30.2
+  Fixes: a6fc3b698130 ("soc: fsl: add GUTS driver for QorIQ platforms")
 
+That is where the bug was introduced, and adding the tag creates a link
+between the fix and the bug, which is what we want.
+
+The fact that it also requires the revert in order to apply is kind of
+orthogonal, it means an automated backport of this commit will probably
+fail, but that's OK it just means someone might have to do it manually.
+
+There is some use of "Depends-on:" to flag a commit that is depended on,
+but you can't use that in a patch submission because you don't know the
+SHA of the parent commit.
+
+Possibly whoever applies this can add a Depends-on: pointing to patch 1.
+
+cheers
+
+> ---
+>  drivers/soc/fsl/guts.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/soc/fsl/guts.c b/drivers/soc/fsl/guts.c
+> index af7741eafc57..5ed2fc1c53a0 100644
+> --- a/drivers/soc/fsl/guts.c
+> +++ b/drivers/soc/fsl/guts.c
+> @@ -158,9 +158,14 @@ static int fsl_guts_probe(struct platform_device *pdev)
+>  	root = of_find_node_by_path("/");
+>  	if (of_property_read_string(root, "model", &machine))
+>  		of_property_read_string_index(root, "compatible", 0, &machine);
+> -	of_node_put(root);
+> -	if (machine)
+> +	if (machine) {
+>  		soc_dev_attr.machine = devm_kstrdup(dev, machine, GFP_KERNEL);
+> +		if (!soc_dev_attr.machine) {
+> +			of_node_put(root);
+> +			return -ENOMEM;
+> +		}
+> +	}
+> +	of_node_put(root);
+>  
+>  	svr = fsl_guts_get_svr();
+>  	soc_die = fsl_soc_die_match(svr, fsl_soc_die);
+> -- 
+> 2.30.2
