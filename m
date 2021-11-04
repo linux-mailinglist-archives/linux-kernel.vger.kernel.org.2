@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7225445383
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB8A445384
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:06:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231650AbhKDNIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 09:08:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54564 "EHLO mail.kernel.org"
+        id S231667AbhKDNJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 09:09:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230091AbhKDNIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 09:08:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90DC660F9D;
-        Thu,  4 Nov 2021 13:06:02 +0000 (UTC)
+        id S230091AbhKDNJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 09:09:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 283D4611C9;
+        Thu,  4 Nov 2021 13:06:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636031163;
-        bh=USkhxGiCg8N2GFKj/4jNlDShUI/JoS9yBKQeisRG8FA=;
+        s=korg; t=1636031191;
+        bh=w9hf0+J1WUYgQSpoES7cJkouqoRd+DnIM0NEtAH+CCY=;
         h=Date:From:To:Cc:Subject:From;
-        b=GJnCiwlYaKoOOsjxodHMbcyKCzzhVCtajw3/ZX5/7h9EuzHJQ7uA2vsxeE1qCXGCr
-         SbEuXxIurgMWavKRpihXCtAKJWw1wXVKOTn619+c0PBEpCWARDkSHYgHAu1S3T5GaN
-         FO3a8JX4eQUI4txkZPhgxSLsPmzYgzWD37M/uN8k=
-Date:   Thu, 4 Nov 2021 14:06:00 +0100
+        b=otcV5Xc2W/0usplWOCmQ7sbfpbZPYsPjgvYeUnwXi5Tz1xdpyze6p6bXvtIpjqnm8
+         w9W6elMX7Ygmn3KLT1cPD+Sp7+4V53gcVOXE+RYiwYdJpuiZ+AN7oIWi1+b4uqRwD3
+         RkfS2vBYLxBivassM19s1FH8C2z2lmc1gwPc2yEk=
+Date:   Thu, 4 Nov 2021 14:06:29 +0100
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: [GIT PULL] Staging driver changes for 5.16-rc1
-Message-ID: <YYPauAJfmnePbPF5@kroah.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Char/Misc driver changes for 5.16-rc1
+Message-ID: <YYPa1fcok+OPjFI/@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
@@ -42,1026 +41,1077 @@ The following changes since commit 519d81956ee277b4419c723adfb154603c2565ba:
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.16-rc1
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.16-rc1
 
-for you to fetch changes up to 10508ae08ed8ce8794785194ad7309f1437d43fd:
+for you to fetch changes up to 536de747bc48262225889a533db6650731ab25d3:
 
-  staging: r8188eu: hal: remove goto statement and local variable (2021-10-30 11:15:55 +0200)
+  comedi: dt9812: fix DMA buffers on stack (2021-10-30 10:54:47 +0200)
 
 ----------------------------------------------------------------
-Staging driver update for 5.16-rc1
+Char/Misc driver update for 5.16-rc1
 
-Here is the big set of staging driver updates and cleanups for 5.16-rc1.
+Here is the big set of char and misc and other tiny driver subsystem
+updates for 5.16-rc1.
 
-Overall we ended up removing a lot of code this time, a bit over 20,000
-lines are now gone thanks to a lot of cleanup work by many developers.
+Loads of things in here, all of which have been in linux-next for a
+while with no reported problems (except for one called out below.)
 
-Nothing huge in here functionality wise, just loads of cleanups:
-	- r8188eu driver major cleanups and removal of unused and dead
-	  code
-	- wlan-ng minor cleanups
-	- fbtft driver cleanups
-	- most driver cleanups
-	- rtl8* drivers cleanups
-	- rts5208 driver cleanups
-	- vt6655 driver cleanups
-	- vc04_services drivers cleanups
-	- wfx cleanups on the way to almost getting this merged out of
-	  staging (it's close!)
-	- tiny mips changes needed for the mt7621 drivers, they have
-	  been acked by the respective subsystem maintainers to go
-	  through this tree.
-
-All of these have been in linux-next for a while with no reported
-issues.
+Included are:
+	- habanana labs driver updates, including dma_buf usage,
+	  reviewed and acked by the dma_buf maintainers
+	- iio driver update (going through this tree not staging as they
+	  really do not belong going through that tree anymore)
+	- counter driver updates
+	- hwmon driver updates that the counter drivers needed, acked by
+	  the hwmon maintainer
+	- xillybus driver updates
+	- binder driver updates
+	- extcon driver updates
+	- dma_buf module namespaces added (will cause a build error in
+	  arm64 for allmodconfig, but that change is on its way through
+	  the drm tree)
+	- lkdtm driver updates
+	- pvpanic driver updates
+	- phy driver updates
+	- virt acrn and nitr_enclaves driver updates
+	- smaller char and misc driver updates
 
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Ajith P V (1):
-      staging: fieldbus: anybus: reframe comment to avoid warning
+Alexander Vorwerk (1):
+      staging: iio: cdc: remove braces from single line if blocks
 
-Aldas Taraškevičius (1):
-      staging: wlan-ng: Remove filenames from files
+Alexandru Ardelean (24):
+      iio: st_sensors: disable regulators after device unregistration
+      iio: st_sensors: remove st_sensors_deallocate_trigger() function
+      iio: st_sensors: remove st_sensors_power_disable() function
+      iio: st_sensors: remove all driver remove functions
+      iio: st_sensors: remove reference to parent device object on st_sensor_data
+      iio: adc: ti-ads8344: convert probe to device-managed
+      iio: dac: ad7303: convert probe to full device-managed
+      staging: iio: ad9832: convert probe to device-managed
+      iio: dac: ad5064: convert probe to full device-managed
+      iio: gyro: adis16080: use devm_iio_device_register() in probe
+      iio: light: max44000: use device-managed functions in probe
+      iio: adc: fsl-imx25-gcq: initialize regulators as needed
+      iio: inkern: introduce devm_iio_map_array_register() short-hand function
+      iio: adc: intel_mrfld_adc: convert probe to full device-managed
+      iio: adc: axp288_adc: convert probe to full device-managed
+      iio: adc: lp8788_adc: convert probe to full-device managed
+      iio: adc: da9150-gpadc: convert probe to full-device managed
+      iio: adc: nau7802: convert probe to full device-managed
+      iio: adc: max1363: convert probe to full device-managed
+      iio: adc: rn5t618-adc: use devm_iio_map_array_register() function
+      iio: adc: berlin2-adc: convert probe to device-managed only
+      iio: adc: Kconfig: add COMPILE_TEST dep for berlin2-adc
+      iio: adc: ad7291: convert probe to device-managed only
+      iio: triggered-buffer: extend support to configure output buffers
 
-Benjamin Philip (9):
-      staging: rts5208: remove unnecessary parentheses in ms.c
-      staging: rts5208: remove unnecessary parentheses in rtsx_card.c
-      staging: rts5208: remove unnecessary parentheses in rtsx.c
-      staging: rts5208: remove unnecessary parentheses in rtsx_chip.c
-      staging: rts5208: remove unnecessary parentheses in rtsx_transport.c
-      staging: rts5208: remove unnecessary parentheses in sd.c
-      staging: rts5208: remove unnecessary parentheses in xd.c
-      staging: rts5208: remove unnecessary parentheses in rtsx_scsi.c
-      staging: rts5208: remove parentheses pair in sd.c
+Alon Mizrahi (1):
+      habanalabs: generalize COMMS message sending procedure
 
-Bryan Brattlof (1):
-      staging: rtl8723bs: ignore unused wiphy_wowlan object warnings
+Amelie Delaunay (3):
+      phy: stm32: restore utmi switch on resume
+      dt-bindings: phy: phy-stm32-usbphyc: add optional phy tuning properties
+      phy: stm32: add phy tuning support
 
-Changcheng Deng (1):
-      staging: r8188eu: use swap()
+Andra Paraschiv (7):
+      nitro_enclaves: Enable Arm64 support
+      nitro_enclaves: Update documentation for Arm64 support
+      nitro_enclaves: Add fix for the kernel-doc report
+      nitro_enclaves: Update copyright statement to include 2021
+      nitro_enclaves: Add fixes for checkpatch match open parenthesis reports
+      nitro_enclaves: Add fixes for checkpatch spell check reports
+      nitro_enclaves: Add fixes for checkpatch blank line reports
 
-Colin Ian King (1):
-      staging: r8188eu: remove redundant variable hoffset
+André Gustavo Nakagomi Lopez (1):
+      iio: adc: lpc18xx_adc: Convert probe to device managed version
 
-Dawid Esterhuizen (1):
-      staging: rtl8712: Statements should start on a tabstop
+Andy Shevchenko (3):
+      pvpanic: Keep single style across modules
+      pvpanic: Fix typos in the comments
+      pvpanic: Indentation fixes here and there
 
-Fabio Aiuto (5):
-      staging: rtl8723bs: unwrap initialization of queues
-      staging: rtl8723bs: remove unnecessary parentheses
-      staging: rtl8723bs: remove unused _rtw_init_queue() function
-      staging: rtl8723bs: remove possible deadlock when disconnect
-      staging: rtl8723bs: remove possible deadlock when disconnect (v2)
+Antoniu Miclaus (2):
+      iio: frequency: adrf6780: add support for ADRF6780
+      dt-bindings: iio: frequency: add adrf6780 doc
 
-Fabio M. De Francesco (23):
-      staging: r8188eu: Remove _enter/_exit_critical_mutex()
-      staging: r8188eu: remove unnedeed parentheses in usbctrl_vendorreq()
-      staging: r8188eu: remove unnecessary space in usbctrl_vendorreq()
-      staging: r8188eu: clean up symbols in usbctrl_vendorreq()
-      staging: r8188eu: reorder declarations in usbctrl_vendorreq()
-      staging: r8188eu: remove test in usbctrl_vendorreq()
-      staging: r8188eu: reorder comments in usbctrl_vendorreq()
-      staging: r8188eu: remove a comment from usbctrl_vendorreq()
-      staging: r8188eu: rename symbols in rtw_read*() and rtw_write*()
-      staging: r8188eu: remove casts from rtw_{read,write}*()
-      staging: r8188eu: change the type of a variable in rtw_write16()
-      staging: r8188eu: remove a buffer from rtw_writeN()
-      staging: r8188eu: remove a bitwise AND from rtw_writeN()
-      staging: r8188eu: change the type of a variable in rtw_read16()
-      staging: r8188eu: Remove a test from usbctrl_vendorreq()
-      staging: r8188eu: call new usb_read() from rtw_read{8,16,32}()
-      staging: r8188eu: call new usb_write() from rtw_write{8,16,32,N}()
-      staging: r8188eu: Use completions for signaling start / end kthread
-      staging: r8188eu: Use completions for signaling enqueueing
-      staging: r8188eu: Remove redundant 'if' statement
-      staging: r8188eu: Remove initialized but unused semaphore
-      staging: r8188eu: Remove unused semaphore "io_retevt"
-      staging: r8188eu: Use a Mutex instead of a binary Semaphore
+Arnd Bergmann (1):
+      iio: imx8qxp-adc: mark PM functions as __maybe_unused
 
-Gaston Gonzalez (21):
-      staging: vchiq_dev: remove braces from if block
-      staging: vchiq_dev: cleanup code alignment issues
-      staging: vchiq: remove braces from if block
-      staging: vchiq: add braces to if block
-      staging: vchiq: cleanup code alignment issues
-      staging: vchiq_arm: cleanup code alignment issues
-      staging: vchiq_arm: remove unnecessary space in cast
-      staging: vchiq_arm: clarify multiplication expressions
-      staging: vchiq_arm: cleanup blank lines
-      staging: vchiq_arm: fix quoted strings split across lines
-      staging: vchiq_arm: remove extra blank line
-      staging: vchiq_arm: use __func__ to get function name in debug message
-      staging: vchiq_core: cleanup blank lines
-      staging: vchiq_core: cleanup code alignment issues
-      staging: vchiq_core.h: fix CamelCase in function declaration
-      staging: vchiq_core.h: use preferred kernel types
-      staging: vchiq: drop trailing semicolon in macro definition
-      staging: vchiq_core: drop extern prefix in function declarations
-      staging: vchiq_core: cleanup lines that end with '(' or '['
-      staging: vchiq_core: fix quoted strings split across lines
-      staging: vchiq_core: get rid of typedef
+Bharat Jauhari (1):
+      habanalabs: bypass reset for continuous h/w error event
 
-Greg Kroah-Hartman (5):
-      staging: vchiq: convert to use a miscdevice
-      staging: axis-fifo: convert to use miscdevice
-      Revert "staging: rtl8723bs: remove possible deadlock when disconnect"
-      Merge branch 5.15-rc3 into staging-next
-      Merge 5.15-rc6 into staging-next
+Billy Tsai (13):
+      dt-bindings: iio: adc: Add ast2600-adc bindings
+      iio: adc: aspeed: completes the bitfield declare.
+      iio: adc: aspeed: Keep model data to driver data.
+      iio: adc: aspeed: Restructure the model data
+      iio: adc: aspeed: Add vref config function
+      iio: adc: aspeed: Use model_data to set clk scaler.
+      iio: adc: aspeed: Use devm_add_action_or_reset.
+      iio: adc: aspeed: Support ast2600 adc.
+      iio: adc: aspeed: Fix the calculate error of clock.
+      iio: adc: aspeed: Add func to set sampling rate.
+      iio: adc: aspeed: Add compensation phase.
+      iio: adc: aspeed: Support battery sensing.
+      iio: adc: aspeed: Get and set trimming data.
 
-Gustavo A. R. Silva (3):
-      staging: rtl8723bs: Replace zero-length array with flexible-array member
-      staging: r8188eu: Replace zero-length array with flexible-array member
-      staging: r8188eu: Use zeroing allocator in wpa_set_encryption()
+Brian Norris (1):
+      coresight: cpu-debug: Control default behavior via Kconfig
 
-Hans de Goede (2):
-      staging: rtl8723bs: remove a second possible deadlock
-      staging: rtl8723bs: remove a third possible deadlock
+Cai Huoqing (34):
+      phy: broadcom: Kconfig: Add configuration menu for Broadcom phy drivers
+      phy: qcom-qmp: Make use of the helper function devm_add_action_or_reset()
+      phy: rockchip-inno-usb2: Make use of the helper function devm_add_action_or_reset()
+      iio: ep93xx: Make use of the helper function devm_platform_ioremap_resource()
+      iio: dac: stm32-dac: Make use of the helper function devm_platform_ioremap_resource()
+      iio: adc: rockchip_saradc: Make use of the helper function devm_platform_ioremap_resource()
+      iio: imx8qxp-adc: Add driver support for NXP IMX8QXP ADC
+      dt-bindings: iio: adc: Add binding documentation for NXP IMX8QXP ADC
+      MAINTAINERS: Add the driver info of the NXP IMX8QXP
+      iio: dac: ad8801: Make use of the helper function dev_err_probe()
+      iio: dac: lpc18xx_dac: Make use of the helper function dev_err_probe()
+      iio: dac: ltc1660: Make use of the helper function dev_err_probe()
+      iio: dac: ds4424: Make use of the helper function dev_err_probe()
+      iio: dac: max5821: Make use of the helper function dev_err_probe()
+      iio: dac: mcp4922: Make use of the helper function dev_err_probe()
+      iio: dac: stm32-dac: Make use of the helper function dev_err_probe()
+      iio: dac: ti-dac7311: Make use of the helper function dev_err_probe()
+      iio: st_sensors: Make use of the helper function dev_err_probe()
+      iio: st_lsm9ds0: Make use of the helper function dev_err_probe()
+      iio: health: afe4403: Make use of the helper function dev_err_probe()
+      iio: health: afe4404: Make use of the helper function dev_err_probe()
+      iio: light: cm36651: Make use of the helper function dev_err_probe()
+      iio: light: noa1305: Make use of the helper function dev_err_probe()
+      iio: adc: ab8500-gpadc: Make use of the helper function dev_err_probe()
+      iio: adc: imx7d_adc: Make use of the helper function dev_err_probe()
+      iio: adc: lpc18xx_adc: Make use of the helper function dev_err_probe()
+      iio: adc: max1118: Make use of the helper function dev_err_probe()
+      iio: adc: max1241: Make use of the helper function dev_err_probe()
+      iio: adc: meson_saradc: Make use of the helper function dev_err_probe()
+      iio: adc: qcom-pm8xxx-xoadc: Make use of the helper function dev_err_probe()
+      iio: adc: rockchip_saradc: Make use of the helper function dev_err_probe()
+      iio: adc: ti-ads7950: Make use of the helper function dev_err_probe()
+      iio: light: cm3605: Make use of the helper function dev_err_probe()
+      iio: light: gp2ap002: Make use of the helper function dev_err_probe()
 
-Jakub Kicinski (8):
-      staging: use eth_hw_addr_set()
-      staging: use eth_hw_addr_set() instead of ether_addr_copy()
-      staging: use eth_hw_addr_set() for dev->addr_len cases
-      staging: qlge: use eth_hw_addr_set()
-      staging: rtl8712: prepare for const netdev->dev_addr
-      staging: unisys: use eth_hw_addr_set()
-      staging: rtl: use eth_hw_addr_set()
-      staging: use eth_hw_addr_set() in orphan drivers
+Christophe JAILLET (9):
+      misc: rtsx: Remove usage of the deprecated "pci-dma-compat.h" API
+      char: xillybus: Remove usage of the deprecated 'pci-dma-compat.h' API
+      char: xillybus: Remove usage of 'pci_unmap_single()'
+      char: xillybus: Remove usage of remaining deprecated pci_ API
+      char: xillybus: Simplify 'xillybus_init_endpoint()'
+      misc: genwqe: Remove usage of the deprecated "pci-dma-compat.h" API
+      tifm: Remove usage of the deprecated "pci-dma-compat.h" API
+      mei: Remove usage of the deprecated "pci-dma-compat.h" API
+      iio: adc: adc128s052: Simplify adc128_probe()
 
-Johan Hovold (2):
-      staging: rtl8192u: fix control-message timeouts
-      staging: r8712u: fix control-message timeout
+Colin Ian King (2):
+      iio: adc: aspeed: Fix spelling mistake "battey" -> "battery"
+      iio: buffer: Fix uninitialized variable ret
 
-Julian Braha (1):
-      staging: rtl8723bs: fix unmet dependency on CRYPTO for CRYPTO_LIB_ARC4
+Dan Carpenter (2):
+      iio: adc: max1027: fix error code in max1027_wait_eoc()
+      phy: ti: gmii-sel: check of_get_address() for failure
 
-Jérôme Pouiller (32):
-      staging: wfx: use abbreviated message for "incorrect sequence"
-      staging: wfx: do not send CAB while scanning
-      staging: wfx: ignore PS when STA/AP share same channel
-      staging: wfx: wait for SCAN_CMPL after a SCAN_STOP
-      staging: wfx: avoid possible lock-up during scan
-      staging: wfx: drop unused argument from hif_scan()
-      staging: wfx: fix atomic accesses in wfx_tx_queue_empty()
-      staging: wfx: take advantage of wfx_tx_queue_empty()
-      staging: wfx: declare support for TDLS
-      staging: wfx: fix support for CSA
-      staging: wfx: relax the PDS existence constraint
-      staging: wfx: simplify API coherency check
-      staging: wfx: update with the firmware API 3.8
-      staging: wfx: uniformize counter names
-      staging: wfx: fix misleading 'rate_id' usage
-      staging: wfx: declare variables at beginning of functions
-      staging: wfx: simplify hif_join()
-      staging: wfx: reorder function for slightly better eye candy
-      staging: wfx: fix error names
-      staging: wfx: apply naming rules in hif_tx_mib.c
-      staging: wfx: remove unused definition
-      staging: wfx: remove useless debug statement
-      staging: wfx: fix space after cast operator
-      staging: wfx: remove references to WFxxx in comments
-      staging: wfx: update files descriptions
-      staging: wfx: reformat comment
-      staging: wfx: avoid c99 comments
-      staging: wfx: fix comments styles
-      staging: wfx: remove useless comments after #endif
-      staging: wfx: explain the purpose of wfx_send_pds()
-      staging: wfx: indent functions arguments
-      staging: wfx: ensure IRQ is ready before enabling it
+Dani Liberman (3):
+      habanalabs: fix race condition in multi CS completion
+      habanalabs: fix NULL pointer dereference
+      habanalabs: refactor fence handling in hl_cs_poll_fences
 
-Kai Song (1):
-      staging: r8188eu: Use kmemdup() to replace kmalloc + memcpy
+Daniel Palmer (2):
+      iio: imu: inv_mpu6050: Mark acpi match table as maybe unused
+      iio: accel: mma7660: Mark acpi match table as maybe unused
 
-Karolina Drobnik (17):
-      staging: vt6655: Rename byPreambleType field
-      staging: vt6655: Rename `by_preamble_type` parameter
-      staging: vt6655: Rename `dwAL2230InitTable` array
-      staging: vt6655: Use named constants when checking preamble type
-      staging: vt6655: Rename `ii` variable
-      staging: vt6655: Rename `byInitCount` variable
-      staging: vt6655: Rename `bySleepCount` variable
-      staging: vt6655: Rename `uChannel` variable
-      staging: vt6655: Rename `byRFType` variable
-      staging: vt6655: Rename `dwAL2230ChannelTable0` array
-      staging: vt6655: Rename `dwAL2230ChannelTable1` array
-      staging: vt6655: Rename `dwAL7230ChannelTable0` array
-      staging: vt6655: Rename `dwAL7230ChannelTable1` array
-      staging: vt6655: Rename `dwAL7230ChannelTable2` array
-      staging: vt6655: Rename `dwAL7230InitTableAMode` array
-      staging: vt6655: Rename `dwAL2230PowerTable` array
-      staging: vt6655: Rename `dwAL7230InitTable` array
+David Heidelberg (2):
+      dt-bindings: iio: kionix,kxcjk1013: driver support interrupts
+      dt-bindings: iio: magnetometer: asahi-kasei,ak8975 add vid reg
 
-Krish Jain (1):
-      staging/mt7621-dma: Format lines in "hsdma-mt7621.c" ending with an open parenthesis
+David Lechner (2):
+      counter/counter-sysfs: use sysfs_emit everywhere
+      counter: drop chrdev_lock
 
-Krzysztof Kozlowski (1):
-      staging; wlan-ng: remove duplicate USB device ID
+Dmitry Baryshkov (12):
+      interconnect: icc-rpm: move bus clocks handling into qnoc_probe
+      interconnect: sdm660: expand DEFINE_QNODE macros
+      interconnect: sdm660: drop default/unused values
+      interconnect: sdm660: merge common code into icc-rpm
+      interconnect: icc-rpm: add support for QoS reg offset
+      interconnect: msm8916: expand DEFINE_QNODE macros
+      interconnect: msm8916: add support for AP-owned nodes
+      interconnect: msm8939: expand DEFINE_QNODE macros
+      interconnect: msm8939: add support for AP-owned nodes
+      interconnect: qcs404: expand DEFINE_QNODE macros
+      interconnect: qcom: drop DEFINE_QNODE macro
+      phy: qcom-qmp: another fix for the sc8180x PCIe definition
 
-Kushal Kothari (5):
-      staging: rtl8723bs: core: Remove true and false comparison
-      staging: rtl8723bs: core: Remove true and false comparison
-      staging: rtl8723bs: core: Remove unnecessary parentheses
-      staging: rtl8723bs: core: Remove unnecessary space after a cast
-      staging: rtl8723bs: core: Remove unnecessary blank lines
+Eddie James (9):
+      fsi: occ: Force sequence numbering per OCC
+      hwmon: (occ) Remove sequence numbering and checksum calculation
+      fsi: occ: Use a large buffer for responses
+      fsi: occ: Store the SBEFIFO FFDC in the user response buffer
+      docs: ABI: testing: Document the OCC hwmon FFDC binary interface
+      hwmon: (occ) Provide the SBEFIFO FFDC in binary sysfs
+      docs: ABI: testing: Document the SBEFIFO timeout interface
+      fsi: sbefifo: Add sysfs file indicating a timeout error
+      fsi: sbefifo: Use interruptible mutex locking
 
-Larry Finger (3):
-      staging: r8188eu: Remove conditionals CONFIG_88EU_{AP_MODE,P2P}
-      staging: r8188eu: Remove mp, a.k.a. manufacturing process, code
-      staging: r8188eu: Remove unused macros and defines from odm.h
+Eli Billauer (1):
+      char: xillybus: Eliminate redundant wrappers to DMA related calls
 
-Longji Guo (1):
-      staging: rtl8723bs: remove meaningless pstat->passoc_req check in OnAssocReq()
+Eugen Hristev (8):
+      dt-bindings: iio: adc: at91-sama5d2: add compatible for sama7g5-adc
+      iio: adc: at91-sama5d2_adc: initialize hardware after clock is started
+      iio: adc: at91-sama5d2_adc: remove unused definition
+      iio: adc: at91-sama5d2_adc: convert to platform specific data structures
+      iio: adc: at91-sama5d2_adc: add support for separate end of conversion registers
+      iio: adc: at91-sama5d2_adc: add helper for COR register
+      iio: adc: at91-sama5d2_adc: add support for sama7g5 device
+      iio: adc: at91-sama5d2_adc: update copyright and authors information
 
-Martin Kaiser (85):
-      staging: r8188eu: remove unused function prototype
-      staging: r8188eu: remove unused define
-      staging: r8188eu: this endless loop is executed only once
-      staging: r8188eu: remove write-only variable bLCKInProgress
-      staging: r8188eu: remove unused function usb_endpoint_is_int
-      staging: r8188eu: remove unused function RT_usb_endpoint_is_bulk_in
-      staging: r8188eu: remove unused function RT_usb_endpoint_num
-      staging: r8188eu: remove the remaining usb endpoint functions
-      staging: r8188eu: btcoex_rfon is always false
-      staging: r8188eu: setting HW_VAR_SET_RPWM does nothing
-      staging: r8188eu: remove write-only variable cpwm
-      staging: r8188eu: remove write-only variable tog
-      staging: r8188eu: bHWPwrPindetect is always false
-      staging: r8188eu: remove rtw_hw_suspend
-      staging: r8188eu: remove rtw_set_rpwm
-      staging: r8188eu: remove unused power state defines
-      staging: r8188eu: _free_pwrlock is empty
-      staging: r8188eu: remove unused pwrctrl definitions
-      staging: r8188eu: remove unused enum and array
-      staging: r8188eu: rtw_set_ips_deny is not used
-      staging: r8188eu: remove unused variable cpwm_tog
-      staging: r8188eu: remove unused variable b_hw_radio_off
-      staging: r8188eu: brfoffbyhw is always false
-      staging: r8188eu: remove rtw_hw_resume
-      staging: r8188eu: remove rtw_free_pwrctrl_priv prototype
-      staging: r8188eu: remove the HW_VAR_CHECK_TXBUF "hal variable"
-      staging: r8188eu: do not write past the end of an array
-      staging: r8188eu: remove an obsolete comment
-      staging: r8188eu: remove unused led component
-      staging: r8188eu: remove write-only HwRxPageSize
-      staging: r8188eu: remove unused IntrMask
-      staging: r8188eu: remove two write-only hal components
-      staging: r8188eu: HardwareType is write-only
-      staging: r8188eu: chip_type is write-only
-      staging: r8188eu: interface type is always usb
-      staging: r8188eu: support interface is always usb
-      staging: r8188eu: hal data's customer id is always 0
-      staging: r8188eu: Odm PatchID is always 0
-      staging: r8188eu: merge two signal scale mapping functions
-      staging: r8188eu: remove an unused define
-      staging: r8188eu: remove specific device table
-      staging: r8188eu: RfOnOffDetect is unused
-      staging: r8188eu: remove odm fab version info
-      staging: r8188eu: remove odm cut version info
-      staging: r8188eu: remove odm dualmac smart concurrent info
-      staging: r8188eu: remove odm wifi test info
-      staging: r8188eu: remove odm hct test info
-      staging: r8188eu: remove odm ext trsw info
-      staging: r8188eu: remove odm ext pa info
-      staging: r8188eu: remove odm ext lna info
-      staging: r8188eu: remove dm_CheckStatistics
-      staging: r8188eu: simplify rtl8188e_HalDmWatchDog
-      staging: r8188eu: remove rtl8188e_deinit_dm_priv
-      staging: r8188eu: remove LastMinUndecoratedPWDBForDM
-      staging: r8188eu: SupportICType is always ODM_RTL8188E
-      staging: r8188eu: remove odm_SwAntDivInit
-      staging: r8188eu: odm BoardType is never set
-      staging: r8188eu: odm SupportPlatform is always ODM_CE
-      staging: r8188eu: remove empty trigger gpio code
-      staging: r8188eu: interface type is always usb
-      staging: r8188eu: remove two checks that are always false
-      staging: r8188eu: remove unused function prototypes
-      staging: r8188eu: PHY_SetRFPathSwitch_8188E is not used
-      staging: r8188eu: clean up Hal8188EPhyCfg.h
-      staging: r8188eu: remove procfs functions
-      staging: r8188eu: CurrentWirelessMode is not used
-      staging: r8188eu: remove unused components in pwrctrl_priv
-      staging: r8188eu: remove BT_COEXIST settings from Makefile
-      staging: r8188eu: res_to_status is unused
-      staging: r8188eu: daemonize is not defined
-      staging: r8188eu: don't accept SIGTERM for cmd thread
-      staging: r8188eu: Makefile: remove unused driver config
-      staging: r8188eu: Makefile: don't overwrite global settings
-      staging: r8188eu: Makefile: use one file list
-      staging: r8188eu: fix memleak in rtw_wx_set_enc_ext
-      staging: r8188eu: remove unused dm_priv components
-      staging: r8188eu: odm_rate_adapt Type is constant
-      staging: r8188eu: use helper to check for broadcast address
-      staging: r8188eu: use helper to set broadcast address
-      staging: r8188eu: remove unused defines and enums
-      staging: r8188eu: silent_reset_inprogress is never read
-      staging: r8188eu: wifi_error_status is write-only
-      staging: r8188eu: silentreset_mutex is unused
-      staging: r8188eu: remove last_tx_complete_time
-      staging: r8188eu: remove the sreset_priv structure
+Fabio Aiuto (1):
+      extcon: extcon-axp288: Use P-Unit semaphore lock for register accesses
 
-Michael Straube (285):
-      staging: rtl8723bs: clean up comparsions to NULL
-      staging: r8188eu: remove rtl8188e_PHY_ConfigRFWithHeaderFile()
-      staging: r8188eu: remove rtl8188e_PHY_ConfigRFWithParaFile()
-      staging: r8188eu: remove rtw_get_oper_bw()
-      staging: r8188eu: remove rtw_get_oper_choffset()
-      staging: r8188eu: remove get_bsstype()
-      staging: r8188eu: remove CAM_empty_entry()
-      staging: r8188eu: remove is_ap_in_wep()
-      staging: r8188eu: remove should_forbid_n_rate()
-      staging: r8188eu: convert type of second parameter of rtw_*_encrypt()
-      staging: r8188eu: convert type of second parameter of rtw_*_decrypt()
-      staging: r8188eu: remove unnecessary type casts
-      staging: r8188eu: remove local variable Indexforchannel
-      staging: r8188eu: refactor field of struct odm_rf_cal
-      staging: r8188eu: remove unused constants from wifi.h
-      staging: r8188eu: remove commented constants from wifi.h
-      staging: r8188eu: remove Hal_MPT_CCKTxPowerAdjustbyIndex()
-      staging: r8188eu: remove set but unused variable
-      staging: r8188eu: remove ICType from struct HAL_VERSION
-      staging: r8188eu: remove unused function SetBcnCtrlReg()
-      staging: r8188eu: use mac_pton() in rtw_macaddr_cfg()
-      staging: r8188eu: ensure mac address buffer is properly aligned
-      staging: r8188eu: use ETH_ALEN
-      staging: r8188eu: use is_*_ether_addr() in rtw_macaddr_cfg()
-      staging: r8188eu: use random default mac address
-      staging: r8188eu: use ether_addr_copy() in rtw_macaddr_cfg()
-      staging: r8188eu: add missing blank line after declarations
-      staging: r8188eu: remove unnecessary parentheses
-      staging: r8188eu: remove header file rtw_ioctl_rtl.h
-      staging: r8188eu: remove unused defines from mp_custom_oid.h
-      staging: r8188eu: remove unused enum from ieee80211.h.
-      staging: r8188eu: remove unused enum rt_eeprom_type
-      staging: r8188eu: remove IS_HARDWARE_TYPE_8188* macros
-      staging: r8188eu: remove enum hardware_type
-      staging: r8188eu: remove unused constant CRC32_POLY
-      staging: r8188eu: use in-kernel arc4 encryption
-      staging: r8188eu: remove rtw_use_tkipkey_handler()
-      staging: r8188eu: remove intf_chip_configure from hal_ops
-      staging: r8188eu: remove read_adapter_info from hal_ops
-      staging: r8188eu: remove read_chip_version from hal_ops
-      staging: r8188eu: remove wrapper around ReadChipVersion8188E()
-      staging: r8188eu: remove GetHalODMVarHandler from hal_ops
-      staging: r8188eu: remove init_default_value from hal_ops
-      staging: r8188eu: remove InitSwLeds from hal_ops
-      staging: r8188eu: remove DeInitSwLeds from hal_ops
-      staging: r8188eu: remove dm_init from hal_ops
-      staging: r8188eu: remove dm_deinit from hal_ops
-      staging: r8188eu: remove SetHalODMVarHandler from hal_ops
-      staging: r8188eu: remove empty functions
-      staging: r8188eu: remove unused function rtw_interface_ps_func()
-      staging: r8188eu: remove interface_ps_func from hal_ops
-      staging: r8188eu: remove hal_dm_watchdog from hal_ops
-      staging: r8188eu: remove set_bwmode_handler from hal_ops
-      staging: r8188eu: remove set_channel_handler from hal_ops
-      staging: r8188eu: remove unused enum hal_intf_ps_func
-      staging: r8188eu: remove Add_RateATid from hal_ops
-      staging: r8188eu: remove hal_power_on from hal_ops
-      staging: r8188eu: remove sreset_init_value from hal_ops
-      staging: r8188eu: remove sreset_reset_value from hal_ops
-      staging: r8188eu: remove silentreset from hal_ops
-      staging: r8188eu: remove sreset_xmit_status_check from hal_ops
-      staging: r8188eu: remove sreset_linked_status_check from hal_ops
-      staging: r8188eu: remove sreset_get_wifi_status from hal_ops
-      staging: r8188eu: remove EfusePowerSwitch from hal_ops
-      staging: r8188eu: rename hal_EfusePowerSwitch_RTL8188E()
-      staging: r8188eu: remove wrapper Efuse_PowerSwitch()
-      staging: r8188eu: remove ReadEFuse from hal_ops
-      staging: r8188eu: remove EFUSEGetEfuseDefinition from hal_ops
-      staging: r8188eu: remove EfuseGetCurrentSize from hal_ops
-      staging: r8188eu: remove empty comments
-      staging: r8188eu: remove Efuse_PgPacketRead from hal_ops
-      staging: r8188eu: remove Efuse_PgPacketWrite from hal_ops
-      staging: r8188eu: remove Efuse_WordEnableDataWrite from hal_ops
-      staging: r8188eu: remove useless assignment
-      staging: r8188eu: remove AntDivBeforeLinkHandler from hal_ops
-      staging: r8188eu: remove AntDivCompareHandler from hal_ops
-      staging: r8188eu: remove empty function rtl8188e_start_thread()
-      staging: r8188eu: remove empty function rtl8188e_stop_thread()
-      staging: r8188eu: remove hal_notch_filter from hal_ops
-      staging: r8188eu: remove free_hal_data from hal_ops
-      staging: r8188eu: remove unused function rtl8188e_clone_haldata()
-      staging: r8188eu: remove SetBeaconRelatedRegistersHandler from hal_ops
-      staging: r8188eu: remove UpdateHalRAMask8188EUsb from hal_ops
-      staging: r8188eu: remove unused function Hal_ProSetCrystalCap()
-      staging: r8188eu: remove unused PHY_GetTxPowerLevel8188E()
-      staging: r8188eu: remove unused PHY_ScanOperationBackup8188E()
-      staging: r8188eu: remove unused PHY_UpdateTxPowerDbm8188E()
-      staging: r8188eu: remove unused rtl8192c_PHY_GetHWRegOriginalValue()
-      staging: r8188eu: remove unused odm_Init_RSSIForDM()
-      staging: r8188eu: remove unused ODM_MacStatusQuery()
-      staging: r8188eu: remove unused macro READ_AND_CONFIG_TC
-      staging: r8188eu: remove unused macro ROUND
-      staging: rtl8723bs: remove unused macros from ioctl_linux.c
-      staging: r8188eu: remove IOL_exec_cmds_sync() from struct hal_ops
-      staging: r8188eu: remove wrapper rtw_IOL_exec_cmds_sync()
-      staging: r8188eu: remove rtw_IOL_append_LLT_cmd()
-      staging: r8188eu: remove empty ODM_ReleaseTimer()
-      staging: r8188eu: remove unused ODM_AcquireSpinLock()
-      staging: r8188eu: remove unused ODM_ReleaseSpinLock()
-      staging: r8188eu: remove unused ODM_FillH2CCmd()
-      staging: r8188eu: remove unused ODM_sleep_us()
-      staging: r8188eu: remove unused ODM_InitializeWorkItem()
-      staging: r8188eu: remove unused ODM_StartWorkItem()
-      staging: r8188eu: remove unused ODM_StopWorkItem()
-      staging: r8188eu: remove unused ODM_FreeWorkItem()
-      staging: r8188eu: remove unused ODM_ScheduleWorkItem()
-      staging: r8188eu: remove unused ODM_IsWorkItemScheduled()
-      staging: r8188eu: remove unused ODM_SetTimer()
-      staging: r8188eu: remove unused ODM_Read2Byte()
-      staging: r8188eu: remove unused ODM_FreeMemory()
-      staging: r8188eu: remove unused ODM_AllocateMemory()
-      staging: r8188eu: remove unused prototype ODM_InitializeTimer()
-      staging: r8188eu: remove unused ODM_CancelAllTimers()
-      staging: r8188eu: remove unused ODM_InitAllTimers()
-      staging: r8188eu: remove mgnt_xmit from struct hal_ops
-      staging: r8188eu: remove hal_xmit from struct hal_ops
-      staging: r8188eu: remove read_bbreg from struct hal_ops
-      staging: r8188eu: remove write_bbreg from struct hal_ops
-      staging: r8188eu: remove read_rfreg from struct hal_ops
-      staging: r8188eu: remove write_rfreg from struct hal_ops
-      staging: r8188eu: remove rtl8188e_set_hal_ops()
-      staging: r8188eu: remove header file HalHWImg8188E_FW.h
-      staging: r8188eu: remove macro GET_EEPROM_EFUSE_PRIV
-      staging: r8188eu: remove unused register definitions from odm_reg.h
-      staging: r8188eu: remove header file odm_reg.h
-      staging: r8188eu: remove unused enum RT_SPINLOCK_TYPE
-      staging: r8188eu: remove unused defines from odm_types.h
-      staging: r8188eu: remove unnecessary include from odm_types.h
-      staging: r8188eu: remove unused enum odm_bt_coexist
-      staging: r8188eu: remove unused ODM_RASupport_Init()
-      staging: r8188eu: remove RaSupport88E from struct odm_dm_struct
-      staging: r8188eu: remove dead code from odm_RxPhyStatus92CSeries_Parsing()
-      staging: r8188eu: remove unused macros from rtl8188e_hal.h
-      staging: r8188eu: remove write-only fields from struct hal_data_8188e
-      staging: r8188eu: remove unused enums from rtl8188e_hal.h
-      staging: r8188eu: remove unused field from struct hal_data_8188e
-      staging: r8188eu: remove IS_1T1R, IS_1T2R, IS_2T2R macros
-      staging: r8188eu: remove if test that is always true
-      staging: r8188eu: remove NumTotalRFPath from struct hal_data_8188e
-      staging: r8188eu: remove switches from phy_RF6052_Config_ParaFile()
-      staging: r8188eu: remove ap_sta_info_defer_update()
-      staging: r8188eu: remove rtw_acl_add_sta()
-      staging: r8188eu: remove rtw_acl_remove_sta()
-      staging: r8188eu: remove rtw_ap_inform_ch_switch()
-      staging: r8188eu: remove rtw_check_beacon_data()
-      staging: r8188eu: remove rtw_set_macaddr_acl()
-      staging: r8188eu: remove odm_ConfigRF_RadioB_8188E()
-      staging: r8188eu: remove ODM_DIG_LowerBound_88E()
-      staging: r8188eu: remove rtl8188e_RF_ChangeTxPath()
-      staging: r8188eu: remove unused struct rf_shadow
-      staging: r8188eu: remove HalDetectPwrDownMode88E()
-      staging: r8188eu: remove rtw_IOL_cmd_tx_pkt_buf_dump()
-      staging: r8188eu: remove rtl8188e_set_rssi_cmd()
-      staging: r8188eu: remove EFUSE_Read1Byte()
-      staging: r8188eu: remove comments from odm_interface.h
-      staging: r8188eu: remove unused macros from odm_interface.h
-      staging: r8188eu: remove _ic_type from macro _cat in odm_interface.h
-      staging: r8188eu: remove dead code from ODM_Write_DIG()
-      staging: r8188eu: remove unnecessary if statement
-      staging: r8188eu: remove more dead code from ODM_Write_DIG()
-      staging: r8188eu: remove macro ODM_REG
-      staging: r8188eu: remove macro ODM_BIT
-      staging: r8188eu: remove unnecessary if statements
-      staging: r8188eu: remove dead code from odm.c
-      staging: r8188eu: remove macros ODM_IC_11{N,AC}_SERIES
-      staging: r8188eu: remove header file odm_RegDefine11AC.h
-      staging: r8188eu: remove unused defines from odm_RegDefine11N.h
-      staging: r8188eu: clean up indentation in odm_RegDefine11N.h
-      staging: r8188eu: remove ODM_SingleDualAntennaDetection()
-      staging: r8188eu: remove EFUSE_ShadowRead()
-      staging: r8188eu: remove efuse_GetCurrentSize()
-      staging: r8188eu: remove efuse_GetMaxSize()
-      staging: r8188eu: remove rtw_BT_efuse_map_write()
-      staging: r8188eu: remove rtw_efuse_access()
-      staging: r8188eu: remove rtw_efuse_map_write()
-      staging: r8188eu: remove rtw_BT_efuse_map_read()
-      staging: r8188eu: remove rtw_efuse_map_read()
-      staging: r8188eu: remove _rtw_dequeue_network()
-      staging: r8188eu: remove _rtw_enqueue_network()
-      staging: r8188eu: remove rtw_get_timestampe_from_ie()
-      staging: r8188eu: remove rtw_scan_abort()
-      staging: r8188eu: remove issue_action_spct_ch_switch()
-      staging: r8188eu: remove issue_probereq_p2p_ex()
-      staging: r8188eu: remove sreset_get_wifi_status()
-      staging: r8188eu: remove build_deauth_p2p_ie()
-      staging: r8188eu: remove rtw_freq2ch()
-      staging: r8188eu: remove rtw_set_802_11_add_key()
-      staging: r8188eu: remove rtw_set_802_11_remove_key()
-      staging: r8188eu: remove rtw_set_802_11_remove_wep()
-      staging: r8188eu: remove rtw_set_country()
-      staging: r8188eu: remove rtw_set_scan_mode()
-      staging: r8188eu: remove rtw_validate_ssid()
-      staging: r8188eu: remove rtw_set_channel_plan()
-      staging: r8188eu: remove rtw_atoi()
-      staging: r8188eu: remove rtw_cbuf_push()
-      staging: r8188eu: remove rtw_cbuf_full()
-      staging: r8188eu: remove rtw_os_read_port()
-      staging: r8188eu: remove rtw_IOL_cmd_buf_dump()
-      staging: r8188eu: remove action_public_str()
-      staging: r8188eu: remove dump_ies()
-      staging: r8188eu: remove hal_ch_offset_to_secondary_ch_offset()
-      staging: r8188eu: remove secondary_ch_offset_to_hal_ch_offset()
-      staging: r8188eu: remove ieee80211_get_hdrlen()
-      staging: r8188eu: remove ieee80211_is_empty_essid()
-      staging: r8188eu: remove rtw_action_frame_parse()
-      staging: r8188eu: remove rtw_ies_remove_ie()
-      staging: r8188eu: remove rtw_set_ie_ch_switch()
-      staging: r8188eu: remove rtw_set_ie_mesh_ch_switch_parm()
-      staging: r8188eu: remove rtw_set_ie_secondary_ch_offset()
-      staging: r8188eu: remove enum secondary_ch_offset
-      staging: r8188eu: remove rtw_dequeue_recvbuf()
-      staging: r8188eu: remove rtw_enqueue_recvbuf()
-      staging: r8188eu: remove rtw_enqueue_recvbuf_to_head()
-      staging: r8188eu: remove rtw_init_recvframe()
-      staging: r8188eu: remove rtw_calculate_wlan_pkt_size_by_attribue()
-      staging: r8188eu: remove rtw_sctx_done()
-      staging: r8188eu: remove odm_DynamicTxPowerNIC()
-      staging: r8188eu: remove odm_DynamicTxPowerAP()
-      staging: r8188eu: remove odm_DynamicTxPower()
-      staging: r8188eu: remove write-only fields from struct dm_priv
-      staging: r8188eu: remove PowerIndex_backup from struct dm_priv
-      staging: r8188eu: remove dead code from rtl8188e_rf6052.c
-      staging: r8188eu: remove DynamicTxHighPowerLvl from struct dm_priv
-      staging: r8188eu: remove odm_DynamicTxPowerInit()
-      staging: r8188eu: remove rtw_proc_{init,remove}_one()
-      staging: r8188eu: remove rtw_cmd_clr_isr()
-      staging: r8188eu: remove rtw_createbss_cmd_ex()
-      staging: r8188eu: remove rtw_getbbreg_cmd()
-      staging: r8188eu: remove rtw_getrfreg_cmd()
-      staging: r8188eu: remove rtw_getrttbl_cmd()
-      staging: r8188eu: remove rtw_led_blink_cmd()
-      staging: r8188eu: remove rtw_readtssi_cmdrsp_callback()
-      staging: r8188eu: remove rtw_set_ch_cmd()
-      staging: r8188eu: remove rtw_set_csa_cmd()
-      staging: r8188eu: remove rtw_setassocsta_cmd()
-      staging: r8188eu: remove rtw_setbasicrate_cmd()
-      staging: r8188eu: remove rtw_setbbreg_cmd()
-      staging: r8188eu: remove rtw_setphy_cmd()
-      staging: r8188eu: remove rtw_setrfreg_cmd()
-      staging: r8188eu: remove rtw_setrttbl_cmd()
-      staging: r8188eu: remove rtw_setstandby_cmd()
-      staging: r8188eu: remove rtw_tdls_cmd()
-      staging: r8188eu: remove dead led blink functions
-      staging: r8188eu: remove dead led control functions
-      staging: r8188eu: remove unnecessary comments
-      staging: r8188eu: remove _InitHWLed()
-      staging: r8188eu: remove LedStrategy from struct led_priv
-      staging: r8188eu: remove ODM_CheckPowerStatus()
-      staging: r8188eu: remove odm_DynamicBBPowerSaving()
-      staging: r8188eu: remove odm_GlobalAdapterCheck()
-      staging: r8188eu: remove SetHalDefVarHandler from struct hal_ops
-      staging: r8188eu: remove GetHalDefVarHandler from struct hal_ops
-      staging: r8188eu: remove init_xmit_priv from struct hal_ops
-      staging: r8188eu: remove init_recv_priv from struct hal_ops
-      staging: r8188eu: remove free_recv_priv from struct hal_ops
-      staging: r8188eu: remove inirp_init from struct hal_ops
-      staging: r8188eu: remove inirp_deinit from struct hal_ops
-      staging: r8188eu: remove rtl8188e_silentreset_for_specific_platform()
-      staging: r8188eu: remove SetHwRegHandler from hal_ops
-      staging: r8188eu: remove GetHwRegHandler from hal_ops
-      staging: r8188eu: remove hal_init from hal_ops
-      staging: r8188eu: remove hal_ops
-      staging: r8188eu: rename rtl8188eu_set_hal_ops()
-      staging: r8188eu: remove unused defines from rtw_sreset.h
-      staging: r8188eu: remove some dead code
-      staging: r8188eu: remove unused macros and defines from rtl8188e_hal.h
-      staging: r8188eu: replace MACADDRLEN with ETH_ALEN
-      staging: r8188eu: remove enum _RTL8712_RF_MIMO_CONFIG_
-      staging: r8188eu: remove empty functions from odm.c
-      staging: r8188eu: remove ODM_SingleDualAntennaDefaultSetting()
-      staging: r8188eu: remove GetPSDData()
-      staging: r8188eu: remove ODM_AntselStatistics_88C()
-      staging: r8188eu: pBandType is never set
-      staging: r8188eu: pMacPhyMode is not used
-      staging: r8188eu: remove ODM_CmnInfoPtrArrayHook()
-      staging: r8188eu: remove unused constants and variables
-      staging: r8188eu: remove unnecessary assignment
-      staging: r8188eu: fix a gcc warning
-      staging: r8188eu: remove duplicate structure
-      staging: r8188eu: BTRxRSSIPercentage is set but never used
-      staging: r8188eu: rename ODM_PhyStatusQuery_92CSeries()
-      staging: r8188eu: remove unused cases from ODM_CmnInfo{Hook,Update}
-      staging: r8188eu: remove unused fields from enum odm_common_info_def
-      staging: r8188eu: remove unused enums and defines from odm.h
-      staging: r8188eu: RFType type is always ODM_1T1R
+Florian Boor (2):
+      iio: adc: ad799x: Implement selecting external reference voltage input on AD7991, AD7995 and AD7999.
+      dt-bindings: iio: ad779x: Add binding document
+
+Georgi Djakov (1):
+      Merge branch 'icc-rpm' into icc-next
+
+Greg Kroah-Hartman (15):
+      Merge 5.15-rc3 into char-misc next
+      Merge 5.15-rc4 into char-misc-next
+      Merge 5.15-rc6 into char-misc-next
+      Merge tag 'counter-for-5.16a-take2' of https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio into char-misc-next
+      Merge tag 'misc-habanalabs-next-2021-10-18' of https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux into char-misc-next
+      Merge tag 'iio-for-5.16a-split-take4' of https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio into char-misc-next
+      Merge tag 'fsi-for-v5.16' of git://git.kernel.org/pub/scm/linux/kernel/git/joel/fsi into char-misc-next
+      Merge tag 'icc-5.16-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc into char-misc-next
+      Merge tag 'iio-fixes-for-5.16a' of https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio into char-misc-next
+      Merge tag 'iio-for-5.16b' of https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio into char-misc-next
+      Merge tag 'soundwire-5.16-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire into char-misc-next
+      dma-buf: move dma-buf symbols into the DMA_BUF module namespace
+      Merge tag 'extcon-next-for-5.16' of git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/extcon into char-misc-next
+      Merge tag 'phy-for-5.16' of git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy into char-misc-next
+      Merge tag 'coresight-next-v5.16.v3' of gitolite.kernel.org:pub/scm/linux/kernel/git/coresight/linux into char-misc-next
+
+Jacopo Mondi (4):
+      dt-bindings: iio: chemical: Document senseair,sunrise CO2 sensor
+      iio: ABI: docs: Document Senseair Sunrise ABI
+      iio: chemical: Add Senseair Sunrise 006-0-007 driver
+      iio: ABI: Document in_concentration_co2_scale
+
+James Clark (1):
+      coresight: Don't immediately close events that are run on invalid CPU/sink combos
+
+Jeya R (2):
+      misc: fastrpc: Update number of max fastrpc sessions
+      misc: fastrpc: copy to user only for non-DMA-BUF heap buffers
+
+Johan Hovold (7):
+      ipack: ipoctal: rename tty-driver pointer
+      comedi: vmk80xx: fix transfer-buffer overflows
+      comedi: vmk80xx: fix bulk-buffer overflow
+      comedi: vmk80xx: fix bulk and interrupt message timeouts
+      most: fix control-message timeouts
+      comedi: ni_usb6501: fix NULL-deref in command paths
+      comedi: dt9812: fix DMA buffers on stack
+
+Johan Jonker (1):
+      dt-bindings: phy: rockchip: remove usb-phy fallback string for rk3066a/rk3188
+
+Jonathan Cameron (6):
+      counter: microchip-tcb-capture: Tidy up a false kernel-doc /** marking.
+      iio: core: Introduce iio_push_to_buffers_with_ts_unaligned()
+      iio: adc: ti-adc108s102: Fix alignment of buffer pushed to iio buffers.
+      iio: gyro: mpu3050: Fix alignment and size issues with buffers.
+      iio: imu: adis16400: Fix buffer alignment requirements.
+      iio: accel: sca3000: Use sign_extend32() instead of opencoding sign extension.
+
+Kees Cook (2):
+      selftests/lkdtm: Add way to repeat a test
+      lkdtm/bugs: Check that a per-task stack canary exists
+
+Krzysztof Kozlowski (3):
+      phy: samsung: unify naming and describe driver in KConfig
+      interconnect: samsung: describe drivers in KConfig
+      iio: adc: exynos: describe drivers in KConfig
+
+Lars-Peter Clausen (2):
+      iio: kfifo-buffer: Add output buffer support
+      iio: xilinx-xadc: Remove `irq` field from state struct
+
+Len Baker (2):
+      tifm: Prefer struct_size over open coded arithmetic
+      drivers/iio: Remove all strcpy() uses
+
+Leo Yan (5):
+      coresight: tmc-etr: Add barrier after updating AUX ring buffer
+      coresight: tmc-etf: Add comment for store ordering
+      coresight: tmc-etr: Use perf_output_handle::head for AUX ring buffer
+      coresight: Update comments for removing cs_etm_find_snapshot()
+      coresight: tmc-etr: Speed up for bounce buffer in flat mode
+
+Liam Beguin (5):
+      iio: adc: ad7949: define and use bitfield names
+      iio: adc: ad7949: enable use with non 14/16-bit controllers
+      iio: adc: ad7949: add vref selection support
+      dt-bindings: iio: adc: ad7949: update voltage reference bindings
+      iio: adc: ad7949: use devm managed functions
+
+Linus Walleij (2):
+      extcon: usb-gpio: Use the right includes
+      extcon: max3355: Drop unused include
+
+Lorenzo Bianconi (1):
+      iio: imu: st_lsm6dsx: move max_fifo_size in st_lsm6dsx_fifo_ops
+
+Lucas Stankus (2):
+      dt-bindings: iio: accel: Add binding documentation for ADXL313
+      iio: accel: Add driver support for ADXL313
+
+Lukas Bulwahn (1):
+      iio: gyro: remove dead config dependencies on INPUT_MPU3050
+
+Manivannan Sadhasivam (1):
+      MAINTAINERS: Update the entry for MHI bus
+
+Mark Brown (1):
+      iio: st_pressure_spi: Add missing entries SPI to device ID table
+
+Matt Ranostay (1):
+      iio: magnetometer: ak8975: add AK09116 support
+
+Mauro Carvalho Chehab (4):
+      misc: hisi_hikey_usb: change the DT schema
+      ABI: sysfs-bus-soundwire-master: use wildcards on What definitions
+      ABI: sysfs-bus-soundwire-slave: use wildcards on What definitions
+      phy: HiSilicon: Add driver for Kirin 970 PCIe PHY
+
+Mihail Chindris (4):
+      drivers: iio: dac: ad5766: Fix dt property name
+      Documentation:devicetree:bindings:iio:dac: Fix val
+      iio: Add output buffer support
+      drivers:iio:dac:ad5766.c: Add trigger buffer
+
+Miquel Raynal (16):
+      iio: adc: max1027: Fix style
+      iio: adc: max1027: Drop extra warning message
+      iio: adc: max1027: Drop useless debug messages
+      iio: adc: max1027: Minimize the number of converted channels
+      iio: adc: max1027: Rename a helper
+      iio: adc: max1027: Create a helper to enable/disable the cnvst trigger
+      iio: adc: max1027: Simplify the _set_trigger_state() helper
+      iio: adc: max1027: Ensure a default cnvst trigger configuration
+      iio: adc: max1027: Create a helper to configure the channels to scan
+      iio: adc: max1027: Prevent single channel accesses during buffer reads
+      iio: adc: max1027: Separate the IRQ handler from the read logic
+      iio: adc: max1027: Introduce an end of conversion helper
+      iio: adc: max1027: Stop requesting a threaded IRQ
+      iio: adc: max1027: Use the EOC IRQ when populated for single reads
+      iio: adc: max1027: Allow all kind of triggers to be used
+      iio: adc: max1027: Don't reject external triggers when there is no IRQ
+
+Moti Haimovski (1):
+      habanalabs: initialize hpriv fields before adding new node
 
 Nathan Chancellor (1):
-      staging: wlan-ng: Avoid bitwise vs logical OR warning in hfa384x_usb_throttlefn()
+      iio: frequency: adrf6780: Fix adrf6780_spi_{read,write}()
 
-Nikita Yushchenko (4):
-      staging: most: dim2: force fcnt=3 on Renesas GEN3
-      staging: most: dim2: use if statements instead of ?: expressions
-      staging: most: dim2: do not double-register the same device
-      staging: most: dim2: use device release method
+Navin Sankar Velliangiri (2):
+      iio: temperature: Add MAX31865 RTD Support
+      dt-bindings: iio: temperature: add MAXIM max31865 support
 
-Ojaswin Mujoo (1):
-      staging: vchiq: Replace function typedefs with equivalent declaration
+Nikita Travkin (4):
+      dt-bindings: vendor-prefixes: Document liteon vendor prefix
+      dt-bindings: iio: light: Document ltr501 light sensor bindings
+      iio: light: ltr501: Add rudimentary regulator support
+      iio: light: ltr501: Add of_device_id table
 
-Paulo Miguel Almeida (1):
-      staging: pi433: fix docs typos and references to previous struct names
+Nuno Sá (7):
+      iio: ad5770r: make devicetree property reading consistent
+      iio: ltc2983: add support for optional reset gpio
+      iio: ltc2983: fail probe if no channels are given
+      iio: adis: do not disabe IRQs in 'adis_init()'
+      iio: adis: handle devices that cannot unmask the drdy pin
+      iio: adis16475: make use of the new unmasked_drdy flag
+      iio: adis16460: make use of the new unmasked_drdy flag
 
-Pavel Skripkin (22):
-      staging: r8188eu: fix memory leak in rtw_set_key
-      staging: r8188eu: remove useless memset
-      staging: r8188eu: remove useless check
-      staging: r8188eu: remove _rtw_mutex_{init,free}
-      staging: r8188eu: make _rtw_init_queue a macro
-      staging: r8188eu: remove usb_{read,write}_mem()
-      staging: r8188eu: remove the helpers of rtw_read8()
-      staging: r8188eu: remove the helpers of rtw_read16()
-      staging: r8188eu: remove the helpers of rtw_read32()
-      staging: r8188eu: remove the helpers of usb_write8()
-      staging: r8188eu: remove the helpers of usb_write16()
-      staging: r8188eu: remove the helpers of usb_write32()
-      staging: r8188eu: remove the helpers of usb_writeN()
-      staging: r8188eu: remove the helpers of usb_read_port()
-      staging: r8188eu: remove the helpers of usb_write_port()
-      staging: r8188eu: remove the helpers of usb_read_port_cancel()
-      staging: r8188eu: remove the helpers of usb_write_port_cancel()
-      staging: r8188eu: remove core/rtw_io.c
-      staging: r8188eu: remove struct _io_ops
-      staging: r8188eu: remove shared buffer for USB requests
-      staging: r8188eu: remove mutex 'usb_vendor_req_mutex'
-      staging: rtl8712: fix use-after-free in rtl8712_dl_fw
+Oded Gabbay (7):
+      habanalabs: add kernel-doc style comments
+      habanalabs: define soft-reset as inference op
+      habanalabs: refactor reset log message
+      habanalabs: prevent race between fd close/open
+      habanalabs: update firmware files
+      habanalabs: use only u32
+      habanalabs: define uAPI to export FD for DMA-BUF
 
-Phillip Potter (18):
-      staging: r8188eu: remove c2h_handler field from struct hal_ops
-      staging: r8188eu: simplify c2h_evt_hdl function
-      staging: r8188eu: remove rtw_hal_c2h_handler function
-      staging: r8188eu: remove rtw_hal_reset_security_engine function
-      staging: r8188eu: remove hal_reset_security_engine from struct hal_ops
-      staging: r8188eu: remove rtw_hal_enable_interrupt function
-      staging: r8188eu: remove enable_interrupt from struct hal_ops
-      staging: r8188eu: remove rtw_hal_disable_interrupt function
-      staging: r8188eu: remove disable_interrupt from struct hal_ops
-      staging: r8188eu: remove rtw_hal_interrupt_handler function
-      staging: r8188eu: remove interrupt_handler from struct hal_ops
-      staging: r8188eu: remove rtw_hal_xmitframe_enqueue function
-      staging: r8188eu: remove hal_xmitframe_enqueue from struct hal_ops
-      staging: r8188eu: remove Efuse_PgPacketWrite_BT function
-      staging: r8188eu: remove Efuse_PgPacketWrite_BT from struct hal_ops
-      staging: r8188eu: remove rtw_hal_c2h_id_filter_ccx function
-      staging: r8188eu: remove c2h_id_filter_ccx from struct hal_ops
-      staging: r8188eu: remove MSG_88E calls from hal/usb_halinit.c
+Ofir Bitton (3):
+      habanalabs: add debugfs node for configuring CS timeout
+      habanalabs: remove redundant cs validity checks
+      habanalabs: add support for a long interrupt target value
 
-Saurav Girepunje (27):
-      staging: r8188eu: core: remove null check before vfree
-      staging: r8188eu: os_dep: remove unused static variable
-      staging: r8188eu: core: remove unused function
-      staging: r8188eu: core: remove condition with no effect
-      staging: r8188eu: os_dep: use kmemdup instead of kzalloc and memcpy
-      staging: r8188eu: hal: remove condition with no effect
-      staging: r8188eu: core: remove condition never execute
-      staging: r8188eu: include: remove duplicate declaration.
-      staging: r8188eu: core: remove unused variable padapter
-      staging: r8188eu: core: remove unused variable Adapter
-      staging: r8188eu: os_dep: simplifiy the rtw_resume function
-      staging: r8188eu: core: remove unused function rtw_set_tx_chksum_offload
-      staging: rtl8723bs: core: remove condition never execute
-      staging: rtl8723bs: core: remove reassignment of same value to variable
-      staging: rtl8192e: remove unused variable ieee
-      staging: rtl8192u: remove unused static variable
-      staging: r8188eu: core: remove power_saving_wk_hdl function
-      staging: r8188eu: core: remove unused variable pAdapter
-      staging: r8188eu: core: remove unused variable local variable
-      staging: r8188eu: hal: remove assignment to itself
-      staging: r8188eu: core: remove duplicate condition check
-      staging: rtl8723bs: hal: remove duplicate check
-      staging: r8188eu: remove unused local variable
-      staging: r8188eu: core: remove goto statement
-      staging: r8188eu: core: remove the goto from rtw_IOL_accquire_xmit_frame
-      staging: rtl8723bs: hal remove the assignment to itself
-      staging: r8188eu: hal: remove goto statement and local variable
+Oleksij Rempel (1):
+      iio: adc: tsc2046: fix scan interval warning
 
-Sergio Paracuellos (16):
-      MIPS: ralink: don't define PC_IOBASE but increase IO_SPACE_LIMIT
-      staging: mt7621-pci: set end limit for 'ioport_resource'
-      Revert "MIPS: ralink: don't define PC_IOBASE but increase IO_SPACE_LIMIT"
-      Revert "staging: mt7621-pci: set end limit for 'ioport_resource'"
-      MIPS: ralink: set PCI_IOBASE to 'mips_io_port_base'
-      PCI: Allow architecture-specific pci_remap_iospace()
-      MIPS: implement architecture-specific 'pci_remap_iospace()'
-      staging: mt7621-pci: properly adjust base address for the IO window
-      staging: mt7621-dts: properly define 'cpc' and 'mc' nodes
-      MIPS: asm: pci: define arch-specific 'pci_remap_iospace()' dependent on 'CONFIG_PCI_DRIVERS_GENERIC'
-      staging: mt7621-dts: change some node hex addresses to lower case
-      staging: mt7621-dts: get rid of nodes with no in-tree driver
-      staging: mt7621-dts: change palmbus address to lower case
-      staging: mt7621-dts: make use of 'IRQ_TYPE_LEVEL_HIGH' instead of magic numbers
-      staging: mt7621-dts: complete 'cpus' node
-      staging: mt7621-dts: add missing SPDX license to files
+Olivier Moysan (7):
+      dt-bindings: iio: stm32-adc: add generic channel binding
+      dt-bindings: iio: stm32-adc: add nvmem support for vrefint internal channel
+      iio: adc: stm32-adc: split channel init into several routines
+      iio: adc: stm32-adc: add support of generic channels binding
+      iio: adc: stm32-adc: add support of internal channels
+      iio: adc: stm32-adc: add vrefint calibration support
+      iio: adc: stm32-adc: use generic binding for sample-time
 
-Sidong Yang (1):
-      staging: pi433: goto abort when setting failed in tx_thread
+Omer Shpigelman (1):
+      habanalabs: context cleanup cosmetics
 
-Siou-Jhih, Guo (1):
-      staging: r8188eu: Fix misspelling in comment
+Pavel Begunkov (1):
+      /dev/mem: nowait zero/null ops
 
-Srivathsa Dara (2):
-      staging: fbtft: fbtft-core: fix 'trailing statements should be on next line' coding style error
-      staging: wfx: sta: Fix 'else' coding style warning
+Pekka Korpinen (1):
+      iio: dac: ad5446: Fix ad5622_write() return value
 
-Stefan Wahren (3):
-      staging: vchiq_arm: re-order vchiq_arm_init_state
-      staging: vchiq_arm: drop unnecessary declarations
-      staging: vchiq_arm: move platform structs to vchiq_arm.c
+Peter Rosin (2):
+      dt-bindings: iio: io-channel-mux: add optional #io-channel-cells
+      dt-bindings: iio: io-channel-mux: allow duplicate channel, labels
 
-Tommaso Merciai (6):
-      staging: vt6655: fix camelcase in pbyCxtBuf
-      staging: vt6655: fix camelcase in bShortSlotTime
-      staging: vt6655: fix camelcase in ldBmThreshold
-      staging: vt6655: fix camelcase in PortOffset
-      staging: vt6655: fix camelcase in byLocalID
-      staging: vt6655: fix camelcase in byRate
+Philip K. Gisslow (1):
+      scripts/tags.sh: Fix obsolete parameter for ctags
 
-Uwe Kleine-König (1):
-      staging: fbtft: Make fbtft_remove_common() return void
+Puranjay Mohan (4):
+      dt-bindings: iio: accel: Add DT binding doc for ADXL355
+      iio: accel: Add driver support for ADXL355
+      iio: accel: adxl355: use if(ret) in place of ret < 0
+      iio: accel: adxl355: Add triggered buffer support
+
+Rafał Miłecki (1):
+      dt-bindings: phy: brcm,ns-usb2-phy: bind just a PHY block
+
+Rajaravi Krishna Katta (3):
+      habanalabs: create static map of f/w hwmon enums
+      habanalabs: enable power info via HWMON framework
+      habanalabs: Unify frequency set/get functionality
+
+Randy Dunlap (2):
+      counter: fix docum. build problems after filename change
+      iio: chemical: SENSEAIR_SUNRISE_CO2 depends on I2C
+
+Roan van Dijk (5):
+      dt-bindings: iio: chemical: sensirion,scd4x: Add yaml description
+      MAINTAINERS: Add myself as maintainer of the scd4x driver
+      drivers: iio: chemical: Add support for Sensirion SCD4x CO2 sensor
+      iio: documentation: Document scd4x calibration use
+      iio: chemical: scd4x: Add a scale for the co2 concentration reading
+
+Sandeep Maheswaram (1):
+      phy: qcom-snps: Correct the FSEL_MASK
+
+Sean Nyekjaer (2):
+      iio: accel: fxls8962af: add threshold event handling
+      iio: accel: fxls8962af: add wake on event
+
+Sebastian Andrzej Siewior (1):
+      samples/kfifo: Rename read_lock/write_lock
+
+Shawn Guo (8):
+      dt-bindings: phy: qcom,qmp: Update maintainer email
+      dt-bindings: phy: qcom,qusb2: Add compatible for QCM2290
+      phy: qcom-qusb2: Add compatible for QCM2290
+      dt-bindings: phy: qcom,qusb2: Add missing vdd-supply
+      phy: qcom-qusb2: Add missing vdd supply
+      dt-bindings: phy: qcom,qmp: Add QCM2290 USB3 PHY
+      phy: qcom-qmp: Add QCM2290 USB3 PHY support
+      dt-bindings: phy: qcom,qmp: IPQ6018 and IPQ8074 PCIe PHY require no supply
+
+Shuo Liu (2):
+      virt: acrn: Introduce interfaces for MMIO device passthrough
+      virt: acrn: Introduce interfaces for virtual device creating/destroying
+
+Srinivas Kandagatla (6):
+      soundwire: debugfs: use controller id and link_id for debugfs
+      nvmem: core: rework nvmem cell instance creation
+      nvmem: core: add nvmem cell post processing callback
+      nvmem: imx-ocotp: add support for post processing
+      soundwire: bus: stop dereferencing invalid slave pointer
+      soundwire: qcom: add debugfs entry for soundwire register dump
+
+Stephen Rothwell (1):
+      fix for "dma-buf: move dma-buf symbols into the DMA_BUF module namespace"
+
+Suzuki K Poulose (28):
+      arm64: Add Neoverse-N2, Cortex-A710 CPU part definition
+      arm64: errata: Add detection for TRBE overwrite in FILL mode
+      arm64: errata: Add workaround for TSB flush failures
+      arm64: errata: Add detection for TRBE write to out-of-range
+      coresight: etm4x: Save restore TRFCR_EL1
+      coresight: etm4x: Use Trace Filtering controls dynamically
+      coresight: etm-pmu: Ensure the AUX handle is valid
+      coresight: trbe: Ensure the format flag is always set
+      coresight: trbe: Drop duplicate TRUNCATE flags
+      coresight: trbe: Unify the enabling sequence
+      coresight: trbe: irq handler: Do not disable TRBE if no action is needed
+      coresight: trbe: Fix handling of spurious interrupts
+      coresight: trbe: Do not truncate buffer on IRQ
+      coresight: trbe: End the AUX handle on truncation
+      coresight: trbe: Prohibit trace before disabling TRBE
+      coresight: trbe: Fix incorrect access of the sink specific data
+      coresight: trbe: Defer the probe on offline CPUs
+      coresight: trbe: Add a helper to calculate the trace generated
+      coresight: trbe: Add a helper to pad a given buffer area
+      coresight: trbe: Decouple buffer base from the hardware base
+      coresight: trbe: Allow driver to choose a different alignment
+      coresight: trbe: Add infrastructure for Errata handling
+      coresight: trbe: Workaround TRBE errata overwrite in FILL mode
+      coresight: trbe: Add a helper to determine the minimum buffer size
+      coresight: trbe: Make sure we have enough space
+      coresight: trbe: Work around write to out of range
+      arm64: errata: Enable workaround for TRBE overwrite in FILL mode
+      arm64: errata: Enable TRBE workaround for write to out-of-range address
+
+Swapnil Jakhade (4):
+      phy: cadence-torrent: Migrate to clk_hw based registration and OF APIs
+      dt-bindings: phy: cadence-torrent: Add clock IDs for derived and received refclk
+      phy: cadence-torrent: Model reference clock driver as a clock to enable derived refclk
+      phy: cadence-torrent: Add support to output received reference clock
+
+Tang Bin (1):
+      iio: adc: twl6030-gpadc: Use the defined variable to clean code
+
+Tanmay Jagdale (2):
+      dt-bindings: coresight: Add burst size for TMC
+      coresight: tmc: Configure AXI write burst size
+
+Tao Zhang (2):
+      coresight: cti: Correct the parameter for pm_runtime_put
+      coresight: etm4x: Add ETM PID for Kryo-5XX
+
+Teng Qi (1):
+      iio: imu: st_lsm6dsx: Avoid potential array overflow in st_lsm6dsx_set_odr()
+
+Todd Kjos (1):
+      binder: don't detect sender/target during buffer cleanup
+
+Tomer Tayar (1):
+      habanalabs: add support for dma-buf exporter
+
+Uwe Kleine-König (15):
+      misc: lis3lv02d: Make lis3lv02d_remove_fs() return void
+      misc: ad525x_dpot: Make ad_dpot_remove() return void
+      iio: accel: bma400: Make bma400_remove() return void
+      iio: accel: bmc150: Make bmc150_accel_core_remove() return void
+      iio: accel: bmi088: Make bmi088_accel_core_remove() return void
+      iio: accel: kxsd9: Make kxsd9_common_remove() return void
+      iio: accel: mma7455: Make mma7455_core_remove() return void
+      iio: dac: ad5380: Make ad5380_remove() return void
+      iio: dac: ad5446: Make ad5446_remove() return void
+      iio: dac: ad5592r: Make ad5592r_remove() return void
+      iio: dac: ad5686: Make ad5686_remove() return void
+      iio: health: afe4403: Don't return an error in .remove()
+      iio: magn: hmc5843: Make hmc5843_common_remove() return void
+      iio: potentiometer: max5487: Don't return an error in .remove()
+      iio: pressure: ms5611: Make ms5611_remove() return void
 
 Vegard Nossum (1):
-      staging: ks7010: select CRYPTO_HASH/CRYPTO_MICHAEL_MIC
+      habanalabs: select CRC32
+
+Vincent Whitchurch (3):
+      mux: add support for delay after muxing
+      dt-bindings: iio: io-channel-mux: Add property for settle time
+      iio: multiplexer: iio-mux: Support settle-time-us property
+
+Vladimir Zapolskiy (1):
+      phy: qcom-qusb2: Fix a memory leak on probe
 
 Wan Jiabing (1):
-      staging: r8188eu: Use memdup_user instead of kmalloc/copy_from_user
+      phy: hisilicon: Add of_node_put() in phy-hisi-inno-usb2
 
-Yang Yingliang (1):
-      staging: r8188eu: fix missing unlock in rtw_resume()
+William Breathitt Gray (17):
+      counter: stm32-lptimer-cnt: Provide defines for clock polarities
+      counter: stm32-timer-cnt: Provide defines for slave mode selection
+      counter: Internalize sysfs interface code
+      counter: Update counter.h comments to reflect sysfs internalization
+      docs: counter: Update to reflect sysfs internalization
+      counter: Move counter enums to uapi header
+      counter: Add character device interface
+      docs: counter: Document character device interface
+      tools/counter: Create Counter tools
+      counter: Implement signalZ_action_component_id sysfs attribute
+      counter: Implement *_component_id sysfs attributes
+      counter: Implement events_queue_size sysfs attribute
+      counter: 104-quad-8: Replace mutex with spinlock
+      counter: 104-quad-8: Add IRQ support for the ACCES 104-QUAD-8
+      docs: counter: Include counter-chrdev kernel-doc to generic-counter.rst
+      counter: Cleanup lingering atomic.h includes
+      counter: Fix use-after-free race condition for events_queue_size write
 
-xu xin (1):
-      staging: r8118eu: remove useless parts of judgements from os_dep/ioctl_linux.
+Yang Yingliang (8):
+      iio: buffer: check return value of kstrdup_const()
+      iio: buffer: Fix memory leak in __iio_buffer_alloc_sysfs_and_mask()
+      iio: buffer: Fix double-free in iio_buffers_alloc_sysfs_and_mask()
+      iio: buffer: Fix memory leak in iio_buffer_register_legacy_sysfs_groups()
+      iio: core: check return value when calling dev_set_name()
+      iio: core: fix double free in iio_device_unregister_sysfs()
+      iio: buffer: Fix memory leak in iio_buffers_alloc_sysfs_and_mask()
+      phy: Sparx5 Eth SerDes: Fix return value check in sparx5_serdes_probe()
 
- arch/mips/include/asm/mach-ralink/spaces.h         |    4 +-
- arch/mips/include/asm/pci.h                        |    4 +
- arch/mips/pci/pci-generic.c                        |   14 +
- drivers/pci/pci.c                                  |    2 +
- drivers/staging/axis-fifo/axis-fifo.c              |   88 +-
- drivers/staging/fbtft/fbtft-core.c                 |   11 +-
- drivers/staging/fbtft/fbtft.h                      |    8 +-
- drivers/staging/fieldbus/anybuss/host.c            |    8 +-
- drivers/staging/gdm724x/gdm_lte.c                  |    4 +-
- drivers/staging/ks7010/Kconfig                     |    3 +
- drivers/staging/ks7010/ks_hostif.c                 |    2 +-
- drivers/staging/ks7010/ks_wlan_net.c               |    4 +-
- drivers/staging/most/dim2/Makefile                 |    2 +-
- drivers/staging/most/dim2/dim2.c                   |  115 +-
- drivers/staging/most/dim2/sysfs.c                  |   49 -
- drivers/staging/most/dim2/sysfs.h                  |   11 -
- drivers/staging/most/net/net.c                     |    2 +-
- drivers/staging/mt7621-dma/hsdma-mt7621.c          |    6 +-
- drivers/staging/mt7621-dts/gbpc1.dts               |    3 +-
- drivers/staging/mt7621-dts/gbpc2.dts               |    1 +
- drivers/staging/mt7621-dts/mt7621.dtsi             |   74 +-
- drivers/staging/mt7621-pci/pci-mt7621.c            |    2 +-
- drivers/staging/octeon/ethernet.c                  |    2 +-
- drivers/staging/pi433/pi433_if.c                   |   18 +-
- drivers/staging/pi433/pi433_if.h                   |   23 +-
- drivers/staging/qlge/qlge_main.c                   |   18 +-
- drivers/staging/qlge/qlge_mpi.c                    |    2 +-
- drivers/staging/r8188eu/Kconfig                    |   10 -
- drivers/staging/r8188eu/Makefile                   |  155 +-
- drivers/staging/r8188eu/core/rtw_ap.c              |  607 +----
- drivers/staging/r8188eu/core/rtw_br_ext.c          |    3 +-
- drivers/staging/r8188eu/core/rtw_cmd.c             |  618 +-----
- drivers/staging/r8188eu/core/rtw_debug.c           |  904 --------
- drivers/staging/r8188eu/core/rtw_efuse.c           |  582 +----
- drivers/staging/r8188eu/core/rtw_ieee80211.c       |  339 +--
- drivers/staging/r8188eu/core/rtw_io.c              |  299 ---
- drivers/staging/r8188eu/core/rtw_ioctl_set.c       |  397 +---
- drivers/staging/r8188eu/core/rtw_iol.c             |   34 +-
- drivers/staging/r8188eu/core/rtw_led.c             | 1365 +-----------
- drivers/staging/r8188eu/core/rtw_mlme.c            |  126 +-
- drivers/staging/r8188eu/core/rtw_mlme_ext.c        |  386 +---
- drivers/staging/r8188eu/core/rtw_mp.c              |  935 --------
- drivers/staging/r8188eu/core/rtw_mp_ioctl.c        | 1170 ----------
- drivers/staging/r8188eu/core/rtw_p2p.c             |   43 +-
- drivers/staging/r8188eu/core/rtw_pwrctrl.c         |  140 +-
- drivers/staging/r8188eu/core/rtw_recv.c            |  116 +-
- drivers/staging/r8188eu/core/rtw_rf.c              |   17 -
- drivers/staging/r8188eu/core/rtw_security.c        |  197 +-
- drivers/staging/r8188eu/core/rtw_sreset.c          |   62 -
- drivers/staging/r8188eu/core/rtw_sta_mgt.c         |   34 +-
- drivers/staging/r8188eu/core/rtw_wlan_util.c       |  157 +-
- drivers/staging/r8188eu/core/rtw_xmit.c            |  121 +-
- drivers/staging/r8188eu/hal/Hal8188ERateAdaptive.c |   22 +-
- drivers/staging/r8188eu/hal/HalHWImg8188E_BB.c     |   32 +-
- drivers/staging/r8188eu/hal/HalHWImg8188E_MAC.c    |   10 +-
- drivers/staging/r8188eu/hal/HalHWImg8188E_RF.c     |   15 +-
- drivers/staging/r8188eu/hal/HalPhyRf_8188e.c       |  171 +-
- drivers/staging/r8188eu/hal/hal_com.c              |   26 +-
- drivers/staging/r8188eu/hal/hal_intf.c             |  391 +---
- drivers/staging/r8188eu/hal/odm.c                  | 1188 +---------
- drivers/staging/r8188eu/hal/odm_HWConfig.c         |  393 +---
- drivers/staging/r8188eu/hal/odm_RTL8188E.c         |   31 +-
- drivers/staging/r8188eu/hal/odm_RegConfig8188E.c   |    8 -
- drivers/staging/r8188eu/hal/odm_interface.c        |   85 -
- drivers/staging/r8188eu/hal/rtl8188e_cmd.c         |   48 +-
- drivers/staging/r8188eu/hal/rtl8188e_dm.c          |   93 +-
- drivers/staging/r8188eu/hal/rtl8188e_hal_init.c    |  310 +--
- drivers/staging/r8188eu/hal/rtl8188e_mp.c          |  798 -------
- drivers/staging/r8188eu/hal/rtl8188e_phycfg.c      |  215 +-
- drivers/staging/r8188eu/hal/rtl8188e_rf6052.c      |  226 +-
- drivers/staging/r8188eu/hal/rtl8188e_rxdesc.c      |    2 +-
- drivers/staging/r8188eu/hal/rtl8188e_sreset.c      |   27 -
- drivers/staging/r8188eu/hal/rtl8188eu_recv.c       |    4 +-
- drivers/staging/r8188eu/hal/rtl8188eu_xmit.c       |   60 +-
- drivers/staging/r8188eu/hal/usb_halinit.c          |  328 +--
- drivers/staging/r8188eu/hal/usb_ops_linux.c        |  256 +--
- drivers/staging/r8188eu/include/Hal8188EPhyCfg.h   |   91 -
- .../staging/r8188eu/include/Hal8188ERateAdaptive.h |    2 -
- drivers/staging/r8188eu/include/HalHWImg8188E_FW.h |   16 -
- drivers/staging/r8188eu/include/HalVerDef.h        |   70 -
- drivers/staging/r8188eu/include/drv_types.h        |   37 +-
- drivers/staging/r8188eu/include/hal_intf.h         |  312 +--
- drivers/staging/r8188eu/include/ieee80211.h        |   71 -
- drivers/staging/r8188eu/include/ioctl_cfg80211.h   |    2 -
- drivers/staging/r8188eu/include/mp_custom_oid.h    |  333 ---
- drivers/staging/r8188eu/include/odm.h              |  457 +---
- drivers/staging/r8188eu/include/odm_HWConfig.h     |   11 +-
- drivers/staging/r8188eu/include/odm_RTL8188E.h     |    2 -
- .../staging/r8188eu/include/odm_RegConfig8188E.h   |    3 -
- .../staging/r8188eu/include/odm_RegDefine11AC.h    |   29 -
- drivers/staging/r8188eu/include/odm_RegDefine11N.h |  112 +-
- drivers/staging/r8188eu/include/odm_interface.h    |   88 -
- drivers/staging/r8188eu/include/odm_precomp.h      |   22 -
- drivers/staging/r8188eu/include/odm_reg.h          |   89 -
- drivers/staging/r8188eu/include/odm_types.h        |   24 -
- drivers/staging/r8188eu/include/osdep_intf.h       |    5 -
- drivers/staging/r8188eu/include/osdep_service.h    |   42 +-
- drivers/staging/r8188eu/include/recv_osdep.h       |    2 -
- drivers/staging/r8188eu/include/rtl8188e_cmd.h     |   16 -
- drivers/staging/r8188eu/include/rtl8188e_dm.h      |   13 -
- drivers/staging/r8188eu/include/rtl8188e_hal.h     |  102 +-
- drivers/staging/r8188eu/include/rtl8188e_led.h     |    2 -
- drivers/staging/r8188eu/include/rtl8188e_recv.h    |    2 +-
- drivers/staging/r8188eu/include/rtl8188e_rf.h      |    1 -
- drivers/staging/r8188eu/include/rtl8188e_spec.h    |    4 -
- drivers/staging/r8188eu/include/rtl8188e_sreset.h  |    2 -
- drivers/staging/r8188eu/include/rtw_ap.h           |   11 -
- drivers/staging/r8188eu/include/rtw_br_ext.h       |    3 +-
- drivers/staging/r8188eu/include/rtw_cmd.h          |   27 +-
- drivers/staging/r8188eu/include/rtw_debug.h        |  156 --
- drivers/staging/r8188eu/include/rtw_eeprom.h       |   57 +-
- drivers/staging/r8188eu/include/rtw_efuse.h        |   21 -
- drivers/staging/r8188eu/include/rtw_io.h           |   87 +-
- drivers/staging/r8188eu/include/rtw_ioctl_rtl.h    |   63 -
- drivers/staging/r8188eu/include/rtw_ioctl_set.h    |    8 -
- drivers/staging/r8188eu/include/rtw_iol.h          |    5 -
- drivers/staging/r8188eu/include/rtw_led.h          |   20 -
- drivers/staging/r8188eu/include/rtw_mlme.h         |   11 -
- drivers/staging/r8188eu/include/rtw_mlme_ext.h     |   14 -
- drivers/staging/r8188eu/include/rtw_mp.h           |  474 ----
- drivers/staging/r8188eu/include/rtw_mp_ioctl.h     |  242 --
- .../staging/r8188eu/include/rtw_mp_phy_regdef.h    | 1063 ---------
- drivers/staging/r8188eu/include/rtw_p2p.h          |    1 -
- drivers/staging/r8188eu/include/rtw_pwrctrl.h      |  130 +-
- drivers/staging/r8188eu/include/rtw_recv.h         |    6 -
- drivers/staging/r8188eu/include/rtw_rf.h           |   12 -
- drivers/staging/r8188eu/include/rtw_security.h     |   20 +-
- drivers/staging/r8188eu/include/rtw_sreset.h       |   34 -
- drivers/staging/r8188eu/include/rtw_xmit.h         |    6 -
- drivers/staging/r8188eu/include/sta_info.h         |    7 -
- drivers/staging/r8188eu/include/usb_ops.h          |    5 -
- drivers/staging/r8188eu/include/usb_ops_linux.h    |    8 -
- drivers/staging/r8188eu/include/usb_osintf.h       |    5 +-
- drivers/staging/r8188eu/include/wifi.h             |   52 -
- drivers/staging/r8188eu/include/xmit_osdep.h       |    2 -
- drivers/staging/r8188eu/os_dep/ioctl_linux.c       | 2331 +-------------------
- drivers/staging/r8188eu/os_dep/mlme_linux.c        |    6 -
- drivers/staging/r8188eu/os_dep/os_intfs.c          |  399 +---
- drivers/staging/r8188eu/os_dep/osdep_service.c     |   82 +-
- drivers/staging/r8188eu/os_dep/recv_linux.c        |   14 -
- drivers/staging/r8188eu/os_dep/usb_intf.c          |  285 +--
- drivers/staging/r8188eu/os_dep/usb_ops_linux.c     |   40 +-
- drivers/staging/r8188eu/os_dep/xmit_linux.c        |    4 -
- drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c     |    7 +-
- drivers/staging/rtl8192e/rtl8192e/rtl_cam.c        |    4 +-
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c       |    2 +-
- drivers/staging/rtl8192e/rtl819x_BAProc.c          |    9 +-
- drivers/staging/rtl8192u/r8192U.h                  |    3 +-
- drivers/staging/rtl8192u/r8192U_core.c             |   36 +-
- drivers/staging/rtl8712/os_intfs.c                 |    9 +-
- drivers/staging/rtl8712/rtl871x_cmd.c              |    2 +-
- drivers/staging/rtl8712/rtl871x_cmd.h              |    2 +-
- drivers/staging/rtl8712/rtl871x_xmit.h             |   10 +-
- drivers/staging/rtl8712/usb_intf.c                 |    6 +-
- drivers/staging/rtl8712/usb_ops_linux.c            |    2 +-
- drivers/staging/rtl8723bs/Kconfig                  |    1 +
- drivers/staging/rtl8723bs/core/rtw_ap.c            |   23 +-
- drivers/staging/rtl8723bs/core/rtw_cmd.c           |  210 +-
- drivers/staging/rtl8723bs/core/rtw_ioctl_set.c     |    4 +-
- drivers/staging/rtl8723bs/core/rtw_mlme.c          |   24 +-
- drivers/staging/rtl8723bs/core/rtw_mlme_ext.c      |   79 +-
- drivers/staging/rtl8723bs/core/rtw_recv.c          |   22 +-
- drivers/staging/rtl8723bs/core/rtw_security.c      |    6 +-
- drivers/staging/rtl8723bs/core/rtw_sta_mgt.c       |   48 +-
- drivers/staging/rtl8723bs/core/rtw_xmit.c          |   49 +-
- drivers/staging/rtl8723bs/hal/odm_DIG.c            |    2 +-
- drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c  |   12 -
- drivers/staging/rtl8723bs/hal/rtl8723bs_recv.c     |    6 +-
- drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c     |    2 -
- drivers/staging/rtl8723bs/include/osdep_service.h  |    2 +-
- drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c  |   26 +-
- drivers/staging/rtl8723bs/os_dep/ioctl_linux.c     |   34 +-
- drivers/staging/rtl8723bs/os_dep/os_intfs.c        |    8 +-
- drivers/staging/rtl8723bs/os_dep/osdep_service.c   |   11 +-
- drivers/staging/rts5208/ms.c                       |   42 +-
- drivers/staging/rts5208/rtsx.c                     |    2 +-
- drivers/staging/rts5208/rtsx_card.c                |    8 +-
- drivers/staging/rts5208/rtsx_chip.c                |   16 +-
- drivers/staging/rts5208/rtsx_scsi.c                |  106 +-
- drivers/staging/rts5208/rtsx_transport.c           |    6 +-
- drivers/staging/rts5208/sd.c                       |   68 +-
- drivers/staging/rts5208/xd.c                       |   48 +-
- drivers/staging/unisys/visornic/visornic_main.c    |    5 +-
- .../vc04_services/interface/vchiq_arm/vchiq_arm.c  |  298 ++-
- .../vc04_services/interface/vchiq_arm/vchiq_arm.h  |   52 -
- .../interface/vchiq_arm/vchiq_connected.c          |   20 +-
- .../interface/vchiq_arm/vchiq_connected.h          |    4 +-
- .../vc04_services/interface/vchiq_arm/vchiq_core.c |  771 +++----
- .../vc04_services/interface/vchiq_arm/vchiq_core.h |  107 +-
- .../vc04_services/interface/vchiq_arm/vchiq_dev.c  |  182 +-
- drivers/staging/vt6655/baseband.c                  |   74 +-
- drivers/staging/vt6655/baseband.h                  |    2 +-
- drivers/staging/vt6655/card.c                      |   98 +-
- drivers/staging/vt6655/channel.c                   |   12 +-
- drivers/staging/vt6655/device.h                    |   10 +-
- drivers/staging/vt6655/device_main.c               |  162 +-
- drivers/staging/vt6655/dpc.c                       |    2 +-
- drivers/staging/vt6655/key.c                       |    2 +-
- drivers/staging/vt6655/mac.c                       |   50 +-
- drivers/staging/vt6655/mac.h                       |    6 +-
- drivers/staging/vt6655/power.c                     |   24 +-
- drivers/staging/vt6655/rf.c                        |  140 +-
- drivers/staging/vt6655/rf.h                        |    2 +-
- drivers/staging/vt6655/rxtx.c                      |   64 +-
- drivers/staging/wfx/bh.c                           |   37 +-
- drivers/staging/wfx/bh.h                           |    4 +-
- drivers/staging/wfx/bus_sdio.c                     |   25 +-
- drivers/staging/wfx/bus_spi.c                      |   22 +-
- drivers/staging/wfx/data_rx.c                      |    7 +-
- drivers/staging/wfx/data_rx.h                      |    4 +-
- drivers/staging/wfx/data_tx.c                      |   87 +-
- drivers/staging/wfx/data_tx.h                      |    6 +-
- drivers/staging/wfx/debug.c                        |   56 +-
- drivers/staging/wfx/debug.h                        |    2 +-
- drivers/staging/wfx/fwio.c                         |   26 +-
- drivers/staging/wfx/fwio.h                         |    2 +-
- drivers/staging/wfx/hif_api_cmd.h                  |   14 +-
- drivers/staging/wfx/hif_api_general.h              |   25 +-
- drivers/staging/wfx/hif_api_mib.h                  |   85 +-
- drivers/staging/wfx/hif_rx.c                       |   23 +-
- drivers/staging/wfx/hif_rx.h                       |    3 +-
- drivers/staging/wfx/hif_tx.c                       |   60 +-
- drivers/staging/wfx/hif_tx.h                       |    6 +-
- drivers/staging/wfx/hif_tx_mib.c                   |   14 +-
- drivers/staging/wfx/hif_tx_mib.h                   |    2 +-
- drivers/staging/wfx/hwio.c                         |    6 +-
- drivers/staging/wfx/hwio.h                         |   20 +-
- drivers/staging/wfx/key.c                          |   30 +-
- drivers/staging/wfx/key.h                          |    4 +-
- drivers/staging/wfx/main.c                         |   37 +-
- drivers/staging/wfx/main.h                         |    3 +-
- drivers/staging/wfx/queue.c                        |   43 +-
- drivers/staging/wfx/queue.h                        |    6 +-
- drivers/staging/wfx/scan.c                         |   51 +-
- drivers/staging/wfx/scan.h                         |    4 +-
- drivers/staging/wfx/sta.c                          |  118 +-
- drivers/staging/wfx/sta.h                          |    8 +-
- drivers/staging/wfx/traces.h                       |    2 +-
- drivers/staging/wfx/wfx.h                          |   14 +-
- drivers/staging/wlan-ng/hfa384x.h                  |    2 +-
- drivers/staging/wlan-ng/hfa384x_usb.c              |   24 +-
- drivers/staging/wlan-ng/p80211conv.c               |    2 +-
- drivers/staging/wlan-ng/p80211conv.h               |    2 +-
- drivers/staging/wlan-ng/p80211hdr.h                |    2 +-
- drivers/staging/wlan-ng/p80211ioctl.h              |    2 +-
- drivers/staging/wlan-ng/p80211mgmt.h               |    2 +-
- drivers/staging/wlan-ng/p80211msg.h                |    2 +-
- drivers/staging/wlan-ng/p80211netdev.c             |    4 +-
- drivers/staging/wlan-ng/p80211netdev.h             |    2 +-
- drivers/staging/wlan-ng/p80211req.c                |    2 +-
- drivers/staging/wlan-ng/p80211req.h                |    2 +-
- drivers/staging/wlan-ng/p80211types.h              |    2 +-
- drivers/staging/wlan-ng/p80211wep.c                |    2 +-
- drivers/staging/wlan-ng/prism2mgmt.c               |    2 +-
- drivers/staging/wlan-ng/prism2mgmt.h               |    2 +-
- drivers/staging/wlan-ng/prism2mib.c                |    2 +-
- drivers/staging/wlan-ng/prism2sta.c                |    6 +-
- drivers/staging/wlan-ng/prism2usb.c                |    3 +-
- 258 files changed, 3323 insertions(+), 22353 deletions(-)
- delete mode 100644 drivers/staging/most/dim2/sysfs.c
- delete mode 100644 drivers/staging/r8188eu/core/rtw_debug.c
- delete mode 100644 drivers/staging/r8188eu/core/rtw_io.c
- delete mode 100644 drivers/staging/r8188eu/core/rtw_mp.c
- delete mode 100644 drivers/staging/r8188eu/core/rtw_mp_ioctl.c
- delete mode 100644 drivers/staging/r8188eu/core/rtw_sreset.c
- delete mode 100644 drivers/staging/r8188eu/hal/rtl8188e_mp.c
- delete mode 100644 drivers/staging/r8188eu/include/HalHWImg8188E_FW.h
- delete mode 100644 drivers/staging/r8188eu/include/mp_custom_oid.h
- delete mode 100644 drivers/staging/r8188eu/include/odm_RegDefine11AC.h
- delete mode 100644 drivers/staging/r8188eu/include/odm_reg.h
- delete mode 100644 drivers/staging/r8188eu/include/rtw_ioctl_rtl.h
- delete mode 100644 drivers/staging/r8188eu/include/rtw_mp.h
- delete mode 100644 drivers/staging/r8188eu/include/rtw_mp_ioctl.h
- delete mode 100644 drivers/staging/r8188eu/include/rtw_mp_phy_regdef.h
- delete mode 100644 drivers/staging/r8188eu/include/rtw_sreset.h
+Yassine Oudjana (3):
+      extcon: usbc-tusb320: Add support for mode setting and reset
+      extcon: usbc-tusb320: Add support for TUSB320L
+      dt-bindings: extcon: usbc-tusb320: Add TUSB320L compatible string
+
+Ye Guojin (1):
+      misc: enclosure: replace snprintf in show functions with sysfs_emit
+
+Yuri Nudelman (3):
+      habanalabs: fix debugfs device memory MMU VA translation
+      habanalabs: take timestamp on wait for interrupt
+      habanalabs: simplify wait for interrupt with timestamp flow
+
+Ziyang Xuan (1):
+      char: xillybus: fix msg_ep UAF in xillyusb_probe()
+
+ .../ABI/testing/debugfs-driver-habanalabs          |    6 +
+ Documentation/ABI/testing/sysfs-bus-counter        |   38 +-
+ .../ABI/testing/sysfs-bus-fsi-devices-sbefifo      |   10 +
+ Documentation/ABI/testing/sysfs-bus-iio            |   42 +
+ .../ABI/testing/sysfs-bus-iio-chemical-sunrise-co2 |   38 +
+ Documentation/ABI/testing/sysfs-bus-iio-scd30      |   34 -
+ .../ABI/testing/sysfs-bus-iio-temperature-max31865 |   20 +
+ .../testing/sysfs-bus-platform-devices-occ-hwmon   |   13 +
+ .../ABI/testing/sysfs-bus-soundwire-master         |   20 +-
+ .../ABI/testing/sysfs-bus-soundwire-slave          |   62 +-
+ Documentation/arm64/silicon-errata.rst             |   12 +
+ .../devicetree/bindings/arm/coresight.txt          |    5 +
+ .../bindings/extcon/extcon-usbc-tusb320.yaml       |    4 +-
+ .../devicetree/bindings/iio/accel/adi,adxl313.yaml |   86 +
+ .../devicetree/bindings/iio/accel/adi,adxl355.yaml |   88 +
+ .../bindings/iio/accel/kionix,kxcjk1013.yaml       |    3 +
+ .../devicetree/bindings/iio/adc/adi,ad7949.yaml    |   51 +-
+ .../devicetree/bindings/iio/adc/adi,ad799x.yaml    |   73 +
+ .../bindings/iio/adc/aspeed,ast2600-adc.yaml       |  100 +
+ .../bindings/iio/adc/atmel,sama5d2-adc.yaml        |    1 +
+ .../bindings/iio/adc/nxp,imx8qxp-adc.yaml          |   78 +
+ .../devicetree/bindings/iio/adc/st,stm32-adc.yaml  |  108 +-
+ .../bindings/iio/chemical/senseair,sunrise.yaml    |   55 +
+ .../bindings/iio/chemical/sensirion,scd4x.yaml     |   46 +
+ .../devicetree/bindings/iio/dac/adi,ad5766.yaml    |    2 +-
+ .../bindings/iio/frequency/adi,adrf6780.yaml       |  131 ++
+ .../bindings/iio/light/liteon,ltr501.yaml          |   51 +
+ .../iio/magnetometer/asahi-kasei,ak8975.yaml       |    7 +
+ .../bindings/iio/multiplexer/io-channel-mux.yaml   |   13 +-
+ .../bindings/iio/temperature/maxim,max31865.yaml   |   52 +
+ .../devicetree/bindings/phy/bcm-ns-usb2-phy.yaml   |   25 +-
+ .../devicetree/bindings/phy/phy-stm32-usbphyc.yaml |  129 ++
+ .../devicetree/bindings/phy/qcom,qmp-phy.yaml      |   84 +-
+ .../devicetree/bindings/phy/qcom,qusb2-phy.yaml    |    7 +
+ .../devicetree/bindings/phy/rockchip-usb-phy.yaml  |   11 +-
+ .../devicetree/bindings/vendor-prefixes.yaml       |    4 +
+ Documentation/driver-api/driver-model/devres.rst   |    1 +
+ Documentation/driver-api/generic-counter.rst       |  363 +++-
+ Documentation/userspace-api/ioctl/ioctl-number.rst |    1 +
+ Documentation/virt/ne_overview.rst                 |   21 +-
+ MAINTAINERS                                        |   42 +-
+ arch/arm64/Kconfig                                 |  111 ++
+ arch/arm64/include/asm/barrier.h                   |   16 +-
+ arch/arm64/include/asm/cputype.h                   |    4 +
+ arch/arm64/kernel/cpu_errata.c                     |   64 +
+ arch/arm64/tools/cpucaps                           |    3 +
+ drivers/android/binder.c                           |   14 +-
+ drivers/char/mem.c                                 |    8 +-
+ drivers/char/xillybus/xillybus.h                   |   31 +-
+ drivers/char/xillybus/xillybus_core.c              |  131 +-
+ drivers/char/xillybus/xillybus_of.c                |   86 +-
+ drivers/char/xillybus/xillybus_pcie.c              |   99 +-
+ drivers/char/xillybus/xillyusb.c                   |    1 +
+ drivers/comedi/drivers/dt9812.c                    |  115 +-
+ drivers/comedi/drivers/ni_usb6501.c                |   10 +
+ drivers/comedi/drivers/vmk80xx.c                   |   28 +-
+ drivers/counter/104-quad-8.c                       |  699 ++++---
+ drivers/counter/Kconfig                            |    6 +-
+ drivers/counter/Makefile                           |    1 +
+ drivers/counter/counter-chrdev.c                   |  573 ++++++
+ drivers/counter/counter-chrdev.h                   |   14 +
+ drivers/counter/counter-core.c                     |  191 ++
+ drivers/counter/counter-sysfs.c                    |  959 ++++++++++
+ drivers/counter/counter-sysfs.h                    |   13 +
+ drivers/counter/counter.c                          | 1496 ---------------
+ drivers/counter/ftm-quaddec.c                      |   60 +-
+ drivers/counter/intel-qep.c                        |  146 +-
+ drivers/counter/interrupt-cnt.c                    |   62 +-
+ drivers/counter/microchip-tcb-capture.c            |   93 +-
+ drivers/counter/stm32-lptimer-cnt.c                |  212 +--
+ drivers/counter/stm32-timer-cnt.c                  |  195 +-
+ drivers/counter/ti-eqep.c                          |  180 +-
+ drivers/dma-buf/dma-buf.c                          |   34 +-
+ drivers/extcon/Kconfig                             |    2 +-
+ drivers/extcon/extcon-axp288.c                     |   31 +-
+ drivers/extcon/extcon-max3355.c                    |    1 -
+ drivers/extcon/extcon-usb-gpio.c                   |    3 +-
+ drivers/extcon/extcon-usbc-tusb320.c               |  163 +-
+ drivers/fsi/fsi-occ.c                              |  218 ++-
+ drivers/fsi/fsi-sbefifo.c                          |   28 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c            |    3 +
+ drivers/gpu/drm/armada/armada_gem.c                |    2 +
+ drivers/gpu/drm/drm_gem_framebuffer_helper.c       |    3 +
+ drivers/gpu/drm/drm_gem_shmem_helper.c             |    2 +
+ drivers/gpu/drm/drm_prime.c                        |    3 +
+ drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c        |    3 +
+ drivers/gpu/drm/exynos/exynos_drm_gem.c            |    3 +
+ drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c         |    3 +
+ drivers/gpu/drm/omapdrm/omap_gem_dmabuf.c          |    2 +
+ drivers/gpu/drm/tegra/gem.c                        |    3 +
+ drivers/gpu/drm/vmwgfx/ttm_object.c                |    3 +
+ drivers/hwmon/occ/common.c                         |   30 +-
+ drivers/hwmon/occ/common.h                         |    3 +-
+ drivers/hwmon/occ/p8_i2c.c                         |   15 +-
+ drivers/hwmon/occ/p9_sbe.c                         |   90 +-
+ drivers/hwtracing/coresight/Kconfig                |   13 +
+ drivers/hwtracing/coresight/coresight-cpu-debug.c  |    2 +-
+ drivers/hwtracing/coresight/coresight-cti-core.c   |    2 +-
+ drivers/hwtracing/coresight/coresight-etb10.c      |    5 +-
+ drivers/hwtracing/coresight/coresight-etm-perf.c   |   56 +-
+ drivers/hwtracing/coresight/coresight-etm4x-core.c |  101 +-
+ drivers/hwtracing/coresight/coresight-etm4x.h      |    9 +-
+ .../coresight/coresight-self-hosted-trace.h        |   33 +
+ drivers/hwtracing/coresight/coresight-tmc-core.c   |   21 +-
+ drivers/hwtracing/coresight/coresight-tmc-etf.c    |   10 +-
+ drivers/hwtracing/coresight/coresight-tmc-etr.c    |   52 +-
+ drivers/hwtracing/coresight/coresight-tmc.h        |    6 +-
+ drivers/hwtracing/coresight/coresight-trbe.c       |  534 +++++-
+ drivers/iio/accel/Kconfig                          |   62 +
+ drivers/iio/accel/Makefile                         |    6 +
+ drivers/iio/accel/adxl313.h                        |   54 +
+ drivers/iio/accel/adxl313_core.c                   |  332 ++++
+ drivers/iio/accel/adxl313_i2c.c                    |   66 +
+ drivers/iio/accel/adxl313_spi.c                    |   92 +
+ drivers/iio/accel/adxl355.h                        |   21 +
+ drivers/iio/accel/adxl355_core.c                   |  765 ++++++++
+ drivers/iio/accel/adxl355_i2c.c                    |   62 +
+ drivers/iio/accel/adxl355_spi.c                    |   65 +
+ drivers/iio/accel/adxl372.c                        |    1 +
+ drivers/iio/accel/bma400.h                         |    2 +-
+ drivers/iio/accel/bma400_core.c                    |    7 +-
+ drivers/iio/accel/bma400_i2c.c                     |    4 +-
+ drivers/iio/accel/bma400_spi.c                     |    4 +-
+ drivers/iio/accel/bmc150-accel-core.c              |    5 +-
+ drivers/iio/accel/bmc150-accel-i2c.c               |    4 +-
+ drivers/iio/accel/bmc150-accel-spi.c               |    4 +-
+ drivers/iio/accel/bmc150-accel.h                   |    2 +-
+ drivers/iio/accel/bmi088-accel-core.c              |    4 +-
+ drivers/iio/accel/bmi088-accel-spi.c               |    4 +-
+ drivers/iio/accel/bmi088-accel.h                   |    2 +-
+ drivers/iio/accel/fxls8962af-core.c                |  347 +++-
+ drivers/iio/accel/kxsd9-i2c.c                      |    4 +-
+ drivers/iio/accel/kxsd9-spi.c                      |    4 +-
+ drivers/iio/accel/kxsd9.c                          |    4 +-
+ drivers/iio/accel/kxsd9.h                          |    2 +-
+ drivers/iio/accel/mma7455.h                        |    2 +-
+ drivers/iio/accel/mma7455_core.c                   |    4 +-
+ drivers/iio/accel/mma7455_i2c.c                    |    4 +-
+ drivers/iio/accel/mma7455_spi.c                    |    4 +-
+ drivers/iio/accel/mma7660.c                        |    2 +-
+ drivers/iio/accel/sca3000.c                        |    3 +-
+ drivers/iio/accel/st_accel_core.c                  |   31 +-
+ drivers/iio/accel/st_accel_i2c.c                   |   23 +-
+ drivers/iio/accel/st_accel_spi.c                   |   23 +-
+ drivers/iio/adc/Kconfig                            |   18 +-
+ drivers/iio/adc/Makefile                           |    1 +
+ drivers/iio/adc/ab8500-gpadc.c                     |   22 +-
+ drivers/iio/adc/ad7291.c                           |   70 +-
+ drivers/iio/adc/ad7949.c                           |  254 ++-
+ drivers/iio/adc/ad799x.c                           |   68 +-
+ drivers/iio/adc/aspeed_adc.c                       |  598 +++++-
+ drivers/iio/adc/at91-sama5d2_adc.c                 |  598 ++++--
+ drivers/iio/adc/axp288_adc.c                       |   28 +-
+ drivers/iio/adc/berlin2-adc.c                      |   34 +-
+ drivers/iio/adc/da9150-gpadc.c                     |   27 +-
+ drivers/iio/adc/ep93xx_adc.c                       |    4 +-
+ drivers/iio/adc/fsl-imx25-gcq.c                    |   55 +-
+ drivers/iio/adc/imx7d_adc.c                        |   18 +-
+ drivers/iio/adc/imx8qxp-adc.c                      |  494 +++++
+ drivers/iio/adc/intel_mrfld_adc.c                  |   24 +-
+ drivers/iio/adc/lp8788_adc.c                       |   31 +-
+ drivers/iio/adc/lpc18xx_adc.c                      |   75 +-
+ drivers/iio/adc/max1027.c                          |  278 ++-
+ drivers/iio/adc/max1118.c                          |    7 +-
+ drivers/iio/adc/max1241.c                          |   17 +-
+ drivers/iio/adc/max1363.c                          |   82 +-
+ drivers/iio/adc/meson_saradc.c                     |   39 +-
+ drivers/iio/adc/nau7802.c                          |   50 +-
+ drivers/iio/adc/qcom-pm8xxx-xoadc.c                |    9 +-
+ drivers/iio/adc/rn5t618-adc.c                      |   13 +-
+ drivers/iio/adc/rockchip_saradc.c                  |   31 +-
+ drivers/iio/adc/stm32-adc-core.c                   |    1 +
+ drivers/iio/adc/stm32-adc-core.h                   |   10 +
+ drivers/iio/adc/stm32-adc.c                        |  422 ++++-
+ drivers/iio/adc/ti-adc108s102.c                    |   11 +-
+ drivers/iio/adc/ti-adc128s052.c                    |   33 +-
+ drivers/iio/adc/ti-ads7950.c                       |    4 +-
+ drivers/iio/adc/ti-ads8344.c                       |   27 +-
+ drivers/iio/adc/ti-tsc2046.c                       |    2 +-
+ drivers/iio/adc/twl6030-gpadc.c                    |    6 +-
+ drivers/iio/adc/xilinx-xadc-core.c                 |    5 +-
+ drivers/iio/adc/xilinx-xadc.h                      |    1 -
+ drivers/iio/buffer/industrialio-triggered-buffer.c |    8 +-
+ drivers/iio/buffer/kfifo_buf.c                     |   50 +
+ drivers/iio/chemical/Kconfig                       |   24 +
+ drivers/iio/chemical/Makefile                      |    2 +
+ drivers/iio/chemical/scd4x.c                       |  696 +++++++
+ drivers/iio/chemical/sunrise_co2.c                 |  537 ++++++
+ .../iio/common/hid-sensors/hid-sensor-trigger.c    |    5 +-
+ drivers/iio/common/st_sensors/st_sensors_core.c    |   48 +-
+ drivers/iio/common/st_sensors/st_sensors_i2c.c     |    1 -
+ drivers/iio/common/st_sensors/st_sensors_spi.c     |    1 -
+ drivers/iio/common/st_sensors/st_sensors_trigger.c |   53 +-
+ drivers/iio/dac/ad5064.c                           |   49 +-
+ drivers/iio/dac/ad5380.c                           |   15 +-
+ drivers/iio/dac/ad5446.c                           |   21 +-
+ drivers/iio/dac/ad5592r-base.c                     |    4 +-
+ drivers/iio/dac/ad5592r-base.h                     |    2 +-
+ drivers/iio/dac/ad5592r.c                          |    4 +-
+ drivers/iio/dac/ad5593r.c                          |    4 +-
+ drivers/iio/dac/ad5686-spi.c                       |    4 +-
+ drivers/iio/dac/ad5686.c                           |    4 +-
+ drivers/iio/dac/ad5686.h                           |    2 +-
+ drivers/iio/dac/ad5696-i2c.c                       |    4 +-
+ drivers/iio/dac/ad5766.c                           |   48 +-
+ drivers/iio/dac/ad5770r.c                          |    2 +-
+ drivers/iio/dac/ad7303.c                           |   47 +-
+ drivers/iio/dac/ad8801.c                           |   11 +-
+ drivers/iio/dac/ds4424.c                           |    9 +-
+ drivers/iio/dac/lpc18xx_dac.c                      |   14 +-
+ drivers/iio/dac/ltc1660.c                          |    7 +-
+ drivers/iio/dac/max5821.c                          |    9 +-
+ drivers/iio/dac/mcp4922.c                          |    7 +-
+ drivers/iio/dac/stm32-dac-core.c                   |   18 +-
+ drivers/iio/dac/ti-dac7311.c                       |    7 +-
+ drivers/iio/frequency/Kconfig                      |   12 +
+ drivers/iio/frequency/Makefile                     |    1 +
+ drivers/iio/frequency/adrf6780.c                   |  527 ++++++
+ drivers/iio/gyro/Kconfig                           |    1 -
+ drivers/iio/gyro/adis16080.c                       |   11 +-
+ drivers/iio/gyro/mpu3050-core.c                    |   24 +-
+ drivers/iio/gyro/st_gyro_core.c                    |   27 +-
+ drivers/iio/gyro/st_gyro_i2c.c                     |   23 +-
+ drivers/iio/gyro/st_gyro_spi.c                     |   23 +-
+ drivers/iio/health/afe4403.c                       |   14 +-
+ drivers/iio/health/afe4404.c                       |    8 +-
+ drivers/iio/iio_core.h                             |    4 +
+ drivers/iio/imu/adis.c                             |   17 +-
+ drivers/iio/imu/adis16400.c                        |   20 +-
+ drivers/iio/imu/adis16460.c                        |   18 +-
+ drivers/iio/imu/adis16475.c                        |   19 +-
+ drivers/iio/imu/adis_trigger.c                     |    4 +
+ drivers/iio/imu/inv_mpu6050/inv_mpu_i2c.c          |    2 +-
+ drivers/iio/imu/inv_mpu6050/inv_mpu_magn.c         |   36 +-
+ drivers/iio/imu/st_lsm6dsx/st_lsm6dsx.h            |    4 +-
+ drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c       |   22 +-
+ drivers/iio/imu/st_lsm9ds0/st_lsm9ds0.h            |    1 -
+ drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c       |   29 +-
+ drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_i2c.c        |    6 -
+ drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_spi.c        |    6 -
+ drivers/iio/industrialio-buffer.c                  |  201 +-
+ drivers/iio/industrialio-core.c                    |   10 +-
+ drivers/iio/inkern.c                               |   17 +
+ drivers/iio/light/cm3605.c                         |   29 +-
+ drivers/iio/light/cm36651.c                        |    7 +-
+ drivers/iio/light/gp2ap002.c                       |   24 +-
+ drivers/iio/light/ltr501.c                         |   37 +
+ drivers/iio/light/max44000.c                       |   17 +-
+ drivers/iio/light/noa1305.c                        |    7 +-
+ drivers/iio/magnetometer/Kconfig                   |    2 +-
+ drivers/iio/magnetometer/ak8975.c                  |   35 +
+ drivers/iio/magnetometer/hmc5843.h                 |    2 +-
+ drivers/iio/magnetometer/hmc5843_core.c            |    4 +-
+ drivers/iio/magnetometer/hmc5843_i2c.c             |    4 +-
+ drivers/iio/magnetometer/hmc5843_spi.c             |    4 +-
+ drivers/iio/magnetometer/st_magn_core.c            |   29 +-
+ drivers/iio/magnetometer/st_magn_i2c.c             |   23 +-
+ drivers/iio/magnetometer/st_magn_spi.c             |   23 +-
+ drivers/iio/multiplexer/iio-mux.c                  |    7 +-
+ drivers/iio/potentiometer/max5487.c                |    7 +-
+ drivers/iio/pressure/ms5611.h                      |    2 +-
+ drivers/iio/pressure/ms5611_core.c                 |    4 +-
+ drivers/iio/pressure/ms5611_i2c.c                  |    4 +-
+ drivers/iio/pressure/ms5611_spi.c                  |    4 +-
+ drivers/iio/pressure/st_pressure_core.c            |   27 +-
+ drivers/iio/pressure/st_pressure_i2c.c             |   23 +-
+ drivers/iio/pressure/st_pressure_spi.c             |   27 +-
+ drivers/iio/temperature/Kconfig                    |   10 +
+ drivers/iio/temperature/Makefile                   |    1 +
+ drivers/iio/temperature/ltc2983.c                  |   16 +
+ drivers/iio/temperature/max31865.c                 |  349 ++++
+ drivers/infiniband/core/umem_dmabuf.c              |    3 +
+ drivers/interconnect/qcom/icc-rpm.c                |  263 ++-
+ drivers/interconnect/qcom/icc-rpm.h                |   56 +-
+ drivers/interconnect/qcom/msm8916.c                | 1214 +++++++++++-
+ drivers/interconnect/qcom/msm8939.c                | 1283 ++++++++++++-
+ drivers/interconnect/qcom/qcs404.c                 |  967 +++++++++-
+ drivers/interconnect/qcom/sdm660.c                 | 1940 ++++++++++++++------
+ drivers/interconnect/samsung/Kconfig               |    6 +-
+ drivers/ipack/devices/ipoctal.c                    |   48 +-
+ drivers/media/common/videobuf2/videobuf2-core.c    |    1 +
+ .../media/common/videobuf2/videobuf2-dma-contig.c  |    1 +
+ drivers/media/common/videobuf2/videobuf2-dma-sg.c  |    1 +
+ drivers/media/common/videobuf2/videobuf2-vmalloc.c |    1 +
+ drivers/misc/ad525x_dpot-i2c.c                     |    3 +-
+ drivers/misc/ad525x_dpot-spi.c                     |    3 +-
+ drivers/misc/ad525x_dpot.c                         |    4 +-
+ drivers/misc/ad525x_dpot.h                         |    2 +-
+ drivers/misc/cardreader/rtsx_pcr.c                 |    2 +-
+ drivers/misc/enclosure.c                           |   16 +-
+ drivers/misc/fastrpc.c                             |   21 +-
+ drivers/misc/genwqe/card_utils.c                   |   10 +-
+ drivers/misc/habanalabs/Kconfig                    |    2 +
+ drivers/misc/habanalabs/common/Makefile            |    2 +-
+ .../misc/habanalabs/common/command_submission.c    |  105 +-
+ drivers/misc/habanalabs/common/context.c           |    8 +-
+ drivers/misc/habanalabs/common/debugfs.c           |   51 +
+ drivers/misc/habanalabs/common/device.c            |  159 +-
+ drivers/misc/habanalabs/common/firmware_if.c       |   28 +-
+ drivers/misc/habanalabs/common/habanalabs.h        |   64 +-
+ drivers/misc/habanalabs/common/habanalabs_drv.c    |   24 +-
+ .../{gaudi/gaudi_hwmgr.c => common/hwmgr.c}        |   38 +-
+ drivers/misc/habanalabs/common/hwmon.c             |  194 +-
+ drivers/misc/habanalabs/common/irq.c               |    5 +-
+ drivers/misc/habanalabs/common/memory.c            |  515 +++++-
+ drivers/misc/habanalabs/common/mmu/mmu.c           |   30 +-
+ drivers/misc/habanalabs/common/sysfs.c             |    6 +-
+ drivers/misc/habanalabs/gaudi/Makefile             |    2 +-
+ drivers/misc/habanalabs/gaudi/gaudi.c              |   22 +-
+ drivers/misc/habanalabs/gaudi/gaudiP.h             |    4 -
+ drivers/misc/habanalabs/goya/goya.c                |   13 +-
+ drivers/misc/habanalabs/goya/goyaP.h               |    1 -
+ drivers/misc/habanalabs/goya/goya_hwmgr.c          |   31 -
+ drivers/misc/habanalabs/include/common/cpucp_if.h  |   22 +-
+ .../misc/habanalabs/include/common/hl_boot_if.h    |  189 +-
+ .../misc/habanalabs/include/gaudi/gaudi_fw_if.h    |   10 +-
+ .../misc/habanalabs/include/gaudi/gaudi_reg_map.h  |    1 +
+ drivers/misc/hisi_hikey_usb.c                      |  119 +-
+ drivers/misc/lis3lv02d/lis3lv02d.c                 |    3 +-
+ drivers/misc/lis3lv02d/lis3lv02d.h                 |    2 +-
+ drivers/misc/lis3lv02d/lis3lv02d_spi.c             |    4 +-
+ drivers/misc/lkdtm/bugs.c                          |   77 +
+ drivers/misc/lkdtm/core.c                          |    1 +
+ drivers/misc/lkdtm/lkdtm.h                         |    1 +
+ drivers/misc/mei/pci-txe.c                         |    4 +-
+ drivers/misc/pvpanic/pvpanic-mmio.c                |    9 +-
+ drivers/misc/pvpanic/pvpanic-pci.c                 |   26 +-
+ drivers/misc/pvpanic/pvpanic.c                     |   16 +-
+ drivers/misc/tifm_7xx1.c                           |    2 +-
+ drivers/misc/tifm_core.c                           |    8 +-
+ drivers/most/most_usb.c                            |    5 +-
+ drivers/mux/core.c                                 |   38 +-
+ drivers/nvmem/core.c                               |  174 +-
+ drivers/nvmem/imx-ocotp.c                          |   25 +
+ drivers/phy/broadcom/Kconfig                       |    4 +
+ drivers/phy/cadence/phy-cadence-torrent.c          |  316 +++-
+ drivers/phy/hisilicon/Kconfig                      |   10 +
+ drivers/phy/hisilicon/Makefile                     |    1 +
+ drivers/phy/hisilicon/phy-hi3670-pcie.c            |  845 +++++++++
+ drivers/phy/hisilicon/phy-hisi-inno-usb2.c         |   10 +-
+ drivers/phy/microchip/sparx5_serdes.c              |    4 +-
+ drivers/phy/qualcomm/phy-qcom-qmp.c                |  157 +-
+ drivers/phy/qualcomm/phy-qcom-qmp.h                |    2 +
+ drivers/phy/qualcomm/phy-qcom-qusb2.c              |   21 +-
+ drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c      |    2 +-
+ drivers/phy/rockchip/phy-rockchip-inno-usb2.c      |   11 +-
+ drivers/phy/samsung/Kconfig                        |   16 +-
+ drivers/phy/st/phy-stm32-usbphyc.c                 |  203 ++
+ drivers/phy/ti/phy-gmii-sel.c                      |    2 +
+ drivers/platform/x86/hp_accel.c                    |    3 +-
+ drivers/soundwire/bus.c                            |    2 +-
+ drivers/soundwire/debugfs.c                        |    2 +-
+ drivers/soundwire/qcom.c                           |   27 +
+ drivers/staging/iio/cdc/ad7746.c                   |    4 +-
+ drivers/staging/iio/frequency/ad9832.c             |   82 +-
+ drivers/staging/media/tegra-vde/dmabuf-cache.c     |    3 +
+ drivers/tee/tee_shm.c                              |    3 +
+ drivers/virt/acrn/hsm.c                            |   49 +
+ drivers/virt/acrn/hypercall.h                      |   52 +
+ drivers/virt/nitro_enclaves/Kconfig                |    8 +-
+ drivers/virt/nitro_enclaves/ne_misc_dev.c          |   17 +-
+ drivers/virt/nitro_enclaves/ne_pci_dev.c           |    2 +-
+ drivers/virt/nitro_enclaves/ne_pci_dev.h           |    8 +-
+ drivers/virtio/virtio_dma_buf.c                    |    1 +
+ drivers/xen/gntdev-dmabuf.c                        |    3 +
+ include/dt-bindings/phy/phy-cadence.h              |    2 +
+ include/linux/counter.h                            |  715 ++++----
+ include/linux/counter_enum.h                       |   45 -
+ include/linux/fsi-occ.h                            |    2 +
+ include/linux/iio/buffer.h                         |   11 +
+ include/linux/iio/buffer_impl.h                    |   11 +
+ include/linux/iio/common/st_sensors.h              |   13 -
+ include/linux/iio/driver.h                         |   14 +
+ include/linux/iio/iio-opaque.h                     |    4 +
+ include/linux/iio/imu/adis.h                       |    2 +
+ include/linux/iio/triggered_buffer.h               |   11 +-
+ include/linux/mfd/stm32-lptimer.h                  |    5 +
+ include/linux/mfd/stm32-timers.h                   |    4 +
+ include/linux/mux/consumer.h                       |   23 +-
+ include/linux/mux/driver.h                         |    4 +
+ include/linux/nvmem-provider.h                     |    5 +
+ include/uapi/linux/acrn.h                          |   70 +
+ include/uapi/linux/counter.h                       |  154 ++
+ include/uapi/linux/nitro_enclaves.h                |   10 +-
+ include/uapi/misc/habanalabs.h                     |   84 +-
+ samples/kfifo/bytestream-example.c                 |   12 +-
+ samples/kfifo/inttype-example.c                    |   12 +-
+ samples/kfifo/record-example.c                     |   12 +-
+ samples/nitro_enclaves/ne_ioctl_sample.c           |    7 +-
+ samples/vfio-mdev/mbochs.c                         |    1 +
+ scripts/tags.sh                                    |    6 +-
+ tools/Makefile                                     |   13 +-
+ tools/counter/Build                                |    1 +
+ tools/counter/Makefile                             |   53 +
+ tools/counter/counter_example.c                    |   92 +
+ tools/testing/selftests/lkdtm/config               |    1 +
+ tools/testing/selftests/lkdtm/run.sh               |   10 +-
+ tools/testing/selftests/lkdtm/tests.txt            |    1 +
+ 398 files changed, 22333 insertions(+), 6906 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-fsi-devices-sbefifo
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-chemical-sunrise-co2
+ delete mode 100644 Documentation/ABI/testing/sysfs-bus-iio-scd30
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-temperature-max31865
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-platform-devices-occ-hwmon
+ create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
+ create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad799x.yaml
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/aspeed,ast2600-adc.yaml
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
+ create mode 100644 Documentation/devicetree/bindings/iio/chemical/senseair,sunrise.yaml
+ create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd4x.yaml
+ create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
+ create mode 100644 Documentation/devicetree/bindings/iio/light/liteon,ltr501.yaml
+ create mode 100644 Documentation/devicetree/bindings/iio/temperature/maxim,max31865.yaml
+ create mode 100644 drivers/counter/counter-chrdev.c
+ create mode 100644 drivers/counter/counter-chrdev.h
+ create mode 100644 drivers/counter/counter-core.c
+ create mode 100644 drivers/counter/counter-sysfs.c
+ create mode 100644 drivers/counter/counter-sysfs.h
+ delete mode 100644 drivers/counter/counter.c
+ create mode 100644 drivers/hwtracing/coresight/coresight-self-hosted-trace.h
+ create mode 100644 drivers/iio/accel/adxl313.h
+ create mode 100644 drivers/iio/accel/adxl313_core.c
+ create mode 100644 drivers/iio/accel/adxl313_i2c.c
+ create mode 100644 drivers/iio/accel/adxl313_spi.c
+ create mode 100644 drivers/iio/accel/adxl355.h
+ create mode 100644 drivers/iio/accel/adxl355_core.c
+ create mode 100644 drivers/iio/accel/adxl355_i2c.c
+ create mode 100644 drivers/iio/accel/adxl355_spi.c
+ create mode 100644 drivers/iio/adc/imx8qxp-adc.c
+ create mode 100644 drivers/iio/chemical/scd4x.c
+ create mode 100644 drivers/iio/chemical/sunrise_co2.c
+ create mode 100644 drivers/iio/frequency/adrf6780.c
+ create mode 100644 drivers/iio/temperature/max31865.c
+ rename drivers/misc/habanalabs/{gaudi/gaudi_hwmgr.c => common/hwmgr.c} (61%)
+ create mode 100644 drivers/phy/hisilicon/phy-hi3670-pcie.c
+ delete mode 100644 include/linux/counter_enum.h
+ create mode 100644 include/uapi/linux/counter.h
+ create mode 100644 tools/counter/Build
+ create mode 100644 tools/counter/Makefile
+ create mode 100644 tools/counter/counter_example.c
