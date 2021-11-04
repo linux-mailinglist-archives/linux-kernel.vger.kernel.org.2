@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161EC4454BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:14:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6C844549C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:13:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbhKDORX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 10:17:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45562 "EHLO mail.kernel.org"
+        id S231305AbhKDOQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 10:16:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231683AbhKDORC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 10:17:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF11F60F39;
-        Thu,  4 Nov 2021 14:14:23 +0000 (UTC)
+        id S231210AbhKDOQW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 10:16:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DB35610FD;
+        Thu,  4 Nov 2021 14:13:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636035264;
-        bh=9eoeH7pnTJB8v1PA67KVXdtRUWEJcFxuMbcpgedG0ZY=;
+        s=korg; t=1636035224;
+        bh=7GVP9ZmEGVTpLLR+MX++U7nu19yZXc1jomRbUneDCYE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FPharKRNUCr51sjymmwJFhGMR6SoyhZjW81dli8xODov4MGvk10sGcpQo/9Wt5hKs
-         2uKjoDpyIxrY8Tu/Jtrw0p/h7ufMaYYGt0OBNa4VX98h/HFsEbdETZECeZHAIFRu28
-         g2rMJJil+j6kmfk7ewFnEczlqJ2NGGsrbGI2mcvs=
+        b=T/JG7JAIJKVIIgjNo8HCS2YgrK4a5BhBIHurW3irQkAIAXnA5Fr2X3PZ+8Y/HL4vk
+         t6bD7UAKPRdw3XzLDKg8VAZ62D2ShS3dRui45FfzlAapP1sEo7obkkN/6BV9ajBMdm
+         X8qtnmiiOI3GBKVq4KZ8FYtdcuEkWll5TA+jmVRQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luo Likang <luolikang@nsfocus.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.14 04/16] media: firewire: firedtv-avc: fix a buffer overflow in avc_ca_pmt()
-Date:   Thu,  4 Nov 2021 15:12:35 +0100
-Message-Id: <20211104141200.002450710@linuxfoundation.org>
+        stable@vger.kernel.org, Mikita Lipski <mikita.lipski@amd.com>,
+        Anson Jacob <Anson.Jacob@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.15 10/12] drm/amd/display: Revert "Directly retrain link from debugfs"
+Date:   Thu,  4 Nov 2021 15:12:36 +0100
+Message-Id: <20211104141159.895170076@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211104141159.863820939@linuxfoundation.org>
-References: <20211104141159.863820939@linuxfoundation.org>
+In-Reply-To: <20211104141159.551636584@linuxfoundation.org>
+References: <20211104141159.551636584@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,84 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Anson Jacob <Anson.Jacob@amd.com>
 
-commit 35d2969ea3c7d32aee78066b1f3cf61a0d935a4e upstream.
+commit 1131cadfd7563975f3a4efcc6f7c1fdc872db38b upstream.
 
-The bounds checking in avc_ca_pmt() is not strict enough.  It should
-be checking "read_pos + 4" because it's reading 5 bytes.  If the
-"es_info_length" is non-zero then it reads a 6th byte so there needs to
-be an additional check for that.
+This reverts commit f5b6a20c7ef40599095c796b0500d842ffdbc639.
 
-I also added checks for the "write_pos".  I don't think these are
-required because "read_pos" and "write_pos" are tied together so
-checking one ought to be enough.  But they make the code easier to
-understand for me.  The check on write_pos is:
+This patch broke new settings from taking effect. Hotplug is
+required for new settings to take effect.
 
-	if (write_pos + 4 >= sizeof(c->operand) - 4) {
-
-The first "+ 4" is because we're writing 5 bytes and the last " - 4"
-is to leave space for the CRC.
-
-The other problem is that "length" can be invalid.  It comes from
-"data_length" in fdtv_ca_pmt().
-
-Cc: stable@vger.kernel.org
-Reported-by: Luo Likang <luolikang@nsfocus.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reviewed-by: Mikita Lipski <mikita.lipski@amd.com>
+Acked-by: Mikita Lipski <mikita.lipski@amd.com>
+Signed-off-by: Anson Jacob <Anson.Jacob@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/firewire/firedtv-avc.c |   14 +++++++++++---
- drivers/media/firewire/firedtv-ci.c  |    2 ++
- 2 files changed, 13 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/media/firewire/firedtv-avc.c
-+++ b/drivers/media/firewire/firedtv-avc.c
-@@ -1165,7 +1165,11 @@ int avc_ca_pmt(struct firedtv *fdtv, cha
- 		read_pos += program_info_length;
- 		write_pos += program_info_length;
- 	}
--	while (read_pos < length) {
-+	while (read_pos + 4 < length) {
-+		if (write_pos + 4 >= sizeof(c->operand) - 4) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
- 		c->operand[write_pos++] = msg[read_pos++];
- 		c->operand[write_pos++] = msg[read_pos++];
- 		c->operand[write_pos++] = msg[read_pos++];
-@@ -1177,13 +1181,17 @@ int avc_ca_pmt(struct firedtv *fdtv, cha
- 		c->operand[write_pos++] = es_info_length >> 8;
- 		c->operand[write_pos++] = es_info_length & 0xff;
- 		if (es_info_length > 0) {
-+			if (read_pos >= length) {
-+				ret = -EINVAL;
-+				goto out;
-+			}
- 			pmt_cmd_id = msg[read_pos++];
- 			if (pmt_cmd_id != 1 && pmt_cmd_id != 4)
- 				dev_err(fdtv->device, "invalid pmt_cmd_id %d at stream level\n",
- 					pmt_cmd_id);
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+@@ -247,6 +247,7 @@ static ssize_t dp_link_settings_write(st
+ {
+ 	struct amdgpu_dm_connector *connector = file_inode(f)->i_private;
+ 	struct dc_link *link = connector->dc_link;
++	struct dc *dc = (struct dc *)link->dc;
+ 	struct dc_link_settings prefer_link_settings;
+ 	char *wr_buf = NULL;
+ 	const uint32_t wr_buf_size = 40;
+@@ -313,7 +314,7 @@ static ssize_t dp_link_settings_write(st
+ 	prefer_link_settings.lane_count = param[0];
+ 	prefer_link_settings.link_rate = param[1];
  
--			if (es_info_length > sizeof(c->operand) - 4 -
--					     write_pos) {
-+			if (es_info_length > sizeof(c->operand) - 4 - write_pos ||
-+			    es_info_length > length - read_pos) {
- 				ret = -EINVAL;
- 				goto out;
- 			}
---- a/drivers/media/firewire/firedtv-ci.c
-+++ b/drivers/media/firewire/firedtv-ci.c
-@@ -134,6 +134,8 @@ static int fdtv_ca_pmt(struct firedtv *f
- 	} else {
- 		data_length = msg->msg[3];
- 	}
-+	if (data_length > sizeof(msg->msg) - data_pos)
-+		return -EINVAL;
+-	dp_retrain_link_dp_test(link, &prefer_link_settings, false);
++	dc_link_set_preferred_training_settings(dc, &prefer_link_settings, NULL, link, true);
  
- 	return avc_ca_pmt(fdtv, &msg->msg[data_pos], data_length);
- }
+ 	kfree(wr_buf);
+ 	return size;
 
 
