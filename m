@@ -2,519 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D358445828
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2843445830
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233818AbhKDRTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:19:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233220AbhKDRTL (ORCPT
+        id S233829AbhKDRVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:21:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33340 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233655AbhKDRVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:19:11 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C52C061203
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 10:16:33 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id v64so16122765ybi.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 10:16:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Acco0uzPq0SShZZCW5r/el/O8oaw0UmpvbFtvedgdaI=;
-        b=nmm+lbUBF6kHXZ7JDnvhYjTQxoYARUJCyFhGIzPTGVRBxjTIl5uBbUjMtEm+riy01A
-         CoWzB2y0BQcmFBMt0UFKrP5TzWZUCCPawOeQTOq9FtnQ4oPfFkESHclNqwrlplZrCxOE
-         oonKd1i6nrF7K57XM6sSpOlupWHNyVEqSxdoGXqm3fdqoYJDdOXFGQMGuIlq/VUXmtiY
-         7ZB8DU8pyz+LoJBnVvCLJARK9tEGiqkGhVG93+BIs/6zGKkQ1ctc11SUn2TRvR6zmt9/
-         //3MEtpNSX9y98H5RCQnNsDb1sTGZgIobrbJ70oEwSEV1Kiowg2wi3QWRjqzpUMiue99
-         27jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Acco0uzPq0SShZZCW5r/el/O8oaw0UmpvbFtvedgdaI=;
-        b=X9AoMKNYyUrGyXPG0fQhdGjUWgaAze8wQC3kud+ZT9X2uA3x2ywyB7WfzNJ27CaaBA
-         SxAOE7yWzYW2qjhTkS+pvIPe9gMVdXOZiNdl9TDHMgtgcBSl0rq6ndiieRGmPmnNIpQF
-         oE/lVPtPPHnkoJorDJxp01meGdKhUigQNqrBmuakdWZjUMbV7qwUTbZxlFDklUepjy7C
-         a/mWaXVLCcVkj1a44HOlmfG3qU6w0PKCfx9KIwcXlQMl0Dt976si4w0CQZCiKLkJn8Ne
-         /HBJe4Fr4aZe8Vxp1mvGxzDrS+yqPDp70RfXgC6tpdDs5c1wxixtFaa8Hmh3I6t22jRJ
-         /SbA==
-X-Gm-Message-State: AOAM532kcoRxX7KTJZal47NotY/6nxpXVVPVI3c6stwlkLAOgGhJRS5p
-        n7OaRMee0cvQQ2cfcsSQ+i0b37FnH8e2V+byoPJXjQ==
-X-Google-Smtp-Source: ABdhPJyNTBZ/oqL/3tK6lBScAaTRp9QXzwBfpeT/w+3PMIFGWuQNMXSrzFOp+QwPGp8ml4xWwFoPbqThqDrzo7ILPSo=
-X-Received: by 2002:a5b:d50:: with SMTP id f16mr44490092ybr.350.1636046192263;
- Thu, 04 Nov 2021 10:16:32 -0700 (PDT)
+        Thu, 4 Nov 2021 13:21:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636046304;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=l89hx7/8/FrnaCKSeke77qbOyrO7Fe6LyIp+mc6FNKU=;
+        b=DgQB+Wdit/13m1+HuxzaqrP80p2jWK66GcsI1Qn8VVgkmXy0PeVLjvDphxUzHq7WlH3/aE
+        kZmZ8Ss6H9QWR6vjAOJJd6NDetOIbp+QH0N0WljjHIolBEbbDT7Fce7Eb36IvdnR7hvPHR
+        j+gYwWxnKNnYyqMNO9PDT2vJGF17Dx8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-520-CBrvaZyaMCuXIZIe2yKnxw-1; Thu, 04 Nov 2021 13:18:21 -0400
+X-MC-Unique: CBrvaZyaMCuXIZIe2yKnxw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBD7C1018720;
+        Thu,  4 Nov 2021 17:18:19 +0000 (UTC)
+Received: from wcosta.com (ovpn-116-33.gru2.redhat.com [10.97.116.33])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CB52C19D9F;
+        Thu,  4 Nov 2021 17:18:14 +0000 (UTC)
+From:   wander@redhat.com
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Wander Lairson Costa <wander@redhat.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Johan Hovold <johan@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        linux-serial@vger.kernel.org (open list:SERIAL DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] tty: serial: Use fifo in 8250 console driver
+Date:   Thu,  4 Nov 2021 14:17:31 -0300
+Message-Id: <20211104171734.137707-1-wander@redhat.com>
 MIME-Version: 1.0
-References: <20211102002203.1046069-1-rananta@google.com> <20211102002203.1046069-2-rananta@google.com>
- <YYMCgC6qMEEWhNrk@google.com>
-In-Reply-To: <YYMCgC6qMEEWhNrk@google.com>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Thu, 4 Nov 2021 10:16:21 -0700
-Message-ID: <CAJHc60wGi3wLNv97dFo1BoOjRUCpNSvw6u_nA+uunJX=k5+dEA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/8] KVM: arm64: Factor out firmware register handling
- from psci.c
-To:     Oliver Upton <oupton@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oliver,
+From: Wander Lairson Costa <wander@redhat.com>
 
-On Wed, Nov 3, 2021 at 2:43 PM Oliver Upton <oupton@google.com> wrote:
->
-> Hi Raghu,
->
-> On Tue, Nov 02, 2021 at 12:21:56AM +0000, Raghavendra Rao Ananta wrote:
-> > Common hypercall firmware register handing is currently employed
-> > by psci.c. Since the upcoming patches add more of these registers,
-> > it's better to move the generic handling to hypercall.c for a
-> > cleaner presentation.
-> >
-> > While we are at it, collect all the firmware registers under
-> > fw_reg_ids[] to help implement kvm_arm_get_fw_num_regs() and
-> > kvm_arm_copy_fw_reg_indices() in a generic way.
-> >
-> > No functional change intended.
-> >
-> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > ---
-> >  arch/arm64/kvm/guest.c       |   2 +-
-> >  arch/arm64/kvm/hypercalls.c  | 151 +++++++++++++++++++++++++++++++
-> >  arch/arm64/kvm/psci.c        | 167 +++--------------------------------
-> >  include/kvm/arm_hypercalls.h |   7 ++
-> >  include/kvm/arm_psci.h       |   8 +-
-> >  5 files changed, 172 insertions(+), 163 deletions(-)
-> >
-> > diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
-> > index 5ce26bedf23c..625f97f7b304 100644
-> > --- a/arch/arm64/kvm/guest.c
-> > +++ b/arch/arm64/kvm/guest.c
-> > @@ -18,7 +18,7 @@
-> >  #include <linux/string.h>
-> >  #include <linux/vmalloc.h>
-> >  #include <linux/fs.h>
-> > -#include <kvm/arm_psci.h>
-> > +#include <kvm/arm_hypercalls.h>
-> >  #include <asm/cputype.h>
-> >  #include <linux/uaccess.h>
-> >  #include <asm/fpsimd.h>
-> > diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
-> > index 30da78f72b3b..d030939c5929 100644
-> > --- a/arch/arm64/kvm/hypercalls.c
-> > +++ b/arch/arm64/kvm/hypercalls.c
-> > @@ -146,3 +146,154 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
-> >       smccc_set_retval(vcpu, val[0], val[1], val[2], val[3]);
-> >       return 1;
-> >  }
-> > +
-> > +static const u64 fw_reg_ids[] = {
-> > +     KVM_REG_ARM_PSCI_VERSION,
-> > +     KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1,
-> > +     KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2,
-> > +};
-> > +
-> > +int kvm_arm_get_fw_num_regs(struct kvm_vcpu *vcpu)
-> > +{
-> > +     return ARRAY_SIZE(fw_reg_ids);
-> > +}
-> > +
-> > +int kvm_arm_copy_fw_reg_indices(struct kvm_vcpu *vcpu, u64 __user *uindices)
-> > +{
-> > +     int i;
-> > +
-> > +     for (i = 0; i < ARRAY_SIZE(fw_reg_ids); i++) {
-> > +             if (put_user(fw_reg_ids[i], uindices))
-> > +                     return -EFAULT;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
->
-> It would appear that this patch is separating out the hypercall services
-> to each handle their own FW regs. At the same time, this is
-> consolidating the register enumeration into a single place.
->
-> It would be nice to keep the scoping consistent with your accessors
-> below, or simply just handle all regs in hypercalls.c. Abstracting
-> per-service might result in a lot of boilerplate, though.
->
-It's neither here nor there, unfortunately, because of how the fw
-registers exists. We have a dedicated fw register for psci and a file
-of its own (psci.c). Some of the other services, such as TRNG, have
-their own file, but because of the bitmap design, they won't have
-their own fw register. And the ARCH_WORKAROUND have their dedicated
-registers, but no file of their own. So, at best I was aiming to push
-all the things relevant to a service in its own file (psci for
-example), just to have a better file-context, while leaving others
-(and generic handling stuff) in hypercall.c.
+Note: I am using a small test app + driver located at [0] for the
+problem description. serco is a driver whose write function dispatches
+to the serial controller. sertest is a user-mode app that writes n bytes
+to the serial console using the serco driver.
 
-Just to maintain consistency, I can create a dedicated file for the
-ARCH_WORKAROUND registers, if you feel that's better.
+Recently I got a report of a soft lockup while loading a bunch a
+scsi_debug devices (> 500).
 
-> > +#define KVM_REG_FEATURE_LEVEL_WIDTH  4
-> > +#define KVM_REG_FEATURE_LEVEL_MASK   (BIT(KVM_REG_FEATURE_LEVEL_WIDTH) - 1)
-> > +
-> > +/*
-> > + * Convert the workaround level into an easy-to-compare number, where higher
-> > + * values mean better protection.
-> > + */
-> > +static int get_kernel_wa_level(u64 regid)
-> > +{
-> > +     switch (regid) {
-> > +     case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1:
-> > +             switch (arm64_get_spectre_v2_state()) {
-> > +             case SPECTRE_VULNERABLE:
-> > +                     return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_NOT_AVAIL;
-> > +             case SPECTRE_MITIGATED:
-> > +                     return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_AVAIL;
-> > +             case SPECTRE_UNAFFECTED:
-> > +                     return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_NOT_REQUIRED;
-> > +             }
-> > +             return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_NOT_AVAIL;
-> > +     case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2:
-> > +             switch (arm64_get_spectre_v4_state()) {
-> > +             case SPECTRE_MITIGATED:
-> > +                     /*
-> > +                      * As for the hypercall discovery, we pretend we
-> > +                      * don't have any FW mitigation if SSBS is there at
-> > +                      * all times.
-> > +                      */
-> > +                     if (cpus_have_final_cap(ARM64_SSBS))
-> > +                             return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL;
-> > +                     fallthrough;
-> > +             case SPECTRE_UNAFFECTED:
-> > +                     return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_REQUIRED;
-> > +             case SPECTRE_VULNERABLE:
-> > +                     return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL;
-> > +             }
-> > +     }
-> > +
-> > +     return -EINVAL;
-> > +}
-> > +
-> > +int kvm_arm_get_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
-> > +{
-> > +     void __user *uaddr = (void __user *)(long)reg->addr;
-> > +     u64 val;
-> > +
-> > +     switch (reg->id) {
-> > +     case KVM_REG_ARM_PSCI_VERSION:
-> > +             val = kvm_psci_version(vcpu, vcpu->kvm);
->
-> Should this become kvm_arm_get_fw_reg() to consistently genericize the
-> PSCI FW register accessors?
->
-Sorry, I didn't follow. Did you mean, "kvm_arm_get_psci_fw_reg()"?
+While investigating it, I noticed that the serial console throughput
+(called by the printk code) is way below the configured speed of 115200
+bps in a HP Proliant DL380 Gen9 server. I was expecting something above
+10KB/s, but I got 2.5KB/s. I then built a simple driver [0] to isolate
+the console from the printk code. Here it is:
 
-> > +             break;
-> > +     case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1:
-> > +     case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2:
-> > +             val = get_kernel_wa_level(reg->id) & KVM_REG_FEATURE_LEVEL_MASK;
-> > +             break;
-> > +     default:
-> > +             return -ENOENT;
-> > +     }
-> > +
-> > +     if (copy_to_user(uaddr, &val, KVM_REG_SIZE(reg->id)))
-> > +             return -EFAULT;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +int kvm_arm_set_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
-> > +{
-> > +     void __user *uaddr = (void __user *)(long)reg->addr;
-> > +     u64 val;
-> > +     int wa_level;
-> > +
-> > +     if (copy_from_user(&val, uaddr, KVM_REG_SIZE(reg->id)))
-> > +             return -EFAULT;
-> > +
-> > +     switch (reg->id) {
-> > +     case KVM_REG_ARM_PSCI_VERSION:
-> > +             return kvm_arm_set_psci_fw_reg(vcpu, val);
-> > +
-> > +     case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1:
-> > +             if (val & ~KVM_REG_FEATURE_LEVEL_MASK)
-> > +                     return -EINVAL;
-> > +
-> > +             if (get_kernel_wa_level(reg->id) < val)
-> > +                     return -EINVAL;
-> > +
-> > +             return 0;
-> > +
-> > +     case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2:
-> > +             if (val & ~(KVM_REG_FEATURE_LEVEL_MASK |
-> > +                         KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_ENABLED))
-> > +                     return -EINVAL;
-> > +
-> > +             /* The enabled bit must not be set unless the level is AVAIL. */
-> > +             if ((val & KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_ENABLED) &&
-> > +                 (val & KVM_REG_FEATURE_LEVEL_MASK) != KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_AVAIL)
-> > +                     return -EINVAL;
-> > +
-> > +             /*
-> > +              * Map all the possible incoming states to the only two we
-> > +              * really want to deal with.
-> > +              */
-> > +             switch (val & KVM_REG_FEATURE_LEVEL_MASK) {
-> > +             case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL:
-> > +             case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_UNKNOWN:
-> > +                     wa_level = KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL;
-> > +                     break;
-> > +             case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_AVAIL:
-> > +             case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_REQUIRED:
-> > +                     wa_level = KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_REQUIRED;
-> > +                     break;
-> > +             default:
-> > +                     return -EINVAL;
-> > +             }
-> > +
-> > +             /*
-> > +              * We can deal with NOT_AVAIL on NOT_REQUIRED, but not the
-> > +              * other way around.
-> > +              */
-> > +             if (get_kernel_wa_level(reg->id) < wa_level)
-> > +                     return -EINVAL;
-> > +
-> > +             return 0;
-> > +     default:
-> > +             return -ENOENT;
-> > +     }
-> > +
-> > +     return -EINVAL;
-> > +}
-> > diff --git a/arch/arm64/kvm/psci.c b/arch/arm64/kvm/psci.c
-> > index 74c47d420253..b9bcbc919b19 100644
-> > --- a/arch/arm64/kvm/psci.c
-> > +++ b/arch/arm64/kvm/psci.c
-> > @@ -404,168 +404,25 @@ int kvm_psci_call(struct kvm_vcpu *vcpu)
-> >       };
-> >  }
-> >
-> > -int kvm_arm_get_fw_num_regs(struct kvm_vcpu *vcpu)
-> > +int kvm_arm_set_psci_fw_reg(struct kvm_vcpu *vcpu, u64 val)
-> >  {
-> > -     return 3;               /* PSCI version and two workaround registers */
-> > -}
-> > -
-> > -int kvm_arm_copy_fw_reg_indices(struct kvm_vcpu *vcpu, u64 __user *uindices)
-> > -{
-> > -     if (put_user(KVM_REG_ARM_PSCI_VERSION, uindices++))
-> > -             return -EFAULT;
-> > -
-> > -     if (put_user(KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1, uindices++))
-> > -             return -EFAULT;
-> > -
-> > -     if (put_user(KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2, uindices++))
-> > -             return -EFAULT;
-> > -
-> > -     return 0;
-> > -}
-> > +     bool wants_02;
-> >
-> > -#define KVM_REG_FEATURE_LEVEL_WIDTH  4
-> > -#define KVM_REG_FEATURE_LEVEL_MASK   (BIT(KVM_REG_FEATURE_LEVEL_WIDTH) - 1)
-> > -
-> > -/*
-> > - * Convert the workaround level into an easy-to-compare number, where higher
-> > - * values mean better protection.
-> > - */
-> > -static int get_kernel_wa_level(u64 regid)
-> > -{
-> > -     switch (regid) {
-> > -     case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1:
-> > -             switch (arm64_get_spectre_v2_state()) {
-> > -             case SPECTRE_VULNERABLE:
-> > -                     return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_NOT_AVAIL;
-> > -             case SPECTRE_MITIGATED:
-> > -                     return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_AVAIL;
-> > -             case SPECTRE_UNAFFECTED:
-> > -                     return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_NOT_REQUIRED;
-> > -             }
-> > -             return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1_NOT_AVAIL;
-> > -     case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2:
-> > -             switch (arm64_get_spectre_v4_state()) {
-> > -             case SPECTRE_MITIGATED:
-> > -                     /*
-> > -                      * As for the hypercall discovery, we pretend we
-> > -                      * don't have any FW mitigation if SSBS is there at
-> > -                      * all times.
-> > -                      */
-> > -                     if (cpus_have_final_cap(ARM64_SSBS))
-> > -                             return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL;
-> > -                     fallthrough;
-> > -             case SPECTRE_UNAFFECTED:
-> > -                     return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_REQUIRED;
-> > -             case SPECTRE_VULNERABLE:
-> > -                     return KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL;
-> > -             }
-> > -     }
-> > +     wants_02 = test_bit(KVM_ARM_VCPU_PSCI_0_2, vcpu->arch.features);
-> >
-> > -     return -EINVAL;
-> > -}
-> > -
-> > -int kvm_arm_get_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
-> > -{
-> > -     void __user *uaddr = (void __user *)(long)reg->addr;
-> > -     u64 val;
-> > -
-> > -     switch (reg->id) {
-> > -     case KVM_REG_ARM_PSCI_VERSION:
-> > -             val = kvm_psci_version(vcpu, vcpu->kvm);
-> > -             break;
-> > -     case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1:
-> > -     case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2:
-> > -             val = get_kernel_wa_level(reg->id) & KVM_REG_FEATURE_LEVEL_MASK;
-> > -             break;
-> > -     default:
-> > -             return -ENOENT;
-> > -     }
-> > -
-> > -     if (copy_to_user(uaddr, &val, KVM_REG_SIZE(reg->id)))
-> > -             return -EFAULT;
-> > -
-> > -     return 0;
-> > -}
-> > -
-> > -int kvm_arm_set_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
-> > -{
-> > -     void __user *uaddr = (void __user *)(long)reg->addr;
-> > -     u64 val;
-> > -     int wa_level;
-> > -
-> > -     if (copy_from_user(&val, uaddr, KVM_REG_SIZE(reg->id)))
-> > -             return -EFAULT;
-> > -
-> > -     switch (reg->id) {
-> > -     case KVM_REG_ARM_PSCI_VERSION:
-> > -     {
-> > -             bool wants_02;
-> > -
-> > -             wants_02 = test_bit(KVM_ARM_VCPU_PSCI_0_2, vcpu->arch.features);
-> > -
-> > -             switch (val) {
-> > -             case KVM_ARM_PSCI_0_1:
-> > -                     if (wants_02)
-> > -                             return -EINVAL;
-> > -                     vcpu->kvm->arch.psci_version = val;
-> > -                     return 0;
-> > -             case KVM_ARM_PSCI_0_2:
-> > -             case KVM_ARM_PSCI_1_0:
-> > -                     if (!wants_02)
-> > -                             return -EINVAL;
-> > -                     vcpu->kvm->arch.psci_version = val;
-> > -                     return 0;
-> > -             }
-> > -             break;
-> > -     }
-> > -
-> > -     case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_1:
-> > -             if (val & ~KVM_REG_FEATURE_LEVEL_MASK)
-> > -                     return -EINVAL;
-> > -
-> > -             if (get_kernel_wa_level(reg->id) < val)
-> > +     switch (val) {
-> > +     case KVM_ARM_PSCI_0_1:
-> > +             if (wants_02)
-> >                       return -EINVAL;
-> > -
-> > +             vcpu->kvm->arch.psci_version = val;
-> >               return 0;
-> > -
-> > -     case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2:
-> > -             if (val & ~(KVM_REG_FEATURE_LEVEL_MASK |
-> > -                         KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_ENABLED))
-> > -                     return -EINVAL;
-> > -
-> > -             /* The enabled bit must not be set unless the level is AVAIL. */
-> > -             if ((val & KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_ENABLED) &&
-> > -                 (val & KVM_REG_FEATURE_LEVEL_MASK) != KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_AVAIL)
-> > -                     return -EINVAL;
-> > -
-> > -             /*
-> > -              * Map all the possible incoming states to the only two we
-> > -              * really want to deal with.
-> > -              */
-> > -             switch (val & KVM_REG_FEATURE_LEVEL_MASK) {
-> > -             case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL:
-> > -             case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_UNKNOWN:
-> > -                     wa_level = KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_AVAIL;
-> > -                     break;
-> > -             case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_AVAIL:
-> > -             case KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_REQUIRED:
-> > -                     wa_level = KVM_REG_ARM_SMCCC_ARCH_WORKAROUND_2_NOT_REQUIRED;
-> > -                     break;
-> > -             default:
-> > -                     return -EINVAL;
-> > -             }
-> > -
-> > -             /*
-> > -              * We can deal with NOT_AVAIL on NOT_REQUIRED, but not the
-> > -              * other way around.
-> > -              */
-> > -             if (get_kernel_wa_level(reg->id) < wa_level)
-> > +     case KVM_ARM_PSCI_0_2:
-> > +     case KVM_ARM_PSCI_1_0:
-> > +             if (!wants_02)
-> >                       return -EINVAL;
-> > -
-> > +             vcpu->kvm->arch.psci_version = val;
-> >               return 0;
-> >       default:
-> > -             return -ENOENT;
-> > +             return -EINVAL;
-> >       }
-> > -
-> > -     return -EINVAL;
-> >  }
-> > diff --git a/include/kvm/arm_hypercalls.h b/include/kvm/arm_hypercalls.h
-> > index 0e2509d27910..5d38628a8d04 100644
-> > --- a/include/kvm/arm_hypercalls.h
-> > +++ b/include/kvm/arm_hypercalls.h
-> > @@ -40,4 +40,11 @@ static inline void smccc_set_retval(struct kvm_vcpu *vcpu,
-> >       vcpu_set_reg(vcpu, 3, a3);
-> >  }
-> >
-> > +struct kvm_one_reg;
-> > +
-> > +int kvm_arm_get_fw_num_regs(struct kvm_vcpu *vcpu);
-> > +int kvm_arm_copy_fw_reg_indices(struct kvm_vcpu *vcpu, u64 __user *uindices);
-> > +int kvm_arm_get_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg);
-> > +int kvm_arm_set_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg);
-> > +
-> >  #endif
-> > diff --git a/include/kvm/arm_psci.h b/include/kvm/arm_psci.h
-> > index 5b58bd2fe088..eddbd7d805e9 100644
-> > --- a/include/kvm/arm_psci.h
-> > +++ b/include/kvm/arm_psci.h
-> > @@ -41,12 +41,6 @@ static inline int kvm_psci_version(struct kvm_vcpu *vcpu, struct kvm *kvm)
-> >
-> >
-> >  int kvm_psci_call(struct kvm_vcpu *vcpu);
-> > -
-> > -struct kvm_one_reg;
-> > -
-> > -int kvm_arm_get_fw_num_regs(struct kvm_vcpu *vcpu);
-> > -int kvm_arm_copy_fw_reg_indices(struct kvm_vcpu *vcpu, u64 __user *uindices);
-> > -int kvm_arm_get_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg);
-> > -int kvm_arm_set_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg);
-> > +int kvm_arm_set_psci_fw_reg(struct kvm_vcpu *vcpu, u64 val);
-> >
-> >  #endif /* __KVM_ARM_PSCI_H__ */
-> > --
-> > 2.33.1.1089.g2158813163f-goog
-> >
+$ time ./sertest -n 2500 /tmp/serco
+
+real    0m0.997s
+user    0m0.000s
+sys     0m0.997s
+
+With the help of the function tracer, I then noticed the serial
+controller was taking around 410us seconds to dispatch one single byte:
+
+$ trace-cmd record -p function_graph -g serial8250_console_write \
+   ./sertest -n 1 /tmp/serco
+
+$ trace-cmd report
+
+            |  serial8250_console_write() {
+ 0.384 us   |    _raw_spin_lock_irqsave();
+ 1.836 us   |    io_serial_in();
+ 1.667 us   |    io_serial_out();
+            |    uart_console_write() {
+            |      serial8250_console_putchar() {
+            |        wait_for_xmitr() {
+ 1.870 us   |          io_serial_in();
+ 2.238 us   |        }
+ 1.737 us   |        io_serial_out();
+ 4.318 us   |      }
+ 4.675 us   |    }
+            |    wait_for_xmitr() {
+ 1.635 us   |      io_serial_in();
+            |      __const_udelay() {
+ 1.125 us   |        delay_tsc();
+ 1.429 us   |      }
+...
+...
+...
+ 1.683 us   |      io_serial_in();
+            |      __const_udelay() {
+ 1.248 us   |        delay_tsc();
+ 1.486 us   |      }
+ 1.671 us   |      io_serial_in();
+ 411.342 us |    }
+
+In another machine, I measured a throughput of 11.5KB/s, with the serial
+controller taking between 80-90us to send each byte. That matches the
+expected throughput for a configuration of 115200 bps.
+
+This patch changes the serial8250_console_write to use the 16550 fifo
+if available. In my artificial benchmark I could get a throughput
+increase up to 100% in some cases, but in the real case described at the
+beginning the gain was of about 25%.
+
+[0] https://github.com/walac/serial-console-test
+
+Signed-off-by: Wander Lairson Costa <wander@redhat.com>
+---
+ drivers/tty/serial/8250/8250.h      |  3 ++
+ drivers/tty/serial/8250/8250_port.c | 63 +++++++++++++++++++++++++----
+ 2 files changed, 59 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/tty/serial/8250/8250.h b/drivers/tty/serial/8250/8250.h
+index 6473361525d1..c711bf118cc1 100644
+--- a/drivers/tty/serial/8250/8250.h
++++ b/drivers/tty/serial/8250/8250.h
+@@ -83,6 +83,9 @@ struct serial8250_config {
+ #define UART_CAP_MINI	BIT(17)	/* Mini UART on BCM283X family lacks:
+ 					 * STOP PARITY EPAR SPAR WLEN5 WLEN6
+ 					 */
++#define UART_CAP_CWFIFO BIT(18) /* Use the UART Fifo in
++				 * serial8250_console_write
++				 */
+ 
+ #define UART_BUG_QUOT	BIT(0)	/* UART has buggy quot LSB */
+ #define UART_BUG_TXEN	BIT(1)	/* UART has buggy TX IIR status */
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index 5775cbff8f6e..e58938c435c9 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -82,7 +82,7 @@ static const struct serial8250_config uart_config[] = {
+ 		.tx_loadsz	= 16,
+ 		.fcr		= UART_FCR_ENABLE_FIFO | UART_FCR_R_TRIG_10,
+ 		.rxtrig_bytes	= {1, 4, 8, 14},
+-		.flags		= UART_CAP_FIFO,
++		.flags		= UART_CAP_FIFO | UART_CAP_CWFIFO,
+ 	},
+ 	[PORT_CIRRUS] = {
+ 		.name		= "Cirrus",
+@@ -2063,10 +2063,7 @@ static void serial8250_break_ctl(struct uart_port *port, int break_state)
+ 	serial8250_rpm_put(up);
+ }
+ 
+-/*
+- *	Wait for transmitter & holding register to empty
+- */
+-static void wait_for_xmitr(struct uart_8250_port *up, int bits)
++static void wait_for_lsr(struct uart_8250_port *up, int bits)
+ {
+ 	unsigned int status, tmout = 10000;
+ 
+@@ -2083,6 +2080,16 @@ static void wait_for_xmitr(struct uart_8250_port *up, int bits)
+ 		udelay(1);
+ 		touch_nmi_watchdog();
+ 	}
++}
++
++/*
++ *	Wait for transmitter & holding register to empty
++ */
++static void wait_for_xmitr(struct uart_8250_port *up, int bits)
++{
++	unsigned int tmout;
++
++	wait_for_lsr(up, bits);
+ 
+ 	/* Wait up to 1s for flow control if necessary */
+ 	if (up->port.flags & UPF_CONS_FLOW) {
+@@ -3332,6 +3339,35 @@ static void serial8250_console_restore(struct uart_8250_port *up)
+ 	serial8250_out_MCR(up, UART_MCR_DTR | UART_MCR_RTS);
+ }
+ 
++/*
++ * Print a string to the serial port using the device FIFO
++ *
++ * It sends fifosize bytes and then waits for the fifo
++ * to get empty.
++ */
++static void serial8250_console_fifo_write(struct uart_8250_port *up,
++		const char *s, unsigned int count)
++{
++	int i;
++	const char *end = s + count;
++	unsigned int fifosize = up->port.fifosize;
++	bool cr_sent = false;
++
++	while (s != end) {
++		wait_for_lsr(up, UART_LSR_THRE);
++
++		for (i = 0; i < fifosize && s != end; ++i) {
++			if (*s == '\n' && !cr_sent) {
++				serial_out(up, UART_TX, '\r');
++				cr_sent = true;
++			} else {
++				serial_out(up, UART_TX, *s++);
++				cr_sent = false;
++			}
++		}
++	}
++}
++
+ /*
+  *	Print a string to the serial port trying not to disturb
+  *	any possible real use of the port...
+@@ -3347,7 +3383,7 @@ void serial8250_console_write(struct uart_8250_port *up, const char *s,
+ 	struct uart_8250_em485 *em485 = up->em485;
+ 	struct uart_port *port = &up->port;
+ 	unsigned long flags;
+-	unsigned int ier;
++	unsigned int ier, use_fifo;
+ 	int locked = 1;
+ 
+ 	touch_nmi_watchdog();
+@@ -3379,7 +3415,20 @@ void serial8250_console_write(struct uart_8250_port *up, const char *s,
+ 		mdelay(port->rs485.delay_rts_before_send);
+ 	}
+ 
+-	uart_console_write(port, s, count, serial8250_console_putchar);
++	use_fifo = (up->capabilities & UART_CAP_CWFIFO)
++		&& port->fifosize > 1
++		&& (serial_port_in(port, UART_FCR) & UART_FCR_ENABLE_FIFO)
++		/*
++		 * After we put a data in the fifo, the controller will send
++		 * it regardless of the CTS state. Therefore, only use fifo
++		 * if we don't use control flow.
++		 */
++		&& !(up->port.flags & UPF_CONS_FLOW);
++
++	if (use_fifo)
++		serial8250_console_fifo_write(up, s, count);
++	else
++		uart_console_write(port, s, count, serial8250_console_putchar);
+ 
+ 	/*
+ 	 *	Finally, wait for transmitter to become empty
+-- 
+2.27.0
+
