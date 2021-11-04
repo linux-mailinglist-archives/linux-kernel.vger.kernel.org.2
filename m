@@ -2,110 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2840B44578A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:50:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFDDF44578C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:50:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231855AbhKDQxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 12:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47764 "EHLO
+        id S231861AbhKDQxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 12:53:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231697AbhKDQxO (ORCPT
+        with ESMTP id S231635AbhKDQx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 12:53:14 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B45B2C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 09:50:36 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id p17so5942789pgj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 09:50:36 -0700 (PDT)
+        Thu, 4 Nov 2021 12:53:29 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14A8C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 09:50:50 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id v4so4691475qtw.8
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 09:50:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=M0azN/cEKtvFWgkC6HeTc7byICS4Dm3BxYG0AeNA3pM=;
-        b=kjcteU6hV/hrbM/SLYf2gUKdOASzr7J2f+CRd9keT5B71ArwF4j1jNLZ1qO9/vsPIR
-         77Xv/kef+n3UPxLUnANSF6VGZTnK/NvHEzovVksRcLKhkbqcbvbeyMj/FZbyS1fly/NX
-         bha5Ablsj06NrWnX68HTswkBY578SEMThy1jlVOhPQ22KhqZxFmy0/GFAEP6fERn7MwP
-         Z/dH9NJTq8hVdaLg5XOZfIv+C+x5RsJog1k1yhrGm1wCzjlHCh7S+V7Chod7QHFfVJkq
-         PgPx35Uio+TiI2MzeN8fwvwrDs7k/PpyNh/OaZ4LQ0eIs09Kh2+urK66ZNUUr2ub+j4r
-         UCDg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NjbAK412qb29GbpY1xd3R5b4kkmRp4MYsmfj5FXSWyg=;
+        b=BMgpFhn6XZ8mAAx6s0bg5L5OjDnCK0h3BH3jKTmZp+xZ/lb34cHo6zUumqPDWQzDcf
+         NlYlMCqFnvSsCHFCoJfZhQIzh2DOxxZSno/kuAzrP4oVZn3AR9Qo1g2V/CDWPg+VbMRK
+         vN3H6p4x9uGt5O8J8immNQhLbYfQS1a7JBXNc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M0azN/cEKtvFWgkC6HeTc7byICS4Dm3BxYG0AeNA3pM=;
-        b=2UsvbHIV14huyCFCkFmVFmk52BdxcLWTSxDvDbp83BdAKD2AkeZ+W9Df7cJL9C3oBg
-         chtnVzEuq9kr/0ABKSjZB72tOfm9O/V1uXO8agN311963+QXUVZzfVrl5S987Psrs/i8
-         qcVqyW8CP+h3y0uy98wRqx73hgShRhK92lo1RDi+3RbHWM9GrSRoibJlIjaiDxGLh1WP
-         T1PIgXSNeP6A3j3SC0LzwYJ4KMTIABAx3mFrOgJNRB/qKbe2rcAWSFQI6FryE6x/IJ/D
-         s2jUJpUHcogFiN8TGEwPvwl/TuOOqF2GLTQs1zzgqGZHGddpa0tgBoUTyOm+Z542z5Dy
-         ESXA==
-X-Gm-Message-State: AOAM530DXkF3Ula6R+vWqbl31hab4dddErQUAnk2aeA0/pRHz/4Ehm8I
-        ITThJh6vrywJ3zN9c87dh5OOng==
-X-Google-Smtp-Source: ABdhPJzpRds01jTpuFR7X2mKXs7ZVtj/lek8KdktJBQD5lTyaNrfYVENb1WYa86f+Djm6fji0P9cYA==
-X-Received: by 2002:a63:a319:: with SMTP id s25mr40084622pge.305.1636044636197;
-        Thu, 04 Nov 2021 09:50:36 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id j62sm4208606pgc.62.2021.11.04.09.50.34
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NjbAK412qb29GbpY1xd3R5b4kkmRp4MYsmfj5FXSWyg=;
+        b=wsbHy2CSBM+pnOQXBv3vP6y/vgYbhOafCpBYhHh5lKFgTNjzD+IpupNQ0eDVvsSg+1
+         3ClEXcNYxnM/fqD5+Z3dVvapDeGbvcq9r2nZgtMvAgMnLr/XsUMerwukPZUoZMSxjU7Y
+         PDdeFr9rLJGCELDG6BfPqC1jQhWmg2GG8/yPEjvEf9JdcWxva5jtCHea3kzpdTPwLZwX
+         Ek1YLm7yoqUHQ6E2C/13T7nVSNJVeYz7LuP4BGNFFONtXZnNJQ1sX8c9055BuuP8eXIr
+         cS1Kqh1pBizdZOLJdf5wEMtaDGy7TDQ3+K8HSMAvdqAJiqHnDUiTz1Xa4pH5JJyEdYkJ
+         aNAw==
+X-Gm-Message-State: AOAM5317/SUIQlOSu5cc5IRyBCpoDXNUOXpqol4qjuiSPRxu5c9pVqB2
+        GtD62r2wq7M0cKkScBWSLWqODA==
+X-Google-Smtp-Source: ABdhPJxEQDvqP+WGecJk6DClZkqZhn8q4G2q2w0QffmXNErJE6tciFGEkTv7QqO11Th3igKkbbK7UQ==
+X-Received: by 2002:a05:622a:15d5:: with SMTP id d21mr42640437qty.300.1636044650079;
+        Thu, 04 Nov 2021 09:50:50 -0700 (PDT)
+Received: from markyacoub.nyc.corp.google.com ([2620:0:1003:314:1118:14fe:72e3:f013])
+        by smtp.gmail.com with ESMTPSA id q20sm3976621qkl.53.2021.11.04.09.50.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 09:50:34 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 10:50:32 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     will@kernel.org, arnd@kernel.org, catalin.marinas@arm.com,
-        gregkh@linuxfoundation.org, anshuman.khandual@arm.com,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] arm64: cpufeature: Export this_cpu_has_cap helper
-Message-ID: <20211104165032.GA491267@p14s>
-References: <20211103221256.725080-1-suzuki.poulose@arm.com>
+        Thu, 04 Nov 2021 09:50:49 -0700 (PDT)
+From:   Mark Yacoub <markyacoub@chromium.org>
+Cc:     seanpaul@chromium.org, pmenzel@molgen.mpg.de,
+        Mark Yacoub <markyacoub@google.com>,
+        Mark Yacoub <markyacoub@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org
+Subject: [PATCH v4 1/3] drm: Move drm_color_lut_check implementation internal to intel_color
+Date:   Thu,  4 Nov 2021 12:50:42 -0400
+Message-Id: <20211104165046.4115042-1-markyacoub@chromium.org>
+X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103221256.725080-1-suzuki.poulose@arm.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 10:12:56PM +0000, Suzuki K Poulose wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Export the this_cpu_has_cap() for use by modules. This is
-> used by TRBE driver. Without this patch, TRBE will fail
-> to build as a module :
-> 
-> ERROR: modpost: "this_cpu_has_cap" [drivers/hwtracing/coresight/coresight-trbe.ko] undefined!
-> 
-> Fixes: 8a1065127d95 ("coresight: trbe: Add infrastructure for Errata handling")
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> [ change to EXPORT_SYMBOL_GPL ]
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  arch/arm64/kernel/cpufeature.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index f8a3067d10c6..82e68c69bb99 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -2839,6 +2839,7 @@ bool this_cpu_has_cap(unsigned int n)
->  
->  	return false;
->  }
-> +EXPORT_SYMBOL_GPL(this_cpu_has_cap);
->
+From: Mark Yacoub <markyacoub@google.com>
 
-I have applied this patch.
+[Why]
+The tests of LUT_EQUAL_CHANNELS and LUT_NON_DECREASING are currently
+unique to i915 driver.
+Freeing up the function name for the more generic LUT checks to folllow
 
-Thanks
-Mathieu
+Tested on Eldrid ChromeOS (TGL).
 
->  /*
->   * This helper function is used in a narrow window when,
-> -- 
-> 2.25.4
-> 
+v1:
+Stuff the test function from DRM to intel driver.
+
+Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
+---
+ drivers/gpu/drm/drm_color_mgmt.c           | 43 ----------------------
+ drivers/gpu/drm/i915/display/intel_color.c | 43 +++++++++++++++++++---
+ drivers/gpu/drm/i915/display/intel_color.h | 27 ++++++++++++++
+ drivers/gpu/drm/i915/i915_pci.c            | 27 ++++++++------
+ include/drm/drm_color_mgmt.h               | 27 --------------
+ 5 files changed, 81 insertions(+), 86 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_color_mgmt.c b/drivers/gpu/drm/drm_color_mgmt.c
+index bb14f488c8f6c..16a07f84948f3 100644
+--- a/drivers/gpu/drm/drm_color_mgmt.c
++++ b/drivers/gpu/drm/drm_color_mgmt.c
+@@ -583,46 +583,3 @@ int drm_plane_create_color_properties(struct drm_plane *plane,
+ 	return 0;
+ }
+ EXPORT_SYMBOL(drm_plane_create_color_properties);
+-
+-/**
+- * drm_color_lut_check - check validity of lookup table
+- * @lut: property blob containing LUT to check
+- * @tests: bitmask of tests to run
+- *
+- * Helper to check whether a userspace-provided lookup table is valid and
+- * satisfies hardware requirements.  Drivers pass a bitmask indicating which of
+- * the tests in &drm_color_lut_tests should be performed.
+- *
+- * Returns 0 on success, -EINVAL on failure.
+- */
+-int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests)
+-{
+-	const struct drm_color_lut *entry;
+-	int i;
+-
+-	if (!lut || !tests)
+-		return 0;
+-
+-	entry = lut->data;
+-	for (i = 0; i < drm_color_lut_size(lut); i++) {
+-		if (tests & DRM_COLOR_LUT_EQUAL_CHANNELS) {
+-			if (entry[i].red != entry[i].blue ||
+-			    entry[i].red != entry[i].green) {
+-				DRM_DEBUG_KMS("All LUT entries must have equal r/g/b\n");
+-				return -EINVAL;
+-			}
+-		}
+-
+-		if (i > 0 && tests & DRM_COLOR_LUT_NON_DECREASING) {
+-			if (entry[i].red < entry[i - 1].red ||
+-			    entry[i].green < entry[i - 1].green ||
+-			    entry[i].blue < entry[i - 1].blue) {
+-				DRM_DEBUG_KMS("LUT entries must never decrease.\n");
+-				return -EINVAL;
+-			}
+-		}
+-	}
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(drm_color_lut_check);
+diff --git a/drivers/gpu/drm/i915/display/intel_color.c b/drivers/gpu/drm/i915/display/intel_color.c
+index dab892d2251ba..bde98a155c9f3 100644
+--- a/drivers/gpu/drm/i915/display/intel_color.c
++++ b/drivers/gpu/drm/i915/display/intel_color.c
+@@ -1279,13 +1279,46 @@ static int check_lut_size(const struct drm_property_blob *lut, int expected)
+ 	return 0;
+ }
+ 
++static int test_luts(const struct drm_property_blob *lut, u32 tests)
++{
++	const struct drm_color_lut *entry;
++	int i;
++
++	if (!lut || !tests)
++		return 0;
++
++	entry = lut->data;
++	for (i = 0; i < drm_color_lut_size(lut); i++) {
++		if (tests & LUT_EQUAL_CHANNELS) {
++			if (entry[i].red != entry[i].blue ||
++			    entry[i].red != entry[i].green) {
++				DRM_DEBUG_KMS(
++					"All LUT entries must have equal r/g/b\n");
++				return -EINVAL;
++			}
++		}
++
++		if (i > 0 && tests & LUT_NON_DECREASING) {
++			if (entry[i].red < entry[i - 1].red ||
++			    entry[i].green < entry[i - 1].green ||
++			    entry[i].blue < entry[i - 1].blue) {
++				DRM_DEBUG_KMS(
++					"LUT entries must never decrease.\n");
++				return -EINVAL;
++			}
++		}
++	}
++
++	return 0;
++}
++
+ static int check_luts(const struct intel_crtc_state *crtc_state)
+ {
+ 	struct drm_i915_private *dev_priv = to_i915(crtc_state->uapi.crtc->dev);
+ 	const struct drm_property_blob *gamma_lut = crtc_state->hw.gamma_lut;
+ 	const struct drm_property_blob *degamma_lut = crtc_state->hw.degamma_lut;
+ 	int gamma_length, degamma_length;
+-	u32 gamma_tests, degamma_tests;
++	u32 gamma_channels_tests, degamma_channels_tests;
+ 
+ 	/* Always allow legacy gamma LUT with no further checking. */
+ 	if (crtc_state_is_legacy_gamma(crtc_state))
+@@ -1300,15 +1333,15 @@ static int check_luts(const struct intel_crtc_state *crtc_state)
+ 
+ 	degamma_length = INTEL_INFO(dev_priv)->color.degamma_lut_size;
+ 	gamma_length = INTEL_INFO(dev_priv)->color.gamma_lut_size;
+-	degamma_tests = INTEL_INFO(dev_priv)->color.degamma_lut_tests;
+-	gamma_tests = INTEL_INFO(dev_priv)->color.gamma_lut_tests;
++	degamma_channels_tests = INTEL_INFO(dev_priv)->color.degamma_lut_tests;
++	gamma_channels_tests = INTEL_INFO(dev_priv)->color.gamma_lut_tests;
+ 
+ 	if (check_lut_size(degamma_lut, degamma_length) ||
+ 	    check_lut_size(gamma_lut, gamma_length))
+ 		return -EINVAL;
+ 
+-	if (drm_color_lut_check(degamma_lut, degamma_tests) ||
+-	    drm_color_lut_check(gamma_lut, gamma_tests))
++	if (test_luts(degamma_lut, degamma_channels_tests) ||
++	    test_luts(gamma_lut, gamma_channels_tests))
+ 		return -EINVAL;
+ 
+ 	return 0;
+diff --git a/drivers/gpu/drm/i915/display/intel_color.h b/drivers/gpu/drm/i915/display/intel_color.h
+index 173727aaa24d2..621f8f2c95467 100644
+--- a/drivers/gpu/drm/i915/display/intel_color.h
++++ b/drivers/gpu/drm/i915/display/intel_color.h
+@@ -7,11 +7,38 @@
+ #define __INTEL_COLOR_H__
+ 
+ #include <linux/types.h>
++#include <linux/bits.h>
+ 
+ struct intel_crtc_state;
+ struct intel_crtc;
+ struct drm_property_blob;
+ 
++/**
++ * enum lut_channels_tests - hw-specific LUT tests to perform
++ *
++ * The test_luts() function takes a bitmask of the values here to
++ * determine which tests to apply to a userspace-provided LUT.
++ */
++enum lut_channels_tests {
++	/**
++	 * @LUT_EQUAL_CHANNELS:
++	 *
++	 * Checks whether the entries of a LUT all have equal values for the
++	 * red, green, and blue channels.  Intended for hardware that only
++	 * accepts a single value per LUT entry and assumes that value applies
++	 * to all three color components.
++	 */
++	LUT_EQUAL_CHANNELS = BIT(0),
++
++	/**
++	 * @LUT_NON_DECREASING:
++	 *
++	 * Checks whether the entries of a LUT are always flat or increasing
++	 * (never decreasing).
++	 */
++	LUT_NON_DECREASING = BIT(1),
++};
++
+ void intel_color_init(struct intel_crtc *crtc);
+ int intel_color_check(struct intel_crtc_state *crtc_state);
+ void intel_color_commit(const struct intel_crtc_state *crtc_state);
+diff --git a/drivers/gpu/drm/i915/i915_pci.c b/drivers/gpu/drm/i915/i915_pci.c
+index 5e8348f506b8d..17798cfc13eb4 100644
+--- a/drivers/gpu/drm/i915/i915_pci.c
++++ b/drivers/gpu/drm/i915/i915_pci.c
+@@ -29,6 +29,7 @@
+ #include <drm/i915_pciids.h>
+ 
+ #include "display/intel_fbdev.h"
++#include "display/intel_color.h"
+ 
+ #include "i915_drv.h"
+ #include "i915_perf.h"
+@@ -132,23 +133,27 @@
+ 
+ #define I9XX_COLORS \
+ 	.color = { .gamma_lut_size = 256 }
+-#define I965_COLORS \
+-	.color = { .gamma_lut_size = 129, \
+-		   .gamma_lut_tests = DRM_COLOR_LUT_NON_DECREASING, \
++#define I965_COLORS                                                            \
++	.color = {                                                             \
++		.gamma_lut_size = 129,                                         \
++		.gamma_lut_tests = LUT_NON_DECREASING,                         \
+ 	}
+ #define ILK_COLORS \
+ 	.color = { .gamma_lut_size = 1024 }
+ #define IVB_COLORS \
+ 	.color = { .degamma_lut_size = 1024, .gamma_lut_size = 1024 }
+-#define CHV_COLORS \
+-	.color = { .degamma_lut_size = 65, .gamma_lut_size = 257, \
+-		   .degamma_lut_tests = DRM_COLOR_LUT_NON_DECREASING, \
+-		   .gamma_lut_tests = DRM_COLOR_LUT_NON_DECREASING, \
++#define CHV_COLORS                                                             \
++	.color = {                                                             \
++		.degamma_lut_size = 65,                                        \
++		.gamma_lut_size = 257,                                         \
++		.degamma_lut_tests = LUT_NON_DECREASING,                       \
++		.gamma_lut_tests = LUT_NON_DECREASING,                         \
+ 	}
+-#define GLK_COLORS \
+-	.color = { .degamma_lut_size = 33, .gamma_lut_size = 1024, \
+-		   .degamma_lut_tests = DRM_COLOR_LUT_NON_DECREASING | \
+-					DRM_COLOR_LUT_EQUAL_CHANNELS, \
++#define GLK_COLORS                                                             \
++	.color = {                                                             \
++		.degamma_lut_size = 33,                                        \
++		.gamma_lut_size = 1024,                                        \
++		.degamma_lut_tests = LUT_NON_DECREASING | LUT_EQUAL_CHANNELS,  \
+ 	}
+ 
+ /* Keep in gen based order, and chronological order within a gen */
+diff --git a/include/drm/drm_color_mgmt.h b/include/drm/drm_color_mgmt.h
+index 81c298488b0c8..3537f3eeb3872 100644
+--- a/include/drm/drm_color_mgmt.h
++++ b/include/drm/drm_color_mgmt.h
+@@ -93,31 +93,4 @@ int drm_plane_create_color_properties(struct drm_plane *plane,
+ 				      enum drm_color_encoding default_encoding,
+ 				      enum drm_color_range default_range);
+ 
+-/**
+- * enum drm_color_lut_tests - hw-specific LUT tests to perform
+- *
+- * The drm_color_lut_check() function takes a bitmask of the values here to
+- * determine which tests to apply to a userspace-provided LUT.
+- */
+-enum drm_color_lut_tests {
+-	/**
+-	 * @DRM_COLOR_LUT_EQUAL_CHANNELS:
+-	 *
+-	 * Checks whether the entries of a LUT all have equal values for the
+-	 * red, green, and blue channels.  Intended for hardware that only
+-	 * accepts a single value per LUT entry and assumes that value applies
+-	 * to all three color components.
+-	 */
+-	DRM_COLOR_LUT_EQUAL_CHANNELS = BIT(0),
+-
+-	/**
+-	 * @DRM_COLOR_LUT_NON_DECREASING:
+-	 *
+-	 * Checks whether the entries of a LUT are always flat or increasing
+-	 * (never decreasing).
+-	 */
+-	DRM_COLOR_LUT_NON_DECREASING = BIT(1),
+-};
+-
+-int drm_color_lut_check(const struct drm_property_blob *lut, u32 tests);
+ #endif
+-- 
+2.34.0.rc0.344.g81b53c2807-goog
+
