@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 677C4444CE4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 02:10:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCBD8444CE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 02:11:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhKDBMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 21:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34410 "EHLO
+        id S231280AbhKDBON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 21:14:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbhKDBMk (ORCPT
+        with ESMTP id S230233AbhKDBOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 21:12:40 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74593C061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 18:10:03 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id k4so4495280plx.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 18:10:03 -0700 (PDT)
+        Wed, 3 Nov 2021 21:14:12 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27750C061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 18:11:35 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id p18so4453737plf.13
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 18:11:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=K7K+tHdK20GBd/ySrom3i+DrmDsH2xwdErxdX8kh7s0=;
-        b=FggLV6NxJc7LVtJbw2NTovwtBYcOxBQTt9rpDHTyYAphphRtXHFrVnZfBy4lA9yCgy
-         Paj18XO5V42GDSOICVBzZtRTAig6zXzcFbwz6YAWwermstOTg6PZkSl6sSBsqHOWH8zu
-         ZxBqNTzppX8ZYPYm1KMJF12SKDctLHFWkiaClnU88mGIPwkzEIPWR7pIpVTyFzyid6+8
-         aDQGOh74q4ioCPbxeRmnhN8Z/SHsEk+yJa38AjwBYz2qWZ4VF5Z7BmXpXKaieq/Pngrt
-         Lp53zXzQ7g/psaKmvR/9JUHzKw+FYxw8S736pJsvRN/U3PTj/4vv7mFV1+axKSuY0k9q
-         2yKQ==
+        bh=TP1hwCW+njqVoxdMPYK11dRBZdomjWtVnigfuLPzlfE=;
+        b=I4ujB1PLmXUwDIhEnrgqJmxi/IIaAHdCQOLUqJ5moGoYMWiuhu/i0x6/84OCmXts55
+         pz17N2KX34guaCBydWLUt4oSavXAvNtwPY/3WPAI90UMX/nb/9qOv4HbdP81GCZ8+h44
+         buP3ISK3vDaGgNND/42q68FwoJahX25azGVW1kyAz4kZZ9d66r4c1ZTxTSEQL6bU2001
+         6+i7oVanH+4nvbl84ILE3zyLGnNAtHDHqWl0hixVaNlVzMiQLjNT3eOHWhVTWHac4gjZ
+         ib7LZdDraw1DSjdTCwRVWxySILFZz7y5D6+6tH2RWd/jC11P4GLxQ2CdEr4C+vk/zIS3
+         kpSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=K7K+tHdK20GBd/ySrom3i+DrmDsH2xwdErxdX8kh7s0=;
-        b=eDKzikFE7qAgQGqzSe8NvGQn984FPiOnXOb4kyF6+GBIjKr5KDQEFR8qkaBysp5d+y
-         UDi2+USsE/cW+TxidRpuOqBh/aW0JcJnz1tFC3KD0cwQxr8QM7L5RBrGWew6zoPLpWwj
-         rDHZpYdglXVluFeVEhipBXuqEeRL4RYDwGRK+b3U2zjNKvFKZx9jXHEkMUMBwAT4lOCF
-         fBr9vkmquDV93MMiWX2SxmijIhcKAvmv/ECm9ZRsjPRtmeGbDC4q/cp7RBn63gGsaH8/
-         t4sGgpAXyQM1gDE6GpzkyZ91D7mZ0I6VG4Mpn8AkCaM6ltwLYBfaCxAQzogGQk8lwZyB
-         ZsOw==
-X-Gm-Message-State: AOAM533tIxXukjx4pVUUWncl6jP6MSH+NOJyCKcNv4TvjbuyuF4ybzY/
-        kSvjTPAfVtiduaOw596cdTc=
-X-Google-Smtp-Source: ABdhPJyP8hi2lnQ0Srk4nYqIiLVvbmDQk8OWCtw4kOJ0Ha0/AYJLPHTRRGLnUqqorh5zM+d0sZ+Uvw==
-X-Received: by 2002:a17:902:a70e:b0:141:a01d:9d6c with SMTP id w14-20020a170902a70e00b00141a01d9d6cmr38669636plq.84.1635988203020;
-        Wed, 03 Nov 2021 18:10:03 -0700 (PDT)
+        bh=TP1hwCW+njqVoxdMPYK11dRBZdomjWtVnigfuLPzlfE=;
+        b=GQ8lpDkJgIwPAToE7Xj1///7juHDbUYckWuAY44OJy/msjkPwm76vua5phIK5BEfy6
+         B1sBTpxnvYN9/+qHQ1JDVFGwfGefMliX8iMuOtR1NlBsCMi+6EiUwHNfypvj1mzjdrPl
+         cWplXExO7Q7PLiN4Zu/CY2DUX3zF56e5gxlIalZ/UGoLCM1VEOI6OE619xQMRYxrcvF5
+         1zbR9TIbS1ewEIFKiTQYzGy41lNPQKuh8vm7iSs1GZBkCmwziIAFWcrwa3DG15vABjZb
+         kTZ/FcHSm5QEHgCsN2jys7QjKKAtcEK76kVVKwDrNCoim26lft9pY2O1cBlrBKQJ4bvT
+         v6Kg==
+X-Gm-Message-State: AOAM5338ys5yJPLDpADhb39AX5ygsXLV1Qh+Bo11AQJ3oWCvTQduj4n0
+        sEtig2eWn73HC50/Jk+w4GQCaAWVyZo=
+X-Google-Smtp-Source: ABdhPJx18CAGa6c0aCYalq525CrBteh7xeX+5AEH5gQfpIZ848hmw5AkMEeLc7ao49X8IrH30pZaUg==
+X-Received: by 2002:a17:90a:7845:: with SMTP id y5mr18613384pjl.48.1635988294795;
+        Wed, 03 Nov 2021 18:11:34 -0700 (PDT)
 Received: from debian11-dev-61.localdomain (192.243.120.180.16clouds.com. [192.243.120.180])
-        by smtp.gmail.com with ESMTPSA id x17sm3422500pfa.209.2021.11.03.18.09.59
+        by smtp.gmail.com with ESMTPSA id y32sm3979759pfa.145.2021.11.03.18.11.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 18:10:02 -0700 (PDT)
+        Wed, 03 Nov 2021 18:11:34 -0700 (PDT)
 From:   davidcomponentone@gmail.com
 X-Google-Original-From: yang.guang5@zte.com.cn
-To:     benh@kernel.crashing.org
-Cc:     davidcomponentone@gmail.com, mpe@ellerman.id.au, paulus@samba.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        zealci@zte.com.cn, yang.guang5@zte.com.cn
-Subject: [PATCH] powerpc: use swap() to make code cleaner
-Date:   Thu,  4 Nov 2021 09:09:51 +0800
-Message-Id: <20211104010951.1027348-1-yang.guang5@zte.com.cn>
+To:     zbr@ioremap.net
+Cc:     davidcomponentone@gmail.com, gregkh@linuxfoundation.org,
+        ivan.zaentsev@wirenboard.ru, yangyingliang@huawei.com,
+        unixbhaskar@gmail.com, dan.carpenter@oracle.com,
+        yang.guang5@zte.com.cn, linux-kernel@vger.kernel.org,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] w1: w1_therm: use swap() to make code cleaner
+Date:   Thu,  4 Nov 2021 09:11:23 +0800
+Message-Id: <20211104011123.1027524-1-yang.guang5@zte.com.cn>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -72,26 +74,31 @@ opencoding it.
 Reported-by: Zeal Robot <zealci@zte.com.cn>
 Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
 ---
- arch/powerpc/platforms/powermac/pic.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/w1/slaves/w1_therm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/platforms/powermac/pic.c b/arch/powerpc/platforms/powermac/pic.c
-index 4921bccf0376..75d8d7ec53db 100644
---- a/arch/powerpc/platforms/powermac/pic.c
-+++ b/arch/powerpc/platforms/powermac/pic.c
-@@ -311,11 +311,8 @@ static void __init pmac_pic_probe_oldstyle(void)
+diff --git a/drivers/w1/slaves/w1_therm.c b/drivers/w1/slaves/w1_therm.c
+index ca70c5f03206..c743cb3d277a 100644
+--- a/drivers/w1/slaves/w1_therm.c
++++ b/drivers/w1/slaves/w1_therm.c
+@@ -1785,7 +1785,7 @@ static ssize_t alarms_store(struct device *device,
+ 	u8 new_config_register[3];	/* array of data to be written */
+ 	int temp, ret;
+ 	char *token = NULL;
+-	s8 tl, th, tt;	/* 1 byte per value + temp ring order */
++	s8 tl, th;	/* 1 byte per value + temp ring order */
+ 	char *p_args, *orig;
  
- 		/* Check ordering of master & slave */
- 		if (of_device_is_compatible(master, "gatwick")) {
--			struct device_node *tmp;
- 			BUG_ON(slave == NULL);
--			tmp = master;
--			master = slave;
--			slave = tmp;
-+			swap(master, slave);
- 		}
+ 	p_args = orig = kmalloc(size, GFP_KERNEL);
+@@ -1837,7 +1837,7 @@ static ssize_t alarms_store(struct device *device,
  
- 		/* We found a slave */
+ 	/* Reorder if required th and tl */
+ 	if (tl > th) {
+-		tt = tl; tl = th; th = tt;
++		swap(tl, th);
+ 	}
+ 
+ 	/*
 -- 
 2.30.2
 
