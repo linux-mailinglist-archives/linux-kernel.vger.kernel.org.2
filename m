@@ -2,85 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55ED54451AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 11:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7C54451B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 11:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbhKDKqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 06:46:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbhKDKqu (ORCPT
+        id S231237AbhKDKs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 06:48:57 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:37276
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230509AbhKDKsz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 06:46:50 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA3CC061714;
-        Thu,  4 Nov 2021 03:44:12 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id b15so469942edd.7;
-        Thu, 04 Nov 2021 03:44:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xkDBHnMYJ6iDT5g1nlO8at1+WyWlzlz85OsTSxEVvzM=;
-        b=AlI02xwYo8DFhlhGbqyW2zNsV2RGiNjJlStiRhG3QdMwFW7ySI/1CNNoMR9FR9wJyt
-         URVjE0yxnWYSVUhFsUZqy7T3GtCJKUUHdUW/hH/tzYjfdFC6ms9WYiJhCBdHSIoMAvvy
-         2z0EYn4aPfTS9TVxvuFSNP5v5IQJoDyIPd9OOyb7t+LKGsY8FvoJbdEw9G0PIVTheT6v
-         BhpE+pqmte+5QVa5ht8G0lw1t5jeWlyVO/Rx//Z/KncMlzz5HGAxwI5f7dMwiFVXlqwH
-         0LczcH7OQGIiBxa7Ujwokzuhijdod2n8s63LK4+7TIsfx9ll3Hr6UdFTVIeaMFzJ+qqG
-         p8zw==
+        Thu, 4 Nov 2021 06:48:55 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 681123F1C8
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 10:46:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1636022776;
+        bh=ZN41nDD8py06mnFa3s9ouXcWZDugqMeS/fkELpZ2qUM=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=REJSS0mNDSw/l4TPLBBD6kwmuPW4CKapQ0sGbZ12ju96JzOFlPCNS3jfB7bXlCaNa
+         c6hMKU0z6r2CJiGDb9e2OQgDnhOAxueBIx/tA7bn9s1E4yzp+UcInMtMkkMx9hjxn6
+         lWE4u6HZXyI9pDnYp2xag2w8Hstyr/sa+01iHYLG47ctmSOCnNI+FoqewHJ0oSz7yq
+         AZK6mh382L07dt3c/kVc9CvD20Hpe7AwHzdijzmBECwaA1dRY8/Blko9armNV7xQUZ
+         YhWuIWvbFIDmH3WPe2M5AO/4puBD26nMUM7cexjBZKVWdUNIDfytZgjbM59k5FMB+Z
+         hftDiAmtVma6Q==
+Received: by mail-ed1-f71.google.com with SMTP id g3-20020a056402424300b003e2981e1edbso5365442edb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 03:46:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xkDBHnMYJ6iDT5g1nlO8at1+WyWlzlz85OsTSxEVvzM=;
-        b=iD6dwhEh8DfpcyvaM+5IdeKv/CmHsY7DpGXV7OR+rs50d/Uiq6H1zu4fG3W0CnJP0r
-         GbD2nV92qZUrZjCgvwvxPDqT3gUZfxaiFuvMieWpHNJ5uhv5/DWUvqOAhEcWvptNC3K8
-         H7FarYr4zYCKQZfudyyvdIDL9SYUy0HxCKdJFfhLyhBwif9pOOvj8LPcPbdu0NnaGEhd
-         KzRM1tmDfrlzT381ViDgUMfV9d/LscOADvOjumDrVhExR6ZVY1zTpY6cwH49079FQfly
-         YMz4SBjCJN+g4KF+ALQBZt1tVOYqRrOB+16b5Az21LcmusVSVGmI1K7A47a/vvhxhUWj
-         +D+Q==
-X-Gm-Message-State: AOAM531aDFVQrBzQ8JyrK7Lc+IJyUOWgBrKaWGvdq6I6awRqtuMK/GHf
-        ztesD0ykebmwhCQB3ClFkJWy+cj058s3RTrn7Wc=
-X-Google-Smtp-Source: ABdhPJwDDWLhQsNsoTOxXL8P3Td/iS+592b0dsuIPQ/M4thnBT8d4vlLMvsKBZL1fh7E3lBy+HacFhGhXZ9fZNFOZKY=
-X-Received: by 2002:a17:906:d553:: with SMTP id cr19mr59904770ejc.128.1636022651440;
- Thu, 04 Nov 2021 03:44:11 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZN41nDD8py06mnFa3s9ouXcWZDugqMeS/fkELpZ2qUM=;
+        b=G5D9M2biJrsoDq5/KbcbMrzRgkLks42xyUKNbpsJ3TdYazi8IMgrxCCNhU0QQciDG9
+         ToMA3fqlZq3YRfhGctbvd82SLT0wdB89g6SEe0P/LG75I/ueZIaSWwe8+DFPOdE9e501
+         55YLrB4ZGVq7fL4ULXEqJIbNa4jvCv8f2s8Ra9SD9y9IaygaloxvsI07V5UcLCoIktq5
+         yAsogsGaB6Nk44KlIYtA1ENdBi+fXuuhHUZZCP7SFtH433NPz3a8BsTTI5WvQz70mC3S
+         jQvHT05eiAc4dqeoQm4dsci8LLMES+o93xIuYtWaCS7Es7wkifcCoTRav3A5EiYLIvHi
+         l6BQ==
+X-Gm-Message-State: AOAM530M3iOp5mkGKnrhZyeuw1mtkRgXQbo7QeDgvX97lpktK9iXo8UA
+        AYDLEmAfaxVLM+Uncukay4rU7KT2y5CzdHPj7AZAM5ZlVu5+0zm+nTQX9Q6kIpyXDI0a54+RDt1
+        yo63AFWQ4ghku/vo4xuMRYxoZTjiyRsGkoaScfuDBDQ==
+X-Received: by 2002:a17:907:9690:: with SMTP id hd16mr29546070ejc.297.1636022776046;
+        Thu, 04 Nov 2021 03:46:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyg44uUWRIXLpI3YABCyqPm2ZeRXQH29L4D/he2NXdV1Ri9DQkShgOR5FoMKKFJ+/3NqYKMPQ==
+X-Received: by 2002:a17:907:9690:: with SMTP id hd16mr29546049ejc.297.1636022775850;
+        Thu, 04 Nov 2021 03:46:15 -0700 (PDT)
+Received: from arighi-desktop.homenet.telecomitalia.it ([2001:67c:1560:8007::aac:c1b6])
+        by smtp.gmail.com with ESMTPSA id f25sm2618473edv.90.2021.11.04.03.46.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 03:46:15 -0700 (PDT)
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Shuah Khan <shuah@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests: net: properly support IPv6 in GSO GRE test
+Date:   Thu,  4 Nov 2021 11:46:13 +0100
+Message-Id: <20211104104613.17204-1-andrea.righi@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20211103083337.387083-1-yang.guang5@zte.com.cn>
-In-Reply-To: <20211103083337.387083-1-yang.guang5@zte.com.cn>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 4 Nov 2021 12:43:23 +0200
-Message-ID: <CAHp75VdZLdJS2SLijO+Ff-8OM+fBvS-R1er5ByYuw38qrRXRwA@mail.gmail.com>
-Subject: Re: [PATCH] media: use swap() to make code cleaner
-To:     davidcomponentone@gmail.com
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Julia Lawall <Julia.Lawall@inria.fr>,
-        Yang Guang <yang.guang5@zte.com.cn>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 10:34 AM <davidcomponentone@gmail.com> wrote:
-> Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
-> opencoding it.
+Explicitly pass -6 to netcat when the test is using IPv6 to prevent
+failures.
 
-Same comments as per all your valuable contributions: just think more
-about the code that you are dealing with!
+Also make sure to pass "-N" to netcat to close the socket after EOF on
+the client side, otherwise we would always hit the timeout and the test
+would fail.
 
->                 if (dev->fmt->uvswap) {
-> -                       tmp = base2;
-> -                       base2 = base3;
-> -                       base3 = tmp;
-> +                       swap(base2, base3);
->                 }
+Without this fix applied:
 
-Have you run checkpatch? What did it say?
+ TEST: GREv6/v4 - copy file w/ TSO                                   [FAIL]
+ TEST: GREv6/v4 - copy file w/ GSO                                   [FAIL]
+ TEST: GREv6/v6 - copy file w/ TSO                                   [FAIL]
+ TEST: GREv6/v6 - copy file w/ GSO                                   [FAIL]
 
+With this fix applied:
+
+ TEST: GREv6/v4 - copy file w/ TSO                                   [ OK ]
+ TEST: GREv6/v4 - copy file w/ GSO                                   [ OK ]
+ TEST: GREv6/v6 - copy file w/ TSO                                   [ OK ]
+ TEST: GREv6/v6 - copy file w/ GSO                                   [ OK ]
+
+Fixes: 025efa0a82df ("selftests: add simple GSO GRE test")
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+---
+ tools/testing/selftests/net/gre_gso.sh | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/tools/testing/selftests/net/gre_gso.sh b/tools/testing/selftests/net/gre_gso.sh
+index facbb0c80443..fdeb44d621eb 100755
+--- a/tools/testing/selftests/net/gre_gso.sh
++++ b/tools/testing/selftests/net/gre_gso.sh
+@@ -116,17 +116,18 @@ gre_gst_test_checks()
+ {
+ 	local name=$1
+ 	local addr=$2
++	local proto=$3
+ 
+-	$NS_EXEC nc -kl $port >/dev/null &
++	$NS_EXEC nc $proto -kl $port >/dev/null &
+ 	PID=$!
+ 	while ! $NS_EXEC ss -ltn | grep -q $port; do ((i++)); sleep 0.01; done
+ 
+-	cat $TMPFILE | timeout 1 nc $addr $port
++	cat $TMPFILE | timeout 1 nc $proto -N $addr $port
+ 	log_test $? 0 "$name - copy file w/ TSO"
+ 
+ 	ethtool -K veth0 tso off
+ 
+-	cat $TMPFILE | timeout 1 nc $addr $port
++	cat $TMPFILE | timeout 1 nc $proto -N $addr $port
+ 	log_test $? 0 "$name - copy file w/ GSO"
+ 
+ 	ethtool -K veth0 tso on
+@@ -155,7 +156,7 @@ gre6_gso_test()
+ 	sleep 2
+ 
+ 	gre_gst_test_checks GREv6/v4 172.16.2.2
+-	gre_gst_test_checks GREv6/v6 2001:db8:1::2
++	gre_gst_test_checks GREv6/v6 2001:db8:1::2 -6
+ 
+ 	cleanup
+ }
 -- 
-With Best Regards,
-Andy Shevchenko
+2.32.0
+
