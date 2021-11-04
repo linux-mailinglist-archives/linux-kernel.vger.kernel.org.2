@@ -2,95 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2710444EE9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:32:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC38D444EF2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:34:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhKDGfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:35:24 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:30917 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbhKDGfT (ORCPT
+        id S230306AbhKDGhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:37:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229994AbhKDGgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:35:19 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HlDGK5wx3zcZxj;
-        Thu,  4 Nov 2021 14:27:53 +0800 (CST)
-Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 4 Nov 2021 14:32:38 +0800
-Received: from [10.174.176.117] (10.174.176.117) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 4 Nov 2021 14:32:38 +0800
-Subject: Re: [RFC PATCH v3 2/3] bpf: Add selftests
-To:     Joe Burton <jevburton.kernel@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     Petar Penkov <ppenkov@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Joe Burton <jevburton@google.com>
-References: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
- <20211102021432.2807760-3-jevburton.kernel@gmail.com>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <98178f0f-ff43-b996-f78b-778f74b44a6b@huawei.com>
-Date:   Thu, 4 Nov 2021 14:32:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 4 Nov 2021 02:36:51 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AADDC061714;
+        Wed,  3 Nov 2021 23:34:14 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id t7so4578792pgl.9;
+        Wed, 03 Nov 2021 23:34:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hVs7hCNESgtkJ7TW5K8/Az50gsR4i8jkMKjnlhtlNV8=;
+        b=gcvDCi40sf7uqwerM6sDKKBs1tb6aD8/m3Tl+EFRLFFpwwUIsfIM8ePKDXH3wM5vPs
+         wQnGABoB58Yj9m8EH7caHmat+O1R+/jeOfjbvccxC1osEDn8OtN7pchfrA2CiQyGh1ec
+         PcvkD9OzU1D+WCoX0uTqKnqRQMB6w7izBWdjV+9aIXt84nuEH8KlZz297vUtoSz/maek
+         xr4hTbZmCxO/sVvohKSUffy1G72gjFI/LtqPlxYy6QI2abTU/GNUDgDAvX+Z6mfi7UZN
+         hudk7NhumjPZ6A3OnGATcEnO1ZU69VB/BILV6Byv9iLKgGIUY6DJkdPquCRrbQvIJCdY
+         65OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hVs7hCNESgtkJ7TW5K8/Az50gsR4i8jkMKjnlhtlNV8=;
+        b=d6E1+jobd+DePMfNXcfccpHWOjcTn/N2T5SgYpfmT0eaKTTy/2L2+GfIoTieryRUY8
+         feHE7jQZu+7oYzYAVLytP1svyJhE/wvwV/sAbCSbmnRrgk6u3qEi9aH5xGpx6NVTCAei
+         6c+0cEhuR0lOHerBooIEejCExTzuJMDHa+Uy0JC3Z8G1qNhIYfkI+RKupaWq59kzf5Ve
+         LE12ip9PI7zEF8o3pQ3yl+yld6CHZr2uPqa9DX3xUYiecuHbV56HKa/DOzxdv2PliEfw
+         XevrOl34xe+7y7sgUNUx1cbeYvA8gTsikwkgMuH6DC6jInu8AwENINSwfmQxrB6vW3EK
+         xAtQ==
+X-Gm-Message-State: AOAM531U5Ap5qNdHRiONK7oUptP/mzBO3a5lH6rF6tShyKmcDiz/BIkM
+        PgRduOmuS5mM/hkMW8Dmec0=
+X-Google-Smtp-Source: ABdhPJxh6lMN/lXFGH2WKKCSwQp0DVvZUCazN1xQskScoyl99C7HsaeCJtVFlONM/oxwft+PA9y4BA==
+X-Received: by 2002:a63:e906:: with SMTP id i6mr10844391pgh.223.1636007653720;
+        Wed, 03 Nov 2021 23:34:13 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id a2sm3366304pgn.20.2021.11.03.23.34.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 23:34:13 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: luo.penghao@zte.com
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luo penghao <luo.penghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH v2] ext4: Remove redundant statement
+Date:   Thu,  4 Nov 2021 06:34:06 +0000
+Message-Id: <20211104063406.2747-1-luo.penghao@zte.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20211102021432.2807760-3-jevburton.kernel@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.176.117]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: luo penghao <luo.penghao@zte.com.cn>
 
-On 11/2/2021 10:14 AM, Joe Burton wrote:
-> From: Joe Burton <jevburton@google.com>
->
-> Add selftests verifying that each supported map type is traced.
->
-> Signed-off-by: Joe Burton <jevburton@google.com>
-> ---
->  .../selftests/bpf/prog_tests/map_trace.c      | 166 ++++++++++++++++++
->  .../selftests/bpf/progs/bpf_map_trace.c       |  95 ++++++++++
->  .../bpf/progs/bpf_map_trace_common.h          |  12 ++
->  3 files changed, 273 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/map_trace.c
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_map_trace.c
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_map_trace_common.h
-snip
-> +	/*
-> +	 * Invoke core BPF program.
-> +	 */
-> +	write_fd = open("/tmp/map_trace_test_file", O_CREAT | O_WRONLY);
-> +	if (!ASSERT_GE(rc, 0, "open tmp file for writing"))
-> +		goto out;
-> +
-> +	bytes_written = write(write_fd, &write_buf, sizeof(write_buf));
-> +	if (!ASSERT_EQ(bytes_written, sizeof(write_buf), "write to tmp file"))
-> +		return;
-In fentry__x64_sys_write(), you just do trigger updates to maps, so for the
-portability of the test
-(e.g. run-able for arm64) and minimal dependency (e.g. don't depends on /tmp),
-why do you
-using nanosleep() and replacing fentry_x64_sys_write by
-tp/syscalls/sys_enter_nanosleep instead.
-Also it will be better if you can filter out other processes by pid.
+The local variable assignment at the end of the function is meaningless.
 
-Thanks,
-Tao
+The clang_analyzer complains as follows:
+
+fs/ext4/fast_commit.c:779:2 warning:
+
+Value stored to 'dst' is never read
+
+change in v2:
+
+Repair the sending email box
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
+---
+ fs/ext4/fast_commit.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index 782d05a..9e5bfa0 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -797,7 +797,6 @@ static  bool ext4_fc_add_dentry_tlv(struct super_block *sb, u16 tag,
+ 	ext4_fc_memcpy(sb, dst, &fcd, sizeof(fcd), crc);
+ 	dst += sizeof(fcd);
+ 	ext4_fc_memcpy(sb, dst, dname, dlen, crc);
+-	dst += dlen;
+ 
+ 	return true;
+ }
+-- 
+2.15.2
+
 
