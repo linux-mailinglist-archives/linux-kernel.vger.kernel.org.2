@@ -2,80 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D1D445525
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:17:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A2F445530
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232656AbhKDOUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 10:20:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46260 "EHLO mail.kernel.org"
+        id S232214AbhKDOVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 10:21:54 -0400
+Received: from mga06.intel.com ([134.134.136.31]:43088 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232396AbhKDOTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 10:19:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0115361251;
-        Thu,  4 Nov 2021 14:16:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636035388;
-        bh=io5UHSjql3YhmsgBzG93pckgXSxBlpVZ1HgVvH2X9Gs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R21EdFe2KoRDiM34hxE1BkV1/zTK5B8F7x/rUpY8AvmYnCU93eDU3mB8pOrX7EG1y
-         imT5Y+4ueDMU57mLgLDkYsMOSoWJFlOGTBnETiqXbUVo1ib0A+mO2SMm+uTEmdeOp6
-         5z8H609NOVf3/60WdVKqMt90hp+rL0jdUGhI3rxg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH 4.19 7/7] ARM: 9120/1: Revert "amba: make use of -1 IRQs warn"
-Date:   Thu,  4 Nov 2021 15:13:10 +0100
-Message-Id: <20211104141158.268578886@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211104141158.037189396@linuxfoundation.org>
-References: <20211104141158.037189396@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S231395AbhKDOUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 10:20:45 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10157"; a="292545743"
+X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
+   d="scan'208";a="292545743"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 07:15:49 -0700
+X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
+   d="scan'208";a="489973630"
+Received: from rabentle-desk1.amr.corp.intel.com ([10.255.230.52])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 07:15:46 -0700
+Message-ID: <a6ed700a76a03eefceca0ce735ab6fd3cab19841.camel@linux.intel.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Fix unchecked MSR 0x773 access
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     rafael@kernel.org, viresh.kumar@linaro.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, lenb@kernel.org
+Date:   Thu, 04 Nov 2021 07:15:42 -0700
+In-Reply-To: <20211104093019.60c0e157@gandalf.local.home>
+References: <20211104051925.119941-1-srinivas.pandruvada@linux.intel.com>
+         <20211104093019.60c0e157@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Kefeng <wangkefeng.wang@huawei.com>
+On Thu, 2021-11-04 at 09:30 -0400, Steven Rostedt wrote:
+> On Wed,  3 Nov 2021 22:19:25 -0700
+> Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> wrote:
+> 
+> > It is possible that on some platforms HWP interrupts are disabled.
+> > In
+> > that case accessing MSR 0x773 will result in warning.
+> > 
+> > So check X86_FEATURE_HWP_NOTIFY feature to access MSR 0x773. The
+> > other
+> > places in code where this MSR is accessed, already checks this
+> > feature
+> > except during disable path called during cpufreq offline and
+> > suspend
+> > callbacks.
+> > 
+> > Fixes: 57577c996d73 ("cpufreq: intel_pstate: Process HWP Guaranteed
+> > change notification")
+> > Reported-by: Steven Rostedt <rostedt@goodmis.org>
+> 
+> I added this patch on top of the above commit and I verified that the
+> issue
+> goes away. And just to confirm, I removed the patch, and the issue
+> reappeared.
+> 
+> Tested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> 
+Thanks for the test.
+Sorry again for the mess up.
 
-commit eb4f756915875b0ea0757751cd29841f0504d547 upstream.
+-Srinivas
 
-After commit 77a7300abad7 ("of/irq: Get rid of NO_IRQ usage"),
-no irq case has been removed, irq_of_parse_and_map() will return
-0 in all cases when get error from parse and map an interrupt into
-linux virq space.
-
-amba_device_register() is only used on no-DT initialization, see
-  s3c64xx_pl080_init()		arch/arm/mach-s3c/pl080.c
-  ep93xx_init_devices()		arch/arm/mach-ep93xx/core.c
-
-They won't set -1 to irq[0], so no need the warn.
-
-This reverts commit 2eac58d5026e4ec8b17ff8b62877fea9e1d2f1b3.
-
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/amba/bus.c |    3 ---
- 1 file changed, 3 deletions(-)
-
---- a/drivers/amba/bus.c
-+++ b/drivers/amba/bus.c
-@@ -360,9 +360,6 @@ static int amba_device_try_add(struct am
- 	void __iomem *tmp;
- 	int i, ret;
- 
--	WARN_ON(dev->irq[0] == (unsigned int)-1);
--	WARN_ON(dev->irq[1] == (unsigned int)-1);
--
- 	ret = request_resource(parent, &dev->res);
- 	if (ret)
- 		goto err_out;
+> -- Steve
+> 
+> 
+> > Signed-off-by: Srinivas Pandruvada <
+> > srinivas.pandruvada@linux.intel.com>
+> > ---
+> >  drivers/cpufreq/intel_pstate.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/drivers/cpufreq/intel_pstate.c
+> > b/drivers/cpufreq/intel_pstate.c
+> > index 349ddbaef796..1e6898dc76b6 100644
+> > --- a/drivers/cpufreq/intel_pstate.c
+> > +++ b/drivers/cpufreq/intel_pstate.c
+> > @@ -1620,6 +1620,9 @@ static void
+> > intel_pstate_disable_hwp_interrupt(struct cpudata *cpudata)
+> >  {
+> >         unsigned long flags;
+> >  
+> > +       if (!boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
+> > +               return;
+> > +
+> >         /* wrmsrl_on_cpu has to be outside spinlock as this can
+> > result in IPC */
+> >         wrmsrl_on_cpu(cpudata->cpu, MSR_HWP_INTERRUPT, 0x00);
+> >  
+> 
 
 
