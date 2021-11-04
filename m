@@ -2,55 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59DB4451C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 11:53:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 534A04451C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 11:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231136AbhKDK4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 06:56:24 -0400
-Received: from comms.puri.sm ([159.203.221.185]:34382 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230148AbhKDK4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 06:56:23 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 74CF9DF8FD;
-        Thu,  4 Nov 2021 03:53:13 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 6Jh-WYjXlZqt; Thu,  4 Nov 2021 03:53:12 -0700 (PDT)
-Message-ID: <209f26d7e2b156818e55eac357c434f599e2ecda.camel@puri.sm>
-Subject: Re: [PATCH v3 0/2] media: hi846: minor build fixes
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     kernel@puri.sm, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, lkp@intel.com, mchehab@kernel.org,
-        paul.kocialkowski@bootlin.com
-Date:   Thu, 04 Nov 2021 11:53:08 +0100
-In-Reply-To: <YXASUAHcvQlWefwp@paasikivi.fi.intel.com>
-References: <20211019155509.1018130-1-martin.kepplinger@puri.sm>
-         <YXASUAHcvQlWefwp@paasikivi.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        id S231186AbhKDK57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 06:57:59 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15360 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhKDK54 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 06:57:56 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HlLBd6LdYz90fl;
+        Thu,  4 Nov 2021 18:55:05 +0800 (CST)
+Received: from dggpeml500019.china.huawei.com (7.185.36.137) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 4 Nov 2021 18:55:15 +0800
+Received: from [10.174.179.189] (10.174.179.189) by
+ dggpeml500019.china.huawei.com (7.185.36.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 4 Nov 2021 18:55:15 +0800
+Subject: Re: [PATCH] block: fix device_add_disk() kobject_create_and_add()
+ error handling
+To:     Luis Chamberlain <mcgrof@kernel.org>, <axboe@kernel.dk>,
+        <hare@suse.de>, <hch@infradead.org>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "kernel test robot" <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+References: <20211103164023.1384821-1-mcgrof@kernel.org>
+From:   Wu Bo <wubo40@huawei.com>
+Message-ID: <1bdaf8e4-319b-8dd2-9869-5bac8ffcbdf2@huawei.com>
+Date:   Thu, 4 Nov 2021 18:55:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
+In-Reply-To: <20211103164023.1384821-1-mcgrof@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.189]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500019.china.huawei.com (7.185.36.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, dem 20.10.2021 um 15:57 +0300 schrieb Sakari Ailus:
-> On Tue, Oct 19, 2021 at 05:55:07PM +0200, Martin Kepplinger wrote:
-> > Similar to many other drivers this basically should fix the build
-> > warning
-> > where the const struct of_device_id we define can be unused.
-> > Reported
-> > here:
-> > https://lore.kernel.org/linux-media/202110170632.b6umsB8m-lkp@intel.com/
+On 2021/11/4 0:40, Luis Chamberlain wrote:
+> Commit 83cbce957446 ("block: add error handling for device_add_disk /
+> add_disk") added error handling to device_add_disk(), however the goto
+> label for the kobject_create_and_add() failure did not set the return
+> value correctly, and so we can end up in a situation where
+> kobject_create_and_add() fails but we report success.
 > 
-> Thanks, Martin!> 
+> Fixes: 83cbce957446 ("block: add error handling for device_add_disk / add_disk")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>   block/genhd.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-
-since the Intel test robot just reminded me that the issue still
-remains: are these patches queued somewhere already?
-
-thanks!
-                         martin
+> diff --git a/block/genhd.c b/block/genhd.c
+> index be4775c13760..b0b484116c3a 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -478,8 +478,10 @@ int __must_check device_add_disk(struct device *parent, struct gendisk *disk,
+>   	if (!disk->part0->bd_holder_dir)in here also should be add ret = -ENOMEM; ?
+>   		goto out_del_integrity;
+>   	disk->slave_dir = kobject_create_and_add("slaves", &ddev->kobj);
+> -	if (!disk->slave_dir)
+> +	if (!disk->slave_dir) {
+> +		ret = -ENOMEM;
+>   		goto out_put_holder_dir;
+> +	}
+>   
+>   	ret = bd_register_pending_holders(disk);
+>   	if (ret < 0)
+> 
 
