@@ -2,231 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2DD44511D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 10:30:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF42445120
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 10:30:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhKDJc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 05:32:56 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:40547 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230410AbhKDJcz (ORCPT
+        id S231185AbhKDJdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 05:33:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231160AbhKDJc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 05:32:55 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 5A196580881;
-        Thu,  4 Nov 2021 05:30:17 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 04 Nov 2021 05:30:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=qYCY7tttcemIZgcojAlZUXbTUNV
-        NVtf/FEcSNSxidEo=; b=ti54t+gBbZVWISv3Jrb2lUE9jcs840yKwzRgKPqto+i
-        dyzTrPXpmInqIea+1dpmYei7g9abeESIBj/6UX/Dds5P7VbFKzTy4F6myN0iF7Eb
-        73y/eT7DRInhfL9iRduWzdHQEzXdjcfJKLpmSgW8VDy5jmI4FI3U4CQJ5N/Wrcct
-        /D6aFyYHvy4QYirnpiFDvGawCWXuDZmvLDGroEMqrDWIEDlwYZQOd+hU3DhHoME0
-        qcp0W5pZoQrws7caYnAtfYHxPYBPwF25Ce6jgc5vGmx6q8MG9x6rL5I+8gxXzRIm
-        W8dXEESC6+BdyYSgfM6gT+nDwJroBUWKKP/KKGyDwWA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=qYCY7t
-        ttcemIZgcojAlZUXbTUNVNVtf/FEcSNSxidEo=; b=enq4j17WhFBFEgYNiXpZv4
-        byWi20QvDq2Tr3q1BH9RcodcPniXzwekDF/LHtZcREVXKr0WpnJ91wrS1vCsu1Ar
-        0jqVUZ9dmbzh36n5RVEJBXU6ZDrx2BASB4kSrZ//v9LQw+jzEfwdZYiOwpl3UM+r
-        2H71TTgYxaYr3QbBuhLeQKi0x47/EDCZ0mxT/SXd8IeTWPD6TbZWRXKuH9W1m7W7
-        yUoKXTRJuEZhR0sBjnE0miVKL3nxk9XfEHohKXMYE+zQ6Dr+KvTX5y6oquH8P08L
-        DcLg5PLjqJuDr1Ia3g3St/tbtWutrP4A2dkT9mv4kM0AOHFnU7Lmv1szAVwPqiIw
-        ==
-X-ME-Sender: <xms:KKiDYUJzzV7vWYg7opkojjVIH8ayQkJFNLIc6tTVimmTbyIoXN4WCA>
-    <xme:KKiDYUJ71bepFVH-ot2Gd2oUO0z7ewAM6UzszVKNUZaMQ9hb2MkZ2HGQsk47ZfX96
-    a_GhWmzImYJZ_spzqs>
-X-ME-Received: <xmr:KKiDYUsf2-YGb3EBXhtrCIbkvPPyPbZs9nkLjfR9WGwOFWaCagEBhCb1AHl-CWpuxpKk_VeV4RQpqhWztXZ64yJnxmoE7-5t>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrtdeggddtudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
-    hrlhcuvffnffculdefhedmnecujfgurhepfffhvffukfhfgggtuggjsehgtderredttdej
-    necuhfhrohhmpefrrghtrhhitghkucghihhllhhirghmshcuoehprghtrhhitghksehsth
-    iftgigrdighiiiqeenucggtffrrghtthgvrhhnpeekvdehudevkefhuedvteethfeflefh
-    vdehiefgudegvdfggfetffevkeetudegudenucffohhmrghinhepghhithhhuhgsrdgtoh
-    hmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepphgr
-    thhrihgtkhesshhtfigtgidrgiihii
-X-ME-Proxy: <xmx:KKiDYRYhcVFDnQN_AQKAuZLvAO1xtvlOxfIFHi-pzRNm8iEZtOVJzA>
-    <xmx:KKiDYbaecCGBal_Ga-tC-QR1Zi5Y_pZsyChJmgiiSVdDRpatWzL_Tg>
-    <xmx:KKiDYdCzORA1vRwKPTZwlRzJF60SYSpzqM4onLB8hVLyAEtnxpC37Q>
-    <xmx:KaiDYYRKtBkdVcvjyrkctFy02Y0MueW0VJ8azSpn2kgu7N5wyhIL4g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 4 Nov 2021 05:30:16 -0400 (EDT)
-Date:   Thu, 4 Nov 2021 04:30:14 -0500
-From:   Patrick Williams <patrick@stwcx.xyz>
-To:     Howard Chiu =?utf-8?B?KOmCseWGoOedvyk=?= 
-        <Howard.Chiu@quantatw.com>
-Cc:     Howard Chiu <howard10703049@gmail.com>,
-        "arnd@arndb.de" <arnd@arndb.de>, "olof@lixom.net" <olof@lixom.net>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "soc@kernel.org" <soc@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>
-Subject: Re: [PATCH v1] ARM: dts: aspeed: Adding Facebook Bletchley BMC
-Message-ID: <YYOoJgXyOdgNmI6B@heinlein>
-References: <20211103071417.388388-1-howard.chiu@quantatw.com>
- <YYKatBCCroiYxLew@heinlein>
- <HKAPR04MB40039608E14195D859DE7EC5968D9@HKAPR04MB4003.apcprd04.prod.outlook.com>
+        Thu, 4 Nov 2021 05:32:59 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41EF2C061205
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 02:30:21 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1miZ4a-00026b-Af; Thu, 04 Nov 2021 10:30:16 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1miZ4Z-0004wE-EV; Thu, 04 Nov 2021 10:30:15 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1miZ4Z-0006cE-Db; Thu, 04 Nov 2021 10:30:15 +0100
+Date:   Thu, 4 Nov 2021 10:30:15 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH] pwm: samsung: describe driver in KConfig
+Message-ID: <20211104093015.url6pu2pj6yqqd4e@pengutronix.de>
+References: <20210924133148.111845-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="pNxo54Czgw/SMy95"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dia4e4xjw5wmpq6c"
 Content-Disposition: inline
-In-Reply-To: <HKAPR04MB40039608E14195D859DE7EC5968D9@HKAPR04MB4003.apcprd04.prod.outlook.com>
+In-Reply-To: <20210924133148.111845-1-krzysztof.kozlowski@canonical.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---pNxo54Czgw/SMy95
-Content-Type: text/plain; charset=utf-8
+--dia4e4xjw5wmpq6c
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 04, 2021 at 03:30:08AM +0000, Howard Chiu (=E9=82=B1=E5=86=A0=
-=E7=9D=BF) wrote:
+On Fri, Sep 24, 2021 at 03:31:48PM +0200, Krzysztof Kozlowski wrote:
+> Describe better which driver applies to which SoC, to make configuring
+> kernel for Samsung SoC easier.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  drivers/pwm/Kconfig | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> index aa29841bbb79..21e3b05a5153 100644
+> --- a/drivers/pwm/Kconfig
+> +++ b/drivers/pwm/Kconfig
+> @@ -476,7 +476,9 @@ config PWM_SAMSUNG
+>  	depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
+>  	depends on HAS_IOMEM
+>  	help
+> -	  Generic PWM framework driver for Samsung.
+> +	  Generic PWM framework driver for Samsung S3C24xx, S3C64xx, S5Pv210
+> +	  and Exynos SoCs.
+> +	  Choose Y here only if you build for such Samsung SoC.
 
-> > Is this board using 64MB or 128MB modules?  Many of the newer systems
-> > have been
-> > starting to use 128MB.  I just want to confirm this is correct.
-> 1Gb SPI flash, MX66L1G45GMI-08G
+Assuming this list is complete, I think this is a nice improvement.
 
-1Gb =3D 1024Mb / 8 =3D 128MB, right?  Shouldn't we use the 128MB layout?
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
-> > > +	sled0_ioexp: pca9539@76 {
-> > > +		compatible =3D "nxp,pca9539";
-> > > +		reg =3D <0x76>;
-> > > +		#address-cells =3D <1>;
-> > > +		#size-cells =3D <0>;
-> > > +		gpio-controller;
-> > > +		#gpio-cells =3D <2>;
-> > > +
-> > > +		gpio-line-names =3D
-> > > +
-> > 	"","SLED0_BMC_CCG5_INT","SLED0_INA230_ALERT","SLED0_P12V_STBY_
-> > ALERT",
-> > > +
-> > 	"SLED0_SSD_ALERT","SLED0_MS_DETECT","SLED0_MD_REF_PWM","",
-> > > +
-> > 	"SLED0_MD_STBY_RESET","SLED0_MD_IOEXP_EN_FAULT","SLED0_MD_D
-> > IR","SLED0_MD_DECAY",
-> > > +
-> > 	"SLED0_MD_MODE1","SLED0_MD_MODE2","SLED0_MD_MODE3","SLED
-> > 0_AC_PWR_EN";
-> >=20
-> > In general, in OpenBMC, we have a preference for the GPIOs to not be
-> > schematic
-> > names but to be named based on their [software-oriented] function.  Ple=
-ase
-> > take
-> > a look at:
-> >=20
-> >=20
-> > https://github.com/openbmc/docs/blob/master/designs/device-tree-gpio-na
-> > ming.md
-> >=20
-> > Any function you see that isn't documented there we should try to get
-> > documented
-> > before fixing the GPIO name to match it.
-> >=20
-> I intend to delete them for now if I have to document them first, because=
-=20
-> most of them are platform-specific GPIO, not for general purpose and also=
- not
-> suitable to current OpenBMC.
-> For example, OpenBMC believes there is only one GPIO to be used to power =
-on=20
-> the chassis, but Bletchley has six.
-> I define gpio-line-names for gpioset/geioget/phosphor-multi-gpio-monitor
-> usage, and they can be replaced with gpiochip number and offset instead.
-> The disadvantage is that they won't be human-friendly when TEs develop th=
-eir tool to test these GPIOs.
-> > > +		gpio-line-names =3D
-> > > +		"SLED0_EMBER_LED","SLED0_BLUE_LED","SLED0_RST_IOEXP","",
-
-Deleting them entirely sounds even less desirable.  If these were just for
-humans, then having a schematic name is better than nothing.  But when you
-suggest their usage to be "TEs develop their tool to test these GPIOs" that
-seems to indicate this becomes ABI and we want stable, documented names, to
-limit the churn on users.
-
-I don't believe the gpiochip/pin numbers are considered stable ABI.  Our te=
-am
-has previously had to do an abstraction between 4.x and 5.x kernel because =
-of
-changes in that space.
-
-My initial preference would be that you leave them in as schematic names, f=
-or
-human purposes, until you start using them in code at which point they shou=
-ld be
-well-documented and using the style we've set out in the document above.
-
-Re: "OpenBMC believes there is only one GPIO to be used to power on the cha=
-ssis,
-but Bletchley has six."... This does not make it system-specific.  Yosemite=
--v2
-has 4 independently managed systems, with their own power sequencing.  There
-should be work going on by that team to expand the GPIO documentation to co=
-ver N
-sub-chassis as well; it just might be that you are ahead of them in documen=
-ting
-it.
-
-It should be trivial to expand the `power-chassis-control` and
-`power-chassis-good` documentation to support sub-chassis.  I can do this f=
-or
-you if you need.  Many of your GPIOs were related to LEDs which are also al=
-ready
-covered by this doc (except might need minor wording for sub-chassis as wel=
-l).
-Can you let me know which other GPIO functions you think you'll need that a=
-ren't
-already in that document and we can work to get them added?
-
-> > > +&i2c13 {
-> > > +	multi-master;
-> > > +	aspeed,hw-timeout-ms =3D <1000>;
-> > > +	status =3D "okay";
-> > > +};
-> >=20
-> > Was this intentional to have defined a multi-master bus with nothing on=
- it?
-> There is a OCP debug card which is a hot plugging device.
-> We only need to specify this bus with "multi-mater" property for IPMB sup=
-port.
-
-Got it.
+thanks
+Uwe
 
 --=20
-Patrick Williams
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
---pNxo54Czgw/SMy95
+--dia4e4xjw5wmpq6c
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEBGD9ii4LE9cNbqJBqwNHzC0AwRkFAmGDqCQACgkQqwNHzC0A
-wRnlOA//RV+35oOn9wEW+jO6oZi0M5yL51mdYiahoSlrSbjn9M3rydZPeCHA2Nfo
-nn+TpAalJ6fNmAjwGdGyQCcorRGgKb4WRw1WW91lErBydFRTSIbL0lJ4dIIQsdjh
-VtRhivTCz1UDMsGYGy+rFc4f/NAIXq3fFDaY5ek58BBUZtHMHHpvaQhvEzg982kS
-iOSsQ79dInmoX/1m5PQDGt67Fx/lcuJCVmlVl5OFuD3UTmpeSckgbs/kT6S4jiiF
-Y/SUWHGOrx9rWwRsNdDgCFJLmWjwTFpopI8hwkw/PkP9w5Y3twv/Ulng4FG/wvuR
-eBLc0bYY69bPXfOWP6UVg3ChnJAiE1mNQNlUwNrbvCF/Rc3NtBM4hIOZ6zDLBc6g
-l54ITv6DLl07KARnYICr/eVCRvSV2znMHxju3c6Lcsql68T98h3+KGsMzX62dd7Q
-O+diXES9DbmR4yMxXN//LN+adaqiRVCo8ubSZ5dnK6bgqJJqd+repyl48XwQCoTU
-KES8EeT+s/rye5AG1o877GEt2yoVjdaETlYzZGZTBRO9tKJ1CVrVBs71J1JFaMP0
-lCI3rDGGz0vzZjNzVMw+xUO/EH8ddOh9wGBCEzypRNAE5ikipidbms5s2BehMWU/
-mPiI/oQk5RHl4q5dxeWi42QScTkXHq3fToJ7ZBoeJN9Oy5Xz4l4=
-=cy2B
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGDqCQACgkQwfwUeK3K
+7AmbUQgAlMzCYfheBhJ9/DkHV0OReAztbiZh7PdQKsIyeqdzFZ795A857eAOEHGD
+a8W5ZqlJ9/Tqy2j99BO1nKpExjl2Nb8pxGVhikPS0NuwZZ0V9pGRukCPBNOU+7XK
+A+hPW0F78EK+Chxhk9WTraTORaH0lqbGIWwXGhfoHKEpb7Flu/g5wBroqsbc7wWA
+nxBhRy73JIlGoT9aCx3XGstsbsgbbkb44wEj8by3A9UyTcTY8AAWomyPqbGWKaXM
+20UG/QVQ7F1C/9OlmzxRRtnlPoIXiLZAimk60GAI/XyUeS3Oy1ziTV31jvgyITmm
+pUvpeUR/oV0p2APnfWVS3pdtzLnB2A==
+=GQCW
 -----END PGP SIGNATURE-----
 
---pNxo54Czgw/SMy95--
+--dia4e4xjw5wmpq6c--
