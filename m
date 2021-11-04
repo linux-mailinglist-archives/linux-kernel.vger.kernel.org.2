@@ -2,337 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208A0445A41
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 20:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BF7445A44
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 20:05:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234194AbhKDTHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 15:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233947AbhKDTHY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 15:07:24 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E095FC061203
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 12:04:45 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id v64so16848584ybi.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 12:04:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a8bYlLhvyabe/zdfFGm59a9QoggEe1fy64RUEfMkLIw=;
-        b=e4zsu8VcJphDG3YFoAXcx2rexEUfhM1w71L7h2hNTthkrFDBtZUZeQKIfr18OSTdpz
-         wpOxX0D8RDOJ64cW2VUslpepyAR0vwqMb+tVoFvUPoETOMicRnV3KJKnbF2QShUj7KXy
-         ndFOQ1ZURzLaQC1e5nTsqfDO/FHoSv5F7Q8t43UxxCS50JMfPQReIcb6Ldfnw/ApAGSo
-         8Gdzp9IEm0k65QHHBsdbptXBD/13Yq6a9yUVR8pP7kKkZ4FE1Sphwaxpk7rMpdVI6q2U
-         3n68uhJtvSwk+PbmAUNYOfCLwgte7wh7FVmq6yyoxrThOHG/y1nlCftm2Okz/Wv3+g0i
-         tS5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a8bYlLhvyabe/zdfFGm59a9QoggEe1fy64RUEfMkLIw=;
-        b=Ll/oXBWwH0LfsbM2hmX6cZ1Yu9bylzv+i300ulbcEgoJBVfHkslx6VFGy/g7r4mOFl
-         IZPMTqrlSvlliSByEjmuIwGOj4yrQ4OZacg6ACaC6GBGOE2Klm6IcreXbHNDKhQxOEPF
-         zOJfaIHCc+/vWtx49ysvmjOOyGQLZ/nivqZS2ErJBA9QOioZdDZBzKlbNw/x7Z+bVjw0
-         LGUXlykzuerF6d8kp8zDQPgSRSFV55u4/droK0pGP98tZu13WjwuFTAgRDYe0Y3T5vjv
-         8z7EeTDkN5964OhAcr3eVF6E26tz6rS+1YNpi1cXSY7fbBjltjIDQm0wbCbJpedS2M7O
-         DHBg==
-X-Gm-Message-State: AOAM530ZgrwKTWgjjG4B63BlnF4gv1eda9HgIuF2V2w3k0h9iU8Znxrf
-        yT2C0Pn4m7XjW53y4L+jIIVIm3DdOyRpF4Qwxlz2MA==
-X-Google-Smtp-Source: ABdhPJw7Bbo4UEiQVtBphw9F/uSKQaSVqBKxcL0Q9JnJqUvuNJ+9wPat2wk8utDuzYoSqM5XyYV9w2O/cB9hgzXC9qI=
-X-Received: by 2002:a25:db0f:: with SMTP id g15mr49843133ybf.414.1636052684836;
- Thu, 04 Nov 2021 12:04:44 -0700 (PDT)
+        id S234217AbhKDTHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 15:07:45 -0400
+Received: from mga14.intel.com ([192.55.52.115]:48359 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231823AbhKDTHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 15:07:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10158"; a="232022292"
+X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
+   d="scan'208";a="232022292"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 12:04:59 -0700
+X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
+   d="scan'208";a="586073150"
+Received: from unknown (HELO [10.209.25.230]) ([10.209.25.230])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 12:04:58 -0700
+Subject: Re: [PATCH] x86/sgx: Fix free page accounting
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Reinette Chatre <reinette.chatre@intel.com>
+Cc:     dave.hansen@linux.intel.com, jarkko@kernel.org, tglx@linutronix.de,
+        bp@alien8.de, mingo@redhat.com, linux-sgx@vger.kernel.org,
+        x86@kernel.org, seanjc@google.com, tony.luck@intel.com,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <373992d869cd356ce9e9afe43ef4934b70d604fd.1636049678.git.reinette.chatre@intel.com>
+ <YYQsc0kktaOdOXb0@kroah.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <460c7c74-0921-03a4-ded0-afa31d9c8aa6@intel.com>
+Date:   Thu, 4 Nov 2021 12:04:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20211102002203.1046069-1-rananta@google.com> <20211102002203.1046069-3-rananta@google.com>
- <YYMKphExkqttn2w0@google.com>
-In-Reply-To: <YYMKphExkqttn2w0@google.com>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Thu, 4 Nov 2021 12:04:33 -0700
-Message-ID: <CAJHc60zC0HSVRfU0wN6OW6dkZm8m9AxmsTkZsRRiLFyq8kdmfg@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/8] KVM: arm64: Setup base for hypercall firmware registers
-To:     Oliver Upton <oupton@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YYQsc0kktaOdOXb0@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 3:18 PM Oliver Upton <oupton@google.com> wrote:
->
-> On Tue, Nov 02, 2021 at 12:21:57AM +0000, Raghavendra Rao Ananta wrote:
-> > The hypercall firmware registers may hold versioning information
-> > for a particular hypercall service. Before a VM starts, these
-> > registers are read/write to the user-space. That is, it can freely
-> > modify the fields as it sees fit for the guest. However, this
-> > shouldn't be allowed once the VM is started since it may confuse
-> > the guest as it may have read an older value. As a result, introduce
-> > a helper interface to convert the registers to read-only once any
-> > vCPU starts running.
-> >
-> > Extend this interface to also clear off all the feature bitmaps of
-> > the firmware registers upon first write. Since KVM exposes an upper
-> > limit of the feature-set to user-space via these registers, this
-> > action will ensure that no new features get enabled by accident if
-> > the user-space isn't aware of a newly added register.
-> >
-> > Since the upcoming changes introduces more firmware registers,
-> > rename the documentation to PSCI (psci.rst) to a more generic
-> > hypercall.rst.
-> >
-> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > ---
-> >  .../virt/kvm/arm/{psci.rst => hypercalls.rst} | 24 +++----
-> >  Documentation/virt/kvm/arm/index.rst          |  2 +-
-> >  arch/arm64/include/asm/kvm_host.h             |  8 +++
-> >  arch/arm64/kvm/arm.c                          |  7 +++
-> >  arch/arm64/kvm/hypercalls.c                   | 62 +++++++++++++++++++
-> >  5 files changed, 90 insertions(+), 13 deletions(-)
-> >  rename Documentation/virt/kvm/arm/{psci.rst => hypercalls.rst} (81%)
->
-> nit: consider doing the rename in a separate patch.
->
-> > diff --git a/Documentation/virt/kvm/arm/psci.rst b/Documentation/virt/kvm/arm/hypercalls.rst
-> > similarity index 81%
-> > rename from Documentation/virt/kvm/arm/psci.rst
-> > rename to Documentation/virt/kvm/arm/hypercalls.rst
-> > index d52c2e83b5b8..85dfd682d811 100644
-> > --- a/Documentation/virt/kvm/arm/psci.rst
-> > +++ b/Documentation/virt/kvm/arm/hypercalls.rst
-> > @@ -1,22 +1,19 @@
-> >  .. SPDX-License-Identifier: GPL-2.0
-> >
-> > -=========================================
-> > -Power State Coordination Interface (PSCI)
-> > -=========================================
-> > +=======================
-> > +ARM Hypercall Interface
-> > +=======================
-> >
-> > -KVM implements the PSCI (Power State Coordination Interface)
-> > -specification in order to provide services such as CPU on/off, reset
-> > -and power-off to the guest.
-> > -
-> > -The PSCI specification is regularly updated to provide new features,
-> > -and KVM implements these updates if they make sense from a virtualization
-> > +New hypercalls are regularly added by ARM specifications (or KVM), and
->
-> nit: maybe we should use the abstraction of "hypercall service" to refer
-> to the functional groups of hypercalls. i.e. PSCI or TRNG are hypercall
-> services.
->
-> > +are made available to the guests if they make sense from a virtualization
-> >  point of view.
-> >
-> >  This means that a guest booted on two different versions of KVM can
-> >  observe two different "firmware" revisions. This could cause issues if
-> > -a given guest is tied to a particular PSCI revision (unlikely), or if
-> > -a migration causes a different PSCI version to be exposed out of the
-> > -blue to an unsuspecting guest.
-> > +a given guest is tied to a particular version of a specific hypercall
-> > +(PSCI revision for instance (unlikely)), or if a migration causes a
->
-> a particular version of a hypercall service
->
-Sure, I can address your comments on this file. Thanks!
-> > +different (PSCI) version to be exposed out of the blue to an unsuspecting
-> > +guest.
-> >
-> >  In order to remedy this situation, KVM exposes a set of "firmware
-> >  pseudo-registers" that can be manipulated using the GET/SET_ONE_REG
-> > @@ -26,6 +23,9 @@ to a convenient value if required.
-> >  The following register is defined:
-> >
-> >  * KVM_REG_ARM_PSCI_VERSION:
-> > +    KVM implements the PSCI (Power State Coordination Interface)
-> > +    specification in order to provide services such as CPU on/off, reset
-> > +    and power-off to the guest.
-> >
-> >    - Only valid if the vcpu has the KVM_ARM_VCPU_PSCI_0_2 feature set
-> >      (and thus has already been initialized)
-> > diff --git a/Documentation/virt/kvm/arm/index.rst b/Documentation/virt/kvm/arm/index.rst
-> > index 78a9b670aafe..e84848432158 100644
-> > --- a/Documentation/virt/kvm/arm/index.rst
-> > +++ b/Documentation/virt/kvm/arm/index.rst
-> > @@ -8,6 +8,6 @@ ARM
-> >     :maxdepth: 2
-> >
-> >     hyp-abi
-> > -   psci
-> > +   hypercalls
-> >     pvtime
-> >     ptp_kvm
-> > diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> > index d0221fb69a60..0b2502494a17 100644
-> > --- a/arch/arm64/include/asm/kvm_host.h
-> > +++ b/arch/arm64/include/asm/kvm_host.h
-> > @@ -102,6 +102,11 @@ struct kvm_s2_mmu {
-> >  struct kvm_arch_memory_slot {
-> >  };
-> >
-> > +struct hvc_reg_desc {
-> > +     bool write_disabled;
-> > +     bool write_attempted;
-> > +};
-> > +
-> >  struct kvm_arch {
-> >       struct kvm_s2_mmu mmu;
-> >
-> > @@ -137,6 +142,9 @@ struct kvm_arch {
-> >
-> >       /* Memory Tagging Extension enabled for the guest */
-> >       bool mte_enabled;
-> > +
-> > +     /* Hypercall firmware registers' information */
-> > +     struct hvc_reg_desc hvc_desc;
-> >  };
-> >
-> >  struct kvm_vcpu_fault_info {
-> > diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> > index 24a1e86d7128..f9a25e439e99 100644
-> > --- a/arch/arm64/kvm/arm.c
-> > +++ b/arch/arm64/kvm/arm.c
-> > @@ -630,6 +630,13 @@ static int kvm_vcpu_first_run_init(struct kvm_vcpu *vcpu)
-> >       if (kvm_vm_is_protected(kvm))
-> >               kvm_call_hyp_nvhe(__pkvm_vcpu_init_traps, vcpu);
-> >
-> > +     /* Mark the hypercall firmware registers as read-only since
-> > +      * at least once vCPU is about to start running.
-> > +      */
-> > +     mutex_lock(&kvm->lock);
-> > +     kvm->arch.hvc_desc.write_disabled = true;
-> > +     mutex_unlock(&kvm->lock);
-> > +
->
-> This really is just an alias for if any vCPU in the VM has started yet.
-> While the ARM KVM code does some bookkeeping around which vCPUs have
-> been started, it is in no way specific to ARM.
->
-> It might be nice to hoist vcpu->arch.has_run_once into the generic KVM
-> code, then build some nice abstractions there to easily determine if any
-> vCPU in the VM has been started yet.
->
-Sure, let me look into it..
-> >       return ret;
-> >  }
-> >
-> > diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
-> > index d030939c5929..7e873206a05b 100644
-> > --- a/arch/arm64/kvm/hypercalls.c
-> > +++ b/arch/arm64/kvm/hypercalls.c
-> > @@ -58,6 +58,12 @@ static void kvm_ptp_get_time(struct kvm_vcpu *vcpu, u64 *val)
-> >       val[3] = lower_32_bits(cycles);
-> >  }
-> >
-> > +static u64 *kvm_fw_reg_to_bmap(struct kvm *kvm, u64 fw_reg)
-> > +{
-> > +     /* No firmware registers supporting hvc bitmaps exits yet */
-> > +     return NULL;
-> > +}
-> > +
-> >  int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
-> >  {
-> >       u32 func_id = smccc_get_function(vcpu);
-> > @@ -234,15 +240,71 @@ int kvm_arm_get_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
-> >       return 0;
-> >  }
-> >
-> > +static void kvm_fw_regs_sanitize(struct kvm *kvm, struct hvc_reg_desc *hvc_desc)
-> > +{
-> > +     unsigned int i;
-> > +     u64 *hc_bmap = NULL;
-> > +
-> > +     mutex_lock(&kvm->lock);
-> > +
-> > +     if (hvc_desc->write_attempted)
-> > +             goto out;
-> > +
-> > +     hvc_desc->write_attempted = true;
-> > +
-> > +     for (i = 0; i < ARRAY_SIZE(fw_reg_ids); i++) {
-> > +             hc_bmap = kvm_fw_reg_to_bmap(kvm, fw_reg_ids[i]);
-> > +             if (hc_bmap)
-> > +                     *hc_bmap = 0;
-> > +     }
->
-> Maybe instead of checking for feature bitmap registers in the full range
-> of FW registers, you could separately track a list of feature bitmap
-> regs and just iterate over that.
->
-> You could then just stash an array/substructure of feature bitmap reg
-> values in struct kvm_arch, along with a bitmap of which regs were
-> touched by the VMM.
->
-> For the first vCPU in KVM_RUN, zero out the FW feature regs that were
-> never written to. You could then punt the clobber operation and do it
-> exactly once for a VM.
->
-Sure, I guess there are some cases that I missed checking. Will try to
-address them in the next patchset.
+On 11/4/21 11:54 AM, Greg KH wrote:
+>>  static bool sgx_should_reclaim(unsigned long watermark)
+>>  {
+>> -	return sgx_nr_free_pages < watermark && !list_empty(&sgx_active_page_list);
+>> +	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
+>> +	       !list_empty(&sgx_active_page_list);
+> What prevents the value from changing right after you test this?  Why is
+> an atomic value somehow solving the problem?
 
-Regards,
-Raghavendra
-> > +out:
-> > +     mutex_unlock(&kvm->lock);
-> > +}
-> > +
-> > +static bool
-> > +kvm_fw_regs_block_write(struct kvm *kvm, struct hvc_reg_desc *hvc_desc, u64 val)
-> > +{
-> > +     bool ret = false;
-> > +     unsigned int i;
-> > +     u64 *hc_bmap = NULL;
-> > +
-> > +     mutex_lock(&kvm->lock);
-> > +
-> > +     for (i = 0; i < ARRAY_SIZE(fw_reg_ids); i++) {
-> > +             hc_bmap = kvm_fw_reg_to_bmap(kvm, fw_reg_ids[i]);
-> > +             if (hc_bmap)
-> > +                     break;
-> > +     }
-> > +
-> > +     if (!hc_bmap)
-> > +             goto out;
-> > +
-> > +     /* Do not allow any updates if the VM has already started */
-> > +     if (hvc_desc->write_disabled && val != *hc_bmap)
-> > +             ret = true;
-> > +
-> > +out:
-> > +     mutex_unlock(&kvm->lock);
-> > +     return ret;
-> > +}
-> > +
-> >  int kvm_arm_set_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
-> >  {
-> >       void __user *uaddr = (void __user *)(long)reg->addr;
-> > +     struct kvm *kvm = vcpu->kvm;
-> > +     struct hvc_reg_desc *hvc_desc = &kvm->arch.hvc_desc;
-> >       u64 val;
-> >       int wa_level;
-> >
-> >       if (copy_from_user(&val, uaddr, KVM_REG_SIZE(reg->id)))
-> >               return -EFAULT;
-> >
-> > +     if (kvm_fw_regs_block_write(kvm, hvc_desc, val))
-> > +             return -EBUSY;
-> > +
-> > +     kvm_fw_regs_sanitize(kvm, hvc_desc);
-> > +
-> >       switch (reg->id) {
-> >       case KVM_REG_ARM_PSCI_VERSION:
-> >               return kvm_arm_set_psci_fw_reg(vcpu, val);
-> > --
-> > 2.33.1.1089.g2158813163f-goog
-> >
+Nothing.  It's fundamentally racy, and that's OK.
+
+Just like the core VM, being under the watermark is an indication that
+the kernel is low on pages (SGX pages in this case).  It means we should
+try SGX reclaim.  Let's say there's a race and a bunch of pages are
+freed.  Reclaim will run once iteration then stop.
+
+We could make an argument that the sgx_reclaim_pages() loop should check
+sgx_nr_free_pages in a few places to ensure it doesn't unnecessarily
+reclaim too much memory.  That's something to look at, but it's beyond
+the scope of this very simple bug fix.
