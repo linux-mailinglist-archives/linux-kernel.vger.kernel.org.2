@@ -2,83 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A57F84456B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4212C4456BB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:04:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbhKDQGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 12:06:00 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:33520 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229770AbhKDQF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 12:05:58 -0400
-Received: from [127.0.0.1] (dynamic-046-114-037-055.46.114.pool.telefonica.de [46.114.37.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E61611EC03AD;
-        Thu,  4 Nov 2021 17:03:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636041799;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a4evrOHd0IfTyrs3k9/fwX+W/P75BgRT5NqUyOT/QhA=;
-        b=MfYrIi/NzQzu7+bUg8+JE8a/TjdlOnIxd1Ge1UeACXOJRNorLjOjCGPP2/IX3XfM4XWYch
-        J+HgUXwKITXMoxJV2gESgaK97zM9aRSiRhSnUzToelJvc4z36gX3fHpH5mvFXVlQXFcdzp
-        cs5LiiOtD9sx6+Z9xuk74MSKNsFALDI=
-Date:   Thu, 04 Nov 2021 16:03:15 +0000
-From:   Boris Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-CC:     brijesh.singh@amd.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-efi@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, Andy Lutomirski <luto@kernel.org>,
-        Sergio Lopez <slp@redhat.com>,
-        platform-driver-x86@vger.kernel.org, linux-mm@kvack.org,
-        Joerg Roedel <jroedel@suse.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Ingo Molnar <mingo@redhat.com>, tony.luck@intel.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jim Mattson <jmattson@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Peter Gonda <pgonda@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, marcorr@google.com,
-        Andi Kleen <ak@linux.intel.com>,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v6_14/42=5D_x86/sev=3A_Regist?= =?US-ASCII?Q?er_GHCB_memory_when_SEV-SNP_is_active?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <47815dd4-f9ac-b141-2852-8f48c8299a5e@amd.com>
-References: <20211008180453.462291-1-brijesh.singh@amd.com> <20211008180453.462291-15-brijesh.singh@amd.com> <YYFs+5UUMfyDgh/a@zn.tnic> <aea0e0c8-7f03-b9db-3084-f487a233c50b@amd.com> <YYGGv6EtWrw7cnLA@zn.tnic> <a975dfbf-f9bb-982e-9814-7259bc075b71@amd.com> <YYPnGeW+8tlNgW34@zn.tnic> <47815dd4-f9ac-b141-2852-8f48c8299a5e@amd.com>
-Message-ID: <C01A4C34-D84A-4489-A2D0-91003B9B564C@alien8.de>
+        id S231607AbhKDQGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 12:06:46 -0400
+Received: from smtprelay0199.hostedemail.com ([216.40.44.199]:50054 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231484AbhKDQGo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 12:06:44 -0400
+Received: from omf08.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 0EC68838436D;
+        Thu,  4 Nov 2021 16:04:06 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf08.hostedemail.com (Postfix) with ESMTPA id 1E5841A29FC;
+        Thu,  4 Nov 2021 16:04:04 +0000 (UTC)
+Message-ID: <834e83a227f40c4654b97f2f0b045b4cbd326f16.camel@perches.com>
+Subject: Re: [PATCH] scsi: scsi_debug: fix return checks for kcalloc
+From:   Joe Perches <joe@perches.com>
+To:     George Kennedy <george.kennedy@oracle.com>,
+        gregkh@linuxfoundation.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dan.carpenter@oracle.com
+Date:   Thu, 04 Nov 2021 09:04:01 -0700
+In-Reply-To: <1635966102-29320-1-git-send-email-george.kennedy@oracle.com>
+References: <1635966102-29320-1-git-send-email-george.kennedy@oracle.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.40
+X-Stat-Signature: 16zn43i8n69z9pymassbmob55zucsoi7
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: 1E5841A29FC
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+sBPcUO2wOTsQDKinIY1mJf6efqbRRJZ0=
+X-HE-Tag: 1636041843-960213
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On November 4, 2021 3:26:56 PM UTC, Brijesh Singh <brijesh=2Esingh@amd=2Eco=
-m> wrote:
->Of course, the current patch does not suffer with it=2E Let me know your=
-=20
->preference=2E
+On Wed, 2021-11-03 at 14:01 -0500, George Kennedy wrote:
+> Change return checks from kcalloc() to now check for NULL and
+> ZERO_SIZE_PTR using the ZERO_OR_NULL_PTR macro or the following
+> crash can occur if ZERO_SIZE_PTR indicator is returned.
+> 
+> BUG: KASAN: null-ptr-deref in memcpy include/linux/fortify-string.h:191 [inline]
+> BUG: KASAN: null-ptr-deref in sg_copy_buffer+0x138/0x240 lib/scatterlist.c:974
+> Write of size 4 at addr 0000000000000010 by task syz-executor.1/22789
+[]
+> diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
+[]
+> @@ -3909,7 +3909,7 @@ static int resp_comp_write(struct scsi_cmnd *scp,
+>  		return ret;
+>  	dnum = 2 * num;
+>  	arr = kcalloc(lb_size, dnum, GFP_ATOMIC);
+> -	if (NULL == arr) {
+> +	if (ZERO_OR_NULL_PTR(arr)) {
+>  		mk_sense_buffer(scp, ILLEGAL_REQUEST, INSUFF_RES_ASC,
+>  				INSUFF_RES_ASCQ);
+>  		return check_condition_result;
 
-Whatever keeps the code simpler=2E
+This one isn't necessary as num is already tested for non-0 above
+this block.
 
-Thx=2E
+> @@ -4265,7 +4265,7 @@ static int resp_verify(struct scsi_cmnd *scp, struct sdebug_dev_info *devip)
+>  		return ret;
+>  
+>  	arr = kcalloc(lb_size, vnum, GFP_ATOMIC);
+> -	if (!arr) {
+> +	if (ZERO_OR_NULL_PTR(arr)) {
+>  		mk_sense_buffer(scp, ILLEGAL_REQUEST, INSUFF_RES_ASC,
+>  				INSUFF_RES_ASCQ);
+>  		return check_condition_result;
 
---=20
-Sent from a small device: formatting sux and brevity is inevitable=2E 
+Here it's probably clearer code to test vnum == 0 before the kcalloc
+and return check_condition_result;
+
+> @@ -4334,7 +4334,7 @@ static int resp_report_zones(struct scsi_cmnd *scp,
+>  			    max_zones);
+>  
+>  	arr = kcalloc(RZONES_DESC_HD, alloc_len, GFP_ATOMIC);
+> -	if (!arr) {
+> +	if (ZERO_OR_NULL_PTR(arr)) {
+>  		mk_sense_buffer(scp, ILLEGAL_REQUEST, INSUFF_RES_ASC,
+>  				INSUFF_RES_ASCQ);
+>  		return check_condition_result;
+
+And here test alloc_len == 0 before the kcalloc.
+
+
