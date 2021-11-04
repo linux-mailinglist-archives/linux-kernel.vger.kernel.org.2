@@ -2,133 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1505444FDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 08:58:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 043E4444FE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:01:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhKDIBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:01:10 -0400
-Received: from mail-ua1-f41.google.com ([209.85.222.41]:39616 "EHLO
-        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhKDIBI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:01:08 -0400
-Received: by mail-ua1-f41.google.com with SMTP id i6so9248819uae.6;
-        Thu, 04 Nov 2021 00:58:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C0VeHDwd0st+efSBfafTGRGInECO+leW6YfH2krS5v8=;
-        b=k2nTBMAfUmED23BJ5zx6DxU6ulYDdc2HG1EB48xkGJW+CGGb1GlVBI9a4CzpR8Cjqb
-         TpuImGOXO4hsl0aGG2vxsMlJGvlP+GkZ/on/uCoDEHsvDaXPyyzu7iA1tYq1Mo6Q2zO7
-         AC1rdLtGKB0tpxLB/IaknpsqlImQMi3Oo+i57INLn8Vjo79X/lq0t3lUQlzdmza4ZZ/o
-         swzOc1In+0WrAidvFnV9igs+LiP0Vrb/nc7HwQlzmXYRbS6osUSjBN6a0qcKo67ApDPq
-         IBZNGm28/+zmBv77lQCnw/KQNzU9E4Ihean2QNMTOJczWL9vc1HatL3X4IsRNv/YLIPG
-         UK3A==
-X-Gm-Message-State: AOAM532tXdVUyZ59KIc8EKMvXgFeJw2udxjnMDp/wcREc8DbSibkwUuT
-        195Y4nxDJ5Pa6A/ZtI7xcLj5vw5FjhmTgA==
-X-Google-Smtp-Source: ABdhPJyGF4VnVry4jSkBCOCLtfOZWAyBiEMhM5qdafXv5eZc5nMjm6DMuf/sCHNnd1YSoNfHjgMzQQ==
-X-Received: by 2002:a05:6102:f08:: with SMTP id v8mr27167977vss.38.1636012708990;
-        Thu, 04 Nov 2021 00:58:28 -0700 (PDT)
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
-        by smtp.gmail.com with ESMTPSA id q8sm628059uae.10.2021.11.04.00.58.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 00:58:28 -0700 (PDT)
-Received: by mail-ua1-f52.google.com with SMTP id v20so9232485uaj.9;
-        Thu, 04 Nov 2021 00:58:28 -0700 (PDT)
-X-Received: by 2002:a05:6102:b13:: with SMTP id b19mr10910538vst.50.1636012707755;
- Thu, 04 Nov 2021 00:58:27 -0700 (PDT)
+        id S230492AbhKDIEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:04:32 -0400
+Received: from mail-eopbgr1300107.outbound.protection.outlook.com ([40.107.130.107]:63538
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230329AbhKDIEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 04:04:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XfRvkf5ig3T814/yiFQ4QFku0DMyJ7vPbvTOeV0h+mwVeSydHMjBhplHCkN4CNK0GRdZRIqlC43b/aMFAj7q9t1AIqd8JKOG/weTFb82PlRe8w3AGudv4/GKDB3cElevMRPPLn1Wy0S8/lgxQs5gpnjSfgsiTntCsIBho6zyp/mpsb/hQEocNj3dDMYCw+iplY8d8Y/rdn17b6WgzbhCETbRRWb1RfTA6fKtis+Db+dQ0Bpexu04e5+Y0CBM8/2WFWJlw7PsGPbptP900k94zx28jZiGlacbF/PBwqFHdgiZY9EFiqcRJFGAvSC8YSscRD8dvaptpiE+YSZjOOllfg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=USEQJsSq8P0LRj8o7+Qc8h96Ror9gUlvtGDei+onOIs=;
+ b=QtDsgi0W12tmcKMOsDuGXxDoYnQ7vngrl1jO+qxMkX3o9Up/ltb638bWv0laPUyL4htTs2ngb0rEZQRBo29OUsf6IT0uaPmVLHk57kkAfZLTIFWL/yTYwxK00il/LueOkoBZSu/es40ncKWIKTE1eUdxGkPl7EHcXS1+yRZsIU8OGc6ZqEEMamutocorNQVBYYkf0l9pK6GVXyqMhNRNqJMzq0gytMGCIMKqMyZYhqT3b0JBVw3sUh/ODIAhyDczHNETguEvasq6p+uP79IDEWEqKCYhQK/ajfwacY8pTj/ecflfzQsnQdIXPdsSC1q8sK+oXZsqOvW1etXA1BEAcA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=USEQJsSq8P0LRj8o7+Qc8h96Ror9gUlvtGDei+onOIs=;
+ b=daisJbedodmDPoeIANjpecuvJMXuc9rR2e7HmRmB2XBpaL7FJc6EZSfzy9UolBft7cpP4OFgLR0HZTeMRAhr5YMnDCz080TfBC3ZpHz+DdACxycugZ5kbKCk1hmFZtoCZCwYLBuZ9yesE47uPUJycRZl0nzDU2LnYo0knQpEttE=
+Authentication-Results: perex.cz; dkim=none (message not signed)
+ header.d=none;perex.cz; dmarc=none action=none header.from=vivo.com;
+Received: from HK2PR06MB3492.apcprd06.prod.outlook.com (2603:1096:202:2f::10)
+ by HK0PR06MB2356.apcprd06.prod.outlook.com (2603:1096:203:42::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11; Thu, 4 Nov
+ 2021 08:01:48 +0000
+Received: from HK2PR06MB3492.apcprd06.prod.outlook.com
+ ([fe80::814a:4668:a3bd:768]) by HK2PR06MB3492.apcprd06.prod.outlook.com
+ ([fe80::814a:4668:a3bd:768%7]) with mapi id 15.20.4669.011; Thu, 4 Nov 2021
+ 08:01:48 +0000
+From:   Guo Zhengkui <guozhengkui@vivo.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Jeremy Szu <jeremy.szu@canonical.com>,
+        Kailang Yang <kailang@realtek.com>,
+        Hui Wang <hui.wang@canonical.com>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        Cameron Berkenpas <cam@neo-zeon.de>,
+        PeiSen Hou <pshou@realtek.com>,
+        Werner Sembach <wse@tuxedocomputers.com>,
+        Sami Loone <sami@loone.fi>, Elia Devito <eliadevito@gmail.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     kernel@vivo.com, Guo Zhengkui <guozhengkui@vivo.com>
+Subject: [PATCH] ALSA: hda/realtek: fix flexible_array.cocci warning
+Date:   Thu,  4 Nov 2021 15:59:41 +0800
+Message-Id: <20211104080017.589-1-guozhengkui@vivo.com>
+X-Mailer: git-send-email 2.20.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: HK2PR06CA0017.apcprd06.prod.outlook.com
+ (2603:1096:202:2e::29) To HK2PR06MB3492.apcprd06.prod.outlook.com
+ (2603:1096:202:2f::10)
 MIME-Version: 1.0
-References: <20210913071251.GA15235@gondor.apana.org.au> <20210917002619.GA6407@gondor.apana.org.au>
- <YVNfqUVJ7w4Z3WXK@archlinux-ax161> <20211001055058.GA6081@gondor.apana.org.au>
- <YVdNFzs8HUQwHa54@archlinux-ax161> <20211003002801.GA5435@gondor.apana.org.au>
- <YV0K+EbrAqDdw2vp@archlinux-ax161> <20211019132802.GA14233@gondor.apana.org.au>
- <alpine.DEB.2.22.394.2111021636040.2330984@ramsan.of.borg> <DM6PR04MB708155E447FD9A79AB89686DE78D9@DM6PR04MB7081.namprd04.prod.outlook.com>
-In-Reply-To: <DM6PR04MB708155E447FD9A79AB89686DE78D9@DM6PR04MB7081.namprd04.prod.outlook.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 4 Nov 2021 08:58:16 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW1wLAt9Y=-GMMuk8HWE3UnRgKNMmD9fq34Rq8J7QyrzQ@mail.gmail.com>
-Message-ID: <CAMuHMdW1wLAt9Y=-GMMuk8HWE3UnRgKNMmD9fq34Rq8J7QyrzQ@mail.gmail.com>
-Subject: Re: [PATCH] crypto: api - Do not create test larvals if manager is disabled
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Vladis Dronov <vdronov@redhat.com>,
-        Simo Sorce <ssorce@redhat.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        kernel test robot <lkp@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from localhost.localdomain (218.213.202.190) by HK2PR06CA0017.apcprd06.prod.outlook.com (2603:1096:202:2e::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.17 via Frontend Transport; Thu, 4 Nov 2021 08:01:47 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 84d04080-349d-4a3c-fa67-08d99f695a0f
+X-MS-TrafficTypeDiagnostic: HK0PR06MB2356:
+X-Microsoft-Antispam-PRVS: <HK0PR06MB23569A08573DF3DE3D3055B0C78D9@HK0PR06MB2356.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5crAR9UiXpHTXCM227024CEgkCiWRs67b0fvywymlqvsg4k1DyVfT0q57nCZR52PxhKvy2wovasY+B63MBvo1etuSrVFNFaEkxv1E3gl0W17Ho5VgijpAObCaxKIiKj5NxNhvgVSfq5tVyBBLdTZZBV6raf3D2rJZphbgsIsZav48zh377lRxAPbl4F/zkaS6kFhX0zEhYHFWWS/J6YohLVo8XEEageHG05OTCAs+2sacAJX8Eux/0x0x/iSZisQ6n0/rhM76y/a3NuR9FIIpZ/eT8D39nfb9R7SAcpK/4kvvXlmoqT5trbDFMzFdqeP2UX7y/MQljGSYQJB55K+0FDvaP/7xdZGXXHFIQiC+zzajskWlgl4AQkz9zFzc9WbMNIMa5i7vPIurrCXcmdj/NKkBsTYl1NSjiemgIq7OBzAvY5TZRoCT/+c1uhEjKrWv5b+u0WAcnsxPNaPvNBrWBPSf0f8bUr0WacnpNZPgPBb+n7MZK7uZnFsuj8APmyJmariEeAHnG2y7JZmm24pyRcMiJQXfk2haJ49ZiQ3FubITC3KTZ0bfdAc7/+tnijGFet9Gi+tXORGGuQwtdKHj4+/es9viugNYGR7lPGEAyiTJtbf3SgkTYEBIAuBIuRMkT5Meb3SyYpw+P1hW7f/VLKwo7yuQdcKT4YkH2rqgQIcMzRjM0m95Vnjl68llHWnduFv/DZEl5y6A1ewh4cEaTIxtRtF2SqS6bhFUDsIlDQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK2PR06MB3492.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(508600001)(2906002)(110136005)(86362001)(36756003)(956004)(66946007)(2616005)(66556008)(66476007)(921005)(6486002)(6506007)(6512007)(8936002)(8676002)(316002)(107886003)(5660300002)(83380400001)(52116002)(26005)(1076003)(38100700002)(7416002)(4326008)(6666004)(38350700002)(4744005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N2RkVDRCRWZiaHhoM2k3TzVKZS9QV3BTcnJZdkdSSjZZSG9OT1dtZmU3RDNq?=
+ =?utf-8?B?K2FTVzlwbHptaElhMEFoMFg1TEVYbVl2aVdXOVI2Z0N5VmgrbmFVUm5LVmx1?=
+ =?utf-8?B?bHh1Q1Bzbjc4STBGUzNUemMxQ0tHVnRYczB1akg2OUI4RXdSZExBZDJldVEw?=
+ =?utf-8?B?ZzMrRkQ2cXgrN0ZYYUMzTDRDTG40WTM2N0wxUGlCMWVIdWUzNk9QNG13UVNX?=
+ =?utf-8?B?enFEaFZ2bG1xVmUra09mRkFWNTNnSWEzNUk3ZFFQRFphZFZIZC9uay9HaCsr?=
+ =?utf-8?B?a1hWdVFPb0VqSDVNYVErTkRWdnY1ZDZMTmhnQWpiRWJvRnVVVTJrRURNZ1Bi?=
+ =?utf-8?B?WGdzVE02NTFYaGs5TGxvN1Rsb095RC9oeGp3bkVuelBLeWc2OFkvYlpmaDZx?=
+ =?utf-8?B?SHEyNXAvb3hxQTd2SkRsWDdHcmVkeFphSlFTR1ZNMmt3YS9zZjRHcHRLMFBC?=
+ =?utf-8?B?UVRZV3o1S0d4eHRGSnEycVJvYjYrZTc2MDFMamw5RzNVMGRwc2NVYlBERmYr?=
+ =?utf-8?B?TSttbWRtS2N5OEJVVVU3U3RGSFRSZFpBc0thejlBRmdvSTlkRmNVcC9SdWdC?=
+ =?utf-8?B?VHFoblUyTVVSL002K3d2YXZ3eDEwU2tYVnZpZEVDS2J1TDZEaGliYkE1RDNw?=
+ =?utf-8?B?cEx4NnRucmc2QjNYL3FKT2VCZU91bXNTR0dleGkydmxmVlNjK0ppK0V6aE5W?=
+ =?utf-8?B?Tng2aFFHVXZsVjFkM0FicWRFcG9hbkxaZ2wreWFYZEY0QS96akJFZUN5QWR0?=
+ =?utf-8?B?TFlNSjlHM1cvS3NtMWxxRE1zbGlza3hKNFZuejZpaTRqclhPUDBxd3pvSC9G?=
+ =?utf-8?B?cmY0UXFGUG16TVMzdlNDVzlxckNqRXlDc0V3NmlIdlBpQ0R5RC9TLzdhRDVp?=
+ =?utf-8?B?eGw2aEVKdjRLU3MvSGhoaFlWb2l3TlU3aTYwVkpRUlprMHVRUzRKaHAxZllF?=
+ =?utf-8?B?TTNYUlAzcEwrZzhGZlduREU2RWJFaDRoN1NzQndxa0NPUHJjNFhobisxR0tw?=
+ =?utf-8?B?WC83Z29Ld3ltVGhKbGlra2tGYisyZ3FDQitkRythTnVoVzh2WnNQd2xRbi9a?=
+ =?utf-8?B?RGp1c2dZR0RqT3VKb0JJaGp6QXE4Qlc2OTBpUWwyWkNHKy9FUjlFV29laC9T?=
+ =?utf-8?B?QTVLRTlKa2hFM0tEazVZTno0Q09IeW82T2Nta2pMZGliOG5CckJ6eVJPYmNQ?=
+ =?utf-8?B?WGczdWY5MldvZ3NaSWwvRkFoTFVaSlFQTi9mb2FBZ1V6RFgvQ05GR2NwcEVE?=
+ =?utf-8?B?SzAzekY5czR0cDVseWV5TnRUM3VwanhiWGkvZWNIay8yOE1vdjBPU0ZGSXN3?=
+ =?utf-8?B?K1Z5WG5zeFgvWldtaW42OGllbUt6cTkySGozN2t5Qy81ZVZnUmplR2xrM3N6?=
+ =?utf-8?B?aGRhOVMyNytKanFreGhUd0VsQkxvdUhYQVFtSldPZnFramFqMEEzZGx6YldP?=
+ =?utf-8?B?Y1J6dy92T2N1a292K1M0cVlnSi9GeUhuQmFlSjZXS2NhR0ZqMklCb0Y3aG9w?=
+ =?utf-8?B?OUFoT0w2dC9rcmt6QXhDczBBNXJhZ21jOFdpcWNINldxY1JVSXVqcHNSV094?=
+ =?utf-8?B?SmxSUERnSWxBclJLZjlhZGkzTHB0Q3dHaU96L2ZzNEl2a0cwMDJnalVTZ05M?=
+ =?utf-8?B?TWgzdVJzYmFOczJCV0JRSEdCVlBhT0RhQWEzMCsxem1tVjk4T2x0bTc1M0dZ?=
+ =?utf-8?B?TDVzREg0bEVlYlQ0TVFvQmN6dTVCTTVWbllUNVYxOWx5ZytSK29XOTNRcDhC?=
+ =?utf-8?B?SHN5QXZYd3ZBdmI1cENxR2w1UDg2TzI5ZXdJaHVuQnlOSkM4SE8xSVBQRmFB?=
+ =?utf-8?B?U2pIUzJVUHZ2MXBNY0JkWDF1QmR6MWVPN2EwV0JTWEpBYVdMNVpDMGJxaUlq?=
+ =?utf-8?B?ODNFMDNIYlVTYTY5aHN5Y1Nxdnc1S1NRZ1crcE9YYW9ieVRyekJ3NWF4MEVw?=
+ =?utf-8?B?THc2d1kweHJUT2htd21TcFJNdnRkblRWNm84YzBtcTlGYWVQNmZ4MzUwblBK?=
+ =?utf-8?B?cDdTVkJsbUIwUEVhaWR1cnRobjIvL3hyQlFRRGpmU0wzemo2MVBzeXMvZTRY?=
+ =?utf-8?B?ZFozc1JXZW9rbUhFTllad252YUZ6aVROTFI1bkJjWHlJS0EvUTBBS1piVDRu?=
+ =?utf-8?B?WWZHWFBYcWl3Ukl1MG9FVDZ5ODBXaC9WYUZzT2hWQ1BIMnlZTVQybVZ3aDBS?=
+ =?utf-8?Q?cTRXJpWZXnqk+uPk8VWfyIw=3D?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 84d04080-349d-4a3c-fa67-08d99f695a0f
+X-MS-Exchange-CrossTenant-AuthSource: HK2PR06MB3492.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2021 08:01:48.2813
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l72F7MkeGN5ILSm9jZ2VIUAgtXo5Zx/V7rec/DbNGMOnua0FVk4qyeHjfOtclNKB0Cl+v5yumX2o15TvU2CmRQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2356
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Damien,
+Fix following coccicheck warnings:
+./sound/pci/hda/patch_realtek.c:128:4-24: WARNING use
+flexible-array member instead.
 
-On Thu, Nov 4, 2021 at 8:29 AM Damien Le Moal <Damien.LeMoal@wdc.com> wrote:
-> On 2021/11/03 0:41, Geert Uytterhoeven wrote:
-> > On Tue, 19 Oct 2021, Herbert Xu wrote:
-> >> On Tue, Oct 05, 2021 at 07:33:28PM -0700, Nathan Chancellor wrote:
-> >>> I assume this is the diff you mean? This does not resolve the issue. My
-> >>> apologies if I am slow to respond, I am on vacation until the middle of
-> >>> next week.
-> >>
-> >> Sorry for the delay.  The kernel robot figured out the problem
-> >> for me.  It's the crypto_alg_tested call that causes api.c to
-> >> depend on algapi.c.  This call is only invoked in the case where
-> >> the crypto manager is turned off.  We could instead simply make
-> >> test larvals disappear in that case.
-> >>
-> >> ---8<---
-> >> The delayed boot-time testing patch created a dependency loop
-> >> between api.c and algapi.c because it added a crypto_alg_tested
-> >> call to the former when the crypto manager is disabled.
-> >>
-> >> We could instead avoid creating the test larvals if the crypto
-> >> manager is disabled.  This avoids the dependency loop as well
-> >> as saving some unnecessary work, albeit in a very unlikely case.
-> >>
-> >> Reported-by: Nathan Chancellor <nathan@kernel.org>
-> >> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> >> Reported-by: kernel test robot <lkp@intel.com>
-> >> Fixes: adad556efcdd ("crypto: api - Fix built-in testing dependency failures")
-> >> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> >
-> > Thanks for your patch, which is now commit cad439fc040efe5f
-> > ("crypto: api - Do not create test larvals if manager is disabled").
-> >
-> > I have bisected a failure to mount the root file system on k210 to this
-> > commit.
-> >
-> > Dmesg before/after:
-> >
-> >       mmcblk0: mmc0:0000 SA04G 3.68 GiB
-> >       random: fast init done
-> >        mmcblk0: p1
-> >      -EXT4-fs (mmcblk0p1): mounted filesystem with ordered data mode. Opts: (null). Quota mode: disabled.
-> >      -VFS: Mounted root (ext4 filesystem) readonly on device 179:1.
-> >      +EXT4-fs (mmcblk0p1): Cannot load crc32c driver.
-> >      +VFS: Cannot open root device "mmcblk0p1" or unknown-block(179,1): error -80
->
-> p1 exist as the message 2 lines above shows. And since the mount error is -80
-> (ELIBBAD), it is really all about crypto. Since the default k210 config compile
-> everything in-kernel (no modules), it should work. Was crc32c compiled as a
-> module ? If yes, then the k210 will need to be booted with U-Boot and use a real
-> initrd, which likely will all end-up in a no memory situation. ext4 in itself
-> will consume way too much memory...
+There is a regular need in the kernel to provide a way
+to declare having a dynamically sized set of trailing
+elements in a structure. Kernel code should always use
+“flexible array members” for these cases. The older style
+of one-element or zero-length arrays should no longer be used.
 
-Everything is built-in, including crc32c. It worked fine, until the commit
-referenced.
+Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
+---
+ sound/pci/hda/patch_realtek.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Gr{oetje,eeting}s,
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6322fac9e694..7935c363092e 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -125,7 +125,7 @@ struct alc_spec {
+ 	unsigned int pll_coef_idx, pll_coef_bit;
+ 	unsigned int coef0;
+ 	struct input_dev *kb_dev;
+-	u8 alc_mute_keycode_map[1];
++	u8 alc_mute_keycode_map[];
+ };
+ 
+ /*
+-- 
+2.20.1
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
