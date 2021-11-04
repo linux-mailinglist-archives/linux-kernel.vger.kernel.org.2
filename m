@@ -2,162 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE3F4452C2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 458D44452C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:14:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231484AbhKDMQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 08:16:07 -0400
-Received: from mail-wm1-f45.google.com ([209.85.128.45]:44744 "EHLO
-        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbhKDMQC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 08:16:02 -0400
-Received: by mail-wm1-f45.google.com with SMTP id c71-20020a1c9a4a000000b0032cdcc8cbafso4092978wme.3;
-        Thu, 04 Nov 2021 05:13:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Iw6B3dHc7fqb73Z9j/6O73BwxisTEKPWaJnYtXissaM=;
-        b=e5h8rOz+Lv4ig7InJDtKVKEDIu9FRo1yuE5/HSKtZkwvEsNAEt440SFasiZ46n59Em
-         VMRjXZTOikVTFRsa5hQnGpLjndKgkYIc9jHtRvperEgsZ/0/Dtyl66i3tVjLg4jm2hBU
-         lIYOmfils+/2WKGP1aSbQKqgb8FugpciwGOtiQTu0AEVQ2AignwP7EGMVV6Oxm6zlsKn
-         H0Os+B1zmbr8iXdP6p1+CwdbJbi1150o7rNLPLAxPd/usQMnrR9DNvwTLVvwYLFecoeB
-         aThdL/dxd5/Bu9xNlKe8ztaIuekk0cf/wtj3CVdQs9rUQyOgcSGBvWWQdnN8HP46dxT6
-         3Fiw==
-X-Gm-Message-State: AOAM530lgJDkWZrDZCrSRTvVDS/g08pZH/hFc6e3Ymy5E1W7gYEY49Dm
-        cPErvbWp3oOEBsqQ6oe+kz8=
-X-Google-Smtp-Source: ABdhPJzgWJgz7gVXmqEgv+2orYt+J3Kg1hsMrqSRkcTE6umbybYlFN7yGGD7dXHm3xQVz5CbcB16Sw==
-X-Received: by 2002:a05:600c:2f17:: with SMTP id r23mr23432402wmn.93.1636028003905;
-        Thu, 04 Nov 2021 05:13:23 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id z135sm10408173wmc.45.2021.11.04.05.13.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 05:13:23 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 12:13:22 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Subject: Re: [PATCH 2/2] x86/hyperv: Move required MSRs check to initial
- platform probing
-Message-ID: <20211104121322.b4jco5u2wukv54fm@liuwe-devbox-debian-v2>
-References: <20211028222148.2924457-1-seanjc@google.com>
- <20211028222148.2924457-3-seanjc@google.com>
- <87r1c4rxu6.fsf@vitty.brq.redhat.com>
+        id S231500AbhKDMRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 08:17:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:46896 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231252AbhKDMRR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 08:17:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DEDA1063;
+        Thu,  4 Nov 2021 05:14:39 -0700 (PDT)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 287103F7D7;
+        Thu,  4 Nov 2021 05:14:38 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 12:14:32 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Suraj Jitindar Singh <surajjs@amazon.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, sjitindarsingh@gmail.com
+Subject: Re: [PATCH] arm64: module: Use aarch64_insn_write when updating
+ relocations later on
+Message-ID: <20211104121430.GA6534@lakrids.cambridge.arm.com>
+References: <20211103210709.31790-1-surajjs@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87r1c4rxu6.fsf@vitty.brq.redhat.com>
+In-Reply-To: <20211103210709.31790-1-surajjs@amazon.com>
+User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 11:20:49AM +0200, Vitaly Kuznetsov wrote:
-> Sean Christopherson <seanjc@google.com> writes:
+On Wed, Nov 03, 2021 at 02:07:09PM -0700, Suraj Jitindar Singh wrote:
+> Livepatch modules have relocation sections named
+> .klp.rela.objname.section_name which are written on module load by calling
+> klp_apply_section_relocs(). This is called in apply_relocations() to write
+> relocations targeting objects in the vmlinux, before the module text is
+> mapped read-only in complete_formation().
+
+Currently arm64 doesn't define HAVE_LIVEPATCH, so LIVEPATCH cannot be
+selected, so klp_apply_section_relocs() does nothing, and so there is no
+problem with mainline.
+
+I assume you have out-of-tree patches to enable that, but it's worth
+noting that we haven't yet finished core cleanups necessary to make that
+safe (e.g. implementing RELIABLE_STACKTRACE, ensuring that the
+reloc/insn code itself isn't subject to instrumentation, etc).
+
+If this is something you want to enable, it would be very helpful if you
+could review/test patches in that area.
+
+> However relocations which target other modules are not written until
+> after the mapping is made read-only causing them to fault.
+
+When you say "which target other modules", do you mean that the text of
+the other modules is altered, or that the text of the module being
+loaded is altered to refer to other modules?
+
+> Avoid this fault by calling aarch64_insn_write() to update the instruction
+> if the module text has already been marked read-only. Preserve the current
+> behaviour if called before this has been done.
 > 
-> > Explicitly check for MSR_HYPERCALL and MSR_VP_INDEX support when probing
-> > for running as a Hyper-V guest instead of waiting until hyperv_init() to
-> > detect the bogus configuration.  Add messages to give the admin a heads
-> > up that they are likely running on a broken virtual machine setup.
-> >
-> > At best, silently disabling Hyper-V is confusing and difficult to debug,
-> > e.g. the kernel _says_ it's using all these fancy Hyper-V features, but
-> > always falls back to the native versions.  At worst, the half baked setup
-> > will crash/hang the kernel.
-> >
-> > Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >  arch/x86/hyperv/hv_init.c      |  9 +--------
-> >  arch/x86/kernel/cpu/mshyperv.c | 20 +++++++++++++++-----
-> >  2 files changed, 16 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> > index 6cc845c026d4..abfb09610e22 100644
-> > --- a/arch/x86/hyperv/hv_init.c
-> > +++ b/arch/x86/hyperv/hv_init.c
-> > @@ -347,20 +347,13 @@ static void __init hv_get_partition_id(void)
-> >   */
-> >  void __init hyperv_init(void)
-> >  {
-> > -	u64 guest_id, required_msrs;
-> > +	u64 guest_id;
-> >  	union hv_x64_msr_hypercall_contents hypercall_msr;
-> >  	int cpuhp;
-> >  
-> >  	if (x86_hyper_type != X86_HYPER_MS_HYPERV)
-> >  		return;
-> >  
-> > -	/* Absolutely required MSRs */
-> > -	required_msrs = HV_MSR_HYPERCALL_AVAILABLE |
-> > -		HV_MSR_VP_INDEX_AVAILABLE;
-> > -
-> > -	if ((ms_hyperv.features & required_msrs) != required_msrs)
-> > -		return;
-> > -
-> >  	if (hv_common_init())
-> >  		return;
-> >  
-> > diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-> > index e095c28d27ae..ef6316fef99f 100644
-> > --- a/arch/x86/kernel/cpu/mshyperv.c
-> > +++ b/arch/x86/kernel/cpu/mshyperv.c
-> > @@ -163,12 +163,22 @@ static uint32_t  __init ms_hyperv_platform(void)
-> >  	cpuid(HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS,
-> >  	      &eax, &hyp_signature[0], &hyp_signature[1], &hyp_signature[2]);
-> >  
-> > -	if (eax >= HYPERV_CPUID_MIN &&
-> > -	    eax <= HYPERV_CPUID_MAX &&
-> > -	    !memcmp("Microsoft Hv", hyp_signature, 12))
-> > -		return HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS;
-> > +	if (eax < HYPERV_CPUID_MIN || eax > HYPERV_CPUID_MAX ||
-> > +	    memcmp("Microsoft Hv", hyp_signature, 12))
-> > +		return 0;
-> >  
-> > -	return 0;
-> > +	/* HYPERCALL and VP_INDEX MSRs are mandatory for all features. */
-> > +	eax = cpuid_eax(HYPERV_CPUID_FEATURES);
-> > +	if (!(eax & HV_MSR_HYPERCALL_AVAILABLE)) {
-> > +		pr_warn("x86/hyperv: HYPERCALL MSR not available.\n");
-> > +		return 0;
-> > +	}
-> > +	if (!(eax & HV_MSR_VP_INDEX_AVAILABLE)) {
-> > +		pr_warn("x86/hyperv: VP_INDEX MSR not available.\n");
-> > +		return 0;
-> > +	}
-> > +
-> > +	return HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS;
-> >  }
-> >  
-> >  static unsigned char hv_get_nmi_reason(void)
+> Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
+> ---
+>  arch/arm64/kernel/module.c | 81 ++++++++++++++++++++++----------------
+>  1 file changed, 47 insertions(+), 34 deletions(-)
 > 
-> In theory, we can get away without VP_INDEX MSR as e.g. PV spinlocks
-> don't need it but it will require us to add the check to all other
-> features which actually need it and disable them so it's probably not
-> worth the effort (and unless we're running on KVM/QEMU which actually
-> *can* create such configuration, it's likely impossible to meet such
-> setup in real life).
-> 
+> diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
+> index b5ec010c481f..35596ea870ab 100644
+> --- a/arch/arm64/kernel/module.c
+> +++ b/arch/arm64/kernel/module.c
+> @@ -19,6 +19,7 @@
+>  #include <asm/alternative.h>
+>  #include <asm/insn.h>
+>  #include <asm/sections.h>
+> +#include <asm/patching.h>
+>  
+>  void *module_alloc(unsigned long size)
+>  {
+> @@ -155,7 +156,8 @@ enum aarch64_insn_movw_imm_type {
+>  };
+>  
+>  static int reloc_insn_movw(enum aarch64_reloc_op op, __le32 *place, u64 val,
+> -			   int lsb, enum aarch64_insn_movw_imm_type imm_type)
+> +			   int lsb, enum aarch64_insn_movw_imm_type imm_type,
+> +			   bool early)
+>  {
+>  	u64 imm;
+>  	s64 sval;
+> @@ -187,7 +189,10 @@ static int reloc_insn_movw(enum aarch64_reloc_op op, __le32 *place, u64 val,
+>  
+>  	/* Update the instruction with the new encoding. */
+>  	insn = aarch64_insn_encode_immediate(AARCH64_INSN_IMM_16, insn, imm);
+> -	*place = cpu_to_le32(insn);
+> +	if (early)
+> +		*place = cpu_to_le32(insn);
+> +	else
+> +		aarch64_insn_write(place, insn);
 
-Indeed. There is no need to make things more complicated than necessary.
+If we really need this, I think it'd be better to refactor the
+reloc_insn_*() helpers to generate the new encoding into a temporary
+buffer, and make it the caller's responsibiltiy to then perform the
+write to the real location in the module.
 
-> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+That way we only have to handle the "early" distinction in one place
+rather than spreading it out.
 
-Thanks for reviewing.
+I see you haven't altered the reloc_data() function -- does livepatch
+never result in data relocations?
 
-Wei.
+Thanks,
+Mark.
 
-
-> 
+>  
+>  	if (imm > U16_MAX)
+>  		return -ERANGE;
+> @@ -196,7 +201,8 @@ static int reloc_insn_movw(enum aarch64_reloc_op op, __le32 *place, u64 val,
+>  }
+>  
+>  static int reloc_insn_imm(enum aarch64_reloc_op op, __le32 *place, u64 val,
+> -			  int lsb, int len, enum aarch64_insn_imm_type imm_type)
+> +			  int lsb, int len, enum aarch64_insn_imm_type imm_type,
+> +			  bool early)
+>  {
+>  	u64 imm, imm_mask;
+>  	s64 sval;
+> @@ -212,7 +218,10 @@ static int reloc_insn_imm(enum aarch64_reloc_op op, __le32 *place, u64 val,
+>  
+>  	/* Update the instruction's immediate field. */
+>  	insn = aarch64_insn_encode_immediate(imm_type, insn, imm);
+> -	*place = cpu_to_le32(insn);
+> +	if (early)
+> +		*place = cpu_to_le32(insn);
+> +	else
+> +		aarch64_insn_write(place, insn);
+>  
+>  	/*
+>  	 * Extract the upper value bits (including the sign bit) and
+> @@ -231,17 +240,17 @@ static int reloc_insn_imm(enum aarch64_reloc_op op, __le32 *place, u64 val,
+>  }
+>  
+>  static int reloc_insn_adrp(struct module *mod, Elf64_Shdr *sechdrs,
+> -			   __le32 *place, u64 val)
+> +			   __le32 *place, u64 val, bool early)
+>  {
+>  	u32 insn;
+>  
+>  	if (!is_forbidden_offset_for_adrp(place))
+>  		return reloc_insn_imm(RELOC_OP_PAGE, place, val, 12, 21,
+> -				      AARCH64_INSN_IMM_ADR);
+> +				      AARCH64_INSN_IMM_ADR, early);
+>  
+>  	/* patch ADRP to ADR if it is in range */
+>  	if (!reloc_insn_imm(RELOC_OP_PREL, place, val & ~0xfff, 0, 21,
+> -			    AARCH64_INSN_IMM_ADR)) {
+> +			    AARCH64_INSN_IMM_ADR, early)) {
+>  		insn = le32_to_cpu(*place);
+>  		insn &= ~BIT(31);
+>  	} else {
+> @@ -253,7 +262,10 @@ static int reloc_insn_adrp(struct module *mod, Elf64_Shdr *sechdrs,
+>  						   AARCH64_INSN_BRANCH_NOLINK);
+>  	}
+>  
+> -	*place = cpu_to_le32(insn);
+> +	if (early)
+> +		*place = cpu_to_le32(insn);
+> +	else
+> +		aarch64_insn_write(place, insn);
+>  	return 0;
+>  }
+>  
+> @@ -270,6 +282,7 @@ int apply_relocate_add(Elf64_Shdr *sechdrs,
+>  	void *loc;
+>  	u64 val;
+>  	Elf64_Rela *rel = (void *)sechdrs[relsec].sh_addr;
+> +	bool early = me->state == MODULE_STATE_UNFORMED;
+>  
+>  	for (i = 0; i < sechdrs[relsec].sh_size / sizeof(*rel); i++) {
+>  		/* loc corresponds to P in the AArch64 ELF document. */
+> @@ -322,88 +335,88 @@ int apply_relocate_add(Elf64_Shdr *sechdrs,
+>  			fallthrough;
+>  		case R_AARCH64_MOVW_UABS_G0:
+>  			ovf = reloc_insn_movw(RELOC_OP_ABS, loc, val, 0,
+> -					      AARCH64_INSN_IMM_MOVKZ);
+> +					      AARCH64_INSN_IMM_MOVKZ, early);
+>  			break;
+>  		case R_AARCH64_MOVW_UABS_G1_NC:
+>  			overflow_check = false;
+>  			fallthrough;
+>  		case R_AARCH64_MOVW_UABS_G1:
+>  			ovf = reloc_insn_movw(RELOC_OP_ABS, loc, val, 16,
+> -					      AARCH64_INSN_IMM_MOVKZ);
+> +					      AARCH64_INSN_IMM_MOVKZ, early);
+>  			break;
+>  		case R_AARCH64_MOVW_UABS_G2_NC:
+>  			overflow_check = false;
+>  			fallthrough;
+>  		case R_AARCH64_MOVW_UABS_G2:
+>  			ovf = reloc_insn_movw(RELOC_OP_ABS, loc, val, 32,
+> -					      AARCH64_INSN_IMM_MOVKZ);
+> +					      AARCH64_INSN_IMM_MOVKZ, early);
+>  			break;
+>  		case R_AARCH64_MOVW_UABS_G3:
+>  			/* We're using the top bits so we can't overflow. */
+>  			overflow_check = false;
+>  			ovf = reloc_insn_movw(RELOC_OP_ABS, loc, val, 48,
+> -					      AARCH64_INSN_IMM_MOVKZ);
+> +					      AARCH64_INSN_IMM_MOVKZ, early);
+>  			break;
+>  		case R_AARCH64_MOVW_SABS_G0:
+>  			ovf = reloc_insn_movw(RELOC_OP_ABS, loc, val, 0,
+> -					      AARCH64_INSN_IMM_MOVNZ);
+> +					      AARCH64_INSN_IMM_MOVNZ, early);
+>  			break;
+>  		case R_AARCH64_MOVW_SABS_G1:
+>  			ovf = reloc_insn_movw(RELOC_OP_ABS, loc, val, 16,
+> -					      AARCH64_INSN_IMM_MOVNZ);
+> +					      AARCH64_INSN_IMM_MOVNZ, early);
+>  			break;
+>  		case R_AARCH64_MOVW_SABS_G2:
+>  			ovf = reloc_insn_movw(RELOC_OP_ABS, loc, val, 32,
+> -					      AARCH64_INSN_IMM_MOVNZ);
+> +					      AARCH64_INSN_IMM_MOVNZ, early);
+>  			break;
+>  		case R_AARCH64_MOVW_PREL_G0_NC:
+>  			overflow_check = false;
+>  			ovf = reloc_insn_movw(RELOC_OP_PREL, loc, val, 0,
+> -					      AARCH64_INSN_IMM_MOVKZ);
+> +					      AARCH64_INSN_IMM_MOVKZ, early);
+>  			break;
+>  		case R_AARCH64_MOVW_PREL_G0:
+>  			ovf = reloc_insn_movw(RELOC_OP_PREL, loc, val, 0,
+> -					      AARCH64_INSN_IMM_MOVNZ);
+> +					      AARCH64_INSN_IMM_MOVNZ, early);
+>  			break;
+>  		case R_AARCH64_MOVW_PREL_G1_NC:
+>  			overflow_check = false;
+>  			ovf = reloc_insn_movw(RELOC_OP_PREL, loc, val, 16,
+> -					      AARCH64_INSN_IMM_MOVKZ);
+> +					      AARCH64_INSN_IMM_MOVKZ, early);
+>  			break;
+>  		case R_AARCH64_MOVW_PREL_G1:
+>  			ovf = reloc_insn_movw(RELOC_OP_PREL, loc, val, 16,
+> -					      AARCH64_INSN_IMM_MOVNZ);
+> +					      AARCH64_INSN_IMM_MOVNZ, early);
+>  			break;
+>  		case R_AARCH64_MOVW_PREL_G2_NC:
+>  			overflow_check = false;
+>  			ovf = reloc_insn_movw(RELOC_OP_PREL, loc, val, 32,
+> -					      AARCH64_INSN_IMM_MOVKZ);
+> +					      AARCH64_INSN_IMM_MOVKZ, early);
+>  			break;
+>  		case R_AARCH64_MOVW_PREL_G2:
+>  			ovf = reloc_insn_movw(RELOC_OP_PREL, loc, val, 32,
+> -					      AARCH64_INSN_IMM_MOVNZ);
+> +					      AARCH64_INSN_IMM_MOVNZ, early);
+>  			break;
+>  		case R_AARCH64_MOVW_PREL_G3:
+>  			/* We're using the top bits so we can't overflow. */
+>  			overflow_check = false;
+>  			ovf = reloc_insn_movw(RELOC_OP_PREL, loc, val, 48,
+> -					      AARCH64_INSN_IMM_MOVNZ);
+> +					      AARCH64_INSN_IMM_MOVNZ, early);
+>  			break;
+>  
+>  		/* Immediate instruction relocations. */
+>  		case R_AARCH64_LD_PREL_LO19:
+>  			ovf = reloc_insn_imm(RELOC_OP_PREL, loc, val, 2, 19,
+> -					     AARCH64_INSN_IMM_19);
+> +					     AARCH64_INSN_IMM_19, early);
+>  			break;
+>  		case R_AARCH64_ADR_PREL_LO21:
+>  			ovf = reloc_insn_imm(RELOC_OP_PREL, loc, val, 0, 21,
+> -					     AARCH64_INSN_IMM_ADR);
+> +					     AARCH64_INSN_IMM_ADR, early);
+>  			break;
+>  		case R_AARCH64_ADR_PREL_PG_HI21_NC:
+>  			overflow_check = false;
+>  			fallthrough;
+>  		case R_AARCH64_ADR_PREL_PG_HI21:
+> -			ovf = reloc_insn_adrp(me, sechdrs, loc, val);
+> +			ovf = reloc_insn_adrp(me, sechdrs, loc, val, early);
+>  			if (ovf && ovf != -ERANGE)
+>  				return ovf;
+>  			break;
+> @@ -411,40 +424,40 @@ int apply_relocate_add(Elf64_Shdr *sechdrs,
+>  		case R_AARCH64_LDST8_ABS_LO12_NC:
+>  			overflow_check = false;
+>  			ovf = reloc_insn_imm(RELOC_OP_ABS, loc, val, 0, 12,
+> -					     AARCH64_INSN_IMM_12);
+> +					     AARCH64_INSN_IMM_12, early);
+>  			break;
+>  		case R_AARCH64_LDST16_ABS_LO12_NC:
+>  			overflow_check = false;
+>  			ovf = reloc_insn_imm(RELOC_OP_ABS, loc, val, 1, 11,
+> -					     AARCH64_INSN_IMM_12);
+> +					     AARCH64_INSN_IMM_12, early);
+>  			break;
+>  		case R_AARCH64_LDST32_ABS_LO12_NC:
+>  			overflow_check = false;
+>  			ovf = reloc_insn_imm(RELOC_OP_ABS, loc, val, 2, 10,
+> -					     AARCH64_INSN_IMM_12);
+> +					     AARCH64_INSN_IMM_12, early);
+>  			break;
+>  		case R_AARCH64_LDST64_ABS_LO12_NC:
+>  			overflow_check = false;
+>  			ovf = reloc_insn_imm(RELOC_OP_ABS, loc, val, 3, 9,
+> -					     AARCH64_INSN_IMM_12);
+> +					     AARCH64_INSN_IMM_12, early);
+>  			break;
+>  		case R_AARCH64_LDST128_ABS_LO12_NC:
+>  			overflow_check = false;
+>  			ovf = reloc_insn_imm(RELOC_OP_ABS, loc, val, 4, 8,
+> -					     AARCH64_INSN_IMM_12);
+> +					     AARCH64_INSN_IMM_12, early);
+>  			break;
+>  		case R_AARCH64_TSTBR14:
+>  			ovf = reloc_insn_imm(RELOC_OP_PREL, loc, val, 2, 14,
+> -					     AARCH64_INSN_IMM_14);
+> +					     AARCH64_INSN_IMM_14, early);
+>  			break;
+>  		case R_AARCH64_CONDBR19:
+>  			ovf = reloc_insn_imm(RELOC_OP_PREL, loc, val, 2, 19,
+> -					     AARCH64_INSN_IMM_19);
+> +					     AARCH64_INSN_IMM_19, early);
+>  			break;
+>  		case R_AARCH64_JUMP26:
+>  		case R_AARCH64_CALL26:
+>  			ovf = reloc_insn_imm(RELOC_OP_PREL, loc, val, 2, 26,
+> -					     AARCH64_INSN_IMM_26);
+> +					     AARCH64_INSN_IMM_26, early);
+>  
+>  			if (IS_ENABLED(CONFIG_ARM64_MODULE_PLTS) &&
+>  			    ovf == -ERANGE) {
+> @@ -452,7 +465,7 @@ int apply_relocate_add(Elf64_Shdr *sechdrs,
+>  				if (!val)
+>  					return -ENOEXEC;
+>  				ovf = reloc_insn_imm(RELOC_OP_PREL, loc, val, 2,
+> -						     26, AARCH64_INSN_IMM_26);
+> +						     26, AARCH64_INSN_IMM_26, early);
+>  			}
+>  			break;
+>  
 > -- 
-> Vitaly
+> 2.17.1
 > 
