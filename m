@@ -2,90 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12EA4458E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:47:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3794458E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232395AbhKDRtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:49:35 -0400
-Received: from 113.196.136.146.ll.static.sparqnet.net ([113.196.136.146]:42198
-        "EHLO mg.sunplus.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232318AbhKDRtd (ORCPT
+        id S232314AbhKDRta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231588AbhKDRt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:49:33 -0400
-X-Greylist: delayed 44076 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Nov 2021 13:49:32 EDT
-X-MailGates: (flag:3,DYNAMIC,RELAY,NOHOST:PASS)(compute_score:DELIVER,40
-        ,3)
-Received: from 172.17.9.112
-        by mg02.sunplus.com with MailGates ESMTP Server V5.0(53130:0:AUTH_RELAY)
-        (envelope-from <wells.lu@sunplus.com>); Fri, 05 Nov 2021 01:46:36 +0800 (CST)
-Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
- sphcmbx02.sunplus.com.tw (172.17.9.112) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Fri, 5 Nov 2021 01:46:36 +0800
-Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
- ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Fri, 5 Nov 2021
- 01:46:36 +0800
-From:   =?utf-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Randy Dunlap <rdunlap@infradead.org>,
-        Wells Lu <wellslutw@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Thu, 4 Nov 2021 13:49:28 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1BACC061714;
+        Thu,  4 Nov 2021 10:46:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tn7iBDCVplhudJn1Ux5LldDOEDc1onv5gHvRnPNYjoY=; b=yNUKz++ApoBdUXngvrYX5CyGvg
+        imcgGf09ZQFQn8B/Ee7PnzFCt/y0wEpicnJbz36cUsZwLnTBOLCzQiPvMObEtppAHHiT+iwKCIv3v
+        YM3pkfqQ0ybk8FdXBjlVgGFdyY/8oL5RKJf22EULpzMFBecIFIADXNJNHEgFr4h4Qm5vfvr071iI8
+        p9PWVU7GgOM6Pvcjgy+SGT1f6eYP8p9EAy/CYiVtw4IDPx2a8P2W0HAFXpIBSn20YbB4iZTCsbYj5
+        nANIm9Zuj7H+UYdwYJRbtlc0fWioZtF2TJHh+fxNkljFwBlYD3wIBi8pide3ZbgJOyUVd+tGx0QPJ
+        uAg2UgxQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1migoz-009i9L-Fp; Thu, 04 Nov 2021 17:46:41 +0000
+Date:   Thu, 4 Nov 2021 10:46:41 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Jane Chu <jane.chu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
-Subject: RE: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
-Thread-Topic: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
-Thread-Index: AQHX0KKBcebTINBXKk6D/f7Frpi9sKvxbhgAgAClKgD//5f5gIABJz+w///9xoCAANUOEA==
-Date:   Thu, 4 Nov 2021 17:46:35 +0000
-Message-ID: <c51d2927eedb4f3999b8361a44526a07@sphcmbx02.sunplus.com.tw>
-References: <cover.1635936610.git.wells.lu@sunplus.com>
- <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
- <d0217eed-a8b7-8eb9-7d50-4bf69cd38e03@infradead.org>
- <159ab76ac7114da983332aadc6056c08@sphcmbx02.sunplus.com.tw>
- <YYLjaYCQHzqBzN1l@lunn.ch>
- <36d5bc6d40734ae0a9c1fb26d258f49f@sphcmbx02.sunplus.com.tw>
- <YYPZN9hPBJTBzVUl@lunn.ch>
-In-Reply-To: <YYPZN9hPBJTBzVUl@lunn.ch>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [172.25.108.39]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
+ RWF_RECOVERY_DATA flag
+Message-ID: <YYQcgdRShSji3LfM@infradead.org>
+References: <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
+ <YXJN4s1HC/Y+KKg1@infradead.org>
+ <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
+ <YXj2lwrxRxHdr4hb@infradead.org>
+ <20211028002451.GB2237511@magnolia>
+ <YYDYUCCiEPXhZEw0@infradead.org>
+ <dfca8558-ad70-41d5-1131-63db66b70542@oracle.com>
+ <CAPcyv4jLn4_SYxLtp_cUT=mm6Y3An22BA+sqex1S-CBnAm6qGA@mail.gmail.com>
+ <YYObn+0juAFvH7Fk@infradead.org>
+ <CAPcyv4jaCj=qDw-MHEcYjVGHYGvX8wbJ_d3kv5nnv7agHnMViQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4jaCj=qDw-MHEcYjVGHYGvX8wbJ_d3kv5nnv7agHnMViQ@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiBUaHUsIE5vdiAwNCwgMjAyMSBhdCAwNTozMTo1N0FNICswMDAwLCBXZWxscyBMdSDlkYLo
-irPpqLAgd3JvdGU6DQo+ID4gSGksDQo+ID4NCj4gPiBUaGFua3MgYSBsb3QgZm9yIHJldmlldy4N
-Cj4gPg0KPiA+ID4NCj4gPiA+ID4gY29uZmlnIE5FVF9WRU5ET1JfU1VOUExVUw0KPiA+ID4gPiAJ
-Ym9vbCAiU3VucGx1cyBkZXZpY2VzIg0KPiA+ID4gPiAJZGVmYXVsdCB5DQo+ID4gPiA+IAlkZXBl
-bmRzIG9uIEFSQ0hfU1VOUExVUw0KPiA+ID4NCj4gPiA+IERvZXMgaXQgYWN0dWFsbHkgZGVwZW5k
-IG9uIEFSQ0hfU1VOUExVUz8gV2hhdCBkbyB5b3UgbWFrZSB1c2Ugb2Y/DQo+ID4NCj4gPiBBUkNI
-X1NVTlBMVVMgd2lsbCBiZSBkZWZpbmVkIGZvciBTdW5wbHVzIGZhbWlseSBzZXJpZXMgU29DLg0K
-PiA+IEV0aGVybmV0IGRldmljZXMgb2YgU3VucGx1cyBhcmUgZGVzaWduZWQgYW5kIHVzZWQgZm9y
-IFN1bnBsdXMgU29DLg0KPiA+IFNvIGZhciwgb25seSB0d28gU29DIG9mIFN1bnBsdXMgaGF2ZSB0
-aGUgbmV0d29yayBkZXZpY2UuDQo+ID4gSSdkIGxpa2UgdG8gc2hvdyB1cCB0aGUgc2VsZWN0aW9u
-IG9ubHkgZm9yIFN1bnBsdXMgU29DLg0KPiANCj4gU28gaXQgZG9lcyBub3QgYWN0dWFsbHkgZGVw
-ZW5kIG9uIEFSQ0hfU1VOUExVUy4gVGhlcmUgYXJlIGEgZmV3IGNhc2VzIHdoZXJlDQo+IGRyaXZl
-cnMgaGF2ZSBuZWVkZWQgdG8gY2FsbCBpbnRvIGFyY2ggc3BlY2lmaWMgY29kZSwgd2hpY2ggc3Rv
-cHMgdGhlbSBidWlsZGluZw0KPiBmb3IgYW55IG90aGVyIGFyY2guDQo+IA0KPiA+ID4gSWRlYWxs
-eSwgeW91IHdhbnQgaXQgdG8gYWxzbyBidWlsZCB3aXRoIENPTVBJTEVfVEVTVCwgc28gdGhhdCB0
-aGUNCj4gPiA+IGRyaXZlciBnZXRzIGJ1aWxkIGJ5IDAtZGF5IGFuZCBhbGwgdGhlIG90aGVyIGJ1
-aWxkIGJvdHMuDQo+ID4NCj4gPiBJIGFtIG5vdCBzdXJlIGlmIHRoaXMgaXMgbWFuZGF0b3J5IG9y
-IG5vdC4NCj4gPiBTaG91bGQgSSBhZGQgQ09NUElMRV9URVNUIGFzIGJlbG93Pw0KPiA+DQo+ID4g
-CWRlcGVuZHMgb24gQVJDSF9TVU5QTFVTIHwgQ09NUElMRV9URVNUDQo+IA0KPiBZZXMuDQo+IA0K
-PiA+IFllcywgdGhlIGRldmljZSBpcyBub3cgb25seSBmb3IgU3VucGx1cyBTUDcwMjEgU29DLg0K
-PiA+IERldmljZXMgaW4gZWFjaCBTb0MgbWF5IGhhdmUgYSBiaXQgZGlmZmVyZW5jZSBiZWNhdXNl
-IG9mIGFkZGluZyBuZXcNCj4gPiBmdW5jdGlvbiBvciBpbXByb3Zpbmcgc29tZXRoaW5nLg0KPiAN
-Cj4gSWYgaXQgd2lsbCBjb21waWxlIHdpdGggQ09NUElMRV9URVNUIG9uIHg4NiwgbWlwcywgZXRj
-LCB5b3Ugc2hvdWxkIGFsbG93IGl0IHRvDQo+IGNvbXBpbGUgd2l0aCBDT01QSUxFX1RFU1QuIFlv
-dSBnZXQgYmV0dGVyIGNvbXBpbGUgdGVzdGluZyB0aGF0IHdheS4NCj4gDQo+ICAgICAgQW5kcmV3
-DQoNCk5vLCB3ZSBvbmx5IGRldmVsb3AgYXJtLWJhc2VkIFNvQywgbmV2ZXIgZm9yIHg4NiBvciBt
-aXBzLg0KV2UgbmV2ZXIgY29tcGlsZSB0aGUgZHJpdmVyIGZvciB4ODYgb3IgbWlwcyBtYWNoaW5l
-Lg0KDQo=
+On Thu, Nov 04, 2021 at 09:08:41AM -0700, Dan Williams wrote:
+> Yes, atomic clear+write new data. The ability to atomic clear requires
+> either a CPU with the ability to overwrite cachelines without doing a
+> RMW cycle (MOVDIR64B), or it requires a device with a suitable
+> slow-path mailbox command like the one defined for CXL devices (see
+> section 8.2.9.5.4.3 Clear Poison in CXL 2.0).
+> 
+> I don't know why you think these devices don't perform wear-leveling
+> with spare blocks?
+
+Because the interface looks so broken.  But yes, apparently it's not
+the media management that is broken but just the inteface that fakes
+up byte level access.
+
+> All kernel accesses do use it. They either route to
+> pmem_copy_to_iter(), or like dm-writecache, call it directly. Do you
+> see a kernel path that does not use that helper?
+
+No, sorry.  My knowledge is out of date.
+(nova does, but it is out of tree, and the lack of using
+copy_mc_to_kernel is the least of its problems)
