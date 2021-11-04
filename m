@@ -2,103 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6358E445606
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6577044560B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:09:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbhKDPK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 11:10:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:48806 "EHLO foss.arm.com"
+        id S231365AbhKDPML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 11:12:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229920AbhKDPK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 11:10:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7870C1FB;
-        Thu,  4 Nov 2021 08:07:48 -0700 (PDT)
-Received: from [10.57.45.134] (unknown [10.57.45.134])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 30D773F7D7;
-        Thu,  4 Nov 2021 08:07:47 -0700 (PDT)
-Subject: Re: [PATCH v1 2/4] coresight: etm4x: Don't use virtual contextID for
- non-root PID namespace
-To:     Leo Yan <leo.yan@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211031144214.237879-1-leo.yan@linaro.org>
- <20211031144214.237879-3-leo.yan@linaro.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <2cd79645-2f1f-1e59-1a26-5540aa7b6f3b@arm.com>
-Date:   Thu, 4 Nov 2021 15:07:45 +0000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S229920AbhKDPMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 11:12:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02F9161216;
+        Thu,  4 Nov 2021 15:09:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636038572;
+        bh=2u485jVlBR+MjS7kkrhnaG+oRtQ8qBeh9FL711O0mcY=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=SJXObTaGYfMXJRGWEyYm/Mjepvm2+J4fNvEEq97mXfcbX11gQPrRAWNnso5BOry2x
+         BlZn+WYh8faZpH0fYCXYM9Px7Z9TviGcsZ3B+hmVAT2FFKE9J9XPHB6A79oe+3aUjf
+         LaQn80lQJ79xry13xm2JAHkvVvuJeY/6t6ktcaNBjPeAgMgSXWi89w3yxtSkEjYkVT
+         dsWw9x8j65ONCc3yznUZ4eLvrQ8kfZo5wk99kU5rzNkFG3mX+5Vk1zwUw+c0aPz+HC
+         ZycyUNRKPYgxnfe7efqvIslROClzhEbb4QcXU6mpuKlfbe3oV1wTdZxFFQjESL8VSa
+         4cXTiWWd2+R5w==
+Message-ID: <70894c6b668dbfc3cc76c3b858c293b9f3a8446e.camel@kernel.org>
+Subject: Re: [PATCH] x86/sgx: Free backing memory after faulting the enclave
+ page
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     reinette.chatre@intel.com, tony.luck@intel.com,
+        nathaniel@profian.com, stable@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 04 Nov 2021 17:09:29 +0200
+In-Reply-To: <e88d6d580354aadaa8eaa5ee6fa703f021786afb.camel@kernel.org>
+References: <20211103232238.110557-1-jarkko@kernel.org>
+         <6831ed3c-c5b1-64f7-2ad7-f2d686224b7e@intel.com>
+         <e88d6d580354aadaa8eaa5ee6fa703f021786afb.camel@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-In-Reply-To: <20211031144214.237879-3-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo
+On Thu, 2021-11-04 at 17:04 +0200, Jarkko Sakkinen wrote:
+> This can be achieved by iterating through all of the enclave pages,
+> which share the same shmem page for storing their PCMD's, as the one
+> being faulted back. If none of those pages is swapped, the PCMD page can
+> safely truncated.
 
-On 31/10/2021 14:42, Leo Yan wrote:
-> As commented in the function ctxid_pid_store(), it can cause the PID
-> values mismatching between context ID tracing and PID allocated in a
-> non-root namespace, and it can leak kernel information.
-> 
-> For this reason, when a process runs in non-root PID namespace, the
-> driver doesn't allow contextID tracing and returns failure when access
-> contextID related sysfs nodes.
-> 
-> VMID works for virtual contextID when the kernel runs in EL2 mode with
-> VHE; on the other hand, the driver doesn't prevent users from accessing
-> it when programs run in the non-root namespace.  Thus this can lead
-> to same issues with contextID described above.
-> 
-> This patch imposes the checking on VMID related sysfs knobs, it returns
-> failure if current process runs in non-root PID namespace.
-> 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+We have bookkeeping in place for this: encl->page_array.
 
-Patch looks good to me. Please see minor comment below.
+/Jarkko
 
-
-> ---
->   .../coresight/coresight-etm4x-sysfs.c         | 28 +++++++++++++++++++
->   1 file changed, 28 insertions(+)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-> index e4c8c44d04ef..e218281703b0 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-> @@ -2111,6 +2111,13 @@ static ssize_t vmid_val_show(struct device *dev,
->   	struct etmv4_drvdata *drvdata = dev_get_drvdata(dev->parent);
->   	struct etmv4_config *config = &drvdata->config;
->   
-> +	/*
-> +	 * Don't use virtual contextID tracing if coming from a PID namespace.
-> +	 * See comment in ctxid_pid_store().
-> +	 */
-> +	if (task_active_pid_ns(current) != &init_pid_ns)
-> +		return -EINVAL;
-> +
->   	spin_lock(&drvdata->spinlock);
->   	val = (unsigned long)config->vmid_val[config->vmid_idx];
->   	spin_unlock(&drvdata->spinlock);
-> @@ -2125,6 +2132,13 @@ static ssize_t vmid_val_store(struct device *dev,
->   	struct etmv4_drvdata *drvdata = dev_get_drvdata(dev->parent);
->   	struct etmv4_config *config = &drvdata->config;
->   
-> +	/*
-> +	 * Don't use virtual contextID tracing if coming from a PID namespace.
-> +	 * See comment in ctxid_pid_store().
-> +	 */
-> +	if (task_active_pid_ns(current) != &init_pid_ns)
-
-Please could we add a helper function to make this obvious ?
-
-e.g: task_is_in_root_ns(task) ?
-
-Suzuki
