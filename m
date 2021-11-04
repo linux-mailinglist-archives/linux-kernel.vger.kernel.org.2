@@ -2,218 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 366144453C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 677244453D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhKDN0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 09:26:11 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:2544 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229505AbhKDN0K (ORCPT
+        id S231340AbhKDN3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 09:29:40 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:40271 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230390AbhKDN3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 09:26:10 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A4DD63R019476
-        for <linux-kernel@vger.kernel.org>; Thu, 4 Nov 2021 13:23:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=7zckvU3CyMlvWvkue7jiilEluIs/oPoVXjT5m4WMrzs=;
- b=GrMT6u1TZ85zXYv7awY7WsguB6naSphafOnji4+YDI0UvorGbnJhydsZhOhqDgBMgIe4
- faeLoZJwmSlk9cFzP51VmcaHKLGA4ryZK2bE2Uu8M62hwE61irb1fYYxFroznCi6R+Po
- AO7zmuC3A8YPsYZVHAqDgkruzDGuHf7a2cb+g3emRcJ3t99uO7jtvU6/MsNIRilaBmcc
- 4dE3tSnF7iyvJy/v+EPDtgQKmsIGFG3jZ84RKofd3mhcNHT83b8tvKj99KT5+IWYBf/Z
- JMXM7L+2bu4RmHIn+Z+x2qZupKnlaeu9V4nxbL+s+XsoZNuPVcls6cwkpnCVrRJGWZpe uA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3c4ffes8rq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 13:23:31 +0000
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1A4DNVib000530
-        for <linux-kernel@vger.kernel.org>; Thu, 4 Nov 2021 13:23:31 GMT
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3c4ffes8r2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Nov 2021 13:23:30 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1A4D6wpU027769;
-        Thu, 4 Nov 2021 13:23:29 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma01fra.de.ibm.com with ESMTP id 3c0wpadwjr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Nov 2021 13:23:29 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1A4DNPju525008
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 4 Nov 2021 13:23:25 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AF68EAE162;
-        Thu,  4 Nov 2021 13:23:25 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 631EBAE097;
-        Thu,  4 Nov 2021 13:23:25 +0000 (GMT)
-Received: from vm.lan (unknown [9.145.12.156])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  4 Nov 2021 13:23:25 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH] perf: Use __BYTE_ORDER__
-Date:   Thu,  4 Nov 2021 14:23:11 +0100
-Message-Id: <20211104132311.984703-1-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 4 Nov 2021 09:29:38 -0400
+Received: from mail-wm1-f43.google.com ([209.85.128.43]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1M2OEq-1mlMKL0etS-003uxX; Thu, 04 Nov 2021 14:26:59 +0100
+Received: by mail-wm1-f43.google.com with SMTP id y84-20020a1c7d57000000b00330cb84834fso7225984wmc.2;
+        Thu, 04 Nov 2021 06:26:59 -0700 (PDT)
+X-Gm-Message-State: AOAM531S8UMj/QIjG5DNthK+75OVEz5x6DYM5tVys2ecMbP7e9Ps8yYb
+        gclSkymV/68dZu1IFC24OYlx6DhNVT4+HxJJ7Lc=
+X-Google-Smtp-Source: ABdhPJxdQh+Brd6emLJv5QQ1PelvFFMegvh2Lb/ivrjscxVDEXD2VVdkHJaSSH8WGm7Oyijr4iW3Xiz6VCfOFWOEO6Y=
+X-Received: by 2002:a1c:1c1:: with SMTP id 184mr23241643wmb.1.1636032418775;
+ Thu, 04 Nov 2021 06:26:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 3ObdEKI_Nx1qqzP6BxRs_fc8e5UvQC2T
-X-Proofpoint-ORIG-GUID: bqtpPfxHAbv-6mO5NAt66MFK1Mvvdwm_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-04_04,2021-11-03_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- adultscore=0 impostorscore=0 suspectscore=0 lowpriorityscore=0
- priorityscore=1501 mlxlogscore=999 spamscore=0 mlxscore=0 malwarescore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111040056
+References: <1636031398-19867-1-git-send-email-volodymyr.mytnyk@plvision.eu>
+In-Reply-To: <1636031398-19867-1-git-send-email-volodymyr.mytnyk@plvision.eu>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 4 Nov 2021 14:26:42 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2nbEFGPRWKwjLYOz3wROLOk1SN-6Wd7-sNkaEuuid==w@mail.gmail.com>
+Message-ID: <CAK8P3a2nbEFGPRWKwjLYOz3wROLOk1SN-6Wd7-sNkaEuuid==w@mail.gmail.com>
+Subject: Re: [PATCH net v3] net: marvell: prestera: fix hw structure laid out
+To:     Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>
+Cc:     Networking <netdev@vger.kernel.org>,
+        Taras Chornyi <taras.chornyi@plvision.eu>,
+        Mickey Rachamim <mickeyr@marvell.com>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Andrew Lunn <andrew@lunn.ch>, Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Denis Kirjanov <dkirjanov@suse.de>,
+        Volodymyr Mytnyk <vmytnyk@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Yevhen Orlov <yevhen.orlov@plvision.eu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:ALzVC8qeXDGCFhnyaNtPDzmMVsNNkPthF3/B56pSDpkdWMyF+Nw
+ zyD88feP0gYv4cXPx/48Iwmok4E+ztJEoTd5DjKp5KlgJWFTPshIlPuT7gWjJzzcRfTnAYb
+ kZZoQW0KBUdATjf7/5zd5EOaIOiN82/8q31KV04FMIm+Zy2hkHCvnB3aP3pod1O+sPOAyKw
+ A8XWkHGZKTyYdc1bQzCkQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:aHlr+uROJ7E=:94QhiYJMjx8NMxDQJG1GP6
+ L4qPuCKzY4v3ZwPLRjRCHsyemx9mjgeVbheQCD5filxj3ekUhPilHu0BFfhxVIkYufcdHaEK+
+ Oza6Z7HlMl3q3MRw48GmHNhiDFONMyPHcVRc5EYb+7emSyFjWhoqOJ4Het6kMzLGKMlzb39YP
+ Lgso145wJntzLnH+ots1aMgpkkHNhuRbBxybRBMpWiCrSEFSVvjTBwTwIAVh50ktPdY2T7UIx
+ K27hWaPNNE6NjgWTC+BhE55etjAQlhPzh1+nPnJVei1ANsbdqiBM9O3zJK0j1JXo2fc67o2Pf
+ V9mEMPMXjF0a/d8BvY4AS7E3k0uNtli/9UIyW7eysWXkdEG1J79Rcn/q1TCW85OqbrtWSJdSw
+ iCK1ufUAvK2BKmseCUL4gv5PksFd0X10bnxBC4enYEt83fuZ3ea7mrRmOyBZuRgRNMkd47NfL
+ qUeDII7Nf2QwcWcKFlqeQYhGJCEwaLkV1sQ6pVJUiOluPYFSxWHB/nK87snZnxsEjXyFHLXEe
+ anMrZv6DXfVvwSv+EfF3Begljls/NXpqMXgdrgEjpGGv3goYwGFgZU5DHoRngE+bizquLGZrK
+ RDvLeQh1MlFcdto4nNAUI3532mH5fF82yI8+xDPNaxEoxjToFGwXhUwBs0cs5hvkDm6o7tx/Z
+ gbwnRM6W9y+yst8Rk5rAYoCbxqj4AE0Ig0eKV+4vZdn9wmT4RA3q85PHknopQ660Z5FQWHMxp
+ 7HmULd5kOwGxDAHez9fQsZCLEik9zVMoMfTUO6aMUWhjB2TZyw1FtBdCOF5tNeLlTc529lfLz
+ VXcu6h3kdHFl8VT3j+qIJiytoQQZpMbB50ghgn4uy2Q4aHowyY=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch from the libc-defined __BYTE_ORDER to the compiler-defined
-__BYTE_ORDER__ in order to make endianness detection more robust, like
-it was done for libbpf.
+On Thu, Nov 4, 2021 at 2:09 PM Volodymyr Mytnyk
+<volodymyr.mytnyk@plvision.eu> wrote:
+>
+> From: Volodymyr Mytnyk <vmytnyk@marvell.com>
+>
+> The prestera FW v4.0 support commit has been merged
+> accidentally w/o review comments addressed and waiting
+> for the final patch set to be uploaded. So, fix the remaining
+> comments related to structure laid out and build issues.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: bb5dbf2cc64d ("net: marvell: prestera: add firmware v4.0 support")
+> Signed-off-by: Volodymyr Mytnyk <vmytnyk@marvell.com>
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c    | 2 +-
- tools/perf/util/data-convert-bt.c                        | 2 +-
- tools/perf/util/genelf.h                                 | 2 +-
- tools/perf/util/intel-bts.c                              | 2 +-
- tools/perf/util/intel-pt-decoder/intel-pt-insn-decoder.c | 2 +-
- tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c  | 2 +-
- tools/perf/util/s390-cpumsf.c                            | 8 ++++----
- 7 files changed, 10 insertions(+), 10 deletions(-)
+I saw this warning today on net-next:
 
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-index 2e5eff4f8f03..2f311189c6e8 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-@@ -13,7 +13,7 @@
- 
- #include "arm-spe-pkt-decoder.h"
- 
--#if __BYTE_ORDER == __BIG_ENDIAN
-+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
- #define le16_to_cpu bswap_16
- #define le32_to_cpu bswap_32
- #define le64_to_cpu bswap_64
-diff --git a/tools/perf/util/data-convert-bt.c b/tools/perf/util/data-convert-bt.c
-index aa862a26d95c..8f7705bbc2da 100644
---- a/tools/perf/util/data-convert-bt.c
-+++ b/tools/perf/util/data-convert-bt.c
-@@ -1437,7 +1437,7 @@ static struct bt_ctf_field_type *create_int_type(int size, bool sign, bool hex)
- 	    bt_ctf_field_type_integer_set_base(type, BT_CTF_INTEGER_BASE_HEXADECIMAL))
- 		goto err;
- 
--#if __BYTE_ORDER == __BIG_ENDIAN
-+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
- 	bt_ctf_field_type_set_byte_order(type, BT_CTF_BYTE_ORDER_BIG_ENDIAN);
- #else
- 	bt_ctf_field_type_set_byte_order(type, BT_CTF_BYTE_ORDER_LITTLE_ENDIAN);
-diff --git a/tools/perf/util/genelf.h b/tools/perf/util/genelf.h
-index d4137559be05..3db3293213a9 100644
---- a/tools/perf/util/genelf.h
-+++ b/tools/perf/util/genelf.h
-@@ -42,7 +42,7 @@ int jit_add_debug_info(Elf *e, uint64_t code_addr, void *debug, int nr_debug_ent
- #error "unsupported architecture"
- #endif
- 
--#if __BYTE_ORDER == __BIG_ENDIAN
-+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
- #define GEN_ELF_ENDIAN	ELFDATA2MSB
- #else
- #define GEN_ELF_ENDIAN	ELFDATA2LSB
-diff --git a/tools/perf/util/intel-bts.c b/tools/perf/util/intel-bts.c
-index af1e78d76228..2c8147a62203 100644
---- a/tools/perf/util/intel-bts.c
-+++ b/tools/perf/util/intel-bts.c
-@@ -35,7 +35,7 @@
- #define INTEL_BTS_ERR_NOINSN  5
- #define INTEL_BTS_ERR_LOST    9
- 
--#if __BYTE_ORDER == __BIG_ENDIAN
-+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
- #define le64_to_cpu bswap_64
- #else
- #define le64_to_cpu
-diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-insn-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-insn-decoder.c
-index 593f20e9774c..9d5e65cec89b 100644
---- a/tools/perf/util/intel-pt-decoder/intel-pt-insn-decoder.c
-+++ b/tools/perf/util/intel-pt-decoder/intel-pt-insn-decoder.c
-@@ -143,7 +143,7 @@ static void intel_pt_insn_decoder(struct insn *insn,
- 
- 	if (branch == INTEL_PT_BR_CONDITIONAL ||
- 	    branch == INTEL_PT_BR_UNCONDITIONAL) {
--#if __BYTE_ORDER == __BIG_ENDIAN
-+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
- 		switch (insn->immediate.nbytes) {
- 		case 1:
- 			intel_pt_insn->rel = insn->immediate.value;
-diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c
-index 02a3395d6ce3..4bd154848cad 100644
---- a/tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c
-+++ b/tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c
-@@ -16,7 +16,7 @@
- 
- #define BIT63		((uint64_t)1 << 63)
- 
--#if __BYTE_ORDER == __BIG_ENDIAN
-+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
- #define le16_to_cpu bswap_16
- #define le32_to_cpu bswap_32
- #define le64_to_cpu bswap_64
-diff --git a/tools/perf/util/s390-cpumsf.c b/tools/perf/util/s390-cpumsf.c
-index 8130b56aa04b..f3fdad28a852 100644
---- a/tools/perf/util/s390-cpumsf.c
-+++ b/tools/perf/util/s390-cpumsf.c
-@@ -244,7 +244,7 @@ static bool s390_cpumsf_basic_show(const char *color, size_t pos,
- 				   struct hws_basic_entry *basicp)
- {
- 	struct hws_basic_entry *basic = basicp;
--#if __BYTE_ORDER == __LITTLE_ENDIAN
-+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
- 	struct hws_basic_entry local;
- 	unsigned long long word = be64toh(*(unsigned long long *)basicp);
- 
-@@ -288,7 +288,7 @@ static bool s390_cpumsf_diag_show(const char *color, size_t pos,
- 				  struct hws_diag_entry *diagp)
- {
- 	struct hws_diag_entry *diag = diagp;
--#if __BYTE_ORDER == __LITTLE_ENDIAN
-+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
- 	struct hws_diag_entry local;
- 	unsigned long long word = be64toh(*(unsigned long long *)diagp);
- 
-@@ -322,7 +322,7 @@ static unsigned long long trailer_timestamp(struct hws_trailer_entry *te,
- static bool s390_cpumsf_trailer_show(const char *color, size_t pos,
- 				     struct hws_trailer_entry *te)
- {
--#if __BYTE_ORDER == __LITTLE_ENDIAN
-+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
- 	struct hws_trailer_entry local;
- 	const unsigned long long flags = be64toh(te->flags);
- 
-@@ -552,7 +552,7 @@ static unsigned long long get_trailer_time(const unsigned char *buf)
- 	te = (struct hws_trailer_entry *)(buf + S390_CPUMSF_PAGESZ
- 					      - sizeof(*te));
- 
--#if __BYTE_ORDER == __LITTLE_ENDIAN
-+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
- 	clock_base = be64toh(te->progusage[0]) >> 63 & 0x1;
- 	progusage2 = be64toh(te->progusage[1]);
- #else
--- 
-2.31.1
+drivers/net/ethernet/marvell/prestera/prestera_hw.c:285:1: error:
+alignment 1 of 'union prestera_msg_port_param' is less than 4
+[-Werror=packed-not-aligned]
 
+and this is addressed by your patch.
+
+However, there is still this structure that lacks explicit padding:
+
+struct prestera_msg_acl_match {
+        __le32 type;
+        /* there is a four-byte hole on most architectures, but not on
+x86-32 or m68k */
+        union {
+                struct {
+                        u8 key;
+                        u8 mask;
+                } __packed u8;
+/* The __packed here makes no sense since this one is aligned but the
+other ones are not */
+                struct {
+                        __le16 key;
+                        __le16 mask;
+                } u16;
+                struct {
+                        __le32 key;
+                        __le32 mask;
+                } u32;
+                struct {
+                        __le64 key;
+                        __le64 mask;
+                } u64;
+                struct {
+                        u8 key[ETH_ALEN];
+                        u8 mask[ETH_ALEN];
+                } mac;
+        } keymask;
+};
+
+and a minor issue in
+
+struct prestera_msg_event_port_param {
+        union {
+                struct {
+                        __le32 mode;
+                        __le32 speed;
+                        u8 oper;
+                        u8 duplex;
+                        u8 fc;
+                        u8 fec;
+                } mac;
+                struct {
+                        __le64 lmode_bmap;
+                        u8 mdix;
+                        u8 fc;
+                        u8 __pad[2];
+                } __packed phy;
+        } __packed;
+} __packed;
+
+There is no need to make the outer aggregates __packed, I would
+mark only the innermost ones here: mode, speed and lmode_bmap.
+Same for prestera_msg_port_cap_param and prestera_msg_port_param.
+
+
+It would be best to add some comments next to the __packed
+attributes to explain exactly which members are misaligned
+and why. I see that most of the packed structures are included in
+union prestera_msg_port_param, which makes that packed
+as well, however nothing that uses this union puts it on a misaligned
+address, so I don't see what the purpose is.
+
+       Arnd
