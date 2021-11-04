@@ -2,142 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974C54456F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F25554456FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:15:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231670AbhKDQPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 12:15:36 -0400
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:41896 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231463AbhKDQPe (ORCPT
+        id S231666AbhKDQRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 12:17:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231419AbhKDQRj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 12:15:34 -0400
-Received: by mail-oi1-f171.google.com with SMTP id l15so10012294oie.8;
-        Thu, 04 Nov 2021 09:12:56 -0700 (PDT)
+        Thu, 4 Nov 2021 12:17:39 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C447C061714;
+        Thu,  4 Nov 2021 09:15:01 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id f8so7978697plo.12;
+        Thu, 04 Nov 2021 09:15:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sGhrNvp6uYs1eENGQtazLcPrJxO2giqX3yn86Q2Rjb0=;
+        b=OzWlf0h4HDva5w8/fjj8qykjVe5BGNoaTXijP4Hro17C7voOuJc2L83UigCX/Ce/Cb
+         oN9HSXKUkDlmO79igfzpN06HaVh8mgRhtICw5Ix+iFqTxY/mHUXFu+Lgs/itfW5uQ7JP
+         /U/7LGPCPa/siFewODGT5aajhljPambkIPQxtS4PXL8uVpH8iv+EZGjlNFZ3QxlCK7o9
+         JamSxoe3HUtNXrTPUDPNzdTb7qwxLf5FuxoCxowi/RFzgyF4DDITN2cMzVC/FqJnchSa
+         /qyM12DwUyQyENbiGq+bYPQTzCb3MZoQxrJHR0Uy3G+LmnPJSrTNKeUPFC7OD+OINALE
+         UQZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=F8S7posVfJa10aMcTqnPvT5yLO9Zkvy1OBcQITEzqpY=;
-        b=Ae+jxVRaqGcoTydkKokAlHiCu4FmwPf+wiNZxhn0X+mlmBicTxTXs3Wcha8Au/7vqo
-         GavonZXqGlF39QP91rDVS4ITzegkQ9ACrA+YARafYMDOc+OfYNTl1Kjkt24bbAcuDacz
-         WELkxjtiFucvvMB+xbnyQMRiklzj82Yq4zfymut5HNq6FmfFvLptB9xxFNxiRA7wSoqn
-         pPjAUil+0Y+w/RoSmEOz2vFlGNgm5RjS/218NTx1IJJyL5zYY5HBsvxQeT4Qdl73hs4f
-         YHHKWRKBaRcXmhMMRDh8t6Aq2P/Q3iMNfzc3zm92gQsbEWu1EDM4quogidt3VGFlyV5G
-         tSVQ==
-X-Gm-Message-State: AOAM533NT9eWRd6D4fot84YNhC9eSMr4gV9SkxGzGB9O97v4vLq7WN84
-        9ZPSkU/Vki10kGmR8AxKB83G0Xg4yw==
-X-Google-Smtp-Source: ABdhPJwqUVX+YeETjwLQl3NQ7K+px0unN5KE5rEKkmpNng5TJE6UFg/nAQ1maNMUHdZGGJPLMsa8Bg==
-X-Received: by 2002:aca:210d:: with SMTP id 13mr1112566oiz.32.1636042375635;
-        Thu, 04 Nov 2021 09:12:55 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id c18sm1730840ots.64.2021.11.04.09.12.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 09:12:54 -0700 (PDT)
-Received: (nullmailer pid 3458347 invoked by uid 1000);
-        Thu, 04 Nov 2021 16:12:52 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Akash Gajjar <gajjar04akash@gmail.com>
-Cc:     Liang Chen <cl@rock-chips.com>, Johan Jonker <jbx6244@gmail.com>,
-        devicetree@vger.kernel.org, Chen-Yu Tsai <wenst@chromium.org>,
-        linux-rockchip@lists.infradead.org,
-        Peter Geis <pgwipeout@gmail.com>, Levin Du <djw@t-chip.com.cn>,
-        heiko@sntech.de, linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Alex Bee <knaerzche@gmail.com>, linux-kernel@vger.kernel.org
-In-Reply-To: <20211104075234.8020-1-gajjar04akash@gmail.com>
-References: <20211104075234.8020-1-gajjar04akash@gmail.com>
-Subject: Re: [PATCH] arm64: dts: rockchip: Add rock pi s dts support
-Date:   Thu, 04 Nov 2021 11:12:52 -0500
-Message-Id: <1636042372.246110.3458346.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sGhrNvp6uYs1eENGQtazLcPrJxO2giqX3yn86Q2Rjb0=;
+        b=Zd9YynsPhdZV/ALtmGbrtPLi1ZcShOlyEgCNdZJzrzyB2syMMisGPhHUa54mjppRsS
+         GQOV9x7Xd379wExszpqBtcpZylNkHlJ916jQwCdCyKxoCIYPPr27QNz/D+nGC6dQ3ros
+         eqgwpECeeEtp1JFAF5tICsHrx6e74KGcaycvATnZaa1PKJe6zxOps+YHdyhioqKJnS0n
+         Bcpcwn7Fuos5tCNWt0QPhU4YHMMJzM8997jtLrIJ1mGzksOExRn/kvXkwtgkRIO6p5Tv
+         /XxjFiV/xAqHlkyW6g/HyaFfNM5ssfGaaUi946dAmlkWKoppOQhPBQDIjOvYFz4mkAHR
+         DDuA==
+X-Gm-Message-State: AOAM531QKqy0vkNeOHj2ehKaGwbTOpCFSvIqxxdhhf+xcMHFegdKJaoN
+        bEFk6QbweuOG1qZ87y/rVLBEnRc5+oD4R/bOUGw=
+X-Google-Smtp-Source: ABdhPJzTreflRsKrO58KDvo836UWmeaabpCOf7NZG2guZUrj0IZFxcDX/Iaw9TuVGSrhhCktbaJ2d2suAoiggJNMJmw=
+X-Received: by 2002:a17:90a:6b0d:: with SMTP id v13mr23239514pjj.138.1636042500356;
+ Thu, 04 Nov 2021 09:15:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
+ <20211103001245.muyte7exph23tmco@ast-mbp.dhcp.thefacebook.com>
+ <fcec81dd-3bb9-7dcf-139d-847538b6ad20@fb.com> <CAN22DihwJ7YDFSPk+8CCs0RcSWvZOpNV=D1u+42XabztS6hcKQ@mail.gmail.com>
+ <CAADnVQJ_ger=Tjn=9SuUTES6Tt5k_G0M+6T_ELzFtw_cSVs83A@mail.gmail.com> <55c95c15-ccad-bb31-be87-ad17db7cb02a@fb.com>
+In-Reply-To: <55c95c15-ccad-bb31-be87-ad17db7cb02a@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 4 Nov 2021 09:14:49 -0700
+Message-ID: <CAADnVQK6kMbX379dy5XOo1s7DricX1z9WZ04PhUD6DoEPO+jsg@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 0/3] Introduce BPF map tracing capability
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Joe Burton <jevburton.kernel@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Petar Penkov <ppenkov@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Joe Burton <jevburton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 04 Nov 2021 13:22:24 +0530, Akash Gajjar wrote:
-> Rock pi s is RK3308 SBC from radxa. Rock pi s has a,
-> - 256MB/512MB DDR3 RAM
-> - micro sd, sd nand flash (optional on board 1/2/4/8Gb)
-> - 100MB ethernet, PoE (optional)
-> - onboard RTL8723DS 802.11 b/g/n wifi + Bluetooth 4.0 Module
-> - 26-pin expansion header
-> - USB2.0 Type-A HOST x1
-> - USB Type-C DC 5V Power Supply
-> - 2 LEDS, 2 Keys
-> 
-> This patch enables
-> - console on UART-2
-> - nand flash
-> - sd card
-> - 100Mbps ethernet
-> - USB2.0
-> 
-> Signed-off-by: Akash Gajjar <gajjar04akash@gmail.com>
-> ---
->  .../devicetree/bindings/arm/rockchip.yaml     |   5 +
->  arch/arm64/boot/dts/rockchip/Makefile         |   1 +
->  .../boot/dts/rockchip/rk3308-rock-pi-s.dts    | 208 ++++++++++++++++++
->  3 files changed, 214 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
-> 
+On Wed, Nov 3, 2021 at 9:23 PM Yonghong Song <yhs@fb.com> wrote:
+>
+> asm("") indeed helped preserve the call.
+>
+> [$ ~/tmp2] cat t.c
+> int __attribute__((noinline)) foo() { asm(""); return 1; }
+> int bar() { return foo() + foo(); }
+> [$ ~/tmp2] clang -O2 -c t.c
+> [$ ~/tmp2] llvm-objdump -d t.o
+>
+> t.o:    file format elf64-x86-64
+>
+> Disassembly of section .text:
+>
+> 0000000000000000 <foo>:
+>         0: b8 01 00 00 00                movl    $1, %eax
+>         5: c3                            retq
+>         6: 66 2e 0f 1f 84 00 00 00 00 00 nopw    %cs:(%rax,%rax)
+>
+> 0000000000000010 <bar>:
+>        10: 50                            pushq   %rax
+>        11: e8 00 00 00 00                callq   0x16 <bar+0x6>
+>        16: e8 00 00 00 00                callq   0x1b <bar+0xb>
+>        1b: b8 02 00 00 00                movl    $2, %eax
+>        20: 59                            popq    %rcx
+>        21: c3                            retq
+> [$ ~/tmp2]
+>
+> Note with asm(""), foo() is called twice, but the compiler optimization
+> knows foo()'s return value is 1 so it did calculation at compiler time,
+> assign the 2 to %eax and returns.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/arm/rockchip.yaml:473:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
-
-dtschema/dtc warnings/errors:
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/arm/rockchip.example.dts'
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 119, in get_single_data
-    node = self.composer.get_single_node()
-  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
-  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 850, in _ruamel_yaml.CParser._compose_sequence_node
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 731, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-ruamel.yaml.scanner.ScannerError: while scanning a plain scalar
-  in "<unicode string>", line 472, column 22
-found a tab character that violates indentation
-  in "<unicode string>", line 473, column 1
-make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/arm/rockchip.example.dts] Error 1
-make[1]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/arm/rockchip.yaml:  while scanning a plain scalar
-  in "<unicode string>", line 472, column 22
-found a tab character that violates indentation
-  in "<unicode string>", line 473, column 1
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/rockchip.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/arm/rockchip.yaml
-make: *** [Makefile:1441: dt_binding_check] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1550787
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Missed %eax=2 part...
+That means that asm("") is not enough.
+Maybe something like:
+int __attribute__((noinline)) foo()
+{
+  int ret = 0;
+  asm volatile("" : "=r"(var) : "0"(var));
+  return ret;
+}
