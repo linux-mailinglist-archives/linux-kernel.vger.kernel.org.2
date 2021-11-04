@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADB8445803
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10370445804
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232058AbhKDRMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:12:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39956 "EHLO mail.kernel.org"
+        id S232103AbhKDRMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:12:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231501AbhKDRM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231740AbhKDRM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Nov 2021 13:12:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id DEFDD61186;
-        Thu,  4 Nov 2021 17:09:50 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 25352611EE;
+        Thu,  4 Nov 2021 17:09:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636045790;
-        bh=OayHXHRKJghWJMs2vm1+vHXo+agWa0gtrv8JzE7QO3Q=;
+        s=k20201202; t=1636045791;
+        bh=745Wy00l5dA1AH3xYnmU1+AknKyAl1Nj11tNyGUjinQ=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Cb4Z2ipr23rV/A24kr5EIP+dYrkpWOdxoU0/MgtsGk+lhGxewSJv9/Jlozg2mI3zX
-         shQllsf0jIY4IV06jVwV/aeWQo82rsf0bdHfyRao4SrwAKEkcdlHdIQKiOJHNmoKVZ
-         SWze283JKNivkYvk2BbhKwLgvPa1DaJgcX558qdPr9nHj1UzH8H5I9h1QZh8otWBEe
-         UGzeUlsAUPhNHTSrWC7qEbiWZ9KwPefW+aY1KhlzVvrJlWifXaeClZXfphrCmEIxgS
-         vG7A/H9YhPPaPWlj/AX/Tst2dumV6Lm4uiW1pnLfZl/wKkx5Xvgiq5Z17E4NLzlu7I
-         NFVWaHd7lrW4g==
+        b=jy3Ca/UNqcaQIvnwtNj7Y7Y7/QVNOrklNPIjLTR1s7v71sL34bxeRIpDYkaFlxk1J
+         PAGjApqzdi2dOKF78ra0Knm/MCVtUOxpBKNPmr5el2snDxFPZeGSiTyDw+WyT5A6uR
+         qzYLHiFMQ5Fe4ZrQRU9mRD78wfX21qAgqOolGhoS86IZXVmDRSNO/JCHEYBh+d/v1K
+         n7RxC35JvwLLbxbZbrd3APSvur3xIDSoAeyT/77fKkF7QM+lDYspGpCy4iHy3fMBYd
+         Jk3mZeH6ZLPVlC8uawqs/iVL43XxzTYrHjN2zDDxXKwpDYWQKvuki2pbPFEF7p8+z5
+         Tbk45892AFvFA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D8111609B8;
-        Thu,  4 Nov 2021 17:09:50 +0000 (UTC)
-Subject: Re: [GIT PULL] Staging driver changes for 5.16-rc1
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1F009609D9;
+        Thu,  4 Nov 2021 17:09:51 +0000 (UTC)
+Subject: Re: [GIT PULL] TTY/Serial driver updates for 5.16-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YYPauAJfmnePbPF5@kroah.com>
-References: <YYPauAJfmnePbPF5@kroah.com>
-X-PR-Tracked-List-Id: <linux-staging.lists.linux.dev>
-X-PR-Tracked-Message-Id: <YYPauAJfmnePbPF5@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.16-rc1
-X-PR-Tracked-Commit-Id: 10508ae08ed8ce8794785194ad7309f1437d43fd
+In-Reply-To: <YYPc/XfSYP1n5UbV@kroah.com>
+References: <YYPc/XfSYP1n5UbV@kroah.com>
+X-PR-Tracked-List-Id: <linux-serial.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YYPc/XfSYP1n5UbV@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.16-rc1
+X-PR-Tracked-Commit-Id: cc8d7b4aea79df7cb45b74f9bc5b8a8bd2ed4c07
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5cd4dc44b8a0f656100e3b6916cf73b1623299eb
-Message-Id: <163604579087.24234.18256208119761136389.pr-tracker-bot@kernel.org>
-Date:   Thu, 04 Nov 2021 17:09:50 +0000
+X-PR-Merge-Commit-Id: abfecb39092029c42c79bacac3d1c96a133ff231
+Message-Id: <163604579112.24234.15610784816359941039.pr-tracker-bot@kernel.org>
+Date:   Thu, 04 Nov 2021 17:09:51 +0000
 To:     Greg KH <gregkh@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        Jiri Slaby <jslaby@suse.cz>,
         Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 4 Nov 2021 14:06:00 +0100:
+The pull request you sent on Thu, 4 Nov 2021 14:15:41 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.16-rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.16-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5cd4dc44b8a0f656100e3b6916cf73b1623299eb
+https://git.kernel.org/torvalds/c/abfecb39092029c42c79bacac3d1c96a133ff231
 
 Thank you!
 
