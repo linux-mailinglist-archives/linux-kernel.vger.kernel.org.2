@@ -2,95 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA72E4451DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 11:59:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 886244451E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 11:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhKDLCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 07:02:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbhKDLCQ (ORCPT
+        id S231320AbhKDLCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 07:02:33 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:55676 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231171AbhKDLCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 07:02:16 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437C7C061203
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 03:59:38 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id bp7so5180264qkb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 03:59:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=yk5XgrdOGaW3p+sZvRRyB5VgAQCpuos1tmstcywTUC4=;
-        b=XX1YBYYHmk1cGhVONndzHMCKWuohW4I4dM1TtuQ9FZOpOuKRiNQ7W8lU0mLOfMXMln
-         tebH6GbKj86VppLGa3M9D3purC3zTa3kl4odzXyqfOMep4hmM3a0qwX/osMUd86fnJex
-         U0DIvfNePhGdPEOvHNjDsXdK5/GWVJUwXUERwJiGXk/2e2mRrXAYzCD3Qpc+LQ/sb0Gb
-         cThFB+zRxr3kmrwkLC58FnNMtAQW3aKy7QMCYwgjlB/2fidVHlkLUMDLdampm91nvXDi
-         09TcE3LMsn5DCPDnkN07mT+vT4KeTjY8hiKaOrekAU9PQlcPpsIzBdCZ4ckpq+SnY5DM
-         w6JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=yk5XgrdOGaW3p+sZvRRyB5VgAQCpuos1tmstcywTUC4=;
-        b=kQFYaZfhTO7ilNTAWjQvY1qe8UruBS1CCVptlMyQnowz9co56pfIdNKET1VAFoFWAX
-         lEhyoVsGgI5TnihgwAewAGhtI7EfAx0YyktAQaGrEpkTWdn+aFABdKwwr5IRJyDYfKwL
-         XIEDZNz5WIENcj+p/RF2YEynGt+pjQiJPhMewN3wafIvJpBSza+gdlO8NCVc8czEhwdM
-         vfOTuarUNMogKrNJCEZ/BSS1dJpa/BvHY4ytGnGhBeaYC276JLQLD3nkwbTLbgHOohZU
-         WPgEpkb02hZThHs/uWzPslOq+ILj1800DPqnte8oT+d8ZL68bi8JKuwtP7ULpo+pkoNt
-         sbrQ==
-X-Gm-Message-State: AOAM532tL4hvX0WZaRtcA8XmO/1UpVH4q/NxGoOh2T3VqjWiXis4p4K4
-        2RpN4A+o2MA2QtLAHOzIRqQNrQ==
-X-Google-Smtp-Source: ABdhPJzhUAIh65nsdBGdq1eovhwrx6kLDOIqjGAzGexR5wn7UKV0JMgWgt2ucF4Fw2LrUUBhtCqJSg==
-X-Received: by 2002:a05:620a:4086:: with SMTP id f6mr40328253qko.220.1636023577438;
-        Thu, 04 Nov 2021 03:59:37 -0700 (PDT)
-Received: from [192.168.1.173] (bras-base-kntaon1617w-grc-33-142-112-185-132.dsl.bell.ca. [142.112.185.132])
-        by smtp.googlemail.com with ESMTPSA id v14sm101547qkp.9.2021.11.04.03.59.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 03:59:36 -0700 (PDT)
-Message-ID: <4e602c87-9764-829c-4763-38f4ac057b7c@mojatatu.com>
-Date:   Thu, 4 Nov 2021 06:59:35 -0400
+        Thu, 4 Nov 2021 07:02:31 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0Uv1L71P_1636023590;
+Received: from localhost.localdomain(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0Uv1L71P_1636023590)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 04 Nov 2021 18:59:51 +0800
+From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
+To:     helgaas@kernel.org
+Cc:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
+        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
+        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
+        bhelgaas@google.com, ying.huang@intel.com,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        xuesong.chen@linux.alibaba.com
+Subject: [PATCH v5 2/4] ACPI: APEI: Filter the PCI MCFG address with an arch-agnostic method
+Date:   Thu,  4 Nov 2021 18:59:45 +0800
+Message-Id: <20211104105945.47625-1-xuesong.chen@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+In-Reply-To: <20211104105715.47396-1-xuesong.chen@linux.alibaba.com>
+References: <20211104105715.47396-1-xuesong.chen@linux.alibaba.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [RFC PATCH v3 0/3] Introduce BPF map tracing capability
-Content-Language: en-US
-To:     Joe Burton <jevburton.kernel@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Petar Penkov <ppenkov@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Joe Burton <jevburton@google.com>
-References: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
- <aa6081aa-9741-be05-8051-e01909662ff1@mojatatu.com>
- <CAN22DihBMX=xTMeTQ2-Z8Fa6r=1ynKshbfhFJJ5Jb=-ww_9hDQ@mail.gmail.com>
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-In-Reply-To: <CAN22DihBMX=xTMeTQ2-Z8Fa6r=1ynKshbfhFJJ5Jb=-ww_9hDQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-03 13:12, Joe Burton wrote:
-> That's a good point. Since the probe is invoked before the update takes
-> place, it would not be possible to account for the possibility that the
-> update failed.
-> 
-> Unless someone wants the `pre update' hook, I'll simply adjust the
-> existing hooks' semantics so that they are invoked after the update.
-> As discussed, this better suits the intended use case.
->
+The commit d91525eb8ee6 ("ACPI, EINJ: Enhance error injection tolerance
+level") fixes the issue that the ACPI/APEI can not access the PCI MCFG
+address on x86 platform, but this issue can also happen on other
+architectures, for instance, we got below error message on ARM64 platform:
+...
+APEI: Can not request [mem 0x50100000-0x50100003] for APEI EINJ Trigger registers
+...
 
-If the goal is to synchronize state between two maps (if i understood
-correctly the intent) then it is more useful to go post-update.
+The above register range is within the MCFG area, because the PCI ECAM
+can access the configuration space in an atomic way in case of the
+hardware implementation of ECAM is correct, which means we don't need
+a mutual exclusion for the EINJ action, thus we can remove this register
+address region from the MCFG safely just like the x86 fix does.
 
-cheers,
-jamal
+Since all the MCFG resources have been saved into the pci_mmcfg_list
+which is shared across different arches, thus we can filter the MCFG
+resources from the APEI by apei_resources_sub(...) in a more common
+arch-agnostic way, which will be beneficial to all the APEI-dependent
+platforms after that.
+
+Signed-off-by: Xuesong Chen <xuesong.chen@linux.alibaba.com>
+---
+ arch/x86/pci/mmconfig-shared.c | 28 --------------------------
+ drivers/acpi/apei/apei-base.c  | 45 ++++++++++++++++++++++++++++--------------
+ 2 files changed, 30 insertions(+), 43 deletions(-)
+
+diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+index 0b961fe6..12f7d96 100644
+--- a/arch/x86/pci/mmconfig-shared.c
++++ b/arch/x86/pci/mmconfig-shared.c
+@@ -605,32 +605,6 @@ static int __init pci_parse_mcfg(struct acpi_table_header *header)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_ACPI_APEI
+-extern int (*arch_apei_filter_addr)(int (*func)(__u64 start, __u64 size,
+-				     void *data), void *data);
+-
+-static int pci_mmcfg_for_each_region(int (*func)(__u64 start, __u64 size,
+-				     void *data), void *data)
+-{
+-	struct pci_mmcfg_region *cfg;
+-	int rc;
+-
+-	if (list_empty(&pci_mmcfg_list))
+-		return 0;
+-
+-	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
+-		rc = func(cfg->res.start, resource_size(&cfg->res), data);
+-		if (rc)
+-			return rc;
+-	}
+-
+-	return 0;
+-}
+-#define set_apei_filter() (arch_apei_filter_addr = pci_mmcfg_for_each_region)
+-#else
+-#define set_apei_filter()
+-#endif
+-
+ static void __init __pci_mmcfg_init(int early)
+ {
+ 	pci_mmcfg_reject_broken(early);
+@@ -665,8 +639,6 @@ void __init pci_mmcfg_early_init(void)
+ 		else
+ 			acpi_table_parse(ACPI_SIG_MCFG, pci_parse_mcfg);
+ 		__pci_mmcfg_init(1);
+-
+-		set_apei_filter();
+ 	}
+ }
+ 
+diff --git a/drivers/acpi/apei/apei-base.c b/drivers/acpi/apei/apei-base.c
+index c7fdb12..daae75a 100644
+--- a/drivers/acpi/apei/apei-base.c
++++ b/drivers/acpi/apei/apei-base.c
+@@ -21,6 +21,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/init.h>
++#include <linux/pci.h>
+ #include <linux/acpi.h>
+ #include <linux/slab.h>
+ #include <linux/io.h>
+@@ -448,13 +449,34 @@ static int apei_get_nvs_resources(struct apei_resources *resources)
+ 	return acpi_nvs_for_each_region(apei_get_res_callback, resources);
+ }
+ 
+-int (*arch_apei_filter_addr)(int (*func)(__u64 start, __u64 size,
+-				     void *data), void *data);
+-static int apei_get_arch_resources(struct apei_resources *resources)
++#ifdef CONFIG_PCI
++extern struct list_head pci_mmcfg_list;
++static int apei_filter_mcfg_addr(struct apei_resources *res,
++			struct apei_resources *mcfg_res)
++{
++	int rc = 0;
++	struct pci_mmcfg_region *cfg;
++
++	if (list_empty(&pci_mmcfg_list))
++		return 0;
++
++	apei_resources_init(mcfg_res);
++	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
++		rc = apei_res_add(&mcfg_res->iomem, cfg->res.start, resource_size(&cfg->res));
++		if (rc)
++			return rc;
++	}
+ 
++	/* filter the mcfg resource from current APEI's */
++	return apei_resources_sub(res, mcfg_res);
++}
++#else
++static inline int apei_filter_mcfg_addr(struct apei_resources *res,
++			struct apei_resources *mcfg_res)
+ {
+-	return arch_apei_filter_addr(apei_get_res_callback, resources);
++	return 0;
+ }
++#endif
+ 
+ /*
+  * IO memory/port resource management mechanism is used to check
+@@ -486,15 +508,9 @@ int apei_resources_request(struct apei_resources *resources,
+ 	if (rc)
+ 		goto nvs_res_fini;
+ 
+-	if (arch_apei_filter_addr) {
+-		apei_resources_init(&arch_res);
+-		rc = apei_get_arch_resources(&arch_res);
+-		if (rc)
+-			goto arch_res_fini;
+-		rc = apei_resources_sub(resources, &arch_res);
+-		if (rc)
+-			goto arch_res_fini;
+-	}
++	rc = apei_filter_mcfg_addr(resources, &arch_res);
++	if (rc)
++		goto arch_res_fini;
+ 
+ 	rc = -EINVAL;
+ 	list_for_each_entry(res, &resources->iomem, list) {
+@@ -544,8 +560,7 @@ int apei_resources_request(struct apei_resources *resources,
+ 		release_mem_region(res->start, res->end - res->start);
+ 	}
+ arch_res_fini:
+-	if (arch_apei_filter_addr)
+-		apei_resources_fini(&arch_res);
++	apei_resources_fini(&arch_res);
+ nvs_res_fini:
+ 	apei_resources_fini(&nvs_resources);
+ 	return rc;
+-- 
+2.9.5
+
