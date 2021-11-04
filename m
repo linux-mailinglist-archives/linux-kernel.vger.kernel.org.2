@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C32444C85
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 01:29:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 377F9444C86
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 01:29:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233567AbhKDAbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 20:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52716 "EHLO
+        id S233587AbhKDAb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 20:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233342AbhKDA3F (ORCPT
+        with ESMTP id S233358AbhKDA3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 20:29:05 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF6BC061205
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 17:26:28 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id w5-20020a654105000000b002692534afceso2391620pgp.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 17:26:28 -0700 (PDT)
+        Wed, 3 Nov 2021 20:29:06 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C8EC061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 17:26:29 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id g20-20020a170902869400b0014002b0f5bcso1912879plo.18
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 17:26:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=IsY0WRuuTFV0eCJh4XuxLWgE9EBRjAtittkz8TMTuco=;
-        b=O7s96ScNe9nmLZhqPDRepEfehWbch5lSXwuuBFzYiqZgVQsgJRuuGd/HsCCp0bLNu4
-         cYQEx19ZWNPAdMz0HClIalz8ml2QbzjuG+kpgnfMKZafKps+5AXiFqHJNbVFhjHTioYL
-         tC1EMjtQ3yJ0X06NcpoHHSW6eMNaRj1UY0Egh3hPuOjeGtPjO4DN4XnLvAY2osT6lAMm
-         Q868Qm3pLeksx//ppWn43EQZ/TdzYIIwGOwnzwEzdl67hcCGzEJJpjoe2w8tgpCv7e+t
-         TP/XmqLrn9P33rNcE9thKpdxIqj+9MZJlkaTX8cqkFRjS/EbxZ7CKKedokkl4MG1CITB
-         FVVA==
+        bh=gefeXeMu+9xCn+OiiZbsmvywIWNyuYY1aczHxfS7F84=;
+        b=q1wAaFzQivbUaLWNpD28vIW6ok97J24IWOZtjc0+hsnIoFnhMyUWsnSfQKoqN3maJ3
+         KBdBMOyYnFaTKZvkOTgijuDb8a1y6dTYyIvATTjrk50gQdXgdq0sK8P9D8VXqeBwIchM
+         S4752LKzCwKCElggFGcp/0gCfncZSwTidehk3QlNJHjH4YdWFX4NP2+qFH0XmXIojpE7
+         shl+78ytzLoTN1+DNy2u1aXGBjCw+SMXFRKxDeT2bHggWBTmy7o/SubcktQSj4/PZQou
+         hwUcODvMGvNUFZIWK9EWYU9o0oSTlOaqrHSlqsc6GHFHSECGSUQyaSoW+8/pBlFiy+YJ
+         LVDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=IsY0WRuuTFV0eCJh4XuxLWgE9EBRjAtittkz8TMTuco=;
-        b=kv+XXRMd85AEFKX70XXp4VSsbtaYheAP8ZzH0xc5Xn4CJeLbRthRX08dNN5uSbuUCh
-         I6tb9TWDQBJxXLzDnNeo8kUan6OubNBU9xhccq2H56sXCfS04rdqYKZAXSEmOC9yRwku
-         33uDX//VZmObA6cPzlifQFm9YyFjEtjLup7LTOB0Aju4FSbNXP+trzvhOsolRPTV4tlW
-         2sDOMcKJMQTXdugxlzTXDbWVjyEiIh41O3Sz/S22D0SFX0XQ9LASU0dX904hwkGaISsQ
-         jK+8yQH5y8cQ08U/Rr8MgxbBmJ6YGpqaG4wgzX+/o1gzeTYuz9OpKhx/tRWogw3j0zIu
-         QQfw==
-X-Gm-Message-State: AOAM533mjyl12GnhbQy/GJIbNqGJqph2L03fRvxzy4BAFFmR5eYFI+nE
-        ppdXUmHob3TWPHCERXV2aBlwzgZ6OWs=
-X-Google-Smtp-Source: ABdhPJz+o3KGoFfULDwKrO6qcyTUUuzAUo3X1uvau9DDSuCs/3Lm9Kc5uh2iA0skAT+76ch/61YBaYAjQn0=
+        bh=gefeXeMu+9xCn+OiiZbsmvywIWNyuYY1aczHxfS7F84=;
+        b=wAyN0enlMqmzPc7QX8yviVAtedIDClJCT3K3jyy6ZByd+LCySyimAgYL9qKwbJumBN
+         NwfP2pyBlw7wZlMhc7k1VPL3/FZyLfWs1YE2dNbxypuenY5mJaf9fOxa5AA6Khe1Icp0
+         77jbJHp5t8F9l3qYcfVTpMn7ZIvPFEojE/GCzpH5wpKbEBUX74lhCeFRAK1DwTloCeoE
+         YsuXTDnFp16X3jKxiChmo6lCAC9hktvFTDhpNhweKTRhFECG9z0e2GcAja2vcRQmLRtm
+         weEgm00VfKHjBpOduDdfXJY78zvMWiVSY4tGQemXmjVRKROY7p+yiYbhN4UA+cZll17T
+         kkkg==
+X-Gm-Message-State: AOAM532cHHDwAUjw4z29vGW5k3zFaplAR/uhlapYMDGJUynUHHK1aO7P
+        sheYZAD1+gwyyYaujQcRCNbqiOxWyqM=
+X-Google-Smtp-Source: ABdhPJwuRHtV9T3+KFXWyLxF72TgsEexvxCX5VCcTZ2sr7WXwUborCujSIBbaHyiH9gR1LJWc7GYuxnx26s=
 X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
- (user=seanjc job=sendgmr) by 2002:a17:90a:5285:: with SMTP id
- w5mr261386pjh.1.1635985587426; Wed, 03 Nov 2021 17:26:27 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a63:740e:: with SMTP id p14mr35995604pgc.329.1635985589285;
+ Wed, 03 Nov 2021 17:26:29 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu,  4 Nov 2021 00:25:18 +0000
+Date:   Thu,  4 Nov 2021 00:25:19 +0000
 In-Reply-To: <20211104002531.1176691-1-seanjc@google.com>
-Message-Id: <20211104002531.1176691-18-seanjc@google.com>
+Message-Id: <20211104002531.1176691-19-seanjc@google.com>
 Mime-Version: 1.0
 References: <20211104002531.1176691-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v5.5 17/30] KVM: s390: Skip gfn/size sanity checks on memslot
- DELETE or FLAGS_ONLY
+Subject: [PATCH v5.5 18/30] KVM: Don't make a full copy of the old memslot in __kvm_set_memory_region()
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
@@ -88,57 +87,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sanity check the hva, gfn, and size of a userspace memory region only if
-any of those properties can change, i.e. skip the checks for DELETE and
-FLAGS_ONLY.  KVM doesn't allow moving the hva or changing the size, a gfn
-change shows up as a MOVE even if flags are being modified, and the
-checks are pointless for the DELETE case as userspace_addr and gfn_base
-are zeroed by common KVM.
+Stop making a full copy of the old memslot in __kvm_set_memory_region()
+now that metadata updates are handled by kvm_set_memslot(), i.e. now that
+the old memslot's dirty bitmap doesn't need to be referenced after the
+memslot and its pointer is modified/invalidated by kvm_set_memslot().
 
 No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/s390/kvm/kvm-s390.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ virt/kvm/kvm_main.c | 35 +++++++++++++----------------------
+ 1 file changed, 13 insertions(+), 22 deletions(-)
 
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index 81f90891db0f..c4d0ed5f3400 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -5020,7 +5020,14 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
- 				   struct kvm_memory_slot *new,
- 				   enum kvm_mr_change change)
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 6c7bbc452dae..bbaa01afac43 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1715,8 +1715,8 @@ static int kvm_set_memslot(struct kvm *kvm,
+ int __kvm_set_memory_region(struct kvm *kvm,
+ 			    const struct kvm_userspace_memory_region *mem)
  {
--	gpa_t size = new->npages * PAGE_SIZE;
-+	gpa_t size;
-+
-+	/* When we are protected, we should not change the memory slots */
-+	if (kvm_s390_pv_get_handle(kvm))
-+		return -EINVAL;
-+
-+	if (change == KVM_MR_DELETE || change == KVM_MR_FLAGS_ONLY)
-+		return 0;
- 
- 	/* A few sanity checks. We can have memory slots which have to be
- 	   located/ended at a segment boundary (1MB). The memory in userland is
-@@ -5030,15 +5037,13 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
- 	if (new->userspace_addr & 0xffffful)
+-	struct kvm_memory_slot old, new;
+-	struct kvm_memory_slot *tmp;
++	struct kvm_memory_slot *old, *tmp;
++	struct kvm_memory_slot new;
+ 	enum kvm_mr_change change;
+ 	int as_id, id;
+ 	int r;
+@@ -1746,25 +1746,16 @@ int __kvm_set_memory_region(struct kvm *kvm,
  		return -EINVAL;
  
-+	size = new->npages * PAGE_SIZE;
- 	if (size & 0xffffful)
+ 	/*
+-	 * Make a full copy of the old memslot, the pointer will become stale
+-	 * when the memslots are re-sorted by update_memslots(), and the old
+-	 * memslot needs to be referenced after calling update_memslots(), e.g.
+-	 * to free its resources and for arch specific behavior.
++	 * Note, the old memslot (and the pointer itself!) may be invalidated
++	 * and/or destroyed by kvm_set_memslot().
+ 	 */
+-	tmp = id_to_memslot(__kvm_memslots(kvm, as_id), id);
+-	if (tmp) {
+-		old = *tmp;
+-		tmp = NULL;
+-	} else {
+-		memset(&old, 0, sizeof(old));
+-		old.id = id;
+-	}
++	old = id_to_memslot(__kvm_memslots(kvm, as_id), id);
+ 
+ 	if (!mem->memory_size) {
+-		if (!old.npages)
++		if (!old || !old->npages)
+ 			return -EINVAL;
+ 
+-		if (WARN_ON_ONCE(kvm->nr_memslot_pages < old.npages))
++		if (WARN_ON_ONCE(kvm->nr_memslot_pages < old->npages))
+ 			return -EIO;
+ 
+ 		memset(&new, 0, sizeof(new));
+@@ -1784,7 +1775,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
+ 	if (new.npages > KVM_MEM_MAX_NR_PAGES)
  		return -EINVAL;
  
- 	if ((new->base_gfn * PAGE_SIZE) + size > kvm->arch.mem_limit)
- 		return -EINVAL;
+-	if (!old.npages) {
++	if (!old || !old->npages) {
+ 		change = KVM_MR_CREATE;
  
--	/* When we are protected, we should not change the memory slots */
--	if (kvm_s390_pv_get_handle(kvm))
--		return -EINVAL;
- 	return 0;
- }
+ 		/*
+@@ -1794,14 +1785,14 @@ int __kvm_set_memory_region(struct kvm *kvm,
+ 		if ((kvm->nr_memslot_pages + new.npages) < kvm->nr_memslot_pages)
+ 			return -EINVAL;
+ 	} else { /* Modify an existing slot. */
+-		if ((new.userspace_addr != old.userspace_addr) ||
+-		    (new.npages != old.npages) ||
+-		    ((new.flags ^ old.flags) & KVM_MEM_READONLY))
++		if ((new.userspace_addr != old->userspace_addr) ||
++		    (new.npages != old->npages) ||
++		    ((new.flags ^ old->flags) & KVM_MEM_READONLY))
+ 			return -EINVAL;
  
+-		if (new.base_gfn != old.base_gfn)
++		if (new.base_gfn != old->base_gfn)
+ 			change = KVM_MR_MOVE;
+-		else if (new.flags != old.flags)
++		else if (new.flags != old->flags)
+ 			change = KVM_MR_FLAGS_ONLY;
+ 		else /* Nothing to change. */
+ 			return 0;
 -- 
 2.33.1.1089.g2158813163f-goog
 
