@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11CF6445B26
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 21:33:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 236BE445B2D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 21:39:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232204AbhKDUgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 16:36:13 -0400
-Received: from mail-lf1-f53.google.com ([209.85.167.53]:37660 "EHLO
-        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231484AbhKDUgM (ORCPT
+        id S232263AbhKDUmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 16:42:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58467 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231484AbhKDUmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 16:36:12 -0400
-Received: by mail-lf1-f53.google.com with SMTP id g29so292777lfv.4;
-        Thu, 04 Nov 2021 13:33:33 -0700 (PDT)
+        Thu, 4 Nov 2021 16:42:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636058378;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uid2a9LMrW9B+45JcYmABYcf/U+z3oWHghPPLRjlNbA=;
+        b=TWtcsanMqEe3ZLd3E6E2bfFDqO4jyEpjRDBXDiBSjtt0yRRtEnPGbn8maYGKYIu8M4vIOh
+        w2EceiLFWNCrxPy0rpYFwLlAaZxjGcB+nmLssaTFuxVNhSNy92eB5LiWb4MmRQRPPsAOAz
+        6G0IjB+0yrK8Jc3BCuuZrB9or1dZ4A8=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-532-cXey0eOSOji3lsYzqnCTTw-1; Thu, 04 Nov 2021 16:39:37 -0400
+X-MC-Unique: cXey0eOSOji3lsYzqnCTTw-1
+Received: by mail-qk1-f197.google.com with SMTP id v14-20020a05620a0f0e00b0043355ed67d1so5602351qkl.7
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 13:39:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uQrrpLW2waHbZAaA6Nm9BoEIagIh7snWJFFsKEGeS7I=;
-        b=IWKGUOM1kFSaTDZBiEdN22rXJDt6aqM/gZX2ak8SLTDcuKe4aajSrSsciBXYJD1yfr
-         XeVTm4nO+AGVTuivsqG0OUd0Zk0ckM9kpGqrL8R2ORWMOTc7xvf67D/rxhV1EUPYfyGB
-         l6p+YyqoDGglURQ7IdDOGMmt6A9HBAanrJg23Lcd41POlq0Aisf1WUmYUJLiYEzEzwi9
-         0WY9Qgibnj2vb/SYoMkGgHfuhTQJcVAZzPDOpLSDS9ks/0OHhOeB9LJwjtTeH0DC3qCO
-         0kZhyFGFzPtWxOEIs6IZDVtILurwgd1XAZf1fRad2ghOpMQIPKBHyUWkysAz7m0Fl1cn
-         CluA==
-X-Gm-Message-State: AOAM530fNmMU5NVlOsj8bvPbPyrR4IvQBRB0FYf2P0HfSm9zfwIIfjvD
-        6Cne+gj7owwX6+VmaTbmfoeFmT3WowJRtpCNdqo=
-X-Google-Smtp-Source: ABdhPJwCrvV1ZZAS6LaxAZkkbIEhcoghUWZWF6LkATSjTIF57mA77tmz4hNPH5BUTYuaFTAOzaRnJqKIgcQdfQtH4ZY=
-X-Received: by 2002:a05:6512:3d0b:: with SMTP id d11mr35570141lfv.481.1636058011424;
- Thu, 04 Nov 2021 13:33:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uid2a9LMrW9B+45JcYmABYcf/U+z3oWHghPPLRjlNbA=;
+        b=rYNP/McKPBq5I/wChfjuXVOifes+wq659s7rzGQbeBxU3NnCkX9Xht3BfFvujLgyBv
+         vjrQC5H9Jmn7/yhRmWosCLR8cgKv+fB0L0ZDJwyPDoG5wmRYjMDP8HnIaINtJ3VkJ1v1
+         adOl2uRuBlVxTdWmbsIXarY1HL2uY5Rh3Od5pPAdg0t/Xu9aO+q1ygQabOZmgqS5e6O4
+         P8OJeGgulH1LrAuyGioi51kktaS750fyct0un8OverGjMYeseBhJ6pqvWHLVZBdJq4bh
+         kV6nBjBTty5OivXn1jculyaV04smyKEfTzxccysHCck4c4MskciKQQ0L+hI+zR06wVdR
+         DcgQ==
+X-Gm-Message-State: AOAM530PrPndj5f7Nuc+Zk/qVsHMOa0Xh9oout9/+7aqHsGFcregNuQ/
+        suU+n9OG05z6FB9UWMtMGQxJxzsTaIFe+14Riw9j9RHp2QwWajjmNfK4q8Kayp8DUy0dDZ0HM5W
+        dtNrQagmTFWxBT8NmDbJOaCi6
+X-Received: by 2002:ac8:53da:: with SMTP id c26mr55450503qtq.402.1636058376618;
+        Thu, 04 Nov 2021 13:39:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyJbrky/rybEZmPX0Sc92vS4yqcIFALVsKIMoyzqTxPldYU82h21l/JVJEuxJll/OhhLTw2lA==
+X-Received: by 2002:ac8:53da:: with SMTP id c26mr55450486qtq.402.1636058376447;
+        Thu, 04 Nov 2021 13:39:36 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::35])
+        by smtp.gmail.com with ESMTPSA id g1sm4751934qtb.7.2021.11.04.13.39.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 13:39:36 -0700 (PDT)
+Date:   Thu, 4 Nov 2021 13:39:33 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com,
+        dvyukov@google.com, seanjc@google.com, pbonzini@redhat.com,
+        mbenes@suse.cz
+Subject: Re: [RFC][PATCH 06/22] x86,entry_32: Remove .fixup usage
+Message-ID: <20211104203933.jxuilpksf7rtbkve@treble>
+References: <20211104164729.226550532@infradead.org>
+ <20211104165524.864310295@infradead.org>
 MIME-Version: 1.0
-References: <YYQadWbtdZ9Ff9N4@kernel.org> <YYQdKijyt20cBQik@kernel.org>
- <CAEf4BzYtq5Fru0_=Stih+Tjya3i29xG+RSF=4oOT7GbUwVRQaQ@mail.gmail.com>
- <YYQiXnUxlOoWMdwZ@kernel.org> <C940FF7A-A27F-4F56-8659-9365FC4A2EF7@fb.com>
-In-Reply-To: <C940FF7A-A27F-4F56-8659-9365FC4A2EF7@fb.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 4 Nov 2021 13:33:20 -0700
-Message-ID: <CAM9d7cg9rXKUdEsdGUBSemzSrwE8XsyQtjCM=zT+8P+gs10n=Q@mail.gmail.com>
-Subject: Re: perf build broken looking for bpf/{libbpf,bpf}.h after merge with upstream
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211104165524.864310295@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Nov 04, 2021 at 05:47:35PM +0100, Peter Zijlstra wrote:
+> +++ b/arch/x86/include/asm/extable_fixup_types.h
+> @@ -19,4 +19,6 @@
+>  #define	EX_TYPE_DEFAULT_MCE_SAFE	12
+>  #define	EX_TYPE_FAULT_MCE_SAFE		13
+>  
+> +#define EX_TYPE_POP_SEG			14
+> +
 
-On Thu, Nov 4, 2021 at 11:13 AM Song Liu <songliubraving@fb.com> wrote:
->
->
->
-> > On Nov 4, 2021, at 11:11 AM, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> >
-> > Em Thu, Nov 04, 2021 at 10:56:26AM -0700, Andrii Nakryiko escreveu:
-> >> On Thu, Nov 4, 2021 at 10:49 AM Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
-> >
-> >>> Em Thu, Nov 04, 2021 at 02:37:57PM -0300, Arnaldo Carvalho de Melo escreveu:
-> >>>>
-> >>>> Hi Song,
-> >>>>
-> >>>>      I just did a merge with upstream and I'm getting this:
-> >>>>
-> >>>>  LINK    /tmp/build/perf/plugins/plugin_scsi.so
-> >>>>  INSTALL trace_plugins
-> >>>
-> >>> To clarify, the command line to build perf that results in this problem
-> >>> is:
-> >>>
-> >>>  make -k BUILD_BPF_SKEL=1 CORESIGHT=1 PYTHON=python3 O=/tmp/build/perf -C tools/perf install-bin
-> >>
-> >> Oh, I dropped CORESIGN and left BUILD_BPF_SKEL=1 and yeah, I see the
-> >> build failure. I do think now that it's related to the recent Makefile
-> >> revamp effort. Quentin, PTAL.
-> >>
-> >> On the side note, why BUILD_BPF_SKEL=1 is not a default, we might have
-> >> caught this sooner. Is there any reason not to flip the default?
-> >
-> > I asked Song in the past about this, and asked again on another reply to
-> > this thread, I think it should be the default.
-> >
-> > Song, Namhyung? You're the skel guys (so far) :-)
->
-> Yeah, let's make it default.
+This looks funky in the patch (but not in the editor), those other ones
+have a tab after '#define'.
 
-Then it'd require 'clang' for the perf build.  Maybe we can check
-the availability of the compiler and disable it back if not.
+>  #endif
+> --- a/arch/x86/mm/extable.c
+> +++ b/arch/x86/mm/extable.c
+> @@ -99,6 +99,13 @@ static bool ex_handler_clear_fs(const st
+>  	return ex_handler_default(fixup, regs);
+>  }
+>  
+> +static bool ex_handler_pop_seg(const struct exception_table_entry *fixup,
+> +			       struct pt_regs *regs)
+> +{
+> +	*((unsigned int *)regs->sp) = 0;
+> +	return ex_handler_default(fixup, regs);
+> +}
 
-Thanks,
-Namhyung
+Clever.  Should be "unsigned long" in case this ever gets used by
+64-bit?  Also, I'd suggest a short comment.
+
+-- 
+Josh
+
