@@ -2,354 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B79D4457EB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C8F4457F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:07:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232212AbhKDRHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:07:42 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:54228 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231944AbhKDRHR (ORCPT
+        id S232041AbhKDRKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:10:10 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:37204 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232034AbhKDRKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:07:17 -0400
-Received: from localhost.localdomain (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 6946620B40A1;
-        Thu,  4 Nov 2021 10:04:39 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6946620B40A1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1636045479;
-        bh=RyMBu6rQR6PFle0jqpyRlebbgs5fEnxTFYriv8Uf4iY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YnK5EJt5Al4G/188AorBngAjoWnSYzoxggjA2wx5KBRHrDyMSLCiuKRnK/frOn0R8
-         XQgAdheQe3Wn2ADcEHMxUtN7qZhXRY7uUcWpCKrBfa+xNfJQNmhTjohhBw61USCWzs
-         RVzE6OYKy23oy3owopbaceztBoAa10dwDXUFWT3s=
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     rostedt@goodmis.org, mhiramat@kernel.org
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        beaub@linux.microsoft.com
-Subject: [PATCH v4 10/10] user_events: Add documentation file
-Date:   Thu,  4 Nov 2021 10:04:33 -0700
-Message-Id: <20211104170433.2206-11-beaub@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211104170433.2206-1-beaub@linux.microsoft.com>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
+        Thu, 4 Nov 2021 13:10:06 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A4GwXMe032494;
+        Thu, 4 Nov 2021 17:07:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=dg7qnGWqYcfGB4K778L7/rd3o+DSNONsoBxzoHeq1iU=;
+ b=SBPguLS/rl7IJZJTLaSIL59WXicQB884HRyO92stgJgowyusHB6oW8AXuxZYZrv2Q1/d
+ WgKQAe1iBYU03oRDRSxSCYJpMbwXa7I8dOTcAbGkv0k7QgkD4Hx9Y9nDi4IJGQxjahx8
+ zkSmSNBEVkF23Xv7F0bbjQS0QDO0gpv3YRSlG9gjxZh16s7dAJNcr8mr0zGcBH0B/VCo
+ UYktzCmxxG6EeOZFD6S9SKm7xkrum+Yisoc1iyM/yPhCuIyvrL+e8sB1Y4y8zI+3NEiw
+ oZKKLsPP8JYA7z1uH9cB+/PqIdCi6/aLqGzzB/oYJi8skGtevHiCCy3Eg6TuYVSTvGIL sA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3c3ju72en5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Nov 2021 17:07:17 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1A4H196c079510;
+        Thu, 4 Nov 2021 17:06:00 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2170.outbound.protection.outlook.com [104.47.55.170])
+        by userp3030.oracle.com with ESMTP id 3c27k8y5tj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Nov 2021 17:06:00 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JRzaq0J1iDVEU969VfgFI7v3i+pqseECzxfVBmBdu/1XOiCKYVlcL/1n3RlzQnRN2/1NH39IiDRDsPJswixuUPOyA8Ka3XmfA5aVXS7opQcRtvPhtIM5fNUDv9EFzzIhqFnMozt65osSYc2w04D/HsTG8bP88wKmegwOww0uD1ddgb//G//OTjQNCjkuwqM0nTQlZhzzuQCwyNk/eYfdkyVv9c1Bg77zs8izTm3V3WZJY0dsIZA4rOBujzT9LGBOdZpepzIpCPPVxy1gCNt38SDWVoXdhedO1iTF+Dnw6w9HPOYxmxnR9ezb+RASB4egP/39XHMv3cVqHgDc+qn2fQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dg7qnGWqYcfGB4K778L7/rd3o+DSNONsoBxzoHeq1iU=;
+ b=A9U0JPFe4o9URpWBaQwSF6bRAPKQY/EfME1S5KEkm9VGQjZyeXes3OZqgBVZFbq1rYizczWZleiF5kVKwfIv9VV1hgRxV+a7wBInkj6KKjJpQrS9tsRPHMz+Mx2ZGQo80Fv81sxyxFQXIZEfKu82igP12Sfy/x6ALQqUuKx7ufd3vJi9zyi91WLtD15GYfv2n4YD6OoJTN4o4qqcrrtKbG9Y+ftAsaEFuIa6bjx1Wppry4K5c9G3fxB1ZNOAnyR46u9MwuDNIVwSwdO6SjLgIoHc2Vu8PnWm+mQFz6p5yU5tWMQ8/B0LIowDw2T4xl4vMtO2k3ecDkDkNl3mAr/aBg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dg7qnGWqYcfGB4K778L7/rd3o+DSNONsoBxzoHeq1iU=;
+ b=eMTRlbQyFKR6oL76SOJJyLeeQ83S1mjTlP+lX7grAQNdGRXEzD467lrfKlo5nCOWL2LCWDAj2L8Fk4uLuIQw2ctgPrJs08wPtlnvZDGLPrcY1Js0TS2r1wjlPbZZdWc7nTQUIjIbzjQudsh6fU45qE7E1N0VRF8/+j8YSb2tA10=
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
+ by MN2PR10MB3935.namprd10.prod.outlook.com (2603:10b6:208:1bf::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Thu, 4 Nov
+ 2021 17:05:58 +0000
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::3c49:46aa:83e1:a329]) by BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::3c49:46aa:83e1:a329%5]) with mapi id 15.20.4669.011; Thu, 4 Nov 2021
+ 17:05:58 +0000
+Message-ID: <0a37429c-05ed-74a2-81c6-7e187d0adc12@oracle.com>
+Date:   Thu, 4 Nov 2021 13:05:52 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH v4] xen/balloon: add late_initcall_sync() for initial
+ ballooning done
+Content-Language: en-US
+To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?= 
+        <marmarek@invisiblethingslab.com>
+References: <20211102091944.17487-1-jgross@suse.com>
+ <f986a7c4-3032-fecd-2e19-4d63a2ee10c7@oracle.com>
+ <f8e52acc-2566-1ed0-d2a3-21e2d468fab7@oracle.com>
+ <3b1f1771-0a96-1f71-9c9d-9fb1a53a266e@suse.com>
+ <18c12ead-ddf1-9231-7f3b-aafddd349dcf@oracle.com>
+ <2f3addff-fbe0-8ef0-6407-e879c0e9827f@suse.com>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+In-Reply-To: <2f3addff-fbe0-8ef0-6407-e879c0e9827f@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN7PR04CA0120.namprd04.prod.outlook.com
+ (2603:10b6:806:122::35) To BLAPR10MB5009.namprd10.prod.outlook.com
+ (2603:10b6:208:321::10)
+MIME-Version: 1.0
+Received: from [10.74.104.20] (138.3.200.20) by SN7PR04CA0120.namprd04.prod.outlook.com (2603:10b6:806:122::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10 via Frontend Transport; Thu, 4 Nov 2021 17:05:56 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b8b8cb64-42f6-4360-c699-08d99fb55efa
+X-MS-TrafficTypeDiagnostic: MN2PR10MB3935:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB3935E9F57F3E73A31D266DF68A8D9@MN2PR10MB3935.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dlBbCOgWkAOzYJn7w9mJlRZauEN4T1CKWKyJejTT1J5zc7LrH0Avvp2J+yr9mbm5/jxKLDxNozcUE5dRcoCYOjVrnc2Ha7o5BoMLHiolZzMTNNbqro2gHbKvI/uIpe045JPhUiIVpki/Begrwfcvrsqtr3fy64HgF3lON1A5t+m12kUR6lNMKAu0nAY0Y8zt0L6sjaO3HjNf0Zn9ugbCoiZghGaX7bnuL7ggGuFQgzULHL28dU7jTRBbU5wVL2/tw4kM3Nv4LiWaXqAe47HWEVnWcEdB2h2R22PiXEYI/XvXnTliCOdlgabKiQ6afdomMQ1UIfh6dBbzhaSxTfbJuug3DaPRUsG0VHqD54X9oznMHOoEmVf+w32NslyN4LE07IF3R127kFNoE3Zeszd2HIh5zPFbj+4qEZI2wEZMuR2lXtASWL2gQZTlpqYS7W/A1l9UeifYpd7NPyO1nEDcchdHkmKziC2BfjYaB57G8+yq5hbfJSWcHR8fAH6YI1prU2xm5N35Ww8b35qNv33TPRnu7rGyhGSJ8yovdY0bmWvj0A0H1OyqT70cmMT+nYK1eQTEj+2vLZlPXjht+qtTuZenQ91AF/yjzZHlCdneyOr5CoKPtrtV6/t+oIpKwnrc0fOjBUYG/XWKE5LJafA/DzOLhEJi/iMYMgkKhoRq/Vf7YBODje0+jCK/AIxWrw2CGRBKg4jSE0ijLqxs5maQMYW6BcAmbq+VI02Rx/m+s6Uoe8t6Wjm0X8YFaWq1uQbC
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(5660300002)(86362001)(31696002)(558084003)(26005)(6486002)(16576012)(2616005)(4326008)(54906003)(83380400001)(36756003)(66946007)(38100700002)(6666004)(44832011)(8676002)(66556008)(66476007)(508600001)(31686004)(186003)(8936002)(956004)(316002)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SnFoLzBsc1JwSDErSlQzRU9aUllna2crMzJjOEdhNzVxOUp6TjVmRk1ZRFVK?=
+ =?utf-8?B?NVdNVzlLY2E1aDJqaFhnK1hoMlhyOHQycCtvSTd2a3VnNmVldE1uSFlSd2ZT?=
+ =?utf-8?B?aTVWcFdsczEvTWlkYjkzZjNBYXdFald4Zy9uR3ZVc2d6MEE4NVZiU3huQzNS?=
+ =?utf-8?B?UTdRN3Q3Q2dJaGRsb2IvVHFMMTRmRFl5UU5uR0NEMHQwbTNwVjRhRzErM3d1?=
+ =?utf-8?B?cDBZOU5md3FCQWgwRkFUVXBpTzgxKzRuYXZwcHVYTnRQSlVYWXd3TUxTby9L?=
+ =?utf-8?B?bmE4NGtGemt3UDZadTlyQnRwLzEwN2xhU2pZVXJzVG1lTzlyNTV0ZzFRclE2?=
+ =?utf-8?B?Y1I4bncwVEplMloreWpOOE9GbzkzREFsV0RYWDREUHZWcmk1aHloQmZ5L3Yw?=
+ =?utf-8?B?YjNsdnIzTGFTd0cwM1lRQk1KTTkraEpIVjNtYzFXVVkzWEhZL3EzbFl3dzNp?=
+ =?utf-8?B?SnVDc3J3NXdHaXFacFVtdGl2bks1bmtEMXdnU3IxYXVOOWkxenN0bUFLQmpM?=
+ =?utf-8?B?VjYzTkpyTm04QjhxY1RyLzdiQk1FVUhWbHROc0VMeWdIb25MZUZNV0JBWStm?=
+ =?utf-8?B?RWpTNm9CUThmTFN0dVJWWmUvTW82aCs2L3cvOFQwTHJTVjlVb05vZnVtOEhw?=
+ =?utf-8?B?THNLWE0vYUdBY1E5UXhkcURTT3FKdEFOMGhKOXVmMzhlSEl3UEQ0VUx4UC9H?=
+ =?utf-8?B?eTlhUHVZdHdONTFHZElvUFZPRGV4WnN5Y2g4Nk5ra1lzT01RUEdwZUNnSFBY?=
+ =?utf-8?B?MFNoWTBTYWJtaG4raEdWWkVDaXVIeHlKbExsYlNvUm9USTJlMm4vUXdQNFQ3?=
+ =?utf-8?B?d3lCNUFwazcvMEZUbmZOS1A5YndGQkRaTVYzVkxGV21Id3Q0L3ArdFVOOG10?=
+ =?utf-8?B?b0RwaDZoT1NJc29qblZJdkgzSTJ4TFQ5aERnaXovUlMxT09iZ2pBOHgzR3Bv?=
+ =?utf-8?B?amIwd0hWdXJjYm80MndDdlRpT0tMT0NNWStNdUdNNW1mcEh1OHJJQytnY0gy?=
+ =?utf-8?B?VXdqbnpvRHBkYlVTMkp3c0REZDZXQy9ONTFGdlUwc1JCYitac0IvSlc5bEEw?=
+ =?utf-8?B?ZHY3Z094bldRYk83cGxZTHlUZXBjWVYyMlB1YzVnUUtRQmdTU3NlYWFVSnh5?=
+ =?utf-8?B?c0dRSitzWjBaN0tJRVJudks0QzNRZDFoMlpkSDQxZW94dHlYUE1YcCtMbjNM?=
+ =?utf-8?B?bG44MnBDOGEwSnAyN0lsK0huMlROdVpKMVJ1YUJpWjJDMThmSktNeDVIM3FW?=
+ =?utf-8?B?YkdHZzRkejlHcEVNSm91TXNUalhJY2M3WHJuVWFwNDFqeTZmNXhaZkpZQlA4?=
+ =?utf-8?B?a1N0VmFrSW80SUNzK1MzNS9vUkN6WnMxVjVUd2hQV0NDZGZPaEEyQXJPeFRW?=
+ =?utf-8?B?YjVBOHlMOFR5bWdBM1ZLYk56SFJOMlE1a3U1dkUxMlIwY1JDWGx4M1NGUzdk?=
+ =?utf-8?B?S1VjYVduTm5OWjVYeks5TEs5R2UyWTVZNkFsd3d5VTJKUEFrTE8xVnRpV3d4?=
+ =?utf-8?B?bnBWWUpjSDlmQ1V6S1JkRm9vSnpwY3F0cmVjYTNrL0xlV2N0S3ZaSldic3Fh?=
+ =?utf-8?B?WGJ6NDhJb2JFR0Z5OUFUeGJzOXhnV2dPWDlQb2dDdURBRzdQR3VHZmZZdmFG?=
+ =?utf-8?B?blB5TTlBM2hkZVZaZDNFaDdoL1BZR0VwVzVsTzhXb3FaSUhiclpKcksxQXNW?=
+ =?utf-8?B?MjdIMFJoMmcyN0tJS2VOVjE1SWduY2NleU9CSzJoSU1xNTF5b2s0eWQ3YkJh?=
+ =?utf-8?B?bWRYTHlCOFkzTDExTk5FSTRpbFRmb1BWZkhyWUVhNy85N1ZudGtMcUZqVk1N?=
+ =?utf-8?B?L3hRck82eWJJYXZ4TFRsYmJZelBXbnozUXN3WVU2RDJ5bllJT21TczFzZkRq?=
+ =?utf-8?B?NFViMVg4OFRaWE1ZNHNQUWpyemlQQzgraDZEM0lFdkFDU3hteXdGZjV2eERo?=
+ =?utf-8?B?SzZKdFVYUHJWWndVWVBIeGVuU2NUcXJ5UTJuVUdMcXRLRVdDVkdPT3d4MVB6?=
+ =?utf-8?B?Z1NwamZYaWU2Q1pJZXdFdXNHc1NEWEtiaERmWGxqT2RrOWNSUFVZMUFQNUJX?=
+ =?utf-8?B?UzhFSDBncjJGU2ljNllhTVlYSUpWMXE4SWhadVVCeDBhNjIrOUlQd0k3bXFQ?=
+ =?utf-8?B?cWxmdWxRVlZ3cWlRZnptc2NBbG5mY015bFRxNmVPZDVLTmwwWlBxVzZEcVVn?=
+ =?utf-8?B?ek5jbnlxRzJFQWdrWjcvTWdXUWt0RlZWa1NodjJhVUh4aFdlaWU5dzFuVUdO?=
+ =?utf-8?Q?ySGlYrM9xV1tSAQFX1U/caGl0PaGMYvMaDCpSrJioY=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b8b8cb64-42f6-4360-c699-08d99fb55efa
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2021 17:05:58.2280
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HpWphvP1ymcJw6q7pq70bCCYidKUoH/bKLpgNojlpsMgq4RHk/57eHFdwp+wGF65rpL000nzZXff/h+cVFMtPCzspHgMKG6qtri9leN3BME=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3935
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10158 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 spamscore=0
+ malwarescore=0 mlxlogscore=999 adultscore=0 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111040064
+X-Proofpoint-GUID: eMqr_Z7NuTGNfxv0icKfOtEOybzoGgFl
+X-Proofpoint-ORIG-GUID: eMqr_Z7NuTGNfxv0icKfOtEOybzoGgFl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a documentation file about user_events with example code, etc.
-explaining how it may be used.
 
-Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
----
- Documentation/trace/user_events.rst | 298 ++++++++++++++++++++++++++++
- 1 file changed, 298 insertions(+)
- create mode 100644 Documentation/trace/user_events.rst
 
-diff --git a/Documentation/trace/user_events.rst b/Documentation/trace/user_events.rst
-new file mode 100644
-index 000000000000..d79c9f07d012
---- /dev/null
-+++ b/Documentation/trace/user_events.rst
-@@ -0,0 +1,298 @@
-+=========================================
-+user_events: User-based Event Tracing
-+=========================================
-+
-+:Author: Beau Belgrave
-+
-+Overview
-+--------
-+User based trace events allow user processes to create events and trace data
-+that can be viewed via existing tools, such as ftrace, perf and eBPF.
-+To enable this feature, build your kernel with CONFIG_USER_EVENTS=y.
-+
-+Programs can view status of the events via 
-+/sys/kernel/debug/tracing/user_events_status and can both register and write
-+data out via /sys/kernel/debug/tracing/user_events_data.
-+
-+Programs can also use /sys/kernel/debug/tracing/dynamic_events to register and
-+delete user based events via the u: prefix. The format of the command to
-+dynamic_events is the same as the ioctl with the u: prefix applied.
-+
-+Typically programs will register a set of events that they wish to expose to
-+tools that can read trace_events (such as ftrace and perf). The registration
-+process gives back two ints to the program for each event. The first int is the
-+status index. This index describes which byte in the 
-+/sys/kernel/debug/tracing/user_events_status file represents this event. The
-+second int is the write index. This index describes the data when a write() or
-+writev() is called on the /sys/kernel/debug/tracing/user_events_data file.
-+
-+The structures referenced in this document are contained with the
-+/include/uap/linux/user_events.h file in the source tree.
-+
-+**NOTE:** *Both user_events_status and user_events_data are under the tracefs filesystem
-+and may be mounted at different paths than above.*
-+
-+Registering
-+-----------
-+Registering within a user process is done via ioctl() out to the
-+/sys/kernel/debug/tracing/user_events_data file. The command to issue is
-+DIAG_IOCSREG. This command takes a struct user_reg as an argument.
-+
-+The struct user_reg requires two values, the first is the size of the structure
-+to ensure forward and backward compatibility. The second is the command string
-+to issue for registering.
-+
-+User based events show up under tracefs like any other event under the subsystem
-+named "user_events". This means tools that wish to attach to the events need to
-+use /sys/kernel/debug/tracing/events/user_events/[name]/enable or perf record
-+-e user_events:[name] when attaching/recording.
-+
-+**NOTE:** *The write_index returned is only valid for the FD that was used*
-+
-+Command Format
-+^^^^^^^^^^^^^^
-+The command string format is as follows:
-+
-+::
-+
-+  name[:FLAG1[,FLAG2...]] [Field1[;Field2...]]
-+
-+Supported Flags
-+^^^^^^^^^^^^^^^
-+**BPF_ITER** - EBPF programs attached to this event will get the raw iovec
-+struct instead of any data copies for max performance.
-+
-+Field Format
-+^^^^^^^^^^^^
-+
-+::
-+
-+  type name [size]
-+
-+Basic types are supported (__data_loc, u32, u64, int, char, char[20]).
-+User programs are encouraged to use clearly sized types like u32.
-+
-+**NOTE:** *Long is not supported since size can vary between user and kernel.*
-+
-+The size is only valid for types that start with a struct prefix.
-+This allows user programs to describe custom structs out to tools, if required.
-+
-+For example, a struct in C that looks like this:
-+
-+::
-+
-+  struct mytype {
-+    char data[20];
-+  };
-+
-+Would be represented by the following field:
-+
-+::
-+
-+  struct mytype myname 20
-+
-+Status
-+------
-+When tools attach/record user based events the status of the event is updated
-+in realtime. This allows user programs to only incur the cost of the write() or
-+writev() calls when something is actively attached to the event.
-+
-+User programs call mmap() on /sys/kernel/debug/tracing/user_events_status to
-+check the status for each event that is registered. The byte to check in the
-+file is given back after the register ioctl() via user_reg.status_index.
-+Currently the size of user_events_status is a single page, however, custom
-+kernel configurations can change this size to allow more user based events. In
-+all cases the size of the file is a multiple of a page size.
-+
-+For example, if the register ioctl() gives back a status_index of 3 you would
-+check byte 3 of the returned mmap data to see if anything is attached to that
-+event.
-+
-+Administrators can easily check the status of all registered events by reading
-+the user_events_status file directly via a terminal. The output is as follows:
-+
-+::
-+
-+  Byte:Name [# Comments]
-+  ...
-+
-+  Active: ActiveCount
-+  Buisy: BusyCount
-+  Max: MaxCount
-+
-+For example, on a system that has a single event the output looks like this:
-+
-+::
-+
-+  1:test
-+
-+  Active: 1
-+  Busy: 0
-+  Max: 4096
-+
-+If a user enables the user event via ftrace, the output would change to this:
-+
-+:: 
-+
-+  1:test # Used by ftrace
-+
-+  Active: 1
-+  Busy: 1
-+  Max: 4096
-+
-+**NOTE:** *A status index of 0 will never be returned. This allows user 
-+programs to have an index that can be used on error cases.*
-+
-+Status Bits
-+^^^^^^^^^^^
-+The byte being checked will be non-zero if anything is attached. Programs can
-+check specific bits in the byte to see what mechanism has been attached.
-+
-+The following values are defined to aid in checking what has been attached:
-+**EVENT_STATUS_FTRACE** - Bit set if ftrace has been attached (Bit 0).
-+
-+**EVENT_STATUS_PERF** - Bit set if perf/eBPF has been attached (Bit 1).
-+
-+Writing Data
-+------------
-+After registering an event the same fd that was used to register can be used
-+to write an entry for that event. The write_index returned must be at the start
-+of the data, then the remaining data is treated as the payload of the event.
-+
-+For example, if write_index returned was 1 and I wanted to write out an int
-+payload of the event. Then the data would have to be 8 bytes (2 ints) long,
-+with the first 4 bytes being equal to 1 and the last 4 bytes being equal to the
-+value I want as the payload.
-+
-+In memory this would look like this:
-+
-+::
-+
-+  int index;
-+  int payload;
-+
-+User programs might have well known structs that they wish to use to emit out
-+as payloads. In those cases writev() can be used, with the first vector being
-+the index and the following vector(s) being the actual event payload.
-+
-+For example, if I have a struct like this:
-+
-+::
-+
-+  struct payload {
-+        int src;
-+        int dst;
-+        int flags;
-+  };
-+
-+It's advised for user programs to do the following:
-+
-+:: 
-+
-+  struct iovec io[2];
-+  struct payload e;
-+
-+  io[0].iov_base = &write_index;
-+  io[0].iov_len = sizeof(write_index);
-+  io[1].iov_base = &e;
-+  io[1].iov_len = sizeof(e);
-+
-+  writev(fd, (const struct iovec*)io, 2);
-+
-+**NOTE:** *The write_index is not emitted out into the trace being recorded.*
-+
-+EBPF
-+----
-+EBPF programs that attach to a user-based event tracepoint are given a pointer
-+to a struct user_bpf_context. The bpf context contains the data type (which can
-+be a user or kernel buffer, or can be a pointer to the iovec) and the data
-+length that was emitted (minus the write_index).
-+
-+Example Code
-+------------
-+
-+::
-+
-+  #include <errno.h>
-+  #include <sys/ioctl.h>
-+  #include <sys/mman.h>
-+  #include <fcntl.h>
-+  #include <stdio.h>
-+  #include <unistd.h>
-+  #include <linux/user_events.h>
-+  
-+  /* Assumes debugfs is mounted */
-+  const char *data_file = "/sys/kernel/debug/tracing/user_events_data";
-+  const char *status_file = "/sys/kernel/debug/tracing/user_events_status";
-+  
-+  static int event_status(char **status)
-+  {
-+  	int fd = open(status_file, O_RDONLY);
-+  
-+  	*status = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ,
-+  		       MAP_SHARED, fd, 0);
-+  
-+  	close(fd);
-+  
-+  	if (*status == MAP_FAILED)
-+  	      return -1;
-+  
-+  	return 0;
-+  }
-+  
-+  static int event_reg(int fd, const char *command, int *status, int *write)
-+  {
-+  	struct user_reg reg = {0};
-+  
-+  	reg.size = sizeof(reg);
-+  	reg.name_args = (__u64)command;
-+  
-+  	if (ioctl(fd, DIAG_IOCSREG, &reg) == -1)
-+  		return -1;
-+  
-+  	*status = reg.status_index;
-+  	*write = reg.write_index;
-+  
-+  	return 0;
-+  }
-+  
-+  int main(int argc, char **argv)
-+  {
-+  	int data_fd, status, write;
-+  	char *status_page;
-+  	struct iovec io[2];
-+  	__u32 count = 0;
-+  
-+  	if (event_status(&status_page) == -1)
-+  		return errno;
-+  
-+  	data_fd = open(data_file, O_RDWR);
-+  
-+  	if (event_reg(data_fd, "test u32 count", &status, &write) == -1)
-+  		return errno;
-+  
-+  	/* Setup iovec */
-+  	io[0].iov_base = &status;
-+  	io[0].iov_len = sizeof(status);
-+  	io[1].iov_base = &count;
-+  	io[1].iov_len = sizeof(count);
-+  
-+  ask:
-+  	printf("Press enter to check status...\n");
-+  	getchar();
-+  
-+  	/* Check if anyone is listening */
-+  	if (status_page[status]) {
-+  		/* Yep, trace out our data */
-+  		writev(data_fd, (const struct iovec*)io, 2);
-+  
-+  		/* Increase the count */
-+  		count++;
-+  
-+  		printf("Something was attached, wrote data\n");
-+  	}
-+  
-+  	goto ask;
-+  
-+  	return 0;
-+  }
--- 
-2.17.1
+>
+>>> And if so, would you mind doing this while committing (I have one day
+>>> off tomorrow)?
+>>
+>>
+>> Yes, of course.
+>
+> Thanks.
+
+
+So I'll change this to pr_notice, even though it's not the best solution.
+
+
+-boris
 
