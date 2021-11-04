@@ -2,107 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DBA445619
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:13:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 979B044561C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:14:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbhKDPQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 11:16:23 -0400
-Received: from mga02.intel.com ([134.134.136.20]:10881 "EHLO mga02.intel.com"
+        id S231486AbhKDPRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 11:17:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231152AbhKDPQW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 11:16:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10157"; a="218920053"
-X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
-   d="scan'208";a="218920053"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 08:13:43 -0700
-X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
-   d="scan'208";a="586004290"
-Received: from unknown (HELO [10.209.25.230]) ([10.209.25.230])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 08:13:41 -0700
-Subject: Re: [PATCH] x86/sgx: Free backing memory after faulting the enclave
- page
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     reinette.chatre@intel.com, tony.luck@intel.com,
-        nathaniel@profian.com, stable@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211103232238.110557-1-jarkko@kernel.org>
- <6831ed3c-c5b1-64f7-2ad7-f2d686224b7e@intel.com>
- <e88d6d580354aadaa8eaa5ee6fa703f021786afb.camel@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <d2191571-30a5-c2aa-e8ed-0a380e9daeac@intel.com>
-Date:   Thu, 4 Nov 2021 08:13:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231386AbhKDPRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 11:17:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D4B3611C4;
+        Thu,  4 Nov 2021 15:14:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636038862;
+        bh=wBYUrtYV5bOgblNDQG58SO6AQxqQAhSDZOqasZVk15g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FaAMhU0/dmkOrfbeLxUhIfBlzP77dzp8qkC6h4Xc05qxukyZPEwTdsl2D+GH5ZGRE
+         4aqzjXBdBsqBlDupu2L9/qhVMH9hheMYNy8a10fhQ4vWoJcCox1/YEioqthzI3W7xi
+         z02NrKj/hQ26ykA3txAx2PXS6lTAAIIzYfj5DrMYYH51tVWwZPZVI4eScZiJXORlcV
+         AqoiuYNLkatCdlXJBxsT0ZmLO8MJfF6Yx/R6ugIG4ptO9GUtLDaAAVdobS3Kqvrj6+
+         vjN1P02n251/Ibk8iVBxUsOM4aw5YxeqSz5No5yw37EUPP20beILIuylqSRQCmAZ6X
+         E6Sa6yaSfktAQ==
+Received: by mail-ed1-f45.google.com with SMTP id g14so22298574edz.2;
+        Thu, 04 Nov 2021 08:14:21 -0700 (PDT)
+X-Gm-Message-State: AOAM533+dZY0b4juTE7HHvzdGCK/P3t0pslzsBz1qSKT/FqD/C/qQbqB
+        TM02GI5Q8z7I/Ok24EO1aONfmjb1AwRU7+bwjA==
+X-Google-Smtp-Source: ABdhPJw1woIBsI1rZWVLnEUod2eEP+ocn5gKgZzN1QZgNcVK9JMnr2075i6IDSFGt6gQX1Q9uYWB0c4fSHEIdZZCWuc=
+X-Received: by 2002:a17:906:66d2:: with SMTP id k18mr13050120ejp.320.1636038852570;
+ Thu, 04 Nov 2021 08:14:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e88d6d580354aadaa8eaa5ee6fa703f021786afb.camel@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211103184939.45263-1-jim2101024@gmail.com> <20211103184939.45263-6-jim2101024@gmail.com>
+In-Reply-To: <20211103184939.45263-6-jim2101024@gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 4 Nov 2021 10:13:56 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+7vER_VkHJZt3vzz6qaqGvF3ts0NQQ4KCR4fi95+ZVZg@mail.gmail.com>
+Message-ID: <CAL_Jsq+7vER_VkHJZt3vzz6qaqGvF3ts0NQQ4KCR4fi95+ZVZg@mail.gmail.com>
+Subject: Re: [PATCH v7 5/7] PCI: brcmstb: Add control of subdevice voltage regulators
+To:     Jim Quinlan <jim2101024@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     PCI <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/4/21 8:04 AM, Jarkko Sakkinen wrote:
->> Do we also need to deal with truncating the PCMD?  (For those watching
->> along at home, there are two things SGX swaps to RAM: the actual page
->> data and also some metadata that ensures page integrity and helps
->> prevent things like rolling back to old versions of swapped pages)
-> Yes.
-> 
-> This can be achieved by iterating through all of the enclave pages,
-> which share the same shmem page for storing their PCMD's, as the one
-> being faulted back. If none of those pages is swapped, the PCMD page can
-> safely truncated.
+On Wed, Nov 3, 2021 at 1:49 PM Jim Quinlan <jim2101024@gmail.com> wrote:
+>
+> This Broadcom STB PCIe RC driver has one port and connects directly to one
+> device, be it a switch or an endpoint.  We want to be able to turn on/off
+> any regulators for that device.  Control of regulators is needed because of
+> the chicken-and-egg situation: although the regulator is "owned" by the
+> device and would be best handled by its driver, the device cannot be
+> discovered and probed unless its regulator is already turned on.
+>
+> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> ---
+>  drivers/pci/controller/pcie-brcmstb.c | 156 +++++++++++++++++++++++++-
+>  1 file changed, 154 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+> index ba4d6daf312c..aaf6a4cbeb78 100644
+> --- a/drivers/pci/controller/pcie-brcmstb.c
+> +++ b/drivers/pci/controller/pcie-brcmstb.c
+> @@ -24,6 +24,7 @@
+>  #include <linux/pci.h>
+>  #include <linux/pci-ecam.h>
+>  #include <linux/printk.h>
+> +#include <linux/regulator/consumer.h>
+>  #include <linux/reset.h>
+>  #include <linux/sizes.h>
+>  #include <linux/slab.h>
+> @@ -191,6 +192,15 @@ static inline void brcm_pcie_bridge_sw_init_set_generic(struct brcm_pcie *pcie,
+>  static inline void brcm_pcie_perst_set_4908(struct brcm_pcie *pcie, u32 val);
+>  static inline void brcm_pcie_perst_set_7278(struct brcm_pcie *pcie, u32 val);
+>  static inline void brcm_pcie_perst_set_generic(struct brcm_pcie *pcie, u32 val);
+> +static int brcm_pcie_add_bus(struct pci_bus *bus);
+> +static void brcm_pcie_remove_bus(struct pci_bus *bus);
+> +static bool brcm_pcie_link_up(struct brcm_pcie *pcie);
+> +
+> +static const char * const supplies[] = {
+> +       "vpcie3v3",
+> +       "vpcie3v3aux",
+> +       "vpcie12v",
 
-I was thinking we could just read the page.  If it's all 0's, truncate it.
+Common DT properties, so they should be in common DT code.
+
+> +};
+>
+>  enum {
+>         RGR1_SW_INIT_1,
+> @@ -295,8 +305,38 @@ struct brcm_pcie {
+>         u32                     hw_rev;
+>         void                    (*perst_set)(struct brcm_pcie *pcie, u32 val);
+>         void                    (*bridge_sw_init_set)(struct brcm_pcie *pcie, u32 val);
+> +       struct regulator_bulk_data supplies[ARRAY_SIZE(supplies)];
+> +       unsigned int            num_supplies;
+
+Humm, this will need to be stored somewhere, but the host bridge is
+not the right place. That doesn't scale to more than 1 bridge/bus. I'm
+not exactly sure where though. pci_bus.self->sys_data,
+pci_bus.self->dev.driver_data, pci_bus->sysdata,
+pci_bus->dev.driver_data are possible options. Bjorn?
+
+However, given suspend/resume hooks are also needed, maybe
+portdrv_pci.c driver is the better spot for all this? The host bridge
+wouldn't be in control of opting in, but presence of a DT node ptr for
+the port device may be sufficient.
+
+Rob
