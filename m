@@ -2,98 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD848444EB7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:19:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC63444EB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:20:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbhKDGWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
+        id S230383AbhKDGXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:23:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbhKDGWA (ORCPT
+        with ESMTP id S230108AbhKDGW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:22:00 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5983C061714;
-        Wed,  3 Nov 2021 23:19:22 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id t21so5569537plr.6;
-        Wed, 03 Nov 2021 23:19:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/U/goPBc2l7LrHLx4AC51EQ2/oPni2YaTPXe0f2kGhw=;
-        b=nYDU5h7IRL77pha8yYfqIhQUTcDsAGC3DGy3rEfGKPoFNR/IGi+yd0wjvBp0ZDqlkp
-         s2Yly0Afy+RgEbH/g9dMEa2DQW/ZveQJkUpN2cPhGCbq2KkiSdFnUZ8xhulUU/IVZr+E
-         pB5aXij2Aw2ihyvFLFdPvI5+Zzpl2+GWiZ3w4lnii+qSiQnQW2B1dqXIeiQAFarBcBhZ
-         tAshYDPow72HccwGCmKEou5vyYOSP2ufpkwrTL1swJ02Gj0Wrv7fp7fKQAhJYuWMdePB
-         S0dlB0EikVDB0GBA6QLxMyLFMqDfxWdyTlOa6D4WPMSd8wLF5uIEpRCrEEDU7ga4GfuV
-         flQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/U/goPBc2l7LrHLx4AC51EQ2/oPni2YaTPXe0f2kGhw=;
-        b=4gqKux4rmG14Z2rSU8WeNBEWPq9J1QJK+jOjb4+n5wITuBVjYd60rOXNuUttizoGUe
-         fHzPJEaL5bVAwu3JflFMQqk0FNoiONSLWP0RkQE+sONVAsuv2iaFl5IDDcDLEvEPFsLC
-         7ZmcVSnKxMvkH13zJkk+n7oTRwkVD+j7eheGareMUD6Nv52t6r65OAavTYbnlO38N7P5
-         O1si9J6Yaf/e6Gpihr7J9zhNqOas20yYwqwA/vQ3DreNtzE0Kt/A20QshpU152grKKtd
-         8r2L/Ce3o5M8NCAQQHwj4vBKzNqo9kfRISrcz3F6Bkwx9Q85Wr1b8FwSFEGyNr4yiWEe
-         zbYw==
-X-Gm-Message-State: AOAM5338U9LzGea1P80Vx+FbJflHe8EWl/Sb9MRWBHRWCOaMNYVRjw95
-        LnK7pqV24GXCJRlE3G7QvzE=
-X-Google-Smtp-Source: ABdhPJygIuFeA88vZ942m0biac428JoZbq07kjeDFMhaCVKPq9qlx1mu9/YLjTthOjbbAoPrjNJ0Kg==
-X-Received: by 2002:a17:90b:1b0a:: with SMTP id nu10mr19861742pjb.35.1636006762390;
-        Wed, 03 Nov 2021 23:19:22 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id d18sm4153900pfv.161.2021.11.03.23.19.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 23:19:22 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: luo.penghao@zte.com.cn
-To:     Song Liu <song@kernel.org>
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] md: Remove redundant assignments
-Date:   Thu,  4 Nov 2021 06:19:16 +0000
-Message-Id: <20211104061916.2218-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 4 Nov 2021 02:22:59 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E601FC061714
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:20:21 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HlD5b0n9Vz4xd3;
+        Thu,  4 Nov 2021 17:20:19 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1636006820;
+        bh=2SNIkm5qUho28abvnF4QlEf2hkq7CW4M7metdPf2QTM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=MFQUNQ+GP+C2P8TdN24VsueDWWzioLH7ID41VsHLgoF4lV/ZgG1BH+54S0a0PBK5s
+         SBmj55YPAPd5xVBnZXzYT5Zq27Ai9HugvEYmm2R9LEUyEGe18udAGaTOQp29tK9/tV
+         3Bl5hVL/+btrOxlHrR8KWTFNCp88NeY+wI9ZJx/kwIFFl+OJcVLBbnO8BAC1REG1O9
+         c8AOsJkIIwF2zMn4S44Ib0uYE4DkT+/UtNsDMzazfo5eumt3SZwRPy1t7Cm507Igzi
+         aJQJZIi86WiA1MC0PD6xdkRk30kamaOYWVWZgh3pX4eI87VgXDR2LkxIFQIn61bgUA
+         xKvtn6zIKQ1vA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        patch-notifications@ellerman.id.au,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linux-audit@redhat.com,
+        linuxppc-dev@lists.ozlabs.org, Eric Paris <eparis@redhat.com>
+Subject: Re: [PATCH v2 RESEND] powerpc/audit: Convert powerpc to
+ AUDIT_ARCH_COMPAT_GENERIC
+In-Reply-To: <20211102235449.rwtbgmddkzdaodhv@meerkat.local>
+References: <a4b3951d1191d4183d92a07a6097566bde60d00a.1629812058.git.christophe.leroy@csgroup.eu>
+ <163584790624.1845480.1785827913484538939.b4-ty@ellerman.id.au>
+ <CAHC9VhROvSQHVQ6Wo8zHND1rGm+r6dGJur69B65sJ9JwNvMDpQ@mail.gmail.com>
+ <87a6im87tq.fsf@mpe.ellerman.id.au>
+ <20211102235449.rwtbgmddkzdaodhv@meerkat.local>
+Date:   Thu, 04 Nov 2021 17:20:18 +1100
+Message-ID: <871r3w8msd.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: luo penghao <luo.penghao@zte.com.cn>
+Konstantin Ryabitsev <konstantin@linuxfoundation.org> writes:
+> On Wed, Nov 03, 2021 at 10:18:57AM +1100, Michael Ellerman wrote:
+>> It's not in next, that notification is from the b4 thanks script, which
+>> didn't notice that the commit has since been reverted.
+>
+> Yeah... I'm not sure how to catch that, but I'm open to suggestions.
 
-The assignment of err will be overwritten next, so this statement
-should be deleted.
+I think that's probably the first time I've had a commit and a revert of
+the commit in the same batch of thanks mails.
 
-The clang_analyzer complains as follows:
+And the notification is not wrong, the commit was applied with that SHA,
+it is in the tree.
 
-drivers/md/md-autodetect.c:178:2: warning:
-
-Value stored to 'err' is never read
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
----
- drivers/md/md-autodetect.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/md/md-autodetect.c b/drivers/md/md-autodetect.c
-index 2cf9737..ab425d5 100644
---- a/drivers/md/md-autodetect.c
-+++ b/drivers/md/md-autodetect.c
-@@ -175,7 +175,6 @@ static void __init md_setup_drive(struct md_setup_args *args)
- 		return;
- 	}
- 
--	err = -EIO;
- 	if (WARN(bdev->bd_disk->fops != &md_fops,
- 			"Opening block device %x resulted in non-md device\n",
- 			mdev))
--- 
-2.15.2
+So I'm not sure it's very common to have a commit & a revert in the tree
+at the same time.
 
 
+On the other hand being able to generate a mail for an arbitrary revert
+would be helpful, ie. independent of any thanks state.
+
+eg, picking a random commit from the past:
+
+  e95ad5f21693 ("powerpc/head_check: Fix shellcheck errors")
+
+
+If I revert that in my tree today, it'd be cool if I could run something
+that would detect the revert, backtrack to the reverted commit, extract
+the message-id from the Link: tag, and generate a reply to the original
+submission noting that it's now been reverted.
+
+In fact we could write a bot to do that across all commits ever ...
+
+cheers
