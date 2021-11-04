@@ -2,100 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E1F444DAC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 04:22:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8590444DB3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 04:28:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbhKDDZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 23:25:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhKDDZ3 (ORCPT
+        id S230011AbhKDDbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 23:31:21 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:50170 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229893AbhKDDbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 23:25:29 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 688DBC061714
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 20:22:52 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id r5so5019621pls.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 20:22:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=v7JV6sBSjHncLlA/Je17qJW+JL2/u9zGNWzcM/tGeGQ=;
-        b=iowS55dMHmgYSfkBWWCQtgegTudprjt8wmXVxeOwd6dvZWjcrLB08Sz1ygrnJkPZwW
-         agjvCWv+w80j/VhP34Rauc+Bdibfzs82V6xboxx0Y259KePWFMUpfksnnjzGmY5Lx5uW
-         gZiFP67XV2Xnfu+KT3CG/6A0Xu8oJ8/N0NnphbXJQ9YGFwwm3PU3T8d1jWFRNs6VvmAO
-         +v+6bkMrtQ4kZqwGn7gaN5EDKrCrSM8ovFkwn7ATfxzHYfapPSg6Fd8Z9PdAnf+T/LD8
-         meKMVRsDO5pbeu+bpnRXwhwKcBZNLQiX8X7OwqpPdJSN1AB9XV3fm4iDTav2ZZPeaNI1
-         fcuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=v7JV6sBSjHncLlA/Je17qJW+JL2/u9zGNWzcM/tGeGQ=;
-        b=YB82s9whIm8/dyQW49mK2VbMrOSM3z3eOcqhGp/jaEoBHaoWH72BYxX9Eox1sJwz4V
-         1ET3TapOTf8UrLLqN8FixKN66/n7Y5OEsG0MA39Axo//4fq5tcHKg44Yv144V2UhVzbM
-         WdbUOKqYcSza1OwSUq8bnpJ9FCliAoAA73kULj1tJ9QLawN3bpywA7WDcy1ZEEl8RjwO
-         N3e7dvyC1pmsi0YeV5OyibndSV+dqeA8z6rI3xv6qnBEYcx6nqc2Wite2zt+j/alEdkr
-         OW0lXpNefseB6TntKvxqx2+NfdHYWuP6gVfbFSMLSMu/vSs5BznatURIIOIqlYeQmgSY
-         pu2g==
-X-Gm-Message-State: AOAM532rBPJri7U9QNw9wMOZUuvS8LlEoVZmyWbG0ecvQ5ivXIjSZzSU
-        6ukhyaeoq49v2DL2n+Kl4Zl7Y8L2VyY=
-X-Google-Smtp-Source: ABdhPJwOBXGeQSZgvDoMBXxO7KZwleKLJHiTvoteHDDwCxHDV5j1CPOewAnolh6Fqmj9QbQ7faCwZw==
-X-Received: by 2002:a17:90a:9418:: with SMTP id r24mr18953177pjo.238.1635996171894;
-        Wed, 03 Nov 2021 20:22:51 -0700 (PDT)
-Received: from Sauravs-MacBook-Air.local ([59.95.84.218])
-        by smtp.gmail.com with ESMTPSA id z3sm3789967pfh.79.2021.11.03.20.22.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 20:22:51 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 08:52:42 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, straube.linux@gmail.com,
-        saurav.girepunje@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] staging: r8188eu: core: remove the unused variable pAdapter
-Message-ID: <YYNSAqGgDPhV1IE1@Sauravs-MacBook-Air.local>
+        Wed, 3 Nov 2021 23:31:20 -0400
+X-UUID: c97709e09f3e451281f0b753048bd9b8-20211104
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=obhkLKakLCXFFdtMrvJQpCX8waFJ6arRjOpKnMlEJDY=;
+        b=U6zaoP1mGU96Nokuy8oq1aI2tau0zHNR3Yxt4Y7okHdW2UZR7EqlN9PsDuksG1w2D6vRJw3bVpp4P962Juelz95P5eTZgZnomeBRu5D3Jttd11X3Y0bnZotvFGpy+JauBYOg+BzddzK4f0h6+kMjnk7YTxN0EwBqfSN37+jfPFw=;
+X-UUID: c97709e09f3e451281f0b753048bd9b8-20211104
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 564425789; Thu, 04 Nov 2021 11:28:41 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3;
+ Thu, 4 Nov 2021 11:28:39 +0800
+Received: from mhfsdcap04 (10.17.3.154) by mtkmbs10n1.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
+ Transport; Thu, 4 Nov 2021 11:28:38 +0800
+Message-ID: <e099c6e8af0b184f8e823fac325ea36329cb5709.camel@mediatek.com>
+Subject: Re: [PATCH v3 13/33] iommu/mediatek: Remove the power status
+ checking in tlb flush all
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, <youlin.pei@mediatek.com>,
+        <anan.sun@mediatek.com>, <chao.hao@mediatek.com>,
+        <yen-chang.chen@mediatek.com>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        "Robin Murphy" <robin.murphy@arm.com>
+Date:   Thu, 4 Nov 2021 11:28:38 +0800
+In-Reply-To: <f0e2ebf98481ee2ae8b88565a337e773532ddffd.camel@mediatek.com>
+References: <20210923115840.17813-1-yong.wu@mediatek.com>
+         <20210923115840.17813-14-yong.wu@mediatek.com>
+         <6cff0b97-b861-e02d-e76f-2510c962c452@collabora.com>
+         <f0e2ebf98481ee2ae8b88565a337e773532ddffd.camel@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the unused variable pAdapter from Efuse_Write1ByteToFakeContent
-This variable is not used in the function.
-
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_efuse.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/staging/r8188eu/core/rtw_efuse.c b/drivers/staging/r8188eu/core/rtw_efuse.c
-index 03c8431b2ed3..39c77f6b06ef 100644
---- a/drivers/staging/r8188eu/core/rtw_efuse.c
-+++ b/drivers/staging/r8188eu/core/rtw_efuse.c
-@@ -40,10 +40,7 @@ static bool Efuse_Read1ByteFromFakeContent(u16 Offset, u8 *Value)
- }
-
- static bool
--Efuse_Write1ByteToFakeContent(
--			struct adapter *pAdapter,
--			u16 Offset,
--			u8 Value)
-+Efuse_Write1ByteToFakeContent(u16 Offset, u8 Value)
- {
- 	if (Offset >= EFUSE_MAX_HW_SIZE)
- 		return false;
-@@ -162,7 +159,7 @@ u8 efuse_OneByteWrite(struct adapter *pAdapter, u16 addr, u8 data, bool pseudo)
- 	u8 result;
-
- 	if (pseudo) {
--		result = Efuse_Write1ByteToFakeContent(pAdapter, addr, data);
-+		result = Efuse_Write1ByteToFakeContent(addr, data);
- 		return result;
- 	}
-
---
-2.33.0
+T24gTW9uLCAyMDIxLTEwLTI1IGF0IDEyOjAzICswODAwLCBZb25nIFd1IHdyb3RlOg0KPiBPbiBG
+cmksIDIwMjEtMTAtMjIgYXQgMTY6MDMgKzAyMDAsIERhZm5hIEhpcnNjaGZlbGQgd3JvdGU6DQo+
+ID4gSGkNCj4gPiANCj4gPiANCj4gPiBPbiAyMy4wOS4yMSAxMzo1OCwgWW9uZyBXdSB3cm90ZToN
+Cj4gPiA+IFRvIHNpbXBsaWZ5IHRoZSBjb2RlLCBSZW1vdmUgdGhlIHBvd2VyIHN0YXR1cyBjaGVj
+a2luZyBpbiB0aGUNCj4gPiA+IHRsYl9mbHVzaF9hbGwsIHJlbW92ZSB0aGlzOg0KPiA+ID4gICAg
+IGlmIChwbV9ydW50aW1lX2dldF9pZl9pbl91c2UoZGF0YS0+ZGV2KSA8PSAwKQ0KPiA+ID4gCSAg
+ICBjb250aW51ZTsNCj4gPiA+IA0KPiA+ID4gQWZ0ZXIgdGhpcyBwYXRjaCwgdGhlIG10a19pb21t
+dV90bGJfZmx1c2hfYWxsIHdpbGwgYmUgY2FsbGVkIGZyb20NCj4gPiA+IGEpIGlzcg0KPiA+ID4g
+YikgcG0gcnVudGltZSByZXN1bWUgY2FsbGJhY2sNCj4gPiA+IGMpIHRsYiBmbHVzaCByYW5nZSBm
+YWlsIGNhc2UNCj4gPiA+IGQpIGlvbW11X2NyZWF0ZV9kZXZpY2VfZGlyZWN0X21hcHBpbmdzDQo+
+ID4gPiAgICAgLT4gaW9tbXVfZmx1c2hfaW90bGJfYWxsDQo+ID4gPiBJbiBmaXJzdCB0aHJlZSBj
+YXNlcywgdGhlIHBvd2VyIGFuZCBjbG9jayBhbHdheXMgYXJlIGVuYWJsZWQ7IGQpDQo+ID4gPiBp
+cw0KPiA+ID4gZGlyZWN0DQo+ID4gDQo+ID4gUmVnYXJkaW5nIGNhc2UgImMpIHRsYiBmbHVzaCBy
+YW5nZSBmYWlsIGNhc2UiLCBJIGZvdW5kIG91dCB0aGF0DQo+ID4gdGhpcw0KPiA+IG9mdGVuIGhh
+cHBlbnMgd2hlbiB0aGUgaW9tbXUgaXMgdXNlZCB3aGlsZSBpdCBpcyBydW50aW1lDQo+ID4gc3Vz
+cGVuZGVkLiANCj4gDQo+IFdoaWNoIFNvQyBhbmQgYnJhbmNoIGFyZSB5b3UgdGVzdGluZyBvbj8N
+Cj4gDQo+ID4gRm9yIGV4YW1wbGUgdGhlIG10ay12Y29kZWMgZW5jb2RlciBkcml2ZXIgY2FsbHMN
+Cj4gPiAicG1fcnVudGltZV9yZXN1bWVfYW5kX2dldCIgb25seSB3aGVuIGl0IHN0YXJ0cw0KPiA+
+IHN0cmVhbWluZyBidXQNCj4gPiBidWZmZXJzIGFsbG9jYXRpb24gaXMgZG9uZSBpbiAndjRsMl9y
+ZXFidWZzJyBiZWZvcmUNCj4gPiAicG1fcnVudGltZV9yZXN1bWVfYW5kX2dldCIgaXMgY2FsbGVk
+DQo+IA0KPiBUaGlzIGlzIHRoZSBjYXNlIEkgdHJpZWQgdG8gZml4IGluIFsxNC8zM10uDQo+IHBt
+X3J1bnRpbWVfZ2V0X2lmX2luX3VzZSBzaG91bGQgcmV0dXJuIHdoZW4gdGhlIGlvbW11IGRldmlj
+ZSdzIHBtIGlzDQo+IG5vdCBhY3RpdmUgd2hlbiB2Y29kZWMgYWxsb2NhdGUgYnVmZmVyIGJlZm9y
+ZSBwbV9ydW50aW1lX3Jlc3VtZV9hbmQNCj4gZ2V0Lg0KPiANCj4gRG8geW91IGhhdmUgdGhlIGRl
+dmljZWxpbmsgcGF0Y2hzZXQgaW4geW91ciBicmFuY2g/IGlmIG5vdCwgdGhlDQo+IHZjb2RlYw0K
+PiBzaG91bGQgY2FsbCBtdGtfc21pX2xhcmJfZ2V0IHRvIGVuYWJsZSB0aGUgcG93ZXIvY2xvY2sg
+Zm9yIGxhcmJzLA0KPiB0aGVuDQo+IHRoZSBpb21tdSdzIGRldmljZSBpcyBhY3RpdmUgdmlhIGRl
+dmljZWxpbmsgYmV0d2VlbiBzbWkgYW5kIGlvbW11DQo+IGRldmljZS4NCj4gDQo+ID4gYW5kIHRo
+ZW4gSSBzZWUgdGhlIHdhcm5pbmcgIlBhcnRpYWwgVExCIGZsdXNoIHRpbWVkIG91dCwgZmFsbGlu
+Zw0KPiA+IGJhY2sNCj4gPiB0byBmdWxsIGZsdXNoIg0KPiA+IEkgYW0gbm90IHN1cmUgaG93IHRv
+IGZpeCB0aGF0IGlzc3VlLCBidXQgaXQgc2VlbXMgdGhhdCBjYXNlICdjKScNCg0KSGF2ZSB5b3Vy
+IGlzc3VlIGJlZW4gZml4ZWQ/IG9yIG1vcmUgaW5mb3JtYXRpb24gYWJvdXQgaXQuDQoNClRoYW5r
+cy4NCg0KPiA+IG1pZ2h0IGluZGljYXRlIHRoYXQNCj4gPiBwb3dlciBhbmQgY2xvY2sgYXJlIGFj
+dHVhbGx5IG5vdCBlbmFibGVkLg0KPiA+IA0KPiA+ID4gbWFwcGluZywgdGhlIHRsYiBmbHVzaCBp
+cyB1bm5lY2Vzc2F5IHNpbmNlIHdlIGFscmVhZHkgaGF2ZQ0KPiA+ID4gdGxiX2ZsdXNoX2FsbA0K
+PiA+ID4gaW4gdGhlIHBtX3J1bnRpbWVfcmVzdW1lIGNhbGxiYWNrLiBXaGVuIHRoZSBpb21tdSdz
+IHBvd2VyIHN0YXR1cw0KPiA+ID4gaXMNCj4gPiA+IGNoYW5nZWQgdG8gYWN0aXZlLCB0aGUgdGxi
+IGFsd2F5cyBpcyBjbGVhbi4NCj4gPiA+IA0KPiA+ID4gSW4gYWRkaXRpb24sIHRoZXJlIHN0aWxs
+IGFyZSAyIHJlYXNvbnMgdGhhdCBkb24ndCBhZGQgUE0gc3RhdHVzDQo+ID4gPiBjaGVja2luZw0K
+PiA+ID4gaW4gdGhlIHRsYiBmbHVzaCBhbGw6DQo+ID4gPiBhKSBXcml0ZSB0bGIgZmx1c2ggYWxs
+IHJlZ2lzdGVyIGFsc28gaXMgb2sgZXZlbiB0aG91Z2ggdGhlIEhXIGhhcw0KPiA+ID4gbm8NCj4g
+PiA+IHBvd2VyIGFuZCBjbG9ja3MuIFdyaXRlIGlnbm9yZS4NCj4gPiA+IGIpIHBtX3J1bnRpbWVf
+Z2V0X2lmX2luX3VzZShtNHVkZXYpIGlzIDAgd2hlbiB0aGUgdGxiX2ZsdXNoX2FsbA0KPiA+ID4g
+aXMgY2FsbGVkIGZybSBwbV9ydW50aW1lX3Jlc3VtZSBjYi4gRnJvbSB0aGlzIHBvaW50LCB3ZSBj
+YW4gbm90DQo+ID4gPiBhZGQNCj4gPiA+IHRoaXMgY29kZSBhYm92ZSBpbiB0aGlzIHRsYl9mbHVz
+aF9hbGwuDQo+ID4gPiANCj4gPiA+IFNpZ25lZC1vZmYtYnk6IFlvbmcgV3UgPHlvbmcud3VAbWVk
+aWF0ZWsuY29tPg0KPiA+ID4gLS0tDQo+ID4gPiAgIGRyaXZlcnMvaW9tbXUvbXRrX2lvbW11LmMg
+fCAyMCArKysrKysrLS0tLS0tLS0tLS0tLQ0KPiA+ID4gICAxIGZpbGUgY2hhbmdlZCwgNyBpbnNl
+cnRpb25zKCspLCAxMyBkZWxldGlvbnMoLSkNCg==
 
