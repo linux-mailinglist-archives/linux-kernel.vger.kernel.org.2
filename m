@@ -2,103 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B2C444F70
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 08:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9E4444F6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 08:00:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbhKDHDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 03:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230467AbhKDHD3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 03:03:29 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D33FC061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 00:00:52 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id l7-20020a0568302b0700b0055ae988dcc8so3831745otv.12
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 00:00:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ztfoODKQtCoSAkQOF1PB4N0RYdp9UGtK0cgegZxVtWc=;
-        b=aiEKgy45nYSlVQLX+o+nZ369l5vGBmMVwn+quE7M41iDwM2ohcnMwmTtAZcS41qsk0
-         HNkDX25sPdDOVOKqYS1/Okb86mmxxxZg6SN3nwKQ8hiU37B+BafY61XX5ySkSCybHtGg
-         wSG6jNch761CMwDeoRoij21PQgBcOGquCPNT4992qdxVnQAPjrIc85Po5qDcvqt1CpC7
-         zZxapRhZYlCitbeWPSRE+ubrwe9k9+GoTl00+xsZd/3MLKa3A/rPTVJXhNapU6slQfBD
-         SWUuesAzM18+gGT3HIPv7xd0V0uBaLSzN6HyYrVni18XwlQi62JKEQDbUvQLVoH0DXFI
-         n3Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ztfoODKQtCoSAkQOF1PB4N0RYdp9UGtK0cgegZxVtWc=;
-        b=Dq4FF5LWATDVCNG+tH8jQ9bAzaJkWh9SAfUpD79/Y5sFMbJxO4EkIFr/zjg8qroUXx
-         tQZystlKHSGNBzBkog1lsDno5uR/LXbKLvtAfcU4KMMmYEMg9fZCsNdktugxaOI1XQfn
-         F1y/we9LFjVKC7ozGSRAjU0jJohgf44DTuZRbCi//ZmXuNonZbuW924uPEuX5YFrWxPD
-         ocm3zj8m6kuejZLdcvq7N8VuPIzFteRYtWwUJSmvnm0MDU6KWyKBQXScl0fNGJ15G73j
-         2WNEMZFSKZOGJ/DpIjNbouLw+QF8Spi/JUXndzP0iKPfuP+9Pa0cnn4ucw8njOj+m8JO
-         BsmQ==
-X-Gm-Message-State: AOAM532jcF0so0tcQnLh3TNchXgUdJW8akBUyhLRu+gTKNPnxfMK5Hml
-        3XnVhT9mGV+ubkUFtm5BN2eLjXYd1ZL1HbtkFj8uHg==
-X-Google-Smtp-Source: ABdhPJwfrJFdDNR2RNG5DijVHkTTLsCgoe8/2qKWKpvX+doxckURfZCzAj5GB6Jyqr1JvACQcB+cy3Io1PZT1LYnvm4=
-X-Received: by 2002:a05:6830:1247:: with SMTP id s7mr26051994otp.329.1636009251085;
- Thu, 04 Nov 2021 00:00:51 -0700 (PDT)
+        id S230383AbhKDHDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 03:03:20 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:34611 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230329AbhKDHDQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 03:03:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1636009239; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=wCODyeGtt62o85Tp9gVUq0qFHjGRtF5/l1WWF1gUykw=;
+ b=YNVZxTXQjFqilZW3V6a6J/HrR0hKurkQZC9zjJ5bR3hhM/0oYgiGQu4i+wPB1OHpQ6QKMIQ9
+ 5ZDjU0Ksbi2hjXsZVUPlsQKAbAiXqaH3B8l39cMtELw4nlq7RpGruj7v0lWvAo3jpS64Pp1l
+ gY8TYRlbWD1T+jQkKT/1KBEojTg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 6183850d7d93184cc71f6ff3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Nov 2021 07:00:29
+ GMT
+Sender: tjiang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8941EC4360C; Thu,  4 Nov 2021 07:00:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: tjiang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B731EC43460;
+        Thu,  4 Nov 2021 07:00:28 +0000 (UTC)
 MIME-Version: 1.0
-References: <20211103133845.78528-1-wangkefeng.wang@huawei.com>
-In-Reply-To: <20211103133845.78528-1-wangkefeng.wang@huawei.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 4 Nov 2021 08:00:00 +0100
-Message-ID: <CANpmjNO6-=dLN=K6R7DrqZmZ5Q8NfORV9kQvwK9kcjCRQhuFaw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] ARM: Support KFENCE feature
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Thu, 04 Nov 2021 15:00:28 +0800
+From:   tjiang@codeaurora.org
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
+        c-hbandi@codeaurora.org, Hemantg <hemantg@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rocky Liao <rjliao@codeaurora.org>, zijuhu@codeaurora.org
+Subject: Re: [PATCH v2] Bluetooth: btusb: using big-endian definition for
+ board_id in struct qca_version
+In-Reply-To: <90D7F483-BCD9-430C-94EA-4018237ABE36@holtmann.org>
+References: <c92c38b60b1b55b5d72f7f1c718641e1@codeaurora.org>
+ <90D7F483-BCD9-430C-94EA-4018237ABE36@holtmann.org>
+Message-ID: <10a208f1f34817a756bb20052537c683@codeaurora.org>
+X-Sender: tjiang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Nov 2021 at 14:26, Kefeng Wang <wangkefeng.wang@huawei.com> wrote=
-:
->
-> This patchset supports Kfence feature, tested the kfence_test on ARM QEMU
-> with or without ARM_LPAE and all passed.
->
-> V2:
-> - drop patch4 in v1, which is used a new way to skip kfence test
->   see commit c40c6e593bf9 ("kfence: test: fail fast if disabled at boot")
-> - fix some issue about NO MMU
->   - drop useless set_memory_valid() under no mmu
->   - fix implicit declaration of function =E2=80=98is_write_fault=E2=80=99=
- if no mmu
-> - make KFENCE depends on !XIP_KERNEL, no tested with xip
->
-> v1:
-> https://lore.kernel.org/linux-arm-kernel/20210825092116.149975-1-wangkefe=
-ng.wang@huawei.com/
->
-> Kefeng Wang (3):
->   ARM: mm: Provide set_memory_valid()
->   ARM: mm: Provide is_write_fault()
->   ARM: Support KFENCE for ARM
+Hi Marcel:
+   yeah , you are right, but in fact we mixing little-endian and 
+big-endian is defined by qc btsoc(have some reason), so host only should 
+be align with it , I will make another change , need your help to 
+review, thank you.
 
-Looks good to me.
-
-Acked-by: Marco Elver <elver@google.com>
+regards.
+tim
 
 
->  arch/arm/Kconfig                  |  1 +
->  arch/arm/include/asm/kfence.h     | 53 +++++++++++++++++++++++++++++++
->  arch/arm/include/asm/set_memory.h |  1 +
->  arch/arm/mm/fault.c               | 16 ++++++++--
->  arch/arm/mm/pageattr.c            | 42 ++++++++++++++++++------
->  5 files changed, 100 insertions(+), 13 deletions(-)
->  create mode 100644 arch/arm/include/asm/kfence.h
->
-> --
-> 2.26.2
->
+On 2021-11-03 22:24, Marcel Holtmann wrote:
+> Hi Tim,
+> 
+>> As we name nvm file by using big-endian for boardID, so align host 
+>> with it.
+>> 
+>> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+>> ---
+>> drivers/bluetooth/btusb.c | 4 ++--
+>> 1 file changed, 2 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+>> index 46d892bbde62..08a1c6d8390f 100644
+>> --- a/drivers/bluetooth/btusb.c
+>> +++ b/drivers/bluetooth/btusb.c
+>> @@ -2883,7 +2883,7 @@ struct qca_version {
+>> 	__le32	rom_version;
+>> 	__le32	patch_version;
+>> 	__le32	ram_version;
+>> -	__le16	board_id;
+>> +	__be16	board_id;
+>> 	__le16	flag;
+>> 	__u8	reserved[4];
+>> } __packed;
+>> @@ -3072,7 +3072,7 @@ static void btusb_generate_qca_nvm_name(char 
+>> *fwname, size_t max_size,
+>> 	u16 flag = le16_to_cpu(ver->flag);
+>> 
+>> 	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+>> -		u16 board_id = le16_to_cpu(ver->board_id);
+>> +		u16 board_id = be16_to_cpu(ver->board_id);
+>> 		const char *variant;
+> 
+> my original comment still stands. Are you sure you are doing this
+> correctly. The in-memory layout of your NVM is mixed little-endian and
+> big-endian? Really? Or do you want to convert back from host endian to
+> big endian?
+> 
+> You commit message text suggest that you have to do this:
+> 
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index 46d892bbde62..55a33a5fea56 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -3090,7 +3090,7 @@ static void btusb_generate_qca_nvm_name(char
+> *fwname, size_t max_size,
+>                                 rom_version, variant);
+>                 } else {
+>                         snprintf(fwname, max_size,
+> "qca/nvm_usb_%08x%s_%04x.bin",
+> -                               rom_version, variant, board_id);
+> +                               rom_version, variant, 
+> cpu_to_be16(board_id));
+>                 }
+>         } else {
+>                 snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin”,
+> 
+> And really, I can not do this anymore. Write lengthy commit messages
+> explaining your change in detail. I am not looking a patches anymore
+> until they have a proper paragraph explaining the change and why it is
+> correct.
+> 
+> Also this change had v16 before I merged and even in that version I
+> had to fix issues. Please stop wasting my time. I have no idea why
+> this wasn’t caught earlier. It is a fundamental flaw. I am close to
+> just reverting the previous patch since it seems it clearly needs more
+> testing.
+> 
+> Regards
+> 
+> Marcel
