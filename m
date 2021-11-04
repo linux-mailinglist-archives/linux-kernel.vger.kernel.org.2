@@ -2,126 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818464458D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:43:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B71044458D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:43:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbhKDRpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:45:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60112 "EHLO
+        id S232300AbhKDRqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:46:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231526AbhKDRpd (ORCPT
+        with ESMTP id S232255AbhKDRqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:45:33 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD2AC061714;
-        Thu,  4 Nov 2021 10:42:54 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id k4so8442230plx.8;
-        Thu, 04 Nov 2021 10:42:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oPgoOWiVy0D0tb3kwUPanVVDmcRg1+IqSLXSRyJ8IBk=;
-        b=q0vNaQSRPVYGhmZQ5EYt/vy2uwmKcYnqg174tmQRVZG1WmdGFS4TbgEhdABFERZR9w
-         b2RED3ckCHnS1UoFwdfYXtcjD9c2LiGXWAkRvNqfOE7OiicDgQlz5fDL2ZwSOeNIBLf/
-         UqsUmg+ive3oIoLA5bsQ/5xNTDerB711mNc/kFVPutJbkGqDmReuOGrFNiAIPeI+WpJ7
-         IJ0czCTV3wd/yi8ixalcY581Z/VnNpg3IPmYAiLsPUn2EQYiDsj4IH9mM5tuvqL5Odmf
-         DQUQNONtgDnjao4bSoFJOjXblV09KCHp5lWIdd/aeb/IqF/LkLT83YeGu8Y3TwfwxKWX
-         QXkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oPgoOWiVy0D0tb3kwUPanVVDmcRg1+IqSLXSRyJ8IBk=;
-        b=Wa0q8cLLWVtsezdh1KU7jp5cgpoqIz1+XEBNKAq7YBcHRf8Mqz4i18WCg/nbPb7CUn
-         B6VVmFqsMHAaMB13iwmI5XBn1w9pv7m2c2hfLvy91BWYBCmsfbFPbkFRurmwGa1S+VvU
-         xosykXFbfb6B4ta6kLWqFQXMI+aHAZxjouvWIZzqvUBACYLEIVpjtnVrNdlRkZN/b1hK
-         Jbw/aYOHEBCgOBEM9CmHUW87IOlvhRJALdrTGXt4sOfUC9jn6USXvg4fGGlf3A567Y1d
-         vsYcHWz6BnXh2bIOT+8lzzt7MWA7Zr91H0g86xQM0sE197FxYrmRmalUd6iAT48Gprxc
-         yQ4A==
-X-Gm-Message-State: AOAM530HMFskbl0I4qor/iyfgqqAvgXPn0rz8LJYnPGu+Y8DUmsSlzHr
-        PIuPUEWg+hAzKET5MIcA9fM=
-X-Google-Smtp-Source: ABdhPJxqRIRgVf2sLLNWA77T5TlkRLn+wicEAKxd0Pb3L4kqr8zpcCBnNewWgZhsVj7gTA8ZTSmYUQ==
-X-Received: by 2002:a17:90b:4b09:: with SMTP id lx9mr10478993pjb.100.1636047774507;
-        Thu, 04 Nov 2021 10:42:54 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id o19sm5820445pfu.56.2021.11.04.10.42.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 10:42:54 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 10:42:51 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Martin Kaistra <martin.kaistra@linutronix.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 7/7] net: dsa: b53: Expose PTP timestamping ioctls to
- userspace
-Message-ID: <20211104174251.GB32548@hoboy.vegasvil.org>
-References: <20211104133204.19757-1-martin.kaistra@linutronix.de>
- <20211104133204.19757-8-martin.kaistra@linutronix.de>
+        Thu, 4 Nov 2021 13:46:16 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CEC5C061203;
+        Thu,  4 Nov 2021 10:43:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tpfTM33t7i1Dy0/MirwuyrZHtl/M5zJb53zksLaIaww=; b=izhOhuQ7+o/FPLVHvFRYe7dOmO
+        EKtpQ0CBDnMKmuXKOe/Zlh3NIONEezpxzTNpDKYTwr2pABanbXIUtTny/VMaNObE/41bPRgqEE1uC
+        cJRKfVaWHcbVX0BuZoBaOgRR/QHe11HLcQ1i7+xflfuFOu2PIxtSyoHEzWKTqfAypcc0omMUWaqIi
+        wkJHvA25mPsBegAiAH8kwFuGnFD2JvXc+tPH335MDjyWcR+/l22fT7b3i51K+5SAj73ghFlbVcP7g
+        vB5RMzB4fuLnjRRi8+4CN9cEcAaZrhSCOTkqBD6gjg+TXUwTbfhTswKMHe6JQ4Skm4Kb2uT9qmp78
+        l/43M2oQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1migln-009hiW-DT; Thu, 04 Nov 2021 17:43:23 +0000
+Date:   Thu, 4 Nov 2021 10:43:23 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jane Chu <jane.chu@oracle.com>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
+ RWF_RECOVERY_DATA flag
+Message-ID: <YYQbu6dOCVB7yS02@infradead.org>
+References: <YXJN4s1HC/Y+KKg1@infradead.org>
+ <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
+ <YXj2lwrxRxHdr4hb@infradead.org>
+ <20211028002451.GB2237511@magnolia>
+ <YYDYUCCiEPXhZEw0@infradead.org>
+ <CAPcyv4j8snuGpy=z6BAXogQkP5HmTbqzd6e22qyERoNBvFKROw@mail.gmail.com>
+ <YYK/tGfpG0CnVIO4@infradead.org>
+ <CAPcyv4it2_PVaM8z216AXm6+h93frg79WM-ziS9To59UtEQJTA@mail.gmail.com>
+ <YYOaOBKgFQYzT/s/@infradead.org>
+ <CAPcyv4jKHH7H+PmcsGDxsWA5CS_U3USHM8cT1MhoLk72fa9z8Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211104133204.19757-8-martin.kaistra@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAPcyv4jKHH7H+PmcsGDxsWA5CS_U3USHM8cT1MhoLk72fa9z8Q@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 02:32:01PM +0100, Martin Kaistra wrote:
-> +static int b53_set_hwtstamp_config(struct b53_device *dev, int port,
-> +				   struct hwtstamp_config *config)
-> +{
-> +	struct b53_port_hwtstamp *ps = &dev->ports[port].port_hwtstamp;
-> +	bool tstamp_enable = false;
-> +
-> +	clear_bit_unlock(B53_HWTSTAMP_ENABLED, &ps->state);
-> +
-> +	/* Reserved for future extensions */
-> +	if (config->flags)
-> +		return -EINVAL;
-> +
-> +	switch (config->tx_type) {
-> +	case HWTSTAMP_TX_ON:
-> +		tstamp_enable = true;
-> +		break;
-> +	case HWTSTAMP_TX_OFF:
-> +		tstamp_enable = false;
-> +		break;
-> +	default:
-> +		return -ERANGE;
-> +	}
-> +
-> +	switch (config->rx_filter) {
-> +	case HWTSTAMP_FILTER_NONE:
-> +		tstamp_enable = false;
-> +		break;
-> +	case HWTSTAMP_FILTER_PTP_V2_L2_EVENT:
-> +	case HWTSTAMP_FILTER_PTP_V2_L2_SYNC:
-> +	case HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ:
-> +	case HWTSTAMP_FILTER_PTP_V2_EVENT:
-> +	case HWTSTAMP_FILTER_PTP_V2_SYNC:
-> +	case HWTSTAMP_FILTER_PTP_V2_DELAY_REQ:
+On Thu, Nov 04, 2021 at 09:24:15AM -0700, Dan Williams wrote:
+> No, the big difference with every other modern storage device is
+> access to byte-addressable storage. Storage devices get to "cheat"
+> with guaranteed minimum 512-byte accesses. So you can arrange for
+> writes to always be large enough to scrub the ECC bits along with the
+> data. For PMEM and byte-granularity DAX accesses the "sector size" is
+> a cacheline and it needed a new CPU instruction before software could
+> atomically update data + ECC. Otherwise, with sub-cacheline accesses,
+> a RMW cycle can't always be avoided. Such a cycle pulls poison from
+> the device on the read and pushes it back out to the media on the
+> cacheline writeback.
 
-This is incorrect.  HWTSTAMP_FILTER_PTP_V2_EVENT includes support for
-UDP/IPv4 and UDP/IPv6.  Driver should return error here.
+Indeed.  The fake byte addressability is indeed the problem, and the
+fix is to not do that, at least on the second attempt.
 
-> +	case HWTSTAMP_FILTER_ALL:
-> +		config->rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
-> +		break;
-> +	default:
-> +		return -ERANGE;
-> +	}
+> I don't understand what overprovisioning has to do with better error
+> management? No other storage device has seen fit to be as transparent
+> with communicating the error list and offering ways to proactively
+> scrub it. Dave and Darrick rightly saw this and said "hey, the FS
+> could do a much better job for the user if it knew about this error
+> list". So I don't get what this argument about spare blocks has to do
+> with what XFS wants? I.e. an rmap facility to communicate files that
+> have been clobbered by cosmic rays and other calamities.
 
-Thanks,
-Richard
+Well, the answer for other interfaces (at least at the gold plated
+cost option) is so strong internal CRCs that user visible bits clobbered
+by cosmic rays don't realisticly happen.  But it is a problem with the
+cheaper ones, and at least SCSI and NVMe offer the error list through
+the Get LBA status command (and I bet ATA too, but I haven't looked into
+that).  Oddly enough there has never been much interested from the
+fs community for those.
+
+> > So far out of the low instrusiveness options Janes' previous series
+> > to automatically retry after calling a clear_poison operation seems
+> > like the best idea so far.  We just need to also think about what
+> > we want to do for direct users of ->direct_access that do not use
+> > the mcsafe iov_iter helpers.
+> 
+> Those exist? Even dm-writecache uses copy_mc_to_kernel().
+
+I'm sorry, I have completely missed that it has been added.  And it's
+been in for a whole year..
