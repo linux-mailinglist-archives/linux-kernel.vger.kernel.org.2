@@ -2,154 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78178445A8F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 20:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A66E9445A9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 20:30:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231740AbhKDT3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 15:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55576 "EHLO
+        id S231794AbhKDTcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 15:32:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231627AbhKDT3D (ORCPT
+        with ESMTP id S230511AbhKDTco (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 15:29:03 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82568C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 12:26:25 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id n8so8951293plf.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 12:26:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iFvVeSw9/fNfFhF8w5RW8u1ZTOCr6KgIVUquXNVljmQ=;
-        b=MBwtJQ8asknVhP2+o1B5c3yheNnRFKD+wjpfslR3BsI6hFURrv3JQdtk+X8YoPbPz5
-         iJtKniC9k6k89FF8h8zeU0xGPD6nyhcdMNu6gur03prppcjUnTsO1UNI4OR+OK0LfhJi
-         HVU9t1WlpSNK0i2K1s40bFL7aQHi4Us0pQjAXgQhLFHsiBAxd7/TghyalxC9Yf8ibnLJ
-         ql34Cp2+/sYkD4inR71yVK/fvFDUzUBfoNPKFda5jM04/YHzWcLN+KrMgWf2MVXien34
-         i0tQzegACcgsfPv6TcrMJk1PLCPNaY/FXEvcex01oarXyKO8G75IjFQeuvJBWJlRqznH
-         oh0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iFvVeSw9/fNfFhF8w5RW8u1ZTOCr6KgIVUquXNVljmQ=;
-        b=KQaJdQ6r29Cwtav1BX0MAK+dxYdVXGzIaaNVSDVXe5dxBehb1/A0tsbbcljzeJF3My
-         4QdM1cjLJYrH0T+tcIcnoe+MuzQFyjyXcNEq6OfbspcF/paTIIPehfmap6wsp5D2cGA7
-         IEINmQR+dcRZZ/a4XYJ6jNPvWbeaefkKN4mbF7/2XqoDF4nidkM8Dp1eiI7Zo2HYGyyk
-         sMDwOuyII5Sas8qfq8KeByCvIK4G5Bd+7a3Yyes5R7HPxQl6PFAfy9iCeyISKoClypTd
-         dIbKLqim62xWSogmfya7cul/xHK0xCpozOp23Wf3iRpmURnBwwp0HYXJRc0Z5yZ0QZc5
-         U95A==
-X-Gm-Message-State: AOAM533LigQXRrneOGR0a5tJoVMwZEurj7Qc2aqM0Cf0r213x2CWZkVD
-        oTXp5IyGzDGGkd8hZIgiSkfw4g==
-X-Google-Smtp-Source: ABdhPJyL3j/EOk+u0py3awzqsb0atapF72NUEteR3hVzCzrUy5Xj9dvRsAPhGEPoblaXMDqUKX1MbQ==
-X-Received: by 2002:a17:90b:4b46:: with SMTP id mi6mr24236208pjb.168.1636053984901;
-        Thu, 04 Nov 2021 12:26:24 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id x9sm4374244pga.28.2021.11.04.12.26.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 12:26:24 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 19:26:20 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH v3] KVM: x86: inhibit APICv when KVM_GUESTDBG_BLOCKIRQ
- active
-Message-ID: <YYQz3E/eNxdnNwBj@google.com>
-References: <20211103143929.15264-1-mlevitsk@redhat.com>
+        Thu, 4 Nov 2021 15:32:44 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9EEC061714;
+        Thu,  4 Nov 2021 12:30:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=PsZGxYZJ1vXnhzJHZV0TXIJJbA2U4NKdfuAv3fOctvc=; b=PPqIjiNNj2vnP1ZZKH427cyEZS
+        Ze4+vDT+HmiL047OGJvvDQHvezq1cQC1mhfBoBGWv2D/fB9QNHvhp/FnURWxVdWbR6Z6PRp7ueEnq
+        d7Uns436Z03Fb9PjdURc5MT2PNotZUKnxFBEUIdOlo5welZZ4xIyY7RE+cZPmwjrI1i+iU8sT8D1L
+        N6WSHofEpzg1YRbIuxov2o0XcCwOHHEilEStyKyKg1Xq84rGv4fsk8eb77/zcMBwy2xIMwWJsJlXT
+        tb/TQ2irgU4a8/J+SkcPnHxaOPEdIom8BiNsJWG9xjFNB0zgTcBQTM16j1FN/Mec909FSrmf6Vg8H
+        ouk8HkmQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1miiQy-009srx-BB; Thu, 04 Nov 2021 19:30:00 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     axboe@kernel.dk, hare@suse.de, hch@infradead.org, wubo40@huawei.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH] block: fix bd_holder_dir kobject_create_and_add() error handling
+Date:   Thu,  4 Nov 2021 12:29:59 -0700
+Message-Id: <20211104192959.2355827-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103143929.15264-1-mlevitsk@redhat.com>
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021, Maxim Levitsky wrote:
-> KVM_GUESTDBG_BLOCKIRQ relies on interrupts being injected using
-> standard kvm's inject_pending_event, and not via APICv/AVIC.
-> 
-> Since this is a debug feature, just inhibit APICv/AVIC while
-> KVM_GUESTDBG_BLOCKIRQ is in use on at least one vCPU.
+Commit 83cbce957446 ("block: add error handling for device_add_disk /
+add_disk") added error handling to device_add_disk(), however the goto
+label for the bd_holder_dir kobject_create_and_add() failure did not set
+the return value correctly, and so we can end up in a situation where
+kobject_create_and_add() fails but we report success.
 
-Very clever!
+Fixes: 83cbce957446 ("block: add error handling for device_add_disk / add_disk")
+Reported-by: Wu Bo <wubo40@huawei.com>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+---
+ block/genhd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> Fixes: 61e5f69ef0837 ("KVM: x86: implement KVM_GUESTDBG_BLOCKIRQ")
-> 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> ---
+diff --git a/block/genhd.c b/block/genhd.c
+index 2263f7862241..c5392cc24d37 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -472,8 +472,10 @@ int __must_check device_add_disk(struct device *parent, struct gendisk *disk,
+ 
+ 	disk->part0->bd_holder_dir =
+ 		kobject_create_and_add("holders", &ddev->kobj);
+-	if (!disk->part0->bd_holder_dir)
++	if (!disk->part0->bd_holder_dir) {
++		ret = -ENOMEM;
+ 		goto out_del_integrity;
++	}
+ 	disk->slave_dir = kobject_create_and_add("slaves", &ddev->kobj);
+ 	if (!disk->slave_dir) {
+ 		ret = -ENOMEM;
+-- 
+2.33.0
 
-With the below nits resolved (tested on Intel w/ APICv):
-
-Reviewed-and-tested-by: Sean Christopherson <seanjc@google.com>
-
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index ac83d873d65b0..5d30cea58182e 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10703,6 +10703,25 @@ int kvm_arch_vcpu_ioctl_set_sregs(struct kvm_vcpu *vcpu,
->  	return ret;
->  }
->  
-> +static void kvm_arch_vcpu_guestdbg_update_apicv_inhibit(struct kvm *kvm)
-> +{
-> +	struct kvm_vcpu *vcpu = NULL;
-
-vcpu doesn't need to be initialized.
-
-> +	int i;
-
-Nit, I'd prefer we use reverse fir tree when it's convenient, i.e.
-
-	bool block_irq_used = false;
-	struct kvm_vcpu *vcpu;
-	int i;
-
-> +	bool block_irq_used = false;
-> +
-> +	down_write(&kvm->arch.apicv_update_lock);
-> +
-> +	kvm_for_each_vcpu(i, vcpu, kvm) {
-> +		if (vcpu->guest_debug & KVM_GUESTDBG_BLOCKIRQ) {
-> +			block_irq_used = true;
-> +			break;
-> +		}
-> +	}
-> +	__kvm_request_apicv_update(kvm, !block_irq_used,
-> +					       APICV_INHIBIT_REASON_BLOCKIRQ);
-
-Heh, this indentation is still messed up, I think you need to change your
-
-	if (r == -ENOCOFFEE)
-		maxim_get_coffee();
-
-to
-
-	while (r == -ENOCOFFEE)
-		r = maxim_get_coffee();
-
-> +	up_write(&kvm->arch.apicv_update_lock);
-> +}
-> +
->  int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
->  					struct kvm_guest_debug *dbg)
->  {
-> @@ -10755,6 +10774,8 @@ int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
->  
->  	static_call(kvm_x86_update_exception_bitmap)(vcpu);
->  
-> +	kvm_arch_vcpu_guestdbg_update_apicv_inhibit(vcpu->kvm);
-> +
->  	r = 0;
->  
->  out:
-> -- 
-> 2.26.3
-> 
