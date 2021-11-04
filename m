@@ -2,137 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4511A444CC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 01:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 759DD444CCF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 02:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhKDBAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 21:00:25 -0400
-Received: from mail-co1nam11on2102.outbound.protection.outlook.com ([40.107.220.102]:4128
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230509AbhKDBAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 21:00:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eO4rsmot21KBLPO5YLaqpaSilyhO1IS9BSSO8vM3yCcX/suw9WRPq5UMBotDu5NvmC7ODYk093UYHzBW2oyEsB2HHGjWev4NJvDW0Wsqfy/yz5iymXRMnYW/vDFXSlMgqWyP0U68h1PRmRmJ0TpjbyVTOi2qKXIG4f0w+dAXmkKM3JaPaaBMiLoUc8MCQ5ZoyoHCfTSEj7uVYTyrpLii3VWfT/8Lai86q3rrDMQP18i+VYeHSN8tQe2XkCVF1TOWvwf8FLeycP/+mrgv85cptulzs+IA+/u8tACOFLWOBNjargLaSi5j5gXLo029YDyHiN2HmNXFVUv6L28TgWgWZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Lf9EEamLfqvtLbUTDs75WqTpTsXuVYpscR3iy8/np/s=;
- b=GZBi4pHlKx5rciczaXUVRBal1o4uJnCMMsArmilrFLXhrROi2HDq+mNFzdewDOBJWTZfQDwylM8LV+2+zrJQQExqGAsLaelDmZuJyFo7J2omeAqVP/CzXX4sRpQodNL991yZpk9iZBrAW7wXyVsRFlCUrxY2nQH68gkRYA0u7ONkCu+JdCeapr2UGa1XWQlDdqAL+vVG0wtB3poZ6RnrOyhpeJfcUvEXCMQ9MwUCoSewCjRsKnASZ7SI2tV5ql0fzDBHPG9cQhOzaSI0isJNzLT8LIuzE9kuxjsYhtUh/WoIOkRYeGNiZ1CtpHD5FofhnLue3JqNLGgogSuk/kMEjg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Lf9EEamLfqvtLbUTDs75WqTpTsXuVYpscR3iy8/np/s=;
- b=gvZsoFuIMxAexslYOnlCBCbwi4rg/c5MSs3FX8g8lpsR72RTfoHgwkQes5yORWNbaXNqvIzdQYC1HpwUgC37geNjPXbbC4O5tw3CmPFCCU7ZRHiM12QsgrUOjdKyCgPrrs4SUEtZoqqun0ce0oJxXJhYelP/l2SFnsJNuY65sv0=
-Authentication-Results: samsung.com; dkim=none (message not signed)
- header.d=none;samsung.com; dmarc=none action=none
- header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by BYAPR04MB5622.namprd04.prod.outlook.com (2603:10b6:a03:103::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Thu, 4 Nov
- 2021 00:57:44 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::6807:22c:61f6:d595]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::6807:22c:61f6:d595%3]) with mapi id 15.20.4669.011; Thu, 4 Nov 2021
- 00:57:44 +0000
-Date:   Thu, 4 Nov 2021 08:57:39 +0800
-From:   Xin Ji <xji@analogixsemi.com>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     dan.carpenter@oracle.com, devel@driverdev.osuosl.org,
-        drinkcat@google.com, span@analogixsemi.com, sam@ravnborg.org,
-        jonas@kwiboo.se, airlied@linux.ie, narmstrong@baylibre.com,
-        zhenli@analogixsemi.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, anarsoul@gmail.com,
-        a.hajda@samsung.com, boris.brezillon@collabora.com, duwe@lst.de,
-        laurent.pinchart@ideasonboard.com, daniel@ffwll.ch,
-        hsinyi@chromium.org, bliang@analogixsemi.com,
-        m.szyprowski@samsung.com
-Subject: Re: [PATCH v11 4/4] drm/bridge: anx7625: add HDMI audio function
-Message-ID: <20211104005739.GB2328386@anxtwsw-Precision-3640-Tower>
-References: <7dc405471da4771641d2942960d364a588bb4395.1628161369.git.xji@analogixsemi.com>
- <20211018030529.2055255-1-xji@analogixsemi.com>
- <20211103142003.GW2794@kadam>
- <CAG3jFysp-Gs_Zk2PooTpqig1ns5pi+FKASMy=FW1V7oecdNGig@mail.gmail.com>
+        id S231361AbhKDBIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 21:08:11 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:38437 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229561AbhKDBIK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 21:08:10 -0400
+Received: by mail-oi1-f182.google.com with SMTP id d12so3132664oij.5;
+        Wed, 03 Nov 2021 18:05:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mGavWcXNjdvsaFGjH3yLVdsxiECxJZKPSKveuDvmokQ=;
+        b=Nub1mM4IxnZs0x6UJyUMt6AXK0V9WY5zfpBpVFCirPnuiSzl2RprAOlgDd56c3JSca
+         efT7Jz2oUSwa7sBxBDPCRkQCSWsi/LBeF1pkAhBSvKA9+1SlV3jAO33LHHMg+p6vx4DP
+         cmCMahLIZCE0pNPmqpiRBBQOEZdKwvksMVQXv191H6xl2r02zOzuGV58XAxQFLcwb/VL
+         Cs2gUrJ6ADRGW7HbmH3HAdJYkeZOvl7EAwen0tvP5VHrkB/dnYdOJOeewrY3ZCHF0AuH
+         mO8221N5GiyYxf6EkRWB6nTDLtWe7Qab8dR8Ew6aXKybPJvXoR4zsMWZCcG+0BGp+6CO
+         V37g==
+X-Gm-Message-State: AOAM530cM9E/pGAf+48GzU+DsQ5MojUBTUWu4BPQgj9kKTJiiDL4pxU3
+        ns9jcxcnJ8IwQG1T3q3FFA==
+X-Google-Smtp-Source: ABdhPJwcF6k+uaPsW687lTM1lrQbGJ72CwyhOXZbDNl0jW49yDGyFkCfZIMrsqrxXE6V9BAJwSV6Qw==
+X-Received: by 2002:a54:4e97:: with SMTP id c23mr13542906oiy.153.1635987933167;
+        Wed, 03 Nov 2021 18:05:33 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id z12sm247106oid.45.2021.11.03.18.05.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 18:05:32 -0700 (PDT)
+Received: (nullmailer pid 2115444 invoked by uid 1000);
+        Thu, 04 Nov 2021 01:05:31 -0000
+Date:   Wed, 3 Nov 2021 20:05:31 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     Jesse Taube <mr.bossman075@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-serial@vger.kernel.org
+Subject: Re: [PATCH v2 11/13] mmc: sdhci-esdhc-imx: Add sdhc support for
+ i.MXRT series
+Message-ID: <YYMx28VvhR7nvMlt@robh.at.kernel.org>
+References: <20211102225701.98944-1-Mr.Bossman075@gmail.com>
+ <20211102225701.98944-12-Mr.Bossman075@gmail.com>
+ <CAOMZO5AxMXxDkNDqGJDhtepqSUxGRCWO+L=c67O==4fx66M7XQ@mail.gmail.com>
+ <c1610093-95ae-68d3-57ae-93b1bc9715d7@gmail.com>
+ <20211102233017.bvZyNHgwkuFX2SrymY1886iySuCFjH3IP1hlSc3HduY@z>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAG3jFysp-Gs_Zk2PooTpqig1ns5pi+FKASMy=FW1V7oecdNGig@mail.gmail.com>
-X-ClientProxiedBy: HKAPR03CA0023.apcprd03.prod.outlook.com
- (2603:1096:203:c9::10) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
-MIME-Version: 1.0
-Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by HKAPR03CA0023.apcprd03.prod.outlook.com (2603:1096:203:c9::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.5 via Frontend Transport; Thu, 4 Nov 2021 00:57:43 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 24f69d79-5647-47af-6dc7-08d99f2e1c13
-X-MS-TrafficTypeDiagnostic: BYAPR04MB5622:
-X-Microsoft-Antispam-PRVS: <BYAPR04MB56223E8807AA3C8BA7BEEBE1C78D9@BYAPR04MB5622.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UrgXnp0nsyIwXCEB2VBDiC+UsHhI2E3xSfBlWQvpW5kdEEKe8Uu/3Z1bOv86lKrutBZaAw19ibH9namZoskzdEoRRlIgEAXbnjnqdhoEmi4H7ez9n/Dy81DofMx09haTgSCXigZt1PzbAdtz9yYfuwcCELJLJPmw+3ug3zA4cYj6cGMNSA3de92cay2pXpwJSzltSdijCnL05hEQC5EBygEvlKHFBk1r/OxWSrHq0IVH/5h3CNYHOaodK+lgGdnKz5QKYuJzjMg7en3Vf38ueM3NPPLqaO1l4P25Mog2IQikM6sPFTUdT7YOlUrB4oi1p8YvOs+nwQLRQLzZryutL9Jylahh1q9K62nCONzSdfxcj0hQ5Bvf0PwTRbFu9R2HXKrseQ+VIXIVCPtE189Q/HopTWCh+uWiJ6CioMICJX8j45F2aHNjZuUu6B1j96D+lzDJdAiZfGB3Ug6C/lsz7IiKNSWaWaPx6WxHlDD7GxGwtgOo/H/IXe/ewV2a16j2SrMRHCqVcL/4BEQR6U0e4wQW0XN6fFgFfTQC2njQz8j4M/togWdLy8g4BVfULcAFDby0uVZp5hmV8gfkvE4Jr5iw+5Ubkgw6ed7jL/BI1ascPt2QUewkGE0Kcj1drDWFSqCwCHI0V9TyHJhwEq2S5v4lFUX5ywmJE+/GQ8tJHPv+/aTLYbCeBFXwDf/6Y0D4ZCo3qX5sSGGEn/EPon4lWQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(316002)(1076003)(8936002)(4744005)(508600001)(7416002)(33656002)(33716001)(6666004)(6916009)(956004)(8676002)(186003)(5660300002)(26005)(38350700002)(38100700002)(66946007)(55016002)(66476007)(66556008)(52116002)(2906002)(9686003)(55236004)(4326008)(86362001)(6496006);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8Xong3PzptDXwR5JtnE6s6m3qm06QWUj+fe7OcCzlCBlOlh/OOkOhLPWNWfR?=
- =?us-ascii?Q?oO4mNgu7O6ln+twnrEBFG1SY1jL5sEthtns+MA5gF6WwrVkJySkMZDDhOC/S?=
- =?us-ascii?Q?/q6ELwC2c4RYmkEN3/WFz88+8DrgiO+srPJYowUjUtSO3d6zDAeY7YyMbqpE?=
- =?us-ascii?Q?F5uJFIA3ac/YgnsN4N8cUZZatC89CTFFfdiSYXrPnySE8KyX0mnR210JhanM?=
- =?us-ascii?Q?rdESusT+Ks3gddJeESexraITvX86mcH2IxxrLJyst6F9ve60biGce9IhAd0G?=
- =?us-ascii?Q?fHcc6Jz5tcVsrFxpChFdOR2hiXsoLdV61ZWJKLC+g1SUOMGDWPIPB8z40IGr?=
- =?us-ascii?Q?oBfk0GNrdzZ9DX5fsIr7r+rqL/Dlz9cEXMCsAQzLr6cJPYGpxVWre9qxMC3u?=
- =?us-ascii?Q?cfxCcHIQKoWrRCpx8NYUp32UO76a2nGn+tC+TP12x1P/k0IQKQAOrmay+7hW?=
- =?us-ascii?Q?3sySIRO/WoNdrGLm4ViQMChykD94N24OWlmWa4PZe1gePtOu5TPjj8jL2IHW?=
- =?us-ascii?Q?+GGxYBDmiZv+NR0geor0p2sDUs2dSLJBxNDWGitSoU7T1UY9OUws+Gg9Qbe9?=
- =?us-ascii?Q?Q9M+jGl4xBvoi17uTNNfjjc85Px09dp2OlaLZ9svCP3Ey9e6Q1DLJIxMyNPL?=
- =?us-ascii?Q?TSE4FA5ZP+pvnEclf3SkaQ1BLZQU8LvJJ+HD80UUOvicND8pfpg/SjpGeoUj?=
- =?us-ascii?Q?TfTuCAkXUCbFogkCj90VtdX0JF4LSVCcCUmQ6rmkNUvRbc9YImlHBmOYrFsp?=
- =?us-ascii?Q?DUpxJegsa+mQAg2w7Fc4M6Bz3+UmTnSxNBuYnTI+qBYjMepfzRZ08K8M7ulT?=
- =?us-ascii?Q?v+IPWpSTpJUHf0qIj8PtYdA4LokmxL8k/zVdTmZ6Ap7OEBbuVfkbfGt8tFAR?=
- =?us-ascii?Q?4FGzGWISJYiE6YeQgm0vkNzIH3Nhzhp3bOx5srvhlwxERSYMrD1wmnCi2Rd+?=
- =?us-ascii?Q?SAMJ/Nv+oel15rIks0tw/7yQXaLaoa2Zkq/SqDaTZb2SH2bL2ls5gdiEWBkG?=
- =?us-ascii?Q?TAjNLdB53Vh6zPSwsBePWWuGNKeWoyi3dVzzg+/BwCy3rPjpmshMrxn6zG2a?=
- =?us-ascii?Q?OxzEE5F+VB0VXveErwNKVhsz70Ps6qMZO8UwTJnPnlyC3RWy9yEGYFytBmTC?=
- =?us-ascii?Q?6MvViaFUe0HEPXsvb4RRUtDfLZSO5V5qs49lzYMyTwTuaCpatHkg90M4lDAa?=
- =?us-ascii?Q?yVr0iA4iQQ8SdlV4W3tAMlSJQFQd21/EOxwxf9X14qAM10yjmbCEabtJvX/g?=
- =?us-ascii?Q?Utja/M+7Q2Wcw+GHVTdnzIwHzdxAuuduCaBvu+Tx0rkqNZbqHd4t8b4e6wFu?=
- =?us-ascii?Q?FTofSyW1UakgAZbCY8tmVi3Wo6JcLgmexn4mBWNvw/28rO63EenqRENtDrFa?=
- =?us-ascii?Q?c2nl8I/ofz/TLPu/iPawluWaTHAr6w9j7ZINjUxfyB8vFOEBeR5tXEZEBk1t?=
- =?us-ascii?Q?MQbuJFJjGH65d/Rm3JLpuCrjLCuly1vG7A0xVswJH1pxfzqEyw0y8HX3jVad?=
- =?us-ascii?Q?ZP+qN1nHZTYXYArD6Eio3QrSY/eIjFNig67S+1pLxrQR/YWmH8xCOhe/M2VF?=
- =?us-ascii?Q?+FwUVr85T5wj4bGBTUu4s6+0Cr5UKj7hvCGG5UwVs3ArehYAq4sm8cbc1lAD?=
- =?us-ascii?Q?FZwns+M9yY8LeR4jhHTgdS4=3D?=
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 24f69d79-5647-47af-6dc7-08d99f2e1c13
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2021 00:57:43.9725
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ce0tVVgQgcenuh1EpGgWdG9/JcOnk7gdhuZVdXyLv0TGxtTC6FvkCH+AXId/k4esXa/hB0GEfJ+Li43pFL6sAA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB5622
+In-Reply-To: <20211102233017.bvZyNHgwkuFX2SrymY1886iySuCFjH3IP1hlSc3HduY@z>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 04:04:00PM +0100, Robert Foss wrote:
-> Hey Xin,
+On Wed, Nov 03, 2021 at 12:30:17AM +0100, Giulio Benetti wrote:
+> Hi Fabio, Jesse, All,
 > 
-> This series does not apply on drm-misc-next. Please fix this and
-> resend. Make sure that checkpatch --strict passes as well.
-OK, I'll apply on drm-misc-next, thanks!
-Xin
+> On 11/3/21 12:25 AM, Jesse Taube wrote:
+> > 
+> > 
+> > On 11/2/21 19:17, Fabio Estevam wrote:
+> > > On Tue, Nov 2, 2021 at 7:57 PM Jesse Taube <mr.bossman075@gmail.com> wrote:
+> > > 
+> > > >    static struct esdhc_soc_data usdhc_imx8qxp_data = {
+> > > >           .flags = ESDHC_FLAG_USDHC | ESDHC_FLAG_STD_TUNING
+> > > > @@ -357,6 +363,7 @@ static const struct of_device_id imx_esdhc_dt_ids[] = {
+> > > >           { .compatible = "fsl,imx7ulp-usdhc", .data = &usdhc_imx7ulp_data, },
+> > > >           { .compatible = "fsl,imx8qxp-usdhc", .data = &usdhc_imx8qxp_data, },
+> > > >           { .compatible = "fsl,imx8mm-usdhc", .data = &usdhc_imx8mm_data, },
+> > > > +       { .compatible = "fsl,imxrt-usdhc", .data = &usdhc_imxrt_data, },
+> > > 
+> > > I thought Rob suggested to use the SoC name, so this would be:
+> > > 
+> > Uh i think that may have been for the UART.
+> > > { .compatible = "fsl,imxrt1050-usdhc", .data = &usdhc_imxrt1050_data, },
+> > > 
+> > > The same applies to the other bindings in the series.
+> > > 
+> > > This way it would be possible to differentiate between future
+> > > supported i.MX RT devices.
+> > > 
+> > This makes sense will do in V3.
+> > 
 > 
-> On Wed, 3 Nov 2021 at 15:20, Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> >
-> > This is a super awkward way to resend a patch series.  Next time, just
-> > start a new thread and put [PATCH RESEND] in the subject.
-> >
-> > I am sorry that no one responded to your thread.  :/
-> >
-> > regards,
-> > dan carpenter
+> If we add every SoC we will end up having a long list for every device
+> driver. At the moment it would be 7 parts:
+> 1) imxrt1020
+> 2) imxrt1024
+> .
+> .
+> .
+> 7) imxrt1170
+
+You don't need a driver update if you use a fallback. When you add 
+the 2nd chip, if you think it is 'the same', then you do:
+
+compatible = "fsl,imxrt1024-usdhc", "fsl,imxrt1050-usdhc";
+
+That requires no driver update until the driver needs to handle some 
+difference. And when there is a difference, you don't need a DT update.
+
+You could make "fsl,imxrt-usdhc" the fallback from the start if you are 
+adverse to the first way.
+
+Rob
