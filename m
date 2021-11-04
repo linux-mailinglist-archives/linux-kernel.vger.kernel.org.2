@@ -2,257 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C070444FF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF6D444FFC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbhKDINz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:13:55 -0400
-Received: from mx0b-00128a01.pphosted.com ([148.163.139.77]:47000 "EHLO
-        mx0b-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230229AbhKDINy (ORCPT
+        id S230397AbhKDIRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230084AbhKDIRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:13:54 -0400
-Received: from pps.filterd (m0167091.ppops.net [127.0.0.1])
-        by mx0b-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A42KRWk003246;
-        Thu, 4 Nov 2021 04:11:14 -0400
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
-        by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3c3e2pea04-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Nov 2021 04:11:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VWy5/OvFfh8MStURcDJ3HF2VuLSsUNgX7p5LoIw6eCZHOWV8ZmwlsKj22Xj2YjYYg8j7La8rKEFX1N4CP165CYdiUmV8OLM1hNOB5U3YB2tW1KtV2LDb6JQoemO6GQ6zJCGG8kshqPYr+gMTp1LMVxbF1hwfKuK6g9kTz73tcjim12Sg9bZ8SJlpDqYeX01s7ToddAscRdwyrStN2ad8rr/wEeYn6fJYZg+9m3tuFInbf3+HcZAWCYU6JaAyz5k9AA0TpIUQGfc94SquGadq4C6p2BmcOSemB2JlLneJ+/Kq73iEG0DKj9T5f/QfWy4RW1/ODPQ3AWgaqtfdegDmTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ycCe+zQGyk2skRUAzD6fV08rY7WtRYDhMIwV4gW94EQ=;
- b=Oz1OSPKunuiZ1z8kHuAHDeGovWRx0noAZnhddAkIYYXR0W0yTpg9lWqo+x6BUES/ogooif/4xH5lCYtuQ7J9Yb1HJLRrTOv8Ap86KYJ57YomzAnl/rGrDUZGUbT2hiJVjEUaH3bNe98igmvm1mQVEUE7eq5s1F7+h4VHUiMCBWdJXjUdyX3LtbCDh7gA3gFS6O+PpurT5wWf3YRqrovjpFUvgx+F9v9o2qZTlmqcKvhoYagNbulfjxNT2qXVzpfKiBAAxB+Fd5dEH+ejeVQeMKfkds0Fh5qqKcTTZQI61RZriobYdXYOQzvjpSjTNHGRJOlSs+fI5/zp6iaS1pFm7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
- dkim=pass header.d=analog.com; arc=none
+        Thu, 4 Nov 2021 04:17:02 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47441C061714;
+        Thu,  4 Nov 2021 01:14:25 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id o14so5972544plg.5;
+        Thu, 04 Nov 2021 01:14:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ycCe+zQGyk2skRUAzD6fV08rY7WtRYDhMIwV4gW94EQ=;
- b=oaHk98+vvMouasiHTxhdoegU9lavTfQZjHKFvXvFdmW1EERLALWnFqIeSBhM+sSVyO4h0gsqg5cfZdJlV/ODwQhvg1iFTX4eyZoIMNElTEilJ9WBGR806YHaNjDznkHeLQdVmqvzkpaiR/P6L4a86IoK+Qe/2a461/UV75E8NAU=
-Received: from SJ0PR03MB6359.namprd03.prod.outlook.com (2603:10b6:a03:399::5)
- by BYAPR03MB4631.namprd03.prod.outlook.com (2603:10b6:a03:12e::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Thu, 4 Nov
- 2021 08:11:12 +0000
-Received: from SJ0PR03MB6359.namprd03.prod.outlook.com
- ([fe80::3523:ea80:f2cf:48c8]) by SJ0PR03MB6359.namprd03.prod.outlook.com
- ([fe80::3523:ea80:f2cf:48c8%9]) with mapi id 15.20.4608.025; Thu, 4 Nov 2021
- 08:11:12 +0000
-From:   "Sa, Nuno" <Nuno.Sa@analog.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-CC:     "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 1/2] iio: frequency: admv1013: add support for ADMV1013
-Thread-Topic: [PATCH v3 1/2] iio: frequency: admv1013: add support for
- ADMV1013
-Thread-Index: AQHXzwfgGHROvFVBxUSS1cWk9SZT/6vwAwkggAI6uACAAMOZ0A==
-Date:   Thu, 4 Nov 2021 08:11:12 +0000
-Message-ID: <SJ0PR03MB6359234D6DA5D0CC58DB1113998D9@SJ0PR03MB6359.namprd03.prod.outlook.com>
-References: <20211101100420.70304-1-antoniu.miclaus@analog.com>
-        <PH0PR03MB6366548C1CE5476989662F74998B9@PH0PR03MB6366.namprd03.prod.outlook.com>
- <20211103200325.3416988c@jic23-huawei>
-In-Reply-To: <20211103200325.3416988c@jic23-huawei>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
- =?utf-8?B?bk5jYm5OaFhHRndjR1JoZEdGY2NtOWhiV2x1WjF3d09XUTRORGxpTmkwek1t?=
- =?utf-8?B?UXpMVFJoTkRBdE9EVmxaUzAyWWpnMFltRXlPV1V6TldKY2JYTm5jMXh0YzJj?=
- =?utf-8?B?dFl6UXpaR000T1RRdE0yUTBOaTB4TVdWakxUaGlPVGN0WlRSaU9UZGhOMk5q?=
- =?utf-8?B?TnpFd1hHRnRaUzEwWlhOMFhHTTBNMlJqT0RrMUxUTmtORFl0TVRGbFl5MDRZ?=
- =?utf-8?B?amszTFdVMFlqazNZVGRqWXpjeE1HSnZaSGt1ZEhoMElpQnplajBpTkRZMk55?=
- =?utf-8?B?SWdkRDBpTVRNeU9EQTBPRGN3TnpBeU5UYzROamswSWlCb1BTSnJUVloyZDFW?=
- =?utf-8?B?dFRGZHNTa0ZrYzNGYVJFRjZSVFZIWVdNMGRHTTlJaUJwWkQwaUlpQmliRDBp?=
- =?utf-8?B?TUNJZ1ltODlJakVpSUdOcFBTSmpRVUZCUVVWU1NGVXhVbE5TVlVaT1EyZFZR?=
- =?utf-8?B?VUZGYjBOQlFVRkhVRXQxUjFVNVNGaEJXVTFFVUhkdVNqRTNVV1ZuZDAwdlEy?=
- =?utf-8?B?TnVXSFJDTkVSQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCU0VG?=
- =?utf-8?B?QlFVRkVZVUZSUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJSVUZC?=
- =?utf-8?B?VVVGQ1FVRkJRVlpKUlhadlVVRkJRVUZCUVVGQlFVRkJRVUZCUVVvMFFVRkJR?=
- =?utf-8?B?bWhCUjFGQllWRkNaa0ZJVFVGYVVVSnFRVWhWUVdOblFteEJSamhCWTBGQ2VV?=
- =?utf-8?B?RkhPRUZoWjBKc1FVZE5RV1JCUW5wQlJqaEJXbWRDYUVGSGQwRmpkMEpzUVVZ?=
- =?utf-8?B?NFFWcG5RblpCU0UxQllWRkNNRUZIYTBGa1owSnNRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkZRVUZCUVVGQlFVRkJRV2RCUVVG?=
- =?utf-8?B?QlFVRnVaMEZCUVVkRlFWcEJRbkJCUmpoQlkzZENiRUZIVFVGa1VVSjVRVWRW?=
- =?utf-8?B?UVZoM1FuZEJTRWxCWW5kQ2NVRkhWVUZaZDBJd1FVaE5RVmgzUWpCQlIydEJX?=
- =?utf-8?B?bEZDZVVGRVJVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCVVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVOQlFVRkJRVUZEWlVGQlFVRlpVVUpyUVVkclFWaDNRbnBCUjFWQldY?=
- =?utf-8?B?ZENNVUZJU1VGYVVVSm1RVWhCUVdOblFuWkJSMjlCV2xGQ2FrRklVVUZqZDBK?=
- =?utf-8?B?bVFVaFJRV0ZSUW14QlNFbEJUV2RCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFrRkJRVUZCUVVGQlFVRkpRVUZCUVVGQlFUMDlJaTgrUEM5dFpYUmhQZz09?=
-x-dg-rorf: true
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=analog.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4ac6afea-7dfb-4250-f644-08d99f6aaa9a
-x-ms-traffictypediagnostic: BYAPR03MB4631:
-x-microsoft-antispam-prvs: <BYAPR03MB46310558288D555FC33C5E55998D9@BYAPR03MB4631.namprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1GWn2LKCARLm+4L4iVQtECsOWeAr8+vAadsdtAo0iuiKgSz/quyFyQ9tN2Rh9URkUkT3IZLc65R7JI8O8arOav56S22uFgGkU3AZFvJwNSV3iuPKZhH6uw7fcO6qgK5IfOOVlweGQaxX4iEmWrgr5UEg4MQDCMNTQD1o/qjGhVAnqkamb0a8ZscXGJx1fwc695fVyY+Rcg+M8B5EG4yfBiWB1wo/rvjMiZ4PnUllG+ukXd0ul3EODPOOknUAwBwfc+MlEfkFXQbmp5AUquoKq229j5Vjrt7OqV1dvbInAkbLSkwssyS+jKVNzhJ+QOa4qakymYPDVVdDnrzLgcs1lV1eO+rCJ821h0YrjO80FNZ8j2hTYbSYa2QPZnEie1KBXv5MToCJCNNja2uOyOUlODyzpUjolkzWe2/UDaYpnzHohJQ8+BiWPXy0T7U0OwxGWcnUAzczFgQVcn3626UYdoLZCYnBdv9L9hQ8NRfg2zRxygC94TqIopaa5bakiruLMH3Wde3oGkjjyYb5j6P9pZsI5/9p+iLPcuYbx+1V7j5Ms7H840+oE2cIqwpMf3PUF+1p0Ix+ZfpMmuiIIVK7l+plclAE5wZOlsuijD0ydyAVK0gnJw/DcF4wUIhgmNSwysVbl17DwbXy7uLW1qeJcugrA34gnmvYJ08I4o6bOJo9WlwXyuMtelFQTzhog552XXlKu1jHDgLZ8CC0YErl2w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR03MB6359.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(26005)(52536014)(66446008)(83380400001)(316002)(66946007)(7696005)(8676002)(66476007)(55016002)(186003)(8936002)(86362001)(76116006)(5660300002)(38070700005)(54906003)(122000001)(2906002)(4326008)(64756008)(38100700002)(66556008)(71200400001)(6506007)(33656002)(6916009)(53546011)(9686003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NkJUTkE5THhCQndINml3TEtIclFwK1BGa2hyR0pYZ21qVXlLNnRyNDV4T3dF?=
- =?utf-8?B?VnhOUm9DY09LNHpVbEpKU1lER015dkdRYkpnTXVaRE55OW5JT0s1S3pFa0Ns?=
- =?utf-8?B?M3VyZU5uKzRuRUIreS9kUVowak9jendibnRyMXlhL1dSVUhEYVpiMDdXL1hN?=
- =?utf-8?B?dGcwMjRjZEgwSGVPb1VQRWdRakhMdTQ3RGdvZnZURjlSeDdETWErMGx5M0E3?=
- =?utf-8?B?STBLMGVwajdzNzZlVjZTNnFRR1ZDNXNYK1dLME9hTFcxcEpBR2ZkbUFOSGdu?=
- =?utf-8?B?clI5dWRlRzNDektPbEVFNHBrVHRHa2VtZUNqSWZFSDA2akhXZE10V2xjK01r?=
- =?utf-8?B?b3NDcEprQ3pOeXJvSWtMbDIyYWtDTkRYcmpGOUVXVkFPL2xpNU52a3RrZ25Z?=
- =?utf-8?B?M214SCtkOFJhMGpGa1VoYnhpd3ZhRElGQ1FzQWxpU3BaK3NmVHlJN1ppYmp0?=
- =?utf-8?B?TUtneldIdUVub3d6QUcvZHZ0Q0wzZFFQVkRRTGNWQVB1NUQ5anNtNE1kaXhK?=
- =?utf-8?B?LzRsZk80d0FVejIvZEtLZW03U084MzNYVGVYakJpQXRoS1Z0S3ZyNkhZTEZv?=
- =?utf-8?B?WlNDcEUySjlLeHovWkV2eWZULzRPSTlFamM3SS9LelNKbVJySzA4eEt2ZUd1?=
- =?utf-8?B?ckhlU3RDdmpkcVJyY1JBK3F6eDRoZFFVekhKZWRPV1QrT2ZVeGZmUXJPVEZG?=
- =?utf-8?B?M2QvRjkrdHdlNVdZMlAwSHpVRG8xVUtmM2tXbVVvbjc4S2NDcE0vL25INklN?=
- =?utf-8?B?eS9zMUxhWVpkR3BFcitBcnkrWkZTa0x6VmZnZmYyejE5TW5OWHNsSkJkRW1n?=
- =?utf-8?B?eEFub1NWVmd1VTJUaHd5a2g3eGJyM3d1cHQwYnI2MEtZSW9BNzRtNkwxbjAz?=
- =?utf-8?B?cWV0Vkc0K0w4bWkxMTdOS1F2dG94ZXdabmkzRDJMVFJnbU1hYWhMeVZuRnp5?=
- =?utf-8?B?VmdaMXlaaXBpckRyWThuZTNNLzdOS0t2WG1RNEJ3V3R0eWR2QldGKzhqR2xE?=
- =?utf-8?B?aGh3YlBaaHhTcjV6TWZiSGI1dThpV0Rlc3pDcnZTS3hlazN0RldBa1JmS3px?=
- =?utf-8?B?WlZjbVMzRTZaMEtacnhoUm9aZVR1ZmdzZ0ZJbWF6R0tEOUdOL3V3UUNFcG9n?=
- =?utf-8?B?R3VQYlA5UUhiOGk5cklMU3FNV2VVcExsaWZFNnFSM1NHbDdtUTdkQS9ITFRG?=
- =?utf-8?B?WmFUNjRzM0dTQTVVSVZDcU5rUjBEZ1Q3Ynp3NkhXNEdEZ3I3RnB1USs0NU9Y?=
- =?utf-8?B?U3ZYZ3o4NXg2U1dOU3JxTDRndHh6STlpTFBhclFDa1BXMzBKa0F6NlR5cnA3?=
- =?utf-8?B?UkllaU9GRHcrSmxBT2E5cUt3NXg5TWd6S3I5dWRiLzFwTnR2d0c3VTBuU1pF?=
- =?utf-8?B?SHJwUkRidTM2elNCMnZHdi9MTVFhM29wOXJzQzlqbEFPa2J4UnlOTXBMc3Av?=
- =?utf-8?B?Qk1nWTdSTC9MRjEwMVMrakxVNFpycUtyQWJXUE4reHhhelo4ak44Um1qWXdm?=
- =?utf-8?B?V1d6U2l1SE43dEpNeVNXeXBvWnpSYk5tQzY3S1BXQlhnWVNmRjlPN0hMN0ky?=
- =?utf-8?B?MEtZZitlVEtxNjd6cTFMOHdvTDU5NzNta0pRRzNYM2lMeDcyTmFaWkVJYnY3?=
- =?utf-8?B?ZEJSZVZ2OVFjeVA5ZzR0L3ZJTnlLaHJtQVFUWVhYRi9mYVBGU2NmWUQ3K2d5?=
- =?utf-8?B?V1VCMTI1WFBJTUkvVnM4akdRUXZlcFU1clhZbnBPaDdwQms2N0xCRVF3NzBS?=
- =?utf-8?B?ZWxGTGs1aFJYNTlKS1h4d1dnQUI0d1lmSTJTVWVQOHR5Mk9zSzhRQ3VkZVBj?=
- =?utf-8?B?ZzJPUzFmdWFyMEV6Ty9jeWwreEJibWZGdTl1eFZSZXU3UkJSOFNkREJvUURP?=
- =?utf-8?B?eHF3QW1tKzFhSXQ3TlFGR1JPYVF0d3dnNXlEZ2pkSDNVU3pJWU1oODNvS2FB?=
- =?utf-8?B?UmVGVjdJR3hnWEMwWlpqak9McnR1Vzg5Wms1Q0FQL0hNbUVXNm50RTF1ZVpO?=
- =?utf-8?B?U0ZXaklGWHpteU11aUxZV1JoU2x5dHI4eXBaQkRXOEhINkxTbDhjUUtuR3N6?=
- =?utf-8?B?TTNVWFJVbWJxYnQ5ZWhrQzloOTFmQVdtYWxRL3BITXUwM21zdk9tSk1oZDlO?=
- =?utf-8?B?RVpKbU1NejdFbWwwMEdXaUdLczI3TzZnRVczZDNKTDh1UG5hekMvOHFQbHc5?=
- =?utf-8?B?a0E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:content-language:to:cc
+         :references:from:organization:subject:in-reply-to
+         :content-transfer-encoding;
+        bh=SAq8tD4DBoE3zQ0QNHeM3XJV9O+xxvOJcQbpkBGQ/QI=;
+        b=ogBPcafYnohY+X0IkauFiFrd62W+8zx2i9/Bgsszkgnj59qqRBG1k8E46LN1p0hDL7
+         wp6BHMQubFVSbMv0RY9UurAR/fNcmRfzt5cFBoEl7AfTk1RBEr5hrSxyxVXsEnY9bJV6
+         zMHDIyNUrHF292nrHTaukcrQh2rvAdueabi8+KXdArN6KRHd/cqMom/DSM9BK5QzRHRx
+         2ak2obT2xZQ4NEXrKOhhjmMtbjDsGuz6knPy1UTO2svTPuSmZq9mrUqEbym6GFMfcBcN
+         tZuJndwd8N8k12obUgBSptqplE0rx1DPnF6dAUpSIGm+dcAGokc7tcIuP43borlfEYqW
+         0sgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=SAq8tD4DBoE3zQ0QNHeM3XJV9O+xxvOJcQbpkBGQ/QI=;
+        b=GWNVp7mozWhUv7uGF7myXhXAqdurawyvMGwn8GG95PVKsPsyE0y4fHUWw8MkemfOEX
+         fBhv/WRoQ2rOtfpXmF1stuXotjcToRXFnUi45st++OknvwQ8vYLMplzO/6rK6A8UwyE6
+         ymQRvicyEIpZuGWmq0JpIrEyJeKhiiaC0nwVT/4nYsB3FWeDxA6cn7MZ9sm39UnUrMkl
+         t6eQlN4wn3+0LxGdAEEJ1GELwvoNsAXXXGde0s6VvzgzEqE0k4Ei2HHiJCeOx6DZNdKb
+         ZZYw5kc3sr7KdZ8IaUhn9n2g1u0+g6nrR1L1PvczRRap5OkrInBhwVCpLQcMfe9l/WwH
+         YPcA==
+X-Gm-Message-State: AOAM533HREzFCK8AiY2Wq9wKlxnM8Kp4SsjUJfCt7wfNb+h7VwmjkBt9
+        ZS/yBUs7H2ZyqQZ4MtJfdKw=
+X-Google-Smtp-Source: ABdhPJxGJVzcX+tivat/qlF387+EdHwzTiMdSlJB2v3eJcn2hMJkloGdcMabPjxhkgdAEvP6dxhMvw==
+X-Received: by 2002:a17:90b:4f4c:: with SMTP id pj12mr20603923pjb.217.1636013664764;
+        Thu, 04 Nov 2021 01:14:24 -0700 (PDT)
+Received: from [192.168.255.10] ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id b7sm4568651pfm.28.2021.11.04.01.14.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Nov 2021 01:14:23 -0700 (PDT)
+Message-ID: <d70ed6da-443e-f279-326e-9c3963f341b5@gmail.com>
+Date:   Thu, 4 Nov 2021 16:14:13 +0800
 MIME-Version: 1.0
-X-OriginatorOrg: analog.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR03MB6359.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ac6afea-7dfb-4250-f644-08d99f6aaa9a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Nov 2021 08:11:12.4619
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +DW5qAXy8CxrPy91WAnQI5B3Kx8/vq6RNn613VcPKx0OsCGVr5QqGRzdMyzjb84XHzt5O/4TJ8FQOJ8inPV6pg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB4631
-X-Proofpoint-ORIG-GUID: 1gDjnER_gB67ALW80kX79XEsn__kisfl
-X-Proofpoint-GUID: 1gDjnER_gB67ALW80kX79XEsn__kisfl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-04_02,2021-11-03_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 spamscore=0 malwarescore=0
- adultscore=0 mlxlogscore=999 phishscore=0 suspectscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111040033
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Content-Language: en-US
+To:     Yao Yuan <yaoyuan0329os@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211103070310.43380-1-likexu@tencent.com>
+ <20211103070310.43380-4-likexu@tencent.com>
+ <20211103120854.w73q476jk7rvopkt@sapienza>
+From:   Like Xu <like.xu.linux@gmail.com>
+Organization: Tencent
+Subject: Re: [PATCH 3/3] KVM: x86: Use static calls to reduce kvm_pmu_ops
+ overhead
+In-Reply-To: <20211103120854.w73q476jk7rvopkt@sapienza>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IEZyb206IEpvbmF0aGFuIENhbWVyb24gPGppYzIzQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IFdl
-ZG5lc2RheSwgTm92ZW1iZXIgMywgMjAyMSA5OjA0IFBNDQo+IFRvOiBTYSwgTnVubyA8TnVuby5T
-YUBhbmFsb2cuY29tPg0KPiBDYzogTWljbGF1cywgQW50b25pdSA8QW50b25pdS5NaWNsYXVzQGFu
-YWxvZy5jb20+Ow0KPiByb2JoK2R0QGtlcm5lbC5vcmc7IGxpbnV4LWlpb0B2Z2VyLmtlcm5lbC5v
-cmc7DQo+IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJu
-ZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjMgMS8yXSBpaW86IGZyZXF1ZW5jeTogYWRt
-djEwMTM6IGFkZCBzdXBwb3J0IGZvcg0KPiBBRE1WMTAxMw0KPiANCj4gW0V4dGVybmFsXQ0KPiAN
-Cj4gT24gVHVlLCAyIE5vdiAyMDIxIDEwOjA5OjE1ICswMDAwDQo+ICJTYSwgTnVubyIgPE51bm8u
-U2FAYW5hbG9nLmNvbT4gd3JvdGU6DQo+IA0KPiA+ID4gKyNkZWZpbmUgQURNVjEwMTNfQ0hBTl9Q
-SEFTRShfY2hhbm5lbCwgcmZfY29tcCkgewkJXA0KPiA+ID4gKwkudHlwZSA9IElJT19BTFRWT0xU
-QUdFLAkJCQkJXA0KPiA+ID4gKwkubW9kaWZpZWQgPSAxLAkJCQkJCVwNCj4gPiA+ICsJLm91dHB1
-dCA9IDEsCQkJCQkJXA0KPiA+ID4gKwkuaW5kZXhlZCA9IDEsCQkJCQkJXA0KPiA+ID4gKwkuY2hh
-bm5lbDIgPSBJSU9fTU9EXyMjcmZfY29tcCwJCQkJXA0KPiA+ID4gKwkuY2hhbm5lbCA9IF9jaGFu
-bmVsLAkJCQkJXA0KPiA+ID4gKwkuaW5mb19tYXNrX3NlcGFyYXRlID0gQklUKElJT19DSEFOX0lO
-Rk9fUEhBU0UpCQlcDQo+ID4gPiArCX0NCj4gPiA+ICsNCj4gPiA+ICsjZGVmaW5lIEFETVYxMDEz
-X0NIQU5fQ0FMSUIoX2NoYW5uZWwsIHJmX2NvbXApIHsJCVwNCj4gPiA+ICsJLnR5cGUgPSBJSU9f
-QUxUVk9MVEFHRSwJCQkJCVwNCj4gPiA+ICsJLm1vZGlmaWVkID0gMSwJCQkJCQlcDQo+ID4gPiAr
-CS5vdXRwdXQgPSAxLAkJCQkJCVwNCj4gPiA+ICsJLmluZGV4ZWQgPSAxLAkJCQkJCVwNCj4gPiA+
-ICsJLmNoYW5uZWwyID0gSUlPX01PRF8jI3JmX2NvbXAsCQkJCVwNCj4gPiA+ICsJLmNoYW5uZWwg
-PSBfY2hhbm5lbCwJCQkJCVwNCj4gPiA+ICsJLmluZm9fbWFza19zZXBhcmF0ZSA9IEJJVChJSU9f
-Q0hBTl9JTkZPX0NBTElCQklBUykJXA0KPiA+ID4gKwl9DQo+ID4gPiArDQo+ID4gPiArc3RhdGlj
-IGNvbnN0IHN0cnVjdCBpaW9fY2hhbl9zcGVjIGFkbXYxMDEzX2NoYW5uZWxzW10gPSB7DQo+ID4g
-PiArCUFETVYxMDEzX0NIQU5fUEhBU0UoMCwgSSksDQo+ID4gPiArCUFETVYxMDEzX0NIQU5fUEhB
-U0UoMCwgUSksDQo+ID4gPiArCUFETVYxMDEzX0NIQU5fQ0FMSUIoMCwgSSksDQo+ID4gPiArCUFE
-TVYxMDEzX0NIQU5fQ0FMSUIoMCwgUSksDQo+ID4gPiArCUFETVYxMDEzX0NIQU5fQ0FMSUIoMSwg
-SSksDQo+ID4gPiArCUFETVYxMDEzX0NIQU5fQ0FMSUIoMSwgUSksDQo+ID4gPiArfTsNCj4gPiA+
-ICsNCj4gPg0KPiA+IEhtbSwgSWYgSSdtIG5vdCBtaXNzaW5nIG5vdGhpbmcgdGhpcyBsZWFkcyB0
-byBzb21ldGhpbmcgbGlrZToNCj4gPg0KPiA+IG91dF9hbHR2b2x0YWdlMF9pX3BoYXNlDQo+ID4g
-b3V0X2FsdHZvbHRhZ2UwX3FfcGhhc2UNCj4gPiBvdXRfYWx0dm9sdGFnZTBfaV9jYWxpYmJpYXMN
-Cj4gPiBvdXRfYWx0dm9sdGFnZTBfcV9jYWxpYmJpYXMNCj4gPiBvdXRfYWx0dm9sdGFnZTFfaV9j
-YWxpYmJpYXMNCj4gPiBvdXRfYWx0dm9sdGFnZTFfcV9jYWxpYmJpYXMNCj4gPg0KPiA+IFRvIG1l
-IGl0IGlzIHJlYWxseSBub24gb2J2aW91cyB0aGF0IGluZGV4IDEgYWxzbyBhcHBsaWVzIHRvIHRo
-ZSBzYW1lDQo+ID4gY2hhbm5lbC4gSSBzZWUgdGhhdCB3ZSBoYXZlIHRoaXMgbGlrZSB0aGlzIHBy
-b2JhYmx5IGJlY2F1c2Ugd2UNCj4gPiBjYW4ndCB1c2UgbW9kaWZpZWQgYW5kIGRpZmZlcmVudGlh
-bCBhdCB0aGUgc2FtZSB0aW1lLCByaWdodD8NCj4gPg0KPiANCj4gSW5kZWVkLCB0aGlzIGlzIHRo
-ZSBwcm9ibGVtIHlvdSBtZW50aW9uZWQgaW4gdGhlIGRpc2N1c3Npb24gb24gdjINCj4gTXkgc3Vn
-Z2VzdGlvbiBvZiBtYWtpbmcgaXQgY2xlYXIgaXQgaXMgYSBkaWZmZXJlbnRpYWwgY2hhbm5lbCBh
-bmQgdGhlbg0KPiBhcHBseWluZyBjYWxpYmJpYXMgdG8gdGhlIHBhcnRzIGRvZXNuJ3Qgd29yayBh
-cyBpdCB3b3VsZCBuZWVkIHRvDQo+IGhhdmUgYm90aCBtb2RpZmllcnMgYW5kIGEgc2Vjb25kIGNo
-YW5uZWwgaW5kZXguDQo+IEFzIGZvciB3aHkgdGhhdCBpcyBhbiBpc3N1ZSwgaXQgY29tZXMgZG93
-biB0byB0cnlpbmcgdG8ga2VlcCB0aGUNCj4gZXZlbnQgaW50ZXJmYWNlIGRlc2NyaXB0aXZlLCBi
-dXQgc3RpbGwgbWluaW1hbC4gIFdlIGJhc2ljYWxseSByYW4NCj4gb3V0IG9mIGJpdHMgYW5kIGF0
-IHRoZSB0aW1lIEkgY291bGRuJ3QgdGhpbmsgb2YgYSByZWFzb24gd2UnZCB3YW50DQo+IGJvdGgg
-ZGlmZmVyZW50aWFsIGFuZCBhIG1vZGlmaWVyLi4uDQoNCkknbSBub3QgcmVhbGx5IHNlZWluZyB0
-aGUgaXNzdWUgd2l0aCB0aGUgZXZlbnQgaW50ZXJmYWNlIGJ1dCB0aGF0IGlzIG1vc3RseQ0KYmVj
-YXVzZSBJIHN0aWxsIG5ldmVyIGhhZCB0byBkZWFsIHdpdGggaXQsIHNvIEkgbmV2ZXIgbG9va2Vk
-IHRoYXQgZGVlcGx5IGludG8NCnRoZSBjb2RlLiBNaWdodCBiZSBhIGdvb2QgdGltZSBrbm93IDop
-DQoNCj4gPiBKb25hdGhhbiwgSSdtIG5vdCBzdXJlIHdoYXQgc2hvdWxkIGJlIHRoZSBkb25lIGhl
-cmUuLi4gRnJvbSB0aGUgdG9wDQo+IG9mIG15DQo+ID4gaGVhZCAgSSBndWVzcyB3ZSBjYW4gZWl0
-aGVyOg0KPiA+DQo+ID4gKiBkcm9wIHRoZSBtb2RpZmllcnMgKG5vdCBwZXJmZWN0IGJ1dCBhbHNv
-IG5vdCB0aGF0IGJhZCBJTU8pDQo+ID4gKiB0d2VhayBzb21ldGhpbmcgYWRkaW5nIGV4dGVuZGVk
-IGluZm8gKG5vdCByZWFsbHkgbmVhdCkNCj4gVHJ1ZSwgaXQncyBub3QgbmVhdCBidXQgbWlnaHQg
-YmUgdGhlIHdheSBmb3J3YXJkcyBmb3IgJ25vdycuLiBXZSBkb24ndA0KPiBoYXZlDQo+IGV2ZW50
-cyBvciBhbnl0aGluZyBvbiB0aGlzIGRyaXZlciwgc28gd2UgY291bGQgbWFrZSBpdCBsb29rIHJp
-Z2h0DQo+IHdpdGhvdXQgYW55DQo+IHJpc2sgb2Ygbm90IGJlaW5nIGFibGUgdG8gZXh0ZW5kIGl0
-LiAgSG93ZXZlciBpdCB3aWxsIHByb2JhYmx5IGNvbWUgYmFjaw0KPiB0byBiaXRlDQo+IHVzIGFu
-ZCB1c2Vyc3BhY2UgbWF5IG5vdCBleHBlY3Qgd2hhdGV2ZXIgd2UgZG8uDQo+IEhvcnJpYmxlIHRo
-b3VnaCBpdCBpcyB5b3UgY291bGQgdXNlIGV4dGVuZF9uYW1lIC0gd2hpY2ggd2FzIG9yaWdpbmFs
-bHkNCj4gaW50ZW5kZWQNCj4gdG8gbGV0IHVzICdsYWJlbCBzcGVjaWFsIHB1cnBvc2UgY2hhbm5l
-bHMnLiAgSXQgd2FzIGEgYmFkIGlkZWEsIGJ1dCBpcyB0aGVyZQ0KPiBhbmQNCj4gbm90IGdvaW5n
-IHdheSBhbnkgdGltZSBzb29uLg0KPiANCj4gSWYgeW91IGRpZCB0aGUgZGlmZmVyZW50aWFsIHRo
-aW5nIGFuZCBzZXQgZXh0ZW5kX25hbWUgPSAiaSIgZXRjIHRoYXQNCj4gbWlnaHQgZ2V0IHVzIGFy
-b3VuZCB0aGUgaW50ZXJuYWwgaXNzdWUgb2YgcmV1c2luZyBjaGFubmVsMiBmb3IgbW9kIGFuZA0K
-PiBkaWZmZXJlbnRpYWwNCj4gY2hhbm5lbC4NCg0KQ291bGRuJ3Qgd2UgdXNlIHRoZSBsYWJlbCB0
-byBhY2hpZXZlIGtpbmQgb2YgdGhlIHNhbWU/IE9yIGRvIHlvdSB0aGluaw0KdGhhdCBoYXZpbmcg
-dGhlICJpIiBhbmQgInEiIGluIHRoZSBmaWxlbmFtZXMgaXMgcmVhbGx5IG1hbmRhdG9yeT8gSSBj
-YW4NCnVuZGVyc3RhbmQgaWYgeW91IHRoaW5rIHRoZXkgYXJlIGFzIHRoZXkgYXJlIHZhbGlkIG1v
-ZGlmaWVycy4gT1RPSCwNCklJUkMsIHdpdGggdGhlIGxhdGVzdCBwYXRjaGVzIGZyb20gUGF1bCwg
-YWRkaW5nIHRoZSBleHRlbmRlZF9uYW1lIHdpbGwNCmF1dG9tYXRpY2FsbHkgZ2V0IHVzIHRoZSBs
-YWJlbCBzeXNmcyBmaWxlIHdoaWNoIG1pZ2h0IGJlIGEgbGl0dGxlIG9kZCBidXQgSQ0KZ3Vlc3Mg
-dGhhdCdzIGFscmVhZHkgdHJ1ZSBmb3IgYWxsIHRoZSBsZWdhY3kgZHJpdmVycyB1c2luZyBpdC4u
-LiBTbyB5ZWFoLA0KYmV0d2VlbiB0aGlzIG9yIGV4dGVuZGVkIGluZm8sIHdlIG1pZ2h0IGhhdmUg
-b3VyICJiYW5kIGFpZCIgZm9yIHRoaXMuDQoNCj4gPiAqIG9yIGhhbmRsaW5nIHRoaXMgaW4gdGhl
-IGNvcmUgd2l0aCBhIG5ldyB2YXJpYWJsZS4gT2YgY291cnNlLCB3ZQ0KPiB3b3VsZCBuZWVkDQo+
-ID4gdG8gYmUgY2FyZWZ1bCB0byBub3QgYnJlYWsgZXhpc3RpbmcgZHJpdmVycy4uLg0KPiANCj4g
-V2Ugd291bGQgZW5kIHVwIHNvbWV0aGluZyBoYXJkbHkgZXZlciB1c2VkIHNvIEknbSBkb3VidGZ1
-bCB0aGF0J3MgYQ0KPiBnb29kDQo+IGlkZWEgdW50aWwgd2UgaGF2ZSBzb21lIHZpc2liaWxpdHkg
-b2YgaG93IGNvbW1vbiBpdCB3b3VsZCBiZS4NCg0KVHJ1ZSwgbW9zdCBsaWtlbHkgd2Ugd291bGQg
-ZW5kIHVwIHdpdGggYSBwdWJsaWMgdmFyaWFibGUgb25seSB1c2VkIGluDQp0aGlzIHVzZSBjYXNl
-Li4uIEJldHRlciB0byB3YWl0IGlmIHNvbWUgdXNlcnMgbGlrZSB0aGlzIHBvcCB1cC4NCg0KLSBO
-dW5vIFPDoQ0K
+On 3/11/2021 8:08 pm, Yao Yuan wrote:
+> On Wed, Nov 03, 2021 at 03:03:10PM +0800, Like Xu wrote:
+>> Convert kvm_pmu_ops to use static calls.
+>>
+>> Here are the worst sched_clock() nanosecond numbers for the kvm_pmu_ops
+>> functions that is most often called (up to 7 digits of calls) when running
+>> a single perf test case in a guest on an ICX 2.70GHz host (mitigations=on):
+>>
+>>        |	legacy	|	static call
+>> ------------------------------------------------------------
+>> .pmc_idx_to_pmc	|	10946	|	10047 (8%)
+>> .pmc_is_enabled	|	11291	|	11175 (1%)
+>> .msr_idx_to_pmc	|	13526	|	12346 (8%)
+>> .is_valid_msr	|	10895	|	10484 (3%)
+>>
+>> Signed-off-by: Like Xu <likexu@tencent.com>
+>> ---
+>>   arch/x86/kvm/pmu.c        | 36 +++++++++++++++++-------------------
+>>   arch/x86/kvm/pmu.h        |  2 +-
+>>   arch/x86/kvm/vmx/nested.c |  2 +-
+>>   arch/x86/kvm/x86.c        |  4 +++-
+>>   4 files changed, 22 insertions(+), 22 deletions(-)
+>>
+>> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
+>> index b6f08c719125..193f925e2064 100644
+>> --- a/arch/x86/kvm/pmu.c
+>> +++ b/arch/x86/kvm/pmu.c
+>> @@ -224,7 +224,7 @@ void reprogram_gp_counter(struct kvm_pmc *pmc, u64 eventsel)
+>>              ARCH_PERFMON_EVENTSEL_CMASK |
+>>              HSW_IN_TX |
+>>              HSW_IN_TX_CHECKPOINTED))) {
+>> -		config = kvm_pmu_ops.find_arch_event(pmc_to_pmu(pmc),
+>> +		config = static_call(kvm_x86_pmu_find_arch_event)(pmc_to_pmu(pmc),
+> 
+> Why you need change them into kvm_pmu_ops.XXX then convert
+> them into static call ? Move the instance definition of
+> kvm_pmu_ops from patch 1 into patch 3 and then drop patch 1,
+> will this work ?
+
+You may git squash all commits to get it *work*.
+
+With reference to afaf0b2f9b801c6eb2278b52d49e6a7d7b659cf1[1],
+doing one thing at a time will make things go smoother.
+
+[1] 
+https://lore.kernel.org/lkml/20200321202603.19355-7-sean.j.christopherson@intel.com/
+
+> 
+>>                              event_select,
+>>                              unit_mask);
+>>        if (config != PERF_COUNT_HW_MAX)
+>> @@ -278,7 +278,7 @@ void reprogram_fixed_counter(struct kvm_pmc *pmc, u8 ctrl, int idx)
+>>
+>>    pmc->current_config = (u64)ctrl;
+>>    pmc_reprogram_counter(pmc, PERF_TYPE_HARDWARE,
+>> -               kvm_pmu_ops.find_fixed_event(idx),
+>> +               static_call(kvm_x86_pmu_find_fixed_event)(idx),
+>>                  !(en_field & 0x2), /* exclude user */
+>>                  !(en_field & 0x1), /* exclude kernel */
+>>                  pmi, false, false);
+>> @@ -287,7 +287,7 @@ EXPORT_SYMBOL_GPL(reprogram_fixed_counter);
+>>
+>>   void reprogram_counter(struct kvm_pmu *pmu, int pmc_idx)
+>>   {
+>> -	struct kvm_pmc *pmc = kvm_pmu_ops.pmc_idx_to_pmc(pmu, pmc_idx);
+>> +	struct kvm_pmc *pmc = static_call(kvm_x86_pmu_pmc_idx_to_pmc)(pmu, pmc_idx);
+>>
+>>    if (!pmc)
+>>        return;
+>> @@ -309,7 +309,7 @@ void kvm_pmu_handle_event(struct kvm_vcpu *vcpu)
+>>    int bit;
+>>
+>>    for_each_set_bit(bit, pmu->reprogram_pmi, X86_PMC_IDX_MAX) {
+>> -		struct kvm_pmc *pmc = kvm_pmu_ops.pmc_idx_to_pmc(pmu, bit);
+>> +		struct kvm_pmc *pmc = static_call(kvm_x86_pmu_pmc_idx_to_pmc)(pmu, bit);
+>>
+>>        if (unlikely(!pmc || !pmc->perf_event)) {
+>>            clear_bit(bit, pmu->reprogram_pmi);
+>> @@ -331,7 +331,7 @@ void kvm_pmu_handle_event(struct kvm_vcpu *vcpu)
+>>   /* check if idx is a valid index to access PMU */
+>>   int kvm_pmu_is_valid_rdpmc_ecx(struct kvm_vcpu *vcpu, unsigned int idx)
+>>   {
+>> -	return kvm_pmu_ops.is_valid_rdpmc_ecx(vcpu, idx);
+>> +	return static_call(kvm_x86_pmu_is_valid_rdpmc_ecx)(vcpu, idx);
+>>   }
+>>
+>>   bool is_vmware_backdoor_pmc(u32 pmc_idx)
+>> @@ -381,7 +381,7 @@ int kvm_pmu_rdpmc(struct kvm_vcpu *vcpu, unsigned idx, u64 *data)
+>>    if (is_vmware_backdoor_pmc(idx))
+>>        return kvm_pmu_rdpmc_vmware(vcpu, idx, data);
+>>
+>> -	pmc = kvm_pmu_ops.rdpmc_ecx_to_pmc(vcpu, idx, &mask);
+>> +	pmc = static_call(kvm_x86_pmu_rdpmc_ecx_to_pmc)(vcpu, idx, &mask);
+>>    if (!pmc)
+>>        return 1;
+>>
+>> @@ -397,22 +397,21 @@ int kvm_pmu_rdpmc(struct kvm_vcpu *vcpu, unsigned idx, u64 *data)
+>>   void kvm_pmu_deliver_pmi(struct kvm_vcpu *vcpu)
+>>   {
+>>    if (lapic_in_kernel(vcpu)) {
+>> -		if (kvm_pmu_ops.deliver_pmi)
+>> -			kvm_pmu_ops.deliver_pmi(vcpu);
+>> +		static_call_cond(kvm_x86_pmu_deliver_pmi)(vcpu);
+>>        kvm_apic_local_deliver(vcpu->arch.apic, APIC_LVTPC);
+>>    }
+>>   }
+>>
+>>   bool kvm_pmu_is_valid_msr(struct kvm_vcpu *vcpu, u32 msr)
+>>   {
+>> -	return kvm_pmu_ops.msr_idx_to_pmc(vcpu, msr) ||
+>> -		kvm_pmu_ops.is_valid_msr(vcpu, msr);
+>> +	return static_call(kvm_x86_pmu_msr_idx_to_pmc)(vcpu, msr) ||
+>> +		static_call(kvm_x86_pmu_is_valid_msr)(vcpu, msr);
+>>   }
+>>
+>>   static void kvm_pmu_mark_pmc_in_use(struct kvm_vcpu *vcpu, u32 msr)
+>>   {
+>>    struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+>> -	struct kvm_pmc *pmc = kvm_pmu_ops.msr_idx_to_pmc(vcpu, msr);
+>> +	struct kvm_pmc *pmc = static_call(kvm_x86_pmu_msr_idx_to_pmc)(vcpu, msr);
+>>
+>>    if (pmc)
+>>        __set_bit(pmc->idx, pmu->pmc_in_use);
+>> @@ -420,13 +419,13 @@ static void kvm_pmu_mark_pmc_in_use(struct kvm_vcpu *vcpu, u32 msr)
+>>
+>>   int kvm_pmu_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>>   {
+>> -	return kvm_pmu_ops.get_msr(vcpu, msr_info);
+>> +	return static_call(kvm_x86_pmu_get_msr)(vcpu, msr_info);
+>>   }
+>>
+>>   int kvm_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>>   {
+>>    kvm_pmu_mark_pmc_in_use(vcpu, msr_info->index);
+>> -	return kvm_pmu_ops.set_msr(vcpu, msr_info);
+>> +	return static_call(kvm_x86_pmu_set_msr)(vcpu, msr_info);
+>>   }
+>>
+>>   /* refresh PMU settings. This function generally is called when underlying
+>> @@ -435,7 +434,7 @@ int kvm_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>>    */
+>>   void kvm_pmu_refresh(struct kvm_vcpu *vcpu)
+>>   {
+>> -	kvm_pmu_ops.refresh(vcpu);
+>> +	static_call(kvm_x86_pmu_refresh)(vcpu);
+>>   }
+>>
+>>   void kvm_pmu_reset(struct kvm_vcpu *vcpu)
+>> @@ -443,7 +442,7 @@ void kvm_pmu_reset(struct kvm_vcpu *vcpu)
+>>    struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+>>
+>>    irq_work_sync(&pmu->irq_work);
+>> -	kvm_pmu_ops.reset(vcpu);
+>> +	static_call(kvm_x86_pmu_reset)(vcpu);
+>>   }
+>>
+>>   void kvm_pmu_init(struct kvm_vcpu *vcpu)
+>> @@ -451,7 +450,7 @@ void kvm_pmu_init(struct kvm_vcpu *vcpu)
+>>    struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+>>
+>>    memset(pmu, 0, sizeof(*pmu));
+>> -	kvm_pmu_ops.init(vcpu);
+>> +	static_call(kvm_x86_pmu_init)(vcpu);
+>>    init_irq_work(&pmu->irq_work, kvm_pmi_trigger_fn);
+>>    pmu->event_count = 0;
+>>    pmu->need_cleanup = false;
+>> @@ -483,14 +482,13 @@ void kvm_pmu_cleanup(struct kvm_vcpu *vcpu)
+>>              pmu->pmc_in_use, X86_PMC_IDX_MAX);
+>>
+>>    for_each_set_bit(i, bitmask, X86_PMC_IDX_MAX) {
+>> -		pmc = kvm_pmu_ops.pmc_idx_to_pmc(pmu, i);
+>> +		pmc = static_call(kvm_x86_pmu_pmc_idx_to_pmc)(pmu, i);
+>>
+>>        if (pmc && pmc->perf_event && !pmc_speculative_in_use(pmc))
+>>            pmc_stop_counter(pmc);
+>>    }
+>>
+>> -	if (kvm_pmu_ops.cleanup)
+>> -		kvm_pmu_ops.cleanup(vcpu);
+>> +	static_call_cond(kvm_x86_pmu_cleanup)(vcpu);
+>>
+>>    bitmap_zero(pmu->pmc_in_use, X86_PMC_IDX_MAX);
+>>   }
+>> diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
+>> index e5550d4acf14..1818d1371ece 100644
+>> --- a/arch/x86/kvm/pmu.h
+>> +++ b/arch/x86/kvm/pmu.h
+>> @@ -109,7 +109,7 @@ static inline bool pmc_is_fixed(struct kvm_pmc *pmc)
+>>
+>>   static inline bool pmc_is_enabled(struct kvm_pmc *pmc)
+>>   {
+>> -	return kvm_pmu_ops.pmc_is_enabled(pmc);
+>> +	return static_call(kvm_x86_pmu_pmc_is_enabled)(pmc);
+>>   }
+>>
+>>   static inline bool kvm_valid_perf_global_ctrl(struct kvm_pmu *pmu,
+>> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+>> index 1e793e44b5ff..a61661de1f39 100644
+>> --- a/arch/x86/kvm/vmx/nested.c
+>> +++ b/arch/x86/kvm/vmx/nested.c
+>> @@ -4796,7 +4796,7 @@ void nested_vmx_pmu_entry_exit_ctls_update(struct kvm_vcpu *vcpu)
+>>        return;
+>>
+>>    vmx = to_vmx(vcpu);
+>> -	if (kvm_pmu_ops.is_valid_msr(vcpu, MSR_CORE_PERF_GLOBAL_CTRL)) {
+>> +	if (static_call(kvm_x86_pmu_is_valid_msr)(vcpu, MSR_CORE_PERF_GLOBAL_CTRL)) {
+>>        vmx->nested.msrs.entry_ctls_high |=
+>>                VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL;
+>>        vmx->nested.msrs.exit_ctls_high |=
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index 72d286595012..88a3ef809c98 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -11317,8 +11317,10 @@ int kvm_arch_hardware_setup(void *opaque)
+>>    memcpy(&kvm_x86_ops, ops->runtime_ops, sizeof(kvm_x86_ops));
+>>    kvm_ops_static_call_update();
+>>
+>> -	if (kvm_x86_ops.hardware_enable)
+>> +	if (kvm_x86_ops.hardware_enable) {
+>>        memcpy(&kvm_pmu_ops, kvm_x86_ops.pmu_ops, sizeof(kvm_pmu_ops));
+>> +		kvm_pmu_ops_static_call_update();
+>> +	}
+>>
+>>    if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
+>>        supported_xss = 0;
+>> --
+>> 2.33.0
+>>
+> 
