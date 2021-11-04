@@ -2,194 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E3F4458CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:38:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F074458CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233983AbhKDRkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 13:40:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49768 "EHLO mail.kernel.org"
+        id S233938AbhKDRmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:42:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233993AbhKDRki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 13:40:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 087DD60E90;
-        Thu,  4 Nov 2021 17:38:00 +0000 (UTC)
+        id S231667AbhKDRmo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 13:42:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 523B360E90;
+        Thu,  4 Nov 2021 17:40:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636047480;
-        bh=3dj54GcToDRArCavCYNJX6yC7TQbVCKsCf0X142AsN4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZRm47lGanUSQF+rZXsdd7tJtrfbOawKWrtazrpkrNThnER0OcS/zUQW9P79HLNUkB
-         IXvx9CnbdBMILZdTZuZzo1/wxm+w0bUURrCINFsseom5Hl+Db0YqDMOdb6R/Im2uHY
-         RcPhst0dFOqQPQqBzw1p2Uyf4DolhOZyYI2uwTYBEOoUaFps5iL5BMkwYCKMoeC3Mh
-         iolF1k8teUGtZ3oPNYep8lJiSoOHpofA/kuDrpyYps7ym/l92vRYDVQF2LojEi4yeZ
-         WO5dEt21xNCMP5QOQTeFoTwwezMYzXpHOD8wVp6/uawVWAKPHLgFothOsVbL+/v64g
-         Q4OLc4wSabIqg==
+        s=k20201202; t=1636047606;
+        bh=IcgAGLN2juO/X4PpyOuhrmT+wzS1AUDVoeN1jSoWPqg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WoXEayTjhWctFyFrvTPZ2EBv+GD8iyOPNiVjaxv3/O3PRvG8B7HqeKnJO/WfMVWOi
+         7tEmGg0emfDTfh11Ea7WSzKEu0k+tmEXyHr58hPL5WrUa48L2fJCcQnfdXDDPb3V2C
+         cFKJ5JNXC3gr8Nf8msT1XFKtymFjGO6Q9k2uB8hwQCGh4lL7hPyZYmxtYdupy/avOH
+         6ZlbsM01TLSfBzCCY+SjPgCodKhhf/uAuUkxYSyIEu2pBRM64nBLjTZGUbpDcqFGLQ
+         qO/REcKfJ0OSLF1UF+qJLfIXuRmsVl4ucu1xk7e2F6fS218BezaCxXaxNEIyglew4A
+         /pFegIJCH0O1g==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id AB116410A1; Thu,  4 Nov 2021 14:37:57 -0300 (-03)
-Date:   Thu, 4 Nov 2021 14:37:57 -0300
+        id 35A1F410A1; Thu,  4 Nov 2021 14:40:03 -0300 (-03)
+Date:   Thu, 4 Nov 2021 14:40:03 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: perf build broken looking for bpf/{libbpf,bpf}.h after merge with
- upstream
-Message-ID: <YYQadWbtdZ9Ff9N4@kernel.org>
+To:     Stephane Eranian <eranian@google.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH v3] perf evsel: Fix missing exclude_{host,guest} setting
+Message-ID: <YYQa8xeUuaRqyTDD@kernel.org>
+References: <20211029224929.379505-1-namhyung@kernel.org>
+ <YYFGxwFMvTRN5KBI@krava>
+ <CAM9d7cjPq7=HoPAi3Cd3crcNJO8hWu0cU8j4qOTqSMxd7M6BqQ@mail.gmail.com>
+ <YYI5EwCjBojR+1QW@krava>
+ <CABPqkBSHo3Gznor1e8M_Ue0XO8Z-HZt326q8N9kLWz4+jKkt-w@mail.gmail.com>
+ <YYJzPkcUz2pcuspX@kernel.org>
+ <CABPqkBQkqehAvpfJk77WZpXezrVO6cAj=9ktKFgL=C_m84_Dgg@mail.gmail.com>
+ <YYL5FaKQ1ZvGwd08@kernel.org>
+ <CABPqkBTr10pcbY0v5mM23PKDWdWg3CNywH4HLSGfy4ab8d6+=g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABPqkBTr10pcbY0v5mM23PKDWdWg3CNywH4HLSGfy4ab8d6+=g@mail.gmail.com>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Wed, Nov 03, 2021 at 03:29:50PM -0700, Stephane Eranian escreveu:
+> On Wed, Nov 3, 2021 at 2:03 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > Em Wed, Nov 03, 2021 at 10:35:04AM -0700, Stephane Eranian escreveu:
+> > > On Wed, Nov 3, 2021 at 4:32 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > > > Em Wed, Nov 03, 2021 at 12:44:12AM -0700, Stephane Eranian escreveu:
+> > > > > On Wed, Nov 3, 2021 at 12:24 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > > > > > If the pmu doesn't support host/guest filtering, pmu/bla1/G
+> > > > > > > may count something.  Not sure if it's better to error out.
+> > > > > > > But the cycles:G and instructions:G should result in 0
+> > > > > > > in case there's no VM running.
 
-Hi Song,
+> > > > > > hm, I think if pmu doesn't support host/guest filtering then
+> > > > > > I think 'pmu/bla1/G' should error, no? better no number than
+> > > > > > bad number
 
-	I just did a merge with upstream and I'm getting this:
+> > > > > Yes, it should in my opinion.
 
-  LINK    /tmp/build/perf/plugins/plugin_scsi.so
-  INSTALL trace_plugins
+> > > > Yeah, I thought about this yesterday (holiday here).
 
-Auto-detecting system features:
-...                        libbfd: [ on  ]
-...        disassembler-four-args: [ on  ]
-...                          zlib: [ on  ]
-...                        libcap: [ on  ]
-...               clang-bpf-co-re: [ on  ]
+> > > Otherwise you create the illusion that you are monitoring in guest
+> > > mode when you are not.
 
+> > > The question is: how can the tool know which modifiers are supported
+> > > per pmu model?
 
-  MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//libbpf//include/bpf
-  MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/
-  MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/
-  INSTALL /tmp/build/perf/util/bpf_skel/.tmp//libbpf//include/bpf/hashmap.h
-  INSTALL /tmp/build/perf/util/bpf_skel/.tmp//libbpf//include/bpf/nlattr.h
-  GEN     /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/bpf_helper_defs.h
-  MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
-  MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
-  MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
-  MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
-  MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
-  MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
-  MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
-  MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/libbpf.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/libbpf_probes.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/xsk.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/bpf.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/nlattr.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/btf.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/libbpf_errno.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/hashmap.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/str_error.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/netlink.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/btf_dump.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/bpf_prog_linfo.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/ringbuf.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/strset.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/linker.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/gen_loader.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/relo_core.o
-  LD      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/libbpf-in.o
-  LINK    /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/libbpf.a
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/main.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/common.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/gen.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/json_writer.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/btf.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/xlated_dumper.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/btf_dumper.o
-  CC      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/disasm.o
-gen.c:15:10: fatal error: bpf/bpf.h: No such file or directory
-   15 | #include <bpf/bpf.h>
-      |          ^~~~~~~~~~~
-compilation terminated.
-make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/gen.o] Error 1
-make[3]: *** Waiting for unfinished jobs....
-xlated_dumper.c:10:10: fatal error: bpf/libbpf.h: No such file or directory
-   10 | #include <bpf/libbpf.h>
-      |          ^~~~~~~~~~~~~~
-compilation terminated.
-btf.c:15:10: fatal error: bpf/bpf.h: No such file or directory
-   15 | #include <bpf/bpf.h>
-      |          ^~~~~~~~~~~
-compilation terminated.
-make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/xlated_dumper.o] Error 1
-make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/btf.o] Error 1
-main.c:12:10: fatal error: bpf/bpf.h: No such file or directory
-   12 | #include <bpf/bpf.h>
-      |          ^~~~~~~~~~~
-compilation terminated.
-make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/main.o] Error 1
-btf_dumper.c:12:10: fatal error: bpf/btf.h: No such file or directory
-   12 | #include <bpf/btf.h>
-      |          ^~~~~~~~~~~
-compilation terminated.
-make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/btf_dumper.o] Error 1
-common.c:24:10: fatal error: bpf/bpf.h: No such file or directory
-   24 | #include <bpf/bpf.h>
-      |          ^~~~~~~~~~~
-compilation terminated.
-make[3]: *** [Makefile:213: /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/common.o] Error 1
-make[2]: *** [Makefile.perf:1048: /tmp/build/perf/util/bpf_skel/.tmp/bootstrap/bpftool] Error 2
-make[1]: *** [Makefile.perf:240: sub-make] Error 2
-make: *** [Makefile:113: install-bin] Error 2
-make: Leaving directory '/var/home/acme/git/perf/tools/perf'
+> > As things stand kernel-wise, we should just do capability querying, i.e.
+> > if the user asks for a feature not available for a specific PMU, we
+> > should refuse and provide a helpful error message to the user.
 
- Performance counter stats for 'make -k BUILD_BPF_SKEL=1 CORESIGHT=1 PYTHON=python3 O=/tmp/build/perf -C tools/perf install-bin':
+> > If the PMUs in the kernel had some kind of mask that stated what of the
+> > 'struct perf_event_attr' selectable features are supported, then we
+> > would just be able to avoid bothering the kernel asking for unsupported
+> > stuff.
 
-          6,965.78 msec task-clock:u              #    1.492 CPUs utilized
-          6,937.93 msec cpu-clock:u               #    1.486 CPUs utilized
+> I think we could add something like that in the sysfs entry for each
+> PMU instance.
+> that would avoid all these perf_event_open() calls and trying to
+> decipher the error
+> code.
 
-       4.669198336 seconds time elapsed
-
-       4.015978000 seconds user
-       3.202660000 seconds sys
-
-
-70: Event expansion for cgroups                                     : Ok
-88: perf all metricgroups test                                      : FAILED!
-⬢[acme@toolbox perf]$ find tools/ -name bpf.h
-tools/include/uapi/linux/bpf.h
-tools/lib/bpf/bpf.h
-tools/perf/include/bpf/bpf.h
-⬢[acme@toolbox perf]$ find tools/ -name libbpf.h
-tools/lib/bpf/libbpf.h
-⬢[acme@toolbox perf]$ find tools/perf/ -name gen.c
-⬢[acme@toolbox perf]$
-
-Before the merge, with pristine sources I wasn't getting this,
-investigating now.
-
-⬢[acme@toolbox perf]$ git show HEAD
-commit e1498f18537a1639963370a4635c6fb99e7d672b (HEAD -> perf/core)
-Merge: 32f7aa2731b24ad8 abfecb39092029c4
-Author: Arnaldo Carvalho de Melo <acme@redhat.com>
-Date:   Thu Nov 4 14:32:11 2021 -0300
-
-    Merge remote-tracking branch 'torvalds/master' into perf/core
-
-    To pick up some tools/perf/ patches that went via tip/perf/core, such
-    as:
-
-      tools/perf: Add mem_hops field in perf_mem_data_src structure
-
-    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-⬢[acme@toolbox perf]$
-
-⬢[acme@toolbox perf]$ git log --oneline -10 torvalds/master
-abfecb39092029c4 (torvalds/master) Merge tag 'tty-5.16-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty
-95faf6ba654dd334 Merge tag 'driver-core-5.16-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core
-5c904c66ed4e86c3 Merge tag 'char-misc-5.16-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc
-5cd4dc44b8a0f656 Merge tag 'staging-5.16-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging
-048ff8629e117d84 Merge tag 'usb-5.16-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb
-7ddb58cb0ecae8e8 Merge tag 'clk-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/clk/linux
-ce840177930f591a Merge tag 'defconfig-5.16' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
-d461e96cd22b5aeb Merge tag 'drivers-5.16' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
-ae45d84fc36d01dc Merge tag 'dt-5.16' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
-2219b0ceefe835b9 Merge tag 'soc-5.16' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
-⬢[acme@toolbox perf]$
+That would speed up these checks with newer kernels, yeah, with older
+kernels we'd fall back to what we have now + bailing out in the current
+case (PMUs not supporting exclude_guest).
 
 - Arnaldo
+ 
+> > Just for exclude_guest we don't even need to have
+> > evsel->pmu->missing_features.exclude_guest, as this is a hard error, no
+> > point in caching previous capability queries.
