@@ -2,131 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D29445319
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:32:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B12445322
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhKDMfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 08:35:13 -0400
-Received: from mail-bn8nam11on2073.outbound.protection.outlook.com ([40.107.236.73]:12512
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231614AbhKDMfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 08:35:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FKuU+RqeOjqVILwWnVWsgkR13xzhqhJV15M5KyLBFHw0vCTBCekK5CsseLLFaQULTm3ZoKn3xZNjjKEJbSRbc7dGRtuzt+YvsRkIdDcn6zzoxyvQDMf4uWroccRNkynI+N1ecqTl0liE6f8dH9SuCg/NCOqKSeGu9PjHMm91rN0B8dB0N8XVL4uVOkJXDMbIF964HHWL9D+pT/YXUTX3AbbLX+OJ4wFSQqwN0edynEeJ9CsaD51dhF5e9eBzpfyClxxCb5YBtxLOS0+liiHXbkUw1GLRpJAwgxQgJf5u8cHlG2bRdJehZzDzB2DHOX4MYvVtW87qmOQqBE3BfjW4IA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2NsdUwqg/ebwpIoq4nYzmmA8cOJ5d422iQxYBnPZ0ig=;
- b=oM9nMrqbKRJdevFAE+SMXtTm6byN5hEaKfTpp/6QYZADYhd/m42c3XtZbS37FHK63ZQhoD8xcAS9QUIEAP+gfrLoenEW97xpYv6RrEkOwHjmv7CSIXHz0qB8btLvNf/SfeQUZpThQMgwPtgTTFKn7fpou5KVRhXkoYEJTcPQwyEjC4ASkmB3lqYwsUCS7ml/fNxeEsRbtBA4ZVYq2aihI61dBc+48AIhTbHpTbm1gJZlto7pz4ROGj9YiPq/nAYtNu8oNf7TWcfeIGY2jdFetb08FF6clBbIuCE+2KuWxm1hWUSLmNc3I1fpQ2s2aZtEho7DwX1r0m4XFv9D+X6bxQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2NsdUwqg/ebwpIoq4nYzmmA8cOJ5d422iQxYBnPZ0ig=;
- b=TPXbdcG/hHN6yhEM9tzrwkRI/hiWAFjJIJXp+Owr4X5wuVP9P2m7wdeMh35F/48N9MFnUkYFb2VRmsSAn2iPHTBYdfZPd+oFqDbwq0CnkbqLlnAaaf/SkvIqJQooYMzshbvbfS/DVYPfJ0wTJWo+Qb9bdmzZZXgpUHi46GFKCNkCZ5qWRJVx24APrn8Pq006ql/mo76E5iGLPFZ5x4HLd4pRY0uk0AHxHjglCNS4itFLjslsiaCQir46Pgipqc8VyLF1r7rx4EQut8pLa3QtLpF9bthX/vr3tAqqHXM7uBcW/WFhPy+KJu0SucoGspod8gKiMFLjiSODGiS5T/IhZg==
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5255.namprd12.prod.outlook.com (2603:10b6:208:315::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10; Thu, 4 Nov
- 2021 12:32:26 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::5897:83b2:a704:7909]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::5897:83b2:a704:7909%7]) with mapi id 15.20.4669.013; Thu, 4 Nov 2021
- 12:32:26 +0000
-Date:   Thu, 4 Nov 2021 09:32:25 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/29] drm/i915/gvt: integrate into the main Makefile
-Message-ID: <20211104123225.GV2744544@nvidia.com>
-References: <20211102070601.155501-1-hch@lst.de>
- <20211102070601.155501-3-hch@lst.de>
- <163602902009.4807.3745093259631583283@jlahtine-mobl.ger.corp.intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163602902009.4807.3745093259631583283@jlahtine-mobl.ger.corp.intel.com>
-X-ClientProxiedBy: BL1PR13CA0208.namprd13.prod.outlook.com
- (2603:10b6:208:2be::33) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S231136AbhKDMhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 08:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhKDMhI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 08:37:08 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D949C061714;
+        Thu,  4 Nov 2021 05:34:30 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id c206so5168205iof.2;
+        Thu, 04 Nov 2021 05:34:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aSDFeDkO0qaLEtNK76O8NQimr+zDhbv1igoxk25YmPY=;
+        b=E1DVTWypHI2O3f/jSult45xc4Nyet5nYf4oCkBxkNAF3ggPghzVdYPA1jCTjFxGi+4
+         0gxaT98/tY8ziYzhlBwzJoKieroEL7j/vsFEzX2lZcYMQSJD+ymAzVbYGaa6Kcfd3ZyD
+         io3gGk3bAqSzjp1kVPH9xpBfSYXJh+Lw2k9LWIHv0fCoZLzyt5HxChxRA3aG2Tkq6+wS
+         kODFZYk9ugSw9G4IWZfyAiH6ZSnmvNOgZoXiOPuwtBaUiRxvJ/azHPABI1jsH31b8DvK
+         FCtm9m+KRoUuRPtNY3MtUMku1SSxhc7Jjgimy+RmRqfq0ks+BhjZMqRbZl0tUNb9Tt/e
+         h/Vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aSDFeDkO0qaLEtNK76O8NQimr+zDhbv1igoxk25YmPY=;
+        b=Vil2qyxa+qN6SzjrVM7ectpPB8mfGe4lFahGOR0H2ZJOdDiiy5d3d2Hx28F5HsG14W
+         75MyH+9lBzXwvxf16/BkY67fuDJj/btxhDtPemEaoMZ3GhDVvM8Ajy0SV/Hx5+QXHdhx
+         QzYQN2jToc92VgjCoqMArFskzT2Eqt+vDotFYLJa+Ti8vFP3b67eAf/iIEWPP7igpkVI
+         GBsMdJIGC1g6vL+DnD2yf8H142LDfLcI2tF69qgPLlWpHl2yc2dh1MGgHyvOUqu2IU9N
+         RvspGzMCT7LFMTh1akzonUjAdsPKVvxeiLuHZRZ3T4Q7MYjhJSv9W9XdUKprnKsAYkP4
+         jRTg==
+X-Gm-Message-State: AOAM530BoCwjatOKgKoiVGeQYCaLHmkRPZ0KoTNuIZLtd/cZjymhxHKq
+        Q+QiYgX34SCNIeHsQFc0740=
+X-Google-Smtp-Source: ABdhPJw6M9RYSmqHFJvybY+a+KomOfFaWSSqh7ifj2ugVv7FmZS+hyQlTz+463uXwfx9IfqdHLDjug==
+X-Received: by 2002:a6b:6a17:: with SMTP id x23mr6170895iog.165.1636029269668;
+        Thu, 04 Nov 2021 05:34:29 -0700 (PDT)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:e81d:737a:bb84:83ba])
+        by smtp.gmail.com with ESMTPSA id o10sm2632156ilc.56.2021.11.04.05.34.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 05:34:28 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: imx8mm-beacon: Enable USB Controllers
+Date:   Thu,  4 Nov 2021 07:34:11 -0500
+Message-Id: <20211104123411.397205-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0208.namprd13.prod.outlook.com (2603:10b6:208:2be::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.5 via Frontend Transport; Thu, 4 Nov 2021 12:32:26 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mibur-005yoS-Ai; Thu, 04 Nov 2021 09:32:25 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7bca73a9-c3c5-4528-f349-08d99f8f28b7
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5255:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB52554D4B8E48573DAB8B23B9C28D9@BL1PR12MB5255.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +301lU9tTSOmLngfzxZu2ylMTOr44Y1XOW8aGxjMgZU5qVMDWMQQcHTcBGQsnxo+iUAVR0siSW6p8x95WJiRaMBl9++bfe9RmtpaV+ljia4Oc296w21zDxf2o8Jvke7nGghlgkRM9Uo3gaMAe6884iqcKLom05VguKjGp1Ue8XQRacYeCuTlk5xdMkumpoer24qtuFm9cAq/RtaUnFK94HYJvrWWbE7chSb6o2Ho6xy1LDl11YkltzeA22rFZy34B7uziWw9QqlNwjhuzLFwDEe+t/GrL2d2Hq8GLofto1jRHnbXpx1p0p1YHkpnmex16BxdHSbX+3IdJ/CzWdiV2HvlbPG09DVBAUj0fcu4XYMhNiausMYwWzO9RaUL/vWr2+/eb3NJcMQJRwk2WZTfntmLLSKyVTtOkIQ96p3Q1LUtv1msXPneNrPPrJQ938akPtT2R+BAvfKdMy2YdRs+LosRNSaePtEXZHz6XNkyL7olZgTc2Etpj91OQ9aqjVNf7h8fg6zROduG5BmLDFnlor7h9YUlQ8eZg7aGBrVnqeWA2uc0L0HcevErtqgA9qaaWsmtoe01QTBLlGQvzJdDlBvsLbamFz7y9fFXgNH4uSDevXWVKYcqlnXWdBVwFSe8XirFKPnq5IDKkTskmKqlng==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(9746002)(9786002)(38100700002)(33656002)(86362001)(2906002)(26005)(66946007)(316002)(4744005)(66556008)(66476007)(4326008)(5660300002)(186003)(83380400001)(8676002)(426003)(1076003)(54906003)(8936002)(508600001)(6916009)(2616005)(7416002)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?X+dZPpvkky70dP9en7T6hiSrmCxSGUAmgjcMkUKUJY0wOJgcDqTF5pxC8OsN?=
- =?us-ascii?Q?w6Q8yVDHHnikPVG90Jwo4PwXorAIHgdBkZl6Wcggw88wTSnBia5BDKkFa2+9?=
- =?us-ascii?Q?m7jtDKoTZgDJzgDLFOp3sXFwpSoYPg3AXRrGYQdDsuB3kZaBQSSN9dKQJn+s?=
- =?us-ascii?Q?Alt/CdgYWbMHm6hroOZr488EBIfoZyXbXwngHVt3xNzf/uLTTHlQ9gOrje8z?=
- =?us-ascii?Q?UmVsh2jGnNW76VkyBFWlIva/31LF/b4eveHxLkxMCKpGh1mV6TLfbu9F8hsf?=
- =?us-ascii?Q?dQCxmvWWjB3KT11obvJp+7tPIBIyFQ/mrebNazg/xfd7//QjjXcVri8aWJzz?=
- =?us-ascii?Q?8rVZSkINix8X2tZ29p0m26tyAe91rCt+YJ8acmG2ZEjvPTSiXtf1GZkkNeGd?=
- =?us-ascii?Q?n+qDmhbRro4MpzEZqzTLG0kB8h0ffEndGqvFOU0slyj0XZUetIWkpr/Ghj4x?=
- =?us-ascii?Q?fHeNqNoFSbBySEoo6zDvYpZ9m31GEkHLIDmQkYyTnP2Dn47/5HRfkCACM3BV?=
- =?us-ascii?Q?mNu0hZB7rQZaxL69raONp3ua+ziAXb1Yf7uABGkmQ2MbQ78iN5w+avKe5y6a?=
- =?us-ascii?Q?4H7CCa1lvOEYVJM2HoNjTxcI3bLJufhEZffWFCmC6iM1d/M+AIWqp5M8pS5p?=
- =?us-ascii?Q?n7EpeCJHg5JeyMVIirGomHsyCOf3tT+lyTBIcv2kRl09XZQzeKXLjRai1/Dq?=
- =?us-ascii?Q?uym40tNibeGEykV/DmU91eFVu0e4eWz0bBdBU2OumY4y00YxaEfkePPvEyfe?=
- =?us-ascii?Q?TcAZAFPQHFhP4tC4jU8779bWFaNuB7df50ZNH6RURNVTLLeQw+ag4CF/jW80?=
- =?us-ascii?Q?QXeamU4qYQTei3y6XtKPEGguy8bcQYfS/4w0Iw+p+kMzRv0wK4mbcJiMJdAN?=
- =?us-ascii?Q?S/u8NKiULLTrAiTZW7mcg4SIx94SvG3cepK7pQLj3ysi31KL8n3yB1zBO1Nj?=
- =?us-ascii?Q?heM7mRYOJbAcqPuPKQHxdF7PngF5v2UDIho1F7ft29lovMXSUo31gKoHvqlA?=
- =?us-ascii?Q?KVNP8aeUwDruczEK6hP95Iz2kqK54Z4VrvwVoa3R2pFgwS8g/uPx2icuRwaj?=
- =?us-ascii?Q?xui8c+nHRO7BspuArNCogFrVx6JuNaOL41G1Fe+ZiXX7v4LD+WuFwtuUjTdn?=
- =?us-ascii?Q?3GDs3wY8DoinDf3GczIxM926OZvxFTfpyn8M4YHi+HPUpT51B2sz7CH9EXrV?=
- =?us-ascii?Q?+NLLhB+I4fcRSs3bC4DenaHoEm/oKDRZAD8XZLuM8DX1S5PwsDL8xUxaKjIg?=
- =?us-ascii?Q?eorrZeMw/J8ITIoKonABDTs7zeuKcjO1XKzwY+LU50kzSXJIQYFqnRJv83yX?=
- =?us-ascii?Q?uj0/Kj3lS8Rbanx7g3/Xxj2jPfZA1dmKyZIB8sV84ky8QYa9SG8v5Z7do4Qc?=
- =?us-ascii?Q?JqoHI5X44HAAJRr/Zj2P3Draic1mE8X6oYUjpkrpYBKxVi86MGiGVU7JuK51?=
- =?us-ascii?Q?KJHvgcqY0t5cRull0r08BU59HWxnrixdPoYilWw3Yzgs3YUmhJP2M/2ejjlB?=
- =?us-ascii?Q?vY/4mHhaOgO2/ehzHF0ztGqQQqMUpwgAafdt6gJRpLC8bNnT4vpVjmTLlPa9?=
- =?us-ascii?Q?i7Px/cPGmJzG8BQ+Lzo=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7bca73a9-c3c5-4528-f349-08d99f8f28b7
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2021 12:32:26.3034
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SQnr3NBzVvG37JnxjxwNNedRfDouNFv++urAz/3fiT6AleC3RYrF29Pyz278G8Jd
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5255
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 02:30:20PM +0200, Joonas Lahtinen wrote:
-> Quoting Christoph Hellwig (2021-11-02 09:05:34)
-> > Remove the separately included Makefile and just use the relative
-> > reference from the main i915 Makefile as for source files in other
-> > subdirectories.
-> 
-> The thinking behind the split is to avoid any merge conflicts as the
-> gvt/ subdirectory is handled through separate pull request flow and
-> are note part of drm-tip.
+The i.MX8M Mini has two available USB controllers.  On the
+imx8mm-beacon board, USB1 is routed to a mini-USB port with
+OTG functionality.  USB2 is routed to a USB hub which has
+three host-only ports connected to it.
 
-Oh? In that case can we eventually move the VFIO mdev driver to
-drivers/vfio/mdev/intel_gvt/ please?
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Jason
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
+index 6f5e63696ec0..4097a66163b2 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
+@@ -43,6 +43,17 @@ reg_audio: regulator-audio {
+ 		enable-active-high;
+ 	};
+ 
++	reg_usbotg1: regulator-usbotg1 {
++		compatible = "regulator-fixed";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_reg_usb_otg1>;
++		regulator-name = "usb_otg_vbus";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		gpio = <&gpio4 29 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
+ 	reg_usdhc2_vmmc: regulator-usdhc2 {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "VSD_3V3";
+@@ -169,6 +180,24 @@ &uart3 {
+ 	status = "okay";
+ };
+ 
++&usbotg1 {
++	vbus-supply = <&reg_usbotg1>;
++	disable-over-current;
++	dr_mode="otg";
++	status = "okay";
++};
++
++&usbotg2 {
++	pinctrl-names = "default";
++	disable-over-current;
++	dr_mode="host";
++	status = "okay";
++};
++
++&usbphynop2 {
++	reset-gpios = <&pca6416_1 7 GPIO_ACTIVE_HIGH>;
++};
++
+ &usdhc2 {
+ 	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+ 	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
+@@ -215,6 +244,12 @@ MX8MM_IOMUXC_SAI2_MCLK_GPIO4_IO27		0x19
+ 		>;
+ 	};
+ 
++	pinctrl_reg_usb_otg1: usbotg1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SAI3_RXC_GPIO4_IO29     0x19
++		>;
++	};
++
+ 	pinctrl_sai3: sai3grp {
+ 		fsl,pins = <
+ 			MX8MM_IOMUXC_SAI3_TXFS_SAI3_TX_SYNC     0xd6
+-- 
+2.32.0
+
