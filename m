@@ -2,133 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B577444569D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC5A4456A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:54:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbhKDP4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 11:56:55 -0400
-Received: from mga05.intel.com ([192.55.52.43]:12424 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231396AbhKDP4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 11:56:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10157"; a="317933610"
-X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
-   d="scan'208";a="317933610"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 08:54:14 -0700
-X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
-   d="scan'208";a="468512031"
-Received: from yoojae-mobl.amr.corp.intel.com (HELO [10.209.121.122]) ([10.209.121.122])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 08:54:14 -0700
-Message-ID: <883dd517-7996-8c44-8cea-1c8838b367b6@linux.intel.com>
-Date:   Thu, 4 Nov 2021 08:54:13 -0700
+        id S231590AbhKDP5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 11:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231463AbhKDP52 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 11:57:28 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7EFC061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 08:54:50 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id r5so7970621pls.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 08:54:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:subject:to:cc:mime-version:message-id
+         :content-transfer-encoding;
+        bh=2mq5ANordmcrEkX0PoTEuQw2qzkrF/htgz2kP66qiS0=;
+        b=RU4JohCg4W11vjiEq4qR3Jb4+dQbG5X+HdrecLh0R1CNnnTkezNEBvsSWCFur95WBx
+         1YYR+29GCrgC8TBzvttlbCwmqJ8qrlohG700ZddwWKVq+zB1u6YUixoUAU9nQ3crg7ad
+         smqLLiSloMAwrGBNOfQ/ABSbBLTZqyvP6sDOme8Ja4RmVSN4v7afaHnzP6J7rU7RbdQl
+         AwL3xZlnuh20UMi+0UYEYzvKAygty708LbTa1LZSOKTHuwBuJXzjZ8xaCChPeFkBSue8
+         lbs78+oaqDcnnetz3cUTaPhAqZIlqJOHpHbeWwdk7LG+YIVocK+f1X9GX67khS9GJe4b
+         44hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:subject:to:cc:mime-version:message-id
+         :content-transfer-encoding;
+        bh=2mq5ANordmcrEkX0PoTEuQw2qzkrF/htgz2kP66qiS0=;
+        b=GU7RVLTspbZWWV/aesEfm7PO65Oj/HR+GwESWFYUSY7FFQJFMv63lSEC+tqcDoB07R
+         wSJOnEzEH5vYXp+zqOVWrBhetwnbhgUT+SAttWj6N7Pm41UJj7phxQhFEEt0hc/gMvBF
+         u468KnQ5A1ozUXqqej/apYxGZZulE4Eq7ZTSu2JupwWrhSdvMuQRPPOuxD/A5Y6LmKdk
+         C6gPYbgxcpcZCNH2zMfJyXeNsu/NHm7r9qYAiXr7ldEuOsY2a1p2yJBw9uMW7q3Hoes6
+         NFah9pYLIwsvxYMYGBmARU/Opj0S4iz3lDj2shYNsQ5+B/GxuGKktXFcO1x6FRnRAYvm
+         Vl8Q==
+X-Gm-Message-State: AOAM532/DhsPp0nY3sR5FLhb7RvLOvnP+XHNEnmlzP5qlzDTAYjRutvE
+        czgGnthpwEIp3hTFxzG8JPxHL7KojYo=
+X-Google-Smtp-Source: ABdhPJwzFDHHQAe6yHdh3UOvFCxsuJieeW7iaNzbH7/KXrFw5K4v+HOPz5CiXgRUVyXjnKpAZ7S8xg==
+X-Received: by 2002:a17:90b:1e44:: with SMTP id pi4mr2852548pjb.245.1636041289778;
+        Thu, 04 Nov 2021 08:54:49 -0700 (PDT)
+Received: from localhost (60-241-46-56.tpgi.com.au. [60.241.46.56])
+        by smtp.gmail.com with ESMTPSA id c21sm5377284pfv.119.2021.11.04.08.54.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 08:54:49 -0700 (PDT)
+Date:   Fri, 05 Nov 2021 01:54:44 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Removal of printk safe buffers delays NMI context printk
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-From:   Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
-Subject: Re: [PATCH] media: aspeed: use reset to replace clk off/on
-To:     Jammy Huang <jammy_huang@aspeedtech.com>, eajames@linux.ibm.com,
-        mchehab@kernel.org, joel@jms.id.au, andrew@aj.id.au,
-        linux-media@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20211103054316.25272-1-jammy_huang@aspeedtech.com>
-Content-Language: en-US
-In-Reply-To: <20211103054316.25272-1-jammy_huang@aspeedtech.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-Id: <1636039236.y415994wfa.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jammy,
+Hi John,
 
-On 11/2/2021 10:43 PM, Jammy Huang wrote:
-> reset should be more proper than clk off/on to bring HW back to good
-> state.
-> 
-> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
-> ---
->   drivers/media/platform/aspeed-video.c | 22 +++++++++++++++++++---
->   1 file changed, 19 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-> index fea5e4d0927e..10d182139809 100644
-> --- a/drivers/media/platform/aspeed-video.c
-> +++ b/drivers/media/platform/aspeed-video.c
-> @@ -23,6 +23,7 @@
->   #include <linux/workqueue.h>
->   #include <linux/debugfs.h>
->   #include <linux/ktime.h>
-> +#include <linux/reset.h>
->   #include <media/v4l2-ctrls.h>
->   #include <media/v4l2-dev.h>
->   #include <media/v4l2-device.h>
-> @@ -220,6 +221,7 @@ struct aspeed_video {
->   	void __iomem *base;
->   	struct clk *eclk;
->   	struct clk *vclk;
-> +	struct reset_control *reset;
->   
->   	struct device *dev;
->   	struct v4l2_ctrl_handler ctrl_handler;
-> @@ -554,6 +556,13 @@ static void aspeed_video_on(struct aspeed_video *video)
->   	set_bit(VIDEO_CLOCKS_ON, &video->flags);
->   }
->   
-> +static void aspeed_video_reset(struct aspeed_video *v)
-> +{
-> +	reset_control_assert(v->reset);
-> +	udelay(100);
-> +	reset_control_deassert(v->reset);
-> +}
-> +
->   static void aspeed_video_bufs_done(struct aspeed_video *video,
->   				   enum vb2_buffer_state state)
->   {
-> @@ -574,7 +583,9 @@ static void aspeed_video_irq_res_change(struct aspeed_video *video, ulong delay)
->   	set_bit(VIDEO_RES_CHANGE, &video->flags);
->   	clear_bit(VIDEO_FRAME_INPRG, &video->flags);
->   
-> -	aspeed_video_off(video);
-> +	aspeed_video_write(video, VE_INTERRUPT_CTRL, 0);
-> +	aspeed_video_write(video, VE_INTERRUPT_STATUS, 0xffffffff);
-> +	aspeed_video_reset(video);
->   	aspeed_video_bufs_done(video, VB2_BUF_STATE_ERROR);
->   
->   	schedule_delayed_work(&video->res_work, delay);
-> @@ -1507,8 +1518,7 @@ static void aspeed_video_stop_streaming(struct vb2_queue *q)
->   		 * Need to force stop any DMA and try and get HW into a good
->   		 * state for future calls to start streaming again.
->   		 */
-> -		aspeed_video_off(video);
-> -		aspeed_video_on(video);
-> +		aspeed_video_reset(video);
+It seems printk from NMI context is now delayed indefinitely and
+there is no printk_safe_flush equivalent (or I can't see one) to
+allow a NMI buffer to be flushed by a different CPU.
 
-You can find the ECLK configuration in 'clk-aspeed.c' or in
-'clk-ast2600.c' that it's coupled with the video engine reset (SCU04[6]
-for AST2500 / SCU040[6] for AST2600). It means that if we call 
-clk_disable() and clk_enable() through aspeed_video_off() and
-aspeed_video_on(), the video engine reset will be implicitly asserted
-and de-asserted by the clock driver so the reset mechanism is already in
-the existing code.
+This causes hard lockup watchdog messages to not get shown on the
+console. I can call printk from a different CPU and that seems to
+flush the stuck CPU's NMI buffer immediately.
+
+What's the best way to expose this? Can we have something like tihs?
+
+void printk_flush(void)
+{
+	preempt_disable();
+	if (console_trylock_spinning())
+		console_unlock();
+	preempt_enable();
+        wake_up_klogd();
+}
 
 Thanks,
-Jae
+Nick
 
->   		aspeed_video_init_regs(video);
->   
-> @@ -1715,6 +1725,12 @@ static int aspeed_video_init(struct aspeed_video *video)
->   		return rc;
->   	}
->   
-> +	video->reset = devm_reset_control_get(dev, NULL);
-> +	if (IS_ERR(video->reset)) {
-> +		dev_err(dev, "Unable to get reset\n");
-> +		return PTR_ERR(video->reset);
-> +	}
-> +
->   	video->eclk = devm_clk_get(dev, "eclk");
->   	if (IS_ERR(video->eclk)) {
->   		dev_err(dev, "Unable to get ECLK\n");
-> 
