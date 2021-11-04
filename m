@@ -2,115 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3683D44536F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:59:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4E8445374
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231509AbhKDNCE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 4 Nov 2021 09:02:04 -0400
-Received: from mga03.intel.com ([134.134.136.65]:56310 "EHLO mga03.intel.com"
+        id S231625AbhKDNC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 09:02:27 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:46826 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230091AbhKDNCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 09:02:02 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10157"; a="231644507"
-X-IronPort-AV: E=Sophos;i="5.87,208,1631602800"; 
-   d="scan'208";a="231644507"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 05:59:24 -0700
-X-IronPort-AV: E=Sophos;i="5.87,208,1631602800"; 
-   d="scan'208";a="450441783"
-Received: from agilev-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.254.157])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 05:59:21 -0700
-Content-Type: text/plain; charset="utf-8"
+        id S230091AbhKDNC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 09:02:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=qUQyBRAgGmRlb0+C03q/ctsuzfX/uEhANwydd0iDgN8=; b=DR
+        L0yMOeYxW8plL2J6VYC5lIOiSnKkoEFOat5lpZqxwXHT8wyjgkZwOkB513lpQPRd9OKTPVRLLghMv
+        D8JbWp/89sTd5KELaQV/aFNdiNgIh3tlBByWAZ1Hc4fEFcypgZFWQpqgoD96ba5UrQMDzEUe0t0xP
+        AlgiWgWKuFFHkwE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1micL9-00CaoT-Qb; Thu, 04 Nov 2021 13:59:35 +0100
+Date:   Thu, 4 Nov 2021 13:59:35 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Wells Lu =?utf-8?B?5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Wells Lu <wellslutw@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
+Subject: Re: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+Message-ID: <YYPZN9hPBJTBzVUl@lunn.ch>
+References: <cover.1635936610.git.wells.lu@sunplus.com>
+ <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
+ <d0217eed-a8b7-8eb9-7d50-4bf69cd38e03@infradead.org>
+ <159ab76ac7114da983332aadc6056c08@sphcmbx02.sunplus.com.tw>
+ <YYLjaYCQHzqBzN1l@lunn.ch>
+ <36d5bc6d40734ae0a9c1fb26d258f49f@sphcmbx02.sunplus.com.tw>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20211102070601.155501-1-hch@lst.de>
-References: <20211102070601.155501-1-hch@lst.de>
-To:     Christoph Hellwig <hch@lst.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>
-Subject: Re: refactor the i915 GVT support and move to the modern mdev API v2
-From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID: <163603075885.4807.880888219859400958@jlahtine-mobl.ger.corp.intel.com>
-User-Agent: alot/0.8.1
-Date:   Thu, 04 Nov 2021 14:59:18 +0200
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <36d5bc6d40734ae0a9c1fb26d258f49f@sphcmbx02.sunplus.com.tw>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhenyu and Zhi,
+On Thu, Nov 04, 2021 at 05:31:57AM +0000, Wells Lu 呂芳騰 wrote:
+> Hi,
+> 
+> Thanks a lot for review.
+> 
+> > 
+> > > config NET_VENDOR_SUNPLUS
+> > > 	bool "Sunplus devices"
+> > > 	default y
+> > > 	depends on ARCH_SUNPLUS
+> > 
+> > Does it actually depend on ARCH_SUNPLUS? What do you make use of?
+> 
+> ARCH_SUNPLUS will be defined for Sunplus family series SoC.
+> Ethernet devices of Sunplus are designed and used for Sunplus SoC.
+> So far, only two SoC of Sunplus have the network device.
+> I'd like to show up the selection only for Sunplus SoC.
 
-Can you have somebody from the GVT team to review the patches that
-are fully contained in gvt/ ?
+So it does not actually depend on ARCH_SUNPLUS. There are a few cases
+where drivers have needed to call into arch specific code, which stops
+them building for any other arch.
 
-I also started discussion on patch 6 which is about defining the
-interface between the modules. I remember there is prior work to shrink
-the interface. Do you have links to such patches?
+> > Ideally, you want it to also build with COMPILE_TEST, so that the driver gets
+> > build by 0-day and all the other build bots.
+> 
+> I am not sure if this is mandatory or not.
+> Should I add COMPILE_TEST as below?
+> 
+> 	depends on ARCH_SUNPLUS | COMPILE_TEST
 
-The minimal we should do is to eliminate the double underscore
-prefixed functions. But I would prefer to have the symbol exports by
-default so that we can enable the functionality just by loading the
-module.
+Yes.
 
-Regards, Joonas
+> Yes, the device is now only for Sunplus SP7021 SoC.
+> Devices in each SoC may have a bit difference because of adding new 
+> function or improving something.
 
-Quoting Christoph Hellwig (2021-11-02 09:05:32)
-> Hi all,
-> 
-> the GVT code in the i915 is a bit of a mess right now due to strange
-> abstractions and lots of indirect calls.  This series refactors various
-> bits to clean that up.  The main user visible change is that almost all
-> of the GVT code moves out of the main i915 driver and into the kvmgt
-> module.
-> 
-> Tested on my Thinkpad with a Kaby Lake CPU and integrated graphics.
-> 
-> Git tree:
-> 
->     git://git.infradead.org/users/hch/misc.git i915-gvt
-> 
-> Gitweb:
-> 
->     http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/i915-gvt
-> 
-> Changes since v1:
->  - rebased on Linux 5.15
->  - allow the kvmgvt module to be loaded at any time and thus solve
->    the deadlock when both i915 amd kvmgvt are modular
->  - include the conversion to the modern mdev API
-> 
-> Note that I do expect to rebased this again against 5.16-rc1 once
-> released, but I'd like to get this out for review ASAP.
-> 
-> Diffstat:
->  b/drivers/gpu/drm/i915/Kconfig          |   33 
->  b/drivers/gpu/drm/i915/Makefile         |   31 
->  b/drivers/gpu/drm/i915/gvt/cfg_space.c  |   89 --
->  b/drivers/gpu/drm/i915/gvt/cmd_parser.c |    4 
->  b/drivers/gpu/drm/i915/gvt/dmabuf.c     |   36 -
->  b/drivers/gpu/drm/i915/gvt/execlist.c   |   12 
->  b/drivers/gpu/drm/i915/gvt/gtt.c        |   55 +
->  b/drivers/gpu/drm/i915/gvt/gvt.h        |  125 ++-
->  b/drivers/gpu/drm/i915/gvt/interrupt.c  |   38 +
->  b/drivers/gpu/drm/i915/gvt/kvmgt.c      | 1099 +++++++++++++++-----------------
->  b/drivers/gpu/drm/i915/gvt/mmio.c       |    4 
->  b/drivers/gpu/drm/i915/gvt/opregion.c   |  148 ----
->  b/drivers/gpu/drm/i915/gvt/page_track.c |    8 
->  b/drivers/gpu/drm/i915/gvt/scheduler.c  |   37 -
->  b/drivers/gpu/drm/i915/gvt/trace.h      |    2 
->  b/drivers/gpu/drm/i915/gvt/vgpu.c       |   22 
->  b/drivers/gpu/drm/i915/i915_drv.c       |    7 
->  b/drivers/gpu/drm/i915/i915_drv.h       |    1 
->  b/drivers/gpu/drm/i915/i915_trace.h     |    1 
->  b/drivers/gpu/drm/i915/intel_gvt.c      |  162 +++-
->  b/drivers/gpu/drm/i915/intel_gvt.h      |   17 
->  drivers/gpu/drm/i915/gvt/Makefile       |    9 
->  drivers/gpu/drm/i915/gvt/gvt.c          |  340 ---------
->  drivers/gpu/drm/i915/gvt/hypercall.h    |   82 --
->  drivers/gpu/drm/i915/gvt/mpt.h          |  400 -----------
->  25 files changed, 929 insertions(+), 1833 deletions(-)
+If it will compile with COMPILE_TEST on x86, mips, etc, you should
+allow it to compile with COMPILE_TEST. You get better compile testing
+that way.
+
+     Andrew
