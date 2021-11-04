@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC53944557D
+	by mail.lfdr.de (Postfix) with ESMTP id 8402C44557C
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbhKDOng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 10:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46300 "EHLO
+        id S231510AbhKDOne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 10:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231312AbhKDOn1 (ORCPT
+        with ESMTP id S231359AbhKDOn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 10:43:27 -0400
+        Thu, 4 Nov 2021 10:43:28 -0400
 Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E308C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 07:40:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F01C061203
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 07:40:50 -0700 (PDT)
 Received: from zn.tnic (p200300ec2f0f2b00bdd517953c60a78f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:2b00:bdd5:1795:3c60:a78f])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3C0F11EC0587;
-        Thu,  4 Nov 2021 15:40:48 +0100 (CET)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 097721EC0588;
+        Thu,  4 Nov 2021 15:40:49 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636036848;
+        t=1636036849;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=igX6eYtXNGZNBfs220tNB5d7rVbXgO27AOhFche1Mmk=;
-        b=JBOPRDN6Y3SJNmff/s1baIwuLtqXrQtqwdNLo9xE7I5dyy7IvU21jGqYvu++EdbITyJReN
-        FwDACLoSkHcBh/C2FNpQIoUcQ8oTxIJwoGL4XIEHrnkO2GJjyoRDuk8tQoj4pRziD+p4J3
-        vNas1KN5Tr3QYGSZo40R+49Yf8QyswQ=
+        bh=6/Vp6S8yftl2qPreaPNzC92PTu2QVKcX8WsIHa/9xu8=;
+        b=lyKzDwnDTb1So/2SCAhRAddpHlaJHS/YFLufxJZaUnwjxk8AaRIho+R91VKms40eqmpnTK
+        rL1I2S0w5Eb8GqO8eiS+crdg+GMQNQWgo6ksZ2tQQ1aR5m86NgmQBXTtJW01TV0teoeAkQ
+        eigWPVNOzKDezics7o3iUo1pksEc0wU=
 From:   Borislav Petkov <bp@alien8.de>
 To:     Tony Luck <tony.luck@intel.com>
 Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH v0 04/12] x86/mce: Remove noinstr annotation from mce_setup()
-Date:   Thu,  4 Nov 2021 15:40:27 +0100
-Message-Id: <20211104144035.20107-5-bp@alien8.de>
+Subject: [PATCH v0 05/12] x86/mce: Allow instrumentation during task work queueing
+Date:   Thu,  4 Nov 2021 15:40:28 +0100
+Message-Id: <20211104144035.20107-6-bp@alien8.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20211104144035.20107-1-bp@alien8.de>
 References: <20211104144035.20107-1-bp@alien8.de>
@@ -47,40 +47,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Borislav Petkov <bp@suse.de>
 
-Instead, sandwitch around the call which is done in noinstr context and
-mark the caller - mce_gather_info() - as noinstr.
+Fixes
+
+  vmlinux.o: warning: objtool: do_machine_check()+0xdb1: call to queue_task_work() leaves .noinstr.text section
 
 Signed-off-by: Borislav Petkov <bp@suse.de>
 ---
- arch/x86/kernel/cpu/mce/core.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/x86/kernel/cpu/mce/core.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index c660008ccd4a..c7181e8e2845 100644
+index c7181e8e2845..65a8be420aff 100644
 --- a/arch/x86/kernel/cpu/mce/core.c
 +++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -128,7 +128,7 @@ static struct irq_work mce_irq_work;
- BLOCKING_NOTIFIER_HEAD(x86_mce_decoder_chain);
+@@ -1451,6 +1451,8 @@ noinstr void do_machine_check(struct pt_regs *regs)
+ 	if (worst != MCE_AR_SEVERITY && !kill_current_task)
+ 		goto out;
  
- /* Do initial initialization of a struct mce */
--noinstr void mce_setup(struct mce *m)
-+void mce_setup(struct mce *m)
- {
- 	memset(m, 0, sizeof(struct mce));
- 	m->cpu = m->extcpu = smp_processor_id();
-@@ -433,9 +433,11 @@ static noinstr void mce_wrmsrl(u32 msr, u64 v)
-  * check into our "mce" struct so that we can use it later to assess
-  * the severity of the problem as we read per-bank specific details.
-  */
--static inline void mce_gather_info(struct mce *m, struct pt_regs *regs)
-+static noinstr void mce_gather_info(struct mce *m, struct pt_regs *regs)
- {
 +	instrumentation_begin();
- 	mce_setup(m);
++
+ 	/* Fault was in user mode and we need to take some action */
+ 	if ((m.cs & 3) == 3) {
+ 		/* If this triggers there is no way to recover. Die hard. */
+@@ -1479,6 +1481,9 @@ noinstr void do_machine_check(struct pt_regs *regs)
+ 		if (m.kflags & MCE_IN_KERNEL_COPYIN)
+ 			queue_task_work(&m, msg, kill_me_never);
+ 	}
++
 +	instrumentation_end();
- 
- 	m->mcgstatus = mce_rdmsrl(MSR_IA32_MCG_STATUS);
- 	if (regs) {
++
+ out:
+ 	mce_wrmsrl(MSR_IA32_MCG_STATUS, 0);
+ }
 -- 
 2.29.2
 
