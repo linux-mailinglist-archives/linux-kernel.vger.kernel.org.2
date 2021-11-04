@@ -2,246 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E2A444FAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 08:26:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6383444FAE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 08:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhKDH23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 03:28:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230119AbhKDH22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 03:28:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E86B61108;
-        Thu,  4 Nov 2021 07:25:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636010750;
-        bh=jtwLvAVAz29Vwu2nF4zBO0gGHBnfHyZEXGHRp+OGjq0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CVqrwqMLP1RTg/gXPhTFHG598IW0Wcj/RmeMRePr0qksYJRFazmYb7ezVYuQ5Y2N6
-         8tVLPItf/rd0m3jKw3nJsialkiau6PprLn/bO9zD7nuSt1wYGH0NqV65F7v4MKzcis
-         40bguY4v8EExZCMWA+Qyp143T4r+sxbCmKYkmetQ=
-Date:   Thu, 4 Nov 2021 08:25:47 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, reinette.chatre@intel.com,
-        tony.luck@intel.com, nathaniel@profian.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
-Subject: Re: [PATCH v11 2/2] x86/sgx: Add an attribute for the amount of SGX
- memory in a NUMA node
-Message-ID: <YYOK+7OREGsSDhEG@kroah.com>
-References: <20211103012813.670195-1-jarkko@kernel.org>
- <20211103012813.670195-2-jarkko@kernel.org>
- <YYJGzgkLJs6819t8@kroah.com>
- <d3711ca7d612627bb891c10e20c3d569fa6f2bf3.camel@kernel.org>
+        id S230445AbhKDH3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 03:29:52 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:62220 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230119AbhKDH3v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 03:29:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1636010834; x=1667546834;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=s3Wa4XpvIJFm0EJyXvJHVa5J0XLjlXx/kmrJ2o57SMw=;
+  b=Mp4TyHeNVjB7vy/5aZVDG3UJg6f4Uv0ayWVm6FiyqCWN/mkSF1rID6q0
+   OXru/yZMBLlNrMXsNCYJ5PP0LDYIegKNCzSoNxVv6Z90/nr39wUmhx99s
+   11NAbNvd6xsNQmFTIqMqTKGC2ZRH13VVRYAB+KHyc+zFj0czlUawfv+aw
+   tjsmvLNNygrLDGs2YYDe6rJx7DUThDwV9CjUZUSwN8APQPAjMVXUIVCg9
+   PRExz8t/wxyQo02LBoskkhaZ4DPGZx6Wt9EQVc727xB6H1I1sgEIkyMq3
+   dhmLe114lyXycCyuNPnQlETJhhJAXAeFWUrr5r9+u7jBNXqyl8LNLabsG
+   w==;
+X-IronPort-AV: E=Sophos;i="5.87,208,1631548800"; 
+   d="scan'208";a="185668872"
+Received: from mail-dm6nam10lp2100.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.100])
+  by ob1.hgst.iphmx.com with ESMTP; 04 Nov 2021 15:27:13 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=abPrhWEsNTVYWO5OYfqQRWqAnjjB9CUxW4Ag4srz9tCIvJqDAW+b+YNy5Gzp9riqPcqDw0KVWJIOQYTSmfe+QGVeiQ7QXvEd2h9WXWqNvL+M61bgp8Vifys7ND45LxYPSgVbmUOpyVv880VAi4VlJRXGPl+emJZW6bbjyjMsIQHje44sikNS8CdQb1sFaeJ9HPL1n463bE2evpb/+i/TQQkCN9FU42WVyLSKSewemBSM5DMJHTBSSB/CmK4RdeBK5Syg2E+wFlMyCmxIMRiP/y8JoOPg19OCfXAgTliKt4vH6WrqZrVAVimzRKZIpNlhuTVIRsrXBGRcCR310666Vg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s3Wa4XpvIJFm0EJyXvJHVa5J0XLjlXx/kmrJ2o57SMw=;
+ b=K2e1qNN69hJVmL3D3Xxej+00hD1Lds/tmr+FSr0CgGngb/3zGsjE5wDERAUMHrmDm2uZSpm8kbWOO2myPv62jWmw9IjVlMBZtY1y/PHdRmbw8jCJFk1F9CyclrurRWFOaXLJdvhAcWuOl1lFQW3ov8pbMqQyakQ6i+lrP9WskocbiYaSx+8CJU/NJQyLLgupx+x21drwYjXZhUdlwuMGDCK8So4olHyre7faHpuRUHdCX0Fol4A0Bjlr0Fg2bIzBRK3yBYm4TP1xmRMZ7LaviN5RhcbvFcfoDYRc1a3jzK0/da5UsXk7Lb3rVtQuw+7ksYBZRPM2RdsT8xkksWIgmA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s3Wa4XpvIJFm0EJyXvJHVa5J0XLjlXx/kmrJ2o57SMw=;
+ b=fg/Kn8FMUzZP7QFKeylVhBYZo/HMmLNu5SDmj4zQSh/mgamz18PYi3urPs9+rdl0HwXYSIreDSvrO1yz1YqaR+YzLNK4W3cxlY8a+JpJt1ijtjXZToBFEzsA3HnUmYZHv8kTmDIdNZRxDkbTZemv+l5oLlRXAP54Y9OFcE82Dn4=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM6PR04MB4169.namprd04.prod.outlook.com (2603:10b6:5:9e::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4649.18; Thu, 4 Nov 2021 07:27:11 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::edbe:4c5:6ee8:fc59]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::edbe:4c5:6ee8:fc59%3]) with mapi id 15.20.4669.011; Thu, 4 Nov 2021
+ 07:27:11 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Huijin Park <huijin.park@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+CC:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Huijin Park <bbanghj.park@gmail.com>
+Subject: RE: [PATCH v2 2/2] mmc: core: adjust polling interval for CMD1
+Thread-Topic: [PATCH v2 2/2] mmc: core: adjust polling interval for CMD1
+Thread-Index: AQHX0UXXkUPjyjTLAk2vNoCrnxqMKKvy966A
+Date:   Thu, 4 Nov 2021 07:27:11 +0000
+Message-ID: <DM6PR04MB657559D2E25D4FF21689116CFC8D9@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20211104063231.2115-1-huijin.park@samsung.com>
+        <CGME20211104063250epcas1p36056caad956e599300146bae77f799d6@epcas1p3.samsung.com>
+ <20211104063231.2115-3-huijin.park@samsung.com>
+In-Reply-To: <20211104063231.2115-3-huijin.park@samsung.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: samsung.com; dkim=none (message not signed)
+ header.d=none;samsung.com; dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a92414d3-a542-476b-cc4a-08d99f64845d
+x-ms-traffictypediagnostic: DM6PR04MB4169:
+x-microsoft-antispam-prvs: <DM6PR04MB4169591A2BAC0DEDF9B3C902FC8D9@DM6PR04MB4169.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: YPykpGui3XuougvFQb5aVi4r1ix6NNgUfoZzCotdID8TlnQmd3tImtkD0nMtaAvMBItDMGnAkw8RNLv4aut4GrFpKC6bkZlty3w3mNJ2FWuzUb6B2AzcdeIfpb5P/oQFy34p8qzdfuR19RUsKS7iexwdjY5HeXsCsd0tUx6guLHB/X6pKPPVFZTbh7xEc49H2OccFkxKvbL1NtOkraR5+bSK7lX52qNNBGF5GXR8MUjxwSn6ByvZ6HFuJ4wNzo+S4Dm30srEMmwIIpouawsCEIRSKwgKy6RTDD2b14zuZHkTruwV6wVQwo2qVDucAts1bMJaeAwiMDsQN7k0OIW1VoK3NBOu5/Qk89MNExmCu9f76cP/w9oS35VysejK55epFpeQMoEaz513kO4OgX2foNfLCC8VlMI4WbIU4vMIQx5Spbw4eOhtga7CmB3Ww7TvIgjzjSf8/WskFIB1Etf3WcyHbVLeqLaFUr+bNUt5n0P0Nss6YOEgVmIfwmRilp+aZ5NyxmQmoaWkRZqcJD38MQxYp1Ly0mqYYrc6jA8jR6NYBy6+YTybzrxS1FWkO5mG03EE4x5BiDW2G7bjbyTH7lLegr30RoMwSjyxsWN8jx8yJ4ZhWWSyNUIPy4ZU0sroD1BLv+v/bJuiqy09669p63aWDUvFBW+syu1END7kMJMPmjf1NvU0EQmdTdd57XZ0eibRTeJ+DkxI+/BNixDNgw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(7696005)(71200400001)(52536014)(54906003)(76116006)(66446008)(86362001)(66476007)(64756008)(110136005)(66556008)(316002)(4326008)(66946007)(508600001)(8676002)(9686003)(8936002)(55016002)(33656002)(4744005)(186003)(2906002)(26005)(82960400001)(6506007)(38070700005)(122000001)(38100700002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?R3krc1RrclR6WkZ6c1dPMWh0dC9pVy9HaUxqOTMvUHZIVXM1VkRLdkl5YUZI?=
+ =?utf-8?B?Mnpnc3dzTkpmR0g5OVgvWnVpMHZMd1p3Nm54RWY3NDJBeUp4SkZFQklKY25Y?=
+ =?utf-8?B?WDljb09HOFUwUjd2N0RqbnMrcVFRd3BncExpeWZuSUl6RHUyaXNrY2lKTXlm?=
+ =?utf-8?B?WnF1WGx6U0tHSnphbFFPb3hJQWlLb1Z0aitYeVJ6SnBTQlhQYkY2TFVudmxn?=
+ =?utf-8?B?Q0pGWHN2dUxMYXdpdnRTc2JRNUJQREpTMzlrMnNleHV2UTc0eThBaWdnTmhS?=
+ =?utf-8?B?VnZsUFhacVYycmhEbHJUemEwN3hHRTE0U3lLYmZqNHhuamdiZjIzcjYvQWtq?=
+ =?utf-8?B?QmR1N2ttR2Flcnk2QlFNajg2bC90RGxnUDEzM3lqVFFuengzdnhoRk4zVkZU?=
+ =?utf-8?B?d2J4SkFZcWIrNDhJdENWZmdpWkhYdzBSWGE5WU1vUEI5a1dSWUhMYzlXR1Fk?=
+ =?utf-8?B?SVRUb01tTlQ2R3VRd1B5WTRmU0kyVVlQZkc4NkRERFl4SGlvYWM5WmE4RVZK?=
+ =?utf-8?B?S3FmZUV1cGhyT0hFYnN4RjJDTUpleHg0aFpKclB3aWJwV3I3YjFqa2I0SUoy?=
+ =?utf-8?B?ZXlTODNVdzJCemtFQnNBNXlRVlk3c09ZN1lWb01Md2xFYkFOYlFnMjFlNzNp?=
+ =?utf-8?B?Qk56OFhwTWxzNXpoRHArN3Q0NnVrN1BKbk9zWGV1ZXRBdUcySEU4OGhsRVl5?=
+ =?utf-8?B?U0hVazNjYmFHK3F5bjlpbTZCSHBkRTJmTE1BN2VlQWlnVHJtZVlybVVsbGxV?=
+ =?utf-8?B?bThmLzAzZ3VZVVNFQ1RiS1diSU1rK2RwS0pJL2hsUHByWlZLNjh0elVSOFhu?=
+ =?utf-8?B?b0tsNEcwajRPYW5sOUpLZVRhMm5KMFNBQkFJVStEWEdWTzNIa1FHMmREUVZI?=
+ =?utf-8?B?RDdCWkQ5aUVIL2UzRUdHeEtUeFRrTVBVc1VKdlNQMjZISTZiV3kwbGVuY1dD?=
+ =?utf-8?B?dkpydSt2VzlDbFdzaFAvZlpibE9mV2ttNVN5RGg4aXJTQjZwdUh6eWFmbi9t?=
+ =?utf-8?B?Qnp0S1hMVHVJYzdQQnZjSVFPM0Z1M1ZPbmkrQnpnMVhwM0tpeWR1TlQ2ak53?=
+ =?utf-8?B?RTRYdnoxaTBINm9QTnI4STdDUjM5Qi9HMWNmaUo4ak5MOTNEbzArN2lGczh5?=
+ =?utf-8?B?ZzFsSjJJby9DRlJwNnlqRkVPcyt3RFFHRmY4QXpOTXZ3OGtqbThPaWp1ODd3?=
+ =?utf-8?B?S2I2MHpnaWpKNlJFcE5ibWh1TjVBVmlVbHhLbDZkeDlRZEROb2JpUEpXdm1v?=
+ =?utf-8?B?QWx3Y0E4ck5GamtpY0JFNzF0L0xoOWx6RzQ0bmZabW5aRWNBbm1aaWFPNGY0?=
+ =?utf-8?B?RVpkc3lNZFpONS9tZnFrd0lINlBzOHRFd2pzV043eXJONEFyYVZwbEJRalFQ?=
+ =?utf-8?B?eGR2YndCeitudlhoMm8xSWs2bnBqdUgvZFoxNkZxZUFISHFVTDBRNU9kbkI0?=
+ =?utf-8?B?NytTbVp6NVBpdUVnMGcwanhkNG14WndZVEFsQ2RqWDBoV0JxMGdIcXZxM0pr?=
+ =?utf-8?B?TWR2UTltOHE3T0lkbnl3dHpZVVlUYVdYRHdTaXVoVWpsZWhDUHVjSkluY0Zu?=
+ =?utf-8?B?a2Mxam5mSmh6Q3dBejErRGR6TUNQclBUNWpZbGszZXB5enRkaFU5ZStrcURs?=
+ =?utf-8?B?MXBrbnZneHFOQjhoTDJWcnovb25xbnpmUzJ1Z3o1NVZ1U2ZicGZNN0xiTUdD?=
+ =?utf-8?B?MXBjQkkyZ094WDAyejJBRTczOGkxZnRWTy80b2pRUkYxSC82TThaaDRTd1hm?=
+ =?utf-8?B?bmZsZmduQkl3R0xZTEw0UXRqVmlYY1ZPSXJ0SjhJZXhoRWM2WjB3VVdFQ0tm?=
+ =?utf-8?B?RlJyS0VlU1c2M3RMaVNiNnBhcCtKOGhmNVdxYnhTZzR3ZzBLN3BZVjg4QlNE?=
+ =?utf-8?B?a2hvOVJJd21QdkJuVXZiMmN1RVhBTitWOVkyYzRkeFFMa1p1MEdxc0pTdkVN?=
+ =?utf-8?B?aW9reVMwRWI4SHRmM0FBUUVQWkRwWkRDYnkvdDJvWFhXa2NRcjV2eXU3anRw?=
+ =?utf-8?B?YUlnNFZHa0NJY2NUbTlLYTJ3TXp3WXJCT3RSOWpHVm14UEVrL0c3cXlXdVhL?=
+ =?utf-8?B?aUwzTzREVEZIZi9xcFRTWXVSM0ZhU3d3M0JHRVRmMHcySCthMlNmNWp4UnZB?=
+ =?utf-8?B?QlBDNEl1VkFvaHgzdzJlYWhpVTRCS01obEhyQnMxSW85dE9WVHFwS2tOMzlK?=
+ =?utf-8?B?SFE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d3711ca7d612627bb891c10e20c3d569fa6f2bf3.camel@kernel.org>
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a92414d3-a542-476b-cc4a-08d99f64845d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Nov 2021 07:27:11.4099
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mpgt3K5D6zxC62zYDsbgrsxozCqcqdJBjXn0FWAmviERFir/5/FeOtsc1Dk0pSj1ALkoByXE+m0GRH+HPcocZQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB4169
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 11:49:40PM +0200, Jarkko Sakkinen wrote:
-> On Wed, 2021-11-03 at 09:22 +0100, Greg Kroah-Hartman wrote:
-> > On Wed, Nov 03, 2021 at 03:28:13AM +0200, Jarkko Sakkinen wrote:
-> > > The amount of SGX memory on the system is determined by the BIOS and it
-> > > varies wildly between systems.  It can be from dozens of MB's on desktops
-> > > or VM's, up to many GB's on servers.  Just like for regular memory, it is
-> > > sometimes useful to know the amount of usable SGX memory in the system.
-> > > 
-> > > Introduce CONFIG_HAVE_ARCH_NODE_DEV_GROUP opt-in flag to expose an arch
-> > > specific attribute group, and add an attribute for the amount of SGX
-> > > memory in bytes to each NUMA node:
-> > > 
-> > > /sys/devices/system/node/nodeX/x86/sgx_total_bytes
-> > > 
-> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > ---
-> > > v11:
-> > > * Fix documentation and the commit message.
-> > > 
-> > > v10:
-> > > * Change DEVICE_ATTR_RO() to static (Greg K-H)
-> > > * Change the attribute name as sgx_total_bytes, and attribute group
-> > >   name as "x86" (Dave).
-> > > * Add a new config flag HAVE_ARCH_NODE_DEV_GROUP to identify, whether
-> > >   an arch exports arch specific attribute group for NUMA nodes.
-> > > 
-> > > v9:
-> > > * Fix racy initialization of sysfs attributes:
-> > >   https://lore.kernel.org/linux-sgx/YXOsx8SvFJV5R7lU@kroah.com/
-> > > 
-> > > v8:
-> > > * Fix a bug in sgx_numa_init(): node->dev should be only set after
-> > >   sysfe_create_group().  Otherwise, sysfs_remove_group() will issue a
-> > >   warning in sgx_numa_exit(), when sgx_create_group() is unsuccessful,
-> > >   because the group does not exist.
-> > > 
-> > > v7:
-> > > * Shorten memory_size to size. The prefix makes the name only longer
-> > >   but does not clarify things more than "size" would.
-> > > * Use device_attribute instead of kobj_attribute.
-> > > * Use named attribute group instead of creating raw kobject just for
-> > >   the "sgx" subdirectory.
-> > > 
-> > > v6:
-> > > * Initialize node->size to zero in sgx_setup_epc_section(), when the
-> > >   node is first accessed.
-> > > 
-> > > v5
-> > > * A new patch based on the discussion on
-> > >   https://lore.kernel.org/linux-sgx/3a7cab4115b4f902f3509ad8652e616b91703e1d.camel@kernel.org/T/#t
-> > > ---
-> > >  Documentation/ABI/stable/sysfs-devices-node |  6 ++++
-> > >  arch/Kconfig                                |  4 +++
-> > >  arch/x86/Kconfig                            |  1 +
-> > >  arch/x86/kernel/cpu/sgx/main.c              | 31 +++++++++++++++++++++
-> > >  arch/x86/kernel/cpu/sgx/sgx.h               |  2 ++
-> > >  drivers/base/node.c                         | 13 ++++++++-
-> > >  include/linux/numa.h                        |  4 +++
-> > >  7 files changed, 60 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/Documentation/ABI/stable/sysfs-devices-node b/Documentation/ABI/stable/sysfs-devices-node
-> > > index 484fc04bcc25..8db67aa472f1 100644
-> > > --- a/Documentation/ABI/stable/sysfs-devices-node
-> > > +++ b/Documentation/ABI/stable/sysfs-devices-node
-> > > @@ -176,3 +176,9 @@ Contact:    Keith Busch <keith.busch@intel.com>
-> > >  Description:
-> > >                 The cache write policy: 0 for write-back, 1 for write-through,
-> > >                 other or unknown.
-> > > +
-> > > +What:          /sys/devices/system/node/nodeX/x86/sgx_total_bytes
-> > > +Date:          November 2021
-> > > +Contact:       Jarkko Sakkinen <jarkko@kernel.org>
-> > > +Description:
-> > > +               The total amount of SGX physical memory in bytes.
-> > > diff --git a/arch/Kconfig b/arch/Kconfig
-> > > index 98db63496bab..ca5d75b5a427 100644
-> > > --- a/arch/Kconfig
-> > > +++ b/arch/Kconfig
-> > > @@ -1285,6 +1285,10 @@ config ARCH_HAS_ELFCORE_COMPAT
-> > >  config ARCH_HAS_PARANOID_L1D_FLUSH
-> > >         bool
-> > >  
-> > > +# Select, if arch has a named attribute group bound to NUMA device nodes.
-> > > +config HAVE_ARCH_NODE_DEV_GROUP
-> > > +       bool
-> > > +
-> > >  source "kernel/gcov/Kconfig"
-> > >  
-> > >  source "scripts/gcc-plugins/Kconfig"
-> > > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> > > index 421fa9e38c60..8503c3bdf63f 100644
-> > > --- a/arch/x86/Kconfig
-> > > +++ b/arch/x86/Kconfig
-> > > @@ -266,6 +266,7 @@ config X86
-> > >         select HAVE_ARCH_KCSAN                  if X86_64
-> > >         select X86_FEATURE_NAMES                if PROC_FS
-> > >         select PROC_PID_ARCH_STATUS             if PROC_FS
-> > > +       select HAVE_ARCH_NODE_DEV_GROUP         if X86_SGX
-> > >         imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
-> > >  
-> > >  config INSTRUCTION_DECODER
-> > > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> > > index a6e313f1a82d..02ebb233c511 100644
-> > > --- a/arch/x86/kernel/cpu/sgx/main.c
-> > > +++ b/arch/x86/kernel/cpu/sgx/main.c
-> > > @@ -714,9 +714,12 @@ static bool __init sgx_page_cache_init(void)
-> > >                         spin_lock_init(&sgx_numa_nodes[nid].lock);
-> > >                         INIT_LIST_HEAD(&sgx_numa_nodes[nid].free_page_list);
-> > >                         node_set(nid, sgx_numa_mask);
-> > > +                       sgx_numa_nodes[nid].size = 0;
-> > >                 }
-> > >  
-> > >                 sgx_epc_sections[i].node =  &sgx_numa_nodes[nid];
-> > > +               sgx_numa_nodes[nid].dev = &node_devices[nid]->dev;
-> > 
-> > You are saving off a pointer to an object without incrementing the
-> > reference count of it?  What prevents it from going away in the future?
-> 
-> Since the arch specific attribute group is part of the "groups" of that device,
-> I'd presume that when sgx_total_bytes_show() is called the device has not gone
-> away:
-> 
-> static const struct attribute_group *node_dev_groups[] = {
-> 	&node_dev_group,
-> #ifdef CONFIG_HAVE_ARCH_NODE_DEV_GROUP
-> 	&arch_node_dev_group,
-> #endif
-> 	NULL,
-> };
-
-Yes, that is true for the dev pointer passed to your callback, but what
-about the dev pointers in this random array you are looping over?
-
-> I mean the "dev" parameter in sgx_total_bytes_show() is probably valid, when
-> sysfs framework calls it, right?
-
-Yes.
-
-> > > +               sgx_numa_nodes[nid].size += size;
-> > >  
-> > >                 sgx_nr_epc_sections++;
-> > >         }
-> > > @@ -790,6 +793,34 @@ int sgx_set_attribute(unsigned long *allowed_attributes,
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(sgx_set_attribute);
-> > >  
-> > > +#ifdef CONFIG_NUMA
-> > > +static ssize_t sgx_total_bytes_show(struct device *dev, struct device_attribute *attr, char *buf)
-> > > +{
-> > > +       unsigned long size = 0;
-> > > +       int nid;
-> > > +
-> > > +       for (nid = 0; nid < num_possible_nodes(); nid++) {
-> > > +               if (dev == sgx_numa_nodes[nid].dev) {
-> > 
-> > Why aren't these values all just part of the device that is being used
-> > here?  You are walking some odd array, with no locking, and no reference
-> > counting on the objects you are looking at, just to find the same object
-> > that you started out with???
-> 
-> This code looks up the struct sgx_numa_node instance, and the array is
-> indexed with NUMA node ID. "dev" is only used as lookup key.
-
-And why isn't that pointer/key properly reference counted?
-
-What happens when the memory numa node id goes away?  Who removes that
-item from the list?
-
-> > That's not the proper thing to do here at all, these values should be
-> > part of the device structure that this attribute lives on, in order to
-> > properly handle all of these reference counting and locking issues
-> > automatically.
-> 
-> The attribute group is part of the device structure, so in that sense
-> it is already like this. And I think that all NUMA node specific data
-> (most of which is unrelated to device sysfs) is best kept in the private
-> struct.
-
-No, the data associated with a specific numa node needs to be IN the
-structure that it belongs to, not in a random other data structure that
-is not locked or reference counted at all.  That is not ok.
-
-> > Please fix the design of this code first, _before_ adding new
-> > attributes.
-> 
-> I sincerely think it is correct now.
-
-I disagree.  Where is the locking and reference count logic that keeps
-these different structures in sync properly?  Why are there different
-structures at all?
-
-Yes, you are just working with what you have now, but you have exposed
-that what we have now is incorrect, and trying to use it in the manner
-you are wanting to here is also incorrect.
-
-thanks,
-
-greg k-h
+IA0KPiBJbiBtbWNfc2VuZF9vcF9jb25kKCksIGxvb3BzIGFyZSBjb250aW51b3VzbHkgcGVyZm9y
+bWVkIGF0IHRoZSBzYW1lDQo+IGludGVydmFsIG9mIDEwIG1zLiAgSG93ZXZlciB0aGUgYmVoYXZp
+b3VyIGlzIG5vdCBnb29kIGZvciBzb21lIGVNTUMgd2hpY2gNCj4gY2FuIGJlIG91dCBmcm9tIGEg
+YnVzeSBzdGF0ZSBlYXJsaWVyIHRoYW4gMTAgbXMgaWYgbm9ybWFsLg0KPiANCj4gUmF0aGVyIHRo
+YW4gZml4aW5nIGFib3V0IHRoZSBpbnRlcnZhbCB0aW1lIGluIG1tY19zZW5kX29wX2NvbmQoKSwg
+bGV0J3MNCj4gaW5zdGVhZCBjb252ZXJ0IGludG8gdXNpbmcgdGhlIGNvbW1vbiBfX21tY19wb2xs
+X2Zvcl9idXN5KCkuDQo+IA0KPiBUaGUgcmVhc29uIGZvciBhZGp1c3RpbmcgdGhlIGludGVydmFs
+IHRpbWUgaXMgdGhhdCBpdCBpcyBpbXBvcnRhbnQgdG8gcmVkdWNlIHRoZQ0KPiBlTU1DIGluaXRp
+YWxpemF0aW9uIHRpbWUsIGVzcGVjaWFsbHkgaW4gZGV2aWNlcyB0aGF0IHVzZSBlTU1DIGFzIHJv
+b3Rmcy4NClRoYXQncyBhbiBpbXByZXNzaXZlIGltcHJvdmVtZW50Lg0KQ2FuIHlvdSBzaGFyZSBz
+b21lIG9mIHRoZSB1c2UtY2FzZXMgaW4gd2hpY2ggMTBtcyByZWR1Y3Rpb24gaW4gYm9vdCB0aW1l
+IGlzIHJlcXVpcmVkPw0KDQpUaGFua3MsDQpBdnJpDQo=
