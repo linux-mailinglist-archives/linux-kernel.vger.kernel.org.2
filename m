@@ -2,74 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD78E445074
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:37:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A23DA44507E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhKDIkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:40:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54022 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230344AbhKDIkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:40:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 103906103C;
-        Thu,  4 Nov 2021 08:37:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636015065;
-        bh=UUdsOFrh+rc0mbbv6xSMpXFRcvxooFtztvPg94FpMFE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=QQLDiPwlKQK00b9DSYsRq7gSj8PMyS3nylqUaUcN76Gr3L5cBeJSdjUST+tZh893v
-         ymAlIbeZWF9IP0qwkbwuFDHDW/CAOk84T1sYPKDCeEpIkuMBog44bthgp3kpMT31dr
-         OnIKDcYyjNcaPHGbpGQiZnaX9D0IWB0Gcr5MCFzYxzqkpj1EdZOyimb1K7/A+14gJK
-         /M/dyBlubYu18/KMIszhn8//iAsx5Xb5cBa5ebNrr3wKfLwBbcppY9IZs8oacP2Mja
-         +TxDDaz7dBMInLIKffffcrKxu0icseAfV6IG1x0zJreU3GS7acuH5dfm7O/0H5GzbW
-         ZUeuMIKtEb7SA==
-Message-ID: <b071e877-334e-b669-e2df-abe4d5927418@kernel.org>
-Date:   Thu, 4 Nov 2021 16:37:41 +0800
+        id S231171AbhKDIl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:41:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230084AbhKDIl0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 04:41:26 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370DBC061714;
+        Thu,  4 Nov 2021 01:38:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5Z3qZq5MUEoDWPLeBRHYP9o1KIVIGNuaMXfbOKsIkY4=; b=RxMrL7MH99hMKk6Gs5eYutueQO
+        Ums+y+hY8WsLMDJl6GlpfIoPPmjhcKQhcpueY1GJSkIHRnJTCcnhH2SeeQWCFCN9bkIevL/5Y+EcO
+        F/2mRbaWyJIOuA9wAZ1i03S5HtU+LM04rezQYbx28JpzNmLAB+5xtqmfaLyh/FH+xAJPg9byf3b4F
+        eo2RmuEPmsWZYAz4eb34OsY3y4hgdcug7cCIxa85QLg3NsawuGhgmkM6R3yR9uB2oWqe2vHI0qWo6
+        PfWBoRMwKG5twnQYzQqyQoRVEc3u6xAj6001td90k1L//2wJQvXPciuw31x9v6bzpZ4nt2+aLgHN/
+        HQnIOIDg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1miYGm-008Ktc-6U; Thu, 04 Nov 2021 08:38:48 +0000
+Date:   Thu, 4 Nov 2021 01:38:48 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH 18/21] iomap: Convert iomap_add_to_ioend to take a folio
+Message-ID: <YYOcGK43XbnumvHi@infradead.org>
+References: <20211101203929.954622-1-willy@infradead.org>
+ <20211101203929.954622-19-willy@infradead.org>
+ <YYDoMltwjNKtJaWR@infradead.org>
+ <YYGfUuItAyTNax5V@casper.infradead.org>
+ <YYKwyudsHOmPthUP@infradead.org>
+ <YYNUoONKjuo6Izfz@casper.infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v2] fs: f2fs: fix UAF in f2fs_available_free_memory
-Content-Language: en-US
-To:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Sahitya Tummala <stummala@codeaurora.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <20211104082202.1286551-1-mudongliangabcd@gmail.com>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20211104082202.1286551-1-mudongliangabcd@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYNUoONKjuo6Izfz@casper.infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/11/4 16:22, Dongliang Mu wrote:
-> if2fs_fill_super
-> -> f2fs_build_segment_manager
->     -> create_discard_cmd_control
->        -> f2fs_start_discard_thread
+On Thu, Nov 04, 2021 at 03:33:52AM +0000, Matthew Wilcox wrote:
+> On Wed, Nov 03, 2021 at 08:54:50AM -0700, Christoph Hellwig wrote:
+> > > -	 * Walk through the page to find areas to write back. If we run off the
+> > > -	 * end of the current map or find the current map invalid, grab a new
+> > > -	 * one.
+> > > +	 * Walk through the folio to find areas to write back. If we
+> > > +	 * run off the end of the current map or find the current map
+> > > +	 * invalid, grab a new one.
+> > 
+> > No real need for reflowing the comment, it still fits just fine even
+> > with the folio change.
 > 
-> It invokes kthread_run to create a thread and run issue_discard_thread.
-> 
-> However, if f2fs_build_node_manager fails, the control flow goes to
-> free_nm and calls f2fs_destroy_node_manager. This function will free
-> sbi->nm_info. However, if issue_discard_thread accesses sbi->nm_info
-> after the deallocation, but before the f2fs_stop_discard_thread, it will
-> cause UAF(Use-after-free).
-> 
-> -> f2fs_destroy_segment_manager
->     -> destroy_discard_cmd_control
->        -> f2fs_stop_discard_thread
-> 
-> Fix this by stopping discard thread before f2fs_destroy_node_manager.
-> 
-> Note that, the commit d6d2b491a82e1 introduces the call of
-> f2fs_available_free_memory into issue_discard_thread.
-> 
-> Fixes: d6d2b491a82e ("f2fs: allow to change discard policy based on cached discard cmds")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> Sure, but I don't like using column 79, unless it's better to.  We're on
+> three lines anyway; may as well make better use of that third line.
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+Ok, tht's a little weird but a personal preference.  That being said
+reflowing the whole comment just for that seems odd.
 
-Thanks,
+> 
+> > > +	isize = i_size_read(inode);
+> > > +	end_pos = page_offset(page) + PAGE_SIZE;
+> > > +	if (end_pos - 1 >= isize) {
+> > 
+> > Wouldn't this check be more obvious as:
+> > 
+> > 	if (end_pos > i_size) {
+> 
+> I _think_ we restrict the maximum file size to 2^63 - 1 to avoid i_size
+> ever being negative.  But that means that end_pos might be 2^63 (ie
+> LONG_MIN), so we need to subtract one from it to get the right answer.
+> Maybe worth a comment?
+
+Yes, please.
