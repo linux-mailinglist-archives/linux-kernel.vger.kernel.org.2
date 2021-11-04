@@ -2,80 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA84444ECE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:22:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82218444ECB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbhKDGZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:25:17 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:46554 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230213AbhKDGZQ (ORCPT
+        id S231135AbhKDGYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:24:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230361AbhKDGYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:25:16 -0400
-X-UUID: 85dac1906203479bbc81c834cdf6ee2d-20211104
-X-UUID: 85dac1906203479bbc81c834cdf6ee2d-20211104
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <qizhong.cheng@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 877291729; Thu, 04 Nov 2021 14:22:37 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 4 Nov 2021 14:22:36 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkmbs10n2.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.3 via Frontend
- Transport; Thu, 4 Nov 2021 14:22:35 +0800
-From:   qizhong cheng <qizhong.cheng@mediatek.com>
-To:     Ryder Lee <ryder.lee@mediatek.com>,
-        Jianjun Wang <jianjun.wang@mediatek.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?q?Krzysztof=20Wilczyi=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Chuanjia Liu <chuanjia.liu@mediatek.com>,
-        Jiey Yang <ot_jiey.yang@mediatek.com>,
-        qizhong cheng <qizhong.cheng@mediatek.com>
-Subject: [PATCH] PCI: mediatek: Delay 100ms to wait power and clock to become stable
-Date:   Thu, 4 Nov 2021 14:21:44 +0800
-Message-ID: <20211104062144.31453-1-qizhong.cheng@mediatek.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 4 Nov 2021 02:24:48 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009A6C061714;
+        Wed,  3 Nov 2021 23:22:10 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id x64so4856421pfd.6;
+        Wed, 03 Nov 2021 23:22:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZMnc+RdzGFexAA80bF3zG73sNj3BpUf7giuC8WuGlDI=;
+        b=oiyLfsWklzdS/vpdi8mS4Vz2uAHcX/+QWXpVamLnCzdaqjm6BQuczB1ktfcOkUSi4t
+         mIK2ukUqrFRi7/oLfklHNuXxfptwRnkkIex9leUQIKsBNu49ZXu6u3ADgGUgC3UeKW1I
+         35NcbhNHkXPqfGp+SLe9kiWfoRjhVJGgXmGmLjo4QirdihcNe0FZvu9jX1KB0u15citr
+         qV/m/QxfdPyXSgmSWQoCgi6SZNW1/9V8oX4HWifU45mScJohaTSQB8v3m/s7zGkTMFgw
+         kf1g8rKzq7d2Qf2R97Wg2N+WU2gHtmZ1BQRJSP+dAowU2g5QQoQBvf6PRe22QOHTghem
+         3p/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZMnc+RdzGFexAA80bF3zG73sNj3BpUf7giuC8WuGlDI=;
+        b=IigdpWF0jS/whcnmszKOcLEL93x6p0zkPo8HNiVZ+0Li8tbcoOV1NkzsiJiplePv5o
+         KLr1yzfQqo2gEN5fPuvo8BA9Z2cI7lwzeVwndh4eB9m4yg1deWWmcF8QCtn3DVCd/yfL
+         BKSyE6CWz1T1mNZNJIJ0XAFG2NRdcY6/DU1SToQ8oT4UdzdpaS1w9+NyEGiqVaLy6bSM
+         p86mbLP7FT7XmzcNbOVbnXAmr8TekRH+78toMGD/jPkCjQJdSyW9p4oEk+jJhwuVUiHC
+         HbwOoBh0ec+JgwKoR5RA5upHJ1ffk1CSENCu4sLYQqKj5PJ75KAbyFrYdvxwgcYy1Ltz
+         vZQA==
+X-Gm-Message-State: AOAM533RhI0TG/ASTIc6BVO3DEOQdBAphrchC68RRx95elnRPON1JlUh
+        zOvy22BtXz/lQzhVmwd8QHg=
+X-Google-Smtp-Source: ABdhPJwK0lNxtD55HRIkVJRtCGHDv0L7yhL3+zBMQTxLASxtUrH91l1JSfjSeLB+DOZniwks3t4wEQ==
+X-Received: by 2002:a63:6881:: with SMTP id d123mr20788473pgc.68.1636006930568;
+        Wed, 03 Nov 2021 23:22:10 -0700 (PDT)
+Received: from debian11-dev-61.localdomain (192.243.120.180.16clouds.com. [192.243.120.180])
+        by smtp.gmail.com with ESMTPSA id bf19sm6572608pjb.6.2021.11.03.23.22.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 23:22:10 -0700 (PDT)
+From:   davidcomponentone@gmail.com
+X-Google-Original-From: yang.guang5@zte.com.cn
+To:     sgoutham@marvell.com
+Cc:     davidcomponentone@gmail.com, lcherian@marvell.com,
+        gakula@marvell.com, jerinj@marvell.com, hkelam@marvell.com,
+        sbhatta@marvell.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Guang <yang.guang5@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] octeontx2-af: use swap() to make code cleaner
+Date:   Thu,  4 Nov 2021 14:21:58 +0800
+Message-Id: <20211104062158.1506043-1-yang.guang5@zte.com.cn>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Described in PCIe CEM specification setctions 2.2 (PERST# Signal) and
-2.2.1 (Initial Power-Up (G3 to S0)). The deassertion of PERST# should
-be delayed 100ms (TPVPERL) for the power and clock to become stable.
+From: Yang Guang <yang.guang5@zte.com.cn>
 
-Signed-off-by: qizhong cheng <qizhong.cheng@mediatek.com>
+Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
+opencoding it.
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
 ---
- drivers/pci/controller/pcie-mediatek.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
-index 2f3f974977a3..b32acbac8084 100644
---- a/drivers/pci/controller/pcie-mediatek.c
-+++ b/drivers/pci/controller/pcie-mediatek.c
-@@ -702,6 +702,14 @@ static int mtk_pcie_startup_port_v2(struct mtk_pcie_port *port)
- 	 */
- 	writel(PCIE_LINKDOWN_RST_EN, port->base + PCIE_RST_CTRL);
- 
-+	/*
-+	 * Described in PCIe CEM specification setctions 2.2 (PERST# Signal)
-+	 * and 2.2.1 (Initial Power-Up (G3 to S0)).
-+	 * The deassertion of PERST# should be delayed 100ms (TPVPERL)
-+	 * for the power and clock to become stable.
-+	 */
-+	msleep(100);
-+
- 	/* De-assert PHY, PE, PIPE, MAC and configuration reset	*/
- 	val = readl(port->base + PCIE_RST_CTRL);
- 	val |= PCIE_PHY_RSTB | PCIE_PERSTB | PCIE_PIPE_SRSTB |
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
+index bb6b42bbefa4..c0005a1feee6 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
+@@ -2450,9 +2450,7 @@ static int npc_mcam_alloc_entries(struct npc_mcam *mcam, u16 pcifunc,
+ 		bmap = mcam->bmap_reverse;
+ 		start = mcam->bmap_entries - start;
+ 		end = mcam->bmap_entries - end;
+-		index = start;
+-		start = end;
+-		end = index;
++		swap(start, end);
+ 	} else {
+ 		bmap = mcam->bmap;
+ 	}
 -- 
-2.25.1
+2.30.2
 
