@@ -2,112 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F13AB445B31
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 21:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 323AE445B33
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 21:46:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232273AbhKDUsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 16:48:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230443AbhKDUsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 16:48:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E19376120E;
-        Thu,  4 Nov 2021 20:45:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636058731;
-        bh=gZOBqz+lxKTgLuq+5ILj4GUvseGdbaGixbQyb6HHeK4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DEpc2LaleIr2cBNslKVL7CpM8f2fJOQf41acEweJDFL+hs63TQOwRzocBTNTtMsSL
-         PgVCSEEgX5QpyplamVlnvrCQd8gHKoBSq3YkjWEk933HHA/gDvcFrffNfgFDTSQSDv
-         plmzl4FPUb4PdCj2Dx4rDmeNFihtmiymWIJr4c6/ERiIOID9LsRcl3KHQhB6ycJkQ7
-         oNf3epAyjlrb8bJ4ISX3LiFeb4nbAyNRW/ciOeFFynCaMbATMu7qot4uiNfsgaeDd4
-         qqw9Fp1GKjzlUpOyZBUI3/xDGVq9hQ61fFq06QPg2DimG7bAm6ENJfE/wGzRCSlW7P
-         Iqt6HNY7fxotw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7398A410A1; Thu,  4 Nov 2021 17:45:28 -0300 (-03)
-Date:   Thu, 4 Nov 2021 17:45:28 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: perf build broken looking for bpf/{libbpf,bpf}.h after merge
- with upstream
-Message-ID: <YYRGaKbfJCe6XElu@kernel.org>
-References: <YYQadWbtdZ9Ff9N4@kernel.org>
- <CAEf4Bzaj4_hXDxk18aJvk2bxJ-rPb++DpPVEeUw0pN-tJuiy0Q@mail.gmail.com>
- <YYQhzbh1tL5MPgaI@kernel.org>
- <83f48296-fa72-a27f-5acb-654b51cd848f@isovalent.com>
- <YYQ/WMJ9mitKB/PO@kernel.org>
+        id S232281AbhKDUtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 16:49:11 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:51335 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230162AbhKDUtH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 16:49:07 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HlbK00fSsz4xcG;
+        Fri,  5 Nov 2021 07:46:28 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1636058788;
+        bh=Q6jveyxUcJjAyWI/Fm6rQCVZxrdQeIii8jLdg66GsPw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=XAVFqtFslKSZP0D2/NypUVjU9U+WZirFgmXsqZHTUOS2WXCJT/knSHcTDwXK6v+Nv
+         NmlPNEGgdxsNa2HBGWdt2EMOcfJS1mBMi1mbUfHtCOdPhaXoMgaATTZd6ewBBXmFT5
+         zQxFHmq/Xy8zNBKf3BogNYOZmrwEih7cEniiwkMKs8HnqTeQD7XtmU36gWTv+bRwUl
+         1pIh86JwAGKyJI4BMEcO+LlKxGPG7qsY1dqRVF0chJJ1cVSn/WfQhj5Wrb5Rykuyzo
+         /FligCeMnXDQy497+VcDU/fL1iqPKOnLe6nlocWdhF15lJAXwPx/fZ/733k1rVE+UF
+         aMvRKO52VydNQ==
+Date:   Fri, 5 Nov 2021 07:46:27 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steve French <smfrench@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the ksmbd tree
+Message-ID: <20211105074627.76ab1526@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YYQ/WMJ9mitKB/PO@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Type: multipart/signed; boundary="Sig_/o5VZqTI1tFccuR_2ag8.HR6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Nov 04, 2021 at 05:15:20PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Thu, Nov 04, 2021 at 06:15:57PM +0000, Quentin Monnet escreveu:
-> > 2021-11-04 15:09 UTC-0300 ~ Arnaldo Carvalho de Melo <acme@kernel.org>
-> > > Em Thu, Nov 04, 2021 at 10:47:12AM -0700, Andrii Nakryiko escreveu:
-> > >> On Thu, Nov 4, 2021 at 10:38 AM Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
-> > >> cc Quentin as well, might be related to recent Makefiles revamp for
-> > >> users of libbpf. But in bpf-next perf builds perfectly fine, so not
-> > >> sure.
+--Sig_/o5VZqTI1tFccuR_2ag8.HR6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> > > This did the trick:
+Hi all,
 
-> > > ⬢[acme@toolbox perf]$ git show
-> > > commit 504afe6757ec646539ca3b4aa0431820e8c92b45 (HEAD -> perf/core)
-> > > Author: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > > Date:   Thu Nov 4 14:58:56 2021 -0300
+Commits
 
-> > >     Revert "bpftool: Remove Makefile dep. on $(LIBBPF) for $(LIBBPF_INTERNAL_HDRS)"
+  99f76ea5661e ("ksmbd: change LeaseKey data type to u8 array")
+  f5ab639bc25e ("ksmbd: remove smb2_buf_length in smb2_transform_hdr")
+  1b3bd95c0471 ("ksmbd: remove smb2_buf_length in smb2_hdr")
+  2361911de730 ("ksmbd: remove md4 leftovers")
+  13fe1226bef4 ("ksmbd: set unique value to volume serial field in FS_VOLUM=
+E_INFORMATION")
 
-> > >     This reverts commit 8b6c46241c774c83998092a4eafe40f054568881.
+are missing a Signed-off-by from their committer.
 
-> > >     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+--=20
+Cheers,
+Stephen Rothwell
 
-> > > diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> > > index c0c30e56988f2cbe..c5ad996ee95d4e87 100644
-> > > --- a/tools/bpf/bpftool/Makefile
-> > > +++ b/tools/bpf/bpftool/Makefile
-> > > @@ -39,14 +39,14 @@ ifeq ($(BPFTOOL_VERSION),)
-> > >  BPFTOOL_VERSION := $(shell make -rR --no-print-directory -sC ../../.. kernelversion)
-> > >  endif
+--Sig_/o5VZqTI1tFccuR_2ag8.HR6
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> > > -$(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBBPF_HDRS_DIR):
-> > > +$(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT):
-> > >         $(QUIET_MKDIR)mkdir -p $@
+-----BEGIN PGP SIGNATURE-----
 
-> > >  $(LIBBPF): $(wildcard $(BPF_DIR)/*.[ch] $(BPF_DIR)/Makefile) | $(LIBBPF_OUTPUT)
-> > >         $(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_OUTPUT) \
-> > >                 DESTDIR=$(LIBBPF_DESTDIR) prefix= $(LIBBPF) install_headers
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGERqMACgkQAVBC80lX
+0Gwnnwf/eU1Jg3DwrH6xyRIPf03+dyhlDex+pi7JBUVnBNqQfSxGgcPha+kqZ7fC
+Rtyuvl7vIvreJPO/ZdMf5+elVBe12b6QawzB7CA0adKal72CrcFOBMkSOjOXtMev
+FLsLWZG76O3rkfT0Hxa/1LrGoTnxor/an2IbD5J1ACpUOgnwDtDygRQ4UT/OGJmp
+AiBiSKvuzQcuFz3elRXkLYdY4tThoaHxxP69qHifH6c1xurRhxILjAm30dUU+zAD
+C6khhlvY/fvXahf3r5KsjPCgkAq/3jAe4AYJW0PSLKHKP+YZ5XkpeRaSYgrFi/+C
+knuhBRcmIcVklZwQAeRvP9XLRVGwlg==
+=eC/l
+-----END PGP SIGNATURE-----
 
-> > > -$(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_HDRS_DIR)
-> > > +$(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h $(LIBBPF)
-> > >         $(call QUIET_INSTALL, $@)
-> > >         $(Q)install -m 644 -t $(LIBBPF_HDRS_DIR) $<
-
-> > Interesting. I needed that patch because otherwise I'd get errors when
-> > compiling bpftool after the switch to libbpf's hashmap implementation.
-> > For the current breakage, it could be a matter of how we pass variables
-> > when descending into bpftool/ from perf's Makefile.perf. I'll try to
-> > look at this in details, and to experiment tonight, if I can. (Thanks
-> > Andrii for the CC!)
- 
-> yeah, if we pass the location for those headers from the perf side, it
-> should work.
-
-But it isn't obvious how perf should communicate to bpftool where to
-find bpf/bpf.h for the bootstrap make target, which seems something
-bpftool should know.
-
-Anyway, I'm calling it a day, will get back to this tomorrow, if you
-don't beat me to it.
-
-- Arnaldo
+--Sig_/o5VZqTI1tFccuR_2ag8.HR6--
