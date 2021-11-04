@@ -2,94 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E684450E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 10:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 274544450EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 10:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhKDJK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 05:10:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33380 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230335AbhKDJKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 05:10:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 474746120F
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 09:07:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636016868;
-        bh=R27FIfu7jHh5qwiMN++UMDXOmhpT/y+CHg7lzhq219M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dw4U3bB0ymILysfIXWK8vpcA+XA2+bV/vU8mel8F8THSsX+vvCa1RbDqb8E2vavY+
-         7O1RGOWjWGAEKWg3xJ1v9ZOSFVrOOzYvkXO4NtwvTBlsY4Z4sSYfrPIXJedrJAGYdk
-         NY77UNbvKRXRGp8O4P4b2Dhio0V22P2uFOjDuos8mIWbwGkocT5MsCxZGsh+YHdu0d
-         E2JbUksN97kC84TWmM+WZpVc9GcPEfsQb7xYtcoPr5eOLONWgnoOx5ChK0fvfxsxIn
-         uuCe0GtC+L/PRYz5X/HNn2I9lXgx2hDXHkDVnVgXOVinreR/QdB1dBDpeJKV+hZHlc
-         pDZ5IqCCdR7ow==
-Received: by mail-ot1-f52.google.com with SMTP id l7-20020a0568302b0700b0055ae988dcc8so4177354otv.12
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 02:07:48 -0700 (PDT)
-X-Gm-Message-State: AOAM530vJB/Z7LGly+ar+fhQCxtSyQJzfcn+rLwTx+P8lV5i4amLUAv5
-        f0xCPA1SHMaK8Vby5yDdfiF84c9LmMX2NrCFnnM=
-X-Google-Smtp-Source: ABdhPJynE9PXEqIl6ipGPMx25k006zcLfIVGsi3mGi2l+xbvtl5qBGXky+cCQ9oxezjrNAEi/8Qhf0PVuYwpuv1/yY8=
-X-Received: by 2002:a05:6830:14c:: with SMTP id j12mr7351037otp.147.1636016867558;
- Thu, 04 Nov 2021 02:07:47 -0700 (PDT)
+        id S230472AbhKDJNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 05:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230365AbhKDJNq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 05:13:46 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE9AC061203
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 02:11:08 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id v15so1263931ljc.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 02:11:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ip4jIKzplcPRjOqExcXRBQqPqAPXrq235jk6EqfK8sA=;
+        b=Ajj9xGu0eMeaOm/pl+F3O4w34Y56ucIS1YivaQBUsztCkIODJSzEomzA8LyYwWDhIv
+         gL4GafSII/OrRNlmeVnclC/zVYk+T//wrPlyD/ksgrxvgeA82um0lcBr8G4qDc3xCJsQ
+         HpK4IiT/8yrDHY95CZO0fe4r0yALgFqeTpFBQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ip4jIKzplcPRjOqExcXRBQqPqAPXrq235jk6EqfK8sA=;
+        b=oxQId7aQLDDg09tZAKrds/OXLlkRWHJM69Qis3ZxFckndem5HawG/LgDewIW0cyJa8
+         YHqw8TcwfgVXebEmqu2rQgHT94gEv5o8FgTDXMHzx6jdjroERh1C9CgeAnO1WoJQLesx
+         3HHysGMaGYUBZgXUqmG7dEyxAlcBVWnDZoaELmbfrfb5bb24Glzy+shl5KKmlD/LwNH7
+         ODIyFrIr2Vp/0jitL1wCOF9Ov/i9vZPqcFmO/w4IhgT65mgafViHG92WB5z0/s+4WqyR
+         fz6IxSGva0FB9OAhwrZwC5r7ylGosEKz3GHxtRfrncNEdJS1guuw6uKSs4kjPkn9hxMh
+         lAqQ==
+X-Gm-Message-State: AOAM532G/idnVHo2VOWNGK/Q0aIRibmEXJQqZt/3I7t+mWtZzk1/UuUt
+        YsX3rBnf1b4h8U+dcm+Nw3Jl2pDeVSH0y18LxRMMwA==
+X-Google-Smtp-Source: ABdhPJy8fhKodASuD5SKo5rDH8OmLdPRdEwIa15ljtPKQs6a7cExLx0VBmUmWvEB+7WHB09t29utQs4L5T2n+YQsf8E=
+X-Received: by 2002:a2e:b5d2:: with SMTP id g18mr18870481ljn.282.1636017066544;
+ Thu, 04 Nov 2021 02:11:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <990f4427968071d59bcbb7411da73acc379d3ac4.1635986046.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <990f4427968071d59bcbb7411da73acc379d3ac4.1635986046.git.mirq-linux@rere.qmqm.pl>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 4 Nov 2021 10:07:36 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEsm1oK5uPqku7uJfF=FeKx1fEjTu80czZPguQPBO_z2w@mail.gmail.com>
-Message-ID: <CAMj1kXEsm1oK5uPqku7uJfF=FeKx1fEjTu80czZPguQPBO_z2w@mail.gmail.com>
-Subject: Re: [PATCH] ARM: fix early early_iounmap()
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Jon Medhurst <tixy@linaro.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211020120431.776494-1-hikalium@chromium.org> <874k9bdcrk.wl-maz@kernel.org>
+In-Reply-To: <874k9bdcrk.wl-maz@kernel.org>
+From:   Hikaru Nishida <hikalium@chromium.org>
+Date:   Thu, 4 Nov 2021 18:10:55 +0900
+Message-ID: <CACTzKb+vVU0Ymh2Nx5B6kSydBsJ6AgrbQMF39RFvqoHpvL_riw@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 0/5] x86/kvm: Virtual suspend time injection support
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, dme@dme.org, tglx@linutronix.de,
+        mlevitsk@redhat.com, linux@roeck-us.net, pbonzini@redhat.com,
+        vkuznets@redhat.com, will@kernel.org, suleiman@google.com,
+        senozhatsky@google.com, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Nov 2021 at 01:46, Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmq=
-m.pl> wrote:
->
-> Currently __set_fixmap() bails out with a warning when called in early bo=
-ot
-> from early_iounmap(). Fix it, and while at it, make the comment a bit eas=
-ier
-> to understand.
->
-> Cc: <stable@vger.kernel.org>
-> Fixes: b089c31c519c ("ARM: 8667/3: Fix memory attribute inconsistencies w=
-hen using fixmap")
-> Signed-off-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
+Hi Marc,
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Thanks for the comments! (Sorry for the late reply)
 
-> ---
->  arch/arm/mm/mmu.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+On Wed, Oct 20, 2021 at 10:52 PM Marc Zyngier <maz@kernel.org> wrote:
 >
-> diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
-> index a4e006005107..274e4f73fd33 100644
-> --- a/arch/arm/mm/mmu.c
-> +++ b/arch/arm/mm/mmu.c
-> @@ -390,9 +390,9 @@ void __set_fixmap(enum fixed_addresses idx, phys_addr=
-_t phys, pgprot_t prot)
->         BUILD_BUG_ON(__fix_to_virt(__end_of_fixed_addresses) < FIXADDR_ST=
-ART);
->         BUG_ON(idx >=3D __end_of_fixed_addresses);
+> Hi Hikaru,
 >
-> -       /* we only support device mappings until pgprot_kernel has been s=
-et */
-> +       /* We support only device mappings before pgprot_kernel is set. *=
-/
->         if (WARN_ON(pgprot_val(prot) !=3D pgprot_val(FIXMAP_PAGE_IO) &&
-> -                   pgprot_val(pgprot_kernel) =3D=3D 0))
-> +                   pgprot_val(prot) && pgprot_val(pgprot_kernel) =3D=3D =
-0))
->                 return;
+> On Wed, 20 Oct 2021 13:04:25 +0100,
+> Hikaru Nishida <hikalium@chromium.org> wrote:
+> >
+> >
+> > Hi,
+> >
+> > This patch series adds virtual suspend time injection support to KVM.
+> > It is an updated version of the following series:
+> > v2:
+> > https://lore.kernel.org/kvm/20210806100710.2425336-1-hikalium@chromium.org/
+> > v1:
+> > https://lore.kernel.org/kvm/20210426090644.2218834-1-hikalium@chromium.org/
+> >
+> > Please take a look again.
+> >
+> > To kvm/arm64 folks:
+> > I'm going to implement this mechanism to ARM64 as well but not
+> > sure which function should be used to make an IRQ (like kvm_apic_set_irq
+> > in x86) and if it is okay to use kvm_gfn_to_hva_cache /
+> > kvm_write_guest_cached for sharing the suspend duration.
 >
->         if (pgprot_val(prot))
+> Before we discuss interrupt injection, I want to understand what this
+> is doing, and how this is doing it. And more precisely, I want to find
+> out how you solve the various problems described by Thomas here [1].
+
+The problems described by Thomas in the thread was:
+- User space or kernel space can observe the stale timestamp before
+the adjustment
+  - Moving CLOCK_MONOTONIC forward will trigger all sorts of timeouts,
+watchdogs, etc...
+- The last attempt to make CLOCK_MONOTONIC behave like CLOCK_BOOTTIME
+was reverted within 3 weeks. a3ed0e4393d6 ("Revert: Unify
+CLOCK_MONOTONIC and CLOCK_BOOTTIME")
+  - CLOCK_MONOTONIC correctness (stops during the suspend) should be maintained.
+
+I agree with the points above. And, the current CLOCK_MONOTONIC
+behavior in the KVM guest is not aligned with the statements above.
+(it advances during the host's suspension.)
+This causes the problems described above (triggering watchdog
+timeouts, etc...) so my patches are going to fix this by 2 steps
+roughly:
+1. Stopping the guest's clocks during the host's suspension
+2. Adjusting CLOCK_BOOTTIME later
+This will make the clocks behave like the host does, not making
+CLOCK_MONOTONIC behave like CLOCK_BOOTTIME.
+
+First one is a bit tricky since the guest can use a timestamp counter
+in each CPUs (TSC in x86) and we need to adjust it without stale
+values are observed by the guest kernel to prevent rewinding of
+CLOCK_MONOTONIC (which is our top priority to make the kernel happy).
+To achieve this, my patch adjusts TSCs (and a kvm-clock) before the
+first vcpu runs of each vcpus after the resume.
+
+Second one is relatively safe: since jumping CLOCK_BOOTTIME forward
+can happen even before my patches when suspend/resume happens, and
+that will not break the monotonicity of the clocks, we can do that
+through IRQ.
+
+[1] shows the flow of the adjustment logic, and [2] shows how the
+clocks behave in the guest and the host before/after my patches.
+The numbers on each step in [1] corresponds to the timing shown in [2].
+The left side of [2] is showing the behavior of the clocks before the
+patches, and the right side shows after the patches. Also, upper
+charts show the guest clocks, and bottom charts are host clocks.
+
+Before the patches(left side), CLOCK_MONOTONIC seems to be jumped from
+the guest's perspective after the host's suspension. As Thomas says,
+large jumps of CLOCK_MONOTONIC may lead to watchdog timeouts and other
+bad things that we want to avoid.
+With the patches(right side), both clocks will be adjusted (t=4,5) as
+if they are stopped during the suspension. This adjustment is done by
+the host side and invisible to the guest since it is done before the
+first vcpu run after the resume. After that, CLOCK_BOOTTIME will be
+adjusted from the guest side, triggered by the IRQ sent from the host.
+
+[1]: https://hikalium.com/files/kvm_virt_suspend_time_seq.png
+[2]: https://hikalium.com/files/kvm_virt_suspend_time_clocks.png
+
+
+>
+> Assuming you solve these, you should model the guest memory access
+> similarly to what we do for stolen time. As for injecting an
+> interrupt, why can't this be a userspace thing?
+
+Since CLOCK_BOOTTIME is calculated by adding a gap
+(tk->monotonic_to_boot) to CLOCK_MONOTONIC, and there are no way to
+change the value from the outside of the guest kernel, we should
+implement some mechanism in the kernel to adjust it.
+(Actually, I tried to add a sysfs interface to modify the gap [3], but
+I learned that that is not a good idea...)
+
+[3]: https://lore.kernel.org/lkml/87eehoax14.fsf@nanos.tec.linutronix.de/
+
+Thank you,
+
+Hikaru Nishida
+
+>
+> Thanks,
+>
+>         M.
+>
+> [1] https://lore.kernel.org/all/871r557jls.ffs@tglx
+>
+>
 > --
-> 2.30.2
->
+> Without deviation from the norm, progress is not possible.
