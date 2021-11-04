@@ -2,135 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184AD4455D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:57:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 829934455C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231584AbhKDPAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 11:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231365AbhKDPAO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 11:00:14 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF045C06127A
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 07:57:36 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id 127so6122313pfu.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 07:57:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vX4yRlqINS3cJMioy/zbkZYtGwo1ojr7gZmj2zjRf/g=;
-        b=BqrM61MUvrWQOLHvp+UR5ZnC+iO2ubyKGmk+NEmdSNqfYpRy4UYi0Cj+79nXJA8HNp
-         E+1nBfrLq1M3yppcC4hnVSzHmAt1vZbO26o1/eR9WOvGrQLR9NXfbf/zi1x/rO1oIxJh
-         fkZPcA7POXj9NhD1Tqc298sgY3WsI+u5cGrpXKaEPl8ng82ruyA6pD/C2x8KZhOv39hx
-         YzIXcEcNtOK8V3yrMHqhPp9ir5D6RX/XeXHbLAtZTTrS7IQ37X8h7JDIwBhThJMQpt0N
-         jC/o0BOoN1CMGT7Q3DEZRn/Vj7UIOSmn1Z82hY/ZE02vOzwEdWVkNXdGvxc8r0am3rFc
-         H1nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vX4yRlqINS3cJMioy/zbkZYtGwo1ojr7gZmj2zjRf/g=;
-        b=jvPrQsLQUN8kbHItakuV8wuA32NUnjBbj+/5VPGFmSmZXBpas4VqTL8uI3OgGzxShu
-         8D5pf62NeA9R4l0hN4dVEJ122Xo+ArPwTi4hPoNCUJ8zqs6SgXAa4lA91U/fXN+WoQsU
-         J1rLrN/HcVYe6ZpWQ5bV7ai4HHYN8YQV0JNzPIpFBdFEcLB02nkYwGLRXiIdvqKq9VX4
-         4aGgReNpbsb7jJCIjTyVl3enJZZUpQKZG9VXwyTlEgKLi1DxQPSbQvR9m2F7Yl1O0sYc
-         2LXZQBDiOyeUU8M4oxWjkp3lpcivzPiMbs8cE0351mpkuV4whYFWXpt3mQTGQKGX5wva
-         6TWw==
-X-Gm-Message-State: AOAM531okMKi8Ish2HuBfEp2O79j0pTUtj9eYIslugpIGV94wkWi1qEV
-        zxrwBmjzPOk8/AEJcPXWIIA=
-X-Google-Smtp-Source: ABdhPJwWOE5Dc9iuie3hKLXSLwaXO/LGXWpNq/doECauuWXnpdo+AW7Yn6+Bfh+ATbjWUxVaiwL97Q==
-X-Received: by 2002:a63:ef02:: with SMTP id u2mr9832332pgh.363.1636037856426;
-        Thu, 04 Nov 2021 07:57:36 -0700 (PDT)
-Received: from localhost.localdomain ([140.82.17.67])
-        by smtp.gmail.com with ESMTPSA id t8sm4328530pgk.66.2021.11.04.07.57.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 07:57:36 -0700 (PDT)
-From:   Yafang Shao <laoar.shao@gmail.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com
-Cc:     linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: [RFC PATCH 4/4] sched/core: Do numa balance in cfs_migration
-Date:   Thu,  4 Nov 2021 14:57:13 +0000
-Message-Id: <20211104145713.4419-5-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211104145713.4419-1-laoar.shao@gmail.com>
-References: <20211104145713.4419-1-laoar.shao@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231359AbhKDPAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 11:00:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230344AbhKDPAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 11:00:02 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE1B5611C3;
+        Thu,  4 Nov 2021 14:57:24 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mieB8-003USb-P8; Thu, 04 Nov 2021 14:57:22 +0000
+Date:   Thu, 04 Nov 2021 14:57:22 +0000
+Message-ID: <871r3w9df1.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Guo Ren <guoren@kernel.org>, Atish Patra <atish.patra@wdc.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Vincent Pelletier <plr.vincent@gmail.com>,
+        Nikita Shubin <nikita.shubin@maquefel.me>
+Subject: Re: [PATCH V6] irqchip/sifive-plic: Fixup EOI failed when masked
+In-Reply-To: <CAAhSdy29qhF4JHuMOqwctn+=HQNBbR3X0gsymqD8OAF1pXE43A@mail.gmail.com>
+References: <20211101131736.3800114-1-guoren@kernel.org>
+        <CAAhSdy29qhF4JHuMOqwctn+=HQNBbR3X0gsymqD8OAF1pXE43A@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: anup@brainfault.org, guoren@kernel.org, atish.patra@wdc.com, tglx@linutronix.de, palmer@dabbelt.com, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, guoren@linux.alibaba.com, plr.vincent@gmail.com, nikita.shubin@maquefel.me
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to active load balance, the numa balance work is also applied to
-cfs tasks only and it should't preempt other FIFO tasks. We'd better assign
-cfs_migration to the numa balance as well.
+On Thu, 04 Nov 2021 14:40:42 +0000,
+Anup Patel <anup@brainfault.org> wrote:
+> 
+> On Mon, Nov 1, 2021 at 6:47 PM <guoren@kernel.org> wrote:
+> >
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > When using "devm_request_threaded_irq(,,,,IRQF_ONESHOT,,)" in the driver,
+> > only the first interrupt could be handled, and continue irq is blocked by
+> > hw. Because the riscv plic couldn't complete masked irq source which has
+> > been disabled in enable register. The bug was firstly reported in [1].
+> >
+> > Here is the description of Interrupt Completion in PLIC spec [2]:
+> >
+> > The PLIC signals it has completed executing an interrupt handler by
+> > writing the interrupt ID it received from the claim to the claim/complete
+> > register. The PLIC does not check whether the completion ID is the same
+> > as the last claim ID for that target. If the completion ID does not match
+> > an interrupt source that is currently enabled for the target, the
+> >                          ^^ ^^^^^^^^^ ^^^^^^^
+> > completion is silently ignored.
+> >
+> > [1] http://lists.infradead.org/pipermail/linux-riscv/2021-July/007441.html
+> > [2] https://github.com/riscv/riscv-plic-spec/blob/8bc15a35d07c9edf7b5d23fec9728302595ffc4d/riscv-plic.adoc
+> >
+> > Reported-by: Vincent Pelletier <plr.vincent@gmail.com>
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Cc: Anup Patel <anup@brainfault.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> > Cc: Atish Patra <atish.patra@wdc.com>
+> > Cc: Nikita Shubin <nikita.shubin@maquefel.me>
+> > Cc: incent Pelletier <plr.vincent@gmail.com>
+> 
+> Please include a Fixes: tag
+> 
+> Also, I see that you have dropped the DT bindings patch. We still
+> need separate compatible string for T-HEAD PLIC because OpenSBI
+> will use it for other work-arounds.
+> 
+> I suggest to include to more patches in this series:
+> 1) Your latest T-HEAD PLIC DT bindings patch
+> 2) Separate patch to use T-HEAD PLIC compatible in PLIC driver
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
----
- kernel/sched/core.c  |  2 +-
- kernel/sched/fair.c  | 13 +++++++++++++
- kernel/sched/sched.h |  2 ++
- 3 files changed, 16 insertions(+), 1 deletion(-)
+No, please keep things separate. The PLIC is broken *today*, and I
+want to take a patch for -rc1. The rest (compatible and such) is a new
+feature and can wait until 5.17.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 9cb81ef8acc8..4a37b06715f4 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8724,7 +8724,7 @@ int migrate_task_to(struct task_struct *p, int target_cpu)
- 	/* TODO: This is not properly updating schedstats */
- 
- 	trace_sched_move_numa(p, curr_cpu, target_cpu);
--	return stop_one_cpu(curr_cpu, migration_cpu_stop, &arg);
-+	return wakeup_cfs_migrater(curr_cpu, migration_cpu_stop, &arg);
- }
- 
- /*
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 932f63baeb82..b7a155e05c98 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -11960,6 +11960,19 @@ static void wakeup_cfs_migrater_nowait(unsigned int cpu, cpu_stop_fn_t fn, void
- 	cfs_migration_queue_work(cpu, work_buf);
- }
- 
-+bool wakeup_cfs_migrater(unsigned int cpu, cpu_stop_fn_t fn, void *arg)
-+{
-+	struct cpu_stop_done done;
-+	struct cpu_stop_work work = { .fn = fn, .arg = arg, .done = &done, .caller = _RET_IP_ };
-+
-+	cpu_stop_init_done(&done, 1);
-+	cfs_migration_queue_work(cpu, &work);
-+	cond_resched();
-+	wait_for_completion(&done.completion);
-+
-+	return done.ret;
-+}
-+
- static int cfs_migration_should_run(unsigned int cpu)
- {
- 	struct cfs_migrater *migrater = &per_cpu(cfs_migrater, cpu);
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index a00fc7057d97..7b242c18a6d8 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -3055,6 +3055,8 @@ static inline bool is_per_cpu_kthread(struct task_struct *p)
- 
- 	return true;
- }
-+
-+bool wakeup_cfs_migrater(unsigned int cpu, cpu_stop_fn_t fn, void *arg);
- #endif
- 
- extern void swake_up_all_locked(struct swait_queue_head *q);
+	M.
+
 -- 
-2.17.1
-
+Without deviation from the norm, progress is not possible.
