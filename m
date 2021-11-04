@@ -2,108 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8D84455BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:55:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3A14455BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:55:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhKDO5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 10:57:52 -0400
-Received: from mga14.intel.com ([192.55.52.115]:23958 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229920AbhKDO5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 10:57:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10157"; a="231966561"
-X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
-   d="scan'208";a="231966561"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 07:55:13 -0700
-X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
-   d="scan'208";a="585996786"
-Received: from unknown (HELO [10.209.25.230]) ([10.209.25.230])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 07:55:12 -0700
-Subject: Re: [RFC PATCH v2 5/5] docs: ABI: Add sysfs documentation interface
- of hardware prefetch driver
-To:     Kohei Tarumizu <tarumizu.kohei@fujitsu.com>,
-        catalin.marinas@arm.com, will@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211104052122.553868-1-tarumizu.kohei@fujitsu.com>
- <20211104052122.553868-6-tarumizu.kohei@fujitsu.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <2a939a62-7016-bbd6-6e2f-2824214687fd@intel.com>
-Date:   Thu, 4 Nov 2021 07:55:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231288AbhKDO6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 10:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230058AbhKDO6I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 10:58:08 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1600EC061714;
+        Thu,  4 Nov 2021 07:55:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=wrSeE0vHuSZ2IQmTnnM2PVhvw+BilCh/rk5TGFPdKSk=; b=Eh4M7NlL+I37REU8uB6I+KnMjR
+        LvWyFTa5kAuwejLldEN9vErizVh/J+d+MtoKgIX8hLcUyQs0bQrtHqUvgvocQu2AyblYBrkKZOtCr
+        nkswuz+/RRTheugcknSPh+zHbguRqyztns2mfT3FaPzTken1CeFsNS9hq8q8xTWOBxKHmarWfabJQ
+        U33z7jzD7NxgDw50ZXhDPFB1+j6R0x4lQ+7xwFVmEpYiuPnlxVAzlJwAnN6P6jAaj4vqJ/6IKwUEG
+        gW923fJRSkR8soOPh8sj0v5vVR19e6e/EgoEOZwD6Ge/9qW1No6V1Eog1k+A8Ta7SMBFmW9C4Jh/M
+        pgEtde7w==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mie9J-00995Y-1C; Thu, 04 Nov 2021 14:55:29 +0000
+Subject: Re: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
+To:     Andrew Lunn <andrew@lunn.ch>,
+        =?UTF-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
+Cc:     Wells Lu <wellslutw@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
+References: <cover.1635936610.git.wells.lu@sunplus.com>
+ <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
+ <d0217eed-a8b7-8eb9-7d50-4bf69cd38e03@infradead.org>
+ <159ab76ac7114da983332aadc6056c08@sphcmbx02.sunplus.com.tw>
+ <YYLjaYCQHzqBzN1l@lunn.ch>
+ <36d5bc6d40734ae0a9c1fb26d258f49f@sphcmbx02.sunplus.com.tw>
+ <YYPZN9hPBJTBzVUl@lunn.ch>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <3209bc4b-bde5-2e7e-4a91-429d2e83905e@infradead.org>
+Date:   Thu, 4 Nov 2021 07:55:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211104052122.553868-6-tarumizu.kohei@fujitsu.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YYPZN9hPBJTBzVUl@lunn.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/21 10:21 PM, Kohei Tarumizu wrote:
-> +What:		/sys/devices/system/cpu/cpu*/hwpf/l*/enable
-> +		/sys/devices/system/cpu/cpu*/hwpf/l*/available_dist
-> +		/sys/devices/system/cpu/cpu*/hwpf/l*/dist
-> +		/sys/devices/system/cpu/cpu*/hwpf/l*/reliable
+On 11/4/21 5:59 AM, Andrew Lunn wrote:
+> On Thu, Nov 04, 2021 at 05:31:57AM +0000, Wells Lu 呂芳騰 wrote:
+>> Hi,
+>>
+>> Thanks a lot for review.
+>>
+>>>
+>>>> config NET_VENDOR_SUNPLUS
+>>>> 	bool "Sunplus devices"
+>>>> 	default y
+>>>> 	depends on ARCH_SUNPLUS
+>>>
+>>> Does it actually depend on ARCH_SUNPLUS? What do you make use of?
+>>
+>> ARCH_SUNPLUS will be defined for Sunplus family series SoC.
+>> Ethernet devices of Sunplus are designed and used for Sunplus SoC.
+>> So far, only two SoC of Sunplus have the network device.
+>> I'd like to show up the selection only for Sunplus SoC.
+> 
+> So it does not actually depend on ARCH_SUNPLUS. There are a few cases
+> where drivers have needed to call into arch specific code, which stops
+> them building for any other arch.
+> 
+>>> Ideally, you want it to also build with COMPILE_TEST, so that the driver gets
+>>> build by 0-day and all the other build bots.
+>>
+>> I am not sure if this is mandatory or not.
+>> Should I add COMPILE_TEST as below?
+>>
+>> 	depends on ARCH_SUNPLUS | COMPILE_TEST
+> 
+> Yes.
 
-How does this look in practice?
+Yes, but use "||" instead of one "|".
 
-	# ls /sys/devices/system/cpu/cpu0/hwpf/
-	l0
-	l1
-	l2
-	...
+> 
+>> Yes, the device is now only for Sunplus SP7021 SoC.
+>> Devices in each SoC may have a bit difference because of adding new
+>> function or improving something.
+> 
+> If it will compile with COMPILE_TEST on x86, mips, etc, you should
+> allow it to compile with COMPILE_TEST. You get better compile testing
+> that way.
+> 
+>       Andrew
+> 
 
-?
 
-Dumb question, but why don't we give these things names?  If the Intel
-one is called "L2 Hardware Prefetcher Disable", couldn't the directory
-be "l2_prefetch"?
-
-BTW, your "reliable" is mismatched with the "strong" value in the docs.
+-- 
+~Randy
