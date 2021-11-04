@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079944457B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 17:57:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B96D44457D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 18:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232057AbhKDQ7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 12:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49266 "EHLO
+        id S232271AbhKDREV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 13:04:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231867AbhKDQ7Z (ORCPT
+        with ESMTP id S232176AbhKDREJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 12:59:25 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29082C061203
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 09:56:47 -0700 (PDT)
+        Thu, 4 Nov 2021 13:04:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C86C06120A
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 10:01:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=5Uem+DoLR2wL8uUlO3rPV0zU6Q45dqhTv0q8p4ZWQyQ=; b=Ql9j+fpRiGK7TSuBpSTIeNBHNU
-        vl9WnqOwXvTsOjNGWgR4Y0jSX9KsCH5lm2sEQoL8aF8PgEtCB1/sFuYHtkm6z7uRcBpQKkBJnhZ8F
-        yEtWvMC36ob5ooNJWrrGZzqnvVBfky8ENR7MfEbHI4vyJ2q+kORqCoqxpyBOnuLbwUPtScAlfIJl7
-        0Pz+so7uwjNZEtdKIBMF4e3l0jjd9yhjB1n4lfurhWQZs5o6FoCFgIdF4WQfMO360kf1Q00Gl6/Iu
-        JrkUgaKhpZjbivTzL8DqPlhKJMwR4Sb8OGO2EJ8CSDjARzZ7lZk3UiFslsIgQaTiISL3LSlcKexlX
-        RpO81Nsg==;
+        bh=GP01YFM16qeWeivEJh41tvuNdAjyBsO9/aV4rwEvVJo=; b=ugHfpiLyVEGNlLYx8Gy1wM502e
+        X4NaW5RkEE/vtkux0fzFrq1eKS2ViorMqjbSKeqvfJAR1wk7y6q78EtLKxm3bwsePtBonivtZa+5x
+        qB3u5OLILd+7RKRpvUzzhSF75KcyVmVEtad7c49GR5D0dLZUZ2l0fOgfymvuBxNo239dpWpZfE9OP
+        D+GNaboGSD1vyky3cJE0rxapG4F1UAXHUBFF5fG8xFwhVw35nKciajy44tdbcU+Iab5/xsdvbfXVF
+        Uvr+RpXvd3JIVWip8HqWtmpJ2dhZHuV3aaEUYD7i7T2ZtLdBpBKUnm0oi539gA/tZ0QBAI4U5cvFJ
+        mWKww1PQ==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mig2X-00EC7k-Bf; Thu, 04 Nov 2021 16:56:37 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mig2X-0060FZ-CB; Thu, 04 Nov 2021 16:57:10 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 582E930199A;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5B168301A54;
         Thu,  4 Nov 2021 17:56:35 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 390BE2DD49FBC; Thu,  4 Nov 2021 17:56:35 +0100 (CET)
-Message-ID: <20211104165525.168368031@infradead.org>
+        id 3CBA92DD49FBE; Thu,  4 Nov 2021 17:56:35 +0100 (CET)
+Message-ID: <20211104165525.228321055@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 04 Nov 2021 17:47:40 +0100
+Date:   Thu, 04 Nov 2021 17:47:41 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
         jpoimboe@redhat.com, mark.rutland@arm.com, dvyukov@google.com,
         seanjc@google.com, pbonzini@redhat.com, mbenes@suse.cz
-Subject: [RFC][PATCH 11/22] x86,xen: Remove .fixup usage
+Subject: [RFC][PATCH 12/22] x86,fpu: Remove .fixup usage
 References: <20211104164729.226550532@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,52 +52,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Employ the fancy new EX_TYPE_IMM_REG to create EX_TYPE_NEG_REG to
-store '-1' into the designated register and use this to remove some
-Xen .fixup usage.
+Employ EX_TYPE_NEG_REG to store '-1' into the %[err] register on
+exception.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/extable_fixup_types.h |    1 +
- arch/x86/include/asm/xen/page.h            |   12 ++----------
- 2 files changed, 3 insertions(+), 10 deletions(-)
+ arch/x86/kernel/fpu/legacy.h |    6 +-----
+ arch/x86/kernel/fpu/xstate.h |    6 +-----
+ 2 files changed, 2 insertions(+), 10 deletions(-)
 
---- a/arch/x86/include/asm/extable_fixup_types.h
-+++ b/arch/x86/include/asm/extable_fixup_types.h
-@@ -35,5 +35,6 @@
- 
- #define	EX_TYPE_IMM_REG			17 /* reg := (long)imm */
- #define	EX_TYPE_EFAULT_REG		(EX_TYPE_IMM_REG | EX_TYPE_IMM(-EFAULT))
-+#define	EX_TYPE_NEG_REG			(EX_TYPE_IMM_REG | EX_TYPE_IMM(-1))
- 
- #endif
---- a/arch/x86/include/asm/xen/page.h
-+++ b/arch/x86/include/asm/xen/page.h
-@@ -96,11 +96,7 @@ static inline int xen_safe_write_ulong(u
- 
- 	asm volatile("1: mov %[val], %[ptr]\n"
- 		     "2:\n"
--		     ".section .fixup, \"ax\"\n"
--		     "3: sub $1, %[ret]\n"
--		     "   jmp 2b\n"
--		     ".previous\n"
--		     _ASM_EXTABLE(1b, 3b)
-+		     _ASM_EXTABLE_TYPE_REG(1b, 2b, EX_TYPE_NEG_REG, %[ret])
- 		     : [ret] "+r" (ret), [ptr] "=m" (*addr)
- 		     : [val] "r" (val));
- 
-@@ -115,11 +111,7 @@ static inline int xen_safe_read_ulong(co
- 
- 	asm volatile("1: mov %[ptr], %[rval]\n"
- 		     "2:\n"
--		     ".section .fixup, \"ax\"\n"
--		     "3: sub $1, %[ret]\n"
--		     "   jmp 2b\n"
--		     ".previous\n"
--		     _ASM_EXTABLE(1b, 3b)
-+		     _ASM_EXTABLE_TYPE_REG(1b, 2b, EX_TYPE_NEG_REG, %[ret])
- 		     : [ret] "+r" (ret), [rval] "+r" (rval)
- 		     : [ptr] "m" (*addr));
- 	*val = rval;
+--- a/arch/x86/kernel/fpu/legacy.h
++++ b/arch/x86/kernel/fpu/legacy.h
+@@ -35,11 +35,7 @@ static inline void ldmxcsr(u32 mxcsr)
+ 	int err;							\
+ 	asm volatile("1:" #insn "\n\t"					\
+ 		     "2:\n"						\
+-		     ".section .fixup,\"ax\"\n"				\
+-		     "3:  movl $-1,%[err]\n"				\
+-		     "    jmp  2b\n"					\
+-		     ".previous\n"					\
+-		     _ASM_EXTABLE(1b, 3b)				\
++		     _ASM_EXTABLE_TYPE_REG(1b, 2b, EX_TYPE_NEG_REG, %[err]) \
+ 		     : [err] "=r" (err), output				\
+ 		     : "0"(0), input);					\
+ 	err;								\
+--- a/arch/x86/kernel/fpu/xstate.h
++++ b/arch/x86/kernel/fpu/xstate.h
+@@ -107,11 +107,7 @@ static inline u64 xfeatures_mask_indepen
+ 		     "\n"						\
+ 		     "xor %[err], %[err]\n"				\
+ 		     "3:\n"						\
+-		     ".pushsection .fixup,\"ax\"\n"			\
+-		     "4: movl $-2, %[err]\n"				\
+-		     "jmp 3b\n"						\
+-		     ".popsection\n"					\
+-		     _ASM_EXTABLE(661b, 4b)				\
++		     _ASM_EXTABLE_TYPE_REG(661b, 3b, EX_TYPE_NEG_REG, %[err]) \
+ 		     : [err] "=r" (err)					\
+ 		     : "D" (st), "m" (*st), "a" (lmask), "d" (hmask)	\
+ 		     : "memory")
 
 
