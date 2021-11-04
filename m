@@ -2,119 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62B744509F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:53:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 231D74450A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhKDI4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 04:56:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22902 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230084AbhKDIz7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 04:55:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636016000;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mOpf3N8k5TmP0/CI17fGHAMr/m+bk2WcpGha5PDfEpM=;
-        b=C07R68LupF1O830mwJfCZXzp3vKr6yuRDVkyYkHDGF7TGVKkQSLKLb65jQZ38vNat41U9V
-        ow/4wqjNQiBKh9XuQrQY4GtSSGAzmFps7vIb3uzzqD5DS1/Qm/Z+D3Dr0EzA+E4jaSZuUI
-        LUvCYo0fjvz3XX1qn5Yv6w+tJkYJ/30=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-551-K4AAL_WiOlKSdV9lrioW_g-1; Thu, 04 Nov 2021 04:53:19 -0400
-X-MC-Unique: K4AAL_WiOlKSdV9lrioW_g-1
-Received: by mail-ed1-f70.google.com with SMTP id y12-20020a056402270c00b003e28de6e995so5052344edd.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 01:53:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=mOpf3N8k5TmP0/CI17fGHAMr/m+bk2WcpGha5PDfEpM=;
-        b=qnhcpg0GAjCqUSkB5Z9zjw/aFX+I9UnORXwqd5Y7JUm/5fU6g0/zSMEhi7IfhZKyRg
-         tZDq5flM+BuTJGPuE4SFFrXIuBSfFXX4GnOAtDdZTnasp0zz3O5dzf4abT9Vj5AvRbZf
-         OU2hIEmhtW3kC+4LpPipfzrOSEvWAZ4Xknk4jPkmDuM4h3Z6qI0GsdWasUVh3iEc2UdQ
-         8fUX9odTaHJz8cA1ZA8KoW51/Ovz+JNIavMmptBO4FmIy2kuYfXupdyLVRf9ayiaNSno
-         yWEFRepWeSU3KQHb6qbsyUuAzk6PXNKbY6qdhGZ5gQZBk0xE1DqFw8KEcBVNhDVjFZKK
-         HRpw==
-X-Gm-Message-State: AOAM532BTKnJohWRP97tJkR+lcDhCIlEDzdlwMmLPysEbvXavcpYcu8+
-        HNW2l+b44wzyYGHsz0fBgqcMRFriEI3pUJFxf0NC+B5OnyqRNGuRduZRHAgpdVSG5Y/n/uhRAJQ
-        TdP2z6YdxiAQLRr4ytmvbxnyJ
-X-Received: by 2002:a05:6402:35c2:: with SMTP id z2mr4555295edc.135.1636015998823;
-        Thu, 04 Nov 2021 01:53:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwgGEBlAZl//6XVnM2bnYFzF2EV8xe3d7ZYqWOwYgQkP5rn3A+uceioa6sefusXG/b67NWtGA==
-X-Received: by 2002:a05:6402:35c2:: with SMTP id z2mr4555279edc.135.1636015998664;
-        Thu, 04 Nov 2021 01:53:18 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id v10sm2453854edt.24.2021.11.04.01.53.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 01:53:17 -0700 (PDT)
-Message-ID: <a30f80e5-9969-986c-0c27-f9a391c7686c@redhat.com>
-Date:   Thu, 4 Nov 2021 09:53:16 +0100
+        id S230410AbhKDI4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:56:18 -0400
+Received: from verein.lst.de ([213.95.11.211]:34363 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230084AbhKDI4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 04:56:17 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 89EB968AA6; Thu,  4 Nov 2021 09:53:36 +0100 (CET)
+Date:   Thu, 4 Nov 2021 09:53:36 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Walter Wu <walter-zh.wu@mediatek.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2] dma-direct: improve DMA_ATTR_NO_KERNEL_MAPPING
+Message-ID: <20211104085336.GA24260@lst.de>
+References: <20211104023221.16391-1-walter-zh.wu@mediatek.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 3/3] backlight: lp855x: Add support ACPI enumeration
-Content-Language: en-US
-To:     Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Jingoo Han <jingoohan1@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20211102225504.18920-1-hdegoede@redhat.com>
- <20211102225504.18920-3-hdegoede@redhat.com>
- <20211103171756.wxthncse2f4syeiz@maple.lan>
- <5d431db5-30dc-b51c-7abb-ab57a3de2f8f@redhat.com>
- <20211103173107.xlchsysme5xzpn24@maple.lan> <YYOZ4TI29Oq6i6za@google.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <YYOZ4TI29Oq6i6za@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211104023221.16391-1-walter-zh.wu@mediatek.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Nov 04, 2021 at 10:32:21AM +0800, Walter Wu wrote:
+> diff --git a/include/linux/set_memory.h b/include/linux/set_memory.h
+> index f36be5166c19..6c7d1683339c 100644
+> --- a/include/linux/set_memory.h
+> +++ b/include/linux/set_memory.h
+> @@ -7,11 +7,16 @@
+>  
+>  #ifdef CONFIG_ARCH_HAS_SET_MEMORY
+>  #include <asm/set_memory.h>
+> +
+> +#ifndef CONFIG_RODATA_FULL_DEFAULT_ENABLED
 
-On 11/4/21 09:29, Lee Jones wrote:
-> On Wed, 03 Nov 2021, Daniel Thompson wrote:
-> 
->> On Wed, Nov 03, 2021 at 06:28:15PM +0100, Hans de Goede wrote:
->>> Hi,
->>>
->>> On 11/3/21 18:17, Daniel Thompson wrote:
->>>> On Tue, Nov 02, 2021 at 11:55:04PM +0100, Hans de Goede wrote:
->>>>> The Xiaomi Mi Pad 2 tablet uses an ACPI enumerated LP8556 backlight
->>>>> controller for its LCD-panel, with a Xiaomi specific ACPI HID of
->>>>> "XMCC0001", add support for this.
->>>>>
->>>>> Note the new "if (id)" check also fixes a NULL pointer deref when a user
->>>>> tries to manually bind the driver from sysfs.
->>>>>
->>>>> When CONFIG_ACPI is disabled acpi_match_device() will always return NULL,
->>>>> so the lp855x_parse_acpi() call will get optimized away.
->>>>>
->>>>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->>>>
->>>> Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
->>>
->>> Thank you.
->>>
->>> So what is the process for upstreaming backlight patches,
->>> do these go through drm-misc-next (in that case I can push
->>> the series myself), or will you pick these up ?
->>
->> Lee Jones gathers up the backlight patches and sends a PR (but, except
->> in exceptional cases, treats my R-b as a pre-requisite before doing so).
-> 
-> Also the merge-window is open, so this is headed for v5.17.
+This is an arm64-specific symbol, and one that only controls a
+default.  I don't think it is suitable to key off stubs in common
+code.
 
-Right, I didn't expect anything else.
+> +static inline int set_memory_valid(unsigned long addr, int numpages, int enable) { return 0; }
 
-Regards,
+Pleae avoid overly long lines.
 
-Hans
+> +		if (IS_ENABLED(CONFIG_RODATA_FULL_DEFAULT_ENABLED)) {
+> +			kaddr = (unsigned long)phys_to_virt(dma_to_phys(dev, *dma_handle));
 
+This can just use page_address.
+
+> +			/* page remove kernel mapping for arm64 */
+> +			set_memory_valid(kaddr, size >> PAGE_SHIFT, 0);
+> +		}
+
+But more importantly:  set_memory_valid only exists on arm64, this
+will break compile everywhere else.  And this API is complete crap.
+Passing kernel virtual addresses as unsigned long just sucks, and
+passing an integer argument for valid/non-valid also is a horrible
+API.
+
+Not to mention the overly long line.  Same on the free side.
