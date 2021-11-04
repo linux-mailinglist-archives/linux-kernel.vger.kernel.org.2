@@ -2,164 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F01445585
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A39C44558B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231791AbhKDOny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 10:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231496AbhKDOne (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 10:43:34 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC34C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 07:40:55 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id a20-20020a1c7f14000000b003231d13ee3cso7374270wmd.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 07:40:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nyuCyLm/+Cp5VpSzLU2JwivIu6Iv13snX4mcokUnZ4Y=;
-        b=SH3ndSYCP/bHAlWNLB1MbaFI/72dBEASUdlQQ7eJxe3gDQjJ/KMiAznjkZ2K3Lp71D
-         lXi8E2AWj6iCyasDkgwWggsuB8+juIwv2Ovz4Bna3ia7l2GW2PBZziH9VE8W9a6wQ8u0
-         iAJBzdnxV2J5vdkBrTaH2Q93YPiV21zj4o02ZO/RmbI/qwFgnMBoHC+0BUW5PVdGu9kE
-         lo77XFrM+j4F/dizCnoVAdFIu/q4RNadLRH7bjPlg+z9rOZstoNoaceX2JFsa/xCayy+
-         8iKFsawG2559lItA7JCsqIQaelr0nBWrTVw+Plt79HoL+79Hy+g3gsUiIJuX/xwMab/M
-         ezFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nyuCyLm/+Cp5VpSzLU2JwivIu6Iv13snX4mcokUnZ4Y=;
-        b=lUeB5PIqVcCD31MqlqROCt4oonoDv4b5YqmmvBDkYIPi2aShQUpwgKSAugNV7afp0h
-         6JW+QYkDkCjC6+x5j3tyilJE5hj82EYy7KCX8PP9rNZ6eFmGiZUZfg8HcNQ8O4lr8iKy
-         MXHtG+T7jmQX2S+SR2n9vQVxyRzCBxTashlkEnmrFmrTzIETDhK1sjOU95OJC+z2SaKC
-         RJmAiGBxOOlqeeqgzPJUS7L1pnGuiT9MUzQVwj5uLzTVsgHjkg4ipxWrU0S94kGmS36V
-         BCMrnrpXO9LSOPbaMr1DN1kQK4LEjWhbhJepb4MKhYRYV/Buv8ztJBASi7UhuYWk9w8/
-         B0qg==
-X-Gm-Message-State: AOAM531Y/C9sZviS8DFcZzqhdtTeqfaORUUP3WlAjjf/DRNIjv5P639p
-        shrd8uJqMCkVbclJoydm4rI5dQigRPURafpDyKTIVQ==
-X-Google-Smtp-Source: ABdhPJxPqhtBmS9Ugwa8o1VEJiVrNuUxJgAEgguDvhGyQ6C+AmAYClWzPJC7tg5ZeC+IFaftXrt709GPGeY6jpuz1Io=
-X-Received: by 2002:a1c:20cc:: with SMTP id g195mr15471504wmg.137.1636036854247;
- Thu, 04 Nov 2021 07:40:54 -0700 (PDT)
+        id S231152AbhKDOpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 10:45:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230409AbhKDOp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 10:45:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78512611EE;
+        Thu,  4 Nov 2021 14:42:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636036969;
+        bh=n0CzbhBUbgevxQWjjtb4wBTU1nHZxIHCQLQyJbqJ9So=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=j+WEmNhZNbzEI0icdK6TZFy0yBqKjsQ9BHQtFlWfWhbEhe7nD79OmcPWML2fi2KKF
+         7znem49g6JuW+JiTJtg2673yZhArNI8kpVmKmRAGuJlFWm4kHX8eyk2UwQCDBUxrSK
+         RBL531RVUoFOiu8k3q9Hf26RIhJlCoGi52CoMEfo/g6RdG+76Kuk5JsYJhdLhVqPjR
+         HJ/RfxYX51nbosuSDGEgqq+RcruTcAzpyXHcI8RTe6KySjYIK1fcPfpaI25vFgws+j
+         ORLh2dJUnHtnYTBF0vlgHD6zO4Fs1RiiAlyzZwYiMxJD/0X2fuk+3ciDXAELkthKSg
+         vxEM7DW+efsTA==
+Received: by mail-ed1-f52.google.com with SMTP id b15so2961836edd.7;
+        Thu, 04 Nov 2021 07:42:49 -0700 (PDT)
+X-Gm-Message-State: AOAM533UN0CSsXc/07VNBk9yCJqmKir73d3eBzYe1IQma1s6F61cuDqi
+        BUMNAQxa2AQaWMWe4Ya5Jv9CWaW3xvBZADJRuQ==
+X-Google-Smtp-Source: ABdhPJy6P/8T2QkdFCza1adxwbd7SLzZ9Y6/ekNEpVkworwq423dcdxpGyT6AJAuyvFvRLeBH+tBIMAGgd/eVM0CKSc=
+X-Received: by 2002:a17:907:a411:: with SMTP id sg17mr38835733ejc.84.1636036967479;
+ Thu, 04 Nov 2021 07:42:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211101131736.3800114-1-guoren@kernel.org>
-In-Reply-To: <20211101131736.3800114-1-guoren@kernel.org>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 4 Nov 2021 20:10:42 +0530
-Message-ID: <CAAhSdy29qhF4JHuMOqwctn+=HQNBbR3X0gsymqD8OAF1pXE43A@mail.gmail.com>
-Subject: Re: [PATCH V6] irqchip/sifive-plic: Fixup EOI failed when masked
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Atish Patra <atish.patra@wdc.com>, Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Vincent Pelletier <plr.vincent@gmail.com>,
-        Nikita Shubin <nikita.shubin@maquefel.me>
+References: <20211029200319.23475-1-jim2101024@gmail.com> <20211029200319.23475-8-jim2101024@gmail.com>
+ <YYFgmxMCnKtTlaqL@robh.at.kernel.org> <CA+-6iNwdLt96U26eW-GDJFD3XB9unKX-ucF3gZ754ux78yMRCw@mail.gmail.com>
+In-Reply-To: <CA+-6iNwdLt96U26eW-GDJFD3XB9unKX-ucF3gZ754ux78yMRCw@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 4 Nov 2021 09:42:34 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLttThthFof2wgQDg+v8wqwvrWGR+2j8RR4E0BLHr4heA@mail.gmail.com>
+Message-ID: <CAL_JsqLttThthFof2wgQDg+v8wqwvrWGR+2j8RR4E0BLHr4heA@mail.gmail.com>
+Subject: Re: [PATCH v6 7/9] PCI: brcmstb: Add control of subdevice voltage regulators
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     Jim Quinlan <jim2101024@gmail.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 6:47 PM <guoren@kernel.org> wrote:
+On Tue, Nov 2, 2021 at 5:36 PM Jim Quinlan <james.quinlan@broadcom.com> wrote:
 >
-> From: Guo Ren <guoren@linux.alibaba.com>
+> On Tue, Nov 2, 2021 at 12:00 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Fri, Oct 29, 2021 at 04:03:15PM -0400, Jim Quinlan wrote:
+> > > This Broadcom STB PCIe RC driver has one port and connects directly to one
+> > > device, be it a switch or an endpoint.  We want to be able to turn on/off
+> > > any regulators for that device.  Control of regulators is needed because of
+> > > the chicken-and-egg situation: although the regulator is "owned" by the
+> > > device and would be best handled by its driver, the device cannot be
+> > > discovered and probed unless its regulator is already turned on.
+> >
+> > I think this can be done in a much more simple way that avoids the
+> > prior patches using the pci_ops.add_bus() (and remove_bus()) hook.
+> > add_bus is called before the core scans a child bus. In the handler, you
+> > just need to get the bridge device, then the bridge DT node, and then
+> > get the regulators and enable.
+> Hi Rob,
+> In reply to my bindings commit you wanted to put the "xxx-supply"
+> property(s) under the
+> bridge node rather than under the pci-ep node.   This not only makes
+> sense but also removes
+> the burden of prematurely creating the struct device *ptr as the
+> bridge device has
+> already been created.
 >
-> When using "devm_request_threaded_irq(,,,,IRQF_ONESHOT,,)" in the driver,
-> only the first interrupt could be handled, and continue irq is blocked by
-> hw. Because the riscv plic couldn't complete masked irq source which has
-> been disabled in enable register. The bug was firstly reported in [1].
+> However, there is still an issue:  if  the pcie-link is not
+> successful, we want the bus enumeration
+> to stop and not read the vendor/dev id of the EP.  Our controller has
+> the disadvantage of causing
+> an abort when accessing config space when the link is not established.  Other
+> controllers kindly return 0xffffffff as the data.
 >
-> Here is the description of Interrupt Completion in PLIC spec [2]:
+> Doing something like this gets around the issue:
 >
-> The PLIC signals it has completed executing an interrupt handler by
-> writing the interrupt ID it received from the claim to the claim/complete
-> register. The PLIC does not check whether the completion ID is the same
-> as the last claim ID for that target. If the completion ID does not match
-> an interrupt source that is currently enabled for the target, the
->                          ^^ ^^^^^^^^^ ^^^^^^^
-> completion is silently ignored.
+> static struct pci_bus *pci_alloc_child_bus(...)
+> {
+>         /* ... */
+> add_dev:
+>         /* ... */
+>         if (child->ops->add_bus) {
+>                 ret = child->ops->add_bus(child);
+> +               if (ret == -ENOLINK)
+> +                       return NULL;
+>                 if (WARN_ON(ret < 0))
+>                         dev_err(&child->dev, "failed to add bus: %d\n", ret);
+>         }
 >
-> [1] http://lists.infradead.org/pipermail/linux-riscv/2021-July/007441.html
-> [2] https://github.com/riscv/riscv-plic-spec/blob/8bc15a35d07c9edf7b5d23fec9728302595ffc4d/riscv-plic.adoc
->
-> Reported-by: Vincent Pelletier <plr.vincent@gmail.com>
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Cc: Anup Patel <anup@brainfault.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Atish Patra <atish.patra@wdc.com>
-> Cc: Nikita Shubin <nikita.shubin@maquefel.me>
-> Cc: incent Pelletier <plr.vincent@gmail.com>
+> Is this acceptable?  Other suggestions?
 
-Please include a Fixes: tag
+Acceptable yes once we agree on error code to return. I'd just do -ENODEV.
 
-Also, I see that you have dropped the DT bindings patch. We still
-need separate compatible string for T-HEAD PLIC because OpenSBI
-will use it for other work-arounds.
+> > Given we're talking about standard properties in a standard (bridge)
+> > node, I think the implementation for .add_bus should be common
+> > (drivers/pci/of.c). It doesn't scale to be doing this in every host
+> > bridge driver.
+> Are you saying that the bridge DT node  should have a property such as
+> "get-and-turn-on-subdev-regulators;" which would invoke what I'm now
+> calling brcm_pcie_add_bus()?
 
-I suggest to include to more patches in this series:
-1) Your latest T-HEAD PLIC DT bindings patch
-2) Separate patch to use T-HEAD PLIC compatible in PLIC driver
+No! Define a common function that host drivers can opt in to by
+setting their .add_bus() hook to or calling from their own add_bus
+function.
 
-Regards,
-Anup
+Ideally, it would work on Rockchip too as it's the same supplies.
+However, that would require some reworking of the link initialization
+and PERST handling. As Bjorn has mentioned, all that should be per RP,
+not per host bridge anyways. I'm taking it one step further and saying
+it should be per PCI bridge. Hikey for example needs PERST handling on
+bridges behind a switch.
 
->
-> ---
->
-> Changes since V6:
->  - Propagate to plic_irq_eoi for all riscv,plic by Nikita Shubin
->  - Remove thead related codes
->
-> Changes since V5:
->  - Move back to mask/unmask
->  - Fixup the problem in eoi callback
->  - Remove allwinner,sun20i-d1 IRQCHIP_DECLARE
->  - Rewrite comment log
->
-> Changes since V4:
->  - Update comment by Anup
->
-> Changes since V3:
->  - Rename "c9xx" to "c900"
->  - Add sifive_plic_chip and thead_plic_chip for difference
->
-> Changes since V2:
->  - Add a separate compatible string "thead,c9xx-plic"
->  - set irq_mask/unmask of "plic_chip" to NULL and point
->    irq_enable/disable of "plic_chip" to plic_irq_mask/unmask
->  - Add a detailed comment block in plic_init() about the
->    differences in Claim/Completion process of RISC-V PLIC and C9xx
->    PLIC.
-> ---
->  drivers/irqchip/irq-sifive-plic.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-> index cf74cfa82045..259065d271ef 100644
-> --- a/drivers/irqchip/irq-sifive-plic.c
-> +++ b/drivers/irqchip/irq-sifive-plic.c
-> @@ -163,7 +163,13 @@ static void plic_irq_eoi(struct irq_data *d)
->  {
->         struct plic_handler *handler = this_cpu_ptr(&plic_handlers);
->
-> -       writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-> +       if (irqd_irq_masked(d)) {
-> +               plic_irq_unmask(d);
-> +               writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-> +               plic_irq_mask(d);
-> +       } else {
-> +               writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-> +       }
->  }
->
->  static struct irq_chip plic_chip = {
-> --
-> 2.25.1
->
+Rob
