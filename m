@@ -2,80 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E54444FB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 08:35:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E296444FEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 09:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbhKDHhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 03:37:48 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:27112 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhKDHhq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 03:37:46 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HlFjN6cPgz1DJ4R;
-        Thu,  4 Nov 2021 15:32:56 +0800 (CST)
-Received: from dggpeml500019.china.huawei.com (7.185.36.137) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Thu, 4 Nov 2021 15:35:02 +0800
-Received: from huawei.com (10.175.124.27) by dggpeml500019.china.huawei.com
- (7.185.36.137) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Thu, 4 Nov
- 2021 15:35:02 +0800
-From:   Wu Bo <wubo40@huawei.com>
-To:     <lars.ellenberg@linbit.com>, <axboe@kernel.dk>
-CC:     <mcgrof@kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linfeilong@huawei.com>,
-        <wubo40@huawei.com>
-Subject: [PATCH] drbd: Fix double free problem in drbd_create_device
-Date:   Thu, 4 Nov 2021 16:07:09 +0800
-Message-ID: <1636013229-26309-1-git-send-email-wubo40@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500019.china.huawei.com (7.185.36.137)
-X-CFilter-Loop: Reflected
+        id S230363AbhKDIKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 04:10:55 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:49640 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230229AbhKDIKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 04:10:52 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-05 (Coremail) with SMTP id zQCowABnSO3WlINh6e1BBg--.52292S2;
+        Thu, 04 Nov 2021 16:07:51 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     jikos@kernel.org, benjamin.tissoires@redhat.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] HID: ite: Add parse before start
+Date:   Thu,  4 Nov 2021 08:07:49 +0000
+Message-Id: <1636013269-3433050-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: zQCowABnSO3WlINh6e1BBg--.52292S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZw1kXw45Ww18JFyUKrWDXFb_yoW3JwcEkw
+        48uwn7Gr98Krs2kF1xAr18Zr9Y9an7ZF1fZ3Wft398Ja47WasrZFZFv3s3G345urW8Z3Wx
+        GrZFvryxAFnI9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbckFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8ZwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUIzuXUUUUU=
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In drbd_create_device(), the 'out_no_io_page' lable has called 
-blk_cleanup_disk() when return failed.
+It might be better to add  hid_parse() before
+wacom_parse_and_register() to ask for the report descriptor.
 
-So remove the 'out_cleanup_disk' lable to avoid double free the
-disk pointer.
-
-Fixes: e92ab4eda516 ("drbd: add error handling support for add_disk()")
-Signed-off-by: Wu Bo <wubo40@huawei.com>
+Fixes: 3c785a0 ("HID: ite: Replace ABS_MISC 120/121 events with touchpad on/off keypresses")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 ---
- drivers/block/drbd/drbd_main.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/hid/hid-ite.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/block/drbd/drbd_main.c b/drivers/block/drbd/drbd_main.c
-index 19db80a..53ba2dd 100644
---- a/drivers/block/drbd/drbd_main.c
-+++ b/drivers/block/drbd/drbd_main.c
-@@ -2796,7 +2796,7 @@ enum drbd_ret_code drbd_create_device(struct drbd_config_context *adm_ctx, unsig
+diff --git a/drivers/hid/hid-ite.c b/drivers/hid/hid-ite.c
+index 14fc068..3c56f75 100644
+--- a/drivers/hid/hid-ite.c
++++ b/drivers/hid/hid-ite.c
+@@ -100,6 +100,10 @@ static int ite_probe(struct hid_device *hdev, const struct hid_device_id *id)
+ 	if (ret)
+ 		return ret;
  
- 	err = add_disk(disk);
- 	if (err)
--		goto out_cleanup_disk;
-+		goto out_idr_remove_vol;
++	ret = hid_parse(hdev);
++	if (ret)
++		return ret;
++
+ 	return hid_hw_start(hdev, HID_CONNECT_DEFAULT);
+ }
  
- 	/* inherit the connection state */
- 	device->state.conn = first_connection(resource)->cstate;
-@@ -2810,8 +2810,6 @@ enum drbd_ret_code drbd_create_device(struct drbd_config_context *adm_ctx, unsig
- 	drbd_debugfs_device_add(device);
- 	return NO_ERROR;
- 
--out_cleanup_disk:
--	blk_cleanup_disk(disk);
- out_idr_remove_vol:
- 	idr_remove(&connection->peer_devices, vnr);
- out_idr_remove_from_resource:
 -- 
-1.8.3.1
+2.7.4
 
