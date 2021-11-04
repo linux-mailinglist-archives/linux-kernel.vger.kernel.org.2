@@ -2,103 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D791F444ED4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B75C444ED6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:25:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230472AbhKDG1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:27:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbhKDG1Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:27:16 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E04C061714;
-        Wed,  3 Nov 2021 23:24:38 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id 127so4880387pfu.1;
-        Wed, 03 Nov 2021 23:24:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GczOOZ819CBVgyrUgEiQpSFxZ9oaI7CSNNwrM6gcDi4=;
-        b=Hu35XFzFsKri1uUtqJXkVeckJpsGM+72fM9nRGmwsmGKva2zZiiphwLe4A9jZ+8JtD
-         Kw1zFBfRAPLGrBT+z0EXyEZnEFJjfOjig1FEAfUTMQpNjzgFp4EIFD+zEbsPiEhMTOFb
-         JdcrER+e7ACeY4Bvx25gGPy/ncmt1vVnYGX4cPeFK7uY3TFv0z56krh0NkPdygBcjFpr
-         NKtSJbz/6sWCN0a1NkDg6/cuYc6xgPPo+Jh7fwRPYPBRka1V51GNCVDLQHEq0zVyv8n0
-         yyRcj+R/FYrPKKAQHXvUqRKXMoYB20tThH80cM1JIK2EAS8oRM78+6ARrSP//HG/Aagc
-         1KRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GczOOZ819CBVgyrUgEiQpSFxZ9oaI7CSNNwrM6gcDi4=;
-        b=MCM1ezX5PLcyxpByBdgeCRMr+MieUk7F9NKb+Y4hOo2VXAhge15efId8H7rPZe/NgW
-         X6r27NTMbeKjRiv9zW/HU6hpPtWScmqlH4eJXLl8aVZY1uaeNEczJUJxn2MvOaVINHJ8
-         LAfUi+qILvLvPwSWJzdWe7071NHs9enN7H/x2YiMqlKPjru9fRLWhERG/y6S5eySY/s/
-         leQb784CR/4x7G0/cqr8wxq2YnkNJR8AqEsTgNl1Zm9I6tw/G4wKSRfTlfBS6kXDbd6g
-         bk9oVNtJloZLrn0zpmLL8NfURvGUr0a4uJNkZW8bSBP0tN2cu7XH8fs6eSey8oA73TJM
-         hfIw==
-X-Gm-Message-State: AOAM530BOUVZCPWEzP1WCpgaWWyR1MuzzHut0PXvYky6SG2Fzi5LSg4k
-        CGxLQ/k0xIqsZCWFA54gyQU=
-X-Google-Smtp-Source: ABdhPJx2kCDWjn3aW8xNGJEIMKL7cFbznv7TIOcrXCtTgu4rDAqzfybLYZNq4KC75JGG5WTFZNuvRQ==
-X-Received: by 2002:a05:6a00:a02:b0:47b:f59a:2c80 with SMTP id p2-20020a056a000a0200b0047bf59a2c80mr49662649pfh.41.1636007078227;
-        Wed, 03 Nov 2021 23:24:38 -0700 (PDT)
-Received: from debian11-dev-61.localdomain (192.243.120.180.16clouds.com. [192.243.120.180])
-        by smtp.gmail.com with ESMTPSA id h12sm3861462pfh.75.2021.11.03.23.24.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 23:24:38 -0700 (PDT)
-From:   davidcomponentone@gmail.com
-X-Google-Original-From: yang.guang5@zte.com.cn
-To:     djwong@kernel.org
-Cc:     davidcomponentone@gmail.com, linux-xfs@vger.kernel.org,
-        dchinner@redhat.com, chandan.babu@oracle.com,
-        gustavoars@kernel.org, yang.guang5@zte.com.cn,
-        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] xfs: use swap() to make code cleaner
-Date:   Thu,  4 Nov 2021 14:24:27 +0800
-Message-Id: <20211104062427.1506328-1-yang.guang5@zte.com.cn>
-X-Mailer: git-send-email 2.30.2
+        id S230383AbhKDG2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:28:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50584 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230084AbhKDG2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 02:28:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A97E611C9;
+        Thu,  4 Nov 2021 06:25:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636007130;
+        bh=Wrb1NEAkG/87PNEOfNe7egV2xOVnLOO55nNFd2hpx/Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nzyfVa82gJNgOeRZLYfaBB4Fjp/UEsAbeSiwfq67Qr8V4daGq2yOqd1qm8uKqXSph
+         XI4bYgEChXSd5ynbyYtQf6iCkI/6K+W5IGQMpyC1/NK7wmD/JXxLcKpa8EMpsJwSEl
+         ReafO7eopoTmQrIq4OqxQug9HUk2kIJdWeBvrhNM=
+Date:   Thu, 4 Nov 2021 07:25:26 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     George Kennedy <george.kennedy@oracle.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dan.carpenter@oracle.com
+Subject: Re: [PATCH] scsi: scsi_debug: fix return checks for kcalloc
+Message-ID: <YYN81hZyBZ2dU3Wu@kroah.com>
+References: <1635966102-29320-1-git-send-email-george.kennedy@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1635966102-29320-1-git-send-email-george.kennedy@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Guang <yang.guang5@zte.com.cn>
+On Wed, Nov 03, 2021 at 02:01:42PM -0500, George Kennedy wrote:
+> Change return checks from kcalloc() to now check for NULL and
+> ZERO_SIZE_PTR using the ZERO_OR_NULL_PTR macro or the following
+> crash can occur if ZERO_SIZE_PTR indicator is returned.
 
-Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
-opencoding it.
+That seems really broken in the api, why is kcalloc() returning
+ZERO_SIZE_PTR?
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
----
- fs/xfs/libxfs/xfs_da_btree.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+Please fix that, otherwise you need to fix all callers in the kernel
+tree.
 
-diff --git a/fs/xfs/libxfs/xfs_da_btree.c b/fs/xfs/libxfs/xfs_da_btree.c
-index dd7a2dbce1d1..9dc1ecb9713d 100644
---- a/fs/xfs/libxfs/xfs_da_btree.c
-+++ b/fs/xfs/libxfs/xfs_da_btree.c
-@@ -864,7 +864,6 @@ xfs_da3_node_rebalance(
- {
- 	struct xfs_da_intnode	*node1;
- 	struct xfs_da_intnode	*node2;
--	struct xfs_da_intnode	*tmpnode;
- 	struct xfs_da_node_entry *btree1;
- 	struct xfs_da_node_entry *btree2;
- 	struct xfs_da_node_entry *btree_s;
-@@ -894,9 +893,7 @@ xfs_da3_node_rebalance(
- 	    ((be32_to_cpu(btree2[0].hashval) < be32_to_cpu(btree1[0].hashval)) ||
- 	     (be32_to_cpu(btree2[nodehdr2.count - 1].hashval) <
- 			be32_to_cpu(btree1[nodehdr1.count - 1].hashval)))) {
--		tmpnode = node1;
--		node1 = node2;
--		node2 = tmpnode;
-+		swap(node1, node2);
- 		xfs_da3_node_hdr_from_disk(dp->i_mount, &nodehdr1, node1);
- 		xfs_da3_node_hdr_from_disk(dp->i_mount, &nodehdr2, node2);
- 		btree1 = nodehdr1.btree;
--- 
-2.30.2
+thanks,
 
+greg k-h
