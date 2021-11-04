@@ -2,167 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C59F445BFD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 23:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAABE445C01
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 23:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232273AbhKDWI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 18:08:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44868 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231849AbhKDWIZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 18:08:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636063545;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ioLGo78Q2H5OCVLHqS6Gc52ME4lW3G+b/fKIEsBxo2U=;
-        b=A7EFybuY9o7DNTZhWEc9vsoSrTt7Qp8VTx42700eiltnp/yKdN+Y9z0sMYotNg/WHX9n0R
-        pJxsCeMNasHXZ+9oLxWZcBXLBeFR1wMX/uOn0E3ffrBmhZ6H+QB/R5L4vuinE+v2G8Hnhp
-        l+356tt6xhksCLsl1EWhWB9VNyFPBiE=
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
- [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-274-dCwQd3KgM2ymZlKIGRk6eA-1; Thu, 04 Nov 2021 18:05:44 -0400
-X-MC-Unique: dCwQd3KgM2ymZlKIGRk6eA-1
-Received: by mail-ot1-f69.google.com with SMTP id u20-20020a056830231400b00553d30b1854so3715599ote.10
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 15:05:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=ioLGo78Q2H5OCVLHqS6Gc52ME4lW3G+b/fKIEsBxo2U=;
-        b=fnb1m2t1oOzIclAWxnQAflOYj5DL+GjM92Aqkm6do0fEPZO7/fowUhb2iUMJyNhdXM
-         EKlZ1elC9yKEAQi5bBe3pJit+NaqLXa0mo8hNg+0+s3agsT1eSQvlpRRxgjTzcMVAzjl
-         S1bkl+XEuu5P3Ez7ZTpteI0pNv4cIJRC4b7XnHf9Dsp8JeCv4TprJ8H3kMq4xwjII+iO
-         AFLfXUCptYKvKU+7/3GB5O1gX8mhWufGoGK6vYRHi4mepVA8fML7KoAJYHeF5GOiiosb
-         Cf1kX2EnRoRayHNUglyfiu3PqCIvIRXsDSM+Ly6ZzMKuXgwfWvmNkVA5RUywTNrJOLj5
-         dU8Q==
-X-Gm-Message-State: AOAM531JNZJv+vyS2QHCRXvlODCilJyPFYcbZJiupMACrNc3nxerDp8K
-        LGr//jiJ+IdO/m+q2U9JiliEMYr1AQPaA+SxdACVu0mn8MQC8IxmFYoqDGSROjin5tq6BpLrxAZ
-        wF7fduLFDVEf0uPuXkx6b72Mg
-X-Received: by 2002:a9d:5a9b:: with SMTP id w27mr4665587oth.337.1636063543928;
-        Thu, 04 Nov 2021 15:05:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx6ni+u9UTnb+zRRJcR39oUjj2OfNF70f3wnC/+24jb1PhSuPs3ioqBdmn7Zbjze9F56ntg5g==
-X-Received: by 2002:a9d:5a9b:: with SMTP id w27mr4665556oth.337.1636063543650;
-        Thu, 04 Nov 2021 15:05:43 -0700 (PDT)
-Received: from redhat.com ([38.15.36.239])
-        by smtp.gmail.com with ESMTPSA id g94sm1655894otg.10.2021.11.04.15.05.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 15:05:43 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 16:05:41 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Matthew Ruffell <matthew.ruffell@canonical.com>
-Cc:     linux-pci@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        kvm@vger.kernel.org, nathan.langford@xcelesunifiedtechnologies.com
-Subject: Re: [PROBLEM] Frequently get "irq 31: nobody cared" when passing
- through 2x GPUs that share same pci switch via vfio
-Message-ID: <20211104160541.4aedc593.alex.williamson@redhat.com>
-In-Reply-To: <CAKAwkKsoKELnR=--06sRZL3S6_rQVi5J_Kcv6iRQ6w2tY71WCQ@mail.gmail.com>
-References: <d4084296-9d36-64ec-8a79-77d82ac6d31c@canonical.com>
-        <20210914104301.48270518.alex.williamson@redhat.com>
-        <9e8d0e9e-1d94-35e8-be1f-cf66916c24b2@canonical.com>
-        <20210915103235.097202d2.alex.williamson@redhat.com>
-        <2fadf33d-8487-94c2-4460-2a20fdb2ea12@canonical.com>
-        <20211005171326.3f25a43a.alex.williamson@redhat.com>
-        <CAKAwkKtJQ1mE3=iaDA1B_Dkn1+ZbN0jTSWrQon0=SAszRv5xFw@mail.gmail.com>
-        <20211012140516.6838248b.alex.williamson@redhat.com>
-        <CAKAwkKsF3Kn1HLAg55cBVmPmo2y0QAf7g6Zc7q6ZsQZBXGW9bg@mail.gmail.com>
-        <CAKAwkKsoKELnR=--06sRZL3S6_rQVi5J_Kcv6iRQ6w2tY71WCQ@mail.gmail.com>
-Organization: Red Hat
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232269AbhKDWJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 18:09:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232002AbhKDWJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 18:09:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0196C60EB4;
+        Thu,  4 Nov 2021 22:07:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1636063640;
+        bh=hiW21M8IbjMnysrLz02OTr1uCPLSmAnYYpV34I+FcwE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DKcWVOCeT6uvpUrM3DSraHq727l4tf7ibOBqBj+QXlnFIa286EcEgf3FKCgbEkWyt
+         xjmRfoDNT5GVuUvOGjgc0HoBd9AIlXaAyD7tGqMmhIgKggmdNV2K5GYkcVtqg5ebZ8
+         6ri0/fHb4E2Xdv+89HNyn19OVN9i1sWX9oO/WB0s=
+Date:   Thu, 4 Nov 2021 15:07:17 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     HORIGUCHI =?UTF-8?B?TkFPWUE=?= (=?UTF-8?B?5aCA5Y+jIOebtOS5nw==?=) 
+        <naoya.horiguchi@nec.com>, "mhocko@suse.com" <mhocko@suse.com>,
+        "minchan@kernel.org" <minchan@kernel.org>,
+        "cgoldswo@codeaurora.org" <cgoldswo@codeaurora.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/3] mm/memory_hotplug: make HWPoisoned dirty swapcache
+ pages unmovable
+Message-Id: <20211104150717.d235501b802868d578639422@linux-foundation.org>
+In-Reply-To: <de9e587e-fcc4-11e0-19a0-22a1bbafa4b6@huawei.com>
+References: <20210821094246.10149-1-linmiaohe@huawei.com>
+        <20210821094246.10149-4-linmiaohe@huawei.com>
+        <20210823082646.GB1452382@hori.linux.bs1.fc.nec.co.jp>
+        <de9e587e-fcc4-11e0-19a0-22a1bbafa4b6@huawei.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Nov 2021 17:35:04 +1300
-Matthew Ruffell <matthew.ruffell@canonical.com> wrote:
+On Mon, 23 Aug 2021 17:14:29 +0800 Miaohe Lin <linmiaohe@huawei.com> wrote:
 
-> Hi Alex,
+> On 2021/8/23 16:26, HORIGUCHI NAOYA(堀口 直也) wrote:
+> > On Sat, Aug 21, 2021 at 05:42:46PM +0800, Miaohe Lin wrote:
+> >> HWPoisoned dirty swapcache pages are kept for killing owner processes.
+> >> We should not offline these pages or do_swap_page() would access the
+> >> offline pages and lead to bad ending.
+> >>
+> > 
+> > Thank you for the report.  I'm not yet sure of the whole picture of this
+> > issue.  do_swap_page() is expected to return with fault VM_FAULT_HWPOISON
+> > when called via the access to the error page, so I wonder why this doesn't
+> > work for your situation.  And what is the "bad ending" in the description?
+> > 
 > 
-> Nathan has been running a workload on the 5.14 kernel + the test patch, and has
-> ran into some interesting softlockups and hardlockups.
+> IMO we might hotremove the page while SwapCache still have ref to it. Thus the page
+> struct would be accessed after offlined. The page struct should be invalid in this case
+> and this would make do_swap_page fragile. Or am I miss something?
 > 
-> The first, happened on a secondary server running a Windows VM, with 7 (of 10)
-> 1080TI GPUs passed through.
+> > I feel that aborting memory hotremove due to a hwpoisoned dirty swapcache
+> > might be too hard, so I'd like to find another solution if we have.
 > 
-> Full dmesg:
-> https://paste.ubuntu.com/p/Wx5hCBBXKb/
+> If there is a better way, we can just drop this one.
 > 
-> There isn't any "irq x: nobody cared" messages, and the crashkernel gets stuck
-> in the usual copying IR tables from dmar, which suggests an ongoing interrupt
-> storm.
+> Many thanks for your review and reply! :)
 > 
-> Nathan disabled "kernel.hardlockup_panic = 1" sysctl, and managed to reproduce
-> the issue again, suggesting that we get stuck in kernel space for too long
-> without the ability for interrupts to be serviced.
+> > # You may separate this patch from former two to make them merged to
+> > # mainline soon.
+>
+> ...
+>
+> >> --- a/mm/memory_hotplug.c
+> >> +++ b/mm/memory_hotplug.c
+> >> @@ -1664,6 +1664,12 @@ static int scan_movable_pages(unsigned long start, unsigned long end,
+> >>  		 */
+> >>  		if (PageOffline(page) && page_count(page))
+> >>  			return -EBUSY;
+> >> +		/*
+> >> +		 * HWPoisoned dirty swapcache pages are definitely unmovable
+> >> +		 * because they are kept for killing owner processes.
+> >> +		 */
+> >> +		if (PageHWPoison(page) && PageSwapCache(page))
+> >> +			return -EBUSY;
 > 
-> It starts with the NIC hitting a tx queue timeout, and then does a NMI to unwind
-> the stack of each CPU, although the stacks don't appear to indicate where things
-> are stuck. The server then remains softlocked, and keeps unwinding stacks every
-> 26 seconds or so, until it eventually hardlockups.
 
-Google finds numerous complaints about transmit queue time outs on igb
-devices, bad NICs, bad cabling, bad drivers(?).  I also see some
-hearsay related specifically to supermicro compatibility.  I'd also
-suspect that a dual 1GbE NIC is sub-par for anything involving 7+ GPUs.
-Time for an upgrade?
-
-It's not clear to me how this would be related to the GPU assignment
-perhaps other than the elevated workload on the host.
-
-> The next interesting thing to report is when Nathan started the same Windows VM
-> on the primary host we have been debugging on, with the 8x 2080TI GPUs. Nathan
-> experienced a stuck VM, with the host responding just fine. When Nathan reset
-> the VM, he got 4x "irq xx: nobody cared" messages on IRQs 25, 27, 29 and 31,
-> which at the time corresponded to the PEX 8747 upstream PCI switches.
-> 
-> Interestingly, Nathan also observed 2x GPU Audio devices sharing the same IRQ
-> line as the upstream PCI switch, although Nathan mentioned this only occured
-> very briefly, and the GPU audio devices were re-assigned different IRQs shortly
-> afterward.
-
-IME, the legacy interrupt support on NVIDIA GPU audio devices is
-marginal for assignment.  We don't claim to support assignment of the
-audio function, even for Quadro cards on RHEL due to this.  I can't
-remember the details off the top of my head, but even with the hacky
-safeguards added in the test patch, we still rely on hardware to both
-honor the INTx disable bit in the command register and accurately report
-if the device is asserting INTx is the status register.  It seems like
-one of these was a bit dicey in this controller.
-
-Now that I think about it more, I recall that the issue was
-predominantly with Linux guests, where the snd_intel_hda driver
-includes:
-
-/* quirks for Nvidia */
-#define AZX_DCAPS_PRESET_NVIDIA \
-        (AZX_DCAPS_NO_MSI | AZX_DCAPS_CORBRP_SELF_CLEAR |\
-         AZX_DCAPS_SNOOP_TYPE(NVIDIA))
-
-And the device table includes:
-
-        { PCI_DEVICE(PCI_VENDOR_ID_NVIDIA, PCI_ANY_ID),
-          .class = PCI_CLASS_MULTIMEDIA_HD_AUDIO << 8,
-          .class_mask = 0xffffff,
-          .driver_data = AZX_DRIVER_NVIDIA | AZX_DCAPS_PRESET_NVIDIA },
-
-That NO_MSI quirk forces the sound driver to use legacy interrupts for
-all NVIDIA HD audio devices.  I think this made audio function
-assignment to Linux guests essentially unusable without using the
-snd_hda_intel.enable_msi=1 driver option to re-enable MSI.  Windows
-uses MSI for these devices, so it works better by default, but when
-we're resetting the VM we're still transitioning through this mode
-where I don't have a good opinion that the hardware behaves in a
-manageable way.
-
-My PCIe switch configuration with NVIDIA GPUs only has Tesla cards, so
-I don't have a way to reproduce this specific shared INTx issue, but it
-may be time to revisit examining the register behavior while running in
-INTx mode.  Thanks,
-
-Alex
-
+I'll drop this.  Please resend something if you still believe that
+changes are desirable.  
