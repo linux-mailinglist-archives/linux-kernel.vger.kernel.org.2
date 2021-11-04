@@ -2,101 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78352444CA1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 01:34:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1F2444CA7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 01:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233056AbhKDAgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 20:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232983AbhKDAgs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 20:36:48 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D470AC0432CC;
-        Wed,  3 Nov 2021 17:33:41 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id bg25so5767515oib.1;
-        Wed, 03 Nov 2021 17:33:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=V213yynwIxju7l3q8g0MgtsXu2d7h87vyCf36TZFlqs=;
-        b=PrpMHkrvenNfhrdEz1KKjNM/RFbi0sE9kHYHEJcEmZwLPeIIH9P5xBhYaQAv0iSawk
-         8BW76pRAjUq17KgEWmUKi8rxcHwNlhrOkmCCU0cpXwHAvgNa6v2Zy526L3v5ImeXEuTi
-         YGATS4n5LFSXiV0ELBgR0JIoO4JCfOJFQi/qmvYu9IQORP5OSu6dCFj+F4UfDnsjvvwL
-         H0E0ChuYBwCqnH53fYRFofgNe+GQ3FNpSjFiQu6UL4vCL8TsQK6mZFic4glCDgB0iBZr
-         GBOhPydpD0hOmd0mkcU1fIQPl9kwzhEOU9mXE07TKKjMdPPdkn/NWPkp3RONweqvHXNu
-         gojg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=V213yynwIxju7l3q8g0MgtsXu2d7h87vyCf36TZFlqs=;
-        b=CIccKOdF5LDa8jABNJdDp1L5U2a5/IYQoV8YBdId4vw9/jh+kgmz+66SPoccbRC7Do
-         iKMlrY9N2T7CXJ9z6Zys9/QRll9TmzvjTfj6IDoLtOwM6xX4qg+ys5Bol3Fwz5p+E3mY
-         YuViFAn5kgtnrO5EsJT1c/3yYzHqWSoq98WxwfUCiOh4+6yrRLfEaraqwWMCdCbFpEGg
-         CZL65wKAA1ADFqXD/NUaaSqRYGTyBQ69OxmgTCFE1vIZrSoaAwhNENl0pCOUoIPXyqcG
-         ntEg5NUrHQ2BOgmAmndHyVBT+CyltBAxFOkX9RYaG7arxp9GBREz/W0mCwEQ5+gcmBoy
-         xGLg==
-X-Gm-Message-State: AOAM533pRuG/IeDzVjnDwM20nXDNpP30jhK0UrRbUfg/ZWFqANn1q5mq
-        DiLbDxQ1Mxp1xOhkl6GFz0MMn1g5fq4=
-X-Google-Smtp-Source: ABdhPJzdgacPXftu/R6dwrdkM/3Ju3cAtk67FoEaiVAG22wqfWUC8GRXLT16+yld4B3HfQGKHGBEqQ==
-X-Received: by 2002:a05:6808:f92:: with SMTP id o18mr11594807oiw.46.1635986019434;
-        Wed, 03 Nov 2021 17:33:39 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q33sm935221ooh.16.2021.11.03.17.33.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Nov 2021 17:33:38 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] watchdog: Kconfig: enable MTK watchdog
-To:     Kevin Hilman <khilman@baylibre.com>,
-        linux-watchdog@vger.kernel.org, linux-mediatek@lists.infradead.org
-Cc:     Fabien Parent <fparent@baylibre.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20211103230354.915658-1-khilman@baylibre.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <fa77f716-a7c4-5926-3f21-418dc4c37fc5@roeck-us.net>
-Date:   Wed, 3 Nov 2021 17:33:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231137AbhKDAj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 20:39:57 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:43473 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230030AbhKDAjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Nov 2021 20:39:55 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Hl4Tm5pg0z8K;
+        Thu,  4 Nov 2021 01:37:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1635986237; bh=f5cqlw1tZGKFEiZUYL8xXBI9O4s1xQd9SM6Z/48bIuU=;
+        h=Date:From:Subject:To:Cc:From;
+        b=ZWWGgfoHpKwhWLJP7KsZ9iMZtK7ex8VxloRuus0sA9g/N3VyAztx7dS7ls5+SaazH
+         1cTVgmLkq2v7sWmhnu8qTu21vVEgwqK8uYuX1DogJA4MDqhHVMoU4p28iCaKTBPnK1
+         zd7fBKGRubcy1VJDgy3nhczM2B0UPwDETPymsoPn3gzlNuzbMxL7GUqBHAT0QAcfuV
+         xASrCjdrE5ZFkL9z01ZWRwepXYlWUVQpug5kvUSgMQSeb2lZbvNT7NLwKRCLuKOvCL
+         7uP+2lgHTIow0PxlCdIj3RLLmJCEPVRgr68dGDfJTH/7O19cBtqKZsFtTgFdRcEnQ6
+         AfUlctQxIgdgg==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.3 at mail
+Date:   Thu, 04 Nov 2021 01:37:15 +0100
+Message-Id: <990f4427968071d59bcbb7411da73acc379d3ac4.1635986046.git.mirq-linux@rere.qmqm.pl>
+From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Subject: [PATCH] ARM: fix early early_iounmap()
 MIME-Version: 1.0
-In-Reply-To: <20211103230354.915658-1-khilman@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+To:     Jon Medhurst <tixy@linaro.org>, Ard Biesheuvel <ardb@kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/21 4:03 PM, Kevin Hilman wrote:
-> Enable CONFIG_MEDIATEK_WATCHDOG when ARCH_MEDIATEK is enabled.
-> 
-> On some platforms (e.g. mt8183-pumpkin), watchdog is enabled by
-> bootloader, so kernel driver needs to be enabled to avoid watchdog
-> firing and causing reboot part way through kernel boot.
-> 
-> Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+Currently __set_fixmap() bails out with a warning when called in early boot
+from early_iounmap(). Fix it, and while at it, make the comment a bit easier
+to understand.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Cc: <stable@vger.kernel.org>
+Fixes: b089c31c519c ("ARM: 8667/3: Fix memory attribute inconsistencies when using fixmap")
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+---
+ arch/arm/mm/mmu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> ---
->   drivers/watchdog/Kconfig | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> index bf59faeb3de1..00bebbb8f877 100644
-> --- a/drivers/watchdog/Kconfig
-> +++ b/drivers/watchdog/Kconfig
-> @@ -836,6 +836,7 @@ config MESON_WATCHDOG
->   config MEDIATEK_WATCHDOG
->   	tristate "Mediatek SoCs watchdog support"
->   	depends on ARCH_MEDIATEK || COMPILE_TEST
-> +	default ARCH_MEDIATEK
->   	select WATCHDOG_CORE
->   	select RESET_CONTROLLER
->   	help
-> 
+diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
+index a4e006005107..274e4f73fd33 100644
+--- a/arch/arm/mm/mmu.c
++++ b/arch/arm/mm/mmu.c
+@@ -390,9 +390,9 @@ void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot)
+ 	BUILD_BUG_ON(__fix_to_virt(__end_of_fixed_addresses) < FIXADDR_START);
+ 	BUG_ON(idx >= __end_of_fixed_addresses);
+ 
+-	/* we only support device mappings until pgprot_kernel has been set */
++	/* We support only device mappings before pgprot_kernel is set. */
+ 	if (WARN_ON(pgprot_val(prot) != pgprot_val(FIXMAP_PAGE_IO) &&
+-		    pgprot_val(pgprot_kernel) == 0))
++		    pgprot_val(prot) && pgprot_val(pgprot_kernel) == 0))
+ 		return;
+ 
+ 	if (pgprot_val(prot))
+-- 
+2.30.2
 
