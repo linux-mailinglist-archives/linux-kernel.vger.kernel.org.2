@@ -2,158 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF79444CDD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 02:06:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3A7444CE1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 02:08:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232576AbhKDBJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 21:09:10 -0400
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:45772 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231229AbhKDBJI (ORCPT
+        id S231827AbhKDBK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 21:10:56 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:27173 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230233AbhKDBKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 21:09:08 -0400
-Received: by mail-oi1-f169.google.com with SMTP id u2so6518839oiu.12;
-        Wed, 03 Nov 2021 18:06:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YocbHtB0WKCVpaPIwIN4Bz/405kKtFB5GzeTgkMKUbU=;
-        b=1VkAe1HtunpbGuHkSr+bAYcm482cbSV0LJnwqLrm656WOnCmcuKvvIuj/PweOOmypb
-         VYZdi2C4Gy9qBpviT5+ConHJY0GSKdsZwSe71hFEYJ4hOwbS2tTgOpDAg0lBvrOha4yq
-         3P6mlAbTWY7EuvlRMoGJEoQK/pz8CjBrqHtS+MFvueiVjCHeLEfOFza26ARf2NIeAQyM
-         hSjMO+7HDqFebpUSf2AeSG9q+gQWofKVy2jyHCEs+2qzAMmXrpMQ0MWlYq4GZeST3sVs
-         Bogu5DcPrG/1irEANyd2Ju5Yrzw59AxywPl/7PIqFcmWXAMlGozcBZRpkVUyWyXcMc3B
-         jtww==
-X-Gm-Message-State: AOAM531ZIn1wtfaUGmh7RATAymsywHDooSM40y8jSvftoF0CrH2iI7NM
-        vDbC4imQo3U59LyyIQGEgQ==
-X-Google-Smtp-Source: ABdhPJxGo+5iN/O5yvgisGFrxVAxyW+CSOOK9/Uinje5TIMZuC9rnFykfXySd0UhCxBTW5qolr+fcQ==
-X-Received: by 2002:aca:280d:: with SMTP id 13mr11393821oix.116.1635987991262;
-        Wed, 03 Nov 2021 18:06:31 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id r24sm524554otc.12.2021.11.03.18.06.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 18:06:30 -0700 (PDT)
-Received: (nullmailer pid 2116973 invoked by uid 1000);
-        Thu, 04 Nov 2021 01:06:29 -0000
-Date:   Wed, 3 Nov 2021 20:06:29 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     James Lo <james.lo@mediatek.com>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [RESEND, v13 2/4] dt-bindings: spmi: document binding for the
- Mediatek SPMI controller
-Message-ID: <YYMyFT94l56iuEbo@robh.at.kernel.org>
-References: <20211103081021.9917-1-james.lo@mediatek.com>
- <20211103081021.9917-3-james.lo@mediatek.com>
+        Wed, 3 Nov 2021 21:10:55 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Hl57l6HbFzTgHJ;
+        Thu,  4 Nov 2021 09:06:43 +0800 (CST)
+Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 4 Nov 2021 09:08:13 +0800
+Received: from localhost.localdomain (10.175.101.6) by
+ dggpeml500011.china.huawei.com (7.185.36.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 4 Nov 2021 09:08:12 +0800
+From:   Di Zhu <zhudi2@huawei.com>
+To:     <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <jakub@cloudflare.com>
+CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <zhudi2@huawei.com>
+Subject: [PATCH bpf-next v5 1/2] bpf: support BPF_PROG_QUERY for progs attached to sockmap
+Date:   Thu, 4 Nov 2021 09:07:44 +0800
+Message-ID: <20211104010745.1177032-1-zhudi2@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103081021.9917-3-james.lo@mediatek.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500011.china.huawei.com (7.185.36.84)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 04:10:19PM +0800, James Lo wrote:
-> This adds documentation for the SPMI controller found on Mediatek SoCs.
-> 
-> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Right now there is no way to query whether BPF programs are
+attached to a sockmap or not.
 
-Missing author S-o-b. checkpatch.pl will tell you this.
+we can use the standard interface in libbpf to query, such as:
+bpf_prog_query(mapFd, BPF_SK_SKB_STREAM_PARSER, 0, NULL, ...);
+the mapFd is the fd of sockmap.
 
-> ---
->  .../bindings/spmi/mtk,spmi-mtk-pmif.yaml      | 76 +++++++++++++++++++
->  1 file changed, 76 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml b/Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
-> new file mode 100644
-> index 000000000000..2445c5e0b0ef
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
-> @@ -0,0 +1,76 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spmi/mtk,spmi-mtk-pmif.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Mediatek SPMI Controller Device Tree Bindings
-> +
-> +maintainers:
-> +  - Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-> +
-> +description: |+
-> +  On MediaTek SoCs the PMIC is connected via SPMI and the controller allows
-> +  for multiple SoCs to control a single SPMI master.
-> +
-> +allOf:
-> +  - $ref: "spmi.yaml"
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - mediatek,mt6873-spmi
-> +      - mediatek,mt8195-spmi
-> +
-> +  reg:
-> +    maxItems: 2
-> +
-> +  reg-names:
-> +    items:
-> +      - const: pmif
-> +      - const: spmimst
-> +
-> +  clocks:
-> +    minItems: 3
-> +    maxItems: 3
-> +
-> +  clock-names:
-> +    items:
-> +      - const: pmif_sys_ck
-> +      - const: pmif_tmr_ck
-> +      - const: spmimst_clk_mux
-> +
-> +  assigned-clocks:
-> +    maxItems: 1
-> +
-> +  assigned-clock-parents:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - clocks
-> +  - clock-names
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/mt8192-clk.h>
-> +
-> +    spmi: spmi@10027000 {
-> +        compatible = "mediatek,mt6873-spmi";
-> +        reg = <0x10027000 0xe00>,
-> +              <0x10029000 0x100>;
-> +        reg-names = "pmif", "spmimst";
-> +        clocks = <&infracfg CLK_INFRA_PMIC_AP>,
-> +                 <&infracfg CLK_INFRA_PMIC_TMR>,
-> +                 <&topckgen CLK_TOP_SPMI_MST_SEL>;
-> +        clock-names = "pmif_sys_ck",
-> +                      "pmif_tmr_ck",
-> +                      "spmimst_clk_mux";
-> +        assigned-clocks = <&topckgen CLK_TOP_PWRAP_ULPOSC_SEL>;
-> +        assigned-clock-parents = <&topckgen CLK_TOP_OSC_D10>;
-> +    };
-> +...
-> -- 
-> 2.18.0
-> 
-> 
+Signed-off-by: Di Zhu <zhudi2@huawei.com>
+---
+/* v2 */
+- John Fastabend <john.fastabend@gmail.com>
+  - add selftest code
+
+/* v3 */
+ - avoid sleeping caused by copy_to_user() in rcu critical zone
+
+/* v4 */
+ - Alexei Starovoitov <alexei.starovoitov@gmail.com>
+  -split into two patches, one for core code and one for selftest.
+
+/* v5 */
+ - Yonghong Song <yhs@fb.com>
+  -Some naming and formatting changes
+---
+ include/linux/bpf.h  |  9 ++++++
+ kernel/bpf/syscall.c |  5 +++
+ net/core/sock_map.c  | 74 +++++++++++++++++++++++++++++++++++++++-----
+ 3 files changed, 81 insertions(+), 7 deletions(-)
+
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index d604c8251d88..235ea7fc5fd8 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1961,6 +1961,9 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
+ int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *prog);
+ int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_type ptype);
+ int sock_map_update_elem_sys(struct bpf_map *map, void *key, void *value, u64 flags);
++int sock_map_bpf_prog_query(const union bpf_attr *attr,
++			    union bpf_attr __user *uattr);
++
+ void sock_map_unhash(struct sock *sk);
+ void sock_map_close(struct sock *sk, long timeout);
+ #else
+@@ -2014,6 +2017,12 @@ static inline int sock_map_update_elem_sys(struct bpf_map *map, void *key, void
+ {
+ 	return -EOPNOTSUPP;
+ }
++
++static inline int sock_map_bpf_prog_query(const union bpf_attr *attr,
++					  union bpf_attr __user *uattr)
++{
++	return -EINVAL;
++}
+ #endif /* CONFIG_BPF_SYSCALL */
+ #endif /* CONFIG_NET && CONFIG_BPF_SYSCALL */
+ 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 4e50c0bfdb7d..748102c3e0c9 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3275,6 +3275,11 @@ static int bpf_prog_query(const union bpf_attr *attr,
+ 	case BPF_FLOW_DISSECTOR:
+ 	case BPF_SK_LOOKUP:
+ 		return netns_bpf_prog_query(attr, uattr);
++	case BPF_SK_SKB_STREAM_PARSER:
++	case BPF_SK_SKB_STREAM_VERDICT:
++	case BPF_SK_MSG_VERDICT:
++	case BPF_SK_SKB_VERDICT:
++		return sock_map_bpf_prog_query(attr, uattr);
+ 	default:
+ 		return -EINVAL;
+ 	}
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index e252b8ec2b85..0320d27550fe 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -1412,38 +1412,50 @@ static struct sk_psock_progs *sock_map_progs(struct bpf_map *map)
+ 	return NULL;
+ }
+ 
+-static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
+-				struct bpf_prog *old, u32 which)
++static int sock_map_prog_lookup(struct bpf_map *map, struct bpf_prog ***pprog,
++				u32 which)
+ {
+ 	struct sk_psock_progs *progs = sock_map_progs(map);
+-	struct bpf_prog **pprog;
+ 
+ 	if (!progs)
+ 		return -EOPNOTSUPP;
+ 
+ 	switch (which) {
+ 	case BPF_SK_MSG_VERDICT:
+-		pprog = &progs->msg_parser;
++		*pprog = &progs->msg_parser;
+ 		break;
+ #if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
+ 	case BPF_SK_SKB_STREAM_PARSER:
+-		pprog = &progs->stream_parser;
++		*pprog = &progs->stream_parser;
+ 		break;
+ #endif
+ 	case BPF_SK_SKB_STREAM_VERDICT:
+ 		if (progs->skb_verdict)
+ 			return -EBUSY;
+-		pprog = &progs->stream_verdict;
++		*pprog = &progs->stream_verdict;
+ 		break;
+ 	case BPF_SK_SKB_VERDICT:
+ 		if (progs->stream_verdict)
+ 			return -EBUSY;
+-		pprog = &progs->skb_verdict;
++		*pprog = &progs->skb_verdict;
+ 		break;
+ 	default:
+ 		return -EOPNOTSUPP;
+ 	}
+ 
++	return 0;
++}
++
++static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
++				struct bpf_prog *old, u32 which)
++{
++	struct bpf_prog **pprog;
++	int ret;
++
++	ret = sock_map_prog_lookup(map, &pprog, which);
++	if (ret)
++		return ret;
++
+ 	if (old)
+ 		return psock_replace_prog(pprog, prog, old);
+ 
+@@ -1451,6 +1463,54 @@ static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
+ 	return 0;
+ }
+ 
++int sock_map_bpf_prog_query(const union bpf_attr *attr,
++			    union bpf_attr __user *uattr)
++{
++	__u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
++	u32 prog_cnt = 0, flags = 0, ufd = attr->target_fd;
++	struct bpf_prog **pprog;
++	struct bpf_prog *prog;
++	struct bpf_map *map;
++	struct fd f;
++	u32 id = 0;
++	int ret;
++
++	if (attr->query.query_flags)
++		return -EINVAL;
++
++	f = fdget(ufd);
++	map = __bpf_map_get(f);
++	if (IS_ERR(map))
++		return PTR_ERR(map);
++
++	rcu_read_lock();
++
++	ret = sock_map_prog_lookup(map, &pprog, attr->query.attach_type);
++	if (ret)
++		goto end;
++
++	prog = *pprog;
++	prog_cnt = (!prog) ? 0 : 1;
++
++	if (!attr->query.prog_cnt || !prog_ids || !prog_cnt)
++		goto end;
++
++	id = prog->aux->id;
++	if (id == 0)
++		prog_cnt = 0;
++
++end:
++	rcu_read_unlock();
++
++	if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)) ||
++	    (id != 0 && copy_to_user(prog_ids, &id, sizeof(u32))) ||
++	    copy_to_user(&uattr->query.prog_cnt, &prog_cnt, sizeof(prog_cnt)))
++		ret = -EFAULT;
++
++	fdput(f);
++	return ret;
++}
++
+ static void sock_map_unlink(struct sock *sk, struct sk_psock_link *link)
+ {
+ 	switch (link->map->map_type) {
+-- 
+2.27.0
+
