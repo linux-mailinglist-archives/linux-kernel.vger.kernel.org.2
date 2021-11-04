@@ -2,83 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347EA444DEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 05:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F202444DF0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 05:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbhKDEaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 00:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbhKDE36 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 00:29:58 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A35AC061714;
-        Wed,  3 Nov 2021 21:27:21 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id s24so5281514plp.0;
-        Wed, 03 Nov 2021 21:27:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xazu9T8/fXFMQx7kIFO5pn1oRXwl4mgPzYvoShItQvU=;
-        b=Vdfon3zvDFBy676XiSF1fJDP4z4UJq0DC9nMrP4kq0khVZdVlIjXqWnT6e0aY38Qwz
-         FicgbRBxyQHnv0pUIb1cwxKfVeCqE502Eg3JTaWHoeHG523LFbG6sE7aplkvMxFS9Nr3
-         FKWQehtAHcDyuF76yEAN9TbwzKRiSSOQ5ut1EopypYbTYtbi2VWx/TQGmeWw3Ag1uQwn
-         ZVTXmV8b6j+FpykQ3/23bVHzEu/J+02OyIUivVkBGp3H7RvErlvffiB2SBF/WdY4LzNB
-         BQu5FsyPgS80z5khlnHAvCiKPNqe1Vf8bvz7EHaaZkhCBgiyLJOYZgdPjsh8pxqKmB2W
-         YVNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xazu9T8/fXFMQx7kIFO5pn1oRXwl4mgPzYvoShItQvU=;
-        b=mPloU3U26R7lt3ZnQyfpKtbyxvY/PEPR9JbL7JqPtx0ZLijKTEFpF+eGf8eLNUMVcX
-         t0jyQIh92DhB4rsicdqUN/53r3HhNFY5okxnAzShjFygznhj2GGClhUipEIuxjYmn5CO
-         O7Cd+Tj6HSCyn6F0jcL02B3/5D5EcvsIbI9v4PaAVTEWDT40EDupHx2ppCC51+reWjFo
-         9Vkf5h+G530i9oii5D94Fd0h+Wm1sCKXkHEQaG+O6pLF7nMeUgtYEm6ppv4flF53ZwLc
-         4c2OezZO5isT9ehAAF61LDFIw6Rb/JdfA4RgC3mFPApbzeFx4BtNwO72Egu0JrVFP8CQ
-         vhsQ==
-X-Gm-Message-State: AOAM532eZS83Ptl00SbAoE9Y/TF3E+RYW2KVCpoYqu754RqIgfixwhIP
-        2J/ynP/AhTlylIG73mh+JZUIY+koAdS1ENKS9j8=
-X-Google-Smtp-Source: ABdhPJzL4j9WN4NkzD8uDrzHQJrIvo2ddgyv0tScDmdKS7hoQtvN9N7OQxAZi22WjAwLMP1Qg9trqnmJFDGsh8lTpdE=
-X-Received: by 2002:a17:90a:17a5:: with SMTP id q34mr19378134pja.122.1636000040856;
- Wed, 03 Nov 2021 21:27:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211102021432.2807760-1-jevburton.kernel@gmail.com>
- <20211103001245.muyte7exph23tmco@ast-mbp.dhcp.thefacebook.com>
- <fcec81dd-3bb9-7dcf-139d-847538b6ad20@fb.com> <CAN22DihwJ7YDFSPk+8CCs0RcSWvZOpNV=D1u+42XabztS6hcKQ@mail.gmail.com>
- <CAADnVQJ_ger=Tjn=9SuUTES6Tt5k_G0M+6T_ELzFtw_cSVs83A@mail.gmail.com> <55c95c15-ccad-bb31-be87-ad17db7cb02a@fb.com>
-In-Reply-To: <55c95c15-ccad-bb31-be87-ad17db7cb02a@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 3 Nov 2021 21:27:09 -0700
-Message-ID: <CAADnVQ+62fOzO8nS_rbTqkFtfWGj06bT1XDUFhdAxY8Lx3OR4g@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 0/3] Introduce BPF map tracing capability
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Joe Burton <jevburton.kernel@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Petar Penkov <ppenkov@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Joe Burton <jevburton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S230218AbhKDEbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 00:31:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229477AbhKDEbS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 00:31:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 10ED860EDF;
+        Thu,  4 Nov 2021 04:28:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636000121;
+        bh=TKeK/+vxB8t1P8ZeczAyl/3rBcV1wlhlUZbhndXr6dg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Efu375FVnI9iquoOMt/+o9S8bfCO8gyAupWKmjQMofzB91mzl5v7Nt4BUaD2CN/To
+         0P5dpKIUV2c1W4v6tjqNKUzdxoWozBVpOrt/46UO15iuCGZ0hUfk/8XXm5lOy+DH88
+         i7b3ySADX3Wi56ro5j85xqCXHZOXPae5ErJToDQS54mkvRHnnkscueqR6ag7dvGm6P
+         ESS8LYps7LRqMLiNBHYHyQDuFOO296VE7EP85xyj49W+eF3nWYXD3qkfCfG8ZND+s+
+         /toCa7h0B6Il8eYT8YKEgFnvlXjx+5gv+yuf723efBvrn91JbgIpgl6hNSSy/VsFJ9
+         oGCoYQ7DE3P5A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EDDED60173;
+        Thu,  4 Nov 2021 04:28:40 +0000 (UTC)
+Subject: Re: [GIT PULL] clk changes for the merge window
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20211104004857.609841-1-sboyd@kernel.org>
+References: <20211104004857.609841-1-sboyd@kernel.org>
+X-PR-Tracked-List-Id: <linux-clk.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211104004857.609841-1-sboyd@kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-for-linus
+X-PR-Tracked-Commit-Id: e2ceaa867d266472b31f3e03ba16f3120aefc152
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7ddb58cb0ecae8e8b6181d736a87667cc9ab8389
+Message-Id: <163600012091.31948.9267957881949704248.pr-tracker-bot@kernel.org>
+Date:   Thu, 04 Nov 2021 04:28:40 +0000
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 9:23 PM Yonghong Song <yhs@fb.com> wrote:
->
-> I checked with a few llvm compiler engineers in Facebook.
-> They mentioned there is nothing preventing compiler from doing
-> optimization like poking inside the noinline function and doing
-> some optimization based on that knowledge.
+The pull request you sent on Wed,  3 Nov 2021 17:48:57 -0700:
 
-Interesting. Thanks for digging in.
-Good to know!
+> https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-for-linus
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7ddb58cb0ecae8e8b6181d736a87667cc9ab8389
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
