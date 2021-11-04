@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E99B444ED9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:26:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 953D2444EDA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 07:26:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbhKDG3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 02:29:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47252 "EHLO
+        id S230451AbhKDG3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 02:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230108AbhKDG3B (ORCPT
+        with ESMTP id S230213AbhKDG3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 02:29:01 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A71C06127A
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 23:26:24 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id z65-20020a256544000000b005c21b35717dso7398355ybb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 23:26:24 -0700 (PDT)
+        Thu, 4 Nov 2021 02:29:05 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB9D4C061714;
+        Wed,  3 Nov 2021 23:26:27 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id p17so4587335pgj.2;
+        Wed, 03 Nov 2021 23:26:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=4+lptrSez3O7I9lFhrCLmPI8ZR+QIBXMWJtPqo31Kho=;
-        b=SN7IJCouH2K1RaDvT7DpS9fRd1EKpz2D+KwHt5kKFYQn8GJJleawLFP+9rQ7724awt
-         MsANgzCrp8apBGjUpdSLvFUtzmPevdsMwOZK4d48DfaRvnuf9LPUrv1xF8+uyCrhiTLr
-         U7fwK828KxzzlQeUbvAupQ0LqzGhmUQSAltbZrlEl0+uZ/Xz9/uYF4uQ3sB99UPXUTH0
-         0FqBsFcgII2ZEdZfDbY5VDongWQnRMYf6uhyflx1BT0h/UWoH9aRHTZ1RkbDm9i7vA/U
-         Fko9dxVExFxxc9rNalm8FlJnzXBnfe3jbzxaXX43FRxDtxcU2IItkAvLNAjoLPALroDt
-         scWg==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nlnnt3n3O4Jk/rf550R30jHD5iuaforuARNIfO1qRrU=;
+        b=Q3MVElHB90l/Gng+gMKxJXEErRAq29eXKemft+xA+adhXOZ/NMc/W92sfgb8xZl+Ql
+         NgnoFw6KHmbP+64CdGOlsG6qYK9NRSmEoya4p15+pPlRkWA8i2zdTlQT6s3EtRQ/11jF
+         ULYtnara3+lqXNmx1fNqCzV2oaaN8I9eLr6adnWJD1eU3DsQBtU27q7I/D2x4OMmExxJ
+         c47OdBFkW+nEk4x7m9KN3MVaa0azsOYJjVSXYE/6+my1PMPMoXbd9Uyc02+1RIntggYy
+         M3DCOhYSsPG3gNoY1jSiy4mPn5+1kQXorePgZKqQA8PuyxeW/1S0IQE5kblzk21AAKZJ
+         JYlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=4+lptrSez3O7I9lFhrCLmPI8ZR+QIBXMWJtPqo31Kho=;
-        b=vd3pDggOrLuID25spiQojDouJLkUjmKp58FUj2yCx/scEgTzOyVm5zQz0GXrTaU5R2
-         AxFJA/CrnfJrGc3lyYBFGcapmml1vA+3KB6zGrHlmEhhGrT/TRUvme2wEhDTj0pSljSM
-         6Jeqe+PKDZYQOfeD12kKT1TlOJ5RJaNOYePRy56B21dKd3baIas6aIR1FCggPVvyrcz8
-         cBjWuE5gdVAbTDInHxDX2YdpOvuW4C6O0PiTnmWjfJHgsp6fYijlmxLiiQXyDEYaAvuX
-         rzCTEETDDSI6pRHa978ew7ZaeqFoRAfJGYECh5+vPgXWmrdm5V4nPwHsDji2ECE6UQG6
-         st2A==
-X-Gm-Message-State: AOAM530pvQEsaJ/8wvzaAWwjFOlEgOE+2dNUUYC93v8ZAleR6kUD9uB2
-        nz6Mt7NGSLFLKRYvxHds7G7I/r/Y6SY0ky+HlYU=
-X-Google-Smtp-Source: ABdhPJwTHX0W7XivKhw5GZhwmnwULoRpTPIU8SfZWXMRJHpAurMGO9os+98teOKiUMv8vlHtXMXy6dNUx75dqiOcjPM=
-X-Received: from albertccwang.ntc.corp.google.com ([2401:fa00:fc:202:b82c:caf0:c403:32cf])
- (user=albertccwang job=sendgmr) by 2002:a25:6c06:: with SMTP id
- h6mr52939921ybc.222.1636007183647; Wed, 03 Nov 2021 23:26:23 -0700 (PDT)
-Date:   Thu,  4 Nov 2021 14:26:16 +0800
-Message-Id: <20211104062616.948353-1-albertccwang@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH] usb: dwc3: gadget: Fix null pointer exception
-From:   Albert Wang <albertccwang@google.com>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org
-Cc:     badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Albert Wang <albertccwang@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nlnnt3n3O4Jk/rf550R30jHD5iuaforuARNIfO1qRrU=;
+        b=jcj8t1MJ2a0eRD+35fwg7L3bR8GTazeK06+9pnuPoDXHKj2IjM5zs1lc5yUSagNbWB
+         1dHLrIa6Ur5+Qjnk+XqQO5ajCo3QQZE/5INnhmIW+9LqmH+G4g1O34hSnK3w67HxpqXR
+         DotQ4ltU8K7NqXGb0RcGamHNC5+7Fy4lAzmuW976KUtS4J7/Thvf2lrWt7yyjK7eZ+Vu
+         ZHsGi7EW12PM6jxq/+PKzyods9apeyGvcuSmCcGnvrqStM4SSHfyKPskOfHgowPkhs1b
+         B9sUWRSsxaYHJ6JdFR6ZzW0onGw3T56t+DbJRAbCp92fc1HN5ablFRp62jQTGTAuS/dd
+         +AtQ==
+X-Gm-Message-State: AOAM5324Cmx3BofJV+xva0ozytOvBuR+9H3ywWhuTU1BBputkZyRdhax
+        QLVtro48vUuO9cqzwitOrVugJNTtFHQ=
+X-Google-Smtp-Source: ABdhPJx220Vg/l6cKgMODZdCbqjkrY2TQ9yb+WgAGxk7h2rm9u/BFrL0LnjVBOBH5hmq5aXIamadkw==
+X-Received: by 2002:a63:af09:: with SMTP id w9mr36793326pge.323.1636007187287;
+        Wed, 03 Nov 2021 23:26:27 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id h6sm929669pfg.128.2021.11.03.23.26.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 23:26:27 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: luo.penghao@zte.com.cn
+To:     Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luo penghao <luo.penghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] xfrm: Remove duplicate assignment
+Date:   Thu,  4 Nov 2021 06:26:21 +0000
+Message-Id: <20211104062621.2643-1-luo.penghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the endpoint interrupt functions
-dwc3_gadget_endpoint_transfer_in_progress() and
-dwc3_gadget_endpoint_trbs_complete() will dereference the endpoint
-descriptor. But it could be cleared in __dwc3_gadget_ep_disable()
-when accessory disconnected. So we need to check whether it is null
-or not before dereferencing it.
+From: luo penghao <luo.penghao@zte.com.cn>
 
-Signed-off-by: Albert Wang <albertccwang@google.com>
+The statement in the switch is repeated with the statement at the
+beginning of the while loop, so this statement is meaningless.
+
+The clang_analyzer complains as follows:
+
+net/xfrm/xfrm_policy.c:3392:2 warning:
+
+Value stored to 'exthdr' is never read
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
 ---
- drivers/usb/dwc3/gadget.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ net/xfrm/xfrm_policy.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 23de2a5a40d6..83c7344888fd 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -3252,6 +3252,9 @@ static bool dwc3_gadget_endpoint_trbs_complete(struct dwc3_ep *dep,
- 	struct dwc3		*dwc = dep->dwc;
- 	bool			no_started_trb = true;
- 
-+	if (!dep->endpoint.desc)
-+		return no_started_trb;
-+
- 	dwc3_gadget_ep_cleanup_completed_requests(dep, event, status);
- 
- 	if (dep->flags & DWC3_EP_END_TRANSFER_PENDING)
-@@ -3299,6 +3302,9 @@ static void dwc3_gadget_endpoint_transfer_in_progress(struct dwc3_ep *dep,
- {
- 	int status = 0;
- 
-+	if (!dep->endpoint.desc)
-+		return;
-+
- 	if (usb_endpoint_xfer_isoc(dep->endpoint.desc))
- 		dwc3_gadget_endpoint_frame_from_event(dep, event);
- 
+diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
+index 7f881f5..e8a31b9 100644
+--- a/net/xfrm/xfrm_policy.c
++++ b/net/xfrm/xfrm_policy.c
+@@ -3389,7 +3389,6 @@ decode_session6(struct sk_buff *skb, struct flowi *fl, bool reverse)
+ 		case NEXTHDR_DEST:
+ 			offset += ipv6_optlen(exthdr);
+ 			nexthdr = exthdr->nexthdr;
+-			exthdr = (struct ipv6_opt_hdr *)(nh + offset);
+ 			break;
+ 		case IPPROTO_UDP:
+ 		case IPPROTO_UDPLITE:
 -- 
-2.33.1.1089.g2158813163f-goog
+2.15.2
+
 
