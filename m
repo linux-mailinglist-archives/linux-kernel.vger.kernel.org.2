@@ -2,111 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3A14455BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:55:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBDAC4455CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 15:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhKDO6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 10:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49668 "EHLO
+        id S231380AbhKDPAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 11:00:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230058AbhKDO6I (ORCPT
+        with ESMTP id S230344AbhKDPAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 10:58:08 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1600EC061714;
-        Thu,  4 Nov 2021 07:55:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=wrSeE0vHuSZ2IQmTnnM2PVhvw+BilCh/rk5TGFPdKSk=; b=Eh4M7NlL+I37REU8uB6I+KnMjR
-        LvWyFTa5kAuwejLldEN9vErizVh/J+d+MtoKgIX8hLcUyQs0bQrtHqUvgvocQu2AyblYBrkKZOtCr
-        nkswuz+/RRTheugcknSPh+zHbguRqyztns2mfT3FaPzTken1CeFsNS9hq8q8xTWOBxKHmarWfabJQ
-        U33z7jzD7NxgDw50ZXhDPFB1+j6R0x4lQ+7xwFVmEpYiuPnlxVAzlJwAnN6P6jAaj4vqJ/6IKwUEG
-        gW923fJRSkR8soOPh8sj0v5vVR19e6e/EgoEOZwD6Ge/9qW1No6V1Eog1k+A8Ta7SMBFmW9C4Jh/M
-        pgEtde7w==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mie9J-00995Y-1C; Thu, 04 Nov 2021 14:55:29 +0000
-Subject: Re: [PATCH 2/2] net: ethernet: Add driver for Sunplus SP7021
-To:     Andrew Lunn <andrew@lunn.ch>,
-        =?UTF-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
-Cc:     Wells Lu <wellslutw@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
-References: <cover.1635936610.git.wells.lu@sunplus.com>
- <650ec751dd782071dd56af5e36c0d509b0c66d7f.1635936610.git.wells.lu@sunplus.com>
- <d0217eed-a8b7-8eb9-7d50-4bf69cd38e03@infradead.org>
- <159ab76ac7114da983332aadc6056c08@sphcmbx02.sunplus.com.tw>
- <YYLjaYCQHzqBzN1l@lunn.ch>
- <36d5bc6d40734ae0a9c1fb26d258f49f@sphcmbx02.sunplus.com.tw>
- <YYPZN9hPBJTBzVUl@lunn.ch>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <3209bc4b-bde5-2e7e-4a91-429d2e83905e@infradead.org>
-Date:   Thu, 4 Nov 2021 07:55:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 4 Nov 2021 11:00:11 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67215C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 07:57:33 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id u17so7609177plg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 07:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OLcGDASkjqFAh2jkBmW+ReuKGptu7lZrBI/eCgVS/l0=;
+        b=qAPEjfsyM+A/dv9FnCwRZ6j7b3t5bRWP0QKxRmqmaZoQ9oCcRMF0SiehXSNSFPaBKy
+         N4s00SGKBb8Pbt2uK+5EXBVT/0IDYTE09OpE/LVacpFedTQAR4mz8EzeE20+C5fhiZsK
+         wOyIShDDpJ+JtE4LPnqEteJua5SjNRN5qI36AhG+Va/J4t8TQGCfU3CJ7CMFUvaNGZqo
+         mewtloZdmN9CAck5VgmrJJYjzNggo2HQ0xt7opFlymCECBZ3nYKGsshXXGcqvbt9IHec
+         he7gfmAbOxKZRSqXzCsLEAFf9eW83JkCaXkJf+fk6uuiD2z4yk43ERvoLgWPDf3EsCtp
+         rQsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OLcGDASkjqFAh2jkBmW+ReuKGptu7lZrBI/eCgVS/l0=;
+        b=PKzIDVWy1u0nIcB3ErFoqTtUwCxmWPMT7RW9Lvv5HLWuo+99IQtHNtO09G4YlOnGz/
+         VcEPIIesJCsjAxKl04aSPM+SSrcbjebx2fab86A1838KMaQI/zNwMJ6HTMVkewF2H3Ez
+         +B2eFvewBOpd363hJVS9xMu3whL5V7F0fABDPPY09/pmpW8pZibV9U1/GVK//nQo6o4h
+         aEjEv4TnAGaWOfsmi6332ie1vOFgjGruOI+pFPU+l5AwTRZf2+3FqJhu0eNqxq3AiHLC
+         PVVqUJfeny8Hg4VLjiVeRQLkkA6qGIIbrYNSxlb1yHQkO/QALQa3McaBzClB/RfaQB37
+         yXqQ==
+X-Gm-Message-State: AOAM530xXwhPwJuHxSv4n7JBWGxVcYkHuxqpX3HYsE4k2Uew2brGLRpy
+        7a83DIqmjU7n8smAtir+Cz4=
+X-Google-Smtp-Source: ABdhPJynLM6xiHWdejPh25khQxUB+kPHY90yTUv5bWXjPzgLzgUzOlYflWiCphnrDPuzJY50EJWRnA==
+X-Received: by 2002:a17:90a:ae18:: with SMTP id t24mr22687446pjq.92.1636037852935;
+        Thu, 04 Nov 2021 07:57:32 -0700 (PDT)
+Received: from localhost.localdomain ([140.82.17.67])
+        by smtp.gmail.com with ESMTPSA id t8sm4328530pgk.66.2021.11.04.07.57.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 07:57:32 -0700 (PDT)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com
+Cc:     linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
+Subject: [RFC PATCH 0/4] sched: Introduce cfs_migration
+Date:   Thu,  4 Nov 2021 14:57:09 +0000
+Message-Id: <20211104145713.4419-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <YYPZN9hPBJTBzVUl@lunn.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/4/21 5:59 AM, Andrew Lunn wrote:
-> On Thu, Nov 04, 2021 at 05:31:57AM +0000, Wells Lu 呂芳騰 wrote:
->> Hi,
->>
->> Thanks a lot for review.
->>
->>>
->>>> config NET_VENDOR_SUNPLUS
->>>> 	bool "Sunplus devices"
->>>> 	default y
->>>> 	depends on ARCH_SUNPLUS
->>>
->>> Does it actually depend on ARCH_SUNPLUS? What do you make use of?
->>
->> ARCH_SUNPLUS will be defined for Sunplus family series SoC.
->> Ethernet devices of Sunplus are designed and used for Sunplus SoC.
->> So far, only two SoC of Sunplus have the network device.
->> I'd like to show up the selection only for Sunplus SoC.
-> 
-> So it does not actually depend on ARCH_SUNPLUS. There are a few cases
-> where drivers have needed to call into arch specific code, which stops
-> them building for any other arch.
-> 
->>> Ideally, you want it to also build with COMPILE_TEST, so that the driver gets
->>> build by 0-day and all the other build bots.
->>
->> I am not sure if this is mandatory or not.
->> Should I add COMPILE_TEST as below?
->>
->> 	depends on ARCH_SUNPLUS | COMPILE_TEST
-> 
-> Yes.
+The active load balance has a known issue[1][2] that there is a race
+window between waking up the migration thread on the busiest CPU and it
+begins to preempt the current running CFS task. This race window may cause
+unexpected behavior that the current running CFS task may be preempted
+by a RT task first, and then the RT task will be preempted by this
+waked migration thread. Per our tracing, the latency caused by this
+preemption can be greater than 1ms, which is not a small latency for the
+RT tasks.
 
-Yes, but use "||" instead of one "|".
+We'd better set a proper priority to this balance work so that it can
+preempt CFS task only. A new per-cpu thread cfs_migration is introduced
+for this purpose. The cfs_migration thread has a priority FIFO-1,
+which means it can preempt any cfs tasks but can't preempt other FIFO
+tasks.
 
-> 
->> Yes, the device is now only for Sunplus SP7021 SoC.
->> Devices in each SoC may have a bit difference because of adding new
->> function or improving something.
-> 
-> If it will compile with COMPILE_TEST on x86, mips, etc, you should
-> allow it to compile with COMPILE_TEST. You get better compile testing
-> that way.
-> 
->       Andrew
-> 
+Besides the active load balance work, the numa balance work also applies
+to CFS tasks only. So we'd better assign cfs_migraion to numa balance
+work as well.
 
+[1]. https://lore.kernel.org/lkml/CAKfTPtBygNcVewbb0GQOP5xxO96am3YeTZNP5dK9BxKHJJAL-g@mail.gmail.com/
+[2]. https://lore.kernel.org/lkml/20210615121551.31138-1-laoar.shao@gmail.com/
+
+Yafang Shao (4):
+  stop_machine: Move cpu_stop_done into stop_machine.h
+  sched/fair: Introduce cfs_migration
+  sched/fair: Do active load balance in cfs_migration
+  sched/core: Do numa balance in cfs_migration
+
+ include/linux/stop_machine.h |  12 +++
+ kernel/sched/core.c          |   2 +-
+ kernel/sched/fair.c          | 143 ++++++++++++++++++++++++++++++++++-
+ kernel/sched/sched.h         |   2 +
+ kernel/stop_machine.c        |  14 +---
+ 5 files changed, 158 insertions(+), 15 deletions(-)
 
 -- 
-~Randy
+2.17.1
+
