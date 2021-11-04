@@ -2,96 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60AD8445674
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:38:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CACC2445677
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231509AbhKDPlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 11:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhKDPlK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 11:41:10 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8895C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 08:38:31 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id ee33so23079723edb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 08:38:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0K6UWIrugOT13ui2fyiIN4B5pxyQCxg5Y4QgfujDLxk=;
-        b=I3BGfNdDEMylnSSsAPKdkHwPptW8SdDQ2iAuipUnR/iLJXQK8LMKOL1UsEX2/3gavM
-         RXqbvjUTF5MYWDoHEcRM2XnTGG9BHleUs0po7ySlU+9pubTL5vhy6mua7xrXH8NGaXBV
-         ZddnblPB/Mq0yNh0RyYTSl7PUlr7r1gzng7wJQ/QwioNwXGPZ7vQ0nOXJSCf6AJDLzsq
-         t3Z/qyCHpOindApWDYQ/KPXtchpWwsH9uSHBGv9E7c86ZuO1IlPqmMhTXNfB/+cGKp+j
-         6cAPsyFEHngSDFIzOwG618acpfBqEXP8pBTtTB5Tw6EPcgG3LOuAzxcQNTBFmlFM+zyF
-         6OIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0K6UWIrugOT13ui2fyiIN4B5pxyQCxg5Y4QgfujDLxk=;
-        b=ya9hpspk+Yj6PDvg96CzSX0/qC7LMTO2D4reA9WFAtNF5UQx8TlYqATvAN5gEnEnQb
-         /1TVbsD+vuS0de4xq+uOA2mpB37NpZUWsI49vRtx/Ibt/inDRcnRF/AIVtA4h1lBuXqu
-         8Fsk23GN/C3FLAvtrl+qy2Q4RjWY7YeVpgXKWgkJZBIrs3C7VItfqIP0reOgisCwxr70
-         htMLx0sBEgHs4S3ge0nr9wNHpKg1C3jsB3HMOC/gk09odBI73Sw4AHseRSjXYTbPeihI
-         /0rDqNF6sHSMTbWWU/y82A/PnVYbHxD1qiPIgr/YVFStEhWaygjyQL5UoXWy8BfWV2/t
-         7zXA==
-X-Gm-Message-State: AOAM530lEi2n7h7jwuFLpFraN8EKIzvxdd+obKP28cbwWbQP5qUfJcBz
-        v49WLnt53kdZK5omN9Kj05MT5YEnZBmFFbtCznMKVQ==
-X-Google-Smtp-Source: ABdhPJzlv+j779DPYQpd2DCJs0vdgpLkFWhPRAuwUIiLiJYofSzulEag829/sAVPIr0SHBTwQPhyPqbHIdgiphG2sPE=
-X-Received: by 2002:a17:907:c15:: with SMTP id ga21mr31185750ejc.349.1636040297956;
- Thu, 04 Nov 2021 08:38:17 -0700 (PDT)
+        id S231566AbhKDPls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 11:41:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231341AbhKDPlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 11:41:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2109610FD;
+        Thu,  4 Nov 2021 15:39:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636040349;
+        bh=33691hjBX9cadGoNuJzUiBoacTbjKNGx8fgHdxnQIQw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NBp55FzKYxropmUNncWTfpvAEjPc/Yu8oqJK2u3YOsk5m/En/j7Bpm+EP3D7MKN3t
+         yQR8Hq7NEYxbZdyB0vj0BxYacEjwI1oT8GCQ0apH3XudV1TIhYef54Dd4q6E6MZVaW
+         gvylekx8Cts46ms8jezMX80mEeJhXX34EMUO6PNBMMiPbKlyWtjyzPq3aqDPmf4EP1
+         ityBueCMVcwFsPI0/xsXzuiTu3Lvrm2zLX5syOP/bWZ6/BbZZys0M/9Jw4U1Yt285W
+         5JqfDrYERFsWks5bOSxaXR1own0RBt5X4JfQ5gRlmqKxhSoVaVICXnUzIbNUOzpoAw
+         vvslMfivQEspg==
+Date:   Thu, 4 Nov 2021 15:39:03 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Trevor Wu <trevor.wu@mediatek.com>
+Cc:     tiwai@suse.com, robh+dt@kernel.org, matthias.bgg@gmail.com,
+        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, yc.hung@mediatek.com,
+        daniel.baluta@nxp.com
+Subject: Re: [PATCH 3/4] ASoC: mediatek: mt8195: separate the common code
+ from machine driver
+Message-ID: <YYP+l7tMofYoB+aC@sirena.org.uk>
+References: <20211103100040.11933-1-trevor.wu@mediatek.com>
+ <20211103100040.11933-4-trevor.wu@mediatek.com>
 MIME-Version: 1.0
-References: <20211101091122.442512-1-mst@redhat.com>
-In-Reply-To: <20211101091122.442512-1-mst@redhat.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 4 Nov 2021 16:38:07 +0100
-Message-ID: <CAMRc=MdvizSVQLyGd7uHdxFoeAitT32BRjGcrRJKwuCmc2RMnQ@mail.gmail.com>
-Subject: Re: [PATCH] virtio_gpio: drop packed attribute
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="c/fvPxmf2qWNcw9j"
+Content-Disposition: inline
+In-Reply-To: <20211103100040.11933-4-trevor.wu@mediatek.com>
+X-Cookie: Motorized vehicles only.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 1, 2021 at 10:11 AM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> Declaring the struct packed here is mostly harmless,
-> but gives a bad example for people to copy.
-> As the struct is packed and aligned manually,
-> let's just drop the attribute.
->
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
->  include/uapi/linux/virtio_gpio.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/uapi/linux/virtio_gpio.h b/include/uapi/linux/virtio_gpio.h
-> index 0445f905d8cc..25c95a034674 100644
-> --- a/include/uapi/linux/virtio_gpio.h
-> +++ b/include/uapi/linux/virtio_gpio.h
-> @@ -25,7 +25,7 @@ struct virtio_gpio_config {
->         __le16 ngpio;
->         __u8 padding[2];
->         __le32 gpio_names_size;
-> -} __packed;
-> +};
->
->  /* Virtio GPIO Request / Response */
->  struct virtio_gpio_request {
-> --
-> MST
->
 
-Applied, thanks!
+--c/fvPxmf2qWNcw9j
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Bart
+On Wed, Nov 03, 2021 at 06:00:39PM +0800, Trevor Wu wrote:
+> Because we will add DSP support, an new machine driver for the same
+> board is required. BE and codec configuration will use the same code
+> when machine driver is designed for the same board.
+
+I don't follow why the DSP support requires a new driver?  Shouldn't all
+systems with the DSP present be using it?
+
+--c/fvPxmf2qWNcw9j
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGD/pYACgkQJNaLcl1U
+h9BAqgf/Us8BcF+vWFc8NQqr1anc/z5wXrFIw7io61z4wr+ALcAiqTXbLnt7KKse
+vtZMFvaxL3V/QbElufEk96G8jEXIrjYRuLAubtVQDl0a3LAtlQ8Se2ynhzu2Ib12
+Rf8pihv2OkEOM8Cj11mnLnokKBRQPj/CeloGdaE0xvVqlrO+ymOTdXZ8luP69uI5
+kCIYGzh3zlGA8G/aT88Doxmc9T5mgCoj9eu35oxN3h05bf4/h5kN77JHL6eiK5op
+h3Xb2ql5Kaok5XZ1R4ZSbc6DhTY8xtsmfBkR7wZwPkmpXyXU9H4FTQXqib55VyXA
+q5NZy4f9SyI9MoQnUgLHSiijyH5mQA==
+=N3h7
+-----END PGP SIGNATURE-----
+
+--c/fvPxmf2qWNcw9j--
