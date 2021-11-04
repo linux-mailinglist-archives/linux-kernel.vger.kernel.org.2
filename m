@@ -2,162 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F6C445C7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 00:00:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 386D8445C6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 23:53:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbhKDXCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 19:02:44 -0400
-Received: from mga17.intel.com ([192.55.52.151]:49621 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232360AbhKDXCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 19:02:35 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10158"; a="212554549"
-X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
-   d="scan'208";a="212554549"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 15:59:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
-   d="scan'208";a="490138598"
-Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by orsmga007.jf.intel.com with ESMTP; 04 Nov 2021 15:59:56 -0700
-From:   "Chang S. Bae" <chang.seok.bae@intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     x86@kernel.org, tglx@linutronix.de, dave.hansen@linux.intel.com,
-        peterz@infradead.org, bp@alien8.de, mingo@redhat.com,
-        chang.seok.bae@intel.com, linux-pm@vger.kernel.org
-Subject: [PATCH 4/4] intel_idle: Add SPR support with AMX INIT-state
-Date:   Thu,  4 Nov 2021 15:52:26 -0700
-Message-Id: <20211104225226.5031-5-chang.seok.bae@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211104225226.5031-1-chang.seok.bae@intel.com>
-References: <20211104225226.5031-1-chang.seok.bae@intel.com>
+        id S232039AbhKDW4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 18:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231322AbhKDW4E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 18:56:04 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2261DC061205
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 15:53:26 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id o8so26607255edc.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 15:53:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pensando.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VaaNOGobytyErlzeuWKHVMN+JarWlcxJWqZAgz0U4Ac=;
+        b=FlDR1CIlE6iRQnoU9OBH1RPrCi8GzrhNWlj5EC+Gthsht2PmwwAxK16cLula+lgUPs
+         HOI/5cwUZAWe7lQVsc2+ydn3+DIrEiblam9I9N3nf2gypDgJfzSNZUMs8t2sFXv5a00G
+         P9yaDiisNl5dxds3OnAz3aysPkEnhpFd1qZqirqO7wN9hgfOtG3sanlPhY/EX3YJWB2a
+         l2dVkbCnPpQddHFc8namR2MuSEXffsyLyDIbbl+XJh8sS+etmHrnUFliTGK7r2JUjG7X
+         eRCWK35JXuzREcuuesNh3s2soD3NCib6F2QgnT+bjkyI1xtoXTMSccyr0ClCkhgCCk4/
+         1PDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VaaNOGobytyErlzeuWKHVMN+JarWlcxJWqZAgz0U4Ac=;
+        b=I/8p/UDOnDyBKlPDVbgS25PYFAHdv1IPrJOsjt3gTxYVZkpmaPH3k7xrcH6e3CXUJf
+         NBNI1ua/0A4aHnLBs7o0OLW0RiT1DnvwnYvqKPHUmu3wNQrJTossoabvCnHzOn2tyYI3
+         Bp4L2/dVT8idy51xQMzJdnhphYzPGT7swYS0W58sXEjdv/Oi2ym7Pv51QT6/qc96m51s
+         iHDbu751CBjqW0YaBrXJKtRaw2lbCwgCgGiI2w5WRd6wZSqlRAsrZTmPbt/BTdpB6JIF
+         1xT5nLDK6sUtuvpU0ovOeKAX9J+bOskEWA5vMh4C8o/xa4S4vip0ek3gtw6kW+yRuuLp
+         yZzA==
+X-Gm-Message-State: AOAM531gcbXDFHUOQrZrEsx2Ek3nm6ozLCtedjKDxWHTU7q+VMt3UAqg
+        wWYK4Q3Ps27m2uO98k/5XCdQzcZnqrE3ydORfG2VIg==
+X-Google-Smtp-Source: ABdhPJzUrnvUCW/c69Ez93sR4uzeVeBsL/wv91s5v5bUJWtKFABC5QThvyqPWPpbeJXV+eImBVpvq8PzbROnddUV+80=
+X-Received: by 2002:a17:906:a3c4:: with SMTP id ca4mr64446282ejb.529.1636066404493;
+ Thu, 04 Nov 2021 15:53:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211025015156.33133-1-brad@pensando.io> <20211025015156.33133-12-brad@pensando.io>
+ <20211025091731.GA2001@C02TD0UTHF1T.local>
+In-Reply-To: <20211025091731.GA2001@C02TD0UTHF1T.local>
+From:   Brad Larson <brad@pensando.io>
+Date:   Thu, 4 Nov 2021 15:53:13 -0700
+Message-ID: <CAK9rFnx7DgS3TYMmu5NBacV_6WC_UwJ=u7n3e_fGd0RpEcg3kA@mail.gmail.com>
+Subject: Re: [PATCH v3 11/11] arm64: dts: Add Pensando Elba SoC support
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Olof Johansson <olof@lixom.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a custom Sapphire Rapids C-state table to intel_idle driver. The
-parameters in the table are preferred over those supplied by ACPI.
+Hi Mark,
 
-SPR supports AMX, and so this custom table uses idle entry points that know
-how to initialize AMX state if necessary.
+On Mon, Oct 25, 2021 at 2:17 AM Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> Hi,
+>
+> On Sun, Oct 24, 2021 at 06:51:56PM -0700, Brad Larson wrote:
+> > Add Pensando common and Elba SoC specific device nodes
+> >
+> > Signed-off-by: Brad Larson <brad@pensando.io>
+>
+> [...]
+>
+> > +     timer {
+> > +             compatible = "arm,armv8-timer";
+> > +             interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(1) |
+> > +                                     IRQ_TYPE_LEVEL_LOW)>,
+> > +                          <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(1) |
+> > +                                     IRQ_TYPE_LEVEL_LOW)>,
+> > +                          <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(1) |
+> > +                                     IRQ_TYPE_LEVEL_LOW)>,
+> > +                          <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(1) |
+> > +                                     IRQ_TYPE_LEVEL_LOW)>;
+> > +     };
+>
+> The GIC_CPU_MASK_SIMPLE() stuff is meant for GICv2, but as below you
+> have GICv3, where this is not valid, so this should go.
+>
+> Also, beware that GIC_CPU_MASK_SIMPLE(1) means a single CPU, which
+> doesn't mak sense for the 16 CPUs you have.
+>
 
-This guarantees that AMX state will never be the cause of hardware C-state
-demotion from C6 to C1E. Under some conditions, this may result in improved
-power savings and thus a higher available turbo frequency budget.
+Thanks for pointing this out.  Elba SoC is a GICv3 implementation and looking
+at other device tree files we should be using this:
 
-[ Based on patch by Artem Bityutskiy <artem.bityutskiy@linux.intel.com>. ]
+        timer {
+                compatible = "arm,armv8-timer";
+                interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(16) |
+                                        IRQ_TYPE_LEVEL_LOW)>,
+                             <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(16) |
+                                        IRQ_TYPE_LEVEL_LOW)>,
+                             <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(16) |
+                                        IRQ_TYPE_LEVEL_LOW)>,
+                             <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(16) |
+                                        IRQ_TYPE_LEVEL_LOW)>;
+        };
 
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Cc: x86@kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-pm@vger.kernel.org
----
- drivers/idle/intel_idle.c | 62 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 62 insertions(+)
+> > +             gic: interrupt-controller@800000 {
+> > +                     compatible = "arm,gic-v3";
+> > +                     #interrupt-cells = <3>;
+> > +                     #address-cells = <2>;
+> > +                     #size-cells = <2>;
+> > +                     ranges;
+> > +                     interrupt-controller;
+> > +                     reg = <0x0 0x800000 0x0 0x200000>,      /* GICD */
+> > +                           <0x0 0xa00000 0x0 0x200000>;      /* GICR */
+> > +                     interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
+> > +
+> > +                     gic_its: msi-controller@820000 {
+> > +                             compatible = "arm,gic-v3-its";
+> > +                             msi-controller;
+> > +                             #msi-cells = <1>;
+> > +                             reg = <0x0 0x820000 0x0 0x10000>;
+> > +                             socionext,synquacer-pre-its =
+> > +                                                     <0xc00000 0x1000000>;
+> > +                     };
+> > +             };
+>
+> Is there any shared lineage with Synquacer? The commit message didn't
+> describe this quirk.
 
-diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
-index e6c543b5ee1d..0ac7dc9e6d51 100644
---- a/drivers/idle/intel_idle.c
-+++ b/drivers/idle/intel_idle.c
-@@ -54,6 +54,7 @@
- #include <asm/intel-family.h>
- #include <asm/mwait.h>
- #include <asm/msr.h>
-+#include <asm/fpu/api.h>
- 
- #define INTEL_IDLE_VERSION "0.5.1"
- 
-@@ -155,6 +156,39 @@ static __cpuidle int intel_idle_s2idle(struct cpuidle_device *dev,
- 	return 0;
- }
- 
-+/**
-+ * intel_idle_tile - Ask the processor to enter the given idle state.
-+ * @dev: cpuidle device of the target CPU.
-+ * @drv: cpuidle driver (assumed to point to intel_idle_driver).
-+ *
-+ * Ensure TILE registers in INIT-state before using intel_idle() to
-+ * enter the idle state.
-+ */
-+static __cpuidle int intel_idle_tile(struct cpuidle_device *dev,
-+				     struct cpuidle_driver *drv, int index)
-+{
-+	fpu_idle_fpregs();
-+
-+	return intel_idle(dev, drv, index);
-+}
-+
-+/**
-+ * intel_idle_s2idle_tile - Ask the processor to enter the given idle state.
-+ * @dev: cpuidle device of the target CPU.
-+ * @drv: cpuidle driver (assumed to point to intel_idle_driver).
-+ * @index: Target idle state index.
-+ *
-+ * Ensure TILE registers in INIT-state before using intel_idle_s2idle() to
-+ * enter the idle state.
-+ */
-+static __cpuidle int intel_idle_s2idle_tile(struct cpuidle_device *dev,
-+					    struct cpuidle_driver *drv, int index)
-+{
-+	fpu_idle_fpregs();
-+
-+	return intel_idle_s2idle(dev, drv, index);
-+}
-+
- /*
-  * States are indexed by the cstate number,
-  * which is also the index into the MWAIT hint array.
-@@ -752,6 +786,27 @@ static struct cpuidle_state icx_cstates[] __initdata = {
- 		.enter = NULL }
- };
- 
-+static struct cpuidle_state spr_cstates[] __initdata = {
-+	{
-+		.name = "C1",
-+		.desc = "MWAIT 0x00",
-+		.flags = MWAIT2flg(0x00),
-+		.exit_latency = 1,
-+		.target_residency = 1,
-+		.enter = &intel_idle,
-+		.enter_s2idle = intel_idle_s2idle, },
-+	{
-+		.name = "C6",
-+		.desc = "MWAIT 0x20",
-+		.flags = MWAIT2flg(0x20) | CPUIDLE_FLAG_TLB_FLUSHED,
-+		.exit_latency = 128,
-+		.target_residency = 384,
-+		.enter = &intel_idle_tile,
-+		.enter_s2idle = intel_idle_s2idle_tile, },
-+	{
-+		.enter = NULL }
-+};
-+
- static struct cpuidle_state atom_cstates[] __initdata = {
- 	{
- 		.name = "C1E",
-@@ -1095,6 +1150,12 @@ static const struct idle_cpu idle_cpu_icx __initconst = {
- 	.use_acpi = true,
- };
- 
-+static const struct idle_cpu idle_cpu_spr __initconst = {
-+	.state_table = spr_cstates,
-+	.disable_promotion_to_c1e = true,
-+	.use_acpi = true,
-+};
-+
- static const struct idle_cpu idle_cpu_avn __initconst = {
- 	.state_table = avn_cstates,
- 	.disable_promotion_to_c1e = true,
-@@ -1157,6 +1218,7 @@ static const struct x86_cpu_id intel_idle_ids[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X,		&idle_cpu_skx),
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,		&idle_cpu_icx),
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D,		&idle_cpu_icx),
-+	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	&idle_cpu_spr),
- 	X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNL,	&idle_cpu_knl),
- 	X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNM,	&idle_cpu_knl),
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT,	&idle_cpu_bxt),
--- 
-2.17.1
+There is no shared lineage with Synqacer.  We are solving the same issue
+with the same mechanism.  I'll add a comment to this DTS node.
 
+Thanks,
+Brad
