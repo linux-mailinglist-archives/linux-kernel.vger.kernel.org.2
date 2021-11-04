@@ -2,188 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6A6444DFD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 05:43:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 398D9444E02
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 05:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhKDEpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 00:45:42 -0400
-Received: from mga05.intel.com ([192.55.52.43]:51231 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229477AbhKDEpl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 00:45:41 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10157"; a="317850208"
-X-IronPort-AV: E=Sophos;i="5.87,207,1631602800"; 
-   d="scan'208";a="317850208"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 21:43:03 -0700
-X-IronPort-AV: E=Sophos;i="5.87,207,1631602800"; 
-   d="scan'208";a="667765567"
-Received: from rabentle-desk1.amr.corp.intel.com ([10.255.230.52])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2021 21:42:59 -0700
-Message-ID: <ed17c104b55646d5ffd367a56317ab8e85771ee4.camel@linux.intel.com>
-Subject: Re: [STACK DUMP][5.16-rc?] from (cpufreq: intel_pstate: Process HWP
- Guaranteed change notification)
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, pablomh@gmail.com,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Date:   Wed, 03 Nov 2021 21:42:54 -0700
-In-Reply-To: <CAHk-=wi63LDzMV1sSiPuH8q38tMZ0_b+w9bUVW=P_O1+rkW28A@mail.gmail.com>
-References: <20211103163340.435ba5b1@gandalf.local.home>
-         <CAHk-=wi63LDzMV1sSiPuH8q38tMZ0_b+w9bUVW=P_O1+rkW28A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0-1 
+        id S230152AbhKDEsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 00:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhKDEso (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 00:48:44 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27510C06127A
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 21:46:07 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id br12so7653738lfb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 21:46:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MSdbnulbptk0ZuR/Tz6LR9TZS4PNPngbTJ9ZV4hqiAY=;
+        b=eWNZQn6h0mRAvVFSonm4jcoNEVKE/t4wJ+QJnDr+UOtXF6oepsc0b+7nfrhBRZ8SYa
+         1KHFb3PivXYs5Rcw+87v/wFeEhb/xtx5QMVOaa0dDC+AXJ6XbaeZxtZJyQPzv9auyGHp
+         Pl2YPMtYNB29dUXB+VVhcax2qSCRj+kLte3Ho=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MSdbnulbptk0ZuR/Tz6LR9TZS4PNPngbTJ9ZV4hqiAY=;
+        b=zk146bAHaG3Im+0HtqZIzpRnLAgx50tDn+QCK2W6Y2a2wBI35DhJe9ubeTbyXml5bM
+         pxULFMbqVIrVfC/1GwHDSnvqxlcjqdBMRtebC38WWLNUaqZMBiVo0Nolqt0IV9G8NpzV
+         wsssLO0G6cK9LsNPXGnFNNEUM9o492/cy3j4fe7P34rCdY36qcfV3DQCFfRrvSCWZCi2
+         OU+Qj+5ZdvZTjEejndJqVtxG74bAd/MTjR+X228CZvGGpGPh3Sy/u/mg7cfkuRZtRHpO
+         i8Etu1PJStJ454f6+37uwkeSQ032IcOs1gX7GOr8YgKMV0h6kOOOnK/k2VrdxOomANJB
+         UIkA==
+X-Gm-Message-State: AOAM5311uP7X7sM2SNpVvy39Frn/nG5aQkU39AS3tCAc2SNc/n85QMYV
+        rUyt6atK3osp9TYrHeP0p0OL1CxwLYdQrQFF
+X-Google-Smtp-Source: ABdhPJxr8udua2bxqDd8/wMGIRgWNM01NVRi+FYAgb2v+B9OwVDM9t/CnmyrExQLQ9Q6k9hGQpmodA==
+X-Received: by 2002:ac2:4570:: with SMTP id k16mr39067237lfm.611.1636001164990;
+        Wed, 03 Nov 2021 21:46:04 -0700 (PDT)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id s10sm18558ljh.27.2021.11.03.21.46.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Nov 2021 21:46:04 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id br12so7653619lfb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 21:46:03 -0700 (PDT)
+X-Received: by 2002:a19:384b:: with SMTP id d11mr453337lfj.678.1636001163584;
+ Wed, 03 Nov 2021 21:46:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211104031554.GA34798@roeck-us.net> <CAHk-=wjvWORtC5vwgavJxpBtV3-q9GGidezS_2NjtUFvqg7H5Q@mail.gmail.com>
+ <77dc70f4-879a-eb5c-2dd6-682b4c7cfd03@roeck-us.net>
+In-Reply-To: <77dc70f4-879a-eb5c-2dd6-682b4c7cfd03@roeck-us.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 3 Nov 2021 21:45:47 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjZo3yj46FwVi0BNKfy5fZ4-UeWkeQ6nhcAbbnKS7K=dQ@mail.gmail.com>
+Message-ID: <CAHk-=wjZo3yj46FwVi0BNKfy5fZ4-UeWkeQ6nhcAbbnKS7K=dQ@mail.gmail.com>
+Subject: Re: parisc build failures in mainline kernel
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Helge Deller <deller@gmx.de>,
+        linux-parisc <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-11-03 at 14:58 -0700, Linus Torvalds wrote:
-> On Wed, Nov 3, 2021 at 1:33 PM Steven Rostedt <rostedt@goodmis.org>
-> wrote:
-> > 
-> > The RIP of cpuidle_enter_state+0xd6/0x3a0 gives me in gdb:
-> 
-> That's not actually the error address - it's not an oops. That's just
-> the register data at the interrupt entry.
-> 
-> The error was that triggered this was that
-> 
->     unchecked MSR access error:
->         WRMSR to 0x773 (tried to write 0x0000000000000000)
->         at rIP: 0xffffffffab06e824 (native_write_msr+0x4/0x20)
-> 
+On Wed, Nov 3, 2021 at 9:30 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> Unfortunately not. With that patch it complains about task_struct.
 
-MSR 773 access must be protected by a CPUID flag. Sorry I missed this
-check during offline path.
+Gaah. You'll need something like this too
 
-diff --git a/drivers/cpufreq/intel_pstate.c
-b/drivers/cpufreq/intel_pstate.c
-index 349ddbaef796..4184073be2c4 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -1621,7 +1621,8 @@ static void
-intel_pstate_disable_hwp_interrupt(struct cpudata *cpudata)
-        unsigned long flags;
- 
-        /* wrmsrl_on_cpu has to be outside spinlock as this can result
-in IPC */
--       wrmsrl_on_cpu(cpudata->cpu, MSR_HWP_INTERRUPT, 0x00);
-+       if (boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
-+               wrmsrl_on_cpu(cpudata->cpu, MSR_HWP_INTERRUPT, 0x00);
- 
-        spin_lock_irqsave(&hwp_notify_lock, flags);
-        if (cpumask_test_and_clear_cpu(cpudata->cpu,
-&hwp_intr_enable_mask))
+-       DEFINE(TASK_CPU, offsetof(struct task_struct, cpu));
++       DEFINE(TASK_CPU, offsetof(struct task_struct, thread_info.cpu));
 
+in arch/parisc/kernel/asm-offsets.c.
 
-I will submit a patch to fix this.
+And really, it should probably be renamed as TASK_TI_CPU, but then you
+have to rename all the uses too.
 
-Thanks,
-Srinivas
+There might be other details like that lurking.
 
-> and then it prints the stack frame - because we shouldn't be doing
-> random MSR writes.
-> 
-> And part of printing the stack frame is printing the register state
-> at
-> kernel entries when switching to an interrupt or exception stack.
-> 
-> So that RIP you point to is not really interesting, and it looks like
-> it's an entirely random harmless instruction, it's just that it is
-> preceded by that
-> 
->         sti
->         nopw
-> 
-> so it's not surprising that it's an interrupt point, because it's
-> exactly one instruction after interrupts were enabled on that CPU
-> (the
-> one instruction being the sti shadow that itself doesn't take
-> interrupts).
-> 
-> So cpuidle_enter_state() itself is entirely harmless, and you see
-> that
-> in the call chain presumably simply because the CPU was idle when the
-> interrupt happened. Again, that's a very reasonable place for an
-> interrupt to happen.
-> 
-> End result: all of this is simply due to an unexpected MSR write, and
-> the real issue is that interrupt from an IPI that caused the WRMSR
-> write on another CPU:
-> 
->     __wrmsr_on_cpu+0x33/0x40
->     flush_smp_call_function_queue+0x122/0x1a0
->     __sysvec_call_function_single+0x29/0xc0
->     sysvec_call_function_single+0x9d/0xd0
-> 
-> and the rest of the call chain is just noise from "whatever that CPU
-> happened to do when it got the IPI".
-> 
-> You don't get the call chain of whatever actually did the IPI, I'm
-> afraid. That's the actual _cause_ of all this, but that happens on
-> another CPU entirely.
-> 
-> > I bisected it down to:
-> > 
-> >  57577c996d73 ("cpufreq: intel_pstate: Process HWP Guaranteed
-> > change notification")
-> > 
-> > Removing the commit makes the issue go away. Adding it back brings
-> > it back'
-> 
-> That commit does various odd things.
-> 
-> The code seems to depend on the 'hwp_notify_lock' spinlock, but then
-> it does some work outside that locked region (exactly because that
-> work triggers an interrupt that needs that lock):
-> 
->       wrmsrl_on_cpu(cpudata->cpu, MSR_HWP_INTERRUPT, 0x00);
-> 
-> and that's exactly what will then warn because that MSR hasn't been
-> enabled on that CPU.
-> 
-> But it also does randomly do some READ_ONCE/WRITE_ONCE magic that all
-> seems entirely bogus. Those values should be protected by the lock.
-> 
-> The way it cancels delayed work is also very questionable: it does
-> 
->         spin_lock_irqsave(&hwp_notify_lock, flags);
->         if (cpumask_test_and_clear_cpu(cpudata->cpu,
-> &hwp_intr_enable_mask))
->                 cancel_delayed_work(&cpudata->hwp_notify_work);
->         spin_unlock_irqrestore(&hwp_notify_lock, flags);
-> 
-> but if the delayed work was already started on that cpu, then it will
-> continue running concurrently, even if the caller now thinks it's all
-> disabled.
-> 
-> You need the "sync" version to make sure the work is also waited on,
-> but you can't do that under the spinlock that the work in question
-> may
-> need, of course.
-> 
-> > So I'm guessing that this commit calls some code that does not
-> > expect to be
-> > called on powering off, at least in debug mode, and is triggering
-> > this
-> > stack dump. Probably because there was some static call or
-> > something that
-> > isn't shutdown properly.
-> 
-> It actually looks more direct than that to me: the code literally
-> seems to do that wrmsrl_on_cpu() that triggers the IPI that actually
-> causes the unchecked MSR write.
-> 
-> I don't know this hardware, and I don't know that code, but there are
-> certainly a few red flags here.
-> 
-> Srinivas?
-> 
-
->               Linus
-
-
+                   Linus
