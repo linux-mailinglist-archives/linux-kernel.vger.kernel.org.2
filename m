@@ -2,107 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2BF7445A44
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 20:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 678EF445A6E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 20:06:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234217AbhKDTHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 15:07:45 -0400
-Received: from mga14.intel.com ([192.55.52.115]:48359 "EHLO mga14.intel.com"
+        id S234229AbhKDTIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 15:08:37 -0400
+Received: from ms.lwn.net ([45.79.88.28]:53388 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231823AbhKDTHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 15:07:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10158"; a="232022292"
-X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
-   d="scan'208";a="232022292"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 12:04:59 -0700
-X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
-   d="scan'208";a="586073150"
-Received: from unknown (HELO [10.209.25.230]) ([10.209.25.230])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 12:04:58 -0700
-Subject: Re: [PATCH] x86/sgx: Fix free page accounting
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Reinette Chatre <reinette.chatre@intel.com>
-Cc:     dave.hansen@linux.intel.com, jarkko@kernel.org, tglx@linutronix.de,
-        bp@alien8.de, mingo@redhat.com, linux-sgx@vger.kernel.org,
-        x86@kernel.org, seanjc@google.com, tony.luck@intel.com,
-        hpa@zytor.com, linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <373992d869cd356ce9e9afe43ef4934b70d604fd.1636049678.git.reinette.chatre@intel.com>
- <YYQsc0kktaOdOXb0@kroah.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
- CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
- 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
- K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
- VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
- e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
- ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
- kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
- rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
- f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
- mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
- UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
- sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
- 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
- cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
- UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
- db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
- lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
- kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
- gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
- AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
- XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
- e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
- pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
- YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
- lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
- M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
- 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
- 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
- OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
- ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
- z5cecg==
-Message-ID: <460c7c74-0921-03a4-ded0-afa31d9c8aa6@intel.com>
-Date:   Thu, 4 Nov 2021 12:04:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234279AbhKDTIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 15:08:32 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::e2d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id EEAFA6696;
+        Thu,  4 Nov 2021 19:05:52 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net EEAFA6696
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1636052753; bh=o3GEWIv2f2lVZGce34tW9xNOROrD5lFoDT9Jcdu7Pbs=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=cWD2qpmPrbHlbnclKCDkNzp1o71oGX8kK0BXQGQOeeYKcjUN3p1lXbqUmt1mCFTj9
+         JU/c6b/x/zj9wAFM4r4X1sARiENDd8M9PHzmP0A5zQnPSvSnPQE6cd/Bvhc49oGRlI
+         YaLYXbeVw5BcLTUaWvokMYvpi+ffOS06TqSd+L/yRETgEjc49BAqw3Hx3rl8DzJiQZ
+         XvG6ghz8bO4LESGs0QJVBA2XfV9sowWQM2PEIpUahZ31cwEpoJmG9bTlOSTX4zVrQb
+         /NHgM0CX/9zECSoLV3W8GoQ5pRrRWes9KWY7eeDtN5dXNGlL75GT2iTb3T05rHXoVm
+         clNOdYeSgYmHA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Beau Belgrave <beaub@linux.microsoft.com>, rostedt@goodmis.org,
+        mhiramat@kernel.org
+Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        beaub@linux.microsoft.com
+Subject: Re: [PATCH v4 10/10] user_events: Add documentation file
+In-Reply-To: <20211104170433.2206-11-beaub@linux.microsoft.com>
+References: <20211104170433.2206-1-beaub@linux.microsoft.com>
+ <20211104170433.2206-11-beaub@linux.microsoft.com>
+Date:   Thu, 04 Nov 2021 13:05:51 -0600
+Message-ID: <8735obrbao.fsf@meer.lwn.net>
 MIME-Version: 1.0
-In-Reply-To: <YYQsc0kktaOdOXb0@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/4/21 11:54 AM, Greg KH wrote:
->>  static bool sgx_should_reclaim(unsigned long watermark)
->>  {
->> -	return sgx_nr_free_pages < watermark && !list_empty(&sgx_active_page_list);
->> +	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
->> +	       !list_empty(&sgx_active_page_list);
-> What prevents the value from changing right after you test this?  Why is
-> an atomic value somehow solving the problem?
+Beau Belgrave <beaub@linux.microsoft.com> writes:
 
-Nothing.  It's fundamentally racy, and that's OK.
+> Add a documentation file about user_events with example code, etc.
+> explaining how it may be used.
 
-Just like the core VM, being under the watermark is an indication that
-the kernel is low on pages (SGX pages in this case).  It means we should
-try SGX reclaim.  Let's say there's a race and a bunch of pages are
-freed.  Reclaim will run once iteration then stop.
+Yay documentation!  Some nits for a slow moment...
 
-We could make an argument that the sgx_reclaim_pages() loop should check
-sgx_nr_free_pages in a few places to ensure it doesn't unnecessarily
-reclaim too much memory.  That's something to look at, but it's beyond
-the scope of this very simple bug fix.
+> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+> ---
+>  Documentation/trace/user_events.rst | 298 ++++++++++++++++++++++++++++
+>  1 file changed, 298 insertions(+)
+>  create mode 100644 Documentation/trace/user_events.rst
+
+Actually, this isn't really a nit.  When you add a new RST file, you
+need to add it to the index.rst file too so that it gets pulled into the
+docs build.  Otherwise you'll get the warning you doubtless saw when you
+tried building the docs after adding this file...:)
+
+> diff --git a/Documentation/trace/user_events.rst b/Documentation/trace/user_events.rst
+> new file mode 100644
+> index 000000000000..d79c9f07d012
+> --- /dev/null
+> +++ b/Documentation/trace/user_events.rst
+> @@ -0,0 +1,298 @@
+> +=========================================
+> +user_events: User-based Event Tracing
+> +=========================================
+> +
+> +:Author: Beau Belgrave
+> +
+> +Overview
+> +--------
+> +User based trace events allow user processes to create events and trace data
+> +that can be viewed via existing tools, such as ftrace, perf and eBPF.
+> +To enable this feature, build your kernel with CONFIG_USER_EVENTS=y.
+> +
+> +Programs can view status of the events via 
+> +/sys/kernel/debug/tracing/user_events_status and can both register and write
+> +data out via /sys/kernel/debug/tracing/user_events_data.
+> +
+> +Programs can also use /sys/kernel/debug/tracing/dynamic_events to register and
+> +delete user based events via the u: prefix. The format of the command to
+> +dynamic_events is the same as the ioctl with the u: prefix applied.
+> +
+> +Typically programs will register a set of events that they wish to expose to
+> +tools that can read trace_events (such as ftrace and perf). The registration
+> +process gives back two ints to the program for each event. The first int is the
+> +status index. This index describes which byte in the 
+> +/sys/kernel/debug/tracing/user_events_status file represents this event. The
+> +second int is the write index. This index describes the data when a write() or
+> +writev() is called on the /sys/kernel/debug/tracing/user_events_data file.
+> +
+> +The structures referenced in this document are contained with the
+> +/include/uap/linux/user_events.h file in the source tree.
+> +
+> +**NOTE:** *Both user_events_status and user_events_data are under the tracefs filesystem
+> +and may be mounted at different paths than above.*
+
+Best to stick with the 80-column guideline for docs, please.
+
+This also won't render the way you expect and may add a warning.
+
+> +Registering
+> +-----------
+> +Registering within a user process is done via ioctl() out to the
+> +/sys/kernel/debug/tracing/user_events_data file. The command to issue is
+> +DIAG_IOCSREG. This command takes a struct user_reg as an argument.
+> +
+> +The struct user_reg requires two values, the first is the size of the structure
+> +to ensure forward and backward compatibility. The second is the command string
+> +to issue for registering.
+> +
+> +User based events show up under tracefs like any other event under the subsystem
+> +named "user_events". This means tools that wish to attach to the events need to
+> +use /sys/kernel/debug/tracing/events/user_events/[name]/enable or perf record
+> +-e user_events:[name] when attaching/recording.
+> +
+> +**NOTE:** *The write_index returned is only valid for the FD that was used*
+> +
+> +Command Format
+> +^^^^^^^^^^^^^^
+> +The command string format is as follows:
+> +
+> +::
+
+You can express this more concisely (and readably) as
+
+  The command string format is as follows::
+
+(there's a bunch of these in this file)
+
+> +  name[:FLAG1[,FLAG2...]] [Field1[;Field2...]]
+> +
+> +Supported Flags
+> +^^^^^^^^^^^^^^^
+> +**BPF_ITER** - EBPF programs attached to this event will get the raw iovec
+> +struct instead of any data copies for max performance.
+> +
+> +Field Format
+> +^^^^^^^^^^^^
+> +
+> +::
+> +
+> +  type name [size]
+> +
+> +Basic types are supported (__data_loc, u32, u64, int, char, char[20]).
+> +User programs are encouraged to use clearly sized types like u32.
+> +
+> +**NOTE:** *Long is not supported since size can vary between user and kernel.*
+> +
+> +The size is only valid for types that start with a struct prefix.
+> +This allows user programs to describe custom structs out to tools, if required.
+> +
+> +For example, a struct in C that looks like this:
+> +
+> +::
+> +
+> +  struct mytype {
+> +    char data[20];
+> +  };
+> +
+> +Would be represented by the following field:
+> +
+> +::
+> +
+> +  struct mytype myname 20
+> +
+> +Status
+> +------
+> +When tools attach/record user based events the status of the event is updated
+> +in realtime. This allows user programs to only incur the cost of the write() or
+> +writev() calls when something is actively attached to the event.
+> +
+> +User programs call mmap() on /sys/kernel/debug/tracing/user_events_status to
+> +check the status for each event that is registered. The byte to check in the
+> +file is given back after the register ioctl() via user_reg.status_index.
+> +Currently the size of user_events_status is a single page, however, custom
+> +kernel configurations can change this size to allow more user based events. In
+> +all cases the size of the file is a multiple of a page size.
+> +
+> +For example, if the register ioctl() gives back a status_index of 3 you would
+> +check byte 3 of the returned mmap data to see if anything is attached to that
+> +event.
+> +
+> +Administrators can easily check the status of all registered events by reading
+> +the user_events_status file directly via a terminal. The output is as follows:
+> +
+> +::
+> +
+> +  Byte:Name [# Comments]
+> +  ...
+> +
+> +  Active: ActiveCount
+> +  Buisy: BusyCount
+> +  Max: MaxCount
+> +
+> +For example, on a system that has a single event the output looks like this:
+> +
+> +::
+> +
+> +  1:test
+> +
+> +  Active: 1
+> +  Busy: 0
+> +  Max: 4096
+> +
+> +If a user enables the user event via ftrace, the output would change to this:
+> +
+> +:: 
+> +
+> +  1:test # Used by ftrace
+> +
+> +  Active: 1
+> +  Busy: 1
+> +  Max: 4096
+> +
+> +**NOTE:** *A status index of 0 will never be returned. This allows user 
+> +programs to have an index that can be used on error cases.*
+> +
+> +Status Bits
+> +^^^^^^^^^^^
+> +The byte being checked will be non-zero if anything is attached. Programs can
+> +check specific bits in the byte to see what mechanism has been attached.
+> +
+> +The following values are defined to aid in checking what has been attached:
+> +**EVENT_STATUS_FTRACE** - Bit set if ftrace has been attached (Bit 0).
+> +
+> +**EVENT_STATUS_PERF** - Bit set if perf/eBPF has been attached (Bit 1).
+> +
+> +Writing Data
+> +------------
+> +After registering an event the same fd that was used to register can be used
+> +to write an entry for that event. The write_index returned must be at the start
+> +of the data, then the remaining data is treated as the payload of the event.
+> +
+> +For example, if write_index returned was 1 and I wanted to write out an int
+> +payload of the event. Then the data would have to be 8 bytes (2 ints) long,
+> +with the first 4 bytes being equal to 1 and the last 4 bytes being equal to the
+> +value I want as the payload.
+> +
+> +In memory this would look like this:
+> +
+> +::
+> +
+> +  int index;
+> +  int payload;
+> +
+> +User programs might have well known structs that they wish to use to emit out
+> +as payloads. In those cases writev() can be used, with the first vector being
+> +the index and the following vector(s) being the actual event payload.
+> +
+> +For example, if I have a struct like this:
+> +
+> +::
+> +
+> +  struct payload {
+> +        int src;
+> +        int dst;
+> +        int flags;
+> +  };
+> +
+> +It's advised for user programs to do the following:
+> +
+> +:: 
+> +
+> +  struct iovec io[2];
+> +  struct payload e;
+> +
+> +  io[0].iov_base = &write_index;
+> +  io[0].iov_len = sizeof(write_index);
+> +  io[1].iov_base = &e;
+> +  io[1].iov_len = sizeof(e);
+> +
+> +  writev(fd, (const struct iovec*)io, 2);
+> +
+> +**NOTE:** *The write_index is not emitted out into the trace being recorded.*
+> +
+> +EBPF
+> +----
+> +EBPF programs that attach to a user-based event tracepoint are given a pointer
+> +to a struct user_bpf_context. The bpf context contains the data type (which can
+> +be a user or kernel buffer, or can be a pointer to the iovec) and the data
+> +length that was emitted (minus the write_index).
+> +
+> +Example Code
+> +------------
+
+Examples are great, but they are best placed under samples/ (or tools/
+if they do something useful) where readers can build and run them.
+
+> +::
+> +
+> +  #include <errno.h>
+> +  #include <sys/ioctl.h>
+> +  #include <sys/mman.h>
+> +  #include <fcntl.h>
+> +  #include <stdio.h>
+> +  #include <unistd.h>
+> +  #include <linux/user_events.h>
+> +  
+> +  /* Assumes debugfs is mounted */
+> +  const char *data_file = "/sys/kernel/debug/tracing/user_events_data";
+> +  const char *status_file = "/sys/kernel/debug/tracing/user_events_status";
+> +  
+> +  static int event_status(char **status)
+> +  {
+> +  	int fd = open(status_file, O_RDONLY);
+> +  
+> +  	*status = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ,
+> +  		       MAP_SHARED, fd, 0);
+> +  
+> +  	close(fd);
+> +  
+> +  	if (*status == MAP_FAILED)
+> +  	      return -1;
+> +  
+> +  	return 0;
+> +  }
+> +  
+> +  static int event_reg(int fd, const char *command, int *status, int *write)
+> +  {
+> +  	struct user_reg reg = {0};
+> +  
+> +  	reg.size = sizeof(reg);
+> +  	reg.name_args = (__u64)command;
+> +  
+> +  	if (ioctl(fd, DIAG_IOCSREG, &reg) == -1)
+> +  		return -1;
+> +  
+> +  	*status = reg.status_index;
+> +  	*write = reg.write_index;
+> +  
+> +  	return 0;
+> +  }
+> +  
+> +  int main(int argc, char **argv)
+> +  {
+> +  	int data_fd, status, write;
+> +  	char *status_page;
+> +  	struct iovec io[2];
+> +  	__u32 count = 0;
+> +  
+> +  	if (event_status(&status_page) == -1)
+> +  		return errno;
+> +  
+> +  	data_fd = open(data_file, O_RDWR);
+> +  
+> +  	if (event_reg(data_fd, "test u32 count", &status, &write) == -1)
+> +  		return errno;
+> +  
+> +  	/* Setup iovec */
+> +  	io[0].iov_base = &status;
+> +  	io[0].iov_len = sizeof(status);
+> +  	io[1].iov_base = &count;
+> +  	io[1].iov_len = sizeof(count);
+> +  
+> +  ask:
+> +  	printf("Press enter to check status...\n");
+> +  	getchar();
+> +  
+> +  	/* Check if anyone is listening */
+> +  	if (status_page[status]) {
+> +  		/* Yep, trace out our data */
+> +  		writev(data_fd, (const struct iovec*)io, 2);
+> +  
+> +  		/* Increase the count */
+> +  		count++;
+> +  
+> +  		printf("Something was attached, wrote data\n");
+> +  	}
+> +  
+> +  	goto ask;
+> +  
+> +  	return 0;
+> +  }
+
+Thanks,
+
+jon
