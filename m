@@ -2,190 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0F0445A1A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 19:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58483445A1F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 20:00:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233873AbhKDTBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 15:01:30 -0400
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:38839 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbhKDTB3 (ORCPT
+        id S233974AbhKDTDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 15:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231823AbhKDTDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 15:01:29 -0400
-Received: by mail-ot1-f52.google.com with SMTP id c2-20020a056830348200b0055a46c889a8so9612085otu.5;
-        Thu, 04 Nov 2021 11:58:51 -0700 (PDT)
+        Thu, 4 Nov 2021 15:03:02 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDA8C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 12:00:24 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id o14so8831244plg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 12:00:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m2k2ICcLxOkYpmYgks+aaOogS3Up01M0dUCMOamz1iE=;
+        b=qztWzrOTLAIveH0jJT+My1lV60S9NBBuoZGvf3bT2cCiy1amPUVAOa8U4/K7xanNV1
+         YhcFxVjtQd99EYpqKdvI2mpDLpo+IvoLQgmSfd36JPAmmGu0GSgIsg2c1k9wjL6Aw7IP
+         v1+p7NJ2mn9mi1aSVMCmwnvf4Fvyss5eFxhoctfmhjUwls1GCBfLPg70Z6rCNN1KO8Vu
+         UvcWJhXZOeNfxNXqMEDF+7ZbG4T8H2agXRtokUhs6BkR1P2QmLirhzwnP4wYxDFRiLXX
+         uwbk3uQPR7MTMgd6i+sYQ0CN2HEBqUy40NqhvSGBIyc3xJ4NHnjlDR1x0j7rKg4WON2B
+         OhSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lLKvPHk7AT6HIK5PlTcyCsOjSG94moArAkUSQWwW8dc=;
-        b=TImzsnRb/fqdZRqyWPF3zb8WYnkv2QoR+PPhItFuBm1Xilvk5eXOnba7KhYKqVs2Fd
-         Wx513sLlmlbL/sk0UR31c74xa1QE2QwJJjOJNJjt78/VPTZ4f7r550J8FljqouPJry70
-         VWo5sXj97WcDgdZ3fLtLJKC9ErIO1C2ZtBcsuHPid11YDq5tErW2rtXXDhO5It387Lc/
-         f3JZVsgIxRtHU4dJp+Uqo5zjrEU/plilFlDl2JiX+eYzCe6LyFUtPjphNmXkwl/TcCCh
-         /2VNXiomZ8vAlnJHABVSsKDjEGIlNVE/+rwz2Roxpy/4LbVx8FJ2iwsgRbj/M8c5F1nw
-         Z8Tw==
-X-Gm-Message-State: AOAM530nIqgLghN3tgjOuZfpEbBX7aRnaIQS9WbQDItexTw8Sc3yUy9v
-        mn8dfGWl5z+wXBMbOKGMuFE5GGAWVZgjxXmcSy/Em9to
-X-Google-Smtp-Source: ABdhPJxubP7USfbkOKPvnIa2lijf2qUx1LObrK2bcOGTG304+NIeP0+vdSeiitCBU1C4XNh/3WaFUvuQZbrXUbuIom8=
-X-Received: by 2002:a9d:a64:: with SMTP id 91mr33171895otg.198.1636052330641;
- Thu, 04 Nov 2021 11:58:50 -0700 (PDT)
+        bh=m2k2ICcLxOkYpmYgks+aaOogS3Up01M0dUCMOamz1iE=;
+        b=0csavU30lSUs6bqayrTAVPb8NM3CLUsigFBd0qBC2ijRmiRi7Zf0kD+pFo++vm2nw7
+         xy21JZSNypLXQ8Lhbsx4tmSRPlV7d+X1yoNl/B0nRGjX5PUwGA57UZLfqpXT3ecQTVTi
+         h36k+nzJsbSG8B1ozVwL891UFYtSxcY3liU9etQSacDgwq08NBRIBAhwsIQ37SdLcipP
+         6B+Ajs97kkd1EoF4jIOEiew4FMCFEQS6esHo/9ei1Qs+jde3rb+E+G1VW6z0ZjMIGyKk
+         6aojt7mNCtZxINqupxlwCoW80mq/6KVYvQg9fNVSdXQ+0nfVCClpJ+bzj+rErcYPhNLH
+         hD0w==
+X-Gm-Message-State: AOAM530kkeACmT2kfBJofvHFLrhfLveqodZRgvEEaXwMkxYhQ6f6TOiL
+        b95/KrWtQ9nVlZKeWxVQjxd3IdLvcreIUX+UImVdMg==
+X-Google-Smtp-Source: ABdhPJwQym6Y7uH09wOtDHKQhWIGrrYFIdBGyf7hiTeaJPAQpu4wAVAeAWHgNrP0Q55EM48GJgoNm4KYD5+8BlLUEcA=
+X-Received: by 2002:a17:90b:1e49:: with SMTP id pi9mr1444333pjb.220.1636052423615;
+ Thu, 04 Nov 2021 12:00:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211102105236.97469-1-srinivas.pandruvada@linux.intel.com>
-In-Reply-To: <20211102105236.97469-1-srinivas.pandruvada@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 4 Nov 2021 19:58:38 +0100
-Message-ID: <CAJZ5v0hRi+tFnCANDcMBkHs9nZxr8yh8afYtkvPhkBHzAaciJQ@mail.gmail.com>
-Subject: Re: [PATCH] thermal/drivers/int340x: processor_thermal: Suppot 64 bit
- RFIM responses
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <YXFPfEGjoUaajjL4@infradead.org> <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
+ <YXJN4s1HC/Y+KKg1@infradead.org> <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
+ <YXj2lwrxRxHdr4hb@infradead.org> <20211028002451.GB2237511@magnolia>
+ <YYDYUCCiEPXhZEw0@infradead.org> <CAPcyv4j8snuGpy=z6BAXogQkP5HmTbqzd6e22qyERoNBvFKROw@mail.gmail.com>
+ <YYK/tGfpG0CnVIO4@infradead.org> <CAPcyv4it2_PVaM8z216AXm6+h93frg79WM-ziS9To59UtEQJTA@mail.gmail.com>
+ <YYOaOBKgFQYzT/s/@infradead.org> <CAPcyv4jKHH7H+PmcsGDxsWA5CS_U3USHM8cT1MhoLk72fa9z8Q@mail.gmail.com>
+ <6d21ece1-0201-54f2-ec5a-ae2f873d46a3@oracle.com>
+In-Reply-To: <6d21ece1-0201-54f2-ec5a-ae2f873d46a3@oracle.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 4 Nov 2021 12:00:12 -0700
+Message-ID: <CAPcyv4hJjcy2TnOv-Y5=MUMHeDdN-BCH4d0xC-pFGcHXEU_ZEw@mail.gmail.com>
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with RWF_RECOVERY_DATA flag
+To:     Jane Chu <jane.chu@oracle.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 11:52 AM Srinivas Pandruvada
-<srinivas.pandruvada@linux.intel.com> wrote:
+On Thu, Nov 4, 2021 at 11:34 AM Jane Chu <jane.chu@oracle.com> wrote:
 >
-> Some of the RFIM mail box command returns 64 bit values. So enhance
-> mailbox interface to return 64 bit values and use them for RFIM
-> commands.
+> Thanks for the enlightening discussion here, it's so helpful!
 >
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Fixes: 5d6fbc96bd36 ("thermal/drivers/int340x: processor_thermal: Export additional attributes")
-> ---
->  .../processor_thermal_device.h                |  2 +-
->  .../int340x_thermal/processor_thermal_mbox.c  | 22 +++++++++++--------
->  .../int340x_thermal/processor_thermal_rfim.c  | 10 ++++-----
->  3 files changed, 19 insertions(+), 15 deletions(-)
+> Please allow me to recap what I've caught up so far -
 >
-> diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
-> index 5a1cfe4864f1..2aae91e7b13d 100644
-> --- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
-> +++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
-> @@ -80,7 +80,7 @@ void proc_thermal_rfim_remove(struct pci_dev *pdev);
->  int proc_thermal_mbox_add(struct pci_dev *pdev, struct proc_thermal_device *proc_priv);
->  void proc_thermal_mbox_remove(struct pci_dev *pdev);
+> 1. recovery write at page boundary due to NP setting in poisoned
+>     page to prevent undesirable prefetching
+> 2. single interface to perform 3 tasks:
+>       { clear-poison, update error-list, write }
+>     such as an API in pmem driver.
+>     For CPUs that support MOVEDIR64B, the 'clear-poison' and 'write'
+>     task can be combined (would need something different from the
+>     existing _copy_mcsafe though) and 'update error-list' follows
+>     closely behind;
+>     For CPUs that rely on firmware call to clear posion, the existing
+>     pmem_clear_poison() can be used, followed by the 'write' task.
+> 3. if user isn't given RWF_RECOVERY_FLAG flag, then dax recovery
+>     would be automatic for a write if range is page aligned;
+>     otherwise, the write fails with EIO as usual.
+>     Also, user mustn't have punched out the poisoned page in which
+>     case poison repairing will be a lot more complicated.
+> 4. desirable to fetch as much data as possible from a poisoned range.
 >
-> -int processor_thermal_send_mbox_cmd(struct pci_dev *pdev, u16 cmd_id, u32 cmd_data, u32 *cmd_resp);
-> +int processor_thermal_send_mbox_cmd(struct pci_dev *pdev, u16 cmd_id, u32 cmd_data, u64 *cmd_resp);
->  int proc_thermal_add(struct device *dev, struct proc_thermal_device *priv);
->  void proc_thermal_remove(struct proc_thermal_device *proc_priv);
->  int proc_thermal_resume(struct device *dev);
-> diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
-> index 59e93b04f0a9..a86521973dad 100644
-> --- a/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
-> +++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
-> @@ -23,7 +23,7 @@
+> If this understanding is in the right direction, then I'd like to
+> propose below changes to
+>    dax_direct_access(), dax_copy_to/from_iter(), pmem_copy_to/from_iter()
+>    and the dm layer copy_to/from_iter, dax_iomap_iter().
 >
->  static DEFINE_MUTEX(mbox_lock);
->
-> -static int send_mbox_cmd(struct pci_dev *pdev, u16 cmd_id, u32 cmd_data, u32 *cmd_resp)
-> +static int send_mbox_cmd(struct pci_dev *pdev, u16 cmd_id, u32 cmd_data, u64 *cmd_resp)
->  {
->         struct proc_thermal_device *proc_priv;
->         u32 retries, data;
-> @@ -68,12 +68,16 @@ static int send_mbox_cmd(struct pci_dev *pdev, u16 cmd_id, u32 cmd_data, u32 *cm
->                         goto unlock_mbox;
->                 }
->
-> -               if (cmd_id == MBOX_CMD_WORKLOAD_TYPE_READ) {
-> -                       data = readl((void __iomem *) (proc_priv->mmio_base + MBOX_OFFSET_DATA));
-> -                       *cmd_resp = data & 0xff;
-> -               }
-> -
->                 ret = 0;
-> +
-> +               if (!cmd_resp)
-> +                       break;
-> +
-> +               if (cmd_id == MBOX_CMD_WORKLOAD_TYPE_READ)
-> +                       *cmd_resp = readl((void __iomem *) (proc_priv->mmio_base + MBOX_OFFSET_DATA));
-> +               else
-> +                       *cmd_resp = readq((void __iomem *) (proc_priv->mmio_base + MBOX_OFFSET_DATA));
-> +
->                 break;
->         } while (--retries);
->
-> @@ -82,7 +86,7 @@ static int send_mbox_cmd(struct pci_dev *pdev, u16 cmd_id, u32 cmd_data, u32 *cm
->         return ret;
->  }
->
-> -int processor_thermal_send_mbox_cmd(struct pci_dev *pdev, u16 cmd_id, u32 cmd_data, u32 *cmd_resp)
-> +int processor_thermal_send_mbox_cmd(struct pci_dev *pdev, u16 cmd_id, u32 cmd_data, u64 *cmd_resp)
->  {
->         return send_mbox_cmd(pdev, cmd_id, cmd_data, cmd_resp);
->  }
-> @@ -153,7 +157,7 @@ static ssize_t workload_type_show(struct device *dev,
->                                    char *buf)
->  {
->         struct pci_dev *pdev = to_pci_dev(dev);
-> -       u32 cmd_resp;
-> +       u64 cmd_resp;
->         int ret;
->
->         ret = send_mbox_cmd(pdev, MBOX_CMD_WORKLOAD_TYPE_READ, 0, &cmd_resp);
-> @@ -187,7 +191,7 @@ static bool workload_req_created;
->
->  int proc_thermal_mbox_add(struct pci_dev *pdev, struct proc_thermal_device *proc_priv)
->  {
-> -       u32 cmd_resp;
-> +       u64 cmd_resp;
->         int ret;
->
->         /* Check if there is a mailbox support, if fails return success */
-> diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_rfim.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_rfim.c
-> index 2b8a3235d518..b25b54d4bac1 100644
-> --- a/drivers/thermal/intel/int340x_thermal/processor_thermal_rfim.c
-> +++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_rfim.c
-> @@ -195,7 +195,7 @@ static ssize_t rfi_restriction_store(struct device *dev,
->                                      const char *buf, size_t count)
->  {
->         u16 cmd_id = 0x0008;
-> -       u32 cmd_resp;
-> +       u64 cmd_resp;
->         u32 input;
->         int ret;
->
-> @@ -215,14 +215,14 @@ static ssize_t rfi_restriction_show(struct device *dev,
->                                     char *buf)
->  {
->         u16 cmd_id = 0x0007;
-> -       u32 cmd_resp;
-> +       u64 cmd_resp;
->         int ret;
->
->         ret = processor_thermal_send_mbox_cmd(to_pci_dev(dev), cmd_id, 0, &cmd_resp);
->         if (ret)
->                 return ret;
->
-> -       return sprintf(buf, "%u\n", cmd_resp);
-> +       return sprintf(buf, "%llu\n", cmd_resp);
->  }
->
->  static ssize_t ddr_data_rate_show(struct device *dev,
-> @@ -230,14 +230,14 @@ static ssize_t ddr_data_rate_show(struct device *dev,
->                                   char *buf)
->  {
->         u16 cmd_id = 0x0107;
-> -       u32 cmd_resp;
-> +       u64 cmd_resp;
->         int ret;
->
->         ret = processor_thermal_send_mbox_cmd(to_pci_dev(dev), cmd_id, 0, &cmd_resp);
->         if (ret)
->                 return ret;
->
-> -       return sprintf(buf, "%u\n", cmd_resp);
-> +       return sprintf(buf, "%llu\n", cmd_resp);
->  }
->
->  static DEVICE_ATTR_RW(rfi_restriction);
-> --
+> 1. dax_iomap_iter() rely on dax_direct_access() to decide whether there
+>     is likely media error: if the API without DAX_F_RECOVERY returns
+>     -EIO, then switch to recovery-read/write code.  In recovery code,
+>     supply DAX_F_RECOVERY to dax_direct_access() in order to obtain
+>     'kaddr', and then call dax_copy_to/from_iter() with DAX_F_RECOVERY.
 
-Applied as 5.16-rc material, thanks!
+I like it. It allows for an atomic write+clear implementation on
+capable platforms and coordinates with potentially unmapped pages. The
+best of both worlds from the dax_clear_poison() proposal and my "take
+a fault and do a slow-path copy".
+
+> 2. the _copy_to/from_iter implementation would be largely the same
+>     as in my recent patch, but some changes in Christoph's
+>     'dax-devirtualize' maybe kept, such as DAX_F_VIRTUAL, obviously
+>     virtual devices don't have the ability to clear poison, so no need
+>     to complicate them.  And this also means that not every endpoint
+>     dax device has to provide dax_op.copy_to/from_iter, they may use the
+>     default.
+
+Did I miss this series or are you talking about this one?
+https://lore.kernel.org/all/20211018044054.1779424-1-hch@lst.de/
+
+> I'm not sure about nova and others, if they use different 'write' other
+> than via iomap, does that mean there will be need for a new set of
+> dax_op for their read/write?
+
+No, they're out-of-tree they'll adjust to the same interface that xfs
+and ext4 are using when/if they go upstream.
+
+> the 3-in-1 binding would always be
+> required though. Maybe that'll be an ongoing discussion?
+
+Yeah, let's cross that bridge when we come to it.
+
+> Comments? Suggestions?
+
+It sounds great to me!
