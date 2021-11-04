@@ -2,148 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 051AB4456A5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 110954456AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:59:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231584AbhKDP7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 11:59:48 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:57524 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229770AbhKDP7r (ORCPT
+        id S231536AbhKDQCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 12:02:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231240AbhKDQCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 11:59:47 -0400
+        Thu, 4 Nov 2021 12:02:01 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA11AC061714;
+        Thu,  4 Nov 2021 08:59:23 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id r10-20020a056830448a00b0055ac7767f5eso8893927otv.3;
+        Thu, 04 Nov 2021 08:59:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1636041429; x=1667577429;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=MTq5hZatD7hD9SHlPbhbXOdMKu5hYT3GVGdSgkvs6HY=;
-  b=YL0lzIh0Lxr8A0vHBt+l8hMnm6xeztchG2Y+INMmkS1E2mHGWeo6OV4w
-   N57Dpl/OvIeqfyiSvDWe7IptZ7d6bp2pdCuDYqqXx1IVLRpN/Oot1bJVi
-   p3/3kwtAa7+KVXFewVpMaTLRmwbG0YsnQPKK5nlrxNGY/cJ5zIO/6v5YU
-   s=;
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 04 Nov 2021 08:57:09 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 08:57:09 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 4 Nov 2021 08:57:08 -0700
-Received: from qian-HP-Z2-SFF-G5-Workstation.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Thu, 4 Nov 2021 08:57:07 -0700
-From:   Qian Cai <quic_qiancai@quicinc.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-CC:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, Qian Cai <quic_qiancai@quicinc.com>
-Subject: [PATCH] arm64: Track no early_pgtable_alloc() for kmemleak
-Date:   Thu, 4 Nov 2021 11:56:23 -0400
-Message-ID: <20211104155623.11158-1-quic_qiancai@quicinc.com>
-X-Mailer: git-send-email 2.30.2
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=+DWga+L4ukHUCEsqSLIkNP4gRULHLBKXgraKCXcH83k=;
+        b=IyRG8ML45zPkZrb9Ey4t+9jJPcza2/TWEHCg+nrHeGAI7KDAUjIk2L06MTntVeODJb
+         YqsXJZ95FkU+U++mo87rxsam8aByv0w/rbL7iqux1amjU9NHdGSI/JJWwblsGPZC9K1a
+         2s6IqGipEFy35oVS6CkiQR9aAZ9201VfG+V93DWKSUS3pQvc5cO2J8k/P+KOfKc8C3/2
+         VGhl/x4owQwIzUZYD8Mms0M/FR8mwGgbUbUEPhFt5S8rGDKlr6Ic7mbS8I5L/DH8wVsu
+         c+wd8hqEWHbLd1r5PI29LNirjRzYoKQbPDOWw0kMakXt+fEgN9wVDqHuBbIAedKUXO8d
+         8/4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=+DWga+L4ukHUCEsqSLIkNP4gRULHLBKXgraKCXcH83k=;
+        b=5+z9Bgit9Xs1/vSy5Muwad7zss6xDtlfBc6IVCPm+ZEcyHIaQ6D1eulqM0ku/NyQms
+         3tjWWhhtH1idCzNNZmw5TAtsv8NlAomjsSM60vGczZwnuj79WDTSqj2hNdfH2WfUI2T+
+         2tUdmAuJyEEsdz7fD8SMZhbyxlTjrN/X2edsDInzRRLeO/YOWcKWY3/9Ny1zgE/Dt+CC
+         hnnvipbiv6e7BFfpt9oItHnm6vbg+9rvrILF+f1Zj45F/gdsbF5wwEl91vrt8hU1quGn
+         mN5PzBzQ+DnAWI1pAtcZtN/ffWxBE+B9mX44aSV6kydVP3772sr6ACBNTryaznXfjAJq
+         9M3Q==
+X-Gm-Message-State: AOAM531ObNydYPJBIp6EJ1vYYclmtesHMHEQ90ynzR8ckfQjYXsEYEFu
+        IPoSr+GTmm2FCL7UVy31tEMmgkt1rd4=
+X-Google-Smtp-Source: ABdhPJwvan2UYqGozZ4ixz4iSDrhnJrkcHeLP7/F7Pn69DbBlbf933yALBOlRknquOcOd4gLzQ+Ltg==
+X-Received: by 2002:a9d:3a4:: with SMTP id f33mr13068470otf.131.1636041562964;
+        Thu, 04 Nov 2021 08:59:22 -0700 (PDT)
+Received: from [172.16.0.2] ([8.48.134.30])
+        by smtp.googlemail.com with ESMTPSA id 3sm1564261oif.12.2021.11.04.08.59.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Nov 2021 08:59:22 -0700 (PDT)
+Message-ID: <f0a0155c-6f4c-231f-dfbf-3239214f52ff@gmail.com>
+Date:   Thu, 4 Nov 2021 09:59:20 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH v2] ipv4/raw: support binding to nonlocal addresses
+Content-Language: en-US
+To:     Riccardo Paolo Bestetti <pbl@bestov.io>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20210321002045.23700-1-pbl@bestov.io>
+ <20211102141921.197561-1-pbl@bestov.io>
+From:   David Ahern <dsahern@gmail.com>
+In-Reply-To: <20211102141921.197561-1-pbl@bestov.io>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After switched page size from 64KB to 4KB on several arm64 servers here,
-kmemleak starts to run out of early memory pool due to a huge number of
-those early_pgtable_alloc() calls:
+On 11/2/21 8:19 AM, Riccardo Paolo Bestetti wrote:
+> Add support to inet v4 raw sockets for binding to nonlocal addresses
+> through the IP_FREEBIND and IP_TRANSPARENT socket options, as well as
+> the ipv4.ip_nonlocal_bind kernel parameter.
+> 
+> Add helper function to inet_sock.h to check for bind address validity on
+> the base of the address type and whether nonlocal address are enabled
+> for the socket via any of the sockopts/sysctl, deduplicating checks in
+> ipv4/ping.c, ipv4/af_inet.c, ipv6/af_inet6.c (for mapped v4->v6
+> addresses), and ipv4/raw.c.
+> 
+> Add test cases with IP[V6]_FREEBIND verifying that both v4 and v6 raw
+> sockets support binding to nonlocal addresses after the change. Add
+> necessary support for the test cases to nettest.
+> 
+> Signed-off-by: Riccardo Paolo Bestetti <pbl@bestov.io>
+> ---
 
-  kmemleak_alloc_phys()
-  memblock_alloc_range_nid()
-  memblock_phys_alloc_range()
-  early_pgtable_alloc()
-  init_pmd()
-  alloc_init_pud()
-  __create_pgd_mapping()
-  __map_memblock()
-  paging_init()
-  setup_arch()
-  start_kernel()
+Reviewed-by: David Ahern <dsahern@kernel.org>
 
-Increased the default value of DEBUG_KMEMLEAK_MEM_POOL_SIZE by 4 times
-won't be enough for a server with 200GB+ memory. There isn't much
-interesting to check memory leaks for those early page tables and those
-early memory mappings should not reference to other memory. Hence, no
-kmemleak false positives, and we can safely skip tracking those early
-allocations from kmemleak like we did in the commit fed84c785270
-("mm/memblock.c: skip kmemleak for kasan_init()") without needing to
-introduce complications to automatically scale the value depends on the
-runtime memory size etc. After the patch, the default value of
-DEBUG_KMEMLEAK_MEM_POOL_SIZE becomes sufficient again.
-
-Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
----
- arch/arm64/mm/mmu.c      |  3 ++-
- include/linux/memblock.h |  1 +
- mm/memblock.c            | 10 +++++++---
- 3 files changed, 10 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index d77bf06d6a6d..4d3cfbaa92a7 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -96,7 +96,8 @@ static phys_addr_t __init early_pgtable_alloc(int shift)
- 	phys_addr_t phys;
- 	void *ptr;
- 
--	phys = memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
-+	phys = memblock_phys_alloc_range(PAGE_SIZE, PAGE_SIZE, 0,
-+					 MEMBLOCK_ALLOC_PGTABLE);
- 	if (!phys)
- 		panic("Failed to allocate page table page\n");
- 
-diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-index 7df557b16c1e..de903055b01c 100644
---- a/include/linux/memblock.h
-+++ b/include/linux/memblock.h
-@@ -390,6 +390,7 @@ static inline int memblock_get_region_node(const struct memblock_region *r)
- #define MEMBLOCK_ALLOC_ANYWHERE	(~(phys_addr_t)0)
- #define MEMBLOCK_ALLOC_ACCESSIBLE	0
- #define MEMBLOCK_ALLOC_KASAN		1
-+#define MEMBLOCK_ALLOC_PGTABLE		2
- 
- /* We are using top down, so it is safe to use 0 here */
- #define MEMBLOCK_LOW_LIMIT 0
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 659bf0ffb086..13bc56a641c0 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -287,7 +287,8 @@ static phys_addr_t __init_memblock memblock_find_in_range_node(phys_addr_t size,
- {
- 	/* pump up @end */
- 	if (end == MEMBLOCK_ALLOC_ACCESSIBLE ||
--	    end == MEMBLOCK_ALLOC_KASAN)
-+	    end == MEMBLOCK_ALLOC_KASAN ||
-+	    end == MEMBLOCK_ALLOC_PGTABLE)
- 		end = memblock.current_limit;
- 
- 	/* avoid allocating the first page */
-@@ -1387,8 +1388,11 @@ phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
- 	return 0;
- 
- done:
--	/* Skip kmemleak for kasan_init() due to high volume. */
--	if (end != MEMBLOCK_ALLOC_KASAN)
-+	/*
-+	 * Skip kmemleak for kasan_init() and early_pgtable_alloc() due to high
-+	 * volume.
-+	 */
-+	if (end != MEMBLOCK_ALLOC_KASAN && end != MEMBLOCK_ALLOC_PGTABLE)
- 		/*
- 		 * The min_count is set to 0 so that memblock allocated
- 		 * blocks are never reported as leaks. This is because many
--- 
-2.30.2
 
