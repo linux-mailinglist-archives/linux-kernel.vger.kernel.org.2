@@ -2,109 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 264D6445231
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA52445234
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:29:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhKDLbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 07:31:42 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:52418
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229505AbhKDLbj (ORCPT
+        id S230365AbhKDLb6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 4 Nov 2021 07:31:58 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:36589 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhKDLb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 07:31:39 -0400
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A882F3F33E
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 11:29:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1636025340;
-        bh=NpUBP66UVdunnGSJXrV9MYZkv3lMfmqOm8B19Xoiuvk=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=G+9T6zBxl0AiuYT6L3DzYPttzZixNcK73U8OOs77HQFuqR2IcDB3HIxdv8s165ixT
-         SU90McAVKQZLHB4ouJxU3HgA3LKat91ZO2tG68iUaNXUVkabk9oQqqy+h6XXo5EQw/
-         iQDbK2rJXMVswEYtnvVeXVUAO+n+eJBfFtZkyk+7pBqAKPrQRWNBUPDI2WSzSjsEKE
-         GDDEtwTiwLJ0fFXp2JG/acboPBny/mIh+HG98ind+d9PlmnvtEBshMr7moVPdn1aym
-         OYazu66sA7iZZqpbSGSnLSqgpSTNKKXFPIYpOftJFFvLi4jTZUuQ9skgqAZw5EBuom
-         UuyFTSqjauaNQ==
-Received: by mail-lf1-f70.google.com with SMTP id c40-20020a05651223a800b004018e2f2512so1301520lfv.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 04:29:00 -0700 (PDT)
+        Thu, 4 Nov 2021 07:31:57 -0400
+Received: by mail-ot1-f41.google.com with SMTP id r10-20020a056830448a00b0055ac7767f5eso7770333otv.3;
+        Thu, 04 Nov 2021 04:29:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=NpUBP66UVdunnGSJXrV9MYZkv3lMfmqOm8B19Xoiuvk=;
-        b=NSSfEJbbRUN2isBYag743EWm5DGWZPqUxNt50BVQo1yOz6bnQHeEeWjHd9BYOZw++v
-         ugTlJmVz/xWVupVKj4Jknbfc5FNulmDmepywvC+tFElWN2+hYiuPcLqZqTxSgtFCo4MH
-         DVeZLYQ4khwKtYDNP2n1UkrEToLi6iH0xVPvFjAIlZayT/7q8bTcT1J41D5Ep3RFGxvF
-         HUgOjntnU5H0gQuH0nrJ08ki6eAHooFeHQibBAFsdQqPFxIO3wFSTQykVYmt7tpaTMB0
-         AGktdiYm2bvM1lTt5SXeEbaJQymCPQSoGiuGNgyekXfJyjrlYZa8CvRiavishHqSbEy1
-         RO6Q==
-X-Gm-Message-State: AOAM531Sl8GmoPb+xWN468W+fTwATAhH1UACrKj4LmpjIfrmwWFrQOTd
-        rqbvNPTGxNmGjdro6qGQqFzOYAZoE15D45MWYLDUtXb/Fr2Gcg11BcMsN29a8b4PcxRifzItGJT
-        lFvhVMg+u81N1MikyZa8dFgx3He9cMxRle5vajhbiKQ==
-X-Received: by 2002:a2e:7301:: with SMTP id o1mr6662020ljc.235.1636025340116;
-        Thu, 04 Nov 2021 04:29:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyeX31B6zCRIiyvHLyGOoVtci4xHbnv+GEY5H8J18mHLr+O6D7itEh3+7wiurlv+14lA6Nnpg==
-X-Received: by 2002:a2e:7301:: with SMTP id o1mr6662003ljc.235.1636025339871;
-        Thu, 04 Nov 2021 04:28:59 -0700 (PDT)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id u4sm47193lff.38.2021.11.04.04.28.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 04:28:59 -0700 (PDT)
-Message-ID: <339a6580-4c03-8aeb-e790-8645b6501831@canonical.com>
-Date:   Thu, 4 Nov 2021 12:28:58 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eEExj6i05wPUp1wi7tN5SgnGp5/UYcEmTl+YJODnmn4=;
+        b=TqbBZNHKT0A7m9W9ZvtflrXWy/ThBEnbpYdyPJmG79f8/5HtSHdy6L2TyonsIbv3QT
+         efvNUI6Y9e2HE6WPM7ASDn5wJsdwZy1ox2GLxehgU8ljwcGGYWSxcierNb0uFm2Zlaty
+         OmukX6TKBqBoXC0NgqAqGpIiyfWpXJ7Rvr5oi+YOahQ8TyLuPRE3puFBkozo2qi3j0Rs
+         W+o/JqbXhjdXpnXpvb2q1cgTAGpssZo5bdRpDyUfaJbuPvT24V3oW0SYHXEwD2Mf6mZf
+         3bn7+HqykOt2rs+IB0UKz6RVPD3SkIYQsBJhFy9T6SQqx6e6iPZzBIbDVc1FA2jP8NXk
+         SMaw==
+X-Gm-Message-State: AOAM5324LZQs0lpHzyEGSZVY6w+n5nAEtxaHMVdu4vpVC6cXNKe9kDWB
+        sUX8m305ra2MCoxRhgQek1IPBinpPe+iXN5CXXc=
+X-Google-Smtp-Source: ABdhPJw/YUxlhi6f3PLQdlPXIr1aQW1J1lgPjhbsPOISxNWuHm7MHufuAdZ4KOx+o8YvCtPxW1JV6UVVe6e/p2+uLLw=
+X-Received: by 2002:a05:6830:1af0:: with SMTP id c16mr36162646otd.16.1636025359375;
+ Thu, 04 Nov 2021 04:29:19 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH] NFC: nfcmrvl: add unanchor after anchor
-Content-Language: en-US
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>, yashsri421@gmail.com,
-        davem@davemloft.net, rdunlap@infradead.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1636016141-3645490-1-git-send-email-jiasheng@iscas.ac.cn>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <1636016141-3645490-1-git-send-email-jiasheng@iscas.ac.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211103055119.19312-1-wangzhitong@uniontech.com>
+ <CAJZ5v0gS5Mo3REP-Y14gxUWge3avdiANHXi51R+mwz+EOBi_1w@mail.gmail.com> <tencent_5EE3079906D3D5211516C198@qq.com>
+In-Reply-To: <tencent_5EE3079906D3D5211516C198@qq.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 4 Nov 2021 12:29:07 +0100
+Message-ID: <CAJZ5v0h03-SpqTmX5gFvocdKTTcsjcn5oTmPmcG5FySu=Lh3jg@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: EC: fix error "do not initialise statics to false"
+To:     =?UTF-8?B?546L5b+X5qGQ?= <wangzhitong@uniontech.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/11/2021 09:55, Jiasheng Jiang wrote:
-> In the error path, the anchored urb is unanchored.
-> But in the successful path, the anchored urb is not.
-> Therefore, it might be better to add unanchor().
-> 
-> Fixes: f26e30c ("NFC: nfcmrvl: Initial commit for Marvell NFC driver")
-> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
-> ---
->  drivers/nfc/nfcmrvl/usb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/nfc/nfcmrvl/usb.c b/drivers/nfc/nfcmrvl/usb.c
-> index bcd563c..f8ae517 100644
-> --- a/drivers/nfc/nfcmrvl/usb.c
-> +++ b/drivers/nfc/nfcmrvl/usb.c
-> @@ -146,9 +146,9 @@ nfcmrvl_submit_bulk_urb(struct nfcmrvl_usb_drv_data *drv_data, gfp_t mem_flags)
->  		if (err != -EPERM && err != -ENODEV)
->  			nfc_err(&drv_data->udev->dev,
->  				"urb %p submission failed (%d)\n", urb, -err);
-> -		usb_unanchor_urb(urb);
->  	}
->  
-> +	usb_unanchor_urb(urb);
->  	usb_free_urb(urb);
->  
->  	return err;
-> 
+On Thu, Nov 4, 2021 at 3:33 AM 王志桐 <wangzhitong@uniontech.com> wrote:
+>
+> hi  Rafael J
+>
+>   Thank you for your reply， Forgive me for my limited level 。
+>   I do't understand your means:
+> "Applied as 5.16-rc material with rewritten changelog and subject, thanks!"
+> Please help me ， Please help guide ， How do I need to modify my patch.
 
-Why only this place in the driver? And why only this driver - some
-others miss it as well (e.g. btusb which was probably the template for
-this one). Are you sure it is a correct patch? Did you test it?
+You don't need to change it, I've changed it myself.
 
-Best regards,
-Krzysztof
+Basically, I've retained the code changes, but I've modified the patch
+subject and description.
