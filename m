@@ -2,169 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8510344511A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 10:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2DD44511D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 10:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbhKDJcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 05:32:10 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:23456 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230363AbhKDJcJ (ORCPT
+        id S231137AbhKDJc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 05:32:56 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:40547 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230410AbhKDJcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 05:32:09 -0400
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 1A49TIYo019688;
-        Thu, 4 Nov 2021 18:29:18 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 1A49TIYo019688
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1636018159;
-        bh=Engq61LYr32cH+7VXpwvsMh9AxyYNgCaB/0faC5zmWg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KgJqK4VazGDZd6EJuBQyueLJTnx2tAQJFN3nPbVmEQQdTAArOppNG+d+6FMsnBM/A
-         xopZ1ujmJGMKiQzIMeXk0mOD4AO+//LYmS1/PnfD9HkWPj3EuShEG42/CNNrYC5HDR
-         OQYcvbY1/W6fd5JYQkUDgFp/gCZ/JwtAf5OtDbflDD+h1hKmghIdaTuONle8evTZeJ
-         8IMy2AUGOeJcE6yNcGF5apwWpA4TxooIClAvEbF/dl72hfOerUnyFrdPWharXaPpPG
-         pXLhtPDL93LMBgSUB1uQ2NmwRQspes6apHX9DDC+bk9lSdVDxblGYHkFV+mLqz+koe
-         Jox9CtY3/mkbA==
-X-Nifty-SrcIP: [209.85.210.173]
-Received: by mail-pf1-f173.google.com with SMTP id s5so5299018pfg.2;
-        Thu, 04 Nov 2021 02:29:18 -0700 (PDT)
-X-Gm-Message-State: AOAM5331gDHkcoJZi0QktxaeeJx4VdFUdp2sOmFnPB3iG9gGW+VVJg28
-        65SXKWI2FIBXf28pv1+/e6N+lZh/1rPc+HMms8E=
-X-Google-Smtp-Source: ABdhPJzQ8NRbL88tAyenh+rSpPEjwwjlCJi2BW3STa61TzcbXNES6Vyc7f5Djw49zAyKhele1GAmoEtN6OdzZPKmvGg=
-X-Received: by 2002:a05:6a00:1584:b0:489:4f9c:6e3a with SMTP id
- u4-20020a056a00158400b004894f9c6e3amr14063161pfk.32.1636018158060; Thu, 04
- Nov 2021 02:29:18 -0700 (PDT)
+        Thu, 4 Nov 2021 05:32:55 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 5A196580881;
+        Thu,  4 Nov 2021 05:30:17 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 04 Nov 2021 05:30:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=qYCY7tttcemIZgcojAlZUXbTUNV
+        NVtf/FEcSNSxidEo=; b=ti54t+gBbZVWISv3Jrb2lUE9jcs840yKwzRgKPqto+i
+        dyzTrPXpmInqIea+1dpmYei7g9abeESIBj/6UX/Dds5P7VbFKzTy4F6myN0iF7Eb
+        73y/eT7DRInhfL9iRduWzdHQEzXdjcfJKLpmSgW8VDy5jmI4FI3U4CQJ5N/Wrcct
+        /D6aFyYHvy4QYirnpiFDvGawCWXuDZmvLDGroEMqrDWIEDlwYZQOd+hU3DhHoME0
+        qcp0W5pZoQrws7caYnAtfYHxPYBPwF25Ce6jgc5vGmx6q8MG9x6rL5I+8gxXzRIm
+        W8dXEESC6+BdyYSgfM6gT+nDwJroBUWKKP/KKGyDwWA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=qYCY7t
+        ttcemIZgcojAlZUXbTUNVNVtf/FEcSNSxidEo=; b=enq4j17WhFBFEgYNiXpZv4
+        byWi20QvDq2Tr3q1BH9RcodcPniXzwekDF/LHtZcREVXKr0WpnJ91wrS1vCsu1Ar
+        0jqVUZ9dmbzh36n5RVEJBXU6ZDrx2BASB4kSrZ//v9LQw+jzEfwdZYiOwpl3UM+r
+        2H71TTgYxaYr3QbBuhLeQKi0x47/EDCZ0mxT/SXd8IeTWPD6TbZWRXKuH9W1m7W7
+        yUoKXTRJuEZhR0sBjnE0miVKL3nxk9XfEHohKXMYE+zQ6Dr+KvTX5y6oquH8P08L
+        DcLg5PLjqJuDr1Ia3g3St/tbtWutrP4A2dkT9mv4kM0AOHFnU7Lmv1szAVwPqiIw
+        ==
+X-ME-Sender: <xms:KKiDYUJzzV7vWYg7opkojjVIH8ayQkJFNLIc6tTVimmTbyIoXN4WCA>
+    <xme:KKiDYUJ71bepFVH-ot2Gd2oUO0z7ewAM6UzszVKNUZaMQ9hb2MkZ2HGQsk47ZfX96
+    a_GhWmzImYJZ_spzqs>
+X-ME-Received: <xmr:KKiDYUsf2-YGb3EBXhtrCIbkvPPyPbZs9nkLjfR9WGwOFWaCagEBhCb1AHl-CWpuxpKk_VeV4RQpqhWztXZ64yJnxmoE7-5t>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrtdeggddtudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdefhedmnecujfgurhepfffhvffukfhfgggtuggjsehgtderredttdej
+    necuhfhrohhmpefrrghtrhhitghkucghihhllhhirghmshcuoehprghtrhhitghksehsth
+    iftgigrdighiiiqeenucggtffrrghtthgvrhhnpeekvdehudevkefhuedvteethfeflefh
+    vdehiefgudegvdfggfetffevkeetudegudenucffohhmrghinhepghhithhhuhgsrdgtoh
+    hmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepphgr
+    thhrihgtkhesshhtfigtgidrgiihii
+X-ME-Proxy: <xmx:KKiDYRYhcVFDnQN_AQKAuZLvAO1xtvlOxfIFHi-pzRNm8iEZtOVJzA>
+    <xmx:KKiDYbaecCGBal_Ga-tC-QR1Zi5Y_pZsyChJmgiiSVdDRpatWzL_Tg>
+    <xmx:KKiDYdCzORA1vRwKPTZwlRzJF60SYSpzqM4onLB8hVLyAEtnxpC37Q>
+    <xmx:KaiDYYRKtBkdVcvjyrkctFy02Y0MueW0VJ8azSpn2kgu7N5wyhIL4g>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 4 Nov 2021 05:30:16 -0400 (EDT)
+Date:   Thu, 4 Nov 2021 04:30:14 -0500
+From:   Patrick Williams <patrick@stwcx.xyz>
+To:     Howard Chiu =?utf-8?B?KOmCseWGoOedvyk=?= 
+        <Howard.Chiu@quantatw.com>
+Cc:     Howard Chiu <howard10703049@gmail.com>,
+        "arnd@arndb.de" <arnd@arndb.de>, "olof@lixom.net" <olof@lixom.net>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "soc@kernel.org" <soc@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>
+Subject: Re: [PATCH v1] ARM: dts: aspeed: Adding Facebook Bletchley BMC
+Message-ID: <YYOoJgXyOdgNmI6B@heinlein>
+References: <20211103071417.388388-1-howard.chiu@quantatw.com>
+ <YYKatBCCroiYxLew@heinlein>
+ <HKAPR04MB40039608E14195D859DE7EC5968D9@HKAPR04MB4003.apcprd04.prod.outlook.com>
 MIME-Version: 1.0
-References: <20211013200536.1851070-1-willy@infradead.org> <CAMj1kXEJ+RThJ83H2VNAmOKkVdhTAUCUF61u9JTv6ccc9uVTDw@mail.gmail.com>
-In-Reply-To: <CAMj1kXEJ+RThJ83H2VNAmOKkVdhTAUCUF61u9JTv6ccc9uVTDw@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 4 Nov 2021 18:28:40 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASfr4pxmXWO8WLPM4j1NiJ6+dAO_QyUmRREzJUXJNozFw@mail.gmail.com>
-Message-ID: <CAK7LNASfr4pxmXWO8WLPM4j1NiJ6+dAO_QyUmRREzJUXJNozFw@mail.gmail.com>
-Subject: Re: [PATCH] builddeb: Support signing kernels with a Machine Owner Key
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        efi@lists.einval.com,
-        debian-kernel <debian-kernel@lists.debian.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Ben Hutchings <ben@decadent.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="pNxo54Czgw/SMy95"
+Content-Disposition: inline
+In-Reply-To: <HKAPR04MB40039608E14195D859DE7EC5968D9@HKAPR04MB4003.apcprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 6:47 PM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Wed, 13 Oct 2021 at 22:07, Matthew Wilcox (Oracle)
-> <willy@infradead.org> wrote:
-> >
-> > If the config file specifies a signing key, use it to sign
-> > the kernel so that machines with SecureBoot enabled can boot.
-> > See https://wiki.debian.org/SecureBoot
-> >
-> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
->
-> For the change itself
->
-> Acked-by: Ard Biesheuvel <ardb@kernel.org>
->
-> although I'd suggest to fix the subject not to refer to Machine Owner
-> Keys, as I don't see anything shim related here (i.e., if you sign
-> using a key that is listed in db, it should also work)
->
->
-> > ---
-> >  scripts/package/builddeb | 10 +++++++++-
-> >  1 file changed, 9 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/scripts/package/builddeb b/scripts/package/builddeb
-> > index 91a502bb97e8..4fa6ff2b5cac 100755
-> > --- a/scripts/package/builddeb
-> > +++ b/scripts/package/builddeb
-> > @@ -147,7 +147,15 @@ else
-> >         cp System.map "$tmpdir/boot/System.map-$version"
-> >         cp $KCONFIG_CONFIG "$tmpdir/boot/config-$version"
-> >  fi
-> > -cp "$($MAKE -s -f $srctree/Makefile image_name)" "$tmpdir/$installed_image_path"
-> > +
-> > +vmlinux=$($MAKE -s -f $srctree/Makefile image_name)
-> > +if is_enabled CONFIG_MODULE_SIG; then
-> > +       cert=$srctree/$(grep ^CONFIG_MODULE_SIG_KEY= include/config/auto.conf | cut -d\" -f2)
-> > +       key=${cert%pem}priv
-> > +       sbsign --key $key --cert $cert "$vmlinux" --output "$tmpdir/$installed_image_path"
-> > +else
-> > +       cp "$vmlinux" "$tmpdir/$installed_image_path"
-> > +fi
-> >
-> >  if is_enabled CONFIG_OF_EARLY_FLATTREE; then
-> >         # Only some architectures with OF support have this target
-> > --
-> > 2.32.0
-> >
 
-How to compile this patch?
+--pNxo54Czgw/SMy95
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-"make  bindeb-pkg" fails with
-Can't load key from file './certs/signing_key.priv'
+On Thu, Nov 04, 2021 at 03:30:08AM +0000, Howard Chiu (=E9=82=B1=E5=86=A0=
+=E7=9D=BF) wrote:
 
+> > Is this board using 64MB or 128MB modules?  Many of the newer systems
+> > have been
+> > starting to use 128MB.  I just want to confirm this is correct.
+> 1Gb SPI flash, MX66L1G45GMI-08G
 
-Also, sbsign emits "Invalid DOS header magic" error
-if CONFIG_EFI_STUB is not set.
+1Gb =3D 1024Mb / 8 =3D 128MB, right?  Shouldn't we use the 128MB layout?
 
-The CONFIG name might depend on arch.
-CONFIG_EFI for ARCH=arm64, but CONFIG_EFI_STUB for ARCH=x86.
+> > > +	sled0_ioexp: pca9539@76 {
+> > > +		compatible =3D "nxp,pca9539";
+> > > +		reg =3D <0x76>;
+> > > +		#address-cells =3D <1>;
+> > > +		#size-cells =3D <0>;
+> > > +		gpio-controller;
+> > > +		#gpio-cells =3D <2>;
+> > > +
+> > > +		gpio-line-names =3D
+> > > +
+> > 	"","SLED0_BMC_CCG5_INT","SLED0_INA230_ALERT","SLED0_P12V_STBY_
+> > ALERT",
+> > > +
+> > 	"SLED0_SSD_ALERT","SLED0_MS_DETECT","SLED0_MD_REF_PWM","",
+> > > +
+> > 	"SLED0_MD_STBY_RESET","SLED0_MD_IOEXP_EN_FAULT","SLED0_MD_D
+> > IR","SLED0_MD_DECAY",
+> > > +
+> > 	"SLED0_MD_MODE1","SLED0_MD_MODE2","SLED0_MD_MODE3","SLED
+> > 0_AC_PWR_EN";
+> >=20
+> > In general, in OpenBMC, we have a preference for the GPIOs to not be
+> > schematic
+> > names but to be named based on their [software-oriented] function.  Ple=
+ase
+> > take
+> > a look at:
+> >=20
+> >=20
+> > https://github.com/openbmc/docs/blob/master/designs/device-tree-gpio-na
+> > ming.md
+> >=20
+> > Any function you see that isn't documented there we should try to get
+> > documented
+> > before fixing the GPIO name to match it.
+> >=20
+> I intend to delete them for now if I have to document them first, because=
+=20
+> most of them are platform-specific GPIO, not for general purpose and also=
+ not
+> suitable to current OpenBMC.
+> For example, OpenBMC believes there is only one GPIO to be used to power =
+on=20
+> the chassis, but Bletchley has six.
+> I define gpio-line-names for gpioset/geioget/phosphor-multi-gpio-monitor
+> usage, and they can be replaced with gpiochip number and offset instead.
+> The disadvantage is that they won't be human-friendly when TEs develop th=
+eir tool to test these GPIOs.
+> > > +		gpio-line-names =3D
+> > > +		"SLED0_EMBER_LED","SLED0_BLUE_LED","SLED0_RST_IOEXP","",
 
+Deleting them entirely sounds even less desirable.  If these were just for
+humans, then having a schematic name is better than nothing.  But when you
+suggest their usage to be "TEs develop their tool to test these GPIOs" that
+seems to indicate this becomes ABI and we want stable, documented names, to
+limit the churn on users.
 
-If you require sbsign, you need to update Build-Depends ?
+I don't believe the gpiochip/pin numbers are considered stable ABI.  Our te=
+am
+has previously had to do an abstraction between 4.x and 5.x kernel because =
+of
+changes in that space.
 
+My initial preference would be that you leave them in as schematic names, f=
+or
+human purposes, until you start using them in code at which point they shou=
+ld be
+well-documented and using the style we've set out in the document above.
 
+Re: "OpenBMC believes there is only one GPIO to be used to power on the cha=
+ssis,
+but Bletchley has six."... This does not make it system-specific.  Yosemite=
+-v2
+has 4 independently managed systems, with their own power sequencing.  There
+should be work going on by that team to expand the GPIO documentation to co=
+ver N
+sub-chassis as well; it just might be that you are ahead of them in documen=
+ting
+it.
 
-My build log:
+It should be trivial to expand the `power-chassis-control` and
+`power-chassis-good` documentation to support sub-chassis.  I can do this f=
+or
+you if you need.  Many of your GPIOs were related to LEDs which are also al=
+ready
+covered by this doc (except might need minor wording for sub-chassis as wel=
+l).
+Can you let me know which other GPIO functions you think you'll need that a=
+ren't
+already in that document and we can work to get them added?
 
+> > > +&i2c13 {
+> > > +	multi-master;
+> > > +	aspeed,hw-timeout-ms =3D <1000>;
+> > > +	status =3D "okay";
+> > > +};
+> >=20
+> > Was this intentional to have defined a multi-master bus with nothing on=
+ it?
+> There is a OCP debug card which is a hot plugging device.
+> We only need to specify this bus with "multi-mater" property for IPMB sup=
+port.
 
-masahiro@grover:~/workspace/linux-kbuild$ make  bindeb-pkg -j8
-sh ./scripts/package/mkdebian
-dpkg-buildpackage -r"fakeroot -u" -a$(cat debian/arch)  -b -nc -uc
-dpkg-buildpackage: info: source package linux-upstream
-dpkg-buildpackage: info: source version 5.15.0-rc2+-1
-dpkg-buildpackage: info: source distribution hirsute
-dpkg-buildpackage: info: source changed by masahiro <masahiro@grover>
-dpkg-buildpackage: info: host architecture amd64
- dpkg-source --before-build .
- debian/rules binary
-make KERNELRELEASE=5.15.0-rc2+ ARCH=x86 KBUILD_BUILD_VERSION=1 -f ./Makefile
-  DESCEND objtool
-  CALL    scripts/atomic/check-atomics.sh
-  CALL    scripts/checksyscalls.sh
-  CHK     include/generated/compile.h
-Kernel: arch/x86/boot/bzImage is ready  (#1)
-make KERNELRELEASE=5.15.0-rc2+ ARCH=x86 KBUILD_BUILD_VERSION=1 -f
-./Makefile intdeb-pkg
-sh ./scripts/package/builddeb
-Can't load key from file './certs/signing_key.priv'
-139999825022720:error:02001002:system library:fopen:No such file or
-directory:../crypto/bio/bss_file.c:69:fopen('./certs/signing_key.priv','r')
-139999825022720:error:2006D080:BIO routines:BIO_new_file:no such
-file:../crypto/bio/bss_file.c:76:
-make[4]: *** [scripts/Makefile.package:87: intdeb-pkg] Error 1
-make[3]: *** [Makefile:1539: intdeb-pkg] Error 2
-make[2]: *** [debian/rules:13: binary-arch] Error 2
-dpkg-buildpackage: error: debian/rules binary subprocess returned exit status 2
-make[1]: *** [scripts/Makefile.package:83: bindeb-pkg] Error 2
-make: *** [Makefile:1539: bindeb-pkg] Error 2
+Got it.
 
+--=20
+Patrick Williams
 
+--pNxo54Czgw/SMy95
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCAAdFiEEBGD9ii4LE9cNbqJBqwNHzC0AwRkFAmGDqCQACgkQqwNHzC0A
+wRnlOA//RV+35oOn9wEW+jO6oZi0M5yL51mdYiahoSlrSbjn9M3rydZPeCHA2Nfo
+nn+TpAalJ6fNmAjwGdGyQCcorRGgKb4WRw1WW91lErBydFRTSIbL0lJ4dIIQsdjh
+VtRhivTCz1UDMsGYGy+rFc4f/NAIXq3fFDaY5ek58BBUZtHMHHpvaQhvEzg982kS
+iOSsQ79dInmoX/1m5PQDGt67Fx/lcuJCVmlVl5OFuD3UTmpeSckgbs/kT6S4jiiF
+Y/SUWHGOrx9rWwRsNdDgCFJLmWjwTFpopI8hwkw/PkP9w5Y3twv/Ulng4FG/wvuR
+eBLc0bYY69bPXfOWP6UVg3ChnJAiE1mNQNlUwNrbvCF/Rc3NtBM4hIOZ6zDLBc6g
+l54ITv6DLl07KARnYICr/eVCRvSV2znMHxju3c6Lcsql68T98h3+KGsMzX62dd7Q
+O+diXES9DbmR4yMxXN//LN+adaqiRVCo8ubSZ5dnK6bgqJJqd+repyl48XwQCoTU
+KES8EeT+s/rye5AG1o877GEt2yoVjdaETlYzZGZTBRO9tKJ1CVrVBs71J1JFaMP0
+lCI3rDGGz0vzZjNzVMw+xUO/EH8ddOh9wGBCEzypRNAE5ikipidbms5s2BehMWU/
+mPiI/oQk5RHl4q5dxeWi42QScTkXHq3fToJ7ZBoeJN9Oy5Xz4l4=
+=cy2B
+-----END PGP SIGNATURE-----
 
-CC'ed Ben in case he has more comments.
-
-
--- 
-Best Regards
-Masahiro Yamada
+--pNxo54Czgw/SMy95--
