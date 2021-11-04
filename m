@@ -2,151 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE8D445654
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:29:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A606D445656
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 16:29:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbhKDPcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 11:32:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhKDPcD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 11:32:03 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65110C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 08:29:21 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mieg0-0008S0-B4; Thu, 04 Nov 2021 16:29:16 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1miefy-0005Su-19; Thu, 04 Nov 2021 16:29:14 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1miefy-0007jS-07; Thu, 04 Nov 2021 16:29:14 +0100
-Date:   Thu, 4 Nov 2021 16:29:13 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     =?utf-8?B?TWHDrXJh?= Canal <maira.canal@usp.br>
-Cc:     sean@mess.org, mchehab@kernel.org, thierry.reding@gmail.com,
-        lee.jones@linaro.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v2] media: ir-rx51: Switch to atomic PWM API
-Message-ID: <20211104152913.uqmmk6z7vppu5pxk@pengutronix.de>
-References: <YX8VkdCAe6coHC4w@fedora>
+        id S231403AbhKDPcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 11:32:33 -0400
+Received: from mga02.intel.com ([134.134.136.20]:12525 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229970AbhKDPcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 11:32:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10157"; a="218923198"
+X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
+   d="scan'208";a="218923198"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 08:29:53 -0700
+X-IronPort-AV: E=Sophos;i="5.87,209,1631602800"; 
+   d="scan'208";a="586008949"
+Received: from unknown (HELO [10.209.25.230]) ([10.209.25.230])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2021 08:29:52 -0700
+Subject: Re: [PATCH] x86/sgx: Free backing memory after faulting the enclave
+ page
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     reinette.chatre@intel.com, tony.luck@intel.com,
+        nathaniel@profian.com, stable@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211103232238.110557-1-jarkko@kernel.org>
+ <6831ed3c-c5b1-64f7-2ad7-f2d686224b7e@intel.com>
+ <e88d6d580354aadaa8eaa5ee6fa703f021786afb.camel@kernel.org>
+ <d2191571-30a5-c2aa-e8ed-0a380e9daeac@intel.com>
+ <55eb8f3649590289a0f2b1ebe7583b6da3ff70ee.camel@kernel.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <c6f5356b-a56a-e057-ef74-74e1169a844b@intel.com>
+Date:   Thu, 4 Nov 2021 08:29:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="anrsmkijiyfufaxw"
-Content-Disposition: inline
-In-Reply-To: <YX8VkdCAe6coHC4w@fedora>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <55eb8f3649590289a0f2b1ebe7583b6da3ff70ee.camel@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/4/21 8:25 AM, Jarkko Sakkinen wrote:
+> On Thu, 2021-11-04 at 08:13 -0700, Dave Hansen wrote:
+>> On 11/4/21 8:04 AM, Jarkko Sakkinen wrote:
+>>>> Do we also need to deal with truncating the PCMD?  (For those watching
+>>>> along at home, there are two things SGX swaps to RAM: the actual page
+>>>> data and also some metadata that ensures page integrity and helps
+>>>> prevent things like rolling back to old versions of swapped pages)
+>>> Yes.
+>>>
+>>> This can be achieved by iterating through all of the enclave pages,
+>>> which share the same shmem page for storing their PCMD's, as the one
+>>> being faulted back. If none of those pages is swapped, the PCMD page can
+>>> safely truncated.
+>> I was thinking we could just read the page.  If it's all 0's, truncate it.
+> Hmm... did ELDU zero PCMD as a side-effect?
 
---anrsmkijiyfufaxw
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I don't think so, but there's nothing stopping us from doing it ourselves.
 
-On Sun, Oct 31, 2021 at 07:15:45PM -0300, Ma=EDra Canal wrote:
-> Remove legacy PWM interface (pwm_config, pwm_enable, pwm_disable) and
-> replace it for the atomic PWM API.
->=20
-> Signed-off-by: Ma=EDra Canal <maira.canal@usp.br>
-> ---
-> V1 -> V2: remove conceptually wrong chunk of code and correct the position
-> of pwm_init_state function
-> ---
->  drivers/media/rc/ir-rx51.c | 16 +++++++++-------
->  1 file changed, 9 insertions(+), 7 deletions(-)
->=20
-> diff --git a/drivers/media/rc/ir-rx51.c b/drivers/media/rc/ir-rx51.c
-> index a0d9c02a7588..41d4a4338072 100644
-> --- a/drivers/media/rc/ir-rx51.c
-> +++ b/drivers/media/rc/ir-rx51.c
-> @@ -19,6 +19,7 @@
->  struct ir_rx51 {
->  	struct rc_dev *rcdev;
->  	struct pwm_device *pwm;
-> +	struct pwm_state *state;
->  	struct hrtimer timer;
->  	struct device	     *dev;
->  	wait_queue_head_t     wqueue;
-> @@ -32,22 +33,22 @@ struct ir_rx51 {
-> =20
->  static inline void ir_rx51_on(struct ir_rx51 *ir_rx51)
->  {
-> -	pwm_enable(ir_rx51->pwm);
-> +	ir_rx51->state->enabled =3D true;
-> +	pwm_apply_state(ir_rx51->pwm, ir_rx51->state);
->  }
-> =20
->  static inline void ir_rx51_off(struct ir_rx51 *ir_rx51)
->  {
-> -	pwm_disable(ir_rx51->pwm);
-> +	ir_rx51->state->enabled =3D false;
-> +	pwm_apply_state(ir_rx51->pwm, ir_rx51->state);
->  }
-> =20
->  static int init_timing_params(struct ir_rx51 *ir_rx51)
->  {
-> -	struct pwm_device *pwm =3D ir_rx51->pwm;
-> -	int duty, period =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC, ir_rx51->freq);
-> +	struct pwm_state *state =3D ir_rx51->state;
-> =20
-> -	duty =3D DIV_ROUND_CLOSEST(ir_rx51->duty_cycle * period, 100);
-> -
-> -	pwm_config(pwm, duty, period);
-> +	state->period =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC, ir_rx51->freq);
-> +	pwm_set_relative_duty_cycle(state, ir_rx51->duty_cycle, 100);
-> =20
->  	return 0;
->  }
-> @@ -242,6 +243,7 @@ static int ir_rx51_probe(struct platform_device *dev)
-> =20
->  	/* Use default, in case userspace does not set the carrier */
->  	ir_rx51.freq =3D DIV_ROUND_CLOSEST_ULL(pwm_get_period(pwm), NSEC_PER_SE=
-C);
-> +	pwm_init_state(pwm, ir_rx51.state);
->  	pwm_put(pwm);
-> =20
+> It should be fairly effecient just to check the pages by using
+> encl->page_tree.
 
-Orthogonal to this patch I wonder why probe calls pwm_get() and
-pwm_put(), just to have another call to pwm_get() in the open callback.
-
-Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-
-
->  	hrtimer_init(&ir_rx51.timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-> --=20
-> 2.31.1
->=20
->=20
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---anrsmkijiyfufaxw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGD/EYACgkQwfwUeK3K
-7Ak1UQf+NfOJSUtl3mRA28YnYB6CjGMtAy59xFUzIY6X9xrzP1nNy36NCJUalITO
-T7ZL+y9ZfgGsZ4gmbb8kG2EPvD+pd9KiwU1HCY0esAq8M/Ap5ZwRXu1SeaH1LQYb
-9BN41gXZ0aphBKU+jwWIXU2TXehrdGHRKmZImVRfDnfGw6UTwJMdsGeUnDkK0Mvm
-FCeVadBfc7TYX5Y0sISQcanMaB1Gmg9gKzK+nnqoqgJKQc4Yuar4e5XkF3KN91Hu
-Np1abLWz1MNDbhZTVtTUcy0qblq81YoroMYjb0K+GmK4Ug9AVtDB0QPgcNQsburu
-850DdXYxowxH+F2oZFTRS5AmFYlHZw==
-=4w8D
------END PGP SIGNATURE-----
-
---anrsmkijiyfufaxw--
+That sounds more complicated and slower than what I suggested.  You
+could even just check the refcount on the page.  I _think_ page cache
+pages have a refcount of 2.  So, look for the refcount that means "no
+more PCMD in this page", and just free it if so.
