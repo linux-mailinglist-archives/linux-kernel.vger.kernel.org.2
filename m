@@ -2,116 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F2A445324
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:35:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D50C445331
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 13:38:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbhKDMiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 08:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhKDMiF (ORCPT
+        id S231152AbhKDMl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 08:41:28 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15361 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhKDMl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 08:38:05 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BD6C061714;
-        Thu,  4 Nov 2021 05:35:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=gTvExCAIQniJoHis0zPNIcgjI2X81k00ve1hFKX54uM=; b=2DgZrVNVn0KO/S5YqvnoQeU5qI
-        5NIJjAH3MmpmUkdV/waNALRuh3hiaylM/dYIWF3aC1NHZCBXIBgqPtkBSWkvFpQ1nj/ckiXEP1j8C
-        S8dV6b3z2p+Q2arlftQHDTU6kdrhkvCwGr3Vv9nRv18lbojdO4df5z1J//gpKN/+bENpRAsKvVAU4
-        tt0Cah64EhMVhcba/nAp58tifAvp/UH1MTj8jCQsg07Dt8fnbFIic8Q447ewVdFIjaKR9c6sqRHvU
-        ZwPEZvPWhziA7GTirM5H5ciPCxj6xf3hkBXXTErDfz1/Ph8wLLIMDgtPAC76YV/aIsUdO49keAIdp
-        pWYKqVeg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55478)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mibxg-0005x4-6e; Thu, 04 Nov 2021 12:35:20 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mibxd-0007KM-7M; Thu, 04 Nov 2021 12:35:17 +0000
-Date:   Thu, 4 Nov 2021 12:35:17 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Tobias Waldekranz <tobias@waldekranz.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Sean Anderson <sean.anderson@seco.com>
-Subject: Re: [RFC PATCH] net: phy/mdio: enable mmd indirect access through
- phy_mii_ioctl()
-Message-ID: <YYPThd7aX+TBWslz@shell.armlinux.org.uk>
-References: <bc9df441-49bf-5c8a-891c-cc3f0db00aba@ti.com>
- <YYF4ZQHqc1jJsE/+@shell.armlinux.org.uk>
- <e18f17bd-9e77-d3ef-cc1e-30adccb7cdd5@ti.com>
- <828e2d69-be15-fe69-48d8-9cfc29c4e76e@ti.com>
- <YYGxvomL/0tiPzvV@lunn.ch>
- <8d24c421-064c-9fee-577a-cbbf089cdf33@ti.com>
- <YYHXcyCOPiUkk8Tz@lunn.ch>
- <01a0ebf9-5d3f-e886-4072-acb9bf418b12@ti.com>
- <YYLk0dEKX2Jlq0Se@lunn.ch>
- <87pmrgjhk4.fsf@waldekranz.com>
+        Thu, 4 Nov 2021 08:41:27 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HlNTx19h5z90XJ;
+        Thu,  4 Nov 2021 20:38:29 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 4 Nov 2021 20:38:39 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.15; Thu, 4 Nov 2021 20:38:38 +0800
+Message-ID: <a8f58b35-5fc5-110a-53b5-a08b1e8aee19@huawei.com>
+Date:   Thu, 4 Nov 2021 20:38:38 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pmrgjhk4.fsf@waldekranz.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 0/3] ARM: Support KFENCE feature
+Content-Language: en-US
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+References: <20211103133845.78528-1-wangkefeng.wang@huawei.com>
+ <YYPOObm72VH2l/AT@shell.armlinux.org.uk>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <YYPOObm72VH2l/AT@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggeme713-chm.china.huawei.com (10.1.199.109) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 12:17:47PM +0100, Tobias Waldekranz wrote:
-> On Wed, Nov 03, 2021 at 20:36, Andrew Lunn <andrew@lunn.ch> wrote:
-> > On Wed, Nov 03, 2021 at 08:42:07PM +0200, Grygorii Strashko wrote:
-> >> 
-> >> 
-> >> On 03/11/2021 02:27, Andrew Lunn wrote:
-> >> > > > What i find interesting is that you and the other resent requester are
-> >> > > > using the same user space tool. If you implement C45 over C22 in that
-> >> > > > tool, you get your solution, and it will work for older kernels as
-> >> > > > well. Also, given the diverse implementations of this IOTCL, it
-> >> > > > probably works for more drivers than just those using phy_mii_ioctl().
-> >> > > 
-> >> > > Do you mean change uapi, like
-> >> > >   add mdio_phy_id_is_c45_over_c22() and
-> >> > >   flag #define MDIO_PHY_ID_C45_OVER_C22 0x4000?
-> >> > 
-> >> > No, i mean user space implements C45 over C22. Make phytool write
-> >> > MII_MMD_CTRL and MII_MMD_DATA to perform a C45 over C22.
-> >> 
-> >> Now I give up - as mentioned there is now way to sync User space vs Kernel
-> >> MMD transactions and so no way to get trusted results.
+
+
+On 2021/11/4 20:12, Russell King (Oracle) wrote:
+> The ARM tree is closed; we're in the mainline merge window. Please
+> resend after -rc1 is released.
+
+Got it, will do.
+
 > 
-> Except that there is a way: https://github.com/wkz/mdio-tools
-
-I'm guessing that this hasn't had much in the way of review, as it has
-a nice exploitable bug - you really want "pc" to be unsigned in
-mdio_nl_eval(), otherwise one can write a branch instruction that makes
-"pc" negative.
-
-Also it looks like one can easily exploit this to trigger any of your
-BUG_ON()/BUG() statements, thereby crashing while holding the MDIO bus
-lock causing a denial of service attack.
-
-I also see nothing that protects against any user on a system being
-able to use this interface, so the exploits above can be triggered by
-any user. Moreover, this lack of protection means any user on the
-system can use this interface to write to a PHY.
-
-Given that some PHYs today contain firmware, this gives anyone access
-to reprogram the PHY firmware, possibly introducing malicious firmware.
-
-I hope no one is using this module in a production environment.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+> On Wed, Nov 03, 2021 at 09:38:42PM +0800, Kefeng Wang wrote:
+>> This patchset supports Kfence feature, tested the kfence_test on ARM QEMU
+>> with or without ARM_LPAE and all passed.
+>>
+>> V2:
+>> - drop patch4 in v1, which is used a new way to skip kfence test
+>>    see commit c40c6e593bf9 ("kfence: test: fail fast if disabled at boot")
+>> - fix some issue about NO MMU
+>>    - drop useless set_memory_valid() under no mmu
+>>    - fix implicit declaration of function ‘is_write_fault’ if no mmu
+>> - make KFENCE depends on !XIP_KERNEL, no tested with xip
+>>
+>> v1:
+>> https://lore.kernel.org/linux-arm-kernel/20210825092116.149975-1-wangkefeng.wang@huawei.com/
+>>
+>> Kefeng Wang (3):
+>>    ARM: mm: Provide set_memory_valid()
+>>    ARM: mm: Provide is_write_fault()
+>>    ARM: Support KFENCE for ARM
+>>
+>>   arch/arm/Kconfig                  |  1 +
+>>   arch/arm/include/asm/kfence.h     | 53 +++++++++++++++++++++++++++++++
+>>   arch/arm/include/asm/set_memory.h |  1 +
+>>   arch/arm/mm/fault.c               | 16 ++++++++--
+>>   arch/arm/mm/pageattr.c            | 42 ++++++++++++++++++------
+>>   5 files changed, 100 insertions(+), 13 deletions(-)
+>>   create mode 100644 arch/arm/include/asm/kfence.h
+>>
+>> -- 
+>> 2.26.2
+>>
+>>
+> 
