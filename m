@@ -2,96 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92821445239
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7DB44523C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 12:31:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhKDLdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 07:33:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbhKDLdh (ORCPT
+        id S231312AbhKDLeN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 4 Nov 2021 07:34:13 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:47036 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229705AbhKDLeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 07:33:37 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B246C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 04:30:59 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id v2so4999105qve.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 04:30:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XI7srUscK+Y38/Rxj8sDNS7Olpg887NgDMGVmRQv+y8=;
-        b=GTZx0G9tMBm48ys0jclkhqpFjUgcGjpRl0HcyPh1VsfbXFPPio1IAUAqiubBcql+KP
-         WzRDFR3KejSKCRPQNoiGq2nz2nSejbhBsf+eu71Qpjx/aHShLqJttKr4VDcsgF4dvRfC
-         jUmuA9UqYCv91cj9x2l4Y1fPYvAk4SRfsDGbg9VoSIne4uus+i0h0HH8i5XNLgyb9xtU
-         nXXkxcPp40iBEu6e1gVnugmGN36kru73bt69x1u/6zBCOcM+J3TBbSgHRzf1+98lEuaY
-         +f4cNa+nZrbDf9p/juY/8xbdbDdmX3tTt17vNkMkff60UWZFk/+WJGF4PHzVs9IDfn30
-         vt+g==
+        Thu, 4 Nov 2021 07:34:12 -0400
+Received: by mail-ot1-f54.google.com with SMTP id w29-20020a056830411d00b0055abaca9349so7709033ott.13;
+        Thu, 04 Nov 2021 04:31:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XI7srUscK+Y38/Rxj8sDNS7Olpg887NgDMGVmRQv+y8=;
-        b=O1HiH27W0VOtb9q0Q7quqwDup6SA/9eASjc8jd3/UFMyvZ/nEO/6MDYj1CzSGU0pb+
-         Kn6q1CuVqRDL+CiXHCULWKupUZBtvChSwzDCC+lRphkeM2f1u7YDIYEUMIemJjrO+9OI
-         /A0r3PferyT5W1j+YO5hjXthMpf1WS5vZW0W8GjPchxx9x05/70MsJl1mVwSUHtMt0pv
-         K1S0uQ+eG3HPQx/S16CJ6vd4C9+6gd53Z5pcXplic58pBXSXDFtwWSdAtBc9tlkWDZVz
-         yfJyKdVrlirduuF+3i2sHfcAmVzsHOsM8jUvMh835dlz16V1a9inB3ncreTdhrorDefv
-         fQIw==
-X-Gm-Message-State: AOAM530ChuTuy827PFqyXuS1ic25WYYlXeUPtGRp8erHqu/d3siEMgXW
-        DpvkF6rH+VBq9zGOx8L7+66ajBnrA9U=
-X-Google-Smtp-Source: ABdhPJyIywkpivxgIkJwyn5gNdwk0JeRrw9h7QwhKZJFgroXdvsptNgp/vhFN7yYZWaf4hcRTfL2RA==
-X-Received: by 2002:a0c:9d05:: with SMTP id m5mr47454320qvf.30.1636025458621;
-        Thu, 04 Nov 2021 04:30:58 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id o8sm3732206qtk.77.2021.11.04.04.30.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 04:30:58 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: lv.ruyi@zte.com.cn
-To:     jens.wiklander@linaro.org
-Cc:     sumit.garg@linaro.org, op-tee@lists.trustedfirmware.org,
-        linux-kernel@vger.kernel.org, Lv Ruyi <lv.ruyi@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] optee: fix kfree NULL pointer
-Date:   Thu,  4 Nov 2021 11:30:47 +0000
-Message-Id: <20211104113047.28585-1-lv.ruyi@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MgdOLOPcs/A9vtxa4IU81lPxBsuAOPrUSmt5KTVFe1c=;
+        b=RtuDRnKoaWUaVIaowkmuA15hLT+FcMOycmX+bE2SSjqRZ/Lxbm/fxOFiLC4g2qLq3s
+         f0r6iG2TD9/7CM+Gv7gkAu8krGhVjAbYxbE7HmRiSQ82ZXXE3+z4az302GYRf6+3C4as
+         iwelHik7ip/h7YjHCZG/e6Q0oWW8HfpCSOX3kDNLuR82o9tO7KdQW6ylnGYggOoj42JB
+         vG0TD9xYZyIaDXTDD5K1yf9FeALFepTRfX41xPS1iOiZgFSmkqxmxQt7wY/jM/FF9dLd
+         0eWEfkCryenle2J3IAapzjCPQCTiwTGm4/ESpmOkS6ONPGSQpTFB1SuVfpjSNeoTXt83
+         VIJw==
+X-Gm-Message-State: AOAM531/jdWSkE0yMHlqOtAFmuOxpoyiLRmg9TmCypGRskPoZy40rx4T
+        3aGp+vZKNYx4EYA7cVSFbsBbTH+FMRmwzgxo1EM=
+X-Google-Smtp-Source: ABdhPJyz+c5mJx35EqCu2zCOmAMuHJd58bEGPCbjF/ZRaisv3JU+s3sWzlmd8eR1Gg5qsKPAA7e55XEGx8XMc0QzcX8=
+X-Received: by 2002:a9d:a64:: with SMTP id 91mr30941382otg.198.1636025493924;
+ Thu, 04 Nov 2021 04:31:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211026075257.3785036-1-ishii.shuuichir@fujitsu.com> <TYCPR01MB6160403C510AE93C1EC2635DE98D9@TYCPR01MB6160.jpnprd01.prod.outlook.com>
+In-Reply-To: <TYCPR01MB6160403C510AE93C1EC2635DE98D9@TYCPR01MB6160.jpnprd01.prod.outlook.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 4 Nov 2021 12:31:22 +0100
+Message-ID: <CAJZ5v0j4ZvbkdF2Az_5MLFY=Vt7835LA-U2N2qKbZVk9KDx7QA@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: Add AEST in ACPI Table Definitions
+To:     "ishii.shuuichir@fujitsu.com" <ishii.shuuichir@fujitsu.com>
+Cc:     "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "robert.moore@intel.com" <robert.moore@intel.com>,
+        "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>,
+        "devel@acpica.org" <devel@acpica.org>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "guohanjun@huawei.com" <guohanjun@huawei.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Ruyi <lv.ruyi@zte.com.cn>
+On Thu, Nov 4, 2021 at 8:14 AM ishii.shuuichir@fujitsu.com
+<ishii.shuuichir@fujitsu.com> wrote:
+>
+> ping?
+>
+> P.S.
+> We should have added the maintainer of ACPI FOR ARM64 (ACPI/arm64) first,
+> but since AEST is an arm-spec ACPI table, added the concerned persons
+> as new e-mail addresses.
 
-This patch fixes the following Coccinelle error:
-drivers/tee/optee/ffa_abi.c: 877: ERROR  optee is NULL but dereferenced.
+Please resend the patch, then, with all of the requisite addresses
+present in the CC list.
 
-If memory allocation fails, optee is null pointer. the code will goto err
- and release optee.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
----
- drivers/tee/optee/ffa_abi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/tee/optee/ffa_abi.c b/drivers/tee/optee/ffa_abi.c
-index 6defd1ec982a..8d9d189557f9 100644
---- a/drivers/tee/optee/ffa_abi.c
-+++ b/drivers/tee/optee/ffa_abi.c
-@@ -811,8 +811,7 @@ static int optee_ffa_probe(struct ffa_device *ffa_dev)
- 
- 	optee = kzalloc(sizeof(*optee), GFP_KERNEL);
- 	if (!optee) {
--		rc = -ENOMEM;
--		goto err;
-+		return -ENOMEM;
- 	}
- 	optee->pool = optee_ffa_config_dyn_shm();
- 	if (IS_ERR(optee->pool)) {
--- 
-2.25.1
-
+> > -----Original Message-----
+> > From: Shuuichirou Ishii <ishii.shuuichir@fujitsu.com>
+> > Sent: Tuesday, October 26, 2021 4:53 PM
+> > To: rjw@rjwysocki.net; lenb@kernel.org; linux-acpi@vger.kernel.org;
+> > linux-kernel@vger.kernel.org; robert.moore@intel.com; erik.kaneda@intel.com;
+> > rafael.j.wysocki@intel.com; devel@acpica.org
+> > Cc: Ishii, Shuuichirou/石井 周一郎 <ishii.shuuichir@fujitsu.com>
+> > Subject: [PATCH] ACPI: Add AEST in ACPI Table Definitions
+> >
+> > When We added AEST using the Upgrading ACPI tables via initrd function, the
+> > kernel could not recognize the AEST, so We added AEST the ACPI table definition.
+> >
+> > Signed-off-by: Shuuichirou Ishii <ishii.shuuichir@fujitsu.com>
+> > ---
+> >  drivers/acpi/tables.c | 2 +-
+> >  include/acpi/actbl2.h | 1 +
+> >  2 files changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c index
+> > f9383736fa0f..ab0fb4c33e07 100644
+> > --- a/drivers/acpi/tables.c
+> > +++ b/drivers/acpi/tables.c
+> > @@ -499,7 +499,7 @@ static const char table_sigs[][ACPI_NAMESEG_SIZE]
+> > __initconst = {
+> >       ACPI_SIG_WDDT, ACPI_SIG_WDRT, ACPI_SIG_DSDT, ACPI_SIG_FADT,
+> >       ACPI_SIG_PSDT, ACPI_SIG_RSDT, ACPI_SIG_XSDT, ACPI_SIG_SSDT,
+> >       ACPI_SIG_IORT, ACPI_SIG_NFIT, ACPI_SIG_HMAT, ACPI_SIG_PPTT,
+> > -     ACPI_SIG_NHLT };
+> > +     ACPI_SIG_NHLT, ACPI_SIG_AEST };
+> >
+> >  #define ACPI_HEADER_SIZE sizeof(struct acpi_table_header)
+> >
+> > diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h index
+> > a47b32a5cbde..b586e40d4b86 100644
+> > --- a/include/acpi/actbl2.h
+> > +++ b/include/acpi/actbl2.h
+> > @@ -48,6 +48,7 @@
+> >  #define ACPI_SIG_SDEV           "SDEV"       /* Secure Devices table */
+> >  #define ACPI_SIG_NHLT           "NHLT"       /* Non-HDAudio Link Table
+> > */
+> >  #define ACPI_SIG_SVKL           "SVKL"       /* Storage Volume Key
+> > Location Table */
+> > +#define ACPI_SIG_AEST           "AEST" /* Arm Error Source Table */
+> >
+> >  /*
+> >   * All tables must be byte-packed to match the ACPI specification, since
+> > --
+> > 2.27.0
+>
