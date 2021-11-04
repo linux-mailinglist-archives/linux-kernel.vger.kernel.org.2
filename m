@@ -2,47 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F124453FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:36:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF2C445400
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhKDNjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 09:39:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38880 "EHLO mail.kernel.org"
+        id S231152AbhKDNja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 09:39:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231318AbhKDNjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 09:39:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3B5661183;
-        Thu,  4 Nov 2021 13:36:26 +0000 (UTC)
-Date:   Thu, 4 Nov 2021 14:36:23 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     christian@brauner.io, shuah@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] selftests: clone3: clone3: add case CLONE3_ARGS_NO_TEST
-Message-ID: <20211104133623.dfey3ryavuelwygz@wittgenstein>
-References: <20211103201350.3866089-1-anders.roxell@linaro.org>
+        id S231332AbhKDNj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 09:39:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06CF4604DC;
+        Thu,  4 Nov 2021 13:36:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636033009;
+        bh=LL6MZq3ANzbnT8B6kNDsWFF+dSyrJdaXeAPKgIfe79Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hmaO4gSO5+Y0cYnIoou/71k59ALarjvmPkvhEgE6BmMqsJuhgv49NaA5Clg4llPzZ
+         ukjfCTKoWIZVR1ai8okRR/yJWpRxekvZT3ioItVnr5zO3rV47gcMIJY3fg6LBQVdYH
+         nnZwSVfLmBMEjGkdSfzQyQBxqqEp+aMx0WOtKc0PPxIJvsAz2jgMRQyVNlldfmfxFL
+         IPt+PB+TUW58wMPlzh8TdySZxqZVxE7UcMXbvlrEcNXLuTYt7NTGj+LsGTTgzu9g4X
+         XnrgqJoX7SPRO/rVf2ByFM7ADLhwopw59qT44le6K1emh71B15GSSIqYiMybK5/CmI
+         X43oeSBrxaDkw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Prathamesh Shete <pshete@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] pinctrl: tegra194: remove duplicate initializer again
+Date:   Thu,  4 Nov 2021 14:36:39 +0100
+Message-Id: <20211104133645.1186968-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211103201350.3866089-1-anders.roxell@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 09:13:50PM +0100, Anders Roxell wrote:
-> Building selftests/clone3 with clang warns about enumeration not handled
-> in switch case:
-> 
-> clone3.c:54:10: warning: enumeration value 'CLONE3_ARGS_NO_TEST' not handled in switch [-Wswitch]
->         switch (test_mode) {
->                 ^
-> 
-> Add the missing switch case with a comment.
-> 
-> Fixes: 17a810699c18 ("selftests: add tests for clone3()")
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
-> ---
+From: Arnd Bergmann <arnd@arndb.de>
 
-Fine by me. Thanks!
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+An earlier bugfix removed a duplicate field initializer in
+a macro, but it seems that this came back with the following
+update:
+
+drivers/pinctrl/tegra/pinctrl-tegra194.c:1341:28: error: initialized field overwritten [-Werror=override-init]
+ 1341 |                 .drv_reg = ((r)),                               \
+      |                            ^
+drivers/pinctrl/tegra/pinctrl-tegra194.c:1392:41: note: in expansion of macro 'DRV_PINGROUP_ENTRY_Y'
+ 1392 | #define drive_touch_clk_pcc4            DRV_PINGROUP_ENTRY_Y(0x2004,    12,     5,      20,     5,      -1,     -1,     -1,     -1,     1)
+      |                                         ^~~~~~~~~~~~~~~~~~~~
+drivers/pinctrl/tegra/pinctrl-tegra194.c:1631:17: note: in expansion of macro 'drive_touch_clk_pcc4'
+ 1631 |                 drive_##pg_name,                                \
+      |                 ^~~~~~
+drivers/pinctrl/tegra/pinctrl-tegra194.c:1636:9: note: in expansion of macro 'PINGROUP'
+ 1636 |         PINGROUP(touch_clk_pcc4,        GP,             TOUCH,          RSVD2,          RSVD3,          0x2000,         1,      Y,      -1,     -1,     6,      8,      -1,     10,     11,     12,     N,      -1,     -1,     N,      "vddio_ao"),
+      |         ^~~~~~~~
+drivers/pinctrl/tegra/pinctrl-tegra194.c:1341:28: note: (near initialization for 'tegra194_groups[0].drv_reg')
+ 1341 |                 .drv_reg = ((r)),                               \
+      |                            ^
+drivers/pinctrl/tegra/pinctrl-tegra194.c:1392:41: note: in expansion of macro 'DRV_PINGROUP_ENTRY_Y'
+ 1392 | #define drive_touch_clk_pcc4            DRV_PINGROUP_ENTRY_Y(0x2004,    12,     5,      20,     5,      -1,     -1,     -1,     -1,     1)
+      |                                         ^~~~~~~~~~~~~~~~~~~~
+drivers/pinctrl/tegra/pinctrl-tegra194.c:1631:17: note: in expansion of macro 'drive_touch_clk_pcc4'
+ 1631 |                 drive_##pg_name,                                \
+      |                 ^~~~~~
+drivers/pinctrl/tegra/pinctrl-tegra194.c:1636:9: note: in expansion of macro 'PINGROUP'
+ 1636 |         PINGROUP(touch_clk_pcc4,        GP,             TOUCH,          RSVD2,          RSVD3,          0x2000,         1,      Y,      -1,     -1,     6,      8,      -1,     10,     11,     12,     N,      -1,     -1,     N,      "vddio_ao"),
+      |         ^~~~~~~~
+
+Remove it again.
+
+Fixes: 613c0826081b ("pinctrl: tegra: Add pinmux support for Tegra194")
+Fixes: 92cadf68e50a ("pinctrl: tegra: pinctrl-tegra194: Do not initialise field twice")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+The two initializers are different, please double-check that I
+remove the right one here.
+---
+ drivers/pinctrl/tegra/pinctrl-tegra194.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/pinctrl/tegra/pinctrl-tegra194.c b/drivers/pinctrl/tegra/pinctrl-tegra194.c
+index b4fef9185d88..5c1dfcb46749 100644
+--- a/drivers/pinctrl/tegra/pinctrl-tegra194.c
++++ b/drivers/pinctrl/tegra/pinctrl-tegra194.c
+@@ -1387,7 +1387,6 @@ static struct tegra_function tegra194_functions[] = {
+ 		.schmitt_bit = schmitt_b,			\
+ 		.drvtype_bit = 13,				\
+ 		.lpdr_bit = e_lpdr,				\
+-		.drv_reg = -1,					\
+ 
+ #define drive_touch_clk_pcc4            DRV_PINGROUP_ENTRY_Y(0x2004,	12,	5,	20,	5,	-1,	-1,	-1,	-1,	1)
+ #define drive_uart3_rx_pcc6             DRV_PINGROUP_ENTRY_Y(0x200c,	12,	5,	20,	5,	-1,	-1,	-1,	-1,	1)
+-- 
+2.29.2
+
