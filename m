@@ -2,158 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6ECD444D2C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 02:59:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2286444D30
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 03:03:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232959AbhKDCCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Nov 2021 22:02:30 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:59352 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230198AbhKDCC3 (ORCPT
+        id S232185AbhKDCGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Nov 2021 22:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231135AbhKDCGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Nov 2021 22:02:29 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A40e1Ed021274;
-        Thu, 4 Nov 2021 01:59:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2021-07-09;
- bh=1mmZHMP2bT2e39+3OCacHXQsu29CbP0X6Lvkqh9HgjU=;
- b=wrL+VJv2FRAH1+xj31n2YT/Jvuk7L4JRK0USgLARpcgnsnPQkAiklYY7RS8HdsNHaG6I
- 6UkxQgrGseyoRtmjMftneRGAOIhOluC/gCScbdZ+6jltxaD2bBNNk0wh21YCVaWmNJZT
- 3i+dq32KNhzWMFYvNZYsnAHON3WAbVQdi6FF2bdlnku4dmkH1+tFFXzm3q5UJqKkiDwU
- tsSfxXVPk767WCWFDCeWOB5aB78hknL8PxEb3+PrwaEWxyBp6ohSKUsRKALCH5ridUKv
- NuCt89qirFd1uHqd7aspM1KBsQV3T/Pc7+O8Dqgeg3aEIHk6UvLp6Ukh/3moxCbzz0b3 fQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3c3mxh68ey-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 Nov 2021 01:59:49 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1A41pgRn102558;
-        Thu, 4 Nov 2021 01:59:49 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2103.outbound.protection.outlook.com [104.47.55.103])
-        by aserp3030.oracle.com with ESMTP id 3c3pfykh2v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 Nov 2021 01:59:48 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GrmQF+eDUVetg+gBWLaXLe6jfGZ4nyC9sYNNfrTxszdx8h3XAc1QPgLsJ54GaP+2rJelIzvOkX6/N1y0CWIiXCeimZXyupmO9klMFBUhj8IIErVuEbpf1ezqmKFujinA04okF0NtlGKVB+j9zZNyWbdRkIgzmAGxGWi+xHzZXGPU8TyEvGYpj4yYpBrxqfUpghRIvNFET8Y/chEuxBxLtZ27nc90EB41H4MmhopQxElwesz8UYe2nOkBB7Zm2MZnR7nVgy5lFxiHjoiTxDid2C2qrqwUgvMCbakCzJTdPBAcy0EtfR5vZlNwOUvuzqldg4d++29z1zuk7/ikQnOrkA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1mmZHMP2bT2e39+3OCacHXQsu29CbP0X6Lvkqh9HgjU=;
- b=XeZ66LUeTeza5Ra5OjQNJGMjxbeY5OHxmGhu0/1LHsjRGGiiIGsS5zDP4F4uWyA8ouJa59Rm9VbPbCDy8VAJQJlFS+SbyvaRJXhnVjuwfiVY2wTC+/DBE2MSf7/1J2GXrFo77M6lUPF+D5qQ7MTqshv21/kYcTB6G28bVY/XloSJ8Hadv1wSuTi4oYP/bf4EumDwr0Loqt1opEn8O9SYHitPDRudn6ZxLSt/uZS9R4V1sp2Xpmh/Z/ZC2YMnLURXG9IJ+HIM3BVVkJrg+sJyYiCw3L5+H/i/FmUCNPFn4YgyK2b+wU/zNE8FqGje5dPhpgg1/Tykq5oeQmGswR3B3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 3 Nov 2021 22:06:17 -0400
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C89C06127A
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Nov 2021 19:03:40 -0700 (PDT)
+Received: by mail-vk1-xa2f.google.com with SMTP id f126so2287429vke.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Nov 2021 19:03:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1mmZHMP2bT2e39+3OCacHXQsu29CbP0X6Lvkqh9HgjU=;
- b=S53Dz9iQI0c1ci6/BS0UYQD3UgLWeekmL1CszqP2LfoeHS5MPP1kEaNfkNdt3siaH/ObN1y5y29XjVkxMNwoL+rL3B4oZcIiC+rH8ukcS+oFu/BtvZJP1M8B8YzwqlIkO4p8qEyZyfDi3BztldTjXUPbesyrM7Ql3xmBSyIIdzA=
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4438.namprd10.prod.outlook.com (2603:10b6:510:36::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11; Thu, 4 Nov
- 2021 01:59:47 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::a457:48f2:991f:c349]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::a457:48f2:991f:c349%8]) with mapi id 15.20.4669.011; Thu, 4 Nov 2021
- 01:59:47 +0000
-To:     George Kennedy <george.kennedy@oracle.com>
-Cc:     gregkh@linuxfoundation.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dan.carpenter@oracle.com
-Subject: Re: [PATCH v2] scsi: scsi_debug: fix type in min_t to avoid stack OOB
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq11r3wr8ck.fsf@ca-mkp.ca.oracle.com>
-References: <1635861997-987-1-git-send-email-george.kennedy@oracle.com>
-Date:   Wed, 03 Nov 2021 21:59:43 -0400
-In-Reply-To: <1635861997-987-1-git-send-email-george.kennedy@oracle.com>
-        (George Kennedy's message of "Tue, 2 Nov 2021 09:06:37 -0500")
-Content-Type: text/plain
-X-ClientProxiedBy: SN4PR0501CA0096.namprd05.prod.outlook.com
- (2603:10b6:803:22::34) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8OPXL+YxDa2W0TcZsqUjnbyFTjPqhOax8KDL2fd+C00=;
+        b=WdiM+aF8BGNd4hfq35kvHbCl5pXxkHZfq9KHILHZvBw46K9AkAc4JCKyLzK/n3E8ui
+         tTxUM6ikbpbzPto6n4KIZmUJJyoB23fZIgeBeW4s1n2CN1kohRFBbJGu7H5aJIjzKtdp
+         O2s1dpYV3X7ZtuMbFOnekyS5EymrwJS0rYlLo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8OPXL+YxDa2W0TcZsqUjnbyFTjPqhOax8KDL2fd+C00=;
+        b=5058ppOcHilVcOA3W3DSa88lEq9uIx2adOQQCkfP9sntfSzeUK9H/EgfbEBBlyIqKu
+         I4xIh+n1gWa9sVnXfgymq0LH0GAunATAWsW8pkeThjKxgxrj82xma7KmswfpGoLFCsOV
+         Q93Nt823w2KFcvzVBjDGpTPLK6mwTf8Si8SjjGXYMc14aO5lSigmduT5W1CE9xjN8uFn
+         YE2D/sGWNIdC/HtpjSZAL6PF2glAn7NUv8Z7nD4wMHpIhdbM7DtSz9bP3GSMHL6R/SCW
+         xMhuK1DX6MuK+aM3lFEvQ9dk5fwmRr+I8pdugR17jy9ChZJY+f2om+Vy3xNwqpCoW6oz
+         q1Fw==
+X-Gm-Message-State: AOAM533FT4H129FBWw3L6TMDRXiczDJjDE1ZhakA2koB5b0Juc9utB0/
+        QTuypZaNi1GMTuIxhrlPIjP6f8FMIphzSOq8Xf8AWQ==
+X-Google-Smtp-Source: ABdhPJxG5z74ambnFOVnqPk97tiJQXdddSOQjfcZlM4OWeP1D6FgJv6Cp1ElCzIHPtfMw78PXxYS1kBxTdYDcn4Gocw=
+X-Received: by 2002:a1f:1904:: with SMTP id 4mr32156546vkz.9.1635991419374;
+ Wed, 03 Nov 2021 19:03:39 -0700 (PDT)
 MIME-Version: 1.0
-Received: from ca-mkp.ca.oracle.com (138.3.201.26) by SN4PR0501CA0096.namprd05.prod.outlook.com (2603:10b6:803:22::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.5 via Frontend Transport; Thu, 4 Nov 2021 01:59:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2be3a8d9-b101-4dfc-4b3e-08d99f36c73f
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4438:
-X-Microsoft-Antispam-PRVS: <PH0PR10MB44384F4AA4D3486F4E65AEFE8E8D9@PH0PR10MB4438.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4FNVa1E2GGUiyywcHwT3ckOyuThFPTWu19ABb8aLnn+2ZFHyKT0UcGJ5qcefm1zEtHrPvMwfMqmKjvIGmJXlHYzinGXNFLVCewL6YZTtYvntYd/SsOWP+iL/ShVjsp6VLZ1bciqVuhmUkZweiTLxemFBYLfaeryfyhlANWG+D7f7OR3WgE8mNFWFb3SS22UAD9XcdOTpM5DnOFCcIhOL+PyKZZkZ4OgJkRIJUYssQefpq4YsSMi93y4zFTULK8BlyD4SVjiT7Aap6v/IOu9bZYip64P+Qmsi4H15bpnRGl31JBAU3Gcdg3gdMc0Lw8ijMFB/Ys5neUDbAIKM4haIlX+H1i4RgKNvfTX99QvlSmqOIIBOyOvgZMaHjQL5WF+qX6MyNWsKWp2/J8dNBrfWMvrzafkZoSHBBD137Wk3VprfXf87iY2aZsG+ClOIYv6sad6h8kw2+wN4Wn3b1P5Yu/BPJSh5V9DYiTDaKGFmvCKEvAIAEURLXmsomXU0A2OZrNWNpbAgj5UuRAs4nY2lI/OqPvDp4upgWtsXoD+VpnloDKnFxTtasqn7uE0EVCUpXpZLfIVbgjfzH91P3lqfmYQxHTEIDD5UM1HxQWW9FbP8t0otW6oVo99cu3mPYhZcaKGVycO5XHzulMDomyj/UOSMQlgsYvqsoJMf940J3/M5JJAUmU7QKzrCP6MCPOOBz+cjBsQQBy4w4AcKdiYiuQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6636002)(6666004)(8936002)(316002)(8676002)(4744005)(4326008)(5660300002)(186003)(55016002)(66946007)(38350700002)(38100700002)(2906002)(66556008)(66476007)(956004)(7696005)(52116002)(508600001)(86362001)(107886003)(26005)(36916002)(6862004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xucFCwgWxstGFn95xpX3u+RaJw98VPAg6gXRzcX8oG2yOnt2uXE9ywhZJBBm?=
- =?us-ascii?Q?yZYWDA9VoA04yzCHGw8nmkGygFA+q6LNwzRQpnyLugo6XueZoF7pVCAPrv90?=
- =?us-ascii?Q?Lyy6BX4UXmvLkFRveVRU99dK2VHUCL5D/IS2Io81ajJMqV3lXWtvuCMDPlAw?=
- =?us-ascii?Q?ZeMPreXJGEnfzMFsq1upO1IP9zGlp1c8ojPX612ZLvUhFmjOZZqGVbKNN1nI?=
- =?us-ascii?Q?2T0MBwJnN8J2PTWQN0upVNpWtpPt8U0Xaii6EJz+4en0cudK7wjDiR6iOpPy?=
- =?us-ascii?Q?Q9Zhjy5LyRwpMemIEsLQzotD6jEhs7x8NaBevSVhLsoFWfhTYwa2zjqzktqt?=
- =?us-ascii?Q?a2bABK4aemWjEwSWSdjz2hsH4gvERUbDyAG3zouT6bTAG4sP4gxPZPzXa+NH?=
- =?us-ascii?Q?eaZp3NWAfXmdeOe19srEiHTwi4vSPs2N4I7hrpIr76PZlg5QdJyA9f6el/VG?=
- =?us-ascii?Q?8OdlzIUKmKYrl/szJ3CFpP5a8dRUoLFvaCbiqA9QWhdcMmmxbi1pIv4urfXb?=
- =?us-ascii?Q?aTiklxlSvloM1cyiv03POCZ2lenqO8N3wJM2u3Bwvj78GBaKfg4Ub1JDofKb?=
- =?us-ascii?Q?Ts0NtalKuN81vLu/SUwcO6yBS0QBTbILg7Ur37FzgzFBgb0K932r1zl3QR9o?=
- =?us-ascii?Q?1PYvMzhWQQ6X0IBIQskyHy5xKbs6fqj8raGP/pkO56t8bIivFefLEeep7grW?=
- =?us-ascii?Q?W4fQM1Xzw3Ye/UNh5YeHCShHJi4LgYfLJ4ODKu0P2UZteo0JopSIbtM01ppB?=
- =?us-ascii?Q?vsq5ImOy4TXH3F7v0nz8oQMLhz5HlVq8PjVr0Ng0imLDTjtqVn40FGrV0rQ4?=
- =?us-ascii?Q?/olQNubrgWS4pMqkeDBtqM2Wrt48J2ruFmK/Mu4blFINkCx9criixZGXkvVO?=
- =?us-ascii?Q?Hb2OhkZI7Aeka05JiYWisobZlKJr/Pvaio04xrCuJYHCZfNzGpGtlnWIQBeW?=
- =?us-ascii?Q?hFrlByDciV45nYybzGp0+n2Ig+5Ym0b4h2pVcvyiu6dG1iqtaHv9ze5xn/eb?=
- =?us-ascii?Q?Risvxgswbz97tkot33gKc4uNvHzPzi9SMSGPMbL8hdy1ya1d92Qs6+zrBpIi?=
- =?us-ascii?Q?kftadNxXSELHdi6yVdPhwK+snZ8kmNkSBSl4U8oA/4NK8SR13vqlxLB0xJEq?=
- =?us-ascii?Q?KRzhobsPkX+z231niBt/syVX/hcXhnw4hnKrUgz/YPl6xp4aZP0T+bSW/dKT?=
- =?us-ascii?Q?ML6GZOSafnYzPS33IIqeUwEb3wqEPi073QPOX8WTir7c5k2Ls7g5e9nnEcPb?=
- =?us-ascii?Q?iUSR0AT/gQ0tKlMwAg07t7BfBkFh6So3qbCJ8f66r2iE9tX6toi/sSYhhvZw?=
- =?us-ascii?Q?e+Lj6uKclnkDuGmFS3s57OTUCRtAAIruR663Y3zs0vqNy1fnNk8XCMdCv0iD?=
- =?us-ascii?Q?Pabzujdg0pPcnP9AASpxUiqisQ53u3FKxa0XI38g2krZGwimBKSyEOXyDGl4?=
- =?us-ascii?Q?CdjKpE4v1qPkx6myShc/DMNlxeMj/VtD1RqGOCI2/Ji3MZmwhyHSeaSHAHk5?=
- =?us-ascii?Q?m9MG7OgqKKJ+EuFJZcda+/AkML8O3ko4Ylfk/GKJRdy39fvCpRpVW1xBLRjF?=
- =?us-ascii?Q?05yHL7z/N7n8Uz+Mde+T0squUUVjINsdTIRws3gPpKykjP8Qui5kOy1oqf7U?=
- =?us-ascii?Q?4y4uzOclqVl1DQpXTKW7iJaLkiYCUsDoaK/DazfCUZDzEOgiOBSrU9U8pRHH?=
- =?us-ascii?Q?KQghbQ=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2be3a8d9-b101-4dfc-4b3e-08d99f36c73f
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2021 01:59:47.1352
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hBRAkJi+cSwd13qnsTQR8WpYkjzHfXgwidIdTVbOwW1FIzMhPGVFgHL2hC/CGk4IOQV1UTGEoQ6znOowuKZhhAsH5yB+tf8K3CJjF0jkefM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4438
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10157 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0
- malwarescore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111040007
-X-Proofpoint-ORIG-GUID: 0sPfZtUCT5WLdNCE_S3HZW_x1IqzfhO3
-X-Proofpoint-GUID: 0sPfZtUCT5WLdNCE_S3HZW_x1IqzfhO3
+References: <20211003125134.2.I7733f5a849476e908cc51f0c71b8a594337fbbdf@changeid>
+ <YVtWVZDzhwMPnKj0@robh.at.kernel.org> <CAPnjgZ3hUu6AUiMtC8tSQPeeG1aH1bQMcE8SQ_T8Nd-FjY_fGQ@mail.gmail.com>
+ <CAL_JsqLT28Lp6pVYLxheZ=iK9QDOzXcezihR+sru4qLQLoUeWw@mail.gmail.com>
+ <CAPnjgZ1accZg-G00xX7HPE8KAoh9NPAkfrb9BFrj3W5Bo_0pKg@mail.gmail.com>
+ <CAL_JsqL5MP1efM_d5EF3x4M_qf3gee8Sc8TQFgxoVsdCWTY9uw@mail.gmail.com>
+ <CAPnjgZ2r1qSDkJS_Z2v25=EsZj_9pt=qSTre3yTjqUnQrV7+ww@mail.gmail.com>
+ <d3ca77bc4dfc5b70@bloch.sibelius.xs4all.nl> <CAPnjgZ28KsGUPLtuKEYGijP9=moHCcJ4O7yC2x9PAt9ak5fK-Q@mail.gmail.com>
+ <CAL_Jsq+UT5MdsfKcVq=Up-WKDg8WFaLNtLKP+3NSHc7kf+av=Q@mail.gmail.com> <CAPnjgZ2tQwvpfgGzoxVhgLPSDvq4qD=2aPFR+CvsDoDCAE_PpQ@mail.gmail.com>
+In-Reply-To: <CAPnjgZ2tQwvpfgGzoxVhgLPSDvq4qD=2aPFR+CvsDoDCAE_PpQ@mail.gmail.com>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Wed, 3 Nov 2021 20:03:27 -0600
+Message-ID: <CAPnjgZ21bd4GJrZTNVUF+NveP7LNRv-QK4H7TYJ+L1jQAuyE4A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dt-bindings: u-boot: Add an initial binding for config
+To:     Rob Herring <robh@kernel.org>
+Cc:     Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Devicetree Discuss <devicetree@vger.kernel.org>,
+        Tom Rini <trini@konsulko.com>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        lk <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rob,
 
-George,
+On Wed, 27 Oct 2021 at 08:09, Simon Glass <sjg@chromium.org> wrote:
+>
+> Hi Rob,
+>
+> On Tue, 26 Oct 2021 at 20:37, Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Sun, Oct 24, 2021 at 9:39 AM Simon Glass <sjg@chromium.org> wrote:
+> > >
+> > > Hi Mark,
+> > >
+> > > On Thu, 21 Oct 2021 at 02:51, Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
+> > > >
+> > > > > From: Simon Glass <sjg@chromium.org>
+> > > > > Date: Wed, 20 Oct 2021 16:44:41 -0600
+> > > > >
+> > > > > Hi Rob,
+> > > > >
+> > > > > On Mon, 18 Oct 2021 at 16:26, Rob Herring <robh@kernel.org> wrote:
+> > > > > >
+> > > > > > On Wed, Oct 13, 2021 at 11:33 AM Simon Glass <sjg@chromium.org> wrote:
+> > > > > > >
+> > > > > > > "
+> > > > > > > Hi Rob,
+> > > > > > >
+> > > > > > > On Tue, 12 Oct 2021 at 09:05, Rob Herring <robh@kernel.org> wrote:
+> > > > > > > >
+> > > > > > > >  On Tue, Oct 12, 2021 at 8:41 AM Simon Glass <sjg@chromium.org> wrote:
+> > > > > > > > >
+> > > > > > > > > Hi Rob,
+> > > > > > > > >
+> > > > > > > > > On Mon, 4 Oct 2021 at 13:30, Rob Herring <robh@kernel.org> wrote:
+> > > > > > > > > >
+> > > > > > > > > > On Sun, Oct 03, 2021 at 12:51:53PM -0600, Simon Glass wrote:
+> > > > > > > > > > > U-Boot makes use of the devicetree for its driver model. Devices are bound
+> > > > > > > > > > > based on the hardware description in the devicetree.
+> > > > > > > > > > >
+> > > > > > > > > > > Since U-Boot is not an operating system, it has no command line or user
+> > > > > > > > > > > space to provide configuration and policy information. This must be made
+> > > > > > > > > > > available in some other way.
+> > > > > > > > > > >
+> > > > > > > > > > > Therefore U-Boot uses devicetree for configuration and run-time control
+> > > > > > > > > > > and has done for approximately 9 years. This works extremely well in the
+> > > > > > > > > > > project and is very flexible. However the bindings have never been
+> > > > > > > > > > > incorporated in the devicetree bindings in the Linux tree. This could be
+> > > > > > > > > > > a good time to start this work as we try to create standard bindings for
+> > > > > > > > > > > communicating between firmware components.
+> > > > > > > > > > >
+> > > > > > > > > > > Add an initial binding for this node, covering just the config node, which
+> > > > > > > > > > > is the main requirement. It is similar in concept to the chosen node, but
+> > > > > > > > > > > used for passing information between firmware components, instead of from
+> > > > > > > > > > > firmware to operating system.
+> > > > > > > > > > >
+> > > > > > > > > > > Signed-off-by: Simon Glass <sjg@chromium.org>
+> > > > > > > > > > > ---
+> > > > > > > > > > > Please be kind in your review. Some words about why this is needed are
+> > > > > > > > > > > included in the description in config.yaml file.
+> > > > > > > > > > >
+> > > > > > > > > > > The last attempt to add just one property needed by U-Boot went into the
+> > > > > > > > > > > weeds 6 years ago, with what I see as confusion about the role of the
+> > > > > > > > > > > chosen node in devicetree[1].
+> > > > > > > > > > >
+> > > > > > > > > > > I am trying again in the hope of reaching resolution rather than just
+> > > > > > > > > > > going around in circles with the 'devicetree is a hardware description'
+> > > > > > > > > > > argument :-)
+> > > > > > > > > > >
+> > > > > > > > > > > Quoting from the introduction to latest devicetree spec[2]:
+> > > > > > > > > > >
+> > > > > > > > > > > >>>
+> > > > > > > > > > > To initialize and boot a computer system, various software components
+> > > > > > > > > > > interact. Firmware might perform low-level initialization of the system
+> > > > > > > > > > > hardware before passing control to software such as an operating system,
+> > > > > > > > > > > bootloader, or  hypervisor. Bootloaders and hypervisors can, in turn,
+> > > > > > > > > > > load and transfer control to operating systems. Standard, consistent
+> > > > > > > > > > > interfaces and conventions facilitate the interactions between these
+> > > > > > > > > > > software components. In this document the term boot program is used to
+> > > > > > > > > > > generically refer to a software component that initializes the system
+> > > > > > > > > > > state and executes another software component referred to as a client
+> > > > > > > > > > > program.
+> > > > > > > > > > > <<<
+> > > > > > > > > > >
+> > > > > > > > > > > This clearly envisages multiple software components in the firmware
+> > > > > > > > > > > domain and in fact that is the case today. They need some way to
+> > > > > > > > > > > communicate configuration data such as memory setup, runtime-feature
+> > > > > > > > > > > selection and developer conveniences. Devicetree seems ideal, at least for
+> > > > > > > > > > > components where the performance / memory requirements of devicetree are
+> > > > > > > > > > > affordable.
+> > > > > > > > > > >
+> > > > > > > > > > > I hope that the Linux community (which owns the devicetree bindings) finds
+> > > > > > > > > > > this initiative valuable and acceptable.
+> > > > > > > > > >
+> > > > > > > > > > Owns? I'm having a sale and can make you a good offer. Buy 1 binding,
+> > > > > > > > > > get 2000 free. :)
+> > > > > > > > >
+> > > > > > > > > Yes, it's the price of that first binding that surely puts everyone off.
+> > > > > > > > >
+> > > > > > > > > (sorry for sitting on this for a week, my spam filter doesn't like
+> > > > > > > > > some mailing lists and I'm working on it)
+> > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > >
+> > > > > > > > > > > [1] https://lists.denx.de/pipermail/u-boot/2015-July/218585.html
+> > > > > > > > > > > [2] https://github.com/devicetree-org/devicetree-specification/releases/tag/v0.3
+> > > > > > > > > > >
+> > > > > > > > > > >  .../devicetree/bindings/u-boot/config.yaml    | 137 ++++++++++++++++++
+> > > > > > > > > > >  1 file changed, 137 insertions(+)
+> > > > > > > > > > >  create mode 100644 Documentation/devicetree/bindings/u-boot/config.yaml
+> > > > > > > > > >
+> > > > > > > > > > Might as well put this into dt-schema rather than the kernel. But might
+> > > > > > > > > > get more review here first.
+> > > > > > > > >
+> > > > > > > > > OK, so does that mean a PR to https://github.com/robherring/dt-schema
+> > > > > > > >
+> > > > > > > > Wrong one: https://github.com/devicetree-org/dt-schema
+> > > > > > > >
+> > > > > > > > I need to update the readme there for the old one.
+> > > > > > >
+> > > > > > > OK thanks.
+> > > > > > >
+> > > > > > > >
+> > > > > > > > > or is there a mailing list for it? I think I am missing some
+> > > > > > > > > understanding here.
+> > > > > > > >
+> > > > > > > > You can send a PR or to a DT mailing list, but the mail list will get
+> > > > > > > > more reviews (hopefully). devicetree-spec is better than devicetree as
+> > > > > > > > it is not a firehose.
+> > > > > > >
+> > > > > > > OK.
+> > > > > > >
+> > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > > diff --git a/Documentation/devicetree/bindings/u-boot/config.yaml b/Documentation/devicetree/bindings/u-boot/config.yaml
+> > > > > > > > > > > new file mode 100644
+> > > > > > > > > > > index 00000000000000..336577a17fdf5a
+> > > > > > > > > > > --- /dev/null
+> > > > > > > > > > > +++ b/Documentation/devicetree/bindings/u-boot/config.yaml
+> > > > > > > > > > > @@ -0,0 +1,137 @@
+> > > > > > > > > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > > > > > > > > > +%YAML 1.2
+> > > > > > > > > > > +---
+> > > > > > > > > > > +$id: http://devicetree.org/schemas/u-boot/config.yaml#
+> > > > > > > > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > > > > > > > +
+> > > > > > > > > > > +title: U-Boot configuration node
+> > > > > > > > > > > +
+> > > > > > > > > > > +maintainers:
+> > > > > > > > > > > +  - Simon Glass <sjg@chromium.org>
+> > > > > > > > > > > +
+> > > > > > > > > > > +description: |
+> > > > > > > > > > > +  The config node does not represent a real device, but serves as a place
+> > > > > > > > > > > +  for passing data between firmware elements, like memory maps. Data in the
+> > > > > > > > > > > +  config node does not represent the hardware. It is ignored by operating
+> > > > > > > > > > > +  systems.
+> > > > > > > > > > > +
+> > > > > > > > > > > +  Purpose of config node
+> > > > > > > > > > > +  ----------------------
+> > > > > > > > > > > +
+> > > > > > > > > > > +  A common problem with firmware is that many builds are needed to deal with the
+> > > > > > > > > > > +  slight variations between different, related models. For example, one model
+> > > > > > > > > > > +  may have a TPM and another may not. Devicetree provides an excellent solution
+> > > > > > > > > > > +  to this problem, in that the devicetree to actually use on a platform can be
+> > > > > > > > > > > +  injected in the factory based on which model is being manufactured at the time.
+> > > > > > > > > > > +
+> > > > > > > > > > > +  A related problem causing build proliferation is dealing with the differences
+> > > > > > > > > > > +  between development firmware, developer-friendly firmware (e.g. with all
+> > > > > > > > > > > +  security features present but with the ability to access the command line),
+> > > > > > > > > > > +  test firmware (which runs tests used in the factory), final production
+> > > > > > > > > > > +  firmware (before signing), signed firmware (where the signatures have been
+> > > > > > > > > > > +  inserted) and the like. Ideally all or most of these should use the same
+> > > > > > > > > > > +  U-Boot build, with just some options to determine the features available. For
+> > > > > > > > > > > +  example, being able to control whether the UART console or JTAG are available,
+> > > > > > > > > > > +  on any image, is a great debugging aid.
+> > > > > > > > > > > +
+> > > > > > > > > > > +  When the firmware consists of multiple parts (various U-Boot phases, TF-A,
+> > > > > > > > > > > +  OP-TEE), it is helpful that all operate the same way at runtime, regardless of
+> > > > > > > > > > > +  how they were built. This can be achieved by passing the runtime configuration
+> > > > > > > > > > > +  (e.g. 'enable UART console', 'here are your public keys') along the chain
+> > > > > > > > > > > +  through each firmware stage. It is frustrating to have to replicate a bug on
+> > > > > > > > > > > +  production firmware which does happen on developer firmware, because they are
+> > > > > > > > > > > +  completely different builds.
+> > > > > > > > > > > +
+> > > > > > > > > > > +  The config node provides useful functionality for this. It allows the different
+> > > > > > > > > > > +  controls to be 'factored out' of the U-Boot binary, so they can be controlled
+> > > > > > > > > > > +  separately from the initial source-code build. The node can be easily updated
+> > > > > > > > > > > +  by a build or factory tool and can control various features in U-Boot. It is
+> > > > > > > > > > > +  similar in concept to a Kconfig option, except that it can be changed after
+> > > > > > > > > > > +  U-Boot is built.
+> > > > > > > > > > > +
+> > > > > > > > > > > +  The config node is similar in concept to /chosen (see chosen.txt) except that
+> > > > > > > > > >
+> > > > > > > > > > chosen.yaml now (in dt-schema).
+> > > > > > > > >
+> > > > > > > > > OK
+> > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > > +  it is for passing information *into* and *between) firmware components,
+> > > > > > > > > > > +  instead of from firmware to the Operating System. Also, while operating
+> > > > > > > > > > > +  systems typically have a (sometimes extremely long) command line, U-Boot does
+> > > > > > > > > > > +  not support this, except with sandbox. The devicetree provides a more
+> > > > > > > > > > > +  structured approach in any case.
+> > > > > > > > > >
+> > > > > > > > > > What about having a /chosen/u-boot/ node instead?
+> > > > > > > > >
+> > > > > > > > > What is your rationale for doing that?
+> > > > > > > >
+> > > > > > > > Simply that /chosen is where the s/w configuration for the next stage
+> > > > > > > > consuming the DT goes. Also, we already have bootcmd defined in chosen
+> > > > > > > > and don't need it in a whole other place.
+> > > > > > >
+> > > > > > > OK I see.
+> > > > > > >
+> > > > > > > The spec says "The /chosen node does not represent a real device in
+> > > > > > > the system but describes parameters chosen or specified by the system
+> > > > > > > firmware at run time. It shall be a child of the root node."
+> > > > > > >
+> > > > > > > To my reading, this is not the same thing. I would prefer something like:
+> > > > > > >
+> > > > > > > "The /xxx node does not represent a real device in the system but
+> > > > > > > describes parameters used by the system firmware at run time. It shall
+> > > > > > > be a child of the root node."
+> > > > > >
+> > > > > > The wording is from simpler times... We can reword it however we need.
+> > > > >
+> > > > > Yes, as is the /chosen node, I think. So perhaps we should be able to
+> > > > > expand to other nodes as needed!
+> > > >
+> > > > Maybe, but it we probably should follow existing practice.
+> > > >
+> > > > The whole DT thing came out of OpenFirmware.  The OpenFirmware
+> > > > standard defines a /options node with various options that control how
+> > > > the firmware behaves.  It is defined in the IEEE 1275 standard:
+> > > >
+> > > >   https://www.openfirmware.info/data/docs/of1275.pdf
+> > > >
+> > > > The way this behaves on Sun and (PowerPC) machines is quite similar
+> > > > how environment variables work in U-Boot.
+> > >
+> > > I don't see much semantic difference between choices and options, but
+> > > I would be quite happy to use 'options' for firmware. In fact it seems
+> > > that 'options' serves the same purpose as the 'config' node I had in
+> > > mind. We still need to have subnodes for project-specific things
+> > > though.
+> >
+> > /options with child node per component is fine with me. There's
+> > nothing in the way of established or documented usage that I have
+> > found. Some old DTs I have have /options but none of it looks like
+> > anything we'd care about.
+>
+> OK I will respin this along those lines, keeping the scope otherwise
+> the same. There are also pointers in this thread to how we might
+> handle standardising things across multiple firmware components, so
+> that is something I will keep in mind also.
 
-> Change min_t() to use type "unsigned int" instead of type "int" to
-> avoid stack out of bounds. With min_t() type "int" the values get sign
-> extended and the larger value gets used causing stack out of bounds.
+In case you didn't see it, I sent a PR:
 
-This needs to be reconciled with the following commits:
+https://github.com/devicetree-org/dt-schema/pull/62
 
-f347c26836c2 scsi: scsi_debug: Fix out-of-bound read in resp_report_tgtpgs()
-4e3ace0051e7 scsi: scsi_debug: Fix out-of-bound read in resp_readcap16()
-
-Thanks!
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Regards,
+Simon
