@@ -2,160 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E106445424
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:40:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CDF445428
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Nov 2021 14:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbhKDNnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 09:43:32 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:58298 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232078AbhKDNms (ORCPT
+        id S231178AbhKDNpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 09:45:17 -0400
+Received: from mail-qt1-f181.google.com ([209.85.160.181]:37529 "EHLO
+        mail-qt1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231651AbhKDNnM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 09:42:48 -0400
-X-UUID: dd3d1f00d03641ca81ca0244cbffcbeb-20211104
-X-UUID: dd3d1f00d03641ca81ca0244cbffcbeb-20211104
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <walter-zh.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 125901010; Thu, 04 Nov 2021 21:40:04 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Thu, 4 Nov 2021 21:40:03 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkmbs10n1.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
- Transport; Thu, 4 Nov 2021 21:40:03 +0800
-Message-ID: <9da413e95727a3b48ea35ec576aa1b1b57ffc9b9.camel@mediatek.com>
-Subject: Re: [PATCH v2] dma-direct: improve DMA_ATTR_NO_KERNEL_MAPPING
-From:   Walter Wu <walter-zh.wu@mediatek.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-CC:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>
-Date:   Thu, 4 Nov 2021 21:40:03 +0800
-In-Reply-To: <CAMj1kXG0DmLXQgfv2N1nhNdXgnXOiK2Rv7D+boSdW9_C=wsowA@mail.gmail.com>
-References: <20211104023221.16391-1-walter-zh.wu@mediatek.com>
-         <20211104085336.GA24260@lst.de>
-         <CAMj1kXHjjmhCVzKFhAseMGOdnidmFT=+o+vwKLTCGFkpwHmcfQ@mail.gmail.com>
-         <cc893162f0e2c81a1d64bf85794cc77ae76cadce.camel@mediatek.com>
-         <CAMj1kXG0DmLXQgfv2N1nhNdXgnXOiK2Rv7D+boSdW9_C=wsowA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Thu, 4 Nov 2021 09:43:12 -0400
+Received: by mail-qt1-f181.google.com with SMTP id o12so4105071qtv.4;
+        Thu, 04 Nov 2021 06:40:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Xa2FxXm6EvIpFGYPWL3bZJ+I6Y3hXoRrueVo8Uzn4QU=;
+        b=ysJsTFQbWMQOpo0OOU7ged1wHdVgxtgm312o+ch19B4bqL76Km9V4kZfOIGANjApIe
+         CeNOC7724zwX3BRKNaIjrCZwGKUYbz34odD10KnobPzU+C26kxWMGRiYK3BBvvQnDZHn
+         VcweRnOJomQAarfzCjpUMKvNbwRvtxAINPShyNwX8VdHGauqOQITRsLG4dXIhnsg939f
+         aVKXOFnYoF7uFhjZgNvduGG2hn0OYcrnsj/FT0xn0MM9XSPaNdD+kCSwSr4pGxqaWE11
+         ljG8jQM53bE9Q+aUseV751T+eykcD0Duce68uTTSoIxYtxCrUi4AMe9F5ddh8Gsvw4mM
+         2Kdw==
+X-Gm-Message-State: AOAM531PMsZnIb049gaVjbjU+zekRisGR0khpBgcFuDSquXcMgEAB4vY
+        1hq3unkBHLRF0m0pHA24hOCWtUs+2/g=
+X-Google-Smtp-Source: ABdhPJwpvNoqDh0GmZQzfNPdQ5UlrzRoxGpKJ2AJPG2aGoaGToi0wBxFrPmvmZ5KbpPIo4ruZOvMKQ==
+X-Received: by 2002:ac8:6112:: with SMTP id a18mr53329488qtm.401.1636033231236;
+        Thu, 04 Nov 2021 06:40:31 -0700 (PDT)
+Received: from mfe-desktop.dimonoffinc.intra (ipagstaticip-ad9375f2-382c-b511-8ac1-9541f69fe50f.sdsl.bell.ca. [142.116.33.166])
+        by smtp.googlemail.com with ESMTPSA id k4sm3187684qko.79.2021.11.04.06.40.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 06:40:30 -0700 (PDT)
+From:   ferlandm@amotus.ca
+To:     a.zummo@towertech.it
+Cc:     alexandre.belloni@bootlin.com, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Marc Ferland <ferlandm@amotus.ca>
+Subject: [PATCH] rtc: pcf85063: add i2c_device_id name matching support
+Date:   Thu,  4 Nov 2021 09:40:07 -0400
+Message-Id: <20211104134007.1159581-1-ferlandm@amotus.ca>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-11-04 at 13:47 +0100, Ard Biesheuvel wrote:
-> On Thu, 4 Nov 2021 at 13:31, Walter Wu <walter-zh.wu@mediatek.com>
-> wrote:
-> > 
-> > On Thu, 2021-11-04 at 09:57 +0100, Ard Biesheuvel wrote:
-> > > On Thu, 4 Nov 2021 at 09:53, Christoph Hellwig <hch@lst.de>
-> > > wrote:
-> > > > 
-> > > > On Thu, Nov 04, 2021 at 10:32:21AM +0800, Walter Wu wrote:
-> > > > > diff --git a/include/linux/set_memory.h
-> > > > > b/include/linux/set_memory.h
-> > > > > index f36be5166c19..6c7d1683339c 100644
-> > > > > --- a/include/linux/set_memory.h
-> > > > > +++ b/include/linux/set_memory.h
-> > > > > @@ -7,11 +7,16 @@
-> > > > > 
-> > > > >  #ifdef CONFIG_ARCH_HAS_SET_MEMORY
-> > > > >  #include <asm/set_memory.h>
-> > > > > +
-> > > > > +#ifndef CONFIG_RODATA_FULL_DEFAULT_ENABLED
-> > > > 
-> > > > This is an arm64-specific symbol, and one that only controls a
-> > > > default.  I don't think it is suitable to key off stubs in
-> > > > common
-> > > > code.
-> > > > 
-> > > > > +static inline int set_memory_valid(unsigned long addr, int
-> > > > > numpages, int enable) { return 0; }
-> > > > 
-> > > > Pleae avoid overly long lines.
-> > > > 
-> > > > > +             if
-> > > > > (IS_ENABLED(CONFIG_RODATA_FULL_DEFAULT_ENABLED))
-> > > > > {
-> > > > > +                     kaddr = (unsigned
-> > > > > long)phys_to_virt(dma_to_phys(dev, *dma_handle));
-> > > > 
-> > > > This can just use page_address.
-> > > > 
-> > > > > +                     /* page remove kernel mapping for arm64
-> > > > > */
-> > > > > +                     set_memory_valid(kaddr, size >>
-> > > > > PAGE_SHIFT,
-> > > > > 0);
-> > > > > +             }
-> > > > 
-> > > > But more importantly:  set_memory_valid only exists on arm64,
-> > > > this
-> > > > will break compile everywhere else.  And this API is complete
-> > > > crap.
-> > > > Passing kernel virtual addresses as unsigned long just sucks,
-> > > > and
-> > > > passing an integer argument for valid/non-valid also is a
-> > > > horrible
-> > > > API.
-> > > > 
-> > > 
-> > > ... and as I pointed out before, you can still pass rodata=off on
-> > > arm64, and get the old behavior, in which case bad things will
-> > > happen
-> > > if you try to use an API that expects to operate on page mappings
-> > > with
-> > > a 1 GB block mapping.
-> > > 
-> > 
-> > Thanks for your suggestion.
-> > 
-> > 
-> > > And you still haven't explained what the actual problem is: is
-> > > this
-> > > about CPU speculation corrupting non-cache coherent inbound DMA?
-> > 
-> > No corrupiton, only cpu read it, we hope to fix the behavior.
-> > 
-> 
-> Fix which behavior? Please explain
-> 
-> 1) the current behavior
-We call dma_direct_alloc() with DMA_ATTR_NO_KERNEL_MAPPING to get the
-allocated buffer and the kernel mapping is exist. Our goal is this
-buffer doesn't allow to be accessed by cpu. Unfortunately, we see cpu
-speculation to read it. So we need to fix it and don't use no-map the
-way.
+From: Marc Ferland <ferlandm@amotus.ca>
 
-> 2) why the current behavior is problematic for you
-dma_direct_alloc() with DMA_ATTR_NO_KERNEL_MAPPING have kernel mapping,
-so it still has cpu speculation read the buffer. Although we have
-hardware to protect the buffer, we still hope use software to fix it.
+The pcf85063 driver regsitration currently supports the "compatible"
+property type of matching (for DT).
 
-> 3) how this patch changes the current behavior
-When call dma_direct_alloc() with DMA_ATTR_NO_KERNEL_MAPPING, then
-remove the kernel mapping which belong to the buffer.
+This patch adds "matching by name" support to the driver by defining
+an i2c_device_id table and setting the id_table parameter in the
+i2c_driver struct.
 
-> 4) why the new behavior fixes your problem.
-If I understand correctly, want to block cpu speculation, then need
-unmap the buffer at stage 1 and stage 2 page table and tlb invalidate.
-This patch is to do stage 1 unmap at EL1.
+This will, for example, make the driver easier to instantiate on
+systems where CONFIG_OF is not enabled (x86 in my case).
 
-> 
-> There is no penalty for using too many words.
+Signed-off-by: Marc Ferland <ferlandm@amotus.ca>
+---
+ drivers/rtc/rtc-pcf85063.c | 92 +++++++++++++++++++++++++-------------
+ 1 file changed, 61 insertions(+), 31 deletions(-)
 
-Thanks.
-Walter
+diff --git a/drivers/rtc/rtc-pcf85063.c b/drivers/rtc/rtc-pcf85063.c
+index 14da4ab30104..521607213ada 100644
+--- a/drivers/rtc/rtc-pcf85063.c
++++ b/drivers/rtc/rtc-pcf85063.c
+@@ -500,21 +500,56 @@ static struct clk *pcf85063_clkout_register_clk(struct pcf85063 *pcf85063)
+ }
+ #endif
+ 
+-static const struct pcf85063_config pcf85063tp_config = {
+-	.regmap = {
+-		.reg_bits = 8,
+-		.val_bits = 8,
+-		.max_register = 0x0a,
++enum pcf85063_type {
++	PCF85063,
++	PCF85063TP,
++	PCF85063A,
++	RV8263,
++};
++
++static struct pcf85063_config pcf85063_cfg[] = {
++	[PCF85063] = {
++		.regmap = {
++			.reg_bits = 8,
++			.val_bits = 8,
++			.max_register = 0x0a,
++		},
++	},
++	[PCF85063TP] = {
++		.regmap = {
++			.reg_bits = 8,
++			.val_bits = 8,
++			.max_register = 0x0a,
++		},
++	},
++	[PCF85063A] = {
++		.regmap = {
++			.reg_bits = 8,
++			.val_bits = 8,
++			.max_register = 0x11,
++		},
++		.has_alarms = 1,
++	},
++	[RV8263] = {
++		.regmap = {
++			.reg_bits = 8,
++			.val_bits = 8,
++			.max_register = 0x11,
++		},
++		.has_alarms = 1,
++		.force_cap_7000 = 1,
+ 	},
+ };
+ 
++static const struct i2c_device_id pcf85063_ids[];
++
+ static int pcf85063_probe(struct i2c_client *client)
+ {
+ 	struct pcf85063 *pcf85063;
+ 	unsigned int tmp;
+ 	int err;
+-	const struct pcf85063_config *config = &pcf85063tp_config;
+-	const void *data = of_device_get_match_data(&client->dev);
++	const struct pcf85063_config *config;
++	enum pcf85063_type type;
+ 	struct nvmem_config nvmem_cfg = {
+ 		.name = "pcf85063_nvram",
+ 		.reg_read = pcf85063_nvmem_read,
+@@ -530,8 +565,12 @@ static int pcf85063_probe(struct i2c_client *client)
+ 	if (!pcf85063)
+ 		return -ENOMEM;
+ 
+-	if (data)
+-		config = data;
++	if (client->dev.of_node)
++		type = (enum pcf85063_type)of_device_get_match_data(&client->dev);
++	else
++		type = i2c_match_id(pcf85063_ids, client)->driver_data;
++
++	config = &pcf85063_cfg[type];
+ 
+ 	pcf85063->regmap = devm_regmap_init_i2c(client, &config->regmap);
+ 	if (IS_ERR(pcf85063->regmap))
+@@ -590,31 +629,21 @@ static int pcf85063_probe(struct i2c_client *client)
+ 	return devm_rtc_register_device(pcf85063->rtc);
+ }
+ 
+-#ifdef CONFIG_OF
+-static const struct pcf85063_config pcf85063a_config = {
+-	.regmap = {
+-		.reg_bits = 8,
+-		.val_bits = 8,
+-		.max_register = 0x11,
+-	},
+-	.has_alarms = 1,
+-};
+-
+-static const struct pcf85063_config rv8263_config = {
+-	.regmap = {
+-		.reg_bits = 8,
+-		.val_bits = 8,
+-		.max_register = 0x11,
+-	},
+-	.has_alarms = 1,
+-	.force_cap_7000 = 1,
++static const struct i2c_device_id pcf85063_ids[] = {
++	{ "pcf85063", PCF85063 },
++	{ "pcf85063tp", PCF85063TP },
++	{ "pcf85063a", PCF85063A },
++	{ "rv8263", RV8263 },
++	{}
+ };
++MODULE_DEVICE_TABLE(i2c, pcf85063_ids);
+ 
++#ifdef CONFIG_OF
+ static const struct of_device_id pcf85063_of_match[] = {
+-	{ .compatible = "nxp,pcf85063", .data = &pcf85063tp_config },
+-	{ .compatible = "nxp,pcf85063tp", .data = &pcf85063tp_config },
+-	{ .compatible = "nxp,pcf85063a", .data = &pcf85063a_config },
+-	{ .compatible = "microcrystal,rv8263", .data = &rv8263_config },
++	{ .compatible = "nxp,pcf85063", .data =  (void *)PCF85063 },
++	{ .compatible = "nxp,pcf85063tp", .data = (void *)PCF85063TP },
++	{ .compatible = "nxp,pcf85063a", .data = (void *)PCF85063A },
++	{ .compatible = "microcrystal,rv8263", .data = (void *)RV8263 },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, pcf85063_of_match);
+@@ -626,6 +655,7 @@ static struct i2c_driver pcf85063_driver = {
+ 		.of_match_table = of_match_ptr(pcf85063_of_match),
+ 	},
+ 	.probe_new	= pcf85063_probe,
++	.id_table	= pcf85063_ids,
+ };
+ 
+ module_i2c_driver(pcf85063_driver);
+-- 
+2.30.2
 
