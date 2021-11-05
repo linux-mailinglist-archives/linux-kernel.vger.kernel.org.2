@@ -2,169 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52AB844606E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 09:07:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 502F14460A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 09:25:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232614AbhKEIKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 04:10:19 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:54297 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231590AbhKEIKS (ORCPT
+        id S232700AbhKEI2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 04:28:21 -0400
+Received: from m13129.mail.163.com ([220.181.13.129]:41880 "EHLO
+        m13129.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232697AbhKEI2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 04:10:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1636099659; x=1667635659;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=e+EAw8a3Iw36rX9s0rmMRPvR1rewtX3f6M8O/rTcgZc=;
-  b=dtZ8jB6VZyiaVU25k/p+VIaIKI6YZVU0m4HKVqMJAfi51nXuYWTGQ/hq
-   mNTE47cIjpWX4rn+7I9GreveTl2oa7M6TzN8sW0F8FJbOdBdFPXoaDW/T
-   sFPbcOL01McKlWXkdEWVvkXZTx33JhYV0dCY6cPN4CwzYCVcJIh5Zg/RA
-   4=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 05 Nov 2021 01:07:38 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 01:07:38 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Fri, 5 Nov 2021 01:07:38 -0700
-Received: from jinlmao-gv.ap.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Fri, 5 Nov 2021 01:07:34 -0700
-Date:   Fri, 5 Nov 2021 16:07:31 +0800
-From:   Jinlong <quic_jinlmao@quicinc.com>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-CC:     Tao Zhang <quic_taozha@quicinc.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>
-Subject: Re: [PATCH 10/10] ARM: dts: msm: Add TPDA and TPDM support to DTS
- for RB5
-Message-ID: <20211105080726.GA25738@jinlmao-gv.ap.qualcomm.com>
-References: <1634801936-15080-1-git-send-email-quic_taozha@quicinc.com>
- <1634801936-15080-11-git-send-email-quic_taozha@quicinc.com>
- <a372fe18-e1c8-57cd-8986-b4d6dbca091b@arm.com>
+        Fri, 5 Nov 2021 04:28:15 -0400
+X-Greylist: delayed 910 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Nov 2021 04:28:13 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=TYmsT
+        PMh1S1uZPE8+HxVwSC8u/rKKcdbz/7ZGfwVB80=; b=RY/pKRcMMSkB5nmp3w0B5
+        MtIZeG97Pvf+C6DEasZ3jMiJLU69PqpZk+l2tYoInCgpcHt2dO/q/4B5xhdBbQmT
+        7wo6Lr31/vSr3UIE8BQwrBjC+9jVkVjN4y8/E7n1VwCFGhV8evKGS7/hqnmrnIsw
+        cnRUrXkqPVAOjpxbsneC/E=
+Received: from slark_xiao$163.com ( [112.97.59.196] ) by
+ ajax-webmail-wmsvr129 (Coremail) ; Fri, 5 Nov 2021 16:10:16 +0800 (CST)
+X-Originating-IP: [112.97.59.196]
+Date:   Fri, 5 Nov 2021 16:10:16 +0800 (CST)
+From:   "Slark Xiao" <slark_xiao@163.com>
+To:     "Manivannan Sadhasivam" <mani@kernel.org>
+Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re:Re: [PATCH v2] bus: mhi: pci_generic: Add new device ID support
+ for T99W175
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
+ Copyright (c) 2002-2021 www.mailtech.cn 163com
+In-Reply-To: <20211102035632.GA5646@thinkpad>
+References: <20211029104918.3976-1-slark_xiao@163.com>
+ <20211102035632.GA5646@thinkpad>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <a372fe18-e1c8-57cd-8986-b4d6dbca091b@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Message-ID: <3baf9d54.30a5.17cef25fd60.Coremail.slark_xiao@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: gcGowAB3EPro5oRhCknaAA--.48034W
+X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/1tbivxs-ZFWBwOEAhgACsO
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the review, Suzuki.  
-
-On Thu, Nov 04, 2021 at 09:45:08AM +0000, Suzuki K Poulose wrote:
-> On 21/10/2021 08:38, Tao Zhang wrote:
-> > Add TPDA and TPDM support to DTS for RB5 board. This change is a
-> > sample for validating. After applying this patch, the new TPDM and
-> > TPDA nodes can be observed at the coresight devices path. TPDM and
-> > TPDA hardware can be operated by commands.
-> > 
-> > List the commands for validating this series patches as below.
-> > echo 1 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-> > echo 1 > /sys/bus/coresight/devices/tpdm0/enable_source
-> > echo 1 > /sys/bus/coresight/devices/tpdm0/integration_test
-> > echo 2 > /sys/bus/coresight/devices/tpdm0/integration_test
-> > cat /dev/tmc_etf0 > /data/etf-tpdm0.bin
-> > echo 0 > /sys/bus/coresight/devices/tpdm0/enable_source
-> > echo 0 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-> > echo 1 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-> > echo 1 > /sys/bus/coresight/devices/tpdm1/enable_source
-> > echo 1 > /sys/bus/coresight/devices/tpdm1/integration_test
-> > echo 2 > /sys/bus/coresight/devices/tpdm1/integration_test
-> > cat /dev/tmc_etf0 > /data/etf-tpdm1.bin
-> > echo 0 > /sys/bus/coresight/devices/tpdm1/enable_source
-> > echo 0 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-> > echo 1 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-> > echo 1 > /sys/bus/coresight/devices/tpdm2/enable_source
-> > echo 1 > /sys/bus/coresight/devices/tpdm2/integration_test
-> > echo 2 > /sys/bus/coresight/devices/tpdm2/integration_test
-> > cat /dev/tmc_etf0 > /data/etf-tpdm2.bin
-> > echo 0 > /sys/bus/coresight/devices/tpdm2/enable_source
-> > echo 0 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
-> > 
-> 
-> 
-> 
-> > If the data from TPDMs can be obtained from the ETF, it means
-> > that the TPDMs verification is successful. At the same time,
-> 
-> 
-> How can we decode the TPDM trace ? Is there a public decoder
-> available ?
-> 
-
-There is an internal tool on PC host to parse the TPDM trace. 
-
-> > since TPDM0, TPDM1 and TPDM2 are all connected to the same
-> > funnel "funnel@6c2d000" and output via different output ports,
-> > it also means that the following patches verification is
-> > successful.
-> > coresight: add support to enable more coresight paths
-> > coresight: funnel: add support for multiple output ports
-> > 
-> > Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
-> > ---
-> >   arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 439 +++++++++++++++++++++++
-> >   1 file changed, 439 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> > index 8ac96f8e79d4..bcec8b181e11 100644
-> > --- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> > +++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> > @@ -222,6 +222,445 @@
-> 
-> 
-> > +
-> > +	funnel@6b04000 {
-> > +		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-> > +		arm,primecell-periphid = <0x000bb908>;
-> > +
-> > +		reg = <0 0x6b04000 0 0x1000>;
-> > +		reg-names = "funnel-base";
-> > +
-> > +		clocks = <&aoss_qmp>;
-> > +		clock-names = "apb_pclk";
-> > +
-> > +		out-ports {
-> > +			port {
-> > +				merge_funnel_out: endpoint {
-> > +					remote-endpoint =
-> > +						<&etf_in>;
-> > +				};
-> > +			};
-> > +		};
-> > +
-> > +		in-ports {
-> > +			#address-cells = <1>;
-> > +			#size-cells = <0>;
-> > +
-> > +			port@7 {
-> > +				reg = <7>;
-> > +				swao_funnel_in7: endpoint {
-> 
-> > +					slave-mode;
-> 
-> This is obsolete, with the new in-ports/out-ports construct.
-> 
-
-We will check and update.
-
-> Suzuki
+CgpBdCAyMDIxLTExLTAyIDExOjU2OjMyLCAiTWFuaXZhbm5hbiBTYWRoYXNpdmFtIiA8bWFuaUBr
+ZXJuZWwub3JnPiB3cm90ZToKPk9uIEZyaSwgT2N0IDI5LCAyMDIxIGF0IDA2OjQ5OjE4UE0gKzA4
+MDAsIFNsYXJrIFhpYW8gd3JvdGU6Cj4+IEFkZCBuZXcgZGV2aWNlIElEIDB4ZTBiZiBmb3IgVDk5
+VzE3NS4KPj4gVGhpcyBkZXZpY2UgSUQgaXMgY3JlYXRlZCBiZWNhdXNlIGl0IGlzIHVzaW5nIFF1
+YWxjb21tIFNEWDU1IG5ldyBiYXNlIGxpbmUuCj4+IAo+PiBUZXN0IGV2aWRlbmNlIGFzIGJlbG93
+Ogo+PiByb290QGpiZC1UaGlua1BhZC1QMS1HZW4tNDovZGV2IyBsc3BjaSAtbm4gfCBncmVwIEZv
+eGNvbm4KPj4gMDAwMDowODowMC4wIFdpcmVsZXNzIGNvbnRyb2xsZXIgWzBkNDBdOiBGb3hjb25u
+IEludGVybmF0aW9uYWwsIEluYy4gRGV2aWNlIFsxMDViOmUwYmZdCj4+IHJvb3RAamJkLVRoaW5r
+UGFkLVAxLUdlbi00Oi9kZXYjIGNhdCB3d2FuMGF0MCAmIGVjaG8gLW5lICJhdGlcciIgPiB3d2Fu
+MGF0MAo+PiBbMl0gMjk3Nwo+PiByb290QGpiZC1UaGlua1BhZC1QMS1HZW4tNDovZGV2IyBhdGkK
+Pj4gTWFudWZhY3R1cmVyOiBRdWFsY29tbQo+PiBNb2RlbDogVDk5VzE3NQo+PiBSZXZpc2lvbjog
+VDk5VzE3NS5GMC42LjAuMC42LkNDLjAwNSAgMSAgW09jdCAyMSAyMDIxIDEwOjAwOjAwXQo+PiBJ
+TUVJOgo+PiArR0NBUDogK0NHU00KPj4gCj4+IE9LCj4+IAo+PiBTaWduZWQtb2ZmLWJ5OiBTbGFy
+ayBYaWFvIDxzbGFya194aWFvQDE2My5jb20+Cj4KPlJldmlld2VkLWJ5OiBNYW5pdmFubmFuIFNh
+ZGhhc2l2YW0gPG1hbmlAa2VybmVsLm9yZz4KPgo+VGhhbmtzLAo+TWFuaQo+CkhpIE1hbmksCiAg
+ICBXaGF0J3Mgb3VyIG5leHQgc3RlcD8gSSBkaWRuJ3Qgc2VlIGFueSByZWplY3Qgb3IgY29uZmly
+bSBlbWFpbC4KICAgQ291bGQgeW91IGhlbHAgYXBwbHkgaXQgaWYgdGhlcmUgaXMgbm8gY29uY2Vy
+bj8KClRoYW5rcwpTbGFyawo+PiAtLS0KPj4gCj4+IHYyOiBBZGQgZGVzY3JpcHRpb25zIGFib3V0
+IHRoZSBkZmlpZmVyZW5jZSBiZXR3ZWVuIDB4ZTBhYiBhbmQgMHhlb2JmLgo+PiAtLS0KPj4gIGRy
+aXZlcnMvYnVzL21oaS9wY2lfZ2VuZXJpYy5jIHwgMyArKysKPj4gIDEgZmlsZSBjaGFuZ2VkLCAz
+IGluc2VydGlvbnMoKykKPj4gCj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2J1cy9taGkvcGNpX2dl
+bmVyaWMuYyBiL2RyaXZlcnMvYnVzL21oaS9wY2lfZ2VuZXJpYy5jCj4+IGluZGV4IDU5YTQ4OTZh
+ODAzMC4uOTRkOGFhOWMyZWFlIDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJzL2J1cy9taGkvcGNpX2dl
+bmVyaWMuYwo+PiArKysgYi9kcml2ZXJzL2J1cy9taGkvcGNpX2dlbmVyaWMuYwo+PiBAQCAtNDIz
+LDYgKzQyMyw5IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgcGNpX2RldmljZV9pZCBtaGlfcGNpX2lk
+X3RhYmxlW10gPSB7Cj4+ICAJLyogRFc1OTMwZSAoc2R4NTUpLCBOb24tZVNJTSwgSXQncyBhbHNv
+IFQ5OVcxNzUgKi8KPj4gIAl7IFBDSV9ERVZJQ0UoUENJX1ZFTkRPUl9JRF9GT1hDT05OLCAweGUw
+YjEpLAo+PiAgCQkuZHJpdmVyX2RhdGEgPSAoa2VybmVsX3Vsb25nX3QpICZtaGlfZm94Y29ubl9z
+ZHg1NV9pbmZvIH0sCj4+ICsJLyogVDk5VzE3NSAoc2R4NTUpLCBCYXNlZCBvbiBRdWFsY29tbSBu
+ZXcgYmFzZWxpbmUgKi8KPj4gKwl7IFBDSV9ERVZJQ0UoUENJX1ZFTkRPUl9JRF9GT1hDT05OLCAw
+eGUwYmYpLAo+PiArCQkuZHJpdmVyX2RhdGEgPSAoa2VybmVsX3Vsb25nX3QpICZtaGlfZm94Y29u
+bl9zZHg1NV9pbmZvIH0sCj4+ICAJLyogTVYzMS1XIChDaW50ZXJpb24pICovCj4+ICAJeyBQQ0lf
+REVWSUNFKDB4MTI2OSwgMHgwMGIzKSwKPj4gIAkJLmRyaXZlcl9kYXRhID0gKGtlcm5lbF91bG9u
+Z190KSAmbWhpX212MzFfaW5mbyB9LAo+PiAtLSAKPj4gMi4yNS4xCj4+IAo=
