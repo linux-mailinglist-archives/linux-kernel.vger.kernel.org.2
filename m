@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E4E446020
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 08:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F287446023
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 08:34:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232186AbhKEHfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 03:35:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhKEHfo (ORCPT
+        id S232353AbhKEHgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 03:36:44 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:57361 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhKEHgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 03:35:44 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183BEC061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 00:33:05 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id s5so8191253pfg.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 00:33:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ILPfUPNM7ARSRqsqeKDzED+z7SvdoX2q4zRig2wDJzY=;
-        b=ejONK/yl9uyxiHYN3bBPHGU0MGI9HlKKKqbPUY7w0X7QjtEp5wxcfYo7ZC8R7NMUMM
-         j5QLeuEMV14mIx3v3X/ROIAiW+DocOBXROZp7C9uWK0nna7bFuHBGuc8mBhcNOmuMZ9k
-         986ROV0oMblP2WlqKKEOOZTOxJBS6EPMzMut7LLvw4OXmc69dmtiT+Q3ByEJk7BHrlPZ
-         GnEchP1Stkksra6suqzc619SCyvpk9Yu4/VVJ9sGzmXU6eZEho8CTQVm+ovK7fvgCxlW
-         EUl7wVWS6zB4nzi4quyYowPR3hi8K9Sk9CWcqWvjanB7R/dmhNcfaYGUPaDPbS0jUZL0
-         2n8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ILPfUPNM7ARSRqsqeKDzED+z7SvdoX2q4zRig2wDJzY=;
-        b=FXD9jZGeDzzwtdauvV8G77r8HhgSZwcdqoG1PVLhYmUNG1QaNII7aWroqdjuT7lRdZ
-         hlQ2Ekgb4nuItzobnhgAHE9sj1r8CGrj5HKAPsfW67TW24MYipNxWpKroqCCqhfqIeO1
-         99AtvVL+W54wFjA4tuJWV1mnH+mwGtcyvAsd2ygp+QLXMMB4VbcnetGPRkTiXjpZ0sIu
-         +9I/7K6WtoXq0S0xVGvoYknqgFTgmYOvFgyf1QODwxJCEmxVWqRIYYGh7UAFbKvMtmeo
-         wRK/9pB12xz3AGPNGAcb/IEekE/8UcXrseUMumtcAArA0k0BtADKMNir8jnyZIkSGQ3z
-         8/2Q==
-X-Gm-Message-State: AOAM530uifJoI4KxcX7vCJNv4p5IzjjxdLy59AdXjf1maaW2EPaf9zVi
-        ml2ZaFpI/HK+c4tQIhAfs1o=
-X-Google-Smtp-Source: ABdhPJx+y+OOYGt/FYjauC80Z3957xc53+A6rSMV4CgMStt+pMYzxp5WbobRRmirOvyTSu3CtqhNwg==
-X-Received: by 2002:a63:5664:: with SMTP id g36mr32365872pgm.243.1636097584651;
-        Fri, 05 Nov 2021 00:33:04 -0700 (PDT)
-Received: from debian11-dev-61.localdomain (192.243.120.180.16clouds.com. [192.243.120.180])
-        by smtp.gmail.com with ESMTPSA id p4sm6699159pfo.73.2021.11.05.00.33.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 00:33:04 -0700 (PDT)
-From:   davidcomponentone@gmail.com
-X-Google-Original-From: yang.guang5@zte.com.cn
-To:     dan.carpenter@oracle.com
-Cc:     davidcomponentone@gmail.com, gregkh@linuxfoundation.org,
-        ivan.zaentsev@wirenboard.ru, linux-kernel@vger.kernel.org,
-        unixbhaskar@gmail.com, yang.guang5@zte.com.cn,
-        yangyingliang@huawei.com, zbr@ioremap.net, zealci@zte.com.cn
-Subject: [PATCH v2] w1: w1_therm: use swap() to make code cleaner
-Date:   Fri,  5 Nov 2021 15:32:44 +0800
-Message-Id: <d687b56df7dc93497bc78e5c337fc05711b5d98a.1636097083.git.yang.guang5@zte.com.cn>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211104110900.GB3164@kadam>
-References: <20211104110900.GB3164@kadam>
+        Fri, 5 Nov 2021 03:36:43 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MhlbM-1mDwhn0QXg-00dpmI; Fri, 05 Nov 2021 08:34:03 +0100
+Received: by mail-wr1-f47.google.com with SMTP id d24so12347860wra.0;
+        Fri, 05 Nov 2021 00:34:02 -0700 (PDT)
+X-Gm-Message-State: AOAM532B4KHfzlnjmea5CyCDL0lzYJegFrNYMJGF+gZDGX9naPQQMSBy
+        attsLfFm59dKXIHU8g9RA0BhqAR5ceOYCU2hmsU=
+X-Google-Smtp-Source: ABdhPJxvgRJPgoHjp3Cm93c7+bPfQdEEsl8T8GZMpa2HolMmJsY0qE+7xHA+Q4coi6dknDfQ3FB44LNPH6v6UQU/yn8=
+X-Received: by 2002:adf:d1c2:: with SMTP id b2mr6829494wrd.369.1636097642645;
+ Fri, 05 Nov 2021 00:34:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211105035959.93748-1-masahiroy@kernel.org> <20211105035959.93748-4-masahiroy@kernel.org>
+In-Reply-To: <20211105035959.93748-4-masahiroy@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 5 Nov 2021 08:33:46 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3YshR=gXWL1co0ZhAAV+7CymC437-=77rcgTQjPiDfQg@mail.gmail.com>
+Message-ID: <CAK8P3a3YshR=gXWL1co0ZhAAV+7CymC437-=77rcgTQjPiDfQg@mail.gmail.com>
+Subject: Re: [PATCH 3/5] certs: remove noisy messages while generating the
+ signing key
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        keyrings@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Ufv6VCK9QyNS6wKk906HEWp6XSjH1SX4vDET4vs/HrEea3MZxL8
+ r3/x/1jpEUPkfMMgBEmcrgWTPCKsJKwNICZiQ9HwrnRWuzAwVUD6EEbMrOB8lFNqUB6E7wy
+ tpJ04lx27RZuGHMYR4BfyZX9bc7ov5ZA2Adw/u0sOmrnR/n8pFBkoqbaq6pEK/cSoB6QAvP
+ g5XmF2gxGydOWFK+fGtTQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LGcYgYDlXTk=:Ls2MeMTTvIuFoWp5GNZIZq
+ xwLGMMZLpu0wLA0AdCCLR71pw581IwtUoXSQqzlsn0mCpp7EHCuIRGZSPSX1/UBg7pp2VOW7m
+ Ne28zaQCIhFk4Ni2lBGepHgL7XNqvNsXN1MlwoaFzC7VbkrZuRpR67P9cQFZq1NOtsTytOteS
+ Krn4Z5kElF+Q0Fn6ygenKmjjcJaAo4Ze6o59WnnaTQdeD72Heh03/X51G9CUsL0+C7aYiBxIl
+ M0/tDe2rvwv5luFfwZXplHuyN69uYJsNGoZb+m4htZ33pGAdu+2l3+FP0Dtn5+Xa2cQzOJeTk
+ tXJ+Kp2cDITJhea3Xer85gfrLb2aqDrzrvVQNZOHOQ4YblMntYzfyYBxzohAgnebgDx1kCA8A
+ UmSyglDNEyl1sb++kVtBi2LGn201U/hxUyuclh7uHXMGR+8kCO8TeGhx03h0+T/Anl4kb2dfU
+ 9rSl7SfIQ3t/l5U4kzgfWMxFsXazO5NzPTYTZRA1hQ0+lG8iLlKf8P/Z3jNZKlKdeT0Hq7D87
+ 234WYdLcUvdbjKnotd0qgxW2n12V3UlrFY0Wt1K+ePJetf03+xeYMP/t7boBJ7L5OOocC1OzW
+ 0CmWiYUDT38t+jAwfCHKtHf6wtTxte0IqGJrlx0ZD+7LjinxOrU2sx3NZDrayDnHRHFrUByO+
+ fpa8Trr4RMs24ND0Hdqhn6GzSecjwgycCSLSE46PovrMgLIXR48u/3otzGr4QxFG4I0I=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Guang <yang.guang5@zte.com.cn>
+On Fri, Nov 5, 2021 at 4:59 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> When you run Kbuild with the parallel option -j, the messages from this
+> rule and others are interleaved, like follows:
+>
+>     ###
+>       CC      arch/x86/mm/pat/set_memory.o
+>     ### Now generating an X.509 key pair to be used for signing modules.
+>     ###
+>     ### If this takes a long time, you might wish to run rngd in the
+>     ### background to keep the supply of entropy topped up.  It
+>       CC      arch/x86/events/intel/bts.o
+>       HDRTEST usr/include/linux/qnx4_fs.h
+>       CC      arch/x86/events/zhaoxin/core.o
+>     ### needs to be run as root, and uses a hardware random
+>     ### number generator if one is available.
+>       AR      init/built-in.a
+>     ###
+>
+> On modern machines, it does not take a long time to generate the key.
+>
+> Remove the ugly log messages.
 
-Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
-opencoding it.
+I have no real objection to this, but I would still point out that
+the warning message may still be helpful for those building
+in a virtual machine or some other environment without a hwrng,
+and that most people wouldn't see the message anway if they
+built with 'make -s', at least after my 5d06ee20b662 ("modsign:
+hide openssl output in silent builds").
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
----
- drivers/w1/slaves/w1_therm.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+I wonder if it would be time to change the default output to
+be more quiet, by degrading it one level, like
 
-diff --git a/drivers/w1/slaves/w1_therm.c b/drivers/w1/slaves/w1_therm.c
-index ca70c5f03206..565578002d79 100644
---- a/drivers/w1/slaves/w1_therm.c
-+++ b/drivers/w1/slaves/w1_therm.c
-@@ -1785,7 +1785,7 @@ static ssize_t alarms_store(struct device *device,
- 	u8 new_config_register[3];	/* array of data to be written */
- 	int temp, ret;
- 	char *token = NULL;
--	s8 tl, th, tt;	/* 1 byte per value + temp ring order */
-+	s8 tl, th;	/* 1 byte per value + temp ring order */
- 	char *p_args, *orig;
- 
- 	p_args = orig = kmalloc(size, GFP_KERNEL);
-@@ -1836,9 +1836,8 @@ static ssize_t alarms_store(struct device *device,
- 	th = int_to_short(temp);
- 
- 	/* Reorder if required th and tl */
--	if (tl > th) {
--		tt = tl; tl = th; th = tt;
--	}
-+	if (tl > th)
-+		swap(tl, th);
- 
- 	/*
- 	 * Read the scratchpad to change only the required bits
--- 
-2.30.2
+                    old           new
+only warnings       make -s       make
+CC file.o           make          make V=1
+full cmdline        make V=1      make V=2
 
+This would take some time to adjust to, but it does sound like
+a more reasonable default. Does anyone still build without -s
+in practice?
+
+        Arnd
