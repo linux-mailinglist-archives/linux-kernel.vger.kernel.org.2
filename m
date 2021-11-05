@@ -2,127 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1651544696E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 21:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5C1446970
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 21:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbhKEULF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 16:11:05 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:16998 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229698AbhKEULD (ORCPT
+        id S233332AbhKEUNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 16:13:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229698AbhKEUNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 16:11:03 -0400
+        Fri, 5 Nov 2021 16:13:00 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35851C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 13:10:20 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id h11so16872425ljk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 13:10:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1636142904; x=1667678904;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=iEQyOxEpu1v2n/yjp3OP13AcVAy+o4Y94WT9P1jQb/Q=;
-  b=cvwNZeD3txYK7Ua4y3leTcyIze9BxN63bUDgobJSR1IVPi67f3rm4L6f
-   uOr3wVBDugCbkxDKctzeq9x5Q70r3j8Pk1YXolk14VxdLrSbucJZJTXk1
-   UPKJRZYdnTh8nZTdfexPHcSLq+y5PShNdxEQSVOxYqCKjUjs/BanPJ4rj
-   Q=;
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 05 Nov 2021 13:08:23 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 13:08:23 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Fri, 5 Nov 2021 13:08:23 -0700
-Received: from [10.47.233.232] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Fri, 5 Nov 2021
- 13:08:22 -0700
-Subject: Re: [RESEND PATCH v2] thermal: Fix a NULL pointer dereference
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-CC:     Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Collins <quic_collinsd@quicinc.com>,
-        Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>,
-        Stable <stable@vger.kernel.org>
-References: <1636070227-15909-1-git-send-email-quic_subbaram@quicinc.com>
- <CAJZ5v0gONybD_pVCAq6ZJTMuStXtoF064u9qPYxco4y=b-JD9A@mail.gmail.com>
- <c7ede029-b75f-e57e-24f1-9633d5d47401@linaro.org>
- <CAJZ5v0j1TDe0ZiBg_ju-JDuCsBDb_exueRDUwCcJ6VD_=fbzjg@mail.gmail.com>
-From:   Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
-Message-ID: <6fd1b6ca-15fc-757b-8755-7f8ec4110bcc@quicinc.com>
-Date:   Fri, 5 Nov 2021 13:08:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xctl1x0wAPIpZlnq6f38f2NZp6soUETgtNqOArwJJzM=;
+        b=S901sIe1SJGG93aoKfsS855Gm77PThXsiZdupcnF8NawwhnX20BnCJNfQRT7I0TxMO
+         7NcAAYhXDHJaMszjR1y7zPAZkWv7APWLkT8ZjLXDov83/KLwmoy6vSVUnhLxm7eKCBnK
+         dnez262baGeTrvWDGsfHLH47V/gt1WwLxxsskLRbr4mPEUnmM1M9YLeaTXMjsmUhfvD0
+         zPTBNTsyQG9JU5oXRLaS2d/xgnmCgHpaUo+yg0DZFT3D9+wtTukXpxUdHVEFlOneVsvW
+         exrKtYaaOXZXXs6rOfxP6fuZjnNVZy5PAbZCtFKzOZ6w4c1y9/WRhoYskeoMslhytMZF
+         qKSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xctl1x0wAPIpZlnq6f38f2NZp6soUETgtNqOArwJJzM=;
+        b=2ErMh5jzlufY80U1e5IWZSRQ9hio0zDrX0lbKSLK7EYM+r2viEXWlIlFaH/beBu/DN
+         ZlaPQb9MolwoAlxfCQlHr6f76Lkx9GK7HRTh1qB5aZ1MLt3DX8pYKFu47WXVtMUyT1RJ
+         YF9pVGNMTDfQFmmv/Wy/lfXCDAlw+JuAPc6oaAFZeQ8dkzdFP5kczml5QuFobpuZzSD3
+         9vNa6KOVNCjraOgT24GzMueS0uZ2KyuzQWBY/+bGBYQwwm3TWKm4Z0Xkb9IqQlfLrypD
+         m0EFBP9pxbBGYbWw0bvE7GLCqCjFKf+qSqfOTcaNXGBH5MaFg1HbBE6S65nZdIdTMX3p
+         5w/A==
+X-Gm-Message-State: AOAM530/7C9gRyFQ+dsCq9pOr8dVNnAv58Ee9IzAhdc8u3cdr4kKOKO8
+        vj/2FYQfWydvtnvUifgkCDWweg/OsOVLwfxVZrXY5w==
+X-Google-Smtp-Source: ABdhPJz/pNuybxTziHGrKEHQAev7MHrqaTDzXDbZbR+tropi2HXYuNyxDQQ0qclanKRlpwBlP0UbmMJgxcTUW8EHNBU=
+X-Received: by 2002:a2e:834b:: with SMTP id l11mr31087388ljh.339.1636143017849;
+ Fri, 05 Nov 2021 13:10:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0j1TDe0ZiBg_ju-JDuCsBDb_exueRDUwCcJ6VD_=fbzjg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+References: <20211105162530.3307666-1-anders.roxell@linaro.org>
+In-Reply-To: <20211105162530.3307666-1-anders.roxell@linaro.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 5 Nov 2021 13:10:07 -0700
+Message-ID: <CAKwvOd=zLuKqo__MyKYdftMgM1Y9K68ppSddokHunrw1Y5qfuA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] selftests: cgroup: build error multiple outpt files
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     shuah@kernel.org, christian@brauner.io, nathan@kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Delgadillo <adelg@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/21 9:37 AM, Rafael J. Wysocki wrote:
-> On Fri, Nov 5, 2021 at 5:19 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->> On 05/11/2021 16:14, Rafael J. Wysocki wrote:
->>> On Fri, Nov 5, 2021 at 12:57 AM Subbaraman Narayanamurthy
->>> <quic_subbaram@quicinc.com> wrote:
->>>> of_parse_thermal_zones() parses the thermal-zones node and registers a
->>>> thermal_zone device for each subnode. However, if a thermal zone is
->>>> consuming a thermal sensor and that thermal sensor device hasn't probed
->>>> yet, an attempt to set trip_point_*_temp for that thermal zone device
->>>> can cause a NULL pointer dereference. Fix it.
->>>>
->>>>  console:/sys/class/thermal/thermal_zone87 # echo 120000 > trip_point_0_temp
->>>>  ...
->>>>  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
->>>>  ...
->>>>  Call trace:
->>>>   of_thermal_set_trip_temp+0x40/0xc4
->>>>   trip_point_temp_store+0xc0/0x1dc
->>>>   dev_attr_store+0x38/0x88
->>>>   sysfs_kf_write+0x64/0xc0
->>>>   kernfs_fop_write_iter+0x108/0x1d0
->>>>   vfs_write+0x2f4/0x368
->>>>   ksys_write+0x7c/0xec
->>>>   __arm64_sys_write+0x20/0x30
->>>>   el0_svc_common.llvm.7279915941325364641+0xbc/0x1bc
->>>>   do_el0_svc+0x28/0xa0
->>>>   el0_svc+0x14/0x24
->>>>   el0_sync_handler+0x88/0xec
->>>>   el0_sync+0x1c0/0x200
->>>>
->>>> While at it, fix the possible NULL pointer dereference in other
->>>> functions as well: of_thermal_get_temp(), of_thermal_set_emul_temp(),
->>>> of_thermal_get_trend().
->>> Can the subject be more specific, please?
->>>
->>> The issue appears to be limited to the of_thermal_ family of
->>> functions, but the subject doesn't reflect that at all.
->>>
->>>> Suggested-by: David Collins <quic_collinsd@quicinc.com>
->>>> Signed-off-by: Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
->>> Daniel, any concerns regarding the code changes below?
->> I've a concern about the root cause but I did not have time to
->> investigate how to fix it nicely.
->>
->> thermal_of is responsible of introducing itself between the thermal core
->> code and the backend. So it defines the ops which in turn call the
->> sensor ops leading us to this problem.
->>
->> So, without a better solution, this fix can be applied until we rethink
->> the thermal_of approach.
->>
->> Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Thanks!
+On Fri, Nov 5, 2021 at 9:25 AM Anders Roxell <anders.roxell@linaro.org> wrote:
 >
-> I've queued it up for 5.16-rc as "thermal: Fix NULL pointer
-> dereferences in of_thermal_ functions".
+> When building selftests/cgroup: with clang the following error are seen:
 
-Thanks, Daniel and Rafael. So, I guess I don't need to send v3 with fixing commit subject right?
+Thanks for the patches!
 
--Subbaraman
+typo in subject/oneline, and the `:` above can be dropped.
+
+Andrew reported similar failures throughout selftests:
+https://lore.kernel.org/linux-kselftest/20211005222739.2491124-1-adelg@google.com/
+
+Both patches touch the same part of tools/testing/selftests/lib.mk.
+This approach looks cleaner to me, but it should reconcile the changes
+to tools/testing/selftests/filesystems/binderfs/Makefile that Andrew
+made in the link above.
+
+>
+> clang -Wall -pthread    test_memcontrol.c cgroup_util.c ../clone3/clone3_selftests.h  -o /home/anders/.cache/tuxmake/builds/current/kselftest/cgroup/test_memcontrol
+> clang: error: cannot specify -o when generating multiple output files
+> make[3]: *** [../lib.mk:146: /home/anders/.cache/tuxmake/builds/current/kselftest/cgroup/test_memcontrol] Error 1
+>
+> Rework to add the header files to LOCAL_HDRS before including ../lib.mk,
+> since the dependency is evaluated in '$(OUTPUT)/%:%.c $(LOCAL_HDRS)' in
+> file lib.mk.
+>
+> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> ---
+>  tools/testing/selftests/cgroup/Makefile | 12 +++++++-----
+>  tools/testing/selftests/lib.mk          |  2 +-
+>  2 files changed, 8 insertions(+), 6 deletions(-)
+>
+> diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
+> index 59e222460581..745fe25fa0b9 100644
+> --- a/tools/testing/selftests/cgroup/Makefile
+> +++ b/tools/testing/selftests/cgroup/Makefile
+> @@ -11,10 +11,12 @@ TEST_GEN_PROGS += test_core
+>  TEST_GEN_PROGS += test_freezer
+>  TEST_GEN_PROGS += test_kill
+>
+> +LOCAL_HDRS += $(selfdir)/clone3/clone3_selftests.h $(selfdir)/pidfd/pidfd.h
+> +
+>  include ../lib.mk
+>
+> -$(OUTPUT)/test_memcontrol: cgroup_util.c ../clone3/clone3_selftests.h
+> -$(OUTPUT)/test_kmem: cgroup_util.c ../clone3/clone3_selftests.h
+> -$(OUTPUT)/test_core: cgroup_util.c ../clone3/clone3_selftests.h
+> -$(OUTPUT)/test_freezer: cgroup_util.c ../clone3/clone3_selftests.h
+> -$(OUTPUT)/test_kill: cgroup_util.c ../clone3/clone3_selftests.h ../pidfd/pidfd.h
+> +$(OUTPUT)/test_memcontrol: cgroup_util.c
+> +$(OUTPUT)/test_kmem: cgroup_util.c
+> +$(OUTPUT)/test_core: cgroup_util.c
+> +$(OUTPUT)/test_freezer: cgroup_util.c
+> +$(OUTPUT)/test_kill: cgroup_util.c
+> diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+> index fe7ee2b0f29c..a40add31a2e3 100644
+> --- a/tools/testing/selftests/lib.mk
+> +++ b/tools/testing/selftests/lib.mk
+> @@ -141,7 +141,7 @@ endif
+>  # Selftest makefiles can override those targets by setting
+>  # OVERRIDE_TARGETS = 1.
+>  ifeq ($(OVERRIDE_TARGETS),)
+> -LOCAL_HDRS := $(selfdir)/kselftest_harness.h $(selfdir)/kselftest.h
+> +LOCAL_HDRS += $(selfdir)/kselftest_harness.h $(selfdir)/kselftest.h
+>  $(OUTPUT)/%:%.c $(LOCAL_HDRS)
+>         $(LINK.c) $(filter-out $(LOCAL_HDRS),$^) $(LDLIBS) -o $@
+>
+> --
+> 2.33.0
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
