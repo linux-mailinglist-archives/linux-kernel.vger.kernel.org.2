@@ -2,102 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE5C446958
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 20:55:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EAFB44695A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 20:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232824AbhKET55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 15:57:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232631AbhKET54 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 15:57:56 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B91C061205
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 12:55:16 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id p8so7874615pgh.11
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 12:55:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9BE6s8fqPo7si+9hU4rA5Zx86f+DZzTQse4zPUGhzI0=;
-        b=K2JJlQhfcPmTgqNvZMN022hVqYO6eH/8AxgqtQORXguKa8NM7Wo9wB2mxAZqdkfBJP
-         ppNT5YQE5mZot/jPo/6TlUfDTaT2X/TQF4QITNnD9iyLfm2WK1BHpKNEffle0LCGh2b4
-         sndnUuP6PC/3WEqL8sKDAROrX/WuH+koIv7G8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9BE6s8fqPo7si+9hU4rA5Zx86f+DZzTQse4zPUGhzI0=;
-        b=2hxz7mjXllRrdHk7R1PdfFjpJkjKqFo7miHMvtzewhfijkjgtNhIEkBi9hVzANBEdy
-         x1chJL8kpnL4dS5yzUSbWsZJFiOnkplDV7E42pzau1Mf0tEtAeEFi7pOII13uVu+fVL6
-         Yv2+l9OfXRlVBClQY9hGpC0i/NrFEPet1FPqlOrRJEpxfCtTwomC9uvGpTz1iedCh3Wn
-         mxzARxG8RyDud7shDS/K8tv9DJXEkPOrY1PsB2uma01ryQMwIyPJVoY0XzlFvniOMdL6
-         gh3dDNI3GahMRuaOOobOd0Q6csnZxoo52bHukUOUDTL7MpmGYM7etCu+NODuHAgbL6M8
-         L+QQ==
-X-Gm-Message-State: AOAM531sPeWN9glL9xQltOLLzE3ak04r2wgGxkxSYCyk8SLSyWgvYJjI
-        vAgLU1CXEl3r/EQoDdc3QtxVvA==
-X-Google-Smtp-Source: ABdhPJz6C1Esv0poMTWA9OAwWm7CjuefshOeHGRbguhnJfCUTwK+nbqOyx93dmWbZ6c/B8FKQ1fObg==
-X-Received: by 2002:a62:ee10:0:b0:49f:9994:354e with SMTP id e16-20020a62ee10000000b0049f9994354emr7956301pfi.21.1636142116413;
-        Fri, 05 Nov 2021 12:55:16 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d13sm8252555pfu.196.2021.11.05.12.55.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 12:55:16 -0700 (PDT)
-Date:   Fri, 5 Nov 2021 12:55:15 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Helge Deller <deller@gmx.de>,
-        linux-parisc <linux-parisc@vger.kernel.org>
-Subject: Re: parisc build failures in mainline kernel
-Message-ID: <202111051254.1AAE34273@keescook>
-References: <20211104031554.GA34798@roeck-us.net>
- <CAHk-=wjvWORtC5vwgavJxpBtV3-q9GGidezS_2NjtUFvqg7H5Q@mail.gmail.com>
- <77dc70f4-879a-eb5c-2dd6-682b4c7cfd03@roeck-us.net>
- <CAHk-=wjZo3yj46FwVi0BNKfy5fZ4-UeWkeQ6nhcAbbnKS7K=dQ@mail.gmail.com>
- <202111051242.86E9DBF@keescook>
- <CAMj1kXGhHGD047BzXC3m9afW+9x_UBj1jgDdC+i2GLqHbrj-Fg@mail.gmail.com>
+        id S232950AbhKET6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 15:58:18 -0400
+Received: from mga17.intel.com ([192.55.52.151]:8884 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232926AbhKET6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 15:58:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10159"; a="212714977"
+X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
+   d="scan'208";a="212714977"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 12:55:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
+   d="scan'208";a="639913030"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by fmsmga001.fm.intel.com with ESMTP; 05 Nov 2021 12:55:33 -0700
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     stern@rowland.harvard.edu, mr.yming81@gmail.com,
+        chunfeng.yun@mediatek.com, matthias.bgg@gmail.com,
+        nishadkamdar@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, eddie.hung@mediatek.com
+References: <20211105133050.GA1590803@rowland.harvard.edu>
+ <20211105160036.549516-1-mathias.nyman@linux.intel.com>
+ <YYVYrksU5/aCB3Fd@kroah.com>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [PATCH] xhci: Fix USB 3.1 enumeration issues by increasing
+ roothub power-on-good delay
+Message-ID: <b5b59fb7-40ce-929e-479a-d0605994cb53@linux.intel.com>
+Date:   Fri, 5 Nov 2021 21:56:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXGhHGD047BzXC3m9afW+9x_UBj1jgDdC+i2GLqHbrj-Fg@mail.gmail.com>
+In-Reply-To: <YYVYrksU5/aCB3Fd@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 08:43:52PM +0100, Ard Biesheuvel wrote:
-> On Fri, 5 Nov 2021 at 20:43, Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Wed, Nov 03, 2021 at 09:45:47PM -0700, Linus Torvalds wrote:
-> > > On Wed, Nov 3, 2021 at 9:30 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > > >
-> > > > Unfortunately not. With that patch it complains about task_struct.
-> > >
-> > > Gaah. You'll need something like this too
-> > >
-> > > -       DEFINE(TASK_CPU, offsetof(struct task_struct, cpu));
-> > > +       DEFINE(TASK_CPU, offsetof(struct task_struct, thread_info.cpu));
-> > >
-> > > in arch/parisc/kernel/asm-offsets.c.
-> > >
-> > > And really, it should probably be renamed as TASK_TI_CPU, but then you
-> > > have to rename all the uses too.
-> > >
-> > > There might be other details like that lurking.
-> >
-> > I'll check this out too if Ard doesn't beat me to it. Thanks for the
-> > investigation and sorry for the breakage!
-> >
+On 5.11.2021 18.15, Greg KH wrote:
+> On Fri, Nov 05, 2021 at 06:00:36PM +0200, Mathias Nyman wrote:
+>> Some USB 3.1 enumeration issues were reported after the hub driver removed
+>> the minimum 100ms limit for the power-on-good delay.
+>>
+>> Since commit 90d28fb53d4a ("usb: core: reduce power-on-good delay time of
+>> root hub") the hub driver sets the power-on-delay based on the
+>> bPwrOn2PwrGood value in the hub descriptor.
+>>
+>> xhci driver has a 20ms bPwrOn2PwrGood value for both roothubs based
+>> on xhci spec section 5.4.8, but it's clearly not enough for the
+>> USB 3.1 devices, causing enumeration issues.
+>>
+>> Tests indicate full 100ms delay is needed.
+>>
+>> Reported-by: Walt Jr. Brake <mr.yming81@gmail.com>
+>> Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2a2e8202c7a16a85a881ad2b6e32ccbebdc01dda
+> So this needs:
+> 	Fixes: 90d28fb53d4a ("usb: core: reduce power-on-good delay time of root hub")
+> right?
 
-Heh. Ard did, in fact, beat me to it. Thank you! :)
+I guess so, not sure on "Fixes" policy here.
 
--Kees
+This patch fixes an xhci issue revealed by ("usb: core: reduce power-on-good delay time of root hub")
+That original patch itself looks correct, but these two patches should really go together to
+avoid any enumeration issues.  
 
--- 
-Kees Cook
+Thanks
+-Mathias
