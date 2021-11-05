@@ -2,125 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125E1445D17
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 01:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B9D445CFF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 01:19:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbhKEAtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 20:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhKEAtG (ORCPT
+        id S232582AbhKEAWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 20:22:07 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:21530 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232561AbhKEAWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 20:49:06 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB086C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 17:46:27 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id u17so10033415plg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 17:46:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+MDx1GrQOub7zJ6Bty8NHKGO6IrOVwg4Q81dxTNGuQk=;
-        b=z1/ZhSMbHBPL6xzuOjXk5p5q8nj06Ql+kZbdIIDYl2CXDWH4nHvtvPlsJceWFuEGIF
-         myQd9Ksfn0kR9uPGa8zftxWOEOG59ZNoGv1CtLfKrvIUpSB7vYlJGNyyZekRAnKXBD7N
-         hsybPk2pAfClRxwqPoUjS45Zg5Tq6fAbsnpeF1TjYVSUzg7Sa1GGmQMgocz6Ur7p+kyh
-         NjRzOqs4+/kxpk/kJVoKkUYXZuLzbiNNMBoikc2mVwUAK+rMppBW6zq18u8KusKY6kd/
-         kZS0fDZuKBAfOGbMeFC9mp4qg0YUwo8+QioiDMxufM4dq7qAm4W3NRici1vzeQprCAsJ
-         OqAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+MDx1GrQOub7zJ6Bty8NHKGO6IrOVwg4Q81dxTNGuQk=;
-        b=q0mBKqS54NgJUvFE0zxweH77fDRhDFkFFTLsGTLjp7oNoW2EJBdN5DYVNNXjVc/vQH
-         xG5i/GYUdTQ+a+QVoprkCBvCznTjqKVsj77FceI3g7fGLlf77PuGRLaXKxmZCTVBSmgO
-         zr2fGmgMW2A4kZaq9hNGPCnVGd9f1oVD8jUeLqdSY0n7D+ARcuzVOF65rjfIFoBGJye+
-         qLq6uj9PErzICTTt3BZ7Ufn6+8RiJgFNcxLJXtq6Ft9ArxpFSyuCPXG02/Lincbljnli
-         7aD1UYc5+A9nepqyO/jxAAj0gd3vBqmfZt6WLaDePAPghy4w73vfCOWaKYdirkfqoggg
-         Frkw==
-X-Gm-Message-State: AOAM532fNgCZdf7+uvivpQdMhF9L0uyUhI+PRY0aigb9s9X2dJgSxj1y
-        b4NJaMvkQvQ+/RdmsP8LXRBv9JrLZqEN0cM3vLsb1Q==
-X-Google-Smtp-Source: ABdhPJzBlY9sEgYPXRy5uLLbIJXLqIS5AXvLIJiE838XFcN7i811yjUHS7Ho7WZmKGzY4qGtN0/EXqtZX8wW5x0PKF4=
-X-Received: by 2002:a17:902:b697:b0:141:c7aa:e10f with SMTP id
- c23-20020a170902b69700b00141c7aae10fmr35263948pls.18.1636073186843; Thu, 04
- Nov 2021 17:46:26 -0700 (PDT)
+        Thu, 4 Nov 2021 20:22:05 -0400
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20211105001925epoutp042784b574d99a795fcfa9daa200e034b8~0fmu2VeUG1530215302epoutp04k
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 00:19:25 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20211105001925epoutp042784b574d99a795fcfa9daa200e034b8~0fmu2VeUG1530215302epoutp04k
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1636071565;
+        bh=9+9TvxZL3BgF2EAXL6HNltat3I9nj7xUgaCN1Ak1Xi4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mScDorKBeyzWEOo01PvIseb/yUt3cvClmV+q31Qlkh60Q8/Mm5JZlV79mk6X8DQOJ
+         fcHTmyUWYEsFXwEABll0F7frZ/4RPOgxflnmORDz4PM2+1q7n9yMQdQc2MCtt+d/cS
+         n19W1AtJlS0Of4XXVypjUGdTjPyg963H+InhRihw=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20211105001925epcas2p4c90ae2f0ca9c738507766a6d53901bb7~0fmuNwR831564415644epcas2p4j;
+        Fri,  5 Nov 2021 00:19:25 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.36.89]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4Hlh2V3fg6z4x9QW; Fri,  5 Nov
+        2021 00:19:14 +0000 (GMT)
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        9C.06.10014.18874816; Fri,  5 Nov 2021 09:19:13 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+        20211105001912epcas2p30469b097f7c348f0a59251d03cd0075e~0fmin0Pj_0378903789epcas2p3M;
+        Fri,  5 Nov 2021 00:19:12 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20211105001912epsmtrp23a6ba0830321c73896bbf2ae9a944327~0fminAYGg0505805058epsmtrp2H;
+        Fri,  5 Nov 2021 00:19:12 +0000 (GMT)
+X-AuditID: b6c32a47-489ff7000000271e-bc-61847881a9c4
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        07.8B.29871.08874816; Fri,  5 Nov 2021 09:19:12 +0900 (KST)
+Received: from perf (unknown [12.36.155.123]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20211105001912epsmtip1adbd31f4da7281add572d22e1a2f5197~0fmiblgSo0689906899epsmtip1f;
+        Fri,  5 Nov 2021 00:19:12 +0000 (GMT)
+Date:   Fri, 5 Nov 2021 09:46:27 +0900
+From:   Youngmin Nam <youngmin.nam@samsung.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        will@kernel.org, daniel.lezcano@linaro.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, pullip.cho@samsung.com,
+        hoony.yu@samsung.com, hajun.sung@samsung.com,
+        myung-su.cha@samsung.com, kgene@kernel.org, kwoo.kang@samsung.com
+Subject: Re: [PATCH v2 1/2] clocksource/drivers/exynos_mct_v2: introduce
+ Exynos MCT version 2 driver for next Exynos SoC
+Message-ID: <20211105004627.GA24234@perf>
 MIME-Version: 1.0
-References: <YXFPfEGjoUaajjL4@infradead.org> <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
- <YXJN4s1HC/Y+KKg1@infradead.org> <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
- <YXj2lwrxRxHdr4hb@infradead.org> <20211028002451.GB2237511@magnolia>
- <YYDYUCCiEPXhZEw0@infradead.org> <CAPcyv4j8snuGpy=z6BAXogQkP5HmTbqzd6e22qyERoNBvFKROw@mail.gmail.com>
- <YYK/tGfpG0CnVIO4@infradead.org> <CAPcyv4it2_PVaM8z216AXm6+h93frg79WM-ziS9To59UtEQJTA@mail.gmail.com>
- <YYOaOBKgFQYzT/s/@infradead.org> <CAPcyv4jKHH7H+PmcsGDxsWA5CS_U3USHM8cT1MhoLk72fa9z8Q@mail.gmail.com>
- <6d21ece1-0201-54f2-ec5a-ae2f873d46a3@oracle.com> <CAPcyv4hJjcy2TnOv-Y5=MUMHeDdN-BCH4d0xC-pFGcHXEU_ZEw@mail.gmail.com>
- <342eb71c-0aff-77e5-3c71-92224d7d48e0@oracle.com>
-In-Reply-To: <342eb71c-0aff-77e5-3c71-92224d7d48e0@oracle.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 4 Nov 2021 17:46:17 -0700
-Message-ID: <CAPcyv4hVu+A0PXgXTwWj3SBimP5pjX_97g+sfGeT47P0-SJkiQ@mail.gmail.com>
-Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with RWF_RECOVERY_DATA flag
-To:     Jane Chu <jane.chu@oracle.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211104094453.GA58798@C02TD0UTHF1T.local>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBJsWRmVeSWpSXmKPExsWy7bCmmW5jRUuiwaLfrBbzPstaNO2/xGxx
+        fO1rVov+x6+ZLTa+/cFk0XjnBZPFpsfXWC0u75rDZjHj/D4mi6XXLzJZLH68gsniX+9BRovN
+        m6YyW7TcMXXg81gzbw2jx6yGXjaPTas62TzuXNvD5vHu3Dl2j81L6j36tqxi9Pi8SS6AIyrb
+        JiM1MSW1SCE1Lzk/JTMv3VbJOzjeOd7UzMBQ19DSwlxJIS8xN9VWycUnQNctMwfoaiWFssSc
+        UqBQQGJxsZK+nU1RfmlJqkJGfnGJrVJqQUpOgXmBXnFibnFpXrpeXmqJlaGBgZEpUGFCdkb3
+        1yksBf2iFd1HrjM3MJ4X6GLk5JAQMJHYtrGZpYuRi0NIYAejRMevxUwQzidGid0790E53xgl
+        dr55ywbTsuHNTWaIxF5Gid6j/6CqHjFKrF53gxmkikVAReLp024WEJtNQFdi24l/jCC2iIC6
+        RM+uL2ALmQW+Mkm875vPBJIQFqiS+LbpJ5jNK6ApsWnvWVYIW1Di5MwnQA0cHJwCFhLXryiD
+        hEUFlCUObDsOtlhC4AiHRPf7q6wQ57lIfNt9F8oWlnh1fAs7hC0l8fndXqgX6iUWb1vKDNE8
+        gVFi/qYPUEXGErOetYNdyiyQITHn4VOwxRJA247cYoEI80l0HP7LDhHmlehoE4LoVJP4NWUD
+        I4QtI7F78QpmCNtDYtZ8kHNAAdTEIrFrz0b2CYzys5C8NgvJNghbR2LB7k9ss4BWMAtISyz/
+        xwFhakqs36W/gJF1FaNYakFxbnpqsVGBMTy6k/NzNzGCk7SW+w7GGW8/6B1iZOJgPMQowcGs
+        JML7fENTohBvSmJlVWpRfnxRaU5q8SFGU2BETWSWEk3OB+aJvJJ4QxNLAxMzM0NzI1MDcyVx
+        XkvR7EQhgfTEktTs1NSC1CKYPiYOTqkGprkCDG+U7+efVHvwJUp029k9PXq557gEbDRPes36
+        nHN0i+KZSA6FBJOz09St1dZJJBuui5nyLWyV6jQ3vslPr6xkd5mWx3n3u27dcdY/j4XOf7Zd
+        cLD1xL4Xy6+39L/Q2WYQ8fPLzRUPWt+yJp0+7+R1NGWKYoavdFjCi13F7rFlTIUJYT5C865N
+        69sya6Okb5TU740c4e4LAz6tampldl680vPewZLwR1pPbC/MWLnF27ay+gb74i/TPmvO+yhU
+        8m7L2Y8p1ttO7j3k/2EKz4K9OwpvTI+aJdFbPXeRXLjqdff6l8eskg5WWSe2ivTfseko7tcq
+        1zTYOdPpUFSwx2dDO/vWoKxd1XkOW2b8XaPEUpyRaKjFXFScCAArWOoEWwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplkeLIzCtJLcpLzFFi42LZdlhJTrehoiXRYNM6dYt5n2UtmvZfYrY4
+        vvY1q0X/49fMFhvf/mCyaLzzgsli0+NrrBaXd81hs5hxfh+TxdLrF5ksFj9ewWTxr/cgo8Xm
+        TVOZLVrumDrweayZt4bRY1ZDL5vHplWdbB53ru1h83h37hy7x+Yl9R59W1YxenzeJBfAEcVl
+        k5Kak1mWWqRvl8CVcfnMOfaC80IVsx+3MjUwruDrYuTkkBAwkdjw5iZzFyMXh5DAbkaJW1Om
+        skEkZCRur7zMCmELS9xvOcIKUfSAUWLenlXMIAkWARWJp0+7WUBsNgFdiW0n/jGC2CIC6hI9
+        u76wgDQwC3xlkni6ew8TSEJYoEri26afYDavgKbEpr1noaZuYZZY8eUZC0RCUOLkzCdgNrOA
+        lsSNfy+BGjiAbGmJ5f84QExOAQuJ61eUQSpEBZQlDmw7zjSBUXAWkuZZSJpnITQvYGRexSiZ
+        WlCcm55bbFhgmJdarlecmFtcmpeul5yfu4kRHGNamjsYt6/6oHeIkYmD8RCjBAezkgjv8w1N
+        iUK8KYmVValF+fFFpTmpxYcYpTlYlMR5L3SdjBcSSE8sSc1OTS1ILYLJMnFwSjUwdTpyPI+t
+        ffd929+Zsp/2BikY9PSY3uHe/UzqWhmL3ZMz0xJT487xeNaKla67td6sSptBqnutsNV1rhDz
+        0MtHlno1Pnmf2smh6Hph99PXiTKL7LaptdqcYo3TPPa74XCmXLSR+dW759zO5FYvU70U8/a2
+        7oXKzZ9PeDB8sgvpvLDxtHtLgtGkV4wTvQ5F7FSrlhY8rJzM0coW/L/7zETxb92fo67xL79x
+        zX/Hb06JhJXfVv8sS7O6Ei75RydJNGTB5PeKv3z2cGSJS4nJpYS49KTp/ZRYpl/6edvR2+fN
+        7p088/fZ4inuvrLGcxSvXPu+8OM8iQXRioVP7+/bqeVutLCsLXXavITvS8tqHnW+VmIpzkg0
+        1GIuKk4EACDDOqAgAwAA
+X-CMS-MailID: 20211105001912epcas2p30469b097f7c348f0a59251d03cd0075e
+X-Msg-Generator: CA
+Content-Type: multipart/mixed;
+        boundary="----TI73IYgzdP03rYJ9SiN0qM3o3mlayfAqXHuFFMbUzbY.6Ea-=_c65ff_"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20211105001912epcas2p30469b097f7c348f0a59251d03cd0075e
+References: <20211102001122.27516-2-youngmin.nam@samsung.com>
+        <20211102102802.GA16545@C02TD0UTHF1T.local> <20211103000945.GA48132@perf>
+        <83f6574b-bbab-f0c3-7198-f773c3dcfc63@canonical.com>
+        <20211103092444.GA7013@perf>
+        <f7871718-f244-8a9e-9302-c27bdb2d3cc1@canonical.com>
+        <20211103095727.GA19093@perf> <20211103100407.GA35817@C02TD0UTHF1T.local>
+        <20211104002102.GA29618@perf> <20211104094453.GA58798@C02TD0UTHF1T.local>
+        <CGME20211105001912epcas2p30469b097f7c348f0a59251d03cd0075e@epcas2p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 1:27 PM Jane Chu <jane.chu@oracle.com> wrote:
->
-> On 11/4/2021 12:00 PM, Dan Williams wrote:
->
-> >>
-> >> If this understanding is in the right direction, then I'd like to
-> >> propose below changes to
-> >>     dax_direct_access(), dax_copy_to/from_iter(), pmem_copy_to/from_iter()
-> >>     and the dm layer copy_to/from_iter, dax_iomap_iter().
-> >>
-> >> 1. dax_iomap_iter() rely on dax_direct_access() to decide whether there
-> >>      is likely media error: if the API without DAX_F_RECOVERY returns
-> >>      -EIO, then switch to recovery-read/write code.  In recovery code,
-> >>      supply DAX_F_RECOVERY to dax_direct_access() in order to obtain
-> >>      'kaddr', and then call dax_copy_to/from_iter() with DAX_F_RECOVERY.
-> >
-> > I like it. It allows for an atomic write+clear implementation on
-> > capable platforms and coordinates with potentially unmapped pages. The
-> > best of both worlds from the dax_clear_poison() proposal and my "take
-> > a fault and do a slow-path copy".
-> >
-> >> 2. the _copy_to/from_iter implementation would be largely the same
-> >>      as in my recent patch, but some changes in Christoph's
-> >>      'dax-devirtualize' maybe kept, such as DAX_F_VIRTUAL, obviously
-> >>      virtual devices don't have the ability to clear poison, so no need
-> >>      to complicate them.  And this also means that not every endpoint
-> >>      dax device has to provide dax_op.copy_to/from_iter, they may use the
-> >>      default.
-> >
-> > Did I miss this series or are you talking about this one?
-> > https://lore.kernel.org/all/20211018044054.1779424-1-hch@lst.de/
->
-> I was referring to
->
-> http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dax-devirtualize
-> that has not come out yet, I said early on that I'll rebase on it,
-> but looks like we still need pmem_copy_to/from_iter(), so.
+------TI73IYgzdP03rYJ9SiN0qM3o3mlayfAqXHuFFMbUzbY.6Ea-=_c65ff_
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
 
-Yeah, since the block-layer divorce gets rid of the old poison
-clearing path, then we're back to pmem_copy_to_iter() (or something
-like it) needing to pick up the slack for poison clearing. I do agree
-it would be nice to clean up all the unnecessary boilerplate, but the
-error-list coordination requires a driver specific callback. At least
-the DAX_F_VIRTUAL flag can eliminate the virtiofs and fuse callbacks.
+On Thu, Nov 04, 2021 at 09:44:53AM +0000, Mark Rutland wrote:
+> Hi,
+> 
+> On Thu, Nov 04, 2021 at 09:21:02AM +0900, Youngmin Nam wrote:
+> > On Wed, Nov 03, 2021 at 10:04:18AM +0000, Mark Rutland wrote:
+> > > On Wed, Nov 03, 2021 at 06:57:28PM +0900, Youngmin Nam wrote:
+> > > > On Wed, Nov 03, 2021 at 10:04:36AM +0100, Krzysztof Kozlowski wrote:
+> > > > > On 03/11/2021 10:24, Youngmin Nam wrote:
+> > > > > > On Wed, Nov 03, 2021 at 09:18:07AM +0100, Krzysztof Kozlowski wrote:
+> > > > > >> On 03/11/2021 01:09, Youngmin Nam wrote:
+> > > > > >>> On Tue, Nov 02, 2021 at 10:28:10AM +0000, Mark Rutland wrote:
+> 
+> > > > > >>>> Previously Will asked you to try CLOCK_EVT_FEAT_PERCPU here, and to set
+> > > > > >>>> the C3STOP flag on the arch timer via the DT when necessary, rather than
+> > > > > >>>> trying to override the arch timer like this:
+> 
+> > > > > >>> Yes, I believe Will's suggestion definitely will work.
+> 
+> > > > So, how about we control timer rating value with DT ?
+> > > > Of course the default rating value should be lower than arm arch timer's.
+> > > > Do you agree with this?
+> > > 
+> > > No; placing a rating value in the DT is a hack. That should *not* live
+> > > in the DT because it's linux-internal detail and not a description of
+> > > the HW.
+> > 
+> > So, how do we use MCTv2 only for clock event device if there are some
+> > limitations caused by SoC design implemention ?
+> 
+> What limitations? Are you thinking of a known issue, or just in case
+> there is a bug in future HW?
+> 
+> If there is a problem, we'll need to describe that in the DT somehow,
+> and we need to know speciifcally what that limitation is.
+> 
+> Above you said that Will's suggestion will definitely work, which
+> implies no such limitations.
+> 
+
+Using arch timer for event device is highly related with Core power down feature so that it is also related with
+power saving scheme in SoC.
+Core power down and power saving depend on SoC design implemention.
+We can't confirm that using only arch timer can cover all scenario at production level.
+So we should be able to use MCTv2 as well.
+
+Why do you enforce using *only* arch timer ?
+Why aren't we allowed to use own timer of our SoC ?
+
+What I meant that replied to Will was
+I think this will work generally, but we can't confirm this will cover all cases.
+
+> Thanks,
+> Mark.
+> 
+
+------TI73IYgzdP03rYJ9SiN0qM3o3mlayfAqXHuFFMbUzbY.6Ea-=_c65ff_
+Content-Type: text/plain; charset="utf-8"
+
+
+------TI73IYgzdP03rYJ9SiN0qM3o3mlayfAqXHuFFMbUzbY.6Ea-=_c65ff_--
