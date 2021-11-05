@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D770C4464F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 590254464F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233240AbhKEOcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 10:32:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47772 "EHLO mail.kernel.org"
+        id S233251AbhKEOcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 10:32:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233105AbhKEOcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232865AbhKEOcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Nov 2021 10:32:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D4B086120E;
+Received: by mail.kernel.org (Postfix) with ESMTPS id C8A7961183;
         Fri,  5 Nov 2021 14:30:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1636122607;
-        bh=RabxvYF8MZZnaFfJhLDyKcDazTYwHz1HTQ/AJEYwWIE=;
+        bh=dA7OYIX2+nXNF2QTVUlqEI2nIRmUtU7HAXldzr4pEQ8=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=NNEy01GitXRvkQh1ABqGilGKA9Y7xFQlmtN+DPsrdmWZSBG1qZ2WjBy2VcnIuSl25
-         DSafvpvMUp72AL3WFAP53wiKBlZfUVJjZilXLWv92q4n5aq7jgrozZ3WQ9OIUI+WJH
-         64Nsz2WvCdvcApOYBWEjmVEoOapB7kpuxWkCb+Ab7qGLU4XbtFN7nFoVRGgTeeOyTN
-         xujPThafhKXYiuUhnqIsKNKSf7V3BRt6+b1diJEZkK18dlBWsV3/eCDiviZyqgJ8QQ
-         fF3nsdWh9lyjlFJJdjv/ZrpwPPlfwK97LI7tWsJ4l+OsdHtdrwrur3lyVSG2FOzOou
-         y/zwPpgFrRtEg==
+        b=K3bB1LwDVlPetK7Z8RDTrUwZvj7/N+gIvckVE1OAhKuaNC9PmilMgOM3SJ40DJ06W
+         xFmr3yp6hwf/z8HS0UVj/GpCcEOuRSFQrMlJ6qrNcW5Dy8YEtbfWjAGsDw1RtRJFY3
+         9fCTF052xO0gyBgQgQtTacPrd4P+DvWr9E6VkGwBvvNbdDaQRi9X5Cbq1ugiePsfAk
+         FeggFWRzHTKV7GtHI+us1d0mYWVgO2Qpqd3il8k1TsWIkyQIPj/GX6WsdZc4lFcPuu
+         /g80BidKDkf7INKGqlVGfCFiOUCBG+Ffzgz6FcjqdmOgGwtOPXpfKfVFb6aWXYema/
+         fMV5H6aBSMBUA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C77FE60A3C;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BBF6E60A02;
         Fri,  5 Nov 2021 14:30:07 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: marvell: prestera: fix patchwork build problems
+Subject: Re: [PATCH 1/2] ax88796c: fix ioctl callback
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163612260781.32748.8817987999743419122.git-patchwork-notify@kernel.org>
+Message-Id: <163612260776.32748.4456572271474269770.git-patchwork-notify@kernel.org>
 Date:   Fri, 05 Nov 2021 14:30:07 +0000
-References: <1636031573-20006-1-git-send-email-volodymyr.mytnyk@plvision.eu>
-In-Reply-To: <1636031573-20006-1-git-send-email-volodymyr.mytnyk@plvision.eu>
-To:     Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>
-Cc:     netdev@vger.kernel.org, taras.chornyi@plvision.eu,
-        mickeyr@marvell.com, serhiy.pshyk@plvision.eu, andrew@lunn.ch,
-        arnd@arndb.de, geert@linux-m68k.org, dkirjanov@suse.de,
-        vmytnyk@marvell.com, tchornyi@marvell.com, davem@davemloft.net,
-        kuba@kernel.org, vkochan@marvell.com, yevhen.orlov@plvision.eu,
-        linux-kernel@vger.kernel.org
+References: <20211105092954.1771974-1-arnd@kernel.org>
+In-Reply-To: <20211105092954.1771974-1-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     l.stelmach@samsung.com, davem@davemloft.net, kuba@kernel.org,
+        jgg@ziepe.ca, arnd@arndb.de, nathan@kernel.org, alobakin@pm.me,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (master)
+This series was applied to netdev/net.git (master)
 by David S. Miller <davem@davemloft.net>:
 
-On Thu,  4 Nov 2021 15:12:52 +0200 you wrote:
-> From: Volodymyr Mytnyk <vmytnyk@marvell.com>
+On Fri,  5 Nov 2021 10:29:39 +0100 you wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> fix the remaining build issues reported by patchwork
-> in firmware v4.0 support commit which has been already
-> merged.
+> The timestamp ioctls are now handled by the ndo_eth_ioctl() callback,
+> not the old ndo_do_ioctl(), but oax88796 introduced the
+> function for the old way.
 > 
-> Fix patchwork issues:
->  - source inline
->  - checkpatch
+> Move it over to ndo_eth_ioctl() to actually allow calling it from
+> user space.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net] net: marvell: prestera: fix patchwork build problems
-    https://git.kernel.org/netdev/net/c/a46a5036e7d2
+  - [1/2] ax88796c: fix ioctl callback
+    https://git.kernel.org/netdev/net/c/9dcc00715a7c
+  - [2/2] octeontx2-nicvf: fix ioctl callback
+    https://git.kernel.org/netdev/net/c/a6785bd7d83c
 
 You are awesome, thank you!
 -- 
