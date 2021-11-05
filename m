@@ -2,59 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127894466BD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:08:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 128524466CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233126AbhKEQLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 12:11:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49392 "EHLO mail.kernel.org"
+        id S232016AbhKEQQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 12:16:33 -0400
+Received: from mga05.intel.com ([192.55.52.43]:16435 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233734AbhKEQLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 12:11:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D009661263;
-        Fri,  5 Nov 2021 16:08:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636128512;
-        bh=OS5UTlMp5z73jlw8RsYg5/GHdP1DKdpGJMdYh5IKr0w=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=OfhnZrOvwJlqeHAL96P3OImEtAVe33WQWrUQmOJ1cN0JNtmjnVbkWuAM1saHkl13Z
-         SoLXjx8PmMKAbpLNy/r3HNyyv/rx6XZh4dUdPRmokE/CACIJEuJWu4OLkhbEqCYaQ1
-         Z+MjNs2moGv+FxhFu+2HJgoymMB78ebOLuO3ozQTs8qRaz1Qp6HZqh44mO69x0r3A3
-         rTizm0XA7g2YtZC74Lr7+9t4U3Y0EjuRiusHkw2tmzRcTetUuxBIDc3eoWEdoRq/nr
-         QeuwflKDTRhGZ21YIeY+DmVGHjwnC/95XvlvePmnBtPToPjqeZzDdOItWvKlAxKuHO
-         8X6lvI7BjXZnQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CA7BF609D9;
-        Fri,  5 Nov 2021 16:08:32 +0000 (UTC)
-Subject: Re: [GIT PULL] arch/microblaze patches for 5.16-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ad54816e-699a-cea5-5964-966fc290b797@monstr.eu>
-References: <ad54816e-699a-cea5-5964-966fc290b797@monstr.eu>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ad54816e-699a-cea5-5964-966fc290b797@monstr.eu>
-X-PR-Tracked-Remote: git://git.monstr.eu/linux-2.6-microblaze.git tags/microblaze-v5.16
-X-PR-Tracked-Commit-Id: 43bdcbd5004393faad06b65c1539d3c9b9d5f6b2
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a51e4a1acb5fa4ce0b0f0bd3606463a09e6fa1b0
-Message-Id: <163612851282.17201.15061892083031115004.pr-tracker-bot@kernel.org>
-Date:   Fri, 05 Nov 2021 16:08:32 +0000
-To:     Michal Simek <monstr@monstr.eu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S231720AbhKEQQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 12:16:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10159"; a="318131377"
+X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
+   d="scan'208";a="318131377"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 09:07:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
+   d="scan'208";a="639860271"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by fmsmga001.fm.intel.com with ESMTP; 05 Nov 2021 09:07:37 -0700
+To:     "Walt Jr. Brake" <mr.yming81@gmail.com>
+Cc:     chunfeng.yun@mediatek.com, matthias.bgg@gmail.com,
+        nishadkamdar@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, eddie.hung@mediatek.com,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Greg KH <gregkh@linuxfoundation.org>
+References: <20211105133050.GA1590803@rowland.harvard.edu>
+ <20211105160036.549516-1-mathias.nyman@linux.intel.com>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [PATCH] xhci: Fix USB 3.1 enumeration issues by increasing
+ roothub power-on-good delay
+Message-ID: <96925c96-0f87-f110-e279-5b669337948a@linux.intel.com>
+Date:   Fri, 5 Nov 2021 18:09:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20211105160036.549516-1-mathias.nyman@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 5 Nov 2021 15:07:37 +0100:
+On 5.11.2021 18.00, Mathias Nyman wrote:
+> Some USB 3.1 enumeration issues were reported after the hub driver removed
+> the minimum 100ms limit for the power-on-good delay.
+> 
+> Since commit 90d28fb53d4a ("usb: core: reduce power-on-good delay time of
+> root hub") the hub driver sets the power-on-delay based on the
+> bPwrOn2PwrGood value in the hub descriptor.
+> 
+> xhci driver has a 20ms bPwrOn2PwrGood value for both roothubs based
+> on xhci spec section 5.4.8, but it's clearly not enough for the
+> USB 3.1 devices, causing enumeration issues.
+> 
+> Tests indicate full 100ms delay is needed.
+> 
+> Reported-by: Walt Jr. Brake <mr.yming81@gmail.com>
+> Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+> 
 
-> git://git.monstr.eu/linux-2.6-microblaze.git tags/microblaze-v5.16
+Walt Jr Brake, just to be sure could you test this one as well?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a51e4a1acb5fa4ce0b0f0bd3606463a09e6fa1b0
+As Alan suggested this sets 100ms for the USB 3 roothub but
+keeps the 20ms for the USB 2 roothub.
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Thanks
+-Mathias 
