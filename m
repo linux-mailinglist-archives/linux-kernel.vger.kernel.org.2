@@ -2,130 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B157446B18
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 00:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F70446B1B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 00:06:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233992AbhKEXHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 19:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58670 "EHLO
+        id S233983AbhKEXIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 19:08:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhKEXHH (ORCPT
+        with ESMTP id S230331AbhKEXId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 19:07:07 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2BF4C061570;
-        Fri,  5 Nov 2021 16:04:27 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id t11so11910970plq.11;
-        Fri, 05 Nov 2021 16:04:27 -0700 (PDT)
+        Fri, 5 Nov 2021 19:08:33 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C674FC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 16:05:53 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id x23so3470046qkf.7
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 16:05:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mLpj0IWmQy+qHP6id8yi4q2C/7CSHG0Ef5TY0V38uHo=;
-        b=gGnuyysLOjn74YheWLVOOvB91aEDyv98a5sjftQC6Q+xFJi7KlA5ry6s5GpNLCbD0i
-         UklDrKpPtmTRk734CRE21u1TEvGwSalDHrGdYOBinXcemCjF3R1o1d5isaqQGzEbmsb9
-         adEnVYojuNOUvXMOGz/hNrbzIVTM3oiUo00x19scAPafqpW1J1hx/weOcIj1TpWiMpoJ
-         tHCDhFFffImJHP+24so2WY1qSkgE747iS64fDG1FOPLzi+C85vI5E2ZEs0craW3qcaIv
-         VNROOWbkjbrbzuFxDfOLMFQ7BYLskN7K/0asQCb3eawbdy4LWX2m9hdgRqCwQ/gdkCqf
-         1XDQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OoJ+FmSfSJVPeg55SPs5H9Cad5OF+xCMwp+gslZjZ0Y=;
+        b=NCrbdZpmxI6P3Ycc8UTDZyEl8KcoG6yiqYRNXnwYz8CQCaOixoMni5S4iS0/0LWpXU
+         j2xTI6tV9vqFf0kl5hyWGCA2kFJPwdGnWBIoA9sdbOYlwMS25l9Z/xoKeSUxbd+Js7kU
+         LcL7cuoRiO/sYMkgvjE7UmqMOLtSW/CNxMuv7NiqQODpi+IiMdkyBT1UKsmcktGBLL4S
+         TbPYsZE3MTTq51YaH0i/OENdKxM2lx26s6ZRXukUy9qvJvuPSpPtcu9vnTg4OasOUjFk
+         RGNCZk9MPZVrenhzza6p3s8Q00tUtVEZ/3vm7wzmtk35KdJJqoLGwA3Lj1KAaGpjeMr7
+         X+QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mLpj0IWmQy+qHP6id8yi4q2C/7CSHG0Ef5TY0V38uHo=;
-        b=7LRqYzzdIFcFuVFEjuxIQvVFngx8ogUYWibXUizZU24inaL9gPEVctZQ5kKmhFsXz3
-         DOPFLSZRKoO88/URLZfHOhB+iROvmNzDOf8nh9FE8i7M5DBL7P2gg7mT52hHDIFLdjkr
-         N11mf3VF/PYRF7NLoS7ffe0wWlawxWD6Dg4ihUyUuONDdeKzQtXvAsjP4vIX0GF0AMxr
-         2EFyEWDDZHv/gnnQpxqDUfYiuH7SjsXyltDxPjwKAUcwixXUv+oqxlDZt8xQpGK+9y0L
-         6DTS3bonzjjc1p1xhVjipQ+ZSZNEFkGMxW4mq7yPs5kB0ypwUAgi+mOYrsXBp42DzwQZ
-         HieQ==
-X-Gm-Message-State: AOAM533gIJNIYokT2XjTmzF4UDwZCiPa9T6jQ5DKki6dG7eY+9ZvbcJ4
-        bGUCqh4dVJzahqIbrBI8TGc=
-X-Google-Smtp-Source: ABdhPJztZtaqlyNPm8X9iqeNAYQv3RY5G3wWepW3L3TyqzB3tjQRdBWkhvx3sLhA1A2JKTB9jauHHQ==
-X-Received: by 2002:a17:90b:1241:: with SMTP id gx1mr33623659pjb.164.1636153467201;
-        Fri, 05 Nov 2021 16:04:27 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:837c:e765:475f:22d3])
-        by smtp.gmail.com with ESMTPSA id c5sm3757408pjm.52.2021.11.05.16.04.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 16:04:25 -0700 (PDT)
-Date:   Fri, 5 Nov 2021 16:04:23 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Jeff LaBundy <jeff@labundy.com>
-Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        linux-input@vger.kernel.org, Geert Uytterhoeven <geert@glider.be>,
-        linux-renesas-soc@vger.kernel.org,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Wu Hao <hao.wu@intel.com>, Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Xu Yilun <yilun.xu@intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] Input: add 'safe' user switch codes
-Message-ID: <YYW4d/YK1MkIfGT/@google.com>
-References: <20211105103508.4153491-1-kieran.bingham+renesas@ideasonboard.com>
- <20211105170037.GA65511@nixie71>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OoJ+FmSfSJVPeg55SPs5H9Cad5OF+xCMwp+gslZjZ0Y=;
+        b=BLURTAyTVhyRCvCv1jD0ct6Tc7lGn/6i0xfBf9+3R/QGHAvsBLURCd68l2wbu2Jypu
+         9oXaNjkdr9kHBXW0YkAp7Np4lTfREcVy+XGor/Lweil9DVu1XdDTsJS8GLqbM1fJE8Cf
+         XCGuv+1t9cG4a04qusjUhQjBRDp/K5e3i+CQfT8BvZ9lHuKdY5rfnybeg0cuLUgEaNaf
+         Yqz9evOJd75cnZDCwdi9/csL7HzeeTPw/eKvBBQj/klHek4bnr1/FbMZQ818LuOk2M0v
+         vz3dVrfo8orU0yraWpIEq2988TTVxkNovK9/f1DK5PJ9S7bAhpKyi7Dj6BFIRZpvrJZy
+         Zx5g==
+X-Gm-Message-State: AOAM530lUACD+ry9g/QrhJHMLaxkt/V3NHeZnfDpf7C1ADebqZ87Y6nZ
+        Nd+Z+f9RnxScFCctLEw/vW2vTvx8tTDMpTaZTXFz3Q==
+X-Google-Smtp-Source: ABdhPJzDu6aeT1YkR0lQHu5xDuwafU6AaOMbWA18O+ozz2p3OOcq25NZhR53bDGAmd9GT8gbwhJmxamH7HPmYQ9mdd8=
+X-Received: by 2002:a05:620a:454f:: with SMTP id u15mr49248563qkp.144.1636153552807;
+ Fri, 05 Nov 2021 16:05:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211105170037.GA65511@nixie71>
+References: <CAD=FV=UKyJLhDEKxhqrit16kvLfi+g0DyYKL6bLJ35fO7NCTsg@mail.gmail.com>
+ <CAJWu+orNotdFUe0Bc9ooP+1nzajd=7A9WiSWXwtrsLkWi8gFAg@mail.gmail.com>
+In-Reply-To: <CAJWu+orNotdFUe0Bc9ooP+1nzajd=7A9WiSWXwtrsLkWi8gFAg@mail.gmail.com>
+From:   Joel Fernandes <joelaf@google.com>
+Date:   Fri, 5 Nov 2021 19:05:41 -0400
+Message-ID: <CAJWu+oocnt-yF=R=XxNvjj14hwV8hAewz-696DcAzGdr5ys2sQ@mail.gmail.com>
+Subject: Re: RT_GROUP_SCHED throttling blocks unthrottled RT tasks?
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jeff, Kieran,
+On Fri, Nov 5, 2021 at 7:04 PM Joel Fernandes <joelaf@google.com> wrote:
+>
+> On Fri, Nov 5, 2021 at 1:44 PM Doug Anderson <dianders@chromium.org> wrote:
+> [..]
+> >
+> >
+> > I tried gathering some tracing. One bit that might (?) be relevant:
+> >
+> >  cros_ec_spi_hig-179     [000] d.h5  1495.305919: sched_waking:
+> > comm=kworker/4:2 pid=5232 prio=120 target_cpu=004
+> >  cros_ec_spi_hig-179     [000] d.h6  1495.305926: sched_wakeup:
+> > comm=kworker/4:2 pid=5232 prio=120 target_cpu=004
+> >           <idle>-0       [001] d.H5  1495.309113: sched_waking:
+> > comm=sugov:6 pid=2658 prio=-1 target_cpu=006
+> >           <idle>-0       [001] d.H6  1495.309119: sched_wakeup:
+> > comm=sugov:6 pid=2658 prio=-1 target_cpu=006
+> >  cros_ec_spi_hig-179     [000] d.h5  1495.309336: sched_waking:
+> > comm=sugov:6 pid=2658 prio=-1 target_cpu=006
+> >  cros_ec_spi_hig-179     [000] d.h6  1495.309341: sched_wakeup:
+> > comm=sugov:6 pid=2658 prio=-1 target_cpu=006
+> >           <idle>-0       [001] d.H5  1495.312137: sched_waking:
+> > comm=sugov:6 pid=2658 prio=-1 target_cpu=006
+> >           <idle>-0       [001] d.H6  1495.312142: sched_wakeup:
+> > comm=sugov:6 pid=2658 prio=-1 target_cpu=006
+> >  cros_ec_spi_hig-179     [000] d.h5  1495.312859: sched_waking:
+> > comm=sugov:6 pid=2658 prio=-1 target_cpu=006
+> >  cros_ec_spi_hig-179     [000] d.h6  1495.312870: sched_wakeup:
+> > comm=sugov:6 pid=2658 prio=-1 target_cpu=006
+> >
+> > My best guess is that there's some bug in the scheduler where it just
+> > loops constantly picking an unthrottled RT task but then incorrectly
+> > decides that it's throttled and thus doesn't run it.
+>
+> Thanks for posting this. Tricky bit indeed. I was wondering if the
+> issue is here:
+> https://elixir.bootlin.com/linux/latest/source/kernel/sched/rt.c#L1031
 
-On Fri, Nov 05, 2021 at 12:00:37PM -0500, Jeff LaBundy wrote:
-> Hi Kieran,
-> 
-> On Fri, Nov 05, 2021 at 10:35:07AM +0000, Kieran Bingham wrote:
-> > All existing SW input codes define an action which can be interpreted by
-> > a user environment to adapt to the condition of the switch.
-> > 
-> > For example, switches to define the audio mute, will prevent audio
-> > playback, and switches to indicate lid and covers being closed may
-> > disable displays.
-> > 
-> > Many evaluation platforms provide switches which can be connected to the
-> > input system but associating these to an action incorrectly could
-> > provide inconsistent end user experiences due to unmarked switch
-> > positions.
-> > 
-> > Define two custom user defined switches allowing hardware descriptions
-> > to be created whereby the position of the switch is not interpreted as
-> > any standard condition that will affect a user experience.
-> > 
-> > This allows wiring up custom generic switches in a way that will allow
-> > them to be read and processed, without incurring undesired or otherwise
-> > undocumented (by the hardware) 'default' behaviours.
-> > 
-> > Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> > ---
-> > 
-> > Sigh, a compile test might have at least saved the buildbots the trouble
-> > of notifying me I also need to update the INPUT_DEVICE_ID_SW_MAX. But
-> > even so - I'm really looking for a discussion on the best ways to
-> > describe a non-defined switch in device tree.
-> > 
-> > Here's a compiling v2 ;-) But the real questions are :
-> > 
-> >  - Should an existing feature switch be used for generic switches?
-> >  - Should we even have a 'user' defined switch?
-> >  - If we add user switches, how many?
-> > 
-> 
-> This is merely my opinion, but if a hardware switch does not have a defined
-> purpose, it does not seem necessary to represent it with an input device.
-
-Yes, exactly. For input core we are trying to avoid generic events with
-no defined meaning.
-
-What are these switches? GPIOs? Maybe it would be better to use GPIO
-layer to test the state for them?
-
-Thanks.
-
--- 
-Dmitry
+Errm, I meant Line 1060 in rt.c
+https://elixir.bootlin.com/linux/latest/source/kernel/sched/rt.c#L1060
