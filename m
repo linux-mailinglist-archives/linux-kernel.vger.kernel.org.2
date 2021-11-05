@@ -2,134 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBE0446563
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:02:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF76446567
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbhKEPEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 11:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233378AbhKEPEg (ORCPT
+        id S233326AbhKEPFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 11:05:19 -0400
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:33503 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229680AbhKEPFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 11:04:36 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59ECC061714;
-        Fri,  5 Nov 2021 08:01:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=HEBvWRg9S4l41qj5CuJ9xd8WUMjF45Gsh7boop/TI/8=; b=exjT7KNvOAVNQofMTz4xN+rh/+
-        rghIpP6ikdGyFT05k2paeUz32XPxNsFZP5Um9+H1tYYr8q6EeyW+i9y/gHZuursjvbc9L5qFvwj/4
-        dCTgxw8CD9KnvLvp0IUf5mCj+sAcNNGFtzOjYZrRzK8QLagQCyrl7DwGKNAI272patCA=;
-Received: from p200300ccff0899001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff08:9900:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1mj0j2-0004v0-Kt; Fri, 05 Nov 2021 16:01:52 +0100
-Date:   Fri, 5 Nov 2021 16:01:51 +0100
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mylene.josserand@free-electrons.com, linus.walleij@linaro.org,
-        rydberg@bitmath.org, dmitry.torokhov@gmail.com, robh+dt@kernel.org,
-        alistair23@gmail.com,
-        =?UTF-8?B?TXlsw6huZQ==?= Josserand <mylene.josserand@bootlin.com>,
-        Maxime Ripard <maxime.ripard@bootlin.com>
-Subject: Re: [PATCH v2 1/4] Input: Add driver for Cypress Generation 5
- touchscreen
-Message-ID: <20211105160151.4d97d587@aktux>
-In-Reply-To: <20211103114830.62711-2-alistair@alistair23.me>
-References: <20211103114830.62711-1-alistair@alistair23.me>
-        <20211103114830.62711-2-alistair@alistair23.me>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 5 Nov 2021 11:05:17 -0400
+Received: by mail-oi1-f169.google.com with SMTP id bl27so12075248oib.0;
+        Fri, 05 Nov 2021 08:02:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vX8f2vS+zMIuTQAbDXugdUdsKE/s6J0wYaU1pfRJZTA=;
+        b=vo0Whb2Ddah0QED+fI/Veeg9aieXC26B5VGhl1TGxG1KpxVXJIMxZwEbJjsFekboSt
+         35vMb9h5sMArqFGgFLctxWlOQNSed/obcg4jDjfDEaF4iGUc6RCzNBAW9AkxJlY759zg
+         eEa0k5WFE2ytG4M9vSZYY1IdouNMg2F0uSqLGKSVLYABxqg1TeQ+qg+OuCi4lTXv3pAk
+         tKm+Ho3Gdqkj4hMvgc2p40sq6CasKe9cz+aD127MhOovXN0RSKGOSCM15znomzLgoibk
+         KuB9yzLKIjZp7kWgxjGFjqE8xPK0B7Y5joEryRTvs2vtkwlxhaGnj/paRu2pk4Zqn+6s
+         8YtA==
+X-Gm-Message-State: AOAM530ierKqZvwQYUQ3tHik13xp+Hxrt6VaAJechCn04pg+jhNJyEgd
+        xjzGwdzux/fYABSsITQx37bNjrAiUUpqtQzWwR8=
+X-Google-Smtp-Source: ABdhPJzZPXVrhnJ4VEWfPpiFT1J/OH74jFYU7MUBQgbFjtakZukbwVdozEMRwT4eEbgU6rlsIDrdGPvBNzPSWPxkBsM=
+X-Received: by 2002:aca:5c5:: with SMTP id 188mr22276883oif.154.1636124557321;
+ Fri, 05 Nov 2021 08:02:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0 (-)
+References: <20211029063228.578909-1-AjitKumar.Pandey@amd.com> <20211029063228.578909-3-AjitKumar.Pandey@amd.com>
+In-Reply-To: <20211029063228.578909-3-AjitKumar.Pandey@amd.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 5 Nov 2021 16:02:26 +0100
+Message-ID: <CAJZ5v0jXnwC-C8mAWtQDtoPko9ALAYhpm3X-TZ5L83ROEUJWmA@mail.gmail.com>
+Subject: Re: [PATCH v2 RESEND 2/5] drivers: acpi: acpi_apd: Remove unused
+ device property "is-rv"
+To:     Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>, Vijendar.Mukunda@amd.com,
+        Alex Deucher <Alexander.Deucher@amd.com>,
+        Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        "open list:ACPI" <linux-acpi@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  3 Nov 2021 21:48:27 +1000
-Alistair Francis <alistair@alistair23.me> wrote:
+On Fri, Oct 29, 2021 at 8:33 AM Ajit Kumar Pandey
+<AjitKumar.Pandey@amd.com> wrote:
+>
+> Initially "is-rv" device property is added for 48MHz fixed clock
+> support on Raven or RV architecture. It's unused now as we moved
+> to clock config based selection to extend such support on others
+> architecture. This change removed unused code from acpi driver.
+>
+> Signed-off-by: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 
-[...]
-> +static int cyttsp5_probe(struct device *dev, struct regmap *regmap, int irq,
-> +			 const char *name)
-> +{
-> +	struct cyttsp5 *ts;
-> +	struct cyttsp5_sysinfo *si;
-> +	int rc = 0, i;
-> +
-> +	ts = devm_kzalloc(dev, sizeof(*ts), GFP_KERNEL);
-> +	if (!ts)
-> +		return -ENOMEM;
-> +
-> +	/* Initialize device info */
-> +	ts->regmap = regmap;
-> +	ts->dev = dev;
-> +	si = &ts->sysinfo;
-> +	dev_set_drvdata(dev, ts);
-> +
-> +	/* Initialize mutexes and spinlocks */
-> +	mutex_init(&ts->system_lock);
-> +
-> +	/* Initialize wait queue */
-> +	init_waitqueue_head(&ts->wait_q);
-> +
-> +	/* Power up the device */
-> +	ts->vdd = regulator_get(dev, "vdd");
-> +	if (IS_ERR(ts->vdd)) {
-> +		rc = PTR_ERR(ts->vdd);
-> +		dev_set_drvdata(dev, NULL);
-> +		kfree(ts);
-> +		return rc;
-> +	}
-> +
-> +	rc = regulator_enable(ts->vdd);
-> +	if (rc) {
-> +		regulator_put(ts->vdd);
-> +		dev_set_drvdata(dev, NULL);
-> +		kfree(ts);
-> +		return rc;
-> +	}
-> +
-> +	/* Reset the gpio to be in a reset state */
-> +	ts->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
+Is this and the [3/5] applicable without the [1/5]?
 
-        so we deassert reset for
+If so, I can pick them up once they are approved by some other AMD
+folks, preferably Mario.
 
-> +	if (IS_ERR(ts->reset_gpio)) {
-> +		rc = PTR_ERR(ts->reset_gpio);	
-> +		dev_err(dev, "Failed to request reset gpio, error %d\n", rc);
-> +		return rc;
-> +	}
-	
-	almost no time 
-> +	gpiod_set_value(ts->reset_gpio, 1);
-
-        and then assert it, keeping the chip in reset
-> +
-> +	/* Need a delay to have device up */
-> +	msleep(20);
-> +
-	and why it should wake up?
-
-	I reversed the logic here to test. I have 
-
-        reset-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>;
-
-	in my tests.
-
-> +	rc = devm_request_threaded_irq(dev, irq, NULL, cyttsp5_handle_irq,
-> +				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-> +				       name, ts);
-        falling or level low (according to the example in the
-        dt schema)?	
-
-Regards,
-Andreas
+> ---
+>  drivers/acpi/acpi_apd.c               | 3 ---
+>  include/linux/platform_data/clk-fch.h | 1 -
+>  2 files changed, 4 deletions(-)
+>
+> diff --git a/drivers/acpi/acpi_apd.c b/drivers/acpi/acpi_apd.c
+> index 6e02448d15d9..6913e9712852 100644
+> --- a/drivers/acpi/acpi_apd.c
+> +++ b/drivers/acpi/acpi_apd.c
+> @@ -87,9 +87,6 @@ static int fch_misc_setup(struct apd_private_data *pdata)
+>         if (ret < 0)
+>                 return -ENOENT;
+>
+> -       if (!acpi_dev_get_property(adev, "is-rv", ACPI_TYPE_INTEGER, &obj))
+> -               clk_data->is_rv = obj->integer.value;
+> -
+>         list_for_each_entry(rentry, &resource_list, node) {
+>                 clk_data->base = devm_ioremap(&adev->dev, rentry->res->start,
+>                                               resource_size(rentry->res));
+> diff --git a/include/linux/platform_data/clk-fch.h b/include/linux/platform_data/clk-fch.h
+> index b9f682459f08..850ca776156d 100644
+> --- a/include/linux/platform_data/clk-fch.h
+> +++ b/include/linux/platform_data/clk-fch.h
+> @@ -12,7 +12,6 @@
+>
+>  struct fch_clk_data {
+>         void __iomem *base;
+> -       u32 is_rv;
+>  };
+>
+>  #endif /* __CLK_FCH_H */
+> --
+> 2.25.1
+>
