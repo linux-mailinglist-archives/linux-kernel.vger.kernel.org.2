@@ -2,81 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D9A445FA2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 07:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE69445FA8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 07:15:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbhKEGQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 02:16:23 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:53167 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhKEGQW (ORCPT
+        id S231642AbhKEGSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 02:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhKEGSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 02:16:22 -0400
+        Fri, 5 Nov 2021 02:18:03 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35FA7C061714;
+        Thu,  4 Nov 2021 23:15:23 -0700 (PDT)
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HlqvR23wKz4xdM;
-        Fri,  5 Nov 2021 17:13:39 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1636092822;
-        bh=Akk3WhXsvfpdeVPhfE7p2R9m6g/Ee2L7iXINN1roAwM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=aZppCqTBm/BLADJpHbam080p9z5LzrnvaxmqW/JYkzoFn+KWSK/bdz5kERUEMKjGo
-         MmVyNccD93tbxX5sginHmkIpJ1DZ0UKGWTXIbyiaNldwM20mAQS+NkFXIHwynf+F5z
-         qMQIK9+mdJcCMVCUfmQbWTuBsGWMMIsnMtXScCOPljP6z03akr6JLLY2bo3SD7tcbY
-         a3+h4BPpOfH72QKrKdJVbJBfNPIzM5BcOPunl0PdbzhLN+IXvHEQ0SiFnigpessbks
-         9gfExohYy5m0Yp1eTUdGpgejMLIbprXrYXoDOwSbQJOudSfACIWy5TNGSLmo7cdVzI
-         muzEztovXqMow==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     cgel.zte@gmail.com
-Cc:     benh@kernel.crashing.org, paulus@samba.org, ye.guojin@zte.com.cn,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH] powerpc: xmon: remove the duplicated operand of the
- bitwise operator
-In-Reply-To: <20211105034011.76008-1-ye.guojin@zte.com.cn>
-References: <20211105034011.76008-1-ye.guojin@zte.com.cn>
-Date:   Fri, 05 Nov 2021 17:13:35 +1100
-Message-ID: <87y2636sfk.fsf@mpe.ellerman.id.au>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HlqxL30X6z4xdL;
+        Fri,  5 Nov 2021 17:15:17 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1636092921;
+        bh=ABu42RiFT1taPHynORs6qxyIrsgHaPYvXtuZnDvLm28=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Phd/GLBGSIR5NA6U4OcbR4wyh40bYgco8LL429cImCmDIf0vz8USNvPLk2qJ5FD6p
+         pvfgD1rACbzSWc9IssJ45dmK8dw0d2rBhX2clDU05+79FbN3X2PhUFSmaYe7R/Us5j
+         RBLCybZssKNtLiIu9PBS57vjQ1Xpt6WBmjvH4SoYkdcePqfzTZxDeqy/ge+GP6qnxh
+         MVcz8w4Pmml1mJ033rzesx9tfUYtJLCKmgvSyqnr0iOTpwSN3uK3bSD6LNKQqPjN5z
+         BfTOpRZwlQiPkzbnyKGK1ahxgxqv8KX4gQqUNLIUcB1kQ5CnuQDvGAkogZE41Xjz7W
+         Iv4D7yeBZwmXw==
+Date:   Fri, 5 Nov 2021 17:15:17 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+Message-ID: <20211105171517.287de894@canb.auug.org.au>
+In-Reply-To: <20211101194223.749197c5@canb.auug.org.au>
+References: <20211015202648.258445ef@canb.auug.org.au>
+        <20211101194223.749197c5@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="Sig_/f1z=jp8ned0U5MhcxSkEu39";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cgel.zte@gmail.com writes:
-> From: Ye Guojin <ye.guojin@zte.com.cn>
+--Sig_/f1z=jp8ned0U5MhcxSkEu39
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+On Mon, 1 Nov 2021 19:42:23 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
 >
-> The operands of the bitwise OR operator are duplicated, remove one of
-> them.
->
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
-> ---
->  arch/powerpc/xmon/ppc-opc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> On Fri, 15 Oct 2021 20:26:48 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
+> wrote:
+> >
+> > After merging the drm-misc tree, today's linux-next build (arm
+> > multi_v7_defconfig) failed like this:
+> >=20
+> > drivers/gpu/drm/drm_modeset_lock.c:111:29: error: conflicting types for=
+ '__stack_depot_save'
+> >   111 | static depot_stack_handle_t __stack_depot_save(void)
+> >       |                             ^~~~~~~~~~~~~~~~~~
+> > In file included from include/linux/page_ext.h:7,
+> >                  from include/linux/mm.h:25,
+> >                  from include/linux/kallsyms.h:13,
+> >                  from include/linux/bpf.h:20,
+> >                  from include/linux/bpf-cgroup.h:5,
+> >                  from include/linux/cgroup-defs.h:22,
+> >                  from include/linux/cgroup.h:28,
+> >                  from include/linux/memcontrol.h:13,
+> >                  from include/linux/swap.h:9,
+> >                  from include/linux/suspend.h:5,
+> >                  from include/linux/regulator/consumer.h:35,
+> >                  from include/linux/i2c.h:18,
+> >                  from include/drm/drm_crtc.h:28,
+> >                  from include/drm/drm_atomic.h:31,
+> >                  from drivers/gpu/drm/drm_modeset_lock.c:24:
+> > include/linux/stackdepot.h:18:22: note: previous declaration of '__stac=
+k_depot_save' was here
+> >    18 | depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+> >       |                      ^~~~~~~~~~~~~~~~~~
+> >=20
+> > Caused by commit
+> >=20
+> >   cd06ab2fd48f ("drm/locking: add backtrace for locking contended locks=
+ without backoff")
+> >=20
+> > This may only have been revealed because of another fix I have had to
+> > apply today.
+> >=20
+> > I have applied the following patch for today.
+> >=20
+> > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Date: Fri, 15 Oct 2021 20:17:52 +1100
+> > Subject: [PATCH] drm/locking: fix for name conflict
+> >=20
+> > Fixes: cd06ab2fd48f ("drm/locking: add backtrace for locking contended =
+locks without backoff")
+> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > ---
+> >  drivers/gpu/drm/drm_modeset_lock.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >=20
+> > diff --git a/drivers/gpu/drm/drm_modeset_lock.c b/drivers/gpu/drm/drm_m=
+odeset_lock.c
+> > index 4d32b61fa1fd..ee36dd20900d 100644
+> > --- a/drivers/gpu/drm/drm_modeset_lock.c
+> > +++ b/drivers/gpu/drm/drm_modeset_lock.c
+> > @@ -79,7 +79,7 @@
+> >  static DEFINE_WW_CLASS(crtc_ww_class);
+> > =20
+> >  #if IS_ENABLED(CONFIG_DRM_DEBUG_MODESET_LOCK)
+> > -static noinline depot_stack_handle_t __stack_depot_save(void)
+> > +static noinline depot_stack_handle_t __drm_stack_depot_save(void)
+> >  {
+> >  	unsigned long entries[8];
+> >  	unsigned int n;
+> > @@ -108,7 +108,7 @@ static void __stack_depot_print(depot_stack_handle_=
+t stack_depot)
+> >  	kfree(buf);
+> >  }
+> >  #else /* CONFIG_DRM_DEBUG_MODESET_LOCK */
+> > -static depot_stack_handle_t __stack_depot_save(void)
+> > +static depot_stack_handle_t __drm_stack_depot_save(void)
+> >  {
+> >  	return 0;
+> >  }
+> > @@ -317,7 +317,7 @@ static inline int modeset_lock(struct drm_modeset_l=
+ock *lock,
+> >  		ret =3D 0;
+> >  	} else if (ret =3D=3D -EDEADLK) {
+> >  		ctx->contended =3D lock;
+> > -		ctx->stack_depot =3D __stack_depot_save();
+> > +		ctx->stack_depot =3D __drm_stack_depot_save();
+> >  	}
+> > =20
+> >  	return ret;
+>=20
+> This has reappeared today.  I don't know what happened to the drm-misc
+> tree over the weeked :-(
+>=20
+> I have reapplied the above fix.
 
-Thanks, but this code is copied from binutils, we don't take cleanup
-patches to it.
+So the above drm-misc commit is now in the drm tree, but its fix up
+commit vanished from the drm-misc tree over the past weekend :-(
 
-cheers
+--=20
+Cheers,
+Stephen Rothwell
 
-> diff --git a/arch/powerpc/xmon/ppc-opc.c b/arch/powerpc/xmon/ppc-opc.c
-> index dfb80810b16c..2cab0ec0d162 100644
-> --- a/arch/powerpc/xmon/ppc-opc.c
-> +++ b/arch/powerpc/xmon/ppc-opc.c
-> @@ -6731,9 +6731,9 @@ const struct powerpc_opcode powerpc_opcodes[] = {
->  {"fre.",	A(63,24,1),   AFRALFRC_MASK, POWER5,	POWER7|PPCVLE,	{FRT, FRB, A_L}},
->  
->  {"fmul",	A(63,25,0),	AFRB_MASK,   PPCCOM,	PPCEFS|PPCVLE,	{FRT, FRA, FRC}},
-> -{"fm",		A(63,25,0),	AFRB_MASK,   PWRCOM,	PPCVLE|PPCVLE,	{FRT, FRA, FRC}},
-> +{"fm",		A(63, 25, 0),	AFRB_MASK,   PWRCOM,	PPCVLE,	{FRT, FRA, FRC}},
->  {"fmul.",	A(63,25,1),	AFRB_MASK,   PPCCOM,	PPCEFS|PPCVLE,	{FRT, FRA, FRC}},
-> -{"fm.",		A(63,25,1),	AFRB_MASK,   PWRCOM,	PPCVLE|PPCVLE,	{FRT, FRA, FRC}},
-> +{"fm.",		A(63, 25, 1),	AFRB_MASK,   PWRCOM,	PPCVLE,	{FRT, FRA, FRC}},
->  
->  {"frsqrte",	A(63,26,0),   AFRAFRC_MASK,  POWER7,	PPCVLE,		{FRT, FRB}},
->  {"frsqrte",	A(63,26,0),   AFRALFRC_MASK, PPC,	POWER7|PPCVLE,	{FRT, FRB, A_L}},
-> -- 
-> 2.25.1
+--Sig_/f1z=jp8ned0U5MhcxSkEu39
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGEy/UACgkQAVBC80lX
+0GwLYgf/YsXemq1FgUmgNNpY1yHPV39pjn7pDRTmtxoFSEa4Fo61slx+DkE9qeRm
+PSH5cAobM2bk8Ir8cG2iuqR2J0A2j1lzwh/FTX0YShmB5sPxYz9NQ1S+Oe8lTUc7
+uhuRJPj/4CDimckFkiYjF5Nwlim0E7sOSapBuFW7RBzcMhRWlXn7foF6xc385mUi
+pQvxiE6TIHzq8NgaFwNyvs9ouVz1dchou+phRXX187ENX958+YHYl9QZLJJ8MMjJ
+kHk+pMN3md6pGWLsu34t1/+9aAqG1aVKChPgRVRotwmKZMj/lJAIrmxE6Is6gdpY
+eVQOAtHXzcLJkDujD2OSOo+RIyHEqQ==
+=q40p
+-----END PGP SIGNATURE-----
+
+--Sig_/f1z=jp8ned0U5MhcxSkEu39--
