@@ -2,66 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE5E4460E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 09:50:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2695E4460EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 09:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbhKEIxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 04:53:35 -0400
-Received: from mga05.intel.com ([192.55.52.43]:52299 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231133AbhKEIxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 04:53:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10158"; a="318068272"
-X-IronPort-AV: E=Sophos;i="5.87,210,1631602800"; 
-   d="scan'208";a="318068272"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 01:50:50 -0700
-X-IronPort-AV: E=Sophos;i="5.87,210,1631602800"; 
-   d="scan'208";a="532535941"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 01:50:48 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id C5288200F5;
-        Fri,  5 Nov 2021 10:50:46 +0200 (EET)
-Date:   Fri, 5 Nov 2021 10:50:46 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     kernel@puri.sm, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, lkp@intel.com, mchehab@kernel.org,
-        paul.kocialkowski@bootlin.com
-Subject: Re: [PATCH v3 0/2] media: hi846: minor build fixes
-Message-ID: <YYTwZsebbyhWbGGM@paasikivi.fi.intel.com>
-References: <20211019155509.1018130-1-martin.kepplinger@puri.sm>
- <YXASUAHcvQlWefwp@paasikivi.fi.intel.com>
- <209f26d7e2b156818e55eac357c434f599e2ecda.camel@puri.sm>
+        id S231133AbhKEIxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 04:53:41 -0400
+Received: from www381.your-server.de ([78.46.137.84]:54902 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232814AbhKEIxj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 04:53:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=ySSYSSRANv06wW3RzwGvD6KRkw+9mAkGLzIgDqWTJuo=; b=IdtuzkjNVjPl+FeD2F/LMO8L7K
+        drQiTHnrxkJ8BV5hW5XHylIWIVAsIUfInahOW2AA6noEjBYbkj9VpEsIXbB4AWgnVFWXgFNSkVdvP
+        OIZghvK7LYRS3YCSitiMTUe4SGhf0N76By5W/KmpCA8YObSOAiw0ZBOp5gURcSwvDhiZjZ6DYwei3
+        4L3JHerZQ0uNvFIrVi1y6HSoLw9KshdxVM3MAbUozBuDzXAuVVN1uNCYXLAKmk4RbGpPUM8PlBbHk
+        R4IOmfWfUurm8OXi2EJnCa7c5Sz2x10nzoE4RRSpBC0nxoKl6r4h76vHg4wROJOzKRyZ+EQPBEAWi
+        oru439gg==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1miuw0-000Exj-Q3; Fri, 05 Nov 2021 09:50:52 +0100
+Received: from [82.135.83.112] (helo=[192.168.178.20])
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1miuw0-000FJ3-Hv; Fri, 05 Nov 2021 09:50:52 +0100
+Subject: Re: [PATCH v7 3/3] iio: test: Add test for IIO_VAL_INT_64.
+To:     Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Vasyl.Vavrychuk@opensynergy.com, jbhayana@google.com,
+        Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAHp75Vd7Wwka37w-6QTXT9vv13bPiygKryBhQTnyvtTpCNU9qw@mail.gmail.com>
+ <20211102073300.13376-1-andriy.tryshnivskyy@opensynergy.com>
+ <CAHp75VfafpEBccivDRC2AVVJbZL2Kdq2KeR0yf_nwTtDTxvDkg@mail.gmail.com>
+ <6d909cca-46a9-3f40-5d4d-97ef2fbe33e9@opensynergy.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <0c449b88-a6fb-76ca-5c13-807f7728f1da@metafoo.de>
+Date:   Fri, 5 Nov 2021 09:50:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <209f26d7e2b156818e55eac357c434f599e2ecda.camel@puri.sm>
+In-Reply-To: <6d909cca-46a9-3f40-5d4d-97ef2fbe33e9@opensynergy.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26343/Thu Nov  4 09:22:31 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+On 11/5/21 9:45 AM, Andriy Tryshnivskyy wrote:
+> On 02.11.21 10:11, Andy Shevchenko wrote:
+>
+>> CAUTION: This email originated from outside of the organization.
+>> Do not click links or open attachments unless you recognize the 
+>> sender and know the content is safe.
+>>
+>>
+>> On Tue, Nov 2, 2021 at 9:33 AM Andriy Tryshnivskyy
+>> <andriy.tryshnivskyy@opensynergy.com> wrote:
+>> Now it's good with format, but you have missed the commit message.
+>
+> Actually commit massage contains a header only (no body message), but 
+> I can add body message too.
+> Thanks!
+>
+>>
+>>> Signed-off-by: Andriy Tryshnivskyy 
+>>> <andriy.tryshnivskyy@opensynergy.com>
+>> ...
+>>
+>>> +static void iio_test_iio_format_value_integer_64(struct kunit *test)
+>>> +{
+>>> +       char *buf = kunit_kmalloc(test, PAGE_SIZE, GFP_KERNEL);
+>> Shouldn't this be checked against NULL?
+>
+> Good question. Truly speaking I've made new test similar to other. And 
+> no other tests has a check for NULL.
+>
+The other tests not having it is my fault. There should be a 
+KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf) under the allocation.
 
-On Thu, Nov 04, 2021 at 11:53:08AM +0100, Martin Kepplinger wrote:
-> Am Mittwoch, dem 20.10.2021 um 15:57 +0300 schrieb Sakari Ailus:
-> > On Tue, Oct 19, 2021 at 05:55:07PM +0200, Martin Kepplinger wrote:
-> > > Similar to many other drivers this basically should fix the build
-> > > warning
-> > > where the const struct of_device_id we define can be unused.
-> > > Reported
-> > > here:
-> > > https://lore.kernel.org/linux-media/202110170632.b6umsB8m-lkp@intel.com/
-> > 
-> > Thanks, Martin!> 
-> > 
-> 
-> since the Intel test robot just reminded me that the issue still
-> remains: are these patches queued somewhere already?
 
-Not yet. And thanks for the ping. I had forgotten about these fixes and
-wrote a fix for the same issue, so I'm taking these two instead.
-
--- 
-Sakari Ailus
