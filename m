@@ -2,76 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9BA4446062
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 09:01:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 014F0446063
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 09:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbhKEIDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 04:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232356AbhKEIDk (ORCPT
+        id S232477AbhKEIEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 04:04:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:48846 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232356AbhKEIEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 04:03:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A1E9C061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 01:01:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ASh5/cxvMHIZe869IHe6A6T0W9qjPjOzQamPtFucorg=; b=J0UFHNyu4Ey2GehgPEIFL/0YNp
-        O84NA3/ipAguXiZNfYumIL//yNvMDEIqIUROAVfDpoIqiekqxvjZ3jQ6FuGOTzESh2F8szVZe968C
-        04seLgQW225Cy0w9e8y2gijmHm9vAo1MCu7Umvh8p6f4zd1D01aAU71Mpcnb5YgQRFgEOUEC8vHkb
-        bjkJs/ox0E+yp1lyfqQ5aP+CU6AvKhg8wqNq23CX/Wrpt882jEwgSVYCGNHg21V6xZ1yktMagsdAm
-        4+YEQt558FQEXhDBpPZQ6oha+XiCPo7g7vBuazCVFYvMc53sX8NdMnMkwtUfoMTxCzd37xmk4PeKM
-        NcpLDLzQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1miu7g-006Ptw-2V; Fri, 05 Nov 2021 07:59:22 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B70E59869D8; Fri,  5 Nov 2021 08:58:51 +0100 (CET)
-Date:   Fri, 5 Nov 2021 08:58:51 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        mark.rutland@arm.com, dvyukov@google.com, seanjc@google.com,
-        mbenes@suse.cz
-Subject: Re: [RFC][PATCH 18/22] x86,kvm: Remove .fixup usage
-Message-ID: <20211105075851.GJ174703@worktop.programming.kicks-ass.net>
-References: <20211104164729.226550532@infradead.org>
- <20211104165525.588957687@infradead.org>
- <0154963b-6bb5-fc33-6a29-bfa57f187c38@redhat.com>
+        Fri, 5 Nov 2021 04:04:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636099281;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0MqXgdVfhBySSGVsmZdlv09NxUwfcfOPShoRaoY0Oy8=;
+        b=cV0v+18rwWRV02WjMSBEpl0IwPtVR3ukC5K652LX40NkCTucb+maRgCNOBaKh2ILiCyJVG
+        TeXXXtgIG7lKT25Y8SUsbYCdP/2rwHrLU9F9ovz4QAQu0MDdHmLlR4ZQlfMIYRLwBJkuYJ
+        fW0RfcNKi9dhkrhxVYE2OeVNCssn88k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-37-LrDIzKHvMBq5Fy_EvqV5AQ-1; Fri, 05 Nov 2021 04:01:20 -0400
+X-MC-Unique: LrDIzKHvMBq5Fy_EvqV5AQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F24CF9126F;
+        Fri,  5 Nov 2021 08:01:18 +0000 (UTC)
+Received: from T590 (ovpn-8-17.pek2.redhat.com [10.72.8.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2D4035D9DE;
+        Fri,  5 Nov 2021 08:00:01 +0000 (UTC)
+Date:   Fri, 5 Nov 2021 15:59:56 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>, live-patching@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>, ming.lei@redhat.com
+Subject: Re: [PATCH V4 3/3] livepatch: free klp_patch object synchronously
+Message-ID: <YYTkfAwdJio5qOFM@T590>
+References: <20211102145932.3623108-1-ming.lei@redhat.com>
+ <20211102145932.3623108-4-ming.lei@redhat.com>
+ <YYKUx+yx4NdeWPBU@alley>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0154963b-6bb5-fc33-6a29-bfa57f187c38@redhat.com>
+In-Reply-To: <YYKUx+yx4NdeWPBU@alley>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 07:50:36PM +0100, Paolo Bonzini wrote:
-
-> > +	FOP1E(op, dst) _ASM_EXTABLE_TYPE(10b, 10b, EX_TYPE_KVM_FASTOP)
+On Wed, Nov 03, 2021 at 02:55:19PM +0100, Petr Mladek wrote:
+> On Tue 2021-11-02 22:59:32, Ming Lei wrote:
+> > klp_mutex isn't acquired before calling kobject_put(klp_patch), so it is
+> > fine to free klp_patch object synchronously.
+> > 
+> > One issue is that enabled store() method, in which the klp_patch kobject
+> > itself is deleted & released. However, sysfs has provided APIs for dealing
+> > with this corner case, so use sysfs_break_active_protection() and
+> > sysfs_unbreak_active_protection() for releasing klp_patch kobject from
+> > enabled_store(), meantime the enabled attribute has to be removed
+> > before deleting the klp_patch kobject.
+> > 
+> > --- a/kernel/livepatch/core.c
+> > +++ b/kernel/livepatch/core.c
+> > @@ -369,10 +370,18 @@ static ssize_t enabled_store(struct kobject *kobj, struct kobj_attribute *attr,
+> >  out:
+> >  	mutex_unlock(&klp_mutex);
+> >  
+> > -	klp_free_patches_async(&to_free);
+> > -
+> >  	if (ret)
+> >  		return ret;
+> > +
+> > +	if (!list_empty(&to_free)) {
+> > +		kn = sysfs_break_active_protection(kobj, &attr->attr);
+> > +		WARN_ON_ONCE(!kn);
+> > +		sysfs_remove_file(kobj, &attr->attr);
+> > +		klp_free_patches(&to_free);
+> > +		if (kn)
+> > +			sysfs_unbreak_active_protection(kn);
+> > +	}
 > 
-> There's a ret right after the 10b label, so I think you can just use this:
+> I agree that using workqueues for free_work looks like a hack.
+> But this looks even more tricky and fragile to me. It feels like
+> playing with sysfs/kernfs internals.
 > 
-> diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-> index 493511efa3dc..f382c03c5954 100644
-> --- a/arch/x86/kvm/emulate.c
-> +++ b/arch/x86/kvm/emulate.c
-> @@ -315,7 +315,7 @@ static int fastop(struct x86_emulate_ctxt *ctxt, fastop_t fop);
->  	__FOP_FUNC(#name)
->  #define __FOP_RET(name) \
-> -	"ret \n\t" \
-> +	"11: ret \n\t" \
->  	".size " name ", .-" name "\n\t"
->  #define FOP_RET(name) \
-> @@ -344,7 +344,7 @@ static int fastop(struct x86_emulate_ctxt *ctxt, fastop_t fop);
->  	__FOP_RET(#op "_" #dst)
->  #define FOP1EEX(op,  dst) \
-> -	FOP1E(op, dst) _ASM_EXTABLE(10b, kvm_fastop_exception)
-> +	FOP1E(op, dst) _ASM_EXTABLE_TYPE_REG(10b, 11b, EX_TYPE_ZERO_REG, %esi)
->  #define FASTOP1(op) \
->  	FOP_START(op) \
+> It might look less tricky when using sysfs_remove_file_self().
 
-That's much nicer, thanks!
+The protection needs to cover removing both 'enabled' attribute and
+the patch kobject, so sysfs_remove_file_self() isn't good here.
+
+> 
+> Anyway, there are only few users of these APIs:
+> 
+>    + sysfs_break_active_protection() is used only scsi
+>    + kernfs_break_active_protection() is used by cgroups, cpusets, and rdtgroup.
+>    + sysfs_remove_file_self() is used by some RDMA-related stuff.
+> 
+> It means that there are some users but it is not widely used API.
+
+It is used by generic pci device and scsi device, both are the most popular
+devices in the world, either one of the two subsystem should have huge amount
+of users, so it means the interface itself has been proved/verified for long
+time by many enough real users.
+
+> 
+> I would personally prefer to keep it as is. I do not see any
+> fundamental advantage of the new code. But I might be biased
+> because the current code was written by me ;-)
+
+The fundamental advantage is that the API has been used/verified by
+enough real users. Also killing attribute/kobject itself isn't unique
+for livepatch, that is actually one common pattern, so it needn't
+such hacky implementation.
+
+
+Thanks,
+Ming
+
