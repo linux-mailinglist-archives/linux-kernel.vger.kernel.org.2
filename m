@@ -2,119 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9633F446272
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:58:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 030E3446275
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 12:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbhKELBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 07:01:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54355 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231536AbhKELA7 (ORCPT
+        id S231934AbhKELDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 07:03:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231475AbhKELDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 07:00:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636109899;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sSErx+kJ2ynt/KJbrh+QZMhOJvLTwiY8iyfjdsdplQM=;
-        b=MClsTdrczSort83DRfSrQ+HyGW5SEKYy0kHkFPKidh8RkmqB2CLWq8YpgkuF7yJXNAYz4K
-        bT0F9IfRrDD+LNNiL3LU2MYFVCgDuuN768VwTRHrmIaDtWzI6VeDYYbnH7ZFvNK2Sfv1sc
-        M89G43Xs3RxkSjjDIfzwBIzKIXule0w=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-457-zf_ulpl7OFGqnI5JHRXuKw-1; Fri, 05 Nov 2021 06:58:18 -0400
-X-MC-Unique: zf_ulpl7OFGqnI5JHRXuKw-1
-Received: by mail-wr1-f69.google.com with SMTP id u4-20020a5d4684000000b0017c8c1de97dso2190336wrq.16
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 03:58:18 -0700 (PDT)
+        Fri, 5 Nov 2021 07:03:35 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ECB7C061714;
+        Fri,  5 Nov 2021 04:00:56 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id v65so10204933ioe.5;
+        Fri, 05 Nov 2021 04:00:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CYwhEvv3UvTqA9MLBaZXm4VtQAjQOsl7jwgvhaMJC9Y=;
+        b=InPhZF78h5Sc0L3eEeCWK0a362vCcN7XYR2ZIRUgHH6pNR71Qrc6UP7fbhNlMEITL4
+         shbd9MLm06dHr4Pn/b30BfWonIfD6p3Vc/kopjPkvgdntRlMvwPZspADNlPD0vD6B8aq
+         1Y0Dj4IrC/hNNW8yLzp8DdiD6PdMQRE8Dx0KPNAt6bSvDJVpVDUwA9vRtL8X8/+IKL0m
+         ajgugTRSGjXVUP+UJw/XAmn09qktjcBL7y4vUCeK4LLj2oswZAtv9DQas4kVdvMQoTD7
+         3OUZChIHjJKmH4Kq0FqtncoqSm+/LNnOOgm16QUjZH8ho2097/h5q3wb6up67t4nJgRv
+         hk8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=sSErx+kJ2ynt/KJbrh+QZMhOJvLTwiY8iyfjdsdplQM=;
-        b=2NmK0cUCj+ZNC8YfzIBtuBkbU9u1mx2k3ZbWtI4YoOJCUFgHAPApgwZEFVD+75StjI
-         HEB4yEgs4IJAbI+xGiKXrNoyzSXdci+mX3h4w9oLlGBOPcbl3DZ4FQ1aZXgT1wzj4jXj
-         Z8DeVA+ip+/5sGN/+pdA+hsv/96U4R08drnz3DLYBT6tASut4TLhLPhlpsSvaRJcNDCn
-         7OMDRbauQUUOAE+N0x9fQ0n6O/g4NNUzurqFif5sB+668zK+EHA3RuZ94lD2IjGjDSUH
-         W/90CdhunTkqE7vthQ+9bwJx2k4IxoG5vzThj8+yy236gSNE9U4QXaTq/TaegvgBT3YA
-         m+ug==
-X-Gm-Message-State: AOAM5304SvkZbYdyfbbN3OfyLAaifaLpePVP5PbtyOJxTu3vzyE9wRt+
-        1v2b0x7IK7Wc0vnSCosOtKsVRpD1+6zmeaqqk2t/xLWcH9jN74oOLQuD1wplnDQnwG8S11Q+Q49
-        RgQ1TAogi6kHnh7r6ohIEXsmG
-X-Received: by 2002:a1c:ed03:: with SMTP id l3mr30018029wmh.86.1636109897436;
-        Fri, 05 Nov 2021 03:58:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyW5ERgXtozFgG2CLpRjpzxMBE06phj3qPLFv2NX1yvKy0Ri/ouVaEC6qCHNGd7M2V/2Y7ARA==
-X-Received: by 2002:a1c:ed03:: with SMTP id l3mr30018008wmh.86.1636109897255;
-        Fri, 05 Nov 2021 03:58:17 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f0c:a000:3f25:9662:b5cf:73f9? (p200300d82f0ca0003f259662b5cf73f9.dip0.t-ipconnect.de. [2003:d8:2f0c:a000:3f25:9662:b5cf:73f9])
-        by smtp.gmail.com with ESMTPSA id g5sm3684554wri.45.2021.11.05.03.58.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 03:58:16 -0700 (PDT)
-Message-ID: <f6935141-3aeb-540d-afb8-292051166a82@redhat.com>
-Date:   Fri, 5 Nov 2021 11:58:15 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CYwhEvv3UvTqA9MLBaZXm4VtQAjQOsl7jwgvhaMJC9Y=;
+        b=BwRHZOZlgOoDGIQ/LxoViJcEGtQEEL4nxV2vsVlu+e6ZmSyTs6AAsbM3FF9yaOpGzc
+         T7ORwrAYEVPgROwNPrBBr9hW9bQnmBxu5fIFu3smL4xdewsXC7cUukBtch5L3M18K7ys
+         alaS55KWPZxURD5lzRkbMubm9wXseq678t1+ckjDHdaLXZ+1dfJOQMOihZGpHGB5hIOV
+         ZNZJAwF9RcxnDTfjAc/4TjwBqD3naCi8+W6KC4yVEQUiArkl2UDGquhwISEDkVtGaEuo
+         HJ+oEk4/qOHAtYuyrBogV3gspP5GBnP1dEu6/NAR8kgihL0qRBhN1ojyn3Z5pOeoyL5y
+         2byQ==
+X-Gm-Message-State: AOAM530GEa8kUJTqE1J3sakV+vcfr9Zn1iBG8h6j9Iu+RsLgSRaaEwQ7
+        7+2PVuvda3yeq2NA8kgzjqFZkEnvHAlGab5pHqE=
+X-Google-Smtp-Source: ABdhPJxXzYHL9WhnmbFj/fHx0zrqSB8IVr79t5HSqXxdoREMNz77EU1+CsOF76L2OAyfFeMYAgk6vWYxt+xvFGGwAV0=
+X-Received: by 2002:a5d:9e44:: with SMTP id i4mr5939590ioi.172.1636110055750;
+ Fri, 05 Nov 2021 04:00:55 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>, linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Ding Hui <dinghui@sangfor.com.cn>,
-        Tony Luck <tony.luck@intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yang Shi <shy828301@gmail.com>, Peter Xu <peterx@redhat.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-References: <20211105055058.3152564-1-naoya.horiguchi@linux.dev>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v3 0/3] mm/hwpoison: fix unpoison_memory()
-In-Reply-To: <20211105055058.3152564-1-naoya.horiguchi@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211103141919.4feefaf0@canb.auug.org.au> <CANiq72=fuk-eVuCpW5jkDn71Pbs=1L2LhSvadR_bTjxcPvtVUQ@mail.gmail.com>
+ <20211104080152.41c38912@canb.auug.org.au> <CANiq72mLAc1OMTo6LBTy1bwxM_+BbrRSCNn1uKW0irezUXBFcg@mail.gmail.com>
+ <20211105073149.5bc4e8a7@canb.auug.org.au>
+In-Reply-To: <20211105073149.5bc4e8a7@canb.auug.org.au>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 5 Nov 2021 12:00:44 +0100
+Message-ID: <CANiq72=Pgts+RmQ3f1UzOG-o_MrS=CnJaLAaDU1UGDr2OUOWRw@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the rust tree with Linus' tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Antonio Terceiro <antonio.terceiro@linaro.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Boris-Chengbiao Zhou <bobo1239@web.de>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        Dariusz Sosnowski <dsosnowski@dsosnowski.pl>,
+        Douglas Su <d0u9.su@outlook.com>, Finn Behrens <me@kloenk.de>,
+        Gary Guo <gary@garyguo.net>, Jiri Olsa <jolsa@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.11.21 06:50, Naoya Horiguchi wrote:
-> Hi,
-> 
-> I updated the unpoison patchset based ou discussions over v2.
-> Please see individual patches for details of updates.
-> 
-> ----- (cover letter copied from v2) -----
-> Main purpose of this series is to sync unpoison code to recent changes
-> around how hwpoison code takes page refcount.  Unpoison should work or
-> simply fail (without crash) if impossible.
-> 
-> The recent works of keeping hwpoison pages in shmem pagecache introduce
-> a new state of hwpoisoned pages, but unpoison for such pages is not
-> supported yet with this series.
-> 
-> It seems that soft-offline and unpoison can be used as general purpose
-> page offline/online mechanism (not in the context of memory error).
+On Thu, Nov 4, 2021 at 9:31 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> I would suggest that you don't rebase if you are intending to submit to
+> Linus.  Instead, do a test merge with his tree and fix the issue in the
+> merge and test that, then explain it all the in the pull request (but
+> ask him to pull your tree without the merge).
 
-I'm not sure what the target use case would be TBH ... for proper memory
-offlining/memory hotunplug we have to offline whole memory blocks. For
-memory ballooning based mechanisms we simply allocate random free pages
-and eventually trigger reclaim to make more random free pages available.
-For memory hotunplug via virtio-mem we're using alloc_contig_range() to
-allocate ranges of interest we logically unplug.
+Note that I am still submitting this as patches, not as a PR. After we
+are in, yes, of course!
 
-The only benefit compared to alloc_contig_range() might be that we can
-offline smaller chunks -- alloc_contig_range() isn't optimized for
-sub-MAX_ORDER granularity yet. But then, alloc_contig_range() should
-much rather be extended.
-
-Long story short, I'm not sure there is a sane use case for this
-"general purpose page offline/online mechanism" ...
-
--- 
-Thanks,
-
-David / dhildenb
-
+Cheers,
+Miguel
