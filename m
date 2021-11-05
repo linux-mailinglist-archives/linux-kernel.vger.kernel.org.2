@@ -2,240 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58B1445E76
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 04:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08FC2445E7B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 04:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231689AbhKEDNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 23:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231715AbhKEDNM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 23:13:12 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4767CC061203
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 20:10:33 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id s7-20020a056830148700b0055ad72acb7eso10168978otq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 20:10:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=so4nsX1lXJFQb35p8revitMJL/1wWrTjn3/v1Nu1RjU=;
-        b=nfMRXfFDdP10e3yMQGY+EtcnRyzXW/9SpY8/To64KOtSx0KWytmlT2donHbe6sKGfp
-         1ReGjJxSrw8bjAUYrKknHyvN+y4KkF6SRybFWMsh9xKmS1uzz7jDWW+DwZJvGpIePEEQ
-         QgDgMwo6nJm3NwpN8EZulfH5k6WS/zgWnM63ZaiM7Q8NBqLKmkqUFhnH4b1L9PlcrDR3
-         NdIWpKkpC5Nl8mLjw7sVOyfPRxp6+T6yVdBevurXyOJj4uEdZXy1mXsoTYMIjhFOCL6m
-         U2HC24P8h0doFSvIj0OA1egiRG2WMOSY9TLT7XaGkwa32Dt4fummJeHH5I68xiVr8E/g
-         LIiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=so4nsX1lXJFQb35p8revitMJL/1wWrTjn3/v1Nu1RjU=;
-        b=LIN4vNBBss/sZ5fUkwu5edCVC3z8tW3bAtt2KRRxruoX9Kzy/lx3myzXaG+ikneV5w
-         dR1qXQMv1T6D1Z0i11+5owTomtFSrqkLSEC1VJxOqOovILuQeoj9N61EJWbXh42b7Gmu
-         ZJTRao0+XE+Z6FbR1AXffaiSlDAtc0VNS77jX6ZBS0HXPRMAcpzMiNkYXHuuV8K0krvZ
-         eZHm7uilJO5KRdIGokYZTXCHbvXlomQsEqCTPJmh8N4xLBoPgBwlj9m4ciqWAZaSGh2u
-         Xnr0fvxYxfaaEEoc1LfN5dlVclKCUTdzoiu+28iMGSP3RPtG0eppaJcpqF93gaBiTqml
-         aoEw==
-X-Gm-Message-State: AOAM533PLnYPE3BJMG61O4LvVrMmWvj/rT+3l0WJAAkLYryTHcwdqkJS
-        DivysVf24kFZQImPPERh2VEeSQ==
-X-Google-Smtp-Source: ABdhPJzMey1z1x3XkS7OK2c5e9r3V8Lb3qenvMGUxDREC0JMxUfO3hmNhvytVtLcLBm7vVYT9QXwYg==
-X-Received: by 2002:a9d:6b84:: with SMTP id b4mr39849412otq.327.1636081832628;
-        Thu, 04 Nov 2021 20:10:32 -0700 (PDT)
-Received: from [192.168.17.16] ([189.219.75.83])
-        by smtp.gmail.com with ESMTPSA id l7sm1812145oog.22.2021.11.04.20.10.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 20:10:32 -0700 (PDT)
-Subject: Re: [PATCH 5.14 00/16] 5.14.17-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     shuah@kernel.org, f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-References: <20211104141159.863820939@linuxfoundation.org>
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <66c808f7-bdeb-a509-8209-3584843dbb8a@linaro.org>
-Date:   Thu, 4 Nov 2021 21:10:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231712AbhKEDRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 23:17:54 -0400
+Received: from mx22.baidu.com ([220.181.50.185]:51272 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229685AbhKEDRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 23:17:52 -0400
+Received: from BC-Mail-EX08.internal.baidu.com (unknown [172.31.51.48])
+        by Forcepoint Email with ESMTPS id C3C0EC946A3D56BAE9FE;
+        Fri,  5 Nov 2021 11:15:09 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-EX08.internal.baidu.com (172.31.51.48) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Fri, 5 Nov 2021 11:15:09 +0800
+Received: from localhost (172.31.63.8) by BJHW-MAIL-EX27.internal.baidu.com
+ (10.127.64.42) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 5
+ Nov 2021 11:15:09 +0800
+Date:   Fri, 5 Nov 2021 11:15:08 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     Xu Wang <vulab@iscas.ac.cn>
+CC:     <joel@jms.id.au>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: ethernet: litex: Remove unnecessary print function
+ dev_err()
+Message-ID: <20211105031508.GA817@LAPTOP-UKSR4ENP.internal.baidu.com>
+References: <20211105014217.38681-1-vulab@iscas.ac.cn>
 MIME-Version: 1.0
-In-Reply-To: <20211104141159.863820939@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211105014217.38681-1-vulab@iscas.ac.cn>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex24.internal.baidu.com (172.31.51.18) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 11/4/21 8:12 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.17 release.
-> There are 16 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 05 11月 21 01:42:17, Xu Wang wrote:
+> The print function dev_err() is redundant because
+> platform_get_irq() already prints an error.
+>
+Reviewed-by: Cai Huoqing <caihuoqing@baidu.com>
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+> ---
+>  drivers/net/ethernet/litex/litex_liteeth.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> Responses should be made by Sat, 06 Nov 2021 14:11:51 +0000.
-> Anything received after that time might be too late.
+> diff --git a/drivers/net/ethernet/litex/litex_liteeth.c b/drivers/net/ethernet/litex/litex_liteeth.c
+> index 3d9385a4989b..ab9fa1525053 100644
+> --- a/drivers/net/ethernet/litex/litex_liteeth.c
+> +++ b/drivers/net/ethernet/litex/litex_liteeth.c
+> @@ -242,10 +242,8 @@ static int liteeth_probe(struct platform_device *pdev)
+>  	priv->dev = &pdev->dev;
+>  
+>  	irq = platform_get_irq(pdev, 0);
+> -	if (irq < 0) {
+> -		dev_err(&pdev->dev, "Failed to get IRQ %d\n", irq);
+> +	if (irq < 0)
+>  		return irq;
+> -	}
+>  	netdev->irq = irq;
+>  
+>  	priv->base = devm_platform_ioremap_resource_byname(pdev, "mac");
+> -- 
+> 2.25.1
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.17-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-
-Results from Linaro's test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-## Build
-* kernel: 5.14.17-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.14.y
-* git commit: 05ed8d6b833a25cb7b38026ed8f584dbdce21ec2
-* git describe: v5.14.16-17-g05ed8d6b833a
-* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.14.y/build/v5.14.16-17-g05ed8d6b833a
-
-## No regressions (compared to v5.14.16)
-
-## No fixes (compared to v5.14.16)
-
-## Test result summary
-total: 95590, pass: 80826, fail: 1113, skip: 12783, xfail: 868
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 290 total, 268 passed, 22 failed
-* arm64: 40 total, 40 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 39 total, 39 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 37 total, 37 passed, 0 failed
-* parisc: 12 total, 12 passed, 0 failed
-* powerpc: 36 total, 36 passed, 0 failed
-* riscv: 24 total, 24 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 24 total, 24 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 40 total, 40 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-
-* kselftest-android
-* kselftest-arm64
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
-
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
