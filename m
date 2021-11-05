@@ -2,79 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6124464A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:08:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2F344649F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233119AbhKEOKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 10:10:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50366 "EHLO
+        id S233105AbhKEOKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 10:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232410AbhKEOKf (ORCPT
+        with ESMTP id S231933AbhKEOKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 10:10:35 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BA8C061205
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 07:07:55 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hm2QZ0DvKz4xbP;
-        Sat,  6 Nov 2021 01:07:50 +1100 (AEDT)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-In-Reply-To: <3d5800b0bbcd7b19761b98f50421358667b45331.1635520232.git.christophe.leroy@csgroup.eu>
-References: <3d5800b0bbcd7b19761b98f50421358667b45331.1635520232.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH] powerpc/8xx: Fix Oops with STRICT_KERNEL_RWX without DEBUG_RODATA_TEST
-Message-Id: <163612125412.2515705.13745636929777214451.b4-ty@ellerman.id.au>
-Date:   Sat, 06 Nov 2021 01:07:34 +1100
+        Fri, 5 Nov 2021 10:10:19 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD770C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 07:07:39 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id w1so33763008edd.10
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 07:07:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:content-language:to:cc:from
+         :subject:content-transfer-encoding;
+        bh=QCNq+zUbqjBlsPPN3RI213vrw2hNPJ7Au8oDGBx4F/U=;
+        b=XZCntxTWh3ZP0eRrw82ahn9UVa+j/EgnV6UxdaWs+XSo7EvM9OKd3LOlnT/q+VEpLA
+         WYzBIsNLfNDMlrG7DaQB/yzekMIH4RtYSX2FpwNhf8wVAuPkp2UPd5bUQI8n0q69JzWy
+         YpadAL3qlN1xWMbJsyz14CP0j0AyHU32G2BcQbP1X5k72QY6LdM9iT80ROkkuYj7tr37
+         HkoZ6M+JHVmESMFvv3Z+AYDj65T6YjWwQFOfhTL+29tb3mkIep7bPULa0gH7mDWmzAQn
+         rbr5YyLp1ylGVe17S8O4IgnvIxYuHA7qqJYK+TtBNz11dEyCwhyoU7wy1fPQe7zGa+bc
+         Vu1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:from:subject:content-transfer-encoding;
+        bh=QCNq+zUbqjBlsPPN3RI213vrw2hNPJ7Au8oDGBx4F/U=;
+        b=y5bzc8gfAEHwCqAPKKUJpPVJ/qSmU459cEYyuzG798swgzT3bT1mbZWzO/6JwkBX5J
+         1tDsfxWAOPpVQX37QSrb1X3U7bHd+omzQTgRvvnp0RYoGiqnrxEhLNmBHWWr6Q0kWprk
+         7kYkysbe6HnFnu8J0u5g1mDaoc+6KyFhPGgrSONuiFSjZSLKs4H9+djpgThjuoIpfKIw
+         vhZKRDE4jwZPxbIIdRGIKgKZIuXogihNFLenqCkto+y6hv/bt3HIHVo/nX18P2ZtLdos
+         2orZ0MRvhnTm/fgciiJz6kEe+4sE6w33kq2XPi+9s7Pdqj1DyqXKRSrBXHcJqWlcPeM8
+         sTYw==
+X-Gm-Message-State: AOAM532N8/7yU/WIplFEnv/tasw1Z9AwaNqESI4kXMwAGVuiFsx3uYq/
+        eQMao+KXKpx9ObzI2ljR74Y/YcM0z0NaWA==
+X-Google-Smtp-Source: ABdhPJy4QHNJwR5b05DE3/0QSMCfKynDvtBd3fA0T2tLBdcvnEeYDbMbS+h9M8c3Zg7AZYBS+LC0gg==
+X-Received: by 2002:a17:906:b854:: with SMTP id ga20mr19007888ejb.308.1636121258445;
+        Fri, 05 Nov 2021 07:07:38 -0700 (PDT)
+Received: from ?IPV6:2a02:768:2307:40d6::45a? ([2a02:768:2307:40d6::45a])
+        by smtp.gmail.com with ESMTPSA id qf9sm4591442ejc.18.2021.11.05.07.07.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Nov 2021 07:07:37 -0700 (PDT)
+Message-ID: <ad54816e-699a-cea5-5964-966fc290b797@monstr.eu>
+Date:   Fri, 5 Nov 2021 15:07:37 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Content-Language: en-US
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Michal Simek <monstr@monstr.eu>
+Subject: [GIT PULL] arch/microblaze patches for 5.16-rc1
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 17:10:45 +0200, Christophe Leroy wrote:
-> Until now, all tests involving CONFIG_STRICT_KERNEL_RWX were done with
-> DEBUG_RODATA_TEST to check the result. But now that
-> CONFIG_STRICT_KERNEL_RWX is selected by default, it came without
-> CONFIG_DEBUG_RODATA_TEST and led to the following Oops
-> 
-> [    6.830908] Freeing unused kernel image (initmem) memory: 352K
-> [    6.840077] BUG: Unable to handle kernel data access on write at 0xc1285200
-> [    6.846836] Faulting instruction address: 0xc0004b6c
-> [    6.851745] Oops: Kernel access of bad area, sig: 11 [#1]
-> [    6.857075] BE PAGE_SIZE=16K PREEMPT CMPC885
-> [    6.861348] SAF3000 DIE NOTIFICATION
-> [    6.864830] CPU: 0 PID: 1 Comm: swapper Not tainted 5.15.0-rc5-s3k-dev-02255-g2747d7b7916f #451
-> [    6.873429] NIP:  c0004b6c LR: c0004b60 CTR: 00000000
-> [    6.878419] REGS: c902be60 TRAP: 0300   Not tainted  (5.15.0-rc5-s3k-dev-02255-g2747d7b7916f)
-> [    6.886852] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 53000335  XER: 8000ff40
-> [    6.893564] DAR: c1285200 DSISR: 82000000
-> [    6.893564] GPR00: 0c000000 c902bf20 c20f4000 08000000 00000001 04001f00 c1800000 00000035
-> [    6.893564] GPR08: ff0001ff c1280000 00000002 c0004b60 00001000 00000000 c0004b1c 00000000
-> [    6.893564] GPR16: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> [    6.893564] GPR24: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 c1060000
-> [    6.932034] NIP [c0004b6c] kernel_init+0x50/0x138
-> [    6.936682] LR [c0004b60] kernel_init+0x44/0x138
-> [    6.941245] Call Trace:
-> [    6.943653] [c902bf20] [c0004b60] kernel_init+0x44/0x138 (unreliable)
-> [    6.950022] [c902bf30] [c001122c] ret_from_kernel_thread+0x5c/0x64
-> [    6.956135] Instruction dump:
-> [    6.959060] 48ffc521 48045469 4800d8cd 3d20c086 89295fa0 2c090000 41820058 480796c9
-> [    6.966890] 4800e48d 3d20c128 39400002 3fe0c106 <91495200> 3bff8000 4806fa1d 481f7d75
-> [    6.974902] ---[ end trace 1e397bacba4aa610 ]---
-> 
-> [...]
+Hi Linus,
 
-Applied to powerpc/next.
+please pull this one small patch to your tree. Sean is pushing one pwm 
+driver and these ancient properties are going against agreed DT binding.
 
-[1/1] powerpc/8xx: Fix Oops with STRICT_KERNEL_RWX without DEBUG_RODATA_TEST
-      https://git.kernel.org/powerpc/c/c12ab8dbc492b992e1ea717db933cee568780c47
+Thanks,
+Michal
 
-cheers
+
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+
+   Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+
+are available in the Git repository at:
+
+   git://git.monstr.eu/linux-2.6-microblaze.git tags/microblaze-v5.16
+
+for you to fetch changes up to 43bdcbd5004393faad06b65c1539d3c9b9d5f6b2:
+
+   microblaze: timer: Remove unused properties (2021-10-26 07:37:18 +0200)
+
+----------------------------------------------------------------
+Microblaze patches for 5.16-rc1
+
+- Remove unused properties
+
+----------------------------------------------------------------
+Sean Anderson (1):
+       microblaze: timer: Remove unused properties
+
+  arch/microblaze/boot/dts/system.dts | 5 -----
+  1 file changed, 5 deletions(-)
+
+-- 
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+
