@@ -2,154 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D9A4465C2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:30:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7634465CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:32:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233549AbhKEPdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 11:33:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233548AbhKEPdG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 11:33:06 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F700C061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 08:30:26 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id n8so11310831plf.4
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 08:30:26 -0700 (PDT)
+        id S233617AbhKEPda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 11:33:30 -0400
+Received: from mx1.tq-group.com ([93.104.207.81]:1233 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233556AbhKEPdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 11:33:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2nsbfWUBXQEl1i8aLsjK652VPTDd+dYABfknXwLaoPY=;
-        b=rj6ZIxCsiZekHlz4ExnTV6eWkMludpSvjlgA1Cj4SSM0SLZQc5PFpuRcFNQhjJrXzT
-         Gh62G+Iv/aQw4uXrNxl0fT5NVKC16zPLFJGZ/o1ID7e+a7MN7RqQEkMXB7XDwn0sE3RJ
-         dOdLlaZk5v0q0Bw1PPNcFDIqPWZpkCNEIjgKLut3uh50SCYjqIuDLmQdo8S756AtWSYA
-         Gb5eD2kWa2xlOHeWdqMt23wCRJjtrVPPybbm5ynOfekh/79cfM8oFUasSxMy9UR+zPZL
-         Su2ojng+T7LEBGxcPqrB+zKTa7QfdT6RwvBpJb0tPQxijNeGsQbCDw5Wag8bfvncHk0f
-         XShw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2nsbfWUBXQEl1i8aLsjK652VPTDd+dYABfknXwLaoPY=;
-        b=I4zVxZtrGQDiaB0KBk1Ca4XB2JRTr3RMaMTLWYTQSAjiKvgoq1sNLEpjt9dNGvuiY+
-         dMCe8gIds/41hORocy2XRty+8gDVMiQyTgv1LXSnVa2mmyUGMZVaKS3fEr1X9Pd/MuG6
-         I6d6CHqs3qpVBuiX4bREOqyKAiorUnS7zk5ZHaILFYxkdlRFa9azb2GTZgJ4Ft0aIw9N
-         vw8mg0pq7i0R3HX5FV4JwNNBjFwhjU4nmnUE3qjuwt361mZKsNiGGqPmEpHKS4SMnHg/
-         7lPLczZ01dOywaCuRyxSbMYjPoQ1/ReOOS159TYLwMoTdJTAu8Oc3Gwn+52Mkacy/mH6
-         pvFQ==
-X-Gm-Message-State: AOAM531JnfUB+HYClYCDXCAK+TBaX8Gl2eNQ4Gh43H+oQNzigqgt8kxh
-        drvu6bGJpNmJN25CRNMMhaMUcw==
-X-Google-Smtp-Source: ABdhPJwbB5QgmG1ZYEIzH3vqvqjDxzDKMNB5fwPXAEJ4neorNMHtzNpwiKp7j1+6vR0jrZgbhCpV4A==
-X-Received: by 2002:a17:90a:fec:: with SMTP id 99mr31361569pjz.193.1636126225912;
-        Fri, 05 Nov 2021 08:30:25 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id m4sm9788773pjl.11.2021.11.05.08.30.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 08:30:25 -0700 (PDT)
-Date:   Fri, 5 Nov 2021 15:30:21 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] KVM: x86: Copy kvm_pmu_ops by value to eliminate
- layer of indirection
-Message-ID: <YYVODdVEc/deNP8p@google.com>
-References: <20211103070310.43380-1-likexu@tencent.com>
- <20211103070310.43380-2-likexu@tencent.com>
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1636126239; x=1667662239;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=USFTG4CyjJ2V0A/IaDFHB/t0MuF5SPUlnI/RWiXmNVg=;
+  b=eZfQDUjCfGGOReZ/ZmMrc8ZgFKoVA3I5o4qiSn381CDooOpyawiGPBzd
+   gG4GIhgOIYlQa7Yh5D48y9qp6Fqh05Laz3jbc+id9l0fm0coES+7j57Ab
+   lqyfp/ca7NiIg3NvsFDIRiCtWM4PUDyGxbdmgKOXIj3FtCymX0WcE5k+8
+   72/4MD7I/2vQ/dBZK0JQhf5k6K1rG3AF/sL0Nopef28Sa5FOtRUKAtyQV
+   vqmyTIgtgDFaX2V4FSMNQ76zSYk8c7vFmdp7K0qMqylunXsCHnC87tz/n
+   tTJooJ7PSte8YieNaRlJ+poYIMyiPwRuWKJtQastdTPLbFREcinhmTfjY
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.87,212,1631570400"; 
+   d="scan'208";a="20358804"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 05 Nov 2021 16:30:34 +0100
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Fri, 05 Nov 2021 16:30:34 +0100
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Fri, 05 Nov 2021 16:30:34 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1636126234; x=1667662234;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=USFTG4CyjJ2V0A/IaDFHB/t0MuF5SPUlnI/RWiXmNVg=;
+  b=bqMyzuA+YKByDetkDO7+i0nDRsdZdKFFTwWvpYJGrwmH7wC3B457dDjB
+   HhA+BgQPBX7Lf71gVUtHcCBKZxoUZUzG35OyJpV3YJ2co8ni8IOVe0YTV
+   drVbSAGKXe2q9tWMwiEMVMDBy2t/TZr35PsWPLUTD8rPirR5veSq44+el
+   jgLs3qmDUltlKC+7Jf/QG/GqDGACtaS0+bCSvBUjb0TvOBGKRDpZAwb2Q
+   w18XDPKaSgA0z5ly3mwe1uE4fe/lpW8k4wpn/mMMVUG5YxbTQ/v/w8sOY
+   2Bk2YXO3GneS1QCpjV+s8JYolYzvdUq4cO9UjvpaNb+m5ZdN17CA/Di0h
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.87,212,1631570400"; 
+   d="scan'208";a="20358803"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 05 Nov 2021 16:30:34 +0100
+Received: from steina-w.tq-net.de (unknown [10.123.49.12])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 9E67D280065;
+        Fri,  5 Nov 2021 16:30:34 +0100 (CET)
+From:   Alexander Stein <alexander.stein@ew.tq-group.com>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Alexander Stein <alexander.stein@ew.tq-group.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Rob Herring <robh@kernel.org>
+Subject: [PATCH v2 4/7] dt-bindings: arm: fsl: add TQMa8MxNL boards
+Date:   Fri,  5 Nov 2021 16:30:22 +0100
+Message-Id: <20211105153025.187106-5-alexander.stein@ew.tq-group.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211105153025.187106-1-alexander.stein@ew.tq-group.com>
+References: <20211105153025.187106-1-alexander.stein@ew.tq-group.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103070310.43380-2-likexu@tencent.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021, Like Xu wrote:
-> Replace the kvm_pmu_ops pointer in common x86 with an instance of the
-> struct to save one pointer dereference when invoking functions. Copy the
-> struct by value to set the ops during kvm_init().
-> 
-> Using kvm_x86_ops.hardware_enable to track whether or not the
-> ops have been initialized, i.e. a vendor KVM module has been loaded.
-> 
-> Signed-off-by: Like Xu <likexu@tencent.com>
-> ---
->  arch/x86/kvm/pmu.c        | 41 +++++++++++++++++++++------------------
->  arch/x86/kvm/pmu.h        |  4 +++-
->  arch/x86/kvm/vmx/nested.c |  2 +-
->  arch/x86/kvm/x86.c        |  3 +++
->  4 files changed, 29 insertions(+), 21 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-> index 0772bad9165c..0db1887137d9 100644
-> --- a/arch/x86/kvm/pmu.c
-> +++ b/arch/x86/kvm/pmu.c
-> @@ -47,6 +47,9 @@
->   *        * AMD:   [0 .. AMD64_NUM_COUNTERS-1] <=> gp counters
->   */
->  
-> +struct kvm_pmu_ops kvm_pmu_ops __read_mostly;
-> +EXPORT_SYMBOL_GPL(kvm_pmu_ops);
-> +
+TQMa8MxNL is a SOM family using NXP i.MX8MN[Q,QL,DL,S,SL] CPU
+MBa8Mx is an evaluation mainbord for this SOM
 
-...
+The SOM needs a mainboard, therefore we provide two compatibles here:
 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index b4ee5e9f9e20..1e793e44b5ff 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -4796,7 +4796,7 @@ void nested_vmx_pmu_entry_exit_ctls_update(struct kvm_vcpu *vcpu)
->  		return;
->  
->  	vmx = to_vmx(vcpu);
-> -	if (kvm_x86_ops.pmu_ops->is_valid_msr(vcpu, MSR_CORE_PERF_GLOBAL_CTRL)) {
-> +	if (kvm_pmu_ops.is_valid_msr(vcpu, MSR_CORE_PERF_GLOBAL_CTRL)) {
+"tq,imx8mn-<SOM>" for the module and
+"tq,imx8mn-<SOM>-<SBC>" for mainboards
 
-I would much prefer we export kvm_pmu_is_valid_msr() and go through that for nVMX
-than export all of kvm_pmu_ops for this one case.
+Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/arm/fsl.yaml | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
->  		vmx->nested.msrs.entry_ctls_high |=
->  				VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL;
->  		vmx->nested.msrs.exit_ctls_high |=
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index ac83d873d65b..72d286595012 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -11317,6 +11317,9 @@ int kvm_arch_hardware_setup(void *opaque)
->  	memcpy(&kvm_x86_ops, ops->runtime_ops, sizeof(kvm_x86_ops));
->  	kvm_ops_static_call_update();
->  
-> +	if (kvm_x86_ops.hardware_enable)
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index abcf559e311e..145f529ffc45 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -780,6 +780,17 @@ properties:
+           - const: variscite,var-som-mx8mn
+           - const: fsl,imx8mn
+ 
++      - description:
++          TQMa8MxNL is a series of SOM featuring NXP i.MX8MN system-on-chip
++          variants. It is designed to be soldered on different carrier boards.
++          All variants (TQMa8M[Q,D,S][L]NL) use the same device tree, hence only
++          one compatible is needed.
++        items:
++          - enum:
++              - tq,imx8mn-tqma8mqnl-mba8mx # TQ-Systems GmbH i.MX8MN TQMa8MQNL SOM on MBa8Mx
++          - const: tq,imx8mn-tqma8mqnl     # TQ-Systems GmbH i.MX8MN TQMa8MQNL SOM
++          - const: fsl,imx8mn
++
+       - description: i.MX8MP based Boards
+         items:
+           - enum:
+-- 
+2.25.1
 
-Huh?  Did you intend this to be?
-
-	if (kvm_x86_ops.pmu_ops)
-
-Either way, I don't see the point, VMX and SVM unconditionally provide the ops.
-
-I would also say land this memcpy() above kvm_ops_static_call_update(), then the
-enabling patch can do the static call updates in kvm_ops_static_call_update()
-instead of adding another helper.
-
-> +		memcpy(&kvm_pmu_ops, kvm_x86_ops.pmu_ops, sizeof(kvm_pmu_ops));
-
-As part of this change, the pmu_ops should be moved to kvm_x86_init_ops and tagged
-as __initdata.  That'll save those precious few bytes, and more importantly make
-the original ops unreachable, i.e. make it harder to sneak in post-init modification
-bugs.
-
-> +
->  	if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
->  		supported_xss = 0;
->  
-> -- 
-> 2.33.0
-> 
