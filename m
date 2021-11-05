@@ -2,114 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E68446488
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:58:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1304B44648B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233017AbhKEOA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 10:00:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232604AbhKEOA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 10:00:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98E5061165;
-        Fri,  5 Nov 2021 13:58:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636120698;
-        bh=m9zv5EkQKsKyPpx5/ykeQzM38x9YUm/UOnYFys8+E1U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:From;
-        b=amg5MS8oymxKPGCl7yJhYMmULdSy7+CVkIs5NZiFbrFxlGwGmzL/ndWUu75anwWBm
-         GpULlv6OlmNKN9gm/l+Pp+in8Qg0A3jm9r4ydP0NLPN5+e7CAacIltxRTJwgiwFAQu
-         XNSbVkZaL+h2PKigX9E15OH3QXhYtY3p18vKYFMGPlXOBQWgnwcj5tcbDQtmTBH0ch
-         NW62nG/elJJbqguz94M2lPV1ikS9vwdM+uJ9RedcGxOW+ZFG/J8wDdelV2hUrKvaGI
-         jgiNaEA1P1UIC5iBagTxwGuyBlNdxJlUGdAIVi3ed+nleR/cerMniOtSCvZaj6PTVq
-         cNnPZ3JSYdQWg==
-From:   SeongJae Park <sj@kernel.org>
-To:     SeongJae Park <sj@kernel.org>
-Cc:     Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: DAMON: problems when running DAMON on ARM64 with 'transparent_hugepage' enabled
-Date:   Fri,  5 Nov 2021 13:57:48 +0000
-Message-Id: <20211105135748.32729-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211027080636.14886-1-sj@kernel.org>
+        id S233054AbhKEOCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 10:02:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232418AbhKEOCS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 10:02:18 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88747C061714;
+        Fri,  5 Nov 2021 06:59:38 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id d72-20020a1c1d4b000000b00331140f3dc8so6529543wmd.1;
+        Fri, 05 Nov 2021 06:59:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=IEEilxdtumvhQuHu01CeJOMQonSCRYhoVYf2TPz9W88=;
+        b=cyPzB0Hfyhyz6+3VmCkjD1Qagc5Dcy/GPXBRG1j23G8+3aboF3wkH22enNT1xEHYN4
+         z8AZcW1jkNMZkFT7xOwpE2qJDE8AlxtpS4QHazMzRRGg5mCEPDJVD5VuQNR5cRpGDrcW
+         45NfO+xztyVBfxx0DbuHWdO+6TjHbAnEOxZT2l9jeV8pCdvA8UwmZX3lHxQzL1vryLQY
+         lbYNGpkedzF/QI8FJcYaxnQmoyc+Pk18Gp+wjTUOfe4QDw0JAV9ffUJO7UmACn8S8Pdy
+         SFvwv71vUfLWehRi8WAeLO/dsIvBDz6SGFcTDIdGDmng95Jxzdle/qjsn5aTySmCdsHW
+         tOKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=IEEilxdtumvhQuHu01CeJOMQonSCRYhoVYf2TPz9W88=;
+        b=uiNV+Fytnp1+BcYBOQE5t6nTJrZXuasaaVCobdcgYBBlNASINW76FaZh0wH9SB60tU
+         twDWYh5O+ROH0X4YfcSTiZlgOP240IcLZkNodwCRJo9FLECnSO7/m4UR7ZSLwH0ctD+1
+         nCOh+p6f1/lQa278B9AD0BSSYHKOP8qwM7I4npvc9/lYTiaibOZwS/Srck3r2Nzk7l7X
+         x5I6OE4SBdvxaqXJBNZPZOUtuxqPBrM5BUL66MU1AfGxXj6PN770SRQD3LWW6O1nElJN
+         KZG9p55HzJiGKmTGR0UJK0nLtvjnIhlbxWsa9owbdDBy+Mg2HCCwlEtvZENdCLWWY+Yq
+         sMOg==
+X-Gm-Message-State: AOAM5309+X6hC7YkYdgB+uuVv8WwHnD62nJIUC1GQckjrNTlxoMZvTCR
+        J4KZCeIQdGWFcOvb2PD0QsFtN7fZ1jM=
+X-Google-Smtp-Source: ABdhPJx2a9hZ0x06sdOx3SDxsTfmhIlR9rYS5MjQmw8Yp7iiAPp+QLiNzM5v4AQkH9sfHtf1TnU98g==
+X-Received: by 2002:a05:600c:19d1:: with SMTP id u17mr8814127wmq.148.1636120777042;
+        Fri, 05 Nov 2021 06:59:37 -0700 (PDT)
+Received: from ?IPV6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id z14sm8305992wrp.70.2021.11.05.06.59.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Nov 2021 06:59:36 -0700 (PDT)
+Message-ID: <11215b43-cd3f-6cdc-36da-44636ca11f51@gmail.com>
+Date:   Fri, 5 Nov 2021 13:59:35 +0000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 5/5] tcp/md5: Make more generic tcp_sig_pool
+Content-Language: en-US
+To:     Leonard Crestez <cdleonard@gmail.com>,
+        Dmitry Safonov <dima@arista.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+References: <20211105014953.972946-1-dima@arista.com>
+ <20211105014953.972946-6-dima@arista.com>
+ <88edb8ff-532e-5662-cda7-c00904c612b4@gmail.com>
+From:   Dmitry Safonov <0x7f454c46@gmail.com>
+In-Reply-To: <88edb8ff-532e-5662-cda7-c00904c612b4@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xiongfeng,
-
-On Wed, 27 Oct 2021 08:06:36 +0000 SeongJae Park <sj@kernel.org> wrote:
-
-> Hello Xiongfeng,
+On 11/5/21 09:54, Leonard Crestez wrote:
+> On 11/5/21 3:49 AM, Dmitry Safonov wrote:
+>> Convert tcp_md5sig_pool to more generic tcp_sig_pool.
+>> Now tcp_sig_pool_alloc(const char *alg) can be used to allocate per-cpu
+>> ahash request for different hashing algorithms besides md5.
+>> tcp_sig_pool_get() and tcp_sig_pool_put() should be used to get
+>> ahash_request and scratch area.
 > 
-> On Wed, 27 Oct 2021 14:14:57 +0800 Xiongfeng Wang <wangxiongfeng2@huawei.com> wrote:
+> This pool pattern is a workaround for crypto-api only being able to
+> allocate transforms from user context.
+>> It would be useful for this "one-transform-per-cpu" object to be part of
+> crypto api itself, there is nothing TCP-specific here other than the
+> size of scratch buffer.
+
+Agree, it would be nice to have something like this as a part of crypto.
+The intention here is to reuse md5 sig pool, rather than introduce
+another similar one.
+
+>> Make tcp_sig_pool reusable for TCP Authentication Option support
+>> (TCP-AO, RFC5925), where RFC5926[1] requires HMAC-SHA1 and AES-128_CMAC
+>> hashing at least.
+> Additional work would be required to support options of arbitrary size
+> and I don't think anyone would use non-standard crypto algorithms.
 > 
-> > Sorry, I forgot to Cc the maillist. Cc it in this mail.
-> > 
-> > On 2021/10/27 10:19, Xiongfeng Wang wrote:
-> > > Hi SeongJae,
-> > > 
-> > > Sorry to disturb you. It's just that I came across some problems when running
-> > > DAMON, but still didn't find the solution after several days.
+> Is RFC5926 conformance really insufficient?
+
+For the resulting hash, the scratch buffer can be used.
+
+Honestly, I just don't see much benefit in introducing more code and
+structures in order to limit hash algorithms. If anything,
+
+:if (strcmp("hmac(sha1)", opts.algo) && strcmp("cmac(aes)", opts.algo))
+:       return -EPROTONOSUPPORT;
+
+and passing the string straight to crypto seems to be better than adding
+new structures.
+
+On the other side, those two hashes MUST be supported to comply with
+RFC, other may. As user can already configure conflicting receive/send
+ids for MKTs, I don't see a point not allowing any hash algorithm
+supported by crypto.
+
+> My knowledge of cryptography doesn't go much beyond "data goes in
+> signature goes out" but there are many recent arguments from that cipher
+> agility is outright harmful and recent protocols like WireGuard don't
+> support any algorithm choices.
+
+You already limit usage when root-enabled sysctl is triggered, I don't
+see big concerns here.
+
 > 
-> You're not disturbing but helping me!  Please don't say so! :)
+>> +#define TCP_SIG_POOL_MAX        8
+>> +static struct tcp_sig_pool_priv_t {
+>> +    struct tcp_sig_crypto        cryptos[TCP_SIG_POOL_MAX];
+>> +    unsigned int            cryptos_nr;
+>> +} tcp_sig_pool_priv = {
+>> +    .cryptos_nr = 1,
+>> +    .cryptos[TCP_MD5_SIG_ID].alg = "md5",
+>> +};
 > 
-> > > 
-> > > A short description is that the result of DAMON is not as expected when running
-> > > on ARM64 with 'transparent_hugepage' enabled. But the result is correct when
-> > > 'transparent_hugepage' is disabled.
-> > > 
-> > > The following are the steps I came across the problems.
-> > > 1. Firstly, I use 'damo record' to sample the 'stairs' demo.
-> > >   damo record "./masim ./configs/stairs.cfg"
-> > > 2. Then I use 'damo report' to show the results.
-> > >   damo report heats --address_range xxx  xxx  --time_range xxx xxx    --heatmap
-> > > stdout    --stdout_heatmap_color emotion
-> > > The result doesn't show like a stair. I wrote a userspace demo to access a
-> > > certain address range in loop and use DAMON to sample the demo. I added
-> > > trace_print in 'damon_va_check_access()' and found out the pages in the address
-> > > range are not always detected as accessed, which is not expected. When I disable
-> > > transparent_hugepage by chance, the pages are marked as accessed. Then I test
-> > > the 'stairs' demo again, the result is correct. It seems that, only when
-> > > transparent_hugepage' is disabled, the access check works. I don't know where
-> > > the bug is, the software or the hardware ? Appreciate it if you have time to
-> > > reply. Thanks !
-> 
-> Thank you for this report!  I have a theory, but would like to test first.
-> Will check and get back to you soon.
+> Why an array of 8? Better to use an arbitrary list.
 
-Sorry for late response.  I also confirmed the issue is reproducible on my
-ARM64 test machine.  My theory is, enabling THP reduced page table walks, and
-therefore the PTE Accessed bits are not frequently updated.  To verify this, I
-made below experimental change.  After applying the change on my test machine,
-I was able to show the expected access pattern regardless of THP enablement.
-
-    --- a/mm/damon/vaddr.c
-    +++ b/mm/damon/vaddr.c
-    @@ -429,6 +429,7 @@ void damon_va_prepare_access_checks(struct damon_ctx *ctx)
-                            continue;
-                    damon_for_each_region(r, t)
-                            damon_va_prepare_access_check(ctx, mm, r);
-    +               flush_tlb_mm(mm);
-                    mmput(mm);
-            }
-     }
-
-Could you please test this on your machine and let me know the result?
-
-Again, please note that this change is only for proof of the theory, rather
-than the complete fix.
-
+Some reasonable limit, may be 16 or whatever in order to avoid
+dynamically (re-)allocating the array and keeping O(1) lookups.
 
 Thanks,
-SJ
-
-> 
-> 
-> Thanks,
-> SJ
-> 
-> > > 
-> > > Thanks,
-> > > Xiongfeng
+          Dmitry
