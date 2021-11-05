@@ -2,403 +2,381 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3940446A7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 22:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 470F3446A82
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 22:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233924AbhKEVXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 17:23:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55564 "EHLO mail.kernel.org"
+        id S232771AbhKEVZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 17:25:17 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:58181 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233907AbhKEVXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 17:23:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D19EF6120A;
-        Fri,  5 Nov 2021 21:20:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636147224;
-        bh=UhsagLjqYhwn+8Kg+4HozciyJL9k/QiXG7oThantdoA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=GmqQMacAKX9x2yfBkZ+vZHn1nuQWVRxbJqXucX+fF3uYRpO0fpYNWsE6y3/BS+5yH
-         g+MgpgV439cf06mqUbnvZnFr+oTgf9E0z6i4O6ZM8HkbTS+2cSQ6x6yNRIKagK7rKX
-         ASryg1LhO6axe+A6id+NiJ9bCTSR5SMavv9N1EsuzNcfX8bYJKgdCebd/r9I/E+BvN
-         alELVW9ONiOGwo/+I7DbYU7+N0Tw91kLL61f+1lGBeVaJTGGbjvxb0LBAcbkuMW8Ps
-         7/40wyqNLO5zuCQfRqnC+P1A/shIQc+7d4KJeiHdJVtHsAmZEIAMOCdBXYKsYlsxo/
-         X0qOT/SHWWkwA==
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     rostedt@goodmis.org
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] tracing: Have existing event_command implementations use helpers
-Date:   Fri,  5 Nov 2021 16:20:16 -0500
-Message-Id: <61eeb0efea39a7cae67ea43f3fe553559e0eb2b7.1636146732.git.zanussi@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1636146732.git.zanussi@kernel.org>
-References: <cover.1636146732.git.zanussi@kernel.org>
-In-Reply-To: <cover.1636146732.git.zanussi@kernel.org>
-References: <cover.1636146732.git.zanussi@kernel.org>
+        id S229894AbhKEVZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 17:25:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1636147355; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=SH7TiQPY9xoClVKmEaVb9enouiZD2YzkjSWXVR8O3+k=; b=r84ZsGnnyLCSnpYLoz6+73wSuxyKHZIJut4nTj4UT2b2fNyKr3QRHWWppWLxsIiPG9n9RGLn
+ Kjrah+MCXiTXBor6OJpfDGZ3ybq7ja2bgUA9ucq5l/ISmPHUW73Ya3Zf35lDiN5NREbkfxYD
+ Dt/LH024eOKnTRlo71i993UVDPs=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 6185a08f8037be265186f0c6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Nov 2021 21:22:23
+ GMT
+Sender: quic_khsieh=quicinc.com@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 85BA4C43616; Fri,  5 Nov 2021 21:22:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 57F2BC4338F;
+        Fri,  5 Nov 2021 21:22:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 57F2BC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@linux.ie,
+        agross@kernel.org, dmitry.baryshkov@linaro.org,
+        bjorn.andersson@linaro.org
+Cc:     quic_abhinavk@quicinc.com, aravindh@codeaurora.org,
+        quic_khsieh@quicinc.com, freedreno@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] drm/msm/dp:  employ bridge mechanism for display enable and disable
+Date:   Fri,  5 Nov 2021 14:22:12 -0700
+Message-Id: <1636147332-11797-1-git-send-email-quic_khsieh@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the existing event_command implementations by making use of
-the helper functions previously introduced.
+Currently the msm_dp_*** functions implement the same sequence which would
+happen when drm_bridge is used. hence get rid of this intermediate layer
+and align with the drm_bridge usage to avoid customized implementation.
 
-Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+
+Changes in v2:
+-- revise commit text
+-- rename dp_bridge to msm_dp_bridge
+-- delete empty functions
 ---
- kernel/trace/trace_events_hist.c    |  52 +++------
- kernel/trace/trace_events_trigger.c | 158 ++++++----------------------
- 2 files changed, 51 insertions(+), 159 deletions(-)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 21 -------
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c     |  7 +++
+ drivers/gpu/drm/msm/dp/dp_display.c         | 18 +++---
+ drivers/gpu/drm/msm/dp/dp_display.h         |  1 +
+ drivers/gpu/drm/msm/dp/dp_drm.c             | 91 +++++++++++++++++++++++++++++
+ drivers/gpu/drm/msm/msm_drv.h               | 16 +++--
+ 6 files changed, 120 insertions(+), 34 deletions(-)
 
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 8ff572a31fd3..c99b1d075d9d 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -6128,10 +6128,11 @@ static int event_hist_trigger_func(struct event_command *cmd_ops,
- 	struct hist_trigger_attrs *attrs;
- 	struct event_trigger_ops *trigger_ops;
- 	struct hist_trigger_data *hist_data;
-+	char *trigger, *p, *start;
- 	struct synth_event *se;
- 	const char *se_name;
--	bool remove = false;
--	char *trigger, *p, *start;
-+	int n_registered;
-+	bool remove;
- 	int ret = 0;
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+index 31050aa..c4e08c4 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+@@ -1003,9 +1003,6 @@ static void dpu_encoder_virt_mode_set(struct drm_encoder *drm_enc,
  
- 	lockdep_assert_held(&event_mutex);
-@@ -6141,11 +6142,9 @@ static int event_hist_trigger_func(struct event_command *cmd_ops,
- 		last_cmd_set(file, param);
- 	}
+ 	trace_dpu_enc_mode_set(DRMID(drm_enc));
  
--	if (!param)
--		return -EINVAL;
+-	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS)
+-		msm_dp_display_mode_set(dpu_enc->dp, drm_enc, mode, adj_mode);
 -
--	if (glob[0] == '!')
--		remove = true;
-+	ret = event_trigger_check(glob, &trigger, &param, &remove, true, false);
-+	if (ret)
-+		return ret;
+ 	list_for_each_entry(conn_iter, connector_list, head)
+ 		if (conn_iter->encoder == drm_enc)
+ 			conn = conn_iter;
+@@ -1181,14 +1178,6 @@ static void dpu_encoder_virt_enable(struct drm_encoder *drm_enc)
  
- 	/*
- 	 * separate the trigger from the filter (k:v [if filter])
-@@ -6202,29 +6201,15 @@ static int event_hist_trigger_func(struct event_command *cmd_ops,
- 		return PTR_ERR(hist_data);
- 	}
+ 	_dpu_encoder_virt_enable_helper(drm_enc);
  
--	trigger_ops = cmd_ops->get_trigger_ops(cmd, trigger);
--
--	trigger_data = kzalloc(sizeof(*trigger_data), GFP_KERNEL);
-+	trigger_data = event_trigger_alloc(cmd_ops, trigger, cmd, hist_data);
- 	if (!trigger_data) {
- 		ret = -ENOMEM;
- 		goto out_free;
- 	}
- 
--	trigger_data->count = -1;
--	trigger_data->ops = trigger_ops;
--	trigger_data->cmd_ops = cmd_ops;
--
--	INIT_LIST_HEAD(&trigger_data->list);
--	RCU_INIT_POINTER(trigger_data->filter, NULL);
--
--	trigger_data->private_data = hist_data;
--
--	/* if param is non-empty, it's supposed to be a filter */
--	if (param && cmd_ops->set_filter) {
--		ret = cmd_ops->set_filter(param, trigger_data, file);
--		if (ret < 0)
--			goto out_free;
--	}
-+	ret = event_trigger_set_filter(cmd_ops, file, param, trigger_data);
-+	if (ret < 0)
-+		goto out_free;
- 
- 	if (remove) {
- 		if (!have_hist_trigger_match(trigger_data, file))
-@@ -6244,18 +6229,14 @@ static int event_hist_trigger_func(struct event_command *cmd_ops,
- 		goto out_free;
- 	}
- 
--	ret = cmd_ops->reg(glob, trigger_ops, trigger_data, file);
--	/*
--	 * The above returns on success the # of triggers registered,
--	 * but if it didn't register any it returns zero.  Consider no
--	 * triggers registered a failure too.
--	 */
--	if (!ret) {
-+	ret = event_trigger_register(cmd_ops, file, glob, cmd, trigger, trigger_data, &n_registered);
-+	if (ret)
-+		goto out_free;
-+	if ((ret == 0) && (n_registered == 0)) {
- 		if (!(attrs->pause || attrs->cont || attrs->clear))
- 			ret = -ENOENT;
- 		goto out_free;
--	} else if (ret < 0)
--		goto out_free;
-+	}
- 
- 	if (get_named_trigger_data(trigger_data))
- 		goto enable;
-@@ -6289,8 +6270,7 @@ static int event_hist_trigger_func(struct event_command *cmd_ops,
-  out_unreg:
- 	cmd_ops->unreg(glob+1, trigger_ops, trigger_data, file);
-  out_free:
--	if (cmd_ops->set_filter)
--		cmd_ops->set_filter(NULL, trigger_data, NULL);
-+	event_trigger_reset_filter(cmd_ops, trigger_data);
- 
- 	remove_hist_vars(hist_data);
- 
-diff --git a/kernel/trace/trace_events_trigger.c b/kernel/trace/trace_events_trigger.c
-index e3977b0a3e74..7920a0b1ded5 100644
---- a/kernel/trace/trace_events_trigger.c
-+++ b/kernel/trace/trace_events_trigger.c
-@@ -799,89 +799,45 @@ event_trigger_callback(struct event_command *cmd_ops,
- 	struct event_trigger_data *trigger_data;
- 	struct event_trigger_ops *trigger_ops;
- 	char *trigger = NULL;
--	char *number;
-+	bool remove;
- 	int ret;
- 
--	/* separate the trigger from the filter (t:n [if filter]) */
--	if (param && isdigit(param[0])) {
--		trigger = strsep(&param, " \t");
--		if (param) {
--			param = skip_spaces(param);
--			if (!*param)
--				param = NULL;
+-	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
+-		ret = msm_dp_display_enable(dpu_enc->dp, drm_enc);
+-		if (ret) {
+-			DPU_ERROR_ENC(dpu_enc, "dp display enable failed: %d\n",
+-				ret);
+-			goto out;
 -		}
 -	}
--
--	trigger_ops = cmd_ops->get_trigger_ops(cmd, trigger);
-+	ret = event_trigger_check(glob, &trigger, &param, &remove, false, true);
-+	if (ret)
-+		return ret;
+ 	dpu_enc->enabled = true;
  
- 	ret = -ENOMEM;
--	trigger_data = kzalloc(sizeof(*trigger_data), GFP_KERNEL);
-+	trigger_data = event_trigger_alloc(cmd_ops, trigger, cmd, file);
- 	if (!trigger_data)
- 		goto out;
+ out:
+@@ -1214,11 +1203,6 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
+ 	/* wait for idle */
+ 	dpu_encoder_wait_for_event(drm_enc, MSM_ENC_TX_COMPLETE);
  
--	trigger_data->count = -1;
--	trigger_data->ops = trigger_ops;
--	trigger_data->cmd_ops = cmd_ops;
--	trigger_data->private_data = file;
--	INIT_LIST_HEAD(&trigger_data->list);
--	INIT_LIST_HEAD(&trigger_data->named_list);
--
--	if (glob[0] == '!') {
-+	if (remove) {
- 		cmd_ops->unreg(glob+1, trigger_ops, trigger_data, file);
--		kfree(trigger_data);
- 		ret = 0;
- 		goto out;
- 	}
- 
--	if (trigger) {
--		number = strsep(&trigger, ":");
--
--		ret = -EINVAL;
--		if (!strlen(number))
--			goto out_free;
--
--		/*
--		 * We use the callback data field (which is a pointer)
--		 * as our counter.
--		 */
--		ret = kstrtoul(number, 0, &trigger_data->count);
--		if (ret)
--			goto out_free;
+-	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
+-		if (msm_dp_display_pre_disable(dpu_enc->dp, drm_enc))
+-			DPU_ERROR_ENC(dpu_enc, "dp display push idle failed\n");
 -	}
 -
--	if (!param) /* if param is non-empty, it's supposed to be a filter */
--		goto out_reg;
+ 	dpu_encoder_resource_control(drm_enc, DPU_ENC_RC_EVENT_PRE_STOP);
+ 
+ 	for (i = 0; i < dpu_enc->num_phys_encs; i++) {
+@@ -1243,11 +1227,6 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
+ 
+ 	DPU_DEBUG_ENC(dpu_enc, "encoder disabled\n");
+ 
+-	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
+-		if (msm_dp_display_disable(dpu_enc->dp, drm_enc))
+-			DPU_ERROR_ENC(dpu_enc, "dp display disable failed\n");
+-	}
 -
--	if (!cmd_ops->set_filter)
--		goto out_reg;
-+	ret = event_trigger_parse_num(trigger, trigger_data);
-+	if (ret)
-+		goto out_free;
- 
--	ret = cmd_ops->set_filter(param, trigger_data, file);
-+	ret = event_trigger_set_filter(cmd_ops, file, param, trigger_data);
- 	if (ret < 0)
- 		goto out_free;
- 
-- out_reg:
- 	/* Up the trigger_data count to make sure reg doesn't free it on failure */
- 	event_trigger_init(trigger_ops, trigger_data);
--	ret = cmd_ops->reg(glob, trigger_ops, trigger_data, file);
--	/*
--	 * The above returns on success the # of functions enabled,
--	 * but if it didn't find any functions it returns zero.
--	 * Consider no functions a failure too.
--	 */
--	if (!ret) {
--		cmd_ops->unreg(glob, trigger_ops, trigger_data, file);
--		ret = -ENOENT;
--	} else if (ret > 0)
--		ret = 0;
-+
-+	ret = event_trigger_register(cmd_ops, file, glob, cmd, trigger, trigger_data, NULL);
-+	if (ret)
-+		goto out_free;
- 
- 	/* Down the counter of trigger_data or free it if not used anymore */
- 	event_trigger_free(trigger_ops, trigger_data);
-  out:
- 	return ret;
--
-  out_free:
--	if (cmd_ops->set_filter)
--		cmd_ops->set_filter(NULL, trigger_data, NULL);
-+	event_trigger_reset_filter(cmd_ops, trigger_data);
- 	kfree(trigger_data);
- 	goto out;
+ 	mutex_unlock(&dpu_enc->enc_lock);
  }
-@@ -1543,26 +1499,16 @@ int event_enable_trigger_func(struct event_command *cmd_ops,
- 	struct event_trigger_data *trigger_data;
- 	struct event_trigger_ops *trigger_ops;
- 	struct trace_array *tr = file->tr;
-+	bool enable, remove;
- 	const char *system;
- 	const char *event;
- 	bool hist = false;
- 	char *trigger;
--	char *number;
--	bool enable;
- 	int ret;
  
--	if (!param)
--		return -EINVAL;
--
--	/* separate the trigger from the filter (s:e:n [if filter]) */
--	trigger = strsep(&param, " \t");
--	if (!trigger)
--		return -EINVAL;
--	if (param) {
--		param = skip_spaces(param);
--		if (!*param)
--			param = NULL;
--	}
-+	ret = event_trigger_check(glob, &trigger, &param, &remove, true, true);
-+	if (ret)
-+		return ret;
- 
- 	system = strsep(&trigger, ":");
- 	if (!trigger)
-@@ -1587,28 +1533,23 @@ int event_enable_trigger_func(struct event_command *cmd_ops,
- 	trigger_ops = cmd_ops->get_trigger_ops(cmd, trigger);
- 
- 	ret = -ENOMEM;
--	trigger_data = kzalloc(sizeof(*trigger_data), GFP_KERNEL);
--	if (!trigger_data)
--		goto out;
--
- 	enable_data = kzalloc(sizeof(*enable_data), GFP_KERNEL);
- 	if (!enable_data) {
- 		kfree(trigger_data);
- 		goto out;
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+index 27d98b5..d16337f 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+@@ -557,6 +557,13 @@ static int _dpu_kms_initialize_displayport(struct drm_device *dev,
+ 				  encoder->base.id, rc);
+ 			return rc;
+ 		}
++
++		rc = msm_dp_bridge_init(priv->dp[i], dev, encoder);
++		if (rc) {
++			DPU_ERROR("failed to setup DPU bridge %d: rc:%d\n",
++				encoder->base.id, rc);
++			return rc;
++		}
  	}
  
--	trigger_data->count = -1;
--	trigger_data->ops = trigger_ops;
--	trigger_data->cmd_ops = cmd_ops;
--	INIT_LIST_HEAD(&trigger_data->list);
--	RCU_INIT_POINTER(trigger_data->filter, NULL);
--
- 	enable_data->hist = hist;
- 	enable_data->enable = enable;
- 	enable_data->file = event_enable_file;
--	trigger_data->private_data = enable_data;
+ 	return rc;
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index e41dd40..e9ea6ed 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -569,8 +569,8 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
+ 	return 0;
+ };
  
--	if (glob[0] == '!') {
-+	trigger_data = event_trigger_alloc(cmd_ops, trigger, cmd, enable_data);
-+	if (!trigger_data) {
-+		kfree(enable_data);
-+		goto out;
+-static int dp_display_enable(struct dp_display_private *dp, u32 data);
+-static int dp_display_disable(struct dp_display_private *dp, u32 data);
++static int __dp_display_enable(struct dp_display_private *dp, u32 data);
++static int __dp_display_disable(struct dp_display_private *dp, u32 data);
+ 
+ static int dp_connect_pending_timeout(struct dp_display_private *dp, u32 data)
+ {
+@@ -855,7 +855,7 @@ static int dp_display_prepare(struct msm_dp *dp_display)
+ 	return 0;
+ }
+ 
+-static int dp_display_enable(struct dp_display_private *dp, u32 data)
++static int __dp_display_enable(struct dp_display_private *dp, u32 data)
+ {
+ 	int rc = 0;
+ 
+@@ -898,7 +898,7 @@ static int dp_display_post_enable(struct msm_dp *dp_display)
+ 	return 0;
+ }
+ 
+-static int dp_display_disable(struct dp_display_private *dp, u32 data)
++static int __dp_display_disable(struct dp_display_private *dp, u32 data)
+ {
+ 	struct msm_dp *dp_display = &dp->dp_display;
+ 
+@@ -1569,12 +1569,12 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
+ 	if (state == ST_DISPLAY_OFF)
+ 		dp_display_host_init(dp_display, true);
+ 
+-	dp_display_enable(dp_display, 0);
++	__dp_display_enable(dp_display, 0);
+ 
+ 	rc = dp_display_post_enable(dp);
+ 	if (rc) {
+ 		DRM_ERROR("DP display post enable failed, rc=%d\n", rc);
+-		dp_display_disable(dp_display, 0);
++		__dp_display_disable(dp_display, 0);
+ 		dp_display_unprepare(dp);
+ 	}
+ 
+@@ -1614,7 +1614,7 @@ int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
+ 	/* stop sentinel checking */
+ 	dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
+ 
+-	dp_display_disable(dp_display, 0);
++	__dp_display_disable(dp_display, 0);
+ 
+ 	rc = dp_display_unprepare(dp);
+ 	if (rc)
+@@ -1633,8 +1633,8 @@ int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
+ }
+ 
+ void msm_dp_display_mode_set(struct msm_dp *dp, struct drm_encoder *encoder,
+-				struct drm_display_mode *mode,
+-				struct drm_display_mode *adjusted_mode)
++				const struct drm_display_mode *mode,
++				const struct drm_display_mode *adjusted_mode)
+ {
+ 	struct dp_display_private *dp_display;
+ 
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.h b/drivers/gpu/drm/msm/dp/dp_display.h
+index 76f45f9..2237e80 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.h
++++ b/drivers/gpu/drm/msm/dp/dp_display.h
+@@ -13,6 +13,7 @@
+ struct msm_dp {
+ 	struct drm_device *drm_dev;
+ 	struct device *codec_dev;
++	struct drm_bridge *bridge;
+ 	struct drm_connector *connector;
+ 	struct drm_encoder *encoder;
+ 	struct drm_panel *drm_panel;
+diff --git a/drivers/gpu/drm/msm/dp/dp_drm.c b/drivers/gpu/drm/msm/dp/dp_drm.c
+index f33e315..e7bea97 100644
+--- a/drivers/gpu/drm/msm/dp/dp_drm.c
++++ b/drivers/gpu/drm/msm/dp/dp_drm.c
+@@ -5,12 +5,21 @@
+ 
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_atomic.h>
++#include <drm/drm_bridge.h>
+ #include <drm/drm_crtc.h>
+ 
+ #include "msm_drv.h"
+ #include "msm_kms.h"
+ #include "dp_drm.h"
+ 
++
++struct msm_dp_bridge {
++	struct drm_bridge bridge;
++	struct msm_dp *dp_display;
++};
++
++#define to_dp_display(x)     container_of((x), struct msm_dp_bridge, bridge)
++
+ struct dp_connector {
+ 	struct drm_connector base;
+ 	struct msm_dp *dp_display;
+@@ -162,3 +171,85 @@ struct drm_connector *dp_drm_connector_init(struct msm_dp *dp_display)
+ 
+ 	return connector;
+ }
++
++static int dp_bridge_attach(struct drm_bridge *drm_bridge,
++				enum drm_bridge_attach_flags flags)
++{
++	return 0;
++}
++
++static void dp_bridge_mode_set(struct drm_bridge *drm_bridge,
++				const struct drm_display_mode *mode,
++				const struct drm_display_mode *adjusted_mode)
++{
++	struct msm_dp_bridge *dp_bridge = to_dp_display(drm_bridge);
++	struct msm_dp *dp_display = dp_bridge->dp_display;
++
++	msm_dp_display_mode_set(dp_display, drm_bridge->encoder, mode, adjusted_mode);
++}
++
++static void dp_bridge_enable(struct drm_bridge *drm_bridge)
++{
++	struct msm_dp_bridge *dp_bridge = to_dp_display(drm_bridge);
++	struct msm_dp *dp_display = dp_bridge->dp_display;
++
++	msm_dp_display_enable(dp_display, drm_bridge->encoder);
++}
++
++static void dp_bridge_disable(struct drm_bridge *drm_bridge)
++{
++	struct msm_dp_bridge *dp_bridge = to_dp_display(drm_bridge);
++	struct msm_dp *dp_display = dp_bridge->dp_display;
++
++	msm_dp_display_pre_disable(dp_display, drm_bridge->encoder);
++}
++
++static void dp_bridge_post_disable(struct drm_bridge *drm_bridge)
++{
++	struct msm_dp_bridge *dp_bridge = to_dp_display(drm_bridge);
++	struct msm_dp *dp_display = dp_bridge->dp_display;
++
++	msm_dp_display_disable(dp_display, drm_bridge->encoder);
++}
++
++static const struct drm_bridge_funcs dp_bridge_ops = {
++	.attach       = dp_bridge_attach,
++	.mode_fixup   = NULL,
++	.pre_enable   = NULL,
++	.enable       = dp_bridge_enable,
++	.disable      = dp_bridge_disable,
++	.post_disable = dp_bridge_post_disable,
++	.mode_set     = dp_bridge_mode_set,
++};
++
++int msm_dp_bridge_init(struct msm_dp *dp_display, struct drm_device *dev,
++			struct drm_encoder *encoder)
++{
++	int rc;
++	struct msm_drm_private *priv;
++	struct msm_dp_bridge *dp_bridge;
++	struct drm_bridge *bridge;
++
++	dp_bridge = kzalloc(sizeof(*dp_bridge), GFP_KERNEL);
++	if (!dp_bridge)
++		return -ENOMEM;
++
++	dp_bridge->dp_display = dp_display;
++
++	bridge = &dp_bridge->bridge;
++	bridge->funcs = &dp_bridge_ops;
++	bridge->encoder = encoder;
++
++	rc = drm_bridge_attach(encoder, bridge, NULL, DRM_BRIDGE_ATTACH_NO_CONNECTOR);
++	if (rc) {
++		DRM_ERROR("failed to attach bridge, rc=%d\n", rc);
++		kfree(dp_bridge);
++		return rc;
 +	}
 +
-+	if (remove) {
- 		cmd_ops->unreg(glob+1, trigger_ops, trigger_data, file);
- 		kfree(trigger_data);
- 		kfree(enable_data);
-@@ -1619,33 +1560,14 @@ int event_enable_trigger_func(struct event_command *cmd_ops,
- 	/* Up the trigger_data count to make sure nothing frees it on failure */
- 	event_trigger_init(trigger_ops, trigger_data);
- 
--	if (trigger) {
--		number = strsep(&trigger, ":");
--
--		ret = -EINVAL;
--		if (!strlen(number))
--			goto out_free;
--
--		/*
--		 * We use the callback data field (which is a pointer)
--		 * as our counter.
--		 */
--		ret = kstrtoul(number, 0, &trigger_data->count);
--		if (ret)
--			goto out_free;
--	}
--
--	if (!param) /* if param is non-empty, it's supposed to be a filter */
--		goto out_reg;
--
--	if (!cmd_ops->set_filter)
--		goto out_reg;
-+	ret = event_trigger_parse_num(trigger, trigger_data);
-+	if (ret)
-+		goto out_free;
- 
--	ret = cmd_ops->set_filter(param, trigger_data, file);
-+	ret = event_trigger_set_filter(cmd_ops, file, param, trigger_data);
- 	if (ret < 0)
- 		goto out_free;
- 
-- out_reg:
- 	/* Don't let event modules unload while probe registered */
- 	ret = trace_event_try_get_ref(event_enable_file->event_call);
- 	if (!ret) {
-@@ -1656,30 +1578,20 @@ int event_enable_trigger_func(struct event_command *cmd_ops,
- 	ret = trace_event_enable_disable(event_enable_file, 1, 1);
- 	if (ret < 0)
- 		goto out_put;
--	ret = cmd_ops->reg(glob, trigger_ops, trigger_data, file);
--	/*
--	 * The above returns on success the # of functions enabled,
--	 * but if it didn't find any functions it returns zero.
--	 * Consider no functions a failure too.
--	 */
--	if (!ret) {
--		ret = -ENOENT;
--		goto out_disable;
--	} else if (ret < 0)
++	priv = dev->dev_private;
++	priv->bridges[priv->num_bridges++] = bridge;
++	dp_display->bridge = bridge;
 +
-+	ret = event_trigger_register(cmd_ops, file, glob, cmd, trigger, trigger_data, NULL);
-+	if (ret)
- 		goto out_disable;
--	/* Just return zero, not the number of enabled functions */
--	ret = 0;
-+
- 	event_trigger_free(trigger_ops, trigger_data);
-  out:
- 	return ret;
--
-  out_disable:
- 	trace_event_enable_disable(event_enable_file, 0, 1);
-  out_put:
- 	trace_event_put_ref(event_enable_file->event_call);
-  out_free:
--	if (cmd_ops->set_filter)
--		cmd_ops->set_filter(NULL, trigger_data, NULL);
-+	event_trigger_reset_filter(cmd_ops, trigger_data);
- 	event_trigger_free(trigger_ops, trigger_data);
- 	kfree(enable_data);
- 	goto out;
++	return 0;
++}
+diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+index 4bb797e..9a2092f 100644
+--- a/drivers/gpu/drm/msm/msm_drv.h
++++ b/drivers/gpu/drm/msm/msm_drv.h
+@@ -388,8 +388,10 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder);
+ int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder);
+ int msm_dp_display_pre_disable(struct msm_dp *dp, struct drm_encoder *encoder);
+ void msm_dp_display_mode_set(struct msm_dp *dp, struct drm_encoder *encoder,
+-				struct drm_display_mode *mode,
+-				struct drm_display_mode *adjusted_mode);
++				const struct drm_display_mode *mode,
++				const struct drm_display_mode *adjusted_mode);
++int msm_dp_bridge_init(struct msm_dp *dp_display, struct drm_device *dev,
++			struct drm_encoder *encoder);
+ void msm_dp_irq_postinstall(struct msm_dp *dp_display);
+ void msm_dp_snapshot(struct msm_disp_state *disp_state, struct msm_dp *dp_display);
+ 
+@@ -426,10 +428,16 @@ static inline int msm_dp_display_pre_disable(struct msm_dp *dp,
+ }
+ static inline void msm_dp_display_mode_set(struct msm_dp *dp,
+ 				struct drm_encoder *encoder,
+-				struct drm_display_mode *mode,
+-				struct drm_display_mode *adjusted_mode)
++				const struct drm_display_mode *mode,
++				const struct drm_display_mode *adjusted_mode)
+ {
+ }
++static inline int msm_dp_bridge_init(struct msm_dp *dp_display,
++				struct drm_device *dev,
++				struct drm_encoder *encoder)
++{
++	return -EINVAL;
++}
+ 
+ static inline void msm_dp_irq_postinstall(struct msm_dp *dp_display)
+ {
 -- 
-2.17.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
