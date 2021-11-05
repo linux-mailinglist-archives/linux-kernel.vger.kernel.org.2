@@ -2,150 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0949B4467F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:32:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D747F4467F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:32:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234352AbhKERfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 13:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41468 "EHLO
+        id S234412AbhKERfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 13:35:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231844AbhKERe7 (ORCPT
+        with ESMTP id S232969AbhKERfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 13:34:59 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B4EC061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 10:32:19 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id o6-20020a17090a0a0600b001a64b9a11aeso3866011pjo.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 10:32:19 -0700 (PDT)
+        Fri, 5 Nov 2021 13:35:21 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55955C061714;
+        Fri,  5 Nov 2021 10:32:41 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id g184so8942460pgc.6;
+        Fri, 05 Nov 2021 10:32:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=P/IttwCntz6OefDEcqNm4d1DXbn/ikIeyFyLM4viNo0=;
-        b=KPZfro/0ifS0qM0agHLRmY0b4Dq80Ai6CW+86yXbAEAx/MKmbUCG64tW/AB2kc6ZuZ
-         8MDknf8TT5A2z9OnkGphsGplf1b6LxaDIjIE9pZ93xy3Th4bYjs7kFc3o6gyZ7apRUp7
-         Kzwg9zEr1pqx+pXMesVIztTVf9D78YKhjuxnEt108VKnQRZuwTqlNV3ThcvzR3ObnqZk
-         pzM8+27tMg9P5UKUeUTHi5jCJq36pseTMhgDiB0gRWVGA7OUslDVR8p2NYvDeX32Yf4+
-         wMt1aQppI+Hapn0ghLOnSjsbWl93K+Ni9YdqTMbArbC6DCi/FpN6G29z7iLkDziGkTdu
-         wzhw==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=2OWM37nBksJ7gayzdgOjUg6cXZHlid4wQ9drsluV0C8=;
+        b=DQRxCNEXF7tlNikiQLw63G8Y+Dsn+L66+H84HjfKEy4BscuewNUkH2sgfXMLDJHfAn
+         70hvD+26uYuolr0JBLTX7LtSCK6egOPeJcWkkXSUqR47XBKqYXNzph3T2TD/mTuAlTFs
+         lSnLFZ6A7rH74GeBag2mVNjv5gEry5gBlqYGUO+rQKkDtTrT559Rxam15FBmwuh7s7M5
+         QLsW7fuznfV9dng22XiNlj+vpyAL6rnI5cnRTja8k7MrhEX22LWkKABdX4Dnj87Nfrly
+         8XKsVaHG3cvhJMfAKbLZlnEEYT5fXydHJ+ZzsJMDbF//OLuIrxEZEkMCcJwQ0c96nr7M
+         ZtqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P/IttwCntz6OefDEcqNm4d1DXbn/ikIeyFyLM4viNo0=;
-        b=MNq4FQBD5pMOKziuspqpOaZKr2M4nUv4hxwPFOTA4VcWjIovPqQ4J+nOoaCC/YCyoA
-         BVSdu5ejtENH5ZJnfuzLfpr4poZz16B9YpeByY+svtUvThgvTjyEz4ajuIvGVf2K280o
-         pvEc9jwvmi5RFpYO41uAp16f3K0xhfcRvjzrVvLGAekZJ0YJ0CE1cQGcDFiHMlkVS9Q2
-         1xrWeAmCWqx0cTpRRdG8FDQa1ouE59fQAydFYiCKEFqBf6HEVKf5LszjfWvHDAmIlAJI
-         ODecw4wWmyQ3uewgUdJ/fjPR92pTCJwNyj7dHIqVVYSGp5+CT/Jj1RJghjoaEO29MCum
-         d03w==
-X-Gm-Message-State: AOAM530bLH0N+iYDrX7U95RinqAXfkvvSf9O2VgCLv6uxcfftptGmu7n
-        g/udRbpA5rjK4WxmBzgpGWZgbw==
-X-Google-Smtp-Source: ABdhPJxLmFXOHVGXxnaHleGj/B+7hceY0BWRDv9Lr+/s+BtbkcCzJPdtOUMBWrA4lxCRBmE9TkNxWA==
-X-Received: by 2002:a17:90a:c85:: with SMTP id v5mr32266767pja.47.1636133538794;
-        Fri, 05 Nov 2021 10:32:18 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id z8sm6783739pgi.45.2021.11.05.10.32.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 10:32:18 -0700 (PDT)
-Date:   Fri, 5 Nov 2021 17:32:14 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        mark.rutland@arm.com, dvyukov@google.com, pbonzini@redhat.com,
-        mbenes@suse.cz
-Subject: Re: [RFC][PATCH 07/22] x86,extable: Extend extable functionality
-Message-ID: <YYVqnr+gql9RpL4C@google.com>
-References: <20211104164729.226550532@infradead.org>
- <20211104165524.925401847@infradead.org>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=2OWM37nBksJ7gayzdgOjUg6cXZHlid4wQ9drsluV0C8=;
+        b=ldm22MS6YSsPqjEtVpKZITvxzXdxAfyYFVpmaEmLMpMBU9pZg8eVEO1eHTXxh22nCw
+         7aRCgi0EjRXSHw0VUmcmSnMmS0+U9KK4a4EsLa0FS45lS9R3/Y4jPKL/8EBMPBaOVpSO
+         QlTilt4xoQKo55CjVnpg6LsBkEyFJ7gYUBUaxZq9srnfTEOIJWsJR+yKAiyzXM9B28kT
+         HdQA9r7brEKFeCR2PjzH6q+n05zSxDDl4p7epgJfFb1kQEk6OA5Pr+v7kOiSrD0WZCpp
+         Dr+xpaw2hI8KJWtJNJ362Eldt3CdRJ8e06nX6NPJC/+11sSQesUgcdEnSXQHnj2+ehgS
+         rMFg==
+X-Gm-Message-State: AOAM531M9eZ/uAVdbgzKU8QHF1duzbgdEZYNn5MccRWhf8pTpOzhT2Ja
+        QhR9TTgHZxvye1PKuXziz+I=
+X-Google-Smtp-Source: ABdhPJykHZw2/9QJGdkoo4Kk9zk/Gp1KOr83+sK4tkJl24z/KpiwOjB5LZro7ajFk49kLCes0PrJww==
+X-Received: by 2002:a65:62c4:: with SMTP id m4mr46146521pgv.453.1636133560906;
+        Fri, 05 Nov 2021 10:32:40 -0700 (PDT)
+Received: from [192.168.50.188] (67.218.130.61.16clouds.com. [67.218.130.61])
+        by smtp.gmail.com with ESMTPSA id s25sm7683062pfm.138.2021.11.05.10.32.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Nov 2021 10:32:40 -0700 (PDT)
+Message-ID: <8301c7f7-4c63-5681-af53-9edc67d96d17@gmail.com>
+Date:   Sat, 6 Nov 2021 01:32:32 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211104165524.925401847@infradead.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] xhci: Fix USB 3.1 enumeration issues by increasing
+ roothub power-on-good delay
+Content-Language: en-US
+To:     Mathias Nyman <mathias.nyman@linux.intel.com>
+Cc:     chunfeng.yun@mediatek.com, matthias.bgg@gmail.com,
+        nishadkamdar@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, eddie.hung@mediatek.com,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Greg KH <gregkh@linuxfoundation.org>
+References: <20211105133050.GA1590803@rowland.harvard.edu>
+ <20211105160036.549516-1-mathias.nyman@linux.intel.com>
+ <96925c96-0f87-f110-e279-5b669337948a@linux.intel.com>
+From:   "Walt Jr. Brake" <mr.yming81@gmail.com>
+In-Reply-To: <96925c96-0f87-f110-e279-5b669337948a@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021, Peter Zijlstra wrote:
-> +static bool ex_handler_imm_reg(const struct exception_table_entry *fixup,
-> +			       struct pt_regs *regs, int reg, int imm)
-> +{
-> +	*pt_regs_nr(regs, reg) = (long)imm;
+On 6/11/2021 00:09, Mathias Nyman wrote:
+> On 5.11.2021 18.00, Mathias Nyman wrote:
+>> Some USB 3.1 enumeration issues were reported after the hub driver removed
+>> the minimum 100ms limit for the power-on-good delay.
+>>
+>> Since commit 90d28fb53d4a ("usb: core: reduce power-on-good delay time of
+>> root hub") the hub driver sets the power-on-delay based on the
+>> bPwrOn2PwrGood value in the hub descriptor.
+>>
+>> xhci driver has a 20ms bPwrOn2PwrGood value for both roothubs based
+>> on xhci spec section 5.4.8, but it's clearly not enough for the
+>> USB 3.1 devices, causing enumeration issues.
+>>
+>> Tests indicate full 100ms delay is needed.
+>>
+>> Reported-by: Walt Jr. Brake <mr.yming81@gmail.com>
+>> Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+>>
+> Walt Jr Brake, just to be sure could you test this one as well?
+>
+> As Alan suggested this sets 100ms for the USB 3 roothub but
+> keeps the 20ms for the USB 2 roothub.
+>
+> Thanks
+> -Mathias
 
-This doesn't work for the -EFAULT case because despite being an 'int', @imm is
-effectively an 'unsigned short'.  More below.
+Yes I tested, it works too.
 
-> +	return ex_handler_default(fixup, regs);
-> +}
-> +
-> +#define EX_TYPE_MASK	0x000000FF
-> +#define EX_REG_MASK	0x00000F00
-> +#define EX_FLAG_MASK	0x0000F000
-> +#define EX_IMM_MASK	0xFFFF0000
-> +
->  int ex_get_fixup_type(unsigned long ip)
->  {
->  	const struct exception_table_entry *e = search_exception_tables(ip);
->  
-> -	return e ? e->type : EX_TYPE_NONE;
-> +	return e ? FIELD_GET(EX_TYPE_MASK, e->type) : EX_TYPE_NONE;
->  }
->  
->  int fixup_exception(struct pt_regs *regs, int trapnr, unsigned long error_code,
->  		    unsigned long fault_addr)
->  {
->  	const struct exception_table_entry *e;
-> +	int type, reg, imm;
->  
->  #ifdef CONFIG_PNPBIOS
->  	if (unlikely(SEGMENT_IS_PNP_CODE(regs->cs))) {
-> @@ -136,7 +181,11 @@ int fixup_exception(struct pt_regs *regs
->  	if (!e)
->  		return 0;
->  
-> -	switch (e->type) {
-> +	type = FIELD_GET(EX_TYPE_MASK, e->type);
-> +	reg  = FIELD_GET(EX_REG_MASK,  e->type);
-> +	imm  = FIELD_GET(EX_IMM_MASK,  e->type);
-
-FIELD_GET casts the result based on the type of the mask, but doesn't explicitly
-sign extend the masked field, i.e. there's no intermediate cast to tell the compiler
-that the imm is a 16-bit value that should be sign extended.
-
-Modifying FIELD_GET to sign extended is probably a bad idea as I'm guessing the
-vast, vast majority of use cases don't want that behavior.  I'm not sure how that
-would even work with masks that are e.g. 5 bits or so.
-
-This hack makes things work as expected.
-
-diff --git a/arch/x86/mm/extable.c b/arch/x86/mm/extable.c
-index 9dc0685366e5..182d62c11404 100644
---- a/arch/x86/mm/extable.c
-+++ b/arch/x86/mm/extable.c
-@@ -223,7 +223,7 @@ int fixup_exception(struct pt_regs *regs, int trapnr, unsigned long error_code,
-
-        type = FIELD_GET(EX_TYPE_MASK, e->type);
-        reg  = FIELD_GET(EX_REG_MASK,  e->type);
--       imm  = FIELD_GET(EX_IMM_MASK,  e->type);
-+       imm  = (int)(short)FIELD_GET(EX_IMM_MASK,  e->type);
-
-        switch (type) {
-        case EX_TYPE_DEFAULT:
-
-
-> +
-> +	switch (type) {
->  	case EX_TYPE_DEFAULT:
->  	case EX_TYPE_DEFAULT_MCE_SAFE:
->  		return ex_handler_default(e, regs);
-> @@ -165,6 +214,8 @@ int fixup_exception(struct pt_regs *regs
->  		break;
->  	case EX_TYPE_POP_SEG:
->  		return ex_handler_pop_seg(e, regs);
-> +	case EX_TYPE_IMM_REG:
-> +		return ex_handler_imm_reg(e, regs, reg, imm);
->  	}
->  	BUG();
->  }
-> 
-> 
