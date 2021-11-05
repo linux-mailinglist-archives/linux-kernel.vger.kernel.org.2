@@ -2,87 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9211E446598
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 416FE44659E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:23:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233459AbhKEPXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 11:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233395AbhKEPXE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 11:23:04 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3BDCC061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 08:20:24 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id AA3531F46BEF
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     lgirdwood@gmail.com
-Cc:     broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        matthias.bgg@gmail.com, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH] ASoC: mediatek: mt8173-rt5650: Rename Speaker control to Ext Spk
-Date:   Fri,  5 Nov 2021 16:20:13 +0100
-Message-Id: <20211105152013.75252-1-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.33.1
+        id S233477AbhKEPZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 11:25:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34306 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233330AbhKEPZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 11:25:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A21161037;
+        Fri,  5 Nov 2021 15:22:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636125782;
+        bh=SqXbChSnDaXFGPgVQdxjFDEugSBYCURJsa2sAqkFNNg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jxtxGOL2YoxoT2/yKMVeR/jc+bUWPN9bDY/yhZPCw3fokccuzCgByw15Nzx2ZlxJo
+         wjGopXljGijo9X9oF2ir5yVpZpboc3d9uwnIT3nt6n+3g8ZfVU5YbkWkd+obhlo3lf
+         JKqyePC61iydtXBx9ZzcapqcaduQdRO6mFeoDM9JzMT9RJTvVu3fTn01f2HpovBlpn
+         rZdYu3DBY3SlVkCpL/2DIbgjAVs3RSbYfh/qL+DQiDu1WH4nh2r8eD3vO7VkywnmpH
+         OIUCLWPepMNoEdIRM4yFUvnTMM+3r8Zf7za9EosQrNmzqRXZCwxGbXNJQYuv5NVgeI
+         lknJBerkJl5yA==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH v2] power: reset: ltc2952: Fix use of floating point literals
+Date:   Fri,  5 Nov 2021 08:20:50 -0700
+Message-Id: <20211105152049.2522250-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.34.0.rc0
 MIME-Version: 1.0
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some RT5645 and RT5650 powered platforms are using "Ext Spk"
-instead of "Speaker", and this is also reflected in alsa-lib
-configurations for the generic RT5645 usecase manager configs.
+A new commit in LLVM causes an error on the use of 'long double' when
+'-mno-x87' is used, which the kernel does through an alias,
+'-mno-80387' (see the LLVM commit below for more details around why it
+does this).
 
-Rename the "Speaker" control to "Ext Spk" in order to be able
-to make the userspace reuse/inherit the same configurations also
-for this machine, along with the others.
+drivers/power/reset/ltc2952-poweroff.c:162:28: error: expression requires  'long double' type support, but target 'x86_64-unknown-linux-gnu' does not support it
+        data->wde_interval = 300L * 1E6L;
+                                  ^
+drivers/power/reset/ltc2952-poweroff.c:162:21: error: expression requires  'long double' type support, but target 'x86_64-unknown-linux-gnu' does not support it
+        data->wde_interval = 300L * 1E6L;
+                           ^
+drivers/power/reset/ltc2952-poweroff.c:163:41: error: expression requires  'long double' type support, but target 'x86_64-unknown-linux-gnu' does not support it
+        data->trigger_delay = ktime_set(2, 500L*1E6L);
+                                               ^
+3 errors generated.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+This happens due to the use of a 'long double' literal. The 'E6' part of
+'1E6L' causes the literal to be a 'double' then the 'L' suffix promotes
+it to 'long double'.
+
+There is no visible reason for floating point values in this driver, as
+the values are only assigned to integer types. Use NSEC_PER_MSEC, which
+is the same integer value as '1E6L', to avoid changing functionality but
+fix the error.
+
+Fixes: 6647156c00cc ("power: reset: add LTC2952 poweroff driver")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1497
+Link: https://github.com/llvm/llvm-project/commit/a8083d42b1c346e21623a1d36d1f0cadd7801d83
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
- sound/soc/mediatek/mt8173/mt8173-rt5650.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-index c28ebf891cb0..2cbf679f5c74 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-@@ -30,15 +30,15 @@ static struct mt8173_rt5650_platform_data mt8173_rt5650_priv = {
- };
+v1 -> v2: https://lore.kernel.org/r/20211104215047.663411-1-nathan@kernel.org/
+
+* A separate review pointed out that NSEC_PER_MSEC is a better choice
+  than USEC_PER_SEC because ktime_t is nanoseconds and the few functions
+  that take these values work in nanoseconds. The value is the same but
+  the documentation is better.
+
+* Pick up Nick's review tag.
+
+ drivers/power/reset/ltc2952-poweroff.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/power/reset/ltc2952-poweroff.c b/drivers/power/reset/ltc2952-poweroff.c
+index fbb344353fe4..65d9528cc989 100644
+--- a/drivers/power/reset/ltc2952-poweroff.c
++++ b/drivers/power/reset/ltc2952-poweroff.c
+@@ -159,8 +159,8 @@ static void ltc2952_poweroff_kill(void)
  
- static const struct snd_soc_dapm_widget mt8173_rt5650_widgets[] = {
--	SND_SOC_DAPM_SPK("Speaker", NULL),
-+	SND_SOC_DAPM_SPK("Ext Spk", NULL),
- 	SND_SOC_DAPM_MIC("Int Mic", NULL),
- 	SND_SOC_DAPM_HP("Headphone", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- };
+ static void ltc2952_poweroff_default(struct ltc2952_poweroff *data)
+ {
+-	data->wde_interval = 300L * 1E6L;
+-	data->trigger_delay = ktime_set(2, 500L*1E6L);
++	data->wde_interval = 300L * NSEC_PER_MSEC;
++	data->trigger_delay = ktime_set(2, 500L * NSEC_PER_MSEC);
  
- static const struct snd_soc_dapm_route mt8173_rt5650_routes[] = {
--	{"Speaker", NULL, "SPOL"},
--	{"Speaker", NULL, "SPOR"},
-+	{"Ext Spk", NULL, "SPOL"},
-+	{"Ext Spk", NULL, "SPOR"},
- 	{"DMIC L1", NULL, "Int Mic"},
- 	{"DMIC R1", NULL, "Int Mic"},
- 	{"Headphone", NULL, "HPOL"},
-@@ -48,7 +48,7 @@ static const struct snd_soc_dapm_route mt8173_rt5650_routes[] = {
- };
- 
- static const struct snd_kcontrol_new mt8173_rt5650_controls[] = {
--	SOC_DAPM_PIN_SWITCH("Speaker"),
-+	SOC_DAPM_PIN_SWITCH("Ext Spk"),
- 	SOC_DAPM_PIN_SWITCH("Int Mic"),
- 	SOC_DAPM_PIN_SWITCH("Headphone"),
- 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+ 	hrtimer_init(&data->timer_trigger, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+ 	data->timer_trigger.function = ltc2952_poweroff_timer_trigger;
+
+base-commit: d4439a1189f93d0ac1eaf0197db8e6b3e197d5c7
 -- 
-2.33.1
+2.34.0.rc0
 
