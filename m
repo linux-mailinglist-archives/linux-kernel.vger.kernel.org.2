@@ -2,249 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F40D445DDA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 03:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BDF445DD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 03:08:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhKECR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 22:17:27 -0400
-Received: from mail.hallyn.com ([178.63.66.53]:46418 "EHLO mail.hallyn.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230514AbhKECR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 22:17:26 -0400
-X-Greylist: delayed 442 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Nov 2021 22:17:25 EDT
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id 9E9BF96F; Thu,  4 Nov 2021 21:07:22 -0500 (CDT)
-Date:   Thu, 4 Nov 2021 21:07:22 -0500
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>,
-        Kees Cook <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Serge Hallyn <serge@hallyn.com>, Jann Horn <jannh@google.com>,
-        Henning Schild <henning.schild@siemens.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Laurent Vivier <laurent@vivier.eu>,
-        Matthew Bobrowski <repnop@google.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, containers@lists.linux.dev,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH 1/2] binfmt_misc: cleanup on filesystem umount
-Message-ID: <20211105020722.GA24590@mail.hallyn.com>
-References: <20211028103114.2849140-1-brauner@kernel.org>
+        id S231690AbhKECLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 22:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230168AbhKECLV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 22:11:21 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1971EC061714;
+        Thu,  4 Nov 2021 19:08:43 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id u1so11382930wru.13;
+        Thu, 04 Nov 2021 19:08:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=G7p3eOuyEP7P+5SWAUtBhjcxOrwbMlR3hzNOptyZbA0=;
+        b=IhRaPGPTa0Jq3iIOcXz9/JXOprUzK8DqDoOx5denLiUjptwj8/xLn0hta0XM0v0huY
+         /QxlgAOlv1ZjWed0HDnlQoh2ESmisDJRm/0U2D9ml9Fw3GLkDvJowHiGw6aVh/x9QrYD
+         C7I9Q+/Jpg/Kuw1QKheqT1ENR6jue0hnbE7JFxs9ybiohII2nS/dLTr4IECH5gUDNmWo
+         0JShhxbc1kniPMH5ldiPE7ntLeUop/CkFJoXgHawHt6tz5oNQ/k01qZL00AWZXo6yIt3
+         O/aeVM9LaQJ6mXHtks6yk9/POvvwv4lTeHRBu2VGA5R67KW58kNU0gY76G4R+aFa54mX
+         jbpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=G7p3eOuyEP7P+5SWAUtBhjcxOrwbMlR3hzNOptyZbA0=;
+        b=w1Ap5emnC3gFKGp6aecKlLhGdTo4LIF5Kp39D1gd9gBJoY6K1t2WKawHOJStKK5ANk
+         vaNvzcSsSXEErWaThxEQe2NBSJv9cfXZqGfHRq7Zp5PPGNkZCBBYSbIj1alQK8PJzcPn
+         R38oyQV5gNI7DmcEXWEGzg/tN5SD6ZkzX+nKxrc47+tTajIRtC/h9vhgmAHFk7B7fX6J
+         yF9+4w3Ex8+7JJj8dHhj9Tc52K5GxoDesV9a45Haw/BxV8OHDl2sRIbsBVmxXmz0z4c6
+         iTCVZyCYbtRnjv2igL+js6g7nVQ25bjRxUq0wTfzdojQ8ajTPBc/8LoJNuRTuihsLU/A
+         0QKw==
+X-Gm-Message-State: AOAM531KpGRUp8oK8AKCKEYrhkCC6Cpc4LU8rCN1tSpi1OrQA6IQlNir
+        utDwNb1uoDvxMgamHODBiP4=
+X-Google-Smtp-Source: ABdhPJwpTipJXleSQHRC7vbUYDE69iJq9tdFx60i8nBEEQca7rflWerJjT27oEqn4pfEMs5EGZBDHQ==
+X-Received: by 2002:adf:df0b:: with SMTP id y11mr45201713wrl.181.1636078121738;
+        Thu, 04 Nov 2021 19:08:41 -0700 (PDT)
+Received: from ?IPV6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id c79sm6826731wme.43.2021.11.04.19.08.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Nov 2021 19:08:41 -0700 (PDT)
+Message-ID: <7a32f18e-aa92-8fd8-4f53-72b4ef8b0ffc@gmail.com>
+Date:   Fri, 5 Nov 2021 02:08:40 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211028103114.2849140-1-brauner@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 06/25] tcp: authopt: Compute packet signatures
+Content-Language: en-US
+To:     Leonard Crestez <cdleonard@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>, netdev@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@kernel.org>
+References: <cover.1635784253.git.cdleonard@gmail.com>
+ <5245f35901015acc6a41d1da92deb96f3e593b7c.1635784253.git.cdleonard@gmail.com>
+From:   Dmitry Safonov <0x7f454c46@gmail.com>
+In-Reply-To: <5245f35901015acc6a41d1da92deb96f3e593b7c.1635784253.git.cdleonard@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 12:31:13PM +0200, Christian Brauner wrote:
-> From: Christian Brauner <christian.brauner@ubuntu.com>
-> 
-> Currently, registering a new binary type pins the binfmt_misc
-> filesystem. Specifically, this means that as long as there is at least
-> one binary type registered the binfmt_misc filesystem survives all
-> umounts, i.e. the superblock is not destroyed. Meaning that a umount
-> followed by another mount will end up with the same superblock and the
-> same binary type handlers. This is a behavior we tend to discourage for
-> any new filesystems (apart from a few special filesystems such as e.g.
-> configfs or debugfs). A umount operation without the filesystem being
-> pinned - by e.g. someone holding a file descriptor to an open file -
-> should usually result in the destruction of the superblock and all
-> associated resources. This makes introspection easier and leads to
-> clearly defined, simple and clean semantics. An administrator can rely
-> on the fact that a umount will guarantee a clean slate making it
-> possible to reinitialize a filesystem. Right now all binary types would
-> need to be explicitly deleted before that can happen.
-> 
-> This allows us to remove the heavy-handed calls to simple_pin_fs() and
-> simple_release_fs() when creating and deleting binary types. This in
-> turn allows us to replace the current brittle pinning mechanism abusing
-> dget() which has caused a range of bugs judging from prior fixes in [2]
-> and [3]. The additional dget() in load_misc_binary() pins the dentry but
-> only does so for the sake to prevent ->evict_inode() from freeing the
-> node when a user removes the binary type and kill_node() is run. Which
-> would mean ->interpreter and ->interp_file would be freed causing a UAF.
-> 
-> This isn't really nicely documented nor is it very clean because it
-> relies on simple_pin_fs() pinning the filesystem as long as at least one
-> binary type exists. Otherwise it would cause load_misc_binary() to hold
-> on to a dentry belonging to a superblock that has been shutdown.
-> Replace that implicit pinning with a clean and simple per-node refcount
-> and get rid of the ugly dget() pinning. A similar mechanism exists for
-> e.g. binderfs (cf. [4]). All the cleanup work can now be done in
-> ->evict_inode().
-> 
-> In a follow-up patch we will make it possible to use binfmt_misc in
-> sandboxes. We will use the cleaner semantics where a umount for the
-> filesystem will cause the superblock and all resources to be
-> deallocated. In preparation for this apply the same semantics to the
-> initial binfmt_misc mount. Note, that this is a user-visible change and
-> as such a uapi change but one that we can reasonably risk. We've
-> discussed this in earlier versions of this patchset (cf. [1]).
-> 
-> The main user and provider of binfmt_misc is systemd. Systemd provides
-> binfmt_misc via autofs since it is configurable as a kernel module and
-> is used by a few exotic packages and users. As such a binfmt_misc mount
-> is triggered when /proc/sys/fs/binfmt_misc is accessed and is only
-> provided on demand. Other autofs on demand filesystems include EFI ESP
-> which systemd umounts if the mountpoint stays idle for a certain amount
-> of time. This doesn't apply to the binfmt_misc autofs mount which isn't
-> touched once it is mounted meaning this change can't accidently wipe
-> binary type handlers without someone having explicitly unmounted
-> binfmt_misc. After speaking to systemd folks they don't expect this
-> change to affect them.
-> 
-> In line with our general policy, if we see a regression for systemd or
-> other users with this change we will switch back to the old behavior for
-> the initial binfmt_misc mount and have binary types pin the filesystem
-> again. But while we touch this code let's take the chance and let's
-> improve on the status quo.
-> 
-> [1]: https://lore.kernel.org/r/20191216091220.465626-2-laurent@vivier.eu
-> [2]: commit 43a4f2619038 ("exec: binfmt_misc: fix race between load_misc_binary() and kill_node()"
-> [3]: commit 83f918274e4b ("exec: binfmt_misc: shift filp_close(interp_file) from kill_node() to bm_evict_inode()")
-> [4]: commit f0fe2c0f050d ("binder: prevent UAF for binderfs devices II")
-> Cc: Sargun Dhillon <sargun@sargun.me>
-> Cc: Serge Hallyn <serge@hallyn.com>
-
-This *looks* right to me.  I'll keep looking back at this one while I
-look at the second patch, but
-
-Acked-by: Serge Hallyn <serge@hallyn.com>
-
-> Cc: Jann Horn <jannh@google.com>
-> Cc: Henning Schild <henning.schild@siemens.com>
-> Cc: Andrei Vagin <avagin@gmail.com>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Laurent Vivier <laurent@vivier.eu>
-> Cc: linux-fsdevel@vger.kernel.org
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> ---
->  fs/binfmt_misc.c | 56 +++++++++++++++++++++++++++++++-----------------
->  1 file changed, 36 insertions(+), 20 deletions(-)
-> 
-> diff --git a/fs/binfmt_misc.c b/fs/binfmt_misc.c
-> index e1eae7ea823a..5a9d5e44c750 100644
-> --- a/fs/binfmt_misc.c
-> +++ b/fs/binfmt_misc.c
-> @@ -60,12 +60,11 @@ typedef struct {
->  	char *name;
->  	struct dentry *dentry;
->  	struct file *interp_file;
-> +	refcount_t ref;
->  } Node;
->  
->  static DEFINE_RWLOCK(entries_lock);
->  static struct file_system_type bm_fs_type;
-> -static struct vfsmount *bm_mnt;
-> -static int entry_count;
->  
->  /*
->   * Max length of the register string.  Determined by:
-> @@ -126,6 +125,16 @@ static Node *check_file(struct linux_binprm *bprm)
->  	return NULL;
->  }
->  
-> +/* Free node if we are sure load_misc_binary() is done with it. */
-> +static void put_node(Node *e)
+On 11/1/21 16:34, Leonard Crestez wrote:
+[..]
+> +/* Find TCP_AUTHOPT in header.
+> + *
+> + * Returns pointer to TCP_AUTHOPT or NULL if not found.
+> + */
+> +static u8 *tcp_authopt_find_option(struct tcphdr *th)
 > +{
-> +	if (refcount_dec_and_test(&e->ref)) {
-> +		if (e->flags & MISC_FMT_OPEN_FILE)
-> +			filp_close(e->interp_file, NULL);
-> +		kfree(e);
+> +	int length = (th->doff << 2) - sizeof(*th);
+> +	u8 *ptr = (u8 *)(th + 1);
+> +
+> +	while (length >= 2) {
+> +		int opcode = *ptr++;
+> +		int opsize;
+> +
+> +		switch (opcode) {
+> +		case TCPOPT_EOL:
+> +			return NULL;
+> +		case TCPOPT_NOP:
+> +			length--;
+> +			continue;
+> +		default:
+> +			if (length < 2)
+> +				return NULL;
+
+^ never true, as checked by the loop condition
+
+> +			opsize = *ptr++;
+> +			if (opsize < 2)
+> +				return NULL;
+> +			if (opsize > length)
+> +				return NULL;
+> +			if (opcode == TCPOPT_AUTHOPT)
+> +				return ptr - 2;
+> +		}
+> +		ptr += opsize - 2;
+> +		length -= opsize;
 > +	}
+> +	return NULL;
 > +}
-> +
->  /*
->   * the loader itself
->   */
-> @@ -142,8 +151,9 @@ static int load_misc_binary(struct linux_binprm *bprm)
->  	/* to keep locking time low, we copy the interpreter string */
->  	read_lock(&entries_lock);
->  	fmt = check_file(bprm);
-> +	/* Make sure the node isn't freed behind our back. */
->  	if (fmt)
-> -		dget(fmt->dentry);
-> +		refcount_inc(&fmt->ref);
->  	read_unlock(&entries_lock);
->  	if (!fmt)
->  		return retval;
-> @@ -198,7 +208,16 @@ static int load_misc_binary(struct linux_binprm *bprm)
->  
->  	retval = 0;
->  ret:
-> -	dput(fmt->dentry);
-> +
-> +	/*
-> +	 * If we actually put the node here all concurrent calls to
-> +	 * load_misc_binary() will have finished. We also know
-> +	 * that for the refcount to be zero ->evict_inode() must have removed
-> +	 * the node to be deleted from the list. All that is left for us is to
-> +	 * close and free.
-> +	 */
-> +	put_node(fmt);
-> +
->  	return retval;
->  }
->  
-> @@ -557,26 +576,29 @@ static void bm_evict_inode(struct inode *inode)
->  {
->  	Node *e = inode->i_private;
->  
-> -	if (e && e->flags & MISC_FMT_OPEN_FILE)
-> -		filp_close(e->interp_file, NULL);
-> -
->  	clear_inode(inode);
-> -	kfree(e);
-> +
-> +	if (e) {
-> +		write_lock(&entries_lock);
-> +		list_del_init(&e->list);
-> +		write_unlock(&entries_lock);
-> +		put_node(e);
-> +	}
->  }
->  
->  static void kill_node(Node *e)
->  {
->  	struct dentry *dentry;
->  
-> -	write_lock(&entries_lock);
-> -	list_del_init(&e->list);
-> -	write_unlock(&entries_lock);
-> -
-> +	/*
-> +	 * It's fine to unconditionally drop the dentry since ->evict_inode()
-> +	 * will check the refcount before freeing the node and so it can't go
-> +	 * away behind load_misc_binary()'s back.
-> +	 */
->  	dentry = e->dentry;
->  	drop_nlink(d_inode(dentry));
->  	d_drop(dentry);
->  	dput(dentry);
-> -	simple_release_fs(&bm_mnt, &entry_count);
->  }
->  
->  /* /<entry> */
-> @@ -683,13 +705,7 @@ static ssize_t bm_register_write(struct file *file, const char __user *buffer,
->  	if (!inode)
->  		goto out2;
->  
-> -	err = simple_pin_fs(&bm_fs_type, &bm_mnt, &entry_count);
-> -	if (err) {
-> -		iput(inode);
-> -		inode = NULL;
-> -		goto out2;
-> -	}
-> -
-> +	refcount_set(&e->ref, 1);
->  	e->dentry = dget(dentry);
->  	inode->i_private = e;
->  	inode->i_fop = &bm_entry_operations;
-> 
-> base-commit: 3906fe9bb7f1a2c8667ae54e967dc8690824f4ea
-> -- 
-> 2.30.2
+
+Why copy'n'pasting tcp_parse_md5sig_option(), rather than adding a new
+argument to the function?
+
+Thanks,
+            Dmitry
