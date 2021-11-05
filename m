@@ -2,384 +2,722 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD7B446103
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A65D8446108
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232348AbhKEJDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 05:03:35 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:47870 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232018AbhKEJDb (ORCPT
+        id S232607AbhKEJEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 05:04:00 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:49751 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231964AbhKEJD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 05:03:31 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1C3A01FD33;
-        Fri,  5 Nov 2021 09:00:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1636102851; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZqUkfErHbOQqWJm0TY1O8G489DdbUPI1VsMY/9rCZ6Q=;
-        b=MzSSr2PYM65pfiwWu9TqV0/AalU4M5MWcf7Ostpcr8w5NbCS6smGQxNAzG++9OU65VyKQn
-        te3i4EyRQMkyfaaa9y9ioCvGpsE6NdUFGLjvMT6aCEpw6BgYDbflGQVkNwZ8OE3jQ+74LQ
-        4aRwTB8c8scSli77u9hRVEP098N1IRY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1636102851;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZqUkfErHbOQqWJm0TY1O8G489DdbUPI1VsMY/9rCZ6Q=;
-        b=B6CG64y7zttDlz1v9gAY3Gzgk6/INWJJpFoAzQBvMkA15zjE57DCa3BJMUHyKzA8b665Lc
-        OjorMGQ6grkzPKDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 66E8713FBA;
-        Fri,  5 Nov 2021 09:00:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id /3QeGMLyhGG2VwAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Fri, 05 Nov 2021 09:00:50 +0000
-Message-ID: <f2c40b22-04bf-e8f2-9839-36d6d26189a1@suse.de>
-Date:   Fri, 5 Nov 2021 10:00:49 +0100
+        Fri, 5 Nov 2021 05:03:58 -0400
+Received: (Authenticated sender: jacopo@jmondi.org)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 7DD0420000B;
+        Fri,  5 Nov 2021 09:01:13 +0000 (UTC)
+Date:   Fri, 5 Nov 2021 10:02:04 +0100
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Eugen Hristev <eugen.hristev@microchip.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        laurent.pinchart@ideasonboard.com, sakari.ailus@iki.fi,
+        robh+dt@kernel.org, nicolas.ferre@microchip.com
+Subject: Re: [PATCH 05/21] media: atmel: atmel-isc: split the clock code into
+ separate source file
+Message-ID: <20211105090204.sdiqdptsxmjs2ebr@uno.localdomain>
+References: <20211022075247.518880-1-eugen.hristev@microchip.com>
+ <20211022075247.518880-6-eugen.hristev@microchip.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v2 2/2] drm: Move nomodeset kernel parameter to the DRM
- subsystem
-Content-Language: en-US
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>, Chia-I Wu <olvaffe@gmail.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Zack Rusin <zackr@vmware.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, nouveau@lists.freedesktop.org,
-        spice-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org
-References: <20211104160707.1407052-1-javierm@redhat.com>
- <20211104160707.1407052-3-javierm@redhat.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <20211104160707.1407052-3-javierm@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------A97zhkvbBn0bSkSl62ggv6lZ"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211022075247.518880-6-eugen.hristev@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------A97zhkvbBn0bSkSl62ggv6lZ
-Content-Type: multipart/mixed; boundary="------------h00fyHHZQ0dUJPUtE2aOh0PM";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Javier Martinez Canillas <javierm@redhat.com>,
- linux-kernel@vger.kernel.org
-Cc: =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
- Daniel Vetter <daniel.vetter@ffwll.ch>, Peter Robinson
- <pbrobinson@gmail.com>, Pekka Paalanen <pekka.paalanen@collabora.com>,
- Alex Deucher <alexander.deucher@amd.com>, Ben Skeggs <bskeggs@redhat.com>,
- Chia-I Wu <olvaffe@gmail.com>, =?UTF-8?Q?Christian_K=c3=b6nig?=
- <christian.koenig@amd.com>, Daniel Vetter <daniel@ffwll.ch>,
- Dave Airlie <airlied@redhat.com>, David Airlie <airlied@linux.ie>,
- Gerd Hoffmann <kraxel@redhat.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Gurchetan Singh <gurchetansingh@chromium.org>,
- Hans de Goede <hdegoede@redhat.com>,
- Jani Nikula <jani.nikula@linux.intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, "Pan, Xinhui" <Xinhui.Pan@amd.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>,
- VMware Graphics <linux-graphics-maintainer@vmware.com>,
- Zack Rusin <zackr@vmware.com>, amd-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
- linux-fbdev@vger.kernel.org, nouveau@lists.freedesktop.org,
- spice-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org
-Message-ID: <f2c40b22-04bf-e8f2-9839-36d6d26189a1@suse.de>
-Subject: Re: [PATCH v2 2/2] drm: Move nomodeset kernel parameter to the DRM
- subsystem
-References: <20211104160707.1407052-1-javierm@redhat.com>
- <20211104160707.1407052-3-javierm@redhat.com>
-In-Reply-To: <20211104160707.1407052-3-javierm@redhat.com>
+Hi Eugen
 
---------------h00fyHHZQ0dUJPUtE2aOh0PM
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+On Fri, Oct 22, 2021 at 10:52:31AM +0300, Eugen Hristev wrote:
+> The atmel-isc-base is getting crowded. Split the clock functions into
+> atmel-isc-clk.c.
+>
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> ---
+>  drivers/media/platform/atmel/Makefile         |   2 +-
+>  drivers/media/platform/atmel/atmel-isc-base.c | 294 ----------------
+>  drivers/media/platform/atmel/atmel-isc-clk.c  | 316 ++++++++++++++++++
+>  3 files changed, 317 insertions(+), 295 deletions(-)
+>  create mode 100644 drivers/media/platform/atmel/atmel-isc-clk.c
+>
+> diff --git a/drivers/media/platform/atmel/Makefile b/drivers/media/platform/atmel/Makefile
+> index 39f0a7eba702..1f6fe7427769 100644
+> --- a/drivers/media/platform/atmel/Makefile
+> +++ b/drivers/media/platform/atmel/Makefile
+> @@ -3,7 +3,7 @@ atmel-isc-objs = atmel-sama5d2-isc.o
+>  atmel-xisc-objs = atmel-sama7g5-isc.o
+>
+>  obj-$(CONFIG_VIDEO_ATMEL_ISI) += atmel-isi.o
+> -obj-$(CONFIG_VIDEO_ATMEL_ISC_BASE) += atmel-isc-base.o
+> +obj-$(CONFIG_VIDEO_ATMEL_ISC_BASE) += atmel-isc-base.o atmel-isc-clk.o
+>  obj-$(CONFIG_VIDEO_ATMEL_ISC) += atmel-isc.o
+>  obj-$(CONFIG_VIDEO_ATMEL_XISC) += atmel-xisc.o
+>  obj-$(CONFIG_VIDEO_MICROCHIP_CSI2DC) += microchip-csi2dc.o
+> diff --git a/drivers/media/platform/atmel/atmel-isc-base.c b/drivers/media/platform/atmel/atmel-isc-base.c
+> index ebf264b980f9..f532fd03e807 100644
+> --- a/drivers/media/platform/atmel/atmel-isc-base.c
+> +++ b/drivers/media/platform/atmel/atmel-isc-base.c
+> @@ -8,9 +8,6 @@
+>   * Author: Eugen Hristev <eugen.hristev@microchip.com>
+>   *
+>   */
+> -
+> -#include <linux/clk.h>
+> -#include <linux/clkdev.h>
+>  #include <linux/clk-provider.h>
 
-SGkNCg0KQW0gMDQuMTEuMjEgdW0gMTc6MDcgc2NocmllYiBKYXZpZXIgTWFydGluZXogQ2Fu
-aWxsYXM6DQo+IFRoZSAibm9tb2Rlc2V0IiBrZXJuZWwgY21kbGluZSBwYXJhbWV0ZXIgaXMg
-aGFuZGxlZCBieSB0aGUgdmdhY29uIGRyaXZlcg0KPiBidXQgdGhlIGV4cG9ydGVkIHZnYWNv
-bl90ZXh0X2ZvcmNlKCkgc3ltYm9sIGlzIG9ubHkgdXNlZCBieSBEUk0gZHJpdmVycy4NCj4g
-DQo+IEl0IG1ha2VzIG11Y2ggbW9yZSBzZW5zZSBmb3IgdGhlIHBhcmFtZXRlciBsb2dpYyB0
-byBiZSBpbiB0aGUgc3Vic3lzdGVtDQo+IG9mIHRoZSBkcml2ZXJzIHRoYXQgYXJlIG1ha2lu
-ZyB1c2Ugb2YgaXQuDQo+IA0KPiBMZXQncyBtb3ZlIHRoZSB2Z2Fjb25fdGV4dF9mb3JjZSgp
-IGZ1bmN0aW9uIGFuZCByZWxhdGVkIGxvZ2ljIHRvIHRoZSBEUk0NCj4gc3Vic3lzdGVtLiBX
-aGlsZSBkb2luZyB0aGF0LCByZW5hbWUgdGhlIGZ1bmN0aW9uIHRvIGRybV9jaGVja19tb2Rl
-c2V0KCkNCj4gd2hpY2ggYmV0dGVyIHJlZmxlY3RzIHdoYXQgdGhlIGZ1bmN0aW9uIGlzIHJl
-YWxseSB1c2VkIHRvIHRlc3QgZm9yLg0KPiANCj4gU3VnZ2VzdGVkLWJ5OiBEYW5pZWwgVmV0
-dGVyIDxkYW5pZWwudmV0dGVyQGZmd2xsLmNoPg0KPiBTaWduZWQtb2ZmLWJ5OiBKYXZpZXIg
-TWFydGluZXogQ2FuaWxsYXMgPGphdmllcm1AcmVkaGF0LmNvbT4NCj4gLS0tDQo+IA0KPiBD
-aGFuZ2VzIGluIHYyOg0KPiAtIENvbmRpdGlvbmFsbHkgYnVpbGQgZHJtX25vbW9kZXNldC5v
-IGlmIENPTkZJR19WR0FfQ09OU09MRSBpcyBzZXQuDQo+IC0gU3F1YXNoIHBhdGNoZXMgdG8g
-bW92ZSBub21vZGVzZXQgbG9naWMgdG8gRFJNIGFuZCBkbyB0aGUgcmVuYW1pbmcuDQo+IC0g
-TmFtZSB0aGUgZnVuY3Rpb24gZHJtX2NoZWNrX21vZGVzZXQoKSBhbmQgbWFrZSBpdCByZXR1
-cm4gLUVOT0RFVi4NCj4gDQo+ICAgZHJpdmVycy9ncHUvZHJtL01ha2VmaWxlICAgICAgICAg
-ICAgICAgIHwgIDIgKysNCj4gICBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVf
-ZHJ2LmMgfCAgMSAtDQo+ICAgZHJpdmVycy9ncHUvZHJtL2FzdC9hc3RfZHJ2LmMgICAgICAg
-ICAgIHwgIDEgLQ0KPiAgIGRyaXZlcnMvZ3B1L2RybS9kcm1fZHJ2LmMgICAgICAgICAgICAg
-ICB8ICA5ICsrKysrLS0tLQ0KPiAgIGRyaXZlcnMvZ3B1L2RybS9kcm1fbm9tb2Rlc2V0LmMg
-ICAgICAgICB8IDI2ICsrKysrKysrKysrKysrKysrKysrKysrKysNCj4gICBkcml2ZXJzL2dw
-dS9kcm0vaTkxNS9pOTE1X21vZHVsZS5jICAgICAgfCAgMiAtLQ0KPiAgIGRyaXZlcnMvZ3B1
-L2RybS9tZ2FnMjAwL21nYWcyMDBfZHJ2LmMgICB8ICAxIC0NCj4gICBkcml2ZXJzL2dwdS9k
-cm0vbm91dmVhdS9ub3V2ZWF1X2RybS5jICAgfCAgMSAtDQo+ICAgZHJpdmVycy9ncHUvZHJt
-L3F4bC9xeGxfZHJ2LmMgICAgICAgICAgIHwgIDEgLQ0KPiAgIGRyaXZlcnMvZ3B1L2RybS9y
-YWRlb24vcmFkZW9uX2Rydi5jICAgICB8ICAxIC0NCj4gICBkcml2ZXJzL2dwdS9kcm0vdGlu
-eS9ib2Nocy5jICAgICAgICAgICAgfCAgMSAtDQo+ICAgZHJpdmVycy9ncHUvZHJtL3Rpbnkv
-Y2lycnVzLmMgICAgICAgICAgIHwgIDEgLQ0KPiAgIGRyaXZlcnMvZ3B1L2RybS92Ym94dmlk
-ZW8vdmJveF9kcnYuYyAgICB8ICAxIC0NCj4gICBkcml2ZXJzL2dwdS9kcm0vdmlydGlvL3Zp
-cnRncHVfZHJ2LmMgICAgfCAgMSAtDQo+ICAgZHJpdmVycy9ncHUvZHJtL3Ztd2dmeC92bXdn
-ZnhfZHJ2LmMgICAgIHwgIDEgLQ0KPiAgIGRyaXZlcnMvdmlkZW8vY29uc29sZS92Z2Fjb24u
-YyAgICAgICAgICB8IDIxIC0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+ICAgaW5jbHVkZS9kcm0v
-ZHJtX21vZGVfY29uZmlnLmggICAgICAgICAgIHwgIDYgKysrKysrDQo+ICAgaW5jbHVkZS9s
-aW51eC9jb25zb2xlLmggICAgICAgICAgICAgICAgIHwgIDYgLS0tLS0tDQo+ICAgMTggZmls
-ZXMgY2hhbmdlZCwgMzkgaW5zZXJ0aW9ucygrKSwgNDQgZGVsZXRpb25zKC0pDQo+ICAgY3Jl
-YXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1L2RybS9kcm1fbm9tb2Rlc2V0LmMNCj4gDQo+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vTWFrZWZpbGUgYi9kcml2ZXJzL2dwdS9k
-cm0vTWFrZWZpbGUNCj4gaW5kZXggMWM0MTE1NmRlYjVmLi5jNzQ4MTBjMjg1YWYgMTAwNjQ0
-DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9NYWtlZmlsZQ0KPiArKysgYi9kcml2ZXJzL2dw
-dS9kcm0vTWFrZWZpbGUNCj4gQEAgLTMzLDYgKzMzLDggQEAgZHJtLSQoQ09ORklHX0RSTV9Q
-UklWQUNZX1NDUkVFTikgKz0gZHJtX3ByaXZhY3lfc2NyZWVuLm8gZHJtX3ByaXZhY3lfc2Ny
-ZWVuX3g4Ni4NCj4gICANCj4gICBvYmotJChDT05GSUdfRFJNX0RQX0FVWF9CVVMpICs9IGRy
-bV9kcF9hdXhfYnVzLm8NCj4gICANCj4gK29iai0kKENPTkZJR19WR0FfQ09OU09MRSkgKz0g
-ZHJtX25vbW9kZXNldC5vDQo+ICsNCg0KVGhpcyBub3cgZGVwZW5kcyBvbiB0aGUgVkdBIHRl
-eHRtb2RlIGNvbnNvbGUuIEV2ZW4gaWYgeW91IGhhdmUgbm8gVkdBIA0KY29uc29sZSwgeW91
-J2Qgd2FudCBkcm1fbm9tb2Rlc2V0Lm8uIFNpbXBsZWRybSBtaWdodCBiZSBidWlsdC1pbiBh
-bmQgY2FuIA0KcHJvdmlkZSBncmFwaGljcy4gTm9uLVBDIHN5c3RlbXMgZG9uJ3QgZXZlbiBo
-YXZlIGEgVkdBIGRldmljZS4NCg0KSSB0aGluayB3ZSByZWFsbHkgd2FudCBhIHNlcGFyYXRl
-IGJvb2xlYW4gY29uZmlnIG9wdGlvbiB0aGF0IGdldHMgDQpzZWxlY3RlZCBieSBDT05GSUdf
-RFJNLg0KDQoNCj4gICBkcm1fY21hX2hlbHBlci15IDo9IGRybV9nZW1fY21hX2hlbHBlci5v
-DQo+ICAgb2JqLSQoQ09ORklHX0RSTV9HRU1fQ01BX0hFTFBFUikgKz0gZHJtX2NtYV9oZWxw
-ZXIubw0KPiAgIA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUv
-YW1kZ3B1X2Rydi5jIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2Rydi5j
-DQo+IGluZGV4IDdmZGU0MGQwNjE4MS4uYjRiNjk5Mzg2MWU2IDEwMDY0NA0KPiAtLS0gYS9k
-cml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfZHJ2LmMNCj4gKysrIGIvZHJpdmVy
-cy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2Rydi5jDQo+IEBAIC0zMSw3ICszMSw2IEBA
-DQo+ICAgI2luY2x1ZGUgImFtZGdwdV9kcnYuaCINCj4gICANCj4gICAjaW5jbHVkZSA8ZHJt
-L2RybV9wY2lpZHMuaD4NCj4gLSNpbmNsdWRlIDxsaW51eC9jb25zb2xlLmg+DQo+ICAgI2lu
-Y2x1ZGUgPGxpbnV4L21vZHVsZS5oPg0KPiAgICNpbmNsdWRlIDxsaW51eC9wbV9ydW50aW1l
-Lmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L3ZnYV9zd2l0Y2hlcm9vLmg+DQo+IGRpZmYgLS1n
-aXQgYS9kcml2ZXJzL2dwdS9kcm0vYXN0L2FzdF9kcnYuYyBiL2RyaXZlcnMvZ3B1L2RybS9h
-c3QvYXN0X2Rydi5jDQo+IGluZGV4IDgwMjA2MzI3OWI4Ni4uNjIyMjA4MmMzMDgyIDEwMDY0
-NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vYXN0L2FzdF9kcnYuYw0KPiArKysgYi9kcml2
-ZXJzL2dwdS9kcm0vYXN0L2FzdF9kcnYuYw0KPiBAQCAtMjYsNyArMjYsNiBAQA0KPiAgICAq
-IEF1dGhvcnM6IERhdmUgQWlybGllIDxhaXJsaWVkQHJlZGhhdC5jb20+DQo+ICAgICovDQo+
-ICAgDQo+IC0jaW5jbHVkZSA8bGludXgvY29uc29sZS5oPg0KPiAgICNpbmNsdWRlIDxsaW51
-eC9tb2R1bGUuaD4NCj4gICAjaW5jbHVkZSA8bGludXgvcGNpLmg+DQo+ICAgDQo+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vZHJtX2Rydi5jIGIvZHJpdmVycy9ncHUvZHJtL2Ry
-bV9kcnYuYw0KPiBpbmRleCAzZmI1NjdkNjI4ODEuLjgwYjg1YjhlYTc3NiAxMDA2NDQNCj4g
-LS0tIGEvZHJpdmVycy9ncHUvZHJtL2RybV9kcnYuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9k
-cm0vZHJtX2Rydi5jDQo+IEBAIC05ODYsMTIgKzk4NiwxMyBAQCBFWFBPUlRfU1lNQk9MKGRy
-bV9kZXZfc2V0X3VuaXF1ZSk7DQo+ICAgICovDQo+ICAgaW50IGRybV9kcnZfZW5hYmxlZChj
-b25zdCBzdHJ1Y3QgZHJtX2RyaXZlciAqZHJpdmVyKQ0KPiAgIHsNCj4gLQlpZiAodmdhY29u
-X3RleHRfZm9yY2UoKSkgew0KPiArCWludCByZXQ7DQo+ICsNCj4gKwlyZXQgPSBkcm1fY2hl
-Y2tfbW9kZXNldCgpOw0KPiArCWlmIChyZXQpDQo+ICAgCQlEUk1fSU5GTygiJXMgZHJpdmVy
-IGlzIGRpc2FibGVkXG4iLCBkcml2ZXItPm5hbWUpOw0KPiAtCQlyZXR1cm4gLUVOT0RFVjsN
-Cj4gLQl9DQo+ICAgDQo+IC0JcmV0dXJuIDA7DQo+ICsJcmV0dXJuIHJldDsNCj4gICB9DQo+
-ICAgRVhQT1JUX1NZTUJPTChkcm1fZHJ2X2VuYWJsZWQpOw0KPiAgIA0KPiBkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9ncHUvZHJtL2RybV9ub21vZGVzZXQuYyBiL2RyaXZlcnMvZ3B1L2RybS9k
-cm1fbm9tb2Rlc2V0LmMNCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gaW5kZXggMDAwMDAw
-MDAwMDAwLi42NjgzZTM5NmQyYzUNCj4gLS0tIC9kZXYvbnVsbA0KPiArKysgYi9kcml2ZXJz
-L2dwdS9kcm0vZHJtX25vbW9kZXNldC5jDQo+IEBAIC0wLDAgKzEsMjYgQEANCj4gKy8vIFNQ
-RFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wDQo+ICsNCj4gKyNpbmNsdWRlIDxsaW51
-eC9tb2R1bGUuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC90eXBlcy5oPg0KPiArDQo+ICtzdGF0
-aWMgYm9vbCBkcm1fbm9tb2Rlc2V0Ow0KPiArDQo+ICtpbnQgZHJtX2NoZWNrX21vZGVzZXQo
-dm9pZCkNCj4gK3sNCj4gKwlyZXR1cm4gZHJtX25vbW9kZXNldCA/IC1FTk9ERVYgOiAwOw0K
-PiArfQ0KPiArRVhQT1JUX1NZTUJPTChkcm1fY2hlY2tfbW9kZXNldCk7DQo+ICsNCj4gK3N0
-YXRpYyBpbnQgX19pbml0IGRpc2FibGVfbW9kZXNldChjaGFyICpzdHIpDQo+ICt7DQo+ICsJ
-ZHJtX25vbW9kZXNldCA9IHRydWU7DQo+ICsNCj4gKwlwcl93YXJuKCJZb3UgaGF2ZSBib290
-ZWQgd2l0aCBub21vZGVzZXQuIFRoaXMgbWVhbnMgeW91ciBHUFUgZHJpdmVycyBhcmUgRElT
-QUJMRURcbiIpOw0KPiArCXByX3dhcm4oIkFueSB2aWRlbyByZWxhdGVkIGZ1bmN0aW9uYWxp
-dHkgd2lsbCBiZSBzZXZlcmVseSBkZWdyYWRlZCwgYW5kIHlvdSBtYXkgbm90IGV2ZW4gYmUg
-YWJsZSB0byBzdXNwZW5kIHRoZSBzeXN0ZW0gcHJvcGVybHlcbiIpOw0KPiArCXByX3dhcm4o
-IlVubGVzcyB5b3UgYWN0dWFsbHkgdW5kZXJzdGFuZCB3aGF0IG5vbW9kZXNldCBkb2VzLCB5
-b3Ugc2hvdWxkIHJlYm9vdCB3aXRob3V0IGVuYWJsaW5nIGl0XG4iKTsNCg0KSSdkIHVwZGF0
-ZSB0aGlzIHRleHQgdG8gYmUgbGVzcyBzZW5zYXRpb25hbC4NCg0KPiArDQo+ICsJcmV0dXJu
-IDE7DQo+ICt9DQo+ICsNCj4gKy8qIERpc2FibGUga2VybmVsIG1vZGVzZXR0aW5nICovDQo+
-ICtfX3NldHVwKCJub21vZGVzZXQiLCBkaXNhYmxlX21vZGVzZXQpOw0KPiBkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9tb2R1bGUuYyBiL2RyaXZlcnMvZ3B1L2Ry
-bS9pOTE1L2k5MTVfbW9kdWxlLmMNCj4gaW5kZXggNDVjYjNlNTQwZWZmLi5jODkwYzFjYTIw
-YzQgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfbW9kdWxlLmMN
-Cj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9tb2R1bGUuYw0KPiBAQCAtNCw4
-ICs0LDYgQEANCj4gICAgKiBDb3B5cmlnaHQgwqkgMjAyMSBJbnRlbCBDb3Jwb3JhdGlvbg0K
-PiAgICAqLw0KPiAgIA0KPiAtI2luY2x1ZGUgPGxpbnV4L2NvbnNvbGUuaD4NCj4gLQ0KDQpU
-aGVzZSBjaGFuZ2VzIHNob3VsZCBiZSBpbiBwYXRjaCAxPw0KDQo+ICAgI2luY2x1ZGUgImdl
-bS9pOTE1X2dlbV9jb250ZXh0LmgiDQo+ICAgI2luY2x1ZGUgImdlbS9pOTE1X2dlbV9vYmpl
-Y3QuaCINCj4gICAjaW5jbHVkZSAiaTkxNV9hY3RpdmUuaCINCj4gZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvZ3B1L2RybS9tZ2FnMjAwL21nYWcyMDBfZHJ2LmMgYi9kcml2ZXJzL2dwdS9kcm0v
-bWdhZzIwMC9tZ2FnMjAwX2Rydi5jDQo+IGluZGV4IDJhNTgxMDk0YmEyYi4uOGUwMDBjYWMx
-MWJhIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWdhZzIwMC9tZ2FnMjAwX2Ry
-di5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZ2FnMjAwL21nYWcyMDBfZHJ2LmMNCj4g
-QEAgLTYsNyArNiw2IEBADQo+ICAgICogICAgICAgICAgRGF2ZSBBaXJsaWUNCj4gICAgKi8N
-Cj4gICANCj4gLSNpbmNsdWRlIDxsaW51eC9jb25zb2xlLmg+DQo+ICAgI2luY2x1ZGUgPGxp
-bnV4L21vZHVsZS5oPg0KPiAgICNpbmNsdWRlIDxsaW51eC9wY2kuaD4NCj4gICAjaW5jbHVk
-ZSA8bGludXgvdm1hbGxvYy5oPg0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL25v
-dXZlYXUvbm91dmVhdV9kcm0uYyBiL2RyaXZlcnMvZ3B1L2RybS9ub3V2ZWF1L25vdXZlYXVf
-ZHJtLmMNCj4gaW5kZXggODg0NGQzNjAyZDg3Li5iZDE0NTY1MjFiN2MgMTAwNjQ0DQo+IC0t
-LSBhL2RyaXZlcnMvZ3B1L2RybS9ub3V2ZWF1L25vdXZlYXVfZHJtLmMNCj4gKysrIGIvZHJp
-dmVycy9ncHUvZHJtL25vdXZlYXUvbm91dmVhdV9kcm0uYw0KPiBAQCAtMjIsNyArMjIsNiBA
-QA0KPiAgICAqIEF1dGhvcnM6IEJlbiBTa2VnZ3MNCj4gICAgKi8NCj4gICANCj4gLSNpbmNs
-dWRlIDxsaW51eC9jb25zb2xlLmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L2RlbGF5Lmg+DQo+
-ICAgI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPg0KPiAgICNpbmNsdWRlIDxsaW51eC9wY2ku
-aD4NCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9xeGwvcXhsX2Rydi5jIGIvZHJp
-dmVycy9ncHUvZHJtL3F4bC9xeGxfZHJ2LmMNCj4gaW5kZXggM2FjMmVmMmJmNTQ1Li5mZjA3
-MGFjNzYxMTEgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9xeGwvcXhsX2Rydi5j
-DQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9xeGwvcXhsX2Rydi5jDQo+IEBAIC0yOSw3ICsy
-OSw2IEBADQo+ICAgDQo+ICAgI2luY2x1ZGUgInF4bF9kcnYuaCINCj4gICANCj4gLSNpbmNs
-dWRlIDxsaW51eC9jb25zb2xlLmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPg0K
-PiAgICNpbmNsdWRlIDxsaW51eC9wY2kuaD4NCj4gICAjaW5jbHVkZSA8bGludXgvdmdhYXJi
-Lmg+DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vcmFkZW9uL3JhZGVvbl9kcnYu
-YyBiL2RyaXZlcnMvZ3B1L2RybS9yYWRlb24vcmFkZW9uX2Rydi5jDQo+IGluZGV4IDU2ZDY4
-OGMwNDM0Ni4uZjU5Y2M5NzFlYzk1IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0v
-cmFkZW9uL3JhZGVvbl9kcnYuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vcmFkZW9uL3Jh
-ZGVvbl9kcnYuYw0KPiBAQCAtMzEsNyArMzEsNiBAQA0KPiAgIA0KPiAgIA0KPiAgICNpbmNs
-dWRlIDxsaW51eC9jb21wYXQuaD4NCj4gLSNpbmNsdWRlIDxsaW51eC9jb25zb2xlLmg+DQo+
-ICAgI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPg0KPiAgICNpbmNsdWRlIDxsaW51eC9wbV9y
-dW50aW1lLmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L3ZnYV9zd2l0Y2hlcm9vLmg+DQo+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vdGlueS9ib2Nocy5jIGIvZHJpdmVycy9ncHUv
-ZHJtL3RpbnkvYm9jaHMuYw0KPiBpbmRleCBlZTZiMWZmOTEyOGIuLjZlOWEzMWYxYTBmMyAx
-MDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL3RpbnkvYm9jaHMuYw0KPiArKysgYi9k
-cml2ZXJzL2dwdS9kcm0vdGlueS9ib2Nocy5jDQo+IEBAIC0xLDYgKzEsNSBAQA0KPiAgIC8v
-IFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9yLWxhdGVyDQo+ICAgDQo+IC0j
-aW5jbHVkZSA8bGludXgvY29uc29sZS5oPg0KPiAgICNpbmNsdWRlIDxsaW51eC9wY2kuaD4N
-Cj4gICANCj4gICAjaW5jbHVkZSA8ZHJtL2RybV9hcGVydHVyZS5oPg0KPiBkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9ncHUvZHJtL3RpbnkvY2lycnVzLmMgYi9kcml2ZXJzL2dwdS9kcm0vdGlu
-eS9jaXJydXMuYw0KPiBpbmRleCA0NzA2YzViYzMwNjcuLjY1OTIwOGQ1YWVmOSAxMDA2NDQN
-Cj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL3RpbnkvY2lycnVzLmMNCj4gKysrIGIvZHJpdmVy
-cy9ncHUvZHJtL3RpbnkvY2lycnVzLmMNCj4gQEAgLTE2LDcgKzE2LDYgQEANCj4gICAgKiBD
-b3B5cmlnaHQgMTk5OS0yMDAxIEplZmYgR2FyemlrIDxqZ2FyemlrQHBvYm94LmNvbT4NCj4g
-ICAgKi8NCj4gICANCj4gLSNpbmNsdWRlIDxsaW51eC9jb25zb2xlLmg+DQo+ICAgI2luY2x1
-ZGUgPGxpbnV4L2RtYS1idWYtbWFwLmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5o
-Pg0KPiAgICNpbmNsdWRlIDxsaW51eC9wY2kuaD4NCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-Z3B1L2RybS92Ym94dmlkZW8vdmJveF9kcnYuYyBiL2RyaXZlcnMvZ3B1L2RybS92Ym94dmlk
-ZW8vdmJveF9kcnYuYw0KPiBpbmRleCBlNDM3N2MzN2NmMzMuLmIxZTYzZmQ1NDNiYiAxMDA2
-NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL3Zib3h2aWRlby92Ym94X2Rydi5jDQo+ICsr
-KyBiL2RyaXZlcnMvZ3B1L2RybS92Ym94dmlkZW8vdmJveF9kcnYuYw0KPiBAQCAtNyw3ICs3
-LDYgQEANCj4gICAgKiAgICAgICAgICBNaWNoYWVsIFRoYXllciA8bWljaGFlbC50aGF5ZXJA
-b3JhY2xlLmNvbSwNCj4gICAgKiAgICAgICAgICBIYW5zIGRlIEdvZWRlIDxoZGVnb2VkZUBy
-ZWRoYXQuY29tPg0KPiAgICAqLw0KPiAtI2luY2x1ZGUgPGxpbnV4L2NvbnNvbGUuaD4NCj4g
-ICAjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L3BjaS5o
-Pg0KPiAgICNpbmNsdWRlIDxsaW51eC92dF9rZXJuLmg+DQo+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL2dwdS9kcm0vdmlydGlvL3ZpcnRncHVfZHJ2LmMgYi9kcml2ZXJzL2dwdS9kcm0vdmly
-dGlvL3ZpcnRncHVfZHJ2LmMNCj4gaW5kZXggMjgyMDBkZmJhMmQxLi5iYTljMGMyZjhhZTYg
-MTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS92aXJ0aW8vdmlydGdwdV9kcnYuYw0K
-PiArKysgYi9kcml2ZXJzL2dwdS9kcm0vdmlydGlvL3ZpcnRncHVfZHJ2LmMNCj4gQEAgLTI3
-LDcgKzI3LDYgQEANCj4gICAgKi8NCj4gICANCj4gICAjaW5jbHVkZSA8bGludXgvbW9kdWxl
-Lmg+DQo+IC0jaW5jbHVkZSA8bGludXgvY29uc29sZS5oPg0KPiAgICNpbmNsdWRlIDxsaW51
-eC9wY2kuaD4NCj4gICAjaW5jbHVkZSA8bGludXgvcG9sbC5oPg0KPiAgICNpbmNsdWRlIDxs
-aW51eC93YWl0Lmg+DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vdm13Z2Z4L3Zt
-d2dmeF9kcnYuYyBiL2RyaXZlcnMvZ3B1L2RybS92bXdnZngvdm13Z2Z4X2Rydi5jDQo+IGlu
-ZGV4IDA1ZTk5NDkyOTNkNS4uMTE1ZWM5NTE4Mjc3IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJz
-L2dwdS9kcm0vdm13Z2Z4L3Ztd2dmeF9kcnYuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0v
-dm13Z2Z4L3Ztd2dmeF9kcnYuYw0KPiBAQCAtMjUsNyArMjUsNiBAQA0KPiAgICAqDQo+ICAg
-ICoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqLw0KPiAgIA0KPiAtI2luY2x1ZGUgPGxpbnV4L2NvbnNv
-bGUuaD4NCj4gICAjaW5jbHVkZSA8bGludXgvZG1hLW1hcHBpbmcuaD4NCj4gICAjaW5jbHVk
-ZSA8bGludXgvbW9kdWxlLmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L3BjaS5oPg0KPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy92aWRlby9jb25zb2xlL3ZnYWNvbi5jIGIvZHJpdmVycy92aWRl
-by9jb25zb2xlL3ZnYWNvbi5jDQo+IGluZGV4IGVmOWM1N2NlMDkwNi4uZDQzMjBiMTQ3OTU2
-IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3ZpZGVvL2NvbnNvbGUvdmdhY29uLmMNCj4gKysr
-IGIvZHJpdmVycy92aWRlby9jb25zb2xlL3ZnYWNvbi5jDQo+IEBAIC05NywzMCArOTcsOSBA
-QCBzdGF0aWMgaW50IAkJdmdhX3ZpZGVvX2ZvbnRfaGVpZ2h0Ow0KPiAgIHN0YXRpYyBpbnQg
-CQl2Z2Ffc2Nhbl9saW5lcwkJX19yZWFkX21vc3RseTsNCj4gICBzdGF0aWMgdW5zaWduZWQg
-aW50IAl2Z2Ffcm9sbGVkX292ZXI7IC8qIGxhc3QgdmNfb3JpZ2luIG9mZnNldCBiZWZvcmUg
-d3JhcCAqLw0KPiAgIA0KPiAtc3RhdGljIGJvb2wgdmdhY29uX3RleHRfbW9kZV9mb3JjZTsN
-Cj4gICBzdGF0aWMgYm9vbCB2Z2FfaGFyZHNjcm9sbF9lbmFibGVkOw0KPiAgIHN0YXRpYyBi
-b29sIHZnYV9oYXJkc2Nyb2xsX3VzZXJfZW5hYmxlID0gdHJ1ZTsNCj4gICANCj4gLWJvb2wg
-dmdhY29uX3RleHRfZm9yY2Uodm9pZCkNCj4gLXsNCj4gLQlyZXR1cm4gdmdhY29uX3RleHRf
-bW9kZV9mb3JjZTsNCj4gLX0NCj4gLUVYUE9SVF9TWU1CT0wodmdhY29uX3RleHRfZm9yY2Up
-Ow0KPiAtDQo+IC1zdGF0aWMgaW50IF9faW5pdCB0ZXh0X21vZGUoY2hhciAqc3RyKQ0KPiAt
-ew0KPiAtCXZnYWNvbl90ZXh0X21vZGVfZm9yY2UgPSB0cnVlOw0KPiAtDQo+IC0JcHJfd2Fy
-bigiWW91IGhhdmUgYm9vdGVkIHdpdGggbm9tb2Rlc2V0LiBUaGlzIG1lYW5zIHlvdXIgR1BV
-IGRyaXZlcnMgYXJlIERJU0FCTEVEXG4iKTsNCj4gLQlwcl93YXJuKCJBbnkgdmlkZW8gcmVs
-YXRlZCBmdW5jdGlvbmFsaXR5IHdpbGwgYmUgc2V2ZXJlbHkgZGVncmFkZWQsIGFuZCB5b3Ug
-bWF5IG5vdCBldmVuIGJlIGFibGUgdG8gc3VzcGVuZCB0aGUgc3lzdGVtIHByb3Blcmx5XG4i
-KTsNCj4gLQlwcl93YXJuKCJVbmxlc3MgeW91IGFjdHVhbGx5IHVuZGVyc3RhbmQgd2hhdCBu
-b21vZGVzZXQgZG9lcywgeW91IHNob3VsZCByZWJvb3Qgd2l0aG91dCBlbmFibGluZyBpdFxu
-Iik7DQo+IC0NCj4gLQlyZXR1cm4gMTsNCj4gLX0NCj4gLQ0KPiAtLyogZm9yY2UgdGV4dCBt
-b2RlIC0gdXNlZCBieSBrZXJuZWwgbW9kZXNldHRpbmcgKi8NCj4gLV9fc2V0dXAoIm5vbW9k
-ZXNldCIsIHRleHRfbW9kZSk7DQo+IC0NCj4gICBzdGF0aWMgaW50IF9faW5pdCBub19zY3Jv
-bGwoY2hhciAqc3RyKQ0KPiAgIHsNCj4gICAJLyoNCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUv
-ZHJtL2RybV9tb2RlX2NvbmZpZy5oIGIvaW5jbHVkZS9kcm0vZHJtX21vZGVfY29uZmlnLmgN
-Cj4gaW5kZXggNDhiN2RlODBkYWY1Li4xODk4MmQzNTA3ZTQgMTAwNjQ0DQo+IC0tLSBhL2lu
-Y2x1ZGUvZHJtL2RybV9tb2RlX2NvbmZpZy5oDQo+ICsrKyBiL2luY2x1ZGUvZHJtL2RybV9t
-b2RlX2NvbmZpZy5oDQo+IEBAIC05NjksNCArOTY5LDEwIEBAIHN0YXRpYyBpbmxpbmUgaW50
-IGRybV9tb2RlX2NvbmZpZ19pbml0KHN0cnVjdCBkcm1fZGV2aWNlICpkZXYpDQo+ICAgdm9p
-ZCBkcm1fbW9kZV9jb25maWdfcmVzZXQoc3RydWN0IGRybV9kZXZpY2UgKmRldik7DQo+ICAg
-dm9pZCBkcm1fbW9kZV9jb25maWdfY2xlYW51cChzdHJ1Y3QgZHJtX2RldmljZSAqZGV2KTsN
-Cj4gICANCj4gKyNpZmRlZiBDT05GSUdfVkdBX0NPTlNPTEUNCj4gK2V4dGVybiBpbnQgZHJt
-X2NoZWNrX21vZGVzZXQodm9pZCk7DQo+ICsjZWxzZQ0KPiArc3RhdGljIGlubGluZSBpbnQg
-ZHJtX2NoZWNrX21vZGVzZXQodm9pZCkgeyByZXR1cm4gMDsgfQ0KPiArI2VuZGlmDQo+ICsN
-Cj4gICAjZW5kaWYNCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvY29uc29sZS5oIGIv
-aW5jbHVkZS9saW51eC9jb25zb2xlLmgNCj4gaW5kZXggMjA4NzRkYjUwYmM4Li5kNGRkODM4
-NDg5OGIgMTAwNjQ0DQo+IC0tLSBhL2luY2x1ZGUvbGludXgvY29uc29sZS5oDQo+ICsrKyBi
-L2luY2x1ZGUvbGludXgvY29uc29sZS5oDQo+IEBAIC0yMTcsMTIgKzIxNyw2IEBAIGV4dGVy
-biBhdG9taWNfdCBpZ25vcmVfY29uc29sZV9sb2NrX3dhcm5pbmc7DQo+ICAgI2RlZmluZSBW
-RVNBX0hTWU5DX1NVU1BFTkQgICAgICAyDQo+ICAgI2RlZmluZSBWRVNBX1BPV0VSRE9XTiAg
-ICAgICAgICAzDQo+ICAgDQo+IC0jaWZkZWYgQ09ORklHX1ZHQV9DT05TT0xFDQo+IC1leHRl
-cm4gYm9vbCB2Z2Fjb25fdGV4dF9mb3JjZSh2b2lkKTsNCj4gLSNlbHNlDQo+IC1zdGF0aWMg
-aW5saW5lIGJvb2wgdmdhY29uX3RleHRfZm9yY2Uodm9pZCkgeyByZXR1cm4gZmFsc2U7IH0N
-Cj4gLSNlbmRpZg0KPiAtDQo+ICAgZXh0ZXJuIHZvaWQgY29uc29sZV9pbml0KHZvaWQpOw0K
-PiAgIA0KPiAgIC8qIEZvciBkZWZlcnJlZCBjb25zb2xlIHRha2VvdmVyICovDQo+IA0KDQot
-LSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2ZWxvcGVyDQpTVVNF
-IFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCk1heGZlbGRzdHIuIDUsIDkwNDA5
-IE7DvHJuYmVyZywgR2VybWFueQ0KKEhSQiAzNjgwOSwgQUcgTsO8cm5iZXJnKQ0KR2VzY2jD
-pGZ0c2bDvGhyZXI6IEl2byBUb3Rldg0K
+Do you still need clk-provider here ?
 
---------------h00fyHHZQ0dUJPUtE2aOh0PM--
+>  #include <linux/delay.h>
+>  #include <linux/interrupt.h>
+> @@ -100,297 +97,6 @@ static inline void isc_reset_awb_ctrls(struct isc_device *isc)
+>  	}
+>  }
+>
+> -static int isc_wait_clk_stable(struct clk_hw *hw)
+> -{
+> -	struct isc_clk *isc_clk = to_isc_clk(hw);
+> -	struct regmap *regmap = isc_clk->regmap;
+> -	unsigned long timeout = jiffies + usecs_to_jiffies(1000);
+> -	unsigned int status;
+> -
+> -	while (time_before(jiffies, timeout)) {
+> -		regmap_read(regmap, ISC_CLKSR, &status);
+> -		if (!(status & ISC_CLKSR_SIP))
+> -			return 0;
+> -
+> -		usleep_range(10, 250);
+> -	}
+> -
+> -	return -ETIMEDOUT;
+> -}
+> -
+> -static int isc_clk_prepare(struct clk_hw *hw)
+> -{
+> -	struct isc_clk *isc_clk = to_isc_clk(hw);
+> -	int ret;
+> -
+> -	ret = pm_runtime_resume_and_get(isc_clk->dev);
+> -	if (ret < 0)
+> -		return ret;
+> -
+> -	return isc_wait_clk_stable(hw);
+> -}
+> -
+> -static void isc_clk_unprepare(struct clk_hw *hw)
+> -{
+> -	struct isc_clk *isc_clk = to_isc_clk(hw);
+> -
+> -	isc_wait_clk_stable(hw);
+> -
+> -	pm_runtime_put_sync(isc_clk->dev);
+> -}
+> -
+> -static int isc_clk_enable(struct clk_hw *hw)
+> -{
+> -	struct isc_clk *isc_clk = to_isc_clk(hw);
+> -	u32 id = isc_clk->id;
+> -	struct regmap *regmap = isc_clk->regmap;
+> -	unsigned long flags;
+> -	unsigned int status;
+> -
+> -	dev_dbg(isc_clk->dev, "ISC CLK: %s, id = %d, div = %d, parent id = %d\n",
+> -		__func__, id, isc_clk->div, isc_clk->parent_id);
+> -
+> -	spin_lock_irqsave(&isc_clk->lock, flags);
+> -	regmap_update_bits(regmap, ISC_CLKCFG,
+> -			   ISC_CLKCFG_DIV_MASK(id) | ISC_CLKCFG_SEL_MASK(id),
+> -			   (isc_clk->div << ISC_CLKCFG_DIV_SHIFT(id)) |
+> -			   (isc_clk->parent_id << ISC_CLKCFG_SEL_SHIFT(id)));
+> -
+> -	regmap_write(regmap, ISC_CLKEN, ISC_CLK(id));
+> -	spin_unlock_irqrestore(&isc_clk->lock, flags);
+> -
+> -	regmap_read(regmap, ISC_CLKSR, &status);
+> -	if (status & ISC_CLK(id))
+> -		return 0;
+> -	else
+> -		return -EINVAL;
+> -}
+> -
+> -static void isc_clk_disable(struct clk_hw *hw)
+> -{
+> -	struct isc_clk *isc_clk = to_isc_clk(hw);
+> -	u32 id = isc_clk->id;
+> -	unsigned long flags;
+> -
+> -	spin_lock_irqsave(&isc_clk->lock, flags);
+> -	regmap_write(isc_clk->regmap, ISC_CLKDIS, ISC_CLK(id));
+> -	spin_unlock_irqrestore(&isc_clk->lock, flags);
+> -}
+> -
+> -static int isc_clk_is_enabled(struct clk_hw *hw)
+> -{
+> -	struct isc_clk *isc_clk = to_isc_clk(hw);
+> -	u32 status;
+> -	int ret;
+> -
+> -	ret = pm_runtime_resume_and_get(isc_clk->dev);
+> -	if (ret < 0)
+> -		return 0;
+> -
+> -	regmap_read(isc_clk->regmap, ISC_CLKSR, &status);
+> -
+> -	pm_runtime_put_sync(isc_clk->dev);
+> -
+> -	return status & ISC_CLK(isc_clk->id) ? 1 : 0;
+> -}
+> -
+> -static unsigned long
+> -isc_clk_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+> -{
+> -	struct isc_clk *isc_clk = to_isc_clk(hw);
+> -
+> -	return DIV_ROUND_CLOSEST(parent_rate, isc_clk->div + 1);
+> -}
+> -
+> -static int isc_clk_determine_rate(struct clk_hw *hw,
+> -				   struct clk_rate_request *req)
+> -{
+> -	struct isc_clk *isc_clk = to_isc_clk(hw);
+> -	long best_rate = -EINVAL;
+> -	int best_diff = -1;
+> -	unsigned int i, div;
+> -
+> -	for (i = 0; i < clk_hw_get_num_parents(hw); i++) {
+> -		struct clk_hw *parent;
+> -		unsigned long parent_rate;
+> -
+> -		parent = clk_hw_get_parent_by_index(hw, i);
+> -		if (!parent)
+> -			continue;
+> -
+> -		parent_rate = clk_hw_get_rate(parent);
+> -		if (!parent_rate)
+> -			continue;
+> -
+> -		for (div = 1; div < ISC_CLK_MAX_DIV + 2; div++) {
+> -			unsigned long rate;
+> -			int diff;
+> -
+> -			rate = DIV_ROUND_CLOSEST(parent_rate, div);
+> -			diff = abs(req->rate - rate);
+> -
+> -			if (best_diff < 0 || best_diff > diff) {
+> -				best_rate = rate;
+> -				best_diff = diff;
+> -				req->best_parent_rate = parent_rate;
+> -				req->best_parent_hw = parent;
+> -			}
+> -
+> -			if (!best_diff || rate < req->rate)
+> -				break;
+> -		}
+> -
+> -		if (!best_diff)
+> -			break;
+> -	}
+> -
+> -	dev_dbg(isc_clk->dev,
+> -		"ISC CLK: %s, best_rate = %ld, parent clk: %s @ %ld\n",
+> -		__func__, best_rate,
+> -		__clk_get_name((req->best_parent_hw)->clk),
+> -		req->best_parent_rate);
+> -
+> -	if (best_rate < 0)
+> -		return best_rate;
+> -
+> -	req->rate = best_rate;
+> -
+> -	return 0;
+> -}
+> -
+> -static int isc_clk_set_parent(struct clk_hw *hw, u8 index)
+> -{
+> -	struct isc_clk *isc_clk = to_isc_clk(hw);
+> -
+> -	if (index >= clk_hw_get_num_parents(hw))
+> -		return -EINVAL;
+> -
+> -	isc_clk->parent_id = index;
+> -
+> -	return 0;
+> -}
+> -
+> -static u8 isc_clk_get_parent(struct clk_hw *hw)
+> -{
+> -	struct isc_clk *isc_clk = to_isc_clk(hw);
+> -
+> -	return isc_clk->parent_id;
+> -}
+> -
+> -static int isc_clk_set_rate(struct clk_hw *hw,
+> -			     unsigned long rate,
+> -			     unsigned long parent_rate)
+> -{
+> -	struct isc_clk *isc_clk = to_isc_clk(hw);
+> -	u32 div;
+> -
+> -	if (!rate)
+> -		return -EINVAL;
+> -
+> -	div = DIV_ROUND_CLOSEST(parent_rate, rate);
+> -	if (div > (ISC_CLK_MAX_DIV + 1) || !div)
+> -		return -EINVAL;
+> -
+> -	isc_clk->div = div - 1;
+> -
+> -	return 0;
+> -}
+> -
+> -static const struct clk_ops isc_clk_ops = {
+> -	.prepare	= isc_clk_prepare,
+> -	.unprepare	= isc_clk_unprepare,
+> -	.enable		= isc_clk_enable,
+> -	.disable	= isc_clk_disable,
+> -	.is_enabled	= isc_clk_is_enabled,
+> -	.recalc_rate	= isc_clk_recalc_rate,
+> -	.determine_rate	= isc_clk_determine_rate,
+> -	.set_parent	= isc_clk_set_parent,
+> -	.get_parent	= isc_clk_get_parent,
+> -	.set_rate	= isc_clk_set_rate,
+> -};
+> -
+> -static int isc_clk_register(struct isc_device *isc, unsigned int id)
+> -{
+> -	struct regmap *regmap = isc->regmap;
+> -	struct device_node *np = isc->dev->of_node;
+> -	struct isc_clk *isc_clk;
+> -	struct clk_init_data init;
+> -	const char *clk_name = np->name;
+> -	const char *parent_names[3];
+> -	int num_parents;
+> -
+> -	if (id == ISC_ISPCK && !isc->ispck_required)
+> -		return 0;
+> -
+> -	num_parents = of_clk_get_parent_count(np);
+> -	if (num_parents < 1 || num_parents > 3)
+> -		return -EINVAL;
+> -
+> -	if (num_parents > 2 && id == ISC_ISPCK)
+> -		num_parents = 2;
+> -
+> -	of_clk_parent_fill(np, parent_names, num_parents);
+> -
+> -	if (id == ISC_MCK)
+> -		of_property_read_string(np, "clock-output-names", &clk_name);
+> -	else
+> -		clk_name = "isc-ispck";
+> -
+> -	init.parent_names	= parent_names;
+> -	init.num_parents	= num_parents;
+> -	init.name		= clk_name;
+> -	init.ops		= &isc_clk_ops;
+> -	init.flags		= CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE;
+> -
+> -	isc_clk = &isc->isc_clks[id];
+> -	isc_clk->hw.init	= &init;
+> -	isc_clk->regmap		= regmap;
+> -	isc_clk->id		= id;
+> -	isc_clk->dev		= isc->dev;
+> -	spin_lock_init(&isc_clk->lock);
+> -
+> -	isc_clk->clk = clk_register(isc->dev, &isc_clk->hw);
+> -	if (IS_ERR(isc_clk->clk)) {
+> -		dev_err(isc->dev, "%s: clock register fail\n", clk_name);
+> -		return PTR_ERR(isc_clk->clk);
+> -	} else if (id == ISC_MCK)
+> -		of_clk_add_provider(np, of_clk_src_simple_get, isc_clk->clk);
+> -
+> -	return 0;
+> -}
+> -
+> -int isc_clk_init(struct isc_device *isc)
+> -{
+> -	unsigned int i;
+> -	int ret;
+> -
+> -	for (i = 0; i < ARRAY_SIZE(isc->isc_clks); i++)
+> -		isc->isc_clks[i].clk = ERR_PTR(-EINVAL);
+> -
+> -	for (i = 0; i < ARRAY_SIZE(isc->isc_clks); i++) {
+> -		ret = isc_clk_register(isc, i);
+> -		if (ret)
+> -			return ret;
+> -	}
+> -
+> -	return 0;
+> -}
+> -EXPORT_SYMBOL_GPL(isc_clk_init);
+> -
+> -void isc_clk_cleanup(struct isc_device *isc)
+> -{
+> -	unsigned int i;
+> -
+> -	of_clk_del_provider(isc->dev->of_node);
+> -
+> -	for (i = 0; i < ARRAY_SIZE(isc->isc_clks); i++) {
+> -		struct isc_clk *isc_clk = &isc->isc_clks[i];
+> -
+> -		if (!IS_ERR(isc_clk->clk))
+> -			clk_unregister(isc_clk->clk);
+> -	}
+> -}
+> -EXPORT_SYMBOL_GPL(isc_clk_cleanup);
+>
+>  static int isc_queue_setup(struct vb2_queue *vq,
+>  			    unsigned int *nbuffers, unsigned int *nplanes,
+> diff --git a/drivers/media/platform/atmel/atmel-isc-clk.c b/drivers/media/platform/atmel/atmel-isc-clk.c
+> new file mode 100644
+> index 000000000000..d650caade396
+> --- /dev/null
+> +++ b/drivers/media/platform/atmel/atmel-isc-clk.c
+> @@ -0,0 +1,316 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Microchip Image Sensor Controller (ISC) common clock driver setup
+> + *
+> + * Copyright (C) 2016-2019 Microchip Technology, Inc.
 
---------------A97zhkvbBn0bSkSl62ggv6lZ
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+Time flies!
 
------BEGIN PGP SIGNATURE-----
+> + *
+> + * Author: Songjun Wu
+> + * Author: Eugen Hristev <eugen.hristev@microchip.com>
+> + *
+> + */
+> +#include <linux/clk.h>
+> +#include <linux/clkdev.h>
+> +#include <linux/clk-provider.h>
+> +#include <linux/platform_device.h>
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmGE8sEFAwAAAAAACgkQlh/E3EQov+B3
-jg/+PjLoQk2lz7PqFF9tYN8f2snZda5aDeMT/7Ge1klzGB4En2i21VZU4bYzjw5VjiMF61yRzR3i
-gCXrMNmzlsrEB3ysS3IxiNXXWZ2+KP0DqcXp4mlzYgKkPGx35Nc1yaSdgDeE/ZgPcnyBjZjI0SVk
-ZK9oJ4eSDsob9+yDYnNnzbPoVxXyswzWoWx4xNUxtkc+IEtpsJi5SAxXhOS96NM7P63m1Do1R7xF
-jCUrfN2DnrU/wJ6qGll769IT6Rt+hfsFEFfJCo3YRZzH3+KX8F9ATKdNV+G6+pzgTwzdZIAK0C17
-BqLe5z9WZq43JD4hnoaKRKMMtw22lXIR92XnAbWULDuCcfi8JrOxDbZY65oCMa2hEsaLdTty3ylw
-bp0/6HLOL8+iGmXBPvAe+ubEf7gAzcdw10jFDYT0VYt3ApuVbXAUPVDxo04zvWAj+onROLXp2S80
-9rqwrL2wANrr3W0c6SQEst8kUjjmgt72CY0xBNN4StscPmww5HO/s/+Vchcnk8zF9GC20sLL2QBr
-zZosY1JY7/2vgCLE3JSj2Y+IMFXWWrV4IbIN4/DzaLMkwLVbfHA3GZsNp80Lb6fTI0qWYrM55hjZ
-uutuGazjm+AB/bJ5XZdGQKliFjp7qZ6AUv0GdLh/ajJA7p2YGvUZHB1ob0oeMSX4OiLRJ79xkSQp
-ye8=
-=y7re
------END PGP SIGNATURE-----
+Is this needed ?
 
---------------A97zhkvbBn0bSkSl62ggv6lZ--
+> +#include <linux/pm_runtime.h>
+> +#include <linux/regmap.h>
+> +
+> +#include <media/v4l2-ctrls.h>
+> +#include <media/v4l2-device.h>
+> +#include <media/videobuf2-dma-contig.h>
+
+Is any one of these needed ?
+
+Removing them highlights how these includes should probably be
+moved to atmel-isc.h which fails to compile if not preceeded by these
+inclusions.
+
+I think you can merge this with the previous patch that adds the file
+entry to MAINTAINERS
+
+Thanks
+   j
+
+> +
+> +#include "atmel-isc-regs.h"
+> +#include "atmel-isc.h"
+> +
+> +static int isc_wait_clk_stable(struct clk_hw *hw)
+> +{
+> +	struct isc_clk *isc_clk = to_isc_clk(hw);
+> +	struct regmap *regmap = isc_clk->regmap;
+> +	unsigned long timeout = jiffies + usecs_to_jiffies(1000);
+> +	unsigned int status;
+> +
+> +	while (time_before(jiffies, timeout)) {
+> +		regmap_read(regmap, ISC_CLKSR, &status);
+> +		if (!(status & ISC_CLKSR_SIP))
+> +			return 0;
+> +
+> +		usleep_range(10, 250);
+> +	}
+> +
+> +	return -ETIMEDOUT;
+> +}
+> +
+> +static int isc_clk_prepare(struct clk_hw *hw)
+> +{
+> +	struct isc_clk *isc_clk = to_isc_clk(hw);
+> +	int ret;
+> +
+> +	ret = pm_runtime_resume_and_get(isc_clk->dev);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return isc_wait_clk_stable(hw);
+> +}
+> +
+> +static void isc_clk_unprepare(struct clk_hw *hw)
+> +{
+> +	struct isc_clk *isc_clk = to_isc_clk(hw);
+> +
+> +	isc_wait_clk_stable(hw);
+> +
+> +	pm_runtime_put_sync(isc_clk->dev);
+> +}
+> +
+> +static int isc_clk_enable(struct clk_hw *hw)
+> +{
+> +	struct isc_clk *isc_clk = to_isc_clk(hw);
+> +	u32 id = isc_clk->id;
+> +	struct regmap *regmap = isc_clk->regmap;
+> +	unsigned long flags;
+> +	unsigned int status;
+> +
+> +	dev_dbg(isc_clk->dev, "ISC CLK: %s, id = %d, div = %d, parent id = %d\n",
+> +		__func__, id, isc_clk->div, isc_clk->parent_id);
+> +
+> +	spin_lock_irqsave(&isc_clk->lock, flags);
+> +	regmap_update_bits(regmap, ISC_CLKCFG,
+> +			   ISC_CLKCFG_DIV_MASK(id) | ISC_CLKCFG_SEL_MASK(id),
+> +			   (isc_clk->div << ISC_CLKCFG_DIV_SHIFT(id)) |
+> +			   (isc_clk->parent_id << ISC_CLKCFG_SEL_SHIFT(id)));
+> +
+> +	regmap_write(regmap, ISC_CLKEN, ISC_CLK(id));
+> +	spin_unlock_irqrestore(&isc_clk->lock, flags);
+> +
+> +	regmap_read(regmap, ISC_CLKSR, &status);
+> +	if (status & ISC_CLK(id))
+> +		return 0;
+> +	else
+> +		return -EINVAL;
+> +}
+> +
+> +static void isc_clk_disable(struct clk_hw *hw)
+> +{
+> +	struct isc_clk *isc_clk = to_isc_clk(hw);
+> +	u32 id = isc_clk->id;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&isc_clk->lock, flags);
+> +	regmap_write(isc_clk->regmap, ISC_CLKDIS, ISC_CLK(id));
+> +	spin_unlock_irqrestore(&isc_clk->lock, flags);
+> +}
+> +
+> +static int isc_clk_is_enabled(struct clk_hw *hw)
+> +{
+> +	struct isc_clk *isc_clk = to_isc_clk(hw);
+> +	u32 status;
+> +	int ret;
+> +
+> +	ret = pm_runtime_resume_and_get(isc_clk->dev);
+> +	if (ret < 0)
+> +		return 0;
+> +
+> +	regmap_read(isc_clk->regmap, ISC_CLKSR, &status);
+> +
+> +	pm_runtime_put_sync(isc_clk->dev);
+> +
+> +	return status & ISC_CLK(isc_clk->id) ? 1 : 0;
+> +}
+> +
+> +static unsigned long
+> +isc_clk_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+> +{
+> +	struct isc_clk *isc_clk = to_isc_clk(hw);
+> +
+> +	return DIV_ROUND_CLOSEST(parent_rate, isc_clk->div + 1);
+> +}
+> +
+> +static int isc_clk_determine_rate(struct clk_hw *hw,
+> +				  struct clk_rate_request *req)
+> +{
+> +	struct isc_clk *isc_clk = to_isc_clk(hw);
+> +	long best_rate = -EINVAL;
+> +	int best_diff = -1;
+> +	unsigned int i, div;
+> +
+> +	for (i = 0; i < clk_hw_get_num_parents(hw); i++) {
+> +		struct clk_hw *parent;
+> +		unsigned long parent_rate;
+> +
+> +		parent = clk_hw_get_parent_by_index(hw, i);
+> +		if (!parent)
+> +			continue;
+> +
+> +		parent_rate = clk_hw_get_rate(parent);
+> +		if (!parent_rate)
+> +			continue;
+> +
+> +		for (div = 1; div < ISC_CLK_MAX_DIV + 2; div++) {
+> +			unsigned long rate;
+> +			int diff;
+> +
+> +			rate = DIV_ROUND_CLOSEST(parent_rate, div);
+> +			diff = abs(req->rate - rate);
+> +
+> +			if (best_diff < 0 || best_diff > diff) {
+> +				best_rate = rate;
+> +				best_diff = diff;
+> +				req->best_parent_rate = parent_rate;
+> +				req->best_parent_hw = parent;
+> +			}
+> +
+> +			if (!best_diff || rate < req->rate)
+> +				break;
+> +		}
+> +
+> +		if (!best_diff)
+> +			break;
+> +	}
+> +
+> +	dev_dbg(isc_clk->dev,
+> +		"ISC CLK: %s, best_rate = %ld, parent clk: %s @ %ld\n",
+> +		__func__, best_rate,
+> +		__clk_get_name((req->best_parent_hw)->clk),
+> +		req->best_parent_rate);
+> +
+> +	if (best_rate < 0)
+> +		return best_rate;
+> +
+> +	req->rate = best_rate;
+> +
+> +	return 0;
+> +}
+> +
+> +static int isc_clk_set_parent(struct clk_hw *hw, u8 index)
+> +{
+> +	struct isc_clk *isc_clk = to_isc_clk(hw);
+> +
+> +	if (index >= clk_hw_get_num_parents(hw))
+> +		return -EINVAL;
+> +
+> +	isc_clk->parent_id = index;
+> +
+> +	return 0;
+> +}
+> +
+> +static u8 isc_clk_get_parent(struct clk_hw *hw)
+> +{
+> +	struct isc_clk *isc_clk = to_isc_clk(hw);
+> +
+> +	return isc_clk->parent_id;
+> +}
+> +
+> +static int isc_clk_set_rate(struct clk_hw *hw,
+> +			    unsigned long rate,
+> +			    unsigned long parent_rate)
+> +{
+> +	struct isc_clk *isc_clk = to_isc_clk(hw);
+> +	u32 div;
+> +
+> +	if (!rate)
+> +		return -EINVAL;
+> +
+> +	div = DIV_ROUND_CLOSEST(parent_rate, rate);
+> +	if (div > (ISC_CLK_MAX_DIV + 1) || !div)
+> +		return -EINVAL;
+> +
+> +	isc_clk->div = div - 1;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct clk_ops isc_clk_ops = {
+> +	.prepare	= isc_clk_prepare,
+> +	.unprepare	= isc_clk_unprepare,
+> +	.enable		= isc_clk_enable,
+> +	.disable	= isc_clk_disable,
+> +	.is_enabled	= isc_clk_is_enabled,
+> +	.recalc_rate	= isc_clk_recalc_rate,
+> +	.determine_rate	= isc_clk_determine_rate,
+> +	.set_parent	= isc_clk_set_parent,
+> +	.get_parent	= isc_clk_get_parent,
+> +	.set_rate	= isc_clk_set_rate,
+> +};
+> +
+> +static int isc_clk_register(struct isc_device *isc, unsigned int id)
+> +{
+> +	struct regmap *regmap = isc->regmap;
+> +	struct device_node *np = isc->dev->of_node;
+> +	struct isc_clk *isc_clk;
+> +	struct clk_init_data init;
+> +	const char *clk_name = np->name;
+> +	const char *parent_names[3];
+> +	int num_parents;
+> +
+> +	if (id == ISC_ISPCK && !isc->ispck_required)
+> +		return 0;
+> +
+> +	num_parents = of_clk_get_parent_count(np);
+> +	if (num_parents < 1 || num_parents > 3)
+> +		return -EINVAL;
+> +
+> +	if (num_parents > 2 && id == ISC_ISPCK)
+> +		num_parents = 2;
+> +
+> +	of_clk_parent_fill(np, parent_names, num_parents);
+> +
+> +	if (id == ISC_MCK)
+> +		of_property_read_string(np, "clock-output-names", &clk_name);
+> +	else
+> +		clk_name = "isc-ispck";
+> +
+> +	init.parent_names	= parent_names;
+> +	init.num_parents	= num_parents;
+> +	init.name		= clk_name;
+> +	init.ops		= &isc_clk_ops;
+> +	init.flags		= CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE;
+> +
+> +	isc_clk = &isc->isc_clks[id];
+> +	isc_clk->hw.init	= &init;
+> +	isc_clk->regmap		= regmap;
+> +	isc_clk->id		= id;
+> +	isc_clk->dev		= isc->dev;
+> +	spin_lock_init(&isc_clk->lock);
+> +
+> +	isc_clk->clk = clk_register(isc->dev, &isc_clk->hw);
+> +	if (IS_ERR(isc_clk->clk)) {
+> +		dev_err(isc->dev, "%s: clock register fail\n", clk_name);
+> +		return PTR_ERR(isc_clk->clk);
+> +	} else if (id == ISC_MCK) {
+> +		of_clk_add_provider(np, of_clk_src_simple_get, isc_clk->clk);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int isc_clk_init(struct isc_device *isc)
+> +{
+> +	unsigned int i;
+> +	int ret;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(isc->isc_clks); i++)
+> +		isc->isc_clks[i].clk = ERR_PTR(-EINVAL);
+> +
+> +	for (i = 0; i < ARRAY_SIZE(isc->isc_clks); i++) {
+> +		ret = isc_clk_register(isc, i);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(isc_clk_init);
+> +
+> +void isc_clk_cleanup(struct isc_device *isc)
+> +{
+> +	unsigned int i;
+> +
+> +	of_clk_del_provider(isc->dev->of_node);
+> +
+> +	for (i = 0; i < ARRAY_SIZE(isc->isc_clks); i++) {
+> +		struct isc_clk *isc_clk = &isc->isc_clks[i];
+> +
+> +		if (!IS_ERR(isc_clk->clk))
+> +			clk_unregister(isc_clk->clk);
+> +	}
+> +}
+> +EXPORT_SYMBOL_GPL(isc_clk_cleanup);
+> --
+> 2.25.1
+>
