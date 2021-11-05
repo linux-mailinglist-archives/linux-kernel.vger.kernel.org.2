@@ -2,125 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B80114465B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C254465B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233521AbhKEPcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 11:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233514AbhKEPcR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 11:32:17 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704FEC061205
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 08:29:37 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id i79so10807082ioa.13
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 08:29:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/UkXJV0OUTVeSB3ZWIvuOW6MEyDXb/nfPaZn/YUVDEM=;
-        b=I+rltgFifRvQNsNZIVeUD++Ek0yxbA4Jl5XK/KgCoQHB3uXJ8aLeXftGBqi9z/1Kuq
-         MrjVCYOIOTp1QVbJQjt9kamQzE5JQsSUgT9ZljMvlaMnRakZuA3oNlpOPB30kGsPPok2
-         fCU4eyoVqWvjDFsRlugQxg0PBjBNFQMCQoCjU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/UkXJV0OUTVeSB3ZWIvuOW6MEyDXb/nfPaZn/YUVDEM=;
-        b=x5zWyPumX25EKmyRCEnHpHaFW6i1RW4V+dRawE79U7H0JY904cJsFQZ0My0GGv1Uc2
-         jeJu+77IoSoqF1RtsWrOrqaSHBSfohslHC/dY39OneaHfQR/iaNzhMhJM6ssjQrXrsiZ
-         FGUfmNS6h790K7SD4kctYG60DxAebgFjWYp7EHIPeeVWub4zxgCVV9RUNIto6KWyvOQM
-         YtXmSrEvWOWzwdBBfLIaq3HW0wXwpwLgp9a1heOtBZUPEDNwnw8W1/I5K93QfUa+sGcb
-         mpBGMBvh51K+PAvTpzfR7FcguHqwZxZgryxkBGm0sx7by7g4bEGYKcLTucYKyegy2g0I
-         KQxg==
-X-Gm-Message-State: AOAM531z5Gd1SlxKkneGdRf1oY2Xys/dEm30n0OZGq277YApwgXXwGtx
-        FWB+n4bVT68P0miA1e/ENfeucw+sCV81Kw==
-X-Google-Smtp-Source: ABdhPJxlO5DbuZti4I2E+7hn4S8/2wPL4PRft/2FBXfYhJSG6Ihlzd5nhiFk7VeMiS7stzVdWIywOw==
-X-Received: by 2002:a5d:8487:: with SMTP id t7mr40986339iom.100.1636126176722;
-        Fri, 05 Nov 2021 08:29:36 -0700 (PDT)
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com. [209.85.166.51])
-        by smtp.gmail.com with ESMTPSA id s5sm4383851ilq.59.2021.11.05.08.29.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 08:29:35 -0700 (PDT)
-Received: by mail-io1-f51.google.com with SMTP id y73so11146563iof.4
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 08:29:35 -0700 (PDT)
-X-Received: by 2002:a05:6638:c49:: with SMTP id g9mr9752326jal.54.1636126175216;
- Fri, 05 Nov 2021 08:29:35 -0700 (PDT)
+        id S233510AbhKEPcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 11:32:13 -0400
+Received: from mga14.intel.com ([192.55.52.115]:33195 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233356AbhKEPcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 11:32:11 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10158"; a="232171794"
+X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
+   d="scan'208";a="232171794"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 08:29:31 -0700
+X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
+   d="scan'208";a="668276282"
+Received: from lucas-s2600cw.jf.intel.com (HELO lucas-S2600CW) ([10.165.21.202])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 08:29:31 -0700
+Date:   Fri, 5 Nov 2021 08:29:36 -0700
+From:   Lucas De Marchi <lucas.demarchi@intel.com>
+To:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        x86@kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: Re: [PATCH 2/2] x86/mm: nuke PAGE_KERNEL_IO
+Message-ID: <20211105152936.vp4xikbg23uob7n3@lucas-S2600CW>
+References: <20211021181511.1533377-1-lucas.demarchi@intel.com>
+ <20211021181511.1533377-3-lucas.demarchi@intel.com>
 MIME-Version: 1.0
-References: <20211104222840.781314-1-robdclark@gmail.com> <be2222e2-8fec-84f9-bbcf-bf639a1a63bd@kali.org>
-In-Reply-To: <be2222e2-8fec-84f9-bbcf-bf639a1a63bd@kali.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 5 Nov 2021 08:29:23 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WnTsdU0TzbbFhRzoYtiX6-HG+g=OHiu1LP+tODPGXZKQ@mail.gmail.com>
-Message-ID: <CAD=FV=WnTsdU0TzbbFhRzoYtiX6-HG+g=OHiu1LP+tODPGXZKQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/devfreq: Fix OPP refcnt leak
-To:     Steev Klimaszewski <steev@kali.org>
-Cc:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20211021181511.1533377-3-lucas.demarchi@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi, gentle ping on this. Is it something that could go through the tip
+tree?
 
-On Thu, Nov 4, 2021 at 9:32 PM Steev Klimaszewski <steev@kali.org> wrote:
+thanks
+Lucas De Marchi
+
+On Thu, Oct 21, 2021 at 11:15:11AM -0700, Lucas De Marchi wrote:
+>PAGE_KERNEL_IO is only defined for x86 and nowadays is the same as
+>PAGE_KERNEL. It was different for some time, OR'ing a `_PAGE_IOMAP` flag
+>in commit be43d72835ba ("x86: add _PAGE_IOMAP pte flag for IO
+>mappings").  This got removed in commit f955371ca9d3 ("x86: remove the
+>Xen-specific _PAGE_IOMAP PTE flag"), so today they are just the same.
+>
+>With the last users outside arch/x86 being remove we can now remove
+>PAGE_KERNEL_IO.
+>
+>Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
+>---
+> arch/x86/include/asm/fixmap.h        | 2 +-
+> arch/x86/include/asm/pgtable_types.h | 7 -------
+> arch/x86/mm/ioremap.c                | 2 +-
+> arch/x86/xen/setup.c                 | 2 +-
+> include/asm-generic/fixmap.h         | 2 +-
+> 5 files changed, 4 insertions(+), 11 deletions(-)
+>
+>diff --git a/arch/x86/include/asm/fixmap.h b/arch/x86/include/asm/fixmap.h
+>index d0dcefb5cc59..5e186a69db10 100644
+>--- a/arch/x86/include/asm/fixmap.h
+>+++ b/arch/x86/include/asm/fixmap.h
+>@@ -173,7 +173,7 @@ static inline void __set_fixmap(enum fixed_addresses idx,
+>  * supported for MMIO addresses, so make sure that the memory encryption
+>  * mask is not part of the page attributes.
+>  */
+>-#define FIXMAP_PAGE_NOCACHE PAGE_KERNEL_IO_NOCACHE
+>+#define FIXMAP_PAGE_NOCACHE PAGE_KERNEL_NOCACHE
+>
+> /*
+>  * Early memremap routines used for in-place encryption. The mappings created
+>diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+>index 40497a9020c6..a87224767ff3 100644
+>--- a/arch/x86/include/asm/pgtable_types.h
+>+++ b/arch/x86/include/asm/pgtable_types.h
+>@@ -199,10 +199,6 @@ enum page_cache_mode {
+> #define __PAGE_KERNEL_WP	 (__PP|__RW|   0|___A|__NX|___D|   0|___G| __WP)
 >
 >
-> On 11/4/21 5:28 PM, Rob Clark wrote:
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > Reported-by: Douglas Anderson <dianders@chromium.org>
-> > Fixes: 9bc95570175a ("drm/msm: Devfreq tuning")
-> > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > ---
-> >   drivers/gpu/drm/msm/msm_gpu_devfreq.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/msm/msm_gpu_devfreq.c b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-> > index d32b729b4616..9bf8600b6eea 100644
-> > --- a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-> > +++ b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-> > @@ -20,8 +20,6 @@ static int msm_devfreq_target(struct device *dev, unsigned long *freq,
-> >       struct msm_gpu *gpu = dev_to_gpu(dev);
-> >       struct dev_pm_opp *opp;
-> >
-> > -     opp = devfreq_recommended_opp(dev, freq, flags);
-> > -
-> >       /*
-> >        * If the GPU is idle, devfreq is not aware, so just ignore
-> >        * it's requests
-> > @@ -31,6 +29,8 @@ static int msm_devfreq_target(struct device *dev, unsigned long *freq,
-> >               return 0;
-> >       }
-> >
-> > +     opp = devfreq_recommended_opp(dev, freq, flags);
-> > +
-> >       if (IS_ERR(opp))
-> >               return PTR_ERR(opp);
-> >
+>-#define __PAGE_KERNEL_IO		__PAGE_KERNEL
+>-#define __PAGE_KERNEL_IO_NOCACHE	__PAGE_KERNEL_NOCACHE
+>-
+>-
+> #ifndef __ASSEMBLY__
 >
-> Testing this here on the Lenovo Yoga C630, and I'm starting to see in my
-> dmesg output
+> #define __PAGE_KERNEL_ENC	(__PAGE_KERNEL    | _ENC)
+>@@ -223,9 +219,6 @@ enum page_cache_mode {
+> #define PAGE_KERNEL_LARGE_EXEC	__pgprot_mask(__PAGE_KERNEL_LARGE_EXEC | _ENC)
+> #define PAGE_KERNEL_VVAR	__pgprot_mask(__PAGE_KERNEL_VVAR       | _ENC)
 >
-> [   36.337061] devfreq 5000000.gpu: Couldn't update frequency transition
-> information.
-> [   36.388122] devfreq 5000000.gpu: Couldn't update frequency transition
-> information.
-
-Ah, I think this makes sense. We're now storing a frequency which
-might not match an actual "opp" and I suppose that we must return it
-in some cases.
-
-I guess a simple fix is to still call devfreq_recommended_opp() in the
-idle case but just call dev_pm_opp_put() to fix the leak.
-
--Doug
+>-#define PAGE_KERNEL_IO		__pgprot_mask(__PAGE_KERNEL_IO)
+>-#define PAGE_KERNEL_IO_NOCACHE	__pgprot_mask(__PAGE_KERNEL_IO_NOCACHE)
+>-
+> #endif	/* __ASSEMBLY__ */
+>
+> /*         xwr */
+>diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
+>index 026031b3b782..3102dda4b152 100644
+>--- a/arch/x86/mm/ioremap.c
+>+++ b/arch/x86/mm/ioremap.c
+>@@ -243,7 +243,7 @@ __ioremap_caller(resource_size_t phys_addr, unsigned long size,
+> 	 * make sure the memory encryption attribute is enabled in the
+> 	 * resulting mapping.
+> 	 */
+>-	prot = PAGE_KERNEL_IO;
+>+	prot = PAGE_KERNEL;
+> 	if ((io_desc.flags & IORES_MAP_ENCRYPTED) || encrypted)
+> 		prot = pgprot_encrypted(prot);
+>
+>diff --git a/arch/x86/xen/setup.c b/arch/x86/xen/setup.c
+>index 8bfc10330107..5dc0771a50f3 100644
+>--- a/arch/x86/xen/setup.c
+>+++ b/arch/x86/xen/setup.c
+>@@ -435,7 +435,7 @@ static unsigned long __init xen_set_identity_and_remap_chunk(
+> 	for (pfn = start_pfn; pfn <= max_pfn_mapped && pfn < end_pfn; pfn++)
+> 		(void)HYPERVISOR_update_va_mapping(
+> 			(unsigned long)__va(pfn << PAGE_SHIFT),
+>-			mfn_pte(pfn, PAGE_KERNEL_IO), 0);
+>+			mfn_pte(pfn, PAGE_KERNEL), 0);
+>
+> 	return remap_pfn;
+> }
+>diff --git a/include/asm-generic/fixmap.h b/include/asm-generic/fixmap.h
+>index 8cc7b09c1bc7..f1b0c6f3d0be 100644
+>--- a/include/asm-generic/fixmap.h
+>+++ b/include/asm-generic/fixmap.h
+>@@ -54,7 +54,7 @@ static inline unsigned long virt_to_fix(const unsigned long vaddr)
+> #define FIXMAP_PAGE_NOCACHE PAGE_KERNEL_NOCACHE
+> #endif
+> #ifndef FIXMAP_PAGE_IO
+>-#define FIXMAP_PAGE_IO PAGE_KERNEL_IO
+>+#define FIXMAP_PAGE_IO PAGE_KERNEL
+> #endif
+> #ifndef FIXMAP_PAGE_CLEAR
+> #define FIXMAP_PAGE_CLEAR __pgprot(0)
+>-- 
+>2.33.1
+>
+>
