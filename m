@@ -2,69 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 028C0446150
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:22:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A962C446120
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232541AbhKEJYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 05:24:03 -0400
-Received: from mail-m974.mail.163.com ([123.126.97.4]:54224 "EHLO
-        mail-m974.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbhKEJYC (ORCPT
+        id S232859AbhKEJJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 05:09:04 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:16169 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232836AbhKEJIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 05:24:02 -0400
-X-Greylist: delayed 923 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Nov 2021 05:24:01 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=7z1K0
-        sPc2NW3ADD5fllk4cazdNDAgk9u0Mox0gqXvXI=; b=I6PEZtmUNKSIVb47WP2ZC
-        abrlVnNCI8qFVXRKHm6Ch/GEYcmmaJlHe16WGtFaw6th5bzXGUAH0vuDpShyDRVc
-        YHYis5eov6Uu+n1nmVhwYY5+E/mSf071qtmCbAsYlZ06FOalmP0FelURtb4IS9TM
-        7htvMGChvZR7pM1WQ+osJ0=
-Received: from fedora.lenovo.com (unknown [103.30.235.251])
-        by smtp4 (Coremail) with SMTP id HNxpCgCHLFXe84RhIsWPKQ--.3737S2;
-        Fri, 05 Nov 2021 17:05:37 +0800 (CST)
-From:   Jimmy Wang <jimmy221b@163.com>
-Cc:     jimmy221b@163.com, Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] platform/x86: thinkpad_acpi: Add support for dual fan control
-Date:   Fri,  5 Nov 2021 17:05:28 +0800
-Message-Id: <20211105090528.39677-1-jimmy221b@163.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 5 Nov 2021 05:08:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636103152;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=e7xfcz9krTQc9FROwiWEKD4HCySxX7lxf7ekiUwaVrw=;
+    b=Jkvl5x8i7dqbmqyMRflT2LmzPr+cIJR4zPc6R1lyKj9RQdovrPIdnVxTR7bdAMQ14b
+    I+EZO/FWuNLQQI0KvOG69CUPfS/HtCzY8YMI1ZsCEiyHIfaVMDdJtBGenAUs+iM/r0++
+    6yPiWiCvnEr0wHMIe3+LRSmi53yN2+NxFA/R+5ZrpdUW74Fe9v++5RVx+UO0UeSBssjr
+    4UhFWEK1nhTVAVk8a8ahGP0Jfz21yThvdMZWcYnL21tFKWSJbD83tZ4JY6CUgkGmZ5ux
+    v+Riki0ucnIEkatTHFE854gJU7mefdsuS4vzqQrY/VF/K2NMorCJ5TnW1SIIk9ktJa1K
+    fpHw==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0lByOdfL1X0"
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
+    with ESMTPSA id 902c63xA595q8uI
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 5 Nov 2021 10:05:52 +0100 (CET)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
+        <jerome.pouiller@silabs.com>, Avri Altman <avri.altman@wdc.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>, Bean Huo <beanhuo@micron.com>
+Cc:     notasas@gmail.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com,
+        "H. Nikolaus Schaller" <hns@goldelico.com>
+Subject: [RFC v4 0/6] mmc: core: extend mmc_fixup_device and transplant ti,wl1251 quirks from to be retired omap_hsmmc
+Date:   Fri,  5 Nov 2021 10:05:45 +0100
+Message-Id: <cover.1636103151.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: HNxpCgCHLFXe84RhIsWPKQ--.3737S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKFykZF15KFyUXw4UCrW8tFb_yoWDAFc_C3
-        Z8WFs2yF95K3909r1UKrnavry2qr9rXw1kGw47Xa43Gr95XF4xZw1jkFyfJFy3ZFnI9a4D
-        Zr15XF1jkry5tjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUi0etUUUUU==
-X-Originating-IP: [103.30.235.251]
-X-CM-SenderInfo: 5mlpz5assruqqrwthudrp/1tbiDgZCAlXl15CCBgAAs7
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-   This adds dual fan control for P1 / X1 Extreme Gen4
+RFC V4 2021-11-05 10:05:51:
+* remove const from char *const * (Ulf Hansson <ulf.hansson@linaro.org>)
+* use for_each_child_of_node() to scan compatible children (Ulf Hansson <ulf.hansson@linaro.org>)
+(see: https://lore.kernel.org/lkml/CAPDyKFpr0kpRXoUACNNSwe8pL1S9wJPjnX+GFGS1PNezKCDYzQ@mail.gmail.com/)
 
-Signed-off-by: Jimmy Wang <jimmy221b@163.com>
----
- drivers/platform/x86/thinkpad_acpi.c | 1 +
- 1 file changed, 1 insertion(+)
+RFC V3 2021-11-03 14:00:13:
+* patches have been split into smaller ones a little further
+* propose a new macro for setup of device tree compatible quirks
+* directly include patches by jerome.pouiller@silabs.com
+  in this series
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index 9c632df734bb..eb201d001075 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -8766,6 +8766,7 @@ static const struct tpacpi_quirk fan_quirk_table[] __initconst = {
- 	TPACPI_Q_LNV3('N', '2', 'E', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (1st gen) */
- 	TPACPI_Q_LNV3('N', '2', 'O', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (2nd gen) */
- 	TPACPI_Q_LNV3('N', '2', 'V', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (3nd gen) */
-+	TPACPI_Q_LNV3('N', '4', '0', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (4nd gen) */
- 	TPACPI_Q_LNV3('N', '3', '0', TPACPI_FAN_2CTL),	/* P15 (1st gen) / P15v (1st gen) */
- 	TPACPI_Q_LNV3('N', '3', '2', TPACPI_FAN_2CTL),	/* X1 Carbon (9th gen) */
- };
+RFC V2 2021-11-01 10:24:26:
+* reworked to not misuse mmc_select_card() but add a call to
+  mmc_fixup_device() right after where host->ops->init_card
+  was called before to apply the wl1251 specific quirks.
+  Device tree matching is done by a new table passed to mmc_fixup_device().
+  suggested by: ulf.hansson@linaro.org
+  based on patches by: jerome.pouiller@silabs.com
+
+RFC V1 2021-10-06 13:24:13:
+
+
+H. Nikolaus Schaller (4):
+  mmc: core: provide macro and table to match the device tree to apply
+    quirks
+  mmc: core: add new calls to mmc_fixup_device(sdio_card_init_methods)
+  mmc: core: transplant ti,wl1251 quirks from to be retired omap_hsmmc
+  mmc: host: omap_hsmmc: revert special init for wl1251
+
+Jérôme Pouiller (2):
+  mmc: core: rewrite mmc_fixup_device()
+  mmc: core: allow to match the device tree to apply quirks
+
+ drivers/mmc/core/card.h       | 37 +++++++++++++++++++
+ drivers/mmc/core/mmc.c        |  1 +
+ drivers/mmc/core/quirks.h     | 69 ++++++++++++++++++++++++++---------
+ drivers/mmc/core/sd.c         |  2 +
+ drivers/mmc/core/sdio.c       |  1 +
+ drivers/mmc/host/omap_hsmmc.c | 36 ------------------
+ 6 files changed, 93 insertions(+), 53 deletions(-)
+
 -- 
-2.31.1
+2.33.0
 
