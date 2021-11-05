@@ -2,214 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18C54466FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36EA0446701
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233504AbhKEQcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 12:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54768 "EHLO
+        id S233573AbhKEQcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 12:32:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233024AbhKEQcM (ORCPT
+        with ESMTP id S233540AbhKEQcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 12:32:12 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE000C061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 09:29:32 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id i5so14627054wrb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 09:29:32 -0700 (PDT)
+        Fri, 5 Nov 2021 12:32:24 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E7CC061205
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 09:29:44 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id p16so19832816lfa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 09:29:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=grsecurity.net; s=grsec;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TT8Hc1gKR31BJRdmEZdAE+1rbO6Bg9GLzw7WQ1cjNys=;
-        b=at/ZvijadB2S2IMcR7OKAB+Kc3nuxTxpECc0/9WquPfbGemZZvmFYrgEx6CL+aKpFN
-         OqlHEYiVsSCJpoa9Gt5ekKTzCZrgWrIbj3EVT6uaabrP6/1fhB7Tq1s5FKbUYDJdRVdZ
-         /ITceiG145GnL9uosj4C/26e2ryNJzKsK5aX/OQe1Npxh7FiIzHc7S2UnNoCMnAYbkoq
-         Q459462loK/+A2Xp6Nn+lFZ5Mf2QTpm7CxDdjv4iK9KmygcNpbpS1yvdMnys7DmjoMWc
-         qOQ3h6oAaYULhu6YuZcs8mTNVdSp8Pwydk3NIA1j4gi4Px10cMZviCyMvEUVrkzsvzxH
-         hYFg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MN4Fk7CkJVCmNEab/XLa1e5EYDL4RIMnp+86qrVvnUE=;
+        b=HEStputohMMdoPj00/j0ebywSZpcViafg3PCxGzvOoTIVVZ5Npq4m0yMrLBeVhSu2c
+         QVACQWtNl/WwMeMDt4sn2uRwTJlFj8FskFc7ddCDxXGlfFnm6gfwx9vaV6AlCDWzL6t5
+         rbs1q2Qsrizw0x6FfHkccp3gJxfg7RuV/AaCnZjs81z0ONCOIs7LSF18mbcDPFq1vvss
+         Txa5KEjCmnU4RM198XwuWE7U1FI8VqC/lhE+2K+KFL+vDwgGAcg8dCGuGzDGurm4x3A/
+         IKMD0HeWSK7HpNE0tN8p+hjASN7k+MoQibXXOeErFy1UhUkdEBBDOJg6p/sf3AutMQ8D
+         WjKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TT8Hc1gKR31BJRdmEZdAE+1rbO6Bg9GLzw7WQ1cjNys=;
-        b=w+p4CCLq2PjGAVO2mOukaCrtATA/GzgtpaPVHRlAnOhsij8VacNsRKo7FdZqUs3ldP
-         u+2Z+WT/+x1EhGNk15Hev7FRR4XCM7h8lS8u6svhcicIxIkmbxEks9+7X1uZmrZK4WI7
-         cJ6thRBAwbr9qW+uD3tLd1MmPlNZ0oVvhL7SaA++csZDdNt6NW2BtQFYieHnGUEI3LAr
-         MvrJMYP7FsYV+vVle7FgfYda19rP8HdivnhjvGwp3zwYyEQZwE2ZaTRQ3VIGJDElUVr1
-         mQUKns7H8v8j7gc4UPBs/j5If2X1/tSEqYXRxrGyNdjSe2wHV0C0Y5MKCquwhOVPy4OI
-         WN1A==
-X-Gm-Message-State: AOAM533Ypqlw9be9mnqMp2xeGu2D5YSgras4nxDHYQKpt9pLluKMp9if
-        wlSfVzaIkIlqDpYFUPJk6bAyLQ==
-X-Google-Smtp-Source: ABdhPJysgkvTbhSl0WMbCKbV3vxgrZ4RnMdaaFqcdCrZfsPs5j84LJo2NmkJb8KMU7/QMxTLG1C7AQ==
-X-Received: by 2002:a5d:6091:: with SMTP id w17mr43501708wrt.65.1636129771464;
-        Fri, 05 Nov 2021 09:29:31 -0700 (PDT)
-Received: from bell.fritz.box (p200300f6af0453007c00c62bb3aa158b.dip0.t-ipconnect.de. [2003:f6:af04:5300:7c00:c62b:b3aa:158b])
-        by smtp.gmail.com with ESMTPSA id c15sm8110316wrs.19.2021.11.05.09.29.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MN4Fk7CkJVCmNEab/XLa1e5EYDL4RIMnp+86qrVvnUE=;
+        b=QSMQPU9kTzCOdeQ3xrUrSo7QL83LYd+XaYoAXinN4mLulrW0Edws3UUeE0jJ1jnoyQ
+         dsJHISwpdnNT12ZxD3ptBYSJz8vkErILMk7lhqWz5SqpGg6LQXA2zDUcZHiRo6yZTt5L
+         W7uxp/7VdiBxzBexSrAlBjScQvZwGfArXAMad8rcDnVB8cB8K89vQiBfHuXOmSqVo1Aa
+         KOO6SWD8EiICgD4BIvznsV1Zqn1msumQLkOQzPt8aM84YfP2DDsnJdMWBuaoObpXDZ1i
+         083AkJQKFzDVPm85oumJpA4siVncdzLx6T1Hoh4wRtJGsTtStOB0/bu+hLvDUv7RQjlj
+         W0gg==
+X-Gm-Message-State: AOAM531ABJtdcyfsWRSvDf8RFvCN51ZIWHkW0ECPL+3paQZs8YhPvoef
+        D3FIt0XcJVwBTpc9TGEaVaWgtQ==
+X-Google-Smtp-Source: ABdhPJwgor9aGLH7GIOLGnUGmxF24CLFUbUBxn/Q15DzlweL/ck79/uYTaIZ8yRIUFnZPgy05GHUqw==
+X-Received: by 2002:ac2:4e68:: with SMTP id y8mr56775071lfs.348.1636129782878;
+        Fri, 05 Nov 2021 09:29:42 -0700 (PDT)
+Received: from localhost (c-9b28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.155])
+        by smtp.gmail.com with ESMTPSA id bt20sm877495lfb.47.2021.11.05.09.29.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 09:29:31 -0700 (PDT)
-From:   Mathias Krause <minipli@grsecurity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Benjamin Segall <bsegall@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        linux-kernel@vger.kernel.org, Odin Ugedal <odin@uged.al>,
-        Kevin Tanguy <kevin.tanguy@corp.ovh.com>,
-        Brad Spengler <spender@grsecurity.net>,
-        Mathias Krause <minipli@grsecurity.net>
-Subject: Re: [PATCH] sched/fair: Prevent dead task groups from regaining cfs_rq's
-Date:   Fri,  5 Nov 2021 17:29:14 +0100
-Message-Id: <20211105162914.215420-1-minipli@grsecurity.net>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <8f4ed996-e6e5-75f4-b5fa-dffb7b7da05b@grsecurity.net>
-References: <b98e3434-67cd-34b7-9e81-148ea31a851c@grsecurity.net> <20211103190613.3595047-1-minipli@grsecurity.net> <xm26ilx86gmp.fsf@google.com> <CAKfTPtBm4vHr=svju=Qg6eZmcv8YDghtM2r_pOahZ2gC3tzTxg@mail.gmail.com> <a6a3c6c9-d5ea-59b6-8871-0f72bff38833@grsecurity.net> <CAKfTPtBxoKBRWs4Z3Pxsk8==Ka9SG7NS3LzfOV33-2UXfhSM=g@mail.gmail.com> <cd3778d3-6980-a804-47e3-82b09dc960a4@grsecurity.net> <CAKfTPtDthksitm02sLowDMKbWZ29efth-YcPi0zVSFqbaZfiMA@mail.gmail.com> <8f4ed996-e6e5-75f4-b5fa-dffb7b7da05b@grsecurity.net>
+        Fri, 05 Nov 2021 09:29:42 -0700 (PDT)
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     shuah@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Anders Roxell <anders.roxell@linaro.org>
+Subject: [PATCH] selftests: mqueue|vDSO: fix convert pointer warnings
+Date:   Fri,  5 Nov 2021 17:29:40 +0100
+Message-Id: <20211105162940.3319021-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Looks like it needs to be the kfree_rcu() one in this case. I'll prepare
-> a patch.
+When building selftests, mqueue and vDSO the following shows up:
 
-Testing the below patch right now. Looking good so far. Will prepare a
-proper patch later, if we all can agree that this covers all cases.
+warning: passing 'int *' to parameter of type 'unsigned int *' converts between pointers to integer types with different sign [-Wpointer-sign]
 
-But the basic idea is to defer the kfree()'s to after the next RCU GP,
-which also means we need to free the tg object itself later. Slightly
-ugly. :/
+warning: passing 'const char *' to parameter of type 'const unsigned char *' converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
 
-Thanks,
-Mathias
+The code looked OK so what normally are done are, adding the compiler
+directive to hide the warnings '-Wno-pointer-sign'.
 
---8<--
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ tools/testing/selftests/mqueue/Makefile | 2 +-
+ tools/testing/selftests/vDSO/Makefile   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 978460f891a1..8b4c849bc892 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9439,12 +9439,19 @@ static inline void alloc_uclamp_sched_group(struct task_group *tg,
- #endif
- }
+diff --git a/tools/testing/selftests/mqueue/Makefile b/tools/testing/selftests/mqueue/Makefile
+index 8a58055fc1f5..814907b6344f 100644
+--- a/tools/testing/selftests/mqueue/Makefile
++++ b/tools/testing/selftests/mqueue/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+-CFLAGS += -O2
++CFLAGS += -O2 -Wno-pointer-sign
+ LDLIBS = -lrt -lpthread -lpopt
  
-+void tg_free(struct task_group *tg)
-+{
-+	kmem_cache_free(task_group_cache, tg);
-+}
-+
- static void sched_free_group(struct task_group *tg)
- {
--	free_fair_sched_group(tg);
-+	bool delayed_free;
-+	delayed_free = free_fair_sched_group(tg);
- 	free_rt_sched_group(tg);
- 	autogroup_free(tg);
--	kmem_cache_free(task_group_cache, tg);
-+	if (!delayed_free)
-+		tg_free(tg);
- }
+ TEST_GEN_PROGS := mq_open_tests mq_perf_tests
+diff --git a/tools/testing/selftests/vDSO/Makefile b/tools/testing/selftests/vDSO/Makefile
+index d53a4d8008f9..2a60233ba2fb 100644
+--- a/tools/testing/selftests/vDSO/Makefile
++++ b/tools/testing/selftests/vDSO/Makefile
+@@ -12,7 +12,7 @@ TEST_GEN_PROGS += $(OUTPUT)/vdso_standalone_test_x86
+ endif
+ TEST_GEN_PROGS += $(OUTPUT)/vdso_test_correctness
  
- /* allocate runqueue etc for a new task group */
-@@ -9506,9 +9513,19 @@ void sched_offline_group(struct task_group *tg)
- {
- 	unsigned long flags;
- 
--	/* End participation in shares distribution: */
--	unregister_fair_sched_group(tg);
--
-+	/*
-+	 * Unlink first, to avoid walk_tg_tree_from() from finding us (via
-+	 * sched_cfs_period_timer()).
-+	 *
-+	 * For this to be effective, we have to wait for all pending users of
-+	 * this task group to leave their RCU critical section to ensure no new
-+	 * user will see our dying task group any more. Specifically ensure
-+	 * that tg_unthrottle_up() won't add decayed cfs_rq's to it.
-+	 *
-+	 * We therefore defer calling unregister_fair_sched_group() to
-+	 * sched_free_group() which is guarantied to get called only after the
-+	 * current RCU grace period has expired.
-+	 */
- 	spin_lock_irqsave(&task_group_lock, flags);
- 	list_del_rcu(&tg->list);
- 	list_del_rcu(&tg->siblings);
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 567c571d624f..54c1f7b571e4 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -11287,12 +11287,11 @@ static void task_change_group_fair(struct task_struct *p, int type)
- 	}
- }
- 
--void free_fair_sched_group(struct task_group *tg)
-+static void free_tg(struct rcu_head *rcu)
- {
-+	struct task_group *tg = container_of(rcu, struct task_group, rcu);
- 	int i;
- 
--	destroy_cfs_bandwidth(tg_cfs_bandwidth(tg));
--
- 	for_each_possible_cpu(i) {
- 		if (tg->cfs_rq)
- 			kfree(tg->cfs_rq[i]);
-@@ -11302,6 +11301,19 @@ void free_fair_sched_group(struct task_group *tg)
- 
- 	kfree(tg->cfs_rq);
- 	kfree(tg->se);
-+	tg_free(tg);
-+}
-+
-+bool free_fair_sched_group(struct task_group *tg)
-+{
-+	destroy_cfs_bandwidth(tg_cfs_bandwidth(tg));
-+	unregister_fair_sched_group(tg);
-+	/*
-+	 * We have to wait for yet another RCU grace period to expire, as
-+	 * print_cfs_stats() might run concurrently.
-+	 */
-+	call_rcu(&tg->rcu, free_tg);
-+	return true;
- }
- 
- int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
-@@ -11459,7 +11471,10 @@ int sched_group_set_shares(struct task_group *tg, unsigned long shares)
- }
- #else /* CONFIG_FAIR_GROUP_SCHED */
- 
--void free_fair_sched_group(struct task_group *tg) { }
-+bool free_fair_sched_group(struct task_group *tg)
-+{
-+	return false;
-+}
- 
- int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
- {
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index eaca971a3ee2..b45ba45d8bdc 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -437,6 +437,8 @@ struct task_group {
- 
- };
- 
-+extern void tg_free(struct task_group *tg);
-+
- #ifdef CONFIG_FAIR_GROUP_SCHED
- #define ROOT_TASK_GROUP_LOAD	NICE_0_LOAD
- 
-@@ -470,7 +472,7 @@ static inline int walk_tg_tree(tg_visitor down, tg_visitor up, void *data)
- 
- extern int tg_nop(struct task_group *tg, void *data);
- 
--extern void free_fair_sched_group(struct task_group *tg);
-+extern bool free_fair_sched_group(struct task_group *tg);
- extern int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent);
- extern void online_fair_sched_group(struct task_group *tg);
- extern void unregister_fair_sched_group(struct task_group *tg);
+-CFLAGS := -std=gnu99
++CFLAGS := -std=gnu99 -Wno-pointer-sign
+ CFLAGS_vdso_standalone_test_x86 := -nostdlib -fno-asynchronous-unwind-tables -fno-stack-protector
+ LDFLAGS_vdso_test_correctness := -ldl
+ ifeq ($(CONFIG_X86_32),y)
+-- 
+2.33.0
+
