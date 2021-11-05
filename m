@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 788AB4463D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5DD4463DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:09:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbhKENK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 09:10:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36842 "EHLO
+        id S232608AbhKENLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 09:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhKENKz (ORCPT
+        with ESMTP id S229924AbhKENLq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 09:10:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ACB4C061714;
-        Fri,  5 Nov 2021 06:08:16 -0700 (PDT)
-Message-ID: <c7137797-cd62-7006-572b-003e8bff89e5@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1636117694;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UeC3aybvyY+u3viJ2ldalln4q7M15Xgy6n9ybUL7U0A=;
-        b=rVZmMZmc8IOKl400/JOAMPcgLx31JlDGn2WSNH0FkPqnh0lAfnfEVGofYsz4S1FVUvKvlx
-        Dw6AEXVktrHxNDdmxuHRccLqaina/ZijUhdZ17QeQoayuCUJVp2jT9QDLGSyxiwbxSnBVj
-        EcZ6nT4ws7bW/mFMlXrzl8k9PA6BTCXl3EBku+jQv2v5DHEZj/y2jWnTcZpa9mQpT78Z9O
-        27V3DDLB+3/+1k6eURbgPR8oli4b4R1jwbQbtWftM9QVQymqXIwxC9xfOieWBKKaENdyvQ
-        54UazyuRvylBUr8IxX4qP7bjMJY3SpPRxsatTV6V6rgdeHd1lsyV6t8HUyv6VA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1636117694;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UeC3aybvyY+u3viJ2ldalln4q7M15Xgy6n9ybUL7U0A=;
-        b=0KX+nvgzoB2m92FYAdiIHoCq4Bl2YiO0Xr4nZ3Mn0XyHAustqtZOdmbDNrjWqGqo/RaHO/
-        z+BQkvlRRsovEsCg==
-Date:   Fri, 5 Nov 2021 14:08:13 +0100
+        Fri, 5 Nov 2021 09:11:46 -0400
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ACCAC061714;
+        Fri,  5 Nov 2021 06:09:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=metanate.com; s=stronger; h=In-Reply-To:Content-Type:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description; bh=Bz8cdhZXbt7ZToRTPSoSmYiw1e6Kd14GIZdjGatloIw=; b=zM41P
+        +/C+xf1ELT2qg/fxigElKjTpMaNsB8GtPzYCWMNnz/nQ6LXTfvxS8IHTWXkDci7TPzv25M4uVsBAh
+        42aSZ/4QW6q2ALr/O2k4H2IxAsb1uzSXyjenG6LCKvmNZALKVvXVv8DnXfOUgBqB9pQSWtNTFEvWB
+        aSt+pw+lfZJSpJn4QAB+Cv/rdu5c+11yhGyDWhYNyL7+ND4EG2O1UGx05exjtCiFpeBa1ItiGKjro
+        mALuRN4lMd1unQMuP9dVL6/2WKXDxzushe9dtNngJ0amEhe/cnqn1nu8+uF800u7ZhcdG71vQ6YO5
+        xom+1Gzl9qRGxJ770Fpvcpbh7GxQg==;
+Received: from [81.174.171.191] (helo=donbot)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1miyxl-0003RI-Pv; Fri, 05 Nov 2021 13:08:57 +0000
+Date:   Fri, 5 Nov 2021 13:08:48 +0000
+From:   John Keeping <john@metanate.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Minas Harutyunyan <hminas@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] usb: dwc2: hcd_queue: Fix use of floating point literal
+Message-ID: <YYUs4PME9QizsPTt@donbot>
+References: <20211104215923.719785-1-nathan@kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 0/7] Add PTP support for BCM53128 switch
-Content-Language: de-DE
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-References: <20211104133204.19757-1-martin.kaistra@linutronix.de>
- <20211104102933.3c6f5b12@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Martin Kaistra <martin.kaistra@linutronix.de>
-In-Reply-To: <20211104102933.3c6f5b12@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211104215923.719785-1-nathan@kernel.org>
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 04.11.21 um 18:29 schrieb Jakub Kicinski:
-> On Thu,  4 Nov 2021 14:31:54 +0100 Martin Kaistra wrote:
->> this series adds PTP support to the b53 DSA driver for the BCM53128
->> switch using the BroadSync HD feature.
->>
->> As there seems to be only one filter (either by Ethertype or DA) for
->> timestamping incoming packets, only L2 is supported.
->>
->> To be able to use the timecounter infrastructure with a counter that
->> wraps around at a non-power of two point, patch 2 adds support for such
->> a custom point. Alternatively I could fix up the delta every time a
->> wrap-around occurs in the driver itself, but this way it can also be
->> useful for other hardware.
+On Thu, Nov 04, 2021 at 02:59:23PM -0700, Nathan Chancellor wrote:
+> A new commit in LLVM causes an error on the use of 'long double' when
+> '-mno-x87' is used, which the kernel does through an alias,
+> '-mno-80387' (see the LLVM commit below for more details around why it
+> does this).
 > 
-> Please make sure that the code builds as a module and that each patch
-> compiles cleanly with W=1 C=1 flags set - build the entire tree first
-> with W=1 C=1 cause there will be extra warning noise, then apply your
-> patches one by one and recompile, there should be no warnings since b53
-> itself builds cleanly.
+>  drivers/usb/dwc2/hcd_queue.c:1744:25: error: expression requires  'long double' type support, but target 'x86_64-unknown-linux-gnu' does not support it
+>                          delay = ktime_set(0, DWC2_RETRY_WAIT_DELAY);
+>                                              ^
+>  drivers/usb/dwc2/hcd_queue.c:62:34: note: expanded from macro 'DWC2_RETRY_WAIT_DELAY'
+>  #define DWC2_RETRY_WAIT_DELAY (1 * 1E6L)
+>                                  ^
+>  1 error generated.
 > 
+> This happens due to the use of a 'long double' literal. The 'E6' part of
+> '1E6L' causes the literal to be a 'double' then the 'L' suffix promotes
+> it to 'long double'.
+> 
+> There is no visible reason for a floating point value in this driver, as
+> the value is only used as a parameter to a function that expects an
+> integer type.  Use USEC_PER_SEC, which is the same integer value as
+> '1E6L', to avoid changing functionality but fix the error.
+> 
+> Fixes: 6ed30a7d8ec2 ("usb: dwc2: host: use hrtimer for NAK retries")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1497
+> Link: https://github.com/llvm/llvm-project/commit/a8083d42b1c346e21623a1d36d1f0cadd7801d83
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  drivers/usb/dwc2/hcd_queue.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/dwc2/hcd_queue.c b/drivers/usb/dwc2/hcd_queue.c
+> index 89a788326c56..bdf1927e1be1 100644
+> --- a/drivers/usb/dwc2/hcd_queue.c
+> +++ b/drivers/usb/dwc2/hcd_queue.c
+> @@ -59,7 +59,7 @@
+>  #define DWC2_UNRESERVE_DELAY (msecs_to_jiffies(5))
+>  
+>  /* If we get a NAK, wait this long before retrying */
+> -#define DWC2_RETRY_WAIT_DELAY (1 * 1E6L)
+> +#define DWC2_RETRY_WAIT_DELAY (1 * USEC_PER_SEC)
 
-Sorry, I will fix that.
+Using USEC_PER_SEC here seems quite weird.  This is used as:
 
-Thanks,
-Martin
+	delay = ktime_set(0, DWC2_RETRY_WAIT_DELAY);
+
+so the units are nanoseconds.
+
+Maybe NSEC_PER_MSEC would better indicate the intent here?
