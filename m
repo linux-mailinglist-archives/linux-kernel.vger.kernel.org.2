@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0DE445D88
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8035445D8B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:50:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbhKEBwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 21:52:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55834 "EHLO
+        id S231793AbhKEBwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 21:52:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbhKEBwg (ORCPT
+        with ESMTP id S231683AbhKEBwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 21:52:36 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A622C061205
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 18:49:57 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id o4-20020a1c7504000000b0032cab7473caso6027395wmc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 18:49:57 -0700 (PDT)
+        Thu, 4 Nov 2021 21:52:37 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C68C061205
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 18:49:58 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id d27so11388050wrb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 18:49:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=arista.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wLIKb1B3sD7gpDetpYDcnVtopk8WtKF14UnMTVr7z5c=;
-        b=GzH0LxLa/7Klq68tpwtV5tT03apuSeJSGuk9msZKS9/0cybWe3JxEm+BTMkS7NpDig
-         h3pZ/kuFMAvhBTuyf9j+GLWoXtQY7vXsSkwndEOge4tDjLoBFbYUnt3t8EdVvgFFVfAv
-         ww6P+4SQ5REZeslnLQHKaZxVPtJAaFCr5sCU2uU9QM1xuWbl8x4nyUOLbBGjo9S9FZOz
-         7aTjhrgLbxAm67XEkv+ZtgDZ9Ie0fvcXbAzYwDLCjDkhinerxBPrMKGD57mw8i/KGkfB
-         mnuOdWeJ0CyCP0BAEkAgRvkgnoda0Cf/6yTuxo8UpwnyrEKwyg5nfBpx8jGP/HqZp3hL
-         i3ZA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=rQaR7pp39Z0B6hBnX5gFqMWGoIyCNaiLBW5E59MvVPU=;
+        b=HpKBBKdcwfPb3BMYNPFePf+BzaC0GDFahXGNk6Xf3M1UObOb5421v7FFc07VdVU1WC
+         J1/772b1SSlAjfPajdR2V345GHLG07oHXjOpjrNG9cCKsPCpANeP0PkuM/zcErR0oM0g
+         Dc79B3CVgKl8USygfoQVaNZfvertwqBr2p7yFq1c+z4f7YKLMEsXEAnpn4GZVOBYhghM
+         3JHacOGOA2OQN5WjvHNOhualZnF72yExBCkAjzZFdMgUdeE7b6CGhHMvMMKCS8esz/bt
+         Ux9z52Qpt9kOdySlK08zeRih87wA8bgyYpdEptTrw5NOVHLDy9j0SY2lJn75SYlj7CMW
+         BrAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wLIKb1B3sD7gpDetpYDcnVtopk8WtKF14UnMTVr7z5c=;
-        b=JGK4M8/R0xmu3ds63uFnGovse0LbApU70uN9qC8n0Mb57Iz4DZylnF09/CXz/PQTz2
-         oRPLijTKdySYPmb/GQNbWJdfVj5q2Mp+EUB/w9GHrbnQ554lqbM2QOYp6999/ahRxtYw
-         lsDI6SQ4wa8GEBqajsqn9Cfi2oEl9/OhfahmvYV7B7LlUFKGqoYcA74maZJMPmgrmoCB
-         edbn/DS1I0osI26j5VBPaaobAn427SPrYwELI5E+Zlhju/3lzYw1ieVZT50l0t8TydwS
-         OaM6RDMvxXCMZ0Au/rFtL8j4xHHloToM8h4B3c93cHYBlG2DkVnSFJNHZQLPpgLkcsTj
-         bFQQ==
-X-Gm-Message-State: AOAM5329AKiKa+rZmJO5YMrF5NOdETNfLWSI0w+V4QW3z5zeEofqK34k
-        D8t29w7x4COaoE4uyf6S1AYPMu2NbEXRItYH
-X-Google-Smtp-Source: ABdhPJxYLDVSgfBtEoosBj4eSv7fLDEh4DCsNpycb2Y+v8EnzxBkVhZpAFRzhxKuUSHhTgkziFaevw==
-X-Received: by 2002:a1c:f31a:: with SMTP id q26mr27039636wmq.148.1636076995407;
-        Thu, 04 Nov 2021 18:49:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rQaR7pp39Z0B6hBnX5gFqMWGoIyCNaiLBW5E59MvVPU=;
+        b=eKj+WaLwh2h3DyFmx5gNWsJ1L2GW2hnyp/S+jNI4pJFNfp9M+d2T7evjmFYqi4Mgea
+         PF1GaMlYjtAagajklRhhexzlZbfGoeUz5mtOm3GPfLIaca45+xt++dGhnAVn3IBJWopS
+         esfDUlFNuTd2PjEUDNRPcv5aQ+dtl+aktQhR4As9ej5BxYOtfd3U1gvDWsTQlz8+D/XI
+         vjKK7Isb8krxDE9Gk0AmFNfxaU+2SAzfyW6ZYmZnrjqPBcweQ+fkijcIsV/ypr2YEPRW
+         uzAmGugcChxTch23AmyUeOQlYxWLFCkCslvQaOOofQSUpzsK4vzC6VU6agDwT8BbeKlJ
+         LJtA==
+X-Gm-Message-State: AOAM5317zNHZd1bb8Cxbf7xmLR2dGfdVfOnTc3d7W7QUQ24MDRInyYHu
+        lqjJ2KUaq4ualNseVS1Wnlcz35OBTitwTeZW
+X-Google-Smtp-Source: ABdhPJxood27uGNuAJy89dbUs4q1LVV544g8s4ei9ZS6BOn6gHSZyEs/iyJSjCj57SDkdUgfgcoRdg==
+X-Received: by 2002:adf:a389:: with SMTP id l9mr58721497wrb.121.1636076996488;
+        Thu, 04 Nov 2021 18:49:56 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id c6sm7202421wmq.46.2021.11.04.18.49.54
+        by smtp.gmail.com with ESMTPSA id c6sm7202421wmq.46.2021.11.04.18.49.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 18:49:55 -0700 (PDT)
+        Thu, 04 Nov 2021 18:49:56 -0700 (PDT)
 From:   Dmitry Safonov <dima@arista.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
@@ -62,56 +62,88 @@ Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
         Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
         Leonard Crestez <cdleonard@gmail.com>,
         linux-crypto@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH 0/5] tcp/md5: Generic tcp_sig_pool
-Date:   Fri,  5 Nov 2021 01:49:48 +0000
-Message-Id: <20211105014953.972946-1-dima@arista.com>
+Subject: [PATCH 1/5] tcp/md5: Don't BUG_ON() failed kmemdup()
+Date:   Fri,  5 Nov 2021 01:49:49 +0000
+Message-Id: <20211105014953.972946-2-dima@arista.com>
 X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211105014953.972946-1-dima@arista.com>
+References: <20211105014953.972946-1-dima@arista.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-3 small fixes for unlikely issues.
+static_branch_unlikely(&tcp_md5_needed) is enabled by
+tcp_alloc_md5sig_pool(), so as long as the code doesn't change
+tcp_md5sig_pool has been already populated if this code is being
+executed.
 
-The last patch adds tcp_sig_pool, which can be used to manage ahashes
-besides md5 algorythm. It reuses tcp_md5sig_pool code and in my view is
-a better alternative to [1] proposal, which uses shash for hasing
-segments and frags. This also doesn't need introduction of an enum with
-supported algorythms, which makes it possible to supply any
-crypto-supported hashing algorythm from socket option syscall (like
-struct xfrm_algo does in ipsec), reducing needless kernel code.
+In case tcptw->tw_md5_key allocaion failed - no reason to crash kernel:
+tcp_{v4,v6}_send_ack() will send unsigned segment, the connection won't be
+established, which is bad enough, but in OOM situation totally
+acceptable and better than kernel crash.
 
-[1]: https://lore.kernel.org/all/5245f35901015acc6a41d1da92deb96f3e593b7c.1635784253.git.cdleonard@gmail.com/T/#u
+Introduce tcp_md5sig_pool_ready() helper.
+tcp_alloc_md5sig_pool() usage is intentionally avoided here as it's
+fast-path here and it's check for sanity rather than point of actual
+pool allocation. That will allow to have generic slow-path allocator
+for tcp crypto pool.
 
-Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: David Ahern <dsahern@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Francesco Ruggeri <fruggeri@arista.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
-Cc: Leonard Crestez <cdleonard@gmail.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: netdev@vger.kernel.org
+Signed-off-by: Dmitry Safonov <dima@arista.com>
+---
+ include/net/tcp.h        | 1 +
+ net/ipv4/tcp.c           | 5 +++++
+ net/ipv4/tcp_minisocks.c | 5 +++--
+ 3 files changed, 9 insertions(+), 2 deletions(-)
 
-Dmitry Safonov (5):
-  tcp/md5: Don't BUG_ON() failed kmemdup()
-  tcp/md5: Don't leak ahash in OOM
-  tcp/md5: Alloc tcp_md5sig_pool only in setsockopt()
-  tcp/md5: Use tcp_md5sig_pool_* naming scheme
-  tcp/md5: Make more generic tcp_sig_pool
-
- include/net/tcp.h        |  23 +++--
- net/ipv4/tcp.c           | 193 ++++++++++++++++++++++++++++-----------
- net/ipv4/tcp_ipv4.c      |  45 ++++-----
- net/ipv4/tcp_minisocks.c |   5 +-
- net/ipv6/tcp_ipv6.c      |  43 +++++----
- 5 files changed, 207 insertions(+), 102 deletions(-)
-
-
-base-commit: 8a796a1dfca2780321755033a74bca2bbe651680
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index 4da22b41bde6..3e5423a10a74 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -1672,6 +1672,7 @@ tcp_md5_do_lookup(const struct sock *sk, int l3index,
+ #endif
+ 
+ bool tcp_alloc_md5sig_pool(void);
++bool tcp_md5sig_pool_ready(void);
+ 
+ struct tcp_md5sig_pool *tcp_get_md5sig_pool(void);
+ static inline void tcp_put_md5sig_pool(void)
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index b7796b4cf0a0..c0856a6af9f5 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -4314,6 +4314,11 @@ bool tcp_alloc_md5sig_pool(void)
+ }
+ EXPORT_SYMBOL(tcp_alloc_md5sig_pool);
+ 
++bool tcp_md5sig_pool_ready(void)
++{
++	return tcp_md5sig_pool_populated;
++}
++EXPORT_SYMBOL(tcp_md5sig_pool_ready);
+ 
+ /**
+  *	tcp_get_md5sig_pool - get md5sig_pool for this user
+diff --git a/net/ipv4/tcp_minisocks.c b/net/ipv4/tcp_minisocks.c
+index cf913a66df17..c99cdb529902 100644
+--- a/net/ipv4/tcp_minisocks.c
++++ b/net/ipv4/tcp_minisocks.c
+@@ -293,11 +293,12 @@ void tcp_time_wait(struct sock *sk, int state, int timeo)
+ 			tcptw->tw_md5_key = NULL;
+ 			if (static_branch_unlikely(&tcp_md5_needed)) {
+ 				struct tcp_md5sig_key *key;
++				bool err = WARN_ON(!tcp_md5sig_pool_ready());
+ 
+ 				key = tp->af_specific->md5_lookup(sk, sk);
+-				if (key) {
++				if (key && !err) {
+ 					tcptw->tw_md5_key = kmemdup(key, sizeof(*key), GFP_ATOMIC);
+-					BUG_ON(tcptw->tw_md5_key && !tcp_alloc_md5sig_pool());
++					WARN_ON_ONCE(tcptw->tw_md5_key == NULL);
+ 				}
+ 			}
+ 		} while (0);
 -- 
 2.33.1
 
