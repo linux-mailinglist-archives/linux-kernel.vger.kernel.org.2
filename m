@@ -2,82 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552494467D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 383604467A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233938AbhKER1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 13:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
+        id S232103AbhKERRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 13:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233384AbhKER06 (ORCPT
+        with ESMTP id S229569AbhKERRP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 13:26:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CE5C061220
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 10:24:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=FYoOtGnGA0t5RP3/pikL/1FJRmrjI44FBqpQjcrAIfU=; b=knxuSLDjQoqGWLvHWb0/LQfOrc
-        slB4hCf61iHg8dbFesvVai6XTfnW8SQeCgFRpgByXeFerxf56GADYUXMO7ot/zdWmHLhCx8uOkWg/
-        OpGLiKIjEuFQPcMgazyEIR7cFm1x4OXaoPYYCJ+37WkAgnXKcvGimI80344EgbwliLKYNp9/7fuVn
-        l9LXdG1ziKAaamiUwG/FNP8QSpNjuyGfxUxTX2mEZIqIQDnfv/xlkPDfcoUh7uMLIlFY9h5T6bA3R
-        SWDRQ+o85twOPruCiURnY6C1AMcOEPXIAK/7KjMyaY7tFmuBoqG3ir1mLjLYc3QD6TKKOOB0vDGJj
-        JXKqRvog==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mj2sa-006ha2-Vb; Fri, 05 Nov 2021 17:20:29 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DB553302A17;
-        Fri,  5 Nov 2021 18:19:48 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 9A404203C0536; Fri,  5 Nov 2021 18:19:48 +0100 (CET)
-Message-ID: <20211105171821.773212821@infradead.org>
-User-Agent: quilt/0.66
-Date:   Fri, 05 Nov 2021 18:10:45 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        jpoimboe@redhat.com, mark.rutland@arm.com, dvyukov@google.com,
-        seanjc@google.com, pbonzini@redhat.com, mbenes@suse.cz
-Subject: [PATCH 22/22] objtool: Remove .fixup handling
-References: <20211105171023.989862879@infradead.org>
+        Fri, 5 Nov 2021 13:17:15 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06676C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 10:14:36 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id o29so3821515wms.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 10:14:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=grsecurity.net; s=grsec;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Zv3ABwnUWd2T/SHLWRu++05oJKCkYNE3n6fh4ULeSmw=;
+        b=idSHuTwy4Uk7mPYTHSQxC+MiMEzIGIndfKskDrMAbruy3ClegQCNDa6l+DvIzbSICq
+         p9a6kWPhVxaq4SvJK/8s0qDRe50CuuvcxxC5JABmP6FugBm3KdVbvLsTpJhC0guxJ1LX
+         ZcHXL5f09/B31OEbqyALl7J5723cuzTbyHDlV+tMJMdse6anL/RNzlVgoQ12ASpIcxGW
+         fDLcj10IviIxiUUvovQEpYLfWY2CPRNJ9EMt+46+ZsszChUn9hWEQ894uHm28O6uSw2O
+         ezez9Srcepu+I0F7QolDv9QH26K7HH607YLlki2Vgz/ziiDPLHp/ReGk23DF8jCp0S3I
+         yeMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Zv3ABwnUWd2T/SHLWRu++05oJKCkYNE3n6fh4ULeSmw=;
+        b=QMY/oPj0hrvI+caPMsEsVAHjl0JkbIujSJOsEF0iVJXstQh9M05u9fj2+fe3JCJQ11
+         4m0kf7qonyQncjuEFEqvTbtR5ihzFOuC8cVFPQSyrC6jROreqEFgr3wsCqj9Ix6Pz+9W
+         SM+nrLV6kThvDjgTmLBXNcUlEis2B3+CFnkAuIQXcQqkzSsDo6vUJpj2t/P77BREMgZT
+         3PeDAHrAJzgnXyB9YTeVeA7u60zfje/Qzl+qAhtBDyCO0dOrmHDD4p3FgXudsarT4wUz
+         va1jojI+hu9bo35ofu8i/ggO16x1rf/sAXslGOKyb/h0dJNeW7RnJlgkh+qc6RbbumA1
+         +lBA==
+X-Gm-Message-State: AOAM531WbIQFTVyR95LVG6TwcyjV8QjobPBHB+N7UiC84JKKIyYoflQR
+        4cq9JHmdS2ihvru1fyAFFRzvqA==
+X-Google-Smtp-Source: ABdhPJwl9lJ17OoBtFWDvNaVdLhq+ue5nx2Z0aiGSyfReQQwWbzK0CKtIrinFtL6ZTYo04tLhs4Ryg==
+X-Received: by 2002:a05:600c:1d28:: with SMTP id l40mr4257963wms.192.1636132474580;
+        Fri, 05 Nov 2021 10:14:34 -0700 (PDT)
+Received: from ?IPv6:2003:f6:af04:5300:7c00:c62b:b3aa:158b? (p200300f6af0453007c00c62bb3aa158b.dip0.t-ipconnect.de. [2003:f6:af04:5300:7c00:c62b:b3aa:158b])
+        by smtp.gmail.com with ESMTPSA id m36sm8529706wms.25.2021.11.05.10.14.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Nov 2021 10:14:34 -0700 (PDT)
+Subject: Re: [PATCH] sched/fair: Prevent dead task groups from regaining
+ cfs_rq's
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Benjamin Segall <bsegall@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        linux-kernel@vger.kernel.org, Odin Ugedal <odin@uged.al>,
+        Kevin Tanguy <kevin.tanguy@corp.ovh.com>,
+        Brad Spengler <spender@grsecurity.net>
+References: <b98e3434-67cd-34b7-9e81-148ea31a851c@grsecurity.net>
+ <20211103190613.3595047-1-minipli@grsecurity.net>
+ <xm26ilx86gmp.fsf@google.com>
+ <CAKfTPtBm4vHr=svju=Qg6eZmcv8YDghtM2r_pOahZ2gC3tzTxg@mail.gmail.com>
+ <a6a3c6c9-d5ea-59b6-8871-0f72bff38833@grsecurity.net>
+ <CAKfTPtBxoKBRWs4Z3Pxsk8==Ka9SG7NS3LzfOV33-2UXfhSM=g@mail.gmail.com>
+ <cd3778d3-6980-a804-47e3-82b09dc960a4@grsecurity.net>
+ <CAKfTPtDthksitm02sLowDMKbWZ29efth-YcPi0zVSFqbaZfiMA@mail.gmail.com>
+ <8f4ed996-e6e5-75f4-b5fa-dffb7b7da05b@grsecurity.net>
+ <20211105162914.215420-1-minipli@grsecurity.net>
+ <YYVim5qpteqfwYjx@hirez.programming.kicks-ass.net>
+From:   Mathias Krause <minipli@grsecurity.net>
+Message-ID: <a113044b-b5b6-8bc1-864b-c817535889ff@grsecurity.net>
+Date:   Fri, 5 Nov 2021 18:14:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <YYVim5qpteqfwYjx@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The .fixup has gone the way of the Dodo, that test will always be
-false.
+Am 05.11.21 um 17:58 schrieb Peter Zijlstra:
+> On Fri, Nov 05, 2021 at 05:29:14PM +0100, Mathias Krause wrote:
+>>> Looks like it needs to be the kfree_rcu() one in this case. I'll prepare
+>>> a patch.
+>>
+>> Testing the below patch right now. Looking good so far. Will prepare a
+>> proper patch later, if we all can agree that this covers all cases.
+>>
+>> But the basic idea is to defer the kfree()'s to after the next RCU GP,
+>> which also means we need to free the tg object itself later. Slightly
+>> ugly. :/
+> 
+> Can't we add an rcu_head to struct task_group and simply call_rcu() the
+> thing with a free function?
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- tools/objtool/check.c |    8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+There is already one and this patch makes use of it for the second RCU
+GP requirement. Basically, the patch is doing what you request, no? See
+the new free_fair_sched_group().
 
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -3296,14 +3296,10 @@ static bool ignore_unreachable_insn(stru
- 		return true;
- 
- 	/*
--	 * Ignore any unused exceptions.  This can happen when a whitelisted
--	 * function has an exception table entry.
--	 *
--	 * Also ignore alternative replacement instructions.  This can happen
-+	 * Ignore alternative replacement instructions.  This can happen
- 	 * when a whitelisted function uses one of the ALTERNATIVE macros.
- 	 */
--	if (!strcmp(insn->sec->name, ".fixup") ||
--	    !strcmp(insn->sec->name, ".altinstr_replacement") ||
-+	if (!strcmp(insn->sec->name, ".altinstr_replacement") ||
- 	    !strcmp(insn->sec->name, ".altinstr_aux"))
- 		return true;
- 
-
-
+Thanks,
+Mathias
