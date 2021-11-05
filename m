@@ -2,143 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36603445E04
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 03:39:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A82445E0E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 03:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbhKECmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 22:42:07 -0400
-Received: from conuserg-11.nifty.com ([210.131.2.78]:38091 "EHLO
-        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbhKECmF (ORCPT
+        id S231981AbhKECvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 22:51:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22969 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230287AbhKECva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 22:42:05 -0400
-Received: from grover.. (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id 1A52cTY8003626;
-        Fri, 5 Nov 2021 11:38:29 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 1A52cTY8003626
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1636079910;
-        bh=IeUZt4PsBFceCGs3eJLrGGs8MODnWGqCocnHEkQlICA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bRjA7etrT/McFMTQ7a3R9J31CzaeQWZ3qGtMr1hEuNoTelMJ+XB1noDBpfor3Ya6Z
-         D8dtEk8eTDfvBccU1a6R41gs9NqUU7GOp57wEUDNZdDZRusOofOfBKcdB0x0xBHV7W
-         5XncPglldZdSMF61sj4k4MutqFyIa5DCzE2YpLVleCcknrEU9mP/5s9vfaiPIO9+pE
-         eaDZi3QC7Ua/Fu2vpcqUWl493tiMTYHdO1upkXmiLjFrGSZkXYmyO+AoNa8hi1NAVa
-         vwXjPHym+H2p4g9pqQuBW1TydH6FfY4KvtrB+3U/h4PeChGdIACzimZ+6sEqgbyUQU
-         PyIen3hkf0prA==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Xingxing Su <suxingxing@loongson.cn>,
-        linux-kernel@vger.kernel.org, zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH] mips: decompressor: do not copy source files while building
-Date:   Fri,  5 Nov 2021 11:38:14 +0900
-Message-Id: <20211105023815.85784-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        Thu, 4 Nov 2021 22:51:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636080530;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xCcEqsnBhifvXkjiVwnMz5H8oH0AK0pj5dvEeQNewCw=;
+        b=P8PsQLaNAFe15EoPXLqHJvLqhI1Mh4ZsRfcc7kfMHOj+KTZaA4ai9RzeQi6upWs/Xu+UDQ
+        bckjdU+b+xk7KUPJ7cKqAWV7BE5QsWEQyjRlON7wF+GsoprcI2J9VfHcjEJI3QvV2BwlwA
+        fAYtj+Rj93Mxwt16uTrxiRsLIJWxp/I=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-326-rNlT9YvMPkC819Jor8MiwQ-1; Thu, 04 Nov 2021 22:48:49 -0400
+X-MC-Unique: rNlT9YvMPkC819Jor8MiwQ-1
+Received: by mail-lf1-f71.google.com with SMTP id b18-20020a0565120b9200b00401dbc6433aso2020791lfv.8
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 19:48:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xCcEqsnBhifvXkjiVwnMz5H8oH0AK0pj5dvEeQNewCw=;
+        b=d6tQ7atpCg6B+ca6AglpMYyjdBNy4VvGN2Wgbq/dKtLL5exaBWEYMeESuEfUUATtox
+         sgwBwxMLvKGqEj0EfsAbwbqlKPrxZPBIc6eAi96CuSbgDPGGx0kG2M9Ofpqsb4ZhU66l
+         y6DJ5YE96SiWIvHJLCH/8IhQBmw/NsJxphNxjlrrzX/seXZR16fjyAXBZdxSoYuwVl2T
+         vvcPVud6v0IrrZjEHRAg/kPdqgQVerWGu077Nr9eiqbuR54/aD4B3uD0KTt7bnmAwJSR
+         ckK2XU0fXPsPiwMEi2kYdfADcCK8vfIZZYhz2WCBGrlFZ1vZ1St4nJWkrHf0xp34IijF
+         Ka6A==
+X-Gm-Message-State: AOAM5338RF2BRFyzWrTzRrR+tz7I33390Wt/LqMKt+fU5HAdum+sr+Th
+        pybmHvEoo+sWU852FLJpO/2yRgbEDmjQ8Sv98xtfTeQ42xbqs9SOVTN9ZEOsDJKcu7uHuBw4MDt
+        DOfSEjRuEgiEXB4SBYrRg9UI6VaqN+aWPKlsf2HT1
+X-Received: by 2002:ac2:4e68:: with SMTP id y8mr52932392lfs.348.1636080528102;
+        Thu, 04 Nov 2021 19:48:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzS1jRGe/qTBDl1fmwuB1InzojHnj32ucWekjQLu2yHsikj5gNhAUpYDb19ZeRf/IO8Jf3Qu4zH8GujGcXFofc=
+X-Received: by 2002:ac2:4e68:: with SMTP id y8mr52932379lfs.348.1636080527953;
+ Thu, 04 Nov 2021 19:48:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211104195833.2089796-1-eperezma@redhat.com>
+In-Reply-To: <20211104195833.2089796-1-eperezma@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Fri, 5 Nov 2021 10:48:37 +0800
+Message-ID: <CACGkMEug9Ci=mmQcwPwD0rKo4Lp8Vkz87i5X6H9Y0MfgQNc53g@mail.gmail.com>
+Subject: Re: [PATCH] vdpa: Avoid duplicate call to vp_vdpa get_status
+To:     =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>, kvm <kvm@vger.kernel.org>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As commit 7ae4a78daacf ("ARM: 8969/1: decompressor: simplify libfdt
-builds") stated, copying source files during the build time may not
-end up with as clean code as expected.
+On Fri, Nov 5, 2021 at 3:58 AM Eugenio P=C3=A9rez <eperezma@redhat.com> wro=
+te:
+>
+> It has no sense to call get_status twice, since we already have a
+> variable for that.
+>
+> Signed-off-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
 
-Do similar for mips to clean up the Makefile and .gitignore.
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- arch/mips/boot/compressed/.gitignore   |  3 ---
- arch/mips/boot/compressed/Makefile     | 12 ------------
- arch/mips/boot/compressed/ashldi3.c    |  2 ++
- arch/mips/boot/compressed/bswapsi.c    |  2 ++
- arch/mips/boot/compressed/uart-ath79.c |  2 ++
- scripts/remove-stale-files             |  5 +++++
- 6 files changed, 11 insertions(+), 15 deletions(-)
- delete mode 100644 arch/mips/boot/compressed/.gitignore
- create mode 100644 arch/mips/boot/compressed/ashldi3.c
- create mode 100644 arch/mips/boot/compressed/bswapsi.c
- create mode 100644 arch/mips/boot/compressed/uart-ath79.c
-
-diff --git a/arch/mips/boot/compressed/.gitignore b/arch/mips/boot/compressed/.gitignore
-deleted file mode 100644
-index d358395614c9..000000000000
---- a/arch/mips/boot/compressed/.gitignore
-+++ /dev/null
-@@ -1,3 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--ashldi3.c
--bswapsi.c
-diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-index 3548b3b45269..e6584dab2360 100644
---- a/arch/mips/boot/compressed/Makefile
-+++ b/arch/mips/boot/compressed/Makefile
-@@ -50,20 +50,8 @@ vmlinuzobjs-$(CONFIG_MIPS_ALCHEMY)		   += $(obj)/uart-alchemy.o
- vmlinuzobjs-$(CONFIG_ATH79)			   += $(obj)/uart-ath79.o
- endif
- 
--extra-y += uart-ath79.c
--$(obj)/uart-ath79.c: $(srctree)/arch/mips/ath79/early_printk.c
--	$(call cmd,shipped)
--
- vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o
- 
--extra-y += ashldi3.c
--$(obj)/ashldi3.c: $(obj)/%.c: $(srctree)/lib/%.c FORCE
--	$(call if_changed,shipped)
--
--extra-y += bswapsi.c
--$(obj)/bswapsi.c: $(obj)/%.c: $(srctree)/arch/mips/lib/%.c FORCE
--	$(call if_changed,shipped)
--
- targets := $(notdir $(vmlinuzobjs-y))
- 
- targets += vmlinux.bin
-diff --git a/arch/mips/boot/compressed/ashldi3.c b/arch/mips/boot/compressed/ashldi3.c
-new file mode 100644
-index 000000000000..f7bf6a7aae31
---- /dev/null
-+++ b/arch/mips/boot/compressed/ashldi3.c
-@@ -0,0 +1,2 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include "../../../../lib/ashldi3.c"
-diff --git a/arch/mips/boot/compressed/bswapsi.c b/arch/mips/boot/compressed/bswapsi.c
-new file mode 100644
-index 000000000000..fdb9c6476904
---- /dev/null
-+++ b/arch/mips/boot/compressed/bswapsi.c
-@@ -0,0 +1,2 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include "../../lib/bswapsi.c"
-diff --git a/arch/mips/boot/compressed/uart-ath79.c b/arch/mips/boot/compressed/uart-ath79.c
-new file mode 100644
-index 000000000000..d686820921be
---- /dev/null
-+++ b/arch/mips/boot/compressed/uart-ath79.c
-@@ -0,0 +1,2 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include "../../ath79/early_printk.c"
-diff --git a/scripts/remove-stale-files b/scripts/remove-stale-files
-index eb630ee287c3..c534fe1eac16 100755
---- a/scripts/remove-stale-files
-+++ b/scripts/remove-stale-files
-@@ -28,4 +28,9 @@ if [ -n "${building_out_of_srctree}" ]; then
- 	do
- 		rm -f arch/arm/boot/compressed/${f}
- 	done
-+
-+	for f in uart-ath79.c ashldi3.c bswapsi.c
-+	do
-+		rm -f arch/mips/boot/compressed/${f}
-+	done
- fi
--- 
-2.30.2
+> ---
+>  drivers/vhost/vdpa.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index 01c59ce7e250..10676ea0348b 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -167,13 +167,13 @@ static long vhost_vdpa_set_status(struct vhost_vdpa=
+ *v, u8 __user *statusp)
+>         status_old =3D ops->get_status(vdpa);
+>
+>         /*
+>          * Userspace shouldn't remove status bits unless reset the
+>          * status to 0.
+>          */
+> -       if (status !=3D 0 && (ops->get_status(vdpa) & ~status) !=3D 0)
+> +       if (status !=3D 0 && (status_old & ~status) !=3D 0)
+>                 return -EINVAL;
+>
+>         if ((status_old & VIRTIO_CONFIG_S_DRIVER_OK) && !(status & VIRTIO=
+_CONFIG_S_DRIVER_OK))
+>                 for (i =3D 0; i < nvqs; i++)
+>                         vhost_vdpa_unsetup_vq_irq(v, i);
+>
+> --
+> 2.27.0
+>
 
