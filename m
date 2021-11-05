@@ -2,83 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9FF7445F7C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 06:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47131445F80
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 06:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232145AbhKEFo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 01:44:26 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:56566 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229620AbhKEFoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 01:44:25 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1miryz-00039c-4v; Fri, 05 Nov 2021 13:41:45 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1miryr-0003GL-SD; Fri, 05 Nov 2021 13:41:37 +0800
-Date:   Fri, 5 Nov 2021 13:41:37 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: Re: crashes in crypto_shash_update()
-Message-ID: <20211105054137.GA12470@gondor.apana.org.au>
-References: <ac79dba2-c527-783b-6d0f-b879908bb5b6@roeck-us.net>
+        id S232289AbhKEFzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 01:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232233AbhKEFzU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 01:55:20 -0400
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C04CC061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 22:52:41 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1636091557;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=YSyrIh8bSiwYOiiRxY8T5Sx3HuohXJJhjpAaVHHzT98=;
+        b=NnQtiGWIQIEfl1BM4CtRl5sZi9C/m3xNOaM6t1IkoUd1mOMOyIFyrkX7EuVTlvQ/+KQnu7
+        miuOzfiApmfgIjN+FqarHeIOvHkOVxLjOpoaXOk9kOac6LFVazXuVP7p87pIW5+5EsboX/
+        BEuHBW8jddN7nGiprj+w9dj4GkkSxHg=
+From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
+To:     linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Ding Hui <dinghui@sangfor.com.cn>,
+        Tony Luck <tony.luck@intel.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yang Shi <shy828301@gmail.com>, Peter Xu <peterx@redhat.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] mm/hwpoison: fix unpoison_memory()
+Date:   Fri,  5 Nov 2021 14:50:55 +0900
+Message-Id: <20211105055058.3152564-1-naoya.horiguchi@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ac79dba2-c527-783b-6d0f-b879908bb5b6@roeck-us.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: naoya.horiguchi@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 10:35:41PM -0700, Guenter Roeck wrote:
-> Hi all,
-> 
-> I see the following pretty widespread crash in crypto_shash_update().
-> 
-> [    1.574992] Unable to handle kernel paging request at virtual address ffffffffffffffc8
-> [    1.575611] Oops [#1]
-> [    1.575698] Modules linked in:
-> [    1.575866] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W         5.15.0-10159-gb8c4a6bfae4e-dirty #1
-> [    1.576120] Hardware name: riscv-virtio,qemu (DT)
-> [    1.576281] epc : crypto_shash_update+0xa/0x2e
-> [    1.576437]  ra : crc32c+0x2c/0x58
-> [    1.576553] epc : ffffffff80358b6c ra : ffffffff80395382 sp : ffffffd00021bc00
-> [    1.576760]  gp : ffffffff81513898 tp : ffffffe001aa8040 t0 : ffffffe001d10568
-> [    1.576966]  t1 : 000000006a138faa t2 : 0000000000000000 s0 : ffffffd00021bc10
-> [    1.577173]  s1 : ffffffff8149e500 a0 : ffffffd00021bc10 a1 : ffffffff81077e70
-> [    1.577378]  a2 : 0000000000000011 a3 : 0000000000000000 a4 : ffffffffffffffb0
-> [    1.577584]  a5 : ffffffffffffffb0 a6 : 0000000000000000 a7 : 0000000028292846
-> [    1.577797]  s2 : ffffffff81077e70 s3 : ffffffff81514008 s4 : ffffffff80c004e0
-> [    1.578005]  s5 : ffffffff81514038 s6 : ffffffff80c10910 s7 : ffffffff80c004a0
-> [    1.578212]  s8 : ffffffff811669a8 s9 : 0000000000000008 s10: ffffffff80a000ac
-> [    1.578421]  s11: 0000000000000000 t3 : 0000000000000009 t4 : 0000000042300000
-> [    1.578628]  t5 : 0000000000000000 t6 : ffffffe003075000
-> [    1.578785] status: 0000000000000120 badaddr: ffffffffffffffc8 cause: 000000000000000d
-> [    1.579010] [<ffffffff80358b6c>] crypto_shash_update+0xa/0x2e
-> [    1.579186] [<ffffffff80395382>] crc32c+0x2c/0x58
-> [    1.579332] [<ffffffff80a1459a>] btrfs_props_init+0x32/0x70
-> [    1.579505] [<ffffffff80a13e26>] init_btrfs_fs+0x12/0x16a
-> [    1.579670] [<ffffffff800020da>] do_one_initcall+0x36/0x15e
-> [    1.579838] [<ffffffff80a00f5c>] kernel_init_freeable+0x1a6/0x20a
-> [    1.580023] [<ffffffff808d6648>] kernel_init+0x1e/0x104
-> [    1.580181] [<ffffffff80002ffa>] ret_from_exception+0x0/0xc
-> [    1.580700] ---[ end trace 4bfa11496ef965ab ]---
-> 
-> 
-> The problem boils down to crypto_alloc_shash() returning -80 (-ELLIBBAD).
-> 
-> Before I spend time analyzing this further, is anyone already looking
-> into the problem ?
+Hi,
 
-Can you confirm that CRYPTO_MANAGER is unset in your config? If
-so I'm aware of the problem and working on a fix.
+I updated the unpoison patchset based ou discussions over v2.
+Please see individual patches for details of updates.
+
+----- (cover letter copied from v2) -----
+Main purpose of this series is to sync unpoison code to recent changes
+around how hwpoison code takes page refcount.  Unpoison should work or
+simply fail (without crash) if impossible.
+
+The recent works of keeping hwpoison pages in shmem pagecache introduce
+a new state of hwpoisoned pages, but unpoison for such pages is not
+supported yet with this series.
+
+It seems that soft-offline and unpoison can be used as general purpose
+page offline/online mechanism (not in the context of memory error). I
+think that we need some additional works to realize it because currently
+soft-offline and unpoison are assumed not to happen so frequently
+(print out too many messages for aggressive usecases). But anyway this
+could be another interesting next topic.
+
+v1: https://lore.kernel.org/linux-mm/20210614021212.223326-1-nao.horiguchi@gmail.com/
+v2: https://lore.kernel.org/linux-mm/20211025230503.2650970-1-naoya.horiguchi@linux.dev/
 
 Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Naoya Horiguchi
+---
+Summary:
+
+Naoya Horiguchi (3):
+      mm/hwpoison: mf_mutex for soft offline and unpoison
+      mm/hwpoison: remove MF_MSG_BUDDY_2ND and MF_MSG_POISONED_HUGE
+      mm/hwpoison: fix unpoison_memory()
+
+ include/linux/mm.h         |   3 +-
+ include/linux/page-flags.h |   4 ++
+ include/ras/ras_event.h    |   2 -
+ mm/memory-failure.c        | 169 ++++++++++++++++++++++++++++-----------------
+ mm/page_alloc.c            |  23 ++++++
+ 5 files changed, 133 insertions(+), 68 deletions(-)
