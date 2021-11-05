@@ -2,120 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB90B4469A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 21:27:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE494469B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 21:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233549AbhKEU3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 16:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52036 "EHLO
+        id S233634AbhKEUbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 16:31:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233534AbhKEU3m (ORCPT
+        with ESMTP id S233614AbhKEUbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 16:29:42 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E2CC061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 13:27:02 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id t11so16886550ljh.6
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 13:27:02 -0700 (PDT)
+        Fri, 5 Nov 2021 16:31:44 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630BDC061205
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 13:29:04 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id u191so16272741oie.13
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 13:29:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3wyUo/ZQtCQyVodL9pugyYugqUauw4Uj0CoamGRaoTo=;
-        b=jDVwGOof8/gm/IIUo7XhzEjXEtnollc06Ebj3pcM+qgJ3GUFaKtvAHx5MtjHxwLSh7
-         RqVxjAMaKz7jc3OnM33zlboH5YsD3D0dlSufzoc9KmJ4MCY0X7fu4xuo5UMJmmkWgA5X
-         jM+TNwOVDhcOmez5CXM0vck43rEdQQ5YLqx21u342gnRHhpvwiWbsBO8Vj82mBgrvl2m
-         Lq90Gxff2LKTw9L/BmpkKg21+Bp2ADNb9LhC1V2B7PWkp405StxP7Ax3XYodwwa9+O4s
-         iIq307MIXAeGJX2svn0y+u8SO4VVcF/SbR4oryd52a4pitv21E4htnP31gP9R25jU00A
-         rZJA==
+        d=kali.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=8JOiyVnxfxaZAhXkgjHfAK5HrLExH5oiye43Nc9y5lE=;
+        b=Mkh7tjdb+bN/TRolya14M3jL1kGZiyedL6PMEh8LA19iejEw/DTZsdk3WhwKP9870o
+         gnhPaIE6lMNPDZXnoMl3bV4nqSkCnnVcBUV3WZyzt1Jlxzy1vhG8Z92AeNC+4BByn6GD
+         cCblwnlHT/5PSL/T9MENFZI4KIBTqCwXE6ilRQrgZxV+XzkVuFDkfGZw8oq/y1igL6ZO
+         p1JnAnwT4gQouVR3lGoiwxh/Eh2ljiQczHGJXxyMYIy848ciIc8G5EGt5DPONSQz7ldK
+         1WgeNYkxTZJbcX6UmDqXNRtz6/cLKOeC1vNFWWMo1rvp69mJCVwhxX5X2UvKrSl1pifH
+         ADPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3wyUo/ZQtCQyVodL9pugyYugqUauw4Uj0CoamGRaoTo=;
-        b=RsCZ3Q5qNDQSQQQ2RC+oAT5qvTj4rVsTBtlAkspKj91QAn+Cwox9wHj1yqnSzdVv4B
-         WxPWmErZVV/ttp2OGttg7EDwMW15fD7Ps+sm1xvQoIkDrzNYNierpaQOct2m8zp2Mzy+
-         QjXqob0sABaPjo3JkKlhUcit0bMEFqBRrsnJxv76k2AlxheTXd/HXrTwlC/6p0Tiyl6z
-         V7eC0MuDazJbylW3VVcAa4A/taHNC8+PCkbwZaT79BmaAavI8Hy1c2M518zzDA2Cl2kO
-         dr8sP7rBqGTyJtUePvk3Z/tbzMpL6ssalX9tpDs9iS2BoaD0otIhuYjOmaEobpeRm6zd
-         sfJA==
-X-Gm-Message-State: AOAM5313PVc0MhKoPfUv1jxr/JcxNmWlyZPm8ySQ3yQGyhtCYHdu4NMf
-        1teqSiZA6rU7ryoteMhENi3AdJwIhJGMg8lLaaewIQ==
-X-Google-Smtp-Source: ABdhPJyeR/MQfc6Wj3DYsKJsPEiSVQY5rZ/UIDydLAnjBCIuEikkBi11cb68jlY8MjNhmB8Vdb1+AQZeA2azlXDwqv8=
-X-Received: by 2002:a2e:750e:: with SMTP id q14mr64381888ljc.338.1636144020678;
- Fri, 05 Nov 2021 13:27:00 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=8JOiyVnxfxaZAhXkgjHfAK5HrLExH5oiye43Nc9y5lE=;
+        b=n6H8+87OifaB/H/xapNqxNc+85ycjrCAYNr+JJsWt5GUcp2Nj1Q70ifBsi+K++aTcL
+         PPDqxTpguMFHAHergCM+xkr2I7r3QxruGrmAq5TWCXpgg/6+6QHSFC2wE5GbA5MtU405
+         MeJ3J3UsqEK9UMMEHi45MqyPQYNErj4UzZzSBkv4wL4JRHXCAz+wigY8pjBIAUmhvbl/
+         EpwayZb16Qc1rpTnSVwt2PcsV5Ujfa5mKyY+oZW2w3vfbDjO+1/cVrRj/cDFnRRQKkv3
+         Gd7q7spkXCPz8+cyNB/lUKBKwm8TR8VdVxFXNnUawtiz68P/qIucNThvBQ4hxYQ3Y1i3
+         jtug==
+X-Gm-Message-State: AOAM531bJYa9neugXJFQeVxHVXstQxEZvM+fzxW2BIYJMhOpwwuqU3J7
+        RZVIV2CAGI9RSQIBH8jipwBawQ==
+X-Google-Smtp-Source: ABdhPJx4R55434miRtFXT3rDjHhYO7yoc/PDMCPS0UxSDNaJESWi8pqHCWAz0JuewFqOuhbI+Hr6Zw==
+X-Received: by 2002:a05:6808:158c:: with SMTP id t12mr24051841oiw.24.1636144143770;
+        Fri, 05 Nov 2021 13:29:03 -0700 (PDT)
+Received: from [192.168.11.48] (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
+        by smtp.gmail.com with ESMTPSA id c18sm3551722ots.64.2021.11.05.13.29.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Nov 2021 13:29:03 -0700 (PDT)
+Message-ID: <fb85e94a-a961-aad2-494d-9318e9ae8f1c@kali.org>
+Date:   Fri, 5 Nov 2021 15:29:01 -0500
 MIME-Version: 1.0
-References: <20211105163137.3324344-1-anders.roxell@linaro.org>
-In-Reply-To: <20211105163137.3324344-1-anders.roxell@linaro.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 5 Nov 2021 13:26:49 -0700
-Message-ID: <CAKwvOdnge-hBmoFH-CHZmbh7DTq8bQiyhbfEOWkBt447=e6QGA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] selftests: timens: use 'llabs()' over 'abs()'
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     shuah@kernel.org, nathan@kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.0
+Subject: Re: [PATCH v2] drm/msm/devfreq: Fix OPP refcnt leak
+Content-Language: en-US
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20211105202021.181092-1-robdclark@gmail.com>
+From:   Steev Klimaszewski <steev@kali.org>
+In-Reply-To: <20211105202021.181092-1-robdclark@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 5, 2021 at 9:31 AM Anders Roxell <anders.roxell@linaro.org> wrote:
->
-> When building selftests/timens with clang, the compiler warn about the
-> function abs() see below:
->
-> timerfd.c:64:7: error: absolute value function 'abs' given an argument of type 'long long' but has parameter of type 'int' which may cause truncation of value [-Werror,-Wabsolute-value]
->                 if (abs(elapsed - 3600) > 60) {
->                     ^
-> timerfd.c:64:7: note: use function 'llabs' instead
->                 if (abs(elapsed - 3600) > 60) {
->                     ^~~
->                     llabs
->
-> The note indicates what to do, Rework to use the function 'llabs()'.
->
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 
-Thanks for the patch!
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
+On 11/5/21 3:20 PM, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+>
+> Reported-by: Douglas Anderson <dianders@chromium.org>
+> Fixes: 9bc95570175a ("drm/msm: Devfreq tuning")
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 > ---
->  tools/testing/selftests/timens/timer.c   | 2 +-
->  tools/testing/selftests/timens/timerfd.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+>   drivers/gpu/drm/msm/msm_gpu_devfreq.c | 5 +++++
+>   1 file changed, 5 insertions(+)
 >
-> diff --git a/tools/testing/selftests/timens/timer.c b/tools/testing/selftests/timens/timer.c
-> index 5e7f0051bd7b..5b939f59dfa4 100644
-> --- a/tools/testing/selftests/timens/timer.c
-> +++ b/tools/testing/selftests/timens/timer.c
-> @@ -56,7 +56,7 @@ int run_test(int clockid, struct timespec now)
->                         return pr_perror("timerfd_gettime");
->
->                 elapsed = new_value.it_value.tv_sec;
-> -               if (abs(elapsed - 3600) > 60) {
-> +               if (llabs(elapsed - 3600) > 60) {
->                         ksft_test_result_fail("clockid: %d elapsed: %lld\n",
->                                               clockid, elapsed);
->                         return 1;
-> diff --git a/tools/testing/selftests/timens/timerfd.c b/tools/testing/selftests/timens/timerfd.c
-> index 9edd43d6b2c1..a4196bbd6e33 100644
-> --- a/tools/testing/selftests/timens/timerfd.c
-> +++ b/tools/testing/selftests/timens/timerfd.c
-> @@ -61,7 +61,7 @@ int run_test(int clockid, struct timespec now)
->                         return pr_perror("timerfd_gettime(%d)", clockid);
->
->                 elapsed = new_value.it_value.tv_sec;
-> -               if (abs(elapsed - 3600) > 60) {
-> +               if (llabs(elapsed - 3600) > 60) {
->                         ksft_test_result_fail("clockid: %d elapsed: %lld\n",
->                                               clockid, elapsed);
->                         return 1;
-> --
-> 2.33.0
->
+> diff --git a/drivers/gpu/drm/msm/msm_gpu_devfreq.c b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+> index d32b729b4616..07f1169df89b 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+> +++ b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+> @@ -20,6 +20,10 @@ static int msm_devfreq_target(struct device *dev, unsigned long *freq,
+>   	struct msm_gpu *gpu = dev_to_gpu(dev);
+>   	struct dev_pm_opp *opp;
+>   
+> +	/*
+> +	 * Note that devfreq_recommended_opp() can modify the freq
+> +	 * to something that actually is in the opp table:
+> +	 */
+>   	opp = devfreq_recommended_opp(dev, freq, flags);
+>   
+>   	/*
+> @@ -28,6 +32,7 @@ static int msm_devfreq_target(struct device *dev, unsigned long *freq,
+>   	 */
+>   	if (gpu->devfreq.idle_freq) {
+>   		gpu->devfreq.idle_freq = *freq;
+> +		dev_pm_opp_put(opp);
+>   		return 0;
+>   	}
+>   
 
+Tested on the Lenovo Yoga C630 and don't see the message from v1 :D
 
--- 
-Thanks,
-~Nick Desaulniers
+Tested-By: Steev Klimaszewski <steev@kali.org>
+
