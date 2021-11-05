@@ -2,85 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D79446737
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C64944673C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233473AbhKEQrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 12:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232930AbhKEQrb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 12:47:31 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5683BC061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 09:44:51 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1636130688;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pa0FDwhZuciKKSRg2JXZFbnZbfRkk7+ScucOPowuPJE=;
-        b=qqb6qVyEGaSXuYP38i8PeduKwl1nuwuMxrEtLikWATG/X1nM+8q1Vy+o0Jll230vCCQGic
-        5Q4U8nw6K4vdhIDYO8b6PmlBUd5u/8U35ur5foe/HDLUcuEPYcIqM9zHyBqkAPNap4v+Ag
-        lDA86YU5arikgmO+iw+ROahiTuC+ynJ7puswwwVMSoP0cw1YcDki84xZRIeN1LOJ3EV+R5
-        Q44vMSJ5XDAEsiwqfBjR/Z1OH8guak5Bie6eDawXJQWZBgVBVbEW0a/QkblbMPu4qSTz4q
-        ItkIODKvQqjkZ/bt1vE4/OZthPTEwXemcrnKE7WdB+34OFXtj7JrI15GJFZA8w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1636130688;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pa0FDwhZuciKKSRg2JXZFbnZbfRkk7+ScucOPowuPJE=;
-        b=Ecvf98ENkfQwQPjRkzC/LumfnqacIRdBRY5bYBhT7QmndSmVUrVvhtytujJpiYJxiNqHZV
-        JDlnfHpavzub+KBg==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: Removal of printk safe buffers delays NMI context printk
-In-Reply-To: <YYVakNdzjrYuBmhf@alley>
-References: <1636039236.y415994wfa.astroid@bobo.none>
- <87ee7vki7f.fsf@jogness.linutronix.de>
- <1636073838.qpmyp6q17i.astroid@bobo.none>
- <87r1bv2aga.fsf@jogness.linutronix.de>
- <1636111599.wwppq55w4t.astroid@bobo.none>
- <87h7cqg0xk.fsf@jogness.linutronix.de> <YYVakNdzjrYuBmhf@alley>
-Date:   Fri, 05 Nov 2021 17:50:48 +0106
-Message-ID: <87lf22eem7.fsf@jogness.linutronix.de>
+        id S233957AbhKEQsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 12:48:01 -0400
+Received: from mga07.intel.com ([134.134.136.100]:60894 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232930AbhKEQr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 12:47:59 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10159"; a="295382296"
+X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
+   d="scan'208";a="295382296"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 09:45:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
+   d="scan'208";a="639871341"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by fmsmga001.fm.intel.com with ESMTP; 05 Nov 2021 09:45:00 -0700
+Received: from alobakin-mobl.ger.corp.intel.com (kfilipek-MOBL1.ger.corp.intel.com [10.213.15.123])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1A5Gis9h007215;
+        Fri, 5 Nov 2021 16:44:54 GMT
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Lukasz Czapnik <lukasz.czapnik@intel.com>,
+        Marcin Kubiak <marcin.kubiak@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Netanel Belgazal <netanel@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        Guy Tzalik <gtzalik@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Sameeh Jubran <sameehj@amazon.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Danielle Ratson <danieller@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jian Shen <shenjian15@huawei.com>,
+        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next 03/21] ethtool, stats: introduce standard XDP statistics
+Date:   Fri,  5 Nov 2021 17:44:53 +0100
+Message-Id: <20211105164453.29102-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211026092323.165-1-alexandr.lobakin@intel.com>
+References: <20210803163641.3743-1-alexandr.lobakin@intel.com> <20210803163641.3743-4-alexandr.lobakin@intel.com> <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <ec0aefbc987575d1979f9102d331bd3e8f809824.camel@kernel.org> <20211026092323.165-1-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-05, Petr Mladek <pmladek@suse.com> wrote:
-> On Fri 2021-11-05 15:03:27, John Ogness wrote:
->> On 2021-11-05, Nicholas Piggin <npiggin@gmail.com> wrote:
->>> but we do need that printk flush capability back there and for
->>> nmi_backtrace.
->> 
->> Agreed. I had not considered this necessary side-effect when I
->> removed the NMI safe buffers.
->
-> Honestly, I do not understand why it stopped working or how
-> it worked before.
+From: Alexander Lobakin <alexandr.lobakin@intel.com>
+Date: Tue, 26 Oct 2021 11:23:23 +0200
 
-IIUC, Nick is presenting a problem where a lockup on the other CPUs is
-detected. Those CPUs will dump their backtraces per NMI context. But in
-their lockup state the irq_work for those CPUs is not functional. So
-even though the messages are in the buffer, there is no one printing the
-buffer.
+> From: Saeed Mahameed <saeed@kernel.org>
+> Date: Tue, 03 Aug 2021 16:57:22 -0700
+> 
+> [ snip ]
+> 
+> > XDP is going to always be eBPF based ! why not just report such stats
+> > to a special BPF_MAP ? BPF stack can collect the stats from the driver
+> > and report them to this special MAP upon user request.
+> 
+> I really dig this idea now. How do you see it?
+> <ifindex:channel:stat_id> as a key and its value as a value or ...?
 
-printk_safe_flush() would dump the NMI safe buffers for all the CPUs
-into the printk buffer, then trigger an irq_work on itself (the
-non-locked-up CPU).
+Ideas, suggestions, anyone?
 
-That irq_work trigger was critical, because the other CPUs (which also
-triggered irq_works for themselves) aren't able to process irq_works. I
-did not consider this case. Which is why we still need to trigger
-irq_work here. (Or, as the removed comment hinted at, add some printk()
-call to either directly print or trigger the irq_work.)
+> [ snip ]
+> 
+> Thanks,
+> Al
 
-John Ogness
+Thanks,
+Al
