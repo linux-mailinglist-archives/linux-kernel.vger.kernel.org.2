@@ -2,106 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6651445D78
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:46:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60839445D7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbhKEBsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 21:48:52 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:38825 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231186AbhKEBsv (ORCPT
+        id S231714AbhKEBsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 21:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231684AbhKEBsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 21:48:51 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Uv4y7ad_1636076769;
-Received: from 30.225.212.33(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0Uv4y7ad_1636076769)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 05 Nov 2021 09:46:09 +0800
-Message-ID: <e1a6fa17-106d-6b0b-8974-5a96bb33086e@linux.alibaba.com>
-Date:   Fri, 5 Nov 2021 09:46:09 +0800
+        Thu, 4 Nov 2021 21:48:52 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69978C061714;
+        Thu,  4 Nov 2021 18:46:13 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id j128-20020a1c2386000000b003301a98dd62so8507384wmj.5;
+        Thu, 04 Nov 2021 18:46:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=2xhc5oWpvO9Tk65WJtzZWw7fGB5wYEtIT3Aaq8xkviA=;
+        b=QuAX2YIVdOkDaBevFozERc6N4+YXFCkM0rdD+8v1wsW27UpiEFrzOZLoAZ2zyphUhw
+         mdqyTfRTOwmrAFlj42xOjNglqtwz52C4HJzcmZWKo9Pb5vdb6+dIUbPptCxM8yVwQR0f
+         ByzrW5CMcEi+FadkLPglRtZAfseBP3mSwYzl4JEWB6DEAj4gaGWIM5phN+LV1uCM44TC
+         4u1YMUMENa6aiA46E0VLlgm3mLqDTelZCHZrPrCcdIjlG9Lqax8bFIdyl+glE8o7k7nn
+         AspdrCFutJQh5GuT8immG08vNiBllBC1YhOQ2g6nEdBqJwtC7sfQg9mCJSc03jvYz2/2
+         5xGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=2xhc5oWpvO9Tk65WJtzZWw7fGB5wYEtIT3Aaq8xkviA=;
+        b=Kk35vLZeqKPU+sEIbNA6fHTI9kYWG4qCeR1gRQrxG27evNHlJrVoqZeklgOd81YQje
+         qUH7+ejG6wyA3ECKcF7pA5r4GBzCnLfLJ0RMRXr4MPMiiVRqYtT0El4ysd1FSg5anv0y
+         TVRI8H0D4xo+ZRzgAH3bm5QkBDLOy7+vhdHfKfJ0F4M7jdQXQGV2qEa0ZMQ+v0THi69p
+         U92ducPXFeIdMGqidNDzzknVsN6VnIpAUyEmOIoUBWbHmUtVreFHVMH3vAG5qlIAySPB
+         qT/98IPNFLbKvIazyY/gs7qD6ZIrF3RnDeIaA5MDv4YU9UHeXj3TGp91jmRvBj0rVBtU
+         6XRg==
+X-Gm-Message-State: AOAM532L6bNTuYRufGHzORr8LD3cvXWs/MhuyL+a09M6x58fEvqE6D+J
+        qtg8YmuOH+0krjrVgInBbVQ=
+X-Google-Smtp-Source: ABdhPJzX1mhMIpnvJbqUXJj+GamrvNa9AxYluUoas0Jjrg4lrIURGC3Xng1GrJ3DjAerE++vcN2/zw==
+X-Received: by 2002:a1c:a715:: with SMTP id q21mr27297533wme.23.1636076772108;
+        Thu, 04 Nov 2021 18:46:12 -0700 (PDT)
+Received: from ?IPV6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id 10sm8240762wrb.75.2021.11.04.18.46.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Nov 2021 18:46:11 -0700 (PDT)
+Message-ID: <cccdd347-57ee-62e5-2824-a3e7e2910395@gmail.com>
+Date:   Fri, 5 Nov 2021 01:46:10 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH v5 0/4] PCI MCFG consolidation and APEI resource filtering
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
-        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
-        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
-        bhelgaas@google.com, ying.huang@intel.com,
-        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211104150053.GA774800@bhelgaas>
-From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
-In-Reply-To: <20211104150053.GA774800@bhelgaas>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 09/25] tcp: authopt: Disable via sysctl by default
+Content-Language: en-US
+To:     Leonard Crestez <cdleonard@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>, netdev@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1635784253.git.cdleonard@gmail.com>
+ <137399b962131c278acbfa5446a3b6d59aa0547b.1635784253.git.cdleonard@gmail.com>
+From:   Dmitry Safonov <0x7f454c46@gmail.com>
+In-Reply-To: <137399b962131c278acbfa5446a3b6d59aa0547b.1635784253.git.cdleonard@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 04/11/2021 23:00, Bjorn Helgaas wrote:
-> On Thu, Nov 04, 2021 at 06:57:15PM +0800, Xuesong Chen wrote:
->> The issue of commit d91525eb8ee6 ("ACPI, EINJ: Enhance error injection tolerance
->> level") on x86 is also happened on our own ARM64 platform. We sent a patch[1]
->> trying to fix this issue in an arch-specific way as x86 does at first, but
->> according to the suggestion from Lorenzo Pieralisi and Catalin Marinas, we can
->> consolidate the PCI MCFG part then fix it in a more common way, that's why this
->> patch series comes.
->>
->> [1] https://marc.info/?l=linux-arm-kernel&m=163108478627166&w=2
+On 11/1/21 16:34, Leonard Crestez wrote:
+> This is mainly intended to protect against local privilege escalations
+> through a rarely used feature so it is deliberately not namespaced.
 > 
-> Thanks.  I see this and will look at it after getting the v5.16
-> changes merged.
+> Enforcement is only at the setsockopt level, this should be enough to
+> ensure that the tcp_authopt_needed static key never turns on.
+> 
+> No effort is made to handle disabling when the feature is already in
+> use.
+> 
+> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
+> ---
+[..]
+> diff --git a/net/ipv4/tcp_authopt.c b/net/ipv4/tcp_authopt.c
+> index 5e80e5e5e36e..7c49dcce7d24 100644
+> --- a/net/ipv4/tcp_authopt.c
+> +++ b/net/ipv4/tcp_authopt.c
+> @@ -3,10 +3,15 @@
+>  #include <linux/kernel.h>
+>  #include <net/tcp.h>
+>  #include <net/tcp_authopt.h>
+>  #include <crypto/hash.h>
+>  
+> +/* This is mainly intended to protect against local privilege escalations through
+> + * a rarely used feature so it is deliberately not namespaced.
+> + */
+> +int sysctl_tcp_authopt;
 
-Ah, Bjorn, I also notice this series is in your patchwork now, hmmm, I don't know why
-the previous iterations are not there either, seems something doesn't work as expected
-in my side. Probably my fault for the unpeaceful interlude :-)
+Could you add pr_warn_once() for setsockopt() without this set, so that
+it's visible in dmesg for a user that gets -EPERM.
 
 Thanks,
-Xuesong
-
-> 
->> ---
->> Change from v4 to v5:
->>   - Fix the warning: no previous prototype for 'remove_quirk_mcfg_res' warning
->>     reported by the kernel test robot.
->>
->> Change from v3 to v4:
->>   - Add a new patch (patch #3) to address the quirk ECAM access issue. Because
->>     the normal ECAM config space can be accessed in a lockless way, so we don't
->>     need the mutual exclusion with the EINJ action. But those quirks maybe break
->>     this rule and corrupt the configuration access, reserve its MCFG address
->>     regions in this case to avoid that happens.
->>
->>   - Add another patch (patch #4) to log the PCI MCFG entry parse message per
->>     the suggestion from Bjorn Helgaas. The output on ARM64 as:
->>     ACPI: MCFG entry for domain 0000 [bus 00-0f] at [mem 0x50000000-0x50ffffff] (base 0x50000000)
->>
->>   - Commit message updated with more details of patch #2
->>
->> Change from v2 to v3:
->>   - Address the comments of Lorenzo Pieralisi about the CONFIG_PCI
->>     dependence issue in APEI module (patch #2)
->>
->> Change from v1 to v2:
->>   - Fix the "undefined reference to `pci_mmcfg_list'" build error in case
->>     of PCI_CONFIG=n, reported by the kernel test robot
->>
->> Xuesong Chen (4):
->>   PCI: MCFG: Consolidate the separate PCI MCFG table entry list
->>   ACPI: APEI: Filter the PCI MCFG address with an arch-agnostic method
->>   ACPI: APEI: Reserve the MCFG address for quirk ECAM implementation
->>   PCI: MCFG: Add the MCFG entry parse log message
->>
->>  arch/x86/include/asm/pci_x86.h | 17 +----------
->>  arch/x86/pci/mmconfig-shared.c | 30 -------------------
->>  drivers/acpi/apei/apei-base.c  | 68 ++++++++++++++++++++++++++++++++----------
->>  drivers/acpi/pci_mcfg.c        | 46 +++++++++++++++-------------
->>  drivers/pci/pci.c              |  2 ++
->>  drivers/pci/quirks.c           |  2 ++
->>  include/linux/pci.h            | 18 +++++++++++
->>  7 files changed, 101 insertions(+), 82 deletions(-)
->>
->> -- 
->> 2.9.5
->>
+          Dmitry
