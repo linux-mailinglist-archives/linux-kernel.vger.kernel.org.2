@@ -2,113 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FABF4467E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:27:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D044467E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234256AbhKERa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 13:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40404 "EHLO
+        id S234286AbhKERbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 13:31:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232476AbhKERaZ (ORCPT
+        with ESMTP id S231689AbhKERa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 13:30:25 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76FFC061714;
-        Fri,  5 Nov 2021 10:27:45 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 133so7685406wme.0;
-        Fri, 05 Nov 2021 10:27:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=rk30KtS19Hr1jWGCg1z0hAjvJQZ3OGvu+1uH/cnLg58=;
-        b=PO7R9d23qwS7/f4zOPrCa6HSwZZl6wCaRC3DWvhgZ30eEzWnaS0hA5EpNt1u3i8Cx4
-         dbSIaGqz4w4wLYdy3230vbXfErsugosgfI3IfWmu16YukjcU+PzEkBCqmzed/NekYuKY
-         mH8bWfjAlrkxYifww/6DObo+NVuSj8Tpyih2INmXlqhcJ8s8pdzP9jM9BYDHtsBJ47HY
-         TE+ehPtDL+afoMynEWwk7bysjvf+IO3Cyi9NPEBEmgAqpHSgVxCdSDLC1TEqiBTrVts6
-         j9BuBc7ajPe2pqDwVpidFyzuiFoq6jHsxUFU81N58RjGAkueL0KRGQBO80VzEXSElO/Y
-         u0gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=rk30KtS19Hr1jWGCg1z0hAjvJQZ3OGvu+1uH/cnLg58=;
-        b=fbaYFCbzNb0s365369SNYW9F0AYcwnuPes+IpE1hCBl7LDarqiskwA4RFYn1JdsBwV
-         DWYBpH8NE5dVujw8uSJQdZ4ihgLwMP2M9c7U8kwq4A9b8ldJkzml4guEmMnH1iABso16
-         tUFwBsGgs1afa3W5na5ovHu9Pr43ufMhdThkzDtWXNJZD8vHl0rVtHfhAEhMsRenGEcw
-         YGNHhxuJkyB0OYGcRyIRJp19YZNUvd04kBbY+fSWyYgcfge/2S2lcL6BJgLSGpqYlLGt
-         MlAJWQzmZqHHLM+Epqw0BXIoPHiGY1uojxB0kBNZO9J6Cl2/lSQIsVUhdFhfh7AnfwBu
-         xSSA==
-X-Gm-Message-State: AOAM5337wU2ZK6TGGG5k9Ts9lC+4D3B6POlVU/atf57/AOSChoqXToLZ
-        58HSVIpQqNQr2BZ/5rWHPtE=
-X-Google-Smtp-Source: ABdhPJwS6UW2koakrpBVcBzrD/W0EcgWKhBz/Q2KmWIxv8ansAVyohH11Uum5Hah1BO5oIwp0N8B9w==
-X-Received: by 2002:a05:600c:3ba3:: with SMTP id n35mr26703463wms.88.1636133264497;
-        Fri, 05 Nov 2021 10:27:44 -0700 (PDT)
-Received: from localhost (eduroam-113039.grenet.fr. [130.190.113.39])
-        by smtp.gmail.com with ESMTPSA id p12sm10287241wrr.10.2021.11.05.10.27.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 10:27:44 -0700 (PDT)
-Date:   Fri, 5 Nov 2021 18:27:01 +0100
-From:   =?utf-8?Q?Fran=C3=A7ois-Xavier?= Carton <fx.carton91@gmail.com>
-To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-Cc:     Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org,
-        Ash Logan <ash@heyquark.com>,
-        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>,
-        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        "Daniel J. Ogorchock" <djogorchock@gmail.com>
-Subject: Re: [PATCH v3 0/4] HID: wiiu-drc: Add a driver for the Wii U gamepad
-Message-ID: <YYVpZWuil2aTnROx@reblochon>
-Mail-Followup-To: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
-        Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org,
-        Ash Logan <ash@heyquark.com>,
-        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>,
-        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        "Daniel J. Ogorchock" <djogorchock@gmail.com>
-References: <20210502232836.26134-1-linkmauve@linkmauve.fr>
- <20210519085924.1636-1-linkmauve@linkmauve.fr>
- <20210921150837.ingexwsauvxgluca@luna>
- <nycvar.YFH.7.76.2110191112490.12554@cbobk.fhfr.pm>
- <20211019092737.kudgdeulghx2ig3m@luna>
- <nycvar.YFH.7.76.2110191128540.12554@cbobk.fhfr.pm>
- <20211104112137.n3q7vy23z3dztmn5@luna>
+        Fri, 5 Nov 2021 13:30:59 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6101C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 10:28:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+j1/xAiEIC6nTouHB02W+EU9E1MWR8L29Tegegb7m5I=; b=T5jlVIrHjUi0TxOlYlZYyLjfhn
+        3ORz4lrlDr0NWTo02+svZcK6hLAi7sLzsCs5bBE4lPSbCQaYTeyYeUyLU8oYNMF/oJkpbyMKKvG+S
+        8DbF7dkpFslhR3lsnRtur6Hs/Fl5ijBJAfgvc5Co4HcYK1wPT0aL5M3OoQ37oy2CZCtztLGoORJ/L
+        PF5/mwfuQBd76duvwbyCQ/FQXkaTT2KdV3RC58VIPJ3bzdKCEl+TmcpoaHD/Jnhkw/n0gd93MrcO1
+        mlwFqQCpNKqkycPEUr/UhzpcWjewoJ42rlbFr6iVNxNET9W01hrDXROrS8hiEBKtwEVncUzNo4+2E
+        myGxLOBQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mj30O-00ENHK-9n; Fri, 05 Nov 2021 17:27:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9B9453000D5;
+        Fri,  5 Nov 2021 18:27:55 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5F865203C0534; Fri,  5 Nov 2021 18:27:55 +0100 (CET)
+Date:   Fri, 5 Nov 2021 18:27:55 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mathias Krause <minipli@grsecurity.net>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Benjamin Segall <bsegall@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        linux-kernel@vger.kernel.org, Odin Ugedal <odin@uged.al>,
+        Kevin Tanguy <kevin.tanguy@corp.ovh.com>,
+        Brad Spengler <spender@grsecurity.net>
+Subject: Re: [PATCH] sched/fair: Prevent dead task groups from regaining
+ cfs_rq's
+Message-ID: <YYVpm7LRWMZMzxId@hirez.programming.kicks-ass.net>
+References: <xm26ilx86gmp.fsf@google.com>
+ <CAKfTPtBm4vHr=svju=Qg6eZmcv8YDghtM2r_pOahZ2gC3tzTxg@mail.gmail.com>
+ <a6a3c6c9-d5ea-59b6-8871-0f72bff38833@grsecurity.net>
+ <CAKfTPtBxoKBRWs4Z3Pxsk8==Ka9SG7NS3LzfOV33-2UXfhSM=g@mail.gmail.com>
+ <cd3778d3-6980-a804-47e3-82b09dc960a4@grsecurity.net>
+ <CAKfTPtDthksitm02sLowDMKbWZ29efth-YcPi0zVSFqbaZfiMA@mail.gmail.com>
+ <8f4ed996-e6e5-75f4-b5fa-dffb7b7da05b@grsecurity.net>
+ <20211105162914.215420-1-minipli@grsecurity.net>
+ <YYVim5qpteqfwYjx@hirez.programming.kicks-ass.net>
+ <a113044b-b5b6-8bc1-864b-c817535889ff@grsecurity.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211104112137.n3q7vy23z3dztmn5@luna>
+In-Reply-To: <a113044b-b5b6-8bc1-864b-c817535889ff@grsecurity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 12:21:37PM +0100, Emmanuel Gil Peyrot wrote:
-> On Tue, Oct 19, 2021 at 11:30:06AM +0200, Jiri Kosina wrote:
-> > On Tue, 19 Oct 2021, Emmanuel Gil Peyrot wrote:
-> […]
-> > > Another driver I’d like to submit eventually is the GameCube Controller 
-> > > Adapter for Wii U, which does exactly what its name says, but being an 
-> > > external USB adapter it also works on any USB computer; would it make 
-> > > sense to develop it alongside the current driver, just because it is 
-> > > sold by the same company?
+On Fri, Nov 05, 2021 at 06:14:33PM +0100, Mathias Krause wrote:
+> Am 05.11.21 um 17:58 schrieb Peter Zijlstra:
+> > On Fri, Nov 05, 2021 at 05:29:14PM +0100, Mathias Krause wrote:
+> >>> Looks like it needs to be the kfree_rcu() one in this case. I'll prepare
+> >>> a patch.
+> >>
+> >> Testing the below patch right now. Looking good so far. Will prepare a
+> >> proper patch later, if we all can agree that this covers all cases.
+> >>
+> >> But the basic idea is to defer the kfree()'s to after the next RCU GP,
+> >> which also means we need to free the tg object itself later. Slightly
+> >> ugly. :/
 > > 
-> > We generally group the support for HID devices in drivers based on the 
-> > producing company, with a few exceptions where it doesn't make sense.
+> > Can't we add an rcu_head to struct task_group and simply call_rcu() the
+> > thing with a free function?
 > 
-> Speaking of which, would you want me to also merge hid-wiimote into
-> hid-nintendo?  Or is there a reason it is separate besides legacy?
-> 
+> There is already one and this patch makes use of it for the second RCU
+> GP requirement. Basically, the patch is doing what you request, no? See
+> the new free_fair_sched_group().
 
-Would naming the drivers with a "nintendo-" prefix while keeping them
-separate be an acceptable solution? Since these drivers share no common
-code, merging them will result in a big driver with different parts for
-unrelated hardware (save for the maker company), which doesn't seem
-right.
-
-For the gamecube adapter driver, I'd prefer to keep it separate; but
-I'll integrate it to hid-nintendo as Emmanuel did for the wii-u if
-that's the preferred option.
+For some reason I thought you still did kfree_rcu(), I suppose reading
+is hard. I'll give it another go after dinner.
