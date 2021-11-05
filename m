@@ -2,168 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7F5446427
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:30:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A60144642A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:30:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233048AbhKENcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 09:32:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232957AbhKENcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 09:32:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A91D61101;
-        Fri,  5 Nov 2021 13:30:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636119002;
-        bh=mWKgiLiqyBozrdDt2IL3sh1nM4cVgTMzzQcmq0TcnkQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H5OLpa3k4y1B934tTm2A7l322K2c0ySciU0R2kY8zf9+r/TvQIb106K3/ezP7K+RT
-         tSR0qVhBtQjah2ssuXzVFgCCJDOAbDT3RjZH0FXf9r143lfkv9+T9+K/VKvmroDHE9
-         rqiS0ig9Vr/o4wowieHcVp0gbtLX6NVAHAykxWnrieWnv3LzITNKTVjiuiHPTSywNe
-         KQqy1t9x+Dev+af2Xf5B1FviyZwQ6RNbPjvZkSvLKxGH5UOD+oYysKETMlLQq08iGU
-         ze4p7slLkS5Cqbu+bYkT//ODClGiseasb+9Hwc1RGLYlBrw0EG2Vn+JxWnAc1KJnQK
-         MAhpRJZARmcHQ==
-Date:   Fri, 5 Nov 2021 13:29:57 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Lh Kuo =?utf-8?B?6YOt5Yqb6LGq?= <lh.Kuo@sunplus.com>
-Cc:     "LH.Kuo" <lhjeff911@gmail.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "qinjian@cqplus1.com" <qinjian@cqplus1.com>,
-        Wells Lu =?utf-8?B?5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
-Subject: Re: [PATCH 1/2] SPI: Add SPI driver for Sunplus SP7021
-Message-ID: <YYUx1VxyvL5evRA6@sirena.org.uk>
-References: <1635747525-31243-1-git-send-email-lh.kuo@sunplus.com>
- <1635747525-31243-2-git-send-email-lh.kuo@sunplus.com>
- <YYAzrDuLYQt4U06J@sirena.org.uk>
- <1c5b8e435d614772a5c0af8d5c633941@sphcmbx02.sunplus.com.tw>
+        id S233058AbhKENdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 09:33:32 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:35359 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S232832AbhKENda (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 09:33:30 -0400
+Received: (qmail 1591166 invoked by uid 1000); 5 Nov 2021 09:30:50 -0400
+Date:   Fri, 5 Nov 2021 09:30:50 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mathias Nyman <mathias.nyman@linux.intel.com>,
+        "Walt Jr. Brake" <mr.yming81@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nishad Kamdar <nishadkamdar@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Eddie Hung <eddie.hung@mediatek.com>
+Subject: Re: [PATCH v2] usb: core: reduce power-on-good delay time of root hub
+Message-ID: <20211105133050.GA1590803@rowland.harvard.edu>
+References: <1618017645-12259-1-git-send-email-chunfeng.yun@mediatek.com>
+ <5e907ccd-40bb-2ece-fe05-1a65a74f3aa2@gmail.com>
+ <20211101140613.GC1456700@rowland.harvard.edu>
+ <3cf46eaf-5443-30df-6d72-b92a6a518afc@linux.intel.com>
+ <62d0ac30-f2b9-f58c-cb1e-215ccb455753@gmail.com>
+ <13d55059-9f66-8599-54fc-46698bae41d1@linux.intel.com>
+ <YYUAv5456iyuxaG6@kroah.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="XjvkUaH+EetQzKru"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1c5b8e435d614772a5c0af8d5c633941@sphcmbx02.sunplus.com.tw>
-X-Cookie: For recreational use only.
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YYUAv5456iyuxaG6@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 05, 2021 at 11:00:31AM +0100, Greg Kroah-Hartman wrote:
+> On Wed, Nov 03, 2021 at 10:37:33PM +0200, Mathias Nyman wrote:
+> > On 2.11.2021 22.29, Walt Jr. Brake wrote:
+> > > On 2/11/2021 17:05, Mathias Nyman wrote:
+> > >> On 1.11.2021 16.06, Alan Stern wrote:
+> > >>> On Sat, Oct 30, 2021 at 12:49:37PM +0800, Walt Jr. Brake wrote:
+> > >>>> This patch make USB 3.1 device cannot be detected, and I report the bug [1]
+> > >>>> to archlinux three month ago. Yesterday I try to fix it myself, and after I
+> > >>>> revert this patch, compile the kernel and test, it works.
+> > >>>>
+> > >>>> [1] https://bugs.archlinux.org/task/71660?project=1&pagenum=2
+> > >>>>
+> > >>>>
+> > >>>> diff --git a/drivers/usb/core/hub.h b/drivers/usb/core/hub.h
+> > >>>> index 22ea1f4f2d66..73f4482d833a 100644
+> > >>>> --- a/drivers/usb/core/hub.h
+> > >>>> +++ b/drivers/usb/core/hub.h
+> > >>>> @@ -148,10 +148,8 @@ static inline unsigned hub_power_on_good_delay(struct
+> > >>>> usb_hub *hub)
+> > >>>>   {
+> > >>>>          unsigned delay = hub->descriptor->bPwrOn2PwrGood * 2;
+> > >>>>
+> > >>>> -       if (!hub->hdev->parent) /* root hub */
+> > >>>> -               return delay;
+> > >>>> -       else /* Wait at least 100 msec for power to become stable */
+> > >>>> -               return max(delay, 100U);
+> > >>>> +       /* Wait at least 100 msec for power to become stable */
+> > >>>> +       return max(delay, 100U);
+> > >>>>   }
+> > >>> Mathias:
+> > >>>
+> > >>> It looks like the bPwrOn2PwrGood value in xhci-hcd's hub descriptor is
+> > >>> too small for some USB 3.1 devices.
+> > >>>
+> > >>> Can you look into this?
+> > >>>
+> > >>> Alan Stern
+> > >>>
+> > >> At first glance the xhci roothub bPwrOn2PwrGood value looks ok.
+> > >> xhci spec 5.4.8 states software should wait 20ms after asserting PP, before
+> > >> attempting to change the state of the port.
+> > >>
+> > >> xhci driver sets desc->bPwrOn2PwrGood = 10; (2ms interval, so equals 20ms )
+> > >>
+> > >> We should probably get this working immediately, so maybe revert that patch
+> > >> while looking into the rootcause.
+> > >>
+> > >> Walt Jr. Brake, instead of reverting that patch, could you test if changing the
+> > >> xhci roothub bPwrOn2PwrGood value helps.
+> > >>
+> > >> diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
+> > >> index a3f875eea751..756231a55602 100644
+> > >> --- a/drivers/usb/host/xhci-hub.c
+> > >> +++ b/drivers/usb/host/xhci-hub.c
+> > >> @@ -257,7 +257,7 @@ static void xhci_common_hub_descriptor(struct xhci_hcd *xhci,
+> > >>   {
+> > >>          u16 temp;
+> > >>   -       desc->bPwrOn2PwrGood = 10;      /* xhci section 5.4.9 says 20ms max */
+> > >> +       desc->bPwrOn2PwrGood = 50;      /* The 20ms in xhci 5.4.8 isn't enough for USB 3.1 */
+> > >>          desc->bHubContrCurrent = 0;
+> > >>            desc->bNbrPorts = ports;
+> > >>
+> > >> Thanks
+> > >> -Mathias
+> > > 
+> > > Mathias:
+> > > 
+> > > Sorry to reply lately. I test with your patch, it works.
+> > > 
+> > > I also test with setting bPwrOn2PwrGood to 45, and it not work.
+> > > 
+> > > Seems that the minimal value should be 50 for this case.
+> > > 
+> > 
+> > Thanks for testing, and for checking that 90ms wait isn't enough
+> 
+> Can you send a "real" patch for this so I can get it into the tree soon
+> to resolve the regression?
 
---XjvkUaH+EetQzKru
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Also, it might make sense to move the desc->bPwrOn2PwrGood setting from 
+xhci_common_hub_descriptor into the speed-specific routines.  For the 
+USB-2 root hub the value can remain set to 10; only the USB-3 root hub 
+needs to be changed.
 
-On Fri, Nov 05, 2021 at 03:12:32AM +0000, Lh Kuo =E9=83=AD=E5=8A=9B=E8=B1=
-=AA wrote:
-
-Please delete unneeded context from mails when replying.  Doing this
-makes it much easier to find your reply in the message, helping ensure
-it won't be missed by people scrolling through the irrelevant quoted
-material.
-
-> > > +++ b/drivers/spi/spi-sunplus-sp7021.c
-> > > @@ -0,0 +1,1356 @@
-> > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > +/*
-> > > + * Sunplus SPI controller driver
-> > > + *
-> > > + * Author: Sunplus Technology Co., Ltd.
-
-> > Please make the entire comment a C++ one so things look more intentiona=
-l.
-
-> Sorry I don't understand. Is there a explanation?
-
-Make the entire comment block C++ style - //
-
-> > If the device has a GPIO chip select it should use the core support for=
- GPIO
-> > chip selects rather than open coding.
-
-> Sorry But I didn't find the core function support to use simply. The core=
- function is too complicated for me.
-
-What did you try and in what way was it complicated?  There's lots of
-other drivers using this and it's generally resulted in less code in the
-drivers so it seems this should be soemthing we can solve.
-
-> > > +	if (RW_phase =3D=3D SPI_SLAVE_WRITE) {
-
-> > > +	} else if (RW_phase =3D=3D SPI_SLAVE_READ) {
-
-> > These two cases share no code, they should probably be separate functio=
-ns
-> > (and what happens if it's an unknown phase?).
-
-> The slave mode of SP7021 is only half duplex.
-
-Not sure that really addresses the concern?
-
-> > > +	if (pspim->tx_cur_len < data_len) {
-> > > +		len_temp =3D min(pspim->data_unit, data_len);
-> > > +		sp7021spi_wb(pspim, len_temp);
-> > > +	}
-
-> > What if there's more data?
-
-> SP7021 only support 16bytes FIFO transfer.
-
-It can transfer more than one FIFO's worth of data though can't it?
-
-> > I find it difficult to convince myself that this isn't going to have an=
-y overflow
-> > issues, and it'll break operation with anything that does any manipulat=
-ion of
-> > chip select during the message.  Given that the device uses GPIO chip s=
-elects
-> > I'd expect it to just implement transfer_one() and not handle messages =
-at all.
-> > This would greatly simplify the code.
-
-> More conditions will be checked in the spi-message function.
-> In this case, only rx-date is allocated for each transfer of the  message.
-
-Part of the issue with both this and the previous section is code
-clarity - it's not just if the code is correct, it's if it's clear that
-the code is correct.
-
-> > So we are using transfer_one?  In that case I'm very confused why the d=
-river
-> > would be walking a transfer list...
-
-> And the spi of SP7021 includes two working modes: spi-master and spi-slave
->=20
-> SP7021 spi-master : full-duplex  FIFO-mode only.
-> SP7021 spi-slave : helf-duplex  DMA-mode
-
-> It seems that linux can contain these two modes in one drive. And this is=
- what I need.
-> Because many registers are overlapped, if they are used in different driv=
-es,=20
-> they will crash if they are declared.
-
-I think the driver needs to be restructured so it's clear which bits
-apply to which mode, it's basically two completely separate code paths.
-I have to say that it's really very surprising that the two different
-modes use such completely different control mechanisms, normally the
-differentiation would be more triggered by performance reasons.
-
---XjvkUaH+EetQzKru
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGFMdQACgkQJNaLcl1U
-h9Bqjwf+LNBPkZ4s2u6+i9R8vT+a3nNJiUhnlikJJTHPLmlE5gNOOXMs7JGYOtfj
-3O2E7/DNGcuu7ad8cTUXmZ4dVGSHhbA8GS8FsK/JN3a3MVd21oogPoeJc0c1yooP
-3AqEZDKXWdFXx61IZYzSTe0Ga3zhIe5Cn4b708uZ7EeCeav6dKJlRS9Ot0bWlOY+
-G1Hmanv1oRMfqkETlCyBCuMk8OJ12XioOhTNnezeHgaEKIvgIOV/ZJ4b31OngH+o
-XIv/rkP0vuuFGgqYyeTSwo1/DigsjjVs0AAAr3hvphrIIRdO3JEOjFZLNrdQxBsz
-szmI5rwe5naM9OL9XuDMAhdVtFBcFA==
-=F6B1
------END PGP SIGNATURE-----
-
---XjvkUaH+EetQzKru--
+Alan Stern
