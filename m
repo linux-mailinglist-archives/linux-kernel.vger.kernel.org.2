@@ -2,108 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3097A446B20
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 00:10:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39477446B22
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 00:11:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234014AbhKEXNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 19:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
+        id S234016AbhKEXOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 19:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhKEXNG (ORCPT
+        with ESMTP id S230331AbhKEXOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 19:13:06 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CFDC061570
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 16:10:26 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id h14so8618346qtb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 16:10:26 -0700 (PDT)
+        Fri, 5 Nov 2021 19:14:03 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 610C7C061570;
+        Fri,  5 Nov 2021 16:11:23 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id g28so880489pgg.3;
+        Fri, 05 Nov 2021 16:11:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=01prNQfOshQwAraB0gPQr6QCA+e8lskhGHoqy/4slkU=;
-        b=jrHZlWSn2gXjjjH9/9iLLT0idaUdpkyj4K9Tr8G4+/nKwy2tSmWgfJ7EOMF6NpMrXj
-         UZuoVBHbSjl3LrrC9cE78Lmlw4OBEpnnP/+FWFMfGSgPjGcyS1VnMYA2P6O2B6jA9ig5
-         zVCKLMrdHUXYIpBT61IEFwON5dPIlJURQWbpySteIeAHqV4oVKqCjBwcIp9RJ0ITfOzc
-         MnnfgYIO7oacyxf4ubhGjyDl214EAGPgw7fpNvCAdUTgXxzbiV23fnMroWfPjs/b6lKY
-         JsHkc/g7us8iS0qniAm0G1nVRSPJHiMjVyEyDfedq5QRx+2hsEGdkwF9/Sz2aOIpI8Cb
-         tDvw==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fe30gTf1JSH+qni1elDo831NVGG1lJluzq3OLW/dWIM=;
+        b=p5sJJOrDEYqV2YTQNzrstft63jCJWAaO8A+cosJrR/IlYDqk32+qiBb8ydvv9Sf/u6
+         ztJ+Zv8n16UP7+B1acBMOC36VXH3xt5G9G4ePa2+gxgDVbK593fo3+vwUdkR6xGuVOD5
+         pkVsFhBeVvMRFm3rAzAHuZYUDPIhzGKsjYrLn69dvTa9TeHgRomfF6sIljreV+xUTAqh
+         ivqy2YdZA5VwG93YrS3mG4HK9tTAwo5HeygmnUA4GlgBklx0TsR2hVxtMC+ClzvWZz6Y
+         IkZAy8wrUw0WstgzVJ/I0U7naYXGjdloseWwDUcIZoshEo1ceW3nOA7FWx+jIIgpLBnt
+         7Fzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=01prNQfOshQwAraB0gPQr6QCA+e8lskhGHoqy/4slkU=;
-        b=grq3zJpnkdJz/gKnpxjrho1xkNpuuZVUTFeCQ/f2We1NB06p2Q8HmDQdXK68Jm9MzU
-         eOjakl7QHDq4C9NtIlKWR9XxUJIQGl45DHpnJhWc0XzDW2d00PfoCmoEnwWSEF5ws3ZI
-         tdWDMjjub5a2bEz+GQNH/Yu4CpycPO3o4r8IbfG0T9+J8HtzcaPnKixCUG8hCjsAGl7K
-         ExTq6MskoGLm7vmgOdWMBw/BZUv7gTtup8qCdoZhpnd9d0AsDdcnQI1kzYN4QwCb9AyR
-         18m8pk4D7Kndanm35Q/AGNc2GL/vjL3aIX51mzlAPRe9hRK24/cc07MbbyIAjgyz2oV2
-         ehHg==
-X-Gm-Message-State: AOAM530hkrfuki83nCClTblBALOF86vVwB9Fj6gJn742EMXrofhuNsxQ
-        WtDLQqyEznRIg0lZH2T+3bfKJZcuN3KLhsKbJ+FJOA==
-X-Google-Smtp-Source: ABdhPJwbXn2bWDBccj7jLS3vgk9oe57vWLQ4se9oPE4pFVQkjtIhcedCdVGY2mO1mgsmMPAA5GSqGbDnuaY9+oNWHKE=
-X-Received: by 2002:a05:622a:1112:: with SMTP id e18mr14406447qty.127.1636153825025;
- Fri, 05 Nov 2021 16:10:25 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fe30gTf1JSH+qni1elDo831NVGG1lJluzq3OLW/dWIM=;
+        b=w8mBOTHASLBiqBFtr/BP/vHN6ZzuqDdjhr3MmRRAl/TP+xL33jUz46PNu8tTjtm1FW
+         3J29ZDfXUbdj1vB/rFIU8KOPcVMslq2ppmKD9q655z5WrGrPn5rQYROF0PKfZZrxC2vM
+         zPdX00mx4bADYpyK6VsLrKrCkVn08Vip5zAhCEbFBkvkcSq2nEWFgb/nXLKnYqWQgUBz
+         jcgLBJ5GaW2LdpE9ucxiyL0s6tVL5r89IJozanRXHDaUBEBCA6lsGb1LhrCL7CGof5vq
+         +cDNaE5MP3aOqLCEJgCkXWh+EHMoPdwC69psDeNIKHUljiy97lVRxq8HzRL9J5QctDua
+         Rpvg==
+X-Gm-Message-State: AOAM532FnrCx+3pRUKuc8mrFFQDcR2rBTPHdIohELOW72hN8lsZJlAir
+        31GIOLqqHad9RsGBLcHO5lo=
+X-Google-Smtp-Source: ABdhPJxHEL9UfKqPpufsLjZ2IJT4l8QtchzUvFFL1+WAcE+uvhlq2IyLoqu4RJJf9RwCHrHW6clN+g==
+X-Received: by 2002:a63:b957:: with SMTP id v23mr45380131pgo.74.1636153882737;
+        Fri, 05 Nov 2021 16:11:22 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:837c:e765:475f:22d3])
+        by smtp.gmail.com with ESMTPSA id c3sm8479607pfv.25.2021.11.05.16.11.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 16:11:21 -0700 (PDT)
+Date:   Fri, 5 Nov 2021 16:11:19 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        David Airlie <airlied@linux.ie>,
+        linux-rockchip@lists.infradead.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Doug Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH 1/2] drm/input_helper: Add new input-handling helper
+Message-ID: <YYW6FwSeNMK25ENm@google.com>
+References: <20211103234018.4009771-1-briannorris@chromium.org>
+ <20211103164002.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
 MIME-Version: 1.0
-References: <CAD=FV=UKyJLhDEKxhqrit16kvLfi+g0DyYKL6bLJ35fO7NCTsg@mail.gmail.com>
- <CAJWu+orNotdFUe0Bc9ooP+1nzajd=7A9WiSWXwtrsLkWi8gFAg@mail.gmail.com> <CAJWu+oocnt-yF=R=XxNvjj14hwV8hAewz-696DcAzGdr5ys2sQ@mail.gmail.com>
-In-Reply-To: <CAJWu+oocnt-yF=R=XxNvjj14hwV8hAewz-696DcAzGdr5ys2sQ@mail.gmail.com>
-From:   Joel Fernandes <joelaf@google.com>
-Date:   Fri, 5 Nov 2021 19:10:13 -0400
-Message-ID: <CAJWu+oqUC4V4QxryLXvG-GRS_Co=n+kMLeWJom4VR6OWCNE4=A@mail.gmail.com>
-Subject: Re: RT_GROUP_SCHED throttling blocks unthrottled RT tasks?
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211103164002.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 5, 2021 at 7:05 PM Joel Fernandes <joelaf@google.com> wrote:
->
-> On Fri, Nov 5, 2021 at 7:04 PM Joel Fernandes <joelaf@google.com> wrote:
-> >
-> > On Fri, Nov 5, 2021 at 1:44 PM Doug Anderson <dianders@chromium.org> wrote:
-> > [..]
-> > >
-> > >
-> > > I tried gathering some tracing. One bit that might (?) be relevant:
-> > >
-> > >  cros_ec_spi_hig-179     [000] d.h5  1495.305919: sched_waking:
-> > > comm=kworker/4:2 pid=5232 prio=120 target_cpu=004
-> > >  cros_ec_spi_hig-179     [000] d.h6  1495.305926: sched_wakeup:
-> > > comm=kworker/4:2 pid=5232 prio=120 target_cpu=004
-> > >           <idle>-0       [001] d.H5  1495.309113: sched_waking:
-> > > comm=sugov:6 pid=2658 prio=-1 target_cpu=006
-> > >           <idle>-0       [001] d.H6  1495.309119: sched_wakeup:
-> > > comm=sugov:6 pid=2658 prio=-1 target_cpu=006
-> > >  cros_ec_spi_hig-179     [000] d.h5  1495.309336: sched_waking:
-> > > comm=sugov:6 pid=2658 prio=-1 target_cpu=006
-> > >  cros_ec_spi_hig-179     [000] d.h6  1495.309341: sched_wakeup:
-> > > comm=sugov:6 pid=2658 prio=-1 target_cpu=006
-> > >           <idle>-0       [001] d.H5  1495.312137: sched_waking:
-> > > comm=sugov:6 pid=2658 prio=-1 target_cpu=006
-> > >           <idle>-0       [001] d.H6  1495.312142: sched_wakeup:
-> > > comm=sugov:6 pid=2658 prio=-1 target_cpu=006
-> > >  cros_ec_spi_hig-179     [000] d.h5  1495.312859: sched_waking:
-> > > comm=sugov:6 pid=2658 prio=-1 target_cpu=006
-> > >  cros_ec_spi_hig-179     [000] d.h6  1495.312870: sched_wakeup:
-> > > comm=sugov:6 pid=2658 prio=-1 target_cpu=006
-> > >
-> > > My best guess is that there's some bug in the scheduler where it just
-> > > loops constantly picking an unthrottled RT task but then incorrectly
-> > > decides that it's throttled and thus doesn't run it.
-> >
-> > Thanks for posting this. Tricky bit indeed. I was wondering if the
-> > issue is here:
-> > https://elixir.bootlin.com/linux/latest/source/kernel/sched/rt.c#L1031
->
-> Errm, I meant Line 1060 in rt.c
-> https://elixir.bootlin.com/linux/latest/source/kernel/sched/rt.c#L1060
+On Wed, Nov 03, 2021 at 04:40:17PM -0700, Brian Norris wrote:
+> A variety of applications have found it useful to listen to
+> user-initiated input events to make decisions within a DRM driver, given
+> that input events are often the first sign that we're going to start
+> doing latency-sensitive activities:
+> 
+>  * Panel self-refresh: software-directed self-refresh (e.g., with
+>    Rockchip eDP) is especially latency sensitive. In some cases, it can
+>    take 10s of milliseconds for a panel to exit self-refresh, which can
+>    be noticeable. Rockchip RK3399 Chrome OS systems have always shipped
+>    with an input_handler boost, that preemptively exits self-refresh
+>    whenever there is input activity.
+> 
+>  * GPU drivers: on GPU-accelerated desktop systems, we may need to
+>    render new frames immediately after user activity. Powering up the
+>    GPU can take enough time that it is worthwhile to start this process
+>    as soon as there is input activity. Many Chrome OS systems also ship
+>    with an input_handler boost that powers up the GPU.
+> 
+> This patch provides a small helper library that abstracts some of the
+> input-subsystem details around picking which devices to listen to, and
+> some other boilerplate. This will be used in the next patch to implement
+> the first bullet: preemptive exit for panel self-refresh.
+> 
+> Bits of this are adapted from code the Android and/or Chrome OS kernels
+> have been carrying for a while.
 
-AAARGH , I hate elixir. I meant this code in update_curr_rt() :
+If this is acceptable to DRM folks I am OK with this from input POV. The
+only think I would call out that the callback is executed in atomic
+context with interrupts disabled.
 
-if (sched_rt_runtime_exceeded(rt_rq))
-    resched_curr(rq);
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+
+Thanks.
+
+-- 
+Dmitry
