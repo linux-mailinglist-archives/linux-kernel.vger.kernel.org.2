@@ -2,73 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BFD445D98
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 365E1445D9A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230379AbhKEBx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 21:53:29 -0400
-Received: from smtp21.cstnet.cn ([159.226.251.21]:44568 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231441AbhKEBx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 21:53:27 -0400
-Received: from localhost.localdomain (unknown [124.16.141.244])
-        by APP-01 (Coremail) with SMTP id qwCowADXcCHgjYRhzK6SBg--.62978S2;
-        Fri, 05 Nov 2021 09:50:25 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     damien.lemoal@opensource.wdc.com
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ata: sata_highbank: Remove unnecessary print function dev_err()
-Date:   Fri,  5 Nov 2021 01:50:21 +0000
-Message-Id: <20211105015021.38998-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+        id S230512AbhKEByK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 21:54:10 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:46787 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229806AbhKEByJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 21:54:09 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hlk4t0ZkWz4xbP;
+        Fri,  5 Nov 2021 12:51:25 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1636077089;
+        bh=2lOyapLlzAgrwNZPiurVfK316EULLqggli6pFQMqWI8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jgpzdLEIFcN6zPmEM1joby9HCnYZCANFqtS8W/5jejxAjNWSmGFWpsxSoXBtjnTPF
+         Tui2ddzquLLlL3Wsumc9Wm8YMpE21zZugxHREPCWAu70PcX2Ulo1/DT7jXtb8b5/UK
+         sh/JixoPWkM6lX5bJUPyTwcGnq1XZxFQe6RAekZZZjQ8b01e5VfjtsM1qNN/deDD51
+         RtLSaN8M5+m9Zj+IX3YnB35vFjv2rgWt6s1y2x+LFG3DCckqmshj3XTtWpbsXHyRyu
+         dU15fu2cvqC+WGokSEYIPsjx6jdbcpTp1pZBYKePPeFQ1/EneAq6YqsYYzW05dQ1oL
+         i5WRqc0FFvS6Q==
+Date:   Fri, 5 Nov 2021 12:51:22 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Matthew Auld <matthew.auld@intel.com>
+Subject: Re: linux-next: manual merge of the char-misc tree with the
+ drm-intel tree
+Message-ID: <20211105125122.21d336ac@canb.auug.org.au>
+In-Reply-To: <20211028182753.56b6a174@canb.auug.org.au>
+References: <20211028182753.56b6a174@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: qwCowADXcCHgjYRhzK6SBg--.62978S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZrWrWF45tw4DJF48Ww45Jrb_yoWxCFc_t3
-        WxuFs7Xry0yFn0yw12vw43ZF9Fka95Xrs5u3Z7tF9xK3WUAF4fZFyUZFs5Jr1DWr40qr1Y
-        yrWj9w13urW3AjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2AYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_KwCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j00PfUUUUU=
-X-Originating-IP: [124.16.141.244]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCwcPA1z4kkBX0wADsx
+Content-Type: multipart/signed; boundary="Sig_/1he=p4nehQe6V5iBAMGQAGk";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The print function dev_err() is redundant because
-platform_get_irq() already prints an error.
+--Sig_/1he=p4nehQe6V5iBAMGQAGk
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/ata/sata_highbank.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Hi all,
 
-diff --git a/drivers/ata/sata_highbank.c b/drivers/ata/sata_highbank.c
-index 8440203e835e..b29d3f1d64b0 100644
---- a/drivers/ata/sata_highbank.c
-+++ b/drivers/ata/sata_highbank.c
-@@ -469,10 +469,8 @@ static int ahci_highbank_probe(struct platform_device *pdev)
- 	}
- 
- 	irq = platform_get_irq(pdev, 0);
--	if (irq < 0) {
--		dev_err(dev, "no irq\n");
-+	if (irq < 0)
- 		return irq;
--	}
- 	if (!irq)
- 		return -EINVAL;
- 
--- 
-2.25.1
+On Thu, 28 Oct 2021 18:27:53 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> Today's linux-next merge of the char-misc tree got a conflict in:
+>=20
+>   drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+>=20
+> between commit:
+>=20
+>   5740211ea442 ("drm/i915/dmabuf: fix broken build")
+>=20
+> from the drm-intel tree and commit:
+>=20
+>   16b0314aa746 ("dma-buf: move dma-buf symbols into the DMA_BUF module na=
+mespace")
+>=20
+> from the char-misc tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+> index a45d0ec2c5b6,abb854281347..000000000000
+> --- a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+> +++ b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
+> @@@ -12,13 -13,8 +13,15 @@@
+>   #include "i915_gem_object.h"
+>   #include "i915_scatterlist.h"
+>  =20
+>  +#if defined(CONFIG_X86)
+>  +#include <asm/smp.h>
+>  +#else
+>  +#define wbinvd_on_all_cpus() \
+>  +	pr_warn(DRIVER_NAME ": Missing cache flush in %s\n", __func__)
+>  +#endif
+>  +
+> + MODULE_IMPORT_NS(DMA_BUF);
+> +=20
+>   I915_SELFTEST_DECLARE(static bool force_different_devices;)
+>  =20
+>   static struct drm_i915_gem_object *dma_buf_to_obj(struct dma_buf *buf)
 
+This is now a conflict between the drm-intel tree and Linux' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/1he=p4nehQe6V5iBAMGQAGk
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGEjhoACgkQAVBC80lX
+0GwH4Af/V9J988QeNptA56hLZgn3wchP6cRFnhcMG6FT3+kxwo97+wludh3alREX
+wFaD54Ta2NyV6cWgkLzf+jb+r4BqhRDNSuCi6/MZEv1U9rc0w95om6/xrn+GGcKx
+g30RFwahGjDIjiEbCVLm2IS2gJWMBVDyMAqugKjdmrJFR/ewdUjv9vXrwFR39W8w
+IWiVZ2wHNUsO8rBD3U/KJYuN6C+dXf/Cs9aohd2UhG/5/6x+yQWMdjvmrSlIWU+g
+d7/zZKTnkzGaxCXt+L6k3yKHv0MSpTugQdb4sCVB4spjuP+1UPzF/83agDqwIbzw
+xlfjQo+C1Z5jRRT+CINSHSU8aNIxAA==
+=z6S2
+-----END PGP SIGNATURE-----
+
+--Sig_/1he=p4nehQe6V5iBAMGQAGk--
