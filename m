@@ -2,171 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DCEF446543
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:53:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9D8446545
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:53:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233252AbhKEOze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 10:55:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60618 "EHLO
+        id S233284AbhKEO4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 10:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231140AbhKEOza (ORCPT
+        with ESMTP id S233305AbhKEO4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 10:55:30 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EB9C061714;
-        Fri,  5 Nov 2021 07:52:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=0BDivR2e7gK5AhopOLLPM2YDzPI9BZ1+6HTjQttj6iQ=; b=hr7IohAlHYnm5gT2uyeQAjecwX
-        8w1orpHEUkBNXb9CrKaHZncTnB2nQoQZ/KBTZa2VhcGdTR5rr8uUIt9/wnCsSC++BiyT0OdpIkOz8
-        YifP1N0Ane4F347M/XG39qp13y0sDRk3x/B3t9/3wq9ADcdi2Y5ap3Oma9eT1hqklVNQ=;
-Received: from p200300ccff0899001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff08:9900:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1mj0aC-0004rc-F7; Fri, 05 Nov 2021 15:52:44 +0100
-Date:   Fri, 5 Nov 2021 15:52:43 +0100
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mylene.josserand@free-electrons.com, linus.walleij@linaro.org,
-        rydberg@bitmath.org, dmitry.torokhov@gmail.com, robh+dt@kernel.org,
-        alistair23@gmail.com
-Subject: Re: [PATCH v2 0/4] Add support for the Cypress cyttsp5
-Message-ID: <20211105155243.7b635651@aktux>
-In-Reply-To: <20211103114830.62711-1-alistair@alistair23.me>
-References: <20211103114830.62711-1-alistair@alistair23.me>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 5 Nov 2021 10:56:08 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 536A7C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 07:53:27 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id t30so14138002wra.10
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 07:53:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=iXLTZXL1GQP1HI9r/QvQqQsWuhIIrqOsmFlp8xIa9EA=;
+        b=s378FoYPpbOvJEqqeuzFQJJ/PPT9UGPGFyvQK0kJrjUMl2vqYFjnIhRzfAnD+Yxz1c
+         wIWQgEUjUATKcu7zviAitnD/Kie0GKxCSKrdD0wQCE2YJGSwszme8HZ9ZSBGebjlDBo5
+         dqXiiaekTEhL9vCP4akjSRj1o/YDfHW5Y9Sj5csljI8CRXuFq9nlAqszS+LCN7geWUGh
+         XDzAn/HLJlqqMF8gy9fr/hHew3Q+BSekoWPpu/AadusPqwVYsu/sW4chCOa4Wdb35QdV
+         EgD0LU1GwIeQ0qqC06iAe3H13Apk5m19FItjl+O4uT1WjFfdy15xIumAswsGjEZT4qjv
+         9xBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=iXLTZXL1GQP1HI9r/QvQqQsWuhIIrqOsmFlp8xIa9EA=;
+        b=wF4GFiAILXoqB8KZVt81KvPt2bUUxc0Iv0X/Tw688CaJTovJPUCpTn+1Ri1eI20F8w
+         pCbVavSZE9lwgEhv9jJYKK0t5YCMkl9iQ6Mx4ahTrKSfhu0S26OBXo6rxERV0QbpFpu2
+         NHYOU9VIlPBY+UDAw6KWJNJ70h0QjpLwSkywFDPyDcR0z4g5tnxh9QrqbGDvBcHy7cA0
+         LmA+Ihg3cCRW25XuYMep/gDdT4X38Xu40HCSChlZi0Sma4W/5EWy9PcP34E9zUyy08aQ
+         w+oudeYNCdW26adzPz1NRq1krMUEzKKEByU2Rmyyl8DTcd5myQUplnp48J+/iEs/Atr8
+         scvQ==
+X-Gm-Message-State: AOAM530MNUXL3PRloMbJJWtY2oW+XHkJ3yVU3uZWjr15WTbwoVed7+Vd
+        Riif7lYkPF9MUCQsD4Ovl621JA==
+X-Google-Smtp-Source: ABdhPJz1uQp/2OsYlQ22lcK92G8Yg5XjL99UT2p/Zrqni2zAlPmMdHMthVbcYCmG7zZys8uRoXs7hg==
+X-Received: by 2002:adf:e306:: with SMTP id b6mr73651599wrj.244.1636124005867;
+        Fri, 05 Nov 2021 07:53:25 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id q84sm14380782wme.3.2021.11.05.07.53.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 07:53:25 -0700 (PDT)
+Date:   Fri, 5 Nov 2021 15:53:23 +0100
+From:   LABBE Corentin <clabbe@baylibre.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
+Subject: Re: [PATCH v3 00/14] staging: media: zoran: fusion in one module
+Message-ID: <YYVFY6NSdlKiIKK3@Red>
+References: <20211026193416.1176797-1-clabbe@baylibre.com>
+ <a85c93db-e118-274f-d86a-d127c7399926@xs4all.nl>
+ <YYKxTrWI299pvqo7@Red>
+ <2bbce7ef-acf8-3c0f-2705-09d34b2d92be@xs4all.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Score: -1.0 (-)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2bbce7ef-acf8-3c0f-2705-09d34b2d92be@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo Alistair,
+Le Wed, Nov 03, 2021 at 05:29:46PM +0100, Hans Verkuil a écrit :
+> On 03/11/2021 16:57, LABBE Corentin wrote:
+> > Le Wed, Nov 03, 2021 at 04:21:02PM +0100, Hans Verkuil a écrit :
+> >> Hi Corentin,
+> >>
+> >> On 26/10/2021 21:34, Corentin Labbe wrote:
+> >>> Hello
+> >>>
+> >>> The main change of this serie is to fusion all zoran related modules in
+> >>> one.
+> >>> This fixes the load order problem when everything is built-in.
+> >>
+> >> I've been testing this series, and while the module load/unload is now working,
+> >> I'm running into a lot of other v4l2 compliance issues.
+> >>
+> >> I've fixed various issues in some follow-up patches available in my tree:
+> >>
+> >> https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=zoran
+> >>
+> >> At least some of the worst offenders are now resolved. Note that the patch
+> >> dropping read/write support relies on this patch:
+> >>
+> >> https://patchwork.linuxtv.org/project/linux-media/patch/4f89b139-13b7-eee6-9662-996626b778b0@xs4all.nl/
+> > 
+> > Hello
+> > 
+> > My test branch already included your "zoran: fix various V4L2 compliance errors"
+> > I have quickly checked other patch and I am ok with them.
+> > I will add and test with them.
+> > 
+> >>
+> >> But there is one really major bug that makes me hesitant to merge this:
+> >>
+> >> This works:
+> >>
+> >> v4l2-ctl -v pixelformat=MJPG,width=768,height=576
+> >> v4l2-ctl --stream-mmap
+> >>
+> >> This fails:
+> >>
+> >> v4l2-ctl -v pixelformat=MJPG,width=768,height=288
+> >> v4l2-ctl --stream-mmap
+> >>
+> >> It's an immediate lock up with nothing to indicate what is wrong.
+> >> As soon as the height is 288 or less, this happens.
+> >>
+> >> Both with my DC30 and DC30D.
+> > 
+> > Just for curiosity, what is the difference between thoses two ?
+> 
+> It's the DC30 variant without an adv7175.
 
-my Xorg (debian buster installation) does not like that:
-[  3112.462] (**) cyttsp5: Applying InputClass "evdev touchscreen catchall"
-[  3112.462] (**) cyttsp5: Applying InputClass "libinput touchscreen catcha=
-ll"
-[  3112.462] (II) Using input driver 'libinput' for 'cyttsp5'
-[  3112.463] (**) cyttsp5: always reports core events
-[  3112.463] (**) Option "Device" "/dev/input/event1"
-[  3112.463] (**) Option "_source" "server/udev"
-[  3112.496] (II) event1  - cyttsp5: is tagged by udev as: Touchscreen
-[  3112.498] (EE) event1  - cyttsp5: kernel bug: device has min =3D=3D max =
-on ABS_X
-[  3112.498] (II) event1  - cyttsp5: was rejected
-[  3112.498] (II) event1  - not using input device '/dev/input/event1'.
-[  3112.499] (EE) libinput: cyttsp5: Failed to create a device for /dev/inp=
-ut/event1
+So my patch removing adv7175 from DC30 is wrong.
+I need to add a new DC30D.
 
-# evtest /dev/input/event1=20
-Input driver version is 1.0.1
-Input device ID: bus 0x0 vendor 0x0 product 0x0 version 0x0
-Input device name: "cyttsp5"
-Supported events:
-  Event type 0 (EV_SYN)
-  Event type 1 (EV_KEY)
-    Event code 330 (BTN_TOUCH)
-  Event type 2 (EV_REL)
-  Event type 3 (EV_ABS)
-    Event code 0 (ABS_X)
-      Value      0
-      Min        0
-      Max        0 <-- upsets xorg
-    Event code 1 (ABS_Y)
-      Value      0
-      Min        0
-      Max        0
-    Event code 47 (ABS_MT_SLOT)
-      Value      0
-      Min        0
-      Max       31
-    Event code 48 (ABS_MT_TOUCH_MAJOR)
-      Value      0
-      Min        0
-      Max      255
-    Event code 49 (ABS_MT_TOUCH_MINOR)
-      Value      0
-      Min        0
-      Max      255
-    Event code 53 (ABS_MT_POSITION_X)
-      Value      0
-      Min        0
-      Max     1447
-    Event code 54 (ABS_MT_POSITION_Y)
-      Value      0
-      Min        0
-      Max     1071
-    Event code 57 (ABS_MT_TRACKING_ID)
-      Value      0
-      Min        0
-      Max    65535
-    Event code 58 (ABS_MT_PRESSURE)
-      Value      0
-      Min        0
-      Max      255
+> 
+> > 
+> >>
+> >> Do you see the same? Any idea what is going on? I would feel much happier
+> >> if this is fixed.
+> >>
+> >> Note that the same problem is present without this patch series, so it's
+> >> been there for some time.
+> >>
+> > 
+> > I will start on digging this problem and add thoses commands to my CI.
+> > And I know there are a huge quantity of problem since origins.
+> > A simple example is that just setting MJPEG as default input format does not work.
+> > 
+> > But since it is not related to my serie, can you please merge it.
+> 
+> Before I do that, I would really like to know a bit more about this issue:
+> can you reproduce it? Is it DC30 specific or a general problem with zoran?
+> 
+> The problem with this hard hang is that it is hard to do regression testing
+> with v4l2-compliance, since it will hang as soon as MJPG pixelformat is
+> tested.
+> 
+> I would feel much happier if the hang can be avoided, even if it is just
+> with a temporary hack. It will make it much easier going forward.
+> 
 
-I specified touchscreen-size-x and touchscreen-size-y in my devicetree.
-No idea why it is like this yet.
+I hit the same problem with my DC10+.
+I got the following trace:
+[   97.022391] BUG: kernel NULL pointer dereference, address: 0000000000000018
+[   97.029357] #PF: supervisor write access in kernel mode
+[   97.034579] #PF: error_code(0x0002) - not-present page
+[   97.039712] PGD 100e30067 P4D 100e30067 PUD 11c958067 PMD 0 
+[   97.045370] Oops: 0002 [#1] PREEMPT SMP NOPTI
+[   97.049723] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G         C        5.15.0-next-20211105+ #126
+[   97.058500] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./K10N78, BIOS P2.00 07/01/2010
+[   97.067791] RIP: 0010:zoran_irq+0x178/0x2e0 [zr36067]
+[   97.072845] Code: 01 8d 5c 00 01 48 8b 85 90 0c 00 00 48 63 db 44 8b 2c 98 41 f6 c5 01 0f 84 64 01 00 00 4c 8b bc dd 38 0d 00 00 e8 98 72 a1 fa <49> 89 47 18 83 bd 90 0b 00 00 01 0f 84 da 00 00 00 48 8b 85 68 0c
+[   97.091590] RSP: 0018:ffffa57040003f00 EFLAGS: 00010016
+[   97.096807] RAX: 000000169273a7d2 RBX: 0000000000000001 RCX: 0000000000000018
+[   97.103932] RDX: 000000830c927d90 RSI: 000000000000d33a RDI: 00041965ba87a734
+[   97.111063] RBP: ffff9d845cce1028 R08: 00000000005b6db7 R09: 0000000000000000
+[   97.118188] R10: 0000000000000000 R11: ffffa57040003ff8 R12: 0000000000000065
+[   97.125312] R13: 0000000004027541 R14: ffff9d845cce1d58 R15: 0000000000000000
+[   97.132434] FS:  0000000000000000(0000) GS:ffff9d845fc00000(0000) knlGS:0000000000000000
+[   97.140513] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   97.146249] CR2: 0000000000000018 CR3: 000000011c956000 CR4: 00000000000006f0
+[   97.153374] Call Trace:
+[   97.155822]  <IRQ>
+[   97.157840]  __handle_irq_event_percpu+0x35/0x180
+[   97.162546]  handle_irq_event+0x50/0xb0
+[   97.166384]  handle_fasteoi_irq+0x8b/0x1e0
+[   97.170483]  __common_interrupt+0x64/0x100
+[   97.174581]  common_interrupt+0x9f/0xc0
+[   97.178414]  </IRQ>
+[   97.180510]  <TASK>
+[   97.182609]  asm_common_interrupt+0x1e/0x40
+[   97.186793] RIP: 0010:acpi_idle_do_entry+0x47/0x50
+[   97.191585] Code: 08 48 8b 15 1f db 5d 01 ed c3 e9 64 fd ff ff 65 48 8b 04 25 00 ad 01 00 48 8b 00 a8 08 75 ea eb 07 0f 00 2d 0b 80 5b 00 fb f4 <fa> c3 cc cc cc cc cc cc cc 41 56 49 89 f6 41 55 41 89 d5 41 54 55
+[   97.210323] RSP: 0018:ffffffffbc603e30 EFLAGS: 00000246
+[   97.215539] RAX: 0000000000004000 RBX: ffff9d84413f1c00 RCX: 000000000000001f
+[   97.222666] RDX: ffff9d845fc00000 RSI: ffff9d8440165000 RDI: ffff9d8440165064
+[   97.229798] RBP: ffff9d8440165064 R08: 000000000001184d R09: 0000000000000018
+[   97.236921] R10: 00000000000029cc R11: 000000000000318c R12: 0000000000000001
+[   97.244046] R13: ffffffffbc7c3e20 R14: 0000000000000001 R15: 0000000000000000
+[   97.251178]  acpi_idle_enter+0x99/0xe0
+[   97.254931]  cpuidle_enter_state+0x84/0x360
+[   97.259118]  cpuidle_enter+0x24/0x40
+[   97.262698]  do_idle+0x1d0/0x250
+[   97.265928]  cpu_startup_entry+0x14/0x20
+[   97.269846]  start_kernel+0x63a/0x65f
+[   97.273514]  secondary_startup_64_no_verify+0xc2/0xcb
+[   97.278565]  </TASK>
+[   97.280748] Modules linked in: adv7175 saa7110 zr36067(C) videobuf2_dma_contig
+[   97.287970] CR2: 0000000000000018
+[   97.291279] ---[ end trace 0ee22c5269015e89 ]---
+[   97.295888] RIP: 0010:zoran_irq+0x178/0x2e0 [zr36067]
+[   97.300941] Code: 01 8d 5c 00 01 48 8b 85 90 0c 00 00 48 63 db 44 8b 2c 98 41 f6 c5 01 0f 84 64 01 00 00 4c 8b bc dd 38 0d 00 00 e8 98 72 a1 fa <49> 89 47 18 83 bd 90 0b 00 00 01 0f 84 da 00 00 00 48 8b 85 68 0c
+[   97.319679] RSP: 0018:ffffa57040003f00 EFLAGS: 00010016
+[   97.324896] RAX: 000000169273a7d2 RBX: 0000000000000001 RCX: 0000000000000018
+[   97.332019] RDX: 000000830c927d90 RSI: 000000000000d33a RDI: 00041965ba87a734
+[   97.339144] RBP: ffff9d845cce1028 R08: 00000000005b6db7 R09: 0000000000000000
+[   97.346276] R10: 0000000000000000 R11: ffffa57040003ff8 R12: 0000000000000065
+[   97.353401] R13: 0000000004027541 R14: ffff9d845cce1d58 R15: 0000000000000000
+[   97.360525] FS:  0000000000000000(0000) GS:ffff9d845fc00000(0000) knlGS:0000000000000000
+[   97.368603] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   97.374340] CR2: 0000000000000018 CR3: 000000011c956000 CR4: 00000000000006f0
+[   97.381464] Kernel panic - not syncing: Fatal exception in interrupt
+[   97.387810] Kernel Offset: 0x39c00000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+[   97.398580] ---[ end Kernel panic - not syncing: Fatal exception in interrupt ]---
 
-Regards,
-Andreas
+x86_64-pc-linux-gnu-addr2line -e vmlinux zoran_irq+0x16f/0x2e0
+/usr/src/linux-next/arch/x86/include/asm/processor.h:443
 
-On Wed,  3 Nov 2021 21:48:26 +1000
-Alistair Francis <alistair@alistair23.me> wrote:
-
-> This patch series builds on top of [1] and adds support for the cyttsp5
-> touchscreen controller for the reMarkable 2.
->=20
-> I first tried to add an I2C HID device. Although the cyttsp5 has some HID
-> looking aspects it is not HID compatible. Just in trying to probe the dev=
-ice
-> I found:
->  - The HID descriptor has extra padding
->  - The HID descriptor sets the high bytes of the descriptor length
->  - The HID descriptor has extra unrecognised tags
->  - The HID reset command doesn't appear to work
->=20
-> I don't think there is a way to use the I2C HID framework with the cyttsp=
-5.
-> For anyone interested you can see the work here [2]. In that branch thoug=
-h I
-> can only obtain a HID descriptor, nothing else works without more core
-> changes.
->=20
-> So instead I rebased the series from [1]. Converted to the new yaml DTS
-> documentation, added regulator support and fixed a x/y miscalculation bug.
->=20
-> 1: https://lwn.net/ml/linux-kernel/20180703094309.18514-1-mylene.josseran=
-d@bootlin.com/
-> 2: https://github.com/alistair23/linux/commits/rM2-mainline-cyttsp5-hid
->=20
-> Alistair Francis (2):
->   ARM: imx_v6_v7_defconfig: Enable the cyttsp5 touchscreen
->   ARM: dts: imx7d: remarkable2: Enable the cyttsp5
->=20
-> Myl=C3=A8ne Josserand (2):
->   Input: Add driver for Cypress Generation 5 touchscreen
->   Documentation: DT: bindings: input: Add documentation for cyttsp5
->=20
->  .../input/touchscreen/cypress,tt21000.yaml    |   92 ++
->  arch/arm/boot/dts/imx7d-remarkable2.dts       |   89 ++
->  arch/arm/configs/imx_v6_v7_defconfig          |    1 +
->  drivers/input/touchscreen/Kconfig             |   14 +
->  drivers/input/touchscreen/Makefile            |    1 +
->  drivers/input/touchscreen/cyttsp5.c           | 1135 +++++++++++++++++
->  6 files changed, 1332 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/c=
-ypress,tt21000.yaml
->  create mode 100644 drivers/input/touchscreen/cyttsp5.c
->=20
-
+I have no more clue for the moment.
