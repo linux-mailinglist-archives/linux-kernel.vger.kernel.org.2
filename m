@@ -2,68 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFC844621E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:20:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F381446222
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:20:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233100AbhKEKWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 06:22:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232787AbhKEKWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 06:22:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6D38261284;
-        Fri,  5 Nov 2021 10:20:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636107608;
-        bh=U/Xq3fs1HP1WRH+4oXRkxIVYvODT9jT28QGt/1AugWU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=OCS0hb6ACpt4YW90mBUBx2hz21aGTu5LKzNu8HRwlfJnxzRtpMwx7e/xadcX27x3f
-         nzBKp5QQc00tTI67qYeh0f4O6bQo7Y2AQP+6fynshxRoL2vxmkT1MtC86OIrPNJAFp
-         KJ7LjgYx9J84PFTd0QNKpQq4mwPqo2rTB3KM+VQBH+D7lVTXZI76jREdndw2K+66z4
-         xJrB/ECdWlO9J6YtPeQsdA7pGT/pSp9fYJon4PUvt8bISv8jGq+aNszegy3JxRwB9I
-         K9nQZy4W3OR+yqIiliTMT0Po2hB/ciBPodavMeq0/hxFnGACCHeUaWM1/m/Cm6elOj
-         ayrXG7iPmSCGg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6037260A0E;
-        Fri,  5 Nov 2021 10:20:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233115AbhKEKXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 06:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233111AbhKEKXE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 06:23:04 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29401C06120C
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 03:20:22 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id b3so16195487uam.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 03:20:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
+        b=o1Hd1jO45+QI3jgwWOh+dfv/dJXKhtZOspvspryaZZDdfqCNYOyHRI2VcDUNyf+fCI
+         0L3hX9AckOlUvbV0Xff+hQdvgeSnr1A5GT5q1WzowLJ+IPYo6mqZbegFllYTvqrQRHXx
+         630XhM/vJ8BVlwOZ5wrb8O48xa0SpsbN0u4WEjQqyw4yYuQ9WmXF8JhTLyjhNTGQYI+r
+         gLwspASBNslY8cS9Hb9Rx9QPw7h5DOK6YKK6V/kfckNE2/dlb8QJ7fTx+Hu/PgpGziCV
+         1vCZJgTZL7OSLD6VaB99WPA8P57E66CJ/0wqQzVAGsL1HIdazD6accUGIWoK0NQOUgj4
+         +r1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
+        b=jVS0VAlYxy6Vhxo/VlbTWGkeAVYuFDOkYRENChccRn+0xMXwswgvGxV0C5dUaxwfwl
+         e2qUosvbas/wb2ZwlF7+hImTlBZfMK2p72NTTqYOewhwhKpm7CnPctN580qzCM81SOAH
+         GSDpXsE8XlSnfvZkvQDj57mxRkQiqe6EE7n1WCozD4x6LIkifP/bmp3DOWTlXnJeLkuK
+         JlQqqQ4qaC8uqE9B4HibfIbig+/sGIsOY4wj/64sNFJE8KZhehf9F+Pr9VBMMFfSFX7W
+         aAnO92/tMeaYyda2kDBNgzo+cfeE6uC9P9gRg75vUYo/LuGpqTt+mhWAO3FxDoO/kyEn
+         J8Dw==
+X-Gm-Message-State: AOAM533qPKW0PaaitDFPE1ygneXmzqXeXxiYyOZhrdXuXtcI/+FLIAD6
+        87OyUojUSidtFNYqIQo1qS9Xj8jh4fJMWpu3/rdU7VR5cBo=
+X-Google-Smtp-Source: ABdhPJwiDIXsqIMGvh6mI6FvNGiyXUPZoSd21inxi4kcLmrhBAS3QkPicCfxjlSaGQN4hKlSFgGhDviPWYC0XHwgDlU=
+X-Received: by 2002:a25:c743:: with SMTP id w64mr53618842ybe.220.1636107609857;
+ Fri, 05 Nov 2021 03:20:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: ethernet: litex: Remove unnecessary print function
- dev_err()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163610760838.10303.2701217711088972051.git-patchwork-notify@kernel.org>
-Date:   Fri, 05 Nov 2021 10:20:08 +0000
-References: <20211105014217.38681-1-vulab@iscas.ac.cn>
-In-Reply-To: <20211105014217.38681-1-vulab@iscas.ac.cn>
-To:     Xu Wang <vulab@iscas.ac.cn>
-Cc:     joel@jms.id.au, caihuoqing@baidu.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Received: by 2002:a05:7108:3984:0:0:0:0 with HTTP; Fri, 5 Nov 2021 03:20:09
+ -0700 (PDT)
+From:   phot akachi <photakachi@gmail.com>
+Date:   Fri, 5 Nov 2021 03:20:09 -0700
+Message-ID: <CAKTgzwzSEtvjTO=1-dMwrZ-3XtBzZ8GA9dZm6Cq0BQgyopruzA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Attention Please,
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
+I am Bar. uchenna ilobi ,  How are you, I hope you are fine and
+healthy? This is to inform you that i have concluded the transaction
+successfully with the help of a new partner from Venezuela and now the
+fund has been transferred to Venezuela into the bank account of the
+new partner.
 
-On Fri,  5 Nov 2021 01:42:17 +0000 you wrote:
-> The print function dev_err() is redundant because
-> platform_get_irq() already prints an error.
-> 
-> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
-> ---
->  drivers/net/ethernet/litex/litex_liteeth.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+Meanwhile, I have decided to compensate you with the sum of
+US$350,000.00 (thiree Hundred and Fifty Thousand United States
+Dollars) due to your past effort, though you disappointed me along the
+line. But nevertheless I am very happy for the successful ending of
+the transaction without any problem and that is the reason why i have
+decided to compensate you with the sum of US$350,000.00 so that you
+will share the joy with me.
 
-Here is the summary with links:
-  - net: ethernet: litex: Remove unnecessary print function dev_err()
-    https://git.kernel.org/netdev/net/c/827beb7781d3
+I advise you to contact my secretary for Atm Card of US$350.000.00,
+which I kept for you. Contact him now without any delay.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Name: solomon brandy
 
+Email:solomonbrandyfiveone@gmail.com
 
+Kindly reconfirm to him the following below information:
+
+Your full name_________________________
+Your address__________________________
+Your country___________________________
+Your age______________________________
+Your occupation________________________
+Your cell Phone number______________________
+
+Note that if you did not send him the above information complete, he
+will not release the Atm card to you because he has to be sure that it
+is you. Ask him to send you the total sum of ($350.000.00 ) Atm card,
+which I kept for you.
+
+Best regards,
+
+Mr. uchenna ilobi
