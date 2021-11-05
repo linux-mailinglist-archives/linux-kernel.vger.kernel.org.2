@@ -2,78 +2,375 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408A34463BB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D00F94463BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhKENE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 09:04:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60106 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231844AbhKENE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 09:04:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C9EC61244;
-        Fri,  5 Nov 2021 13:01:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636117307;
-        bh=+iixnyf7MJNhvqf9F2NimPiFdRUEFFWHVFvENpXmyNI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tIuEyzUGr+11KSiAd5QLkrbU+zLI8RcI813tAqdgnIe5QM25OQM8Ocae2fpmfPkNf
-         9R9ZozGHI91OOM7LEVT0qSMhktCAYiQQmta9qgkeXpo8tl38vJEG1BXt+xOBQVDowM
-         PXZomPJ5GJA5M99FTPtSopNly+6EQ1Bm5c4ZbJnE=
-Date:   Fri, 5 Nov 2021 14:01:44 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.15 00/12] 5.15.1-rc1 review
-Message-ID: <YYUrOBubzGisk055@kroah.com>
-References: <20211104141159.551636584@linuxfoundation.org>
- <78c3c647-c98c-dab6-28bd-67d057c08ae7@nvidia.com>
+        id S232280AbhKENFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 09:05:11 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:44697 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231844AbhKENFG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 09:05:06 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hm0ys70hxz4xcv;
+        Sat,  6 Nov 2021 00:02:13 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1636117345;
+        bh=sZyekvqn6dq27feDYIUhUpSJNvO0e6/O4q8+HcGAVao=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ehnDpWEv6sRQVPDQBTzb9zg1P4/GJZFhtDry5WdRYwE77jWChQfVQRDd224lKHzpF
+         Y/II6Vt/44/9QJhkF6PJklSTBnckto9bqZoYQ068Pz3w5H/HVMa1R3RwwXDoh7gm4S
+         6C70ucWA9J+/mrQVoK0YF5vLDSewtzgEPfspGYEb8WPYc6t6La/qHTj7uQ5/cZ0byU
+         M1v1Oek4oRwyUEyCwLCGkCXQDTMrTxE2SNoDHTo7GpmHB03l9GvGBQLuCjrhsDneH0
+         0pQ7UrDfP54r3ZewRA0fzRD6IdQcPpNzDSAOyWAdn5IOFTg0M8hvnVkpUPPGcBixu2
+         mNeqKZQUsobsg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     agust@denx.de, aik@ozlabs.ru, atrajeev@linux.vnet.ibm.cm,
+        atrajeev@linux.vnet.ibm.com, christophe.leroy@csgroup.eu,
+        clg@kaod.org, cuibixuan@linux.alibaba.com, dja@axtens.net,
+        gustavoars@kernel.org, hbathini@linux.ibm.com,
+        hegdevasant@linux.vnet.ibm.com, joel@jms.id.au,
+        kda@linux-powerpc.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, lvivier@redhat.com,
+        nathanl@linux.ibm.com, ndesaulniers@google.com,
+        nixiaoming@huawei.com, npiggin@gmail.com, pbonzini@redhat.com,
+        peterz@infradead.org, ruscur@russell.cc, schnelle@linux.ibm.com,
+        segher@kernel.crashing.org, songkai01@inspur.com,
+        u.kleine-koenig@pengutronix.de, wanjiabing@vivo.com
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.16-1 tag
+Date:   Sat, 06 Nov 2021 00:02:09 +1100
+Message-ID: <87v9167o32.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <78c3c647-c98c-dab6-28bd-67d057c08ae7@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 11:30:43AM +0000, Jon Hunter wrote:
-> Hi Greg,
-> 
-> On 04/11/2021 14:12, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.15.1 release.
-> > There are 12 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Sat, 06 Nov 2021 14:11:51 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.1-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> 
-> Commit c045ceb5a145 ("reset: tegra-bpmp: Handle errors in BPMP response") was
-> pulled in late for v5.15 and this unfortunately broke HDA audio support for
-> Tegra194. We are working on a fix for this and so the below failure is
-> expected. For now we can ignore the below failures and I will figure out how
-> we fix this.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-Should that commit just be reverted?  Wouldn't that be the "correct"
-thing to do right now and then work on fixing this properly later?
+Hi Linus,
 
-Is this being discussed anywhere so that the regression bot can track
-it?
+Please pull a small batch of powerpc updates for 5.16:
 
-thanks,
+The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
 
-greg k-h
+  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
+
+are available in the git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/po=
+werpc-5.16-1
+
+for you to fetch changes up to c12ab8dbc492b992e1ea717db933cee568780c47:
+
+  powerpc/8xx: Fix Oops with STRICT_KERNEL_RWX without DEBUG_RODATA_TEST (2=
+021-11-01 21:39:03 +1100)
+
+- ------------------------------------------------------------------
+powerpc updates for 5.16
+
+ - Enable STRICT_KERNEL_RWX for Freescale 85xx platforms.
+
+ - Activate CONFIG_STRICT_KERNEL_RWX by default, while still allowing it to=
+ be disabled.
+
+ - Add support for out-of-line static calls on 32-bit.
+
+ - Fix oopses doing bpf-to-bpf calls when STRICT_KERNEL_RWX is enabled.
+
+ - Fix boot hangs on e5500 due to stale value in ESR passed to do_page_faul=
+t().
+
+ - Fix several bugs on pseries in handling of device tree cache information=
+ for hotplugged
+   CPUs, and/or during partition migration.
+
+ - Various other small features and fixes.
+
+Thanks to: Alexey Kardashevskiy, Alistair Popple, Anatolij Gustschin, Andre=
+w Donnellan,
+Athira Rajeev, Bixuan Cui, Bjorn Helgaas, C=C3=A9dric Le Goater, Christophe=
+ Leroy, Daniel
+Axtens, Daniel Henrique Barboza, Denis Kirjanov, Fabiano Rosas, Frederic Ba=
+rrat, Gustavo
+A. R. Silva, Hari Bathini, Jacques de Laval, Joel Stanley, Kai Song, Kajol =
+Jain, Laurent
+Vivier, Leonardo Bras, Madhavan Srinivasan, Nathan Chancellor, Nathan Lynch=
+, Naveen N.
+Rao, Nicholas Piggin, Nick Desaulniers, Niklas Schnelle, Oliver O'Halloran,=
+ Rob Herring,
+Russell Currey, Srikar Dronamraju, Stan Johnson, Tyrel Datwyler, Uwe Kleine=
+-K=C3=B6nig, Vasant
+Hegde, Wan Jiabing, Xiaoming Ni,
+
+- ------------------------------------------------------------------
+Alexey Kardashevskiy (1):
+      powerps/pseries/dma: Add support for 2M IOMMU page size
+
+Anatolij Gustschin (3):
+      powerpc/5200: dts: add missing pci ranges
+      powerpc/5200: dts: fix pci ranges warnings
+      powerpc/5200: dts: fix memory node unit name
+
+Athira Rajeev (3):
+      powerpc/perf: Refactor the code definition of perf reg extended mask
+      powerpc/perf: Expose instruction and data address registers as part o=
+f extended regs
+      powerpc/perf: Fix cycles/instructions as PM_CYC/PM_INST_CMPL in power=
+10
+
+Bixuan Cui (1):
+      powerpc/44x/fsp2: add missing of_node_put
+
+Christophe Leroy (31):
+      powerpc/476: Fix sparse report
+      powerpc/powermac: Remove stale declaration of pmac_md
+      powerpc/mem: Fix arch/powerpc/mm/mem.c:53:12: error: no previous prot=
+otype for 'create_section_mapping'
+      video: fbdev: chipsfb: use memset_io() instead of memset()
+      powerpc: Set max_mapnr correctly
+      powerpc: Mark .opd section read-only
+      powerpc/booke: Disable STRICT_KERNEL_RWX, DEBUG_PAGEALLOC and KFENCE
+      powerpc/fsl_booke: Rename fsl_booke.c to fsl_book3e.c
+      powerpc/fsl_booke: Take exec flag into account when setting TLBCAMs
+      powerpc/fsl_booke: Enable reloading of TLBCAM without switching to AS1
+      powerpc/fsl_booke: Tell map_mem_in_cams() if init is done
+      powerpc/fsl_booke: Allocate separate TLBCAMs for readonly memory
+      powerpc/fsl_booke: Update of TLBCAMs after init
+      powerpc/fsl_booke: Enable STRICT_KERNEL_RWX
+      powerpc/32: Don't use lmw/stmw for saving/restoring non volatile regs
+      powerpc/audit: Convert powerpc to AUDIT_ARCH_COMPAT_GENERIC
+      powerpc/time: Remove generic_suspend_{dis/en}able_irqs()
+      powerpc/machdep: Remove stale functions from ppc_md structure
+      powerpc/32: Add support for out-of-line static calls
+      powerpc: warn on emulation of dcbz instruction in kernel mode
+      powerpc/lib/sstep: Don't use __{get/put}_user() on kernel addresses
+      powerpc/8xx: Simplify TLB handling
+      powerpc: Activate CONFIG_STRICT_KERNEL_RWX by default
+      powerpc/breakpoint: Cleanup
+      powerpc/32: Don't use a struct based type for pte_t
+      powerpc/boot: Set LC_ALL=3DC in wrapper script
+      powerpc/nohash: Fix __ptep_set_access_flags() and ptep_set_wrprotect()
+      powerpc/book3e: Fix set_memory_x() and set_memory_nx()
+      powerpc/fsl_booke: Fix setting of exec flag when setting TLBCAMs
+      powerpc: Don't provide __kernel_map_pages() without ARCH_SUPPORTS_DEB=
+UG_PAGEALLOC
+      powerpc/8xx: Fix Oops with STRICT_KERNEL_RWX without DEBUG_RODATA_TEST
+
+C=C3=A9dric Le Goater (1):
+      powerpc/boot: Use CONFIG_PPC_POWERNV to compile OPAL support
+
+Daniel Axtens (1):
+      powerpc: Remove unused prototype for of_show_percpuinfo
+
+Denis Kirjanov (1):
+      powerpc/xmon: fix task state output
+
+Gustavo A. R. Silva (1):
+      powerpc/vas: Fix potential NULL pointer dereference
+
+Hari Bathini (1):
+      powerpc/bpf: Fix write protecting JIT code
+
+Joel Stanley (2):
+      powerpc/s64: Clarify that radix lacks DEBUG_PAGEALLOC
+      powerpc/64s: Default to 64K pages for 64 bit book3s
+
+Kai Song (1):
+      powerpc/eeh: Fix docstrings in eeh.c
+
+Laurent Vivier (1):
+      KVM: PPC: Tick accounting should defer vtime accounting 'til after IR=
+Q handling
+
+Michael Ellerman (4):
+      Revert "powerpc/audit: Convert powerpc to AUDIT_ARCH_COMPAT_GENERIC"
+      powerpc/dcr: Use cmplwi instead of 3-argument cmpli
+      MAINTAINERS: Update powerpc KVM entry
+      Merge branch 'topic/ppc-kvm' into next
+
+Nathan Lynch (8):
+      powerpc: fix unbalanced node refcount in check_kvm_guest()
+      powerpc/paravirt: vcpu_is_preempted() commentary
+      powerpc/paravirt: correct preempt debug splat in vcpu_is_preempted()
+      powerpc/pseries/cpuhp: cache node corrections
+      powerpc/cpuhp: BUG -> WARN conversion in offline path
+      powerpc/pseries/cpuhp: delete add/remove_by_count code
+      powerpc/pseries/cpuhp: remove obsolete comment from pseries_cpu_die
+      powerpc/pseries/mobility: ignore ibm, platform-facilities updates
+
+Nicholas Piggin (3):
+      KVM: PPC: Book3S HV: H_ENTER filter out reserved HPTE[B] value
+      powerpc/64s/interrupt: Fix check_return_regs_valid() false positive
+      powerpc/32e: Ignore ESR in instruction storage interrupt handler
+
+Nick Desaulniers (1):
+      powerpc/asm: Remove UPD_CONSTR after GCC 4.9 removal
+
+Niklas Schnelle (1):
+      powerpc: Drop superfluous pci_dev_is_added() calls
+
+Russell Currey (2):
+      selftests/powerpc: Use date instead of EPOCHSECONDS in mitigation-pat=
+ching.sh
+      powerpc/security: Use a mutex for interrupt exit code patching
+
+Uwe Kleine-K=C3=B6nig (1):
+      powerpc/83xx/mpc8349emitx: Make mcu_gpiochip_remove() return void
+
+Vasant Hegde (2):
+      powerpc/powernv/dump: Fix typo in comment
+      powerpc/powernv/prd: Unregister OPAL_MSG_PRD2 notifier during module =
+unload
+
+Wan Jiabing (2):
+      powerpc/pseries/iommu: Add of_node_put() before break
+      powerpc/kexec_file: Add of_node_put() before goto
+
+Xiaoming Ni (2):
+      powerpc/85xx: Fix oops when mpc85xx_smp_guts_ids node cannot be found
+      powerpc/85xx: fix timebase sync issue when CONFIG_HOTPLUG_CPU=3Dn
+
+
+ MAINTAINERS                                                     |   7 +-
+ arch/powerpc/Kconfig                                            |  20 +-
+ arch/powerpc/boot/Makefile                                      |   2 +-
+ arch/powerpc/boot/dts/a4m072.dts                                |   6 +-
+ arch/powerpc/boot/dts/charon.dts                                |   8 +-
+ arch/powerpc/boot/dts/digsy_mtc.dts                             |   8 +-
+ arch/powerpc/boot/dts/lite5200.dts                              |   8 +-
+ arch/powerpc/boot/dts/lite5200b.dts                             |   8 +-
+ arch/powerpc/boot/dts/media5200.dts                             |   8 +-
+ arch/powerpc/boot/dts/mpc5200b.dtsi                             |   6 +-
+ arch/powerpc/boot/dts/mucmc52.dts                               |   6 +-
+ arch/powerpc/boot/dts/o2d.dts                                   |   2 +-
+ arch/powerpc/boot/dts/o2d.dtsi                                  |   2 +-
+ arch/powerpc/boot/dts/o2dnt2.dts                                |   2 +-
+ arch/powerpc/boot/dts/o3dnt.dts                                 |   2 +-
+ arch/powerpc/boot/dts/pcm030.dts                                |   6 +-
+ arch/powerpc/boot/dts/pcm032.dts                                |   8 +-
+ arch/powerpc/boot/dts/tqm5200.dts                               |   8 +-
+ arch/powerpc/boot/serial.c                                      |   2 +-
+ arch/powerpc/boot/wrapper                                       |   2 +
+ arch/powerpc/configs/cell_defconfig                             |   1 -
+ arch/powerpc/configs/g5_defconfig                               |   1 +
+ arch/powerpc/configs/maple_defconfig                            |   1 +
+ arch/powerpc/configs/microwatt_defconfig                        |   1 +
+ arch/powerpc/configs/pasemi_defconfig                           |   1 -
+ arch/powerpc/configs/powernv_defconfig                          |   1 -
+ arch/powerpc/configs/ppc64_defconfig                            |   1 -
+ arch/powerpc/configs/ps3_defconfig                              |   1 +
+ arch/powerpc/configs/pseries_defconfig                          |   1 -
+ arch/powerpc/configs/skiroot_defconfig                          |   1 -
+ arch/powerpc/include/asm/asm-const.h                            |   2 -
+ arch/powerpc/include/asm/atomic.h                               |   8 +-
+ arch/powerpc/include/asm/book3s/64/hash.h                       |   2 +
+ arch/powerpc/include/asm/book3s/64/pgtable.h                    |  10 +
+ arch/powerpc/include/asm/book3s/64/radix.h                      |   3 +
+ arch/powerpc/include/asm/io.h                                   |   4 +-
+ arch/powerpc/include/asm/iommu.h                                |   6 -
+ arch/powerpc/include/asm/kexec.h                                |   1 -
+ arch/powerpc/include/asm/kvm_book3s_64.h                        |   4 +
+ arch/powerpc/include/asm/machdep.h                              |  13 -
+ arch/powerpc/include/asm/nohash/32/pgtable.h                    |  21 +-
+ arch/powerpc/include/asm/nohash/32/pte-8xx.h                    |  22 ++
+ arch/powerpc/include/asm/nohash/64/pgtable.h                    |   5 -
+ arch/powerpc/include/asm/nohash/pte-book3e.h                    |  18 +-
+ arch/powerpc/include/asm/nohash/tlbflush.h                      |  15 +
+ arch/powerpc/include/asm/paravirt.h                             |  40 ++-
+ arch/powerpc/include/asm/pgtable-types.h                        |  18 +-
+ arch/powerpc/include/asm/ppc_asm.h                              |   4 +-
+ arch/powerpc/include/asm/static_call.h                          |  28 ++
+ arch/powerpc/include/asm/uaccess.h                              |   6 +-
+ arch/powerpc/include/uapi/asm/perf_regs.h                       |  28 +-
+ arch/powerpc/kernel/Makefile                                    |   2 +-
+ arch/powerpc/kernel/align.c                                     |   1 +
+ arch/powerpc/kernel/eeh.c                                       |  12 +-
+ arch/powerpc/kernel/firmware.c                                  |   7 +-
+ arch/powerpc/kernel/head_8xx.S                                  |   2 +-
+ arch/powerpc/kernel/head_booke.h                                |  15 +-
+ arch/powerpc/kernel/hw_breakpoint_constraints.c                 |  15 +-
+ arch/powerpc/kernel/interrupt.c                                 |   2 +-
+ arch/powerpc/kernel/setup-common.c                              |   3 -
+ arch/powerpc/kernel/static_call.c                               |  37 +++
+ arch/powerpc/kernel/swsusp_64.c                                 |   5 -
+ arch/powerpc/kernel/swsusp_asm64.S                              |   1 -
+ arch/powerpc/kernel/sysfs.c                                     |   3 +-
+ arch/powerpc/kernel/time.c                                      |  22 +-
+ arch/powerpc/kernel/vmlinux.lds.S                               |  12 +-
+ arch/powerpc/kexec/core.c                                       |  13 -
+ arch/powerpc/kexec/core_32.c                                    |   2 +-
+ arch/powerpc/kexec/core_64.c                                    |   2 +-
+ arch/powerpc/kexec/file_load_64.c                               |   1 +
+ arch/powerpc/kvm/book3s_hv.c                                    |  30 +-
+ arch/powerpc/kvm/book3s_hv_rm_mmu.c                             |   9 +
+ arch/powerpc/kvm/booke.c                                        |  16 +-
+ arch/powerpc/kvm/powerpc.c                                      |   4 +-
+ arch/powerpc/lib/feature-fixups.c                               |  11 +
+ arch/powerpc/lib/sstep.c                                        | 197 ++++=
++++++----
+ arch/powerpc/mm/book3s64/hash_utils.c                           |   2 +-
+ arch/powerpc/mm/book3s64/radix_pgtable.c                        |   7 +
+ arch/powerpc/mm/mem.c                                           |   4 +-
+ arch/powerpc/mm/mmu_decl.h                                      |   4 +-
+ arch/powerpc/mm/nohash/Makefile                                 |   4 +-
+ arch/powerpc/mm/nohash/{fsl_booke.c =3D> fsl_book3e.c}            |  76 ++=
+++-
+ arch/powerpc/mm/nohash/kaslr_booke.c                            |   2 +-
+ arch/powerpc/mm/nohash/tlb.c                                    |   6 +-
+ arch/powerpc/mm/nohash/tlb_low.S                                |   8 +-
+ arch/powerpc/mm/nohash/tlb_low_64e.S                            |   8 +-
+ arch/powerpc/mm/pgtable.c                                       |   2 +-
+ arch/powerpc/mm/pgtable_32.c                                    |   2 +-
+ arch/powerpc/net/bpf_jit_comp.c                                 |   2 +-
+ arch/powerpc/perf/perf_regs.c                                   |   4 +
+ arch/powerpc/perf/power10-events-list.h                         |   8 +-
+ arch/powerpc/perf/power10-pmu.c                                 |  44 ++-
+ arch/powerpc/platforms/44x/fsp2.c                               |   2 +
+ arch/powerpc/platforms/44x/ppc476.c                             |   4 +-
+ arch/powerpc/platforms/83xx/mcu_mpc8349emitx.c                  |   7 +-
+ arch/powerpc/platforms/85xx/Makefile                            |   4 +-
+ arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c                    |   7 +-
+ arch/powerpc/platforms/85xx/smp.c                               |  12 +-
+ arch/powerpc/platforms/book3s/vas-api.c                         |   4 +-
+ arch/powerpc/platforms/powermac/pmac.h                          |   1 -
+ arch/powerpc/platforms/powermac/setup.c                         |   2 -
+ arch/powerpc/platforms/powernv/opal-dump.c                      |   2 +-
+ arch/powerpc/platforms/powernv/opal-prd.c                       |  12 +-
+ arch/powerpc/platforms/powernv/pci-sriov.c                      |   6 -
+ arch/powerpc/platforms/pseries/hotplug-cpu.c                    | 298 ++++=
++---------------
+ arch/powerpc/platforms/pseries/iommu.c                          |  14 +-
+ arch/powerpc/platforms/pseries/mobility.c                       |  34 +++
+ arch/powerpc/platforms/pseries/setup.c                          |   3 +-
+ arch/powerpc/sysdev/dcr-low.S                                   |   2 +-
+ arch/powerpc/xmon/xmon.c                                        |   3 +-
+ drivers/video/fbdev/chipsfb.c                                   |   2 +-
+ tools/testing/selftests/powerpc/security/mitigation-patching.sh |   4 +-
+ 112 files changed, 837 insertions(+), 582 deletions(-)
+ create mode 100644 arch/powerpc/include/asm/static_call.h
+ create mode 100644 arch/powerpc/kernel/static_call.c
+ rename arch/powerpc/mm/nohash/{fsl_booke.c =3D> fsl_book3e.c} (84%)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmGFJ7sACgkQUevqPMjh
+pYAxrQ/+MdmbOkjDzXJMkw55QAZH+iRmUZwkFzLtl2lrs/7d83x8VA+u2QVDsMgG
+OGwm0jszQF553pNPwZ07GZfTi++8WpIIa/SR1y2wTG3JUadBF/owUjZPEb9iKBAH
+mubh3TMiqWiyLCKtnalQdRUCUS/CpC9zJ3UQpvN5Ehh+A8+yJkreAj8CXT9nd27V
+TmYrVmrOoFuDybCNeaUYkizp2cKcModb+5+QUkDsCVI7eKP8a4ddDS8h9q/e/Wru
+SoyrMgLK2zrRXjvaKBD6y6h9fJbohL+gE0zjFgboxAN/EBCSNsQXI0lBpkiWh91d
+c63dO7DlIBx5MZ7990g+QiV88+kz0FAB5wCt+d9z7bV9I9cKOwaoQlfexV3+V0Kb
+n6kKb2Feqt8fo+79qxXLRZ3ZfsNRo1zBPQaVTNSyKfLpqc6dCe8eTNxTm1V6zv1R
+gWBts0N7YqBAwB0gLCN5BEr11p33n84jMKsahJ38mWjTIRVK9shbjMRwAV11T6Qy
+8aw4axp8YGPvalawvo7u+SaeZ6QOgy6O7pfVwCHyUGMf0AagVE/I/sz67ScG6qhL
+JmyTuPyEQ7z+1BxlYNXWOS7FlzoMPSs5LIyOJoP+C3ly+GTnwlFkyJpJjss69YDU
+P2Z8kfLHcsuFxe0q4wGmWFGzsVqFja0TJ2W+uVZjIOlJOSA0q6c=3D
+=3DH9IO
+-----END PGP SIGNATURE-----
