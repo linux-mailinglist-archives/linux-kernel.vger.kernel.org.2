@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB14644678A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4337144678B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234246AbhKERMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 13:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36050 "EHLO
+        id S234257AbhKERMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 13:12:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233489AbhKERM2 (ORCPT
+        with ESMTP id S234239AbhKERMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 13:12:28 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A2FC061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 10:09:48 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id w132-20020a25c78a000000b005c27f083240so14296430ybe.16
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 10:09:48 -0700 (PDT)
+        Fri, 5 Nov 2021 13:12:30 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22242C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 10:09:51 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id w5-20020a25ac05000000b005c55592df4dso5995928ybi.12
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 10:09:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=wacezEpCKQOT7J0uXwLpWPgWJZoDmBOEitRRyB3vpok=;
-        b=pWmaD7cr3Jh/On3VifbtQpfF2PGdjeJDLDLDeiC0UJq94aNCyl8W4XXmdhcGR9G7MC
-         FvQD7t+CXP1PVwa+oFwRtYQbB1egZLdB6quuO0DcYjIEwdI9xz+bLmpXgI4ijj6JXqbp
-         QyJ1EWlS5ICPkcL9wlEFTl1OeVyqS5+Ya9HgtEPiG4bcoPOD0zihfv0mcqRkMBcLnSge
-         dEjnj3umhTGeqPmMD+pkWtiBwqW7b+RDh/7MLUsKMxutIy93R0ueZPKG1pLKPt4mFE4T
-         ypj4aFtOJRGGRa7uLDyMgyNsR05gOFI2BqXrFyE14buaQ3ZrdFDfiUfuzACZwa4HPdMV
-         436Q==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=z0O3497izQrGzE+RqKqAfi71eKeDLbQ0+emHXSjNxus=;
+        b=WrgOMrKMjZPLM7nMk6lChnpzCQIONGBrgE3he26bqeO2RzqC4TVOam4bD2gnphOyC3
+         zW/VfJuZMPR3ynAXNZYnJtEHwYsx1fozSDhsKZ5BtgWzOq1DXKRWgtWbm++u2XeMsy3V
+         GN3ZwOSf1uIH+JlJPViafrDhLm50MRIiy+dtRLR5sD3iUuCzugFZfTsmwZg2PMezar1e
+         esV2PPLauUUq0vldALr18vpgHUt7Y9ps2umUk2hEE3epqJaW44eyMK8q7UU27O2WGJCq
+         6AB6An76iUhXxCSgPBcA7ZTtwl/Q7400MiEUdCkqh3j1ynEotiGGVWRyJvCczQ+ajbmv
+         xJsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=wacezEpCKQOT7J0uXwLpWPgWJZoDmBOEitRRyB3vpok=;
-        b=pUxn9aSfJ4mylZEJUSjaXSTNq/gsZRjlXRN1ENF6Q3R53SkeVtl/AKdpfb0R4REnTv
-         tCwoAZFpzPFn2Q6ZgyanJAbJ9kXNtjp0ncQMqHEyI1KJFBLC8GbMG3c1qVOMmTbDHrFH
-         hOwDOx4ILFwZKlLBJFfxxNqc3yD1HZtokqG+5IIZjyt/Yt6AmA3/G3q5ZFFMyFBMezbz
-         CJtbF1yDdbSoCuN5dNPFaA/AEOSMCxeJ8O57cEFkQJzZ0yUPkpw7hnjoCBkcsQaBNy6X
-         1KVAW97swT0YYMAieCRSWvzipbLJ2Iu23qSNl1GRY/JorvrzoYzKfIGkzZjt2O1/ph4D
-         57dA==
-X-Gm-Message-State: AOAM5301uC/hwzc0QzzUdUw8KpvrfEbL8N4RBMtXChtYkF07FbmSd9QA
-        6jpTXI+G8Uw/makAKeK3S1jBG06+jnIA
-X-Google-Smtp-Source: ABdhPJxPfYTMK2qfpEvH2rBPLEMClJc0cLuJc3Xqgtjmo1MyvTcaTUXQp8Ip14yuncTFnb8bBvgyfp73BfDA
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=z0O3497izQrGzE+RqKqAfi71eKeDLbQ0+emHXSjNxus=;
+        b=4yJWb+zy+5pE52tdtHrZ2EP29YlN82HKQoHYK2sU9kVwlEcvCwgeM26bMS+jZesxSd
+         Je1zGqoMeuoUbRBanc6WQvYuZsBzV9T+JFmPd9ar+j86/ciFYzVeydbpBynHkuQbf/AU
+         QpUC+0ImPKzflSKx/vaC3FNwbqJQt7LlsMo6CA7Lnkc8IdQAUyntw/+9ESN18hBWvEzu
+         y3Kh2hq8jLqjWH8ogHE2BsMEgXuASgGi6mKl6pTqPJi8AOjJixoTSJrtemuaWU5zNBw2
+         DDIhT8Shw04GCa3HVuH2Na20scfyGOdZa+GRXCR9E2nzcl/eakx1Eh1ZdnsPaBhcxb8G
+         bUCw==
+X-Gm-Message-State: AOAM533MeSsXq5KLwRru/MIHi9EHTJIIZXh6npncFwEYIrlc1csLC4wy
+        Vh3+2HQYbamkIp7yIkjtdrrrJ5HhMIxF
+X-Google-Smtp-Source: ABdhPJz60IBOqx0nkmjSLQqDEhkpU/OQKzLYO599+iSl9UaJoKUz284gVKoe2Vh67KpFF/mHb1uhjwvfC2CM
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:4cee:beb8:1744:5207])
- (user=irogers job=sendgmr) by 2002:a25:4bc3:: with SMTP id
- y186mr60456831yba.74.1636132188166; Fri, 05 Nov 2021 10:09:48 -0700 (PDT)
-Date:   Fri,  5 Nov 2021 10:09:36 -0700
-Message-Id: <20211105170943.3479315-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a25:ab66:: with SMTP id
+ u93mr5317341ybi.337.1636132190339; Fri, 05 Nov 2021 10:09:50 -0700 (PDT)
+Date:   Fri,  5 Nov 2021 10:09:37 -0700
+In-Reply-To: <20211105170943.3479315-1-irogers@google.com>
+Message-Id: <20211105170943.3479315-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20211105170943.3479315-1-irogers@google.com>
 X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
-Subject: [PATCH 0/7] New function and literals for metrics
+Subject: [PATCH 1/7] perf test: Add expr test for events with hyphens
 From:   Ian Rogers <irogers@google.com>
 To:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
         Jin Yao <yao.jin@linux.intel.com>,
@@ -73,40 +77,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a test for hyphenated events that are common with Intel's icelake
-topdown events.
+An example of such an event is topdown-fe-bound.
 
-Try to tidy the existing cputopo code and make it more consistent with
-the sysfs ABI. Refactor the #smt_on literal parsing into a general
-literal token that we can use for more literals. This is then used for
-num_cpus, num_cores, num_dies and num_packages literals that use the
-existing topology code. Finally, a source_count function is added
-which is used to determine the number of events contributing to an
-aggregate event. The intent for these new literals and function is for
-them to be used in upcoming metrics.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/tests/expr.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Ian Rogers (7):
-  perf test: Add expr test for events with hyphens
-  perf cputopo: Update to use pakage_cpus
-  perf cputopo: Match die_siblings to topology ABI name
-  perf cputopo: Match thread_siblings to topology ABI name
-  perf expr: Add literal values starting with #
-  perf expr: Add metric literals for topology.
-  perf expr: Add source_count for aggregating events
-
- tools/perf/tests/expr.c       | 34 ++++++++++++++-
- tools/perf/util/cputopo.c     | 78 ++++++++++++++++++-----------------
- tools/perf/util/cputopo.h     | 33 ++++++++++++---
- tools/perf/util/evsel.c       | 12 ++++++
- tools/perf/util/evsel.h       |  1 +
- tools/perf/util/expr.c        | 65 ++++++++++++++++++++++++++---
- tools/perf/util/expr.h        |  4 ++
- tools/perf/util/expr.l        | 16 ++++++-
- tools/perf/util/expr.y        | 72 ++++++++++++++++++--------------
- tools/perf/util/header.c      | 20 ++++-----
- tools/perf/util/stat-shadow.c |  7 +++-
- 11 files changed, 250 insertions(+), 92 deletions(-)
-
+diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
+index 077783223ce0..9ee2dc91c27b 100644
+--- a/tools/perf/tests/expr.c
++++ b/tools/perf/tests/expr.c
+@@ -134,6 +134,16 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
+ 	TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, "EVENT2,param=3@",
+ 						    (void **)&val_ptr));
+ 
++	expr__ctx_clear(ctx);
++	TEST_ASSERT_VAL("find ids",
++			expr__find_ids("dash\\-event1 - dash\\-event2",
++				       NULL, ctx) == 0);
++	TEST_ASSERT_VAL("find ids", hashmap__size(ctx->ids) == 2);
++	TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, "dash-event1",
++						    (void **)&val_ptr));
++	TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, "dash-event2",
++						    (void **)&val_ptr));
++
+ 	/* Only EVENT1 or EVENT2 need be measured depending on the value of smt_on. */
+ 	expr__ctx_clear(ctx);
+ 	TEST_ASSERT_VAL("find ids",
 -- 
 2.34.0.rc0.344.g81b53c2807-goog
 
