@@ -2,263 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BBD446554
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:59:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5AA44656A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233345AbhKEPCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 11:02:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233333AbhKEPCL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 11:02:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65A7861252;
-        Fri,  5 Nov 2021 14:59:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636124371;
-        bh=B1qFtiscq4n7antXqmGoMknyo6BxXwdLVygSWI2bsPA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s2i0kvGJwMJI50mg04XRW/RZ2q+d7nTMRFXtP0YDkyL8fk5umOuCqDN/R8YfAXfXe
-         RRK4AFgigwgNA9m5HavDbb8OxMrkkpsKSeIj1JTXkfC7GX4dXkiTfx0rynRSWfVjaR
-         0qTWBFivlP/8B14R28K3hGYsbR6CleRXgNUTfM+SwRMeqItCDycOsMP4FAZKGRFgSu
-         NKuGXleCe40BvlyiWM/Gsd4V+d0BHJ5HMYfxn/T42s7Sd0J7lg4zuAq/aDnvniG9Jw
-         mrX2FAyAIBnN2A+lsCRuZMilDKOvk+xEK5vUSZ9Mit426PuAdmZKt3AxitUIInyw2w
-         91/WejVowEngQ==
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH v6 2/2] arm64: implement support for static call trampolines
-Date:   Fri,  5 Nov 2021 15:59:17 +0100
-Message-Id: <20211105145917.2828911-3-ardb@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211105145917.2828911-1-ardb@kernel.org>
-References: <20211105145917.2828911-1-ardb@kernel.org>
+        id S233344AbhKEPGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 11:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229680AbhKEPGq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 11:06:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F4C8C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 08:04:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=W9SnoanO33UFz5dG9pFgGMhmc12jctelo4NbEeinDas=; b=fWjZWglzXCsknXllnNKq+AfJf3
+        NfM5RMBpf2kTX/CCZULzWd4jNqzteigcZt/UYMbY3A2YaFzeS5cBzO10raPSqoEKrWFPqSFRVItZX
+        erX4smzrqh6LuS0HbcORKjWcIpbr2aSzHDjI8gbg64WqvNrh57vknTf7VyKgDqA056x8wVoMetAn8
+        x2Jdz6qhMSxpgS99iqCjKHmnCgSsAoVGEz1p4KKNUL6WUa2znJFIE+yqHUNzrfoHjiu7/K/knCpHR
+        SWfiV+MMn3ShpmDarKG7VWwmRz+i9PXsQk2notwgzHpAqhC9UzZsYCw52fepm3AAGI1KX01fsRMCO
+        hFC79gtQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mj0fM-006co7-W4; Fri, 05 Nov 2021 14:59:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8C5FF30022C;
+        Fri,  5 Nov 2021 15:58:03 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6E68331A04571; Fri,  5 Nov 2021 15:58:03 +0100 (CET)
+Date:   Fri, 5 Nov 2021 15:58:03 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mathias Krause <minipli@grsecurity.net>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, Odin Ugedal <odin@uged.al>,
+        Kevin Tanguy <kevin.tanguy@corp.ovh.com>,
+        Brad Spengler <spender@grsecurity.net>
+Subject: Re: [PATCH] sched/fair: Prevent dead task groups from regaining
+ cfs_rq's
+Message-ID: <YYVGe1zgNp1B2xyI@hirez.programming.kicks-ass.net>
+References: <b98e3434-67cd-34b7-9e81-148ea31a851c@grsecurity.net>
+ <20211103190613.3595047-1-minipli@grsecurity.net>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7392; h=from:subject; bh=B1qFtiscq4n7antXqmGoMknyo6BxXwdLVygSWI2bsPA=; b=owEB7QES/pANAwAKAcNPIjmS2Y8kAcsmYgBhhUbEdLzHjvYTKAjHfvxW2Q8AWCuqtPm00YUzg9Xc M0InLJ6JAbMEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCYYVGxAAKCRDDTyI5ktmPJL9qC/ 9hfM5WTFRR7SIU8NED63TvgTH5X6a3gdqfir8dnDBIuqOkZEywbvzTx6X0BzmmPFBVUMIup5uyciJP Ap+bPTBYYhDrBlar9kbpBVHCeDbCVoFihQRdl1sLA6XamVuIAksSQkZkwoMA1nYepQx2WzxOt1YfoU Dkn3R09Nnurpsw50cl5peElR0JBBUyIE1rt/hI/6Sl7kHxTXG00CiZ6rDYOOQfvg7DD+sSb9ADDhwt fdNvPHZscFCLgtuC6zC56PoOmwMGS8X21M1ZQzGEc36FqSZ9e+7wfRlMc81EpasJ6YBgEROzLUQtwl +1fFsCOlbW72S6GiUQavidl+czV9EuhbQkIKW/IwLseLBmhAUjyBl8J7DsrrbI5ITYB4avZnGwFsBO u15o063EPjYdDt0JLZylc+36L03XkYDcoH4w523Ocp1MraqeqYsO+cW9eQqsqfYdPjRp2N6Umsh8L+ AUDWVkglZJbmJ4aPQqtmVAbzDDu1JApKxKAYlg7waVbBU=
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211103190613.3595047-1-minipli@grsecurity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement arm64 support for the 'unoptimized' static call variety, which
-routes all calls through a single trampoline that is patched to perform a
-tail call to the selected function.
 
-It is expected that the direct branch instruction will be able to cover
-the common case. However, given that static call targets may be located
-in modules loaded out of direct branching range, we need a fallback path
-that loads the address into R16 and uses a branch-to-register (BR)
-instruction to perform an indirect call.
+TJ, long email below, but TL;DR, is it ok to do synchornize_rcu() from
+a css_released callback? We can't use the css_offline callback because
+commit 2f5177f0fd7e ("sched/cgroup: Fix/cleanup cgroup teardown/init")
+but we do need a second GP, as per the below.
 
-Unlike on x86, there is no pressing need on arm64 to avoid indirect
-calls at all cost, but hiding it from the compiler as is done here does
-have some benefits:
-- the literal is located in .text, which gives us the same robustness
-  advantage that code patching does;
-- no performance hit on CFI enabled Clang builds that decorate compiler
-  emitted indirect calls with branch target validity checks.
-
-Acked-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- arch/arm64/Kconfig                   |  2 +
- arch/arm64/include/asm/static_call.h | 40 ++++++++++
- arch/arm64/kernel/patching.c         | 77 +++++++++++++++++++-
- arch/arm64/kernel/vmlinux.lds.S      |  1 +
- 4 files changed, 117 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 176d6fddc4f2..ccc33b85769c 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -193,6 +193,8 @@ config ARM64
- 	select HAVE_PERF_USER_STACK_DUMP
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HAVE_POSIX_CPU_TIMERS_TASK_WORK
-+	# https://github.com/ClangBuiltLinux/linux/issues/1354
-+	select HAVE_STATIC_CALL if !LTO_CLANG_THIN || CLANG_VERSION >= 130000
- 	select HAVE_FUNCTION_ARG_ACCESS_API
- 	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select MMU_GATHER_RCU_TABLE_FREE
-diff --git a/arch/arm64/include/asm/static_call.h b/arch/arm64/include/asm/static_call.h
-new file mode 100644
-index 000000000000..6ee918991510
---- /dev/null
-+++ b/arch/arm64/include/asm/static_call.h
-@@ -0,0 +1,40 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_STATIC_CALL_H
-+#define _ASM_STATIC_CALL_H
-+
-+/*
-+ * The sequence below is laid out in a way that guarantees that the literal and
-+ * the instruction are always covered by the same cacheline, and can be updated
-+ * using a single store-pair instruction (provided that we rewrite the BTI C
-+ * instruction as well). This means the literal and the instruction are always
-+ * in sync when observed via the D-side.
-+ *
-+ * However, this does not guarantee that the I-side will catch up immediately
-+ * as well: until the I-cache maintenance completes, CPUs may branch to the old
-+ * target, or execute a stale NOP or RET. We deal with this by writing the
-+ * literal unconditionally, even if it is 0x0 or the branch is in range. That
-+ * way, a stale NOP will fall through and call the new target via an indirect
-+ * call. Stale RETs or Bs will be taken as before, and branch to the old
-+ * target.
-+ */
-+#define __ARCH_DEFINE_STATIC_CALL_TRAMP(name, insn)			    \
-+	asm("	.pushsection	.static_call.text, \"ax\"		\n" \
-+	    "	.align		4					\n" \
-+	    "	.globl		" STATIC_CALL_TRAMP_STR(name) "		\n" \
-+	    "0:	.quad		0x0					\n" \
-+	    STATIC_CALL_TRAMP_STR(name) ":				\n" \
-+	    "	hint 		34	/* BTI C */			\n" \
-+		insn "							\n" \
-+	    "	ldr		x16, 0b					\n" \
-+	    "	cbz		x16, 1f					\n" \
-+	    "	br		x16					\n" \
-+	    "1:	ret							\n" \
-+	    "	.popsection						\n")
-+
-+#define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)			\
-+	__ARCH_DEFINE_STATIC_CALL_TRAMP(name, "b " #func)
-+
-+#define ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)			\
-+	__ARCH_DEFINE_STATIC_CALL_TRAMP(name, "ret")
-+
-+#endif /* _ASM_STATIC_CALL_H */
-diff --git a/arch/arm64/kernel/patching.c b/arch/arm64/kernel/patching.c
-index 771f543464e0..a265a87d4d9e 100644
---- a/arch/arm64/kernel/patching.c
-+++ b/arch/arm64/kernel/patching.c
-@@ -3,6 +3,7 @@
- #include <linux/mm.h>
- #include <linux/smp.h>
- #include <linux/spinlock.h>
-+#include <linux/static_call.h>
- #include <linux/stop_machine.h>
- #include <linux/uaccess.h>
- 
-@@ -66,7 +67,7 @@ int __kprobes aarch64_insn_read(void *addr, u32 *insnp)
- 	return ret;
- }
- 
--static int __kprobes __aarch64_insn_write(void *addr, __le32 insn)
-+static int __kprobes __aarch64_insn_write(void *addr, void *insn, int size)
- {
- 	void *waddr = addr;
- 	unsigned long flags = 0;
-@@ -75,7 +76,7 @@ static int __kprobes __aarch64_insn_write(void *addr, __le32 insn)
- 	raw_spin_lock_irqsave(&patch_lock, flags);
- 	waddr = patch_map(addr, FIX_TEXT_POKE0);
- 
--	ret = copy_to_kernel_nofault(waddr, &insn, AARCH64_INSN_SIZE);
-+	ret = copy_to_kernel_nofault(waddr, insn, size);
- 
- 	patch_unmap(FIX_TEXT_POKE0);
- 	raw_spin_unlock_irqrestore(&patch_lock, flags);
-@@ -85,7 +86,77 @@ static int __kprobes __aarch64_insn_write(void *addr, __le32 insn)
- 
- int __kprobes aarch64_insn_write(void *addr, u32 insn)
- {
--	return __aarch64_insn_write(addr, cpu_to_le32(insn));
-+	__le32 i = cpu_to_le32(insn);
-+
-+	return __aarch64_insn_write(addr, &i, AARCH64_INSN_SIZE);
-+}
-+
-+static void *strip_cfi_jt(void *addr)
-+{
-+	if (IS_ENABLED(CONFIG_CFI_CLANG)) {
-+		void *p = addr;
-+		u32 insn;
-+
-+		/*
-+		 * Taking the address of a function produces the address of the
-+		 * jump table entry when Clang CFI is enabled. Such entries are
-+		 * ordinary jump instructions, preceded by a BTI C instruction
-+		 * if BTI is enabled for the kernel.
-+		 */
-+		if (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
-+			p += 4;
-+
-+		insn = le32_to_cpup(p);
-+		if (aarch64_insn_is_b(insn))
-+			return p + aarch64_get_branch_offset(insn);
-+
-+		WARN_ON(1);
-+	}
-+	return addr;
-+}
-+
-+void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
-+{
-+	/*
-+	 * -0x8	<literal>
-+	 *  0x0	bti c		<--- trampoline entry point
-+	 *  0x4	<branch or nop>
-+	 *  0x8	ldr x16, <literal>
-+	 *  0xc	cbz x16, 20
-+	 * 0x10	br x16
-+	 * 0x14	ret
-+	 */
-+	struct {
-+		u64	literal;
-+		__le32	insn[2];
-+	} insns;
-+	u32 insn;
-+	int ret;
-+
-+	insn = aarch64_insn_gen_hint(AARCH64_INSN_HINT_BTIC);
-+	insns.literal = (u64)func;
-+	insns.insn[0] = cpu_to_le32(insn);
-+
-+	if (!func) {
-+		insn = aarch64_insn_gen_branch_reg(AARCH64_INSN_REG_LR,
-+						   AARCH64_INSN_BRANCH_RETURN);
-+	} else {
-+		insn = aarch64_insn_gen_branch_imm((u64)tramp + 4,
-+						   (u64)strip_cfi_jt(func),
-+						   AARCH64_INSN_BRANCH_NOLINK);
-+
-+		/*
-+		 * Use a NOP if the branch target is out of range, and rely on
-+		 * the indirect call instead.
-+		 */
-+		if (insn == AARCH64_BREAK_FAULT)
-+			insn = aarch64_insn_gen_hint(AARCH64_INSN_HINT_NOP);
-+	}
-+	insns.insn[1] = cpu_to_le32(insn);
-+
-+	ret = __aarch64_insn_write(tramp - 8, &insns, sizeof(insns));
-+	if (!WARN_ON(ret))
-+		caches_clean_inval_pou((u64)tramp - 8, sizeof(insns));
- }
- 
- int __kprobes aarch64_insn_patch_text_nosync(void *addr, u32 insn)
-diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index 50bab186c49b..e16860a14eaf 100644
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -173,6 +173,7 @@ SECTIONS
- 			HIBERNATE_TEXT
- 			KEXEC_TEXT
- 			TRAMP_TEXT
-+			STATIC_CALL_TEXT
- 			*(.gnu.warning)
- 		. = ALIGN(16);
- 		*(.got)			/* Global offset table		*/
--- 
-2.30.2
-
+On Wed, Nov 03, 2021 at 08:06:13PM +0100, Mathias Krause wrote:
+> Kevin is reporting crashes which point to a use-after-free of a cfs_rq
+> in update_blocked_averages(). Initial debugging revealed that we've live
+> cfs_rq's (on_list=1) in an about to be kfree()'d task group in
+> free_fair_sched_group(). However, it was unclear how that can happen.
+> 
+> His kernel config happened to lead to a layout of struct sched_entity
+> that put the 'my_q' member directly into the middle of the object which
+> makes it incidentally overlap with SLUB's freelist pointer. That, in
+> combination with SLAB_FREELIST_HARDENED's freelist pointer mangling,
+> leads to a reliable access violation in form of a #GP which made the UAF
+> fail fast, e.g. like this:
+> 
+> general protection fault, probably for non-canonical address 0xff80f68888f69107: 0000 [#1] SMP
+> CPU: 5 PID: 0 Comm: swapper/5 Not tainted 5.14.13-custom+ #3
+> Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 12/12/2018
+> RIP: 0010:[<ffffffff81194af8>] update_blocked_averages+0x428/0xb90
+> Code: 28 01 00 4c 8b 4c 24 10 41 8b 97 c4 00 00 00 85 d2 75 32 4c 89 fe 4c 89 cf e8 74 2c 01 00 49 8b 96 80 00 00 00 48 85 d2 74 0e <48> 83 ba 08 01 00 00 00 0f 85 45 01 00 00 85 c0 0f 84 34 fe ff ff
+> RSP: 0018:ffffc9000002bf08 EFLAGS: 00010086
+> RAX: 0000000000000001 RBX: ffff8880202eba00 RCX: 000000000000b686
+> RDX: ff80f68888f68fff RSI: 0000000000000000 RDI: 000000000000000c
+> RBP: ffff888006808a00 R08: ffff888006808a00 R09: 0000000000000000
+> R10: 0000000000000008 R11: 0000000000000000 R12: ffff8880202ebb40
+> R13: 0000000000000000 R14: ffff8880087e7f00 R15: ffff888006808a00
+> FS:  0000000000000000(0000) GS:ffff888237d40000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000315b147b8000 CR3: 0000000002d70000 CR4: 00000000001606f0 shadow CR4: 00000000001606f0
+> Stack:
+>  0100008237d58b80 0000000000000286 000003ae017023d5 00000000000000f0
+>  ffff888237d5d240 0000000000000028 ffff888237d5c980 ffff888237d5c900
+>  ffff888237d5c900 0000000000000001 0000000000000100 0000000000000007
+> Call Trace:
+>  <IRQ>
+>  [<ffffffff8119952a>] run_rebalance_domains+0x3a/0x60
+>  [<ffffffff810030bf>] __do_softirq+0xbf/0x1fb
+>  [<ffffffff81162e7f>] irq_exit_rcu+0x7f/0x90
+>  [<ffffffff822d0d7e>] sysvec_apic_timer_interrupt+0x6e/0x90
+>  </IRQ>
+>  [<ffffffff81001d82>] asm_sysvec_apic_timer_interrupt+0x12/0x20
+> RIP: 0010:[<ffffffff822debe9>] acpi_idle_do_entry+0x49/0x50
+> Code: 8b 15 2f b3 75 01 ed c3 0f 0b e9 52 fd ff ff 65 48 8b 04 25 40 1c 01 00 48 8b 00 a8 08 75 e8 eb 07 0f 00 2d d9 e2 1d 00 fb f4 <fa> c3 0f 0b cc cc cc 41 55 41 89 d5 41 54 49 89 f4 55 53 48 89 fb
+> RSP: 0000:ffffc900000bbe68 EFLAGS: 00000246
+> RAX: 0000000000004000 RBX: 0000000000000001 RCX: ffff888237d40000
+> RDX: 0000000000000001 RSI: ffffffff82cdd4c0 RDI: ffff888100b7bc64
+> RBP: ffff888101c07000 R08: ffff888100b7bc00 R09: 00000000000000ac
+> R10: 0000000000000005 R11: ffff888237d5b824 R12: 0000000000000001
+> R13: ffffffff82cdd4c0 R14: ffffffff82cdd540 R15: 0000000000000000
+>  [<ffffffff8118dab9>] ? sched_clock_cpu+0x9/0xa0
+>  [<ffffffff818d26f8>] acpi_idle_enter+0x48/0xb0
+>  [<ffffffff81ec123c>] cpuidle_enter_state+0x7c/0x2c0
+>  [<ffffffff81ec14b4>] cpuidle_enter+0x24/0x40
+>  [<ffffffff8118e5d4>] do_idle+0x1c4/0x210
+>  [<ffffffff8118e79e>] cpu_startup_entry+0x1e/0x20
+>  [<ffffffff810a8a4a>] start_secondary+0x11a/0x120
+>  [<ffffffff81000103>] secondary_startup_64_no_verify+0xae/0xbb
+> ---[ end trace aac4ad8b95ba31e5 ]---
+> 
+> Michal seems to have run into the same issue[1]. He already correctly
+> diagnosed that commit a7b359fc6a37 ("sched/fair: Correctly insert
+> cfs_rq's to list on unthrottle") is causing the preconditions for the
+> UAF to happen by re-adding cfs_rq's also to task groups that have no
+> more running tasks, i.e. also to dead ones. His analysis, however,
+> misses the real root cause and it cannot be seen from the crash
+> backtrace only, as the real offender is tg_unthrottle_up() getting
+> called via sched_cfs_period_timer() via the timer interrupt at an
+> inconvenient time.
+> 
+> When unregister_fair_sched_group() unlinks all cfs_rq's from the dying
+> task group, it doesn't protect itself from getting interrupted. If the
+> timer interrupt triggers while we iterate over all CPUs or after
+> unregister_fair_sched_group() has finished but prior to unlinking the
+> task group, sched_cfs_period_timer() will execute and walk the list of
+> task groups, trying to unthrottle cfs_rq's, i.e. re-add them to the
+> dying task group. These will later -- in free_fair_sched_group() -- be
+> kfree()'ed while still being linked, leading to the fireworks Kevin and
+> Michal are seeing.
+> 
+> To fix this race, ensure the dying task group gets unlinked first.
+> However, simply switching the order of unregistering and unlinking the
+> task group isn't sufficient, as concurrent RCU walkers might still see
+> it, as can be seen below:
+> 
+>     CPU1:                                      CPU2:
+>       :                                        timer IRQ:
+>       :                                          do_sched_cfs_period_timer():
+>       :                                            :
+>       :                                            distribute_cfs_runtime():
+>       :                                              rcu_read_lock();
+>       :                                              :
+>       :                                              unthrottle_cfs_rq():
+>     sched_offline_group():                             :
+>       :                                                walk_tg_tree_from(…,tg_unthrottle_up,…):
+>       list_del_rcu(&tg->list);                           :
+>  (1)  :                                                  list_for_each_entry_rcu(child, &parent->children, siblings)
+>       :                                                    :
+>  (2)  list_del_rcu(&tg->siblings);                         :
+>       :                                                    tg_unthrottle_up():
+>       unregister_fair_sched_group():                         struct cfs_rq *cfs_rq = tg->cfs_rq[cpu_of(rq)];
+>         :                                                    :
+>         list_del_leaf_cfs_rq(tg->cfs_rq[cpu]);               :
+>         :                                                    :
+>         :                                                    if (!cfs_rq_is_decayed(cfs_rq) || cfs_rq->nr_running)
+>  (3)    :                                                        list_add_leaf_cfs_rq(cfs_rq);
+>       :                                                      :
+>       :                                                    :
+>       :                                                  :
+>       :                                                :
+>       :                                              :
+>  (4)  :                                              rcu_read_unlock();
+> 
+> CPU 2 walks the task group list in parallel to sched_offline_group(),
+> specifically, it'll read the soon to be unlinked task group entry at
+> (1). Unlinking it on CPU 1 at (2) therefore won't prevent CPU 2 from
+> still passing it on to tg_unthrottle_up(). CPU 1 now tries to unlink all
+> cfs_rq's via list_del_leaf_cfs_rq() in unregister_fair_sched_group().
+> Meanwhile CPU 2 will re-add some of these at (3), which is the cause of
+> the UAF later on.
+> 
+> To prevent this additional race from happening, we need to wait until
+> walk_tg_tree_from() has finished traversing the task groups, i.e. after
+> the RCU read critical section ends in (4). Afterwards we're safe to call
+> unregister_fair_sched_group(), as each new walk won't see the dying task
+> group any more.
+> 
+> Using synchronize_rcu() might be seen as a too heavy hammer to nail this
+> problem. However, the overall tear down sequence (e.g., as documented in
+> css_free_rwork_fn()) already relies on quite a few assumptions regarding
+> execution context and RCU grace periods from passing. Looking at the
+> autogroup code, which calls sched_destroy_group() directly after
+> sched_offline_group() and the apparent need to have at least one RCU
+> grace period expire after unlinking the task group, prior to calling
+> unregister_fair_sched_group(), there seems to be no better alternative.
+> Calling unregister_fair_sched_group() via call_rcu() will only lead to
+> trouble in sched_offline_group() which also relies on (yet another)
+> expired RCU grace period.
+> 
+> This patch survives Michal's reproducer[2] for 8h+ now, which used to
+> trigger within minutes before.
+> 
+> [1] https://lore.kernel.org/lkml/20211011172236.11223-1-mkoutny@suse.com/
+> [2] https://lore.kernel.org/lkml/20211102160228.GA57072@blackbody.suse.cz/
+> 
+> Fixes: a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to list on unthrottle")
+> Cc: Odin Ugedal <odin@uged.al>
+> Cc: Michal Koutný <mkoutny@suse.com>
+> Reported-by: Kevin Tanguy <kevin.tanguy@corp.ovh.com>
+> Suggested-by: Brad Spengler <spender@grsecurity.net>
+> Signed-off-by: Mathias Krause <minipli@grsecurity.net>
+> ---
+>  kernel/sched/core.c | 18 +++++++++++++++---
+>  1 file changed, 15 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 978460f891a1..60125a6c9d1b 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -9506,13 +9506,25 @@ void sched_offline_group(struct task_group *tg)
+>  {
+>  	unsigned long flags;
+>  
+> -	/* End participation in shares distribution: */
+> -	unregister_fair_sched_group(tg);
+> -
+> +	/*
+> +	 * Unlink first, to avoid walk_tg_tree_from() from finding us (via
+> +	 * sched_cfs_period_timer()).
+> +	 */
+>  	spin_lock_irqsave(&task_group_lock, flags);
+>  	list_del_rcu(&tg->list);
+>  	list_del_rcu(&tg->siblings);
+>  	spin_unlock_irqrestore(&task_group_lock, flags);
+> +
+> +	/*
+> +	 * Wait for all pending users of this task group to leave their RCU
+> +	 * critical section to ensure no new user will see our dying task
+> +	 * group any more. Specifically ensure that tg_unthrottle_up() won't
+> +	 * add decayed cfs_rq's to it.
+> +	 */
+> +	synchronize_rcu();
+> +
+> +	/* End participation in shares distribution: */
+> +	unregister_fair_sched_group(tg);
+>  }
+>  
+>  static void sched_change_group(struct task_struct *tsk, int type)
+> -- 
+> 2.30.2
+> 
