@@ -2,174 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86A244618D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:48:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A94446195
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbhKEJvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 05:51:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43920 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232616AbhKEJvW (ORCPT
+        id S232864AbhKEJws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 05:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232837AbhKEJwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 05:51:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636105723;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TDCxTaiuFN2oEnFyA/uNKzyzy5BqHnuVtliUgcTwAYg=;
-        b=iqXTa6FOGtUvh6h+YYv36T8RGq9SRYaq+dSxItGpN2pTj5bv9i3iRw+N5B7yWea0Rw/O3i
-        tx54caYUf54cTuXxSYRj5x2Qfs2liPADIi/warL/yJaaShKyIkpQGl7f5gcf6Wc6t+Fctn
-        qeh1dWuclLaeOkeAbnTiqWVOo6W9PaY=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-98-omYIjQNFOxiGzWvdmDHTzQ-1; Fri, 05 Nov 2021 05:48:41 -0400
-X-MC-Unique: omYIjQNFOxiGzWvdmDHTzQ-1
-Received: by mail-wm1-f72.google.com with SMTP id k5-20020a7bc3050000b02901e081f69d80so3114352wmj.8
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 02:48:41 -0700 (PDT)
+        Fri, 5 Nov 2021 05:52:46 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F022C061203
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 02:50:07 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id i16-20020a9d68d0000000b0055c630be045so1596282oto.10
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 02:50:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=6wn/L7/SSOhEC1CvL6qpAc+L8JOU1SQHvHQXVt2hgdI=;
+        b=hlk46Ule8jDc0kHPpvMjrplvYrsNRmNQGi8r/epX8JG/m/iySnRWU4dM1JQzvu2EyO
+         T1BdKsnwMrMyBbBWE41IMzLT1wyP8AoJ4x6BYAEnxynEsJDKZchWqKOMtHAxiCr6Jfp5
+         mP6WnqHQweE3Phxmbp+GhHc5kJGZJKgjmS/spwvPzvuM2RnS2oSUfH/jI3QccfgXhzhh
+         FCiKCzQ9Loa3jIbAXud7vesZ6IakPCBlOsuXymE+krhTrKZ2gJNdU5vEJXnkdljztFn/
+         iL+QX2cLpqpb0DZq4qrL5GTR1pIJEhMLHXfnLw/1SrpBEyPfZIXquqIIPZZciffY+qds
+         XlTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=TDCxTaiuFN2oEnFyA/uNKzyzy5BqHnuVtliUgcTwAYg=;
-        b=M7XE8BV2mhxwS/A1k6u2Tu/TYa7j13UozKqog8U3SxJeZ7cs8zGAepp3SdxEHvqFhs
-         +DZYJIcrhjvnISei9ELPZO6jiif9dNO+XN9vz0Jo46JnxmiTx6T5mWreihIFsO4ZZr1n
-         CaVB05wmKnhvyxN9In+BPHH1AMVRjGweA8ntPadtp9AVE0FkSxJHq02+c6FHob/MTeTc
-         SXqa6Y9/Fs0jxP9zpHuzH6PN/ZiDsU8Q93+4ulsZg4pAgNSC7qy8jvJQ51O6rZRO4PBZ
-         U2UWVdqCSQNi6ToDpf+3fk6IS/o2gnXeClgTQZSZbc+eSjN6Bsd3Iq0yRVzS7QAxy0Cd
-         uaHg==
-X-Gm-Message-State: AOAM531sMZlew89upZ2ZiF5jOjzDAi5dLvbgMhqLCcz1t1uLfj5krjXn
-        VWPwlAd9moYfeaIYrTeQwD9MqKN1BgzYstzylgvkKxzk6NB0riSC5nKLAJZ2fIujvkUGnOjDMPX
-        oKzs3k6/E3LWbLCXX20lmToYE
-X-Received: by 2002:a05:6000:1043:: with SMTP id c3mr47457544wrx.64.1636105720564;
-        Fri, 05 Nov 2021 02:48:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxAy5NPgcgZDunmEq87tVcIv6+r2xtRAUkaFqPrEIO+dNAeu5S620buzaYA0spdyOnq5mk7Jw==
-X-Received: by 2002:a05:6000:1043:: with SMTP id c3mr47457520wrx.64.1636105720304;
-        Fri, 05 Nov 2021 02:48:40 -0700 (PDT)
-Received: from [192.168.1.128] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id u20sm6503643wmq.6.2021.11.05.02.48.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 02:48:39 -0700 (PDT)
-Message-ID: <38dbcc8f-2f95-6846-537f-9b85468bfa87@redhat.com>
-Date:   Fri, 5 Nov 2021 10:48:38 +0100
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=6wn/L7/SSOhEC1CvL6qpAc+L8JOU1SQHvHQXVt2hgdI=;
+        b=q+q+aAWWFkhapp3Lvue1BWq+djS77c66+DyZ6QMFgi8qNBxyCxFzE30a2LVQmV2dF/
+         h3uesSX2x/DU3mLTnQG4DwjGYu2+4R3zwMVvEQsYjW0B2GNH5aPywFgwqAbo4JDDgngN
+         udsG5DsZR68uJFWmeWBSIhSQu4WhjZVz4Ng9NSVZI+Mrs0eYcZ5dqVM36jVaSsXYWA6L
+         XJ4lkF3vCUTjNJ7CIFrf/A5OJhL0Wo9Hg/KOuqoKtJba4oRRQIozcQadM2LItBk/3a+O
+         8WLP3CyFabmGbgDhVs6AuwuYOm+w8WoanOeR+6jI24vCn17cftGbqpBLA4ffFR3CeiyD
+         pY9g==
+X-Gm-Message-State: AOAM530UaeeIkz6PWALGbY0LLbFD57nm6WVc2baszA6+oFubEYnl51du
+        dTgaRyZ7FPtB5OaqONquNrAZaBHNilOWs8ZTtdNBJQ==
+X-Google-Smtp-Source: ABdhPJx3DMMB+58/dyKZwFRuLmXcKJP5SQvzh+M+qBwz56yovBbYQc5ZStHSiwe8APbGvw+eUhua2OuZnWoqOe/Y/o0=
+X-Received: by 2002:a9d:6348:: with SMTP id y8mr44727729otk.179.1636105806759;
+ Fri, 05 Nov 2021 02:50:06 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 1/2] drm: Add a drm_drv_enabled() to check if drivers
- should be enabled
-Content-Language: en-US
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        amd-gfx@lists.freedesktop.org,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        nouveau@lists.freedesktop.org, Dave Airlie <airlied@redhat.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        virtualization@lists.linux-foundation.org,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        spice-devel@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        intel-gfx@lists.freedesktop.org,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-References: <20211104160707.1407052-1-javierm@redhat.com>
- <20211104160707.1407052-2-javierm@redhat.com> <87ilx7ae3v.fsf@intel.com>
- <0c07f121-42d3-9f37-1e14-842fb685b501@redhat.com>
- <d4a64906-69e5-3250-2362-79f2afac0a23@suse.de>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-In-Reply-To: <d4a64906-69e5-3250-2362-79f2afac0a23@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 5 Nov 2021 10:49:54 +0100
+Message-ID: <CACRpkdbRu_NTJpSeyOeMRq5TFgj0-7Ny1vTvcak4K9qaY6nunw@mail.gmail.com>
+Subject: [GIT PULL] Pin control bulk changes for v5.16
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Thomas,
+Hi Linus,
 
-On 11/5/21 09:43, Thomas Zimmermann wrote:
-> Hi
-> 
-> Am 04.11.21 um 21:09 schrieb Javier Martinez Canillas:
->> Hello Jani,
->>
->> On 11/4/21 20:57, Jani Nikula wrote:
->>> On Thu, 04 Nov 2021, Javier Martinez Canillas <javierm@redhat.com> wrote:
->>>> +/**
->>>> + * drm_drv_enabled - Checks if a DRM driver can be enabled
->>>> + * @driver: DRM driver to check
->>>> + *
->>>> + * Checks whether a DRM driver can be enabled or not. This may be the case
->>>> + * if the "nomodeset" kernel command line parameter is used.
->>>> + *
->>>> + * Return: 0 on success or a negative error code on failure.
->>>> + */
->>>> +int drm_drv_enabled(const struct drm_driver *driver)
-> 
-> Jani mentioned that i915 absolutely wants this to run from the 
-> module_init function. Best is to drop the parameter.
->
+here is the big pin control pull request for v5.16.
 
-Ok. I now wonder though how much value would add this function since
-it will just be a wrapper around the nomodeset check.
+The details are in the signed tag as usual.
 
-We talked about adding a new DRIVER_GENERIC feature flag and check for
-this, but as danvet mentioned that is not really needed. We just need
-to avoid testing for nomodeset in the simpledrm driver.
+The most interesting aspect is that we now have initial
+support for the Apple pin controller as used in the M1
+laptops and the iPhones which is a step forward for using
+Linux efficiently on this Apple silicon.
 
-Do you envision other condition that could be added later to disable a
-DRM driver ? Or do you think that just from a code readability point of
-view makes worth it ?
+Please pull it in!
 
->>>> +{
->>>> +	if (vgacon_text_force()) {
->>>> +		DRM_INFO("%s driver is disabled\n", driver->name);
->>>> +		return -ENODEV;
->>>> +	}
-> 
-> If we run this from within a module_init function, we'd get plenty of 
-> these warnings if drivers are compiled into the kernel. Maybe simply 
-> remove the message. There's already a warning printed by the nomodeset 
-> handler.
->
+Yours,
+Linus Walleij
 
-Indeed. I'll just drop it.
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 
->>>> +
->>>> +	return 0;
->>>> +}
->>>> +EXPORT_SYMBOL(drm_drv_enabled);
->>>
->>> The name implies a bool return, but it's not.
->>>
->>> 	if (drm_drv_enabled(...)) {
->>> 		/* surprise, it's disabled! */
->>> 	}
->>>
->>
->> It used to return a bool in v2 but Thomas suggested an int instead to
->> have consistency on the errno code that was returned by the callers.
->>
->> I should probably name that function differently to avoid confusion.
-> 
-> Yes, please.
->
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
 
-drm_driver_check() maybe ?
- 
-Best regards,
--- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
+tags/pinctrl-v5.16-1
+
+for you to fetch changes up to a0f160ffcb83de6a04fa75f9e7bdfe969f2863f7:
+
+  pinctrl: add pinctrl/GPIO driver for Apple SoCs (2021-10-27 00:16:52 +0200)
+
+----------------------------------------------------------------
+Pin control changes for the v5.16 kernel cycle
+
+Core changes:
+
+- Add infrastructure for per-parent interrupt data to support
+  the Apple pin controller.
+
+New drivers:
+
+- New combined pin control and GPIO driver for the Apple SoC.
+  This is used in all modern Apple silicon such as the M1
+  laptops but also in at least recent iPhone variants.
+
+- New subdriver for the Qualcomm SM6350
+
+- New subdriver for the Qualcomm QCM2290
+
+- New subdriver for the Qualcomm PM6350
+
+- New subdriver for the Uniphier NX1
+
+- New subdriver for the Samsung ExynosAutoV9
+
+- New subdriver for the Mediatek MT7986
+
+- New subdriver for the nVidia Tegra194
+
+Improvements:
+
+- Improve power management in the Mediatek driver.
+
+- Improvements to the Renesas internal consistency checker.
+
+- Convert the Rockchip pin control device tree bindings to YAML.
+
+- Finally convert the Qualcomm PMIC SSBI and SPMI MPP GPIO
+  driver to use hierarchical interrupts.
+
+- Convert the Qualcomm PMIC MPP device tree bindings to YAML.
+
+----------------------------------------------------------------
+Andrey Gusakov (1):
+      pinctrl: renesas: r8a779[56]x: Add MediaLB pins
+
+Biju Das (1):
+      pinctrl: renesas: rzg2l: Fix missing port register 21h
+
+Cai Huoqing (2):
+      pinctrl: nomadik: Kconfig: Remove repeated config dependency
+      pinctrl: intel: Kconfig: Add configuration menu to Intel pin control
+
+Chanho Park (1):
+      pinctrl: samsung: support ExynosAutov9 SoC pinctrl
+
+Colin Ian King (1):
+      pinctrl: Fix spelling mistake "atleast" -> "at least"
+
+Dmitry Baryshkov (6):
+      dt-bindings: pinctrl: qcom,pmic-mpp: Convert qcom pmic mpp
+bindings to YAML
+      pinctrl: qcom: ssbi-mpp: hardcode IRQ counts
+      pinctrl: qcom: ssbi-mpp: add support for hierarchical IRQ chip
+      pinctrl: qcom: spmi-mpp: hardcode IRQ counts
+      pinctrl: qcom: spmi-mpp: add support for hierarchical IRQ chip
+      dt-bindings: pinctrl: qcom,pmic-mpp: switch to #interrupt-cells
+
+Du Huanpeng (1):
+      pinctrl: gemini: fix typos
+
+Fabien Dessenne (1):
+      pinctrl: stm32: do not warn when 'st,package' is absent
+
+Florian Fainelli (1):
+      pinctrl: bcm2835: Allow building driver as a module
+
+Geert Uytterhoeven (5):
+      pinctrl: renesas: Fix save/restore on SoCs with pull-down only pins
+      pinctrl: renesas: checker: Fix off-by-one bug in drive register check
+      pinctrl: renesas: checker: Move overlapping field check
+      pinctrl: renesas: checker: Fix bias checks on SoCs with
+pull-down only pins
+      pinctrl: renesas: checker: Prefix common checker output
+
+Horatiu Vultur (2):
+      dt-bindings: pinctrl: pinctrl-microchip-sgpio: Add reset binding
+      pinctrl: microchip sgpio: use reset driver
+
+Jason Wang (1):
+      pinctrl: renesas: No need to initialise global statics
+
+Joey Gouly (3):
+      dt-bindings: pinctrl: add #interrupt-cells to apple,pinctrl
+      dt-bindings: pinctrl: Add apple,npins property to apple,pinctrl
+      pinctrl: add pinctrl/GPIO driver for Apple SoCs
+
+Johan Jonker (1):
+      dt-bindings: pinctrl: convert rockchip,pinctrl.txt to YAML
+
+Konrad Dybcio (2):
+      dt-bindings: pinctrl: qcom: Add SM6350 pinctrl bindings
+      pinctrl: qcom: Add SM6350 pinctrl driver
+
+Kunihiko Hayashi (3):
+      pinctrl: uniphier: Add extra audio pinmux settings for LD11,
+LD20 and PXs3 SoCs
+      dt-bindings: pinctrl: uniphier: Add NX1 pinctrl binding
+      pinctrl: uniphier: Add UniPhier NX1 pinctrl driver
+
+Linus Walleij (3):
+      Merge tag 'renesas-pinctrl-for-v5.16-tag1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers
+into devel
+      Merge tag 'renesas-pinctrl-for-v5.16-tag2' of
+git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers
+into devel
+      Merge branch 'ib-gpio-ppid' into devel
+
+Luca Weiss (3):
+      pinctrl: qcom: msm8226: fill in more functions
+      dt-bindings: pinctrl: qcom,pmic-gpio: Add compatible for PM6350
+      pinctrl: qcom: spmi-gpio: Add compatible for PM6350
+
+Marc Zyngier (1):
+      gpio: Allow per-parent interrupt data
+
+Prathamesh Shete (3):
+      pinctrl: tegra: Add pinmux support for Tegra194
+      pinctrl: tegra: Use correct offset for pin group
+      pinctrl: tegra: Fix warnings and error
+
+Rahul Tanwar (1):
+      pinctrl: equilibrium: Fix function addition in multiple groups
+
+Sam Shih (3):
+      pinctrl: mediatek: moore: check if pin_desc is valid before use
+      dt-bindings: pinctrl: update bindings for MT7986 SoC
+      pinctrl: mediatek: add support for MT7986 SoC
+
+Shawn Guo (2):
+      dt-bindings: pinctrl: qcom: Add QCM2290 pinctrl bindings
+      pinctrl: qcom: Add QCM2290 pinctrl driver
+
+Subbaraman Narayanamurthy (2):
+      dt-bindings: pinctrl: qcom-pmic-gpio: Add
+output-{enable,disable} properties
+      pinctrl: qcom: spmi-gpio: add support to enable/disable output
+
+Suresh Mangipudi (1):
+      pinctrl: tegra: include lpdr pin properties
+
+Yang Yingliang (1):
+      pinctrl: core: fix possible memory leak in pinctrl_enable()
+
+Zhiyong Tao (6):
+      pinctrl: mediatek: mt8195: Add pm_ops
+      dt-bindings: pinctrl: mt8195: add rsel define
+      dt-bindings: pinctrl: mt8195: change pull up/down description
+      pinctrl: mediatek: fix coding style
+      pinctrl: mediatek: support rsel feature
+      pinctrl: mediatek: add rsel setting on MT8195
+
+ .../devicetree/bindings/pinctrl/apple,pinctrl.yaml |   10 +
+ .../bindings/pinctrl/mediatek,mt7986-pinctrl.yaml  |  363 ++++
+ .../bindings/pinctrl/microchip,sparx5-sgpio.yaml   |    7 +
+ .../bindings/pinctrl/pinctrl-mt8195.yaml           |   86 +-
+ .../bindings/pinctrl/qcom,pmic-gpio.yaml           |    4 +
+ .../devicetree/bindings/pinctrl/qcom,pmic-mpp.txt  |  187 --
+ .../devicetree/bindings/pinctrl/qcom,pmic-mpp.yaml |  188 ++
+ .../bindings/pinctrl/qcom,qcm2290-pinctrl.yaml     |  165 ++
+ .../bindings/pinctrl/qcom,sm6350-pinctrl.yaml      |  148 ++
+ .../bindings/pinctrl/rockchip,pinctrl.txt          |  114 --
+ .../bindings/pinctrl/rockchip,pinctrl.yaml         |  184 ++
+ .../bindings/pinctrl/samsung-pinctrl.txt           |    1 +
+ .../pinctrl/socionext,uniphier-pinctrl.yaml        |    1 +
+ drivers/gpio/gpiolib.c                             |    9 +-
+ drivers/pinctrl/Kconfig                            |   16 +
+ drivers/pinctrl/Makefile                           |    1 +
+ drivers/pinctrl/bcm/Kconfig                        |    2 +-
+ drivers/pinctrl/bcm/pinctrl-bcm2835.c              |    9 +-
+ drivers/pinctrl/core.c                             |    2 +
+ drivers/pinctrl/intel/Kconfig                      |    6 +-
+ drivers/pinctrl/mediatek/Kconfig                   |    7 +
+ drivers/pinctrl/mediatek/Makefile                  |    1 +
+ drivers/pinctrl/mediatek/pinctrl-moore.c           |   18 +
+ drivers/pinctrl/mediatek/pinctrl-mt7986.c          |  927 ++++++++++
+ drivers/pinctrl/mediatek/pinctrl-mt8195.c          |  134 ++
+ drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c   |  231 ++-
+ drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h   |   46 +
+ drivers/pinctrl/mediatek/pinctrl-paris.c           |   68 +-
+ drivers/pinctrl/nomadik/Kconfig                    |    1 -
+ drivers/pinctrl/pinctrl-apple-gpio.c               |  534 ++++++
+ drivers/pinctrl/pinctrl-equilibrium.c              |    7 +-
+ drivers/pinctrl/pinctrl-gemini.c                   |    4 +-
+ drivers/pinctrl/pinctrl-microchip-sgpio.c          |    7 +
+ drivers/pinctrl/pinctrl-st.c                       |    2 +-
+ drivers/pinctrl/qcom/Kconfig                       |   17 +
+ drivers/pinctrl/qcom/Makefile                      |    2 +
+ drivers/pinctrl/qcom/pinctrl-msm8226.c             |   74 +-
+ drivers/pinctrl/qcom/pinctrl-qcm2290.c             | 1129 ++++++++++++
+ drivers/pinctrl/qcom/pinctrl-sm6350.c              | 1401 +++++++++++++++
+ drivers/pinctrl/qcom/pinctrl-spmi-gpio.c           |    7 +
+ drivers/pinctrl/qcom/pinctrl-spmi-mpp.c            |  111 +-
+ drivers/pinctrl/qcom/pinctrl-ssbi-mpp.c            |  133 +-
+ drivers/pinctrl/renesas/core.c                     |   83 +-
+ drivers/pinctrl/renesas/pfc-r8a77950.c             |   14 +
+ drivers/pinctrl/renesas/pfc-r8a77951.c             |   22 +-
+ drivers/pinctrl/renesas/pfc-r8a7796.c              |   22 +-
+ drivers/pinctrl/renesas/pfc-r8a77965.c             |   22 +-
+ drivers/pinctrl/renesas/pinctrl-rzg2l.c            |    2 +-
+ drivers/pinctrl/samsung/pinctrl-exynos-arm64.c     |  108 ++
+ drivers/pinctrl/samsung/pinctrl-samsung.c          |    2 +
+ drivers/pinctrl/samsung/pinctrl-samsung.h          |    1 +
+ drivers/pinctrl/stm32/pinctrl-stm32.c              |   16 +-
+ drivers/pinctrl/tegra/pinctrl-tegra.c              |   32 +-
+ drivers/pinctrl/tegra/pinctrl-tegra.h              |    2 +
+ drivers/pinctrl/tegra/pinctrl-tegra194.c           | 1794 +++++++++++++++++++-
+ drivers/pinctrl/tegra/pinctrl-tegra210.c           |  330 ++--
+ drivers/pinctrl/uniphier/Kconfig                   |    4 +
+ drivers/pinctrl/uniphier/Makefile                  |    1 +
+ drivers/pinctrl/uniphier/pinctrl-uniphier-ld11.c   |   18 +
+ drivers/pinctrl/uniphier/pinctrl-uniphier-ld20.c   |   35 +
+ drivers/pinctrl/uniphier/pinctrl-uniphier-nx1.c    |  489 ++++++
+ drivers/pinctrl/uniphier/pinctrl-uniphier-pxs3.c   |   40 +
+ include/dt-bindings/pinctrl/mt65xx.h               |    9 +
+ include/linux/gpio/driver.h                        |   19 +-
+ 64 files changed, 8720 insertions(+), 709 deletions(-)
+ create mode 100644
+Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.yaml
+ delete mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-mpp.txt
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-mpp.yaml
+ create mode 100644
+Documentation/devicetree/bindings/pinctrl/qcom,qcm2290-pinctrl.yaml
+ create mode 100644
+Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml
+ delete mode 100644
+Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.txt
+ create mode 100644
+Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml
+ create mode 100644 drivers/pinctrl/mediatek/pinctrl-mt7986.c
+ create mode 100644 drivers/pinctrl/pinctrl-apple-gpio.c
+ create mode 100644 drivers/pinctrl/qcom/pinctrl-qcm2290.c
+ create mode 100644 drivers/pinctrl/qcom/pinctrl-sm6350.c
+ create mode 100644 drivers/pinctrl/uniphier/pinctrl-uniphier-nx1.c
