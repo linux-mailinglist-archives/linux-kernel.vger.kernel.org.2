@@ -2,123 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB93446B03
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 23:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79EF4446B05
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 23:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233541AbhKEWtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 18:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54740 "EHLO
+        id S233977AbhKEWty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 18:49:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230400AbhKEWtI (ORCPT
+        with ESMTP id S233159AbhKEWtu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 18:49:08 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63229C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 15:46:28 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id c26-20020a9d615a000000b0055bf6efab46so6978366otk.6
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 15:46:28 -0700 (PDT)
+        Fri, 5 Nov 2021 18:49:50 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 143F7C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 15:47:10 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id t11so11891757plq.11
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 15:47:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kali.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=hp5yDR8Prvk1XOLHiJfiiyB7kBL9249Yo9SKWwYcurc=;
-        b=fGfqNbnk2ABvhMLmmytPWqSyXS3vqgLp/RW8uAetdm0Cf3iesPucRqyyvJNF7r0Q0p
-         llJgco8xvycR18ObUR7xkFgLtHf4wCvKrFgsafbzEthUpZ2QrQ/bIeJT8GfvqlEedjcv
-         iKwKJ2Q5F24ztUUhf4RvV7kl+3mahObZwskzURGwwjWy2+VkB1O/U6QYXpe19uBU2TST
-         IFocwXviedARStv0DlCnQR7Ik0ADeMCPrwLR26FdfnDyOunBFQiDG7XMQn5jELVyOcZ2
-         +TtaLKkUegCepqXB+bWAFRHFUaaC+DKjYWDZOCBvv1B3TVOAnSrRUMoPxThIH98QGRmE
-         9Dgg==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OxUqrQOKE5rz2Yy9rGFxDjQ64K2p6FbsasTsNrHPkGY=;
+        b=oaRJRNUL2SeshzXw5yVr3ynQ87l1WCM717Ekxc3C6L/t2VOi9zgkRI9+8hunUnhNY+
+         0msWk0cT4U5n99XcAvfOnCW/Cj2ZMX0HW0XqYw2n2baHGwSd+r0BqxWkJGOeWPcRnCRJ
+         aGUE41MrHdgdkXSuZ3EQC+Nz7d+IXcNkJOnIkO2KmNR4z/l2OZ+njSV5O6KHdT6aYcbY
+         ZBYX46mufxAAXdVuydJSwdZH300owuXKd0BPFcE0losc9dPeXD5YZBGQd7shvZXvReSC
+         fbYPmxHsrrO0XrCG7dBjkChiiU7yzvrnmtABfUE9sqKQXhaAjQsUhpgMl/hrIEon9BXC
+         JUTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=hp5yDR8Prvk1XOLHiJfiiyB7kBL9249Yo9SKWwYcurc=;
-        b=lRmCyN6B7z3ASJFs+dEUQOdJUrvwz9zqQ9D6JdhZccRJiiqSAaluIk+n/gF06isV4w
-         4bSVW+SdMTUyNZvS4o9WHCZydjof7g2R5OTbca22+Yn4wvDZkCyGuQK39E5IDY6Y6LJd
-         X9Up+ldDaNy5LEsU5c8dzoESXhXTBrlcSYEiHwSqvT81U4ZEpIWl6tKcfueDYvump0O/
-         eKbiVd8uc0loLJfBWJvEx4c0PqkP8cFdMsW+bqR+as/cCC8miJjwgpM2NfVWomc6qrkr
-         RyMya1z2qOtHpPETYcKG+Mbw8cnQaOpQsr0Ql1TyRd9O2DfELa2/8pRGRNtNd0zGGfy5
-         cOFg==
-X-Gm-Message-State: AOAM533BGRZlZW2nddkD7dWTT9NCAUm0MhkguTcVkSdsRxCVewZjfw1u
-        F4pHmwPl7NPc4FcJzolS8CNJmA==
-X-Google-Smtp-Source: ABdhPJyEJdiMXWfm/UqxBA2WDu4DzGeeV0uKlRlzpuKENRl1YQIIQp1eeo/rNJm6rSb5svD8o3XdZg==
-X-Received: by 2002:a05:6830:4009:: with SMTP id h9mr45877669ots.186.1636152387820;
-        Fri, 05 Nov 2021 15:46:27 -0700 (PDT)
-Received: from [192.168.11.48] (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
-        by smtp.gmail.com with ESMTPSA id i11sm2991821oof.36.2021.11.05.15.46.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 15:46:27 -0700 (PDT)
-Message-ID: <f955a2aa-f788-00db-1ed8-dc9c7a1b2572@kali.org>
-Date:   Fri, 5 Nov 2021 17:46:25 -0500
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OxUqrQOKE5rz2Yy9rGFxDjQ64K2p6FbsasTsNrHPkGY=;
+        b=j4c8WTizKLDidoSKkNFTSeDb1aPyA5/5YiUN0J7i2SKhAFctU/eayTrMOhGEs32/ON
+         sqgbf7BKt3bWMPCdilwsCILt+DeA0z7SZbSfIBmdU8DoplA53uLvGsMIjOyJfH/BwzeY
+         CQXAzoLA4To8dnR6y9ZK9Zj5dvyZxA+7S6xlSTnfRCPxDVHU2hCpXrRaVVJ10bOybDaQ
+         rmx5YjaGxtVcX6nHND+Ze+Tneqp1kXybBWUgwrXLbv1GYpx+ZwUvZ5GqWxxwrvZFVbjC
+         RoDMoX6IPO82HcZwSL99j4HbJdLvLxK7NfF5BxYPk94lgTuqX4LyB6uT2bR0X3FMWHI3
+         gilg==
+X-Gm-Message-State: AOAM532roUrtwg7uNDqiFy20+Lj6tY+/sQBlvxy3ubgqB3xKgaxWDE5x
+        DiIWwXxfNV2u9FerYIsNpQszfKq5Of3Idg==
+X-Google-Smtp-Source: ABdhPJw/vX5xoimWxW7XMyz2ihPOstRLNm8ajQj2qZQu+nXqI+ZsbMHHvfcgSeq6uyqWjYEbfLauKQ==
+X-Received: by 2002:a17:902:db07:b0:141:ea12:218b with SMTP id m7-20020a170902db0700b00141ea12218bmr35627640plx.46.1636152429333;
+        Fri, 05 Nov 2021 15:47:09 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id s2sm11157690pjs.56.2021.11.05.15.47.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 15:47:08 -0700 (PDT)
+Date:   Fri, 5 Nov 2021 22:47:04 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm@vger.kernel.org, Marc Orr <marcorr@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V11 4/5] selftest: KVM: Add open sev dev helper
+Message-ID: <YYW0aPKZLT6FyUnT@google.com>
+References: <20211021174303.385706-1-pgonda@google.com>
+ <20211021174303.385706-5-pgonda@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH v3 0/5] Refactor thermal pressure update to avoid code
- duplication
-Content-Language: en-US
-To:     Thara Gopinath <thara.gopinath@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
-        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        viresh.kumar@linaro.org, amitk@kernel.org,
-        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
-        bjorn.andersson@linaro.org, agross@kernel.org
-References: <20211103161020.26714-1-lukasz.luba@arm.com>
- <c7b526f0-2c26-0cfc-910b-3521c6a6ef51@kali.org>
- <3cba148a-7077-7b6b-f131-dc65045aa348@arm.com>
- <9d533b6e-a81c-e823-fa6f-61fdea92fa65@kali.org>
- <74ea027b-b213-42b8-0f7d-275f3b84712e@linaro.org>
- <74603569-2ff1-999e-9618-79261fdb0ee4@kali.org>
- <b7e76c2a-ceac-500a-ff75-535a3f0d51d6@linaro.org>
-From:   Steev Klimaszewski <steev@kali.org>
-In-Reply-To: <b7e76c2a-ceac-500a-ff75-535a3f0d51d6@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211021174303.385706-5-pgonda@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 21, 2021, Peter Gonda wrote:
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index 10a8ed691c66..06a6c04010fb 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -31,6 +31,19 @@ static void *align(void *x, size_t size)
+>  	return (void *) (((size_t) x + mask) & ~mask);
+>  }
+>  
+> +int open_path_or_exit(const char *path, int flags)
+> +{
+> +	int fd;
+> +
+> +	fd = open(path, flags);
+> +	if (fd < 0) {
+> +		print_skip("%s not available (errno: %d)", path, errno);
 
-> [snip]
-> Hi,
->
-> So IIUC the below logs correctly, you are never hitting boost 
-> frequency (with or without this patch series). Is that correct ?
->
-> w.r.t temperature , how are you measuring it? Do you have LMh enabled 
-> or are you using tsens to mitigate cpu temperature ?
+While you're here, can you add the strerror(errno) as well?  There are some other
+enhancements I'd like to make as some failure modes are really annoying, e.g. if
+the max vCPUs test fails/skips due to ulimits, but printing the human friendly
+version is an easy one to pick off.
 
-
-Hi,
-
-I was wrong - it does indeed go boost with the patchset applied, it's 
-just that it doesn't boost up to 2.96GHz very often at all. As noted by 
-the 0.03% when i ran it while compiling zellij; I reapplied the patches 
-(and the 6th patch from Lukasz's email) and after boot, 2.96GHz was 
-showing at 0.39%.
-
-Most tools that read the cpu frequency don't really seem to be well 
-suited for big.LITTLE, and seem to throw an average of the speed, so 
-cpufreq-info was the best I have.  We're apparently supposed to be using 
-cpupower these days, but it doesn't seem to know anything about arm64 
-devices.
-
-Temperature wise, I'm just getting from the sensors, and I am using LMh.
-
-Now, I have to admit, while I've thrown a patch here or there, I'm not 
-exactly a kernel developer, just enough knowledge to be somewhat 
-dangerous and know how to backport things.  In my mind, and my line of 
-thinking, I would expect with boost enabled, that the cpu would boost up 
-to that as often as possible, not require a specific workload to 
-actually hit it.  But then again, I would expect multiple compilation 
-jobs to be one of the workloads that would?
-
-So I think, the part about never hitting 2.96GHz can be dismissed, and 
-was simply my lack of knowledge about the cpufreq-info tool's averages.  
-It does seem however to rarely ever hit 2.96GHz and I would actually 
-expect it to hit it far more often.
-
+> +		exit(KSFT_SKIP);
+> +	}
+> +
+> +	return fd;
+> +}
+> +
+>  /*
+>   * Open KVM_DEV_PATH if available, otherwise exit the entire program.
+>   *
+> @@ -42,16 +55,7 @@ static void *align(void *x, size_t size)
+>   */
+>  static int _open_kvm_dev_path_or_exit(int flags)
+>  {
+> -	int fd;
+> -
+> -	fd = open(KVM_DEV_PATH, flags);
+> -	if (fd < 0) {
+> -		print_skip("%s not available, is KVM loaded? (errno: %d)",
+> -			   KVM_DEV_PATH, errno);
+> -		exit(KSFT_SKIP);
+> -	}
+> -
+> -	return fd;
+> +	return open_path_or_exit(KVM_DEV_PATH, flags);
+>  }
+>  
+>  int open_kvm_dev_path_or_exit(void)
+> diff --git a/tools/testing/selftests/kvm/lib/x86_64/svm.c b/tools/testing/selftests/kvm/lib/x86_64/svm.c
+> index 2ac98d70d02b..14a8618efa9c 100644
+> --- a/tools/testing/selftests/kvm/lib/x86_64/svm.c
+> +++ b/tools/testing/selftests/kvm/lib/x86_64/svm.c
+> @@ -13,6 +13,8 @@
+>  #include "processor.h"
+>  #include "svm_util.h"
+>  
+> +#define SEV_DEV_PATH "/dev/sev"
+> +
+>  struct gpr64_regs guest_regs;
+>  u64 rflags;
+>  
+> @@ -160,3 +162,14 @@ void nested_svm_check_supported(void)
+>  		exit(KSFT_SKIP);
+>  	}
+>  }
+> +
+> +/*
+> + * Open SEV_DEV_PATH if available, otherwise exit the entire program.
+> + *
+> + * Return:
+> + *   The opened file descriptor of /dev/sev.
+> + */
+> +int open_sev_dev_path_or_exit(void)
+> +{
+> +	return open_path_or_exit(SEV_DEV_PATH, 0);
+> +}
+> -- 
+> 2.33.0.1079.g6e70778dc9-goog
+> 
