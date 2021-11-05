@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675224467AB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:18:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 685824467C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:23:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232718AbhKERVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 13:21:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
+        id S232996AbhKERZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 13:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbhKERVX (ORCPT
+        with ESMTP id S230089AbhKERZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 13:21:23 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC668C061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 10:18:43 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id n11-20020a17090a2bcb00b001a1e7a0a6a6so3846127pje.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 10:18:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=wzufjbDqGxDa2/k86ie4tw8Pdx0MnDOAPtjEE+yOjpY=;
-        b=dQ9hk9G7njRsxD1PZLshA+qzst9HtFIjOrwfqVOpZkhjgpbH3ZJ15Wa2K3G+FvZceL
-         hf9sPs/iug5gJ3B9H67sqfOaURp09a7LS2rrhl4ggSk+Br7zwF/uGsygQNe1d8ZVeTif
-         H6iSveVskAIqdwAyK/IZZXBAqjTxcutW6bTlXsqQXBYOWEw8r/SX/f84SW9LiXyKEJRj
-         0jTKQFwP0OqkOUvWJbtwbG4fNqX+gXZBd2s3f7E5c0a3OTPRe/8Gg5gjWwdZoighFEc0
-         pRfCo9ZaDYlIGw26xPbQ0Lq8+xl58P9AyLd2TgQwNYDaZ5wdrn3MsFPMLE9EY6n4ZmUY
-         pBRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=wzufjbDqGxDa2/k86ie4tw8Pdx0MnDOAPtjEE+yOjpY=;
-        b=qe7/3IoAKL481TjCiCJVJZZTETOjkMxOLJ6OKrd6DQ/lJljQU6hauhn4U9AhRnybmg
-         s2ulGjvZIAA8IWtYMHE71Q4dIcrhXaruB8ZcJDqvD0LzsT0//GSX4JWFZVpueF2/dru0
-         vViB7Dn1rE45//7ui1Op8ChvBJhi1uiUL/uAWFNnYLWuHiZVkHFfgdy1x+3c3HT7ml5Y
-         ptY42IB/+/mrFXd7iBoJZ9sXuZLqDauq6+Fgt+eZK6Ohk3JcMyvx0RvLUaVQcrbmqDq5
-         Z2OZz2ZQMb95SlKamCKFgX13RUD5iPsnHRJaC2/MU1Dmzcoez6ZLt72L+R1hf7s6qjqG
-         4dzA==
-X-Gm-Message-State: AOAM5332g/H2j/hR1W3G5A/njFhclA8kXTc7YAyhnHDq+UFuntbFFNQS
-        K0w5oaLHANhMDTv+pocZ5tY=
-X-Google-Smtp-Source: ABdhPJytey5AouVICCVDk82iHij/AVBq1i2JZ5+cq79HqLAUse2Ke4aYg8gr5O0k/fTERlBtekAIKw==
-X-Received: by 2002:a17:90a:be10:: with SMTP id a16mr30954933pjs.133.1636132723242;
-        Fri, 05 Nov 2021 10:18:43 -0700 (PDT)
-Received: from [192.168.1.2] ([59.95.82.141])
-        by smtp.gmail.com with ESMTPSA id l1sm7758035pff.125.2021.11.05.10.18.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 10:18:42 -0700 (PDT)
-Message-ID: <9bc5a088-2cdc-1bbd-6459-d1b95e25aa9c@gmail.com>
-Date:   Fri, 5 Nov 2021 22:48:34 +0530
+        Fri, 5 Nov 2021 13:25:56 -0400
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF160C061714;
+        Fri,  5 Nov 2021 10:23:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
+        Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
+        In-Reply-To:References; bh=ctF+ypAFgSoH0Id9vII8CUGN6vLFTyuz4AWE/C/4nUw=; b=XQ
+        jAixBCYw5JdFAs0OhECoIoekyoj6b3MSl3jZPA0dsASrJwp9mC/zEg7ihQA80pGzOqpXIFMk+1LLU
+        D2MLD+/PMJGc+EEM0hxjrpljG5OPJ9qNyRD3+XTT82Sp9AW14wFOHYNhMHQ6mEr5e1dOSHA3fJnke
+        JHMedJGT+ROccEOtZQtWqwuCJQ9zz37xU/Q99vdZf8WFR4FIw/1SmnNKMezyAoOIbku+1n3m24yGg
+        RuUW/vo+w7B2swnIozTX4lcrnVABq0AwVHhmc2J9BeWmgm+7+tySHASofn/R1TbiQqDWTv0jjakHW
+        zSwX1Fn7hf6gHOhnEPnU0fkndQLHrrpA==;
+Received: from [81.174.171.191] (helo=donbot.metanate.com)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1mj2vo-0006fe-Dc; Fri, 05 Nov 2021 17:23:12 +0000
+From:   John Keeping <john@metanate.com>
+To:     Minas Harutyunyan <hminas@synopsys.com>
+Cc:     John Keeping <john@metanate.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: dwc2: gadget: respect driver's max_speed
+Date:   Fri,  5 Nov 2021 17:23:04 +0000
+Message-Id: <20211105172304.1308458-1-john@metanate.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH v2] staging: r8188eu: os_dep: remove the goto statement
-Content-Language: en-GB
-To:     Pavel Skripkin <paskripkin@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        straube.linux@gmail.com, martin@kaiser.cx,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        saurav.girepunje@hotmail.com
-References: <YYKvWeyqd71pYSqM@Sauravs-MacBook-Air.local>
- <YYT/LibxFzssNUJN@kroah.com> <ecf6ba8e-8273-0d77-5ceb-3ad44179d3a3@gmail.com>
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-In-Reply-To: <ecf6ba8e-8273-0d77-5ceb-3ad44179d3a3@gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+UDCs should not enumerate faster than the max_speed set by the gadget
+driver.  Use this to further restrict the speed set in the DWC2
+parameters so that the device will not connect faster than is supported
+by the gadget driver.
 
+For configfs-based composite devices this can be set via the max_speed
+configfs file.
 
-On 05/11/21 4:06 pm, Pavel Skripkin wrote:
-> On 11/5/21 12:53, Greg KH wrote:
->> Right after this, ret8 is set, but never checked, which looks like a bug
->> to me.  Can you work on fixing that after I take this patch?
-Yes, I will send a patch removing a local variable for return value and changing 
-the return type of function rtw_init_default_value . As rtw_init_default_value always return 
-success and the return value of this function is not checked.
->>
->> thanks,
->>
->> greg k-h
->>
-> 
-> ret8 is returned from this function, but as I said [1] it can be just removed. It will be always set to _SUCCESS.
-> 
-> 
-> 
-> [1] https://lore.kernel.org/linux-staging/f26b4aec-c0a1-8c93-b34e-8b1a36ac81b3@gmail.com/
-> 
-> 
-Pavel also mentioned to remove the local variable ret8.
-> With regards,
-> Pavel Skripkin
+Signed-off-by: John Keeping <john@metanate.com>
+---
+ drivers/usb/dwc2/gadget.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-Thanks,
-Saurav
+diff --git a/drivers/usb/dwc2/gadget.c b/drivers/usb/dwc2/gadget.c
+index 744539b78f6c..1f39c2f1be8e 100644
+--- a/drivers/usb/dwc2/gadget.c
++++ b/drivers/usb/dwc2/gadget.c
+@@ -3377,6 +3377,7 @@ void dwc2_hsotg_core_init_disconnected(struct dwc2_hsotg *hsotg,
+ 	u32 val;
+ 	u32 usbcfg;
+ 	u32 dcfg = 0;
++	u8 speed;
+ 	int ep;
+ 
+ 	/* Kill any ep0 requests as controller will be reinitialized */
+@@ -3418,7 +3419,22 @@ void dwc2_hsotg_core_init_disconnected(struct dwc2_hsotg *hsotg,
+ 
+ 	dcfg |= DCFG_EPMISCNT(1);
+ 
+-	switch (hsotg->params.speed) {
++	speed = hsotg->params.speed;
++	if (hsotg->driver) {
++		switch (hsotg->driver->max_speed) {
++		case USB_SPEED_LOW:
++			speed = DWC2_SPEED_PARAM_LOW;
++			break;
++		case USB_SPEED_FULL:
++			if (speed != USB_SPEED_LOW)
++				speed = DWC2_SPEED_PARAM_FULL;
++			break;
++		default:
++			break;
++		}
++	}
++
++	switch (speed) {
+ 	case DWC2_SPEED_PARAM_LOW:
+ 		dcfg |= DCFG_DEVSPD_LS;
+ 		break;
+-- 
+2.33.1
+
