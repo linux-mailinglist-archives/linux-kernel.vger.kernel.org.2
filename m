@@ -2,123 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8ED44643F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1DD446440
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:38:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232418AbhKENko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 09:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232052AbhKENkm (ORCPT
+        id S232709AbhKENlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 09:41:02 -0400
+Received: from smtpbguseast3.qq.com ([54.243.244.52]:40014 "EHLO
+        smtpbguseast3.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231946AbhKENlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 09:40:42 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25742C061714;
-        Fri,  5 Nov 2021 06:38:03 -0700 (PDT)
-Message-ID: <ba543ae4-3a71-13fe-fa82-600ac37eaf5a@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1636119481;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sZQB9w3+9FKZwmi/cO2+1n0La9tvCBuaJ9sTpnPYv4g=;
-        b=RDGwff50BUZRF67gegFKaDbSUG2omly1gxVB7XUa7+2giu6sckDggxlWMSEymeNSexidQJ
-        n52bGsUc+kvAi+8St8UKVFnhfsUjUndyXpt7/+yE6X5++ygqhUkoId7OMOOd0qtMAUiV0d
-        jcbglE6CKlk+IDQGUmaWzoJ8bVZHpGe0nzVDelfL+c5dER0T6aj9wEyS/L8iYm4aHFOfOQ
-        4l2O/WShm2GtY+OTnLH3DTIgRsjWhcfdmwOeYVp48Uc8wk/4FBulArFHwyxvrYCRtOBie1
-        1JzxcDFgpUfTN5bkCfMx39iZg/C/Eq2Jps6rSON6RDUFrj0B7lUpgQoRImc5QQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1636119481;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sZQB9w3+9FKZwmi/cO2+1n0La9tvCBuaJ9sTpnPYv4g=;
-        b=A2Y1ws64rELJfRZc3Z2qFqdyymiBgpjNKzpO0NBUgCEqaSVkfx8E7/0MZgP0tETMJ+Jbn8
-        Jxm5+pGQ5gYoVjBw==
-Date:   Fri, 5 Nov 2021 14:38:01 +0100
-MIME-Version: 1.0
-Subject: Re: [PATCH 7/7] net: dsa: b53: Expose PTP timestamping ioctls to
- userspace
-Content-Language: de-DE
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-References: <20211104133204.19757-1-martin.kaistra@linutronix.de>
- <20211104133204.19757-8-martin.kaistra@linutronix.de>
- <20211104174251.GB32548@hoboy.vegasvil.org>
-From:   Martin Kaistra <martin.kaistra@linutronix.de>
-In-Reply-To: <20211104174251.GB32548@hoboy.vegasvil.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Fri, 5 Nov 2021 09:41:00 -0400
+X-QQ-GoodBg: 1
+X-QQ-SSF: B0400000000000F0
+X-QQ-FEAT: veLmM2oPw1kmQ8gJxIWMvO/ako+8zG7bY9s7C3iFVXzjItoSk8v76+Kl/SEOG
+        gSPihiQtvSHDIPzWnkhSM+IfuZz5vCKpFSGhluoZ+hO8lYntqoNIc20q1elIN6kEj4xmSWZ
+        fcyf4110u/3oEyMTtdqZBHdMIOiXo3GJ7ACLEWLB8lSztLYkaUy+zPikpJQL2MvC6i5tMDw
+        3Ql1tedtqEzbG709X8XN5YWUmUnTuG6YGQVWHUNeKWY2hWt9FUXO8qaKEGVrIxn13M5yLhG
+        X8sYhbCwr13L0y4t/u1HKoYZXKD77YGdGHGhUHWFyQ+rcZYxqXM5TEyMZ+WqD3/FFs/9d/4
+        5TH+7GaMNGOe+jQQ3ugR69fveNwcgTEoot3opQp
+X-QQ-BUSINESS-ORIGIN: 2
+X-Originating-IP: 113.57.13.187
+X-QQ-STYLE: 
+X-QQ-mid: logic531t1636119493t9484519
+From:   "=?utf-8?B?bGlhbnpoaSBjaGFuZw==?=" <changlianzhi@uniontech.com>
+To:     "=?utf-8?B?QW5keSBTaGV2Y2hlbmtv?=" 
+        <andriy.shevchenko@linux.intel.com>
+Cc:     "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>,
+        "=?utf-8?B?ZG1pdHJ5LnRvcm9raG92?=" <dmitry.torokhov@gmail.com>,
+        "=?utf-8?B?R3JlZyBLSA==?=" <gregkh@linuxfoundation.org>,
+        "=?utf-8?B?amlyaXNsYWJ5?=" <jirislaby@kernel.org>,
+        "=?utf-8?B?MjgyODI3OTYx?=" <282827961@qq.com>
+Subject: Re: [PATCH v10] tty: Fix the keyboard led light display problem
+Mime-Version: 1.0
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: base64
+Date:   Fri, 5 Nov 2021 21:38:13 +0800
+X-Priority: 3
+Message-ID: <tencent_0E22777E5505E7C27FF412EB@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+References: <20211105122443.23897-1-changlianzhi@uniontech.com>
+        <YYUoWJWbPpK079/d@smile.fi.intel.com>
+In-Reply-To: <YYUoWJWbPpK079/d@smile.fi.intel.com>
+X-QQ-ReplyHash: 4003995281
+X-QQ-SENDSIZE: 520
+Received: from qq.com (unknown [127.0.0.1])
+        by smtp.qq.com (ESMTP) with SMTP
+        id ; Fri, 05 Nov 2021 21:38:14 +0800 (CST)
+Feedback-ID: logic:uniontech.com:qybgforeign:qybgforeign7
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 04.11.21 um 18:42 schrieb Richard Cochran:
-> On Thu, Nov 04, 2021 at 02:32:01PM +0100, Martin Kaistra wrote:
->> +static int b53_set_hwtstamp_config(struct b53_device *dev, int port,
->> +				   struct hwtstamp_config *config)
->> +{
->> +	struct b53_port_hwtstamp *ps = &dev->ports[port].port_hwtstamp;
->> +	bool tstamp_enable = false;
->> +
->> +	clear_bit_unlock(B53_HWTSTAMP_ENABLED, &ps->state);
->> +
->> +	/* Reserved for future extensions */
->> +	if (config->flags)
->> +		return -EINVAL;
->> +
->> +	switch (config->tx_type) {
->> +	case HWTSTAMP_TX_ON:
->> +		tstamp_enable = true;
->> +		break;
->> +	case HWTSTAMP_TX_OFF:
->> +		tstamp_enable = false;
->> +		break;
->> +	default:
->> +		return -ERANGE;
->> +	}
->> +
->> +	switch (config->rx_filter) {
->> +	case HWTSTAMP_FILTER_NONE:
->> +		tstamp_enable = false;
->> +		break;
->> +	case HWTSTAMP_FILTER_PTP_V2_L2_EVENT:
->> +	case HWTSTAMP_FILTER_PTP_V2_L2_SYNC:
->> +	case HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ:
->> +	case HWTSTAMP_FILTER_PTP_V2_EVENT:
->> +	case HWTSTAMP_FILTER_PTP_V2_SYNC:
->> +	case HWTSTAMP_FILTER_PTP_V2_DELAY_REQ:
-> 
-> This is incorrect.  HWTSTAMP_FILTER_PTP_V2_EVENT includes support for
-> UDP/IPv4 and UDP/IPv6.  Driver should return error here.
+T24gRnJpLCBOb3YgMDUsIDIwMjEgYXQgMDg6MjQ6NDNQTSArMDgwMCwgbGlhbnpoaSBjaGFu
+ZyB3cm90ZToNCj4gPiBTd2l0Y2hpbmcgZnJvbSB0aGUgZGVza3RvcCBlbnZpcm9ubWVudCB0
+byB0aGUgdHR5IGVudmlyb25tZW50LA0KPiA+IHRoZSBzdGF0ZSBvZiB0aGUga2V5Ym9hcmQg
+bGVkIGxpZ2h0cyBhbmQgdGhlIHN0YXRlIG9mIHRoZSBrZXlib2FyZA0KPiA+IGxvY2sgYXJl
+IGluY29uc2lzdGVudC4gVGhpcyBpcyBiZWNhdXNlIHRoZSBhdHRyaWJ1dGUga2ItPmtiZG1v
+ZGUNCj4gPiBvZiB0aGUgdHR5IGJvdW5kIGluIHRoZSBkZXNrdG9wIGVudmlyb25tZW50IChY
+b3JnKSBpcyBzZXQgdG8NCj4gPiBWQ19PRkYsIHdoaWNoIGNhdXNlcyB0aGUgbGVkc3RhdGUg
+YW5kIGtiLT5sZWRmbGFnc3RhdGUNCj4gPiB2YWx1ZXMgb2YgdGhlIGJvdW5kIHR0eSB0byBh
+bHdheXMgYmUgMCwgd2hpY2ggY2F1c2VzIHRoZSBzd2l0Y2gNCj4gPiBmcm9tIHRoZSBkZXNr
+dG9wIFdoZW4gdG8gdGhlIHR0eSBlbnZpcm9ubWVudCwgdGhlIExFRCBsaWdodA0KPiA+IHN0
+YXR1cyBpcyBpbmNvbnNpc3RlbnQgd2l0aCB0aGUga2V5Ym9hcmQgbG9jayBzdGF0dXMuDQo+
+ID4gSW4gb3JkZXIgdG8gZW5zdXJlIHRoYXQgdGhlIGtleWJvYXJkIExFRCBsaWdodHMgYXJl
+IGRpc3BsYXllZA0KPiA+IG5vcm1hbGx5IGR1cmluZyB0aGUgVlQgc3dpdGNoaW5nIHByb2Nl
+c3MsIHdoZW4gdGhlIFZUIGlzDQo+ID4gc3dpdGNoZWQsIHRoZSBjdXJyZW50IFZUIExFRCBj
+b25maWd1cmF0aW9uIGlzIGZvcmNlZCB0byBiZSBpc3N1ZWQuDQo+ID4NCj4gPiBTaWduZWQt
+b2ZmLWJ5OiBsaWFuemhpIGNoYW5nIDxjaGFuZ2xpYW56aGlAdW5pb250ZWNoLmNvbT4NCj4g
+PiAtLS0NCj4gPiAgdjEwOg0KPiA+ICBUaGUgbGVkIHN0YXRlIG9mIHRoZSBpbnB1dCBkZXZp
+Y2UgaXMgbm8gbG9uZ2VyIHN5bmNocm9uaXplZCB0bw0KPiA+ICBsZWRzdGF0ZSwgYW5kIHRo
+ZSByZWxhdGVkIGNvZGUgaXMgZGVsZXRlZC4gVGhlIGN1cnJlbnQgcGxhbiBpcw0KPiA+ICBj
+aGFuZ2VkIHRvOiB3aGVuIHRoZSBWVCBpcyBzd2l0Y2hlZCwgdGhlIExFRCBzdGF0ZSBzYXZl
+ZCBieSB0aGUNCj4gPiAgY3VycmVudCBWVCBpcyBmb3JjZWQgdG8gYmUgaXNzdWVkLg0KPiA+
+IA0KPiBTaG91bGRuJ3QgeW91IGFkZCBhIFN1Z2dlc3RlZC1ieSB0YWc/DQoNCk9oLCBzb3Jy
+eSwgSSB3YXMgbmVnbGlnZW50LCBJIHdpbGwgYWRkIGl0IHJpZ2h0IGF3YXkuDQoNClRoYW5r
+cy4NCi0tDQpsaWFuemhpIGNoYW5n
 
-Ok, then I will remove HWTSTAMP_FILTER_PTP_V2_(EVENT|SYNC|DELAY_REQ) 
-from this list, what about HWTSTAMP_FILTER_ALL?
-
-> 
->> +	case HWTSTAMP_FILTER_ALL:
->> +		config->rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
->> +		break;
->> +	default:
->> +		return -ERANGE;
->> +	}
-> 
-> Thanks,
-> Richard
-> 
 
 
