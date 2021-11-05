@@ -2,120 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D4C44698D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 21:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C282A44697C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 21:15:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233452AbhKEUWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 16:22:46 -0400
-Received: from mail-oo1-f43.google.com ([209.85.161.43]:42853 "EHLO
-        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230318AbhKEUWp (ORCPT
+        id S233452AbhKEUR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 16:17:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233293AbhKEURz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 16:22:45 -0400
-Received: by mail-oo1-f43.google.com with SMTP id a17-20020a4a6851000000b002b59bfbf669so3386209oof.9;
-        Fri, 05 Nov 2021 13:20:05 -0700 (PDT)
+        Fri, 5 Nov 2021 16:17:55 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCABC061714;
+        Fri,  5 Nov 2021 13:15:15 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id s136so9244783pgs.4;
+        Fri, 05 Nov 2021 13:15:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zo3rIYzOc3Xp6uAoP9Fv9lWIdKoPMXjS9MDpfKN91kc=;
+        b=klECCijoYSjHh8+WqxV6Oh8UxAVsnZAibpB7wTOGvJyESIMyQwCqEh0C5yr/+HdBHC
+         YkgDZPXUahVY4YaW1m52xzBy8qVc6qY4oZWNZnyHKrCyz1RljemRFcRlcVIW65q96SR9
+         DtTFTor28us1UC5dlZlkhvgRyPmEdOwzTq5GI9NmADK4NUq4WDMx8/t1wScgH1dIidMB
+         sAJFyI3XSwIW1KK3dFPHHSxmTvsaoK3rUcsICi8vUF4rWpnCxMc9Vx6D1BkvjRnqH/II
+         6iyEVoDHrV2oje9YD1fVoNq0UA6E9OhhWa10sScxnjO4qqSX4qN0g54o8U0dvrBD7YOd
+         5pyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7MPKTdHQno9jBif76suur5pudLPh3OWTJgqggfvLu34=;
-        b=H5t3W2R+QO6wkKZaa/pR8QlZwA2sNdZ7XW+CO/I8j5Rwu2CyYugy/w3Ke9UWYmHbj0
-         /hTCrpHxETVNfpxCXP74IXxV8yOVK1ZiVOjOMRvIsjZHmmsUyPoy7Rp4ZQSivj8n3hvc
-         AIC0Kie51lQ5Ms55KueTxozYMc0fClGyKX5uZDy2d4D6PPECh9x5bXV8+3aI4PGQijQA
-         BdLPM/1cm8JMIafd51usDPncVVLjpmkRY1CNYdrOAV2kioSmZqEByC461b2RDMttVtoK
-         Lf/WMKwC4FqFCALKloIhScyCRvznEk44WdUsCpqWMrJBCHxeb0gsTq7rpfJDJX1viXrE
-         dt+Q==
-X-Gm-Message-State: AOAM531aauC/IfmyrfgOcrbqmvavWWhZsufixwClk1YrHqVvfHmZL7r4
-        LVvMwcbQxMByB3ByJdv6cbE3T1+5rEJdWLea3GU=
-X-Google-Smtp-Source: ABdhPJzEjUNBJy+QF4alCNwY7iLrMoJolwPu/ujQMI4VKhzkDlx+PegEdT0GgVqoeDpNCKm3/i5mYGPBhtqm58nmLFo=
-X-Received: by 2002:a4a:e544:: with SMTP id s4mr10428042oot.0.1636143602756;
- Fri, 05 Nov 2021 13:20:02 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zo3rIYzOc3Xp6uAoP9Fv9lWIdKoPMXjS9MDpfKN91kc=;
+        b=O18FezP8+L2Rk+VCLT+N5dKB7LamVgABdEVFa9QUBfE+Soyr/AIBamjtCt3FpnEqoM
+         FOOng6z53+2Jf6rVREhbGQFOvXIQRkBp390aml20r/jdV15KomZOwtG5phBpw7wUbtlu
+         J2w26sDGq4CgWCaTfTVNPt4Eax6R3j6qSVg1fICvWF6kKWoVjGZIfghVoh0I7YoTh1RQ
+         6yB7c4lkTqoGXzBmfp0+U1dJbVZQhj6eb1ny1n1y21oGa3xQalpKffPGQvqCqLdqXzQZ
+         x1aT6OGowjFuFEWRiSIV+3HLRH9eIneA2mIATVoh3nWMWGnwll4KhPCad4DrOfc9sZOX
+         8JLw==
+X-Gm-Message-State: AOAM533YxwL2ulgFmD/VDaWCoVBRoqk3jah/TDbNOk/gyvQyxHS0zkkx
+        rkSPs5ayZB4pEOX9r7kPuPM=
+X-Google-Smtp-Source: ABdhPJwQJc0KBqMQuvF6EwTcAijRJhFdSAz+a471WITh171BrTeKd88KLrx6xsQhLWxBU9iSuk/AVA==
+X-Received: by 2002:a05:6a00:14ce:b0:492:69bd:3906 with SMTP id w14-20020a056a0014ce00b0049269bd3906mr20222723pfu.18.1636143315150;
+        Fri, 05 Nov 2021 13:15:15 -0700 (PDT)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id b130sm8131340pfb.9.2021.11.05.13.15.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 13:15:13 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Steev Klimaszewski <steev@kali.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] drm/msm/devfreq: Fix OPP refcnt leak
+Date:   Fri,  5 Nov 2021 13:20:21 -0700
+Message-Id: <20211105202021.181092-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <1636070227-15909-1-git-send-email-quic_subbaram@quicinc.com>
- <CAJZ5v0gONybD_pVCAq6ZJTMuStXtoF064u9qPYxco4y=b-JD9A@mail.gmail.com>
- <c7ede029-b75f-e57e-24f1-9633d5d47401@linaro.org> <CAJZ5v0j1TDe0ZiBg_ju-JDuCsBDb_exueRDUwCcJ6VD_=fbzjg@mail.gmail.com>
- <6fd1b6ca-15fc-757b-8755-7f8ec4110bcc@quicinc.com>
-In-Reply-To: <6fd1b6ca-15fc-757b-8755-7f8ec4110bcc@quicinc.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 5 Nov 2021 21:19:51 +0100
-Message-ID: <CAJZ5v0haK3570pipSHg3k22=vUXu5DUpoDrbxWSqELSuGd0uxQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2] thermal: Fix a NULL pointer dereference
-To:     Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Collins <quic_collinsd@quicinc.com>,
-        Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>,
-        Stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 5, 2021 at 9:08 PM Subbaraman Narayanamurthy
-<quic_subbaram@quicinc.com> wrote:
->
-> On 11/5/21 9:37 AM, Rafael J. Wysocki wrote:
-> > On Fri, Nov 5, 2021 at 5:19 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
-> >> On 05/11/2021 16:14, Rafael J. Wysocki wrote:
-> >>> On Fri, Nov 5, 2021 at 12:57 AM Subbaraman Narayanamurthy
-> >>> <quic_subbaram@quicinc.com> wrote:
-> >>>> of_parse_thermal_zones() parses the thermal-zones node and registers a
-> >>>> thermal_zone device for each subnode. However, if a thermal zone is
-> >>>> consuming a thermal sensor and that thermal sensor device hasn't probed
-> >>>> yet, an attempt to set trip_point_*_temp for that thermal zone device
-> >>>> can cause a NULL pointer dereference. Fix it.
-> >>>>
-> >>>>  console:/sys/class/thermal/thermal_zone87 # echo 120000 > trip_point_0_temp
-> >>>>  ...
-> >>>>  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
-> >>>>  ...
-> >>>>  Call trace:
-> >>>>   of_thermal_set_trip_temp+0x40/0xc4
-> >>>>   trip_point_temp_store+0xc0/0x1dc
-> >>>>   dev_attr_store+0x38/0x88
-> >>>>   sysfs_kf_write+0x64/0xc0
-> >>>>   kernfs_fop_write_iter+0x108/0x1d0
-> >>>>   vfs_write+0x2f4/0x368
-> >>>>   ksys_write+0x7c/0xec
-> >>>>   __arm64_sys_write+0x20/0x30
-> >>>>   el0_svc_common.llvm.7279915941325364641+0xbc/0x1bc
-> >>>>   do_el0_svc+0x28/0xa0
-> >>>>   el0_svc+0x14/0x24
-> >>>>   el0_sync_handler+0x88/0xec
-> >>>>   el0_sync+0x1c0/0x200
-> >>>>
-> >>>> While at it, fix the possible NULL pointer dereference in other
-> >>>> functions as well: of_thermal_get_temp(), of_thermal_set_emul_temp(),
-> >>>> of_thermal_get_trend().
-> >>> Can the subject be more specific, please?
-> >>>
-> >>> The issue appears to be limited to the of_thermal_ family of
-> >>> functions, but the subject doesn't reflect that at all.
-> >>>
-> >>>> Suggested-by: David Collins <quic_collinsd@quicinc.com>
-> >>>> Signed-off-by: Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
-> >>> Daniel, any concerns regarding the code changes below?
-> >> I've a concern about the root cause but I did not have time to
-> >> investigate how to fix it nicely.
-> >>
-> >> thermal_of is responsible of introducing itself between the thermal core
-> >> code and the backend. So it defines the ops which in turn call the
-> >> sensor ops leading us to this problem.
-> >>
-> >> So, without a better solution, this fix can be applied until we rethink
-> >> the thermal_of approach.
-> >>
-> >> Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> > Thanks!
-> >
-> > I've queued it up for 5.16-rc as "thermal: Fix NULL pointer
-> > dereferences in of_thermal_ functions".
->
-> Thanks, Daniel and Rafael. So, I guess I don't need to send v3 with fixing commit subject right?
+From: Rob Clark <robdclark@chromium.org>
 
-Right.
+Reported-by: Douglas Anderson <dianders@chromium.org>
+Fixes: 9bc95570175a ("drm/msm: Devfreq tuning")
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/msm_gpu_devfreq.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/gpu/drm/msm/msm_gpu_devfreq.c b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+index d32b729b4616..07f1169df89b 100644
+--- a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
++++ b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+@@ -20,6 +20,10 @@ static int msm_devfreq_target(struct device *dev, unsigned long *freq,
+ 	struct msm_gpu *gpu = dev_to_gpu(dev);
+ 	struct dev_pm_opp *opp;
+ 
++	/*
++	 * Note that devfreq_recommended_opp() can modify the freq
++	 * to something that actually is in the opp table:
++	 */
+ 	opp = devfreq_recommended_opp(dev, freq, flags);
+ 
+ 	/*
+@@ -28,6 +32,7 @@ static int msm_devfreq_target(struct device *dev, unsigned long *freq,
+ 	 */
+ 	if (gpu->devfreq.idle_freq) {
+ 		gpu->devfreq.idle_freq = *freq;
++		dev_pm_opp_put(opp);
+ 		return 0;
+ 	}
+ 
+-- 
+2.31.1
+
