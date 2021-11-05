@@ -2,103 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 046D44468AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 19:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 965EE4468B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 19:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233102AbhKESzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 14:55:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229926AbhKESzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 14:55:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DA4861215;
-        Fri,  5 Nov 2021 18:53:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636138386;
-        bh=hV76Xvv6i74dZtaHM89S+SSEowZvftfggWJ/QqvgC9A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=CWKwmniUzpPJBNFQqPVW84z1S1LeA9Ybf8lyPWOKfKteIJ/hJduQzc7aPDHTO9Xtu
-         VgmaFnsGK2q0Q3NyhjpyjzImoy8AcZ67iCozwO35kfCVlJzxuNeCFMiBWhm+N1kFu7
-         j9eNWuvKukTYliq0SGSdpe/IRRdHckZEPy7Foj7w9CsIM9dcy5b7N0Mh8ce77qauqr
-         jh0EqjsyEPtUSqvckX2itIJXG6i/bKH2ygC2X6g/8qdvQzK0dXPyg1gslA0FFuh+RW
-         lqzNKfqEJJ6/Bw/jcPokr12IGlU/85FUCO1zzDSxBxLyjq+QpH8x3xYaAZULuE2S+M
-         433SIGs6Xb1uA==
-Date:   Fri, 5 Nov 2021 13:53:04 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     =?iso-8859-1?Q?J=F6rg_R=F6del?= <joro@8bytes.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        iommu@lists.linux-foundation.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Subject: Re: How to reduce PCI initialization from 5 s (1.5 s adding them to
- IOMMU groups)
-Message-ID: <20211105185304.GA936068@bhelgaas>
+        id S232050AbhKES5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 14:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229494AbhKES5S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 14:57:18 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C30C061714;
+        Fri,  5 Nov 2021 11:54:38 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id o12so25165185ybk.1;
+        Fri, 05 Nov 2021 11:54:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OfPwx8khpfkruo5sm/keesa03eNkz1fJCURx4ZaZf88=;
+        b=HJRQud+VDb5QhxdhznR7+6o6aS6p/7rz/XoO5FVQB5WUPV61cP9R7jI3GKNll1ELfb
+         wJRQ5jieXF3YqNMV1QrsUxSmL/cw17a7JU8JbUjf/Y6zonc4Ydec5C2Q1e17kPUIowvX
+         +XM4m5vUkLQh6hlPDPjI0tXrmO4vT6+nyR7QUB55CDKFBZwsucmkQPziY5H4uLZvo2QP
+         URM79INm4uzTSo3pfIPA2qCX+GIph+HJ57y73lXKwYH9RLZqQQmMIp56aD2XH1cv/G3A
+         1jOQoVLp8B2LAWDDIK2hk0ijCh7q6iw2qBZg+lDOhsMABMAg9RBTdLsuI049aTt/K9w1
+         AXUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OfPwx8khpfkruo5sm/keesa03eNkz1fJCURx4ZaZf88=;
+        b=cB0kUze33hK9S1vdCC/wE2l0mzpThSNX0Rlt8SLM1DTc8xUfUelamqsHQqrZhIxC8N
+         lJ0P91jUuwzWCb3XU9zrCQemwWw2Qez81cWmCRaOU53w3NEvpyjzSnim0paW7eBiWcym
+         Nrc8Y+oHtqFqiRPBANZEMOs62PxyoWmIhyC6UBsHRKdCkM8m2xebjvVAheO+juzObB47
+         wOeyUvhb3HH2dcjAEIKiwJ3w3a2cLY0+II32YoAGmtzDd8/XEulzYT20w/i1Mh48+jVz
+         oyGdJYmuAQ9efe9PuX33KT8W0QOriEZxKpAPH1ftMDijyojOi8ZNRas3lkKcJgpK3SAJ
+         xBGA==
+X-Gm-Message-State: AOAM531nSa962yCI41HohtvsWPLpWqAwnDMoxJQvF9aIbd6wU8kRBXPv
+        ek3SIF6WnoxyLEK7CDp9icKgGwPkZNRQgsFLLcs=
+X-Google-Smtp-Source: ABdhPJxb1WsvpZa4362is7/y7dGyqv18OXP0Jsm+r/VDp8slgw9XnOGTRjiFY/9rGGp6ZLyGWIWXhOwQIkQ5YnRs82E=
+X-Received: by 2002:a25:d187:: with SMTP id i129mr53043971ybg.2.1636138477967;
+ Fri, 05 Nov 2021 11:54:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <de6706b2-4ea5-ce68-6b72-02090b98630f@molgen.mpg.de>
+References: <1636131046-5982-1-git-send-email-alan.maguire@oracle.com> <1636131046-5982-3-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1636131046-5982-3-git-send-email-alan.maguire@oracle.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 5 Nov 2021 11:54:27 -0700
+Message-ID: <CAEf4BzaCmCM5zuSrtUDvR8Y+nf=3FF8+mSjQHytn=N5fBZV40w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add exception handling
+ selftests for tp_bpf program
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     ardb@kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, andreyknvl@gmail.com,
+        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>, joey.gouly@arm.com,
+        maz@kernel.org, daizhiyuan@phytium.com.cn, jthierry@redhat.com,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, rppt@kernel.org,
+        Jisheng.Zhang@synaptics.com,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 12:56:09PM +0100, Paul Menzel wrote:
-> Dear Linux folks,
-> 
-> 
-> On a PowerEdge T440/021KCD, BIOS 2.11.2 04/22/2021, Linux 5.10.70 takes
-> almost five seconds to initialize PCI. According to the timestamps, 1.5 s
-> are from assigning the PCI devices to the 142 IOMMU groups.
-> 
-> ```
-> $ lspci | wc -l
-> 281
-> $ dmesg
-> […]
-> [    2.918411] PCI: Using host bridge windows from ACPI; if necessary, use
-> "pci=nocrs" and report a bug
-> [    2.933841] ACPI: Enabled 5 GPEs in block 00 to 7F
-> [    2.973739] ACPI: PCI Root Bridge [PC00] (domain 0000 [bus 00-16])
-> [    2.980398] acpi PNP0A08:00: _OSC: OS supports [ExtendedConfig ASPM
-> ClockPM Segments MSI HPX-Type3]
-> [    2.989457] acpi PNP0A08:00: _OSC: platform does not support [LTR]
-> [    2.995451] acpi PNP0A08:00: _OSC: OS now controls [PME PCIeCapability]
-> [    3.001394] acpi PNP0A08:00: FADT indicates ASPM is unsupported, using
-> BIOS configuration
-> [    3.010511] PCI host bridge to bus 0000:00
-> […]
-> [    6.233508] system 00:05: [io  0x1000-0x10fe] has been reserved
-> [    6.239420] system 00:05: Plug and Play ACPI device, IDs PNP0c02 (active)
-> [    6.239906] pnp: PnP ACPI: found 6 devices
+On Fri, Nov 5, 2021 at 10:11 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> Exception handling is triggered in BPF tracing programs when
+> a NULL pointer is dereferenced; the exception handler zeroes the
+> target register and execution of the BPF program progresses.
+>
+> To test exception handling then, we need to trigger a NULL pointer
+> dereference for a field which should never be zero; if it is, the
+> only explanation is the exception handler ran.  task->task_works
+> is the NULL pointer chosen (for a new task from fork() no work
+> is associated), and the task_works->func field should not be zero
+> if task_works is non-NULL.  Test verifies task_works and
+> task_works->func are 0.
+>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/exhandler.c | 43 ++++++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/exhandler_kern.c | 43 ++++++++++++++++++++++
+>  2 files changed, 86 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/exhandler.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/exhandler_kern.c
+>
 
-For ~280 PCI devices, (6.24-2.92)/280 = 0.012 s/dev.  On my laptop I
-have about (.66-.37)/36 = 0.008 s/dev (on v5.4), so about the same
-ballpark.
+The test looks good, thank you!
 
-Faster would always be better, of course.  I assume this is not really
-a regression?
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-> [    6.989016] pci 0000:d7:05.0: disabled boot interrupts on device
-> [8086:2034]
-> [    6.996063] PCI: CLS 0 bytes, default 64
-> [    7.000008] Trying to unpack rootfs image as initramfs...
-> [    7.065281] Freeing initrd memory: 5136K
-> […]
-> [    7.079098] DMAR: dmar7: Using Queued invalidation
-> [    7.083983] pci 0000:00:00.0: Adding to iommu group 0
-> […]
-> [    8.537808] pci 0000:d7:17.1: Adding to iommu group 141
-
-I don't have this iommu stuff turned on and don't know what's
-happening here.
-
-> Is there anything that could be done to reduce the time?
-> 
-> 
-> Kind regards,
-> 
-> Paul
+[...]
