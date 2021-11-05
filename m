@@ -2,135 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E9F446358
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 13:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C6644635C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 13:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232280AbhKEM2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 08:28:41 -0400
-Received: from mail-mw2nam10on2083.outbound.protection.outlook.com ([40.107.94.83]:31435
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229529AbhKEM2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 08:28:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C6VZqvacFnh0z0pyeb0P6wz4aug+MeP1KCbg8mbSeLHKcLAtTp0KwkykoPLbzkaH/ULBUTItIqhzBs/ZWndlnjV/aKSWk1PG2r6c+owgrk5arWA6aRkTHUDVSG8ZrFa5asxRgMNlKrO2Kz95GrmgKFK8ZEhBgYoAJaPz7LO1vw92WArvGwmxV6BZBg+Kv+il5HomN/Y3WJ70vciwCoZqvhWU+ZduCyrpi+BAaWWd2m5V6OASe3+yB5UyRT53CwavIACgxc6Te7QUQZe6RZtOUFgf1nPBbR3QkCxGXCI/fJmR4OESJ+0Mllf/3yEeSOXdsLjFG5W8P3HIrPH6tOiq6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pxSh9JBm8RX07FGKohe2gOYvl1bfUB70qZZKcqVa3MY=;
- b=GarrsLFvbgMHZ2/8Q7xxfUqsBm7iAR2FsS/jtjYDGOzkVYKPfNdurMGUtJGD2B5j0LTif6zJ3RfBOXAJRSzDu0iYjuMdfEbpJWXWdI0VHBnvDcqZmXjWzqOk58pnSH7SfM7BihK6uWEU+cAP/C8ZHTL7fsqLebGj/LdXIVqr3pTLMv0oM82PEJ267Hr/qYfU9M+h1QHsmoK7HIi2/Z0pvXGwUFR9ylsS5uwkYnFm4AD4Miq5CSPTjTtco5ZTGekRV41mpVMw9MXgtzfznYdqiKFwLrZEftGVdJZq51oA8vmQqHi/cU359zbqA54IwPA+FYTQBEjpO8vpsBu8cF3aMQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pxSh9JBm8RX07FGKohe2gOYvl1bfUB70qZZKcqVa3MY=;
- b=H58jO3AIOJvTXJEkceDVqyHtM3AFu9CL8J8DlKtX0EKXSvrFLmK2mn9wAwfJ1HNf9e7suDMNN1kONq/vVmC0NHEEnc/2cs9CV+J8HJNSVhttHHdoXvnd9LlQhr9fL/s95F5nHqHS5I4H10NgwLTwufkfRHNYvSfdvIVUP6dA2rakIaQLlAfX1L9WhPNBjVcrnA6L402ccIWtE86MrHKNtmo/vlYsIELOpDT7klqZ1dcFmEWMN6Q5Nswxgelb63xPE3lCHhGtp+X9ehTgwX9Zr9nqFqCYr1U57SgF+3iSAP0Pk9lWx/9b5LsH6DR2xL3GGL3jHkLukpQnNivD6p/HwQ==
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5173.namprd12.prod.outlook.com (2603:10b6:208:308::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10; Fri, 5 Nov
- 2021 12:25:58 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::5897:83b2:a704:7909]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::5897:83b2:a704:7909%7]) with mapi id 15.20.4669.013; Fri, 5 Nov 2021
- 12:25:58 +0000
-Date:   Fri, 5 Nov 2021 09:25:57 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     akpm@linux-foundation.org, jglisse@redhat.com, jhubbard@nvidia.com,
-        ziy@nvidia.com, rcampbell@nvidia.com, Felix.Kuehling@amd.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/hmm.c: Allow VM_MIXEDMAP to work with hmm_range_fault
-Message-ID: <20211105122557.GA2744544@nvidia.com>
-References: <20211104012001.2555676-1-apopple@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211104012001.2555676-1-apopple@nvidia.com>
-X-ClientProxiedBy: BLAPR03CA0099.namprd03.prod.outlook.com
- (2603:10b6:208:32a::14) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S232329AbhKEM3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 08:29:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229529AbhKEM3l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 08:29:41 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1527CC061714;
+        Fri,  5 Nov 2021 05:27:02 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id w1so32727693edd.10;
+        Fri, 05 Nov 2021 05:27:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VWnwoguiS8Ek3wXdinAoUlLWrPmI0p9qcxlIOqqvuf4=;
+        b=WQTtiepPdxr+1qL1KOH7sLyVAHlZ4keVF2ROBKBaalj+LYa8+kUcsWY8b+ZnFEaseG
+         ROTVJpXjPrRSfBHrfQcX+6W9DZFhS4teSACoXplshotQffNKW3wxCaE3eOS4eKHrDfoH
+         LvjsMuvNbJSbaYKvsQehN/eRQnBheZjA8ncbrmpO+f2kSDuPmKcI3AnfXAzWWkUuKVAN
+         mnj/RAbhMPbLwZxPJCiNnyCPBsqM6u/cq6Jtd5OT+efqhTJCggfYSwD97E9iyabfdMeI
+         XbuAdP0tII+p9J/1g5aJ/Wm7RastZAQjeP+g7JGMkaGbeHClk+k3jXZSglBN/Q8a8zKi
+         t5ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VWnwoguiS8Ek3wXdinAoUlLWrPmI0p9qcxlIOqqvuf4=;
+        b=ofsJbqap6nPjPHdhkU1+LI37jk2ZMIDJc6bnk28tjLwImWqnF0ITJ942mrsqJKV7X4
+         KiN6CGOtRdqQs2RRcdLMqDpZHu/mmywbcCRL1CqpPf7Us3Ovj/FnIoSrQuSTn3uBOepM
+         cuOcdfETP23HEUUMIpBiUNqIpwiHYmLF/XFphBuvxmP3Nn4PennpXOq14wJ4gC0ZataE
+         /wnh1mbdQ1oAjCsYGIz/1mb1e3G1dQ57xriepbvE6a4coWzdmCgh0KQ8Twibh4AhnsBy
+         s+A/vq9mlqwBb8gYSUTFSs1oPIYIJuO3j+8jhOb/rVavvO/0h5Vmzm+gyxCcS393MsMw
+         4Rew==
+X-Gm-Message-State: AOAM531VLBTQQ622Qs4TUGYL7/ijQoCxiS0sCuFPxYPQlk7MztzITLUH
+        Q4tB+1ZXPxOCyNIP/suFRvaKkRC29GZn0w==
+X-Google-Smtp-Source: ABdhPJy1p4mx96iQlG4iPSiOJ8nL03P+wrgU9AOxqAdkTOF/0WQLNezrp9b8Abnn76W3ALi6elQrTQ==
+X-Received: by 2002:a17:906:d541:: with SMTP id cr1mr74734988ejc.81.1636115220681;
+        Fri, 05 Nov 2021 05:27:00 -0700 (PDT)
+Received: from ?IPv6:2a04:241e:501:3870:9439:4202:183c:5296? ([2a04:241e:501:3870:9439:4202:183c:5296])
+        by smtp.gmail.com with ESMTPSA id oz13sm4081898ejc.65.2021.11.05.05.26.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Nov 2021 05:27:00 -0700 (PDT)
+Subject: Re: [PATCH v2 21/25] tcp: authopt: Add initial l3index support
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>, Shuah Khan <shuah@kernel.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>, netdev@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1635784253.git.cdleonard@gmail.com>
+ <4e049d1ade4be3010b4ea63daf2ef3bed4e1892b.1635784253.git.cdleonard@gmail.com>
+ <e08a7554-bd3e-e524-830d-64b76853ace2@gmail.com>
+From:   Leonard Crestez <cdleonard@gmail.com>
+Message-ID: <320b8801-1f35-a283-be11-a4f4275847d2@gmail.com>
+Date:   Fri, 5 Nov 2021 14:26:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BLAPR03CA0099.namprd03.prod.outlook.com (2603:10b6:208:32a::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11 via Frontend Transport; Fri, 5 Nov 2021 12:25:58 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1miyI9-006KQv-Fh; Fri, 05 Nov 2021 09:25:57 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: da3e302f-0de5-4987-dde1-08d9a0576bf3
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5173:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB51735569BDCAAEC81F588DFCC28E9@BL1PR12MB5173.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XKzJNoR6FYFGm2sUUkKR9Et8P87v3EI1SDVO1DvC3WtTHvDNy8au2Pp8JPfbT3/64ijB9PCU2JEbXMi+VErdIeHPwDRCHuLmCn90rOhF2ijrWlC+N9UO17+tPb5nTjbTvRVd0Q2pHwdKCttbrxAIldcI+v6m3SBmxhi1PYcrtfKJlybGA6jBFBGRj7aaD0HM9QE0SsoFqcbk1o3hIgdzWl6ZMeERak0/fltiQkS9CdCdZa0WvguRj5iBOOoDuyuawxFCsKkVs6e4gKRqA80CAZn7F3priblkCrDb0Z7Lv+wg9Q+CTw0ScF8QgQUCWWwTa+CImDm00VdnIT0MuVWJdA0FLtm6jBgrniPZJs7qZeKI8tvh+2xzIYFr2ooYJD1XQ2T0a5MJDc2NSV1zgFRR7bhGOit36kRqBVDYCjEFpBQtmc+0qpx4mzqerztIon/uoQ7a2xOlgInxMIhbxAtvRwW/FjIaEWHgW5qbMWw5s3KU3jDspCVHlXCToBQY6OnZixyoxEhAAxoXcC1rQSBXNGzrsWgZKfRNE+sltjs9/vMG98X8WnZeuX6hKdedvXJESPNTy/NG1lwbLUFeD5081ypt842QPB31CyBc1aFKhNRjZR+FnAhQbsxu/y04U25gRrM8j4FyztlhCQJBHVkB3A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(66946007)(6862004)(9786002)(508600001)(8676002)(83380400001)(26005)(33656002)(9746002)(37006003)(2616005)(38100700002)(6636002)(4326008)(1076003)(66556008)(86362001)(316002)(36756003)(8936002)(5660300002)(426003)(4744005)(186003)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?a2FwYSdT/pdZmqQhRKpeOwxb3vNX5Zif2lZFUzfIEfYSsCbBNjTCAnC+CbF6?=
- =?us-ascii?Q?4POnO/0/SIdWjP1Nlti7McFF0Ov5kE1q1vbE31sxW5RCl2f4JDN9lrUgqpOD?=
- =?us-ascii?Q?JXN/JEggk3gqYET/awucLxRR3uobsWkSR5UYFtXBc8WYzXMg0xXMl/R8ZAnh?=
- =?us-ascii?Q?LfisddPrY0I4PXKrvl65tsHh9lcOetCHNTyE1RFzFInqruBLetxKiOQbCdqM?=
- =?us-ascii?Q?/8+9Y9xsQmVktptkMgncup4WM9rYUX9HGiKoT22O9SxjvQVFRLgmd4TlUo58?=
- =?us-ascii?Q?lWa5BkqSvKdnPcCwVIG3VxBXLEBpylCzrF5/PYby4epOELxuYjY0yOFN4fW8?=
- =?us-ascii?Q?Fi7yflD4Nd8YWJqXiGjGwz/aWWZ04214N/XKaceK7oYiYQE0649HP6Beclec?=
- =?us-ascii?Q?CobLhPWbj8Vh30wEHLbeI0m61Cx+JQ9twWWEn7nSfl2amkOnqx00H7TZYDum?=
- =?us-ascii?Q?4QlDDnNvvq81CI2iSFTZU4Mj/9BtYMWj0gXhiLWHp6j6CQ2XEbxnPgICqItK?=
- =?us-ascii?Q?VsdNJmdK3ytM9lvMTqdZNFnH2FWsK/gztCBDX1+BtvQ9tzL9DIz6Jlue1ghl?=
- =?us-ascii?Q?ygLuATPy93+S9BlJffjyN02Wsmtl1cPaPQv8DH62AXpVw3HTWcM32mWr3ydw?=
- =?us-ascii?Q?wUbkgj2j3Qj3H5N7hxNUxctBnuAFBmEGpZVlbHgmX8sXeR4tS+1k94oC5MjU?=
- =?us-ascii?Q?Z7l3WPSXO1ul+7ijaZ2UqOyjQxgPGHyjyx4NhmoOw7XVDiTuQIlHVqWk8LCy?=
- =?us-ascii?Q?GensDML+5/+xDQS3kAH9vC2zz/kSHiZEflLf4pwgZQ3qn5c0tlMkz+Id4IAy?=
- =?us-ascii?Q?GKdWPWC3qosz4qECyK/fOZ/D9CNE/AQzyrAoUeU3LSMFRJnDM/HRWxbp0rXt?=
- =?us-ascii?Q?KAUZd4WGftUgOK0Kledzl2MkgPdiRQKuTI+i3q0SpFdWr3HIHom/wRZfcbfa?=
- =?us-ascii?Q?bm6RmRe2szVHPu0JxcvagX8c7o9/huuynbfuDPeuuwOONxcJc9BhVGRT9qdu?=
- =?us-ascii?Q?gC/DE9hd0cW9ctv0SGs+OeNQKVLCudDmDa+bzEgR182mQmKd4Evu2WBVlNVG?=
- =?us-ascii?Q?KVUAe7bDWgk/yzAqF6nyxY8ore5r20eVOnEHkJEZ/1qzqZl6T80rPOTbfytN?=
- =?us-ascii?Q?Fsvsp/igqnAPUMNLPnf9AvEY+U3Ayqs3QOoRg0wkU8esuUTBU6tkmisNLmlt?=
- =?us-ascii?Q?RsPCJzEv83kwQIZp2daKyxCyysjdKyZDim7dP80I30kMhgV1PLkMm57nUcP6?=
- =?us-ascii?Q?RWQfCcsfkBj9k+Q+eQUEPhRvDeR0LenxFDSxRgirpRKfRoFmDGKGT3OgWMoj?=
- =?us-ascii?Q?4nKzmLuTune3CQ93C9D1vKJZtsjx/JlbuIxOJg84PdDVpF+FI8TrUomZIb9w?=
- =?us-ascii?Q?MdKVNjjW6YQwXa0mcid5BFdTQaOwU6XVsSFhrvar+8yZXn8ACCyXz3yPawmp?=
- =?us-ascii?Q?31aQqGuL5bN9GBL+2NA/zWvqw12d7ki9zZ11q71p/d0K7sb9k0cZp2AipuPQ?=
- =?us-ascii?Q?mmIh1UV+pT/sYyeLd12+ZFP4om3jpjR01ZssE8TaaiUUUSsT2ZEXwEmAP6cf?=
- =?us-ascii?Q?PYWYSOrShkizIvKrrkQ=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: da3e302f-0de5-4987-dde1-08d9a0576bf3
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2021 12:25:58.5589
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lXPpIlyU5Bs6+LC24v8VLIjDHRd1F/f4Zi42X6YgGLOkBSXHBu37WhjvH8eEI2rs
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5173
+In-Reply-To: <e08a7554-bd3e-e524-830d-64b76853ace2@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 12:20:01PM +1100, Alistair Popple wrote:
-> hmm_range_fault() can be used instead of get_user_pages() for devices
-> which allow faulting however unlike get_user_pages() it will return an
-> error when used on a VM_MIXEDMAP range.
+On 11/3/21 5:06 AM, David Ahern wrote:
+> On 11/1/21 10:34 AM, Leonard Crestez wrote:
+>> @@ -584,10 +614,24 @@ int tcp_set_authopt_key(struct sock *sk, sockptr_t optval, unsigned int optlen)
+>>   		return -EINVAL;
+>>   	err = tcp_authopt_alg_require(alg);
+>>   	if (err)
+>>   		return err;
+>>   
+>> +	/* check ifindex is valid (zero is always valid) */
+>> +	if (opt.flags & TCP_AUTHOPT_KEY_IFINDEX && opt.ifindex) {
+>> +		struct net_device *dev;
+>> +
+>> +		rcu_read_lock();
+>> +		dev = dev_get_by_index_rcu(sock_net(sk), opt.ifindex);
+>> +		if (dev && netif_is_l3_master(dev))
+>> +			l3index = dev->ifindex;
+>> +		rcu_read_unlock();
 > 
-> To make hmm_range_fault() more closely match get_user_pages() remove
-> this restriction. This requires dealing with the !ARCH_HAS_PTE_SPECIAL
-> case in hmm_vma_handle_pte(). Rather than replicating the logic of
-> vm_normal_page() call it directly and do a check for the zero pfn
-> similar to what get_user_pages() currently does.
-> 
-> Also add a test to hmm selftest to verify functionality.
+> rcu_read_lock()... rcu_read_unlock() can be replaced with
+> netif_index_is_l3_master(...)
 
-Please add a fixes line
-
-> Signed-off-by: Alistair Popple <apopple@nvidia.com>
-> ---
->  lib/test_hmm.c                         | 24 +++++++++++++++
->  mm/hmm.c                               |  5 +--
->  tools/testing/selftests/vm/hmm-tests.c | 42 ++++++++++++++++++++++++++
->  3 files changed, 69 insertions(+), 2 deletions(-)
-
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Jason
+Yes, this makes the code shorter.
