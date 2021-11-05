@@ -2,155 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56926445E23
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 03:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B668F445E26
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 03:59:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231705AbhKEC6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 22:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42302 "EHLO
+        id S231855AbhKEDCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 23:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231759AbhKEC6y (ORCPT
+        with ESMTP id S230456AbhKEDCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 22:58:54 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2CD0C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 19:56:15 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id v20so10219020plo.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 19:56:15 -0700 (PDT)
+        Thu, 4 Nov 2021 23:02:01 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 054BDC061714;
+        Thu,  4 Nov 2021 19:59:22 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id g91-20020a9d12e4000000b0055ae68cfc3dso8441427otg.9;
+        Thu, 04 Nov 2021 19:59:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Sldp+dEA/S3fed/PPXTlW+EzxdJTFfKjqSSoeZHFt94=;
-        b=WNWCD5Wz6aytXpg2bn/p5/52YbT3FeflDludwI2sImT4WEN4YrvdlTFCp7i/e4mX9y
-         pRNCYGqROvhhYio/q11i42l86JotYT4o8hM5QKbxtFqHtQLIJi1VRG+kaIgwrP4lzo2s
-         ccu0LN4+NWKFr2+8x28tYLDEqjpOYJU3HoiqK79bki4Ifk+UYm2IIU83/MtW4V11Pay8
-         Ib9BG5JUGpMM0305IvRIPgrvm2RZlI+Z9hIDEgUItjWizybR8K5pdyT4ZGbh//gW2t0g
-         cRAzDfjDUE8FW/55cw4cy/Eh4D4efDYd4SZm9+ylBQ6GbHks73ylnxsJsBoZbmaVBYre
-         wOBA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XnI9g132VVmuM0dfdWaa2DPIJ0tMZeltl/rjMSrblFY=;
+        b=JPKA+MVwu2XoHKfEKhyPsXKhRCpdGY65L4ypNAmzP+fWraigSMOeaUplsuSLJpYM3x
+         l1hr/oGmWbMODwUGYG7ll0nqtR5h+S/u0iRWKYBduFnDSk9hMdQdyFT56aGGVMBpcCdO
+         DhF5jRLMK0e0WwEXdbx8OF9ydhWqzCrSkqhSXIZFtHLAV5d+4XtM/7qrECPbAKjn6kkX
+         r48vE8xmY/gbGK68cEmvHz8BnDKEfpPfGI2XILG/V1gzOy6RCqYs+CBa1RoC0+oM9Rw4
+         2v148QRsMVSltkM5JS8OG/Kfs5ql68kx2s3MakNn577CZ1XJrCUddbSxNQNKv38QLMkD
+         cfMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Sldp+dEA/S3fed/PPXTlW+EzxdJTFfKjqSSoeZHFt94=;
-        b=N9E1/iGLw2RNdqyvrLTnY1Ts27FGlt8I02Rnrxtz7U4a7xKBAxlsZAeCV46pAQDo3e
-         JU0UYJNaQxXC/m+o5fLzpOk5ksz/8cuUGXklvhFXwFihjB/UJQCQ5Yy1na0NlCx/Vog6
-         bA+6AisN9r/MOKcpRzYhiRzO1VbmqYC0/ir1p4MkTUb0hpgS57y0tNRdjMDybcXTnR75
-         IxyKHvJ0YPrx7FljF6pH/7B7r4n5vkbGIsjgQrF4NC2uFLtzB3+LBxuVe3Hidt98Ceji
-         Rk03aKLPoP3XowW4woINd9gHDU31iSK1ekfmALWzPdhbhRPCVMsCDkKzpkOE/L25ssMu
-         R9AA==
-X-Gm-Message-State: AOAM531EO4Etoq+wvxTuEtMF6hdUOSlrT7khxcYoRUtoDqVEj7HSi8HU
-        QRoDCcytcv0JZJgRm+xXCs/5+lqJDxg=
-X-Google-Smtp-Source: ABdhPJypwO55FF48mMTgLOXlgYlvP3+fyv+itreGkJB2dinAEKGEXapmrwQnC2nrvR6hL6ObL0Ujiw==
-X-Received: by 2002:a17:90a:e7c4:: with SMTP id kb4mr27289226pjb.237.1636080975251;
-        Thu, 04 Nov 2021 19:56:15 -0700 (PDT)
-Received: from [10.230.2.240] ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id h20sm6347511pfh.175.2021.11.04.19.56.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 19:56:14 -0700 (PDT)
-Message-ID: <9318932a-9b00-62be-eeb9-ca755a05c841@gmail.com>
-Date:   Thu, 4 Nov 2021 19:56:12 -0700
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=XnI9g132VVmuM0dfdWaa2DPIJ0tMZeltl/rjMSrblFY=;
+        b=kQUZyJ+2lm9Wd5X1W3McmRwDFP9+nIY8Strn53ZnSvX4dyQVjx3xLQAHXZEdHZ7xqU
+         RYruYwd3lXklzE/q7XyjwDXkaYNoMF7iypNDo/IdH/uTIUwrc5vK02PwxyPYUV1F9yBH
+         gniZdKoGfDpibuO2hVuQF1/nUDCJQ1FphoIxgBPWFpcYlAKK10mj9BVuXPcWIeF6MewQ
+         Y9vxHnqyOBGIkAIzrGBgjOA5A8MlKbt66nq3scQnuTDBfKwxHu/UeuDSxoG0TSHo01s/
+         5NODWeCfuqGH+tgbOENFdSBvi2fsSw5vfclFa8QoJCEgP9c1XShLL4LboJ8wPS30LFhi
+         hD3Q==
+X-Gm-Message-State: AOAM530VOx+7M79gRskT7c+b5Vi54KjD2fezD9K4uRZ10emoaIk0aNgL
+        IeHxTXOW1B7tJWnbghpNJ/kByKBGrxE=
+X-Google-Smtp-Source: ABdhPJwknlXw++6iy8k7nRavsdW0Uev9fTWlo2k2Svdvwm5pmMouWH41OIa/6ueOqAiNbZyJHSGkcA==
+X-Received: by 2002:a9d:730b:: with SMTP id e11mr17295524otk.212.1636081162352;
+        Thu, 04 Nov 2021 19:59:22 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t12sm2014179oth.21.2021.11.04.19.59.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 19:59:21 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 4 Nov 2021 19:59:20 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>
+Cc:     kuba@kernel.org, andrew@lunn.ch, mickeyr@marvell.com,
+        serhiy.pshyk@plvision.eu, taras.chornyi@plvision.eu,
+        Volodymyr Mytnyk <vmytnyk@marvell.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Yevhen Orlov <yevhen.orlov@plvision.eu>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v4] net: marvell: prestera: add firmware v4.0
+ support
+Message-ID: <20211105025920.GA2923425@roeck-us.net>
+References: <1635485889-27504-1-git-send-email-volodymyr.mytnyk@plvision.eu>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH] bus: brcmstb_gisb: Allow building as module
-Content-Language: en-US
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-kernel@lists.infradead.org,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210924191035.1032106-1-f.fainelli@gmail.com>
- <20211105025155.GA2922689@roeck-us.net>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20211105025155.GA2922689@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1635485889-27504-1-git-send-email-volodymyr.mytnyk@plvision.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/4/2021 7:51 PM, Guenter Roeck wrote:
-> On Fri, Sep 24, 2021 at 12:10:34PM -0700, Florian Fainelli wrote:
->> Allow building the Broadcom STB GISB arbiter driver as a module, however
->> similar to interrupt controller drivers, don't allow its unbind/removal
->> since it is not quite prepared for that and we want it to catch bus
->> errors all the time.
->>
->> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+On Fri, Oct 29, 2021 at 08:38:07AM +0300, Volodymyr Mytnyk wrote:
+> From: Volodymyr Mytnyk <vmytnyk@marvell.com>
 > 
-> Hmm, did you actually test that ?
-
-Great way to introduce someone to a problem, really.
-
+> Add firmware (FW) version 4.0 support for Marvell Prestera
+> driver.
 > 
-> Building mips:allmodconfig ... failed
-> --------------
-> Error log:
-> <stdin>:1559:2: warning: #warning syscall futex_waitv not implemented [-Wcpp]
-> ERROR: modpost: "board_be_handler" [drivers/bus/brcmstb_gisb.ko] undefined!
-
-I did not indeed test a modular build for MIPS and had not anticipated 
-it to fail. Thomas, do you have any objections exporting 
-board_be_handler to modules or would you rather not do it and force the 
-driver to be boolean for MIPS?
-
+> Major changes have been made to new v4.0 FW ABI to add support
+> of new features, introduce the stability of the FW ABI and ensure
+> better forward compatibility for the future driver vesrions.
 > 
-> Guenter
+> Current v4.0 FW feature set support does not expect any changes
+> to ABI, as it was defined and tested through long period of time.
+> The ABI may be extended in case of new features, but it will not
+> break the backward compatibility.
 > 
->>   drivers/bus/Kconfig        | 2 +-
->>   drivers/bus/brcmstb_gisb.c | 7 ++++++-
->>   2 files changed, 7 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
->> index a5b96f3aad67..9cfeae3fc244 100644
->> --- a/drivers/bus/Kconfig
->> +++ b/drivers/bus/Kconfig
->> @@ -30,7 +30,7 @@ config ARM_INTEGRATOR_LM
->>   	  found on the ARM Integrator AP (Application Platform)
->>   
->>   config BRCMSTB_GISB_ARB
->> -	bool "Broadcom STB GISB bus arbiter"
->> +	tristate "Broadcom STB GISB bus arbiter"
->>   	depends on ARM || ARM64 || MIPS
->>   	default ARCH_BRCMSTB || BMIPS_GENERIC
->>   	help
->> diff --git a/drivers/bus/brcmstb_gisb.c b/drivers/bus/brcmstb_gisb.c
->> index 6551286a60cc..4c2f7d61cb9b 100644
->> --- a/drivers/bus/brcmstb_gisb.c
->> +++ b/drivers/bus/brcmstb_gisb.c
->> @@ -1,6 +1,6 @@
->>   // SPDX-License-Identifier: GPL-2.0-only
->>   /*
->> - * Copyright (C) 2014-2017 Broadcom
->> + * Copyright (C) 2014-2021 Broadcom
->>    */
->>   
->>   #include <linux/init.h>
->> @@ -536,6 +536,7 @@ static struct platform_driver brcmstb_gisb_arb_driver = {
->>   		.name	= "brcm-gisb-arb",
->>   		.of_match_table = brcmstb_gisb_arb_of_match,
->>   		.pm	= &brcmstb_gisb_arb_pm_ops,
->> +		.suppress_bind_attrs = true,
->>   	},
->>   };
->>   
->> @@ -546,3 +547,7 @@ static int __init brcm_gisb_driver_init(void)
->>   }
->>   
->>   module_init(brcm_gisb_driver_init);
->> +
->> +MODULE_AUTHOR("Broadcom");
->> +MODULE_DESCRIPTION("Broadcom STB GISB arbiter driver");
->> +MODULE_LICENSE("GPL v2");
+> ABI major changes done in v4.0:
+> - L1 ABI, where MAC and PHY API configuration are split.
+> - ACL has been split to low-level TCAM and Counters ABI
+>   to provide more HW ACL capabilities for future driver
+>   versions.
+> 
+> To support backward support, the addition compatibility layer is
+> required in the driver which will have two different codebase under
+> "if FW-VER elif FW-VER else" conditions that will be removed
+> in the future anyway, So, the idea was to break backward support
+> and focus on more stable FW instead of supporting old version
+> with very minimal and limited set of features/capabilities.
+> 
+> Improve FW msg validation:
+>  * Use __le64, __le32, __le16 types in msg to/from FW to
+>    catch endian mismatch by sparse.
+>  * Use BUILD_BUG_ON for structures sent/recv to/from FW.
+> 
+> Co-developed-by: Vadym Kochan <vkochan@marvell.com>
+> Signed-off-by: Vadym Kochan <vkochan@marvell.com>
+> Signed-off-by: Yevhen Orlov <yevhen.orlov@plvision.eu>
+> Signed-off-by: Taras Chornyi <tchornyi@marvell.com>
+> Signed-off-by: Volodymyr Mytnyk <vmytnyk@marvell.com>
 
--- 
-Florian
+Compiling this file on m68k results in:
+
+In file included from <command-line>:
+In function 'prestera_hw_build_tests',
+    inlined from 'prestera_hw_switch_init' at drivers/net/ethernet/marvell/prestera/prestera_hw.c:788:2:
+include/linux/compiler_types.h:317:45: error: call to '__compiletime_assert_351' declared with attribute error: BUILD_BUG_ON failed: sizeof(struct prestera_msg_switch_attr_req) != 16
+
+The size of struct prestera_msg_switch_attr_req is not well defined.
+
+struct prestera_msg_switch_attr_req {
+        struct prestera_msg_cmd cmd;			// 4 bytes
+        __le32 attr;					// 4 bytes
+        union prestera_msg_switch_param param;		// 6 bytes
+};
+
+The compiler may well decide, in this situation, to generate a structure of
+size 14, not 16. The error is therefore not surprising.
+
+Guenter
