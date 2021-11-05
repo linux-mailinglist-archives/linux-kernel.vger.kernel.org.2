@@ -2,152 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721FA4463C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8BD4463CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:03:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232608AbhKENFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 09:05:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53956 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231239AbhKENFl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 09:05:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636117381;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iLgQ5EmaL+DmQgkfnA8r6Au7OZ5a7gYy6SmBrNd2Jg0=;
-        b=PJc/6qYSApEyjgJDY7YvtHbCgROxfxt37spj59Cut4M5+WgR2ybGYihD3NoMqqhRuPypoA
-        a33YR74OsyDzaWmBjjYgg5to0vfHCLzKOoPz2YU49FPX0aChopP6a1cbfX3HwiCDsXm8Zs
-        HZtA4quMMvEd/Bh/zJ2rv7OpBHzi/Wo=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-403-u3KXltpJMq-Kf2TADMEB_w-1; Fri, 05 Nov 2021 09:02:58 -0400
-X-MC-Unique: u3KXltpJMq-Kf2TADMEB_w-1
-Received: by mail-wr1-f72.google.com with SMTP id d7-20020a5d6447000000b00186a113463dso2302479wrw.10
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 06:02:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=iLgQ5EmaL+DmQgkfnA8r6Au7OZ5a7gYy6SmBrNd2Jg0=;
-        b=U5a4JdaTzehkklmd4yp5uYi4CV9QX7reabKnlJUKK/WX7ypgAXnZPr5jHo6upvgxwA
-         3ruXOA3nSz1ooG3iDcVb534lob8DCZFMkqvUZAXR8IdnL9oDID3+vpbNjZ/FwLFynCgM
-         0hg/gA1xoxwZuRMGerb93K1L01SyTXxZnfqBVQuD3nXK6JZXxhil32BefAXVSsar/kaX
-         KJ7Zt9b8dqP/+J6RqSniS1CUE4olGWbb40E/omp8HnZ0vTs355X3mKNivBURFZpsvGMV
-         y0sdx0QhLbNtT+idJzDVPIzIm6lIdO0rsVqENKooj4d3GZJUwb9dz6qqt5jSMBr8z3No
-         9LPg==
-X-Gm-Message-State: AOAM5322xfa19tVYUMO8919y9/1rCsTshngJtdWWFfI0disMQzsN64VA
-        yrxnrP4EAMM4B5v6Z9c5Xg83eDTVxF9qS4j820p58bRyeEM11RizGwlm3JT5Bn67MxCD9UskXoW
-        bvD5TSnSJ9nvP2g6wogy05bEb
-X-Received: by 2002:adf:d1c2:: with SMTP id b2mr8894824wrd.369.1636117377156;
-        Fri, 05 Nov 2021 06:02:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy4FNkl2pJ0RVTR1lono1DFLFCRUFCJzXmJtOSdgDG0W+NMxHGOW8KGvf14VSf7b8sSj83Bvw==
-X-Received: by 2002:adf:d1c2:: with SMTP id b2mr8894791wrd.369.1636117376914;
-        Fri, 05 Nov 2021 06:02:56 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f0c:a000:3f25:9662:b5cf:73f9? (p200300d82f0ca0003f259662b5cf73f9.dip0.t-ipconnect.de. [2003:d8:2f0c:a000:3f25:9662:b5cf:73f9])
-        by smtp.gmail.com with ESMTPSA id o1sm8061186wru.91.2021.11.05.06.02.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 06:02:56 -0700 (PDT)
-Message-ID: <3b675cb9-3002-b1a7-1b24-fdd38b55d73b@redhat.com>
-Date:   Fri, 5 Nov 2021 14:02:55 +0100
+        id S232619AbhKENG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 09:06:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231239AbhKENG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 09:06:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A43D160F9B;
+        Fri,  5 Nov 2021 13:03:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636117427;
+        bh=GGdaqM4ZLemAr74nj3CO0oh8DGXzHO2ZiWpz2bA/Q3Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=u6myhAUt2cjOuDDabk6BRgRVtQ2o4mLVAZ4UlYg3DPrxXDPfMHXM1jsVdjGiBHxT9
+         XXJpwoesp2JI2fnL0o/BMzHzH24tn8VWwCELASFCiqGXao8YP+xDf67DurV72/c649
+         LVlfV/FgdsF9SguO9mRmIk/wkC6fO7D011U2+gy7TN25iXfGOL9NRyhOX6L2Qg5isx
+         VoWPnwMxoRp1gURGnAWZCjveQmd7MX9ObAsf9w16Z9AsWGfCKQHkALBcFE3KG03ziD
+         E9h0cGoY1kBdMGJ/JMj82kaORNJXT56Olfwo2tWTotYekHW9AaSO5n8cIJ6S6me1DC
+         EI2UBZMXpx/ug==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-gpio@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-m68k@lists.linux-m68k.org, geert@linux-m68k.org,
+        gerg@linux-m68k.org, linux@armlinux.org.uk,
+        linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org,
+        dalias@libc.org, ysato@users.sourceforge.jp,
+        Arnd Bergmann <arnd@arndb.de>,
+        Fu Wei <tekkamanninja@gmail.com>, Alex Shi <alexs@kernel.org>,
+        Hu Haowen <src.res@email.cn>,
+        linux-doc-tw-discuss@lists.sourceforge.net,
+        Jonathan Corbet <corbet@lwn.net>,
+        Drew Fustini <drew@beagleboard.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC 1/3] gpiolib: remove irq_to_gpio() definition
+Date:   Fri,  5 Nov 2021 14:03:03 +0100
+Message-Id: <20211105130338.241100-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>
-Cc:     Naoya Horiguchi <naoya.horiguchi@nec.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Ding Hui <dinghui@sangfor.com.cn>,
-        Tony Luck <tony.luck@intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yang Shi <shy828301@gmail.com>, Peter Xu <peterx@redhat.com>,
-        linux-kernel@vger.kernel.org
-References: <20211105114954.GA3163106@u2004>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v3 0/3] mm/hwpoison: fix unpoison_memory()
-In-Reply-To: <20211105114954.GA3163106@u2004>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.11.21 12:49, Naoya Horiguchi wrote:
-> On Fri, Nov 05, 2021 at 11:58:15AM +0100, David Hildenbrand wrote:
->> On 05.11.21 06:50, Naoya Horiguchi wrote:
->>> Hi,
->>>
->>> I updated the unpoison patchset based ou discussions over v2.
->>> Please see individual patches for details of updates.
->>>
->>> ----- (cover letter copied from v2) -----
->>> Main purpose of this series is to sync unpoison code to recent changes
->>> around how hwpoison code takes page refcount.  Unpoison should work or
->>> simply fail (without crash) if impossible.
->>>
->>> The recent works of keeping hwpoison pages in shmem pagecache introduce
->>> a new state of hwpoisoned pages, but unpoison for such pages is not
->>> supported yet with this series.
->>>
->>> It seems that soft-offline and unpoison can be used as general purpose
->>> page offline/online mechanism (not in the context of memory error).
->>
->> I'm not sure what the target use case would be TBH ... for proper memory
->> offlining/memory hotunplug we have to offline whole memory blocks. For
->> memory ballooning based mechanisms we simply allocate random free pages
->> and eventually trigger reclaim to make more random free pages available.
->> For memory hotunplug via virtio-mem we're using alloc_contig_range() to
->> allocate ranges of interest we logically unplug.
-> 
-> I heard about it from two people independently and I think that that's maybe
-> a rough idea, so if no one shows the clear use case or someone logically
-> shows that we don't need it, I do not head for it.
+From: Arnd Bergmann <arnd@arndb.de>
 
-I'd love to learn about use cases!
+All implementations other than coldfire have returned an error since
+the avr32 and blackfin architectures got removed, and the last user in
+driver code was removed in 2016, so just remove this old interface.
 
-> 
->>
->> The only benefit compared to alloc_contig_range() might be that we can
->> offline smaller chunks -- alloc_contig_range() isn't optimized for
->> sub-MAX_ORDER granularity yet. But then, alloc_contig_range() should
->> much rather be extended.
-> 
-> If alloc_contig_range() supports memory offline in arbitrary size of
-> granurality (including a single page), maybe soft offline can be (partially
-> I guess) unified to it.
+The only reference is now in the Chinese documentation, which should be
+changed to remove this reference as well.
 
-Conceptually, memory offlining, alloc_contig_range(), soft-offlining all
-perform roughly the same thing just with different flavors: evacuate a
-given PFN area and decide what shall happen with it.
+Cc: Fu Wei <tekkamanninja@gmail.com>
+Cc: Alex Shi <alexs@kernel.org>
+Cc: Hu Haowen <src.res@email.cn>
+Cc: linux-doc-tw-discuss@lists.sourceforge.net
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ Documentation/driver-api/gpio/legacy.rst | 20 +++++---------------
+ arch/m68k/include/asm/gpio.h             |  7 -------
+ arch/sh/include/asm/gpio.h               |  5 -----
+ include/linux/gpio.h                     | 12 ------------
+ 4 files changed, 5 insertions(+), 39 deletions(-)
 
-After memory offlining, memory cannot get reused (e.g., allocated via
-the buddy) before re-onlining that memory. It's some kind of "fake
-allocation" + advanced magic to actually remove the memory from the system.
-
-alloc_contig_range() is just a "real" allocation, and can be used (e.g.,
-by virtio-mem) for fake offlining by some additional magic on top.
-
-soft-offlining is just another special type of "special allocation",
-however, focused on individual page.
-
-
-The biggest difference between soft-offlining and
-alloc_contig_range()+memory offlining is right now the granularity.
-While alloc_contig_range() can be used to allocate individual pages on
-ZONE_MOVABLE and MIGRATE_CMA, it cannot deal with other zones with such
-small granularity yet -- too many false negatives, meaning an allocation
-might fail although the single page actually could get allocated.
-
+diff --git a/Documentation/driver-api/gpio/legacy.rst b/Documentation/driver-api/gpio/legacy.rst
+index 9b12eeb89170..06c05e2d62c1 100644
+--- a/Documentation/driver-api/gpio/legacy.rst
++++ b/Documentation/driver-api/gpio/legacy.rst
+@@ -382,22 +382,18 @@ GPIOs mapped to IRQs
+ --------------------
+ GPIO numbers are unsigned integers; so are IRQ numbers.  These make up
+ two logically distinct namespaces (GPIO 0 need not use IRQ 0).  You can
+-map between them using calls like::
++map between them using::
+ 
+ 	/* map GPIO numbers to IRQ numbers */
+ 	int gpio_to_irq(unsigned gpio);
+ 
+-	/* map IRQ numbers to GPIO numbers (avoid using this) */
+-	int irq_to_gpio(unsigned irq);
+-
+-Those return either the corresponding number in the other namespace, or
++This returns an irq number corresponding to the gpio number, or
+ else a negative errno code if the mapping can't be done.  (For example,
+ some GPIOs can't be used as IRQs.)  It is an unchecked error to use a GPIO
+-number that wasn't set up as an input using gpio_direction_input(), or
+-to use an IRQ number that didn't originally come from gpio_to_irq().
++number that wasn't set up as an input using gpio_direction_input().
+ 
+-These two mapping calls are expected to cost on the order of a single
+-addition or subtraction.  They're not allowed to sleep.
++The mapping call is expected to cost on the order of a single
++addition or subtraction.  It is not allowed to sleep.
+ 
+ Non-error values returned from gpio_to_irq() can be passed to request_irq()
+ or free_irq().  They will often be stored into IRQ resources for platform
+@@ -405,12 +401,6 @@ devices, by the board-specific initialization code.  Note that IRQ trigger
+ options are part of the IRQ interface, e.g. IRQF_TRIGGER_FALLING, as are
+ system wakeup capabilities.
+ 
+-Non-error values returned from irq_to_gpio() would most commonly be used
+-with gpio_get_value(), for example to initialize or update driver state
+-when the IRQ is edge-triggered.  Note that some platforms don't support
+-this reverse mapping, so you should avoid using it.
+-
+-
+ Emulating Open Drain Signals
+ ----------------------------
+ Sometimes shared signals need to use "open drain" signaling, where only the
+diff --git a/arch/m68k/include/asm/gpio.h b/arch/m68k/include/asm/gpio.h
+index a50b27719a58..5cfc0996ba94 100644
+--- a/arch/m68k/include/asm/gpio.h
++++ b/arch/m68k/include/asm/gpio.h
+@@ -66,13 +66,6 @@ static inline int gpio_to_irq(unsigned gpio)
+ 		return __gpio_to_irq(gpio);
+ }
+ 
+-static inline int irq_to_gpio(unsigned irq)
+-{
+-	return (irq >= MCFGPIO_IRQ_VECBASE &&
+-		irq < (MCFGPIO_IRQ_VECBASE + MCFGPIO_IRQ_MAX)) ?
+-		irq - MCFGPIO_IRQ_VECBASE : -ENXIO;
+-}
+-
+ static inline int gpio_cansleep(unsigned gpio)
+ {
+ 	return gpio < MCFGPIO_PIN_MAX ? 0 : __gpio_cansleep(gpio);
+diff --git a/arch/sh/include/asm/gpio.h b/arch/sh/include/asm/gpio.h
+index d643250f0a0f..588c1380e4cb 100644
+--- a/arch/sh/include/asm/gpio.h
++++ b/arch/sh/include/asm/gpio.h
+@@ -40,11 +40,6 @@ static inline int gpio_to_irq(unsigned gpio)
+ 	return __gpio_to_irq(gpio);
+ }
+ 
+-static inline int irq_to_gpio(unsigned int irq)
+-{
+-	return -ENOSYS;
+-}
+-
+ #endif /* CONFIG_GPIOLIB */
+ 
+ #endif /* __ASM_SH_GPIO_H */
+diff --git a/include/linux/gpio.h b/include/linux/gpio.h
+index 008ad3ee56b7..d8d7daa7eb94 100644
+--- a/include/linux/gpio.h
++++ b/include/linux/gpio.h
+@@ -81,11 +81,6 @@ static inline int gpio_to_irq(unsigned int gpio)
+ 	return __gpio_to_irq(gpio);
+ }
+ 
+-static inline int irq_to_gpio(unsigned int irq)
+-{
+-	return -EINVAL;
+-}
+-
+ #endif /* ! CONFIG_ARCH_HAVE_CUSTOM_GPIO_H */
+ 
+ /* CONFIG_GPIOLIB: bindings for managed devices that want to request gpios */
+@@ -219,13 +214,6 @@ static inline int gpio_to_irq(unsigned gpio)
+ 	return -EINVAL;
+ }
+ 
+-static inline int irq_to_gpio(unsigned irq)
+-{
+-	/* irq can never have been returned from gpio_to_irq() */
+-	WARN_ON(1);
+-	return -EINVAL;
+-}
+-
+ static inline int devm_gpio_request(struct device *dev, unsigned gpio,
+ 				    const char *label)
+ {
 -- 
-Thanks,
-
-David / dhildenb
+2.29.2
 
