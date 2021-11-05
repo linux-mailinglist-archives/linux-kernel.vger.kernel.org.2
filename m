@@ -2,111 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2975D44677D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:01:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E4C44677E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbhKERDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 13:03:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234177AbhKERDt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 13:03:49 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE5E6C061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 10:01:09 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id x131so4214668pfc.12
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 10:01:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=xsURJGLRNnzE+/ZVeB1/VoPg+vRN7TokqtjtTXhqXZ4=;
-        b=K712YducHOeeG3nknJVfrZT1NcHoTLxMIV6GBxLnqtsxr8aV4Jhtxipo53pTp6jcOo
-         6cpiAa+C3zRjwY11S6MZvCsIib8UlNJ2slfv3rofjM0I2aQ4x1bUdTGrbH7sUSKiXGyd
-         z29h6HX8/ObTEY+7m/RsVy2TboMs9RIlBCjor3+wMXLqbzPvHX9gO/M7hoQDXCnmtrA6
-         haBkJiHyzseb4VjZYcZ6M2OiUuaur9fPAUF9xEoVm15NyhaWuXmKx9VlaKxvO+TwSG7q
-         Y3RKqrTx/Mu39mTHa03IB0Br5hnszo42LmDJDRiEwE3XIzFFyeTViHdbYD8m8rN0pw4C
-         P7XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=xsURJGLRNnzE+/ZVeB1/VoPg+vRN7TokqtjtTXhqXZ4=;
-        b=rce3kV08+aUAyaL+FYlR1a0bExgkx+SV9TDb5EAX+CRWVhmpYoB+wHjzCM7blbX3uW
-         BgiI6O3BdChVHoaF4NJutBgUg1b8YG5Hb+j/W2aBM9oay97mIO3XxMiwi5BbMczFAilC
-         E8aF+YqztBo5G63mtyimx/N6nSrJGEJm3NxnAlNEVNVI74MEU+NIvI0ZTw1CD3gVnqZ2
-         ynGo4OhlAqLFEI2TGn3NqwiaER4bVCIQCxF4bAy9UdJgb3JcmW+pPjqqoJOi3OXRya+Q
-         hbMAQdQO+Qs0NJI5zdhRVrBAJMsb3N0ei6ZSALL2Qim7giQJYd50nEpQNDYj9YsV3Egd
-         WGNQ==
-X-Gm-Message-State: AOAM533Caw+Ovxuhu9rFe4+pXuQT3HHIJQxxefPmoAtgISlokH0rByRi
-        4WpIVMa3Qd+cEAGVQJZ5qC8=
-X-Google-Smtp-Source: ABdhPJwrqnExkc17IhVVzj+2IbPPqG4ikL4QKYY7ynYNOGMYtY5ANpSxHSnuJ2MJ4SIZvnYkBmOCXg==
-X-Received: by 2002:a63:f70a:: with SMTP id x10mr2372284pgh.12.1636131669430;
-        Fri, 05 Nov 2021 10:01:09 -0700 (PDT)
-Received: from [192.168.1.2] ([59.95.82.141])
-        by smtp.gmail.com with ESMTPSA id q18sm8152946pfj.46.2021.11.05.10.01.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 10:01:08 -0700 (PDT)
-Message-ID: <2bd55f74-be52-f182-b210-1d2d88fd8fdf@gmail.com>
-Date:   Fri, 5 Nov 2021 22:31:03 +0530
+        id S234193AbhKERD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 13:03:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:33698 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234177AbhKERD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 13:03:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BB1292F;
+        Fri,  5 Nov 2021 10:01:16 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.196.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2B5793F7F5;
+        Fri,  5 Nov 2021 10:01:15 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Yafang Shao <laoar.shao@gmail.com>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com
+Cc:     linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [RFC PATCH 2/4] sched/fair: Introduce cfs_migration
+In-Reply-To: <20211104145713.4419-3-laoar.shao@gmail.com>
+References: <20211104145713.4419-1-laoar.shao@gmail.com> <20211104145713.4419-3-laoar.shao@gmail.com>
+Date:   Fri, 05 Nov 2021 17:01:12 +0000
+Message-ID: <87a6iitu3r.mognet@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH] staging: r8188eu: core: remove the unused variable
- pAdapter
-Content-Language: en-GB
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        straube.linux@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, saurav.girepunje@hotmail.com
-References: <YYNSAqGgDPhV1IE1@Sauravs-MacBook-Air.local>
- <YYT/s7TABtElQTnC@kroah.com>
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-In-Reply-To: <YYT/s7TABtElQTnC@kroah.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 04/11/21 14:57, Yafang Shao wrote:
+> A new per-cpu kthread named "cfs_migration/N" is introduced to do
+> cfs specific balance works. It is a FIFO task with priority FIFO-1,
+> which means it can preempt any cfs tasks but can't preempt other FIFO
+> tasks. The kthreads as follows,
+>
+>     PID     COMMAND
+>     13      [cfs_migration/0]
+>     20      [cfs_migration/1]
+>     25      [cfs_migration/2]
+>     32      [cfs_migration/3]
+>     38      [cfs_migration/4]
+>     ...
+>
+>     $ cat /proc/13/sched
+>     ...
+>     policy                                       :                    1
+>     prio                                         :                   98
+>     ...
+>
+>     $ cat /proc/13/status
+>     ...
+>     Cpus_allowed:	0001
+>     Cpus_allowed_list:	0
+>     ...
+>
+> All the works need to be done will be queued into a singly linked list,
+> in which the first queued will be first serviced.
+>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Cc: Valentin Schneider <valentin.schneider@arm.com>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> ---
+>  kernel/sched/fair.c | 93 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 93 insertions(+)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 87db481e8a56..56b3fa91828b 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -20,6 +20,8 @@
+>   *  Adaptive scheduling granularity, math enhancements by Peter Zijlstra
+>   *  Copyright (C) 2007 Red Hat, Inc., Peter Zijlstra
+>   */
+> +#include <linux/smpboot.h>
+> +#include <linux/stop_machine.h>
+>  #include "sched.h"
+>
+>  /*
+> @@ -11915,3 +11917,94 @@ int sched_trace_rq_nr_running(struct rq *rq)
+>          return rq ? rq->nr_running : -1;
+>  }
+>  EXPORT_SYMBOL_GPL(sched_trace_rq_nr_running);
+> +
+> +#ifdef CONFIG_SMP
+> +struct cfs_migrater {
+> +	struct task_struct *thread;
+> +	struct list_head works;
+> +	raw_spinlock_t lock;
+
+Hm so the handler of that work queue will now be a SCHED_FIFO task (which
+can block) rather than a CPU stopper (which can't), but AFAICT the
+callsites that would enqueue an item can't block, so having this as a
+raw_spinlock_t should still make sense.
+
+> +};
+> +
+> +DEFINE_PER_CPU(struct cfs_migrater, cfs_migrater);
+> +
+> +static int cfs_migration_should_run(unsigned int cpu)
+> +{
+> +	struct cfs_migrater *migrater = &per_cpu(cfs_migrater, cpu);
+> +	unsigned long flags;
+> +	int run;
+> +
+> +	raw_spin_lock_irqsave(&migrater->lock, flags);
+> +	run = !list_empty(&migrater->works);
+> +	raw_spin_unlock_irqrestore(&migrater->lock, flags);
+> +
+> +	return run;
+> +}
+> +
+> +static void cfs_migration_setup(unsigned int cpu)
+> +{
+> +	/* cfs_migration should have a higher priority than normal tasks,
+> +	 * but a lower priority than other FIFO tasks.
+> +	 */
+> +	sched_set_fifo_low(current);
+> +}
+> +
+> +static void cfs_migrater_thread(unsigned int cpu)
+> +{
+> +	struct cfs_migrater *migrater = &per_cpu(cfs_migrater, cpu);
+> +	struct cpu_stop_work *work;
+> +
+> +repeat:
+> +	work = NULL;
+> +	raw_spin_lock_irq(&migrater->lock);
+> +	if (!list_empty(&migrater->works)) {
+> +		work = list_first_entry(&migrater->works,
+> +					struct cpu_stop_work, list);
+> +		list_del_init(&work->list);
+> +	}
+> +	raw_spin_unlock_irq(&migrater->lock);
+> +
+> +	if (work) {
+> +		struct cpu_stop_done *done = work->done;
+> +		cpu_stop_fn_t fn = work->fn;
+> +		void *arg = work->arg;
+> +		int ret;
+> +
+> +		preempt_count_inc();
+> +		ret = fn(arg);
+> +		if (done) {
+> +			if (ret)
+> +				done->ret = ret;
+> +			cpu_stop_signal_done(done);
+> +		}
+> +		preempt_count_dec();
+> +		goto repeat;
+> +	}
+> +}
+
+You're pretty much copying the CPU stopper setup, but that seems overkill
+for the functionality we're after: migrate a CFS task from one CPU to
+another. This shouldn't need to be able to run any arbitrary callback
+function.
+
+Unfortunately you are tackling both CFS active balancing and NUMA balancing
+at the same time, and right now they're plumbed a bit differently which
+probably drove you to use something a bit for polymorphic. Ideally we
+should be making them use the same paths, but IMO it would be acceptable as
+a first step to just cater to CFS active balancing - folks that really care
+about their RT tasks can disable CONFIG_NUMA_BALANCING, but there is
+nothing to disable CFS active balancing.
 
 
-On 05/11/21 3:26 pm, Greg KH wrote:
-> On Thu, Nov 04, 2021 at 08:52:42AM +0530, Saurav Girepunje wrote:
->> Remove the unused variable pAdapter from Efuse_Write1ByteToFakeContent
->> This variable is not used in the function.
->>
->> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
->> ---
->>  drivers/staging/r8188eu/core/rtw_efuse.c | 7 ++-----
->>  1 file changed, 2 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/staging/r8188eu/core/rtw_efuse.c b/drivers/staging/r8188eu/core/rtw_efuse.c
->> index 03c8431b2ed3..39c77f6b06ef 100644
->> --- a/drivers/staging/r8188eu/core/rtw_efuse.c
->> +++ b/drivers/staging/r8188eu/core/rtw_efuse.c
->> @@ -40,10 +40,7 @@ static bool Efuse_Read1ByteFromFakeContent(u16 Offset, u8 *Value)
->>  }
->>
->>  static bool
->> -Efuse_Write1ByteToFakeContent(
->> -			struct adapter *pAdapter,
->> -			u16 Offset,
->> -			u8 Value)
->> +Efuse_Write1ByteToFakeContent(u16 Offset, u8 Value)s
-> 
-> You can do this same thing in drivers/staging/rtl8723bs/core/rtw_efuse.c
-> if you want to.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Now, I'm thinking the bare information we need is:
 
-Yes, Now I have sent patch for drivers/staging/rtl8723bs/core/rtw_efuse.c also.
-Thanks for pointing this.
+- a task to migrate
+- a CPU to move it to
 
-Regards,
-Saurav
+And then you can do something like...
+
+trigger_migration(task_struct *p, unsigned int dst_cpu)
+{
+        work = { p, dst_cpu };
+        get_task_struct(p);
+        /* queue work + wake migrater + wait for completion */
+}
+
+cfs_migrater_thread()
+{
+        /* ... */
+        p = work->p;
+
+        if (task_rq(p) != this_rq())
+                goto out;
+
+        /* migrate task to work->dst_cpu */
+out:
+        complete(<some completion struct>);
+        put_task_struct(p);
+}
+
+
+We should also probably add something to prevent the migration from
+happening after it is no longer relevant. Say if we have something like:
+
+  <queue work to migrate p from CPU0 to CPU1>
+  <FIFO-2 task runs for 42 seconds on CPU0>
+  <cfs_migration/0 now gets to run>
+
+p could have moved elsewhere while cfs_migration/0. I'm thinking source CPU
+could be a useful information, but that doesn't tell you if the task moved
+around in the meantime...
+
+WDYT?
