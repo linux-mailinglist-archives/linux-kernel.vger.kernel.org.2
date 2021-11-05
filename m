@@ -2,70 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD4644625B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A53544625E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbhKEKwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 06:52:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34554 "EHLO mail.kernel.org"
+        id S231766AbhKEKws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 06:52:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230003AbhKEKwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 06:52:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 160CF610A8;
-        Fri,  5 Nov 2021 10:49:51 +0000 (UTC)
+        id S231642AbhKEKwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 06:52:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id F13A26124A;
+        Fri,  5 Nov 2021 10:50:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636109394;
-        bh=flL52suMqN/frqIhABji+kP/KZLf7M9LOU0RKHo6DLY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UHIkVgQ6n5Zyxz0A4kkUqNx//vww03JEjx7BVRVBn8g1SzYXC5XpSbyPhTc/6CQp4
-         7VvwqDdzpzd5lnQZuG1gkrjKQUw/axAdmhmkty0yFl7yf4j5fZ1+WDyQbYBQ+CR5iL
-         uKM5GooAJ9Dk/qzcZ2aGLEpvAzSxszQO3tKsKlusWO6SZ9ay3dcZVq7BZ6YAxjKpBt
-         Loq6f+itdJBPQRJ3z2TK7BwsVXHVaHayAVENKVzqG8b3o/UxRLB5xDvAuuRvJOlwQv
-         OSBPYK6iOpIBiL9CWWeclndyZnEpXH7fodmG5ZzSqos+qgsxd46iR9l4dybgF4jTyU
-         GRhROeEeCPH3g==
-Date:   Fri, 5 Nov 2021 12:49:47 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Qian Cai <quic_qiancai@quicinc.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: Track no early_pgtable_alloc() for kmemleak
-Message-ID: <YYUMSwqqW2MHKKuT@kernel.org>
-References: <20211104155623.11158-1-quic_qiancai@quicinc.com>
- <YYQTKRrDIJbkcplr@kernel.org>
- <9bb6fe11-c10a-a373-9288-d44a5ba976fa@quicinc.com>
+        s=k20201202; t=1636109408;
+        bh=PEbAx5J23QwyAPFh+r1xwhp+zPTVbSStfq79iDXgTao=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=KJpEQ91h9wDJQzsIU4auifDCO0ji2s9VYiYHn8Iaen8f+6tBlzijpSFE+FtQ3Hi2E
+         0aJ35HcvIa6mRccEC0zca1kuBOZMUusHlOdMmhD73UY4D25ZAy1STWk298Ll6pW0aB
+         4SVjU7Aw0/euQOaTOTZDm7XyL0jWmTO/MGHiTE9EYw66yFXVMtaFVu3Ovka8+pLe+Q
+         B/oLb8/BtJa/gyJLqrbsjvYxpp8/bHESHKqbQdWb/uwcfyPyXrCbss1H+1pngLzcbl
+         M0CuVQiaNivloiDFWiZKebDT/2Rar2QE/5dk4o976uVEJl5Lf6YCifr/k09zNv8k6T
+         4HfvwZj/6FYJg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DF3DE60A0E;
+        Fri,  5 Nov 2021 10:50:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9bb6fe11-c10a-a373-9288-d44a5ba976fa@quicinc.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net: udp: correct the document for udp_mem
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163610940791.24664.10352541983010508425.git-patchwork-notify@kernel.org>
+Date:   Fri, 05 Nov 2021 10:50:07 +0000
+References: <20211105073541.2981935-1-imagedong@tencent.com>
+In-Reply-To: <20211105073541.2981935-1-imagedong@tencent.com>
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, corbet@lwn.net,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, imagedong@tencent.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 01:57:03PM -0400, Qian Cai wrote:
-> 
-> 
-> On 11/4/21 1:06 PM, Mike Rapoport wrote:
-> > I think I'll be better to rename MEMBLOCK_ALLOC_KASAN to, say,
-> > MEMBLOCK_ALLOC_NOKMEMLEAK and use that for both KASAN and page table cases.
-> 
-> Okay, that would look a bit nicer.
-> 
-> > But more generally, we are going to hit this again and again.
-> > Couldn't we add a memblock allocation as a mean to get more memory to
-> > kmemleak::mem_pool_alloc()?
-> 
-> For the last 5 years, this is the second time I am ware of this kind of
-> issue just because of the 64KB->4KB switch on those servers, although I
-> agree it could happen again in the future due to some new debugging
-> features etc. I don't feel a strong need to rewrite it now though. Not
-> sure if Catalin saw things differently. Anyway, Mike, do you agree that
-> we could rewrite that separately in the future?
+Hello:
 
-Yeah, the rework can definitely go on top. 
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
+On Fri,  5 Nov 2021 15:35:41 +0800 you wrote:
+> From: Menglong Dong <imagedong@tencent.com>
+> 
+> udp_mem is a vector of 3 INTEGERs, which is used to limit the number of
+> pages allowed for queueing by all UDP sockets.
+> 
+> However, sk_has_memory_pressure() in __sk_mem_raise_allocated() always
+> return false for udp, as memory pressure is not supported by udp, which
+> means that __sk_mem_raise_allocated() will fail once pages allocated
+> for udp socket exceeds udp_mem[0].
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next] net: udp: correct the document for udp_mem
+    https://git.kernel.org/netdev/net/c/69dfccbc1186
+
+You are awesome, thank you!
 -- 
-Sincerely yours,
-Mike.
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
