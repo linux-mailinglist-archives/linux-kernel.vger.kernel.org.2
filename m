@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9A1446408
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B329E44640A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbhKENWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 09:22:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232781AbhKENWf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 09:22:35 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D9FC06120D;
-        Fri,  5 Nov 2021 06:19:41 -0700 (PDT)
-Date:   Fri, 05 Nov 2021 13:19:38 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1636118380;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p99QONqqFlhmJhGB4cU3v/TOmqtcFhGoVJvHxocSo/k=;
-        b=SPHiRcyAnwiHJcOJ6ljv9RWoxBo3FeldVPh1Y4c1wcVJqoqBPD9fTlg/cA+N/kIDchYVyC
-        7xI56up8bxKSSyGD/1A4DCybzlOe//VCEUejc490JACAXSntDUdw/1Drq3KIgl0H7SIlYY
-        MAMHire81zwm6RB19/If7zDSshfB/i8SYPghJevMF3TNMoOBuGId7fjpvcQ0uNMIZULaIA
-        VknPprwThwRB7lKV6EZDi2UO1ChWURIPt1nMy5dgZubxeAjLqAykkOpgCQyh8wfG8Rac2G
-        jP61tG+dRtAwNNbyu/5lW+4jI9E6AQQmu4Z1P0y1lVafFYPKYa0n0gI9UxDrSA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1636118380;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p99QONqqFlhmJhGB4cU3v/TOmqtcFhGoVJvHxocSo/k=;
-        b=uX1fWfUjQRcLjmc6bVszOQL2flmi1/jkTJozBhX13P3FmBsRyTnwIV7+ERCwlA/2MaHnAx
-        Dyjn6EL3GTRMhHAQ==
-From:   "tip-bot2 for Juergen Gross" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] MAINTAINERS: Add some information to PARAVIRT_OPS entry
-Cc:     Juergen Gross <jgross@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20211104095955.4813-1-jgross@suse.com>
-References: <20211104095955.4813-1-jgross@suse.com>
+        id S232781AbhKENXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 09:23:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231149AbhKENXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 09:23:51 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4DBF5610FD;
+        Fri,  5 Nov 2021 13:21:11 +0000 (UTC)
+Date:   Fri, 5 Nov 2021 09:21:08 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     syzbot <syzbot+43fd005b5a1b4d10781e@syzkaller.appspotmail.com>,
+        john.stultz@linaro.org, linux-kernel@vger.kernel.org,
+        sboyd@kernel.org, syzkaller-bugs@googlegroups.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steven Rostedt <rosted@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [syzbot] possible deadlock in ktime_get_coarse_ts64
+Message-ID: <20211105092108.71cd14ac@gandalf.local.home>
+In-Reply-To: <87lf224uki.ffs@tglx>
+References: <00000000000013aebd05cff8e064@google.com>
+        <87lf224uki.ffs@tglx>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Message-ID: <163611837895.626.6157744222328526514.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Fri, 05 Nov 2021 14:10:21 +0100
+Thomas Gleixner <tglx@linutronix.de> wrote:
 
-Commit-ID:     43d3b7f6a362c06a19f14ff432993780aaad7ffd
-Gitweb:        https://git.kernel.org/tip/43d3b7f6a362c06a19f14ff432993780aaad7ffd
-Author:        Juergen Gross <jgross@suse.com>
-AuthorDate:    Thu, 04 Nov 2021 10:59:55 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 05 Nov 2021 14:16:44 +01:00
+> > -> #0 (tk_core.seq.seqcount){----}-{0:0}:  
+> >        check_prev_add kernel/locking/lockdep.c:3051 [inline]
+> >        check_prevs_add kernel/locking/lockdep.c:3174 [inline]
+> >        validate_chain+0x1dfb/0x8240 kernel/locking/lockdep.c:3789
+> >        __lock_acquire+0x1382/0x2b00 kernel/locking/lockdep.c:5015
+> >        lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5625
+> >        seqcount_lockdep_reader_access+0xfe/0x230 include/linux/seqlock.h:103
+> >        ktime_get_coarse_ts64+0x25/0x110 kernel/time/timekeeping.c:2255
+> >        ktime_get_coarse include/linux/timekeeping.h:120 [inline]
+> >        ktime_get_coarse_ns include/linux/timekeeping.h:126 [inline]  
+> 
+> --> this call is invalid  
+> 
+> >        ____bpf_ktime_get_coarse_ns kernel/bpf/helpers.c:173 [inline]
+> >        bpf_ktime_get_coarse_ns+0x7e/0x130 kernel/bpf/helpers.c:171
+> >        bpf_prog_a99735ebafdda2f1+0x10/0xb50
+> >        bpf_dispatcher_nop_func include/linux/bpf.h:721 [inline]
+> >        __bpf_prog_run include/linux/filter.h:626 [inline]
+> >        bpf_prog_run include/linux/filter.h:633 [inline]
+> >        BPF_PROG_RUN_ARRAY include/linux/bpf.h:1294 [inline]
+> >        trace_call_bpf+0x2cf/0x5d0 kernel/trace/bpf_trace.c:127
+> >        perf_trace_run_bpf_submit+0x7b/0x1d0 kernel/events/core.c:9708
+> >        perf_trace_lock+0x37c/0x440 include/trace/events/lock.h:39
+> >        trace_lock_release+0x128/0x150 include/trace/events/lock.h:58  
+> 
+> Timestamps from within a tracepoint can only be taken with:
+> 
+>          1) jiffies
+>          2) sched_clock()
+>          3) ktime_get_*_fast_ns()
 
-MAINTAINERS: Add some information to PARAVIRT_OPS entry
+This is why we have tracing clocks:
 
-Most patches for paravirt_ops are going through the tip tree, as those
-patches tend to touch x86 specific files a lot.
+include/linux/trace_clock.h:
 
-Add the x86 ML and the tip tree to the PARAVIRT_OPS MAINTAINERS entry
-in order to reflect that.
+  trace_clock_local()
+  trace_clock()
+  trace_clock_jiffies()
+  trace_clock_global()
+  trace_clock_counter()
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20211104095955.4813-1-jgross@suse.com
+And perf uses its own clock, which is either local_clock() or one of the
+ktime_get_*_ns() clocks.
 
----
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
+-- Steve
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 96a96b1..0ad926b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14191,7 +14191,9 @@ M:	Juergen Gross <jgross@suse.com>
- M:	Deep Shah <sdeep@vmware.com>
- M:	"VMware, Inc." <pv-drivers@vmware.com>
- L:	virtualization@lists.linux-foundation.org
-+L:	x86@kernel.org
- S:	Supported
-+T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
- F:	Documentation/virt/paravirt_ops.rst
- F:	arch/*/include/asm/paravirt*.h
- F:	arch/*/kernel/paravirt*
+> 
+> Those are NMI safe and can be invoked from anywhere.
+> 
+> All other time getters which have to use the timekeeping seqcount
+> protection are prone to live locks and _cannot_ be used from
+> tracepoints ever.
+> 
+> This restriction exists since day one of tracepoints and is not
+> magically going away for BPF.
