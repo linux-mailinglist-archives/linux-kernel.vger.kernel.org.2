@@ -2,208 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ECB644685E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 19:27:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB7B446861
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 19:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231857AbhKES3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 14:29:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229504AbhKES3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 14:29:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFAC1603E7;
-        Fri,  5 Nov 2021 18:27:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636136827;
-        bh=sku8KBV+7rn2Fkqwj1+0oav+5cIgu42GkuB4CnIPzoA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VQCoX1WOFrrMqex3/EWO0DwsSewCfCKfWrIzxNxedD4jG2A3e1fTYvXwd4PFu5RiY
-         7oHKN2o4X7+eD6NwLJzMzwKQGfsOXg1UgktsE/y6DkuwoMgy7kEoa7ME2e1jvkh3qH
-         D05BpH9RLlnIEBxXjo/Lc2maNF4fZIFSc9HKfOYv+HeGPjA5FjtHyM8tIV4HI/e/kx
-         xiVIOWSAoFq4lYzgYZ0J8p7OWHk9mkXJAU9vTH2bV00H37/pZUCcLL1R8nLVX7druy
-         b2TubBUtyb8DmA2pZ9n68V9hkd2M1oDGgdIqoe3C/1wd1WI+/1/gKCHMgEmCaT2cr4
-         OtI/vBJjd+jTA==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mj3vQ-008k4H-Jq; Fri, 05 Nov 2021 18:26:52 +0000
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        Alan <alan@linux.intel.com>, Alex Dewar <alex.dewar90@gmail.com>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Baokun Li <libaokun1@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Yang Li <abaci-bugfix@linux.alibaba.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: [PATCH] media: atomisp: get rid of ISP2401_NEW_INPUT_SYSTEM
-Date:   Fri,  5 Nov 2021 18:26:51 +0000
-Message-Id: <eab8c36ae221f459278c1ed3e21815029a845ebc.1636136804.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S231963AbhKEScn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 14:32:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35835 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231425AbhKEScl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 14:32:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636137001;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=q0ibc6O3PYfeNoUD8Hno1Eg7DzvFjxEzh6a4kwFLGOE=;
+        b=JYluSkAMoTyv7/1zoWH9t3r2DEB6v+4LGUVK0VQd3zKUmNEONsxHmnKpq37UIzEHJ9emmn
+        PlZLmRkKAC0lxI9/mQDvJzscnDU/AxgAVg3bp0HnImbYWhRCEzgpGqq0yPoeQhZPU1sUAx
+        8obBYDc37F4Nrf1r+9E8w17JE2Lziug=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-282-WjdVNf6WP0eRYgROoGguxQ-1; Fri, 05 Nov 2021 14:30:00 -0400
+X-MC-Unique: WjdVNf6WP0eRYgROoGguxQ-1
+Received: by mail-pf1-f197.google.com with SMTP id x20-20020aa79414000000b0049f9cb19a5fso1401467pfo.17
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 11:30:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q0ibc6O3PYfeNoUD8Hno1Eg7DzvFjxEzh6a4kwFLGOE=;
+        b=uNNJjWjzAAx5qh6CYB3nUf+J2bwbUDS2+liwSP8DTUZ+jMP92eG+z8yMX7nAbVSLLF
+         tbBLrPwcvN6EEnnjPC7dd7r8lk0QUKhHGx9xBzzzDTm2/lbd+qRa0EI4m1BY40aFqbQS
+         AmteDNVDZi/RI00Fxj8cyJxWkatCaPMqvEkUreYBACcGqMhwNHwMukPhoOmqB5AMn2G8
+         qsCQ6yqU/HmQN3LYmM8jWC8cgfLyZwm2MbnqXa23WOT4P/6SFDSR+gmz/IYxIXvkUQ9n
+         AyfX63cwIfrvgh7jomMSXmN1wZ3gUFmHz9/dLMMRDA5WOOC9vnEgx1sUNXNgE7PPvbQQ
+         0B7w==
+X-Gm-Message-State: AOAM532WIWSrpO66mMn/GoPo7kQEzRF9W7/YZhsQbDHfzQ9Il+TLATl9
+        Rw7+GhpZrjzT/kqtHImv15lBTSbuZtORv4Xqe0QeK202qUbFSKuTstFPyQ3WxgpX6gMjEyRdX5Y
+        9A6PfY6fCAXYNVoeWgI0U8t45sUn1HBC7YtjeWdwl
+X-Received: by 2002:a17:902:aa84:b0:142:36cb:2a47 with SMTP id d4-20020a170902aa8400b0014236cb2a47mr11145130plr.89.1636136999062;
+        Fri, 05 Nov 2021 11:29:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyPXPuim2CHer0bDcCHkohpwv2IwRwJ+RNXARPLcRSEeV3dEOlycJbdPWX/R942R7MJhYZgvAPwlZwgcTiRZqE=
+X-Received: by 2002:a17:902:aa84:b0:142:36cb:2a47 with SMTP id
+ d4-20020a170902aa8400b0014236cb2a47mr11145109plr.89.1636136998822; Fri, 05
+ Nov 2021 11:29:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+References: <1636013269-3433050-1-git-send-email-jiasheng@iscas.ac.cn>
+In-Reply-To: <1636013269-3433050-1-git-send-email-jiasheng@iscas.ac.cn>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Fri, 5 Nov 2021 19:29:47 +0100
+Message-ID: <CAO-hwJLX8N1rBXguaj9nN9jyqz8txaMtMkAge4GSch++uFbtoA@mail.gmail.com>
+Subject: Re: [PATCH] HID: ite: Add parse before start
+To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All ISP2401 devices use the new input system. So, get rid
-of the remaining definitions, replacing them by runtime
-checks for BYT/CHT when applicable.
+Hi Jiasheng,
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/staging/media/atomisp/Makefile        |  2 +-
- .../staging/media/atomisp/pci/atomisp_cmd.c   | 19 +++++++++++--------
- .../media/atomisp/pci/atomisp_compat_css20.c  |  4 ++--
- .../staging/media/atomisp/pci/atomisp_fops.c  |  4 +---
- .../staging/media/atomisp/pci/atomisp_v4l2.c  | 14 ++------------
- 5 files changed, 17 insertions(+), 26 deletions(-)
+On Thu, Nov 4, 2021 at 9:08 AM Jiasheng Jiang <jiasheng@iscas.ac.cn> wrote:
+>
+> It might be better to add  hid_parse() before
+> wacom_parse_and_register() to ask for the report descriptor.
 
-diff --git a/drivers/staging/media/atomisp/Makefile b/drivers/staging/media/atomisp/Makefile
-index a23c04cf7f34..a98204e9b20f 100644
---- a/drivers/staging/media/atomisp/Makefile
-+++ b/drivers/staging/media/atomisp/Makefile
-@@ -319,7 +319,7 @@ ifeq ($(CONFIG_VIDEO_ATOMISP_ISP2401),y)
- atomisp-objs += \
- 	$(obj-cht) \
- 	pci/runtime/isys/src/ibuf_ctrl_rmgr.o
--DEFINES += -DISP2401 -DISP2401_NEW_INPUT_SYSTEM
-+DEFINES += -DISP2401
- endif
- 
- ccflags-y += $(INCLUDES) $(DEFINES) -fno-common
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_cmd.c b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-index 0ddee36cdcd7..4ef5d728cd2f 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-@@ -5156,11 +5156,11 @@ static int css_input_resolution_changed(struct atomisp_sub_device *asd,
- 	dev_dbg(asd->isp->dev, "css_input_resolution_changed to %ux%u\n",
- 		ffmt->width, ffmt->height);
- 
--#if defined(ISP2401_NEW_INPUT_SYSTEM)
--	atomisp_css_input_set_two_pixels_per_clock(asd, false);
--#else
--	atomisp_css_input_set_two_pixels_per_clock(asd, true);
--#endif
-+	if (IS_ISP2401)
-+		atomisp_css_input_set_two_pixels_per_clock(asd, false);
-+	else
-+		atomisp_css_input_set_two_pixels_per_clock(asd, true);
-+
- 	if (asd->continuous_mode->val) {
- 		/* Note for all checks: ffmt includes pad_w+pad_h */
- 		if (asd->run_mode->val == ATOMISP_RUN_MODE_VIDEO ||
-@@ -5494,9 +5494,14 @@ static void atomisp_get_dis_envelop(struct atomisp_sub_device *asd,
- static void atomisp_check_copy_mode(struct atomisp_sub_device *asd,
- 				    int source_pad, struct v4l2_pix_format *f)
- {
--#if defined(ISP2401_NEW_INPUT_SYSTEM)
- 	struct v4l2_mbus_framefmt *sink, *src;
- 
-+	if (!IS_ISP2401) {
-+		/* Only used for the new input system */
-+		asd->copy_mode = false;
-+		return;
-+	}
-+
- 	sink = atomisp_subdev_get_ffmt(&asd->subdev, NULL,
- 				       V4L2_SUBDEV_FORMAT_ACTIVE, ATOMISP_SUBDEV_PAD_SINK);
- 	src = atomisp_subdev_get_ffmt(&asd->subdev, NULL,
-@@ -5510,8 +5515,6 @@ static void atomisp_check_copy_mode(struct atomisp_sub_device *asd,
- 	      sensor[asd->sensor_curr].stream_num > 1)))
- 		asd->copy_mode = true;
- 	else
--#endif
--		/* Only used for the new input system */
- 		asd->copy_mode = false;
- 
- 	dev_dbg(asd->isp->dev, "copy_mode: %d\n", asd->copy_mode);
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-index a8972b231e06..da177a8e78e3 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-@@ -972,7 +972,7 @@ int atomisp_css_irq_translate(struct atomisp_device *isp,
- void atomisp_css_rx_get_irq_info(enum mipi_port_id port,
- 				 unsigned int *infos)
- {
--#ifndef ISP2401_NEW_INPUT_SYSTEM
-+#ifndef IS_ISP2401
- 	ia_css_isys_rx_get_irq_info(port, infos);
- #else
- 	*infos = 0;
-@@ -982,7 +982,7 @@ void atomisp_css_rx_get_irq_info(enum mipi_port_id port,
- void atomisp_css_rx_clear_irq_info(enum mipi_port_id port,
- 				   unsigned int infos)
- {
--#ifndef ISP2401_NEW_INPUT_SYSTEM
-+#ifndef IS_ISP2401
- 	ia_css_isys_rx_clear_irq_info(port, infos);
- #endif
- }
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_fops.c b/drivers/staging/media/atomisp/pci/atomisp_fops.c
-index ac4e45b350de..b247d1582cff 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_fops.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_fops.c
-@@ -464,13 +464,11 @@ int atomisp_qbuffers_to_css(struct atomisp_sub_device *asd)
- 		css_capture_pipe_id = IA_CSS_PIPE_ID_CAPTURE;
- 	}
- 
--#ifdef ISP2401_NEW_INPUT_SYSTEM
--	if (asd->copy_mode) {
-+	if (IS_ISP2401 && asd->copy_mode) {
- 		css_capture_pipe_id = IA_CSS_PIPE_ID_COPY;
- 		css_preview_pipe_id = IA_CSS_PIPE_ID_COPY;
- 		css_video_pipe_id = IA_CSS_PIPE_ID_COPY;
- 	}
--#endif
- 
- 	if (asd->yuvpp_mode) {
- 		capture_pipe = &asd->video_out_capture;
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-index bbef485ee15c..0223e3dd95a6 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-@@ -1635,12 +1635,7 @@ static int atomisp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *i
- 		pdev->d3cold_delay = 0;
- 		break;
- 	case ATOMISP_PCI_DEVICE_SOC_ANN:
--		isp->media_dev.hw_revision = (
--#ifdef ISP2401_NEW_INPUT_SYSTEM
--						 ATOMISP_HW_REVISION_ISP2401
--#else
--						 ATOMISP_HW_REVISION_ISP2401_LEGACY
--#endif
-+		isp->media_dev.hw_revision = (	 ATOMISP_HW_REVISION_ISP2401
- 						 << ATOMISP_HW_REVISION_SHIFT);
- 		isp->media_dev.hw_revision |= pdev->revision < 2 ?
- 					      ATOMISP_HW_STEPPING_A0 : ATOMISP_HW_STEPPING_B0;
-@@ -1648,12 +1643,7 @@ static int atomisp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *i
- 		isp->hpll_freq = HPLL_FREQ_1600MHZ;
- 		break;
- 	case ATOMISP_PCI_DEVICE_SOC_CHT:
--		isp->media_dev.hw_revision = (
--#ifdef ISP2401_NEW_INPUT_SYSTEM
--						 ATOMISP_HW_REVISION_ISP2401
--#else
--						 ATOMISP_HW_REVISION_ISP2401_LEGACY
--#endif
-+		isp->media_dev.hw_revision = (	 ATOMISP_HW_REVISION_ISP2401
- 						 << ATOMISP_HW_REVISION_SHIFT);
- 		isp->media_dev.hw_revision |= pdev->revision < 2 ?
- 					      ATOMISP_HW_STEPPING_A0 : ATOMISP_HW_STEPPING_B0;
--- 
-2.31.1
+seems like a copy/paste error when working on 2 different drivers.
+
+>
+> Fixes: 3c785a0 ("HID: ite: Replace ABS_MISC 120/121 events with touchpad on/off keypresses")
+> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+> ---
+>  drivers/hid/hid-ite.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/hid/hid-ite.c b/drivers/hid/hid-ite.c
+> index 14fc068..3c56f75 100644
+> --- a/drivers/hid/hid-ite.c
+> +++ b/drivers/hid/hid-ite.c
+> @@ -100,6 +100,10 @@ static int ite_probe(struct hid_device *hdev, const struct hid_device_id *id)
+>         if (ret)
+>                 return ret;
+>
+> +       ret = hid_parse(hdev);
+
+hid_parse() is an inline definition of hid_open_report() which is
+called just above.
+So here you are asking to call the same code twice, which is suboptimal.
+
+Cheers,
+Benjamin
+
+> +       if (ret)
+> +               return ret;
+> +
+>         return hid_hw_start(hdev, HID_CONNECT_DEFAULT);
+>  }
+>
+> --
+> 2.7.4
+>
 
