@@ -2,166 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0EC24466FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C944466FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:28:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233283AbhKEQ3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 12:29:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:33326 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232708AbhKEQ3T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 12:29:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3772E2F;
-        Fri,  5 Nov 2021 09:26:39 -0700 (PDT)
-Received: from [10.57.26.129] (unknown [10.57.26.129])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 411113F7F5;
-        Fri,  5 Nov 2021 09:26:35 -0700 (PDT)
-Subject: Re: [PATCH v3 0/5] Refactor thermal pressure update to avoid code
- duplication
-To:     Steev Klimaszewski <steev@kali.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
-        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        viresh.kumar@linaro.org, amitk@kernel.org,
-        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
-        thara.gopinath@linaro.org, bjorn.andersson@linaro.org,
-        agross@kernel.org
-References: <20211103161020.26714-1-lukasz.luba@arm.com>
- <c7b526f0-2c26-0cfc-910b-3521c6a6ef51@kali.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <3cba148a-7077-7b6b-f131-dc65045aa348@arm.com>
-Date:   Fri, 5 Nov 2021 16:26:32 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S232987AbhKEQat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 12:30:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231689AbhKEQao (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 12:30:44 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A80C061205
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 09:28:04 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id j2so19836023lfg.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 09:28:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fa7Z6nglF14QRStQgbgptF1fA20fCaVRUV/pNu+eqLM=;
+        b=EKRe7n8ax5DNYYW6YP/lIzY6bHmkK1CRdjLwWq9BPWIrnt06mK03oOdDdS+NkVWG5L
+         BVmrmKlTGeZsn9Gy3h+aZgJkc35JrlYirDCw3yykztrp+jWD6XFXYDJn2Dco/ikfZ8/e
+         dO6XwL8FtbJuNNRatSNT35fU3PGY4iQITkUTKUl1GqicrYG/5kU2nXS0HReaf+C7RRpx
+         EOUF9aHCA6gCUnAXIp1ztXYDv7koXGK2/G7FV/5IQMrqvdTXmV7aIhGTBiwpm92w2YV5
+         RbaqdsNwoLAZ1gNw+yUGwrimB5uisck7N1SRSPlQWztE9q9C7j5nH/SK/kS2x+MyLula
+         ELcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fa7Z6nglF14QRStQgbgptF1fA20fCaVRUV/pNu+eqLM=;
+        b=vC1+Xf6x9xQqWC5R4nk/YC4bXtTiV+uAoGIKURIPQqsz0xMYAov0c6z0Q1QVggp6Sy
+         zbtieaVKNnKxTOEEq/F7Y5ZC26ql6qDYZWmnLQpF/SEJKVWydlkbLhVHkxJwxQ1gyYN3
+         ZvWQdmwOcXyzq5VH0RuydQ3jb9wYCceyRVn9wUS8O//S9U+l/TAKu/c2kvxecHBq+cte
+         AIZbwg5ensWvLHKRZ2e7SajBYeIn0IOV5EPUAb3bhaF/nf3GpLgf4pNeWM1dFaLndbdN
+         JT9byV4SWzMdK80byi05ExEiT20eLUYg30xU64kFwMZxhZnRTNuDyUBlKGobI/yrQvAj
+         s/Ug==
+X-Gm-Message-State: AOAM530dTmIl0hQbFj4ly4LAKXrBcm8pKWqIdduJQkkOfN4ZDviQN1nC
+        wRnTb0qBm//h3MPuXBUN3sz9lw==
+X-Google-Smtp-Source: ABdhPJz7gvTwzAM6Evcf7owRlQfpCs/L3f/eIxh6EHcbCdoD14bk1rQyi+Kz0k127+E0BVXJXkWsAg==
+X-Received: by 2002:ac2:4bc1:: with SMTP id o1mr51578864lfq.192.1636129683115;
+        Fri, 05 Nov 2021 09:28:03 -0700 (PDT)
+Received: from localhost (c-9b28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.155])
+        by smtp.gmail.com with ESMTPSA id p12sm872557lfa.265.2021.11.05.09.28.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 09:28:02 -0700 (PDT)
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     shuah@kernel.org
+Cc:     nathan@kernel.org, ndesaulniers@google.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Anders Roxell <anders.roxell@linaro.org>
+Subject: [PATCH] selftests: vDSO: parse: warning: fix assignment as a condition
+Date:   Fri,  5 Nov 2021 17:27:56 +0100
+Message-Id: <20211105162756.3314148-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <c7b526f0-2c26-0cfc-910b-3521c6a6ef51@kali.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steev,
+When building selftests/vDSO with clang the following warning shows up:
 
-On 11/5/21 3:39 PM, Steev Klimaszewski wrote:
-> Hi Lukasz,
-> 
+clang -std=gnu99 -Wno-pointer-sign    vdso_test_gettimeofday.c parse_vdso.c  -o /home/anders/.cache/tuxmake/builds/current/kselftest/vDSO/vdso_test_gettimeofday
+parse_vdso.c:65:9: warning: using the result of an assignment as a condition without parentheses [-Wparentheses]
+                if (g = h & 0xf0000000)
+                    ~~^~~~~~~~~~~~~~~~
 
-[snip]
+Rework to a parentheses before doing the check.
 
-> I've been testing this patchset on the Lenovo Yoga C630, and today while 
-> compiling alacritty and running an apt-get full-upgrade, I found the 
-> following in dmesg output:
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ tools/testing/selftests/vDSO/parse_vdso.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you for testing and sending feedback!
+diff --git a/tools/testing/selftests/vDSO/parse_vdso.c b/tools/testing/selftests/vDSO/parse_vdso.c
+index 413f75620a35..b47b721a4ea4 100644
+--- a/tools/testing/selftests/vDSO/parse_vdso.c
++++ b/tools/testing/selftests/vDSO/parse_vdso.c
+@@ -62,7 +62,7 @@ static unsigned long elf_hash(const unsigned char *name)
+ 	while (*name)
+ 	{
+ 		h = (h << 4) + *name++;
+-		if (g = h & 0xf0000000)
++		if ((g = (h & 0xf0000000)))
+ 			h ^= g >> 24;
+ 		h &= ~g;
+ 	}
+-- 
+2.33.0
 
-Are you using a mainline kernel or you applied on some vendor production
-kernel this patch set? I need to exclude a different code base
-from the equation, especially to the arch_topology.c init code.
-
-> 
-> [  194.343903] ------------[ cut here ]------------
-> [  194.343912] WARNING: CPU: 4 PID: 192 at 
-> drivers/base/arch_topology.c:188 
-> topology_update_thermal_pressure+0xe4/0x100
-> [  194.343928] Modules linked in: aes_ce_ccm snd_seq_dummy snd_hrtimer 
-> snd_seq snd_seq_device algif_hash algif_skcipher af_alg bnep 
-> cpufreq_ondemand cpufreq_conservative cpufreq_powersave 
-> cpufreq_userspace lz4 lz4_compress zram zsmalloc q6asm_dai q6routing 
-> q6afe_dai q6adm q6asm q6afe q6dsp_common snd_soc_wsa881x q6core 
-> regmap_sdw snd_soc_wcd934x gpio_wcd934x soundwire_qcom snd_soc_wcd_mbhc 
-> wcd934x regmap_slimbus uvcvideo videobuf2_vmalloc venus_enc venus_dec 
-> videobuf2_dma_contig videobuf2_memops qrtr_smd fastrpc apr binfmt_misc 
-> nls_ascii nls_cp437 vfat fat snd_soc_sdm845 snd_soc_rt5663 
-> snd_soc_qcom_common pm8941_pwrkey joydev snd_soc_rl6231 aes_ce_blk 
-> qcom_spmi_adc5 soundwire_bus qcom_vadc_common crypto_simd 
-> qcom_spmi_temp_alarm snd_soc_core cryptd hci_uart snd_compress btqca 
-> industrialio aes_ce_cipher snd_pcm_dmaengine btrtl crct10dif_ce btbcm 
-> ghash_ce snd_pcm btintel gf128mul sha2_ce snd_timer venus_core bluetooth 
-> snd v4l2_mem2mem sha256_arm64 videobuf2_v4l2 videobuf2_common soundcore
-> [  194.344007]  sha1_ce videodev ecdh_generic ecc mc ath10k_snoc 
-> ath10k_core hid_multitouch ath mac80211 qcom_rng libarc4 qcom_q6v5_mss 
-> cfg80211 sg rfkill qcom_q6v5_pas qcom_pil_info slim_qcom_ngd_ctrl 
-> qcom_wdt pdr_interface qcom_q6v5 evdev rmtfs_mem slimbus qcom_sysmon 
-> fuse configfs qrtr ip_tables x_tables autofs4 ext4 mbcache jbd2 
-> panel_simple rtc_pm8xxx msm llcc_qcom ocmem gpu_sched ti_sn65dsi86 
-> drm_dp_aux_bus drm_kms_helper drm camcc_sdm845 ipa qcom_common 
-> qmi_helpers mdt_loader gpio_keys pwm_bl
-> [  194.344056] CPU: 4 PID: 192 Comm: kworker/4:1H Not tainted 5.15.0 #9
-> [  194.344060] Hardware name: LENOVO 81JL/LNVNB161216, BIOS 
-> 9UCN33WW(V2.06) 06/ 4/2019
-> [  194.344062] Workqueue: events_highpri qcom_lmh_dcvs_poll
-> [  194.344068] pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS 
-> BTYPE=--)
-> [  194.344070] pc : topology_update_thermal_pressure+0xe4/0x100
-> [  194.344073] lr : topology_update_thermal_pressure+0x30/0x100
-> [  194.344075] sp : ffff800014043d10
-> [  194.344076] x29: ffff800014043d10 x28: 0000000000000000 x27: 
-> 0000000000000000
-> [  194.344080] x26: ffff759c40b66974 x25: ffff759db37a2405 x24: 
-> ffff759c40e83358
-> [  194.344084] x23: 0000000000000000 x22: ffffb2699eafe1d8 x21: 
-> 00000000002d1e00
-> [  194.344087] x20: ffff759c49f5bc20 x19: 000000000000b8cc x18: 
-> 0000000000000000
-> [  194.344090] x17: 2f756e672d78756e x16: ffffb2699d7d83d0 x15: 
-> 0000000000000000
-> [  194.344093] x14: 0000000000000000 x13: 0000000000000030 x12: 
-> 0101010101010101
-> [  194.344096] x11: 7f7f7f7f7f7f7f7f x10: feff68716f676668 x9 : 
-> ffffb2699dd66a58
-> [  194.344099] x8 : fefefefefefefeff x7 : 000000000000000f x6 : 
-> 0000000000000002
-> [  194.344102] x5 : ffffc33415124000 x4 : 0000000000000400 x3 : 
-> 0000000000000b19
-> [  194.344105] x2 : 0000000000000b8c x1 : ffffb2699e678f40 x0 : 
-> ffffb2699e678f48
-> [  194.344108] Call trace:
-> [  194.344110]  topology_update_thermal_pressure+0xe4/0x100
-> [  194.344113]  qcom_lmh_dcvs_notify+0xc8/0x160
-> [  194.344115]  qcom_lmh_dcvs_poll+0x20/0x2c
-> [  194.344116]  process_one_work+0x1f4/0x490
-> [  194.344120]  worker_thread+0x188/0x504
-> [  194.344121]  kthread+0x12c/0x140
-> [  194.344125]  ret_from_fork+0x10/0x20
-> [  194.344128] ---[ end trace bd0039c4fb892d5b ]---
-
-[snip]
-
-That's interesting why we hit this. I should have added info about
-those two values, which are compared.
-
-Could you make this change and try it again, please?
-We would know the problematic values, which triggered this.
----------------------8<-----------------------------------
-diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-index db18d79065fe..0d8db0927041 100644
---- a/drivers/base/arch_topology.c
-+++ b/drivers/base/arch_topology.c
-@@ -185,8 +185,11 @@ void topology_update_thermal_pressure(const struct 
-cpumask *cpus,
-         /* Convert to MHz scale which is used in 'freq_factor' */
-         capped_freq /= 1000;
-
--       if (WARN_ON(max_freq < capped_freq))
-+       if (max_freq < capped_freq) {
-+               pr_warn("THERMAL_PRESSURE: max_freq (%lu) < capped_freq 
-(%lu) for CPUs [%*pbl]\n",
-+                       max_freq, capped_freq, cpumask_pr_args(cpus));
-                 return;
-+       }
-
-         capacity = mult_frac(capped_freq, max_capacity, max_freq);
-
------------------------------->8---------------------------
-
-Could you also dump for me the cpufreq and capacity sysfs content?
-$ grep . /sys/devices/system/cpu/cpu*/cpufreq/*
-$ grep . /sys/devices/system/cpu/cpu*/cpu_capacity
-
-Regards,
-Lukasz
