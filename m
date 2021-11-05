@@ -2,236 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2024462FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 12:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB894462FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 12:50:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232752AbhKELu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 07:50:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232715AbhKELu1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 07:50:27 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15847C061203
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 04:47:48 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id f4so31814992edx.12
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 04:47:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XTxab8i7yuKvcX/MconQlN8sr6y6p4GmfklrCzCyM6c=;
-        b=ysPYLTWmuPHnL+KutMlfyXqmuUY3M1OMLQVPUpG2ToSOVV6oyhgpEx64+2hokaSxtz
-         NKi/q5SB9QyujeTAGV4x2P1z77ynWsxTaGvV5HxlEHfrAtAw58BI6LbaZq7t/JadUNRH
-         EY3VPum3/BK3F2G5JQeYRYX1aQuz3YCOaSgpDnXtYwiH+X4M3WNFxAXehvU90zVyT+9O
-         UnN/T/6kU8zKjRjsOdrs6UyoHAHz8lzhsodEo1pkRDUyucxn86kwyZ8z9AWj0A9/5XaU
-         4EvFXynmDvUMUMuKtM7dzqpdCyEiCSGEHm4LpUkFDxVPxVFT5nI4fIlSS/UF57HMc1zL
-         kc5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XTxab8i7yuKvcX/MconQlN8sr6y6p4GmfklrCzCyM6c=;
-        b=aJSjlsypbQDXpjePxJK1Y50hRpX3trntvqHiqhkd6NjV46Vj8hsxqC3TYbNcRGZhEg
-         p328ON29sIju4oVNEjQZhWkXXwRQNA+7rJuP7sylLql1GAoboTKmZGv65nyLIGHacPW0
-         eg0zqXB2u8h/ap181KVGebm5RM8jEecYrSlzInpuPutHH4j9F14Hki6/kd37rhZ1ZXMJ
-         xmxdoCwp0dXsKTCSTWtTFAVVI/xnxOl2aSSV0zgV0s0LmqIFHu5Lq5+3IxegivOKrquB
-         nbAoTmTOVx8dsGaZ9Ugw6iqRQ6oE2vD6vRslLkE0mpsMUyKl0QchxqYKty216jDwyrKG
-         KYZg==
-X-Gm-Message-State: AOAM530JW4QfZsZjZp/SzsxzyY8wI+LSuc3dZQTFlsPV4N33JBYl4cCX
-        UJYJ8eTirfFkvtzawsKoV8W83VxrGyx/LXUU1z86FA==
-X-Google-Smtp-Source: ABdhPJwUid9aeskkGBdwmeVcBs8DWltFxHmlSxKFW0Vc1rM66dR7IlhUhNmq/f9Ee71Rv/sWuAxn9nP/EnoBtI3KdT0=
-X-Received: by 2002:a17:907:7f90:: with SMTP id qk16mr10615099ejc.169.1636112866242;
- Fri, 05 Nov 2021 04:47:46 -0700 (PDT)
+        id S232467AbhKELwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 07:52:46 -0400
+Received: from out1.migadu.com ([91.121.223.63]:55991 "EHLO out1.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229942AbhKELwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 07:52:45 -0400
+Date:   Fri, 5 Nov 2021 20:49:54 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1636113004;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=PstElwx1eHISZknSHtmk0mKL3v3w5arvXKrkYvDW1AA=;
+        b=oa9juKgR5gf24x1lNqNPzbpYlKMamJvPc5ehAtL+FdcVMCrIdMPG4JAyNMT+EbAL6o6A86
+        factHVWknALHVa2daYZdj3NK3ikQ7VbvnufWo34/YgOOtFAj08nTH1ivGJ9JCWlfxUf+50
+        RKoUN68yCgm3EnDGrAavu2UcdHVUqKI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Naoya Horiguchi <naoya.horiguchi@nec.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Ding Hui <dinghui@sangfor.com.cn>,
+        Tony Luck <tony.luck@intel.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yang Shi <shy828301@gmail.com>, Peter Xu <peterx@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] mm/hwpoison: fix unpoison_memory()
+Message-ID: <20211105114954.GA3163106@u2004>
 MIME-Version: 1.0
-References: <20211104141158.037189396@linuxfoundation.org>
-In-Reply-To: <20211104141158.037189396@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 5 Nov 2021 17:17:34 +0530
-Message-ID: <CA+G9fYvLsOpFPkCD5czxfwz8TuVcmAbmk1Wm1mU0Jbz73bDuGw@mail.gmail.com>
-Subject: Re: [PATCH 4.19 0/7] 4.19.216-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f6935141-3aeb-540d-afb8-292051166a82@redhat.com>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: naoya.horiguchi@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Nov 2021 at 19:46, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.216 release.
-> There are 7 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 06 Nov 2021 14:11:51 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.216-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Fri, Nov 05, 2021 at 11:58:15AM +0100, David Hildenbrand wrote:
+> On 05.11.21 06:50, Naoya Horiguchi wrote:
+> > Hi,
+> > 
+> > I updated the unpoison patchset based ou discussions over v2.
+> > Please see individual patches for details of updates.
+> > 
+> > ----- (cover letter copied from v2) -----
+> > Main purpose of this series is to sync unpoison code to recent changes
+> > around how hwpoison code takes page refcount.  Unpoison should work or
+> > simply fail (without crash) if impossible.
+> > 
+> > The recent works of keeping hwpoison pages in shmem pagecache introduce
+> > a new state of hwpoisoned pages, but unpoison for such pages is not
+> > supported yet with this series.
+> > 
+> > It seems that soft-offline and unpoison can be used as general purpose
+> > page offline/online mechanism (not in the context of memory error).
+> 
+> I'm not sure what the target use case would be TBH ... for proper memory
+> offlining/memory hotunplug we have to offline whole memory blocks. For
+> memory ballooning based mechanisms we simply allocate random free pages
+> and eventually trigger reclaim to make more random free pages available.
+> For memory hotunplug via virtio-mem we're using alloc_contig_range() to
+> allocate ranges of interest we logically unplug.
 
+I heard about it from two people independently and I think that that's maybe
+a rough idea, so if no one shows the clear use case or someone logically
+shows that we don't need it, I do not head for it.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+> 
+> The only benefit compared to alloc_contig_range() might be that we can
+> offline smaller chunks -- alloc_contig_range() isn't optimized for
+> sub-MAX_ORDER granularity yet. But then, alloc_contig_range() should
+> much rather be extended.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+If alloc_contig_range() supports memory offline in arbitrary size of
+granurality (including a single page), maybe soft offline can be (partially
+I guess) unified to it.
 
-## Build
-* kernel: 4.19.216-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.19.y
-* git commit: afcee5295c1e9b8651e30edeac3014a1049f15c1
-* git describe: v4.19.215-8-gafcee5295c1e
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
-.215-8-gafcee5295c1e
+Thanks,
+Naoya Horiguchi
 
-## No regressions (compared to v4.19.215)
+> 
+> Long story short, I'm not sure there is a sane use case for this
+> "general purpose page offline/online mechanism" ...
 
-## No fixes (compared to v4.19.215)
-
-## Test result summary
-total: 77617, pass: 62224, fail: 825, skip: 12865, xfail: 1703
-
-## Build Summary
-* arm: 130 total, 108 passed, 22 failed
-* arm64: 38 total, 38 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 31 total, 30 passed, 1 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 27 total, 27 passed, 0 failed
-* s390: 12 total, 12 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 22 total, 22 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
