@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60240445D27
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:02:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0F4445D2C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhKEBEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 21:04:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45112 "EHLO
+        id S231288AbhKEBIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 21:08:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231218AbhKEBEc (ORCPT
+        with ESMTP id S231133AbhKEBIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 21:04:32 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AEA6C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 18:01:53 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id v15so5288570ljc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 18:01:53 -0700 (PDT)
+        Thu, 4 Nov 2021 21:08:35 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94896C061203
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 18:05:56 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id g18so2662192pfk.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 18:05:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=79ZKQZn6O1IkafVjDwZ+j3jAYbT2DQtY9V0AzRB5LOE=;
-        b=axm33hmfgPNDbFW8M7zbtqsr9jCWF/3lTmgL2TTu2T0wBTNKmAot9PMmut8/Gn1Fff
-         5SFieg25LBaoEwbIQIqlx7qBBoa7jp2W0t+CgaPpt3i4GjFiqahCdSwobYV9l7AkAkT2
-         8He3HEpsgFMVLDflbpIVIkfMapMOpA5/P/KPEyn1YhmP46te/eb5BDYvh5/qkQWR0AE3
-         TPr8zqd7qb8rpt0zZHxNcZn2p1X3IJ6SebfSqI9u57tM1wPvuNZA6E0M7K3dz6Zj+1wL
-         zZ5f+2qV6pgCRthgDMbzfL86NoG/gDBtiGmi4B4GsGRaLwqCNX3+YuZzx3g4bYcCTrY0
-         Nr1g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=G/nhaOd9Dv5dMVPfxGxOacbJh3HbdybN9D3Bt3gtDl4=;
+        b=nvfkNvU5Z8xadZEfrQs+mun09ht1fvHcLrH2DxUG/3DX7gUnwMzAJkexDG2eYTXZcT
+         nXC0KbqPvC1tK0JQgs5hCtnmTYToVQpMf8nCU56R48NFvVb6s3m/Ngv/UjYCmArWyqT5
+         p0SUqwKjeQQxCQt0zc0As36KIH4BAIyfNYMeM36s0WzO5Q1J/xrc07u8scp9QxgFseUx
+         dQ59ZAkYjl9GQ/mNW/WJt9rhnODEtXi5DZG6vgO1qHgTfVwOKU3kDPsIgbbN9rzZyOjx
+         2mxK9OAGR8TorHdShQM7kemuuxLfv77EOifqsz29EGFHH4GQs7sBLdkOTDN1ZVWUEahZ
+         b+Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=79ZKQZn6O1IkafVjDwZ+j3jAYbT2DQtY9V0AzRB5LOE=;
-        b=3QJ48ns3j+Xc4RADpvBsVPyxmxEiBiDpTszJwBLEupea510H3fH66HkeGqVAklyT/H
-         XEMN5eUQ6D/MKVq0rx3W5kulxyewqwLx9COOgtfihhUonTi84yKz598ej3efWQIxFhjP
-         ogk18YxpYrj7BzJPQuF4Ujk3grj0UBKEICSxaQ569q+78g22/UopSbcMgSpV1tvERIgi
-         LkJMQtmNXTlwD+gt7xNVoK02tkOxwaHcPoIrlwPA8rcvnMiFS93TpwNQz5R+tNUE3Dfn
-         8PdZWfXOQPlMs/0xp972f0Q8zr9endRkoW4GJ8FWxxlFesPh60fy22bxAn1NciJcnlEp
-         DnEQ==
-X-Gm-Message-State: AOAM530rMQL69i/Qe+Ngt2cu9/Zqok32wkLOZI17BoYrsGtPC5dOIVXY
-        x6COt3rJvXNbLNT/GlKTBZwZuSAOz6xd7QhX63ucJ9ce5bQ=
-X-Google-Smtp-Source: ABdhPJwdiE12gp4pr+/pTmBIp1OutEv7sqvDKuwDARDTCB2kQkZPfuDkOicHQjBYUEqEn73iODSbdC7q9FPi2Lj6REc=
-X-Received: by 2002:a2e:986:: with SMTP id 128mr12328634ljj.253.1636074111609;
- Thu, 04 Nov 2021 18:01:51 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G/nhaOd9Dv5dMVPfxGxOacbJh3HbdybN9D3Bt3gtDl4=;
+        b=nX58PlJShjvXJAJJ1g78a7AVxhUBlZoxv/MVuHVxgtFIsvrc90z70G08BYaw/9jTxw
+         0d1AGqlYCbmKvHYo7BWUe3kooq6FUZVEn+5Gu/HabfHEw1VuRRUtOCS3eAzxK5+vFlDT
+         zNBgZPWAgjo8NeUJV7EdfcsvWz4oBbdXuMJCRAaU7cYgtJ9nxdK3P9SxB+gE/40r6ti2
+         NXje+zvYc8k7xCK1Im43BYiB9QKTKeHjpiiIbkwGldKuthOKP25MZ3FlIVJR3USfKoE0
+         qaCZsNPWUwjghKJd+YngQpcFsQpIqHF43UJM0Tx2tVmMNUvIm0B3BKOgd2QQTWepNbF/
+         cIAg==
+X-Gm-Message-State: AOAM532w6o4F/q8XcrMFan48SQb9RTP09Tram9FXmFjFnXppSrSUPYkB
+        w8NnJjPimlBM8TnwRtZNY5e+yySHSbN//Q==
+X-Google-Smtp-Source: ABdhPJxRK/fTi3PW003l6+S9tkKhBsOPyaIXk2qUrZkoR1F5QCgcD/FeTTDil/grcsUm+sPO+IkX/A==
+X-Received: by 2002:a05:6a00:c94:b0:480:fcc2:bb2c with SMTP id a20-20020a056a000c9400b00480fcc2bb2cmr37089927pfv.30.1636074355284;
+        Thu, 04 Nov 2021 18:05:55 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id u22sm4846371pfi.78.2021.11.04.18.05.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 18:05:54 -0700 (PDT)
+Date:   Fri, 5 Nov 2021 01:05:50 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] KVM: nVMX: Track whether changes in L0 require
+ MSR bitmap for L2 to be rebuilt
+Message-ID: <YYSDbljJgpEOnx+W@google.com>
+References: <20211013142258.1738415-1-vkuznets@redhat.com>
+ <20211013142258.1738415-4-vkuznets@redhat.com>
 MIME-Version: 1.0
-References: <20211104210914.4160448-1-osk@google.com> <CACPK8XfXuU4i4khbpo8rxqxT9zz021N_m=s8uinoT+nHbCa_Yg@mail.gmail.com>
-In-Reply-To: <CACPK8XfXuU4i4khbpo8rxqxT9zz021N_m=s8uinoT+nHbCa_Yg@mail.gmail.com>
-From:   Oskar Senft <osk@google.com>
-Date:   Thu, 4 Nov 2021 21:01:35 -0400
-Message-ID: <CABoTLcQkds=-RjoY+fTVKyR1r+7Axb2-kFC7DiqMcEQTtJgk6g@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: aspeed: tyan-s7106: Update nct7802 config
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013142258.1738415-4-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joel
+On Wed, Oct 13, 2021, Vitaly Kuznetsov wrote:
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index 592217fd7d92..2cdf66e6d1b0 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -148,6 +148,15 @@ struct nested_vmx {
+>  	bool need_vmcs12_to_shadow_sync;
+>  	bool dirty_vmcs12;
+>  
+> +	/*
+> +	 * Indicates whether MSR bitmap for L2 needs to be rebuilt due to
+> +	 * changes in MSR bitmap for L1 or switching to a different L2. Note,
+> +	 * this flag can only be used reliably in conjunction with a paravirt L1
+> +	 * which informs L0 whether any changes to MSR bitmap for L2 were done
+> +	 * on its side.
+> +	 */
+> +	bool msr_bitmap_force_recalc;
 
-> > +               channel@0 { /* LTD */
-> > +                       reg = <0>;
-> > +                       status = "okay";
->
-> The status = "okay" should be redundant; as long as  you don't specify
-> a status, a node is assumed to be enabled.
+Belated bikeshedding...  What about need_msr_bitmap_recalc to follow the above
+need_vmcs12_to_shadow_sync?
 
-My apologies! I know you mentioned something similar for the DTS
-binding patch. I didn't realize that this was a generic statement,
-rather than limited to the example in the binding. Fixed in PATCH v2.
-
-Oskar.
+> +
+>  	/*
+>  	 * Indicates lazily loaded guest state has not yet been decached from
+>  	 * vmcs02.
+> -- 
+> 2.31.1
+> 
