@@ -2,94 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271EB445D62
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B84445D64
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbhKEBlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 21:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbhKEBlF (ORCPT
+        id S231576AbhKEBl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 21:41:28 -0400
+Received: from mail-wm1-f43.google.com ([209.85.128.43]:35564 "EHLO
+        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230345AbhKEBl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 21:41:05 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8B3C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 18:38:26 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id g13so5520167qtk.12
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 18:38:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=R7jmwbzRfe4ViZ3UmdAXqWcwYspkOIX/cD7v15It0jc=;
-        b=LwrxvUDNr1WcluyF87vqkxj5m5CkTMPDtEKwRDbOTZ/hHPht1Dxb0pl4oAry8W4aTQ
-         /6euwl7P6NHXVucfeOd6DE5VvZC2zGC472IyBVaP9opY/caivJfTqYV/1+XQtepJL49w
-         VVvewz2WtrC5vTSzxwxWJqdJLe/bMGAjWQNB1iX/Vy4p9+CaWF3BNLE/MR1d6J06boud
-         hugd1aVhYd18BR5CA/lFX6X0A5S0uiJKO2fAYdUxMr/jxxzYHS96E8oNVUe8w2sDM9B3
-         XKwKuEuJjhGWNoTN3D4/q+Ay6mngLlXjFf55hBmbPUTEluoav5SMIIGeJyx5bpZN77dL
-         OOwA==
+        Thu, 4 Nov 2021 21:41:27 -0400
+Received: by mail-wm1-f43.google.com with SMTP id 77-20020a1c0450000000b0033123de3425so8553868wme.0;
+        Thu, 04 Nov 2021 18:38:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=R7jmwbzRfe4ViZ3UmdAXqWcwYspkOIX/cD7v15It0jc=;
-        b=0Vuf0J7mAxYgT28zURwTzPwaTP4lPtFHcInFRFDp6qxp5KmsRKgL9hot+f4Sc5pM+T
-         VcKNbxzZkYRCClj0I/2R8/AKwH9/bQ7AkhHsuMLOrZL81b75Q0BNGHowFAza4Vz/6giw
-         QCAclFHd549ugyxIbqaB2N1253U3IUiGD7t43fqY7fJ7e9RvsfDDl9KmOSxAA7NxcZee
-         DAo1LbbzY02xS0qlCn2h6DupZ+vua97tRpP+vVr5rm9dHeGO7TklHA/MXESVR0HCUPlN
-         qkX2soAarEslPjwO8VoiXzjHTrW/b0ZuMuwHtDvh/a6Sr/BOhZ3phq4PXPt3JZyAFxm7
-         ra0Q==
-X-Gm-Message-State: AOAM5305t8VBH+ggtwx3OqCm9JXTGtJ9Er9jSx/truHmM4VZvLEPCeUs
-        +gNYi/O1fJ0IAZxxW+dTqu8=
-X-Google-Smtp-Source: ABdhPJwnpCKghjSO7MCH5FicB6SiXeOQ9bRoOI3rbVOYzeCkQaQaUs3jh4YQZF2IPjKc52gkQeP6cQ==
-X-Received: by 2002:ac8:530f:: with SMTP id t15mr10911088qtn.72.1636076305691;
-        Thu, 04 Nov 2021 18:38:25 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id f1sm4613755qkj.84.2021.11.04.18.38.23
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AdvEedg53EmklS1heCqwrwrop81P8Z504Yc+L9o1ZtQ=;
+        b=NpfsMTTwg8ZlDo7VKukiA3lS0bS/9nMVi8sEvyNuIH6Q8ydBiAqXtkPhpy0wqX+eDJ
+         i/uyqrTqjlUuStu/Rdw0PgaDtSYMbgwH9e8fLc++tqjbXo49sEwh4OyAdikjvqEMqbU5
+         8qt+AsZ92R0NwgQUCKhmj42uclaeIsSKkDif0v9zPZvYPS0VOUCsQSQswTBJKURWZ7MW
+         VV7Tm1oGHT0G2M888RKrgpppYU016noq0EN7T8FkQModr+BcexRUFeYv1e6ILLiPiR9s
+         GmBP5tkCMexmvHoOg5QI8oIyXdqSpqowBoMmkkxCnO/l3pUew4DNsevSp58VB1i4SIPR
+         sDRQ==
+X-Gm-Message-State: AOAM531QbEkEKhhj7ZzQWUqGFAXVsD+wuZ98uBUTilWNr5hfs8EmITGJ
+        CWOfOVl+eD26eqR7oEO+gbM=
+X-Google-Smtp-Source: ABdhPJyo3pJfWTiXZPiSWPp8sQKsFDzomtRBr5SzVFS+PZMUU/Hvv9h3ZDi3IbnXXSOGdoLSsIJYeA==
+X-Received: by 2002:a05:600c:350c:: with SMTP id h12mr24377035wmq.123.1636076327425;
+        Thu, 04 Nov 2021 18:38:47 -0700 (PDT)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id l16sm6726686wmq.46.2021.11.04.18.38.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 18:38:25 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: zhang.mingyu@zte.com.cn
-To:     jesper.nilsson@axis.com
-Cc:     lars.persson@axis.com, linux@armlinux.org.uk,
-        linux-arm-kernel@axis.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Zhang Mingyu <zhang.mingyu@zte.com.cn>,
+        Thu, 04 Nov 2021 18:38:47 -0700 (PDT)
+Date:   Fri, 5 Nov 2021 02:38:45 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     cgel.zte@gmail.com
+Cc:     nirmal.patel@linux.intel.com, jonathan.derrick@linux.dev,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ran jianping <ran.jianping@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] arm:Remove unneeded semicolon
-Date:   Fri,  5 Nov 2021 01:38:19 +0000
-Message-Id: <20211105013819.75014-1-zhang.mingyu@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH] PCI:vmd: remove duplicate include in vmd.c
+Message-ID: <YYSLJaisv7wMC1LZ@rocinante>
+References: <20211105013321.74364-1-ran.jianping@zte.com.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211105013321.74364-1-ran.jianping@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Mingyu <zhang.mingyu@zte.com.cn>
+Hi,
 
-Eliminate the following coccinelle check warning:
-arch/arm/mach-artpec/board-artpec6.c:42:2-3
+> 'linux/device.h' included in 'drivers/pci/controller/vmd.c'
+>  is duplicated.It is also included on the 13 line.
+[...]
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Zhang Mingyu <zhang.mingyu@zte.com.cn>
----
- arch/arm/mach-artpec/board-artpec6.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This has already been take care off in a patch sent earlier, as per:
 
-diff --git a/arch/arm/mach-artpec/board-artpec6.c b/arch/arm/mach-artpec/board-artpec6.c
-index d3cf3e8603e8..c27e7bbcd7bc 100644
---- a/arch/arm/mach-artpec/board-artpec6.c
-+++ b/arch/arm/mach-artpec/board-artpec6.c
-@@ -39,7 +39,7 @@ static void __init artpec6_init_machine(void)
- 		 */
- 		regmap_write(regmap, ARTPEC6_DMACFG_REGNUM,
- 			     ARTPEC6_DMACFG_UARTS_BURST);
--	};
-+	}
- }
- 
- static void artpec6_l2c310_write_sec(unsigned long val, unsigned reg)
--- 
-2.25.1
+  https://lore.kernel.org/linux-pci/20211104063720.29375-1-wanjiabing@vivo.com/
 
+Albeit, thank you for taking the time to send the patch over!
+
+	Krzysztof
