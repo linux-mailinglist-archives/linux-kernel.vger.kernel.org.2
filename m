@@ -2,86 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B93244658D
+	by mail.lfdr.de (Postfix) with ESMTP id D971444658F
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:15:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233484AbhKEPRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 11:17:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37502 "EHLO
+        id S233504AbhKEPSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 11:18:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233477AbhKEPRt (ORCPT
+        with ESMTP id S233378AbhKEPSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 11:17:49 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B58C061714;
-        Fri,  5 Nov 2021 08:15:09 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id q124so15031451oig.3;
-        Fri, 05 Nov 2021 08:15:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nRhfZqrqdZWGnOBfkyLKspl1Uf94yRkMCJhYCZ5LVhA=;
-        b=hD2cRtdQ4bu+k3MRpzutZ+3nkHJk1j6LFy2Vmkk8teVwvTa+60CSoKA+roHXtZwQlT
-         3/6KKydm+cLmlHO1kcyDYG3z9AWzBs+CjR3k5zgusSYz3EOYH1/d6x+N8ZL+NEqEQfzf
-         SH8ZczwYDMyndK2Ef83BRKpFyLup5eTuoWF7zhyzx5cnktxe82Juz3XOM9VRXuxbUfAW
-         WfDHn8Tqwjy0EktXxhwfSlq4cEUkJ3a8OnBvwpzegq3+35EQHSDzmZnZuBHXotUZ43eN
-         mplpUQ29AAIwB5v9P0WK3HkAyKVyrw9zqQztnjwUDhDkQ5MomDMx5ynFrMg5e0nxWG11
-         fR0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=nRhfZqrqdZWGnOBfkyLKspl1Uf94yRkMCJhYCZ5LVhA=;
-        b=cxTF5eLReWD1HpyHJkFtHc/5axIjRerowlbT4U4JgNDeyxiZ4Bi34S4z3IqHNyUu0O
-         aqqV+lhKKOgFoSdT1IihXIS1k4ZhZZPglT/RZXyGnBx1nLPLnMcJQ3dJ+iKzlhjt94O7
-         jZTY3SoHxXZj38syfm5hBSJBFl6HJmxyn7GW+Z2oxSGkGBkue+5+9L3BVs8VnY5aBMtA
-         Ta+h+yh5l/V2MIwlSzuCv9Hv7v6MRVQmfmBT+bU9Pn4JmVIQE/zQUIFFyJZy9/vyOuvV
-         CZf7gs1/cSM7WOUBvaGVytZWrWllBrj5hRMhGWfWd4fp8d0hMcdG4jOGB1rfaDGSQIwF
-         TdSA==
-X-Gm-Message-State: AOAM533+rO5197/1o2ZA1Wr/By5wkLU85RRZ4cxt2YCNIKDUbrx/4YSy
-        oGlIHz2UvjAf91rB43o4AcNJFr1d5zs=
-X-Google-Smtp-Source: ABdhPJzV2xjTiJltBQqoQIawJhHFtmzbilMqrehO69REmAZJOAjHx1/qzSzbQLHL1PZyRXTCDxiJjw==
-X-Received: by 2002:aca:6c2:: with SMTP id 185mr22608711oig.31.1636125309308;
-        Fri, 05 Nov 2021 08:15:09 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u6sm2480295ooh.15.2021.11.05.08.15.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 08:15:08 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 5 Nov 2021 08:15:07 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/14] 5.10.78-rc2 review
-Message-ID: <20211105151507.GE4027848@roeck-us.net>
-References: <20211104170112.899181800@linuxfoundation.org>
+        Fri, 5 Nov 2021 11:18:15 -0400
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF41C061714;
+        Fri,  5 Nov 2021 08:15:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=metanate.com; s=stronger; h=In-Reply-To:Content-Type:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description; bh=vj1Y8Yv+t+83fnDU9eN1bFfDvaknUqC+W0ZNrx23L/U=; b=m9Pra
+        IbzxNsNJ113UP1/JZWfzDx+yYKJVoAh7ltJ2/bgX2A2gAgCzg0r6hciQFnn6672sHIdl+3ZPPI0V/
+        SrF5yj/FnTte56oYpbmQ5w2CA/1LprZAoJ/7JIVUwgcSJegSNpJEh2jXWM7dUn+1cTx3Zzm5o38di
+        r8IihhsWigOsJzuPWQT6jg0hSSGOwvsbZ8fp6Fp7cOlVY5t5RK86xK5sl6qAcp/rlct+vaSTIcbpM
+        jR+9oxi5D6VamP+9jReAR9bVWVPxanM6OTNcUTRPxHtfCwyefv9+0l64Tyxtv9j/rSabjjcCx8rGR
+        s3YDT9pafAyxrCof1MaYXZbqouh5w==;
+Received: from [81.174.171.191] (helo=donbot)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1mj0wC-0004zX-Kg; Fri, 05 Nov 2021 15:15:28 +0000
+Date:   Fri, 5 Nov 2021 15:15:27 +0000
+From:   John Keeping <john@metanate.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Minas Harutyunyan <hminas@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v2] usb: dwc2: hcd_queue: Fix use of floating point
+ literal
+Message-ID: <YYVKj/+4snhK6/vs@donbot>
+References: <20211105145802.2520658-1-nathan@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211104170112.899181800@linuxfoundation.org>
+In-Reply-To: <20211105145802.2520658-1-nathan@kernel.org>
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 06:01:35PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.78 release.
-> There are 14 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Nov 05, 2021 at 07:58:03AM -0700, Nathan Chancellor wrote:
+> A new commit in LLVM causes an error on the use of 'long double' when
+> '-mno-x87' is used, which the kernel does through an alias,
+> '-mno-80387' (see the LLVM commit below for more details around why it
+> does this).
 > 
-> Responses should be made by Sat, 06 Nov 2021 17:01:02 +0000.
-> Anything received after that time might be too late.
+>  drivers/usb/dwc2/hcd_queue.c:1744:25: error: expression requires  'long double' type support, but target 'x86_64-unknown-linux-gnu' does not support it
+>                          delay = ktime_set(0, DWC2_RETRY_WAIT_DELAY);
+>                                              ^
+>  drivers/usb/dwc2/hcd_queue.c:62:34: note: expanded from macro 'DWC2_RETRY_WAIT_DELAY'
+>  #define DWC2_RETRY_WAIT_DELAY (1 * 1E6L)
+>                                  ^
+>  1 error generated.
 > 
+> This happens due to the use of a 'long double' literal. The 'E6' part of
+> '1E6L' causes the literal to be a 'double' then the 'L' suffix promotes
+> it to 'long double'.
+> 
+> There is no visible reason for a floating point value in this driver, as
+> the value is only used as a parameter to a function that expects an
+> integer type. Use NSEC_PER_MSEC, which is the same integer value as
+> '1E6L', to avoid changing functionality but fix the error.
+> 
+> Fixes: 6ed30a7d8ec2 ("usb: dwc2: host: use hrtimer for NAK retries")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1497
+> Link: https://github.com/llvm/llvm-project/commit/a8083d42b1c346e21623a1d36d1f0cadd7801d83
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Build results:
-	total: 159 pass: 159 fail: 0
-Qemu test results:
-	total: 474 pass: 474 fail: 0
+Reviewed-by: John Keeping <john@metanate.com>
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
+> ---
+> 
+> v1 -> v2: https://lore.kernel.org/r/20211104215923.719785-1-nathan@kernel.org/
+> 
+> * Use NSEC_PER_MSEC instead of USEC_PER_SEC, as the units of the second
+>   parameter of ktime_set is nanoseconds. Thanks to John Keeping for
+>   pointing this out.
+> 
+> * Pick up Nick's review tag.
+> 
+>  drivers/usb/dwc2/hcd_queue.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/dwc2/hcd_queue.c b/drivers/usb/dwc2/hcd_queue.c
+> index 89a788326c56..24beff610cf2 100644
+> --- a/drivers/usb/dwc2/hcd_queue.c
+> +++ b/drivers/usb/dwc2/hcd_queue.c
+> @@ -59,7 +59,7 @@
+>  #define DWC2_UNRESERVE_DELAY (msecs_to_jiffies(5))
+>  
+>  /* If we get a NAK, wait this long before retrying */
+> -#define DWC2_RETRY_WAIT_DELAY (1 * 1E6L)
+> +#define DWC2_RETRY_WAIT_DELAY (1 * NSEC_PER_MSEC)
+>  
+>  /**
+>   * dwc2_periodic_channel_available() - Checks that a channel is available for a
+> 
+> base-commit: d4439a1189f93d0ac1eaf0197db8e6b3e197d5c7
+> -- 
+> 2.34.0.rc0
+> 
