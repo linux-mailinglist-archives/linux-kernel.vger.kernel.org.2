@@ -2,93 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923D0445D5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B3E445D60
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:36:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbhKEBif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 21:38:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52612 "EHLO
+        id S231543AbhKEBis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 21:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231234AbhKEBie (ORCPT
+        with ESMTP id S231154AbhKEBiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 21:38:34 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C2EDC061714;
-        Thu,  4 Nov 2021 18:35:56 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id az8so7535562qkb.2;
-        Thu, 04 Nov 2021 18:35:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wiaOGKq4FmlnzvPuVfHkcdLQnMCut1ocGVdyodYUkvU=;
-        b=foTH20+IWuvdIPU1jo5HDx577DWQ0Em/tVGo5imA9rHJ4Bx0na7IaYpA29FJdzUEN+
-         Z01zKxyM71E9VtOv9yQOGb8mnDegLAbJAeEgrj99UuSu8hHKv3krld5FQu7ABLHOHvVI
-         Jx9lz8AY8O7Gfarci1TYC+L/jnt9KDKk+N7HvJF9DfTLcSJInHYpZfbMDZcL8tj1JlBk
-         hwaobRMTM6lT8QaDGQYiJnde39TI5ezk3tXPCuBvpuwmSN4LCsjeG/dI2qLeWc3tpR2a
-         kpyARzEfTeyD1AdmqJKFK9bkwspbzqN4L2XUYUlF85SElMiOdEhCxlBO9hm4BnnyOCkY
-         OAjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wiaOGKq4FmlnzvPuVfHkcdLQnMCut1ocGVdyodYUkvU=;
-        b=8G+GineGpjVXC4fIk+khj/bsmvdcoNyWimCclq9DxskzECyhufXsTMv1EC8ptmoYfY
-         HsXGFTSmCIQQL38G49a98dR6Cd/FcAC44xlYs7FqkNKjzEGbbzdCH7QrxSv3z0H5sikQ
-         H2jYIebQWSkRgbOuIi9Djc4fKORLppG9+Kqn4qFazYt1xLBNrwv8zMzQySF+etUvxO+9
-         Eczdkzv95hC0dxUDKem5UWYLJWxtpzf63QdjBWZj9UykZwqPAYKa24k16AocfkfdzAsx
-         AqUVDoP9t9AUytoaHpus8lZjMCJMLgm1Qx1cAucDsDCN0meP2j48IdXbuj7Hr1O5VFHA
-         aJcg==
-X-Gm-Message-State: AOAM530qqNngmnSH5+6iz8QLJCDjCr0uj98GvQr2sJxsoUPNCFRFPZXE
-        qZeCocC42hxm0wSL1Az0+Yo=
-X-Google-Smtp-Source: ABdhPJwsVZPqK7JetU/48F1kQvt56eFGAZT8NyBCqKHbgtA09EfZ6gWapJoqKoT07nlMhk/03evkQw==
-X-Received: by 2002:a05:620a:4312:: with SMTP id u18mr44551553qko.483.1636076155429;
-        Thu, 04 Nov 2021 18:35:55 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id u11sm4905341qko.119.2021.11.04.18.35.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 18:35:55 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: zhang.mingyu@zte.com.cn
-To:     john.stultz@linaro.org
-Cc:     tglx@linutronix.de, sboyd@kernel.org, shuah@kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Zhang Mingyu <zhang.mingyu@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] kselftests: timers:Remove unneeded semicolon
-Date:   Fri,  5 Nov 2021 01:35:47 +0000
-Message-Id: <20211105013547.74922-1-zhang.mingyu@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 4 Nov 2021 21:38:46 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD92C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 18:36:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=v8DJycKbUDuWHpo+yhZJgQbYGXaKWxErBb27iH0ci4g=; b=WndQzfJNkRgAS34M5fvbOp6U8C
+        s5P0cEXvUBtOygmGG99b0voR10xbo2iJGdZIDuuhs0dA2ei9WzbiFi3oFz/ADATvrIe3QhF8oHpEE
+        kUEKkd7bhqOGwHBKf8O7wqDXhaUDpaBeK96Lo9af23crHoB7LtRzpBdx5dPF5zvuYtxFw6+CAEyqt
+        dQXIXmyk2b37dOTEKbuC0fcy54xiN5SIpdDMq9t0PiuPRintNk365pKCU7CBymCDO7GtNsxf478Ww
+        4y+HSmcVqdzUj9su1aCea7hCIOARMdkfzShQyOvI0tOB5WNdt9WZvo7ZyFCEJJ4S2aebtuczD+qgn
+        GNT3Berg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mio9G-00AJZy-Bj; Fri, 05 Nov 2021 01:36:06 +0000
+Subject: Re: [PATCH v2] drivers/coresight: ultrasoc: Add System Memory Buffer
+ driver
+To:     Qi Liu <liuqi115@huawei.com>, mathieu.poirier@linaro.org,
+        suzuki.poulose@arm.com, mike.leach@linaro.org
+Cc:     coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linuxarm@huawei.com
+References: <20211105012012.86635-1-liuqi115@huawei.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <af9dbbbf-64f0-f3c6-fa30-4e306e6156d2@infradead.org>
+Date:   Thu, 4 Nov 2021 18:36:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211105012012.86635-1-liuqi115@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Mingyu <zhang.mingyu@zte.com.cn>
+On 11/4/21 6:20 PM, Qi Liu wrote:
+> diff --git a/drivers/hwtracing/coresight/ultrasoc/Kconfig b/drivers/hwtracing/coresight/ultrasoc/Kconfig
+> new file mode 100644
+> index 000000000000..c18c25bf9df3
+> --- /dev/null
+> +++ b/drivers/hwtracing/coresight/ultrasoc/Kconfig
+> @@ -0,0 +1,12 @@
+> +# SPDX-License-Identifier: MIT
+> +#
+> +# ultrasoc configuration
+> +#
+> +config ULTRASOC_SMB
+> +	tristate "Ultrasoc system memory buffer drivers"
+> +        depends on ARM64 && CORESIGHT
 
-Eliminate the following coccinelle check warning:
-tools/testing/selftests/timers/alarmtimer-suspend.c:82:2-3
+The "depends" line should be indented with a tab instead of spaces...
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Zhang Mingyu <zhang.mingyu@zte.com.cn>
----
- tools/testing/selftests/timers/alarmtimer-suspend.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +	help
+> +	  This enables support for the Ultrasoc system memory buffer
+> +	  driver that is responsible for receiving the trace data from
+> +	  Coresight ETM devices and storing them to a system buffer
+> +	  respectively.
 
-diff --git a/tools/testing/selftests/timers/alarmtimer-suspend.c b/tools/testing/selftests/timers/alarmtimer-suspend.c
-index 4da09dbf83ba..54da4b088f4c 100644
---- a/tools/testing/selftests/timers/alarmtimer-suspend.c
-+++ b/tools/testing/selftests/timers/alarmtimer-suspend.c
-@@ -79,7 +79,7 @@ char *clockstring(int clockid)
- 		return "CLOCK_BOOTTIME_ALARM";
- 	case CLOCK_TAI:
- 		return "CLOCK_TAI";
--	};
-+	}
- 	return "UNKNOWN_CLOCKID";
- }
- 
+
 -- 
-2.25.1
-
+~Randy
