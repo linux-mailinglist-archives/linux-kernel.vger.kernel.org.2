@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497804467D1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 799A54467B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234055AbhKER1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 13:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39522 "EHLO
+        id S233716AbhKERW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 13:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233299AbhKER06 (ORCPT
+        with ESMTP id S233018AbhKERWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 13:26:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544F6C06120E
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 10:24:18 -0700 (PDT)
+        Fri, 5 Nov 2021 13:22:45 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445AEC06120B
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 10:20:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=8Rz0mZkQehQxcX5yjRFpxiNaHxGLU5lXuprb55c9f0E=; b=Lui5BnuAmKM9/1iaeAej3QQPCB
-        sJEaWR2bLtFVeoj96X35z53l1CMhMvpZ2WUVGChaowkw1rgXs6nBJs6wFtSHu1z0FU/OAlFZUMkAw
-        jAO+NvTXtMZqHJlEvJzNauZCtDhSvNidH9eLga3IUthspk3zSnf8U3L5i+TEGBOJqmyK857wrUxPf
-        ph3KbqqRc3Q1TxKLUNXYf6ME0SnXpHgEuEx6BosZfFS41/5lRft/1vgkjC7DQU8V3aZOCiQOcDzNt
-        +Ftr7z7e92KoIX9rhjoFI82vpawzpcHS67YMm3SFmAWvaPCiUGnmZ/NAUSP5iIwVGA/ApwVp673As
-        hekAEU3g==;
+        bh=aom7kC5mk4zDSEkoZCD37KPCKdonpjmoI2wHmTSZP5k=; b=WbTD5vPJ52vlDgzCV7OHOfyetw
+        L5HrYaeSj3j3VORe1sYHa0caTt6Vjt3HT/tZBH89OHPBKhm6tsrTkE9q1kf+PGoiOchEHrKTrT64z
+        kEnj7/qnDfZFrFHuVLwoXA6dzxQx7kAQ+0gLmF3/M4BZkFU077gKfVvzv8f55CDDdYbEZ4iAihxT8
+        dgjLX71fLwDqWEunTPzNbpxcmBxtWfLap0+R2kssd4AuGhM46x5nfkLerEoAKww8oMsate0qqbI+V
+        gCzFsHSEOpG5C1KLkvUgPXOT4ov36qjQy5FKoJsBWIhzGs43+ewi+JOSjIjXITfFS2V+X89z2B2cX
+        lLg8XMmg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mj2sX-006hZq-3H; Fri, 05 Nov 2021 17:20:29 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mj2sX-00ENAO-PL; Fri, 05 Nov 2021 17:19:49 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5AFE53005F4;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5D10C30072B;
         Fri,  5 Nov 2021 18:19:48 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 40C63201ED0CA; Fri,  5 Nov 2021 18:19:48 +0100 (CET)
-Message-ID: <20211105171820.629235268@infradead.org>
+        id 46C55201C7B53; Fri,  5 Nov 2021 18:19:48 +0100 (CET)
+Message-ID: <20211105171820.688114170@infradead.org>
 User-Agent: quilt/0.66
-Date:   Fri, 05 Nov 2021 18:10:26 +0100
+Date:   Fri, 05 Nov 2021 18:10:27 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
         jpoimboe@redhat.com, mark.rutland@arm.com, dvyukov@google.com,
         seanjc@google.com, pbonzini@redhat.com, mbenes@suse.cz
-Subject: [PATCH 03/22] x86,copy_user_64: Remove .fixup usage
+Subject: [PATCH 04/22] x86,copy_mc_64: Remove .fixup usage
 References: <20211105171023.989862879@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,113 +56,57 @@ Place the anonymous .fixup code at the tail of the regular functions.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/lib/copy_user_64.S |   32 +++++++++++---------------------
- 1 file changed, 11 insertions(+), 21 deletions(-)
+ arch/x86/lib/copy_mc_64.S |   12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
---- a/arch/x86/lib/copy_user_64.S
-+++ b/arch/x86/lib/copy_user_64.S
-@@ -32,14 +32,10 @@
- 	decl %ecx
- 	jnz 100b
- 102:
--	.section .fixup,"ax"
--103:	addl %ecx,%edx			/* ecx is zerorest also */
--	jmp .Lcopy_user_handle_tail
--	.previous
+--- a/arch/x86/lib/copy_mc_64.S
++++ b/arch/x86/lib/copy_mc_64.S
+@@ -78,9 +78,7 @@ SYM_FUNC_START(copy_mc_fragile)
+ 	xorl %eax, %eax
+ .L_done:
+ 	ret
+-SYM_FUNC_END(copy_mc_fragile)
  
--	_ASM_EXTABLE_CPY(100b, 103b)
--	_ASM_EXTABLE_CPY(101b, 103b)
--	.endm
-+	_ASM_EXTABLE_CPY(100b, .Lcopy_user_handle_align)
-+	_ASM_EXTABLE_CPY(101b, .Lcopy_user_handle_align)
-+.endm
+-	.section .fixup, "ax"
+ 	/*
+ 	 * Return number of bytes not copied for any failure. Note that
+ 	 * there is no "tail" handling since the source buffer is 8-byte
+@@ -105,14 +103,14 @@ SYM_FUNC_END(copy_mc_fragile)
+ 	movl	%ecx, %edx
+ 	jmp copy_mc_fragile_handle_tail
+ 
+-	.previous
+-
+ 	_ASM_EXTABLE_TYPE(.L_read_leading_bytes, .E_leading_bytes, EX_TYPE_DEFAULT_MCE_SAFE)
+ 	_ASM_EXTABLE_TYPE(.L_read_words, .E_read_words, EX_TYPE_DEFAULT_MCE_SAFE)
+ 	_ASM_EXTABLE_TYPE(.L_read_trailing_bytes, .E_trailing_bytes, EX_TYPE_DEFAULT_MCE_SAFE)
+ 	_ASM_EXTABLE(.L_write_leading_bytes, .E_leading_bytes)
+ 	_ASM_EXTABLE(.L_write_words, .E_write_words)
+ 	_ASM_EXTABLE(.L_write_trailing_bytes, .E_trailing_bytes)
++
++SYM_FUNC_END(copy_mc_fragile)
+ #endif /* CONFIG_X86_MCE */
  
  /*
-  * copy_user_generic_unrolled - memory copy with exception handling.
-@@ -107,7 +103,6 @@ SYM_FUNC_START(copy_user_generic_unrolle
- 	ASM_CLAC
+@@ -133,9 +131,7 @@ SYM_FUNC_START(copy_mc_enhanced_fast_str
+ 	/* Copy successful. Return zero */
+ 	xorl %eax, %eax
+ 	ret
+-SYM_FUNC_END(copy_mc_enhanced_fast_string)
+ 
+-	.section .fixup, "ax"
+ .E_copy:
+ 	/*
+ 	 * On fault %rcx is updated such that the copy instruction could
+@@ -147,7 +143,7 @@ SYM_FUNC_END(copy_mc_enhanced_fast_strin
+ 	movq %rcx, %rax
  	ret
  
--	.section .fixup,"ax"
- 30:	shll $6,%ecx
- 	addl %ecx,%edx
- 	jmp 60f
-@@ -115,7 +110,6 @@ SYM_FUNC_START(copy_user_generic_unrolle
- 	jmp 60f
- 50:	movl %ecx,%edx
- 60:	jmp .Lcopy_user_handle_tail /* ecx is zerorest also */
 -	.previous
- 
- 	_ASM_EXTABLE_CPY(1b, 30b)
- 	_ASM_EXTABLE_CPY(2b, 30b)
-@@ -166,20 +160,16 @@ SYM_FUNC_START(copy_user_generic_string)
- 	movl %edx,%ecx
- 	shrl $3,%ecx
- 	andl $7,%edx
--1:	rep
--	movsq
-+1:	rep movsq
- 2:	movl %edx,%ecx
--3:	rep
--	movsb
-+3:	rep movsb
- 	xorl %eax,%eax
- 	ASM_CLAC
- 	ret
- 
--	.section .fixup,"ax"
- 11:	leal (%rdx,%rcx,8),%ecx
- 12:	movl %ecx,%edx		/* ecx is zerorest also */
- 	jmp .Lcopy_user_handle_tail
--	.previous
- 
- 	_ASM_EXTABLE_CPY(1b, 11b)
- 	_ASM_EXTABLE_CPY(3b, 12b)
-@@ -203,16 +193,13 @@ SYM_FUNC_START(copy_user_enhanced_fast_s
- 	cmpl $64,%edx
- 	jb .L_copy_short_string	/* less then 64 bytes, avoid the costly 'rep' */
- 	movl %edx,%ecx
--1:	rep
--	movsb
-+1:	rep movsb
- 	xorl %eax,%eax
- 	ASM_CLAC
- 	ret
- 
--	.section .fixup,"ax"
- 12:	movl %ecx,%edx		/* ecx is zerorest also */
- 	jmp .Lcopy_user_handle_tail
--	.previous
- 
- 	_ASM_EXTABLE_CPY(1b, 12b)
- SYM_FUNC_END(copy_user_enhanced_fast_string)
-@@ -240,6 +227,11 @@ SYM_CODE_START_LOCAL(.Lcopy_user_handle_
- 	ret
- 
- 	_ASM_EXTABLE_CPY(1b, 2b)
+-
+ 	_ASM_EXTABLE_TYPE(.L_copy, .E_copy, EX_TYPE_DEFAULT_MCE_SAFE)
 +
-+.Lcopy_user_handle_align:
-+	addl %ecx,%edx			/* ecx is zerorest also */
-+	jmp .Lcopy_user_handle_tail
-+
- SYM_CODE_END(.Lcopy_user_handle_tail)
- 
- /*
-@@ -350,7 +342,6 @@ SYM_FUNC_START(__copy_user_nocache)
- 	sfence
- 	ret
- 
--	.section .fixup,"ax"
- .L_fixup_4x8b_copy:
- 	shll $6,%ecx
- 	addl %ecx,%edx
-@@ -366,7 +357,6 @@ SYM_FUNC_START(__copy_user_nocache)
- .L_fixup_handle_tail:
- 	sfence
- 	jmp .Lcopy_user_handle_tail
--	.previous
- 
- 	_ASM_EXTABLE_CPY(1b, .L_fixup_4x8b_copy)
- 	_ASM_EXTABLE_CPY(2b, .L_fixup_4x8b_copy)
++SYM_FUNC_END(copy_mc_enhanced_fast_string)
+ #endif /* !CONFIG_UML */
 
 
