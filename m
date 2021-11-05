@@ -2,322 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C720446951
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 20:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F05D446953
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 20:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232631AbhKETyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 15:54:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44150 "EHLO
+        id S232676AbhKETys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 15:54:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbhKETyO (ORCPT
+        with ESMTP id S230063AbhKETyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 15:54:14 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779A7C061208
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 12:51:34 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id i16-20020a9d68d0000000b0055c630be045so3961545oto.10
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 12:51:34 -0700 (PDT)
+        Fri, 5 Nov 2021 15:54:37 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CF8C061714;
+        Fri,  5 Nov 2021 12:51:58 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id bg25so15494406oib.1;
+        Fri, 05 Nov 2021 12:51:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kali.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=zab+Ou5F3dW/0ZI0DKEFUpycAWNeYtpXPO2oI479330=;
-        b=KcqJhLbaoCexVm3KDkroByaRJ7lHmAQeK3eocFyPKufdbpWkkF77OSWmTJyBmS4EbW
-         jHHIb/nS3qCIIQwDjMapXNFrnyC/hUn1srD0MPGA/r8t7N140uA/WfyrFVyPQrscIlrK
-         SLs3vNwYKoGgwgY0XbZgmpuEl536B//TmdSAI5h3Gju5uF+CWwC1OuizoRA2WzzHRty3
-         he5j3o6H+9b53pBIiQ4YnU95WWl4344y2vlMiLw8mFtWXblOATFL4nRZEjpfhG9VCLAk
-         8sI6rr6dNaNn4JyPLsFtYt/iLwpTxF+JcmlmuxGKJoBL+q133GpWmDx9ylayRNipwLRI
-         sypw==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Cu13afi5YdNTXVpPIxFdtRUqaXpmJXw8oN5rJSTgUfw=;
+        b=cFBJ32UAO5dTAuReqy+9vhWjg5KioPPvsgYH4/8bwdj80vrdErPlgDjMhDaQuq2vK7
+         NFicgPMRKCbJCrQjRws2WABl3oLXjTumYFj8nK1ABd6ZudT/Md56XN+tAy8Ka0Z1THu+
+         gi7PmfQ8etnwswnsidtLhfJ6q6SxbSZjs6XyngKwBvZYjYP1/M3Gr7eM2TY/q6sRlN/k
+         RtSQQYraGV6OtKDGSs4kAHTpN9GYe6aY5s3PIPdwEuZ9q2dtwSjIgZ4o605usbrWjxch
+         b+58KuYTwCXB1VY5EWNV5f91m3o/2mIuu16ZlthMQqlKank5sUcc2+/rTbDR/K9y31ss
+         UDkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=zab+Ou5F3dW/0ZI0DKEFUpycAWNeYtpXPO2oI479330=;
-        b=cqDzHidD2xJ1+5SyzT9k8mx60cyIFNYZbxPhhDjAS749I0+bmLRzVgrhznIjx0TKxG
-         wJqnQP45J2iFkDbfHfJEnLqoVrn5bLPEfBg5yEtokIBSS1B36hDAHnQCh9KW1kcN3ex+
-         3HVgSuBvO6r7NJsF17jGg9KojUWLnOk+Y9+TXQSpYouCCLc9jr8zbixODdjEgF2IOsY4
-         0WH9NhfBVayrWInY4VoF3lnet5342rUIa/5Hy4d+n0BX9y6TK58u3movAa+82k78ZMOv
-         hEH7mOiNfZjwD6y+aUmesQ/ThheOlaygy0DJM15uYJr04hcr7MYb4H3ge7yvPzkzIZgn
-         DVPQ==
-X-Gm-Message-State: AOAM533uvpJiQKU65cdCFuWKqLY76uCxpauQiUqvGEfV8IRc6Z/2tLrm
-        KHjhg9HYatpCqAq7ch+/9ASvEw==
-X-Google-Smtp-Source: ABdhPJwwcJebiYj6bzdtbn3M7TB4ZyB2aAPZl+DRYQNGGHgqlwqzd2M4WHSiZ8HTWqu9YZ27mLAikg==
-X-Received: by 2002:a05:6830:91a:: with SMTP id v26mr31093705ott.313.1636141893687;
-        Fri, 05 Nov 2021 12:51:33 -0700 (PDT)
-Received: from [192.168.11.48] (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
-        by smtp.gmail.com with ESMTPSA id x13sm2664707ooj.37.2021.11.05.12.51.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 12:51:33 -0700 (PDT)
-Message-ID: <74603569-2ff1-999e-9618-79261fdb0ee4@kali.org>
-Date:   Fri, 5 Nov 2021 14:51:31 -0500
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Cu13afi5YdNTXVpPIxFdtRUqaXpmJXw8oN5rJSTgUfw=;
+        b=XbS4kNL/5RvmGb72SloB2aqAyNPmN8PFBbhoItw85VCAaqBhDl8AORZH/MQNXPNU6F
+         gC5OhlczVU7A/mfqJylOrMFPVI9Z8iJHtLGNHMDcZ6TGdTEqHQJk3qe32XpX9mbnIAgY
+         qsPqzJ5JIDZXWgP7qgA0om5UPZzdrkN0sTrvyhyobgpmOGaB0JCN/G25B2jpW+1xDkAW
+         arc9DLP6ax8V67euPy8QhO9bytV9mWVdAuNyPEsk80kG8sO0ngDFUge0RlyMEQINbhwI
+         aKsutdvhh9XMcLmzlHpawy5JbyJfsks8/huIoO0jTeuCtWxNBvuiXV3lh3XPt/ZOay54
+         EtcA==
+X-Gm-Message-State: AOAM5310shEX+vIkVPNHQ2Od3Y0x3+nrHBvBXwj7o6QNDo5RW/Optr98
+        TkczDNuAQHmhbagj7tgQMPY=
+X-Google-Smtp-Source: ABdhPJyyj/xmEsV2riYpDqxqvSGA3gx3/VvulZ2S/W+tOa040GrFqBTndoudGnazdvmA/oApIfD8hg==
+X-Received: by 2002:a05:6808:493:: with SMTP id z19mr10290264oid.125.1636141917462;
+        Fri, 05 Nov 2021 12:51:57 -0700 (PDT)
+Received: from localhost ([2600:1700:65a0:ab60:d18c:87bf:9ef9:564d])
+        by smtp.gmail.com with ESMTPSA id y18sm1245203oov.29.2021.11.05.12.51.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 12:51:56 -0700 (PDT)
+Date:   Fri, 5 Nov 2021 12:51:55 -0700
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     Di Zhu <zhudi2@huawei.com>
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, jakub@cloudflare.com,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 1/2] bpf: support BPF_PROG_QUERY for progs
+ attached to sockmap
+Message-ID: <YYWLW5IJhmIa2aVX@unknown>
+References: <20211104010745.1177032-1-zhudi2@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Subject: Re: [PATCH v3 0/5] Refactor thermal pressure update to avoid code
- duplication
-Content-Language: en-US
-To:     Thara Gopinath <thara.gopinath@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
-        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        viresh.kumar@linaro.org, amitk@kernel.org,
-        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
-        bjorn.andersson@linaro.org, agross@kernel.org
-References: <20211103161020.26714-1-lukasz.luba@arm.com>
- <c7b526f0-2c26-0cfc-910b-3521c6a6ef51@kali.org>
- <3cba148a-7077-7b6b-f131-dc65045aa348@arm.com>
- <9d533b6e-a81c-e823-fa6f-61fdea92fa65@kali.org>
- <74ea027b-b213-42b8-0f7d-275f3b84712e@linaro.org>
-From:   Steev Klimaszewski <steev@kali.org>
-In-Reply-To: <74ea027b-b213-42b8-0f7d-275f3b84712e@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211104010745.1177032-1-zhudi2@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 04, 2021 at 09:07:44AM +0800, Di Zhu wrote:
+> +int sock_map_bpf_prog_query(const union bpf_attr *attr,
+> +			    union bpf_attr __user *uattr)
+> +{
+> +	__u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
+> +	u32 prog_cnt = 0, flags = 0, ufd = attr->target_fd;
+> +	struct bpf_prog **pprog;
+> +	struct bpf_prog *prog;
+> +	struct bpf_map *map;
+> +	struct fd f;
+> +	u32 id = 0;
+> +	int ret;
+> +
+> +	if (attr->query.query_flags)
+> +		return -EINVAL;
+> +
+> +	f = fdget(ufd);
+> +	map = __bpf_map_get(f);
+> +	if (IS_ERR(map))
+> +		return PTR_ERR(map);
+> +
+> +	rcu_read_lock();
+> +
+> +	ret = sock_map_prog_lookup(map, &pprog, attr->query.attach_type);
+> +	if (ret)
+> +		goto end;
+> +
+> +	prog = *pprog;
+> +	prog_cnt = (!prog) ? 0 : 1;
+> +
+> +	if (!attr->query.prog_cnt || !prog_ids || !prog_cnt)
+> +		goto end;
 
-On 11/5/21 2:18 PM, Thara Gopinath wrote:
->
->
-> On 11/5/21 1:33 PM, Steev Klimaszewski wrote:
->> Hi,
->>
->> On 11/5/21 11:26 AM, Lukasz Luba wrote:
->>> Hi Steev,
->>>
->>> On 11/5/21 3:39 PM, Steev Klimaszewski wrote:
->>>> Hi Lukasz,
->>>>
->>> [snip]
-> Hi Steve,
->
-> Does your system have enough load to hit the boost frequencies ? I 
-> don't think this patch should affect hitting boost frequencies as 
-> there is no error being returned from topology_update_thermal_pressure.
->
-> The warning you are getting is because you have boost frequency 
-> enabled and IIUC lmh enabled and thermal pressure framework bails out 
-> due to boost_frequency being greater than what is available in per_cpu 
-> freq_factor. This is because we do not recalculate freq_factor every 
-> time boost is enabled / disabled. IIRC there were some discussions 
-> around rebuilding scheduler domains and capacity with user space 
-> changes to max frequency but it has never proceeded much. Till that 
-> point, I think the right way, is to check whether the new capcity 
-> exceeds the max_capacity of the cpu and if yes use max_capacity in 
-> lieu of new_capacity to calculate thermal pressure.
->
-Hi Thara,
+This sanity check (except prog_cnt) can be moved before RCU read lock?
 
-I should definitely be able to push it to 2.96GHz, however I'm simply 
-not getting it at all with these patches applied.
+> +
+> +	id = prog->aux->id;
+> +	if (id == 0)
+> +		prog_cnt = 0;
 
-So, I'm currently compiling multiple applications - alacritty 
-(https://github.com/alacritty/alacritty), and zellij 
-(https://github.com/zellij-org/zellij), as well as running pixz on a 
-5.1GB file to compress it, and throwing in cpuburn-a53 
-(https://github.com/ssvb/cpuburn-arm) and I'm simply not getting 2.96GHz 
-at all.  Ever.  I don't normally try to push it that high, but I wanted 
-to see if we could ever hit it (the system was also never going above 86C)
+The id seems generic, so why not handle it in bpf_prog_query() for all progs?
 
-analyzing CPU 4:
-   driver: qcom-cpufreq-hw
-   CPUs which run at the same hardware frequency: 4 5 6 7
-   CPUs which need to have their frequency coordinated by software: 4 5 6 7
-   maximum transition latency: 4294.55 ms.
-   hardware limits: 826 MHz - 2.96 GHz
-   available frequency steps: 826 MHz, 902 MHz, 979 MHz, 1.06 GHz, 1.21 
-GHz, 1.29 GHz, 1.36 GHz, 1.46 GHz, 1.54 GHz, 1.61 GHz, 1.69 GHz, 1.77 
-GHz, 1.84 GHz, 1.92 GHz, 2.00 GHz, 2.09 GHz, 2.17 GHz, 2.25 GHz, 2.32 
-GHz, 2.40 GHz, 2.48 GHz, 2.55 GHz, 2.65 GHz, 2.75 GHz, 2.84 GHz
-   available cpufreq governors: ondemand, conservative, powersave, 
-userspace, performance, schedutil
-   current policy: frequency should be within 826 MHz and 2.84 GHz.
-                   The governor "schedutil" may decide which speed to use
-                   within this range.
-   current CPU frequency is 2.84 GHz.
-   cpufreq stats: 826 MHz:54.84%, 902 MHz:0.02%, 979 MHz:0.02%, 1.06 
-GHz:0.02%, 1.21 GHz:0.08%, 1.29 GHz:0.07%, 1.36 GHz:0.09%, 1.46 
-GHz:0.04%, 1.54 GHz:0.02%, 1.61 GHz:0.02%, 1.69 GHz:0.02%, 1.77 
-GHz:0.13%, 1.84 GHz:0.04%, 1.92 GHz:0.04%, 2.00 GHz:0.02%, 2.09 
-GHz:0.03%, 2.17 GHz:0.02%, 2.25 GHz:0.02%, 2.32 GHz:0.01%, 2.40 
-GHz:0.02%, 2.48 GHz:0.02%, 2.55 GHz:0.02%, 2.65 GHz:0.02%, 2.75 
-GHz:0.02%, 2.84 GHz:44.38%, 2.96 GHz:0.00%  (8066)
-analyzing CPU 5:
-   driver: qcom-cpufreq-hw
-   CPUs which run at the same hardware frequency: 4 5 6 7
-   CPUs which need to have their frequency coordinated by software: 4 5 6 7
-   maximum transition latency: 4294.55 ms.
-   hardware limits: 826 MHz - 2.96 GHz
-   available frequency steps: 826 MHz, 902 MHz, 979 MHz, 1.06 GHz, 1.21 
-GHz, 1.29 GHz, 1.36 GHz, 1.46 GHz, 1.54 GHz, 1.61 GHz, 1.69 GHz, 1.77 
-GHz, 1.84 GHz, 1.92 GHz, 2.00 GHz, 2.09 GHz, 2.17 GHz, 2.25 GHz, 2.32 
-GHz, 2.40 GHz, 2.48 GHz, 2.55 GHz, 2.65 GHz, 2.75 GHz, 2.84 GHz
-   available cpufreq governors: ondemand, conservative, powersave, 
-userspace, performance, schedutil
-   current policy: frequency should be within 826 MHz and 2.84 GHz.
-                   The governor "schedutil" may decide which speed to use
-                   within this range.
-   current CPU frequency is 2.84 GHz.
-   cpufreq stats: 826 MHz:54.84%, 902 MHz:0.02%, 979 MHz:0.02%, 1.06 
-GHz:0.02%, 1.21 GHz:0.08%, 1.29 GHz:0.07%, 1.36 GHz:0.09%, 1.46 
-GHz:0.04%, 1.54 GHz:0.02%, 1.61 GHz:0.02%, 1.69 GHz:0.02%, 1.77 
-GHz:0.13%, 1.84 GHz:0.04%, 1.92 GHz:0.04%, 2.00 GHz:0.02%, 2.09 
-GHz:0.03%, 2.17 GHz:0.02%, 2.25 GHz:0.02%, 2.32 GHz:0.01%, 2.40 
-GHz:0.02%, 2.48 GHz:0.02%, 2.55 GHz:0.02%, 2.65 GHz:0.02%, 2.75 
-GHz:0.02%, 2.84 GHz:44.38%, 2.96 GHz:0.00%  (8066)
-analyzing CPU 6:
-   driver: qcom-cpufreq-hw
-   CPUs which run at the same hardware frequency: 4 5 6 7
-   CPUs which need to have their frequency coordinated by software: 4 5 6 7
-   maximum transition latency: 4294.55 ms.
-   hardware limits: 826 MHz - 2.96 GHz
-   available frequency steps: 826 MHz, 902 MHz, 979 MHz, 1.06 GHz, 1.21 
-GHz, 1.29 GHz, 1.36 GHz, 1.46 GHz, 1.54 GHz, 1.61 GHz, 1.69 GHz, 1.77 
-GHz, 1.84 GHz, 1.92 GHz, 2.00 GHz, 2.09 GHz, 2.17 GHz, 2.25 GHz, 2.32 
-GHz, 2.40 GHz, 2.48 GHz, 2.55 GHz, 2.65 GHz, 2.75 GHz, 2.84 GHz
-   available cpufreq governors: ondemand, conservative, powersave, 
-userspace, performance, schedutil
-   current policy: frequency should be within 826 MHz and 2.84 GHz.
-                   The governor "schedutil" may decide which speed to use
-                   within this range.
-   current CPU frequency is 2.84 GHz.
-   cpufreq stats: 826 MHz:54.84%, 902 MHz:0.02%, 979 MHz:0.02%, 1.06 
-GHz:0.02%, 1.21 GHz:0.08%, 1.29 GHz:0.07%, 1.36 GHz:0.09%, 1.46 
-GHz:0.04%, 1.54 GHz:0.02%, 1.61 GHz:0.02%, 1.69 GHz:0.02%, 1.77 
-GHz:0.13%, 1.84 GHz:0.04%, 1.92 GHz:0.04%, 2.00 GHz:0.02%, 2.09 
-GHz:0.03%, 2.17 GHz:0.02%, 2.25 GHz:0.02%, 2.32 GHz:0.01%, 2.40 
-GHz:0.02%, 2.48 GHz:0.02%, 2.55 GHz:0.02%, 2.65 GHz:0.02%, 2.75 
-GHz:0.02%, 2.84 GHz:44.38%, 2.96 GHz:0.00%  (8066)
-analyzing CPU 7:
-   driver: qcom-cpufreq-hw
-   CPUs which run at the same hardware frequency: 4 5 6 7
-   CPUs which need to have their frequency coordinated by software: 4 5 6 7
-   maximum transition latency: 4294.55 ms.
-   hardware limits: 826 MHz - 2.96 GHz
-   available frequency steps: 826 MHz, 902 MHz, 979 MHz, 1.06 GHz, 1.21 
-GHz, 1.29 GHz, 1.36 GHz, 1.46 GHz, 1.54 GHz, 1.61 GHz, 1.69 GHz, 1.77 
-GHz, 1.84 GHz, 1.92 GHz, 2.00 GHz, 2.09 GHz, 2.17 GHz, 2.25 GHz, 2.32 
-GHz, 2.40 GHz, 2.48 GHz, 2.55 GHz, 2.65 GHz, 2.75 GHz, 2.84 GHz
-   available cpufreq governors: ondemand, conservative, powersave, 
-userspace, performance, schedutil
-   current policy: frequency should be within 826 MHz and 2.84 GHz.
-                   The governor "schedutil" may decide which speed to use
-                   within this range.
-   current CPU frequency is 2.84 GHz.
-   cpufreq stats: 826 MHz:54.84%, 902 MHz:0.02%, 979 MHz:0.02%, 1.06 
-GHz:0.02%, 1.21 GHz:0.08%, 1.29 GHz:0.07%, 1.36 GHz:0.09%, 1.46 
-GHz:0.04%, 1.54 GHz:0.02%, 1.61 GHz:0.02%, 1.69 GHz:0.02%, 1.77 
-GHz:0.13%, 1.84 GHz:0.04%, 1.92 GHz:0.04%, 2.00 GHz:0.02%, 2.09 
-GHz:0.03%, 2.17 GHz:0.02%, 2.25 GHz:0.02%, 2.32 GHz:0.01%, 2.40 
-GHz:0.02%, 2.48 GHz:0.02%, 2.55 GHz:0.02%, 2.65 GHz:0.02%, 2.75 
-GHz:0.02%, 2.84 GHz:44.38%, 2.96 GHz:0.00%  (8066)
+> +
+> +end:
+> +	rcu_read_unlock();
+> +
+> +	if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)) ||
+
+'flags' is always 0 here, right? So this is not needed as uattr has been already
+cleared in __sys_bpf().
 
 
-
-After removing this patchset, and rebooting and just compiling zellij:
-
-analyzing CPU 4:
-   driver: qcom-cpufreq-hw
-   CPUs which run at the same hardware frequency: 4 5 6 7
-   CPUs which need to have their frequency coordinated by software: 4 5 6 7
-   maximum transition latency: 4294.55 ms.
-   hardware limits: 826 MHz - 2.96 GHz
-   available frequency steps: 826 MHz, 902 MHz, 979 MHz, 1.06 GHz, 1.21 
-GHz, 1.29 GHz, 1.36 GHz, 1.46 GHz, 1.54 GHz, 1.61 GHz, 1.69 GHz, 1.77 
-GHz, 1.84 GHz, 1.92 GHz, 2.00 GHz, 2.09 GHz, 2.17 GHz, 2.25 GHz, 2.32 
-GHz, 2.40 GHz, 2.48 GHz, 2.55 GHz, 2.65 GHz, 2.75 GHz, 2.84 GHz
-   available cpufreq governors: ondemand, conservative, powersave, 
-userspace, performance, schedutil
-   current policy: frequency should be within 826 MHz and 2.84 GHz.
-                   The governor "schedutil" may decide which speed to use
-                   within this range.
-   current CPU frequency is 2.84 GHz.
-   cpufreq stats: 826 MHz:16.01%, 902 MHz:0.08%, 979 MHz:0.05%, 1.06 
-GHz:0.06%, 1.21 GHz:0.37%, 1.29 GHz:0.17%, 1.36 GHz:0.15%, 1.46 
-GHz:0.20%, 1.54 GHz:0.18%, 1.61 GHz:0.21%, 1.69 GHz:0.17%, 1.77 
-GHz:0.22%, 1.84 GHz:0.32%, 1.92 GHz:0.37%, 2.00 GHz:0.22%, 2.09 
-GHz:0.20%, 2.17 GHz:0.20%, 2.25 GHz:0.19%, 2.32 GHz:0.19%, 2.40 
-GHz:0.21%, 2.48 GHz:0.18%, 2.55 GHz:0.18%, 2.65 GHz:0.21%, 2.75 
-GHz:0.16%, 2.84 GHz:79.49%, 2.96 GHz:0.03%  (5315)
-analyzing CPU 5:
-   driver: qcom-cpufreq-hw
-   CPUs which run at the same hardware frequency: 4 5 6 7
-   CPUs which need to have their frequency coordinated by software: 4 5 6 7
-   maximum transition latency: 4294.55 ms.
-   hardware limits: 826 MHz - 2.96 GHz
-   available frequency steps: 826 MHz, 902 MHz, 979 MHz, 1.06 GHz, 1.21 
-GHz, 1.29 GHz, 1.36 GHz, 1.46 GHz, 1.54 GHz, 1.61 GHz, 1.69 GHz, 1.77 
-GHz, 1.84 GHz, 1.92 GHz, 2.00 GHz, 2.09 GHz, 2.17 GHz, 2.25 GHz, 2.32 
-GHz, 2.40 GHz, 2.48 GHz, 2.55 GHz, 2.65 GHz, 2.75 GHz, 2.84 GHz
-   available cpufreq governors: ondemand, conservative, powersave, 
-userspace, performance, schedutil
-   current policy: frequency should be within 826 MHz and 2.84 GHz.
-                   The governor "schedutil" may decide which speed to use
-                   within this range.
-   current CPU frequency is 2.84 GHz.
-   cpufreq stats: 826 MHz:16.01%, 902 MHz:0.08%, 979 MHz:0.05%, 1.06 
-GHz:0.06%, 1.21 GHz:0.37%, 1.29 GHz:0.17%, 1.36 GHz:0.15%, 1.46 
-GHz:0.20%, 1.54 GHz:0.18%, 1.61 GHz:0.21%, 1.69 GHz:0.17%, 1.77 
-GHz:0.22%, 1.84 GHz:0.32%, 1.92 GHz:0.37%, 2.00 GHz:0.22%, 2.09 
-GHz:0.20%, 2.17 GHz:0.20%, 2.25 GHz:0.19%, 2.32 GHz:0.19%, 2.40 
-GHz:0.21%, 2.48 GHz:0.18%, 2.55 GHz:0.18%, 2.65 GHz:0.21%, 2.75 
-GHz:0.16%, 2.84 GHz:79.49%, 2.96 GHz:0.03%  (5315)
-analyzing CPU 6:
-   driver: qcom-cpufreq-hw
-   CPUs which run at the same hardware frequency: 4 5 6 7
-   CPUs which need to have their frequency coordinated by software: 4 5 6 7
-   maximum transition latency: 4294.55 ms.
-   hardware limits: 826 MHz - 2.96 GHz
-   available frequency steps: 826 MHz, 902 MHz, 979 MHz, 1.06 GHz, 1.21 
-GHz, 1.29 GHz, 1.36 GHz, 1.46 GHz, 1.54 GHz, 1.61 GHz, 1.69 GHz, 1.77 
-GHz, 1.84 GHz, 1.92 GHz, 2.00 GHz, 2.09 GHz, 2.17 GHz, 2.25 GHz, 2.32 
-GHz, 2.40 GHz, 2.48 GHz, 2.55 GHz, 2.65 GHz, 2.75 GHz, 2.84 GHz
-   available cpufreq governors: ondemand, conservative, powersave, 
-userspace, performance, schedutil
-   current policy: frequency should be within 826 MHz and 2.84 GHz.
-                   The governor "schedutil" may decide which speed to use
-                   within this range.
-   current CPU frequency is 2.84 GHz.
-   cpufreq stats: 826 MHz:16.01%, 902 MHz:0.08%, 979 MHz:0.05%, 1.06 
-GHz:0.06%, 1.21 GHz:0.37%, 1.29 GHz:0.17%, 1.36 GHz:0.15%, 1.46 
-GHz:0.20%, 1.54 GHz:0.18%, 1.61 GHz:0.21%, 1.69 GHz:0.17%, 1.77 
-GHz:0.22%, 1.84 GHz:0.32%, 1.92 GHz:0.37%, 2.00 GHz:0.22%, 2.09 
-GHz:0.20%, 2.17 GHz:0.20%, 2.25 GHz:0.19%, 2.32 GHz:0.19%, 2.40 
-GHz:0.21%, 2.48 GHz:0.18%, 2.55 GHz:0.18%, 2.65 GHz:0.21%, 2.75 
-GHz:0.16%, 2.84 GHz:79.49%, 2.96 GHz:0.03%  (5315)
-analyzing CPU 7:
-   driver: qcom-cpufreq-hw
-   CPUs which run at the same hardware frequency: 4 5 6 7
-   CPUs which need to have their frequency coordinated by software: 4 5 6 7
-   maximum transition latency: 4294.55 ms.
-   hardware limits: 826 MHz - 2.96 GHz
-   available frequency steps: 826 MHz, 902 MHz, 979 MHz, 1.06 GHz, 1.21 
-GHz, 1.29 GHz, 1.36 GHz, 1.46 GHz, 1.54 GHz, 1.61 GHz, 1.69 GHz, 1.77 
-GHz, 1.84 GHz, 1.92 GHz, 2.00 GHz, 2.09 GHz, 2.17 GHz, 2.25 GHz, 2.32 
-GHz, 2.40 GHz, 2.48 GHz, 2.55 GHz, 2.65 GHz, 2.75 GHz, 2.84 GHz
-   available cpufreq governors: ondemand, conservative, powersave, 
-userspace, performance, schedutil
-   current policy: frequency should be within 826 MHz and 2.84 GHz.
-                   The governor "schedutil" may decide which speed to use
-                   within this range.
-   current CPU frequency is 2.84 GHz.
-   cpufreq stats: 826 MHz:16.01%, 902 MHz:0.08%, 979 MHz:0.05%, 1.06 
-GHz:0.06%, 1.21 GHz:0.37%, 1.29 GHz:0.17%, 1.36 GHz:0.15%, 1.46 
-GHz:0.20%, 1.54 GHz:0.18%, 1.61 GHz:0.21%, 1.69 GHz:0.17%, 1.77 
-GHz:0.22%, 1.84 GHz:0.32%, 1.92 GHz:0.37%, 2.00 GHz:0.22%, 2.09 
-GHz:0.20%, 2.17 GHz:0.20%, 2.25 GHz:0.19%, 2.32 GHz:0.19%, 2.40 
-GHz:0.21%, 2.48 GHz:0.18%, 2.55 GHz:0.18%, 2.65 GHz:0.21%, 2.75 
-GHz:0.16%, 2.84 GHz:79.49%, 2.96 GHz:0.03%  (5315)
-
-
->>
->> Thank you for the fast response!
->>
->> -- steev
->>
->
+Thanks.
