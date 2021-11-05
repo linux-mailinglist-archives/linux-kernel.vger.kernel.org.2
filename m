@@ -2,76 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B3E445D60
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 271EB445D62
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:38:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231543AbhKEBis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 21:38:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52662 "EHLO
+        id S231426AbhKEBlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 21:41:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbhKEBiq (ORCPT
+        with ESMTP id S229782AbhKEBlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 21:38:46 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD92C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 18:36:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=v8DJycKbUDuWHpo+yhZJgQbYGXaKWxErBb27iH0ci4g=; b=WndQzfJNkRgAS34M5fvbOp6U8C
-        s5P0cEXvUBtOygmGG99b0voR10xbo2iJGdZIDuuhs0dA2ei9WzbiFi3oFz/ADATvrIe3QhF8oHpEE
-        kUEKkd7bhqOGwHBKf8O7wqDXhaUDpaBeK96Lo9af23crHoB7LtRzpBdx5dPF5zvuYtxFw6+CAEyqt
-        dQXIXmyk2b37dOTEKbuC0fcy54xiN5SIpdDMq9t0PiuPRintNk365pKCU7CBymCDO7GtNsxf478Ww
-        4y+HSmcVqdzUj9su1aCea7hCIOARMdkfzShQyOvI0tOB5WNdt9WZvo7ZyFCEJJ4S2aebtuczD+qgn
-        GNT3Berg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mio9G-00AJZy-Bj; Fri, 05 Nov 2021 01:36:06 +0000
-Subject: Re: [PATCH v2] drivers/coresight: ultrasoc: Add System Memory Buffer
- driver
-To:     Qi Liu <liuqi115@huawei.com>, mathieu.poirier@linaro.org,
-        suzuki.poulose@arm.com, mike.leach@linaro.org
-Cc:     coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linuxarm@huawei.com
-References: <20211105012012.86635-1-liuqi115@huawei.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <af9dbbbf-64f0-f3c6-fa30-4e306e6156d2@infradead.org>
-Date:   Thu, 4 Nov 2021 18:36:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 4 Nov 2021 21:41:05 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8B3C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 18:38:26 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id g13so5520167qtk.12
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 18:38:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R7jmwbzRfe4ViZ3UmdAXqWcwYspkOIX/cD7v15It0jc=;
+        b=LwrxvUDNr1WcluyF87vqkxj5m5CkTMPDtEKwRDbOTZ/hHPht1Dxb0pl4oAry8W4aTQ
+         /6euwl7P6NHXVucfeOd6DE5VvZC2zGC472IyBVaP9opY/caivJfTqYV/1+XQtepJL49w
+         VVvewz2WtrC5vTSzxwxWJqdJLe/bMGAjWQNB1iX/Vy4p9+CaWF3BNLE/MR1d6J06boud
+         hugd1aVhYd18BR5CA/lFX6X0A5S0uiJKO2fAYdUxMr/jxxzYHS96E8oNVUe8w2sDM9B3
+         XKwKuEuJjhGWNoTN3D4/q+Ay6mngLlXjFf55hBmbPUTEluoav5SMIIGeJyx5bpZN77dL
+         OOwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R7jmwbzRfe4ViZ3UmdAXqWcwYspkOIX/cD7v15It0jc=;
+        b=0Vuf0J7mAxYgT28zURwTzPwaTP4lPtFHcInFRFDp6qxp5KmsRKgL9hot+f4Sc5pM+T
+         VcKNbxzZkYRCClj0I/2R8/AKwH9/bQ7AkhHsuMLOrZL81b75Q0BNGHowFAza4Vz/6giw
+         QCAclFHd549ugyxIbqaB2N1253U3IUiGD7t43fqY7fJ7e9RvsfDDl9KmOSxAA7NxcZee
+         DAo1LbbzY02xS0qlCn2h6DupZ+vua97tRpP+vVr5rm9dHeGO7TklHA/MXESVR0HCUPlN
+         qkX2soAarEslPjwO8VoiXzjHTrW/b0ZuMuwHtDvh/a6Sr/BOhZ3phq4PXPt3JZyAFxm7
+         ra0Q==
+X-Gm-Message-State: AOAM5305t8VBH+ggtwx3OqCm9JXTGtJ9Er9jSx/truHmM4VZvLEPCeUs
+        +gNYi/O1fJ0IAZxxW+dTqu8=
+X-Google-Smtp-Source: ABdhPJwnpCKghjSO7MCH5FicB6SiXeOQ9bRoOI3rbVOYzeCkQaQaUs3jh4YQZF2IPjKc52gkQeP6cQ==
+X-Received: by 2002:ac8:530f:: with SMTP id t15mr10911088qtn.72.1636076305691;
+        Thu, 04 Nov 2021 18:38:25 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id f1sm4613755qkj.84.2021.11.04.18.38.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 18:38:25 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: zhang.mingyu@zte.com.cn
+To:     jesper.nilsson@axis.com
+Cc:     lars.persson@axis.com, linux@armlinux.org.uk,
+        linux-arm-kernel@axis.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Zhang Mingyu <zhang.mingyu@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] arm:Remove unneeded semicolon
+Date:   Fri,  5 Nov 2021 01:38:19 +0000
+Message-Id: <20211105013819.75014-1-zhang.mingyu@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20211105012012.86635-1-liuqi115@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/4/21 6:20 PM, Qi Liu wrote:
-> diff --git a/drivers/hwtracing/coresight/ultrasoc/Kconfig b/drivers/hwtracing/coresight/ultrasoc/Kconfig
-> new file mode 100644
-> index 000000000000..c18c25bf9df3
-> --- /dev/null
-> +++ b/drivers/hwtracing/coresight/ultrasoc/Kconfig
-> @@ -0,0 +1,12 @@
-> +# SPDX-License-Identifier: MIT
-> +#
-> +# ultrasoc configuration
-> +#
-> +config ULTRASOC_SMB
-> +	tristate "Ultrasoc system memory buffer drivers"
-> +        depends on ARM64 && CORESIGHT
+From: Zhang Mingyu <zhang.mingyu@zte.com.cn>
 
-The "depends" line should be indented with a tab instead of spaces...
+Eliminate the following coccinelle check warning:
+arch/arm/mach-artpec/board-artpec6.c:42:2-3
 
-> +	help
-> +	  This enables support for the Ultrasoc system memory buffer
-> +	  driver that is responsible for receiving the trace data from
-> +	  Coresight ETM devices and storing them to a system buffer
-> +	  respectively.
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Zhang Mingyu <zhang.mingyu@zte.com.cn>
+---
+ arch/arm/mach-artpec/board-artpec6.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
+diff --git a/arch/arm/mach-artpec/board-artpec6.c b/arch/arm/mach-artpec/board-artpec6.c
+index d3cf3e8603e8..c27e7bbcd7bc 100644
+--- a/arch/arm/mach-artpec/board-artpec6.c
++++ b/arch/arm/mach-artpec/board-artpec6.c
+@@ -39,7 +39,7 @@ static void __init artpec6_init_machine(void)
+ 		 */
+ 		regmap_write(regmap, ARTPEC6_DMACFG_REGNUM,
+ 			     ARTPEC6_DMACFG_UARTS_BURST);
+-	};
++	}
+ }
+ 
+ static void artpec6_l2c310_write_sec(unsigned long val, unsigned reg)
 -- 
-~Randy
+2.25.1
+
