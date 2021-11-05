@@ -2,155 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9351446242
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BDC6446244
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbhKEKiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 06:38:13 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:36443 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233152AbhKEKiC (ORCPT
+        id S233151AbhKEKjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 06:39:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhKEKjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 06:38:02 -0400
-Received: by mail-io1-f70.google.com with SMTP id e5-20020a5ede45000000b005e21017c253so361055ioq.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 03:35:23 -0700 (PDT)
+        Fri, 5 Nov 2021 06:39:02 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF563C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 03:36:22 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id j5so14228428lja.9
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 03:36:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=hOtYGAstQBZM1HTeKAOZH5NrcEzxemdgOcTinWbxn2M=;
+        b=pc9fJctElMG5cqMh61CF50Deg2JNAQh7FPXXFFN8Nrf+TrFFJL2YVL8232VPVRTaLL
+         85ElTCMXvvPAIM8IB/A2nD0i98TO219O7arR6jf8eMMd4KD3ZPxa/mP1ChYW83yNcxNp
+         18ywIYyxua9ghOFsby7+90mHI62gnykfQFrpSYcjeT4RVatPs9K5FwUe22lBCIuc527r
+         uglE/XEMtkL/FaPKVr/RmooMzvAH9EThHW+eK4qRf5rAGF63jTUGxAwk0iNlrTfu34Zp
+         8UBoapdJZgyndP31a9JDDDRqoyzYJjWqZEA1t8MTUFqJsYopy7QaVTU3eQPq35nAjsAU
+         U+4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=cNB+tE4AKA8z8YAxBjN+ixj7uS5g86EAeIE4JxHKPoo=;
-        b=f8puTx0y2PdWiYWhom8Gcn7NKSSNd+WA0sC1eP8Xocdwn1NdfaE/U5b/ckKAkPWE57
-         rGFBKQrrpRI9A08cuIbM85rH6jgu1JozAxzfAuozVCE0phIYrUprWL7B2vFUiLDhCzHM
-         rAmhstjN64UYpMh0XPS+PIn8lqnPXqJGRF78nlAE2rjtvfymTKjX5Qsqf7iBOm9GHXDs
-         NjHeDKyTm3RJZ397mIR8AwVQA234NE7UVULP8MxqTraPsBNmhnfop9OM5WRUE29fjIsw
-         zIsI9HKnWj2oWnhaiz4FUzrazjSaXgSGBGtDDH9zMMto1cvRGcVpITEVDNGdnAO2eOqm
-         Hg5g==
-X-Gm-Message-State: AOAM530qXOkrUmHtz5+3RWAvlW6ctkskFxYwM+5eH3FHonhCMNVSNdGs
-        1Jd+Y5fcivsoiIfjCOrQ1JVESCnqZqfqMo/hjV9QE7YFBWpD
-X-Google-Smtp-Source: ABdhPJwZyhCRYGxypk9hITyt4FJuVw8c6uF2lWTTkViU6A1fb9h1Z8EvFd7jxNjiaE0qXkiFQwmStZY/sok1Z366jRHSVsrE291r
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=hOtYGAstQBZM1HTeKAOZH5NrcEzxemdgOcTinWbxn2M=;
+        b=1hA9QO4cbl9GNZEpDZbjBxHaluJouNOP4eYVnCHehu105NjUghZXvXa1vHL5nbw6bv
+         J5Ztc2F+Oz5ViveczBq1IyC9+b6el9DoAEW8+Lo9UpOdWSglVldfX40ks5Onlivagj0W
+         UoTfuy5xVH++aCoYt0s+xZt4ViR87iB2jJ6CDgaiQ2zPkSVk5JxgFDZR77+7+8CfD6w/
+         CckeD26RWoeAj5C72MQKz3nkByo1uEnLZIC0WIFhK2IV7DgI1FKtuEbPRATj45rPe5Lp
+         n04H43On8OC/XB5eA4GG8raV61ZTSuXcD9Vocpoi7xB54mlSDzySX/uFMAhd5vlOtuB9
+         iNYQ==
+X-Gm-Message-State: AOAM533d8wVwszJG+dPLVcnFAxU0t8KysZ5sAyffjqZ+kzrSMINCe7PY
+        b1iu17E0dBkKKBe6A5ghkum/35uMXC0=
+X-Google-Smtp-Source: ABdhPJwhepuWJLnqDEh0NejsKAUrFCgXVoX9OJ+XjsEQnwUsZw42uUCZ4AeDrBqcOTOR6kYf6RApSw==
+X-Received: by 2002:a2e:9a47:: with SMTP id k7mr22070931ljj.100.1636108581373;
+        Fri, 05 Nov 2021 03:36:21 -0700 (PDT)
+Received: from [192.168.1.11] ([217.117.245.207])
+        by smtp.gmail.com with ESMTPSA id q13sm42923ljp.115.2021.11.05.03.36.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Nov 2021 03:36:20 -0700 (PDT)
+Message-ID: <ecf6ba8e-8273-0d77-5ceb-3ad44179d3a3@gmail.com>
+Date:   Fri, 5 Nov 2021 13:36:20 +0300
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:933:: with SMTP id o19mr6913868ilt.92.1636108522273;
- Fri, 05 Nov 2021 03:35:22 -0700 (PDT)
-Date:   Fri, 05 Nov 2021 03:35:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000048c15c05d0083397@google.com>
-Subject: [syzbot] general protection fault in cgroup_file_write
-From:   syzbot <syzbot+50f5cf33a284ce738b62@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, christian@brauner.io,
-        daniel@iogearbox.net, hannes@cmpxchg.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        lizefan.x@bytedance.com, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        tj@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v2] staging: r8188eu: os_dep: remove the goto statement
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Saurav Girepunje <saurav.girepunje@gmail.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        straube.linux@gmail.com, martin@kaiser.cx,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        saurav.girepunje@hotmail.com
+References: <YYKvWeyqd71pYSqM@Sauravs-MacBook-Air.local>
+ <YYT/LibxFzssNUJN@kroah.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <YYT/LibxFzssNUJN@kroah.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 11/5/21 12:53, Greg KH wrote:
+> Right after this, ret8 is set, but never checked, which looks like a bug
+> to me.  Can you work on fixing that after I take this patch?
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-syzbot found the following issue on:
-
-HEAD commit:    d4439a1189f9 Merge tag 'hsi-for-5.16' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1656d30ab00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ff3ea6b218615239
-dashboard link: https://syzkaller.appspot.com/bug?extid=50f5cf33a284ce738b62
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+50f5cf33a284ce738b62@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000008: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000040-0x0000000000000047]
-CPU: 1 PID: 11182 Comm: syz-executor.1 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:cgroup_file_write+0xbe/0x790 kernel/cgroup/cgroup.c:3831
-Code: 81 c3 88 08 00 00 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 c0 5c 52 00 48 8b 1b 48 83 c3 40 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 a3 5c 52 00 48 8b 03 48 89 44 24
-RSP: 0018:ffffc9000a79f2a0 EFLAGS: 00010202
-RAX: 0000000000000008 RBX: 0000000000000040 RCX: ffff888074320000
-RDX: 0000000000000000 RSI: ffff88801d008980 RDI: ffff88806b48ac00
-RBP: ffffc9000a79f390 R08: ffffffff8207dab3 R09: fffffbfff1fedffb
-R10: fffffbfff1fedffb R11: 0000000000000000 R12: 1ffff920014f3e5c
-R13: ffff88806b48ac00 R14: ffff88806b48ac00 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fe6fd24a1b8 CR3: 000000002c740000 CR4: 00000000003526e0
-Call Trace:
- <TASK>
- kernfs_fop_write_iter+0x3b6/0x510 fs/kernfs/file.c:296
- __kernel_write+0x5d1/0xaf0 fs/read_write.c:535
- do_acct_process+0x112a/0x17b0 kernel/acct.c:518
- acct_pin_kill+0x27/0x130 kernel/acct.c:173
- pin_kill+0x2a6/0x940 fs/fs_pin.c:44
- mnt_pin_kill+0xc1/0x170 fs/fs_pin.c:81
- cleanup_mnt+0x4bc/0x510 fs/namespace.c:1130
- task_work_run+0x146/0x1c0 kernel/task_work.c:164
- exit_task_work include/linux/task_work.h:32 [inline]
- do_exit+0x705/0x24f0 kernel/exit.c:832
- do_group_exit+0x168/0x2d0 kernel/exit.c:929
- get_signal+0x16b0/0x2090 kernel/signal.c:2820
- arch_do_signal_or_restart+0x9c/0x730 arch/x86/kernel/signal.c:868
- handle_signal_work kernel/entry/common.c:148 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x191/0x220 kernel/entry/common.c:207
- __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
- syscall_exit_to_user_mode+0x2e/0x70 kernel/entry/common.c:300
- do_syscall_64+0x53/0xd0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f0054d5fae9
-Code: Unable to access opcode bytes at RIP 0x7f0054d5fabf.
-RSP: 002b:00007f00522d5218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 00007f0054e72f68 RCX: 00007f0054d5fae9
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f0054e72f68
-RBP: 00007f0054e72f60 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f0054e72f6c
-R13: 00007ffd99a378af R14: 00007f00522d5300 R15: 0000000000022000
- </TASK>
-Modules linked in:
----[ end trace 54fd0e4a1cf7068c ]---
-RIP: 0010:cgroup_file_write+0xbe/0x790 kernel/cgroup/cgroup.c:3831
-Code: 81 c3 88 08 00 00 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 c0 5c 52 00 48 8b 1b 48 83 c3 40 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 a3 5c 52 00 48 8b 03 48 89 44 24
-RSP: 0018:ffffc9000a79f2a0 EFLAGS: 00010202
-RAX: 0000000000000008 RBX: 0000000000000040 RCX: ffff888074320000
-RDX: 0000000000000000 RSI: ffff88801d008980 RDI: ffff88806b48ac00
-RBP: ffffc9000a79f390 R08: ffffffff8207dab3 R09: fffffbfff1fedffb
-R10: fffffbfff1fedffb R11: 0000000000000000 R12: 1ffff920014f3e5c
-R13: ffff88806b48ac00 R14: ffff88806b48ac00 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fe6fd24a1b8 CR3: 000000000c88e000 CR4: 00000000003526e0
-----------------
-Code disassembly (best guess):
-   0:	81 c3 88 08 00 00    	add    $0x888,%ebx
-   6:	48 89 d8             	mov    %rbx,%rax
-   9:	48 c1 e8 03          	shr    $0x3,%rax
-   d:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1)
-  12:	74 08                	je     0x1c
-  14:	48 89 df             	mov    %rbx,%rdi
-  17:	e8 c0 5c 52 00       	callq  0x525cdc
-  1c:	48 8b 1b             	mov    (%rbx),%rbx
-  1f:	48 83 c3 40          	add    $0x40,%rbx
-  23:	48 89 d8             	mov    %rbx,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
-  2f:	74 08                	je     0x39
-  31:	48 89 df             	mov    %rbx,%rdi
-  34:	e8 a3 5c 52 00       	callq  0x525cdc
-  39:	48 8b 03             	mov    (%rbx),%rax
-  3c:	48                   	rex.W
-  3d:	89                   	.byte 0x89
-  3e:	44                   	rex.R
-  3f:	24                   	.byte 0x24
+ret8 is returned from this function, but as I said [1] it can be just 
+removed. It will be always set to _SUCCESS.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+[1] 
+https://lore.kernel.org/linux-staging/f26b4aec-c0a1-8c93-b34e-8b1a36ac81b3@gmail.com/
+
+
+With regards,
+Pavel Skripkin
