@@ -2,115 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C959D445EF4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 05:01:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF3A445EFE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 05:03:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhKEEDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 00:03:47 -0400
-Received: from conuserg-08.nifty.com ([210.131.2.75]:49974 "EHLO
-        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbhKEEDh (ORCPT
+        id S229825AbhKEEGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 00:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhKEEGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 00:03:37 -0400
-Received: from grover.. (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 1A5403LU022540;
-        Fri, 5 Nov 2021 13:00:07 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 1A5403LU022540
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1636084807;
-        bh=jddleuDKBxe/P3YZOxewL3DfC/cVOoAyPm2jkKAyeJ0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=znEQ3uNNcjfWQy7WHIJDrMJrbRaezPQtjncDyWGVBSV1gOL7OWj3YxD5y+DtBhg4a
-         HHOoRWdaLUdUCFHAyg7g+2RbltS5LUJFFzJE9gpTRoRsT9yKnVw0cRs9j+u7/Qr4Ph
-         ezZ5Kn7Tnw92ceksGCUAQYAGy+z08aWAPNCN54VdAt7OZkK/2/4J3pTVLYhmNTEQAE
-         Zo5WgNbByaEHlCugjDlXzKDunfN85wiXF2tlTDP5EV3+5cKJWbR8y7Z6QH1xrm30LH
-         6m3SRMWr2Jbb6OMnONhcLH/nLITLjZ1LWzx1M071vpv2dpAtO/nd49IOBXxFTyDqtM
-         MdfEaQ2d0iIdA==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>, keyrings@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] certs: use if_changed to re-generate the key when the key type is changed
-Date:   Fri,  5 Nov 2021 12:59:58 +0900
-Message-Id: <20211105035959.93748-6-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211105035959.93748-1-masahiroy@kernel.org>
-References: <20211105035959.93748-1-masahiroy@kernel.org>
+        Fri, 5 Nov 2021 00:06:07 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5035C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 21:03:28 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id h17so3860110qtx.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 21:03:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fc58r/t2jY2c5ky17n3aPeo946grK/8InB/YHBMFXg0=;
+        b=hUefx7guT4tDLT5XGyklHCcGIW1VPdCcQRBzE6azcgWKgPGaTSkv59UR+HbKaPenbu
+         1RyaykiT3gGeHfV3KsAlZ9NxHLs0aBizgSnItZFCaj1LtoBMjwUKWNAur0B5z0BSOlUa
+         F2FW0XwYGf8OHQ3G2cunukrvXQuvqj41QWCDk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fc58r/t2jY2c5ky17n3aPeo946grK/8InB/YHBMFXg0=;
+        b=f5jS4EFYo4XKbbenTTk3DRUyHOPYCCvddfQw70av01HuFLWx2WLVB5nxJmiwnqm/fx
+         VQyR2QxPp1aGJ4By+Zf2V/qLMiwn3D5fM/f/DGbJiAWjtANdZbTwIYRrd85ElshqNua+
+         /F6XMgXo+RUpLCOgJlNJNIYBdC4Lu3ZUjvlOXL7ds+s8n/kG9rvTeW8MzLvdfrJk1gIf
+         8ilbEpEBPv3YAwqGeiuvKQ21mPeNjqNZ0Qy+Lvt5mKw4ndSjV+rHugvXdwEHolsvcJeS
+         noi/TleYub6EZWxDClSK9mTv/MRzBl7SYPTVKbY3JeO66VLr5jQVe3sOdneQ4JJpM0tn
+         OhsA==
+X-Gm-Message-State: AOAM530XgYFXIDLkKVx4o4y29GY4fN5HcJZQ/2S8t4oXFj1gvq3hCFzA
+        q3EqqqbutrmKnYwtURYCIuN6IZcLWmNuZp8QWno=
+X-Google-Smtp-Source: ABdhPJzfPavatG8fz8XDOwBDZsLLephzECNg76r7i3JlbR1TwNWIDvIl3n5RB+4ILqhQIz7sZl7ZobnqnfcA0TeT/hM=
+X-Received: by 2002:ac8:5812:: with SMTP id g18mr668756qtg.392.1636085008050;
+ Thu, 04 Nov 2021 21:03:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211105005955.107419-1-osk@google.com> <CACPK8XcXR=V5-Q+sC4MniNJZJgvbiysFD-5yu6v30_2BwDRTSA@mail.gmail.com>
+ <CABoTLcS=s0XuM9jiisYW3=1gXtiwP8WeopqTOeBwnTX1XCky9Q@mail.gmail.com>
+ <CACPK8XebNsSr3wiMdMxDwQuMGX3p0g2Kid91dekUc6TGcHqfYQ@mail.gmail.com> <CABoTLcTb5uGABwe9FG4haj1888NA4mdZqJFTeQcSotBnq1aZVg@mail.gmail.com>
+In-Reply-To: <CABoTLcTb5uGABwe9FG4haj1888NA4mdZqJFTeQcSotBnq1aZVg@mail.gmail.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Fri, 5 Nov 2021 04:03:15 +0000
+Message-ID: <CACPK8Xc0cmgDqOwGDWu4H+x9ySEvwwPVr0M+vJZ=hTOCj3VxiA@mail.gmail.com>
+Subject: Re: [PATCH v2] ARM: dts: aspeed: tyan-s7106: Update nct7802 config
+To:     Oskar Senft <osk@google.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the key type of the existing signing key does not match to
-CONFIG_MODULE_SIG_KEY_TYPE_*, the Makefile removes it so that it is
-re-generated.
+On Fri, 5 Nov 2021 at 03:29, Oskar Senft <osk@google.com> wrote:
+>
+> Hi Joel
+>
+> > I test the kernels independently of yocto; I recommend doing that with
+> > a cross compiler when submitting patches upstream. My flow looks like
+> > this:
+> > [...]
+> > A few notes:
+> >  - I use the cross compiler from my distro. Debian unstable has GCC
+> > 11.2.0, which is the same as openbmc. You can use the compiler from
+> > your openbmc build tree if you aren't able to install a modern
+> > compiler
+> I couldn't figure out how to use the compiler from the OpenBMC tree.
+> The biggest issue is that it has "openbmc" in its name and Linux build
+> was getting confused by it. I gave up on that approach and found how
+> to install the right cross compiler in our environment. That worked
+> well. Thanks for the hints!
 
-Use if_changed so that the key is re-generated when the key type is
-changed (that is, the openssl command line is changed).
+Cool. For reference, you should be able to do this:
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+CROSS_COMPILE="openbmc/build/p10bmc/tmp/sysroots-components/x86_64/gcc-cross-arm/usr/bin/arm-openbmc-linux-gnueabi/arm-openbmc-linux-gnueabi-"
 
- certs/Makefile | 30 ++++++------------------------
- 1 file changed, 6 insertions(+), 24 deletions(-)
-
-diff --git a/certs/Makefile b/certs/Makefile
-index fdf206022113..a702b70f3cb9 100644
---- a/certs/Makefile
-+++ b/certs/Makefile
-@@ -51,41 +51,23 @@ ifdef SIGN_KEY
- #
- ###############################################################################
- 
--openssl_available       = $(shell openssl help 2>/dev/null && echo yes)
--
- # We do it this way rather than having a boolean option for enabling an
- # external private key, because 'make randconfig' might enable such a
- # boolean option and we unfortunately can't make it depend on !RANDCONFIG.
- ifeq ($(CONFIG_MODULE_SIG_KEY),"certs/signing_key.pem")
- 
--ifeq ($(openssl_available),yes)
--X509TEXT=$(shell openssl x509 -in "certs/signing_key.pem" -text 2>/dev/null)
--endif
--
--# Support user changing key type
--ifdef CONFIG_MODULE_SIG_KEY_TYPE_ECDSA
--keytype_openssl = -newkey ec -pkeyopt ec_paramgen_curve:secp384r1
--ifeq ($(openssl_available),yes)
--$(if $(findstring id-ecPublicKey,$(X509TEXT)),,$(shell rm -f "certs/signing_key.pem"))
--endif
--endif # CONFIG_MODULE_SIG_KEY_TYPE_ECDSA
--
--ifdef CONFIG_MODULE_SIG_KEY_TYPE_RSA
--ifeq ($(openssl_available),yes)
--$(if $(findstring rsaEncryption,$(X509TEXT)),,$(shell rm -f "certs/signing_key.pem"))
--endif
--endif # CONFIG_MODULE_SIG_KEY_TYPE_RSA
-+keytype-$(CONFIG_MODULE_SIG_KEY_TYPE_ECDSA) := -newkey ec -pkeyopt ec_paramgen_curve:secp384r1
- 
- quiet_cmd_gen_key = GENKEY  $@
-       cmd_gen_key = openssl req -new -nodes -utf8 -$(CONFIG_MODULE_SIG_HASH) -days 36500 \
- 		-batch -x509 -config $(obj)/x509.genkey \
- 		-outform PEM -out $(obj)/signing_key.pem \
--		-keyout $(obj)/signing_key.pem \
--		$(keytype_openssl) \
--		2>&1
-+		-keyout $(obj)/signing_key.pem $(keytype-y) 2>&1
-+
-+$(obj)/signing_key.pem: $(obj)/x509.genkey FORCE
-+	$(call if_changed,gen_key)
- 
--$(obj)/signing_key.pem: $(obj)/x509.genkey
--	$(call cmd,gen_key)
-+targets += signing_key.pem
- 
- quiet_cmd_copy_x509_config = COPY    $@
-       cmd_copy_x509_config = cat $(srctree)/$(src)/default_x509.genkey > $@
--- 
-2.30.2
-
+>
+> >  - building with -s means warnings stand out
+> Excellent idea, thank you!
+>
+> >  - if you're working on device trees and want to ensure your binary is
+> > being built each time, omit the -s and build the 'dtbs' target
+> Ack.
+>
+> I'll send a PATCH v3 now.
+>
+> Oskar.
