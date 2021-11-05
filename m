@@ -2,750 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308BF4462B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 12:29:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0D44462B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 12:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232513AbhKELc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 07:32:28 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:63936 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229884AbhKELcW (ORCPT
+        id S232434AbhKELcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 07:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231486AbhKELcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Nov 2021 07:32:22 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A50Y3Zl007580;
-        Fri, 5 Nov 2021 07:29:42 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3c4t6b2u5u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Nov 2021 07:29:42 -0400
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 1A5BTfOX019445
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 5 Nov 2021 07:29:41 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Fri, 5 Nov 2021
- 07:29:40 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
- Fri, 5 Nov 2021 07:29:40 -0400
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.181])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 1A5BTbk0016952;
-        Fri, 5 Nov 2021 07:29:39 -0400
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     <jic23@kernel.org>, <robh+dt@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Subject: [PATCH v4 1/3] iio: frequency: admv1013: add support for ADMV1013
-Date:   Fri, 5 Nov 2021 13:29:28 +0200
-Message-ID: <20211105112930.122017-2-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211105112930.122017-1-antoniu.miclaus@analog.com>
-References: <20211105112930.122017-1-antoniu.miclaus@analog.com>
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EFD1C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 04:29:43 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id f4so31654120edx.12
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 04:29:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=nJ4IMjZvcUgkYa7y1stcZyUMCuomkLUa0D2FVp+QakQ=;
+        b=Rz9mLIMA2UFiXw0lGbGm6HVMfuQ/cXelQee/vjJTqMJJxXIG57VM7vPOyvfjkFxRLN
+         fAwsDY9+UTnz0uaycCwlCzBj8hws73SgTCToMxprcCiuc2XHgWE9whAhO6f/a1CKskLO
+         nrKkVeasRFX6iCOsGJ0kqZml01uXIMVIgVtuhsUC0YClALW6OavL0Fe6Z1nROHA3XPY1
+         YXwM9T8dM5CPvwHgUd2y1/8ky5a+DM5sb9Rwi/9nFCh87WSQ704kd09nSQSWB9Elz0Da
+         jQABYH7BiyzixOJn8zpSebFmWzk36Me0X3MZa4Eg2rTkui33xu6rQatZcWir4MGafoz7
+         oJGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nJ4IMjZvcUgkYa7y1stcZyUMCuomkLUa0D2FVp+QakQ=;
+        b=OBZom6wCpJevOr/dx51jqszeBAqG6ZP+5Jgy1FTQFSS8Y3E97lujJdUXQuUbi6/t2n
+         mXYisrQW676NZVmdkLO0uLROpkfLYazBj6TbG/Oad6wic2QQoAGlmlk2t5hoa3dtmzYF
+         4Rn6iACshaOUdFVHlEyyst9jdFCtroQ1kSG5h5Eyt5ubUPUTrZHdHzTniVJ/REg5Opf1
+         l2qoLbJVMn4jE+80+DUJj97ny9ffUzTTRRQEfWkn30f2wVvTfsVzC82YlC/oCgmduvAW
+         uavWQmJl1kwAqNNfQZt7gNLzHkVOUi/DRVQs+E4w677gPFCSe4EyQ4fh9KSOvm+nzRNM
+         dR5Q==
+X-Gm-Message-State: AOAM5314ny1Fo7H/Qgaf7IAYjCRXa/4Du3uAHRGj4xwr/sC7qlX0rdX3
+        DtZ2FTIkURvdpUNcgOSon4q9MrTStq7e04jE3AkivQ==
+X-Google-Smtp-Source: ABdhPJzH4IKZs9buleIYN4ypGN1mgN1Jtlonl6/C4n0JXh1zqkVKNRARMPaHzOFIt/7V6c6/TFKBQj+1AFInQg0zt1c=
+X-Received: by 2002:a05:6402:3492:: with SMTP id v18mr27849623edc.398.1636111781499;
+ Fri, 05 Nov 2021 04:29:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: -G6M1EscA10IHfEix3jyoAeSpWbhs7zE
-X-Proofpoint-ORIG-GUID: -G6M1EscA10IHfEix3jyoAeSpWbhs7zE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-05_01,2021-11-03_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- malwarescore=0 mlxlogscore=999 suspectscore=0 bulkscore=0 mlxscore=0
- spamscore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111050067
+References: <20211104170112.899181800@linuxfoundation.org>
+In-Reply-To: <20211104170112.899181800@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 5 Nov 2021 16:59:28 +0530
+Message-ID: <CA+G9fYtZveFaBLBedMRaV+iiHOc9G93aDyH917nEGe7frU+u2w@mail.gmail.com>
+Subject: Re: [PATCH 5.10 00/14] 5.10.78-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ADMV1013 is a wideband, microwave upconverter optimized
-for point to point microwave radio designs operating in the
-24 GHz to 44 GHz radio frequency (RF) range.
+On Thu, 4 Nov 2021 at 22:31, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.78 release.
+> There are 14 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 06 Nov 2021 17:01:02 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.78-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Datasheet:
-https://www.analog.com/media/en/technical-documentation/data-sheets/ADMV1013.pdf
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
-changes in v4:
- - add extended info for the LO feedthrough offset calibration
- drivers/iio/frequency/Kconfig    |  11 +
- drivers/iio/frequency/Makefile   |   1 +
- drivers/iio/frequency/admv1013.c | 631 +++++++++++++++++++++++++++++++
- 3 files changed, 643 insertions(+)
- create mode 100644 drivers/iio/frequency/admv1013.c
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-diff --git a/drivers/iio/frequency/Kconfig b/drivers/iio/frequency/Kconfig
-index 240b81502512..411b3b961e46 100644
---- a/drivers/iio/frequency/Kconfig
-+++ b/drivers/iio/frequency/Kconfig
-@@ -49,5 +49,16 @@ config ADF4371
- 
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called adf4371.
-+
-+config ADMV1013
-+	tristate "Analog Devices ADMV1013 Microwave Upconverter"
-+	depends on SPI && COMMON_CLK
-+	help
-+	  Say yes here to build support for Analog Devices ADMV1013
-+	  24 GHz to 44 GHz, Wideband, Microwave Upconverter.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called admv1013.
-+
- endmenu
- endmenu
-diff --git a/drivers/iio/frequency/Makefile b/drivers/iio/frequency/Makefile
-index 518b1e50caef..559922a8196e 100644
---- a/drivers/iio/frequency/Makefile
-+++ b/drivers/iio/frequency/Makefile
-@@ -7,3 +7,4 @@
- obj-$(CONFIG_AD9523) += ad9523.o
- obj-$(CONFIG_ADF4350) += adf4350.o
- obj-$(CONFIG_ADF4371) += adf4371.o
-+obj-$(CONFIG_ADMV1013) += admv1013.o
-diff --git a/drivers/iio/frequency/admv1013.c b/drivers/iio/frequency/admv1013.c
-new file mode 100644
-index 000000000000..e3d99afe5ecc
---- /dev/null
-+++ b/drivers/iio/frequency/admv1013.c
-@@ -0,0 +1,631 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * ADMV1013 driver
-+ *
-+ * Copyright 2021 Analog Devices Inc.
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/bits.h>
-+#include <linux/clk.h>
-+#include <linux/clkdev.h>
-+#include <linux/clk-provider.h>
-+#include <linux/device.h>
-+#include <linux/iio/iio.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/notifier.h>
-+#include <linux/property.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/spi/spi.h>
-+#include <linux/units.h>
-+
-+#include <asm/unaligned.h>
-+
-+/* ADMV1013 Register Map */
-+#define ADMV1013_REG_SPI_CONTROL		0x00
-+#define ADMV1013_REG_ALARM			0x01
-+#define ADMV1013_REG_ALARM_MASKS		0x02
-+#define ADMV1013_REG_ENABLE			0x03
-+#define ADMV1013_REG_LO_AMP_I			0x05
-+#define ADMV1013_REG_LO_AMP_Q			0x06
-+#define ADMV1013_REG_OFFSET_ADJUST_I		0x07
-+#define ADMV1013_REG_OFFSET_ADJUST_Q		0x08
-+#define ADMV1013_REG_QUAD			0x09
-+#define ADMV1013_REG_VVA_TEMP_COMP		0x0A
-+
-+/* ADMV1013_REG_SPI_CONTROL Map */
-+#define ADMV1013_PARITY_EN_MSK			BIT(15)
-+#define ADMV1013_SPI_SOFT_RESET_MSK		BIT(14)
-+#define ADMV1013_CHIP_ID_MSK			GENMASK(11, 4)
-+#define ADMV1013_CHIP_ID			0xA
-+#define ADMV1013_REVISION_ID_MSK		GENMASK(3, 0)
-+
-+/* ADMV1013_REG_ALARM Map */
-+#define ADMV1013_PARITY_ERROR_MSK		BIT(15)
-+#define ADMV1013_TOO_FEW_ERRORS_MSK		BIT(14)
-+#define ADMV1013_TOO_MANY_ERRORS_MSK		BIT(13)
-+#define ADMV1013_ADDRESS_RANGE_ERROR_MSK	BIT(12)
-+
-+/* ADMV1013_REG_ENABLE Map */
-+#define ADMV1013_VGA_PD_MSK			BIT(15)
-+#define ADMV1013_MIXER_PD_MSK			BIT(14)
-+#define ADMV1013_QUAD_PD_MSK			GENMASK(13, 11)
-+#define ADMV1013_BG_PD_MSK			BIT(10)
-+#define ADMV1013_MIXER_IF_EN_MSK		BIT(7)
-+#define ADMV1013_DET_EN_MSK			BIT(5)
-+
-+/* ADMV1013_REG_LO_AMP Map */
-+#define ADMV1013_LOAMP_PH_ADJ_FINE_MSK		GENMASK(13, 7)
-+#define ADMV1013_MIXER_VGATE_MSK		GENMASK(6, 0)
-+
-+/* ADMV1013_REG_OFFSET_ADJUST Map */
-+#define ADMV1013_MIXER_OFF_ADJ_P_MSK		GENMASK(15, 9)
-+#define ADMV1013_MIXER_OFF_ADJ_N_MSK		GENMASK(8, 2)
-+
-+/* ADMV1013_REG_QUAD Map */
-+#define ADMV1013_QUAD_SE_MODE_MSK		GENMASK(9, 6)
-+#define ADMV1013_QUAD_FILTERS_MSK		GENMASK(3, 0)
-+
-+/* ADMV1013_REG_VVA_TEMP_COMP Map */
-+#define ADMV1013_VVA_TEMP_COMP_MSK		GENMASK(15, 0)
-+
-+enum {
-+	ADMV1013_LO_FEED_OFFSET_CALIB_P,
-+	ADMV1013_LO_FEED_OFFSET_CALIB_N
-+};
-+
-+struct admv1013_state {
-+	struct spi_device	*spi;
-+	struct clk		*clkin;
-+	/* Protect against concurrent accesses to the device and to data */
-+	struct mutex		lock;
-+	struct regulator	*reg;
-+	struct notifier_block	nb;
-+	unsigned int		quad_se_mode;
-+	bool			vga_pd;
-+	bool			mixer_pd;
-+	bool			quad_pd;
-+	bool			bg_pd;
-+	bool			mixer_if_en;
-+	bool			det_en;
-+	u8			data[3] ____cacheline_aligned;
-+};
-+
-+static int __admv1013_spi_read(struct admv1013_state *st, unsigned int reg,
-+			       unsigned int *val)
-+{
-+	int ret;
-+	struct spi_transfer t = {0};
-+
-+	st->data[0] = 0x80 | (reg << 1);
-+	st->data[1] = 0x0;
-+	st->data[2] = 0x0;
-+
-+	t.rx_buf = &st->data[0];
-+	t.tx_buf = &st->data[0];
-+	t.len = 3;
-+
-+	ret = spi_sync_transfer(st->spi, &t, 1);
-+	if (ret)
-+		return ret;
-+
-+	*val = (get_unaligned_be24(&st->data[0]) >> 1) & GENMASK(15, 0);
-+
-+	return ret;
-+}
-+
-+static int admv1013_spi_read(struct admv1013_state *st, unsigned int reg,
-+			     unsigned int *val)
-+{
-+	int ret;
-+
-+	mutex_lock(&st->lock);
-+	ret = __admv1013_spi_read(st, reg, val);
-+	mutex_unlock(&st->lock);
-+
-+	return ret;
-+}
-+
-+static int __admv1013_spi_write(struct admv1013_state *st,
-+				unsigned int reg,
-+				unsigned int val)
-+{
-+	put_unaligned_be24((val << 1) | (reg << 17), &st->data[0]);
-+
-+	return spi_write(st->spi, &st->data[0], 3);
-+}
-+
-+static int admv1013_spi_write(struct admv1013_state *st, unsigned int reg,
-+			      unsigned int val)
-+{
-+	int ret;
-+
-+	mutex_lock(&st->lock);
-+	ret = __admv1013_spi_write(st, reg, val);
-+	mutex_unlock(&st->lock);
-+
-+	return ret;
-+}
-+
-+static int __admv1013_spi_update_bits(struct admv1013_state *st, unsigned int reg,
-+				      unsigned int mask, unsigned int val)
-+{
-+	int ret;
-+	unsigned int data, temp;
-+
-+	ret = __admv1013_spi_read(st, reg, &data);
-+	if (ret)
-+		return ret;
-+
-+	temp = (data & ~mask) | (val & mask);
-+
-+	return __admv1013_spi_write(st, reg, temp);
-+}
-+
-+static int admv1013_spi_update_bits(struct admv1013_state *st, unsigned int reg,
-+				    unsigned int mask, unsigned int val)
-+{
-+	int ret;
-+
-+	mutex_lock(&st->lock);
-+	ret = __admv1013_spi_update_bits(st, reg, mask, val);
-+	mutex_unlock(&st->lock);
-+
-+	return ret;
-+}
-+
-+static ssize_t admv1013_read(struct iio_dev *indio_dev,
-+			     uintptr_t private,
-+			     const struct iio_chan_spec *chan,
-+			     char *buf)
-+{
-+	struct admv1013_state *st = iio_priv(indio_dev);
-+	unsigned int data, addr;
-+	int ret;
-+
-+	switch (chan->channel2) {
-+	case IIO_MOD_I:
-+		addr = ADMV1013_REG_OFFSET_ADJUST_I;
-+		break;
-+	case IIO_MOD_Q:
-+		addr = ADMV1013_REG_OFFSET_ADJUST_Q;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	ret = admv1013_spi_read(st, addr, &data);
-+	if (ret)
-+		return ret;
-+
-+	switch ((u32)private) {
-+	case ADMV1013_LO_FEED_OFFSET_CALIB_P:
-+		data = FIELD_GET(ADMV1013_MIXER_OFF_ADJ_P_MSK, data);
-+		break;
-+	case ADMV1013_LO_FEED_OFFSET_CALIB_N:
-+		data = FIELD_GET(ADMV1013_MIXER_OFF_ADJ_N_MSK, data);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return sysfs_emit(buf, "%u\n", data);
-+}
-+
-+static int admv1013_read_raw(struct iio_dev *indio_dev,
-+			     struct iio_chan_spec const *chan,
-+			     int *val, int *val2, long info)
-+{
-+	struct admv1013_state *st = iio_priv(indio_dev);
-+	unsigned int data, addr;
-+	int ret;
-+
-+	switch (info) {
-+	case IIO_CHAN_INFO_PHASE:
-+		if (chan->channel2 == IIO_MOD_I)
-+			addr = ADMV1013_REG_LO_AMP_I;
-+		else
-+			addr = ADMV1013_REG_LO_AMP_Q;
-+
-+		ret = admv1013_spi_read(st, addr, &data);
-+		if (ret)
-+			return ret;
-+
-+		*val = FIELD_GET(ADMV1013_LOAMP_PH_ADJ_FINE_MSK, data);
-+
-+		return IIO_VAL_INT;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static ssize_t admv1013_write(struct iio_dev *indio_dev,
-+			      uintptr_t private,
-+			      const struct iio_chan_spec *chan,
-+			      const char *buf, size_t len)
-+{
-+	struct admv1013_state *st = iio_priv(indio_dev);
-+	unsigned int data, addr, msk;
-+	int ret;
-+
-+	ret = kstrtou32(buf, 10, &data);
-+	if (ret)
-+		return ret;
-+
-+	switch (chan->channel2) {
-+	case IIO_MOD_I:
-+		addr = ADMV1013_REG_OFFSET_ADJUST_I;
-+		break;
-+	case IIO_MOD_Q:
-+		addr = ADMV1013_REG_OFFSET_ADJUST_Q;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch ((u32)private) {
-+	case ADMV1013_LO_FEED_OFFSET_CALIB_P:
-+		msk = ADMV1013_MIXER_OFF_ADJ_P_MSK;
-+		data = FIELD_PREP(ADMV1013_MIXER_OFF_ADJ_P_MSK, data);
-+		break;
-+	case ADMV1013_LO_FEED_OFFSET_CALIB_N:
-+		msk = ADMV1013_MIXER_OFF_ADJ_N_MSK;
-+		data = FIELD_PREP(ADMV1013_MIXER_OFF_ADJ_N_MSK, data);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	ret = admv1013_spi_update_bits(st, addr, msk, data);
-+
-+	return ret ? ret : len;
-+}
-+
-+static int admv1013_write_raw(struct iio_dev *indio_dev,
-+			      struct iio_chan_spec const *chan,
-+			      int val, int val2, long info)
-+{
-+	struct admv1013_state *st = iio_priv(indio_dev);
-+
-+	switch (info) {
-+	case IIO_CHAN_INFO_PHASE:
-+		if (chan->channel2 == IIO_MOD_I)
-+			return admv1013_spi_update_bits(st, ADMV1013_REG_LO_AMP_I,
-+							ADMV1013_LOAMP_PH_ADJ_FINE_MSK,
-+							FIELD_PREP(ADMV1013_LOAMP_PH_ADJ_FINE_MSK, val));
-+		else
-+			return admv1013_spi_update_bits(st, ADMV1013_REG_LO_AMP_Q,
-+							ADMV1013_LOAMP_PH_ADJ_FINE_MSK,
-+							FIELD_PREP(ADMV1013_LOAMP_PH_ADJ_FINE_MSK, val));
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int admv1013_update_quad_filters(struct admv1013_state *st)
-+{
-+	unsigned int filt_raw;
-+	u64 rate = clk_get_rate(st->clkin);
-+
-+	if (rate >= (5400 * HZ_PER_MHZ) && rate <= (7000 * HZ_PER_MHZ))
-+		filt_raw = 15;
-+	else if (rate >= (5400 * HZ_PER_MHZ) && rate <= (8000 * HZ_PER_MHZ))
-+		filt_raw = 10;
-+	else if (rate >= (6600 * HZ_PER_MHZ) && rate <= (9200 * HZ_PER_MHZ))
-+		filt_raw = 5;
-+	else
-+		filt_raw = 0;
-+
-+	return __admv1013_spi_update_bits(st, ADMV1013_REG_QUAD,
-+					ADMV1013_QUAD_FILTERS_MSK,
-+					FIELD_PREP(ADMV1013_QUAD_FILTERS_MSK, filt_raw));
-+}
-+
-+static int admv1013_update_mixer_vgate(struct admv1013_state *st)
-+{
-+	unsigned int vcm, mixer_vgate;
-+
-+	vcm = regulator_get_voltage(st->reg);
-+
-+	if (vcm >= 0 && vcm < 1800000)
-+		mixer_vgate = (2389 * vcm / 1000000 + 8100) / 100;
-+	else if (vcm > 1800000 && vcm < 2600000)
-+		mixer_vgate = (2375 * vcm / 1000000 + 125) / 100;
-+	else
-+		return -EINVAL;
-+
-+	return __admv1013_spi_update_bits(st, ADMV1013_REG_LO_AMP_I,
-+				 ADMV1013_MIXER_VGATE_MSK,
-+				 FIELD_PREP(ADMV1013_MIXER_VGATE_MSK, mixer_vgate));
-+}
-+
-+static int admv1013_reg_access(struct iio_dev *indio_dev,
-+			       unsigned int reg,
-+			       unsigned int write_val,
-+			       unsigned int *read_val)
-+{
-+	struct admv1013_state *st = iio_priv(indio_dev);
-+
-+	if (read_val)
-+		return admv1013_spi_read(st, reg, read_val);
-+	else
-+		return admv1013_spi_write(st, reg, write_val);
-+}
-+
-+static const struct iio_info admv1013_info = {
-+	.read_raw = admv1013_read_raw,
-+	.write_raw = admv1013_write_raw,
-+	.debugfs_reg_access = &admv1013_reg_access,
-+};
-+
-+static int admv1013_freq_change(struct notifier_block *nb, unsigned long action, void *data)
-+{
-+	struct admv1013_state *st = container_of(nb, struct admv1013_state, nb);
-+	int ret;
-+
-+	if (action == POST_RATE_CHANGE) {
-+		mutex_lock(&st->lock);
-+		ret = notifier_from_errno(admv1013_update_quad_filters(st));
-+		mutex_unlock(&st->lock);
-+		return ret;
-+	}
-+
-+	return NOTIFY_OK;
-+}
-+
-+#define _ADMV1013_EXT_INFO(_name, _shared, _ident) { \
-+		.name = _name, \
-+		.read = admv1013_read, \
-+		.write = admv1013_write, \
-+		.private = _ident, \
-+		.shared = _shared, \
-+}
-+
-+static const struct iio_chan_spec_ext_info admv1013_ext_info[] = {
-+	_ADMV1013_EXT_INFO("lo_feedthrough_offset_calib_positive", IIO_SEPARATE,
-+			   ADMV1013_LO_FEED_OFFSET_CALIB_P),
-+	_ADMV1013_EXT_INFO("lo_feedthrough_offset_calib_negative", IIO_SEPARATE,
-+			   ADMV1013_LO_FEED_OFFSET_CALIB_N),
-+	{ },
-+};
-+
-+#define ADMV1013_CHAN_PHASE(_channel, rf_comp) {		\
-+	.type = IIO_ALTVOLTAGE,					\
-+	.modified = 1,						\
-+	.output = 1,						\
-+	.indexed = 1,						\
-+	.channel2 = IIO_MOD_##rf_comp,				\
-+	.channel = _channel,					\
-+	.info_mask_separate = BIT(IIO_CHAN_INFO_PHASE)		\
-+	}
-+
-+#define ADMV1013_FEED_LO_CALIB(_channel, rf_comp,  _admv1013_ext_info) {\
-+	.type = IIO_ALTVOLTAGE,					\
-+	.modified = 1,						\
-+	.output = 1,						\
-+	.indexed = 1,						\
-+	.channel2 = IIO_MOD_##rf_comp,				\
-+	.channel = _channel,					\
-+	.ext_info = _admv1013_ext_info,				\
-+	}
-+
-+static const struct iio_chan_spec admv1013_channels[] = {
-+	ADMV1013_CHAN_PHASE(0, I),
-+	ADMV1013_CHAN_PHASE(0, Q),
-+	ADMV1013_FEED_LO_CALIB(0, I, admv1013_ext_info),
-+	ADMV1013_FEED_LO_CALIB(0, Q, admv1013_ext_info),
-+};
-+
-+static int admv1013_init(struct admv1013_state *st)
-+{
-+	int ret;
-+	unsigned int chip_id, enable_reg, enable_reg_msk;
-+	struct spi_device *spi = st->spi;
-+
-+	/* Perform a software reset */
-+	ret = __admv1013_spi_update_bits(st, ADMV1013_REG_SPI_CONTROL,
-+					 ADMV1013_SPI_SOFT_RESET_MSK,
-+					 FIELD_PREP(ADMV1013_SPI_SOFT_RESET_MSK, 1));
-+	if (ret)
-+		return ret;
-+
-+	ret = __admv1013_spi_update_bits(st, ADMV1013_REG_SPI_CONTROL,
-+					 ADMV1013_SPI_SOFT_RESET_MSK,
-+					 FIELD_PREP(ADMV1013_SPI_SOFT_RESET_MSK, 0));
-+	if (ret)
-+		return ret;
-+
-+	ret = __admv1013_spi_read(st, ADMV1013_REG_SPI_CONTROL, &chip_id);
-+	if (ret)
-+		return ret;
-+
-+	chip_id = FIELD_GET(ADMV1013_CHIP_ID_MSK, chip_id);
-+	if (chip_id != ADMV1013_CHIP_ID) {
-+		dev_err(&spi->dev, "Invalid Chip ID.\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = __admv1013_spi_write(st, ADMV1013_REG_VVA_TEMP_COMP, 0xE700);
-+	if (ret)
-+		return ret;
-+
-+	ret = __admv1013_spi_update_bits(st, ADMV1013_REG_QUAD,
-+					 ADMV1013_QUAD_SE_MODE_MSK,
-+					 FIELD_PREP(ADMV1013_QUAD_SE_MODE_MSK, st->quad_se_mode));
-+	if (ret)
-+		return ret;
-+
-+	ret = admv1013_update_mixer_vgate(st);
-+	if (ret)
-+		return ret;
-+
-+	ret = admv1013_update_quad_filters(st);
-+	if (ret)
-+		return ret;
-+
-+	enable_reg_msk = ADMV1013_VGA_PD_MSK |
-+			ADMV1013_MIXER_PD_MSK |
-+			ADMV1013_QUAD_PD_MSK |
-+			ADMV1013_BG_PD_MSK |
-+			ADMV1013_MIXER_IF_EN_MSK |
-+			ADMV1013_DET_EN_MSK;
-+
-+	enable_reg = FIELD_PREP(ADMV1013_VGA_PD_MSK, st->vga_pd) |
-+			FIELD_PREP(ADMV1013_MIXER_PD_MSK, st->mixer_pd) |
-+			FIELD_PREP(ADMV1013_QUAD_PD_MSK, st->quad_pd ? 7 : 0) |
-+			FIELD_PREP(ADMV1013_BG_PD_MSK, st->bg_pd) |
-+			FIELD_PREP(ADMV1013_MIXER_IF_EN_MSK, st->mixer_if_en) |
-+			FIELD_PREP(ADMV1013_DET_EN_MSK, st->det_en);
-+
-+	return __admv1013_spi_update_bits(st, ADMV1013_REG_ENABLE, enable_reg_msk, enable_reg);
-+}
-+
-+static void admv1013_clk_disable(void *data)
-+{
-+	clk_disable_unprepare(data);
-+}
-+
-+static void admv1013_reg_disable(void *data)
-+{
-+	regulator_disable(data);
-+}
-+
-+static void admv1013_powerdown(void *data)
-+{
-+	unsigned int enable_reg, enable_reg_msk;
-+
-+	/* Disable all components in the Enable Register */
-+	enable_reg_msk = ADMV1013_VGA_PD_MSK |
-+			ADMV1013_MIXER_PD_MSK |
-+			ADMV1013_QUAD_PD_MSK |
-+			ADMV1013_BG_PD_MSK |
-+			ADMV1013_MIXER_IF_EN_MSK |
-+			ADMV1013_DET_EN_MSK;
-+
-+	enable_reg = FIELD_PREP(ADMV1013_VGA_PD_MSK, 1) |
-+			FIELD_PREP(ADMV1013_MIXER_PD_MSK, 1) |
-+			FIELD_PREP(ADMV1013_QUAD_PD_MSK, 7) |
-+			FIELD_PREP(ADMV1013_BG_PD_MSK, 1) |
-+			FIELD_PREP(ADMV1013_MIXER_IF_EN_MSK, 0) |
-+			FIELD_PREP(ADMV1013_DET_EN_MSK, 0);
-+
-+	admv1013_spi_update_bits(data, ADMV1013_REG_ENABLE, enable_reg_msk, enable_reg);
-+}
-+
-+static int admv1013_properties_parse(struct admv1013_state *st)
-+{
-+	int ret;
-+	struct spi_device *spi = st->spi;
-+
-+	st->vga_pd = device_property_read_bool(&spi->dev, "adi,vga-powerdown");
-+	st->mixer_pd = device_property_read_bool(&spi->dev, "adi,mixer-powerdown");
-+	st->quad_pd = device_property_read_bool(&spi->dev, "adi,quad-powerdown");
-+	st->bg_pd = device_property_read_bool(&spi->dev, "adi,bg-powerdown");
-+	st->mixer_if_en = device_property_read_bool(&spi->dev, "adi,mixer-if-enable");
-+	st->det_en = device_property_read_bool(&spi->dev, "adi,detector-enable");
-+
-+	ret = device_property_read_u32(&spi->dev, "adi,quad-se-mode", &st->quad_se_mode);
-+	if (ret)
-+		st->quad_se_mode = 12;
-+
-+	st->reg = devm_regulator_get(&spi->dev, "vcm");
-+	if (IS_ERR(st->reg))
-+		return dev_err_probe(&spi->dev, PTR_ERR(st->reg),
-+				     "failed to get the common-mode voltage\n");
-+
-+	st->clkin = devm_clk_get(&spi->dev, "lo_in");
-+	if (IS_ERR(st->clkin))
-+		return dev_err_probe(&spi->dev, PTR_ERR(st->clkin),
-+				     "failed to get the LO input clock\n");
-+
-+	return 0;
-+}
-+
-+static int admv1013_probe(struct spi_device *spi)
-+{
-+	struct iio_dev *indio_dev;
-+	struct admv1013_state *st;
-+	int ret;
-+
-+	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
-+	if (!indio_dev)
-+		return -ENOMEM;
-+
-+	st = iio_priv(indio_dev);
-+
-+	indio_dev->info = &admv1013_info;
-+	indio_dev->name = "admv1013";
-+	indio_dev->channels = admv1013_channels;
-+	indio_dev->num_channels = ARRAY_SIZE(admv1013_channels);
-+
-+	st->spi = spi;
-+
-+	ret = admv1013_properties_parse(st);
-+	if (ret)
-+		return ret;
-+
-+	ret = regulator_enable(st->reg);
-+	if (ret) {
-+		dev_err(&spi->dev, "Failed to enable specified Common-Mode Voltage!\n");
-+		return ret;
-+	}
-+
-+	ret = devm_add_action_or_reset(&spi->dev, admv1013_reg_disable,
-+				       st->reg);
-+	if (ret)
-+		return ret;
-+
-+	ret = clk_prepare_enable(st->clkin);
-+	if (ret)
-+		return ret;
-+
-+	ret = devm_add_action_or_reset(&spi->dev, admv1013_clk_disable, st->clkin);
-+	if (ret)
-+		return ret;
-+
-+	st->nb.notifier_call = admv1013_freq_change;
-+	ret = devm_clk_notifier_register(&spi->dev, st->clkin, &st->nb);
-+	if (ret)
-+		return ret;
-+
-+	mutex_init(&st->lock);
-+
-+	ret = admv1013_init(st);
-+	if (ret) {
-+		dev_err(&spi->dev, "admv1013 init failed\n");
-+		return ret;
-+	}
-+
-+	ret = devm_add_action_or_reset(&spi->dev, admv1013_powerdown, st);
-+	if (ret)
-+		return ret;
-+
-+	return devm_iio_device_register(&spi->dev, indio_dev);
-+}
-+
-+static const struct spi_device_id admv1013_id[] = {
-+	{ "admv1013", 0},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(spi, admv1013_id);
-+
-+static const struct of_device_id admv1013_of_match[] = {
-+	{ .compatible = "adi,admv1013" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, admv1013_of_match);
-+
-+static struct spi_driver admv1013_driver = {
-+	.driver = {
-+		.name = "admv1013",
-+		.of_match_table = admv1013_of_match,
-+	},
-+	.probe = admv1013_probe,
-+	.id_table = admv1013_id,
-+};
-+module_spi_driver(admv1013_driver);
-+
-+MODULE_AUTHOR("Antoniu Miclaus <antoniu.miclaus@analog.com");
-+MODULE_DESCRIPTION("Analog Devices ADMV1013");
-+MODULE_LICENSE("GPL v2");
--- 
-2.33.1
+## Build
+* kernel: 5.10.78-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.10.y
+* git commit: 2bb5f9ae86fa10a6cfe99fbf64a5165e711c37ad
+* git describe: v5.10.77-15-g2bb5f9ae86fa
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.77-15-g2bb5f9ae86fa
 
+## No regressions (compared to v5.10.77)
+
+## No fixes (compared to v5.10.77)
+
+## Test result summary
+total: 91230, pass: 77387, fail: 603, skip: 12234, xfail: 1006
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 290 total, 268 passed, 22 failed
+* arm64: 40 total, 40 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 39 total, 39 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 37 total, 37 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 36 total, 36 passed, 0 failed
+* riscv: 24 total, 24 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 40 total, 40 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
