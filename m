@@ -2,115 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C7A445CDC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 01:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A2E445CDA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 01:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbhKEAD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 20:03:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232435AbhKEADZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 20:03:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EADE6121E;
-        Fri,  5 Nov 2021 00:00:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636070446;
-        bh=gecQ0nukzSqLw2rZdP9krP19f9e4VSUL6mOBSXKSTkY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mK4Mr1FteUnVP4YznUeFazG/YgAGzji5dNB8U9oXl9/J2au6HJlsFtPKH3c/vrr9R
-         nBjRXntR4RCXAfvkn2rfwnBtZ0vdOBKxI69bXnXKLVRGPe1rz43MTypJv3VoavIvQd
-         XCCkiLhsV7icEhCsC+lbJJgG/OC15dNBohIURONMEaYly9uc6+M9USvPUoxZVdvzs0
-         pNzEyrqgWdlOzyIxaefijWzhak/3bJe282XXuYAzvsX1evgPmaRstHb5oggZr2+RVm
-         w9BkU+arQa4O0qjhJwuMRkf59ckoCRGfnXgNcVPbvX9iF9A7NOG3nN9zLpG6mhikB7
-         Hw7Ex91dkoIdA==
-Received: by mail-ed1-f50.google.com with SMTP id ee33so27316182edb.8;
-        Thu, 04 Nov 2021 17:00:46 -0700 (PDT)
-X-Gm-Message-State: AOAM533zqctJeDigIPbp32zLdSysrwyfHWYDtiyvQ+QaDDd9iVGXJswD
-        4zJPOvUDmb07tLjYYX8d+y35/maJYpDPDVtP0Q==
-X-Google-Smtp-Source: ABdhPJx/WMm8hJQXmws5vs/A8Eq/kJboI9Ajg4xbaZCnrwqe3NFwsFluqpKG7WJR/yu5SJJOXENMxG3a9r06A35Nhwg=
-X-Received: by 2002:a17:907:7f2a:: with SMTP id qf42mr524429ejc.388.1636070444817;
- Thu, 04 Nov 2021 17:00:44 -0700 (PDT)
+        id S232512AbhKEADP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 20:03:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232458AbhKEADO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 20:03:14 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD5EC061203
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 17:00:35 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id 2so5562642iou.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 17:00:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1D5yxs0xfIhYm8/B96+PNye8oOeNX0Jp5t6vnzcyLgE=;
+        b=CVwqxTLA3nbfUKUtCv4y9LikeiI5iYtVGe8JWfYVyqwGr2eqQCYpT0cJHW06X0+Pk9
+         2e6bbJb6XIS1h2wr51KxbqTbMNhKcL/pcZ9ZQco5JLnTwzFOmtQtBfnUbydQOB0uETle
+         8g0kTLUx5hcHRzRkaTYfgYkf550SChau3ro+w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1D5yxs0xfIhYm8/B96+PNye8oOeNX0Jp5t6vnzcyLgE=;
+        b=H3dTo2BsHX6O16edSGo/iybpuSG1rwabTGOkmUWCa7Y/lssqPwtwEstJ8nf3GhisZ6
+         S7lULgMNeDkHIJSXjCF/9YO0WNZopYfUCBYDaTjVSEyhd+/WnRANS/q2XfVNXpzPcoQ+
+         2+nQB/fO4tMOpZAAjzD8Vsuw5QTJ4BpVFxBhuPZ11FlRq7Vy97OA+ikiE/oBm8UAKWos
+         9jo2VsXgXhTen3QPTFJyhc+Gsjd23KkYybsWb+SrGZqIpEOdizPxhHVaV0jQcZkdkDAV
+         DQS48AwlEToga4gXZbABgtOnSmZRWfS11V1LAHjzMTPKwziQKyAcj9YhjfQ6NGJ8GX4x
+         k85A==
+X-Gm-Message-State: AOAM530pWcr8yQ15GnMDsmWq8OIOGsUHRfgtjB9gkk3SzIoS9BWcbTnR
+        iQEUdrcj7DSN52RHbi5RuJdOHg==
+X-Google-Smtp-Source: ABdhPJyZdOga1I3lbD3EU5Iof7Kix71f51gHO95Qu+5/LRvc2oi8ND0sV6Eu4WPte0hMPjfH4Y2ZSg==
+X-Received: by 2002:a05:6602:1250:: with SMTP id o16mr8881897iou.15.1636070435438;
+        Thu, 04 Nov 2021 17:00:35 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id t6sm3897731iov.39.2021.11.04.17.00.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Nov 2021 17:00:34 -0700 (PDT)
+Subject: Re: [PATCH 5.10 00/14] 5.10.78-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20211104170112.899181800@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <907ada00-59f3-6276-f394-7236dc41c29f@linuxfoundation.org>
+Date:   Thu, 4 Nov 2021 18:00:34 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20211029075203.17093-1-nancy.lin@mediatek.com> <20211029075203.17093-18-nancy.lin@mediatek.com>
-In-Reply-To: <20211029075203.17093-18-nancy.lin@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Fri, 5 Nov 2021 08:00:32 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-PMzZu-nKweOpL_ybEPAaGD4PpaO=7zsY2rb=B8ubG3A@mail.gmail.com>
-Message-ID: <CAAOTY_-PMzZu-nKweOpL_ybEPAaGD4PpaO=7zsY2rb=B8ubG3A@mail.gmail.com>
-Subject: Re: [PATCH v7 17/20] drm/mediatek: add mediatek-drm plane color
- encoding info
-To:     "Nancy.Lin" <nancy.lin@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "jason-jh . lin" <jason-jh.lin@mediatek.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        singo.chang@mediatek.com,
-        srv_heupstream <srv_heupstream@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211104170112.899181800@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Nancy:
+On 11/4/21 11:01 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.78 release.
+> There are 14 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 06 Nov 2021 17:01:02 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.78-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Nancy.Lin <nancy.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=8829=E6=
-=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=883:52=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Add plane color encoding information for color space conversion.
-> It's a preparation for adding support for mt8195 ovl_adaptor mdp_rdma
-> csc control.
+rc2 is good.
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Compiled and booted on my test system. No dmesg regressions.
 
->
-> Signed-off-by: Nancy.Lin <nancy.lin@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_plane.c | 1 +
->  drivers/gpu/drm/mediatek/mtk_drm_plane.h | 1 +
->  2 files changed, 2 insertions(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/m=
-ediatek/mtk_drm_plane.c
-> index 734a1fb052df..81bd5d6e8df5 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-> @@ -137,6 +137,7 @@ static void mtk_plane_update_new_state(struct drm_pla=
-ne_state *new_state,
->         mtk_plane_state->pending.width =3D drm_rect_width(&new_state->dst=
-);
->         mtk_plane_state->pending.height =3D drm_rect_height(&new_state->d=
-st);
->         mtk_plane_state->pending.rotation =3D new_state->rotation;
-> +       mtk_plane_state->pending.color_encoding =3D new_state->color_enco=
-ding;
->  }
->
->  static void mtk_plane_atomic_async_update(struct drm_plane *plane,
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.h b/drivers/gpu/drm/m=
-ediatek/mtk_drm_plane.h
-> index d454bece9535..2d5ec66e3df1 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_plane.h
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.h
-> @@ -24,6 +24,7 @@ struct mtk_plane_pending_state {
->         bool                            dirty;
->         bool                            async_dirty;
->         bool                            async_config;
-> +       enum drm_color_encoding         color_encoding;
->  };
->
->  struct mtk_plane_state {
-> --
-> 2.18.0
->
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
