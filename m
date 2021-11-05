@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2695E4460EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 09:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 538EC4460ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 09:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhKEIxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 04:53:41 -0400
-Received: from www381.your-server.de ([78.46.137.84]:54902 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232814AbhKEIxj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 04:53:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=ySSYSSRANv06wW3RzwGvD6KRkw+9mAkGLzIgDqWTJuo=; b=IdtuzkjNVjPl+FeD2F/LMO8L7K
-        drQiTHnrxkJ8BV5hW5XHylIWIVAsIUfInahOW2AA6noEjBYbkj9VpEsIXbB4AWgnVFWXgFNSkVdvP
-        OIZghvK7LYRS3YCSitiMTUe4SGhf0N76By5W/KmpCA8YObSOAiw0ZBOp5gURcSwvDhiZjZ6DYwei3
-        4L3JHerZQ0uNvFIrVi1y6HSoLw9KshdxVM3MAbUozBuDzXAuVVN1uNCYXLAKmk4RbGpPUM8PlBbHk
-        R4IOmfWfUurm8OXi2EJnCa7c5Sz2x10nzoE4RRSpBC0nxoKl6r4h76vHg4wROJOzKRyZ+EQPBEAWi
-        oru439gg==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1miuw0-000Exj-Q3; Fri, 05 Nov 2021 09:50:52 +0100
-Received: from [82.135.83.112] (helo=[192.168.178.20])
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1miuw0-000FJ3-Hv; Fri, 05 Nov 2021 09:50:52 +0100
-Subject: Re: [PATCH v7 3/3] iio: test: Add test for IIO_VAL_INT_64.
-To:     Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Vasyl.Vavrychuk@opensynergy.com, jbhayana@google.com,
-        Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAHp75Vd7Wwka37w-6QTXT9vv13bPiygKryBhQTnyvtTpCNU9qw@mail.gmail.com>
- <20211102073300.13376-1-andriy.tryshnivskyy@opensynergy.com>
- <CAHp75VfafpEBccivDRC2AVVJbZL2Kdq2KeR0yf_nwTtDTxvDkg@mail.gmail.com>
- <6d909cca-46a9-3f40-5d4d-97ef2fbe33e9@opensynergy.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <0c449b88-a6fb-76ca-5c13-807f7728f1da@metafoo.de>
-Date:   Fri, 5 Nov 2021 09:50:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S232285AbhKEIy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 04:54:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229739AbhKEIyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 04:54:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EB1761245;
+        Fri,  5 Nov 2021 08:52:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636102336;
+        bh=tLq4vqpRI+b9CyNwNzXtcwMluJjPlrKEK5QQz35I6xA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GDvvuJB1Xn4A3267nPe3+WwFjpQN0W3lz+TD9eGEv9gamS7iDFne71ZezRz4g4WjA
+         dI9RbILJlkgSWiCVhH3P5oISq6hJrKAGlEgQfT98tCrJ4wsBRFifUuhp/zD+lkAeI8
+         SueiwQuGgS6ML7uRHE5L8FzXGXcEFs1ujkSXH0A8=
+Date:   Fri, 5 Nov 2021 09:52:13 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Haimin Zhang <tcs.kernel@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Haimin Zhang <tcs_kernel@tencent.com>,
+        TCS Robot <tcs_robot@tencent.com>
+Subject: Re: [PATCH 2/2] USB: ehci_brcm_hub_control: replace wIndex-1 with
+ temp
+Message-ID: <YYTwveXGgNKXCfpk@kroah.com>
+References: <20211105083357.29715-1-tcs_kernel@tencent.com>
 MIME-Version: 1.0
-In-Reply-To: <6d909cca-46a9-3f40-5d4d-97ef2fbe33e9@opensynergy.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26343/Thu Nov  4 09:22:31 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211105083357.29715-1-tcs_kernel@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/21 9:45 AM, Andriy Tryshnivskyy wrote:
-> On 02.11.21 10:11, Andy Shevchenko wrote:
->
->> CAUTION: This email originated from outside of the organization.
->> Do not click links or open attachments unless you recognize the 
->> sender and know the content is safe.
->>
->>
->> On Tue, Nov 2, 2021 at 9:33 AM Andriy Tryshnivskyy
->> <andriy.tryshnivskyy@opensynergy.com> wrote:
->> Now it's good with format, but you have missed the commit message.
->
-> Actually commit massage contains a header only (no body message), but 
-> I can add body message too.
-> Thanks!
->
->>
->>> Signed-off-by: Andriy Tryshnivskyy 
->>> <andriy.tryshnivskyy@opensynergy.com>
->> ...
->>
->>> +static void iio_test_iio_format_value_integer_64(struct kunit *test)
->>> +{
->>> +       char *buf = kunit_kmalloc(test, PAGE_SIZE, GFP_KERNEL);
->> Shouldn't this be checked against NULL?
->
-> Good question. Truly speaking I've made new test similar to other. And 
-> no other tests has a check for NULL.
->
-The other tests not having it is my fault. There should be a 
-KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf) under the allocation.
+On Fri, Nov 05, 2021 at 04:33:57PM +0800, Haimin Zhang wrote:
+> In function `ehci_brcm_hub_control`, like following code,  
+> it filters out the case where the upper byte of wIndex is nonzero, 
+> so it need be replaced with temp.
+
+I do not understand this text, can you try to reword it?
+
+And you have trailing whitespace.
+
+And why use `?
+
+> ```
+
+What is this for?  Changelog comments are not in markdown format.
+
+> 	if ((typeReq == GetPortStatus) &&
+> 	    (wIndex && wIndex <= ports) &&       // need to be replaced
+
+What does this comment mean?
+
+> 	    ehci->reset_done[wIndex-1] &&
+> 	    time_after_eq(jiffies, ehci->reset_done[wIndex-1]) &&
+> 	    (ehci_readl(ehci, status_reg) & PORT_RESUME)) {
+> ```
+> 
+> Signed-off-by: Haimin Zhang <tcs_kernel@tencent.com>
+> Reported-by: TCS Robot <tcs_robot@tencent.com>
+
+Again, lines need to be in different order, and your from: line is not
+correct.
+
+Also, you need an individual email address, not a group email alias for
+your contributions.  We work with individuals, not groups.
 
 
+
+> ---
+>  drivers/usb/host/ehci-brcm.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/usb/host/ehci-brcm.c b/drivers/usb/host/ehci-brcm.c
+> index a1e3290e5459..efcfca162126 100644
+> --- a/drivers/usb/host/ehci-brcm.c
+> +++ b/drivers/usb/host/ehci-brcm.c
+> @@ -73,9 +73,9 @@ static int ehci_brcm_hub_control(
+>  	 * of RESUME
+>  	 */
+>  	if ((typeReq == GetPortStatus) &&
+> -	    (wIndex && wIndex <= ports) &&
+> -	    ehci->reset_done[wIndex-1] &&
+> -	    time_after_eq(jiffies, ehci->reset_done[wIndex-1]) &&
+> +	    (temp < ports) &&
+
+Where did temp come from?
+
+thanks,
+
+greg k-h
