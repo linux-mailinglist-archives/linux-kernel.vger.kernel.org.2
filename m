@@ -2,239 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CECA445D9F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F267A445DA1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhKEBzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 21:55:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbhKEBzC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 21:55:02 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1192C061714;
-        Thu,  4 Nov 2021 18:52:23 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hlk5x1yZDz4xbP;
-        Fri,  5 Nov 2021 12:52:21 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1636077141;
-        bh=JE/kLrFPEolv/IwxXNB8GrJ2PXc3eWUHNRjVny8PBiI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Gv3lUd0MgPLSSe+s1m+Eo5TMu2w8kyCJ8/Yb22SIJGnf5luV6sjfMqA2u3B32YaV8
-         Z+sJEKYNOdAoqbl3wx+0gUuNmSKHNqCKb2sk86mxIc+9MAsb7kF2P0iMjuaIpIbPhw
-         M0xOGFUAh0z7TMZDYib13iiYmbG3k8UhNqY9nniLQWh2YquDBNoJabP3gIhaxGnLd0
-         anDzM2uSv0ymc6Ebj+vbDqYRdkXRMHoStIJkIiqwlYnF+diBiG7mXFhIrGiiG0KBZj
-         /QoCUJNrafU+ufRwcfPQ/8lyzazyCqdgf2wJB4eIbOv7IwsakmfDnjJnAn8H6dKDyi
-         9PXxncMhZZK0w==
-Date:   Fri, 5 Nov 2021 12:52:20 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Thierry Reding <treding@nvidia.com>
-Subject: Re: linux-next: manual merge of the char-misc tree with the
- drm-tegra tree
-Message-ID: <20211105125220.62af1b2f@canb.auug.org.au>
-In-Reply-To: <20211027153739.0cc2e5f2@canb.auug.org.au>
-References: <20211027153739.0cc2e5f2@canb.auug.org.au>
+        id S231303AbhKEBze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 21:55:34 -0400
+Received: from mail-eopbgr1320119.outbound.protection.outlook.com ([40.107.132.119]:8512
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229685AbhKEBzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 21:55:33 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Hfv82r+YskmvRbkOhvjxg2gkb5NSMJQWNezi94v4S5Qd09iM52m7cBsT2Kh/w9jHEfKvuTTOop2PXdCI9yHPm5hYFCtw44KdziQbIQ0xq1ilxDE6Tc9h0aIVZ3QQnmE14Y5QgSwQOGuqpH3l2q3r1OOgxRDQQzvSdI8AtZrR8tHwxKTUq/XQx2QBVrMDx/OhPxCg0z3bsVohpRHMHKEDG+qJSOanK9e6Bucpo6roJQJ3066JwBQr9Joz704vCAiH5EAkvHyF8AIiW793W1+HLpHtaZfT3lkfXZqyq+ARS2VHThLNWqvx6s8skP/DuxDLLtF08ioG2Rnl5sdtTMEvZw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LJf+kOJDXLy80dZ93O645Kl5anNe2k7FlgS2J1agIwM=;
+ b=SfxtTKKvMrrAWsdFPQHTOSNw8Jo9WlSFiB3HijVsgRa8+JUkeuj+S0sxfoY1Dsy9aBkXvenytFwB0Nn8V1TxNayhGc356rX4GyQxdTK8I78iC7OSzINxsU5mj2SWNrF/kFP7PpKdWh5AiRDZ4EXEz7vU5hZGr/y50xUYZzZr+CGA9BfGzHHlb144H9ubg1FUtOvgPfixt2/QubPHVyqv93Hu+Zbkx9rHeV59OygTsvbVvmw9zT77C6qhU2NEEA7ueRWfuMqfrgscwhzZH978QqchhDLP7e4Yy7AeiRqgzPovH5y3TZmPt5clnjjFUQBMsL968dLeVqI1+0Q968DIHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LJf+kOJDXLy80dZ93O645Kl5anNe2k7FlgS2J1agIwM=;
+ b=X4wJ4wexndmMUBy8J7rE0nI8HN3U43Fx+kVUN/61IKTfYrq4Wl+XgHEqD59xgsFKtcr++c9UHqYEjPsCPeSUBT9xAR/7LlVGKe8o2sARLdEQOP2KB0G/WQzJcGq8MciVQjKbn31xQS+6w9CWqPYHUu5c3p8OZKk5p4rloseRfVc=
+Authentication-Results: qq.com; dkim=none (message not signed)
+ header.d=none;qq.com; dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
+ SG2PR06MB3045.apcprd06.prod.outlook.com (2603:1096:4:6c::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4649.15; Fri, 5 Nov 2021 01:52:50 +0000
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4669.013; Fri, 5 Nov 2021
+ 01:52:49 +0000
+Subject: Re: [PATCH] PCI: kirin: Fix of_node_put() issue in pcie-kirin
+To:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        jiabing.wan@qq.com
+References: <20211103062518.25695-1-wanjiabing@vivo.com>
+ <20211103143059.GA683503@bhelgaas>
+ <AF*AtQCaEjn8dlEJIiS9Xqqm.9.1636034225636.Hmail.wanjiabing@vivo.com>
+From:   Jiabing Wan <wanjiabing@vivo.com>
+Organization: vivo
+Message-ID: <8819ab07-9cbf-dc68-34c8-69d67cae53c5@vivo.com>
+Date:   Fri, 5 Nov 2021 09:52:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <AF*AtQCaEjn8dlEJIiS9Xqqm.9.1636034225636.Hmail.wanjiabing@vivo.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: SGAP274CA0012.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::24)
+ To SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/mMB=iZ.uuaexGJe+pUwWTGO";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Received: from [172.22.218.43] (218.213.202.190) by SGAP274CA0012.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11 via Frontend Transport; Fri, 5 Nov 2021 01:52:47 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a747a0d2-87a0-451c-3ad6-08d99ffef869
+X-MS-TrafficTypeDiagnostic: SG2PR06MB3045:
+X-Microsoft-Antispam-PRVS: <SG2PR06MB30455C4E15AA84A8E960E6EAAB8E9@SG2PR06MB3045.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:289;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1PRUApkU7snaJ5SaTr7xuzCDX2xhAtyPUbW/csdmsr987Mek9z8wEoOJgGxPRLYs3X4one+krgoEVfDdDzVf/A3qikCVPbq6FGgisnKDC+kdlEJzHxYjqz4WuX20tdO87/6etInE4HrxBMVvFiocVlLnIs9VFOtcaPuOSJdFBHUJbMyVPoqNoFp5qDKmLDK84b8hkkUOZD/gA6GEjSmx/HJ6yZpULiBNZY3SXGKjR+11/d8JDFNyrmWD1rR1fqwT1dK/FRMar9KyIg45DaFYQOv2WuTQUn8SKcOS4a/rEWToIGucS19Tq8YtFWmQ8JFhGPjrQYW1/6wEpz8LeLIgnJRH/GayrUZn86JqEj7ThvzadjvNRwzTnVTnnbCJmp8P/KNFpNo10HLNxqvlmaraYnXTaJpGFgBl+0cPX1WDpAO4VHF9RnjHl+DgksQbi9+nlzpreG/Kj+n/93T/Xe+fJJ02a41fPk6T0WnuFO0oTZYb38q91Q5xm7bKHj2UtZgnRCkOl0T0n+9aTXHsnFiM33rtO5ONDqz+zxBPpto9txNzj/Vz45j3S6iYYfibDXENDMER6dnBP9YMctxDDE8Gm7tsyQjy7qETNilrQXCxsPFOto23HfRPll6VzojtqjezI6gL2PwsGdn5NCiZNAum89pPUymzrBRzNfeq2XCPkT5ADdfdc8iHXdRxcHtm521G1fOJR9DmD9wBisx9gbJMzGEhb3DwMs2pON6rgF74OX4YamqQLlNGHavuYIxlmneYLve+3aTrsBSU0gABVubhJS8OZHSrDSAz14bNZ4GDpHXP4IoVgapZ5ofg+hGbMHLCR1dYm+4k1rNko0ekM7WvSwt971v5iccCfaK9cY0NmVZnzNFVtjERbxpuqPp0yg2s
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(966005)(7416002)(66946007)(66556008)(66476007)(26005)(316002)(508600001)(16576012)(186003)(6486002)(6666004)(38100700002)(38350700002)(53546011)(110136005)(36916002)(8936002)(36756003)(2906002)(2616005)(31696002)(52116002)(54906003)(31686004)(49246003)(83380400001)(956004)(86362001)(4326008)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?8ra03zTXVMPVA6rUYM7HpEXDMX0B+Hiyce5hX6Gh2nn1MC4zba5fe1LF?=
+ =?Windows-1252?Q?glG5OspcjCGDh7itQbxSZYIWB33etJZqrSChiwpzS3zTs6NPJOoamph9?=
+ =?Windows-1252?Q?JaQvD8GJFvSt1Crs2Af9FXWycKtUd2jN8m/XqsZLMG3gnwCguO7i3UcS?=
+ =?Windows-1252?Q?V93czfkJstzkYMIG8anmPPhuTGMstOlpYjPLDYVNt1Up3t7gqwyo863M?=
+ =?Windows-1252?Q?+bq7MEMTU8mSrZXGNmBxBI5BnbA/ptkcriUkvrwgpW2C/9J211vWyGp+?=
+ =?Windows-1252?Q?qrI9bqcVmbHVGpQ5zrtN6TFT+EWmec9TGMyDU1hR68l2OoWkbNRPj8Qw?=
+ =?Windows-1252?Q?We5vhByk1nVp6o99eC/KQ+NUgVLSCoz6iKviBxAWNksMWWRo9fjT/qji?=
+ =?Windows-1252?Q?SzzvgcxTenS4XLY6yMBNyEq9D4T3T0jekbJg7IM+YTKTs20rJDYN/CJZ?=
+ =?Windows-1252?Q?ouEBhht2FuTRHdGrBuurDTpLOn0yW37tdIalSagV22DZWgqZaVYq8ooC?=
+ =?Windows-1252?Q?77msaP7QYP0p4rXQD6PidwS9KT8//OPn96hPvg2gHVQTbOBFhcYa67c0?=
+ =?Windows-1252?Q?slVXgYoo0YAywHIjhen2d22lgrF4YSVwKKk69Cv9GSqmM8BoJ5lELhxa?=
+ =?Windows-1252?Q?/E7I62+urmc2ueP+3RTTUT5aaW0TGzV9ubIykLLbFTiX79I7HvNygXPc?=
+ =?Windows-1252?Q?eyuE6pbVkE8yseZhuA/lZ1SMS7SkJiZK7e1HC1v/txLT4iCUyTorfxmU?=
+ =?Windows-1252?Q?FqiA3BT+SPlTEl/ZFCK+VrUUHkZkCdvTSXvu6vRpHa1SD57ha7nSJ6B/?=
+ =?Windows-1252?Q?uOBFhLgVsWSMrFyU/k6+fPcvnoBPJGfzrQBOn9z+Aq5Ggse0PbKgVLMl?=
+ =?Windows-1252?Q?/JJCN1YsOC0D4aRW4aUShR7JQxHMQl5c6nO3dtnjzWBeJDlNINip4Wde?=
+ =?Windows-1252?Q?JejrS3Q0ElPE7ZGn5XYD+L1S5vr00H1HJ5ps3yz1oQzxjUTAEYcnSzNA?=
+ =?Windows-1252?Q?2rwCrFAelURauzCajCqaZk7A3dQRuhMEAbH+m/cY8oWz1QUCqAfeQlk9?=
+ =?Windows-1252?Q?Ilqa7oNIALZo8+Sjj/xBys2AcF9iJEWD9fvO9BRRyzbFe8R2ELG57lzE?=
+ =?Windows-1252?Q?LI1mIFVRcKOheJQRe2h+x1C8LTI1c3X15L+LVRM76LcSMXiPE/cScwpJ?=
+ =?Windows-1252?Q?jd25FwnJNe+DbS0UaV5S94SBQtAbXrnTwjIiy7fvVAcwHVKsABX6bQp3?=
+ =?Windows-1252?Q?J3yVLK7jH7jeRYZ2fXdNbjDTqf/IKNxhzcQQ6Le1XYT2C2Hn/VPiPx2T?=
+ =?Windows-1252?Q?VKJheUAaZqUH7R6FzYpsEm8+ELcRiB7dpWLF3upLXaqWJXe6YSgaJjYo?=
+ =?Windows-1252?Q?1+YzJx15xGigmAgfVTw3s4pfePZqK5oJTa3b2mr4eimm2RClTvl6uZmv?=
+ =?Windows-1252?Q?+9oEjooegPvXruU0P3tnzzGx3gL3XPAsRWwtj+hGK7n51Gy7Cwj3j/zk?=
+ =?Windows-1252?Q?b2avjySz7LyIcPhAwcozvP6CBJkWpCENqtHyChBAfbEJnS224C66rGEP?=
+ =?Windows-1252?Q?OJ+gMCeGrOrOHT/BrIGS1JhidcDLHfQB5/d+asE3fsP4pDxYuiXys1Pc?=
+ =?Windows-1252?Q?m4qZW/49sPX0+ui5a3pGL3+f+l1v6sy7pBEtTwkpMUr57rH+7gm5zFBe?=
+ =?Windows-1252?Q?Khhu3pqMyaQdHS3rarAeCHx62F/Xfx5tsZRuKLjhSrJK1D6DGRd6GWJb?=
+ =?Windows-1252?Q?c7Xo78eqNyM2pWq7+Wk=3D?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a747a0d2-87a0-451c-3ad6-08d99ffef869
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2021 01:52:49.2268
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1uG7tjBDz6X7esYN/ExCgsJOpS5jzwct7adjNSt5id5u/ar/ctV36Cm4HScjS1nkkbszbBGFv5KpIQPMkigo9g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB3045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mMB=iZ.uuaexGJe+pUwWTGO
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-On Wed, 27 Oct 2021 15:37:39 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> Today's linux-next merge of the char-misc tree got a conflict in:
->=20
->   drivers/gpu/drm/tegra/gem.c
->=20
-> between commit:
->=20
->   1c4d17a5267b ("drm/tegra: Implement correct DMA-BUF semantics")
->=20
-> from the drm-tegra tree and commit:
->=20
->   16b0314aa746 ("dma-buf: move dma-buf symbols into the DMA_BUF module na=
-mespace")
->=20
-> from the char-misc tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> --=20
-> Cheers,
-> Stephen Rothwell
->=20
-> diff --cc drivers/gpu/drm/tegra/gem.c
-> index 62fc7e8429d4,d38fd7e12b57..000000000000
-> --- a/drivers/gpu/drm/tegra/gem.c
-> +++ b/drivers/gpu/drm/tegra/gem.c
-> @@@ -20,78 -21,60 +21,80 @@@
->   #include "drm.h"
->   #include "gem.h"
->  =20
-> + MODULE_IMPORT_NS(DMA_BUF);
-> +=20
->  -static void tegra_bo_put(struct host1x_bo *bo)
->  +static unsigned int sg_dma_count_chunks(struct scatterlist *sgl, unsign=
-ed int nents)
->   {
->  -	struct tegra_bo *obj =3D host1x_to_tegra_bo(bo);
->  +	dma_addr_t next =3D ~(dma_addr_t)0;
->  +	unsigned int count =3D 0, i;
->  +	struct scatterlist *s;
->  +
->  +	for_each_sg(sgl, s, nents, i) {
->  +		/* sg_dma_address(s) is only valid for entries that have sg_dma_len(s=
-) !=3D 0. */
->  +		if (!sg_dma_len(s))
->  +			continue;
->  +
->  +		if (sg_dma_address(s) !=3D next) {
->  +			next =3D sg_dma_address(s) + sg_dma_len(s);
->  +			count++;
->  +		}
->  +	}
->  =20
->  -	drm_gem_object_put(&obj->gem);
->  +	return count;
->   }
->  =20
->  -/* XXX move this into lib/scatterlist.c? */
->  -static int sg_alloc_table_from_sg(struct sg_table *sgt, struct scatterl=
-ist *sg,
->  -				  unsigned int nents, gfp_t gfp_mask)
->  +static inline unsigned int sgt_dma_count_chunks(struct sg_table *sgt)
->   {
->  -	struct scatterlist *dst;
->  -	unsigned int i;
->  -	int err;
->  -
->  -	err =3D sg_alloc_table(sgt, nents, gfp_mask);
->  -	if (err < 0)
->  -		return err;
->  -
->  -	dst =3D sgt->sgl;
->  +	return sg_dma_count_chunks(sgt->sgl, sgt->nents);
->  +}
->  =20
->  -	for (i =3D 0; i < nents; i++) {
->  -		sg_set_page(dst, sg_page(sg), sg->length, 0);
->  -		dst =3D sg_next(dst);
->  -		sg =3D sg_next(sg);
->  -	}
->  +static void tegra_bo_put(struct host1x_bo *bo)
->  +{
->  +	struct tegra_bo *obj =3D host1x_to_tegra_bo(bo);
->  =20
->  -	return 0;
->  +	drm_gem_object_put(&obj->gem);
->   }
->  =20
->  -static struct sg_table *tegra_bo_pin(struct device *dev, struct host1x_=
-bo *bo,
->  -				     dma_addr_t *phys)
->  +static struct host1x_bo_mapping *tegra_bo_pin(struct device *dev, struc=
-t host1x_bo *bo,
->  +					      enum dma_data_direction direction)
->   {
->   	struct tegra_bo *obj =3D host1x_to_tegra_bo(bo);
->  -	struct sg_table *sgt;
->  +	struct drm_gem_object *gem =3D &obj->gem;
->  +	struct host1x_bo_mapping *map;
->   	int err;
->  =20
->  +	map =3D kzalloc(sizeof(*map), GFP_KERNEL);
->  +	if (!map)
->  +		return ERR_PTR(-ENOMEM);
->  +
->  +	kref_init(&map->ref);
->  +	map->bo =3D host1x_bo_get(bo);
->  +	map->direction =3D direction;
->  +	map->dev =3D dev;
->  +
->   	/*
->  -	 * If we've manually mapped the buffer object through the IOMMU, make
->  -	 * sure to return the IOVA address of our mapping.
->  -	 *
->  -	 * Similarly, for buffers that have been allocated by the DMA API the
->  -	 * physical address can be used for devices that are not attached to
->  -	 * an IOMMU. For these devices, callers must pass a valid pointer via
->  -	 * the @phys argument.
->  -	 *
->  -	 * Imported buffers were also already mapped at import time, so the
->  -	 * existing mapping can be reused.
->  +	 * Imported buffers need special treatment to satisfy the semantics of=
- DMA-BUF.
->   	 */
->  -	if (phys) {
->  -		*phys =3D obj->iova;
->  -		return NULL;
->  +	if (gem->import_attach) {
->  +		struct dma_buf *buf =3D gem->import_attach->dmabuf;
->  +
->  +		map->attach =3D dma_buf_attach(buf, dev);
->  +		if (IS_ERR(map->attach)) {
->  +			err =3D PTR_ERR(map->attach);
->  +			goto free;
->  +		}
->  +
->  +		map->sgt =3D dma_buf_map_attachment(map->attach, direction);
->  +		if (IS_ERR(map->sgt)) {
->  +			dma_buf_detach(buf, map->attach);
->  +			err =3D PTR_ERR(map->sgt);
->  +			goto free;
->  +		}
->  +
->  +		err =3D sgt_dma_count_chunks(map->sgt);
->  +		map->size =3D gem->size;
->  +
->  +		goto out;
->   	}
->  =20
->   	/*
+On 2021/11/4 21:56, Rob Herring wrote:
+> On Wed, Nov 3, 2021 at 9:31 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>> [+to Mauro, author of code being changed,
+>> Rob for "of_pci_get_devfn()" naming question]
+>>
+>> On Wed, Nov 03, 2021 at 02:25:18AM -0400, Wan Jiabing wrote:
+>>> Fix following coccicheck warning:
+>>> ./drivers/pci/controller/dwc/pcie-kirin.c:414:2-34: WARNING: Function
+>>> for_each_available_child_of_node should have of_node_put() before return.
+>>>
+>>> Early exits from for_each_available_child_of_node should decrement the
+>>> node reference counter. Replace return by goto here.
+>>>
+>>> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+>>> ---
+>>>   drivers/pci/controller/dwc/pcie-kirin.c | 3 ++-
+>>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
+>>> index 06017e826832..23a2c076ce53 100644
+>>> --- a/drivers/pci/controller/dwc/pcie-kirin.c
+>>> +++ b/drivers/pci/controller/dwc/pcie-kirin.c
+>>> @@ -422,7 +422,8 @@ static int kirin_pcie_parse_port(struct kirin_pcie *pcie,
+>>>                        pcie->num_slots++;
+>>>                        if (pcie->num_slots > MAX_PCI_SLOTS) {
+>>>                                dev_err(dev, "Too many PCI slots!\n");
+>>> -                             return -EINVAL;
+>>> +                             ret = -EINVAL;
+>>> +                             goto put_node;
+>>>                        }
+>>>
+>>>                        ret = of_pci_get_devfn(child);
+>> This is a change to the code added here:
+>>    https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/commit/?id=31bd24f0cfe0
+>>
+>> This fix looks right to me; all the other early exits from the inner
+>> loop drop the "child" reference.
+>>
+>> But this is a nested loop and the *outer* loop also increments
+>> refcounts, and I don't see that outer loop reference on "parent" being
+>> dropped at all:
+>>
+>>      for_each_available_child_of_node(node, parent) {
+>>        for_each_available_child_of_node(parent, child) {
+>>          ...
+>>          if (error)
+>>            goto put_node;
+>>        }
+>>      }
+>>
+>>    put_node:
+>>      of_node_put(child);
+> Indeed. There should be a put on the parent.
+OK, I'll fix in v2. Thanks.
 
-This is now a conflict between the drm-tegra tree and Linus' tree.
+Jiabing Wan
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/mMB=iZ.uuaexGJe+pUwWTGO
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGEjlQACgkQAVBC80lX
-0Gy2RQf/aN6lhbGhG4hg2Zp8TuopKuuhTZ0nOdpp4QPGXzYTKHz9lPJwTWD45Hoc
-xVPLGAdYYvwQ9jGnDDn6osqNFZV/HjCCR+lVv1aUxhZ9xAs9FVY7my4oQLT2pPVW
-KQwig6kEP2MxZrXO8gmmHClOWhhG/5xe9EA9ZBmq2V/DuwMPdpEuFrMppaJxDoVB
-sVPpCywIMJ0uXPPzyZkxwTsVVdMxOqkeFANTZQmQcXlQ8c4qk3ycSZYyjuhsJjGx
-J2OEDuVxf+Hxe5OEiWqLhx7n15ZvIaPSmAq7rvs8RmKRcC7f00T7eHjHWrIb6KQi
-qky15miThblRxaxaHjLlGo/i7CrJdw==
-=MaUK
------END PGP SIGNATURE-----
-
---Sig_/mMB=iZ.uuaexGJe+pUwWTGO--
