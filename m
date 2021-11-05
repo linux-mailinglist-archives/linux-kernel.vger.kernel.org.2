@@ -2,263 +2,1123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363C544612E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F46446132
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:13:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbhKEJN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 05:13:59 -0400
-Received: from mx0b-00128a01.pphosted.com ([148.163.139.77]:58588 "EHLO
-        mx0b-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231190AbhKEJN6 (ORCPT
+        id S231946AbhKEJOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 05:14:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhKEJOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 05:13:58 -0400
-Received: from pps.filterd (m0167091.ppops.net [127.0.0.1])
-        by mx0b-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A50XT9B019022;
-        Fri, 5 Nov 2021 05:11:16 -0400
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2043.outbound.protection.outlook.com [104.47.73.43])
-        by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3c4t639v7p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Nov 2021 05:11:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aHJF5VXskOqo2pF5dWc9pvNyKKYfhDaexDah2cYdSlCNbqZ2tO8uM/cs30oqxFnlyIbYMRe0LVMBqp5D7GvdFS+Ca67RNUw38S+7L9TDEuHNyG+KkUO2jNxESf9utAIGKQo2ck2ii2OhF6ZJK9M/QZd1N3yTsRVG2gBTp4xq4HV+BKvis120B4WfLRMLlkE2XH9HDWlT2fKbP9P3EKovKTvCnRQpRZ6AYr4JNDLcGQDjWkcI9tv7CgMcNOBdG/5xZG5UO5N6ph2K5sDwH5Au547bYQWT+UUyWtG6B3GSEd4kN+Cu1Vm356zoKiB8QA63Hlqn7FzrgaxWGiVSkG2uJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ust/K6v+u1odAeZcXEhouvg16KS+CWbJx8rhX0q0wWk=;
- b=DNFkWK4d7/Ci7+k3nUzWiruFwfXyRBrRbZ47/JvCIR+vbCR3+mH0SKn/YKqtVOYb4Ez8gPU2ySOGgvLkXG9HWTbrkMtU0ytOiv8TYSeZIiK+JPZalLKsVX6FmfSiTl3YP/nBB2p0jwMbCZlk459W9YCyvP+B7ZbvT4OwS8DQtB1cNEz2qpJR1pwy3jT4xWm4d87ux0M7lkeqdzXOk2HdjEZJ2V+djPWy8LwnX1/daw6B2CrbdFvpmJlhBi/2QaXc1i9diNg331OsTsVdDM1wCnTRtJnctG8mF9NlZPQobTfp1AXv30196foEu6faA29U1KKw2vRz5bSp2/qCDI1Rng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
- dkim=pass header.d=analog.com; arc=none
+        Fri, 5 Nov 2021 05:14:20 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C3CC061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 02:11:41 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id w29so1092504wra.12
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 02:11:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ust/K6v+u1odAeZcXEhouvg16KS+CWbJx8rhX0q0wWk=;
- b=AZiYphWmeNM+ZnxImJ13KkfuOT3Aio4Qiy1X4jiWmlSOv6/HoGgF/Rgw9t10GnBXMWaWdhkNofWyUiTq/S/v4rPNHS74ycvFTqZJyOi0oiUIM7cEnvmvMMa8WmLyGoDIA6+ltZT7YWzRintXrpqDit0qNx9/8csHVjWN1SeB7Ac=
-Received: from PH0PR03MB6366.namprd03.prod.outlook.com (2603:10b6:510:ab::22)
- by PH0PR03MB5925.namprd03.prod.outlook.com (2603:10b6:510:30::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.13; Fri, 5 Nov
- 2021 09:11:14 +0000
-Received: from PH0PR03MB6366.namprd03.prod.outlook.com
- ([fe80::e555:851:6adb:f73]) by PH0PR03MB6366.namprd03.prod.outlook.com
- ([fe80::e555:851:6adb:f73%8]) with mapi id 15.20.4628.022; Fri, 5 Nov 2021
- 09:11:13 +0000
-From:   "Sa, Nuno" <Nuno.Sa@analog.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-CC:     "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 1/2] iio: frequency: admv1013: add support for ADMV1013
-Thread-Topic: [PATCH v3 1/2] iio: frequency: admv1013: add support for
- ADMV1013
-Thread-Index: AQHXzwfgGHROvFVBxUSS1cWk9SZT/6vwAwkggAI6uACAAMOZ0IAAsqmAgAD3rxA=
-Date:   Fri, 5 Nov 2021 09:11:13 +0000
-Message-ID: <PH0PR03MB6366966631672FDD18926628998E9@PH0PR03MB6366.namprd03.prod.outlook.com>
-References: <20211101100420.70304-1-antoniu.miclaus@analog.com>
-        <PH0PR03MB6366548C1CE5476989662F74998B9@PH0PR03MB6366.namprd03.prod.outlook.com>
-        <20211103200325.3416988c@jic23-huawei>
-        <SJ0PR03MB6359234D6DA5D0CC58DB1113998D9@SJ0PR03MB6359.namprd03.prod.outlook.com>
- <20211104182317.2b448a43@jic23-huawei>
-In-Reply-To: <20211104182317.2b448a43@jic23-huawei>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
- =?utf-8?B?bk5jYm5OaFhHRndjR1JoZEdGY2NtOWhiV2x1WjF3d09XUTRORGxpTmkwek1t?=
- =?utf-8?B?UXpMVFJoTkRBdE9EVmxaUzAyWWpnMFltRXlPV1V6TldKY2JYTm5jMXh0YzJj?=
- =?utf-8?B?dE5URXlaR0V6TlRFdE0yVXhPQzB4TVdWakxUaGlPVGN0WlRSaU9UZGhOMk5q?=
- =?utf-8?B?TnpFd1hHRnRaUzEwWlhOMFhEVXhNbVJoTXpVekxUTmxNVGd0TVRGbFl5MDRZ?=
- =?utf-8?B?amszTFdVMFlqazNZVGRqWXpjeE1HSnZaSGt1ZEhoMElpQnplajBpTkRnNU9T?=
- =?utf-8?B?SWdkRDBpTVRNeU9EQTFOemN3TnpFME5EQXhOamc1SWlCb1BTSTJWR3N5Tmpa?=
- =?utf-8?B?dmQzWlJhRWd5UWtock9IRkhUMjVYTlRCdk4zYzlJaUJwWkQwaUlpQmliRDBp?=
- =?utf-8?B?TUNJZ1ltODlJakVpSUdOcFBTSmpRVUZCUVVWU1NGVXhVbE5TVlVaT1EyZFZR?=
- =?utf-8?B?VUZGYjBOQlFVTmFlVFF3VkVwa1RGaEJXRUV5VjNKVE1XUTFLMFpqUkZwaGRF?=
- =?utf-8?B?eFdNMjQwVlVSQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCU0VG?=
- =?utf-8?B?QlFVRkVZVUZSUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJSVUZC?=
- =?utf-8?B?VVVGQ1FVRkJRVlpKUlhadlVVRkJRVUZCUVVGQlFVRkJRVUZCUVVvMFFVRkJR?=
- =?utf-8?B?bWhCUjFGQllWRkNaa0ZJVFVGYVVVSnFRVWhWUVdOblFteEJSamhCWTBGQ2VV?=
- =?utf-8?B?RkhPRUZoWjBKc1FVZE5RV1JCUW5wQlJqaEJXbWRDYUVGSGQwRmpkMEpzUVVZ?=
- =?utf-8?B?NFFWcG5RblpCU0UxQllWRkNNRUZIYTBGa1owSnNRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkZRVUZCUVVGQlFVRkJRV2RCUVVG?=
- =?utf-8?B?QlFVRnVaMEZCUVVkRlFWcEJRbkJCUmpoQlkzZENiRUZIVFVGa1VVSjVRVWRW?=
- =?utf-8?B?UVZoM1FuZEJTRWxCWW5kQ2NVRkhWVUZaZDBJd1FVaE5RVmgzUWpCQlIydEJX?=
- =?utf-8?B?bEZDZVVGRVJVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCVVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVOQlFVRkJRVUZEWlVGQlFVRlpVVUpyUVVkclFWaDNRbnBCUjFWQldY?=
- =?utf-8?B?ZENNVUZJU1VGYVVVSm1RVWhCUVdOblFuWkJSMjlCV2xGQ2FrRklVVUZqZDBK?=
- =?utf-8?B?bVFVaFJRV0ZSUW14QlNFbEJUV2RCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFrRkJRVUZCUVVGQlFVRkpRVUZCUVVGQlFUMDlJaTgrUEM5dFpYUmhQZz09?=
-x-dg-rorf: true
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=analog.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b06be3b5-4f9e-440a-1864-08d9a03c3785
-x-ms-traffictypediagnostic: PH0PR03MB5925:
-x-microsoft-antispam-prvs: <PH0PR03MB59256C9B3BED2C5ACBB3731D998E9@PH0PR03MB5925.namprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qvb1FONHKzJRRNEvR89eAIqg38WuuCuclL64aKpWi3YQ/KxNzaWnFBk/CXwx739ykMUV8N2vPuu5AVYd9aYalegUkvYvBMzr3NyaqipFxu3zyZiJE3/IfP0/lg+bIAxVz6ZVSwoNtcztV2E39cTlxugF55cm9IVC71y8gYS/VbERyb2nLu2Z9J/XmTRpBNQS/79MeZzuOkqwI7+GIoGWXKTY/b0dBrdVr7cb4+2l99FcRk6bi6gr+JU34rAPyxFd2Xeu0kIoi3RYApJZzoSZf67fyFp9oPfKqp5C815VumGML1oMrR2x5/ulvHhlsdjNjY4yHJoJUm1L5gkROQiwJo70NBUJ+t6dwoXtVhOaVVUXkzkNpK3lYjrfRxKGT6spp3/pkERkI03bqdrZQ3l2l0g2rGrWiU4CYnmQxV254MpACK41e/heMBA6Ne5y30OlnXc7U6/iGXB/d26TcJKN4ElHW1tziM7CyrgSO5qi4YBS1o8+8SYOXmrG58PrjGwN3BaUCayMdiFs0vkz1hM3fgc8dNVEupqaXtFnjd2KUsAt9cbjiDGXEM7LI2c0rZjcDlMrEdiV9czezjFnbsx2ItmmtyAokY0MM5XNQTh8An8g0Pjb/iJXvGdE7wv8zHtnx/TchaWeVd86U5mo07eFKJNDki3dmU0LB76Ny7la1T2YPS+ZDXiX4ECAplHoJzycoji+ZL4Gx8AGnAIhYGIDaQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR03MB6366.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(66476007)(5660300002)(2906002)(7696005)(6916009)(66556008)(6506007)(64756008)(33656002)(55016002)(53546011)(83380400001)(76116006)(66446008)(38070700005)(122000001)(38100700002)(54906003)(71200400001)(186003)(508600001)(8936002)(9686003)(8676002)(26005)(316002)(4326008)(52536014)(86362001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bDdUUUl4US9jMEkzWThSbmJWbElvWEV2Q1BGQlVtS1dheWRvNzIwRnQ0aXdj?=
- =?utf-8?B?K1FrZVhFUzhCZ3RYMGtKY1d2aXE2VjJMQTNET2Q3Y1R3anJNL0pLcTZtNzJz?=
- =?utf-8?B?SVVDMGgrdWpUN3Rhd0tEdjlVQ1ExbkJIcjNOcm0wb0ZROWNLVlhPalROd0pR?=
- =?utf-8?B?Vzd2Uk1xbEN4UU80d2w3ZENMdkY0cGlGaVpEWUF2ejB1NDBZM05xVGt6YUxN?=
- =?utf-8?B?bmxaZ3psaDZrVjZQVHdTeUg5MG5RaXF5NmZkM25tSTA0emt0ejNYMzR6c0Yv?=
- =?utf-8?B?UnN6UHpjMjJOdDMxSDFEQjMxNC9NUjYxQlM4TDRtWFNxdnAvbWhSeHdoUnRZ?=
- =?utf-8?B?NTdTSTBTVEFTRlQwaHJUQmJMOVk1MXNrZkxFSVlVZWoxZ3drbjk2TjFqRElp?=
- =?utf-8?B?cnhDamhBcTVUMHgwcXFZbytsc2ZENmovRlJHVVJVa2xWamV6ZkxWaEk0azdW?=
- =?utf-8?B?dncvYlZmTksycnJjUnAvM0tueEpKekRsQWVnTi9WVFhQMm1lM1BPRW94YUJi?=
- =?utf-8?B?cGFFOU41cnNrZlVWaXR3L0ZkUnlMaGM1Vk1qM2MvZlB2SUhyQ2Q0c01CQzdU?=
- =?utf-8?B?dy9OSjJjRmxzWlNhTHNvaERnaklGWlN0dm41eTR2K2c3dVprQU1RNFhpa2Nl?=
- =?utf-8?B?L0xCRnBCSG9GcklsTXBTdGxLQWtmVkVHSWk3OFlYYUNRVlBEYXk2V2prblc1?=
- =?utf-8?B?aGVKMVljK28vMHVmWmo4T3JiOUs0SXkwbS94cWVHdityeEdCY05yQ2ZuWHY0?=
- =?utf-8?B?YXUySTBxc3piTjRoS2lBYWZUZXZscGlHZ1AxNm02dWMxUXh2NFZXMkd4dUxn?=
- =?utf-8?B?a1dwU1NYenFTUWJHRFRwQmk4Q2FBKzRJcS92TkhtYkI3QlFxN0l0clgvdGd5?=
- =?utf-8?B?S0JEdWorc2dYMFQvei9yZzdSb2poVzM5TkdrSW1TYjJXWHcvenZEc2djR0dN?=
- =?utf-8?B?VGxQemVxQTVZTHJmQURIbFpqQ0QvVkJTbklLUGxyWm5WUWZTUlBPN29ic3JV?=
- =?utf-8?B?OTFWaXFtVjVDb2RlSEJqU3hDbThPWFVJWnBIWXI0Q3FBamZkaW1NTEJXR1Bw?=
- =?utf-8?B?N2NyeFhyNnVDR1hJVTNOZVl5QmJYY08wSWc2b0hFcDZ6QlRIQ1VSanJuUVlW?=
- =?utf-8?B?NjV4V3JGeDNrTHRLT2tTL0U0TGxMU2c1c0VVUzlWbkxYbHVpdDRITUxrZ056?=
- =?utf-8?B?dFBRREZ1L3ZwSWdRTHhCSGFMdmlPemwvOHZLUEUrY0JEMFc5Z1ZDOW1LQSta?=
- =?utf-8?B?TEpnR0ZncFdTM0tjenVmRElNNVFZeUp2TDlkeUt2VmFVb3pLSTJSaSs4bEI3?=
- =?utf-8?B?dnYzUUNXOExkMFNWVWhpNjRVSEJyVjB3SitqVjl4MFlkMDV5S2t1eExKcHRD?=
- =?utf-8?B?NW1nZURIS1V1N2ZUcGxBcC8vYVBxV3ZxZkVVb3BlYkNGQXZKdDBuZXczQmp1?=
- =?utf-8?B?dFc2S28yWUgyaGJTR1owKzNOc3JKTm1YQXpGMVcxQ1NHQmlPMkhKZ3lBcXhV?=
- =?utf-8?B?QUJGTm80VTExTWpjcXpPUmFCN0g1V29OK1U1ZDI5cXF2TzNKSEJ4eDgwOG54?=
- =?utf-8?B?eFAzMUwvZWxXSW9xOXR6bEhvOGhydHVDUW5aWlB3SGJ0dThuSEFod1hrUzVu?=
- =?utf-8?B?M2NwUE9NNFZvRHMzZ3hsMnU5c1VsNURoZHJDdEZjYll0TTlYcWxmQWlxZWsz?=
- =?utf-8?B?QndKUUdBajIxYnY3bkc5dCtjVjRaMUhjMWMzeHFaeVNpREVGeWwrSnhscGxT?=
- =?utf-8?B?SkNFSDdIZGV2dG1qYVhKYllKVE5HMDJDMFlGbXZHZkR0bjJoc1J5OTdSR1Nq?=
- =?utf-8?B?K21BTGMwcllRMnJHQjBEak1xM0wvczFIem9uOVNub3laK1VGbzNiNmI5UDRv?=
- =?utf-8?B?TG1Raks0YlRUWFBWUWQ0RFZhZTZXcHQ5ZVpXSXlsUzFIQ3JBRzFQd2xnbkhK?=
- =?utf-8?B?QzdMQlVReXRwWmdlVzZ4UGl4WmxrUnFRZGJNWVBtRmpDbW5uZUZGWktwY0RC?=
- =?utf-8?B?MWNlY2JwaFhrczlmZlM1eTJDZ2hXZTlsdVp5dVM5WGIvK25ZUkhpYnJtS2lF?=
- =?utf-8?B?REU2U1pvUWFVT2k4bFdTL25qaG5peTJNRVFQV0ExRUJKL0xlekNBanQ0K3R4?=
- =?utf-8?B?YzlnQTFmREE2aE9RZkhtdzV2YWNoRVE0UDVVU3l2QXVqaGRPMHFtRk9hNTNp?=
- =?utf-8?B?cFE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1bz3/JOl+KWwwRr3/O0Bp33aeNIsD/g3lOrT7yN+a4I=;
+        b=Wqx69v2358mAXvSkddRifMnDwHegtWYgWDLVjjpn34GYcVx+MLtHMeNBRneesmVVcu
+         ZJUAZnz0RXFc5lCNlQXQhP4J4QHeCoke0CMDqbWzcXYg0z3tI0Zo0bB3HqrDtyKh93eu
+         mV8iCsKsxYXmAPrh4ToFQhynWRN8lOAKEK7pYAAmAH4/mExhOKN90lWXPdzu8yy3n4MF
+         PU9Arc9evYMdFKd4lZmaD6sQ7SeAvDwAgUCxutGOI/vjB4MlIqq9k8ztzIv91GXMyaaa
+         K1+bRZr65iNPzyU20ZlxpNBlJDCndT71iY8+3A1Lv7e0My9hfJk0kWNyBMgSaFNHwZr1
+         8eqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1bz3/JOl+KWwwRr3/O0Bp33aeNIsD/g3lOrT7yN+a4I=;
+        b=4FoRxiRH0w4lmtQEAUtuuutz2AnwgHi4s3cVN5Nd0xrEgd9VCIUCyG5SRXHqps+ffC
+         K4wN2KEPeyWp3+koK32uduCjnH5p7IFNaQkI73QgLDXMQZuzsanx377DrayAwqhgLZPu
+         /reyFARpLC9Nb5FzGpD3oX1dM2TdIRZd4rLmXNRNdZ4Jj/f8pMKz7ahRYIY4AVtTQtbF
+         LOcRTfOX5J854VB1yrB2LFpssJrtrobtqzgCfZC2KSpcf/SGiQeVaJOJeMxk5iTWsfKe
+         PvKcdShO6es6z5OXfxV6LVd3yNdaLKNrJfIy3H9vW5y66Nj5eE0A8uA+btXpPSVBOVpQ
+         0Hng==
+X-Gm-Message-State: AOAM533WZ52ITk09Z7UInHaiD9Iv8IyMGgLpufXsRhNCHk22gGKOiUZ4
+        TRJLa+BFnUjeLwTvs38e102nuf754LDOdDHkifv7tIfua5Ldt4+X/fA=
+X-Google-Smtp-Source: ABdhPJwWKXVC8EhfA717k2tirJWvRH3R9THqb2VMF5Ykuqt++rIDt/HIXkF2czGGYMDWSQn63oo+ysZEruqp8POO5mY=
+X-Received: by 2002:a5d:6147:: with SMTP id y7mr27989427wrt.217.1636103499407;
+ Fri, 05 Nov 2021 02:11:39 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: analog.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR03MB6366.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b06be3b5-4f9e-440a-1864-08d9a03c3785
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Nov 2021 09:11:13.7795
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QzR6apiYJ8Vm9Qs3zOHXZ5ft3FcRJL4Y3xgGbpPc92LEvn9U3W0XImkCkjEUy8qD8HoX6n4Wefks4c6Na4u88A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR03MB5925
-X-Proofpoint-GUID: wrqe6mGNjr9NTq3VAgZ1xwmiDjds1rBJ
-X-Proofpoint-ORIG-GUID: wrqe6mGNjr9NTq3VAgZ1xwmiDjds1rBJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-05_01,2021-11-03_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- malwarescore=0 adultscore=0 mlxlogscore=999 mlxscore=0 bulkscore=0
- priorityscore=1501 clxscore=1015 suspectscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111050054
+References: <20211028092702.1099653-1-xiehuan09@gmail.com> <20211105004704.3f4aa456c2c537a56f64e65a@kernel.org>
+In-Reply-To: <20211105004704.3f4aa456c2c537a56f64e65a@kernel.org>
+From:   Jeff Xie <xiehuan09@gmail.com>
+Date:   Fri, 5 Nov 2021 17:11:27 +0800
+Message-ID: <CAEr6+EAGnYn337KAS3Sgx4m84vScxdRrS_yscofxErDugXOeSg@mail.gmail.com>
+Subject: Re: [RFC] [PATCH v3] trace: Add trace any kernel object
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, mingo@redhat.com,
+        Tom Zanussi <zanussi@kernel.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSm9uYXRoYW4gQ2FtZXJv
-biA8amljMjNAa2VybmVsLm9yZz4NCj4gU2VudDogVGh1cnNkYXksIE5vdmVtYmVyIDQsIDIwMjEg
-NzoyMyBQTQ0KPiBUbzogU2EsIE51bm8gPE51bm8uU2FAYW5hbG9nLmNvbT4NCj4gQ2M6IE1pY2xh
-dXMsIEFudG9uaXUgPEFudG9uaXUuTWljbGF1c0BhbmFsb2cuY29tPjsNCj4gcm9iaCtkdEBrZXJu
-ZWwub3JnOyBsaW51eC1paW9Admdlci5rZXJuZWwub3JnOw0KPiBkZXZpY2V0cmVlQHZnZXIua2Vy
-bmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTogW1BB
-VENIIHYzIDEvMl0gaWlvOiBmcmVxdWVuY3k6IGFkbXYxMDEzOiBhZGQgc3VwcG9ydCBmb3INCj4g
-QURNVjEwMTMNCj4gDQo+IFtFeHRlcm5hbF0NCj4gDQo+IE9uIFRodSwgNCBOb3YgMjAyMSAwODox
-MToxMiArMDAwMA0KPiAiU2EsIE51bm8iIDxOdW5vLlNhQGFuYWxvZy5jb20+IHdyb3RlOg0KPiAN
-Cj4gPiA+IEZyb206IEpvbmF0aGFuIENhbWVyb24gPGppYzIzQGtlcm5lbC5vcmc+DQo+ID4gPiBT
-ZW50OiBXZWRuZXNkYXksIE5vdmVtYmVyIDMsIDIwMjEgOTowNCBQTQ0KPiA+ID4gVG86IFNhLCBO
-dW5vIDxOdW5vLlNhQGFuYWxvZy5jb20+DQo+ID4gPiBDYzogTWljbGF1cywgQW50b25pdSA8QW50
-b25pdS5NaWNsYXVzQGFuYWxvZy5jb20+Ow0KPiA+ID4gcm9iaCtkdEBrZXJuZWwub3JnOyBsaW51
-eC1paW9Admdlci5rZXJuZWwub3JnOw0KPiA+ID4gZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7
-IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gPiA+IFN1YmplY3Q6IFJlOiBbUEFUQ0gg
-djMgMS8yXSBpaW86IGZyZXF1ZW5jeTogYWRtdjEwMTM6IGFkZCBzdXBwb3J0DQo+IGZvcg0KPiA+
-ID4gQURNVjEwMTMNCj4gPiA+DQo+ID4gPiBbRXh0ZXJuYWxdDQo+ID4gPg0KPiA+ID4gT24gVHVl
-LCAyIE5vdiAyMDIxIDEwOjA5OjE1ICswMDAwDQo+ID4gPiAiU2EsIE51bm8iIDxOdW5vLlNhQGFu
-YWxvZy5jb20+IHdyb3RlOg0KPiA+ID4NCj4gPiA+ID4gPiArI2RlZmluZSBBRE1WMTAxM19DSEFO
-X1BIQVNFKF9jaGFubmVsLCByZl9jb21wKSB7DQo+IAlcDQo+ID4gPiA+ID4gKwkudHlwZSA9IElJ
-T19BTFRWT0xUQUdFLA0KPiAJXA0KPiA+ID4gPiA+ICsJLm1vZGlmaWVkID0gMSwJCQkJCQlcDQo+
-ID4gPiA+ID4gKwkub3V0cHV0ID0gMSwJCQkJCQlcDQo+ID4gPiA+ID4gKwkuaW5kZXhlZCA9IDEs
-CQkJCQkJXA0KPiA+ID4gPiA+ICsJLmNoYW5uZWwyID0gSUlPX01PRF8jI3JmX2NvbXAsDQo+IAlc
-DQo+ID4gPiA+ID4gKwkuY2hhbm5lbCA9IF9jaGFubmVsLAkJCQkJXA0KPiA+ID4gPiA+ICsJLmlu
-Zm9fbWFza19zZXBhcmF0ZSA9IEJJVChJSU9fQ0hBTl9JTkZPX1BIQVNFKQ0KPiAJXA0KPiA+ID4g
-PiA+ICsJfQ0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArI2RlZmluZSBBRE1WMTAxM19DSEFOX0NB
-TElCKF9jaGFubmVsLCByZl9jb21wKSB7DQo+IAlcDQo+ID4gPiA+ID4gKwkudHlwZSA9IElJT19B
-TFRWT0xUQUdFLA0KPiAJXA0KPiA+ID4gPiA+ICsJLm1vZGlmaWVkID0gMSwJCQkJCQlcDQo+ID4g
-PiA+ID4gKwkub3V0cHV0ID0gMSwJCQkJCQlcDQo+ID4gPiA+ID4gKwkuaW5kZXhlZCA9IDEsCQkJ
-CQkJXA0KPiA+ID4gPiA+ICsJLmNoYW5uZWwyID0gSUlPX01PRF8jI3JmX2NvbXAsDQo+IAlcDQo+
-ID4gPiA+ID4gKwkuY2hhbm5lbCA9IF9jaGFubmVsLAkJCQkJXA0KPiA+ID4gPiA+ICsJLmluZm9f
-bWFza19zZXBhcmF0ZSA9DQo+IEJJVChJSU9fQ0hBTl9JTkZPX0NBTElCQklBUykJXA0KPiA+ID4g
-PiA+ICsJfQ0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArc3RhdGljIGNvbnN0IHN0cnVjdCBpaW9f
-Y2hhbl9zcGVjIGFkbXYxMDEzX2NoYW5uZWxzW10gPSB7DQo+ID4gPiA+ID4gKwlBRE1WMTAxM19D
-SEFOX1BIQVNFKDAsIEkpLA0KPiA+ID4gPiA+ICsJQURNVjEwMTNfQ0hBTl9QSEFTRSgwLCBRKSwN
-Cj4gPiA+ID4gPiArCUFETVYxMDEzX0NIQU5fQ0FMSUIoMCwgSSksDQo+ID4gPiA+ID4gKwlBRE1W
-MTAxM19DSEFOX0NBTElCKDAsIFEpLA0KPiA+ID4gPiA+ICsJQURNVjEwMTNfQ0hBTl9DQUxJQigx
-LCBJKSwNCj4gPiA+ID4gPiArCUFETVYxMDEzX0NIQU5fQ0FMSUIoMSwgUSksDQo+ID4gPiA+ID4g
-K307DQo+ID4gPiA+ID4gKw0KPiA+ID4gPg0KPiA+ID4gPiBIbW0sIElmIEknbSBub3QgbWlzc2lu
-ZyBub3RoaW5nIHRoaXMgbGVhZHMgdG8gc29tZXRoaW5nIGxpa2U6DQo+ID4gPiA+DQo+ID4gPiA+
-IG91dF9hbHR2b2x0YWdlMF9pX3BoYXNlDQo+ID4gPiA+IG91dF9hbHR2b2x0YWdlMF9xX3BoYXNl
-DQo+ID4gPiA+IG91dF9hbHR2b2x0YWdlMF9pX2NhbGliYmlhcw0KPiA+ID4gPiBvdXRfYWx0dm9s
-dGFnZTBfcV9jYWxpYmJpYXMNCj4gPiA+ID4gb3V0X2FsdHZvbHRhZ2UxX2lfY2FsaWJiaWFzDQo+
-ID4gPiA+IG91dF9hbHR2b2x0YWdlMV9xX2NhbGliYmlhcw0KPiA+ID4gPg0KPiA+ID4gPiBUbyBt
-ZSBpdCBpcyByZWFsbHkgbm9uIG9idmlvdXMgdGhhdCBpbmRleCAxIGFsc28gYXBwbGllcyB0byB0
-aGUgc2FtZQ0KPiA+ID4gPiBjaGFubmVsLiBJIHNlZSB0aGF0IHdlIGhhdmUgdGhpcyBsaWtlIHRo
-aXMgcHJvYmFibHkgYmVjYXVzZSB3ZQ0KPiA+ID4gPiBjYW4ndCB1c2UgbW9kaWZpZWQgYW5kIGRp
-ZmZlcmVudGlhbCBhdCB0aGUgc2FtZSB0aW1lLCByaWdodD8NCj4gPiA+ID4NCj4gPiA+DQo+ID4g
-PiBJbmRlZWQsIHRoaXMgaXMgdGhlIHByb2JsZW0geW91IG1lbnRpb25lZCBpbiB0aGUgZGlzY3Vz
-c2lvbiBvbiB2Mg0KPiA+ID4gTXkgc3VnZ2VzdGlvbiBvZiBtYWtpbmcgaXQgY2xlYXIgaXQgaXMg
-YSBkaWZmZXJlbnRpYWwgY2hhbm5lbCBhbmQgdGhlbg0KPiA+ID4gYXBwbHlpbmcgY2FsaWJiaWFz
-IHRvIHRoZSBwYXJ0cyBkb2Vzbid0IHdvcmsgYXMgaXQgd291bGQgbmVlZCB0bw0KPiA+ID4gaGF2
-ZSBib3RoIG1vZGlmaWVycyBhbmQgYSBzZWNvbmQgY2hhbm5lbCBpbmRleC4NCj4gPiA+IEFzIGZv
-ciB3aHkgdGhhdCBpcyBhbiBpc3N1ZSwgaXQgY29tZXMgZG93biB0byB0cnlpbmcgdG8ga2VlcCB0
-aGUNCj4gPiA+IGV2ZW50IGludGVyZmFjZSBkZXNjcmlwdGl2ZSwgYnV0IHN0aWxsIG1pbmltYWwu
-ICBXZSBiYXNpY2FsbHkgcmFuDQo+ID4gPiBvdXQgb2YgYml0cyBhbmQgYXQgdGhlIHRpbWUgSSBj
-b3VsZG4ndCB0aGluayBvZiBhIHJlYXNvbiB3ZSdkIHdhbnQNCj4gPiA+IGJvdGggZGlmZmVyZW50
-aWFsIGFuZCBhIG1vZGlmaWVyLi4uDQo+ID4NCj4gPiBJJ20gbm90IHJlYWxseSBzZWVpbmcgdGhl
-IGlzc3VlIHdpdGggdGhlIGV2ZW50IGludGVyZmFjZSBidXQgdGhhdCBpcw0KPiBtb3N0bHkNCj4g
-PiBiZWNhdXNlIEkgc3RpbGwgbmV2ZXIgaGFkIHRvIGRlYWwgd2l0aCBpdCwgc28gSSBuZXZlciBs
-b29rZWQgdGhhdCBkZWVwbHkNCj4gaW50bw0KPiA+IHRoZSBjb2RlLiBNaWdodCBiZSBhIGdvb2Qg
-dGltZSBrbm93IDopDQo+IA0KPiBub3QgdGhhdCBpdCByZWFsbHkgbWF0dGVycyBmb3IgdGhpcyBk
-aXNjdXNzaW9uLCBidXQgbWVoIC0gSSBrbm93IHdoZXJlDQo+IHRvIGxvb2sgOikNCj4gDQo+IC8q
-Kg0KPiAgKiBJSU9fRVZFTlRfQ09ERSgpIC0gY3JlYXRlIGV2ZW50IGlkZW50aWZpZXINCj4gICog
-QGNoYW5fdHlwZToJVHlwZSBvZiB0aGUgY2hhbm5lbC4gU2hvdWxkIGJlIG9uZSBvZiBlbnVtDQo+
-IGlpb19jaGFuX3R5cGUuDQo+ICAqIEBkaWZmOglXaGV0aGVyIHRoZSBldmVudCBpcyBmb3IgYW4g
-ZGlmZmVyZW50aWFsIGNoYW5uZWwgb3Igbm90Lg0KPiAgKiBAbW9kaWZpZXI6CU1vZGlmaWVyIGZv
-ciB0aGUgY2hhbm5lbC4gU2hvdWxkIGJlIG9uZSBvZiBlbnVtDQo+IGlpb19tb2RpZmllci4NCj4g
-ICogQGRpcmVjdGlvbjoJRGlyZWN0aW9uIG9mIHRoZSBldmVudC4gT25lIG9mIGVudW0NCj4gaWlv
-X2V2ZW50X2RpcmVjdGlvbi4NCj4gICogQHR5cGU6CVR5cGUgb2YgdGhlIGV2ZW50LiBTaG91bGQg
-YmUgb25lIG9mIGVudW0NCj4gaWlvX2V2ZW50X3R5cGUuDQo+ICAqIEBjaGFuOglDaGFubmVsIG51
-bWJlciBmb3Igbm9uLWRpZmZlcmVudGlhbCBjaGFubmVscy4NCj4gICogQGNoYW4xOglGaXJzdCBj
-aGFubmVsIG51bWJlciBmb3IgZGlmZmVyZW50aWFsIGNoYW5uZWxzLg0KPiAgKiBAY2hhbjI6CVNl
-Y29uZCBjaGFubmVsIG51bWJlciBmb3IgZGlmZmVyZW50aWFsIGNoYW5uZWxzLg0KPiAgKi8NCj4g
-I2RlZmluZSBJSU9fRVZFTlRfQ09ERShjaGFuX3R5cGUsIGRpZmYsIG1vZGlmaWVyLCBkaXJlY3Rp
-b24sDQo+IAlcDQo+IAkJICAgICAgIHR5cGUsIGNoYW4sIGNoYW4xLCBjaGFuMikJCQlcDQo+IAko
-KCh1NjQpdHlwZSA8PCA1NikgfCAoKHU2NClkaWZmIDw8IDU1KSB8CQkJXA0KPiAJICgodTY0KWRp
-cmVjdGlvbiA8PCA0OCkgfCAoKHU2NCltb2RpZmllciA8PCA0MCkgfAkJXA0KPiAJICgodTY0KWNo
-YW5fdHlwZSA8PCAzMikgfCAoKCh1MTYpY2hhbjIpIDw8IDE2KSB8ICgodTE2KWNoYW4xKSB8DQo+
-IFwNCj4gCSAoKHUxNiljaGFuKSkNCj4gDQo+IEknZCBmb3Jnb3R0ZW4gdGhlIG9kZCBjaGFuIHZz
-IGNoYW4xIGJpdCA6KQ0KPiANCj4gT3RoZXJ3aXNlLCBrZXkgdGhpbmcgaXMgd2UgYXJlIHJ1bm5p
-bmcgb3V0IG9mIHNwYWNlIGluIHRoZSA2NCBiaXRzIHRoYXQNCj4gYXJlIHB1c2hlZCB0aHJvdWdo
-IHRoZSBldmVudCBrZmlmby4NCg0KWWVhaCwgaXQgdG9vayBtZSBhIGJpdCB0byByZW1lbWJlciB0
-byBsb29rIGF0IHRoZSB1YXBpIGJ1dCB0aGVuICBJIGZvdW5kDQp0aG9zZSBkZWZpbmVzLi4uDQoN
-Ci0gTnVubyBTw6ENCg==
+Hi Masami,
+
+Thank you very much for your patient guidance and help, It helped me a lot.
+
+On Thu, Nov 4, 2021 at 11:47 PM Masami Hiramatsu <mhiramat@kernel.org> wrot=
+e:
+>
+> Hi Jeff,
+>
+> Thank you for updating!
+>
+> On Thu, 28 Oct 2021 17:27:02 +0800
+> Jeff Xie <xiehuan09@gmail.com> wrote:
+>
+> > Introduce a method based on function tracer and kprobe/uprobe/trace_eve=
+nt/
+> > to trace any object in the linux kernel.
+> >
+> > Usage:
+> > When using kprobe/uprobe/trace_event/ we can use a new trigger(objtrace=
+)
+> > to set object and trigger object trace.
+> >
+> > For example:
+> >
+> > For the function bio_add_page, we can trace the first argument:
+> >
+> > int bio_add_page(struct bio *bio, struct page *page,
+> >                               unsigned int len, unsigned int offset)
+> >
+> > [root@JeffXie ]# cd /sys/kernel/debug/tracing/
+> > [root@JeffXie tracing]# echo 'p bio_add_page arg1=3D$arg1' > kprobe_eve=
+nts
+> > [root@JeffXie tracing]# cd events/kprobes/p_bio_add_page_0/
+> > [root@JeffXie p_bio_add_page_0]# echo 'objtrace:arg1:1 if comm =3D=3D "=
+cat"' > ./trigger
+> > [root@JeffXie p_bio_add_page_0]# cat /test.txt
+> > [root@JeffXie p_bio_add_page_0]# cd /sys/kernel/debug/tracing/
+> > [root@JeffXie tracing]# cat ./trace
+> > # tracer: nop
+> > #
+> > # entries-in-buffer/entries-written: 81/81   #P:4
+> > #
+> > #                                _-----=3D> irqs-off
+> > #                               / _----=3D> need-resched
+> > #                              | / _---=3D> hardirq/softirq
+> > #                              || / _--=3D> preempt-depth
+> > #                              ||| / _-=3D> migrate-disable
+> > #                              |||| /     delay
+> > #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+> > #              | |         |   |||||     |         |
+> >              cat-122     [001] .....   111.193997: bio_add_page <-ext4_=
+mpage_readpages object:0xffff888102a4b900
+> >              cat-122     [001] .....   111.193998: __bio_try_merge_page=
+ <-bio_add_page object:0xffff888102a4b900
+> >              cat-122     [001] .....   111.193998: __bio_add_page <-bio=
+_add_page object:0xffff888102a4b900
+> >              cat-122     [001] .....   111.193998: submit_bio <-ext4_mp=
+age_readpages object:0xffff888102a4b900
+> >              cat-122     [001] .....   111.193998: submit_bio_noacct <-=
+ext4_mpage_readpages object:0xffff888102a4b900
+> >              cat-122     [001] .....   111.193999: __submit_bio <-submi=
+t_bio_noacct object:0xffff888102a4b900
+> >              cat-122     [001] .....   111.193999: submit_bio_checks <-=
+__submit_bio object:0xffff888102a4b900
+> >              cat-122     [001] .....   111.193999: __cond_resched <-sub=
+mit_bio_checks object:0xffff888102a4b900
+> >              cat-122     [001] .....   111.193999: rcu_all_qs <-__cond_=
+resched object:0xffff888102a4b900
+> >              cat-122     [001] .....   111.194000: should_fail_bio <-su=
+bmit_bio_checks object:0xffff888102a4b900
+> >              cat-122     [001] .....   111.194001: blk_mq_submit_bio <-=
+__submit_bio object:0xffff888102a4b900
+> >              cat-122     [001] .....   111.194001: blk_attempt_plug_mer=
+ge <-blk_mq_submit_bio object:0xffff888102a4b900
+> >              cat-122     [001] .....   111.194001: __blk_mq_sched_bio_m=
+erge <-blk_mq_submit_bio object:0xffff888102a4b900
+> >              cat-122     [001] .....   111.194002: __blk_mq_alloc_reque=
+st <-blk_mq_submit_bio object:0xffff888102a4b900
+> >              cat-122     [001] .....   111.194002: blk_mq_get_tag <-__b=
+lk_mq_alloc_request object:0xffff888102a4b900
+> >              cat-122     [001] .....   111.194003: blk_account_io_start=
+ <-blk_mq_submit_bio object:0xffff888102a4b900
+> >           <idle>-0       [001] d....   111.194212: bio_advance <-blk_up=
+date_request object:0xffff888102a4b900
+> >           <idle>-0       [001] d....   111.194213: bio_endio <-blk_upda=
+te_request object:0xffff888102a4b900
+> >           <idle>-0       [001] d....   111.194213: mpage_end_io <-blk_u=
+pdate_request object:0xffff888102a4b900
+> >           <idle>-0       [001] d....   111.194213: __read_end_io <-blk_=
+update_request object:0xffff888102a4b900
+> >           <idle>-0       [001] d....   111.194218: bio_put <-blk_update=
+_request object:0xffff888102a4b900
+> >           <idle>-0       [001] d....   111.194218: bio_free <-blk_updat=
+e_request object:0xffff888102a4b900
+> >           <idle>-0       [001] d....   111.194218: bio_free <-blk_updat=
+e_request object:0xffff888102a4b900
+> >           <idle>-0       [001] d....   111.194218: bvec_free <-bio_free=
+ object:0xffff888102a4b900
+> >           <idle>-0       [001] d....   111.194219: mempool_free <-blk_u=
+pdate_request object:0xffff888102a4b900
+> >           <idle>-0       [001] d....   111.194219: mempool_free <-blk_u=
+pdate_request object:0xffff888102a4b900
+> >           <idle>-0       [001] d....   111.194219: mempool_free_slab <-=
+blk_update_request object:0xffff888102a4b900
+> >           <idle>-0       [001] d....   111.194219: mempool_free_slab <-=
+blk_update_request object:0xffff888102a4b900
+> >           <idle>-0       [001] d....   111.194219: kmem_cache_free <-bl=
+k_update_request object:0xffff888102a4b900
+> >           <idle>-0       [001] d....   111.194219: kmem_cache_free <-bl=
+k_update_request object:0xffff888102a4b900
+> >
+> > Signed-off-by: Jeff Xie <xiehuan09@gmail.com>
+> > ---
+> > Currently only showing all the code I have, But I think that there are =
+main three tasks
+> > to be completed next:
+> >
+> > 1. Masami suggested:
+> >
+> > <snip>
+> > objfilter:add:arg1
+> >
+> > and the exit event
+> >
+> > objfilter:del:arg1
+> >
+> > then user will only see the trace between the entrance and exit events.
+> > </snip>
+> >
+> > Actually, I don=E2=80=99t have a good idea to implement it now ;-)
+> > Looking for related existing code logic.
+>
+> Even though, please support 'add' command at least (no problem even if
+> there is only 'add' supported) because it defines its syntax.
+> It seems a bit redundant now, but if there is 'add', we can extend it to
+> support 'del', 'clear' or 'update' etc.
+>
+
+Thanks, I will add the "add" command.
+
+>
+> >
+> > 2. Steven suggested:
+> > <snip>
+> > For example:
+> >
+> >       obj =3D arg1 + 0x64
+> >       if (copy_from_kernel_nofault(&val, arg1 + 0x64, sizeof(val)))
+> >               // faulted
+> >               return;
+> >
+> > Now val has the content of __bi_cnt and we can print that!
+> > </snip>
+> >
+> > We need to implement a more complex parsing and also record the size of=
+ a arg
+> > or other related members.it may change the way I record the object.
+>
+> That can be done in additional patch in a series. I recommend you to send=
+ a
+> series of patches, which simply add a feature (or extend existing feature=
+),
+> step by step.
+
+This is a good suggestion, although I have never submitted a patchset.
+I will try it. ;-=EF=BC=89
+
+> >
+> >
+> > 3. Update trigger documentation
+> >
+> > https://lore.kernel.org/lkml/20211026225234.549ec8e9eb59f1fd1671edbc@ke=
+rnel.org/T/#t
+> >
+> > I'm very happy to work with you all, and got a lot of knowledge from yo=
+ur help.
+> >
+> > At present, I am the only person writing code using the free time, I us=
+ually need to do
+> > other work about linux and take care of a three-month-old boy. unlike a=
+ group, the progress
+> > of submitting patches may be slower.
+>
+> That is OK. You can start sowing the seeds, then we can grow it. :-)
+
+I never thought that my idea might become a relatively large project.
+With my current level of kernel programming, I might not be able to
+complete it alone.
+
+> And also, please add a (set of) testcase for this feature under
+> tools/testing/selftests/ftrace/test.d/, so that the future changes will n=
+ot
+> cause any regression. You don't have to check the trace result (if you ca=
+n,
+> it is recommended) but at least the usage (e.g. accepting correct syntax,
+> and rejecting wrong syntax) test case is helpful.
+
+ok, I will add a set of testcase.
+
+> >
+> >  include/linux/ftrace.h              |  16 +
+> >  include/linux/trace_events.h        |   1 +
+> >  kernel/trace/Kconfig                |   7 +
+> >  kernel/trace/Makefile               |   1 +
+> >  kernel/trace/trace.h                |   8 +
+> >  kernel/trace/trace_entries.h        |  17 +
+> >  kernel/trace/trace_events_trigger.c |   1 +
+> >  kernel/trace/trace_object.c         | 553 ++++++++++++++++++++++++++++
+> >  kernel/trace/trace_output.c         |  40 ++
+> >  9 files changed, 644 insertions(+)
+> >  create mode 100644 kernel/trace/trace_object.c
+> >
+> > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> > index 832e65f06754..37cbf154c2f8 100644
+> > --- a/include/linux/ftrace.h
+> > +++ b/include/linux/ftrace.h
+> > @@ -1078,4 +1078,20 @@ unsigned long arch_syscall_addr(int nr);
+> >
+> >  #endif /* CONFIG_FTRACE_SYSCALLS */
+> >
+> > +struct trace_event_file;
+> > +
+> > +#ifdef CONFIG_TRACE_OBJECT
+> > +int init_trace_object(void);
+> > +int exit_trace_object(void);
+> > +void set_trace_object(void *obj);
+> > +void record_trace_object(struct trace_event_file *trace_file,
+> > +             struct pt_regs *regs);
+> > +#else
+> > +static inline int init_trace_object(void) { return 0; }
+> > +static inline int exit_trace_object(void) { return 0; }
+> > +static inline void set_trace_object(void *obj) { }
+> > +static inline void record_trace_object(struct trace_event_file *trace_=
+file,
+> > +             struct pt_regs *regs) { }
+> > +#endif /* CONFIG_TRACE_OBJECT */
+> > +
+> >  #endif /* _LINUX_FTRACE_H */
+> > diff --git a/include/linux/trace_events.h b/include/linux/trace_events.=
+h
+> > index 3e475eeb5a99..84b5c12c7f44 100644
+> > --- a/include/linux/trace_events.h
+> > +++ b/include/linux/trace_events.h
+> > @@ -684,6 +684,7 @@ enum event_trigger_type {
+> >       ETT_EVENT_HIST          =3D (1 << 4),
+> >       ETT_HIST_ENABLE         =3D (1 << 5),
+> >       ETT_EVENT_EPROBE        =3D (1 << 6),
+> > +     ETT_TRACE_OBJECT        =3D (1 << 7),
+> >  };
+> >
+> >  extern int filter_match_preds(struct event_filter *filter, void *rec);
+> > diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+> > index 420ff4bc67fd..d302a0f085f9 100644
+> > --- a/kernel/trace/Kconfig
+> > +++ b/kernel/trace/Kconfig
+> > @@ -237,6 +237,13 @@ config FUNCTION_PROFILER
+> >
+> >         If in doubt, say N.
+> >
+> > +config TRACE_OBJECT
+> > +     bool "Trace kernel object"
+>
+> "Trace kernel object in function parameter" ?
+>
+I agree, It looks more accurate.
+
+> > +     depends on FUNCTION_TRACER
+>
+> This depends on "HAVE_FUNCTION_ARG_ACCESS_API".
+> Also, select "TRACING".
+>
+> > +     default y
+> > +     help
+> > +      This help kernel developer to trace any kernel object.
+>
+> ... "You can trace the kernel object in the kernel function parameter."
+> "The kernel object is dynamically specified via event trigger."
+
+I will copy that. ;-)
+
+> > +
+> >  config STACK_TRACER
+> >       bool "Trace max stack"
+> >       depends on HAVE_FUNCTION_TRACER
+> > diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
+> > index 6de5d4d63165..6d9e78a488aa 100644
+> > --- a/kernel/trace/Makefile
+> > +++ b/kernel/trace/Makefile
+> > @@ -66,6 +66,7 @@ obj-$(CONFIG_FUNCTION_GRAPH_TRACER) +=3D trace_functi=
+ons_graph.o
+> >  obj-$(CONFIG_TRACE_BRANCH_PROFILING) +=3D trace_branch.o
+> >  obj-$(CONFIG_BLK_DEV_IO_TRACE) +=3D blktrace.o
+> >  obj-$(CONFIG_FUNCTION_GRAPH_TRACER) +=3D fgraph.o
+> > +obj-$(CONFIG_TRACE_OBJECT) +=3D trace_object.o
+> >  ifeq ($(CONFIG_BLOCK),y)
+> >  obj-$(CONFIG_EVENT_TRACING) +=3D blktrace.o
+> >  endif
+> > diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+> > index b7c0f8e160fb..d2508f977fe6 100644
+> > --- a/kernel/trace/trace.h
+> > +++ b/kernel/trace/trace.h
+> > @@ -49,6 +49,7 @@ enum trace_type {
+> >       TRACE_TIMERLAT,
+> >       TRACE_RAW_DATA,
+> >       TRACE_FUNC_REPEATS,
+> > +     TRACE_OBJECT,
+> >
+> >       __TRACE_LAST_TYPE,
+> >  };
+> > @@ -460,6 +461,7 @@ extern void __ftrace_bad_type(void);
+> >                         TRACE_GRAPH_RET);             \
+> >               IF_ASSIGN(var, ent, struct func_repeats_entry,          \
+> >                         TRACE_FUNC_REPEATS);                          \
+> > +             IF_ASSIGN(var, ent, struct trace_object_entry, TRACE_OBJE=
+CT);\
+> >               __ftrace_bad_type();                                    \
+> >       } while (0)
+> >
+> > @@ -1510,6 +1512,12 @@ static inline int register_trigger_hist_cmd(void=
+) { return 0; }
+> >  static inline int register_trigger_hist_enable_disable_cmds(void) { re=
+turn 0; }
+> >  #endif
+> >
+> > +#ifdef CONFIG_TRACE_OBJECT
+> > +extern int register_trigger_object_cmd(void);
+> > +#else
+> > +static inline int register_trigger_object_cmd(void) { return 0; }
+> > +#endif
+> > +
+> >  extern int register_trigger_cmds(void);
+> >  extern void clear_event_triggers(struct trace_array *tr);
+> >
+> > diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.=
+h
+> > index cd41e863b51c..bb120d9498a9 100644
+> > --- a/kernel/trace/trace_entries.h
+> > +++ b/kernel/trace/trace_entries.h
+> > @@ -401,3 +401,20 @@ FTRACE_ENTRY(timerlat, timerlat_entry,
+> >                __entry->context,
+> >                __entry->timer_latency)
+> >  );
+> > +
+> > +/*
+> > + * trace object entry:
+> > + */
+> > +FTRACE_ENTRY(object, trace_object_entry,
+> > +
+> > +     TRACE_OBJECT,
+> > +
+> > +     F_STRUCT(
+> > +             __field(        unsigned long,          ip              )
+> > +             __field(        unsigned long,          parent_ip       )
+> > +             __field(        unsigned long,          object          )
+> > +     ),
+> > +
+> > +     F_printk(" %ps <-- %ps object:%lx\n",
+> > +              (void *)__entry->ip, (void *)__entry->parent_ip, __entry=
+->object)
+> > +);
+> > diff --git a/kernel/trace/trace_events_trigger.c b/kernel/trace/trace_e=
+vents_trigger.c
+> > index 3d5c07239a2a..da2d871fa809 100644
+> > --- a/kernel/trace/trace_events_trigger.c
+> > +++ b/kernel/trace/trace_events_trigger.c
+> > @@ -1687,6 +1687,7 @@ __init int register_trigger_cmds(void)
+> >       register_trigger_enable_disable_cmds();
+> >       register_trigger_hist_enable_disable_cmds();
+> >       register_trigger_hist_cmd();
+> > +     register_trigger_object_cmd();
+> >
+> >       return 0;
+> >  }
+> > diff --git a/kernel/trace/trace_object.c b/kernel/trace/trace_object.c
+> > new file mode 100644
+> > index 000000000000..c10d8fb913db
+> > --- /dev/null
+> > +++ b/kernel/trace/trace_object.c
+> > @@ -0,0 +1,553 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * trace any object
+> > + * Copyright (C) 2021 Jeff Xie <xiehuan09@gmail.com>
+> > + */
+> > +
+> > +#define pr_fmt(fmt) "trace_object: " fmt
+> > +
+> > +#include <linux/workqueue.h>
+> > +#include "trace_output.h"
+> > +
+> > +static struct work_struct obj_refill_work;
+> > +static DEFINE_PER_CPU(atomic_t, trace_object_event_disable);
+> > +static DEFINE_RAW_SPINLOCK(object_spin_lock);
+> > +static struct trace_event_file event_trace_file;
+> > +static LIST_HEAD(obj_head);
+> > +static const int max_args_num =3D 6;
+> > +static atomic_t trace_object_ref;
+> > +
+> > +struct obj_pool {
+> > +     void **obj;
+> > +     int min_nr;
+> > +     int curr_nr;
+> > +};
+> > +
+> > +static struct obj_pool obj_pool;
+> > +static int init_obj_num =3D 1024;
+> > +static int reserved_obj_num =3D 100;
+> > +
+> > +static int object_exist(void *obj)
+> > +{
+> > +     int i, used, ret =3D false;
+> > +
+> > +     if (!obj)
+> > +             goto out;
+> > +
+> > +     used =3D obj_pool.min_nr - obj_pool.curr_nr;
+> > +     if (!used)
+> > +             goto out;
+> > +
+> > +     for (i =3D 0; i < used; i++) {
+> > +             if (obj_pool.obj[obj_pool.curr_nr + i] =3D=3D obj) {
+> > +                     ret =3D true;
+> > +                     goto out;
+> > +             }
+> > +     }
+>
+> Maybe later when we optimize this, we need to introduce a hash
+> table or xarray.
+>
+> > +out:
+> > +     return ret;
+> > +}
+> > +
+> > +static int object_empty(void)
+> > +{
+> > +     int ret;
+> > +
+> > +     ret =3D obj_pool.curr_nr =3D=3D obj_pool.min_nr;
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +static void **remove_object_element(void)
+> > +{
+> > +     void **obj =3D &obj_pool.obj[--obj_pool.curr_nr];
+> > +     BUG_ON(obj_pool.curr_nr < 0);
+> > +
+> > +     return obj;
+> > +}
+> > +
+> > +static void add_object_element(void *obj)
+> > +{
+> > +     BUG_ON(obj_pool.curr_nr >=3D obj_pool.min_nr);
+> > +     obj_pool.obj[obj_pool.curr_nr++] =3D obj;
+> > +}
+> > +
+> > +void set_trace_object(void *obj)
+> > +{
+> > +     unsigned long flags;
+> > +     void **new_obj;
+> > +
+> > +     if (in_nmi())
+> > +             return;
+> > +
+> > +     if (!obj)
+> > +             return;
+> > +
+> > +     raw_spin_lock_irqsave(&object_spin_lock, flags);
+> > +
+> > +     if (object_exist(obj))
+> > +             goto out;
+> > +
+> > +     if (obj_pool.curr_nr =3D=3D 0) {
+> > +             raw_spin_unlock_irqrestore(&object_spin_lock, flags);
+> > +             trace_printk("object_pool is full, can't trace object:0x%=
+px\n", obj);
+> > +             return;
+> > +     }
+> > +
+> > +     new_obj =3D remove_object_element();
+> > +     *new_obj =3D obj;
+> > +     if (obj_pool.curr_nr =3D=3D reserved_obj_num) {
+> > +             raw_spin_unlock_irqrestore(&object_spin_lock, flags);
+> > +             schedule_work(&obj_refill_work);
+> > +             return;
+> > +     }
+> > +out:
+> > +     raw_spin_unlock_irqrestore(&object_spin_lock, flags);
+> > +}
+> > +
+> > +static void object_pool_exit(void)
+> > +{
+> > +     obj_pool.min_nr =3D 0;
+> > +     obj_pool.curr_nr =3D 0;
+> > +     kfree(obj_pool.obj);
+> > +     obj_pool.obj =3D NULL;
+> > +}
+> > +
+> > +static void obj_refill_fn(struct work_struct *refill_work)
+> > +{
+> > +     void **new_obj_element;
+> > +     unsigned long flags;
+> > +     int new_min_nr, new_curr_nr;
+> > +     int used_nr;
+> > +
+> > +     new_min_nr =3D obj_pool.min_nr * 2;
+>
+> This can easily cause OOM. I think we need a limit to cap.
+> Anyway, at the first step, you can drop this "refill" routine and
+> simply use fixed size array (or hash table?).
+> Anyway if the array becomes huge, your kernel may slow down.
+
+If we limit the max size, should be able to solve the OOM.
+The logic of this refill should look normal, But in order to simplify
+the implementation of the first step,
+I can remove the refill routine.
+
+>
+> > +     new_obj_element =3D kmalloc_array(new_min_nr, sizeof(void *), GFP=
+_KERNEL);
+> > +
+> > +     if (!new_obj_element)
+> > +             return;
+> > +
+> > +     raw_spin_lock_irqsave(&object_spin_lock, flags);
+> > +
+> > +     used_nr =3D obj_pool.min_nr - obj_pool.curr_nr;
+> > +     new_curr_nr =3D new_min_nr - used_nr;
+> > +     memcpy(new_obj_element + new_curr_nr, obj_pool.obj + obj_pool.cur=
+r_nr,
+> > +                     used_nr * sizeof(void *));
+> > +
+> > +     kfree(obj_pool.obj);
+> > +     obj_pool.obj =3D new_obj_element;
+> > +     obj_pool.curr_nr =3D new_curr_nr;
+> > +     obj_pool.min_nr  =3D new_min_nr;
+> > +
+> > +     raw_spin_unlock_irqrestore(&object_spin_lock, flags);
+> > +}
+> > +
+> > +static int init_object_pool(void)
+> > +{
+> > +     int ret =3D 0;
+> > +     int i;
+> > +
+> > +     obj_pool.obj =3D kmalloc_array(init_obj_num, sizeof(void *), GFP_=
+KERNEL);
+> > +     if (!obj_pool.obj) {
+> > +             ret =3D -ENOMEM;
+> > +             goto out;
+> > +     }
+> > +     obj_pool.min_nr =3D init_obj_num;
+> > +
+> > +     for (i =3D 0; i < init_obj_num; i++)
+> > +             add_object_element(obj_pool.obj[i]);
+> > +
+> > +out:
+> > +     return ret;
+> > +}
+> > +
+> > +static void submit_trace_object(unsigned long ip, unsigned long parent=
+_ip,
+> > +                              unsigned long object)
+> > +{
+> > +
+> > +     struct trace_buffer *buffer;
+> > +     struct ring_buffer_event *event;
+> > +     struct trace_object_entry *entry;
+> > +     int pc;
+> > +
+> > +     pc =3D preempt_count();
+> > +     event =3D trace_event_buffer_lock_reserve(&buffer, &event_trace_f=
+ile,
+> > +                     TRACE_OBJECT, sizeof(*entry), pc);
+> > +     if (!event)
+> > +             return;
+> > +     entry   =3D ring_buffer_event_data(event);
+> > +     entry->ip                       =3D ip;
+> > +     entry->parent_ip                =3D parent_ip;
+> > +     entry->object                   =3D object;
+> > +
+> > +     event_trigger_unlock_commit(&event_trace_file, buffer, event,
+> > +             entry, pc);
+> > +}
+> > +
+> > +static void
+> > +trace_object_events_call(unsigned long ip, unsigned long parent_ip,
+> > +             struct ftrace_ops *op, struct ftrace_regs *fregs)
+> > +{
+> > +     struct pt_regs *pt_regs =3D ftrace_get_regs(fregs);
+> > +     unsigned long obj;
+> > +     long disabled;
+> > +     int cpu, n;
+> > +
+> > +     preempt_disable_notrace();
+> > +
+> > +     cpu =3D raw_smp_processor_id();
+> > +     disabled =3D atomic_inc_return(&per_cpu(trace_object_event_disabl=
+e, cpu));
+> > +
+> > +     if (disabled !=3D 1)
+> > +             goto out;
+> > +
+> > +     if (object_empty())
+> > +             goto out;
+> > +
+> > +     for (n =3D 0; n < max_args_num; n++) {
+> > +             obj =3D regs_get_kernel_argument(pt_regs, n);
+> > +             if (object_exist((void *)obj))
+> > +                     submit_trace_object(ip, parent_ip, obj);
+> > +     }
+> > +
+> > +out:
+> > +     atomic_dec(&per_cpu(trace_object_event_disable, cpu));
+> > +     preempt_enable_notrace();
+> > +}
+> > +
+> > +static struct ftrace_ops trace_ops =3D {
+> > +     .func  =3D trace_object_events_call,
+> > +     .flags =3D FTRACE_OPS_FL_SAVE_REGS,
+> > +};
+> > +
+> > +static void
+> > +trace_object_trigger(struct event_trigger_data *data,
+> > +                struct trace_buffer *buffer,  void *rec,
+> > +                struct ring_buffer_event *event)
+> > +{
+> > +
+> > +     struct ftrace_event_field *field =3D data->private_data;
+> > +     void *obj =3D NULL;
+> > +
+> > +     memcpy(&obj, (char *)rec + field->offset, field->size);
+>
+> Please use 'sizeof(obj)' instead of 'field->size' because 'field->size'
+> can be longer than that.
+>
+This is only one  I can't understand.
+
+The field->size should be (1(u8/s8), 2(u16/s16), 4(u32/s32),
+8(u64/s64)) , the sizeof(obj) is 8
+and it should never be longer than sizeof(obj).
+
+> > +     set_trace_object(obj);
+> > +}
+> > +
+> > +static void
+> > +trace_object_trigger_free(struct event_trigger_ops *ops,
+> > +                struct event_trigger_data *data)
+> > +{
+> > +     if (WARN_ON_ONCE(data->ref <=3D 0))
+> > +             return;
+> > +
+> > +     data->ref--;
+> > +     if (!data->ref)
+> > +             trigger_data_free(data);
+> > +}
+> > +
+> > +static void
+> > +trace_object_count_trigger(struct event_trigger_data *data,
+> > +                      struct trace_buffer *buffer, void *rec,
+> > +                      struct ring_buffer_event *event)
+> > +{
+> > +     if (!data->count)
+> > +             return;
+> > +
+> > +     if (data->count !=3D -1)
+> > +             (data->count)--;
+> > +
+> > +     trace_object_trigger(data, buffer, rec, event);
+> > +}
+> > +
+> > +static int event_object_trigger_init(struct event_trigger_ops *ops,
+> > +                    struct event_trigger_data *data)
+> > +{
+> > +     data->ref++;
+> > +     return 0;
+> > +}
+> > +
+> > +static int
+> > +event_trigger_print(const char *name, struct seq_file *m,
+> > +                 void *data, char *filter_str)
+> > +{
+> > +     long count =3D (long)data;
+> > +
+> > +     seq_puts(m, name);
+> > +
+> > +     if (count =3D=3D -1)
+> > +             seq_puts(m, ":unlimited");
+> > +     else
+> > +             seq_printf(m, ":count=3D%ld", count);
+> > +
+> > +     if (filter_str)
+> > +             seq_printf(m, " if %s\n", filter_str);
+> > +     else
+> > +             seq_putc(m, '\n');
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static int
+> > +trace_object_trigger_print(struct seq_file *m, struct event_trigger_op=
+s *ops,
+> > +                      struct event_trigger_data *data)
+> > +{
+> > +     return event_trigger_print("objtrace", m, (void *)data->count,
+> > +                                data->filter_str);
+> > +}
+> > +
+> > +
+> > +static struct event_trigger_ops objecttrace_trigger_ops =3D {
+> > +     .func                   =3D trace_object_trigger,
+> > +     .print                  =3D trace_object_trigger_print,
+> > +     .init                   =3D event_object_trigger_init,
+> > +     .free                   =3D trace_object_trigger_free,
+> > +};
+> > +
+> > +static struct event_trigger_ops objecttrace_count_trigger_ops =3D {
+> > +     .func                   =3D trace_object_count_trigger,
+> > +     .print                  =3D trace_object_trigger_print,
+> > +     .init                   =3D event_object_trigger_init,
+> > +     .free                   =3D trace_object_trigger_free,
+> > +};
+> > +
+> > +static struct event_trigger_ops *
+> > +objecttrace_get_trigger_ops(char *cmd, char *param)
+> > +{
+> > +     return param ? &objecttrace_count_trigger_ops : &objecttrace_trig=
+ger_ops;
+> > +}
+> > +
+> > +static int register_object_trigger(char *glob, struct event_trigger_op=
+s *ops,
+> > +                         struct event_trigger_data *data,
+> > +                         struct trace_event_file *file)
+> > +{
+> > +     struct event_trigger_data *test;
+> > +     int ret =3D 0;
+> > +
+> > +     lockdep_assert_held(&event_mutex);
+> > +
+> > +     list_for_each_entry(test, &file->triggers, list) {
+> > +             if (test->cmd_ops->trigger_type =3D=3D data->cmd_ops->tri=
+gger_type) {
+> > +                     ret =3D -EEXIST;
+> > +                     goto out;
+> > +             }
+> > +     }
+> > +
+> > +     if (data->ops->init) {
+> > +             ret =3D data->ops->init(data->ops, data);
+> > +             if (ret < 0)
+> > +                     goto out;
+> > +     }
+> > +
+> > +     list_add_rcu(&data->list, &file->triggers);
+> > +     ret++;
+> > +
+> > +     update_cond_flag(file);
+> > +     if (trace_event_trigger_enable_disable(file, 1) < 0) {
+> > +             list_del_rcu(&data->list);
+> > +             update_cond_flag(file);
+> > +             ret--;
+> > +     }
+> > +     init_trace_object();
+> > +out:
+> > +     return ret;
+> > +}
+> > +
+> > +void unregister_object_trigger(char *glob, struct event_trigger_ops *o=
+ps,
+> > +                            struct event_trigger_data *test,
+> > +                            struct trace_event_file *file)
+> > +{
+> > +     struct event_trigger_data *data;
+> > +     bool unregistered =3D false;
+> > +
+> > +     lockdep_assert_held(&event_mutex);
+> > +
+> > +     list_for_each_entry(data, &file->triggers, list) {
+> > +             if (data->cmd_ops->trigger_type =3D=3D test->cmd_ops->tri=
+gger_type) {
+> > +                     unregistered =3D true;
+> > +                     list_del_rcu(&data->list);
+> > +                     trace_event_trigger_enable_disable(file, 0);
+> > +                     update_cond_flag(file);
+> > +                     break;
+> > +             }
+> > +     }
+> > +
+> > +     if (unregistered && data->ops->free) {
+> > +             data->ops->free(data->ops, data);
+> > +             exit_trace_object();
+> > +     }
+> > +}
+> > +
+> > +static int
+> > +event_object_trigger_callback(struct event_command *cmd_ops,
+> > +                    struct trace_event_file *file,
+> > +                    char *glob, char *cmd, char *param)
+> > +{
+> > +     struct event_trigger_data *trigger_data;
+> > +     struct event_trigger_ops *trigger_ops;
+> > +     struct trace_event_call *call;
+> > +     struct ftrace_event_field *field;
+> > +     char *trigger =3D NULL;
+> > +     char *arg;
+> > +     char *number;
+> > +     int ret;
+> > +
+> > +     ret =3D -EINVAL;
+> > +     if (!param)
+> > +             goto out;
+> > +
+> > +     /* separate the trigger from the filter (a:n [if filter]) */
+> > +     trigger =3D strsep(&param, " \t");
+> > +     if (!trigger)
+> > +             goto out;
+> > +     if (param) {
+> > +             param =3D skip_spaces(param);
+> > +             if (!*param)
+> > +                     param =3D NULL;
+> > +     }
+> > +
+>
+> Here, please consider to add 'add' check, so that we can avoid
+> syntax change in the future.
+>
+> cmd =3D strsep(&trigger, ':');
+> if (!cmd || strcmp(cmd, "add"))
+>         goto out;
+>
+>
+> > +     arg =3D strsep(&trigger, ":");
+> > +     if (!arg)
+> > +             goto out;
+> > +     call =3D file->event_call;
+> > +     field =3D trace_find_event_field(call, arg);
+> > +     if (!field)
+> > +             goto out;
+>
+> And here, please check the 'field->size' is same as 'sizeof(void *)'.
+>
+> Thank you,
+>
+> > +
+> > +     trigger_ops =3D cmd_ops->get_trigger_ops(cmd, trigger);
+> > +
+> > +     ret =3D -ENOMEM;
+> > +     trigger_data =3D kzalloc(sizeof(*trigger_data), GFP_KERNEL);
+> > +     if (!trigger_data)
+> > +             goto out;
+> > +
+> > +     trigger_data->count =3D -1;
+> > +     trigger_data->ops =3D trigger_ops;
+> > +     trigger_data->cmd_ops =3D cmd_ops;
+> > +     trigger_data->private_data =3D field;
+> > +     INIT_LIST_HEAD(&trigger_data->list);
+> > +     INIT_LIST_HEAD(&trigger_data->named_list);
+> > +
+> > +     if (glob[0] =3D=3D '!') {
+> > +             cmd_ops->unreg(glob+1, trigger_ops, trigger_data, file);
+> > +             kfree(trigger_data);
+> > +             ret =3D 0;
+> > +             goto out;
+> > +     }
+> > +
+> > +     if (trigger) {
+> > +             number =3D strsep(&trigger, ":");
+> > +
+> > +             ret =3D -EINVAL;
+> > +             if (!strlen(number))
+> > +                     goto out_free;
+> > +
+> > +             /*
+> > +              * We use the callback data field (which is a pointer)
+> > +              * as our counter.
+> > +              */
+> > +             ret =3D kstrtoul(number, 0, &trigger_data->count);
+> > +             if (ret)
+> > +                     goto out_free;
+> > +     }
+> > +
+> > +     if (!param) /* if param is non-empty, it's supposed to be a filte=
+r */
+> > +             goto out_reg;
+> > +
+> > +     if (!cmd_ops->set_filter)
+> > +             goto out_reg;
+> > +
+> > +     ret =3D cmd_ops->set_filter(param, trigger_data, file);
+> > +     if (ret < 0)
+> > +             goto out_free;
+> > +
+> > + out_reg:
+> > +     /* Up the trigger_data count to make sure reg doesn't free it on =
+failure */
+> > +     event_object_trigger_init(trigger_ops, trigger_data);
+> > +     ret =3D cmd_ops->reg(glob, trigger_ops, trigger_data, file);
+> > +     /*
+> > +      * The above returns on success the # of functions enabled,
+> > +      * but if it didn't find any functions it returns zero.
+> > +      * Consider no functions a failure too.
+> > +      */
+> > +     if (!ret) {
+> > +             cmd_ops->unreg(glob, trigger_ops, trigger_data, file);
+> > +             ret =3D -ENOENT;
+> > +     } else if (ret > 0)
+> > +             ret =3D 0;
+> > +
+> > +     /* Down the counter of trigger_data or free it if not used anymor=
+e */
+> > +     trace_object_trigger_free(trigger_ops, trigger_data);
+> > + out:
+> > +     return ret;
+> > +
+> > + out_free:
+> > +     if (cmd_ops->set_filter)
+> > +             cmd_ops->set_filter(NULL, trigger_data, NULL);
+> > +     kfree(trigger_data);
+> > +     goto out;
+> > +}
+> > +
+> > +static struct event_command trigger_object_cmd =3D {
+> > +     .name                   =3D "objtrace",
+> > +     .trigger_type           =3D ETT_TRACE_OBJECT,
+> > +     .flags                  =3D EVENT_CMD_FL_NEEDS_REC,
+> > +     .func                   =3D event_object_trigger_callback,
+> > +     .reg                    =3D register_object_trigger,
+> > +     .unreg                  =3D unregister_object_trigger,
+> > +     .get_trigger_ops        =3D objecttrace_get_trigger_ops,
+> > +     .set_filter             =3D set_trigger_filter,
+> > +};
+> > +
+> > +__init int register_trigger_object_cmd(void)
+> > +{
+> > +     int ret;
+> > +
+> > +     ret =3D register_event_command(&trigger_object_cmd);
+> > +     WARN_ON(ret < 0);
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +int init_trace_object(void)
+> > +{
+> > +     int ret;
+> > +
+> > +     if (atomic_inc_return(&trace_object_ref) !=3D 1) {
+> > +             ret =3D 0;
+> > +             goto out;
+> > +     }
+> > +
+> > +     ret =3D init_object_pool();
+> > +     if (ret)
+> > +             goto out;
+> > +
+> > +     INIT_WORK(&obj_refill_work, obj_refill_fn);
+> > +     event_trace_file.tr =3D top_trace_array();
+> > +     if (WARN_ON(!event_trace_file.tr)) {
+> > +             ret =3D -1;
+> > +             goto out;
+> > +     }
+> > +     ret =3D register_ftrace_function(&trace_ops);
+> > +out:
+> > +     return ret;
+> > +}
+> > +
+> > +int exit_trace_object(void)
+> > +{
+> > +     int ret;
+> > +
+> > +     if (WARN_ON_ONCE(atomic_read(&trace_object_ref) <=3D 0))
+> > +             goto out;
+> > +
+> > +     if (atomic_dec_return(&trace_object_ref) !=3D 0) {
+> > +             ret =3D 0;
+> > +             goto out;
+> > +     }
+> > +
+> > +     ret =3D unregister_ftrace_function(&trace_ops);
+> > +     if (ret) {
+> > +             pr_err("can't unregister ftrace for trace object\n");
+> > +             goto out;
+> > +     }
+> > +     object_pool_exit();
+> > +out:
+> > +     return ret;
+> > +}
+> > diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+> > index c2ca40e8595b..76ca560af693 100644
+> > --- a/kernel/trace/trace_output.c
+> > +++ b/kernel/trace/trace_output.c
+> > @@ -1552,6 +1552,45 @@ static struct trace_event trace_func_repeats_eve=
+nt =3D {
+> >       .funcs          =3D &trace_func_repeats_funcs,
+> >  };
+> >
+> > +/* TRACE_OBJECT */
+> > +static enum print_line_t trace_object_print(struct trace_iterator *ite=
+r, int flags,
+> > +                                     struct trace_event *event)
+> > +{
+> > +     struct trace_object_entry *field;
+> > +     struct trace_seq *s =3D &iter->seq;
+> > +
+> > +     trace_assign_type(field, iter->ent);
+> > +     print_fn_trace(s, field->ip, field->parent_ip, flags);
+> > +     trace_seq_printf(s, " object:0x%lx", field->object);
+> > +     trace_seq_putc(s, '\n');
+> > +
+> > +     return trace_handle_return(s);
+> > +}
+> > +
+> > +static enum print_line_t trace_object_raw(struct trace_iterator *iter,=
+ int flags,
+> > +                                   struct trace_event *event)
+> > +{
+> > +     struct trace_object_entry *field;
+> > +
+> > +     trace_assign_type(field, iter->ent);
+> > +
+> > +     trace_seq_printf(&iter->seq, "%lx %lx\n",
+> > +                      field->ip,
+> > +                      field->parent_ip);
+> > +
+> > +     return trace_handle_return(&iter->seq);
+> > +}
+> > +
+> > +static struct trace_event_functions trace_object_funcs =3D {
+> > +     .trace          =3D trace_object_print,
+> > +     .raw            =3D trace_object_raw,
+> > +};
+> > +
+> > +static struct trace_event trace_object_event =3D {
+> > +     .type           =3D TRACE_OBJECT,
+> > +     .funcs          =3D &trace_object_funcs,
+> > +};
+> > +
+> >  static struct trace_event *events[] __initdata =3D {
+> >       &trace_fn_event,
+> >       &trace_ctx_event,
+> > @@ -1566,6 +1605,7 @@ static struct trace_event *events[] __initdata =
+=3D {
+> >       &trace_timerlat_event,
+> >       &trace_raw_data_event,
+> >       &trace_func_repeats_event,
+> > +     &trace_object_event,
+> >       NULL
+> >  };
+> >
+> > --
+> > 2.25.1
+> >
+>
+>
+> --
+> Masami Hiramatsu <mhiramat@kernel.org>
+
+Thanks,
+---
+JeffXie
