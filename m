@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3C5446557
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A25144654F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:59:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233353AbhKEPCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 11:02:25 -0400
-Received: from mout.gmx.net ([212.227.17.21]:48445 "EHLO mout.gmx.net"
+        id S233322AbhKEPCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 11:02:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233344AbhKEPCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 11:02:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1636124353;
-        bh=rTZyr90F33UIxLT2rfkTze3Dx3P4fW7zLUDyWI7/ts4=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=dxIr5giVrgHWCMHcPIkRVfFseDrweAo/gGxpbdLHAFzMO1S/qoYAl7eTwmKkI4Zla
-         dhHFVm4FriE4PQatxsvVyMFgCYPRRRwouSF+DUTIQn3LxRPFEUeH2Is3zeyiY5TJ1L
-         VhG/RxCRZvZ5qvJ525BXURVU01EcMkQ9vstHwm8o=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.1.252] ([5.166.175.137]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MdvmY-1m9OQ23QPe-00b78d; Fri, 05
- Nov 2021 15:59:12 +0100
-Message-ID: <10ed7b49-fd66-68c7-5533-866c2ea27ddb@gmx.com>
-Date:   Fri, 5 Nov 2021 14:59:11 +0000
+        id S233299AbhKEPCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 11:02:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F1EF611C0;
+        Fri,  5 Nov 2021 14:59:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636124364;
+        bh=pKL79R6e/6XFSt3xwJ9CLWqM2WH3RKaSvXVeu+Riva8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=STO1ghN4zaCF5IOzyYOj6Ff3mkZPthU7Jl8FcSWcjF7begjBgU4eRF9AWyvCZlj2h
+         /q2/7GHX0sPDqAIT7aLttfpmonsLzAOhXT26w3dzeFkFeimq3GmpNvjf33b63bofXe
+         SQmLWGYS6qmw2lFUrpBMOITGM1ZIvECPprmLTpNFVucBlhETHzmn26/vOxm3smwXmh
+         8PmIlxm2j9sD2bMN8dErb4ZtjGw0o2Os0eQ1/ZIJZFihREQVwC7IQHD7/1tBHZD7mM
+         rMekz8dZD2XIT5l+8tr4v3vWzDNz2hdo1/pd7asr6rwG4gLSm4QqJCZ4M2bbtJxLQu
+         bortuVTSAA9fQ==
+From:   Ard Biesheuvel <ardb@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH v6 0/2] static call support for arm64
+Date:   Fri,  5 Nov 2021 15:59:15 +0100
+Message-Id: <20211105145917.2828911-1-ardb@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Subject: Re: [PATCH v1 (RFC)] docs: discourage users from using
- bugzilla.kernel.org
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org
-References: <20210110121033.130504-1-linux@leemhuis.info>
- <6abc7248-efda-b569-9030-5384e5ce1f29@gmx.com>
- <YYVC6Nd+XjG6shDV@casper.infradead.org>
-From:   "Artem S. Tashkinov" <aros@gmx.com>
-In-Reply-To: <YYVC6Nd+XjG6shDV@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:18FimqYHz03+t3Osu8rgaYFfIygFQ7fi9zFJdfzEHD6rSwti+Wd
- BviphiGw0Ycj+ZwdwffgfUL25sqiA7PuN5OpsJ6ByyWixTI1C1BdRnptUIqk6U8bEc4DhHD
- W4L1D6tXaBgNXQqmfvPglbBJGyWvPnX4C2JqRTJN+57lsgWHVy2WOjPv3jM8oMAGBkvSqPX
- RX8lZO4S+mZfegxLnmgNw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7q0tcp2KL34=:CNiu6UFq6mvvSrRGKYsCM7
- /LUdigkclRC1TQbtUjGSdRrznLvZrbZ4KDOekQSOvRVGBWOsIvgKwafJZ6c4+iE/Cg541agh6
- 6D4T0wcseNTxdwLNaE8zeYBmBm6ENOXOKJHMvKsD49jhTa1Y03LIE8hPHnWaNCcec8DSOs33h
- FKykfuO8ALI7PItErLWdcxQJs5+v4npV4/+3/kfbKOg8ALu9A9srLLfy8JiqBR7uLYz88zBiF
- po028MDfav8wIQMLNFUdPRZ8PKSC2SNSfNQDzt8S3hsKqpAIm5ZSYBoA6lFizDbUhE4gPplGD
- H2csnGmqWcKTMWseKQu/bOQYX7isAmylnaH8xkOWzhYHKwB3u2HzRP14xu1DL6mg4vQJqaqWI
- lmekvx0QLxe6R5zx3K6VNDKjx51DUfcNY5O9jB4r0vWxUsWJ9dver2OXsdoqAGoNJ0Iw/nIBU
- EQfLMazUDWOQtCcOtXVwt6tEx482oP3EKz+uZZKIBGEOC+xRzERJp5Nw+UYY/PCZf/j1K+h5x
- TnDPfnmZeuePqCtnhCgz/k150ut92IU8ei08FtbXFj6X1LjAI39PS88L0wFeUVhCyFGdu8UTH
- H8lg/yHbr/b2HfSQULbsescPMlRkPx2VCcpeWrZ08hrlHMsupzpv8GFSO2jsb36pl5KChujs7
- DpwEUb/OVGMOIqu3Dj4poLUW3UfcTd6r9KGk5PzmdLAnF4eGBvG9e+DHZLBrf4Tm+a1qLgFt+
- ex28vXnj4TRUJ1fS8+PG7jMAgbiJaNWeuRx0Y6Pgixiti66mIY9wTaeNoyEP3w0mRNHrqHEYz
- Q7uHejLEPNhSK3TDl7+IiC4Sw7smyvTpRFOqTBQRCbjP6npEFuQ9uG86jce5Wa1rdcRAp8uIW
- Eiw0irBaIg0hlTeFztmT0rG7QTSWN9HV9WH6XaWxyEFnTZJXdMwGXxkz2oEGaa1oYQtHVYhz4
- lfaE5VAIIMuh26CWh7qc9kVBGGuN32g/uIlFltghD3vPmbkMlycPBSsVXOPGlxfd7dswaA1o5
- gogd4D9fmlsAZ76BzghDLwmaRdjku2sysalUU9X2TUlinD/ZJgmvmP9VEch7p+z9cw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2148; h=from:subject; bh=pKL79R6e/6XFSt3xwJ9CLWqM2WH3RKaSvXVeu+Riva8=; b=owEB7QES/pANAwAKAcNPIjmS2Y8kAcsmYgBhhUbAj5SBIcvjKtxaOssCNZgQWw/pHGgDQICvYqHa 6zjLF4+JAbMEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCYYVGwAAKCRDDTyI5ktmPJBUdC/ 0T1Dc01GVgdNiLpzvWkonon53HTdb9vEYTLLXfwNKsjnI3kcz6LRWtjpSTcxNcryANcq7X+L9ofz59 6E+iEqAMlAKovbJlF4E99DPgtpEM50bn96RAk7eDbESggSRW5JD4OHK/6HlHPk3rjrGLrDPIeC5PJy noVUMVClmR07CPEniOq4FDwBTkEfEk9LwKjCfsQu0gAozt9APTnk0xKi/GkJriwKnozkrEWbSnwuZy qmuLorCxBAZmxWVG4Uh4XPBWNPHruLB4PAcxXrp1Dz+P1w8NOs2mt6pOxxecVCiPK+ITkhmOwyTgVc pTsWlmWrtXdOH4qKr4LGph0PQwVFJhBRWbMlQq8W/2ZLeHDcAsl0WiGnvM1EVW17al/Xs0S/05l6Ne PINHHrYdhlHKXjDK6WTAoroh8Sq9it5dG2FyihmJqyINHjNju/4zGHrHUYzeuAcYadHUJad+pz7KOd kHuYusJV+htQgWVsSyvXE648BA98I+8649MFyyadZRSMc=
+X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/21 14:42, Matthew Wilcox wrote:
-> On Fri, Nov 05, 2021 at 02:36:51PM +0000, Artem S. Tashkinov wrote:
->> Hello,
->>
->> Let me express an utter dissatisfaction and even contempt for this prop=
-osal.
->
-> Thank you for volunteering to take over administration of
-> bugzilla.kernel.org.  Can you lay out your plans for making kernel
-> developers care about it?
->
+This implements non-inline static calls for arm64. This is rather
+straight-forward, as we don't rely on any tooling to look for static
+call sites etc. The only minor complication is Clang CFI, which is
+already in mainline for arm64, and requires a little tweak to ensure
+that we don't end up patching the CFI jump table instead of the static
+call trampoline itself.
 
-Last time I checked the Linux foundation is not exactly living from hand
-to mouth and has enough financial backing from major corporations.
+Changes since v5:
+- drop the patch that works around issues with references to symbols
+  with static linkage from asm blocks; this is specific to Clang+ThinLTO
+  in versions before 13, so we can just decide not to support that config.
+- add a patch to use non-function type symbols for the trampolines, to
+  ensure that taking the address gives us the trampoline itself rather
+  than the address of a CFI jump table entry that branches to it.
 
-Is this really about funding?
+Changes since v4:
+- add preparatory patch to address generic CFI/LTO issues with static
+  calls
+- add comment to patch #2 describing the trampoline layout
+- add handling of Clang CFI jump table entries
+- add PeterZ's ack to patch #2
 
-Regards,
-Artem
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Quentin Perret <qperret@google.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: James Morse <james.morse@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+
+Ard Biesheuvel (2):
+  static_call: use non-function types to refer to the trampolines
+  arm64: implement support for static call trampolines
+
+ arch/arm64/Kconfig                   |  2 +
+ arch/arm64/include/asm/static_call.h | 40 ++++++++++
+ arch/arm64/kernel/patching.c         | 77 +++++++++++++++++++-
+ arch/arm64/kernel/vmlinux.lds.S      |  1 +
+ include/linux/static_call.h          |  4 +-
+ include/linux/static_call_types.h    | 11 ++-
+ 6 files changed, 127 insertions(+), 8 deletions(-)
+ create mode 100644 arch/arm64/include/asm/static_call.h
+
+-- 
+2.30.2
+
