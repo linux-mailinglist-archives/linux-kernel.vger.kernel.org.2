@@ -2,89 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DAD1446484
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E68446488
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:58:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232865AbhKEOAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 10:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231933AbhKEOAJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 10:00:09 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F56C061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 06:57:29 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1636120648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=41fUQYQRItfdxOFUK3dRPaRWhEWtV10CSnYM0e/zT3o=;
-        b=r8TnQFAcGYXoCyTVKYd37rfgQOaJWa8cecJh0vCSautQIyO40lmD0OJC33C6rNrGWmOdop
-        SBHz7XUJ3kU+dbFOGhDSLxMXVhqpOgESXPzYEi161+8EC4ocjURMLN+WFdNLoNTpb/c06v
-        6m/QyuTRGwCSwQc6LJ8KTINxlfw/zxVGinU+slycQEpattF8LxnbImP9V5Ye8JXC05hc3G
-        amHri4ijPkBZOF1g9/2MWGLsvxy6F+NTLgM3Z5DuKlelvvLheg21N0ud204uC+hdI4KSse
-        Lhs3Iuzq8vhXJvo1MAGoa8LgRAi+0IzhQaleD8y8VQI7fPMaV3n4YmVF8J6aBg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1636120648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=41fUQYQRItfdxOFUK3dRPaRWhEWtV10CSnYM0e/zT3o=;
-        b=8JBP62uRQOT2yvJ65iG48WHrLtVe6mIzWyCk+TnpFTq/sHNCn/3Nscl8igvAq3bSjCiiJ4
-        atVYwbugKsNSA/AA==
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>
-Subject: Re: Removal of printk safe buffers delays NMI context printk
-In-Reply-To: <1636111599.wwppq55w4t.astroid@bobo.none>
-References: <1636039236.y415994wfa.astroid@bobo.none>
- <87ee7vki7f.fsf@jogness.linutronix.de>
- <1636073838.qpmyp6q17i.astroid@bobo.none>
- <87r1bv2aga.fsf@jogness.linutronix.de>
- <1636111599.wwppq55w4t.astroid@bobo.none>
-Date:   Fri, 05 Nov 2021 15:03:27 +0106
-Message-ID: <87h7cqg0xk.fsf@jogness.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S233017AbhKEOA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 10:00:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232604AbhKEOA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 10:00:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98E5061165;
+        Fri,  5 Nov 2021 13:58:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636120698;
+        bh=m9zv5EkQKsKyPpx5/ykeQzM38x9YUm/UOnYFys8+E1U=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:From;
+        b=amg5MS8oymxKPGCl7yJhYMmULdSy7+CVkIs5NZiFbrFxlGwGmzL/ndWUu75anwWBm
+         GpULlv6OlmNKN9gm/l+Pp+in8Qg0A3jm9r4ydP0NLPN5+e7CAacIltxRTJwgiwFAQu
+         XNSbVkZaL+h2PKigX9E15OH3QXhYtY3p18vKYFMGPlXOBQWgnwcj5tcbDQtmTBH0ch
+         NW62nG/elJJbqguz94M2lPV1ikS9vwdM+uJ9RedcGxOW+ZFG/J8wDdelV2hUrKvaGI
+         jgiNaEA1P1UIC5iBagTxwGuyBlNdxJlUGdAIVi3ed+nleR/cerMniOtSCvZaj6PTVq
+         cNnPZ3JSYdQWg==
+From:   SeongJae Park <sj@kernel.org>
+To:     SeongJae Park <sj@kernel.org>
+Cc:     Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: DAMON: problems when running DAMON on ARM64 with 'transparent_hugepage' enabled
+Date:   Fri,  5 Nov 2021 13:57:48 +0000
+Message-Id: <20211105135748.32729-1-sj@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211027080636.14886-1-sj@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-05, Nicholas Piggin <npiggin@gmail.com> wrote:
->> What was removed from 93d102f094b was irq_work triggering on all
->> CPUs.
->
-> No, it was the caller executing the flush for all remote CPUs itself.
-> irq work was not involved (and irq work can't be raised in a remote
-> CPU from NMI context).
+Hi Xiongfeng,
 
-Maybe I am missing something. In 93d102f094b~1 I see:
+On Wed, 27 Oct 2021 08:06:36 +0000 SeongJae Park <sj@kernel.org> wrote:
 
-watchdog_smp_panic
-  printk_safe_flush
-    __printk_safe_flush
-      printk_safe_flush_buffer
-        printk_safe_flush_line
-          printk_deferred
-            vprintk_deferred
-              vprintk_emit (but no direct printing)
-              defer_console_output
-                irq_work_queue
+> Hello Xiongfeng,
+> 
+> On Wed, 27 Oct 2021 14:14:57 +0800 Xiongfeng Wang <wangxiongfeng2@huawei.com> wrote:
+> 
+> > Sorry, I forgot to Cc the maillist. Cc it in this mail.
+> > 
+> > On 2021/10/27 10:19, Xiongfeng Wang wrote:
+> > > Hi SeongJae,
+> > > 
+> > > Sorry to disturb you. It's just that I came across some problems when running
+> > > DAMON, but still didn't find the solution after several days.
+> 
+> You're not disturbing but helping me!  Please don't say so! :)
+> 
+> > > 
+> > > A short description is that the result of DAMON is not as expected when running
+> > > on ARM64 with 'transparent_hugepage' enabled. But the result is correct when
+> > > 'transparent_hugepage' is disabled.
+> > > 
+> > > The following are the steps I came across the problems.
+> > > 1. Firstly, I use 'damo record' to sample the 'stairs' demo.
+> > >   damo record "./masim ./configs/stairs.cfg"
+> > > 2. Then I use 'damo report' to show the results.
+> > >   damo report heats --address_range xxx  xxx  --time_range xxx xxx    --heatmap
+> > > stdout    --stdout_heatmap_color emotion
+> > > The result doesn't show like a stair. I wrote a userspace demo to access a
+> > > certain address range in loop and use DAMON to sample the demo. I added
+> > > trace_print in 'damon_va_check_access()' and found out the pages in the address
+> > > range are not always detected as accessed, which is not expected. When I disable
+> > > transparent_hugepage by chance, the pages are marked as accessed. Then I test
+> > > the 'stairs' demo again, the result is correct. It seems that, only when
+> > > transparent_hugepage' is disabled, the access check works. I don't know where
+> > > the bug is, the software or the hardware ? Appreciate it if you have time to
+> > > reply. Thanks !
+> 
+> Thank you for this report!  I have a theory, but would like to test first.
+> Will check and get back to you soon.
 
-AFAICT, using defer_console_output() instead of your new printk_flush()
-should cause the exact behavior as before.
+Sorry for late response.  I also confirmed the issue is reproducible on my
+ARM64 test machine.  My theory is, enabling THP reduced page table walks, and
+therefore the PTE Accessed bits are not frequently updated.  To verify this, I
+made below experimental change.  After applying the change on my test machine,
+I was able to show the expected access pattern regardless of THP enablement.
 
-> but we do need that printk flush capability back there and for
-> nmi_backtrace.
+    --- a/mm/damon/vaddr.c
+    +++ b/mm/damon/vaddr.c
+    @@ -429,6 +429,7 @@ void damon_va_prepare_access_checks(struct damon_ctx *ctx)
+                            continue;
+                    damon_for_each_region(r, t)
+                            damon_va_prepare_access_check(ctx, mm, r);
+    +               flush_tlb_mm(mm);
+                    mmput(mm);
+            }
+     }
 
-Agreed. I had not considered this necessary side-effect when I removed
-the NMI safe buffers.
+Could you please test this on your machine and let me know the result?
 
-I am just wondering if we should fix the regression by going back to
-using irq_work (such as defer_console_output()) or if we want to
-introduce something new that introduces direct printing.
+Again, please note that this change is only for proof of the theory, rather
+than the complete fix.
 
-John Ogness
+
+Thanks,
+SJ
+
+> 
+> 
+> Thanks,
+> SJ
+> 
+> > > 
+> > > Thanks,
+> > > Xiongfeng
