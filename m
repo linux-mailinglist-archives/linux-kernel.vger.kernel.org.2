@@ -2,203 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCED44769D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 23:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 296A7447703
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 01:46:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235350AbhKGXCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 18:02:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbhKGXCe (ORCPT
+        id S236108AbhKHAsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 19:48:45 -0500
+Received: from prt-mail.chinatelecom.cn ([42.123.76.219]:59515 "EHLO
+        chinatelecom.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229807AbhKHAso (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 18:02:34 -0500
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D9CC061714
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 14:59:50 -0800 (PST)
-Received: by mail-pj1-x1049.google.com with SMTP id e10-20020a17090a7c4a00b001a4151ef9c7so6163408pjl.1
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 14:59:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:cc;
-        bh=RGyd5fiyOhy5GGKEzKJh8xi/Umvf6q20k85EJTXajbk=;
-        b=chNygS8CqeKmDlPQFveSwxc2tvI/R+tMYlS4e00i48Ehiwsc1GLRsWF3YTYTWutBct
-         mGuSqWFklUyiydxgheXtB34yv9IXiDAIGcB2HvldMCrPVt9nEKXS9R4rsz+FMUOIOW6f
-         TklNTnd4e+sUSjhuYdoNP+54QWjdy5msxUUx0kHxhBUQvYHIObvM5YQKu/N1/WVn/Dgk
-         Bg+DzJKwqVDpmOFl4v5lkqR1EEBcasQTHmgZz8Fy26IhJjbN+l8+xaAEZIIiwtfyRsQc
-         sjOU7+ciZfCSb1sCW3vYp0GxGHwjrw7l3NcKbdyhlbZeoIdToPjGRO4NvBAv/P3UqlxC
-         +s1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
-        bh=RGyd5fiyOhy5GGKEzKJh8xi/Umvf6q20k85EJTXajbk=;
-        b=oLFQ0mt9rtbIIVu5OVYe3hfvNDapOWIgE1Q9VweZI9vNutKueAVn10hQTFYAPGtX2Y
-         5Ud4lhm4LFaJmCWNXvJiHusdE07IOQe0Oy9XrIZQR7DW/tCh6SEBeaO93PG98NjRzuJB
-         EbgxCIEDyYAH0nlTIKKu3fYOoTE+lVsf0SBxELdU6dj2KnBeulod3qz41E7vLAx14C2K
-         kA++MjsEJElXT3HHwH7qkLc5q499TsFz/CcA3pcBDgsFu1zkhv5oNhjUjEw3BHUzerRD
-         af6zrz6I5AOO1GPkAYyF2MhKVJ5YojNy3Zd5vYKG5dAssSIaWbW3q8sNtrmO6SYMkV85
-         i3SQ==
-X-Gm-Message-State: AOAM53288gZpjf8xwbe7YxSllBjDLDSV7EIQy4I4nzUPO7IijFZGDEPo
-        kHPZn53BxKl3INrMAGhcCFpioQcsDE6tYXE5zg==
-X-Google-Smtp-Source: ABdhPJwt5nUAcpy2chlqCQQlPa8udRSH/MwnDkgO0xpWaRUaU1F1uUiexJxGrX23pi143MUAQRLdVrDx6o2gteVIZg==
-X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:86c8:d4b:a94b:a8fe])
- (user=almasrymina job=sendgmr) by 2002:a17:902:e88f:b0:141:f982:777 with SMTP
- id w15-20020a170902e88f00b00141f9820777mr44864402plg.68.1636325990117; Sun,
- 07 Nov 2021 14:59:50 -0800 (PST)
-Date:   Sun,  7 Nov 2021 14:59:47 -0800
-Message-Id: <20211107225947.1287388-1-almasrymina@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
-Subject: [PATCH v3] mm: Add PM_HUGE_THP_MAPPING to /proc/pid/pagemap
-From:   Mina Almasry <almasrymina@google.com>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        Sun, 7 Nov 2021 19:48:44 -0500
+X-Greylist: delayed 412 seconds by postgrey-1.27 at vger.kernel.org; Sun, 07 Nov 2021 19:48:42 EST
+HMM_SOURCE_IP: 172.18.0.48:43760.616130149
+HMM_ATTACHE_NUM: 0000
+HMM_SOURCE_TYPE: SMTP
+Received: from clientip-110.80.1.45 (unknown [172.18.0.48])
+        by chinatelecom.cn (HERMES) with SMTP id 1090E2800AF;
+        Mon,  8 Nov 2021 08:38:21 +0800 (CST)
+X-189-SAVE-TO-SEND: +zhenggy@chinatelecom.cn
+Received: from  ([172.18.0.48])
+        by app0024 with ESMTP id a7c1a4c9887d45d59953a2e84212ca75 for lvs-devel@vger.kernel.org;
+        Mon, 08 Nov 2021 08:38:42 CST
+X-Transaction-ID: a7c1a4c9887d45d59953a2e84212ca75
+X-Real-From: zhenggy@chinatelecom.cn
+X-Receive-IP: 172.18.0.48
+X-MEDUSA-Status: 0
+Sender: zhenggy@chinatelecom.cn
+From:   GuoYong Zheng <zhenggy@chinatelecom.cn>
+To:     lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org
+Cc:     horms@verge.net.au, ja@ssi.bg, pablo@netfilter.org,
+        kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org,
+        GuoYong Zheng <zhenggy@chinatelecom.cn>
+Subject: [PATCH] ipvs: remove unused variable for ip_vs_new_dest
+Date:   Fri,  5 Nov 2021 19:39:40 +0800
+Message-Id: <1636112380-11040-1-git-send-email-zhenggy@chinatelecom.cn>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PM_HUGE_THP MAPPING to allow userspace to detect whether a given virt
-address is currently mapped by a transparent huge page or not.
+The dest variable is not used after ip_vs_new_dest anymore in
+ip_vs_add_dest, do not need pass it to ip_vs_new_dest, remove it.
 
-Example use case is a process requesting THPs from the kernel (via
-a huge tmpfs mount for example), for a performance critical region of
-memory.  The userspace may want to query whether the kernel is actually
-backing this memory by hugepages or not.
-
-PM_HUGE_THP_MAPPING bit is set if the virt address is mapped at the PMD
-level and the underlying page is a transparent huge page.
-
-Tested manually by adding logging into transhuge-stress, and by
-allocating THP and querying the PM_HUGE_THP_MAPPING flag at those
-virtual addresses.
-
-Signed-off-by: Mina Almasry <almasrymina@google.com>
-
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: David Rientjes rientjes@google.com
-Cc: Paul E. McKenney <paulmckrcu@fb.com>
-Cc: Yu Zhao <yuzhao@google.com>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Peter Xu <peterx@redhat.com>
-Cc: Ivan Teterevkov <ivan.teterevkov@nutanix.com>
-Cc: Florian Schmidt <florian.schmidt@nutanix.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-mm@kvack.org
-
+Signed-off-by: GuoYong Zheng <zhenggy@chinatelecom.cn>
 ---
- Documentation/admin-guide/mm/pagemap.rst      |  3 ++-
- fs/proc/task_mmu.c                            |  6 +++++-
- tools/testing/selftests/vm/transhuge-stress.c | 21 +++++++++++++++----
- 3 files changed, 24 insertions(+), 6 deletions(-)
+ net/netfilter/ipvs/ip_vs_ctl.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
-index fdc19fbc10839..8a0f0064ff336 100644
---- a/Documentation/admin-guide/mm/pagemap.rst
-+++ b/Documentation/admin-guide/mm/pagemap.rst
-@@ -23,7 +23,8 @@ There are four components to pagemap:
-     * Bit  56    page exclusively mapped (since 4.2)
-     * Bit  57    pte is uffd-wp write-protected (since 5.13) (see
-       :ref:`Documentation/admin-guide/mm/userfaultfd.rst <userfaultfd>`)
--    * Bits 57-60 zero
-+    * Bit  58    page is a huge (PMD size) THP mapping
-+    * Bits 59-60 zero
-     * Bit  61    page is file-page or shared-anon (since 3.5)
-     * Bit  62    page swapped
-     * Bit  63    page present
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index ad667dbc96f5c..e10b59064c0b9 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -1302,6 +1302,7 @@ struct pagemapread {
- #define PM_SOFT_DIRTY		BIT_ULL(55)
- #define PM_MMAP_EXCLUSIVE	BIT_ULL(56)
- #define PM_UFFD_WP		BIT_ULL(57)
-+#define PM_HUGE_THP_MAPPING	BIT_ULL(58)
- #define PM_FILE			BIT_ULL(61)
- #define PM_SWAP			BIT_ULL(62)
- #define PM_PRESENT		BIT_ULL(63)
-@@ -1409,12 +1410,13 @@ static int pagemap_pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
- 	struct pagemapread *pm = walk->private;
- 	spinlock_t *ptl;
- 	pte_t *pte, *orig_pte;
-+	u64 flags = 0;
- 	int err = 0;
+diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+index e62b40b..494399d 100644
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@ -959,8 +959,7 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
+  *	Create a destination for the given service
+  */
+ static int
+-ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest,
+-	       struct ip_vs_dest **dest_p)
++ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
+ {
+ 	struct ip_vs_dest *dest;
+ 	unsigned int atype, i;
+@@ -1020,8 +1019,6 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
+ 	spin_lock_init(&dest->stats.lock);
+ 	__ip_vs_update_dest(svc, dest, udest, 1);
+ 
+-	*dest_p = dest;
+-
+ 	LeaveFunction(2);
+ 	return 0;
+ 
+@@ -1095,7 +1092,7 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
+ 		/*
+ 		 * Allocate and initialize the dest structure
+ 		 */
+-		ret = ip_vs_new_dest(svc, udest, &dest);
++		ret = ip_vs_new_dest(svc, udest);
+ 	}
+ 	LeaveFunction(2);
+ 
+-- 
+1.8.3.1
 
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- 	ptl = pmd_trans_huge_lock(pmdp, vma);
- 	if (ptl) {
--		u64 flags = 0, frame = 0;
-+		u64 frame = 0;
- 		pmd_t pmd = *pmdp;
- 		struct page *page = NULL;
-
-@@ -1456,6 +1458,8 @@ static int pagemap_pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
-
- 		if (page && page_mapcount(page) == 1)
- 			flags |= PM_MMAP_EXCLUSIVE;
-+		if (page && is_transparent_hugepage(page))
-+			flags |= PM_HUGE_THP_MAPPING;
-
- 		for (; addr != end; addr += PAGE_SIZE) {
- 			pagemap_entry_t pme = make_pme(frame, flags);
-diff --git a/tools/testing/selftests/vm/transhuge-stress.c b/tools/testing/selftests/vm/transhuge-stress.c
-index fd7f1b4a96f94..7dce18981fff5 100644
---- a/tools/testing/selftests/vm/transhuge-stress.c
-+++ b/tools/testing/selftests/vm/transhuge-stress.c
-@@ -16,6 +16,12 @@
- #include <string.h>
- #include <sys/mman.h>
-
-+/*
-+ * We can use /proc/pid/pagemap to detect whether the kernel was able to find
-+ * hugepages or no. This can be very noisy, so is disabled by default.
-+ */
-+#define NO_DETECT_HUGEPAGES
-+
- #define PAGE_SHIFT 12
- #define HPAGE_SHIFT 21
-
-@@ -23,6 +29,7 @@
- #define HPAGE_SIZE (1 << HPAGE_SHIFT)
-
- #define PAGEMAP_PRESENT(ent)	(((ent) & (1ull << 63)) != 0)
-+#define PAGEMAP_THP(ent)	(((ent) & (1ull << 58)) != 0)
- #define PAGEMAP_PFN(ent)	((ent) & ((1ull << 55) - 1))
-
- int pagemap_fd;
-@@ -47,10 +54,16 @@ int64_t allocate_transhuge(void *ptr)
- 			(uintptr_t)ptr >> (PAGE_SHIFT - 3)) != sizeof(ent))
- 		err(2, "read pagemap");
-
--	if (PAGEMAP_PRESENT(ent[0]) && PAGEMAP_PRESENT(ent[1]) &&
--	    PAGEMAP_PFN(ent[0]) + 1 == PAGEMAP_PFN(ent[1]) &&
--	    !(PAGEMAP_PFN(ent[0]) & ((1 << (HPAGE_SHIFT - PAGE_SHIFT)) - 1)))
--		return PAGEMAP_PFN(ent[0]);
-+	if (PAGEMAP_PRESENT(ent[0]) && PAGEMAP_PRESENT(ent[1])) {
-+#ifndef NO_DETECT_HUGEPAGES
-+		if (!PAGEMAP_THP(ent[0]))
-+			fprintf(stderr, "WARNING: detected non THP page\n");
-+#endif
-+		if (PAGEMAP_PFN(ent[0]) + 1 == PAGEMAP_PFN(ent[1]) &&
-+		    !(PAGEMAP_PFN(ent[0]) &
-+		      ((1 << (HPAGE_SHIFT - PAGE_SHIFT)) - 1)))
-+			return PAGEMAP_PFN(ent[0]);
-+	}
-
- 	return -1;
- }
---
-2.34.0.rc0.344.g81b53c2807-goog
