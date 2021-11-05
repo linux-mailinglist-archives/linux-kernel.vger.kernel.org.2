@@ -2,84 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0976D4467E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:27:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FABF4467E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:27:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234133AbhKER3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 13:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40098 "EHLO
+        id S234256AbhKERa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 13:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234083AbhKER3J (ORCPT
+        with ESMTP id S232476AbhKERaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 13:29:09 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC7F3C061714;
-        Fri,  5 Nov 2021 10:26:29 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1636133188;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VKIhEPtrIBLVQEGlBVNklKOA/z9ASGygP+at60u3C5s=;
-        b=NomZK0Xl/W6VZS1jYGUWvFlDnKuHW2010rs+wzTydZmfGPNDBt3SCR3Q8pIrvgE67Cr1ah
-        dWwy0fi8EpXO4SInoNF7QJB2Uvsd94lxJx0PQCBvnt/0jSU2HPGlulte/bA87oCX7W31NJ
-        nvdffNAliipXT4TZx5VGfkaZM4e2/G8KBsBTGRuFias9LHgFyMb9Bx8G4DtQgaQDBhuYwK
-        UkkxQ7s2TPcR9yCCNUGh6nEjSTxTl/TZzdPusNo9sjZL0k9XiLGevHvkky2sxqC8CRnVHS
-        BOp4kQBXEFzQP2DZN+Z2fOxq9xKsN8Y7u45gpfGMOiiwDHb29P3E36pHs/tnLA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1636133188;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VKIhEPtrIBLVQEGlBVNklKOA/z9ASGygP+at60u3C5s=;
-        b=YMeIPvzk6jiuTJdEPWvIhR+kBGH9OCu4QTYklvPkndhZz7LilMR9f86kf3BNhyDGKc894M
-        QeDK5x1NGr6FkfCg==
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH 4/4] intel_idle: Add SPR support with AMX INIT-state
-In-Reply-To: <0B7F49C0-B850-45BC-BEC9-60DF3E2D88C5@intel.com>
-References: <20211104225226.5031-1-chang.seok.bae@intel.com>
- <20211104225226.5031-5-chang.seok.bae@intel.com> <878ry24qpb.ffs@tglx>
- <0B7F49C0-B850-45BC-BEC9-60DF3E2D88C5@intel.com>
-Date:   Fri, 05 Nov 2021 18:26:27 +0100
-Message-ID: <8735oa4ipo.ffs@tglx>
+        Fri, 5 Nov 2021 13:30:25 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76FFC061714;
+        Fri,  5 Nov 2021 10:27:45 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 133so7685406wme.0;
+        Fri, 05 Nov 2021 10:27:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=rk30KtS19Hr1jWGCg1z0hAjvJQZ3OGvu+1uH/cnLg58=;
+        b=PO7R9d23qwS7/f4zOPrCa6HSwZZl6wCaRC3DWvhgZ30eEzWnaS0hA5EpNt1u3i8Cx4
+         dbSIaGqz4w4wLYdy3230vbXfErsugosgfI3IfWmu16YukjcU+PzEkBCqmzed/NekYuKY
+         mH8bWfjAlrkxYifww/6DObo+NVuSj8Tpyih2INmXlqhcJ8s8pdzP9jM9BYDHtsBJ47HY
+         TE+ehPtDL+afoMynEWwk7bysjvf+IO3Cyi9NPEBEmgAqpHSgVxCdSDLC1TEqiBTrVts6
+         j9BuBc7ajPe2pqDwVpidFyzuiFoq6jHsxUFU81N58RjGAkueL0KRGQBO80VzEXSElO/Y
+         u0gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=rk30KtS19Hr1jWGCg1z0hAjvJQZ3OGvu+1uH/cnLg58=;
+        b=fbaYFCbzNb0s365369SNYW9F0AYcwnuPes+IpE1hCBl7LDarqiskwA4RFYn1JdsBwV
+         DWYBpH8NE5dVujw8uSJQdZ4ihgLwMP2M9c7U8kwq4A9b8ldJkzml4guEmMnH1iABso16
+         tUFwBsGgs1afa3W5na5ovHu9Pr43ufMhdThkzDtWXNJZD8vHl0rVtHfhAEhMsRenGEcw
+         YGNHhxuJkyB0OYGcRyIRJp19YZNUvd04kBbY+fSWyYgcfge/2S2lcL6BJgLSGpqYlLGt
+         MlAJWQzmZqHHLM+Epqw0BXIoPHiGY1uojxB0kBNZO9J6Cl2/lSQIsVUhdFhfh7AnfwBu
+         xSSA==
+X-Gm-Message-State: AOAM5337wU2ZK6TGGG5k9Ts9lC+4D3B6POlVU/atf57/AOSChoqXToLZ
+        58HSVIpQqNQr2BZ/5rWHPtE=
+X-Google-Smtp-Source: ABdhPJwS6UW2koakrpBVcBzrD/W0EcgWKhBz/Q2KmWIxv8ansAVyohH11Uum5Hah1BO5oIwp0N8B9w==
+X-Received: by 2002:a05:600c:3ba3:: with SMTP id n35mr26703463wms.88.1636133264497;
+        Fri, 05 Nov 2021 10:27:44 -0700 (PDT)
+Received: from localhost (eduroam-113039.grenet.fr. [130.190.113.39])
+        by smtp.gmail.com with ESMTPSA id p12sm10287241wrr.10.2021.11.05.10.27.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 10:27:44 -0700 (PDT)
+Date:   Fri, 5 Nov 2021 18:27:01 +0100
+From:   =?utf-8?Q?Fran=C3=A7ois-Xavier?= Carton <fx.carton91@gmail.com>
+To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+Cc:     Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org,
+        Ash Logan <ash@heyquark.com>,
+        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>,
+        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        "Daniel J. Ogorchock" <djogorchock@gmail.com>
+Subject: Re: [PATCH v3 0/4] HID: wiiu-drc: Add a driver for the Wii U gamepad
+Message-ID: <YYVpZWuil2aTnROx@reblochon>
+Mail-Followup-To: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
+        Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org,
+        Ash Logan <ash@heyquark.com>,
+        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>,
+        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        "Daniel J. Ogorchock" <djogorchock@gmail.com>
+References: <20210502232836.26134-1-linkmauve@linkmauve.fr>
+ <20210519085924.1636-1-linkmauve@linkmauve.fr>
+ <20210921150837.ingexwsauvxgluca@luna>
+ <nycvar.YFH.7.76.2110191112490.12554@cbobk.fhfr.pm>
+ <20211019092737.kudgdeulghx2ig3m@luna>
+ <nycvar.YFH.7.76.2110191128540.12554@cbobk.fhfr.pm>
+ <20211104112137.n3q7vy23z3dztmn5@luna>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211104112137.n3q7vy23z3dztmn5@luna>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05 2021 at 16:03, Bae, Chang Seok wrote:
-> On Nov 5, 2021, at 07:33, Thomas Gleixner <tglx@linutronix.de> wrote:
->> On Thu, Nov 04 2021 at 15:52, Chang S. Bae wrote:
->>> +static __cpuidle int intel_idle_tile(struct cpuidle_device *dev,
->>> +				     struct cpuidle_driver *drv, int index)
->>> +{
->>> +	fpu_idle_fpregs();
->> 
->> That's redundant because arch_cpu_idle_enter() is invoked before the
->> actual idle mechanism. 
->
-> I think the way this series is shaped makes confusion, sorry.
->
-> Since PATCH3 and PATCH4 are in debate -- which approach should be chosen, it
-> was decided to post both and let just one of them be selected. E.g., if PATCH3
-> is right, then PATCH4 should be abandoned.
+On Thu, Nov 04, 2021 at 12:21:37PM +0100, Emmanuel Gil Peyrot wrote:
+> On Tue, Oct 19, 2021 at 11:30:06AM +0200, Jiri Kosina wrote:
+> > On Tue, 19 Oct 2021, Emmanuel Gil Peyrot wrote:
+> […]
+> > > Another driver I’d like to submit eventually is the GameCube Controller 
+> > > Adapter for Wii U, which does exactly what its name says, but being an 
+> > > external USB adapter it also works on any USB computer; would it make 
+> > > sense to develop it alongside the current driver, just because it is 
+> > > sold by the same company?
+> > 
+> > We generally group the support for HID devices in drivers based on the 
+> > producing company, with a few exceptions where it doesn't make sense.
+> 
+> Speaking of which, would you want me to also merge hid-wiimote into
+> hid-nintendo?  Or is there a reason it is separate besides legacy?
+> 
 
-My bad. I should have read the cover letter before complaining.
+Would naming the drivers with a "nintendo-" prefix while keeping them
+separate be an acceptable solution? Since these drivers share no common
+code, merging them will result in a big driver with different parts for
+unrelated hardware (save for the maker company), which doesn't seem
+right.
 
-> I think PATCH3 is better. Maybe PATCH4 should not be sent together to avoid
-> such confusion.
-
-Yes. patch 3 is way better than patch 4.
-
-Thanks,
-
-        tglx
+For the gamecube adapter driver, I'd prefer to keep it separate; but
+I'll integrate it to hid-nintendo as Emmanuel did for the wii-u if
+that's the preferred option.
