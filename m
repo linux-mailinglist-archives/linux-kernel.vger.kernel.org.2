@@ -2,177 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2E244632B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 13:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B4144632C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 13:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232931AbhKEMLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 08:11:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44019 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232328AbhKEMLg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 08:11:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636114136;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z96ltttEMI7xDMFWWKjBYprOf7tFQRkGV8p2r4IJRn8=;
-        b=CNyGI3HuzEVcZFMXNzKc2RQK551FSq4GeQ3PMpC/q6tXBnd9TCBsj4McHGaQzayrWRtZ08
-        Ah9Xy+LuUjRiua4UeMZPBPRyqcCHM5zt3ATTbyq8aNpF1YTQ7PFSfem1vGNJPMCoDjriga
-        GNjlzRT4AMuTbnVEyk8t/kYA1Bp9+ao=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-93-5hUsQqvlNRWu5jd4iwRYnQ-1; Fri, 05 Nov 2021 08:08:55 -0400
-X-MC-Unique: 5hUsQqvlNRWu5jd4iwRYnQ-1
-Received: by mail-wm1-f71.google.com with SMTP id v10-20020a1cf70a000000b00318203a6bd1so3183927wmh.6
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 05:08:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Z96ltttEMI7xDMFWWKjBYprOf7tFQRkGV8p2r4IJRn8=;
-        b=wkcP1tn5z7BhtuCWQ8wVWeHFdW074pmZDUGbwnRirKO0oW6k5Xayz9bHNbaGxQKskc
-         9kPNu7FOjx8eO8PgWxlm4AysqKDOnXsF4Rk1XmoaRb/cMr1mrhJCSI/EOYtAvTVfhn+v
-         Bm1o5cltaBUdpdEZgoFNHvim4UufFtH33uBFtwc8ZH+6sHDu+b6Oyvgt/kTdvakajgzk
-         uqw0PVN5zY92S8ErLs9oMkUPkGZeD9rP0K6xXlt0Qk4k0fwnKVwTqLtKyA07pO7wiZ8/
-         EW5H8mfnU4AeLCLldKOc6h0YJAX24w2IAPSn05JUTSESMdx0+fMWQ3f/H+WsicXFdpSi
-         WrnA==
-X-Gm-Message-State: AOAM5313OJZMQAKMEM2HWZpMDPJ0RWIt5XfRbWtNaiLT5dfOPgc2iVyo
-        j+a/yc6XW1gY76LQsXyk8yWvwah25vvNkLNbSJQdD6Plbh128BYAuHyWVVCPGFGkNuY5WSPeFH0
-        6zpuos9ZDOgD8VeP3v6UKWkTI7A439QQAKxhSEmm5+sXbPKq1qkWaVjZfT1rB1k32rqAJ3wPF1n
-        Yz
-X-Received: by 2002:a7b:ca4c:: with SMTP id m12mr27584697wml.119.1636114134362;
-        Fri, 05 Nov 2021 05:08:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwiI8uK5l1z6MEdD2zH8CJe0sZv403aDV4qAB5NUTSetjGcYY165o55UgPye3ySTHuKBhLE2Q==
-X-Received: by 2002:a7b:ca4c:: with SMTP id m12mr27584466wml.119.1636114132643;
-        Fri, 05 Nov 2021 05:08:52 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id f18sm7751308wre.7.2021.11.05.05.08.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 05:08:52 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/4] KVM: nVMX: Implement Enlightened MSR Bitmap feature
-In-Reply-To: <YYSEYY4h6NN7FGbR@google.com>
-References: <20211013142258.1738415-1-vkuznets@redhat.com>
- <20211013142258.1738415-5-vkuznets@redhat.com>
- <YYSEYY4h6NN7FGbR@google.com>
-Date:   Fri, 05 Nov 2021 13:08:51 +0100
-Message-ID: <8735oals8c.fsf@vitty.brq.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S232937AbhKEMMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 08:12:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231428AbhKEMMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 08:12:05 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 18BCF61215;
+        Fri,  5 Nov 2021 12:09:25 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1miy26-003eKb-Sf; Fri, 05 Nov 2021 12:09:23 +0000
+Date:   Fri, 05 Nov 2021 12:09:22 +0000
+Message-ID: <87y262953h.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] irqdomain: check irq mapping against domain size
+In-Reply-To: <20211105090601.243416-1-ben.dooks@codethink.co.uk>
+References: <20211105090601.243416-1-ben.dooks@codethink.co.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: ben.dooks@codethink.co.uk, linux-kernel@vger.kernel.org, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+Hi Ben,
 
-> On Wed, Oct 13, 2021, Vitaly Kuznetsov wrote:
->> Updating MSR bitmap for L2 is not cheap and rearly needed. TLFS for Hyper-V
->> offers 'Enlightened MSR Bitmap' feature which allows L1 hypervisor to
->> inform L0 when it changes MSR bitmap, this eliminates the need to examine
->> L1's MSR bitmap for L2 every time when 'real' MSR bitmap for L2 gets
->> constructed.
->> 
->> Use 'vmx->nested.msr_bitmap_changed' flag to implement the feature.
->> 
->> Note, KVM already uses 'Enlightened MSR bitmap' feature when it runs as a
->> nested hypervisor on top of Hyper-V. The newly introduced feature is going
->> to be used by Hyper-V guests on KVM.
->> 
->> When the feature is enabled for Win10+WSL2, it shaves off around 700 CPU
->> cycles from a nested vmexit cost (tight cpuid loop test).
->> 
->> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> ---
->>  arch/x86/kvm/hyperv.c     |  2 ++
->>  arch/x86/kvm/vmx/nested.c | 20 ++++++++++++++++++--
->>  2 files changed, 20 insertions(+), 2 deletions(-)
->> 
->> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
->> index 6f11cda2bfa4..a00de1dbec57 100644
->> --- a/arch/x86/kvm/hyperv.c
->> +++ b/arch/x86/kvm/hyperv.c
->> @@ -2516,6 +2516,8 @@ int kvm_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
->>  
->>  		case HYPERV_CPUID_NESTED_FEATURES:
->>  			ent->eax = evmcs_ver;
->> +			if (evmcs_ver)
->> +				ent->eax |= HV_X64_NESTED_MSR_BITMAP;
->>  
->>  			break;
->>  
->> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
->> index bf4fa63ed371..7cd0c20d4557 100644
->> --- a/arch/x86/kvm/vmx/nested.c
->> +++ b/arch/x86/kvm/vmx/nested.c
->> @@ -608,15 +608,30 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
->>  						 struct vmcs12 *vmcs12)
->>  {
->>  	int msr;
->> +	struct vcpu_vmx *vmx = to_vmx(vcpu);
->>  	unsigned long *msr_bitmap_l1;
->> -	unsigned long *msr_bitmap_l0 = to_vmx(vcpu)->nested.vmcs02.msr_bitmap;
->> -	struct kvm_host_map *map = &to_vmx(vcpu)->nested.msr_bitmap_map;
->> +	unsigned long *msr_bitmap_l0 = vmx->nested.vmcs02.msr_bitmap;
->> +	struct hv_enlightened_vmcs *evmcs = vmx->nested.hv_evmcs;
->> +	struct kvm_host_map *map = &vmx->nested.msr_bitmap_map;
->
-> That reminds me, can my nested bitmap fixes get merged?  Superficial conflicts,
-> but still conflicts that I'd rather not have to resolve :-)
->
-> https://lkml.kernel.org/r/20210924204907.1111817-1-seanjc@google.com
->
+On Fri, 05 Nov 2021 09:06:01 +0000,
+Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+> 
+> The irq translate code does not check the irq number against
+> the maximum a domain can handle. This can cause an OOPS if
+> the firmware data has been damaged in any way. Check the intspec
+> or fwdata against the irqdomain and return -EINVAL if over.
+> 
+> This is the result of bug somewhere in the boot of a SiFive Unmatched
+> board where the 5th argument of the pcie node is being damaged which
+> causes an OOPS in the startup code.
+> 
+> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+> ---
+>  kernel/irq/irqdomain.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+> index 6284443b87ec..e61397420723 100644
+> --- a/kernel/irq/irqdomain.c
+> +++ b/kernel/irq/irqdomain.c
+> @@ -906,6 +906,8 @@ int irq_domain_xlate_onecell(struct irq_domain *d, struct device_node *ctrlr,
+>  {
+>  	if (WARN_ON(intsize < 1))
+>  		return -EINVAL;
+> +	if (WARN_ON(intspec[0] > d->hwirq_max))
+> +		return -EINVAL;
 
-From my side I can suggest to combine these two series in v4)
+This doesn't seem right.
 
->>  
->>  	/* Nothing to do if the MSR bitmap is not in use.  */
->>  	if (!cpu_has_vmx_msr_bitmap() ||
->>  	    !nested_cpu_has(vmcs12, CPU_BASED_USE_MSR_BITMAPS))
->>  		return false;
->>  
->> +	/*
->> +	 * MSR bitmap update can be skipped when:
->> +	 * - MSR bitmap for L1 hasn't changed.
->> +	 * - Nested hypervisor (L1) is attempting to launch the same L2 as
->> +	 *   before.
->> +	 * - Nested hypervisor (L1) has enabled 'Enlightened MSR Bitmap' feature
->> +	 *   and tells KVM (L0) there were no changes in MSR bitmap for L2.
->> +	 */
->> +	if (!vmx->nested.msr_bitmap_force_recalc && evmcs &&
->> +	    evmcs->hv_enlightenments_control.msr_bitmap &&
->> +	    evmcs->hv_clean_fields & HV_VMX_ENLIGHTENED_CLEAN_FIELD_MSR_BITMAP)
->> +		goto out_clear_msr_bitmap_force_recalc;
->
-> Huh?  Why clear it, it's already clear.  Any reason not to simply return true?
->
+For a start, d->hwirq_max is 0 when the domain is backed by a radix
+tree. Also, nothing says that what you read from the DT is something
+that should be directly meaningful to the irqdomain. A driver could
+well call into this and perform some extra processing on the data
+before it lands into the irqdomain.
 
-No need indeed, will drop in v4.
+In general, this looks like DT validation code, and I'm not keen on
+that in the core code.
 
->> +
->>  	if (kvm_vcpu_map(vcpu, gpa_to_gfn(vmcs12->msr_bitmap), map))
->>  		return false;
->>  
->> @@ -700,6 +715,7 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
->>  
->>  	kvm_vcpu_unmap(vcpu, &to_vmx(vcpu)->nested.msr_bitmap_map, false);
->>  
->> +out_clear_msr_bitmap_force_recalc:
->>  	vmx->nested.msr_bitmap_force_recalc = false;
->>  
->>  	return true;
->> -- 
->> 2.31.1
->> 
->
+Thanks,
+
+	M.
 
 -- 
-Vitaly
-
+Without deviation from the norm, progress is not possible.
