@@ -2,106 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93B54460B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 09:33:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A36C84460CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 09:42:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232755AbhKEIfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 04:35:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26351 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232736AbhKEIfi (ORCPT
+        id S232770AbhKEIou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 04:44:50 -0400
+Received: from lucky1.263xmail.com ([211.157.147.134]:46194 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229473AbhKEIor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 04:35:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636101179;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JSxcNVRVB/DnKZ4+R+U2HEVeDSNW0idhy+8Cu/Pwcx0=;
-        b=APMT/2up7s68m7Hru2j/xMF7qi+7x3C2nOT1Lu9cxn33Pw3qiRgBFOwBthC6O9q+tEdd1o
-        g4i3lFlEBSZWLdL6WhGN4FWj/OGo0DKEVyZSAsO9QLamTQqskivBkyb361q38YQM72OhLF
-        vD+UeQBCLxywKBVfrIvBn2bS3F6/TAQ=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-602-BHL6sGacOX23kg6du7JCew-1; Fri, 05 Nov 2021 04:32:58 -0400
-X-MC-Unique: BHL6sGacOX23kg6du7JCew-1
-Received: by mail-ed1-f71.google.com with SMTP id y20-20020a056402359400b003e28c9bc02cso8249945edc.9
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 01:32:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=JSxcNVRVB/DnKZ4+R+U2HEVeDSNW0idhy+8Cu/Pwcx0=;
-        b=U5mt28TblXsJXtI7ShTqLPqmOqPDcE+qef1EGFUMaEjM8ozQO+GTplrRVm7f/9GOgd
-         yt1rpSBq3pjG1hs6mMMgTMjY++MYzVqAboX/PUfxzUw7rpelkUsDf3SfhtnaiD7HIkbp
-         sLWb2x+zlAR24hyRRawVCVPzvVjJRhP91UtZZvF7U0rKfeNYwJJ/hMjJxMOuCffV0dFa
-         X66L5m0cmzHL2ZR+hTDfcVEwujm22QsQObKOyaCKZMo4YTAV6bGwwfKrTF02ZvDc0GZl
-         hFD4WDxJlcrLFdrGUp9kSbZUbWx5TmJ5xFqDRUtl5UI5F1Pp2p8QKoqyziqz1BYmdWix
-         TE4Q==
-X-Gm-Message-State: AOAM5301AM8WC53+ue/hbaD0erJFCePhC+0whIVxuUPR1V8tEEoA338I
-        TNAPNH1bJ9XxNmcXJ8b3/+m2lPwOy0mXn+2avpSDTYT7W/O/61pPHyug+S+h35ZEFDyZbrWftGW
-        mxKR0tNH4gw4kVZYrQKPMHkSG
-X-Received: by 2002:a05:6402:6c8:: with SMTP id n8mr44987882edy.38.1636101176829;
-        Fri, 05 Nov 2021 01:32:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz1GoJj1G+zOd7oQ+Yq/sGjIs8oFTI+82pGo9B8tvnTk8Cb+1Fmockzi86p8mv8w/4VBcIpXg==
-X-Received: by 2002:a05:6402:6c8:: with SMTP id n8mr44987864edy.38.1636101176724;
-        Fri, 05 Nov 2021 01:32:56 -0700 (PDT)
-Received: from steredhat (host-87-10-72-39.retail.telecomitalia.it. [87.10.72.39])
-        by smtp.gmail.com with ESMTPSA id f22sm4127471edu.26.2021.11.05.01.32.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 01:32:56 -0700 (PDT)
-Date:   Fri, 5 Nov 2021 09:32:53 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>
-Subject: Re: [PATCH] vdpa: Avoid duplicate call to vp_vdpa get_status
-Message-ID: <20211105083253.y4mikalhbfwmcuhp@steredhat>
-References: <20211104195833.2089796-1-eperezma@redhat.com>
+        Fri, 5 Nov 2021 04:44:47 -0400
+X-Greylist: delayed 529 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Nov 2021 04:44:46 EDT
+Received: from localhost (unknown [192.168.167.70])
+        by lucky1.263xmail.com (Postfix) with ESMTP id AF940D1250;
+        Fri,  5 Nov 2021 16:33:11 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P31296T140158673274624S1636101189603309_;
+        Fri, 05 Nov 2021 16:33:11 +0800 (CST)
+X-IP-DOMAINF: 1
+X-RL-SENDER: jay.xu@rock-chips.com
+X-SENDER: xjq@rock-chips.com
+X-LOGIN-NAME: jay.xu@rock-chips.com
+X-FST-TO: maarten.lankhorst@linux.intel.com
+X-RCPT-COUNT: 14
+X-LOCAL-RCPT-COUNT: 2
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-UNIQUE-TAG: <b0618e41130f8db6484a6eaac288d033>
+X-System-Flag: 0
+From:   Jianqun Xu <jay.xu@rock-chips.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, christian.koenig@amd.com
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        linux-rockchip@lists.infradead.org, jay.xu@rock-chips.com,
+        andy.yan@rock-chips.com
+Subject: [PATCH] drm/prime/gem: drm_gem_object_release_handle by handle
+Date:   Fri,  5 Nov 2021 16:33:08 +0800
+Message-Id: <20211105083308.392156-1-jay.xu@rock-chips.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211104195833.2089796-1-eperezma@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 08:58:33PM +0100, Eugenio Pérez wrote:
->It has no sense to call get_status twice, since we already have a
->variable for that.
->
->Signed-off-by: Eugenio Pérez <eperezma@redhat.com>
->---
-> drivers/vhost/vdpa.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
->index 01c59ce7e250..10676ea0348b 100644
->--- a/drivers/vhost/vdpa.c
->+++ b/drivers/vhost/vdpa.c
->@@ -167,13 +167,13 @@ static long vhost_vdpa_set_status(struct vhost_vdpa *v, u8 __user *statusp)
-> 	status_old = ops->get_status(vdpa);
->
-> 	/*
-> 	 * Userspace shouldn't remove status bits unless reset the
-> 	 * status to 0.
-> 	 */
->-	if (status != 0 && (ops->get_status(vdpa) & ~status) != 0)
->+	if (status != 0 && (status_old & ~status) != 0)
-> 		return -EINVAL;
->
-> 	if ((status_old & VIRTIO_CONFIG_S_DRIVER_OK) && !(status & VIRTIO_CONFIG_S_DRIVER_OK))
-> 		for (i = 0; i < nvqs; i++)
-> 			vhost_vdpa_unsetup_vq_irq(v, i);
->
->-- 
->2.27.0
->
+The drm_gem_handle_delete is called by DRM_IOCTL_GEM_CLOSE from
+userspace.
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+drm_gem_handle_delete(handle)
+  drm_gem_object_release_handle(handle)
+    drm_gem_remove_prime_handles()
+	drm_prime_remove_buf_handle_locked()
+	  if (member->dma_buf == dma_buf)
+	    free member
+	    return
+
+The api description of drm_gem_handle_delete says to delete the given
+file-private handle.
+
+But the drm_gem_remove_prime_handles seems to remove *handles* from
+rbtree of drm file-private structure.
+
+And then the drm_gem_remove_prime_handles only remove the first handle
+lookuped from rbtree, as following codes:
+
+	rb = prime_fpriv->dmabufs.rb_node;
+	while (rb) {
+		struct drm_prime_member *member;
+
+		member = rb_entry(rb, struct drm_prime_member, dmabuf_rb);
+		if (member->dma_buf == dma_buf) {
+			rb_erase(&member->handle_rb, &prime_fpriv->handles);
+			rb_erase(&member->dmabuf_rb, &prime_fpriv->dmabufs);
+
+			dma_buf_put(dma_buf);
+			kfree(member);
+			return;
+		}
+
+This patch fixes to remove the rbtree member by given handle.
+
+Test
+
+handle_1 = drm_alloc(1MB)
+fd_1     = drm_handle_to_fd(handle_1)
+name_1   = drm get flink name from handle(handle_1)        // DRM_IOCTL_GEM_FLINK
+
+handle_2 = drm get handle,size_2 from flink name(name_1)   // DRM_IOCTL_GEM_OPEN
+fd_2     = drm_handle_to_fd(handle_2)
+
+handle_3 = drm get handle,size_3 from flink name(name_1)   // DRM_IOCTL_GEM_OPEN
+fd_3     = drm_handle_to_fd(handle_3)
+
+drm close handle(handle_3) // DRM_IOCTL_GEM_CLOSE
+
+handle_4 = drm_alloc(4MB)
+fd_4     = drm_handle_to_fd(handle_4)
+
+We find that the fd_4 dmabuf size is 1MB. Tested by following:
+
+handle_5 = drm_fd_to_handle(fd_4)
+name_5   = drm get flink name from handle(handle_5)        // DRM_IOCTL_GEM_FLINK
+handle_3 = drm get handle,size_5 from flink name(name_5)   // DRM_IOCTL_GEM_OPEN
+
+Without this patch, the size_5 = 1MB
+With this patch, the size_5 = 4MB
+
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+---
+ drivers/gpu/drm/drm_gem.c      | 7 ++++---
+ drivers/gpu/drm/drm_internal.h | 2 +-
+ drivers/gpu/drm/drm_prime.c    | 4 ++--
+ 3 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
+index 09c820045859..bfa5637f54d2 100644
+--- a/drivers/gpu/drm/drm_gem.c
++++ b/drivers/gpu/drm/drm_gem.c
+@@ -168,7 +168,8 @@ void drm_gem_private_object_init(struct drm_device *dev,
+ EXPORT_SYMBOL(drm_gem_private_object_init);
+ 
+ static void
+-drm_gem_remove_prime_handles(struct drm_gem_object *obj, struct drm_file *filp)
++drm_gem_remove_prime_handle(struct drm_gem_object *obj, struct drm_file *filp,
++			    int handle)
+ {
+ 	/*
+ 	 * Note: obj->dma_buf can't disappear as long as we still hold a
+@@ -177,7 +178,7 @@ drm_gem_remove_prime_handles(struct drm_gem_object *obj, struct drm_file *filp)
+ 	mutex_lock(&filp->prime.lock);
+ 	if (obj->dma_buf) {
+ 		drm_prime_remove_buf_handle_locked(&filp->prime,
+-						   obj->dma_buf);
++						   obj->dma_buf, handle);
+ 	}
+ 	mutex_unlock(&filp->prime.lock);
+ }
+@@ -252,7 +253,7 @@ drm_gem_object_release_handle(int id, void *ptr, void *data)
+ 	if (obj->funcs->close)
+ 		obj->funcs->close(obj, file_priv);
+ 
+-	drm_gem_remove_prime_handles(obj, file_priv);
++	drm_gem_remove_prime_handle(obj, file_priv, id);
+ 	drm_vma_node_revoke(&obj->vma_node, file_priv);
+ 
+ 	drm_gem_object_handle_put_unlocked(obj);
+diff --git a/drivers/gpu/drm/drm_internal.h b/drivers/gpu/drm/drm_internal.h
+index 17f3548c8ed2..17c4f6cac21c 100644
+--- a/drivers/gpu/drm/drm_internal.h
++++ b/drivers/gpu/drm/drm_internal.h
+@@ -75,7 +75,7 @@ int drm_prime_fd_to_handle_ioctl(struct drm_device *dev, void *data,
+ void drm_prime_init_file_private(struct drm_prime_file_private *prime_fpriv);
+ void drm_prime_destroy_file_private(struct drm_prime_file_private *prime_fpriv);
+ void drm_prime_remove_buf_handle_locked(struct drm_prime_file_private *prime_fpriv,
+-					struct dma_buf *dma_buf);
++					struct dma_buf *dma_bufi, int handle);
+ 
+ /* drm_drv.c */
+ struct drm_minor *drm_minor_acquire(unsigned int minor_id);
+diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
+index deb23dbec8b5..080476296715 100644
+--- a/drivers/gpu/drm/drm_prime.c
++++ b/drivers/gpu/drm/drm_prime.c
+@@ -188,7 +188,7 @@ static int drm_prime_lookup_buf_handle(struct drm_prime_file_private *prime_fpri
+ }
+ 
+ void drm_prime_remove_buf_handle_locked(struct drm_prime_file_private *prime_fpriv,
+-					struct dma_buf *dma_buf)
++					struct dma_buf *dma_buf, int handle)
+ {
+ 	struct rb_node *rb;
+ 
+@@ -197,7 +197,7 @@ void drm_prime_remove_buf_handle_locked(struct drm_prime_file_private *prime_fpr
+ 		struct drm_prime_member *member;
+ 
+ 		member = rb_entry(rb, struct drm_prime_member, dmabuf_rb);
+-		if (member->dma_buf == dma_buf) {
++		if ((member->dma_buf == dma_buf) && (member->handle == handle)) {
+ 			rb_erase(&member->handle_rb, &prime_fpriv->handles);
+ 			rb_erase(&member->dmabuf_rb, &prime_fpriv->dmabufs);
+ 
+-- 
+2.25.1
+
+
 
