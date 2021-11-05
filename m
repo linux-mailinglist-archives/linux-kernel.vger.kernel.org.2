@@ -2,103 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012244464FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:33:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EACDC446501
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:34:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233254AbhKEOgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 10:36:16 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:51865 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233230AbhKEOgP (ORCPT
+        id S233268AbhKEOgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 10:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233259AbhKEOge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 10:36:15 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id D3718580873;
-        Fri,  5 Nov 2021 10:33:34 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Fri, 05 Nov 2021 10:33:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=7vHGH5
-        fsWp+AmiltcS8fSgzVtFKPV6KtppB0gEokIww=; b=ZtwKF4f/OZwYUAfoIxksjl
-        eLsbDweOswOJhxqMcdKfCjt6sk0ObD3uMVNPUP7lRF/vwbmmhKs/Ddy5h2YtGITO
-        uW+evRjVm7z6TkBwiZKzXb8GrRW8kJe0sQVuIgJwUpq6YrZw8MvQkkW3rThe+Vv6
-        BEZvElSUfG61SmwPvtoND+ICMSA5Ac2VrrZgGkV7Du6cdlbbhdo92AdMnp6aw5zc
-        u9xyQ4iTuHSAiC6UdCuzLsuZHr8Kgtbqx3vdiFRKEFNJMryF7LDYyxA93vpJwlLh
-        Gdw3mDSEtxHUGdRMJvX63R5YxGpfmzxzLKGvFLF1yci26Xkd9sUbDvKlpXBNDWYA
-        ==
-X-ME-Sender: <xms:vUCFYfe1oqMLVxtZh4uEd42AnTNQVpgE5N3blhaqxS4fudOHsuVhrg>
-    <xme:vUCFYVOAbRVtZf9ujPlJ8sM8igG0zuPyTOoCydW_Fpu99Pmq-TQ0EuPS_g81JT_NA
-    D4rZVVqJ5eeP34>
-X-ME-Received: <xmr:vUCFYYiNzr5m-2jGUAfKjOPsY91AaYrWYt9R0W571MhU-RraTA2zigTaC1A85ERs6PYQ8JOCDHAhQgK4mHnwxsZ6Xw6NfA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrtdeigdeigecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtrodttddtvdenucfhrhhomhepkfguohcuufgt
-    hhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrthhtvg
-    hrnhepgfejvefhvdegiedukeetudevgeeujeefffeffeetkeekueeuheejudeltdejuedu
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepihguoh
-    hstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:vUCFYQ_fXX9PkOHvculQRZ68o5e2JDJ54IYOpSUOWs1P4dMVgXrdjQ>
-    <xmx:vUCFYbs3d3G7qUea5InpNwIrXV9I-d_zdc6BDs_V0FTBP87ZS8w7GQ>
-    <xmx:vUCFYfFYH3ccf4rW94Gv8Z8HLS0ezT_nOByD9L6_66eaghTJSVak6Q>
-    <xmx:vkCFYZLhdOKiPWfAFUYGC_pNzOVpkXJnO1cvfKB-qmhwqelA6_bZ9w>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 5 Nov 2021 10:33:32 -0400 (EDT)
-Date:   Fri, 5 Nov 2021 16:33:29 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Vladis Dronov <vdronov@redhat.com>,
-        Simo Sorce <ssorce@redhat.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        kernel test robot <lkp@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: crypto: api - Fix boot-up crash when crypto manager is disabled
-Message-ID: <YYVAuRaITKKvAhSp@shredder>
-References: <YV0K+EbrAqDdw2vp@archlinux-ax161>
- <20211019132802.GA14233@gondor.apana.org.au>
- <alpine.DEB.2.22.394.2111021636040.2330984@ramsan.of.borg>
- <DM6PR04MB708155E447FD9A79AB89686DE78D9@DM6PR04MB7081.namprd04.prod.outlook.com>
- <CAMuHMdW1wLAt9Y=-GMMuk8HWE3UnRgKNMmD9fq34Rq8J7QyrzQ@mail.gmail.com>
- <20211104121612.GA8044@gondor.apana.org.au>
- <CAMuHMdWAAWWS+TgeN1AajHBS5w9-datMEeXqAN8RjxRd9bX63Q@mail.gmail.com>
- <20211104133044.GA8563@gondor.apana.org.au>
- <YYP5ypSPOcP4WGCr@shredder>
- <20211105072608.GA13584@gondor.apana.org.au>
+        Fri, 5 Nov 2021 10:36:34 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25785C061714;
+        Fri,  5 Nov 2021 07:33:55 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636122832;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pDQ7Vlp4ZOk3OANnx52v04hzRNMdVvh44HRolFIyIAQ=;
+        b=XO98W27616NvKI97Mivdn1rwsesN/VZHlmzi8aFlXtf8O1iBxJfFa81vtOieGEbSmJyLjA
+        1Iex+jL+fh+71A5wfgk/gY8oz+lFurfAs5fMu8uGNISpkL+U+EGjMXxzoZoL/EtwL2NXZc
+        /Z1OaGvMT6H77GzIgqRzMOt7c1aYnGJMcuUZUeA4gs2Lss0Eh1noYfkNxVJ7qcHb8BIAue
+        WPGuF3eHeSaG82ESTh4du5QwolZxKz8p972tuF9pQlj+1Pmi50z6/tfLe7vSOCmLd6fBKq
+        3fNp1/3wjIJnGATg3hG7rmWitD1+Z2dZS0oGEQAhSxi3TI1GPXSQDPyga1qnng==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636122832;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pDQ7Vlp4ZOk3OANnx52v04hzRNMdVvh44HRolFIyIAQ=;
+        b=BbR0IXGCaZkM33c0ZQTShuP3SUwC6/3Cbn/eW73UTOoPjqkBCtKYCARHootjdKiF0jeLja
+        h9XbkLJsksJlhzDA==
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, dave.hansen@linux.intel.com, peterz@infradead.org,
+        bp@alien8.de, mingo@redhat.com, chang.seok.bae@intel.com,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH 4/4] intel_idle: Add SPR support with AMX INIT-state
+In-Reply-To: <20211104225226.5031-5-chang.seok.bae@intel.com>
+References: <20211104225226.5031-1-chang.seok.bae@intel.com>
+ <20211104225226.5031-5-chang.seok.bae@intel.com>
+Date:   Fri, 05 Nov 2021 15:33:52 +0100
+Message-ID: <878ry24qpb.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211105072608.GA13584@gondor.apana.org.au>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 03:26:08PM +0800, Herbert Xu wrote:
-> On Thu, Nov 04, 2021 at 05:18:34PM +0200, Ido Schimmel wrote:
-> >
-> > Attached my config. I can easily test patches.
-> 
-> Thanks!
-> 
-> Could you all try this patch please?
-> 
-> ---8<---
-> When the crypto manager is disabled, we need to explicitly set
-> the crypto algorithms' tested status so that they can be used.
-> 
-> Fixes: cad439fc040e ("crypto: api - Do not create test larvals if...")
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Reported-by: Ido Schimmel <idosch@idosch.org>
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Chang,
 
-Tested-by: Ido Schimmel <idosch@nvidia.com>
+On Thu, Nov 04 2021 at 15:52, Chang S. Bae wrote:
+> +/**
+> + * intel_idle_tile - Ask the processor to enter the given idle state.
+> + * @dev: cpuidle device of the target CPU.
+> + * @drv: cpuidle driver (assumed to point to intel_idle_driver).
+> + *
+> + * Ensure TILE registers in INIT-state before using intel_idle() to
+> + * enter the idle state.
+> + */
+> +static __cpuidle int intel_idle_tile(struct cpuidle_device *dev,
+> +				     struct cpuidle_driver *drv, int index)
+> +{
+> +	fpu_idle_fpregs();
 
-Thanks, Herbert!
+That's redundant because arch_cpu_idle_enter() is invoked before the
+actual idle mechanism. 
+
+> +/**
+> + * intel_idle_s2idle_tile - Ask the processor to enter the given idle state.
+> + * @dev: cpuidle device of the target CPU.
+> + * @drv: cpuidle driver (assumed to point to intel_idle_driver).
+> + * @index: Target idle state index.
+> + *
+> + * Ensure TILE registers in INIT-state before using intel_idle_s2idle() to
+> + * enter the idle state.
+> + */
+> +static __cpuidle int intel_idle_s2idle_tile(struct cpuidle_device *dev,
+> +					    struct cpuidle_driver *drv, int index)
+> +{
+> +	fpu_idle_fpregs();
+
+Ditto
+
+Thanks,
+
+        tglx
