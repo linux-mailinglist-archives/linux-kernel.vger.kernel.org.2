@@ -2,113 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948FC4467C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:24:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FF14467D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:25:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233293AbhKER0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 13:26:37 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:47333 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233105AbhKER0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 13:26:36 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Hm6mp3JY9z9sSb;
-        Fri,  5 Nov 2021 18:23:54 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Hbpmo9jN3v01; Fri,  5 Nov 2021 18:23:54 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Hm6mp2FcNz9sSV;
-        Fri,  5 Nov 2021 18:23:54 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 338768B786;
-        Fri,  5 Nov 2021 18:23:54 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id c50ensR6JB-3; Fri,  5 Nov 2021 18:23:54 +0100 (CET)
-Received: from [192.168.233.150] (unknown [192.168.233.150])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9C5F58B763;
-        Fri,  5 Nov 2021 18:23:53 +0100 (CET)
-Message-ID: <459684e7-73bf-fbfb-c666-cc16299d858b@csgroup.eu>
-Date:   Fri, 5 Nov 2021 18:23:54 +0100
+        id S233659AbhKER1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 13:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234059AbhKER1M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 13:27:12 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DAAEC06120D;
+        Fri,  5 Nov 2021 10:24:32 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636133071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a+70iYdg6zUu8Lqi6l7KLgNhOA3/zlkFH1TwBReetG8=;
+        b=WFzb2tacbq96jVu7RhlPEY4ULAeT4NuRbAOanTgGuRy/qpi2bUkxmNNLRTWO0SncoPbetJ
+        GzG1hhnas/4PzZ4pG0L+QAy0fclAP8oT52Ueai63Lbb7Bc4oIvAKvwY0n3D6RTgtHZjrq4
+        vYYzbW2TlmyZzM0kFZt41Umm5TiXT4+TXhzqW8ZKU7DvqlvUctH9g+AFDzxMjxaN0jh4an
+        43Qp0WDRm5pzufSwvweUov/AvbFltQR3bMotKfEmao3NwkGHMsAMvcI4zMsoU4E9WAO9+D
+        Ty067a+yyQd/E+8EsUsAzDY/HSIg6psHVWh6q+ZuCyQGsd5x6yH7jEzQozvCjA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636133071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a+70iYdg6zUu8Lqi6l7KLgNhOA3/zlkFH1TwBReetG8=;
+        b=r+mu8TZwIG5G63i+/GeMuj/wlWX2MPGiPtXez1sg5Nbz+KWGwShfBlubhoAfBgjTgH4eeI
+        I/+66eCg6UgqYYAw==
+To:     Dmitrii Banshchikov <me@ubique.spb.ru>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     syzbot <syzbot+43fd005b5a1b4d10781e@syzkaller.appspotmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>, sboyd@kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steven Rostedt <rosted@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [syzbot] possible deadlock in ktime_get_coarse_ts64
+In-Reply-To: <20211105170328.fjnzr6bnbca7mdfq@amnesia>
+References: <00000000000013aebd05cff8e064@google.com> <87lf224uki.ffs@tglx>
+ <CAADnVQLcuMAr3XMTD1Lys5S5ybME4h=NL3=adEwib2UT6b-E9w@mail.gmail.com>
+ <20211105170328.fjnzr6bnbca7mdfq@amnesia>
+Date:   Fri, 05 Nov 2021 18:24:30 +0100
+Message-ID: <875yt64isx.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v3 2/4] mm: Make generic arch_is_kernel_initmem_freed() do
- what it says
-Content-Language: fr-FR
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>
-Cc:     arnd@arndb.de, linux-arch@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org
-References: <9ecfdee7dd4d741d172cb93ff1d87f1c58127c9a.1633001016.git.christophe.leroy@csgroup.eu>
- <1d40783e676e07858be97d881f449ee7ea8adfb1.1633001016.git.christophe.leroy@csgroup.eu>
- <87ilyhmd26.fsf@linkitivity.dja.id.au>
- <20211104144442.7130ae4a104fca70623a2d1a@linux-foundation.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-In-Reply-To: <20211104144442.7130ae4a104fca70623a2d1a@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 05 2021 at 21:03, Dmitrii Banshchikov wrote:
+> On Fri, Nov 05, 2021 at 08:53:06AM -0700, Alexei Starovoitov wrote:
+>> > Timestamps from within a tracepoint can only be taken with:
+>> >
+>> >          1) jiffies
+>> >          2) sched_clock()
+>> >          3) ktime_get_*_fast_ns()
+>> >
+>> > Those are NMI safe and can be invoked from anywhere.
+>> >
+>> > All other time getters which have to use the timekeeping seqcount
+>> > protection are prone to live locks and _cannot_ be used from
+>> > tracepoints ever.
+>> 
+>> Obviously.
+>> That helper was added for networking use cases and accidentally
+>> enabled for tracing.
+>
+> Sorry for that.
+> I'm preparing a patch that will forbid using bpf_ktime_get_coarse_ns()
+> helper in BPF_LINK_TYPE_RAW_TRACEPOINT.
 
+It cannot be used in TRACING and PERF_EVENT either. But those contexts
+have to exclude other functions as well:
 
-Le 04/11/2021 à 22:44, Andrew Morton a écrit :
-> On Fri, 01 Oct 2021 17:14:41 +1000 Daniel Axtens <dja@axtens.net> wrote:
-> 
->>>   #ifdef __KERNEL__
->>> +/*
->>> + * Check if an address is part of freed initmem. After initmem is freed,
->>> + * memory can be allocated from it, and such allocations would then have
->>> + * addresses within the range [_stext, _end].
->>> + */
->>> +#ifndef arch_is_kernel_initmem_freed
->>> +static int arch_is_kernel_initmem_freed(unsigned long addr)
->>> +{
->>> +	if (system_state < SYSTEM_FREEING_INITMEM)
->>> +		return 0;
->>> +
->>> +	return init_section_contains((void *)addr, 1);
->>
->> Is init_section_contains sufficient here?
->>
->> include/asm-generic/sections.h says:
->>   * [__init_begin, __init_end]: contains .init.* sections, but .init.text.*
->>   *                   may be out of this range on some architectures.
->>   * [_sinittext, _einittext]: contains .init.text.* sections
->>
->> init_section_contains only checks __init_*:
->> static inline bool init_section_contains(void *virt, size_t size)
->> {
->> 	return memory_contains(__init_begin, __init_end, virt, size);
->> }
->>
->> Do we need to check against _sinittext and _einittext?
->>
->> Your proposed generic code will work for powerpc and s390 because those
->> archs only test against __init_* anyway. I don't know if any platform
->> actually does place .init.text outside of __init_begin=>__init_end, but
->> the comment seems to suggest that they could.
->>
-> 
-> Christophe?
-> 
+     bpf_ktime_get_ns
+     bpf_ktime_get_boot_ns
 
-Sorry for answering late.
+along with
 
-I've been thorugh free_initmem() in each architecture. The only sections 
-involved in the freeing actions are [__init_begin, __init_end], so I 
-think checking against __init_being, __init_end is enough.
+    bpf_spin_lock/unlock
+    bpf_timer_*
 
-If some architecture has init text outside of this section, then it is 
-not freed hence not necessary to check.
+Thanks,
 
-Christophe
+        tglx
