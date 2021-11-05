@@ -2,68 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24795445FE1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 07:54:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A300446053
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 08:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232410AbhKEG4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 02:56:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229601AbhKEG4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 02:56:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18AEB6124F;
-        Fri,  5 Nov 2021 06:54:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636095250;
-        bh=HQhrS1X5t7IMuJtjnHPKK3V+2VJ1abmG4ti9NZ7i0kQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K2bHre3PZkavP+PA6upnzoyy0LAgcnIlGoJTLFapnyqPTLr4g1UR/eTXGkhpgFsp6
-         goBuL+0DMXsBVgLxxeye07zM1J6sSq4gFyz+/QKvm2MbVF6tbdPOQzP+fF5sHAQgTH
-         PxC/qS6wWEqXgNHtI+bIK27onjvZcuzdQdsiKANI=
-Date:   Fri, 5 Nov 2021 07:54:08 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        id S232280AbhKEH4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 03:56:40 -0400
+Received: from isilmar-4.linta.de ([136.243.71.142]:37664 "EHLO
+        isilmar-4.linta.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230395AbhKEH4i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 03:56:38 -0400
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+Received: from light.dominikbrodowski.net (brodo.linta [10.2.0.102])
+        by isilmar-4.linta.de (Postfix) with ESMTPSA id C0941201332;
+        Fri,  5 Nov 2021 07:53:57 +0000 (UTC)
+Received: by light.dominikbrodowski.net (Postfix, from userid 1000)
+        id 5AD76204B5; Fri,  5 Nov 2021 07:04:36 +0100 (CET)
+Date:   Fri, 5 Nov 2021 07:04:36 +0100
+From:   Dominik Brodowski <linux@dominikbrodowski.net>
+To:     tytso@mit.edu
+Cc:     "Ivan T. Ivanov" <iivanov@suse.de>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] driver core: platform: Make use of the helper function
- dev_err_probe()
-Message-ID: <YYTVEPVNITE8EEHk@kroah.com>
-References: <20211105030959.730-1-caihuoqing@baidu.com>
+Subject: [PATCH v3] random: fix crash on multiple early calls to
+ add_bootloader_randomness()
+Message-ID: <YYTJdLuuFAShnblb@light.dominikbrodowski.net>
+References: <20211012082708.121931-1-iivanov@suse.de>
+ <YWVKAk4h5bsUA3b6@light.dominikbrodowski.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211105030959.730-1-caihuoqing@baidu.com>
+In-Reply-To: <YWVKAk4h5bsUA3b6@light.dominikbrodowski.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 11:09:59AM +0800, Cai Huoqing wrote:
-> When possible using dev_err_probe() helps to properly deal with the
-> PROBE_DEFER error, the benefit is that DEFER issue will be logged
-> in the devices_deferred debugfs file.
-> BTW rename 'dev' to 'pdev'.
+If add_bootloader_randomness() or add_hwgenerator_randomness() is
+called for the first time during early boot, crng_init equals 0. Then,
+crng_fast_load() gets called -- which is safe to do even if the input
+pool is not yet properly set up.
 
-"BTW"???
+If the added entropy suffices to increase crng_init to 1, future calls
+to add_bootloader_randomness() or add_hwgenerator_randomness() used to
+progress to credit_entropy_bits(). However, if the input pool is not yet
+properly set up, the cmpxchg call within that function can lead to an
+infinite recursion. This is not only a hypothetical problem, as qemu
+on arm64 may provide bootloader entropy via EFI and via devicetree.
 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->  drivers/base/platform.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-> index 598acf93a360..5befd3258677 100644
-> --- a/drivers/base/platform.c
-> +++ b/drivers/base/platform.c
-> @@ -253,13 +253,14 @@ EXPORT_SYMBOL_GPL(platform_get_irq_optional);
->   *
->   * Return: non-zero IRQ number on success, negative error number on failure.
->   */
-> -int platform_get_irq(struct platform_device *dev, unsigned int num)
-> +int platform_get_irq(struct platform_device *pdev, unsigned int num)
+As crng_global_init_time is set to != 0 once the input pool is properly
+set up, check (also) for this condition to determine which branch to take.
 
-Why change the variable name?  It has nothing to do with this change,
-please do not do that.
+Calls to crng_fast_load() do not modify the input pool; therefore, the
+entropy_count for the input pool must not be modified at that early
+stage.
 
-thanks,
+Reported-by: Ivan T. Ivanov <iivanov@suse.de>
+Fixes: 18b915ac6b0a ("efi/random: Treat EFI_RNG_PROTOCOL output as bootloader randomness")
+Tested-by: Ivan T. Ivanov <iivanov@suse.de>
+Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
+---
+v2->v3: onle one unlikely (Ard Biesheuvel)
+v1->v2: fix commit message; unmerge Reported-and-tested-by-tag (Ard Biesheuvel)
 
-greg k-h
+ drivers/char/random.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index 605969ed0f96..18fe804c1bf8 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -1763,8 +1763,8 @@ static void __init init_std_data(struct entropy_store *r)
+ }
+ 
+ /*
+- * Note that setup_arch() may call add_device_randomness()
+- * long before we get here. This allows seeding of the pools
++ * add_device_randomness() or add_bootloader_randomness() may be
++ * called long before we get here. This allows seeding of the pools
+  * with some platform dependent data very early in the boot
+  * process. But it limits our options here. We must use
+  * statically allocated structures that already have all
+@@ -2274,7 +2274,12 @@ void add_hwgenerator_randomness(const char *buffer, size_t count,
+ {
+ 	struct entropy_store *poolp = &input_pool;
+ 
+-	if (unlikely(crng_init == 0)) {
++	/* We cannot do much with the input pool until it is set up in
++	 * rand_initalize(); therefore just mix into the crng state.
++	 * As this does not affect the input pool, we cannot credit
++	 * entropy for this.
++	 */
++	if (unlikely(crng_init == 0 || crng_global_init_time == 0)) {
+ 		crng_fast_load(buffer, count);
+ 		return;
+ 	}
