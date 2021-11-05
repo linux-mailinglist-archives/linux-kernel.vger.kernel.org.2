@@ -2,287 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11E1446212
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF8B44620F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:17:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233080AbhKEKT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 06:19:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233045AbhKEKT5 (ORCPT
+        id S233060AbhKEKTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 06:19:22 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:59484 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232693AbhKEKTV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 06:19:57 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73722C061714;
-        Fri,  5 Nov 2021 03:17:18 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id w1so31566253edd.10;
-        Fri, 05 Nov 2021 03:17:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yxS+teCMlbvtTm/Hjy1qwKiXkuYaNC03ztUq8ZtPmME=;
-        b=S2YjR1XDbGJvR5itXa5PWQeRDOQdbnu2+b5+8ySW0q/bHEyWHtkOiVy4GR5Pd6YO3z
-         ZGU0Kj7mAB072ZzLX5Rv/apegH7I+XmN7N8fXQkNC+1ald+uqfwuvJk6z/C8dtZaQaAE
-         qCGK9I6N21tBOTCNToRHYyce7M+B42Kjl1+R5cjDE+HfTEJxpAAiLIPgce1I/tvHtoAU
-         vK2e2BQgj0+3gVxGXiIVWy1jc1ecqvL6LH3NyW5yAmLQwJUQ1gOTz12qzCY70KnmFx5w
-         SvVAbB80X4eATApmqSHSV/4wJvHc/8xevBnnXce7yhfvAq1JPAGJwP9HOhFo4xGtXd93
-         6eFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yxS+teCMlbvtTm/Hjy1qwKiXkuYaNC03ztUq8ZtPmME=;
-        b=RlPQNvkWxtAD5hFuDLHtMmjCIg+Tt6n7etmgUYIsAbu5F2ljtJnrFVji+XikS0Sos/
-         RgPgNpNXpC47lxUyryUscwpF/veTd7tlDKcO6R1cYBlA9OvK4GoUO8qhQkUgiS5BU2iG
-         vX96kYs2WvZvmt9TAIjBigRkDh4Br/6rYZlv6NePKVTAD+ELHAYrI7mL9wm4RsMrOLye
-         mVojCcd+E7TcPVhoVqMwsikM484/mkn+xg6HbCHbJ4tXf8wV/7vsiTVFg7erMnD0HAtN
-         yGjRnzGhnzJkHXaFKywagE8Rg5W2JDhRVLPLDExVOCebprNldICLBcrTQ45wTzhLUl3p
-         zc8A==
-X-Gm-Message-State: AOAM5328Tc9ZgZEuvSx06xxrBhDLUpgBuvo6JKv0G6w0RvEF2Hee9UDj
-        aPxRf6yR8MvzgZRT6g9cPLbU9C1ZYHLga83Ameo=
-X-Google-Smtp-Source: ABdhPJwfy3H9/8A17I9QKXpbpzwU+ftTlEEDvvR5PETZYjqEH7ZrMlY+70sGOCgUZ0/1xFcJJ4sp4qCxp+AqQkEP5uI=
-X-Received: by 2002:a17:906:bccc:: with SMTP id lw12mr4946710ejb.128.1636107436973;
- Fri, 05 Nov 2021 03:17:16 -0700 (PDT)
+        Fri, 5 Nov 2021 06:19:21 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Uv9ZLH3_1636107389;
+Received: from 30.21.164.50(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Uv9ZLH3_1636107389)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 05 Nov 2021 18:16:30 +0800
+Subject: Re: [RFC PATCH 1/3] mm: migrate: Fix the return value of
+ migrate_pages()
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     akpm@linux-foundation.org, rostedt@goodmis.org, mingo@redhat.com,
+        shy828301@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1635936218.git.baolin.wang@linux.alibaba.com>
+ <c838c56f12cd3e6c693c0b124a167fdc07f59fb6.1635936218.git.baolin.wang@linux.alibaba.com>
+ <81ED0EF7-779F-4977-AF09-665FF750319C@nvidia.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+Message-ID: <1b05ce4f-059e-94bc-3753-f11d0c32693d@linux.alibaba.com>
+Date:   Fri, 5 Nov 2021 18:17:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211105100501.1904-1-andriy.tryshnivskyy@opensynergy.com> <20211105100501.1904-2-andriy.tryshnivskyy@opensynergy.com>
-In-Reply-To: <20211105100501.1904-2-andriy.tryshnivskyy@opensynergy.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 5 Nov 2021 12:16:40 +0200
-Message-ID: <CAHp75Ve7AoPaPUv699kEu3jMGRWTysLd932NZCfi8cjwuDmcOw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] iio: test: Add check against NULL for buffer in tests.
-To:     Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
-Cc:     jbhayana@google.com, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vasyl.Vavrychuk@opensynergy.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <81ED0EF7-779F-4977-AF09-665FF750319C@nvidia.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 5, 2021 at 12:05 PM Andriy Tryshnivskyy
-<andriy.tryshnivskyy@opensynergy.com> wrote:
->
-> Add KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf) for every test.
-> Also use ARRAY_SIZE(values) where it is possible.
 
-Strictly speaking 'also' and similar in the commit message means you
-have to split. Here are two patches in one. But these are test cases
-and I don't care so much about the rules. Up to maintainers.
 
->
-> Signed-off-by: Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
-> ---
->  drivers/iio/test/iio-test-format.c | 69 ++++++++++++++++++------------
->  1 file changed, 42 insertions(+), 27 deletions(-)
->
-> diff --git a/drivers/iio/test/iio-test-format.c b/drivers/iio/test/iio-test-format.c
-> index f1e951eddb43..b746d00bc0ea 100644
-> --- a/drivers/iio/test/iio-test-format.c
-> +++ b/drivers/iio/test/iio-test-format.c
-> @@ -14,10 +14,13 @@
->
->  static void iio_test_iio_format_value_integer(struct kunit *test)
->  {
-> -       char *buf = kunit_kmalloc(test, PAGE_SIZE, GFP_KERNEL);
-> +       char *buf;
->         int val;
->         int ret;
->
-> +       buf = kunit_kmalloc(test, PAGE_SIZE, GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf);
+On 2021/11/4 23:33, Zi Yan wrote:
+> On 3 Nov 2021, at 6:51, Baolin Wang wrote:
+> 
+>> As Zi Yan pointed out, the syscall move_pages() can return a non-migrated
+>> number larger than the number of pages the users tried to migrate, when a
+>> THP page is failed to migrate. This is confusing for users.
+>>
+>> Since other migration scenarios do not care about the actual non-migrated
+>> number of pages except the memory compaction migration which will fix in
+>> following patch. Thus we can change the return value to return the number
+>> of {normal page, THP, hugetlb} instead to avoid this issue, meanwhile we
+>> should still keep the migration counters using the number of normal pages.
+>>
+>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>> ---
+>>   mm/migrate.c | 18 ++++++++++--------
+>>   1 file changed, 10 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/mm/migrate.c b/mm/migrate.c
+>> index a11e948..00b8922 100644
+>> --- a/mm/migrate.c
+>> +++ b/mm/migrate.c
+>> @@ -1428,7 +1428,7 @@ static inline int try_split_thp(struct page *page, struct page **page2,
+>>    * @mode:		The migration mode that specifies the constraints for
+>>    *			page migration, if any.
+>>    * @reason:		The reason for page migration.
+>> - * @ret_succeeded:	Set to the number of pages migrated successfully if
+>> + * @ret_succeeded:	Set to the number of normal pages migrated successfully if
+>>    *			the caller passes a non-NULL pointer.
+>>    *
+>>    * The function returns after 10 attempts or if no pages are movable any more
+>> @@ -1436,7 +1436,7 @@ static inline int try_split_thp(struct page *page, struct page **page2,
+>>    * It is caller's responsibility to call putback_movable_pages() to return pages
+>>    * to the LRU or free list only if ret != 0.
+>>    *
+>> - * Returns the number of pages that were not migrated, or an error code.
+>> + * Returns the number of {normal page, THP} that were not migrated, or an error code.
+>>    */
+>>   int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>>   		free_page_t put_new_page, unsigned long private,
+>> @@ -1445,6 +1445,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>>   	int retry = 1;
+>>   	int thp_retry = 1;
+>>   	int nr_failed = 0;
+>> +	int nr_failed_pages = 0;
+>>   	int nr_succeeded = 0;
+>>   	int nr_thp_succeeded = 0;
+>>   	int nr_thp_failed = 0;
+>> @@ -1517,7 +1518,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>>   					}
+>>
+>>   					nr_thp_failed++;
+>> -					nr_failed += nr_subpages;
+>> +					nr_failed_pages += nr_subpages;
+>>   					break;
+>>   				}
+>>
+>> @@ -1537,7 +1538,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>>   					}
+>>
+>>   					nr_thp_failed++;
+>> -					nr_failed += nr_subpages;
+>> +					nr_failed_pages += nr_subpages;
+>>   					goto out;
+>>   				}
+>>   				nr_failed++;
+>> @@ -1566,7 +1567,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>>   				 */
+>>   				if (is_thp) {
+>>   					nr_thp_failed++;
+>> -					nr_failed += nr_subpages;
+>> +					nr_failed_pages += nr_subpages;
+>>   					break;
+>>   				}
+>>   				nr_failed++;
+>> @@ -1575,8 +1576,9 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>>   		}
+>>   	}
+>>   	nr_failed += retry + thp_retry;
+> 
+> This line can probably go away, since we do not want to count retried pages.
+
+OK.
+
+> 
+>> +	nr_failed_pages += nr_failed;
+>>   	nr_thp_failed += thp_retry;
+>> -	rc = nr_failed;
+>> +	rc = nr_failed + nr_thp_failed;
+>>   out:
+>>   	/*
+>>   	 * Put the permanent failure page back to migration list, they
+>> @@ -1585,11 +1587,11 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>>   	list_splice(&ret_pages, from);
+>>
+>>   	count_vm_events(PGMIGRATE_SUCCESS, nr_succeeded);
+>> -	count_vm_events(PGMIGRATE_FAIL, nr_failed);
+>> +	count_vm_events(PGMIGRATE_FAIL, nr_failed_pages);
+>>   	count_vm_events(THP_MIGRATION_SUCCESS, nr_thp_succeeded);
+>>   	count_vm_events(THP_MIGRATION_FAIL, nr_thp_failed);
+>>   	count_vm_events(THP_MIGRATION_SPLIT, nr_thp_split);
+>> -	trace_mm_migrate_pages(nr_succeeded, nr_failed, nr_thp_succeeded,
+>> +	trace_mm_migrate_pages(nr_succeeded, nr_failed_pages, nr_thp_succeeded,
+>>   			       nr_thp_failed, nr_thp_split, mode, reason);
+>>
+>>   	if (!swapwrite)
+>> -- 
+>> 1.8.3.1
+> 
+> Thank you for the patch!
+> 
+> In general, this looks good to me. But like you said in other email, when a THP fails to
+> migrate and gets split, the number of nr_failed will still be inflated by the number of
+> failed subpage migrations. What I can think of is to split THPs to a separate list and
+> stop increasing nr_failed when the pages from the new list is under migration. Let me
+> know how it sounds to you.
+
+Thanks for your patch, but I think it does not cover all the cases.
+
+Firstly, what confuses me is that if we return 1 to users when failed to 
+migrate 1 THP page, but actually we may have migrated some normal pages 
+successfaully if the THP page is split. Anyway we can add some comments 
+for migrate_pages() to explain it if this is acceptable.
+
+Another concern about your patch is that, if the first round migration 
+all pages are migrated successfaully (nr_failed = 0), but if failed to 
+migrate the subpages of the THP in the second round, we will still 
+return 0 to users, which is incorrect. Further more, if the subpages of 
+the THP are migrated partially in the second round, what the number of 
+non-migrated should be returned?  Suppose multiple THP pages have been 
+split?
+
+Last concern is that, we will try to migrate subpages of the THP in the 
+second round, but if some non-migrated pages are still remained in the 
+'from' list, we will do another redundant migration for these 
+failed-migration pages and no failed counting for them. We can fix this 
+issue by moving the remained non-migrated pages to 'ret_pages' list, 
+which will put back to 'from' list when returning from this function.
+
+if (!list_empty(&thp_split_pages)) {
++	list_splice(from, &ret_pages);
+	list_splice(&thp_split_pages, from);
+	no_failed_counting = true;
+	goto thp_subpage_migration;
+}
+
+The concern 2 is more complicated, or we can just use 'nr_thp_split' to 
+return if some subpages are failed to be migrated to simplify the case, 
+no matter how many subpages are failed?
+
+rc = nr_failed + nr_thp_failed + nr_thp_split;
+
+> An untested but compiled patch (please apply it before this one) looks like:
+> 
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 1852d787e6ab..f7e424f8e647 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -1457,13 +1457,16 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>          int swapwrite = current->flags & PF_SWAPWRITE;
+>          int rc, nr_subpages;
+>          LIST_HEAD(ret_pages);
+> +       LIST_HEAD(thp_split_pages);
+>          bool nosplit = (reason == MR_NUMA_MISPLACED);
+> +       bool no_failed_counting = false;
+> 
+>          trace_mm_migrate_pages_start(mode, reason);
+> 
+>          if (!swapwrite)
+>                  current->flags |= PF_SWAPWRITE;
+> 
+> +thp_subpage_migration:
+>          for (pass = 0; pass < 10 && (retry || thp_retry); pass++) {
+>                  retry = 0;
+>                  thp_retry = 0;
+> @@ -1512,7 +1515,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>                          case -ENOSYS:
+>                                  /* THP migration is unsupported */
+>                                  if (is_thp) {
+> -                                       if (!try_split_thp(page, &page2, from)) {
+> +                                       if (!try_split_thp(page, &page2, &thp_split_pages)) {
+>                                                  nr_thp_split++;
+>                                                  goto retry;
+>                                          }
+> @@ -1523,7 +1526,8 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>                                  }
+> 
+>                                  /* Hugetlb migration is unsupported */
+> -                               nr_failed++;
+> +                               if (!no_failed_counting)
+> +                                       nr_failed++;
+>                                  break;
+>                          case -ENOMEM:
+>                                  /*
+> @@ -1532,7 +1536,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>                                   * THP NUMA faulting doesn't split THP to retry.
+>                                   */
+>                                  if (is_thp && !nosplit) {
+> -                                       if (!try_split_thp(page, &page2, from)) {
+> +                                       if (!try_split_thp(page, &page2, &thp_split_pages)) {
+>                                                  nr_thp_split++;
+>                                                  goto retry;
+>                                          }
+> @@ -1541,7 +1545,8 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>                                          nr_failed += nr_subpages;
+>                                          goto out;
+>                                  }
+> -                               nr_failed++;
+> +                               if (!no_failed_counting)
+> +                                       nr_failed++;
+>                                  goto out;
+>                          case -EAGAIN:
+>                                  if (is_thp) {
+> @@ -1570,13 +1575,24 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>                                          nr_failed += nr_subpages;
+>                                          break;
+>                                  }
+> -                               nr_failed++;
+> +                               if (!no_failed_counting)
+> +                                       nr_failed++;
+>                                  break;
+>                          }
+>                  }
+>          }
+> -       nr_failed += retry + thp_retry;
+> +       /* get thp_retry before it can be reset in THP subpage migration. */
+>          nr_thp_failed += thp_retry;
+> +       /* try to migrate subpages of fail-to-migrate THPs, no nr_failed
+> +        * counting in this round, since all subpages of a THP is counted as
+> +        * 1 failure in the first round. */
+> +       if (!list_empty(&thp_split_pages)) {
+> +               list_splice(from, &thp_split_pages);
+
+Should be list_splice(&thp_split_pages, from)?
+
+> +               no_failed_counting = true;
+> +               goto thp_subpage_migration;
+> +       }
 > +
->         val = 42;
->         ret = iio_format_value(buf, IIO_VAL_INT, 1, &val);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "42\n");
-> @@ -41,142 +44,154 @@ static void iio_test_iio_format_value_integer(struct kunit *test)
->
->  static void iio_test_iio_format_value_fixedpoint(struct kunit *test)
->  {
-> -       char *buf = kunit_kmalloc(test, PAGE_SIZE, GFP_KERNEL);
->         int values[2];
-> +       char *buf;
->         int ret;
->
-> +       buf = kunit_kmalloc(test, PAGE_SIZE, GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf);
-> +
->         /* positive >= 1 */
->         values[0] = 1;
->         values[1] = 10;
->
-> -       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_MICRO, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_MICRO, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "1.000010\n");
->
-> -       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_MICRO_DB, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_MICRO_DB, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "1.000010 dB\n");
->
-> -       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_NANO, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_NANO, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "1.000000010\n");
->
->         /* positive < 1 */
->         values[0] = 0;
->         values[1] = 12;
->
-> -       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_MICRO, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_MICRO, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "0.000012\n");
->
-> -       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_MICRO_DB, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_MICRO_DB, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "0.000012 dB\n");
->
-> -       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_NANO, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_NANO, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "0.000000012\n");
->
->         /* negative <= -1 */
->         values[0] = -1;
->         values[1] = 10;
->
-> -       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_MICRO, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_MICRO, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "-1.000010\n");
->
-> -       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_MICRO_DB, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_MICRO_DB, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "-1.000010 dB\n");
->
-> -       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_NANO, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_NANO, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "-1.000000010\n");
->
->         /* negative > -1 */
->         values[0] = 0;
->         values[1] = -123;
-> -       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_MICRO, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_MICRO, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "-0.000123\n");
->
-> -       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_MICRO_DB, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_MICRO_DB, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "-0.000123 dB\n");
->
-> -       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_NANO, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_INT_PLUS_NANO, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "-0.000000123\n");
->  }
->
->  static void iio_test_iio_format_value_fractional(struct kunit *test)
->  {
-> -       char *buf = kunit_kmalloc(test, PAGE_SIZE, GFP_KERNEL);
->         int values[2];
-> +       char *buf;
->         int ret;
->
-> +       buf = kunit_kmalloc(test, PAGE_SIZE, GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf);
-> +
->         /* positive < 1 */
->         values[0] = 1;
->         values[1] = 10;
-> -       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "0.100000000\n");
->
->         /* positive >= 1 */
->         values[0] = 100;
->         values[1] = 3;
-> -       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "33.333333333\n");
->
->         /* negative > -1 */
->         values[0] = -1;
->         values[1] = 1000000000;
-> -       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "-0.000000001\n");
->
->         /* negative <= -1 */
->         values[0] = -200;
->         values[1] = 3;
-> -       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "-66.666666666\n");
->
->         /* Zero */
->         values[0] = 0;
->         values[1] = -10;
-> -       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "0.000000000\n");
->  }
->
->  static void iio_test_iio_format_value_fractional_log2(struct kunit *test)
->  {
-> -       char *buf = kunit_kmalloc(test, PAGE_SIZE, GFP_KERNEL);
->         int values[2];
-> +       char *buf;
->         int ret;
->
-> +       buf = kunit_kmalloc(test, PAGE_SIZE, GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf);
-> +
->         /* positive < 1 */
->         values[0] = 123;
->         values[1] = 10;
-> -       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL_LOG2, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL_LOG2, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "0.120117187\n");
->
->         /* positive >= 1 */
->         values[0] = 1234567;
->         values[1] = 10;
-> -       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL_LOG2, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL_LOG2, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "1205.631835937\n");
->
->         /* negative > -1 */
->         values[0] = -123;
->         values[1] = 10;
-> -       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL_LOG2, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL_LOG2, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "-0.120117187\n");
->
->         /* negative <= -1 */
->         values[0] = -1234567;
->         values[1] = 10;
-> -       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL_LOG2, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL_LOG2, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "-1205.631835937\n");
->
->         /* Zero */
->         values[0] = 0;
->         values[1] = 10;
-> -       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL_LOG2, 2, values);
-> +       ret = iio_format_value(buf, IIO_VAL_FRACTIONAL_LOG2, ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "0.000000000\n");
->  }
->
->  static void iio_test_iio_format_value_multiple(struct kunit *test)
->  {
-> -       char *buf = kunit_kmalloc(test, PAGE_SIZE, GFP_KERNEL);
->         int values[] = {1, -2, 3, -4, 5};
-> +       char *buf;
->         int ret;
->
-> +       buf = kunit_kmalloc(test, PAGE_SIZE, GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf);
-> +
->         ret = iio_format_value(buf, IIO_VAL_INT_MULTIPLE,
->                                ARRAY_SIZE(values), values);
->         IIO_TEST_FORMAT_EXPECT_EQ(test, buf, ret, "1 -2 3 -4 5 \n");
+> +       nr_failed += retry + thp_retry;
+>          rc = nr_failed;
+>   out:
+>          /*
 > --
-> 2.17.1
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+> Best Regards,
+> Yan, Zi
+> 
