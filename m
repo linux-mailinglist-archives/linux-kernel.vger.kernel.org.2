@@ -2,98 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0F4445D2C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:06:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8601445D2F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhKEBIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 21:08:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231133AbhKEBIf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 21:08:35 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94896C061203
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 18:05:56 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id g18so2662192pfk.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 18:05:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=G/nhaOd9Dv5dMVPfxGxOacbJh3HbdybN9D3Bt3gtDl4=;
-        b=nvfkNvU5Z8xadZEfrQs+mun09ht1fvHcLrH2DxUG/3DX7gUnwMzAJkexDG2eYTXZcT
-         nXC0KbqPvC1tK0JQgs5hCtnmTYToVQpMf8nCU56R48NFvVb6s3m/Ngv/UjYCmArWyqT5
-         p0SUqwKjeQQxCQt0zc0As36KIH4BAIyfNYMeM36s0WzO5Q1J/xrc07u8scp9QxgFseUx
-         dQ59ZAkYjl9GQ/mNW/WJt9rhnODEtXi5DZG6vgO1qHgTfVwOKU3kDPsIgbbN9rzZyOjx
-         2mxK9OAGR8TorHdShQM7kemuuxLfv77EOifqsz29EGFHH4GQs7sBLdkOTDN1ZVWUEahZ
-         b+Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=G/nhaOd9Dv5dMVPfxGxOacbJh3HbdybN9D3Bt3gtDl4=;
-        b=nX58PlJShjvXJAJJ1g78a7AVxhUBlZoxv/MVuHVxgtFIsvrc90z70G08BYaw/9jTxw
-         0d1AGqlYCbmKvHYo7BWUe3kooq6FUZVEn+5Gu/HabfHEw1VuRRUtOCS3eAzxK5+vFlDT
-         zNBgZPWAgjo8NeUJV7EdfcsvWz4oBbdXuMJCRAaU7cYgtJ9nxdK3P9SxB+gE/40r6ti2
-         NXje+zvYc8k7xCK1Im43BYiB9QKTKeHjpiiIbkwGldKuthOKP25MZ3FlIVJR3USfKoE0
-         qaCZsNPWUwjghKJd+YngQpcFsQpIqHF43UJM0Tx2tVmMNUvIm0B3BKOgd2QQTWepNbF/
-         cIAg==
-X-Gm-Message-State: AOAM532w6o4F/q8XcrMFan48SQb9RTP09Tram9FXmFjFnXppSrSUPYkB
-        w8NnJjPimlBM8TnwRtZNY5e+yySHSbN//Q==
-X-Google-Smtp-Source: ABdhPJxRK/fTi3PW003l6+S9tkKhBsOPyaIXk2qUrZkoR1F5QCgcD/FeTTDil/grcsUm+sPO+IkX/A==
-X-Received: by 2002:a05:6a00:c94:b0:480:fcc2:bb2c with SMTP id a20-20020a056a000c9400b00480fcc2bb2cmr37089927pfv.30.1636074355284;
-        Thu, 04 Nov 2021 18:05:55 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id u22sm4846371pfi.78.2021.11.04.18.05.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 18:05:54 -0700 (PDT)
-Date:   Fri, 5 Nov 2021 01:05:50 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] KVM: nVMX: Track whether changes in L0 require
- MSR bitmap for L2 to be rebuilt
-Message-ID: <YYSDbljJgpEOnx+W@google.com>
-References: <20211013142258.1738415-1-vkuznets@redhat.com>
- <20211013142258.1738415-4-vkuznets@redhat.com>
+        id S231312AbhKEBJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 21:09:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231133AbhKEBJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 21:09:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FE0861245
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 01:07:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636074423;
+        bh=e16Mi+K8f8A1YlnrwXmStFNz6CID+giZJVpBpRE2tTc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=vLKs/+rnOTf+GHM+en71ZdfWoZ9LCvkd38uhyWZZBnqkLkjgBOGFEuC7BbS8IcnDd
+         AlXw78dsDT0hksruuO8HtBrbLdE+IOJCNRkHnbmvP1eL2FAwrZy08nGZGRvlaRqMWc
+         IP9Zb92RRZGuT4hUGhkXQkTPbNHSeHJpfFn0m198OuLz1Kmhzjx3Aju2t/6wsz3rZ4
+         IjRzhBwjdbK+0SJodYU4NuhOfKDQMKdnbA6zrQuIwCNmN69vEWBzjFXF3zhjxYsApi
+         TJhDC3iCWb2AlBj46anhftyZJtAPHrZkeU1cyQD/XMnmmJdUfTB882X8++cAnm2pwi
+         HPTnDpYjxL4WA==
+Received: by mail-vk1-f180.google.com with SMTP id 84so2056565vkc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 18:07:03 -0700 (PDT)
+X-Gm-Message-State: AOAM530BLc0iguGkA6p3PC76mE4sU9Zuop6Ov0WX7EAhNi/PCLurUWXG
+        xta0qpDgpLwGEhVs3kkUweLddEUVYwoEwSgWibc=
+X-Google-Smtp-Source: ABdhPJwvGbRaXLEYfAh9ZSkqQVjXrx0y4PslYQqJ2YKH8KiIhxPspAOtMRvTVeoQRt/X55tBRbhbwatt3wcno5mwOU8=
+X-Received: by 2002:a05:6122:d07:: with SMTP id az7mr20321320vkb.22.1636074422159;
+ Thu, 04 Nov 2021 18:07:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013142258.1738415-4-vkuznets@redhat.com>
+References: <20211101131736.3800114-1-guoren@kernel.org> <CAAhSdy29qhF4JHuMOqwctn+=HQNBbR3X0gsymqD8OAF1pXE43A@mail.gmail.com>
+ <871r3w9df1.wl-maz@kernel.org>
+In-Reply-To: <871r3w9df1.wl-maz@kernel.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Fri, 5 Nov 2021 09:06:51 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTa4uA6Zv5bvnfiQNQax3OikAPJynktwDr-00hqX8FPzQ@mail.gmail.com>
+Message-ID: <CAJF2gTTa4uA6Zv5bvnfiQNQax3OikAPJynktwDr-00hqX8FPzQ@mail.gmail.com>
+Subject: Re: [PATCH V6] irqchip/sifive-plic: Fixup EOI failed when masked
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Anup Patel <anup@brainfault.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Vincent Pelletier <plr.vincent@gmail.com>,
+        Nikita Shubin <nikita.shubin@maquefel.me>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021, Vitaly Kuznetsov wrote:
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index 592217fd7d92..2cdf66e6d1b0 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -148,6 +148,15 @@ struct nested_vmx {
->  	bool need_vmcs12_to_shadow_sync;
->  	bool dirty_vmcs12;
->  
-> +	/*
-> +	 * Indicates whether MSR bitmap for L2 needs to be rebuilt due to
-> +	 * changes in MSR bitmap for L1 or switching to a different L2. Note,
-> +	 * this flag can only be used reliably in conjunction with a paravirt L1
-> +	 * which informs L0 whether any changes to MSR bitmap for L2 were done
-> +	 * on its side.
-> +	 */
-> +	bool msr_bitmap_force_recalc;
+On Thu, Nov 4, 2021 at 10:57 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Thu, 04 Nov 2021 14:40:42 +0000,
+> Anup Patel <anup@brainfault.org> wrote:
+> >
+> > On Mon, Nov 1, 2021 at 6:47 PM <guoren@kernel.org> wrote:
+> > >
+> > > From: Guo Ren <guoren@linux.alibaba.com>
+> > >
+> > > When using "devm_request_threaded_irq(,,,,IRQF_ONESHOT,,)" in the driver,
+> > > only the first interrupt could be handled, and continue irq is blocked by
+> > > hw. Because the riscv plic couldn't complete masked irq source which has
+> > > been disabled in enable register. The bug was firstly reported in [1].
+> > >
+> > > Here is the description of Interrupt Completion in PLIC spec [2]:
+> > >
+> > > The PLIC signals it has completed executing an interrupt handler by
+> > > writing the interrupt ID it received from the claim to the claim/complete
+> > > register. The PLIC does not check whether the completion ID is the same
+> > > as the last claim ID for that target. If the completion ID does not match
+> > > an interrupt source that is currently enabled for the target, the
+> > >                          ^^ ^^^^^^^^^ ^^^^^^^
+> > > completion is silently ignored.
+> > >
+> > > [1] http://lists.infradead.org/pipermail/linux-riscv/2021-July/007441.html
+> > > [2] https://github.com/riscv/riscv-plic-spec/blob/8bc15a35d07c9edf7b5d23fec9728302595ffc4d/riscv-plic.adoc
+> > >
+> > > Reported-by: Vincent Pelletier <plr.vincent@gmail.com>
+> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > > Cc: Anup Patel <anup@brainfault.org>
+> > > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > > Cc: Marc Zyngier <maz@kernel.org>
+> > > Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> > > Cc: Atish Patra <atish.patra@wdc.com>
+> > > Cc: Nikita Shubin <nikita.shubin@maquefel.me>
+> > > Cc: incent Pelletier <plr.vincent@gmail.com>
+> >
+> > Please include a Fixes: tag
+Okay
 
-Belated bikeshedding...  What about need_msr_bitmap_recalc to follow the above
-need_vmcs12_to_shadow_sync?
+> >
+> > Also, I see that you have dropped the DT bindings patch. We still
+> > need separate compatible string for T-HEAD PLIC because OpenSBI
+> > will use it for other work-arounds.
+> >
+> > I suggest to include to more patches in this series:
+> > 1) Your latest T-HEAD PLIC DT bindings patch
+> > 2) Separate patch to use T-HEAD PLIC compatible in PLIC driver
+Thx for the suggestion, and I would put above in 5.17 as Mark suggested.
 
-> +
->  	/*
->  	 * Indicates lazily loaded guest state has not yet been decached from
->  	 * vmcs02.
-> -- 
-> 2.31.1
-> 
+>
+> No, please keep things separate. The PLIC is broken *today*, and I
+> want to take a patch for -rc1. The rest (compatible and such) is a new
+> feature and can wait until 5.17.
+Okay
+
+>
+>         M.
+>
+> --
+> Without deviation from the norm, progress is not possible.
+
+
+
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
