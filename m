@@ -2,88 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E85644689F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 19:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADFD84468A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 19:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232983AbhKESu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 14:50:28 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:47975 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229785AbhKESu1 (ORCPT
+        id S232997AbhKESvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 14:51:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232987AbhKESvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 14:50:27 -0400
+        Fri, 5 Nov 2021 14:51:36 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C67C061205
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 11:48:56 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id i13so7890197qvm.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 11:48:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1636138067; x=1667674067;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=G3qfrI/sS+kNFHo6v7HTnTcHlMqBxMKZpKZwQGGOccM=;
-  b=mV/rhr0e9CAhZFT84k3qsazA73itdbKDeVpTbAGXUf8Wwt1nuFAcodxm
-   SLXNiBIefRrCTBElOrhVmS8hGY4Aa3LfUrIVXv908kTfmDAvYo4zNzNCe
-   9m8l+sTDcTAdyD0QpJj7NwbZUjb1TILnMiVDYL+2e9BE4yWuzcbOFWREk
-   I=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 05 Nov 2021 11:47:47 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 11:47:46 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Fri, 5 Nov 2021 11:47:46 -0700
-Received: from [10.110.96.158] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Fri, 5 Nov 2021
- 11:47:45 -0700
-Subject: Re: [RFC PATCH] software node: Skip duplicated software_node sysfs
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20211101200346.16466-1-quic_qiancai@quicinc.com>
- <CAHp75VcrWPdR8EVGpcsniQedT0J4X700N7thFs6+srTP1MTgwQ@mail.gmail.com>
-From:   Qian Cai <quic_qiancai@quicinc.com>
-Message-ID: <52df4a97-1132-d594-0180-132d0ca714d5@quicinc.com>
-Date:   Fri, 5 Nov 2021 14:47:43 -0400
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Yw+xYYZxJY7aqJNmLJZqOSvkSUnGIUGzQbrZ89NrdYY=;
+        b=IUvwPhlHPqszZsAvbv+dcliHFp/WpGdH694upHpX58UFOvrraajf4xRiPtUEESlFVC
+         Tq5AxF3WsE9/hDfFLWirPsNthoPGxbxmDfSKT0kmKviloXLurGTpV7iTtQ47h3sSOpuf
+         M/W1GQOyFFfU4W3pO1SWfg6Mn2XvzrsiZDUmHtv3KxdiJXWzXdPpNZr/Xw0y6ngmDgnB
+         3OgCDZig9jBlo9Ms7oZVP7U96m/LEkBXz0lUDzGRAIHQkX8YnK/BXPBrz8ZU+lypsk7b
+         owtsnIU69/4e8emMtvgs40ce9w1+K7jp8Ea8JJ3yzzYSE6oOu+d+r9SS17GDUDAxMPHZ
+         mmSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Yw+xYYZxJY7aqJNmLJZqOSvkSUnGIUGzQbrZ89NrdYY=;
+        b=6Q3mIFFHveDg8Rpgzst4tx64ZyNcrVcEHSSkE1wNThXJCdY6kIkbIGCoSGwOeIBQ47
+         VgxAzLUCnh6d40gTEfl487yxd8d2qabPQLtQlTJ6ueFaOXGje06LXXOMj/q+VEJhbKqL
+         SL5TS9g/LQnpZdP+Xx5RQLokk25UFHOEFsc1EO7VnL349oXOfaGQCWhdQNQ6HdTEW4FB
+         NdEdcuStf7CsRHERKgE5dhmiLU+2qW+/D+u2CNrqJQ10BJzf1ODT3yIkj9o++c19/v3E
+         z1vX6cPD20X5euq0jOU0LO8BHAVqKb7x6a84uPIXPWV7Rvf3S/l6ZEn/rNC+23xPopt4
+         XTVg==
+X-Gm-Message-State: AOAM530O21EH6Y3BVOQfkivsjx7e1+c1cflijSVxcZJh0sD5ssu4z0z6
+        2opIWpZWvfDJyKfMyPfgajrXzqxSVKyOjw==
+X-Google-Smtp-Source: ABdhPJxGYWjCLEtLuovCaU8pO2vakxfS89lE+CcanM5jT+pZM72mN3wyu/fpt4pc0r8+TvzyQ4Q7/w==
+X-Received: by 2002:ad4:5747:: with SMTP id q7mr935708qvx.19.1636138134991;
+        Fri, 05 Nov 2021 11:48:54 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id s14sm724536qkg.115.2021.11.05.11.48.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Nov 2021 11:48:54 -0700 (PDT)
+Subject: Re: [PATCH] drivers: thermal: Reset previous low and high trip during
+ thermal zone init
+To:     Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1635883240-24293-1-git-send-email-manafm@codeaurora.org>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <51de966a-9c9e-88a8-5c2c-96773a64d527@linaro.org>
+Date:   Fri, 5 Nov 2021 14:48:53 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VcrWPdR8EVGpcsniQedT0J4X700N7thFs6+srTP1MTgwQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <1635883240-24293-1-git-send-email-manafm@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 11/1/21 7:51 PM, Andy Shevchenko wrote:
-> No, it’s not so easy. What you are doing is a papering over the real issue
-> which is the limitation of the firmware nodes to two. What we need is to
-> drop the link from struct fwnode_handle, move it to upper layer and modify
-> all fwnode ops to be used over the list of fwnode:s.
+On 11/2/21 4:00 PM, Manaf Meethalavalappu Pallikunhi wrote:
+> During the suspend is in process, thermal_zone_device_update bails out
+> thermal zone re-evaluation for any sensor trip violation without
+> setting next valid trip to that sensor. It assumes during resume
+> it will re-evaluate same thermal zone and update trip. But when it is
+> in suspend temperature goes down and on resume path while updating
+> thermal zone if temperature is less than previously violated trip,
+> thermal zone set trip function evaluates the same previous high and
+> previous low trip as new high and low trip. Since there is no change
+> in high/low trip, it bails out from thermal zone set trip API without
+> setting any trip. It leads to a case where sensor high trip or low
+> trip is disabled forever even though thermal zone has a valid high
+> or low trip.
 > 
-> XHCI driver and DWC3 are sharing the primary fwnode, but at the same time
-> they wanted to have _different_ secondary ones when role is switched. This
-> can’t be done in the current design. And here is the symptom what you got.
+> During thermal zone device init, reset thermal zone previous high
+> and low trip. It resolves above mentioned scenario.
+> 
+> Signed-off-by: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
 
-Andy, thanks for the pointers so far. I was able to trace
-set_primary_fwnode() and set_secondary_fwnode().
+Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
 
-Anyway, what's the "upper layer"? Is that "struct device" or "struct
-swnode"? I suppose you meant:
+-- 
+Warm Regards
+Thara (She/Her/Hers)
 
-- Remove "secondary" field from "struct fwnode_handle".
-- Replace "fwnode" from "upper layer" with
-  "struct list_head fwnode_head;".
-- Modify all functions in "software_node_ops" to use "fwnode_head".
+> ---
+>   drivers/thermal/thermal_core.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+> index 21db445..2b7a0b4 100644
+> --- a/drivers/thermal/thermal_core.c
+> +++ b/drivers/thermal/thermal_core.c
+> @@ -477,6 +477,8 @@ static void thermal_zone_device_init(struct thermal_zone_device *tz)
+>   {
+>   	struct thermal_instance *pos;
+>   	tz->temperature = THERMAL_TEMP_INVALID;
+> +	tz->prev_low_trip = -INT_MAX;
+> +	tz->prev_high_trip = INT_MAX;
+>   	list_for_each_entry(pos, &tz->thermal_instances, tz_node)
+>   		pos->initialized = false;
+>   }
+> 
 
-Is that correct?
+
