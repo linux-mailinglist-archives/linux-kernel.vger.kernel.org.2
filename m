@@ -2,110 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0894469F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 21:44:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1084469F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 21:45:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233727AbhKEUrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 16:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233197AbhKEUq7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 16:46:59 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F31DC061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 13:44:19 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id f3so21028327lfu.12
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 13:44:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=senqiBJkxESggfPiWBCUi5fzLmZvRY+Wca6s+ykrVZE=;
-        b=tE/oV/4g9EFoy+oty4gmADvSPhF9RtkrPCM8KYsx7S0ZT1o5JCnEvklXoCI9IxsqcM
-         gxMTZRmXUvFzJEl/WJLI1x24ObCKPcy3VSYwr/7RGCco7gZ7o2rGHQ9fRMtJcaI+/a+c
-         J66muvNcBHI/5CV205/pLwwEDs/to+O8pIu02srpXcku+Js2urLgtLi4nInfWxRMEEen
-         W3kZEEEZiayiOotNfIGjhSssobGAjj/2yUKT9PKfKy6MgWilikRQ4VEzfNA96X5OU7B+
-         nmXQsZ2j0TFa8BpMuVlLXIU5pBR/m95t+sWiy+LyqN6jGystPHn97oWU5YMZ6LFT8X/L
-         NntQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=senqiBJkxESggfPiWBCUi5fzLmZvRY+Wca6s+ykrVZE=;
-        b=URP7YdpIh2IH+v1UFtXvx7wRTx+MIbJh/xKWReRdXS7bR5HJODV8VYKs4iPPxnXkjh
-         lVpYhSlobg612ZWXzYSu3kcUppGNOUvFDN3ie0uDc7vbbbPHesCfODAgxa+73q0q8Sfo
-         Ef/2bGJduu9CUTfb7TLOo/SKVOqHTOt+qevr/zfsuy4QcWOOGoeHa45VSKxxNwBLc/k0
-         +u200vb8r/gzi2PYqnfKVUWTzbTt20zGJVb0cUsMu8ROoogX8CSvLypQo8zEu6eAs9PS
-         nqeEfCAL+5QQ+UMi9U+VEsKQzhLdiFobCIfUU63MZpvcwBJ2IVRbMtJ/kgyTeVNjONQS
-         6bqQ==
-X-Gm-Message-State: AOAM531hhGgOCDdFNgUW8R9B+HovgvK1ixCjlPsUKL2M+s8Fd4AeaORc
-        /zMLmIiPQHkW1AfBuWvFdgMmcBRBSg/g6RPEDYierQ==
-X-Google-Smtp-Source: ABdhPJw7IgaZKzrFcRGOUYu89cL7dGi3eKPzT/JXI7SWHD10+wo4CRxvRI9anjQ1vUxykmf481gYxF1btkhuziSU+UI=
-X-Received: by 2002:a05:6512:228a:: with SMTP id f10mr55986163lfu.489.1636145057351;
- Fri, 05 Nov 2021 13:44:17 -0700 (PDT)
+        id S233715AbhKEUsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 16:48:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233705AbhKEUs2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 16:48:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4820F61372;
+        Fri,  5 Nov 2021 20:45:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636145148;
+        bh=mbkrqX49D8pvCsH1aYAfKqkgRYkCne50RDuP81HnW7k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=X1QCIDMOpF/j4JsFMp9QbVW+hb765FKHzOPgW/k7AZIfQ6mQOmnfvVlcEZX24Sl/p
+         3lSwTJTnduXcZNtJcTxfJkTIKXIu4/TRYuqCSdbEZKjWHy/fYKyVlILbZmqV1E7XLq
+         wUhERcMGmrqRpIndKgMBr7XXEJogaTOdT8wYuIB+BW7Ey83+yr9wiE11HatmtCfiFr
+         VpHYVNBcTubzYdCBI7uAPipMbmRfThzFpvWynOik6cROL4fpJvPsUUWa5EA+XpBfuK
+         FQ4gOxbD5LMIDky9WLplrxla3ynOUMPvwHrGOAv1r8aI3AXp7TFWh3aawMkEC4TXFP
+         fQhRTddtd1MKg==
+Received: by mail-wr1-f54.google.com with SMTP id d24so15658407wra.0;
+        Fri, 05 Nov 2021 13:45:48 -0700 (PDT)
+X-Gm-Message-State: AOAM531TjcZZVftOmy5VcMznS68JLp6AFL23hymA32+v/iyTXAAYpDqm
+        tUtU39Z3S4D8Ev01O/RVfh/yAZ6T8p7eVKUx2OE=
+X-Google-Smtp-Source: ABdhPJwYYHCIQ5b6GvuGVOKrx9JsbQ4IGmE0F25KFAMebt371XDu28fdt4XzAsUVYK/ecp40hA94FfXPeSlX5tSrZv4=
+X-Received: by 2002:a05:6000:10cb:: with SMTP id b11mr64789976wrx.71.1636145146801;
+ Fri, 05 Nov 2021 13:45:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211105163403.3330950-1-anders.roxell@linaro.org>
-In-Reply-To: <20211105163403.3330950-1-anders.roxell@linaro.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 5 Nov 2021 13:44:06 -0700
-Message-ID: <CAKwvOdn0vEyj-EPJG0e39v-Vq+oLFptV0oXYfzfzuy=HPzSzOA@mail.gmail.com>
-Subject: Re: [PATCH] selftests: timers: use 'llabs()' over 'abs()'
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     shuah@kernel.org, tglx@linutronix.de, john.stultz@linaro.org,
-        nathan@kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev
+References: <20211105163137.3324344-1-anders.roxell@linaro.org>
+ <20211105163137.3324344-2-anders.roxell@linaro.org> <CAKwvOd=rRntVgYdqEeb=JAYo2iC-wVB3dkQWNvwdZdrYgt2s7Q@mail.gmail.com>
+In-Reply-To: <CAKwvOd=rRntVgYdqEeb=JAYo2iC-wVB3dkQWNvwdZdrYgt2s7Q@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 5 Nov 2021 21:45:30 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3ZuL9TQbj+tGkdvRRmEv_jT3OvzmaoFKHwdw=5J1w_SA@mail.gmail.com>
+Message-ID: <CAK8P3a3ZuL9TQbj+tGkdvRRmEv_jT3OvzmaoFKHwdw=5J1w_SA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] selftests: timens: exec: use 'labs()' over 'abs()'
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Anders Roxell <anders.roxell@linaro.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 5, 2021 at 9:34 AM Anders Roxell <anders.roxell@linaro.org> wrote:
+On Fri, Nov 5, 2021 at 9:35 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
 >
-> When building selftests/timers with clang, the compiler warn about the
-> function abs() see below:
+> On Fri, Nov 5, 2021 at 9:31 AM Anders Roxell <anders.roxell@linaro.org> wrote:
+> >
+> > When building selftests/timens with clang, the compiler warn about the
+> > function abs() see below:
+> >
+> > exec.c:33:8: error: absolute value function 'abs' given an argument of type 'long' but has parameter of type 'int' which may cause truncation of value [-Werror,-Wabsolute-value]
+> >                         if (abs(tst.tv_sec - now.tv_sec) > 5)
+> >                             ^
+> > exec.c:33:8: note: use function 'labs' instead
+> >                         if (abs(tst.tv_sec - now.tv_sec) > 5)
+> >                             ^~~
+> >                             labs
 >
-> posix_timers.c:69:6: warning: absolute value function 'abs' given an argument of type 'long long' but has parameter of type 'int' which may cause truncation of value [-Wabsolute-value]
->         if (abs(diff - DELAY * USECS_PER_SEC) > USECS_PER_SEC / 2) {
->             ^
-> posix_timers.c:69:6: note: use function 'llabs' instead
->         if (abs(diff - DELAY * USECS_PER_SEC) > USECS_PER_SEC / 2) {
->             ^~~
->             llabs
+> Careful.
 >
-> The note indicates what to do, Rework to use the function 'llabs()'.
->
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> Isn't the tv_sec member of `struct timespec` a `time_t` which is 32b
+> on 32b hosts and 64b on 64b hosts? If I'm recalling that correctly,
+> then this patch results in a harmless (though unnecessary) sign
+> extension for 32b targets. That should be fine, but someone like Arnd
+> should triple check if my concern is valid or not.
 
-Thanks for the patch!
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+It could actually be 'int', 'long' or 'long long' depending on the architecture
+and C library. Maybe we need a temporary variable of type 'long long'
+to hold the difference, and pass that to llabs()?
 
-I wonder why tools/testing/selftests/timers/adjtick.c redefines llabs
-when it already includes stdlib.h, and how that doesn't result in some
-kind of compiler diagnostic.
-
-> ---
->  tools/testing/selftests/timers/posix_timers.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/timers/posix_timers.c b/tools/testing/selftests/timers/posix_timers.c
-> index 337424c5c987..73fb27901a1d 100644
-> --- a/tools/testing/selftests/timers/posix_timers.c
-> +++ b/tools/testing/selftests/timers/posix_timers.c
-> @@ -66,7 +66,7 @@ static int check_diff(struct timeval start, struct timeval end)
->         diff = end.tv_usec - start.tv_usec;
->         diff += (end.tv_sec - start.tv_sec) * USECS_PER_SEC;
->
-> -       if (abs(diff - DELAY * USECS_PER_SEC) > USECS_PER_SEC / 2) {
-> +       if (llabs(diff - DELAY * USECS_PER_SEC) > USECS_PER_SEC / 2) {
->                 printf("Diff too high: %lld..", diff);
->                 return -1;
->         }
-> --
-> 2.33.0
->
-
-
--- 
-Thanks,
-~Nick Desaulniers
+       Arnd
