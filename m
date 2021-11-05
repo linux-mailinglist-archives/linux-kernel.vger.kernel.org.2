@@ -2,90 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5962446013
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 08:21:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E39446015
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 08:21:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbhKEHYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 03:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232308AbhKEHYV (ORCPT
+        id S232587AbhKEHY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 03:24:26 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44616 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232308AbhKEHYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 03:24:21 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F5BC061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 00:21:42 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso2781559pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 00:21:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=y/fywMTV/av3QXQO285nEaIk6kylhyDDn7HWAL1SK9U=;
-        b=J9VsG7BpA6Wg/aBCbNB4mmVu5FmAEJbjHtLlusYN6JPzObDF5l374arxs4VAMU8Kcb
-         GzhyBVVASdsJvLPo5Zh5WMYIOaB0Yfge2PzMR9fJUiYPXq29dvfQ6g/CVYYO6dwYtYh0
-         b79D1f5BL4ZLk6tWHoDvqCHBdDH5N5KgvHCjfQQk3ezEDrcPA9N9jWyjXOU4vBN2NTtH
-         59EYARqhDRYHGPXzd/1qDMq0YWyUDpDES+Fxm5U/eD/9gzykQxOfnfoQ3hnlM/7z3bzq
-         jkuzgt/xEi/LoTM/xHshf7Oa66JGZXvdgLad7KOJZDtkkqGheBd+u1QH4vqHiSmXXUvI
-         ehCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=y/fywMTV/av3QXQO285nEaIk6kylhyDDn7HWAL1SK9U=;
-        b=C37FHwnq/u2VTIKteWkpzo5kEMRxrZ8TQ3dkdaLrG4BBP5H88CeeKxbAZNGDLpjlKW
-         vjBXfrsri8R7ZgavA1v81OoiM2UGKMOikXmanIiVF7Ig5uHwJ6Ma6/AiZnkC6NkcmJrF
-         OGJFjR8UOPSxIenaHPIk3BOgL9E3Pkcx9uuDEM+VE/7F42XvzM9r0WiYB0rF1XI6NJIR
-         odaB88l0GShjt2GAtKjpq8K5Gb5isNymNuupfXjUclrypE4vQ2s91jZOxFtxV/7H3POy
-         KiHGto5sHf/NC7+e59S2O+qiLzcRF9+wWwbZNSp7wgtuCRZ3bQetcdHHSnc0Zx8Nqkv7
-         M9Vg==
-X-Gm-Message-State: AOAM530TImj+UID3LIBJaRNmfHrmMqIoAHYIk0jYB4j12obQ9WjkgCIS
-        4LGTGNiG6u5Dky949/6dgvPG+fcOd7+FPQ==
-X-Google-Smtp-Source: ABdhPJz7QGe8oVhDc8shfWD7/Seoydn1BU8ePIuBHSHFbz01FHU7wMIFeJDN6rod7LqAkqT3zQqxBw==
-X-Received: by 2002:a17:90a:a101:: with SMTP id s1mr27504550pjp.48.1636096902018;
-        Fri, 05 Nov 2021 00:21:42 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.111])
-        by smtp.googlemail.com with ESMTPSA id v16sm5368020pgo.71.2021.11.05.00.21.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Nov 2021 00:21:41 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Like Xu <likexu@tencent.com>
-Subject: [PATCH] perf/x86/lbr: Reset LBR_SELECT during vlbr reset
-Date:   Fri,  5 Nov 2021 00:20:51 -0700
-Message-Id: <1636096851-36623-1-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
+        Fri, 5 Nov 2021 03:24:24 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C7A83212C0;
+        Fri,  5 Nov 2021 07:21:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1636096904; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=e1uQhXPX+zzruPAHU7gkgLZXfsixCcLzIGp+XeLr+fE=;
+        b=hYeJYqHN0X99Sw++eEveknJEhWBFMGoWVHARibot017IrDVfsIx3yPIfaJ3pWgS0cgPW1q
+        kTKm+HmYcBK9NasZXLTvGAH/xJ0r+E3qG4qU5rc8yJsOha9C2CCUiblIMc9CbRGohvZwfE
+        SZnPuw/4OB7tg7bcbPoeIO5SILT6Anw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1636096904;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=e1uQhXPX+zzruPAHU7gkgLZXfsixCcLzIGp+XeLr+fE=;
+        b=Znel2je89do3/Krncx9XFNKmvfHd6dUWF19hAK8uywyPLh1P1ufFbjf/jh4bxGMh6AZcVt
+        HsQObf1zd+bvR9Ag==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id C18462C144;
+        Fri,  5 Nov 2021 07:21:44 +0000 (UTC)
+Date:   Fri, 05 Nov 2021 08:21:44 +0100
+Message-ID: <s5hpmrfgj93.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Ping-Ke Shih <pkshih@realtek.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Larry Finger <Larry.Finger@gmail.com>
+Subject: Re: [PATCH] rtw89: Fix crash by loading compressed firmware file
+In-Reply-To: <20211105071725.31539-1-tiwai@suse.de>
+References: <20211105071725.31539-1-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+On Fri, 05 Nov 2021 08:17:25 +0100,
+Takashi Iwai wrote:
+> 
+> When a firmware is loaded in the compressed format or via user-mode
+> helper, it's mapped in read-only, and the rtw89 driver crashes at
+> rtw89_fw_download() when it tries to modify some data.
+> 
+> This patch is an attemp to avoid the crash by re-allocating the data
+> via vmalloc() for the data modification.
 
-lbr_select in kvm guest has residual data even if kvm guest is poweroff.
-We can get residual data in the next boot. Because lbr_select is not
-reset during kvm vlbr release. Let's reset LBR_SELECT during vlbr reset.
+Alternatively, we may drop the code that modifies the loaded firmware
+data?  At least SET_FW_HDR_PART_SIZE() in rtw89_fw_hdr_parser() looks
+writing it, and I have no idea why this overwrite is needed.
 
-Cc: Like Xu <likexu@tencent.com>
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
- arch/x86/events/intel/lbr.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-index 9e6d6eaeb4cb..1076de93a2f5 100644
---- a/arch/x86/events/intel/lbr.c
-+++ b/arch/x86/events/intel/lbr.c
-@@ -279,6 +279,8 @@ void intel_pmu_lbr_reset(void)
- 
- 	cpuc->last_task_ctx = NULL;
- 	cpuc->last_log_id = 0;
-+	if (!static_cpu_has(X86_FEATURE_ARCH_LBR) && cpuc->lbr_select)
-+		wrmsrl(MSR_LBR_SELECT, 0);
- }
- 
- /*
--- 
-2.25.1
+thanks,
 
+Takashi
+
+> 
+> Buglink: https://bugzilla.opensuse.org/show_bug.cgi?id=1188303
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> 
+> ---
+>  drivers/net/wireless/realtek/rtw89/core.h |  3 ++-
+>  drivers/net/wireless/realtek/rtw89/fw.c   | 15 ++++++++++-----
+>  2 files changed, 12 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/realtek/rtw89/core.h b/drivers/net/wireless/realtek/rtw89/core.h
+> index c2885e4dd882..048855e05697 100644
+> --- a/drivers/net/wireless/realtek/rtw89/core.h
+> +++ b/drivers/net/wireless/realtek/rtw89/core.h
+> @@ -2309,7 +2309,8 @@ struct rtw89_fw_suit {
+>  	RTW89_FW_VER_CODE((s)->major_ver, (s)->minor_ver, (s)->sub_ver, (s)->sub_idex)
+>  
+>  struct rtw89_fw_info {
+> -	const struct firmware *firmware;
+> +	const void *firmware;
+> +	size_t firmware_size;
+>  	struct rtw89_dev *rtwdev;
+>  	struct completion completion;
+>  	u8 h2c_seq;
+> diff --git a/drivers/net/wireless/realtek/rtw89/fw.c b/drivers/net/wireless/realtek/rtw89/fw.c
+> index 212aaf577d3c..b59fecaeea25 100644
+> --- a/drivers/net/wireless/realtek/rtw89/fw.c
+> +++ b/drivers/net/wireless/realtek/rtw89/fw.c
+> @@ -124,8 +124,8 @@ int rtw89_mfw_recognize(struct rtw89_dev *rtwdev, enum rtw89_fw_type type,
+>  			struct rtw89_fw_suit *fw_suit)
+>  {
+>  	struct rtw89_fw_info *fw_info = &rtwdev->fw;
+> -	const u8 *mfw = fw_info->firmware->data;
+> -	u32 mfw_len = fw_info->firmware->size;
+> +	const u8 *mfw = fw_info->firmware;
+> +	u32 mfw_len = fw_info->firmware_size;
+>  	const struct rtw89_mfw_hdr *mfw_hdr = (const struct rtw89_mfw_hdr *)mfw;
+>  	const struct rtw89_mfw_info *mfw_info;
+>  	int i;
+> @@ -489,7 +489,10 @@ static void rtw89_load_firmware_cb(const struct firmware *firmware, void *contex
+>  		return;
+>  	}
+>  
+> -	fw->firmware = firmware;
+> +	fw->firmware = vmalloc(firmware->size);
+> +	if (fw->firmware)
+> +		memcpy((void *)fw->firmware, firmware->data, firmware->size);
+> +	release_firmware(firmware);
+>  	complete_all(&fw->completion);
+>  }
+>  
+> @@ -518,8 +521,10 @@ void rtw89_unload_firmware(struct rtw89_dev *rtwdev)
+>  
+>  	rtw89_wait_firmware_completion(rtwdev);
+>  
+> -	if (fw->firmware)
+> -		release_firmware(fw->firmware);
+> +	if (fw->firmware) {
+> +		vfree(fw->firmware);
+> +		fw->firmware = NULL;
+> +	}
+>  }
+>  
+>  #define H2C_CAM_LEN 60
+> -- 
+> 2.26.2
+> 
