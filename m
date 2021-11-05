@@ -2,159 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B476446758
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F192C44675A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233694AbhKEQz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 12:55:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
+        id S234077AbhKEQ4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 12:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbhKEQzy (ORCPT
+        with ESMTP id S229494AbhKEQ4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 12:55:54 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC72C061714;
-        Fri,  5 Nov 2021 09:53:14 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id w1so35479028edd.10;
-        Fri, 05 Nov 2021 09:53:14 -0700 (PDT)
+        Fri, 5 Nov 2021 12:56:22 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6C8C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 09:53:42 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id gt5so3450311pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 09:53:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3wQiaaWhR30+eBaE/+DYo9nkogWMcP6rX9ZpU/zDODA=;
-        b=h0qtt4EyrB8SubAJDk6MU80NETFOFF+DciUePl49cGm7MPXqsYpPWFGxJbJbiwZ1eg
-         Cyhj7z4sq3t0zKTExlgcxnHXjouxKYPfn6BZ20GvcjBR3VWmAtMyEeGd8+SCzhZCaDHA
-         CroS1AkarPJGy4jVHpl+NnXGgVibW+5vmoJF905dNCmaKgybUI+SN2JAT0HHocMArBde
-         gHyab7ptqjtjL4ZXKIpbW3yBYYmOzfkE4qG87Pz2fx4+v0z4aX/NP7Xbk4jPAEeHFw0x
-         krb/LBNKt2H3/a+isRKQpUjnmxNvHaFAoNb8+L2hITrWyhA2hcoXd1iO2MyG2XA4r9L+
-         JnAg==
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=4nGHuCf41SngR745SwIkimU/Vz5GHGbBbJavoYdXknU=;
+        b=cvlBAU4nu5Zfg7BqZjgLR7OzjV6Q/yQ1MI3p5KYU+MbWfFYAN5EaU1pY3SlYw6k/CN
+         4NRKMukOUbn/W+Tubf9Z9KdM4Qr7/8VN9mt3WxjLprN+g7hXLrGRZzFZ3amYuTc+71/T
+         6+5Y9u7BfNClL00+y41u+I5AoM5QsUrLPHAalCPG0mLdkKqHMlmsa4vzW6KUaB35Yz1e
+         X6xFOmHrHNUKOTzNBLnSj0r5fcnISWHcr2sWUNxGDupgd3kGm34ZwkWFy7P8C7x3uqRO
+         moozdY1w/STHnTkqLheHWFHwhuTZJNXU6HMQn7hJ5tzLhP9qHPd1GXlkFyUotADabZ9X
+         3Ovw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3wQiaaWhR30+eBaE/+DYo9nkogWMcP6rX9ZpU/zDODA=;
-        b=WMafNoOUGdw9zvZZOpW6mOx+3rjGSb5brSyEtkIKdFvzpnFT+JR5KCrC0pzEd29Og1
-         h7QP16DNE/BVAL+vPnawmJgR8NzVVXQpwRu+8AUvYDUvKtmLOB1sIHhBEb37Lsdnhfq8
-         RnC5QzrLaBJ85J2boR+KpKabIYcLzgUYckvDS1RdoQOGOuY+jBUeWirkYEtxrkfmPe9l
-         uk4acGv5V8elG19tjQC+NOAnJjWScfcOZGTdm3hRzRKnz9gG8Iacd/CKsMtKOonUn9Ww
-         PSfNo9k+h7Nr/MH0ivTvC3x/OGA+g4x2RgYE2mbSugGLdJBHvo+WqGcPKsv2tPJEnlRl
-         1FJQ==
-X-Gm-Message-State: AOAM533aVwylAJV3lsRcqAKqwppbcBgViOVBYFt83Mc4hRh70I7Fyben
-        4JE2za5W7xAYp94U/OmFUuM=
-X-Google-Smtp-Source: ABdhPJzo2+IndVPww4UMxxGyhzUoBuE9XZD6xUx0GRRNIq95EeHqno3CSGN55nQ1K6VbnrDUglf3ug==
-X-Received: by 2002:a05:6402:d0e:: with SMTP id eb14mr18970650edb.59.1636131193486;
-        Fri, 05 Nov 2021 09:53:13 -0700 (PDT)
-Received: from ?IPv6:2a04:241e:501:3870:9439:4202:183c:5296? ([2a04:241e:501:3870:9439:4202:183c:5296])
-        by smtp.gmail.com with ESMTPSA id j12sm5482429edw.14.2021.11.05.09.53.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 09:53:13 -0700 (PDT)
-Subject: Re: [PATCH 5/5] tcp/md5: Make more generic tcp_sig_pool
-To:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@kernel.org>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>
-References: <20211105014953.972946-1-dima@arista.com>
- <20211105014953.972946-6-dima@arista.com>
- <88edb8ff-532e-5662-cda7-c00904c612b4@gmail.com>
- <11215b43-cd3f-6cdc-36da-44636ca11f51@gmail.com>
-From:   Leonard Crestez <cdleonard@gmail.com>
-Message-ID: <4de0111a-af4e-779e-eda9-f0cda433dde5@gmail.com>
-Date:   Fri, 5 Nov 2021 18:53:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4nGHuCf41SngR745SwIkimU/Vz5GHGbBbJavoYdXknU=;
+        b=dnqmHUlRDpE0gTp4rLZGi7bnlPIsPmJjbfOaY2eIXc7M66It71ncSoPp/ELE1tEKUb
+         nQY3cJrH3oMIeNEjhR4JQWgnsInXAYCX85m1NVXV1QLyW86oN0DTE088/IuRiTr+pofb
+         sYc/QNP6kw5x+NFjMO0Fqnl2ya8P0c7T9YGcfwTMA51b2S9XcVnNSDJxbctPjQ/flU39
+         xPsqyvNc1wAnA2tenNlG+02G23oQSi35Yz0XVl4EzlsnjkneQSzVDnqrYKjAMc8TOhxH
+         dcRRiVYSJdVHt9HjR+AgP+ajIJNNCCRWolllcooJr5cuyyfEzSQWqg/Vl2PVy8I6zTTC
+         SQ5A==
+X-Gm-Message-State: AOAM533Lc7ZQ8GPN/kndxQYoYGGoCyhDqQnP6KtqR947aN/ax0OFkpqd
+        QODY//AIAQTXdT8MvA/2hF8=
+X-Google-Smtp-Source: ABdhPJwUiTStHlUz0AoR2/KXSCbvRLr5WBjWiWLRorWKks+4plI1K4xZeMemnQ3lFWKVsD9JQJzPnA==
+X-Received: by 2002:a17:90a:fe87:: with SMTP id co7mr31139202pjb.21.1636131222166;
+        Fri, 05 Nov 2021 09:53:42 -0700 (PDT)
+Received: from localhost.localdomain ([2001:4490:4409:3406:a18f:7c45:2f81:cea2])
+        by smtp.gmail.com with ESMTPSA id s30sm8524425pfg.17.2021.11.05.09.53.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Nov 2021 09:53:41 -0700 (PDT)
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        saurav.girepunje@gmail.com, dan.carpenter@oracle.com,
+        shreyaskumar1035@gmail.com, ross.schm.dev@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Remove unused local variable in rtw_efuse.c
+Date:   Fri,  5 Nov 2021 22:23:28 +0530
+Message-Id: <20211105165330.78524-1-saurav.girepunje@gmail.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <saurav.girepunje@gmail.com>
+References: <saurav.girepunje@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <11215b43-cd3f-6cdc-36da-44636ca11f51@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/21 3:59 PM, Dmitry Safonov wrote:
-> On 11/5/21 09:54, Leonard Crestez wrote:
->> On 11/5/21 3:49 AM, Dmitry Safonov wrote:
->>> Convert tcp_md5sig_pool to more generic tcp_sig_pool.
->>> Now tcp_sig_pool_alloc(const char *alg) can be used to allocate per-cpu
->>> ahash request for different hashing algorithms besides md5.
->>> tcp_sig_pool_get() and tcp_sig_pool_put() should be used to get
->>> ahash_request and scratch area.
->>
->> This pool pattern is a workaround for crypto-api only being able to
->> allocate transforms from user context.
->>> It would be useful for this "one-transform-per-cpu" object to be part of
->> crypto api itself, there is nothing TCP-specific here other than the
->> size of scratch buffer.
-> 
-> Agree, it would be nice to have something like this as a part of crypto.
-> The intention here is to reuse md5 sig pool, rather than introduce
-> another similar one.
-> 
->>> Make tcp_sig_pool reusable for TCP Authentication Option support
->>> (TCP-AO, RFC5925), where RFC5926[1] requires HMAC-SHA1 and AES-128_CMAC
->>> hashing at least.
->> Additional work would be required to support options of arbitrary size
->> and I don't think anyone would use non-standard crypto algorithms.
->>
->> Is RFC5926 conformance really insufficient?
-> 
-> For the resulting hash, the scratch buffer can be used.
-> 
-> Honestly, I just don't see much benefit in introducing more code and
-> structures in order to limit hash algorithms. If anything,
-> 
-> :if (strcmp("hmac(sha1)", opts.algo) && strcmp("cmac(aes)", opts.algo))
-> :       return -EPROTONOSUPPORT;
-> 
-> and passing the string straight to crypto seems to be better than adding
-> new structures.
-> 
-> On the other side, those two hashes MUST be supported to comply with
-> RFC, other may. As user can already configure conflicting receive/send
-> ids for MKTs, I don't see a point not allowing any hash algorithm
-> supported by crypto.
+This patch series to remove the unused local variable in rtw_efuse.c
 
-The algorithm enum controls not just the algorithm but the length in 
-bytes of the traffic key and signatures. Supporting arbitrary algorithms 
-requires supporting arbitrary byte lengths everywhere and increasing a 
-couple of stack allocations (including some in the TCP core).
+Remove the unused variable padapter from Efuse_Read1ByteFromFakeContent.
+Remove the unused variable padapter from Efuse_Write1ByteToFakeContent.
 
-An earlier version actually had u8 fields for the length but those were 
-later removed.
+Saurav Girepunje (2):
+  staging: rtl8723bs: core: remove unused variable pAdapter
+  staging: rtl8723bs: core: remove unused local variable padapter
 
-Adding this is not difficult but requires careful testing of the new 
-corner cases. All this will be for functionality is never going to be used.
+ drivers/staging/rtl8723bs/core/rtw_efuse.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
->> My knowledge of cryptography doesn't go much beyond "data goes in
->> signature goes out" but there are many recent arguments from that cipher
->> agility is outright harmful and recent protocols like WireGuard don't
->> support any algorithm choices.
-> 
-> You already limit usage when root-enabled sysctl is triggered, I don't
-> see big concerns here.
-> 
->>
->>> +#define TCP_SIG_POOL_MAX        8
->>> +static struct tcp_sig_pool_priv_t {
->>> +    struct tcp_sig_crypto        cryptos[TCP_SIG_POOL_MAX];
->>> +    unsigned int            cryptos_nr;
->>> +} tcp_sig_pool_priv = {
->>> +    .cryptos_nr = 1,
->>> +    .cryptos[TCP_MD5_SIG_ID].alg = "md5",
->>> +};
->>
->> Why an array of 8? Better to use an arbitrary list.
-> 
-> Some reasonable limit, may be 16 or whatever in order to avoid
-> dynamically (re-)allocating the array and keeping O(1) lookups.
+--
+2.33.0
 
-Defining an arbitrary array length limit is an underhanded way of making 
-lookup O(1).
