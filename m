@@ -2,99 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29CD244665A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:47:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99DB6446667
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233630AbhKEPuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 11:50:06 -0400
-Received: from mga18.intel.com ([134.134.136.126]:55426 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230400AbhKEPuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 11:50:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10159"; a="218824977"
-X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
-   d="scan'208";a="218824977"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 08:47:25 -0700
-X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
-   d="scan'208";a="490367841"
-Received: from luhan1-mobl2.amr.corp.intel.com (HELO [10.212.219.183]) ([10.212.219.183])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 08:47:25 -0700
-Subject: Re: [RFC PATCH] mm: migrate: Add new node demotion strategy
-To:     "Huang, Ying" <ying.huang@intel.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, dave.hansen@linux.intel.com,
-        ziy@nvidia.com, osalvador@suse.de, shy828301@gmail.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <c02bcbc04faa7a2c852534e9cd58a91c44494657.1636016609.git.baolin.wang@linux.alibaba.com>
- <665cb882-6dbc-335f-1435-e52659d7ee58@intel.com>
- <87tugrxqks.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <c0023ae8-0aff-0890-00fb-310d72130f8a@intel.com>
-Date:   Fri, 5 Nov 2021 08:47:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233669AbhKEPv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 11:51:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232774AbhKEPv2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 11:51:28 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8315C061205
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 08:48:48 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id e65so8714586pgc.5
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 08:48:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BQvAChtGkGopxkASFYsDwmXZHmFC6+xDduRNBAB5e/o=;
+        b=thcOmkTShq9Bj+tVLe+cwd6h3zcbAFPcJkJmzQdKhBNgKCY0vYLnO4CWPof9vab67N
+         aPiQmqFs9U1sTyPYwAtbOcpQ9uQrua8mQHuNm2X2pcMfp9zzSEjuyqMNxm9BRNcZpK10
+         dTElB6AgVPcof8XDSgFPwjxa4XpeBuQVNbF2IH3OoyHYlOFMWnuN9x7Mre3fKmmVHSXy
+         gOKVS3HJ+EyZe7nnuQT72uASNAUyZvP3OGgzuS8Nm9x+2XSfq+mYj8tA/evJa8mSmNnS
+         +GvFivhfjdC5gr7ATBpR1XCdBRTNFOC92qcmnLfdSMi5s/NJiS1dDXekDmRiyqPAEgx7
+         jT7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BQvAChtGkGopxkASFYsDwmXZHmFC6+xDduRNBAB5e/o=;
+        b=CV8XUq/IdI/XRBgXLVPVTPM+ucMYyraiO4b6WYQvIRvfghubGtDcIl0Xa60DMDBPrk
+         9vWRcQmvGxqRg9ShEn3YriEeYylWM2ONBr6QNhIuVQibZffz0nxSOKpsQPKGWfJDKZBX
+         6i+EAUJw2hty4SpaJdNJSJNQAnhcGEvvgX7fbimL8SppJJLrWWa77YZ4S5BVa8ojJw4b
+         mXA5pr7tMdRn3cczjUpMweKFPCH1dQobKFeiWv0JVHNvioc/B6z9fyY2jg4MiRMwsgNi
+         aXM7nQGiwzQ3U6nSmffLFmu/1qp9H/mEf/jppIyPRK4mEguYqQymEKb3AKH/RjjFAMA8
+         zBSQ==
+X-Gm-Message-State: AOAM5336VzMzqqMs1ER6Lsx++tc6ezagLz9h0PK2IwrfFb3tdMt+MZNL
+        Q+Q/VbFxdbk+WL7OBb+p0sSlfw==
+X-Google-Smtp-Source: ABdhPJwXas/ahUMjBO+7ij7kGm7PUrKGVTLhKaKoZjF9MnmCtV5p81sAuZ0C1I0ZWjOOHbbl7b3Bug==
+X-Received: by 2002:aa7:8883:0:b0:49f:9e4b:3047 with SMTP id z3-20020aa78883000000b0049f9e4b3047mr4187915pfe.48.1636127328031;
+        Fri, 05 Nov 2021 08:48:48 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id lw1sm10743182pjb.38.2021.11.05.08.48.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 08:48:47 -0700 (PDT)
+Date:   Fri, 5 Nov 2021 15:48:43 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] KVM: x86: Introduce definitions to support static
+ calls for kvm_pmu_ops
+Message-ID: <YYVSW4Jr75oJ6MhC@google.com>
+References: <20211103070310.43380-1-likexu@tencent.com>
+ <20211103070310.43380-3-likexu@tencent.com>
 MIME-Version: 1.0
-In-Reply-To: <87tugrxqks.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211103070310.43380-3-likexu@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/4/21 7:51 PM, Huang, Ying wrote:
->> Let's also try to do it with the existing node_demotion[] data
->> structure before we go adding more.
-> To avoid cache ping-pong, I guess some kind of per-CPU data structure
-> may be more suitable for interleaving among multiple nodes.
+On Wed, Nov 03, 2021, Like Xu wrote:
+> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
+> index 0db1887137d9..b6f08c719125 100644
+> --- a/arch/x86/kvm/pmu.c
+> +++ b/arch/x86/kvm/pmu.c
+> @@ -50,6 +50,13 @@
+>  struct kvm_pmu_ops kvm_pmu_ops __read_mostly;
+>  EXPORT_SYMBOL_GPL(kvm_pmu_ops);
+>  
+> +#define	KVM_X86_PMU_OP(func)	\
+> +	DEFINE_STATIC_CALL_NULL(kvm_x86_pmu_##func,	\
+> +				*(((struct kvm_pmu_ops *)0)->func))
+> +#define	KVM_X86_PMU_OP_NULL	KVM_X86_PMU_OP
 
-It would probably be better to just find something that's more
-read-heavy.  Like, instead of keeping a strict round-robin, just
-randomly select one of the notes to which you can round-robin.
+More of a question for the existing code, what's the point of KVM_X86_OP_NULL?
+AFAICT, it always resolves to KVM_X86_OP.  Unless there's some magic I'm missing,
+I vote we remove KVM_X86_OP_NULL and then not introduce KVM_X86_PMU_OP_NULL.
+And I'm pretty sure it's useless, e.g. get_cs_db_l_bits is defined with the NULL
+variant, but it's never NULL and its calls aren't guarded with anything.  And if
+KVM_X86_OP_NULL is intended to aid in documenting behavior, it's doing a pretty
+miserable job of that :-)
 
-That will scale naturally without having to worry about caching or fancy
-per-cpu data structures.
+> +#include <asm/kvm-x86-pmu-ops.h>
+> +EXPORT_STATIC_CALL_GPL(kvm_x86_pmu_is_valid_msr);
+
+I'll double down on my nVMX suggestion so that this export can be avoided.
+
+>  static void kvm_pmi_trigger_fn(struct irq_work *irq_work)
+>  {
+>  	struct kvm_pmu *pmu = container_of(irq_work, struct kvm_pmu, irq_work);
+> diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
+> index b2fe135d395a..e5550d4acf14 100644
+> --- a/arch/x86/kvm/pmu.h
+> +++ b/arch/x86/kvm/pmu.h
+> @@ -3,6 +3,8 @@
+>  #define __KVM_X86_PMU_H
+>  
+>  #include <linux/nospec.h>
+> +#include <linux/static_call_types.h>
+> +#include <linux/static_call.h>
+>  
+>  #define vcpu_to_pmu(vcpu) (&(vcpu)->arch.pmu)
+>  #define pmu_to_vcpu(pmu)  (container_of((pmu), struct kvm_vcpu, arch.pmu))
+> @@ -45,6 +47,19 @@ struct kvm_pmu_ops {
+>  	void (*cleanup)(struct kvm_vcpu *vcpu);
+>  };
+>  
+> +#define	KVM_X86_PMU_OP(func)	\
+> +	DECLARE_STATIC_CALL(kvm_x86_pmu_##func, *(((struct kvm_pmu_ops *)0)->func))
+> +#define	KVM_X86_PMU_OP_NULL	KVM_X86_PMU_OP
+> +#include <asm/kvm-x86-pmu-ops.h>
+> +
+> +static inline void kvm_pmu_ops_static_call_update(void)
+> +{
+> +#define	KVM_X86_PMU_OP(func)	\
+> +	static_call_update(kvm_x86_pmu_##func, kvm_pmu_ops.func)
+> +#define	KVM_X86_PMU_OP_NULL	KVM_X86_PMU_OP
+> +#include <asm/kvm-x86-pmu-ops.h>
+> +}
+
+As alluded to in patch 01, I'd prefer these go in kvm_ops_static_call_update()
+to keep the static call magic somewhat contained.
+
+> +
+>  static inline u64 pmc_bitmask(struct kvm_pmc *pmc)
+>  {
+>  	struct kvm_pmu *pmu = pmc_to_pmu(pmc);
+> -- 
+> 2.33.0
+> 
