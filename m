@@ -2,75 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E52445DA7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D34E6445DA8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:56:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbhKEB6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 21:58:08 -0400
-Received: from smtp21.cstnet.cn ([159.226.251.21]:46030 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229685AbhKEB6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 21:58:07 -0400
-Received: from localhost.localdomain (unknown [124.16.141.244])
-        by APP-01 (Coremail) with SMTP id qwCowACnPyD6joRhBc2SBg--.22848S2;
-        Fri, 05 Nov 2021 09:55:06 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     prabhakar.mahadev-lad.rj@bp.renesas.com, jic23@kernel.org,
-        lars@metafoo.de
-Cc:     linux-iio@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] iio: adc: rzg2l_adc: Remove unnecessary print function dev_err()
-Date:   Fri,  5 Nov 2021 01:55:04 +0000
-Message-Id: <20211105015504.39226-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+        id S231517AbhKEB6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 21:58:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229685AbhKEB6g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 21:58:36 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4722BC061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 18:55:57 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id f3so15610834lfu.12
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 18:55:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MQ5rx0ih4ImPc1lQ/4TmMDxVD6bAbyAbRYZrdiz+dqM=;
+        b=IxszP5A3m4BSkHIF+6XK27KLraJpaPXPDKK/xS9G6jvRIw5LkesIvUoxQLffwQK1C8
+         uUlJdR2eAxmr+zwqs1OUapvIGKsA/roR7TygBWGeGcWLKYMGz1L77jsN6uh43LElBGQ+
+         Cj7GAD+Nh2Mkoiu9hQAHrF7qMmVtpOsKv27pH8flr8JIRvxKBw+8crEYS+5EKHenJjfR
+         RW65ZOygMfaIyNcUkylcdN45BknAkQa6a3/ExPWyvZcEU32Axn1OBonZBb9XPA+OnWzl
+         CP1qyEpT0ayEEy/QjQ9G2k8Cn5x9ttRtSnWx7Lcs5P3eSdVFmXLee/tlsIjLFN9/Ra8p
+         fScg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MQ5rx0ih4ImPc1lQ/4TmMDxVD6bAbyAbRYZrdiz+dqM=;
+        b=ED1yBK206KWSnmy3N9XYMMOjMbbwxvtqDj+LZDODM33x+XmGBm0plPx8y4WI27cAdi
+         t9XxfnKT/Dp/TBFhaMEoNiDD6nYrFyT9zycYflrnMbEgHcULeqK5rwA0F+VLRGnP45xu
+         0sbO7mVKgAS/TVzD24zlj37lFnN9Z1g94JlLpmf/RFV0LM+BZGqCzXK+sXQCjiePXPLR
+         AlBMfr+JkOM7AZgOWdwg0pDlpUGw0JNUlIE1cT6+hmJdZwh8FTXDLIzKIgZsWaBUITNR
+         nDpuEePCfbUuh6I8jUkCzY55yttXRr7KNxxtuMO3a9cdKy2zF9s/+ibR0BfgUF4f5n8R
+         cMZw==
+X-Gm-Message-State: AOAM531siw/JBSBwggpA6ERx/UYqLcF0gkKDG7oz3q1tVWI/gjSqqQv6
+        nA2gxl3iC5edQ3CaJji3nVETETIK9L5/Azsl+u58Xw==
+X-Google-Smtp-Source: ABdhPJxDNQ3NpaQv5bX1NdFnU5Xuxljz59rmlGzJNPgHe5vI0SvIqz2Djc3K4bRYHI/sIf7AP+kOUjIsvTFytbhLdhA=
+X-Received: by 2002:ac2:4f02:: with SMTP id k2mr49131299lfr.635.1636077355028;
+ Thu, 04 Nov 2021 18:55:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: qwCowACnPyD6joRhBc2SBg--.22848S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZrWrWF45KryUZFy7WrWfKrg_yoW3Jrc_Ka
-        1xZanxArWIkwsYyw1Utw43Zr92yayqqw4DCr1qyFW3KFy7KFnrZFyUZFs0yr4xu3y8Wa47
-        XF13WrySkr1fCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2kYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6w4l42xK
-        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8go7tUUUUU==
-X-Originating-IP: [124.16.141.244]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBgkQA10TfuT6OgAAsI
+References: <20211105005955.107419-1-osk@google.com> <CACPK8XcXR=V5-Q+sC4MniNJZJgvbiysFD-5yu6v30_2BwDRTSA@mail.gmail.com>
+ <CABoTLcS=s0XuM9jiisYW3=1gXtiwP8WeopqTOeBwnTX1XCky9Q@mail.gmail.com>
+In-Reply-To: <CABoTLcS=s0XuM9jiisYW3=1gXtiwP8WeopqTOeBwnTX1XCky9Q@mail.gmail.com>
+From:   Oskar Senft <osk@google.com>
+Date:   Thu, 4 Nov 2021 21:55:39 -0400
+Message-ID: <CABoTLcRyc0B5HXSzEusPKWOwO+BG6GfSmmv0miDd6Y4rRCYTiw@mail.gmail.com>
+Subject: Re: [PATCH v2] ARM: dts: aspeed: tyan-s7106: Update nct7802 config
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The print function dev_err() is redundant because
-platform_get_irq() already prints an error.
+To answer my own question and as a reminder for myself ...
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/iio/adc/rzg2l_adc.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+> > I applied this and tried comple testing, and got this warning:
+> >
+> >   DTC     arch/arm/boot/dts/aspeed-bmc-tyan-s7106.dtb
+> > ../arch/arm/boot/dts/aspeed-bmc-tyan-s7106.dts:217.4-14: Warning
+> > (reg_format): /ahb/apb/bus@1e78a000/i2c-bus@40/nct7802@28/channel@0:reg:
+> > property has invalid length (4 bytes) (#address-cells == 2,
+> > #size-cells == 1)
+> Is there an easy way for me to see these types of warnings? Or should
+> they really come out as errors?
 
-diff --git a/drivers/iio/adc/rzg2l_adc.c b/drivers/iio/adc/rzg2l_adc.c
-index 32fbf57c362f..9d5be52bd948 100644
---- a/drivers/iio/adc/rzg2l_adc.c
-+++ b/drivers/iio/adc/rzg2l_adc.c
-@@ -506,10 +506,8 @@ static int rzg2l_adc_probe(struct platform_device *pdev)
- 	}
- 
- 	irq = platform_get_irq(pdev, 0);
--	if (irq < 0) {
--		dev_err(dev, "no irq resource\n");
-+	if (irq < 0)
- 		return irq;
--	}
- 
- 	ret = devm_request_irq(dev, irq, rzg2l_adc_isr,
- 			       0, dev_name(dev), adc);
--- 
-2.25.1
+Yes, there is:
 
+1) Copy the .config from the OpenBMC build directory:
+cp ~/src/openbmc/build/s7106/tmp/work/s7106-openbmc-linux-gnueabi/linux-aspeed/5.15+gitAUTOINC+da6376d789-r0/linux-s7106-standard-build/.config
+.
+
+2) Run
+ARCH="arm" make aspeed-bmc-tyan-s7106.dtb
+
+
+Oskar.
