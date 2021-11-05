@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EDA6446A2D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 21:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D15D4446A2F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 21:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233848AbhKEUxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 16:53:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57544 "EHLO
+        id S233771AbhKEU4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 16:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233754AbhKEUxv (ORCPT
+        with ESMTP id S230219AbhKEU4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 16:53:51 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12141C061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 13:51:11 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id s24so16910103lji.12
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 13:51:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IsqXxMPAEyayuWYNn2cn31F1D2jcff0K1QvBSthWMBM=;
-        b=qOxV+6+MFUFLS2PS7gWTFOb+5OBR+cqySkvjy3obIuGHjHYU2+OPa1v0oH5ar3Momb
-         1SfH9k7CtbWT3EoxFjVodUnvjUC7Sbd62Yd+tv89a35AM2Q477zcUc+DozAS/Lv/mS1y
-         lPjneQGIlCtLwO6x6p+kHAIBo8KsK7JvzjcYBekIJDr5SvANWAhocb6d403cSVlvN9QE
-         q691o0BWYl49mrnOtyAlBN8sa2c4x1HZTJezZCORUEHVarGNWj+9TGwDAqPQlnBVwyA9
-         YMAgDh4A6AkxZeDLvFZC4h+oDYaqFL2h+lf/eYcRrNHxUzwl7RsJ5sTteaxm4LXmEV+V
-         PFTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IsqXxMPAEyayuWYNn2cn31F1D2jcff0K1QvBSthWMBM=;
-        b=KH9kQL+e4sYGO8VVfSfzsj9v1o+Qz8uwUjlOvltIkq5OGeahJlLxaC7FeUaSGDUL7O
-         4A7PpRNE4mvA99pdmNkZkQM0u4tsNA3s5aPNC5Icf2Y5tT5Qoxw7pAof6T7qJb4yKcxh
-         tHbGUQHFEE0Em33x33Pq4noteh1EA03ciqhAbWhbQZJBl3VlY8N2MXBsyoh+P6JeaG1K
-         ZaSkHzKvuMI58AqJFRbAcXskxc9bq/KkAWDT8cGSS/SIGqdsYIxJsIU0edhpRDsDAWyE
-         1avOTQWNxC9pzqWIDpL6fXRPbcdbKoxMlTiSsYEIHYccKXkN7jofRvQ4ou8WmVfBxuaS
-         U1zw==
-X-Gm-Message-State: AOAM532IquaAKF4yYnzXNRg7o8EDQpiTwLJdLFdTIEpZQepmbcEK/MFW
-        h8k5WSFtHqK4q81/BjcN8K1WmlEtA6Svc1y7Vxgs3g==
-X-Google-Smtp-Source: ABdhPJyscGR2faQ3WY30fi9rHtfREOCPhjZDAaOuuO8TE7pOhp1KBS3rpUKQlf4rPXLm+5TIIpFu3wdMSSP1pETACTo=
-X-Received: by 2002:a2e:750e:: with SMTP id q14mr64510854ljc.338.1636145469249;
- Fri, 05 Nov 2021 13:51:09 -0700 (PDT)
+        Fri, 5 Nov 2021 16:56:21 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816D3C061714;
+        Fri,  5 Nov 2021 13:53:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=foWIUn3EVKz1t6fa/u04+WvizPsE4kVQFqtzJb/v8vA=; b=3xb1NDkrBW9UmfQcm7RJORPNxA
+        wfhJXEreFdQRsnrFYkej5Nyaj8osXkrRvkhEbaVG5My7o+6MQfWP/WGgY9/5st+Z6Tj2gSytcsvT3
+        PPMdmK2sz8f/L4pIWe37TX7kHuPuHxj5QWg7ZuQvvcQWp3i86anJq3T162g3ejts6DDVaa431OFQJ
+        sEBL9hXX+x/LWumLxuq7IJNv02mw/vGtsz5d7jw0L5BtI4B3/GGdckGlRcmLODyj6tOmxhGEYR8K6
+        KF5LLOONt6IbNJWBgbqhvCr3GYOrfjzEU/l2/I3pbKgxWKpmLCJsFpKmwVBqSeziordL0DUSswYkW
+        d3GqkHtQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mj6DU-00CKk3-LY; Fri, 05 Nov 2021 20:53:40 +0000
+Subject: Re: [RFC 6/8] HID: usi: Add driver for Universal Stylus Interface
+ (USI)
+To:     Tero Kristo <tero.kristo@linux.intel.com>, jikos@kernel.org,
+        benjamin.tissoires@redhat.com, mika.westerberg@linux.intel.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211104133701.1733551-1-tero.kristo@linux.intel.com>
+ <20211104133701.1733551-7-tero.kristo@linux.intel.com>
+ <07757860-06bd-b47a-51ff-24cf31a7b28b@infradead.org>
+ <1c3bb031-c4dc-6525-95c0-c41c84b47ea5@linux.intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <27f5089a-36a4-18ae-a75d-7db106ea5267@infradead.org>
+Date:   Fri, 5 Nov 2021 13:53:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211105163137.3324344-1-anders.roxell@linaro.org>
- <20211105163137.3324344-2-anders.roxell@linaro.org> <CAKwvOd=rRntVgYdqEeb=JAYo2iC-wVB3dkQWNvwdZdrYgt2s7Q@mail.gmail.com>
- <CAK8P3a3ZuL9TQbj+tGkdvRRmEv_jT3OvzmaoFKHwdw=5J1w_SA@mail.gmail.com>
-In-Reply-To: <CAK8P3a3ZuL9TQbj+tGkdvRRmEv_jT3OvzmaoFKHwdw=5J1w_SA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 5 Nov 2021 13:50:58 -0700
-Message-ID: <CAKwvOdm=a7w0cQdynY2i5ST=xrfjzXVZcUniAoEyqC21oKPQsQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] selftests: timens: exec: use 'labs()' over 'abs()'
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Anders Roxell <anders.roxell@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1c3bb031-c4dc-6525-95c0-c41c84b47ea5@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 5, 2021 at 1:45 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Fri, Nov 5, 2021 at 9:35 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
-> >
-> > On Fri, Nov 5, 2021 at 9:31 AM Anders Roxell <anders.roxell@linaro.org> wrote:
-> > >
-> > > When building selftests/timens with clang, the compiler warn about the
-> > > function abs() see below:
-> > >
-> > > exec.c:33:8: error: absolute value function 'abs' given an argument of type 'long' but has parameter of type 'int' which may cause truncation of value [-Werror,-Wabsolute-value]
-> > >                         if (abs(tst.tv_sec - now.tv_sec) > 5)
-> > >                             ^
-> > > exec.c:33:8: note: use function 'labs' instead
-> > >                         if (abs(tst.tv_sec - now.tv_sec) > 5)
-> > >                             ^~~
-> > >                             labs
-> >
-> > Careful.
-> >
-> > Isn't the tv_sec member of `struct timespec` a `time_t` which is 32b
-> > on 32b hosts and 64b on 64b hosts? If I'm recalling that correctly,
-> > then this patch results in a harmless (though unnecessary) sign
-> > extension for 32b targets. That should be fine, but someone like Arnd
-> > should triple check if my concern is valid or not.
->
-> It could actually be 'int', 'long' or 'long long' depending on the architecture
-> and C library. Maybe we need a temporary variable of type 'long long'
-> to hold the difference, and pass that to llabs()?
+On 11/4/21 11:33 PM, Tero Kristo wrote:
+> 
+> On 04/11/2021 17:03, Randy Dunlap wrote:
+>> On 11/4/21 6:36 AM, Tero Kristo wrote:
+>>> diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
+>>> index 3c33bf572d6d..c235ecb8f037 100644
+>>> --- a/drivers/hid/Kconfig
+>>> +++ b/drivers/hid/Kconfig
+>>> @@ -1222,6 +1222,11 @@ config HID_MCP2221
+>>>       To compile this driver as a module, choose M here: the module
+>>>       will be called hid-mcp2221.ko.
+>>>   +config HID_USI
+>>> +    tristate "USI (Universal Stylus Interface) support"
+>>> +    help
+>>> +    Provides USI support over I2C HID interface.
+>>
+>> Indent help text "Provides ..." with 2 additional spaces, please,
+>> per coding-style.rst.
+>>
+> Sorry yeah, this slipped through. Seems most of the drivers/hid/Kconfig is with wrong indentation, copied layout from there. I also need to add a bit more beef to this help text while updating it, and remove the mention of i2c only.
 
-Yeah, that SGTM. Thanks for the review!
+Thanks for adding more beef to it.
+
+And yes, I have noticed that drivers/hid/Kconfig is a bit messy. :\
+
 -- 
-Thanks,
-~Nick Desaulniers
+~Randy
