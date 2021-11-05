@@ -2,73 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B9B4465C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E074465C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:30:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233539AbhKEPcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 11:32:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36764 "EHLO mail.kernel.org"
+        id S233584AbhKEPdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 11:33:19 -0400
+Received: from mx1.tq-group.com ([93.104.207.81]:26763 "EHLO mx1.tq-group.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233535AbhKEPct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 11:32:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C2A7C60EFE;
-        Fri,  5 Nov 2021 15:30:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636126209;
-        bh=GHN2X9hNdhcQsX8SkapeTNsqiMfVCAoIvIpHqYs3i/U=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=sdE+tOFJnvQcXfDNI+XrDZkwxCMYxW2GTrdUMo1we9WwDoviRhqiYWUCRy0lpHeEr
-         ZF+8orAqLFv6KEft80HPULqnr5LrgqxHXKlSJgBqGs+aE542HYcqpfiYmIQNn+dHIr
-         heuE2OvwVFSl1VyOvECgoxZAnIyHGA0SW8mWYYqOZfeD0fawsFHOeffJ7ywsJ2J/OR
-         +ihGcRqh5/1YKxv3p0mHMfcRs/3fQ1F/Mas9uT38T/t1Unyt/abYsS0Y4LlQZ3Xzs2
-         AzUsJnMc+Pc/hZDFU0h7rhsXIkBoyIRnEX2n7OCv336w+N4IhrMScjmCii8+O7QW6y
-         bjvR09A/1Df0g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B20FA609E6;
-        Fri,  5 Nov 2021 15:30:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233558AbhKEPdO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 11:33:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1636126235; x=1667662235;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=oRR20EjSccrFQYUYLWils29Cevmq6Y1DX5OtWOQacQ8=;
+  b=UL65kDo6qLRXLn7X5CWHHlJhqovVfoDTJ21kdiFPDQERZfzYjOWbQyBi
+   e7hpOhKEbfH3MCqNgcTklL6AX0KK9TaQcEPZo3tAUhrQ1hSkZ8r5ZxgvC
+   q5pGE5H0kF+9MDLh4DuB9RSivteOWUG+6EkJFCEqQMSEEipXfnAU5xfrB
+   OvvFSeC6qt7Ordngt4LGGnbg4DxDyQZ9oeV311XtzVX7ZWeCXZ6Tii9oM
+   Q1OIH6p+V1KZ9B/Y02JhkNYfly6j2xJM4JWbMYwTwCx3BK+sitO6ufFWq
+   y6dnh9BGrpJ22hyKCDoQbdbe5LYmlYsY27a9SMFpeGsr6CDtIkl+cPPMF
+   w==;
+X-IronPort-AV: E=Sophos;i="5.87,212,1631570400"; 
+   d="scan'208";a="20358797"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 05 Nov 2021 16:30:34 +0100
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Fri, 05 Nov 2021 16:30:34 +0100
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Fri, 05 Nov 2021 16:30:34 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1636126234; x=1667662234;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=oRR20EjSccrFQYUYLWils29Cevmq6Y1DX5OtWOQacQ8=;
+  b=dIY4FmAQIP9kJcFnC6SzxnNjJQ3W7+28cXoIa8bNBBbQ09kea5O7XRWv
+   UVsqD9phpbBhfvhQpSxAVIYI3Eb4zGljevgRTkthzRtvLNv4t9G4O9KTv
+   hrkY4bEg4dAbCnoxZvxaCuFZUZvnQwrL/uBj0dp5bbAa2D36o6/3vK0JT
+   TMnC/HfILiE3AIvaNqbuhjiVfvWS2rMan/OU+hxxTXzu4xCA8MM15WCrF
+   fhefjt4MBoR4TkAnp1TAFBtXf9LQB3ycS06fOnj34cuFWO865Hlm9wCp9
+   FK2TR4Cq83MPobEtVJ9A3qdzGFQF4jkfE67kcbdto2pffP0oxpauEoqvs
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.87,212,1631570400"; 
+   d="scan'208";a="20358795"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 05 Nov 2021 16:30:33 +0100
+Received: from steina-w.tq-net.de (unknown [10.123.49.12])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id AE6AC280065;
+        Fri,  5 Nov 2021 16:30:33 +0100 (CET)
+From:   Alexander Stein <alexander.stein@ew.tq-group.com>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Alexander Stein <alexander.stein@ew.tq-group.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2 0/7] Support for some TQMa8M* boards
+Date:   Fri,  5 Nov 2021 16:30:18 +0100
+Message-Id: <20211105153025.187106-1-alexander.stein@ew.tq-group.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] bpftool: Install libbpf headers for the bootstrap
- version, too
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163612620972.29979.8998296341719188720.git-patchwork-notify@kernel.org>
-Date:   Fri, 05 Nov 2021 15:30:09 +0000
-References: <20211105015813.6171-1-quentin@isovalent.com>
-In-Reply-To: <20211105015813.6171-1-quentin@isovalent.com>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        acme@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        songliubraving@fb.com, jolsa@kernel.org, namhyung@kernel.org,
-        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Thanks everyone for their review on v1!
 
-This patch was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+Changes in v2:
+* Rebased to next-20211101
+* Added Rob's Acked-By on Patch for DT bindings
+* for other changes please refer to individual patches
 
-On Fri,  5 Nov 2021 01:58:13 +0000 you wrote:
-> We recently changed bpftool's Makefile to make it install libbpf's
-> headers locally instead of pulling them from the source directory of the
-> library. Although bpftool needs two versions of libbpf, a "regular" one
-> and a "bootstrap" version, we would only install headers for the regular
-> libbpf build. Given that this build always occurs before the bootstrap
-> build when building bpftool, this is enough to ensure that the bootstrap
-> bpftool will have access to the headers exported through the regular
-> libbpf build.
-> 
-> [...]
+Note on TQMa8Mx:
+Due to CPU errata cpuidle is broken and needs to be disabled, see [1] for
+pending patch.
 
-Here is the summary with links:
-  - [bpf] bpftool: Install libbpf headers for the bootstrap version, too
-    https://git.kernel.org/bpf/bpf/c/e41ac2020bca
+This patch set adds support for the following modules:
+* TQMa8Mx
+* TQMa8MxML
+* TQMa8MxNL
 
-You are awesome, thank you!
+Each of the modules is available with different i.MX8M variants, the
+bootloader modifies the device tree and disabled paripherals which
+are not available on the actual hardware.
+
+All of them can be attached to the same mainboard MBa8Mx, although
+TQMa8MxML & TQMa8MxNL need an adapter. For that reason there is a single
+mainboard .dtsi file named mba8mx.dtsi.
+
+There is a .dtsi file for each module named imx8m?-tmqa8m*.dts.
+
+Finally there is the final .dts file which includes the mainboard and
+the attached module and contains the missing connection, prominently clk
+and pinctrl defines.
+
+[1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20211105095535.3920998-1-alexander.stein@ew.tq-group.com/
+
+Alexander Stein (7):
+  dt-bindings: arm: fsl: add TQMa8MxML boards
+  arm64: dts: freescale: add initial tree for TQMa8MQML with i.MX8MM
+  arm64: defconfig: enable drivers for TQ TQMa8MxML-MBa8Mx
+  dt-bindings: arm: fsl: add TQMa8MxNL boards
+  arm64: dts: freescale: add initial tree for TQMa8MQNL with i.MX8MN
+  dt-bindings: arm: fsl: add TQMa8Mx boards
+  arm64: dts: freescale: add initial tree for TQMa8Mx with i.MX8M
+
+ .../devicetree/bindings/arm/fsl.yaml          |  31 ++
+ arch/arm64/boot/dts/freescale/Makefile        |   3 +
+ .../dts/freescale/imx8mm-tqma8mqml-mba8mx.dts | 299 +++++++++++++
+ .../boot/dts/freescale/imx8mm-tqma8mqml.dtsi  | 353 +++++++++++++++
+ .../dts/freescale/imx8mn-tqma8mqnl-mba8mx.dts | 283 ++++++++++++
+ .../boot/dts/freescale/imx8mn-tqma8mqnl.dtsi  | 340 +++++++++++++++
+ .../dts/freescale/imx8mq-tqma8mq-mba8mx.dts   | 412 ++++++++++++++++++
+ .../boot/dts/freescale/imx8mq-tqma8mq.dtsi    | 378 ++++++++++++++++
+ arch/arm64/boot/dts/freescale/mba8mx.dtsi     | 283 ++++++++++++
+ arch/arm64/configs/defconfig                  |   7 +
+ 10 files changed, 2389 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-tqma8mqml-mba8mx.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-tqma8mqml.dtsi
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-tqma8mqnl-mba8mx.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-tqma8mqnl.dtsi
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-tqma8mq-mba8mx.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-tqma8mq.dtsi
+ create mode 100644 arch/arm64/boot/dts/freescale/mba8mx.dtsi
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
