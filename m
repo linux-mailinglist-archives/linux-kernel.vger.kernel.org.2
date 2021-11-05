@@ -2,108 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93780446112
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 028C0446150
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229500AbhKEJHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 05:07:05 -0400
-Received: from www381.your-server.de ([78.46.137.84]:53610 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhKEJHE (ORCPT
+        id S232541AbhKEJYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 05:24:03 -0400
+Received: from mail-m974.mail.163.com ([123.126.97.4]:54224 "EHLO
+        mail-m974.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229971AbhKEJYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 05:07:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=3ERJVON27xcB0z4IEBF5AHmN8Vw67kknzNO/pdOijRI=; b=ELJp80fFHYxNskFRI0kIPTceht
-        O8COvo5xQws8t3yi0rJg7S6bRFqvUPphU6d909zV0WmTztx5J9hLkfN2g0z2z0kHf9KhXUIPuzaRa
-        +kVYfQasZ0CKXzrKIhBKtft+bjp7C+1Y23B6I3kFKYuo5KM8ZlGV8jIORPHTk8WN5CtczGrCoVVsM
-        UHRjFlo0OHo1nNqkkxpjJph23lKYQHcH45RdWaxvfVq6b+8wvIf5J+pQiTNf2aYJvheO+S8VYpGcf
-        vFwfQ5SVRPwAuLzuU4J+CJImYsQ9YowLS63y0hlC99LhBShc2zLzZJKlw6UCPE8mjsRFWqV0yxHGk
-        lUz5lp5Q==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1miv93-000Gbn-G5; Fri, 05 Nov 2021 10:04:21 +0100
-Received: from [82.135.83.112] (helo=[192.168.178.20])
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1miv93-0007yJ-A7; Fri, 05 Nov 2021 10:04:21 +0100
-Subject: Re: [PATCH v7 3/3] iio: test: Add test for IIO_VAL_INT_64.
-To:     Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Vasyl.Vavrychuk@opensynergy.com, jbhayana@google.com,
-        Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAHp75Vd7Wwka37w-6QTXT9vv13bPiygKryBhQTnyvtTpCNU9qw@mail.gmail.com>
- <20211102073300.13376-1-andriy.tryshnivskyy@opensynergy.com>
- <CAHp75VfafpEBccivDRC2AVVJbZL2Kdq2KeR0yf_nwTtDTxvDkg@mail.gmail.com>
- <6d909cca-46a9-3f40-5d4d-97ef2fbe33e9@opensynergy.com>
- <0c449b88-a6fb-76ca-5c13-807f7728f1da@metafoo.de>
- <a3665295-6415-0c0b-f53d-87f658150991@opensynergy.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <61ddb1da-47eb-bbda-d6a7-98ef19fa494e@metafoo.de>
-Date:   Fri, 5 Nov 2021 10:04:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Fri, 5 Nov 2021 05:24:02 -0400
+X-Greylist: delayed 923 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Nov 2021 05:24:01 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=7z1K0
+        sPc2NW3ADD5fllk4cazdNDAgk9u0Mox0gqXvXI=; b=I6PEZtmUNKSIVb47WP2ZC
+        abrlVnNCI8qFVXRKHm6Ch/GEYcmmaJlHe16WGtFaw6th5bzXGUAH0vuDpShyDRVc
+        YHYis5eov6Uu+n1nmVhwYY5+E/mSf071qtmCbAsYlZ06FOalmP0FelURtb4IS9TM
+        7htvMGChvZR7pM1WQ+osJ0=
+Received: from fedora.lenovo.com (unknown [103.30.235.251])
+        by smtp4 (Coremail) with SMTP id HNxpCgCHLFXe84RhIsWPKQ--.3737S2;
+        Fri, 05 Nov 2021 17:05:37 +0800 (CST)
+From:   Jimmy Wang <jimmy221b@163.com>
+Cc:     jimmy221b@163.com, Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/x86: thinkpad_acpi: Add support for dual fan control
+Date:   Fri,  5 Nov 2021 17:05:28 +0800
+Message-Id: <20211105090528.39677-1-jimmy221b@163.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <a3665295-6415-0c0b-f53d-87f658150991@opensynergy.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26343/Thu Nov  4 09:22:31 2021)
+X-CM-TRANSID: HNxpCgCHLFXe84RhIsWPKQ--.3737S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrKFykZF15KFyUXw4UCrW8tFb_yoWDAFc_C3
+        Z8WFs2yF95K3909r1UKrnavry2qr9rXw1kGw47Xa43Gr95XF4xZw1jkFyfJFy3ZFnI9a4D
+        Zr15XF1jkry5tjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUi0etUUUUU==
+X-Originating-IP: [103.30.235.251]
+X-CM-SenderInfo: 5mlpz5assruqqrwthudrp/1tbiDgZCAlXl15CCBgAAs7
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/21 9:55 AM, Andriy Tryshnivskyy wrote:
->
-> On 05.11.21 10:50, Lars-Peter Clausen wrote:
->> CAUTION: This email originated from outside of the organization.
->> Do not click links or open attachments unless you recognize the 
->> sender and know the content is safe.
->>
->>
->> On 11/5/21 9:45 AM, Andriy Tryshnivskyy wrote:
->>> On 02.11.21 10:11, Andy Shevchenko wrote:
->>>
->>>> CAUTION: This email originated from outside of the organization.
->>>> Do not click links or open attachments unless you recognize the
->>>> sender and know the content is safe.
->>>>
->>>>
->>>> On Tue, Nov 2, 2021 at 9:33 AM Andriy Tryshnivskyy
->>>> <andriy.tryshnivskyy@opensynergy.com> wrote:
->>>> Now it's good with format, but you have missed the commit message.
->>>
->>> Actually commit massage contains a header only (no body message), but
->>> I can add body message too.
->>> Thanks!
->>>
->>>>
->>>>> Signed-off-by: Andriy Tryshnivskyy
->>>>> <andriy.tryshnivskyy@opensynergy.com>
->>>> ...
->>>>
->>>>> +static void iio_test_iio_format_value_integer_64(struct kunit *test)
->>>>> +{
->>>>> +       char *buf = kunit_kmalloc(test, PAGE_SIZE, GFP_KERNEL);
->>>> Shouldn't this be checked against NULL?
->>>
->>> Good question. Truly speaking I've made new test similar to other. And
->>> no other tests has a check for NULL.
->>>
->> The other tests not having it is my fault. There should be a
->> KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf) under the allocation.
->>
-> Understood. Then If you wouldn't mind I will add assert to other tests 
-> too.
+   This adds dual fan control for P1 / X1 Extreme Gen4
 
-Perfect, thanks!
+Signed-off-by: Jimmy Wang <jimmy221b@163.com>
+---
+ drivers/platform/x86/thinkpad_acpi.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index 9c632df734bb..eb201d001075 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -8766,6 +8766,7 @@ static const struct tpacpi_quirk fan_quirk_table[] __initconst = {
+ 	TPACPI_Q_LNV3('N', '2', 'E', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (1st gen) */
+ 	TPACPI_Q_LNV3('N', '2', 'O', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (2nd gen) */
+ 	TPACPI_Q_LNV3('N', '2', 'V', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (3nd gen) */
++	TPACPI_Q_LNV3('N', '4', '0', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (4nd gen) */
+ 	TPACPI_Q_LNV3('N', '3', '0', TPACPI_FAN_2CTL),	/* P15 (1st gen) / P15v (1st gen) */
+ 	TPACPI_Q_LNV3('N', '3', '2', TPACPI_FAN_2CTL),	/* X1 Carbon (9th gen) */
+ };
+-- 
+2.31.1
 
