@@ -2,220 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AB2D446A46
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 22:06:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D8E446A45
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 22:06:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233757AbhKEVJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 17:09:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60952 "EHLO
+        id S233740AbhKEVJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 17:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233365AbhKEVJQ (ORCPT
+        with ESMTP id S233365AbhKEVJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 17:09:16 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA21DC061205
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 14:06:35 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id v15so9903567ljc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 14:06:35 -0700 (PDT)
+        Fri, 5 Nov 2021 17:09:09 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2E2C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 14:06:29 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id l12so7863870qtx.7
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 14:06:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8ekPbxFkl2No7KCWi5lfhL3+5lIg3GBm30pE4uSVqWk=;
-        b=drKjIx38RYDRTnv+3mqDDC7UMt6AoIoTx/LvR2Qg/Hwm17y0c4Qt1RVXX2iJPBWouH
-         0DRxPhkT9ujCWepCtnu0jX0c/IORmiGPBH2UShbjfVWCA4k8mXA1fCO0b+ZaCr32+MCT
-         WJa95RipxyIJAqyxkgIOhOnt591K0MjY9SUQpYvv5gSyHzoWYNpDnnNO6ORNQqOgUC1p
-         r+kD5cl/zgm30utoqW+gizRu4ZB8U8sS1HeprZxPgpSLUuiUPQln99s+90oyBibcARLB
-         4NHGrtuHGk3LLM45JUv714TFAbur/tNWYiFqTk2ww9WW4XJGJNJfgX4YEJs+bHy2reoQ
-         zdOQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QDTTSkZZ6aeMgKDMehvVej6WlMp7qjF/3G5nLFNl/qU=;
+        b=kNorvtlD9JypAa5xV/UvmA+z7I912+YOxbljKXCD9fJDrGlXpMB05wQ6hzfKjGL0L+
+         3js+XYV8xx6EMJGLNk22J4CQbvR/HZk7/MuGkzV0lxTPf2yzIRVRk6i2+CeZvPm7O+N8
+         1ddPpyFcJSTCKp9xb0weAC99GikyGbeO7pITyaLlNw/1qaOStP0cvK98qv4F0kwrqbMR
+         ALo9JPETA53khbGBO7qipp2RIqLhK3tmtrTuqv6c3UJkSWDISZHGUVCwqJEfNwIEBinb
+         ebcT3AgMEuvuCYy4jqD6NfI/xLUTS+DS4T7+Fh6igDQnUXP7hGRvuM5AWNdbesvatOdH
+         5hmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8ekPbxFkl2No7KCWi5lfhL3+5lIg3GBm30pE4uSVqWk=;
-        b=5nh/yzQZm93s8clJK/wIAkr8/+ispuPqRlf0rGAXO6fsK0MAYbz7dnpVz6fa18wHBm
-         P/Hlt+cDAtf5+tdGnl3Rp1abPb6oSLWodpGeNd5ld9vCys9K3Qm0a5CIi39kt4ckdrsE
-         wq6Mxqh2nIYkZMBFGAhA3u2/KX/sLafIjNZQ6/2yGG+cKwM3y49raEWZ2a3AMqM8CiF/
-         T+yMNdHxEiDZJ7Etlvka5IHC9j1UlFEDGLtWjUcJmxmTiWXNJOgOmYqZATwrQwgF1y1/
-         nCedlksXWsQCcO0WB5YMxPpy8cgAi+ZMV/K5aRogtx4XIp81jWSK/TcOnhJmnQxRLhdp
-         GR4g==
-X-Gm-Message-State: AOAM5313G1QsxCOKgUU+J1iXx+f4kfU1Nb2gCZsF/GPhBo6wzawsFEEN
-        bSf87a1b3O38w4xwQnGRlOqjDYRZYdzaQcsLTE1yoA==
-X-Google-Smtp-Source: ABdhPJzINjsxFhV2yejBgV/znnB678jW21C1LtxUZQQl5A81L+4emVqEEGoYR0ShhMPdNTDld1bsgNhjs3mOC7/l+Do=
-X-Received: by 2002:a2e:8183:: with SMTP id e3mr29632366ljg.526.1636146393948;
- Fri, 05 Nov 2021 14:06:33 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QDTTSkZZ6aeMgKDMehvVej6WlMp7qjF/3G5nLFNl/qU=;
+        b=hKyjSKsqbvsgJaiDv4JuLPPNez534VQ1fnwNhtBxRytyEc1BxTRax+l8PW9kAIe9Jn
+         0MTSFP3vxYjrBPcBdGNMHMvz4s3jMR+JH6u06vI5dDuad2jUNB/h8iKH4Waj7hkhLYnC
+         0qvfzYTt9+IgJGKiU+T2JuyyBKmjBMtABeAfKfr/ykgYKYvacetTky6yoFPGmkwRm6c5
+         S3QvAeXG89r7N6rL680BrkBdnvjm+uiXnagrNUZc/HJFEzcH0k1/vFmGaApkxe85cnAK
+         PDTQ1ReUhjHR/GZIKL87mF504v2YgCuLff1zQhOYGVIYyfXnvFzEfHnLxhtuvB6KjnTO
+         mEPQ==
+X-Gm-Message-State: AOAM532HtIh5bXgGYyW/xlAf+1XmSyTge36BFPu6qcJBbWTSaGhZ1p/A
+        Zswk4Pz4zK5Zomosm4H7iRL6Ag==
+X-Google-Smtp-Source: ABdhPJyMiiSM65mYeDQqW5fG/Es5wLQ4mYGZRlaBhmTxH9BOURMK0zEgCVbw/+qvHB/lpXhuvIJpaA==
+X-Received: by 2002:a05:622a:60f:: with SMTP id z15mr62824804qta.286.1636146388119;
+        Fri, 05 Nov 2021 14:06:28 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id p187sm5845228qkd.101.2021.11.05.14.06.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Nov 2021 14:06:27 -0700 (PDT)
+Subject: Re: [PATCH v3 0/5] Refactor thermal pressure update to avoid code
+ duplication
+To:     Steev Klimaszewski <steev@kali.org>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
+        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        viresh.kumar@linaro.org, amitk@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        bjorn.andersson@linaro.org, agross@kernel.org
+References: <20211103161020.26714-1-lukasz.luba@arm.com>
+ <c7b526f0-2c26-0cfc-910b-3521c6a6ef51@kali.org>
+ <3cba148a-7077-7b6b-f131-dc65045aa348@arm.com>
+ <9d533b6e-a81c-e823-fa6f-61fdea92fa65@kali.org>
+ <74ea027b-b213-42b8-0f7d-275f3b84712e@linaro.org>
+ <74603569-2ff1-999e-9618-79261fdb0ee4@kali.org>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <b7e76c2a-ceac-500a-ff75-535a3f0d51d6@linaro.org>
+Date:   Fri, 5 Nov 2021 17:06:26 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <202111051833.sOedoq8J-lkp@intel.com> <YYUhzUEbK4t5/hOC@hirez.programming.kicks-ass.net>
-In-Reply-To: <YYUhzUEbK4t5/hOC@hirez.programming.kicks-ass.net>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 5 Nov 2021 14:06:22 -0700
-Message-ID: <CAKwvOdnPWrBDasA73CRZQPwPt8Bd6H6B3qWTxqWt6UkdkAo=Uw@mail.gmail.com>
-Subject: Re: [peterz-queue:x86/wip.extable 1/22] drivers/crypto/ccree/cc_driver.c:117:18:
- warning: result of comparison of constant 18446744073709551615 with
- expression of type 'typeof (_Generic((mask), char: (unsigned char)0, unsigned
- char: (unsigned char)0, signed char: (unsigned char)0, unsigned shor...
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <74603569-2ff1-999e-9618-79261fdb0ee4@kali.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 5, 2021 at 5:21 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Fri, Nov 05, 2021 at 06:17:44PM +0800, kernel test robot wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.gi=
-t x86/wip.extable
-> > head:   a4d149db054a77aa35b04bb088f749cbb9a2edea
-> > commit: 4b9e954553a4137f7504e068438851c27edc6b22 [1/22] bitfield.h: Fix=
- "type of reg too small for mask" test
-> > config: riscv-randconfig-r032-20211105 (attached as .config)
-> > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 84=
-7a6807332b13f43704327c2d30103ec0347c77)
-> > reproduce (this is a W=3D1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/s=
-bin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # install riscv cross compiling tool for clang build
-> >         # apt-get install binutils-riscv64-linux-gnu
-> >         # https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.=
-git/commit/?id=3D4b9e954553a4137f7504e068438851c27edc6b22
-> >         git remote add peterz-queue https://git.kernel.org/pub/scm/linu=
-x/kernel/git/peterz/queue.git
-> >         git fetch --no-tags peterz-queue x86/wip.extable
-> >         git checkout 4b9e954553a4137f7504e068438851c27edc6b22
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross =
-W=3D1 ARCH=3Driscv
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All warnings (new ones prefixed by >>):
-> >
-> > >> drivers/crypto/ccree/cc_driver.c:117:18: warning: result of comparis=
-on of constant 18446744073709551615 with expression of type 'typeof (_Gener=
-ic((mask), char: (unsigned char)0, unsigned char: (unsigned char)0, signed =
-char: (unsigned char)0, unsigned short: (unsigned short)0, short: (unsigned=
- short)0, unsigned int: (unsigned int)0, int: (unsigned int)0, unsigned lon=
-g: (unsigned long)0, long: (unsigned long)0, unsigned long long: (unsigned =
-long long)0, long long: (unsigned long long)0, default: (mask)))' (aka 'uns=
-igned int') is always false [-Wtautological-constant-out-of-range-compare]
-> >            cache_params |=3D FIELD_PREP(mask, val);
-> >                            ^~~~~~~~~~~~~~~~~~~~~
-> >    include/linux/bitfield.h:111:3: note: expanded from macro 'FIELD_PRE=
-P'
-> >                    __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");=
-    \
-> >                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >    include/linux/bitfield.h:68:53: note: expanded from macro '__BF_FIEL=
-D_CHECK'
-> >                    BUILD_BUG_ON_MSG(__bf_cast_unsigned(_mask, _mask) > =
-    \
-> >                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~=
-~~~~~
-> >    include/linux/build_bug.h:39:58: note: expanded from macro 'BUILD_BU=
-G_ON_MSG'
-> >    #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-> >                                        ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
-> >    include/linux/compiler_types.h:322:22: note: expanded from macro 'co=
-mpiletime_assert'
-> >            _compiletime_assert(condition, msg, __compiletime_assert_, _=
-_COUNTER__)
-> >            ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~~~
-> >    include/linux/compiler_types.h:310:23: note: expanded from macro '_c=
-ompiletime_assert'
-> >            __compiletime_assert(condition, msg, prefix, suffix)
-> >            ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >    include/linux/compiler_types.h:302:9: note: expanded from macro '__c=
-ompiletime_assert'
-> >                    if (!(condition))                                   =
-    \
-> >                          ^~~~~~~~~
->
-> I'm confused here.. the code reads:
->
->
-> #define __scalar_type_to_unsigned_cases(type)                           \
->                 unsigned type:  (unsigned type)0,                       \
->                 signed type:    (unsigned type)0
->
-> #define __unsigned_scalar_typeof(x) typeof(                             \
->                 _Generic((x),                                           \
->                         char:   (unsigned char)0,                       \
->                         __scalar_type_to_unsigned_cases(char),          \
->                         __scalar_type_to_unsigned_cases(short),         \
->                         __scalar_type_to_unsigned_cases(int),           \
->                         __scalar_type_to_unsigned_cases(long),          \
->                         __scalar_type_to_unsigned_cases(long long),     \
->                         default: (x)))
->
-> #define __bf_cast_unsigned(type, x)     ((__unsigned_scalar_typeof(type))=
-(x))
->
-> #define __BF_FIELD_CHECK(_mask, _reg, _val, _pfx)                       \
->         ({                                                              \
->                 BUILD_BUG_ON_MSG(!__builtin_constant_p(_mask),          \
->                                  _pfx "mask is not constant");          \
->                 BUILD_BUG_ON_MSG((_mask) =3D=3D 0, _pfx "mask is zero"); =
-   \
->                 BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?           \
->                                  ~((_mask) >> __bf_shf(_mask)) & (_val) :=
- 0, \
->                                  _pfx "value too large for the field"); \
->                 BUILD_BUG_ON_MSG(__bf_cast_unsigned(_mask, _mask) >     \
->                                  __bf_cast_unsigned(_reg, ~0ull),       \
->                                  _pfx "type of reg too small for mask"); =
-\
->                 __BUILD_BUG_ON_NOT_POWER_OF_2((_mask) +                 \
->                                               (1ULL << __bf_shf(_mask)));=
- \
->         })
->
-> #define FIELD_PREP(_mask, _val)                                         \
->         ({                                                              \
->                 __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");    \
->                 ((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask);   \
->         })
->
->
-> static void init_cc_cache_params(struct cc_drvdata *drvdata)
-> {
->         struct device *dev =3D drvdata_to_dev(drvdata);
->         u32 cache_params, ace_const, val, mask;
->
->         ...
->
->         mask =3D CC_GENMASK(CC_AXIM_CACHE_PARAMS_AWCACHE);        <-- *BO=
-OM*
->         cache_params &=3D ~mask;
->         cache_params |=3D FIELD_PREP(mask, val);
->
->         ...
-> }
->
-> So we're having "(unsigned int)mask > (unsigned long long)~0ull" as
-> a compile time constant input to the BUILD_BUG_ON_MSG(), and clang-14 is
-> now complaining it's a constant ?!?
-
-No, the error message (trimmed for clarity):
->> warning: result of comparison of constant 18446744073709551615  (ie ~0ul=
-l / ULLONG_MAX) with expression of type ... 'unsigned int') is always false=
- [-Wtautological-constant-out-of-range-compare]
-
-Is `val` an int, but should be a long long? We're comparing if an
-unsigned int is greater than ULLONG_MAX, which is impossible (or
-rather a tautology; something that's always either true or false, in
-this case false).  Or maybe mask and reg are different widths?
-
->
-> It is that by design.
->
 
 
---=20
-Thanks,
-~Nick Desaulniers
+On 11/5/21 3:51 PM, Steev Klimaszewski wrote:
+> 
+> On 11/5/21 2:18 PM, Thara Gopinath wrote:
+>>
+>>
+>> On 11/5/21 1:33 PM, Steev Klimaszewski wrote:
+>>> Hi,
+>>>
+>>> On 11/5/21 11:26 AM, Lukasz Luba wrote:
+>>>> Hi Steev,
+>>>>
+>>>> On 11/5/21 3:39 PM, Steev Klimaszewski wrote:
+>>>>> Hi Lukasz,
+>>>>>
+>>>> [snip]
+>> Hi Steve,
+>>
+>> Does your system have enough load to hit the boost frequencies ? I 
+>> don't think this patch should affect hitting boost frequencies as 
+>> there is no error being returned from topology_update_thermal_pressure.
+>>
+>> The warning you are getting is because you have boost frequency 
+>> enabled and IIUC lmh enabled and thermal pressure framework bails out 
+>> due to boost_frequency being greater than what is available in per_cpu 
+>> freq_factor. This is because we do not recalculate freq_factor every 
+>> time boost is enabled / disabled. IIRC there were some discussions 
+>> around rebuilding scheduler domains and capacity with user space 
+>> changes to max frequency but it has never proceeded much. Till that 
+>> point, I think the right way, is to check whether the new capcity 
+>> exceeds the max_capacity of the cpu and if yes use max_capacity in 
+>> lieu of new_capacity to calculate thermal pressure.
+>>
+> Hi Thara,
+> 
+> I should definitely be able to push it to 2.96GHz, however I'm simply 
+> not getting it at all with these patches applied. >
+> So, I'm currently compiling multiple applications - alacritty 
+> (https://github.com/alacritty/alacritty), and zellij 
+> (https://github.com/zellij-org/zellij), as well as running pixz on a 
+> 5.1GB file to compress it, and throwing in cpuburn-a53 
+> (https://github.com/ssvb/cpuburn-arm) and I'm simply not getting 2.96GHz 
+> at all.  Ever.  I don't normally try to push it that high, but I wanted 
+> to see if we could ever hit it (the system was also never going above 86C)
+
+Hi,
+
+So IIUC the below logs correctly, you are never hitting boost frequency 
+(with or without this patch series). Is that correct ?
+
+w.r.t temperature , how are you measuring it? Do you have LMh enabled or 
+are you using tsens to mitigate cpu temperature ?
+
+-- 
+Warm Regards
+Thara (She/Her/Hers)
+> 
+> analyzing CPU 4:
+>    driver: qcom-cpufreq-hw
+>    CPUs which run at the same hardware frequency: 4 5 6 7
+>    CPUs which need to have their frequency coordinated by software: 4 5 6 7
+>    maximum transition latency: 4294.55 ms.
+>    hardware limits: 826 MHz - 2.96 GHz
+>    available frequency steps: 826 MHz, 902 MHz, 979 MHz, 1.06 GHz, 1.21 
+> GHz, 1.29 GHz, 1.36 GHz, 1.46 GHz, 1.54 GHz, 1.61 GHz, 1.69 GHz, 1.77 
+> GHz, 1.84 GHz, 1.92 GHz, 2.00 GHz, 2.09 GHz, 2.17 GHz, 2.25 GHz, 2.32 
+> GHz, 2.40 GHz, 2.48 GHz, 2.55 GHz, 2.65 GHz, 2.75 GHz, 2.84 GHz
+>    available cpufreq governors: ondemand, conservative, powersave, 
+> userspace, performance, schedutil
+>    current policy: frequency should be within 826 MHz and 2.84 GHz.
+>                    The governor "schedutil" may decide which speed to use
+>                    within this range.
+>    current CPU frequency is 2.84 GHz.
+>    cpufreq stats: 826 MHz:54.84%, 902 MHz:0.02%, 979 MHz:0.02%, 1.06 
+> GHz:0.02%, 1.21 GHz:0.08%, 1.29 GHz:0.07%, 1.36 GHz:0.09%, 1.46 
+> GHz:0.04%, 1.54 GHz:0.02%, 1.61 GHz:0.02%, 1.69 GHz:0.02%, 1.77 
+> GHz:0.13%, 1.84 GHz:0.04%, 1.92 GHz:0.04%, 2.00 GHz:0.02%, 2.09 
+> GHz:0.03%, 2.17 GHz:0.02%, 2.25 GHz:0.02%, 2.32 GHz:0.01%, 2.40 
+> GHz:0.02%, 2.48 GHz:0.02%, 2.55 GHz:0.02%, 2.65 GHz:0.02%, 2.75 
+> GHz:0.02%, 2.84 GHz:44.38%, 2.96 GHz:0.00%  (8066)
+> analyzing CPU 5:
+>    driver: qcom-cpufreq-hw
+>    CPUs which run at the same hardware frequency: 4 5 6 7
+>    CPUs which need to have their frequency coordinated by software: 4 5 6 7
+>    maximum transition latency: 4294.55 ms.
+>    hardware limits: 826 MHz - 2.96 GHz
+>    available frequency steps: 826 MHz, 902 MHz, 979 MHz, 1.06 GHz, 1.21 
+> GHz, 1.29 GHz, 1.36 GHz, 1.46 GHz, 1.54 GHz, 1.61 GHz, 1.69 GHz, 1.77 
+> GHz, 1.84 GHz, 1.92 GHz, 2.00 GHz, 2.09 GHz, 2.17 GHz, 2.25 GHz, 2.32 
+> GHz, 2.40 GHz, 2.48 GHz, 2.55 GHz, 2.65 GHz, 2.75 GHz, 2.84 GHz
+>    available cpufreq governors: ondemand, conservative, powersave, 
+> userspace, performance, schedutil
+>    current policy: frequency should be within 826 MHz and 2.84 GHz.
+>                    The governor "schedutil" may decide which speed to use
+>                    within this range.
+>    current CPU frequency is 2.84 GHz.
+>    cpufreq stats: 826 MHz:54.84%, 902 MHz:0.02%, 979 MHz:0.02%, 1.06 
+> GHz:0.02%, 1.21 GHz:0.08%, 1.29 GHz:0.07%, 1.36 GHz:0.09%, 1.46 
+> GHz:0.04%, 1.54 GHz:0.02%, 1.61 GHz:0.02%, 1.69 GHz:0.02%, 1.77 
+> GHz:0.13%, 1.84 GHz:0.04%, 1.92 GHz:0.04%, 2.00 GHz:0.02%, 2.09 
+> GHz:0.03%, 2.17 GHz:0.02%, 2.25 GHz:0.02%, 2.32 GHz:0.01%, 2.40 
+> GHz:0.02%, 2.48 GHz:0.02%, 2.55 GHz:0.02%, 2.65 GHz:0.02%, 2.75 
+> GHz:0.02%, 2.84 GHz:44.38%, 2.96 GHz:0.00%  (8066)
+> analyzing CPU 6:
+>    driver: qcom-cpufreq-hw
+>    CPUs which run at the same hardware frequency: 4 5 6 7
+>    CPUs which need to have their frequency coordinated by software: 4 5 6 7
+>    maximum transition latency: 4294.55 ms.
+>    hardware limits: 826 MHz - 2.96 GHz
+>    available frequency steps: 826 MHz, 902 MHz, 979 MHz, 1.06 GHz, 1.21 
+> GHz, 1.29 GHz, 1.36 GHz, 1.46 GHz, 1.54 GHz, 1.61 GHz, 1.69 GHz, 1.77 
+> GHz, 1.84 GHz, 1.92 GHz, 2.00 GHz, 2.09 GHz, 2.17 GHz, 2.25 GHz, 2.32 
+> GHz, 2.40 GHz, 2.48 GHz, 2.55 GHz, 2.65 GHz, 2.75 GHz, 2.84 GHz
+>    available cpufreq governors: ondemand, conservative, powersave, 
+> userspace, performance, schedutil
+>    current policy: frequency should be within 826 MHz and 2.84 GHz.
+>                    The governor "schedutil" may decide which speed to use
+>                    within this range.
+>    current CPU frequency is 2.84 GHz.
+>    cpufreq stats: 826 MHz:54.84%, 902 MHz:0.02%, 979 MHz:0.02%, 1.06 
+> GHz:0.02%, 1.21 GHz:0.08%, 1.29 GHz:0.07%, 1.36 GHz:0.09%, 1.46 
+> GHz:0.04%, 1.54 GHz:0.02%, 1.61 GHz:0.02%, 1.69 GHz:0.02%, 1.77 
+> GHz:0.13%, 1.84 GHz:0.04%, 1.92 GHz:0.04%, 2.00 GHz:0.02%, 2.09 
+> GHz:0.03%, 2.17 GHz:0.02%, 2.25 GHz:0.02%, 2.32 GHz:0.01%, 2.40 
+> GHz:0.02%, 2.48 GHz:0.02%, 2.55 GHz:0.02%, 2.65 GHz:0.02%, 2.75 
+> GHz:0.02%, 2.84 GHz:44.38%, 2.96 GHz:0.00%  (8066)
+> analyzing CPU 7:
+>    driver: qcom-cpufreq-hw
+>    CPUs which run at the same hardware frequency: 4 5 6 7
+>    CPUs which need to have their frequency coordinated by software: 4 5 6 7
+>    maximum transition latency: 4294.55 ms.
+>    hardware limits: 826 MHz - 2.96 GHz
+>    available frequency steps: 826 MHz, 902 MHz, 979 MHz, 1.06 GHz, 1.21 
+> GHz, 1.29 GHz, 1.36 GHz, 1.46 GHz, 1.54 GHz, 1.61 GHz, 1.69 GHz, 1.77 
+> GHz, 1.84 GHz, 1.92 GHz, 2.00 GHz, 2.09 GHz, 2.17 GHz, 2.25 GHz, 2.32 
+> GHz, 2.40 GHz, 2.48 GHz, 2.55 GHz, 2.65 GHz, 2.75 GHz, 2.84 GHz
+>    available cpufreq governors: ondemand, conservative, powersave, 
+> userspace, performance, schedutil
+>    current policy: frequency should be within 826 MHz and 2.84 GHz.
+>                    The governor "schedutil" may decide which speed to use
+>                    within this range.
+>    current CPU frequency is 2.84 GHz.
+>    cpufreq stats: 826 MHz:54.84%, 902 MHz:0.02%, 979 MHz:0.02%, 1.06 
+> GHz:0.02%, 1.21 GHz:0.08%, 1.29 GHz:0.07%, 1.36 GHz:0.09%, 1.46 
+> GHz:0.04%, 1.54 GHz:0.02%, 1.61 GHz:0.02%, 1.69 GHz:0.02%, 1.77 
+> GHz:0.13%, 1.84 GHz:0.04%, 1.92 GHz:0.04%, 2.00 GHz:0.02%, 2.09 
+> GHz:0.03%, 2.17 GHz:0.02%, 2.25 GHz:0.02%, 2.32 GHz:0.01%, 2.40 
+> GHz:0.02%, 2.48 GHz:0.02%, 2.55 GHz:0.02%, 2.65 GHz:0.02%, 2.75 
+> GHz:0.02%, 2.84 GHz:44.38%, 2.96 GHz:0.00%  (8066)
+> 
+> 
+> 
+> After removing this patchset, and rebooting and just compiling zellij:
+> 
+> analyzing CPU 4:
+>    driver: qcom-cpufreq-hw
+>    CPUs which run at the same hardware frequency: 4 5 6 7
+>    CPUs which need to have their frequency coordinated by software: 4 5 6 7
+>    maximum transition latency: 4294.55 ms.
+>    hardware limits: 826 MHz - 2.96 GHz
+>    available frequency steps: 826 MHz, 902 MHz, 979 MHz, 1.06 GHz, 1.21 
+> GHz, 1.29 GHz, 1.36 GHz, 1.46 GHz, 1.54 GHz, 1.61 GHz, 1.69 GHz, 1.77 
+> GHz, 1.84 GHz, 1.92 GHz, 2.00 GHz, 2.09 GHz, 2.17 GHz, 2.25 GHz, 2.32 
+> GHz, 2.40 GHz, 2.48 GHz, 2.55 GHz, 2.65 GHz, 2.75 GHz, 2.84 GHz
+>    available cpufreq governors: ondemand, conservative, powersave, 
+> userspace, performance, schedutil
+>    current policy: frequency should be within 826 MHz and 2.84 GHz.
+>                    The governor "schedutil" may decide which speed to use
+>                    within this range.
+>    current CPU frequency is 2.84 GHz.
+>    cpufreq stats: 826 MHz:16.01%, 902 MHz:0.08%, 979 MHz:0.05%, 1.06 
+> GHz:0.06%, 1.21 GHz:0.37%, 1.29 GHz:0.17%, 1.36 GHz:0.15%, 1.46 
+> GHz:0.20%, 1.54 GHz:0.18%, 1.61 GHz:0.21%, 1.69 GHz:0.17%, 1.77 
+> GHz:0.22%, 1.84 GHz:0.32%, 1.92 GHz:0.37%, 2.00 GHz:0.22%, 2.09 
+> GHz:0.20%, 2.17 GHz:0.20%, 2.25 GHz:0.19%, 2.32 GHz:0.19%, 2.40 
+> GHz:0.21%, 2.48 GHz:0.18%, 2.55 GHz:0.18%, 2.65 GHz:0.21%, 2.75 
+> GHz:0.16%, 2.84 GHz:79.49%, 2.96 GHz:0.03%  (5315)
+> analyzing CPU 5:
+>    driver: qcom-cpufreq-hw
+>    CPUs which run at the same hardware frequency: 4 5 6 7
+>    CPUs which need to have their frequency coordinated by software: 4 5 6 7
+>    maximum transition latency: 4294.55 ms.
+>    hardware limits: 826 MHz - 2.96 GHz
+>    available frequency steps: 826 MHz, 902 MHz, 979 MHz, 1.06 GHz, 1.21 
+> GHz, 1.29 GHz, 1.36 GHz, 1.46 GHz, 1.54 GHz, 1.61 GHz, 1.69 GHz, 1.77 
+> GHz, 1.84 GHz, 1.92 GHz, 2.00 GHz, 2.09 GHz, 2.17 GHz, 2.25 GHz, 2.32 
+> GHz, 2.40 GHz, 2.48 GHz, 2.55 GHz, 2.65 GHz, 2.75 GHz, 2.84 GHz
+>    available cpufreq governors: ondemand, conservative, powersave, 
+> userspace, performance, schedutil
+>    current policy: frequency should be within 826 MHz and 2.84 GHz.
+>                    The governor "schedutil" may decide which speed to use
+>                    within this range.
+>    current CPU frequency is 2.84 GHz.
+>    cpufreq stats: 826 MHz:16.01%, 902 MHz:0.08%, 979 MHz:0.05%, 1.06 
+> GHz:0.06%, 1.21 GHz:0.37%, 1.29 GHz:0.17%, 1.36 GHz:0.15%, 1.46 
+> GHz:0.20%, 1.54 GHz:0.18%, 1.61 GHz:0.21%, 1.69 GHz:0.17%, 1.77 
+> GHz:0.22%, 1.84 GHz:0.32%, 1.92 GHz:0.37%, 2.00 GHz:0.22%, 2.09 
+> GHz:0.20%, 2.17 GHz:0.20%, 2.25 GHz:0.19%, 2.32 GHz:0.19%, 2.40 
+> GHz:0.21%, 2.48 GHz:0.18%, 2.55 GHz:0.18%, 2.65 GHz:0.21%, 2.75 
+> GHz:0.16%, 2.84 GHz:79.49%, 2.96 GHz:0.03%  (5315)
+> analyzing CPU 6:
+>    driver: qcom-cpufreq-hw
+>    CPUs which run at the same hardware frequency: 4 5 6 7
+>    CPUs which need to have their frequency coordinated by software: 4 5 6 7
+>    maximum transition latency: 4294.55 ms.
+>    hardware limits: 826 MHz - 2.96 GHz
+>    available frequency steps: 826 MHz, 902 MHz, 979 MHz, 1.06 GHz, 1.21 
+> GHz, 1.29 GHz, 1.36 GHz, 1.46 GHz, 1.54 GHz, 1.61 GHz, 1.69 GHz, 1.77 
+> GHz, 1.84 GHz, 1.92 GHz, 2.00 GHz, 2.09 GHz, 2.17 GHz, 2.25 GHz, 2.32 
+> GHz, 2.40 GHz, 2.48 GHz, 2.55 GHz, 2.65 GHz, 2.75 GHz, 2.84 GHz
+>    available cpufreq governors: ondemand, conservative, powersave, 
+> userspace, performance, schedutil
+>    current policy: frequency should be within 826 MHz and 2.84 GHz.
+>                    The governor "schedutil" may decide which speed to use
+>                    within this range.
+>    current CPU frequency is 2.84 GHz.
+>    cpufreq stats: 826 MHz:16.01%, 902 MHz:0.08%, 979 MHz:0.05%, 1.06 
+> GHz:0.06%, 1.21 GHz:0.37%, 1.29 GHz:0.17%, 1.36 GHz:0.15%, 1.46 
+> GHz:0.20%, 1.54 GHz:0.18%, 1.61 GHz:0.21%, 1.69 GHz:0.17%, 1.77 
+> GHz:0.22%, 1.84 GHz:0.32%, 1.92 GHz:0.37%, 2.00 GHz:0.22%, 2.09 
+> GHz:0.20%, 2.17 GHz:0.20%, 2.25 GHz:0.19%, 2.32 GHz:0.19%, 2.40 
+> GHz:0.21%, 2.48 GHz:0.18%, 2.55 GHz:0.18%, 2.65 GHz:0.21%, 2.75 
+> GHz:0.16%, 2.84 GHz:79.49%, 2.96 GHz:0.03%  (5315)
+> analyzing CPU 7:
+>    driver: qcom-cpufreq-hw
+>    CPUs which run at the same hardware frequency: 4 5 6 7
+>    CPUs which need to have their frequency coordinated by software: 4 5 6 7
+>    maximum transition latency: 4294.55 ms.
+>    hardware limits: 826 MHz - 2.96 GHz
+>    available frequency steps: 826 MHz, 902 MHz, 979 MHz, 1.06 GHz, 1.21 
+> GHz, 1.29 GHz, 1.36 GHz, 1.46 GHz, 1.54 GHz, 1.61 GHz, 1.69 GHz, 1.77 
+> GHz, 1.84 GHz, 1.92 GHz, 2.00 GHz, 2.09 GHz, 2.17 GHz, 2.25 GHz, 2.32 
+> GHz, 2.40 GHz, 2.48 GHz, 2.55 GHz, 2.65 GHz, 2.75 GHz, 2.84 GHz
+>    available cpufreq governors: ondemand, conservative, powersave, 
+> userspace, performance, schedutil
+>    current policy: frequency should be within 826 MHz and 2.84 GHz.
+>                    The governor "schedutil" may decide which speed to use
+>                    within this range.
+>    current CPU frequency is 2.84 GHz.
+>    cpufreq stats: 826 MHz:16.01%, 902 MHz:0.08%, 979 MHz:0.05%, 1.06 
+> GHz:0.06%, 1.21 GHz:0.37%, 1.29 GHz:0.17%, 1.36 GHz:0.15%, 1.46 
+> GHz:0.20%, 1.54 GHz:0.18%, 1.61 GHz:0.21%, 1.69 GHz:0.17%, 1.77 
+> GHz:0.22%, 1.84 GHz:0.32%, 1.92 GHz:0.37%, 2.00 GHz:0.22%, 2.09 
+> GHz:0.20%, 2.17 GHz:0.20%, 2.25 GHz:0.19%, 2.32 GHz:0.19%, 2.40 
+> GHz:0.21%, 2.48 GHz:0.18%, 2.55 GHz:0.18%, 2.65 GHz:0.21%, 2.75 
+> GHz:0.16%, 2.84 GHz:79.49%, 2.96 GHz:0.03%  (5315)
+> 
+> 
+>>>
+>>> Thank you for the fast response!
+>>>
+>>> -- steev
+>>>
+>>
+
