@@ -2,92 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A23844624D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78C7344624E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbhKEKnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 06:43:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhKEKnJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 06:43:09 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7CBC061203
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 03:40:27 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1miwdy-0006fX-CC; Fri, 05 Nov 2021 11:40:22 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1miwdw-0006uo-7K; Fri, 05 Nov 2021 11:40:20 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1miwdw-0002qU-5y; Fri, 05 Nov 2021 11:40:20 +0100
-Date:   Fri, 5 Nov 2021 11:40:17 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     =?utf-8?B?TWHDrXJh?= Canal <maira.canal@usp.br>
-Cc:     daniel.thompson@linaro.org, lee.jones@linaro.org,
-        jingoohan1@gmail.com, thierry.reding@gmail.com,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v6] backlight: lp855x: Switch to atomic PWM API
-Message-ID: <20211105104017.65ysrdy5nzccfzmo@pengutronix.de>
-References: <YYQfThRqabp4A7Dz@fedora>
+        id S230227AbhKEKnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 06:43:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:58094 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229500AbhKEKnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 06:43:42 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D1B121FB;
+        Fri,  5 Nov 2021 03:41:02 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.196.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0E5023F7B4;
+        Fri,  5 Nov 2021 03:41:01 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH] sched: Tweak default dynamic preempt mode selection
+Date:   Fri,  5 Nov 2021 10:40:35 +0000
+Message-Id: <20211105104035.3112162-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ci2ykdunk5cwiced"
-Content-Disposition: inline
-In-Reply-To: <YYQfThRqabp4A7Dz@fedora>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit c597bfddc9e9 ("sched: Provide Kconfig support for default dynamic
+preempt mode") changed the selectable config names for the preemption
+model. This means a config file must now select
 
---ci2ykdunk5cwiced
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  CONFIG_PREEMPT_BEHAVIOUR=y
 
-Hello,
+rather than
 
-On Thu, Nov 04, 2021 at 02:58:38PM -0300, Ma=EDra Canal wrote:
-> Remove legacy PWM interface (pwm_config, pwm_enable, pwm_disable) and
-> replace it for the atomic PWM API.
->=20
-> Signed-off-by: Ma=EDra Canal <maira.canal@usp.br>
+  CONFIG_PREEMPT=y
 
-LGTM,
+to get a preemptible kernel. This means all arch config files need to be
+updated - right now arm64 defconfig selects CONFIG_PREEMPT=y but ends up
+with CONFIG_PREEMPT_NONE_BEHAVIOUR=y.
 
-Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+Instead, have CONFIG_*PREEMPT be the selectable configs again, and make
+them select their _BEHAVIOUR equivalent if CONFIG_PREEMPT_DYNAMIC is set.
 
-Thanks
-Uwe
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+---
+ kernel/Kconfig.preempt | 36 ++++++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
+index 60f1bfc3c7b2..25e8d6a3d9fa 100644
+--- a/kernel/Kconfig.preempt
++++ b/kernel/Kconfig.preempt
+@@ -1,12 +1,21 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ 
++config PREEMPT_NONE_BEHAVIOUR
++	bool
++
++config PREEMPT_VOLUNTARY_BEHAVIOUR
++	bool
++
++config PREEMPT_BEHAVIOUR
++	bool
++
+ choice
+ 	prompt "Preemption Model"
+-	default PREEMPT_NONE_BEHAVIOUR
++	default PREEMPT_NONE
+ 
+-config PREEMPT_NONE_BEHAVIOUR
++config PREEMPT_NONE
+ 	bool "No Forced Preemption (Server)"
+-	select PREEMPT_NONE if !PREEMPT_DYNAMIC
++	select PREEMPT_NONE_BEHAVIOUR if PREEMPT_DYNAMIC
+ 	help
+ 	  This is the traditional Linux preemption model, geared towards
+ 	  throughput. It will still provide good latencies most of the
+@@ -18,10 +27,10 @@ config PREEMPT_NONE_BEHAVIOUR
+ 	  raw processing power of the kernel, irrespective of scheduling
+ 	  latencies.
+ 
+-config PREEMPT_VOLUNTARY_BEHAVIOUR
++config PREEMPT_VOLUNTARY
+ 	bool "Voluntary Kernel Preemption (Desktop)"
+ 	depends on !ARCH_NO_PREEMPT
+-	select PREEMPT_VOLUNTARY if !PREEMPT_DYNAMIC
++	select PREEMPT_VOLUNTARY_BEHAVIOUR if PREEMPT_DYNAMIC
+ 	help
+ 	  This option reduces the latency of the kernel by adding more
+ 	  "explicit preemption points" to the kernel code. These new
+@@ -37,10 +46,12 @@ config PREEMPT_VOLUNTARY_BEHAVIOUR
+ 
+ 	  Select this if you are building a kernel for a desktop system.
+ 
+-config PREEMPT_BEHAVIOUR
++config PREEMPT
+ 	bool "Preemptible Kernel (Low-Latency Desktop)"
+ 	depends on !ARCH_NO_PREEMPT
+-	select PREEMPT
++	select PREEMPTION
++	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
++	select PREEMPT_BEHAVIOUR if PREEMPT_DYNAMIC
+ 	help
+ 	  This option reduces the latency of the kernel by making
+ 	  all kernel code (that is not executing in a critical section)
+@@ -75,17 +86,6 @@ config PREEMPT_RT
+ 
+ endchoice
+ 
+-config PREEMPT_NONE
+-	bool
+-
+-config PREEMPT_VOLUNTARY
+-	bool
+-
+-config PREEMPT
+-	bool
+-	select PREEMPTION
+-	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
+-
+ config PREEMPT_COUNT
+        bool
+ 
+-- 
+2.25.1
 
---ci2ykdunk5cwiced
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGFCg4ACgkQwfwUeK3K
-7AkWNQf/SKHSeiYd9w//qWXwmgc6r1QNVz5DIhFauWP9fpTyPfv4KUilZmt18t7E
-iN+Z/4YSC+8LUj88zqTBYawZoE+DkluxSa5eVq6Uis3yynM5eEfVJVU4yyBdNJ+B
-cEr3NAK0sLb49ZenYACy0MImHiDFSjTI7OPu/RBknIHsD2doU/N6kYbBI0ZxCPw/
-OXbO7xH/4VMms11B+CLX6usMMh8e/yRGvVBN/y3OrjY2dY1Pl8yzKxV738slKkGi
-w2Bn0Zb5pDN+fVJVUBK7mUAzp3MjA3t8QQL0L4TtJ6nvhpOWvqEGC8rVMeVfDebW
-PwQqcIYSc3hRkYdQqaNkC6WwMWIfxg==
-=ggPo
------END PGP SIGNATURE-----
-
---ci2ykdunk5cwiced--
