@@ -2,125 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22DA44468D1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 20:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C73304468F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 20:26:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233280AbhKETWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 15:22:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
+        id S233332AbhKET3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 15:29:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232647AbhKETWC (ORCPT
+        with ESMTP id S230318AbhKET3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 15:22:02 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C229C061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 12:19:22 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id v23so1745740pjr.5
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 12:19:22 -0700 (PDT)
+        Fri, 5 Nov 2021 15:29:31 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FA9C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 12:26:52 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id q203so11771320iod.12
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 12:26:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1D403wDZlwgRv4lGaRdAf+80WasZvx7ixzH/KrjC85Y=;
-        b=jkQC9cTNktZNdwl5hOjJCP7ahZDgZeinNX+ZQU4ir/wEOnKOA8kYL5EtPOEmTPWe8X
-         OC/VBOkhDygCDZnmjYoAdkrQdEid7lis7jDvxwZLDCNY6DNAmv+pFfFtAlrem8tI8rt1
-         Nzv1AD/TyrffOB7zWvXybhz/Or+X7crRjdVImGzkkFO6QYtwCr7/t6FtdwCrynzhPQJl
-         1efE0b5d/ULvJeVqBASsdP9ILTWkipPUxccpf9fCX6k6JBNFpchFulpx7xwDnQUVKE40
-         /oDuPZVlynSQcccXeFHni45hfGjAheTazyMfE/RuC+MkFnerZs8JMlsURZy/oVFoF7eC
-         IuZw==
+        bh=qRP0k6J60c+VRwgJP2pgOOfkoTqAwQ9aAbOh9TWNhbk=;
+        b=KR6zp2+8oFmAu3cr0wq4MJ/cHADZX4KGo1aKqYbpjcyliQWXOf7HRHwwq+7lFNnzh1
+         jh1P1KFFeoQ7NgAb8nhsV/q1cTjiLjkq6g4fP4HaXi8ZR9FelHeYOzXQGPLPpcsEI49X
+         8GqFqdahIX7tn4KItYhNUdx58omiOi5iH4X35gOLIoGiM1tlj/ffYaaYHYkuVem9In36
+         IcUPcVj4mllHsZQbj8IE0UFEfsEhNngRqg1Y7s/1rRYNFwp4CJAbpTOQpsxcP2Xkx2yf
+         fU+xPjP408mBfFKRaKR9HEyhukNjG+vlCnY/NHJfLrNUKgP3IRKeVrHJNBXeWU6xRwoH
+         cccg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1D403wDZlwgRv4lGaRdAf+80WasZvx7ixzH/KrjC85Y=;
-        b=QGgBY/c0obQq91z7rC/42QFKbuGM+FRlqcK/ijQALGKitm6vBY2wn2U4gdYyZbgagX
-         /VszJ48fTQY00zoQQM6yV1SUlLRecwssUTiEgfaT+dc40FSvlI+OM2aDlVI5jH/dqMJe
-         TRUjQ2D1XDzc9hslD4KYlx25omE0OOQumTJhTq8poAztdtoNBV/4zPM/s5IOBdydIXwt
-         ifHH17I9BwAW+oXXibGmzcAkvjjRXP0IGEryXp/obWgHnnoWBbJopz53nJzykZej/X0u
-         S+4Kv7Okmk5Sv41rQIQg0E8mwJmdXZyf3vb/BmSB3Ssd2M9tEpFqWvRKFLSyRhkEEk+m
-         lnTg==
-X-Gm-Message-State: AOAM531NDOoLSPMAjZ6Qc+GNf6hgVVqxCBNoRhIfwd22yPl/0xXU3EVK
-        4XcKvsdpgdtLrxukhvprACs=
-X-Google-Smtp-Source: ABdhPJzh9VGTe/XQrZFrwlxzu2jcl3AdE6vZDahyENl8PiEDmtObiMikYgfzQXIFPgUY975yvePgqg==
-X-Received: by 2002:a17:90a:ad47:: with SMTP id w7mr31750914pjv.16.1636139961907;
-        Fri, 05 Nov 2021 12:19:21 -0700 (PDT)
-Received: from octofox.hsd1.ca.comcast.net ([2601:641:401:1d20:f835:72eb:3372:626f])
-        by smtp.gmail.com with ESMTPSA id 8sm10112759pjt.46.2021.11.05.12.19.20
+        bh=qRP0k6J60c+VRwgJP2pgOOfkoTqAwQ9aAbOh9TWNhbk=;
+        b=MUFDpra7JNEvo9m0cmXln9pxM1pUGDczzhpWu8o8V0kQXiZWVLBDecHqqoeIrqHvWg
+         xgW3l9cytJURPemug7Yiywwr0U17iab2ojT/LQ7ol3cUR7ec7hfVnH6kfhRJhzPdmz+Q
+         Oaqq2N9juWsyv8ZBjQ9uXo8jqRckXxCMcN6l/LEmUAWFprz8CwpJtVyGePS8RcGq1CCe
+         Q/pQizkF4oMBsMd4lvIhilXctk4MfIPpQ1ZWmXTzKdFNX0w1JnM0lWZEpyQCMuwbmKFF
+         QPfj/dZTjwdlkNPYMRuS4UItZqf46ork2a3/+h0aqrYURQNlOupIbfXFbagruvhaLd6X
+         wquQ==
+X-Gm-Message-State: AOAM5312qKOfclQzvYj4N5O5L4yJ4z+O8tn4M2rFly6ubID8cZMF1Wto
+        QW8UQLHQUq+2TVbmROa5Lj8=
+X-Google-Smtp-Source: ABdhPJzGjY79lwbH9Wx5dRR19O6yLjk08RQIKZHczVQG6f+Nm3kjDuEs34bbOyHLH/VhcPf2yLM56w==
+X-Received: by 2002:a05:6638:2045:: with SMTP id t5mr10875675jaj.127.1636140411193;
+        Fri, 05 Nov 2021 12:26:51 -0700 (PDT)
+Received: from samwise.. (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
+        by smtp.googlemail.com with ESMTPSA id l18sm4338617iob.17.2021.11.05.12.26.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 12:19:21 -0700 (PDT)
-From:   Max Filippov <jcmvbkbc@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PULL 00/10] xtensa updates for v5.16
-Date:   Fri,  5 Nov 2021 12:19:05 -0700
-Message-Id: <20211105191905.7979-1-jcmvbkbc@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 05 Nov 2021 12:26:50 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com, sean@poorly.run,
+        daniel.vetter@ffwll.ch, seanpaul@chromium.org, lyude@redhat.com,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+Cc:     Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH v10 00/10] use DYNAMIC_DEBUG to implement DRM.debug & DRM.trace
+Date:   Fri,  5 Nov 2021 13:26:27 -0600
+Message-Id: <20211105192637.2370737-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Jason, Greg, DRM-everyone,
 
-please pull the following Xtensa architecture updates for v5.16:
+This patchset has 3 separate but related parts:
 
-The following changes since commit 519d81956ee277b4419c723adfb154603c2565ba:
+1. DEFINE_DYNAMIC_DEBUG_BITGRPS [patch 1/10]
 
-  Linux 5.15-rc6 (2021-10-17 20:00:13 -1000)
+   Declares DRM.debug style bitmap, bits control pr_debugs by matching formats
+   Adds callback to translate bits to $cmd > dynamic_debug/control
+   This could obsolete EXPORT(dynamic_debug_exec_queries) not included.
 
-are available in the Git repository at:
+   /* anticipated_usage */
+   static struct dyndbg_desc drm_categories_map[] = {
+   	  [0] = { DRM_DBG_CAT_CORE },
+	  [1] = { DRM_DBG_CAT_DRIVER },
+	  [2] = { DRM_DBG_CAT_KMS },
+	  [3] = { DRM_DBG_CAT_PRIME }, ... };
 
-  git://github.com/jcmvbkbc/linux-xtensa.git tags/xtensa-20211105
+   DEFINE_DYNAMIC_DEBUG_BITGRPS(debug, __drm_debug,
+				" bits control drm.debug categories ",
+				drm_categories_map);
 
-for you to fetch changes up to bd47cdb78997f83bd170c389ef59de9eec65976a:
+   Please consider this patch for -next:
+   - new interface, new code, no users to break
+   - allows DRM folks to consider in earnest.
+   - api bikeshedding to do ?
+     struct dyndbg_desc isnt that great a name, others too probably.
 
-  xtensa: move section symbols to asm/sections.h (2021-10-18 22:19:35 -0700)
+2. use (1) to reimplement drm.debug [patches 3-7]:
 
-----------------------------------------------------------------
-Xtensa updates for v5.16
+   1st in amdgpu & i915 to control existing pr_debugs by their formats
+   then in drm-print, for all drm.debug API users
+   POC for (1)
+   avoids drm_debug_enabled(), gives NOOP savings & new flexibility.
+   changes drm.debug categories from enum to format-prefix-string
+   alters in-log format to include the format-prefix-string
+   Daniel Vetter liked this at -v3
+   https://lore.kernel.org/lkml/YPbPvm%2FxcBlTK1wq@phenom.ffwll.local/
+   Im sure Ive missed stuff.
+   
+3. separately, Sean Paul proposed drm.trace to mirror drm.debug to tracefs
+   https://patchwork.freedesktop.org/series/78133/
 
-- add support for xtensa cores witout windowed registers option
+He argues:
+   tracefs is fast/lightweight compared to syslog
+   independent selection (of drm categories) to tracefs
+       gives tailored traffic w.o flooding syslog
 
-----------------------------------------------------------------
-Max Filippov (10):
-      xtensa: move _SimulateUserKernelVectorException out of WindowVectors
-      xtensa: use a14 instead of a15 in inline assembly
-      xtensa: don't use a12 in strncpy_user
-      xtensa: don't use a12 in __xtensa_copy_user in call0 ABI
-      xtensa: definitions for call0 ABI
-      xtensa: implement call0 ABI support in assembly
-      xtensa: use register window specific opcodes only when present
-      xtensa: only build windowed register support code when needed
-      xtensa: remove unused variable wmask
-      xtensa: move section symbols to asm/sections.h
+ISTM he's correct.  So it follows that write-to-tracefs is also a good
+feature for dyndbg, where its then available for all pr_debug users,
+on a per-site basis, via echo +T >control.  (iff CONFIG_TRACING).
 
- arch/xtensa/boot/boot-elf/bootstrap.S     |   2 +
- arch/xtensa/boot/boot-redboot/bootstrap.S |  72 +++++-----
- arch/xtensa/include/asm/asmmacro.h        |  65 +++++++++
- arch/xtensa/include/asm/atomic.h          |  26 ++--
- arch/xtensa/include/asm/cmpxchg.h         |  16 +--
- arch/xtensa/include/asm/core.h            |  11 ++
- arch/xtensa/include/asm/processor.h       |  32 ++++-
- arch/xtensa/include/asm/sections.h        |  41 ++++++
- arch/xtensa/include/asm/traps.h           |   2 +
- arch/xtensa/kernel/align.S                |   2 +
- arch/xtensa/kernel/entry.S                | 216 +++++++++++++++++++-----------
- arch/xtensa/kernel/head.S                 |  24 ++--
- arch/xtensa/kernel/mcount.S               |  38 +++++-
- arch/xtensa/kernel/process.c              |  27 +++-
- arch/xtensa/kernel/setup.c                | 102 +++++---------
- arch/xtensa/kernel/signal.c               |  12 +-
- arch/xtensa/kernel/traps.c                |   6 +-
- arch/xtensa/kernel/vectors.S              |  55 +++++---
- arch/xtensa/kernel/vmlinux.lds.S          |  12 +-
- arch/xtensa/lib/strncpy_user.S            |  17 ++-
- arch/xtensa/lib/usercopy.S                |  28 +++-
- 21 files changed, 541 insertions(+), 265 deletions(-)
- create mode 100644 arch/xtensa/include/asm/sections.h
+So basically, I borg'd his:
+   [patch 14/14] drm/print: Add tracefs support to the drm logging helpers
+   
+Then I added a T flag, so it can be toggled from shell:
+
+   # turn on all drm's pr_debug --> tracefs
+   echo module drm +T > /proc/dynamic_debug/control
+
+It appears to just work: (RFC)
+
+The instance name is a placeholder, per-module subdirs kinda fits the
+tracefs pattern, full mod/file-basename/function/line feels like
+overkill, mod/basename-func.line would flatten it nicely. RFC.
+
+[root@gandalf dyndbg-tracefs]# pwd
+/sys/kernel/tracing/instances/dyndbg-tracefs
+[root@gandalf dyndbg-tracefs]# echo 1 > /sys/module/drm/parameters/trace
+[root@gandalf dyndbg-tracefs]# head -n16 trace | sed -e 's/^#//'
+ tracer: nop
+
+ entries-in-buffer/entries-written: 405/405   #P:24
+
+                                _-----=> irqs-off
+                               / _----=> need-resched
+                              | / _---=> hardirq/softirq
+                              || / _--=> preempt-depth
+                              ||| / _-=> migrate-disable
+                              |||| /     delay
+           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+              | |         |   |||||     |         |
+           <...>-2254    [000] .....  7040.894352: __dynamic_pr_debug: drm:core: comm="gnome-shel:cs0" pid=2254, dev=0xe200, auth=1, AMDGPU_CS
+           <...>-2207    [015] .....  7040.894654: __dynamic_pr_debug: drm:core: comm="gnome-shell" pid=2207, dev=0xe200, auth=1, DRM_IOCTL_MODE_ADDFB2
+           <...>-2207    [015] .....  7040.995403: __dynamic_pr_debug: drm:core: comm="gnome-shell" pid=2207, dev=0xe200, auth=1, DRM_IOCTL_MODE_RMFB
+           <...>-2207    [015] .....  7040.995413: __dynamic_pr_debug: drm:core: OBJ ID: 121 (2)
+
+This is the pr-debug doing most of that logging: (from dynamic_debug/control)
+
+  drivers/gpu/drm/drm_ioctl.c:866 [drm]drm_ioctl =T "drm:core: comm=\042%s\042 pid=%d, dev=0x%lx, auth=%d, %s\012"
+
+Turning on decoration flags changes the trace:
+
+  echo module drm format drm:core: +mflt > /proc/dynamic_debug/control 
+
+           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+              | |         |   |||||     |         |
+           <...>-2254    [003] ..... 15980.936660: __dynamic_pr_debug: [2254] drm:drm_ioctl:866: drm:core: comm="gnome-shel:cs0" pid=2254, dev=0xe200, auth=1, AMDGPU_CS
+           <...>-2207    [015] ..... 15980.936966: __dynamic_pr_debug: [2207] drm:drm_ioctl:866: drm:core: comm="gnome-shell" pid=2207, dev=0xe200, auth=1, DRM_IOCTL_MODE_ADDFB2
+           <...>-2207    [015] ..... 15981.037727: __dynamic_pr_debug: [2207] drm:drm_ioctl:866: drm:core: comm="gnome-shell" pid=2207, dev=0xe200, auth=1, DRM_IOCTL_MODE_RMFB
+           <...>-2207    [015] ..... 15981.037739: __dynamic_pr_debug: [2207] drm:drm_mode_object_put:195: drm:core: OBJ ID: 124 (2)
+           <...>-2207    [015] ..... 15981.037742: __dynamic_pr_debug: [2207] drm:drm_mode_object_put:195: drm:core: OBJ ID: 124 (1)
+
+The FUNCTION could stand tweaking (to match the callsite in the
+control file, cited above), or perhaps replaced by the 'mfl'
+decorations; the 't' flag is redundant for trace. Meh.
+
+SELFTEST
+
+A previous version of this patchset added test_dynamic_debug.ko, but
+it relied upon code I ripped out when I made tracefs available by
+default (without modules registering 1st).  So it fails 10/29 tests,
+which counted +T sites executed, via side effect.
+
+TODO: userspace selftest
+
+  # to set expected tracing activity
+  echo module test_dynamic_debug function do_debugging +T > control
+
+  # run do_debugging function (todo: add sysfs knob) 
+  echo 2 > /sys/module/test-dynamic-debug/parameters/run_me
+
+If thats wrapped in the right trace_on, trace_pipe, etc incantations,
+the +T enabled pr_debugs in do_debugging() can be counted, compared
+against expectations, and passed or failed.
+
+change since v9:
+. patch confict against drm-misc resolved
+. s/CATEGORIES/BITGRPS/ in 1/10 - keep name generic: bitmap + groups
+. CATEGORIES is drm term, use it there only
+. fix api friction wrt drm.trace knob
+  2 separate macros: DEFINE_DYNAMIC_DEBUG_{LOG,TRACE}_GROUPS - JBaron
+
+v9: https://patchwork.freedesktop.org/series/96327/
+v8: https://patchwork.freedesktop.org/series/93914/
+    https://lore.kernel.org/lkml/20210915163957.2949166-1-jim.cromie@gmail.com/
+
+The major change since v8 is that +T now works for all users, if
+CONFIG_TRACING=y, otherwise it complains/errors.
+
+
+Jim Cromie (10):
+  dyndbg: add DEFINE_DYNAMIC_DEBUG_BITGRPS macro and callbacks
+  drm: fix doc grammar
+  amdgpu: use dyndbg.BITGRPS to control existing pr_debugs
+  i915/gvt: trim spaces from pr_debug "gvt: core:" prefixes
+  i915/gvt: use dyndbg.BITGRPS for existing pr_debugs
+  drm_print: add choice to use dynamic debug in drm-debug
+  drm_print: instrument drm_debug_enabled
+  dyndbg: add print-to-tracefs, selftest with it - RFC
+  dyndbg: create DEFINE_DYNAMIC_DEBUG_LOG|TRACE_GROUPS
+  drm: use DEFINE_DYNAMIC_DEBUG_TRACE_GROUPS in 3 places
+
+ .../admin-guide/dynamic-debug-howto.rst       |   7 +-
+ MAINTAINERS                                   |   1 +
+ drivers/gpu/drm/Kconfig                       |  26 ++
+ drivers/gpu/drm/Makefile                      |   2 +
+ drivers/gpu/drm/amd/amdgpu/Makefile           |   2 +
+ .../gpu/drm/amd/display/dc/core/dc_debug.c    |  55 ++++-
+ drivers/gpu/drm/drm_print.c                   |  62 +++--
+ drivers/gpu/drm/i915/Makefile                 |   2 +
+ drivers/gpu/drm/i915/gvt/debug.h              |  18 +-
+ drivers/gpu/drm/i915/intel_gvt.c              |  47 ++++
+ include/drm/drm_drv.h                         |   2 +-
+ include/drm/drm_print.h                       | 182 +++++++++++---
+ include/linux/dynamic_debug.h                 |  88 ++++++-
+ lib/Kconfig.debug                             |  11 +
+ lib/Makefile                                  |   1 +
+ lib/dynamic_debug.c                           | 203 ++++++++++++++--
+ lib/test_dynamic_debug.c                      | 222 ++++++++++++++++++
+ 17 files changed, 843 insertions(+), 88 deletions(-)
+ create mode 100644 lib/test_dynamic_debug.c
 
 -- 
-Thanks.
--- Max
+2.31.1
+
