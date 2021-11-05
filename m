@@ -2,62 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D15D446AF3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 23:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22782446AF4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 23:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233443AbhKEWhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 18:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52104 "EHLO
+        id S232135AbhKEWjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 18:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233280AbhKEWhM (ORCPT
+        with ESMTP id S230384AbhKEWjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 18:37:12 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECF7C061205
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 15:34:32 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id l8so10956032ilv.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 15:34:32 -0700 (PDT)
+        Fri, 5 Nov 2021 18:39:39 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF7BC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 15:36:59 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id j9so9492992pgh.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 15:36:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=eriDMJ1VSc5nz4G+g+1zHzTH043RgXlZ6cpKSPDYOeU=;
-        b=V8ihsxlWvii9ykWAosYp3IZ2HStn6sOx05hwdJABkuFTTmhpden1g1SgK0sa6SyL4i
-         it0H5FIT5gLE0zDck9v0elRAE4zJRd6x7mhlQMFdObPriict4A5kc3TdmyxRioI7LOMi
-         K4v/WFajAdqC0MDlRr6DQJr6QLMH08zkP1LZN874HHMKYaTVoy5p4j7Kb/HuzZrdnJWI
-         Wrwns3akCwDFe4gCDCi2KB3mCv42Zx19z+EtFT4klIS+JMsU87zVG8w2cAjxM9RBa4kL
-         NLROrbHO4NPYPqD6JbQ1sU+ySiY9alzGpv/MXVN48hJTkUgX73octq4ScolkEmUHUpPZ
-         pLfA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QL98x9U/Qa90ZzOr5AopLmpOuoSWBwUx/5i1xSLSc5k=;
+        b=oXfMfj9J0O8HNOmX4kMPKS85ZSGdzfcfDKW7WKCeXzg+XGuItcu2cNdIpCv7b1ydJh
+         OTs4fTWdcfVaj1utbrRQ0SpqLqbGqEG3/kEJXG7nxFznCu+Pj29J3TcD2t/pusOxSfhr
+         2DAw6mY+t+nqOD1QcJuhkvJQ0/RhE4t0u50aEGF8GZ39X/5NtjSckpVg4A+22pJoaL5q
+         x7z/A5pIXufVcjVXq07HAn+KN+deAEs3VHlBVXoq3Uq08mJtskrAlLYdhVVw99EGY9Tg
+         cyP614ZNOByr6i14Ecorxihfo5h3Dn2DQCh4vZYlrVyUi2/BodIvlo3DnvMuL1UlCk/X
+         7DGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=eriDMJ1VSc5nz4G+g+1zHzTH043RgXlZ6cpKSPDYOeU=;
-        b=Neq8bulXVmK6iQX4wUz+5LPkhenrQ76g1tm2do5bjQfbEOflL9uJv4HILxio2znDhr
-         hbyZ1QdpacKEM6Wf/hGnUpw1LrAlOArpxF+KHlTHLwyZ5YVAHwXcarhB4VOjYbTi1YK/
-         f15dqOR5UfDuq7+Dj+bf9l4sBTELaZnpc9HAoCiacTOT/6n6+pFsemtFE7koE0l3+oV4
-         2AbLaENjMnMLo/OC4FH+juALAoDuKDPGZ/FuQtqTO6E890C9ukiZO9LdpG4OZdNC7BMk
-         jsHpT8iZsgrMB+YhmDjxquhgb0b94OaO2N+MIzvQ3h1wG14fwBS/EoVrxuIiU6zP/cQ5
-         MT9A==
-X-Gm-Message-State: AOAM532+V64ns0hqBbOAoC3a7CFARJtNJAslidQixQPTmsX7nRGPFaVD
-        Zu2ViabV7myxTnJDB6XuoCzrqeNfz2Fz8ac3t3Q=
-X-Google-Smtp-Source: ABdhPJwDw//9w5bNxZOD8CzTR4OrMDl86wBIBnN/YYDyh+tRmzNGAajX5JtwMYlidXfRoLHnjcFBs4F3nIR60trhApQ=
-X-Received: by 2002:a05:6e02:1848:: with SMTP id b8mr17249798ilv.299.1636151672065;
- Fri, 05 Nov 2021 15:34:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QL98x9U/Qa90ZzOr5AopLmpOuoSWBwUx/5i1xSLSc5k=;
+        b=c/0takldAgOH/gMnVNHIuvqpJHQZyydV/XjLJn4+rm/ClmctQi78UiEiCLx2qGq5Br
+         psTYrO7dDuu58em8lDnDyQnP6u0XiMRDCPDZoydnxa9kvFaMppj8kva5pwSNv9eDsJnQ
+         Xa7zmWwqyz+hHxP/cANc2pO7aKq2KoOBTUVYqZlueJZpWCB0IAr5V/1lXi+sPKBq5U0I
+         xtbSPIviYY9OL8PdK87dYugf3IxyoEHZCLBS41u0bxGdXIDF7VM9BrjMZsM39Fv5hqdy
+         AmEpo8jdq5laVRRamysN1oXVFkOQD01ear+DyNQA+KrgJu47FIyzf2XZKw/FPOZeJEqH
+         yaOQ==
+X-Gm-Message-State: AOAM532n9kV8kLXRQUKWuEL/uwVgoVlab1hZqZKzmTaSyUQPXXetV+5T
+        A9vimxY2QapMDQcxVhALlB8=
+X-Google-Smtp-Source: ABdhPJzp/msi/KagylOnFGxkQ+yeeI8fRkRKdV1x7c+5CxMwBv44xQeCPdH79/B28LDw+cuU+uXwWA==
+X-Received: by 2002:a05:6a00:806:b0:49f:9e16:c90f with SMTP id m6-20020a056a00080600b0049f9e16c90fmr6782094pfk.1.1636151818543;
+        Fri, 05 Nov 2021 15:36:58 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:837c:e765:475f:22d3])
+        by smtp.gmail.com with ESMTPSA id w3sm5728324pfd.195.2021.11.05.15.36.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 15:36:57 -0700 (PDT)
+Date:   Fri, 5 Nov 2021 15:36:55 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     lianzhi chang <changlianzhi@uniontech.com>
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
+        282827961@qq.com
+Subject: Re: [PATCH v12] tty: Fix the keyboard led light display problem
+Message-ID: <YYWyB1UmQxo0a2WU@google.com>
+References: <20211105134816.13982-1-changlianzhi@uniontech.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6638:24ce:0:0:0:0 with HTTP; Fri, 5 Nov 2021 15:34:31
- -0700 (PDT)
-Reply-To: morissarhodesville326@gmail.com
-From:   Morissa Rhodesville <bahalhassane726@gmail.com>
-Date:   Fri, 5 Nov 2021 22:34:31 +0000
-Message-ID: <CALtWYMFWW8Rcx_hmsaCdr=xPZ1-WZtDg+1E0bevf4U10LaHB1Q@mail.gmail.com>
-Subject: my pleasure meeting you
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211105134816.13982-1-changlianzhi@uniontech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Greetings.
-I wish to discuss very important issues with you, your urgent response
-is highly appreciated
-Miss Morissa
+Hi lianzhi
+On Fri, Nov 05, 2021 at 09:48:16PM +0800, lianzhi chang wrote:
+> Switching from the desktop environment to the tty environment,
+> the state of the keyboard led lights and the state of the keyboard
+> lock are inconsistent. This is because the attribute kb->kbdmode
+> of the tty bound in the desktop environment (Xorg) is set to
+> VC_OFF, which causes the ledstate and kb->ledflagstate
+> values of the bound tty to always be 0, which causes the switch
+> from the desktop When to the tty environment, the LED light
+> status is inconsistent with the keyboard lock status.
+> In order to ensure that the keyboard LED lights are displayed
+> normally during the VT switching process, when the VT is
+> switched, the current VT LED configuration is forced to be issued.
+> 
+> Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  v10:
+>  The led state of the input device is no longer synchronized to
+>  ledstate, and the related code is deleted. The current plan is
+>  changed to: when the VT is switched, the LED state saved by the
+>  current VT is forced to be issued.
+>  v11:
+>  Supplement the signature of the collaborator.
+>  
+>  drivers/tty/vt/keyboard.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+> index c7fbbcdcc346..20013c45b979 100644
+> --- a/drivers/tty/vt/keyboard.c
+> +++ b/drivers/tty/vt/keyboard.c
+> @@ -153,6 +153,7 @@ static int shift_state = 0;
+>  
+>  static unsigned int ledstate = -1U;			/* undefined */
+>  static unsigned char ledioctl;
+> +static bool vt_switch;
+>  
+>  /*
+>   * Notifier list for console keyboard events
+> @@ -412,8 +413,12 @@ static void do_compute_shiftstate(void)
+>  /* We still have to export this method to vt.c */
+>  void vt_set_leds_compute_shiftstate(void)
+>  {
+> +	struct kbd_struct *kb;
+>  	unsigned long flags;
+>  
+> +	kb = kbd_table + fg_console;
+> +	if (kb->kbdmode != VC_OFF)
+> +		vt_switch = true;
+
+Could you please add explanation here why it is not racy (I do not think
+it is as I believe currently executed tasklets can be scheduled).
+
+>  	set_leds();
+>  
+>  	spin_lock_irqsave(&kbd_event_lock, flags);
+> @@ -1247,14 +1252,24 @@ void vt_kbd_con_stop(unsigned int console)
+>   */
+>  static void kbd_bh(struct tasklet_struct *unused)
+>  {
+> +	struct kbd_struct *kb;
+>  	unsigned int leds;
+>  	unsigned long flags;
+>  
+> +	kb = kbd_table + fg_console;
+> +	if (kb->kbdmode == VC_OFF)
+> +		return;
+
+Why do we need to do this? Won't this stop setting arbitrary LEDs via
+console ioctl?
+
+> +
+>  	spin_lock_irqsave(&led_lock, flags);
+>  	leds = getleds();
+>  	leds |= (unsigned int)kbd->lockstate << 8;
+>  	spin_unlock_irqrestore(&led_lock, flags);
+>  
+> +	if (vt_switch) {
+> +		ledstate = ~leds;
+> +		vt_switch = false;
+> +	}
+> +
+>  	if (leds != ledstate) {
+>  		kbd_propagate_led_state(ledstate, leds);
+>  		ledstate = leds;
+> @@ -1643,6 +1658,8 @@ int __init kbd_init(void)
+>  	int i;
+>  	int error;
+>  
+> +	vt_switch = false;
+
+No need to explicitly initialize it here, as a static variable it will
+be automatically initialized to 0 (false).
+
+> +
+>  	for (i = 0; i < MAX_NR_CONSOLES; i++) {
+>  		kbd_table[i].ledflagstate = kbd_defleds();
+>  		kbd_table[i].default_ledflagstate = kbd_defleds();
+
+Thanks.
+
+-- 
+Dmitry
