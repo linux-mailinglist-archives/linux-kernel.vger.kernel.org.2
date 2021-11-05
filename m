@@ -2,196 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7BA7446859
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 19:22:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8D944685A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 19:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhKESZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 14:25:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57163 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229504AbhKESZT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 14:25:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636136549;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MSxZAOJclkvtrf7ZNjR4+yUMBn6uV9v5VIW+Q0Lv0l4=;
-        b=cmRY1fZxJCLjDThP4M6dqylNQK/v7Sm/qI+o5rNJkb8aweFBG/JgK6nRLBMTwrH4dfqfzA
-        svoZHQ9vOMojopcgwc4msfAfDSmlCYtA9JO3RepbOnXocvhss7ImwOvO/4ii9TDztn3VyY
-        gEGO7krIhQnf0wpPNAwONJIWeF1PCGo=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-DKEzvdFxOBKaS4d0ERkEqg-1; Fri, 05 Nov 2021 14:22:28 -0400
-X-MC-Unique: DKEzvdFxOBKaS4d0ERkEqg-1
-Received: by mail-pj1-f72.google.com with SMTP id y18-20020a17090abd1200b001a4dcd1501cso2824750pjr.4
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 11:22:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MSxZAOJclkvtrf7ZNjR4+yUMBn6uV9v5VIW+Q0Lv0l4=;
-        b=t4Q4H7BbMSEBngxfjPCM0/yHa6rBVq3gU9bYS0JxXQClyG78p7l4NL7VPNkakcXCw5
-         3A9brHY0Y/qCz79Nib1NqZ6UqtdWXGR2vAb0d67q7FE3y1ALm+6I7nw1Z8dwmrl9BeqL
-         1msTLWAq9wtCEAYnCJlt7VLdE/5hgoAMjW5d29xL3Y47BeVLS0X8CHS+AoLE0bHsdd+R
-         FMvEjDI0+ApC5k52hik74sJhLfoVuTn9OFyhqWX4fsj8o0zlZHpc4XgU1UaZnHv45h3H
-         /NV7aV4k3QxeSMlIFQgvrYvR6uQE5xvWUIM3FZ4X9MdDOHkJdGAo+HnE+VKSeKjjpDBx
-         qnMg==
-X-Gm-Message-State: AOAM533CH7178xx6pI+jqAA8gnkTo0uKbeNSdvKTkfeMz6+uH4jUesj6
-        SL98MdUJPsF3s1x6KspgyD4oAPqmgoSAhNqVb4YoAV9TSidZa64rokSSY73xDRTAlIoi+S+r9/l
-        PvZyXTla7FcZ/gMqI3zWgWdpDEVWkobbEcmax0ZGz
-X-Received: by 2002:a05:6a00:1252:b0:494:e3:f8e0 with SMTP id u18-20020a056a00125200b0049400e3f8e0mr15236483pfi.83.1636136547785;
-        Fri, 05 Nov 2021 11:22:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx2i/OwsVRu3DmktZjs43kBLL5byX/OBKExli/7oqgb/cNhQ95oKDF7fg8sjslZm2YM2p4QtrRCbvM9z1jJpRo=
-X-Received: by 2002:a05:6a00:1252:b0:494:e3:f8e0 with SMTP id
- u18-20020a056a00125200b0049400e3f8e0mr15236452pfi.83.1636136547470; Fri, 05
- Nov 2021 11:22:27 -0700 (PDT)
+        id S231854AbhKESZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 14:25:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:34414 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231475AbhKESZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 14:25:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 343672F;
+        Fri,  5 Nov 2021 11:22:56 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.196.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 321B33F7F5;
+        Fri,  5 Nov 2021 11:22:55 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Srinivasan\, Sadagopan" <Sadagopan.Srinivasan@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] sched/fair: Adjust the allowed NUMA imbalance when SD_NUMA spans multiple LLCs
+In-Reply-To: <20211028130305.GS3959@techsingularity.net>
+References: <20211028130305.GS3959@techsingularity.net>
+Date:   Fri, 05 Nov 2021 18:22:52 +0000
+Message-ID: <875yt6tqbn.mognet@arm.com>
 MIME-Version: 1.0
-References: <20211104133701.1733551-1-tero.kristo@linux.intel.com>
-In-Reply-To: <20211104133701.1733551-1-tero.kristo@linux.intel.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Fri, 5 Nov 2021 19:22:16 +0100
-Message-ID: <CAO-hwJ+=GL6MrJdh754bUF5_ciJqNvPxcLUstSLD+AfCH2VKdw@mail.gmail.com>
-Subject: Re: [RFC 0/8] HID: add support for USI style pens
-To:     Tero Kristo <tero.kristo@linux.intel.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tero,
-
-[just a quick note, I am supposed to be on holiday this week]
-
-On Thu, Nov 4, 2021 at 2:38 PM Tero Kristo <tero.kristo@linux.intel.com> wrote:
+On 28/10/21 14:03, Mel Gorman wrote:
+> Commit 7d2b5dd0bcc4 ("sched/numa: Allow a floating imbalance between NUMA
+> nodes") allowed an imbalance between NUMA nodes such that communicating
+> tasks would not be pulled apart by the load balancer. This works fine when
+> there is a 1:1 relationship between LLC and node but can be suboptimal
+> for multiple LLCs if independent tasks prematurely use CPUs sharing cache.
 >
-> Hi,
->
-> This series is an RFC for USI (Universal Stylus Interface) style pen
-> support. This is based on documentation from USB org describing the HID
-> usage tables for digitizers (page 0x0D) and experimentation with actual
-> USI capable controllers.
->
-> This series introduces the USI support with a new HID driver, which
-> applies the controller specific quirks. The most problematic part of the
-> USI support is handling of the pen parameters (color, line width, line
-> style), which are not immediately available from the controller from pen
-> down event, but must be cached and queried separately from the controller.
-> In addition to that, when a get-feature report is sent to the
-> controller, there is a delay before the proper value is reported out; it
-> is not part of the feature report coming back immediately.
-> Most of the code in the driver is to handle this (otherwise we could
-> just use hid-generic.)
->
-> This also boils down to the reason why this series is an RFC, I would like
-> to receive some feedback which option to pick for programming of the new
-> values for the programmable pen parameters; whether to parse the input
-> events so userspace can directly write the new values to the input event
-> file handle, or whether to use IOCTL. Patches #7 / #8 are sort of optional
-> choices towards this, but are there to show that both approaches can be
-> done. Direct write to evdev causes some confusion on the driver level
-> though, thus patch #7 is there to avoid some of that introducing new
-> input events for writing the parameters. IOCTL might be the cleanest
-> approach and I am slightly leaning towards that myself (see patch #8,
-> this would need to be squashed and cleaned up a bit though but would
-> effectively get rid of some code from patch #6 and completely rid patch #7.)
-
-This series unfortunately raised quite a few red flags for me, and I
-am glad this is just an RFC.
-Let me enumerate them first and discuss a little bit more about those:
- 1. USI is supposed to be generic, so why is there a new driver for it
-instead of being handled by hid-input.c?
- 2. new MSC_EVENTS are created without Dmitry or Peter being CC-ed
- 3. new ioctls???
- 4. direct write to evdev to write parameters
- 5. patch 1/8 doesn't compile without 5/8
- 6. no tests :)
-
-1. new driver
-After quickly reading the RFC, I think the main issue there is that we
-are now having a transducer index which is incompatible with the way
-input and evedev works nowadays. Yay, we have a new hid-multitouch for
-pen :(
-
-Wacom has been dealing with that situation for years by tweaking the
-protocol and by just emitting a different serial number (roughly). I
-think the safest approach would be to keep the existing protocol
-running so that our user space can handle it properly.
-
-I'd need to read the rest of the code more carefully, but if we could
-have a basic generic handling (without the fancy features like
-changing the pen style/color) I'd be happier.
-
-2. MSC_* events
-there is an issue with those: they are not cached like the ABS_* ones.
-Meaning that each report will wake up userspace for something which
-basically doesn't change.
-I know ABS_* is saturated, but I'd like to have reviews from others on
-what could be done here instead of just using MSC_* as a new ABS_*
-
-3. ioctls
-this is problematic to me. Any new kernel ABI is problematic to me,
-and I'd much rather not add any new ones.
-
-My new set of mind is because of the recent work I have been
-conducting regarding eBPF.
-Basically I managed to have eBPF programs handling the device
-configuration and event processing in a local branch.
-I should be able to push a WIP next week, but basically this should
-allow me to not have to deal with new kernel APIs besides the generic
-eBPF one.
-We can imagine a generic hid-input.c processing for those tablets, and
-have a new userspace component that loads an eBPF program with its own
-userspace API which is capable of the fancy features.
-
-For instance, my current playground is setting the haptic feedback of
-the Surface Dial depending on the resolution I set on it.
-
-Furthermore, ioctls on a new cdev means that the classic userspace
-libraries will not have access to it without some heavy tuning in the
-systemd space (libinput only has read/write access to
-/dev/input/event*).
-
-4. direct write to evdev
-
-We enabled that once for LEDs, and it's a pain to maintain. Maybe we
-can make a use case for it but given that you don't seem very
-enthusiastic about it too, I wonder if this is not a dead end.
-
-5. patch ordering doesn't compile
-I guess this is just a rebase hiccup. Not an issue for an RFC
-
-6. tests
-For these kinds of new classes of devices, I'd like to have tests in
-the https://gitlab.freedesktop.org/libevdev/hid-tools repository.
-There is already an initial MR for tablet support (!115 in this
-project), and we should extend it with more tests.
-
-I'd happily help with those tests if you could share the report
-descriptors and some device dumps made with the hid-recorder tool from
-that repository.
-
->
-> The driver has been tested with chromebooks that contain either Goodix
-> or Elan manufactured USI capable touchscreen controllers in them.
->
-> Any feedback appreciated!
-
-I'll try to have a deeper look next week (though it seems a few bits
-stacked up during my week off, sigh).
-
-Cheers,
-Benjamin
-
->
-> -Tero
->
+> Zen* has multiple LLCs per node with local memory channels and due to
+> the allowed imbalance, it's far harder to tune some workloads to run
+> optimally than it is on hardware that has 1 LLC per node. This patch
+> adjusts the imbalance on multi-LLC machines to allow an imbalance up to
+> the point where LLCs should be balanced between nodes.
 >
 
+I've run out of brain juice for today and didn't get to decipher the logic
+you're implementing, but for now I do have a comment on the topology
+detection side of things (see inline).
+
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -644,6 +644,7 @@ static void destroy_sched_domains(struct sched_domain *sd)
+>  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_llc);
+>  DEFINE_PER_CPU(int, sd_llc_size);
+>  DEFINE_PER_CPU(int, sd_llc_id);
+> +DEFINE_PER_CPU(int, sd_numaimb_shift);
+>  DEFINE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
+>  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_numa);
+>  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
+> @@ -672,6 +673,20 @@ static void update_top_cache_domain(int cpu)
+>       sd = lowest_flag_domain(cpu, SD_NUMA);
+>       rcu_assign_pointer(per_cpu(sd_numa, cpu), sd);
+>
+> +	/*
+> +	 * Save the threshold where an imbalance is allowed between SD_NUMA
+> +	 * domains. If LLC spans the entire node, then imbalances are allowed
+> +	 * until 25% of the domain is active. Otherwise, allow an imbalance
+> +	 * up to the point where LLCs between NUMA nodes should be balanced
+> +	 * to maximise cache and memory bandwidth utilisation.
+> +	 */
+> +	if (sd) {
+> +		if (sd->span_weight == size)
+> +			per_cpu(sd_numaimb_shift, cpu) = 2;
+> +		else
+> +			per_cpu(sd_numaimb_shift, cpu) = max(2, ilog2(sd->span_weight / size * num_online_nodes()));
+> +	}
+> +
+
+So nodes are covered by the NODE topology level which *doesn't* have
+SD_NUMA set. I always get confused on how MC/DIE/NODE is supposed to look
+on those sub-NUMA clustering thingies, but either way consider:
+
+  NUMA-20 [              ]
+  NODE    [      ][      ]
+  DIE     [      ][      ]
+  MC      [  ][  ][  ][  ]
+
+NODE level gets degenerated, update_top_cache_domain() is invoked with:
+
+  NUMA-20 [              ]
+  DIE     [      ][      ]
+  MC      [  ][  ][  ][  ]
+
+That lowest_flag_domain(cpu, SD_NUMA) will span the entire system.
+
+Conversely, with this topology where node == LLC:
+
+  NUMA-20 [              ]
+  NODE    [      ][      ]
+  DIE     [      ][      ]
+  MC      [      ][      ]
+
+You get
+
+  NUMA-20 [              ]
+  MC      [      ][      ]
+
+lowest_flag_domain(cpu, SD_NUMA)->span_weight > size, even though LLC =
+node.
+
+Long story short, I think you want to use sd->child here - that *should*
+point to a domain that spans exactly one node (it's gonna be NODE, or some
+other domain that has the same span because NODE was degenerated).
+
+>       sd = highest_flag_domain(cpu, SD_ASYM_PACKING);
+>       rcu_assign_pointer(per_cpu(sd_asym_packing, cpu), sd);
+>
