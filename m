@@ -2,98 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C83446B38
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 00:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85863446B43
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 00:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbhKEX3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 19:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
+        id S232695AbhKEXgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 19:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbhKEX3V (ORCPT
+        with ESMTP id S229917AbhKEXgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 19:29:21 -0400
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B90C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 16:26:40 -0700 (PDT)
-Received: by mail-ua1-x92a.google.com with SMTP id e10so19983044uab.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 16:26:40 -0700 (PDT)
+        Fri, 5 Nov 2021 19:36:16 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205BBC061570;
+        Fri,  5 Nov 2021 16:33:36 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id j9so9577100pgh.1;
+        Fri, 05 Nov 2021 16:33:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=keith-pro.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=DDm1Gl41ZNtTKaM+qpehqkgZKvcUPdtW3sUncsgoqtQ=;
-        b=jwZIkkREp8XKMk9lrzVf72deTNly5CgzMkBkkmL/q/s+fQ62Fjhvs6WhnIt9xDBFNF
-         Jh8r7JAA6S3R8uEVOgGjt2Gh5dP0aSDkfbniB9vOu43TV+eWrXly9+XX7/6tJIRG0B3c
-         ifPxyA8qCvKXyycHLGN68ZrS4H1lWZpvCndwOdRWwaTbjDKvwo6vjOfmwX1cL6yVRFfe
-         aw/AX4w48PzNL88rEGxGdRXNg7dkVATTBLstWYOn/Wi4BEpxGKNvCl0DDeFfXqmP8hYa
-         DfePeiaCBuJOOoybNYuluRvx8azFM+AS3PNwU5/kNh7ZhxHTN5OiGfYJDi6O/g2IvTdv
-         /R1g==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MM0zBe3+lgpxRN35m32BV7e0djrGYypyK+XY2hlIPvI=;
+        b=q1XEPJonTV0fyWuY2IZAt3OlUkfTRhqbzgBxkEKFDL16Qori9GaFH6LNrKdaTatESN
+         SMallXOwObkm/ny67iWwIGLHEQgD9SRUL1A0THCF382ytaC6jxg8UWlalUqksZ/nLbLp
+         dFhMg+suq13+v9hSiC1FqFFOi0AHBQ0oAoTkwm5Q00fdQVw6E8nuN+BMrol5eeU+TvHk
+         BkP5SX15OiwFtYDe0rafOc6sm6Zzmvx7EcI2tI5QC5ORgs7Nvo5WWmPYlLW2EujpA1Y/
+         jxCh8yxxNAqDFoiJIbhSi9p8ONGcYhT/079OIYXhhmuJlQ+B24/nMrZhfiGacbgtaoxq
+         5QDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=DDm1Gl41ZNtTKaM+qpehqkgZKvcUPdtW3sUncsgoqtQ=;
-        b=wLTJKobbuUPk1NWxv4HTGyWsNWsUZwWC+JhUnWXFpKUI+d+XVihZJLLQgcotZhue/p
-         m8Xd5s2NEdFCcYspO4spq74K3XwEwXO8CwEtshk0RmmEFIsniEYd/88J3Tp4w8PCss/i
-         d1iUOW2UqdAy99cjSMii3uTHw6mIgWyBU6a+h4LJWLYt01jbQjUI3ZKB70LSdk/NFSAR
-         R02nB9FTVEz8b9vREzqlGvFpzK/lIzRHcIwRbpgK3nrgXTB7KEQTBWDoXB8JQGndq5kP
-         w4eXGVaMMVzkUHqNwy5ReekZb9T7gUFfKAdKvmo6kAMJgH2diJOki6SLpu89VcL6ZrgA
-         RLdw==
-X-Gm-Message-State: AOAM533lgI6sf9ZmvvKvz5mt60EfFcwHEJduAgp6OgLEHBH5t1JJ8xae
-        pHBWL1TwglqSFA2OU6HKTBmyxIYVSvaH/8EQPiSsl6hzKEKfzQ==
-X-Google-Smtp-Source: ABdhPJzkF0FANQ2rZqhLawXbS3S/qnBzaCxWz9HaVzrBHdhLTH9Ks2L7E0FVesU3IpxxdTp4A7gMSPa/2PilI9u8/Fk=
-X-Received: by 2002:ab0:7044:: with SMTP id v4mr70801324ual.76.1636154799906;
- Fri, 05 Nov 2021 16:26:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MM0zBe3+lgpxRN35m32BV7e0djrGYypyK+XY2hlIPvI=;
+        b=VMHKc51nMtFPrHeODWQ+K9+hJnKW0xb3btao8m+zVzUNdD4rGXnlD6RuQNrBbOQd3g
+         nS4VDmPUKG+Z1zK90nuINpANeHauH5hkuuzk+eXL1ZXWt1UyzJgRCKOHkYWmdP9YEo2r
+         8N0H1lR4XGUOqzgNWNAiffW/dMCUSeGcryVFzMXWOx+3pkGePBPg5ZERkaPUwzriOQwj
+         BLCIf7XgNngi3Zvwtof83z+CXnKCbUXwNBvx3qI+aWE5htuDLB3bGpGjfI3a29jIriL5
+         L0EQipEu6pT4sVk7tolebtV6rf6rSRYjanBu7ina6wlso5cNgdyNz3nBOZP/T+Yl1y2l
+         pGvA==
+X-Gm-Message-State: AOAM530nYYqTkehoJKzm5ZSvRTYD44/0RXC3S+7/EpvHx2XxATmOyMK3
+        EfNNDeaWLnxGuvvdmTQIk3fSfgcBt3o=
+X-Google-Smtp-Source: ABdhPJyqWtZBHh78DP2mdqNED8fHF+niIJbfRurkPV748XQC86I0v9p/aVX96lxJujxbBMnC+Vut0Q==
+X-Received: by 2002:a63:e00b:: with SMTP id e11mr47340017pgh.190.1636155214087;
+        Fri, 05 Nov 2021 16:33:34 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:837c:e765:475f:22d3])
+        by smtp.gmail.com with ESMTPSA id f18sm8305673pfv.74.2021.11.05.16.33.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 16:33:32 -0700 (PDT)
+Date:   Fri, 5 Nov 2021 16:33:30 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neal Gompa <ngompa13@gmail.com>
+Subject: Re: [PATCH] Input: i8042 - Add quirk for Fujitsu Lifebook T725
+Message-ID: <YYW/StbFdd2fYvJg@google.com>
+References: <20211103070019.13374-1-tiwai@suse.de>
 MIME-Version: 1.0
-Received: by 2002:a59:a3a8:0:b0:238:a19b:849f with HTTP; Fri, 5 Nov 2021
- 16:26:39 -0700 (PDT)
-X-Originating-IP: [76.178.140.121]
-In-Reply-To: <CALGQo4Yw7Ptm5faXjyAewW9Xe5=QKC_m9=QMy4Rb0N2p-a3VuQ@mail.gmail.com>
-References: <CALGQo4Yw7Ptm5faXjyAewW9Xe5=QKC_m9=QMy4Rb0N2p-a3VuQ@mail.gmail.com>
-From:   Keith Cancel <admin@keith.pro>
-Date:   Fri, 5 Nov 2021 23:26:39 +0000
-Message-ID: <CALGQo4aMFOrRW4EkDyjwNxGO6jayQsxzmwh3PSmjZv+Vi3jvzQ@mail.gmail.com>
-Subject: Re: Intel Alder Lake Question (Scheduler)
-To:     linux-kernel@vger.kernel.org
-Cc:     gayatri.kammela@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211103070019.13374-1-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Gayatri,
+On Wed, Nov 03, 2021 at 08:00:19AM +0100, Takashi Iwai wrote:
+> Fujitsu Lifebook T725 laptop requires, like a few other similar
+> models, the nomux and notimeout options to probe the touchpad
+> properly.  This patch adds the corresponding quirk entries.
+> 
+> BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1191980
+> Tested-by: Neal Gompa <ngompa13@gmail.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-So I was searching through the mailing list looking at various
-patches. I don't see any for alder lake regarding what I was
-mentioning. Is there something I am overlooking? I did see you were on
-multiple email chains for adding alder so maybe you have a better
-idea.
+Applied, thank you.
 
-Thanks,
-Keith Cancel
-
-
-
-On Fri, Nov 5, 2021 at 7:51 AM Keith Cancel <admin@keith.pro> wrote:
->
-> Hello,
->
-> So Alder lake was supposed to have AVX-512 disabled/fused off. So it
-> looks like that was not the case. For example see this news article:
-> https://www.anandtech.com/show/17047/the-intel-12th-gen-core-i912900k-review-hybrid-performance-brings-hybrid-complexity/2
->
-> This issue I noticed it seems to be the possibility that a bios could
-> allow someone to enable both AVX-512 and and E-Cores (efficiency
-> cores). How on earth would the scheduler handle this? I could imagine
-> the scheduler switching a process/thread using AVX-512 to an
-> efficiency core. Now suddenly the core the thread/process is running
-> no longer has AVX-512 instructions... This sounds like a headache.
->
-> I suppose the kernel could handle the trap and then from on only
-> schedule such a process on performance cores. This issue I see here
-> though is userland process could then intentionally trigger such a
-> trap to then only be scheduled on a performance core. Even if it does
-> not use AVX-512 otherwise.
->
-> Thanks,
-> Keith Cancel
+-- 
+Dmitry
