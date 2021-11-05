@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCCB445D03
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 01:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55621445D08
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 01:31:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhKEAaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 20:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhKEAau (ORCPT
+        id S229971AbhKEAef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 20:34:35 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:42889 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhKEAeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 20:30:50 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99281C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 17:28:11 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id r9-20020a7bc089000000b00332f4abf43fso6001280wmh.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 17:28:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O4YUDgdo255VAYFqIsJJWpu2PRm/0Or1BTzsdPRBrWk=;
-        b=cHCo4gmABWuKJiSybcT/mk1Y2DZ4oBzkPmeJL3FPTwxhr9SRrlxubLRg/LuBrnlKH1
-         vIVEDT0pjtWkI03yyGUc+x0Lj0ZbTx8SAqWrHYm2W3DzvtPjjhu1koNSdbO+c01X07jx
-         kyqXT0Pms9lIMaYkU4WR+YGq3Pl0/Ru23wvnWBM5T0H/Ztf10wK2bgj6cG9aWPXHywog
-         Pv7JLyKW7n5YjzlFGBfYStcYbCAOVFMC9weiDsQwYoJdcN87sMKPyDKnster9bVKXzaX
-         zkgl4+vJaCP+pWWlpecd00tj/s2J6l05HFCSqsFW3eijEYl22ZzOm+C56zQNlep/lFDD
-         eZPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O4YUDgdo255VAYFqIsJJWpu2PRm/0Or1BTzsdPRBrWk=;
-        b=VCi3ojd3aQNgHIZxeOAB4PO9KCNDjJIi1DsGxSTK6t4HFcZaNRSaVCxO4gn2XeexgG
-         H4bt7ZESRsCCLv+SQd+7xIWeT5t+3bsjbcbBi4uvzrpc0fKK9Q7KTSO2ol25kHg5uXGc
-         fW1QvhLPiaDYVIoyRg+idUgtK9EJh0O7MtgIJGPjVk4bugclKUu6MkDtYCkhpsQ/DWrr
-         aFxfBZ6gR3ybBQCUFl9ngDidLww4BJx1zSD93+boBmIIlSukcuGyojvN3R93NtJ5Nrs7
-         YvZ8F0PFUt6KC13hhtCMg/3QmcWsRJYnQ5ZPLkf3+GSqpQh9kPHrkjLbvFX23AtWmFtk
-         zwbQ==
-X-Gm-Message-State: AOAM5333P0DGOI/6jvyFXu8sXpCCwVG2i/8NLSAdM2Bzwi200RJBEL/S
-        08VkhR9iDS7vLA/0iZk8Rm0kcQ==
-X-Google-Smtp-Source: ABdhPJx4p9NftzFucX4ulXLAkGfTpfrMSXcolRKkskOwXdMsmHLlKAcnfTmWTrFXg53nadktouJ/Ew==
-X-Received: by 2002:a1c:7515:: with SMTP id o21mr28288141wmc.99.1636072090171;
-        Thu, 04 Nov 2021 17:28:10 -0700 (PDT)
-Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
-        by smtp.gmail.com with ESMTPSA id g18sm6924566wmq.4.2021.11.04.17.28.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 17:28:09 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, straube.linux@gmail.com,
-        martin@kaiser.cx, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: r8188eu: remove MSG_88E call from odm_TXPowerTrackingThermalMeterInit
-Date:   Fri,  5 Nov 2021 00:28:07 +0000
-Message-Id: <20211105002807.6628-1-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 4 Nov 2021 20:34:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1636072313; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=BDIoF3/FvA1RoYzn+r7S+qitEnsRNcOF7wiDLaFQVc0=; b=qDcRu3x8NzyeTBdu7SpFLEwpRDNLyF5ttXICfU7O89cC2XdwR3z/gsX4Tr1qziNbeQzII+Eu
+ rW6UqmRKo8xueTIfhsefmIb2DHDJXlXM9w7SU7Sd20PGHtuvtnkM8QNRgPlKdYm3kZMeu/HB
+ juoWzHChnpqrfzBgvtDau0pZCxg=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 61847b5dc19d3d12571d8ba7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Nov 2021 00:31:25
+ GMT
+Sender: quic_bbhatt=quicinc.com@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 60D17C43616; Fri,  5 Nov 2021 00:31:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from vivace-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0706EC4338F;
+        Fri,  5 Nov 2021 00:31:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0706EC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
+From:   Bhaumik Bhatt <quic_bbhatt@quicinc.com>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, quic_hemantk@quicinc.com,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        Bhaumik Bhatt <quic_bbhatt@quicinc.com>
+Subject: [PATCH] bus: mhi: core: Read missing channel configuration entry
+Date:   Thu,  4 Nov 2021 17:31:13 -0700
+Message-Id: <1636072273-16034-1-git-send-email-quic_bbhatt@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unnecessary MSG_88E macro call from hal/odm.c, within the
-function odm_TXPowerTrackingThermalMeterInit. All it does is print a
-struct member, during initialization, that is then immediately set on
-the following line. It is therefore surplus to requirements.
+The 'wake-capable' entry in channel configuration is not set when
+parsing the configuration specified by the controller driver. Add
+the missing entry to ensure channel is correctly specified as a
+'wake-capable' channel.
 
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Signed-off-by: Bhaumik Bhatt <quic_bbhatt@quicinc.com>
 ---
- drivers/staging/r8188eu/hal/odm.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/bus/mhi/core/init.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
-index 21f115194df8..bca625a46263 100644
---- a/drivers/staging/r8188eu/hal/odm.c
-+++ b/drivers/staging/r8188eu/hal/odm.c
-@@ -891,8 +891,6 @@ void odm_TXPowerTrackingThermalMeterInit(struct odm_dm_struct *pDM_Odm)
- 	pDM_Odm->RFCalibrateInfo.bTXPowerTracking = true;
- 	pDM_Odm->RFCalibrateInfo.TXPowercount = 0;
- 	pDM_Odm->RFCalibrateInfo.bTXPowerTrackingInit = false;
--	MSG_88E("pDM_Odm TxPowerTrackControl = %d\n", pDM_Odm->RFCalibrateInfo.TxPowerTrackControl);
--
- 	pDM_Odm->RFCalibrateInfo.TxPowerTrackControl = true;
- }
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index 5aaca6d..f1ec3441 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -788,6 +788,7 @@ static int parse_ch_cfg(struct mhi_controller *mhi_cntrl,
+ 		mhi_chan->offload_ch = ch_cfg->offload_channel;
+ 		mhi_chan->db_cfg.reset_req = ch_cfg->doorbell_mode_switch;
+ 		mhi_chan->pre_alloc = ch_cfg->auto_queue;
++		mhi_chan->wake_capable = ch_cfg->wake_capable;
  
+ 		/*
+ 		 * If MHI host allocates buffers, then the channel direction
 -- 
-2.31.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
