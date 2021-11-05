@@ -2,101 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F8B446225
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:22:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9836044622B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233101AbhKEKZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 06:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56260 "EHLO
+        id S233106AbhKEK1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 06:27:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbhKEKZF (ORCPT
+        with ESMTP id S233066AbhKEK1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 06:25:05 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C96C061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 03:22:25 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id g14so30816455edz.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 03:22:25 -0700 (PDT)
+        Fri, 5 Nov 2021 06:27:17 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A13C061205
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 03:24:38 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id y73so10126354iof.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 03:24:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=67g/16Zrh0Kxtmp5M9YzHHZvRj8XJzzpY2MX8AJR3cc=;
-        b=aD+xqcgPV/MXOkur99WgvJZCB0/7YNGmqyxJCDBKrVDYsUXPkM2DKQx/BX4eMBChGE
-         8/hic/T1epL2A6eXSPVFTjvMcktH3e04O4Uk7nX65hsyDJifgKv5HIR/7jBJx1b2CngD
-         MUWaCjT4n26mcGzYd2lvn8NG2magx7x+ES0QYecVf3mMI4jEaYW7gc5ZUqGYTn3GxRKX
-         QMVMkIJYhS4ReQMQUhbVcuogqtOWWGIrjtHPc6HwS4nBs0uKW98Wx4MIsX68Vpe7gqhs
-         cRC4jmuR/SZUNcqLI+L2fGQpq9J+dCS5lmdyZzz+wJGVh92u4Ik9WP3SZoyxe3kENF7A
-         G7zg==
+        bh=QpRU87aczKNt8pCnpW5GQbPMrLgRV+FWXIAVVwm+1ks=;
+        b=bT9B1fITwmYV+PY51N96GYVFaPX1+Ee8OXYGq3NGAzRwfxbvfVtiKEhsTuCxhaNa26
+         DAesW421GTbjotZLvw9sFznn3tBe3sdlDCthVOw4xfzhbtAbcLIEQAXwnMkiRB82Wkv8
+         v8+jYchHaNGnC1LMcCaRQsvDK7gprwpoJdFT/YfNrrCPjFY0neNLSIR11MiUJVERzYDI
+         8AvdPPOIWLjgR/+NGSAYO4HCpvOBTRIoLJ6mqex2svUQPUjFrmth4TLBmO3/GrHNXhxu
+         o3wM7xPf+8Q3KjT3DmTnrx4ln6ZAiGGHVoYBsRlz2RLsUegGSt4192axrycJ/X7cDpbl
+         S+2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=67g/16Zrh0Kxtmp5M9YzHHZvRj8XJzzpY2MX8AJR3cc=;
-        b=PBlOgsDl4g1kGH0QrTleCeM/aXPVTk1O7gNtsFNn+E62SXM0LTUJWjOvv9IcJOhjAv
-         sF2aT9wdveBShn/p47khKC+Abtn4WCGZheY55VQgMgd7AN0/O2dsjriqDeceUTd03Q/N
-         /CpDXEW2gGCGv7YuXtUVr/z7FF6xkXQkoMnqiZh4OSasw8BKUO/1Ukumji2Y4pujNM/q
-         eEuYDmsPWKQ1Th4gZcV3YoJ6z1eZIXDXjiCvrCRXw8mWIdajnd3GxXEl5oWOTy09a1D+
-         jiqQqKGomy30nsa6olkU0R/JSbq3ngzlroaF9l1Tdr12nCqvWx6Ozn3nmIUb62C8ljrY
-         uvPg==
-X-Gm-Message-State: AOAM53034sn1IjKGkFBSrOhjm3fhMmWr8QsdZ7HayIHfEYTdNP3XV6kf
-        djsjYFezUxuX7CaLKKtTmb607v4W3rcW+AqXafuuYevQKKQ=
-X-Google-Smtp-Source: ABdhPJyQ8QgEkhTclPmA0LiYhDy5SN5jNlQGb3fx94SJBTWnhL9yOitBK+z8bFm/WQggIv+dxZjizkG01SoeS9tQGaI=
-X-Received: by 2002:aa7:cb09:: with SMTP id s9mr78350545edt.359.1636107744161;
- Fri, 05 Nov 2021 03:22:24 -0700 (PDT)
+        bh=QpRU87aczKNt8pCnpW5GQbPMrLgRV+FWXIAVVwm+1ks=;
+        b=Usl3ZqLmgW1S9/8kJy0P7KKcgQnW4RdKRPfADrKHd9ARdw8bp2hH0/ngZxPZ5JBqRt
+         mzrxQLMFRV1E01GGnDm/j9xBc4k+7pb6+IhsgYT0HdBqKuu00x0lCpcW1kr28jiM/HNL
+         9oH9a/UQqqoLqlePKnMdQvinLkxt/43rTMp6K29BOIJ7A6fxFfIktVzoYGKu/OMuRauO
+         3KMb6J2UqBYzzLEw0VUmkqajD2454tDO4Mshs/avQyLO0jeixJ45/VyumXi8mSRhY8nB
+         v2xYcg/S67V3QwIuRgmz/QkAstyOmpjYxyNBXLz1FBMFIdqOCEzJsMPmrb6n8c5y8R1Q
+         N7Pg==
+X-Gm-Message-State: AOAM530BwHVAJuUo/RR4wkIK71ZiZRRCoiOu9m1e6BNhSLVJlmxNTka8
+        xqR5YqB9PyXdLqV0uW5aB7HRXXFexY7lsf8n6YT/Cw==
+X-Google-Smtp-Source: ABdhPJyaebHYRKyKjlBGJs0I9gVjv5cj397Ne2wgaB9n13zhgHwjy5GNMT1op+EiiCWDE9VyF4Mwh5lMIkRgnTIRRNI=
+X-Received: by 2002:a05:6602:3350:: with SMTP id c16mr12909576ioz.43.1636107877555;
+ Fri, 05 Nov 2021 03:24:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <202111050644.9HQjbpIQ-lkp@intel.com>
-In-Reply-To: <202111050644.9HQjbpIQ-lkp@intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 5 Nov 2021 12:21:48 +0200
-Message-ID: <CAHp75Ve=ByJ+KMFXsH6sYQeM+FAzgYBX80TqdVfb5_YFLX3sdw@mail.gmail.com>
-Subject: Re: drivers/media/v4l2-core/v4l2-ioctl.c:303:28: warning: taking
- address of packed member 'pixelformat' of class or structure
- 'v4l2_pix_format_mplane' may result in an unaligned pointer value
-To:     kernel test robot <lkp@intel.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org,
+References: <20211102165657.3428995-1-robert.marko@sartura.hr>
+ <20211102165657.3428995-4-robert.marko@sartura.hr> <CAHp75VcWWBHDpM9+POPMUmWuGmdbyH0wCGXvqFH3znbZnTht+w@mail.gmail.com>
+In-Reply-To: <CAHp75VcWWBHDpM9+POPMUmWuGmdbyH0wCGXvqFH3znbZnTht+w@mail.gmail.com>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Fri, 5 Nov 2021 11:24:27 +0100
+Message-ID: <CA+HBbNEp7-aheGr3jNbV_EYYVSmekp_AFc4hR8gVekjmRE-Y8A@mail.gmail.com>
+Subject: Re: [PATCH v7 4/6] reset: Add Delta TN48M CPLD reset controller
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+        Andrew Lunn <andrew@lunn.ch>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 5, 2021 at 12:24 AM kernel test robot <lkp@intel.com> wrote:
+On Tue, Nov 2, 2021 at 8:31 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
 >
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   c1e2e0350ce37f633b5ce3ce1cdf4428513fc2a2
-> commit: e927e1e0f0dd3e353d5556503a71484008692c82 v4l: ioctl: Use %p4cc printk modifier to print FourCC codes
-> date:   9 months ago
-> config: mips-randconfig-r011-20211101 (attached as .config)
-> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 82ed106567063ea269c6d5669278b733e173a42f)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install mips cross compiling tool for clang build
->         # apt-get install binutils-mips-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e927e1e0f0dd3e353d5556503a71484008692c82
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout e927e1e0f0dd3e353d5556503a71484008692c82
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=mips
+> On Tue, Nov 2, 2021 at 6:57 PM Robert Marko <robert.marko@sartura.hr> wrote:
+> >
+> > Delta TN48M CPLD exposes resets for the following:
+> > * 88F7040 SoC
+> > * 88F6820 SoC
+> > * 98DX3265 switch MAC-s
+> > * 88E1680 PHY-s
+> > * 88E1512 PHY
+> > * PoE PSE controller
+> >
+> > Controller supports only self clearing resets.
 >
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> ...
 >
-> All warnings (new ones prefixed by >>):
+> > +#include <linux/device.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
 >
-> >> drivers/media/v4l2-core/v4l2-ioctl.c:303:28: warning: taking address of packed member 'pixelformat' of class or structure 'v4l2_pix_format_mplane' may result in an unaligned pointer value [-Waddress-of-packed-member]
+> > +#include <linux/of.h>
+>
+> I haven't found any user of this header, but mod_devicetable.h is missing.
 
-Yeah, I discussed it with Sakari a few months ago. Dunno what is the outcome.
-TL;DR: some are easy to fix, i.e. by dropping __packed, the rest needs
-more thinking...
+Hi,
+thanks will fix up in v8.
+
+>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/regmap.h>
+> > +#include <linux/reset-controller.h>
+>
+> > +#include <dt-bindings/reset/delta,tn48m-reset.h>
+>
+> Shouldn't this go before linux/* as it provides more generic definitions?
+
+I have looked at other drivers and I would say that almost all of them
+do it this way,
+putting it after other includes.
+I also personally prefer it this way.
+
+>
+> ...
+>
+> > +#define TN48M_RESET_TIMEOUT    125000
+> > +#define TN48M_RESET_SLEEP      10
+>
+> In which units? (both)
+
+Its microseconds, will make it clear in v8.
+
+Regards,
+Robert
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+
 
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
