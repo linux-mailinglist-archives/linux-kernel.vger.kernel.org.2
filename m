@@ -2,58 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE20B4466BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:08:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 127894466BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:08:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233803AbhKEQLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 12:11:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49380 "EHLO mail.kernel.org"
+        id S233126AbhKEQLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 12:11:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233126AbhKEQLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233734AbhKEQLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Nov 2021 12:11:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9A3CC61252;
+Received: by mail.kernel.org (Postfix) with ESMTPS id D009661263;
         Fri,  5 Nov 2021 16:08:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1636128512;
-        bh=zKegTsRYwShURaAhoJC3gMMqFkHaD1sWFCoyhpvBpAw=;
+        bh=OS5UTlMp5z73jlw8RsYg5/GHdP1DKdpGJMdYh5IKr0w=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ACeqH5rH8KXY76Jdrr/26aaPEDWmePgKPal1Gq6K39N9I3REK4nuglJUtJ1L9HOvM
-         ibuDZcrOY3x4jTxg3xB28ueOVoOTbsJ/xYZpTl/aIqQT0WKCidDGJ7RU8429837NQ3
-         yKpZSO9X26jdZgb/5KFt1r55AH6XOEyN8lDn4plhzzNtHqTb6TDViVgIvlYjmnkjn7
-         FG86emzlCEn4IXibZ5I7xH5hLlq75BXl4vp01Z3I1Qto4STsDzFABdJZcL2bbHAbEF
-         DmBkAjRSEmKOSAzNJlnHs5w7cYyEfLs18LBlcGWsLQlnx4MAI8JICXPG0lljTSz62D
-         umQj+qj0b0E+Q==
+        b=OfhnZrOvwJlqeHAL96P3OImEtAVe33WQWrUQmOJ1cN0JNtmjnVbkWuAM1saHkl13Z
+         SoLXjx8PmMKAbpLNy/r3HNyyv/rx6XZh4dUdPRmokE/CACIJEuJWu4OLkhbEqCYaQ1
+         Z+MjNs2moGv+FxhFu+2HJgoymMB78ebOLuO3ozQTs8qRaz1Qp6HZqh44mO69x0r3A3
+         rTizm0XA7g2YtZC74Lr7+9t4U3Y0EjuRiusHkw2tmzRcTetUuxBIDc3eoWEdoRq/nr
+         QeuwflKDTRhGZ21YIeY+DmVGHjwnC/95XvlvePmnBtPToPjqeZzDdOItWvKlAxKuHO
+         8X6lvI7BjXZnQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9452F609D9;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CA7BF609D9;
         Fri,  5 Nov 2021 16:08:32 +0000 (UTC)
-Subject: Re: [GIT PULL] first round of SCSI updates for the 5.15+ merge window
+Subject: Re: [GIT PULL] arch/microblaze patches for 5.16-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <b13f25e87fd8d4ed027ef64aba8ebd7273c4b8b8.camel@HansenPartnership.com>
-References: <b13f25e87fd8d4ed027ef64aba8ebd7273c4b8b8.camel@HansenPartnership.com>
+In-Reply-To: <ad54816e-699a-cea5-5964-966fc290b797@monstr.eu>
+References: <ad54816e-699a-cea5-5964-966fc290b797@monstr.eu>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <b13f25e87fd8d4ed027ef64aba8ebd7273c4b8b8.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
-X-PR-Tracked-Commit-Id: 83c3a7beaef7fd261c190b69f6be6337f251bf16
+X-PR-Tracked-Message-Id: <ad54816e-699a-cea5-5964-966fc290b797@monstr.eu>
+X-PR-Tracked-Remote: git://git.monstr.eu/linux-2.6-microblaze.git tags/microblaze-v5.16
+X-PR-Tracked-Commit-Id: 43bdcbd5004393faad06b65c1539d3c9b9d5f6b2
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: fe91c4725aeed35023ba4f7a1e1adfebb6878c23
-Message-Id: <163612851260.17201.4106345384610850520.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: a51e4a1acb5fa4ce0b0f0bd3606463a09e6fa1b0
+Message-Id: <163612851282.17201.15061892083031115004.pr-tracker-bot@kernel.org>
 Date:   Fri, 05 Nov 2021 16:08:32 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+To:     Michal Simek <monstr@monstr.eu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 05 Nov 2021 08:14:27 -0400:
+The pull request you sent on Fri, 5 Nov 2021 15:07:37 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
+> git://git.monstr.eu/linux-2.6-microblaze.git tags/microblaze-v5.16
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/fe91c4725aeed35023ba4f7a1e1adfebb6878c23
+https://git.kernel.org/torvalds/c/a51e4a1acb5fa4ce0b0f0bd3606463a09e6fa1b0
 
 Thank you!
 
