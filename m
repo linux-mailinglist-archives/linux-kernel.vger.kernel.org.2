@@ -2,92 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A32C4464EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:28:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8462A4464F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233214AbhKEObS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 10:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233216AbhKEObQ (ORCPT
+        id S233179AbhKEObf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 10:31:35 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:35266 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233170AbhKEObd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 10:31:16 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189D7C061714;
-        Fri,  5 Nov 2021 07:28:37 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id w1so33988028edd.10;
-        Fri, 05 Nov 2021 07:28:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4wnFihb9FXtR0j6s/uHUquZ5b5gAn6PDUylWYZcjqls=;
-        b=Fa8cnWlbD+FnsaVmc4oZuliRtAF2sAimCkPYZgkPfLWzR1sVJEzyBnMWn7xH4KPXRQ
-         nqUrFV3GAL2IiZrccmCnHGpmpQebHOiwGj3YewDXD8yRf70wk1zzkRRHMcQVTBDvehjU
-         9JHdETwTUarCRH3tbqiJ6Po8uSMXDNANppF+1JXFlgDguApnhIQZvOH73hy9XHlWcwPM
-         PPoi3wN0nEMPFiFpd742jd0hIswMbOuNzFo7P0s52hm4pnFE/qzuWsSAHK53VJ8fMsKh
-         CVz8LOPwpeUrt4K7KXYvVwHMn74IxnrwSxRAOXw7lDfrjjsVhiMB+me5dlAQBZoDVRjP
-         ROAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4wnFihb9FXtR0j6s/uHUquZ5b5gAn6PDUylWYZcjqls=;
-        b=NmurOGwjp8x9pgs8BRkme9tTKVeJLXI2LW2vuLEorXyp3befuUjVQ7GducvFGaUl3J
-         SD4Z77NtRyZl5fe8QMo4njGwynR9ZWkXU8HfAme6yWCbFv9QzlxOlGQOwwrmo4lmarrd
-         PxU8mhP7lIlIxndbnk4ovpbVrfuIYqaciQTl/feI9WdqkDTRQM+Kh95wwn0aK7kjzJn0
-         3Vk0d6U26Pg+KEqSW6BiLDy/L1wJcy2AHQ82Njcu7tFspgwZZkoYwwnPT1EWBP3hAsyR
-         QmLhl9i4qnwpLgQsXcZZAlj/u7zaEBKPRgXoXURFH3EvgkNRe70tBiK+C1pjhKqci81Z
-         CwTg==
-X-Gm-Message-State: AOAM530hJgAm9wrSzmvfXq85p4j3fKy/+IxyNihTbDJjyukF4eyAiX5g
-        n5uPE/McsicQTVhosSZJyys=
-X-Google-Smtp-Source: ABdhPJxB531x5JjUQVyT9+b7131JLPeLHSABBwIeCQDnVOFWNXYCzdi8U9ZKt9u4U267GJfGioprsw==
-X-Received: by 2002:a17:907:720d:: with SMTP id dr13mr45995011ejc.153.1636122515666;
-        Fri, 05 Nov 2021 07:28:35 -0700 (PDT)
-Received: from skbuf ([188.25.175.102])
-        by smtp.gmail.com with ESMTPSA id m9sm4100187eje.102.2021.11.05.07.28.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 07:28:35 -0700 (PDT)
-Date:   Fri, 5 Nov 2021 16:28:33 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     Martin Kaistra <martin.kaistra@linutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 7/7] net: dsa: b53: Expose PTP timestamping ioctls to
- userspace
-Message-ID: <20211105142833.nv56zd5bqrkyjepd@skbuf>
-References: <20211104133204.19757-1-martin.kaistra@linutronix.de>
- <20211104133204.19757-8-martin.kaistra@linutronix.de>
- <20211104174251.GB32548@hoboy.vegasvil.org>
- <ba543ae4-3a71-13fe-fa82-600ac37eaf5a@linutronix.de>
- <20211105141319.GA16456@hoboy.vegasvil.org>
+        Fri, 5 Nov 2021 10:31:33 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1A5ESeaJ6012927, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36504.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 1A5ESeaJ6012927
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 5 Nov 2021 22:28:40 +0800
+Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
+ RTEXH36504.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Fri, 5 Nov 2021 22:28:40 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 5 Nov 2021 22:28:39 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::dc53:1026:298b:c584]) by
+ RTEXMBS04.realtek.com.tw ([fe80::dc53:1026:298b:c584%5]) with mapi id
+ 15.01.2308.015; Fri, 5 Nov 2021 22:28:39 +0800
+From:   Pkshih <pkshih@realtek.com>
+To:     "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "tiwai@suse.de" <tiwai@suse.de>
+CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "Larry.Finger@gmail.com" <Larry.Finger@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] rtw89: Fix crash by loading compressed firmware file
+Thread-Topic: [PATCH] rtw89: Fix crash by loading compressed firmware file
+Thread-Index: AQHX0hU7VE24GGCl002qwvOXgdMXQqv0AUsAgACX6Q///34ogIAAjK5D///UggA=
+Date:   Fri, 5 Nov 2021 14:28:39 +0000
+Message-ID: <bd80d3b6cdc42d7818d7d5c6a5036d8188eb4a67.camel@realtek.com>
+References: <20211105071725.31539-1-tiwai@suse.de>
+         <s5hpmrfgj93.wl-tiwai@suse.de> <87zgqjqaae.fsf@codeaurora.org>
+         <s5hh7crgflg.wl-tiwai@suse.de> <87v917q8hw.fsf@codeaurora.org>
+In-Reply-To: <87v917q8hw.fsf@codeaurora.org>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.36.1-2 
+x-originating-ip: [125.224.68.85]
+x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
+x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
+ rules found
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: =?utf-8?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzExLzUg5LiL5Y2IIDAxOjMxOjAw?=
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D4E091EEC96FD749BB655CA55B8139B1@realtek.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211105141319.GA16456@hoboy.vegasvil.org>
+X-KSE-ServerInfo: RTEXH36504.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 11/05/2021 14:09:25
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 167092 [Nov 05 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 465 465 eb31509370142567679dd183ac984a0cb2ee3296
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;realtek.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 11/05/2021 14:12:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 07:13:19AM -0700, Richard Cochran wrote:
-> On Fri, Nov 05, 2021 at 02:38:01PM +0100, Martin Kaistra wrote:
-> > Ok, then I will remove HWTSTAMP_FILTER_PTP_V2_(EVENT|SYNC|DELAY_REQ) from
-> > this list, what about HWTSTAMP_FILTER_ALL?
-> 
-> AKK means time stamp every received frame, so your driver should
-> return an error in this case as well.
-
-What is the expected convention exactly? There are other drivers that
-downgrade the user application's request to what they support, and at
-least ptp4l does not error out, it just prints a warning.
+T24gRnJpLCAyMDIxLTExLTA1IGF0IDExOjAzICswMjAwLCBLYWxsZSBWYWxvIHdyb3RlOg0KPiBU
+YWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+IHdyaXRlczoNCj4gDQo+ID4gT24gRnJpLCAwNSBO
+b3YgMjAyMSAwOToyNToxMyArMDEwMCwNCj4gPiBLYWxsZSBWYWxvIHdyb3RlOg0KPiA+ID4gVGFr
+YXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cml0ZXM6DQo+ID4gPiANCj4gPiA+ID4gT24gRnJp
+LCAwNSBOb3YgMjAyMSAwODoxNzoyNSArMDEwMCwNCj4gPiA+ID4gVGFrYXNoaSBJd2FpIHdyb3Rl
+Og0KPiA+ID4gPiA+IFdoZW4gYSBmaXJtd2FyZSBpcyBsb2FkZWQgaW4gdGhlIGNvbXByZXNzZWQg
+Zm9ybWF0IG9yIHZpYSB1c2VyLW1vZGUNCj4gPiA+ID4gPiBoZWxwZXIsIGl0J3MgbWFwcGVkIGlu
+IHJlYWQtb25seSwgYW5kIHRoZSBydHc4OSBkcml2ZXIgY3Jhc2hlcyBhdA0KPiA+ID4gPiA+IHJ0
+dzg5X2Z3X2Rvd25sb2FkKCkgd2hlbiBpdCB0cmllcyB0byBtb2RpZnkgc29tZSBkYXRhLg0KPiA+
+ID4gPiA+IA0KPiA+ID4gPiA+IFRoaXMgcGF0Y2ggaXMgYW4gYXR0ZW1wIHRvIGF2b2lkIHRoZSBj
+cmFzaCBieSByZS1hbGxvY2F0aW5nIHRoZSBkYXRhDQo+ID4gPiA+ID4gdmlhIHZtYWxsb2MoKSBm
+b3IgdGhlIGRhdGEgbW9kaWZpY2F0aW9uLg0KPiA+ID4gPiANCj4gPiA+ID4gQWx0ZXJuYXRpdmVs
+eSwgd2UgbWF5IGRyb3AgdGhlIGNvZGUgdGhhdCBtb2RpZmllcyB0aGUgbG9hZGVkIGZpcm13YXJl
+DQo+ID4gPiA+IGRhdGE/ICBBdCBsZWFzdCBTRVRfRldfSERSX1BBUlRfU0laRSgpIGluIHJ0dzg5
+X2Z3X2hkcl9wYXJzZXIoKSBsb29rcw0KPiA+ID4gPiB3cml0aW5nIGl0LCBhbmQgSSBoYXZlIG5v
+IGlkZWEgd2h5IHRoaXMgb3ZlcndyaXRlIGlzIG5lZWRlZC4NCj4gPiA+IA0KPiA+ID4gU3RyYW5n
+ZSwgaXNuJ3QgdGhlIGZpcm13YXJlIGRhdGEgbWFya2VkIGFzIGNvbnN0IGp1c3QgdG8gYXZvaWQg
+dGhpcyBraW5kDQo+ID4gPiBvZiBwcm9ibGVtPyBEb2VzIHJ0dzg5IGhhdmUgd3JvbmcgY2FzdHMg
+c29tZXdoZXJlIHdoaWNoIHJlbW92ZXMgdGhlDQo+ID4gPiBjb25zdD8NCj4gPiANCj4gPiBZZXMu
+ICBTRVRfRldfSERSX1BBUlRfU0laRSgpIGRvZXMgdGhlIGNhc3QsIGRyb3BwaW5nIHRoZSBjb25z
+dC4NCj4gDQo+IE9oIG1hbiwgYWxsIG9mIEdFVCBhbmQgU0VUIG1hY3JvcyBpbiBmdy5oIGhhdmUg
+dGhvc2UgY2FzdHM6DQo+IA0KPiAjZGVmaW5lIEdFVF9GV19IRFJfTUFKT1JfVkVSU0lPTihmd2hk
+cikJXA0KPiAJbGUzMl9nZXRfYml0cygqKChfX2xlMzIgKikoZndoZHIpICsgMSksIEdFTk1BU0so
+NywgMCkpDQo+ICNkZWZpbmUgR0VUX0ZXX0hEUl9NSU5PUl9WRVJTSU9OKGZ3aGRyKQlcDQo+IAls
+ZTMyX2dldF9iaXRzKCooKF9fbGUzMiAqKShmd2hkcikgKyAxKSwgR0VOTUFTSygxNSwgOCkpDQo+
+ICNkZWZpbmUgR0VUX0ZXX0hEUl9TVUJWRVJTSU9OKGZ3aGRyKQlcDQo+IAlsZTMyX2dldF9iaXRz
+KCooKF9fbGUzMiAqKShmd2hkcikgKyAxKSwgR0VOTUFTSygyMywgMTYpKQ0KPiANCj4gSSBkb24n
+dCBrbm93IGhvdyBJIG1pc3NlZCB0aG9zZSBkdXJpbmcgbXkgcmV2aWV3IDooIEJ1dCB0aGlzIGlz
+IGV4YWN0bHkNCj4gd2h5IEkgcHJlZmVyIGhhdmluZyBhIHByb3BlciBzdHJ1Y3QgZm9yIGNvbW1h
+bmRzIGFuZCBldmVudHMsIGluc3RlYWQgb2YNCj4gdTggYnVmIHVzZWQgd2l0aCB0aGVzZSBtYWNy
+b3MuDQo+IA0KDQoNCkkgY2FuIHVzZSBhIHN0cnVjdCB0byBhY2Nlc3MgZmlybXdhcmUgaGVhZGVy
+LCBiZWN1YXNlIHRoZWlyIGZpZWxkcw0KYXJlIG11bHRpcGxlIG9mIDggYml0cy4NCg0KQnV0LCB0
+aGUgImZpcm13YXJlIHNlY3Rpb24gaGVhZGVyIiB0aGF0IGlzIGFkZGl0aW9uYWwgaGVhZGVyIGZv
+bGxvd2VkDQpieSBmaXJtd2FyZSBoZWFkZXIsIGFuZCBpdCBjb250YWlucyBiaXQgZmllbGRzLCBs
+aWtlczoNCg0KI2RlZmluZSBHRVRfRldTRUNUSU9OX0hEUl9TRUNfU0laRShmd2hkcikJXA0KCWxl
+MzJfZ2V0X2JpdHMoKigoX19sZTMyICopKGZ3aGRyKSArIDEpLCBHRU5NQVNLKDIzLCAwKSkNCiNk
+ZWZpbmUgR0VUX0ZXU0VDVElPTl9IRFJfQ0hFQ0tTVU0oZndoZHIpCVwNCglsZTMyX2dldF9iaXRz
+KCooKF9fbGUzMiAqKShmd2hkcikgKyAxKSwgQklUKDI4KSkNCiNkZWZpbmUgR0VUX0ZXU0VDVElP
+Tl9IRFJfUkVETChmd2hkcikJXA0KCWxlMzJfZ2V0X2JpdHMoKigoX19sZTMyICopKGZ3aGRyKSAr
+IDEpLCBCSVQoMjkpKQ0KI2RlZmluZSBHRVRfRldTRUNUSU9OX0hEUl9ETF9BRERSKGZ3aGRyKQlc
+DQoJbGUzMl9nZXRfYml0cygqKChfX2xlMzIgKikoZndoZHIpKSwgR0VOTUFTSygzMSwgMCkpDQoN
+CklmIHdlIHVzZSBhIHN0cnVjdCwgaXQgbmVlZHMgYmlnLS9saXR0bGUtIGVuZGlhbnMgcGFydHMu
+DQoNClRoZW4sIHdlIHdpbGwgYWNjZXNzIGZpcm13YXJlIGhlYWRlciB3aXRoIHR3byBtZXRob2Rz
+OyBpcw0KaXQgcmVhc29uYWJsZT8NCg0KDQpUaGUgbWFjcm8gU0VUX0ZXX0hEUl9QQVJUX1NJWkUo
+KSBpcyB1c2VkIHRvIHNldCB0aGUgZmlybXdhcmUNCnBhcnRpdGlvbiBzaXplIHdlIGFyZSBnb2lu
+ZyB0byBkb3dubG9hZCwgYW5kIGl0IGlzIG9ubHkgdXNlZA0KYnkgcnR3ODlfZndfZG93bmxvYWRf
+aGRyKCkuIFNvLCBJIHdpbGwgc2V0IHRoZSBwYXJ0aXRpb24gc2l6ZQ0KYWZ0ZXIgY29weWluZyBj
+b25zdGFudCBmaXJtd2FyZSBoZWFkZXIgaW50byBza2ItPmRhdGEuDQoNCi0tDQpQaW5nLUtlDQoN
+Cg==
