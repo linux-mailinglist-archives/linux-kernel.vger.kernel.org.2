@@ -2,142 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1AA446B59
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 00:48:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F25EF446B64
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 00:57:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233184AbhKEXvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 19:51:07 -0400
-Received: from esa.hc503-62.ca.iphmx.com ([216.71.131.47]:15715 "EHLO
-        esa.hc503-62.ca.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233175AbhKEXvG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 19:51:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=uwaterloo.ca; i=@uwaterloo.ca; q=dns/txt; s=default;
-  t=1636156106; x=1667692106;
-  h=subject:to:cc:references:in-reply-to:from:message-id:
-   date:mime-version:content-transfer-encoding;
-  bh=0czp8HPimoHrpAqsPvqIllMPMs8etJtDQEcHMcp5MUU=;
-  b=+djJ3CYv3sf/LJ+uLrsxAT5W6tiHdeFB/AVX0scsUkZ2QvGOm/HP/QHo
-   M9zPqTF8/mFuA3tbpGDFzio2bY2IUr3xp7N1txafJwdy4iXfxcgoPhUP0
-   gdbdBitSkbFy3qk4RIu4TtslKRN6iJVlu9QDc9khmI3Jm51I+T1+lYFTH
-   w=;
-IronPort-Data: A9a23:bpprgq8fh9aiqbfFR6w0DrUDO3+TJUtcMsCJ2f8bNWPcYEJGY0x3z
- mofDDzQaPyPZ2GmKdpybovlpElTsMfXxocxSgo5/HhEQiMRo6IpJzg4wmQcnc+2BpeeJK6yx
- 5xGMrEsCuhqFieEzvuKGue99iYUOZllwtMQMcacUsxLbVYMpBwJ1FQzxIbVvqYy2YLgWlrV5
- IupyyHiEAbNNwBcYzN8B52r9UsHUMTa4Fv0aXRnOJinFHeH/5UkJMp3yZOZdhMUcaEIdgKOf
- Nsv+Znilo/vE7XBPfv++lrzWhVirrc/pmFigFIOM0SpqkAqSiDfTs/XnRfTAKtao2zhojx/9
- DlCnYyNFxoyALTUouFDUxZfHw09ErcB24aSdBBTseTLp6HHW3DrxfNuCRlqe4Yf/OB6Cn0I6
- OMRND0XaheEwem/qF65YrA214Jyc4+xZNNZ5ioIITLxVJ7KRbjfT6jO5MRc0R8tmclSEOzaY
- M1fYjMHgBHoOUcQYgxMWcNWcOGAxST1Ug9foVCsnbM6/mbhyjZB06jUGY+AEjCNbYAP9qqCn
- UrE9mL/AjkVM9uQzTfD+XWp7sfGgyr0WYQ6G7q/+fpnxlaUwwQ7EBoNVnO0pv62jkP4UNVaQ
- 2Qe4SchpKw23EOsSdb5Uluzp3vslgYeR/JfFOo17AzLwa3Riy6dB24ZXntIcN0OqsA7X3op2
- 0WPktevAiZg2JWRSHSA5vKXoCm0NCw9M2APf2kHQBED7t2lp5s85jrLT9B+AOuwi/X2Bzj7w
- HaNtidWr7EOkckj1Kih+13DxTW2qfDhQgcr60PXV2S+4wVRYI+jepzu6F7H4PIGJ4GcJnGIv
- 2ABs8yf6v0eSJ+KiSqBSfkMG7fv4OyKWBXAjlp/N50g8Smx4XmlfJAW7DwWDEJoNMkDUSXkb
- E/apUVa45o7FGOncaJtcaqwDcowxKTtHNijUerbBvJWZYNyXBeA5yIoZEn44oz2uEMrl6cyM
- ovdbNmlEXsADaNgijG/LwsA7YIWKukF7Tu7bfjGI96PiNJyuFb9pW85DWaz
-Received: from connect.uwaterloo.ca (HELO connhm04.connect.uwaterloo.ca) ([129.97.208.43])
-  by ob1.hc503-62.ca.iphmx.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Nov 2021 19:48:22 -0400
-Received: from [10.42.0.123] (10.32.137.240) by connhm04.connect.uwaterloo.ca
- (172.16.137.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 5
- Nov 2021 19:48:21 -0400
-Subject: Re: [PATCH v0.8 3/6] sched/umcg: implement UMCG syscalls
-To:     Peter Oskolkov <posk@posk.io>,
+        id S233433AbhKFAAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 20:00:01 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:20332 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233311AbhKEX75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 19:59:57 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4HmHVb6HGFzBs;
+        Sat,  6 Nov 2021 00:57:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1636156635; bh=m5pndQqsZAfsS+FW1lbAnLViWscX+7vW/HS+H4mYBKg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hhhHpB7ZS4HG39gN9VN9s41HVGTMpArfwk+CIFrRRUhAAn2nVMgZajsgWsAEvJ5Uh
+         E5kVQtH50Hw+vS/SQw2R4N2aAeNeaQxjqX7ir5sEPslX0+QLwnK90B76F+LeCC0oAQ
+         PIxCMskP3Gv3nwVt/hQmWgI+O03uONbc4LfkN9p5SDeJJBZ6ZRwwme7leUxbDszrVm
+         dEbpNMH+ZwjXs15naK6R98AzrEPJWYY5dGiGyLyQtkGFN9d/rjaiicUDQ2N/I12qdE
+         3ePV/0GKFuuOK26dKbitWlt3+bMzUazhaKZ5rx7dILwSez6IuMQDIpnakNB9l+ZBGt
+         /qCnycePN9fPQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.3 at mail
+Date:   Sat, 6 Nov 2021 00:57:06 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
         Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>
-CC:     Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@google.com>,
-        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>
-References: <20211104195804.83240-1-posk@google.com>
- <20211104195804.83240-4-posk@google.com>
-In-Reply-To: <20211104195804.83240-4-posk@google.com>
-From:   Thierry Delisle <tdelisle@uwaterloo.ca>
-Message-ID: <ec84f37d-da30-8f03-3864-0c94078f6e21@uwaterloo.ca>
-Date:   Fri, 5 Nov 2021 19:48:21 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
+Message-ID: <YYXEzlHn28/d5C6A@qmqm.qmqm.pl>
+References: <20211101060419.4682-1-laoar.shao@gmail.com>
+ <YYM5R95a7jgB2TPO@qmqm.qmqm.pl>
+ <CALOAHbDtoBEr8TuuUEMAnw3aeOf=S10Lh_eBCS=5Ty+JHgdj0Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.32.137.240]
-X-ClientProxiedBy: connhm02.connect.uwaterloo.ca (172.16.137.66) To
- connhm04.connect.uwaterloo.ca (172.16.137.68)
+In-Reply-To: <CALOAHbDtoBEr8TuuUEMAnw3aeOf=S10Lh_eBCS=5Ty+JHgdj0Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-04 3:58 p.m., Peter Oskolkov wrote:
- > +/*
- > + * Try to wake up. May be called with preempt_disable set. May be called
- > + * cross-process.
- > + *
- > + * Note: umcg_ttwu succeeds even if ttwu fails: see wait/wake state
- > + *       ordering logic.
- > + */
- > +static int umcg_ttwu(u32 next_tid, int wake_flags)
- > +{
- > +    struct task_struct *next;
- > +
- > +    rcu_read_lock();
- > +    next = find_task_by_vpid(next_tid);
- > +    if (!next || !umcg_wakeup_allowed(next)) {
- > +        rcu_read_unlock();
- > +        return -ESRCH;
- > +    }
- > +
- > +    /* The result of ttwu below is ignored. */
- > +    try_to_wake_up(next, TASK_NORMAL, wake_flags);
- > +    rcu_read_unlock();
- > +
- > +    return 0;
- > +}
+On Fri, Nov 05, 2021 at 02:34:58PM +0800, Yafang Shao wrote:
+> On Thu, Nov 4, 2021 at 9:37 AM Micha� Miros�aw <mirq-linux@rere.qmqm.pl> wrote:
+> >
+> > On Mon, Nov 01, 2021 at 06:04:08AM +0000, Yafang Shao wrote:
+> > > There're many truncated kthreads in the kernel, which may make trouble
+> > > for the user, for example, the user can't get detailed device
+> > > information from the task comm.
+> > >
+> > > This patchset tries to improve this problem fundamentally by extending
+> > > the task comm size from 16 to 24, which is a very simple way.
+> > [...]
+> >
+> > Hi,
+> >
+> > I've tried something like this a few years back. My attempt got mostly
+> > lost in the mailing lists, but I'm still carrying the patches in my
+> > tree [1]. My target was userspace thread names, and it turned out more
+> > involved than I had time for.
+> >
+> > [1] https://rere.qmqm.pl/git/?p=linux;a=commit;h=2c3814268caf2b1fee6d1a0b61fd1730ce135d4a
+> >     and its parents
+> >
+> 
+> Hi Michal,
+> 
+> Thanks for the information.
+> 
+> I have looked through your patches.  It seems to contain six patches
+> now and can be divided into three parts per my understanding.
+> 
+> 1. extend task comm len
+> This parts contains below 4 patches:
+> [prctl: prepare for bigger
+> TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=cfd99db9cf911bb4d106889aeba1dfe89b6527d0)
+> [bluetooth: prepare for bigger
+> TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=ba2805f5196865b81cc6fc938ea53af2c7c2c892)
+> [taskstats: prepare for bigger
+> TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=4d29bfedc57b36607915a0171f4864ec504908ca)
+> [mm: make TASK_COMM_LEN
+> configurable](https://rere.qmqm.pl/git/?p=linux;a=commit;h=362acc35582445174589184c738c4d86ec7d174b)
+> 
+> What kind of userspace issues makes you extend the task comm length ?
+> Why not just use /proc/[pid]/cmdline ?
 
-Doesn't try_to_wake_up return different values based on whether or not a 
-task
-was woken up? I think it could be useful to propagate that result instead of
-always returning zero. Even if it only helps for debugging.
+This was to enable longer thread names (as set by pthread_setname_np()).
+Currently its 16 bytes, and that's too short for e.g. Chrome's or Firefox'es
+threads. I believe that FreeBSD has 32-byte limit and so I expect that
+major portable code is already prepared for bigger thread names.
 
+> 2.  A fix
+> Below patch:
+> [procfs: signal /proc/PID/comm write
+> truncation](https://rere.qmqm.pl/git/?p=linux;a=commit;h=d72027388d4d95db5438a7a574e0a03ae4b5d6d7)
+> 
+> It seems this patch is incomplete ?   I don't know what it means to do.
 
+Currently writes to /proc/PID/comm are silently truncated. This patch
+makes the write() call return the actual number of bytes actually written
+and on subsequent calls return -ENOSPC. glibc checks the length in
+pthread_setname_np() before write(), so the change is not currently
+relevant for it. I don't know/remember what other runtimes do, though.
 
- > +static bool enqueue_idle_worker(struct umcg_task __user *ut_worker)
- > +{
- > +    u64 __user *node = &ut_worker->idle_workers_ptr;
- > +    u64 __user *head_ptr;
- > +    u64 first = (u64)node;
- > +    u64 head;
- > +
- > +    if (get_user(head, node) || !head)
- > +        return false;
- > +
- > +    head_ptr = (u64 __user *)head;
- > +
- > +    /* Mark the worker as pending. */
- > +    if (put_user(UMCG_IDLE_NODE_PENDING, node))
- > +        return false;
- > +
- > +    /* Make the head point to the worker. */
- > +    if (xchg_user_64(head_ptr, &first))
- > +        return false;
- > +
- > +    /* Make the worker point to the previous head. */
- > +    if (put_user(first, node))
- > +        return false;
- > +
- > +    return true;
- > +}
+> 3. A feature provided for pthread_getname_np
+> Below patch:
+> [procfs: lseek(/proc/PID/comm, 0,
+> SEEK_END)](https://rere.qmqm.pl/git/?p=linux;a=commit;h=2c3814268caf2b1fee6d1a0b61fd1730ce135d4a)
+> 
+> It seems this patch is useful. With this patch the userspace can
+> directly get the TASK_COMM_LEN through the API.
 
-If the last two operation return false, whichever task tries to consume the
-list could deadlock, depending on whether or not the ensuing
-force_sig(SIGKILL); reaches the consuming task. Does the force_sig kill
-the task or the entire process. Is it possible to consume this list from a
-different process that shares the memory? I'm wondering if the last
-two "return false" should attempt to retract the
-UMCG_IDLE_NODE_PENDING.
+This one I'm not really fond of because it abuses lseek() in that it
+doesn't move the write pointer. But in case of /proc files this normally
+would return EINVAL anyway.
+
+Best Regards
+Micha��Miros�aw
