@@ -2,110 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301CC445EDC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 04:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C12445EE4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 04:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbhKEDwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 23:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54140 "EHLO
+        id S231959AbhKEDzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 23:55:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231627AbhKEDwi (ORCPT
+        with ESMTP id S231628AbhKEDzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 23:52:38 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79BFC061714;
-        Thu,  4 Nov 2021 20:49:59 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id k4so10293684plx.8;
-        Thu, 04 Nov 2021 20:49:59 -0700 (PDT)
+        Thu, 4 Nov 2021 23:55:09 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24701C061205
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 20:52:30 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id r10-20020a056830448a00b0055ac7767f5eso11294304otv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 20:52:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=kali.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=TqMPoo1kUSiUVo3cNnEi6zuytFVpbUMxm1ejQKcH6w4=;
-        b=MT/eZTmAae9ZJn80kntiBHYYCu73+UJ3Ob5saGuwItNVGe2giHo7hPAeKx0BS84yCt
-         j5istB0R/t7gydVtNEh6zHA9aPLnD0YZBlMu+ptYPbLkp3O18iFki1rwIpa6pxJjMx+k
-         Tz2rC/XMN7wyImNy+wI6qMfyFDvkuVxHLDY5Wf2BUK0iZXFBY/aSGQrWhCK6KjT9H3ld
-         zVejrImLHAsdxxoyVSBd2BZODLJ8No/91BgwjbU43VfcFuhK4AQNWO0hKZpy2E34mEe0
-         1VAiUTXchBtk1N3D7ZYMyv5BIEQJXGt8ogP/0RpZElFPM6+rQUepy6xMATyWI5ISt+ef
-         2JEg==
+        bh=xP2+6X9TQmRFBAqTvYPY5wqGGHltv9YNlYSimPRXZ2Y=;
+        b=CGLK+9hp1NCCqzbxqqXYsO74IoXZ0KZRbyxU5HVn8hae82mL9KyH4mszZg0rSkS56P
+         CwHAwGf3SYIof1+7bn0IgUofU46qXYszVEkzuLX8tky4j6f3Sw1t7+V3YWyY1a/q6jSu
+         kHHfp0HDBm4wlBSWbVba2nYZwdQpWQnU7GbqrPuD5p6smkaKOjAqXShOn/tEO3H6ZkmU
+         0GZugWDAMOWvb+7v4onW5RvQ7arZZlp6c2N+8/oeounnJ4EcdXYQ+1o/dddkSw4TcxBu
+         CbFOZtjNbEaoNq+719aGjc+LVNdIUV1DxTGrzTCxjmbXmrfeP66JQ6hmDcQXyp01cQpo
+         NEew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=TqMPoo1kUSiUVo3cNnEi6zuytFVpbUMxm1ejQKcH6w4=;
-        b=AURAzWVe0shGNb4CmxAtmM3le1ZXtllclK0KW9LCLBajJFchiM3bXWc3Ssx6tRcD7b
-         pj/Vo0WUKa9MEk6p//7lfZ6ceeUaEUUmjJMPoAy1nFk6oP1+qwaW/8IKJ+8gl5/hNqDJ
-         x6P6t1P6MzWXgc4xmcA6By5syrrnS1gd+L8YI0s0SYXIb0taXXTP5gyvSpiVxlWBmqy7
-         gRWhlDjOCnEXPOlOswuGBMx1ExtNqnYW7sc7CIhsi5xqK3y5tUk8Wk/7AQkb3e8drmx/
-         YdYiiL22SW/UnGR1fL1nN8XdUR6G+Lh6dMuTL1eBOIjLY4lRpQD00R6GbNvgF2pTKgmb
-         SN+Q==
-X-Gm-Message-State: AOAM531lwStKS6cY6jCCVeCO3xA9IgdQ7nIsu+rPCd6mvPD0qrRIJVbZ
-        RfeT41pmRtoDPAw/UjV8MWUrH8LwNV0=
-X-Google-Smtp-Source: ABdhPJxUczS1Jjov+LBZ0a+AuFZUqmrBdu16zg5YKOREOJRsBUqW3avRPVF6QpQ8tcSHIr29i4tRFw==
-X-Received: by 2002:a17:90b:1d0e:: with SMTP id on14mr27195572pjb.119.1636084199359;
-        Thu, 04 Nov 2021 20:49:59 -0700 (PDT)
-Received: from bobo.ozlabs.ibm.com (60-241-46-56.tpgi.com.au. [60.241.46.56])
-        by smtp.gmail.com with ESMTPSA id mi3sm5807412pjb.35.2021.11.04.20.49.57
+        bh=xP2+6X9TQmRFBAqTvYPY5wqGGHltv9YNlYSimPRXZ2Y=;
+        b=Jh624v/72LCDpLeBXsR6YErDB7p50SZmMY9FI/HchClRZXfQNrp6M03Q4gKhB2rQ7k
+         LwQnWPelHO6Eb84zRYuWZioGxJo/OUc/PBM57kB/4z4sAuxEAojux971V+PoHN/bIZR/
+         OjnBIFzNpnAAmYfVnEsFc0AOKX6vPya2hLOxhlTRumBKyDedyFQ13CwkaZD7Ws8P/jgx
+         ZT9jAZqxl2Fk9b/awYavpuaGDeo+QtQ9HW46cgFzBxk8Pvu//cnT2I0ZZm+zCMUHdGHC
+         YEaqb9RA/chgadHzlOn3ye7oBduoy9/JhKZiVvyWOm1vTLNOfw0QJSS7a4R1bJ5nX4hO
+         VOlw==
+X-Gm-Message-State: AOAM532nkCJ6qHHkhgtfRM2oLaxWKk65r1lIlvdcPJjPHgqQImtIWxT9
+        8j12J4IEz3I8ASRsOYg2pZ9JTA==
+X-Google-Smtp-Source: ABdhPJzGwvBoFgn45iP5txtjoxs21//4/l1DkwhT5t8nPl002PE+VKHAfF9OO4JH5M+AYA/UWxKUMw==
+X-Received: by 2002:a05:6830:1ad5:: with SMTP id r21mr42931988otc.192.1636084349438;
+        Thu, 04 Nov 2021 20:52:29 -0700 (PDT)
+Received: from DESKTOP-UL9N8HT.localdomain (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
+        by smtp.gmail.com with ESMTPSA id d10sm1918517ooj.24.2021.11.04.20.52.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 20:49:59 -0700 (PDT)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Nicholas Piggin <npiggin@gmail.com>, kvm@vger.kernel.org,
+        Thu, 04 Nov 2021 20:52:29 -0700 (PDT)
+From:   Steev Klimaszewski <steev@kali.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Steev Klimaszewski <steev@kali.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: move struct kvm_vcpu * array to the bottom of struct kvm
-Date:   Fri,  5 Nov 2021 13:49:49 +1000
-Message-Id: <20211105034949.1397997-1-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
+Subject: [PATCH] arm64: dts: qcom: c630: disable crypto due to serror
+Date:   Thu,  4 Nov 2021 22:52:32 -0500
+Message-Id: <20211105035235.2392-1-steev@kali.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Increasing the max VCPUs on powerpc makes the kvm_arch member offset
-great enough that some assembly breaks due to addressing constants
-overflowing field widths.
+Disable the crypto due to it causing an serror when cryptomanager tests
+are enabled.  Add a fixme comment so that someone way smarter than I can
+come along and fix it.
 
-Moving the vcpus array to the end of struct kvm prevents this from
-happening. It has the side benefit that moving the large array out
-from the middle of the structure should help keep other commonly
-accessed fields in the same or adjacent cache lines.
-
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Steev Klimaszewski <steev@kali.org>
 ---
+ arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-It would next be possible to now make this a dynamically sized array,
-and make the KVM_MAX_VCPUS more dynamic, however x86 kvm_svm uses its
-own scheme rather than kvm_arch for some reason.
-
-Thanks,
-Nick
-
- include/linux/kvm_host.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 0f18df7fe874..78cd9b63a6a5 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -553,7 +553,6 @@ struct kvm {
- 	struct mutex slots_arch_lock;
- 	struct mm_struct *mm; /* userspace tied to this vm */
- 	struct kvm_memslots __rcu *memslots[KVM_ADDRESS_SPACE_NUM];
--	struct kvm_vcpu *vcpus[KVM_MAX_VCPUS];
+diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+index b2e09d3387ed..955f73acd26b 100644
+--- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
++++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+@@ -813,3 +813,8 @@ &wifi {
  
- 	/* Used to wait for completion of MMU notifiers.  */
- 	spinlock_t mn_invalidate_lock;
-@@ -623,6 +622,9 @@ struct kvm {
- 	struct notifier_block pm_notifier;
- #endif
- 	char stats_id[KVM_STATS_NAME_SIZE];
-+
-+	/* This array can be very large, so keep it at the bottom */
-+	struct kvm_vcpu *vcpus[KVM_MAX_VCPUS];
+ 	qcom,snoc-host-cap-8bit-quirk;
  };
- 
- #define kvm_err(fmt, ...) \
++
++&crypto {
++	/* FIXME: qce_start triggers an SError */
++	status= "disable";
++};
 -- 
-2.23.0
+2.33.0
 
