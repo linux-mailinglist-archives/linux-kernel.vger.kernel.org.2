@@ -2,109 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54952446038
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 08:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C68F7446042
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 08:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbhKEHqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 03:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
+        id S232054AbhKEHyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 03:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229862AbhKEHqC (ORCPT
+        with ESMTP id S229884AbhKEHyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 03:46:02 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A47C061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 00:43:23 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so2745850pjc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 00:43:23 -0700 (PDT)
+        Fri, 5 Nov 2021 03:54:13 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A31FC061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 00:51:34 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id az37so15571458uab.13
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 00:51:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:content-language:to:cc
-         :references:from:organization:subject:in-reply-to
-         :content-transfer-encoding;
-        bh=hDOoOkqRZ7U9ysDeiWkOoUcmQQBlu93F6tJYyIDCxVk=;
-        b=qIV/iMxGnqY+SrKQFhXzwhCjA+mJZjeC/aj7xv7NZp2J53z0LWlVShTsOoZ7rZLwgr
-         KE/BPTK9aJdhQoia3fvkLfecfa7VCbn00ffEnE4lX2f84AhlQ8IRi7v4Opd894pe0Qyj
-         mPJ5lxrd3VmcD+d7PIkCseBdEb+CaMIJs3dUcsvjvkv0Z6+hE2UBOqIgxjA0RK6SdIhe
-         gZPhdAhWlS9xdKrctdkXKXSvMezcJHMlA2C7PZYRACZ7/l4a/3Nu3zFcZCICn8wNkikG
-         t+N8/En5FrFHBdh9gEsyOANQbps87szXAixWuATuKgqzgiqLow9j2X7kRXOFvg4VRHLp
-         7yFA==
+        d=keith-pro.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=Ql/whxklNbpeT/TF1sL/HqiOGPe6lSTe12O+OSuI+eI=;
+        b=ZC+fTHcif2qCPUKFmZfEGF45V0CERSr/dNF+jA7xD0MJifdzBearf+WaW7RH/sQrPo
+         fHCd34S+AORFj+Dkgt6zwKqMfMC8erNmIarURCJUcvTpiSkq/ZGOb/nnAXeZ6+50fcCD
+         qEEOmZlKo6a7H5sDAPnkabN15gExrJj6vGEnXru04dCBBstCq2zKDx284bbM91OeplUc
+         zYUB/8WziFrQoSGp2ZO53RjqmeQQerhgYy8slHZfZ2vDL8jGutD1UoEmq2x65WhX5eRg
+         bX1h7PiHLGbNkHCKM7JNDrCvnKubdq6XaXaMsf5ZlCIdFc+WIt6SiAEb3JaGtWA5llZv
+         svyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=hDOoOkqRZ7U9ysDeiWkOoUcmQQBlu93F6tJYyIDCxVk=;
-        b=d7kPUYdWARvsSMjHl4eATIwuzjW37XPtoTgA9DPvuzQZrCrIMeZ5QFJL35MYbsAax5
-         T1xLIcFNNZbQZMLRtDYb3T7jWcZW6ZGCA3eiE+a+owEDPu/tbefn601NEb5u4oG1LcdG
-         H9Dsv84O/zoTapvBpwqi2PtZ51m/dSfro8RKA2oW2wYC5JgWMOGtl+ZIS+eqUgwxh46E
-         UQi4aJNA+LFgc9V/aBkiuAKWnNpa2DLwB/00MSvOre8Jbmod8REGSNeaGrdDcbpHWwzZ
-         c6/1ktT50QfRomnrbN5QjMjAjqFBA6xZfUMcepS+nPg0741o+45DMPGuJiS29Dv+uf7p
-         z3dg==
-X-Gm-Message-State: AOAM531dK9+Eb48yKnNU8bc6dsqrHI9PMTf0oPij4lIxWdCFD+lD0JXT
-        OxRBzHLsjGiYKYzyjSVsFRo=
-X-Google-Smtp-Source: ABdhPJxsAev7Nat0AaISjDgyc0QjNCqB0whT2n66cTZgqMzPVXhMnliaHu4aD32t1E3bfmcirV18nQ==
-X-Received: by 2002:a17:90b:1812:: with SMTP id lw18mr28000822pjb.96.1636098202874;
-        Fri, 05 Nov 2021 00:43:22 -0700 (PDT)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id u8sm1933735pfk.22.2021.11.05.00.43.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 00:43:22 -0700 (PDT)
-Message-ID: <bba6a29e-7ef6-c21f-745e-527210a1a181@gmail.com>
-Date:   Fri, 5 Nov 2021 15:43:14 +0800
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=Ql/whxklNbpeT/TF1sL/HqiOGPe6lSTe12O+OSuI+eI=;
+        b=TD2A781YbnuV2mO/kjBETBC7DCrl2llTaRXrZXt7yU385g0w0tUy+Vy9uIrmVNkj+y
+         +vlslepo059yLyXmEmbNEFDb1lNAw6yCIkafO0PEe0Cos5t6rWh/5e4ppR5hWvw1tFCy
+         AeQYCcJDJHY9pAb+WUQXB7YREGu/ulVxwkk++zCx5vPH9Z7cXQ4JkUrX0uD3yX+Hd8x2
+         ri7mgqICwo/bxthxCBNh3H9hwK1VsrpCUqFSP3cqtsvABYDuiEuwY5yLn7Wemu3+Fv13
+         ZYfhEtuHPM4JF1sS8FOVi2kzBZu6fYpNWzprOGH47mLbAO+dBidgnzDOe0zBs4Z03Bv6
+         d1og==
+X-Gm-Message-State: AOAM533L6ethlMEUzfcmBGOO1SI4YvJ+6Sn3bLk0K2DG8Uy1F6FjWJ4J
+        YcBU1eK2hLfGim3pcouMzq60JMBNryqjnH83oRss/N3eXB3hmQ==
+X-Google-Smtp-Source: ABdhPJxg6AhFdjliiGvkzCVekgPWhfXHTnAFZSe/aJnTiB+7xNILGvWWg6RoZi00ESyKrQ2mNX38rkXAjDmrgHfXJfA=
+X-Received: by 2002:a05:6102:370f:: with SMTP id s15mr10421320vst.5.1636098693561;
+ Fri, 05 Nov 2021 00:51:33 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Content-Language: en-US
-To:     Wanpeng Li <kernellwp@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Like Xu <likexu@tencent.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <1636096851-36623-1-git-send-email-wanpengli@tencent.com>
-From:   Like Xu <like.xu.linux@gmail.com>
-Organization: Tencent
-Subject: Re: [PATCH] perf/x86/lbr: Reset LBR_SELECT during vlbr reset
-In-Reply-To: <1636096851-36623-1-git-send-email-wanpengli@tencent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From:   Keith Cancel <admin@keith.pro>
+Date:   Fri, 5 Nov 2021 07:51:04 +0000
+Message-ID: <CALGQo4Yw7Ptm5faXjyAewW9Xe5=QKC_m9=QMy4Rb0N2p-a3VuQ@mail.gmail.com>
+Subject: Intel Alder Lake Question (Scheduler)
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/2021 3:20 pm, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> lbr_select in kvm guest has residual data even if kvm guest is poweroff.
-> We can get residual data in the next boot. Because lbr_select is not
-> reset during kvm vlbr release. Let's reset LBR_SELECT during vlbr reset.
+Hello,
 
-This is because when a new vlbr event is first scheduled in the current CPU,
-the lbr_select is not reset, which causes the previous lbr_select value
-to be visible to the next vcpu.
+So Alder lake was supposed to have AVX-512 disabled/fused off. So it
+looks like that was not the case. For example see this news article:
+https://www.anandtech.com/show/17047/the-intel-12th-gen-core-i912900k-review-hybrid-performance-brings-hybrid-complexity/2
 
-Considering that the requested lbr_select will be reconfigured
-when the event is enabled. It is trivial, but a valid fix. Thanks.
+This issue I noticed it seems to be the possibility that a bios could
+allow someone to enable both AVX-512 and and E-Cores (efficiency
+cores). How on earth would the scheduler handle this? I could imagine
+the scheduler switching a process/thread using AVX-512 to an
+efficiency core. Now suddenly the core the thread/process is running
+no longer has AVX-512 instructions... This sounds like a headache.
 
-> 
-> Cc: Like Xu <likexu@tencent.com>
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
->   arch/x86/events/intel/lbr.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-> index 9e6d6eaeb4cb..1076de93a2f5 100644
-> --- a/arch/x86/events/intel/lbr.c
-> +++ b/arch/x86/events/intel/lbr.c
-> @@ -279,6 +279,8 @@ void intel_pmu_lbr_reset(void)
->   
->   	cpuc->last_task_ctx = NULL;
->   	cpuc->last_log_id = 0;
-> +	if (!static_cpu_has(X86_FEATURE_ARCH_LBR) && cpuc->lbr_select)
-> +		wrmsrl(MSR_LBR_SELECT, 0);
->   }
->   
->   /*
-> 
+I suppose the kernel could handle the trap and then from on only
+schedule such a process on performance cores. This issue I see here
+though is userland process could then intentionally trigger such a
+trap to then only be scheduled on a performance core. Even if it does
+not use AVX-512 otherwise.
+
+Thanks,
+Keith Cancel
