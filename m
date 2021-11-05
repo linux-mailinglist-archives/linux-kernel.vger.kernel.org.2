@@ -2,157 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6844C4465EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F3694465F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:42:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233267AbhKEPnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 11:43:19 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:33416 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233625AbhKEPnP (ORCPT
+        id S232016AbhKEPoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 11:44:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230386AbhKEPox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 11:43:15 -0400
-Received: by mail-oi1-f182.google.com with SMTP id bl27so12251035oib.0;
-        Fri, 05 Nov 2021 08:40:35 -0700 (PDT)
+        Fri, 5 Nov 2021 11:44:53 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF08CC061714;
+        Fri,  5 Nov 2021 08:42:13 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id g184so8698015pgc.6;
+        Fri, 05 Nov 2021 08:42:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lXIaObu/Py4YZyLKzOZro9KF/nVIU+g+Q8GM5ida1Og=;
+        b=XNVoRkmMDXWP2ANhka/BFf4FjRXl1SRhdPt1FFrrPKTpXiaCQ1wdOf2LQSf8OQMeSk
+         90DTYRAfXMYcIJ+RVyFpNoY6IPfN55z9JnXRFU2v/FoOx8SvIH/5EcgzTWnWgDdsaJaG
+         +5XBkdlA1z9EWDR6iJBQfd3i24hGRhxWk2R3kG3VkuSAlH4zWIaEhaE2LL+xvL1VvxA+
+         lElWvnJpDmw73fGVhwMKeX3TEtSl68zbnM7FKDeGP4TivBDwS5i0+fOmjAW2jimoU0lZ
+         vwSNcnwot6I3N5uiWTtBX4BOqoPpAp8NO0y099/LKcXWwbi6LdOzEVBkMmrUya/0eqLq
+         /7rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+aMNxNbmpqOJ7wYtvnDP1I1JUU/Vwc9pDw9R9dCWQ44=;
-        b=vaOaWAiEfBFJqtU4VEou2yq40L7FbHZhG0orjk7Afxa0bfnM0P9e4Vt7zjltUbb5FI
-         6bV+0yyK1tiuCq3V5fmsrs5w7AZfv3MuLmoQOThRYq0wPAOQ/G/WZZ5uS3iuXS+kkZRU
-         niMk6TBshGu3/8fXiS6h0SzMOFXigO3jGAtw4DzFB4c8r3aszGZia07mUNc+fKkbJSu0
-         6gTy9zzDoTuKO35vjnoiswrpnYP2q/NIcZXBnm5kMx+eoPO8kkyK42xHePL7d3/hCeOY
-         BCUzKG4ZvH9w6a03sYX/F4Blk9UnppTEzFN59j97vcWbwt2TGDt6E6SL2MnBB6iOuVj6
-         XZzA==
-X-Gm-Message-State: AOAM532o8as1kz47jkdDWzFZxNdlUHrXBWmdwwJSUp8h5HznZ+WRIn2g
-        xRINsGArhRz3WX6JzCjqzeSTPdm2JZSpdaT4NxQ=
-X-Google-Smtp-Source: ABdhPJyc7w0NC5gvnKZJhWB4Hi7WOpvPTSAuWUqtQbakK/6zRNwCBktNVWVPjvoGCL0SjsOFomAK54mlVnTp8moDgGo=
-X-Received: by 2002:a05:6808:e90:: with SMTP id k16mr22209764oil.166.1636126835039;
- Fri, 05 Nov 2021 08:40:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lXIaObu/Py4YZyLKzOZro9KF/nVIU+g+Q8GM5ida1Og=;
+        b=QywbjkD8RVo7IlTx+/j1oCUzhI4eNNjz4HZKHj/JGgVgxT9JXqPawiqtV5PyxUi7K/
+         LzJ7dkktSOX8dmO0OPPvtMG31yWKMUc555joprWNoZk/mLF8fbdFBuEdEBFpmouisIl3
+         sRhK6+lcswOlMOy0SMioRGaOFRGlET/7UFB7uRzdLyz5oA4OrAqv+ClxCU1iNCnYXNZM
+         RXJK1aNiV+2BSvlr35V95NZFsAl5WgD0i8qFprXny47JMnCV65gTO2KVzpX1mX8mm2Pf
+         W2Xh3URXa/GUNxlp3+e99Q1WPsl1C9rls5nq3kFWallokEOB2yobCI2aJsOJw4/bWJAC
+         QVsw==
+X-Gm-Message-State: AOAM531gDAeY07PYFQk12ECWuE0rP7GsDXJhEr8ruPrUiV9oalUpVPdM
+        ja6w+G474khB5VDk8GvgnK0rMAoAW9w=
+X-Google-Smtp-Source: ABdhPJykX0UAphaHVjTEhNy4GJmQz5vOgJ6x+INBsZhC+3Q1qOF4lXnHzRifX5Xli1w3v4tUbt6ZGQ==
+X-Received: by 2002:a05:6a00:150d:b0:47c:1d28:4ef5 with SMTP id q13-20020a056a00150d00b0047c1d284ef5mr59893304pfu.6.1636126932868;
+        Fri, 05 Nov 2021 08:42:12 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id b8sm7547097pfi.103.2021.11.05.08.42.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 08:42:12 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM BCM63XX ARM
+        ARCHITECTURE), Justin Chen <justinpopo6@gmail.com>,
+        linux-watchdog@vger.kernel.org (open list:WATCHDOG DEVICE DRIVERS),
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        linux-mips@vger.kernel.org (open list:MIPS),
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM63XX
+        ARM ARCHITECTURE)
+Subject: [PATCH v4 0/7] Removal of bcm63xx-wdt
+Date:   Fri,  5 Nov 2021 08:42:01 -0700
+Message-Id: <20211105154208.614260-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211022075057.10759-1-Pierre.Gondois@arm.com>
-In-Reply-To: <20211022075057.10759-1-Pierre.Gondois@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 5 Nov 2021 16:40:24 +0100
-Message-ID: <CAJZ5v0g4RrpnRfTsBm_Qi2-JM8SQCAH9_7gTM9cB3Rmc0DG4Hg@mail.gmail.com>
-Subject: Re: [PATCH v1] cpufreq: CPPC: Fix performance/frequency conversion
-To:     Pierre Gondois <Pierre.Gondois@arm.com>
-Cc:     Ionela Voinescu <Ionela.Voinescu@arm.com>,
-        Lukasz Luba <Lukasz.Luba@arm.com>,
-        Morten Rasmussen <Morten.Rasmussen@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dietmar Eggemann <Dietmar.Eggemann@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 9:51 AM Pierre Gondois <Pierre.Gondois@arm.com> wrote:
->
-> CPUfreq governors request CPU frequencies using information
-> on current CPU usage. The CPPC driver converts them to
-> performance requests. Frequency targets are computed as:
->   target_freq = (util / cpu_capacity) * max_freq
-> target_freq is then clamped between [policy->min, policy->max].
->
-> The CPPC driver converts performance values to frequencies
-> (and vice-versa) using cppc_cpufreq_perf_to_khz() and
-> cppc_cpufreq_khz_to_perf(). These functions both use two different
-> factors depending on the range of the input value. For
-> cppc_cpufreq_khz_to_perf():
-> - (NOMINAL_PERF / NOMINAL_FREQ) or
-> - (LOWEST_PERF / LOWEST_FREQ)
-> and for cppc_cpufreq_perf_to_khz():
-> - (NOMINAL_FREQ / NOMINAL_PERF) or
-> - ((NOMINAL_PERF - LOWEST_FREQ) / (NOMINAL_PERF - LOWEST_PERF))
->
-> This means the functions are not inverse for some values:
-> (perf_to_khz(khz_to_perf(x)) != x)
->
-> This patch makes use of one single conversion factor, being
-> (MAX_PERF / MAX_FREQ).
->
-> As LOWEST_FREQ is not used during conversion, the LOWEST_FREQ
-> advertised through policy->cpuinfo.min_freq might be different
-> from the LOWEST_FREQ value available in the CPPC object,
-> but the conversion will be correct.
+This patch series prepares the bcm7038_wdt driver to support its bcm63xx
+counter part, updates the MIPS BCM63xx platform code to provide the
+necessary information about the "periph" clock, and finally proceeds
+with removing the bcm63xx_wdt altogether.
 
-Well, this assumes that there is a linear perf <-> freq mapping which
-is a change in behavior.
+This was only compiled tested as I did not have a readily available
+BCM63xx system to test with.
 
-While I agree that consistency is a good thing in general, won't this
-cause the values visible via sysfs to change?  And if it does, won't
-it confuse anyone or break anything in user space?
+This should also help with adding support for BCM4908 which Rafal is
+working on.
 
-> Suggested-by: Lukasz Luba <lukasz.luba@arm.com>
-> Suggested-by: Morten Rasmussen <morten.rasmussen@arm.com>
-> Signed-off-by: Pierre Gondois <Pierre.Gondois@arm.com>
-> ---
->  drivers/cpufreq/cppc_cpufreq.c | 33 ++++++++++-----------------------
->  1 file changed, 10 insertions(+), 23 deletions(-)
->
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> index d4c27022b9c9..d2ac74e7701e 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> @@ -302,13 +302,10 @@ static u64 cppc_get_dmi_max_khz(void)
->  }
->
->  /*
-> - * If CPPC lowest_freq and nominal_freq registers are exposed then we can
-> - * use them to convert perf to freq and vice versa
-> - *
-> - * If the perf/freq point lies between Nominal and Lowest, we can treat
-> - * (Low perf, Low freq) and (Nom Perf, Nom freq) as 2D co-ordinates of a line
-> - * and extrapolate the rest
-> - * For perf/freq > Nominal, we use the ratio perf:freq at Nominal for conversion
-> + * The CPPC driver receives frequency requests and translates them to performance
-> + * requests. Thus, frequency values are actually performance values on a frequency
-> + * scale. The conversion is done as:
-> + * target_freq = target_perf * (nominal_freq / nominal_perf)
->   */
->  static unsigned int cppc_cpufreq_perf_to_khz(struct cppc_cpudata *cpu_data,
->                                              unsigned int perf)
-> @@ -317,14 +314,9 @@ static unsigned int cppc_cpufreq_perf_to_khz(struct cppc_cpudata *cpu_data,
->         static u64 max_khz;
->         u64 mul, div;
->
-> -       if (caps->lowest_freq && caps->nominal_freq) {
-> -               if (perf >= caps->nominal_perf) {
-> -                       mul = caps->nominal_freq;
-> -                       div = caps->nominal_perf;
-> -               } else {
-> -                       mul = caps->nominal_freq - caps->lowest_freq;
-> -                       div = caps->nominal_perf - caps->lowest_perf;
-> -               }
-> +       if (caps->nominal_freq) {
-> +               mul = caps->nominal_freq;
-> +               div = caps->nominal_perf;
->         } else {
->                 if (!max_khz)
->                         max_khz = cppc_get_dmi_max_khz();
-> @@ -341,14 +333,9 @@ static unsigned int cppc_cpufreq_khz_to_perf(struct cppc_cpudata *cpu_data,
->         static u64 max_khz;
->         u64  mul, div;
->
-> -       if (caps->lowest_freq && caps->nominal_freq) {
-> -               if (freq >= caps->nominal_freq) {
-> -                       mul = caps->nominal_perf;
-> -                       div = caps->nominal_freq;
-> -               } else {
-> -                       mul = caps->lowest_perf;
-> -                       div = caps->lowest_freq;
-> -               }
-> +       if (caps->nominal_freq) {
-> +               mul = caps->nominal_perf;
-> +               div = caps->nominal_freq;
->         } else {
->                 if (!max_khz)
->                         max_khz = cppc_get_dmi_max_khz();
-> --
-> 2.17.1
->
+Changes in v4:
+- fixed binding patch (Rob, Guenter)
+- updated Kconfig description title to mention BCM63xx
+
+Changes in v3:
+
+- added Guenter's and Thomas' tags to patch 6
+- added missing initialization of id_table
+- use Rafal's latest binding patch
+
+Changes in v2:
+
+- added Guenter's Reviewed-by where given
+- update binding patch to pass make dt_bindings_check (Rob)
+
+
+Florian Fainelli (6):
+  dt-bindings: watchdog: Add BCM6345 compatible to BCM7038 binding
+  watchdog: bcm7038_wdt: Support platform data configuration
+  watchdog: Allow building BCM7038_WDT for BCM63XX
+  watchdog: bcm7038_wdt: Add platform device id for bcm63xx-wdt
+  MIPS: BCM63XX: Provide platform data to watchdog device
+  watchdog: Remove BCM63XX_WDT
+
+Rafał Miłecki (1):
+  dt-bindings: watchdog: convert Broadcom's WDT to the json-schema
+
+ .../bindings/watchdog/brcm,bcm7038-wdt.txt    |  19 --
+ .../bindings/watchdog/brcm,bcm7038-wdt.yaml   |  42 +++
+ arch/mips/bcm63xx/dev-wdt.c                   |   8 +
+ drivers/watchdog/Kconfig                      |  17 +-
+ drivers/watchdog/Makefile                     |   1 -
+ drivers/watchdog/bcm63xx_wdt.c                | 315 ------------------
+ drivers/watchdog/bcm7038_wdt.c                |  16 +-
+ include/linux/platform_data/bcm7038_wdt.h     |   8 +
+ 8 files changed, 77 insertions(+), 349 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.txt
+ create mode 100644 Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.yaml
+ delete mode 100644 drivers/watchdog/bcm63xx_wdt.c
+ create mode 100644 include/linux/platform_data/bcm7038_wdt.h
+
+-- 
+2.25.1
+
