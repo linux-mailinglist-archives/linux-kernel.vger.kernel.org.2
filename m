@@ -2,103 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E545344673F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A648446744
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233416AbhKEQsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 12:48:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58648 "EHLO
+        id S233907AbhKEQtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 12:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233951AbhKEQsB (ORCPT
+        with ESMTP id S232930AbhKEQtm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 12:48:01 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 898ABC061208
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 09:45:21 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id f3so19809467lfu.12
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 09:45:21 -0700 (PDT)
+        Fri, 5 Nov 2021 12:49:42 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49653C061205
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 09:47:02 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id y13-20020aa7942d000000b0049fa1a97f02so708275pfo.9
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 09:47:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vgo3jVJmdTH5GxUz+5stwlmrOeYD79EfO01ThQfyjbQ=;
-        b=Np1j9Uy0lGaSSTvDEzHqS2+yEZcf0ojz8egqSf66QCCCqHsOnZAexmX7yu+3L6iDXu
-         060T/Ak0MJgayTUGaF5KsLjXVPir4Dn8b61gY+eHuQNJqnLLD6vQtJwQdMStoMJY/Ycm
-         fSdP6w/3sUbhj7AlCG6dvw+ZFKYAm6pbzsZpYr/7PgAxWgdf+pqch6Hra/LBNRMDvVNo
-         qkKTEltpflbo23In6QS2b53SJoqmpyS+TZryh3EY+vKvi8XKixQdcAOuh2PhtbDDPqfA
-         qIc6+RevvSkXnHJREbGBcjxuCGGzQ6oFyPLhC2ut5mSw60mTYq4bLv8IJtZodz8BexgZ
-         MZgA==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=if51XuBZwIEX2x5mLxcA/AQLijVPXzGJ1zH9O3ITOIA=;
+        b=Bg4zUOjdV8Y7SgLyQzPIDKkpSFIJLkTHj9Rt68Qmz24lHffLYUbriq4yw14sx6Dddz
+         QixjtB9SIw/v7q7tS/uI3csIuQrYnZZ2M4evplGWaWqLSrFIl1kfVEaXkdHRs1GaRbqe
+         uaVvnj6DLevC87Ht5zZBi5aPIMFrSO248B9hDL5wdTpTCT1S2U3gIN8XlfZhT9SV4S0u
+         AS9z2RIsg8nBAa9T/YzTD2vH4SgaU5kLiyacN8yGDuawRf/DzN05HEwW6Ao6eGSF0aS5
+         TrBdDUR/Px5z4oLqtZwki7e25BU1SEQzjyCHJmnWQSnAjKvJW0Ods9NY0fihVavm5N7m
+         DU5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vgo3jVJmdTH5GxUz+5stwlmrOeYD79EfO01ThQfyjbQ=;
-        b=g8iSvIffB1oZkPfb1bQ+/NFq2DuS6AVJLZ/2IQvSpeQ9DdxyMUF//UgqWRy2pa2LZ2
-         cHwU+zGB5Tg8D53tM9WUmxpYAj2Ha3zEXh4yvav+z1ubNV4IMB8nP7Y+lhWuhMJGnltc
-         SqM8b2SQQrLrX+BOC7t0bB5jCujAaWak1/drp274+JLTxtqIYn3qBTDzawnoEf8PkeBl
-         MZ3UV2QzW8tZfWujgH0czTgN0FJFGfVN9/mejKqFSAGtFKhbzwOB019z0N9QeLsUknCJ
-         xa7F8HEUwgbc2UrSdbqQBV69fBGmV0CGmpwT3ihsE3+vHJDmcxpwDnfC52uSgRNKdtdy
-         YOig==
-X-Gm-Message-State: AOAM531figY8MiIFgfIAuzkZplyXUiXpxfEZvUO/9uH2BqxIr+KD/s+n
-        lmo6tXUYWVS+NOvXNiMV966vxA==
-X-Google-Smtp-Source: ABdhPJwG3G6cMAbQABxpQQEIsXi2suMLY513mTVfNIqk4LQDS9bdbO9qWIH1j5JI0FEk57La/1jifQ==
-X-Received: by 2002:ac2:4c53:: with SMTP id o19mr55052413lfk.303.1636130719932;
-        Fri, 05 Nov 2021 09:45:19 -0700 (PDT)
-Received: from localhost (c-9b28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.155])
-        by smtp.gmail.com with ESMTPSA id l15sm725734lfg.239.2021.11.05.09.45.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 09:45:19 -0700 (PDT)
-From:   Anders Roxell <anders.roxell@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org, shuah@kernel.org
-Cc:     nathan@kernel.org, ndesaulniers@google.com, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Anders Roxell <anders.roxell@linaro.org>
-Subject: [PATCH] selftests: net: tls: remove unused variable and code
-Date:   Fri,  5 Nov 2021 17:45:11 +0100
-Message-Id: <20211105164511.3360473-1-anders.roxell@linaro.org>
-X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=if51XuBZwIEX2x5mLxcA/AQLijVPXzGJ1zH9O3ITOIA=;
+        b=b47I3eLaL5jrBXnEsczIGS+H2Z5SpDrxihmU7r1cRJ7eqod0LYPiyKvopmVaQR2MZR
+         +vKZJgZAG0fTqiqxDL9C281AIRGl957pA1gGKvGnvSMEDH3Uvo/G8l2fJ73hvuB9l1j+
+         WYZO5ri/MHwF1FtgnFKbtxdrTp7qQM+B7N7xeuuA5Gyydo0tetQcyHaFGRu/6gUfQtJJ
+         D4lTXTsS5whbZd6qUK/XnGDEN7Vfbhfg62k4m82fZUXpQHbV2NiNf1OESANHDWZV8/f1
+         rjPjSCj2E4+bgDmeCkfxDYV/3FLQRrhNSM5fKJRou8qVj4mLoKuzrAffElRw18yBOORU
+         KmQQ==
+X-Gm-Message-State: AOAM532CvcC1jiPrh1b9sC3OPmdtvvYNR62eIINA08BA5aqXygsqGKTG
+        M3czB2i6lK4GVbAVNzf4lbypiZp2/0pD
+X-Google-Smtp-Source: ABdhPJwEGWwXqFldXt9Fi9QKrpUbQ4nHAs9t/CUL8QIAuTpk8dAqdUX5hkJ9RJrD2Cz3NpNMAU2kUctDYDRx
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:4cee:beb8:1744:5207])
+ (user=irogers job=sendgmr) by 2002:a17:90b:2389:: with SMTP id
+ mr9mr13880566pjb.152.1636130821694; Fri, 05 Nov 2021 09:47:01 -0700 (PDT)
+Date:   Fri,  5 Nov 2021 09:46:57 -0700
+Message-Id: <20211105164657.3476647-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
+Subject: [PATCH] perf metric: Fix memory leaks.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building selftests/net with clang, the compiler warn about the
-function abs() see below:
+Certain error paths may leak memory as caught by address sanitizer.
+Ensure this is cleaned up to make sure address/leak sanitizer is happy.
 
-tls.c:657:15: warning: variable 'len_compared' set but not used [-Wunused-but-set-variable]
-        unsigned int len_compared = 0;
-                     ^
-
-Rework to remove the unused variable and the for-loop where the variable
-'len_compared' was assinged.
-
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+Fixes: 5ecd5a0c7d1c ("perf metrics: Modify setup and deduplication")
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/testing/selftests/net/tls.c | 3 ---
- 1 file changed, 3 deletions(-)
+ tools/perf/util/metricgroup.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/net/tls.c b/tools/testing/selftests/net/tls.c
-index d3047e251fe9..e61fc4c32ba2 100644
---- a/tools/testing/selftests/net/tls.c
-+++ b/tools/testing/selftests/net/tls.c
-@@ -654,7 +654,6 @@ TEST_F(tls, recvmsg_single_max)
- TEST_F(tls, recvmsg_multiple)
- {
- 	unsigned int msg_iovlen = 1024;
--	unsigned int len_compared = 0;
- 	struct iovec vec[1024];
- 	char *iov_base[1024];
- 	unsigned int iov_len = 16;
-@@ -675,8 +674,6 @@ TEST_F(tls, recvmsg_multiple)
- 	hdr.msg_iovlen = msg_iovlen;
- 	hdr.msg_iov = vec;
- 	EXPECT_NE(recvmsg(self->cfd, &hdr, 0), -1);
--	for (i = 0; i < msg_iovlen; i++)
--		len_compared += iov_len;
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index 4917e9704765..734d2ce94825 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -228,6 +228,7 @@ static void metric__free(struct metric *m)
+ 	free(m->metric_refs);
+ 	expr__ctx_free(m->pctx);
+ 	free((char *)m->modifier);
++	evlist__delete(m->evlist);
+ 	free(m);
+ }
  
- 	for (i = 0; i < msg_iovlen; i++)
- 		free(iov_base[i]);
+@@ -1352,6 +1353,14 @@ static int parse_ids(struct perf_pmu *fake_pmu, struct expr_parse_ctx *ids,
+ 	*out_evlist = parsed_evlist;
+ 	parsed_evlist = NULL;
+ err_out:
++	/*
++	 * Errors are generally cleaned up by printing, but parsing may succeed
++	 * with intermediate unused errors being recorded.
++	 */
++	free(parse_error.str);
++	free(parse_error.help);
++	free(parse_error.first_str);
++	free(parse_error.first_help);
+ 	evlist__delete(parsed_evlist);
+ 	strbuf_release(&events);
+ 	return ret;
+@@ -1481,8 +1490,10 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
+ 	}
+ 
+ 
+-	if (combined_evlist)
++	if (combined_evlist) {
+ 		evlist__splice_list_tail(perf_evlist, &combined_evlist->core.entries);
++		evlist__delete(combined_evlist);
++	}
+ 
+ 	list_for_each_entry(m, &metric_list, nd) {
+ 		if (m->evlist)
 -- 
-2.33.0
+2.34.0.rc0.344.g81b53c2807-goog
 
