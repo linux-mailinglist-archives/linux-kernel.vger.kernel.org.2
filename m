@@ -2,194 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86E7445F18
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 05:21:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4410D445F1E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 05:24:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhKEEYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 00:24:00 -0400
-Received: from mail-dm6nam12on2076.outbound.protection.outlook.com ([40.107.243.76]:10977
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229884AbhKEEX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 00:23:59 -0400
+        id S231613AbhKEE1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 00:27:12 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43498 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229884AbhKEE1K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 00:27:10 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A50RpbJ029841;
+        Thu, 4 Nov 2021 21:24:02 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=SntenbIbxbh71IiR+eGK+zyRxA7978v4rahh0SKtl+w=;
+ b=gRJu/fGa39WhiolYMwb96toGY1hqYh13lvvoagABjah4gHE3n0Z1rhi68wXz6amDeTy/
+ 7jWlLlLdAIoD0HfggXmO/AR0ROer6VqxS0oyB3TLXutMEPTdUB0pChzL7zS4P6Od7Rz8
+ VlahPwwXrMg8Hu0vIeQTU960o4kTKQSEsFs= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3c4t32159a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 04 Nov 2021 21:24:02 -0700
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Thu, 4 Nov 2021 21:24:01 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XLMtPZfooPpPK6cd8kos+xPrXjhclAB+3uNjXZjGxWLeVsQW6ZBZ90XHq9YrcsJOtjvzW5Op+Xg2EDGMTRkpPC3D775nECTWcG5arlFk4RPTti+hSZ/57RHnsOmo9t7l3RIq0Z4CoI+1wvdfl6tRWw6b9W9rbgPOY6TV5choLGwbowtMDu1WSucCMIwRHejiLcJyJJjGKAtl+gO3nGkDc++WaH3cZcWRmVNyMaKAyD/eollGbjWAQhHalj1d/6E56Us8dlJv7kNR5Igkrl9SblSUZm0/ZZoN7HVuabDLnliytbs5hd23E8B01Tya82wtiovPzggUskmEbeB80c3Pjw==
+ b=LCHZuXP2tVYMJsoyLJGGphWiRKT+FHdIciYl+6XF6UCpt0Ra7pe8oicSLfTuFVPpUUhTUSMG/MZmqjQY/eQwvtSqTSEcDo0lvA8gj0NevtCBtpg6Zf7RINZRgVhbbVjNneVsv8WEccS79MJ1bc45dMrM+VUAiBqtCGU90gUdBMkYROdYjQSr4u45BkUAafKa3aDnlbaAHgbSgb51WlFu1VJpH6LB0KCfZqKEzSPhajSaOCdzY874WrtqzLM4HKDtlHIbcYBaK8tlv2lYw/GhpVsT4swCbkRDyJASyUZrOS8axkytZVHI/xycYsmVJS8z28+aePj0dDGUmzJgnjAROA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cKqWy1pJJGy/QKWOgc6LSUReHTQFSHjGqwlCgaZeBRg=;
- b=BmfU9M/0Ht+mVep6lbffWz3acwLQxLuB9P7KTmN5YbaZmvie8gEzsNFtmn78pDR0kzUV/riM6VH9OiGFxg4YO7hcF15ayJVImdooQy7rd0cpzXJ+0v8QgPiGvlWZGany3GnOJJYtv8n/B9lUlnycdHc5jLM5VBmQI8F2fsjx4weTJjWvM1Ly5eyspZp0oU8GbkckdOhdrN8l5CyDohfxoBiGL5fznH3Kb1cIKiCDAFuPEqinOs/VBLYbQMSQppwEIy1nkFycZFU513VvXQeF02gmnmwYCcQ3RKg0Y6NBFOp8UnXI3fCQQ0v6gE69qg5U8WdPICP4IgZNrWqEO0cayg==
+ bh=SntenbIbxbh71IiR+eGK+zyRxA7978v4rahh0SKtl+w=;
+ b=YffgMwQWNa/m8GQCYvhBnaDtC2Wyf+gyv/ZxhxXjQ+S6lKlkTZqcF1damWY5d9NjT+44kcc4jAoTyxcoOwXKWoVwrk5LQDVUloVpQ1cusfLHg4LbesEcxWJZqqolb1OEAl4zKk82uXhA0Pqd9mM6wdk9RidMvMSZ2jrLxKvdnC2vSB39Gr54hUphhfUARF32BCLjkKWWpf3wkUtaNZu2a9dPkuq6WQnpMxQVe9sjEeMe2LZkYK1YTb5tqANGspDVog0qEhM0yS2nVhAB2pWpPQOfRJwuhqdBN6BeT9m9KYJ10hd+gxO+5bnyzC1AovSX1Rsij9N0+kOKBYI92Vxb3Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cKqWy1pJJGy/QKWOgc6LSUReHTQFSHjGqwlCgaZeBRg=;
- b=2XeY1tsgWXM1eE1lk1k/kFrGPnt0Uv2yLAZM4SiVtai1lxGiE2V25qEwheU5TAeXbpKvl6zFwXk2YvyHTnN0V6A8DO3Eij6uD7QmaVfb2WHWfDW/AWKBB44fP+jusPsMXIpWTHXEfhKSRYdhJLrC8sH41uvFRHN5EPcdZSV8Xg4=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from CY4PR1201MB0246.namprd12.prod.outlook.com
- (2603:10b6:910:23::16) by CY4PR12MB1432.namprd12.prod.outlook.com
- (2603:10b6:903:44::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10; Fri, 5 Nov
- 2021 04:21:12 +0000
-Received: from CY4PR1201MB0246.namprd12.prod.outlook.com
- ([fe80::5d29:d78d:3e89:b697]) by CY4PR1201MB0246.namprd12.prod.outlook.com
- ([fe80::5d29:d78d:3e89:b697%3]) with mapi id 15.20.4649.021; Fri, 5 Nov 2021
- 04:21:12 +0000
-Date:   Fri, 5 Nov 2021 12:20:47 +0800
-From:   Huang Rui <ray.huang@amd.com>
-To:     "Fontenot, Nathan" <Nathan.Fontenot@amd.com>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "Sharma, Deepak" <Deepak.Sharma@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
-        Steven Noonan <steven@valvesoftware.com>,
-        "Su, Jinzhou (Joe)" <Jinzhou.Su@amd.com>,
-        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH v3 06/21] cpufreq: amd: introduce a new amd pstate driver
- to support future processors
-Message-ID: <YYSxH3PN70zeyNLX@hr-amd>
-References: <20211029130241.1984459-1-ray.huang@amd.com>
- <20211029130241.1984459-7-ray.huang@amd.com>
- <012f60e6-af5a-5102-b35f-7b14ac9ad198@amd.com>
- <YYIzwuzoqXRscqif@hr-amd>
- <6e1831dc-9d7c-151c-ca83-594d249d6442@amd.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6e1831dc-9d7c-151c-ca83-594d249d6442@amd.com>
-X-ClientProxiedBy: HK2PR06CA0020.apcprd06.prod.outlook.com
- (2603:1096:202:2e::32) To CY4PR1201MB0246.namprd12.prod.outlook.com
- (2603:10b6:910:23::16)
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SN6PR15MB2479.namprd15.prod.outlook.com (2603:10b6:805:17::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.13; Fri, 5 Nov
+ 2021 04:23:55 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::51ef:4b41:5aea:3f75]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::51ef:4b41:5aea:3f75%6]) with mapi id 15.20.4669.011; Fri, 5 Nov 2021
+ 04:23:55 +0000
+Message-ID: <ef670dc7-e3c9-ad89-dc8b-5cbd1910b38c@fb.com>
+Date:   Thu, 4 Nov 2021 21:23:51 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.0
+Subject: Re: [PATCH bpf-next v5 1/2] bpf: support BPF_PROG_QUERY for progs
+ attached to sockmap
+Content-Language: en-US
+To:     Di Zhu <zhudi2@huawei.com>, <davem@davemloft.net>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <jakub@cloudflare.com>
+CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20211105015730.1605333-1-zhudi2@huawei.com>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <20211105015730.1605333-1-zhudi2@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR04CA0164.namprd04.prod.outlook.com
+ (2603:10b6:303:85::19) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-Received: from hr-amd (165.204.134.251) by HK2PR06CA0020.apcprd06.prod.outlook.com (2603:1096:202:2e::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.13 via Frontend Transport; Fri, 5 Nov 2021 04:21:06 +0000
+Received: from [IPV6:2620:10d:c085:21e1::14ee] (2620:10d:c090:400::5:bd86) by MW4PR04CA0164.namprd04.prod.outlook.com (2603:10b6:303:85::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11 via Frontend Transport; Fri, 5 Nov 2021 04:23:53 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4a51882e-50a1-4617-742a-08d9a013b32f
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1432:
-X-Microsoft-Antispam-PRVS: <CY4PR12MB14327A34A02F521BD59BCBB2EC8E9@CY4PR12MB1432.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Office365-Filtering-Correlation-Id: b79f6f60-52b8-469b-f61c-08d9a0141443
+X-MS-TrafficTypeDiagnostic: SN6PR15MB2479:
+X-Microsoft-Antispam-PRVS: <SN6PR15MB247963FBF4DEB8A96BD2F8BBD38E9@SN6PR15MB2479.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: T+fZ2eldZ8hS0h+K7Cuv4mE3XIMAvZR77S+9nin1odp6+WTzYgI9pBnwP9chXCoy8+7QPuMUiWMfDiDdF29fbtocWA8WeEtoLKB5H/OGc5v4QPuytK6HckYT48iwo/G8+h1Inwz9UZcW38xlgMss8D1A6pJonf41a6n+nvO67Sv85/7qYobiZ04JfS+3E3KYrriYg8uRoxQrDgMe84NTrE+05xAAf5z0G5DfAl0k2fPd+5qgXJ8l74azsZ4kLVxz3jDef3CQHpHUitXpZ74IubFnz+09jgbQT/Bh+kGT3MJTZ1pOOVIVl3xcasa2yYwvu1leNs+XXKgfd8alpIr1/+B+XkbA57v3/0hF/RJQb6ncyuvev0k/05O1QuEORad1ZUeTcHntE86gG6mVNYpqqKgjgxFZKGQIcxl8uePsi6dNS6FtY0WEr+a6oqf9NHyV0Wp0fqFTeIKV62HDHegAXhNdtyMM2I6Unf+2TaIj2GGmgmYMoM+mfQ3/CPdD/jyqevQzfkAMvkenHAerwtM4M131J/l31cgzVR/I8Q2vXiApepHddWiCtKbFZzzAqt+1JWj8LswOIS4PZGkYsgytSVCtLXkNWtVdYRGmrYqI5QhTt1JUPoQgrpa4iwY4kwOmSIsx3nVMsGHlzaJBizCyoV8valo5b9JHQm2tEK/lp7Bs1zBgtkPE/GhD6ZQFSauxMxBW5Hgyf7wq7vC2VpI+mA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1201MB0246.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(316002)(6666004)(53546011)(956004)(6636002)(33716001)(86362001)(7416002)(186003)(4326008)(6862004)(54906003)(38100700002)(508600001)(66946007)(83380400001)(55016002)(2906002)(26005)(66476007)(8936002)(9686003)(6496006)(66556008)(5660300002)(2004002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: chSuu767zDwbnVesDOQqZXX0W5g271n66NXORocknNLgDaOygdRZu64tC8AZHn4SsqsrQ92BXS684CBTm7szZVWCWS9GSv5K4P/ZH8EpcPC7aZ4OrYtGD072OrOITdK+UPWeH2Hq2GyZV2uauWsvtQeo56E5GbCwmoHgk+d8w63o0dXm7EkAffdWcHWGbvh0m5cPalq0gv7orS23VP5C/zmpWKE2GfSrqXex+iz7irr3O5B3LyZC2T07+PIYIH5NIvnWeu717ah5NEtiZmAAEVV6E2rhsag9IizGbtY2VaVAQZQQ2pomJcZkABBz8drw4Ch0G4Pf9pozzpOUZ0QUgsY8TFKcWatqqWVg6HwxYmQiH1j13RQpIbdSxPa6YEEt5se+1EO/sFFCftJPzF9sJNlGUsVunPIr30crJUO4AG8sxcDBnAQG/jzSyOXx2nkKNRyt+3SnDKPoKLP7Yvzs3y/Ge7zEa78jesrN8Z4RihF0Cpkj/Du/UZa59A3hl4HuVuLhqAzuABjYaLfgfEJ3hBnVsH7arSbTUYRoLRaA5K/xNcAU+6PBPivs2rSi92cFpyLQBuYojb9PLd/dcLpKifWiHfQKHNDNdRdh7ZA7msfc8yKRVGzHeZujchMAG1CQS/vjHkfW/8zwrstYrX3M0qsofrb2+RtV7jrAC43IxU5H87wA/53AsQMeIHhfrFcy86rfv6upGEWq+Jx+jYsyim1i/ta69qivuxTPGaQnlonieGLHj2BNO4DG+jhxfGMA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2616005)(66946007)(66476007)(66556008)(8936002)(2906002)(508600001)(86362001)(6486002)(8676002)(4326008)(52116002)(316002)(186003)(4744005)(5660300002)(7416002)(31696002)(53546011)(921005)(38100700002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?x6G7ynq054Pp0vHx1j698X80DCLq84JVLgR/Rz2QC5avkdxJ28R5daviHyQC?=
- =?us-ascii?Q?Fnn7RRjvQAIzI8nCHv5UBg9+XlZHbIh39HetDm1Ay8e8sWvb+VFeUxoFx095?=
- =?us-ascii?Q?/suz1aVP+yFuTMAPfThMNkjNgt4+RapWxeAM9UtwkzGa4NeTh67k9LI53FTJ?=
- =?us-ascii?Q?rsinTZ8dHSuIC/B5P2eysHix4OhAfr07f9FRI7ciizNT/EcVSk4dNpWyzmCc?=
- =?us-ascii?Q?9TCsB4rxUbbTQ60tCmWIasIJbCEaieWRQYi0NlNNK36L1untuCPtZ/BCRc4N?=
- =?us-ascii?Q?8UToLwCzCT0QdbozF3nbYOI8aibxwiFZj2moegXzkHrgtYJv+qzkDmYDh3/3?=
- =?us-ascii?Q?mHO78gt/hBor3WKItUEDlnF/Zg/E+dmEDk+kDqTWqcGgD1+mP2Z4mojYzIdI?=
- =?us-ascii?Q?j9IRMumSXl8bP+w4eUFZEpbXYqzls6AZfGA5H0QwElMCaO6LTm0/Pw4BeHvZ?=
- =?us-ascii?Q?hvcYf/f3DSz0+6M276eKs9j8lMuVHaTvPQUZd3Ukc7pzkSTQhqEEszvvmf0P?=
- =?us-ascii?Q?WpVc7liXe986MVttWLC1LJL6UtiyDK8ffgr1wZFlravCK0NLFV3rXkzYylTp?=
- =?us-ascii?Q?SbEVXMSOOlhlX4A734Dds6b/Z9vbs9kYHc5E3dpalGmLi31CLfazmWfl5tm4?=
- =?us-ascii?Q?ZT0WJNVQ3mEVFILjzHAOhSI6WN1f5WubyQATlb4CpB+jWW1KMA5/0cAvhgTV?=
- =?us-ascii?Q?Pg0GH6PqLz1ePEGYIqdUkDcyqRFIscOadcCKU4d2u6nOccwKqaBYzGXtgY18?=
- =?us-ascii?Q?qEfysWRWcD1Fs3HdyD//TmnXMWtTSNtbqkUFQjCWsKY6tBZShHgOIftJGGzC?=
- =?us-ascii?Q?hcPInnbIQeqXPolilNuIjOH5YNMmfBZNY0JYBrzDpXwLPbs7lDYRGOYcUE3k?=
- =?us-ascii?Q?3eHAx6k+2IT34BajvHNDFl23tNrz5LTU3wxY2EE1sRg9FWRqWHrB/4JEV7jF?=
- =?us-ascii?Q?QaLz7dnIMWKGlPB7qPltBmXsxee+OCr3qs+cOU+KEu1zWmahhsIRYdZ+LXjd?=
- =?us-ascii?Q?uoQ0SpUna/Gj8Fz5K32/m2tTIW9x4X7P4RoeaWq4iZx9YJ7A59EA545BOgmW?=
- =?us-ascii?Q?k9Jjm0p/n4F3w57E882qPzx1gSY2ebBDGO5Hu+Bu3gzma8eBtpZYX4lb01GL?=
- =?us-ascii?Q?LyJyOKew8NRuMoUvyPhtxZNVy7imqsOIogosp9NqpaK8SQATF4PEFRNxnlk4?=
- =?us-ascii?Q?cfwdl7QFjGJHqqAO4h2X/lWxe5pEg3W6sVM7dfZ5RmVweRTbaytWwGJV4rrC?=
- =?us-ascii?Q?Ja/vpTD0NXaDKqHMmfF8i9QmV/6HsuaysXvfLDP5pIvCvAYuaVAwwclcN+M0?=
- =?us-ascii?Q?gMJ03MZxpq0hbuElV+63R3A7RH6Jv5Z+xQtWt+9tOPxR646GhH0qFyhS6srL?=
- =?us-ascii?Q?52VGZttWqUErK4/Do9KoQw4LA/9GHZ5ADLOQooF6NT5k1UshdffAAXZqVQ2e?=
- =?us-ascii?Q?5s2SsdcuYSlOtGL2IdmenXLNnQ7xyAgcT2A2MNinzXE8zmLvfpWxP2azme/K?=
- =?us-ascii?Q?s8OWqWBAdV2TA7crijBD2YpNjMYBdueMEedKcOgMD8Tpx28qzTqz1si03icE?=
- =?us-ascii?Q?Cdb/B9gAecWXRQxm9VzZcBx84iv3wkhhYmYNPhdg73wQipn+JnXUWwWPKL73?=
- =?us-ascii?Q?6uFdgL64H7jSDMJGNvLBRUQ=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a51882e-50a1-4617-742a-08d9a013b32f
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR1201MB0246.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QWxmRWRBRE8yL2FIUlhSNEdlTzViNjZNQnRSTGlDN1B5aVozV3oyM3VEazht?=
+ =?utf-8?B?Z2hyK2pkRXFmVWFJdUN2aFpmbW1ocGxJa1JJZjF1VXVZV1pneVNqUmZoSEFT?=
+ =?utf-8?B?OHpaSEZoVUQvdmNPbml3c0Zwa09RSnFtd3VDTzdVb1pUVjkwdHNZcElIaVcr?=
+ =?utf-8?B?YTVYWXdyUTJxTUlPbFI4QVB1MjlEYjdKQzQrZTkwVlZ4MnpYZ3BDTHNzZHlB?=
+ =?utf-8?B?MnUva2VEdXFHbWJQaVVybEtLVWZTVVYrZ0YydlBkN1Q3aThNNmFUK1Z3MDE2?=
+ =?utf-8?B?ak5NQXI3bnRmN1grUm5rZ0R3TjJUM3cvbGtHaEFNTE92N3J1VEh6MUc4a1k1?=
+ =?utf-8?B?ZFc2T1lXQUhpbk1GZjhaSHBybXU4aEtTR1VEWmFEMy96WkswNHBKWUZ3dk5J?=
+ =?utf-8?B?eEZQRUVPcWt2WCtpTkxpNXZCK2pyUWQ2S3MzWXNKeTVKWm05MVExQ0txZUhn?=
+ =?utf-8?B?S1ROZU1JY3dwdklXV01MM2tnZnBWQmNxOTJkVW04MURldER2R1V0WjFDL2xw?=
+ =?utf-8?B?UDQ4eE4vQ2xtdDdJYkZqT3FZZHNrcVZ5TkdOREVkeDRTd3ZJNm1meXdqYjc4?=
+ =?utf-8?B?anNCaDliaHBPQzdhdjd5WUMwbVk1ZStZTmhrYnpEMS81NEJRQmE5cEFVV3d3?=
+ =?utf-8?B?MlpFQXhmWmY3TzVhU1FzR1BTME9MdnYzelhxRC9ZMCtaR2dWUUFWSVhTbUsr?=
+ =?utf-8?B?S1F6enEvdUlHSEl1YnpsTHc3ZXlKa1ZJL2ZQN2pmS0xvV2VsbWpLbHFVcWRz?=
+ =?utf-8?B?MHBzWXRnRzJkL2grZGZrbjJqWURxd2RCUDJQY0NHZ05rbHN0NXRKaytwMExn?=
+ =?utf-8?B?ODR2N3A1VW96Qy9yYWd1NnVXNFBqMlZNWDErWVRTR0lBYWIrN2tMbVptdTJa?=
+ =?utf-8?B?MzFGdmhGME91Z21yNU5OUXU1NDhSa0JpblRGYk9Kc3B3OUE0M3ZscWkyNVhQ?=
+ =?utf-8?B?UHh0QWRZMi84cHJSeVVOVFdWVzN6ejRSWTRzQXdVbGRXZjRXejREZ0NTaXhY?=
+ =?utf-8?B?aHZnaU0wRlByRzlPb2NGa2Q4cE5DZVBVQnJvKzRVVFp0S3I2WThWM0FOdGhj?=
+ =?utf-8?B?dStwNFhrN2hBVDl1RUtHZ01PeFg0emR1OTJIS1p4U3N3eXBpTnkwUGpDN3Bv?=
+ =?utf-8?B?TnE1b3d1bW1aTEZBODZodVdXdDdPbm9uOXh6ZytJNXhoQ2w1Y1hFRUFLMlV2?=
+ =?utf-8?B?Tkp3bzQ5REJBbytRa0xQbDNyZEZHazRLT0Y3RUxveW9LTGRWNkZzVUR2Z0xj?=
+ =?utf-8?B?VHNoaTZMNWthSW4wcVBncUR0L2JxZVhuczJvc3NKNWE2UDhLTkpUK1d1THdz?=
+ =?utf-8?B?TTIwcjB2QUZyQ1V1VXU0VDVoMFQ2Yk5JWkJjeERteTdUQmxWeHQ2UnlxTFBO?=
+ =?utf-8?B?ZDBtSkM0NFVYOXhwNUZmaEliSjlPOGZvRWN5Y012UithUjRkbnpPaGJZdEZw?=
+ =?utf-8?B?cXZtQ1MxRXhraGpyd25wbTJ4SFFvQlVCcXArWlB1THZ2TXpiclRPTVZTQWdO?=
+ =?utf-8?B?dU9zMG55QTNsN2lRWExUbWZ5a3pFTElLM21pS0dZNlZiSWs0dmZYTnpMNXNx?=
+ =?utf-8?B?cDJiSzd0d0F4Z1Q0dUVscTMzQTVCdkpqM0VKRGpnQVhaMmFNSDVJdll6dFRk?=
+ =?utf-8?B?UE9Yc0ZhVThvRTkwaG1iSWFnWHdnenlXbjZhNy9EQ3BneGdlam9DTlVXM1Ex?=
+ =?utf-8?B?ZTVQcTkzWGFJTEluVEVBelU5VERnWXNpaGxZQ0ZPZjExd1E5OEdWd3NsSU41?=
+ =?utf-8?B?VHVCbVdWMTJJVDFUM05kSmh0OXdDTk9zRVBBSGYvNUd5ZFNPT2l0Tm9yanNV?=
+ =?utf-8?B?aHV2V2M5YWhxMGlOODdMMmFvRzFrd2hFM3Y2YlJOT3B0ZzArL1AzdFh4KzZU?=
+ =?utf-8?B?dzVqaC8rRmZtckN0YzExcTVaaEJtQ2xyeDFCYnB1aTBEZWFITmJWdVVpL1l1?=
+ =?utf-8?B?bmhFSDJIakdSWEhaSTF6S2VMRUFkMkNOTlE3ZDNmUEU1MThLdExLQVJQejhs?=
+ =?utf-8?B?ajNIWEp6TEx6cGtxNnYzUEpMS210dFYwRi9LaWE1SHBxRDVhek1nRDM2QnNj?=
+ =?utf-8?B?bG5lK3N6aEpITnBwL3gwcHF6MnpvcmNKOHVCTlFpT2pYNUpFeDNMeSt1WkJk?=
+ =?utf-8?Q?567pjJ0qe5Xc+d+5W11DzK2PS?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b79f6f60-52b8-469b-f61c-08d9a0141443
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2021 04:21:12.4428
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2021 04:23:55.1293
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mIpCUrvfUDOnWMuHP4vLYU5O3ogmztFyvajqZNLSf1hYcCeDuq3x8EPEifnWJnDq+nnotxTXogPuoHm3g7Nurg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1432
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZQ4YNCBY/A4rbtY0W38KTv0dBBu82r53G8/LccVz0tvC8eXeB3YE8FvJhCr4ghac
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2479
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: OHiwdd8jr6NpoS5FYtc1a4Tgsp4FXuXZ
+X-Proofpoint-GUID: OHiwdd8jr6NpoS5FYtc1a4Tgsp4FXuXZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-05_01,2021-11-03_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ mlxlogscore=873 priorityscore=1501 spamscore=0 clxscore=1015
+ impostorscore=0 bulkscore=0 phishscore=0 suspectscore=0 adultscore=0
+ lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2111050023
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 11:10:59PM +0800, Fontenot, Nathan wrote:
-> On 11/3/21 2:01 AM, Huang Rui wrote:
-> 
-> >>> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-> >>> new file mode 100644
-> >>> index 000000000000..a400861c7fdc
-> >>> --- /dev/null
-> >>> +++ b/drivers/cpufreq/amd-pstate.c
-> >>> @@ -0,0 +1,413 @@
-> >>> +/*
-> >>> + * amd-pstate.c - AMD Processor P-state Frequency Driver
-> >>> + *
-> >>> + * Copyright (C) 2021 Advanced Micro Devices, Inc. All Rights Reserved.
-> >>> + *
-> >>> + * This program is free software; you can redistribute it and/or
-> >>> + * modify it under the terms of the GNU General Public License
-> >>> + * as published by the Free Software Foundation; either version 2
-> >>> + * of the License, or (at your option) any later version.
-> >>> + *
-> >>> + * This program is distributed in the hope that it will be useful,
-> >>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> >>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-> >>> + * GNU General Public License for more details.
-> >>> + *
-> >>> + * You should have received a copy of the GNU General Public License along with
-> >>> + * this program; if not, write to the Free Software
-> >>> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-> >>
-> >> You should use a SPDX license identifier instead of copying the GPL text
-> >> in the file. See Documentation/process/license-rules.rst
-> > 
-> > The SPDX license identifier is an alternative way to instead of the common
-> > way to express the license at the top comment of the file. Acutally it's
-> > not mandatory, right?
-> > 
-> 
-> It's not mandatory but I believe using SPDX identifiers is the preferred method.
-> 
 
-Yes, indeed, I will change this in V4.
 
-> ...
+On 11/4/21 6:57 PM, Di Zhu wrote:
+> Right now there is no way to query whether BPF programs are
+> attached to a sockmap or not.
 > 
-> >>> +static int __init amd_pstate_init(void)
-> >>> +{
-> >>> +	int ret;
-> >>> +
-> >>> +	if (boot_cpu_data.x86_vendor != X86_VENDOR_AMD)
-> >>> +		return -ENODEV;
-> >>> +
-> >>> +	if (!acpi_cpc_valid()) {
-> >>> +		pr_debug("%s, the _CPC object is not present in SBIOS\n",
-> >>> +			 __func__);
-> >>
-> >> Do we need to print the function name here (and below)?
-> > 
-> > It's a soft reminder to tell the user where the message comes from.
-> >
+> we can use the standard interface in libbpf to query, such as:
+> bpf_prog_query(mapFd, BPF_SK_SKB_STREAM_PARSER, 0, NULL, ...);
+> the mapFd is the fd of sockmap.
 > 
-> True, but you do define pr_fmt at the top of the file so users will know
-> this is coming from the amd_pstate driver.
-> 
+> Signed-off-by: Di Zhu <zhudi2@huawei.com>
 
-Hmm, yes, will clean this in V4.
-
-Thanks,
-Ray
+Acked-by: Yonghong Song <yhs@fb.com>
