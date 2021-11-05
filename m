@@ -2,113 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B55445DE8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 03:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFE4445DE9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 03:26:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231868AbhKEC12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 22:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231830AbhKEC11 (ORCPT
+        id S231892AbhKEC3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 22:29:12 -0400
+Received: from smtpq2.tb.ukmail.iss.as9143.net ([212.54.57.97]:35086 "EHLO
+        smtpq2.tb.ukmail.iss.as9143.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231874AbhKEC3J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 22:27:27 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB54EC061203
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 19:24:48 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id u60so3380934ybi.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 19:24:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qhQ00mQkgKps/BbiSdbnroOgBqYJ/1hR8QXi9VVQFSw=;
-        b=NFA2QJ6aZI8sYbtJecTC0hkvKzoBbuFW94j+Xg/jUMf5Hd4wXm6DojN+SdCwW6E1Cx
-         yZ1Nf6msME+LnM4zNtKMw8BtMa0QITYIuPxk6k6qGpqVFjuPCZ4SleYY3ujEqxIs9FFr
-         /+lwXnmTVr72sSc2il0M53Phc0ide/ZzftuiYkBDHPRd/OKUpQZjbD6ezOeDci3vOJjA
-         UzNL7+E5iAfUwYk6HYyh4T5h9b6KImHXVk2ize18YOAkmF3+sFkVSbe0OLo1TFB299nj
-         nAIm2azHfRhukh+/vB2bfgHgeny+LnCBLW7dT5m2SBLjlqrQhZP8lubKusamwFCX5N/R
-         Akqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qhQ00mQkgKps/BbiSdbnroOgBqYJ/1hR8QXi9VVQFSw=;
-        b=tnY7+/OK3j3CEXuRTC8VHFt/hDvyAwAje8jzI8uGejXDYu4sYCUDU+0hVD3Qw8I91r
-         USlcECN0EJ3eY9y9UP2ZSjds0x/Vyi30rW9dkABE2va51oewSEQTc2OB6kEamTTWh8wl
-         mT6a06oBMtRWZb9ZSZpPNtsRUTTd6DoL8PwpNFoGF8ZKu0fXf28/vxBWhhnpLGURmg3i
-         RJ5bp4SwMtNxTT/PfNZwIQ58BtuyMqMctFbghYKaj+evJaIpUidd5jIZccRk91JOFGUD
-         s2rgCQRC1YJgiwpUadZV/Cn4yCknwBRF4TbjnOs0JpONK/2z4e5IDQA3V9Bav6XoDes4
-         7slA==
-X-Gm-Message-State: AOAM531kvX39PL9f8a+CUmhFnfynpMrQEueYIPUkigT+zz6WTlqNijzE
-        +tFKSgTDOA05eY7PcXlFwn5TuJ1ywMlrEJivD5Z9Mw==
-X-Google-Smtp-Source: ABdhPJzF/eDQ1Ip0lTuv8CEdpv7jUAKIPRBImfFTnXzlYc7oDNsCucZdgzKgPF4gDVIN/yJF9Kkcz6o4Tf/nWER2AW8=
-X-Received: by 2002:a25:50d2:: with SMTP id e201mr56274417ybb.296.1636079087456;
- Thu, 04 Nov 2021 19:24:47 -0700 (PDT)
+        Thu, 4 Nov 2021 22:29:09 -0400
+Received: from [212.54.57.111] (helo=csmtp7.tb.ukmail.iss.as9143.net)
+        by smtpq2.tb.ukmail.iss.as9143.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <zarniwhoop@ntlworld.com>)
+        id 1miow1-0004x1-Nb
+        for linux-kernel@vger.kernel.org; Fri, 05 Nov 2021 03:26:29 +0100
+Received: from llamedos.mydomain ([81.97.236.130])
+        by cmsmtp with ESMTPA
+        id iow0mIhItufb4iow0mfAGd; Fri, 05 Nov 2021 03:26:29 +0100
+X-Originating-IP: [81.97.236.130]
+X-Authenticated-Sender: zarniwhoop@ntlworld.com
+X-Spam: 0
+X-Authority: v=2.4 cv=FOAIesks c=1 sm=1 tr=0 ts=61849655 cx=a_exe
+ a=OGiDJHazYrvzwCbh7ZIPzQ==:117 a=OGiDJHazYrvzwCbh7ZIPzQ==:17
+ a=IkcTkHD0fZMA:10 a=vIxV3rELxO4A:10 a=VwQbUJbxAAAA:8 a=NLZqzBF-AAAA:8
+ a=4DOhSakD1qRXDmDi5pwA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
+ a=wW_WBVUImv98JQXhvVPZ:22
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ntlworld.com;
+        s=meg.feb2017; t=1636079189;
+        bh=VvfiRyeSH3AEwBpH2Q4Pe2E6hehLZWyq8iWj06fTFMk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=Q/Pc7nE36mcwRUcc7Ju6UZQJhfy1HjCOSP4kTvdJYZHsbJaT8Yk73jb5+hU44q+Fw
+         xdXvUrBZBEteocz2Ccf6+qOEMyH4k4xjPiXfqyFnoBysk6c1C//no4seaO8bv7tBii
+         HoOB3uJw7TKqpi5O/rxc6WOeDlZK11V71k0QR7piBRix93HJrtRfv/wgoufN4NF1SV
+         RWCCfD9rpBmibbXW3IbRGAEO5EDa33SESVobXa80RQpUbCZrWpK3z54jYOkesSbQs8
+         1Nvnf1cqM6TGs/YdjZ0fD7DkkVvJQmIXIH6sROTALa5O8jZ66wEOqIQr+m1BiXYtI0
+         nNrfwciqYoQYg==
+Received: by llamedos.mydomain (Postfix, from userid 1000)
+        id 2783660C47; Fri,  5 Nov 2021 02:26:28 +0000 (GMT)
+Date:   Fri, 5 Nov 2021 02:26:28 +0000
+From:   Ken Moffat <zarniwhoop@ntlworld.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.15 00/12] 5.15.1-rc1 review
+Message-ID: <YYSWVA1wnlK9V17J@llamedos.localdomain>
+References: <20211104141159.551636584@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20211105014953.972946-1-dima@arista.com> <20211105014953.972946-3-dima@arista.com>
-In-Reply-To: <20211105014953.972946-3-dima@arista.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 4 Nov 2021 19:24:34 -0700
-Message-ID: <CANn89iKMMxA5evhVO2EjV512fQdZ1Y5_nBZTe1Che1p=NbDvbQ@mail.gmail.com>
-Subject: Re: [PATCH 2/5] tcp/md5: Don't leak ahash in OOM
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Leonard Crestez <cdleonard@gmail.com>,
-        linux-crypto@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-Clacks-Overhead: GNU Terry Pratchett
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211104141159.551636584@linuxfoundation.org>
+User-Agent: Mutt/2.1.3 (2021-09-10)
+X-CMAE-Envelope: MS4xfP1a8fm2vmqgAq6qIf/1pNCWBzqL/CASFF5z22rhkhLMZjKjAT7dcMqFrPfBRSvGDa9cSS2jYuU5mb3nuTUaekAYhOEZZlx4VQeN/S8X6Q9gNJo+tAWL
+ 7omaLWEh+QE/Z2SAfV1vCu+kqLdbekLA1bREylaqay9Fp2TcRmOrOhyZP0QQXVR0enUyshym3jDXzu3pfpazl0a2IXzUhsDxOQN96N9A8/RTJAb9I26tgUvN
+ 6aQDjf+U3ytWJIzru2Dr/3Yfsi3lI7P+VFJKTLV2ZDTvZN47Vawd/yM7p7mDJWtoxpfSh6rDWnuiVv2FMop8OWVe/EeHeq0MZzxC/pycg70tO96CbtwLb9i6
+ Tana9m77vvZ2joS4Yn7FrznI9+asWeCH8+cX7S3dibPgTEQgbSCoWeDOLDaHrD2PqEs7okFrXEv9D8qPlbkpGBEXd/SWOMjFSWoGTXrUrbsqqIWNvWmA2WG5
+ uOtu10/aw/uW8IwP0JxsWrbtY0zAuV2iGVXsbgOYQtxAzK/4SL7bnUcRRZL/MXunSJQAPhfZN2KmgqTqBuWLio2WeUayvqCwCVdIaX8+lApttlX2DZmQjDAE
+ mbI=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 6:50 PM Dmitry Safonov <dima@arista.com> wrote:
->
-> In quite unlikely scenario when __tcp_alloc_md5sig_pool() succeeded in
-> crypto_alloc_ahash(), but later failed to allocate per-cpu request or
-> scratch area ahash will be leaked.
-> In theory it can happen multiple times in OOM condition for every
-> setsockopt(TCP_MD5SIG{,_EXT}).
+On Thu, Nov 04, 2021 at 03:12:26PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.1
+> release.  There are 12 patches in this series, all will be posted
+> as a response to this one.  If anyone has any issues with these
+> being applied, please let me know.
+> 
+> Responses should be made by Sat, 06 Nov 2021 14:11:51 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.1-rc1.gz
+> or in the git tree and branch at:
+> git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> linux-5.15.y and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+Tested on my AMD Picasso, I confirm that the xorg problems I saw in
+5.15.0 are solved by this.
 
-Then store it in a global, like the other parts ?
+Tested-by: Ken Moffat <zarniwhoop@ntlworld.com>
 
-This makes the patch smaller, and hopefully the allocations will
-eventually succeed,
-one at a time.
-
-Bug fixes should target net tree, with a Fixes: tag, not buried in
-apatch series targeting net-next (which is closed btw)
-
-Thanks.
-
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index b461ae573afc82a2c37321b13c2d76f61cd13b53..e2353e35693935fb5abd7da4531c98b86fd35e1c
-100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -4260,13 +4260,14 @@ static bool tcp_md5sig_pool_populated = false;
-
- static void __tcp_alloc_md5sig_pool(void)
- {
--       struct crypto_ahash *hash;
-+       static struct crypto_ahash *hash;
-        int cpu;
-
--       hash = crypto_alloc_ahash("md5", 0, CRYPTO_ALG_ASYNC);
--       if (IS_ERR(hash))
--               return;
--
-+       if (IS_ERR_OR_NULL(hash)) {
-+               hash = crypto_alloc_ahash("md5", 0, CRYPTO_ALG_ASYNC);
-+               if (IS_ERR(hash))
-+                       return;
-+       }
-        for_each_possible_cpu(cpu) {
-                void *scratch = per_cpu(tcp_md5sig_pool, cpu).scratch;
-                struct ahash_request *req;
+-- 
+Vetinari smiled. "Can you keep a secret, Mister Lipwig?"
+"Oh, yes, sir. I've kept lots."
+"Capital. And the point is, so can I. You do not need to know.”
