@@ -2,86 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ECEB4469A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 21:26:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 160154469AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 21:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233533AbhKEU2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 16:28:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51852 "EHLO
+        id S233584AbhKEUbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 16:31:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233373AbhKEU2y (ORCPT
+        with ESMTP id S233558AbhKEUbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 16:28:54 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D44C061205
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 13:26:14 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id q203so11943899iod.12
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 13:26:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Uw0GAODwRueFvBOQE2OGWsggM53Zcuqt3yCcWbHWgkA=;
-        b=ZDCN/m0tmqnKaMhe26FXs3xZ5Si8fvJfzleOAKObY1a/TB05o9H4RU9PduYZUA8Ri/
-         bRLZ77CghW64RM1dj3p2bmSYjZU4v6wqLhkQcNTMlCTsLe5+9QXsX3dRNmrdyjFIUm27
-         ngqeVF/UcylsMcCudABfAf4UBFkDA06ibJIaU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Uw0GAODwRueFvBOQE2OGWsggM53Zcuqt3yCcWbHWgkA=;
-        b=NXUpWGFmhbeGUr/4BnjU6unKaNYMkCfggllW7A1qF/ALzcitSggljvR2NThUxTHoXB
-         lQgH/WJy9cXqhmmIWaSVLcIarT57jbanVEsdxneZdtzxHkyOwnI0MtXDsiFly+ayO0Xu
-         dXCjevcOTxHLtg4h/TvT4RAxXNgxu/or2VhTuhOMqBrMNs8N7Vfd3qKEKpUY4ug3p5fF
-         M3WmwS+ioN1wpJb69ARnIIJwCNikZdYvMLI4plpbDVarBOt/QivzLKEYAJfoB/k9mm6+
-         sNsQE6ixuoXoZhdAWAYO/IhV0izxaaRYIIhKa+uz7YS04sdaFUZpBaOyn7qa4llk5Wm2
-         ci3g==
-X-Gm-Message-State: AOAM532qrZ190iqoHurr0VXDMEiUKF86VRLltWnN/WLOYEbf2jj71fR4
-        hv2re4t6er897cRXLfQi8bgCGzilOHykbw==
-X-Google-Smtp-Source: ABdhPJy1YkbBVnHPQkw8p8yvonZL9WCvRcnKKaPaHxEzrMEpTGU5VtWXkpt4CjHMmTm7xNVSnXUp4g==
-X-Received: by 2002:a05:6602:14cd:: with SMTP id b13mr1132369iow.17.1636143973384;
-        Fri, 05 Nov 2021 13:26:13 -0700 (PDT)
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com. [209.85.166.44])
-        by smtp.gmail.com with ESMTPSA id t14sm5941733ilu.63.2021.11.05.13.26.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 13:26:12 -0700 (PDT)
-Received: by mail-io1-f44.google.com with SMTP id f9so11937812ioo.11
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 13:26:12 -0700 (PDT)
-X-Received: by 2002:a05:6602:24da:: with SMTP id h26mr1098936ioe.168.1636143971873;
- Fri, 05 Nov 2021 13:26:11 -0700 (PDT)
+        Fri, 5 Nov 2021 16:31:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C253DC061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 13:28:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SBUlw2ZrXdlIU2jyUk3frE2xH8Y80m9s1WmI2QsIwFw=; b=lTa0FqqaWIUOZLnpwuCgqhYLz+
+        hmHusQoAY2iuIDdcOTwfJS928274AnfjYs4kecPm6q6WP+5gCuBeYqnFWr4hdiuFKvhuCVxcLn9IG
+        6WdFROFoPVimiqRxLXsnW+ReSVJFHVs6/+8HAClUdBRhySkibG6a9Ppqmdg6foDBoIkwFzgoBMzWL
+        sVTmzSLvfu6DCH3l++bios2fwSiP2OARz9LHz8ZwTCgTd5SM7+oynrVTqSy0osE6PETmIngUmaY46
+        fGgpJe+1IoeIVCf6OODKm3aSCDuwmdEI07yTd/GlUo34hRnmtLQw784FVIu750iJRBu/JAHDJZpxy
+        2FJjltdA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mj5mr-006o2p-H7; Fri, 05 Nov 2021 20:26:50 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8C3FE9862D2; Fri,  5 Nov 2021 21:26:08 +0100 (CET)
+Date:   Fri, 5 Nov 2021 21:26:08 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+        mark.rutland@arm.com, dvyukov@google.com, pbonzini@redhat.com,
+        mbenes@suse.cz
+Subject: Re: [RFC][PATCH 07/22] x86,extable: Extend extable functionality
+Message-ID: <20211105202608.GI174730@worktop.programming.kicks-ass.net>
+References: <20211104164729.226550532@infradead.org>
+ <20211104165524.925401847@infradead.org>
+ <YYVqnr+gql9RpL4C@google.com>
+ <20211105184556.GN174703@worktop.programming.kicks-ass.net>
+ <YYWDQO3ugarMcKmH@google.com>
+ <20211105193229.GP174703@worktop.programming.kicks-ass.net>
+ <YYWKSmHkgdMA2euh@google.com>
+ <20211105201557.GQ174703@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20211105202021.181092-1-robdclark@gmail.com>
-In-Reply-To: <20211105202021.181092-1-robdclark@gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 5 Nov 2021 13:26:00 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Wz0bDNUVdbsjsPv-CU-4WF1ngXT5tODSRpG9qtUqs70w@mail.gmail.com>
-Message-ID: <CAD=FV=Wz0bDNUVdbsjsPv-CU-4WF1ngXT5tODSRpG9qtUqs70w@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/msm/devfreq: Fix OPP refcnt leak
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org,
-        Steev Klimaszewski <steev@kali.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211105201557.GQ174703@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Nov 05, 2021 at 09:15:57PM +0100, Peter Zijlstra wrote:
 
-On Fri, Nov 5, 2021 at 1:15 PM Rob Clark <robdclark@gmail.com> wrote:
->
-> From: Rob Clark <robdclark@chromium.org>
->
-> Reported-by: Douglas Anderson <dianders@chromium.org>
-> Fixes: 9bc95570175a ("drm/msm: Devfreq tuning")
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->  drivers/gpu/drm/msm/msm_gpu_devfreq.c | 5 +++++
->  1 file changed, 5 insertions(+)
+> That's really unfortunate that is... 6.4.4.1 item 5 of the C99 spec
+> covers this gem :-( I suppose I'll go stick that (int) cast in the
+> EX_IMM_MASK definition or something.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+--- a/arch/x86/include/asm/extable_fixup_types.h
++++ b/arch/x86/include/asm/extable_fixup_types.h
+@@ -2,10 +2,15 @@
+ #ifndef _ASM_X86_EXTABLE_FIXUP_TYPES_H
+ #define _ASM_X86_EXTABLE_FIXUP_TYPES_H
+ 
++/*
++ * Our IMM is signed, as such it must live at the top end of the word. Also,
++ * since C99 hex constants are of ambigious type, force cast the mask to 'int'
++ * so that FIELD_GET() will DTRT and sign extend the value when it extracts it.
++ */
+ #define EX_DATA_TYPE_MASK		0x000000FF
+ #define EX_DATA_REG_MASK		0x00000F00
+ #define EX_DATA_FLAG_MASK		0x0000F000
+-#define EX_DATA_IMM_MASK		0xFFFF0000
++#define EX_DATA_IMM_MASK		((int)0xFFFF0000)
+ 
+ #define EX_DATA_REG_SHIFT		8
+ #define EX_DATA_FLAG_SHIFT		12
+
