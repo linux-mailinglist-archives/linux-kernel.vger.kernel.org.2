@@ -2,108 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE51446056
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 08:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03803446059
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 08:56:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232418AbhKEH5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 03:57:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36140 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232453AbhKEH5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 03:57:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A79E06126A;
-        Fri,  5 Nov 2021 07:54:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636098864;
-        bh=Ip8ksL1d39Oojfv6OIR65aUdoJJPXviXFWi/+0sgmO0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qqfNatdCzgN9+ujyhD4OnQ1jeTCzY91cBdSjAuipYPd1cOkoVLgH2Z7jQs9xPguTv
-         a0AWuafKJewVp7a1MRFIKh36uY5iNLwSYYVXKP2C1kZwo4ytGuyYIpptqvpZI99zq4
-         aGZijWrVPaLbInGHtIxmMBZUnvNiha8n3rlpsjnh5HKqa0bswDJAC9G5BqOt9VaKCA
-         PNfEjcZepc5DqPKe9oee2wNkOyO6qLbOK+/EpV2GuPsYiFjSXWVYphYRQ545f2lcvU
-         ThsRKK/aQ1K9YA9WTzNOcJ39xx5HKJ7FdF+iIGiDM0oZuvvhR7oCur9HNY2ArjI68v
-         DOckJfrHyorww==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Bob Picco <bob.picco@oracle.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: pgtable: make __pte_to_phys/__phys_to_pte_val inline functions
-Date:   Fri,  5 Nov 2021 08:54:03 +0100
-Message-Id: <20211105075414.2553155-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S231963AbhKEH64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 03:58:56 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:65031 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229494AbhKEH6y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 03:58:54 -0400
+X-Greylist: delayed 14121 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Nov 2021 03:58:53 EDT
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 1A57tw8L003117;
+        Fri, 5 Nov 2021 16:55:59 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 1A57tw8L003117
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1636098959;
+        bh=eUeAMxtwxFFh8Dwf2BE8J5fy9OSlHDE5RkEUpDimoWA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eHv2TFOD2/lGIBDU2aeiIYblXhXO033DBnKQ11fCNHZpEVYC1GdKUzT+OmLDA0ET1
+         esjbD124Fz78rGhRM9SjnqwuQ3lVZdjmqDDwRlNNUts9pvatbxm67V/c7RDSflrFeS
+         L+qEdZZHmSTu/keMuRkpDfUZ2kGK3PI3aXMRHAbq56n3H3Oxt9MtJ++aKOpouTc2bS
+         CkgWXdow3rB0DBohVPF6N8qpfK6u4ib99NniXOwN9t1JK/WpoZlM1X0EQWf/HQNPz+
+         ICRzzPLyZPmGdl84h4XxYGlY9dcueTacCMRmBfd37NCrSULcVh0EWLeQaBPq2RHVNH
+         RiFlboMCVP6RA==
+X-Nifty-SrcIP: [209.85.210.172]
+Received: by mail-pf1-f172.google.com with SMTP id x131so3015874pfc.12;
+        Fri, 05 Nov 2021 00:55:59 -0700 (PDT)
+X-Gm-Message-State: AOAM530eVafANLCq5HJKaKAIKxj8genqPfxUSNzCn1P7f9ZglENLd3uj
+        LcvvClb0MA1iwBlvC7dW0mowHAP9+TVJjTZJfJY=
+X-Google-Smtp-Source: ABdhPJyhFL6Tp/ZS4djPor06mdMxajCscy5SE9HhwBdmwd5K7yoOPvj4u1mDzVtPVlUeCN6lyWYjAxCrTEK2GfPni4Q=
+X-Received: by 2002:a05:6a00:1584:b0:489:4f9c:6e3a with SMTP id
+ u4-20020a056a00158400b004894f9c6e3amr20905091pfk.32.1636098958464; Fri, 05
+ Nov 2021 00:55:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211105035959.93748-1-masahiroy@kernel.org> <20211105035959.93748-4-masahiroy@kernel.org>
+ <CAK8P3a3YshR=gXWL1co0ZhAAV+7CymC437-=77rcgTQjPiDfQg@mail.gmail.com>
+In-Reply-To: <CAK8P3a3YshR=gXWL1co0ZhAAV+7CymC437-=77rcgTQjPiDfQg@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 5 Nov 2021 16:55:21 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQs5jCQ0kNKXWrTGEu45K+1mTGXWZrhgA3u8hv+yNfeSg@mail.gmail.com>
+Message-ID: <CAK7LNAQs5jCQ0kNKXWrTGEu45K+1mTGXWZrhgA3u8hv+yNfeSg@mail.gmail.com>
+Subject: Re: [PATCH 3/5] certs: remove noisy messages while generating the
+ signing key
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        keyrings@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Nov 5, 2021 at 4:34 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Fri, Nov 5, 2021 at 4:59 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > When you run Kbuild with the parallel option -j, the messages from this
+> > rule and others are interleaved, like follows:
+> >
+> >     ###
+> >       CC      arch/x86/mm/pat/set_memory.o
+> >     ### Now generating an X.509 key pair to be used for signing modules.
+> >     ###
+> >     ### If this takes a long time, you might wish to run rngd in the
+> >     ### background to keep the supply of entropy topped up.  It
+> >       CC      arch/x86/events/intel/bts.o
+> >       HDRTEST usr/include/linux/qnx4_fs.h
+> >       CC      arch/x86/events/zhaoxin/core.o
+> >     ### needs to be run as root, and uses a hardware random
+> >     ### number generator if one is available.
+> >       AR      init/built-in.a
+> >     ###
+> >
+> > On modern machines, it does not take a long time to generate the key.
+> >
+> > Remove the ugly log messages.
+>
+> I have no real objection to this, but I would still point out that
+> the warning message may still be helpful for those building
+> in a virtual machine or some other environment without a hwrng,
+> and that most people wouldn't see the message anway if they
+> built with 'make -s', at least after my 5d06ee20b662 ("modsign:
+> hide openssl output in silent builds").
+>
+> I wonder if it would be time to change the default output to
+> be more quiet, by degrading it one level, like
+>
+>                     old           new
+> only warnings       make -s       make
+> CC file.o           make          make V=1
+> full cmdline        make V=1      make V=2
+>
+> This would take some time to adjust to, but it does sound like
+> a more reasonable default. Does anyone still build without -s
+> in practice?
 
-gcc warns about undefined behavior the vmalloc code when building
-with CONFIG_ARM64_PA_BITS_52, when the 'idx++' in the argument to
-__phys_to_pte_val() is evaluated twice:
 
-mm/vmalloc.c: In function 'vmap_pfn_apply':
-mm/vmalloc.c:2800:58: error: operation on 'data->idx' may be undefined [-Werror=sequence-point]
- 2800 |         *pte = pte_mkspecial(pfn_pte(data->pfns[data->idx++], data->prot));
-      |                                                 ~~~~~~~~~^~
-arch/arm64/include/asm/pgtable-types.h:25:37: note: in definition of macro '__pte'
-   25 | #define __pte(x)        ((pte_t) { (x) } )
-      |                                     ^
-arch/arm64/include/asm/pgtable.h:80:15: note: in expansion of macro '__phys_to_pte_val'
-   80 |         __pte(__phys_to_pte_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
-      |               ^~~~~~~~~~~~~~~~~
-mm/vmalloc.c:2800:30: note: in expansion of macro 'pfn_pte'
- 2800 |         *pte = pte_mkspecial(pfn_pte(data->pfns[data->idx++], data->prot));
-      |                              ^~~~~~~
+Yes, me.
 
-I have no idea why this never showed up earlier, but the safest
-workaround appears to be changing those macros into inline functions
-so the arguments get evaluated only once.
+I usually build normally (CC file.o log style).
 
-Cc: Matthew Wilcox <willy@infradead.org>
-Fixes: 75387b92635e ("arm64: handle 52-bit physical addresses in page table entries")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/arm64/include/asm/pgtable.h | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+I am opposed to making silent builds default.
 
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 84fbb52b4224..c4ba047a82d2 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -67,9 +67,15 @@ extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
-  * page table entry, taking care of 52-bit addresses.
-  */
- #ifdef CONFIG_ARM64_PA_BITS_52
--#define __pte_to_phys(pte)	\
--	((pte_val(pte) & PTE_ADDR_LOW) | ((pte_val(pte) & PTE_ADDR_HIGH) << 36))
--#define __phys_to_pte_val(phys)	(((phys) | ((phys) >> 36)) & PTE_ADDR_MASK)
-+static inline phys_addr_t __pte_to_phys(pte_t pte)
-+{
-+	return (pte_val(pte) & PTE_ADDR_LOW) |
-+		((pte_val(pte) & PTE_ADDR_HIGH) << 36);
-+}
-+static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
-+{
-+	return (phys | (phys >> 36)) & PTE_ADDR_MASK;
-+}
- #else
- #define __pte_to_phys(pte)	(pte_val(pte) & PTE_ADDR_MASK)
- #define __phys_to_pte_val(phys)	(phys)
+People would be upset if they do 'make' to
+see nothing in the terminal.
+
+
+
+
 -- 
-2.29.2
-
+Best Regards
+Masahiro Yamada
