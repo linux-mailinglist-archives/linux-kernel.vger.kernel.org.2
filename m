@@ -2,289 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5144446794
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3564467B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232695AbhKERM6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Nov 2021 13:12:58 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4066 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234315AbhKERMo (ORCPT
+        id S233549AbhKERWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 13:22:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232969AbhKERWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 13:12:44 -0400
-Received: from fraeml739-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Hm6MV6Yzzz67S0x;
-        Sat,  6 Nov 2021 01:05:26 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml739-chm.china.huawei.com (10.206.15.220) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 5 Nov 2021 18:10:02 +0100
-Received: from localhost (10.202.226.41) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.15; Fri, 5 Nov
- 2021 17:10:02 +0000
-Date:   Fri, 5 Nov 2021 17:10:01 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>
-CC:     Jonathan Cameron <jic23@kernel.org>, Rob Herring <robh@kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Sa, Nuno" <Nuno.Sa@analog.com>
-Subject: Re: [PATCH v3 2/2] dt-bindings: iio: frequency: add admv1013 doc
-Message-ID: <20211105171001.0000674d@Huawei.com>
-In-Reply-To: <BN6PR03MB339518BB48808ED6F77B494C9B8E9@BN6PR03MB3395.namprd03.prod.outlook.com>
-References: <20211101100420.70304-1-antoniu.miclaus@analog.com>
-        <20211101100420.70304-2-antoniu.miclaus@analog.com>
-        <YYF6cPSDroPz/wun@robh.at.kernel.org>
-        <CY4PR03MB3399E5DC1D8A966C7CFC8C049B8C9@CY4PR03MB3399.namprd03.prod.outlook.com>
-        <CY4PR03MB3399682ABFC08090528FED2C9B8C9@CY4PR03MB3399.namprd03.prod.outlook.com>
-        <20211104182647.29ae2bc4@jic23-huawei>
-        <BN6PR03MB339518BB48808ED6F77B494C9B8E9@BN6PR03MB3395.namprd03.prod.outlook.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.202.226.41]
-X-ClientProxiedBy: lhreml705-chm.china.huawei.com (10.201.108.54) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+        Fri, 5 Nov 2021 13:22:44 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC8DC061205
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 10:20:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=6/N/TJCSOrn8IpQwBu9aix8SzHF76Hp/mWbvCJp+zwQ=; b=BwrxzmGIkUDYY66zNlVFlMeFjX
+        4DRv64a3A6f7aXOImmrzn/LPO/61S/xqtJ8cQl7SVNYIBkCQFeldEMdORvlYvoxIodMWpdVA3Ma0K
+        MmXm9d07n8SHMCBPhZVas6AgKUjfCW3vRDxHr9zycmEJH5iNojydByn0Fp83Am3nXaEzEctgrI33V
+        srbTXFNHvoWkHwRHBP1QM6BgCiGjz3R8P5es/h8rIJX3y/SP56Qe3jFAgava90CIgF6krn/wFdl6d
+        ItZVAdPmSme6BO+6h45ZGNVXGgrF7I7nbajm8nEOpT+fiy8fm9Hq25XH7K7ULLp5jiyHJMx0eIBmk
+        78qv8E7Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mj2sX-00ENAN-Oz; Fri, 05 Nov 2021 17:19:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 569BF300388;
+        Fri,  5 Nov 2021 18:19:48 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 35A882032195B; Fri,  5 Nov 2021 18:19:48 +0100 (CET)
+Message-ID: <20211105171023.989862879@infradead.org>
+User-Agent: quilt/0.66
+Date:   Fri, 05 Nov 2021 18:10:23 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        jpoimboe@redhat.com, mark.rutland@arm.com, dvyukov@google.com,
+        seanjc@google.com, pbonzini@redhat.com, mbenes@suse.cz
+Subject: [PATCH 00/22] x86: Remove anonymous out-of-line fixups
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Nov 2021 08:38:42 +0000
-"Miclaus, Antoniu" <Antoniu.Miclaus@analog.com> wrote:
+Hi,
 
-> > -----Original Message-----
-> > From: Jonathan Cameron <jic23@kernel.org>
-> > Sent: Thursday, November 4, 2021 8:27 PM
-> > To: Miclaus, Antoniu <Antoniu.Miclaus@analog.com>
-> > Cc: Rob Herring <robh@kernel.org>; linux-iio@vger.kernel.org;
-> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Sa, Nuno
-> > <Nuno.Sa@analog.com>
-> > Subject: Re: [PATCH v3 2/2] dt-bindings: iio: frequency: add admv1013 doc
-> > 
-> > [External]
-> > 
-> > On Wed, 3 Nov 2021 14:30:56 +0000
-> > "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com> wrote:
-> >   
-> > > Example:
-> > > In the setup that we tested the driver, we had a clock chip that was  
-> > hardware-routed only to the positive side of the local oscillator input (LOP
-> > pin) from admv1013.  
-> > >
-> > > Therefore, I think keeping the property in the DT might be useful.  
-> > 
-> > I think Rob's question was more general than that one property... See below.  
-> > >
-> > > Regards,
-> > > --
-> > > Antoniu Miclăuş
-> > >  
-> > > > -----Original Message-----
-> > > > From: Miclaus, Antoniu
-> > > > Sent: Wednesday, November 3, 2021 10:09 AM
-> > > > To: Rob Herring <robh@kernel.org>
-> > > > Cc: jic23@kernel.org; linux-iio@vger.kernel.org;  
-> > devicetree@vger.kernel.org;  
-> > > > linux-kernel@vger.kernel.org; Sa, Nuno <Nuno.Sa@analog.com>
-> > > > Subject: RE: [PATCH v3 2/2] dt-bindings: iio: frequency: add admv1013  
-> > doc  
-> > > >
-> > > > Hello Rob,
-> > > >
-> > > > These properties are fixed and available in the datasheet (binary format):
-> > > > https://www.analog.com/media/en/technical-documentation/data-
-> > > > sheets/ADMV1013.pdf
-> > > >
-> > > > Please see Page 37 of 39, Table 15, QUAD_SE_MODE.
-> > > >
-> > > > Regards,
-> > > > --
-> > > > Antoniu Miclăuş
-> > > >  
-> > > > > -----Original Message-----
-> > > > > From: Rob Herring <robh@kernel.org>
-> > > > > Sent: Tuesday, November 2, 2021 7:51 PM
-> > > > > To: Miclaus, Antoniu <Antoniu.Miclaus@analog.com>
-> > > > > Cc: jic23@kernel.org; linux-iio@vger.kernel.org;  
-> > > > devicetree@vger.kernel.org;  
-> > > > > linux-kernel@vger.kernel.org; Sa, Nuno <Nuno.Sa@analog.com>
-> > > > > Subject: Re: [PATCH v3 2/2] dt-bindings: iio: frequency: add admv1013  
-> > doc  
-> > > > >
-> > > > > [External]
-> > > > >
-> > > > > On Mon, Nov 01, 2021 at 12:04:20PM +0200, Antoniu Miclaus wrote:  
-> > > > > > Add device tree bindings for the ADMV1013 Upconverter.
-> > > > > >
-> > > > > > Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
-> > > > > > ---
-> > > > > >  .../bindings/iio/frequency/adi,admv1013.yaml  | 119  
-> > > > > ++++++++++++++++++  
-> > > > > >  1 file changed, 119 insertions(+)
-> > > > > >  create mode 100644  
-> > > > > Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml  
-> > > > > >
-> > > > > > diff --git  
-> > > > >  
-> > a/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml  
-> > > > >  
-> > b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml  
-> > > > > > new file mode 100644
-> > > > > > index 000000000000..47993253a586
-> > > > > > --- /dev/null
-> > > > > > +++  
-> > > > >  
-> > b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml  
-> > > > > > @@ -0,0 +1,119 @@
-> > > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > > > +%YAML 1.2
-> > > > > > +---
-> > > > > > +$id:  
-> > > > >  
-> > > >  
-> > https://urldefense.com/v3/__http://devicetree.org/schemas/iio/frequency  
-> > > > >  
-> > > >  
-> > /adi,admv1013.yaml*__;Iw!!A3Ni8CS0y2Y!uTDPalOgj6YS_vZ6bsDSbA_Qna6Q  
-> > > > > OwMpoRxzo6nn06i5TNuGWZEk9PvtbC6SKQGXrugy$  
-> > > > > > +$schema:  
-> > https://urldefense.com/v3/__http://devicetree.org/meta-  
-> > > > >  
-> > > >  
-> > schemas/core.yaml*__;Iw!!A3Ni8CS0y2Y!uTDPalOgj6YS_vZ6bsDSbA_Qna6Q  
-> > > > > OwMpoRxzo6nn06i5TNuGWZEk9PvtbC6SKYugV1fM$  
-> > > > > > +
-> > > > > > +title: ADMV1013 Microwave Upconverter
-> > > > > > +
-> > > > > > +maintainers:
-> > > > > > +  - Antoniu Miclaus <antoniu.miclaus@analog.com>
-> > > > > > +
-> > > > > > +description: |
-> > > > > > +   Wideband, microwave upconverter optimized for point to point  
-> > > > > microwave  
-> > > > > > +   radio designs operating in the 24 GHz to 44 GHz frequency range.
-> > > > > > +
-> > > > > > +   https://www.analog.com/en/products/admv1013.html
-> > > > > > +
-> > > > > > +properties:
-> > > > > > +  compatible:
-> > > > > > +    enum:
-> > > > > > +      - adi,admv1013
-> > > > > > +
-> > > > > > +  reg:
-> > > > > > +    maxItems: 1
-> > > > > > +
-> > > > > > +  spi-max-frequency:
-> > > > > > +    maximum: 1000000
-> > > > > > +
-> > > > > > +  clocks:
-> > > > > > +    description:
-> > > > > > +      Definition of the external clock.
-> > > > > > +    minItems: 1
-> > > > > > +
-> > > > > > +  clock-names:
-> > > > > > +    items:
-> > > > > > +      - const: lo_in
-> > > > > > +
-> > > > > > +  clock-output-names:
-> > > > > > +    maxItems: 1
-> > > > > > +
-> > > > > > +  vcm-supply:
-> > > > > > +    description:
-> > > > > > +      Analog voltage regulator.
-> > > > > > +
-> > > > > > +  adi,vga-powerdown:
-> > > > > > +    description:
-> > > > > > +      Power Down the Voltage Gain Amplifier Circuit available at
-> > > > > > +      BG_RBIAS2 pin.
-> > > > > > +    type: boolean  
-> > 
-> > What wiring would make it sensible to always have this powered down?
-> > If we can describe that rather than vga-powerdown then that is what should
-> > be in the binding.  If there isn't any wiring based justification and this
-> > is just turning off part of the device, then it should not be in the binding.
-> >   
-> This part is similar to ADRF6780 that has also an Enable Register that can power down circuit blocks within the part:
-> https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git/tree/drivers/iio/frequency/adrf6780.c?h=togreg
-> 
+Direct counterpart to the arm64 series from Mark:
 
-Hmm.  Guess we weren't super awake with that one :( 
+  https://lkml.kernel.org/r/20211019160219.5202-1-mark.rutland@arm.com
 
-> I preferred to expose these properties in the device tree, rather than creating custom device attributes in the driver.
-> 
-> But I guess these properties can be managed also only from debug fs.
+Since he already put it rather well:
 
-The ideal situation is to control these based on what the device is being used for
-and not provide explicit control to userspace or via dt.
+"We recently realised that out-of-line extable fixups cause a number of problems
+for backtracing (mattering both for developers and for RELIABLE_STACKTRACE and
+LIVEPATCH). Dmitry spotted a confusing backtrace, which we identified was due
+to problems with unwinding fixups, as summarized in:
 
-So if it doesn't make sense to power up a unit because it isn't wired to anything
-then express the wiring in DT.
+  https://lore.kernel.org/linux-arm-kernel/20210927171812.GB9201@C02TD0UTHF1T.local/
 
-If it makes sense to power down a unit because it isn't being used currently
-due to what features are in use, then power it down automatically.  Runtime pm
-handles a lot of these cases by letting you do autopowerdown if not used after
-a certain period.  That way, we don't end up powering up and down rapidly but
-only do it if we have go reason to believe it is worth powering down.
+The gist is that while backtracing through a fixup, the fixup gets symbolized
+as an offset from the nearest prior symbol (which happens to be
+`__entry_tramp_text_end`), and we the backtrace misses the function that was
+being fixed up (because the fixup handling adjusts the PC, then the fixup does
+a direct branch back to the original function). We can't reliably map from an
+arbitrary PC in the fixup text back to the original function.
 
-Could we use either of these approaches here?
+The way we create fixups is a bit unfortunate: most fixups are generated from
+common templates, and only differ in register to be poked and the address to
+branch back to, leading to redundant copies of the same logic that must pollute
+Since the fixups are all written in assembly, and duplicated for each fixup
+site, we can only perform very simple fixups, and can't handle any complex
+triage that we might need for some exceptions (e.g. MTE faults)."
 
-Jonathan
-> 
-> I can adapt the code based on your decision. Looking forward to your feedback.
-> > > > > > +
-> > > > > > +  adi,mixer-powerdown:
-> > > > > > +    description:
-> > > > > > +      Power Down the Mixer Circuit. Enable to put the block in
-> > > > > > +      a power down state.  
-> > 
-> > Same for all these other power downs.
-> >   
-> > > > > > +    type: boolean
-> > > > > > +
-> > > > > > +  adi,quad-powerdown:
-> > > > > > +    description:
-> > > > > > +      Power Down the Quadrupler. Enable to put the block in
-> > > > > > +      a power down state.
-> > > > > > +    type: boolean
-> > > > > > +
-> > > > > > +  adi,bg-powerdown:
-> > > > > > +    description:
-> > > > > > +      Power Down the Transmitter Band Gap. Enable to put the part in
-> > > > > > +      a power down state.
-> > > > > > +    type: boolean
-> > > > > > +
-> > > > > > +  adi,mixer-if-enable:
-> > > > > > +    description:
-> > > > > > +      Enable the Intermediate Frequency Mode. Either IF Mode or I/Q  
-> > > > Mode  
-> > > > > > +      can be enabled at a time.
-> > > > > > +    type: boolean
-> > > > > > +
-> > > > > > +  adi,detector-enable:
-> > > > > > +    description:
-> > > > > > +      Enable the Envelope Detector available at output pins VENV_P  
-> > and  
-> > > > > > +      VENV_N. Disable to reduce power consumption.
-> > > > > > +    type: boolean
-> > > > > > +
-> > > > > > +  adi,quad-se-mode:
-> > > > > > +    description:
-> > > > > > +      Switch the LO path from differential to single-ended operation.
-> > > > > > +      Set value 6 for Single-Ended Mode, Negative Side Disabled.
-> > > > > > +      Set value 9 for Single-Ended Mode, Positive Side Disabled.
-> > > > > > +      Set value 12 for Differential Mode.
-> > > > > > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > > > > > +    enum: [6, 9, 12]  
-> > > > >
-> > > > > All these vendor properties are fixed based on the board design or
-> > > > > something a user may want to change? The latter does not belong in  
-> > DT.  
-> > > > >
-> > > > > Rob  
-> 
+
+This time things have been build tested for both i386 and x86_64
+(defconfig,allyesconfig) and boot tested x86_64 and even started a guest inside
+of that.
+
+Also available here:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git x86/wip.extable
+
+Changes since RFC:
+
+ - rebase to origin/master
+ - Fixup missing mmx prefetch and use 3DNOWPREFETCH feature
+ - renamed POP_SEG to POP_ZERO, changed size, added comment
+ - added found to extable_type_reg voodoo
+ - used insn-eval.c copy of pt_regs indexing
+ - renamed exception_table_entry::type to ::data
+ - renamed macro magic
+ - removed ltype from __get_user_asm()
+ - dropped ftrace patch
+ - simpler kvm patch
+ - rewrote all of load_unaligned_zeropad()
+ - removed .fixup from objtool
+
+---
+ arch/x86/entry/entry_32.S                  |  28 ++-----
+ arch/x86/entry/entry_64.S                  |  13 ++-
+ arch/x86/entry/vdso/vdso-layout.lds.S      |   1 -
+ arch/x86/include/asm/asm.h                 |  33 ++++++++
+ arch/x86/include/asm/extable.h             |   6 +-
+ arch/x86/include/asm/extable_fixup_types.h |  46 +++++++++--
+ arch/x86/include/asm/futex.h               |  28 ++-----
+ arch/x86/include/asm/insn-eval.h           |   2 +
+ arch/x86/include/asm/msr.h                 |  26 ++----
+ arch/x86/include/asm/segment.h             |   9 +--
+ arch/x86/include/asm/sgx.h                 |  18 +++++
+ arch/x86/include/asm/uaccess.h             |  39 ++++-----
+ arch/x86/include/asm/word-at-a-time.h      |  67 +++++++++++-----
+ arch/x86/include/asm/xen/page.h            |  12 +--
+ arch/x86/kernel/cpu/sgx/encls.h            |  36 ++-------
+ arch/x86/kernel/fpu/legacy.h               |   6 +-
+ arch/x86/kernel/fpu/xstate.h               |   6 +-
+ arch/x86/kernel/vmlinux.lds.S              |   1 -
+ arch/x86/kvm/emulate.c                     |  16 +---
+ arch/x86/kvm/vmx/vmx_ops.h                 |  14 ++--
+ arch/x86/lib/checksum_32.S                 |  19 +----
+ arch/x86/lib/copy_mc_64.S                  |  12 +--
+ arch/x86/lib/copy_user_64.S                |  32 +++-----
+ arch/x86/lib/insn-eval.c                   |  66 +++++++++------
+ arch/x86/lib/mmx_32.c                      |  86 +++++++-------------
+ arch/x86/lib/usercopy_32.c                 |  66 ++++++---------
+ arch/x86/lib/usercopy_64.c                 |   8 +-
+ arch/x86/mm/extable.c                      | 124 ++++++++++++++++++++++-------
+ arch/x86/net/bpf_jit_comp.c                |   2 +-
+ include/linux/bitfield.h                   |  19 ++++-
+ tools/objtool/check.c                      |   8 +-
+ 31 files changed, 445 insertions(+), 404 deletions(-)
 
