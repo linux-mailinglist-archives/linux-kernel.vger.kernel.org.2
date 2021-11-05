@@ -2,68 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9293445CD3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 01:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C7A445CDC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 01:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232481AbhKEACs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 20:02:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51778 "EHLO mail.kernel.org"
+        id S232537AbhKEAD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 20:03:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232040AbhKEACr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 20:02:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id A285B61213;
-        Fri,  5 Nov 2021 00:00:08 +0000 (UTC)
+        id S232435AbhKEADZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 20:03:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EADE6121E;
+        Fri,  5 Nov 2021 00:00:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636070408;
-        bh=x/OYS7dMxW+2fJz5aisiqzeC2J+gW/AGkrHT82OrYG8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=AXLO+1QnEkBgYldi8zgD+QFjq616bE5Xg1G1je1aQXAFpfLmdLQQ6pn902Df/ehi5
-         ZqmgWynSM67VlDS5C3axvAfGvfbU7+z6kr8401K7TJodkV+gp8s/onnAlydJJ+vhiO
-         TZfxzg9bni8ai5LB4N/6eX7Ryoo504VC2FxxIlOj+WPm5uo/YSVhhvjvQwksPU6zgS
-         BO1fW5W4RhHzfesZmFY5bplsC9X6FsTU5zuX0TX1Sc6ITdeGNwb23gSwbVC7jNktm1
-         BZxHZGc+nt4QKXEy4h4NcghAWNbiReV97QnHpUMwz6Ru1WKG7gAZzJqZPLNBZvs7F6
-         HohCZT87Y6X5g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 945D160981;
-        Fri,  5 Nov 2021 00:00:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1636070446;
+        bh=gecQ0nukzSqLw2rZdP9krP19f9e4VSUL6mOBSXKSTkY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mK4Mr1FteUnVP4YznUeFazG/YgAGzji5dNB8U9oXl9/J2au6HJlsFtPKH3c/vrr9R
+         nBjRXntR4RCXAfvkn2rfwnBtZ0vdOBKxI69bXnXKLVRGPe1rz43MTypJv3VoavIvQd
+         XCCkiLhsV7icEhCsC+lbJJgG/OC15dNBohIURONMEaYly9uc6+M9USvPUoxZVdvzs0
+         pNzEyrqgWdlOzyIxaefijWzhak/3bJe282XXuYAzvsX1evgPmaRstHb5oggZr2+RVm
+         w9BkU+arQa4O0qjhJwuMRkf59ckoCRGfnXgNcVPbvX9iF9A7NOG3nN9zLpG6mhikB7
+         Hw7Ex91dkoIdA==
+Received: by mail-ed1-f50.google.com with SMTP id ee33so27316182edb.8;
+        Thu, 04 Nov 2021 17:00:46 -0700 (PDT)
+X-Gm-Message-State: AOAM533zqctJeDigIPbp32zLdSysrwyfHWYDtiyvQ+QaDDd9iVGXJswD
+        4zJPOvUDmb07tLjYYX8d+y35/maJYpDPDVtP0Q==
+X-Google-Smtp-Source: ABdhPJx/WMm8hJQXmws5vs/A8Eq/kJboI9Ajg4xbaZCnrwqe3NFwsFluqpKG7WJR/yu5SJJOXENMxG3a9r06A35Nhwg=
+X-Received: by 2002:a17:907:7f2a:: with SMTP id qf42mr524429ejc.388.1636070444817;
+ Thu, 04 Nov 2021 17:00:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] devlink: fix flexible_array.cocci warning
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163607040860.859.9217991818151034963.git-patchwork-notify@kernel.org>
-Date:   Fri, 05 Nov 2021 00:00:08 +0000
-References: <20211103121607.27490-1-guozhengkui@vivo.com>
-In-Reply-To: <20211103121607.27490-1-guozhengkui@vivo.com>
-To:     Guo Zhengkui <guozhengkui@vivo.com>
-Cc:     jiri@nvidia.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@vivo.com
+References: <20211029075203.17093-1-nancy.lin@mediatek.com> <20211029075203.17093-18-nancy.lin@mediatek.com>
+In-Reply-To: <20211029075203.17093-18-nancy.lin@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Fri, 5 Nov 2021 08:00:32 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-PMzZu-nKweOpL_ybEPAaGD4PpaO=7zsY2rb=B8ubG3A@mail.gmail.com>
+Message-ID: <CAAOTY_-PMzZu-nKweOpL_ybEPAaGD4PpaO=7zsY2rb=B8ubG3A@mail.gmail.com>
+Subject: Re: [PATCH v7 17/20] drm/mediatek: add mediatek-drm plane color
+ encoding info
+To:     "Nancy.Lin" <nancy.lin@mediatek.com>
+Cc:     CK Hu <ck.hu@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "jason-jh . lin" <jason-jh.lin@mediatek.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        singo.chang@mediatek.com,
+        srv_heupstream <srv_heupstream@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi, Nancy:
 
-This patch was applied to netdev/net.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
+Nancy.Lin <nancy.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=8829=E6=
+=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=883:52=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Add plane color encoding information for color space conversion.
+> It's a preparation for adding support for mt8195 ovl_adaptor mdp_rdma
+> csc control.
 
-On Wed,  3 Nov 2021 20:16:06 +0800 you wrote:
-> Fix following coccicheck warning:
-> ./net/core/devlink.c:69:6-10: WARNING use flexible-array member instead
-> 
-> Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+
+>
+> Signed-off-by: Nancy.Lin <nancy.lin@mediatek.com>
 > ---
->  net/core/devlink.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Here is the summary with links:
-  - devlink: fix flexible_array.cocci warning
-    https://git.kernel.org/netdev/net/c/96d0c9be432d
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>  drivers/gpu/drm/mediatek/mtk_drm_plane.c | 1 +
+>  drivers/gpu/drm/mediatek/mtk_drm_plane.h | 1 +
+>  2 files changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/m=
+ediatek/mtk_drm_plane.c
+> index 734a1fb052df..81bd5d6e8df5 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+> @@ -137,6 +137,7 @@ static void mtk_plane_update_new_state(struct drm_pla=
+ne_state *new_state,
+>         mtk_plane_state->pending.width =3D drm_rect_width(&new_state->dst=
+);
+>         mtk_plane_state->pending.height =3D drm_rect_height(&new_state->d=
+st);
+>         mtk_plane_state->pending.rotation =3D new_state->rotation;
+> +       mtk_plane_state->pending.color_encoding =3D new_state->color_enco=
+ding;
+>  }
+>
+>  static void mtk_plane_atomic_async_update(struct drm_plane *plane,
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.h b/drivers/gpu/drm/m=
+ediatek/mtk_drm_plane.h
+> index d454bece9535..2d5ec66e3df1 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_plane.h
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.h
+> @@ -24,6 +24,7 @@ struct mtk_plane_pending_state {
+>         bool                            dirty;
+>         bool                            async_dirty;
+>         bool                            async_config;
+> +       enum drm_color_encoding         color_encoding;
+>  };
+>
+>  struct mtk_plane_state {
+> --
+> 2.18.0
+>
