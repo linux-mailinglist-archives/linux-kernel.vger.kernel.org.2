@@ -2,163 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D534466CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3584466B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhKEQQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 12:16:24 -0400
-Received: from mga01.intel.com ([192.55.52.88]:53175 "EHLO mga01.intel.com"
+        id S232509AbhKEQKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 12:10:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229500AbhKEQQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 12:16:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10159"; a="255579725"
-X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
-   d="scan'208";a="255579725"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 09:07:03 -0700
-X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
-   d="scan'208";a="502000107"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 09:07:02 -0700
-Date:   Fri, 5 Nov 2021 09:07:02 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Qu Wenruo <wqu@suse.com>
+        id S229763AbhKEQKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 12:10:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 51A5C6112E;
+        Fri,  5 Nov 2021 16:08:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636128493;
+        bh=/w4W0ESOTR3ErgXkOkcticBCY+46uc64I7Xlcxy9P2w=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=XTTfmGPZSUdGjiAGuod186zifKddnUXjjhvdWNJe0S0cIUg3DKI10zpZ4PGgoOwgP
+         7oxx/iDyr/SkaXvBYvKZeHxVLsy/j5kzXqdJQpWyCKhpEH+Tal60DDYqWYA2/YVZ7t
+         dypuvJWDqMj6WfQYUrGY2QGyyDH2le2F0fTPzYMHKB9htEfQvGRIPwm1jCXnKtNGHG
+         Warp+wiqgmJSl+dC/+MKSaXxYlXf7FSJRUvriaIX5ak1zcszRB3DFwqCDheFYYT0er
+         UFyFm7VDPWi3ix3SOzSzb48bmEpioq5rYb7ZDWYq+BUtij/hrDdU0LkfCCILPHnFif
+         C2byCe1j0zVpw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 399AE609E6;
+        Fri,  5 Nov 2021 16:08:13 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.16-1 tag
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <87v9167o32.fsf@mpe.ellerman.id.au>
+References: <87v9167o32.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
+X-PR-Tracked-Message-Id: <87v9167o32.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.16-1
+X-PR-Tracked-Commit-Id: c12ab8dbc492b992e1ea717db933cee568780c47
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 5c0b0c676ac2d84f69568715af91e45b610fe17a
+Message-Id: <163612849317.17201.16359583073056008031.pr-tracker-bot@kernel.org>
+Date:   Fri, 05 Nov 2021 16:08:13 +0000
+To:     Michael Ellerman <mpe@ellerman.id.au>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        David Sterba <dsterba@suse.cz>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: Re: Kmap-related crashes and memory leaks on 32bit arch (5.15+)
-Message-ID: <20211105160702.GY3538886@iweiny-DESK2.sc.intel.com>
-References: <20211104115001.GU20319@twin.jikos.cz>
- <CAHk-=whYQvExYESEOJoSj4Jy7t+tSZgbCWuNpdwXYh+3zq2itw@mail.gmail.com>
- <CAHk-=whBOXM3mh-QtzK-EQtDEHQLcziAXu07KxU1crUc5jiQUg@mail.gmail.com>
- <CAHk-=whGUxtcL8Z67y4A6_diSmtQdnOq1p_gyBAMzpKD9yk+gw@mail.gmail.com>
- <f3d3dc5d-dcf8-76b7-f383-aed3c942ae49@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f3d3dc5d-dcf8-76b7-f383-aed3c942ae49@suse.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+        nathanl@linux.ibm.com, songkai01@inspur.com, aik@ozlabs.ru,
+        kda@linux-powerpc.org, gustavoars@kernel.org, wanjiabing@vivo.com,
+        cuibixuan@linux.alibaba.com, peterz@infradead.org, joel@jms.id.au,
+        u.kleine-koenig@pengutronix.de, agust@denx.de,
+        atrajeev@linux.vnet.ibm.cm, lvivier@redhat.com,
+        schnelle@linux.ibm.com, npiggin@gmail.com, clg@kaod.org,
+        nixiaoming@huawei.com, hbathini@linux.ibm.com, dja@axtens.net,
+        atrajeev@linux.vnet.ibm.com, ndesaulniers@google.com,
+        linux-kernel@vger.kernel.org, hegdevasant@linux.vnet.ibm.com,
+        pbonzini@redhat.com, linuxppc-dev@lists.ozlabs.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 08:01:13AM +0800, Qu Wenruo wrote:
-> 
+The pull request you sent on Sat, 06 Nov 2021 00:02:09 +1100:
 
-[snip]
+> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.16-1
 
-> 
-> 
-> BTW, I also thought that part can be suspicious, as it keeps the page mapped
-> (unlike all other call sites), thus I tried the following diff, but no
-> difference for the leakage:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/5c0b0c676ac2d84f69568715af91e45b610fe17a
 
-I just saw this thread and I was wondering why can't kmap_local_page() be used?
+Thank you!
 
-I know we are trying to remove highmem from the kernel but the DAX stray write
-protection I've been working on depends on the kmap interface to ensure that
-DAX pages are properly accessed.[1]  Also there are a couple of new helpers
-which could be used instead of the changes below.
-
-I know this does not solve the problem Linus is seeing and DAX is not yet
-supported on btrfs but I know there has been some effort to get it working and
-things like commit ...
-
-	8c945d32e604 ("btrfs: compression: drop kmap/kunmap from lzo") 
-
-... would break that support.
-
-> 
-> diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
-> index 65cb0766e62d..0648acc48310 100644
-> --- a/fs/btrfs/lzo.c
-> +++ b/fs/btrfs/lzo.c
-> @@ -151,6 +151,7 @@ static int copy_compressed_data_to_page(char
-> *compressed_data,
->  	kaddr = kmap(cur_page);
->  	write_compress_length(kaddr + offset_in_page(*cur_out),
->  			      compressed_size);
-> +	kunmap(cur_page);
->  	*cur_out += LZO_LEN;
-> 
->  	orig_out = *cur_out;
-> @@ -160,7 +161,6 @@ static int copy_compressed_data_to_page(char
-> *compressed_data,
->  		u32 copy_len = min_t(u32, sectorsize - *cur_out % sectorsize,
->  				     orig_out + compressed_size - *cur_out);
-> 
-> -		kunmap(cur_page);
->  		cur_page = out_pages[*cur_out / PAGE_SIZE];
->  		/* Allocate a new page */
->  		if (!cur_page) {
-> @@ -173,6 +173,7 @@ static int copy_compressed_data_to_page(char
-> *compressed_data,
-> 
->  		memcpy(kaddr + offset_in_page(*cur_out),
->  		       compressed_data + *cur_out - orig_out, copy_len);
-> +		kunmap(cur_page);
-
-memcpy_to_page()?
-
-> 
->  		*cur_out += copy_len;
->  	}
-> @@ -186,12 +187,15 @@ static int copy_compressed_data_to_page(char
-> *compressed_data,
->  		goto out;
-> 
->  	/* The remaining size is not enough, pad it with zeros */
-> +	cur_page = out_pages[*cur_out / PAGE_SIZE];
-> +	ASSERT(cur_page);
-> +	kmap(cur_page);
->  	memset(kaddr + offset_in_page(*cur_out), 0,
->  	       sector_bytes_left);
-> +	kunmap(cur_page);
-
-memzero_page()?
-
-Just my $0.02 given I've been trying to remove kmap() uses and btrfs remains
-one of the big users of kmap().
-
-Thanks,
-Ira
-
-[1] https://lore.kernel.org/lkml/20210804043231.2655537-16-ira.weiny@intel.com/
-
->  	*cur_out += sector_bytes_left;
-> 
->  out:
-> -	kunmap(cur_page);
->  	return 0;
->  }
-> 
-> Thanks,
-> Qu
-> > 
-> > In particular, what if "offset_in_page(*cur_out)" is very close to the
-> > end of the page?
-> > 
-> > That write_compress_length() always writes out a word-sized length (ie
-> > LZO_LEN bytes), and the above pattern seems to have no model to handle
-> > the "oh, this 4-byte write crosses a page boundary"
-> > 
-> > The other writes in that function seem to do it properly, and you have
-> > 
-> >          u32 copy_len = min_t(u32, sectorsize - *cur_out % sectorsize,
-> >                               orig_out + compressed_size - *cur_out);
-> > 
-> > so doing the memcpy() of size 'copy_len' should never cross a page
-> > boundary as long as sectorsize is a power-of-2 smaller or equal to a
-> > page size. But those 4-byte length writes seem like they could be page
-> > crossers.
-> > 
-> > The same situation exists on the reading side, I think.
-> > 
-> > Maybe there's some reason why the read/write_compress_length() can
-> > never cross a page boundary, but it did strike me as odd.
-> > 
-> >               Linus
-> > 
-> 
-> 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
