@@ -2,266 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5B04461BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:55:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA744461BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbhKEJ6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 05:58:00 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51914 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232954AbhKEJ5y (ORCPT
+        id S232965AbhKEJ63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 05:58:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230075AbhKEJ6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 05:57:54 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C2CB9218A4;
-        Fri,  5 Nov 2021 09:55:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1636106112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+        Fri, 5 Nov 2021 05:58:16 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC4C7C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 02:55:36 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636106134;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=KFKgqjsVVpDaPTDousPDt96FJKqdCU2sOOhjtib7BWc=;
-        b=oS8DuB9/NxKVi6XlZqCfhYKCNZaLzolpEE4OwG5RC0Q63k5Wz7KyyF9jlGynT+jd78U5qQ
-        YSbeVyL+23CqU6C7DFujES4L0ZEiAerV6wgsUfD/jSeoJ6WUhPfZUOR1wHjzqohdVL1tJz
-        X/vt4Ls+zbQ3gQAkYnbkAneBaY59oSs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1636106112;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+        bh=qh6RxtEJsuIwX72Zd/aEZ9gJ+PJVkg8DjOskJnoW+gM=;
+        b=MAfXmulExhmA4I8HyVrh4Cqw+1mhxI7hFqKKGC3Uh2hS4CReHEtlCXcfQFzek87Z6ogVHI
+        w9aBAW1avQoUYqqbsyfUM84SfMiTAwbx8xIEtif4Sx3NNjyOFbekLfzykLAR/J2oTmXErd
+        G8x6rRjxYs9DUZHA9dQ3ipWY7REDE3M2YrHFKEEQzGMdGN/Skwp9lB0VRLsYM8VyFdbp/i
+        ASvMcemdcS4FVFsxsjggO+6zpN1Q1BpMLQNujRQ6F1ECKVxOWAtAO6GO7L19JfdJYO74wj
+        bkD54uOpVEoKVQbU2Fha1W2hiFWq7ePw7ra4aTvAzVEqhKv0+udwG+DqFhb9Jw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636106134;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=KFKgqjsVVpDaPTDousPDt96FJKqdCU2sOOhjtib7BWc=;
-        b=0WY1ADo1PNbzXrvYjvDKIkvN1mkI1KwMFhZvwgAgug53k6aNj+PVzRtAdvrSgNFeDgwNVH
-        +J4twYvwweXD+tDg==
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
-        by relay2.suse.de (Postfix) with ESMTP id 8555A2C160;
-        Fri,  5 Nov 2021 09:55:12 +0000 (UTC)
-From:   Michal Suchanek <msuchanek@suse.de>
-To:     keyrings@vger.kernel.org
-Cc:     Michal Suchanek <msuchanek@suse.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>, Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Rob Herring <robh@kernel.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Frank van der Linden <fllinden@amazon.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: [PATCH 2/2] module: Move duplicate mod_check_sig users code to mod_parse_sig
-Date:   Fri,  5 Nov 2021 10:55:05 +0100
-Message-Id: <db734c833b84c1f41d6a326ee8ea4829c29c8c6e.1636105912.git.msuchanek@suse.de>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1636105912.git.msuchanek@suse.de>
-References: <cover.1635948742.git.msuchanek@suse.de> <cover.1636105912.git.msuchanek@suse.de>
+        bh=qh6RxtEJsuIwX72Zd/aEZ9gJ+PJVkg8DjOskJnoW+gM=;
+        b=JA8w/xDPkweGESOk1FnwebI/FZJgRrQ48MRY5W7crUzFjajlSJc3bSUoXdBTqBzhxMwp6H
+        BKBnylMo071nYCCQ==
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>
+Subject: Re: Removal of printk safe buffers delays NMI context printk
+In-Reply-To: <1636073838.qpmyp6q17i.astroid@bobo.none>
+References: <1636039236.y415994wfa.astroid@bobo.none>
+ <87ee7vki7f.fsf@jogness.linutronix.de>
+ <1636073838.qpmyp6q17i.astroid@bobo.none>
+Date:   Fri, 05 Nov 2021 11:01:33 +0106
+Message-ID: <87r1bv2aga.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Multiple users of mod_check_sig check for the marker, then call
-mod_check_sig, extract signature length, and remove the signature.
+On 2021-11-05, Nicholas Piggin <npiggin@gmail.com> wrote:
+>> We are planning on implementing a pr_flush() that will do something
+>> similar. But I am wondering how you are planning on triggering a CPU
+>> to call that function.
+>
+> Similar way as was removed by commit 93d102f094b ("printk: remove safe
+> buffers") fro nmi_backtrace and powerpc watchdog. The following patch
+> is what I'm using which seems to work for me.
 
-Put this code in one place together with mod_check_sig.
+What was removed from 93d102f094b was irq_work triggering on all
+CPUs. Your patch is attempting to directly print from a non-NMI
+context. This is obviously a better approach if a caller is known to be
+non-NMI.
 
-Signed-off-by: Michal Suchanek <msuchanek@suse.de>
----
- include/linux/module_signature.h    |  1 +
- kernel/module_signature.c           | 56 ++++++++++++++++++++++++++++-
- kernel/module_signing.c             | 26 +++-----------
- security/integrity/ima/ima_modsig.c | 22 ++----------
- 4 files changed, 63 insertions(+), 42 deletions(-)
+Also, before 93d102f094b the safe buffer flushing was performed before
+triggering the NMI backtraces (in some cases). So clearly it worked
+before by accident rather than by design. (Not that that really
+matters.)
 
-diff --git a/include/linux/module_signature.h b/include/linux/module_signature.h
-index 7eb4b00381ac..1343879b72b3 100644
---- a/include/linux/module_signature.h
-+++ b/include/linux/module_signature.h
-@@ -42,5 +42,6 @@ struct module_signature {
- 
- int mod_check_sig(const struct module_signature *ms, size_t file_len,
- 		  const char *name);
-+int mod_parse_sig(const void *data, size_t *len, size_t *sig_len, const char *name);
- 
- #endif /* _LINUX_MODULE_SIGNATURE_H */
-diff --git a/kernel/module_signature.c b/kernel/module_signature.c
-index 00132d12487c..784b40575ee4 100644
---- a/kernel/module_signature.c
-+++ b/kernel/module_signature.c
-@@ -8,14 +8,36 @@
- 
- #include <linux/errno.h>
- #include <linux/printk.h>
-+#include <linux/string.h>
- #include <linux/module_signature.h>
- #include <asm/byteorder.h>
- 
-+/**
-+ * mod_check_sig_marker - check that the given data has signature marker at the end
-+ *
-+ * @data:	Data with appended signature
-+ * @len:	Length of data. Signature marker length is subtracted on success.
-+ */
-+static inline int mod_check_sig_marker(const void *data, size_t *len)
-+{
-+	const unsigned long markerlen = sizeof(MODULE_SIG_STRING) - 1;
-+
-+	if (markerlen > *len)
-+		return -ENODATA;
-+
-+	if (memcmp(data + *len - markerlen, MODULE_SIG_STRING,
-+		   markerlen))
-+		return -ENODATA;
-+
-+	*len -= markerlen;
-+	return 0;
-+}
-+
- /**
-  * mod_check_sig - check that the given signature is sane
-  *
-  * @ms:		Signature to check.
-- * @file_len:	Size of the file to which @ms is appended.
-+ * @file_len:	Size of the file to which @ms is appended (without the marker).
-  * @name:	What is being checked. Used for error messages.
-  */
- int mod_check_sig(const struct module_signature *ms, size_t file_len,
-@@ -44,3 +66,35 @@ int mod_check_sig(const struct module_signature *ms, size_t file_len,
- 
- 	return 0;
- }
-+
-+/**
-+ * mod_parse_sig - check that the given signature is sane and determine signature length
-+ *
-+ * @data:	Data with appended signature.
-+ * @len:	Length of data. Signature and marker length is subtracted on success.
-+ * @sig_len:	Length of signature. Filled on success.
-+ * @name:	What is being checked. Used for error messages.
-+ */
-+int mod_parse_sig(const void *data, size_t *len, size_t *sig_len, const char *name)
-+{
-+	const struct module_signature *sig;
-+	int rc;
-+
-+	rc = mod_check_sig_marker(data, len);
-+	if (rc)
-+		return rc;
-+
-+	if (*len < sizeof(*sig))
-+		return -ENODATA;
-+
-+	sig = (const struct module_signature *)(data + (*len - sizeof(*sig)));
-+
-+	rc = mod_check_sig(sig, *len, name);
-+	if (rc)
-+		return rc;
-+
-+	*sig_len = be32_to_cpu(sig->sig_len);
-+	*len -= *sig_len + sizeof(*sig);
-+
-+	return 0;
-+}
-diff --git a/kernel/module_signing.c b/kernel/module_signing.c
-index cef72a6f6b5d..02bbca90f467 100644
---- a/kernel/module_signing.c
-+++ b/kernel/module_signing.c
-@@ -25,35 +25,17 @@ int verify_appended_signature(const void *data, size_t *len,
- 			      struct key *trusted_keys,
- 			      enum key_being_used_for purpose)
- {
--	const unsigned long markerlen = sizeof(MODULE_SIG_STRING) - 1;
- 	struct module_signature ms;
--	size_t sig_len, modlen = *len;
-+	size_t sig_len;
- 	int ret;
- 
--	pr_devel("==>%s %s(,%zu)\n", __func__, key_being_used_for[purpose], modlen);
-+	pr_devel("==>%s %s(,%zu)\n", __func__, key_being_used_for[purpose], *len);
- 
--	if (markerlen > modlen)
--		return -ENODATA;
--
--	if (memcmp(data + modlen - markerlen, MODULE_SIG_STRING,
--		   markerlen))
--		return -ENODATA;
--	modlen -= markerlen;
--
--	if (modlen <= sizeof(ms))
--		return -EBADMSG;
--
--	memcpy(&ms, data + (modlen - sizeof(ms)), sizeof(ms));
--
--	ret = mod_check_sig(&ms, modlen, key_being_used_for[purpose]);
-+	ret = mod_parse_sig(data, len, &sig_len, key_being_used_for[purpose]);
- 	if (ret)
- 		return ret;
- 
--	sig_len = be32_to_cpu(ms.sig_len);
--	modlen -= sig_len + sizeof(ms);
--	*len = modlen;
--
--	return verify_pkcs7_signature(data, modlen, data + modlen, sig_len,
-+	return verify_pkcs7_signature(data, *len, data + *len, sig_len,
- 				      trusted_keys,
- 				      purpose,
- 				      NULL, NULL);
-diff --git a/security/integrity/ima/ima_modsig.c b/security/integrity/ima/ima_modsig.c
-index fb25723c65bc..46917eb37fd8 100644
---- a/security/integrity/ima/ima_modsig.c
-+++ b/security/integrity/ima/ima_modsig.c
-@@ -37,33 +37,17 @@ struct modsig {
-  *
-  * Return: 0 on success, error code otherwise.
-  */
--int ima_read_modsig(enum ima_hooks func, const void *buf, loff_t buf_len,
-+int ima_read_modsig(enum ima_hooks func, const void *buf, loff_t len,
- 		    struct modsig **modsig)
- {
--	const size_t marker_len = strlen(MODULE_SIG_STRING);
--	const struct module_signature *sig;
- 	struct modsig *hdr;
--	size_t sig_len;
--	const void *p;
-+	size_t sig_len, buf_len = len;
- 	int rc;
- 
--	if (buf_len <= marker_len + sizeof(*sig))
--		return -ENOENT;
--
--	p = buf + buf_len - marker_len;
--	if (memcmp(p, MODULE_SIG_STRING, marker_len))
--		return -ENOENT;
--
--	buf_len -= marker_len;
--	sig = (const struct module_signature *)(p - sizeof(*sig));
--
--	rc = mod_check_sig(sig, buf_len, func_tokens[func]);
-+	rc = mod_parse_sig(buf, &buf_len, &sig_len, func_tokens[func]);
- 	if (rc)
- 		return rc;
- 
--	sig_len = be32_to_cpu(sig->sig_len);
--	buf_len -= sig_len + sizeof(*sig);
--
- 	/* Allocate sig_len additional bytes to hold the raw PKCS#7 data. */
- 	hdr = kzalloc(sizeof(*hdr) + sig_len, GFP_KERNEL);
- 	if (!hdr)
--- 
-2.31.1
+> What would pr_flush do differently and where were you planning to use
+> it?
 
+Currently, and particularly when we move to threaded printers, printk
+callers do not know when their messages are actually visible. However,
+in some cases the printk caller (or some related task) wants to be sure
+the message is visible.
+
+pr_flush() will allow a task to block until all pending messages (at the
+time of the call) are output on all consoles.
+
+Your patch is doing something similar for non-NMI contexts, except that
+it will exit early if it fails to get the console lock. For your case
+this is probably acceptable because you are only concerned that some
+context is printing the messages, even if the latest messages may not
+have been printed yet.
+
+>     printk: restore flushing of NMI buffers on remote CPUs after NMI backtraces
+>     
+>     printk from NMI context relies on irq work being raised on the local CPU
+>     to print to console. This can be a problem if the NMI was raised by a
+>     lockup detector to print lockup stack and regs, because the CPU may not
+>     enable irqs (because it is locked up).
+>     
+>     Introduce printk_flush() that can be called from non-NMI context on
+>     another CPU to try to get those messages to the console.
+>     
+>     Fixes: 93d102f094be ("printk: remove safe buffers")
+>     Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+>
+> diff --git a/arch/powerpc/kernel/watchdog.c b/arch/powerpc/kernel/watchdog.c
+> index 5f69ba4de1f3..59ddb24797ae 100644
+> --- a/arch/powerpc/kernel/watchdog.c
+> +++ b/arch/powerpc/kernel/watchdog.c
+> @@ -227,6 +227,12 @@ static void watchdog_smp_panic(int cpu)
+>  		cpumask_clear(&wd_smp_cpus_ipi);
+>  	}
+>  
+> +	/*
+> +	 * Force flush any remote buffers that might be stuck in IRQ context
+> +	 * and therefore could not run their irq_work.
+> +	 */
+> +	printk_flush();
+> +
+
+nmi_trigger_cpumask_backtrace() tracks and waits (up to 10 seconds) for
+the CPUs to print their backtrace before flushing. Here there is no
+waiting. I suppose in practice the NMI backtrace will be fast enough,
+but I am just wondering if there should be some sort of tracking/waiting
+like in nmi_trigger_cpumask_backtrace().
+
+>  	if (hardlockup_panic)
+>  		nmi_panic(NULL, "Hard LOCKUP");
+>  
+> diff --git a/include/linux/printk.h b/include/linux/printk.h
+> index 85b656f82d75..50424ad87fb5 100644
+> --- a/include/linux/printk.h
+> +++ b/include/linux/printk.h
+> @@ -198,6 +198,7 @@ void dump_stack_print_info(const char *log_lvl);
+>  void show_regs_print_info(const char *log_lvl);
+>  extern asmlinkage void dump_stack_lvl(const char *log_lvl) __cold;
+>  extern asmlinkage void dump_stack(void) __cold;
+> +void printk_flush(void);
+>  #else
+>  static inline __printf(1, 0)
+>  int vprintk(const char *s, va_list args)
+> @@ -274,6 +275,9 @@ static inline void dump_stack_lvl(const char *log_lvl)
+>  static inline void dump_stack(void)
+>  {
+>  }
+> +static inline void printk_flush(void)
+> +{
+> +}
+>  #endif
+>  
+>  #ifdef CONFIG_SMP
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index a8d0a58deebc..dd9471bb58c2 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -2206,6 +2206,26 @@ int vprintk_store(int facility, int level,
+>  	return ret;
+>  }
+>  
+> +void printk_flush(void)
+> +{
+> +	/*
+> +	 * Disable preemption to avoid being preempted while holding
+> +	 * console_sem which would prevent anyone from printing to
+> +	 * console
+> +	 */
+> +	preempt_disable();
+> +	/*
+> +	 * Try to acquire and then immediately release the console
+> +	 * semaphore.  The release will print out buffers and wake up
+> +	 * /dev/kmsg and syslog() users.
+> +	 */
+> +	if (console_trylock_spinning())
+> +		console_unlock();
+> +	preempt_enable();
+> +
+> +	wake_up_klogd();
+> +}
+
+I have mixed feelings about this printk_flush() because it is exactly
+this code that is about to undergo massive reworking. If this function
+is accepted, then I wonder if printk_trigger_flush() might be a better
+name since it does not necessarily wait until the messages are
+printed. (There could be another task printing and already a queued
+handover printer. Or this task could handover printing before
+finishing.)
+
+John Ogness
