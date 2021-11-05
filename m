@@ -2,118 +2,487 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1249446811
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08FD7446828
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234455AbhKERtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 13:49:35 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:15879 "EHLO m43-7.mailgun.net"
+        id S234575AbhKERvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 13:51:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232041AbhKERtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 13:49:33 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1636134413; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=qDwmVWSIeX5wK0Zlss+9lopfSxSIFEjjri+vJXI5YY4=;
- b=jQe4bdVNZxvUQDAUZmikazYRrmXIsNHmMBHVRQlF9vuoavnD0Tzy8l3DZqW1w5d2ihRwS4YX
- 421XjcMrce8bWbXvIVq/tdiSGMRWjmrJjFqV9piXyymhx9rEZF1fs8FEcmrPGyNma8BOJqoM
- 1UKPd2UZ/0y4KxNp3qZU+jnHmd0=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 61856e0be736dec45b7d0515 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Nov 2021 17:46:51
- GMT
-Sender: manafm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3C808C43460; Fri,  5 Nov 2021 17:46:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: manafm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6615DC4338F;
-        Fri,  5 Nov 2021 17:46:49 +0000 (UTC)
+        id S234518AbhKERvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 13:51:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 782F661263;
+        Fri,  5 Nov 2021 17:48:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636134508;
+        bh=vP/JpDGb+Cvga7YPKCWXofdlkKeZJx+gI72wmHjEpAE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rnAmA0EWWThLfDwTYhC4RWpAGPB884QLGxI77QfxGwXhPnS2XKoyy/aoRaezAuLdn
+         12YHb1LOs5WLGTNoDl4exiSraJAUpAacuk38uo1mQECAVWJO/ShxJ2W0G06etaL0Z2
+         3qsHTe+Ei15cpH43TL4NmXkF9IPZ5NBZlRdmaYgPUxnk2IUVcb3jsIv3VRioCWFaB3
+         SNTAcVDeaQfb6PT4d1F7Racjv22Kr4MGTYDgTpRJwtsp9gkpcrWmX6f0kQJAvH73ML
+         80VvNI1Ev8pDtN8ViFuj5ta1kupTgc6EmAOnB/FJnh6kvbTdrKASkCgKWDPYfjBEAd
+         t37Wz3wVuGcQQ==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mj3K4-007eNZ-8S; Fri, 05 Nov 2021 17:48:16 +0000
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: [PATCH 1/8] media: atomisp: drop duplicated ia_css_isp_configs.c
+Date:   Fri,  5 Nov 2021 17:48:08 +0000
+Message-Id: <286ba3e4f25e9ba2ab78de4cbf010f18167b2604.1636134411.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 05 Nov 2021 23:16:49 +0530
-From:   manafm@codeaurora.org
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drivers: thermal: Reset previous low and high trip during
- thermal zone init
-In-Reply-To: <CAJZ5v0g-N0WOASc7RzFpSYC+Y8nFdiw6DmPHcYr5Y7HQeCetkA@mail.gmail.com>
-References: <1635883240-24293-1-git-send-email-manafm@codeaurora.org>
- <CAJZ5v0g-N0WOASc7RzFpSYC+Y8nFdiw6DmPHcYr5Y7HQeCetkA@mail.gmail.com>
-Message-ID: <efb9e319537b888c8848bc67dc552c6b@codeaurora.org>
-X-Sender: manafm@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-05 20:52, Rafael J. Wysocki wrote:
-> On Tue, Nov 2, 2021 at 9:01 PM Manaf Meethalavalappu Pallikunhi
-> <manafm@codeaurora.org> wrote:
->> 
->> During the suspend is in process, thermal_zone_device_update bails out
->> thermal zone re-evaluation for any sensor trip violation without
->> setting next valid trip to that sensor. It assumes during resume
->> it will re-evaluate same thermal zone and update trip. But when it is
->> in suspend temperature goes down and on resume path while updating
->> thermal zone if temperature is less than previously violated trip,
->> thermal zone set trip function evaluates the same previous high and
->> previous low trip as new high and low trip. Since there is no change
->> in high/low trip, it bails out from thermal zone set trip API without
->> setting any trip. It leads to a case where sensor high trip or low
->> trip is disabled forever even though thermal zone has a valid high
->> or low trip.
->> 
->> During thermal zone device init, reset thermal zone previous high
->> and low trip. It resolves above mentioned scenario.
-> 
-> Makes sense to me.
-> 
-> Daniel?
-> 
->> Signed-off-by: Manaf Meethalavalappu Pallikunhi 
->> <manafm@codeaurora.org>
->> ---
->>  drivers/thermal/thermal_core.c | 2 ++
->>  1 file changed, 2 insertions(+)
->> 
->> diff --git a/drivers/thermal/thermal_core.c 
->> b/drivers/thermal/thermal_core.c
->> index 21db445..2b7a0b4 100644
->> --- a/drivers/thermal/thermal_core.c
->> +++ b/drivers/thermal/thermal_core.c
->> @@ -477,6 +477,8 @@ static void thermal_zone_device_init(struct 
->> thermal_zone_device *tz)
->>  {
->>         struct thermal_instance *pos;
->>         tz->temperature = THERMAL_TEMP_INVALID;
->> +       tz->prev_low_trip = -INT_MAX;
-> 
-> Why not use INT_MIN instead?
-> 
-The thermal_zone_set_trips API uses -INT_MAX as default low trip to 
-start trip aggregation. I used the same default values here as well.
+Both 2400 and 2401 have this file, but they're identical.
 
->> +       tz->prev_high_trip = INT_MAX;
->>         list_for_each_entry(pos, &tz->thermal_instances, tz_node)
->>                 pos->initialized = false;
->>  }
->> --
+So, drop one of them.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/staging/media/atomisp/Makefile        |   3 +-
+ .../css_2401_system/hive/ia_css_isp_configs.c | 386 ------------------
+ .../hive => }/ia_css_isp_configs.c            |   0
+ 3 files changed, 1 insertion(+), 388 deletions(-)
+ delete mode 100644 drivers/staging/media/atomisp/pci/css_2401_system/hive/ia_css_isp_configs.c
+ rename drivers/staging/media/atomisp/pci/{css_2400_system/hive => }/ia_css_isp_configs.c (100%)
+
+diff --git a/drivers/staging/media/atomisp/Makefile b/drivers/staging/media/atomisp/Makefile
+index 606b7754fdfd..320c14f4afa6 100644
+--- a/drivers/staging/media/atomisp/Makefile
++++ b/drivers/staging/media/atomisp/Makefile
+@@ -53,6 +53,7 @@ atomisp-objs += \
+ 	pci/hmm/hmm.o \
+ 	pci/hmm/hmm_reserved_pool.o \
+ 	pci/ia_css_device_access.o \
++	pci/ia_css_isp_configs.o \
+ 	pci/isp/kernels/aa/aa_2/ia_css_aa2.host.o \
+ 	pci/isp/kernels/anr/anr_1.0/ia_css_anr.host.o \
+ 	pci/isp/kernels/anr/anr_2/ia_css_anr2.host.o \
+@@ -157,7 +158,6 @@ atomisp-objs += \
+ 	pci/system_local.o \
+ 
+ obj-byt = \
+-	pci/css_2400_system/hive/ia_css_isp_configs.o \
+ 	pci/css_2400_system/hive/ia_css_isp_params.o \
+ 	pci/css_2400_system/hive/ia_css_isp_states.o \
+ 
+@@ -166,7 +166,6 @@ obj-byt = \
+ #
+ 
+ obj-cht = \
+-	pci/css_2401_system/hive/ia_css_isp_configs.o \
+ 	pci/css_2401_system/hive/ia_css_isp_params.o \
+ 	pci/css_2401_system/hive/ia_css_isp_states.o \
+ 	pci/css_2401_system/host/csi_rx.o \
+diff --git a/drivers/staging/media/atomisp/pci/css_2401_system/hive/ia_css_isp_configs.c b/drivers/staging/media/atomisp/pci/css_2401_system/hive/ia_css_isp_configs.c
+deleted file mode 100644
+index 1a021ae841fe..000000000000
+--- a/drivers/staging/media/atomisp/pci/css_2401_system/hive/ia_css_isp_configs.c
++++ /dev/null
+@@ -1,386 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * Support for Intel Camera Imaging ISP subsystem.
+- * Copyright (c) 2015, Intel Corporation.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms and conditions of the GNU General Public License,
+- * version 2, as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+- * more details.
+- */
+-
+-/* Generated code: do not edit or commmit. */
+-
+-#define IA_CSS_INCLUDE_CONFIGURATIONS
+-#include "ia_css_pipeline.h"
+-#include "ia_css_isp_configs.h"
+-#include "ia_css_debug.h"
+-#include "assert_support.h"
+-
+-/* Code generated by genparam/genconfig.c:gen_configure_function() */
+-
+-void
+-ia_css_configure_iterator(
+-    const struct ia_css_binary *binary,
+-    const struct ia_css_iterator_configuration *config_dmem)
+-{
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_iterator() enter:\n");
+-
+-	{
+-		unsigned int offset = 0;
+-		unsigned int size   = 0;
+-
+-		if (binary->info->mem_offsets.offsets.config) {
+-			size   = binary->info->mem_offsets.offsets.config->dmem.iterator.size;
+-			offset = binary->info->mem_offsets.offsets.config->dmem.iterator.offset;
+-		}
+-		if (size) {
+-			ia_css_iterator_config((struct sh_css_isp_iterator_isp_config *)
+-					       &binary->mem_params.params[IA_CSS_PARAM_CLASS_CONFIG][IA_CSS_ISP_DMEM].address[offset],
+-					       config_dmem, size);
+-		}
+-	}
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_iterator() leave:\n");
+-}
+-
+-/* Code generated by genparam/genconfig.c:gen_configure_function() */
+-
+-void
+-ia_css_configure_copy_output(
+-    const struct ia_css_binary *binary,
+-    const struct ia_css_copy_output_configuration *config_dmem)
+-{
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_copy_output() enter:\n");
+-
+-	{
+-		unsigned int offset = 0;
+-		unsigned int size   = 0;
+-
+-		if (binary->info->mem_offsets.offsets.config) {
+-			size   = binary->info->mem_offsets.offsets.config->dmem.copy_output.size;
+-			offset = binary->info->mem_offsets.offsets.config->dmem.copy_output.offset;
+-		}
+-		if (size) {
+-			ia_css_copy_output_config((struct sh_css_isp_copy_output_isp_config *)
+-						  &binary->mem_params.params[IA_CSS_PARAM_CLASS_CONFIG][IA_CSS_ISP_DMEM].address[offset],
+-						  config_dmem, size);
+-		}
+-	}
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_copy_output() leave:\n");
+-}
+-
+-/* Code generated by genparam/genconfig.c:gen_configure_function() */
+-
+-void
+-ia_css_configure_crop(
+-    const struct ia_css_binary *binary,
+-    const struct ia_css_crop_configuration *config_dmem)
+-{
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_crop() enter:\n");
+-
+-	{
+-		unsigned int offset = 0;
+-		unsigned int size   = 0;
+-
+-		if (binary->info->mem_offsets.offsets.config) {
+-			size   = binary->info->mem_offsets.offsets.config->dmem.crop.size;
+-			offset = binary->info->mem_offsets.offsets.config->dmem.crop.offset;
+-		}
+-		if (size) {
+-			ia_css_crop_config((struct sh_css_isp_crop_isp_config *)
+-					   &binary->mem_params.params[IA_CSS_PARAM_CLASS_CONFIG][IA_CSS_ISP_DMEM].address[offset],
+-					   config_dmem, size);
+-		}
+-	}
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_crop() leave:\n");
+-}
+-
+-/* Code generated by genparam/genconfig.c:gen_configure_function() */
+-
+-void
+-ia_css_configure_fpn(
+-    const struct ia_css_binary *binary,
+-    const struct ia_css_fpn_configuration *config_dmem)
+-{
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_fpn() enter:\n");
+-
+-	{
+-		unsigned int offset = 0;
+-		unsigned int size   = 0;
+-
+-		if (binary->info->mem_offsets.offsets.config) {
+-			size   = binary->info->mem_offsets.offsets.config->dmem.fpn.size;
+-			offset = binary->info->mem_offsets.offsets.config->dmem.fpn.offset;
+-		}
+-		if (size) {
+-			ia_css_fpn_config((struct sh_css_isp_fpn_isp_config *)
+-					  &binary->mem_params.params[IA_CSS_PARAM_CLASS_CONFIG][IA_CSS_ISP_DMEM].address[offset],
+-					  config_dmem, size);
+-		}
+-	}
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_fpn() leave:\n");
+-}
+-
+-/* Code generated by genparam/genconfig.c:gen_configure_function() */
+-
+-void
+-ia_css_configure_dvs(
+-    const struct ia_css_binary *binary,
+-    const struct ia_css_dvs_configuration *config_dmem)
+-{
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_dvs() enter:\n");
+-
+-	{
+-		unsigned int offset = 0;
+-		unsigned int size   = 0;
+-
+-		if (binary->info->mem_offsets.offsets.config) {
+-			size   = binary->info->mem_offsets.offsets.config->dmem.dvs.size;
+-			offset = binary->info->mem_offsets.offsets.config->dmem.dvs.offset;
+-		}
+-		if (size) {
+-			ia_css_dvs_config((struct sh_css_isp_dvs_isp_config *)
+-					  &binary->mem_params.params[IA_CSS_PARAM_CLASS_CONFIG][IA_CSS_ISP_DMEM].address[offset],
+-					  config_dmem, size);
+-		}
+-	}
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_dvs() leave:\n");
+-}
+-
+-/* Code generated by genparam/genconfig.c:gen_configure_function() */
+-
+-void
+-ia_css_configure_qplane(
+-    const struct ia_css_binary *binary,
+-    const struct ia_css_qplane_configuration *config_dmem)
+-{
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_qplane() enter:\n");
+-
+-	{
+-		unsigned int offset = 0;
+-		unsigned int size   = 0;
+-
+-		if (binary->info->mem_offsets.offsets.config) {
+-			size   = binary->info->mem_offsets.offsets.config->dmem.qplane.size;
+-			offset = binary->info->mem_offsets.offsets.config->dmem.qplane.offset;
+-		}
+-		if (size) {
+-			ia_css_qplane_config((struct sh_css_isp_qplane_isp_config *)
+-					     &binary->mem_params.params[IA_CSS_PARAM_CLASS_CONFIG][IA_CSS_ISP_DMEM].address[offset],
+-					     config_dmem, size);
+-		}
+-	}
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_qplane() leave:\n");
+-}
+-
+-/* Code generated by genparam/genconfig.c:gen_configure_function() */
+-
+-void
+-ia_css_configure_output0(
+-    const struct ia_css_binary *binary,
+-    const struct ia_css_output0_configuration *config_dmem)
+-{
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_output0() enter:\n");
+-
+-	{
+-		unsigned int offset = 0;
+-		unsigned int size   = 0;
+-
+-		if (binary->info->mem_offsets.offsets.config) {
+-			size   = binary->info->mem_offsets.offsets.config->dmem.output0.size;
+-			offset = binary->info->mem_offsets.offsets.config->dmem.output0.offset;
+-		}
+-		if (size) {
+-			ia_css_output0_config((struct sh_css_isp_output_isp_config *)
+-					      &binary->mem_params.params[IA_CSS_PARAM_CLASS_CONFIG][IA_CSS_ISP_DMEM].address[offset],
+-					      config_dmem, size);
+-		}
+-	}
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_output0() leave:\n");
+-}
+-
+-/* Code generated by genparam/genconfig.c:gen_configure_function() */
+-
+-void
+-ia_css_configure_output1(
+-    const struct ia_css_binary *binary,
+-    const struct ia_css_output1_configuration *config_dmem)
+-{
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_output1() enter:\n");
+-
+-	{
+-		unsigned int offset = 0;
+-		unsigned int size   = 0;
+-
+-		if (binary->info->mem_offsets.offsets.config) {
+-			size   = binary->info->mem_offsets.offsets.config->dmem.output1.size;
+-			offset = binary->info->mem_offsets.offsets.config->dmem.output1.offset;
+-		}
+-		if (size) {
+-			ia_css_output1_config((struct sh_css_isp_output_isp_config *)
+-					      &binary->mem_params.params[IA_CSS_PARAM_CLASS_CONFIG][IA_CSS_ISP_DMEM].address[offset],
+-					      config_dmem, size);
+-		}
+-	}
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_output1() leave:\n");
+-}
+-
+-/* Code generated by genparam/genconfig.c:gen_configure_function() */
+-
+-void
+-ia_css_configure_output(
+-    const struct ia_css_binary *binary,
+-    const struct ia_css_output_configuration *config_dmem)
+-{
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_output() enter:\n");
+-
+-	{
+-		unsigned int offset = 0;
+-		unsigned int size   = 0;
+-
+-		if (binary->info->mem_offsets.offsets.config) {
+-			size   = binary->info->mem_offsets.offsets.config->dmem.output.size;
+-			offset = binary->info->mem_offsets.offsets.config->dmem.output.offset;
+-		}
+-		if (size) {
+-			ia_css_output_config((struct sh_css_isp_output_isp_config *)
+-					     &binary->mem_params.params[IA_CSS_PARAM_CLASS_CONFIG][IA_CSS_ISP_DMEM].address[offset],
+-					     config_dmem, size);
+-		}
+-	}
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_output() leave:\n");
+-}
+-
+-/* Code generated by genparam/genconfig.c:gen_configure_function() */
+-
+-void
+-ia_css_configure_raw(
+-    const struct ia_css_binary *binary,
+-    const struct ia_css_raw_configuration *config_dmem)
+-{
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_raw() enter:\n");
+-
+-	{
+-		unsigned int offset = 0;
+-		unsigned int size   = 0;
+-
+-		if (binary->info->mem_offsets.offsets.config) {
+-			size   = binary->info->mem_offsets.offsets.config->dmem.raw.size;
+-			offset = binary->info->mem_offsets.offsets.config->dmem.raw.offset;
+-		}
+-		if (size) {
+-			ia_css_raw_config((struct sh_css_isp_raw_isp_config *)
+-					  &binary->mem_params.params[IA_CSS_PARAM_CLASS_CONFIG][IA_CSS_ISP_DMEM].address[offset],
+-					  config_dmem, size);
+-		}
+-	}
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_raw() leave:\n");
+-}
+-
+-/* Code generated by genparam/genconfig.c:gen_configure_function() */
+-
+-void
+-ia_css_configure_tnr(
+-    const struct ia_css_binary *binary,
+-    const struct ia_css_tnr_configuration *config_dmem)
+-{
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_tnr() enter:\n");
+-
+-	{
+-		unsigned int offset = 0;
+-		unsigned int size   = 0;
+-
+-		if (binary->info->mem_offsets.offsets.config) {
+-			size   = binary->info->mem_offsets.offsets.config->dmem.tnr.size;
+-			offset = binary->info->mem_offsets.offsets.config->dmem.tnr.offset;
+-		}
+-		if (size) {
+-			ia_css_tnr_config((struct sh_css_isp_tnr_isp_config *)
+-					  &binary->mem_params.params[IA_CSS_PARAM_CLASS_CONFIG][IA_CSS_ISP_DMEM].address[offset],
+-					  config_dmem, size);
+-		}
+-	}
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_tnr() leave:\n");
+-}
+-
+-/* Code generated by genparam/genconfig.c:gen_configure_function() */
+-
+-void
+-ia_css_configure_ref(
+-    const struct ia_css_binary *binary,
+-    const struct ia_css_ref_configuration *config_dmem)
+-{
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_ref() enter:\n");
+-
+-	{
+-		unsigned int offset = 0;
+-		unsigned int size   = 0;
+-
+-		if (binary->info->mem_offsets.offsets.config) {
+-			size   = binary->info->mem_offsets.offsets.config->dmem.ref.size;
+-			offset = binary->info->mem_offsets.offsets.config->dmem.ref.offset;
+-		}
+-		if (size) {
+-			ia_css_ref_config((struct sh_css_isp_ref_isp_config *)
+-					  &binary->mem_params.params[IA_CSS_PARAM_CLASS_CONFIG][IA_CSS_ISP_DMEM].address[offset],
+-					  config_dmem, size);
+-		}
+-	}
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_ref() leave:\n");
+-}
+-
+-/* Code generated by genparam/genconfig.c:gen_configure_function() */
+-
+-void
+-ia_css_configure_vf(
+-    const struct ia_css_binary *binary,
+-    const struct ia_css_vf_configuration *config_dmem)
+-{
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_vf() enter:\n");
+-
+-	{
+-		unsigned int offset = 0;
+-		unsigned int size   = 0;
+-
+-		if (binary->info->mem_offsets.offsets.config) {
+-			size   = binary->info->mem_offsets.offsets.config->dmem.vf.size;
+-			offset = binary->info->mem_offsets.offsets.config->dmem.vf.offset;
+-		}
+-		if (size) {
+-			ia_css_vf_config((struct sh_css_isp_vf_isp_config *)
+-					 &binary->mem_params.params[IA_CSS_PARAM_CLASS_CONFIG][IA_CSS_ISP_DMEM].address[offset],
+-					 config_dmem, size);
+-		}
+-	}
+-	ia_css_debug_dtrace(IA_CSS_DEBUG_TRACE_PRIVATE,
+-			    "ia_css_configure_vf() leave:\n");
+-}
+diff --git a/drivers/staging/media/atomisp/pci/css_2400_system/hive/ia_css_isp_configs.c b/drivers/staging/media/atomisp/pci/ia_css_isp_configs.c
+similarity index 100%
+rename from drivers/staging/media/atomisp/pci/css_2400_system/hive/ia_css_isp_configs.c
+rename to drivers/staging/media/atomisp/pci/ia_css_isp_configs.c
+-- 
+2.31.1
+
