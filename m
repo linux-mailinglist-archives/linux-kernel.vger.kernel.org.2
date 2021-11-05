@@ -2,81 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160154469AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 21:28:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB90B4469A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 21:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233584AbhKEUbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 16:31:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52454 "EHLO
+        id S233549AbhKEU3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 16:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233558AbhKEUbd (ORCPT
+        with ESMTP id S233534AbhKEU3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 16:31:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C253DC061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 13:28:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SBUlw2ZrXdlIU2jyUk3frE2xH8Y80m9s1WmI2QsIwFw=; b=lTa0FqqaWIUOZLnpwuCgqhYLz+
-        hmHusQoAY2iuIDdcOTwfJS928274AnfjYs4kecPm6q6WP+5gCuBeYqnFWr4hdiuFKvhuCVxcLn9IG
-        6WdFROFoPVimiqRxLXsnW+ReSVJFHVs6/+8HAClUdBRhySkibG6a9Ppqmdg6foDBoIkwFzgoBMzWL
-        sVTmzSLvfu6DCH3l++bios2fwSiP2OARz9LHz8ZwTCgTd5SM7+oynrVTqSy0osE6PETmIngUmaY46
-        fGgpJe+1IoeIVCf6OODKm3aSCDuwmdEI07yTd/GlUo34hRnmtLQw784FVIu750iJRBu/JAHDJZpxy
-        2FJjltdA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mj5mr-006o2p-H7; Fri, 05 Nov 2021 20:26:50 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8C3FE9862D2; Fri,  5 Nov 2021 21:26:08 +0100 (CET)
-Date:   Fri, 5 Nov 2021 21:26:08 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        mark.rutland@arm.com, dvyukov@google.com, pbonzini@redhat.com,
-        mbenes@suse.cz
-Subject: Re: [RFC][PATCH 07/22] x86,extable: Extend extable functionality
-Message-ID: <20211105202608.GI174730@worktop.programming.kicks-ass.net>
-References: <20211104164729.226550532@infradead.org>
- <20211104165524.925401847@infradead.org>
- <YYVqnr+gql9RpL4C@google.com>
- <20211105184556.GN174703@worktop.programming.kicks-ass.net>
- <YYWDQO3ugarMcKmH@google.com>
- <20211105193229.GP174703@worktop.programming.kicks-ass.net>
- <YYWKSmHkgdMA2euh@google.com>
- <20211105201557.GQ174703@worktop.programming.kicks-ass.net>
+        Fri, 5 Nov 2021 16:29:42 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E2CC061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 13:27:02 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id t11so16886550ljh.6
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 13:27:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3wyUo/ZQtCQyVodL9pugyYugqUauw4Uj0CoamGRaoTo=;
+        b=jDVwGOof8/gm/IIUo7XhzEjXEtnollc06Ebj3pcM+qgJ3GUFaKtvAHx5MtjHxwLSh7
+         RqVxjAMaKz7jc3OnM33zlboH5YsD3D0dlSufzoc9KmJ4MCY0X7fu4xuo5UMJmmkWgA5X
+         jM+TNwOVDhcOmez5CXM0vck43rEdQQ5YLqx21u342gnRHhpvwiWbsBO8Vj82mBgrvl2m
+         Lq90Gxff2LKTw9L/BmpkKg21+Bp2ADNb9LhC1V2B7PWkp405StxP7Ax3XYodwwa9+O4s
+         iIq307MIXAeGJX2svn0y+u8SO4VVcF/SbR4oryd52a4pitv21E4htnP31gP9R25jU00A
+         rZJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3wyUo/ZQtCQyVodL9pugyYugqUauw4Uj0CoamGRaoTo=;
+        b=RsCZ3Q5qNDQSQQQ2RC+oAT5qvTj4rVsTBtlAkspKj91QAn+Cwox9wHj1yqnSzdVv4B
+         WxPWmErZVV/ttp2OGttg7EDwMW15fD7Ps+sm1xvQoIkDrzNYNierpaQOct2m8zp2Mzy+
+         QjXqob0sABaPjo3JkKlhUcit0bMEFqBRrsnJxv76k2AlxheTXd/HXrTwlC/6p0Tiyl6z
+         V7eC0MuDazJbylW3VVcAa4A/taHNC8+PCkbwZaT79BmaAavI8Hy1c2M518zzDA2Cl2kO
+         dr8sP7rBqGTyJtUePvk3Z/tbzMpL6ssalX9tpDs9iS2BoaD0otIhuYjOmaEobpeRm6zd
+         sfJA==
+X-Gm-Message-State: AOAM5313PVc0MhKoPfUv1jxr/JcxNmWlyZPm8ySQ3yQGyhtCYHdu4NMf
+        1teqSiZA6rU7ryoteMhENi3AdJwIhJGMg8lLaaewIQ==
+X-Google-Smtp-Source: ABdhPJyeR/MQfc6Wj3DYsKJsPEiSVQY5rZ/UIDydLAnjBCIuEikkBi11cb68jlY8MjNhmB8Vdb1+AQZeA2azlXDwqv8=
+X-Received: by 2002:a2e:750e:: with SMTP id q14mr64381888ljc.338.1636144020678;
+ Fri, 05 Nov 2021 13:27:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211105201557.GQ174703@worktop.programming.kicks-ass.net>
+References: <20211105163137.3324344-1-anders.roxell@linaro.org>
+In-Reply-To: <20211105163137.3324344-1-anders.roxell@linaro.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 5 Nov 2021 13:26:49 -0700
+Message-ID: <CAKwvOdnge-hBmoFH-CHZmbh7DTq8bQiyhbfEOWkBt447=e6QGA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] selftests: timens: use 'llabs()' over 'abs()'
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     shuah@kernel.org, nathan@kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 09:15:57PM +0100, Peter Zijlstra wrote:
+On Fri, Nov 5, 2021 at 9:31 AM Anders Roxell <anders.roxell@linaro.org> wrote:
+>
+> When building selftests/timens with clang, the compiler warn about the
+> function abs() see below:
+>
+> timerfd.c:64:7: error: absolute value function 'abs' given an argument of type 'long long' but has parameter of type 'int' which may cause truncation of value [-Werror,-Wabsolute-value]
+>                 if (abs(elapsed - 3600) > 60) {
+>                     ^
+> timerfd.c:64:7: note: use function 'llabs' instead
+>                 if (abs(elapsed - 3600) > 60) {
+>                     ^~~
+>                     llabs
+>
+> The note indicates what to do, Rework to use the function 'llabs()'.
+>
+> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 
-> That's really unfortunate that is... 6.4.4.1 item 5 of the C99 spec
-> covers this gem :-( I suppose I'll go stick that (int) cast in the
-> EX_IMM_MASK definition or something.
+Thanks for the patch!
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
---- a/arch/x86/include/asm/extable_fixup_types.h
-+++ b/arch/x86/include/asm/extable_fixup_types.h
-@@ -2,10 +2,15 @@
- #ifndef _ASM_X86_EXTABLE_FIXUP_TYPES_H
- #define _ASM_X86_EXTABLE_FIXUP_TYPES_H
- 
-+/*
-+ * Our IMM is signed, as such it must live at the top end of the word. Also,
-+ * since C99 hex constants are of ambigious type, force cast the mask to 'int'
-+ * so that FIELD_GET() will DTRT and sign extend the value when it extracts it.
-+ */
- #define EX_DATA_TYPE_MASK		0x000000FF
- #define EX_DATA_REG_MASK		0x00000F00
- #define EX_DATA_FLAG_MASK		0x0000F000
--#define EX_DATA_IMM_MASK		0xFFFF0000
-+#define EX_DATA_IMM_MASK		((int)0xFFFF0000)
- 
- #define EX_DATA_REG_SHIFT		8
- #define EX_DATA_FLAG_SHIFT		12
+> ---
+>  tools/testing/selftests/timens/timer.c   | 2 +-
+>  tools/testing/selftests/timens/timerfd.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/timens/timer.c b/tools/testing/selftests/timens/timer.c
+> index 5e7f0051bd7b..5b939f59dfa4 100644
+> --- a/tools/testing/selftests/timens/timer.c
+> +++ b/tools/testing/selftests/timens/timer.c
+> @@ -56,7 +56,7 @@ int run_test(int clockid, struct timespec now)
+>                         return pr_perror("timerfd_gettime");
+>
+>                 elapsed = new_value.it_value.tv_sec;
+> -               if (abs(elapsed - 3600) > 60) {
+> +               if (llabs(elapsed - 3600) > 60) {
+>                         ksft_test_result_fail("clockid: %d elapsed: %lld\n",
+>                                               clockid, elapsed);
+>                         return 1;
+> diff --git a/tools/testing/selftests/timens/timerfd.c b/tools/testing/selftests/timens/timerfd.c
+> index 9edd43d6b2c1..a4196bbd6e33 100644
+> --- a/tools/testing/selftests/timens/timerfd.c
+> +++ b/tools/testing/selftests/timens/timerfd.c
+> @@ -61,7 +61,7 @@ int run_test(int clockid, struct timespec now)
+>                         return pr_perror("timerfd_gettime(%d)", clockid);
+>
+>                 elapsed = new_value.it_value.tv_sec;
+> -               if (abs(elapsed - 3600) > 60) {
+> +               if (llabs(elapsed - 3600) > 60) {
+>                         ksft_test_result_fail("clockid: %d elapsed: %lld\n",
+>                                               clockid, elapsed);
+>                         return 1;
+> --
+> 2.33.0
+>
 
+
+-- 
+Thanks,
+~Nick Desaulniers
