@@ -2,205 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CB0445FC8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 07:39:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3B7445FCC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 07:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbhKEGlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 02:41:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35885 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232365AbhKEGl1 (ORCPT
+        id S232396AbhKEGl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 02:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232365AbhKEGl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 02:41:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636094328;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7MzSJBDS29IOMUDtXrVUz+OaQ2N//CapA2UKaWP7lEM=;
-        b=QhtbgFNT74/IsglHQ+6fZkC2Y7CePxZr+ftfUY6H3Aac02g6DKlQbyMqlkS/TTDQe3ECjK
-        +wDr6zlnU2Jk+KotoJuW1NhNvLYSi/bVFlB/QTD6F+/UhzdeMQ9WnDXS3EVWMYlE5XXVmh
-        i7QncGLECi1Z+/Kn0iCQA3dS+n0Xcfw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-240--I5fRV5UM4qltVggdfgl-g-1; Fri, 05 Nov 2021 02:38:45 -0400
-X-MC-Unique: -I5fRV5UM4qltVggdfgl-g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F47810A8E02;
-        Fri,  5 Nov 2021 06:38:44 +0000 (UTC)
-Received: from localhost (ovpn-8-32.pek2.redhat.com [10.72.8.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1473216A32;
-        Fri,  5 Nov 2021 06:38:23 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Ming Lei <ming.lei@redhat.com>
-Subject: [PATCH 2/2] kobject: wait until kobject is cleaned up before freeing module
-Date:   Fri,  5 Nov 2021 14:37:10 +0800
-Message-Id: <20211105063710.4092936-3-ming.lei@redhat.com>
-In-Reply-To: <20211105063710.4092936-1-ming.lei@redhat.com>
-References: <20211105063710.4092936-1-ming.lei@redhat.com>
+        Fri, 5 Nov 2021 02:41:56 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7920C061714;
+        Thu,  4 Nov 2021 23:39:16 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id r4so28899884edi.5;
+        Thu, 04 Nov 2021 23:39:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=88ty7n3GLW4LpESkkrw+h5VZNGe5tXzthKbejd1J1AU=;
+        b=PxHJBW244D1q978km3IaliWf7OBWzGyCc+owmZorV5kadxyUFdcSL5FNpfBZj32cmK
+         xDA8wVVupVQchdNYhOajoDmKGXih9T7WaAFSqZDW9Sg9gNuaCHdEqlExnjpaZsj+fAtY
+         HbNMJ+iwoReJ9IbKCGIP9dio63cq2PuUEcqSjERXpRtsn+WYI9YdJ7Nsfeq3KaG3NmtF
+         xhOHiWCQ3USI/l2czPQ+IsppITKGnPXZz1hhtNGSQe5+yeVW2RHmwoRUQAREO7m8v9YA
+         XxyWTt4hj+KI3VEC08qzq+otUy8cfrfjcoSDvzac0Im6KaW8Lptrga0o/cxX8ZHbs0kN
+         n0xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=88ty7n3GLW4LpESkkrw+h5VZNGe5tXzthKbejd1J1AU=;
+        b=kRU+ib7RnzDVAvbGgcL3BT/NLXSq1JzVnwIx8XgIQz8iADvZwc825JfIcvvb5WmAVm
+         WMsWdVBFr8xNwIc42lLbo34xbpAwksM7z7PSsp473781paMEMXSFU4/qH9E4qcl4nVSy
+         f9h4O3vkI+KOOMOT0n7NRbHp9tiPc+nJwSh6t6o7zKvAife547CgTFdgJmGirEayTT5i
+         xWpMSvq/xnmdP7z8JSMMVllFdFW7D4fUhgtGJmn8CJCT745IMkXCjQSggIBsyKiRhrf5
+         HiRzNdBOhjTwPEWvRLoGvUocwntytfFMMzUtaUO3newGgyeK2YmL6uO/+jDiLsO9hik8
+         sxJA==
+X-Gm-Message-State: AOAM533ixJo+NmlDY+i7SbOqELYjLqcQPT9NLWrmFQRfyHzNokzmYIT+
+        T8cm9zkddzjtxCico2+QEJw=
+X-Google-Smtp-Source: ABdhPJwAe5GbP8kvHZ9zmOaQbGwgBez74W00MivWtunluypavqRv7KUqdf5dNrTIq7ddFjzWdg2S/Q==
+X-Received: by 2002:a17:906:794f:: with SMTP id l15mr965742ejo.324.1636094355056;
+        Thu, 04 Nov 2021 23:39:15 -0700 (PDT)
+Received: from ?IPv6:2a04:241e:501:3800:fafc:6a7c:c046:18f4? ([2a04:241e:501:3800:fafc:6a7c:c046:18f4])
+        by smtp.gmail.com with ESMTPSA id sc27sm3296290ejc.125.2021.11.04.23.39.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Nov 2021 23:39:14 -0700 (PDT)
+Subject: Re: [PATCH v2 06/25] tcp: authopt: Compute packet signatures
+To:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>, netdev@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+References: <cover.1635784253.git.cdleonard@gmail.com>
+ <5245f35901015acc6a41d1da92deb96f3e593b7c.1635784253.git.cdleonard@gmail.com>
+ <816d5018-6cc5-78c4-4c13-f92927ad23f7@gmail.com>
+From:   Leonard Crestez <cdleonard@gmail.com>
+Message-ID: <6beb9ff4-34ec-5685-ab9d-decd382ab7cc@gmail.com>
+Date:   Fri, 5 Nov 2021 08:39:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <816d5018-6cc5-78c4-4c13-f92927ad23f7@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kobject_put() may become asynchronously because of
-CONFIG_DEBUG_KOBJECT_RELEASE, so once kobject_put() returns, the caller may
-expect the kobject is released after the last refcnt is dropped, however
-CONFIG_DEBUG_KOBJECT_RELEASE just schedules one delayed work function
-for cleaning up the kobject. Inside the cleanup handler, kobj->ktype and
-kobj->ktype->release are required.
+On 11/5/21 3:53 AM, Dmitry Safonov wrote:
+> On 11/1/21 16:34, Leonard Crestez wrote:
+> [..]
+>> +static int skb_shash_frags(struct shash_desc *desc,
+>> +			   struct sk_buff *skb)
+>> +{
+>> +	struct sk_buff *frag_iter;
+>> +	int err, i;
+>> +
+>> +	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
+>> +		skb_frag_t *f = &skb_shinfo(skb)->frags[i];
+>> +		u32 p_off, p_len, copied;
+>> +		struct page *p;
+>> +		u8 *vaddr;
+>> +
+>> +		skb_frag_foreach_page(f, skb_frag_off(f), skb_frag_size(f),
+>> +				      p, p_off, p_len, copied) {
+>> +			vaddr = kmap_atomic(p);
+>> +			err = crypto_shash_update(desc, vaddr + p_off, p_len);
+>> +			kunmap_atomic(vaddr);
+>> +			if (err)
+>> +				return err;
+>> +		}
+>> +	}
+>> +
+>> +	skb_walk_frags(skb, frag_iter) {
+>> +		err = skb_shash_frags(desc, frag_iter);
+>> +		if (err)
+>> +			return err;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+> 
+> This seems quite sub-optimal: IIUC, shash should only be used for small
+> amount of hashing. That's why tcp-md5 uses ahash with scatterlists.
 
-It is supposed that no activity is on kobject itself any more since
-module_exit() is started, so it is reasonable for the kobject user or
-driver to expect that kobject can be really released in the last run of
-kobject_put() in module_exit() code path. Otherwise, it can be thought as
-one driver's bug since the module is going away.
+There is indeed no good reason to prefer shash over ahash. Despite the 
+"async" in the name it's possible to use it in atomic context.
 
-When the ->ktype and ->ktype->release are allocated as module static
-variable, it can cause trouble because the delayed cleanup handler may
-be run after the module is unloaded.
+> Which drives me to the question: why not reuse tcp_md5sig_pool code?
+> 
+> And it seems that you can avoid TCP_AUTHOPT_ALG_* enum and just supply
+> to crypto the string from socket option (like xfrm does).
+> 
+> Here is my idea:
+> https://lore.kernel.org/all/20211105014953.972946-6-dima@arista.com/T/#u
 
-Fixes the issue by flushing scheduled kobject cleanup work before
-freeing module.
+Making the md5 pool more generic and reusing it can work.
 
-Reported-by: Petr Mladek <pmladek@suse.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- include/linux/kobject.h |  1 +
- lib/kobject.c           | 62 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 63 insertions(+)
+This "pool" mechanism is really just a workaround for the crypto API not 
+supporting the allocation of a hash in softirq context. It would make a 
+lot sense for this functionality to be part of the crypto layer itself.
 
-diff --git a/include/linux/kobject.h b/include/linux/kobject.h
-index ea30529fba08..e5e3419cf36b 100644
---- a/include/linux/kobject.h
-+++ b/include/linux/kobject.h
-@@ -70,6 +70,7 @@ struct kobject {
- 	struct kernfs_node	*sd; /* sysfs directory entry */
- 	struct kref		kref;
- #ifdef CONFIG_DEBUG_KOBJECT_RELEASE
-+	struct list_head	node;
- 	struct delayed_work	release;
- #endif
- 	unsigned int state_initialized:1;
-diff --git a/lib/kobject.c b/lib/kobject.c
-index 4c0dbe11be3d..f5fd6017d8ce 100644
---- a/lib/kobject.c
-+++ b/lib/kobject.c
-@@ -17,6 +17,12 @@
- #include <linux/slab.h>
- #include <linux/random.h>
- #include <linux/module.h>
-+#include <linux/delay.h>
-+
-+#ifdef CONFIG_DEBUG_KOBJECT_RELEASE
-+static LIST_HEAD(kobj_cleanup_list);
-+static DEFINE_SPINLOCK(kobj_cleanup_lock);
-+#endif
- 
- /**
-  * kobject_namespace() - Return @kobj's namespace tag.
-@@ -682,6 +688,13 @@ static void kobject_cleanup(struct kobject *kobj)
- 	struct kobject *parent = kobj->parent;
- 	struct kobj_type *t = get_ktype(kobj);
- 	const char *name = kobj->name;
-+#ifdef CONFIG_DEBUG_KOBJECT_RELEASE
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&kobj_cleanup_lock, flags);
-+	list_del(&kobj->node);
-+	spin_unlock_irqrestore(&kobj_cleanup_lock, flags);
-+#endif
- 
- 	pr_debug("kobject: '%s' (%p): %s, parent %p\n",
- 		 kobject_name(kobj), kobj, __func__, kobj->parent);
-@@ -716,11 +729,49 @@ static void kobject_cleanup(struct kobject *kobj)
- }
- 
- #ifdef CONFIG_DEBUG_KOBJECT_RELEASE
-+/*
-+ * Module notifier call back, flushing scheduled kobject cleanup work
-+ * before freeing module
-+ */
-+static int kobj_module_callback(struct notifier_block *nb,
-+				   unsigned long val, void *data)
-+{
-+	LIST_HEAD(pending);
-+
-+	if (val != MODULE_STATE_GOING)
-+		return NOTIFY_DONE;
-+
-+	spin_lock_irq(&kobj_cleanup_lock);
-+	list_splice_init(&kobj_cleanup_list, &pending);
-+	spin_unlock_irq(&kobj_cleanup_lock);
-+
-+	while (!list_empty_careful(&pending))
-+		msleep(jiffies_to_msecs(HZ / 10));
-+
-+	flush_scheduled_work();
-+	return NOTIFY_DONE;
-+}
-+
-+static struct notifier_block kobj_module_nb = {
-+	.notifier_call = kobj_module_callback,
-+};
-+
- static void kobject_delayed_cleanup(struct work_struct *work)
- {
- 	kobject_cleanup(container_of(to_delayed_work(work),
- 				     struct kobject, release));
- }
-+
-+static int __init kobj_delayed_cleanup_init(void)
-+{
-+	WARN_ON(register_module_notifier(&kobj_module_nb));
-+	return 0;
-+}
-+#else
-+static int __init kobj_delayed_cleanup_init(void)
-+{
-+	return 0;
-+}
- #endif
- 
- static void kobject_release(struct kref *kref)
-@@ -728,6 +779,7 @@ static void kobject_release(struct kref *kref)
- 	struct kobject *kobj = container_of(kref, struct kobject, kref);
- #ifdef CONFIG_DEBUG_KOBJECT_RELEASE
- 	unsigned long delay = HZ + HZ * (get_random_int() & 0x3);
-+	unsigned long flags;
- 
- 	if (kobj->ktype == &module_ktype)
- 		delay = 0;
-@@ -736,6 +788,10 @@ static void kobject_release(struct kref *kref)
- 		 kobject_name(kobj), kobj, __func__, kobj->parent, delay);
- 	INIT_DELAYED_WORK(&kobj->release, kobject_delayed_cleanup);
- 
-+	spin_lock_irqsave(&kobj_cleanup_lock, flags);
-+	list_add(&kobj->node, &kobj_cleanup_list);
-+	spin_unlock_irqrestore(&kobj_cleanup_lock, flags);
-+
- 	schedule_delayed_work(&kobj->release, delay);
- #else
- 	kobject_cleanup(kobj);
-@@ -1146,3 +1202,9 @@ void kobj_ns_drop(enum kobj_ns_type type, void *ns)
- 	spin_unlock(&kobj_ns_type_lock);
- }
- EXPORT_SYMBOL_GPL(kobj_ns_drop);
-+
-+static int __init kobj_subsys_init(void)
-+{
-+	return kobj_delayed_cleanup_init();
-+}
-+core_initcall(kobj_subsys_init)
--- 
-2.31.1
+Looking at your generic tcp_sig_crypto there is nothing actually 
+specific to TCP in there: it's just an ahash and a scratch buffer per-cpu.
 
+I don't understand the interest in using arbitrary crypto algorithms 
+beyond RFC5926, this series is already complex enough. Other than 
+increasing the complexity of crypto allocation there are various stack 
+allocations which would need to be up to the maximum size of a TCP options.
+
+--
+Regards,
+Leonard
