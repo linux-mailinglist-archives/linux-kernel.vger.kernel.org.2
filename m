@@ -2,136 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0E444682D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE78F446836
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 19:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234341AbhKERzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 13:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231689AbhKERzt (ORCPT
+        id S234442AbhKESDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 14:03:06 -0400
+Received: from mail-ua1-f52.google.com ([209.85.222.52]:34561 "EHLO
+        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234172AbhKESDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 13:55:49 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB46BC061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 10:53:09 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id v127so7688458wme.5
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 10:53:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3qgpnu4+F949fFLt8z7lhntewhGpkCVCzWBi5xlW0s0=;
-        b=dmlBo/fkpE9Iw7lZw2Qa6cY2qshJgOqn/esRDkYVWJovgHLAEfPt31IG47x6DF8jVM
-         4ER8ljNzvW3nHCpkHveERc8dU94O8eFXdh0pmFSOcFDfUcoBREFZWbP2pQQKb3lMW0Nl
-         NG05r2mL1x53BdJjnSZ5Qcs4k3ZemviXqIu88=
+        Fri, 5 Nov 2021 14:03:04 -0400
+Received: by mail-ua1-f52.google.com with SMTP id b3so18615577uam.1;
+        Fri, 05 Nov 2021 11:00:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=3qgpnu4+F949fFLt8z7lhntewhGpkCVCzWBi5xlW0s0=;
-        b=LjGHlCXbhNHvf24snErmOV/ZPz+GtH903oeIc6A8VKQ+m2176kUd5DWtZI1rw576rG
-         4Aln+YRgmo00R3a0iLwSZK1j4QsIDDS+3Ju9tLTGlBvLG9zrq4w5TRYB1gkADzokKRJw
-         8vES5dV8yWN6u/gzV62lAxyKZr6/V0HB9b54gflWOnhksqQbnT5kac4y+XYMUf595xBf
-         yVxlNIwzRXds0Skt9/Ou0AXFgK9r/kWQkWIg7A4fnqYLbkYkbAC8aBKRxErcJbTVNIlv
-         z5QgAaygnsOhdp41B06WZTEVZ7c69p3K4gTAvNKI3poJ/9tgv2aBzo4AOn4WxLoXJl97
-         0XHg==
-X-Gm-Message-State: AOAM531sfCoV10QRsRQ510p7qBKnYIdcKl/lUXUCS34zoguC3I5SGoys
-        N+WjSCVmz+W0RVWWWbmQdUj5Bw==
-X-Google-Smtp-Source: ABdhPJxj4ymiq7qSLhQiUYJ5j1gU+jqd+d6bDAotiSbE0ZcSDcoiY/LEjRjkGyWD86rZ5EdVzoa5cA==
-X-Received: by 2002:a05:600c:1c13:: with SMTP id j19mr31954323wms.175.1636134788288;
-        Fri, 05 Nov 2021 10:53:08 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id i15sm11461959wmb.20.2021.11.05.10.53.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 10:53:07 -0700 (PDT)
-Date:   Fri, 5 Nov 2021 18:53:05 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Arnd Bergmann <arnd@arndb.de>,
-        "Acked-by : Jani Nikula" <jani.nikula@intel.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Kees Cook <keescook@chromium.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm: fb_helper: improve CONFIG_FB dependency
-Message-ID: <YYVvgVNz+py5H4Yz@phenom.ffwll.local>
-Mail-Followup-To: Arnd Bergmann <arnd@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>, Arnd Bergmann <arnd@arndb.de>,
-        "Acked-by : Jani Nikula" <jani.nikula@intel.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Kees Cook <keescook@chromium.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20211029120307.1407047-1-arnd@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=au20GLB/AwFB4ER6edB7mFBdjMKbP9KemXLMUAQRuws=;
+        b=70Dqg0zFTz+/ywAeju2PWoodLqcdhCFbWmjzEUuhGlPpRWuMSdO3tJVTUWzwJUOOkb
+         S0/KWBkHkcPapoSDAdm5tUEZDOUiJKU1AmLJbFjERBwFzwJSp38y/hkfjfIJp18dND8o
+         an7nHz80az2RvXeIj7qUxyZHyqJotferXqWPIEO6x9LUl/S121i8h5mIVEMBECjQpBmk
+         OYNtX9tXgEJfJzVaRMyopKsqSYWGpuNhtbCsWEDovXxudirmmn3wYse55uLVHZavYEQI
+         yBVEgSTzPxTPGa0Aas3+NZnYyb1KRCz+yIxdpHiNy3qAB29KZuyw8tkSgeQRMRRLqzq5
+         T+tA==
+X-Gm-Message-State: AOAM530/Aa5W5yV56KNyiRqQUmqFHyvsu6Q9mLGy2wNnjn29Jckg0Q/x
+        o5NWmcn0KKVd+Lg7QuDZz1S5gxh7ckWhtQ==
+X-Google-Smtp-Source: ABdhPJzZ4L16A2hBj8cb2dUszxMli3hyl/+Vw64MVMiTXnEhdd3j0I5qjUma5n6AzczusEiwpvE7bA==
+X-Received: by 2002:a67:ec10:: with SMTP id d16mr7351906vso.58.1636135224152;
+        Fri, 05 Nov 2021 11:00:24 -0700 (PDT)
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
+        by smtp.gmail.com with ESMTPSA id i27sm1432100uab.8.2021.11.05.11.00.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Nov 2021 11:00:23 -0700 (PDT)
+Received: by mail-ua1-f51.google.com with SMTP id i6so18539501uae.6;
+        Fri, 05 Nov 2021 11:00:23 -0700 (PDT)
+X-Received: by 2002:ab0:15a1:: with SMTP id i30mr56283928uae.122.1636135223241;
+ Fri, 05 Nov 2021 11:00:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211029120307.1407047-1-arnd@kernel.org>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+References: <20211003002801.GA5435@gondor.apana.org.au> <YV0K+EbrAqDdw2vp@archlinux-ax161>
+ <20211019132802.GA14233@gondor.apana.org.au> <alpine.DEB.2.22.394.2111021636040.2330984@ramsan.of.borg>
+ <DM6PR04MB708155E447FD9A79AB89686DE78D9@DM6PR04MB7081.namprd04.prod.outlook.com>
+ <CAMuHMdW1wLAt9Y=-GMMuk8HWE3UnRgKNMmD9fq34Rq8J7QyrzQ@mail.gmail.com>
+ <20211104121612.GA8044@gondor.apana.org.au> <CAMuHMdWAAWWS+TgeN1AajHBS5w9-datMEeXqAN8RjxRd9bX63Q@mail.gmail.com>
+ <20211104133044.GA8563@gondor.apana.org.au> <YYP5ypSPOcP4WGCr@shredder> <20211105072608.GA13584@gondor.apana.org.au>
+In-Reply-To: <20211105072608.GA13584@gondor.apana.org.au>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 5 Nov 2021 19:00:12 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVg5X00xhsYOnC84md-dNADGGL3mT3qqn3925AJFmqbMw@mail.gmail.com>
+Message-ID: <CAMuHMdVg5X00xhsYOnC84md-dNADGGL3mT3qqn3925AJFmqbMw@mail.gmail.com>
+Subject: Re: crypto: api - Fix boot-up crash when crypto manager is disabled
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Ido Schimmel <idosch@idosch.org>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Vladis Dronov <vdronov@redhat.com>,
+        Simo Sorce <ssorce@redhat.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        kernel test robot <lkp@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 02:02:38PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> My previous patch correctly addressed the possible link failure, but as
-> Jani points out, the dependency is now stricter than it needs to be.
-> 
-> Change it again, to allow DRM_FBDEV_EMULATION to be used when
-> DRM_KMS_HELPER and FB are both loadable modules and DRM is linked into
-> the kernel.
-> 
-> As a side-effect, the option is now only visible when at least one DRM
-> driver makes use of DRM_KMS_HELPER. This is better, because the option
-> has no effect otherwise.
-> 
-> Fixes: 606b102876e3 ("drm: fb_helper: fix CONFIG_FB dependency")
-> Suggested-by: Acked-by: Jani Nikula <jani.nikula@intel.com>
-> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Hi Herbert,
 
-Queued up for the merge window, thanks for the patch.
--Daniel
+On Fri, Nov 5, 2021 at 8:26 AM Herbert Xu <herbert@gondor.apana.org.au> wrote:
+> Could you all try this patch please?
+>
+> ---8<---
+> When the crypto manager is disabled, we need to explicitly set
+> the crypto algorithms' tested status so that they can be used.
+>
+> Fixes: cad439fc040e ("crypto: api - Do not create test larvals if...")
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reported-by: Ido Schimmel <idosch@idosch.org>
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-> ---
->  drivers/gpu/drm/Kconfig | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-> index c08860db2520..d2e6d8ce5000 100644
-> --- a/drivers/gpu/drm/Kconfig
-> +++ b/drivers/gpu/drm/Kconfig
-> @@ -117,9 +117,8 @@ config DRM_DEBUG_MODESET_LOCK
->  
->  config DRM_FBDEV_EMULATION
->  	bool "Enable legacy fbdev support for your modesetting driver"
-> -	depends on DRM
-> -	depends on FB=y || FB=DRM
-> -	select DRM_KMS_HELPER
-> +	depends on DRM_KMS_HELPER
-> +	depends on FB=y || FB=DRM_KMS_HELPER
->  	select FB_CFB_FILLRECT
->  	select FB_CFB_COPYAREA
->  	select FB_CFB_IMAGEBLIT
-> -- 
-> 2.29.2
-> 
+Thanks!
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
