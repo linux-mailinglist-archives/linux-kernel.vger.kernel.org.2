@@ -2,120 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0516446592
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:17:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 934F9446596
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhKEPTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 11:19:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37942 "EHLO
+        id S233408AbhKEPV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 11:21:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233356AbhKEPTh (ORCPT
+        with ESMTP id S233355AbhKEPVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 11:19:37 -0400
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69454C061714;
-        Fri,  5 Nov 2021 08:16:57 -0700 (PDT)
-Received: by mail-ua1-x92f.google.com with SMTP id o26so17702127uab.5;
-        Fri, 05 Nov 2021 08:16:57 -0700 (PDT)
+        Fri, 5 Nov 2021 11:21:24 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA6AC061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 08:18:43 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id m14so33524175edd.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 08:18:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=W7Ej9nUPelbvcg8WsAGskNxrFmjjze1zHOKgYJgl9Yg=;
-        b=HruQYqomszar0rWSAQkS/UJbSjf223BYbu2VidWlBtREhSvPDKJX369KX7L2W/eYWR
-         TD9/tKwkZpoqSs3K2HcEIimuiFazZ8wFtrU4ie5j3LfXE2bJq0EbuaZctCUTx3aHmktN
-         xJeBSDwTOU18Adx5zR4vIaqtlraXy+1W1Yalmfu2CgQn8myC7itrd0YwczJNIHoV99Bu
-         xbiQNHNfFcsQQ+/wRmcejzPF1M+T+KhNMMQdLKWjf9lY7Uh2+vRMUXotDFLEBRSlJ3LN
-         Gv59XMjL9GSwT03KbNqo0GIOf1E2wa+P4OHP1m15caL3JyCKto+3lwKuZ/HdUrzMMVRq
-         dX8w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=i9xZtOveuu4jbIdOFsc814Y2qvvKfwig9WrRvuHTEOg=;
+        b=SCeySTUWTEPQV2arwdlJG6fjA0DTyzalIjPTFdI5rwovEvbB3SYHKjYjhVON5o+CmM
+         WZptJEKjVuH41de6B4gyZJfNRT5WiRWsRH5/Klx9KihJEiavwd4m5Le155FY3J9dbB9C
+         Cj1aVTfbG0x/4Q2ZuQYb6v18Ljg1afv/LCr6WAy4CZN/0s2lR0r1G1q+zjk0vwymJBET
+         GTzmSYKPPaKloWlktF+JrOiyRarsJEEUkeGVuLXUL2RUhyMzlAbW+9qHFFCMCXfGG79O
+         45Gr1hJyzTDM3uhf66YLPShhcTAsAZMnYIb48V/DOiYt/Td8LhzADGvWPv1pj7P1m0+n
+         7sxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=W7Ej9nUPelbvcg8WsAGskNxrFmjjze1zHOKgYJgl9Yg=;
-        b=B7kwBX0dvRjo+sNK7v86gHTuoAEc/op5IK0bhbZHXcjDcWCDIlQBDVMUqId3LowN8M
-         XuxMIKBDDPSXCdeRettW1z8MRU87HHL3mFhzINRPjB1yM88L/qJWopWwnF7dxKOpV4P5
-         Ne8iuEUt8z4ViceyrV5XGrKwNWCuU15V67zitFezhcC8P9wHHa6t0TQh8eJ34TbboScS
-         dVuorr1qV2YtzNJW1NBF8Ucqh4Kj88d/LOHNfq5RSHVnJk+HyfSD4YmUQze+6J00eo3h
-         teCZG+F3M6J7ntBoSJyOD4SHQo1bY5WbsqT1AwBnMYWtIA87o9ZpMYx/KnUvCmANWCx3
-         fm3g==
-X-Gm-Message-State: AOAM5316I3Sk+bSmBb5i3xmfjKuWFDbVgG+cIi9UhEaF7a5PZGzI7OqC
-        g1n2tkHTbUYEVLErlnwaKHKRVrsGgl8pzvewIHhyI8ON8DM=
-X-Google-Smtp-Source: ABdhPJx9DNu2/5tu+S/ya7hNgORi6bcfJUZPT5AQ3hGeRR+XJ4RLI5C4SxhqBNqRRvhoSn20zCI/UnyrU1iMEz7r9eg=
-X-Received: by 2002:a67:ed8c:: with SMTP id d12mr72198197vsp.45.1636125416361;
- Fri, 05 Nov 2021 08:16:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=i9xZtOveuu4jbIdOFsc814Y2qvvKfwig9WrRvuHTEOg=;
+        b=t2Jg32yIT9yZR32mzRvejjTQdBSlaSObiGPgC7DEAN2O3vKNYzoHkjpQ0pEQ4MoJiF
+         oexqZJcpf4vKc330wvCdcRElwWrzCkXsRuWZBy+SuV/FRU6vvdnQNr0C3chs2GIylPWB
+         Nc8lkB8UDzaWooemb/1wNz91YiBtTxaKaU02onmzcMPcDWcpA9tP4blrh09mvXunLKHZ
+         0QAnTaQnw0dqt9vgqz0qOIMFTaOUDr2rxMTg3FX3sQQtb6ap3X2SENcbSG8EcQ8v9XeO
+         EPH5mScigSuAab8L32PeIo9vRYc0o066bNeibU6Iq7DiPN73sauNDsNDwHHOwWPzzM2z
+         sjaQ==
+X-Gm-Message-State: AOAM532J/AaCdC040E/F7U8euSJPsw+jy00a4zyTQd49HA2QuWmivUeE
+        9m8nc2qNu5q0J/ItjzxSzuo=
+X-Google-Smtp-Source: ABdhPJwAQgvJbA2xcqECODxSkWfim6E2m5qDTQG583ZUpRmlufSeQZraovhAJhNdunWKA7OBC9L9zw==
+X-Received: by 2002:a17:906:7044:: with SMTP id r4mr41149163ejj.256.1636125522075;
+        Fri, 05 Nov 2021 08:18:42 -0700 (PDT)
+Received: from localhost.localdomain (host-79-56-54-101.retail.telecomitalia.it. [79.56.54.101])
+        by smtp.gmail.com with ESMTPSA id hd15sm4473126ejc.69.2021.11.05.08.18.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 08:18:41 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] staging: r8188eu: Use kzalloc() with GFP_ATOMIC in atomic context
+Date:   Fri, 05 Nov 2021 16:18:39 +0100
+Message-ID: <3198013.HnMX8GfXRX@localhost.localdomain>
+In-Reply-To: <20211105132551.GB2001@kadam>
+References: <20211101191847.6749-1-fmdefrancesco@gmail.com> <20211105132551.GB2001@kadam>
 MIME-Version: 1.0
-References: <20211008222327.9324-1-angiolucci@gmail.com> <CAKdAkRTdCSC_6UqWkcT3p697+d0kwEqMSSR=M9vw-NPAjdZ4SQ@mail.gmail.com>
-In-Reply-To: <CAKdAkRTdCSC_6UqWkcT3p697+d0kwEqMSSR=M9vw-NPAjdZ4SQ@mail.gmail.com>
-From:   =?UTF-8?Q?Vin=C3=ADcius_Reis?= <itsme.vreis@gmail.com>
-Date:   Fri, 5 Nov 2021 12:16:45 -0300
-Message-ID: <CALawNGC3HTV86+LAkMNf_nApqnUoAQ7UPEXOj9WXake5DhHkpQ@mail.gmail.com>
-Subject: Re: [PATCH] HID: hid-asus.c: Maps key 0x35 (display off) to KEY_SCREENLOCK
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, angiolucci@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em qui., 28 de out. de 2021 =C3=A0s 13:07, Dmitry Torokhov
-<dmitry.torokhov@gmail.com> escreveu:
->
-> Hi Vin=C3=ADcius,
->
-> On Fri, Oct 8, 2021 at 3:24 PM Vin=C3=ADcius Angiolucci Reis
-> <itsme.vreis@gmail.com> wrote:
-> >
-> > On Windows systems, ASUS laptops uses the "turn display off" key
-> > (usually fn+f6) to turn both display and keyboard backlit off. On Linux
-> > systems, this key has no effect at all since most desktop enviroments
-> > don't deal with KEY_DISPLAY_OFF. By mapping it to KEY_SCREENLOCK
-> > instead, would enable desktop environments to handle this key as a
-> > screen lock intent from the user, out of the box.
->
-> But is it the intent of the user? The fact that current desktop
-> environments do not handle this key is not a reason to change kernel
-> behavior.
->
-> If screen lock is simply your preference then you can change the
-> mapping via udev on your system without the need to patch the kernel.
->
-> Thanks.
->
-> --
-> Dmitry
+On Friday, November 5, 2021 2:25:52 PM CET Dan Carpenter wrote:
+> On Mon, Nov 01, 2021 at 08:18:47PM +0100, Fabio M. De Francesco wrote:
+> > Use the GFP_ATOMIC flag of kzalloc() with two memory allocation in
+> > report_del_sta_event(). This function is called while holding spinlocks,
+> > therefore it is not allowed to sleep. With the GFP_ATOMIC type flag, the
+> > allocation is high priority and must not sleep.
+> > 
+> > This issue is detected by Smatch which emits the following warning:
+> > "drivers/staging/r8188eu/core/rtw_mlme_ext.c:6848 report_del_sta_event()
+> > warn: sleeping in atomic context".
+> > 
+> > After the change, the post-commit hook output the following message:
+> > "CHECK: Prefer kzalloc(sizeof(*pcmd_obj)...) over
+> > kzalloc(sizeof(struct cmd_obj)...)".
+> > 
+> > According to the above "CHECK", use the preferred style in the first
+> > kzalloc().
+> > 
+> > Fixes: 79f712ea994d ("staging: r8188eu: Remove wrappers for kalloc() and 
+kzalloc()")
+> 
+> This is not the correct Fixes tag.  The original allocation wrappers
+> checked in_interrupt() they did not check in_atomic() so they had same
+> bug.  The correct tag is:
+> 
+> Fixes: 15865124feed ("staging: r8188eu: introduce new core dir for 
+RTL8188eu driver")
+> 
+> regards,
+> dan carpenter
 
-(Sorry, I'm sending this response again because it seems the first
-attempt didn't make it to the mailing lists for some reason.)
+Hello Dan,
 
-Hi Dmitry,
+I'm sorry but I surely missing something, therefore, before making changes I 
+need to understand this subject a little better. Let me explain what I am 
+missing...
 
-I've picked up this particular key event because it would trigger a close
-behavior to the one seen on Windows. It is far from being my preference,
-which would be an exact mimic of the Windows behavior (and can be
-achieved by xset dpms force on/off from user space).
+The two kzalloc() in report_del_sta_event() are called while spinlocks are 
+held and bottom halves are disabled by spin_lock_bh(). If I remember it 
+correctly spin_lock_bh() finally calls __local_bh_disable_ip() to disable 
+bottom halves on local CPU before actually acquiring the lock.
 
-The idea of this patch is to improve the user experience, by giving that ke=
-y a
-behavior as close as possible to what users might experience on Windows.
-Because most Linux desktop environments also turn the display off after
-locking the screen, this would be a good approximation to what happens on
-Windows. I think it is more about giving (consistent) behavior to it
-than changing it.
+This is the code and inline documentation of in_interrupt():
 
-I agree it is possible to control that via udev or something else. But
-most regular
-users won't be able to do that, ending up with an unused key, though.
-The hardcore user that would prefer a very different key behavior
-could keep using
-udev to do that.
+/* in_interrupt() - We're in NMI,IRQ,SoftIRQ context or have BH disabled" */
+#define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
+#define in_interrupt()		(irq_count())
 
-So IMHO I think that setting this up on the kernel would be a good
-approach in this case.
+And this is the code and inline documentation of in_atomic():
 
-Thanks.
+"/*
+ * Are we running in atomic context?  WARNING: this macro cannot
+ * always detect atomic context; in particular, it cannot know about
+ * held spinlocks in non-preemptible kernels.  Thus it should not be
+ * used in the general case to determine whether sleeping is possible.
+ * Do not use in_atomic() in driver code.
+ */
+#define in_atomic()	(preempt_count() != 0)
 
-Vin=C3=ADcius
+To summarize, I think that using in_interrupt() in the old wrappers was the 
+wiser choice. Therefore this patch fixes 79f712ea994d ("staging: r8188eu: 
+Remove wrappers for kalloc() and kzalloc()").
+
+I know that I have so little experience that I shouldn't even discuss this 
+topics. However, I would appreciate if you may explain with some more details 
+why in_atomic() should have been preferred over in_interrupt() in the old 
+wrappers that were removed with commit 79f712ea994d.
+
+Thank you very much in advance,
+
+Fabio M. De Francesco
+
+
