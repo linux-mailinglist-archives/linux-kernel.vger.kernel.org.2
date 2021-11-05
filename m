@@ -2,138 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 919B84466E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 372684466EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233104AbhKEQW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 12:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232711AbhKEQW0 (ORCPT
+        id S233096AbhKEQ00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 12:26:26 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:46998 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229926AbhKEQ0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 12:22:26 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B334C061205
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 09:19:46 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id n29so2835833wra.11
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 09:19:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rbAN5/q5aC9W3g+TNBCzDR83qZDPyKlQY+DOynOxaWc=;
-        b=VhRTph4H734/VFWv5Yc71JjNDUjDWgs0/IuG/jYe+c8C50wENnseJ+QPDkeHwA/Nue
-         3Xbz6x92PZ1BndQkUjML5iQSRz57Exiqd4kboE5ww4Ti3PhYah3rJXKFO3VBZuHPSm5d
-         /Vp2YxW1Ff7eL1Hof4VeOgn/6RiT1J2qNZBgTT5dWMbqkoNDUOHmieu/xtNsT+DOfHse
-         lp4ngxhcokO09ZxK4RxQit5P3ZgRlqPR9QAcPp8UKoyZIKMT5Ch7QIC8S6CWCGMCMyRa
-         K4TrMCiO7ZTy3gyYspywYPzKmkKetTIZYOYIW9iHGu85e53bazQM34oeM0j/mZqmD+Bq
-         Zgqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rbAN5/q5aC9W3g+TNBCzDR83qZDPyKlQY+DOynOxaWc=;
-        b=lKgZTFfnzygvjRifzZXm0juOz8QkuCvmV672JQsu6Og/B26E9NeJl9wdJToKa5iAbT
-         ypjx3ikWP2Ueei4RXt5+fay4tp554eyMifAkh3Sfu+ZCqFp4MHwieFxq9YZkXRo4qtLn
-         MUuLex7/MEEadRQPTWpa5W0dc8vFwyAdpcZM9XJk3k+NWcWx4MICZQL5ADf5FkdaUKr+
-         uJ3SC8PMWWhoEEVRXU2q6v8CHuaHIzSa39uUrKvlAU0vpxZB1WrctSuy6Vj+t4psItN+
-         amlb/Cs+1On9roBcrclg0rx0mLK5hmV+G3pIvhyo0Ilt2SUnPLl2pjYfsty0cb+dRaGu
-         tmig==
-X-Gm-Message-State: AOAM5339ChBzbGa+uYs1WaO8N5SeWTSJVu+MudTQNMgu4VWSJlq/RQFX
-        yjYe0pdlKSbTQAdzrkZ4VL0o6A==
-X-Google-Smtp-Source: ABdhPJy4CVexYxHVciN9OvU9Rmn1DM0uKsGgR4pRPBwBd95RUZkv9/fHFHDsW2awhxYolxwd+SzRiA==
-X-Received: by 2002:a5d:4575:: with SMTP id a21mr60441042wrc.193.1636129184919;
-        Fri, 05 Nov 2021 09:19:44 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:decd:efcb:adc8:b46? ([2a01:e34:ed2f:f020:decd:efcb:adc8:b46])
-        by smtp.googlemail.com with ESMTPSA id x4sm6686432wmi.3.2021.11.05.09.19.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 09:19:43 -0700 (PDT)
-Subject: Re: [RESEND PATCH v2] thermal: Fix a NULL pointer dereference
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
-Cc:     Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Collins <quic_collinsd@quicinc.com>,
-        Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>,
-        Stable <stable@vger.kernel.org>
-References: <1636070227-15909-1-git-send-email-quic_subbaram@quicinc.com>
- <CAJZ5v0gONybD_pVCAq6ZJTMuStXtoF064u9qPYxco4y=b-JD9A@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <c7ede029-b75f-e57e-24f1-9633d5d47401@linaro.org>
-Date:   Fri, 5 Nov 2021 17:19:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 5 Nov 2021 12:26:25 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 91DE4212BC;
+        Fri,  5 Nov 2021 16:23:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636129424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FcmEpSdvpRAw1DH1xDlu+cpQVWWLRqY9tKa4dTZkU94=;
+        b=APbqb1DDidz+TjLCxY94do2ZwrbxXNUgxU0hYlglFJtB+b9Wd3hl1NawU9NvhiXOWNJckU
+        Pl3GwS5FuYL7Sps2Z3BQnaPjgE5PzTZ6yBB43i2LGmn06RelsGL8AX917IFF+MqEIf59PB
+        xnsI5imwbMKNS/AZgdgnS/FXF4OWn9c=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 75B0B2C144;
+        Fri,  5 Nov 2021 16:23:44 +0000 (UTC)
+Date:   Fri, 5 Nov 2021 17:23:44 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Removal of printk safe buffers delays NMI context printk
+Message-ID: <YYVakNdzjrYuBmhf@alley>
+References: <1636039236.y415994wfa.astroid@bobo.none>
+ <87ee7vki7f.fsf@jogness.linutronix.de>
+ <1636073838.qpmyp6q17i.astroid@bobo.none>
+ <87r1bv2aga.fsf@jogness.linutronix.de>
+ <1636111599.wwppq55w4t.astroid@bobo.none>
+ <87h7cqg0xk.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0gONybD_pVCAq6ZJTMuStXtoF064u9qPYxco4y=b-JD9A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87h7cqg0xk.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/11/2021 16:14, Rafael J. Wysocki wrote:
-> On Fri, Nov 5, 2021 at 12:57 AM Subbaraman Narayanamurthy
-> <quic_subbaram@quicinc.com> wrote:
->>
->> of_parse_thermal_zones() parses the thermal-zones node and registers a
->> thermal_zone device for each subnode. However, if a thermal zone is
->> consuming a thermal sensor and that thermal sensor device hasn't probed
->> yet, an attempt to set trip_point_*_temp for that thermal zone device
->> can cause a NULL pointer dereference. Fix it.
->>
->>  console:/sys/class/thermal/thermal_zone87 # echo 120000 > trip_point_0_temp
->>  ...
->>  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
->>  ...
->>  Call trace:
->>   of_thermal_set_trip_temp+0x40/0xc4
->>   trip_point_temp_store+0xc0/0x1dc
->>   dev_attr_store+0x38/0x88
->>   sysfs_kf_write+0x64/0xc0
->>   kernfs_fop_write_iter+0x108/0x1d0
->>   vfs_write+0x2f4/0x368
->>   ksys_write+0x7c/0xec
->>   __arm64_sys_write+0x20/0x30
->>   el0_svc_common.llvm.7279915941325364641+0xbc/0x1bc
->>   do_el0_svc+0x28/0xa0
->>   el0_svc+0x14/0x24
->>   el0_sync_handler+0x88/0xec
->>   el0_sync+0x1c0/0x200
->>
->> While at it, fix the possible NULL pointer dereference in other
->> functions as well: of_thermal_get_temp(), of_thermal_set_emul_temp(),
->> of_thermal_get_trend().
+On Fri 2021-11-05 15:03:27, John Ogness wrote:
+> On 2021-11-05, Nicholas Piggin <npiggin@gmail.com> wrote:
+> >> What was removed from 93d102f094b was irq_work triggering on all
+> >> CPUs.
+> >
+> > No, it was the caller executing the flush for all remote CPUs itself.
+> > irq work was not involved (and irq work can't be raised in a remote
+> > CPU from NMI context).
 > 
-> Can the subject be more specific, please?
+> Maybe I am missing something. In 93d102f094b~1 I see:
 > 
-> The issue appears to be limited to the of_thermal_ family of
-> functions, but the subject doesn't reflect that at all.
+> watchdog_smp_panic
+>   printk_safe_flush
+>     __printk_safe_flush
+>       printk_safe_flush_buffer
+>         printk_safe_flush_line
+>           printk_deferred
+>             vprintk_deferred
+>               vprintk_emit (but no direct printing)
+>               defer_console_output
+>                 irq_work_queue
 > 
->> Suggested-by: David Collins <quic_collinsd@quicinc.com>
->> Signed-off-by: Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
+> AFAICT, using defer_console_output() instead of your new printk_flush()
+> should cause the exact behavior as before.
+
+I agree. printk_safe_flush() used printk_deferred(). It only queued
+the irq_work and never called consoles directly.
+
+> > but we do need that printk flush capability back there and for
+> > nmi_backtrace.
 > 
-> Daniel, any concerns regarding the code changes below?
+> Agreed. I had not considered this necessary side-effect when I removed
+> the NMI safe buffers.
 
-I've a concern about the root cause but I did not have time to
-investigate how to fix it nicely.
+Honestly, I do not understand why it stopped working or how
+it worked before.
 
-thermal_of is responsible of introducing itself between the thermal core
-code and the backend. So it defines the ops which in turn call the
-sensor ops leading us to this problem.
+printk() calls vprintk(). Current vprintk() does:
 
-So, without a better solution, this fix can be applied until we rethink
-the thermal_of approach.
+asmlinkage int vprintk(const char *fmt, va_list args)
+{
+[...]
+	/*
+	 * Use the main logbuf even in NMI. But avoid calling console
+	 * drivers that might have their own locks.
+	 */
+	if (this_cpu_read(printk_context) || in_nmi()) {
+		int len;
 
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+		len = vprintk_store(0, LOGLEVEL_DEFAULT, NULL, fmt, args);
+		defer_console_output();
+		return len;
+	}
+
+	/* No obstacles. */
+	return vprintk_default(fmt, args);
+}
+
+By other words, current vprintk():
+
+   + queues irq_work() in NMI context
+   + tries to flush consoles immeditely otherwise
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> I am just wondering if we should fix the regression by going back to
+> using irq_work (such as defer_console_output()) or if we want to
+> introduce something new that introduces direct printing.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Yup, defer_console_output() should do the same as printk_safe_flush()
+before. We do not longer need to copy the messages because they are
+already in the main lockless log buffer.
+
+Well, I am curious about the original code. The commit 93d102f094be9beab28e5
+("printk: remove safe buffers") did the following:
+
+diff --git a/arch/powerpc/kernel/watchdog.c b/arch/powerpc/kernel/watchdog.c
+index c9a8f4781a10..dc17d8903d4f 100644
+--- a/arch/powerpc/kernel/watchdog.c
++++ b/arch/powerpc/kernel/watchdog.c
+@@ -183,11 +183,6 @@ static void watchdog_smp_panic(int cpu, u64 tb)
+ 
+        wd_smp_unlock(&flags);
+ 
+-       printk_safe_flush();
+-       /*
+-        * printk_safe_flush() seems to require another print
+-        * before anything actually goes out to console.
+-        */
+        if (sysctl_hardlockup_all_cpu_backtrace)
+                trigger_allbutself_cpu_backtrace();
+
+And I am curious because:
+
+   + Why was printk_safe_flush() called before triggering backtraces
+     on other CPUs?
+
+   + The comment says that another print is needed before the messages
+     goes to the console. It makes sense because printk_safe_flush()
+     only set irq_work. But the patch did not remove any printk().
+     So, nobody called any printk() even before.
+
+Best Regards,
+Petr
