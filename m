@@ -2,80 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA384446078
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 09:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8829A44607B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 09:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbhKEIQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 04:16:55 -0400
-Received: from elvis.franken.de ([193.175.24.41]:33295 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231403AbhKEIQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 04:16:53 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1miuMT-0006S3-00; Fri, 05 Nov 2021 09:14:09 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 7FDC5C292A; Fri,  5 Nov 2021 09:13:51 +0100 (CET)
-Date:   Fri, 5 Nov 2021 09:13:51 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@lists.infradead.org,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] bus: brcmstb_gisb: Allow building as module
-Message-ID: <20211105081351.GA6380@alpha.franken.de>
-References: <20210924191035.1032106-1-f.fainelli@gmail.com>
- <20211105025155.GA2922689@roeck-us.net>
- <9318932a-9b00-62be-eeb9-ca755a05c841@gmail.com>
+        id S232642AbhKEIRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 04:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232568AbhKEIRl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 04:17:41 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88865C061714;
+        Fri,  5 Nov 2021 01:15:02 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id p138so1606357qke.10;
+        Fri, 05 Nov 2021 01:15:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rPfvQBk9AhoT2kc937nnSOy2TXOgDFuQytW4y8jVxFc=;
+        b=kiiZwYVYwAz1LQX78zsD+NDbdA/4OsZa8umJ+ZjWQQPFqK2mxzCYyxKmOrPKrO26Bz
+         ZyF3AA/WiVXv995qeoIy6t3nBBJ+HFbh9FJcZcNjfjVtjgD/5N3+7cTcVumy38UGCek0
+         azZdYX5fxn72sDRF/JDnfTGaGmnu31sjFnX22hm4EeUetrxtmP9vvkwmmcGQnyoZKCdU
+         YDHWkt+2WXMybe3d8knU3cNeGmU2ITccolBtHhHvZwxPWKanxY56N1uCb3yXNChKol+X
+         9nsrxSgLE1Okrh6bNkWbxMdoiVQ2z6EtGFrxPXO/rIsk7PqdWM9lIzCMxWMKF/evysf+
+         CrCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rPfvQBk9AhoT2kc937nnSOy2TXOgDFuQytW4y8jVxFc=;
+        b=nlG9MN0RD+rcslFfwTkBWfdEmDddaO0kUoxw4BrRzCBADhZsBbPGbmG0yPkHyILfFZ
+         bjL2lI58YuVpd0RG1GeLEZtj8lLVIC3tHwuomfrMm/FTrIarr4+Zfby7unIRZfwDn+wH
+         IJglOu6+5raPWUrfu+RTVWU/MbZ8eul+xQOmtfREbOSpWYWRNCJX5DL+gKoYRUQxIEaJ
+         +7LFNGh1E4xc0nlgkwdmQCROOR9KvIuKpe/MCy124bj3gvNRPUzS+da/w9U2Z5MGElb3
+         59aMi0IjWhONPwX5E4Z9DLCrxitPet0F38OPgOlCeHhgzhFjizz//DzLTNNU2CQeGFjj
+         Jlww==
+X-Gm-Message-State: AOAM532uFnJJks1kYRPeFwO5uP6mlRejs/nx1zKteSU7XWbRZCsuvEv5
+        krlbfY0b0V7kLJMGxSuajPs=
+X-Google-Smtp-Source: ABdhPJzioDRSIy3hwQsqdvBFcBgX30wR0E4KakSfdJdGREKIjOq76xX+xfMX3AKidBj+gf6+JPHIWw==
+X-Received: by 2002:a05:620a:410b:: with SMTP id j11mr24302464qko.498.1636100101808;
+        Fri, 05 Nov 2021 01:15:01 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id t11sm5016276qkm.92.2021.11.05.01.14.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 01:15:01 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: yao.jing2@zte.com.cn
+To:     kartilak@cisco.com
+Cc:     sebaddel@cisco.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jing Yao <yao.jing2@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] scsi: snic: Replace snprintf in show functions with   sysfs_emit
+Date:   Fri,  5 Nov 2021 08:14:54 +0000
+Message-Id: <20211105081454.76950-1-yao.jing2@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9318932a-9b00-62be-eeb9-ca755a05c841@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 07:56:12PM -0700, Florian Fainelli wrote:
-> 
-> 
-> On 11/4/2021 7:51 PM, Guenter Roeck wrote:
-> > On Fri, Sep 24, 2021 at 12:10:34PM -0700, Florian Fainelli wrote:
-> > > Allow building the Broadcom STB GISB arbiter driver as a module, however
-> > > similar to interrupt controller drivers, don't allow its unbind/removal
-> > > since it is not quite prepared for that and we want it to catch bus
-> > > errors all the time.
-> > > 
-> > > Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> > 
-> > Hmm, did you actually test that ?
-> 
-> Great way to introduce someone to a problem, really.
-> 
-> > 
-> > Building mips:allmodconfig ... failed
-> > --------------
-> > Error log:
-> > <stdin>:1559:2: warning: #warning syscall futex_waitv not implemented [-Wcpp]
-> > ERROR: modpost: "board_be_handler" [drivers/bus/brcmstb_gisb.ko] undefined!
-> 
-> I did not indeed test a modular build for MIPS and had not anticipated it to
-> fail. Thomas, do you have any objections exporting board_be_handler to
-> modules or would you rather not do it and force the driver to be boolean for
-> MIPS?
+From: Jing Yao <yao.jing2@zte.com.cn>
 
-I'd prefer to not export it, so making the driver non-modular for MIPS
-would be a solution. If there is a need to set the bus error handling
-I'd like to see a function setting and that function could be exported.
+coccicheck complains about the use of snprintf() in sysfs show
+functions:
+WARNING use scnprintf or sprintf
 
-Thomas.
+Use sysfs_emit instead of scnprintf, snprintf or sprintf makes more
+sense.
 
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yao <yao.jing2@zte.com.cn>
+---
+ drivers/scsi/snic/snic_attrs.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/scsi/snic/snic_attrs.c b/drivers/scsi/snic/snic_attrs.c
+index dc03ce1ec909..cb501be3e9ec 100644
+--- a/drivers/scsi/snic/snic_attrs.c
++++ b/drivers/scsi/snic/snic_attrs.c
+@@ -27,7 +27,7 @@ snic_show_sym_name(struct device *dev,
+ {
+ 	struct snic *snic = shost_priv(class_to_shost(dev));
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", snic->name);
++	return sysfs_emit(buf, "%s\n", snic->name);
+ }
+ 
+ static ssize_t
+@@ -37,7 +37,7 @@ snic_show_state(struct device *dev,
+ {
+ 	struct snic *snic = shost_priv(class_to_shost(dev));
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n",
++	return sysfs_emit(buf, "%s\n",
+ 			snic_state_str[snic_get_state(snic)]);
+ }
+ 
+@@ -46,7 +46,7 @@ snic_show_drv_version(struct device *dev,
+ 		      struct device_attribute *attr,
+ 		      char *buf)
+ {
+-	return snprintf(buf, PAGE_SIZE, "%s\n", SNIC_DRV_VERSION);
++	return sysfs_emit(buf, "%s\n", SNIC_DRV_VERSION);
+ }
+ 
+ static ssize_t
+@@ -59,7 +59,7 @@ snic_show_link_state(struct device *dev,
+ 	if (snic->config.xpt_type == SNIC_DAS)
+ 		snic->link_status = svnic_dev_link_status(snic->vdev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n",
++	return sysfs_emit(buf, "%s\n",
+ 			(snic->link_status) ? "Link Up" : "Link Down");
+ }
+ 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.25.1
+
