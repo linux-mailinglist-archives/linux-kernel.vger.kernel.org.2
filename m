@@ -2,107 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB26446110
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93780446112
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232623AbhKEJGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 05:06:45 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:28510 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhKEJGm (ORCPT
+        id S229500AbhKEJHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 05:07:05 -0400
+Received: from www381.your-server.de ([78.46.137.84]:53610 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhKEJHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 05:06:42 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1636103043; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=Pa3ICw5KIRTQO6FEZOuM+DFjebBoG9lYhHSPEJ5QY60=; b=N+1sFB+NAMyCguvOmodqw5JcHRPX66fzV6fJTQ6QCUm8ICv58AGuwjTza3dmORt8J5ESJG8i
- YqIa8OJKxnDBi0O543jBFu4YLdGSBznmK6UjG5DrsrFSYXvz4wSytNThuVK3uz1AGKpH598U
- SLOhm7VlJMzVWC+gLgVp4bhRqMo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 6184f383045d18c07587da02 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Nov 2021 09:04:03
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 74191C4360C; Fri,  5 Nov 2021 09:04:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 58877C4338F;
-        Fri,  5 Nov 2021 09:04:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 58877C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Ping-Ke Shih <pkshih@realtek.com>, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Larry Finger <Larry.Finger@gmail.com>
-Subject: Re: [PATCH] rtw89: Fix crash by loading compressed firmware file
-References: <20211105071725.31539-1-tiwai@suse.de>
-        <s5hpmrfgj93.wl-tiwai@suse.de> <87zgqjqaae.fsf@codeaurora.org>
-        <s5hh7crgflg.wl-tiwai@suse.de>
-Date:   Fri, 05 Nov 2021 11:03:55 +0200
-In-Reply-To: <s5hh7crgflg.wl-tiwai@suse.de> (Takashi Iwai's message of "Fri,
-        05 Nov 2021 09:40:43 +0100")
-Message-ID: <87v917q8hw.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 5 Nov 2021 05:07:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=3ERJVON27xcB0z4IEBF5AHmN8Vw67kknzNO/pdOijRI=; b=ELJp80fFHYxNskFRI0kIPTceht
+        O8COvo5xQws8t3yi0rJg7S6bRFqvUPphU6d909zV0WmTztx5J9hLkfN2g0z2z0kHf9KhXUIPuzaRa
+        +kVYfQasZ0CKXzrKIhBKtft+bjp7C+1Y23B6I3kFKYuo5KM8ZlGV8jIORPHTk8WN5CtczGrCoVVsM
+        UHRjFlo0OHo1nNqkkxpjJph23lKYQHcH45RdWaxvfVq6b+8wvIf5J+pQiTNf2aYJvheO+S8VYpGcf
+        vFwfQ5SVRPwAuLzuU4J+CJImYsQ9YowLS63y0hlC99LhBShc2zLzZJKlw6UCPE8mjsRFWqV0yxHGk
+        lUz5lp5Q==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1miv93-000Gbn-G5; Fri, 05 Nov 2021 10:04:21 +0100
+Received: from [82.135.83.112] (helo=[192.168.178.20])
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1miv93-0007yJ-A7; Fri, 05 Nov 2021 10:04:21 +0100
+Subject: Re: [PATCH v7 3/3] iio: test: Add test for IIO_VAL_INT_64.
+To:     Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Vasyl.Vavrychuk@opensynergy.com, jbhayana@google.com,
+        Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAHp75Vd7Wwka37w-6QTXT9vv13bPiygKryBhQTnyvtTpCNU9qw@mail.gmail.com>
+ <20211102073300.13376-1-andriy.tryshnivskyy@opensynergy.com>
+ <CAHp75VfafpEBccivDRC2AVVJbZL2Kdq2KeR0yf_nwTtDTxvDkg@mail.gmail.com>
+ <6d909cca-46a9-3f40-5d4d-97ef2fbe33e9@opensynergy.com>
+ <0c449b88-a6fb-76ca-5c13-807f7728f1da@metafoo.de>
+ <a3665295-6415-0c0b-f53d-87f658150991@opensynergy.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <61ddb1da-47eb-bbda-d6a7-98ef19fa494e@metafoo.de>
+Date:   Fri, 5 Nov 2021 10:04:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <a3665295-6415-0c0b-f53d-87f658150991@opensynergy.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26343/Thu Nov  4 09:22:31 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Takashi Iwai <tiwai@suse.de> writes:
-
-> On Fri, 05 Nov 2021 09:25:13 +0100,
-> Kalle Valo wrote:
->> 
->> Takashi Iwai <tiwai@suse.de> writes:
->> 
->> > On Fri, 05 Nov 2021 08:17:25 +0100,
->> > Takashi Iwai wrote:
->> >> 
->> >> When a firmware is loaded in the compressed format or via user-mode
->> >> helper, it's mapped in read-only, and the rtw89 driver crashes at
->> >> rtw89_fw_download() when it tries to modify some data.
->> >> 
->> >> This patch is an attemp to avoid the crash by re-allocating the data
->> >> via vmalloc() for the data modification.
->> >
->> > Alternatively, we may drop the code that modifies the loaded firmware
->> > data?  At least SET_FW_HDR_PART_SIZE() in rtw89_fw_hdr_parser() looks
->> > writing it, and I have no idea why this overwrite is needed.
->> 
->> Strange, isn't the firmware data marked as const just to avoid this kind
->> of problem? Does rtw89 have wrong casts somewhere which removes the
->> const?
+On 11/5/21 9:55 AM, Andriy Tryshnivskyy wrote:
 >
-> Yes.  SET_FW_HDR_PART_SIZE() does the cast, dropping the const.
+> On 05.11.21 10:50, Lars-Peter Clausen wrote:
+>> CAUTION: This email originated from outside of the organization.
+>> Do not click links or open attachments unless you recognize the 
+>> sender and know the content is safe.
+>>
+>>
+>> On 11/5/21 9:45 AM, Andriy Tryshnivskyy wrote:
+>>> On 02.11.21 10:11, Andy Shevchenko wrote:
+>>>
+>>>> CAUTION: This email originated from outside of the organization.
+>>>> Do not click links or open attachments unless you recognize the
+>>>> sender and know the content is safe.
+>>>>
+>>>>
+>>>> On Tue, Nov 2, 2021 at 9:33 AM Andriy Tryshnivskyy
+>>>> <andriy.tryshnivskyy@opensynergy.com> wrote:
+>>>> Now it's good with format, but you have missed the commit message.
+>>>
+>>> Actually commit massage contains a header only (no body message), but
+>>> I can add body message too.
+>>> Thanks!
+>>>
+>>>>
+>>>>> Signed-off-by: Andriy Tryshnivskyy
+>>>>> <andriy.tryshnivskyy@opensynergy.com>
+>>>> ...
+>>>>
+>>>>> +static void iio_test_iio_format_value_integer_64(struct kunit *test)
+>>>>> +{
+>>>>> +       char *buf = kunit_kmalloc(test, PAGE_SIZE, GFP_KERNEL);
+>>>> Shouldn't this be checked against NULL?
+>>>
+>>> Good question. Truly speaking I've made new test similar to other. And
+>>> no other tests has a check for NULL.
+>>>
+>> The other tests not having it is my fault. There should be a
+>> KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf) under the allocation.
+>>
+> Understood. Then If you wouldn't mind I will add assert to other tests 
+> too.
 
-Oh man, all of GET and SET macros in fw.h have those casts:
+Perfect, thanks!
 
-#define GET_FW_HDR_MAJOR_VERSION(fwhdr)	\
-	le32_get_bits(*((__le32 *)(fwhdr) + 1), GENMASK(7, 0))
-#define GET_FW_HDR_MINOR_VERSION(fwhdr)	\
-	le32_get_bits(*((__le32 *)(fwhdr) + 1), GENMASK(15, 8))
-#define GET_FW_HDR_SUBVERSION(fwhdr)	\
-	le32_get_bits(*((__le32 *)(fwhdr) + 1), GENMASK(23, 16))
-
-I don't know how I missed those during my review :( But this is exactly
-why I prefer having a proper struct for commands and events, instead of
-u8 buf used with these macros.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
