@@ -2,121 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD1D446006
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 08:08:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9DE446009
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 08:10:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbhKEHKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 03:10:50 -0400
-Received: from mail-eopbgr1400111.outbound.protection.outlook.com ([40.107.140.111]:43584
-        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232490AbhKEHKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 03:10:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m/XZQ4anszKh26HiOxKLfl67+QJmTkV+lenCGA3HOboNNSG20ZNcxbXGK0FaR++46w3fqGCtgFZdIMx6wzr09bT7kRyi/Vy7soTPpn5tAma/fjLXVZ9pZFtQjWdffN/BDMDAv2xtqjc/luNRQHJeYSVs8kwT8VZrG8jh8/iIvTavUOV/V6zVJX4fdJJTfL3RaC4ZPuZoL2TnBaqPpHGYBCiJjtPOWia2rBO9XDsbNh12YMR1pyjogWuKj4j6c9EShxEDxctqBMJAMx8t0E0c9HvvQbD1s6U5Mh7HXjK5vMdDXDFZwuid7RJ8/M64Vt9d62SU9zm2r7QPr19SMW6Hew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ds3Xe4xE/9muukLrWL3cm7Ypxz6nMaeZ1wdgdUk9INA=;
- b=Gze+2lOcijRlIfqv71iKxRsH3pnhRHht4LGikV6V01GVlyXxv6lTzFvTI5zV+ACsWQw67My+igOAAb/oAawRHG+EHzvp3zjflck3bKXIAL2iMvqh9BxhXu6OP87Fj6JStxVvs0qdF6gmVv7UWIkhpyYifnh0Amny8HXS8cBOlFaA3mB/+NQcXJZ7PbiX0Qk6o7VdS+g/MyxY2HTVJFRH88/NSq5knaLYP8qeua2tdno01J8It78uKkxg5PIRoSXXXR4a7TlGdEJeOwPMX0PHtdGZmFELfILzEcj6UgNobnyh6ZzDWhRMFTZQaNsJoXvuMqEWWB9nD+t6Salb0mi5wg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=connect.ust.hk; dmarc=pass action=none
- header.from=connect.ust.hk; dkim=pass header.d=connect.ust.hk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connect.ust.hk;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ds3Xe4xE/9muukLrWL3cm7Ypxz6nMaeZ1wdgdUk9INA=;
- b=L3U47eBhWrC4mhxVkmJAG2y9DsOv3sMWZRrJd0B6sPN7HTclCx00+7hGQKsztNlgJoTq6zwF7MVkNV+jcqTOsODohWx2Nla1/3hPxg/PoBFCCciYYeN9lJXs60avsNwdFpbQKI4PNWNCdtsZjSiP4UfjwyyR1yqkuWInlY42mUI=
-Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:b7::8) by
- TYAP286MB0442.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:8037::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4669.13; Fri, 5 Nov 2021 07:07:43 +0000
-Received: from TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
- ([fe80::c0af:a534:cead:3a04]) by TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
- ([fe80::c0af:a534:cead:3a04%6]) with mapi id 15.20.4669.013; Fri, 5 Nov 2021
- 07:07:42 +0000
-From:   YE Chengfeng <cyeaa@connect.ust.hk>
-To:     "stefanr@s5r6.in-berlin.de" <stefanr@s5r6.in-berlin.de>,
-        "linux1394-devel@lists.sourceforge.net" 
-        <linux1394-devel@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: firewire: suspected uaf issue
-Thread-Topic: firewire: suspected uaf issue
-Thread-Index: AdfSE2Y8PWxJkaikSrSvFCtkAX2o8w==
-Date:   Fri, 5 Nov 2021 07:07:42 +0000
-Message-ID: <TYCP286MB1188FABA20A0F8F3C6498E538A8E9@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: s5r6.in-berlin.de; dkim=none (message not signed)
- header.d=none;s5r6.in-berlin.de; dmarc=none action=none
- header.from=connect.ust.hk;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e6a438bb-6918-4ca4-e99f-08d9a02af624
-x-ms-traffictypediagnostic: TYAP286MB0442:
-x-microsoft-antispam-prvs: <TYAP286MB0442559DFCD0728F22659C218A8E9@TYAP286MB0442.JPNP286.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:4502;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gYvZt/lKcJbYQUhFxhONir4zLIQMIg6lkDSPmcibnDmfRY6pVrVDs7Rn0LgsalTOfcw2cR2OlCMzECc9PHXw89wr5yROJe3kGOFO55RGf2FK32otfHHN0+DwiLLhbaaQShpmnFcSibLTiJWNPy+ptEXVO/F6wwQCYP3uXlaQbvXK6s5gDy4tGNwGvPRHglX7sRTlNopP9XlNaC8M5iUnFLueHPfi5sdSABzK6Btqx2TtQ8/eXnvvaZMK+SFFpNYKdvlSzl5lRojKP2zEU4XLEJ7W3+U458924FVY/IZBWikaStOU8JXxC/vhjsfPvL8wua7TX4paGHq9EjyFTRywHrmnqiy+o1oV0Aibl9NCuSTIRGCoaVuyoNcvHD7eFqh/mNC0kT3MDDl0Zm4vnIwgfEpjOzPX9d+/DZZoTL9dTVazJWC+1y56TFKLqAtmAWrkC3s2tjOfdBsyT6ZXWGiitjLZn7IW5lwve/G5sDYKWPWY50fMKyqRLx/H1cNvACifQ0qDmf5XrufEzw3Kfq7rq7JV8/YpedtEYdibDvdtHZQycxAXruYX0UCYG9uRB21Fk9nG2naHExk2e5ClQephuDsdrqXxIE9cszABmvfvnQofs8wxkbg4brcfTDrAypVJr4QgHYTMYfIrqQzUcIJKqG5mVnE4SohUR/lluYmrcg9k7q3N8Qh0Hxl+5hetCJC5JHPXD1Aq0oDrywI0+g0duENUssGDwme2qWzehVF7xezwBCS452tYwZ5hbcMgmYZVJuNuzBNzjpUgztYq0mabrIjKcy+MahP46Xj1OW/xeuY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(66556008)(66476007)(5660300002)(66946007)(76116006)(66446008)(64756008)(38100700002)(52536014)(86362001)(55016002)(9686003)(122000001)(38070700005)(83380400001)(110136005)(71200400001)(33656002)(7696005)(316002)(8936002)(966005)(2906002)(786003)(8676002)(4744005)(26005)(508600001)(6506007)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?lJmvY8iest0+jViEmSh8/jAKsTyM9Bwd4m98e4bo3A3yDVJrGztt7cdizyuo?=
- =?us-ascii?Q?4s8sfsHGw/dj49XVZV3L1NDhdW4DtSWQDVQjl7LbD3YzXc3e8hbx5mK2+ASt?=
- =?us-ascii?Q?fE5cDjJh64wffkGDg4bkgGiRaZ8t5dm9nUGxRHenROzEMvFrkevTAh7lNurb?=
- =?us-ascii?Q?WTKdZHKOaloEmNe6Zo0TA18knaPPipME47ZllQSxwsncsJcHp2J2uPyBmcPP?=
- =?us-ascii?Q?WaCSTFF3NHPkc42p6T3eeoufPfHuqoXcTltWsVhtOWqBS5v0UrgwuEcdwcLT?=
- =?us-ascii?Q?J7RNhJwuz/NNpQfzXmdfbtpt+NdepIwn532EVwgy+W/z+LTZA7DBpu/YgWlE?=
- =?us-ascii?Q?9JnZAndkgfjH3EefhQCXdVA0CfPBaLk/ahJFxsW1cIItyQeNipcMB/X1BGRu?=
- =?us-ascii?Q?gpi/7r/0pSVy4cipv1sPpPTIVgJUHYQHuECYjFDx9Q40d3/8ljr+S1E5SkKm?=
- =?us-ascii?Q?k30mnBU8gzCt9IMcprFxP2EWx9DZwayRNq397vKNoGO1mE3EYcYobUVxtlCt?=
- =?us-ascii?Q?Sw6DDPfvLseUFS46Rs/RTF9zzErx+FlyuiVefMbaFA6Cz//dTbj5Ql3/3qVH?=
- =?us-ascii?Q?TBnZKy0g2VBNPE/BaxNkw1sZrJBU5uneI2rMiFB8pgazQkduzJGmeWwmriM9?=
- =?us-ascii?Q?5LElcJrFdWwbYamE33VNP9KYqmGvTuj7MyB4NPgaG9qb9gmJYQ4MI+81Q5xB?=
- =?us-ascii?Q?hStL7HkJ4Y1QIkif4Amb9wVXp+N7ZJUDoeuTDKuhHz9LDZabvlyZh90UXA28?=
- =?us-ascii?Q?Yf0gsEFB7eGCp5BN04ZgTrG0Jbx9Llhc2z9hLsHpHKK6j8Pe5Z2su4UqwiZZ?=
- =?us-ascii?Q?EfI+otwSaLUGGngxgao0CYHPA/YXR9+FIYtO2Xciw30y74R7MeGupYtuVn0a?=
- =?us-ascii?Q?PkKHcseqZ5CZ00lzfmJD8MJJXcWD5ohMnHzAgE64FPRVq49P/FAWUWiG9GGR?=
- =?us-ascii?Q?I2pndy1gq+3mCzH8hzNZCwgExDn8MeU4JWXdYFNiZZRt7hTurBGZ3sBQcP1+?=
- =?us-ascii?Q?S2eMi8Dh8PStqOI3wUMH09/emm8y3Ip9+/pwcB1LPgqHmhZLLPM7LnTJf5/p?=
- =?us-ascii?Q?mjX+ZFzwjYM1j29zwe+QNUayY5P6dTqNwkmlfY79ZCLY0Ug0HSF0TaKi1WiZ?=
- =?us-ascii?Q?YeEWy9vruRQqV4s1OFwzyQXPNbT8z35MQYoNCrKoDSTnHrV4eEjJJFm7pf+O?=
- =?us-ascii?Q?N8XCTf8l3iqBmAsdJMaGwDm2vFJZfChVpzej+ptX6CII47p/7nDnL4SU2gu3?=
- =?us-ascii?Q?s3d6a0Exm77nTHPqfJSbSEBdQSZ+yJJb+A6y/gEiVAqSeITK8tCG8+2GH4DV?=
- =?us-ascii?Q?7Vklbhb6Sc6p4RCV9Sm4WHuEaiqLnZNKC0jG7zrAClRwPDPcCoPCbGhWxamR?=
- =?us-ascii?Q?mIgd1KmMaaWr5e59LkJHP5B5mE3dgnCBGM5dgM6FM+fV8y8FFCB7jOA9HSjd?=
- =?us-ascii?Q?e63avG175H2YbuewT0jgWXoY4gZaOggranv9di8BdSUeA+Jgy6PaYQ4jAtfM?=
- =?us-ascii?Q?smOjHSZnbxOvaRGhcfjziQcy5+YcmcqScuXln/VEH1PHiCxB/jNyyupmu9sB?=
- =?us-ascii?Q?IEqMkNPRQEiR9yU5FVjKAmbdm/+HbmcQ91JvnNn0wDcSGk4ejlIkLb/HO/p4?=
- =?us-ascii?Q?Xg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232490AbhKEHNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 03:13:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44548 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232486AbhKEHNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 03:13:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8855F61250;
+        Fri,  5 Nov 2021 07:10:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636096238;
+        bh=y7PYD7ScSEup1sTtkL4KaiBLwigwF2LB1vwyYh51tlo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ebRh0mlrSrrXXndaFcCsR564XXUFyaWoNyrQgUwZI9BztSKDXmCIa9psaa+sGJPez
+         /0Ma9ooUJ0I+mrXtq3EG9GdkIzIWBvjHjlYNVz8HuxFxIVLBE8VNDKNEJM5a3L4i26
+         AxKfI/f5QhYeyNmUzCHRYU6j3H6IKWgZVhujaRF8=
+Date:   Fri, 5 Nov 2021 08:10:35 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     dave.hansen@linux.intel.com, jarkko@kernel.org, tglx@linutronix.de,
+        bp@alien8.de, mingo@redhat.com, linux-sgx@vger.kernel.org,
+        x86@kernel.org, seanjc@google.com, tony.luck@intel.com,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: Fix free page accounting
+Message-ID: <YYTY60T7YzycEAmp@kroah.com>
+References: <373992d869cd356ce9e9afe43ef4934b70d604fd.1636049678.git.reinette.chatre@intel.com>
+ <YYQsc0kktaOdOXb0@kroah.com>
+ <a636290d-db04-be16-1c86-a8dcc3719b39@intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: connect.ust.hk
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6a438bb-6918-4ca4-e99f-08d9a02af624
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Nov 2021 07:07:42.6269
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 6c1d4152-39d0-44ca-88d9-b8d6ddca0708
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: berQf5fi0ceZ0A2IInALf7X7jmIG2Kxp623Ratz/2rIpIi4B07e0E0XZ4LTLHsOdGjiYe7zHTAiELzroo6JgtA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAP286MB0442
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a636290d-db04-be16-1c86-a8dcc3719b39@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Nov 04, 2021 at 01:57:31PM -0700, Reinette Chatre wrote:
+> Hi Greg,
+> 
+> On 11/4/2021 11:54 AM, Greg KH wrote:
+> > On Thu, Nov 04, 2021 at 11:28:54AM -0700, Reinette Chatre wrote:
+> > > The SGX driver maintains a single global free page counter,
+> > > sgx_nr_free_pages, that reflects the number of free pages available
+> > > across all NUMA nodes. Correspondingly, a list of free pages is
+> > > associated with each NUMA node and sgx_nr_free_pages is updated
+> > > every time a page is added or removed from any of the free page
+> > > lists. The main usage of sgx_nr_free_pages is by the reclaimer
+> > > that will run when the total free pages go below a watermark to
+> > > ensure that there are always some free pages available to, for
+> > > example, support efficient page faults.
+> > > 
+> > > With sgx_nr_free_pages accessed and modified from a few places
+> > > it is essential to ensure that these accesses are done safely but
+> > > this is not the case. sgx_nr_free_pages is sometimes accessed
+> > > without any protection and when it is protected it is done
+> > > inconsistently with any one of the spin locks associated with the
+> > > individual NUMA nodes.
+> > > 
+> > > The consequence of sgx_nr_free_pages not being protected is that
+> > > its value may not accurately reflect the actual number of free
+> > > pages on the system, impacting the availability of free pages in
+> > > support of many flows. The problematic scenario is when the
+> > > reclaimer never runs because it believes there to be sufficient
+> > > free pages while any attempt to allocate a page fails because there
+> > > are no free pages available. The worst scenario observed was a
+> > > user space hang because of repeated page faults caused by
+> > > no free pages ever made available.
+> > > 
+> > > Change the global free page counter to an atomic type that
+> > > ensures simultaneous updates are done safely. While doing so, move
+> > > the updating of the variable outside of the spin lock critical
+> > > section to which it does not belong.
+> > > 
+> > > Cc: stable@vger.kernel.org
+> > > Fixes: 901ddbb9ecf5 ("x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()")
+> > > Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
+> > > Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
+> > > ---
+> > >   arch/x86/kernel/cpu/sgx/main.c | 12 ++++++------
+> > >   1 file changed, 6 insertions(+), 6 deletions(-)
+> > > 
+> > > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> > > index 63d3de02bbcc..8558d7d5f3e7 100644
+> > > --- a/arch/x86/kernel/cpu/sgx/main.c
+> > > +++ b/arch/x86/kernel/cpu/sgx/main.c
+> > > @@ -28,8 +28,7 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
+> > >   static LIST_HEAD(sgx_active_page_list);
+> > >   static DEFINE_SPINLOCK(sgx_reclaimer_lock);
+> > > -/* The free page list lock protected variables prepend the lock. */
+> > > -static unsigned long sgx_nr_free_pages;
+> > > +atomic_long_t sgx_nr_free_pages = ATOMIC_LONG_INIT(0);
+> > >   /* Nodes with one or more EPC sections. */
+> > >   static nodemask_t sgx_numa_mask;
+> > > @@ -403,14 +402,15 @@ static void sgx_reclaim_pages(void)
+> > >   		spin_lock(&node->lock);
+> > >   		list_add_tail(&epc_page->list, &node->free_page_list);
+> > > -		sgx_nr_free_pages++;
+> > >   		spin_unlock(&node->lock);
+> > > +		atomic_long_inc(&sgx_nr_free_pages);
+> > >   	}
+> > >   }
+> > >   static bool sgx_should_reclaim(unsigned long watermark)
+> > >   {
+> > > -	return sgx_nr_free_pages < watermark && !list_empty(&sgx_active_page_list);
+> > > +	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
+> > > +	       !list_empty(&sgx_active_page_list);
+> > 
+> 
+> Thank you very much for taking a look.
+> 
+> > What prevents the value from changing right after you test this?
+> 
+> You are correct. It is indeed possible for the value to change after this
+> test. This test decides when to reclaim more pages so an absolute accurate
+> value is not required but knowing that the amount of free pages are running
+> low is.
+> 
+> >  Why is
+> > an atomic value somehow solving the problem?
+> 
+> During stress testing it was found that page allocation during hot path (for
+> example page fault) is failing because there were no free pages available in
+> any of the free page lists while the global counter contained a value that
+> does not reflect the actual free pages and was higher than the watermark and
+> thus the reclaimer is never run.
+> 
+> Changing it to atomic fixed this issue. I also reverted to how this counter
+> was managed before with a spin lock protected free counter per free list and
+> that also fixes the issue.
+>
+> > The value changes were happening safely, it was just the reading of the
+> > value that was not.  You have not changed the fact that the value can
+> > change right after reading given that there was not going to be a
+> > problem with reading a stale value before.
+> 
+> I am testing on a two socket system and I am seeing that the value of
+> sgx_nr_free_pages does not accurately reflect the actual free pages.
+> 
+> It does not look to me like the value is updated safely as it is updated
+> with inconsistent protection on a system like this. There is a spin lock
+> associated with each NUMA node and which lock is used to update the variable
+> depends on which NUMA node memory is being modified - it is not always
+> protected with the same lock:
+> 
+> spin_lock(&node->lock);
+> sgx_nr_free_pages++;
+> spin_unlock(&node->lock);
 
-We notice that after client_put(client); at #line 1316, client is dereferen=
-ced l(e.g., #line 1318), and we don't see any client_get(client) like state=
-ment before clientt_put(client). Could it be a uaf issue?
+Ah, I missed that the original code was using a different lock for every
+call place, while now you are just using a single lock (the atomic value
+itself.)  That makes more sense, sorry for the noise.
 
-https://github.com/torvalds/linux/blob/master/drivers/firewire/core-cdev.c#=
-L1316
+But isn't this going to cause more thrashing and slow things down as you
+are hitting the "global" lock for this variable for every allocation?
+Or is this not in the hot path?
 
-Best regards.
-Chengfeng
+
+
+> 
+> 
+> > In other words, what did you really fix here?  And how did you test it
+> > to verify it did fix things?
+> 
+> To test this I created a stress test that builds on top of the new
+> "oversubscription" test case that we are trying to add to the SGX
+> kselftests:
+> https://lore.kernel.org/lkml/7715db4882ab9fd52d21de6f62bb3b7e94dc4885.1635447301.git.reinette.chatre@intel.com/
+> 
+> In the changed test an enclave is created with as much heap as SGX memory.
+> After that all the pages are accessed, their type is changed, then the
+> enclave is entered to run EACCEPT on each page, after that the pages are
+> removed (EREMOVE).
+> 
+> This test places significant stress on the SGX memory allocation and reclaim
+> subsystems. The troublesome part of the test is when the enclave is entered
+> so that EACCEPT can be run on each page. During this time, because of the
+> oversubscription and previous accesses, there are many page faults. During
+> this time a new page needs to be allocated in the SGX memory into which the
+> page being faulted needs to be decrypted and loaded back into SGX memory. At
+> this point the test hangs.
+> 
+> Below I show the following:
+> * perf top showing that the test hangs because user space is stuck just
+> encountering page faults
+> * below that I show the code traces explaining why the repeated page faults
+> occur (because reclaimer never runs)
+> * below that shows the perf top traces after this patch is applied showing
+> that the reclaimer now gets a chance to run and the test can complete
+> 
+> 
+> Here is the perf top trace before this patch is applied showing how user
+> space is stuck hitting page faults over and over:
+>    PerfTop:    4569 irqs/sec  kernel:25.0%  exact: 100.0% lost: 0/0 drop:
+> 0/0 [4000Hz cycles],  (all, 224 CPUs)
+
+<ascii art that line-wrapped snipped>
+
+> With this patch the test is able to complete and the tracing shows that the
+> reclaimer is getting a chance to run. Previously the system was spending
+> almost all its time in page faults but now the time is split between the
+> page faults and the reclaimer.
+> 
+> 
+>    PerfTop:    7432 irqs/sec  kernel:81.5%  exact: 100.0% lost: 0/0 drop:
+> 0/0 [4000Hz cycles],  (all, 224 CPUs)
+
+Ok, that's better, you need the reclaim in order to make forward
+progress.
+
+Thanks for the detailed explaination, no objection from me, sorry for
+the misunderstanding.
+
+greg k-h
