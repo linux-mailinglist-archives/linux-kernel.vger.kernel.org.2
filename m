@@ -2,128 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738FA44615C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:25:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D537F446160
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232761AbhKEJ1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 05:27:53 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:38089 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232716AbhKEJ1v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 05:27:51 -0400
-Received: (Authenticated sender: jacopo@jmondi.org)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 521BA24000C;
-        Fri,  5 Nov 2021 09:25:06 +0000 (UTC)
-Date:   Fri, 5 Nov 2021 10:25:59 +0100
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Eugen Hristev <eugen.hristev@microchip.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@iki.fi,
-        robh+dt@kernel.org, nicolas.ferre@microchip.com
-Subject: Re: [PATCH 11/21] media: atmel: atmel-isc-base: implement mbus_code
- support in enumfmt
-Message-ID: <20211105092559.ce6pdm4hwvxkmutd@uno.localdomain>
-References: <20211022075247.518880-1-eugen.hristev@microchip.com>
- <20211022075247.518880-12-eugen.hristev@microchip.com>
+        id S232757AbhKEJcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 05:32:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230175AbhKEJch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 05:32:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2CF96124D;
+        Fri,  5 Nov 2021 09:29:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636104598;
+        bh=tKBD+RLlfhE7VeZpMQSfNhzCQ40GPzXQUm0WWaajWiU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=blJrmjedEf9wRzkN712Vm/D1FqePc61/3vF+cXYJKBSfZCTddSND6bALdvpydjdKo
+         RI5oSKdgT1erbLNBISzhoa7HHvu+yBRvFy610vDyVbkx7Gaws+rguc/Q406/F1AFcQ
+         pjcwctC8aYrrND2/H6UdqQLleGkNZwDFZ7dmMizBFFrFthQUDAqnAihEBztLDkOTVQ
+         7cYMtVopEIxUMkaCA2VMyTVAjUvffSsf0gvrsiVQlybU7xOaUOoyICkOM20KwiG4PR
+         BBx6aFsWNwdOS1iXDmsFM++bcN88JwyK+kgqNMmqYHPobbAbENNrVfgIy7Dc0JqNci
+         ihr5aq3iCrZ0w==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] ax88796c: fix ioctl callback
+Date:   Fri,  5 Nov 2021 10:29:39 +0100
+Message-Id: <20211105092954.1771974-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211022075247.518880-12-eugen.hristev@microchip.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eugen,
+From: Arnd Bergmann <arnd@arndb.de>
 
-On Fri, Oct 22, 2021 at 10:52:37AM +0300, Eugen Hristev wrote:
-> If enumfmt is called with an mbus_code, the enumfmt handler should only
-> return the formats that are supported for this mbus_code.
-> To make it more easy to understand the formats, changed the report order
-> to report first the native formats, and after that the formats that the ISC
-> can convert to.
->
-> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+The timestamp ioctls are now handled by the ndo_eth_ioctl() callback,
+not the old ndo_do_ioctl(), but oax88796 introduced the
+function for the old way.
 
-Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
+Move it over to ndo_eth_ioctl() to actually allow calling it from
+user space.
 
-Thanks
-   j
+Fixes: a97c69ba4f30 ("net: ax88796c: ASIX AX88796C SPI Ethernet Adapter Driver")
+Fixes: a76053707dbf ("dev_ioctl: split out ndo_eth_ioctl")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+It would be best to completely remove the .ndo_do_ioctl() callback
+to avoid this problem in the future, but I'm still unsure whether
+we want to just remove the ancient wireless and localtalk drivers
+instead of fixing them.
+---
+ drivers/net/ethernet/asix/ax88796c_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->  drivers/media/platform/atmel/atmel-isc-base.c | 51 ++++++++++++++++---
->  1 file changed, 43 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/media/platform/atmel/atmel-isc-base.c b/drivers/media/platform/atmel/atmel-isc-base.c
-> index 2dd2511c7be1..1f7fbe5e4d79 100644
-> --- a/drivers/media/platform/atmel/atmel-isc-base.c
-> +++ b/drivers/media/platform/atmel/atmel-isc-base.c
-> @@ -499,21 +499,56 @@ static int isc_enum_fmt_vid_cap(struct file *file, void *priv,
->  	u32 index = f->index;
->  	u32 i, supported_index;
->
-> -	if (index < isc->controller_formats_size) {
-> -		f->pixelformat = isc->controller_formats[index].fourcc;
-> -		return 0;
-> +	supported_index = 0;
-> +
-> +	for (i = 0; i < isc->formats_list_size; i++) {
-> +		if (!isc->formats_list[i].sd_support)
-> +			continue;
-> +		/*
-> +		 * If specific mbus_code is requested, provide only
-> +		 * supported formats with this mbus code
-> +		 */
-> +		if (f->mbus_code && f->mbus_code !=
-> +		    isc->formats_list[i].mbus_code)
-> +			continue;
-> +		if (supported_index == index) {
-> +			f->pixelformat = isc->formats_list[i].fourcc;
-> +			return 0;
-> +		}
-> +		supported_index++;
->  	}
->
-> -	index -= isc->controller_formats_size;
-> +	/*
-> +	 * If the sensor does not support this mbus_code whatsoever,
-> +	 * there is no reason to advertise any of our output formats
-> +	 */
-> +	if (supported_index == 0)
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * If the sensor uses a format that is not raw, then we cannot
-> +	 * convert it to any of the formats that we usually can with a
-> +	 * RAW sensor. Thus, do not advertise them.
-> +	 */
-> +	if (!isc->config.sd_format ||
-> +	    !ISC_IS_FORMAT_RAW(isc->config.sd_format->mbus_code))
-> +		return -EINVAL;
->
-> +	/*
-> +	 * Iterate again through the formats that we can convert to.
-> +	 * However, to avoid duplicates, skip the formats that
-> +	 * the sensor already supports directly
-> +	 */
-> +	index -= supported_index;
->  	supported_index = 0;
->
-> -	for (i = 0; i < isc->formats_list_size; i++) {
-> -		if (!ISC_IS_FORMAT_RAW(isc->formats_list[i].mbus_code) ||
-> -		    !isc->formats_list[i].sd_support)
-> +	for (i = 0; i < isc->controller_formats_size; i++) {
-> +		/* if this format is already supported by sensor, skip it */
-> +		if (find_format_by_fourcc(isc, isc->controller_formats[i].fourcc))
->  			continue;
->  		if (supported_index == index) {
-> -			f->pixelformat = isc->formats_list[i].fourcc;
-> +			f->pixelformat =
-> +				isc->controller_formats[i].fourcc;
->  			return 0;
->  		}
->  		supported_index++;
-> --
-> 2.25.1
->
+diff --git a/drivers/net/ethernet/asix/ax88796c_main.c b/drivers/net/ethernet/asix/ax88796c_main.c
+index 4b0c5a09fd57..8994f2322268 100644
+--- a/drivers/net/ethernet/asix/ax88796c_main.c
++++ b/drivers/net/ethernet/asix/ax88796c_main.c
+@@ -934,7 +934,7 @@ static const struct net_device_ops ax88796c_netdev_ops = {
+ 	.ndo_stop		= ax88796c_close,
+ 	.ndo_start_xmit		= ax88796c_start_xmit,
+ 	.ndo_get_stats64	= ax88796c_get_stats64,
+-	.ndo_do_ioctl		= ax88796c_ioctl,
++	.ndo_eth_ioctl		= ax88796c_ioctl,
+ 	.ndo_set_mac_address	= eth_mac_addr,
+ 	.ndo_set_features	= ax88796c_set_features,
+ };
+-- 
+2.29.2
+
