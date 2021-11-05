@@ -2,120 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 677B144623F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:35:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9351446242
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233156AbhKEKiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 06:38:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhKEKhx (ORCPT
+        id S233175AbhKEKiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 06:38:13 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:36443 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233152AbhKEKiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 06:37:53 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5C6C061714;
-        Fri,  5 Nov 2021 03:35:14 -0700 (PDT)
-Received: from Monstersaurus.ksquared.org.uk.beta.tailscale.net (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E1199E7;
-        Fri,  5 Nov 2021 11:35:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1636108512;
-        bh=IEjUClWapyjX1HEa1/kYmeWrMydAUUc4XIq1iNdGE88=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FOZWUF1F+Jr9saHNaIMljatR0si9VEcfq5kvi022un6PVrqJiH7LuL2Wo9Qwu6kGm
-         tjjNJDUoom5+joeCHloE51yA9nN6/7Zt1bSm2er2EnjT0dVNfHLEnx6vZ6fdXmI64h
-         /1H65C+iAIS3XtIJnqt8tkDsBF2DT6TqN/Njfa7Q=
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-To:     linux-input@vger.kernel.org, Geert Uytterhoeven <geert@glider.be>,
-        linux-renesas-soc@vger.kernel.org
-Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Wu Hao <hao.wu@intel.com>, Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Xu Yilun <yilun.xu@intel.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] Input: add 'safe' user switch codes
-Date:   Fri,  5 Nov 2021 10:35:07 +0000
-Message-Id: <20211105103508.4153491-1-kieran.bingham+renesas@ideasonboard.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 5 Nov 2021 06:38:02 -0400
+Received: by mail-io1-f70.google.com with SMTP id e5-20020a5ede45000000b005e21017c253so361055ioq.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 03:35:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=cNB+tE4AKA8z8YAxBjN+ixj7uS5g86EAeIE4JxHKPoo=;
+        b=f8puTx0y2PdWiYWhom8Gcn7NKSSNd+WA0sC1eP8Xocdwn1NdfaE/U5b/ckKAkPWE57
+         rGFBKQrrpRI9A08cuIbM85rH6jgu1JozAxzfAuozVCE0phIYrUprWL7B2vFUiLDhCzHM
+         rAmhstjN64UYpMh0XPS+PIn8lqnPXqJGRF78nlAE2rjtvfymTKjX5Qsqf7iBOm9GHXDs
+         NjHeDKyTm3RJZ397mIR8AwVQA234NE7UVULP8MxqTraPsBNmhnfop9OM5WRUE29fjIsw
+         zIsI9HKnWj2oWnhaiz4FUzrazjSaXgSGBGtDDH9zMMto1cvRGcVpITEVDNGdnAO2eOqm
+         Hg5g==
+X-Gm-Message-State: AOAM530qXOkrUmHtz5+3RWAvlW6ctkskFxYwM+5eH3FHonhCMNVSNdGs
+        1Jd+Y5fcivsoiIfjCOrQ1JVESCnqZqfqMo/hjV9QE7YFBWpD
+X-Google-Smtp-Source: ABdhPJwZyhCRYGxypk9hITyt4FJuVw8c6uF2lWTTkViU6A1fb9h1Z8EvFd7jxNjiaE0qXkiFQwmStZY/sok1Z366jRHSVsrE291r
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:933:: with SMTP id o19mr6913868ilt.92.1636108522273;
+ Fri, 05 Nov 2021 03:35:22 -0700 (PDT)
+Date:   Fri, 05 Nov 2021 03:35:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000048c15c05d0083397@google.com>
+Subject: [syzbot] general protection fault in cgroup_file_write
+From:   syzbot <syzbot+50f5cf33a284ce738b62@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, christian@brauner.io,
+        daniel@iogearbox.net, hannes@cmpxchg.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        lizefan.x@bytedance.com, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        tj@kernel.org, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All existing SW input codes define an action which can be interpreted by
-a user environment to adapt to the condition of the switch.
+Hello,
 
-For example, switches to define the audio mute, will prevent audio
-playback, and switches to indicate lid and covers being closed may
-disable displays.
+syzbot found the following issue on:
 
-Many evaluation platforms provide switches which can be connected to the
-input system but associating these to an action incorrectly could
-provide inconsistent end user experiences due to unmarked switch
-positions.
+HEAD commit:    d4439a1189f9 Merge tag 'hsi-for-5.16' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1656d30ab00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ff3ea6b218615239
+dashboard link: https://syzkaller.appspot.com/bug?extid=50f5cf33a284ce738b62
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Define two custom user defined switches allowing hardware descriptions
-to be created whereby the position of the switch is not interpreted as
-any standard condition that will affect a user experience.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-This allows wiring up custom generic switches in a way that will allow
-them to be read and processed, without incurring undesired or otherwise
-undocumented (by the hardware) 'default' behaviours.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+50f5cf33a284ce738b62@syzkaller.appspotmail.com
 
-Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+general protection fault, probably for non-canonical address 0xdffffc0000000008: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000040-0x0000000000000047]
+CPU: 1 PID: 11182 Comm: syz-executor.1 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:cgroup_file_write+0xbe/0x790 kernel/cgroup/cgroup.c:3831
+Code: 81 c3 88 08 00 00 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 c0 5c 52 00 48 8b 1b 48 83 c3 40 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 a3 5c 52 00 48 8b 03 48 89 44 24
+RSP: 0018:ffffc9000a79f2a0 EFLAGS: 00010202
+RAX: 0000000000000008 RBX: 0000000000000040 RCX: ffff888074320000
+RDX: 0000000000000000 RSI: ffff88801d008980 RDI: ffff88806b48ac00
+RBP: ffffc9000a79f390 R08: ffffffff8207dab3 R09: fffffbfff1fedffb
+R10: fffffbfff1fedffb R11: 0000000000000000 R12: 1ffff920014f3e5c
+R13: ffff88806b48ac00 R14: ffff88806b48ac00 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe6fd24a1b8 CR3: 000000002c740000 CR4: 00000000003526e0
+Call Trace:
+ <TASK>
+ kernfs_fop_write_iter+0x3b6/0x510 fs/kernfs/file.c:296
+ __kernel_write+0x5d1/0xaf0 fs/read_write.c:535
+ do_acct_process+0x112a/0x17b0 kernel/acct.c:518
+ acct_pin_kill+0x27/0x130 kernel/acct.c:173
+ pin_kill+0x2a6/0x940 fs/fs_pin.c:44
+ mnt_pin_kill+0xc1/0x170 fs/fs_pin.c:81
+ cleanup_mnt+0x4bc/0x510 fs/namespace.c:1130
+ task_work_run+0x146/0x1c0 kernel/task_work.c:164
+ exit_task_work include/linux/task_work.h:32 [inline]
+ do_exit+0x705/0x24f0 kernel/exit.c:832
+ do_group_exit+0x168/0x2d0 kernel/exit.c:929
+ get_signal+0x16b0/0x2090 kernel/signal.c:2820
+ arch_do_signal_or_restart+0x9c/0x730 arch/x86/kernel/signal.c:868
+ handle_signal_work kernel/entry/common.c:148 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0x191/0x220 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x2e/0x70 kernel/entry/common.c:300
+ do_syscall_64+0x53/0xd0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f0054d5fae9
+Code: Unable to access opcode bytes at RIP 0x7f0054d5fabf.
+RSP: 002b:00007f00522d5218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 00007f0054e72f68 RCX: 00007f0054d5fae9
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f0054e72f68
+RBP: 00007f0054e72f60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f0054e72f6c
+R13: 00007ffd99a378af R14: 00007f00522d5300 R15: 0000000000022000
+ </TASK>
+Modules linked in:
+---[ end trace 54fd0e4a1cf7068c ]---
+RIP: 0010:cgroup_file_write+0xbe/0x790 kernel/cgroup/cgroup.c:3831
+Code: 81 c3 88 08 00 00 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 c0 5c 52 00 48 8b 1b 48 83 c3 40 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 a3 5c 52 00 48 8b 03 48 89 44 24
+RSP: 0018:ffffc9000a79f2a0 EFLAGS: 00010202
+RAX: 0000000000000008 RBX: 0000000000000040 RCX: ffff888074320000
+RDX: 0000000000000000 RSI: ffff88801d008980 RDI: ffff88806b48ac00
+RBP: ffffc9000a79f390 R08: ffffffff8207dab3 R09: fffffbfff1fedffb
+R10: fffffbfff1fedffb R11: 0000000000000000 R12: 1ffff920014f3e5c
+R13: ffff88806b48ac00 R14: ffff88806b48ac00 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe6fd24a1b8 CR3: 000000000c88e000 CR4: 00000000003526e0
+----------------
+Code disassembly (best guess):
+   0:	81 c3 88 08 00 00    	add    $0x888,%ebx
+   6:	48 89 d8             	mov    %rbx,%rax
+   9:	48 c1 e8 03          	shr    $0x3,%rax
+   d:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1)
+  12:	74 08                	je     0x1c
+  14:	48 89 df             	mov    %rbx,%rdi
+  17:	e8 c0 5c 52 00       	callq  0x525cdc
+  1c:	48 8b 1b             	mov    (%rbx),%rbx
+  1f:	48 83 c3 40          	add    $0x40,%rbx
+  23:	48 89 d8             	mov    %rbx,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
+  2f:	74 08                	je     0x39
+  31:	48 89 df             	mov    %rbx,%rdi
+  34:	e8 a3 5c 52 00       	callq  0x525cdc
+  39:	48 8b 03             	mov    (%rbx),%rax
+  3c:	48                   	rex.W
+  3d:	89                   	.byte 0x89
+  3e:	44                   	rex.R
+  3f:	24                   	.byte 0x24
+
+
 ---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Sigh, a compile test might have at least saved the buildbots the trouble
-of notifying me I also need to update the INPUT_DEVICE_ID_SW_MAX. But
-even so - I'm really looking for a discussion on the best ways to
-describe a non-defined switch in device tree.
-
-Here's a compiling v2 ;-) But the real questions are :
-
- - Should an existing feature switch be used for generic switches?
- - Should we even have a 'user' defined switch?
- - If we add user switches, how many?
-
-
- include/linux/mod_devicetable.h        | 2 +-
- include/uapi/linux/input-event-codes.h | 4 +++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
-index ae2e75d15b21..dfa1e4f41cd8 100644
---- a/include/linux/mod_devicetable.h
-+++ b/include/linux/mod_devicetable.h
-@@ -326,7 +326,7 @@ struct pcmcia_device_id {
- #define INPUT_DEVICE_ID_LED_MAX		0x0f
- #define INPUT_DEVICE_ID_SND_MAX		0x07
- #define INPUT_DEVICE_ID_FF_MAX		0x7f
--#define INPUT_DEVICE_ID_SW_MAX		0x10
-+#define INPUT_DEVICE_ID_SW_MAX		0x12
- #define INPUT_DEVICE_ID_PROP_MAX	0x1f
- 
- #define INPUT_DEVICE_ID_MATCH_BUS	1
-diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/linux/input-event-codes.h
-index 225ec87d4f22..84a7b3debcb3 100644
---- a/include/uapi/linux/input-event-codes.h
-+++ b/include/uapi/linux/input-event-codes.h
-@@ -894,7 +894,9 @@
- #define SW_MUTE_DEVICE		0x0e  /* set = device disabled */
- #define SW_PEN_INSERTED		0x0f  /* set = pen inserted */
- #define SW_MACHINE_COVER	0x10  /* set = cover closed */
--#define SW_MAX			0x10
-+#define SW_1			0x11  /* set = user defined */
-+#define SW_2			0x12  /* set = user defined */
-+#define SW_MAX			0x12
- #define SW_CNT			(SW_MAX+1)
- 
- /*
--- 
-2.30.2
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
