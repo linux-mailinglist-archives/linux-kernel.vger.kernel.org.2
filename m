@@ -2,130 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF692446355
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 13:25:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95356446357
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 13:25:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbhKEM1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 08:27:48 -0400
-Received: from smtpbguseast2.qq.com ([54.204.34.130]:56344 "EHLO
-        smtpbguseast2.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbhKEM1p (ORCPT
+        id S232130AbhKEM2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 08:28:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229529AbhKEM2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 08:27:45 -0400
-X-QQ-mid: bizesmtp40t1636115096t7d02pfo
-Received: from localhost.localdomain (unknown [113.57.152.160])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Fri, 05 Nov 2021 20:24:47 +0800 (CST)
-X-QQ-SSF: B1400000002000B0E000B00A0000000
-X-QQ-FEAT: zD6y7hNAcUB++xq7tffMJUeTC9c7Pwdkgb5HmTE+ryBlcDvITZzt67gMQ8n2n
-        jFPLOYyGmdAD9oVRGhRcZp+q/1Yiq/d//PwIBSuhWwuGkTwQfDuyM/sUTJrM0AKBbh8jzDQ
-        5ELB/xlUJ1PdVQQV2yXicfGeTUJ2T0u/cpVFEtnHYcN2sKl7Wt7YR/ZvwxtHUJUIWIgU4AL
-        aYM+jFIpQEGPC79eN7k9wleWJdiAGQHGavFn1Du/pJRSiCJSzb0UKt8Cs0LcUEwdGtNhfPB
-        feybi7c16Wg/u3bD6I92Q6N6HuoxJdDR5sZdfzutyMjCtdZkxteEcYpNUYQV7vKB4SRqcnY
-        C48sGWBp0l0GGnoX1bQOpw8mInLww==
-X-QQ-GoodBg: 2
-From:   lianzhi chang <changlianzhi@uniontech.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
-        282827961@qq.com, lianzhi chang <changlianzhi@uniontech.com>
-Subject: [PATCH v10] tty: Fix the keyboard led light display problem
-Date:   Fri,  5 Nov 2021 20:24:43 +0800
-Message-Id: <20211105122443.23897-1-changlianzhi@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 5 Nov 2021 08:28:18 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5BFC061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 05:25:39 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id j9so8265765pgh.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 05:25:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wFA/PQHqVLHAswIP07odo99SFSBTmuENHHzd1hwpl1I=;
+        b=ANwh8ajyZlakCf7P/G/GPbotqbSgxZe3ye0P5ORMtyJVFfYZOXrApWoMhUl4A6oJN8
+         DoOAPKaKcDl+Th0oyk7s180uogyJUpVasfIutXgKeBfc97hT4+JLC4TglUzcp9E6n5VD
+         HIcPCUhUtSQvP2lm3+XOD8d4d1Pb/LE5TZTuSfJOnZ+QBvmrJx3NyYWLJ5X+XtPNYtTB
+         6MEFia2GvE5yHoyUQDgzNfQNmP9lL8LZvOSpxQltBaWui3OASyc0f0qcJJ2d8mVXTg1u
+         DPqoxpWMr+7p7BTRqMV1RBWQo4YzFYi2UYnkGYLxwqOc52xTJLYe12zWDzoHZUB/exLA
+         4HfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wFA/PQHqVLHAswIP07odo99SFSBTmuENHHzd1hwpl1I=;
+        b=eKwmLTnysWPGh+MEgH9abZpPWRJGVlW54iU30Lh6278DIVt9k7LZnYtj5lRBtoPFpO
+         O4CJnnUweGfswvLCxnU1epNjprfFR/47WMPIZ9IUzSxxaEuIEZ4It3OyjLeCc3dLjSQs
+         /x8D4Sc6ji4VRQAnWhIT7v1tQo9Nx3DnK11VG2divC+ZqA4EaO5m3m8ri5yZLKOAKGN4
+         yvR7jjBXmnmeedbTVGzEnjo8OWGZGNWnCnvKpAq8nBh8uqHuslBAfVtpe6XyK4WEIg0i
+         ep6xvsOhvcwBUfPPwvOl9hTYXBa/qbgjPaA/qjCvxSPF0Tf0R0DK+Q4GltsaDHBp8d71
+         COJA==
+X-Gm-Message-State: AOAM5315DoQWv42+b0Y7hTgloMLifb/pn+XWq5ZRx5O8Xi+7a8NecU0H
+        6j8SFbw7Xw3FUyhklHAQsCUPig==
+X-Google-Smtp-Source: ABdhPJy3rPGP1CEIeXpZ+EdREFacYam00MXt9smlAzcYMpEUXnGTFSL/Q/0fbgGJmUfLTdcOlVUnpw==
+X-Received: by 2002:a62:6411:0:b0:44c:bf9f:f584 with SMTP id y17-20020a626411000000b0044cbf9ff584mr58429077pfb.29.1636115138711;
+        Fri, 05 Nov 2021 05:25:38 -0700 (PDT)
+Received: from FVFDK26JP3YV.bytedance.net ([61.120.150.77])
+        by smtp.gmail.com with ESMTPSA id hk18sm4770620pjb.20.2021.11.05.05.25.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Nov 2021 05:25:38 -0700 (PDT)
+From:   Lei He <helei.sig11@bytedance.com>
+To:     herbert@gondor.apana.org.au
+Cc:     helei.sig11@bytedance.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pizhenwei@bytedance.com
+Subject: [PATCH] crypto: testmgr - Fix wrong test case of RSA
+Date:   Fri,  5 Nov 2021 20:25:31 +0800
+Message-Id: <20211105122531.73891-1-helei.sig11@bytedance.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign5
-X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switching from the desktop environment to the tty environment,
-the state of the keyboard led lights and the state of the keyboard
-lock are inconsistent. This is because the attribute kb->kbdmode
-of the tty bound in the desktop environment (Xorg) is set to
-VC_OFF, which causes the ledstate and kb->ledflagstate
-values of the bound tty to always be 0, which causes the switch
-from the desktop When to the tty environment, the LED light
-status is inconsistent with the keyboard lock status.
-In order to ensure that the keyboard LED lights are displayed
-normally during the VT switching process, when the VT is
-switched, the current VT LED configuration is forced to be issued.
+According to the BER encoding rules, integer value should be encoded
+as two's complement, and if the highest bit of a positive integer
+is 1, should add a leading zero-octet.
 
-Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
+The kernel's built-in RSA algorithm cannot recognize negative numbers
+when parsing keys, so it can pass this test case.
+
+Export the key to file and run the following command to verify the
+fix result:
+
+  openssl asn1parse -inform DER -in /path/to/key/file
+
+Signed-off-by: Lei He <helei.sig11@bytedance.com>
 ---
- v10:
- The led state of the input device is no longer synchronized to 
- ledstate, and the related code is deleted. The current plan is
- changed to: when the VT is switched, the LED state saved by the
- current VT is forced to be issued.
- 
- drivers/tty/vt/keyboard.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ crypto/testmgr.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
-index c7fbbcdcc346..20013c45b979 100644
---- a/drivers/tty/vt/keyboard.c
-+++ b/drivers/tty/vt/keyboard.c
-@@ -153,6 +153,7 @@ static int shift_state = 0;
- 
- static unsigned int ledstate = -1U;			/* undefined */
- static unsigned char ledioctl;
-+static bool vt_switch;
- 
- /*
-  * Notifier list for console keyboard events
-@@ -412,8 +413,12 @@ static void do_compute_shiftstate(void)
- /* We still have to export this method to vt.c */
- void vt_set_leds_compute_shiftstate(void)
- {
-+	struct kbd_struct *kb;
- 	unsigned long flags;
- 
-+	kb = kbd_table + fg_console;
-+	if (kb->kbdmode != VC_OFF)
-+		vt_switch = true;
- 	set_leds();
- 
- 	spin_lock_irqsave(&kbd_event_lock, flags);
-@@ -1247,14 +1252,24 @@ void vt_kbd_con_stop(unsigned int console)
-  */
- static void kbd_bh(struct tasklet_struct *unused)
- {
-+	struct kbd_struct *kb;
- 	unsigned int leds;
- 	unsigned long flags;
- 
-+	kb = kbd_table + fg_console;
-+	if (kb->kbdmode == VC_OFF)
-+		return;
-+
- 	spin_lock_irqsave(&led_lock, flags);
- 	leds = getleds();
- 	leds |= (unsigned int)kbd->lockstate << 8;
- 	spin_unlock_irqrestore(&led_lock, flags);
- 
-+	if (vt_switch) {
-+		ledstate = ~leds;
-+		vt_switch = false;
-+	}
-+
- 	if (leds != ledstate) {
- 		kbd_propagate_led_state(ledstate, leds);
- 		ledstate = leds;
-@@ -1643,6 +1658,8 @@ int __init kbd_init(void)
- 	int i;
- 	int error;
- 
-+	vt_switch = false;
-+
- 	for (i = 0; i < MAX_NR_CONSOLES; i++) {
- 		kbd_table[i].ledflagstate = kbd_defleds();
- 		kbd_table[i].default_ledflagstate = kbd_defleds();
+diff --git a/crypto/testmgr.h b/crypto/testmgr.h
+index 779720bf9364..a253d66ba1c1 100644
+--- a/crypto/testmgr.h
++++ b/crypto/testmgr.h
+@@ -257,9 +257,9 @@ static const struct akcipher_testvec rsa_tv_template[] = {
+ 	}, {
+ #endif
+ 	.key =
+-	"\x30\x82\x02\x1F" /* sequence of 543 bytes */
++	"\x30\x82\x02\x20" /* sequence of 544 bytes */
+ 	"\x02\x01\x01" /* version - integer of 1 byte */
+-	"\x02\x82\x01\x00" /* modulus - integer of 256 bytes */
++	"\x02\x82\x01\x01\x00" /* modulus - integer of 256 bytes */
+ 	"\xDB\x10\x1A\xC2\xA3\xF1\xDC\xFF\x13\x6B\xED\x44\xDF\xF0\x02\x6D"
+ 	"\x13\xC7\x88\xDA\x70\x6B\x54\xF1\xE8\x27\xDC\xC3\x0F\x99\x6A\xFA"
+ 	"\xC6\x67\xFF\x1D\x1E\x3C\x1D\xC1\xB5\x5F\x6C\xC0\xB2\x07\x3A\x6D"
+@@ -299,7 +299,7 @@ static const struct akcipher_testvec rsa_tv_template[] = {
+ 	"\x02\x01\x00" /* exponent1 - integer of 1 byte */
+ 	"\x02\x01\x00" /* exponent2 - integer of 1 byte */
+ 	"\x02\x01\x00", /* coefficient - integer of 1 byte */
+-	.key_len = 547,
++	.key_len = 548,
+ 	.m = "\x54\x85\x9b\x34\x2c\x49\xea\x2a",
+ 	.c =
+ 	"\xb2\x97\x76\xb4\xae\x3e\x38\x3c\x7e\x64\x1f\xcc\xa2\x7f\xf6\xbe"
 -- 
-2.20.1
-
-
+2.11.0
 
