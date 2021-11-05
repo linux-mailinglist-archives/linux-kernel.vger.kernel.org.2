@@ -2,116 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CFA4446B57
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 00:48:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1AA446B59
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 00:48:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233000AbhKEXvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 19:51:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232810AbhKEXu4 (ORCPT
+        id S233184AbhKEXvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 19:51:07 -0400
+Received: from esa.hc503-62.ca.iphmx.com ([216.71.131.47]:15715 "EHLO
+        esa.hc503-62.ca.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233175AbhKEXvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 19:50:56 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7E6C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 16:48:16 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id p18so11947005plf.13
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 16:48:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=ryRN4TgQQNUidOFgzw61H/Jz4p5AOYR2K+13jgQ3gH8=;
-        b=K/jshyNoys3K3DMqIRivon9zbv2INp7kKdEUBhHNXUthbTYWj58/bzhIpThA0oGXmK
-         4Iefaxo5ak2ERByJAQjBtDnddBohONQiCYbLt+4ZdcV3tykYWu17muUb+nQ7mdg6s2WV
-         Qo4AF3KaquyQIUHQMS/fL6+gIVpKpLFZGPTr1lxHZw3G3mYdASPKkbXyNusmU2PvGcHc
-         OgfQ7NV/ElnwQDphw7DanbVCYxGnYFn+mSCeAU2OXF3hibVMNQZ5fVB07ktPxkYpILe3
-         Ic2V4NiLpkZd5SpRe2wNIOtYpQkJsEcLJEHVn5UaDzWBPrjF7fFsmqrTo0ggB7zYa2SX
-         /uAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=ryRN4TgQQNUidOFgzw61H/Jz4p5AOYR2K+13jgQ3gH8=;
-        b=Et/dEtcTw2q8MSrCu8MTG90qGAv2uYS7W+gYhicKC+F0BdX/lYX+oJeD9aX5R/whQU
-         DOdxqlu6bscfo8gRT77Mqs7mRPbnz7ytDUhU537PPV5JFdl2nUIzkkT6ShrIMb5YrDRn
-         9492Hzw53eLlp1y7oKN1F1M0nb5lCUeuXWwgyHqk432CmFhQKCbBAhd9ETNwrBYsUN5W
-         wVH8WOT+0Uju3Mdn7BsNYRI7XglXz1N+Nqs+Rb4I5v73XDYZeeEThUCWf41KvP1PMiK8
-         TOIiSi5qiNxJfJWu4bQJSt504QxK+sKk5Qkl+ASrVai9n5rp6VxyvVeDBcP835Fq8AfD
-         EhEw==
-X-Gm-Message-State: AOAM530NJHHborxVhGDCOqj/V59u+JTIBM2Kv3oUh2fxdxt+ls85/BDf
-        7NvHM3uXoylB7tITYZMr61zm/xwlYYU=
-X-Google-Smtp-Source: ABdhPJzsusgq2bR6E7KX6TKl5BtV8K2tv2KsGRrQaeuOjPcYf+/9dFIva7bHmuwBBao4tqAWS2WlJg==
-X-Received: by 2002:a17:90b:1947:: with SMTP id nk7mr33874976pjb.227.1636156095974;
-        Fri, 05 Nov 2021 16:48:15 -0700 (PDT)
-Received: from localhost (60-241-46-56.tpgi.com.au. [60.241.46.56])
-        by smtp.gmail.com with ESMTPSA id h4sm10612499pjm.14.2021.11.05.16.48.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 16:48:15 -0700 (PDT)
-Date:   Sat, 06 Nov 2021 09:48:09 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: Removal of printk safe buffers delays NMI context printk
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     =?iso-8859-1?q?Laurent=0A?= Dufour <ldufour@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>
-References: <1636039236.y415994wfa.astroid@bobo.none>
-        <87ee7vki7f.fsf@jogness.linutronix.de>
-        <1636073838.qpmyp6q17i.astroid@bobo.none>
-        <87r1bv2aga.fsf@jogness.linutronix.de>
-        <1636111599.wwppq55w4t.astroid@bobo.none>
-        <87h7cqg0xk.fsf@jogness.linutronix.de>
-In-Reply-To: <87h7cqg0xk.fsf@jogness.linutronix.de>
+        Fri, 5 Nov 2021 19:51:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=uwaterloo.ca; i=@uwaterloo.ca; q=dns/txt; s=default;
+  t=1636156106; x=1667692106;
+  h=subject:to:cc:references:in-reply-to:from:message-id:
+   date:mime-version:content-transfer-encoding;
+  bh=0czp8HPimoHrpAqsPvqIllMPMs8etJtDQEcHMcp5MUU=;
+  b=+djJ3CYv3sf/LJ+uLrsxAT5W6tiHdeFB/AVX0scsUkZ2QvGOm/HP/QHo
+   M9zPqTF8/mFuA3tbpGDFzio2bY2IUr3xp7N1txafJwdy4iXfxcgoPhUP0
+   gdbdBitSkbFy3qk4RIu4TtslKRN6iJVlu9QDc9khmI3Jm51I+T1+lYFTH
+   w=;
+IronPort-Data: A9a23:bpprgq8fh9aiqbfFR6w0DrUDO3+TJUtcMsCJ2f8bNWPcYEJGY0x3z
+ mofDDzQaPyPZ2GmKdpybovlpElTsMfXxocxSgo5/HhEQiMRo6IpJzg4wmQcnc+2BpeeJK6yx
+ 5xGMrEsCuhqFieEzvuKGue99iYUOZllwtMQMcacUsxLbVYMpBwJ1FQzxIbVvqYy2YLgWlrV5
+ IupyyHiEAbNNwBcYzN8B52r9UsHUMTa4Fv0aXRnOJinFHeH/5UkJMp3yZOZdhMUcaEIdgKOf
+ Nsv+Znilo/vE7XBPfv++lrzWhVirrc/pmFigFIOM0SpqkAqSiDfTs/XnRfTAKtao2zhojx/9
+ DlCnYyNFxoyALTUouFDUxZfHw09ErcB24aSdBBTseTLp6HHW3DrxfNuCRlqe4Yf/OB6Cn0I6
+ OMRND0XaheEwem/qF65YrA214Jyc4+xZNNZ5ioIITLxVJ7KRbjfT6jO5MRc0R8tmclSEOzaY
+ M1fYjMHgBHoOUcQYgxMWcNWcOGAxST1Ug9foVCsnbM6/mbhyjZB06jUGY+AEjCNbYAP9qqCn
+ UrE9mL/AjkVM9uQzTfD+XWp7sfGgyr0WYQ6G7q/+fpnxlaUwwQ7EBoNVnO0pv62jkP4UNVaQ
+ 2Qe4SchpKw23EOsSdb5Uluzp3vslgYeR/JfFOo17AzLwa3Riy6dB24ZXntIcN0OqsA7X3op2
+ 0WPktevAiZg2JWRSHSA5vKXoCm0NCw9M2APf2kHQBED7t2lp5s85jrLT9B+AOuwi/X2Bzj7w
+ HaNtidWr7EOkckj1Kih+13DxTW2qfDhQgcr60PXV2S+4wVRYI+jepzu6F7H4PIGJ4GcJnGIv
+ 2ABs8yf6v0eSJ+KiSqBSfkMG7fv4OyKWBXAjlp/N50g8Smx4XmlfJAW7DwWDEJoNMkDUSXkb
+ E/apUVa45o7FGOncaJtcaqwDcowxKTtHNijUerbBvJWZYNyXBeA5yIoZEn44oz2uEMrl6cyM
+ ovdbNmlEXsADaNgijG/LwsA7YIWKukF7Tu7bfjGI96PiNJyuFb9pW85DWaz
+Received: from connect.uwaterloo.ca (HELO connhm04.connect.uwaterloo.ca) ([129.97.208.43])
+  by ob1.hc503-62.ca.iphmx.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Nov 2021 19:48:22 -0400
+Received: from [10.42.0.123] (10.32.137.240) by connhm04.connect.uwaterloo.ca
+ (172.16.137.68) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 5
+ Nov 2021 19:48:21 -0400
+Subject: Re: [PATCH v0.8 3/6] sched/umcg: implement UMCG syscalls
+To:     Peter Oskolkov <posk@posk.io>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>
+CC:     Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>
+References: <20211104195804.83240-1-posk@google.com>
+ <20211104195804.83240-4-posk@google.com>
+In-Reply-To: <20211104195804.83240-4-posk@google.com>
+From:   Thierry Delisle <tdelisle@uwaterloo.ca>
+Message-ID: <ec84f37d-da30-8f03-3864-0c94078f6e21@uwaterloo.ca>
+Date:   Fri, 5 Nov 2021 19:48:21 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Message-Id: <1636155848.5e41htngh5.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.32.137.240]
+X-ClientProxiedBy: connhm02.connect.uwaterloo.ca (172.16.137.66) To
+ connhm04.connect.uwaterloo.ca (172.16.137.68)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from John Ogness's message of November 5, 2021 11:57 pm:
-> On 2021-11-05, Nicholas Piggin <npiggin@gmail.com> wrote:
->>> What was removed from 93d102f094b was irq_work triggering on all
->>> CPUs.
->>
->> No, it was the caller executing the flush for all remote CPUs itself.
->> irq work was not involved (and irq work can't be raised in a remote
->> CPU from NMI context).
->=20
-> Maybe I am missing something. In 93d102f094b~1 I see:
->=20
-> watchdog_smp_panic
->   printk_safe_flush
->     __printk_safe_flush
->       printk_safe_flush_buffer
->         printk_safe_flush_line
->           printk_deferred
->             vprintk_deferred
->               vprintk_emit (but no direct printing)
->               defer_console_output
->                 irq_work_queue
+On 2021-11-04 3:58 p.m., Peter Oskolkov wrote:
+ > +/*
+ > + * Try to wake up. May be called with preempt_disable set. May be called
+ > + * cross-process.
+ > + *
+ > + * Note: umcg_ttwu succeeds even if ttwu fails: see wait/wake state
+ > + *       ordering logic.
+ > + */
+ > +static int umcg_ttwu(u32 next_tid, int wake_flags)
+ > +{
+ > +    struct task_struct *next;
+ > +
+ > +    rcu_read_lock();
+ > +    next = find_task_by_vpid(next_tid);
+ > +    if (!next || !umcg_wakeup_allowed(next)) {
+ > +        rcu_read_unlock();
+ > +        return -ESRCH;
+ > +    }
+ > +
+ > +    /* The result of ttwu below is ignored. */
+ > +    try_to_wake_up(next, TASK_NORMAL, wake_flags);
+ > +    rcu_read_unlock();
+ > +
+ > +    return 0;
+ > +}
 
-Oh I thought you meant irq_work triggering on all CPUs (i.e., including
-remote CPUs) was the key.
+Doesn't try_to_wake_up return different values based on whether or not a 
+task
+was woken up? I think it could be useful to propagate that result instead of
+always returning zero. Even if it only helps for debugging.
 
-> AFAICT, using defer_console_output() instead of your new printk_flush()
-> should cause the exact behavior as before.
 
-It does.
 
->> but we do need that printk flush capability back there and for
->> nmi_backtrace.
->=20
-> Agreed. I had not considered this necessary side-effect when I removed
-> the NMI safe buffers.
->=20
-> I am just wondering if we should fix the regression by going back to
-> using irq_work (such as defer_console_output()) or if we want to
-> introduce something new that introduces direct printing.
+ > +static bool enqueue_idle_worker(struct umcg_task __user *ut_worker)
+ > +{
+ > +    u64 __user *node = &ut_worker->idle_workers_ptr;
+ > +    u64 __user *head_ptr;
+ > +    u64 first = (u64)node;
+ > +    u64 head;
+ > +
+ > +    if (get_user(head, node) || !head)
+ > +        return false;
+ > +
+ > +    head_ptr = (u64 __user *)head;
+ > +
+ > +    /* Mark the worker as pending. */
+ > +    if (put_user(UMCG_IDLE_NODE_PENDING, node))
+ > +        return false;
+ > +
+ > +    /* Make the head point to the worker. */
+ > +    if (xchg_user_64(head_ptr, &first))
+ > +        return false;
+ > +
+ > +    /* Make the worker point to the previous head. */
+ > +    if (put_user(first, node))
+ > +        return false;
+ > +
+ > +    return true;
+ > +}
 
-irq_work works for this situation so for a minimal fix I think it's=20
-fine. When you do the big rework it would be okay to do it directly
-if you have such a facility for other reaons.
-
-Thanks,
-Nick
+If the last two operation return false, whichever task tries to consume the
+list could deadlock, depending on whether or not the ensuing
+force_sig(SIGKILL); reaches the consuming task. Does the force_sig kill
+the task or the entire process. Is it possible to consume this list from a
+different process that shares the memory? I'm wondering if the last
+two "return false" should attempt to retract the
+UMCG_IDLE_NODE_PENDING.
