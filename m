@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF674464EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:28:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A32C4464EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233208AbhKEObM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 10:31:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55110 "EHLO
+        id S233214AbhKEObS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 10:31:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233179AbhKEObK (ORCPT
+        with ESMTP id S233216AbhKEObQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 10:31:10 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01BD5C061205
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 07:28:31 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id g19so3006357pfb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 07:28:30 -0700 (PDT)
+        Fri, 5 Nov 2021 10:31:16 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189D7C061714;
+        Fri,  5 Nov 2021 07:28:37 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id w1so33988028edd.10;
+        Fri, 05 Nov 2021 07:28:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=6VOsn4mMFoeIpWQu2tEjJSqUu/jwqRBM5pT3S++VzdI=;
-        b=XiyvkvqawwmKSqbr6vdIUBXiQC1cfJn1vgIyTfwpitSY0+4E6fSaF93z849+RwCj8S
-         Ex0FHHCMA7sy9lOiTRZwF0KEuGO569VhInFavlOBCppDT29OEbHRFS4WhydMiuUPLl6C
-         Q9949q//FEzvM/LEb71LH3RXYR2UYuSDEpuHyUevgVGF66RMB7CiCtud470kF2m4jc+0
-         zpkwmj/vgznbhqeuefUMEIsiCYZMXy5yBMtivvmlpOqWJx7WpcVQV+PP3o73dT0GNHo1
-         Y+z63NkNTs0uca57NwO6LKhHrgdrjIDgzpqSXxSXob5HMXdU0IuhDHbI9TDl/Hkoh8dv
-         9hXg==
+        bh=4wnFihb9FXtR0j6s/uHUquZ5b5gAn6PDUylWYZcjqls=;
+        b=Fa8cnWlbD+FnsaVmc4oZuliRtAF2sAimCkPYZgkPfLWzR1sVJEzyBnMWn7xH4KPXRQ
+         nqUrFV3GAL2IiZrccmCnHGpmpQebHOiwGj3YewDXD8yRf70wk1zzkRRHMcQVTBDvehjU
+         9JHdETwTUarCRH3tbqiJ6Po8uSMXDNANppF+1JXFlgDguApnhIQZvOH73hy9XHlWcwPM
+         PPoi3wN0nEMPFiFpd742jd0hIswMbOuNzFo7P0s52hm4pnFE/qzuWsSAHK53VJ8fMsKh
+         CVz8LOPwpeUrt4K7KXYvVwHMn74IxnrwSxRAOXw7lDfrjjsVhiMB+me5dlAQBZoDVRjP
+         ROAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=6VOsn4mMFoeIpWQu2tEjJSqUu/jwqRBM5pT3S++VzdI=;
-        b=0lcOfrD/ACTOoHtEcw8bV5oxW5iCym/MDDDWRERq8cpMBuuShMaTVDRz84vA5TBt03
-         ijk53goMfleYeOSUT/f2j7J1rQMC5W52iNoHmVdJjpJ9WUjbe0CzAsxQLb5nNaw9h1Vh
-         87CBkkI1TYZM41gJ3aVKuDr9Fcx2E2vVlm2cJ7MJAbpq+DCu4pBuiMCMg8AVLt44hkf/
-         LMw0tMDQ/23Pa07sEuCEHbSq+jvieWdqWs+q6bhMktQ1rEhl1/bR1xye6UF5jJfn+NXE
-         BTEfUkSMWPD3NmgMNA3aQCb+fwUjRlbI2l3Xrq5Thexv89jEtKwROMH1j/CMoRReM21H
-         O09w==
-X-Gm-Message-State: AOAM5318D24RJcqCch85dKZ3u+mq3gRCxGXtoxGwV3hp6ce97FbLLClb
-        IyRnEJSxj2EqmCMID2g6e28NiPgP4QOLkQ==
-X-Google-Smtp-Source: ABdhPJylVGegWkkSA0YXLTmS35LbNL+nGjfJbkH+KHjlMdPQu/IG4VPB10tM6rOLC8rVBwrBWi1JCQ==
-X-Received: by 2002:a05:6a00:1906:b0:44c:b35d:71a8 with SMTP id y6-20020a056a00190600b0044cb35d71a8mr60181918pfi.51.1636122510325;
-        Fri, 05 Nov 2021 07:28:30 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id fw21sm9722729pjb.25.2021.11.05.07.28.29
+        bh=4wnFihb9FXtR0j6s/uHUquZ5b5gAn6PDUylWYZcjqls=;
+        b=NmurOGwjp8x9pgs8BRkme9tTKVeJLXI2LW2vuLEorXyp3befuUjVQ7GducvFGaUl3J
+         SD4Z77NtRyZl5fe8QMo4njGwynR9ZWkXU8HfAme6yWCbFv9QzlxOlGQOwwrmo4lmarrd
+         PxU8mhP7lIlIxndbnk4ovpbVrfuIYqaciQTl/feI9WdqkDTRQM+Kh95wwn0aK7kjzJn0
+         3Vk0d6U26Pg+KEqSW6BiLDy/L1wJcy2AHQ82Njcu7tFspgwZZkoYwwnPT1EWBP3hAsyR
+         QmLhl9i4qnwpLgQsXcZZAlj/u7zaEBKPRgXoXURFH3EvgkNRe70tBiK+C1pjhKqci81Z
+         CwTg==
+X-Gm-Message-State: AOAM530hJgAm9wrSzmvfXq85p4j3fKy/+IxyNihTbDJjyukF4eyAiX5g
+        n5uPE/McsicQTVhosSZJyys=
+X-Google-Smtp-Source: ABdhPJxB531x5JjUQVyT9+b7131JLPeLHSABBwIeCQDnVOFWNXYCzdi8U9ZKt9u4U267GJfGioprsw==
+X-Received: by 2002:a17:907:720d:: with SMTP id dr13mr45995011ejc.153.1636122515666;
+        Fri, 05 Nov 2021 07:28:35 -0700 (PDT)
+Received: from skbuf ([188.25.175.102])
+        by smtp.gmail.com with ESMTPSA id m9sm4100187eje.102.2021.11.05.07.28.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 07:28:29 -0700 (PDT)
-Date:   Fri, 5 Nov 2021 14:28:25 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] KVM: nVMX: Track whether changes in L0 require
- MSR bitmap for L2 to be rebuilt
-Message-ID: <YYU/iQCQJosjTKVs@google.com>
-References: <20211013142258.1738415-1-vkuznets@redhat.com>
- <20211013142258.1738415-4-vkuznets@redhat.com>
- <YYSDbljJgpEOnx+W@google.com>
- <875yt6lscj.fsf@vitty.brq.redhat.com>
+        Fri, 05 Nov 2021 07:28:35 -0700 (PDT)
+Date:   Fri, 5 Nov 2021 16:28:33 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     Martin Kaistra <martin.kaistra@linutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 7/7] net: dsa: b53: Expose PTP timestamping ioctls to
+ userspace
+Message-ID: <20211105142833.nv56zd5bqrkyjepd@skbuf>
+References: <20211104133204.19757-1-martin.kaistra@linutronix.de>
+ <20211104133204.19757-8-martin.kaistra@linutronix.de>
+ <20211104174251.GB32548@hoboy.vegasvil.org>
+ <ba543ae4-3a71-13fe-fa82-600ac37eaf5a@linutronix.de>
+ <20211105141319.GA16456@hoboy.vegasvil.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <875yt6lscj.fsf@vitty.brq.redhat.com>
+In-Reply-To: <20211105141319.GA16456@hoboy.vegasvil.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021, Vitaly Kuznetsov wrote:
-> Sean Christopherson <seanjc@google.com> writes:
+On Fri, Nov 05, 2021 at 07:13:19AM -0700, Richard Cochran wrote:
+> On Fri, Nov 05, 2021 at 02:38:01PM +0100, Martin Kaistra wrote:
+> > Ok, then I will remove HWTSTAMP_FILTER_PTP_V2_(EVENT|SYNC|DELAY_REQ) from
+> > this list, what about HWTSTAMP_FILTER_ALL?
 > 
-> > On Wed, Oct 13, 2021, Vitaly Kuznetsov wrote:
-> >> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> >> index 592217fd7d92..2cdf66e6d1b0 100644
-> >> --- a/arch/x86/kvm/vmx/vmx.h
-> >> +++ b/arch/x86/kvm/vmx/vmx.h
-> >> @@ -148,6 +148,15 @@ struct nested_vmx {
-> >>  	bool need_vmcs12_to_shadow_sync;
-> >>  	bool dirty_vmcs12;
-> >>  
-> >> +	/*
-> >> +	 * Indicates whether MSR bitmap for L2 needs to be rebuilt due to
-> >> +	 * changes in MSR bitmap for L1 or switching to a different L2. Note,
-> >> +	 * this flag can only be used reliably in conjunction with a paravirt L1
-> >> +	 * which informs L0 whether any changes to MSR bitmap for L2 were done
-> >> +	 * on its side.
-> >> +	 */
-> >> +	bool msr_bitmap_force_recalc;
-> >
-> > Belated bikeshedding...  What about need_msr_bitmap_recalc to follow the above
-> > need_vmcs12_to_shadow_sync?
-> >
-> 
-> 'msr_bitmap_force_recalc' was suggested by Paolo but
-> 'need_msr_bitmap_recalc' sounds equally good to me.
+> AKK means time stamp every received frame, so your driver should
+> return an error in this case as well.
 
-Ah, actually, Paolo's is better.  "!need" implies that the recalc can be skipped
-regardless of any other behavior, whereas "!force" provides the hint that a recalc
-may still be needed for other reasons.
-
-Can we move the "force" to the front though, i.e. force_msr_bitmap_recalc?  The
-other fields in nested_vmx all have the verb at the front.
-
-	bool need_vmcs12_to_shadow_sync;
-	bool need_sync_vmcs02_to_vmcs12_rare;
-	bool change_vmcs01_virtual_apic_mode;
-	bool reload_vmcs01_apic_access_page;
-	bool update_vmcs01_cpu_dirty_logging;
+What is the expected convention exactly? There are other drivers that
+downgrade the user application's request to what they support, and at
+least ptp4l does not error out, it just prints a warning.
