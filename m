@@ -2,98 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE78F446836
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 19:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE18446837
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 19:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234442AbhKESDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 14:03:06 -0400
-Received: from mail-ua1-f52.google.com ([209.85.222.52]:34561 "EHLO
-        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234172AbhKESDE (ORCPT
+        id S234469AbhKESDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 14:03:25 -0400
+Received: from mail-lf1-f44.google.com ([209.85.167.44]:44574 "EHLO
+        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231689AbhKESDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 14:03:04 -0400
-Received: by mail-ua1-f52.google.com with SMTP id b3so18615577uam.1;
-        Fri, 05 Nov 2021 11:00:24 -0700 (PDT)
+        Fri, 5 Nov 2021 14:03:22 -0400
+Received: by mail-lf1-f44.google.com with SMTP id y26so20250895lfa.11
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 11:00:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=au20GLB/AwFB4ER6edB7mFBdjMKbP9KemXLMUAQRuws=;
-        b=70Dqg0zFTz+/ywAeju2PWoodLqcdhCFbWmjzEUuhGlPpRWuMSdO3tJVTUWzwJUOOkb
-         S0/KWBkHkcPapoSDAdm5tUEZDOUiJKU1AmLJbFjERBwFzwJSp38y/hkfjfIJp18dND8o
-         an7nHz80az2RvXeIj7qUxyZHyqJotferXqWPIEO6x9LUl/S121i8h5mIVEMBECjQpBmk
-         OYNtX9tXgEJfJzVaRMyopKsqSYWGpuNhtbCsWEDovXxudirmmn3wYse55uLVHZavYEQI
-         yBVEgSTzPxTPGa0Aas3+NZnYyb1KRCz+yIxdpHiNy3qAB29KZuyw8tkSgeQRMRRLqzq5
-         T+tA==
-X-Gm-Message-State: AOAM530/Aa5W5yV56KNyiRqQUmqFHyvsu6Q9mLGy2wNnjn29Jckg0Q/x
-        o5NWmcn0KKVd+Lg7QuDZz1S5gxh7ckWhtQ==
-X-Google-Smtp-Source: ABdhPJzZ4L16A2hBj8cb2dUszxMli3hyl/+Vw64MVMiTXnEhdd3j0I5qjUma5n6AzczusEiwpvE7bA==
-X-Received: by 2002:a67:ec10:: with SMTP id d16mr7351906vso.58.1636135224152;
-        Fri, 05 Nov 2021 11:00:24 -0700 (PDT)
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
-        by smtp.gmail.com with ESMTPSA id i27sm1432100uab.8.2021.11.05.11.00.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 11:00:23 -0700 (PDT)
-Received: by mail-ua1-f51.google.com with SMTP id i6so18539501uae.6;
-        Fri, 05 Nov 2021 11:00:23 -0700 (PDT)
-X-Received: by 2002:ab0:15a1:: with SMTP id i30mr56283928uae.122.1636135223241;
- Fri, 05 Nov 2021 11:00:23 -0700 (PDT)
+        bh=sdBRipuhd/DnnvTp2K6X1I90WSvK4UoQDH9TPK1ZEYc=;
+        b=aMgtr3tZ05Ompywz5n7xguWZ0wIJQVp2OHiBKHLJGbgGX8KftBPyqldjn9hCc9XrHZ
+         V62r2I+iUA0HiN32gRhSIHvuR+L+dRNnCTAATYsaRQ37S4qdQ1h2WE+ffg2oCaM+8iHJ
+         FmgWhHskqmAHjCwnnuJA+TWsuYCjgiVYoHVhL7/ePsYYy8tS6E04n+bkdq3DoBEC0cLa
+         3b8uy5ybmvovk93qccv1cahVdbhAmcoSYAt773WDa9QTyWzhyBJ0qq7SZeAzqMNjwPth
+         rJUE4uP9Ag/5nVq0CTj+x5c9f9yw6oQHNt7B1sxGMho3jNkCRNs3U46Bq1JC0dABx7SA
+         NZew==
+X-Gm-Message-State: AOAM533aC5jB7ryQAgYgZNErPWn8BeouG4orFpr4qzK+uc+wv2Vy9flW
+        D3mga1UFK8K606J8yI+/jZPUBprqoPHg9sIIs6g=
+X-Google-Smtp-Source: ABdhPJzSnxxLZZr8dVz8B5at9ASoSqDHgsF/72vRLICKzVl+uEAeH8XRnErbsx0CT95avzxmc+og2CoFDJtAYwDm4FU=
+X-Received: by 2002:a05:6512:1515:: with SMTP id bq21mr54570057lfb.71.1636135241059;
+ Fri, 05 Nov 2021 11:00:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211003002801.GA5435@gondor.apana.org.au> <YV0K+EbrAqDdw2vp@archlinux-ax161>
- <20211019132802.GA14233@gondor.apana.org.au> <alpine.DEB.2.22.394.2111021636040.2330984@ramsan.of.borg>
- <DM6PR04MB708155E447FD9A79AB89686DE78D9@DM6PR04MB7081.namprd04.prod.outlook.com>
- <CAMuHMdW1wLAt9Y=-GMMuk8HWE3UnRgKNMmD9fq34Rq8J7QyrzQ@mail.gmail.com>
- <20211104121612.GA8044@gondor.apana.org.au> <CAMuHMdWAAWWS+TgeN1AajHBS5w9-datMEeXqAN8RjxRd9bX63Q@mail.gmail.com>
- <20211104133044.GA8563@gondor.apana.org.au> <YYP5ypSPOcP4WGCr@shredder> <20211105072608.GA13584@gondor.apana.org.au>
-In-Reply-To: <20211105072608.GA13584@gondor.apana.org.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 5 Nov 2021 19:00:12 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVg5X00xhsYOnC84md-dNADGGL3mT3qqn3925AJFmqbMw@mail.gmail.com>
-Message-ID: <CAMuHMdVg5X00xhsYOnC84md-dNADGGL3mT3qqn3925AJFmqbMw@mail.gmail.com>
-Subject: Re: crypto: api - Fix boot-up crash when crypto manager is disabled
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Ido Schimmel <idosch@idosch.org>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Vladis Dronov <vdronov@redhat.com>,
-        Simo Sorce <ssorce@redhat.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        kernel test robot <lkp@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
+References: <20211029224929.379505-1-namhyung@kernel.org> <20211103072112.32312-1-ravi.bangoria@amd.com>
+In-Reply-To: <20211103072112.32312-1-ravi.bangoria@amd.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 5 Nov 2021 11:00:29 -0700
+Message-ID: <CAM9d7chQH+Br6NJhDdjjOdV7FsODS0_Rj+w-UsfzUud27iPNbQ@mail.gmail.com>
+Subject: Re: [PATCH v3] perf evsel: Fix missing exclude_{host,guest} setting
+To:     Ravi Bangoria <ravi.bangoria@amd.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Kim Phillips <kim.phillips@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Herbert,
+Hello,
 
-On Fri, Nov 5, 2021 at 8:26 AM Herbert Xu <herbert@gondor.apana.org.au> wrote:
-> Could you all try this patch please?
+On Wed, Nov 3, 2021 at 12:22 AM Ravi Bangoria <ravi.bangoria@amd.com> wrote:
 >
-> ---8<---
-> When the crypto manager is disabled, we need to explicitly set
-> the crypto algorithms' tested status so that they can be used.
+> > The current logic for the perf missing feature has a bug that it can
+> > wrongly clear some modifiers like G or H.  Actually some PMUs don't
+> > support any filtering or exclusion while others do.  But we check it
+> > as a global feature.
 >
-> Fixes: cad439fc040e ("crypto: api - Do not create test larvals if...")
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Reported-by: Ido Schimmel <idosch@idosch.org>
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> (Sorry to pitch in bit late)
+>
+> AMD has one more problem on a similar line. On AMD, non-precise and
+> precise sampling are provided by core and IBS pmu respectively. Plus,
+> core pmu has filtering capability but IBS does not. Perf by default
+> sets precise_ip=3 and exclude_guest=1 and goes on decreasing precise_ip
+> with exclude_guest set until perf_event_open() succeeds. This is
+> causing perf to always fallback to core pmu (non-precise mode) even if
+> it's perfectly feasible to do precise sampling. Do you guys think this
+> problem should also be addressed while designing solution for Namhyung's
+> patch or solve it seperately like below patch:
+>
+> ---><---
+>
+> From 48808299679199c39ff737a30a7f387669314fd7 Mon Sep 17 00:00:00 2001
+> From: Ravi Bangoria <ravi.bangoria@amd.com>
+> Date: Tue, 2 Nov 2021 11:01:12 +0530
+> Subject: [PATCH] perf/amd/ibs: Don't set exclude_guest by default
+>
+> Perf tool sets exclude_guest by default while calling perf_event_open().
+> Because IBS does not have filtering capability, it always gets rejected
+> by IBS PMU driver and thus perf falls back to non-precise sampling. Fix
+> it by not setting exclude_guest by default on AMD.
+>
+> Before:
+>   $ sudo ./perf record -C 0 -vvv true |& grep precise
+>     precise_ip                       3
+>   decreasing precise_ip by one (2)
+>     precise_ip                       2
+>   decreasing precise_ip by one (1)
+>     precise_ip                       1
+>   decreasing precise_ip by one (0)
+>
+> After:
+>   $ sudo ./perf record -C 0 -vvv true |& grep precise
+>     precise_ip                       3
+>   decreasing precise_ip by one (2)
+>     precise_ip                       2
+>
+> Reported-by: Kim Phillips <kim.phillips@amd.com>
+> Signed-off-by: Ravi Bangoria <ravi.bangoria@amd.com>
 
-Thanks!
+It'd be nice if it can cover explicit -e cycles:pp as well.  Anyway,
 
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-Gr{oetje,eeting}s,
+Thanks,
+Namhyung
 
-                        Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> ---
+>  tools/perf/arch/x86/util/evsel.c | 23 +++++++++++++++++++++++
+>  tools/perf/util/evsel.c          | 12 +++++++-----
+>  tools/perf/util/evsel.h          |  1 +
+>  3 files changed, 31 insertions(+), 5 deletions(-)
+>
+> diff --git a/tools/perf/arch/x86/util/evsel.c b/tools/perf/arch/x86/util/evsel.c
+> index 2f733cdc8dbb..7841a49ce856 100644
+> --- a/tools/perf/arch/x86/util/evsel.c
+> +++ b/tools/perf/arch/x86/util/evsel.c
+> @@ -1,8 +1,31 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  #include <stdio.h>
+> +#include <stdlib.h>
+>  #include "util/evsel.h"
+> +#include "util/env.h"
+> +#include "linux/string.h"
+>
+>  void arch_evsel__set_sample_weight(struct evsel *evsel)
+>  {
+>         evsel__set_sample_bit(evsel, WEIGHT_STRUCT);
+>  }
+> +
+> +void arch_evsel__fixup_new_cycles(struct perf_event_attr *attr)
+> +{
+> +       struct perf_env env = {0};
+> +
+> +       if (!perf_env__cpuid(&env))
+> +               return;
+> +
+> +       /*
+> +        * On AMD, precise cycles event sampling internally uses IBS pmu.
+> +        * But IBS does not have filtering capabilities and perf by default
+> +        * sets exclude_guest = 1. This makes IBS pmu event init fail and
+> +        * thus perf ends up doing non-precise sampling. Avoid it by clearing
+> +        * exclude_guest.
+> +        */
+> +       if (env.cpuid && strstarts(env.cpuid, "AuthenticAMD"))
+> +               attr->exclude_guest = 0;
+> +
+> +       free(env.cpuid);
+> +}
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index dbfeceb2546c..0b4267d4bb38 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -294,7 +294,7 @@ static bool perf_event_can_profile_kernel(void)
+>         return perf_event_paranoid_check(1);
+>  }
+>
+> -struct evsel *evsel__new_cycles(bool precise, __u32 type, __u64 config)
+> +struct evsel *evsel__new_cycles(bool precise __maybe_unused, __u32 type, __u64 config)
+>  {
+>         struct perf_event_attr attr = {
+>                 .type   = type,
+> @@ -305,18 +305,16 @@ struct evsel *evsel__new_cycles(bool precise, __u32 type, __u64 config)
+>
+>         event_attr_init(&attr);
+>
+> -       if (!precise)
+> -               goto new_event;
+> -
+>         /*
+>          * Now let the usual logic to set up the perf_event_attr defaults
+>          * to kick in when we return and before perf_evsel__open() is called.
+>          */
+> -new_event:
+>         evsel = evsel__new(&attr);
+>         if (evsel == NULL)
+>                 goto out;
+>
+> +       arch_evsel__fixup_new_cycles(&evsel->core.attr);
+> +
+>         evsel->precise_max = true;
+>
+>         /* use asprintf() because free(evsel) assumes name is allocated */
+> @@ -1047,6 +1045,10 @@ void __weak arch_evsel__set_sample_weight(struct evsel *evsel)
+>         evsel__set_sample_bit(evsel, WEIGHT);
+>  }
+>
+> +void __weak arch_evsel__fixup_new_cycles(struct perf_event_attr *attr __maybe_unused)
+> +{
+> +}
+> +
+>  /*
+>   * The enable_on_exec/disabled value strategy:
+>   *
+> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+> index 1f7edfa8568a..764e54c6a23d 100644
+> --- a/tools/perf/util/evsel.h
+> +++ b/tools/perf/util/evsel.h
+> @@ -277,6 +277,7 @@ void __evsel__reset_sample_bit(struct evsel *evsel, enum perf_event_sample_forma
+>  void evsel__set_sample_id(struct evsel *evsel, bool use_sample_identifier);
+>
+>  void arch_evsel__set_sample_weight(struct evsel *evsel);
+> +void arch_evsel__fixup_new_cycles(struct perf_event_attr *attr);
+>
+>  int evsel__set_filter(struct evsel *evsel, const char *filter);
+>  int evsel__append_tp_filter(struct evsel *evsel, const char *filter);
+> --
+> 2.27.0
+>
