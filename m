@@ -2,71 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6833044600E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 08:15:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D809446012
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 08:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232112AbhKEHSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 03:18:07 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:40298 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230073AbhKEHSF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 03:18:05 -0400
-Received: from BC-Mail-Ex03.internal.baidu.com (unknown [172.31.51.43])
-        by Forcepoint Email with ESMTPS id BF7C92CAB7A78CB7F91C;
-        Fri,  5 Nov 2021 15:15:16 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex03.internal.baidu.com (172.31.51.43) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Fri, 5 Nov 2021 15:15:16 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Fri, 5 Nov 2021 15:15:16 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] driver core: platform: Make use of the helper function dev_err_probe()
-Date:   Fri, 5 Nov 2021 15:15:09 +0800
-Message-ID: <20211105071509.969-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S232583AbhKEHUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 03:20:22 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44490 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232525AbhKEHUO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 03:20:14 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 7D0DC21892;
+        Fri,  5 Nov 2021 07:17:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1636096652; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=moIlCeqCuX+BsEoLqCY+cHnNdFET5l+jgYndyJOOQNs=;
+        b=ZqtOdJ9uOP5MZNPS2y14CTLZmV1VJ+b3qhzmy8M2x4tGscufH1D8wb2oY+13hB+SPZcsLC
+        puCMiX3yN/JH7xdynOXsyu5yyTLbVuxlgvtf06byB1ISD5INDoa4WahEutC7UJeJKg6cBG
+        ZmBqxqF5rQNPKeGqQF1WFUl0aXrWP8I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1636096652;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=moIlCeqCuX+BsEoLqCY+cHnNdFET5l+jgYndyJOOQNs=;
+        b=EM/hLDfSBdiMED7Mt1/Zyo5bmYSNqRQiy9CoiLr67DCnn8aJIs8a9dTt6lMqQlNSeergt9
+        gR6S4GYlizmmc5Ag==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 657C72C144;
+        Fri,  5 Nov 2021 07:17:32 +0000 (UTC)
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Ping-Ke Shih <pkshih@realtek.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Larry Finger <Larry.Finger@gmail.com>
+Subject: [PATCH] rtw89: Fix crash by loading compressed firmware file
+Date:   Fri,  5 Nov 2021 08:17:25 +0100
+Message-Id: <20211105071725.31539-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-EX02.internal.baidu.com (172.31.51.42) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When possible using dev_err_probe() helps to properly deal with the
-PROBE_DEFER error, the benefit is that DEFER issue will be logged
-in the devices_deferred debugfs file.
+When a firmware is loaded in the compressed format or via user-mode
+helper, it's mapped in read-only, and the rtw89 driver crashes at
+rtw89_fw_download() when it tries to modify some data.
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+This patch is an attemp to avoid the crash by re-allocating the data
+via vmalloc() for the data modification.
+
+Buglink: https://bugzilla.opensuse.org/show_bug.cgi?id=1188303
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+
 ---
-v1->v2: *Revert the change of variable name 'dev'.
+ drivers/net/wireless/realtek/rtw89/core.h |  3 ++-
+ drivers/net/wireless/realtek/rtw89/fw.c   | 15 ++++++++++-----
+ 2 files changed, 12 insertions(+), 6 deletions(-)
 
- drivers/base/platform.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index 598acf93a360..7109351366c8 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -258,8 +258,9 @@ int platform_get_irq(struct platform_device *dev, unsigned int num)
- 	int ret;
+diff --git a/drivers/net/wireless/realtek/rtw89/core.h b/drivers/net/wireless/realtek/rtw89/core.h
+index c2885e4dd882..048855e05697 100644
+--- a/drivers/net/wireless/realtek/rtw89/core.h
++++ b/drivers/net/wireless/realtek/rtw89/core.h
+@@ -2309,7 +2309,8 @@ struct rtw89_fw_suit {
+ 	RTW89_FW_VER_CODE((s)->major_ver, (s)->minor_ver, (s)->sub_ver, (s)->sub_idex)
  
- 	ret = platform_get_irq_optional(dev, num);
--	if (ret < 0 && ret != -EPROBE_DEFER)
--		dev_err(&dev->dev, "IRQ index %u not found\n", num);
-+	if (ret < 0)
-+		return dev_err_probe(&dev->dev, ret,
-+				     "IRQ index %u not found\n", num);
+ struct rtw89_fw_info {
+-	const struct firmware *firmware;
++	const void *firmware;
++	size_t firmware_size;
+ 	struct rtw89_dev *rtwdev;
+ 	struct completion completion;
+ 	u8 h2c_seq;
+diff --git a/drivers/net/wireless/realtek/rtw89/fw.c b/drivers/net/wireless/realtek/rtw89/fw.c
+index 212aaf577d3c..b59fecaeea25 100644
+--- a/drivers/net/wireless/realtek/rtw89/fw.c
++++ b/drivers/net/wireless/realtek/rtw89/fw.c
+@@ -124,8 +124,8 @@ int rtw89_mfw_recognize(struct rtw89_dev *rtwdev, enum rtw89_fw_type type,
+ 			struct rtw89_fw_suit *fw_suit)
+ {
+ 	struct rtw89_fw_info *fw_info = &rtwdev->fw;
+-	const u8 *mfw = fw_info->firmware->data;
+-	u32 mfw_len = fw_info->firmware->size;
++	const u8 *mfw = fw_info->firmware;
++	u32 mfw_len = fw_info->firmware_size;
+ 	const struct rtw89_mfw_hdr *mfw_hdr = (const struct rtw89_mfw_hdr *)mfw;
+ 	const struct rtw89_mfw_info *mfw_info;
+ 	int i;
+@@ -489,7 +489,10 @@ static void rtw89_load_firmware_cb(const struct firmware *firmware, void *contex
+ 		return;
+ 	}
  
- 	return ret;
+-	fw->firmware = firmware;
++	fw->firmware = vmalloc(firmware->size);
++	if (fw->firmware)
++		memcpy((void *)fw->firmware, firmware->data, firmware->size);
++	release_firmware(firmware);
+ 	complete_all(&fw->completion);
  }
+ 
+@@ -518,8 +521,10 @@ void rtw89_unload_firmware(struct rtw89_dev *rtwdev)
+ 
+ 	rtw89_wait_firmware_completion(rtwdev);
+ 
+-	if (fw->firmware)
+-		release_firmware(fw->firmware);
++	if (fw->firmware) {
++		vfree(fw->firmware);
++		fw->firmware = NULL;
++	}
+ }
+ 
+ #define H2C_CAM_LEN 60
 -- 
-2.25.1
+2.26.2
 
