@@ -2,169 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B6144667C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29CD244665A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:47:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233801AbhKEPxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 11:53:48 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:55904
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233711AbhKEPxb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 11:53:31 -0400
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 77F9240032
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 15:50:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1636127451;
-        bh=0bEssfmXxHPGUprNSso7Mjq6wm8EF4TYvKsU8/02BBE=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=R8dj0RqQc0ALnPM2TfACK1dTguzdHyYjZyDDXWdkhTvXW8UhMrjc/qYEkmL1S3Yf4
-         +awa5517kENFbcuxjOQv/lfA+m280M9RIbP2oXP8KfMc5IwikOqIWFlN4yntDJSEa7
-         wtQTzR1DMxPYNlOdkWlLrIbsj27NzCv/89XEjHQiLJjjicUvCYBQfcLxHdJvsXcYel
-         qT9+U4yA8U3ge0Kr69bbETmGWx3yM+pDts/aY7cmMG6Ny0o5scV5Nk7sxGOG1pZ0WU
-         1lMfGQHM632NlgIkKl1cWVTBw5yiis7HEHU6HwpE08jMLqD90L/Qsm5Zd/WEZ3q4ml
-         QypjBLnxSEwHA==
-Received: by mail-wm1-f72.google.com with SMTP id o10-20020a05600c4fca00b0033312e1ed8bso699842wmq.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 08:50:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0bEssfmXxHPGUprNSso7Mjq6wm8EF4TYvKsU8/02BBE=;
-        b=nQylN1RCAQmKw3mf13kn/r7O6IpFWqAkENA3kR6lzPoFfMq91akaTyVM3K7LOtX5F/
-         fwDi6qm0OZLmkEpPgXm6uJWfPQTpxyULCRuPUrQWauMQ7g5uqaqK2aX+4zoGjDN38jxe
-         4jsRgYJC2oZB1wbKCMy4XeTrT5iuXcEwqMJnw1r0DrcEeIpeRT0BaYQcYmr0dWIZ+kFE
-         fcQvCVuCklVJCxURilGf5Hn48wjl2ADrOzWGM404LZNdqfeaXqXc8I08f1mpDadyGgIm
-         RYRaxg8QHdMIj2fNIC9wHUUJI7h6vuFGvHUVDuXPibU0eVzFOvD6qgEeH0GEgr0oUWpW
-         dy6Q==
-X-Gm-Message-State: AOAM530gd+nPkDMFy45pkg8JtZaW7nuJn+fR55t4MV5/QLa+Ot5B0Ks/
-        NIJq0hxMhM5rksNajeS3DQMd0ALqwVI7Hj1wjJ0iXWlgSab8jwJ9uQA5ZKrwZrGqlEK4RiEnFRF
-        UJnQi5IxnopkEyb5JB1a/8zjTc87h7bMfnfqDSwruGQ==
-X-Received: by 2002:a5d:468f:: with SMTP id u15mr60369019wrq.171.1636127449749;
-        Fri, 05 Nov 2021 08:50:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyP30QeivC6b36TFL+IkuxX7YAofe7sXVJxsbORnG4EhnoSVTTf2FUxAHUW+sOGX9Deb4eenw==
-X-Received: by 2002:a5d:468f:: with SMTP id u15mr60368997wrq.171.1636127449594;
-        Fri, 05 Nov 2021 08:50:49 -0700 (PDT)
-Received: from localhost.localdomain (lfbn-lyo-1-470-249.w2-7.abo.wanadoo.fr. [2.7.60.249])
-        by smtp.gmail.com with ESMTPSA id h27sm13219037wmc.43.2021.11.05.08.50.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 08:50:49 -0700 (PDT)
-From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
-To:     Steve French <sfrench@samba.org>, Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
-        linux-power@fi.rohmeurope.com
-Cc:     Alexandre Ghiti <alexandre.ghiti@canonical.com>
-Subject: [PATCH 7/7] arch: Remove leftovers from prism54 wireless driver
-Date:   Fri,  5 Nov 2021 16:43:34 +0100
-Message-Id: <20211105154334.1841927-8-alexandre.ghiti@canonical.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211105154334.1841927-1-alexandre.ghiti@canonical.com>
-References: <20211105154334.1841927-1-alexandre.ghiti@canonical.com>
+        id S233630AbhKEPuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 11:50:06 -0400
+Received: from mga18.intel.com ([134.134.136.126]:55426 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230400AbhKEPuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 11:50:05 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10159"; a="218824977"
+X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
+   d="scan'208";a="218824977"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 08:47:25 -0700
+X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
+   d="scan'208";a="490367841"
+Received: from luhan1-mobl2.amr.corp.intel.com (HELO [10.212.219.183]) ([10.212.219.183])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 08:47:25 -0700
+Subject: Re: [RFC PATCH] mm: migrate: Add new node demotion strategy
+To:     "Huang, Ying" <ying.huang@intel.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, dave.hansen@linux.intel.com,
+        ziy@nvidia.com, osalvador@suse.de, shy828301@gmail.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <c02bcbc04faa7a2c852534e9cd58a91c44494657.1636016609.git.baolin.wang@linux.alibaba.com>
+ <665cb882-6dbc-335f-1435-e52659d7ee58@intel.com>
+ <87tugrxqks.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <c0023ae8-0aff-0890-00fb-310d72130f8a@intel.com>
+Date:   Fri, 5 Nov 2021 08:47:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <87tugrxqks.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver was removed so remove all references to it.
+On 11/4/21 7:51 PM, Huang, Ying wrote:
+>> Let's also try to do it with the existing node_demotion[] data
+>> structure before we go adding more.
+> To avoid cache ping-pong, I guess some kind of per-CPU data structure
+> may be more suitable for interleaving among multiple nodes.
 
-Fixes: d249ff28b1d8 ("intersil: remove obsolete prism54 wireless driver")
-Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
----
- arch/mips/configs/ip27_defconfig        | 1 -
- arch/mips/configs/malta_defconfig       | 1 -
- arch/mips/configs/malta_kvm_defconfig   | 1 -
- arch/mips/configs/maltaup_xpa_defconfig | 1 -
- arch/powerpc/configs/pmac32_defconfig   | 1 -
- 5 files changed, 5 deletions(-)
+It would probably be better to just find something that's more
+read-heavy.  Like, instead of keeping a strict round-robin, just
+randomly select one of the notes to which you can round-robin.
 
-diff --git a/arch/mips/configs/ip27_defconfig b/arch/mips/configs/ip27_defconfig
-index 638d7cf5ef01..821630ac1be7 100644
---- a/arch/mips/configs/ip27_defconfig
-+++ b/arch/mips/configs/ip27_defconfig
-@@ -223,7 +223,6 @@ CONFIG_TMD_HERMES=m
- CONFIG_NORTEL_HERMES=m
- CONFIG_P54_COMMON=m
- CONFIG_P54_PCI=m
--CONFIG_PRISM54=m
- CONFIG_LIBERTAS=m
- CONFIG_LIBERTAS_THINFIRM=m
- CONFIG_MWL8K=m
-diff --git a/arch/mips/configs/malta_defconfig b/arch/mips/configs/malta_defconfig
-index 9cb2cf2595e0..3321bb576944 100644
---- a/arch/mips/configs/malta_defconfig
-+++ b/arch/mips/configs/malta_defconfig
-@@ -302,7 +302,6 @@ CONFIG_HOSTAP_FIRMWARE=y
- CONFIG_HOSTAP_FIRMWARE_NVRAM=y
- CONFIG_HOSTAP_PLX=m
- CONFIG_HOSTAP_PCI=m
--CONFIG_PRISM54=m
- CONFIG_LIBERTAS=m
- CONFIG_INPUT_MOUSEDEV=y
- CONFIG_MOUSE_PS2_ELANTECH=y
-diff --git a/arch/mips/configs/malta_kvm_defconfig b/arch/mips/configs/malta_kvm_defconfig
-index 5924e48fd3ec..009b30372226 100644
---- a/arch/mips/configs/malta_kvm_defconfig
-+++ b/arch/mips/configs/malta_kvm_defconfig
-@@ -310,7 +310,6 @@ CONFIG_HOSTAP_FIRMWARE=y
- CONFIG_HOSTAP_FIRMWARE_NVRAM=y
- CONFIG_HOSTAP_PLX=m
- CONFIG_HOSTAP_PCI=m
--CONFIG_PRISM54=m
- CONFIG_LIBERTAS=m
- CONFIG_INPUT_MOUSEDEV=y
- CONFIG_SERIAL_8250=y
-diff --git a/arch/mips/configs/maltaup_xpa_defconfig b/arch/mips/configs/maltaup_xpa_defconfig
-index c0d3156ef640..e214e136101c 100644
---- a/arch/mips/configs/maltaup_xpa_defconfig
-+++ b/arch/mips/configs/maltaup_xpa_defconfig
-@@ -309,7 +309,6 @@ CONFIG_HOSTAP_FIRMWARE=y
- CONFIG_HOSTAP_FIRMWARE_NVRAM=y
- CONFIG_HOSTAP_PLX=m
- CONFIG_HOSTAP_PCI=m
--CONFIG_PRISM54=m
- CONFIG_LIBERTAS=m
- CONFIG_INPUT_MOUSEDEV=y
- CONFIG_MOUSE_PS2_ELANTECH=y
-diff --git a/arch/powerpc/configs/pmac32_defconfig b/arch/powerpc/configs/pmac32_defconfig
-index 7aefac5afab0..13885ec563d1 100644
---- a/arch/powerpc/configs/pmac32_defconfig
-+++ b/arch/powerpc/configs/pmac32_defconfig
-@@ -169,7 +169,6 @@ CONFIG_USB_USBNET=m
- CONFIG_B43=m
- CONFIG_B43LEGACY=m
- CONFIG_P54_COMMON=m
--CONFIG_PRISM54=m
- CONFIG_INPUT_EVDEV=y
- # CONFIG_KEYBOARD_ATKBD is not set
- # CONFIG_MOUSE_PS2 is not set
--- 
-2.32.0
-
+That will scale naturally without having to worry about caching or fancy
+per-cpu data structures.
