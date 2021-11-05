@@ -2,89 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F8A446B06
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 23:47:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D69DC446B09
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 23:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234005AbhKEWuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 18:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233981AbhKEWt4 (ORCPT
+        id S232824AbhKEWzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 18:55:25 -0400
+Received: from mail-il1-f206.google.com ([209.85.166.206]:46943 "EHLO
+        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230076AbhKEWzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 18:49:56 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F88C061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 15:47:16 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id f8so11890518plo.12
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 15:47:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8G7C8nsDy15wA5lpwg2GfHwvnNpNmOJdVq919XoijNA=;
-        b=WOrV80UnZe/T2btUKcyfUDXiCR9XVH8tO0vqc6IP6y/wWeaPpO7ZO4gfSPwalRsfrx
-         P6ktcGM4iMsJ8kaIJy7EZaDjHcZhZsQkIqOiJf+wFef59tMaJhcxr1mmac4J5MhL7Jwl
-         J0QEtVLyHbNWjXPF2Ac8MpFA/VO+fepoZoKAywCKqxyaN8/3tX/haq1CjTiBFIlvM1Qc
-         Fc0eOfCt4J/RW8FXIE4by5pO7omTQRu4ABaze10Quo9tkfTsDwTcyrE2KpjuroPakNIE
-         AeCfe8XE5BC06KkAG+lcyGUWXbL4zf/sEqQgdTMMo0tGIFZqQcntQQcdDXeRGrwSoFeG
-         qN+g==
+        Fri, 5 Nov 2021 18:55:06 -0400
+Received: by mail-il1-f206.google.com with SMTP id a5-20020a92c545000000b0026b54ead1b1so6945103ilj.13
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 15:52:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8G7C8nsDy15wA5lpwg2GfHwvnNpNmOJdVq919XoijNA=;
-        b=sK9TUOx25owqW8h4U5uymYjh83ksG/b0dCadXyF6Bjezweo7VDOxEyurMlmMF02E7b
-         Bfw4yDa5f6SHJ+CgSIpD3VyqKeEcboNk1oKblO79YYIlos7TMPJ69VLzH0NNBDen8IWB
-         9bVBK5p5pB13t7A/50NwGlmg+rRyJgQgTl2oZo3uqku0mvpbHOp/trSusA1HSENe7otB
-         v/d7EghgSlwliuaDH/F5JcNku3XfRKz2pVAHI3BRyYXJ6cAKOjRrNMm2N6lvM2UZHWb2
-         CY4xWm2Zgk6s9yfASOte/QQxFoRnQQrm/+AnZqdTZBQ69gNPAHLbqrqKCyPRPWDUGsOX
-         6tcw==
-X-Gm-Message-State: AOAM532YVTJ9O4hlwdRppmViEprkOlk5Go3q4t2f9IlpZdhR4N5YoDDS
-        x+zHaaLGEtIYkEos7yZfx+OPlg==
-X-Google-Smtp-Source: ABdhPJzr+WVGsImu+m6dRSH581SA9YE3OK4buYyLsih5WTm91nm5X7/qePPe0lOPciiIb/ftHaeduw==
-X-Received: by 2002:a17:90a:bb0d:: with SMTP id u13mr32949966pjr.158.1636152436128;
-        Fri, 05 Nov 2021 15:47:16 -0700 (PDT)
-Received: from p14s.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id j2sm8499027pfc.155.2021.11.05.15.47.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 15:47:15 -0700 (PDT)
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Coresight fix for v5.16
-Date:   Fri,  5 Nov 2021 16:47:14 -0600
-Message-Id: <20211105224714.1873452-1-mathieu.poirier@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=D6vw50snD/d6vQarAM8qqXWKFCIgsahx4AepWsVyToQ=;
+        b=ONeuf3bu3nMi+lsbyE5MR2MGw3D3rUfU3tI0Dyd2Z6Qm8JalcR70l5oEQNgzDkcygq
+         OqkQ5hhYukKYvlL0p/gGTco7esp/R+6o2pIXxoWNKO1C9eO5uIjCd+pFdURk8vgEN+Y3
+         h7em7pegHLARL98Ibs7PRBsb/WaLHW6KOXbP25Y+nrGIpJ+2iJskOS9NWIeiY0d9k1hB
+         SBnJ/YePyHoiFCqCHt0vl268hDmF/6CxjMle+4MFNvZsl+TYecb6pbhslvQH4PLHfyP2
+         qKyToq8fKNudNB43wfRvRTuFjDwzdfo9E8uHJtaOshrpd74gKPOB5wF8TPIET+aVHrev
+         5pbA==
+X-Gm-Message-State: AOAM531ySE3B2WBln19fK2e30vwn+49z0nhW2CXqGTBzghNVwLiRLrEx
+        s0t7Jt8F7iTLDKditVqk9IhAmSMof4hh0OKgvJMlsOcarJ4h
+X-Google-Smtp-Source: ABdhPJwhWx8SmYwLeTZJBNR8VBEcP/2BmqT9ECcsmvAqg339Wv/R/n1Y9HErEsayUg6eKWAQv0Mb9m2jRY6P4Hl9K0Zq5tPTlagm
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1c87:: with SMTP id w7mr30716757ill.244.1636152746324;
+ Fri, 05 Nov 2021 15:52:26 -0700 (PDT)
+Date:   Fri, 05 Nov 2021 15:52:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003e37cb05d0127f04@google.com>
+Subject: [syzbot] upstream boot error: WARNING in vtime_user_enter
+From:   syzbot <syzbot+7535c916093a64efc0d2@syzkaller.appspotmail.com>
+To:     frederic@kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 561ced0bb90a4be298b7db5fb54f29731d74a3f6:
+Hello,
 
-  arm64: errata: Enable TRBE workaround for write to out-of-range address (2021-10-27 11:46:06 -0600)
+syzbot found the following issue on:
 
-are available in the Git repository at:
+HEAD commit:    fe91c4725aee Merge tag 'scsi-misc' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12651382b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=788cf6fa2a42d474
+dashboard link: https://syzkaller.appspot.com/bug?extid=7535c916093a64efc0d2
+compiler:       arm-linux-gnueabi-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+userspace arch: arm
 
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/coresight/linux.git tags/coresight-fixes-v5.16
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7535c916093a64efc0d2@syzkaller.appspotmail.com
 
-for you to fetch changes up to 20b02fe36530a1e48dde73c80b882ae276346ea3:
+Registered RDS/tcp transport
+NET: Registered PF_SMC protocol family
+9pnet: Installing 9P2000 support
+Key type dns_resolver registered
+Key type ceph registered
+libceph: loaded (mon/osd proto 15/24)
+NET: Registered PF_VSOCK protocol family
+Registering SWP/SWPB emulation handler
+registered taskstats version 1
+Loading compiled-in X.509 certificates
+Loaded X.509 cert 'Build time autogenerated kernel key: f850c787ad998c396ae089c083b940ff0a9abb77'
+zswap: loaded using pool lzo/zbud
+Key type ._fscrypt registered
+Key type .fscrypt registered
+Key type fscrypt-provisioning registered
+Key type big_key registered
+Key type encrypted registered
+ima: No TPM chip found, activating TPM-bypass!
+Loading compiled-in module X.509 certificates
+Loaded X.509 cert 'Build time autogenerated kernel key: f850c787ad998c396ae089c083b940ff0a9abb77'
+ima: Allocated hash algorithm: sha256
+ima: No architecture policies found
+evm: Initialising EVM extended attributes:
+evm: security.selinux
+evm: security.SMACK64 (disabled)
+evm: security.SMACK64EXEC (disabled)
+evm: security.SMACK64TRANSMUTE (disabled)
+evm: security.SMACK64MMAP (disabled)
+evm: security.apparmor (disabled)
+evm: security.ima
+evm: security.capability
+evm: HMAC attrs: 0x1
+printk: console [netcon0] enabled
+netconsole: network logging started
+gtp: GTP module loaded (pdp ctx size 64 bytes)
+ALSA device list:
+  #0: Dummy 1
+  #1: Loopback 1
+  #2: Virtual MIDI Card 1
+  #3: ARM AC'97 Interface PL041 rev0 at 0x1c040000, irq 36
+uart-pl011 1c090000.serial: no DMA platform data
+md: Skipping autodetection of RAID arrays. (raid=autodetect will force)
+EXT4-fs (vda): mounted filesystem without journal. Opts: (null). Quota mode: none.
+VFS: Mounted root (ext4 filesystem) readonly on device 253:0.
+devtmpfs: mounted
+Freeing unused kernel image (initmem) memory: 2048K
+Failed to set sysctl parameter 'vm.nr_hugepages=4': parameter not found
+Failed to set sysctl parameter 'vm.nr_overcommit_hugepages=4': parameter not found
+Run /sbin/init as init process
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 1 at include/linux/seqlock.h:271 __seqprop_assert include/linux/seqlock.h:271 [inline]
+WARNING: CPU: 1 PID: 1 at include/linux/seqlock.h:271 __seqprop_assert include/linux/seqlock.h:269 [inline]
+WARNING: CPU: 1 PID: 1 at include/linux/seqlock.h:271 vtime_user_enter+0x13c/0x140 kernel/sched/cputime.c:709
+Modules linked in:
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 1 Comm: init Not tainted 5.15.0-syzkaller #0
+Hardware name: ARM-Versatile Express
+Backtrace: 
+[<818473a0>] (dump_backtrace) from [<81847728>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:237)
+ r7:81f6ac1c r6:00000080 r5:81f7ca6c r4:60000093
+[<81847710>] (show_stack) from [<81851734>] (__dump_stack lib/dump_stack.c:88 [inline])
+[<81847710>] (show_stack) from [<81851734>] (dump_stack_lvl+0x70/0x98 lib/dump_stack.c:106)
+[<818516c4>] (dump_stack_lvl) from [<81851774>] (dump_stack+0x18/0x1c lib/dump_stack.c:113)
+ r7:81f6ac1c r6:82639b0c r5:00000000 r4:82878098
+[<8185175c>] (dump_stack) from [<81848284>] (panic+0x114/0x354 kernel/panic.c:232)
+[<81848170>] (panic) from [<802437d8>] (__warn+0xa4/0x13c kernel/panic.c:603)
+ r3:82622488 r2:00000000 r1:838d7cd8 r0:81f6ac1c
+ r7:00000009
+[<80243734>] (__warn) from [<8184852c>] (warn_slowpath_fmt+0x68/0xd4 kernel/panic.c:626)
+ r8:00000009 r7:8028e1ac r6:0000010f r5:81f62fd0 r4:00000000
+[<818484c8>] (warn_slowpath_fmt) from [<8028e1ac>] (__seqprop_assert include/linux/seqlock.h:271 [inline])
+[<818484c8>] (warn_slowpath_fmt) from [<8028e1ac>] (__seqprop_assert include/linux/seqlock.h:269 [inline])
+[<818484c8>] (warn_slowpath_fmt) from [<8028e1ac>] (vtime_user_enter+0x13c/0x140 kernel/sched/cputime.c:709)
+ r8:82622494 r7:00000001 r6:838e0710 r5:81864e90 r4:838e0000
+[<8028e070>] (vtime_user_enter) from [<81864e90>] (__context_tracking_enter+0xf8/0x25c kernel/context_tracking.c:82)
+ r7:00000001 r6:838e0000 r5:824a7bc8 r4:00000001
+[<81864d98>] (__context_tracking_enter) from [<8041bbbc>] (context_tracking_enter kernel/context_tracking.c:122 [inline])
+[<81864d98>] (__context_tracking_enter) from [<8041bbbc>] (context_tracking_enter+0x4c/0x7c kernel/context_tracking.c:106)
+ r9:838e0000 r8:00000000 r7:00000000 r6:00000000 r5:60000093 r4:00000001
+[<8041bb70>] (context_tracking_enter) from [<8041bc84>] (user_enter include/linux/context_tracking.h:28 [inline])
+[<8041bb70>] (context_tracking_enter) from [<8041bc84>] (context_tracking_user_enter+0x1c/0x20 kernel/context_tracking.c:130)
+ r5:818654dc r4:00000000
+[<8041bc68>] (context_tracking_user_enter) from [<802000b4>] (no_work_pending+0x8/0x44)
+Exception stack(0x838d7fb0 to 0x838d7ff8)
+7fa0:                                     00000000 00000000 00000000 00000000
+7fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+7fe0: 00000000 7eb28ed0 00000000 76f66a00 00000010 00000000
+Rebooting in 86400 seconds..
 
-  arm64: cpufeature: Export this_cpu_has_cap helper (2021-11-04 10:46:21 -0600)
 
----------------------------------------------------------------
-coresight: Fix for v5.16
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-This fix enables to compile the TRBE driver as a module by
-exporting function this_cpu_has_cap().
-
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      arm64: cpufeature: Export this_cpu_has_cap helper
-
- arch/arm64/kernel/cpufeature.c | 1 +
- 1 file changed, 1 insertion(+)
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
