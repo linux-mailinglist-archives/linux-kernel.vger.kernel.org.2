@@ -2,131 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A60144642A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D7144642D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:31:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233058AbhKENdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 09:33:32 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:35359 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S232832AbhKENda (ORCPT
+        id S233093AbhKENdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 09:33:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232832AbhKENdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 09:33:30 -0400
-Received: (qmail 1591166 invoked by uid 1000); 5 Nov 2021 09:30:50 -0400
-Date:   Fri, 5 Nov 2021 09:30:50 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mathias Nyman <mathias.nyman@linux.intel.com>,
-        "Walt Jr. Brake" <mr.yming81@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nishad Kamdar <nishadkamdar@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Eddie Hung <eddie.hung@mediatek.com>
-Subject: Re: [PATCH v2] usb: core: reduce power-on-good delay time of root hub
-Message-ID: <20211105133050.GA1590803@rowland.harvard.edu>
-References: <1618017645-12259-1-git-send-email-chunfeng.yun@mediatek.com>
- <5e907ccd-40bb-2ece-fe05-1a65a74f3aa2@gmail.com>
- <20211101140613.GC1456700@rowland.harvard.edu>
- <3cf46eaf-5443-30df-6d72-b92a6a518afc@linux.intel.com>
- <62d0ac30-f2b9-f58c-cb1e-215ccb455753@gmail.com>
- <13d55059-9f66-8599-54fc-46698bae41d1@linux.intel.com>
- <YYUAv5456iyuxaG6@kroah.com>
+        Fri, 5 Nov 2021 09:33:54 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF664C061714;
+        Fri,  5 Nov 2021 06:31:14 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id u18so13743524wrg.5;
+        Fri, 05 Nov 2021 06:31:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=gMX/UK1c/Pgfy++V0gm8fG3W7DC1irWPzRW83EBXmbw=;
+        b=fvqvyne4qHEXvk5y2bb1wutYlN7Y7Xerlg8OcVuzELMARBeA3RnfDbwYAxEOYVGB3u
+         5LfSuU29k36rQfQnCln8Gk6BiA3b/tQUCyQ8o4aB/cmLAXeOHh5hwgJmBD01aKGIDe7Y
+         yzn+CKCPQ8JD0Y6G5NxlCCJdh+05pHFgKve1vQ0p8zaCuHYanCF+RXWtpnyPucH4IvPP
+         wonRTmy0rxwbDAZ+NQsBcRXbNqKMViJ4sH339rvKLpnwlLlzkHjU8qvsiwljlys+uain
+         mhY/AhWNqDw5GlpJpzEGw4KXfh0LAd4GOL0uVBnGtW1d6Ypcsuyv9hyZQdkCz1fp9WE1
+         pR2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=gMX/UK1c/Pgfy++V0gm8fG3W7DC1irWPzRW83EBXmbw=;
+        b=OzKj20wV/YWXs634i3B2gkUCvRPp6JLSqmjVHoA9iii3Ght6SkLKzq8tLQKMlI1hre
+         frYlLMGEQNLyzGR474ewh7a6Whebs64d+vgzAJu45X6Z5DRycDKvWr1wmIQIAoNBqnKh
+         E8enFMkmjvZiSxrurC6SLgCzytp3Y7tnuHXHbQsAMBarkQoTi49vmTKlnOpwwWdjRW1U
+         1Mn7gqXTOsWcEoWMasvD8iuYZWUdC15r6XBvoqAQUrC4O1C2DxMQtx4+aPEBns7cMPNY
+         K1Lu9OAha0fOjWfhopAQg4/QiOc+Urn27/yLPxAZ34hYxChg27LMqAzFQR0KyHtv1wTb
+         X6ag==
+X-Gm-Message-State: AOAM532I83y0atc+rTek0HlIoO9xKFmDnaFd8gVKwRXr6HfWVLx7MYYq
+        qRWO2xWb9Pt5E+SWjXfYmeE=
+X-Google-Smtp-Source: ABdhPJy+1vIrqOuy12eXJaWnfHTuWgmDg0S7rmJVgyPZFgxx7iUAU0omJLL3c94agcBzCFvpmtEXyQ==
+X-Received: by 2002:a5d:4e0f:: with SMTP id p15mr33256420wrt.48.1636119073384;
+        Fri, 05 Nov 2021 06:31:13 -0700 (PDT)
+Received: from ?IPV6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id v191sm7698146wme.36.2021.11.05.06.31.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Nov 2021 06:31:12 -0700 (PDT)
+Message-ID: <36dd4742-fa40-0907-7aa4-cb20a511bf42@gmail.com>
+Date:   Fri, 5 Nov 2021 13:31:11 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YYUAv5456iyuxaG6@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 1/5] tcp/md5: Don't BUG_ON() failed kmemdup()
+Content-Language: en-US
+To:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Leonard Crestez <cdleonard@gmail.com>,
+        linux-crypto@vger.kernel.org, netdev@vger.kernel.org
+References: <20211105014953.972946-1-dima@arista.com>
+ <20211105014953.972946-2-dima@arista.com>
+ <15c0469e-9433-0a8d-50f0-de6517365464@gmail.com>
+From:   Dmitry Safonov <0x7f454c46@gmail.com>
+In-Reply-To: <15c0469e-9433-0a8d-50f0-de6517365464@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 11:00:31AM +0100, Greg Kroah-Hartman wrote:
-> On Wed, Nov 03, 2021 at 10:37:33PM +0200, Mathias Nyman wrote:
-> > On 2.11.2021 22.29, Walt Jr. Brake wrote:
-> > > On 2/11/2021 17:05, Mathias Nyman wrote:
-> > >> On 1.11.2021 16.06, Alan Stern wrote:
-> > >>> On Sat, Oct 30, 2021 at 12:49:37PM +0800, Walt Jr. Brake wrote:
-> > >>>> This patch make USB 3.1 device cannot be detected, and I report the bug [1]
-> > >>>> to archlinux three month ago. Yesterday I try to fix it myself, and after I
-> > >>>> revert this patch, compile the kernel and test, it works.
-> > >>>>
-> > >>>> [1] https://bugs.archlinux.org/task/71660?project=1&pagenum=2
-> > >>>>
-> > >>>>
-> > >>>> diff --git a/drivers/usb/core/hub.h b/drivers/usb/core/hub.h
-> > >>>> index 22ea1f4f2d66..73f4482d833a 100644
-> > >>>> --- a/drivers/usb/core/hub.h
-> > >>>> +++ b/drivers/usb/core/hub.h
-> > >>>> @@ -148,10 +148,8 @@ static inline unsigned hub_power_on_good_delay(struct
-> > >>>> usb_hub *hub)
-> > >>>>   {
-> > >>>>          unsigned delay = hub->descriptor->bPwrOn2PwrGood * 2;
-> > >>>>
-> > >>>> -       if (!hub->hdev->parent) /* root hub */
-> > >>>> -               return delay;
-> > >>>> -       else /* Wait at least 100 msec for power to become stable */
-> > >>>> -               return max(delay, 100U);
-> > >>>> +       /* Wait at least 100 msec for power to become stable */
-> > >>>> +       return max(delay, 100U);
-> > >>>>   }
-> > >>> Mathias:
-> > >>>
-> > >>> It looks like the bPwrOn2PwrGood value in xhci-hcd's hub descriptor is
-> > >>> too small for some USB 3.1 devices.
-> > >>>
-> > >>> Can you look into this?
-> > >>>
-> > >>> Alan Stern
-> > >>>
-> > >> At first glance the xhci roothub bPwrOn2PwrGood value looks ok.
-> > >> xhci spec 5.4.8 states software should wait 20ms after asserting PP, before
-> > >> attempting to change the state of the port.
-> > >>
-> > >> xhci driver sets desc->bPwrOn2PwrGood = 10; (2ms interval, so equals 20ms )
-> > >>
-> > >> We should probably get this working immediately, so maybe revert that patch
-> > >> while looking into the rootcause.
-> > >>
-> > >> Walt Jr. Brake, instead of reverting that patch, could you test if changing the
-> > >> xhci roothub bPwrOn2PwrGood value helps.
-> > >>
-> > >> diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
-> > >> index a3f875eea751..756231a55602 100644
-> > >> --- a/drivers/usb/host/xhci-hub.c
-> > >> +++ b/drivers/usb/host/xhci-hub.c
-> > >> @@ -257,7 +257,7 @@ static void xhci_common_hub_descriptor(struct xhci_hcd *xhci,
-> > >>   {
-> > >>          u16 temp;
-> > >>   -       desc->bPwrOn2PwrGood = 10;      /* xhci section 5.4.9 says 20ms max */
-> > >> +       desc->bPwrOn2PwrGood = 50;      /* The 20ms in xhci 5.4.8 isn't enough for USB 3.1 */
-> > >>          desc->bHubContrCurrent = 0;
-> > >>            desc->bNbrPorts = ports;
-> > >>
-> > >> Thanks
-> > >> -Mathias
-> > > 
-> > > Mathias:
-> > > 
-> > > Sorry to reply lately. I test with your patch, it works.
-> > > 
-> > > I also test with setting bPwrOn2PwrGood to 45, and it not work.
-> > > 
-> > > Seems that the minimal value should be 50 for this case.
-> > > 
-> > 
-> > Thanks for testing, and for checking that 90ms wait isn't enough
+On 11/5/21 02:55, Eric Dumazet wrote:
 > 
-> Can you send a "real" patch for this so I can get it into the tree soon
-> to resolve the regression?
+> 
+> On 11/4/21 6:49 PM, Dmitry Safonov wrote:
+>> static_branch_unlikely(&tcp_md5_needed) is enabled by
+>> tcp_alloc_md5sig_pool(), so as long as the code doesn't change
+>> tcp_md5sig_pool has been already populated if this code is being
+>> executed.
+>>
+>> In case tcptw->tw_md5_key allocaion failed - no reason to crash kernel:
+>> tcp_{v4,v6}_send_ack() will send unsigned segment, the connection won't be
+>> established, which is bad enough, but in OOM situation totally
+>> acceptable and better than kernel crash.
+>>
+>> Introduce tcp_md5sig_pool_ready() helper.
+>> tcp_alloc_md5sig_pool() usage is intentionally avoided here as it's
+>> fast-path here and it's check for sanity rather than point of actual
+>> pool allocation. That will allow to have generic slow-path allocator
+>> for tcp crypto pool.
+>>
+>> Signed-off-by: Dmitry Safonov <dima@arista.com>
+>> ---
+>>  include/net/tcp.h        | 1 +
+>>  net/ipv4/tcp.c           | 5 +++++
+>>  net/ipv4/tcp_minisocks.c | 5 +++--
+>>  3 files changed, 9 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/include/net/tcp.h b/include/net/tcp.h
+>> index 4da22b41bde6..3e5423a10a74 100644
+>> --- a/include/net/tcp.h
+>> +++ b/include/net/tcp.h
+>> @@ -1672,6 +1672,7 @@ tcp_md5_do_lookup(const struct sock *sk, int l3index,
+>>  #endif
+>>  
+>>  bool tcp_alloc_md5sig_pool(void);
+>> +bool tcp_md5sig_pool_ready(void);
+>>  
+>>  struct tcp_md5sig_pool *tcp_get_md5sig_pool(void);
+>>  static inline void tcp_put_md5sig_pool(void)
+>> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+>> index b7796b4cf0a0..c0856a6af9f5 100644
+>> --- a/net/ipv4/tcp.c
+>> +++ b/net/ipv4/tcp.c
+>> @@ -4314,6 +4314,11 @@ bool tcp_alloc_md5sig_pool(void)
+>>  }
+>>  EXPORT_SYMBOL(tcp_alloc_md5sig_pool);
+>>  
+>> +bool tcp_md5sig_pool_ready(void)
+>> +{
+>> +	return tcp_md5sig_pool_populated;
+>> +}
+>> +EXPORT_SYMBOL(tcp_md5sig_pool_ready);
+>>  
+>>  /**
+>>   *	tcp_get_md5sig_pool - get md5sig_pool for this user
+>> diff --git a/net/ipv4/tcp_minisocks.c b/net/ipv4/tcp_minisocks.c
+>> index cf913a66df17..c99cdb529902 100644
+>> --- a/net/ipv4/tcp_minisocks.c
+>> +++ b/net/ipv4/tcp_minisocks.c
+>> @@ -293,11 +293,12 @@ void tcp_time_wait(struct sock *sk, int state, int timeo)
+>>  			tcptw->tw_md5_key = NULL;
+>>  			if (static_branch_unlikely(&tcp_md5_needed)) {
+>>  				struct tcp_md5sig_key *key;
+>> +				bool err = WARN_ON(!tcp_md5sig_pool_ready());
+>>  
+>>  				key = tp->af_specific->md5_lookup(sk, sk);
+>> -				if (key) {
+>> +				if (key && !err) {
+>>  					tcptw->tw_md5_key = kmemdup(key, sizeof(*key), GFP_ATOMIC);
+>> -					BUG_ON(tcptw->tw_md5_key && !tcp_alloc_md5sig_pool());
+>> +					WARN_ON_ONCE(tcptw->tw_md5_key == NULL);
+>>  				}
+>>  			}
+>>  		} while (0);
+>>
+> 
+> Hmmm.... how this BUG_ON() could trigger exactly ?
+> 
+> tcp_md5_needed can only be enabled after __tcp_alloc_md5sig_pool has succeeded.
 
-Also, it might make sense to move the desc->bPwrOn2PwrGood setting from 
-xhci_common_hub_descriptor into the speed-specific routines.  For the 
-USB-2 root hub the value can remain set to 10; only the USB-3 root hub 
-needs to be changed.
+Yeah, I've misread this part as
+: BUG_ON(!tcptw->tw_md5_key || !tcp_alloc_md5sig_pool());
 
-Alan Stern
+Still, there is an issue with checking tcp_alloc_md5sig_pool():
+currently the condition is never true, but if it ever becomes true, the
+tcp_alloc_md5sig_pool() call may cause tcp_time_wait() to sleep with bh
+disabled (i.e. __tcp_close()). So, if this condition ever becomes true,
+it will cause an issue checking it here.
+
+I'll squash this with patch 3 and send when the merge window closes.
+
+Thanks,
+          Dmitry
