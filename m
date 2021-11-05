@@ -2,146 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D32446A86
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 22:24:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB9A446AA1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 22:33:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233837AbhKEV0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 17:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbhKEV0k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 17:26:40 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7514C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 14:24:00 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id v23so1938813pjr.5
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 14:24:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PJsbEMmA9k9jPfV6ZrVj0hzT5Uz5Or2KzUubJmMRE8Q=;
-        b=LbqqufrTqHAHbs1mCu5bvp1hf4bUdbD9QGjTIhULBnO1weAjjkaO1VOgFc38nXQEm6
-         7EojuunEJQKSy5vMxPFsfLfgFiYC42hvHGTM3r88WHCpRaDtdEgBnDSrhXz3LFipeH+S
-         e55ODCwZmbQ4y0p4Al5mblhrCawMA0tU2Ew+AaBB+TiDVsyQ2yCSsHPy/xAMsD3Hb2/A
-         WP/MJ0jnS4E7lnVFhbWTKEDJ+hMTA/h6ZSfzmUQbdl2g2NkztfUPaHOaREuV20d6ys0t
-         MVd/Ez6ZRGwbhfLtgh0we7htK6eTTlb2oBk09nS6tgVSbV0g4YgBJ0JrunFNySEV5CbE
-         iz4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PJsbEMmA9k9jPfV6ZrVj0hzT5Uz5Or2KzUubJmMRE8Q=;
-        b=F9nxK9zrdIwRdEaf4FVdj0Tzdt/UhXaLipvAoBcvuYXh3XwFc8S0iRlp8495t0j9o3
-         bm7Z3lKDSJVyTIoskDRIvu/gg4xd14QDOzw4OJPpxTFHbZZDGZq0k51jb/sIAniP0sEP
-         lmYC2YWq5rFpkwlymmw5boD8bKSZX4qQ46NeBr8xFEyWCHMMjJK78jj8mEYxj0hMcysg
-         9Nfgq9n/pWDfxcHIMH4uscMww3p0JzxgivG0R37pMPhhPtzjlqAHQwGXaXBky9FBPEYz
-         RfkMm3H95YKcfmcyPPFM2QUSKAI7cyJ7RFAAR61Xj5okguSDbHh48/ghcgfxEDeptSvo
-         wZLg==
-X-Gm-Message-State: AOAM533I8Ul1t8C/3D7jsAPIi24APXXdnFT+Y+Er2rshtnJbWkuMZIlP
-        48bXefGC+X1HPy/te5lldaARNA==
-X-Google-Smtp-Source: ABdhPJxduACQQIwrJP0sY2B5JA3HXxHtVdYstTlpZTFbNyRupYFz4+x2+NDHq4Nuz9lQdhxg2ePM8A==
-X-Received: by 2002:a17:902:e806:b0:142:830:eaa4 with SMTP id u6-20020a170902e80600b001420830eaa4mr26812740plg.16.1636147439966;
-        Fri, 05 Nov 2021 14:23:59 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id u8sm3494189pfk.22.2021.11.05.14.23.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 14:23:59 -0700 (PDT)
-Date:   Fri, 5 Nov 2021 21:23:55 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 05/10] x86/tdx: Handle port I/O
-Message-ID: <YYWg6wa398Vw6FJu@google.com>
-References: <20211005204136.1812078-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005204136.1812078-6-sathyanarayanan.kuppuswamy@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211005204136.1812078-6-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S233015AbhKEVfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 17:35:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57114 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231690AbhKEVfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 17:35:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 454B360F9E;
+        Fri,  5 Nov 2021 21:32:56 +0000 (UTC)
+From:   Clark Williams <williams@redhat.com>
+Subject: [ANNOUNCE] 4.19.215-rt94
+Date:   Fri, 05 Nov 2021 21:30:12 -0000
+Message-ID: <163614781239.218435.9293794866106659017@puck.lan>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Pavel Machek <pavel@denx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021, Kuppuswamy Sathyanarayanan wrote:
-> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-> index 4cbffcb737d9..cd0fb5d14ad7 100644
-> --- a/arch/x86/kernel/tdx.c
-> +++ b/arch/x86/kernel/tdx.c
-> @@ -175,6 +175,38 @@ static u64 tdx_handle_cpuid(struct pt_regs *regs)
->  	return ret;
->  }
->  
-> +/*
-> + * tdx_handle_early_io() cannot be re-used in #VE handler for handling
-> + * I/O because the way of handling string I/O is different between
-> + * normal and early I/O case. Also, once trace support is enabled,
-> + * tdx_handle_io() will be extended to use trace calls which is also
-> + * not valid for early I/O cases.
-> + */
-> +static void tdx_handle_io(struct pt_regs *regs, u32 exit_qual)
-> +{
-> +	struct tdx_hypercall_output outh;
+Hello RT-list!
 
-Same comments as patch 04.
+I'm pleased to announce the 4.19.215-rt94 stable release.
 
-> +	int out, size, port, ret;
-> +	bool string;
-> +	u64 mask;
-> +
-> +	string = VE_IS_IO_STRING(exit_qual);
-> +
-> +	/* I/O strings ops are unrolled at build time. */
-> +	BUG_ON(string);
+In addition to a merge of the 4.19.215 stable release, this release contains
+a back port of the following commit:
 
-And here as well.
+2cdede918a7b fscache: fix initialisation of cookie hash table raw spinlocks
 
-> +
-> +	out = VE_IS_IO_OUT(exit_qual);
-> +	size = VE_GET_IO_SIZE(exit_qual);
-> +	port = VE_GET_PORT_NUM(exit_qual);
-> +	mask = GENMASK(8 * size, 0);
+You can get this release via the git tree at:
 
-And here.
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
 
-> +
-> +	ret = _tdx_hypercall(EXIT_REASON_IO_INSTRUCTION, size, out, port,
-> +			     regs->ax, &outh);
+  branch: v4.19-rt
+  Head SHA1: 36a43624fe45b54ab3b24adb37959675c7a6c75e
 
-This one too.
+Or to build 4.19.215-rt94 directly, the following patches should be applied:
 
-> +	if (!out) {
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.tar.xz
 
-This needs to check "ret".  In general, why is this continuing on if I/O fails?
-If I/O fails, the kernel done messed up and some downstream driver is going to
-be real unhappy.  At a minimum, it should WARN.
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.19.215.xz
 
-On a related topic, the GHCB says:
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/patch-4.19.215-rt94.patch.xz
 
-	TDG.VP.VMCALL_INVALID_OPERAND 0x80000000 00000000 Invalid-IO-Port access
 
-The "Invalid-IO-Port access" in particular is poorly worded as it implies the VMM
-is allowed to deny access to ports, but AFAIK that's not the intention.  A better
-phrasing would be something like "Reserved value in input GPR".
+You can also build from 4.19.214-rt93 by applying the incremental patch:
 
-The GHCI should probably also state that bits 63:16 of R14 (port) are reserved.
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/incr/patch-4.19.214-rt93-rt94.patch.xz
 
-> +		regs->ax &= ~mask;
-> +		regs->ax |= (ret ? UINT_MAX : outh.r11) & mask;
-> +	}
-> +}
+Enjoy!
+Clark
+
+Changes from v4.19.214-rt93:
+---
+
+Arnd Bergmann (3):
+      ARM: 9134/1: remove duplicate memcpy() definition
+      ARM: 9139/1: kprobes: fix arch_init_kprobes() prototype
+      ARM: 9141/1: only warn about XIP address when not compile testing
+
+Clark Williams (2):
+      Merge tag 'v4.19.215' into v4.19-rt
+      Linux 4.19.215-rt94
+
+Clément Bœsch (1):
+      arm64: dts: allwinner: h5: NanoPI Neo 2: Fix ethernet node
+
+Eric Dumazet (3):
+      ipv4: use siphash instead of Jenkins in fnhe_hashfun()
+      ipv6: use siphash in rt6_exception_hash()
+      ipv6: make exception cache less predictible
+
+Greg Kroah-Hartman (1):
+      Linux 4.19.215
+
+Gregor Beck (1):
+      fscache: fix initialisation of cookie hash table raw spinlocks
+
+Guenter Roeck (1):
+      nios2: Make NIOS2_DTB_SOURCE_BOOL depend on !COMPILE_TEST
+
+Haibo Chen (1):
+      mmc: sdhci-esdhc-imx: clear the buffer_read_ready to reset standard tuning circuit
+
+Jaehoon Chung (1):
+      mmc: dw_mmc: exynos: fix the finding clock sample value
+
+Johan Hovold (2):
+      mmc: vub300: fix control-message timeouts
+      net: lan78xx: fix division by zero in send path
+
+Krzysztof Kozlowski (1):
+      nfc: port100: fix using -ERRNO as command type mask
+
+Michael Chan (1):
+      net: Prevent infinite while loop in skb_tx_hash()
+
+Nathan Chancellor (1):
+      ARM: 8819/1: Remove '-p' from LDFLAGS
+
+Naveen N. Rao (1):
+      powerpc/bpf: Fix BPF_MOD when imm == 1
+
+Nick Desaulniers (1):
+      ARM: 9133/1: mm: proc-macros: ensure *_tlb_fns are 4B aligned
+
+Oliver Neukum (1):
+      usbnet: sanity check for maxpacket
+
+Patrisious Haddad (1):
+      RDMA/mlx5: Set user priority for DCT
+
+Pavel Skripkin (2):
+      Revert "net: mdiobus: Fix memory leak in __mdiobus_register"
+      net: batman-adv: fix error handling
+
+Robin Murphy (1):
+      arm64: Avoid premature usercopy failure
+
+Shawn Guo (1):
+      mmc: sdhci: Map more voltage level to SDHCI_POWER_330
+
+Trevor Woerner (1):
+      net: nxp: lpc_eth.c: avoid hang when bringing interface down
+
+Wang Hai (1):
+      usbnet: fix error return code in usbnet_probe()
+
+Wenbin Mei (1):
+      mmc: cqhci: clear HALT state after CQE enable
+
+Xin Long (5):
+      sctp: use init_tag from inithdr for ABORT chunk
+      sctp: fix the processing for COOKIE_ECHO chunk
+      sctp: add vtag check in sctp_sf_violation
+      sctp: add vtag check in sctp_sf_do_8_5_1_E_sa
+      sctp: add vtag check in sctp_sf_ootb
+
+Yang Yingliang (1):
+      regmap: Fix possible double-free in regcache_rbtree_exit()
+
+Yuiko Oshino (2):
+      net: ethernet: microchip: lan743x: Fix driver crash when lan743x_pm_resume fails
+      net: ethernet: microchip: lan743x: Fix dma allocation failure by using dma_set_mask_and_coherent
+
+Zheyu Ma (1):
+      ata: sata_mv: Fix the error handling of mv_chip_id()
+---
+Makefile                                           |  2 +-
+ arch/arm/Makefile                                  |  2 +-
+ arch/arm/boot/bootp/Makefile                       |  2 +-
+ arch/arm/boot/compressed/Makefile                  |  2 -
+ arch/arm/boot/compressed/decompress.c              |  3 ++
+ arch/arm/kernel/vmlinux-xip.lds.S                  |  2 +-
+ arch/arm/mm/proc-macros.S                          |  1 +
+ arch/arm/probes/kprobes/core.c                     |  2 +-
+ .../boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts   |  2 +-
+ arch/arm64/lib/copy_from_user.S                    | 13 +++--
+ arch/arm64/lib/copy_in_user.S                      | 20 +++++---
+ arch/arm64/lib/copy_to_user.S                      | 14 ++++--
+ arch/nios2/platform/Kconfig.platform               |  1 +
+ arch/powerpc/net/bpf_jit_comp64.c                  | 10 +++-
+ drivers/ata/sata_mv.c                              |  4 +-
+ drivers/base/regmap/regcache-rbtree.c              |  7 ++-
+ drivers/infiniband/hw/mlx5/qp.c                    |  2 +
+ drivers/mmc/host/cqhci.c                           |  3 ++
+ drivers/mmc/host/dw_mmc-exynos.c                   | 14 ++++++
+ drivers/mmc/host/sdhci-esdhc-imx.c                 | 17 +++++++
+ drivers/mmc/host/sdhci.c                           |  6 +++
+ drivers/mmc/host/vub300.c                          | 18 +++----
+ drivers/net/ethernet/microchip/lan743x_main.c      | 22 +++++++++
+ drivers/net/ethernet/nxp/lpc_eth.c                 |  5 +-
+ drivers/net/phy/mdio_bus.c                         |  1 -
+ drivers/net/usb/lan78xx.c                          |  6 +++
+ drivers/net/usb/usbnet.c                           |  5 ++
+ drivers/nfc/port100.c                              |  4 +-
+ fs/fscache/cookie.c                                |  2 +-
+ localversion-rt                                    |  2 +-
+ net/batman-adv/bridge_loop_avoidance.c             |  8 +++-
+ net/batman-adv/main.c                              | 56 +++++++++++++++-------
+ net/batman-adv/network-coding.c                    |  4 +-
+ net/batman-adv/translation-table.c                 |  4 +-
+ net/core/dev.c                                     |  6 +++
+ net/ipv4/route.c                                   | 12 ++---
+ net/ipv6/route.c                                   | 25 +++++++---
+ net/sctp/sm_statefuns.c                            | 30 ++++++++----
+ 38 files changed, 251 insertions(+), 88 deletions(-)
+---
