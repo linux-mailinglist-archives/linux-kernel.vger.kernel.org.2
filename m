@@ -2,78 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467B6445D68
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:39:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E20F7445D5A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:35:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbhKEBmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 21:42:31 -0400
-Received: from smtp21.cstnet.cn ([159.226.251.21]:40272 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230345AbhKEBma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 21:42:30 -0400
-X-Greylist: delayed 344 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Nov 2021 21:42:29 EDT
-Received: from localhost.localdomain (unknown [124.16.141.244])
-        by APP-01 (Coremail) with SMTP id qwCowACnPyD3iYRhJ0+SBg--.22237S2;
-        Fri, 05 Nov 2021 09:33:44 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, amitk@kernel.org,
-        thara.gopinath@linaro.org, rafael@kernel.org,
-        daniel.lezcano@linaro.org, rui.zhang@intel.com
-Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] thermal/drivers/qcom/spmi-adc-tm5: Remove unnecessary print function dev_err()
-Date:   Fri,  5 Nov 2021 01:33:40 +0000
-Message-Id: <20211105013340.38300-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+        id S231500AbhKEBiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 21:38:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231236AbhKEBh6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 21:37:58 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B341EC061203
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 18:35:19 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id v20so10106346plo.7
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 18:35:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q+r8LSqikMIilQXxN0nyoS2okHlFhIR7lspEguCYFa0=;
+        b=KLVm3GA6EsbW5lEpuwpZ3bWD6edBgWdpThXC4PmysSycODxJwt5aPWM1XdIVyt70zu
+         zZIHLob5VTFB9bMKtsocBIHuMWtEGqLgep6Tbyo0WB13vQk+cj0f3t+LvnnrI8N70mw0
+         RscuxQHCCpaQ8++RuGokESm1xDmRYn5KNzgEU+yZ5WdY0lvEDWGa9+kubM4yGg9feP2j
+         bNpHUGc8OzE5F5KOK1fwG0rEzCe6coKb2u4symBRKNTBmRihxTEtYbKfFmvBvRPRT4L8
+         7O43kfBZEMbQCJxm4+KrWJq/mnjFySFMlWS+pBDNe2DMB/vMhyBzkrBZEcat78XUaQE0
+         EW2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q+r8LSqikMIilQXxN0nyoS2okHlFhIR7lspEguCYFa0=;
+        b=i2X3SmzkUyi1H/6lL7brjRQqtfCY/5M1n0Ij8E7A19t+PAv5OD7u8KQ+/WFkC4wxUT
+         5MypNZwwdwdGUynBGRJhI7m5BmrWxQeVVUvp0zgSYJ808X30r8Ijgfg8BFuEcvTBlyFF
+         6ugFvbxKgFwzzwwfPWGEBrAUxn2Ajm5l1LyPQErNXmqKMvI0jw17/4GZAGadSsmA/S/5
+         FTT8rXeRdrM3TtO9v+2eqNaPtDFqR+c5fSzXRjAmSmHuXAAEOuQIfomIR74dZYz+so3T
+         nPjVwx2V2FH/01YaEGoE+aIOE76HZcJKlQnhaA7AFB6oTKW+JDRpM+FOP5zyI1e00hUi
+         grtQ==
+X-Gm-Message-State: AOAM531QcmvafkEDL++gI1oJB+B7v49pVEdf7dR+Skh/tDqekAv31O89
+        JHuEA32l2nkV3qfhwpm5ON/rn5Qcw9lB+AZpmperJg==
+X-Google-Smtp-Source: ABdhPJz1em1qltzKGt1ubVwIZtwjqPkj5fokslj5L/imxnRNQj9GTwkrfgkmhMUWrwfqIVtIAQM1IvqAgAXnAyo/9a8=
+X-Received: by 2002:a17:90b:1e49:: with SMTP id pi9mr3596462pjb.220.1636076119266;
+ Thu, 04 Nov 2021 18:35:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: qwCowACnPyD3iYRhJ0+SBg--.22237S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZrWrWF45tw4DKr1xGryrtFb_yoW3ZwbEkr
-        18Xr4xJ3yFyrn0vw1rtr4akr9FyF4vvF4SgrsavF9Iy345Ja4DWFykAFykArWxZr40kryU
-        CFy3Wry3Gw1fZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb4kYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kI
-        c2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
-        Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU2rcTDU
-        UUU
-X-Originating-IP: [124.16.141.244]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCwcPA1z4kkBX0wABsz
+References: <YXFPfEGjoUaajjL4@infradead.org> <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
+ <YXJN4s1HC/Y+KKg1@infradead.org> <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
+ <YXj2lwrxRxHdr4hb@infradead.org> <20211028002451.GB2237511@magnolia>
+ <YYDYUCCiEPXhZEw0@infradead.org> <CAPcyv4j8snuGpy=z6BAXogQkP5HmTbqzd6e22qyERoNBvFKROw@mail.gmail.com>
+ <YYK/tGfpG0CnVIO4@infradead.org> <CAPcyv4it2_PVaM8z216AXm6+h93frg79WM-ziS9To59UtEQJTA@mail.gmail.com>
+ <YYOaOBKgFQYzT/s/@infradead.org> <CAPcyv4jKHH7H+PmcsGDxsWA5CS_U3USHM8cT1MhoLk72fa9z8Q@mail.gmail.com>
+ <6d21ece1-0201-54f2-ec5a-ae2f873d46a3@oracle.com> <CAPcyv4hJjcy2TnOv-Y5=MUMHeDdN-BCH4d0xC-pFGcHXEU_ZEw@mail.gmail.com>
+ <342eb71c-0aff-77e5-3c71-92224d7d48e0@oracle.com> <CAPcyv4hVu+A0PXgXTwWj3SBimP5pjX_97g+sfGeT47P0-SJkiQ@mail.gmail.com>
+In-Reply-To: <CAPcyv4hVu+A0PXgXTwWj3SBimP5pjX_97g+sfGeT47P0-SJkiQ@mail.gmail.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 4 Nov 2021 18:35:08 -0700
+Message-ID: <CAPcyv4gLiaFEJW6W8XtDBH_Z4OPgHabdcWedmzy-_0Tqtjv5=A@mail.gmail.com>
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with RWF_RECOVERY_DATA flag
+To:     Jane Chu <jane.chu@oracle.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The print function dev_err() is redundant because
-platform_get_irq() already prints an error.
+On Thu, Nov 4, 2021 at 5:46 PM Dan Williams <dan.j.williams@intel.com> wrote:
+>
+> On Thu, Nov 4, 2021 at 1:27 PM Jane Chu <jane.chu@oracle.com> wrote:
+> >
+> > On 11/4/2021 12:00 PM, Dan Williams wrote:
+> >
+> > >>
+> > >> If this understanding is in the right direction, then I'd like to
+> > >> propose below changes to
+> > >>     dax_direct_access(), dax_copy_to/from_iter(), pmem_copy_to/from_iter()
+> > >>     and the dm layer copy_to/from_iter, dax_iomap_iter().
+> > >>
+> > >> 1. dax_iomap_iter() rely on dax_direct_access() to decide whether there
+> > >>      is likely media error: if the API without DAX_F_RECOVERY returns
+> > >>      -EIO, then switch to recovery-read/write code.  In recovery code,
+> > >>      supply DAX_F_RECOVERY to dax_direct_access() in order to obtain
+> > >>      'kaddr', and then call dax_copy_to/from_iter() with DAX_F_RECOVERY.
+> > >
+> > > I like it. It allows for an atomic write+clear implementation on
+> > > capable platforms and coordinates with potentially unmapped pages. The
+> > > best of both worlds from the dax_clear_poison() proposal and my "take
+> > > a fault and do a slow-path copy".
+> > >
+> > >> 2. the _copy_to/from_iter implementation would be largely the same
+> > >>      as in my recent patch, but some changes in Christoph's
+> > >>      'dax-devirtualize' maybe kept, such as DAX_F_VIRTUAL, obviously
+> > >>      virtual devices don't have the ability to clear poison, so no need
+> > >>      to complicate them.  And this also means that not every endpoint
+> > >>      dax device has to provide dax_op.copy_to/from_iter, they may use the
+> > >>      default.
+> > >
+> > > Did I miss this series or are you talking about this one?
+> > > https://lore.kernel.org/all/20211018044054.1779424-1-hch@lst.de/
+> >
+> > I was referring to
+> >
+> > http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dax-devirtualize
+> > that has not come out yet, I said early on that I'll rebase on it,
+> > but looks like we still need pmem_copy_to/from_iter(), so.
+>
+> Yeah, since the block-layer divorce gets rid of the old poison
+> clearing path, then we're back to pmem_copy_to_iter() (or something
+> like it) needing to pick up the slack for poison clearing. I do agree
+> it would be nice to clean up all the unnecessary boilerplate, but the
+> error-list coordination requires a driver specific callback. At least
+> the DAX_F_VIRTUAL flag can eliminate the virtiofs and fuse callbacks.
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/thermal/qcom/qcom-spmi-adc-tm5.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-index 824671cf494a..8492dd3bfed6 100644
---- a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-+++ b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-@@ -612,10 +612,8 @@ static int adc_tm5_probe(struct platform_device *pdev)
- 	adc_tm->base = reg;
- 
- 	irq = platform_get_irq(pdev, 0);
--	if (irq < 0) {
--		dev_err(dev, "get_irq failed: %d\n", irq);
-+	if (irq < 0)
- 		return irq;
--	}
- 
- 	ret = adc_tm5_get_dt_data(adc_tm, node);
- 	if (ret) {
--- 
-2.25.1
-
+Although, if error management is generically implemented relative to a
+'struct dax_device' then there wouldn't be a need to call all the way
+back into the driver, and the cleanup could still move forward.
