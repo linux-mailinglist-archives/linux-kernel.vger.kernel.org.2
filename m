@@ -2,177 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461D2445F8F
+	by mail.lfdr.de (Postfix) with ESMTP id 90A01445F90
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 06:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232072AbhKEGBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 02:01:13 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:41010 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229587AbhKEGBI (ORCPT
+        id S232066AbhKEGBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 02:01:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231856AbhKEGBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 02:01:08 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R901e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Uv82AQ3_1636091905;
-Received: from 30.240.97.40(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0Uv82AQ3_1636091905)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 05 Nov 2021 13:58:26 +0800
-Message-ID: <f3342c56-c7de-22e3-d3c6-f1b2c6df656c@linux.alibaba.com>
-Date:   Fri, 5 Nov 2021 13:58:25 +0800
+        Fri, 5 Nov 2021 02:01:39 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0204C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 22:58:59 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id bq14so7927894qkb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 22:58:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bb9gceZLitaxHABPZh/aWsMloY6IdSQssq54VH/+oUY=;
+        b=i561PFIQbwxoNJwatTVcH7CHntJCG58/E87eIAP87EwQhiS6YtMovntHe/cb5yozGs
+         zbQ7BOwPQWcVoS09h6uUxuaeE5AA8WjCC6O/QXAKCiegIqzXuQP77QZwGLKgY5vf0Yh7
+         4WWBuigojcGGOK8+L/3KtPJ9RBqPTw3QYp60t8pIMU2KbZFMDgm5TXg9sY33rBeHg3A6
+         6ZY4hYxKG2Pbbj7094ghHMsmPELm0OjTn6X4AnEPDjJfwNC8zSKXbuTf91dGiWBoC4Ea
+         KuvMC3xeD7Ym5qIQsnycytgyKQZEMzj890GoXlUJmIVaSJOeDjvY1BTb1hDwDgBlwLBo
+         8T8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bb9gceZLitaxHABPZh/aWsMloY6IdSQssq54VH/+oUY=;
+        b=p4abcUEF+YepQAGOXdOFLTsm4YUkDNAPnVthvuRl6bLLEGzDAoUXoIHjxb1MuNYig+
+         j0XDAiLg0XCYL9hf9EPTJgSEfnPkBnvFXkAwHZOBODJi8qWn+FZWdiPGPx8du1XXXpYI
+         4Iof/p/u8rTWdzbtjzo2QWmdAln7U6JUnoZ4jpmqE68oE8+VjTpd5xqBwiRhVa4tulBP
+         2sBZqx9J2mwJekwi1Iv3ilrgy1Obf8lusc4Uu/JIjfAayBhCSjB98bqwOnbRsNtLOyQG
+         6J63tE/TbY+vMU9JMMTlv2BPHmD8P9R9bDk/JkxxICRGlJDJZsxlrHMFJGfZM3JkPoAc
+         jHJQ==
+X-Gm-Message-State: AOAM530u6vyUu7NuPS7qjp/bxmURQoXQRDVx4GbBV3iOFpH06leW0hXj
+        YtldiToKHHW2J2lfPdPrFQGApaUMd3wr8As7D7kox4iYeYc=
+X-Google-Smtp-Source: ABdhPJzdC1Zq21yaHzyJ3Vy/8xgdQ7hSUN5ZUaA+3Z3rF8XdDSpFW5UZLWIA/z2OyZ0V/8CLml38X9FwVN7jCULGI9I=
+X-Received: by 2002:a37:4041:: with SMTP id n62mr44191687qka.225.1636091938982;
+ Thu, 04 Nov 2021 22:58:58 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:94.0)
- Gecko/20100101 Thunderbird/94.0
-Subject: Re: [PATCH 1/2] arm64: trans_pgd: fix incorrect use of
- pmd_populate_kernel in copy_pte()
-Content-Language: en-US
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Fuad Tabba <tabba@google.com>,
+References: <1634278612-17055-1-git-send-email-huangzhaoyang@gmail.com>
+ <YYGV1TxsZXzGXFmx@cmpxchg.org> <CAGWkznEaEEz=m5UmPXRECiizwht7+8Zw_xH9V7Wwyd__10eJDA@mail.gmail.com>
+ <CAGWkznFuX=6mSnj7J7=t7et5QO-GB2BKCMRiHoU37jcH9dPhLA@mail.gmail.com> <78b3f72b-3fe7-f2e0-0e6b-32f28b8ce777@arm.com>
+In-Reply-To: <78b3f72b-3fe7-f2e0-0e6b-32f28b8ce777@arm.com>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Fri, 5 Nov 2021 13:58:37 +0800
+Message-ID: <CAGWkznF_8iBp57BPoQKvG4VuNYep=g+ZxgO7D4e0wMDLipJ8uw@mail.gmail.com>
+Subject: Re: [Resend PATCH] psi : calc cfs task memstall time more precisely
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20211030183200.51295-1-rongwei.wang@linux.alibaba.com>
- <20211030183200.51295-2-rongwei.wang@linux.alibaba.com>
- <CAMj1kXHnhnyyL4_WnUFdjJhk7Rcz8hLG8d13y3nRkV5xvBoPKg@mail.gmail.com>
-From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
-In-Reply-To: <CAMj1kXHnhnyyL4_WnUFdjJhk7Rcz8hLG8d13y3nRkV5xvBoPKg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        xuewen.yan@unisoc.com, Ke Wang <ke.wang@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/31/21 8:25 PM, Ard Biesheuvel wrote:
-> On Sat, 30 Oct 2021 at 20:32, Rongwei Wang
-> <rongwei.wang@linux.alibaba.com> wrote:
->>
->> In commit 5de59884ac0e ("arm64: trans_pgd: pass NULL instead
->> of init_mm to *_populate functions"), simply replace init_mm
->> with NULL for pmd_populate_kernel. But in commit 59511cfd08f3
->> ("arm64: mm: use XN table mapping attributes for user/kernel
->> mappings"), adding the check of mm context in
->> pmd_populate_kernel. And these changes will cause a crash when
->> executing copy_pte/trans_pgd.c, as follows:
->>
->> kernel BUG at arch/arm64/include/asm/pgalloc.h:79!
->> Internal error: Oops - BUG: 0 [#1] SMP
->> Modules linked in: rfkill(E) aes_ce_blk(E) aes_ce_cipher(E) ...
->> CPU: 21 PID: 1617 Comm: a.out Kdump: loaded Tainted: ... 5.15.0-rc7-mm1+ #8
->> Hardware name: ECS, BIOS 0.0.0 02/06/2015
->> pstate: 40400005 (nZcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
->> pc : trans_pgd_create_copy+0x4ac/0x4f0
->> lr : trans_pgd_create_copy+0x34c/0x4f0
->> sp : ffff80001bf2bc50
->> x29: ffff80001bf2bc50 x28: ffff0010067f1000 x27: ffff800011072000
->> x26: ffff001fffff8000 x25: ffff008000000000 x24: 0040000000000041
->> x23: 0040000000000001 x22: ffff80001bf2bd68 x21: ffff80001188ded8
->> x20: ffff800000000000 x19: ffff000000000000 x18: 0000000000000000
->> x17: 0000000000000000 x16: 0000000000000000 x15: 00000000200004c0
->> x14: ffff00003fffffff x13: ffff007fffffffff x12: ffff800010f882a8
->> x11: 0000000000face57 x10: 0000000000000001 x9 : 0000000000000000
->> x8 : ffff00100cece000 x7 : ffff001001c9f000 x6 : ffff00100ae40000
->> x5 : 0000000000000040 x4 : 0000000000000000 x3 : ffff001fffff7000
->> x2 : ffff000000200000 x1 : ffff000040000000 x0 : ffff00100cecd000
->> Call trace:
->>   trans_pgd_create_copy+0x4ac/0x4f0
->>   machine_kexec_post_load+0x94/0x3bc
->>   do_kexec_load+0x11c/0x2e0
->>   __arm64_sys_kexec_load+0xa8/0xf4
->>   invoke_syscall+0x50/0x120
->>   el0_svc_common.constprop.0+0x58/0x190
->>   do_el0_svc+0x2c/0x90
->>   el0_svc+0x28/0xe0
->>   el0t_64_sync_handler+0xb0/0xb4
->>   el0t_64_sync+0x180/0x184
->> Code: f90000c0 d5033a9f d5033fdf 17ffff7b (d4210000)
->> ---[ end trace cc5461ffe1a085db ]---
->> Kernel panic - not syncing: Oops - BUG: Fatal exception
->>
->> This bug can be reproduced by a user case:
->>
->> void execute_kexec_load(void)
->> {
->>          syscall(__NR_mmap, 0x1ffff000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
->>          syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
->>          syscall(__NR_mmap, 0x21000000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
->>
->>          *(uint64_t*)0x200004c0 = 0;
->>          *(uint64_t*)0x200004c8 = 0;
->>          *(uint64_t*)0x200004d0 = 0;
->>          *(uint64_t*)0x200004d8 = 0;
->>          syscall(__NR_kexec_load, 0ul, 1ul, 0x200004c0ul, 0ul);
->> }
->>
->> And this patch just make some simple changes, and including
->> replace pmd_populate_kernel with pmd_populate.
->>
->> Fixes: 59511cfd08f3 ("arm64: mm: use XN table mapping attributes for user/kernel mappings")
->> Reported-by: Abaci <abaci@linux.alibaba.com>
->> Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
->> ---
->>   arch/arm64/mm/trans_pgd.c | 7 ++++---
->>   1 file changed, 4 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/arm64/mm/trans_pgd.c b/arch/arm64/mm/trans_pgd.c
->> index d7da8ca40d2e..3f1fc6cb9c9d 100644
->> --- a/arch/arm64/mm/trans_pgd.c
->> +++ b/arch/arm64/mm/trans_pgd.c
->> @@ -62,12 +62,13 @@ static int copy_pte(struct trans_pgd_info *info, pmd_t *dst_pmdp,
->>   {
->>          pte_t *src_ptep;
->>          pte_t *dst_ptep;
->> +       struct page *page;
->>          unsigned long addr = start;
->>
->> -       dst_ptep = trans_alloc(info);
->> -       if (!dst_ptep)
->> +       page = virt_to_page(trans_alloc(info));
->> +       if (!page)
->>                  return -ENOMEM;
->> -       pmd_populate_kernel(NULL, dst_pmdp, dst_ptep);
->> +       pmd_populate(NULL, dst_pmdp, page);
-> 
-> Are you sure this truly fixes the underlying issue rather than the symptom?
-> 
-> pmd_populate() will create a table entry with the PXN attribute set,
-> which means nothing below it will be executable by the kernel,
-> regardless of the executable permissions at the PTE level.
-Hi Ard
-
-I had check here again because of you reminder. Indeed, It's incorrect 
-fix just replace pmd_populate_kernel with pmd_populate in above patch.
-
-And how about the following method to be used to fix this bug? In fact, 
-the following code just restore one modification in 5de59884ac0e 
-("arm64: trans_pgd: pass NULL instead of init_mm to *_populate functions").
-
-diff --git a/arch/arm64/mm/trans_pgd.c b/arch/arm64/mm/trans_pgd.c
-index d7da8ca40d2e..5275ca312360 100644
---- a/arch/arm64/mm/trans_pgd.c
-+++ b/arch/arm64/mm/trans_pgd.c
-@@ -67,7 +67,7 @@ static int copy_pte(struct trans_pgd_info *info, pmd_t 
-*dst_pmdp,
-         dst_ptep = trans_alloc(info);
-         if (!dst_ptep)
-                 return -ENOMEM;
--       pmd_populate_kernel(NULL, dst_pmdp, dst_ptep);
-+       pmd_populate_kernel(&init_mm, dst_pmdp, dst_ptep);
-         dst_ptep = pte_offset_kernel(dst_pmdp, start);
-
-         src_ptep = pte_offset_kernel(src_pmdp, start);
-
-Thanks!
-> 
-> 
->>          dst_ptep = pte_offset_kernel(dst_pmdp, start);
->>
->>          src_ptep = pte_offset_kernel(src_pmdp, start);
->> --
->> 2.27.0
->>
+On Thu, Nov 4, 2021 at 4:58 PM Dietmar Eggemann
+<dietmar.eggemann@arm.com> wrote:
+>
+> On 03/11/2021 08:08, Zhaoyang Huang wrote:
+> > +Vincent Guittot
+> >
+> > On Wed, Nov 3, 2021 at 3:07 PM Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
+> >>
+> >> On Wed, Nov 3, 2021 at 3:47 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >>>
+> >>> CC peterz as well for rt and timekeeping magic
+> >>>
+> >>> On Fri, Oct 15, 2021 at 02:16:52PM +0800, Huangzhaoyang wrote:
+> >>>> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> >>>>
+> >>>> In an EAS enabled system, there are two scenarios discordant to current design,
+>
+> I don't understand the EAS (probably asymmetric CPU capacity is meant
+> here) angle of the story. Pressure on CPU capacity which is usable for
+> CFS happens on SMP as well?
+ Mentioning EAS here mainly about RT tasks preempting small CFS tasks
+(big CFS tasks could be scheduled to big core), which would introduce
+more proportion of preempted time within PSI_MEM_STALL than SMP does.
+>
+> >>>>
+> >>>> 1. workload used to be heavy uneven among cores for sake of scheduler policy.
+> >>>> RT task usually preempts CFS task in little core.
+> >>>> 2. CFS task's memstall time is counted as simple as exit - entry so far, which
+> >>>> ignore the preempted time by RT, DL and Irqs.
+> >>>>
+> >>>> With these two constraints, the percpu nonidle time would be mainly consumed by
+> >>>> none CFS tasks and couldn't be averaged. Eliminating them by calc the time growth
+> >>>> via the proportion of cfs_rq's utilization on the whole rq.
+> >>>>
+> >>>> eg.
+> >>>> Here is the scenario which this commit want to fix, that is the rt and irq consume
+> >>>> some utilization of the whole rq. This scenario could be typical in a core
+> >>>> which is assigned to deal with all irqs. Furthermore, the rt task used to run on
+> >>>> little core under EAS.
+> >>>>
+> >>>> Binder:305_3-314    [002] d..1   257.880195: psi_memtime_fixup: original:30616,adjusted:25951,se:89,cfs:353,rt:139,dl:0,irq:18
+> >>>> droid.phone-1525    [001] d..1   265.145492: psi_memtime_fixup: original:61616,adjusted:53492,se:55,cfs:225,rt:121,dl:0,irq:15
+> >>>>
+> >>>> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> >>>> ---
+> >>>>  kernel/sched/psi.c | 20 +++++++++++++++++++-
+> >>>>  1 file changed, 19 insertions(+), 1 deletion(-)
+> >>>>
+> >>>> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+> >>>> index cc25a3c..754a836 100644
+> >>>> --- a/kernel/sched/psi.c
+> >>>> +++ b/kernel/sched/psi.c
+> >>>> @@ -182,6 +182,8 @@ struct psi_group psi_system = {
+> >>>>
+> >>>>  static void psi_avgs_work(struct work_struct *work);
+> >>>>
+> >>>> +static unsigned long psi_memtime_fixup(u32 growth);
+> >>>> +
+> >>>>  static void group_init(struct psi_group *group)
+> >>>>  {
+> >>>>       int cpu;
+> >>>> @@ -492,6 +494,21 @@ static u64 window_update(struct psi_window *win, u64 now, u64 value)
+> >>>>       return growth;
+> >>>>  }
+> >>>>
+> >>>> +static unsigned long psi_memtime_fixup(u32 growth)
+> >>>> +{
+> >>>> +     struct rq *rq = task_rq(current);
+> >>>> +     unsigned long growth_fixed = (unsigned long)growth;
+> >>>> +
+> >>>> +     if (!(current->policy == SCHED_NORMAL || current->policy == SCHED_BATCH))
+> >>>> +             return growth_fixed;
+>
+> This will let the idle task (swapper) pass. Is this indented? Or do you
+> want to only let CFS tasks (including SCHED_IDLE) pass?
+idle tasks will NOT call psi_memstall_xxx. We just want CFS tasks to
+scale the STALL time.
+>
+> if (current->sched_class != &fair_sched_class)
+>     return growth_fixed;
+>
+> >>>> +
+> >>>> +     if (current->in_memstall)
+> >>>> +             growth_fixed = div64_ul((1024 - rq->avg_rt.util_avg - rq->avg_dl.util_avg
+> >>>> +                                     - rq->avg_irq.util_avg + 1) * growth, 1024);
+> >>>> +
+>
+> We do this slightly different in scale_rt_capacity() [fair.c]:
+>
+> max = arch_scale_cpu_capacity(cpu_of(rq) /* instead of 1024 to support
+>                                             asymmetric CPU capacity */
+Is it possible that the SUM of rqs' util_avg large than
+arch_scale_cpu_capacity because of task migration things?
+>
+> used = cpu_util_rt(rq);
+> used += cpu_util_dl(rq);
+> used += thermal_load_avg(rq);
+>
+> free = max - used
+> irq = cpu_util_irq(rq)
+>
+> used = scale_irq_capacity(free, irq, max);
+>
+> scaling then with with: max - used / max
+ok. so introduce thermal util.
+>
+> >>>> +     return growth_fixed;
+> >>>> +}
+> >>>> +
+> >>>>  static void init_triggers(struct psi_group *group, u64 now)
+> >>>>  {
+> >>>>       struct psi_trigger *t;
+> >>>> @@ -658,6 +675,7 @@ static void record_times(struct psi_group_cpu *groupc, u64 now)
+> >>>>       }
+> >>>>
+> >>>>       if (groupc->state_mask & (1 << PSI_MEM_SOME)) {
+> >>>> +             delta = psi_memtime_fixup(delta);
+> >>>
+> >> add vincent for advise on cpu load mechanism
+> >>
+> >>> Ok, so we want to deduct IRQ and RT preemption time from the memstall
+> >>> period of an active reclaimer, since it's technically not stalled on
+> >>> memory during this time but on CPU.
+> >>>
+> >>> However, we do NOT want to deduct IRQ and RT time from memstalls that
+> >>> are sleeping on refaults swapins, since they are not affected by what
+> >>> is going on on the CPU.
+> >>>
+> >>> Does util_avg capture that difference? I'm not confident it does - but
+> >>> correct me if I'm wrong. We need length of time during which and IRQ
+> >>> or an RT task preempted the old rq->curr, not absolute irq/rt length.
+> >> As far as my understanding, core's capacity = IRQ + DEADLINE + RT +
+> >> CFS. For a certain time period, all cfs tasks preempt each other
+> >> inside CFS's utilization. So the sleeping on refaults is counted in.
+> >>>
+> >>> (Btw, such preemption periods, in addition to being deducted from
+> >>> memory stalls, should probably also be added to CPU contention stalls,
+> >>> to make CPU pressure reporting more accurate as well.)
+>
