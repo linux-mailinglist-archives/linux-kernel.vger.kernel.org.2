@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0008B445D22
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E9E445D24
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 02:01:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhKEBCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 21:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44670 "EHLO
+        id S231154AbhKEBDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 21:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230257AbhKEBCm (ORCPT
+        with ESMTP id S229664AbhKEBDP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 21:02:42 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F6FC061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 18:00:03 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id g190-20020a25dbc7000000b005c21574c704so10973410ybf.13
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 18:00:03 -0700 (PDT)
+        Thu, 4 Nov 2021 21:03:15 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F141FC061203
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 18:00:36 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id g18so2652513pfk.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 18:00:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=BWRsLXSuRuX7m2v7ufxzsJ2Lj2A75oZX9+jsZ2D7yIw=;
-        b=rOB7r6/fbY4l8mLPY8G3uBq2wReZq1FkHA0EBN59GTT5x8sq0UR3tghTOvqg93YHAp
-         ka1dLR4hOsSUL+pyNB7Uqgw5s0H60ScBMNGlizFjPJ+LUQBEF+vfLk1e4OjZMgQc9Byd
-         e2stSuja4pjQw7iO+8De8x2Vs6eNmKC3mG+rYm/fZwxHBe2DCuHQLIxmVTBTspSuerjB
-         ajM8wiAa9HlwhqKJMh5nN/8j++sUnE3NjPtiq2nmk5TntUHB7+GvIh6497yJcl2VN2oV
-         huoKII/Ozk5GvReIIeTaWv+F5FEfr5ssOgz+Qr4pJnTMeMZKYjN7+4OUyVi5IR9PMXaa
-         zUYQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5AsWWG+WUfnRqvVdyPwSZBhohM0u6yD1mbjUY07UvQQ=;
+        b=Wj40ttb1/f0Ni3Dpwwh7PGzp2tLlAieYFhg2e0JliymKZdTTkMOcSEFRRoj+Ib0ovO
+         53a8oGpagVSYUJ2EDzfDDMIP9dWw7v7B6SHv6tNJRlIK2c2wAsMmoveDumSYQQWtrm0y
+         fINgTFun54Lvd9P5jVSwIoRUGiJb0PDOsFmY5eYpvPq+1A5s3xnewtCOeh602K0Ix6OY
+         LCTuOpJR0j4R+24aoLXoAJkaZx76qgAUcjqhhIUgUk3vx4s8LYpJi/jc4v9cwC5PJ7Rx
+         twcjNa8a3sVZtUSwK+fqkt9ljf5nSGpfX14uoZXp6nNjdc4ZEuLWQUeADLbXImDG0gPK
+         1lcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=BWRsLXSuRuX7m2v7ufxzsJ2Lj2A75oZX9+jsZ2D7yIw=;
-        b=maDexcYTRtpveLF0YVf1JkdkH+Vr9dLtkUN4XiNhm0e+dFpMaH9/GntXLQ3ARmYcha
-         601qrZCCCKX/RWe8JePQM3JSd6xaekva3byOBXADhRwDInqMZkqtvsoE902M95Pw+6iv
-         MGJ9eVxZpdtEM2sI0TWwpYpr59C3FHqH+5x8EDgBitKveMDnWSv6OwzU3ioREpQ8LY9B
-         gmuAd5ekrtbVrA/uM1BtIl3EIKBd6kw9VtkAxuFmF0Y3XiLwDBMQWu0TIXk7ozMD83Tj
-         QfLYtVoC3Y5ysvmowZE8vRmT+O6Gya0d0Gb1qX+nODEGb4mZlZHSGJ7QEfqS10t4lVG3
-         W++g==
-X-Gm-Message-State: AOAM531JsZ9phwhlmNzZtzdfwxZOXLJh4VWKlqiepEyt5pqs8wa9VXD1
-        CzKxcEPLHhAftYELrebFR4wLymc=
-X-Google-Smtp-Source: ABdhPJxGKt0KTPJnJkQP+F1fXbU5ufjr9qUcOu3vXpvZaG/Sj3DoJSO3btei4j4hApi6sqDQHbLE7aM=
-X-Received: from osk.cam.corp.google.com ([2620:15c:93:a:24f7:55ac:2f28:525])
- (user=osk job=sendgmr) by 2002:a25:50ca:: with SMTP id e193mr48233941ybb.324.1636074002883;
- Thu, 04 Nov 2021 18:00:02 -0700 (PDT)
-Date:   Thu,  4 Nov 2021 20:59:55 -0400
-Message-Id: <20211105005955.107419-1-osk@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
-Subject: [PATCH v2] ARM: dts: aspeed: tyan-s7106: Update nct7802 config
-From:   Oskar Senft <osk@google.com>
-To:     linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, Oskar Senft <osk@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5AsWWG+WUfnRqvVdyPwSZBhohM0u6yD1mbjUY07UvQQ=;
+        b=PmYhbmuLFD4r/LSvo4D+mA+e+cSFH0/3s8CJD3FEDAPqf+MRhxxrJ78FAUMzXn4TZC
+         uNEk94z8hi5KxzWu7cqqZvrtd16UCy8l3gSglUgsh/YJxy1/5i6TNDp9bAmtefykkGAM
+         X3FWH9iCSbXyi3c5n+A4ePLWTrePmPqOc+lmQf+MZ4bnReI2gUzj+8yRYwYJ7xWb9gdf
+         7pA1NRwyxbTiY8yTAnpQgZYNqh/SYcD5KcJcgDzige+qFk5AwlleGj5onDh5qkvbZJ2a
+         /rBiT0fqXGYc3z1Mx2wvyZEbcvTq8vq6bOYlC1iqArr7bpB+z6mrpeozUBvf3+W6ERHO
+         nXXg==
+X-Gm-Message-State: AOAM530s5k/0PePXK/Wso7szFrX0F3gBdMCsgD9ERWTwBjasxctmrlMz
+        E5wIZ4wteac8oQE+/sPVEF5LOA==
+X-Google-Smtp-Source: ABdhPJyExLrTk4AQNxZbAzjzFbNCCrY3MFN/MzFs3b2RpbUmtepP+C6fRZhxyvs07zJxE6TSksmFCg==
+X-Received: by 2002:a63:1d53:: with SMTP id d19mr41014133pgm.85.1636074036255;
+        Thu, 04 Nov 2021 18:00:36 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id m10sm5124833pfk.152.2021.11.04.18.00.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Nov 2021 18:00:35 -0700 (PDT)
+Date:   Fri, 5 Nov 2021 01:00:31 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] KVM: VMX: Introduce vmx_msr_bitmap_l01_changed()
+ helper
+Message-ID: <YYSCL2dum2be1rei@google.com>
+References: <20211013142258.1738415-1-vkuznets@redhat.com>
+ <20211013142258.1738415-3-vkuznets@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013142258.1738415-3-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change updates the configuration for the nct7802 hardware
-monitor to correctly configure its temperature sensors.
+On Wed, Oct 13, 2021, Vitaly Kuznetsov wrote:
+> In preparation to enabling 'Enlightened MSR Bitmap' feature for Hyper-V
+> guests move MSR bitmap update tracking to a dedicated helper.
+> 
+> Note: vmx_msr_bitmap_l01_changed() is called when MSR bitmap might be
+> updated. KVM doesn't check if the bit we're trying to set is already set
+> (or the bit it's trying to clear is already cleared). Such situations
+> should not be common and a few false positives should not be a problem.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
 
-Signed-off-by: Oskar Senft <osk@google.com>
----
-Changes from PATCH v1:
-- Removed superfluous "status" from channels.
----
- arch/arm/boot/dts/aspeed-bmc-tyan-s7106.dts | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/arch/arm/boot/dts/aspeed-bmc-tyan-s7106.dts b/arch/arm/boot/dts/aspeed-bmc-tyan-s7106.dts
-index 68f332ee1886..66734e4e2ea1 100644
---- a/arch/arm/boot/dts/aspeed-bmc-tyan-s7106.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-tyan-s7106.dts
-@@ -213,6 +213,25 @@ &i2c0 {
- 	nct7802@28 {
- 		compatible = "nuvoton,nct7802";
- 		reg = <0x28>;
-+		channel@0 { /* LTD */
-+			reg = <0>;
-+		};
-+		channel@1 { /* RTD1 */
-+			reg = <1>;
-+			sensor-type = "temperature";
-+			temperature-mode = "thermistor";
-+		};
-+
-+		channel@2 { /* RTD2 */
-+			reg = <2>;
-+			sensor-type = "temperature";
-+			temperature-mode = "thermistor";
-+		};
-+
-+		channel@3 { /* RTD3 */
-+			reg = <3>;
-+			sensor-type = "temperature";
-+		};
- 	};
- 
- 	/* Also connected to:
--- 
-2.34.0.rc0.344.g81b53c2807-goog
-
+Reviewed-by: Sean Christopherson <seanjc@google.com>
