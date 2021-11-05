@@ -2,189 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08F0544694C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 20:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E81A44694E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 20:50:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232490AbhKETvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 15:51:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230063AbhKETvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 15:51:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B51D61053;
-        Fri,  5 Nov 2021 19:49:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636141751;
-        bh=y9E2/3tUW798ZN2V86zmgMhgAcJlwxxzk/tb4Atgp4w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U46T9o8IV/RIMPrYDEotuj/2aagThYdTPu35w0FmRmg+DLk/WW9tVuxnDYxA/o/8x
-         MLzqCcFnOPeDMubg/0HZ0I+7FyAjygtoQbBYonTTSZDe8sxDjz4DPzmFLXQYMaOiJy
-         sSR+H1V0kgrd47R0nYq6JrsbuhE345saZ6CDn8e1DuUk2+j3nKroTGkBUtWGaP08BU
-         /sR00KaRFzdk+3VVZgcQtK0/e2gcXauJQPRyxNUzal1gY0oYibV6hvtPDQTLABeoHD
-         WIUBpuiov1aPJ/F+Woxd8WnC6KYaUciiBBez8zhsr6wL88PuFztyKzbPKDSreid6hV
-         oUXeZPCUJcsEg==
-Date:   Fri, 5 Nov 2021 21:49:01 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Qian Cai <quic_qiancai@quicinc.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: Track no early_pgtable_alloc() for kmemleak
-Message-ID: <YYWKrdrVbjXLn0wJ@kernel.org>
-References: <20211105150509.7826-1-quic_qiancai@quicinc.com>
+        id S232513AbhKETxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 15:53:24 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:53686 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230063AbhKETxW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 15:53:22 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 88D1D1FD54;
+        Fri,  5 Nov 2021 19:50:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1636141841;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JNwd7X2iEE09DTErgxUeujO/mrcL8e8h2ujAlV8kmBM=;
+        b=ZQpK7EmcQOr9qzxapbFJ8mQ1BmdXADMcUfIODEIKxtNzqsDK/lpIP2AtvkJjCV7fJRKwoi
+        p8yMktfKeA8989Z88Y5Gwn6Ao3efeUwQu1/XAPTUuRjzUsqBtHggm6nHkcxKegikpJoSmt
+        orBi227JgsTK1NzLDORbT9HX+Kk+oPQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1636141841;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JNwd7X2iEE09DTErgxUeujO/mrcL8e8h2ujAlV8kmBM=;
+        b=7kdb9Vttjf+ZCnGUaUElWMFKRLDvGqgQcsKN+i55wNdUefirb5bzaxu64YHsO0OTelVBNS
+        zjzUj+6q0rMfoNAQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 7C8C42C144;
+        Fri,  5 Nov 2021 19:50:41 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 6AEDCDA799; Fri,  5 Nov 2021 20:50:04 +0100 (CET)
+Date:   Fri, 5 Nov 2021 20:50:04 +0100
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Qu Wenruo <wqu@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: Re: Kmap-related crashes and memory leaks on 32bit arch (5.15+)
+Message-ID: <20211105195004.GJ28560@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Qu Wenruo <wqu@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+References: <20211104115001.GU20319@twin.jikos.cz>
+ <CAHk-=whYQvExYESEOJoSj4Jy7t+tSZgbCWuNpdwXYh+3zq2itw@mail.gmail.com>
+ <CAHk-=whBOXM3mh-QtzK-EQtDEHQLcziAXu07KxU1crUc5jiQUg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211105150509.7826-1-quic_qiancai@quicinc.com>
+In-Reply-To: <CAHk-=whBOXM3mh-QtzK-EQtDEHQLcziAXu07KxU1crUc5jiQUg@mail.gmail.com>
+crom:   David Sterba <dsterba@suse.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+From:   David Sterba <dsterba@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 11:05:09AM -0400, Qian Cai wrote:
-> After switched page size from 64KB to 4KB on several arm64 servers here,
-> kmemleak starts to run out of early memory pool due to a huge number of
-> those early_pgtable_alloc() calls:
+On Thu, Nov 04, 2021 at 04:37:25PM -0700, Linus Torvalds wrote:
+> On Thu, Nov 4, 2021 at 3:09 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> > If (a) works, but (b) still fails, then it must be some odd
+> > interaction issug withs-----ing else. Which sounds unlikely, since I
+> > don't think we really had anything that should affect kmap or anything
+> > in this area, but who knows...
 > 
->   kmemleak_alloc_phys()
->   memblock_alloc_range_nid()
->   memblock_phys_alloc_range()
->   early_pgtable_alloc()
->   init_pmd()
->   alloc_init_pud()
->   __create_pgd_mapping()
->   __map_memblock()
->   paging_init()
->   setup_arch()
->   start_kernel()
-> 
-> Increased the default value of DEBUG_KMEMLEAK_MEM_POOL_SIZE by 4 times
-> won't be enough for a server with 200GB+ memory. There isn't much
-> interesting to check memory leaks for those early page tables and those
-> early memory mappings should not reference to other memory. Hence, no
-> kmemleak false positives, and we can safely skip tracking those early
-> allocations from kmemleak like we did in the commit fed84c785270
-> ("mm/memblock.c: skip kmemleak for kasan_init()") without needing to
-> introduce complications to automatically scale the value depends on the
-> runtime memory size etc. After the patch, the default value of
-> DEBUG_KMEMLEAK_MEM_POOL_SIZE becomes sufficient again.
-> 
-> Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
+> And bisection ends up perhaps somewhat painful, but sounds like the
+> way to go if there's no other path forward.
 
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+Just to give an update, I tested several merge commits and the btrfs
+merge is the first bad (037c50bfbeb33b4c).
 
-> ---
-> v2:
-> Rename MEMBLOCK_ALLOC_KASAN to MEMBLOCK_ALLOC_NOLEAKTRACE to deal with
-> those situations in general.
-> 
->  arch/arm/mm/kasan_init.c   | 2 +-
->  arch/arm64/mm/kasan_init.c | 5 +++--
->  arch/arm64/mm/mmu.c        | 3 ++-
->  include/linux/memblock.h   | 2 +-
->  mm/memblock.c              | 9 ++++++---
->  5 files changed, 13 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/arm/mm/kasan_init.c b/arch/arm/mm/kasan_init.c
-> index 4b1619584b23..5ad0d6c56d56 100644
-> --- a/arch/arm/mm/kasan_init.c
-> +++ b/arch/arm/mm/kasan_init.c
-> @@ -32,7 +32,7 @@ pmd_t tmp_pmd_table[PTRS_PER_PMD] __page_aligned_bss;
->  static __init void *kasan_alloc_block(size_t size)
->  {
->  	return memblock_alloc_try_nid(size, size, __pa(MAX_DMA_ADDRESS),
-> -				      MEMBLOCK_ALLOC_KASAN, NUMA_NO_NODE);
-> +				      MEMBLOCK_ALLOC_NOLEAKTRACE, NUMA_NO_NODE);
->  }
->  
->  static void __init kasan_pte_populate(pmd_t *pmdp, unsigned long addr,
-> diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
-> index 6f5a6fe8edd7..c12cd700598f 100644
-> --- a/arch/arm64/mm/kasan_init.c
-> +++ b/arch/arm64/mm/kasan_init.c
-> @@ -36,7 +36,7 @@ static phys_addr_t __init kasan_alloc_zeroed_page(int node)
->  {
->  	void *p = memblock_alloc_try_nid(PAGE_SIZE, PAGE_SIZE,
->  					      __pa(MAX_DMA_ADDRESS),
-> -					      MEMBLOCK_ALLOC_KASAN, node);
-> +					      MEMBLOCK_ALLOC_NOLEAKTRACE, node);
->  	if (!p)
->  		panic("%s: Failed to allocate %lu bytes align=0x%lx nid=%d from=%llx\n",
->  		      __func__, PAGE_SIZE, PAGE_SIZE, node,
-> @@ -49,7 +49,8 @@ static phys_addr_t __init kasan_alloc_raw_page(int node)
->  {
->  	void *p = memblock_alloc_try_nid_raw(PAGE_SIZE, PAGE_SIZE,
->  						__pa(MAX_DMA_ADDRESS),
-> -						MEMBLOCK_ALLOC_KASAN, node);
-> +						MEMBLOCK_ALLOC_NOLEAKTRACE,
-> +						node);
->  	if (!p)
->  		panic("%s: Failed to allocate %lu bytes align=0x%lx nid=%d from=%llx\n",
->  		      __func__, PAGE_SIZE, PAGE_SIZE, node,
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index d77bf06d6a6d..acfae9b41cc8 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -96,7 +96,8 @@ static phys_addr_t __init early_pgtable_alloc(int shift)
->  	phys_addr_t phys;
->  	void *ptr;
->  
-> -	phys = memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
-> +	phys = memblock_phys_alloc_range(PAGE_SIZE, PAGE_SIZE, 0,
-> +					 MEMBLOCK_ALLOC_NOLEAKTRACE);
->  	if (!phys)
->  		panic("Failed to allocate page table page\n");
->  
-> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-> index 7df557b16c1e..8adcf1fa8096 100644
-> --- a/include/linux/memblock.h
-> +++ b/include/linux/memblock.h
-> @@ -389,7 +389,7 @@ static inline int memblock_get_region_node(const struct memblock_region *r)
->  /* Flags for memblock allocation APIs */
->  #define MEMBLOCK_ALLOC_ANYWHERE	(~(phys_addr_t)0)
->  #define MEMBLOCK_ALLOC_ACCESSIBLE	0
-> -#define MEMBLOCK_ALLOC_KASAN		1
-> +#define MEMBLOCK_ALLOC_NOLEAKTRACE	1
->  
->  /* We are using top down, so it is safe to use 0 here */
->  #define MEMBLOCK_LOW_LIMIT 0
-> diff --git a/mm/memblock.c b/mm/memblock.c
-> index 659bf0ffb086..1018e50566f3 100644
-> --- a/mm/memblock.c
-> +++ b/mm/memblock.c
-> @@ -287,7 +287,7 @@ static phys_addr_t __init_memblock memblock_find_in_range_node(phys_addr_t size,
->  {
->  	/* pump up @end */
->  	if (end == MEMBLOCK_ALLOC_ACCESSIBLE ||
-> -	    end == MEMBLOCK_ALLOC_KASAN)
-> +	    end == MEMBLOCK_ALLOC_NOLEAKTRACE)
->  		end = memblock.current_limit;
->  
->  	/* avoid allocating the first page */
-> @@ -1387,8 +1387,11 @@ phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
->  	return 0;
->  
->  done:
-> -	/* Skip kmemleak for kasan_init() due to high volume. */
-> -	if (end != MEMBLOCK_ALLOC_KASAN)
-> +	/*
-> +	 * Skip kmemleak for those places like kasan_init() and
-> +	 * early_pgtable_alloc() due to high volume.
-> +	 */
-> +	if (end != MEMBLOCK_ALLOC_NOLEAKTRACE)
->  		/*
->  		 * The min_count is set to 0 so that memblock allocated
->  		 * blocks are never reported as leaks. This is because many
-> -- 
-> 2.30.2
-> 
+Last good is the one right before that,
 
--- 
-Sincerely yours,
-Mike.
+9c6e8d52a7299  Merge tag 'exfat-for-5.16-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat
+(plus the fixup to make it compile e66435936756d9bce)
+
+The remaining test to do is the merge conflict resolved by me, as you
+suggested.
