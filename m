@@ -2,220 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B90B446AF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 23:41:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C889446AFC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 23:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232135AbhKEWoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 18:44:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233958AbhKEWoB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 18:44:01 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F12C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 15:41:21 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id 127so10129399pfu.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 15:41:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RKFhKV3LHdn4kWJrl1IZufQaNytFJcypgLXt2t47CaE=;
-        b=AFqc0U7z1fdj5Fc1F6jpUP7OMzpwvRabNaAKrNSmNaIOXCwF5Px19CeoDSsVsekX+H
-         qGNq1bLpE7HU4u0jK8O0jpWcSMdustiZI69p1x8FR2Y4W7by/UQE/+kqCrTuRzbEkNV/
-         nfq1gWgFw7NBJNUrjIOJ1ZeUrVP8peLWPL2GH8mNbHo3RvYbohLmsBh8BB+w8SXQ3G05
-         iOcwBui9ZdOxmGb6T/nMW9HbmOX93tU86QN9V6l/Un4i0dxoffgRTAYSAn0AaIxe4M5N
-         QiRrI5dyR3cJ5MSjsRZKqpVA27r8L7inC3TUP6wEwbaq3wN6Vq32+rRR7FdEL4vLWbju
-         76bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RKFhKV3LHdn4kWJrl1IZufQaNytFJcypgLXt2t47CaE=;
-        b=MqaYnmZUDUbfIw5AaAt/A5Ynfulmk4rRyrA4NYUmG7pKc55wnEMkbUTLrxoIMVoIo+
-         0IMlY7ZoGRDd0AIfNwlTrz0RDP27oVVO5mdoXcW1cpa5WzNF2w4oisHqZQX3l3LTUarH
-         T37CgsmyGL3yFF8yA0ckD9c9aS+S/hZd8m6t1dy2GVD6d5GkHXWvsxiybxj1yy6XOV5d
-         eWGXY3syOfHzT7CZceGtu09v1zH6kb8g+HIH//XmgTzzDS/iuHDWbqSJ+PgQFLbF4iQ7
-         SKLkc1ErDLA0g/YSlk2qbOgMg2SQlGAfBVEGdMUh7CU/MM7kfhT9+LtR2U9wQ/BwxBYY
-         CXfA==
-X-Gm-Message-State: AOAM533nqCrS+EKmla8+/G3NnSVh8603Gwu4XaRd/bfiYExMbmWBZF07
-        RMfz22YFLUmziEHSKgjlP2QssQ==
-X-Google-Smtp-Source: ABdhPJwwmnpJPkfeItkz37xqp2m5sS+LBml/avb8CRSmncJrbsFTSPsXq8Z176MHjopw3YcD297Fng==
-X-Received: by 2002:a05:6a00:16cb:b0:44b:bd38:e068 with SMTP id l11-20020a056a0016cb00b0044bbd38e068mr62757719pfc.34.1636152080786;
-        Fri, 05 Nov 2021 15:41:20 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id u38sm3165193pfg.0.2021.11.05.15.41.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 15:41:20 -0700 (PDT)
-Date:   Fri, 5 Nov 2021 22:41:16 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 09/10] x86/tdx: Handle in-kernel MMIO
-Message-ID: <YYWzDKkH3ZDS1b2J@google.com>
-References: <20211005204136.1812078-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005204136.1812078-10-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S233973AbhKEWpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 18:45:22 -0400
+Received: from mail-vi1eur05on2119.outbound.protection.outlook.com ([40.107.21.119]:32992
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230400AbhKEWpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 18:45:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L8cBgBz9NPQJ26786nRS0eetdXGOfwdR6cnxgCK0Bsjnw7/HAzOjsbzsFGlch/2QE7aJGwHV/lDGE4J7P72vrV0NkWgmKIxCBCQZ2tKn8gfiv77/yZ5v7xNAhrkggW7Z49SFdvJ2y0sG3KYOzTJ7uPWoYx5pO79aRszWt3gqA4/vuA+TZg/92BXZQ0DSvM0wNRI6+2IZ417PbjK4J+NEGxW2BVKM9J/q59mdf/3a0iZc3I80FxZ2HEc6fw3MvYVWrFkWwdLBqiPFwN/Ae4E0+Y75eXswWVZJ/YjNmMXBumH5Y+GLxRZ3G5e2wPsNYtbgOduFVjz6WIFVb9Dt0FA4Wg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=38mp6XKa9TBRurRNeGN9gXcnvWQuNW68BmpNZ9KNvrE=;
+ b=Wr+pE3uBPmYlpRRrVLhADRkwfN+9epoOUqT4sfcIhD3VRi17fNCOVgG52gbA5rw4DW5HpJlM3KiBAsIiycnW8O1VtVgXw/LgXi/wUpaXnpge9gyjaJrY3S3S+7gJJjqHSmimz1yV0v8tomzgUJObkjLW8fGKUcIoIxzsfF6tFfIIT5e4sO6IWu+/V0epCzg5VGCfUHL/f7X/zoEa27jZ0k7TWRxJci0LWZnBTBcduLtQ1D2LOGiW4CBGnQLB9jI/t0v0sQ97VQ1eRTClk5fOiwwggKeFQ1uJjVuc0eyWhGwrX7oCqv7+5u0xcD1oJuEP1CyiPS31Xk2NfxCvn4SwXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=38mp6XKa9TBRurRNeGN9gXcnvWQuNW68BmpNZ9KNvrE=;
+ b=oyVTARNKYdkNPohYpjSNVpiBvV9Wcz9Bb4MTLsh/HvGx1ucRKhWxlROEL5oWQk4EM9R7lr+K3hEI3H6kxezXyoGOgCygqQTLgM2Fc4QXbesLcIEYMOBMWWwFeC6So+/Fr3zinFOLszXRWjUDHtgMSoNlgqce2jpTss7sadPQxNQ=
+Received: from VI1P190MB0734.EURP190.PROD.OUTLOOK.COM (2603:10a6:800:123::23)
+ by VI1P190MB0448.EURP190.PROD.OUTLOOK.COM (2603:10a6:802:3a::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.19; Fri, 5 Nov
+ 2021 22:42:36 +0000
+Received: from VI1P190MB0734.EURP190.PROD.OUTLOOK.COM
+ ([fe80::a1aa:fd40:3626:d67f]) by VI1P190MB0734.EURP190.PROD.OUTLOOK.COM
+ ([fe80::a1aa:fd40:3626:d67f%6]) with mapi id 15.20.4669.013; Fri, 5 Nov 2021
+ 22:42:36 +0000
+From:   Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+CC:     Taras Chornyi <taras.chornyi@plvision.eu>,
+        Mickey Rachamim <mickeyr@marvell.com>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Andrew Lunn <andrew@lunn.ch>, Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Denis Kirjanov <dkirjanov@suse.de>,
+        Volodymyr Mytnyk <vmytnyk@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Yevhen Orlov <yevhen.orlov@plvision.eu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net v4] net: marvell: prestera: fix hw structure laid out
+Thread-Topic: [PATCH net v4] net: marvell: prestera: fix hw structure laid out
+Thread-Index: AQHX0mUuVcB8vzXrnUiS928altpGN6v1XrOAgAAmYDo=
+Date:   Fri, 5 Nov 2021 22:42:36 +0000
+Message-ID: <VI1P190MB0734F38F35521218A02CF2048F8E9@VI1P190MB0734.EURP190.PROD.OUTLOOK.COM>
+References: <1636130964-21252-1-git-send-email-volodymyr.mytnyk@plvision.eu>
+ <8a5d8e0c-730e-0426-37f1-180c78f7d402@roeck-us.net>
+In-Reply-To: <8a5d8e0c-730e-0426-37f1-180c78f7d402@roeck-us.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+suggested_attachment_session_id: 70113553-262c-57b2-381a-a98b2d924c0d
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=plvision.eu;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 938aa84f-3c3e-41cd-6348-08d9a0ad90a8
+x-ms-traffictypediagnostic: VI1P190MB0448:
+x-microsoft-antispam-prvs: <VI1P190MB04486ECC79BB0898E96570F98F8E9@VI1P190MB0448.EURP190.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:3383;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pM/EIPhmlwr1VxVE153ED/YUGY3aOEmLgQ4rC5/OEC4uCG6q/2ibfVIvR5tBIu+B2bnsfIGDf3Qg4wFvTwJtUeBznlfgc3BXBrCnRM6hGeuB9D1JWKih4vDNKLGRYlOImDWYoAyJwCB+0Rpjv206o7aDQQ4veL73wJ0J32ceiBPUHKqd3XEVvAeKj1jx5WSfRAFNFttj+ASO70SeMYcgLCIA6C8W3fFmnG14EBhOoOKPtCZjL59rhfRIH7NvJySw0rBFcubAySQ0uhOfb4wRqJ8P5F1kpNR/48B1jDip/DV2uziJ0Wfmr/60kakCnjXiTK+FXlYxClx7Wg/RiZ86nyvNqXJqbljZUixEWtP9G9YG/77E2XElPR7ptxYDsZGmfaBNgmZnkN3J3TaucCrR7LMz+vbKTeJdIn2t8MAy/gcGgRwwkitsBWDtaMyuKLhMn7wKdjDmR//WSnYFHYbUu1hoG7DsdSWfYUHxd0CCVIPsk4lYQ2Q5ZXd4mnBHEXKoodhoFWPGHr9CkAOLF8eXJVxDT2kHJFzivU/abk73qxV+HVrI9f7zrHVzWkArl4RcPn/PzjRSS3jEixZAYQDswNzXTOWi8MiJVqJeP6fwOCN/G74uxj46JnyeRE2aZegmT1PeJt+llMlShFzJoIMnQ+iMwfAM/bw8ehnGbPEp/QyNn+5YrfmFCcRDdLzI53Kgye4FShORZh7sPBNJToRhxw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P190MB0734.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39830400003)(136003)(396003)(366004)(346002)(376002)(110136005)(71200400001)(9686003)(54906003)(66446008)(66946007)(7696005)(38070700005)(64756008)(55016002)(508600001)(6506007)(91956017)(66556008)(7416002)(76116006)(66476007)(26005)(86362001)(316002)(8676002)(44832011)(8936002)(5660300002)(122000001)(4326008)(2906002)(38100700002)(52536014)(33656002)(186003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?vwbkr5hExQruqbm+ATLyeJZUTAxQDv00mNTeZ4VjILXRTUDG0G5I6uN45i?=
+ =?iso-8859-1?Q?47gWqOqDEPMork3k35tc3af9hKY+BY7zRePbYTDeXn8o11AoGtDUa5EpUO?=
+ =?iso-8859-1?Q?z94hc0++YzijlOXMtScUKRxujRl1QI0x8i+mAeFfiOyQBHFheWWXU8eq1m?=
+ =?iso-8859-1?Q?RXN+ljVc/rVPN0DS6vzQc50FNK27gcBJqsRxY0fHa7mcB36umHGCMtbMmK?=
+ =?iso-8859-1?Q?Okbh+ahpdP3/290PZazsjsmOE5u6B6BSUEkzJIq6003WC1+zjfhCW39awY?=
+ =?iso-8859-1?Q?Oj6O/PokyD4ulcuoEFq05zmmTJbWx9AVZd0a6ZNgdRlub6yAp/VLd/xqQ0?=
+ =?iso-8859-1?Q?JKV7AlMdQU0shQUJR5Y5gg7DVhsTZtRix+oCN1qxeKz9tHtA6Q6IKG7nOM?=
+ =?iso-8859-1?Q?o4lw2e1ToqpCI+jnOlIB/8YoRDxqsgE+iUJZfXapSXnWLwarOchz3HpWuX?=
+ =?iso-8859-1?Q?c+5Y6RBrFpdiQ4BD61QHCA8sj5uha8FULo+S91zuUj8f/dkQ3WiSaUMp1m?=
+ =?iso-8859-1?Q?588/LUqPejcK5UTf9qZnqbS2cnZ69odH0SymJFXx6nggmZpfnRrgX6Gq3I?=
+ =?iso-8859-1?Q?KpGUXzDZTtq/WcRcU77Z912T7/olniJvfZX9tcuuJ3QsgQSkTHxA4mOXo+?=
+ =?iso-8859-1?Q?58pevNFbphnftHp/npvfQUf1f7B97lj99X3pkaAI2usy1j36INTGpClDSq?=
+ =?iso-8859-1?Q?ZXoLtCi/0EurDvJqYPynyFkVdYmxp4AYBjKU9leOzjj/G6CEe19k/KIV5s?=
+ =?iso-8859-1?Q?fa1+VvaMkXbrUl9tQbmLbSqdw0K1alMmLyarc0Lv7xFgwvkaZ5ZomF2zyV?=
+ =?iso-8859-1?Q?DbvCLOjLZaNbAN7/epaDJxPT5rt1NMrRkhG2oRBwaNFByWS0+3HxVriMcH?=
+ =?iso-8859-1?Q?JC6aW33cI1TaehIYVyFMR8e1l/+lcPxlgRgdmRUvilWm3KeDPp3vG5i4j7?=
+ =?iso-8859-1?Q?5XUACUjTFmi3Ze9dEEGc3AffrAOxLXUbUy9zHMdD/zGNKQbZjED7a5ogT2?=
+ =?iso-8859-1?Q?R8o/qMtGa29X6RcTJRgL7ryXjpreZojiEjd/A9tb76/HDrkO37aPv10opx?=
+ =?iso-8859-1?Q?N+grOTPN9mTLOKX19XKj3LIzaYCwUZj2ckgHzBmGUIsWrdhahUFXte/wA0?=
+ =?iso-8859-1?Q?xh6zluhtQ1nrirIulfKw29odnLNzVaIaswhINvLdYU8LQGpUW8f0ghqupD?=
+ =?iso-8859-1?Q?jF90CRz1I5ZQalEayhGKP+SAY+COk/+g1f9JSYs31wDlLoD87+sgQsFCZd?=
+ =?iso-8859-1?Q?IYcDuPMt/P3TINcPKNPSPebKJBBEkgwZoRvkp1LBpMl1q1YowgOWgeD+OL?=
+ =?iso-8859-1?Q?KfPS5UFFBR0U/8KD0NtL4f/CenYds8rDUAGhqHQNQ5UbBqB2wW7ez6ulkX?=
+ =?iso-8859-1?Q?7ANVblo6TUaeGMrohLSHOMr5zAu2RYDlE59QJSU4/nXcsjEIkYcDK2OxEN?=
+ =?iso-8859-1?Q?8lFBXDFPH/Sfu82AqDtwzqN4UPvORdDzHts7kt5VCV9wnxdYSr6drrM55u?=
+ =?iso-8859-1?Q?zRJT+4++zcFvsF5qELAST23ki4V4cfpMxbIWPmvUZFogZujwGV9bGMvEUR?=
+ =?iso-8859-1?Q?53Y4xAq6aRFBDsTmyV4kNHfx3DGS+e8u1e/fNWKzUh4c3DCwREcIjh3pQa?=
+ =?iso-8859-1?Q?UGksB6t1mFif+nB2R+CwDPIMf6xc7W95fI+Z1EuE8ZTsXBYTrj8ciExGd0?=
+ =?iso-8859-1?Q?RWDH8TCnA2nZTI/racTLVB1QwkUM2xFcAI4RrbNX?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211005204136.1812078-10-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1P190MB0734.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 938aa84f-3c3e-41cd-6348-08d9a0ad90a8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Nov 2021 22:42:36.5291
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xavZHncxHgGoxfFhx6tdy4Fpb+/+Pd9GkqJ7brrLrIECMjUHtHUvhflS9yry9L96ccmdVpKGUEA0zEOCGhDSl7Tq2DghY18Sdb0TkcyqSp4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1P190MB0448
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021, Kuppuswamy Sathyanarayanan wrote:
-> @@ -207,6 +210,103 @@ static void tdx_handle_io(struct pt_regs *regs, u32 exit_qual)
->  	}
->  }
->  
-> +static unsigned long tdx_mmio(int size, bool write, unsigned long addr,
-> +			      unsigned long *val)
-> +{
-> +	struct tdx_hypercall_output out = {0};
-> +	u64 err;
-> +
-> +	err = _tdx_hypercall(EXIT_REASON_EPT_VIOLATION, size, write,
-> +			     addr, *val, &out);
-> +	*val = out.r11;
-
-Val should not be written on error, and writing it for "write" is also weird.
-
-> +	return err;
-> +}
-> +
-> +static int tdx_handle_mmio(struct pt_regs *regs, struct ve_info *ve)
-> +{
-> +	char buffer[MAX_INSN_SIZE];
-> +	unsigned long *reg, val;
-> +	struct insn insn = {};
-> +	enum mmio_type mmio;
-> +	int size, ret;
-> +	u8 sign_byte;
-> +
-> +	if (user_mode(regs)) {
-> +		ret = insn_fetch_from_user(regs, buffer);
-> +		if (!ret)
-> +			return -EFAULT;
-> +		if (!insn_decode_from_regs(&insn, regs, buffer, ret))
-> +			return -EFAULT;
-> +	} else {
-> +		ret = copy_from_kernel_nofault(buffer, (void *)regs->ip,
-> +					       MAX_INSN_SIZE);
-> +		if (ret)
-> +			return -EFAULT;
-> +		insn_init(&insn, buffer, MAX_INSN_SIZE, 1);
-> +		insn_get_length(&insn);
-> +	}
-> +
-> +	mmio = insn_decode_mmio(&insn, &size);
-> +	if (mmio == MMIO_DECODE_FAILED)
-> +		return -EFAULT;
-> +
-> +	if (mmio != MMIO_WRITE_IMM && mmio != MMIO_MOVS) {
-> +		reg = insn_get_modrm_reg_ptr(&insn, regs);
-> +		if (!reg)
-> +			return -EFAULT;
-> +	}
-> +
-> +	switch (mmio) {
-> +	case MMIO_WRITE:
-> +		memcpy(&val, reg, size);
-> +		ret = tdx_mmio(size, true, ve->gpa, &val);
-> +		break;
-> +	case MMIO_WRITE_IMM:
-> +		val = insn.immediate.value;
-> +		ret = tdx_mmio(size, true, ve->gpa, &val);
-> +		break;
-> +	case MMIO_READ:
-> +		ret = tdx_mmio(size, false, ve->gpa, &val);
-
-val is never set, i.e. this is leaking stack data to the untrusted VMM.
-
-> +		if (ret)
-> +			break;
-> +		/* Zero-extend for 32-bit operation */
-> +		if (size == 4)
-> +			*reg = 0;
-> +		memcpy(reg, &val, size);
-> +		break;
-> +	case MMIO_READ_ZERO_EXTEND:
-> +		ret = tdx_mmio(size, false, ve->gpa, &val);
-
-And here.
-
-> +		if (ret)
-> +			break;
-> +
-> +		/* Zero extend based on operand size */
-> +		memset(reg, 0, insn.opnd_bytes);
-> +		memcpy(reg, &val, size);
-> +		break;
-> +	case MMIO_READ_SIGN_EXTEND:
-> +		ret = tdx_mmio(size, false, ve->gpa, &val);
-
-And here.
-
-> +		if (ret)
-> +			break;
-> +
-> +		if (size == 1)
-> +			sign_byte = (val & 0x80) ? 0xff : 0x00;
-> +		else
-> +			sign_byte = (val & 0x8000) ? 0xff : 0x00;
-> +
-> +		/* Sign extend based on operand size */
-> +		memset(reg, sign_byte, insn.opnd_bytes);
-> +		memcpy(reg, &val, size);
-> +		break;
-> +	case MMIO_MOVS:
-> +	case MMIO_DECODE_FAILED:
-> +		return -EFAULT;
-> +	}
-> +
-> +	if (ret)
-> +		return -EFAULT;
-> +	return insn.length;
-> +}
-> +
->  unsigned long tdx_get_ve_info(struct ve_info *ve)
->  {
->  	struct tdx_module_output out = {0};
-> @@ -256,6 +356,14 @@ int tdx_handle_virtualization_exception(struct pt_regs *regs,
->  	case EXIT_REASON_IO_INSTRUCTION:
->  		tdx_handle_io(regs, ve->exit_qual);
->  		break;
-> +	case EXIT_REASON_EPT_VIOLATION:
-> +		/* Currently only MMIO triggers EPT violation */
-> +		ve->instr_len = tdx_handle_mmio(regs, ve);
-> +		if (ve->instr_len < 0) {
-> +			pr_warn_once("MMIO failed\n");
-
-That's not remotely helpful.  Why not?
-
-		if (WARN_ON_ONCE(ve->instr_len < 0))
-			return -EFAULT;
-
-> +			return -EFAULT;
-> +		}
-> +		break;
->  	default:
->  		pr_warn("Unexpected #VE: %lld\n", ve->exit_reason);
->  		return -EFAULT;
-> -- 
-> 2.25.1
-> 
+>=0A=
+> > From: Volodymyr Mytnyk <vmytnyk@marvell.com>=0A=
+> > =0A=
+> > The prestera FW v4.0 support commit has been merged=0A=
+> > accidentally w/o review comments addressed and waiting=0A=
+> > for the final patch set to be uploaded. So, fix the remaining=0A=
+> > comments related to structure laid out and build issues.=0A=
+> > =0A=
+> > Reported-by: kernel test robot <lkp@intel.com>=0A=
+> > Fixes: bb5dbf2cc64d ("net: marvell: prestera: add firmware v4.0 support=
+")=0A=
+> > Signed-off-by: Volodymyr Mytnyk <vmytnyk@marvell.com>=0A=
+> =0A=
+> The patch does not apply to the mainline kernel, so I can not test it the=
+re.=0A=
+> It does apply to linux-next, and m68k:allmodconfig builds there with the =
+patch=0A=
+> applied. However, m68k:allmodconfig also builds in -next with this patch =
+_not_=0A=
+> applied, so I can not really say if it does any good or bad.=0A=
+> In the meantime, the mainline kernel (as of v5.15-10643-gfe91c4725aee)=0A=
+> still fails to build.=0A=
+> =0A=
+> Guenter=0A=
+=0A=
+Hi Guenter,=0A=
+=0A=
+	The mainline kernel doesn't have the base ("net: marvell: prestera: add fi=
+rmware v4.0 support") commit yet, so the patch will not be applied.=0A=
+=0A=
+This patch is based on net/master, so you can try the patch there.=0A=
+=0A=
+To apply this patch to mainline, the following list of patches should be po=
+rted from net/master first:=0A=
+ - bb5dbf2cc64d ("net: marvell: prestera: add firmware v4.0 support")=0A=
+ - 236f57fe1b88 ("net: marvell: prestera: Add explicit padding")=0A=
+ - a46a5036e7d2 ("net: marvell: prestera: fix patchwork build problems")=0A=
+=0A=
+    Volodymyr=0A=
