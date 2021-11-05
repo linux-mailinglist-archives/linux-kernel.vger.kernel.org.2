@@ -2,85 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DCE445CF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 01:11:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 427FA445CF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 01:13:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232484AbhKEAN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 20:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34098 "EHLO
+        id S232553AbhKEAQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 20:16:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232410AbhKEANy (ORCPT
+        with ESMTP id S232532AbhKEAQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 20:13:54 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208D7C061203
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 17:11:16 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id n128so8912745iod.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 17:11:16 -0700 (PDT)
+        Thu, 4 Nov 2021 20:16:25 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75225C06120D
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 17:13:46 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id o8so27114968edc.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 17:13:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=pensando.io; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=4KsnJxBGTyLgNC9LQFVaGBTTSMsAvFSllk79LexRwJA=;
-        b=nFhNJs/6zLfX/HDdX03yOBZsFn//RbfnTbfvj+8xfIcqZA01a8sEJdr7u7Hg2yFwIx
-         UQ8Wr+wzrwqo1ljEOyT7Z0fOU4gCqarwPqUzj1f018BbkV8CPIPaNqLH+1IHHrzBv5SB
-         u/PfIRUb4ABRnF3OXo6a4xpOLivk43cyxfPcY=
+        bh=IhgAEkTJECpIqTDL/ENLizRv8mhp9DKt9XOklg+3I0E=;
+        b=ZY9tceljvnofycAv9BIK/1dgqJWFJUN15uDkr55E7aCBUrYsVfhBP+wQrXBG7jVNRL
+         P8ndUiQ3g9pc/N/1Ve+JjtH7EVHjm/zBNN+1D16sVhvfNoE6OeUxlt40m0spMpv/sO37
+         +v7+zxIXXLcU+dyOR3Xs/ZGpIMYxERdoG7pkZrik/61sn1pwziXfgC5ayCDP4YvCqyDf
+         0ce08dZjKRZ5vlaGoORvHNycU5ed5fynSbHJrcHJKpgnKrxjYgspNmEggyebv4BcdgVm
+         p428yZwYhl8qLMvC+MEndxSuSYaoAxHgmKGYMO+vZuAo25zcyXXZ697UrAqx7Zsu15Fs
+         zQ2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4KsnJxBGTyLgNC9LQFVaGBTTSMsAvFSllk79LexRwJA=;
-        b=7ocdUcom+dlRASFA4S4ydEa3tCl6gBtUcoTG7MMbAtH8MgPsxqkLAVvUJOSXk4E+Nh
-         vuR/F80ba5Hq5vYIvzj4olA1HlwPnFccmXXHgUEwLPn2BpJWE6TWHfEf24P/FSxcKvqw
-         NBElg084m0f0c1hG/EHEL+Qk6cebS/CLabGBNpr0nhyuu5bGB54CCVwJHjNtk57+numd
-         J+G+l8Q/4qWtcpjGd02qGCIh+1ke327QyqjiAcK76VT8ozoQHQa0ebW6CTRi2TbOTkAy
-         HdBgZAddI87rBsyiGaO6wjjGVIsEu1nkvplICIpmVD8HTr7vsQPDcM8zy4fkHYbcDnHH
-         S2MQ==
-X-Gm-Message-State: AOAM533f6iU1zhYuIN25mHxy2zahJUyJEU/hYUH938viLgLEi599D9XR
-        XDn148ztoXYF1a3J4Ke5nxlkRDe1VshcsQ==
-X-Google-Smtp-Source: ABdhPJzaHGiWm/q/CE8+LTmzvVYKyt5iS987h3XQzvOnEjGenXHtCpBGMOumcvfcuUANwJ9zk7R2uA==
-X-Received: by 2002:a5d:8152:: with SMTP id f18mr38453286ioo.135.1636071075457;
-        Thu, 04 Nov 2021 17:11:15 -0700 (PDT)
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com. [209.85.166.177])
-        by smtp.gmail.com with ESMTPSA id k11sm3935736ilv.66.2021.11.04.17.11.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Nov 2021 17:11:14 -0700 (PDT)
-Received: by mail-il1-f177.google.com with SMTP id w10so7886784ilc.13
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 17:11:13 -0700 (PDT)
-X-Received: by 2002:a05:6e02:1a85:: with SMTP id k5mr18841136ilv.27.1636071073597;
- Thu, 04 Nov 2021 17:11:13 -0700 (PDT)
+        bh=IhgAEkTJECpIqTDL/ENLizRv8mhp9DKt9XOklg+3I0E=;
+        b=YakJFt0E1qHgonUY+FHYHspxUctTPzBOKobAqn9mGq5pgdmVe3fJ+ETd+h+DBFBkFi
+         yHxcGslgqLm7kDnvMtSkRi4GKzyGZu6fX3N0yeD1kgIkMGKqCn3oKJ4JK6mHaP+Qttxf
+         n8MvwK/c+BPWWlPhrSRmgJEYGyuEmX910XELiFY824PDmjJyIcZ9yS643CfkUuPcqOol
+         9iKXaXEwiXiVnjWK3xwSA8sYFuuV4G+8dX6Uykscco4QJeuKxsCEf+XRdtJJWENVopv/
+         4ARIrQPR/p5bbGMdw3BX8EppwjUfRJEVBzW9MCHA0QO0SwmWYMZM8V30OYPpt+zdLVE8
+         tkWA==
+X-Gm-Message-State: AOAM5313dWZ7H2OudK9Nka7JrrH2qmT5OW2Ex/zmMlbdWyF16zCLDrit
+        /OCRc+hveOBjCH+dgczOWMU8Gk2Y8prX6G4HeawF4A==
+X-Google-Smtp-Source: ABdhPJxFuIEUo5C+4vx/YHqoFhN3Iksc8LjQ08WNM9GqIe3SHw3kWZZCIQuufKgOtnhH5tSjlXA7ZPWX2h7Zhr4uIlQ=
+X-Received: by 2002:a50:9dca:: with SMTP id l10mr73680807edk.61.1636071224938;
+ Thu, 04 Nov 2021 17:13:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211104222840.781314-1-robdclark@gmail.com>
-In-Reply-To: <20211104222840.781314-1-robdclark@gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 4 Nov 2021 17:11:02 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Xfv+X+X+KBM5yiJ0CdqyAPDKfOgsoZETb_7kmaHR1ztg@mail.gmail.com>
-Message-ID: <CAD=FV=Xfv+X+X+KBM5yiJ0CdqyAPDKfOgsoZETb_7kmaHR1ztg@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/devfreq: Fix OPP refcnt leak
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20211025015156.33133-1-brad@pensando.io> <20211025015156.33133-4-brad@pensando.io>
+ <1635166454.830065.190977.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1635166454.830065.190977.nullmailer@robh.at.kernel.org>
+From:   Brad Larson <brad@pensando.io>
+Date:   Thu, 4 Nov 2021 17:13:34 -0700
+Message-ID: <CAK9rFnwP-7LAZFABrkwMk=jWF=y7+3Y_p3ivbpZQ5dH=9sy6xQ@mail.gmail.com>
+Subject: Re: [PATCH v3 03/11] dt-bindings: mmc: Add Pensando Elba SoC binding
+To:     Rob Herring <robh@kernel.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Olof Johansson <olof@lixom.net>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Rob,
 
-On Thu, Nov 4, 2021 at 3:23 PM Rob Clark <robdclark@gmail.com> wrote:
+On Mon, Oct 25, 2021 at 5:54 AM Rob Herring <robh@kernel.org> wrote:
 >
-> From: Rob Clark <robdclark@chromium.org>
+> On Sun, 24 Oct 2021 18:51:48 -0700, Brad Larson wrote:
+> > Pensando Elba ARM 64-bit SoC is integrated with this IP and
+> > explicitly controls byte-lane enables resulting in an additional
+> > reg property resource.
+> >
+> > Signed-off-by: Brad Larson <brad@pensando.io>
+> > ---
+> >  .../devicetree/bindings/mmc/cdns,sdhci.yaml         | 13 ++++++++-----
+> >  1 file changed, 8 insertions(+), 5 deletions(-)
+> >
 >
-> Reported-by: Douglas Anderson <dianders@chromium.org>
-> Fixes: 9bc95570175a ("drm/msm: Devfreq tuning")
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->  drivers/gpu/drm/msm/msm_gpu_devfreq.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>
+> yamllint warnings/errors:
+> ./Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml:20:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+>
+> dtschema/dtc warnings/errors:
+>
+> doc reference errors (make refcheckdocs):
+>
+> See https://patchwork.ozlabs.org/patch/1545481
+>
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+>
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>
+> pip3 install dtschema --upgrade
+>
+> Please check and re-submit.
+>
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+yamllint was not installed, it is now and dtschema is updated to run again
+before re-submit.
+
+Thanks,
+Brad
