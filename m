@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2054462ED
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7244462EB
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 12:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbhKELmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 07:42:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45070 "EHLO
+        id S232713AbhKELl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 07:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232660AbhKELlu (ORCPT
+        with ESMTP id S232656AbhKELlw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 07:41:50 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54EC8C061203
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 04:39:10 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id g14so31484708edz.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 04:39:10 -0700 (PDT)
+        Fri, 5 Nov 2021 07:41:52 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05700C06120E
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 04:39:12 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id o8so31940912edc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 04:39:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sartura-hr.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Ck6CnoOUEpGTUA7mAEjajeF6BgfIwURf2ogwlOV0P5c=;
-        b=jmLBKKyKZ8Ekwd8uM8vB3tZ+PPyyhmcVZq2ecajkPXURrhRvA8olhb+jkvV9VP5Ef0
-         CdF7zr+OIiA1xk9njuhrggek/F14dtzsIynJCxtcwYg4jutcZ3NtUAay7XR1HBNdFMSG
-         NYqBAQJWwA6mWo7bdz0kOWo+fRTqX9qB3a46wuW9ebEjSG+2PQG+PDMSWLzc1m84JN6k
-         y6iyveiy1U0CVbrY/5tl7DCHBjqH3BoVNk9oAEt78TacX+6tgkv8wAlr8USOnww94IKj
-         33IReUWs55pYrJgHob8M+YDRgyncHBPO3U0GCcH3e3fnrC6DAd2sKX7gV9mbgHQ9rWmV
-         STdA==
+        bh=YJRk7pJimoXqav/9xV335feIX1hm9pCZ7nOav9odEq4=;
+        b=aKuuoK00LuivdAYNlDwRwmi+qD9I4DHEe+Y9CrAJjS16Q212fyx2LlyRTKC8gAZlFT
+         Zg5zxd5kV/g9elPmkIafWGeZf/J+NOIZPKdT4c6o1jnK8JimCEs5ua9rKsecH+lQ1Klm
+         B5Bz4xcvmC5XvegqJHhh0Fo163n0Y4uHFXwzcGlGnW9mnfapt77m/HX3RSUDBPVg/q3Y
+         9UVxDQSq2AKV77+eov//P195gYUUqcJSQM8y6/81HTMZpu3snypsc5ip1ix3ekuu5dy+
+         /mnAU0i53yeHDjZNQAiK6uVn0nWMFZK6xZXxNdkZPjd5VWr58xzH7ImpnStE7V7VJLNJ
+         33nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Ck6CnoOUEpGTUA7mAEjajeF6BgfIwURf2ogwlOV0P5c=;
-        b=fJAwV51Di7s0mH+FCsLTpfLaCRb0OJnRBsvMpXL5tr6+1LbdbuikU8GbhPC2u5q1tX
-         P64RBpLfwIxbgIwP8UAPwPhvb8OngU2xz8CjakH/JxpR2IWaIJfePmrNirPVF1FFxLg2
-         3xRtS3SkMZ79lpBAfEaeeCj/+mdWkEcxCqSfzlzhFXrYJnJDhvMWYkQXNFqahM3HoBYq
-         wtPsOt4QdtWOrLuUsTOQqG8rZuxRrUcEnG4bwORkb+RvLNzGr/Hy0nqQaAXT2+8o6ATg
-         l9ayU2cAs0hQaEdPFWGWGLyGxM/Efjz3SQcKJsNw/8KLEwBmFew4cuMDGt4VpUIm0Wmi
-         xmiQ==
-X-Gm-Message-State: AOAM5328z/Zummj4t7LQrdLdTIfuK7r9f3YlVLm9w4RvoienmwkpwfVY
-        tkQb+GTOmLUWix7nG4xLRfTyyA==
-X-Google-Smtp-Source: ABdhPJwQJ6pI2myDid81p56qbL+BAalAoh+JzDW0wFzYPYZCMHeodMIpnqBmUyjdDFPX+nQoHngiHA==
-X-Received: by 2002:a17:907:e86:: with SMTP id ho6mr51083665ejc.197.1636112348961;
-        Fri, 05 Nov 2021 04:39:08 -0700 (PDT)
+        bh=YJRk7pJimoXqav/9xV335feIX1hm9pCZ7nOav9odEq4=;
+        b=P8YUNHWYXIxNfI/A3xt81Qa/u9DI8JMAo/xEo9+AopjQFqPf87Rj+SLBroyq4xWS/X
+         B2R1wEdE1lzyucVExuJ3ReyykptEW9JJRqu0msyV+7Idxoq60Y4+xRAX2/aYguLIQStx
+         un+qaDlM5tXFO1nf/SgLTo3ihlekrmvWDwLaEBpEX9cqZo/8PeYxknoDvYSC9+9awjvB
+         ZMV3WEfJL6rb2kJHy4wz30HDg356Qe4FvBH2LBJjQG88Inq4suCx9tXhcNAZpx33+0Pt
+         emJIA7ESizrJrDEJlN4FMXe1o2bbVzLsuMrwbrQWVdSMb+yrZW0a1FJXTYQVFi1CQpvm
+         FwvQ==
+X-Gm-Message-State: AOAM53265aobOoxFsF52q21EEW+HPcM6OxPNlbJoByGJHi38hUHgxObU
+        MmBIfQoV8SEnIZ8NfRBjNueU1g==
+X-Google-Smtp-Source: ABdhPJxqUcn0LqivlMH4SnXfhree8tk5/xJcjPALZ73DSDq6gh8cDJKAx06H2wNYSlPtGfqS8KKsoQ==
+X-Received: by 2002:a17:907:7d8d:: with SMTP id oz13mr45712512ejc.361.1636112350575;
+        Fri, 05 Nov 2021 04:39:10 -0700 (PDT)
 Received: from fedora.. (dh207-99-83.xnet.hr. [88.207.99.83])
-        by smtp.googlemail.com with ESMTPSA id bn20sm4011325ejb.5.2021.11.05.04.39.07
+        by smtp.googlemail.com with ESMTPSA id bn20sm4011325ejb.5.2021.11.05.04.39.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 04:39:08 -0700 (PDT)
+        Fri, 05 Nov 2021 04:39:10 -0700 (PDT)
 From:   Robert Marko <robert.marko@sartura.hr>
 To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
         robh+dt@kernel.org, lee.jones@linaro.org, p.zabel@pengutronix.de,
@@ -55,9 +55,9 @@ To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
         linux-kernel@vger.kernel.org, andy.shevchenko@gmail.com,
         michael@walle.cc
 Cc:     luka.perkov@sartura.hr, Robert Marko <robert.marko@sartura.hr>
-Subject: [PATCH v8 3/6] dt-bindings: reset: Add Delta TN48M
-Date:   Fri,  5 Nov 2021 12:38:56 +0100
-Message-Id: <20211105113859.101868-3-robert.marko@sartura.hr>
+Subject: [PATCH v8 4/6] reset: Add Delta TN48M CPLD reset controller
+Date:   Fri,  5 Nov 2021 12:38:57 +0100
+Message-Id: <20211105113859.101868-4-robert.marko@sartura.hr>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211105113859.101868-1-robert.marko@sartura.hr>
 References: <20211105113859.101868-1-robert.marko@sartura.hr>
@@ -67,41 +67,206 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add header for the Delta TN48M CPLD provided
-resets.
+Delta TN48M CPLD exposes resets for the following:
+* 88F7040 SoC
+* 88F6820 SoC
+* 98DX3265 switch MAC-s
+* 88E1680 PHY-s
+* 88E1512 PHY
+* PoE PSE controller
+
+Controller supports only self clearing resets.
 
 Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 ---
- include/dt-bindings/reset/delta,tn48m-reset.h | 20 +++++++++++++++++++
- 1 file changed, 20 insertions(+)
- create mode 100644 include/dt-bindings/reset/delta,tn48m-reset.h
+Changes in v8:
+* Drop of.h and include mod_devicetable.h per Andys comment
+* Mark the units used in timeout and sleep defines for the timeout poller
 
-diff --git a/include/dt-bindings/reset/delta,tn48m-reset.h b/include/dt-bindings/reset/delta,tn48m-reset.h
+Changes in v5:
+* Allow COMPILE_TEST as well
+* Default to MFD_TN48M_CPLD
+
+Changes in v4:
+* Drop assert and deassert as only self-clearing
+resets are support by the HW
+* Make sure that reset is cleared before returning
+from reset.
+---
+ drivers/reset/Kconfig       |  10 +++
+ drivers/reset/Makefile      |   1 +
+ drivers/reset/reset-tn48m.c | 128 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 139 insertions(+)
+ create mode 100644 drivers/reset/reset-tn48m.c
+
+diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+index 5656cac04b4c..e76aba5f4c84 100644
+--- a/drivers/reset/Kconfig
++++ b/drivers/reset/Kconfig
+@@ -243,6 +243,16 @@ config RESET_TI_SYSCON
+ 	  you wish to use the reset framework for such memory-mapped devices,
+ 	  say Y here. Otherwise, say N.
+ 
++config RESET_TN48M_CPLD
++	tristate "Delta Networks TN48M switch CPLD reset controller"
++	depends on MFD_TN48M_CPLD || COMPILE_TEST
++	default MFD_TN48M_CPLD
++	help
++	  This enables the reset controller driver for the Delta TN48M CPLD.
++	  It provides reset signals for Armada 7040 and 385 SoC-s, Alleycat 3X
++	  switch MAC-s, Alaska OOB ethernet PHY, Quad Alaska ethernet PHY-s and
++	  Microchip PD69200 PoE PSE controller.
++
+ config RESET_UNIPHIER
+ 	tristate "Reset controller driver for UniPhier SoCs"
+ 	depends on ARCH_UNIPHIER || COMPILE_TEST
+diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
+index ea8b8d9ca565..79beab92324f 100644
+--- a/drivers/reset/Makefile
++++ b/drivers/reset/Makefile
+@@ -31,6 +31,7 @@ obj-$(CONFIG_RESET_SOCFPGA) += reset-socfpga.o
+ obj-$(CONFIG_RESET_SUNXI) += reset-sunxi.o
+ obj-$(CONFIG_RESET_TI_SCI) += reset-ti-sci.o
+ obj-$(CONFIG_RESET_TI_SYSCON) += reset-ti-syscon.o
++obj-$(CONFIG_RESET_TN48M_CPLD) += reset-tn48m.o
+ obj-$(CONFIG_RESET_UNIPHIER) += reset-uniphier.o
+ obj-$(CONFIG_RESET_UNIPHIER_GLUE) += reset-uniphier-glue.o
+ obj-$(CONFIG_RESET_ZYNQ) += reset-zynq.o
+diff --git a/drivers/reset/reset-tn48m.c b/drivers/reset/reset-tn48m.c
 new file mode 100644
-index 000000000000..d4e9ed12de3e
+index 000000000000..6889e9173577
 --- /dev/null
-+++ b/include/dt-bindings/reset/delta,tn48m-reset.h
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
++++ b/drivers/reset/reset-tn48m.c
+@@ -0,0 +1,128 @@
++// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * Delta TN48M CPLD GPIO driver
++ * Delta TN48M CPLD reset driver
 + *
 + * Copyright (C) 2021 Sartura Ltd.
 + *
 + * Author: Robert Marko <robert.marko@sartura.hr>
 + */
 +
-+#ifndef _DT_BINDINGS_RESET_TN48M_H
-+#define _DT_BINDINGS_RESET_TN48M_H
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/mod_devicetable.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/regmap.h>
++#include <linux/reset-controller.h>
 +
-+#define CPU_88F7040_RESET	0
-+#define CPU_88F6820_RESET	1
-+#define MAC_98DX3265_RESET	2
-+#define PHY_88E1680_RESET	3
-+#define PHY_88E1512_RESET	4
-+#define POE_RESET		5
++#include <dt-bindings/reset/delta,tn48m-reset.h>
 +
-+#endif /* _DT_BINDINGS_RESET_TN48M_H */
++#define TN48M_RESET_REG		0x10
++
++#define TN48M_RESET_TIMEOUT_US	125000
++#define TN48M_RESET_SLEEP_US	10
++
++struct tn48_reset_map {
++	u8 bit;
++};
++
++struct tn48_reset_data {
++	struct reset_controller_dev rcdev;
++	struct regmap *regmap;
++};
++
++static const struct tn48_reset_map tn48m_resets[] = {
++	[CPU_88F7040_RESET] = {0},
++	[CPU_88F6820_RESET] = {1},
++	[MAC_98DX3265_RESET] = {2},
++	[PHY_88E1680_RESET] = {4},
++	[PHY_88E1512_RESET] = {6},
++	[POE_RESET] = {7},
++};
++
++static inline struct tn48_reset_data *to_tn48_reset_data(
++			struct reset_controller_dev *rcdev)
++{
++	return container_of(rcdev, struct tn48_reset_data, rcdev);
++}
++
++static int tn48m_control_reset(struct reset_controller_dev *rcdev,
++			       unsigned long id)
++{
++	struct tn48_reset_data *data = to_tn48_reset_data(rcdev);
++	unsigned int val;
++
++	regmap_update_bits(data->regmap, TN48M_RESET_REG,
++			   BIT(tn48m_resets[id].bit), 0);
++
++	return regmap_read_poll_timeout(data->regmap,
++					TN48M_RESET_REG,
++					val,
++					val & BIT(tn48m_resets[id].bit),
++					TN48M_RESET_SLEEP_US,
++					TN48M_RESET_TIMEOUT_US);
++}
++
++static int tn48m_control_status(struct reset_controller_dev *rcdev,
++				unsigned long id)
++{
++	struct tn48_reset_data *data = to_tn48_reset_data(rcdev);
++	unsigned int regval;
++	int ret;
++
++	ret = regmap_read(data->regmap, TN48M_RESET_REG, &regval);
++	if (ret < 0)
++		return ret;
++
++	if (BIT(tn48m_resets[id].bit) & regval)
++		return 0;
++	else
++		return 1;
++}
++
++static const struct reset_control_ops tn48_reset_ops = {
++	.reset		= tn48m_control_reset,
++	.status		= tn48m_control_status,
++};
++
++static int tn48m_reset_probe(struct platform_device *pdev)
++{
++	struct tn48_reset_data *data;
++	struct regmap *regmap;
++
++	regmap = dev_get_regmap(pdev->dev.parent, NULL);
++	if (!regmap)
++		return -ENODEV;
++
++	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	data->regmap = regmap;
++
++	data->rcdev.owner = THIS_MODULE;
++	data->rcdev.ops = &tn48_reset_ops;
++	data->rcdev.nr_resets = ARRAY_SIZE(tn48m_resets);
++	data->rcdev.of_node = pdev->dev.of_node;
++
++	return devm_reset_controller_register(&pdev->dev, &data->rcdev);
++}
++
++static const struct of_device_id tn48m_reset_of_match[] = {
++	{ .compatible = "delta,tn48m-reset", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, tn48m_reset_of_match);
++
++static struct platform_driver tn48m_reset_driver = {
++	.driver = {
++		.name = "delta-tn48m-reset",
++		.of_match_table = tn48m_reset_of_match,
++	},
++	.probe = tn48m_reset_probe,
++};
++module_platform_driver(tn48m_reset_driver);
++
++MODULE_AUTHOR("Robert Marko <robert.marko@sartura.hr>");
++MODULE_DESCRIPTION("Delta TN48M CPLD reset driver");
++MODULE_LICENSE("GPL");
 -- 
 2.33.1
 
