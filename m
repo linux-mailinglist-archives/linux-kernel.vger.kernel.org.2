@@ -2,82 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55621445D08
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 01:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0848445D12
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 01:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbhKEAef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 20:34:35 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:42889 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhKEAeb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 20:34:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1636072313; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=BDIoF3/FvA1RoYzn+r7S+qitEnsRNcOF7wiDLaFQVc0=; b=qDcRu3x8NzyeTBdu7SpFLEwpRDNLyF5ttXICfU7O89cC2XdwR3z/gsX4Tr1qziNbeQzII+Eu
- rW6UqmRKo8xueTIfhsefmIb2DHDJXlXM9w7SU7Sd20PGHtuvtnkM8QNRgPlKdYm3kZMeu/HB
- juoWzHChnpqrfzBgvtDau0pZCxg=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 61847b5dc19d3d12571d8ba7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Nov 2021 00:31:25
- GMT
-Sender: quic_bbhatt=quicinc.com@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 60D17C43616; Fri,  5 Nov 2021 00:31:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from vivace-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0706EC4338F;
-        Fri,  5 Nov 2021 00:31:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0706EC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
-From:   Bhaumik Bhatt <quic_bbhatt@quicinc.com>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, quic_hemantk@quicinc.com,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        Bhaumik Bhatt <quic_bbhatt@quicinc.com>
-Subject: [PATCH] bus: mhi: core: Read missing channel configuration entry
-Date:   Thu,  4 Nov 2021 17:31:13 -0700
-Message-Id: <1636072273-16034-1-git-send-email-quic_bbhatt@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        id S230199AbhKEAng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 20:43:36 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:9290 "EHLO smtp1.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229587AbhKEAnf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 20:43:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1636072857;
+  x=1667608857;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=GjYacMkXqPa7BY/QUGUd7Cu5vTMkFLoJdOBo70fFGAg=;
+  b=i01lGdl8iJZG1tdXDENeI33ZPdqzekc107SLf312ar65YE13gO3J8DTO
+   1wxUqXIVrqW9xYwZDy6Ka2rYHZbHeZgbHWtFGksebh7mhHJyMIYbcKfyb
+   uFlAu743z18hjwcHnSnMbnNb7t9L63Z+SFgL9M5ZPBDBxE2iP2wUu87yf
+   URugCrolvalmUa6rJ5CYO0pMawMFdKple7F0XcqC6YE1+Xltt5euCxzp8
+   XeaYZn1RpJUgd0sNCDyaXfcUWuH2Pr4VlOOnCGJcG78ualMUr/kIxEy0k
+   aU46+VuaRHmNI4xzdaEgjRn4bo/0runoB1BwU3yiytR/IAG+YeMlGEjcD
+   A==;
+From:   Pavel Modilaynen <pavel.modilaynen@axis.com>
+To:     <a.zummo@towertech.it>, <alexandre.belloni@bootlin.com>
+CC:     <linux-rtc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@axis.com>, Pavel Modilaynen <pavelmn@axis.com>
+Subject: [PATCH] rtc: rs5c372: Add support of RTC_VL_READ ioctl
+Date:   Fri, 5 Nov 2021 01:40:49 +0100
+Message-ID: <20211105004049.5486-1-pavel.modilaynen@axis.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'wake-capable' entry in channel configuration is not set when
-parsing the configuration specified by the controller driver. Add
-the missing entry to ensure channel is correctly specified as a
-'wake-capable' channel.
+From: Pavel Modilaynen <pavelmn@lnxpavelmn.se.axis.com>
 
-Signed-off-by: Bhaumik Bhatt <quic_bbhatt@quicinc.com>
+Read, cache and expose with RTC_VL_READ ioctl low voltage
+detection flag. It is supported on all devices except RS5C372A/B,
+for which osciallation halt detection bit is interpreted
+as low voltage condition.
+Add RTC_VL_CLEAR ioctl to clear the cached value.
+
+Signed-off-by: Pavel Modilaynen <pavelmn@lnxpavelmn.se.axis.com>
 ---
- drivers/bus/mhi/core/init.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/rtc/rtc-rs5c372.c | 46 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index 5aaca6d..f1ec3441 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -788,6 +788,7 @@ static int parse_ch_cfg(struct mhi_controller *mhi_cntrl,
- 		mhi_chan->offload_ch = ch_cfg->offload_channel;
- 		mhi_chan->db_cfg.reset_req = ch_cfg->doorbell_mode_switch;
- 		mhi_chan->pre_alloc = ch_cfg->auto_queue;
-+		mhi_chan->wake_capable = ch_cfg->wake_capable;
+diff --git a/drivers/rtc/rtc-rs5c372.c b/drivers/rtc/rtc-rs5c372.c
+index 80980414890c..68d2ed9670c4 100644
+--- a/drivers/rtc/rtc-rs5c372.c
++++ b/drivers/rtc/rtc-rs5c372.c
+@@ -126,6 +126,7 @@ struct rs5c372 {
+ 	unsigned		smbus:1;
+ 	char			buf[17];
+ 	char			*regs;
++	int			voltage_low;
+ };
  
- 		/*
- 		 * If MHI host allocates buffers, then the channel direction
+ static int rs5c_get_regs(struct rs5c372 *rs5c)
+@@ -216,22 +217,40 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
+ 	if (status < 0)
+ 		return status;
+ 
++	/* check the warning bits */
+ 	switch (rs5c->type) {
+ 	case rtc_r2025sd:
+ 	case rtc_r2221tl:
+ 		if ((rs5c->type == rtc_r2025sd && !(ctrl2 & R2x2x_CTRL2_XSTP)) ||
+ 		    (rs5c->type == rtc_r2221tl &&  (ctrl2 & R2x2x_CTRL2_XSTP))) {
+ 			dev_warn(&client->dev, "rtc oscillator interruption detected. Please reset the rtc clock.\n");
++			/* keep it as indicator of low/dead battery */
++			rs5c->voltage_low = 1;
+ 			return -EINVAL;
+ 		}
+ 		break;
+ 	default:
+ 		if (ctrl2 & RS5C_CTRL2_XSTP) {
+ 			dev_warn(&client->dev, "rtc oscillator interruption detected. Please reset the rtc clock.\n");
++			/* keep it as indicator of low/dead battery */
++			rs5c->voltage_low = 1;
+ 			return -EINVAL;
+ 		}
+ 	}
+ 
++
++	switch (rs5c->type) {
++	case rtc_rs5c372a:
++	case rtc_rs5c372b:
++		break;
++	default:
++		if (ctrl2 & R2x2x_CTRL2_VDET) {
++			rs5c->voltage_low = 1;
++			dev_warn(&client->dev, "low voltage detected\n");
++		}
++		break;
++	}
++
+ 	tm->tm_sec = bcd2bin(rs5c->regs[RS5C372_REG_SECS] & 0x7f);
+ 	tm->tm_min = bcd2bin(rs5c->regs[RS5C372_REG_MINS] & 0x7f);
+ 	tm->tm_hour = rs5c_reg2hr(rs5c, rs5c->regs[RS5C372_REG_HOURS]);
+@@ -485,6 +504,32 @@ static int rs5c372_rtc_proc(struct device *dev, struct seq_file *seq)
+ #define	rs5c372_rtc_proc	NULL
+ #endif
+ 
++#ifdef CONFIG_RTC_INTF_DEV
++static int rs5c372_ioctl(struct device *dev, unsigned int cmd, unsigned long arg)
++{
++	struct rs5c372	*rs5c = i2c_get_clientdata(to_i2c_client(dev));
++
++	dev_dbg(dev, "%s: cmd=%x\n", __func__, cmd);
++
++	switch (cmd) {
++	case RTC_VL_READ:
++		if (rs5c->voltage_low)
++			dev_info(dev, "low voltage detected, date/time is not reliable.\n");
++
++		return put_user(rs5c->voltage_low, (unsigned int __user *)arg);
++	case RTC_VL_CLR:
++		/* Clear the cached value. */
++		rs5c->voltage_low = 0;
++		return 0;
++	default:
++		return -ENOIOCTLCMD;
++	}
++	return 0;
++}
++#else
++#define rs5c372_ioctl	NULL
++#endif
++
+ static const struct rtc_class_ops rs5c372_rtc_ops = {
+ 	.proc		= rs5c372_rtc_proc,
+ 	.read_time	= rs5c372_rtc_read_time,
+@@ -492,6 +537,7 @@ static const struct rtc_class_ops rs5c372_rtc_ops = {
+ 	.read_alarm	= rs5c_read_alarm,
+ 	.set_alarm	= rs5c_set_alarm,
+ 	.alarm_irq_enable = rs5c_rtc_alarm_irq_enable,
++	.ioctl		= rs5c372_ioctl,
+ };
+ 
+ #if IS_ENABLED(CONFIG_RTC_INTF_SYSFS)
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.20.1
 
