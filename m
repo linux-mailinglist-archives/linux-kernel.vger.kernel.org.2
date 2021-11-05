@@ -2,69 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9278044689D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 19:46:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E85644689F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 19:47:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232931AbhKESsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 14:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231904AbhKESsu (ORCPT
+        id S232983AbhKESu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 14:50:28 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:47975 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229785AbhKESu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 14:48:50 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B890C061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 11:46:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FU/5WDp2+K9KX09DkFjUK8PWJVoij/2WiddvJIfmz0M=; b=G0IXXQGdqCkicVOIexpxNZX+l0
-        GkVRgcJ9eZqiU8yO6pbViFHR5EDzIEtxfHhh2GEs4ZLZC3ddwy98FyBshd148iaSGFhyP7eRUoCJj
-        lKRhClyJk9rrLtKqoryO0yWOIduVLadBq+DHnXwevhSPJ1EL9szdzr61YEhhHOqaiL1Nix2mzQcXS
-        fybtI4F2KyILzdOiTFuI4CJayZinjsHZmW9FwPQz3iF2ljXRVKRl08KgRsmRcNuYeXDx68LL+NeWV
-        6wk/cOKDPlDC9JjyZNE2NQKQUIFKlyYygOqGyEYoOFQN/JlwVS04Cye92+ScY4FnMf7A6i7HQJDFp
-        pIZvjn3A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mj4Du-00ENoF-0z; Fri, 05 Nov 2021 18:45:58 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AC5719862D2; Fri,  5 Nov 2021 19:45:56 +0100 (CET)
-Date:   Fri, 5 Nov 2021 19:45:56 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        mark.rutland@arm.com, dvyukov@google.com, pbonzini@redhat.com,
-        mbenes@suse.cz
-Subject: Re: [RFC][PATCH 07/22] x86,extable: Extend extable functionality
-Message-ID: <20211105184556.GN174703@worktop.programming.kicks-ass.net>
-References: <20211104164729.226550532@infradead.org>
- <20211104165524.925401847@infradead.org>
- <YYVqnr+gql9RpL4C@google.com>
+        Fri, 5 Nov 2021 14:50:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1636138067; x=1667674067;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=G3qfrI/sS+kNFHo6v7HTnTcHlMqBxMKZpKZwQGGOccM=;
+  b=mV/rhr0e9CAhZFT84k3qsazA73itdbKDeVpTbAGXUf8Wwt1nuFAcodxm
+   SLXNiBIefRrCTBElOrhVmS8hGY4Aa3LfUrIVXv908kTfmDAvYo4zNzNCe
+   9m8l+sTDcTAdyD0QpJj7NwbZUjb1TILnMiVDYL+2e9BE4yWuzcbOFWREk
+   I=;
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 05 Nov 2021 11:47:47 -0700
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 11:47:46 -0700
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Fri, 5 Nov 2021 11:47:46 -0700
+Received: from [10.110.96.158] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Fri, 5 Nov 2021
+ 11:47:45 -0700
+Subject: Re: [RFC PATCH] software node: Skip duplicated software_node sysfs
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211101200346.16466-1-quic_qiancai@quicinc.com>
+ <CAHp75VcrWPdR8EVGpcsniQedT0J4X700N7thFs6+srTP1MTgwQ@mail.gmail.com>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <52df4a97-1132-d594-0180-132d0ca714d5@quicinc.com>
+Date:   Fri, 5 Nov 2021 14:47:43 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYVqnr+gql9RpL4C@google.com>
+In-Reply-To: <CAHp75VcrWPdR8EVGpcsniQedT0J4X700N7thFs6+srTP1MTgwQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 05:32:14PM +0000, Sean Christopherson wrote:
 
-> > +#define EX_IMM_MASK	0xFFFF0000
 
-> > +	imm  = FIELD_GET(EX_IMM_MASK,  e->type);
+On 11/1/21 7:51 PM, Andy Shevchenko wrote:
+> No, it’s not so easy. What you are doing is a papering over the real issue
+> which is the limitation of the firmware nodes to two. What we need is to
+> drop the link from struct fwnode_handle, move it to upper layer and modify
+> all fwnode ops to be used over the list of fwnode:s.
 > 
-> FIELD_GET casts the result based on the type of the mask, but doesn't explicitly
-> sign extend the masked field, i.e. there's no intermediate cast to tell the compiler
-> that the imm is a 16-bit value that should be sign extended.
-> 
-> Modifying FIELD_GET to sign extended is probably a bad idea as I'm guessing the
-> vast, vast majority of use cases don't want that behavior.  I'm not sure how that
-> would even work with masks that are e.g. 5 bits or so.
+> XHCI driver and DWC3 are sharing the primary fwnode, but at the same time
+> they wanted to have _different_ secondary ones when role is switched. This
+> can’t be done in the current design. And here is the symptom what you got.
 
-So the way I was reading it was that typeof(_mask) is 'int', e->type is
-also 'int', we mask out the top bits, and since it's all 'int' we do an
-arith shift right (ie. preserves sign).
+Andy, thanks for the pointers so far. I was able to trace
+set_primary_fwnode() and set_secondary_fwnode().
 
-Where did that reading go wrong?
+Anyway, what's the "upper layer"? Is that "struct device" or "struct
+swnode"? I suppose you meant:
+
+- Remove "secondary" field from "struct fwnode_handle".
+- Replace "fwnode" from "upper layer" with
+  "struct list_head fwnode_head;".
+- Modify all functions in "software_node_ops" to use "fwnode_head".
+
+Is that correct?
