@@ -2,88 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2DB446AD6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 23:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7456446AE6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 23:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233958AbhKEWRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 18:17:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233102AbhKEWRR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 18:17:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6ED08611CE;
-        Fri,  5 Nov 2021 22:14:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636150476;
-        bh=IgiIT96kP5iugFyRbEgt/qbM2X6IoaiCAs7AL5o9wHA=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=bZhsL+RC5DXIC6ASH0TpvLjBV8UXk2UbeQttKStVLnk2Jg0iksE3GPsoky5uYcAyX
-         w3X8eIG+YRFB1paRWg1hDJS3PS6tfuFiYpiNXpX/4qkk94wiRj6/uipGtHIijTQtbo
-         LfQaKnE/z9W3P+d1tO3l6Uq3gEc3iV0vFqZ1BU7REm0TNyiTCoxrclUjzhfCJ/z8cX
-         FeQkvFNHlLYBdACDHlrOOomuuMc6xtOazyMa4jHs3JIRTbSZGJZv4hjM3GGyhgx+Sq
-         XMOgEepSBS7WkAVCOxn3DR0VkjFiq4EAYf+Yzvi8XwY05DFuPLhqQkis7zEmw1mqfu
-         N9VGjb6d+guAQ==
-Message-ID: <6655423a30c3ef695516b08fa409bf52d5db5fbc.camel@kernel.org>
-Subject: Re: [PATCH v11 2/2] x86/sgx: Add an attribute for the amount of SGX
- memory in a NUMA node
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, reinette.chatre@intel.com,
-        tony.luck@intel.com, nathaniel@profian.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
-Date:   Sat, 06 Nov 2021 00:14:34 +0200
-In-Reply-To: <YYOK+7OREGsSDhEG@kroah.com>
-References: <20211103012813.670195-1-jarkko@kernel.org>
-         <20211103012813.670195-2-jarkko@kernel.org> <YYJGzgkLJs6819t8@kroah.com>
-         <d3711ca7d612627bb891c10e20c3d569fa6f2bf3.camel@kernel.org>
-         <YYOK+7OREGsSDhEG@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.40.4-1 
+        id S231344AbhKEWbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 18:31:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229940AbhKEWbl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 18:31:41 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89259C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 15:29:01 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id i11so1692637ilv.13
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 15:29:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jDjxnqL+Ru3M1ILZhtlrQeztG6RNMjBqozSge68edGI=;
+        b=NjB1yiPzJlNDRcVwwmVO7+DWpgLMyRy0lbo9Ln8xQAb3hM/U1cy99m5YLXa644TuRP
+         b3OQRLqAkP0y2pgR8TSE6DmrBs/eGlke5b6QgUtsv8GPe4B+VUiK30nqVxy62dVcLO8L
+         Lg2irM21YYw2uOGY7hcYDMvnG150LH0wYKJig=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jDjxnqL+Ru3M1ILZhtlrQeztG6RNMjBqozSge68edGI=;
+        b=p+xIhvst9cSltXPlJ5LcpkP/Vr/H9Z6C9v8l3zu4WhT4j6zIni9YJoB9IJ+yjoRxRc
+         3R5uVaHssJKWZNkt61sRLKu+EGIZPVpa0YiD/pr6UMETqaTcYQ6tYRyKa8izLnHLjWjk
+         I8bqk6gB62IwQSiO0K5ipDiQIKJb0L5w7QIQ20z8/NmnLJCCxTvy+w8LStFhv53s9git
+         9i9/qYcBhGpoKkHHUG0TRq7qLK8B0BNKGuBqZo2CBL+JtGB9Xagu47gOu2JmeQ2pJn75
+         HvxRuNNBC5SPReaXFF7xfBvDCqa5lHGu4DBmFkRk8g8PWCvFnBy/7+okxKRHnzBkhwIr
+         AnwA==
+X-Gm-Message-State: AOAM532d/WK1wK+SZrnakCPOyltGAS/uekgsG2JYhoPGHfzlCiEi6CP2
+        +WEQlTF76MWU2bQwkd8ErKzAsA==
+X-Google-Smtp-Source: ABdhPJzVYHOsfve6j1cM2O8WGFl8uYBhASZU2Pp3JXgCAJSKwPzx5hbQPPqDcWbHJWFYy34ZhtrbqQ==
+X-Received: by 2002:a92:9513:: with SMTP id y19mr41291649ilh.300.1636151341044;
+        Fri, 05 Nov 2021 15:29:01 -0700 (PDT)
+Received: from melhuishj.c.googlers.com.com (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
+        by smtp.gmail.com with ESMTPSA id y6sm5516318ilu.38.2021.11.05.15.28.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 15:29:00 -0700 (PDT)
+From:   Jesse Melhuish <melhuishj@chromium.org>
+To:     linux-bluetooth@vger.kernel.org
+Cc:     Jesse Melhuish <melhuishj@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Sonny Sasaka <sonnysasaka@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH] bluetooth: Don't initialize msft/aosp when using user channel
+Date:   Fri,  5 Nov 2021 22:28:37 +0000
+Message-Id: <20211105222820.1.I2a8b2f2e52d05ae9ead3f3dcc1dd90ef47a7acd7@changeid>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-11-04 at 08:25 +0100, Greg Kroah-Hartman wrote:
-> > static const struct attribute_group *node_dev_groups[] =3D {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&node_dev_group,
-> > #ifdef CONFIG_HAVE_ARCH_NODE_DEV_GROUP
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&arch_node_dev_group,
-> > #endif
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0NULL,
-> > };
->=20
-> Yes, that is true for the dev pointer passed to your callback, but what
-> about the dev pointers in this random array you are looping over?
+A race condition is triggered when usermode control is given to
+userspace before the kernel's MSFT query responds, resulting in an
+unexpected response to userspace's reset command.
 
-Right. I got what you are saying.
+Issue can be observed in btmon:
+< HCI Command: Vendor (0x3f|0x001e) plen 2                    #3 [hci0]
+        05 01                                            ..
+@ USER Open: bt_stack_manage (privileged) version 2.22  {0x0002} [hci0]
+< HCI Command: Reset (0x03|0x0003) plen 0                     #4 [hci0]
+> HCI Event: Command Complete (0x0e) plen 5                   #5 [hci0]
+      Vendor (0x3f|0x001e) ncmd 1
+	Status: Command Disallowed (0x0c)
+	05                                               .
+> HCI Event: Command Complete (0x0e) plen 4                   #6 [hci0]
+      Reset (0x03|0x0003) ncmd 2
+	Status: Success (0x00)
 
-I think the most legit place to mark an entry in this array would be
-just *before* device_register() in register_node(). It's different from
-hugetlb_register_node() because hugetlb code adds its attribute group
-with sysfs_create_group().
+Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Reviewed-by: Sonny Sasaka <sonnysasaka@chromium.org>
+Signed-off-by: Jesse Melhuish <melhuishj@chromium.org>
+---
 
-Similarly, the legit place to unmark an entry would be in
-unregister_node(), right after device_unregister().
+ net/bluetooth/hci_core.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-After writing this I realized something: the device ID is the same
-as NUMA node ID. This means that I can rewrite my callback as
-
-static ssize_t sgx_total_bytes_show(struct device *dev, struct device_attri=
-bute *attr, char *buf)
-{
-	unsigned long size =3D 0;
-	int nid =3D dev->id;
-
-	return sysfs_emit(buf, "%lu\n", sgx_numa_nodes[dev->id].size);
-}
-
-I.e no need to maintain a device pointer.
-
-/Jarkko
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index c07b2d2a44b0..2b5df597e7ed 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -1595,8 +1595,10 @@ static int hci_dev_do_open(struct hci_dev *hdev)
+ 	    hci_dev_test_flag(hdev, HCI_VENDOR_DIAG) && hdev->set_diag)
+ 		ret = hdev->set_diag(hdev, true);
+ 
+-	msft_do_open(hdev);
+-	aosp_do_open(hdev);
++	if (!hci_dev_test_flag(hdev, HCI_USER_CHANNEL)) {
++		msft_do_open(hdev);
++		aosp_do_open(hdev);
++	}
+ 
+ 	clear_bit(HCI_INIT, &hdev->flags);
+ 
+-- 
+2.31.0
 
