@@ -2,119 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90421445F03
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 05:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1302E445F0D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 05:12:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhKEEHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 00:07:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbhKEEHp (ORCPT
+        id S230345AbhKEEOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 00:14:47 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:44848 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229884AbhKEEOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 00:07:45 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BC9C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 21:05:06 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id i13so6681047qvm.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 21:05:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hOpqec9HAj9jc/h7EYjL2E/xFemoSEaVzq55rh5h1G0=;
-        b=b2i5CsEmawrSp4+08EqRBkecvPNVR4RFKQpGU+0Xf9aHlg/iULVccpTMYT3/fxZUdO
-         RYbQ+GQ/SzrwAAd5mNxwzunTf5QJBAclDgGGX6Yjemfz3hgwpoyIR+Ak6bqa9jWZI/w8
-         6N0fSSQqaB5Wbkfn9TmARxFrBBiWszl/2RmNY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hOpqec9HAj9jc/h7EYjL2E/xFemoSEaVzq55rh5h1G0=;
-        b=3IY8w8zUmQ1nTOA2+5smV0uE1+j3thp9quCCNlGm5syAL3UdSFr2hTc0s5AbBtiPHD
-         PCZtliZ8T3ELR3k3/diYVKDrzi0I+C7IFHNd8OiYxlwU7Z8dEk9Zoqw6m+CFE+5txEn9
-         SPx2Xymg1uPi4jY3HkNDgjmoFWsXbkXYurEjvs2i4FRoOB6kSbHyaLLCet14kN/lcaiQ
-         QaArh5APt/rzRC9yRapg7bo61TuqO+rD2HMeTCt5Bf4DYY1uUHkh99SDEIXtpgCgPwXe
-         NIrLkCdxwlNzRleUKhZsUvQOUK5Ae1n0X67ld50x9AeIrneo/hCsrwD/DJFrLFVwyTIA
-         qbmg==
-X-Gm-Message-State: AOAM530cci4PxS+g9ULnR6sJwJyrqZHeZnb4uX124yWNugIei+BCVQsL
-        GZpgvVDKJa/Vo1NRqD6/mh6Wsmhm8NTkTXI/zSs=
-X-Google-Smtp-Source: ABdhPJwnces3XhrDwJCHcodu8Tn5LZ7tc0hq7XiLObCwHwZeJEuNgABrBIX1YSlCefqP2MTsmdykYniAn3Xcchnm9bk=
-X-Received: by 2002:a05:6214:f2d:: with SMTP id iw13mr4449053qvb.13.1636085105549;
- Thu, 04 Nov 2021 21:05:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211105032910.446492-1-osk@google.com>
-In-Reply-To: <20211105032910.446492-1-osk@google.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 5 Nov 2021 04:04:53 +0000
-Message-ID: <CACPK8Xc7SAVamBrCgptiWgV7r52ysrWjtRCkOmgKu_5AWPrG9w@mail.gmail.com>
-Subject: Re: [PATCH v3] ARM: dts: aspeed: tyan-s7106: Update nct7802 config
-To:     Oskar Senft <osk@google.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>
+        Fri, 5 Nov 2021 00:14:45 -0400
+X-UUID: 9c2cbe9fa3dd4117bb2ca022e041268b-20211105
+X-UUID: 9c2cbe9fa3dd4117bb2ca022e041268b-20211105
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <trevor.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 105411032; Fri, 05 Nov 2021 12:11:56 +0800
+Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 5 Nov 2021 12:11:56 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkexhb02.mediatek.inc (172.21.101.103) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 5 Nov 2021 12:11:55 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkmbs10n1.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
+ Transport; Fri, 5 Nov 2021 12:11:55 +0800
+Message-ID: <b4360ea17c3045759e85ee13fa9c001afe73c93c.camel@mediatek.com>
+Subject: Re: [PATCH 3/4] ASoC: mediatek: mt8195: separate the common code
+ from machine driver
+From:   Trevor Wu <trevor.wu@mediatek.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     <tiwai@suse.com>, <robh+dt@kernel.org>, <matthias.bgg@gmail.com>,
+        <alsa-devel@alsa-project.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <yc.hung@mediatek.com>, <daniel.baluta@nxp.com>
+Date:   Fri, 5 Nov 2021 12:11:55 +0800
+In-Reply-To: <YYP+l7tMofYoB+aC@sirena.org.uk>
+References: <20211103100040.11933-1-trevor.wu@mediatek.com>
+         <20211103100040.11933-4-trevor.wu@mediatek.com>
+         <YYP+l7tMofYoB+aC@sirena.org.uk>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Nov 2021 at 03:29, Oskar Senft <osk@google.com> wrote:
->
-> This change updates the configuration for the nct7802 hardware
-> monitor to correctly configure its temperature sensors.
->
-> Signed-off-by: Oskar Senft <osk@google.com>
+On Thu, 2021-11-04 at 15:39 +0000, Mark Brown wrote:
+> On Wed, Nov 03, 2021 at 06:00:39PM +0800, Trevor Wu wrote:
+> > Because we will add DSP support, an new machine driver for the same
+> > board is required. BE and codec configuration will use the same
+> > code
+> > when machine driver is designed for the same board.
+> 
+> I don't follow why the DSP support requires a new driver?  Shouldn't
+> all
+> systems with the DSP present be using it?
 
-Thanks, applied.
+We need to keep the solution without DSP, so we can replace DSP
+solution with non-DSP when it's required. But when we introduce SOF for
+DSP control, there will be more routes in machine driver and device
+tree usage is different from the original. So it's hard to share the
+same driver for these two solutions.
 
+Thanks,
+Trevor
 
-> ---
-> Changes from PATCH v2:
-> - Add missing address-cells, size-cells configuration.
-> - Add missing new line between channel 0 and 1.
->
-> Changes from PATCH v1:
-> - Removed superfluous "status" from channels.
-> ---
->  arch/arm/boot/dts/aspeed-bmc-tyan-s7106.dts | 24 +++++++++++++++++++++
->  1 file changed, 24 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/aspeed-bmc-tyan-s7106.dts b/arch/arm/boot/dts/aspeed-bmc-tyan-s7106.dts
-> index 68f332ee1886..60ac6d3f03b5 100644
-> --- a/arch/arm/boot/dts/aspeed-bmc-tyan-s7106.dts
-> +++ b/arch/arm/boot/dts/aspeed-bmc-tyan-s7106.dts
-> @@ -213,6 +213,30 @@ &i2c0 {
->         nct7802@28 {
->                 compatible = "nuvoton,nct7802";
->                 reg = <0x28>;
-> +
-> +               #address-cells = <1>;
-> +               #size-cells = <0>;
-> +
-> +               channel@0 { /* LTD */
-> +                       reg = <0>;
-> +               };
-> +
-> +               channel@1 { /* RTD1 */
-> +                       reg = <1>;
-> +                       sensor-type = "temperature";
-> +                       temperature-mode = "thermistor";
-> +               };
-> +
-> +               channel@2 { /* RTD2 */
-> +                       reg = <2>;
-> +                       sensor-type = "temperature";
-> +                       temperature-mode = "thermistor";
-> +               };
-> +
-> +               channel@3 { /* RTD3 */
-> +                       reg = <3>;
-> +                       sensor-type = "temperature";
-> +               };
->         };
->
->         /* Also connected to:
-> --
-> 2.34.0.rc0.344.g81b53c2807-goog
->
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+
