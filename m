@@ -2,68 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72130445E1F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 03:55:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C496445E22
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 03:55:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232069AbhKEC5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 22:57:48 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:47529 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231496AbhKEC5r (ORCPT
+        id S232086AbhKEC6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 22:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231627AbhKEC6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 22:57:47 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Uv6m9jd_1636080904;
-Received: from 30.225.212.33(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0Uv6m9jd_1636080904)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 05 Nov 2021 10:55:05 +0800
-Message-ID: <0f064ea0-2af7-1141-cf43-ce9d3da0eb6b@linux.alibaba.com>
-Date:   Fri, 5 Nov 2021 10:55:04 +0800
+        Thu, 4 Nov 2021 22:58:01 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D019C061714;
+        Thu,  4 Nov 2021 19:55:22 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id y1so10200846plk.10;
+        Thu, 04 Nov 2021 19:55:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=45+llUOgil6QGWh/6zA+LlVuyM/uPXKNATalzsb9kFc=;
+        b=pv6QeQ8U3fe0uYwo3nvn2NBkmImxld1nouO0U2Bb2SB1oS2VTJbyGPSSAtN8RnPoXi
+         /R/lG1B4IZQBMUNiaRcR45Y9dqiYj0ldw+xaOEzVNZkKQ0ImUkzvHi/a880GXPyrF0CE
+         eBvJiRHzu3FH4DsaGxGPkj4EbLyb4TC9PCWe1iIsHv0HW3KrxVTporL7plYx1KYmYi1B
+         6VCceV3gO4MbPbc2241SCb7DjjQLSVVASXK7weqsOODJlMd2oU8wKUZKYFFG2+XeCeJB
+         c4Ton1OLqxRyWtSizv14JjFLMLIeo99g1WKLtNOL0A4W3n3EYNE7OmdBygf9ISi0ZjVf
+         tKOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=45+llUOgil6QGWh/6zA+LlVuyM/uPXKNATalzsb9kFc=;
+        b=hWlTMz0s3/11fZKJYtanQiAdDVTlK+zobj/OE86uuzay58aji+8zXVahIXOaGQatwC
+         v+YzZG1hIPoWy2I5k9r3ggRLZyd9yC/lEJ5ROxvM2HsAjxNL4vuG+O80oXGbhJ/iwuGC
+         qOhLrFn1X5h444ix0wya8kA4/BH0CxzgBHfJcgSHKnsmTPaarBmDPrlpq/spzfmnM+0r
+         K9Ov1K07Z5CGzlhav8xtaZ5TlrSQNNhHzSnTyhArA9aEdbD3/bxhYdX6GQSSx0qYZV1j
+         L/MjyWibL9Rc8YMv3BiYrwllra7ASqvaQwpiVaW9Ngu61k3X2ynciOF0aAFZPnYPplqt
+         DD7g==
+X-Gm-Message-State: AOAM530egzn+WJY0eKqBG4GeGkfptBpCIl9kmfo2GLY9s2T0Vh+bXH3e
+        6p4X6zR5oq36ohDqItN6ThhXPsllbz4=
+X-Google-Smtp-Source: ABdhPJzitAh5fVbBpk8AOP9CIVqZherI1eQpadhUmMFN6+//TTEVSLvgjHeSK48MWE+Y4SoSMlRE1w==
+X-Received: by 2002:a17:90b:1b04:: with SMTP id nu4mr26949131pjb.72.1636080921439;
+        Thu, 04 Nov 2021 19:55:21 -0700 (PDT)
+Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id d2sm6417300pfj.42.2021.11.04.19.55.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Nov 2021 19:55:20 -0700 (PDT)
+Subject: Re: [PATCH 1/5] tcp/md5: Don't BUG_ON() failed kmemdup()
+To:     Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Leonard Crestez <cdleonard@gmail.com>,
+        linux-crypto@vger.kernel.org, netdev@vger.kernel.org
+References: <20211105014953.972946-1-dima@arista.com>
+ <20211105014953.972946-2-dima@arista.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <15c0469e-9433-0a8d-50f0-de6517365464@gmail.com>
+Date:   Thu, 4 Nov 2021 19:55:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH v5 0/4] PCI MCFG consolidation and APEI resource filtering
-To:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, catalin.marinas@arm.com,
-        lorenzo.pieralisi@arm.com, james.morse@arm.com, will@kernel.org,
-        rafael@kernel.org, tony.luck@intel.com, bp@alien8.de,
-        mingo@kernel.org, bhelgaas@google.com, ying.huang@intel.com,
-        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211104150053.GA774800@bhelgaas>
- <e1a6fa17-106d-6b0b-8974-5a96bb33086e@linux.alibaba.com>
- <YYSPb8+9zcEZ5tLs@rocinante>
-From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
-In-Reply-To: <YYSPb8+9zcEZ5tLs@rocinante>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211105014953.972946-2-dima@arista.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 05/11/2021 09:57, Krzysztof Wilczyński wrote:
-> Hi,
-> 
-> [...]
->>> Thanks.  I see this and will look at it after getting the v5.16
->>> changes merged.
->>
->> Ah, Bjorn, I also notice this series is in your patchwork now, hmmm, I don't know why
->> the previous iterations are not there either, seems something doesn't work as expected
->> in my side. Probably my fault for the unpeaceful interlude :-)
-> [...]
-> 
-> You can check your previous submissions using the following:
-> 
->   https://patchwork.kernel.org/project/linux-pci/list/?submitter=201963&archive=both&state=*
 
-Ah, yes, it does show all. I thought the previous versions haven't been queued to the patchwork...
+On 11/4/21 6:49 PM, Dmitry Safonov wrote:
+> static_branch_unlikely(&tcp_md5_needed) is enabled by
+> tcp_alloc_md5sig_pool(), so as long as the code doesn't change
+> tcp_md5sig_pool has been already populated if this code is being
+> executed.
+> 
+> In case tcptw->tw_md5_key allocaion failed - no reason to crash kernel:
+> tcp_{v4,v6}_send_ack() will send unsigned segment, the connection won't be
+> established, which is bad enough, but in OOM situation totally
+> acceptable and better than kernel crash.
+> 
+> Introduce tcp_md5sig_pool_ready() helper.
+> tcp_alloc_md5sig_pool() usage is intentionally avoided here as it's
+> fast-path here and it's check for sanity rather than point of actual
+> pool allocation. That will allow to have generic slow-path allocator
+> for tcp crypto pool.
+> 
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
+> ---
+>  include/net/tcp.h        | 1 +
+>  net/ipv4/tcp.c           | 5 +++++
+>  net/ipv4/tcp_minisocks.c | 5 +++--
+>  3 files changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/net/tcp.h b/include/net/tcp.h
+> index 4da22b41bde6..3e5423a10a74 100644
+> --- a/include/net/tcp.h
+> +++ b/include/net/tcp.h
+> @@ -1672,6 +1672,7 @@ tcp_md5_do_lookup(const struct sock *sk, int l3index,
+>  #endif
+>  
+>  bool tcp_alloc_md5sig_pool(void);
+> +bool tcp_md5sig_pool_ready(void);
+>  
+>  struct tcp_md5sig_pool *tcp_get_md5sig_pool(void);
+>  static inline void tcp_put_md5sig_pool(void)
+> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+> index b7796b4cf0a0..c0856a6af9f5 100644
+> --- a/net/ipv4/tcp.c
+> +++ b/net/ipv4/tcp.c
+> @@ -4314,6 +4314,11 @@ bool tcp_alloc_md5sig_pool(void)
+>  }
+>  EXPORT_SYMBOL(tcp_alloc_md5sig_pool);
+>  
+> +bool tcp_md5sig_pool_ready(void)
+> +{
+> +	return tcp_md5sig_pool_populated;
+> +}
+> +EXPORT_SYMBOL(tcp_md5sig_pool_ready);
+>  
+>  /**
+>   *	tcp_get_md5sig_pool - get md5sig_pool for this user
+> diff --git a/net/ipv4/tcp_minisocks.c b/net/ipv4/tcp_minisocks.c
+> index cf913a66df17..c99cdb529902 100644
+> --- a/net/ipv4/tcp_minisocks.c
+> +++ b/net/ipv4/tcp_minisocks.c
+> @@ -293,11 +293,12 @@ void tcp_time_wait(struct sock *sk, int state, int timeo)
+>  			tcptw->tw_md5_key = NULL;
+>  			if (static_branch_unlikely(&tcp_md5_needed)) {
+>  				struct tcp_md5sig_key *key;
+> +				bool err = WARN_ON(!tcp_md5sig_pool_ready());
+>  
+>  				key = tp->af_specific->md5_lookup(sk, sk);
+> -				if (key) {
+> +				if (key && !err) {
+>  					tcptw->tw_md5_key = kmemdup(key, sizeof(*key), GFP_ATOMIC);
+> -					BUG_ON(tcptw->tw_md5_key && !tcp_alloc_md5sig_pool());
+> +					WARN_ON_ONCE(tcptw->tw_md5_key == NULL);
+>  				}
+>  			}
+>  		} while (0);
+> 
 
-Thanks,
-Xuesong
+Hmmm.... how this BUG_ON() could trigger exactly ?
 
-> 
-> This changes the default filters to include everything you submitted.
-> 
-> 	Krzysztof
-> 
+tcp_md5_needed can only be enabled after __tcp_alloc_md5sig_pool has succeeded.
+
+This patch, sent during merge-window, is a distraction, sorry.
+
+About renaming : It looks nice, but is a disaster for backports
+done for stable releases. Please refrain from doing this.
