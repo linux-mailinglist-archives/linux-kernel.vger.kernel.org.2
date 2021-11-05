@@ -2,160 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA48446281
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 12:03:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59720446284
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 12:06:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232072AbhKELGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 07:06:34 -0400
-Received: from mga04.intel.com ([192.55.52.120]:41728 "EHLO mga04.intel.com"
+        id S232084AbhKELIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 07:08:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232067AbhKELGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 07:06:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10158"; a="230605216"
-X-IronPort-AV: E=Sophos;i="5.87,211,1631602800"; 
-   d="scan'208";a="230605216"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 04:03:49 -0700
-X-IronPort-AV: E=Sophos;i="5.87,211,1631602800"; 
-   d="scan'208";a="501901059"
-Received: from jprisaca-mobl.ger.corp.intel.com (HELO localhost) ([10.251.214.70])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 04:03:46 -0700
-From:   Jani Nikula <jani.nikula@intel.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Dave Airlie <airlied@linux.ie>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-In-Reply-To: <20211105171517.287de894@canb.auug.org.au>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20211015202648.258445ef@canb.auug.org.au> <20211101194223.749197c5@canb.auug.org.au> <20211105171517.287de894@canb.auug.org.au>
-Date:   Fri, 05 Nov 2021 13:03:43 +0200
-Message-ID: <874k8qampc.fsf@intel.com>
+        id S231312AbhKELIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 07:08:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EBBF6008E;
+        Fri,  5 Nov 2021 11:06:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636110366;
+        bh=gJsm1IizLqHIU46nqJ2PCv1weO5m/+2Lhx/GTelVNiA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uKknH7Xo3L4tFaDX1x10uGTlyVBD8Pp4ABE1Nd6UfR4udeBpijbZRzg2e/wl1LBDi
+         oU7vKRK6ylEEkUbz6G2lXztI5Z56Z1/C/jWh2euo0IRIb3z9doWrztVJuejnH4XNmj
+         wp4FYpWDS3vR91479Qi8qBmLwsxkXj7gfKB/NXKB3TxhGj432VRQBMAwsWVifm5OM2
+         lz8EeR9tRp8idUnHCk47LG7uL5nCfRzH7+qg4g+dUTx9rWnMVGRk57ujHNhiyIRqLI
+         adN/QVDYKJsQ+S1aOJLIsJeEn+hkIu2Bhltdxbjdhm0TYWiCeTGdQgesPgunBPQ3ow
+         zGCcD9kAFT/NQ==
+Date:   Fri, 5 Nov 2021 13:05:58 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Qian Cai <quic_qiancai@quicinc.com>, Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: Track no early_pgtable_alloc() for kmemleak
+Message-ID: <YYUQFv4osDcMt0mS@kernel.org>
+References: <20211104155623.11158-1-quic_qiancai@quicinc.com>
+ <YYQTKRrDIJbkcplr@kernel.org>
+ <9bb6fe11-c10a-a373-9288-d44a5ba976fa@quicinc.com>
+ <YYUChdTeXP/OQUwS@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYUChdTeXP/OQUwS@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 05 Nov 2021, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> Hi all,
->
-> On Mon, 1 Nov 2021 19:42:23 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>
->> On Fri, 15 Oct 2021 20:26:48 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->> >
->> > After merging the drm-misc tree, today's linux-next build (arm
->> > multi_v7_defconfig) failed like this:
->> > 
->> > drivers/gpu/drm/drm_modeset_lock.c:111:29: error: conflicting types for '__stack_depot_save'
->> >   111 | static depot_stack_handle_t __stack_depot_save(void)
->> >       |                             ^~~~~~~~~~~~~~~~~~
->> > In file included from include/linux/page_ext.h:7,
->> >                  from include/linux/mm.h:25,
->> >                  from include/linux/kallsyms.h:13,
->> >                  from include/linux/bpf.h:20,
->> >                  from include/linux/bpf-cgroup.h:5,
->> >                  from include/linux/cgroup-defs.h:22,
->> >                  from include/linux/cgroup.h:28,
->> >                  from include/linux/memcontrol.h:13,
->> >                  from include/linux/swap.h:9,
->> >                  from include/linux/suspend.h:5,
->> >                  from include/linux/regulator/consumer.h:35,
->> >                  from include/linux/i2c.h:18,
->> >                  from include/drm/drm_crtc.h:28,
->> >                  from include/drm/drm_atomic.h:31,
->> >                  from drivers/gpu/drm/drm_modeset_lock.c:24:
->> > include/linux/stackdepot.h:18:22: note: previous declaration of '__stack_depot_save' was here
->> >    18 | depot_stack_handle_t __stack_depot_save(unsigned long *entries,
->> >       |                      ^~~~~~~~~~~~~~~~~~
->> > 
->> > Caused by commit
->> > 
->> >   cd06ab2fd48f ("drm/locking: add backtrace for locking contended locks without backoff")
->> > 
->> > This may only have been revealed because of another fix I have had to
->> > apply today.
->> > 
->> > I have applied the following patch for today.
->> > 
->> > From: Stephen Rothwell <sfr@canb.auug.org.au>
->> > Date: Fri, 15 Oct 2021 20:17:52 +1100
->> > Subject: [PATCH] drm/locking: fix for name conflict
->> > 
->> > Fixes: cd06ab2fd48f ("drm/locking: add backtrace for locking contended locks without backoff")
->> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
->> > ---
->> >  drivers/gpu/drm/drm_modeset_lock.c | 6 +++---
->> >  1 file changed, 3 insertions(+), 3 deletions(-)
->> > 
->> > diff --git a/drivers/gpu/drm/drm_modeset_lock.c b/drivers/gpu/drm/drm_modeset_lock.c
->> > index 4d32b61fa1fd..ee36dd20900d 100644
->> > --- a/drivers/gpu/drm/drm_modeset_lock.c
->> > +++ b/drivers/gpu/drm/drm_modeset_lock.c
->> > @@ -79,7 +79,7 @@
->> >  static DEFINE_WW_CLASS(crtc_ww_class);
->> >  
->> >  #if IS_ENABLED(CONFIG_DRM_DEBUG_MODESET_LOCK)
->> > -static noinline depot_stack_handle_t __stack_depot_save(void)
->> > +static noinline depot_stack_handle_t __drm_stack_depot_save(void)
->> >  {
->> >  	unsigned long entries[8];
->> >  	unsigned int n;
->> > @@ -108,7 +108,7 @@ static void __stack_depot_print(depot_stack_handle_t stack_depot)
->> >  	kfree(buf);
->> >  }
->> >  #else /* CONFIG_DRM_DEBUG_MODESET_LOCK */
->> > -static depot_stack_handle_t __stack_depot_save(void)
->> > +static depot_stack_handle_t __drm_stack_depot_save(void)
->> >  {
->> >  	return 0;
->> >  }
->> > @@ -317,7 +317,7 @@ static inline int modeset_lock(struct drm_modeset_lock *lock,
->> >  		ret = 0;
->> >  	} else if (ret == -EDEADLK) {
->> >  		ctx->contended = lock;
->> > -		ctx->stack_depot = __stack_depot_save();
->> > +		ctx->stack_depot = __drm_stack_depot_save();
->> >  	}
->> >  
->> >  	return ret;
->> 
->> This has reappeared today.  I don't know what happened to the drm-misc
->> tree over the weeked :-(
->> 
->> I have reapplied the above fix.
->
-> So the above drm-misc commit is now in the drm tree, but its fix up
-> commit vanished from the drm-misc tree over the past weekend :-(
+On Fri, Nov 05, 2021 at 10:08:05AM +0000, Catalin Marinas wrote:
+> On Thu, Nov 04, 2021 at 01:57:03PM -0400, Qian Cai wrote:
+> > On 11/4/21 1:06 PM, Mike Rapoport wrote:
+> > > I think I'll be better to rename MEMBLOCK_ALLOC_KASAN to, say,
+> > > MEMBLOCK_ALLOC_NOKMEMLEAK and use that for both KASAN and page table cases.
+> > 
+> > Okay, that would look a bit nicer.
+> 
+> Or MEMBLOCK_ALLOC_ACCESSIBLE_NOLEAKTRACE to match SLAB_NOLEAKTRACE and
+> also hint that it's accessible memory.
 
-Cc: drm-misc maintainers.
+Hmm, I think MEMBLOCK_ALLOC_NOLEAKTRACE is enough. Having a constant
+instead of end limit already implies there is no limit and when we update
+the API to use lower bits or a dedicated 'flags' we won't need to change
+the flag name as well.
 
-We normally point drm-misc/for-linux-next at drm-misc-next, *except* to
-drm-misc-next-fixes during the merge window. This is because
-drm-misc-next already starts accumulating stuff that's headed to one
-release later, e.g. currently v5.17. I think that's part of the reason.
+> > > But more generally, we are going to hit this again and again.
+> > > Couldn't we add a memblock allocation as a mean to get more memory to
+> > > kmemleak::mem_pool_alloc()?
+> > 
+> > For the last 5 years, this is the second time I am ware of this kind of
+> > issue just because of the 64KB->4KB switch on those servers, although I
+> > agree it could happen again in the future due to some new debugging
+> > features etc. I don't feel a strong need to rewrite it now though. Not
+> > sure if Catalin saw things differently. Anyway, Mike, do you agree that
+> > we could rewrite that separately in the future?
+> 
+> I was talking to Mike on IRC last night and I think you still need a
+> flag, otherwise you could get a recursive memblock -> kmemleak ->
+> memblock call (that's why we have SLAB_NOLEAKTRACE). So for the time
+> being, a new MEMBLOCK_* definition would do.
+> 
+> I wonder whether we could actually use the bottom bits in the end/limit
+> as actual flags so one can do (MEMBLOCK_ALLOC_ACCESSIBLE |
+> MEMBLOCK_NOLEAKTRACE). But that could be for a separate clean-up.
 
-I probably should have pushed c4f08d7246a5 ("drm/locking: fix
-__stack_depot_* name conflict") to drm-misc-next-fixes.
+We never restricted end/limit to be on a word boundary, but I doubt that in
+practice we'd ever have the low bits set.
 
-There's still something funny going on, because the drm-misc-next pull
-request [1] isn't part of the drm pull request for v5.16 [2]. Is there
-going to be another drm pull?
+I'm not entirely happy with using end limit parameter for this, I'd like to
+see how much churn it will be to extend some of memblock_*_alloc with an
+explicit flags parameter.
 
-BR,
-Jani.
-
-
-[1] https://lore.kernel.org/r/20211014120452.2wicnt6hobu3kbwb@gilmour
-[2] https://lore.kernel.org/r/CAPM=9tyOyz4_-OdjDduFkponSXycO6maBDFsWGTLv+j=_Vp6ww@mail.gmail.com
-
-
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+--
+Sincerely yours,
+Mike.
