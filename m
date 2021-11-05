@@ -2,176 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A672C446732
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:42:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F69446733
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:42:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233877AbhKEQpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 12:45:10 -0400
-Received: from foss.arm.com ([217.140.110.172]:33458 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233849AbhKEQpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 12:45:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6BF8E2F;
-        Fri,  5 Nov 2021 09:42:29 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 91BA93F7F5;
-        Fri,  5 Nov 2021 09:42:27 -0700 (PDT)
-Subject: Re: [Resend PATCH] psi : calc cfs task memstall time more precisely
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        xuewen.yan@unisoc.com, Ke Wang <ke.wang@unisoc.com>
-References: <1634278612-17055-1-git-send-email-huangzhaoyang@gmail.com>
- <YYGV1TxsZXzGXFmx@cmpxchg.org>
- <CAGWkznEaEEz=m5UmPXRECiizwht7+8Zw_xH9V7Wwyd__10eJDA@mail.gmail.com>
- <CAGWkznFuX=6mSnj7J7=t7et5QO-GB2BKCMRiHoU37jcH9dPhLA@mail.gmail.com>
- <78b3f72b-3fe7-f2e0-0e6b-32f28b8ce777@arm.com>
- <CAGWkznF_8iBp57BPoQKvG4VuNYep=g+ZxgO7D4e0wMDLipJ8uw@mail.gmail.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <85c81ab7-49ed-aba5-6221-ea6a8f37f8ad@arm.com>
-Date:   Fri, 5 Nov 2021 17:42:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233242AbhKEQpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 12:45:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232930AbhKEQpb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 12:45:31 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A7ABC061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 09:42:51 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id r8so14610503wra.7
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 09:42:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fftvvpcviCHio0E7043Muy78rSgaoMH1Uvzaam7PMgM=;
+        b=G2VrGFCEaT6XvHUKCE+rX86Xhaj+ovGldPhIDH3PgmxUzbREQi4e2M7BkpC/LIvigj
+         jSMzApxZ4+itIl73db/SXSxR1ufYwBP8pn+uEBc7ugb2haAdERSWtM14gQ6Qgt8oH8Ud
+         MPF3I9FEInJgcwXkKi3QnCHen/4QzBPnbHfr4In2k+5xx+r1hVhIcwQLYuaWT2V8wIDN
+         z73f9pLjwocnhrLC3q7nH3c/pK3JyW6NpumByje3L2tT/rq8mX/4m6CuHzRlgALv9iAq
+         xnaGEJm41BRjkKg6SqJABwv88dfEka9ms1kq0pKnmLtL8gkU069Xypmu9/c3ouiIwTC4
+         9ztA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fftvvpcviCHio0E7043Muy78rSgaoMH1Uvzaam7PMgM=;
+        b=R5pJdwHGH+bug5tsUk4FlXX2OBVh88ag3jQxFjCMYwYvygXYmMHLYnYR/WeEZPWwNi
+         oCNF2LilwWr8oj8c6A5NynErF62fCWcoyQd2q8GaMYiXT7kWlIsNeZs2HB6OpTVSx26o
+         ZzwSbu07JY7CPaeL4qgcWMYI48K+XdaeCZhz4Z1oBGKYf1HvUb+dUpOBFtl9PVq3l340
+         IA2oWHj502G8n0aE+Y0xNa1TDvwEuali1t26GA9mw4tphQ2JqOrQ1NthuuMHFQ1VMMY9
+         YQBIfOdFjnWQbZpmI26aJ8hIg/ewyQSvWFmM6bFWt+VbsbyX7pBxK1W4HtZAKUwN6Ejq
+         3DKw==
+X-Gm-Message-State: AOAM531Cw8LZy2zNnT8zGp9ggJfsz73wsil9nNPOrE5t2gJ9uiWCHxlV
+        eTD7GNQzE/6s1AXwtJ2f6dLFfg==
+X-Google-Smtp-Source: ABdhPJyUdN9AAQJOIv8BrtNq5PG/GDZV2zRQCb7Jvr1QlnWAG+L7YkDEsD+6MsxQ3kdN9wY05y6Tuw==
+X-Received: by 2002:a5d:4d8b:: with SMTP id b11mr49641462wru.393.1636130570115;
+        Fri, 05 Nov 2021 09:42:50 -0700 (PDT)
+Received: from localhost.localdomain ([95.148.6.174])
+        by smtp.gmail.com with ESMTPSA id t189sm8040590wma.8.2021.11.05.09.42.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 09:42:49 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Dongliang Mu <mudongliangabcd@gmail.com>,
+        syzbot+44d53c7255bb1aea22d2@syzkaller.appspotmail.com,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH v4.4.y 1/1] usb: hso: fix error handling code of hso_create_net_device
+Date:   Fri,  5 Nov 2021 16:42:45 +0000
+Message-Id: <20211105164245.2732082-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
 MIME-Version: 1.0
-In-Reply-To: <CAGWkznF_8iBp57BPoQKvG4VuNYep=g+ZxgO7D4e0wMDLipJ8uw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/11/2021 06:58, Zhaoyang Huang wrote:
-> On Thu, Nov 4, 2021 at 4:58 PM Dietmar Eggemann
-> <dietmar.eggemann@arm.com> wrote:
->>
->> On 03/11/2021 08:08, Zhaoyang Huang wrote:
->>> +Vincent Guittot
->>>
->>> On Wed, Nov 3, 2021 at 3:07 PM Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
->>>>
->>>> On Wed, Nov 3, 2021 at 3:47 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->>>>>
->>>>> CC peterz as well for rt and timekeeping magic
->>>>>
->>>>> On Fri, Oct 15, 2021 at 02:16:52PM +0800, Huangzhaoyang wrote:
->>>>>> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
->>>>>>
->>>>>> In an EAS enabled system, there are two scenarios discordant to current design,
->>
->> I don't understand the EAS (probably asymmetric CPU capacity is meant
->> here) angle of the story. Pressure on CPU capacity which is usable for
->> CFS happens on SMP as well?
->  Mentioning EAS here mainly about RT tasks preempting small CFS tasks
-> (big CFS tasks could be scheduled to big core), which would introduce
-> more proportion of preempted time within PSI_MEM_STALL than SMP does.
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-What's your CPU layout? Do you have the little before the big CPUs? Like
-Hikey 960?
+[ Upstream commit a6ecfb39ba9d7316057cea823b196b734f6b18ca ]
 
-root@linaro-developer:~# cat /sys/devices/system/cpu/cpu*/cpu_capacity
-462
-462
-462
-462
-1024
-1024
-1024
-1024
+The current error handling code of hso_create_net_device is
+hso_free_net_device, no matter which errors lead to. For example,
+WARNING in hso_free_net_device [1].
 
-And I guess rt class prefers lower CPU numbers hence you see this?
+Fix this by refactoring the error handling code of
+hso_create_net_device by handling different errors by different code.
 
->>>>>> 1. workload used to be heavy uneven among cores for sake of scheduler policy.
->>>>>> RT task usually preempts CFS task in little core.
->>>>>> 2. CFS task's memstall time is counted as simple as exit - entry so far, which
->>>>>> ignore the preempted time by RT, DL and Irqs.
->>>>>>
->>>>>> With these two constraints, the percpu nonidle time would be mainly consumed by
->>>>>> none CFS tasks and couldn't be averaged. Eliminating them by calc the time growth
->>>>>> via the proportion of cfs_rq's utilization on the whole rq.
->>>>>>
->>>>>> eg.
->>>>>> Here is the scenario which this commit want to fix, that is the rt and irq consume
->>>>>> some utilization of the whole rq. This scenario could be typical in a core
->>>>>> which is assigned to deal with all irqs. Furthermore, the rt task used to run on
->>>>>> little core under EAS.
->>>>>>
->>>>>> Binder:305_3-314    [002] d..1   257.880195: psi_memtime_fixup: original:30616,adjusted:25951,se:89,cfs:353,rt:139,dl:0,irq:18
->>>>>> droid.phone-1525    [001] d..1   265.145492: psi_memtime_fixup: original:61616,adjusted:53492,se:55,cfs:225,rt:121,dl:0,irq:15
+[1] https://syzkaller.appspot.com/bug?id=66eff8d49af1b28370ad342787413e35bbe76efe
 
-[...]
+Reported-by: syzbot+44d53c7255bb1aea22d2@syzkaller.appspotmail.com
+Fixes: 5fcfb6d0bfcd ("hso: fix bailout in error case of probe")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/net/usb/hso.c | 33 +++++++++++++++++++++++----------
+ 1 file changed, 23 insertions(+), 10 deletions(-)
 
->>>>>> @@ -492,6 +494,21 @@ static u64 window_update(struct psi_window *win, u64 now, u64 value)
->>>>>>       return growth;
->>>>>>  }
->>>>>>
->>>>>> +static unsigned long psi_memtime_fixup(u32 growth)
->>>>>> +{
->>>>>> +     struct rq *rq = task_rq(current);
->>>>>> +     unsigned long growth_fixed = (unsigned long)growth;
->>>>>> +
->>>>>> +     if (!(current->policy == SCHED_NORMAL || current->policy == SCHED_BATCH))
->>>>>> +             return growth_fixed;
->>
->> This will let the idle task (swapper) pass. Is this indented? Or do you
->> want to only let CFS tasks (including SCHED_IDLE) pass?
-> idle tasks will NOT call psi_memstall_xxx. We just want CFS tasks to
-> scale the STALL time.
+diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
+index fa3f1b8700aa8..b35a887ba5944 100644
+--- a/drivers/net/usb/hso.c
++++ b/drivers/net/usb/hso.c
+@@ -2522,7 +2522,7 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
+ 			   hso_net_init);
+ 	if (!net) {
+ 		dev_err(&interface->dev, "Unable to create ethernet device\n");
+-		goto exit;
++		goto err_hso_dev;
+ 	}
+ 
+ 	hso_net = netdev_priv(net);
+@@ -2535,13 +2535,13 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
+ 				      USB_DIR_IN);
+ 	if (!hso_net->in_endp) {
+ 		dev_err(&interface->dev, "Can't find BULK IN endpoint\n");
+-		goto exit;
++		goto err_net;
+ 	}
+ 	hso_net->out_endp = hso_get_ep(interface, USB_ENDPOINT_XFER_BULK,
+ 				       USB_DIR_OUT);
+ 	if (!hso_net->out_endp) {
+ 		dev_err(&interface->dev, "Can't find BULK OUT endpoint\n");
+-		goto exit;
++		goto err_net;
+ 	}
+ 	SET_NETDEV_DEV(net, &interface->dev);
+ 	SET_NETDEV_DEVTYPE(net, &hso_type);
+@@ -2551,21 +2551,21 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
+ 		hso_net->mux_bulk_rx_urb_pool[i] = usb_alloc_urb(0, GFP_KERNEL);
+ 		if (!hso_net->mux_bulk_rx_urb_pool[i]) {
+ 			dev_err(&interface->dev, "Could not allocate rx urb\n");
+-			goto exit;
++			goto err_mux_bulk_rx;
+ 		}
+ 		hso_net->mux_bulk_rx_buf_pool[i] = kzalloc(MUX_BULK_RX_BUF_SIZE,
+ 							   GFP_KERNEL);
+ 		if (!hso_net->mux_bulk_rx_buf_pool[i])
+-			goto exit;
++			goto err_mux_bulk_rx;
+ 	}
+ 	hso_net->mux_bulk_tx_urb = usb_alloc_urb(0, GFP_KERNEL);
+ 	if (!hso_net->mux_bulk_tx_urb) {
+ 		dev_err(&interface->dev, "Could not allocate tx urb\n");
+-		goto exit;
++		goto err_mux_bulk_rx;
+ 	}
+ 	hso_net->mux_bulk_tx_buf = kzalloc(MUX_BULK_TX_BUF_SIZE, GFP_KERNEL);
+ 	if (!hso_net->mux_bulk_tx_buf)
+-		goto exit;
++		goto err_free_tx_urb;
+ 
+ 	add_net_device(hso_dev);
+ 
+@@ -2573,7 +2573,7 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
+ 	result = register_netdev(net);
+ 	if (result) {
+ 		dev_err(&interface->dev, "Failed to register device\n");
+-		goto exit;
++		goto err_free_tx_buf;
+ 	}
+ 
+ 	hso_log_port(hso_dev);
+@@ -2581,8 +2581,21 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
+ 	hso_create_rfkill(hso_dev, interface);
+ 
+ 	return hso_dev;
+-exit:
+-	hso_free_net_device(hso_dev);
++
++err_free_tx_buf:
++	remove_net_device(hso_dev);
++	kfree(hso_net->mux_bulk_tx_buf);
++err_free_tx_urb:
++	usb_free_urb(hso_net->mux_bulk_tx_urb);
++err_mux_bulk_rx:
++	for (i = 0; i < MUX_BULK_RX_BUF_COUNT; i++) {
++		usb_free_urb(hso_net->mux_bulk_rx_urb_pool[i]);
++		kfree(hso_net->mux_bulk_rx_buf_pool[i]);
++	}
++err_net:
++	free_netdev(net);
++err_hso_dev:
++	kfree(hso_dev);
+ 	return NULL;
+ }
+ 
+-- 
+2.34.0.rc0.344.g81b53c2807-goog
 
-Not sure I  get this.
-
-__schedule() -> psi_sched_switch() -> psi_task_change() ->
-psi_group_change() -> record_times() -> psi_memtime_fixup()
-
-is something else than calling psi_memstall_enter() or _leave()?
-
-IMHO, at least record_times() can be called with current equal
-swapper/X. Or is it that PSI_MEM_SOME is never set for the idle task in
-this callstack? I don't know the PSI internals.
-
->>
->> if (current->sched_class != &fair_sched_class)
->>     return growth_fixed;
->>
->>>>>> +
->>>>>> +     if (current->in_memstall)
->>>>>> +             growth_fixed = div64_ul((1024 - rq->avg_rt.util_avg - rq->avg_dl.util_avg
->>>>>> +                                     - rq->avg_irq.util_avg + 1) * growth, 1024);
->>>>>> +
->>
->> We do this slightly different in scale_rt_capacity() [fair.c]:
->>
->> max = arch_scale_cpu_capacity(cpu_of(rq) /* instead of 1024 to support
->>                                             asymmetric CPU capacity */
-> Is it possible that the SUM of rqs' util_avg large than
-> arch_scale_cpu_capacity because of task migration things?
-
-I assume you meant if the rq (cpu_rq(CPUx)) util_avg sum (CFS, RT, DL,
-IRQ and thermal part) can be larger than arch_scale_cpu_capacity(CPUx)?
-
-Yes it can.
-
-Have a lock at
-
-effective_cpu_util(..., max, ...) {
-
-  if (foo >= max)
-    return max;
-
-}
-
-Even the CFS part (cpu_rq(CPUx)->cfs.avg.util_avg) can be larger than
-the original cpu capacity (rq->cpu_capacity_orig).
-
-Have a look at cpu_util(). capacity_orig_of(CPUx) and
-arch_scale_cpu_capacity(CPUx) both returning rq->cpu_capacity_orig.
-
-[...]
