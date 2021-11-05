@@ -2,140 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDCB4446A38
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 21:59:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A50F446A42
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 22:03:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233866AbhKEVCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 17:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59352 "EHLO
+        id S233712AbhKEVGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 17:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230064AbhKEVCD (ORCPT
+        with ESMTP id S230064AbhKEVGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 17:02:03 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354ACC061570
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 13:59:23 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id iq11so3848191pjb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 13:59:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MXiC0S76dI2cPXsuxXI/B8AxYMIOQDDtelXVgC1U1K4=;
-        b=cUzRVKMoPxS1py3Y/hYVdKwctH0kHTW3uj09eufdPHfuvdx4Az2XRhwRSFhuMhADwA
-         JoOW92fGfBGfQSLl+XTRXFwn2BBRTUnOdEHB+ENThiRFaQG2wwMQ09xUC7A0SXLnmx+N
-         WwTkXQwEI89uQzDpnC7MDUHgHW96R6zhFqP+i28g5u5A/Lps0/+/2DEnIUVpbkvhVLDr
-         mqLz0BvLOMoqYihsfD6BIv9M1u+M6ISpPu3QYLVEKiM1mJmNuyU0rjakKKS7LcM17fyx
-         I02gakwsGTudL57O4r68i+pBfoEA7oWrXJMFOR4B/ee6fgeoX6rLtIOL78EvKeDcnGIE
-         Q0dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MXiC0S76dI2cPXsuxXI/B8AxYMIOQDDtelXVgC1U1K4=;
-        b=HmmU30XAdAcatcAAidMzvmPyT/6h4NWHfdNRprxPzezUsp4NBChD4RBl7n2WxQ0idT
-         2+yxz4pW6VfyEKU9k69P5SVjpZ7djJZMO0bRTgInsBvNU8X/1zo4ZgSgIGR5y+YeQ3fo
-         4N5Ta6bQGXktgEp5wXBtDyRJe2cmT0pJ7Xja3D+O5my6cU3YxHogh4ag5gUQOdC7G5pc
-         +24H6P0eiFlCc6FJbq1PTdRzG0vX0/62M81MzhQECv0/VrnYelxdiTIAqCJ6PQiso1f4
-         jXfstE5KLaspXAO3eNXdKNg+HACwPNTwbCJUeg8HShHxfME+c4iumWzasGtFeVNG4yjY
-         KD3g==
-X-Gm-Message-State: AOAM532tboNtlxbwzJztisIoU6Ro43PmC2OeAo3PP6OwEexVtCi3iNOX
-        2Ew0wuDifdTmoo1Oa1Rt6TcIew==
-X-Google-Smtp-Source: ABdhPJyQgYAcCIZ9WIYAfeAgEMCBydb43M8muGPipBl5QRsCErYRTzJk8/0xt6cOKxEiKHVEMXRx4w==
-X-Received: by 2002:a17:903:2055:b0:142:497c:a249 with SMTP id q21-20020a170903205500b00142497ca249mr6205316pla.35.1636145962459;
-        Fri, 05 Nov 2021 13:59:22 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id ng9sm10631656pjb.4.2021.11.05.13.59.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 13:59:21 -0700 (PDT)
-Date:   Fri, 5 Nov 2021 20:59:17 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 08/11] x86/tdx: Wire up KVM hypercalls
-Message-ID: <YYWbJVTNr5QMTQGb@google.com>
-References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005025205.1784480-9-sathyanarayanan.kuppuswamy@linux.intel.com>
+        Fri, 5 Nov 2021 17:06:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21CBC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 14:03:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=s3GzurqiZlDrydhtZFIi3IJAbTjHLM1J2fOffymQHsg=; b=j0HJaohSEFpL3Gy8udWipTU3jl
+        sZ2D8CpMb4uOxTy6yx3iQpIN4AMhvujbh/jIsURH8Hg79ZolXtalvld3NcroaVj1iYP57l/3+9JM+
+        RaKsAvIO2cwgwqVyLF6Nnm9IOjnhX+qGc8qcO+kkywD1RG3/AnYRvyJCXPmS0t3Fzv6OfQ8iRibdV
+        J2dsiokN7HssaaohkkT8YMWB+sdNdQKBeeKrd6yaPteqZSFvfSDPz4BFy4A3LLXPpjvgV9DcAnnd/
+        PI0JFIt3lb/BmVkZ6KWrOz5h06rjWb0W2+aD0HnWDCN6UhGhCuIYPuvJMoy2nQ3n6ZCqhfMyHf9GB
+        rrDx4y2Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mj6Hm-006pHM-SU; Fri, 05 Nov 2021 20:58:45 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C7A119862D2; Fri,  5 Nov 2021 21:58:05 +0100 (CET)
+Date:   Fri, 5 Nov 2021 21:58:05 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+        mark.rutland@arm.com, dvyukov@google.com, pbonzini@redhat.com,
+        mbenes@suse.cz
+Subject: Re: [RFC][PATCH 15/22] x86,vmx: Remove .fixup usage
+Message-ID: <20211105205805.GR174703@worktop.programming.kicks-ass.net>
+References: <20211104164729.226550532@infradead.org>
+ <20211104165525.408049586@infradead.org>
+ <YYV1UeFeWUtnQ4jV@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211005025205.1784480-9-sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <YYV1UeFeWUtnQ4jV@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021, Kuppuswamy Sathyanarayanan wrote:
-> [Isaku Yamahata: proposed KVM VENDOR string]
+On Fri, Nov 05, 2021 at 06:17:53PM +0000, Sean Christopherson wrote:
 
-...
+> diff --git a/arch/x86/kvm/vmx/vmx_ops.h b/arch/x86/kvm/vmx/vmx_ops.h
+> index 9e9ef47e988c..5e5113d2b324 100644
+> --- a/arch/x86/kvm/vmx/vmx_ops.h
+> +++ b/arch/x86/kvm/vmx/vmx_ops.h
 
-> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-> index 458a564dd4c2..ebb97e082376 100644
-> --- a/arch/x86/include/asm/tdx.h
-> +++ b/arch/x86/include/asm/tdx.h
-> @@ -6,8 +6,9 @@
->  #include <linux/cpufeature.h>
->  #include <linux/types.h>
->  
-> -#define TDX_CPUID_LEAF_ID	0x21
-> -#define TDX_HYPERCALL_STANDARD  0
-> +#define TDX_CPUID_LEAF_ID			0x21
-> +#define TDX_HYPERCALL_STANDARD			0
-> +#define TDX_HYPERCALL_VENDOR_KVM		0x4d564b2e584454 /* TDX.KVM */
-
-...
-
-> +#if defined(CONFIG_KVM_GUEST) && defined(CONFIG_INTEL_TDX_GUEST)
-> +static inline long tdx_kvm_hypercall(unsigned int nr, unsigned long p1,
-> +				     unsigned long p2, unsigned long p3,
-> +				     unsigned long p4)
-> +{
-> +	struct tdx_hypercall_output out;
-> +	u64 err;
+> @@ -76,29 +75,24 @@ static __always_inline unsigned long __vmcs_readl(unsigned long field)
+>  		     "ja 3f\n\t"
+> 
+>  		     /*
+> -		      * VMREAD failed.  Push '0' for @fault, push the failing
+> -		      * @field, and bounce through the trampoline to preserve
+> -		      * volatile registers.
+> +		      * VMREAD failed, push the failing @field, and bounce
+> +		      * through the trampoline to preserve volatile registers.
+> +		      * If VMREAD faults, this will push -FAULT (see below).
+>  		      */
+> -		     "push $0\n\t"
+> -		     "push %2\n\t"
+> -		     "2:call vmread_error_trampoline\n\t"
+> +		     "2: push %2\n\t"
+> +		     "call vmread_error_trampoline\n\t"
+> 
+>  		     /*
+>  		      * Unwind the stack.  Note, the trampoline zeros out the
+> -		      * memory for @fault so that the result is '0' on error.
+> +		      * memory for @field so that the result is '0' on error,
+> +		      * hence the pop to %1, not %2.
+>  		      */
+> -		     "pop %2\n\t"
+>  		     "pop %1\n\t"
+>  		     "3:\n\t"
+> 
+> -		     /* VMREAD faulted.  As above, except push '1' for @fault. */
+> -		     ".pushsection .fixup, \"ax\"\n\t"
+> -		     "4: push $1\n\t"
+> -		     "push %2\n\t"
+> -		     "jmp 2b\n\t"
+> -		     ".popsection\n\t"
+> -		     _ASM_EXTABLE(1b, 4b)
+> +		     /* VMREAD faulted.  As above, except push '-EFAULT' for @fault. */
+> +		     _ASM_EXTABLE_TYPE_REG(1b, 2b, EX_TYPE_EFAULT_REG, %1)
 > +
-> +	err = __tdx_hypercall(TDX_HYPERCALL_VENDOR_KVM, nr, p1, p2,
-> +			      p3, p4, &out);
+>  		     : ASM_CALL_CONSTRAINT, "=r"(value) : "r"(field) : "cc");
+>  	return value;
+>  }
 
-Why use a magic string?  There are already mechanisms for the host to announce
-itself to the guest, i.e. the guest shouldn't be attempting these hypercalls unless
-it knows it's running on KVM (or something that implements KVM's ABI, whatever
-that may be).
+A different option is something like the below; down side is that it
+increases the amount of text, while your version decreases the amount of
+useless text (the gunk between vmread and 3:, all of which should
+ideally live out-of-line).
 
-The only use case I can think of is to support multiple flavors of hypercalls in
-the VMM, e.g. to let KVM support both KVM and Hyper-V hypercalls when KVM is
-masquerading as Hyper-V, but this magic value alone isn't sufficient.
+For now I'll stick with your patch.
 
-And if there is a future where KVM wants to support multiple sets of hypercalls,
-using the entire 64-bit GPR for a magic value is unnecessary and wasteful, e.g.
-it requires an overside MOV imm, reg.
+diff --git a/arch/x86/kvm/vmx/vmx_ops.h b/arch/x86/kvm/vmx/vmx_ops.h
+index 9e9ef47e988c..99fc1f34fbd4 100644
+--- a/arch/x86/kvm/vmx/vmx_ops.h
++++ b/arch/x86/kvm/vmx/vmx_ops.h
+@@ -81,8 +81,8 @@ static __always_inline unsigned long __vmcs_readl(unsigned long field)
+ 		      * volatile registers.
+ 		      */
+ 		     "push $0\n\t"
+-		     "push %2\n\t"
+-		     "2:call vmread_error_trampoline\n\t"
++		     "2: push %2\n\t"
++		     "call vmread_error_trampoline\n\t"
+ 
+ 		     /*
+ 		      * Unwind the stack.  Note, the trampoline zeros out the
+@@ -90,14 +90,14 @@ static __always_inline unsigned long __vmcs_readl(unsigned long field)
+ 		      */
+ 		     "pop %2\n\t"
+ 		     "pop %1\n\t"
+-		     "3:\n\t"
++		     "jmp 3f\n\t"
+ 
+-		     /* VMREAD faulted.  As above, except push '1' for @fault. */
+-		     ".pushsection .fixup, \"ax\"\n\t"
+ 		     "4: push $1\n\t"
+-		     "push %2\n\t"
+ 		     "jmp 2b\n\t"
+-		     ".popsection\n\t"
++
++		     "3:\n\t"
++
++		     /* VMREAD faulted.  As above, except push '1' for @fault. */
+ 		     _ASM_EXTABLE(1b, 4b)
+ 		     : ASM_CALL_CONSTRAINT, "=r"(value) : "r"(field) : "cc");
+ 	return value;
 
-Why not use a single high bit?  Actually, looking at KVM's set of hypercalls,
-the guest can literally pass @nr as is.  The GHCI defines all non-zero values as
-vendor owned, i.e. this needs to ensure only that @nr is non-zero.  For whatever
-reason, perhaps to avoid false positives if the guest forgets to fill the value,
-KVM's hypercalls start at '1'.
-
-Regardless of what is stuffed into r10 for the TDVMCALL, if it's anything other
-than KVM's raw hypercall number, it absolutely must go into
-include/uapi/linux/kvm_para.h and it should be done as a standalone commit,
-because what you're proposing here is effectively committing KVM to supporting
-an ABI.  That is not remotely clear from the changelog.
