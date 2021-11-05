@@ -2,94 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E6D4461F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 130954461FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232890AbhKEKNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 06:13:17 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:37764
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232907AbhKEKNP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 06:13:15 -0400
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A26963F4A6
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 10:10:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1636107035;
-        bh=z0tsoUmWOaxgRAp937Z0S11BvmYuYC7jjzjengboIcg=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=o5Z1vjJgSACA4EGoej49Wsnt105zwONo0S4jNqAklTObPsnMYLPwG3oGVt9RJ7BnG
-         F7qTQn2tIct+b+bZiIglAQVLaR912Qqlds+Vm2NN/7f6x3trZfznQr/fknLQgeQcZN
-         H5Sz3/Td1/HoN1+/zzfrbpOqcDCrXuX4v1LyOWPSzQoLgKRVMFGxn1Wr8HrafvwFvT
-         GYC4XLkOUM1WwPT9s54eGpEvxYRkFpQMdq7Lbwr8IBsJ7Ytv3IZxAkIuxuLagfBe38
-         Dd0+8agkK4/e/s92qIcVYzbYToRAYV8KW6e/goiC4naEZEibHaaTCizdCqyFE9d+Dl
-         BgPjJ8FnaxmIw==
-Received: by mail-lf1-f72.google.com with SMTP id c13-20020a05651200cd00b004001aab328aso3375268lfp.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 03:10:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=z0tsoUmWOaxgRAp937Z0S11BvmYuYC7jjzjengboIcg=;
-        b=NunxoyGqHUsuodkot6iv04DsVqJGtpjGU0qPDnHXBuD2G23ttSg/VKa2o9FTiY1i5h
-         OrQIesqWLn/tMCPyiaD4sktHsU2wvABDwmVVuh27Mfi0UDhkuyU6nnpxbYdvln+7Dsq5
-         bkdM8R1O3yG6vSixmMMD6JA8VTGxZGZsyox1DkhI4pXCgGHsPsart8QpHWYuaILPOCbj
-         hCkLHucnl54h8YuaXFJiVSHVhnkVkjVozYUo1+pAJcZAfr5okcuYgdHOYPJsRll4SUTu
-         CsI4Cc9I/9PLEYvGfvkLMdG5Jyp4RGi2lJd6mfmWe6hVS9AjoDll1hjCNcuYN2Q+Fpyq
-         VKGQ==
-X-Gm-Message-State: AOAM5329bQcICVuBfJgwP8NXyBqi2BcFI0Nl1y94AcaEuTMjMwMaqPuV
-        eekcdBqpgasTH3dxqUfW+yxntEMasMYwiFuq3P15jh6we5x6dbtObsW03Pd7Gjxkb5XQBe0fO/V
-        q9Jfudc8xXoQhsFfLDzp0/zz4FksQkfG3pNkEow3wSA==
-X-Received: by 2002:a05:6512:926:: with SMTP id f6mr52661467lft.495.1636107035097;
-        Fri, 05 Nov 2021 03:10:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz8ms6IBqfGRrpRsf+ifN6GlLsj6sLALe5+yrME7rKButQoJ+/xoGsTps2A9xU47zf/OcwOvg==
-X-Received: by 2002:a05:6512:926:: with SMTP id f6mr52661450lft.495.1636107034918;
-        Fri, 05 Nov 2021 03:10:34 -0700 (PDT)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id k7sm33785lfv.214.2021.11.05.03.10.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 03:10:34 -0700 (PDT)
-Message-ID: <45e75291-223d-829a-6772-07bde8943dcc@canonical.com>
-Date:   Fri, 5 Nov 2021 11:10:33 +0100
+        id S233048AbhKEKNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 06:13:31 -0400
+Received: from mga18.intel.com ([134.134.136.126]:24376 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232907AbhKEKNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 06:13:30 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10158"; a="218774609"
+X-IronPort-AV: E=Sophos;i="5.87,211,1631602800"; 
+   d="scan'208";a="218774609"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 03:10:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,211,1631602800"; 
+   d="scan'208";a="498298132"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by fmsmga007.fm.intel.com with SMTP; 05 Nov 2021 03:10:37 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Fri, 05 Nov 2021 12:10:35 +0200
+Date:   Fri, 5 Nov 2021 12:10:35 +0200
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Ilia Mirkin <imirkin@alum.mit.edu>
+Cc:     Mark Yacoub <markyacoub@chromium.org>, pmenzel@molgen.mpg.de,
+        David Airlie <airlied@linux.ie>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Yacoub <markyacoub@google.com>
+Subject: Re: [PATCH v5 2/3] drm: Add Gamma and Degamma LUT sizes props to
+ drm_crtc to validate.
+Message-ID: <YYUDGyA6J4/DRkP2@intel.com>
+References: <20211104200255.63499-1-markyacoub@chromium.org>
+ <20211104200255.63499-2-markyacoub@chromium.org>
+ <CAKb7UvhEH4bwhGr=82zBT5dnHRFsK+pFafHWoS+j+PAE3a9x4Q@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: nfc: pn533: suspected double free when pn533_fill_fragment_skbs()
- return value <= 0
-Content-Language: en-US
-To:     YE Chengfeng <cyeaa@connect.ust.hk>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wengjianfeng@yulong.com" <wengjianfeng@yulong.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <TYCP286MB1188FA6BE2735C22AA9C473E8A8E9@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <TYCP286MB1188FA6BE2735C22AA9C473E8A8E9@TYCP286MB1188.JPNP286.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKb7UvhEH4bwhGr=82zBT5dnHRFsK+pFafHWoS+j+PAE3a9x4Q@mail.gmail.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/11/2021 10:22, YE Chengfeng wrote:
-> Hi,
+On Thu, Nov 04, 2021 at 05:15:43PM -0400, Ilia Mirkin wrote:
+> On Thu, Nov 4, 2021 at 4:03 PM Mark Yacoub <markyacoub@chromium.org> wrote:
+> >
+> > From: Mark Yacoub <markyacoub@google.com>
+> >
+> > [Why]
+> > 1. drm_atomic_helper_check doesn't check for the LUT sizes of either Gamma
+> > or Degamma props in the new CRTC state, allowing any invalid size to
+> > be passed on.
+> > 2. Each driver has its own LUT size, which could also be different for
+> > legacy users.
+> >
+> > [How]
+> > 1. Create |degamma_lut_size| and |gamma_lut_size| to save the LUT sizes
+> > assigned by the driver when it's initializing its color and CTM
+> > management.
+> > 2. Create drm_atomic_helper_check_crtc which is called by
+> > drm_atomic_helper_check to check the LUT sizes saved in drm_crtc that
+> > they match the sizes in the new CRTC state.
+> > 3. As the LUT size check now happens in drm_atomic_helper_check, remove
+> > the lut check in intel_color.c
+> >
+> > Resolves: igt@kms_color@pipe-A-invalid-gamma-lut-sizes on MTK
+> > Tested on Zork (amdgpu) and Jacuzzi (mediatek), volteer (TGL)
+> >
+> > v3:
+> > 1. Check for lut pointer inside drm_check_lut_size.
+> >
+> > v2:
+> > 1. Remove the rename to a parent commit.
+> > 2. Create a drm drm_check_lut_size instead of intel only function.
+> >
+> > v1:
+> > 1. Fix typos
+> > 2. Remove the LUT size check from intel driver
+> > 3. Rename old LUT check to indicate it's a channel change
+> >
+> > Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
+> > ---
+> >  drivers/gpu/drm/drm_atomic_helper.c        | 52 ++++++++++++++++++++++
+> >  drivers/gpu/drm/drm_color_mgmt.c           | 19 ++++++++
+> >  drivers/gpu/drm/i915/display/intel_color.c | 32 ++++++-------
+> >  include/drm/drm_atomic_helper.h            |  1 +
+> >  include/drm/drm_color_mgmt.h               |  3 ++
+> >  include/drm/drm_crtc.h                     | 11 +++++
+> >  6 files changed, 99 insertions(+), 19 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+> > index bc3487964fb5e..548e5d8221fb4 100644
+> > --- a/drivers/gpu/drm/drm_atomic_helper.c
+> > +++ b/drivers/gpu/drm/drm_atomic_helper.c
+> > @@ -929,6 +929,54 @@ drm_atomic_helper_check_planes(struct drm_device *dev,
+> >  }
+> >  EXPORT_SYMBOL(drm_atomic_helper_check_planes);
+> >
+> > +/**
+> > + * drm_atomic_helper_check_crtcs - validate state object for CRTC changes
+> > + * @state: the driver state object
+> > + *
+> > + * Check the CRTC state object such as the Gamma/Degamma LUT sizes if the new
+> > + * state holds them.
+> > + *
+> > + * RETURNS:
+> > + * Zero for success or -errno
+> > + */
+> > +int drm_atomic_helper_check_crtcs(struct drm_atomic_state *state)
+> > +{
+> > +       struct drm_crtc *crtc;
+> > +       struct drm_crtc_state *new_crtc_state;
+> > +       int i;
+> > +
+> > +       for_each_new_crtc_in_state (state, crtc, new_crtc_state, i) {
+> > +               if (!new_crtc_state->color_mgmt_changed)
+> > +                       continue;
+> > +
+> > +               if (drm_check_lut_size(new_crtc_state->gamma_lut,
+> > +                                      crtc->gamma_lut_size) ||
+> > +                   drm_check_lut_size(new_crtc_state->gamma_lut,
+> > +                                      crtc->gamma_size)) {
+> > +                       drm_dbg_state(
+> > +                               state->dev,
+> > +                               "Invalid Gamma LUT size. Expected %u/%u, got %u.\n",
+> > +                               crtc->gamma_lut_size, crtc->gamma_size,
+> > +                               drm_color_lut_size(new_crtc_state->gamma_lut));
+> > +                       return -EINVAL;
+> > +               }
+> > +
+> > +               if (drm_check_lut_size(new_crtc_state->degamma_lut,
+> > +                                      crtc->degamma_lut_size)) {
+> > +                       drm_dbg_state(
+> > +                               state->dev,
+> > +                               "Invalid Degamma LUT size. Expected %u, got %u.\n",
+> > +                               crtc->degamma_lut_size,
+> > +                               drm_color_lut_size(
+> > +                                       new_crtc_state->degamma_lut));
+> > +                       return -EINVAL;
+> > +               }
+> > +       }
+> > +
+> > +       return 0;
+> > +}
+> > +EXPORT_SYMBOL(drm_atomic_helper_check_crtcs);
+> > +
+> >  /**
+> >   * drm_atomic_helper_check - validate state object
+> >   * @dev: DRM device
+> > @@ -974,6 +1022,10 @@ int drm_atomic_helper_check(struct drm_device *dev,
+> >         if (ret)
+> >                 return ret;
+> >
+> > +       ret = drm_atomic_helper_check_crtcs(state);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> >         if (state->legacy_cursor_update)
+> >                 state->async_update = !drm_atomic_helper_async_check(dev, state);
+> >
+> > diff --git a/drivers/gpu/drm/drm_color_mgmt.c b/drivers/gpu/drm/drm_color_mgmt.c
+> > index 16a07f84948f3..c85094223b535 100644
+> > --- a/drivers/gpu/drm/drm_color_mgmt.c
+> > +++ b/drivers/gpu/drm/drm_color_mgmt.c
+> > @@ -166,6 +166,7 @@ void drm_crtc_enable_color_mgmt(struct drm_crtc *crtc,
+> >         struct drm_mode_config *config = &dev->mode_config;
+> >
+> >         if (degamma_lut_size) {
+> > +               crtc->degamma_lut_size = degamma_lut_size;
+> >                 drm_object_attach_property(&crtc->base,
+> >                                            config->degamma_lut_property, 0);
+> >                 drm_object_attach_property(&crtc->base,
+> > @@ -178,6 +179,7 @@ void drm_crtc_enable_color_mgmt(struct drm_crtc *crtc,
+> >                                            config->ctm_property, 0);
+> >
+> >         if (gamma_lut_size) {
+> > +               crtc->gamma_lut_size = gamma_lut_size;
+> >                 drm_object_attach_property(&crtc->base,
+> >                                            config->gamma_lut_property, 0);
+> >                 drm_object_attach_property(&crtc->base,
+> > @@ -506,6 +508,23 @@ const char *drm_get_color_range_name(enum drm_color_range range)
+> >         return color_range_name[range];
+> >  }
+> >
+> > +/**
+> > + * drm_check_lut_size - Checks if LUT size matches the driver expected size.
+> > + * @lut: blob containing the LUT
+> > + * @expected_size: driver expected LUT size
+> > + *
+> > + * Returns -EINVAL on mismatch, 0 on match.
+> > + */
+> > +int drm_check_lut_size(const struct drm_property_blob *lut,
+> > +                      uint32_t expected_size)
+> > +{
+> > +       if (!lut)
+> > +               return 0;
+> > +
+> > +       return drm_color_lut_size(lut) != expected_size ? -EINVAL : 0;
+> > +}
+> > +EXPORT_SYMBOL(drm_check_lut_size);
+> > +
+> >  /**
+> >   * drm_plane_create_color_properties - color encoding related plane properties
+> >   * @plane: plane object
+> > diff --git a/drivers/gpu/drm/i915/display/intel_color.c b/drivers/gpu/drm/i915/display/intel_color.c
+> > index 1469871d21ff9..0fe4b2359812a 100644
+> > --- a/drivers/gpu/drm/i915/display/intel_color.c
+> > +++ b/drivers/gpu/drm/i915/display/intel_color.c
+> > @@ -1262,23 +1262,6 @@ intel_color_add_affected_planes(struct intel_crtc_state *new_crtc_state)
+> >         return 0;
+> >  }
+> >
+> > -static int check_lut_size(const struct drm_property_blob *lut, int expected)
+> > -{
+> > -       int len;
+> > -
+> > -       if (!lut)
+> > -               return 0;
+> > -
+> > -       len = drm_color_lut_size(lut);
+> > -       if (len != expected) {
+> > -               DRM_DEBUG_KMS("Invalid LUT size; got %d, expected %d\n",
+> > -                             len, expected);
+> > -               return -EINVAL;
+> > -       }
+> > -
+> > -       return 0;
+> > -}
+> > -
+> >  static int test_luts(const struct drm_property_blob *lut, u32 tests)
+> >  {
+> >         const struct drm_color_lut *entry;
+> > @@ -1336,9 +1319,20 @@ static int check_luts(const struct intel_crtc_state *crtc_state)
+> >         degamma_channels_tests = INTEL_INFO(dev_priv)->color.degamma_lut_tests;
+> >         gamma_channels_tests = INTEL_INFO(dev_priv)->color.gamma_lut_tests;
+> >
+> > -       if (check_lut_size(degamma_lut, degamma_length) ||
+> > -           check_lut_size(gamma_lut, gamma_length))
+> > +       if (drm_check_lut_size(degamma_lut, degamma_length)) {
+> > +               drm_dbg_state(
+> > +                       &dev_priv->drm,
+> > +                       "Invalid Degamma LUT size. Expected %u, got %u.\n",
+> > +                       degamma_length, drm_color_lut_size(degamma_lut));
+> >                 return -EINVAL;
+> > +       }
+> > +
+> > +       if (drm_check_lut_size(gamma_lut, gamma_length)) {
+> > +               drm_dbg_state(&dev_priv->drm,
+> > +                             "Invalid Gamma LUT size. Expected %u, got %u.\n",
+> > +                             degamma_length, drm_color_lut_size(gamma_lut));
+> > +               return -EINVAL;
+> > +       }
+> >
+> >         if (test_luts(degamma_lut, degamma_channels_tests) ||
+> >             test_luts(gamma_lut, gamma_channels_tests))
+> > diff --git a/include/drm/drm_atomic_helper.h b/include/drm/drm_atomic_helper.h
+> > index 4045e2507e11c..a22d32a7a8719 100644
+> > --- a/include/drm/drm_atomic_helper.h
+> > +++ b/include/drm/drm_atomic_helper.h
+> > @@ -38,6 +38,7 @@ struct drm_atomic_state;
+> >  struct drm_private_obj;
+> >  struct drm_private_state;
+> >
+> > +int drm_atomic_helper_check_crtcs(struct drm_atomic_state *state);
+> >  int drm_atomic_helper_check_modeset(struct drm_device *dev,
+> >                                 struct drm_atomic_state *state);
+> >  int drm_atomic_helper_check_plane_state(struct drm_plane_state *plane_state,
+> > diff --git a/include/drm/drm_color_mgmt.h b/include/drm/drm_color_mgmt.h
+> > index 3537f3eeb3872..cb2d74719f2d5 100644
+> > --- a/include/drm/drm_color_mgmt.h
+> > +++ b/include/drm/drm_color_mgmt.h
+> > @@ -74,6 +74,9 @@ static inline int drm_color_lut_size(const struct drm_property_blob *blob)
+> >         return blob->length / sizeof(struct drm_color_lut);
+> >  }
+> >
+> > +int drm_check_lut_size(const struct drm_property_blob *lut,
+> > +                      uint32_t expected_size);
+> > +
+> >  enum drm_color_encoding {
+> >         DRM_COLOR_YCBCR_BT601,
+> >         DRM_COLOR_YCBCR_BT709,
+> > diff --git a/include/drm/drm_crtc.h b/include/drm/drm_crtc.h
+> > index 2deb15d7e1610..4fd1c9a4bbba8 100644
+> > --- a/include/drm/drm_crtc.h
+> > +++ b/include/drm/drm_crtc.h
+> > @@ -1072,6 +1072,17 @@ struct drm_crtc {
+> >         /** @funcs: CRTC control functions */
+> >         const struct drm_crtc_funcs *funcs;
+> >
+> > +       /**
+> > +        * @degamma_lut_size: Size of degamma LUT.
+> > +        */
+> > +       size_t degamma_lut_size;
+> > +
+> > +       /**
+> > +        * @gamma_lut_size: Size of Gamma LUT. Not used by legacy userspace such as
+> > +        * X, which doesn't support large lut sizes.
+> > +        */
+> > +       size_t gamma_lut_size;
+> > +
 > 
-> We notice that skb is already freed by dev_kfree_skb in pn533_fill_fragment_skbs, but follow error handler branch #line 2288 and #line 2356, skb is freed again, seems like a double free issue. Would you like to have a look at them? We will provide patch for them after confirmation.
+> On NVIDIA hardware, multiple LUT sizes are supported. We do this check in e.g.
 > 
-> https://github.com/torvalds/linux/blob/master/drivers/nfc/pn533/pn533.c#L2288
+> drivers/gpu/drm/nouveau/dispnv50/base907c.c:base907c_ilut
+> 
+> So I don't think a single sizes at the CRTC level makes sense.
 
-Hi,
+Same on i915. While atm we do restrict things to just two LUT sizes per
+crtc (for legacy vs. GAMMA_LUT) there are plans to potentially expose
+an arbitrary number of LUT modes.
 
-Indeed it looks like double free. Please send a patch even without
-confirmation - code is better than just text report.
-
-Best regards,
-Krzysztof
+-- 
+Ville Syrjälä
+Intel
