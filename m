@@ -2,196 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78959446572
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:06:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2192446574
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233418AbhKEPJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 11:09:30 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:28464 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233385AbhKEPJa (ORCPT
+        id S233427AbhKEPJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 11:09:51 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41072 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233385AbhKEPJt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 11:09:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1636124810; x=1667660810;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=N/XGvxinYfHMqC8ASpNZ0TKaYbQ/o6kLCUX0kgvUPGU=;
-  b=DltiNJz2ho9J9yhDyNajsbHrNurA53hQlBblxSwe9r8rh8rTW0bNvnWt
-   x+/Z1s7QPKUDYhpbsmVSw/0uLSUfb8Y60it/jJ/FJ6i7AA1gedZSA26qc
-   +EZWc/y7gCHQveg64yzow+maophQkOOhxEG6SRvOd6hzIQ5Q+anlMJlFB
-   E=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 05 Nov 2021 08:06:50 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 08:06:49 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Fri, 5 Nov 2021 08:06:49 -0700
-Received: from qian-HP-Z2-SFF-G5-Workstation.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Fri, 5 Nov 2021 08:06:47 -0700
-From:   Qian Cai <quic_qiancai@quicinc.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-CC:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        <kasan-dev@googlegroups.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, Qian Cai <quic_qiancai@quicinc.com>
-Subject: [PATCH v2] arm64: Track no early_pgtable_alloc() for kmemleak
-Date:   Fri, 5 Nov 2021 11:05:09 -0400
-Message-ID: <20211105150509.7826-1-quic_qiancai@quicinc.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+        Fri, 5 Nov 2021 11:09:49 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id BABE21FD36;
+        Fri,  5 Nov 2021 15:07:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1636124828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AMaBSs4QaGn7q0+DdTvTOHBM1/9cehbfR6xMtGSpL0M=;
+        b=0eqejjXpz+3Ix5Wg7oNyqR5PZ+l741fE9XMdmTko3h9pjEI1xkYPJhX0fIQyD+MiEZvgA+
+        QGdEEWOSCPT9jZPdQHxgVUhvPotTni69wC9vMq2st6ln0sEkDbE62zpijN1DsML9Ve1RGa
+        kWhXYec8Vcvljtq86/7xg1mHch+VuwA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1636124828;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AMaBSs4QaGn7q0+DdTvTOHBM1/9cehbfR6xMtGSpL0M=;
+        b=gSgRN3BgoOSFYiW+DYlQMXcqjkw1jgz6LH1AkrG5wkRm/26rgSgDay6WL4k0moFQ01lYwO
+        OB0QdFPCkt4BOGAQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id ABC1B2C150;
+        Fri,  5 Nov 2021 15:07:08 +0000 (UTC)
+Date:   Fri, 05 Nov 2021 16:07:08 +0100
+Message-ID: <s5h5yt6fxpf.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Pkshih <pkshih@realtek.com>
+Cc:     "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "Larry.Finger@gmail.com" <Larry.Finger@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] rtw89: Fix crash by loading compressed firmware file
+In-Reply-To: <bd80d3b6cdc42d7818d7d5c6a5036d8188eb4a67.camel@realtek.com>
+References: <20211105071725.31539-1-tiwai@suse.de>
+        <s5hpmrfgj93.wl-tiwai@suse.de>
+        <87zgqjqaae.fsf@codeaurora.org>
+        <s5hh7crgflg.wl-tiwai@suse.de>
+        <87v917q8hw.fsf@codeaurora.org>
+        <bd80d3b6cdc42d7818d7d5c6a5036d8188eb4a67.camel@realtek.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After switched page size from 64KB to 4KB on several arm64 servers here,
-kmemleak starts to run out of early memory pool due to a huge number of
-those early_pgtable_alloc() calls:
+On Fri, 05 Nov 2021 15:28:39 +0100,
+Pkshih wrote:
+> 
+> On Fri, 2021-11-05 at 11:03 +0200, Kalle Valo wrote:
+> > Takashi Iwai <tiwai@suse.de> writes:
+> > 
+> > > On Fri, 05 Nov 2021 09:25:13 +0100,
+> > > Kalle Valo wrote:
+> > > > Takashi Iwai <tiwai@suse.de> writes:
+> > > > 
+> > > > > On Fri, 05 Nov 2021 08:17:25 +0100,
+> > > > > Takashi Iwai wrote:
+> > > > > > When a firmware is loaded in the compressed format or via user-mode
+> > > > > > helper, it's mapped in read-only, and the rtw89 driver crashes at
+> > > > > > rtw89_fw_download() when it tries to modify some data.
+> > > > > > 
+> > > > > > This patch is an attemp to avoid the crash by re-allocating the data
+> > > > > > via vmalloc() for the data modification.
+> > > > > 
+> > > > > Alternatively, we may drop the code that modifies the loaded firmware
+> > > > > data?  At least SET_FW_HDR_PART_SIZE() in rtw89_fw_hdr_parser() looks
+> > > > > writing it, and I have no idea why this overwrite is needed.
+> > > > 
+> > > > Strange, isn't the firmware data marked as const just to avoid this kind
+> > > > of problem? Does rtw89 have wrong casts somewhere which removes the
+> > > > const?
+> > > 
+> > > Yes.  SET_FW_HDR_PART_SIZE() does the cast, dropping the const.
+> > 
+> > Oh man, all of GET and SET macros in fw.h have those casts:
+> > 
+> > #define GET_FW_HDR_MAJOR_VERSION(fwhdr)	\
+> > 	le32_get_bits(*((__le32 *)(fwhdr) + 1), GENMASK(7, 0))
+> > #define GET_FW_HDR_MINOR_VERSION(fwhdr)	\
+> > 	le32_get_bits(*((__le32 *)(fwhdr) + 1), GENMASK(15, 8))
+> > #define GET_FW_HDR_SUBVERSION(fwhdr)	\
+> > 	le32_get_bits(*((__le32 *)(fwhdr) + 1), GENMASK(23, 16))
+> > 
+> > I don't know how I missed those during my review :( But this is exactly
+> > why I prefer having a proper struct for commands and events, instead of
+> > u8 buf used with these macros.
+> > 
+> 
+> 
+> I can use a struct to access firmware header, becuase their fields
+> are multiple of 8 bits.
+> 
+> But, the "firmware section header" that is additional header followed
+> by firmware header, and it contains bit fields, likes:
+> 
+> #define GET_FWSECTION_HDR_SEC_SIZE(fwhdr)	\
+> 	le32_get_bits(*((__le32 *)(fwhdr) + 1), GENMASK(23, 0))
+> #define GET_FWSECTION_HDR_CHECKSUM(fwhdr)	\
+> 	le32_get_bits(*((__le32 *)(fwhdr) + 1), BIT(28))
+> #define GET_FWSECTION_HDR_REDL(fwhdr)	\
+> 	le32_get_bits(*((__le32 *)(fwhdr) + 1), BIT(29))
+> #define GET_FWSECTION_HDR_DL_ADDR(fwhdr)	\
+> 	le32_get_bits(*((__le32 *)(fwhdr)), GENMASK(31, 0))
+> 
+> If we use a struct, it needs big-/little- endians parts.
+> 
+> Then, we will access firmware header with two methods; is
+> it reasonable?
 
-  kmemleak_alloc_phys()
-  memblock_alloc_range_nid()
-  memblock_phys_alloc_range()
-  early_pgtable_alloc()
-  init_pmd()
-  alloc_init_pud()
-  __create_pgd_mapping()
-  __map_memblock()
-  paging_init()
-  setup_arch()
-  start_kernel()
+You should put const in the cast in le32_get_bits() invocations, at
+least.
 
-Increased the default value of DEBUG_KMEMLEAK_MEM_POOL_SIZE by 4 times
-won't be enough for a server with 200GB+ memory. There isn't much
-interesting to check memory leaks for those early page tables and those
-early memory mappings should not reference to other memory. Hence, no
-kmemleak false positives, and we can safely skip tracking those early
-allocations from kmemleak like we did in the commit fed84c785270
-("mm/memblock.c: skip kmemleak for kasan_init()") without needing to
-introduce complications to automatically scale the value depends on the
-runtime memory size etc. After the patch, the default value of
-DEBUG_KMEMLEAK_MEM_POOL_SIZE becomes sufficient again.
+For the le32_replace_bits(), ideally it should be rewritten in some
+better way the compiler can catch.  e.g. use an inline function to
+take a void * argument without const,
 
-Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
----
-v2:
-Rename MEMBLOCK_ALLOC_KASAN to MEMBLOCK_ALLOC_NOLEAKTRACE to deal with
-those situations in general.
+static inline void RTW89_SET_FWCMD_CXRFK_TYPE(void *cmd, unsigned int val)
+{
+	le32p_replace_bits((__le32 *)((u8 *)(cmd) + 2), val, GENMASK(17, 10));
+}
 
- arch/arm/mm/kasan_init.c   | 2 +-
- arch/arm64/mm/kasan_init.c | 5 +++--
- arch/arm64/mm/mmu.c        | 3 ++-
- include/linux/memblock.h   | 2 +-
- mm/memblock.c              | 9 ++++++---
- 5 files changed, 13 insertions(+), 8 deletions(-)
+Then the compiler will warn when you pass a const pointer there.
 
-diff --git a/arch/arm/mm/kasan_init.c b/arch/arm/mm/kasan_init.c
-index 4b1619584b23..5ad0d6c56d56 100644
---- a/arch/arm/mm/kasan_init.c
-+++ b/arch/arm/mm/kasan_init.c
-@@ -32,7 +32,7 @@ pmd_t tmp_pmd_table[PTRS_PER_PMD] __page_aligned_bss;
- static __init void *kasan_alloc_block(size_t size)
- {
- 	return memblock_alloc_try_nid(size, size, __pa(MAX_DMA_ADDRESS),
--				      MEMBLOCK_ALLOC_KASAN, NUMA_NO_NODE);
-+				      MEMBLOCK_ALLOC_NOLEAKTRACE, NUMA_NO_NODE);
- }
- 
- static void __init kasan_pte_populate(pmd_t *pmdp, unsigned long addr,
-diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
-index 6f5a6fe8edd7..c12cd700598f 100644
---- a/arch/arm64/mm/kasan_init.c
-+++ b/arch/arm64/mm/kasan_init.c
-@@ -36,7 +36,7 @@ static phys_addr_t __init kasan_alloc_zeroed_page(int node)
- {
- 	void *p = memblock_alloc_try_nid(PAGE_SIZE, PAGE_SIZE,
- 					      __pa(MAX_DMA_ADDRESS),
--					      MEMBLOCK_ALLOC_KASAN, node);
-+					      MEMBLOCK_ALLOC_NOLEAKTRACE, node);
- 	if (!p)
- 		panic("%s: Failed to allocate %lu bytes align=0x%lx nid=%d from=%llx\n",
- 		      __func__, PAGE_SIZE, PAGE_SIZE, node,
-@@ -49,7 +49,8 @@ static phys_addr_t __init kasan_alloc_raw_page(int node)
- {
- 	void *p = memblock_alloc_try_nid_raw(PAGE_SIZE, PAGE_SIZE,
- 						__pa(MAX_DMA_ADDRESS),
--						MEMBLOCK_ALLOC_KASAN, node);
-+						MEMBLOCK_ALLOC_NOLEAKTRACE,
-+						node);
- 	if (!p)
- 		panic("%s: Failed to allocate %lu bytes align=0x%lx nid=%d from=%llx\n",
- 		      __func__, PAGE_SIZE, PAGE_SIZE, node,
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index d77bf06d6a6d..acfae9b41cc8 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -96,7 +96,8 @@ static phys_addr_t __init early_pgtable_alloc(int shift)
- 	phys_addr_t phys;
- 	void *ptr;
- 
--	phys = memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
-+	phys = memblock_phys_alloc_range(PAGE_SIZE, PAGE_SIZE, 0,
-+					 MEMBLOCK_ALLOC_NOLEAKTRACE);
- 	if (!phys)
- 		panic("Failed to allocate page table page\n");
- 
-diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-index 7df557b16c1e..8adcf1fa8096 100644
---- a/include/linux/memblock.h
-+++ b/include/linux/memblock.h
-@@ -389,7 +389,7 @@ static inline int memblock_get_region_node(const struct memblock_region *r)
- /* Flags for memblock allocation APIs */
- #define MEMBLOCK_ALLOC_ANYWHERE	(~(phys_addr_t)0)
- #define MEMBLOCK_ALLOC_ACCESSIBLE	0
--#define MEMBLOCK_ALLOC_KASAN		1
-+#define MEMBLOCK_ALLOC_NOLEAKTRACE	1
- 
- /* We are using top down, so it is safe to use 0 here */
- #define MEMBLOCK_LOW_LIMIT 0
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 659bf0ffb086..1018e50566f3 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -287,7 +287,7 @@ static phys_addr_t __init_memblock memblock_find_in_range_node(phys_addr_t size,
- {
- 	/* pump up @end */
- 	if (end == MEMBLOCK_ALLOC_ACCESSIBLE ||
--	    end == MEMBLOCK_ALLOC_KASAN)
-+	    end == MEMBLOCK_ALLOC_NOLEAKTRACE)
- 		end = memblock.current_limit;
- 
- 	/* avoid allocating the first page */
-@@ -1387,8 +1387,11 @@ phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
- 	return 0;
- 
- done:
--	/* Skip kmemleak for kasan_init() due to high volume. */
--	if (end != MEMBLOCK_ALLOC_KASAN)
-+	/*
-+	 * Skip kmemleak for those places like kasan_init() and
-+	 * early_pgtable_alloc() due to high volume.
-+	 */
-+	if (end != MEMBLOCK_ALLOC_NOLEAKTRACE)
- 		/*
- 		 * The min_count is set to 0 so that memblock allocated
- 		 * blocks are never reported as leaks. This is because many
--- 
-2.30.2
 
+BTW, while reading your reply, I noticed that it's an unaligned access
+to a 32bit value, which is another potential breakage on some
+architectures.  So the whole stuff has to be rewritten in anyway...
+
+
+> The macro SET_FW_HDR_PART_SIZE() is used to set the firmware
+> partition size we are going to download, and it is only used
+> by rtw89_fw_download_hdr(). So, I will set the partition size
+> after copying constant firmware header into skb->data.
+
+Sounds good.
+
+
+thanks,
+
+Takashi
