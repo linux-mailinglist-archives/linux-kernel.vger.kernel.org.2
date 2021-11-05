@@ -2,86 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7643446AB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 22:55:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91DBC446ABB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 22:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233262AbhKEV5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 17:57:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58826 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231278AbhKEV5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 17:57:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 176FC611C1;
-        Fri,  5 Nov 2021 21:54:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636149299;
-        bh=ozLXL5/2PJL3zbRtU8MD/vvGcph5oF+8ijAGfOjyUqU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l4E1V4IyVRhANj+/5iOD/zho763+XCq9A47TQZ3vgq9wwmU3zu+aJpeYy0zgwvMP1
-         0AePxgsviW7bL3zThVDvbEHf+wTHzVw5erAjhiCKtkM2aQOK27E5bQ9g0MfM8AXI2Q
-         4tDEqerU7rnx7MTY4HAm+jgsVAXxMWw5Ub5c2it/YLxUptZX2CF23uxugFuPwBWMT8
-         Eyrag+ShHuOAqkPO5qFF3IHb+PPt1Kl/I1bXYCafdDgE91wZYcNSwTcQozbq1IgQvS
-         yrlv97ZglzH/ubdjjewEYfnzuojVM1i8fOR1LPmUJqJSjyUvfRbstB5sd1AgqTxs3X
-         00f9sI/+jNrJg==
-Date:   Fri, 5 Nov 2021 22:54:55 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, viresh.kumar@linaro.org,
-        conghui.chen@intel.com, mst@redhat.com, jiedeng@alumni.sjtu.edu.cn,
-        vincent.whitchurch@axis.com
-Subject: Re: [PATCH] i2c: virtio: update the maintainer to Conghui
-Message-ID: <YYWoLxrhMMYdJeJ8@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, viresh.kumar@linaro.org,
-        conghui.chen@intel.com, mst@redhat.com, jiedeng@alumni.sjtu.edu.cn,
-        vincent.whitchurch@axis.com
-References: <00fadb64713aebd752dca3156e37c8f01c5ac184.1635736816.git.jie.deng@intel.com>
+        id S233928AbhKEV6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 17:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231278AbhKEV6B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 17:58:01 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B01E1C061570;
+        Fri,  5 Nov 2021 14:55:21 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso4293114pjb.0;
+        Fri, 05 Nov 2021 14:55:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=wf2WN6HefyrQHqdRn636Wu8eKmnAVoIwGYs4XKC3BQM=;
+        b=PJhw8aPharqWHsNZA8yx57zgLyk6c0QBjlqA+wDpzzboGwa/015LQDWC4cIX4lq1O0
+         EseHzlGQGS3omtuqyQLE4lffWEMw15D2VjV433siRhAoCTjm4LHn58tjg3yEk6Ov1vYu
+         65pOEPeDByBDWS/DC/6HnsHxaHvwtLrI5eNfJS/4V0teWtryo1t7kjK8d/YUNfL0Txws
+         LgOuesffDxRrsxh1ZeqAnMLQeL/7tlZswQnKcjF4+Op03GJ2oqAoe08Cn0g6mUB5u9EA
+         gfbOt/UwEV54LXSonkJwZS5962AXoh5pLBQN3vjgar5Ad5yEJBd2tR1J9ff6f71aS5O5
+         EyxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=wf2WN6HefyrQHqdRn636Wu8eKmnAVoIwGYs4XKC3BQM=;
+        b=ARMjlBChmkkMkdrDMqnO3wg/e9wQny2KV18N34nIOYh+kjThHUlTbmL7/HnZxGuUz+
+         Bo1tG65uaImNA7zvx1hg38zv47YJIOMimNi9eANMmRoD7c+6W+YhFt/qWL6qI5Nm245n
+         z9IB+bSSo/n+e8ukTXdhyMBIVt0Hc5M+PGxt7ZFu63c1aSLYPfmLxWJMGv5FPpmzXNWZ
+         fOO2/NIGtXMX8ggDlDSJZ7Kf8iW06WEB2Jz3H/CWuquhjt63g3MjIVjhKfi5p2iflY9n
+         iD1EAeLNlR6Hjp9HyTXVOosyKzKsnbjdhTgNOA2XJVtvVA8t5MWbFt3xjhQEQ113FOkT
+         iJZg==
+X-Gm-Message-State: AOAM530u0YHEElzp856NKwCyikxnoo1kDImyMoFoYAlH+lytrtFoNA7l
+        SWv9Buq9D7X5UgvFY6JviUMXyfUCA64=
+X-Google-Smtp-Source: ABdhPJyvEVDayFk+vPCzjUHsHcuf6MEgKgxATPpaQAApueGCwZ/8Ir1HEITf71+SO44KMNZWHR0pyA==
+X-Received: by 2002:a17:90a:3045:: with SMTP id q5mr33202996pjl.58.1636149321037;
+        Fri, 05 Nov 2021 14:55:21 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:837c:e765:475f:22d3])
+        by smtp.gmail.com with ESMTPSA id w13sm6696589pgm.3.2021.11.05.14.55.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 14:55:19 -0700 (PDT)
+Date:   Fri, 5 Nov 2021 14:55:17 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     =?iso-8859-1?Q?Vin=EDcius?= Reis <itsme.vreis@gmail.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, angiolucci@gmail.com
+Subject: Re: [PATCH] HID: hid-asus.c: Maps key 0x35 (display off) to
+ KEY_SCREENLOCK
+Message-ID: <YYWoRW9NRC58zQ9w@google.com>
+References: <20211008222327.9324-1-angiolucci@gmail.com>
+ <CAKdAkRTdCSC_6UqWkcT3p697+d0kwEqMSSR=M9vw-NPAjdZ4SQ@mail.gmail.com>
+ <CALawNGC3HTV86+LAkMNf_nApqnUoAQ7UPEXOj9WXake5DhHkpQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="p/3B1e8uB5Gz7BDf"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <00fadb64713aebd752dca3156e37c8f01c5ac184.1635736816.git.jie.deng@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALawNGC3HTV86+LAkMNf_nApqnUoAQ7UPEXOj9WXake5DhHkpQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 05, 2021 at 12:16:45PM -0300, Vinícius Reis wrote:
+> Em qui., 28 de out. de 2021 às 13:07, Dmitry Torokhov
+> <dmitry.torokhov@gmail.com> escreveu:
+> >
+> > Hi Vinícius,
+> >
+> > On Fri, Oct 8, 2021 at 3:24 PM Vinícius Angiolucci Reis
+> > <itsme.vreis@gmail.com> wrote:
+> > >
+> > > On Windows systems, ASUS laptops uses the "turn display off" key
+> > > (usually fn+f6) to turn both display and keyboard backlit off. On Linux
+> > > systems, this key has no effect at all since most desktop enviroments
+> > > don't deal with KEY_DISPLAY_OFF. By mapping it to KEY_SCREENLOCK
+> > > instead, would enable desktop environments to handle this key as a
+> > > screen lock intent from the user, out of the box.
+> >
+> > But is it the intent of the user? The fact that current desktop
+> > environments do not handle this key is not a reason to change kernel
+> > behavior.
+> >
+> > If screen lock is simply your preference then you can change the
+> > mapping via udev on your system without the need to patch the kernel.
+> >
+> > Thanks.
+> >
+> > --
+> > Dmitry
+> 
+> (Sorry, I'm sending this response again because it seems the first
+> attempt didn't make it to the mailing lists for some reason.)
+> 
+> Hi Dmitry,
+> 
+> I've picked up this particular key event because it would trigger a close
+> behavior to the one seen on Windows. It is far from being my preference,
+> which would be an exact mimic of the Windows behavior (and can be
+> achieved by xset dpms force on/off from user space).
+> 
+> The idea of this patch is to improve the user experience, by giving that key a
+> behavior as close as possible to what users might experience on Windows.
+> Because most Linux desktop environments also turn the display off after
+> locking the screen, this would be a good approximation to what happens on
+> Windows. I think it is more about giving (consistent) behavior to it
+> than changing it.
+> 
+> I agree it is possible to control that via udev or something else. But
+> most regular
+> users won't be able to do that, ending up with an unused key, though.
+> The hardcore user that would prefer a very different key behavior
+> could keep using
+> udev to do that.
+> 
+> So IMHO I think that setting this up on the kernel would be a good
+> approach in this case.
 
---p/3B1e8uB5Gz7BDf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I am sorry, I disagree. I understand that patching the kernel might be
+easier than implementing new shortcut/behavior in various desktop
+environments, but that does not make it the right approach.
 
-On Mon, Nov 01, 2021 at 01:24:50PM +0800, Jie Deng wrote:
-> Due to changes in my work, I'm passing the virtio-i2c driver
-> maintenance to Conghui.
->=20
-> Signed-off-by: Jie Deng <jie.deng@intel.com>
+Thanks.
 
-Applied to for-next, thanks!
-
-
---p/3B1e8uB5Gz7BDf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGFqC8ACgkQFA3kzBSg
-KbbLdA//SKDwfQfgKzLLa+x6RK61bqbX5LdqdDVpSPVaxGNSmNJZXDROjBb+t8WQ
-swB3ZakcMIkLZHFbUoLKH+TN0SRos31DGtGhQf6W5/Oiz4lgFBnHGNw29IqxwEMh
-oh+5ijcInSR61aUIXJ6jwj/FAHBH3NmcPE5sNLEn4OVctk5n1rGD2CLCdJ+LAJqP
-KgCux7ib3m0QEvSpYMf2cIR1tb78SOxlaFTp8bofjDVDzh/5GHPHRaGej9Ja5Abm
-gvzuUCOQjitWfJGVTldAg7UocC9QvazkAKM6Dcz10S0YdVg+b+pLKvDNO81IbmUg
-oOl1Gg6LolSKD3+qI95kYLKJOa6305j1Sfr+EhjnzAU/CsuQBQv8c1ibOXL2fRap
-Jc2KAudvUKeQPMbGaRDeDUs4JODY6d07LK5uSTu6Qycvh+Rl1dUCPGFQNKKanM6q
-D4Qpaq03sKzzDQK1wdn4fotBIPjXcPGNa2kGiyszw+NWj1Oj867DqT7rBxYRMeYu
-6E/D1lWnT+HIuDFn3sYju/97l6kt8xZ3O5p0H4uJvUXoEZD9PLlFs+0ZFzDRNpAK
-7BjOo3Y261n5noosesW4QmrrcbvC/Ugri8+NdCUcKEcsX9ELeHvQ4AmKRR2pa2fE
-JRxJ6gLFnVhx9EUsSHYfOOGQmep8eUMtlCAb9vCQnsmpmTAQDx0=
-=kEyn
------END PGP SIGNATURE-----
-
---p/3B1e8uB5Gz7BDf--
+-- 
+Dmitry
