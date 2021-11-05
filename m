@@ -2,197 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF17D4463A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 13:53:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B824B4463AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 13:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231705AbhKEMzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 08:55:39 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:51511 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbhKEMzh (ORCPT
+        id S231844AbhKEM4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 08:56:51 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61390 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229740AbhKEM4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 08:55:37 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 4D1D4100005;
-        Fri,  5 Nov 2021 12:52:55 +0000 (UTC)
-Date:   Fri, 5 Nov 2021 13:52:55 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Vincent Shih =?utf-8?B?5pa96YyV6bS7?= <vincent.shih@sunplus.com>
-Cc:     Vincent Shih <vincent.sunplus@gmail.com>,
-        "a.zummo@towertech.it" <a.zummo@towertech.it>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 1/2] rtc: Add driver for Sunplus SP7021
-Message-ID: <YYUpJ14jqK9gT4RD@piout.net>
-References: <1635834123-24668-1-git-send-email-vincent.shih@sunplus.com>
- <1635834123-24668-2-git-send-email-vincent.shih@sunplus.com>
- <YYHZdXqpNqzusQ5n@piout.net>
- <6b70a97056fe4ab79326b472227899da@sphcmbx02.sunplus.com.tw>
+        Fri, 5 Nov 2021 08:56:50 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A5AlTw1019999;
+        Fri, 5 Nov 2021 12:54:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=mBDX/RJg1VWvFterAiaSlLzTEMntgc5Q/D5mpl4aS5c=;
+ b=YdhpLi32HbvVqTK/6bVZBmoSNsD8Ru8j8IUw4fYUDQt97icn7hbpg0ptbF/kavoKKbO4
+ 8TkFbTaxz5+f+d3cPUr5f5R6uRzPgnRIOssl9Lvber/OHXXl7k3BPOv6BrJiEyBhoZOY
+ Yi3jBvDQvlnLicAU4YtWVkqpShv4Tm+V+Gd9bMvTR8GiDxIpeo9GdXfSixs99iBRrtaL
+ AldJLh3CQiGNW3F2AwsTsOK/Z+4IzdhxSWl1G7PUeCUV//nbho3zvfbyrzKC9gBkUSgS
+ rfHWavs6t9c5qIy7ODIeii7hlaCzOJm2K1DF7oZ3fS2uGr1fb3jNfYdS7dm9iZa+LJgX Rw== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c4yn16jyr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Nov 2021 12:54:07 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1A5CnIJ7010007;
+        Fri, 5 Nov 2021 12:54:02 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 3c4t4dcssy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Nov 2021 12:54:01 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1A5CrxpB55837120
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 5 Nov 2021 12:53:59 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 838274C040;
+        Fri,  5 Nov 2021 12:53:59 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 29FC14C058;
+        Fri,  5 Nov 2021 12:53:59 +0000 (GMT)
+Received: from [9.145.172.52] (unknown [9.145.172.52])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  5 Nov 2021 12:53:59 +0000 (GMT)
+Message-ID: <5e98cb7e-699e-a643-57ec-eff19275fb28@linux.ibm.com>
+Date:   Fri, 5 Nov 2021 13:53:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [GIT PULL] first round of SCSI updates for the 5.15+ merge window
+Content-Language: en-US
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <b13f25e87fd8d4ed027ef64aba8ebd7273c4b8b8.camel@HansenPartnership.com>
+ <f5900f54-dddd-6dd4-ce13-a8bdfa58b6ad@linux.ibm.com>
+ <1a031eaec5f867380e8aeabef57e5cecff70e701.camel@HansenPartnership.com>
+From:   Steffen Maier <maier@linux.ibm.com>
+In-Reply-To: <1a031eaec5f867380e8aeabef57e5cecff70e701.camel@HansenPartnership.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: r_SkCEJHNFJS8mN6nMxXnDMsAL3lCVRx
+X-Proofpoint-ORIG-GUID: r_SkCEJHNFJS8mN6nMxXnDMsAL3lCVRx
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6b70a97056fe4ab79326b472227899da@sphcmbx02.sunplus.com.tw>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-05_02,2021-11-03_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
+ bulkscore=0 adultscore=0 spamscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 suspectscore=0 lowpriorityscore=0 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111050073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/11/2021 12:05:22+0000, Vincent Shih 施錕鴻 wrote:
-> > > +static int sp_rtc_set_alarm(struct device *dev, struct rtc_wkalrm
-> > > +*alrm) {
-> > > +	struct rtc_device *rtc = dev_get_drvdata(dev);
-> > > +	unsigned long alarm_time;
-> > > +
-> > > +	alarm_time = rtc_tm_to_time64(&alrm->time);
-> > > +	RTC_DEBUG("%s, alarm_time: %u\n", __func__, (u32)(alarm_time));
-> > > +
-> > > +	if (alarm_time > 0xFFFFFFFF)
-> > > +		return -EINVAL;
-> > 
-> > Please set the range of the rtc properly and the core will do this check for you.
+On 11/5/21 13:43, James Bottomley wrote:
+> On Fri, 2021-11-05 at 13:37 +0100, Steffen Maier wrote:
+>> On 11/5/21 13:14, James Bottomley wrote:
+>>> a move to register core sysfs files
+>>> earlier, which means they're available to KOBJ_ADD processing,
+>>> which
+>>> necessitates switching all drivers to using attribute groups.
+>>
+>> I seem to be missing?:
+>>
+>> https://lore.kernel.org/linux-scsi/163478764102.7011.9375895285870786953.b4-ty@oracle.com/t/#mab0eeb4a8d8db95c3ace0013bfef775736e124cb
+>> ("scsi: core: Fix early registration of sysfs attributes for
+>> scsi_device")
+>> https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git/commit/?h=5.16/scsi-staging&id=3a71f0f7a51259b3cb95d79cac1e19dcc5e89ce9
+>> https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git/commit/?h=5.16/scsi-queue&id=3a71f0f7a51259b3cb95d79cac1e19dcc5e89ce9
 > 
-> I modified it as the following statements
-> 
-> #define RTC_ALARM_SET 0x50		//register offset
-> #define ALARM_SET 0xFFFFFFFF		//field in the register
-> If (alarm_time > ALARM_SET)
->       return -EINVAL;
-> 
-> Is it applicable??
-> 
+> We have quite a list of patches that came in just before the merge
+> window opened.  They get incubated in linux-next for as long as
+> possible and then sent in the final pull request.
 
-No, please set the rtc .range_min and .range_max and the core will do
-the check for you.
+I think that would break our CI with Linus' vanilla kernel between when Linus 
+merges this and until he merges your final pull request. Daily test fails for 
+about a week or so? I tried to avoid that by coming up with a regression fix as 
+fast as possible.
 
-> > 
-> > > +
-> > > +	if ((rtc->aie_timer.enabled) && (rtc->aie_timer.node.expires ==
-> > ktime_set(alarm_time, 0))) {
-> > > +		if (rtc->uie_rtctimer.enabled)
-> > > +			sp_rtc.set_alarm_again = 1;
-> > > +	}
-> > 
-> > You have to explain that.
-> 
-> Since the alarm and update interrupts use the same HW one, rtc->aie_timer.enabled,
-> rtc->uie_rtctimer.enabled and sp_rtc.set_alarm_again are used to distinguish between
-> alarm interrupt and update one in rtc_irq_handler() (RTC_UF or RTC_AF). There is
-> only alarm interrupt supported in out HW. I found the update interrupt is implemented
-> by the alarm one in kernel.
-> 
-> > 
-> > > +
-> > > +	writel((u32)alarm_time, &rtc_reg_ptr->rtc_alarm_set);
-> > > +	wmb();			// make sure settings are effective.
-> > 
-> > doesn't writel come with a barrier?
-> 
-> It is useless. I will remove it.
-> 
-> > 
-> > > +
-> > > +	// enable alarm for update irq
-> > > +	if (rtc->uie_rtctimer.enabled)
-> > > +		writel((0x003F << 16) | 0x17, &rtc_reg_ptr->rtc_ctrl);
-> > > +	else if (!rtc->aie_timer.enabled)
-> > > +		writel((0x0007 << 16) | 0x0, &rtc_reg_ptr->rtc_ctrl);
-> > 
-> > Magic values, please explain also, I'm not sure why you need to look at
-> > uie_rtctimer and aie_timer as your RTC seems capable of having an alarm
-> > every seconds.
-> 
-> 1. I will give the definitions for that magic values.
-> 2. It is for update interrupt. rtc_alarm_irq_enable() will call alarm_irq_enable()
->   to enable HW alarm interrupt , but rtc_update_irq_enable() will not. Therefore
->   the HW interrupt for update one is enabled here. Otherwise how can I enable
->   HW alarm interrupt for update one??
-> 
-
-From the .set_alarm point of view, there is no difference between a
-regular alarm and the uie alarm set by the core. alrm.enabled will
-always be enabled.
-
-> > 
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int sp_rtc_read_alarm(struct device *dev, struct rtc_wkalrm
-> > > +*alrm) {
-> > > +	unsigned int alarm_time;
-> > > +
-> > > +	alarm_time = readl(&rtc_reg_ptr->rtc_alarm_set);
-> > > +	RTC_DEBUG("%s, alarm_time: %u\n", __func__, alarm_time);
-> > > +	rtc_time64_to_tm((unsigned long)(alarm_time), &alrm->time);
-> > > +
-> > 
-> > You have to also set whether the alarm is enabled or not, else, simply don't
-> > bother returning anything.
-> 
-> I will modify it.
-> 
-> > 
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int sp_rtc_alarm_irq_enable(struct device *dev, unsigned int
-> > > +enabled) {
-> > > +	struct rtc_device *rtc = dev_get_drvdata(dev);
-> > > +
-> > > +	if (enabled)
-> > > +		writel((0x003F << 16) | 0x17, &rtc_reg_ptr->rtc_ctrl);
-> > > +	else if (!rtc->uie_rtctimer.enabled)
-> > > +		writel((0x0007 << 16) | 0x0, &rtc_reg_ptr->rtc_ctrl);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static const struct rtc_class_ops sp_rtc_ops = {
-> > > +	.read_time =		sp_rtc_read_time,
-> > > +	.set_time =		sp_rtc_set_time,
-> > > +	.set_alarm =		sp_rtc_set_alarm,
-> > > +	.read_alarm =		sp_rtc_read_alarm,
-> > > +	.alarm_irq_enable =	sp_rtc_alarm_irq_enable,
-> > > +};
-> > > +
-> > > +static irqreturn_t rtc_irq_handler(int irq, void *dev_id) {
-> > > +	struct platform_device *plat_dev = dev_id;
-> > > +	struct rtc_device *rtc = platform_get_drvdata(plat_dev);
-> > > +
-> > > +	if (rtc->uie_rtctimer.enabled) {
-> > > +		rtc_update_irq(rtc, 1, RTC_IRQF | RTC_UF);
-> > > +		RTC_DEBUG("[RTC] update irq\n");
-> > > +
-> > > +		if (sp_rtc.set_alarm_again == 1) {
-> > > +			sp_rtc.set_alarm_again = 0;
-> > > +			rtc_update_irq(rtc, 1, RTC_IRQF | RTC_AF);
-> > > +			RTC_DEBUG("[RTC] alarm irq\n");
-> > > +		}
-> > > +	} else {
-> > > +		rtc_update_irq(rtc, 1, RTC_IRQF | RTC_AF);
-> > > +		RTC_DEBUG("[RTC] alarm irq\n");
-> > > +	}
-> > 
-> > I'm pretty sure you can get rid of most of that and stop looking at uie_rtctimer.
-> 
-> rtc->aie_timer.enabled, rtc->uie_rtctimer.enabled and sp_rtc.set_alarm_again are
-> used to distinguish between alarm interrupt and update one. There 3 conditions for
-> triggering the alarm interrupt :
-> 1. only alarm
-> 2. only update
-> 3. alarm and update together
-> 
-
-No, stop emulating UIE in your driver and let the core handle that. If
-UIE is enabled for the RTC, it will set up an alarm every second. Your
-driver doesn't have to handle the difference.
-
+We're covered with linux-next already via Martin's for-next.
 
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Mit freundlichen Gruessen / Kind regards
+Steffen Maier
+
+Linux on IBM Z and LinuxONE
+
+https://www.ibm.com/privacy/us/en/
+IBM Deutschland Research & Development GmbH
+Vorsitzender des Aufsichtsrats: Gregor Pillen
+Geschaeftsfuehrung: Dirk Wittkopp
+Sitz der Gesellschaft: Boeblingen
+Registergericht: Amtsgericht Stuttgart, HRB 243294
