@@ -2,116 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7E2446536
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:48:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B34A44653A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:50:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233267AbhKEOun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 10:50:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233162AbhKEOul (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 10:50:41 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2060BC061208
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 07:48:01 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id t11so15404077ljh.6
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 07:48:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=zfhV6Gwgf0sNTi1LiHNLJjrEkjkdv8O0IylaTB1V6Y0=;
-        b=XDEkCdq9vbijnaUXZhE9vmtvMCpG1ac/W5v/wUUDSrfijdB5fVv7957sSp5zWsZZ2/
-         C2K85AnqNElbJBe6g896rOCaVQ5pIYggI8IHKX0RbF6D5DGd8Lmyb3pEwWxAy6LXXgVn
-         oGOp86j+3iXftmpZRb4jzb6FKWSIytairdoPc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=zfhV6Gwgf0sNTi1LiHNLJjrEkjkdv8O0IylaTB1V6Y0=;
-        b=MijcOHDsuNRLJm4R2FU9fXOcfNYhs2UezsxNKEaGzIxH5933XrCJZ+Zx5WHk1Dsh71
-         jrk+LQ7JBR2H8AgIQEWKXhlT2ATBBzDBFOTLErOI3n9D4eWTH+xjO4tfDmmacj4azcgk
-         u2umSim98RXPfC9Pak9Llgm5O1gHuAB+DGbPnCGBK2ZmJBH0DH44b3ofd8Pgm+65asY6
-         C69U1CLWIIsISdFEwLQs0XPFw0BfzCUrkIndRg8sUvftICEZ44hUHF7kawC09NTQN99M
-         ZgGDoLyWjf8n5MNM5WioxG6GAZ4o0ewmlXmozzaZMv6epEU7Eu6y9MYcfx4ViLXFzlzW
-         hlXg==
-X-Gm-Message-State: AOAM531CaoHpPBOrAh6SDFKNv+HG6ktjR4mR7VvIR0FkaLsaVl47P3lS
-        pAzRm5GM0n2Q3qltQn2AOWRPOA==
-X-Google-Smtp-Source: ABdhPJyqGf7LHd6ltIp1FxZaIjg29uJoEhLhJOgH/6HaLKpsEWoaMg5bWUcdQFLgXGB1IwbsV0ryOw==
-X-Received: by 2002:a2e:9c0b:: with SMTP id s11mr62580170lji.259.1636123679311;
-        Fri, 05 Nov 2021 07:47:59 -0700 (PDT)
-Received: from cloudflare.com (2a01-110f-480d-6f00-ff34-bf12-0ef2-5071.aa.ipv6.supernova.orange.pl. [2a01:110f:480d:6f00:ff34:bf12:ef2:5071])
-        by smtp.gmail.com with ESMTPSA id g19sm106394ljl.27.2021.11.05.07.47.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 07:47:58 -0700 (PDT)
-References: <20211104122304.962104-1-markpash@cloudflare.com>
- <20211104122304.962104-2-markpash@cloudflare.com>
- <32332bb4-1848-0280-9482-5189ab912b02@fb.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Yonghong Song <yhs@fb.com>,
-        Mark Pashmfouroush <markpash@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>, kernel-team@cloudflare.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Add ifindex to bpf_sk_lookup
-In-reply-to: <32332bb4-1848-0280-9482-5189ab912b02@fb.com>
-Date:   Fri, 05 Nov 2021 15:47:57 +0100
-Message-ID: <87y262hd5u.fsf@cloudflare.com>
+        id S233294AbhKEOw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 10:52:56 -0400
+Received: from mga04.intel.com ([192.55.52.120]:19995 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229680AbhKEOwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 10:52:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10158"; a="230634321"
+X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
+   d="scan'208";a="230634321"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 07:50:05 -0700
+X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
+   d="scan'208";a="668261911"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 07:50:03 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mj0XM-003pNt-Uz;
+        Fri, 05 Nov 2021 16:49:48 +0200
+Date:   Fri, 5 Nov 2021 16:49:48 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     lianzhi chang <changlianzhi@uniontech.com>
+Cc:     linux-kernel@vger.kernel.org, dmitry.torokhov@gmail.com,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org, 282827961@qq.com
+Subject: Re: [PATCH v12] tty: Fix the keyboard led light display problem
+Message-ID: <YYVEjMKfhnEMqQxD@smile.fi.intel.com>
+References: <20211105134816.13982-1-changlianzhi@uniontech.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211105134816.13982-1-changlianzhi@uniontech.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 07:06 PM CET, 'Yonghong Song' via kernel-team+notifications wrote:
-> On 11/4/21 5:23 AM, Mark Pashmfouroush wrote:
->> It may be helpful to have access to the ifindex during bpf socket
->> lookup. An example may be to scope certain socket lookup logic to
->> specific interfaces, i.e. an interface may be made exempt from custom
->> lookup code.
->> Add the ifindex of the arriving connection to the bpf_sk_lookup API.
->> Signed-off-by: Mark Pashmfouroush <markpash@cloudflare.com>
->> diff --git a/include/linux/filter.h b/include/linux/filter.h
->> index 24b7ed2677af..0012a5176a32 100644
->> --- a/include/linux/filter.h
->> +++ b/include/linux/filter.h
->> @@ -1374,6 +1374,7 @@ struct bpf_sk_lookup_kern {
->>   		const struct in6_addr *daddr;
->>   	} v6;
->>   	struct sock	*selected_sk;
->> +	u32		ifindex;
->
-> In struct __sk_buff, we have two ifindex related fields:
->
->         __u32 ingress_ifindex;
->         __u32 ifindex;
->
-> Does newly-added ifindex corresponds to skb->ingress_ifindex or
-> skb->ifindex? From comments:
->   > +	__u32 ifindex;		/* The arriving interface. Determined by inet_iif. */
->
-> looks like it corresponds to ingress? Should be use the name
-> ingress_ifindex to be consistent with __sk_buff?
->
+On Fri, Nov 05, 2021 at 09:48:16PM +0800, lianzhi chang wrote:
+> Switching from the desktop environment to the tty environment,
+> the state of the keyboard led lights and the state of the keyboard
+> lock are inconsistent. This is because the attribute kb->kbdmode
+> of the tty bound in the desktop environment (Xorg) is set to
+> VC_OFF, which causes the ledstate and kb->ledflagstate
+> values of the bound tty to always be 0, which causes the switch
+> from the desktop When to the tty environment, the LED light
+> status is inconsistent with the keyboard lock status.
+> In order to ensure that the keyboard LED lights are displayed
+> normally during the VT switching process, when the VT is
+> switched, the current VT LED configuration is forced to be issued.
 
-On ingress these two (skb->skb_iif and skb->dev-ifindex) are the same,
-if I read the code correctly [1].
+...
 
-That said, I agree that ingress_ifindex would be less ambiguous (iif ->
-ingress interface, can't get that wrong).
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Also, as Yonghong points out __sk_buff and xdp_md context objects
-already use this identifier for the same bit of information, so it will
-be less of surprise.
+Not me, it's Dmitry who suggested the solution. Sorry I wasn't crystal clear
+about this part.
 
-[1] https://elixir.bootlin.com/linux/latest/source/net/core/dev.c#L5258
+...
 
-[...]
+>  v11:
+>  Supplement the signature of the collaborator.
+
+You have v12 in the subject...
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
