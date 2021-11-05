@@ -2,191 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D474461C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC384461CB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232930AbhKEKBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 06:01:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49696 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230075AbhKEKBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 06:01:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BD2761265;
-        Fri,  5 Nov 2021 09:58:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636106331;
-        bh=itU9oZT9iw2NSls+sL79AK1kE9CLjWxwYCiODRJjY2c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xXgiba1LIL9eTpZjdJrSbt1Ebg/pto5N+ZR+WBcgGN8BUFi9I5N7jkEvIX2WrkuLK
-         hBj6jTXEjmj334dnj/eoLjr7vOH7fHSq79YXNvBzwTWnTgUH5W1ydkaf1uNxLyjs6E
-         SknTyJxLYEuvfgtbjiLwv/65/ufb3UPx3Q1INzao=
-Date:   Fri, 5 Nov 2021 10:58:48 +0100
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     =?utf-8?B?6IOh5ZCv6IiqKE5pY2sgSHUp?= <huqihang@oppo.com>
-Cc:     Peter Chen <peter.chen@kernel.org>,
-        "balbi@kernel.org" <balbi@kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usb: gadget: composite: Fix null pointer exception
-Message-ID: <YYUAWD1AbxUIuU30@kroah.com>
-References: <20211101015757.290350-1-huqihang@oppo.com>
- <20211101131849.GA4126@Peter>
- <KU1PR02MB25366C0D39F8A21319A36CC5B08B9@KU1PR02MB2536.apcprd02.prod.outlook.com>
+        id S230075AbhKEKBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 06:01:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56710 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232955AbhKEKBj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 06:01:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636106340;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PAYCTLIu4BclXd+cEViyuoXMMG/fW8iPDkQUaON6iK4=;
+        b=CqULCLW89Y0wGu31R3NUuP46hlTKi/ghcATCHNKGuooAnf92HOGa8RXgcCxZ7jMVY7MDMR
+        sNt21nF/zwsGfTM6PA4W+NdhHnmvNHRXR1BAkrCY50jmLQnDewAPk9nPFk95630/4EDhy+
+        Zs8nlZ3hvna5oSB9/r6GShAM+II7NZU=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-550-7578yrBzNcSfM7ZRhBZXQg-1; Fri, 05 Nov 2021 05:58:58 -0400
+X-MC-Unique: 7578yrBzNcSfM7ZRhBZXQg-1
+Received: by mail-wr1-f72.google.com with SMTP id d13-20020adf9b8d000000b00160a94c235aso2149127wrc.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 02:58:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=PAYCTLIu4BclXd+cEViyuoXMMG/fW8iPDkQUaON6iK4=;
+        b=UVoWtaXQhpRKpqJCX2NRz2MDHc8RheelZO8u/rcPkfPcFUSnyoglSkE5u/1z5//QMF
+         z8a7Rsb13aAeb4DSUmhmpy7a24hMf9OY10fSQOZVR9xcytETtH0mRtAbNKuH2fGbb7cf
+         CkOp7fHTxJJ1OFRCs99VBqNgyLBg5hi2xpQs2Pgu3neElX555Avkdr8G4X9oZgxxBw1a
+         +ACLSLXrRA//mM5r52wATnstHWLPTieKHwbJ5IEdn+dCng19He/TBcJRegAIoLMnf+70
+         eK5iCkpWKwwkpPxSGKIyoeQcO2DHzM0rpiNwgTY+r18SL23MD4uhVXKs3p8DqABnsKFH
+         Bduw==
+X-Gm-Message-State: AOAM532bjmiGA4Y6yGrszKnyCKHh6VNzqf0hdwMAHSGhYc0RvrNIGPi3
+        03gv/qAxn3/jC9QnnDIXQwSH6fzenGJVSq7GBfZFdAP02CJu3XpVjkQmCniad13asSf9OXyd6sB
+        DDL+XGyRJ3QRRdd32tFIJTTnH
+X-Received: by 2002:adf:ec90:: with SMTP id z16mr46047438wrn.247.1636106336897;
+        Fri, 05 Nov 2021 02:58:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyVMn64qcflGLedLN5EhsNM7GWU6o/3vwDL3aOoAYuCZV9//84CDnDeN1gsW9919fwpqQaOmg==
+X-Received: by 2002:adf:ec90:: with SMTP id z16mr46047414wrn.247.1636106336738;
+        Fri, 05 Nov 2021 02:58:56 -0700 (PDT)
+Received: from [192.168.1.128] ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id c17sm7678095wmk.23.2021.11.05.02.58.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Nov 2021 02:58:56 -0700 (PDT)
+Message-ID: <87a6bb4a-01ef-4979-f5c2-c0bb0d0a29f9@redhat.com>
+Date:   Fri, 5 Nov 2021 10:58:54 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <KU1PR02MB25366C0D39F8A21319A36CC5B08B9@KU1PR02MB2536.apcprd02.prod.outlook.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 2/2] drm: Move nomodeset kernel parameter to the DRM
+ subsystem
+Content-Language: en-US
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>, Chia-I Wu <olvaffe@gmail.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Zack Rusin <zackr@vmware.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, nouveau@lists.freedesktop.org,
+        spice-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org
+References: <20211104160707.1407052-1-javierm@redhat.com>
+ <20211104160707.1407052-3-javierm@redhat.com>
+ <f2c40b22-04bf-e8f2-9839-36d6d26189a1@suse.de> <87cznf9cty.fsf@intel.com>
+ <2698c680-6d05-f58d-d7c2-ea76aeb0bb47@suse.de>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+In-Reply-To: <2698c680-6d05-f58d-d7c2-ea76aeb0bb47@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 03:59:16AM +0000, 胡启航(Nick Hu) wrote:
-> > -----Original Message-----
-> > From: Peter Chen <peter.chen@kernel.org>
-> > Sent: Monday, November 1, 2021 9:19 PM
-> > To: 胡启航(Nick Hu) <huqihang@oppo.com>
-> > Cc: balbi@kernel.org; gregkh@linuxfoundation.org; linux-usb@vger.kernel.org;
-> > linux-kernel@vger.kernel.org
-> > Subject: Re: [PATCH] usb: gadget: composite: Fix null pointer exception
-> > 
-> > On 21-11-01 09:57:57, Qihang Hu wrote:
-> > > In the config_ep_by_speed_and_alt function, select the corresponding
-> > > descriptor through g->speed, but the interface driver
-> > 
-> > function driver
-> > 
-> > > may not
-> > > support the corresponding speed. So, we need to check whether the
-> > > interface driver provides the corresponding speed descriptor when
-> > > selecting the descriptor.
-> > >
-> > > [  237.708146]  android_work: sent uevent USB_STATE=CONNECTED
-> > > [  237.712464]  kconfigfs-gadget gadget: super-speed config #1: b
-> > > [  237.712487]  kUnable to handle kernel NULL pointer dereference at
-> > virtual address 0000000000000000
-> > > [  237.712493]  kMem abort info:
-> > > [  237.712498]  k  ESR = 0x96000006
-> > > [  237.712504]  k  EC = 0x25: DABT (current EL), IL = 32 bits
-> > > [  237.712510]  k  SET = 0, FnV = 0
-> > > [  237.712515]  k  EA = 0, S1PTW = 0
-> > > [  237.712520]  kData abort info:
-> > > [  237.712525]  k  ISV = 0, ISS = 0x00000006
-> > > [  237.712530]  k  CM = 0, WnR = 0
-> > > [  237.712536]  kuser pgtable: 4k pages, 39-bit VAs,
-> > pgdp=000000020ef29000
-> > > [  237.712541]  k[0000000000000000] pgd=000000020ef2a003,
-> > pud=000000020ef2a003, pmd=0000000000000000
-> > > [  237.712554]  kInternal error: Oops: 96000006 [#1] PREEMPT SMP
-> > > [  237.722067]  kSkip md ftrace buffer dump for: 0x1609e0
-> > > [  237.787037]  kWorkqueue: dwc_wq dwc3_bh_work.cfi_jt
-> > > [  237.854922]  kpstate: 60c00085 (nZCv daIf +PAN +UAO)
-> > > [  237.863165]  kpc : config_ep_by_speed_and_alt+0x90/0x308
-> > > [  237.871766]  klr : audio_set_alt+0x54/0x78
-> > > [  237.879108]  ksp : ffffffc0104839e0
-> > >
-> > > Signed-off-by: Qihang Hu <huqihang@oppo.com>
-> > > ---
-> > >  drivers/usb/gadget/composite.c | 6 +++---
-> > >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/drivers/usb/gadget/composite.c b/drivers/usb/gadget/composite.c
-> > > index 72a9797dbbae..443a65af98af 100644
-> > > --- a/drivers/usb/gadget/composite.c
-> > > +++ b/drivers/usb/gadget/composite.c
-> > > @@ -166,21 +166,21 @@ int config_ep_by_speed_and_alt(struct usb_gadget
-> > *g,
-> > >  	/* select desired speed */
-> > >  	switch (g->speed) {
-> > >  	case USB_SPEED_SUPER_PLUS:
-> > > -		if (gadget_is_superspeed_plus(g)) {
-> > > +		if (gadget_is_superspeed_plus(g) && f->ssp_descriptors) {
-> > >  			speed_desc = f->ssp_descriptors;
-> > >  			want_comp_desc = 1;
-> > >  			break;
-> > >  		}
-> > >  		fallthrough;
-> > >  	case USB_SPEED_SUPER:
-> > > -		if (gadget_is_superspeed(g)) {
-> > > +		if (gadget_is_superspeed(g) && f->ss_descriptors) {
-> > >  			speed_desc = f->ss_descriptors;
-> > >  			want_comp_desc = 1;
-> > >  			break;
-> > >  		}
-> > >  		fallthrough;
-> > >  	case USB_SPEED_HIGH:
-> > > -		if (gadget_is_dualspeed(g)) {
-> > > +		if (gadget_is_dualspeed(g) && f->hs_descriptors) {
-> > >  			speed_desc = f->hs_descriptors;
-> > >  			break;
-> > >  		}
-> > > --
-> > > 2.25.1
-> > >
-> > 
-> > Besides your fix, you may show an warning that said "the function
-> > doesn't hold the descriptors for supported speed, using the default (FS)
-> > descriptors". See below kernel doc for detail.
-> > 
-> > /**
-> >  * config_ep_by_speed_and_alt() - configures the given endpoint
-> >  *
-> >  * ....
-> >  * Note: the supplied function should hold all the descriptors
-> >  * for supported speeds
-> >  */
-> > 
-> > What's more, you may fix android f_audio_source.c, and let it support
-> > super speed and super speed plus.
-> > 
-> > --
-> > 
-> > Thanks,
-> > Peter Chen
-> 
-> 
-> 
-> From 9b8262792b6e85e6060601dbfc651b1e75b649f0 Mon Sep 17 00:00:00 2001
-> From: Qihang Hu <huqihang@oppo.com>
-> Date: Sat, 30 Oct 2021 16:11:38 +0800
-> Subject: [PATCH] usb: gadget: composite: Fix null pointer exception
-> 
-> In the config_ep_by_speed_and_alt function, select the corresponding
-> descriptor through g->speed, but the function driver may not
-> support the corresponding speed. So, we need to check whether the
-> function driver provides the corresponding speed descriptor when
-> selecting the descriptor.
-> 
-> [  237.708146]  android_work: sent uevent USB_STATE=CONNECTED
-> [  237.712464]  kconfigfs-gadget gadget: super-speed config #1: b
-> [  237.712487]  kUnable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-> [  237.712493]  kMem abort info:
-> [  237.712498]  k  ESR = 0x96000006
-> [  237.712504]  k  EC = 0x25: DABT (current EL), IL = 32 bits
-> [  237.712510]  k  SET = 0, FnV = 0
-> [  237.712515]  k  EA = 0, S1PTW = 0
-> [  237.712520]  kData abort info:
-> [  237.712525]  k  ISV = 0, ISS = 0x00000006
-> [  237.712530]  k  CM = 0, WnR = 0
-> [  237.712536]  kuser pgtable: 4k pages, 39-bit VAs, pgdp=000000020ef29000
-> [  237.712541]  k[0000000000000000] pgd=000000020ef2a003, pud=000000020ef2a003, pmd=0000000000000000
-> [  237.712554]  kInternal error: Oops: 96000006 [#1] PREEMPT SMP
-> [  237.722067]  kSkip md ftrace buffer dump for: 0x1609e0
-> [  237.787037]  kWorkqueue: dwc_wq dwc3_bh_work.cfi_jt
-> [  237.854922]  kpstate: 60c00085 (nZCv daIf +PAN +UAO)
-> [  237.863165]  kpc : config_ep_by_speed_and_alt+0x90/0x308
-> [  237.871766]  klr : audio_set_alt+0x54/0x78
-> [  237.879108]  ksp : ffffffc0104839e0
-> 
-> Signed-off-by: Qihang Hu <huqihang@oppo.com>
-> ---
->  drivers/usb/gadget/composite.c | 39 ++++++++++++++++++++++------------
->  1 file changed, 26 insertions(+), 13 deletions(-)
+On 11/5/21 10:39, Thomas Zimmermann wrote:
 
-I can not take patches at the end of other email messages.
+[snip]
 
-Please send this properly as a v2 patch, as the documentation asks for.
+>>>>    
+>>>> +obj-$(CONFIG_VGA_CONSOLE) += drm_nomodeset.o
+>>>> +
+>>>
+>>> This now depends on the VGA textmode console. Even if you have no VGA
+>>> console, you'd want drm_nomodeset.o. Simpledrm might be built-in and can
+>>> provide graphics. Non-PC systems don't even have a VGA device.
+>>
+>> This was discussed in an earlier version, which had this builtin but the
+>> header still had a stub for CONFIG_VGA_CONSOLE=n.
+>>
+>>> I think we really want a separate boolean config option that gets
+>>> selected by CONFIG_DRM.
+>>
+>> Perhaps that should be a separate change on top.
+> 
+> Sure, make it a separate patch.
+>
 
-thanks,
+Agreed. I was planning to do it as a follow-up as well and drop the
+#ifdef CONFIG_VGA_CONSOLE guard in the header.
+ 
+> We want to make this work on ARM systems. I even have a request to 
+> replace offb on Power architecture by simpledrm. So the final config has 
+> to be system agnostic.
+>
 
-greg k-h
+Same, since we want to drop the fbdev drivers in Fedora, for all arches.
+ 
+> Best regards
+> Thomas
+> 
+Best regards,
+-- 
+Javier Martinez Canillas
+Linux Engineering
+Red Hat
+
