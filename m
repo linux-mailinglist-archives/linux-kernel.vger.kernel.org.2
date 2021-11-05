@@ -2,84 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16E84463B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 408A34463BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:01:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbhKENEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 09:04:10 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:39048 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhKENEI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 09:04:08 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id AB1B21F463C4
-Subject: Re: [RFC] tty/sysrq: Add alternative SysRq key
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Slaby <jirislaby@kernel.org>, kernel@collabora.com
-References: <20211103155438.11167-1-andrzej.p@collabora.com>
- <20211104120111.GB23122@duo.ucw.cz>
- <17ccc35d-441c-70c1-a80a-28a4ff824535@collabora.com>
- <alpine.DEB.2.21.2111041227510.57165@angie.orcam.me.uk>
- <alpine.DEB.2.21.2111041311260.57165@angie.orcam.me.uk>
- <9fbe062a-2992-0361-e72a-f2b1523143dd@collabora.com>
-Message-ID: <b3a917ef-8a70-80b6-8c79-48ce4628b9e8@collabora.com>
-Date:   Fri, 5 Nov 2021 14:01:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231952AbhKENE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 09:04:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60106 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231844AbhKENE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 09:04:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C9EC61244;
+        Fri,  5 Nov 2021 13:01:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636117307;
+        bh=+iixnyf7MJNhvqf9F2NimPiFdRUEFFWHVFvENpXmyNI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tIuEyzUGr+11KSiAd5QLkrbU+zLI8RcI813tAqdgnIe5QM25OQM8Ocae2fpmfPkNf
+         9R9ZozGHI91OOM7LEVT0qSMhktCAYiQQmta9qgkeXpo8tl38vJEG1BXt+xOBQVDowM
+         PXZomPJ5GJA5M99FTPtSopNly+6EQ1Bm5c4ZbJnE=
+Date:   Fri, 5 Nov 2021 14:01:44 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.15 00/12] 5.15.1-rc1 review
+Message-ID: <YYUrOBubzGisk055@kroah.com>
+References: <20211104141159.551636584@linuxfoundation.org>
+ <78c3c647-c98c-dab6-28bd-67d057c08ae7@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <9fbe062a-2992-0361-e72a-f2b1523143dd@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <78c3c647-c98c-dab6-28bd-67d057c08ae7@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Nov 05, 2021 at 11:30:43AM +0000, Jon Hunter wrote:
+> Hi Greg,
+> 
+> On 04/11/2021 14:12, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.15.1 release.
+> > There are 12 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Sat, 06 Nov 2021 14:11:51 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.1-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> 
+> Commit c045ceb5a145 ("reset: tegra-bpmp: Handle errors in BPMP response") was
+> pulled in late for v5.15 and this unfortunately broke HDA audio support for
+> Tegra194. We are working on a fix for this and so the below failure is
+> expected. For now we can ignore the below failures and I will figure out how
+> we fix this.
 
-W dniu 04.11.2021 o 15:17, Andrzej Pietrasiewicz pisze:
-> Hi Maciej,
-> 
-> W dniu 04.11.2021 o 14:13, Maciej W. Rozycki pisze:
->> On Thu, 4 Nov 2021, Maciej W. Rozycki wrote:
->>
->>>   The reason for this is with their more recent laptops Lenovo in their
->>> infinite wisdom have placed the <PrintScreen> key (which in a traditional
->>> PS/2-keyboard manner produces <SysRq> when combined with <Alt>) in their
->>> keyboards between the right <Alt> and <Ctrl> keys.  With thumbs not being
->>> as accurate as other fingers (and the overall misdesign of the keyboard
->>> and touchpad interface) you can imagine how often I have inadvertently hit
->>> <SysRq> combined with a letter key, wreaking havoc to my system (and of
->>> course I want to keep the key enabled for times when I do need it).
->>
->>   On second thoughts this can be disabled with `setkeycodes 54 0' once we
->> do have an alternative combination available.
->>
-> 
-> Doesn't `setkeycodes` affect only one keyboard? What if there are more
-> keyboards connected to a machine?
-> 
->  From drivers/tty/vt/keyboard.c:
-> 
-> /*
->   * Translation of scancodes to keycodes. We set them on only the first
->   * keyboard in the list that accepts the scancode and keycode.
->   * Explanation for not choosing the first attached keyboard anymore:
->   *  USB keyboards for example have two event devices: one for all "normal"
->   *  keys and one for extra function keys (like "volume up", "make coffee",
->   *  etc.). So this means that scancodes for the extra function keys won't
->   *  be valid for the first event device, but will be for the second.
->   */
-> 
+Should that commit just be reverted?  Wouldn't that be the "correct"
+thing to do right now and then work on fixing this properly later?
 
-My second thoughts: if we run `setkeycodes` to map, say, F10 as SysRq,
-don't we lose F10?
+Is this being discussed anywhere so that the regression bot can track
+it?
 
-Andrzej
+thanks,
+
+greg k-h
