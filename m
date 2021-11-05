@@ -2,123 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7584466AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:06:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D534466CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:13:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233814AbhKEQIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 12:08:38 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45186 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233799AbhKEQId (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 12:08:33 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 52F022171F;
-        Fri,  5 Nov 2021 16:05:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1636128353; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4rnXTfL1Je/pQtE2hkC3jKFM7qmnf3mmib4Clu3p9R4=;
-        b=Ign6XLWhBNkSuNQrvL/bXCjr2qg+Tv7uq9Wi7JxcH8TGpl2smca3qHXh4e4ftOM1/wT0KC
-        jFWyll1JJgUBAbL4UHCQHFxnZ/fUXIjZp8XKbuqlk+vh+HP7q4empigRUhc4WQDIspU2ld
-        CmyU25Cf0pdjamzBSs0Rr/RmRm3MJjs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1636128353;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4rnXTfL1Je/pQtE2hkC3jKFM7qmnf3mmib4Clu3p9R4=;
-        b=slOL+0lXwJu1qTIp7Pp8Idui+3rw5x+gXYrYZAlHwBhdmdJNYvV8yzgsztq8hSMR4AKGSG
-        uqoQZMRcwfKAZNAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EC53E1400B;
-        Fri,  5 Nov 2021 16:05:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id wF4oN2BWhWGxOgAAMHmgww
-        (envelope-from <jdelvare@suse.de>); Fri, 05 Nov 2021 16:05:52 +0000
-Date:   Fri, 5 Nov 2021 17:05:50 +0100
-From:   Jean Delvare <jdelvare@suse.de>
-To:     Terry Bowman <Terry.Bowman@amd.com>
-Cc:     linux-kernel@vger.kernel.org, thomas.lendacky@amd.com,
-        linux-i2c@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] i2c: piix4: Replace piix4_smbus driver's cd6h/cd7h port
- io accesses with mmio accesses
-Message-ID: <20211105170550.746443b9@endymion>
-In-Reply-To: <20210907183720.6e0be6b6@endymion>
-References: <20210715221828.244536-1-Terry.Bowman@amd.com>
-        <20210907183720.6e0be6b6@endymion>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+        id S231133AbhKEQQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 12:16:24 -0400
+Received: from mga01.intel.com ([192.55.52.88]:53175 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229500AbhKEQQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 12:16:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10159"; a="255579725"
+X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
+   d="scan'208";a="255579725"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 09:07:03 -0700
+X-IronPort-AV: E=Sophos;i="5.87,212,1631602800"; 
+   d="scan'208";a="502000107"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 09:07:02 -0700
+Date:   Fri, 5 Nov 2021 09:07:02 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        David Sterba <dsterba@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: Re: Kmap-related crashes and memory leaks on 32bit arch (5.15+)
+Message-ID: <20211105160702.GY3538886@iweiny-DESK2.sc.intel.com>
+References: <20211104115001.GU20319@twin.jikos.cz>
+ <CAHk-=whYQvExYESEOJoSj4Jy7t+tSZgbCWuNpdwXYh+3zq2itw@mail.gmail.com>
+ <CAHk-=whBOXM3mh-QtzK-EQtDEHQLcziAXu07KxU1crUc5jiQUg@mail.gmail.com>
+ <CAHk-=whGUxtcL8Z67y4A6_diSmtQdnOq1p_gyBAMzpKD9yk+gw@mail.gmail.com>
+ <f3d3dc5d-dcf8-76b7-f383-aed3c942ae49@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f3d3dc5d-dcf8-76b7-f383-aed3c942ae49@suse.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Sep 2021 18:37:20 +0200, Jean Delvare wrote:
-> More generally, I am worried about the overall design. The driver
-> originally used per-access I/O port requesting because keeping the I/O
-> ports busy all the time would prevent other drivers from working. Do we
-> still need to do the same with the new code? If it is possible and safe
-> to have a permanent mapping to the memory ports, that would be a lot
-> faster.
+On Fri, Nov 05, 2021 at 08:01:13AM +0800, Qu Wenruo wrote:
 > 
-> On the other hand, the read-modify-write cycle in
-> piix4_setup_sb800_smba() is unsafe if 2 drivers can actually call
-> request_mem_region() on the same memory area successfully.
+
+[snip]
+
 > 
-> I'm not opposed to taking your patch with minimal changes (as long as
-> the code is safe) and working on performance improvements later.
+> 
+> BTW, I also thought that part can be suspicious, as it keeps the page mapped
+> (unlike all other call sites), thus I tried the following diff, but no
+> difference for the leakage:
 
-I looked some more at the code. I was thinking that maybe if the
-registers accessed by the two drivers (i2c-piix4 and sp5100_tco) were
-disjoint, then each driver could simply request subsets of the mapped
-memory.
+I just saw this thread and I was wondering why can't kmap_local_page() be used?
 
-Unfortunately, while most registers are indeed exclusively used by one
-of the drivers, there's one register (0x00 = IsaDecode) which is used
-by both. So this simple approach isn't possible.
+I know we are trying to remove highmem from the kernel but the DAX stray write
+protection I've been working on depends on the kmap interface to ensure that
+DAX pages are properly accessed.[1]  Also there are a couple of new helpers
+which could be used instead of the changes below.
 
-That being said, the register in question is only accessed at device
-initialization time (on the sp5100_tco side, that's in function
-sp5100_tco_setupdevice) and only for some devices (Embedded FCH). So
-one approach which may work is to let the i2c-piix4 driver instantiate
-the watchdog platform device in that case, instead of having sp5100_tco
-instantiate its own device as is currently the case. That way, the
-i2c-piix4 driver would request the "shared" memory area, perform the
-initialization steps for both functions (SMBus and watchdog) and then
-instantiate the watchdog device so that sp5100_tco gets loaded and goes
-on with the runtime management of the watchdog device.
+I know this does not solve the problem Linus is seeing and DAX is not yet
+supported on btrfs but I know there has been some effort to get it working and
+things like commit ...
 
-If I'm not mistaken, this is what the i2c-i801 driver is already doing
-for the watchdog device in all recent Intel chipsets. So maybe the same
-approach can work for the i2c-piix4 driver for the AMD chipsets.
-However I must confess that I did not try to do it nor am I familiar
-with the sp5100_tco driver details, so maybe it's not possible for some
-reason.
+	8c945d32e604 ("btrfs: compression: drop kmap/kunmap from lzo") 
 
-If it's not possible then the only safe approach would be to migrate
-i2c-piix4 and sp5100_tco to a true MFD setup with 3 separate drivers:
-one new MFD PCI driver binding to the PCI device, providing access to
-the registers with proper locking, and instantiating the platform
-device, one driver for SMBus (basically i2c-piix4 converted to a
-platform driver and relying on the MFD driver for register access) and
-one driver for the watchdog (basically sp5100_tco converted to a
-platform driver and relying on the MFD driver for register access).
-That's a much larger change though, so I suppose we'd try avoid it if
-at all possible.
+... would break that support.
 
--- 
-Jean Delvare
-SUSE L3 Support
+> 
+> diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
+> index 65cb0766e62d..0648acc48310 100644
+> --- a/fs/btrfs/lzo.c
+> +++ b/fs/btrfs/lzo.c
+> @@ -151,6 +151,7 @@ static int copy_compressed_data_to_page(char
+> *compressed_data,
+>  	kaddr = kmap(cur_page);
+>  	write_compress_length(kaddr + offset_in_page(*cur_out),
+>  			      compressed_size);
+> +	kunmap(cur_page);
+>  	*cur_out += LZO_LEN;
+> 
+>  	orig_out = *cur_out;
+> @@ -160,7 +161,6 @@ static int copy_compressed_data_to_page(char
+> *compressed_data,
+>  		u32 copy_len = min_t(u32, sectorsize - *cur_out % sectorsize,
+>  				     orig_out + compressed_size - *cur_out);
+> 
+> -		kunmap(cur_page);
+>  		cur_page = out_pages[*cur_out / PAGE_SIZE];
+>  		/* Allocate a new page */
+>  		if (!cur_page) {
+> @@ -173,6 +173,7 @@ static int copy_compressed_data_to_page(char
+> *compressed_data,
+> 
+>  		memcpy(kaddr + offset_in_page(*cur_out),
+>  		       compressed_data + *cur_out - orig_out, copy_len);
+> +		kunmap(cur_page);
+
+memcpy_to_page()?
+
+> 
+>  		*cur_out += copy_len;
+>  	}
+> @@ -186,12 +187,15 @@ static int copy_compressed_data_to_page(char
+> *compressed_data,
+>  		goto out;
+> 
+>  	/* The remaining size is not enough, pad it with zeros */
+> +	cur_page = out_pages[*cur_out / PAGE_SIZE];
+> +	ASSERT(cur_page);
+> +	kmap(cur_page);
+>  	memset(kaddr + offset_in_page(*cur_out), 0,
+>  	       sector_bytes_left);
+> +	kunmap(cur_page);
+
+memzero_page()?
+
+Just my $0.02 given I've been trying to remove kmap() uses and btrfs remains
+one of the big users of kmap().
+
+Thanks,
+Ira
+
+[1] https://lore.kernel.org/lkml/20210804043231.2655537-16-ira.weiny@intel.com/
+
+>  	*cur_out += sector_bytes_left;
+> 
+>  out:
+> -	kunmap(cur_page);
+>  	return 0;
+>  }
+> 
+> Thanks,
+> Qu
+> > 
+> > In particular, what if "offset_in_page(*cur_out)" is very close to the
+> > end of the page?
+> > 
+> > That write_compress_length() always writes out a word-sized length (ie
+> > LZO_LEN bytes), and the above pattern seems to have no model to handle
+> > the "oh, this 4-byte write crosses a page boundary"
+> > 
+> > The other writes in that function seem to do it properly, and you have
+> > 
+> >          u32 copy_len = min_t(u32, sectorsize - *cur_out % sectorsize,
+> >                               orig_out + compressed_size - *cur_out);
+> > 
+> > so doing the memcpy() of size 'copy_len' should never cross a page
+> > boundary as long as sectorsize is a power-of-2 smaller or equal to a
+> > page size. But those 4-byte length writes seem like they could be page
+> > crossers.
+> > 
+> > The same situation exists on the reading side, I think.
+> > 
+> > Maybe there's some reason why the read/write_compress_length() can
+> > never cross a page boundary, but it did strike me as odd.
+> > 
+> >               Linus
+> > 
+> 
+> 
