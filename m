@@ -2,112 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A07A0446681
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:53:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEC8446685
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 16:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233691AbhKEP4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 11:56:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbhKEPz6 (ORCPT
+        id S233720AbhKEP6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 11:58:15 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:56160
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232537AbhKEP6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 11:55:58 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F843C061714;
-        Fri,  5 Nov 2021 08:53:17 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so3622480pjc.4;
-        Fri, 05 Nov 2021 08:53:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Khe0I5Q1+2/UsOTg7rhV0f6H2RtwXCWMhvt//siSaDk=;
-        b=pn3EYzc6w8kr6oC5ozcCwu3VCkEb8m5a+kfq5XY7ZqW1POxqtmQpp4QKBdIQcEzOFS
-         1puyWo81rZSNlvhTtV2VzdrEGIbgTrozK7bvQFE7qsXvTKYax1iu6CbyMKYFm2S5hJTS
-         5SFI4shOxTt7PUBZVBq7P5SDHCIN6iP2AxCRuJdWeJ/j/+zsaxIFVqMeM267CjqqKF8u
-         7vJGUP0kJjmC5qL/GUCgDVnpsxV7B50gkXTeXxA87RZUDZmo5sD3bdVMJ/8MIdKuz5wJ
-         MOw7hKnvdt+oZXN7o5usmeATHJqk7apwonFsXgiwWayRWY2o8AS5gI3T8JuqpdIkuSj4
-         TzzA==
+        Fri, 5 Nov 2021 11:58:14 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 1D8E94000F
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 15:55:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1636127733;
+        bh=bkK6gTfKiBQfKNtHU6pcGHzhWJk/mu2xTUMLvC1SmhU=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=uaFilYUeN9rfFMUVYquRN1HDDxnXSGdp5rSoHLlg/xV0JhkAvnHNZwyDTS7iivB7B
+         aVkAsjz98Yu9mv5hIFbaaIoiqxpWsvyFY2g23SUDdPVIJrvRXXzZ8sqaELeDc9q+wR
+         kD5Yaudk27M5n3Zqcdd8kRVUlHW/nMIYzNk9MEjdkPF4fDdnc95g6vs++NG1sWQM3F
+         hpxMylFRRVHwzMRyXYIzZmntJM4vZgZGk71tzSDWGKgIXNvd1oNskkaSq7vvJtNnMh
+         v2wG+EGPB4ra22d/Hla8zuDskqLnC9NVkZNTnZLUtosc67CzrWGDc5lIi2MwCDxnmx
+         kLV4YW0aNnxUw==
+Received: by mail-ed1-f71.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso9210249edj.20
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 08:55:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Khe0I5Q1+2/UsOTg7rhV0f6H2RtwXCWMhvt//siSaDk=;
-        b=QnPYEbYxq996yeQc7LSz87iuyW73kStEOXkc9QJFHFsnuqSd2TqsKJkT40xt9B44y7
-         /wMhETwvxo3rUwcZBFHvmuHbBk2uTSSENNAcIG64k9ySC8+Ve0WXrUaz4Uzhvd26IeZQ
-         bPKkoBp+5ykx6sBkicBcXpx8mJUNuGdTSaLM4+u/cf7rDtRzT9C4OARmVZxsHXoEWe14
-         VDWPiml7Vo13iobNxNvSi3Ctsov6iR85wcRzuAaNM2QaJQ4zo800NvU3+3nawJl6O2Ow
-         pe2cNgYdYlqu9hs4p4YT8n5eyDivBQc2zpar6wQb7PQuhGfrx/vsWHGkKKp6b/x7udo7
-         NAYg==
-X-Gm-Message-State: AOAM5335ribtGwvq8Dgw/Eu8iJgV2pcOzsliyI+9Zq9gBQE4r7rFjvXt
-        1Lm2/t72k2uSF1KGIj7d4gBvVqxeLmBAX4NLqgM=
-X-Google-Smtp-Source: ABdhPJysMmQYIo1h3VxoqPh1PKRxUaQ2M/1AowyMPIc49/j/epzYRmiJfssaucD64MBAjBASXL0xm8s+qHvUHjVO3Fg=
-X-Received: by 2002:a17:903:2306:b0:141:e52e:457d with SMTP id
- d6-20020a170903230600b00141e52e457dmr33970309plh.3.1636127597077; Fri, 05 Nov
- 2021 08:53:17 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bkK6gTfKiBQfKNtHU6pcGHzhWJk/mu2xTUMLvC1SmhU=;
+        b=hZfv00Y2MiLCkvyXuMsrFp4Q8Et+WgfPBNMbShWTVjg28HM4crgUYwJmYgPJe2cF0w
+         YPBSxWGHTuK53afhSr8SvPUg+EHobCRrHf3jfCbV9j8fEP3jbBV1ULrMGFZZ55dP20KQ
+         YD2D3auQqPTPY/x7yU6m4pQyYbw1SYI0/UI4tD1OtNm53xGkQ4wRKXcWFbUcxbb4ut9m
+         +E3CBuuiK+5HZHw4aBighLlLzANYMAAUMgunDMDlyMBPiPHODscLLyPzF5awZz7MzqV5
+         L/zGDZaQZsyYU7WXZbVl8WctxmQ7BTr+0XmkhCaM0T+TF3Gxt3NR0TOIPtJl4n5lZlLi
+         OfpA==
+X-Gm-Message-State: AOAM533JZ8VWTm+9EMjLn72ubUbnSDaTiurTwVTI3v2/bjzv/1uHtFoQ
+        72R3UtdfUixQpsEiEQVRnbpAqX5eo4kZgYno4tNqK+OWf6VGCmOsAGDwhaXCpMGRvlEkXEsiYec
+        xoWu7Kne7FkfNy4swwuHvgF1hTCRUvkuFdpaz9E26QA==
+X-Received: by 2002:a05:6402:40c5:: with SMTP id z5mr6193840edb.185.1636127732800;
+        Fri, 05 Nov 2021 08:55:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyZv4GqWbag+7ya5gdVD8gpmI5A28DpPxkcj0fSg+twxAqfGbAq4tIApC1T7p0IYdgyFS3uLA==
+X-Received: by 2002:a05:6402:40c5:: with SMTP id z5mr6193797edb.185.1636127732493;
+        Fri, 05 Nov 2021 08:55:32 -0700 (PDT)
+Received: from arighi-desktop.homenet.telecomitalia.it ([2001:67c:1560:8007::aac:c1b6])
+        by smtp.gmail.com with ESMTPSA id c22sm1611539edy.66.2021.11.05.08.55.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 08:55:32 -0700 (PDT)
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Alexis Bauvin <abauvin@scaleway.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests: net: test_vxlan_under_vrf: fix HV connectivity test
+Date:   Fri,  5 Nov 2021 16:55:29 +0100
+Message-Id: <20211105155529.105545-1-andrea.righi@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <00000000000013aebd05cff8e064@google.com> <87lf224uki.ffs@tglx>
-In-Reply-To: <87lf224uki.ffs@tglx>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 5 Nov 2021 08:53:06 -0700
-Message-ID: <CAADnVQLcuMAr3XMTD1Lys5S5ybME4h=NL3=adEwib2UT6b-E9w@mail.gmail.com>
-Subject: Re: [syzbot] possible deadlock in ktime_get_coarse_ts64
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     syzbot <syzbot+43fd005b5a1b4d10781e@syzkaller.appspotmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>, sboyd@kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Steven Rostedt <rosted@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Dmitrii Banshchikov <me@ubique.spb.ru>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 5, 2021 at 6:10 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> >
-> > -> #0 (tk_core.seq.seqcount){----}-{0:0}:
-> >        check_prev_add kernel/locking/lockdep.c:3051 [inline]
-> >        check_prevs_add kernel/locking/lockdep.c:3174 [inline]
-> >        validate_chain+0x1dfb/0x8240 kernel/locking/lockdep.c:3789
-> >        __lock_acquire+0x1382/0x2b00 kernel/locking/lockdep.c:5015
-> >        lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5625
-> >        seqcount_lockdep_reader_access+0xfe/0x230 include/linux/seqlock.h:103
-> >        ktime_get_coarse_ts64+0x25/0x110 kernel/time/timekeeping.c:2255
-> >        ktime_get_coarse include/linux/timekeeping.h:120 [inline]
-> >        ktime_get_coarse_ns include/linux/timekeeping.h:126 [inline]
->
-> --> this call is invalid
->
-> >        ____bpf_ktime_get_coarse_ns kernel/bpf/helpers.c:173 [inline]
-> >        bpf_ktime_get_coarse_ns+0x7e/0x130 kernel/bpf/helpers.c:171
-> >        bpf_prog_a99735ebafdda2f1+0x10/0xb50
-> >        bpf_dispatcher_nop_func include/linux/bpf.h:721 [inline]
-> >        __bpf_prog_run include/linux/filter.h:626 [inline]
-> >        bpf_prog_run include/linux/filter.h:633 [inline]
-> >        BPF_PROG_RUN_ARRAY include/linux/bpf.h:1294 [inline]
-> >        trace_call_bpf+0x2cf/0x5d0 kernel/trace/bpf_trace.c:127
-> >        perf_trace_run_bpf_submit+0x7b/0x1d0 kernel/events/core.c:9708
-> >        perf_trace_lock+0x37c/0x440 include/trace/events/lock.h:39
-> >        trace_lock_release+0x128/0x150 include/trace/events/lock.h:58
->
-> Timestamps from within a tracepoint can only be taken with:
->
->          1) jiffies
->          2) sched_clock()
->          3) ktime_get_*_fast_ns()
->
-> Those are NMI safe and can be invoked from anywhere.
->
-> All other time getters which have to use the timekeeping seqcount
-> protection are prone to live locks and _cannot_ be used from
-> tracepoints ever.
+It looks like test_vxlan_under_vrf.sh is always failing to verify the
+connectivity test during the ping between the two simulated VMs.
 
-Obviously.
-That helper was added for networking use cases and accidentally
-enabled for tracing.
+This is due to the fact that veth-hv in each VM should have a distinct
+MAC address.
+
+Fix by setting a unique MAC address on each simulated VM interface.
+
+Without this fix:
+
+ $ sudo ./tools/testing/selftests/net/test_vxlan_under_vrf.sh
+ Checking HV connectivity                                           [ OK ]
+ Check VM connectivity through VXLAN (underlay in the default VRF)  [FAIL]
+
+With this fix applied:
+
+ $ sudo ./tools/testing/selftests/net/test_vxlan_under_vrf.sh
+ Checking HV connectivity                                           [ OK ]
+ Check VM connectivity through VXLAN (underlay in the default VRF)  [ OK ]
+ Check VM connectivity through VXLAN (underlay in a VRF)            [FAIL]
+
+NOTE: the connectivity test with the underlay VRF is still failing; it
+seems that ARP requests are blocked at the simulated hypervisor level,
+probably due to some missing ARP forwarding rules. This requires more
+investigation (in the meantime we may consider to set that test as
+expected failure - XFAIL).
+
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+---
+ tools/testing/selftests/net/test_vxlan_under_vrf.sh | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/testing/selftests/net/test_vxlan_under_vrf.sh b/tools/testing/selftests/net/test_vxlan_under_vrf.sh
+index 534c8b7699ab..ea5a7a808f12 100755
+--- a/tools/testing/selftests/net/test_vxlan_under_vrf.sh
++++ b/tools/testing/selftests/net/test_vxlan_under_vrf.sh
+@@ -101,6 +101,8 @@ setup-vm() {
+     ip -netns hv-$id link set veth-tap master br0
+     ip -netns hv-$id link set veth-tap up
+ 
++    ip link set veth-hv address 02:1d:8d:dd:0c:6$id
++
+     ip link set veth-hv netns vm-$id
+     ip -netns vm-$id addr add 10.0.0.$id/24 dev veth-hv
+     ip -netns vm-$id link set veth-hv up
+-- 
+2.32.0
+
