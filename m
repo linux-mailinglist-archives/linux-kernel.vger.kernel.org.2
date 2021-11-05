@@ -2,116 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E337C44671D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9786E446720
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:38:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233808AbhKEQkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 12:40:25 -0400
-Received: from mail-oo1-f41.google.com ([209.85.161.41]:36746 "EHLO
-        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233382AbhKEQkY (ORCPT
+        id S233820AbhKEQlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 12:41:08 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:58662 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233366AbhKEQlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 12:40:24 -0400
-Received: by mail-oo1-f41.google.com with SMTP id t7-20020a4aadc7000000b002b8733ab498so3210118oon.3;
-        Fri, 05 Nov 2021 09:37:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P1Gp0/MAdFAvXBeRj35bImIZhx/EFHupa8h4iwZFEeg=;
-        b=WNo4yOW/fr/VGFaAidZB97Q23JxqT7NeepXrOaVTku/HvdmPrMiaOmLTdZxDJotuib
-         VPbrpWGa4ty44MmyRPL3hxCCqyO+ZNKGVLcVOih06WdGHB3k2mFvruiftY7dKtclarjo
-         fpzIZKDf9UU37J/oHtZ7KpR9ZbxK3r/C85UZzLSpmm4bclOE2dy3ABQMjl28tdqAPXY0
-         9DXiOezPsLlGDPYIyJkgX0/dlTR7c22Sp4ngZClY4/vX2YGhj9InyyQ8/o+Ygrjd+Hh0
-         itDowhTH0zaUC77qSSTjSN6WVs72j7gVvrX1TbYCUZ44FwP3jv6DovCd/TSol2VGuyst
-         Yeuw==
-X-Gm-Message-State: AOAM53378VE8s8aP3cFUYFKWYyrk79zfQ13jpCjLHgvhzFPnMCeXnlx1
-        zFymDF7/14NdMNC2AYusCI88KcqtImcP9oSpzKQ=
-X-Google-Smtp-Source: ABdhPJwJDsvykL3wZ8MVMKzW4SKFSt5yr4+mf5kAd6MjF5Yui+IbB1w0qgns3f1hdjUwgp+W/rrt+pGwrnXgL1KJiA0=
-X-Received: by 2002:a4a:e544:: with SMTP id s4mr9557867oot.0.1636130264293;
- Fri, 05 Nov 2021 09:37:44 -0700 (PDT)
+        Fri, 5 Nov 2021 12:41:07 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:42698)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mj2ET-0040wi-Cl; Fri, 05 Nov 2021 10:38:25 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:47856 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mj2ER-005uAo-CI; Fri, 05 Nov 2021 10:38:24 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Linux API <linux-api@vger.kernel.org>
+References: <878ry512iv.fsf@disp2133>
+        <CAHk-=wivLcb3ELGSf=fM0u=PxP5m1=jRrVXDOr0+QJZRZggaHg@mail.gmail.com>
+Date:   Fri, 05 Nov 2021 11:37:55 -0500
+In-Reply-To: <CAHk-=wivLcb3ELGSf=fM0u=PxP5m1=jRrVXDOr0+QJZRZggaHg@mail.gmail.com>
+        (Linus Torvalds's message of "Wed, 3 Nov 2021 12:34:44 -0700")
+Message-ID: <871r3uy2vw.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <1636070227-15909-1-git-send-email-quic_subbaram@quicinc.com>
- <CAJZ5v0gONybD_pVCAq6ZJTMuStXtoF064u9qPYxco4y=b-JD9A@mail.gmail.com> <c7ede029-b75f-e57e-24f1-9633d5d47401@linaro.org>
-In-Reply-To: <c7ede029-b75f-e57e-24f1-9633d5d47401@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 5 Nov 2021 17:37:33 +0100
-Message-ID: <CAJZ5v0j1TDe0ZiBg_ju-JDuCsBDb_exueRDUwCcJ6VD_=fbzjg@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2] thermal: Fix a NULL pointer dereference
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Collins <quic_collinsd@quicinc.com>,
-        Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>,
-        Stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1mj2ER-005uAo-CI;;;mid=<871r3uy2vw.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19VqaJj8/S8xVQx26R9tPAt2wUIi1RqVro=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.1 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubMetaSxObfu_03,
+        XMSubMetaSx_00 autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa04 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1359 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 13 (0.9%), b_tie_ro: 11 (0.8%), parse: 1.32
+        (0.1%), extract_message_metadata: 21 (1.5%), get_uri_detail_list: 1.69
+        (0.1%), tests_pri_-1000: 21 (1.6%), tests_pri_-950: 1.65 (0.1%),
+        tests_pri_-900: 1.28 (0.1%), tests_pri_-90: 98 (7.2%), check_bayes: 82
+        (6.1%), b_tokenize: 7 (0.5%), b_tok_get_all: 6 (0.5%), b_comp_prob:
+        2.3 (0.2%), b_tok_touch_all: 63 (4.7%), b_finish: 1.00 (0.1%),
+        tests_pri_0: 1190 (87.5%), check_dkim_signature: 0.62 (0.0%),
+        check_dkim_adsp: 2.9 (0.2%), poll_dns_idle: 0.82 (0.1%), tests_pri_10:
+        2.2 (0.2%), tests_pri_500: 7 (0.5%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [GIT PULL] per signal_struct coredumps
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 5, 2021 at 5:19 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->
-> On 05/11/2021 16:14, Rafael J. Wysocki wrote:
-> > On Fri, Nov 5, 2021 at 12:57 AM Subbaraman Narayanamurthy
-> > <quic_subbaram@quicinc.com> wrote:
-> >>
-> >> of_parse_thermal_zones() parses the thermal-zones node and registers a
-> >> thermal_zone device for each subnode. However, if a thermal zone is
-> >> consuming a thermal sensor and that thermal sensor device hasn't probed
-> >> yet, an attempt to set trip_point_*_temp for that thermal zone device
-> >> can cause a NULL pointer dereference. Fix it.
-> >>
-> >>  console:/sys/class/thermal/thermal_zone87 # echo 120000 > trip_point_0_temp
-> >>  ...
-> >>  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
-> >>  ...
-> >>  Call trace:
-> >>   of_thermal_set_trip_temp+0x40/0xc4
-> >>   trip_point_temp_store+0xc0/0x1dc
-> >>   dev_attr_store+0x38/0x88
-> >>   sysfs_kf_write+0x64/0xc0
-> >>   kernfs_fop_write_iter+0x108/0x1d0
-> >>   vfs_write+0x2f4/0x368
-> >>   ksys_write+0x7c/0xec
-> >>   __arm64_sys_write+0x20/0x30
-> >>   el0_svc_common.llvm.7279915941325364641+0xbc/0x1bc
-> >>   do_el0_svc+0x28/0xa0
-> >>   el0_svc+0x14/0x24
-> >>   el0_sync_handler+0x88/0xec
-> >>   el0_sync+0x1c0/0x200
-> >>
-> >> While at it, fix the possible NULL pointer dereference in other
-> >> functions as well: of_thermal_get_temp(), of_thermal_set_emul_temp(),
-> >> of_thermal_get_trend().
-> >
-> > Can the subject be more specific, please?
-> >
-> > The issue appears to be limited to the of_thermal_ family of
-> > functions, but the subject doesn't reflect that at all.
-> >
-> >> Suggested-by: David Collins <quic_collinsd@quicinc.com>
-> >> Signed-off-by: Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
-> >
-> > Daniel, any concerns regarding the code changes below?
->
-> I've a concern about the root cause but I did not have time to
-> investigate how to fix it nicely.
->
-> thermal_of is responsible of introducing itself between the thermal core
-> code and the backend. So it defines the ops which in turn call the
-> sensor ops leading us to this problem.
->
-> So, without a better solution, this fix can be applied until we rethink
-> the thermal_of approach.
->
-> Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-Thanks!
+> On Wed, Nov 3, 2021 at 12:07 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>
+>> Please pull the per_signal_struct_coredumps-for-v5.16 branch
+>
+> I've pulled it, but I'm not convinced about that odd extra merge
+> commit that contains the commentary.
+>
+> That's what signed tags are for, and they have that explanation that
+> then makes it into the merge - plus they have the crypto signature to
+> show it all comes from you.
+>
+> So that would have been the much better model than a fake extra merge.
+>
+> But at least that extra merge did have explanations, so at least it
+> doesn't trigger me on _that_ level.
 
-I've queued it up for 5.16-rc as "thermal: Fix NULL pointer
-dereferences in of_thermal_ functions".
+I have been creating those when I place a patchset with an interesting
+cover letter in a branch.  Now with the entire branch being just that
+patchset, it doesn't make a lot of sense (except as somewhere to store
+that cover letter so I don't loose it).  At other times when there are
+multiple sets of changes on a single branch I think it makes more sense.
+
+Am I missing a better way to preserve the cover letter for the
+changes when multiple sets of changes land in a single branch?
+
+Eric
