@@ -2,76 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8034460DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 09:47:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C35E4460DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 09:47:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232785AbhKEIuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 04:50:04 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:30008 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231634AbhKEIuB (ORCPT
+        id S232796AbhKEIuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 04:50:16 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:47160 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232790AbhKEIuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 04:50:01 -0400
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 1A58koj8013729;
-        Fri, 5 Nov 2021 17:46:50 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 1A58koj8013729
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1636102010;
-        bh=hEhJl2HdynqX/cF0owA6s9AgGPrScZoY2qglPu0+FfE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ak8PZCssR7Bow/bWI9HqjRhuTFrqtAjgowh/6OzS4z572N9CbgdblEi/vi7bYk7k+
-         Yeclupgq0S1Et8ceLVDGxlNp0PhD7H4tLaDiVBWs2nNPl2FZOhojvFcAB/8ILJ5g18
-         yA+Ri3qRpjqblI3QcMSt5XwCTgbuFz2ynwS3k4MDt5I8ZaoixRdVl+ANkO4MmLos2f
-         HYJQJw/3PG42yjIpzLL+jfKy1Ro/ENTBBWR8nTKnoILqA39F6NgAMehZwYSjVUwJsW
-         gzDhnet41AJtzzDlEo4JekafOUOKkrFTKzR0tV5ldc0ZMgQP2lqFm0udsQjKgXn7d3
-         P63MI3uuPC8aQ==
-X-Nifty-SrcIP: [209.85.214.180]
-Received: by mail-pl1-f180.google.com with SMTP id t21so10672472plr.6;
-        Fri, 05 Nov 2021 01:46:50 -0700 (PDT)
-X-Gm-Message-State: AOAM5328U2f2SmNDmtpEQpukVfw9M0BXvN1m9Xo3QHjC/hajjG46aWXc
-        2YRye0EOYqTU46xBvYgawtsgXyJNWHeTGa+1Rqo=
-X-Google-Smtp-Source: ABdhPJygdgn5UgdZjMaG+cOCSDm3kljTr1w8GPZi1lXnvecM9e+48pkqKi3e0chVMcGUZx2vmzk2NLRgodiaolvYSaE=
-X-Received: by 2002:a17:902:6b83:b0:141:6368:3562 with SMTP id
- p3-20020a1709026b8300b0014163683562mr49190366plk.42.1636102009703; Fri, 05
- Nov 2021 01:46:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211001053253.1223316-1-masahiroy@kernel.org>
- <20211001053253.1223316-3-masahiroy@kernel.org> <boris.20211028071331@codesynthesis.com>
-In-Reply-To: <boris.20211028071331@codesynthesis.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 5 Nov 2021 17:46:12 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASx05b8pWJDaBbRE8rMZ_ceL1qFCMZQ9Dy21pJsuTM_+w@mail.gmail.com>
-Message-ID: <CAK7LNASx05b8pWJDaBbRE8rMZ_ceL1qFCMZQ9Dy21pJsuTM_+w@mail.gmail.com>
-Subject: Re: [PATCH 03/10] kconfig: refactor conf_write_symbol()
-To:     Boris Kolpackov <boris@codesynthesis.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 5 Nov 2021 04:50:14 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id C0B161FD43;
+        Fri,  5 Nov 2021 08:47:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1636102054; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=WfjqvLJ35rAHDfeQrUYAJUUvXN9PYIVCRnmDgt0NZ1M=;
+        b=NF+H7aXyjtryw9nF5wMm4vsyL/NN7e8DZ81ISzUGVyB7HE+UO+UzNgPrT0HdpZ5u4lAC/G
+        iRNfFT5FVyyg5VQO1/EaR31IZgSOOHCyhYuQATWPlRRCT8HHyDoJv/zx7ib/oV14guJuAU
+        BuLVH3U2G5qVIbHqN2RoDBv0l/gBM3k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1636102054;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=WfjqvLJ35rAHDfeQrUYAJUUvXN9PYIVCRnmDgt0NZ1M=;
+        b=oXQ2YmcWNnDwtcMTgmfJ9JmA0DXTVEmuS9wC3wSqJf2eSxOAESzYQbZRYb7UYgrB8T0g+e
+        G+TgafOJfBzGanCA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id AE5492C150;
+        Fri,  5 Nov 2021 08:47:34 +0000 (UTC)
+Date:   Fri, 05 Nov 2021 09:47:34 +0100
+Message-ID: <s5hfssbgfa1.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: 5.14.y-stable: Missing sound fixes from 5.15
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 2:16 PM Boris Kolpackov <boris@codesynthesis.com> wrote:
->
-> Masahiro Yamada <masahiroy@kernel.org> writes:
->
-> > +static void __print_symbol(FILE *fp, struct symbol *sym, enum output_n output_n,
->
-> Identifier that start with double underscore are reserved. The same
-> goes for __conf_write_autoconf() in another patch.
+Hi Greg,
+
+could you cherry-pick the following three commits to 5.14.y tree?
+The Cc-to-stable was missing on those, although they should have been
+picked up.
+
+cbea6e5a7772b7a5b80baa8f98fd77853487fd2a
+    ALSA: pcm: Check mmap capability of runtime dma buffer at first
+0899a7a23047f106c06888769d6cd6ff43d7395f
+    ALSA: pci: rme: Set up buffer type properly
+4d9e9153f1c64d91a125c6967bc0bfb0bb653ea0
+    ALSA: pci: cs46xx: Fix set up buffer type properly
+
+They are needed only for 5.14.y, not for older versions.
+
+The relevant bug report is found at:
+  https://bugzilla.kernel.org/show_bug.cgi?id=214947
 
 
-Without this patch, there are some functions that start with double underscores.
+Thanks!
 
-For example,
-
-  __expr_eliminate_eq() in scripts/kconfig/expr.c
-  __expand_string()  in scripts/kconfig/preprocess.c
-
-Are they problematic as well?
-
-
--- 
-Best Regards
-Masahiro Yamada
+Takashi
