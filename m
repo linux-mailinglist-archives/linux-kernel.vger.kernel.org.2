@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555AF44649D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6124464A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:08:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233054AbhKEOJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 10:09:08 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:40044 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232106AbhKEOJH (ORCPT
+        id S233119AbhKEOKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 10:10:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232410AbhKEOKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 10:09:07 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id 36EBB1F46464
-Subject: Re: [RFC] tty/sysrq: Add alternative SysRq key
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Slaby <jirislaby@kernel.org>, kernel@collabora.com
-References: <20211103155438.11167-1-andrzej.p@collabora.com>
- <20211104120111.GB23122@duo.ucw.cz>
- <17ccc35d-441c-70c1-a80a-28a4ff824535@collabora.com>
- <alpine.DEB.2.21.2111041227510.57165@angie.orcam.me.uk>
- <alpine.DEB.2.21.2111041311260.57165@angie.orcam.me.uk>
- <9fbe062a-2992-0361-e72a-f2b1523143dd@collabora.com>
- <b3a917ef-8a70-80b6-8c79-48ce4628b9e8@collabora.com>
- <YYUxNaDG0DquQvke@kroah.com>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Message-ID: <bec3ea81-4084-02ab-d26d-7215296cf2ee@collabora.com>
-Date:   Fri, 5 Nov 2021 15:06:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 5 Nov 2021 10:10:35 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BA8C061205
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 07:07:55 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hm2QZ0DvKz4xbP;
+        Sat,  6 Nov 2021 01:07:50 +1100 (AEDT)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+In-Reply-To: <3d5800b0bbcd7b19761b98f50421358667b45331.1635520232.git.christophe.leroy@csgroup.eu>
+References: <3d5800b0bbcd7b19761b98f50421358667b45331.1635520232.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH] powerpc/8xx: Fix Oops with STRICT_KERNEL_RWX without DEBUG_RODATA_TEST
+Message-Id: <163612125412.2515705.13745636929777214451.b4-ty@ellerman.id.au>
+Date:   Sat, 06 Nov 2021 01:07:34 +1100
 MIME-Version: 1.0
-In-Reply-To: <YYUxNaDG0DquQvke@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-W dniu 05.11.2021 o 14:27, Greg Kroah-Hartman pisze:
-> On Fri, Nov 05, 2021 at 02:01:23PM +0100, Andrzej Pietrasiewicz wrote:
->> Hi,
->>
->> W dniu 04.11.2021 o 15:17, Andrzej Pietrasiewicz pisze:
->>> Hi Maciej,
->>>
->>> W dniu 04.11.2021 o 14:13, Maciej W. Rozycki pisze:
->>>> On Thu, 4 Nov 2021, Maciej W. Rozycki wrote:
->>>>
->>>>>    The reason for this is with their more recent laptops Lenovo in their
->>>>> infinite wisdom have placed the <PrintScreen> key (which in a traditional
->>>>> PS/2-keyboard manner produces <SysRq> when combined with <Alt>) in their
->>>>> keyboards between the right <Alt> and <Ctrl> keys.  With thumbs not being
->>>>> as accurate as other fingers (and the overall misdesign of the keyboard
->>>>> and touchpad interface) you can imagine how often I have inadvertently hit
->>>>> <SysRq> combined with a letter key, wreaking havoc to my system (and of
->>>>> course I want to keep the key enabled for times when I do need it).
->>>>
->>>>    On second thoughts this can be disabled with `setkeycodes 54 0' once we
->>>> do have an alternative combination available.
->>>>
->>>
->>> Doesn't `setkeycodes` affect only one keyboard? What if there are more
->>> keyboards connected to a machine?
->>>
->>>   From drivers/tty/vt/keyboard.c:
->>>
->>> /*
->>>    * Translation of scancodes to keycodes. We set them on only the first
->>>    * keyboard in the list that accepts the scancode and keycode.
->>>    * Explanation for not choosing the first attached keyboard anymore:
->>>    *  USB keyboards for example have two event devices: one for all "normal"
->>>    *  keys and one for extra function keys (like "volume up", "make coffee",
->>>    *  etc.). So this means that scancodes for the extra function keys won't
->>>    *  be valid for the first event device, but will be for the second.
->>>    */
->>>
->>
->> My second thoughts: if we run `setkeycodes` to map, say, F10 as SysRq,
->> don't we lose F10?
+On Fri, 29 Oct 2021 17:10:45 +0200, Christophe Leroy wrote:
+> Until now, all tests involving CONFIG_STRICT_KERNEL_RWX were done with
+> DEBUG_RODATA_TEST to check the result. But now that
+> CONFIG_STRICT_KERNEL_RWX is selected by default, it came without
+> CONFIG_DEBUG_RODATA_TEST and led to the following Oops
 > 
-> The fact that this patch adds a "new" sysrq key no matter what is a
-> non-starter, please think through the consequences of such a change...
+> [    6.830908] Freeing unused kernel image (initmem) memory: 352K
+> [    6.840077] BUG: Unable to handle kernel data access on write at 0xc1285200
+> [    6.846836] Faulting instruction address: 0xc0004b6c
+> [    6.851745] Oops: Kernel access of bad area, sig: 11 [#1]
+> [    6.857075] BE PAGE_SIZE=16K PREEMPT CMPC885
+> [    6.861348] SAF3000 DIE NOTIFICATION
+> [    6.864830] CPU: 0 PID: 1 Comm: swapper Not tainted 5.15.0-rc5-s3k-dev-02255-g2747d7b7916f #451
+> [    6.873429] NIP:  c0004b6c LR: c0004b60 CTR: 00000000
+> [    6.878419] REGS: c902be60 TRAP: 0300   Not tainted  (5.15.0-rc5-s3k-dev-02255-g2747d7b7916f)
+> [    6.886852] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 53000335  XER: 8000ff40
+> [    6.893564] DAR: c1285200 DSISR: 82000000
+> [    6.893564] GPR00: 0c000000 c902bf20 c20f4000 08000000 00000001 04001f00 c1800000 00000035
+> [    6.893564] GPR08: ff0001ff c1280000 00000002 c0004b60 00001000 00000000 c0004b1c 00000000
+> [    6.893564] GPR16: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> [    6.893564] GPR24: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 c1060000
+> [    6.932034] NIP [c0004b6c] kernel_init+0x50/0x138
+> [    6.936682] LR [c0004b60] kernel_init+0x44/0x138
+> [    6.941245] Call Trace:
+> [    6.943653] [c902bf20] [c0004b60] kernel_init+0x44/0x138 (unreliable)
+> [    6.950022] [c902bf30] [c001122c] ret_from_kernel_thread+0x5c/0x64
+> [    6.956135] Instruction dump:
+> [    6.959060] 48ffc521 48045469 4800d8cd 3d20c086 89295fa0 2c090000 41820058 480796c9
+> [    6.966890] 4800e48d 3d20c128 39400002 3fe0c106 <91495200> 3bff8000 4806fa1d 481f7d75
+> [    6.974902] ---[ end trace 1e397bacba4aa610 ]---
 > 
+> [...]
 
-I wouldn't say this RFC adds a "new" sysrq no matter what. It does so only
-when the input device (keyboard) does _not_ have SysRq key at all. So I would
-say that this patch adds a replacement SysRq key if the SysRq key proper is
-_physically_ absent. Which seems not such a bad thing to me. The problem I'm
-trying to solve is exactly this: what to use as SysRq if there's no SysRq?
+Applied to powerpc/next.
 
-Andrzej
+[1/1] powerpc/8xx: Fix Oops with STRICT_KERNEL_RWX without DEBUG_RODATA_TEST
+      https://git.kernel.org/powerpc/c/c12ab8dbc492b992e1ea717db933cee568780c47
+
+cheers
