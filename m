@@ -2,110 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D194445DFE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 03:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA64445E01
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 03:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbhKECgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 22:36:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230519AbhKECf7 (ORCPT
+        id S231934AbhKECiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 22:38:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21587 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231391AbhKECiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 22:35:59 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E451C061203
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 19:33:20 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id g29so1715872lfv.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 19:33:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=o/wF/V9TAVPEMQT2oLx1JVaew2djn3pZBY/upXLYuzc=;
-        b=GHpARzBoc3z/GsbFqrJCUrognspJ9m9qQ1sj0wcXiZge8xxxr+jTrMTOztjbycnI/7
-         NHnSqexQjrRoOmLcDknkrM8cry6B90geRSP2tgz4Gecfu0siRipJYdmrIlXERou7RMhT
-         lzhvHCzskfzOE3Mekrc/1PkmhdDuz3uZVYTPK5qNKsnueHcgWCCX4Vg3t/E3/r0MzztR
-         HTUR+h35WMLm+x6LPLCUvrHbHGsFD5trcEoptWMmHVv8KAF/dDyO6d++homNebX3ivdb
-         ISYJgmQ4wmKzgRN6FfPnCGOrmsfkQAbUKl89A+W2glZSmwMyCbofK4MZlZT+sw+GOCSh
-         n6iw==
+        Thu, 4 Nov 2021 22:38:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636079731;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VKBsGL0N95B/IgJqo+QGVJ0yA+4yb0e6eNgdYWHMsBE=;
+        b=K8RV/dTY8Bo183c3S9N29ZlHezb3H0lwgxXHNs1esGRY3GyXO7tq5LJM9hSiUqEJsbLa7h
+        NqrWira8FR8u+HGq3knv54dcKqAuVuMKYp60G4qMMPttxFDvo8W3QptLe1VhrWwOHRQ7Ce
+        Aex+/JJwDM88lAzlLGZtS6mEOUsnBrU=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-421-9u2ClZ2rPEi-4MvAIIodjQ-1; Thu, 04 Nov 2021 22:35:30 -0400
+X-MC-Unique: 9u2ClZ2rPEi-4MvAIIodjQ-1
+Received: by mail-lf1-f69.google.com with SMTP id p19-20020a056512139300b003ff6dfea137so2860798lfa.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 19:35:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=o/wF/V9TAVPEMQT2oLx1JVaew2djn3pZBY/upXLYuzc=;
-        b=1DhOCRf/O0IQVs4iGbdwBYQcs8jEV5KiGGpQ8TeMA8mFf1z6PVajsp2XEtXN+Y+8J2
-         lC2P6aGj4waZhaQzQrlrV0P73h4d2yD2YkU2nIui1baONTmtnWsiObaFurNy1+wolagK
-         adje2wxvrmeWQEMpbJM0Wj2fRfkXUC7fSQ3VTS+noaA40bHZFEVO04BNcI06EJkTw1ln
-         XKDSgMmBTrs8Yf+y6btAW84Spzq0tdmENige5OTDXOs7+qxFRzuLcJmpck0bTENmk9ps
-         MqSfKMgQjO/G1I1DhZAV290KN2SbFvRWoooG7mqjbT/DV2PoKt+NM0+WJz4imnnQrdYS
-         LKzA==
-X-Gm-Message-State: AOAM5304np/qtzze44Tkft7xqBWKmVq/+aiQvaddhZ+yXvcbd2rw/cmp
-        nxW/kCyNRJrRDYNHI0l7dvBgXAkcs9MZV3MlXAQ=
-X-Google-Smtp-Source: ABdhPJwOk443/Wx7zXIdaTNzHesyOo1vEVSG65yR+Kp0G5P7UeBNNTlCFENt9G1ribS0vqx4q5fu6ifRWJHK8FDLVOY=
-X-Received: by 2002:ac2:4859:: with SMTP id 25mr8117600lfy.112.1636079598533;
- Thu, 04 Nov 2021 19:33:18 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VKBsGL0N95B/IgJqo+QGVJ0yA+4yb0e6eNgdYWHMsBE=;
+        b=tWHHD/1nnjx6snKU2xqzMc6Nd8BLr+/pWphkWDgo/S1xi1aovNanyGMfl8V+Ehj7Vc
+         T+T6a9QGNArOpFgJziXW0pqPlshP1YG02jX2wuxGt6Gj2KS4j5FZ7xvNV5etCz26SwFd
+         iDMJ2nuaqR4kZMBV8qG+ZRI6re/oYqeTPrFFlF7kje4OIauSf2LK5TVUYsRd6/w5a0C2
+         uD1yYepn4zhbXV4UItmIoBgcWP2h8icbcoTjsf/EaxZPO8femNhXeOLMO8Av210CB6It
+         tdWtJWLd8lUYguTblvD04s6s3bubGll7A5n1lebvdQn3vHy+aWeh33kwD0GICQa0Cicp
+         1jJg==
+X-Gm-Message-State: AOAM530LxDHrxbnLTU2jZsMww8PqjHUP4eBQpiFOeJUE31drel30sbS6
+        hoBPT1vu+0wLQAEK0lUlacX1yCkACff1pJ8ceHYlPFDFZClmr2l/482cRyA8xNYp3hnMmA0qGiW
+        esEXN75chQ847cWTKVA3T/zw9QncZRIL2Lhhq+cJn
+X-Received: by 2002:a05:6512:3b26:: with SMTP id f38mr50855191lfv.629.1636079728605;
+        Thu, 04 Nov 2021 19:35:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzZx/L+SiFE1oxYrHCOr1l/Atr1jABgM7xE0CVioPICzfc1cQLBOiIXWL6UFK3ppv8MQuqic1nbF0kue0ka3h8=
+X-Received: by 2002:a05:6512:3b26:: with SMTP id f38mr50855185lfv.629.1636079728426;
+ Thu, 04 Nov 2021 19:35:28 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6512:32c6:0:0:0:0 with HTTP; Thu, 4 Nov 2021 19:33:18
- -0700 (PDT)
-Reply-To: mstheresaheidi8@gmail.com
-From:   Ms Theresa Heidi <hennagercjames@gmail.com>
-Date:   Fri, 5 Nov 2021 02:33:18 +0000
-Message-ID: <CAMhtcvhrN_4Z9ZxgtGLP1H0Lvv3+M5iQNxOqXDEbBVFbNvHVTQ@mail.gmail.com>
-Subject: =?UTF-8?B?55eF6Zmi44GL44KJ44Gu57eK5oCl44Gu5Yqp44GR77yB?=
-To:     undisclosed-recipients:;
+References: <20211104195248.2088904-1-eperezma@redhat.com>
+In-Reply-To: <20211104195248.2088904-1-eperezma@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Fri, 5 Nov 2021 10:35:17 +0800
+Message-ID: <CACGkMEvURdieU_i_XOYH-Gab9M_wfT4apXNLpHHF+KGiPNCEVQ@mail.gmail.com>
+Subject: Re: [PATCH] vdpa: Mark vdpa_config_ops.get_vq_notification as optional
+To:     =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>, kvm <kvm@vger.kernel.org>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-6Kaq5oSb44Gq44KL5oSb44GZ44KL5Lq644CBDQoNCuaFiOWWhOWvhOS7mOOBk+OBruaJi+e0meOB
-jOOBguOBquOBn+OBq+mpmuOBjeOBqOOBl+OBpuadpeOCi+OBi+OCguOBl+OCjOOBquOBhOOBk+OB
-qOOBr+eiuuOBi+OBp+OBmeOAgeazqOaEj+a3seOBj+iqreOCk+OBp+OBj+OBoOOBleOBhOOAguen
-geOBr+OBguOBquOBn+OBruaPtOWKqeOCkuW/heimgeOBqOOBl+OBpuOBhOOCi+mWk+OBq+engeea
-hOOBquaknOe0ouOCkumAmuOBl+OBpuOBguOBquOBn+OBrumbu+WtkOODoeODvOODq+OBrumAo+e1
-oeWFiOOBq+WHuuOBj+OCj+OBl+OBvuOBl+OBn+OAguengeOBr+W/g+OBi+OCieaCsuOBl+OBv+OC
-kui+vOOCgeOBpuOBk+OBruODoeODvOODq+OCkuabuOOBhOOBpuOBhOOBvuOBmeOAguOCpOODs+OC
-v+ODvOODjeODg+ODiOOBjOS+neeEtuOBqOOBl+OBpuacgOmAn+OBruOCs+ODn+ODpeODi+OCseOD
-vOOCt+ODp+ODs+aJi+auteOBp+OBguOCi+OBn+OCgeOAgeOCpOODs+OCv+ODvOODjeODg+ODiOOC
-kuS7i+OBl+OBpuOBguOBquOBn+OBq+mAo+e1oeOBmeOCi+OBk+OBqOOCkumBuOaKnuOBl+OBvuOB
-l+OBn+OAgg0KDQrnp4Hjga7lkI3liY3jga/jg4bjg6zjgrXjg7vjg4/jgqTjgrjlpKvkurrjgafj
-gZnnp4Hjga/nj77lnKjjgIHnp4HjgYw2Muats+OBruiCuueZjOOBrue1kOaenOOBqOOBl+OBpuOC
-pOOCueODqeOCqOODq+OBruengeeri+eXhemZouOBq+WFpemZouOBl+OBpuOBiuOCiuOAgeengeOB
-r+e0hDTlubTliY3jgIHlpKvjga7mrbvlvozjgZnjgZDjgavogrrjgYzjgpPjgajoqLrmlq3jgZXj
-gozjgb7jgZfjgZ/jgILnp4Hjga/ogrrjga7nmYzjga7msrvnmYLjgpLlj5fjgZHjgabjgYTjgovj
-gZPjgZPjga7nl4XpmaLjgafnp4Hjga7jg6njg4Pjg5fjg4jjg4Pjg5fjgajkuIDnt5LjgavjgYTj
-gb7jgZnjgILnp4Hjga/kuqHjgY3lpKvjgYvjgonlj5fjgZHntpnjgYTjgaDos4fph5HjgpLmjIHj
-gaPjgabjgYTjgb7jgZnjgYzjgIHlkIjoqIjjga8yNTDkuIfjg4njg6soMiw1MDAsMDAwLDAwMOex
-s+ODieODqynjgafjgZnjgILku4rjgIHnp4Hjga/np4Hjga7kurrnlJ/jga7mnIDlvozjga7ml6Xj
-gavov5HjgaXjgYTjgabjgYTjgovjgZPjgajjga/mmI7jgonjgYvjgafjgYLjgorjgIHnp4Hjga/j
-goLjgYbjgZPjga7jgYrph5HjgpLlv4XopoHjgajjgZfjgarjgYTjgajmgJ3jgYTjgb7jgZnjgILn
-p4Hjga7ljLvogIXjga/jgIHnp4HjgYzogrrnmYzjga7llY/poYzjga7jgZ/jgoHjgasx5bm06ZaT
-57aa44GL44Gq44GE44GT44Go44KS56eB44Gr55CG6Kej44GV44Gb44G+44GX44Gf44CCDQoNCuOB
-k+OBruOBiumHkeOBr+OBvuOBoOWkluWbveOBrumKgOihjOOBq+OBguOCiuOAgee1jOWWtuiAheOB
-r+engeOCkuacrOW9k+OBruaJgOacieiAheOBqOOBl+OBpuOAgeOBiumHkeOCkuWPl+OBkeWPluOC
-i+OBn+OCgeOBq+WJjeOBq+WHuuOBpuadpeOCi+OBi+OAgeeXheawl+OBruOBn+OCgeOBq+adpeOC
-i+OBk+OBqOOBjOOBp+OBjeOBquOBhOOBruOBp+engeOBq+S7o+OCj+OBo+OBpuiqsOOBi+OBq+OB
-neOCjOOCkuWPl+OBkeWPluOCi+OBn+OCgeOBruaJv+iqjeabuOOCkueZuuihjOOBmeOCi+OCiOOB
-huOBq+abuOOBhOOBn+OAgumKgOihjOOBruihjOWLleOBq+WkseaVl+OBmeOCi+OBqOOAgeOBneOC
-jOOCkumVt+OBj+e2reaMgeOBl+OBn+OBn+OCgeOBq+izh+mHkeOBjOayoeWPjuOBleOCjOOCi+WP
-r+iDveaAp+OBjOOBguOCiuOBvuOBmeOAgg0KDQrnp4HjgYzlpJblm73jga7pioDooYzjgYvjgonj
-gZPjga7jgYrph5HjgpLlvJXjgY3lh7rjgZnjga7jgpLmiYvkvJ3jgaPjgabjgY/jgozjgovjgarj
-gonjgIHjgYLjgarjgZ/jgavpgKPntaHjgZnjgovjgZPjgajjgavjgZfjgb7jgZfjgZ/jgILjgZ3j
-gZfjgabjgIHmhYjlloTmtLvli5Xjga7jgZ/jgoHjga7os4fph5HjgpLkvb/jgaPjgabjgIHmgbXj
-gb7jgozjgarjgYTkurrjgIXjgpLliqnjgZHjgIHnpL7kvJrjga5Db3ZpZC0xOeODkeODs+ODh+OD
-n+ODg+OCr+OBqOaIpuOBhuOBk+OBqOOCguOBp+OBjeOBvuOBmeOAguengeOBq+S9leOBi+OBjOi1
-t+OBk+OCi+WJjeOBq+OAgeOBk+OCjOOCieOBruS/oeiol+WfuumHkeOCkuiqoOWun+OBq+aJseOB
-o+OBpuOBu+OBl+OBhOOAguOBk+OCjOOBr+ebl+OBvuOCjOOBn+OBiumHkeOBp+OBr+OBquOBj+OA
-geWujOWFqOOBquazleeahOiovOaLoOOBjOOBguOCjOOBsDEwMO+8heODquOCueOCr+OBjOOBquOB
-hOOBqOOBhOOBhuWNsemZuuOBr+OBguOCiuOBvuOBm+OCk+OAgg0KDQrnp4Hjga/jgYLjgarjgZ/j
-gavjgYLjgarjgZ/jga7lgIvkurrnmoTjgarkvb/nlKjjga7jgZ/jgoHjga7nt4/jgYrph5Hjga40
-NSXjgpLlj5bjgaPjgabjgbvjgZfjgYTjgYzjgIHjgYrph5Hjga41NSXjga/mhYjlloTmtLvli5Xj
-gavooYzjgY/jgILnp4Hjga/np4Hjga7mnIDlvozjga7poZjjgYTjgpLljbHpmbrjgavjgZXjgonj
-gZnjgoLjga7jgpLmnJvjgpPjgafjgYTjgarjgYTjga7jgafjgIHnp4Hjga/np4Hjga7lv4Pjga7m
-rLLmnJvjgpLpgZTmiJDjgZnjgovjgZ/jgoHjgavjgIHjgZPjga7llY/poYzjgafjgYLjgarjgZ/j
-ga7mnIDlpKfpmZDjga7kv6HpoLzjgajmqZ/lr4bmgKfjgavmhJ/orJ3jgZfjgb7jgZnjgILjgYLj
-garjgZ/jga7jgrnjg5Hjg6DjgafjgZPjga7miYvntJnjgpLlj5fjgZHlj5bjgaPjgZ/loLTlkIjj
-gIHnp4Hjga/pnZ7luLjjgavnlLPjgZfoqLPjgYLjgorjgb7jgZvjgpPjgYzjgIHlm73jga7mnIDo
-v5Hjga7mjqXntprjgqjjg6njg7zjgavjgojjgovjgoLjga7jgafjgZnjgIINCg0K44GC44Gq44Gf
-44Gu5pyA5oSb44Gu5aeJ5aa544CCDQrjg4bjg6zjgrXjg7vjg4/jgqTjgrjlpKvkuroNCg==
+On Fri, Nov 5, 2021 at 3:53 AM Eugenio P=C3=A9rez <eperezma@redhat.com> wro=
+te:
+>
+> Since vhost_vdpa_mmap checks for its existence before calling it.
+>
+> Signed-off-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+> ---
+>  include/linux/vdpa.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+> index c3011ccda430..0bdc7f785394 100644
+> --- a/include/linux/vdpa.h
+> +++ b/include/linux/vdpa.h
+> @@ -155,7 +155,7 @@ struct vdpa_map_file {
+>   *                             @vdev: vdpa device
+>   *                             @idx: virtqueue index
+>   *                             @state: pointer to returned state (last_a=
+vail_idx)
+> - * @get_vq_notification:       Get the notification area for a virtqueue
+> + * @get_vq_notification:       Get the notification area for a virtqueue=
+ (optional)
+>   *                             @vdev: vdpa device
+>   *                             @idx: virtqueue index
+>   *                             Returns the notifcation area
+> --
+> 2.27.0
+>
+
