@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ACAD44688B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 19:39:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBBFD446890
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 19:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232771AbhKESlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 14:41:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49410 "EHLO mail.kernel.org"
+        id S232798AbhKESmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 14:42:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232730AbhKESli (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 14:41:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAB9F61131;
-        Fri,  5 Nov 2021 18:38:55 +0000 (UTC)
-Date:   Fri, 5 Nov 2021 18:38:52 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Qian Cai <quic_qiancai@quicinc.com>
-Cc:     Will Deacon <will@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+        id S232513AbhKESmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 14:42:03 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30554611AE;
+        Fri,  5 Nov 2021 18:39:23 +0000 (UTC)
+Date:   Fri, 5 Nov 2021 14:39:21 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: Track no early_pgtable_alloc() for kmemleak
-Message-ID: <YYV6PPpH6Y+APfsm@arm.com>
-References: <20211105150509.7826-1-quic_qiancai@quicinc.com>
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: Re: [GIT PULL] s390 patches for the 5.16 merge window
+Message-ID: <20211105143921.06050d1c@gandalf.local.home>
+In-Reply-To: <your-ad-here.call-01636137270-ext-1192@work.hours>
+References: <your-ad-here.call-01636137270-ext-1192@work.hours>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211105150509.7826-1-quic_qiancai@quicinc.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 11:05:09AM -0400, Qian Cai wrote:
-> After switched page size from 64KB to 4KB on several arm64 servers here,
-> kmemleak starts to run out of early memory pool due to a huge number of
-> those early_pgtable_alloc() calls:
-> 
->   kmemleak_alloc_phys()
->   memblock_alloc_range_nid()
->   memblock_phys_alloc_range()
->   early_pgtable_alloc()
->   init_pmd()
->   alloc_init_pud()
->   __create_pgd_mapping()
->   __map_memblock()
->   paging_init()
->   setup_arch()
->   start_kernel()
-> 
-> Increased the default value of DEBUG_KMEMLEAK_MEM_POOL_SIZE by 4 times
-> won't be enough for a server with 200GB+ memory. There isn't much
-> interesting to check memory leaks for those early page tables and those
-> early memory mappings should not reference to other memory. Hence, no
-> kmemleak false positives, and we can safely skip tracking those early
-> allocations from kmemleak like we did in the commit fed84c785270
-> ("mm/memblock.c: skip kmemleak for kasan_init()") without needing to
-> introduce complications to automatically scale the value depends on the
-> runtime memory size etc. After the patch, the default value of
-> DEBUG_KMEMLEAK_MEM_POOL_SIZE becomes sufficient again.
-> 
-> Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
+On Fri, 5 Nov 2021 19:34:30 +0100
+Vasily Gorbik <gor@linux.ibm.com> wrote:
 
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> +++ b/samples/Makefile
+> @@ -21,6 +21,7 @@ subdir-$(CONFIG_SAMPLE_TIMER)		+= timers
+>  obj-$(CONFIG_SAMPLE_TRACE_EVENTS)	+= trace_events/
+>  obj-$(CONFIG_SAMPLE_TRACE_PRINTK)	+= trace_printk/
+>  obj-$(CONFIG_SAMPLE_FTRACE_DIRECT)	+= ftrace/
+> +obj-$(CONFIG_SAMPLE_FTRACE_MULTI_DIRECT) += ftrace/
+>  obj-$(CONFIG_SAMPLE_TRACE_ARRAY)	+= ftrace/
+>  subdir-$(CONFIG_SAMPLE_UHID)		+= uhid
+>  obj-$(CONFIG_VIDEO_PCI_SKELETON)	+= v4l/
+> diff --git a/samples/ftrace/Makefile b/samples/ftrace/Makefile
+> index ab1d1c05c288..e8a3f8520a44 100644
+> --- a/samples/ftrace/Makefile
+> +++ b/samples/ftrace/Makefile
+> @@ -3,7 +3,7 @@
+>  obj-$(CONFIG_SAMPLE_FTRACE_DIRECT) += ftrace-direct.o
+>  obj-$(CONFIG_SAMPLE_FTRACE_DIRECT) += ftrace-direct-too.o
+>  obj-$(CONFIG_SAMPLE_FTRACE_DIRECT) += ftrace-direct-modify.o
+> -obj-$(CONFIG_SAMPLE_FTRACE_DIRECT) += ftrace-direct-multi.o
+> +obj-$(CONFIG_SAMPLE_FTRACE_MULTI_DIRECT) += ftrace-direct-multi.o
+>  
+>  CFLAGS_sample-trace-array.o := -I$(src)
+>  obj-$(CONFIG_SAMPLE_TRACE_ARRAY) += sample-trace-array.o
+> --
+
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+-- Steve
