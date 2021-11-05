@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AFE446983
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 21:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E172446987
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 21:17:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233483AbhKEUSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 16:18:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49576 "EHLO
+        id S233431AbhKEUUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 16:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233035AbhKEUSw (ORCPT
+        with ESMTP id S233113AbhKEUUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 16:18:52 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C74C061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 13:16:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jcOfjw6XwonYpk3ilQHHDmFG7O1LJuGnONCWZY3GCR4=; b=nMhc7QiLyVX7yEJgANQd4IzhL/
-        mr0S3ilYRjL6VIaGNxoN4UuU2meqeWNwqOWO8+woM4t0natBIJELUSHLr1tYNCspP0h1OpXrzrufl
-        THoVVUNPqE0cPTbJ+l+INJE95jvQMR+1vATLkWEhgSyQFDA6eB7lPIbtEPw8uozfxCYxyk3W77vL9
-        54hHli5+N1las0MX9oJNsS3uGfE/zNTYGyqi3oSHP7UeC5oGWZhku95dqJJ9KshCoEtNlRD64X3mr
-        hHbVyXZM34PkSkxjB2+fq6Bq8zqynvmfusGqF1wpjtZtdiS/3OSgMyFUZBlKw7/q4PzDHuteDEBTX
-        af0y2O3A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mj5d0-00EOWj-Dh; Fri, 05 Nov 2021 20:16:00 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 428A79862D2; Fri,  5 Nov 2021 21:15:57 +0100 (CET)
-Date:   Fri, 5 Nov 2021 21:15:57 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        mark.rutland@arm.com, dvyukov@google.com, pbonzini@redhat.com,
-        mbenes@suse.cz
-Subject: Re: [RFC][PATCH 07/22] x86,extable: Extend extable functionality
-Message-ID: <20211105201557.GQ174703@worktop.programming.kicks-ass.net>
-References: <20211104164729.226550532@infradead.org>
- <20211104165524.925401847@infradead.org>
- <YYVqnr+gql9RpL4C@google.com>
- <20211105184556.GN174703@worktop.programming.kicks-ass.net>
- <YYWDQO3ugarMcKmH@google.com>
- <20211105193229.GP174703@worktop.programming.kicks-ass.net>
- <YYWKSmHkgdMA2euh@google.com>
+        Fri, 5 Nov 2021 16:20:07 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AEBBC061205
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 13:17:27 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 1so16858934ljv.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 13:17:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vuayPgK0AFa+ecEYX+ZQ8vgmFv5JEOwxSTm6d2kZs78=;
+        b=RnLKexsrCAjWUIWwBZJfog7vhfH5WjN0Y7/YF3zs2wOqmrQE9nWihazTTbqcXtgNEP
+         RNPZtzuvVpldX7fSo1DnFucJJy1OYubefmnOlOt62AtxzoQyyuWnY71JVUAnromuH+6B
+         N9fAHe3RZqI/7+KL0cN3xwUnWjmvCjq0uiXvBd01XwM5XDotom9RHn19Q3GfLb/Fz1Xj
+         gOIBEpcBsM2uNBBCVwGUov8nM49RQuzGEFZDgDlRddmnis4ves7gWRZyct12HUIsbO5G
+         OFgp9Opri3GuuIE9wu8qeSYA5SeB7XS7Q+62+kZaBUEXN8LB9OD9gHn5BtjBTXCkuwtx
+         2/kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vuayPgK0AFa+ecEYX+ZQ8vgmFv5JEOwxSTm6d2kZs78=;
+        b=EZQvFA6Zfj5D/g8TP206FM7naJYiFFEaWq+UCyPNcfDhliAsGcsyzgCTMmP8CcKKu2
+         1FycpyPysc3fXTOtfnFe5j22QSPZJ77I5Z1Jh10GlImlpuRh5nTP3c2UwkA05UiDFu3R
+         wH3yKqhPW/Ijhl17Q0LYxjxoq2mEyTWG8k8w1ivvI3Wiif/K9tHjClok2a+hyr5MMxmR
+         WB+QLi879ubpxUvRQ/Z4O8o02oolcMIdRqiO55WArBnlY1dwCRhEd1NdIUxx0OQrGF7O
+         jp0KCqV9DtqDtchxSh+FAnwjLT7WosUaBGTLZZIkXxXG6ZlIuXdxiIVug9dPynTz0U2N
+         bHVQ==
+X-Gm-Message-State: AOAM532a0kjRAtFOZsm6/+YZs85cDsNoLrzJFOTOG8kg9p4JLR7kmDZs
+        vtMA4eHnjgUxoyH9K+D0UwMshNiuUuClqhrSsFTaDN8ocmo=
+X-Google-Smtp-Source: ABdhPJwZM39NYLp6cBlt7OdvlReYZCF5U9ViiH0CM54S+pnKkPT65t3gV5XP9lM1W9YaFAsOziYunWIWhRBIKNm1sZI=
+X-Received: by 2002:a2e:9192:: with SMTP id f18mr5264789ljg.220.1636143445722;
+ Fri, 05 Nov 2021 13:17:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYWKSmHkgdMA2euh@google.com>
+References: <20211105162756.3314148-1-anders.roxell@linaro.org>
+In-Reply-To: <20211105162756.3314148-1-anders.roxell@linaro.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 5 Nov 2021 13:17:14 -0700
+Message-ID: <CAKwvOd=dtb98Ue1xYz0gQmRGeQWdH6sBEkpXioevPQ94envK8A@mail.gmail.com>
+Subject: Re: [PATCH] selftests: vDSO: parse: warning: fix assignment as a condition
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     shuah@kernel.org, nathan@kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 07:47:22PM +0000, Sean Christopherson wrote:
-> On Fri, Nov 05, 2021, Peter Zijlstra wrote:
-> > On Fri, Nov 05, 2021 at 07:17:20PM +0000, Sean Christopherson wrote:
+On Fri, Nov 5, 2021 at 9:28 AM Anders Roxell <anders.roxell@linaro.org> wrote:
+>
+> When building selftests/vDSO with clang the following warning shows up:
+>
+> clang -std=gnu99 -Wno-pointer-sign    vdso_test_gettimeofday.c parse_vdso.c  -o /home/anders/.cache/tuxmake/builds/current/kselftest/vDSO/vdso_test_gettimeofday
+> parse_vdso.c:65:9: warning: using the result of an assignment as a condition without parentheses [-Wparentheses]
+>                 if (g = h & 0xf0000000)
+>                     ~~^~~~~~~~~~~~~~~~
+>
+> Rework to a parentheses before doing the check.
+>
+> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 
-> > C99 is sodding daft wrt signed values. That's why we force -fwrapv and
-> > say signed is 2s complement and expect sanity.
-> 
-> FWIW, -fwrapv was supplanted by -fno-strict-overflow back in 2009 by commit
-> a137802ee839 ("Don't use '-fwrapv' compiler option: it's buggy in gcc-4.1.x").
-> But I don't think that matters because AFAICT both apply only to "addition,
-> subtraction and multiplication".
+Thanks for the patch!
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Right... I think i remember running into that before. I think I yelled
-at people at the time for that not being very consistent. If we
-explicitly state we want 2s complement, it had damn well be everywhere.
+> ---
+>  tools/testing/selftests/vDSO/parse_vdso.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/vDSO/parse_vdso.c b/tools/testing/selftests/vDSO/parse_vdso.c
+> index 413f75620a35..b47b721a4ea4 100644
+> --- a/tools/testing/selftests/vDSO/parse_vdso.c
+> +++ b/tools/testing/selftests/vDSO/parse_vdso.c
+> @@ -62,7 +62,7 @@ static unsigned long elf_hash(const unsigned char *name)
+>         while (*name)
+>         {
+>                 h = (h << 4) + *name++;
+> -               if (g = h & 0xf0000000)
+> +               if ((g = (h & 0xf0000000)))
+>                         h ^= g >> 24;
+>                 h &= ~g;
+>         }
+> --
+> 2.33.0
+>
 
-> > > gcc-10 generates a bare "shr", i.e. doesn't special case negative values, and "shr"
-> > > is explicitly defined as an unsigned divide.
-> > 
-> > We hard rely on signed shift right to preserve sign all over the place,
-> > how come it goes sideways here? Lemme go stare at asm...
-> 
-> Huh.  TIL there's actually a use case for this.
 
-Yeah, the canonical pattern for sign extending an n-bit int is:
-
-	(int)(x << (32-n)) >> (32-n)
-
-I think we have macros for that somehwere, but I can never remember what
-they're called.
-
-> Anyways, I think the issue is that EX_IMM_MASK is being interpreted as an unsigned
-> value by the compiler.  Which I think is legal for a 64-bit kernel?  Because bit 63
-> is the MSB, not bit 31.  E.g. this
-> 
-> 	FIELD_GET((int)EX_IMM_MASK, e->type)
-> 
-> generates SAR instead of SHR.
-
-Bah, you're right. The compiler is free to interpret a hex constant as
-either. At the same time there's only an unsigned suffix, so while we
-can force it unsigned, we can't explicitly construct a signed hex
-constant.
-
-That's really unfortunate that is... 6.4.4.1 item 5 of the C99 spec
-covers this gem :-( I suppose I'll go stick that (int) cast in the
-EX_IMM_MASK definition or something.
+-- 
+Thanks,
+~Nick Desaulniers
