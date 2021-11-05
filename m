@@ -2,122 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F023446450
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0C9446463
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:44:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232805AbhKENpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 09:45:23 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:18706 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232604AbhKENpW (ORCPT
+        id S233105AbhKENqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 09:46:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232638AbhKENqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 09:45:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1636119762; h=Date: Message-ID: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=97JDROl6nekEmikx5XRgFoJpVnsjC7pw9N4FbxjAHmg=;
- b=nnsEl/JbZD30rKlIxNwRlmWruQX9oe+2hYzq6U0V1WqWZT1JBqlfkHWLMHwyAT7+8iOjFYhP
- uXNUlbh3vPewzUPSF4hmPGb5gdP4UsgYxh6rOsVBt1zk8cEFAwOG+sYK8H3OdxwXGJM/tkFA
- OJMtMQ1rRV3+cMHqZi3S04jzefg=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 618534d1045d18c075fd4084 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Nov 2021 13:42:41
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7BB9EC43618; Fri,  5 Nov 2021 13:42:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CD44EC4338F;
-        Fri,  5 Nov 2021 13:42:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org CD44EC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Fri, 5 Nov 2021 09:46:53 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D08C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 06:44:14 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id w29so2256023wra.12
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 06:44:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=snx5IdStXoxnNy/JFY0xnDVQNvsxaMatNZgT4R6LL3M=;
+        b=vZVA9rVJ8XZERKTGvHfZQ12kX6iTwnrAod7t20ayB+z2mGX/RpTKfRkn5DRBprVi2G
+         KVtK3dAnJ+xGxa23dMgWwJauoh3iR9uj6YrHG4a6+j9o9ryFFhUEQjs69mRvrTKX7WvX
+         66DQmrOtgSfMkY00Ms1TB4dOm1p6wPxlXUrYfEUwI3G4456fR4Fx/wKgRseBb60pkd2y
+         1koDzOwKv5PU0kH76cSDZIyzgOd/yRilOG7hj1fbDTcf9/QFLdPs7ZefAK6M0gLtYqbY
+         okFiKtEH1EyqcntDgSr82lG9RPnS4Katns2eQXP+2Vr83NR0ifUweheRkSa5CqiSGIhr
+         eI8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=snx5IdStXoxnNy/JFY0xnDVQNvsxaMatNZgT4R6LL3M=;
+        b=KvcrIIAOzgfx42+KUBtgrNsNHSnTp0V1t7zO9RtioSEZS0NFimRyeBblUdmrZHrCE2
+         AOwC8LhTRENj1jUuFQiJuYv8+NKCxLyfycuZGrVJFyqLQdQlaRr/VOPOJIce3W4Uw3Br
+         4XnmOQcFGhNpshsh5iEhWPbTRPOnYUlN6ymCvK9KG05kpzgVp9s9OE3tTSL/MHhG7Qls
+         Ufppxh3G0Z0Ck2w1Ne5n/OQPc86IXU5lU2V5TOQbgrGJEha0LWjOszYeCGF/3Ss+e6K9
+         AsLXn/JxDCKbHcK/t0vlRDk/g3vF0aAzw/2whFis9oGhV3P8l0K+Qp4YQynmaLgBP9zc
+         EmBQ==
+X-Gm-Message-State: AOAM532st9Lv6niVl9r6jRtuuJZQdXoeRqPTohQgIVMDBEzuXAsa5f6b
+        uKtM6nx1vVFjHxqGACg72a14NPH8iUtBtA==
+X-Google-Smtp-Source: ABdhPJxPFQrGqtZYn0ID0M96jKOyOS8NpAqWb25gZLSXAjK7HFAr1ZKSN2BtbW+zXB/9vbVdTzvCTA==
+X-Received: by 2002:a5d:6d8b:: with SMTP id l11mr28556733wrs.178.1636119852910;
+        Fri, 05 Nov 2021 06:44:12 -0700 (PDT)
+Received: from google.com ([95.148.6.174])
+        by smtp.gmail.com with ESMTPSA id p27sm7431639wmi.28.2021.11.05.06.44.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 06:44:12 -0700 (PDT)
+Date:   Fri, 5 Nov 2021 13:44:10 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [v4.4.y and v4.9.y] net: hso: register netdev later to avoid a race
+ condition
+Message-ID: <YYU1KqvnZLyPbFcb@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] ath9k: Fix out-of-bound memcpy in ath9k_hif_usb_rx_stream
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <YXsidrRuK6zBJicZ@10-18-43-117.dynapool.wireless.nyu.edu>
-References: <YXsidrRuK6zBJicZ@10-18-43-117.dynapool.wireless.nyu.edu>
-To:     Zekun Shen <bruceshenzk@gmail.com>
-Cc:     bruceshenzk@gmail.com, ath9k-devel@qca.qualcomm.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <163611975427.24604.10345795952487961567.kvalo@codeaurora.org>
-Date:   Fri,  5 Nov 2021 13:42:40 +0000 (UTC)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zekun Shen <bruceshenzk@gmail.com> wrote:
+Stable Maintainers,
 
-> Large pkt_len can lead to out-out-bound memcpy. Current
-> ath9k_hif_usb_rx_stream allows combining the content of two urb
-> inputs to one pkt. The first input can indicate the size of the
-> pkt. Any remaining size is saved in hif_dev->rx_remain_len.
-> While processing the next input, memcpy is used with rx_remain_len.
-> 
-> 4-byte pkt_len can go up to 0xffff, while a single input is 0x4000
-> maximum in size (MAX_RX_BUF_SIZE). Thus, the patch adds a check for
-> pkt_len which must not exceed 2 * MAX_RX_BUG_SIZE.
-> 
-> BUG: KASAN: slab-out-of-bounds in ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
-> Read of size 46393 at addr ffff888018798000 by task kworker/0:1/23
-> 
-> CPU: 0 PID: 23 Comm: kworker/0:1 Not tainted 5.6.0 #63
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> BIOS rel-1.10.2-0-g5f4c7b1-prebuilt.qemu-project.org 04/01/2014
-> Workqueue: events request_firmware_work_func
-> Call Trace:
->  <IRQ>
->  dump_stack+0x76/0xa0
->  print_address_description.constprop.0+0x16/0x200
->  ? ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
->  ? ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
->  __kasan_report.cold+0x37/0x7c
->  ? ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
->  kasan_report+0xe/0x20
->  check_memory_region+0x15a/0x1d0
->  memcpy+0x20/0x50
->  ath9k_hif_usb_rx_cb+0x490/0xed7 [ath9k_htc]
->  ? hif_usb_mgmt_cb+0x2d9/0x2d9 [ath9k_htc]
->  ? _raw_spin_lock_irqsave+0x7b/0xd0
->  ? _raw_spin_trylock_bh+0x120/0x120
->  ? __usb_unanchor_urb+0x12f/0x210
->  __usb_hcd_giveback_urb+0x1e4/0x380
->  usb_giveback_urb_bh+0x241/0x4f0
->  ? __hrtimer_run_queues+0x316/0x740
->  ? __usb_hcd_giveback_urb+0x380/0x380
->  tasklet_action_common.isra.0+0x135/0x330
->  __do_softirq+0x18c/0x634
->  irq_exit+0x114/0x140
->  smp_apic_timer_interrupt+0xde/0x380
->  apic_timer_interrupt+0xf/0x20
-> 
-> Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
+Please consider this patch for back-porting to v4.4y and v4.9.y
 
-I need to test this myself.
+  4c761daf8bb9a ("net: hso: register netdev later to avoid a race condition")
 
-Patch set to Deferred.
+It should apply cleanly to both branches.
+
+Kind regards,
+Lee
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/YXsidrRuK6zBJicZ@10-18-43-117.dynapool.wireless.nyu.edu/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
