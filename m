@@ -2,78 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBF544654D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3C5446557
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233260AbhKEPBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 11:01:05 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:43854 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229680AbhKEPBE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 11:01:04 -0400
-Received: by mail-ot1-f54.google.com with SMTP id i16-20020a9d68d0000000b0055c630be045so2745836oto.10;
-        Fri, 05 Nov 2021 07:58:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N29f2qG9N8qGZBGabftefpAZctoEUTP2dAZL8SLGpjU=;
-        b=BJdlrN4GK5lb1oYxH/MiUmQPypn0QxOnIr6FAz73z8+YO5NEvabYgc7m0Q/XCLELHc
-         FlcueSAKlB4609zLZtBb1hTAktWzw3frsPm/ua5mOSYW6s82gIq3Ti6Ip4Y6ygWe5LTy
-         qYjnlHELnxXkKSFXIT0U4iKAqtjlT5aVnV8gzPY9ejp3PYgR3M9q+mQLvTUOuQadriG+
-         6YtChgv0J3YSw4NkdGP7LUlsrUbQ1KbjXY1y2bhDP97pIn7lBiT/Q9YzCLQ1cBpkgHcy
-         C4OCXwPze4iQ3e8t5EiCliUPy36S8HyOjTzCXvb9TZZUL16ZfY8iBajm43aVP9/jQPxu
-         qjMA==
-X-Gm-Message-State: AOAM532kfvgj2FxvNcgnJWw4CP4reyjwrp1NcBjSbRMnu572gag7c4BW
-        cUvXTq+9UnlzBfpPEl8L6UolRop34edOQa6F9Rk=
-X-Google-Smtp-Source: ABdhPJzbBsU2kX81at/Ihg+/gwg0il6C3IJjZmh66hovIKnVJ7ey9fb5vDJvLcs9yLkSzrEoh1M6QGh3i4lQhJ38mrE=
-X-Received: by 2002:a05:6830:3484:: with SMTP id c4mr28386618otu.254.1636124304787;
- Fri, 05 Nov 2021 07:58:24 -0700 (PDT)
+        id S233353AbhKEPCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 11:02:25 -0400
+Received: from mout.gmx.net ([212.227.17.21]:48445 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233344AbhKEPCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 11:02:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1636124353;
+        bh=rTZyr90F33UIxLT2rfkTze3Dx3P4fW7zLUDyWI7/ts4=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=dxIr5giVrgHWCMHcPIkRVfFseDrweAo/gGxpbdLHAFzMO1S/qoYAl7eTwmKkI4Zla
+         dhHFVm4FriE4PQatxsvVyMFgCYPRRRwouSF+DUTIQn3LxRPFEUeH2Is3zeyiY5TJ1L
+         VhG/RxCRZvZ5qvJ525BXURVU01EcMkQ9vstHwm8o=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.1.252] ([5.166.175.137]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MdvmY-1m9OQ23QPe-00b78d; Fri, 05
+ Nov 2021 15:59:12 +0100
+Message-ID: <10ed7b49-fd66-68c7-5533-866c2ea27ddb@gmx.com>
+Date:   Fri, 5 Nov 2021 14:59:11 +0000
 MIME-Version: 1.0
-References: <20211102182542.3460787-1-sudeep.holla@arm.com>
-In-Reply-To: <20211102182542.3460787-1-sudeep.holla@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 5 Nov 2021 15:58:14 +0100
-Message-ID: <CAJZ5v0jL2+1rzqB2aAJ0T6w3md2dyuHWZNKOk+AbioeD-4ccDA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] ACPI: Add support for PCC Operation Region
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Robert Moore <robert.moore@intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v1 (RFC)] docs: discourage users from using
+ bugzilla.kernel.org
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org
+References: <20210110121033.130504-1-linux@leemhuis.info>
+ <6abc7248-efda-b569-9030-5384e5ce1f29@gmx.com>
+ <YYVC6Nd+XjG6shDV@casper.infradead.org>
+From:   "Artem S. Tashkinov" <aros@gmx.com>
+In-Reply-To: <YYVC6Nd+XjG6shDV@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:18FimqYHz03+t3Osu8rgaYFfIygFQ7fi9zFJdfzEHD6rSwti+Wd
+ BviphiGw0Ycj+ZwdwffgfUL25sqiA7PuN5OpsJ6ByyWixTI1C1BdRnptUIqk6U8bEc4DhHD
+ W4L1D6tXaBgNXQqmfvPglbBJGyWvPnX4C2JqRTJN+57lsgWHVy2WOjPv3jM8oMAGBkvSqPX
+ RX8lZO4S+mZfegxLnmgNw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7q0tcp2KL34=:CNiu6UFq6mvvSrRGKYsCM7
+ /LUdigkclRC1TQbtUjGSdRrznLvZrbZ4KDOekQSOvRVGBWOsIvgKwafJZ6c4+iE/Cg541agh6
+ 6D4T0wcseNTxdwLNaE8zeYBmBm6ENOXOKJHMvKsD49jhTa1Y03LIE8hPHnWaNCcec8DSOs33h
+ FKykfuO8ALI7PItErLWdcxQJs5+v4npV4/+3/kfbKOg8ALu9A9srLLfy8JiqBR7uLYz88zBiF
+ po028MDfav8wIQMLNFUdPRZ8PKSC2SNSfNQDzt8S3hsKqpAIm5ZSYBoA6lFizDbUhE4gPplGD
+ H2csnGmqWcKTMWseKQu/bOQYX7isAmylnaH8xkOWzhYHKwB3u2HzRP14xu1DL6mg4vQJqaqWI
+ lmekvx0QLxe6R5zx3K6VNDKjx51DUfcNY5O9jB4r0vWxUsWJ9dver2OXsdoqAGoNJ0Iw/nIBU
+ EQfLMazUDWOQtCcOtXVwt6tEx482oP3EKz+uZZKIBGEOC+xRzERJp5Nw+UYY/PCZf/j1K+h5x
+ TnDPfnmZeuePqCtnhCgz/k150ut92IU8ei08FtbXFj6X1LjAI39PS88L0wFeUVhCyFGdu8UTH
+ H8lg/yHbr/b2HfSQULbsescPMlRkPx2VCcpeWrZ08hrlHMsupzpv8GFSO2jsb36pl5KChujs7
+ DpwEUb/OVGMOIqu3Dj4poLUW3UfcTd6r9KGk5PzmdLAnF4eGBvG9e+DHZLBrf4Tm+a1qLgFt+
+ ex28vXnj4TRUJ1fS8+PG7jMAgbiJaNWeuRx0Y6Pgixiti66mIY9wTaeNoyEP3w0mRNHrqHEYz
+ Q7uHejLEPNhSK3TDl7+IiC4Sw7smyvTpRFOqTBQRCbjP6npEFuQ9uG86jce5Wa1rdcRAp8uIW
+ Eiw0irBaIg0hlTeFztmT0rG7QTSWN9HV9WH6XaWxyEFnTZJXdMwGXxkz2oEGaa1oYQtHVYhz4
+ lfaE5VAIIMuh26CWh7qc9kVBGGuN32g/uIlFltghD3vPmbkMlycPBSsVXOPGlxfd7dswaA1o5
+ gogd4D9fmlsAZ76BzghDLwmaRdjku2sysalUU9X2TUlinD/ZJgmvmP9VEch7p+z9cw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sudeep,
-
-On Tue, Nov 2, 2021 at 7:26 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
+On 11/5/21 14:42, Matthew Wilcox wrote:
+> On Fri, Nov 05, 2021 at 02:36:51PM +0000, Artem S. Tashkinov wrote:
+>> Hello,
+>>
+>> Let me express an utter dissatisfaction and even contempt for this prop=
+osal.
 >
-> Hi,
+> Thank you for volunteering to take over administration of
+> bugzilla.kernel.org.  Can you lay out your plans for making kernel
+> developers care about it?
 >
-> This series adds support for ACPI PCC OpRegion added in ACPI 6.3
-> I understand that the ACPICA changes need to go via different route,
-> but I am posting it together to give complete narative/picture for
-> the review/discussion.
->
-> Regards,
-> Sudeep
->
-> Sudeep Holla (3):
->   ACPICA: Fix wrong interpretation of PCC address
->   ACPICA: Add support for PCC Opregion special context data
 
-The above two need to be submitted to the upstream project via GitHub
-at https://github.com/acpica/acpica
+Last time I checked the Linux foundation is not exactly living from hand
+to mouth and has enough financial backing from major corporations.
 
-The will be applicable to the Linux code base only after they have
-been accepted by the upstream.
+Is this really about funding?
 
->   ACPI: PCC: Implement OperationRegion handler for the PCC Type 3 subtype
-
-And this one will be applied when the above happens.
-
-Thanks!
+Regards,
+Artem
