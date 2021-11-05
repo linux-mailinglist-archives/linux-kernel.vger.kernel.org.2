@@ -2,170 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04908446319
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 13:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15CBF446320
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 13:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232849AbhKEMFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 08:05:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45378 "EHLO
+        id S232883AbhKEMHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 08:07:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45336 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232832AbhKEMFq (ORCPT
+        by vger.kernel.org with ESMTP id S232904AbhKEMHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 08:05:46 -0400
+        Fri, 5 Nov 2021 08:07:15 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636113787;
+        s=mimecast20190719; t=1636113875;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=6QFtRJa6fXxJb5Blssvwh+XqvE8JdPrEz8mODr6e1JI=;
-        b=QZDiRzTBvRSqb1wKTQSbwBqCzn/e7Q3TLc2uEnXknyCTgmWLUtchDlf+KNV6YzGKOlV9l9
-        7efkag2PiOZKlphWCfXNR6PLqDVhZz7M3ObHVuxQnw+NdLONSjDQj9D2WXfqeYP4KbfRTx
-        PgF16VrMfvOpTCPpOwEW8QRbkPmjp4k=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-333-oJEcsxuoMcaOr2InQjsx1g-1; Fri, 05 Nov 2021 08:03:06 -0400
-X-MC-Unique: oJEcsxuoMcaOr2InQjsx1g-1
-Received: by mail-wr1-f72.google.com with SMTP id q17-20020adfcd91000000b0017bcb12ad4fso2250384wrj.12
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 05:03:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=6QFtRJa6fXxJb5Blssvwh+XqvE8JdPrEz8mODr6e1JI=;
-        b=CAU97OqiF3KJFW/34bClKPYsYeGSMWMLq8iNudA4HqmbqcdoNLmof78Dvws6oXUlON
-         CIA20siQrd5seudFd0wH2h2yIhJapVi7SvVRbLZrOpUmPoOkxeE6nxFt4pUclhO7vSyr
-         uWgUDEKar1eP1gD9X5oZIj0rfMGk6Cj15QE6y2NzMbcyn61JLuUqmPqq396HnkD+vAav
-         rCMgPDxXvXDUkAI9m+0U0z6iHayWy3rRutSTe4QNwvkoHnTr0APXpOo2KNMS/UgWiD4h
-         CTZEKWiig8oBZoqPaKjEHIpSJUxhyGa/jDMRM9osbA2w1BxCSNaM00xQ1JBmL8ytP+59
-         LXCw==
-X-Gm-Message-State: AOAM530BuwxSsuPxoo0plOP5/hooNKGRVTCTqkuYhvCogegWJH9jGVRV
-        wuqhE6Aw6qfl+5FuvJ1H0aTD2QN3GYQSboJ8fYsHBn1Hx4o/QT3JzqjJwhoCpheRpDt3uSswFXX
-        8khTDtACvQ9faQ2/YXmDM0n1riyt+ZmgSzln+VrmXzJcg6bSIMfk6zDMYz5hHgaHPPc+Xw5wA4o
-        kS
-X-Received: by 2002:a5d:6d8c:: with SMTP id l12mr31663594wrs.435.1636113785104;
-        Fri, 05 Nov 2021 05:03:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyAU17O16GODKHSlfRSZLi1fwRykHnh0clQnHPHKuuFcA+KlkO2tvGWAb2k2FPeYYS0DnWXCA==
-X-Received: by 2002:a5d:6d8c:: with SMTP id l12mr31663532wrs.435.1636113784798;
-        Fri, 05 Nov 2021 05:03:04 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id r8sm9166846wrz.43.2021.11.05.05.03.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 05:03:04 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] KVM: nVMX: Don't use Enlightened MSR Bitmap for L3
-In-Reply-To: <YYSAPotqLVIScunK@google.com>
-References: <20211013142258.1738415-1-vkuznets@redhat.com>
- <20211013142258.1738415-2-vkuznets@redhat.com>
- <YYSAPotqLVIScunK@google.com>
-Date:   Fri, 05 Nov 2021 13:03:03 +0100
-Message-ID: <878ry2lsi0.fsf@vitty.brq.redhat.com>
+        bh=XASuO+rECscFYeoZ2e+O7ZWZF/gxoe7C6KcT09KQuV8=;
+        b=J1f6/KocCmX8Q/ckk7NRTHnS3OQteD2wZY20hQ0WCHuHl2k+CABkOZYz1fa9yRRq0R3Km8
+        VvzKq/WWOTfzrevQlA5+ykCOYBbhfDB6+TrBGLaE0bzThF/Lucsa2H3ORjVzNUks76A3tn
+        bjT69VqCcTt41CYU9g0gSdkbvqW1R54=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-48-DQ_V2EfZNS-WZmEUvlRrnQ-1; Fri, 05 Nov 2021 08:04:32 -0400
+X-MC-Unique: DQ_V2EfZNS-WZmEUvlRrnQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBAE980A5C2;
+        Fri,  5 Nov 2021 12:04:30 +0000 (UTC)
+Received: from T590 (ovpn-8-17.pek2.redhat.com [10.72.8.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 20BFB5D740;
+        Fri,  5 Nov 2021 12:04:08 +0000 (UTC)
+Date:   Fri, 5 Nov 2021 20:04:03 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>, live-patching@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>, ming.lei@redhat.com
+Subject: Re: [PATCH V4 1/3] livepatch: remove 'struct completion finish' from
+ klp_patch
+Message-ID: <YYUds30Tkbs9HglB@T590>
+References: <20211102145932.3623108-1-ming.lei@redhat.com>
+ <20211102145932.3623108-2-ming.lei@redhat.com>
+ <YYFfmo5/Dds7bspY@alley>
+ <YYHdFLwGry58Q16F@T590>
+ <YYKGDSdKwQfjs6xf@alley>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYKGDSdKwQfjs6xf@alley>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+On Wed, Nov 03, 2021 at 01:52:29PM +0100, Petr Mladek wrote:
+> On Wed 2021-11-03 08:51:32, Ming Lei wrote:
+> > On Tue, Nov 02, 2021 at 04:56:10PM +0100, Petr Mladek wrote:
+> > > On Tue 2021-11-02 22:59:30, Ming Lei wrote:
+> > > > The completion finish is just for waiting release of the klp_patch
+> > > > object, then releases module refcnt. We can simply drop the module
+> > > > refcnt in the kobject release handler of klp_patch.
+> > > > 
+> > > > This way also helps to support allocating klp_patch from heap.
+> 
+> First, I am sorry for confusion. The above description is correct.
+> I does not say anything about that kobject_put() is synchronous.
+> 
+> > > IMHO, this is wrong assumption. kobject_put() might do everyting
+> > > asynchronously, see:
+> 
+> I see that you are aware of this behavior.
+> 
+> > >    kobject_put()
+> > >      kobject_release()
+> > >        INIT_DELAYED_WORK(&kobj->release, kobject_delayed_cleanup);
+> > >        schedule_delayed_work(&kobj->release, delay);
+> > > 
+> > >    asynchronously:
+> > > 
+> > >      kobject_delayed_cleanup()
+> > >       kobject_cleanup()
+> > > 	__kobject_del()
+> > 
+> > OK, this is one generic kobject release vs. module unloading issue to
+> > solve, not unique for klp module, and there should be lots of drivers
+> > suffering from it.
+> 
+> Yup, the problem is generic. It would be nice to have a generic
+> solution. For example, add kobject_release_sync() that would return
+> only when the object is really released.
 
-> On Wed, Oct 13, 2021, Vitaly Kuznetsov wrote:
->> 3-level nesting is also not a very common setup nowadays.
->
-> Says who? :-D
->
+The generic solution has been posted out:
 
-The one who wants to sleep well at night ;-)
+https://lore.kernel.org/lkml/20211105063710.4092936-1-ming.lei@redhat.com/
 
->> Don't enable 'Enlightened MSR Bitmap' feature for KVM's L2s (real L3s) for
->> now.
->> 
->> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
->> ---
->>  arch/x86/kvm/vmx/vmx.c | 21 ++++++++++++---------
->>  1 file changed, 12 insertions(+), 9 deletions(-)
->> 
->> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->> index 1c8b2b6e7ed9..e82cdde58119 100644
->> --- a/arch/x86/kvm/vmx/vmx.c
->> +++ b/arch/x86/kvm/vmx/vmx.c
->> @@ -2655,15 +2655,6 @@ int alloc_loaded_vmcs(struct loaded_vmcs *loaded_vmcs)
->>  		if (!loaded_vmcs->msr_bitmap)
->>  			goto out_vmcs;
->>  		memset(loaded_vmcs->msr_bitmap, 0xff, PAGE_SIZE);
->> -
->> -		if (IS_ENABLED(CONFIG_HYPERV) &&
->> -		    static_branch_unlikely(&enable_evmcs) &&
->> -		    (ms_hyperv.nested_features & HV_X64_NESTED_MSR_BITMAP)) {
->> -			struct hv_enlightened_vmcs *evmcs =
->> -				(struct hv_enlightened_vmcs *)loaded_vmcs->vmcs;
->> -
->> -			evmcs->hv_enlightenments_control.msr_bitmap = 1;
->> -		}
->>  	}
->>  
->>  	memset(&loaded_vmcs->host_state, 0, sizeof(struct vmcs_host_state));
->> @@ -6903,6 +6894,18 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
->>  
->>  	vmx->loaded_vmcs = &vmx->vmcs01;
->>  
->> +	/*
->> +	 * Use Hyper-V 'Enlightened MSR Bitmap' feature when KVM runs as a
->> +	 * nested (L1) hypervisor and Hyper-V in L0 supports it.
->
-> And maybe call out specifically that KVM intentionally uses this only for vmcs02?
->
->> +	 */
->> +	if (IS_ENABLED(CONFIG_HYPERV) && static_branch_unlikely(&enable_evmcs)
->> +	    && (ms_hyperv.nested_features & HV_X64_NESTED_MSR_BITMAP)) {
->
-> && on the previous line, I think we'll survive the 82 char line :-)
->
->> +		struct hv_enlightened_vmcs *evmcs =
->> +			(struct hv_enlightened_vmcs *)vmx->loaded_vmcs->vmcs;
->
-> Hmm, what about landing this right after vmcs01's VMCS is allocated?  It's kinda
-> weird, but it makes it more obvious that ->vmcs is not NULL.  And if the cast is
-> simply via a "void *" it all fits on one line.
->
-> 	err = alloc_loaded_vmcs(&vmx->vmcs01);
-> 	if (err < 0)
-> 		goto free_pml;
->
-> 	/*
-> 	 * Use Hyper-V 'Enlightened MSR Bitmap' feature when KVM runs as a
-> 	 * nested (L1) hypervisor and Hyper-V in L0 supports it.  Enable an
-> 	 * enlightened bitmap only for vmcs01, KVM currently isn't equipped to
-> 	 * realize any performance benefits from enabling it for vmcs02.
-> 	 */ 
-> 	if (IS_ENABLED(CONFIG_HYPERV) && static_branch_unlikely(&enable_evmcs) &&
-> 	    (ms_hyperv.nested_features & HV_X64_NESTED_MSR_BITMAP)) {
-> 		struct hv_enlightened_vmcs *evmcs = (void *)vmx->vmcs01.vmcs;
+which needn't any generic API change, just flushes all scheduled kobject
+cleanup work before freeing module, and the change is transparent for
+drivers.
 
-(void *) usually smells a bit fishy to me but it seems to fit here.
+IMO, kobject_release_sync() is one wrong direction for fixing this
+issue, since it is basically impossible to audit if one kobject_put()
+need to be replaced with kobject_release_sync().
 
->
-> 		evmcs->hv_enlightenments_control.msr_bitmap = 1;
-> 	}
->
+> 
+> > > > --- a/kernel/livepatch/core.c
+> > > > +++ b/kernel/livepatch/core.c
+> > > > @@ -678,11 +678,6 @@ static void klp_free_patch_finish(struct klp_patch *patch)
+> > > >  	 * cannot get enabled again.
+> > > >  	 */
+> > > >  	kobject_put(&patch->kobj);
+> > > > -	wait_for_completion(&patch->finish);
+> > > > -
+> > > > -	/* Put the module after the last access to struct klp_patch. */
+> > > > -	if (!patch->forced)
+> > > > -		module_put(patch->mod);
+> > > 
+> > > klp_free_patch_finish() does not longer wait until the release
+> > > callbacks are called.
+> > > 
+> > > klp_free_patch_finish() is called also in klp_enable_patch() error
+> > > path.
+> > > 
+> > > klp_enable_patch() is called in module_init(). For example, see
+> > > samples/livepatch/livepatch-sample.c
+> > > 
+> > > The module must not get removed until the release callbacks are called.
+> > > Does the module loader check the module reference counter when
+> > > module_init() fails?
+> > 
+> > Good catch, that is really one corner case, in which the kobject has to
+> > be cleaned up before returning from mod->init(), cause there can't be
+> > module unloading in case of mod->init() failure.
+> 
+> Just to be sure. We want to keep the safe behavior in this case.
+> There are many situations when klp_enable() might fail. And the error
+> handling must be safe.
+> 
+> In general, livepatch developers are very conservative.
+> Livepatches are not easy to create. They are used only by people
+> who really want to avoid reboot. We want to keep the livepatch kernel
+> framework as safe as possible to avoid any potential damage.
 
->> +
->> +		evmcs->hv_enlightenments_control.msr_bitmap = 1;
->> +	}
->> +
->>  	if (cpu_need_virtualize_apic_accesses(vcpu)) {
->>  		err = alloc_apic_access_page(vcpu->kvm);
->>  		if (err)
->> -- 
->> 2.31.1
->> 
->
+The posted patch can cover this situation in which module_init() fails.
 
--- 
-Vitaly
+
+
+Thanks,
+Ming
 
