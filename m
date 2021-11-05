@@ -2,150 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0848445D12
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 01:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 125E1445D17
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 01:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230199AbhKEAng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 20:43:36 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:9290 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229587AbhKEAnf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 20:43:35 -0400
+        id S230367AbhKEAtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 20:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhKEAtG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 20:49:06 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB086C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 17:46:27 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id u17so10033415plg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 17:46:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1636072857;
-  x=1667608857;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=GjYacMkXqPa7BY/QUGUd7Cu5vTMkFLoJdOBo70fFGAg=;
-  b=i01lGdl8iJZG1tdXDENeI33ZPdqzekc107SLf312ar65YE13gO3J8DTO
-   1wxUqXIVrqW9xYwZDy6Ka2rYHZbHeZgbHWtFGksebh7mhHJyMIYbcKfyb
-   uFlAu743z18hjwcHnSnMbnNb7t9L63Z+SFgL9M5ZPBDBxE2iP2wUu87yf
-   URugCrolvalmUa6rJ5CYO0pMawMFdKple7F0XcqC6YE1+Xltt5euCxzp8
-   XeaYZn1RpJUgd0sNCDyaXfcUWuH2Pr4VlOOnCGJcG78ualMUr/kIxEy0k
-   aU46+VuaRHmNI4xzdaEgjRn4bo/0runoB1BwU3yiytR/IAG+YeMlGEjcD
-   A==;
-From:   Pavel Modilaynen <pavel.modilaynen@axis.com>
-To:     <a.zummo@towertech.it>, <alexandre.belloni@bootlin.com>
-CC:     <linux-rtc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@axis.com>, Pavel Modilaynen <pavelmn@axis.com>
-Subject: [PATCH] rtc: rs5c372: Add support of RTC_VL_READ ioctl
-Date:   Fri, 5 Nov 2021 01:40:49 +0100
-Message-ID: <20211105004049.5486-1-pavel.modilaynen@axis.com>
-X-Mailer: git-send-email 2.20.1
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+MDx1GrQOub7zJ6Bty8NHKGO6IrOVwg4Q81dxTNGuQk=;
+        b=z1/ZhSMbHBPL6xzuOjXk5p5q8nj06Ql+kZbdIIDYl2CXDWH4nHvtvPlsJceWFuEGIF
+         myQd9Ksfn0kR9uPGa8zftxWOEOG59ZNoGv1CtLfKrvIUpSB7vYlJGNyyZekRAnKXBD7N
+         hsybPk2pAfClRxwqPoUjS45Zg5Tq6fAbsnpeF1TjYVSUzg7Sa1GGmQMgocz6Ur7p+kyh
+         NjRzOqs4+/kxpk/kJVoKkUYXZuLzbiNNMBoikc2mVwUAK+rMppBW6zq18u8KusKY6kd/
+         kZS0fDZuKBAfOGbMeFC9mp4qg0YUwo8+QioiDMxufM4dq7qAm4W3NRici1vzeQprCAsJ
+         OqAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+MDx1GrQOub7zJ6Bty8NHKGO6IrOVwg4Q81dxTNGuQk=;
+        b=q0mBKqS54NgJUvFE0zxweH77fDRhDFkFFTLsGTLjp7oNoW2EJBdN5DYVNNXjVc/vQH
+         xG5i/GYUdTQ+a+QVoprkCBvCznTjqKVsj77FceI3g7fGLlf77PuGRLaXKxmZCTVBSmgO
+         zr2fGmgMW2A4kZaq9hNGPCnVGd9f1oVD8jUeLqdSY0n7D+ARcuzVOF65rjfIFoBGJye+
+         qLq6uj9PErzICTTt3BZ7Ufn6+8RiJgFNcxLJXtq6Ft9ArxpFSyuCPXG02/Lincbljnli
+         7aD1UYc5+A9nepqyO/jxAAj0gd3vBqmfZt6WLaDePAPghy4w73vfCOWaKYdirkfqoggg
+         Frkw==
+X-Gm-Message-State: AOAM532fNgCZdf7+uvivpQdMhF9L0uyUhI+PRY0aigb9s9X2dJgSxj1y
+        b4NJaMvkQvQ+/RdmsP8LXRBv9JrLZqEN0cM3vLsb1Q==
+X-Google-Smtp-Source: ABdhPJzBlY9sEgYPXRy5uLLbIJXLqIS5AXvLIJiE838XFcN7i811yjUHS7Ho7WZmKGzY4qGtN0/EXqtZX8wW5x0PKF4=
+X-Received: by 2002:a17:902:b697:b0:141:c7aa:e10f with SMTP id
+ c23-20020a170902b69700b00141c7aae10fmr35263948pls.18.1636073186843; Thu, 04
+ Nov 2021 17:46:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <YXFPfEGjoUaajjL4@infradead.org> <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
+ <YXJN4s1HC/Y+KKg1@infradead.org> <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
+ <YXj2lwrxRxHdr4hb@infradead.org> <20211028002451.GB2237511@magnolia>
+ <YYDYUCCiEPXhZEw0@infradead.org> <CAPcyv4j8snuGpy=z6BAXogQkP5HmTbqzd6e22qyERoNBvFKROw@mail.gmail.com>
+ <YYK/tGfpG0CnVIO4@infradead.org> <CAPcyv4it2_PVaM8z216AXm6+h93frg79WM-ziS9To59UtEQJTA@mail.gmail.com>
+ <YYOaOBKgFQYzT/s/@infradead.org> <CAPcyv4jKHH7H+PmcsGDxsWA5CS_U3USHM8cT1MhoLk72fa9z8Q@mail.gmail.com>
+ <6d21ece1-0201-54f2-ec5a-ae2f873d46a3@oracle.com> <CAPcyv4hJjcy2TnOv-Y5=MUMHeDdN-BCH4d0xC-pFGcHXEU_ZEw@mail.gmail.com>
+ <342eb71c-0aff-77e5-3c71-92224d7d48e0@oracle.com>
+In-Reply-To: <342eb71c-0aff-77e5-3c71-92224d7d48e0@oracle.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 4 Nov 2021 17:46:17 -0700
+Message-ID: <CAPcyv4hVu+A0PXgXTwWj3SBimP5pjX_97g+sfGeT47P0-SJkiQ@mail.gmail.com>
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with RWF_RECOVERY_DATA flag
+To:     Jane Chu <jane.chu@oracle.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Modilaynen <pavelmn@lnxpavelmn.se.axis.com>
+On Thu, Nov 4, 2021 at 1:27 PM Jane Chu <jane.chu@oracle.com> wrote:
+>
+> On 11/4/2021 12:00 PM, Dan Williams wrote:
+>
+> >>
+> >> If this understanding is in the right direction, then I'd like to
+> >> propose below changes to
+> >>     dax_direct_access(), dax_copy_to/from_iter(), pmem_copy_to/from_iter()
+> >>     and the dm layer copy_to/from_iter, dax_iomap_iter().
+> >>
+> >> 1. dax_iomap_iter() rely on dax_direct_access() to decide whether there
+> >>      is likely media error: if the API without DAX_F_RECOVERY returns
+> >>      -EIO, then switch to recovery-read/write code.  In recovery code,
+> >>      supply DAX_F_RECOVERY to dax_direct_access() in order to obtain
+> >>      'kaddr', and then call dax_copy_to/from_iter() with DAX_F_RECOVERY.
+> >
+> > I like it. It allows for an atomic write+clear implementation on
+> > capable platforms and coordinates with potentially unmapped pages. The
+> > best of both worlds from the dax_clear_poison() proposal and my "take
+> > a fault and do a slow-path copy".
+> >
+> >> 2. the _copy_to/from_iter implementation would be largely the same
+> >>      as in my recent patch, but some changes in Christoph's
+> >>      'dax-devirtualize' maybe kept, such as DAX_F_VIRTUAL, obviously
+> >>      virtual devices don't have the ability to clear poison, so no need
+> >>      to complicate them.  And this also means that not every endpoint
+> >>      dax device has to provide dax_op.copy_to/from_iter, they may use the
+> >>      default.
+> >
+> > Did I miss this series or are you talking about this one?
+> > https://lore.kernel.org/all/20211018044054.1779424-1-hch@lst.de/
+>
+> I was referring to
+>
+> http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dax-devirtualize
+> that has not come out yet, I said early on that I'll rebase on it,
+> but looks like we still need pmem_copy_to/from_iter(), so.
 
-Read, cache and expose with RTC_VL_READ ioctl low voltage
-detection flag. It is supported on all devices except RS5C372A/B,
-for which osciallation halt detection bit is interpreted
-as low voltage condition.
-Add RTC_VL_CLEAR ioctl to clear the cached value.
-
-Signed-off-by: Pavel Modilaynen <pavelmn@lnxpavelmn.se.axis.com>
----
- drivers/rtc/rtc-rs5c372.c | 46 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
-
-diff --git a/drivers/rtc/rtc-rs5c372.c b/drivers/rtc/rtc-rs5c372.c
-index 80980414890c..68d2ed9670c4 100644
---- a/drivers/rtc/rtc-rs5c372.c
-+++ b/drivers/rtc/rtc-rs5c372.c
-@@ -126,6 +126,7 @@ struct rs5c372 {
- 	unsigned		smbus:1;
- 	char			buf[17];
- 	char			*regs;
-+	int			voltage_low;
- };
- 
- static int rs5c_get_regs(struct rs5c372 *rs5c)
-@@ -216,22 +217,40 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
- 	if (status < 0)
- 		return status;
- 
-+	/* check the warning bits */
- 	switch (rs5c->type) {
- 	case rtc_r2025sd:
- 	case rtc_r2221tl:
- 		if ((rs5c->type == rtc_r2025sd && !(ctrl2 & R2x2x_CTRL2_XSTP)) ||
- 		    (rs5c->type == rtc_r2221tl &&  (ctrl2 & R2x2x_CTRL2_XSTP))) {
- 			dev_warn(&client->dev, "rtc oscillator interruption detected. Please reset the rtc clock.\n");
-+			/* keep it as indicator of low/dead battery */
-+			rs5c->voltage_low = 1;
- 			return -EINVAL;
- 		}
- 		break;
- 	default:
- 		if (ctrl2 & RS5C_CTRL2_XSTP) {
- 			dev_warn(&client->dev, "rtc oscillator interruption detected. Please reset the rtc clock.\n");
-+			/* keep it as indicator of low/dead battery */
-+			rs5c->voltage_low = 1;
- 			return -EINVAL;
- 		}
- 	}
- 
-+
-+	switch (rs5c->type) {
-+	case rtc_rs5c372a:
-+	case rtc_rs5c372b:
-+		break;
-+	default:
-+		if (ctrl2 & R2x2x_CTRL2_VDET) {
-+			rs5c->voltage_low = 1;
-+			dev_warn(&client->dev, "low voltage detected\n");
-+		}
-+		break;
-+	}
-+
- 	tm->tm_sec = bcd2bin(rs5c->regs[RS5C372_REG_SECS] & 0x7f);
- 	tm->tm_min = bcd2bin(rs5c->regs[RS5C372_REG_MINS] & 0x7f);
- 	tm->tm_hour = rs5c_reg2hr(rs5c, rs5c->regs[RS5C372_REG_HOURS]);
-@@ -485,6 +504,32 @@ static int rs5c372_rtc_proc(struct device *dev, struct seq_file *seq)
- #define	rs5c372_rtc_proc	NULL
- #endif
- 
-+#ifdef CONFIG_RTC_INTF_DEV
-+static int rs5c372_ioctl(struct device *dev, unsigned int cmd, unsigned long arg)
-+{
-+	struct rs5c372	*rs5c = i2c_get_clientdata(to_i2c_client(dev));
-+
-+	dev_dbg(dev, "%s: cmd=%x\n", __func__, cmd);
-+
-+	switch (cmd) {
-+	case RTC_VL_READ:
-+		if (rs5c->voltage_low)
-+			dev_info(dev, "low voltage detected, date/time is not reliable.\n");
-+
-+		return put_user(rs5c->voltage_low, (unsigned int __user *)arg);
-+	case RTC_VL_CLR:
-+		/* Clear the cached value. */
-+		rs5c->voltage_low = 0;
-+		return 0;
-+	default:
-+		return -ENOIOCTLCMD;
-+	}
-+	return 0;
-+}
-+#else
-+#define rs5c372_ioctl	NULL
-+#endif
-+
- static const struct rtc_class_ops rs5c372_rtc_ops = {
- 	.proc		= rs5c372_rtc_proc,
- 	.read_time	= rs5c372_rtc_read_time,
-@@ -492,6 +537,7 @@ static const struct rtc_class_ops rs5c372_rtc_ops = {
- 	.read_alarm	= rs5c_read_alarm,
- 	.set_alarm	= rs5c_set_alarm,
- 	.alarm_irq_enable = rs5c_rtc_alarm_irq_enable,
-+	.ioctl		= rs5c372_ioctl,
- };
- 
- #if IS_ENABLED(CONFIG_RTC_INTF_SYSFS)
--- 
-2.20.1
-
+Yeah, since the block-layer divorce gets rid of the old poison
+clearing path, then we're back to pmem_copy_to_iter() (or something
+like it) needing to pick up the slack for poison clearing. I do agree
+it would be nice to clean up all the unnecessary boilerplate, but the
+error-list coordination requires a driver specific callback. At least
+the DAX_F_VIRTUAL flag can eliminate the virtiofs and fuse callbacks.
