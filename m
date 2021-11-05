@@ -2,128 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93536446444
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:39:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B84446447
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 14:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbhKENmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 09:42:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44020 "EHLO
+        id S232659AbhKENnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 09:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbhKENmV (ORCPT
+        with ESMTP id S229924AbhKENnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 09:42:21 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 484F7C061714;
-        Fri,  5 Nov 2021 06:39:42 -0700 (PDT)
-Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1mizRS-0006hc-NT; Fri, 05 Nov 2021 14:39:39 +0100
-Message-ID: <5ee758fc-571d-a28a-9f12-4f7d74835ec0@leemhuis.info>
-Date:   Fri, 5 Nov 2021 14:39:38 +0100
+        Fri, 5 Nov 2021 09:43:02 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86ED7C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 06:40:22 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id b17so17250345uas.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 06:40:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
+        b=NljcgcOZduTwD1o2oXgPFmAQxNkrDB6ocQdFpBOhTwfJvgBYFAr8ZA2RrVqvU+bwzk
+         CLxEa/iGEFcyLIJPLoDjnrCuIdQM7HLm9qTHehL5mUej3IGTw6S6yxXeh9k0oHVzJD3K
+         mBFSa9zn9lipKwP6LwaHBnUXXavS4eQ4NGcKKN2SwYJ9/D4/kv8hMgWHHUKckiPMbBvx
+         Sxmv74g3ai0M7OA7rlSmf4urp95nTK5PZq9N/4+pCT/9VgnDtecpB3l92vt7IsKoYtOT
+         sKIVHx2L3dyYHN0PyCwwkQYMlAnAw66WJcfyIihI4iVqNSy1QPEkHhj4QXTb8F1a92np
+         dV0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
+        b=iGmBh5UJrl3KA7emT4WrUjFa1UmFqEdtm7RpItryxORZKIRiChruNKLCpsvJ6x2KqA
+         TzTYFwZii0/sUPmvVBNSdLkSqcMChkY4pzWsMdTsFHwP13se5bURRxjRjQVl8QG6GyVB
+         zX9d8t4PUBleZg6+spFq1hpi460UJWOR7LIULY4aYkUJO4OVDmh6BCyb5ZYMHAl+a+10
+         lxv1oRqAD9Zj5+GEjWKj4k7BdQpxAOSWPCIkD/j4D8+P5KqxJtA251INUeGMG9fxjaqP
+         9ZFw+crYXcWBD7b5lMtZJnLZbC7YqcOQcZ9RiV1xNPsEhQsNijsjkXwLN+MIEsz58o8I
+         KsXg==
+X-Gm-Message-State: AOAM531M3iwMERzyFab0ZWfCpvTiRqF4tLZOLkMyXwGzmtZf5wJvM6d+
+        guvAVdcfwHWAtTe7898KgDEfPEN69l8eBFlcCnU=
+X-Google-Smtp-Source: ABdhPJx7Kua2rZkCmvE0b0xpLl4H8cK+cOdlqUXySgDlA3RWNrgmVoV9yQ+Og7bbUzEc120AFfXrYZfEpyqNXvNd6o8=
+X-Received: by 2002:a05:6102:3ed4:: with SMTP id n20mr74076774vsv.57.1636119621500;
+ Fri, 05 Nov 2021 06:40:21 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCHv2] Bluetooth: quirk disabling LE Read Transmit Power
-Content-Language: en-BS
-To:     Orlando Chamberlain <redecorating@protonmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>
-Cc:     danielwinkler@google.com, Johan Hedberg <johan.hedberg@intel.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        regressions@lists.linux.dev, sonnysasaka@chromium.org
-References: <4970a940-211b-25d6-edab-21a815313954@protonmail.com>
- <20210930063106.19881-1-redecorating@protonmail.com>
- <20210930141256.19943-1-redecorating@protonmail.com>
- <FA02CDD7-CFEC-4481-9940-BA95D81FD3F3@holtmann.org>
- <275acce4-9eab-9cba-7145-5a75a69ca530@protonmail.com>
- <20211001083412.3078-1-redecorating@protonmail.com>
- <1D2217A9-EA73-4D93-8D0B-5BC2718D4788@holtmann.org>
- <20211001132756.434e56bb@localhost> <20211004111518.0765650c@localhost>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <20211004111518.0765650c@localhost>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1636119582;9234bea1;
-X-HE-SMSGID: 1mizRS-0006hc-NT
+Received: by 2002:ab0:20b3:0:0:0:0:0 with HTTP; Fri, 5 Nov 2021 06:40:20 -0700 (PDT)
+Reply-To: uchennailobitenone@gmail.com
+From:   uchenna <robertanderson6016@gmail.com>
+Date:   Fri, 5 Nov 2021 06:40:20 -0700
+Message-ID: <CA+o7mw1iV7OVyLVXOTJE=7-D9z6dgwzdT7hrPLyHmFZSV4iAoA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lo, this is your Linux kernel regression tracker speaking. I have this
-regression on the radar of regzbot, my Linux regression tracking bot:
-https://linux-regtracking.leemhuis.info/regzbot/regression/4970a940-211b-25d6-edab-21a815313954@protonmail.com/
+Attention Please,
 
-Has any progress been made since below mail? If not: how can we get the
-ball rolling again and get this regression fixed?
+I am Bar. uchenna ilobi ,  How are you, I hope you are fine and
+healthy? This is to inform you that i have concluded the transaction
+successfully with the help of a new partner from Venezuela and now the
+fund has been transferred to Venezuela into the bank account of the
+new partner.
 
-Ciao, Thorsten
+Meanwhile, I have decided to compensate you with the sum of
+US$350,000.00 (thiree Hundred and Fifty Thousand United States
+Dollars) due to your past effort, though you disappointed me along the
+line. But nevertheless I am very happy for the successful ending of
+the transaction without any problem and that is the reason why i have
+decided to compensate you with the sum of US$350,000.00 so that you
+will share the joy with me.
 
-P.S.: I have no personal interest in this issue. Hence, feel free to
-exclude me on further messages in this thread after the first reply, as
-I'm only posting this mail to hopefully get a status update and things
-rolling again.
+I advise you to contact my secretary for Atm Card of US$350.000.00,
+which I kept for you. Contact him now without any delay.
 
-#regzbot poke
+Name: solomon brandy
 
-On 04.10.21 13:15, Orlando Chamberlain wrote:
-> On Fri, 01 Oct 2021 23:28:03 +1000
-> "Orlando Chamberlain" <redecorating@protonmail.com> wrote:
->> On Fri, 01 Oct 2021 19:35:16 +1000
->> "Marcel Holtmann" <marcel@holtmann.org> wrote:
->>
->>> I would really prefer to do that via the ACPI table matching in
->>> hci_bcm.c and not via some magic chip id check.
->>
->> Initially I thought we may be able to do this based off BCM2E7C (which
->> is in the DSDT table which I'll attach), however it seems like many
->> Macs also have that (i.e. MacBookPro14,1, MacBookAir8,1, MacBook9,1),
->> so unless all these don't support LE Read Transmit Power, (which
->> would be hard to determine), I don't know if BCM2E7C can be used to
->> quirk it.
-> 
-> I think there aren't any Macs that support LE Read Transmit Power.
-> 
-> I checked the Bluetooth spec here
-> https://www.bluetooth.com/specifications/specs/core-specification-5-1/
-> and it seems like 5.1 is the first version that mentions LE Read
-> Transmit Power. It says 5.1 was adopted on 21 Jan 2019.
-> 
-> As far as I know, all of the models released after that date that have
-> ever had working Bluetooth were affected, while unaffected models were
-> released before that date (and thus shouldn't support LE Read Transmit
-> Power? This is at least true for the MacBookPro15,1, a 2018 model that
-> doesn't support the command).
-> 
-> I think this means that no Apple computer released so far supports the
-> command, so disabling LE Read Transmit Power for all Apple controllers
-> based off "apple-uart-blth" (probably a better choice than "BCM2E7C")
-> won't affect any controllers that actually support it.
-> 
-> Device (BLTH)
-> {
->     Name (_HID, EisaId ("BCM2E7C"))  // _HID: Hardware ID
->     Name (_CID, "apple-uart-blth")  // _CID: Compatible ID
->     Name (_UID, One)  // _UID: Unique ID
->     Name (_ADR, Zero)  // _ADR: Address
-> 
-> As to future Apple computers, they seem to no longer be using UART and
-> instead have a second Broadcom PCI device (the first being for WiFi)
-> that is for Bluetooth. 3 Intel Macs Models have this second device
-> (MacBookPro15,4, MacBookPro16,3 and MacBookAir9,1), and so do the M1
-> ones.
-> 
-> I can't say that they won't move back to UART at some point and then
-> support LE Read Transmit Power, but if they do, I don't think they
-> would move back to x86_64, so only having this quirk activated when
-> compiling for x86_64 might be an option if that's an issue.
-> 
->> I'll try to see if I can find something else in the ACPI tables that
->> can be used as a quirk. (I'll see if I can get the table of a similar
->> model that wasn't affected and compare the BLTH sections)
-> 
-> The BLTH sections were the same for affected and unaffected macs.
-> 
-> 
-> 
-> Would disabling LE Read Transmit Power if the controller is
-> "apple-uart-blth" work for you?
-> 
+Email:solomonbrandyfiveone@gmail.com
+
+Kindly reconfirm to him the following below information:
+
+Your full name_________________________
+Your address__________________________
+Your country___________________________
+Your age______________________________
+Your occupation________________________
+Your cell Phone number______________________
+
+Note that if you did not send him the above information complete, he
+will not release the Atm card to you because he has to be sure that it
+is you. Ask him to send you the total sum of ($350.000.00 ) Atm card,
+which I kept for you.
+
+Best regards,
+
+Mr. uchenna ilobi
