@@ -2,204 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B368144620C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:16:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6B3446211
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 11:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbhKEKSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 06:18:36 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52818 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233041AbhKEKSe (ORCPT
+        id S233070AbhKEKTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 06:19:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25245 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233064AbhKEKTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 06:18:34 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4A33C21892;
-        Fri,  5 Nov 2021 10:15:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1636107354; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Fri, 5 Nov 2021 06:19:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636107422;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=tzTStpT68H1flecD6y0xE4GHTy0YcwY+IxQpIsRqqTk=;
-        b=orCQK/xM7Fxu+9/vAh7QbfVPbIdqUpTpXj1XwR7Jf8ilitnc78Rb8FuxnTVyVEJMLrM4Ke
-        T2H1J37LhFPuGK808OMYW+fcwSYaLQt0X+Faiba0cYU0nCr/8rtzHjs55GjJHzjvsUq1rR
-        Wo/LEqfvVBQM9Hu2tdCXr6/cI8l3Oj4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1636107354;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tzTStpT68H1flecD6y0xE4GHTy0YcwY+IxQpIsRqqTk=;
-        b=2o9KzvfvWSimE78oUDZsxslr4eL6oFkfsr4fkk8/E0mYkWOKmDaw88BB/NzI2GN8jup1c1
-        dAfMCesmf9V1TsCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C65C513FE2;
-        Fri,  5 Nov 2021 10:15:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id pG1lL1kEhWFsfgAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Fri, 05 Nov 2021 10:15:53 +0000
-Message-ID: <51ed4aec-9496-5ccc-97f2-1328ffd767ae@suse.de>
-Date:   Fri, 5 Nov 2021 11:15:53 +0100
+        bh=kPznHvWnpFcoHTeIhXssVu2znI1z2HpT9qw2EMKn0Kw=;
+        b=NMupP2J6JDnRYXVdj07Cp2RHvNJ+6tY/a0N2Qg+k9snM/giaXN4B7shmodX/cyOqk0wLdY
+        vBwNetbXCtTV9q9+JPMR818RbGY9O6LmaNeNfkLbynkQCroBlYybHGXFchZSQCXN1u3z/J
+        rE+YnGPTRrfwwmqzme0GmAhpggaPijE=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-6-EnADdkzbPVCDqP3mwzslxQ-1; Fri, 05 Nov 2021 06:16:17 -0400
+X-MC-Unique: EnADdkzbPVCDqP3mwzslxQ-1
+Received: by mail-wr1-f70.google.com with SMTP id d7-20020a5d6447000000b00186a113463dso2155417wrw.10
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 03:16:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=kPznHvWnpFcoHTeIhXssVu2znI1z2HpT9qw2EMKn0Kw=;
+        b=JviPzSXfkbivjlmQMI32ebSCZPokzDOzlPMzZTMbcITH6OiWuQnwz/CEb4OXsuHd4W
+         xRsgmllmaO9/RPZEfV2cSP1JHOiENwhPZZbnAVZQZ4Iuep3nEu1EKRnQPjNwCTd6IakB
+         jZzhqBx5oPRkiSAM2GKlszr6GASALt1j5Efaufy4AOeAh/GCQXgMItXHsjA6DXXShqoU
+         pH703s4ZzSZc+dNehCEa1Wp+u1LTA48yM4hskDq1HqdrjAqzudzneZiXBPH9o1hNb5Vi
+         ta+c05L9HQHMhmwi6TCsjwQRY5br+3y5A1tDyMjAIBln4yrqwM6XhC8ioChSJZHSaEPK
+         2r+w==
+X-Gm-Message-State: AOAM530qBiuw2mEO+evFYVC07SK8zlWBy4jEfeoSd9uNhwZ9yUzZ5ECU
+        az0zsQAWAHoCzuz6kd6fO/9yjuWgeanUwgJBTeyQuul/Gw5tAamfrCIyEFUVH1MR32aQ+f/jk1h
+        yQsVbbNB93scHiTmeLia+Bz1y
+X-Received: by 2002:a1c:c908:: with SMTP id f8mr29129209wmb.142.1636107376077;
+        Fri, 05 Nov 2021 03:16:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzhNqPBlKrGt6TwQdZcOZ2s0zp+RaoRtDdcuBKkzTuLRk6nNdBqdk1JmcztBkYqd6i7RjoCdA==
+X-Received: by 2002:a1c:c908:: with SMTP id f8mr29129188wmb.142.1636107375911;
+        Fri, 05 Nov 2021 03:16:15 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id z6sm7896874wrm.93.2021.11.05.03.16.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 03:16:15 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>
+Subject: Re: [PATCH v2 1/2] x86/hyperv: Fix NULL deref in
+ set_hv_tscchange_cb() if Hyper-V setup fails
+In-Reply-To: <20211104182239.1302956-2-seanjc@google.com>
+References: <20211104182239.1302956-1-seanjc@google.com>
+ <20211104182239.1302956-2-seanjc@google.com>
+Date:   Fri, 05 Nov 2021 11:16:14 +0100
+Message-ID: <87mtmilxg1.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v2 1/2] drm: Add a drm_drv_enabled() to check if drivers
- should be enabled
-Content-Language: en-US
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        amd-gfx@lists.freedesktop.org,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        spice-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        virtualization@lists.linux-foundation.org,
-        intel-gfx@lists.freedesktop.org,
-        =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
-        Peter Robinson <pbrobinson@gmail.com>
-References: <20211104160707.1407052-1-javierm@redhat.com>
- <20211104160707.1407052-2-javierm@redhat.com> <87ilx7ae3v.fsf@intel.com>
- <0c07f121-42d3-9f37-1e14-842fb685b501@redhat.com>
- <d4a64906-69e5-3250-2362-79f2afac0a23@suse.de>
- <38dbcc8f-2f95-6846-537f-9b85468bfa87@redhat.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <38dbcc8f-2f95-6846-537f-9b85468bfa87@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------B6UIr1uaa90BoK3L0T3a7xAT"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------B6UIr1uaa90BoK3L0T3a7xAT
-Content-Type: multipart/mixed; boundary="------------i143tV5bKgPhhjLIGaoCb4k9";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Javier Martinez Canillas <javierm@redhat.com>,
- Jani Nikula <jani.nikula@linux.intel.com>, linux-kernel@vger.kernel.org
-Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>,
- Pekka Paalanen <pekka.paalanen@collabora.com>,
- Hans de Goede <hdegoede@redhat.com>, David Airlie <airlied@linux.ie>,
- Daniel Vetter <daniel.vetter@ffwll.ch>, dri-devel@lists.freedesktop.org,
- Rodrigo Vivi <rodrigo.vivi@intel.com>, amd-gfx@lists.freedesktop.org,
- Gurchetan Singh <gurchetansingh@chromium.org>,
- Ben Skeggs <bskeggs@redhat.com>,
- VMware Graphics <linux-graphics-maintainer@vmware.com>,
- Gerd Hoffmann <kraxel@redhat.com>, spice-devel@lists.freedesktop.org,
- nouveau@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>,
- Dave Airlie <airlied@redhat.com>, =?UTF-8?Q?Christian_K=c3=b6nig?=
- <christian.koenig@amd.com>, virtualization@lists.linux-foundation.org,
- intel-gfx@lists.freedesktop.org, =?UTF-8?Q?Michel_D=c3=a4nzer?=
- <michel@daenzer.net>, Peter Robinson <pbrobinson@gmail.com>
-Message-ID: <51ed4aec-9496-5ccc-97f2-1328ffd767ae@suse.de>
-Subject: Re: [PATCH v2 1/2] drm: Add a drm_drv_enabled() to check if drivers
- should be enabled
-References: <20211104160707.1407052-1-javierm@redhat.com>
- <20211104160707.1407052-2-javierm@redhat.com> <87ilx7ae3v.fsf@intel.com>
- <0c07f121-42d3-9f37-1e14-842fb685b501@redhat.com>
- <d4a64906-69e5-3250-2362-79f2afac0a23@suse.de>
- <38dbcc8f-2f95-6846-537f-9b85468bfa87@redhat.com>
-In-Reply-To: <38dbcc8f-2f95-6846-537f-9b85468bfa87@redhat.com>
+Sean Christopherson <seanjc@google.com> writes:
 
---------------i143tV5bKgPhhjLIGaoCb4k9
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+> Check for a valid hv_vp_index array prior to derefencing hv_vp_index when
+> setting Hyper-V's TSC change callback.  If Hyper-V setup failed in
+> hyperv_init(), the kernel will still report that it's running under
+> Hyper-V, but will have silently disabled nearly all functionality.
+>
+>   BUG: kernel NULL pointer dereference, address: 0000000000000010
+>   #PF: supervisor read access in kernel mode
+>   #PF: error_code(0x0000) - not-present page
+>   PGD 0 P4D 0
+>   Oops: 0000 [#1] SMP
+>   CPU: 4 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc2+ #75
+>   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+>   RIP: 0010:set_hv_tscchange_cb+0x15/0xa0
+>   Code: <8b> 04 82 8b 15 12 17 85 01 48 c1 e0 20 48 0d ee 00 01 00 f6 c6 08
+>   ...
+>   Call Trace:
+>    kvm_arch_init+0x17c/0x280
+>    kvm_init+0x31/0x330
+>    vmx_init+0xba/0x13a
+>    do_one_initcall+0x41/0x1c0
+>    kernel_init_freeable+0x1f2/0x23b
+>    kernel_init+0x16/0x120
+>    ret_from_fork+0x22/0x30
+>
+> Fixes: 93286261de1b ("x86/hyperv: Reenlightenment notifications support")
+> Cc: stable@vger.kernel.org
+> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/hyperv/hv_init.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+> index 24f4a06ac46a..7d252a58fbe4 100644
+> --- a/arch/x86/hyperv/hv_init.c
+> +++ b/arch/x86/hyperv/hv_init.c
+> @@ -177,6 +177,9 @@ void set_hv_tscchange_cb(void (*cb)(void))
+>  		return;
+>  	}
+>  
+> +	if (!hv_vp_index)
+> +		return;
+> +
 
-SGkNCg0KQW0gMDUuMTEuMjEgdW0gMTA6NDggc2NocmllYiBKYXZpZXIgTWFydGluZXogQ2Fu
-aWxsYXM6DQo+IEhlbGxvIFRob21hcywNCj4gDQo+IE9uIDExLzUvMjEgMDk6NDMsIFRob21h
-cyBaaW1tZXJtYW5uIHdyb3RlOg0KPj4gSGkNCj4+DQo+PiBBbSAwNC4xMS4yMSB1bSAyMTow
-OSBzY2hyaWViIEphdmllciBNYXJ0aW5leiBDYW5pbGxhczoNCj4+PiBIZWxsbyBKYW5pLA0K
-Pj4+DQo+Pj4gT24gMTEvNC8yMSAyMDo1NywgSmFuaSBOaWt1bGEgd3JvdGU6DQo+Pj4+IE9u
-IFRodSwgMDQgTm92IDIwMjEsIEphdmllciBNYXJ0aW5leiBDYW5pbGxhcyA8amF2aWVybUBy
-ZWRoYXQuY29tPiB3cm90ZToNCj4+Pj4+ICsvKioNCj4+Pj4+ICsgKiBkcm1fZHJ2X2VuYWJs
-ZWQgLSBDaGVja3MgaWYgYSBEUk0gZHJpdmVyIGNhbiBiZSBlbmFibGVkDQo+Pj4+PiArICog
-QGRyaXZlcjogRFJNIGRyaXZlciB0byBjaGVjaw0KPj4+Pj4gKyAqDQo+Pj4+PiArICogQ2hl
-Y2tzIHdoZXRoZXIgYSBEUk0gZHJpdmVyIGNhbiBiZSBlbmFibGVkIG9yIG5vdC4gVGhpcyBt
-YXkgYmUgdGhlIGNhc2UNCj4+Pj4+ICsgKiBpZiB0aGUgIm5vbW9kZXNldCIga2VybmVsIGNv
-bW1hbmQgbGluZSBwYXJhbWV0ZXIgaXMgdXNlZC4NCj4+Pj4+ICsgKg0KPj4+Pj4gKyAqIFJl
-dHVybjogMCBvbiBzdWNjZXNzIG9yIGEgbmVnYXRpdmUgZXJyb3IgY29kZSBvbiBmYWlsdXJl
-Lg0KPj4+Pj4gKyAqLw0KPj4+Pj4gK2ludCBkcm1fZHJ2X2VuYWJsZWQoY29uc3Qgc3RydWN0
-IGRybV9kcml2ZXIgKmRyaXZlcikNCj4+DQo+PiBKYW5pIG1lbnRpb25lZCB0aGF0IGk5MTUg
-YWJzb2x1dGVseSB3YW50cyB0aGlzIHRvIHJ1biBmcm9tIHRoZQ0KPj4gbW9kdWxlX2luaXQg
-ZnVuY3Rpb24uIEJlc3QgaXMgdG8gZHJvcCB0aGUgcGFyYW1ldGVyLg0KPj4NCj4gDQo+IE9r
-LiBJIG5vdyB3b25kZXIgdGhvdWdoIGhvdyBtdWNoIHZhbHVlIHdvdWxkIGFkZCB0aGlzIGZ1
-bmN0aW9uIHNpbmNlDQo+IGl0IHdpbGwganVzdCBiZSBhIHdyYXBwZXIgYXJvdW5kIHRoZSBu
-b21vZGVzZXQgY2hlY2suDQo+IA0KPiBXZSB0YWxrZWQgYWJvdXQgYWRkaW5nIGEgbmV3IERS
-SVZFUl9HRU5FUklDIGZlYXR1cmUgZmxhZyBhbmQgY2hlY2sgZm9yDQo+IHRoaXMsIGJ1dCBh
-cyBkYW52ZXQgbWVudGlvbmVkIHRoYXQgaXMgbm90IHJlYWxseSBuZWVkZWQuIFdlIGp1c3Qg
-bmVlZA0KPiB0byBhdm9pZCB0ZXN0aW5nIGZvciBub21vZGVzZXQgaW4gdGhlIHNpbXBsZWRy
-bSBkcml2ZXIuDQo+IA0KPiBEbyB5b3UgZW52aXNpb24gb3RoZXIgY29uZGl0aW9uIHRoYXQg
-Y291bGQgYmUgYWRkZWQgbGF0ZXIgdG8gZGlzYWJsZSBhDQo+IERSTSBkcml2ZXIgPyBPciBk
-byB5b3UgdGhpbmsgdGhhdCBqdXN0IGZyb20gYSBjb2RlIHJlYWRhYmlsaXR5IHBvaW50IG9m
-DQo+IHZpZXcgbWFrZXMgd29ydGggaXQgPw0KDQpEUklWRVJfR0VORVJJQyB3b3VsZCBoYXZl
-IGJlZW4gbmljZSwgYnV0IGl0J3Mgbm90IGhhcHBlbmluZyBub3cuDQoNCkkgc3VnZ2VzdCB0
-byBtb3ZlIG92ZXIgdGhlIG5vbW9kZXNldCBwYXJhbWV0ZXIgKGkuZS4sIHRoaXMgcGF0Y2hz
-ZXQpLCANCnRoZW4gbWFrZSB0aGUgY29uZmlnIG9wdGlvbiBzeXN0ZW0gYWdub3N0aWMsIGFu
-ZCBmaW5hbGx5IGFkZCB0aGUgdGVzdCB0byANCmFsbCBkcml2ZXJzIGV4cGVjdCBzaW1wbGVk
-cm0uIFRoYXQgc2hvdWxkIHNvbHZlIHRoZSBpbW1pbmVudCBwcm9ibGVtLg0KDQpCZXN0IHJl
-Z2FyZHMNClRob21hcw0KDQo+IA0KPj4+Pj4gK3sNCj4+Pj4+ICsJaWYgKHZnYWNvbl90ZXh0
-X2ZvcmNlKCkpIHsNCj4+Pj4+ICsJCURSTV9JTkZPKCIlcyBkcml2ZXIgaXMgZGlzYWJsZWRc
-biIsIGRyaXZlci0+bmFtZSk7DQo+Pj4+PiArCQlyZXR1cm4gLUVOT0RFVjsNCj4+Pj4+ICsJ
-fQ0KPj4NCj4+IElmIHdlIHJ1biB0aGlzIGZyb20gd2l0aGluIGEgbW9kdWxlX2luaXQgZnVu
-Y3Rpb24sIHdlJ2QgZ2V0IHBsZW50eSBvZg0KPj4gdGhlc2Ugd2FybmluZ3MgaWYgZHJpdmVy
-cyBhcmUgY29tcGlsZWQgaW50byB0aGUga2VybmVsLiBNYXliZSBzaW1wbHkNCj4+IHJlbW92
-ZSB0aGUgbWVzc2FnZS4gVGhlcmUncyBhbHJlYWR5IGEgd2FybmluZyBwcmludGVkIGJ5IHRo
-ZSBub21vZGVzZXQNCj4+IGhhbmRsZXIuDQo+Pg0KPiANCj4gSW5kZWVkLiBJJ2xsIGp1c3Qg
-ZHJvcCBpdC4NCj4gDQo+Pj4+PiArDQo+Pj4+PiArCXJldHVybiAwOw0KPj4+Pj4gK30NCj4+
-Pj4+ICtFWFBPUlRfU1lNQk9MKGRybV9kcnZfZW5hYmxlZCk7DQo+Pj4+DQo+Pj4+IFRoZSBu
-YW1lIGltcGxpZXMgYSBib29sIHJldHVybiwgYnV0IGl0J3Mgbm90Lg0KPj4+Pg0KPj4+PiAJ
-aWYgKGRybV9kcnZfZW5hYmxlZCguLi4pKSB7DQo+Pj4+IAkJLyogc3VycHJpc2UsIGl0J3Mg
-ZGlzYWJsZWQhICovDQo+Pj4+IAl9DQo+Pj4+DQo+Pj4NCj4+PiBJdCB1c2VkIHRvIHJldHVy
-biBhIGJvb2wgaW4gdjIgYnV0IFRob21hcyBzdWdnZXN0ZWQgYW4gaW50IGluc3RlYWQgdG8N
-Cj4+PiBoYXZlIGNvbnNpc3RlbmN5IG9uIHRoZSBlcnJubyBjb2RlIHRoYXQgd2FzIHJldHVy
-bmVkIGJ5IHRoZSBjYWxsZXJzLg0KPj4+DQo+Pj4gSSBzaG91bGQgcHJvYmFibHkgbmFtZSB0
-aGF0IGZ1bmN0aW9uIGRpZmZlcmVudGx5IHRvIGF2b2lkIGNvbmZ1c2lvbi4NCj4+DQo+PiBZ
-ZXMsIHBsZWFzZS4NCj4+DQo+IA0KPiBkcm1fZHJpdmVyX2NoZWNrKCkgbWF5YmUgPw0KPiAg
-IA0KPiBCZXN0IHJlZ2FyZHMsDQo+IA0KDQotLSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFw
-aGljcyBEcml2ZXIgRGV2ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55
-IEdtYkgNCk1heGZlbGRzdHIuIDUsIDkwNDA5IE7DvHJuYmVyZywgR2VybWFueQ0KKEhSQiAz
-NjgwOSwgQUcgTsO8cm5iZXJnKQ0KR2VzY2jDpGZ0c2bDvGhyZXI6IEl2byBUb3Rldg0K
+Arguably, we could've merged this with 'if (!hv_reenlightenment_available())' 
+above to get a message printed:
 
---------------i143tV5bKgPhhjLIGaoCb4k9--
+diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+index 24f4a06ac46a..4a2a091c2f0e 100644
+--- a/arch/x86/hyperv/hv_init.c
++++ b/arch/x86/hyperv/hv_init.c
+@@ -172,7 +172,7 @@ void set_hv_tscchange_cb(void (*cb)(void))
+        };
+        struct hv_tsc_emulation_control emu_ctrl = {.enabled = 1};
+ 
+-       if (!hv_reenlightenment_available()) {
++       if (!hv_reenlightenment_available() || !hv_vp_index) {
+                pr_warn("Hyper-V: reenlightenment support is unavailable\n");
+                return;
+        }
 
---------------B6UIr1uaa90BoK3L0T3a7xAT
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+just to have an indication that something is off.
 
------BEGIN PGP SIGNATURE-----
+>  	hv_reenlightenment_cb = cb;
+>  
+>  	/* Make sure callback is registered before we write to MSRs */
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmGFBFkFAwAAAAAACgkQlh/E3EQov+BM
-VxAApJ+gCwrWKtMnfMCIOdE1H5sy5UiFFRJhaFO9nWmtTfxEkKFpICSMRdQjvfXmVpzfF9d4XU24
-R0ORKedqqjdlvs1N9IO/0w3YzrdnchVmel9qwBbuqaO8okKuyhWqgAE87D/lhExbiUejptg1JNKJ
-OWC33FOGtNwkNnV6QUwLuMABt39tqBGJewiQd/agaEMt/JTaB6O4wdPf/CkESKiniZZ1Sk4+ilsl
-Oi2mPR6Vse1Q0zCfy2pDhKlNVhQoxwSJSz74lHHssfse/eex+a5Tg3gsgQII3ka2tJELoOzuBMGG
-IfsX0xT4lGnY9EvrrP7tPm48q6oqY3febUebBgJPnctqcpmdexGOx0hQ+LXbBcOzhFwDva8I09/K
-Z/wR8yUPKNxLgXBk1ZwmCQ1SLR/sBc9S9zYWB8SBMlOBsil7lVT1bQSftVOh/qhWY+VdCU8I2Xgr
-NsySLGVoj+LbUMLYuSke8IzcmgdPohY9oNM97N6eflxeeB20nSk9pvvqN8FBRPBYUgGNvAg3hD3t
-Vsz/mGCx1LXlhrJlk37Fu9nDPKeQliaNNAiQsfdvVAl18aptfS2jCEgYewMDOHC5jaw5/OMSS4y3
-l0W+Gy8BI91wwm0xevVaN4b8I0/UtAiPx1k0xO1V3gSyTalUob6+SgPT//FN5VaRSFrX8aKDWA3/
-NNo=
-=XthL
------END PGP SIGNATURE-----
+With or without the change,
 
---------------B6UIr1uaa90BoK3L0T3a7xAT--
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+
+-- 
+Vitaly
+
