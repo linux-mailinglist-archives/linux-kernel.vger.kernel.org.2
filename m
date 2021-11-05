@@ -2,91 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E518B44630B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 12:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D14F44630E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 12:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232786AbhKEL6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 07:58:54 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:56015 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231852AbhKEL6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 07:58:51 -0400
-Received: from [192.168.0.2] (ip5f5ae8e7.dynamic.kabel-deutschland.de [95.90.232.231])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 8229861EA191E;
-        Fri,  5 Nov 2021 12:56:09 +0100 (CET)
-Message-ID: <de6706b2-4ea5-ce68-6b72-02090b98630f@molgen.mpg.de>
-Date:   Fri, 5 Nov 2021 12:56:09 +0100
+        id S232807AbhKEMAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 08:00:30 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:44801 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231852AbhKEMA3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 08:00:29 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id CD5943200C46;
+        Fri,  5 Nov 2021 07:57:48 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Fri, 05 Nov 2021 07:57:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=GXv8uTQQMC84AFsDfN1s4dkYTlk
+        J+uJwixHFe05xs5A=; b=G9vj57WOaV98UrEPEj0k756GLwtGvkKCgNeWfJYlzLO
+        8p3n1moUFQLu8Rgc3PImQElOxqG8OlB9CcsncF9nRDlvtZI0McDLOiAd1iUZCkos
+        sH4jgzv99x23szWPoI7Btceq7RG8gGnTC7jVF5cbG4m+fEqcHTgqPoCW0Ow2XhEa
+        ugUqIy8CaZRBN+MgV25uG90nTExvnz1kgQZhzK7ZdNTyV7BkAMZelYssKmjk90dX
+        bw9KNQywnYNrCfC/iLGCIaL04KxA6GKOA6CZqrW6dlUr9CcuHmegnkfUeM5wU5tl
+        hti53I7VSUyUJR2A+LM8g7uYKSeIWGeS3nsJ0afBv2Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=GXv8uT
+        QQMC84AFsDfN1s4dkYTlkJ+uJwixHFe05xs5A=; b=heQkImP7etvn9nYSz4a+vX
+        KS10HYncfm65v6J74cBSPuraY2HdAyUI88i6bEEL1D7nSczbdalb1IUOjyVocyBA
+        B6Wox3qo2EH2WOQO6HfBRbil3kBFvk8tpvRwAI0+Cua+u5Q2lFtbzziXYF31jdVr
+        JXM6wN49ouljb537NLE8rHpIbnCiyj8VDG1UDeh0UgVtUWMTzMjZjbmVVWDfp27q
+        afTR7yU61RqP+mCTPIkSGJDV/lg06TuUai1mx00ms7vyX8pYvOvXXnDmpCzgBcmd
+        iktyEYJP1u0gyKIgjP6V3/+PWcGYf8WNoubmFN86k9rdsLce/qjvY4C6ANXg9v6A
+        ==
+X-ME-Sender: <xms:OxyFYTz9_K8EJfG6WNKMucHsQTV85gIeC1kOEV5Cjr6noLJJyFJ1Hg>
+    <xme:OxyFYbTWgf0T39im5a6pICEfC3xPdSPm255dQFtpwds8poWzhRFwFFqVSp9S537b0
+    zVEOTAvYovmRTxvqOU>
+X-ME-Received: <xmr:OxyFYdV6fpR3rC45oQ_yUpLF-BiSBXMoIibqBxB7w-xoaD4HImftM_yUomDiiDiKYSK_xvkNK7QElH9gUNo8bgGrRXd125dfl1FWg2gs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrtdeigdefvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
+    igihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:OxyFYdgWdROWw882YshFuN4RvocnR07SK_xcHxoh449QPLVRqPNv7g>
+    <xmx:OxyFYVCOxBbf9Ozi6E8hFC10wu0PAaKOMiYpmx8qKXMvCJxlA2XDHg>
+    <xmx:OxyFYWIUM1zbwaVAg62wgoVTkvq2JorCdGzAUVCX1Np4qpEjacdaDg>
+    <xmx:PByFYZ3CRXHVFGNcxR6gpkkXMoo6m5nChbNS1Kar2blgGR2s-DLBhw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 5 Nov 2021 07:57:47 -0400 (EDT)
+Date:   Fri, 5 Nov 2021 12:57:45 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jani Nikula <jani.nikula@intel.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+Message-ID: <20211105115745.pg2a33quk63l4434@gilmour>
+References: <20211015202648.258445ef@canb.auug.org.au>
+ <20211101194223.749197c5@canb.auug.org.au>
+ <20211105171517.287de894@canb.auug.org.au>
+ <874k8qampc.fsf@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: How to reduce PCI initialization from 5 s (1.5 s adding them to IOMMU
- groups)
-To:     =?UTF-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     iommu@lists.linux-foundation.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vkojbrwivjvcbsco"
+Content-Disposition: inline
+In-Reply-To: <874k8qampc.fsf@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Linux folks,
 
+--vkojbrwivjvcbsco
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On a PowerEdge T440/021KCD, BIOS 2.11.2 04/22/2021, Linux 5.10.70 takes 
-almost five seconds to initialize PCI. According to the timestamps, 1.5 
-s are from assigning the PCI devices to the 142 IOMMU groups.
+Hi,
 
-```
-$ lspci | wc -l
-281
-$ dmesg
-[…]
-[    2.918411] PCI: Using host bridge windows from ACPI; if necessary, 
-use "pci=nocrs" and report a bug
-[    2.933841] ACPI: Enabled 5 GPEs in block 00 to 7F
-[    2.973739] ACPI: PCI Root Bridge [PC00] (domain 0000 [bus 00-16])
-[    2.980398] acpi PNP0A08:00: _OSC: OS supports [ExtendedConfig ASPM 
-ClockPM Segments MSI HPX-Type3]
-[    2.989457] acpi PNP0A08:00: _OSC: platform does not support [LTR]
-[    2.995451] acpi PNP0A08:00: _OSC: OS now controls [PME PCIeCapability]
-[    3.001394] acpi PNP0A08:00: FADT indicates ASPM is unsupported, 
-using BIOS configuration
-[    3.010511] PCI host bridge to bus 0000:00
-[…]
-[    6.233508] system 00:05: [io  0x1000-0x10fe] has been reserved
-[    6.239420] system 00:05: Plug and Play ACPI device, IDs PNP0c02 (active)
-[    6.239906] pnp: PnP ACPI: found 6 devices
-[…]
-[    6.989016] pci 0000:d7:05.0: disabled boot interrupts on device 
-[8086:2034]
-[    6.996063] PCI: CLS 0 bytes, default 64
-[    7.000008] Trying to unpack rootfs image as initramfs...
-[    7.065281] Freeing initrd memory: 5136K
-[…]
-[    7.079098] DMAR: dmar7: Using Queued invalidation
-[    7.083983] pci 0000:00:00.0: Adding to iommu group 0
-[…]
-[    8.537808] pci 0000:d7:17.1: Adding to iommu group 141
-[    8.571191] DMAR: Intel(R) Virtualization Technology for Directed I/O
-[    8.577618] PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
-[…]
-```
+On Fri, Nov 05, 2021 at 01:03:43PM +0200, Jani Nikula wrote:
+> On Fri, 05 Nov 2021, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > Hi all,
+> >
+> > On Mon, 1 Nov 2021 19:42:23 +1100 Stephen Rothwell <sfr@canb.auug.org.a=
+u> wrote:
+> >>
+> >> On Fri, 15 Oct 2021 20:26:48 +1100 Stephen Rothwell <sfr@canb.auug.org=
+=2Eau> wrote:
+> >> >
+> >> > After merging the drm-misc tree, today's linux-next build (arm
+> >> > multi_v7_defconfig) failed like this:
+> >> >=20
+> >> > drivers/gpu/drm/drm_modeset_lock.c:111:29: error: conflicting types =
+for '__stack_depot_save'
+> >> >   111 | static depot_stack_handle_t __stack_depot_save(void)
+> >> >       |                             ^~~~~~~~~~~~~~~~~~
+> >> > In file included from include/linux/page_ext.h:7,
+> >> >                  from include/linux/mm.h:25,
+> >> >                  from include/linux/kallsyms.h:13,
+> >> >                  from include/linux/bpf.h:20,
+> >> >                  from include/linux/bpf-cgroup.h:5,
+> >> >                  from include/linux/cgroup-defs.h:22,
+> >> >                  from include/linux/cgroup.h:28,
+> >> >                  from include/linux/memcontrol.h:13,
+> >> >                  from include/linux/swap.h:9,
+> >> >                  from include/linux/suspend.h:5,
+> >> >                  from include/linux/regulator/consumer.h:35,
+> >> >                  from include/linux/i2c.h:18,
+> >> >                  from include/drm/drm_crtc.h:28,
+> >> >                  from include/drm/drm_atomic.h:31,
+> >> >                  from drivers/gpu/drm/drm_modeset_lock.c:24:
+> >> > include/linux/stackdepot.h:18:22: note: previous declaration of '__s=
+tack_depot_save' was here
+> >> >    18 | depot_stack_handle_t __stack_depot_save(unsigned long *entri=
+es,
+> >> >       |                      ^~~~~~~~~~~~~~~~~~
+> >> >=20
+> >> > Caused by commit
+> >> >=20
+> >> >   cd06ab2fd48f ("drm/locking: add backtrace for locking contended lo=
+cks without backoff")
+> >> >=20
+> >> > This may only have been revealed because of another fix I have had to
+> >> > apply today.
+> >> >=20
+> >> > I have applied the following patch for today.
+> >> >=20
+> >> > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> >> > Date: Fri, 15 Oct 2021 20:17:52 +1100
+> >> > Subject: [PATCH] drm/locking: fix for name conflict
+> >> >=20
+> >> > Fixes: cd06ab2fd48f ("drm/locking: add backtrace for locking contend=
+ed locks without backoff")
+> >> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> >> > ---
+> >> >  drivers/gpu/drm/drm_modeset_lock.c | 6 +++---
+> >> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >> >=20
+> >> > diff --git a/drivers/gpu/drm/drm_modeset_lock.c b/drivers/gpu/drm/dr=
+m_modeset_lock.c
+> >> > index 4d32b61fa1fd..ee36dd20900d 100644
+> >> > --- a/drivers/gpu/drm/drm_modeset_lock.c
+> >> > +++ b/drivers/gpu/drm/drm_modeset_lock.c
+> >> > @@ -79,7 +79,7 @@
+> >> >  static DEFINE_WW_CLASS(crtc_ww_class);
+> >> > =20
+> >> >  #if IS_ENABLED(CONFIG_DRM_DEBUG_MODESET_LOCK)
+> >> > -static noinline depot_stack_handle_t __stack_depot_save(void)
+> >> > +static noinline depot_stack_handle_t __drm_stack_depot_save(void)
+> >> >  {
+> >> >  	unsigned long entries[8];
+> >> >  	unsigned int n;
+> >> > @@ -108,7 +108,7 @@ static void __stack_depot_print(depot_stack_hand=
+le_t stack_depot)
+> >> >  	kfree(buf);
+> >> >  }
+> >> >  #else /* CONFIG_DRM_DEBUG_MODESET_LOCK */
+> >> > -static depot_stack_handle_t __stack_depot_save(void)
+> >> > +static depot_stack_handle_t __drm_stack_depot_save(void)
+> >> >  {
+> >> >  	return 0;
+> >> >  }
+> >> > @@ -317,7 +317,7 @@ static inline int modeset_lock(struct drm_modese=
+t_lock *lock,
+> >> >  		ret =3D 0;
+> >> >  	} else if (ret =3D=3D -EDEADLK) {
+> >> >  		ctx->contended =3D lock;
+> >> > -		ctx->stack_depot =3D __stack_depot_save();
+> >> > +		ctx->stack_depot =3D __drm_stack_depot_save();
+> >> >  	}
+> >> > =20
+> >> >  	return ret;
+> >>=20
+> >> This has reappeared today.  I don't know what happened to the drm-misc
+> >> tree over the weeked :-(
+> >>=20
+> >> I have reapplied the above fix.
+> >
+> > So the above drm-misc commit is now in the drm tree, but its fix up
+> > commit vanished from the drm-misc tree over the past weekend :-(
+>=20
+> Cc: drm-misc maintainers.
+>=20
+> We normally point drm-misc/for-linux-next at drm-misc-next, *except* to
+> drm-misc-next-fixes during the merge window. This is because
+> drm-misc-next already starts accumulating stuff that's headed to one
+> release later, e.g. currently v5.17. I think that's part of the reason.
 
-Is there anything that could be done to reduce the time?
+Indeed
 
+> I probably should have pushed c4f08d7246a5 ("drm/locking: fix
+> __stack_depot_* name conflict") to drm-misc-next-fixes.
+>=20
+> There's still something funny going on, because the drm-misc-next pull
+> request [1] isn't part of the drm pull request for v5.16 [2]. Is there
+> going to be another drm pull?
 
-Kind regards,
+The last drm-misc-next PR for some reason didn't got logged into
+patchwork, and Dave missed it.
 
-Paul
+We found out yesterday, and he pulled it today so I assume there will be
+a second PR with that last PR and today's drm-misc-next-fixes PR.
+
+Maxime
+
+--vkojbrwivjvcbsco
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYYUcOQAKCRDj7w1vZxhR
+xU+MAP4hgo9+qBCiI/qme/i6DPqP4+Y2ORFyGlUEBuEar1UvwgEAtP1vY7VT12Fi
+2bs9GPcW2eHwXfRgz2UMaIg32SZO7wM=
+=oApB
+-----END PGP SIGNATURE-----
+
+--vkojbrwivjvcbsco--
