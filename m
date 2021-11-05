@@ -2,75 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2EFB445DF4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 03:30:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D194445DFE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 03:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbhKECcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Nov 2021 22:32:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229587AbhKECcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Nov 2021 22:32:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4C0CF611AE;
-        Fri,  5 Nov 2021 02:30:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636079407;
-        bh=bpOxBh4+l1D+uUqXMPFto5X4pv4MBB3feOnFtc+F4GU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=IWEcl/BdfPWf2T4nBqnA5teXOfi36eQBg5sOLLnBj4TVZiWaIREPOwMUDZkR1DA2k
-         KYU/Iq64ki5ekVDNXFr6NlWspgcwPQwpq26o6aR8/Ql10kQeMqx5uPPsTswxCcSK5d
-         CLYGMpKnQooTCzaYz1PAkcfA34E0E4ZKeal739roo0Mu0DGPcILV9baUupeYNPF89w
-         qGYKrjJNhvsD6PiIQVZkrh1VWSA+WDzc5GXMRXLkUqtBogzr32tYDaXVTC2liKn76X
-         JD/Ts+YdThGmxFtyYzr3/Gf4OY2Q50XW9CAahdJNty+vE5Y6wbqhgugygfGVDUqezY
-         UaXxgxyzA1IzQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 447AB60981;
-        Fri,  5 Nov 2021 02:30:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231931AbhKECgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Nov 2021 22:36:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230519AbhKECf7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Nov 2021 22:35:59 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E451C061203
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 19:33:20 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id g29so1715872lfv.4
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 19:33:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=o/wF/V9TAVPEMQT2oLx1JVaew2djn3pZBY/upXLYuzc=;
+        b=GHpARzBoc3z/GsbFqrJCUrognspJ9m9qQ1sj0wcXiZge8xxxr+jTrMTOztjbycnI/7
+         NHnSqexQjrRoOmLcDknkrM8cry6B90geRSP2tgz4Gecfu0siRipJYdmrIlXERou7RMhT
+         lzhvHCzskfzOE3Mekrc/1PkmhdDuz3uZVYTPK5qNKsnueHcgWCCX4Vg3t/E3/r0MzztR
+         HTUR+h35WMLm+x6LPLCUvrHbHGsFD5trcEoptWMmHVv8KAF/dDyO6d++homNebX3ivdb
+         ISYJgmQ4wmKzgRN6FfPnCGOrmsfkQAbUKl89A+W2glZSmwMyCbofK4MZlZT+sw+GOCSh
+         n6iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=o/wF/V9TAVPEMQT2oLx1JVaew2djn3pZBY/upXLYuzc=;
+        b=1DhOCRf/O0IQVs4iGbdwBYQcs8jEV5KiGGpQ8TeMA8mFf1z6PVajsp2XEtXN+Y+8J2
+         lC2P6aGj4waZhaQzQrlrV0P73h4d2yD2YkU2nIui1baONTmtnWsiObaFurNy1+wolagK
+         adje2wxvrmeWQEMpbJM0Wj2fRfkXUC7fSQ3VTS+noaA40bHZFEVO04BNcI06EJkTw1ln
+         XKDSgMmBTrs8Yf+y6btAW84Spzq0tdmENige5OTDXOs7+qxFRzuLcJmpck0bTENmk9ps
+         MqSfKMgQjO/G1I1DhZAV290KN2SbFvRWoooG7mqjbT/DV2PoKt+NM0+WJz4imnnQrdYS
+         LKzA==
+X-Gm-Message-State: AOAM5304np/qtzze44Tkft7xqBWKmVq/+aiQvaddhZ+yXvcbd2rw/cmp
+        nxW/kCyNRJrRDYNHI0l7dvBgXAkcs9MZV3MlXAQ=
+X-Google-Smtp-Source: ABdhPJwOk443/Wx7zXIdaTNzHesyOo1vEVSG65yR+Kp0G5P7UeBNNTlCFENt9G1ribS0vqx4q5fu6ifRWJHK8FDLVOY=
+X-Received: by 2002:ac2:4859:: with SMTP id 25mr8117600lfy.112.1636079598533;
+ Thu, 04 Nov 2021 19:33:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 0/2] MCTP sockaddr padding check/initialisation
- fixup
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163607940727.4777.16083570466558280918.git-patchwork-notify@kernel.org>
-Date:   Fri, 05 Nov 2021 02:30:07 +0000
-References: <cover.1635965993.git.esyr@redhat.com>
-In-Reply-To: <cover.1635965993.git.esyr@redhat.com>
-To:     Eugene Syromiatnikov <esyr@redhat.com>
-Cc:     jk@codeconstruct.com.au, matt@codeconstruct.com.au,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Received: by 2002:a05:6512:32c6:0:0:0:0 with HTTP; Thu, 4 Nov 2021 19:33:18
+ -0700 (PDT)
+Reply-To: mstheresaheidi8@gmail.com
+From:   Ms Theresa Heidi <hennagercjames@gmail.com>
+Date:   Fri, 5 Nov 2021 02:33:18 +0000
+Message-ID: <CAMhtcvhrN_4Z9ZxgtGLP1H0Lvv3+M5iQNxOqXDEbBVFbNvHVTQ@mail.gmail.com>
+Subject: =?UTF-8?B?55eF6Zmi44GL44KJ44Gu57eK5oCl44Gu5Yqp44GR77yB?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Wed, 3 Nov 2021 20:09:36 +0100 you wrote:
-> Hello.
-> 
-> This pair of patches introduces checks for padding fields of struct
-> sockaddr_mctp/sockaddr_mctp_ext to ease their re-use for possible
-> extensions in the future;  as well as zeroing of these fields
-> in the respective sockaddr filling routines.  While the first commit
-> is definitely an ABI breakage, it is proposed in hopes that the change
-> is made soon enough (the interface appeared only in Linux 5.15)
-> to avoid affecting any existing user space.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,v2,1/2] mctp: handle the struct sockaddr_mctp padding fields
-    https://git.kernel.org/netdev/net/c/1e4b50f06d97
-  - [net-next,v2,2/2] mctp: handle the struct sockaddr_mctp_ext padding field
-    https://git.kernel.org/netdev/net/c/e9ea574ec1c2
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+6Kaq5oSb44Gq44KL5oSb44GZ44KL5Lq644CBDQoNCuaFiOWWhOWvhOS7mOOBk+OBruaJi+e0meOB
+jOOBguOBquOBn+OBq+mpmuOBjeOBqOOBl+OBpuadpeOCi+OBi+OCguOBl+OCjOOBquOBhOOBk+OB
+qOOBr+eiuuOBi+OBp+OBmeOAgeazqOaEj+a3seOBj+iqreOCk+OBp+OBj+OBoOOBleOBhOOAguen
+geOBr+OBguOBquOBn+OBruaPtOWKqeOCkuW/heimgeOBqOOBl+OBpuOBhOOCi+mWk+OBq+engeea
+hOOBquaknOe0ouOCkumAmuOBl+OBpuOBguOBquOBn+OBrumbu+WtkOODoeODvOODq+OBrumAo+e1
+oeWFiOOBq+WHuuOBj+OCj+OBl+OBvuOBl+OBn+OAguengeOBr+W/g+OBi+OCieaCsuOBl+OBv+OC
+kui+vOOCgeOBpuOBk+OBruODoeODvOODq+OCkuabuOOBhOOBpuOBhOOBvuOBmeOAguOCpOODs+OC
+v+ODvOODjeODg+ODiOOBjOS+neeEtuOBqOOBl+OBpuacgOmAn+OBruOCs+ODn+ODpeODi+OCseOD
+vOOCt+ODp+ODs+aJi+auteOBp+OBguOCi+OBn+OCgeOAgeOCpOODs+OCv+ODvOODjeODg+ODiOOC
+kuS7i+OBl+OBpuOBguOBquOBn+OBq+mAo+e1oeOBmeOCi+OBk+OBqOOCkumBuOaKnuOBl+OBvuOB
+l+OBn+OAgg0KDQrnp4Hjga7lkI3liY3jga/jg4bjg6zjgrXjg7vjg4/jgqTjgrjlpKvkurrjgafj
+gZnnp4Hjga/nj77lnKjjgIHnp4HjgYw2Muats+OBruiCuueZjOOBrue1kOaenOOBqOOBl+OBpuOC
+pOOCueODqeOCqOODq+OBruengeeri+eXhemZouOBq+WFpemZouOBl+OBpuOBiuOCiuOAgeengeOB
+r+e0hDTlubTliY3jgIHlpKvjga7mrbvlvozjgZnjgZDjgavogrrjgYzjgpPjgajoqLrmlq3jgZXj
+gozjgb7jgZfjgZ/jgILnp4Hjga/ogrrjga7nmYzjga7msrvnmYLjgpLlj5fjgZHjgabjgYTjgovj
+gZPjgZPjga7nl4XpmaLjgafnp4Hjga7jg6njg4Pjg5fjg4jjg4Pjg5fjgajkuIDnt5LjgavjgYTj
+gb7jgZnjgILnp4Hjga/kuqHjgY3lpKvjgYvjgonlj5fjgZHntpnjgYTjgaDos4fph5HjgpLmjIHj
+gaPjgabjgYTjgb7jgZnjgYzjgIHlkIjoqIjjga8yNTDkuIfjg4njg6soMiw1MDAsMDAwLDAwMOex
+s+ODieODqynjgafjgZnjgILku4rjgIHnp4Hjga/np4Hjga7kurrnlJ/jga7mnIDlvozjga7ml6Xj
+gavov5HjgaXjgYTjgabjgYTjgovjgZPjgajjga/mmI7jgonjgYvjgafjgYLjgorjgIHnp4Hjga/j
+goLjgYbjgZPjga7jgYrph5HjgpLlv4XopoHjgajjgZfjgarjgYTjgajmgJ3jgYTjgb7jgZnjgILn
+p4Hjga7ljLvogIXjga/jgIHnp4HjgYzogrrnmYzjga7llY/poYzjga7jgZ/jgoHjgasx5bm06ZaT
+57aa44GL44Gq44GE44GT44Go44KS56eB44Gr55CG6Kej44GV44Gb44G+44GX44Gf44CCDQoNCuOB
+k+OBruOBiumHkeOBr+OBvuOBoOWkluWbveOBrumKgOihjOOBq+OBguOCiuOAgee1jOWWtuiAheOB
+r+engeOCkuacrOW9k+OBruaJgOacieiAheOBqOOBl+OBpuOAgeOBiumHkeOCkuWPl+OBkeWPluOC
+i+OBn+OCgeOBq+WJjeOBq+WHuuOBpuadpeOCi+OBi+OAgeeXheawl+OBruOBn+OCgeOBq+adpeOC
+i+OBk+OBqOOBjOOBp+OBjeOBquOBhOOBruOBp+engeOBq+S7o+OCj+OBo+OBpuiqsOOBi+OBq+OB
+neOCjOOCkuWPl+OBkeWPluOCi+OBn+OCgeOBruaJv+iqjeabuOOCkueZuuihjOOBmeOCi+OCiOOB
+huOBq+abuOOBhOOBn+OAgumKgOihjOOBruihjOWLleOBq+WkseaVl+OBmeOCi+OBqOOAgeOBneOC
+jOOCkumVt+OBj+e2reaMgeOBl+OBn+OBn+OCgeOBq+izh+mHkeOBjOayoeWPjuOBleOCjOOCi+WP
+r+iDveaAp+OBjOOBguOCiuOBvuOBmeOAgg0KDQrnp4HjgYzlpJblm73jga7pioDooYzjgYvjgonj
+gZPjga7jgYrph5HjgpLlvJXjgY3lh7rjgZnjga7jgpLmiYvkvJ3jgaPjgabjgY/jgozjgovjgarj
+gonjgIHjgYLjgarjgZ/jgavpgKPntaHjgZnjgovjgZPjgajjgavjgZfjgb7jgZfjgZ/jgILjgZ3j
+gZfjgabjgIHmhYjlloTmtLvli5Xjga7jgZ/jgoHjga7os4fph5HjgpLkvb/jgaPjgabjgIHmgbXj
+gb7jgozjgarjgYTkurrjgIXjgpLliqnjgZHjgIHnpL7kvJrjga5Db3ZpZC0xOeODkeODs+ODh+OD
+n+ODg+OCr+OBqOaIpuOBhuOBk+OBqOOCguOBp+OBjeOBvuOBmeOAguengeOBq+S9leOBi+OBjOi1
+t+OBk+OCi+WJjeOBq+OAgeOBk+OCjOOCieOBruS/oeiol+WfuumHkeOCkuiqoOWun+OBq+aJseOB
+o+OBpuOBu+OBl+OBhOOAguOBk+OCjOOBr+ebl+OBvuOCjOOBn+OBiumHkeOBp+OBr+OBquOBj+OA
+geWujOWFqOOBquazleeahOiovOaLoOOBjOOBguOCjOOBsDEwMO+8heODquOCueOCr+OBjOOBquOB
+hOOBqOOBhOOBhuWNsemZuuOBr+OBguOCiuOBvuOBm+OCk+OAgg0KDQrnp4Hjga/jgYLjgarjgZ/j
+gavjgYLjgarjgZ/jga7lgIvkurrnmoTjgarkvb/nlKjjga7jgZ/jgoHjga7nt4/jgYrph5Hjga40
+NSXjgpLlj5bjgaPjgabjgbvjgZfjgYTjgYzjgIHjgYrph5Hjga41NSXjga/mhYjlloTmtLvli5Xj
+gavooYzjgY/jgILnp4Hjga/np4Hjga7mnIDlvozjga7poZjjgYTjgpLljbHpmbrjgavjgZXjgonj
+gZnjgoLjga7jgpLmnJvjgpPjgafjgYTjgarjgYTjga7jgafjgIHnp4Hjga/np4Hjga7lv4Pjga7m
+rLLmnJvjgpLpgZTmiJDjgZnjgovjgZ/jgoHjgavjgIHjgZPjga7llY/poYzjgafjgYLjgarjgZ/j
+ga7mnIDlpKfpmZDjga7kv6HpoLzjgajmqZ/lr4bmgKfjgavmhJ/orJ3jgZfjgb7jgZnjgILjgYLj
+garjgZ/jga7jgrnjg5Hjg6DjgafjgZPjga7miYvntJnjgpLlj5fjgZHlj5bjgaPjgZ/loLTlkIjj
+gIHnp4Hjga/pnZ7luLjjgavnlLPjgZfoqLPjgYLjgorjgb7jgZvjgpPjgYzjgIHlm73jga7mnIDo
+v5Hjga7mjqXntprjgqjjg6njg7zjgavjgojjgovjgoLjga7jgafjgZnjgIINCg0K44GC44Gq44Gf
+44Gu5pyA5oSb44Gu5aeJ5aa544CCDQrjg4bjg6zjgrXjg7vjg4/jgqTjgrjlpKvkuroNCg==
