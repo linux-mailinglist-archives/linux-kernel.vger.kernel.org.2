@@ -2,130 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B67CB446123
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:06:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AF4944617B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 10:42:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232937AbhKEJJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 05:09:10 -0400
-Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.100]:31809 "EHLO
-        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232839AbhKEJIz (ORCPT
+        id S232825AbhKEJpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 05:45:07 -0400
+Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:37834 "EHLO
+        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230175AbhKEJpE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 05:08:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636103155;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=ytqJC3tzZimA/vKcRado/QdQBzzBwoUDJjRTyS4f9aA=;
-    b=jBH7QDTr7g+eR7GD+GQ5tp/rN31LiCz0PazLAjszxI+5qTXi4kcuIF7vo/iz3HNp21
-    PFd7/Kg6/OldVyrnFqPDBPP0krA+ldkRV1g82STC5sTXsgebkU/2Z51nmiwXfQcZyjB3
-    0pA0C5VSXwgsY7CBW7KJJ2wWB4V4O45wkKhqi0QSzweV5m9xV0cWD7FWnS39F4SOTePl
-    VBdAU9UNgttvNd/fq/Bu+Tgia60EXnWYaTzxMywfDpRBB+XumHWxmLE0H7NDwwXjNqjY
-    scRCjHZ8hBkMMr/UYr4nDVMhpPzC1TsVD2wqfV6GstaobF+y/kjndisnifFgr8ObMCGx
-    9TcQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0lByOdfL1X0"
-X-RZG-CLASS-ID: mo00
-Received: from iMac.fritz.box
-    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
-    with ESMTPSA id 902c63xA595s8uP
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 5 Nov 2021 10:05:54 +0100 (CET)
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>, Avri Altman <avri.altman@wdc.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>, Bean Huo <beanhuo@micron.com>
-Cc:     notasas@gmail.com, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
-        kernel@pyra-handheld.com,
-        "H. Nikolaus Schaller" <hns@goldelico.com>
-Subject: [RFC v4 6/6] mmc: host: omap_hsmmc: revert special init for wl1251
-Date:   Fri,  5 Nov 2021 10:05:51 +0100
-Message-Id: <229fef6d6c3956b108b040fc34e8c8f3c710f377.1636103151.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <cover.1636103151.git.hns@goldelico.com>
-References: <cover.1636103151.git.hns@goldelico.com>
+        Fri, 5 Nov 2021 05:45:04 -0400
+X-Greylist: delayed 2172 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Nov 2021 05:45:04 EDT
+Received: from [167.98.27.226] (helo=rainbowdash)
+        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+        id 1mivAm-0003It-SP; Fri, 05 Nov 2021 09:06:08 +0000
+Received: from ben by rainbowdash with local (Exim 4.94.2)
+        (envelope-from <ben@rainbowdash>)
+        id 1mivAm-0011Kr-CB; Fri, 05 Nov 2021 09:06:08 +0000
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+To:     linux-kernel@vger.kernel.org
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ben Dooks <ben.dooks@codethink.co.uk>
+Subject: [PATCH] irqdomain: check irq mapping against domain size
+Date:   Fri,  5 Nov 2021 09:06:01 +0000
+Message-Id: <20211105090601.243416-1-ben.dooks@codethink.co.uk>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replaces: commit f6498b922e57 ("mmc: host: omap_hsmmc: add code for special init of wl1251 to get rid of pandora_wl1251_init_card")
-Requires: commit ("mmc: core: transplant ti,wl1251 quirks from to be retired omap_hsmmc")
+The irq translate code does not check the irq number against
+the maximum a domain can handle. This can cause an OOPS if
+the firmware data has been damaged in any way. Check the intspec
+or fwdata against the irqdomain and return -EINVAL if over.
 
-After moving the wl1251 quirks from omap_hsmmc_init_card() to wl1251_quirk()
-and sdio_card_init_methods[] we can remove omap_hsmmc_init_card() completely.
+This is the result of bug somewhere in the boot of a SiFive Unmatched
+board where the 5th argument of the pcie node is being damaged which
+causes an OOPS in the startup code.
 
-This also removes the specialization on the combination of omap_hsmmc and wl1251.
-
-Related-to: commit f6498b922e57 ("mmc: host: omap_hsmmc: add code for special init of wl1251 to get rid of pandora_wl1251_init_card")
-Related-to: commit 2398c41d6432 ("omap: pdata-quirks: remove openpandora quirks for mmc3 and wl1251")
-Related-to: commit f9d50fef4b64 ("ARM: OMAP2+: omap3-pandora: add wifi support")
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
 ---
- drivers/mmc/host/omap_hsmmc.c | 36 -----------------------------------
- 1 file changed, 36 deletions(-)
+ kernel/irq/irqdomain.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
-index 6960e305e0a39..9749639ea8977 100644
---- a/drivers/mmc/host/omap_hsmmc.c
-+++ b/drivers/mmc/host/omap_hsmmc.c
-@@ -1504,41 +1504,6 @@ static void omap_hsmmc_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
- 	omap_hsmmc_set_bus_mode(host);
- }
- 
--static void omap_hsmmc_init_card(struct mmc_host *mmc, struct mmc_card *card)
--{
--	struct omap_hsmmc_host *host = mmc_priv(mmc);
--
--	if (card->type == MMC_TYPE_SDIO || card->type == MMC_TYPE_SD_COMBO) {
--		struct device_node *np = mmc_dev(mmc)->of_node;
--
--		/*
--		 * REVISIT: should be moved to sdio core and made more
--		 * general e.g. by expanding the DT bindings of child nodes
--		 * to provide a mechanism to provide this information:
--		 * Documentation/devicetree/bindings/mmc/mmc-card.txt
--		 */
--
--		np = of_get_compatible_child(np, "ti,wl1251");
--		if (np) {
--			/*
--			 * We have TI wl1251 attached to MMC3. Pass this
--			 * information to the SDIO core because it can't be
--			 * probed by normal methods.
--			 */
--
--			dev_info(host->dev, "found wl1251\n");
--			card->quirks |= MMC_QUIRK_NONSTD_SDIO;
--			card->cccr.wide_bus = 1;
--			card->cis.vendor = 0x104c;
--			card->cis.device = 0x9066;
--			card->cis.blksize = 512;
--			card->cis.max_dtr = 24000000;
--			card->ocr = 0x80;
--			of_node_put(np);
--		}
--	}
--}
--
- static void omap_hsmmc_enable_sdio_irq(struct mmc_host *mmc, int enable)
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index 6284443b87ec..e61397420723 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -906,6 +906,8 @@ int irq_domain_xlate_onecell(struct irq_domain *d, struct device_node *ctrlr,
  {
- 	struct omap_hsmmc_host *host = mmc_priv(mmc);
-@@ -1667,7 +1632,6 @@ static struct mmc_host_ops omap_hsmmc_ops = {
- 	.set_ios = omap_hsmmc_set_ios,
- 	.get_cd = mmc_gpio_get_cd,
- 	.get_ro = mmc_gpio_get_ro,
--	.init_card = omap_hsmmc_init_card,
- 	.enable_sdio_irq = omap_hsmmc_enable_sdio_irq,
- };
- 
+ 	if (WARN_ON(intsize < 1))
+ 		return -EINVAL;
++	if (WARN_ON(intspec[0] > d->hwirq_max))
++		return -EINVAL;
+ 	*out_hwirq = intspec[0];
+ 	*out_type = IRQ_TYPE_NONE;
+ 	return 0;
+@@ -948,6 +950,8 @@ int irq_domain_xlate_onetwocell(struct irq_domain *d,
+ {
+ 	if (WARN_ON(intsize < 1))
+ 		return -EINVAL;
++	if (WARN_ON(intspec[0] > d->hwirq_max))
++		return -EINVAL;
+ 	*out_hwirq = intspec[0];
+ 	if (intsize > 1)
+ 		*out_type = intspec[1] & IRQ_TYPE_SENSE_MASK;
+@@ -973,6 +977,8 @@ int irq_domain_translate_onecell(struct irq_domain *d,
+ {
+ 	if (WARN_ON(fwspec->param_count < 1))
+ 		return -EINVAL;
++	if (WARN_ON(fwspec->param[0] > d->hwirq_max))
++		return -EINVAL;
+ 	*out_hwirq = fwspec->param[0];
+ 	*out_type = IRQ_TYPE_NONE;
+ 	return 0;
+@@ -994,6 +1000,8 @@ int irq_domain_translate_twocell(struct irq_domain *d,
+ {
+ 	if (WARN_ON(fwspec->param_count < 2))
+ 		return -EINVAL;
++	if (WARN_ON(fwspec->param[0] > d->hwirq_max))
++		return -EINVAL;
+ 	*out_hwirq = fwspec->param[0];
+ 	*out_type = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
+ 	return 0;
 -- 
-2.33.0
+2.30.2
 
