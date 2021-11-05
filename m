@@ -2,167 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2ABD44629A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 12:23:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05ADC4462A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 12:25:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232289AbhKELZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 07:25:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232115AbhKELZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 07:25:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62AB96124F;
-        Fri,  5 Nov 2021 11:23:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636111391;
-        bh=2iXLKsU1kgBMiFQPc8UDVzfzjXZkOHioGnb4880emKw=;
-        h=Date:From:To:cc:Subject:From;
-        b=cYU+1Mnz9XeamLyv95ZBD8ImQTbvYdw4vfgaCwLhnXRslHc+x6k3p3lLh17/B41yb
-         sF0LzgcOtjGv8R/XbvOb001lXVuijfja3xy5tlkJGc8zF/OkvnlxMjnLYyHx4W2DV3
-         mMi+nMFAIUfV4B5mwmElUnEqBGum7A0gjaXvmKzl8uNkLanY0p8slrFX88qmvHKzrG
-         0QaakCwYN/WAwSUSg+MZp0H4khj8vUUu/spJWnZCZgzBPuI8qTXNxip4YQ37hLL/cv
-         bNDauOCHLebD8hYSoI6kg5tnLLgnOsRKns9pwKqvcL/lHn5KpFb4K1HATTqAo5vDpw
-         1yIl9LraYrrqA==
-Date:   Fri, 5 Nov 2021 12:23:08 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] HID for 5.16
-Message-ID: <nycvar.YFH.7.76.2111051220020.12554@cbobk.fhfr.pm>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S232367AbhKEL2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 07:28:07 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59686 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229722AbhKEL2E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 07:28:04 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A5999XO031244;
+        Fri, 5 Nov 2021 11:24:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=e9D2hDXw5uLaWjr0O62LR56g3ZNMoC7f4LEvQFXitpE=;
+ b=nZon3T3iRBmS8xONrD1Te57byAh7Y88nL/8P11ViB+jHfxvjU4PW6FjuHJZ/E2nVFxzS
+ rgsoFV6QLxIimPtJZuzUBmsoGYlc18j2P99+VVAOG/0LhwmvPbj3u+1gJAXSk5X3L+DP
+ x2b0KpHMTrQn8SOGvH1MZSbTFRlExj24TPw1/4VPkm3/O5rMmUrGqWq+Rlbmafk66mpG
+ +qUDhfQb8aVk85CqXN17SzhcqGxUl4/mqaRy1gwI1hL0KQ0reHZ5BgstuIydnCNzBSpa
+ bwD+SWmzJ3ynRvtQaSbxHQIEbETBreQxySEGPrNGQCqnqgH3dTjXGIT818fteV71cTFE IA== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c4xruwu71-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Nov 2021 11:24:19 +0000
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1A5BDTOs014179;
+        Fri, 5 Nov 2021 11:24:17 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03fra.de.ibm.com with ESMTP id 3c4t4fkkdq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Nov 2021 11:24:17 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1A5BHiIE52101476
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 5 Nov 2021 11:17:44 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8A1DF4C04E;
+        Fri,  5 Nov 2021 11:24:14 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D3D2B4C050;
+        Fri,  5 Nov 2021 11:24:13 +0000 (GMT)
+Received: from [9.145.172.52] (unknown [9.145.172.52])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  5 Nov 2021 11:24:13 +0000 (GMT)
+Message-ID: <22139a80-3f64-1f21-6b5c-65d250bafe09@linux.ibm.com>
+Date:   Fri, 5 Nov 2021 12:24:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH][next] scsi: Replace one-element arrays with
+ flexible-array members
+Content-Language: en-US
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.de>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Javed Hasan <jhasan@marvell.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Neerav Parikh <neerav.parikh@intel.com>,
+        Ross Brattain <ross.b.brattain@intel.com>,
+        Robert Love <robert.w.love@intel.com>
+References: <20211105091102.GA126301@embeddedor>
+From:   Steffen Maier <maier@linux.ibm.com>
+In-Reply-To: <20211105091102.GA126301@embeddedor>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: H5tiez4w19d-7XeK4JdROvAkqqT6Gkj0
+X-Proofpoint-ORIG-GUID: H5tiez4w19d-7XeK4JdROvAkqqT6Gkj0
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-05_01,2021-11-03_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 bulkscore=0
+ malwarescore=0 mlxlogscore=999 mlxscore=0 impostorscore=0 adultscore=0
+ spamscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111050065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 11/5/21 10:11, Gustavo A. R. Silva wrote:
+> Use flexible-array members in struct fc_fdmi_attr_entry and
+> fs_fdmi_attrs instead of one-element arrays, and refactor the
+> code accordingly.
+> 
+> Also, turn the one-element array _port_ in struct fc_fdmi_rpl
+> into a simple object of type struct fc_fdmi_port_name, as it
+> seems there is no more than just one port expected:
+> 
+> $ git grep -nw numport drivers/scsi/
+> drivers/scsi/csiostor/csio_lnode.c:447: reg_pl->numport = htonl(1);
+> drivers/scsi/libfc/fc_encode.h:232:             put_unaligned_be32(1, &ct->payload.rhba.port.numport);
+> 
+> Also, this helps with the ongoing efforts to globally enable
+> -Warray-bounds and get us closer to being able to tighten the
+> FORTIFY_SOURCE routines on memcpy().
+> 
+> https://github.com/KSPP/linux/issues/79
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>   drivers/scsi/csiostor/csio_lnode.c | 2 +-
+>   drivers/scsi/libfc/fc_encode.h     | 4 ++--
+>   include/scsi/fc/fc_ms.h            | 6 +++---
+>   3 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/scsi/csiostor/csio_lnode.c b/drivers/scsi/csiostor/csio_lnode.c
+> index d5ac93897023..cf9dd79ee488 100644
+> --- a/drivers/scsi/csiostor/csio_lnode.c
+> +++ b/drivers/scsi/csiostor/csio_lnode.c
+> @@ -445,7 +445,7 @@ csio_ln_fdmi_dprt_cbfn(struct csio_hw *hw, struct csio_ioreq *fdmi_req)
+>   	/* Register one port per hba */
+>   	reg_pl = (struct fc_fdmi_rpl *)pld;
+>   	reg_pl->numport = htonl(1);
+> -	memcpy(&reg_pl->port[0].portname, csio_ln_wwpn(ln), 8);
+> +	memcpy(&reg_pl->port.portname, csio_ln_wwpn(ln), 8);
+>   	pld += sizeof(*reg_pl);
+> 
+>   	/* Start appending HBA attributes hba */
+> diff --git a/drivers/scsi/libfc/fc_encode.h b/drivers/scsi/libfc/fc_encode.h
+> index 74ae7fd15d8d..5806f99e4061 100644
+> --- a/drivers/scsi/libfc/fc_encode.h
+> +++ b/drivers/scsi/libfc/fc_encode.h
+> @@ -232,7 +232,7 @@ static inline int fc_ct_ms_fill(struct fc_lport *lport,
+>   		put_unaligned_be32(1, &ct->payload.rhba.port.numport);
+>   		/* Port Name */
+>   		put_unaligned_be64(lport->wwpn,
+> -				   &ct->payload.rhba.port.port[0].portname);
+> +				   &ct->payload.rhba.port.port.portname);
+> 
+>   		/* HBA Attributes */
+>   		put_unaligned_be32(numattrs,
 
-please pull from
+> diff --git a/include/scsi/fc/fc_ms.h b/include/scsi/fc/fc_ms.h
+> index 00191695233a..44fbe84fa664 100644
+> --- a/include/scsi/fc/fc_ms.h
+> +++ b/include/scsi/fc/fc_ms.h
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-linus
+> @@ -174,7 +174,7 @@ struct fs_fdmi_attrs {
 
-to receive HID subsystem updates for 5.16 merge window.
+/*
+  * Registered Port List
 
-=====
-- support for Nintendo Switch Pro Controllers and Joy-Cons (Daniel J. 
-  Ogorchock)
-- support for new revision of the NitroKey U2F device firmware (Andrej 
-  Shadura)
-- LED handling improvements for Sony Playstation5 controllers (Roderick 
-  Colenbrander)
-- support for Apple 2021 Magic Keyboard (Alex Henrie)
-- other assorted code cleanups and new device ID additions
-=====
+>    */
+>   struct fc_fdmi_rpl {
+>   	__be32				numport;
+> -	struct fc_fdmi_port_name	port[1];
+> +	struct fc_fdmi_port_name	port;
+>   } __attribute__((__packed__));
 
-Thanks.
+While I'm not affected by the change, it feels to me as if these are protocol 
+definitions originating in a T11 Fibre Channel standard FC-GS. It's a port 
+*list*. Can you "modify" the standard here?
 
-----------------------------------------------------------------
-Alex Henrie (3):
-      HID: apple: Rename MAGIC_KEYBOARD_ANSI to MAGIC_KEYBOARD_2015
-      HID: apple: Add support for the 2021 Magic Keyboard
-      HID: apple: Bring back flag for Apple tilde key quirk
+The fact, that currently existing code users only ever seem to use one single 
+port in the list, would be an independent thing to me.
 
-Alexander F. Lent (1):
-      HID: apple: Eliminate obsolete IR receiver quirks
-
-Andrej Shadura (3):
-      HID: u2fzero: Support NitroKey U2F revision of the device
-      HID: u2fzero: clarify error check and length calculations
-      HID: u2fzero: properly handle timeouts in usb_submit_urb
-
-Basavaraj Natikar (3):
-      HID: amd_sfh: Use dma_set_mask_and_coherent()
-      HID: amd_sfh: switch from 'pci_' to 'dev_' API
-      HID: amd_sfh: Update Copyright details
-
-Cai Huoqing (2):
-      HID: cougar: Make use of the helper function devm_add_action_or_reset()
-      HID: wacom: Make use of the helper function devm_add_action_or_reset()
-
-Christophe JAILLET (1):
-      HID: amd_sfh: switch from 'pci_' to 'dma_' API
-
-Dan Carpenter (1):
-      HID: hid-debug: clean up snprintf() checks in hid_resolv_usage()
-
-Daniel J. Ogorchock (16):
-      HID: nintendo: add nintendo switch controller driver
-      HID: nintendo: add player led support
-      HID: nintendo: add power supply support
-      HID: nintendo: add home led support
-      HID: nintendo: add rumble support
-      HID: nintendo: improve subcommand reliability
-      HID: nintendo: send subcommands after receiving input report
-      HID: nintendo: patch hw version for userspace HID mappings
-      HID: nintendo: reduce device removal subcommand errors
-      HID: nintendo: set controller uniq to MAC
-      HID: nintendo: add support for charging grip
-      HID: nintendo: add support for reading user calibration
-      HID: nintendo: add IMU support
-      HID: nintendo: improve rumble performance and stability
-      HID: nintendo: ratelimit subcommands and rumble
-      HID: nintendo: prevent needless queueing of the rumble worker
-
-Felipe Balbi (1):
-      HID: core: add TransducerSerialNumber2
-
-Ilya Skriblovsky (1):
-      HID: Add support for side buttons of Xiaomi Mi Dual Mode Wireless Mouse Silent
-
-Jason Gerecke (1):
-      HID: wacom: Shrink critical section in `wacom_add_shared_data`
-
-Jiri Kosina (3):
-      HID: playstation: fix return from dualsense_player_led_set_brightness()
-      HID: playstation: require multicolor LED functionality
-      HID: nintendo: fix -Werror build
-
-José Expósito (1):
-      HID: multitouch: disable sticky fingers for UPERFECT Y
-
-Roderick Colenbrander (3):
-      HID: playstation: expose DualSense lightbar through a multi-color LED.
-      leds: add new LED_FUNCTION_PLAYER for player LEDs for game controllers.
-      HID: playstation: expose DualSense player LEDs through LED class.
-
-Vinícius Angiolucci Reis (1):
-      HID: hid-asus.c: Maps key 0x35 (display off) to KEY_SCREENLOCK
-
- Documentation/leds/well-known-leds.txt             |   14 +
- MAINTAINERS                                        |    6 +
- drivers/hid/Kconfig                                |   32 +
- drivers/hid/Makefile                               |    2 +
- drivers/hid/amd-sfh-hid/amd_sfh_client.c           |    3 +-
- drivers/hid/amd-sfh-hid/amd_sfh_hid.c              |    2 +
- drivers/hid/amd-sfh-hid/amd_sfh_hid.h              |    2 +
- drivers/hid/amd-sfh-hid/amd_sfh_pcie.c             |   21 +-
- drivers/hid/amd-sfh-hid/amd_sfh_pcie.h             |    3 +-
- .../amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.c  |    3 +-
- .../amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.h  |    3 +-
- .../hid_descriptor/amd_sfh_hid_report_desc.h       |    3 +-
- drivers/hid/hid-apple.c                            |   66 +-
- drivers/hid/hid-asus.c                             |    2 +-
- drivers/hid/hid-cougar.c                           |    3 +-
- drivers/hid/hid-debug.c                            |   10 +-
- drivers/hid/hid-ids.h                              |   18 +-
- drivers/hid/hid-input.c                            |    1 +
- drivers/hid/hid-multitouch.c                       |   13 +
- drivers/hid/hid-nintendo.c                         | 2319 ++++++++++++++++++++
- drivers/hid/hid-playstation.c                      |  159 +-
- drivers/hid/hid-quirks.c                           |    3 +-
- drivers/hid/hid-u2fzero.c                          |   55 +-
- drivers/hid/hid-xiaomi.c                           |   94 +
- drivers/hid/wacom_sys.c                            |   15 +-
- drivers/input/joydev.c                             |   10 +
- include/dt-bindings/leds/common.h                  |    7 +
- 27 files changed, 2788 insertions(+), 81 deletions(-)
- create mode 100644 drivers/hid/hid-nintendo.c
- create mode 100644 drivers/hid/hid-xiaomi.c
 
 -- 
-Jiri Kosina
-SUSE Labs
+Mit freundlichen Gruessen / Kind regards
+Steffen Maier
 
+Linux on IBM Z and LinuxONE
+
+https://www.ibm.com/privacy/us/en/
+IBM Deutschland Research & Development GmbH
+Vorsitzender des Aufsichtsrats: Gregor Pillen
+Geschaeftsfuehrung: Dirk Wittkopp
+Sitz der Gesellschaft: Boeblingen
+Registergericht: Amtsgericht Stuttgart, HRB 243294
