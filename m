@@ -2,112 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383604467A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:14:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 675224467AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 18:18:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhKERRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 13:17:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37248 "EHLO
+        id S232718AbhKERVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 13:21:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbhKERRP (ORCPT
+        with ESMTP id S229569AbhKERVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 13:17:15 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06676C061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 10:14:36 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id o29so3821515wms.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 10:14:35 -0700 (PDT)
+        Fri, 5 Nov 2021 13:21:23 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC668C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 10:18:43 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id n11-20020a17090a2bcb00b001a1e7a0a6a6so3846127pje.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 10:18:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=grsecurity.net; s=grsec;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Zv3ABwnUWd2T/SHLWRu++05oJKCkYNE3n6fh4ULeSmw=;
-        b=idSHuTwy4Uk7mPYTHSQxC+MiMEzIGIndfKskDrMAbruy3ClegQCNDa6l+DvIzbSICq
-         p9a6kWPhVxaq4SvJK/8s0qDRe50CuuvcxxC5JABmP6FugBm3KdVbvLsTpJhC0guxJ1LX
-         ZcHXL5f09/B31OEbqyALl7J5723cuzTbyHDlV+tMJMdse6anL/RNzlVgoQ12ASpIcxGW
-         fDLcj10IviIxiUUvovQEpYLfWY2CPRNJ9EMt+46+ZsszChUn9hWEQ894uHm28O6uSw2O
-         ezez9Srcepu+I0F7QolDv9QH26K7HH607YLlki2Vgz/ziiDPLHp/ReGk23DF8jCp0S3I
-         yeMQ==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=wzufjbDqGxDa2/k86ie4tw8Pdx0MnDOAPtjEE+yOjpY=;
+        b=dQ9hk9G7njRsxD1PZLshA+qzst9HtFIjOrwfqVOpZkhjgpbH3ZJ15Wa2K3G+FvZceL
+         hf9sPs/iug5gJ3B9H67sqfOaURp09a7LS2rrhl4ggSk+Br7zwF/uGsygQNe1d8ZVeTif
+         H6iSveVskAIqdwAyK/IZZXBAqjTxcutW6bTlXsqQXBYOWEw8r/SX/f84SW9LiXyKEJRj
+         0jTKQFwP0OqkOUvWJbtwbG4fNqX+gXZBd2s3f7E5c0a3OTPRe/8Gg5gjWwdZoighFEc0
+         pRfCo9ZaDYlIGw26xPbQ0Lq8+xl58P9AyLd2TgQwNYDaZ5wdrn3MsFPMLE9EY6n4ZmUY
+         pBRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=Zv3ABwnUWd2T/SHLWRu++05oJKCkYNE3n6fh4ULeSmw=;
-        b=QMY/oPj0hrvI+caPMsEsVAHjl0JkbIujSJOsEF0iVJXstQh9M05u9fj2+fe3JCJQ11
-         4m0kf7qonyQncjuEFEqvTbtR5ihzFOuC8cVFPQSyrC6jROreqEFgr3wsCqj9Ix6Pz+9W
-         SM+nrLV6kThvDjgTmLBXNcUlEis2B3+CFnkAuIQXcQqkzSsDo6vUJpj2t/P77BREMgZT
-         3PeDAHrAJzgnXyB9YTeVeA7u60zfje/Qzl+qAhtBDyCO0dOrmHDD4p3FgXudsarT4wUz
-         va1jojI+hu9bo35ofu8i/ggO16x1rf/sAXslGOKyb/h0dJNeW7RnJlgkh+qc6RbbumA1
-         +lBA==
-X-Gm-Message-State: AOAM531WbIQFTVyR95LVG6TwcyjV8QjobPBHB+N7UiC84JKKIyYoflQR
-        4cq9JHmdS2ihvru1fyAFFRzvqA==
-X-Google-Smtp-Source: ABdhPJwl9lJ17OoBtFWDvNaVdLhq+ue5nx2Z0aiGSyfReQQwWbzK0CKtIrinFtL6ZTYo04tLhs4Ryg==
-X-Received: by 2002:a05:600c:1d28:: with SMTP id l40mr4257963wms.192.1636132474580;
-        Fri, 05 Nov 2021 10:14:34 -0700 (PDT)
-Received: from ?IPv6:2003:f6:af04:5300:7c00:c62b:b3aa:158b? (p200300f6af0453007c00c62bb3aa158b.dip0.t-ipconnect.de. [2003:f6:af04:5300:7c00:c62b:b3aa:158b])
-        by smtp.gmail.com with ESMTPSA id m36sm8529706wms.25.2021.11.05.10.14.33
+        bh=wzufjbDqGxDa2/k86ie4tw8Pdx0MnDOAPtjEE+yOjpY=;
+        b=qe7/3IoAKL481TjCiCJVJZZTETOjkMxOLJ6OKrd6DQ/lJljQU6hauhn4U9AhRnybmg
+         s2ulGjvZIAA8IWtYMHE71Q4dIcrhXaruB8ZcJDqvD0LzsT0//GSX4JWFZVpueF2/dru0
+         vViB7Dn1rE45//7ui1Op8ChvBJhi1uiUL/uAWFNnYLWuHiZVkHFfgdy1x+3c3HT7ml5Y
+         ptY42IB/+/mrFXd7iBoJZ9sXuZLqDauq6+Fgt+eZK6Ohk3JcMyvx0RvLUaVQcrbmqDq5
+         Z2OZz2ZQMb95SlKamCKFgX13RUD5iPsnHRJaC2/MU1Dmzcoez6ZLt72L+R1hf7s6qjqG
+         4dzA==
+X-Gm-Message-State: AOAM5332g/H2j/hR1W3G5A/njFhclA8kXTc7YAyhnHDq+UFuntbFFNQS
+        K0w5oaLHANhMDTv+pocZ5tY=
+X-Google-Smtp-Source: ABdhPJytey5AouVICCVDk82iHij/AVBq1i2JZ5+cq79HqLAUse2Ke4aYg8gr5O0k/fTERlBtekAIKw==
+X-Received: by 2002:a17:90a:be10:: with SMTP id a16mr30954933pjs.133.1636132723242;
+        Fri, 05 Nov 2021 10:18:43 -0700 (PDT)
+Received: from [192.168.1.2] ([59.95.82.141])
+        by smtp.gmail.com with ESMTPSA id l1sm7758035pff.125.2021.11.05.10.18.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 10:14:34 -0700 (PDT)
-Subject: Re: [PATCH] sched/fair: Prevent dead task groups from regaining
- cfs_rq's
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Benjamin Segall <bsegall@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        linux-kernel@vger.kernel.org, Odin Ugedal <odin@uged.al>,
-        Kevin Tanguy <kevin.tanguy@corp.ovh.com>,
-        Brad Spengler <spender@grsecurity.net>
-References: <b98e3434-67cd-34b7-9e81-148ea31a851c@grsecurity.net>
- <20211103190613.3595047-1-minipli@grsecurity.net>
- <xm26ilx86gmp.fsf@google.com>
- <CAKfTPtBm4vHr=svju=Qg6eZmcv8YDghtM2r_pOahZ2gC3tzTxg@mail.gmail.com>
- <a6a3c6c9-d5ea-59b6-8871-0f72bff38833@grsecurity.net>
- <CAKfTPtBxoKBRWs4Z3Pxsk8==Ka9SG7NS3LzfOV33-2UXfhSM=g@mail.gmail.com>
- <cd3778d3-6980-a804-47e3-82b09dc960a4@grsecurity.net>
- <CAKfTPtDthksitm02sLowDMKbWZ29efth-YcPi0zVSFqbaZfiMA@mail.gmail.com>
- <8f4ed996-e6e5-75f4-b5fa-dffb7b7da05b@grsecurity.net>
- <20211105162914.215420-1-minipli@grsecurity.net>
- <YYVim5qpteqfwYjx@hirez.programming.kicks-ass.net>
-From:   Mathias Krause <minipli@grsecurity.net>
-Message-ID: <a113044b-b5b6-8bc1-864b-c817535889ff@grsecurity.net>
-Date:   Fri, 5 Nov 2021 18:14:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Fri, 05 Nov 2021 10:18:42 -0700 (PDT)
+Message-ID: <9bc5a088-2cdc-1bbd-6459-d1b95e25aa9c@gmail.com>
+Date:   Fri, 5 Nov 2021 22:48:34 +0530
 MIME-Version: 1.0
-In-Reply-To: <YYVim5qpteqfwYjx@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH v2] staging: r8188eu: os_dep: remove the goto statement
+Content-Language: en-GB
+To:     Pavel Skripkin <paskripkin@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        straube.linux@gmail.com, martin@kaiser.cx,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        saurav.girepunje@hotmail.com
+References: <YYKvWeyqd71pYSqM@Sauravs-MacBook-Air.local>
+ <YYT/LibxFzssNUJN@kroah.com> <ecf6ba8e-8273-0d77-5ceb-3ad44179d3a3@gmail.com>
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+In-Reply-To: <ecf6ba8e-8273-0d77-5ceb-3ad44179d3a3@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 05.11.21 um 17:58 schrieb Peter Zijlstra:
-> On Fri, Nov 05, 2021 at 05:29:14PM +0100, Mathias Krause wrote:
->>> Looks like it needs to be the kfree_rcu() one in this case. I'll prepare
->>> a patch.
->>
->> Testing the below patch right now. Looking good so far. Will prepare a
->> proper patch later, if we all can agree that this covers all cases.
->>
->> But the basic idea is to defer the kfree()'s to after the next RCU GP,
->> which also means we need to free the tg object itself later. Slightly
->> ugly. :/
-> 
-> Can't we add an rcu_head to struct task_group and simply call_rcu() the
-> thing with a free function?
 
-There is already one and this patch makes use of it for the second RCU
-GP requirement. Basically, the patch is doing what you request, no? See
-the new free_fair_sched_group().
+
+On 05/11/21 4:06 pm, Pavel Skripkin wrote:
+> On 11/5/21 12:53, Greg KH wrote:
+>> Right after this, ret8 is set, but never checked, which looks like a bug
+>> to me.  Can you work on fixing that after I take this patch?
+Yes, I will send a patch removing a local variable for return value and changing 
+the return type of function rtw_init_default_value . As rtw_init_default_value always return 
+success and the return value of this function is not checked.
+>>
+>> thanks,
+>>
+>> greg k-h
+>>
+> 
+> ret8 is returned from this function, but as I said [1] it can be just removed. It will be always set to _SUCCESS.
+> 
+> 
+> 
+> [1] https://lore.kernel.org/linux-staging/f26b4aec-c0a1-8c93-b34e-8b1a36ac81b3@gmail.com/
+> 
+> 
+Pavel also mentioned to remove the local variable ret8.
+> With regards,
+> Pavel Skripkin
 
 Thanks,
-Mathias
+Saurav
