@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53556446904
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 20:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C090446908
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 20:27:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbhKET3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 15:29:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38652 "EHLO
+        id S233407AbhKET37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 15:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233338AbhKET3u (ORCPT
+        with ESMTP id S233374AbhKET3v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 15:29:50 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3137C061205
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 12:27:10 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id k1so10497130ilo.7
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 12:27:10 -0700 (PDT)
+        Fri, 5 Nov 2021 15:29:51 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF76C061205
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 12:27:11 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id d70so10956060iof.7
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 12:27:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=W/eb6uDj0ZcPussZNWTyXvX7+BhhrBBdZ4eRtPk3Njs=;
-        b=fIfqGP52iMjTWJ3rJiWHeZApL+OE+qNoX8r4HqPqhUJsBNZBk06CuQTKr8jLitRKC2
-         89ldORPkk/VwhqpGKMIfFgwCsdnzOvDotuAbe1BEGzzhHF70zd0TnPQAjlakfTLpTazp
-         +dlPwKK779zSg/PwgWsvuvoAGlTy9d0JLStrfkVARlKT+p9Hcc3/mMoq3nxpG3CI/1mc
-         nhfd1S715+l8rmbG+V/8phkn4T52/qFF/rRFZe3W+ePU25y4miS/Ver+6oDKXjr/WhEH
-         IdkiUkDHsic4l4UByJMEZn7GcFFPMHPYRPzcVap7vxJv4R6jiRbkSS6GSvLje3ZwYG7y
-         oWXQ==
+        bh=RyfWj4lDBm5JLTztNtdXlP2pvw82NplVvLHkINaddHI=;
+        b=qVKTmYneIDNEr7QHbl1uC6bSNBSf8Y05Zcal5qyh/Ge6l2rhQUhbuYh+2D2KYkKQ9G
+         J4rFBTBNnyGKvVx5DJSfolblJfPOyh6MuDPssEL8LsJcHDvEZAQFFG3GfEiv4JuMQIGO
+         N11V26vDqADX5L/RiolUjg1mhFkqc6mSXpuNts8eUt+JmZBOsyf+ifOZDYZ1JDhsALjG
+         AmhAH3TqBi7pkekDpm6WmDvgNkGlsI3Kch9bjzyIGMN+l822ChvRmhJ3iwP9tmP5Svnx
+         LUtBbi7JjRk4d4Mbfsq+a0d/ZU78j9Pw4zsajEcn1iz/djvfSF4sRfHCR7l4XUgVa3pn
+         tqZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=W/eb6uDj0ZcPussZNWTyXvX7+BhhrBBdZ4eRtPk3Njs=;
-        b=PmEjhRbJAISsyxmQcT10K5Q80q9+9KDM0Q2SL6mLde4WQ5ULG5khVKI3DyQe9zp4Xj
-         RQrqruDtDva4W8QSpbOpZp2VIiMXY9NcqindEmJUmjppIcOoY9BACYKNI4GAbi5BWPTt
-         XHv7DMp3qsu4SxiW9+SBnCNxgJhq5wpbYwP0Dx33gEsAIKOsmxR++tkeBW0aKNHjFmYW
-         SMQ8aNPUOtzdEQHfBxDBJMw8MpEaJDnG66QpVga6yHOCeXWaKb5LrPTWpBoXKQHz0ild
-         aozea5V7k0Ro6dooW1qIT0hrzIJxm5P0E/y7zs6Mi0jDS6DcqOFiF0h1SPRq49y1+Y0F
-         EO4g==
-X-Gm-Message-State: AOAM53376A7ib3An8FEs8+OmU6wyxyVpgRAXhuEoPBdfElVNAr32D9ri
-        FqjzldA8+d/OVwlgG3SbgpE=
-X-Google-Smtp-Source: ABdhPJxel0Z7f8bD3NjrFD/j0wBPFyQfk151niEjAkFKLKmn/Dr7fv6lOMFJehAzWUYQyTtDdhcaEQ==
-X-Received: by 2002:a92:c74a:: with SMTP id y10mr34886664ilp.122.1636140430381;
-        Fri, 05 Nov 2021 12:27:10 -0700 (PDT)
+        bh=RyfWj4lDBm5JLTztNtdXlP2pvw82NplVvLHkINaddHI=;
+        b=SBmiA5nMucJJqcNIkhjh4R36Mg6xrFMfsPy93Q5zU3uqKxjqn9fTxUIQalw9UMQFG4
+         ZEgNxlUnL2WDY12UXNGU4icQ9MAxsxF7n6ovLkCM99G6QTvlDRmQZxt+TSkfzHLVgmiL
+         zc1hdI9M+wIW6NjoFv1juyNe24kOpfjuKAgWSyCISVndwMPfGe5CKztpZcw2KqBjkne3
+         EzSNcV1zoQr9qBjFemFkPfXuNHp1l3A39atY55v66wRVaSuLKB3xAhW92gmnqdGtK1bK
+         OOPVQjF2JYDrnTLCMMMTRwt/y4/rQt666jPtt/RZY8uwIkFuI/dWJ0gMl9nBZ1ICq+rJ
+         xY6g==
+X-Gm-Message-State: AOAM530XWYN0cFrH9L8/xVB5iw4ZpAXxM+h2T9/mR0CKBtyswruSzJvL
+        1BbK06HVtak52GwnXHPdEKg=
+X-Google-Smtp-Source: ABdhPJxOYt+lweZYvxAHtCNFFp40e2qQJbUadz/cFaCrc5NMal45RzO9yik8UJRD2dfAWz1Q8V1Jqg==
+X-Received: by 2002:a02:bb85:: with SMTP id g5mr10708401jan.130.1636140431271;
+        Fri, 05 Nov 2021 12:27:11 -0700 (PDT)
 Received: from samwise.. (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id l18sm4338617iob.17.2021.11.05.12.27.09
+        by smtp.googlemail.com with ESMTPSA id l18sm4338617iob.17.2021.11.05.12.27.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 05 Nov 2021 12:27:10 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
@@ -56,9 +56,9 @@ To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
         intel-gvt-dev@lists.freedesktop.org,
         intel-gfx@lists.freedesktop.org
 Cc:     Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v10 03/10] amdgpu: use dyndbg.BITGRPS to control existing pr_debugs
-Date:   Fri,  5 Nov 2021 13:26:30 -0600
-Message-Id: <20211105192637.2370737-4-jim.cromie@gmail.com>
+Subject: [PATCH v10 04/10] i915/gvt: trim spaces from pr_debug "gvt: core:" prefixes
+Date:   Fri,  5 Nov 2021 13:26:31 -0600
+Message-Id: <20211105192637.2370737-5-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211105192637.2370737-1-jim.cromie@gmail.com>
 References: <20211105192637.2370737-1-jim.cromie@gmail.com>
@@ -68,96 +68,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-logger_types.h defines many DC_LOG_*() categorized debug wrappers.
-Most of these already use DRM debug API, so are controllable using
-drm.debug, but others use a bare pr_debug("$prefix: .."), with 1 of 13
-different class-prefixes matching [:uppercase:]
+Taking embedded spaces out of existing prefixes makes them more easily
+searchable; simplifying the extra quoting needed otherwise:
 
-Use DEFINE_DYNAMIC_DEBUG_BITGRPS to create a sysfs location which maps
-from bits to these 13 sets of categorized pr_debugs to en/disable.
+  $> echo format "^gvt: core:" +p >control
 
-Makefile adds -DDYNAMIC_DEBUG_MODULE for CONFIG_DYNAMIC_DEBUG_CORE,
-otherwise BUILD_BUG_ON triggers (obvious errors on subtle misuse is
-better than mysterious ones).
+Dropping the internal spaces means any trailing space in a query will
+more clearly terminate the prefix being searched for.
+
+Consider a generic drm-debug example:
+
+  # turn off ATOMIC reports
+  echo format "^drm:atomic: " -p > control
+
+  # turn off all ATOMIC:* reports, including any sub-categories
+  echo format "^drm:atomic:" -p > control
+
+  # turn on ATOMIC:FAIL: reports
+  echo format "^drm:atomic:fail: " +p > control
+
+Removing embedded spaces in the format prefixes simplifies the
+corresponding match string.  This means that "quoted" match-prefixes
+are only needed when the trailing space is desired, in order to
+exclude explicitly sub-categorized pr-debugs; in this example,
+"drm:atomic:fail:".
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- drivers/gpu/drm/amd/amdgpu/Makefile           |  2 +
- .../gpu/drm/amd/display/dc/core/dc_debug.c    | 47 ++++++++++++++++++-
- 2 files changed, 48 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/i915/gvt/debug.h | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/Makefile b/drivers/gpu/drm/amd/amdgpu/Makefile
-index 653726588956..077342ca803f 100644
---- a/drivers/gpu/drm/amd/amdgpu/Makefile
-+++ b/drivers/gpu/drm/amd/amdgpu/Makefile
-@@ -38,6 +38,8 @@ ccflags-y := -I$(FULL_AMD_PATH)/include/asic_reg \
- 	-I$(FULL_AMD_DISPLAY_PATH)/amdgpu_dm \
- 	-I$(FULL_AMD_PATH)/amdkfd
+diff --git a/drivers/gpu/drm/i915/gvt/debug.h b/drivers/gpu/drm/i915/gvt/debug.h
+index c6027125c1ec..bbecc279e077 100644
+--- a/drivers/gpu/drm/i915/gvt/debug.h
++++ b/drivers/gpu/drm/i915/gvt/debug.h
+@@ -36,30 +36,30 @@ do {									\
+ } while (0)
  
-+ccflags-$(CONFIG_DYNAMIC_DEBUG_CORE) += -DYNAMIC_DEBUG_MODULE
-+
- amdgpu-y := amdgpu_drv.o
+ #define gvt_dbg_core(fmt, args...) \
+-	pr_debug("gvt: core: "fmt, ##args)
++	pr_debug("gvt:core: " fmt, ##args)
  
- # add KMS driver
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_debug.c b/drivers/gpu/drm/amd/display/dc/core/dc_debug.c
-index 21be2a684393..e49a755c6a69 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_debug.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_debug.c
-@@ -36,8 +36,53 @@
+ #define gvt_dbg_irq(fmt, args...) \
+-	pr_debug("gvt: irq: "fmt, ##args)
++	pr_debug("gvt:irq: " fmt, ##args)
  
- #include "resource.h"
+ #define gvt_dbg_mm(fmt, args...) \
+-	pr_debug("gvt: mm: "fmt, ##args)
++	pr_debug("gvt:mm: " fmt, ##args)
  
--#define DC_LOGGER_INIT(logger)
-+#if defined(CONFIG_DRM_USE_DYNAMIC_DEBUG)
-+#include <linux/dynamic_debug.h>
-+
-+unsigned long __debug_dc;
-+EXPORT_SYMBOL(__debug_dc);
-+
-+#define help_(_N, _cat)	"\t  Bit-" #_N "\t" _cat "\n"
-+
-+#define DC_DYNDBG_BITMAP_DESC(name)					\
-+	"Control pr_debugs via /sys/module/amdgpu/parameters/" #name	\
-+	", where each bit controls a debug category.\n"			\
-+	help_(0, "[SURFACE]:")						\
-+	help_(1, "[CURSOR]:")						\
-+	help_(2, "[PFLIP]:")						\
-+	help_(3, "[VBLANK]:")						\
-+	help_(4, "[HW_LINK_TRAINING]:")					\
-+	help_(5, "[HW_AUDIO]:")						\
-+	help_(6, "[SCALER]:")						\
-+	help_(7, "[BIOS]:")						\
-+	help_(8, "[BANDWIDTH_CALCS]:")					\
-+	help_(9, "[DML]:")						\
-+	help_(10, "[IF_TRACE]:")					\
-+	help_(11, "[GAMMA]:")						\
-+	help_(12, "[SMU_MSG]:")
-+
-+static struct dyndbg_bitdesc amdgpu_bitmap[] = {
-+	[0] = { "[CURSOR]:" },
-+	[1] = { "[PFLIP]:" },
-+	[2] = { "[VBLANK]:" },
-+	[3] = { "[HW_LINK_TRAINING]:" },
-+	[4] = { "[HW_AUDIO]:" },
-+	[5] = { "[SCALER]:" },
-+	[6] = { "[BIOS]:" },
-+	[7] = { "[BANDWIDTH_CALCS]:" },
-+	[8] = { "[DML]:" },
-+	[9] = { "[IF_TRACE]:" },
-+	[10] = { "[GAMMA]:" },
-+	[11] = { "[SMU_MSG]:" }
-+};
-+
-+DEFINE_DYNAMIC_DEBUG_LOG_GROUPS(debug_dc, __debug_dc,
-+				DC_DYNDBG_BITMAP_DESC(debug_dc),
-+				amdgpu_bitmap);
-+
-+#endif
+ #define gvt_dbg_mmio(fmt, args...) \
+-	pr_debug("gvt: mmio: "fmt, ##args)
++	pr_debug("gvt:mmio: " fmt, ##args)
  
-+#define DC_LOGGER_INIT(logger)
+ #define gvt_dbg_dpy(fmt, args...) \
+-	pr_debug("gvt: dpy: "fmt, ##args)
++	pr_debug("gvt:dpy: " fmt, ##args)
  
- #define SURFACE_TRACE(...) do {\
- 		if (dc->debug.surface_trace) \
+ #define gvt_dbg_el(fmt, args...) \
+-	pr_debug("gvt: el: "fmt, ##args)
++	pr_debug("gvt:el: " fmt, ##args)
+ 
+ #define gvt_dbg_sched(fmt, args...) \
+-	pr_debug("gvt: sched: "fmt, ##args)
++	pr_debug("gvt:sched: " fmt, ##args)
+ 
+ #define gvt_dbg_render(fmt, args...) \
+-	pr_debug("gvt: render: "fmt, ##args)
++	pr_debug("gvt:render: " fmt, ##args)
+ 
+ #define gvt_dbg_cmd(fmt, args...) \
+-	pr_debug("gvt: cmd: "fmt, ##args)
++	pr_debug("gvt:cmd: " fmt, ##args)
+ 
+ #endif
 -- 
 2.31.1
 
