@@ -2,54 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF3A445EFE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 05:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90421445F03
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 05:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbhKEEGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 00:06:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
+        id S229961AbhKEEHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 00:07:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhKEEGH (ORCPT
+        with ESMTP id S229884AbhKEEHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 00:06:07 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5035C061714
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 21:03:28 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id h17so3860110qtx.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 21:03:28 -0700 (PDT)
+        Fri, 5 Nov 2021 00:07:45 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BC9C061714
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Nov 2021 21:05:06 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id i13so6681047qvm.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Nov 2021 21:05:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=jms.id.au; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fc58r/t2jY2c5ky17n3aPeo946grK/8InB/YHBMFXg0=;
-        b=hUefx7guT4tDLT5XGyklHCcGIW1VPdCcQRBzE6azcgWKgPGaTSkv59UR+HbKaPenbu
-         1RyaykiT3gGeHfV3KsAlZ9NxHLs0aBizgSnItZFCaj1LtoBMjwUKWNAur0B5z0BSOlUa
-         F2FW0XwYGf8OHQ3G2cunukrvXQuvqj41QWCDk=
+        bh=hOpqec9HAj9jc/h7EYjL2E/xFemoSEaVzq55rh5h1G0=;
+        b=b2i5CsEmawrSp4+08EqRBkecvPNVR4RFKQpGU+0Xf9aHlg/iULVccpTMYT3/fxZUdO
+         RYbQ+GQ/SzrwAAd5mNxwzunTf5QJBAclDgGGX6Yjemfz3hgwpoyIR+Ak6bqa9jWZI/w8
+         6N0fSSQqaB5Wbkfn9TmARxFrBBiWszl/2RmNY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fc58r/t2jY2c5ky17n3aPeo946grK/8InB/YHBMFXg0=;
-        b=f5jS4EFYo4XKbbenTTk3DRUyHOPYCCvddfQw70av01HuFLWx2WLVB5nxJmiwnqm/fx
-         VQyR2QxPp1aGJ4By+Zf2V/qLMiwn3D5fM/f/DGbJiAWjtANdZbTwIYRrd85ElshqNua+
-         /F6XMgXo+RUpLCOgJlNJNIYBdC4Lu3ZUjvlOXL7ds+s8n/kG9rvTeW8MzLvdfrJk1gIf
-         8ilbEpEBPv3YAwqGeiuvKQ21mPeNjqNZ0Qy+Lvt5mKw4ndSjV+rHugvXdwEHolsvcJeS
-         noi/TleYub6EZWxDClSK9mTv/MRzBl7SYPTVKbY3JeO66VLr5jQVe3sOdneQ4JJpM0tn
-         OhsA==
-X-Gm-Message-State: AOAM530XgYFXIDLkKVx4o4y29GY4fN5HcJZQ/2S8t4oXFj1gvq3hCFzA
-        q3EqqqbutrmKnYwtURYCIuN6IZcLWmNuZp8QWno=
-X-Google-Smtp-Source: ABdhPJzfPavatG8fz8XDOwBDZsLLephzECNg76r7i3JlbR1TwNWIDvIl3n5RB+4ILqhQIz7sZl7ZobnqnfcA0TeT/hM=
-X-Received: by 2002:ac8:5812:: with SMTP id g18mr668756qtg.392.1636085008050;
- Thu, 04 Nov 2021 21:03:28 -0700 (PDT)
+        bh=hOpqec9HAj9jc/h7EYjL2E/xFemoSEaVzq55rh5h1G0=;
+        b=3IY8w8zUmQ1nTOA2+5smV0uE1+j3thp9quCCNlGm5syAL3UdSFr2hTc0s5AbBtiPHD
+         PCZtliZ8T3ELR3k3/diYVKDrzi0I+C7IFHNd8OiYxlwU7Z8dEk9Zoqw6m+CFE+5txEn9
+         SPx2Xymg1uPi4jY3HkNDgjmoFWsXbkXYurEjvs2i4FRoOB6kSbHyaLLCet14kN/lcaiQ
+         QaArh5APt/rzRC9yRapg7bo61TuqO+rD2HMeTCt5Bf4DYY1uUHkh99SDEIXtpgCgPwXe
+         NIrLkCdxwlNzRleUKhZsUvQOUK5Ae1n0X67ld50x9AeIrneo/hCsrwD/DJFrLFVwyTIA
+         qbmg==
+X-Gm-Message-State: AOAM530cci4PxS+g9ULnR6sJwJyrqZHeZnb4uX124yWNugIei+BCVQsL
+        GZpgvVDKJa/Vo1NRqD6/mh6Wsmhm8NTkTXI/zSs=
+X-Google-Smtp-Source: ABdhPJwnces3XhrDwJCHcodu8Tn5LZ7tc0hq7XiLObCwHwZeJEuNgABrBIX1YSlCefqP2MTsmdykYniAn3Xcchnm9bk=
+X-Received: by 2002:a05:6214:f2d:: with SMTP id iw13mr4449053qvb.13.1636085105549;
+ Thu, 04 Nov 2021 21:05:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211105005955.107419-1-osk@google.com> <CACPK8XcXR=V5-Q+sC4MniNJZJgvbiysFD-5yu6v30_2BwDRTSA@mail.gmail.com>
- <CABoTLcS=s0XuM9jiisYW3=1gXtiwP8WeopqTOeBwnTX1XCky9Q@mail.gmail.com>
- <CACPK8XebNsSr3wiMdMxDwQuMGX3p0g2Kid91dekUc6TGcHqfYQ@mail.gmail.com> <CABoTLcTb5uGABwe9FG4haj1888NA4mdZqJFTeQcSotBnq1aZVg@mail.gmail.com>
-In-Reply-To: <CABoTLcTb5uGABwe9FG4haj1888NA4mdZqJFTeQcSotBnq1aZVg@mail.gmail.com>
+References: <20211105032910.446492-1-osk@google.com>
+In-Reply-To: <20211105032910.446492-1-osk@google.com>
 From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 5 Nov 2021 04:03:15 +0000
-Message-ID: <CACPK8Xc0cmgDqOwGDWu4H+x9ySEvwwPVr0M+vJZ=hTOCj3VxiA@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: dts: aspeed: tyan-s7106: Update nct7802 config
+Date:   Fri, 5 Nov 2021 04:04:53 +0000
+Message-ID: <CACPK8Xc7SAVamBrCgptiWgV7r52ysrWjtRCkOmgKu_5AWPrG9w@mail.gmail.com>
+Subject: Re: [PATCH v3] ARM: dts: aspeed: tyan-s7106: Update nct7802 config
 To:     Oskar Senft <osk@google.com>
 Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
         linux-aspeed <linux-aspeed@lists.ozlabs.org>,
@@ -63,35 +61,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, 5 Nov 2021 at 03:29, Oskar Senft <osk@google.com> wrote:
 >
-> Hi Joel
+> This change updates the configuration for the nct7802 hardware
+> monitor to correctly configure its temperature sensors.
 >
-> > I test the kernels independently of yocto; I recommend doing that with
-> > a cross compiler when submitting patches upstream. My flow looks like
-> > this:
-> > [...]
-> > A few notes:
-> >  - I use the cross compiler from my distro. Debian unstable has GCC
-> > 11.2.0, which is the same as openbmc. You can use the compiler from
-> > your openbmc build tree if you aren't able to install a modern
-> > compiler
-> I couldn't figure out how to use the compiler from the OpenBMC tree.
-> The biggest issue is that it has "openbmc" in its name and Linux build
-> was getting confused by it. I gave up on that approach and found how
-> to install the right cross compiler in our environment. That worked
-> well. Thanks for the hints!
+> Signed-off-by: Oskar Senft <osk@google.com>
 
-Cool. For reference, you should be able to do this:
+Thanks, applied.
 
-CROSS_COMPILE="openbmc/build/p10bmc/tmp/sysroots-components/x86_64/gcc-cross-arm/usr/bin/arm-openbmc-linux-gnueabi/arm-openbmc-linux-gnueabi-"
 
+> ---
+> Changes from PATCH v2:
+> - Add missing address-cells, size-cells configuration.
+> - Add missing new line between channel 0 and 1.
 >
-> >  - building with -s means warnings stand out
-> Excellent idea, thank you!
+> Changes from PATCH v1:
+> - Removed superfluous "status" from channels.
+> ---
+>  arch/arm/boot/dts/aspeed-bmc-tyan-s7106.dts | 24 +++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
 >
-> >  - if you're working on device trees and want to ensure your binary is
-> > being built each time, omit the -s and build the 'dtbs' target
-> Ack.
+> diff --git a/arch/arm/boot/dts/aspeed-bmc-tyan-s7106.dts b/arch/arm/boot/dts/aspeed-bmc-tyan-s7106.dts
+> index 68f332ee1886..60ac6d3f03b5 100644
+> --- a/arch/arm/boot/dts/aspeed-bmc-tyan-s7106.dts
+> +++ b/arch/arm/boot/dts/aspeed-bmc-tyan-s7106.dts
+> @@ -213,6 +213,30 @@ &i2c0 {
+>         nct7802@28 {
+>                 compatible = "nuvoton,nct7802";
+>                 reg = <0x28>;
+> +
+> +               #address-cells = <1>;
+> +               #size-cells = <0>;
+> +
+> +               channel@0 { /* LTD */
+> +                       reg = <0>;
+> +               };
+> +
+> +               channel@1 { /* RTD1 */
+> +                       reg = <1>;
+> +                       sensor-type = "temperature";
+> +                       temperature-mode = "thermistor";
+> +               };
+> +
+> +               channel@2 { /* RTD2 */
+> +                       reg = <2>;
+> +                       sensor-type = "temperature";
+> +                       temperature-mode = "thermistor";
+> +               };
+> +
+> +               channel@3 { /* RTD3 */
+> +                       reg = <3>;
+> +                       sensor-type = "temperature";
+> +               };
+>         };
 >
-> I'll send a PATCH v3 now.
+>         /* Also connected to:
+> --
+> 2.34.0.rc0.344.g81b53c2807-goog
 >
-> Oskar.
