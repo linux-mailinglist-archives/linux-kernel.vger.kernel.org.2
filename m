@@ -2,154 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 372684466EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:23:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D06D4466F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 17:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbhKEQ00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 12:26:26 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:46998 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbhKEQ0Z (ORCPT
+        id S233276AbhKEQ2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 12:28:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233113AbhKEQ23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 12:26:25 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 91DE4212BC;
-        Fri,  5 Nov 2021 16:23:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636129424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FcmEpSdvpRAw1DH1xDlu+cpQVWWLRqY9tKa4dTZkU94=;
-        b=APbqb1DDidz+TjLCxY94do2ZwrbxXNUgxU0hYlglFJtB+b9Wd3hl1NawU9NvhiXOWNJckU
-        Pl3GwS5FuYL7Sps2Z3BQnaPjgE5PzTZ6yBB43i2LGmn06RelsGL8AX917IFF+MqEIf59PB
-        xnsI5imwbMKNS/AZgdgnS/FXF4OWn9c=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 75B0B2C144;
-        Fri,  5 Nov 2021 16:23:44 +0000 (UTC)
-Date:   Fri, 5 Nov 2021 17:23:44 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: Removal of printk safe buffers delays NMI context printk
-Message-ID: <YYVakNdzjrYuBmhf@alley>
-References: <1636039236.y415994wfa.astroid@bobo.none>
- <87ee7vki7f.fsf@jogness.linutronix.de>
- <1636073838.qpmyp6q17i.astroid@bobo.none>
- <87r1bv2aga.fsf@jogness.linutronix.de>
- <1636111599.wwppq55w4t.astroid@bobo.none>
- <87h7cqg0xk.fsf@jogness.linutronix.de>
+        Fri, 5 Nov 2021 12:28:29 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884CFC061205
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 09:25:49 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id j5so15878808lja.9
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 09:25:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UrGzSNLl9hkWQ6FY0wrjlvm9IW4EhNpFnEOVw1+6lI0=;
+        b=cVjspeqH37diRa4ySe6S2iiA1czmxfOtOWLfHoi5JdPW0nCQu/RUnglVsGr+rjbT6k
+         u7eO1hSzHFioTYrxlCnLamDqmnjFC8lyLVdRPA3WCX56FEwRTsfbrZzX0yFKWlAIC18F
+         0OTX/yMqnJFwPLjZcYAIEAsY5ncjbglIRVQ0TeWRNyPYuj/m4owkRTqfjkA5IOWPVUhk
+         u4K3Pp4t5kgqyBpmbr0jy3gl3wS8BOJ4pNH3M6cPTnnKsSTWCcty+KuzN7c9gpU/Se5H
+         OgXaAF0fE86e0wiqbxTbPyCRpV4OIwtXpFskRbopwuQ7RWJKvecgZ7YxM37qV7V51xsH
+         o1sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UrGzSNLl9hkWQ6FY0wrjlvm9IW4EhNpFnEOVw1+6lI0=;
+        b=5oZXzWlRhEZ1BfXTq/EuBdATOdkVCg6FbFJK5qPrbSxTuxNQwJGr3uaZWZTxlUMqLC
+         gjt6DYh2RjhU6dNunuv/2THc5/mxBcexw0ZX4tai1+vhG0cGkXgcYyKLaYtNXYBsBi7f
+         DUl4GRlwpAVAg2DiMCsSavI6JOcOcgmAc2xZfdH7MuPsTVEnyt9fX4BsnKKvxeqauWUv
+         Rq3a9im9WOqbvOGK9GSWS3LTc+zt65yV94ikk9XHg+BJWJcVwzKvAakC4gxgz4s95fQ/
+         6XO3XHZuKH7R1hlPi0qbciJQF6qctNZ8oBxW6VqisX0+3z2pqOhRLckSII+kvIGDxrj8
+         VKBA==
+X-Gm-Message-State: AOAM531g8jHulz4f4aMhVpAxPqroBvQZWcmrrDmUK0Dy+/K67S3FADxv
+        HImiKR/O/dyVaq7daz+gJ16tug==
+X-Google-Smtp-Source: ABdhPJxc+p+Sfr1lDnaHzVQSMv9ex6Kr2Ycy5rJpErG8VNnPs4Ud2FdjIX/NFVqB/7lmod7aZKjflA==
+X-Received: by 2002:a2e:b8c3:: with SMTP id s3mr9383633ljp.496.1636129547776;
+        Fri, 05 Nov 2021 09:25:47 -0700 (PDT)
+Received: from localhost (c-9b28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.155])
+        by smtp.gmail.com with ESMTPSA id x20sm874133lfu.196.2021.11.05.09.25.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 09:25:46 -0700 (PDT)
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     shuah@kernel.org, christian@brauner.io
+Cc:     nathan@kernel.org, ndesaulniers@google.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 1/2] selftests: cgroup: build error multiple outpt files
+Date:   Fri,  5 Nov 2021 17:25:29 +0100
+Message-Id: <20211105162530.3307666-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h7cqg0xk.fsf@jogness.linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2021-11-05 15:03:27, John Ogness wrote:
-> On 2021-11-05, Nicholas Piggin <npiggin@gmail.com> wrote:
-> >> What was removed from 93d102f094b was irq_work triggering on all
-> >> CPUs.
-> >
-> > No, it was the caller executing the flush for all remote CPUs itself.
-> > irq work was not involved (and irq work can't be raised in a remote
-> > CPU from NMI context).
-> 
-> Maybe I am missing something. In 93d102f094b~1 I see:
-> 
-> watchdog_smp_panic
->   printk_safe_flush
->     __printk_safe_flush
->       printk_safe_flush_buffer
->         printk_safe_flush_line
->           printk_deferred
->             vprintk_deferred
->               vprintk_emit (but no direct printing)
->               defer_console_output
->                 irq_work_queue
-> 
-> AFAICT, using defer_console_output() instead of your new printk_flush()
-> should cause the exact behavior as before.
+When building selftests/cgroup: with clang the following error are seen:
 
-I agree. printk_safe_flush() used printk_deferred(). It only queued
-the irq_work and never called consoles directly.
+clang -Wall -pthread    test_memcontrol.c cgroup_util.c ../clone3/clone3_selftests.h  -o /home/anders/.cache/tuxmake/builds/current/kselftest/cgroup/test_memcontrol
+clang: error: cannot specify -o when generating multiple output files
+make[3]: *** [../lib.mk:146: /home/anders/.cache/tuxmake/builds/current/kselftest/cgroup/test_memcontrol] Error 1
 
-> > but we do need that printk flush capability back there and for
-> > nmi_backtrace.
-> 
-> Agreed. I had not considered this necessary side-effect when I removed
-> the NMI safe buffers.
+Rework to add the header files to LOCAL_HDRS before including ../lib.mk,
+since the dependency is evaluated in '$(OUTPUT)/%:%.c $(LOCAL_HDRS)' in
+file lib.mk.
 
-Honestly, I do not understand why it stopped working or how
-it worked before.
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ tools/testing/selftests/cgroup/Makefile | 12 +++++++-----
+ tools/testing/selftests/lib.mk          |  2 +-
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-printk() calls vprintk(). Current vprintk() does:
-
-asmlinkage int vprintk(const char *fmt, va_list args)
-{
-[...]
-	/*
-	 * Use the main logbuf even in NMI. But avoid calling console
-	 * drivers that might have their own locks.
-	 */
-	if (this_cpu_read(printk_context) || in_nmi()) {
-		int len;
-
-		len = vprintk_store(0, LOGLEVEL_DEFAULT, NULL, fmt, args);
-		defer_console_output();
-		return len;
-	}
-
-	/* No obstacles. */
-	return vprintk_default(fmt, args);
-}
-
-By other words, current vprintk():
-
-   + queues irq_work() in NMI context
-   + tries to flush consoles immeditely otherwise
-
-
-> I am just wondering if we should fix the regression by going back to
-> using irq_work (such as defer_console_output()) or if we want to
-> introduce something new that introduces direct printing.
-
-Yup, defer_console_output() should do the same as printk_safe_flush()
-before. We do not longer need to copy the messages because they are
-already in the main lockless log buffer.
-
-Well, I am curious about the original code. The commit 93d102f094be9beab28e5
-("printk: remove safe buffers") did the following:
-
-diff --git a/arch/powerpc/kernel/watchdog.c b/arch/powerpc/kernel/watchdog.c
-index c9a8f4781a10..dc17d8903d4f 100644
---- a/arch/powerpc/kernel/watchdog.c
-+++ b/arch/powerpc/kernel/watchdog.c
-@@ -183,11 +183,6 @@ static void watchdog_smp_panic(int cpu, u64 tb)
+diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
+index 59e222460581..745fe25fa0b9 100644
+--- a/tools/testing/selftests/cgroup/Makefile
++++ b/tools/testing/selftests/cgroup/Makefile
+@@ -11,10 +11,12 @@ TEST_GEN_PROGS += test_core
+ TEST_GEN_PROGS += test_freezer
+ TEST_GEN_PROGS += test_kill
  
-        wd_smp_unlock(&flags);
++LOCAL_HDRS += $(selfdir)/clone3/clone3_selftests.h $(selfdir)/pidfd/pidfd.h
++
+ include ../lib.mk
  
--       printk_safe_flush();
--       /*
--        * printk_safe_flush() seems to require another print
--        * before anything actually goes out to console.
--        */
-        if (sysctl_hardlockup_all_cpu_backtrace)
-                trigger_allbutself_cpu_backtrace();
+-$(OUTPUT)/test_memcontrol: cgroup_util.c ../clone3/clone3_selftests.h
+-$(OUTPUT)/test_kmem: cgroup_util.c ../clone3/clone3_selftests.h
+-$(OUTPUT)/test_core: cgroup_util.c ../clone3/clone3_selftests.h
+-$(OUTPUT)/test_freezer: cgroup_util.c ../clone3/clone3_selftests.h
+-$(OUTPUT)/test_kill: cgroup_util.c ../clone3/clone3_selftests.h ../pidfd/pidfd.h
++$(OUTPUT)/test_memcontrol: cgroup_util.c
++$(OUTPUT)/test_kmem: cgroup_util.c
++$(OUTPUT)/test_core: cgroup_util.c
++$(OUTPUT)/test_freezer: cgroup_util.c
++$(OUTPUT)/test_kill: cgroup_util.c
+diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+index fe7ee2b0f29c..a40add31a2e3 100644
+--- a/tools/testing/selftests/lib.mk
++++ b/tools/testing/selftests/lib.mk
+@@ -141,7 +141,7 @@ endif
+ # Selftest makefiles can override those targets by setting
+ # OVERRIDE_TARGETS = 1.
+ ifeq ($(OVERRIDE_TARGETS),)
+-LOCAL_HDRS := $(selfdir)/kselftest_harness.h $(selfdir)/kselftest.h
++LOCAL_HDRS += $(selfdir)/kselftest_harness.h $(selfdir)/kselftest.h
+ $(OUTPUT)/%:%.c $(LOCAL_HDRS)
+ 	$(LINK.c) $(filter-out $(LOCAL_HDRS),$^) $(LDLIBS) -o $@
+ 
+-- 
+2.33.0
 
-And I am curious because:
-
-   + Why was printk_safe_flush() called before triggering backtraces
-     on other CPUs?
-
-   + The comment says that another print is needed before the messages
-     goes to the console. It makes sense because printk_safe_flush()
-     only set irq_work. But the patch did not remove any printk().
-     So, nobody called any printk() even before.
-
-Best Regards,
-Petr
