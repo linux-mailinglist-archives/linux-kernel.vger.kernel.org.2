@@ -2,92 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B48D446AF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 23:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D15D446AF3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 23:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233419AbhKEWg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 18:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51934 "EHLO
+        id S233443AbhKEWhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 18:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbhKEWg2 (ORCPT
+        with ESMTP id S233280AbhKEWhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 18:36:28 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCFFC061570
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 15:33:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=hOO7lxIdBGiMGSI9eUV+OgwA4OmL8+b8B41jLoeStsA=; b=eWF9+Hb4zSso9qRigLlE/jCi4Z
-        TNbolrY25qFn8X4vgDnqdSYYpg14Sx24s7SacR7Zqckl8LL6q2RTd1okcHoZDFLTd/SaQ9xeBYTr7
-        NyLcJ9B0FASuQtS2t6AVizVwO718b0JMR84xAAhpoUy8QivDSHMlqBj/ByL106XBkvB9/cQLTVBMp
-        XrTAj/vYc5EHfJtt2dxrWc8sDFqvDzAPCRcUVtPxgP2KPLtUdHhiDkzNghmjsWPDqaAYPXHtMG9V/
-        1a1Do0pzk1CeWoRroJ024Xa7kagOE9UrBtdXbCvwDm55NEUnNtCQkCDHvGhjxClG70oSABD89lCU5
-        7lroctig==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mj7mM-00CPVu-RT; Fri, 05 Nov 2021 22:33:46 +0000
-Date:   Fri, 5 Nov 2021 15:33:46 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jessica Yu <jeyu@kernel.org>, mcgrof@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Modules updates for v5.16-rc1
-Message-ID: <YYWxSlB1CNhhjUTQ@bombadil.infradead.org>
+        Fri, 5 Nov 2021 18:37:12 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECF7C061205
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 15:34:32 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id l8so10956032ilv.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 15:34:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=eriDMJ1VSc5nz4G+g+1zHzTH043RgXlZ6cpKSPDYOeU=;
+        b=V8ihsxlWvii9ykWAosYp3IZ2HStn6sOx05hwdJABkuFTTmhpden1g1SgK0sa6SyL4i
+         it0H5FIT5gLE0zDck9v0elRAE4zJRd6x7mhlQMFdObPriict4A5kc3TdmyxRioI7LOMi
+         K4v/WFajAdqC0MDlRr6DQJr6QLMH08zkP1LZN874HHMKYaTVoy5p4j7Kb/HuzZrdnJWI
+         Wrwns3akCwDFe4gCDCi2KB3mCv42Zx19z+EtFT4klIS+JMsU87zVG8w2cAjxM9RBa4kL
+         NLROrbHO4NPYPqD6JbQ1sU+ySiY9alzGpv/MXVN48hJTkUgX73octq4ScolkEmUHUpPZ
+         pLfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=eriDMJ1VSc5nz4G+g+1zHzTH043RgXlZ6cpKSPDYOeU=;
+        b=Neq8bulXVmK6iQX4wUz+5LPkhenrQ76g1tm2do5bjQfbEOflL9uJv4HILxio2znDhr
+         hbyZ1QdpacKEM6Wf/hGnUpw1LrAlOArpxF+KHlTHLwyZ5YVAHwXcarhB4VOjYbTi1YK/
+         f15dqOR5UfDuq7+Dj+bf9l4sBTELaZnpc9HAoCiacTOT/6n6+pFsemtFE7koE0l3+oV4
+         2AbLaENjMnMLo/OC4FH+juALAoDuKDPGZ/FuQtqTO6E890C9ukiZO9LdpG4OZdNC7BMk
+         jsHpT8iZsgrMB+YhmDjxquhgb0b94OaO2N+MIzvQ3h1wG14fwBS/EoVrxuIiU6zP/cQ5
+         MT9A==
+X-Gm-Message-State: AOAM532+V64ns0hqBbOAoC3a7CFARJtNJAslidQixQPTmsX7nRGPFaVD
+        Zu2ViabV7myxTnJDB6XuoCzrqeNfz2Fz8ac3t3Q=
+X-Google-Smtp-Source: ABdhPJwDw//9w5bNxZOD8CzTR4OrMDl86wBIBnN/YYDyh+tRmzNGAajX5JtwMYlidXfRoLHnjcFBs4F3nIR60trhApQ=
+X-Received: by 2002:a05:6e02:1848:: with SMTP id b8mr17249798ilv.299.1636151672065;
+ Fri, 05 Nov 2021 15:34:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Received: by 2002:a05:6638:24ce:0:0:0:0 with HTTP; Fri, 5 Nov 2021 15:34:31
+ -0700 (PDT)
+Reply-To: morissarhodesville326@gmail.com
+From:   Morissa Rhodesville <bahalhassane726@gmail.com>
+Date:   Fri, 5 Nov 2021 22:34:31 +0000
+Message-ID: <CALtWYMFWW8Rcx_hmsaCdr=xPZ1-WZtDg+1E0bevf4U10LaHB1Q@mail.gmail.com>
+Subject: my pleasure meeting you
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-As requested by Jessica, I'm stepping in to help with modules
-maintenance. This is my my first pull request, so if there are any
-issues with it please let me know so I can fix things for the next
-time around to make it even smoother for you.
-
-Nothing exciting here, except a warning enhancement and a fix for
-insanely large modules.
-
-Thank you,
-
-  Luis
-
-The following changes since commit 7fd982f394c42f25a73fe9dfbf1e6b11fa26b40a:
-
-  module: change to print useful messages from elf_validity_check() (2021-11-05 15:13:10 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/ tags/modules-5.16-rc1
-
-for you to fetch changes up to 7fd982f394c42f25a73fe9dfbf1e6b11fa26b40a:
-
-  module: change to print useful messages from elf_validity_check() (2021-11-05 15:13:10 -0700)
-
-----------------------------------------------------------------
-modules patches for 5.16-rc1
-
-As requested by Jessica I'm stepping in to help with modules
-maintenance. This is my first pull request to you.
-
-I've collected only two patches for modules for the 5.16-rc1 merge
-window. These patches are from Shuah Khan as she debugged some corner
-case error with modules. The error messages are improved for
-elf_validity_check(). While doing this work a corner case fix was
-spotted on validate_section_offset() due to a possible overflow bug
-on 64-bit. The impact of this fix is low given this just limits
-module section headers placed within the 32-bit boundary, and we
-obviously don't have insane module sizes. Even if a specially crafted
-module is constructed later checks would invalidate the module right
-away.
-
-I've let this sit through 0-day testing since October 15th with no
-issues found.
-
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-
-----------------------------------------------------------------
+Hello Greetings.
+I wish to discuss very important issues with you, your urgent response
+is highly appreciated
+Miss Morissa
