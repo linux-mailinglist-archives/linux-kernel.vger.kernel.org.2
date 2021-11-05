@@ -2,86 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B62446495
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 555AF44649D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 15:06:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233048AbhKEOGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 10:06:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232106AbhKEOGp (ORCPT
+        id S233054AbhKEOJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 10:09:08 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:40044 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232106AbhKEOJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 10:06:45 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48B4C061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 07:04:05 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id g191-20020a1c9dc8000000b0032fbf912885so6526420wme.4
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 07:04:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=eRUkcnCsnW/Jzom+fJQ9Oipyz+BV70fkQqo1JE5ywEA=;
-        b=cXPj0JABQ+GK1CEytrm6xlSeCoC9XwJ1CfhKZdPkRfSxvEUkzoM/ysmGThm3oJpvNa
-         62LQSfxa8K1+HhVHR/+SJQzyuqGD076s8Ly/moUKR7KOXxObdWlNTbrQ28F5d2ojdlVp
-         Snfv57tHUpWo67DPyEeQSIhlzfOP9hnqmKGBftgeRlGxEFRGQujqcD7vth5N3iU0jMK8
-         kXUaiMMjoK1DCTYlyiIErVW+RYqgvlYMJU5iVHbyFrjlI1mlwOoKdd0oBvovuiNzuKyK
-         zqTpjzzYCgRE2NNYEsIswXj3GyB299wu/XCmYGd4SkVnbCJzpgZravvgkKajjGof68FK
-         FH6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=eRUkcnCsnW/Jzom+fJQ9Oipyz+BV70fkQqo1JE5ywEA=;
-        b=OxYLmAWvrOaYh6qfKYtO95bH3nzy9+6mzT+s54olA+yG0Z+HYiVzilgviTzSJXwxEI
-         gK70aIT9bIowlMPwaaug8bIFaKiAFUSHns5OxJ4tMRugMJeazYxCC1ghI3XjOhSc81EI
-         HvST/XvBM1iEVmPq1ZN/Z8HEmwfaTH07EMuGH5zFjHHSR2BNvf8zR2lSarZerEjEPXKC
-         IeAnq2U1LnRJqGg3WuJQRKYXGGBIBYr5VQoHJdgiENUOURJIacbTeACh03UQTBj4b6eF
-         Ynfv5xZ31xqEK1Yh1+vOhrPHOoFDBmQUXBzpbOg+MPIAdMpXRoWjAlxbLoYdyFhxR1rp
-         PejQ==
-X-Gm-Message-State: AOAM530rWpVXJq81S/SD71gHGl5LSGEQSePICif03quz1hZBG/QgHBSA
-        8uM6674/eJTrI53lc+LBYoZEpjPe9RdnTA==
-X-Google-Smtp-Source: ABdhPJweRjIy2I0BF+5yqtXWRpmY9TSE1UB7YhjgzcsASgtRjHCvCizFmbEh43py53M433Nyf7DHIw==
-X-Received: by 2002:a05:600c:2195:: with SMTP id e21mr31062039wme.187.1636121044500;
-        Fri, 05 Nov 2021 07:04:04 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id c17sm8213987wmk.23.2021.11.05.07.04.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 07:04:03 -0700 (PDT)
-Message-ID: <ff8187bb-a9ab-11a1-f658-911c1b601ce7@linaro.org>
-Date:   Fri, 5 Nov 2021 14:06:04 +0000
+        Fri, 5 Nov 2021 10:09:07 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: andrzej.p)
+        with ESMTPSA id 36EBB1F46464
+Subject: Re: [RFC] tty/sysrq: Add alternative SysRq key
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
+        linux-input@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Slaby <jirislaby@kernel.org>, kernel@collabora.com
+References: <20211103155438.11167-1-andrzej.p@collabora.com>
+ <20211104120111.GB23122@duo.ucw.cz>
+ <17ccc35d-441c-70c1-a80a-28a4ff824535@collabora.com>
+ <alpine.DEB.2.21.2111041227510.57165@angie.orcam.me.uk>
+ <alpine.DEB.2.21.2111041311260.57165@angie.orcam.me.uk>
+ <9fbe062a-2992-0361-e72a-f2b1523143dd@collabora.com>
+ <b3a917ef-8a70-80b6-8c79-48ce4628b9e8@collabora.com>
+ <YYUxNaDG0DquQvke@kroah.com>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Message-ID: <bec3ea81-4084-02ab-d26d-7215296cf2ee@collabora.com>
+Date:   Fri, 5 Nov 2021 15:06:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH 5.10 14/16] Revert "wcn36xx: Disable bmps when encryption
- is disabled"
+In-Reply-To: <YYUxNaDG0DquQvke@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Kalle Valo <kvalo@codeaurora.org>
-References: <20211104141159.561284732@linuxfoundation.org>
- <20211104141200.061783376@linuxfoundation.org> <20211105131848.GA9566@amd>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20211105131848.GA9566@amd>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/11/2021 13:18, Pavel Machek wrote:
-> This explains why revert is a good idea for mainline, but it may still
-> cause problems for 5.10. Is someone able to test it in 5.10?
+Hi Greg,
+
+W dniu 05.11.2021 o 14:27, Greg Kroah-Hartman pisze:
+> On Fri, Nov 05, 2021 at 02:01:23PM +0100, Andrzej Pietrasiewicz wrote:
+>> Hi,
+>>
+>> W dniu 04.11.2021 o 15:17, Andrzej Pietrasiewicz pisze:
+>>> Hi Maciej,
+>>>
+>>> W dniu 04.11.2021 o 14:13, Maciej W. Rozycki pisze:
+>>>> On Thu, 4 Nov 2021, Maciej W. Rozycki wrote:
+>>>>
+>>>>>    The reason for this is with their more recent laptops Lenovo in their
+>>>>> infinite wisdom have placed the <PrintScreen> key (which in a traditional
+>>>>> PS/2-keyboard manner produces <SysRq> when combined with <Alt>) in their
+>>>>> keyboards between the right <Alt> and <Ctrl> keys.  With thumbs not being
+>>>>> as accurate as other fingers (and the overall misdesign of the keyboard
+>>>>> and touchpad interface) you can imagine how often I have inadvertently hit
+>>>>> <SysRq> combined with a letter key, wreaking havoc to my system (and of
+>>>>> course I want to keep the key enabled for times when I do need it).
+>>>>
+>>>>    On second thoughts this can be disabled with `setkeycodes 54 0' once we
+>>>> do have an alternative combination available.
+>>>>
+>>>
+>>> Doesn't `setkeycodes` affect only one keyboard? What if there are more
+>>> keyboards connected to a machine?
+>>>
+>>>   From drivers/tty/vt/keyboard.c:
+>>>
+>>> /*
+>>>    * Translation of scancodes to keycodes. We set them on only the first
+>>>    * keyboard in the list that accepts the scancode and keycode.
+>>>    * Explanation for not choosing the first attached keyboard anymore:
+>>>    *  USB keyboards for example have two event devices: one for all "normal"
+>>>    *  keys and one for extra function keys (like "volume up", "make coffee",
+>>>    *  etc.). So this means that scancodes for the extra function keys won't
+>>>    *  be valid for the first event device, but will be for the second.
+>>>    */
+>>>
+>>
+>> My second thoughts: if we run `setkeycodes` to map, say, F10 as SysRq,
+>> don't we lose F10?
 > 
-> Best regards,
-> 								Pavel
+> The fact that this patch adds a "new" sysrq key no matter what is a
+> non-starter, please think through the consequences of such a change...
+> 
 
-I have to pull in a bunch of out-of-tree patches to boot on the target 
-device but..
+I wouldn't say this RFC adds a "new" sysrq no matter what. It does so only
+when the input device (keyboard) does _not_ have SysRq key at all. So I would
+say that this patch adds a replacement SysRq key if the SysRq key proper is
+_physically_ absent. Which seems not such a bad thing to me. The problem I'm
+trying to solve is exactly this: what to use as SysRq if there's no SysRq?
 
-Sure, I can have a look over the weekend
-
----
-bod
+Andrzej
