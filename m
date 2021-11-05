@@ -2,156 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15CBF446320
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 13:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D91D944631D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Nov 2021 13:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232883AbhKEMHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 08:07:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45336 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232904AbhKEMHP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 08:07:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636113875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XASuO+rECscFYeoZ2e+O7ZWZF/gxoe7C6KcT09KQuV8=;
-        b=J1f6/KocCmX8Q/ckk7NRTHnS3OQteD2wZY20hQ0WCHuHl2k+CABkOZYz1fa9yRRq0R3Km8
-        VvzKq/WWOTfzrevQlA5+ykCOYBbhfDB6+TrBGLaE0bzThF/Lucsa2H3ORjVzNUks76A3tn
-        bjT69VqCcTt41CYU9g0gSdkbvqW1R54=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-48-DQ_V2EfZNS-WZmEUvlRrnQ-1; Fri, 05 Nov 2021 08:04:32 -0400
-X-MC-Unique: DQ_V2EfZNS-WZmEUvlRrnQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S232866AbhKEMHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 08:07:04 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:50819 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232693AbhKEMHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 08:07:03 -0400
+Received: from [192.168.0.2] (ip5f5ae8e7.dynamic.kabel-deutschland.de [95.90.232.231])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBAE980A5C2;
-        Fri,  5 Nov 2021 12:04:30 +0000 (UTC)
-Received: from T590 (ovpn-8-17.pek2.redhat.com [10.72.8.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 20BFB5D740;
-        Fri,  5 Nov 2021 12:04:08 +0000 (UTC)
-Date:   Fri, 5 Nov 2021 20:04:03 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>, live-patching@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>, ming.lei@redhat.com
-Subject: Re: [PATCH V4 1/3] livepatch: remove 'struct completion finish' from
- klp_patch
-Message-ID: <YYUds30Tkbs9HglB@T590>
-References: <20211102145932.3623108-1-ming.lei@redhat.com>
- <20211102145932.3623108-2-ming.lei@redhat.com>
- <YYFfmo5/Dds7bspY@alley>
- <YYHdFLwGry58Q16F@T590>
- <YYKGDSdKwQfjs6xf@alley>
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 7AEEE61EA191E;
+        Fri,  5 Nov 2021 13:04:22 +0100 (CET)
+Message-ID: <0f86c80b-aa6b-e1fd-5fda-0a4e4093250d@molgen.mpg.de>
+Date:   Fri, 5 Nov 2021 13:04:22 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYKGDSdKwQfjs6xf@alley>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: How to reduce PCI initialization from 5 s (1.5 s adding them to
+ IOMMU groups)s
+Content-Language: en-US
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+To:     =?UTF-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     iommu@lists.linux-foundation.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+References: <de6706b2-4ea5-ce68-6b72-02090b98630f@molgen.mpg.de>
+In-Reply-To: <de6706b2-4ea5-ce68-6b72-02090b98630f@molgen.mpg.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 01:52:29PM +0100, Petr Mladek wrote:
-> On Wed 2021-11-03 08:51:32, Ming Lei wrote:
-> > On Tue, Nov 02, 2021 at 04:56:10PM +0100, Petr Mladek wrote:
-> > > On Tue 2021-11-02 22:59:30, Ming Lei wrote:
-> > > > The completion finish is just for waiting release of the klp_patch
-> > > > object, then releases module refcnt. We can simply drop the module
-> > > > refcnt in the kobject release handler of klp_patch.
-> > > > 
-> > > > This way also helps to support allocating klp_patch from heap.
+Dear Linux folks,
+
+
+Am 05.11.21 um 12:56 schrieb Paul Menzel:
+
+> On a PowerEdge T440/021KCD, BIOS 2.11.2 04/22/2021, Linux 5.10.70 takes 
+> almost five seconds to initialize PCI. According to the timestamps, 1.5 
+> s are from assigning the PCI devices to the 142 IOMMU groups.
 > 
-> First, I am sorry for confusion. The above description is correct.
-> I does not say anything about that kobject_put() is synchronous.
+> ```
+> $ lspci | wc -l
+> 281
+> $ dmesg
+> […]
+> [    2.918411] PCI: Using host bridge windows from ACPI; if necessary, use "pci=nocrs" and report a bug
+> [    2.933841] ACPI: Enabled 5 GPEs in block 00 to 7F
+> [    2.973739] ACPI: PCI Root Bridge [PC00] (domain 0000 [bus 00-16])
+> [    2.980398] acpi PNP0A08:00: _OSC: OS supports [ExtendedConfig ASPM ClockPM Segments MSI HPX-Type3]
+> [    2.989457] acpi PNP0A08:00: _OSC: platform does not support [LTR]
+> [    2.995451] acpi PNP0A08:00: _OSC: OS now controls [PME PCIeCapability]
+> [    3.001394] acpi PNP0A08:00: FADT indicates ASPM is unsupported, 
+> using BIOS configuration
+> [    3.010511] PCI host bridge to bus 0000:00
+> […]
+> [    6.233508] system 00:05: [io  0x1000-0x10fe] has been reserved
+> [    6.239420] system 00:05: Plug and Play ACPI device, IDs PNP0c02 (active)
+> [    6.239906] pnp: PnP ACPI: found 6 devices
+> […]
+> [    6.989016] pci 0000:d7:05.0: disabled boot interrupts on device [8086:2034]
+> [    6.996063] PCI: CLS 0 bytes, default 64
+> [    7.000008] Trying to unpack rootfs image as initramfs...
+> [    7.065281] Freeing initrd memory: 5136K
+> […]
+> [    7.079098] DMAR: dmar7: Using Queued invalidation
+> [    7.083983] pci 0000:00:00.0: Adding to iommu group 0
+> […]
+> [    8.537808] pci 0000:d7:17.1: Adding to iommu group 141
+> [    8.571191] DMAR: Intel(R) Virtualization Technology for Directed I/O
+> [    8.577618] PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
+> […]
+> ```
 > 
-> > > IMHO, this is wrong assumption. kobject_put() might do everyting
-> > > asynchronously, see:
-> 
-> I see that you are aware of this behavior.
-> 
-> > >    kobject_put()
-> > >      kobject_release()
-> > >        INIT_DELAYED_WORK(&kobj->release, kobject_delayed_cleanup);
-> > >        schedule_delayed_work(&kobj->release, delay);
-> > > 
-> > >    asynchronously:
-> > > 
-> > >      kobject_delayed_cleanup()
-> > >       kobject_cleanup()
-> > > 	__kobject_del()
-> > 
-> > OK, this is one generic kobject release vs. module unloading issue to
-> > solve, not unique for klp module, and there should be lots of drivers
-> > suffering from it.
-> 
-> Yup, the problem is generic. It would be nice to have a generic
-> solution. For example, add kobject_release_sync() that would return
-> only when the object is really released.
+> Is there anything that could be done to reduce the time?
 
-The generic solution has been posted out:
-
-https://lore.kernel.org/lkml/20211105063710.4092936-1-ming.lei@redhat.com/
-
-which needn't any generic API change, just flushes all scheduled kobject
-cleanup work before freeing module, and the change is transparent for
-drivers.
-
-IMO, kobject_release_sync() is one wrong direction for fixing this
-issue, since it is basically impossible to audit if one kobject_put()
-need to be replaced with kobject_release_sync().
-
-> 
-> > > > --- a/kernel/livepatch/core.c
-> > > > +++ b/kernel/livepatch/core.c
-> > > > @@ -678,11 +678,6 @@ static void klp_free_patch_finish(struct klp_patch *patch)
-> > > >  	 * cannot get enabled again.
-> > > >  	 */
-> > > >  	kobject_put(&patch->kobj);
-> > > > -	wait_for_completion(&patch->finish);
-> > > > -
-> > > > -	/* Put the module after the last access to struct klp_patch. */
-> > > > -	if (!patch->forced)
-> > > > -		module_put(patch->mod);
-> > > 
-> > > klp_free_patch_finish() does not longer wait until the release
-> > > callbacks are called.
-> > > 
-> > > klp_free_patch_finish() is called also in klp_enable_patch() error
-> > > path.
-> > > 
-> > > klp_enable_patch() is called in module_init(). For example, see
-> > > samples/livepatch/livepatch-sample.c
-> > > 
-> > > The module must not get removed until the release callbacks are called.
-> > > Does the module loader check the module reference counter when
-> > > module_init() fails?
-> > 
-> > Good catch, that is really one corner case, in which the kobject has to
-> > be cleaned up before returning from mod->init(), cause there can't be
-> > module unloading in case of mod->init() failure.
-> 
-> Just to be sure. We want to keep the safe behavior in this case.
-> There are many situations when klp_enable() might fail. And the error
-> handling must be safe.
-> 
-> In general, livepatch developers are very conservative.
-> Livepatches are not easy to create. They are used only by people
-> who really want to avoid reboot. We want to keep the livepatch kernel
-> framework as safe as possible to avoid any potential damage.
-
-The posted patch can cover this situation in which module_init() fails.
+I created an issue at the Kernel.org Bugzilla, and attached the output 
+of `dmesg` there [1].
 
 
+Kind regards,
 
-Thanks,
-Ming
+Paul
 
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=214953
