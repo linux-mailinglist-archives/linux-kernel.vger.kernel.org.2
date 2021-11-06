@@ -2,121 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C956446E3C
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 14:49:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2DE446E45
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 15:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbhKFNw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 09:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52466 "EHLO
+        id S233925AbhKFO0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 10:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbhKFNw0 (ORCPT
+        with ESMTP id S233614AbhKFO0G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 09:52:26 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76370C061570;
-        Sat,  6 Nov 2021 06:49:45 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id g3so19866599ljm.8;
-        Sat, 06 Nov 2021 06:49:45 -0700 (PDT)
+        Sat, 6 Nov 2021 10:26:06 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2892AC061570;
+        Sat,  6 Nov 2021 07:23:25 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so5402304pjl.2;
+        Sat, 06 Nov 2021 07:23:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=hllwjT4hNTrSJHeTE4iXbEl+wXeiJPG72ZsFy8OgFs8=;
-        b=j/bX+iS3Gw45KdNSlp0LnjcQLupd19hi3uzB904DP6jv8i8dx80jU2wBQCMr3LZEAd
-         TXx2OhXaHkr5HDGh3t4StZev0qvqsbH4dBUYOyep7WqYxhfGbKus/x74cGKuJVvttclL
-         iRg9kV3HhbWSoK6o/YxK7Mhb7uXif2ZX3gKhoy2MFkObCkzvs2UpIfzjiC+Sf5Sx8cj7
-         MalPqo8LENV3JseVC37UuJvIYsqdWYxxrq8D1Rsxmh3GxNb5ayytjdMnJ8uKb25VX9Bq
-         4/D9UH/hEr1AjeCkNg6qLYtCHlGJ2tLoTILaFID2bwZjA830pLKWIpWPuJrOwhf9tAx1
-         J4EA==
+        h=from:to:cc:subject:date:message-id;
+        bh=hq+4Vsu97LBFL6wCsWyPt3va/75TDS9sonocRI27F48=;
+        b=IbCYME7dpSm3Tp1aj3zGo8L8h3H+p0ACCWTmZgCX2Zl9US9pKz0eO5yzQWEokCklZB
+         zjJ2R3/TtJYBZkARFn/csyoAtvTuzOZlzaCReNIZ61MKyzgDSkPxFvkyNdR3QH/a7nvK
+         34F6r63sM8qttDu0XSvlMu0ih32OFiJlTW9X2akSJCCEuyUGqzrKQTWeb09O3DatGZra
+         tNi7UD1t9reaXc9Ka6CHPJ/KvxGR1hhmvqkm0Dkq2h79WWzJMRqEtnkZnl44M8duN9wG
+         sF9jyKu+7CmBHbeRrmF5djRUvH7gQSfNPqVwQ1iL6YCpSbzprg+Dm6xfQgDG6TzIvdfH
+         RglA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=hllwjT4hNTrSJHeTE4iXbEl+wXeiJPG72ZsFy8OgFs8=;
-        b=sebC/rVW1bfBb9clkOyTGUkPSJqMmAXaeZwTQbuTYIRoPGc3+SlZcKE3onlmPy65x+
-         YJsqHrbrviWbnoRmzIzkna/EZ3pOlMCXEbf8h+I87Dx/7XIxEuoNOz7FymCpJaFh7o64
-         BLxP7nxIVPkdEu3Hpkpe6pAb7b9d8qinjmElLeKgIrI6QThbRuFPzNUiwvTg60eyoYQN
-         8pypjpRFT9aYW6U/oKdg2rcRB3ppyBQiG1g18Tk0UAms05P0X+05z8jH+cCp3P7AI9lW
-         0BcoUYriu2MoA3j/cFZQWJ46kS9qFoxEvJmmO7tdDGVMXy3kVe5rDbxbjnGOBLqRHz2+
-         Xp1Q==
-X-Gm-Message-State: AOAM5335QFAMD5jfAMVv52CusdJ+jJik9HQptjGlXvNCcc2AnDFwoiyM
-        jHE6lF+oaIFMwluyuZg/qVmY08LOBVNUH9dGGui+23l+uMg=
-X-Google-Smtp-Source: ABdhPJxwSZ9CWpulDTAqSztmY/n1f6kETA98HrigwzD1Nw/AoGwg5iHK7PszWU95TjjeEV0WrgIy4gbrHjW1JJjHOlU=
-X-Received: by 2002:a2e:9119:: with SMTP id m25mr13574819ljg.229.1636206583758;
- Sat, 06 Nov 2021 06:49:43 -0700 (PDT)
-MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Sat, 6 Nov 2021 08:49:31 -0500
-Message-ID: <CAH2r5mum6Fm=4jybfZ2fcvP9yBioXV4mi6TTjwnTZhasZLnRnQ@mail.gmail.com>
-Subject: [GIT PULL] cifs/smb3 client fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=hq+4Vsu97LBFL6wCsWyPt3va/75TDS9sonocRI27F48=;
+        b=Uyu977t6jPRl43o2XlCi/Y9Iqw0jh4hoy2HZa6piwMKW9yWx3wi7hgKeqk5O8Sql4Y
+         CTlrznsftMRCEZbKvTjn5vrp4SMatseV+7XaggG452kG7PSH60enCSyKxlQtc4zLvtZW
+         oMX2JW+8t3Qr6MJzxXB/rPKa7FEou4oi6XB+LS5nVNQe1Q4xl4jlm8kcQx9gWJHnfnt5
+         QcJTAg0K0h6TUWJ4JaKl61lHTRpmGSSJ38sKgI6vbVnXshuy9AS+UVw6L30hVqMbrV3f
+         8YW3DNAyek/toswyWIc6Hi+HtUkHHrRIT6bfHE9WYe/3xfcGOpbNTWUtwQEwaAFlYGJO
+         4PEw==
+X-Gm-Message-State: AOAM533t/fne01v6SrRHL491pMO8vNr3iKmPCIycOf6aZCqXroOHuq+O
+        Cl2lt6nrxnBs2BXLsr8AHzXptf1id20=
+X-Google-Smtp-Source: ABdhPJzCIvEQFUREbXqSs3e1dOl+iJaYLi0z1ZTfCk80pEBKYApexIvmiUJInDJPbrJ9sGSH4ljiLg==
+X-Received: by 2002:a17:90a:bb84:: with SMTP id v4mr38861487pjr.4.1636208604662;
+        Sat, 06 Nov 2021 07:23:24 -0700 (PDT)
+Received: from scdiu3.sunplus.com ([113.196.136.192])
+        by smtp.googlemail.com with ESMTPSA id m4sm10859258pjs.1.2021.11.06.07.23.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 06 Nov 2021 07:23:24 -0700 (PDT)
+From:   Tony Huang <tonyhuang.sunplus@gmail.com>
+X-Google-Original-From: Tony Huang <tony.huang@sunplus.com>
+To:     ulf.hansson@linaro.org, robh+dt@kernel.org,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, p.zabel@pengutronix.de
+Cc:     wells.lu@sunplus.com, Tony Huang <tony.huang@sunplus.com>
+Subject: [PATCH 0/2] Add mmc driver for Sunplus SP7021 SOC
+Date:   Sat,  6 Nov 2021 22:23:16 +0800
+Message-Id: <1636208598-18234-1-git-send-email-tony.huang@sunplus.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-3906fe9bb7f1a2c8667ae54e967dc8690824f4ea:
+This is a patch series for mmc driver for Sunplus SP7021 SOC.
 
-  Linux 5.15-rc7 (2021-10-25 11:30:31 -0700)
+Sunplus SP7021 is an ARM Cortex A7 (4 cores) based SoC. It integrates
+many peripherals (ex: UART, I2C, SPI, SDIO, eMMC, USB, SD card and
+etc.) into a single chip. It is designed for industrial control.
 
-are available in the Git repository at:
+Refer to:
+https://sunplus-tibbo.atlassian.net/wiki/spaces/doc/overview
+https://tibbo.com/store/plus1.html
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.16-rc-part1-smb3-client-fixes
+Tony Huang (2):
+  dt-binding: mmc: Add mmc yaml file for Sunplus SP7021
+  mmc: Add mmc driver for Sunplus SP7021
 
-for you to fetch changes up to d7171cd1acf70eb949ece8ccc95be27b3dfcf4da:
+ .../devicetree/bindings/mmc/sunplus-mmc.yaml       |   64 +
+ MAINTAINERS                                        |    7 +
+ drivers/mmc/host/Kconfig                           |    9 +
+ drivers/mmc/host/Makefile                          |    1 +
+ drivers/mmc/host/sunplus_mmc.c                     | 1593 ++++++++++++++++++++
+ drivers/mmc/host/sunplus_mmc.h                     |  181 +++
+ 6 files changed, 1855 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mmc/sunplus-mmc.yaml
+ create mode 100644 drivers/mmc/host/sunplus_mmc.c
+ create mode 100644 drivers/mmc/host/sunplus_mmc.h
 
-  smb3: add dynamic trace points for socket connection (2021-11-05
-16:20:24 -0500)
+-- 
+2.7.4
 
-----------------------------------------------------------------
-7 cifs/smb3 fixes:
-- a reconnect fix for stable
-- a minor mount option fix
-- a debugging improvement for (TCP) connection issues
-- refactoring of common code to help ksmbd
-
-Regression test results:
-http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/826
-
-There is a larger set of fixes (multichannel and DFS related e.g.)
-still being tested/reviewed for later in the merge window
-----------------------------------------------------------------
-Ronnie Sahlberg (4):
-      cifs: Create a new shared file holding smb2 pdu definitions
-      cifs: move NEGOTIATE_PROTOCOL definitions out into the common area
-      cifs: Move more definitions into the shared area
-      cifs: Move SMB2_Create definitions to the shared area
-
-Shyam Prasad N (1):
-      cifs: To match file servers, make sure the server hostname matches
-
-Steve French (2):
-      cifs: add mount parameter tcpnodelay
-      smb3: add dynamic trace points for socket connection
-
- fs/cifs/cifsfs.c          |   1 -
- fs/cifs/cifsglob.h        |   3 +-
- fs/cifs/connect.c         |  26 +-
- fs/cifs/fs_context.c      |  16 ++
- fs/cifs/fs_context.h      |   2 +
- fs/cifs/misc.c            |   2 +-
- fs/cifs/smb2maperror.c    |  16 +-
- fs/cifs/smb2misc.c        |  47 ++--
- fs/cifs/smb2ops.c         |  73 +++---
- fs/cifs/smb2pdu.c         | 187 +++++++-------
- fs/cifs/smb2pdu.h         | 919
-++----------------------------------------------------------------
- fs/cifs/smb2proto.h       |   2 +-
- fs/cifs/smb2transport.c   |  36 +--
- fs/cifs/trace.h           |  71 ++++++
- fs/smbfs_common/smb2pdu.h | 989
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 15 files changed, 1299 insertions(+), 1091 deletions(-)
- create mode 100644 fs/smbfs_common/smb2pdu.h
-
-
---
-Thanks,
-
-Steve
