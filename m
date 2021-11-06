@@ -2,78 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B11446C02
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 03:08:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE115446C03
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 03:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbhKFCLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 22:11:02 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:45513 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbhKFCLA (ORCPT
+        id S231661AbhKFCLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 22:11:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:35952 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231332AbhKFCLq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 22:11:00 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Fri, 5 Nov 2021 22:11:46 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HmLPt71sTz4xbw;
-        Sat,  6 Nov 2021 13:08:18 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1636164499;
-        bh=ZPtty8KTq65Wde5yy/uRNwcnqAJGpUlNY8aZijd3AZM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=f9Gm0vMRV5McVS1uchayjxlA/j1kd24++a6d5Ms8SwSU1N5cJ/Nb0bTPqrJXDOp20
-         ld/gsBmSr4u6N6kRhsqNTERHXb3Olc4bzND80rTJ5Re10vzMUvnVI6CFM8uB1MM6ak
-         5eVHdiCXwNjXPPfVexLjiJ252LdP5jsVJ+fuvDPGRRx0p6ayizSfCR6EIHFs5ih/TE
-         AogzuFWGV82DeANx4hfyqq6vKTey+vdiClZAe7ClWZj+9EPhGxin+gAbwvUVDSOL2a
-         BW1gBWTdLvvkd/HjMiOfnJDArfAfuZuI48Zg/oXwiHeujqmm/tpUZu9GKggnmYaGue
-         +R8o6udzz1OqQ==
-Date:   Sat, 6 Nov 2021 13:08:16 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Steven Whitehouse <swhiteho@redhat.com>,
-        Bob Peterson <rpeterso@redhat.com>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the gfs2 tree
-Message-ID: <20211106130816.6f51e4cd@canb.auug.org.au>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8A8A7218F8;
+        Sat,  6 Nov 2021 02:09:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1636164545; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=gI3pVf2yiR5r/UEtG9xEBfrAQBOq8foMeThoRbLJKbY=;
+        b=nPqUMv49auVsiO6ac9F9VZud6lAO8EnqnPYWyo/i1jKns3bUoKdJYLuITP/TiJwRrW8tVV
+        GOVuFbkmAdN7X7M3AMMsX3s14ZVadLQcoemsITq9pNcQ28bhO83ylaRrmGqff28tFVvXCQ
+        WNT2vIoVGOZRuZ0CKOHM7KmOq0VKJ9g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1636164545;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=gI3pVf2yiR5r/UEtG9xEBfrAQBOq8foMeThoRbLJKbY=;
+        b=dHX4a5zhXH9QJztD0665QVeRyJ0VbXgp55EiQgGLLfE5Uj7P+cq9o/E1gVv2GpLGz1dJ/3
+        wKJ4fAYWPWbhuOAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1140413DA1;
+        Sat,  6 Nov 2021 02:09:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id r9kwMsDjhWH7FQAAMHmgww
+        (envelope-from <ematsumiya@suse.de>); Sat, 06 Nov 2021 02:09:04 +0000
+From:   Enzo Matsumiya <ematsumiya@suse.de>
+To:     linux-nvme@lists.infradead.org
+Cc:     Enzo Matsumiya <ematsumiya@suse.de>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] nvme: add NO APST quirk for Kioxia device
+Date:   Fri,  5 Nov 2021 23:08:57 -0300
+Message-Id: <20211106020858.18625-1-ematsumiya@suse.de>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/sWvuO6=k3Dm/tlsiW909JDt";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/sWvuO6=k3Dm/tlsiW909JDt
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This particular Kioxia device times out and aborts I/O during any load,
+but it's more easily observable with discards (fstrim).
 
-Hi all,
+The device gets to a state that is also not possible to use "nvme set-feature"
+to disable APST. Booting with nvme_core.default_ps_max_latency=0 solves the issue.
 
-Commit
+We had a dozen or so of these behaving this same way on customer
+environment.
 
-  c125c1290099 ("gfs2: release iopen glock early in evict")
+Signed-off-by: Enzo Matsumiya <ematsumiya@suse.de>
+---
+ drivers/nvme/host/core.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-is missing a Signed-off-by from its committer.
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 838b5e2058be..a698c099164c 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -2469,7 +2469,19 @@ static const struct nvme_core_quirk_entry core_quirks[] = {
+ 		.vid = 0x14a4,
+ 		.fr = "22301111",
+ 		.quirks = NVME_QUIRK_SIMPLE_SUSPEND,
+-	}
++	},
++	{
++		/*
++		 * This Kioxia device times out and aborts I/O during any load,
++		 * but more easily reproducible with discards (fstrim).
++		 *
++		 * Device is left in a state that is also not possible to use "nvme set-feature"
++		 * to disable APST, but booting with nvme_core.default_ps_max_latency=0 works.
++		 */
++		.vid = 0x1e0f,
++		.mn = "KCD6XVUL6T40",
++		.quirks = NVME_QUIRK_NO_APST,
++ 	}
+ };
+ 
+ /* match is null-terminated but idstr is space-padded. */
+-- 
+2.33.0
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/sWvuO6=k3Dm/tlsiW909JDt
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGF45AACgkQAVBC80lX
-0GwS7Qf/XQBdbA+d3FDIJjPo92xFZMbf0Rh7b7V6C1oNj3yTEakwJru2FhCRErnD
-BDL3KlrER5C2zolsabDYF/sdXNPhGsZDGqIszXq3q1+yef6fPzIafdvaUqY+6iNA
-QE4szo8HJfMvIRG8YDA4mvwd8XItiLP8m2stHXVeXrtmXZ7KgrH9kSHnt3MAXsGg
-EgkoKWAipmK39mJdSGfOWJbe+oOXWg7xzZxDAmIGIvAO00uqmBsUItfnVkPSW24Q
-2yrIjMDYa4dm2TDIQtj4y2S5tfv9pig09QoMzcTcOzWIQCYavk87TeG8pqEtyZnw
-2ox38/qBvVUxRtfWKXOdaG86gj5ZRA==
-=P7QM
------END PGP SIGNATURE-----
-
---Sig_/sWvuO6=k3Dm/tlsiW909JDt--
