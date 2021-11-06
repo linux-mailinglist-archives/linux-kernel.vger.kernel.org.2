@@ -2,88 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5905544701B
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 20:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0E744701C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 20:27:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234913AbhKFTaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 15:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232589AbhKFTaR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 15:30:17 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DE3C061714
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 12:27:36 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id i9so12916628ilu.8
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Nov 2021 12:27:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:in-reply-to:references:subject:message-id:date
-         :mime-version:content-transfer-encoding;
-        bh=g6dCQa8LHOVQsABsddtajlBRunqB4Uil1VxpOE1O+8o=;
-        b=WQ0ToyOVPQKgfjBZCSwYr33XbhHdGzbxGU1+nJMORZhGLxFREBEmqbIYd+ED+nlxb6
-         2veZSghDoUU7BUZvzuXbxh995TLYSql2kYGJqx+tHHsCRhuvvcgGnAaziIXXYOjiQVXZ
-         AfLp6vv2WIjt1r/ulOUITH8ELwysH0qADzQHRiUyfk9rM/Eu0+JvgZJ0O9jIwPx5Irh4
-         JbVz882LaSloBhoytyDuMAA6xTAWNET3Oo40hzDHtdpyGsiXlR2A1Vyidn9J7YbbaRFF
-         jzFqW2ZrGzJE4GmUk6rnJXYihA5NjB1WPYz0dCI/ddQhcqMCpe3sDwmrRlbMjCkaKq1J
-         0vAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
-         :message-id:date:mime-version:content-transfer-encoding;
-        bh=g6dCQa8LHOVQsABsddtajlBRunqB4Uil1VxpOE1O+8o=;
-        b=hgi5wyrPrVbopt6QVhAFGFT2LhSC4GbzuFC09yRKKTRgNxExWGIsVPW6RZvO8MuBvr
-         BZCyl6p/s3R7g7kb9PnaHaGr00srs0DkeCGvzRCcPhcX0byqZMWHCfxD0EEh/Z1GPLaC
-         2/i2FrafbCTCpVz2H9VpdqlstDGN/QK2/9gbZUYHmU+bYhBA3JmKd6Zzc/ivzz0cA5p3
-         bBlLHSvPeQ8moaW7yVJIzaQIi782/IpzLv4n04RHqRXcOKVKQaHCAUZzAiiTzJ6Hu7nZ
-         P82lczUYvCbd6v8rQM29FPk6n+UcbNySe+XkUnRYGnaPN/l3NDk1KZkSuCMHfN3/MxD0
-         q3Rw==
-X-Gm-Message-State: AOAM5320xsp8JNOiBHH2rzOLQlSFCfMVvOPi4nJIb2gH+5ByMspmFEe1
-        W/ZPE+k6z73bbucDMgGSvWopyA==
-X-Google-Smtp-Source: ABdhPJwYAg9h7KdgsD0GqlyFP6YqfXCbbo9reZ4XcToNIbXicMp8ZQjys1oQD+6Jn5aMStdiUw6FQA==
-X-Received: by 2002:a92:d411:: with SMTP id q17mr31461470ilm.116.1636226855303;
-        Sat, 06 Nov 2021 12:27:35 -0700 (PDT)
-Received: from [127.0.1.1] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id c12sm6560928ils.31.2021.11.06.12.27.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Nov 2021 12:27:34 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Cc:     linux-block@vger.kernel.org, noreply@ellerman.id.au,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20211106185549.1578444-1-geert@linux-m68k.org>
-References: <20211106185549.1578444-1-geert@linux-m68k.org>
-Subject: Re: [PATCH -next] ataflop: Add missing semicolon to return statement
-Message-Id: <163622685463.267869.14813196810807657315.b4-ty@kernel.dk>
-Date:   Sat, 06 Nov 2021 13:27:34 -0600
+        id S234921AbhKFTaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 15:30:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45234 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232626AbhKFTa3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Nov 2021 15:30:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F06E761051;
+        Sat,  6 Nov 2021 19:27:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636226868;
+        bh=xHbbKopAcL+R4RbxmrJnPw4G1mPEiz0DA4CRQStuUXo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S8vVadJnlRaB2/11cvIr3Vq8S6vx4LmgODuJo0nLPkyDGzUu+JyHyzTlrLsSLkC00
+         I8VTOr6rSml6sxip3DI+NNyr7wV4szmP4vTfCpLU8pY7ZugotN+Kd8chVZHqfvOn+5
+         GL2HRCPJq3CGrHCXeOUIvVH0p3YHf5lzqkqQIT0In94FwsC53ThAfHz/Qm92jwzPiD
+         l8KdA590CPVang5r4OaYRpx2Sqd0XHTXODfPwX03/jaHe13TSFXXlcMF5tQXpfydMu
+         aY+WTeZvILFLdHn6rsDDzuSQl640v0l9wH3C43K6UmC9ttCxEevnR2rTr5+HYYrfXd
+         FuvwpiJEmdhYg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 96D47410A1; Sat,  6 Nov 2021 16:27:45 -0300 (-03)
+Date:   Sat, 6 Nov 2021 16:27:45 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, masahiroy@kernel.org,
+        Laura Abbott <labbott@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        irogers@google.com
+Subject: Re: [PATCH] perf tools: Enable warnings through HOSTCFLAGS
+Message-ID: <YYbXMd3N4+aXYLTJ@kernel.org>
+References: <1635525041-151876-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1635525041-151876-1-git-send-email-john.garry@huawei.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 6 Nov 2021 19:55:49 +0100, Geert Uytterhoeven wrote:
->     drivers/block/ataflop.c: In function ‘ataflop_probe’:
->     drivers/block/ataflop.c:2023:2: error: expected expression before ‘if’
->      2023 |  if (ataflop_alloc_disk(drive, type))
-> 	  |  ^~
->     drivers/block/ataflop.c:2023:2: error: ‘return’ with a value, in function returning void [-Werror=return-type]
->     drivers/block/ataflop.c:2011:13: note: declared here
->      2011 | static void ataflop_probe(dev_t dev)
-> 	  |             ^~~~~~~~~~~~~
+Em Sat, Oct 30, 2021 at 12:30:41AM +0800, John Garry escreveu:
+> The tools build system uses KBUILD_HOSTCFLAGS symbol for obvious purposes.
 > 
-> [...]
+> However this is not set for anything under tools/
+> 
+> As such, host tools apps built have no compiler warnings enabled.
+> 
+> Declare HOSTCFLAGS for perf tools build, and also use that symbol in
+> declaration of host_c_flags. HOSTCFLAGS comes from EXTRA_WARNINGS, which
+> is independent of target platform/arch warning flags.
+> 
+> Suggested-by: Jiri Olsa <jolsa@redhat.com>
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> --
+> Using HOSTCFLAGS, as opposed to KBUILD_HOSTCFLAGS, is going opposite
+> direction to commit 96f14fe738b6 ("kbuild: Rename HOSTCFLAGS to
+> KBUILD_HOSTCFLAGS"), so would like further opinion from Laura and
+> Masahiro.
 
-Applied, thanks!
+Laura's redhat e-mail bouncedm updated it to her kernel.org one, Laura,
+Masahiro, would you please comment? Jiri?
 
-[1/1] ataflop: Add missing semicolon to return statement
-      commit: 38987a872b313e72f7a64e91ec0b8084eaec0f10
+- Arnaldo
+ 
+> diff --git a/tools/build/Build.include b/tools/build/Build.include
+> index 2cf3b1bde86e..c2a95ab47379 100644
+> --- a/tools/build/Build.include
+> +++ b/tools/build/Build.include
+> @@ -99,7 +99,7 @@ cxx_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(CXXFLAGS) -D"BUILD_STR(s)=\#s" $(CXX
+>  ###
+>  ## HOSTCC C flags
+>  
+> -host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(KBUILD_HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
+> +host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
+>  
+>  # output directory for tests below
+>  TMPOUT = .tmp_$$$$
+> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> index 4a9baed28f2e..9b95ba09657f 100644
+> --- a/tools/perf/Makefile.config
+> +++ b/tools/perf/Makefile.config
+> @@ -17,6 +17,7 @@ detected     = $(shell echo "$(1)=y"       >> $(OUTPUT).config-detected)
+>  detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
+>  
+>  CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
+> +HOSTCFLAGS := $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
+>  
+>  include $(srctree)/tools/scripts/Makefile.arch
+>  
+> @@ -211,6 +212,7 @@ endif
+>  ifneq ($(WERROR),0)
+>    CORE_CFLAGS += -Werror
+>    CXXFLAGS += -Werror
+> +  HOSTCFLAGS += -Werror
+>  endif
+>  
+>  ifndef DEBUG
+> @@ -292,6 +294,9 @@ CXXFLAGS += -ggdb3
+>  CXXFLAGS += -funwind-tables
+>  CXXFLAGS += -Wno-strict-aliasing
+>  
+> +HOSTCFLAGS += -Wall
+> +HOSTCFLAGS += -Wextra
+> +
+>  # Enforce a non-executable stack, as we may regress (again) in the future by
+>  # adding assembler files missing the .GNU-stack linker note.
+>  LDFLAGS += -Wl,-z,noexecstack
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index a3966f290297..8ca656aa8b06 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -226,7 +226,7 @@ else
+>  endif
+>  
+>  export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX AWK
+> -export HOSTCC HOSTLD HOSTAR
+> +export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
+>  
+>  include $(srctree)/tools/build/Makefile.include
+>  
+> -- 
+> 2.17.1
 
-Best regards,
 -- 
-Jens Axboe
 
-
+- Arnaldo
