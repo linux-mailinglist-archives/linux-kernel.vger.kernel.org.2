@@ -2,132 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B053446C3B
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 04:32:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 014C2446C3C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 04:32:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbhKFDel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 23:34:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60294 "EHLO
+        id S233360AbhKFDfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 23:35:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232715AbhKFDek (ORCPT
+        with ESMTP id S232715AbhKFDfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 23:34:40 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE06C061570;
-        Fri,  5 Nov 2021 20:32:00 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id v4so8985202qtw.8;
-        Fri, 05 Nov 2021 20:32:00 -0700 (PDT)
+        Fri, 5 Nov 2021 23:35:00 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67297C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 20:32:20 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id j9so9930829pgh.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 20:32:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=wkpgNQuq4JsLqknJBD1B1v5Yol1MQM6zbdbDiYMGGZA=;
-        b=hgiPx5F0EFZhG5rjZ38Nd1W+yIUCv1chlfqMG+oENzRnzhW5lvM23QQxKZLSb0jfhL
-         RJS8/dk1GhsvUFTefVNzQJUoeAeYi1AUywgxHs7hRPC+A/F8zaYRsWHJ0mLPPLwbmOXT
-         oh/PZBrk5rFNWeGOmsgOe448gVjFiiE4zoN9eZQezGAyM9PjboVbe5pgfkoXmeaQY/0L
-         MS+dmUvs4ITUa4VzronPRiTuIiXjd1VrcRCUKjmuxRXozsmUhwq8PnTHvRy3zMg4BjYa
-         C5Hopd2Xg4d+cpeQzZTCnJOw1nH0cY+OZa2EJvNrnJgdnO6bDx1/nZ/d5/Cy3c9Ojrls
-         BtjQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kPw4IpQgVBr/ID80OekzGmZKKaWfDwtzZQlyt4TvPck=;
+        b=WAi+C8/Ck8zZ0zAPSHoEakdHLL+EjKgGG6vUEqDWiAP+aOofMnXUPSfAw86q4mgO+g
+         kHJ8YFyKAi38co/Cg1Vref/EzgQrBw7IiimsN09gvkvUUB0Hctu1ua7G6EuMpxXJlhmG
+         9TGQIyWHLdoZViQKT+ba52KUi1sSx1d3Rg8TC/AmUxdvtmZYE/by6AYmphSPw6wMcKN3
+         NEWp/kZhJyw/1lasVZOLlL/FtJReS+F1DUCxvR/55nsY4rwQ0Lz+XzhpYV+SX0L9Ku8z
+         o8ChK3jAjD8fIyYSf7I+mviVbKARRVnKgGgGE3FNs09jh6NkpDxiRUk+Oh//qmJLoaul
+         NAAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=wkpgNQuq4JsLqknJBD1B1v5Yol1MQM6zbdbDiYMGGZA=;
-        b=5+HCPh+UB6Ojy5NwefPWxuiOr9+ttwfek0CXcBqnlQcdMFJimLy5PLGQkIAovA4Mnn
-         T6DtlKfVMcoTNJStX0fPflUgL1XzX/PN83Dl+JhgwMyKR5qOrnwDJKLv1TKOHgzuexfm
-         YR1pUorleyMvZRkIo/wQnXi5x5qOs+XM9tVMOQMN5olIj4mvPhywID2cuy+eXVJeWUrw
-         Oz9X1/Pv+62Fed2jHyCRNUJu+tiFU88S3jccxFV4ERjXHIf8T8cBTpW5Vh3bTJcWb6Ij
-         dv/QI2/W6raP3SSD3RB2IMoS34bQKbhNx+sNiSiw7GgeptqW60UAnv/CI3nBDdbKfHSh
-         4XQA==
-X-Gm-Message-State: AOAM530k5S9xN9DGIivU82wWydinnpVUB3LUaKGmBZigtRgbmkcmNuvg
-        78XYcPexd/vrSOTbEejiOJs=
-X-Google-Smtp-Source: ABdhPJzYtlqC8qs6hPByPJoSOKCrc2c8ne+KrGz3g6UBY3vAaiZ7Vlqv1sVsjMQENfDUuxGe53AkDQ==
-X-Received: by 2002:a05:622a:1209:: with SMTP id y9mr68014388qtx.13.1636169519359;
-        Fri, 05 Nov 2021 20:31:59 -0700 (PDT)
-Received: from ?IPV6:2600:1700:dfe0:49f0:a892:6224:ce6d:2f10? ([2600:1700:dfe0:49f0:a892:6224:ce6d:2f10])
-        by smtp.gmail.com with ESMTPSA id bs33sm6407894qkb.130.2021.11.05.20.31.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Nov 2021 20:31:58 -0700 (PDT)
-Message-ID: <249707d6-660f-99ce-b7d3-c48dc7209bbe@gmail.com>
-Date:   Fri, 5 Nov 2021 20:31:56 -0700
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kPw4IpQgVBr/ID80OekzGmZKKaWfDwtzZQlyt4TvPck=;
+        b=PsP6G8HPqwmFGaHNTNYhKpAaMvqss+dl8guYN8mV7MRbGjXP4VM29So7+jT9vfZTil
+         zmFngAIXVabrsZ8+EQ4kdFmOIgZU1MekKvQiD3tFPnHXlDtyABbiwwQSC79/vZ6HJ9Wf
+         55CtAzYurOCYo3sBBvszz/U5Ya+Kd9xcNzFZiHJs8jeO6v/WjJwJ/0eJCHIPz4toBDAE
+         XIymMOqXTe+8DWVJXP38+zRM5u9DHag8ZR/GBrDofnJFamNAed62RIs4EpgqJ4Bclv6g
+         rEID/ilo3LrZT72H4s2o5hDUo6SCeoyw+vtZ7VfyMdvCLpY5EAC9mvJipokfgRQhbQot
+         IJng==
+X-Gm-Message-State: AOAM532Ck2WUrFwz5p387m9ANu1DjzFi0tFXV2ca/6iwh5MiR4DCV/E1
+        /6bWl/aNUhOaCpl26KCbMnFupw==
+X-Google-Smtp-Source: ABdhPJzw6SsCiB4uzMEDwuRTSSnGPepGGpqVQ+/aFnAW3PQvPu/K8rK4c3kiilDUM2Xm/4jruhK1sg==
+X-Received: by 2002:a62:7cd3:0:b0:494:6e78:9959 with SMTP id x202-20020a627cd3000000b004946e789959mr13846321pfc.46.1636169539171;
+        Fri, 05 Nov 2021 20:32:19 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([134.195.101.46])
+        by smtp.gmail.com with ESMTPSA id y4sm9048024pfi.178.2021.11.05.20.32.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 20:32:18 -0700 (PDT)
+Date:   Sat, 6 Nov 2021 11:32:13 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     German Gomez <german.gomez@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, James Clark <james.clark@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/3] perf arm-spe: Save context ID in record
+Message-ID: <20211106033213.GH477387@leoy-ThinkPad-X240s>
+References: <20211102180739.18049-1-german.gomez@arm.com>
+ <20211102180739.18049-3-german.gomez@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [RFC PATCH] mips: BCM63XX: select CPU_SUPPORTS_32BIT_KERNEL
-Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Paul Burton <paulburton@kernel.org>,
-        Maxime Bizon <mbizon@freebox.fr>,
-        Ralf Baechle <ralf@linux-mips.org>
-References: <20211106025823.32437-1-rdunlap@infradead.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20211106025823.32437-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211102180739.18049-3-german.gomez@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 02, 2021 at 06:07:38PM +0000, German Gomez wrote:
+> This patch is to save context ID in record, this will be used to set TID
+> for samples.
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: James Clark <james.clark@arm.com>
+> Signed-off-by: German Gomez <german.gomez@arm.com>
 
+Reviewed-by: Leo Yan <leo.yan@linaro.org>
 
-On 11/5/2021 7:58 PM, Randy Dunlap wrote:
-> 
-> Several header files need info on CONFIG_32BIT or CONFIG_64BIT,
-> but kconfig symbol BCM63XX does not provide that info. This leads
-> to many build errors, e.g.:
-> 
->     arch/mips/include/asm/page.h:196:13: error: use of undeclared identifier 'CAC_BASE'
->             return x - PAGE_OFFSET + PHYS_OFFSET;
->     arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
->     #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
->     arch/mips/include/asm/io.h:134:28: error: use of undeclared identifier 'CAC_BASE'
->             return (void *)(address + PAGE_OFFSET - PHYS_OFFSET);
->     arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
->     #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
-> 
-> arch/mips/include/asm/uaccess.h:82:10: error: use of undeclared identifier '__UA_LIMIT'
->             return (__UA_LIMIT & (addr | (addr + size) | __ua_size(size))) == 0;
-> 
-> 
-> Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs.")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: bcm-kernel-feedback-list@broadcom.com
-> Cc: linux-mips@vger.kernel.org
-> Cc: Paul Burton <paulburton@kernel.org>
-> Cc: Maxime Bizon <mbizon@freebox.fr>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
 > ---
-> Note: I did see a bunch of build errors like this one:
-> ../arch/mips/kernel/r4k_fpu.S:217: Error: opcode not supported on this processor: mips1 (mips1) `ldc1 $f24,192($4)'
-> but I'm hoping/guessing that this is due to not having a proper compiler
-> for the BCM63xx target.
+>  tools/perf/util/arm-spe-decoder/arm-spe-decoder.c | 2 ++
+>  tools/perf/util/arm-spe-decoder/arm-spe-decoder.h | 1 +
+>  2 files changed, 3 insertions(+)
 > 
->   arch/mips/Kconfig |    1 +
->   1 file changed, 1 insertion(+)
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> index 32fe41835..1b58859d2 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> @@ -151,6 +151,7 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
+>  	u64 payload, ip;
+>  
+>  	memset(&decoder->record, 0x0, sizeof(decoder->record));
+> +	decoder->record.context_id = -1;
+>  
+>  	while (1) {
+>  		err = arm_spe_get_next_packet(decoder);
+> @@ -180,6 +181,7 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
+>  		case ARM_SPE_COUNTER:
+>  			break;
+>  		case ARM_SPE_CONTEXT:
+> +			decoder->record.context_id = payload;
+>  			break;
+>  		case ARM_SPE_OP_TYPE:
+>  			if (idx == SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC) {
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+> index 59bdb7309..46a8556a9 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+> @@ -38,6 +38,7 @@ struct arm_spe_record {
+>  	u64 timestamp;
+>  	u64 virt_addr;
+>  	u64 phys_addr;
+> +	u64 context_id;
+>  };
+>  
+>  struct arm_spe_insn;
+> -- 
+> 2.25.1
 > 
-> --- linux-next-20211105.orig/arch/mips/Kconfig
-> +++ linux-next-20211105/arch/mips/Kconfig
-> @@ -329,6 +329,7 @@ config BCM63XX
->   	select SYNC_R4K
->   	select DMA_NONCOHERENT
->   	select IRQ_MIPS_CPU
-> +	select CPU_SUPPORTS_32BIT_KERNEL
-
-That's one option, the other could be to add:
-
-         select SYS_HAS_CPU_BMIPS32_3300
-         select SYS_HAS_CPU_BMIPS4350
-         select SYS_HAS_CPU_BMIPS4380
-
-Which would ensure that CPU_SUPPORTS_32BIT_KERNEL is selected AFAICT. 
-Can you try that? What config file did you use to produce that build 
-error BTW?
--- 
-Florian
