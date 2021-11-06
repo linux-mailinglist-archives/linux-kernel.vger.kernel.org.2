@@ -2,104 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76008447043
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 20:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 324C4447048
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 20:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234981AbhKFTzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 15:55:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52350 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229727AbhKFTzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 15:55:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C74A61054;
-        Sat,  6 Nov 2021 19:53:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636228384;
-        bh=qOGVHV2slOC5KIVm+e1qOM8RcHuz8RRw18Wkv9dHLGA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YFcAv2qBwo6SX9n6aQ+4q0Uyjo7i879ialfqOLPD4spS8Sweh3QPkd0s7uMyrBzPc
-         KFVzmcJKhr1bl2YEelz/R+eA4nPyVqViwpSiPZ54170W2M11XXfqsXsiGh/0VlieI2
-         L8UUu19g47Wee1/lS59TkSVourVJbbWK4JFp3kNheT7hNrMf3Yb7elcRIfFZrqlgnx
-         JLt6LVLDUXmOlwxl9joReuVpC4buZFNl12rt+hHCmuD8nvjNrZvA72ugusnXvexe/F
-         sTQyaclbHzSzpfMJlDwqmY5wFXPcB9f3k6XFLKytIquuyt6QzlhkWxKsxT+GjJNTr8
-         YjQidxwULyKRQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 38D31410A1; Sat,  6 Nov 2021 16:53:02 -0300 (-03)
-Date:   Sat, 6 Nov 2021 16:53:02 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Denis Nikitin <denik@chromium.org>
-Cc:     James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] perf inject: Add vmlinux and ignore-vmlinux arguments
-Message-ID: <YYbdHl8GXosMn8rX@kernel.org>
-References: <20211018134844.2627174-1-james.clark@arm.com>
- <20211018134844.2627174-4-james.clark@arm.com>
- <CADDJ8CWoHb28JDjxq+ZtFVTUXQjhtFTszjeeXKx1WMue8zBp2A@mail.gmail.com>
+        id S234983AbhKFT7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 15:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229727AbhKFT7S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Nov 2021 15:59:18 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2487C061570;
+        Sat,  6 Nov 2021 12:56:36 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id bq11so26137957lfb.10;
+        Sat, 06 Nov 2021 12:56:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=/SrIMiSEkY+x5qFXlc6oA7hCfVljirHRWhiQsqbjR28=;
+        b=M7ZPPJiIKJDgHZ9aGY79OfDxvpN0GgTqiYv5gldYYtD4qx07UyUsv+EPz0S7O9qkcX
+         3nxLMK35L2pbQgCcg6jwlqez9WPxUt0HVMNgWbJVKzi5c0C6DG382TrkOD2ml3aIchCw
+         C5dJXbAoEiddtLzBHOHY9p/Tloti6g89hNA9l+JqKoFnjo7gDfYSMMzx0xUj+Gws5G28
+         rtf3KHDD7BIjpCVWoKuyX1S11yOs/aD3lbkzlGMIQfmTsxCXlEJ065nm89sG2BseVWFr
+         MvVefJxEB3M6hO6mVvoMqPgUxt/xpE31nes/C1uB5/IB/04chDuVcOnv7NBcAccRKueV
+         LOTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=/SrIMiSEkY+x5qFXlc6oA7hCfVljirHRWhiQsqbjR28=;
+        b=5uBNdapDrqYnw9VNtjS3vCt8SGlAHT5IQcS/pbKuAd/JbTWACMd5UQhsuJLlhQpYhs
+         9vmFj2mJiJXMkTfSe8q6JDPtyol4IaSdg3tGoDGF/TzTYr1IYa5GtkA5bx5J3EIuco6b
+         sep7neig6s/+oZSZTE31KdALMcaCRQVtAG4UXdTZoJc5JCEgxmTlEvtnSwDG0ynzkqx8
+         fRyGUQO8/Vh5ANyFp0WxdoWw4tW9nocOmpmvDWIBVxU7lS7zQs+tmzcRhnmc3QR0jjkz
+         qzsT+2ia1MHlzbZj79sBCzv8TG+M3riYurPHtDw5Lxpl2mD91/nfoT7OMmn6zCP9GoWT
+         Okjg==
+X-Gm-Message-State: AOAM533KV+bfxDPZb+uG3AIV8OK1/NGw/iMVUlScu+8D+mFCPB6IP+Ih
+        6qRr+iV9JyfDIo1C+08XPuQ=
+X-Google-Smtp-Source: ABdhPJxIb4gkY4tOwPQmfpqeLiCriX6z19eQYoSiPekz8ZbGTOrf8/87O80GMFVFXNd9ohG7c7Nkyg==
+X-Received: by 2002:a05:6512:3c98:: with SMTP id h24mr60508533lfv.155.1636228594179;
+        Sat, 06 Nov 2021 12:56:34 -0700 (PDT)
+Received: from [192.168.1.11] ([217.117.245.207])
+        by smtp.gmail.com with ESMTPSA id k15sm1092368ljh.102.2021.11.06.12.56.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 06 Nov 2021 12:56:33 -0700 (PDT)
+Message-ID: <58f5cf69-3b3b-62f2-9f73-49c51176a534@gmail.com>
+Date:   Sat, 6 Nov 2021 22:56:33 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADDJ8CWoHb28JDjxq+ZtFVTUXQjhtFTszjeeXKx1WMue8zBp2A@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH] tty: vt: keyboard: do not copy an extra-byte in
+ copy_to_user
+Content-Language: en-US
+To:     Ajay Garg <ajaygargnsit@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
+        kernel@esmil.dk, David Laight <David.Laight@aculab.com>
+Cc:     "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211106092041.43745-1-ajaygargnsit@gmail.com>
+ <9eafae1f-d9f0-298d-cf20-212865d0becc@gmail.com>
+ <868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com>
+ <CAHP4M8Ww0-VqCBKX=iLd=zy1AcDoNdzTOqJuaqRxCGZsMhoX9w@mail.gmail.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <CAHP4M8Ww0-VqCBKX=iLd=zy1AcDoNdzTOqJuaqRxCGZsMhoX9w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Nov 05, 2021 at 09:19:10PM -0700, Denis Nikitin escreveu:
-> On Mon, Oct 18, 2021 at 6:49 AM James Clark <james.clark@arm.com> wrote:
-> >
-> > Other perf tools allow specifying the path to vmlinux. Perf inject
-> > didn't have this argument which made some auxtrace workflows difficult.
-> >
-> > Also add ignore-vmlinux for consistency with other tools.
-> >
-> > Suggested-by: Denis Nitikin <denik@chromium.org>
-> > Signed-off-by: James Clark <james.clark@arm.com>
-> > ---
-> >  tools/perf/builtin-inject.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-> > index 6ad191e731fc..4261ad89730f 100644
-> > --- a/tools/perf/builtin-inject.c
-> > +++ b/tools/perf/builtin-inject.c
-> > @@ -938,6 +938,10 @@ int cmd_inject(int argc, const char **argv)
-> >  #endif
-> >                 OPT_INCR('v', "verbose", &verbose,
-> >                          "be more verbose (show build ids, etc)"),
-> > +               OPT_STRING('k', "vmlinux", &symbol_conf.vmlinux_name,
-> > +                          "file", "vmlinux pathname"),
-> > +               OPT_BOOLEAN(0, "ignore-vmlinux", &symbol_conf.ignore_vmlinux,
-> > +                           "don't load vmlinux even if found"),
+On 11/6/21 22:20, Ajay Garg wrote:
+> I vote for David's strscpy "fix", as it is simple, and does away with
+> the dependency on the length of "func_table[kb_func]".
 > 
-> I think we also need to update documentation at Documentation/perf-inject.txt
 
-I can replicate what is in 'perf report' where this came from, will do
-it now.
- 
-> >                 OPT_STRING(0, "kallsyms", &symbol_conf.kallsyms_name, "file",
-> >                            "kallsyms pathname"),
-> >                 OPT_BOOLEAN('f', "force", &data.force, "don't complain, do it"),
-> > @@ -972,6 +976,9 @@ int cmd_inject(int argc, const char **argv)
-> >                 return -1;
-> >         }
-> >
-> > +       if (symbol__validate_sym_arguments())
-> > +               return -1;
-> > +
-> >         if (inject.in_place_update) {
-> >                 if (!strcmp(inject.input_name, "-")) {
-> >                         pr_err("Input file name required for in-place updating\n");
-> > --
-> > 2.28.0
-> >
-> 
-> Tested-by: Denis Nikitin <denik@chromium.org>
+strscpy fix sounds reasonable to me. just to be save in future.
 
-Thanks,
+There is only one thing I am wondering about: translation table entries 
+are set by user using this struct
 
-- Arnaldo
+struct kbsentry {
+	unsigned char kb_func;
+	unsigned char kb_string[512];
+};
+
+it means entries cannot be longer than sizeof(kbsentry::kb_string) - 1 
+at all. Do we need extra branching with strscpy() or do we need to do 
+anything else here?
+
+
+
+With regards,
+Pavel Skripkin
