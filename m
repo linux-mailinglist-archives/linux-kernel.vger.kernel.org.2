@@ -2,107 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E397446DBC
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 12:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36366446DBE
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 12:54:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234082AbhKFL4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 07:56:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229968AbhKFL4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 07:56:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C9186120A;
-        Sat,  6 Nov 2021 11:53:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636199599;
-        bh=oOqfUkN+V01wkWHLOAfGGPh0bwOJZPTt6wQPkt/W0qQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fRWXE3CU7LRnQ7iMonBxh4PiDxUBRDWn/t9e3fNXbV1LN194uMsDAtS1f0k9uDJGE
-         if6c/4wy0PALr3mX5tgd/JHMSdLrjM5rt+dY7kJtuAEIbzJ2KwOyYZVfS/6ILa0Jms
-         gTmBjCpQAcimqZSwpxnkWCfQWjy4uqo/njm4PkYE=
-Date:   Sat, 6 Nov 2021 12:53:10 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Meng Li <Meng.Li@windriver.com>
-Cc:     stable@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH] driver: ethernet: stmmac: remove the redundant clock
- disable action
-Message-ID: <YYZsprWP3vO9dtZy@kroah.com>
-References: <20211106104401.10846-1-Meng.Li@windriver.com>
+        id S234091AbhKFL5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 07:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233562AbhKFL5G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Nov 2021 07:57:06 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBAFFC061714
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 04:54:24 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id bj27so9516387qkb.11
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Nov 2021 04:54:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lucidpixels.com; s=google;
+        h=from:to:cc:references:in-reply-to:subject:date:message-id
+         :mime-version:content-transfer-encoding:content-language
+         :thread-index;
+        bh=dqPN2n6BjpQRetBTCE2FROhnqvD7qwFmp4cQx0DCJAE=;
+        b=e8BP8vCKZPi9SAnUi2ZdXWN29CSndyqNyIBge6g4qsrac+Uc6hED/QUyuDPs5h53k+
+         yWPhev/Verz2YkE83/2AJaJrnLflor+7LYbtdbM2SnV22dKzB8pmdUlcwsvKaxM4M/sb
+         +OlNWTfOJxisRw5ispf4Sn7h9WsqqdQhwzasE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
+         :message-id:mime-version:content-transfer-encoding:content-language
+         :thread-index;
+        bh=dqPN2n6BjpQRetBTCE2FROhnqvD7qwFmp4cQx0DCJAE=;
+        b=ufpHu+f+7kdrXhJOr47oxTO/BPM4ktp5nL5zo6Fmex5FXPq6itlK2NPjmEm8LUMCHm
+         NdXPhAfRbt5qmkBoBWw1aCNeT2rh4pXGja/fblXEXJM6uxNuEKk7hFVj3D3T/DhsQPhl
+         zusTIAsUqGYwUZaF10vXDIvdehKbWi6WWV4ugfbODz9jfIqgvqUmpbJsqDVtYKwvygoz
+         mEuoWCk4Yt72fKKTue5QpI7jV5g9mwX4KGq1KQA806jkbOAAbqBqYJPIcREb3gKD4Bwy
+         GCwiSc39vgvX5SUBs6qK4L9EeLrb2X4BJJFVvnSzepZoQ2osya+RyoW+UEKHkEVowP7v
+         rNJw==
+X-Gm-Message-State: AOAM533e3hUtE4p2g/dOeAqkf1qhvGEL7SsComG0ndautPPWwMYQFQvB
+        FDIpCJvg+pxJ/I3rrHDlxDP56w==
+X-Google-Smtp-Source: ABdhPJyGC3/GU/JXOGG46ZDEFvTm4JDoKDH7HXKCf0YyFVsvRmMltjDzixYF1sWDURkeHN5fR4VC/A==
+X-Received: by 2002:a05:620a:460a:: with SMTP id br10mr5225023qkb.314.1636199663730;
+        Sat, 06 Nov 2021 04:54:23 -0700 (PDT)
+Received: from WARPC (pool-70-106-225-116.clppva.fios.verizon.net. [70.106.225.116])
+        by smtp.gmail.com with ESMTPSA id h11sm7328425qkp.46.2021.11.06.04.54.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 06 Nov 2021 04:54:23 -0700 (PDT)
+From:   "Justin Piszcz" <jpiszcz@lucidpixels.com>
+To:     "'Bart Van Assche'" <bvanassche@acm.org>,
+        "'Douglas Miller'" <dougmill@linux.vnet.ibm.com>
+Cc:     "'LKML'" <linux-kernel@vger.kernel.org>,
+        <linux-scsi@vger.kernel.org>
+References: <006a01d7cead$b9262d70$2b728850$@lucidpixels.com> <a4a88807-8f52-ef9a-c58e-0ff454da5ade@acm.org> <CAO9zADxiobgwDE5dtvo98EL0djdgQyrGJA_w4Oxb+pZ9pvOEjQ@mail.gmail.com> <CAO9zADycForyq9cmh=epw9r-Wzz=xt32vL3mePuBAPehCgUTjw@mail.gmail.com> <50a16ee2-dfa4-d009-17c5-1984cf0a6161@linux.vnet.ibm.com> <CAO9zADwVnuKU-tfZxm4USjf76yJhTZqWfZw4yspv8sc93RuBbQ@mail.gmail.com> <e0c2935d-d961-11a0-1b4c-580b55dc6b59@acm.org>
+In-Reply-To: <e0c2935d-d961-11a0-1b4c-580b55dc6b59@acm.org>
+Subject: RE: kernel 5.15 does not boot with 3ware card (never had this issue <= 5.14) - scsi 0:0:0:0: WARNING: (0x06:0x002C) : Command (0x12) timed out, resetting card
+Date:   Sat, 6 Nov 2021 07:54:19 -0400
+Message-ID: <002401d7d305$082971b0$187c5510$@lucidpixels.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211106104401.10846-1-Meng.Li@windriver.com>
+Content-Type: text/plain;
+        charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-us
+Thread-Index: AQFvog4DBvS/YijzZ80RtFVSnXGKrgJY98sAAayFrYQByo6A5QHYGZ9yAapycYICkRDNnKxnoB7g
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 06, 2021 at 06:44:01PM +0800, Meng Li wrote:
-> When run below command to remove ethernet driver on
-> stratix10 platform, there will be warning trace as below:
-> 
-> $ cd /sys/class/net/etha01/device/driver
-> $ echo ff800000.ethernet > unbind
-> 
-> WARNING: CPU: 3 PID: 386 at drivers/clk/clk.c:810 clk_core_unprepare+0x114/0x274
-> Modules linked in: sch_fq_codel
-> CPU: 3 PID: 386 Comm: sh Tainted: G        W         5.10.74-yocto-standard #1
-> Hardware name: SoCFPGA Stratix 10 SoCDK (DT)
-> pstate: 00000005 (nzcv daif -PAN -UAO -TCO BTYPE=--)
-> pc : clk_core_unprepare+0x114/0x274
-> lr : clk_core_unprepare+0x114/0x274
-> sp : ffff800011bdbb10
-> clk_core_unprepare+0x114/0x274
->  clk_unprepare+0x38/0x50
->  stmmac_remove_config_dt+0x40/0x80
->  stmmac_pltfr_remove+0x64/0x80
->  platform_drv_remove+0x38/0x60
->  ... ..
->  el0_sync_handler+0x1a4/0x1b0
->  el0_sync+0x180/0x1c0
-> This issue is introduced by introducing upstream commit 8f269102baf7
-> ("net: stmmac: disable clocks in stmmac_remove_config_dt()")
-> Because clock has been disabled in function stmmac_dvr_remove()
-> It not reasonable the remove clock disable action from function
-> stmmac_remove_config_dt(), because it is mainly used in probe failed,
-> and other platform drivers also use this common function. So, remove
-> stmmac_remove_config_dt() from stmmac_pltfr_remove(), only other
-> necessary code.
-> 
-> Fixes: 1af3a8e91f1a ("net: stmmac: disable clocks in stmmac_remove_config_dt()")
-> Signed-off-by: Meng Li <Meng.Li@windriver.com>
-> 
-> ---
-> 
-> Some extra comments as below:
-> 
-> 1. This patch is only for linux-stable kernel v5.10, so the fixed commit ID is the one
->    in linux-stable kernel, not the one in mainline upsteam kernel.
 
-Ick, why?
 
-> 2. I created a patch only to fix the linux-stable kernel v5.10, not submit it to upstream kernel.
->    The reason as below:
->    In fact, upstream kernel doesn't have this issue any more. Because it has a patch to improve
->    the clock management and other 4 patches to fix the 1st patch. Detial patches as below:
->    5ec55823438e("net: stmmac: add clocks management for gmac driver")
->    30f347ae7cc1("net: stmmac: fix missing unlock on error in stmmac_suspend()")
->    b3dcb3127786("net: stmmac: correct clocks enabled in stmmac_vlan_rx_kill_vid()")
->    4691ffb18ac9("net: stmmac: fix system hang if change mac address after interface ifdown")
->    ab00f3e051e8("net: stmmac: fix issue where clk is being unprepared twice")
-> 
->    But I think it is a little complex to backport all the 5 patches. Moreover, it may be related
->    with other patches and code context mofification.
->    Therefore, I create a simple and clear patch to only this issue on linux-stable kernel, v 5.10
+-----Original Message-----
+From: Bart Van Assche <bvanassche@acm.org>=20
+Sent: Wednesday, November 3, 2021 12:23 PM
+To: Justin Piszcz <jpiszcz@lucidpixels.com>; Douglas Miller =
+<dougmill@linux.vnet.ibm.com>
+Cc: LKML <linux-kernel@vger.kernel.org>; linux-scsi@vger.kernel.org
+Subject: Re: kernel 5.15 does not boot with 3ware card (never had this =
+issue <=3D 5.14) - scsi 0:0:0:0: WARNING: (0x06:0x002C) : Command (0x12) =
+timed out, resetting card
 
-We almost ALWAYS want the original patches instead.  When we try to do
-stable-only patches, 95% of the time it gets wrong and it makes
-backporting future fixes for the same code area impossible.
+On 11/3/21 9:18 AM, Justin Piszcz wrote:
+> Thanks!-- Has anyone else reading run into this issue and/or are there
+> any suggestions how I can troubleshoot this further (as all -rc's have
+> the same issue)?
 
-So please submit the above patches as a series and I will be glad to
-consider them.
+How about bisecting this issue
+(https://www.kernel.org/doc/html/latest/admin-guide/bug-bisect.html)?
 
-thanks,
+[ .. ]
 
-greg k-h
+I was having some issues finding a list of changes with git bisect, so I =
+started checking the kernel .config and boot parameters:
+
+I found the option that was causing the system not to boot (tested with =
+5.15.0 and latest linux-git as of 6 NOV 2021)
+append=3D"3w-sas.use_msi=3D1"
+
+3w-sas.use_msi defaults to 0 (so now it is using IR-IO-APIC instead of =
+MSI but now the machine boots using 5.15)
+https://lwn.net/Articles/358679/
+
+Something between 5.14 and 5.15 changed regarding x86_64's handling of =
+Message Signaled Interrupts.
+... which causes the kernel to no longer boot when 3w-sas.use_msi=3D1 is =
+specified starting with 5.15.
+
+Regards,
+
+Justin.
+
+
+
+
