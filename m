@@ -2,74 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F77C446C42
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 04:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A808446C46
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 04:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbhKFDqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 23:46:30 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:56586 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229500AbhKFDq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 23:46:27 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mjCcD-00061h-Hx; Sat, 06 Nov 2021 11:43:37 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mjCcA-0004qM-GI; Sat, 06 Nov 2021 11:43:34 +0800
-Date:   Sat, 6 Nov 2021 11:43:34 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Dmitry Safonov <0x7f454c46@gmail.com>
-Cc:     Leonard Crestez <cdleonard@gmail.com>,
-        Dmitry Safonov <dima@arista.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [PATCH 5/5] tcp/md5: Make more generic tcp_sig_pool
-Message-ID: <20211106034334.GA18577@gondor.apana.org.au>
-References: <20211105014953.972946-1-dima@arista.com>
- <20211105014953.972946-6-dima@arista.com>
- <88edb8ff-532e-5662-cda7-c00904c612b4@gmail.com>
- <11215b43-cd3f-6cdc-36da-44636ca11f51@gmail.com>
+        id S233433AbhKFDs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 23:48:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhKFDsx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 23:48:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD61C061570;
+        Fri,  5 Nov 2021 20:46:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DUeLl3GL340iUKIiVJiqtjBe7sAAcyIadJ3zWvIOyGU=; b=XFk2OqW2UNX/DKiU/a4IYDy1eY
+        5Td/YNDnwQYxICncieUyGPoGBBXHFnsxtSuqaYg+NZdoIXxYO9y71QebrlKZyejsKTe4lFv3vWrKV
+        sIRezDA0ssnBH2ySdKC7tzKwB64OYooNkSn7StEqj6IyeeW2NQD47r7E4JeEWxsVZrfWDtxulOFPV
+        p+foN/tCkHT9gPd/o5Z4ozfcmY7ac9i0xw9XDpWJr4Yul/DlYwVXQGT18EryzUKPe6CZ/BvETR4il
+        Uu/SL2RAufcD1ulLw+EAUEh2TBidZFOl0YEm9VC65KXBiGvjYfNqhnqQG2etiFFCOHJvjb40ltVLP
+        VYLXab5Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mjCdA-0071tn-Ae; Sat, 06 Nov 2021 03:45:03 +0000
+Date:   Sat, 6 Nov 2021 03:44:36 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 19/21] iomap: Convert iomap_migrate_page to use folios
+Message-ID: <YYX6JBO/aRy07wgC@casper.infradead.org>
+References: <20211101203929.954622-1-willy@infradead.org>
+ <20211101203929.954622-20-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <11215b43-cd3f-6cdc-36da-44636ca11f51@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211101203929.954622-20-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 01:59:35PM +0000, Dmitry Safonov wrote:
-> On 11/5/21 09:54, Leonard Crestez wrote:
->
-> > This pool pattern is a workaround for crypto-api only being able to
-> > allocate transforms from user context.
-> >> It would be useful for this "one-transform-per-cpu" object to be part of
-> > crypto api itself, there is nothing TCP-specific here other than the
-> > size of scratch buffer.
+On Mon, Nov 01, 2021 at 08:39:27PM +0000, Matthew Wilcox (Oracle) wrote:
+> +++ b/fs/iomap/buffered-io.c
+> @@ -493,19 +493,21 @@ int
+>  iomap_migrate_page(struct address_space *mapping, struct page *newpage,
+>  		struct page *page, enum migrate_mode mode)
+>  {
+> +	struct folio *folio = page_folio(page);
+> +	struct folio *newfolio = page_folio(newpage);
+
+Re-reviewing this patch, and I don't like the naming.  How about:
+
+	struct folio *src = page_folio(page);
+	struct folio *dest = page_folio(newpage);
+
+... eventually flowing that renaming throughout the migration
+implementations.
+
+>  	int ret;
+>  
+> -	ret = migrate_page_move_mapping(mapping, newpage, page, 0);
+> +	ret = folio_migrate_mapping(mapping, newfolio, folio, 0);
+>  	if (ret != MIGRATEPAGE_SUCCESS)
+>  		return ret;
+>  
+> -	if (page_has_private(page))
+> -		attach_page_private(newpage, detach_page_private(page));
+> +	if (folio_test_private(folio))
+> +		folio_attach_private(newfolio, folio_detach_private(folio));
+>  
+>  	if (mode != MIGRATE_SYNC_NO_COPY)
+> -		migrate_page_copy(newpage, page);
+> +		folio_migrate_copy(newfolio, folio);
+>  	else
+> -		migrate_page_states(newpage, page);
+> +		folio_migrate_flags(newfolio, folio);
+>  	return MIGRATEPAGE_SUCCESS;
+>  }
+>  EXPORT_SYMBOL_GPL(iomap_migrate_page);
+> -- 
+> 2.33.0
 > 
-> Agree, it would be nice to have something like this as a part of crypto.
-> The intention here is to reuse md5 sig pool, rather than introduce
-> another similar one.
-
-As I said before, I'm happy to see the ahash/shash interface modified
-so that we allow the key to be in the request object in addition to the
-tfm.  However, I don't really have the time to work on that and
-nobody else from the crypto side seems interested in this.
-
-So if you guys have the time and are willing to work on it then I'm
-more than happy to help you.
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
