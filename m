@@ -2,102 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790BC446ED1
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 16:55:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2A9446EDB
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 17:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234578AbhKFP5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 11:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234532AbhKFP5g (ORCPT
+        id S233972AbhKFQLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 12:11:49 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:50901 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232053AbhKFQLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 11:57:36 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E7A8C061714;
-        Sat,  6 Nov 2021 08:54:54 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id k1so12568430ilo.7;
-        Sat, 06 Nov 2021 08:54:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nBcoZb4cANV3EfFk1jlOBnnvSvADPABY6nQqW9dTSxE=;
-        b=FJmuv4f4v2wR4rm6As+zpSWSJORr++vMB3aFxmJjj1UUfufQ7cbFbwajKusW2ILhwA
-         GDCGrTDvjvfHacZ2zWNy/LKu0TzA1vmUStLhTQ1mQaLNguF52x20l61EUJkybP76YDi5
-         +E+6nE9s+ur87TDnVGox9dEZD2Hp6g9bny63zZexWplZKBUqMJBojFWcmVkWzsV43+4/
-         iOYBjw3jQa1tv2cVOFnxvD1CTO35iKteo4v2heKCc1Z1RfYRrlld3xyHA2ybTtgmK5Mq
-         nLssraQuK2791u748s1miSVG9NiMuUn1RuKMif1tTwkfFbHb/pbmykuZ6oU+b+7LRqRI
-         9Viw==
+        Sat, 6 Nov 2021 12:11:48 -0400
+Received: by mail-io1-f72.google.com with SMTP id d71-20020a6bb44a000000b005e222c38641so657775iof.17
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Nov 2021 09:09:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nBcoZb4cANV3EfFk1jlOBnnvSvADPABY6nQqW9dTSxE=;
-        b=BATceiKQfO0Xo/1fxQMz4QU49Bq8w6vORd9Zg8Wp8u4ntBMd9Z3fS5JzAVzELkSkMp
-         pkKPTJG0q8U6+oPo5FF9xtBO9giuf26bq9AQRMlaTcHuMItXh7M8amzkbJdUfz9A061G
-         Nh1iGKcmNwyLIJtscFZZyzQQlBReldRGDr6K6vlViAjs98HHyPNgXkg4ucnU009FFeNo
-         npgrmOVCBpS1tk0ui7Yf37wRERix0ENCdOKmrfs2eSrhl/QSVP7clxPNuzSG6V9XKgm5
-         /+64iR7KUqbC6Pz9U7y8Ho8FqGB57GrqYLThDTYzPfcCCC7lsgiTJQD8io85kOZTaygO
-         xYbA==
-X-Gm-Message-State: AOAM533UMc3kColQfMwY/qtJpXsrduoiqfuk+lP4stH1fKWDqwoqn7cD
-        VYisHK2ZbOEbn3prA8btjEU=
-X-Google-Smtp-Source: ABdhPJy+BiqbWNfyydrcutyDetwpsLA0bY1tGP2GgldxnjF3A4eVczGPjf0kgIiTo2s3QdyGSkSoCA==
-X-Received: by 2002:a05:6e02:168c:: with SMTP id f12mr26512828ila.171.1636214093765;
-        Sat, 06 Nov 2021 08:54:53 -0700 (PDT)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:64ba:1c0f:6d36:c11d])
-        by smtp.gmail.com with ESMTPSA id d2sm5718313ilg.77.2021.11.06.08.54.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Nov 2021 08:54:53 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     tharvey@gateworks.com, frieder.schrempf@kontron.de,
-        linux-media@vger.kernel.org, laurent.pinchart@ideasonboard.com,
-        aford@beaconembedded.com, cstevens@beaconembedded.com,
-        jagan@amarulasolutions.com, Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 5/5] arm64: defconfig: Enable OV5640
-Date:   Sat,  6 Nov 2021 10:54:27 -0500
-Message-Id: <20211106155427.753197-5-aford173@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211106155427.753197-1-aford173@gmail.com>
-References: <20211106155427.753197-1-aford173@gmail.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=QqpG2ujyFdtX1D/IpoTYH2d0pbAXhtWvdOKz8yZlSqY=;
+        b=D/r1gDrg3zKybqKLrJ7SG7yVibfOLm9X+w5yb35DFWnRu+qeJwpqy3mrnimZNXYTpu
+         9rU4yBRNhxe+K2csvUBMWBxoIqyLI4RQXfPwIsGML7XcBvvGjqdsEGI1NUY1OyJeIAlq
+         3gcDhYtfQKTvUtvecIXyPECA/HMEOVUKn9UmLKDHRnGVZAJ055JucaJCwTzLR3mXwX5k
+         hLnI9kdhXStnqIS8pfnJLWpk6ZmBAwLKiIFqXfjapaP1gu3AJ/1zHMqw0CTs7SwPjryQ
+         YvDfHRej/WjLducxwGem/F4tC1I++Q7wBFp+VfcwbupEMyg+IEJ0ZnYeJ5+QfI+FZ4ye
+         VMzA==
+X-Gm-Message-State: AOAM533Be8ZKiHhTBomfxJPPin6vRH3zJT+LZNf/xvUdYoYBecOnGjco
+        xh+6Zt8pu3p7V45jzn6xTYS52SajehUav7dc+qmjBK5FTW34
+X-Google-Smtp-Source: ABdhPJxHYBDMptvTT4I2qhDfgHiUdhddkrynfcSDI3B1z2AnakIJrFjxx4QPg+lHcVYgeQ5RFvXq9fvxL+F3GjIkgNzT9+NqGh1L
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6602:2c95:: with SMTP id i21mr4894708iow.60.1636214946868;
+ Sat, 06 Nov 2021 09:09:06 -0700 (PDT)
+Date:   Sat, 06 Nov 2021 09:09:06 -0700
+In-Reply-To: <0000000000004d87c705b00bcb0a@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000af312005d020fa29@google.com>
+Subject: Re: [syzbot] WARNING in sta_info_insert_rcu
+From:   syzbot <syzbot+ef4ca92d9d6f5ba2f880@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, expedicao@bandup.com.br, hdanton@sina.com,
+        johannes.berg@intel.com, johannes@sipsolutions.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, yuehaibing@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Beacon EmbeddedWorks imx8mm development kit has a TD Next 5640
-Camera.  Enable the OV5640 driver to use the camera.
+syzbot suspects this issue was fixed by commit:
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
----
-V2:  No Change
+commit a6555f844549cd190eb060daef595f94d3de1582
+Author: YueHaibing <yuehaibing@huawei.com>
+Date:   Fri Aug 27 14:42:30 2021 +0000
 
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+    mac80211: Drop frames from invalid MAC address in ad-hoc mode
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index bc261cf2ef5a..4c1eb9aae5e5 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -668,6 +668,7 @@ CONFIG_VIDEO_QCOM_VENUS=m
- CONFIG_SDR_PLATFORM_DRIVERS=y
- CONFIG_VIDEO_RCAR_DRIF=m
- CONFIG_VIDEO_IMX219=m
-+CONFIG_VIDEO_OV5640=m
- CONFIG_VIDEO_OV5645=m
- CONFIG_VIDEO_QCOM_CAMSS=m
- CONFIG_DRM=m
--- 
-2.32.0
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=103db432b00000
+start commit:   7266f2030eb0 Merge tag 'pm-5.13-rc8' of git://git.kernel.o..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=533cb04fad26afdb
+dashboard link: https://syzkaller.appspot.com/bug?extid=ef4ca92d9d6f5ba2f880
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11be2fd0300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10d85b14300000
 
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: mac80211: Drop frames from invalid MAC address in ad-hoc mode
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
