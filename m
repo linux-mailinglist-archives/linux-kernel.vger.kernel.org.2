@@ -2,191 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C0D447051
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 21:02:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C330447052
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 21:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234988AbhKFUFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 16:05:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233477AbhKFUFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 16:05:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C032F60EE9;
-        Sat,  6 Nov 2021 20:02:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636228950;
-        bh=UWK/1Ut2+nkoRQjPT3vwmn/To1ytATaqaVXfznRjdlk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pfaJGUvxpY8YbFfehpCqd9hBT6I4WMuGXsYzcymhd4kNUdYVuvWa9RFw44VmiJF2W
-         ao3RaIoMewfVhTH/dhcRxUs47mC8znkOPh0MgtlgHXCCrVqhJ5AVXMbmQuoIgCPNQp
-         whxPURbl8oWA+A18nCc5RfjftjEqz4/6+w5XL1hNcQYGwinnABEQ3ZS5iiPVEqnNCC
-         Aa6OmKWgXMYIypYFvC6HXJEuKx4/Tac4HCeFRv+ys2FjKtSTbN159XbqwvE9EGLbDj
-         k4YTAi+uLpuw8Xbu20rWptoSlLehDYK8+sd0h6SuUchay0rkZ/PxVuovZaWTfGtbnT
-         EFBnnTNqrRYvA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5BB0A410A1; Sat,  6 Nov 2021 17:02:27 -0300 (-03)
-Date:   Sat, 6 Nov 2021 17:02:27 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>
-Subject: Re: [PATCH] perf: Use __BYTE_ORDER__
-Message-ID: <YYbfUxEe3D3oMePU@kernel.org>
-References: <20211104132311.984703-1-iii@linux.ibm.com>
+        id S234996AbhKFUH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 16:07:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233477AbhKFUHv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Nov 2021 16:07:51 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9CEC061570
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 13:05:10 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636229107;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3LAhmyA9MVbYyu1NRCaNhJnh3QMqcX+oD7lwbOXZlsU=;
+        b=ghhQqagYiFDUqbJD8lqxaRKoM4qsqHlKXmLNT6En0dbxkKv6hw8Eyl9JgtC2DWU0NvujeY
+        CD2tu4j2Lj0KRhsAlyaB48zW5WNao2RwH2XPryH8sc7Frb+l1FjDIZ2iBNC1Ju/lyqSiRK
+        Ug3dZw95cTcV7Zh8V1jBRRm24wKpTyiHQ4NFFygkjYobAZXgRneJiddi7GZFU6VPbk6JTf
+        EO/1fOeF9Pu1l+nPS9WYC2niK2YmjZTnU0NDtXlIDGgHrmL7FNH4b/0jcsxBytZpdH6mxB
+        Mnhu5/EJZ4EpJ4vz/YEYJU+VQ+8EeeL0hWqVBMjXilUlPEYckB9eabSel4DDvw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636229107;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3LAhmyA9MVbYyu1NRCaNhJnh3QMqcX+oD7lwbOXZlsU=;
+        b=oQ2NOu/DqeEw4gtqWZRpr3ngzE8Q218vI5qxYFJWYLra0/+ysBnw3R9aLzLDy18Rq0uos3
+        pSV5l0Dlwatrs4CA==
+To:     Nicholas Piggin <npiggin@gmail.com>, Petr Mladek <pmladek@suse.com>
+Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Removal of printk safe buffers delays NMI context printk
+In-Reply-To: <1636158295.cxlln6r0kk.astroid@bobo.none>
+References: <1636039236.y415994wfa.astroid@bobo.none>
+ <87ee7vki7f.fsf@jogness.linutronix.de>
+ <1636073838.qpmyp6q17i.astroid@bobo.none>
+ <87r1bv2aga.fsf@jogness.linutronix.de>
+ <1636111599.wwppq55w4t.astroid@bobo.none>
+ <87h7cqg0xk.fsf@jogness.linutronix.de> <YYVakNdzjrYuBmhf@alley>
+ <87lf22eem7.fsf@jogness.linutronix.de>
+ <1636158295.cxlln6r0kk.astroid@bobo.none>
+Date:   Sat, 06 Nov 2021 21:11:07 +0106
+Message-ID: <871r3tqccs.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211104132311.984703-1-iii@linux.ibm.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Nov 04, 2021 at 02:23:11PM +0100, Ilya Leoshkevich escreveu:
-> Switch from the libc-defined __BYTE_ORDER to the compiler-defined
-> __BYTE_ORDER__ in order to make endianness detection more robust, like
-> it was done for libbpf.
+On 2021-11-06, Nicholas Piggin <npiggin@gmail.com> wrote:
+> This patch seems to work, I can submit it if you'd like?
 
-Thanks, applied.
+It looks good to me. Thanks for identifying and fixing this regression.
 
-- Arnaldo
+John Ogness
 
- 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 > ---
->  tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c    | 2 +-
->  tools/perf/util/data-convert-bt.c                        | 2 +-
->  tools/perf/util/genelf.h                                 | 2 +-
->  tools/perf/util/intel-bts.c                              | 2 +-
->  tools/perf/util/intel-pt-decoder/intel-pt-insn-decoder.c | 2 +-
->  tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c  | 2 +-
->  tools/perf/util/s390-cpumsf.c                            | 8 ++++----
->  7 files changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> index 2e5eff4f8f03..2f311189c6e8 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> @@ -13,7 +13,7 @@
+>  arch/powerpc/kernel/watchdog.c | 6 ++++++
+>  include/linux/printk.h         | 4 ++++
+>  kernel/printk/printk.c         | 5 +++++
+>  lib/nmi_backtrace.c            | 6 ++++++
+>  4 files changed, 21 insertions(+)
+>
+> diff --git a/arch/powerpc/kernel/watchdog.c b/arch/powerpc/kernel/watchdog.c
+> index 5f69ba4de1f3..c8017bc23b00 100644
+> --- a/arch/powerpc/kernel/watchdog.c
+> +++ b/arch/powerpc/kernel/watchdog.c
+> @@ -227,6 +227,12 @@ static void watchdog_smp_panic(int cpu)
+>  		cpumask_clear(&wd_smp_cpus_ipi);
+>  	}
 >  
->  #include "arm-spe-pkt-decoder.h"
+> +	/*
+> +	 * Force flush any remote buffers that might be stuck in IRQ context
+> +	 * and therefore could not run their irq_work.
+> +	 */
+> +	printk_trigger_flush();
+> +
+>  	if (hardlockup_panic)
+>  		nmi_panic(NULL, "Hard LOCKUP");
 >  
-> -#if __BYTE_ORDER == __BIG_ENDIAN
-> +#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
->  #define le16_to_cpu bswap_16
->  #define le32_to_cpu bswap_32
->  #define le64_to_cpu bswap_64
-> diff --git a/tools/perf/util/data-convert-bt.c b/tools/perf/util/data-convert-bt.c
-> index aa862a26d95c..8f7705bbc2da 100644
-> --- a/tools/perf/util/data-convert-bt.c
-> +++ b/tools/perf/util/data-convert-bt.c
-> @@ -1437,7 +1437,7 @@ static struct bt_ctf_field_type *create_int_type(int size, bool sign, bool hex)
->  	    bt_ctf_field_type_integer_set_base(type, BT_CTF_INTEGER_BASE_HEXADECIMAL))
->  		goto err;
->  
-> -#if __BYTE_ORDER == __BIG_ENDIAN
-> +#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
->  	bt_ctf_field_type_set_byte_order(type, BT_CTF_BYTE_ORDER_BIG_ENDIAN);
+> diff --git a/include/linux/printk.h b/include/linux/printk.h
+> index 85b656f82d75..9497f6b98339 100644
+> --- a/include/linux/printk.h
+> +++ b/include/linux/printk.h
+> @@ -198,6 +198,7 @@ void dump_stack_print_info(const char *log_lvl);
+>  void show_regs_print_info(const char *log_lvl);
+>  extern asmlinkage void dump_stack_lvl(const char *log_lvl) __cold;
+>  extern asmlinkage void dump_stack(void) __cold;
+> +void printk_trigger_flush(void);
 >  #else
->  	bt_ctf_field_type_set_byte_order(type, BT_CTF_BYTE_ORDER_LITTLE_ENDIAN);
-> diff --git a/tools/perf/util/genelf.h b/tools/perf/util/genelf.h
-> index d4137559be05..3db3293213a9 100644
-> --- a/tools/perf/util/genelf.h
-> +++ b/tools/perf/util/genelf.h
-> @@ -42,7 +42,7 @@ int jit_add_debug_info(Elf *e, uint64_t code_addr, void *debug, int nr_debug_ent
->  #error "unsupported architecture"
+>  static inline __printf(1, 0)
+>  int vprintk(const char *s, va_list args)
+> @@ -274,6 +275,9 @@ static inline void dump_stack_lvl(const char *log_lvl)
+>  static inline void dump_stack(void)
+>  {
+>  }
+> +static inline void printk_trigger_flush(void)
+> +{
+> +}
 >  #endif
 >  
-> -#if __BYTE_ORDER == __BIG_ENDIAN
-> +#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
->  #define GEN_ELF_ENDIAN	ELFDATA2MSB
->  #else
->  #define GEN_ELF_ENDIAN	ELFDATA2LSB
-> diff --git a/tools/perf/util/intel-bts.c b/tools/perf/util/intel-bts.c
-> index af1e78d76228..2c8147a62203 100644
-> --- a/tools/perf/util/intel-bts.c
-> +++ b/tools/perf/util/intel-bts.c
-> @@ -35,7 +35,7 @@
->  #define INTEL_BTS_ERR_NOINSN  5
->  #define INTEL_BTS_ERR_LOST    9
+>  #ifdef CONFIG_SMP
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index a8d0a58deebc..99221b016c68 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -3252,6 +3252,11 @@ void defer_console_output(void)
+>  	preempt_enable();
+>  }
 >  
-> -#if __BYTE_ORDER == __BIG_ENDIAN
-> +#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
->  #define le64_to_cpu bswap_64
->  #else
->  #define le64_to_cpu
-> diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-insn-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-insn-decoder.c
-> index 593f20e9774c..9d5e65cec89b 100644
-> --- a/tools/perf/util/intel-pt-decoder/intel-pt-insn-decoder.c
-> +++ b/tools/perf/util/intel-pt-decoder/intel-pt-insn-decoder.c
-> @@ -143,7 +143,7 @@ static void intel_pt_insn_decoder(struct insn *insn,
->  
->  	if (branch == INTEL_PT_BR_CONDITIONAL ||
->  	    branch == INTEL_PT_BR_UNCONDITIONAL) {
-> -#if __BYTE_ORDER == __BIG_ENDIAN
-> +#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
->  		switch (insn->immediate.nbytes) {
->  		case 1:
->  			intel_pt_insn->rel = insn->immediate.value;
-> diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c
-> index 02a3395d6ce3..4bd154848cad 100644
-> --- a/tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c
-> +++ b/tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c
-> @@ -16,7 +16,7 @@
->  
->  #define BIT63		((uint64_t)1 << 63)
->  
-> -#if __BYTE_ORDER == __BIG_ENDIAN
-> +#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
->  #define le16_to_cpu bswap_16
->  #define le32_to_cpu bswap_32
->  #define le64_to_cpu bswap_64
-> diff --git a/tools/perf/util/s390-cpumsf.c b/tools/perf/util/s390-cpumsf.c
-> index 8130b56aa04b..f3fdad28a852 100644
-> --- a/tools/perf/util/s390-cpumsf.c
-> +++ b/tools/perf/util/s390-cpumsf.c
-> @@ -244,7 +244,7 @@ static bool s390_cpumsf_basic_show(const char *color, size_t pos,
->  				   struct hws_basic_entry *basicp)
+> +void printk_trigger_flush(void)
+> +{
+> +	defer_console_output();
+> +}
+> +
+>  int vprintk_deferred(const char *fmt, va_list args)
 >  {
->  	struct hws_basic_entry *basic = basicp;
-> -#if __BYTE_ORDER == __LITTLE_ENDIAN
-> +#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
->  	struct hws_basic_entry local;
->  	unsigned long long word = be64toh(*(unsigned long long *)basicp);
+>  	int r;
+> diff --git a/lib/nmi_backtrace.c b/lib/nmi_backtrace.c
+> index f9e89001b52e..199ab201d501 100644
+> --- a/lib/nmi_backtrace.c
+> +++ b/lib/nmi_backtrace.c
+> @@ -75,6 +75,12 @@ void nmi_trigger_cpumask_backtrace(const cpumask_t *mask,
+>  		touch_softlockup_watchdog();
+>  	}
 >  
-> @@ -288,7 +288,7 @@ static bool s390_cpumsf_diag_show(const char *color, size_t pos,
->  				  struct hws_diag_entry *diagp)
->  {
->  	struct hws_diag_entry *diag = diagp;
-> -#if __BYTE_ORDER == __LITTLE_ENDIAN
-> +#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
->  	struct hws_diag_entry local;
->  	unsigned long long word = be64toh(*(unsigned long long *)diagp);
->  
-> @@ -322,7 +322,7 @@ static unsigned long long trailer_timestamp(struct hws_trailer_entry *te,
->  static bool s390_cpumsf_trailer_show(const char *color, size_t pos,
->  				     struct hws_trailer_entry *te)
->  {
-> -#if __BYTE_ORDER == __LITTLE_ENDIAN
-> +#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
->  	struct hws_trailer_entry local;
->  	const unsigned long long flags = be64toh(te->flags);
->  
-> @@ -552,7 +552,7 @@ static unsigned long long get_trailer_time(const unsigned char *buf)
->  	te = (struct hws_trailer_entry *)(buf + S390_CPUMSF_PAGESZ
->  					      - sizeof(*te));
->  
-> -#if __BYTE_ORDER == __LITTLE_ENDIAN
-> +#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
->  	clock_base = be64toh(te->progusage[0]) >> 63 & 0x1;
->  	progusage2 = be64toh(te->progusage[1]);
->  #else
+> +	/*
+> +	 * Force flush any remote buffers that might be stuck in IRQ context
+> +	 * and therefore could not run their irq_work.
+> +	 */
+> +	printk_trigger_flush();
+> +
+>  	clear_bit_unlock(0, &backtrace_flag);
+>  	put_cpu();
+>  }
 > -- 
-> 2.31.1
-> 
-
--- 
-
-- Arnaldo
+> 2.23.0
