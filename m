@@ -2,78 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66959446BE9
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 02:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C23E446BF2
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 02:41:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhKFBit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 21:38:49 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:21561 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233894AbhKFBi1 (ORCPT
+        id S230310AbhKFBoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 21:44:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230149AbhKFBnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 21:38:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1636162531; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=qc+YvceZyAXnl1VNihVaILaqzEudz89tr+yVe+vDKKs=; b=L5meB56OQOtmCH6DGK/EMgegHL0fgpMoKZfcGfgbil+IqIGGT3EkCiZMymYOKUIMQNHNAOHp
- B+33SPqIn+hU5Zoj/0Bk07EMDlYXuKJjx0l40Lr41dCzRG9SozLPE4gQ5aGYg33WrUeuwVP3
- dc9L/jr0pxR2aXmNAB7pgTg/6TE=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 6185dbd58037be265184c7c1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 06 Nov 2021 01:35:17
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1050FC4360C; Sat,  6 Nov 2021 01:35:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.110.30.239] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E6D2DC4338F;
-        Sat,  6 Nov 2021 01:35:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E6D2DC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH] bus: mhi: core: Read missing channel configuration entry
-To:     Bhaumik Bhatt <quic_bbhatt@quicinc.com>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, quic_hemantk@quicinc.com,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org
-References: <1636072273-16034-1-git-send-email-quic_bbhatt@quicinc.com>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <358e03fd-bf43-d6cc-63af-a554eae895ef@codeaurora.org>
-Date:   Fri, 5 Nov 2021 18:35:15 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Fri, 5 Nov 2021 21:43:22 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E343C061714
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 18:40:32 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id f4so38677827edx.12
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 18:40:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QW28q31zTKGihmikqeRTg40iyRXMpJFUAKZOr0xTvEk=;
+        b=cjxeBR5gfQ+qvEXqvOVXm4mfPcpzJzD+nJgPwXP7WD9DMQvT9+WETTO+UGgjlke/6O
+         xvVmMBNNlJErrtIjgdz+QS/V9uuZjk873rKsfC9g6LUIWQbmbjZ3uXfr25VYRi44tAGG
+         EgH4jsOwoHVZoI7CHLSWSi+n7yjchIq0O+oUU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QW28q31zTKGihmikqeRTg40iyRXMpJFUAKZOr0xTvEk=;
+        b=vr/pdI6T0UV5cBRwj1kmIWcJ+0/bXqqHbPtFsVBIdum0SRf0EIPB4NGCGFvYzEe4JA
+         65LafOA086jIgdOFeDYs4o6Mwyi6ev8u7TkXtl3khlKpTqhsaHCsiC5RpYgGC543o2eF
+         GejjGfYpgGwSPNj3PoUKXg1gY2qpOuaYAKoNWaaPX9kF5gk4sKTlEDaqlEEY3Kne0/Hk
+         TT+N5cecjXn6n9LuCMRydCDYgt1z34E0fjSqtU+enoAYY32/v4BvntrucBj/Y/UMX/hn
+         ENwuiXhFsBbGabkOGk4P+1lv5vqSdoVXsxmIc+46AkASNKvCF8yVBgVSok7Qg1Pf+QXk
+         lO+g==
+X-Gm-Message-State: AOAM532wDKJEW+8i+OL8rzzEtgcSwbmWUa1usMSjLre3znq7MVm6Fc81
+        ZSbgfKKdt4gVdgcr15o2dg9H/9hwx8LnUjDAdJS4Ll4OO6o=
+X-Google-Smtp-Source: ABdhPJxDcKSTNnkjA7l3gFkZdz3ftF9zMLNz/4Rtv02BW7FljeMFRPXda6TzlFIfw8MJ9utFqCNjsoOdplnTVO9D9wE=
+X-Received: by 2002:a17:906:489a:: with SMTP id v26mr25840003ejq.305.1636162830366;
+ Fri, 05 Nov 2021 18:40:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1636072273-16034-1-git-send-email-quic_bbhatt@quicinc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211018134844.2627174-1-james.clark@arm.com> <20211018134844.2627174-2-james.clark@arm.com>
+In-Reply-To: <20211018134844.2627174-2-james.clark@arm.com>
+From:   Denis Nikitin <denik@chromium.org>
+Date:   Fri, 5 Nov 2021 18:40:19 -0700
+Message-ID: <CADDJ8CVnXu6HKuRqWJ+28CC6QuR-187tnSN8j7eSCb2KyKfXzA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] perf tools: Refactor out kernel symbol argument
+ sanity checking
+To:     James Clark <james.clark@arm.com>
+Cc:     acme@kernel.org, linux-perf-users@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 18, 2021 at 6:48 AM James Clark <james.clark@arm.com> wrote:
+>
+> User supplied values for vmlinux and kallsyms are checked before
+> continuing. Refactor this into a function so that it can be used
+> elsewhere.
+>
+> Signed-off-by: James Clark <james.clark@arm.com>
+> ---
+>  tools/perf/builtin-report.c | 13 ++-----------
+>  tools/perf/util/symbol.c    | 22 ++++++++++++++++++++++
+>  tools/perf/util/symbol.h    |  2 ++
+>  3 files changed, 26 insertions(+), 11 deletions(-)
+>
+> diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+> index a0316ce910db..8167ebfe776a 100644
+> --- a/tools/perf/builtin-report.c
+> +++ b/tools/perf/builtin-report.c
+> @@ -1378,18 +1378,9 @@ int cmd_report(int argc, const char **argv)
+>         if (quiet)
+>                 perf_quiet_option();
+>
+> -       if (symbol_conf.vmlinux_name &&
+> -           access(symbol_conf.vmlinux_name, R_OK)) {
+> -               pr_err("Invalid file: %s\n", symbol_conf.vmlinux_name);
+> -               ret = -EINVAL;
+> -               goto exit;
+> -       }
+> -       if (symbol_conf.kallsyms_name &&
+> -           access(symbol_conf.kallsyms_name, R_OK)) {
+> -               pr_err("Invalid file: %s\n", symbol_conf.kallsyms_name);
+> -               ret = -EINVAL;
+> +       ret = symbol__validate_sym_arguments();
+> +       if (ret)
+>                 goto exit;
+> -       }
+>
+>         if (report.inverted_callchain)
+>                 callchain_param.order = ORDER_CALLER;
+> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+> index 0fc9a5410739..8fad1f0d41cb 100644
+> --- a/tools/perf/util/symbol.c
+> +++ b/tools/perf/util/symbol.c
+> @@ -2630,3 +2630,25 @@ struct mem_info *mem_info__new(void)
+>                 refcount_set(&mi->refcnt, 1);
+>         return mi;
+>  }
+> +
+> +/*
+> + * Checks that user supplied symbol kernel files are accessible because
+> + * the default mechanism for accessing elf files fails silently. i.e. if
+> + * debug syms for a build ID aren't found perf carries on normally. When
+> + * they are user supplied we should assume that the user doesn't want to
+> + * silently fail.
+> + */
+> +int symbol__validate_sym_arguments(void)
+> +{
+> +       if (symbol_conf.vmlinux_name &&
+> +           access(symbol_conf.vmlinux_name, R_OK)) {
+> +               pr_err("Invalid file: %s\n", symbol_conf.vmlinux_name);
+> +               return -EINVAL;
+> +       }
+> +       if (symbol_conf.kallsyms_name &&
+> +           access(symbol_conf.kallsyms_name, R_OK)) {
+> +               pr_err("Invalid file: %s\n", symbol_conf.kallsyms_name);
+> +               return -EINVAL;
+> +       }
+> +       return 0;
+> +}
+> diff --git a/tools/perf/util/symbol.h b/tools/perf/util/symbol.h
+> index 954d6a049ee2..166196686f2e 100644
+> --- a/tools/perf/util/symbol.h
+> +++ b/tools/perf/util/symbol.h
+> @@ -286,4 +286,6 @@ static inline void __mem_info__zput(struct mem_info **mi)
+>
+>  #define mem_info__zput(mi) __mem_info__zput(&mi)
+>
+> +int symbol__validate_sym_arguments(void);
+> +
+>  #endif /* __PERF_SYMBOL */
+> --
+> 2.28.0
+>
 
-
-On 11/4/2021 5:31 PM, Bhaumik Bhatt wrote:
-> The 'wake-capable' entry in channel configuration is not set when
-> parsing the configuration specified by the controller driver. Add
-> the missing entry to ensure channel is correctly specified as a
-> 'wake-capable' channel.
-> 
-> Signed-off-by: Bhaumik Bhatt <quic_bbhatt@quicinc.com>
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum, a Linux Foundation Collaborative Project
+Reviewed-by: Denis Nikitin <denik@chromium.org>
