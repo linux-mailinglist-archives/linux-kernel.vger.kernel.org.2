@@ -2,93 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 523F64470F1
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 00:18:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D6C4470F4
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 00:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234635AbhKFXTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 19:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
+        id S234709AbhKFXVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 19:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbhKFXTW (ORCPT
+        with ESMTP id S229843AbhKFXVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 19:19:22 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1907CC061570
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 16:16:41 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id r8so19776010wra.7
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Nov 2021 16:16:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IZ/mVLnVEjcxSgetrmyGMYqsYZyZaCCXV6KwPJ0Xu2s=;
-        b=RkqL8VMOgBhResrdZPpHrKB3aNjdst8n+rhc7Dv6QdsNNiwglICXJzRqfuxY0yp9EN
-         duORt1qV5ebIpDxwS9gpdlaI7YG2RMXX8o+BKKXJu4hfc+rZoOc3GBvX64LNTHRyWC67
-         Iym1sqE/95FRJGbmkknoqTCh9Qv4E9bmfOUCP/9GpkVaFDTWeDnlOadd3g1+Fyq2KNJa
-         PC9TCpfrZ5pgPSIgW0gACFvrYhbC6ZLd8F5fcpNKaGmAsy5h5NflnhovcxSbLW65qSNA
-         RPWAXbCDupTRix68ASj+7LI5RDe317s/kvjN5Ef5RKP1J0xJYZ/fC5v46IJJOpy6XA/w
-         LlOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IZ/mVLnVEjcxSgetrmyGMYqsYZyZaCCXV6KwPJ0Xu2s=;
-        b=jlbk5Vz6QAaYiz0TZw9eCmMSsVfdYJ6DI1dJCpGx54oU69gj0Ci71qJi8xi5vYzI69
-         smDjTALkTrAMkMhSfSHSUg2MeUP5s++gpSwn3wf4tDRHQ7XGjrb6hdu5fBQGPx1nif9G
-         1nsOqfqF1SfTMzjT36emncFoUnGCuw/UGCiIOsct3/iL0+r4RJk7zcOO//s1wzO0HWME
-         9YpbrTE6le6RZ9Jm+STExvYzTMxOwj8oJnht4yiLc1mPRS+jfRfeoyr4zld34S1wf5dv
-         rsms/QHxm1L3I1kFL2khqRet1jnZCYxrCAZro6B6RhHklvG51cyg5/GUbemBKgrODsur
-         DhvQ==
-X-Gm-Message-State: AOAM531WWRwhQWFM/oYOh/b72cBQtc3I4V8UM6Q/1EXlH1nHk8Q1FrGy
-        32RWFfmb25j9xxeEaL+6GHMrnw==
-X-Google-Smtp-Source: ABdhPJzzTMAz+XqQ3CuJCZFA0d5RS+rno4KgaxH2kXOJ+4jFW3qdhJjNFP+Sj/m7CQk+yBWtI97heQ==
-X-Received: by 2002:a5d:61ca:: with SMTP id q10mr69651962wrv.102.1636240599736;
-        Sat, 06 Nov 2021 16:16:39 -0700 (PDT)
-Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
-        by smtp.gmail.com with ESMTPSA id 4sm16320389wrz.90.2021.11.06.16.16.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Nov 2021 16:16:39 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, straube.linux@gmail.com,
-        martin@kaiser.cx, fmdefrancesco@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        dan.carpenter@oracle.com
-Subject: [PATCH 2/2] staging: r8188eu: remove MSG_88E macro
-Date:   Sat,  6 Nov 2021 23:16:36 +0000
-Message-Id: <20211106231636.894-3-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211106231636.894-1-phil@philpotter.co.uk>
-References: <20211106231636.894-1-phil@philpotter.co.uk>
+        Sat, 6 Nov 2021 19:21:39 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7155C061570
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 16:18:57 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mjUxS-00009t-J8; Sun, 07 Nov 2021 00:18:46 +0100
+Received: from pengutronix.de (dialin-80-228-153-084.ewe-ip-backbone.de [80.228.153.84])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id CB31A6A6018;
+        Sat,  6 Nov 2021 23:18:41 +0000 (UTC)
+Date:   Sun, 7 Nov 2021 00:18:39 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can <linux-can@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Matt Kline <matt@bitbashing.io>,
+        Sean Nyekjaer <sean@geanix.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>
+Subject: Re: [RFC PATCH v1] can: m_can: m_can_read_fifo: fix memory leak in
+ error branch
+Message-ID: <20211106231839.7zcmtxpidemu4owa@pengutronix.de>
+References: <20211026180909.1953355-1-mailhol.vincent@wanadoo.fr>
+ <20211029113405.hbqcu6chf5e3olrm@pengutronix.de>
+ <CAMZ6RqJ1CtphrUxRDWOKEsJF_uzoPbYD2mPiD56VvJ9qB7oxow@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="34ah5prvwlomu2j5"
+Content-Disposition: inline
+In-Reply-To: <CAMZ6RqJ1CtphrUxRDWOKEsJF_uzoPbYD2mPiD56VvJ9qB7oxow@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove MSG_88E macro from include/rtw_debug.h, as it no longer has any
-callers within the driver.
 
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- drivers/staging/r8188eu/include/rtw_debug.h | 6 ------
- 1 file changed, 6 deletions(-)
+--34ah5prvwlomu2j5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/staging/r8188eu/include/rtw_debug.h b/drivers/staging/r8188eu/include/rtw_debug.h
-index 0a77e3e73a45..39b69b9ad0a3 100644
---- a/drivers/staging/r8188eu/include/rtw_debug.h
-+++ b/drivers/staging/r8188eu/include/rtw_debug.h
-@@ -66,10 +66,4 @@ extern u32 GlobalDebugLevel;
- 			pr_info(DRIVER_PREFIX __VA_ARGS__);		\
- 	} while (0)
- 
--#define MSG_88E(...)							\
--	do {								\
--		if (_drv_err_ <= GlobalDebugLevel)			\
--			pr_info(DRIVER_PREFIX __VA_ARGS__);			\
--	} while (0)
--
- #endif	/* __RTW_DEBUG_H__ */
--- 
-2.31.1
+On 30.10.2021 01:35:01, Vincent MAILHOL wrote:
+> On Fri. 29 Oct 2021 at 20:34, Marc Kleine-Budde <mkl@pengutronix.de> wrot=
+e:
+> > On 27.10.2021 03:09:09, Vincent Mailhol wrote:
+> > > In m_can_read_fifo(), if the second call to m_can_fifo_read() fails,
+> > > the function jump to the out_fail label and returns without calling
+> > > m_can_receive_skb(). This means that the skb previously allocated by
+> > > alloc_can_skb() is not freed. In other terms, this is a memory leak.
+> > >
+> > > This patch adds a new goto statement: out_receive_skb and do some
+> > > small code refactoring to fix the issue.
+> >
+> > This means we pass a skb to the user space, which contains wrong data.
+> > Probably 0x0, but if the CAN frame doesn't contain 0x0, it's wrong. That
+> > doesn't look like a good idea. If the CAN frame broke due to a CRC issue
+> > on the wire it is not received. IMHO it's best to discard the skb and
+> > return the error.
+>=20
+> Arg... Guess I made the right choice to tag the patch as RFC...
+>=20
+> Just one question, what is the correct function to discard the
+> skb? The driver uses the napi polling system (which I am not
+> entirely familiar with). Does it mean that the rx is not done in
+> IRQ context and that we can simply use kfree_skb() instead of
+> dev_kfree_skb_irq()?
 
+The m_can driver is a bit more complicated. It uses NAPI for mmio
+devices, but threaded IRQs for SPI devices. Looking at
+dev_kfree_skb_any(), it checks for hard IRQs or IRQs disabled, I think
+this is not the case for both threaded IRQs and NAPI.
+
+https://elixir.bootlin.com/linux/v5.15/source/net/core/dev.c#L3108
+
+So I think kfree_skb() should be OK.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--34ah5prvwlomu2j5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmGHDU0ACgkQqclaivrt
+76nZXwf/a7+FU0/i5iAebuEHJK4kAC72+mXiRsd5KL37AS5zpvzdkwzuHe7UJdGh
+clzOZO6CNhzUlqbzeo1q5kT42cMJEkiKRcUcID6NNwXMlIz0fPv80w3Uh18dHk0A
+QXiQlwi51iQWBE3/YUDH1sTYtsoQxeqtvKaURW509QbKoCVqzn9G7mWqmQwol9v6
+j5S6jRPso/i8bQA9Ye9IcIx5nhUz+mVEaQ2I+NSGL1Kq0cfKgUYJBHQ8XHGkjID8
+MJauoS4vvVqsxarQGfeGCs3O5uPR2OE5utIfvB2d9Ph1oLEgmmUrxH4kG4xwXcJ6
+HWCndadx1//5xbD3pTzSS3a4X3IEjg==
+=3/22
+-----END PGP SIGNATURE-----
+
+--34ah5prvwlomu2j5--
