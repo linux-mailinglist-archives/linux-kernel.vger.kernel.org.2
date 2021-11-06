@@ -2,96 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D68446C21
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 03:58:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6142A446C23
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 03:59:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232983AbhKFDBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 23:01:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53090 "EHLO
+        id S232996AbhKFDBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 23:01:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbhKFDBI (ORCPT
+        with ESMTP id S229852AbhKFDBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 23:01:08 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A99CC061570;
-        Fri,  5 Nov 2021 19:58:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=qQH0nBTUcxXKHal9giqwqa8esN9py6mZ5ZFCCMzF95g=; b=tRW2HvXoPmpAAdwHky8fw3NQvF
-        JvKO3zhkGEc1/bYt0BZBpOdIV2JYL+KOdyWW3fnnJqnahOyWgjObo+IGUoX9oqcJzMuEVOb+B9emS
-        1+xeMl5QDfZrthTjmPtRMAi+5JiK6DhY3SsCKhv3TzKyL8kEhgh9TK7Ixy8uJKvJH+8yF2Rtr1bPL
-        h6OGRWPNbHERYT3OhDln71jKbJsAYRD2D/wyWU6swfM7pUFtlpsRV+G90baKkP0Ee1Vwc2LMT9o5K
-        iDCp41uuJVaD6xKQZerRjXa1xMmeYX4BgVpS68V73V/WgMCg0dTCv4pMkkskeRtbFMfbJuP5aVdC2
-        H+GDOyDA==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mjBuS-00CbKs-4g; Sat, 06 Nov 2021 02:58:24 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Paul Burton <paulburton@kernel.org>,
-        Maxime Bizon <mbizon@freebox.fr>,
-        Ralf Baechle <ralf@linux-mips.org>
-Subject: [RFC PATCH] mips: BCM63XX: select CPU_SUPPORTS_32BIT_KERNEL
-Date:   Fri,  5 Nov 2021 19:58:23 -0700
-Message-Id: <20211106025823.32437-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Fri, 5 Nov 2021 23:01:42 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3036BC061570;
+        Fri,  5 Nov 2021 19:59:02 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HmMXH50d4z4xcG;
+        Sat,  6 Nov 2021 13:58:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1636167536;
+        bh=ZIPdHpDZyV3DQoZHd7BxpbjbtGyh8Bai0u4etKPEdQU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BD21KIJE/tPZ1xYYXG3pTWVStLIqal75TUdvcVOkfCG9pQQBUZjSGIQCc4WXaihzN
+         gK5bzdClEPFc2ms6qHMfkYxf8QTsOB/CK12CSbgzt7see0Vq6ykrWJb7Xsm88zvZHu
+         CGARJapv57pcGL9bF4vki3FzybpLanqySpw2ODLvvy2lHYzVAbx1itCkSp8pEuFpTA
+         237MQZ2yVR4DP7lO+JjNpZMvAGNi+FnPIpEmEP6Gb9X2BOPN5aTu8mSozrEHAxsr9G
+         rDMQT4xQ7zTKKGBczb3+cpwfOrFZfjcuOjOKxA5P9xjQiarbgWR10vH2VnU9Orlzfv
+         QQJ2k/gMENsPw==
+Date:   Sat, 6 Nov 2021 13:58:54 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: linux-next: Tree for Nov 6
+Message-ID: <20211106135836.35dcbcdf@elm.ozlabs.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/z46DJR0mSgfNZmHl11Sfy6=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/z46DJR0mSgfNZmHl11Sfy6=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Several header files need info on CONFIG_32BIT or CONFIG_64BIT,
-but kconfig symbol BCM63XX does not provide that info. This leads
-to many build errors, e.g.:
+Hi all,
 
-   arch/mips/include/asm/page.h:196:13: error: use of undeclared identifier 'CAC_BASE'
-           return x - PAGE_OFFSET + PHYS_OFFSET;
-   arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
-   #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
-   arch/mips/include/asm/io.h:134:28: error: use of undeclared identifier 'CAC_BASE'
-           return (void *)(address + PAGE_OFFSET - PHYS_OFFSET);
-   arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
-   #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
+Changes since 20211105:
 
-arch/mips/include/asm/uaccess.h:82:10: error: use of undeclared identifier '__UA_LIMIT'
-           return (__UA_LIMIT & (addr | (addr + size) | __ua_size(size))) == 0;
+I was informed that there is a potential corrupter bug in the block
+tree included in next-20211105, so this release is just that one with
+the block tree code reverted.  I have also replaced the next-20211105
+tag with DONT-USE-next-20211105 and removed the incremental patch.
 
+Hopefully this has not caused anyone more than the usual grief.
 
-Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: bcm-kernel-feedback-list@broadcom.com
-Cc: linux-mips@vger.kernel.org
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Maxime Bizon <mbizon@freebox.fr>
-Cc: Ralf Baechle <ralf@linux-mips.org>
----
-Note: I did see a bunch of build errors like this one:
-../arch/mips/kernel/r4k_fpu.S:217: Error: opcode not supported on this processor: mips1 (mips1) `ldc1 $f24,192($4)'
-but I'm hoping/guessing that this is due to not having a proper compiler
-for the BCM63xx target.
+--=20
+Cheers,
+Stephen Rothwell
 
- arch/mips/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+--Sig_/z46DJR0mSgfNZmHl11Sfy6=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
---- linux-next-20211105.orig/arch/mips/Kconfig
-+++ linux-next-20211105/arch/mips/Kconfig
-@@ -329,6 +329,7 @@ config BCM63XX
- 	select SYNC_R4K
- 	select DMA_NONCOHERENT
- 	select IRQ_MIPS_CPU
-+	select CPU_SUPPORTS_32BIT_KERNEL
- 	select SYS_SUPPORTS_32BIT_KERNEL
- 	select SYS_SUPPORTS_BIG_ENDIAN
- 	select SYS_HAS_EARLY_PRINTK
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGF724ACgkQAVBC80lX
+0Gyu8wf+JFL1/1aG411xTRVX12zh2O4BVauUGYKZ5ur6foomIXjFCjYM+b3QVBDM
+SamwMarTl/ywLiFhmz4EglInXppAb3v8Ay43J6KAH7DrdbktzxFmVcebwb/hUblO
+PIV9xT/TSO7t5vKoYwDnAIKlrRpKCrKfZZWNePKm5fJS/btPnJ0bBbZrKGYPeu4p
+7j5SteqpeJb5EfjyhVdnLDnt8nHza9HKMZC229WZcnUU80hsZuRJfqFhPQ+iB4mb
+/Q2U5EHYlEIkByzsdZHSXQKT1BamCXUxkxZLSl1FTAkWdHjOSXHXAIPtn/TPyDCs
+g9tDev/+ploqpkB02EYZtRdJg8LVig==
+=okh+
+-----END PGP SIGNATURE-----
+
+--Sig_/z46DJR0mSgfNZmHl11Sfy6=--
