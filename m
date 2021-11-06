@@ -2,154 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D113A446CE5
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 08:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE06A446CE9
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 08:42:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233816AbhKFHoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 03:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233665AbhKFHoK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 03:44:10 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD28C061570
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 00:41:29 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id h14so9319570qtb.3
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Nov 2021 00:41:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aQ6S1hA/qSpBacaCcbjcd1nTEY2NkWgXRI06DO8+tqc=;
-        b=Zu/2sG3a1Lr0Lb9H1iSFAx2gwtZgnMniYrl0WZO8Lse4tYnjuL9QL9bD9a5/SaNI/8
-         h6Hz+YSCS5hCHOBNQaBhzVxqb6AZT9Zv4QajAvO5lWnaD6gF8Nxno9u58+EX6ltmxRHr
-         uEdd6p9I1ljG3+d166Fl75oTAHJmG15DwhFZDKSZH2JZ0OFWbF2RWuK1EQ9HhAmCuYv7
-         1jzUAADcNnOQgWOgnZPNGrrxiSximd1hx1JhZy2tBVFiiO1vnwM6lIjOFWJ3x+oYLPFR
-         IlALU1KOGLLVOpRpXzD/Q4zLtMHodFtzznW1dVTe9+FWQq2hpZI72gMSOBK1h/NC3Ra0
-         RQgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aQ6S1hA/qSpBacaCcbjcd1nTEY2NkWgXRI06DO8+tqc=;
-        b=Q5L5lOlm9DiRLe/7SM21P6ty9X2MlvVcHZZHmtkHxIAP03fYjVv2huumbtfRdH2hPg
-         ZnqvvgR4kr10t5+GhZOF3/hHzGWHIL+iCvOQc7t5gWGH25tIZ9PaY8M/y9Uh4abDo9hv
-         fz7xAss6Vemg65QNX3lxQcaVPCFevb8TZz/ZhVZhunOdM0VN20YtHXBL6pPwjVXgRhkY
-         ZtmbqyOMvMPykaSeZHcu73BF/zKjlJ7KS/Les69DTJC0LDPkVxjMt+dReqI2odbprDi7
-         fZ5301LTVe63ktun13BH1vjPNCaDvmE8ZcOzucBafRZqaGIdmWQFq5N16icxh2nGjfBt
-         YA2g==
-X-Gm-Message-State: AOAM5310VNCIxfqBT3UhUnO4lw4uLPHQl8s4VSgSraqloi4WJ6KW1rh8
-        +zU3ZsL7OffebWEHWRAcIomK4DZO7a1i0ThaR6g=
-X-Google-Smtp-Source: ABdhPJwp8Xwf4z8B1FN0Nsu0TskHZPssLLD7mfy1IvcTBh12gtGOIk0m2zyUuyuBsUrtidPrv7WqDEmbl3CbQwIkuFs=
-X-Received: by 2002:ac8:5c08:: with SMTP id i8mr68209780qti.181.1636184488937;
- Sat, 06 Nov 2021 00:41:28 -0700 (PDT)
+        id S233824AbhKFHpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 03:45:32 -0400
+Received: from mout.web.de ([212.227.15.3]:45047 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232984AbhKFHpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Nov 2021 03:45:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1636184519;
+        bh=35PqTHwkplKaAMFgJ59LBZT6nBoDV7pVOc0kXy1wcE4=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=hVUNW1tQiNx771U8H6Zl+ST9Xd6253El3iM4FMbShqjJayQ9/TGU2fvbEtXHB3lwN
+         4yxU10Iz6Q537A4Xg/OeTEshNimxYSO/D1mpcmcV53oKx1MJwdxevUpM/HAaSJgpdm
+         B8yz+5Ej4tJUBokPgXJnbbLkHNoMMkrd7olTzKg8=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from gecko ([46.223.150.38]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mt8gP-1mULqo15JZ-00t62y; Sat, 06
+ Nov 2021 08:41:59 +0100
+Date:   Sat, 6 Nov 2021 07:41:46 +0000
+From:   Lukas Straub <lukasstraub2@web.de>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Jane Chu <jane.chu@oracle.com>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "djwong@kernel.org" <djwong@kernel.org>,
+        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [dm-devel] [PATCH 0/6] dax poison recovery with
+ RWF_RECOVERY_DATA flag
+Message-ID: <20211106074146.04fc36a3@gecko>
+In-Reply-To: <CAPcyv4hK18DetEf9+NcDqM5y07Vp-=nhysHJ3JSnKbS-ET2ppw@mail.gmail.com>
+References: <20211021001059.438843-1-jane.chu@oracle.com>
+        <YXFPfEGjoUaajjL4@infradead.org>
+        <e89a2b17-3f03-a43e-e0b9-5d2693c3b089@oracle.com>
+        <YXJN4s1HC/Y+KKg1@infradead.org>
+        <2102a2e6-c543-2557-28a2-8b0bdc470855@oracle.com>
+        <YXj2lwrxRxHdr4hb@infradead.org>
+        <CAPcyv4hK18DetEf9+NcDqM5y07Vp-=nhysHJ3JSnKbS-ET2ppw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211104145713.4419-1-laoar.shao@gmail.com> <20211104145713.4419-5-laoar.shao@gmail.com>
- <878ry2tu1m.mognet@arm.com>
-In-Reply-To: <878ry2tu1m.mognet@arm.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sat, 6 Nov 2021 15:40:53 +0800
-Message-ID: <CALOAHbDZMiLR-3NQHYPJ707Hk-3X+yjrxk_YA0xyxa40Sj7SEQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/4] sched/core: Do numa balance in cfs_migration
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/bO7uynQmFI27w4fHadpypym";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Provags-ID: V03:K1:cgcmyG78PhSL4Zie9BD7YaHQeP9628H6KkHtTzOyZ3i+4wJ78J8
+ CVAakX/Hc4C9zy9aH/Eq8qbaCUlHAY2KwCknO/3N/XooBP+bO/4K17nL8q0WJP1pkOkqsCP
+ jh9EK9kbxryW4SXw8vfZDLkigyiu/hBiE6JIywmP5F8tybHoYhl44p35REdmELfp6rsLju9
+ sVkrHjhk2SSXrVs4bD1Nw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3jg3S52G6Ls=:KZ/BQIYeNXHQyZaVHYZNDB
+ B5o/Z0BjkCtnLyzMtrG+NcmAszVdyyAosulkAUdu4Do4gsSJh9lRjWn/3tRcyuZ4FmRHwBes1
+ VeFyVj4IyV6zUVQWOQRQwpzdRy98RuAm7s6JQhvihtoi+CQoUZBWqk9Q1Ypyo/A+GR5n8MC3T
+ 4grzXiMQnLzTrzJQ4JMlLVunwJUWhxPyCJox8+IcPldKZS1c2U20kH6YIyI6MhSsfu/hw8U9h
+ 3VSNvOQ/cxlFmILkzI4fD5NL9t2DizamADv/OaO92O+r6CikqJt0wnpVYJEgHxkME9XTf9cO4
+ 9Z21nom30FlZobIA01gNwtd2GL5sSeHRR0s1BG2D5exluAEKff7oSPddtNHlsrORpgGcxAXBT
+ uB50bLam07jDZJ4w4bFr4b8ohC+dCOW31pv/nIX/Bk1inW3S4A8uLw2nkxAaap0mwzwBZCeWe
+ ZomO1a3f3L92XqLahjS+3Q12ilZJGqSPX/10zrRIOtNwsyBIIfOUUF3Ef6cQ1iOdY5esxGsEl
+ u8pA+SuekdzaQkBIchREbIBECK3MkXVsQYkC93IH3eabXffZjWh4HfpvDD7zz6V7Hud2BZcyz
+ y5n0EA4zLgYm1Yw/V3sIqKuA+bZbS9FIYRmgPqOxe2HF8WFmh3fVVysfjJ4SGC4+Pyko2Cf5E
+ Js5FG/rqlGtSTm9U2608S7B8whCVz/Xqjwjd/F4AiO7Guea//5+zTOb1FDg2x8wZRuSxsLLo6
+ V7ZxBC7AqYTo0dM9JqPqbs/6ufYYLw0vsn8A5ho+7yFbp3fD1xtmnSORDw31NQb0CTgKDc2wk
+ Hg0RKjtVQdSOg+TdbAequyhsmRK/t5bpjebHiUTGgqDY1e2vU4HcLFOqCvk7clZRmNHtgG+1l
+ tyia4dsjvzGaruXdyzGPKhRG9n2y3iiud/TBrSRYXQjEeYBKy3iv7jmxCvep2rdJFvaZ2n6eQ
+ iCOljTjv4fx1RcM0C035/k53amXizMqMlWt7jbQvxOv02mIsqg1/dR25V6SkvKR2z+/Kk6T7P
+ sS+D0fkkgGKiTt4nPP5+2lRGUjccZTomgJWrVczSnR2AZQAhLOxvNRkbzRMD/l7pDrHSfHfGB
+ Gbf7+NMYq2J8R8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 6, 2021 at 1:02 AM Valentin Schneider
-<valentin.schneider@arm.com> wrote:
->
-> On 04/11/21 14:57, Yafang Shao wrote:
-> > Similar to active load balance, the numa balance work is also applied to
-> > cfs tasks only and it should't preempt other FIFO tasks. We'd better assign
-> > cfs_migration to the numa balance as well.
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > Cc: Valentin Schneider <valentin.schneider@arm.com>
-> > Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> > ---
-> >  kernel/sched/core.c  |  2 +-
-> >  kernel/sched/fair.c  | 13 +++++++++++++
-> >  kernel/sched/sched.h |  2 ++
-> >  3 files changed, 16 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 9cb81ef8acc8..4a37b06715f4 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -8724,7 +8724,7 @@ int migrate_task_to(struct task_struct *p, int target_cpu)
-> >       /* TODO: This is not properly updating schedstats */
-> >
-> >       trace_sched_move_numa(p, curr_cpu, target_cpu);
-> > -     return stop_one_cpu(curr_cpu, migration_cpu_stop, &arg);
-> > +     return wakeup_cfs_migrater(curr_cpu, migration_cpu_stop, &arg);
->
-> So that one I find really icky - migration_cpu_stop() really is meant to be
-> run from a CPU stopper (cf. cpu_stop suffix). IMO this is the opportunity
-> to make NUMA balancing reuse the logic for CFS active balance here, but per
-> previous email I'd say it could be done as a second step.
->
+--Sig_/bO7uynQmFI27w4fHadpypym
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Sure.
+On Tue, 2 Nov 2021 09:03:55 -0700
+Dan Williams <dan.j.williams@intel.com> wrote:
 
-> >  }
+> On Tue, Oct 26, 2021 at 11:50 PM Christoph Hellwig <hch@infradead.org> wr=
+ote:
 > >
-> >  /*
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 932f63baeb82..b7a155e05c98 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -11960,6 +11960,19 @@ static void wakeup_cfs_migrater_nowait(unsigned int cpu, cpu_stop_fn_t fn, void
-> >       cfs_migration_queue_work(cpu, work_buf);
-> >  }
+> > On Fri, Oct 22, 2021 at 08:52:55PM +0000, Jane Chu wrote: =20
+> > > Thanks - I try to be honest.  As far as I can tell, the argument
+> > > about the flag is a philosophical argument between two views.
+> > > One view assumes design based on perfect hardware, and media error
+> > > belongs to the category of brokenness. Another view sees media
+> > > error as a build-in hardware component and make design to include
+> > > dealing with such errors. =20
 > >
-> > +bool wakeup_cfs_migrater(unsigned int cpu, cpu_stop_fn_t fn, void *arg)
-> > +{
-> > +     struct cpu_stop_done done;
-> > +     struct cpu_stop_work work = { .fn = fn, .arg = arg, .done = &done, .caller = _RET_IP_ };
-> > +
-> > +     cpu_stop_init_done(&done, 1);
-> > +     cfs_migration_queue_work(cpu, &work);
-> > +     cond_resched();
-> > +     wait_for_completion(&done.completion);
-> > +
-> > +     return done.ret;
-> > +}
-> > +
-> >  static int cfs_migration_should_run(unsigned int cpu)
-> >  {
-> >       struct cfs_migrater *migrater = &per_cpu(cfs_migrater, cpu);
-> > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> > index a00fc7057d97..7b242c18a6d8 100644
-> > --- a/kernel/sched/sched.h
-> > +++ b/kernel/sched/sched.h
-> > @@ -3055,6 +3055,8 @@ static inline bool is_per_cpu_kthread(struct task_struct *p)
+> > No, I don't think so.  Bit errors do happen in all media, which is
+> > why devices are built to handle them.  It is just the Intel-style
+> > pmem interface to handle them which is completely broken. =20
+>=20
+> No, any media can report checksum / parity errors. NVME also seems to
+> do a poor job with multi-bit ECC errors consumed from DRAM. There is
+> nothing "pmem" or "Intel" specific here.
+>=20
+> > > errors in mind from start.  I guess I'm trying to articulate why
+> > > it is acceptable to include the RWF_DATA_RECOVERY flag to the
+> > > existing RWF_ flags. - this way, pwritev2 remain fast on fast path,
+> > > and its slow path (w/ error clearing) is faster than other alternativ=
+e.
+> > > Other alternative being 1 system call to clear the poison, and
+> > > another system call to run the fast pwrite for recovery, what
+> > > happens if something happened in between? =20
 > >
-> >       return true;
-> >  }
-> > +
-> > +bool wakeup_cfs_migrater(unsigned int cpu, cpu_stop_fn_t fn, void *arg);
-> >  #endif
-> >
-> >  extern void swake_up_all_locked(struct swait_queue_head *q);
-> > --
-> > 2.17.1
+> > Well, my point is doing recovery from bit errors is by definition not
+> > the fast path.  Which is why I'd rather keep it away from the pmem
+> > read/write fast path, which also happens to be the (much more important)
+> > non-pmem read/write path. =20
+>=20
+> I would expect this interface to be useful outside of pmem as a
+> "failfast" or "try harder to recover" flag for reading over media
+> errors.
+
+Yeah, I think this flag could also be useful for non-raid btrfs.
+
+If you have an extend that is shared between multiple snapshots and
+it's data is corrupted (without the disk returning an i/o error), btrfs
+won't be able to fix the corruption without raid and will always return
+an i/o error when accessing the affected range (due to checksum
+mismatch).
+
+Of course you could just overwrite the range in the file with good
+data, but that would only fix the file you are operating on, snapshots
+will still reference the corrupted data.
+
+With this flag, a read could just return the corrupted data without i/o
+error and a write could write directly to the on-disk data to fixup the
+corruption everywhere. btrfs could also check that the newly written
+data actually matches the checksum.
+However, in this btrfs usecase the process still needs to be
+CAP_SYS_ADMIN or similar, since it's easy to create collisions for
+crc32 and so an attacker could write to a file that he has no
+permissions for, if that file shares an extend with one where he has
+write permissions.
+
+Regards,
+Lukas Straub
+--=20
 
 
+--Sig_/bO7uynQmFI27w4fHadpypym
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
--- 
-Thanks
-Yafang
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEg/qxWKDZuPtyYo+kNasLKJxdslgFAmGGMboACgkQNasLKJxd
+slh+lRAAmqlkYqSnahrbcMNcIf/3kQ4uICysOb5Of52uTw3AE5Zg5scO4Znz1I4i
+C9VdaWeKGFRS80+qPZG4yl7RKXhJncImtTa58DIZH600g2Y9ZKezU/n3fT3Ucqt0
+Qer/iVBgFfx7Gg4W5ecdAGoA9yvyftTlKrPYwjB2NJxEBx+jlJW7uFpFeNUCn8KE
+mi06wFpQE2AgvXzLwkemXopL1IX/MNJLZlnayfRuaUuC98WCbhNdUfHb57NyJge9
+iaHXtYeIoq8F8z/nCiV5lxjSbxXmG3Kjf/7/GhomNfKe4inPSNdg0+Z2rPpyXQ9s
+Svfo62cr0hpLQXe8rrtd6gGQ/Ya58xpc3Ty8+n5uvJbDqE+OXWbJJn/K2q/sEZS4
+RNMqhIj781hbQ3jjTOfZhgEkUDw3H3RZziGSPLWUvYLN2YSxtzi97x/ECPZ6ZMEa
+HlamKMVDk6jOcbYGcn4wJw9QME8AWfezsOD32bE96iLO3zSFPAf1kv3k+rPZNDIB
+OviD9ZIz8gunPk/Zb9rycvLyKgkMF1iGo7sCl9PQiPnEb/xuCfsRQut2DD3YQLFO
+b9sbSP7ETTQ5YeTTm3SKl1X+6PBl4Jdhm7KhPEwhGJzuh3UQqHbrEns1EIlmDXhE
+GVpiyzVzqx65VlNc78VMwO6qyrWuqf0VKV5EObIFQ5v0oXjKXgw=
+=PyLM
+-----END PGP SIGNATURE-----
+
+--Sig_/bO7uynQmFI27w4fHadpypym--
