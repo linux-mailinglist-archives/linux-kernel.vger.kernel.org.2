@@ -2,100 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F536446EC0
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 16:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 428CA446EC4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 16:54:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234497AbhKFPxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 11:53:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
+        id S233962AbhKFP52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 11:57:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233459AbhKFPxI (ORCPT
+        with ESMTP id S231545AbhKFP51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 11:53:08 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0141C061746
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 08:50:27 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id y11so19780317oih.7
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Nov 2021 08:50:27 -0700 (PDT)
+        Sat, 6 Nov 2021 11:57:27 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D2DC061570;
+        Sat,  6 Nov 2021 08:54:46 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id k22so824919iol.13;
+        Sat, 06 Nov 2021 08:54:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8Qra9akannOKhHfzF9P4EEi/dtPKcdfqFmb0pyjRQ68=;
-        b=dzv9XWCCxRprjKKXScrpOCvs+6FdSi28Gvt0E1xNYibSuwbNIz+resh9bS19/F+rFB
-         t3N9/psI/V5V06B0wdF1Q83rUvrwpFcMIi8ABjTLHFXJZZxNYQbhP+IKTkB56rXKdRaA
-         iGWrck51xPr9+jbs1gdQIJFuj8WU778qgruuT2oafrCA+iyRBsKXKYPGeGly0kJKqjv5
-         8LonxpWyKsTkJVtKSNpsh2smJm7vHFECuaTsIw+4feUfOXUnEheE2rD6/Dx4652yVGCa
-         3FXl0NyG2/wiL7MF8EqEGDY2mZFMIY4EniTD16YqZy5xcXtfvLoVHx6bSTkA5DoFrTBb
-         gqJw==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iiKkWXx7LH2mtsbKdfcA3IaZmnBXPN3UgFdD8y0kBYA=;
+        b=MJxwBVe9vLmvxQwX+/3/BR4kcgDSfMwKNajXuRCbZSQXxFYDunWJ8Q0+HSe7Hq/IKn
+         qw4sCGPdv/TEkP6fm9DH6+01JgDt0ANlSOwFgn5jU0EtOch35OOrDTdFmPJ7nknZgoJr
+         Ty+qxgkBgSNiN+dzo0hJtwBnmhEl2+Qck8f5LXeAk/08dweFu1/MIIrfPgIl5ZKm6dpl
+         ACwhe8NDeG/ypLFfBB2Upq92BbqcCpOvtnX2ZMcqCA/i5Cqy31eTMVGPMboLbaG1Y9/b
+         77pP2jOmvtkpT2WPsd4fX/DoancCOYhqejRuNZAh95OITWsRCmlIsUb9p3pHVqHjWXFi
+         0Wew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8Qra9akannOKhHfzF9P4EEi/dtPKcdfqFmb0pyjRQ68=;
-        b=TAJFkf3SoMKdiLsizeGXcOtEUcq8WNzwq+wjqMeWzGDIJP9TTegWEzPUYjwtoIZLby
-         Jvzw0kmk9ReJxdtSGIJ0KNYiGhBRUlo3C2OhMRV+udJWl8YhxdLtC0U8tjL3v7fC7yoY
-         x8CpD8Uyah+lW74ufXpKswVcDQyG0LjRpAAkeqh+O/uBNuNt69p2QKMXCUeI1abc02+P
-         vGY4yZktuPeW+R3yt+hVHWrKYxKro3EWFEi7Yf2bpwqmKnA2bZDA5xB+IAv5b3Gt7WqR
-         +0ufW11oU4ufUtLOn7fnksGHqtd1bLEIIySSbIme0RxACDAASXBA18Mu5RA7fOS9tD+E
-         fplg==
-X-Gm-Message-State: AOAM532kWvGh7MX78gXBhxL+YjmWNBpo+aTrmmBqfDKnagEXVZbDiytF
-        7wrjubDX+GgDl3OT0qugOz6/gg==
-X-Google-Smtp-Source: ABdhPJwBJ9YCa16fxUpZolirtN5bLSZpdYhwFTjrajGd+orwqE/4zEDLYu89/vMhKXVRAg59/mmxIw==
-X-Received: by 2002:a05:6808:144f:: with SMTP id x15mr27350233oiv.132.1636213826928;
-        Sat, 06 Nov 2021 08:50:26 -0700 (PDT)
-Received: from yoga (rrcs-97-77-166-58.sw.biz.rr.com. [97.77.166.58])
-        by smtp.gmail.com with ESMTPSA id o42sm3797396ooi.9.2021.11.06.08.50.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iiKkWXx7LH2mtsbKdfcA3IaZmnBXPN3UgFdD8y0kBYA=;
+        b=BA3JNacb5nt7EMqB/dCpGZB+7dAoFIXnpsFdYN86SLaRALPOn3NO/83/5spS9gDtiZ
+         O8/SW5vAqVsTpEPUp3kRgVZVOW7DIKYxx2jaizUJETW/ft7sQUEYPc1EkYFUkL4E9U73
+         LSG44ECf0OZDFKyOfOk0/si79bQfYt21iCgYRRdkexsFffN/wCnALfkFBO8CSxN/7HXr
+         M9rJqLDQey+6TrfHffYVO+A0DqsIHM92DxQSCx//wX7PhwVwmkLAuOf+06WNYEf4X/PA
+         Uus3MWks3gx6HBqOAYs8fDSnj9xL4aRcSu18YQUuXRzZ7On3OhppWYZd/Jna6kWqwQ3V
+         rBlg==
+X-Gm-Message-State: AOAM532RuQb0WDhf4sByZnKrJLIhx9KozDGz/q9OqHBk4cCrLvOw7sBE
+        Fz7IsvizukiKojDMMKw2UHA=
+X-Google-Smtp-Source: ABdhPJxtrSSYCX6qkHYipUtxezBT7pSTriqytk8UjlFhB6d5r7EJeLQHagN9vMzwwHmiq3/E09KJgg==
+X-Received: by 2002:a05:6602:1607:: with SMTP id x7mr4941365iow.134.1636214085658;
+        Sat, 06 Nov 2021 08:54:45 -0700 (PDT)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:64ba:1c0f:6d36:c11d])
+        by smtp.gmail.com with ESMTPSA id d2sm5718313ilg.77.2021.11.06.08.54.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Nov 2021 08:50:26 -0700 (PDT)
-Date:   Sat, 6 Nov 2021 10:50:24 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Xu Wang <vulab@iscas.ac.cn>
-Cc:     agross@kernel.org, amitk@kernel.org, thara.gopinath@linaro.org,
-        rafael@kernel.org, daniel.lezcano@linaro.org, rui.zhang@intel.com,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] thermal/drivers/qcom/spmi-adc-tm5: Remove unnecessary
- print function dev_err()
-Message-ID: <YYakQHd3Hr944k1B@yoga>
-References: <20211105013340.38300-1-vulab@iscas.ac.cn>
+        Sat, 06 Nov 2021 08:54:44 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     tharvey@gateworks.com, frieder.schrempf@kontron.de,
+        linux-media@vger.kernel.org, laurent.pinchart@ideasonboard.com,
+        aford@beaconembedded.com, cstevens@beaconembedded.com,
+        jagan@amarulasolutions.com, Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peng Fan <peng.fan@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V2 1/5] soc: imx: imx8m-blk-ctrl: Fix imx8mm mipi reset
+Date:   Sat,  6 Nov 2021 10:54:23 -0500
+Message-Id: <20211106155427.753197-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211105013340.38300-1-vulab@iscas.ac.cn>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 04 Nov 20:33 CDT 2021, Xu Wang wrote:
+Most of the blk-ctrl reset bits are found in one register, however
+there are two bits in offset 8 for pulling the MIPI DPHY out of reset
+and these need to be set when IMX8MM_DISPBLK_PD_MIPI_CSI is brought
+out of reset or the MIPI_CSI hangs.
 
-> The print function dev_err() is redundant because
-> platform_get_irq() already prints an error.
-> 
-> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+Fixes: 926e57c065df ("soc: imx: imx8m-blk-ctrl: add DISP blk-ctrl")
+Signed-off-by: Adam Ford <aford173@gmail.com>
+---
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+V2:  Make a note that the extra register is only for Mini/Nano DISPLAY_BLK_CTRL
+     Rename the new register to mipi_phy_rst_mask
+     Encapsulate the edits to this register with an if-statement
 
-> ---
->  drivers/thermal/qcom/qcom-spmi-adc-tm5.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> index 824671cf494a..8492dd3bfed6 100644
-> --- a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> +++ b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> @@ -612,10 +612,8 @@ static int adc_tm5_probe(struct platform_device *pdev)
->  	adc_tm->base = reg;
->  
->  	irq = platform_get_irq(pdev, 0);
-> -	if (irq < 0) {
-> -		dev_err(dev, "get_irq failed: %d\n", irq);
-> +	if (irq < 0)
->  		return irq;
-> -	}
->  
->  	ret = adc_tm5_get_dt_data(adc_tm, node);
->  	if (ret) {
-> -- 
-> 2.25.1
-> 
+ drivers/soc/imx/imx8m-blk-ctrl.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/drivers/soc/imx/imx8m-blk-ctrl.c b/drivers/soc/imx/imx8m-blk-ctrl.c
+index 519b3651d1d9..581eb4bc7f7d 100644
+--- a/drivers/soc/imx/imx8m-blk-ctrl.c
++++ b/drivers/soc/imx/imx8m-blk-ctrl.c
+@@ -17,6 +17,7 @@
+ 
+ #define BLK_SFT_RSTN	0x0
+ #define BLK_CLK_EN	0x4
++#define BLK_MIPI_RESET_DIV	0x8 /* Mini/Nano DISPLAY_BLK_CTRL only */
+ 
+ struct imx8m_blk_ctrl_domain;
+ 
+@@ -36,6 +37,15 @@ struct imx8m_blk_ctrl_domain_data {
+ 	const char *gpc_name;
+ 	u32 rst_mask;
+ 	u32 clk_mask;
++
++	/*
++	 * i.MX8M Mini and Nano have a third DISPLAY_BLK_CTRL register
++	 * which is used to control the reset for the MIPI Phy.
++	 * Since it's only present in certain circumstances,
++	 * an if-statement should be used before setting and clearing this
++	 * register.
++	 */
++	u32 mipi_phy_rst_mask;
+ };
+ 
+ #define DOMAIN_MAX_CLKS 3
+@@ -78,6 +88,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
+ 
+ 	/* put devices into reset */
+ 	regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
++	if (data->mipi_phy_rst_mask)
++		regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
+ 
+ 	/* enable upstream and blk-ctrl clocks to allow reset to propagate */
+ 	ret = clk_bulk_prepare_enable(data->num_clks, domain->clks);
+@@ -99,6 +111,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
+ 
+ 	/* release reset */
+ 	regmap_set_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
++	if (data->mipi_phy_rst_mask)
++		regmap_set_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
+ 
+ 	/* disable upstream clocks */
+ 	clk_bulk_disable_unprepare(data->num_clks, domain->clks);
+@@ -120,6 +134,9 @@ static int imx8m_blk_ctrl_power_off(struct generic_pm_domain *genpd)
+ 	struct imx8m_blk_ctrl *bc = domain->bc;
+ 
+ 	/* put devices into reset and disable clocks */
++	if (data->mipi_phy_rst_mask)
++		regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
++
+ 	regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
+ 	regmap_clear_bits(bc->regmap, BLK_CLK_EN, data->clk_mask);
+ 
+@@ -488,6 +505,7 @@ static const struct imx8m_blk_ctrl_domain_data imx8mm_disp_blk_ctl_domain_data[]
+ 		.gpc_name = "mipi-csi",
+ 		.rst_mask = BIT(3) | BIT(4),
+ 		.clk_mask = BIT(10) | BIT(11),
++		.mipi_phy_rst_mask = BIT(16) | BIT(17),
+ 	},
+ };
+ 
+-- 
+2.32.0
+
