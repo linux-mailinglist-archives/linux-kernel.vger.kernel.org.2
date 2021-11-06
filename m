@@ -2,107 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88BC446DE6
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 13:17:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D584D446DD6
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 13:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbhKFMTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 08:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbhKFMTj (ORCPT
+        id S234162AbhKFMPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 08:15:25 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:27179 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229485AbhKFMPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 08:19:39 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F25C061570;
-        Sat,  6 Nov 2021 05:16:58 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id j6-20020a4aab46000000b002bb88bfb594so3997909oon.4;
-        Sat, 06 Nov 2021 05:16:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+POYMDTp6W1bADv+1zpQV58ffNru2a1oFkuJEw7LceM=;
-        b=cDS6jT3mPqFPQ3DEWrCVdEKL0K4a4YC9rrPpVEZqfcHkG99ywGdW4gGtVygvq77vSp
-         pEfwt8ub/xY76sEVmRbhNTMHD+20lTCKQnqqm09A/K1KLiqOBHVa6q49G9tP3/zlKoAV
-         nSRwCSESqn5iuDdi/bHRLOcE8vsk1SVQYZ8VA0CoRUdtOtDdVufV+v22LftFsfWHdv2X
-         li2rnWNk/OC6w19jsEuCPWeP6mB8vuS04GYaaspg/gUKL1T/N7xM81qZWtlvpzIc+bVx
-         7MrRqROxO4rnQtgWjtIol/Zr3OuEmK50lFvX0SODk0Shew0MLixN6tdLWvjcZ5K9cXTO
-         xB+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+POYMDTp6W1bADv+1zpQV58ffNru2a1oFkuJEw7LceM=;
-        b=sbAb+HE/0xZ/iz7Scz6kxslUXqKSizLzae3DfsKbYGx1o8XnGGceDucf6hQJAomYe3
-         RaQV4PXwDi8C32BGnl6/ODnlKBprxJFws/DYGBLAlfmJ5DODNVXSPlDs4e/+DnOQbtIQ
-         lNH+HLW/RMDM1XfL1UJSKtXOmPk5OU4tjKOS6h3Wc+UDFkJ3zlL17rflrvKPSqgonUix
-         T2HclCQqVgcUvfcCxWepLgbpuB78nFK0qzdfbLInAoC+2gabB8tFL65yw9ZQ61QVbhRc
-         kNIoQ1F+D7Nfp6QQNv0xhGWhiq4rhjWQAM20vaTVIbYYAR3LXxganD6a/g3w6+tfeiuF
-         xcig==
-X-Gm-Message-State: AOAM532fL6eU9S/x1DSmPOg787moA0uyw0A3JwVciunqLjJz+dkfUZRJ
-        QSlRsJHFAi/+bpnn0yyyh8BDBqAnTFLUBAUPGY8=
-X-Google-Smtp-Source: ABdhPJzH+uh1bsIQhgyKNTei5cixUNJJIf2WHuW6LIbw/BXBvHpf+9pRteVEOqiI9w4abJuhdmNbYBcQMN44mUS0oeY=
-X-Received: by 2002:a4a:d5c8:: with SMTP id a8mr13017354oot.18.1636201017393;
- Sat, 06 Nov 2021 05:16:57 -0700 (PDT)
+        Sat, 6 Nov 2021 08:15:24 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HmbnS1yhwz8v8V;
+        Sat,  6 Nov 2021 20:11:08 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Sat, 6 Nov 2021 20:12:40 +0800
+Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
+ (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Sat, 6 Nov
+ 2021 20:12:39 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
+        <mcoquelin.stm32@gmail.com>, <kirill.shutemov@linux.intel.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH v2 00/12] Some bugfixs for ubi/ubifs
+Date:   Sat, 6 Nov 2021 20:25:05 +0800
+Message-ID: <20211106122517.3304628-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20211106104053.98761-1-ajaygargnsit@gmail.com> <dd7e35fc-d5b2-c41b-f03a-cbf467401205@gmail.com>
-In-Reply-To: <dd7e35fc-d5b2-c41b-f03a-cbf467401205@gmail.com>
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-Date:   Sat, 6 Nov 2021 17:46:45 +0530
-Message-ID: <CAHP4M8XaWtagZcocGoeT2Rb6F6JeKqMFa2ZzTZ0ddCES0-T-jw@mail.gmail.com>
-Subject: Re: [PATCH v2] tty: vt: keyboard: initialize "kbs" so that kfree(kbs)
- runs fine even if kbs is not kmalloced.
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+v1->v2:
+  1. Add new fix for ubifs, "ubifs: Fix to add refcount once page is set
+  private"
+  2. Update "ubifs: Rename whiteout atomically":
+     1) Move inode mode in create_whiteout()
+     2) Don't check O_SYNC for whiteout, because it inherits from the old_dir
+     3) Remove useless 'synced_i_size ' assignment for whiteout, because
+	it's always be zero.
+  3. Update "ubifs: setflags: Make dirtied_ino_d 8 bytes aligned":
+     1) Align dirtied_ino_d with 8 bytes.
 
-Thanks for the review.
+Zhihao Cheng (12):
+  ubifs: rename_whiteout: Fix double free for whiteout_ui->data
+  ubifs: Fix deadlock in concurrent rename whiteout and inode writeback
+  ubifs: Fix wrong number of inodes locked by ui_mutex in ubifs_inode
+    comment
+  ubifs: Add missing iput if do_tmpfile() failed in rename whiteout
+  ubifs: Rename whiteout atomically
+  ubifs: Fix 'ui->dirty' race between do_tmpfile() and writeback work
+  ubifs: Rectify space amount budget for mkdir/tmpfile operations
+  ubifs: setflags: Make dirtied_ino_d 8 bytes aligned
+  ubifs: Fix read out-of-bounds in ubifs_wbuf_write_nolock()
+  ubifs: Fix to add refcount once page is set private
+  ubi: fastmap: Return error code if memory allocation fails in
+    add_aeb()
+  ubi: fastmap: Add all fastmap pebs into 'ai->fastmap' when
+    fm->used_blocks>=2
 
->
-> Please, don't put change log into commit message. It should go under ---
->
+ drivers/mtd/ubi/fastmap.c |  69 ++++++-----
+ fs/ubifs/dir.c            | 235 +++++++++++++++++++++++---------------
+ fs/ubifs/file.c           |  14 +--
+ fs/ubifs/io.c             |  34 +++++-
+ fs/ubifs/ioctl.c          |   2 +-
+ fs/ubifs/journal.c        |  52 +++++++--
+ fs/ubifs/ubifs.h          |   2 +-
+ 7 files changed, 259 insertions(+), 149 deletions(-)
 
-Ok, many thanks Pavel.
-Will take care in all my future patches.
+-- 
+2.31.1
 
-
->
-> These is only one caller of vt_do_kdgkb_ioctl, which simple does:
->
->
->         case KDGKBSENT:
->         case KDSKBSENT:
->                 return vt_do_kdgkb_ioctl(cmd, up, perm);
->
-> It means, that cmd can not be different from KDGKBSENT and KDSKBSENT.
->
-> I guess, you found this "issue" via static analysis tool like smatch or
-> smth similar, but this bug is impossible right now.
->
-
-Yes, following was reported by smatch (amongst others) :
-vt_do_kdgkb_ioctl() error: uninitialized symbol 'kbs'.
-
-
-Regarding the current state, "vt_do_kdgkb_ioctl" should ideally behave
-correctly independently, without bothering whether a cmd is a valid
-one. From that perspective, it makes sense to ensure that kfree never
-crashes.
-
-However, I don't have any strong opinions on what is right or what is
-wrong, as long as things work fine.
-
-So, if there is a general consensus that the change should not be made
-currently, I would be ok.
-In case the change should be made, kindly let me know, I will post the
-v3 patch (making change as per the review-comment of moving changelog
-below ---).
-
-
-Thanks and Regards,
-Ajay
