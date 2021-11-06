@@ -2,103 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FD844705F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 21:14:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C24447065
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 21:18:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235024AbhKFUQs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 6 Nov 2021 16:16:48 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:50587 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233450AbhKFUQr (ORCPT
+        id S235029AbhKFUVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 16:21:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233034AbhKFUVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 16:16:47 -0400
-Received: from mail-wm1-f54.google.com ([209.85.128.54]) by
- mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MJm8N-1n3Szt0MrR-00K50N; Sat, 06 Nov 2021 21:14:04 +0100
-Received: by mail-wm1-f54.google.com with SMTP id c71-20020a1c9a4a000000b0032cdcc8cbafso8833989wme.3;
-        Sat, 06 Nov 2021 13:14:04 -0700 (PDT)
-X-Gm-Message-State: AOAM530r9MDoe7IEQGPPfj0ehB3eA3xqLPV/Svd21mRgZcnKm0d1gucz
-        NPn6ZTU+GYilmDNl6PZNxRQrkSRMBageDy6w9Lw=
-X-Google-Smtp-Source: ABdhPJx2b7CI98WRD0rAAEdo1HKxy9i2uBVWZl83alUhBfVIWCeQyFYst1M/z75cIXhVEij7b8+WEncj4WeKS5OT9eg=
-X-Received: by 2002:a05:600c:2107:: with SMTP id u7mr20411429wml.82.1636229643722;
- Sat, 06 Nov 2021 13:14:03 -0700 (PDT)
+        Sat, 6 Nov 2021 16:21:13 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A2FC061570;
+        Sat,  6 Nov 2021 13:18:31 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id e11so1901932ljo.13;
+        Sat, 06 Nov 2021 13:18:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=88qCoN8PEpI6RV4cVB/bp4pbyXm2b0XUSZtuu/Gd9aw=;
+        b=PnjxXggs3iYs0WY02NX+m0pWTMDosWg9AdSgsy03QxSqaEt+ey43FAYkKZyNC9I7z5
+         8xCkvH8qtIzDReaTQtky+SuCHfoi4QaCyfKdoIgQciAfpKmaylU2W3mXZZ1tTEz8x9a0
+         vZxgw428w3GT5XMfRz9xZIgETbTdaCzFKhGQZJk0hibWAIImGQIB2ZCqSqpILyamh9E8
+         ajuh54TWnEE1cWZhB5zAIAsT53d6q6G3N9Vp/A+FmtKYawZC5pnRSuK1Dly27BjqFxlz
+         +xNlcEXhPE4TtUOM0gzkK4XqVJr9PSxxflkPBWfm72J4VTQ5z75HIIhvLvI3jdsCJwIw
+         UaYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=88qCoN8PEpI6RV4cVB/bp4pbyXm2b0XUSZtuu/Gd9aw=;
+        b=fw2Vov9QlG5ahcmCLKE7VFqcGsqc1q5HK3rnPN/qQJpTidx/igLASEMMYniSlPV5/l
+         5GiDtG1qtzWNl39q75yjLuD/CINwnv+YdLJchla4bLGX2QuTgcSAe+TaLddlR/BzdO7S
+         qbaD94TpEK3LM/TIb7WDDnlwBfeL3kyUJcJmHBOg6737LAupss63s8uolbJh7J60SplL
+         0pe9go4iE7BsS3hZOXCmDL/2Fn9Ymz7e2q4YFrAiY/S1SBsJt7faweH/dmvEWLwGm2Tm
+         vfzUFtP8xp7A+GigXdNhCar6C0452XgECnrldududvzb33E3TXBjKuRHfP+uU+jZmjDL
+         785Q==
+X-Gm-Message-State: AOAM5325DJi0cjb9Gt/1XOZPxaopF/bO9xW0/yINxGSgTGzg9bnYVALf
+        c0oXScIHcUcxwqCYjf1zq0U=
+X-Google-Smtp-Source: ABdhPJz0mX1WoYEhhk4WgPsSWfdGi9E3K0d6DpdkeS60QFf0e4KDri5Bo0zY1HUKaNOCw8q/7OfsQQ==
+X-Received: by 2002:a2e:a5c8:: with SMTP id n8mr71717765ljp.367.1636229909496;
+        Sat, 06 Nov 2021 13:18:29 -0700 (PDT)
+Received: from [192.168.1.11] ([217.117.245.207])
+        by smtp.gmail.com with ESMTPSA id p16sm1246655lfa.266.2021.11.06.13.18.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 06 Nov 2021 13:18:28 -0700 (PDT)
+Message-ID: <6b58a3e1-f2ea-cc4c-03b2-06334b559373@gmail.com>
+Date:   Sat, 6 Nov 2021 23:18:27 +0300
 MIME-Version: 1.0
-References: <20211102110519.142434-1-krzysztof.kozlowski@canonical.com>
- <c4bcafd0-f614-78c8-4d72-5d2b672f7e32@free.fr> <08c8f447-dcae-83b4-e5b3-a13704a5b158@canonical.com>
- <4062510.I3n91tvSNF@diego>
-In-Reply-To: <4062510.I3n91tvSNF@diego>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 6 Nov 2021 21:13:47 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2Pg8CkXgN8YNhp2U5Kgwf08kQGpLeTsyWKgNpGChC4uQ@mail.gmail.com>
-Message-ID: <CAK8P3a2Pg8CkXgN8YNhp2U5Kgwf08kQGpLeTsyWKgNpGChC4uQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] ARM: s3c: mark as deprecated and schedule removal
- after 2022
-To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
-Cc:     Cedric Roux <sed@free.fr>, Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        Olof Johansson <olof@lixom.net>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Sam Van Den Berge <sam.van.den.berge@telenet.be>,
-        Lihua Yao <ylhuajnu@outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:xJK477YiYTHh/GjItTFmXQ0pBloRQThOtqQKT14YuAFzyci2SEM
- TU2wPz1+fkgRUwVRWxDDKKmr6I8bM8VrRkfNq/VvEKYGW5DUb7qbk3T1T/v+NmjM1SfAsTU
- SOXS1xGxD3X0itYw8HdtVr4Q49HI7hNKuHMzxh1f81Is/74+3R/KmuJsSQgy6LCjER+tdIk
- 9RoTQsztKc7k7dMcES+mg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:X+/yWRsxneU=:LpFHi9m3bDsPqwh8X6BY+q
- 5XnK3a3sCJ8tVehR7UJWLVtZwkQA7Jk7gjsF1RTqX113DrZJsVVmGFSk8HkUWxQYjJVSZKtAq
- jS5kZPZRi+Ltz+yrDsB9FzXpUB8STjAB4KK+3XCNkP6vQTpDNLnLHJl26SdMyi18ouvnsrrnz
- ZfBdDxZobP+ypMYFtYnOrCmVL0u52SCQKMWO5cYC1kVRqUeFw9IE861f+7frxOCJgblrBJYQv
- 7EnyeBsH2aB1kk3COt86x/1v1MdO5Bx1m7ILoewHQxh4I67+fcjoZlAop5yqrwf0gyxxgHBM1
- Su5e2+Ce68n2BC7CgZ5CqkDQI+rwYtytlsyT+YG0IKATI+VOvgpdtAjUx6sOiQzJV4OKfbng3
- LBR0hnXCnPbLDHpAQ9xdrDTXN+OrlR9xmrN+xmWu+fgTpk+ZVGCDTph7GbFvVIdvsyrXjbwh9
- iUNa6pk7wvVdLyFttbTlDoqchm9av7/4JYmj+K6jino+exhJPIPfRncL++BqX/nRVzbr9IUG9
- HZKXHwjc0rKsxFYKWHCR8Yl+BxQAH0f6igrVnBikwDh5ok7PVSKHQTlu6rjNw6Wa9Y40jI5a9
- mMEc0oKCNLciEzywbKr4UbPAJ/mUOgA5Qyq8xsHpDwqCaJqzZSOz5r/eyjOS6l1DmPJRODHLP
- ZJcjkxkkf4pIfVrzyZ9PuxGGfLPgbGnRa33sBKWkk+4yZM3VEXt9FUVPZG9wLPILlaEh9DqY4
- Z9oXHeLbsmTq8flFnyn5Rqq7AoT8xfxbLAG9f1ZqjSW3Ihv2FzidMd/P6qm/SxauN4Y1n7t1z
- K4AhNolNRnXlDeVTz1uL8jS6ryo3YHH9i9bzTXV0o9eEJp8oS0=
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH] tty: vt: keyboard: do not copy an extra-byte in
+ copy_to_user
+Content-Language: en-US
+To:     Ajay Garg <ajaygargnsit@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
+        kernel@esmil.dk, David Laight <David.Laight@aculab.com>
+Cc:     "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211106092041.43745-1-ajaygargnsit@gmail.com>
+ <9eafae1f-d9f0-298d-cf20-212865d0becc@gmail.com>
+ <868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com>
+ <CAHP4M8Ww0-VqCBKX=iLd=zy1AcDoNdzTOqJuaqRxCGZsMhoX9w@mail.gmail.com>
+ <CAHP4M8UcZ=ttB8jbN1yOY6YH8SiQ27NhdEKi9SDH1CWG-GY6eg@mail.gmail.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <CAHP4M8UcZ=ttB8jbN1yOY6YH8SiQ27NhdEKi9SDH1CWG-GY6eg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 6, 2021 at 8:33 PM Heiko Stübner <heiko@sntech.de> wrote:
-> Am Samstag, 6. November 2021, 19:20:05 CET schrieb Krzysztof Kozlowski:
-> > On 05/11/2021 18:49, Cedric Roux wrote:
-> > >
-> > > Anyway, there is at least one s3c2440 server on Earth powered
-> > > by the linux kernel. Now you know! :)
-> >
-> > Thanks for coming back! We will see how much of feedback we gather.
->
-> I do believe all (or at least most) of s3c24xx could run with a devicetree
-> base with core peripherals enabled.
->
-> So one possible alternative way could be to just deprecate (and then drop)
-> all the board-files + their platform-data parts in mach-s3c.
+On 11/6/21 22:46, Ajay Garg wrote:
+> Actually, on further thoughts, even David's solution will require an
+> extra check, if -E2BIG is returned.
+> 
+> So, I guess the solution suggested by me looks the best
+> (https://lore.kernel.org/linux-serial/868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com/T/#m1c4aaa4347b02fd4c11ce611ff5029fcb71c37a1)
+> :
+> 
+> 1.
+> == Do not use the return value from strlcpy. ==
+> 
+>                  len = strlcpy(kbs, func_table[kb_func] ? : "", len);
+> =>
+>                  strlcpy(kbs, func_table[kb_func] ? : "", len);
+> 
+> 
+> 2.
+> == Calculate the actual length of kbs, add 1, and then copy those many
+> bytes to user-buffer ==
+> 
+> ret = copy_to_user(user_kdgkb->kb_string, kbs, len + 1) ?
+>                          -EFAULT : 0;
+> =>
+> ret = copy_to_user(user_kdgkb->kb_string, kbs, strlen(kbs) + 1) ?
+>                          -EFAULT : 0;
+> 
 
-Yes, and this would be similar to what we've done for mach-imx and
-mach-omap2 in the past.
+But isn't strlen(kbs) is guaranteed to be equal to strlcpy() return 
+value in this case? As I said in previous emails,
+strlen(func_table[kb_func]) < sizeof(user_kdgkb->kb_string) by design of 
+this function.
 
-However, I think the Cragganmore/Speyside board that Mark mentioned
-is not in the category of easily converted machines, so leaving only the
-DT-enabled machines around would not help him.
+Do we need extra strlen() call here? Let's see what more experienced 
+people think about it :)
 
-If this is actually the case, one other possibility would be to remove
-all the board files except for that one, in the hope that the transformation
-(even a partial one) to DT becomes easier when there is no risk of
-breaking other machines.
 
-        Arnd
+
+With regards,
+Pavel Skripkin
