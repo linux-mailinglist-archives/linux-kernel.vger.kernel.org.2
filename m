@@ -2,126 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA69C447077
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 21:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75EED447080
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 21:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235079AbhKFUvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 16:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhKFUvO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 16:51:14 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B981C061570;
-        Sat,  6 Nov 2021 13:48:33 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id x27so26364131lfu.5;
-        Sat, 06 Nov 2021 13:48:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=VAeOOd6OoG8jIe4twgz7nyq7hcVLOkrGdKItQvlZdwg=;
-        b=K6SCRMoR9I6/EMP+kOdrRYbG2L6ciumqh0qEVBwQ6s64fYA5B+SZDadfVS5k60u+9a
-         dJvZSccPGbnTl7nXfS9jROKhM4Zv+GUILLAXxoevkZXiBY6KGAFdoecG9FjVtWqEDZAM
-         4oghynGPi7S5beX5byO5z327smC7f4Spjq4oUlJWBV7T5P8ihMPQqcV05vZZWHTCp5+u
-         nWy6OzBb5kiNU4R02NLnUtL6oF3imqGu5LbiK9zddWsddu17jd8x/0JpFMDZpGAiZI4H
-         Y4Pzd0NyaFxE2sbqVfIb/u8poY2xP4EV2patorNXSzlqX3OUQEHgfLbJPCPsbJBqM2Vz
-         N/dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=VAeOOd6OoG8jIe4twgz7nyq7hcVLOkrGdKItQvlZdwg=;
-        b=lo31dzBD7ycg5K854Zjaar8apobrpCJtmpcBO60ymvyKKL7pAaS4j6o2QOo1IZyrcY
-         HYYzEg699yjEtT+Dk+Ds7EDl2QXjcGtl+OfFsGXUYMEV9AFvluXwIJA0eeX2O9n9GRql
-         dQUGMvZQroythMgxB6pLFU4SfXfItrnxI29fEMtySJbq19QO9EMAs13lktx8X3qElRBe
-         C7xZruJg6ljWgPqbuUJARdLln5IglIIbw1VjqJW0kQSNjE1vLaJbtNPTtMtfsaDjWH3I
-         xBEfv5AP851hIOU6/0tpjl+W/eA+XkeqqMGW5zKmCw3VKbJG7IY07B3zCUb5Z6C/EGNs
-         If9w==
-X-Gm-Message-State: AOAM533I74emCuERv7Kfd8FOqOwncidHOkmEnU0k375MR8rA2OFhLmS+
-        61gnPHMFzq+6xKSlf5Mbits=
-X-Google-Smtp-Source: ABdhPJx5sXEct7WHiw/MExJvHFOIcQNFHhQS6099PidFbHk/2UwvrYJjfJcykjBqZym8mGo9sa+LSA==
-X-Received: by 2002:ac2:4a89:: with SMTP id l9mr5405710lfp.679.1636231711339;
-        Sat, 06 Nov 2021 13:48:31 -0700 (PDT)
-Received: from [192.168.1.11] ([217.117.245.207])
-        by smtp.gmail.com with ESMTPSA id c3sm594515lfb.122.2021.11.06.13.48.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Nov 2021 13:48:30 -0700 (PDT)
-Message-ID: <65c45951-08ba-26bb-f96b-3d4442b1d4d4@gmail.com>
-Date:   Sat, 6 Nov 2021 23:48:30 +0300
+        id S235083AbhKFU7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 16:59:25 -0400
+Received: from mout.gmx.net ([212.227.17.20]:45699 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229723AbhKFU7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Nov 2021 16:59:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1636232056;
+        bh=Mwd00qb2ZiJx72AR8VOZy+k9pKeasCOoFRxt9I1uV2U=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=C0sCrT8yqXlZxZN/D8t3r5AoxwhULAsJ8jy0NerNyYtNdbWgnqBYX9Y6CiU9MHxYu
+         zquWuU6nUJY+jyfB4yNiyLcx1VtjpHa5bjIspLTdTbHxN0xolbUGlTJ6HhUeKdKZyT
+         nslIEB0sT9+3bcpa5ZRh7JRv4jOvvxznOxhoRVuE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([87.79.195.52]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MOA3F-1n7sEw3p2f-00OWCa; Sat, 06
+ Nov 2021 21:54:16 +0100
+Date:   Sat, 6 Nov 2021 21:54:06 +0100
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2 27/45] mfd: ntxec: Use devm_register_power_handler()
+Message-ID: <YYbqlmOM95q7Hbjo@latitude>
+References: <20211027211715.12671-1-digetx@gmail.com>
+ <20211027211715.12671-28-digetx@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH] tty: vt: keyboard: do not copy an extra-byte in
- copy_to_user
-Content-Language: en-US
-To:     Ajay Garg <ajaygargnsit@gmail.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
-        kernel@esmil.dk, David Laight <David.Laight@aculab.com>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20211106092041.43745-1-ajaygargnsit@gmail.com>
- <9eafae1f-d9f0-298d-cf20-212865d0becc@gmail.com>
- <868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com>
- <CAHP4M8Ww0-VqCBKX=iLd=zy1AcDoNdzTOqJuaqRxCGZsMhoX9w@mail.gmail.com>
- <CAHP4M8UcZ=ttB8jbN1yOY6YH8SiQ27NhdEKi9SDH1CWG-GY6eg@mail.gmail.com>
- <6b58a3e1-f2ea-cc4c-03b2-06334b559373@gmail.com>
- <CAHP4M8Vs8a8u98enuHXaBcC7D4fCZzCOtEq06VnvuPUqhqPK=Q@mail.gmail.com>
- <9717b429-597f-7778-c880-94361bcdee7f@gmail.com>
- <CAHP4M8XtFiAa1kF5A_rPbcui3DP8L6iyfP8GbwgLLzo0Bo+TNQ@mail.gmail.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <CAHP4M8XtFiAa1kF5A_rPbcui3DP8L6iyfP8GbwgLLzo0Bo+TNQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EIEte5+tjVxDHmE6"
+Content-Disposition: inline
+In-Reply-To: <20211027211715.12671-28-digetx@gmail.com>
+X-Provags-ID: V03:K1:SVFlmtuvvynO7MrtDzObaEyN/WaPcv8tOsGAlIRvdbuKBKDAEQ/
+ nVePqR5eYOMd9xdpGO5unEqHbls4MbMcwDHHiD/2xW054xRTDPzVuInIGVNwfhVnOpuaRe4
+ ac8qzmvsisWAHTSwATyyh2lQM4j3GTT+YgfTlnX+xnTkWWDcDQ1QJM/FLNOUp2gu+vKNebi
+ 4PIdlh56euOWziRZzNIlQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:u5Fne7zv3PE=:dNBEMEjx9T9adiFRODtMYS
+ bP1c0hzh59ZKklI1R2cCTJxmTQB45y+QzZX2y0PFbg7yQDeDmSxw52obaEhQa1OdTD86QHXVu
+ bbxucMZOIMSbjbLPCif24qpNcHVpf4XClB+BVAEEUwNoQd2u+UA3qLozpzzQZNC8E146erRcl
+ EAKHMtg1jl5nUIbs95J8LLOgltdAEihA4JrPrtzt7z304ULnl8JDCKZ1GtxLnSmRKL2GPNjji
+ BW4Wh4ednr1BPkh3V5pGtcs7sYJeT+fCg9+1Ao3TSUyI/IMvOamAK8fVGMSOSa8NHso9PeZQG
+ p+/g7H+fY7krRTHyMZXbNHeGC6zFFjT+rzUWo+KzQQxtKMn72KqFsaG2rKGpecWbyuM0yrSA3
+ xhBNrwHcineUl3uAIRxEl8UFkkXss6eAsh3Q7PLKHNXtaR46/z4OumfDtDC9mwHJVuXp9n3KM
+ M7BF+sRUvasT/1Hjw3WGpiUE/z6upYRlSC4e82UllEXyFN6W5gyX4r9kjFZV6JMJQR4UbuEW1
+ 4g31iHAtTXNZxCvREA7FhQCKM9rtiy8KysUGnceOt3v+aXNzH7SzuQRyJ9+2MgAUQhI7LT2+v
+ VClVfxb0rprv/xqBe8DR8WZ7vcK3mCHHlNMCIkYs+6FCITYMw1DHU+CCMKRJej3SCQwR1LGqj
+ hUPkhNKbB6PRt/vk+6c77kVWLHqNnHOCN73BdRo6Txp4mZxNOEbbazHi+tZW5jEpWLgiTWfNM
+ nvxwa10sJSG8hWu5gGN/aF40RAay1aoGu/k5TA+el84toB3VY6ini0lBJUlrb8M4zbzR9pa9/
+ Pm44sh1ruNP7AzMnsBiAzzZX6lqJDAsa+TO5YVhuM9bbKS9hD1KoschPm0B4aJf++t2+ahC/M
+ b/QH4Oe5cluIsKILSHGZSoRrX9sqCtW26taTpZQSEsbNePGKbzsw8Oa3lejuRZ+LJbcUK2xLt
+ ttQpHqsFbUZlBFAYwpFpRbcNm/+LQLWVCLIU9Rk9O9c0hSOeoGw2PLPC+aL/hsmQVrqlLI/F5
+ NAfMG2YBy//Wmh7LL2E3535/ea8r6g8I6Rr7Y4YuBRiuLWpoBhkDI8ZJxuoe0BuQmictlfruZ
+ QdH3qyP8a6Ex3I=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/21 23:44, Ajay Garg wrote:
->> >
->> > That's the whole point of the discussion :)
->> >
->> > The method "vt_do_kdgkb_ioctl" does not manage "func_table[kb_func]".
->> > Thus, the method does not know whether or not
->> > strlen(func_table[kb_func]) < sizeof(user_kdgkb->kb_string).
->> >
->>
->> It manages. The code under `case KDSKBSENT:` sets func_table[] entries
->> via vt_kdskbsent().
->>
->> kbs = strndup_user(..., sizeof(user_kdgkb->kb_string));
->>
->> is used to allocate buffer for the func_table[] entry. That's my main
->> point :)
-> 
-> func_table is set in vt_kdskbent, which itself is external.
-> 
-> More importantly, vt_kdskbent is handled in case KDSKBSENT:, while the
-> strlcpy issue we are dealing with is in case KDGKBSENT:
-> In case KDGKBSENT, following are managed :
-> 
->                  ssize_t len = sizeof(user_kdgkb->kb_string);
->                  kbs = kmalloc(len, GFP_KERNEL);
-> 
-> while func_table[kb_func] is external entity here, so no assumption
-> ought to be made for it, just my 2 cents though :)
-> 
-> Anyhow, really, it is the maintainers' choice now :), since there
-> isn't a burning (compilation/runtime) issue.
-> 
 
-I fully agree here, it's maintainer's choice. Let's sit down and wait 
-what experienced people thing about this :)
+--EIEte5+tjVxDHmE6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I've just wanted to explain my idea better to exclude possible 
-misunderstanding.
+Hi,
 
-Thanks
+On Thu, Oct 28, 2021 at 12:16:57AM +0300, Dmitry Osipenko wrote:
+> Use devm_register_power_handler() that replaces global pm_power_off
+> variable and allows to register multiple power-off handlers. It also
+> provides restart-handler support, i.e. all in one API.
+>=20
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+
+When I boot with (most of) this patchset applied, I get the warning at
+kernel/reboot.c:187:
+
+	/*
+	 * Handler must have unique priority. Otherwise call order is
+	 * determined by registration order, which is unreliable.
+	 */
+	WARN_ON(!atomic_notifier_has_unique_priority(&restart_handler_list, nb));
+
+As the NTXEC driver doesn't specify a priority, I think this is an issue
+to be fixed elsewhere.
+
+Other than that, it works and looks good, as far as I can tell.
 
 
+For this patch:
 
-With regards,
-Pavel Skripkin
+Reviewed-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+Tested-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+
+
+Best regards,
+Jonathan
+---
+
+Full Oops log:
+
+[    3.523294] ------------[ cut here ]------------
+[    3.528193] WARNING: CPU: 0 PID: 1 at kernel/reboot.c:187 register_resta=
+rt_handler+0x4c/0x58
+[    3.536975] Modules linked in:
+[    3.540312] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.15.0-00021-gcb24=
+c628b307 #622
+[    3.548214] Hardware name: Freescale i.MX50 (Device Tree Support)
+[    3.554357] [<c0111540>] (unwind_backtrace) from [<c010cdd0>] (show_stac=
+k+0x10/0x14)
+[    3.562183] [<c010cdd0>] (show_stack) from [<c0bf240c>] (dump_stack_lvl+=
+0x58/0x70)
+[    3.569824] [<c0bf240c>] (dump_stack_lvl) from [<c0127604>] (__warn+0xd4=
+/0x154)
+[    3.577191] [<c0127604>] (__warn) from [<c0bec844>] (warn_slowpath_fmt+0=
+x74/0xa8)
+[    3.584727] [<c0bec844>] (warn_slowpath_fmt) from [<c01593c8>] (register=
+_restart_handler+0x4c/0x58)
+[    3.593823] [<c01593c8>] (register_restart_handler) from [<c08676c8>] (_=
+_watchdog_register_device+0x13c/0x27c)
+[    3.603889] [<c08676c8>] (__watchdog_register_device) from [<c0867868>] =
+(watchdog_register_device+0x60/0xb4)
+[    3.613764] [<c0867868>] (watchdog_register_device) from [<c08678f8>] (d=
+evm_watchdog_register_device+0x3c/0x84)
+[    3.623898] [<c08678f8>] (devm_watchdog_register_device) from [<c1146454=
+>] (imx2_wdt_probe+0x254/0x2ac)
+[    3.633346] [<c1146454>] (imx2_wdt_probe) from [<c06feb74>] (platform_pr=
+obe+0x58/0xb8)
+[    3.641314] [<c06feb74>] (platform_probe) from [<c06fb2f8>] (call_driver=
+_probe+0x24/0x108)
+[    3.649636] [<c06fb2f8>] (call_driver_probe) from [<c06fbe08>] (really_p=
+robe.part.0+0xa8/0x358)
+[    3.658384] [<c06fbe08>] (really_probe.part.0) from [<c06fc1c4>] (__driv=
+er_probe_device+0x94/0x208)
+[    3.667470] [<c06fc1c4>] (__driver_probe_device) from [<c06fc368>] (driv=
+er_probe_device+0x30/0xc8)
+[    3.676468] [<c06fc368>] (driver_probe_device) from [<c06fcb0c>] (__driv=
+er_attach+0xe0/0x1c4)
+[    3.685032] [<c06fcb0c>] (__driver_attach) from [<c06f9a20>] (bus_for_ea=
+ch_dev+0x74/0xc0)
+[    3.693253] [<c06f9a20>] (bus_for_each_dev) from [<c06faeb8>] (bus_add_d=
+river+0x100/0x208)
+[    3.701563] [<c06faeb8>] (bus_add_driver) from [<c06fd8a0>] (driver_regi=
+ster+0x88/0x118)
+[    3.709696] [<c06fd8a0>] (driver_register) from [<c06fe920>] (__platform=
+_driver_probe+0x44/0xdc)
+[    3.718522] [<c06fe920>] (__platform_driver_probe) from [<c01022ac>] (do=
+_one_initcall+0x78/0x388)
+[    3.727444] [<c01022ac>] (do_one_initcall) from [<c1101708>] (do_initcal=
+ls+0xcc/0x110)
+[    3.735413] [<c1101708>] (do_initcalls) from [<c110198c>] (kernel_init_f=
+reeable+0x1ec/0x250)
+[    3.743896] [<c110198c>] (kernel_init_freeable) from [<c0bfe724>] (kerne=
+l_init+0x10/0x128)
+[    3.752224] [<c0bfe724>] (kernel_init) from [<c010011c>] (ret_from_fork+=
+0x14/0x38)
+[    3.759844] Exception stack(0xc40adfb0 to 0xc40adff8)
+[    3.764933] dfa0:                                     00000000 00000000 =
+00000000 00000000
+[    3.773143] dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 =
+00000000 00000000
+[    3.781351] dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[    3.788347] irq event stamp: 143613
+[    3.792102] hardirqs last  enabled at (143623): [<c01a3ebc>] __up_consol=
+e_sem+0x50/0x60
+[    3.800397] hardirqs last disabled at (143632): [<c01a3ea8>] __up_consol=
+e_sem+0x3c/0x60
+[    3.808491] softirqs last  enabled at (143612): [<c0101518>] __do_softir=
+q+0x2f8/0x5b0
+[    3.816591] softirqs last disabled at (143603): [<c01307dc>] __irq_exit_=
+rcu+0x160/0x1d8
+[    3.825014] ---[ end trace 7f6709d2c89774b4 ]---
+
+--EIEte5+tjVxDHmE6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmGG624ACgkQCDBEmo7z
+X9s6ChAAk6BAeo5fWoSSZHjjpn6ATqjK8ym6Qwe2EuauLkxbrtHK3OsbljBzCdtj
+p4LUnHOvUjWpnlBRfbbZSXKo5B0LxFtUhe/Cz9IDICft4K2DmOExc+xY9zQNcjMO
+rNIxDh4Q8qUdWv4c4B3p812s36yVKoaAGT6XHR9ISWOWmTWq/SNXiFetn9KdMaRs
+INw4aNL0grB717V8ucg5RtEOcrLEHRPf6Rv0b6yhfRdBQGx5XCatsdkofBcM9Rlr
+ECVr+SDk6hoMvPgqbnK3hh1fU0MGiDoyHN/+PhdW5k71EoqynneLlz1xhU4P1TAQ
+4leH70X0lvTJSlpZ+dWkgVGkGzE8LtrjCwhCzZvf+UKqhKf4VWp9LInkiRU2mEaN
+ZGeaNLEL/oEE2nHZuWuW8imYr/WoYQKyZX+rG/g+aViMxom4/RC/IF5GFWxInCgi
+IBVFSiKxJOwKvKHZrsiJsk+zqcmb1TRObyYd0ecsOPD413IWwnFIl6502QRQolJH
+UvdIANNtt2/XORmBBNNGCQtZJ82srfxBpn9jzBtCZu03m4RymWvURbqbIx7mAiz0
+6nj5cArubiCB8WOnOcCmsgHzLZDzN2SAy5UFxsELy67LUXWjsGMG++sHbkDuaiji
+/h71rvx5wmakG7quyBIQDCUtxgSMJL73yZA4N8UsQABCsmnNXgE=
+=jBJI
+-----END PGP SIGNATURE-----
+
+--EIEte5+tjVxDHmE6--
