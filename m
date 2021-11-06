@@ -2,188 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6287446F4E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 18:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F1B446F51
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 18:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233997AbhKFRWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 13:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41542 "EHLO
+        id S234671AbhKFRXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 13:23:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbhKFRWb (ORCPT
+        with ESMTP id S229551AbhKFRXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 13:22:31 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72A5C061570;
-        Sat,  6 Nov 2021 10:19:49 -0700 (PDT)
-Date:   Sun, 7 Nov 2021 01:20:26 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1636219186;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XMmhs9HYhNcGgQ65VphvZRVIvAdwsAifoT5Xiz9YzPo=;
-        b=gcXkaPyby+FXI8KETJ5qGraTykKZH6YXSiFsHLqtJ3Xv528zpUisCBfyGFglMTVL6FWOPT
-        gUzrN+hHi/CBchqgxFh1QGzQ6ZiIfbkhhMPtbDz39EjUuS2KYELg2Rkv6mJVp32TYmW3uF
-        ubdvRSbonJ8tGxOrXP4Niobp7BWOolM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Tao Zhou <tao.zhou@linux.dev>
-To:     Peter Oskolkov <posk@posk.io>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@google.com>,
-        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
-        Thierry Delisle <tdelisle@uwaterloo.ca>,
-        Tao Zhou <tao.zhou@linux.dev>
-Subject: Re: [PATCH v0.8 3/6] sched/umcg: implement UMCG syscalls
-Message-ID: <YYa5WjXTrhYKmoze@geo.homenetwork>
-References: <20211104195804.83240-1-posk@google.com>
- <20211104195804.83240-4-posk@google.com>
+        Sat, 6 Nov 2021 13:23:50 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E740C061714
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 10:21:09 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id bl27so17194107oib.0
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Nov 2021 10:21:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vTSLEwZ2lTdgm04aqi8C+KVIKM9ISYcIdJi5xTJQmDQ=;
+        b=TM7HT/3kUvCVkyIyxqrla2bPoXwiNaUgVa/rkdmDjclsBlQ+MF4cgYeM/LlxxQn+u+
+         Upxm0KHjHAlzeiGcjmD3wX0/bO2011j3SFBKR+42KzRtu3rUHR486mXtat3EwEIQLY5O
+         xB5EJZNBvZHyQap3cH0THKAk/lKVH3CLTC/c2HSCGZBqt6vc6Dn//I+0ydBVp/BrFWgv
+         8KpLjGyF3Ozozmncwwdp2w9H5NjqlVxTFPofh5Hfo7RiO99fV3XnkB2PN8voK5dB71ik
+         jlwRhUwFz+mvHuqzHdqZI64R6e/1wCRhpaOuvqeibUZLnmp+SQ9JSFe6+Mz0OQxOzpUU
+         7nvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vTSLEwZ2lTdgm04aqi8C+KVIKM9ISYcIdJi5xTJQmDQ=;
+        b=A9nhombdhNqXhdd93er1C0R8bBE6NQnv4IiditLNxV3TsViNoNQTPHAgoO8qucuC0j
+         xkVy7Oa/s+j86PTM5ln4fvnGapqfto8VTEn8e1pOmSJLLOLOrkDzx7gh2Ro3Si+xc4Pb
+         UGWtwiFSWb/Lz5qZq1uHzA76U9oqKFla0daT95EX9Jf2OXtjI4FZjSYu0f7IKuX1vZHO
+         4+xPkyEbt4P3hW3bJANTCEnxv/HZDMwIphlBDhsRcplAHp5QiKuifeLwVPff1ZX3MglJ
+         z7Fyz+2tUJE/wMltamlvyfnc2xTT2SBmYZdLMimr0KRCqFxWkSGMHV/ouJUes7tUY+54
+         27HQ==
+X-Gm-Message-State: AOAM533YoEbvs5D3R62IsJnZsozNQbJouHWSiuLtlMu9WtUkyXQj5LzF
+        OOyAH6jaOtmPZxabAIzth8aIBQ==
+X-Google-Smtp-Source: ABdhPJwqV+YJ+7OmqgyefLnoB9WNSGrGUryYUqJWPS8f6XLyzo2xKmxNbd/mkUmHKL02UYGvTeOrxw==
+X-Received: by 2002:a05:6808:1897:: with SMTP id bi23mr6223384oib.111.1636219268707;
+        Sat, 06 Nov 2021 10:21:08 -0700 (PDT)
+Received: from ripper.. (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 64sm3905304otm.37.2021.11.06.10.21.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Nov 2021 10:21:08 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm/dp: Drop now unused hpd_high member
+Date:   Sat,  6 Nov 2021 10:22:46 -0700
+Message-Id: <20211106172246.2597431-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211104195804.83240-4-posk@google.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: tao.zhou@linux.dev
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+Since '8ede2ecc3e5e ("drm/msm/dp: Add DP compliance tests on Snapdragon
+Chipsets")' the hpd_high member of struct dp_usbpd has been write-only.
 
-On Thu, Nov 04, 2021 at 12:58:01PM -0700, Peter Oskolkov wrote:
+Let's clean up the code a little bit by removing the writes as well.
 
-> +/**
-> + * umcg_update_state: atomically update umcg_task.state_ts, set new timestamp.
-> + * @state_ts   - points to the state_ts member of struct umcg_task to update;
-> + * @expected   - the expected value of state_ts, including the timestamp;
-> + * @desired    - the desired value of state_ts, state part only;
-> + * @may_fault  - whether to use normal or _nofault cmpxchg.
-> + *
-> + * The function is basically cmpxchg(state_ts, expected, desired), with extra
-> + * code to set the timestamp in @desired.
-> + */
-> +static int umcg_update_state(u64 __user *state_ts, u64 *expected, u64 desired,
-> +				bool may_fault)
-> +{
-> +	u64 curr_ts = (*expected) >> (64 - UMCG_STATE_TIMESTAMP_BITS);
-> +	u64 next_ts = ktime_get_ns() >> UMCG_STATE_TIMESTAMP_GRANULARITY;
-> +
-> +	/* Cut higher order bits. */
-> +	next_ts &= UMCG_TASK_STATE_MASK_FULL;
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ drivers/gpu/drm/msm/dp/dp_display.c | 6 ------
+ drivers/gpu/drm/msm/dp/dp_hpd.c     | 2 --
+ drivers/gpu/drm/msm/dp/dp_hpd.h     | 2 --
+ 3 files changed, 10 deletions(-)
 
-next_ts &= (1 << UMCG_STATE_TIMESTAMP_BITS) - 1; or am I wrong.
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index aba8aa47ed76..70177c0d6a37 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -522,11 +522,8 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
+ 
+ 	dp->hpd_state = ST_CONNECT_PENDING;
+ 
+-	hpd->hpd_high = 1;
+-
+ 	ret = dp_display_usbpd_configure_cb(&dp->pdev->dev);
+ 	if (ret) {	/* link train failed */
+-		hpd->hpd_high = 0;
+ 		dp->hpd_state = ST_DISCONNECTED;
+ 
+ 		if (ret == -ECONNRESET) { /* cable unplugged */
+@@ -603,7 +600,6 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 		/* triggered by irq_hdp with sink_count = 0 */
+ 		if (dp->link->sink_count == 0) {
+ 			dp_ctrl_off_phy(dp->ctrl);
+-			hpd->hpd_high = 0;
+ 			dp->core_initialized = false;
+ 		}
+ 		mutex_unlock(&dp->event_mutex);
+@@ -627,8 +623,6 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 	/* disable HPD plug interrupts */
+ 	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK, false);
+ 
+-	hpd->hpd_high = 0;
+-
+ 	/*
+ 	 * We don't need separate work for disconnect as
+ 	 * connect/attention interrupts are disabled
+diff --git a/drivers/gpu/drm/msm/dp/dp_hpd.c b/drivers/gpu/drm/msm/dp/dp_hpd.c
+index e1c90fa47411..db98a1d431eb 100644
+--- a/drivers/gpu/drm/msm/dp/dp_hpd.c
++++ b/drivers/gpu/drm/msm/dp/dp_hpd.c
+@@ -32,8 +32,6 @@ int dp_hpd_connect(struct dp_usbpd *dp_usbpd, bool hpd)
+ 	hpd_priv = container_of(dp_usbpd, struct dp_hpd_private,
+ 					dp_usbpd);
+ 
+-	dp_usbpd->hpd_high = hpd;
+-
+ 	if (!hpd_priv->dp_cb || !hpd_priv->dp_cb->configure
+ 				|| !hpd_priv->dp_cb->disconnect) {
+ 		pr_err("hpd dp_cb not initialized\n");
+diff --git a/drivers/gpu/drm/msm/dp/dp_hpd.h b/drivers/gpu/drm/msm/dp/dp_hpd.h
+index 5bc5bb64680f..8feec5aa5027 100644
+--- a/drivers/gpu/drm/msm/dp/dp_hpd.h
++++ b/drivers/gpu/drm/msm/dp/dp_hpd.h
+@@ -26,7 +26,6 @@ enum plug_orientation {
+  * @multi_func: multi-function preferred
+  * @usb_config_req: request to switch to usb
+  * @exit_dp_mode: request exit from displayport mode
+- * @hpd_high: Hot Plug Detect signal is high.
+  * @hpd_irq: Change in the status since last message
+  * @alt_mode_cfg_done: bool to specify alt mode status
+  * @debug_en: bool to specify debug mode
+@@ -39,7 +38,6 @@ struct dp_usbpd {
+ 	bool multi_func;
+ 	bool usb_config_req;
+ 	bool exit_dp_mode;
+-	bool hpd_high;
+ 	bool hpd_irq;
+ 	bool alt_mode_cfg_done;
+ 	bool debug_en;
+-- 
+2.33.1
 
-> +	if (next_ts == curr_ts)
-> +		++next_ts;
-> +
-> +	/* Remove an old timestamp, if any. */
-> +	desired &= UMCG_TASK_STATE_MASK_FULL;
-> +
-> +	/* Set the new timestamp. */
-> +	desired |= (next_ts << (64 - UMCG_STATE_TIMESTAMP_BITS));
-> +
-> +	if (may_fault)
-> +		return cmpxchg_user_64(state_ts, expected, desired);
-> +
-> +	return cmpxchg_user_64_nofault(state_ts, expected, desired);
-> +}
-> +
-> +/**
-> + * sys_umcg_ctl: (un)register the current task as a UMCG task.
-> + * @flags:       ORed values from enum umcg_ctl_flag; see below;
-> + * @self:        a pointer to struct umcg_task that describes this
-> + *               task and governs the behavior of sys_umcg_wait if
-> + *               registering; must be NULL if unregistering.
-> + *
-> + * @flags & UMCG_CTL_REGISTER: register a UMCG task:
-> + *         UMCG workers:
-> + *              - @flags & UMCG_CTL_WORKER
-> + *              - self->state must be UMCG_TASK_BLOCKED
-> + *         UMCG servers:
-> + *              - !(@flags & UMCG_CTL_WORKER)
-> + *              - self->state must be UMCG_TASK_RUNNING
-> + *
-> + *         All tasks:
-> + *              - self->next_tid must be zero
-> + *
-> + *         If the conditions above are met, sys_umcg_ctl() immediately returns
-> + *         if the registered task is a server; a worker will be added to
-> + *         idle_workers_ptr, and the worker put to sleep; an idle server
-> + *         from idle_server_tid_ptr will be woken, if present.
-> + *
-> + * @flags == UMCG_CTL_UNREGISTER: unregister a UMCG task. If the current task
-> + *           is a UMCG worker, the userspace is responsible for waking its
-> + *           server (before or after calling sys_umcg_ctl).
-> + *
-> + * Return:
-> + * 0                - success
-> + * -EFAULT          - failed to read @self
-> + * -EINVAL          - some other error occurred
-> + */
-> +SYSCALL_DEFINE2(umcg_ctl, u32, flags, struct umcg_task __user *, self)
-> +{
-> +	struct umcg_task ut;
-> +
-> +	if (flags == UMCG_CTL_UNREGISTER) {
-> +		if (self || !current->umcg_task)
-> +			return -EINVAL;
-> +
-> +		if (current->flags & PF_UMCG_WORKER)
-> +			umcg_handle_exiting_worker();
-> +		else
-> +			umcg_clear_task(current);
-> +
-> +		return 0;
-> +	}
-> +
-> +	if (!(flags & UMCG_CTL_REGISTER))
-> +		return -EINVAL;
-> +
-> +	flags &= ~UMCG_CTL_REGISTER;
-> +	if (flags && flags != UMCG_CTL_WORKER)
-> +		return -EINVAL;
-> +
-> +	if (current->umcg_task || !self)
-> +		return -EINVAL;
-> +
-> +	if (copy_from_user(&ut, self, sizeof(ut)))
-> +		return -EFAULT;
-> +
-> +	if (ut.next_tid)
-> +		return -EINVAL;
-> +
-> +	if (flags == UMCG_CTL_WORKER) {
-> +		if ((ut.state_ts & UMCG_TASK_STATE_MASK_FULL) != UMCG_TASK_BLOCKED)
-
-Or use UMCG_TASK_STATE_MASK that is enough.
-
-> +			return -EINVAL;
-> +
-> +		WRITE_ONCE(current->umcg_task, self);
-> +		current->flags |= PF_UMCG_WORKER;
-> +
-> +		/* Trigger umcg_handle_resuming_worker() */
-> +		set_tsk_thread_flag(current, TIF_NOTIFY_RESUME);
-> +	} else {
-> +		if ((ut.state_ts & UMCG_TASK_STATE_MASK_FULL) != UMCG_TASK_RUNNING)
-
-The same here.
-
-> +			return -EINVAL;
-> +
-> +		WRITE_ONCE(current->umcg_task, self);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-
-
-Thanks,
-Tao
