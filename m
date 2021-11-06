@@ -2,123 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D16EC446E39
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 14:47:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C956446E3C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 14:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbhKFNuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 09:50:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51984 "EHLO
+        id S232002AbhKFNw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 09:52:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbhKFNuR (ORCPT
+        with ESMTP id S229932AbhKFNw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 09:50:17 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EE1C061570
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 06:47:35 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso5376680pjb.0
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Nov 2021 06:47:35 -0700 (PDT)
+        Sat, 6 Nov 2021 09:52:26 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76370C061570;
+        Sat,  6 Nov 2021 06:49:45 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id g3so19866599ljm.8;
+        Sat, 06 Nov 2021 06:49:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cpPMO+oyCgCm4JMMdEnYJQPJnzv6BIKAi1V6GfI7xUA=;
-        b=v5mEqjJBFLHCL2H+vbyoD8h7c/OK8u2x6BVSkvfTVJu2ym+Q1oFfJyqYW8sMjBad43
-         kionLzcQfNSHLC2FS4WKmExtY3u94h1UxFEoG31S5PGm4dwKBr/UHQzUBKKgOVeDpTxF
-         MKbmAV9lKcbFa16+vWA8VNm2BepL2dFZeIestYmLslUYhppFZJw+CsZKwH2tDxWTDMgL
-         nq3c85j3bgjYnfwD3S0SCIaewLjVoGj6PUJZ6fH2aTOTeAbaUD9O9CDM20QpgqO558Vz
-         5BT4xeR0D7aFQoN+ari7JJG0xcUR6Z7baIgHVKFmjxKdIStEhP1sK+SjkMlUSS75lew6
-         HBug==
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=hllwjT4hNTrSJHeTE4iXbEl+wXeiJPG72ZsFy8OgFs8=;
+        b=j/bX+iS3Gw45KdNSlp0LnjcQLupd19hi3uzB904DP6jv8i8dx80jU2wBQCMr3LZEAd
+         TXx2OhXaHkr5HDGh3t4StZev0qvqsbH4dBUYOyep7WqYxhfGbKus/x74cGKuJVvttclL
+         iRg9kV3HhbWSoK6o/YxK7Mhb7uXif2ZX3gKhoy2MFkObCkzvs2UpIfzjiC+Sf5Sx8cj7
+         MalPqo8LENV3JseVC37UuJvIYsqdWYxxrq8D1Rsxmh3GxNb5ayytjdMnJ8uKb25VX9Bq
+         4/D9UH/hEr1AjeCkNg6qLYtCHlGJ2tLoTILaFID2bwZjA830pLKWIpWPuJrOwhf9tAx1
+         J4EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cpPMO+oyCgCm4JMMdEnYJQPJnzv6BIKAi1V6GfI7xUA=;
-        b=smYIX6zgoQ6+U2cV/CqyUx3sxEIAyH0A+3vjIp+7LiF5SBQgoV2we2OSwurRBLSsJ9
-         m438r1qGtwUnjGbaYusAH//LSXUEDR7LMzi/qjM6B7hO35uDTG87LDO4JJoHlZjy01r1
-         5Apk8twYw3r+8PeSdSX+yWn8ZfN540BurnEv1cjYiRXjS39oCHmeEKlcH2qiowa6ndh1
-         MqZ08nMdsJy4KmgWUFcT2bAJlN37K/SYQ8IdPBh+S24s53X6ueV5bK3LEclMP8ANPJLL
-         n+vEnjDJerrxzim2sd/tF1zRC0WuEQniOezx+YfOchOpVp2i/4XEMd6MrMjkwum0DiHP
-         7BeQ==
-X-Gm-Message-State: AOAM532W/8ZUaPbvNBbqddLUY2sM9xF25ndR8Gfuifx16m3VnONUuy4A
-        5ZtmzfJMjDGr1pG/b7exCbKW6w==
-X-Google-Smtp-Source: ABdhPJwwtrmOcgNOnynP3D3Y+zgQzsZtX6gLsQWCWXog4kHLg3MsIDrrLiQxzOeYTDuq2Q3OLwekdw==
-X-Received: by 2002:a17:90a:408f:: with SMTP id l15mr37664768pjg.34.1636206453806;
-        Sat, 06 Nov 2021 06:47:33 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([134.195.101.46])
-        by smtp.gmail.com with ESMTPSA id z2sm11005889pfh.135.2021.11.06.06.47.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Nov 2021 06:47:33 -0700 (PDT)
-Date:   Sat, 6 Nov 2021 21:47:25 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, James Clark <james.clark@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/3] perf arm-spe: Save context ID in record
-Message-ID: <20211106134725.GI477387@leoy-ThinkPad-X240s>
-References: <20211102180739.18049-1-german.gomez@arm.com>
- <20211102180739.18049-3-german.gomez@arm.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=hllwjT4hNTrSJHeTE4iXbEl+wXeiJPG72ZsFy8OgFs8=;
+        b=sebC/rVW1bfBb9clkOyTGUkPSJqMmAXaeZwTQbuTYIRoPGc3+SlZcKE3onlmPy65x+
+         YJsqHrbrviWbnoRmzIzkna/EZ3pOlMCXEbf8h+I87Dx/7XIxEuoNOz7FymCpJaFh7o64
+         BLxP7nxIVPkdEu3Hpkpe6pAb7b9d8qinjmElLeKgIrI6QThbRuFPzNUiwvTg60eyoYQN
+         8pypjpRFT9aYW6U/oKdg2rcRB3ppyBQiG1g18Tk0UAms05P0X+05z8jH+cCp3P7AI9lW
+         0BcoUYriu2MoA3j/cFZQWJ46kS9qFoxEvJmmO7tdDGVMXy3kVe5rDbxbjnGOBLqRHz2+
+         Xp1Q==
+X-Gm-Message-State: AOAM5335QFAMD5jfAMVv52CusdJ+jJik9HQptjGlXvNCcc2AnDFwoiyM
+        jHE6lF+oaIFMwluyuZg/qVmY08LOBVNUH9dGGui+23l+uMg=
+X-Google-Smtp-Source: ABdhPJxwSZ9CWpulDTAqSztmY/n1f6kETA98HrigwzD1Nw/AoGwg5iHK7PszWU95TjjeEV0WrgIy4gbrHjW1JJjHOlU=
+X-Received: by 2002:a2e:9119:: with SMTP id m25mr13574819ljg.229.1636206583758;
+ Sat, 06 Nov 2021 06:49:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102180739.18049-3-german.gomez@arm.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Sat, 6 Nov 2021 08:49:31 -0500
+Message-ID: <CAH2r5mum6Fm=4jybfZ2fcvP9yBioXV4mi6TTjwnTZhasZLnRnQ@mail.gmail.com>
+Subject: [GIT PULL] cifs/smb3 client fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 06:07:38PM +0000, German Gomez wrote:
-> This patch is to save context ID in record, this will be used to set TID
-> for samples.
-> 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> Signed-off-by: James Clark <james.clark@arm.com>
-> Signed-off-by: German Gomez <german.gomez@arm.com>
-> ---
->  tools/perf/util/arm-spe-decoder/arm-spe-decoder.c | 2 ++
->  tools/perf/util/arm-spe-decoder/arm-spe-decoder.h | 1 +
->  2 files changed, 3 insertions(+)
-> 
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-> index 32fe41835..1b58859d2 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-> @@ -151,6 +151,7 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
->  	u64 payload, ip;
->  
->  	memset(&decoder->record, 0x0, sizeof(decoder->record));
-> +	decoder->record.context_id = -1;
+Please pull the following changes since commit
+3906fe9bb7f1a2c8667ae54e967dc8690824f4ea:
 
-Since 'context_id' is type u64, here it's good to assign '(u64)-1'.
+  Linux 5.15-rc7 (2021-10-25 11:30:31 -0700)
 
->  	while (1) {
->  		err = arm_spe_get_next_packet(decoder);
-> @@ -180,6 +181,7 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
->  		case ARM_SPE_COUNTER:
->  			break;
->  		case ARM_SPE_CONTEXT:
-> +			decoder->record.context_id = payload;
->  			break;
->  		case ARM_SPE_OP_TYPE:
->  			if (idx == SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC) {
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
-> index 59bdb7309..46a8556a9 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
-> @@ -38,6 +38,7 @@ struct arm_spe_record {
->  	u64 timestamp;
->  	u64 virt_addr;
->  	u64 phys_addr;
-> +	u64 context_id;
->  };
->  
->  struct arm_spe_insn;
-> -- 
-> 2.25.1
-> 
+are available in the Git repository at:
+
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.16-rc-part1-smb3-client-fixes
+
+for you to fetch changes up to d7171cd1acf70eb949ece8ccc95be27b3dfcf4da:
+
+  smb3: add dynamic trace points for socket connection (2021-11-05
+16:20:24 -0500)
+
+----------------------------------------------------------------
+7 cifs/smb3 fixes:
+- a reconnect fix for stable
+- a minor mount option fix
+- a debugging improvement for (TCP) connection issues
+- refactoring of common code to help ksmbd
+
+Regression test results:
+http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/826
+
+There is a larger set of fixes (multichannel and DFS related e.g.)
+still being tested/reviewed for later in the merge window
+----------------------------------------------------------------
+Ronnie Sahlberg (4):
+      cifs: Create a new shared file holding smb2 pdu definitions
+      cifs: move NEGOTIATE_PROTOCOL definitions out into the common area
+      cifs: Move more definitions into the shared area
+      cifs: Move SMB2_Create definitions to the shared area
+
+Shyam Prasad N (1):
+      cifs: To match file servers, make sure the server hostname matches
+
+Steve French (2):
+      cifs: add mount parameter tcpnodelay
+      smb3: add dynamic trace points for socket connection
+
+ fs/cifs/cifsfs.c          |   1 -
+ fs/cifs/cifsglob.h        |   3 +-
+ fs/cifs/connect.c         |  26 +-
+ fs/cifs/fs_context.c      |  16 ++
+ fs/cifs/fs_context.h      |   2 +
+ fs/cifs/misc.c            |   2 +-
+ fs/cifs/smb2maperror.c    |  16 +-
+ fs/cifs/smb2misc.c        |  47 ++--
+ fs/cifs/smb2ops.c         |  73 +++---
+ fs/cifs/smb2pdu.c         | 187 +++++++-------
+ fs/cifs/smb2pdu.h         | 919
+++----------------------------------------------------------------
+ fs/cifs/smb2proto.h       |   2 +-
+ fs/cifs/smb2transport.c   |  36 +--
+ fs/cifs/trace.h           |  71 ++++++
+ fs/smbfs_common/smb2pdu.h | 989
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 15 files changed, 1299 insertions(+), 1091 deletions(-)
+ create mode 100644 fs/smbfs_common/smb2pdu.h
+
+
+--
+Thanks,
+
+Steve
