@@ -2,111 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 456C0446D98
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 12:24:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFBEF446DA0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 12:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234039AbhKFL0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 07:26:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhKFL0f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 07:26:35 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8FBC061570;
-        Sat,  6 Nov 2021 04:23:53 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id x27so24216320lfu.5;
-        Sat, 06 Nov 2021 04:23:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=BXlRYAh3YbYC5iv9ffYa4vhrR4jRNdTVq66Mwt+GBbg=;
-        b=gsdlYLrvVpUTDPBvvJZS76uYyeUIpM5B+eIlVguR/cQJN6Cp+pxA2Cg3gnXAe+9rL1
-         ziwR/yfXxbtJxR9D2cUNH+ZsAXyrMacNazeKA/8m+h9aI4uHasJ4HzX1Hqi7XXn/CXRH
-         0sfg09EOHNebN+eSvHFNGtzCg1BdtAUE22c9oMsVfqQCV+Rs98zZuS7RduM1hQhR8+BE
-         8mwuWhiWk7YjzllCfqiyJeE7S2nPUHup470Dfm2DpRvHMIlcm/2oi6Gj5xURXUrUjbmX
-         Bcr2a8FcnpTeEGay5Eewdi3YGdgBtOp9pbpJVWRWUhFphzpn9P534lkfLXtj3bGcZvYW
-         nQsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=BXlRYAh3YbYC5iv9ffYa4vhrR4jRNdTVq66Mwt+GBbg=;
-        b=0ClQfSTQzCGvWhH8M/MCfqbF4Nzh4X1HNVqRvRgbNGSe1mJG6zqm6THB57E+HCEyOH
-         eF0RMyuh84IPN7wnLViqy4rX8asQlIufhcLYxcxgdHCvcrjL/OQdD6Qk+1EWIoik+YyP
-         en5XCSGNEUZB94SysKoR66SlbUaqTdGqQA52zpBL7rsks93j2pQi+I269CHWP4xVVf/b
-         rPuNDXSVXYVzqm1b7p6wB+d+20F1QlZ/k/5PmOHyiam7w0oQO+K8XtIp/EqIEjA9wYdh
-         BaH9V3rdrysj+tACiY/HJpWrJ0J5N4jiPmA01aWDd+Z70PMxzRlUjbecSGyn+iH8Q21g
-         N/Qw==
-X-Gm-Message-State: AOAM532+hxb8SiNoTCBRybaF38SPsTWGT0tzx1x8s53Bw5v4+0UgfTqj
-        jc0UhBjqNeN9dCyTgf20DvVpZ+GxU80=
-X-Google-Smtp-Source: ABdhPJwAQ0K0aEpUaWJeJeSRvrwtwtjWJPD/UpOt9NZZanATEu5R1JZ/RppbBYH4qqNQmSq/sJGztA==
-X-Received: by 2002:a19:5e42:: with SMTP id z2mr27215648lfi.102.1636197832193;
-        Sat, 06 Nov 2021 04:23:52 -0700 (PDT)
-Received: from [192.168.1.11] ([217.117.245.207])
-        by smtp.gmail.com with ESMTPSA id d21sm877535lfv.78.2021.11.06.04.23.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Nov 2021 04:23:51 -0700 (PDT)
-Message-ID: <9eafae1f-d9f0-298d-cf20-212865d0becc@gmail.com>
-Date:   Sat, 6 Nov 2021 14:23:51 +0300
+        id S234061AbhKFLcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 07:32:42 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:60803 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229500AbhKFLcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Nov 2021 07:32:41 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4HmZss2pjdz8K;
+        Sat,  6 Nov 2021 12:29:53 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1636198197; bh=WAutzEgYEkmalNSwQrpbordkhKZLQ/Y22509TsCal1M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MoSDr5iITx3E3YPjbwkyIUAMMz2VmRaGqyp931kZX9YG+QyaLES6TvE+QwQNSCXlJ
+         fpc5I73Jklg2OzmXxu2LMdsy9vNLA7EBPNnzQtR/b7pam2rbJ41auAZmoiKWDoGoTh
+         33ZJgvXhhdDgMv5Gftq0VWNj2quwtGMnCQ05Vicp9WOB1XHJmcwdB4C6fV5moIbunY
+         2pHxjtQgDkyQmIbCl5sYp6e9aq2kjDEzW8DTwxKTUYFbt5WG7t6QG/dNh1ogsZV3La
+         pN/Cdf+ZUSXgzppa++BQRGky7Z/Oiq8oAuUHz4R2kaNp0awXgwxWySm/P9++rhyRyL
+         YNV8/t5iEpSKQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.3 at mail
+Date:   Sat, 6 Nov 2021 12:29:51 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
+Message-ID: <YYZnL58B+GsNypEn@qmqm.qmqm.pl>
+References: <20211101060419.4682-1-laoar.shao@gmail.com>
+ <YYM5R95a7jgB2TPO@qmqm.qmqm.pl>
+ <CALOAHbDtoBEr8TuuUEMAnw3aeOf=S10Lh_eBCS=5Ty+JHgdj0Q@mail.gmail.com>
+ <YYXEzlHn28/d5C6A@qmqm.qmqm.pl>
+ <CALOAHbAP5qhKjsgwhekcDcutWpHMsxxGfB+K1-=2RyOyJt9MeQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH] tty: vt: keyboard: do not copy an extra-byte in
- copy_to_user
-Content-Language: en-US
-To:     Ajay Garg <ajaygargnsit@gmail.com>, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211106092041.43745-1-ajaygargnsit@gmail.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <20211106092041.43745-1-ajaygargnsit@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALOAHbAP5qhKjsgwhekcDcutWpHMsxxGfB+K1-=2RyOyJt9MeQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Ajay!
-
-On 11/6/21 12:20, Ajay Garg wrote:
-> Both (statically-allocated) "user_kdgkb->kb_string" and
-> (dynamically-allocated) "kbs" are of length "len", so we must
-> not copy more than "len" bytes.
+On Sat, Nov 06, 2021 at 05:12:24PM +0800, Yafang Shao wrote:
+> On Sat, Nov 6, 2021 at 7:57 AM Micha³ Miros³aw <mirq-linux@rere.qmqm.pl> wrote:
+> >
+> > On Fri, Nov 05, 2021 at 02:34:58PM +0800, Yafang Shao wrote:
+> > > On Thu, Nov 4, 2021 at 9:37 AM Micha³ Miros³aw <mirq-linux@rere.qmqm.pl> wrote:
+> > > >
+> > > > On Mon, Nov 01, 2021 at 06:04:08AM +0000, Yafang Shao wrote:
+> > > > > There're many truncated kthreads in the kernel, which may make trouble
+> > > > > for the user, for example, the user can't get detailed device
+> > > > > information from the task comm.
+> > > > >
+> > > > > This patchset tries to improve this problem fundamentally by extending
+> > > > > the task comm size from 16 to 24, which is a very simple way.
+> > > > [...]
+> > > >
+> > > > Hi,
+> > > >
+> > > > I've tried something like this a few years back. My attempt got mostly
+> > > > lost in the mailing lists, but I'm still carrying the patches in my
+> > > > tree [1]. My target was userspace thread names, and it turned out more
+> > > > involved than I had time for.
+> > > >
+> > > > [1] https://rere.qmqm.pl/git/?p=linux;a=commit;h=2c3814268caf2b1fee6d1a0b61fd1730ce135d4a
+> > > >     and its parents
+> > > >
+> > >
+> > > Hi Michal,
+> > >
+> > > Thanks for the information.
+> > >
+> > > I have looked through your patches.  It seems to contain six patches
+> > > now and can be divided into three parts per my understanding.
+> > >
+> > > 1. extend task comm len
+> > > This parts contains below 4 patches:
+> > > [prctl: prepare for bigger
+> > > TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=cfd99db9cf911bb4d106889aeba1dfe89b6527d0)
+> > > [bluetooth: prepare for bigger
+> > > TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=ba2805f5196865b81cc6fc938ea53af2c7c2c892)
+> > > [taskstats: prepare for bigger
+> > > TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=4d29bfedc57b36607915a0171f4864ec504908ca)
+> > > [mm: make TASK_COMM_LEN
+> > > configurable](https://rere.qmqm.pl/git/?p=linux;a=commit;h=362acc35582445174589184c738c4d86ec7d174b)
+> > >
+> > > What kind of userspace issues makes you extend the task comm length ?
+> > > Why not just use /proc/[pid]/cmdline ?
+> >
+> > This was to enable longer thread names (as set by pthread_setname_np()).
+> > Currently its 16 bytes, and that's too short for e.g. Chrome's or Firefox'es
+> > threads. I believe that FreeBSD has 32-byte limit and so I expect that
+> > major portable code is already prepared for bigger thread names.
+> >
 > 
-> Signed-off-by: Ajay Garg <ajaygargnsit@gmail.com>
-> ---
->   drivers/tty/vt/keyboard.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> The comm len in FreeBSD is (19 + 1) bytes[1], but that is still larger
+> than Linux :)
+> The task comm is short for many applications, that is why cmdline is
+> introduced per my understanding, but pthread_{set, get}name_np() is
+> reading/writing the comm or via prctl(2) rather than reading/writing
+> the cmdline...
 > 
-> diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
-> index c7fbbcdcc346..dfef7de8a057 100644
-> --- a/drivers/tty/vt/keyboard.c
-> +++ b/drivers/tty/vt/keyboard.c
-> @@ -2070,7 +2070,7 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
->   		len = strlcpy(kbs, func_table[kb_func] ? : "", len);
-
-		^^^^^^^^^
-
-len is reinitialized here, i.e len passed to kmalloc and len passed to 
-copy_to_user() can be different.
-
-strlcpy() returns strlen() of source string (2nd argument), that's why 
-we need +1 here to pass null byte to user.
-
-Am I missing something?
-
-
->   		spin_unlock_irqrestore(&func_buf_lock, flags);
->   
-> -		ret = copy_to_user(user_kdgkb->kb_string, kbs, len + 1) ?
-> +		ret = copy_to_user(user_kdgkb->kb_string, kbs, len) ?
->   			-EFAULT : 0;
->   
->   		break;
+> Is the truncated Chrome or Firefox thread comm really harmful or is
+> extending the task comm just for portable?
+> Could you pls show me some examples if the short comm is really harmful?
 > 
+> Per my understanding, if the short comm is harmful to applications
+> then it is worth extending it.
+> But if it is only for portable code, it may not be worth extending it.
+> 
+> [1]. https://github.com/freebsd/freebsd-src/blob/main/sys/sys/param.h#L126
 
+I don't think it is harmful as in exposing a bug or something. It's just
+inconvenient when debugging a system where you can't differentiate
+between threads because their names have been cut too short.
 
-With regards,
-Pavel Skripkin
+Best Regards
+Micha³ Miros³aw
