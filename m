@@ -2,101 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE115446C03
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 03:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83919446C08
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 03:25:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231661AbhKFCLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 22:11:47 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:35952 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbhKFCLq (ORCPT
+        id S231844AbhKFC1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 22:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230081AbhKFC1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 22:11:46 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8A8A7218F8;
-        Sat,  6 Nov 2021 02:09:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1636164545; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=gI3pVf2yiR5r/UEtG9xEBfrAQBOq8foMeThoRbLJKbY=;
-        b=nPqUMv49auVsiO6ac9F9VZud6lAO8EnqnPYWyo/i1jKns3bUoKdJYLuITP/TiJwRrW8tVV
-        GOVuFbkmAdN7X7M3AMMsX3s14ZVadLQcoemsITq9pNcQ28bhO83ylaRrmGqff28tFVvXCQ
-        WNT2vIoVGOZRuZ0CKOHM7KmOq0VKJ9g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1636164545;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=gI3pVf2yiR5r/UEtG9xEBfrAQBOq8foMeThoRbLJKbY=;
-        b=dHX4a5zhXH9QJztD0665QVeRyJ0VbXgp55EiQgGLLfE5Uj7P+cq9o/E1gVv2GpLGz1dJ/3
-        wKJ4fAYWPWbhuOAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1140413DA1;
-        Sat,  6 Nov 2021 02:09:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id r9kwMsDjhWH7FQAAMHmgww
-        (envelope-from <ematsumiya@suse.de>); Sat, 06 Nov 2021 02:09:04 +0000
-From:   Enzo Matsumiya <ematsumiya@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     Enzo Matsumiya <ematsumiya@suse.de>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] nvme: add NO APST quirk for Kioxia device
-Date:   Fri,  5 Nov 2021 23:08:57 -0300
-Message-Id: <20211106020858.18625-1-ematsumiya@suse.de>
-X-Mailer: git-send-email 2.33.0
+        Fri, 5 Nov 2021 22:27:48 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C97C061570;
+        Fri,  5 Nov 2021 19:25:08 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id p8so8473956pgh.11;
+        Fri, 05 Nov 2021 19:25:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HS5tdtnjvtjCMr7mW88LxdLfRIjrhjbdJc8HlrChIEg=;
+        b=ZLrSv+yowWNqO2SF/2PhBAyu9ur4ZKQJcEVVZI3a4W87NomWXLbhOwA4kvAydlemk/
+         gHJN0Xai9afiz1Vd+CkU5S07wQI5mbxi+DXTlE5LHbIbPyMFw3eXZV/4OR9XwAWwttIC
+         MiF4SRTPASsl3rs7NNE9BhOQqqLPV7Ci/kVxRB9pYVcothwp57QOy4lpAcpEDPfCMYcm
+         R5xFAgOkEkIyYygCVVuDZSvqG1VmNYar2MRhFGTBKJthVu+OqzwFncZRJIf2ZZeGfIF/
+         wAIzaU4xnj0NQioQ87s0nOQgqy6IHjRiHRYS663i0qYpLeWb+cyrjdaaghHw0dS8yw73
+         loew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HS5tdtnjvtjCMr7mW88LxdLfRIjrhjbdJc8HlrChIEg=;
+        b=kh7wlNWSKjf/9lScdaP6GKOjUCmzi/oXV4JHiFGIRh5AjU59BD2gl57Jiz3dldkRXy
+         VqswE6QUifgUrd2KNcKehhPv5t9RMQWTXQIDvTOHG7BmCitVMPCJmfpQWXubbS4WWWuw
+         w+dpShITElu1pqGcN3Owm/EHLoeCdnGqOWHd58BRwFx95XmLoHmVGKbLi1AssnyAI0bU
+         YjiZ8b6qyzqd69bxD/UVb5YqAKfEQYsTaRoqw1Cu/Nd6N8SF1acvE4KFxtu7w9sYGwNO
+         NkyfV82NhVbvc+maB2Y0nDT7WLuUM0JZmZ1awGtj6Z6S+ZhXwp6bt95OdkPiAlvP8pXm
+         gUTQ==
+X-Gm-Message-State: AOAM530NsBYwGz8y3CGdYP5wMljzI/88ZQwku1bp5OES3YtxxugctaYm
+        kjshQmpCkpVthWyJpHMdhcI=
+X-Google-Smtp-Source: ABdhPJzqz+LPA78908kez9PRo7qqfIpvJ5Vf1VtQiAQoyfpvTnE4hiu4jdgouLouIs9gqZ9yoclf+g==
+X-Received: by 2002:a63:1cd:: with SMTP id 196mr47171777pgb.39.1636165507644;
+        Fri, 05 Nov 2021 19:25:07 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:837c:e765:475f:22d3])
+        by smtp.gmail.com with ESMTPSA id a21sm8678162pfv.67.2021.11.05.19.25.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Nov 2021 19:25:06 -0700 (PDT)
+Date:   Fri, 5 Nov 2021 19:25:04 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mylene.josserand@free-electrons.com, linus.walleij@linaro.org,
+        andreas@kemnade.info, rydberg@bitmath.org, robh+dt@kernel.org,
+        alistair23@gmail.com
+Subject: Re: [PATCH v2 4/4] ARM: dts: imx7d: remarkable2: Enable the cyttsp5
+Message-ID: <YYXngKCBbAkkxEKj@google.com>
+References: <20211103114830.62711-1-alistair@alistair23.me>
+ <20211103114830.62711-5-alistair@alistair23.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211103114830.62711-5-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This particular Kioxia device times out and aborts I/O during any load,
-but it's more easily observable with discards (fstrim).
+On Wed, Nov 03, 2021 at 09:48:30PM +1000, Alistair Francis wrote:
+> +	tsc@24 {
+> +		compatible = "cypress,tt21000";
+> +		reg = <0x24>;
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_touch>;
+> +		interrupt-parent = <&gpio1>;
+> +		interrupts = <14 IRQ_TYPE_EDGE_FALLING>;
+> +		reset-gpios = <&gpio1 13 0>;
 
-The device gets to a state that is also not possible to use "nvme set-feature"
-to disable APST. Booting with nvme_core.default_ps_max_latency=0 solves the issue.
+Reset lines are almost universally active low. Are you sure it is active
+high in your case?
 
-We had a dozen or so of these behaving this same way on customer
-environment.
+Thanks.
 
-Signed-off-by: Enzo Matsumiya <ematsumiya@suse.de>
----
- drivers/nvme/host/core.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 838b5e2058be..a698c099164c 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -2469,7 +2469,19 @@ static const struct nvme_core_quirk_entry core_quirks[] = {
- 		.vid = 0x14a4,
- 		.fr = "22301111",
- 		.quirks = NVME_QUIRK_SIMPLE_SUSPEND,
--	}
-+	},
-+	{
-+		/*
-+		 * This Kioxia device times out and aborts I/O during any load,
-+		 * but more easily reproducible with discards (fstrim).
-+		 *
-+		 * Device is left in a state that is also not possible to use "nvme set-feature"
-+		 * to disable APST, but booting with nvme_core.default_ps_max_latency=0 works.
-+		 */
-+		.vid = 0x1e0f,
-+		.mn = "KCD6XVUL6T40",
-+		.quirks = NVME_QUIRK_NO_APST,
-+ 	}
- };
- 
- /* match is null-terminated but idstr is space-padded. */
 -- 
-2.33.0
-
+Dmitry
