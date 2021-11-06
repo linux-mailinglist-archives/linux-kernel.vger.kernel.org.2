@@ -2,156 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 066B644705C
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 21:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FD844705F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 21:14:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234998AbhKFUPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 16:15:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229598AbhKFUPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 16:15:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B667461058;
-        Sat,  6 Nov 2021 20:12:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636229571;
-        bh=VExLNn2H7AysruulvVY/PSyrJByHUoO+ctvfj3Yeg0s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cpfWVJYmndSZxfdMLc7vMgX70OE7eQczm/sezO3uy4rNKm483WTP2zktP637sKROi
-         Os8s76dB5XGZy6ePPiGhFOAaHFQFZGwv/ShwoUURVYREgOg768OmlsBnCMRU6CrMgZ
-         B9wgcii/xZIUDD8KE+RcSZHW/s7VjL/5PeRBX7o6dWqPEpvuQjt15voLQXQwrghV2d
-         39c2lwIZMA6qJXxCHrqgHu7ojYOYVZU/8EkDtRHRCjccl5P3dN/cvlx15kkT/yUXH0
-         ZLIdHkYRBCJioikqvr8HC6XzMy8g/WrgqQHPwF+VOV4JABTCwrn6VWgHmUAgauf4Uq
-         I8X3oddq3JZsA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 744E6410A1; Sat,  6 Nov 2021 17:12:48 -0300 (-03)
-Date:   Sat, 6 Nov 2021 17:12:48 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] perf build: Install libbpf headers locally when
- building
-Message-ID: <YYbhwPnn4OvnybzQ@kernel.org>
-References: <20211105020244.6869-1-quentin@isovalent.com>
- <CAEf4Bza_-vvOXPRZaJzi4YpU5Bfb=werLUFG=Au9DtaanbuArg@mail.gmail.com>
- <YYbXjE1aAdNjI+aY@kernel.org>
+        id S235024AbhKFUQs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 6 Nov 2021 16:16:48 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:50587 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233450AbhKFUQr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Nov 2021 16:16:47 -0400
+Received: from mail-wm1-f54.google.com ([209.85.128.54]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MJm8N-1n3Szt0MrR-00K50N; Sat, 06 Nov 2021 21:14:04 +0100
+Received: by mail-wm1-f54.google.com with SMTP id c71-20020a1c9a4a000000b0032cdcc8cbafso8833989wme.3;
+        Sat, 06 Nov 2021 13:14:04 -0700 (PDT)
+X-Gm-Message-State: AOAM530r9MDoe7IEQGPPfj0ehB3eA3xqLPV/Svd21mRgZcnKm0d1gucz
+        NPn6ZTU+GYilmDNl6PZNxRQrkSRMBageDy6w9Lw=
+X-Google-Smtp-Source: ABdhPJx2b7CI98WRD0rAAEdo1HKxy9i2uBVWZl83alUhBfVIWCeQyFYst1M/z75cIXhVEij7b8+WEncj4WeKS5OT9eg=
+X-Received: by 2002:a05:600c:2107:: with SMTP id u7mr20411429wml.82.1636229643722;
+ Sat, 06 Nov 2021 13:14:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YYbXjE1aAdNjI+aY@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <20211102110519.142434-1-krzysztof.kozlowski@canonical.com>
+ <c4bcafd0-f614-78c8-4d72-5d2b672f7e32@free.fr> <08c8f447-dcae-83b4-e5b3-a13704a5b158@canonical.com>
+ <4062510.I3n91tvSNF@diego>
+In-Reply-To: <4062510.I3n91tvSNF@diego>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 6 Nov 2021 21:13:47 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2Pg8CkXgN8YNhp2U5Kgwf08kQGpLeTsyWKgNpGChC4uQ@mail.gmail.com>
+Message-ID: <CAK8P3a2Pg8CkXgN8YNhp2U5Kgwf08kQGpLeTsyWKgNpGChC4uQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] ARM: s3c: mark as deprecated and schedule removal
+ after 2022
+To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+Cc:     Cedric Roux <sed@free.fr>, Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        Olof Johansson <olof@lixom.net>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Sam Van Den Berge <sam.van.den.berge@telenet.be>,
+        Lihua Yao <ylhuajnu@outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:xJK477YiYTHh/GjItTFmXQ0pBloRQThOtqQKT14YuAFzyci2SEM
+ TU2wPz1+fkgRUwVRWxDDKKmr6I8bM8VrRkfNq/VvEKYGW5DUb7qbk3T1T/v+NmjM1SfAsTU
+ SOXS1xGxD3X0itYw8HdtVr4Q49HI7hNKuHMzxh1f81Is/74+3R/KmuJsSQgy6LCjER+tdIk
+ 9RoTQsztKc7k7dMcES+mg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:X+/yWRsxneU=:LpFHi9m3bDsPqwh8X6BY+q
+ 5XnK3a3sCJ8tVehR7UJWLVtZwkQA7Jk7gjsF1RTqX113DrZJsVVmGFSk8HkUWxQYjJVSZKtAq
+ jS5kZPZRi+Ltz+yrDsB9FzXpUB8STjAB4KK+3XCNkP6vQTpDNLnLHJl26SdMyi18ouvnsrrnz
+ ZfBdDxZobP+ypMYFtYnOrCmVL0u52SCQKMWO5cYC1kVRqUeFw9IE861f+7frxOCJgblrBJYQv
+ 7EnyeBsH2aB1kk3COt86x/1v1MdO5Bx1m7ILoewHQxh4I67+fcjoZlAop5yqrwf0gyxxgHBM1
+ Su5e2+Ce68n2BC7CgZ5CqkDQI+rwYtytlsyT+YG0IKATI+VOvgpdtAjUx6sOiQzJV4OKfbng3
+ LBR0hnXCnPbLDHpAQ9xdrDTXN+OrlR9xmrN+xmWu+fgTpk+ZVGCDTph7GbFvVIdvsyrXjbwh9
+ iUNa6pk7wvVdLyFttbTlDoqchm9av7/4JYmj+K6jino+exhJPIPfRncL++BqX/nRVzbr9IUG9
+ HZKXHwjc0rKsxFYKWHCR8Yl+BxQAH0f6igrVnBikwDh5ok7PVSKHQTlu6rjNw6Wa9Y40jI5a9
+ mMEc0oKCNLciEzywbKr4UbPAJ/mUOgA5Qyq8xsHpDwqCaJqzZSOz5r/eyjOS6l1DmPJRODHLP
+ ZJcjkxkkf4pIfVrzyZ9PuxGGfLPgbGnRa33sBKWkk+4yZM3VEXt9FUVPZG9wLPILlaEh9DqY4
+ Z9oXHeLbsmTq8flFnyn5Rqq7AoT8xfxbLAG9f1ZqjSW3Ihv2FzidMd/P6qm/SxauN4Y1n7t1z
+ K4AhNolNRnXlDeVTz1uL8jS6ryo3YHH9i9bzTXV0o9eEJp8oS0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Nov 06, 2021 at 04:29:16PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Fri, Nov 05, 2021 at 11:38:50AM -0700, Andrii Nakryiko escreveu:
-> > On Thu, Nov 4, 2021 at 7:02 PM Quentin Monnet <quentin@isovalent.com> wrote:
+On Sat, Nov 6, 2021 at 8:33 PM Heiko Stübner <heiko@sntech.de> wrote:
+> Am Samstag, 6. November 2021, 19:20:05 CET schrieb Krzysztof Kozlowski:
+> > On 05/11/2021 18:49, Cedric Roux wrote:
 > > >
-> > > API headers from libbpf should not be accessed directly from the
-> > > library's source directory. Instead, they should be exported with "make
-> > > install_headers". Let's adjust perf's Makefile to install those headers
-> > > locally when building libbpf.
-> > >
-> > > Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> > > ---
-> > > Note: Sending to bpf-next because it's directly related to libbpf, and
-> > > to similar patches merged through bpf-next, but maybe Arnaldo prefers to
-> > > take it?
-> > 
-> > Arnaldo would know better how to thoroughly test it, so I'd prefer to
-> > route this through perf tree. Any objections, Arnaldo?
-> 
-> Preliminary testing passed for 'BUILD_BPF_SKEL=1' with without
-> LIBBPF_DYNAMIC=1 (using the system's libbpf-devel to build perf), so far
-> so good, so I tentatively applied it, will see with the full set of
-> containers.
+> > > Anyway, there is at least one s3c2440 server on Earth powered
+> > > by the linux kernel. Now you know! :)
+> >
+> > Thanks for coming back! We will see how much of feedback we gather.
+>
+> I do believe all (or at least most) of s3c24xx could run with a devicetree
+> base with core peripherals enabled.
+>
+> So one possible alternative way could be to just deprecate (and then drop)
+> all the board-files + their platform-data parts in mach-s3c.
 
-Because all the preliminary tests used O= to have that OUTPUT variable
-set, when we do simply:
+Yes, and this would be similar to what we've done for mach-imx and
+mach-omap2 in the past.
 
-	make -C tools/perf
+However, I think the Cragganmore/Speyside board that Mark mentioned
+is not in the category of easily converted machines, so leaving only the
+DT-enabled machines around would not help him.
 
-it breaks:
+If this is actually the case, one other possibility would be to remove
+all the board files except for that one, in the hope that the transformation
+(even a partial one) to DT becomes easier when there is no risk of
+breaking other machines.
 
-⬢[acme@toolbox perf]$ make -C tools clean > /dev/null 2>&1
-⬢[acme@toolbox perf]$ make JOBS=1 -C tools/perf
-make: Entering directory '/var/home/acme/git/perf/tools/perf'
-  BUILD:   Doing 'make -j1' parallel build
-  HOSTCC  fixdep.o
-  HOSTLD  fixdep-in.o
-  LINK    fixdep
-<SNIP ABI sync warnings>
-
-Auto-detecting system features:
-...                         dwarf: [ on  ]
-...            dwarf_getlocations: [ on  ]
-...                         glibc: [ on  ]
-...                        libbfd: [ on  ]
-...                libbfd-buildid: [ on  ]
-...                        libcap: [ on  ]
-...                        libelf: [ on  ]
-...                       libnuma: [ on  ]
-...        numa_num_possible_cpus: [ on  ]
-...                       libperl: [ on  ]
-...                     libpython: [ on  ]
-...                     libcrypto: [ on  ]
-...                     libunwind: [ on  ]
-...            libdw-dwarf-unwind: [ on  ]
-...                          zlib: [ on  ]
-...                          lzma: [ on  ]
-...                     get_cpuid: [ on  ]
-...                           bpf: [ on  ]
-...                        libaio: [ on  ]
-...                       libzstd: [ on  ]
-...        disassembler-four-args: [ on  ]
-
-
-  CC      fd/array.o
-  LD      fd/libapi-in.o
-  CC      fs/fs.o
-  CC      fs/tracing_path.o
-  CC      fs/cgroup.o
-  LD      fs/libapi-in.o
-  CC      cpu.o
-  CC      debug.o
-  CC      str_error_r.o
-  LD      libapi-in.o
-  AR      libapi.a
-  CC      exec-cmd.o
-  CC      help.o
-  CC      pager.o
-  CC      parse-options.o
-  CC      run-command.o
-  CC      sigchain.o
-  CC      subcmd-config.o
-  LD      libsubcmd-in.o
-  AR      libsubcmd.a
-  CC      core.o
-  CC      cpumap.o
-  CC      threadmap.o
-  CC      evsel.o
-  CC      evlist.o
-  CC      mmap.o
-  CC      zalloc.o
-  CC      xyarray.o
-  CC      lib.o
-  LD      libperf-in.o
-  AR      libperf.a
-make[2]: *** No rule to make target 'libbpf', needed by 'libbpf/libbpf.a'.  Stop.
-make[1]: *** [Makefile.perf:240: sub-make] Error 2
-make: *** [Makefile:70: all] Error 2
-make: Leaving directory '/var/home/acme/git/perf/tools/perf'
-⬢[acme@toolbox perf]$
-
-Trying to fix...
-
-- Arnaldo
+        Arnd
