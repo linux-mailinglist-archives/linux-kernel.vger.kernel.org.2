@@ -2,132 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0E744701C
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 20:27:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F3B44701F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 20:29:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234921AbhKFTaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 15:30:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45234 "EHLO mail.kernel.org"
+        id S234928AbhKFTcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 15:32:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232626AbhKFTa3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 15:30:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F06E761051;
-        Sat,  6 Nov 2021 19:27:47 +0000 (UTC)
+        id S232498AbhKFTcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Nov 2021 15:32:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BC7960E8B;
+        Sat,  6 Nov 2021 19:29:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636226868;
-        bh=xHbbKopAcL+R4RbxmrJnPw4G1mPEiz0DA4CRQStuUXo=;
+        s=k20201202; t=1636226959;
+        bh=SSh/MjS6+Voc6TzAoE/tOg6RTP+gVHgAW32sKjAaUmo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S8vVadJnlRaB2/11cvIr3Vq8S6vx4LmgODuJo0nLPkyDGzUu+JyHyzTlrLsSLkC00
-         I8VTOr6rSml6sxip3DI+NNyr7wV4szmP4vTfCpLU8pY7ZugotN+Kd8chVZHqfvOn+5
-         GL2HRCPJq3CGrHCXeOUIvVH0p3YHf5lzqkqQIT0In94FwsC53ThAfHz/Qm92jwzPiD
-         l8KdA590CPVang5r4OaYRpx2Sqd0XHTXODfPwX03/jaHe13TSFXXlcMF5tQXpfydMu
-         aY+WTeZvILFLdHn6rsDDzuSQl640v0l9wH3C43K6UmC9ttCxEevnR2rTr5+HYYrfXd
-         FuvwpiJEmdhYg==
+        b=SXqJNXbi7+Hpa/cw0Vjccw8nQKSQMJkl7lXbA/6SwRDWDbDUdXr4dkb1l/OrrhWmM
+         5mV9ebOfySX0U7bmMYdjX838818NsWyoNOuRVTzFzU5sIjvQsPkgnfcOIoidXWI7MD
+         i729Kuh7MinnyKWhzQi8i/6/in5NGXaDxb/JueMNDMEJNFQfmuzQdQIN0Bb9Hx2wa+
+         otJLWnHuZj/6esupGjPv1MP+18cBZEl6KsvHNX9UJHbkHz8Y45eXbPNJ6gvPMBia8S
+         IAlzvfSvQTAd27KrSeAxSSWFZ9dOUCo5stT+Z4RVgyPYFO5eoAlCiDZLnD93us3Cfn
+         J38uz+wCDksTA==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 96D47410A1; Sat,  6 Nov 2021 16:27:45 -0300 (-03)
-Date:   Sat, 6 Nov 2021 16:27:45 -0300
+        id C4C0C410A2; Sat,  6 Nov 2021 16:29:16 -0300 (-03)
+Date:   Sat, 6 Nov 2021 16:29:16 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, masahiroy@kernel.org,
-        Laura Abbott <labbott@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        irogers@google.com
-Subject: Re: [PATCH] perf tools: Enable warnings through HOSTCFLAGS
-Message-ID: <YYbXMd3N4+aXYLTJ@kernel.org>
-References: <1635525041-151876-1-git-send-email-john.garry@huawei.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] perf build: Install libbpf headers locally when
+ building
+Message-ID: <YYbXjE1aAdNjI+aY@kernel.org>
+References: <20211105020244.6869-1-quentin@isovalent.com>
+ <CAEf4Bza_-vvOXPRZaJzi4YpU5Bfb=werLUFG=Au9DtaanbuArg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1635525041-151876-1-git-send-email-john.garry@huawei.com>
+In-Reply-To: <CAEf4Bza_-vvOXPRZaJzi4YpU5Bfb=werLUFG=Au9DtaanbuArg@mail.gmail.com>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Oct 30, 2021 at 12:30:41AM +0800, John Garry escreveu:
-> The tools build system uses KBUILD_HOSTCFLAGS symbol for obvious purposes.
+Em Fri, Nov 05, 2021 at 11:38:50AM -0700, Andrii Nakryiko escreveu:
+> On Thu, Nov 4, 2021 at 7:02 PM Quentin Monnet <quentin@isovalent.com> wrote:
+> >
+> > API headers from libbpf should not be accessed directly from the
+> > library's source directory. Instead, they should be exported with "make
+> > install_headers". Let's adjust perf's Makefile to install those headers
+> > locally when building libbpf.
+> >
+> > Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> > ---
+> > Note: Sending to bpf-next because it's directly related to libbpf, and
+> > to similar patches merged through bpf-next, but maybe Arnaldo prefers to
+> > take it?
 > 
-> However this is not set for anything under tools/
-> 
-> As such, host tools apps built have no compiler warnings enabled.
-> 
-> Declare HOSTCFLAGS for perf tools build, and also use that symbol in
-> declaration of host_c_flags. HOSTCFLAGS comes from EXTRA_WARNINGS, which
-> is independent of target platform/arch warning flags.
-> 
-> Suggested-by: Jiri Olsa <jolsa@redhat.com>
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> --
-> Using HOSTCFLAGS, as opposed to KBUILD_HOSTCFLAGS, is going opposite
-> direction to commit 96f14fe738b6 ("kbuild: Rename HOSTCFLAGS to
-> KBUILD_HOSTCFLAGS"), so would like further opinion from Laura and
-> Masahiro.
+> Arnaldo would know better how to thoroughly test it, so I'd prefer to
+> route this through perf tree. Any objections, Arnaldo?
 
-Laura's redhat e-mail bouncedm updated it to her kernel.org one, Laura,
-Masahiro, would you please comment? Jiri?
+Preliminary testing passed for 'BUILD_BPF_SKEL=1' with without
+LIBBPF_DYNAMIC=1 (using the system's libbpf-devel to build perf), so far
+so good, so I tentatively applied it, will see with the full set of
+containers.
+
+Thanks!
 
 - Arnaldo
  
-> diff --git a/tools/build/Build.include b/tools/build/Build.include
-> index 2cf3b1bde86e..c2a95ab47379 100644
-> --- a/tools/build/Build.include
-> +++ b/tools/build/Build.include
-> @@ -99,7 +99,7 @@ cxx_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(CXXFLAGS) -D"BUILD_STR(s)=\#s" $(CXX
->  ###
->  ## HOSTCC C flags
->  
-> -host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(KBUILD_HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
-> +host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
->  
->  # output directory for tests below
->  TMPOUT = .tmp_$$$$
-> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> index 4a9baed28f2e..9b95ba09657f 100644
-> --- a/tools/perf/Makefile.config
-> +++ b/tools/perf/Makefile.config
-> @@ -17,6 +17,7 @@ detected     = $(shell echo "$(1)=y"       >> $(OUTPUT).config-detected)
->  detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
->  
->  CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
-> +HOSTCFLAGS := $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
->  
->  include $(srctree)/tools/scripts/Makefile.arch
->  
-> @@ -211,6 +212,7 @@ endif
->  ifneq ($(WERROR),0)
->    CORE_CFLAGS += -Werror
->    CXXFLAGS += -Werror
-> +  HOSTCFLAGS += -Werror
->  endif
->  
->  ifndef DEBUG
-> @@ -292,6 +294,9 @@ CXXFLAGS += -ggdb3
->  CXXFLAGS += -funwind-tables
->  CXXFLAGS += -Wno-strict-aliasing
->  
-> +HOSTCFLAGS += -Wall
-> +HOSTCFLAGS += -Wextra
-> +
->  # Enforce a non-executable stack, as we may regress (again) in the future by
->  # adding assembler files missing the .GNU-stack linker note.
->  LDFLAGS += -Wl,-z,noexecstack
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index a3966f290297..8ca656aa8b06 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -226,7 +226,7 @@ else
->  endif
->  
->  export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX AWK
-> -export HOSTCC HOSTLD HOSTAR
-> +export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
->  
->  include $(srctree)/tools/build/Makefile.include
->  
-> -- 
-> 2.17.1
+> > ---
+> >  tools/perf/Makefile.perf | 24 +++++++++++++-----------
+> >  1 file changed, 13 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> > index b856afa6eb52..3a81b6c712a9 100644
+> > --- a/tools/perf/Makefile.perf
+> > +++ b/tools/perf/Makefile.perf
+> > @@ -241,7 +241,7 @@ else # force_fixdep
+> >
+> >  LIB_DIR         = $(srctree)/tools/lib/api/
+> >  TRACE_EVENT_DIR = $(srctree)/tools/lib/traceevent/
+> > -BPF_DIR         = $(srctree)/tools/lib/bpf/
+> > +LIBBPF_DIR      = $(srctree)/tools/lib/bpf/
+> >  SUBCMD_DIR      = $(srctree)/tools/lib/subcmd/
+> >  LIBPERF_DIR     = $(srctree)/tools/lib/perf/
+> >  DOC_DIR         = $(srctree)/tools/perf/Documentation/
+> > @@ -293,7 +293,6 @@ strip-libs = $(filter-out -l%,$(1))
+> >  ifneq ($(OUTPUT),)
+> >    TE_PATH=$(OUTPUT)
+> >    PLUGINS_PATH=$(OUTPUT)
+> > -  BPF_PATH=$(OUTPUT)
+> >    SUBCMD_PATH=$(OUTPUT)
+> >    LIBPERF_PATH=$(OUTPUT)
+> >  ifneq ($(subdir),)
+> > @@ -305,7 +304,6 @@ else
+> >    TE_PATH=$(TRACE_EVENT_DIR)
+> >    PLUGINS_PATH=$(TRACE_EVENT_DIR)plugins/
+> >    API_PATH=$(LIB_DIR)
+> > -  BPF_PATH=$(BPF_DIR)
+> >    SUBCMD_PATH=$(SUBCMD_DIR)
+> >    LIBPERF_PATH=$(LIBPERF_DIR)
+> >  endif
+> > @@ -324,7 +322,10 @@ LIBTRACEEVENT_DYNAMIC_LIST_LDFLAGS = $(if $(findstring -static,$(LDFLAGS)),,$(DY
+> >  LIBAPI = $(API_PATH)libapi.a
+> >  export LIBAPI
+> >
+> > -LIBBPF = $(BPF_PATH)libbpf.a
+> > +LIBBPF_OUTPUT = $(OUTPUT)libbpf
+> > +LIBBPF_DESTDIR = $(LIBBPF_OUTPUT)
+> > +LIBBPF_INCLUDE = $(LIBBPF_DESTDIR)/include
+> > +LIBBPF = $(LIBBPF_OUTPUT)/libbpf.a
+> >
+> >  LIBSUBCMD = $(SUBCMD_PATH)libsubcmd.a
+> >
+> > @@ -829,12 +830,14 @@ $(LIBAPI)-clean:
+> >         $(call QUIET_CLEAN, libapi)
+> >         $(Q)$(MAKE) -C $(LIB_DIR) O=$(OUTPUT) clean >/dev/null
+> >
+> > -$(LIBBPF): FORCE
+> > -       $(Q)$(MAKE) -C $(BPF_DIR) O=$(OUTPUT) $(OUTPUT)libbpf.a FEATURES_DUMP=$(FEATURE_DUMP_EXPORT)
+> > +$(LIBBPF): FORCE | $(LIBBPF_OUTPUT)
+> > +       $(Q)$(MAKE) -C $(LIBBPF_DIR) FEATURES_DUMP=$(FEATURE_DUMP_EXPORT) \
+> > +               O= OUTPUT=$(LIBBPF_OUTPUT)/ DESTDIR=$(LIBBPF_DESTDIR) prefix= \
+> > +               $@ install_headers
+> >
+> >  $(LIBBPF)-clean:
+> >         $(call QUIET_CLEAN, libbpf)
+> > -       $(Q)$(MAKE) -C $(BPF_DIR) O=$(OUTPUT) clean >/dev/null
+> > +       $(Q)$(RM) -r -- $(LIBBPF_OUTPUT)
+> >
+> >  $(LIBPERF): FORCE
+> >         $(Q)$(MAKE) -C $(LIBPERF_DIR) EXTRA_CFLAGS="$(LIBPERF_CFLAGS)" O=$(OUTPUT) $(OUTPUT)libperf.a
+> > @@ -1036,14 +1039,13 @@ SKELETONS += $(SKEL_OUT)/bperf_cgroup.skel.h
+> >
+> >  ifdef BUILD_BPF_SKEL
+> >  BPFTOOL := $(SKEL_TMP_OUT)/bootstrap/bpftool
+> > -LIBBPF_SRC := $(abspath ../lib/bpf)
+> > -BPF_INCLUDE := -I$(SKEL_TMP_OUT)/.. -I$(BPF_PATH) -I$(LIBBPF_SRC)/..
+> > +BPF_INCLUDE := -I$(SKEL_TMP_OUT)/.. -I$(LIBBPF_INCLUDE)
+> >
+> > -$(SKEL_TMP_OUT):
+> > +$(SKEL_TMP_OUT) $(LIBBPF_OUTPUT):
+> >         $(Q)$(MKDIR) -p $@
+> >
+> >  $(BPFTOOL): | $(SKEL_TMP_OUT)
+> > -       CFLAGS= $(MAKE) -C ../bpf/bpftool \
+> > +       $(Q)CFLAGS= $(MAKE) -C ../bpf/bpftool \
+> >                 OUTPUT=$(SKEL_TMP_OUT)/ bootstrap
+> >
+> >  VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)                           \
+> > --
+> > 2.32.0
+> >
 
 -- 
 
