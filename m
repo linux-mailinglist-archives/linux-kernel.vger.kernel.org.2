@@ -2,113 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6946E446CFD
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 09:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AFA7446D01
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 09:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhKFI0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 04:26:24 -0400
-Received: from smtpbguseast3.qq.com ([54.243.244.52]:42249 "EHLO
-        smtpbguseast3.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230426AbhKFI0X (ORCPT
+        id S233378AbhKFIdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 04:33:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230426AbhKFIdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 04:26:23 -0400
-X-QQ-mid: bizesmtp42t1636187009tfv3czrk
-Received: from localhost.localdomain (unknown [218.94.48.178])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Sat, 06 Nov 2021 16:23:20 +0800 (CST)
-X-QQ-SSF: 01400000000000Z0Z000000A0000000
-X-QQ-FEAT: PiGp83eJkfylU46hdeyC/FtC94gproOiLDGpMY/C+3DkWRINGBskox7qsPNsE
-        5YCiph5qH2NFWHrwtoAE6kRLXLdOvQvF+FMAB2in/q4Jqp0mc8uci6GO7JxitxQdG5QSdHI
-        sG5VteqGwTzp41rhnOPRGm0PMH9caWhWgilpAICuZ/5ek4vqMEW87X70eVCu/RxkgK4YXyV
-        pwzijCJN3ICkZF4e/sLAcvXOxytBcy5C0+XH6yJxsLCEsEE8z+qEtf/7Nre/OqJRLqTt110
-        lTh+wCuhPJx9tg4Q6XE3pVeABREbB16PV/8LU8FDbcv4DAGmovc3xTD0F3KnZSRqU/7S/97
-        BR0aiWgLjo7biVTAES12wm0JVQbiMoCdYGUbVn0zxc+BDm7Dbd3Y09DBbUxag==
-X-QQ-GoodBg: 2
-From:   Yue Hu <huyue2@yulong.com>
-To:     xiang@kernel.org, chao@kernel.org, linux-erofs@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, zhangwen@yulong.com,
-        geshifei@yulong.com, zbestahu@gmail.com, Yue Hu <huyue2@yulong.com>
-Subject: [PATCH v2] erofs: remove useless cache strategy of DELAYEDALLOC
-Date:   Sat,  6 Nov 2021 16:23:15 +0800
-Message-Id: <20211106082315.25781-1-huyue2@yulong.com>
-X-Mailer: git-send-email 2.17.1
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:yulong.com:qybgforeign:qybgforeign5
-X-QQ-Bgrelay: 1
+        Sat, 6 Nov 2021 04:33:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC04C061570
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 01:30:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Jqj3XnNC6AI4qWVi+KOh7dQ0dvYOdMogW1IFuJxwAD0=; b=F6CGG/imjp36xvtSWdDWed+gKS
+        HTEGnYW/JzapM2uHEM8TNoj8iWO6P4rpgsU5hTxd/wPPK7q0XvD3dToFmgy13M3QGHbMwWZ/ogQKn
+        E6Eygpn970nj0A1a4d2DI5xPFA9bjKUDOnVrMBkASJ0jTCMaKBlyr/fziXWy7MA7TcALZu+vX6WGu
+        rSevKu08bg3BlPvA7eIpVmHDheuxMbeBTAM8Z4+u2/BdvPCY+b/D8x4qqpEb/mWUuYDA4RD7YUR8C
+        OGwF1z1f8i8cMm53oYKExzrCWtKMSG37xksPyjP4wqg9mJ3L/LgSXPYBH/ZIxiGv/RyCjqapoAfvW
+        jo+rOepw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mjH3a-0077Ep-37; Sat, 06 Nov 2021 08:28:24 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 437E79862D2; Sat,  6 Nov 2021 09:28:08 +0100 (CET)
+Date:   Sat, 6 Nov 2021 09:28:08 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+        mark.rutland@arm.com, dvyukov@google.com, pbonzini@redhat.com,
+        mbenes@suse.cz
+Subject: Re: [RFC][PATCH 15/22] x86,vmx: Remove .fixup usage
+Message-ID: <20211106082808.GS174703@worktop.programming.kicks-ass.net>
+References: <20211104164729.226550532@infradead.org>
+ <20211104165525.408049586@infradead.org>
+ <YYV1UeFeWUtnQ4jV@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYV1UeFeWUtnQ4jV@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DELAYEDALLOC is not used at all, remove related dead code. Also,
-remove the blank line at the end of zdata.h.
+On Fri, Nov 05, 2021 at 06:17:53PM +0000, Sean Christopherson wrote:
 
-Signed-off-by: Yue Hu <huyue2@yulong.com>
----
-v2: remove the blank line at the end of zdata.h.
+> And hopefully this entire mess will
+> go away before that happens, as the trampoline shenanigans are needed
+> only because the minimum compiler version doesn't guarantee support for
+> asm goto with outputs.
 
- fs/erofs/zdata.c | 20 --------------------
- fs/erofs/zdata.h |  1 -
- 2 files changed, 21 deletions(-)
+We can at least have those who use sane compilers get sane code..
 
-diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-index bcb1b91b234f..812c7c6ae456 100644
---- a/fs/erofs/zdata.c
-+++ b/fs/erofs/zdata.c
-@@ -96,16 +96,9 @@ static void z_erofs_free_pcluster(struct z_erofs_pcluster *pcl)
- 	DBG_BUGON(1);
+Something like this, right?
+
+--- a/arch/x86/kvm/vmx/vmx_ops.h
++++ b/arch/x86/kvm/vmx/vmx_ops.h
+@@ -70,6 +70,31 @@ static __always_inline unsigned long __v
+ {
+ 	unsigned long value;
+ 
++#ifdef CONFIG_CC_HAS_ASM_GOTO_OUTPUT
++
++	asm_volatile_goto("1: vmread %[field], %[output]\n\t"
++			  "jna %l[do_fail]\n\t"
++
++			  _ASM_EXTABLE(1b, %l[do_exception])
++
++			  : ASM_CALL_CONSTRAINT, [output] "=r" (value)
++			  : [field] "r" (field)
++			  : "cc"
++			  : do_fail, do_exception);
++
++	return value;
++
++do_fail: __cold;
++	WARN_ONCE(1, "kvm: vmread failed: field=%lx\n", field);
++	pr_warn_ratelimited("kvm: vmread failed: field=%lx\n", field);
++	return 0;
++
++do_exception: __cold;
++	kvm_spurious_fault();
++	return 0;
++
++#else /* !CONFIG_CC_HAS_ASM_GOTO_OUTPUT */
++
+ 	asm volatile("1: vmread %2, %1\n\t"
+ 		     ".byte 0x3e\n\t" /* branch taken hint */
+ 		     "ja 3f\n\t"
+@@ -94,7 +119,10 @@ static __always_inline unsigned long __v
+ 		     _ASM_EXTABLE_TYPE_REG(1b, 2b, EX_TYPE_EFAULT_REG, %1)
+ 
+ 		     : ASM_CALL_CONSTRAINT, "=r"(value) : "r"(field) : "cc");
++
+ 	return value;
++
++#endif /* CONFIG_CC_HAS_ASM_GOTO_OUTPUT */
  }
  
--/*
-- * a compressed_pages[] placeholder in order to avoid
-- * being filled with file pages for in-place decompression.
-- */
--#define PAGE_UNALLOCATED     ((void *)0x5F0E4B1D)
--
- /* how to allocate cached pages for a pcluster */
- enum z_erofs_cache_alloctype {
- 	DONTALLOC,	/* don't allocate any cached pages */
--	DELAYEDALLOC,	/* delayed allocation (at the time of submitting io) */
- 	/*
- 	 * try to use cached I/O if page allocation succeeds or fallback
- 	 * to in-place I/O instead to avoid any direct reclaim.
-@@ -267,10 +260,6 @@ static void preload_compressed_pages(struct z_erofs_collector *clt,
- 			/* I/O is needed, no possible to decompress directly */
- 			standalone = false;
- 			switch (type) {
--			case DELAYEDALLOC:
--				t = tagptr_init(compressed_page_t,
--						PAGE_UNALLOCATED);
--				break;
- 			case TRYALLOC:
- 				newpage = erofs_allocpage(pagepool, gfp);
- 				if (!newpage)
-@@ -1089,15 +1078,6 @@ static struct page *pickup_page_for_submission(struct z_erofs_pcluster *pcl,
- 	if (!page)
- 		goto out_allocpage;
- 
--	/*
--	 * the cached page has not been allocated and
--	 * an placeholder is out there, prepare it now.
--	 */
--	if (page == PAGE_UNALLOCATED) {
--		tocache = true;
--		goto out_allocpage;
--	}
--
- 	/* process the target tagged pointer */
- 	t = tagptr_init(compressed_page_t, page);
- 	justfound = tagptr_unfold_tags(t);
-diff --git a/fs/erofs/zdata.h b/fs/erofs/zdata.h
-index 879df5362777..4a69515dea75 100644
---- a/fs/erofs/zdata.h
-+++ b/fs/erofs/zdata.h
-@@ -179,4 +179,3 @@ static inline void z_erofs_onlinepage_endio(struct page *page)
- #define Z_EROFS_VMAP_GLOBAL_PAGES	2048
- 
- #endif
--
--- 
-2.17.1
-
-
-
+ static __always_inline u16 vmcs_read16(unsigned long field)
