@@ -2,114 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFD6447012
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 20:24:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5905544701B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 20:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234902AbhKFT0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 15:26:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43432 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232498AbhKFT0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 15:26:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21C7B60F9D;
-        Sat,  6 Nov 2021 19:24:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636226644;
-        bh=jQGbXnitLchMei/HJt6evi7umlZCzkT9kLGbjbsg+hg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=flwve9EwWJaWib7IpCKyH+YZxli5EQuKuBb+Gel6gCYqH4pWHOcHHA3pSkWhMgVQr
-         ppRkdEXijVaUX0Eiq6ULhfgwRvPvrRwcDtfZd9w/JjwR9L6lRBE0TGFe8b/BOiEU4K
-         WSiz2pnIkT/2kF2e1Yxzcb0tQPTAd/jiNvb5bzZ6H3SzaTHzAEvRLtjRw8I3o6kjEh
-         SkqpoUJpxbhH3KWzwsnrkSe5OF+vSlDc57rs/YDFGAsecP7+e7kjWo0RdfiaCnVUJ/
-         G2S57gCEKVEvFtv9fVckeIEfZmGOrxMqcUYjGSZqHSKsIhnrsZYSRlWARA3iQrmO1g
-         2M4N0MJCUSW2Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E6B64410A1; Sat,  6 Nov 2021 16:24:01 -0300 (-03)
-Date:   Sat, 6 Nov 2021 16:24:01 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ravi Bangoria <ravi.bangoria@amd.com>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Kim Phillips <kim.phillips@amd.com>
-Subject: Re: [PATCH v3] perf evsel: Fix missing exclude_{host,guest} setting
-Message-ID: <YYbWUetkc6keL/Xa@kernel.org>
-References: <20211029224929.379505-1-namhyung@kernel.org>
- <20211103072112.32312-1-ravi.bangoria@amd.com>
- <CAM9d7chQH+Br6NJhDdjjOdV7FsODS0_Rj+w-UsfzUud27iPNbQ@mail.gmail.com>
+        id S234913AbhKFTaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 15:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232589AbhKFTaR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Nov 2021 15:30:17 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DE3C061714
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 12:27:36 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id i9so12916628ilu.8
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Nov 2021 12:27:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:in-reply-to:references:subject:message-id:date
+         :mime-version:content-transfer-encoding;
+        bh=g6dCQa8LHOVQsABsddtajlBRunqB4Uil1VxpOE1O+8o=;
+        b=WQ0ToyOVPQKgfjBZCSwYr33XbhHdGzbxGU1+nJMORZhGLxFREBEmqbIYd+ED+nlxb6
+         2veZSghDoUU7BUZvzuXbxh995TLYSql2kYGJqx+tHHsCRhuvvcgGnAaziIXXYOjiQVXZ
+         AfLp6vv2WIjt1r/ulOUITH8ELwysH0qADzQHRiUyfk9rM/Eu0+JvgZJ0O9jIwPx5Irh4
+         JbVz882LaSloBhoytyDuMAA6xTAWNET3Oo40hzDHtdpyGsiXlR2A1Vyidn9J7YbbaRFF
+         jzFqW2ZrGzJE4GmUk6rnJXYihA5NjB1WPYz0dCI/ddQhcqMCpe3sDwmrRlbMjCkaKq1J
+         0vAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
+         :message-id:date:mime-version:content-transfer-encoding;
+        bh=g6dCQa8LHOVQsABsddtajlBRunqB4Uil1VxpOE1O+8o=;
+        b=hgi5wyrPrVbopt6QVhAFGFT2LhSC4GbzuFC09yRKKTRgNxExWGIsVPW6RZvO8MuBvr
+         BZCyl6p/s3R7g7kb9PnaHaGr00srs0DkeCGvzRCcPhcX0byqZMWHCfxD0EEh/Z1GPLaC
+         2/i2FrafbCTCpVz2H9VpdqlstDGN/QK2/9gbZUYHmU+bYhBA3JmKd6Zzc/ivzz0cA5p3
+         bBlLHSvPeQ8moaW7yVJIzaQIi782/IpzLv4n04RHqRXcOKVKQaHCAUZzAiiTzJ6Hu7nZ
+         P82lczUYvCbd6v8rQM29FPk6n+UcbNySe+XkUnRYGnaPN/l3NDk1KZkSuCMHfN3/MxD0
+         q3Rw==
+X-Gm-Message-State: AOAM5320xsp8JNOiBHH2rzOLQlSFCfMVvOPi4nJIb2gH+5ByMspmFEe1
+        W/ZPE+k6z73bbucDMgGSvWopyA==
+X-Google-Smtp-Source: ABdhPJwYAg9h7KdgsD0GqlyFP6YqfXCbbo9reZ4XcToNIbXicMp8ZQjys1oQD+6Jn5aMStdiUw6FQA==
+X-Received: by 2002:a92:d411:: with SMTP id q17mr31461470ilm.116.1636226855303;
+        Sat, 06 Nov 2021 12:27:35 -0700 (PDT)
+Received: from [127.0.1.1] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id c12sm6560928ils.31.2021.11.06.12.27.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Nov 2021 12:27:34 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Cc:     linux-block@vger.kernel.org, noreply@ellerman.id.au,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211106185549.1578444-1-geert@linux-m68k.org>
+References: <20211106185549.1578444-1-geert@linux-m68k.org>
+Subject: Re: [PATCH -next] ataflop: Add missing semicolon to return statement
+Message-Id: <163622685463.267869.14813196810807657315.b4-ty@kernel.dk>
+Date:   Sat, 06 Nov 2021 13:27:34 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7chQH+Br6NJhDdjjOdV7FsODS0_Rj+w-UsfzUud27iPNbQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Nov 05, 2021 at 11:00:29AM -0700, Namhyung Kim escreveu:
-> Hello,
+On Sat, 6 Nov 2021 19:55:49 +0100, Geert Uytterhoeven wrote:
+>     drivers/block/ataflop.c: In function ‘ataflop_probe’:
+>     drivers/block/ataflop.c:2023:2: error: expected expression before ‘if’
+>      2023 |  if (ataflop_alloc_disk(drive, type))
+> 	  |  ^~
+>     drivers/block/ataflop.c:2023:2: error: ‘return’ with a value, in function returning void [-Werror=return-type]
+>     drivers/block/ataflop.c:2011:13: note: declared here
+>      2011 | static void ataflop_probe(dev_t dev)
+> 	  |             ^~~~~~~~~~~~~
 > 
-> On Wed, Nov 3, 2021 at 12:22 AM Ravi Bangoria <ravi.bangoria@amd.com> wrote:
-> >
-> > > The current logic for the perf missing feature has a bug that it can
-> > > wrongly clear some modifiers like G or H.  Actually some PMUs don't
-> > > support any filtering or exclusion while others do.  But we check it
-> > > as a global feature.
-> >
-> > (Sorry to pitch in bit late)
-> >
-> > AMD has one more problem on a similar line. On AMD, non-precise and
-> > precise sampling are provided by core and IBS pmu respectively. Plus,
-> > core pmu has filtering capability but IBS does not. Perf by default
-> > sets precise_ip=3 and exclude_guest=1 and goes on decreasing precise_ip
-> > with exclude_guest set until perf_event_open() succeeds. This is
-> > causing perf to always fallback to core pmu (non-precise mode) even if
-> > it's perfectly feasible to do precise sampling. Do you guys think this
-> > problem should also be addressed while designing solution for Namhyung's
-> > patch or solve it seperately like below patch:
-> >
-> > ---><---
-> >
-> > From 48808299679199c39ff737a30a7f387669314fd7 Mon Sep 17 00:00:00 2001
-> > From: Ravi Bangoria <ravi.bangoria@amd.com>
-> > Date: Tue, 2 Nov 2021 11:01:12 +0530
-> > Subject: [PATCH] perf/amd/ibs: Don't set exclude_guest by default
-> >
-> > Perf tool sets exclude_guest by default while calling perf_event_open().
-> > Because IBS does not have filtering capability, it always gets rejected
-> > by IBS PMU driver and thus perf falls back to non-precise sampling. Fix
-> > it by not setting exclude_guest by default on AMD.
-> >
-> > Before:
-> >   $ sudo ./perf record -C 0 -vvv true |& grep precise
-> >     precise_ip                       3
-> >   decreasing precise_ip by one (2)
-> >     precise_ip                       2
-> >   decreasing precise_ip by one (1)
-> >     precise_ip                       1
-> >   decreasing precise_ip by one (0)
-> >
-> > After:
-> >   $ sudo ./perf record -C 0 -vvv true |& grep precise
-> >     precise_ip                       3
-> >   decreasing precise_ip by one (2)
-> >     precise_ip                       2
-> >
-> > Reported-by: Kim Phillips <kim.phillips@amd.com>
-> > Signed-off-by: Ravi Bangoria <ravi.bangoria@amd.com>
-> 
-> It'd be nice if it can cover explicit -e cycles:pp as well.  Anyway,
+> [...]
 
-Ravi, please consider Namhyung's request, a patch on top as I'm adding
-this already.
- 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
+Applied, thanks!
 
-Thanks, applied.
+[1/1] ataflop: Add missing semicolon to return statement
+      commit: 38987a872b313e72f7a64e91ec0b8084eaec0f10
 
-- Arnaldo
+Best regards,
+-- 
+Jens Axboe
+
 
