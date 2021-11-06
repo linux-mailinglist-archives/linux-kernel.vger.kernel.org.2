@@ -2,113 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A376447026
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 20:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36303447037
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 20:46:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234951AbhKFTg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 15:36:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42866 "EHLO
+        id S234372AbhKFTtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 15:49:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234937AbhKFTg4 (ORCPT
+        with ESMTP id S229727AbhKFTtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 15:36:56 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C3B2C061570;
-        Sat,  6 Nov 2021 12:34:15 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id j4-20020a9d7384000000b0055c7c162ed9so2206275otk.8;
-        Sat, 06 Nov 2021 12:34:15 -0700 (PDT)
+        Sat, 6 Nov 2021 15:49:12 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6615DC061570;
+        Sat,  6 Nov 2021 12:46:31 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id u2so20444910oiu.12;
+        Sat, 06 Nov 2021 12:46:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oOe3b0kcwXyjGf+xbfObtBH/XEAjq5Cq4hXTOy1UI/M=;
-        b=dXIjWkuaHIWUFpMn58TTxdAHThTZhYq9Zg6wJeiC/c/JlRAXlF4u01QeRD91GgYGEh
-         8d91Ru6y6m68A5ke6hguEuYi9qkYlne0K1Wjz6U1oHv7fQB7n9BwgT0uVUX+b6F7MWYI
-         4PyKuQGgJ9xPiEw+vNFo/17DsQsrkX9UVghUE4xlWZ6BH52mxt60jEvYFKIOP0fPcVtf
-         Y9N3022qQHcZJa7hvUZFJ0C19dTSmG2pyA+31lneh3v6pVnGTezoCZwsXJbE0LTbbJCx
-         ZZuByCqMxiSjqm5k3E93L/EqIeRtu5BpyXxpoQi5tBFwmgvN72hmaLPHBaBuoRzpmrcY
-         lfVA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PMspPuEiHF8TTw4kpezLZ3py+j8BpQXsy8JAmQiChSg=;
+        b=bZj1bZW5/C8ymc9ru64b52ComXgJNFIyr1bapKV2EWDocBtE3mAzrW1SLuzvWVApDQ
+         vmQRzXPgxo7LIYH2iLZoIGiI3GKgRIcwHoWu7q89Y+UdkqFF5HSkl3C4ZlCIboMbKXNb
+         CvQuz0UFLNgYPndh5wnsm3okt2+//t9bGKse1h+zwvMSal6F9ptJgzZWsy9qIiYpp1Qh
+         QtkUBLo3BrNWrqwcwQOpuFqs4jwwXVV7AqR8C13yYHo+PZl69pRBE2AoNeFDP0Tl4Dfn
+         /eE2nslWlSuqWxecZUHoegoxDjU/0m/K3J1hnRKzhcwBOQd2IVekaGAHy9m41nkkiE3I
+         3Ozw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oOe3b0kcwXyjGf+xbfObtBH/XEAjq5Cq4hXTOy1UI/M=;
-        b=YrsFbbT0MzlkarWKqaiaJJ32ev9EHlUt+F4W2/CFniJLicAB8wkLysh2k72FJjuiUg
-         /C0lEMcFrIJ1b3L1s+VWvM5st+nN5w3dKlNL2NOfrWMG7nxWYlnN1g/IaVraX5thCBQ4
-         sd0MVbuE32Ig4bhMIbcEpHF/nn91vHdYATSsKd1luTnGmfxgEW4xPfwoG6gu/83dH/he
-         MjoAOqapBGMheoa3tEvg3B4VMZ4DKZ+KZPlSRA946fb4kJWnAbY54BHiQfgJ8WlD3t5J
-         cznVxtpkpWnr++JoGMDho1men/AOvlmIcaJeD+R3t9CHYa8D380f8/BUYQbf61vAdWqz
-         HFBA==
-X-Gm-Message-State: AOAM531JXtpqZsCpLEa4BDYEdCHEmiCkNHQnj95PG2ctbc3Z35rT+rks
-        C+hZSM67mJzd0V8Cgw7PWIzzzRroGOw=
-X-Google-Smtp-Source: ABdhPJwIsNvCiZpfeyeyoXHFW5Sl2vSe9R1JcLd9vuIwsBhcM32hMdHnb5C8B/eI+R2rxcq77UA2mQ==
-X-Received: by 2002:a05:6830:1aee:: with SMTP id c14mr23933778otd.25.1636227254567;
-        Sat, 06 Nov 2021 12:34:14 -0700 (PDT)
-Received: from [192.168.1.2] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.googlemail.com with ESMTPSA id r22sm659584oij.36.2021.11.06.12.34.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Nov 2021 12:34:13 -0700 (PDT)
-Subject: Re: [PATCH v2] mips: BCM63XX: ensure that CPU_SUPPORTS_32BIT_KERNEL
- is set
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Paul Burton <paulburton@kernel.org>,
-        Maxime Bizon <mbizon@freebox.fr>,
-        Ralf Baechle <ralf@linux-mips.org>
-References: <20211106154911.26222-1-rdunlap@infradead.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <33e97b1c-448a-ca46-724c-b10539d5e811@gmail.com>
-Date:   Sat, 6 Nov 2021 12:34:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PMspPuEiHF8TTw4kpezLZ3py+j8BpQXsy8JAmQiChSg=;
+        b=LLl3rj2ZeVov/SSbpUmb1ogEw92hfaE6zBHIzvePpE+g3gaF2dZ8yL3YlbtHulpHjq
+         fLDaPhmffzZ7/4zSpzvO9PNFRRwsvvL4wxUb9houh4LwgNiqTm949IDkLYOo0QCZFXfn
+         Jd4OtQeN2d60XWDfWAGSPm1K/rPr7TEv3/w2xJnvxwnomgdvInpQi4Zo41YiXku+40FY
+         g9qhtAYiq6FPb/bF4As176o+kJ5jnSkL/ZrwNxCilNiytEha/UGlRzq9dHKSNcr484jt
+         vrQWRkFz01wvuLb0gEzH4hTonhmVJ8GxzeUedlWrtO8Y6FMdrDLatB/crflkVMWJ6nct
+         HnAg==
+X-Gm-Message-State: AOAM530wN3tO0kQDdoytRgbEDlr36SlwTAIovy4Fdu+g96xEaqkmYsot
+        sCPUKtGM84GDoTQaxHRCn4beauVZAufxhF/7WB8=
+X-Google-Smtp-Source: ABdhPJz30mwHsyZZBJKXIvrBbWkOYGE/1UuZWohf+qYGZ7K8qggINr+7egIte0C0W/Cj57CAezkZChLeIbpQ/32QYP8=
+X-Received: by 2002:a54:4499:: with SMTP id v25mr28167081oiv.71.1636227990612;
+ Sat, 06 Nov 2021 12:46:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211106154911.26222-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211106092041.43745-1-ajaygargnsit@gmail.com>
+ <9eafae1f-d9f0-298d-cf20-212865d0becc@gmail.com> <868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com>
+ <CAHP4M8Ww0-VqCBKX=iLd=zy1AcDoNdzTOqJuaqRxCGZsMhoX9w@mail.gmail.com>
+In-Reply-To: <CAHP4M8Ww0-VqCBKX=iLd=zy1AcDoNdzTOqJuaqRxCGZsMhoX9w@mail.gmail.com>
+From:   Ajay Garg <ajaygargnsit@gmail.com>
+Date:   Sun, 7 Nov 2021 01:16:18 +0530
+Message-ID: <CAHP4M8UcZ=ttB8jbN1yOY6YH8SiQ27NhdEKi9SDH1CWG-GY6eg@mail.gmail.com>
+Subject: Re: [PATCH] tty: vt: keyboard: do not copy an extra-byte in copy_to_user
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
+        kernel@esmil.dk, David Laight <David.Laight@aculab.com>
+Cc:     "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 06/11/2021 à 08:49, Randy Dunlap a écrit :
-> Several header files need info on CONFIG_32BIT or CONFIG_64BIT,
-> but kconfig symbol BCM63XX does not provide that info. This leads
-> to many build errors, e.g.:
-> 
->    arch/mips/include/asm/page.h:196:13: error: use of undeclared identifier 'CAC_BASE'
->            return x - PAGE_OFFSET + PHYS_OFFSET;
->    arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
->    #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
->    arch/mips/include/asm/io.h:134:28: error: use of undeclared identifier 'CAC_BASE'
->            return (void *)(address + PAGE_OFFSET - PHYS_OFFSET);
->    arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
->    #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
-> 
-> arch/mips/include/asm/uaccess.h:82:10: error: use of undeclared identifier '__UA_LIMIT'
->            return (__UA_LIMIT & (addr | (addr + size) | __ua_size(size))) == 0;
-> 
-> 
-> Selecting the SYS_HAS_CPU_BMIPS* symbols causes SYS_HAS_CPU_BMIPS to be
-> set, which then selects CPU_SUPPORT_32BIT_KERNEL, which causes
-> CONFIG_32BIT to be set. (a bit more indirect than v1 [RFC].)
-> 
-> Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs.")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: bcm-kernel-feedback-list@broadcom.com
-> Cc: linux-mips@vger.kernel.org
-> Cc: Paul Burton <paulburton@kernel.org>
-> Cc: Maxime Bizon <mbizon@freebox.fr>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Suggested-by: Florian Fainelli <f.fainelli@gmail.com>
+Actually, on further thoughts, even David's solution will require an
+extra check, if -E2BIG is returned.
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+So, I guess the solution suggested by me looks the best
+(https://lore.kernel.org/linux-serial/868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com/T/#m1c4aaa4347b02fd4c11ce611ff5029fcb71c37a1)
+:
 
-Thanks Randy!
--- 
-Florian
+1.
+== Do not use the return value from strlcpy. ==
+
+                len = strlcpy(kbs, func_table[kb_func] ? : "", len);
+=>
+                strlcpy(kbs, func_table[kb_func] ? : "", len);
+
+
+2.
+== Calculate the actual length of kbs, add 1, and then copy those many
+bytes to user-buffer ==
+
+ret = copy_to_user(user_kdgkb->kb_string, kbs, len + 1) ?
+                        -EFAULT : 0;
+=>
+ret = copy_to_user(user_kdgkb->kb_string, kbs, strlen(kbs) + 1) ?
+                        -EFAULT : 0;
+
+On Sun, Nov 7, 2021 at 12:50 AM Ajay Garg <ajaygargnsit@gmail.com> wrote:
+>
+> Thanks Pavel, Andy, David for the help.
+>
+> Andy,
+>
+> There is no compilation/runtime blocker.
+> There were warnings reported by smatch.
+>
+> My intention is to make the method "vt_do_kdgkb_ioctl" bullet-proof in
+> itself, without depending upon external clients.
+>
+> Pavel has explained that currently things are fine, as per :
+> https://lore.kernel.org/linux-serial/868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com/T/#m740fffb7c6ee52fdc98b9ef0b4e32a060b6a3be3
+>
+> but it seems that there is a big flaw - we are dependent on the length
+> of "func_table[kb_func]" being ok. If func_table[kb_func] goes awry,
+> the method will cause overflow.
+>
+> Since func_table[kb_func]" is not managed by the method, so the method
+> must not depend on func_table[kb_func]" length-correctness. Instead,
+> "vt_do_kdgkb_ioctl" must ensure no overflow, without depending how
+> external entities (func_table[kb_func] behave.
+>
+>
+>
+> The issue with strlcpy, along with a potential "fix", has been explained in :
+> https://lore.kernel.org/linux-serial/868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com/T/#m1c4aaa4347b02fd4c11ce611ff5029fcb71c37a1
+>
+> David has provided a simpler fix (usage of strscpy), as in :
+> https://lore.kernel.org/linux-serial/868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com/T/#m63dab1137e593f2030920a53272f71866b442f40
+>
+>
+> So, we could go with one of the above changes (mine/David's), or
+> nothing at all (since there is no blocker).
+>
+> I vote for David's strscpy "fix", as it is simple, and does away with
+> the dependency on the length of "func_table[kb_func]".
+>
+>
+> Would like to know what the maintainers think.
+> If there is a consensus that the method "vt_do_kdgkb_ioctl" be made
+> bullet-proof in itself, please let me know, I will float the next
+> version of patch.
+>
+>
+> Thanks again Pavel, David, Andy.
+>
+>
+> Thanks and Regards,
+> Ajay
