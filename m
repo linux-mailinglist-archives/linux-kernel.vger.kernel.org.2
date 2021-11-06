@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E09CF446EBA
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 16:49:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F536446EC0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 16:50:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234491AbhKFPwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 11:52:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50058 "EHLO
+        id S234497AbhKFPxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 11:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbhKFPwC (ORCPT
+        with ESMTP id S233459AbhKFPxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 11:52:02 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA45C061570;
-        Sat,  6 Nov 2021 08:49:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=j8qzGlwrTBpEce87Vbe9I6pnNIX+NnMeGnNkeHgq+lQ=; b=LEtRIktCpeq7jStDHIH3vhgFt8
-        8s3cLkKE+EbSglwi87PnWjSwUv3pMsScC6pnasRg/Txwt62HCDGqVRNzGakKcxOvBQosB96ru8mVG
-        lB0wenHtxaHbRuCiEuLYjFrAUYJpAjTyIE+0KxVj7YpP9p7VTQTh01/RoO/qX83tCzI+SGxOMsE9Q
-        sujEMHZFiPe67/AXpb/YX+uSY6cHXUSZDOn1f84dXcDiHm7Sr3KlX7oBfrGsmBldqmtpkB8eBoX8c
-        zGSdgmZT7YZwKot+mkieTkmR4XlVM3bHairfxLLzMnBV64xTm0RFv+567WKNpvE6WiLDqf0vq+YCY
-        re60/uOg==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mjNwS-008ZI5-1w; Sat, 06 Nov 2021 15:49:16 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Paul Burton <paulburton@kernel.org>,
-        Maxime Bizon <mbizon@freebox.fr>,
-        Ralf Baechle <ralf@linux-mips.org>
-Subject: [PATCH v2] mips: BCM63XX: ensure that CPU_SUPPORTS_32BIT_KERNEL is set
-Date:   Sat,  6 Nov 2021 08:49:11 -0700
-Message-Id: <20211106154911.26222-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Sat, 6 Nov 2021 11:53:08 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0141C061746
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 08:50:27 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id y11so19780317oih.7
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Nov 2021 08:50:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8Qra9akannOKhHfzF9P4EEi/dtPKcdfqFmb0pyjRQ68=;
+        b=dzv9XWCCxRprjKKXScrpOCvs+6FdSi28Gvt0E1xNYibSuwbNIz+resh9bS19/F+rFB
+         t3N9/psI/V5V06B0wdF1Q83rUvrwpFcMIi8ABjTLHFXJZZxNYQbhP+IKTkB56rXKdRaA
+         iGWrck51xPr9+jbs1gdQIJFuj8WU778qgruuT2oafrCA+iyRBsKXKYPGeGly0kJKqjv5
+         8LonxpWyKsTkJVtKSNpsh2smJm7vHFECuaTsIw+4feUfOXUnEheE2rD6/Dx4652yVGCa
+         3FXl0NyG2/wiL7MF8EqEGDY2mZFMIY4EniTD16YqZy5xcXtfvLoVHx6bSTkA5DoFrTBb
+         gqJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8Qra9akannOKhHfzF9P4EEi/dtPKcdfqFmb0pyjRQ68=;
+        b=TAJFkf3SoMKdiLsizeGXcOtEUcq8WNzwq+wjqMeWzGDIJP9TTegWEzPUYjwtoIZLby
+         Jvzw0kmk9ReJxdtSGIJ0KNYiGhBRUlo3C2OhMRV+udJWl8YhxdLtC0U8tjL3v7fC7yoY
+         x8CpD8Uyah+lW74ufXpKswVcDQyG0LjRpAAkeqh+O/uBNuNt69p2QKMXCUeI1abc02+P
+         vGY4yZktuPeW+R3yt+hVHWrKYxKro3EWFEi7Yf2bpwqmKnA2bZDA5xB+IAv5b3Gt7WqR
+         +0ufW11oU4ufUtLOn7fnksGHqtd1bLEIIySSbIme0RxACDAASXBA18Mu5RA7fOS9tD+E
+         fplg==
+X-Gm-Message-State: AOAM532kWvGh7MX78gXBhxL+YjmWNBpo+aTrmmBqfDKnagEXVZbDiytF
+        7wrjubDX+GgDl3OT0qugOz6/gg==
+X-Google-Smtp-Source: ABdhPJwBJ9YCa16fxUpZolirtN5bLSZpdYhwFTjrajGd+orwqE/4zEDLYu89/vMhKXVRAg59/mmxIw==
+X-Received: by 2002:a05:6808:144f:: with SMTP id x15mr27350233oiv.132.1636213826928;
+        Sat, 06 Nov 2021 08:50:26 -0700 (PDT)
+Received: from yoga (rrcs-97-77-166-58.sw.biz.rr.com. [97.77.166.58])
+        by smtp.gmail.com with ESMTPSA id o42sm3797396ooi.9.2021.11.06.08.50.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Nov 2021 08:50:26 -0700 (PDT)
+Date:   Sat, 6 Nov 2021 10:50:24 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Xu Wang <vulab@iscas.ac.cn>
+Cc:     agross@kernel.org, amitk@kernel.org, thara.gopinath@linaro.org,
+        rafael@kernel.org, daniel.lezcano@linaro.org, rui.zhang@intel.com,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] thermal/drivers/qcom/spmi-adc-tm5: Remove unnecessary
+ print function dev_err()
+Message-ID: <YYakQHd3Hr944k1B@yoga>
+References: <20211105013340.38300-1-vulab@iscas.ac.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211105013340.38300-1-vulab@iscas.ac.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Several header files need info on CONFIG_32BIT or CONFIG_64BIT,
-but kconfig symbol BCM63XX does not provide that info. This leads
-to many build errors, e.g.:
+On Thu 04 Nov 20:33 CDT 2021, Xu Wang wrote:
 
-   arch/mips/include/asm/page.h:196:13: error: use of undeclared identifier 'CAC_BASE'
-           return x - PAGE_OFFSET + PHYS_OFFSET;
-   arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
-   #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
-   arch/mips/include/asm/io.h:134:28: error: use of undeclared identifier 'CAC_BASE'
-           return (void *)(address + PAGE_OFFSET - PHYS_OFFSET);
-   arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
-   #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
+> The print function dev_err() is redundant because
+> platform_get_irq() already prints an error.
+> 
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 
-arch/mips/include/asm/uaccess.h:82:10: error: use of undeclared identifier '__UA_LIMIT'
-           return (__UA_LIMIT & (addr | (addr + size) | __ua_size(size))) == 0;
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-
-Selecting the SYS_HAS_CPU_BMIPS* symbols causes SYS_HAS_CPU_BMIPS to be
-set, which then selects CPU_SUPPORT_32BIT_KERNEL, which causes
-CONFIG_32BIT to be set. (a bit more indirect than v1 [RFC].)
-
-Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: bcm-kernel-feedback-list@broadcom.com
-Cc: linux-mips@vger.kernel.org
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Maxime Bizon <mbizon@freebox.fr>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Suggested-by: Florian Fainelli <f.fainelli@gmail.com>
----
-v2: select 3 SYS_HAS_CPU_BMIPS* symbols that will cause
-    CPU_SUPPORTS_32BIT_KERNEL to be set (Florian)
-
- arch/mips/Kconfig |    3 +++
- 1 file changed, 3 insertions(+)
-
---- linux-next-20211105.orig/arch/mips/Kconfig
-+++ linux-next-20211105/arch/mips/Kconfig
-@@ -332,6 +332,9 @@ config BCM63XX
- 	select SYS_SUPPORTS_32BIT_KERNEL
- 	select SYS_SUPPORTS_BIG_ENDIAN
- 	select SYS_HAS_EARLY_PRINTK
-+	select SYS_HAS_CPU_BMIPS32_3300
-+	select SYS_HAS_CPU_BMIPS4350
-+	select SYS_HAS_CPU_BMIPS4380
- 	select SWAP_IO_SPACE
- 	select GPIOLIB
- 	select MIPS_L1_CACHE_SHIFT_4
+> ---
+>  drivers/thermal/qcom/qcom-spmi-adc-tm5.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
+> index 824671cf494a..8492dd3bfed6 100644
+> --- a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
+> +++ b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
+> @@ -612,10 +612,8 @@ static int adc_tm5_probe(struct platform_device *pdev)
+>  	adc_tm->base = reg;
+>  
+>  	irq = platform_get_irq(pdev, 0);
+> -	if (irq < 0) {
+> -		dev_err(dev, "get_irq failed: %d\n", irq);
+> +	if (irq < 0)
+>  		return irq;
+> -	}
+>  
+>  	ret = adc_tm5_get_dt_data(adc_tm, node);
+>  	if (ret) {
+> -- 
+> 2.25.1
+> 
