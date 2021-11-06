@@ -2,125 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6326B446FF3
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 19:59:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3934D446FF7
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 20:01:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234826AbhKFTB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 15:01:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234147AbhKFTBz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 15:01:55 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246D2C061570;
-        Sat,  6 Nov 2021 11:59:14 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id s19-20020a056830125300b0055ad9673606so17179048otp.0;
-        Sat, 06 Nov 2021 11:59:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w/De7BpxXxHmTIkQQm3S5gIv0fyA+bSz7s084KVq+qk=;
-        b=ERp/KaRpAyloDuMsxxYmdvO51oNzew06YZxc7JwgzcXiErKvY0ThENJR16hxtRZPCg
-         IgsiruyCAyCUcfeCw6k6DM6KRSKDePpr5hUnSNTwXjTXU9ntOpZ9S9ZcIlnQrANJFjQL
-         5Gg0ygVx33VtNMwT7l4IyFLbZXfBKtbLv4AvfOqfrL4h8MPa19fYS+vXzL9F0N8MNv5a
-         rbs1JDe3ULkQHfJLwTxr2nu0oHCSia9ERpWPR92m+kwoQ4c6n4pPIa/FLFahDr+0Yv6T
-         +42lwk6SnWq/fBUmOG1aS+xt7Tqmj8wnJcD3nbLnq9b5Kr2M2o8jrJTY+rwtf/PIRsk1
-         1aVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w/De7BpxXxHmTIkQQm3S5gIv0fyA+bSz7s084KVq+qk=;
-        b=BayY93kJ8UxKbo1XbBYN5YFReUAJaLXarAuYN9jkXFKRWgdL1YslHECKSlMIeR+Xxz
-         eW7cdmv8BFxiY1HnYCKpvhKY3MCvD9+fVsM9gr9TgoQ0watG9rDfThWUoTXjSpj9J82J
-         E7E8eKPjKIpSgjjrE/G7k/5UUUVr/VbRrE8kJpMo6PC459QEcsPdeJ1tEJdCrPh/w3p6
-         EWzSs+14S1FZe3ZVeFIwUbaQNoHswna8IYkmrACXMYeAHUFG0HDieSvBmimxB8fLwNoY
-         bhHx9HLsnsGRZvKSg30sKDWI8WaruUSjcyeRHAZaYUsrX+7nXHet+5I+BXSfGPisqEVC
-         kjvQ==
-X-Gm-Message-State: AOAM533yctgtzOJslH8xcAvMEKaTInJxwP3RoHAxuQLKPHDt5DK7XxRi
-        sUPkIrJvyDu2hnQWfMvYzqMCtgoksBjDwtXZO6M=
-X-Google-Smtp-Source: ABdhPJx8IjEZ/STpiFs4brCB+WtH6ZG/2bsrAawNzpQrp6+wmclzRwBR5BAAKO0tkNm2b1wT6UaQbxCl40PUmbdrXhM=
-X-Received: by 2002:a9d:7617:: with SMTP id k23mr36426215otl.351.1636225153438;
- Sat, 06 Nov 2021 11:59:13 -0700 (PDT)
+        id S234869AbhKFTEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 15:04:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232523AbhKFTES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Nov 2021 15:04:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1C3261058;
+        Sat,  6 Nov 2021 19:01:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636225297;
+        bh=gHiRP7T92ZrX+spwRw+xIdpGjcXe+C4gS84lei3bAXE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QWf3im/y0N/JbBKieGbxgCnRWbwO7L7qXY+xgCOev9tT7B4JvpDD1PlyWkgf9CUfN
+         IKRjIAkVj3v9hNpO8yqxxNAOjRSww+eKli1Gf/H1bOanbKlNnnKvS0rwXWlbypNQ+k
+         e4AYixfm6F7uOFxiO/Cc6KdVAPMbeK6vra3oNXgNakBw9H0VrWQY10A5R7TEXIM9Ol
+         qdsC37A12ATVR6fbLBK+1ePb11NnkO5S5g0UHxTZm8Qr92EuZBFrx75vnHJcvhuJvL
+         +/aJlJmJMOoISG5YvaBEqA/wtaLd6e47NWAHOA5Om++x/IewwTCNlK23tW1L0MK67G
+         dS2CLSvHJqrEQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 72C0F410A1; Sat,  6 Nov 2021 16:01:33 -0300 (-03)
+Date:   Sat, 6 Nov 2021 16:01:33 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>, Song Liu <songliubraving@fb.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        linux-perf-users@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 1/2] perf bpf: Avoid memory leak from perf_env__insert_btf
+Message-ID: <YYbRDT6eknbL1DVd@kernel.org>
+References: <20211106053733.3580931-1-irogers@google.com>
 MIME-Version: 1.0
-References: <20211106104053.98761-1-ajaygargnsit@gmail.com> <CAHp75VdY8aoF+dCm0j7EA-53BFaWdepvYYv7h5MVz2kVWagOOA@mail.gmail.com>
-In-Reply-To: <CAHp75VdY8aoF+dCm0j7EA-53BFaWdepvYYv7h5MVz2kVWagOOA@mail.gmail.com>
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-Date:   Sun, 7 Nov 2021 00:29:01 +0530
-Message-ID: <CAHP4M8Vdj4Eb8q773BeHvsW9n6t=3n1WznuXAR4fZCNi1J6rOg@mail.gmail.com>
-Subject: Re: [PATCH v2] tty: vt: keyboard: initialize "kbs" so that kfree(kbs)
- runs fine even if kbs is not kmalloced.
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
-        kernel@esmil.dk
-Cc:     "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211106053733.3580931-1-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-First of all, many thanks to Pavel for all the help and guidance,
-nature bless you.
-I will make it a point to keep all maintainers in loop, for all my
-future patches.
+Em Fri, Nov 05, 2021 at 10:37:32PM -0700, Ian Rogers escreveu:
+> perf_env__insert_btf doesn't insert if a duplicate btf id is
+> encountered and this causes a memory leak. Modify the function to return
+> a success/error value and then free the memory if insertion didn't
+> happen.
+> 
+> Fixes: 3792cb2ff43b ("perf bpf: Save BTF in a rbtree in perf_env")
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/bpf-event.c | 5 ++++-
+>  tools/perf/util/env.c       | 5 ++++-
+>  tools/perf/util/env.h       | 2 +-
+>  3 files changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
+> index 1a7112a87736..0783b464777a 100644
+> --- a/tools/perf/util/bpf-event.c
+> +++ b/tools/perf/util/bpf-event.c
+> @@ -120,7 +120,10 @@ static int perf_env__fetch_btf(struct perf_env *env,
+>  	node->data_size = data_size;
+>  	memcpy(node->data, data, data_size);
+>  
+> -	perf_env__insert_btf(env, node);
+> +	if (!perf_env__insert_btf(env, node)) {
+> +		/* Insertion failed because of a duplicate. */
+> +		free(node);
+> +	}
+>  	return 0;
 
->
-> Everybody who is developing for kernel may check this easily, no need
-> to have this in the commit message.
->
-> As I told you, NAK.
-> This is no value in this patch according to the commit message.
->
-> If you have a compiler warning you need to provide the command line
-> for `make` that makes that warning appear.
+Shouldn't this error be propagated? Song?
 
-"make" as such runs fine, without any blocker (on my x86_64 machine).
+- Arnaldo
 
-The "kbs not initialized" is seen, when the smatch static-analyzer is run.
-Thereafter, the patch was floated, to make the method
-"vt_do_kdgkb_ioctl" crash-proof by handling kbs properly, without
-depending upon external factors on whether a switch-case is hit or
-not.
+>  }
+>  
+> diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
+> index cf773f0dec38..5b24eb010336 100644
+> --- a/tools/perf/util/env.c
+> +++ b/tools/perf/util/env.c
+> @@ -74,12 +74,13 @@ struct bpf_prog_info_node *perf_env__find_bpf_prog_info(struct perf_env *env,
+>  	return node;
+>  }
+>  
+> -void perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
+> +bool perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
+>  {
+>  	struct rb_node *parent = NULL;
+>  	__u32 btf_id = btf_node->id;
+>  	struct btf_node *node;
+>  	struct rb_node **p;
+> +	bool ret = true;
+>  
+>  	down_write(&env->bpf_progs.lock);
+>  	p = &env->bpf_progs.btfs.rb_node;
+> @@ -93,6 +94,7 @@ void perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
+>  			p = &(*p)->rb_right;
+>  		} else {
+>  			pr_debug("duplicated btf %u\n", btf_id);
+> +			ret = false;
+>  			goto out;
+>  		}
+>  	}
+> @@ -102,6 +104,7 @@ void perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
+>  	env->bpf_progs.btfs_cnt++;
+>  out:
+>  	up_write(&env->bpf_progs.lock);
+> +	return ret;
+>  }
+>  
+>  struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id)
+> diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
+> index 1383876f72b3..163e5ec503a2 100644
+> --- a/tools/perf/util/env.h
+> +++ b/tools/perf/util/env.h
+> @@ -167,7 +167,7 @@ void perf_env__insert_bpf_prog_info(struct perf_env *env,
+>  				    struct bpf_prog_info_node *info_node);
+>  struct bpf_prog_info_node *perf_env__find_bpf_prog_info(struct perf_env *env,
+>  							__u32 prog_id);
+> -void perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node);
+> +bool perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node);
+>  struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id);
+>  
+>  int perf_env__numa_node(struct perf_env *env, int cpu);
+> -- 
+> 2.34.0.rc0.344.g81b53c2807-goog
 
-> In that case the better
-> solution would be to add default case because some compilers can make
-> (wrong) assumptions based on the absence of the default case.
->
-> Something like
->
-> default:
->    kbs = NULL;
->    break;
->
-> at the end of the switch.
->
-> But again, your current commit message does not sell.
+-- 
 
-Hmm, am not sure what to make of this.
-
-I guess, we could follow one of the following approaches :
-
-i)
-Leave things as it is, as there is no blocker in the make-compilation/runtime.
-
-ii)
-Put the "default: kbs = NULL; break;" case, as suggested, to ensure
-"vt_do_kdgkb_ioctl" does its work fine flawlessly, without depending
-upon external clients.
-
-
-Since there is no blocker in functionality, I am ok with whatever
-consensus is reached by the maintainers.
-If we wish to go with ii), please let me know, I will float next
-patch-version with the ii) change, along with a better commit-message.
-
-As of now, since Andy has voted for a NAK, I would not pursue this
-further as of now :)
-
-
-Thanks and Regards,
-Ajay
+- Arnaldo
