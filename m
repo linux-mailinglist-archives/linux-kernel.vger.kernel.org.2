@@ -2,154 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFBEF446DA0
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 12:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D377446DAC
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 12:44:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234061AbhKFLcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 07:32:42 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:60803 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229500AbhKFLcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 07:32:41 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4HmZss2pjdz8K;
-        Sat,  6 Nov 2021 12:29:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1636198197; bh=WAutzEgYEkmalNSwQrpbordkhKZLQ/Y22509TsCal1M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MoSDr5iITx3E3YPjbwkyIUAMMz2VmRaGqyp931kZX9YG+QyaLES6TvE+QwQNSCXlJ
-         fpc5I73Jklg2OzmXxu2LMdsy9vNLA7EBPNnzQtR/b7pam2rbJ41auAZmoiKWDoGoTh
-         33ZJgvXhhdDgMv5Gftq0VWNj2quwtGMnCQ05Vicp9WOB1XHJmcwdB4C6fV5moIbunY
-         2pHxjtQgDkyQmIbCl5sYp6e9aq2kjDEzW8DTwxKTUYFbt5WG7t6QG/dNh1ogsZV3La
-         pN/Cdf+ZUSXgzppa++BQRGky7Z/Oiq8oAuUHz4R2kaNp0awXgwxWySm/P9++rhyRyL
-         YNV8/t5iEpSKQ==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.3 at mail
-Date:   Sat, 6 Nov 2021 12:29:51 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
-Message-ID: <YYZnL58B+GsNypEn@qmqm.qmqm.pl>
-References: <20211101060419.4682-1-laoar.shao@gmail.com>
- <YYM5R95a7jgB2TPO@qmqm.qmqm.pl>
- <CALOAHbDtoBEr8TuuUEMAnw3aeOf=S10Lh_eBCS=5Ty+JHgdj0Q@mail.gmail.com>
- <YYXEzlHn28/d5C6A@qmqm.qmqm.pl>
- <CALOAHbAP5qhKjsgwhekcDcutWpHMsxxGfB+K1-=2RyOyJt9MeQ@mail.gmail.com>
+        id S233278AbhKFLpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 07:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230007AbhKFLpS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Nov 2021 07:45:18 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC64C061570
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 04:42:37 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id 2so10336519iou.1
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Nov 2021 04:42:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=EFS/qJJq2u3i9HcnYLVF3IVNVvcjNp8ZLU4zo+G1R0U=;
+        b=iBlcjP96QoRQNDYF+lY/mZDV5h+ZXDlmpowfvwOyvslO7oOZTdrS6uc+WMoravCebi
+         7MFvwWC/ZkRQ+Afbv9Lw6J21sqhoekIMf5fls75+q1DhZ8Gkq6pQv3oNIC3iuyoeSK2q
+         QawSkb2XC2Gw2Oq1adgKEgsLe4dwopRQ4Y5VsXml1EnmYFJGEqkCow1hL2H5fkidkt1i
+         ade3ZRH01YFZZnuBe20/lEsJfaJC46wrbMj5l8sldfXAevEzZseBN3OmsIa+xTD74fL+
+         8IK2gXgErFUw4O7hYMOKzGWL6CZ8VASldr8x9mOFzuQZEBHegzAbiZrXE+4KAQ3Mji3r
+         3wfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=EFS/qJJq2u3i9HcnYLVF3IVNVvcjNp8ZLU4zo+G1R0U=;
+        b=yCMdROWMVVHuWrnqrHr4BQVU0r11U5gEPyE9duB/KeBabY28lHeGysjD08Epps2qNG
+         x86EDxpAdkPhOHOD4XvHZifigcb++rq6WyTUqc5rSabVkLcwh3pa9ibFUHTyIFi4z7RL
+         NH4IlVpGZ1gNrK93LjTilTkeWDzsPsZ6egpBxgSbDt2P+EgRrcuk7cQ0ijkgbhrycyzG
+         yFqV78aqnMcvG8t+PdLUi1u0Ia/uFQiTAs7JZjEAmEnVw2ZBvr+UY7FAGgPg/5oBG0xs
+         vQJ0p9Yv87XDNOGiRMasbd3f2sujtivCCgDMBHfvkQyxGFZhGPtjVDX+y+joWQV8rf3Y
+         doKA==
+X-Gm-Message-State: AOAM533MS1Mih2U4jVqVmgIf99D9OG2XBLd92RLhiTxlm9GyQXUPBL1j
+        LwPASM18cJp0vurMKtWUHBc0WAnSkYtqgdutf4E=
+X-Google-Smtp-Source: ABdhPJwlyR94RgBspI8yHyXXsAI+7On9mWM1TyLymJ8Fws6d5WEM46lTkjxS3TP+wryECZqxBK7VLYLCTdoe/N17mpc=
+X-Received: by 2002:a05:6602:1cc:: with SMTP id w12mr3827984iot.63.1636198956841;
+ Sat, 06 Nov 2021 04:42:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALOAHbAP5qhKjsgwhekcDcutWpHMsxxGfB+K1-=2RyOyJt9MeQ@mail.gmail.com>
+Reply-To: godwinppter@gmail.com
+Sender: unnation1860@gmail.com
+Received: by 2002:a6b:8d11:0:0:0:0:0 with HTTP; Sat, 6 Nov 2021 04:42:36 -0700 (PDT)
+From:   Godwin Pete <godwinnpeter@gmail.com>
+Date:   Sat, 6 Nov 2021 12:42:36 +0100
+X-Google-Sender-Auth: S7O7BBbA9tUxX_5GAUkmlpWTcOI
+Message-ID: <CAMKcg84X4+ipPkw2eaFD0MVL0D5wncLiUkQEOYHBcmJ2gDftYA@mail.gmail.com>
+Subject: =?UTF-8?B?w4kgdW0gcHJhemVyIGluZm9ybcOhLWxv?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 06, 2021 at 05:12:24PM +0800, Yafang Shao wrote:
-> On Sat, Nov 6, 2021 at 7:57 AM Micha³ Miros³aw <mirq-linux@rere.qmqm.pl> wrote:
-> >
-> > On Fri, Nov 05, 2021 at 02:34:58PM +0800, Yafang Shao wrote:
-> > > On Thu, Nov 4, 2021 at 9:37 AM Micha³ Miros³aw <mirq-linux@rere.qmqm.pl> wrote:
-> > > >
-> > > > On Mon, Nov 01, 2021 at 06:04:08AM +0000, Yafang Shao wrote:
-> > > > > There're many truncated kthreads in the kernel, which may make trouble
-> > > > > for the user, for example, the user can't get detailed device
-> > > > > information from the task comm.
-> > > > >
-> > > > > This patchset tries to improve this problem fundamentally by extending
-> > > > > the task comm size from 16 to 24, which is a very simple way.
-> > > > [...]
-> > > >
-> > > > Hi,
-> > > >
-> > > > I've tried something like this a few years back. My attempt got mostly
-> > > > lost in the mailing lists, but I'm still carrying the patches in my
-> > > > tree [1]. My target was userspace thread names, and it turned out more
-> > > > involved than I had time for.
-> > > >
-> > > > [1] https://rere.qmqm.pl/git/?p=linux;a=commit;h=2c3814268caf2b1fee6d1a0b61fd1730ce135d4a
-> > > >     and its parents
-> > > >
-> > >
-> > > Hi Michal,
-> > >
-> > > Thanks for the information.
-> > >
-> > > I have looked through your patches.  It seems to contain six patches
-> > > now and can be divided into three parts per my understanding.
-> > >
-> > > 1. extend task comm len
-> > > This parts contains below 4 patches:
-> > > [prctl: prepare for bigger
-> > > TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=cfd99db9cf911bb4d106889aeba1dfe89b6527d0)
-> > > [bluetooth: prepare for bigger
-> > > TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=ba2805f5196865b81cc6fc938ea53af2c7c2c892)
-> > > [taskstats: prepare for bigger
-> > > TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=4d29bfedc57b36607915a0171f4864ec504908ca)
-> > > [mm: make TASK_COMM_LEN
-> > > configurable](https://rere.qmqm.pl/git/?p=linux;a=commit;h=362acc35582445174589184c738c4d86ec7d174b)
-> > >
-> > > What kind of userspace issues makes you extend the task comm length ?
-> > > Why not just use /proc/[pid]/cmdline ?
-> >
-> > This was to enable longer thread names (as set by pthread_setname_np()).
-> > Currently its 16 bytes, and that's too short for e.g. Chrome's or Firefox'es
-> > threads. I believe that FreeBSD has 32-byte limit and so I expect that
-> > major portable code is already prepared for bigger thread names.
-> >
-> 
-> The comm len in FreeBSD is (19 + 1) bytes[1], but that is still larger
-> than Linux :)
-> The task comm is short for many applications, that is why cmdline is
-> introduced per my understanding, but pthread_{set, get}name_np() is
-> reading/writing the comm or via prctl(2) rather than reading/writing
-> the cmdline...
-> 
-> Is the truncated Chrome or Firefox thread comm really harmful or is
-> extending the task comm just for portable?
-> Could you pls show me some examples if the short comm is really harmful?
-> 
-> Per my understanding, if the short comm is harmful to applications
-> then it is worth extending it.
-> But if it is only for portable code, it may not be worth extending it.
-> 
-> [1]. https://github.com/freebsd/freebsd-src/blob/main/sys/sys/param.h#L126
+Oi,
 
-I don't think it is harmful as in exposing a bug or something. It's just
-inconvenient when debugging a system where you can't differentiate
-between threads because their names have been cut too short.
+Como voc=C3=AA est=C3=A1? Estou muito feliz em inform=C3=A1-lo sobre meu su=
+cesso. No
+momento, estou fora do pa=C3=ADs para fazer um investimento com parte da
+minha parte, ap=C3=B3s concluir a transfer=C3=AAncia com um empres=C3=A1rio=
+ indiano.
+Mas irei visitar o seu pa=C3=ADs, no pr=C3=B3ximo ano, ap=C3=B3s a conclus=
+=C3=A3o do meu
+projeto. Por favor, contacte a minha secret=C3=A1ria para enviar-lhe o
+cart=C3=A3o (multibanco) que j=C3=A1 creditei no valor de ($ 300.000,00). B=
+asta
+entrar em contato com ela para ajud=C3=A1-lo a receber o cart=C3=A3o (ATM).=
+ J=C3=A1
+expliquei tudo para ela antes da minha viagem. Isso =C3=A9 o que posso
+fazer por voc=C3=AA porque voc=C3=AA n=C3=A3o p=C3=B4de ajudar na transfer=
+=C3=AAncia, mas pelo
+fato de ser a pessoa com quem entrei em contato inicialmente para a
+transfer=C3=AAncia. Decidi dar este ($ 300.000,00) como compensa=C3=A7=C3=
+=A3o por ter
+sido contatado inicialmente para a transfer=C3=AAncia. Sempre procuro fazer
+a diferen=C3=A7a, no trato com as pessoas sempre que entro em contato com
+elas. Tamb=C3=A9m estou tentando mostrar que sou uma pessoa bem diferente
+das outras que podem ter um prop=C3=B3sito diferente dentro delas. Acredito
+que voc=C3=AA me prestar=C3=A1 alguma ajuda quando eu, visitar seu pa=C3=AD=
+s, para
+outro investimento l=C3=A1. Portanto, entre em contato com minha secret=C3=
+=A1ria
+para obter o cart=C3=A3o. Os contatos dela s=C3=A3o os seguintes,
 
-Best Regards
-Micha³ Miros³aw
+Nome completo: Sra., Jovita Dumuije,
+Pa=C3=ADs: Burkina Faso
+Email: jovitadumuije@gmail.com
+
+Obrigado e espero por uma boa empresa com voc=C3=AA no futuro.
+
+Godwin Peter,
