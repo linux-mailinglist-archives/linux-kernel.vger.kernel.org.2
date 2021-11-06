@@ -2,108 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71499446BC5
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 02:25:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2752446BC8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 02:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233639AbhKFB2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 21:28:07 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:20570 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233096AbhKFB2F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 21:28:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1636161925; x=1667697925;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=sglaOwUzHlzlCzVky4H9HY7VZv0OsVdHPN/wDLDLv40=;
-  b=AtSxkRCwxD0BF/jeo1kHoPhihRNS0Hiipzqi7p4Hx6YUoeVl/vQzWnku
-   1F7jHB4Qon8Ukmd7RyaRFAzCAhYbazCxz3fFYJznFHpzoMFfIlcJOxFtI
-   P2aGwYI3bNuv2X42UIBo/iDwAguFyXkL0FEmuI6kgNhx2TkY/uii4RblL
-   U=;
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 05 Nov 2021 18:25:25 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg01-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2021 18:25:25 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Fri, 5 Nov 2021 18:25:24 -0700
-Received: from jackp-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Fri, 5 Nov 2021 18:25:23 -0700
-Date:   Fri, 5 Nov 2021 18:25:17 -0700
-From:   Jack Pham <quic_jackp@quicinc.com>
-To:     Albert Wang <albertccwang@google.com>
-CC:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
-        <badhri@google.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: Re: [PATCH] usb: dwc3: gadget: Fix null pointer exception
-Message-ID: <20211106012513.GA19852@jackp-linux.qualcomm.com>
-References: <20211104062616.948353-1-albertccwang@google.com>
+        id S233660AbhKFBdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 21:33:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231963AbhKFBdO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Nov 2021 21:33:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53C10611CE;
+        Sat,  6 Nov 2021 01:30:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636162233;
+        bh=02topxTHAKThTBTO3zqDJ42JdAkAX0HtqC0Y3dyHDO4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bSUfk72v4gVL76Pufs+Vep/nBUKmVCUx7AEjw4b8a+DvrEpt0bPhp/BiReiKv4E3l
+         mYAiv/VypSVL8AmEslrvfQvjoLHycS2WI4SD7RHYIPA3u1ZwOmdOCIuX1HFqBzc25M
+         Y4J1viSGnQL+EDyvlB66JRtKPwKvd+2rUwZw8Fe4ONPlghum73i1+l8T7pnJUpeq8e
+         mXABvTQuLsy+JI6wdZJ0/wvUt8e6hNHpXlRsTqyDEq9129Zi9IwA+XkkFm66mWWqAd
+         tE7f8LFr24Lp2K6E8xFNvVzWwApBVPbxNvtdc1AcV+y3fjgsdHIkusncqVq9d4PPa9
+         O2o9jSN5p4dFw==
+Received: by mail-ed1-f41.google.com with SMTP id m14so38158526edd.0;
+        Fri, 05 Nov 2021 18:30:33 -0700 (PDT)
+X-Gm-Message-State: AOAM533Y2KGFVb1Y4DQ3kAzx0BLhH+2hRT0E5OLLlI4poMKfVmx5vBBG
+        0DU3KPNrIZq4Sgf2m/J/zO80lsv+oltpYIKaLg==
+X-Google-Smtp-Source: ABdhPJxnUmIJLji323JYPjuxpKBPy6Ndvgj+6MG4lN/0vDFEDITAF/DyPe1a/jS0M0oVZrMBXPAX17mREqfK/9RxrPY=
+X-Received: by 2002:a17:906:66d2:: with SMTP id k18mr25705246ejp.320.1636162231741;
+ Fri, 05 Nov 2021 18:30:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20211104062616.948353-1-albertccwang@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+References: <1635519876-7112-1-git-send-email-srivasam@codeaurora.org>
+ <1635519876-7112-2-git-send-email-srivasam@codeaurora.org>
+ <CAE-0n53ok5muZ8nhpsigsw3w_qx_TSxGSdm7pf9nbb+s4K+HiQ@mail.gmail.com> <0cf52203-249a-2f6c-6106-888631ac85fa@codeaurora.org>
+In-Reply-To: <0cf52203-249a-2f6c-6106-888631ac85fa@codeaurora.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 5 Nov 2021 20:30:20 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLxJ4HYUEcdCu-5EiakXe9e3yueOdxRa24K2r04F1Zqeg@mail.gmail.com>
+Message-ID: <CAL_JsqLxJ4HYUEcdCu-5EiakXe9e3yueOdxRa24K2r04F1Zqeg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine
+ machine bindings
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        "Gross, Andy" <agross@kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        judyhsiao@chromium.org, Liam Girdwood <lgirdwood@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Patrick Lai <plai@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 02:26:16PM +0800, Albert Wang wrote:
-> In the endpoint interrupt functions
-> dwc3_gadget_endpoint_transfer_in_progress() and
-> dwc3_gadget_endpoint_trbs_complete() will dereference the endpoint
-> descriptor. But it could be cleared in __dwc3_gadget_ep_disable()
-> when accessory disconnected. So we need to check whether it is null
-> or not before dereferencing it.
-> 
-> Signed-off-by: Albert Wang <albertccwang@google.com>
+On Tue, Nov 2, 2021 at 5:57 AM Srinivasa Rao Mandadapu
+<srivasam@codeaurora.org> wrote:
+>
+>
+> On 10/30/2021 12:37 AM, Stephen Boyd wrote:
+> Thanks for Your time Stephen!!!
+> > Quoting Srinivasa Rao Mandadapu (2021-10-29 08:04:35)
+> >> diff --git a/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+> >> new file mode 100644
+> >> index 0000000..3a781c8
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+> >> @@ -0,0 +1,170 @@
+> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >> +%YAML 1.2
+> >> +---
+> >> +$id: http://devicetree.org/schemas/sound/google,sc7280-herobrine.yaml#
+> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >> +
+> >> +title: Google SC7280-Herobrine ASoC sound card driver
+> >> +
+> >> +maintainers:
+> >> +  - Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> >> +  - Judy Hsiao <judyhsiao@chromium.org>
+> >> +
+> >> +description:
+> >> +  This binding describes the SC7280 sound card which uses LPASS for audio.
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    enum:
+> >> +      - google,sc7280-herobrine
+> >> +
+> >> +  audio-routing:
+> >> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> >> +    description:
+> >> +      A list of the connections between audio components. Each entry is a
+> >> +      pair of strings, the first being the connection's sink, the second
+> >> +      being the connection's source.
+> >> +
+> >> +  model:
+> >> +    $ref: /schemas/types.yaml#/definitions/string
+> >> +    description: User specified audio sound card name
+> >> +
+> >> +  "#address-cells":
+> >> +    const: 1
+> >> +
+> >> +  "#size-cells":
+> >> +    const: 0
+> >> +
+> >> +patternProperties:
+> >> +  "^dai-link@[0-9a-f]$":
+> >> +    description:
+> >> +      Each subnode represents a dai link. Subnodes of each dai links would be
+> >> +      cpu/codec dais.
+> >> +
+> >> +    type: object
+> >> +
+> >> +    properties:
+> >> +      link-name:
+> >> +        description: Indicates dai-link name and PCM stream name.
+> >> +        $ref: /schemas/types.yaml#/definitions/string
+> >> +        maxItems: 1
+> >> +
+> >> +      reg:
+> >> +        maxItems: 1
+> >> +        description: dai link address.
+> >> +
+> >> +      cpu:
+> >> +        description: Holds subnode which indicates cpu dai.
+> >> +        type: object
+> >> +        properties:
+> >> +          sound-dai: true
+> > Is sound-dai required? And additionalProperties is false? I think we
+> > need that yet again.
+> Okay. Will mark additionalPropertiesas true.
 
-Nice catch.  I think this might have been caused when the call to
-dwc3_remove_requests() in __dwc3_gadget_ep_disable() was moved after
-the endpoint descriptors is cleared.  So you can probably add:
+'additiionalProperties: true' is almost never right. It's generally
+only correct for schemas that are incomplete collections of
+properties.
 
-Fixes: f09ddcfcb8c5 ("usb: dwc3: gadget: Prevent EP queuing while
-stopping transfers").
-
-Reviewed-by: Jack Pham <quic_jackp@quicinc.com>
-
-> ---
->  drivers/usb/dwc3/gadget.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-> index 23de2a5a40d6..83c7344888fd 100644
-> --- a/drivers/usb/dwc3/gadget.c
-> +++ b/drivers/usb/dwc3/gadget.c
-> @@ -3252,6 +3252,9 @@ static bool dwc3_gadget_endpoint_trbs_complete(struct dwc3_ep *dep,
->  	struct dwc3		*dwc = dep->dwc;
->  	bool			no_started_trb = true;
->  
-> +	if (!dep->endpoint.desc)
-> +		return no_started_trb;
-> +
->  	dwc3_gadget_ep_cleanup_completed_requests(dep, event, status);
->  
->  	if (dep->flags & DWC3_EP_END_TRANSFER_PENDING)
-> @@ -3299,6 +3302,9 @@ static void dwc3_gadget_endpoint_transfer_in_progress(struct dwc3_ep *dep,
->  {
->  	int status = 0;
->  
-> +	if (!dep->endpoint.desc)
-> +		return;
-> +
->  	if (usb_endpoint_xfer_isoc(dep->endpoint.desc))
->  		dwc3_gadget_endpoint_frame_from_event(dep, event);
->  
-> -- 
-> 2.33.1.1089.g2158813163f-goog
-> 
+Rob
