@@ -2,205 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565C8446D7A
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 11:44:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC2D446D7B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 11:49:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234012AbhKFKrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 06:47:20 -0400
-Received: from mx0a-0064b401.pphosted.com ([205.220.166.238]:64914 "EHLO
-        mx0a-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230219AbhKFKrT (ORCPT
+        id S230147AbhKFKw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 06:52:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhKFKwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 06:47:19 -0400
-Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1A6AiZRp022147;
-        Sat, 6 Nov 2021 03:44:35 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=from : to : cc :
- subject : date : message-id : content-type : mime-version; s=PPS06212021;
- bh=FDzLOglzS/mqXmCHZRrfaQQjN+Z2GoNOo1aDtZaLflk=;
- b=VpchAELxOpmhypyB5wx9flyOXqMwvenc/eeDyJ/b41mKsXzbrAO7ORTbXWOE2jUH/I/O
- WsGwLN1Yuy1A+kkcPv+KMNw0QdCRWGNMp9Xbxrx77aKwklSsMMAJWJ3hmKwuhxfUlAnU
- CdSt1l2m9utx1PQDw3G+E5cypAg3adbEYajGons3z1EY/R+5rZhYcrWpGpiIVA8xgken
- XxaEH/6r/9jXp1rZcq3EcA53MlSkQ5WfbgvxuvDLDrmnDQNi9pKH8EU5ePXHHV/MIf/c
- oJqsijT4S+tn9P9VPI0QGTGeDQSJH9BUpu2fljpFyc4+QBRDU6dtKRoE7IutPP6yr/mL XA== 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2176.outbound.protection.outlook.com [104.47.59.176])
-        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3c4t31s719-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 06 Nov 2021 03:44:34 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nb3+cRRtxjSs+SSSWaR3duAJtMXF39GMQyVmSecvWjy0heufdhepCI21Rf4zpB+/uLp1GV3wiY4YxX/t31rCxlTHiup3tudzgxSNPZLlt+T9TVzTDtsixNnHFwj5UKG3Nkxp1uGe9LL2AGUtb1oDNGlKz4ZkkoXJ15K6v7bcAOb5jjl4DnW+Frn31TwO/oB5YOoUyqQwnkKiDdhypHR62eEiBBsg3C8Am5NbGPaxW4hv3k6Jhz/eozEZD3ycHqF8OIoaKXey97+EP1qEo8dIWu7cgXAHm5M1USX0gZHH3Wz32pBx9hUKQw6foc6JmafQ1l2jLbFscmesPu7T70q4dg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FDzLOglzS/mqXmCHZRrfaQQjN+Z2GoNOo1aDtZaLflk=;
- b=BFyM5HC7vLCsKBo+eOBFiJ2hAUR30hg9HJu7vwu5NOpubGeEEWeok4Hcacgnywi6nxzrIIzyyCYLm11C60ey4aqfL8irOlytpTTPKDfdcoWv6K7hGz3+3pKo7/1IKGWWrG89WqCLO/mEuI3W3qjBZN9oVU3ZEoEP3L+oNb5tTSrZdOh+XZgnRQs9QgC5GSBPEfen2dGH9qv0HIthiGWmMtIxUOZdRNQhXd7056Y42ZnXGRy2/NA1+R3zqav2fQvGRspLFkByO3Omj4O0zmRG1tAG3nAivM1OTiJR5gdx+l+OhezE41i/brBMLPRTcvBikd7si4NgqlgXh0/tRyjiuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from PH0PR11MB5191.namprd11.prod.outlook.com (2603:10b6:510:3e::24)
- by PH0PR11MB4950.namprd11.prod.outlook.com (2603:10b6:510:33::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.13; Sat, 6 Nov
- 2021 10:44:31 +0000
-Received: from PH0PR11MB5191.namprd11.prod.outlook.com
- ([fe80::a090:40db:80ae:f06a]) by PH0PR11MB5191.namprd11.prod.outlook.com
- ([fe80::a090:40db:80ae:f06a%9]) with mapi id 15.20.4669.013; Sat, 6 Nov 2021
- 10:44:31 +0000
-From:   Meng Li <Meng.Li@windriver.com>
-To:     stable@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        meng.li@windriver.com
-Subject: [PATCH] driver: ethernet: stmmac: remove the redundant clock disable action
-Date:   Sat,  6 Nov 2021 18:44:01 +0800
-Message-Id: <20211106104401.10846-1-Meng.Li@windriver.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR0401CA0007.apcprd04.prod.outlook.com
- (2603:1096:202:2::17) To PH0PR11MB5191.namprd11.prod.outlook.com
- (2603:10b6:510:3e::24)
+        Sat, 6 Nov 2021 06:52:23 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B63C061570
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 03:49:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ngL4kkwgEo/O80l8efaNal6CPpRsGuCfvOFOTPEyZYI=; b=UodRppAyudMBR7V7aON7iUDpc1
+        R6xh7R2a+nh2vyl+/L+WzV3bKCqGW3uQnW49eusjPmVGaqpqHOmCgFy6hoxCI2jxd4F8IHI5ATl8b
+        5YxnqwAUTohHXGmj4T7VX3A7OpsZVYV+WxNIAk2Of7dwbHT9P623Ah1dwVKDa6/S6FRkv25fpkYZQ
+        d4bOh6ZdS134DYmaDv2yp2HaEKrb7yFvGJ12bAd+8RcjUmfo2/TeLfKpuQhJv7RM/EQmG+2WIRugU
+        cBd9D+5Dj5aOxavkxyCSxLIR/W4fqtZXn0nH+y5pzpqAGkOCCHpIGzmFkOOa1az2LUol8XmPEvWNj
+        EFVcg3Cw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mjJFn-00EUwT-V1; Sat, 06 Nov 2021 10:49:16 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A516B9862D4; Sat,  6 Nov 2021 11:48:54 +0100 (CET)
+Date:   Sat, 6 Nov 2021 11:48:54 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mathias Krause <minipli@grsecurity.net>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Benjamin Segall <bsegall@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        linux-kernel@vger.kernel.org, Odin Ugedal <odin@uged.al>,
+        Kevin Tanguy <kevin.tanguy@corp.ovh.com>,
+        Brad Spengler <spender@grsecurity.net>
+Subject: Re: [PATCH] sched/fair: Prevent dead task groups from regaining
+ cfs_rq's
+Message-ID: <20211106104854.GU174703@worktop.programming.kicks-ass.net>
+References: <b98e3434-67cd-34b7-9e81-148ea31a851c@grsecurity.net>
+ <20211103190613.3595047-1-minipli@grsecurity.net>
+ <xm26ilx86gmp.fsf@google.com>
+ <CAKfTPtBm4vHr=svju=Qg6eZmcv8YDghtM2r_pOahZ2gC3tzTxg@mail.gmail.com>
+ <a6a3c6c9-d5ea-59b6-8871-0f72bff38833@grsecurity.net>
+ <CAKfTPtBxoKBRWs4Z3Pxsk8==Ka9SG7NS3LzfOV33-2UXfhSM=g@mail.gmail.com>
+ <cd3778d3-6980-a804-47e3-82b09dc960a4@grsecurity.net>
+ <CAKfTPtDthksitm02sLowDMKbWZ29efth-YcPi0zVSFqbaZfiMA@mail.gmail.com>
+ <8f4ed996-e6e5-75f4-b5fa-dffb7b7da05b@grsecurity.net>
+ <20211105162914.215420-1-minipli@grsecurity.net>
 MIME-Version: 1.0
-Received: from pek-mli1-d2.wrs.com (60.247.85.82) by HK2PR0401CA0007.apcprd04.prod.outlook.com (2603:1096:202:2::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11 via Frontend Transport; Sat, 6 Nov 2021 10:44:28 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4bb5ff10-638c-41f7-62f2-08d9a11269e9
-X-MS-TrafficTypeDiagnostic: PH0PR11MB4950:
-X-Microsoft-Antispam-PRVS: <PH0PR11MB495001FBCD3A713A7C06B8C6F18F9@PH0PR11MB4950.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bJ9TrNxK5oPWV+w58IyMTrcZRAQ5bqhZbkLd5p4Xk2uAa5zE7lGo8PP18bCWZV1DVc9Np29EIvS+5xHlRKIcmmqn/E1co/9epjpJrpvSPdrEZRKgB0Uls1IJeBvZch3sbIphKFJhgIMBFGJ2YNtOyfWGA09FGFdqlT06FAumnabdewHVmIulEoPh5Oypf5ixHl/j+ZRGss9yQwXy4uzvdXi1AdlHJU9nudVAOZO8IllrUsUL+GoEM+1M6trR667tyUgFz6GSiEmebaEAoKhtf1zvophuBjnlIJTl6Ps4S+CjlVmxUxx3ufCRG+GrfHTFCr5WCmpnvs48H+tdnQ4rJ1IpYg9RNJ4mHtOIQXvXyDlwVz+1CF73DAVF/BvaNN/5cQLpZDU8uooX8pNxMKFokh4QaaFv4atfj3TGO6+xBUDOH4qSMbJhb3RDi2NWUgeaM3e7nhbAncK15edpjyZc3z+PAelWStEQm3+1RJyW2pRJM9ujSd+cEIQkWJJIMBtkD57NhzgHisus5B49Ks+kiF6N9qWYYxHDGE4LRKNT9WY+hePu0/+jK9AvXlt2ouHO2lZoujWVmxKepkIKlbmmh6hUb7cxJ2/vio+SJ9mJKa5rsgFEf74dTdrJ4B4lOuUT/+c7dxr5eJHwmjnTjv5v29VDpOH4qDN/VPXVPkzRTIJDziw1/cEM0jn6HFOng0eS6ZP5ghl/jpZIgsfMkuXgiQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5191.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(2616005)(66556008)(52116002)(2906002)(66476007)(316002)(86362001)(45080400002)(66946007)(5660300002)(83380400001)(956004)(38100700002)(38350700002)(1076003)(36756003)(6666004)(107886003)(6512007)(508600001)(186003)(8936002)(8676002)(6486002)(26005)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zUo5ZBMowHN4oN5kDHpS/BbPL8yx0g3A5zFIi0/vdTBCQF0f2aOnVirZQozp?=
- =?us-ascii?Q?lVr6in3Rsv2Z96GytlpR4a8OuFSqTxtYgeGUSsJ0YkbuatFNVhS5Vhq6Oz4c?=
- =?us-ascii?Q?vybE6Z7cj7jcpTj6iaynux7XAiwOKMYeYFbkz8m/yxA1FFKMUUCfnLC1d39Z?=
- =?us-ascii?Q?wfoH9zL4B/9avmd/LFt1x4afGkEMuK3jfxZK2HID/jKjcSuMZNcGCurhhFWs?=
- =?us-ascii?Q?VG6Fy+lwVhTxGMP0SZDmSTCFRKO4tKpVkaqS64zCGdAbWhq8GxGwzZWv1vRq?=
- =?us-ascii?Q?P+8sM7JgOi3XZmNy9KjbVEl/2eOEQv5s2jvHaYuWuJGDURzvJZt+FZt5NkGh?=
- =?us-ascii?Q?tWeTc8/NdNE9kycHz+jBSOhvL4YWozIK9+npQnDCQBcC9hgbJFLaIN/w6O1z?=
- =?us-ascii?Q?hfX5dWd6vm15TbJO5bpOGzMqvLO+ecjXEEj0YRaMJQ6zQCXOKn2cb4H/KLeE?=
- =?us-ascii?Q?a7oVeKaUq6OPZJdwHJW7vTn92AEKza1sKYQWRC2mU0cXzgulVC5XU9DQzylp?=
- =?us-ascii?Q?pKHyfLcNciySQ/PgeCErriHsh5rIs4NoJvSCdu5c2oTf7aYHMC9wWvfpCRZo?=
- =?us-ascii?Q?oZqfbg6y84ZzXpcJUwTwlD1bbDNFL9CEjvXRcaaG0UXTqVONYQBT6+2QawgP?=
- =?us-ascii?Q?+ix4fZVDX6rH6NoaWkbDCKECOtist89JHpBTPgaJGv89AxmDIl+5PonDt/SI?=
- =?us-ascii?Q?2JypsSRUENMX/b9WP1AkTYb7wl9mjDXQmwQTS6RiVXj8He/j3m6oqbOUOEpL?=
- =?us-ascii?Q?YbrO+0UGN+NzSaj89AzB/m7/PObhbVFKHWD3UaAcd8RVQ1zaoszyDz5YTJ0p?=
- =?us-ascii?Q?qHuRcjjrEVemxF8EllvxKUYRz4vc0kdKDAnOtqmpy2meC6sDnFjV300M+a+Z?=
- =?us-ascii?Q?CIilZ8h91XslzyJInmnuAnO3spmoEpSj2AyKLGVbrvadTVpaKpdXeSJ5XmKR?=
- =?us-ascii?Q?WKuto+kygHxW0Sf/MR5BzQUzINYxl+7QLb6OY0drgYENGLOxtebqZVVDzAr+?=
- =?us-ascii?Q?nYumN0ByHgfhNjCvWRyh71OJN+B5GcDglyXpYgdlae+7qf4RldieZro0bJMU?=
- =?us-ascii?Q?1rQAUbkk//gcd+VLRqa1HwxF49DU5fiwoJ6vRISuvg4GLCJ4rsP29fVRYwQk?=
- =?us-ascii?Q?G0g6FWqGM5d6jlVzUNRuc0KZQ4oY2bjLwC5FlRMK+GaYN+QxLm6zJoiyFRSz?=
- =?us-ascii?Q?QWXVwcgDS8+uYvV9fF9yYZxeIMV4R4wPwIbnhcDBSmwxiwA4LprCTvgCX14Y?=
- =?us-ascii?Q?vY4oINFA49qpQvMP9n3vlrT4MfcXabqtuKeiG35VdOeo6wm/hbe1lJ0VG+hT?=
- =?us-ascii?Q?B8GQifAGJzVnN/KnqALeqXyACBc8vCLwpE1g8afIzdAJWt/ohW339eCopbM2?=
- =?us-ascii?Q?blNM5m4l/Rr2Xe9IcuyU2rd81u/X5cqmFawVKtJ1lHKa47tjfLzSN9vT+nKN?=
- =?us-ascii?Q?r1/x9p9bJ1T7pY+qe8tkwYpT6kx+38PumCOF3CY1HsjMF18SXjnc6DD4aRxg?=
- =?us-ascii?Q?cMfmvqPQL+vYq01tF0FLNRovGbkzEGbWUh3VrzElK8jTrJUZw3j1Kwi7jEId?=
- =?us-ascii?Q?er8jFba9ZjJ7kP2qf0TaeOsfaa1vNZO7v3hDtVN4/dUKDI6MgPVYMC39wRgf?=
- =?us-ascii?Q?sM6BDMOyWjywYna78HMKoxA=3D?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4bb5ff10-638c-41f7-62f2-08d9a11269e9
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5191.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2021 10:44:31.0222
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: W0RC8CgZpdTtzQmrOxoLxhBVrFuNye4AXyzneP+13xQZbAcFOm4SZF6x4EwXzuJOOEePIqwsDxWNiXWbYxgsLA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4950
-X-Proofpoint-ORIG-GUID: cWDHNPRcimXpA2jnkMpGJRlFL3xQJqr_
-X-Proofpoint-GUID: cWDHNPRcimXpA2jnkMpGJRlFL3xQJqr_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-06_02,2021-11-03_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 spamscore=0 phishscore=0 clxscore=1011 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=953 bulkscore=0 mlxscore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111060065
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211105162914.215420-1-minipli@grsecurity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When run below command to remove ethernet driver on
-stratix10 platform, there will be warning trace as below:
+On Fri, Nov 05, 2021 at 05:29:14PM +0100, Mathias Krause wrote:
+> > Looks like it needs to be the kfree_rcu() one in this case. I'll prepare
+> > a patch.
+> 
+> Testing the below patch right now. Looking good so far. Will prepare a
+> proper patch later, if we all can agree that this covers all cases.
+> 
+> But the basic idea is to defer the kfree()'s to after the next RCU GP,
+> which also means we need to free the tg object itself later. Slightly
+> ugly. :/
 
-$ cd /sys/class/net/etha01/device/driver
-$ echo ff800000.ethernet > unbind
-
-WARNING: CPU: 3 PID: 386 at drivers/clk/clk.c:810 clk_core_unprepare+0x114/0x274
-Modules linked in: sch_fq_codel
-CPU: 3 PID: 386 Comm: sh Tainted: G        W         5.10.74-yocto-standard #1
-Hardware name: SoCFPGA Stratix 10 SoCDK (DT)
-pstate: 00000005 (nzcv daif -PAN -UAO -TCO BTYPE=--)
-pc : clk_core_unprepare+0x114/0x274
-lr : clk_core_unprepare+0x114/0x274
-sp : ffff800011bdbb10
-clk_core_unprepare+0x114/0x274
- clk_unprepare+0x38/0x50
- stmmac_remove_config_dt+0x40/0x80
- stmmac_pltfr_remove+0x64/0x80
- platform_drv_remove+0x38/0x60
- ... ..
- el0_sync_handler+0x1a4/0x1b0
- el0_sync+0x180/0x1c0
-This issue is introduced by introducing upstream commit 8f269102baf7
-("net: stmmac: disable clocks in stmmac_remove_config_dt()")
-Because clock has been disabled in function stmmac_dvr_remove()
-It not reasonable the remove clock disable action from function
-stmmac_remove_config_dt(), because it is mainly used in probe failed,
-and other platform drivers also use this common function. So, remove
-stmmac_remove_config_dt() from stmmac_pltfr_remove(), only other
-necessary code.
-
-Fixes: 1af3a8e91f1a ("net: stmmac: disable clocks in stmmac_remove_config_dt()")
-Signed-off-by: Meng Li <Meng.Li@windriver.com>
+How's this then?
 
 ---
-
-Some extra comments as below:
-
-1. This patch is only for linux-stable kernel v5.10, so the fixed commit ID is the one
-   in linux-stable kernel, not the one in mainline upsteam kernel.
-
-2. I created a patch only to fix the linux-stable kernel v5.10, not submit it to upstream kernel.
-   The reason as below:
-   In fact, upstream kernel doesn't have this issue any more. Because it has a patch to improve
-   the clock management and other 4 patches to fix the 1st patch. Detial patches as below:
-   5ec55823438e("net: stmmac: add clocks management for gmac driver")
-   30f347ae7cc1("net: stmmac: fix missing unlock on error in stmmac_suspend()")
-   b3dcb3127786("net: stmmac: correct clocks enabled in stmmac_vlan_rx_kill_vid()")
-   4691ffb18ac9("net: stmmac: fix system hang if change mac address after interface ifdown")
-   ab00f3e051e8("net: stmmac: fix issue where clk is being unprepared twice")
-
-   But I think it is a little complex to backport all the 5 patches. Moreover, it may be related
-   with other patches and code context mofification.
-   Therefore, I create a simple and clear patch to only this issue on linux-stable kernel, v 5.10
-
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index 53be8fc1d125..0fb702ce2408 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -706,7 +706,8 @@ int stmmac_pltfr_remove(struct platform_device *pdev)
- 	if (plat->exit)
- 		plat->exit(pdev, plat->bsp_priv);
- 
--	stmmac_remove_config_dt(pdev, plat);
-+	of_node_put(plat->phy_node);
-+	of_node_put(plat->mdio_node);
- 
- 	return ret;
+diff --git a/kernel/sched/autogroup.c b/kernel/sched/autogroup.c
+index 2067080bb235..8629b37d118e 100644
+--- a/kernel/sched/autogroup.c
++++ b/kernel/sched/autogroup.c
+@@ -31,7 +31,7 @@ static inline void autogroup_destroy(struct kref *kref)
+ 	ag->tg->rt_se = NULL;
+ 	ag->tg->rt_rq = NULL;
+ #endif
+-	sched_offline_group(ag->tg);
++	sched_release_group(ag->tg);
+ 	sched_destroy_group(ag->tg);
  }
--- 
-2.17.1
-
+ 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 9cb81ef8acc8..22528bd61ba5 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -9715,6 +9715,21 @@ static void sched_free_group(struct task_group *tg)
+ 	kmem_cache_free(task_group_cache, tg);
+ }
+ 
++static void sched_free_group_rcu(struct rcu_head *rcu)
++{
++	sched_free_group(container_of(rcu, struct task_group, rcu_head));
++}
++
++static void sched_unregister_group(struct task_group *tg)
++{
++	unregister_fair_sched_group(tg);
++	/*
++	 * We have to wait for yet another RCU grace period to expire, as
++	 * print_cfs_stats() might run concurrently.
++	 */
++	call_rcu(&tg->rcu, sched_free_group_rcu);
++}
++
+ /* allocate runqueue etc for a new task group */
+ struct task_group *sched_create_group(struct task_group *parent)
+ {
+@@ -9735,7 +9750,7 @@ struct task_group *sched_create_group(struct task_group *parent)
+ 	return tg;
+ 
+ err:
+-	sched_free_group(tg);
++	sched_unregister_group(tg);
+ 	return ERR_PTR(-ENOMEM);
+ }
+ 
+@@ -9758,25 +9773,35 @@ void sched_online_group(struct task_group *tg, struct task_group *parent)
+ }
+ 
+ /* rcu callback to free various structures associated with a task group */
+-static void sched_free_group_rcu(struct rcu_head *rhp)
++static void sched_unregister_group_rcu(struct rcu_head *rhp)
+ {
+ 	/* Now it should be safe to free those cfs_rqs: */
+-	sched_free_group(container_of(rhp, struct task_group, rcu));
++	sched_unregister_group(container_of(rhp, struct task_group, rcu));
+ }
+ 
+ void sched_destroy_group(struct task_group *tg)
+ {
+ 	/* Wait for possible concurrent references to cfs_rqs complete: */
+-	call_rcu(&tg->rcu, sched_free_group_rcu);
++	call_rcu(&tg->rcu, sched_unregister_group_rcu);
+ }
+ 
+-void sched_offline_group(struct task_group *tg)
++void sched_release_group(struct task_group *tg)
+ {
+ 	unsigned long flags;
+ 
+-	/* End participation in shares distribution: */
+-	unregister_fair_sched_group(tg);
+-
++	/*
++	 * Unlink first, to avoid walk_tg_tree_from() from finding us (via
++	 * sched_cfs_period_timer()).
++	 *
++	 * For this to be effective, we have to wait for all pending users of
++	 * this task group to leave their RCU critical section to ensure no new
++	 * user will see our dying task group any more. Specifically ensure
++	 * that tg_unthrottle_up() won't add decayed cfs_rq's to it.
++	 *
++	 * We therefore defer calling unregister_fair_sched_group() to
++	 * sched_unregister_group() which is guarantied to get called only after the
++	 * current RCU grace period has expired.
++	 */
+ 	spin_lock_irqsave(&task_group_lock, flags);
+ 	list_del_rcu(&tg->list);
+ 	list_del_rcu(&tg->siblings);
+@@ -9895,7 +9920,7 @@ static void cpu_cgroup_css_released(struct cgroup_subsys_state *css)
+ {
+ 	struct task_group *tg = css_tg(css);
+ 
+-	sched_offline_group(tg);
++	sched_release_group(tg);
+ }
+ 
+ static void cpu_cgroup_css_free(struct cgroup_subsys_state *css)
+@@ -9905,7 +9930,7 @@ static void cpu_cgroup_css_free(struct cgroup_subsys_state *css)
+ 	/*
+ 	 * Relies on the RCU grace period between css_released() and this.
+ 	 */
+-	sched_free_group(tg);
++	sched_unregister_group(tg);
+ }
+ 
+ /*
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index f0b249ec581d..20038274c57b 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -504,7 +504,7 @@ extern struct task_group *sched_create_group(struct task_group *parent);
+ extern void sched_online_group(struct task_group *tg,
+ 			       struct task_group *parent);
+ extern void sched_destroy_group(struct task_group *tg);
+-extern void sched_offline_group(struct task_group *tg);
++extern void sched_release_group(struct task_group *tg);
+ 
+ extern void sched_move_task(struct task_struct *tsk);
+ 
