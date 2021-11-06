@@ -2,148 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BBB446D0E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 09:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 837AB446D22
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 10:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233898AbhKFJBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 05:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45734 "EHLO
+        id S233929AbhKFJPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 05:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231772AbhKFJBT (ORCPT
+        with ESMTP id S233906AbhKFJPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 05:01:19 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4D9C061570;
-        Sat,  6 Nov 2021 01:58:38 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id u7so9395351qtc.1;
-        Sat, 06 Nov 2021 01:58:38 -0700 (PDT)
+        Sat, 6 Nov 2021 05:15:42 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0BFC061570;
+        Sat,  6 Nov 2021 02:13:01 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id c20so942359qko.10;
+        Sat, 06 Nov 2021 02:13:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=bxE33X7IpWFgB70FZ2MS1BI8JfapENi/edcV5iiJbfY=;
-        b=RuvAuuwfg1DfQC1URohNu1SQxElJJcbJYxfUIJK+OJ2PMbX8dBuAeaVT5BKEKtOVZC
-         mCe6qKQRQgO91dvHs/OejpBmFpmVaJ483106Y0hchbUiGUYuEXODyKtHwt8v/sR5YOMp
-         P0DfJ59yqeF2orzRYuNg8RWR7XTiXu+gheBBpKRHM5Xr77QDuWz3BohnJKnczRE8vuz7
-         9CHjvSM26MQVfxGpxC3Iq1Hw0ZOg9epUZiWiswxcPTfcAtDtMsNnQ8G1GGRLnM0oQUZ4
-         tolrX4GW6Hb4Ja/8jts4+cBH3sVs8yB9LLGUCPWbf+NuBqBKANOIh/BMqQ5FJ/CKSaVq
-         gdAw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=PX63qJThybc8qmxgHYUMYlSyCq1NFMGIDZAgv7Xx9LM=;
+        b=PCHCxhfQGKHkgBbVj/JAGlmlsEBIiLTckTLku56k8nvSzpt8kyEsjRRcmQ4m6iR4HX
+         JATH+60zm+4MXfoSHnj6dC/BbNPVEwW/Ij1ErOTSiHbhSPYS0x5gez0wITXMVmG+8Se7
+         dJ7YJiPmnxQB8biUc8cmmQvAev0Myq/+QqfRsJFGT6UMruKUFLfhoTQS+9C13YrKhPJS
+         BvkwfuaaI4EndhzKlXMDowViJk/szsiW2q5mUEZHJrjEcnG3Gy76d7BbwO2Eapw4RPJt
+         ZOYLVijLAdocPJKqnkxM6PU9CNjljiXI9dNg0xikdeTA0jp7yjIrfzIQCTDtWEMh57P3
+         Jtpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=bxE33X7IpWFgB70FZ2MS1BI8JfapENi/edcV5iiJbfY=;
-        b=2dzYGkHKBjHuQFky5L2EX4C4oLrJtVW3W52I1ckGBIJUTDsoOEzj3JiMp/ve6opjxa
-         uowo/oy0ANDZDXdofLxNQFunog0aNiNoIQsiaXXH0Vd9aZI1mlJ65lk8l4bCUq1miFC+
-         7com7Hr1Qci8xfUS6Hrj0A6JMwY+ogu7seooKjTYfNN+sPID5+x/nIVummTWq0Q9JPa2
-         LDjhLBo9UwJXqbjrRh7pFzfSXBjyFmFyk6E/QlR3ZwoijneDFX4c68qUu0lrgaMsJedy
-         uJE/uCv563Miy9SCQwIwaC5qAK4dM3KfGAsP+WpwatdDZpyq+JwtRiCuENZFMP4OMaYA
-         G0gw==
-X-Gm-Message-State: AOAM532XQ6NykOxuMMMNW18QBaA1Hd6PYo5B+3VBJRZMswfpiwkNsVum
-        8LUsXPd6kynl+c5InP6Q0Lk=
-X-Google-Smtp-Source: ABdhPJwXmrMAm0F0448vH72ueurSUK2mnx+q5lZomnfDhrtDDOPD1cWmpyQI2btss0+TD9NWo7cyTA==
-X-Received: by 2002:ac8:4e94:: with SMTP id 20mr52827929qtp.150.1636189117045;
-        Sat, 06 Nov 2021 01:58:37 -0700 (PDT)
-Received: from [192.168.0.40] ([162.245.63.85])
-        by smtp.gmail.com with ESMTPSA id v17sm6817912qkl.123.2021.11.06.01.58.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Nov 2021 01:58:36 -0700 (PDT)
-Message-ID: <f9323c6fddd4a55d8ca4191a9539ebd056221045.camel@gmail.com>
-Subject: Re: [PATCH v3 00/21] cpufreq: introduce a new AMD CPU frequency
- control mechanism
-From:   Matt McDonald <gardotd426@gmail.com>
-To:     Huang Rui <ray.huang@amd.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "Sharma, Deepak" <Deepak.Sharma@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
-        Steven Noonan <steven@valvesoftware.com>,
-        "Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
-        "Su, Jinzhou (Joe)" <Jinzhou.Su@amd.com>,
-        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Date:   Sat, 06 Nov 2021 04:58:35 -0400
-In-Reply-To: <YYVXV/sCbO0mPVK2@hr-amd>
-References: <20211029130241.1984459-1-ray.huang@amd.com>
-         <a0e932477e9b826c0781dda1d0d2953e57f904cc.camel@suse.cz>
-         <YYVXV/sCbO0mPVK2@hr-amd>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PX63qJThybc8qmxgHYUMYlSyCq1NFMGIDZAgv7Xx9LM=;
+        b=0ZCx1vgAfy9/6PcVi/aw3ERXMwL6J5ahGG9XyHzQEb4xqiZbRyRY2U8rbqnlp9UDF2
+         Gou1lyBxNqWBVyTf2A88Jwzi7vkhD/6Ng7HaS0XSx3KfU1gZNHrlScXI4w7RM8dL8Mss
+         xGm16WhGwhh7LJmLic/gTbhga5miHgvTyC8JEYMGO535bjcoHdVmm76AuC+QeNZjEa8c
+         rmg98EEaV3rLu/APGv4csA++zCxPcNGmWAjOe20rO8nUISyZCwLW5XdJYUfMrU+MuH9x
+         bP5ecrCrMqXlorXV4fJPcR+EPznHDWuBTYWELjuakqYqWFQYh0aDh/A+ItO3dUSS80Lt
+         wZ5w==
+X-Gm-Message-State: AOAM532yB9CZxeSnOMVjnGmj8RsV4dm7uXRAWDt8Qww6ObY5DDxS+M9J
+        jOJPP/ub7PwxqPpD00Tsz00zEyrwBZPEAwUaHQw=
+X-Google-Smtp-Source: ABdhPJzcgK4H7AdugIlTueY2VSiyaBGl6vbyH+oEMhigN1Ho/LAfp5M9vcc9nP1GB5Kg/0hVtXWP6INtd1Plta4Iqpc=
+X-Received: by 2002:a37:9a42:: with SMTP id c63mr2527573qke.216.1636189981026;
+ Sat, 06 Nov 2021 02:13:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211101060419.4682-1-laoar.shao@gmail.com> <YYM5R95a7jgB2TPO@qmqm.qmqm.pl>
+ <CALOAHbDtoBEr8TuuUEMAnw3aeOf=S10Lh_eBCS=5Ty+JHgdj0Q@mail.gmail.com> <YYXEzlHn28/d5C6A@qmqm.qmqm.pl>
+In-Reply-To: <YYXEzlHn28/d5C6A@qmqm.qmqm.pl>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Sat, 6 Nov 2021 17:12:24 +0800
+Message-ID: <CALOAHbAP5qhKjsgwhekcDcutWpHMsxxGfB+K1-=2RyOyJt9MeQ@mail.gmail.com>
+Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > I've tested this driver and it seems the results are a little
-> > underwhelming.
-> > The test machine is a two sockets server with two AMD EPYC 7713,
-> > family:model:stepping 25:1:1, 128 cores/256 threads, 256G of memory
-> > and SSD
-> > storage. On this system, the amd-pstate driver works only in
-> > "shared memory support", not in "full MSR support",
-> > meaning that frequency switches are triggered from a workqueue
-> > instead of scheduler context (!fast_switch).
+On Sat, Nov 6, 2021 at 7:57 AM Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.q=
+mqm.pl> wrote:
+>
+> On Fri, Nov 05, 2021 at 02:34:58PM +0800, Yafang Shao wrote:
+> > On Thu, Nov 4, 2021 at 9:37 AM Micha=C5=82 Miros=C5=82aw <mirq-linux@re=
+re.qmqm.pl> wrote:
+> > >
+> > > On Mon, Nov 01, 2021 at 06:04:08AM +0000, Yafang Shao wrote:
+> > > > There're many truncated kthreads in the kernel, which may make trou=
+ble
+> > > > for the user, for example, the user can't get detailed device
+> > > > information from the task comm.
+> > > >
+> > > > This patchset tries to improve this problem fundamentally by extend=
+ing
+> > > > the task comm size from 16 to 24, which is a very simple way.
+> > > [...]
+> > >
+> > > Hi,
+> > >
+> > > I've tried something like this a few years back. My attempt got mostl=
+y
+> > > lost in the mailing lists, but I'm still carrying the patches in my
+> > > tree [1]. My target was userspace thread names, and it turned out mor=
+e
+> > > involved than I had time for.
+> > >
+> > > [1] https://rere.qmqm.pl/git/?p=3Dlinux;a=3Dcommit;h=3D2c3814268caf2b=
+1fee6d1a0b61fd1730ce135d4a
+> > >     and its parents
+> > >
+> >
+> > Hi Michal,
+> >
+> > Thanks for the information.
+> >
+> > I have looked through your patches.  It seems to contain six patches
+> > now and can be divided into three parts per my understanding.
+> >
+> > 1. extend task comm len
+> > This parts contains below 4 patches:
+> > [prctl: prepare for bigger
+> > TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=3Dlinux;a=3Dcommit;h=3Dcfd99=
+db9cf911bb4d106889aeba1dfe89b6527d0)
+> > [bluetooth: prepare for bigger
+> > TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=3Dlinux;a=3Dcommit;h=3Dba280=
+5f5196865b81cc6fc938ea53af2c7c2c892)
+> > [taskstats: prepare for bigger
+> > TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=3Dlinux;a=3Dcommit;h=3D4d29b=
+fedc57b36607915a0171f4864ec504908ca)
+> > [mm: make TASK_COMM_LEN
+> > configurable](https://rere.qmqm.pl/git/?p=3Dlinux;a=3Dcommit;h=3D362acc=
+35582445174589184c738c4d86ec7d174b)
+> >
+> > What kind of userspace issues makes you extend the task comm length ?
+> > Why not just use /proc/[pid]/cmdline ?
+>
+> This was to enable longer thread names (as set by pthread_setname_np()).
+> Currently its 16 bytes, and that's too short for e.g. Chrome's or Firefox=
+'es
+> threads. I believe that FreeBSD has 32-byte limit and so I expect that
+> major portable code is already prepared for bigger thread names.
+>
 
-Huang, I've also done some detailed testing, and while many synthetic
-benchmarks seem to show minimal differences between this new frequency
-control mechanism and acpi_cpufreq, the general user experience seems a
-bit degraded, but most of all, gaming performance in many instances (if
-not all) is cut in half. Fully half. 
+The comm len in FreeBSD is (19 + 1) bytes[1], but that is still larger
+than Linux :)
+The task comm is short for many applications, that is why cmdline is
+introduced per my understanding, but pthread_{set, get}name_np() is
+reading/writing the comm or via prctl(2) rather than reading/writing
+the cmdline...
 
-I have an RTX 3090 and a Ryzen 9 5900X, with 32GB (4x8) DDR4 3600. In
-Control with DLSS and RT enabled, on 5.15.rc5 with acpi_cpufreq, I get
-120-130 fps at 1440p. The same exact kernel with v3 of AMD_CPPC gives
-me 50 fps. GPU usage is still at 100, but the CPU frequency is being
-reported as like 5100Mhz*, and other assorted weirdness, but most
-importantly the fps is stuck at 50. This is regardless of performance
-scheduler (schedutil, ondemand, userspace or performance). 
+Is the truncated Chrome or Firefox thread comm really harmful or is
+extending the task comm just for portable?
+Could you pls show me some examples if the short comm is really harmful?
 
-*My CPU can indeed boost over 5GHz on a single core here and there, but
-this was constant and on all cores, so clearly it wasn't accurate.
+Per my understanding, if the short comm is harmful to applications
+then it is worth extending it.
+But if it is only for portable code, it may not be worth extending it.
 
-Also, from the documentation it looks like there's supposed to be a way
-to fall back to acpi_cpufreq, but I found no such way to do that. If
-AMD_CPPC was built into the kernel, I had to use amd-pstate, there was
-no other option. Maybe I misinterpreted and acpi-cpufreq is only able
-to be used as a fallback for CPUs that don't support amd-pstate.
+[1]. https://github.com/freebsd/freebsd-src/blob/main/sys/sys/param.h#L126
 
-I know that gaming on Linux hasn't historically been one of AMD's
-priorities with their CPUs, but with the Steam Deck upcoming I would
-imagine this is a pretty important use-case, and I've tested multiple
-games and they all lose a full 50% performance. I'm happy to test any
-revisions or even kernel parameters or whatever else to try and get
-this sorted. 
+> > 2.  A fix
+> > Below patch:
+> > [procfs: signal /proc/PID/comm write
+> > truncation](https://rere.qmqm.pl/git/?p=3Dlinux;a=3Dcommit;h=3Dd7202738=
+8d4d95db5438a7a574e0a03ae4b5d6d7)
+> >
+> > It seems this patch is incomplete ?   I don't know what it means to do.
+>
+> Currently writes to /proc/PID/comm are silently truncated. This patch
+> makes the write() call return the actual number of bytes actually written
+> and on subsequent calls return -ENOSPC. glibc checks the length in
+> pthread_setname_np() before write(), so the change is not currently
+> relevant for it. I don't know/remember what other runtimes do, though.
+>
+> > 3. A feature provided for pthread_getname_np
+> > Below patch:
+> > [procfs: lseek(/proc/PID/comm, 0,
+> > SEEK_END)](https://rere.qmqm.pl/git/?p=3Dlinux;a=3Dcommit;h=3D2c3814268=
+caf2b1fee6d1a0b61fd1730ce135d4a)
+> >
+> > It seems this patch is useful. With this patch the userspace can
+> > directly get the TASK_COMM_LEN through the API.
+>
+> This one I'm not really fond of because it abuses lseek() in that it
+> doesn't move the write pointer. But in case of /proc files this normally
+> would return EINVAL anyway.
+>
 
+Another possible way is introducing a new PR_GET_COMM_LEN for
+prctl(2), but I'm not sure if it is worth it.
 
-
-> Would you mind that we add a module param or filter the known good
-> processors (mobile parts) to load amd-pstate. And others can use the
-> param
-> to switch between amd-pstate and acpi-cpufreq manually? After we
-> address the
-> performance gap, then we can switch it back.
-
-
-This would be something I would be interested to try.
-
-> 
-> It seems the issue mainly from the processors with big number of
-> cores and
-> threads. Let's find the similiar family threadripper or EYPC
-> processors to
-> duplicate the test results. Will contact at you for details. :-)
-
-This may be an interesting route of investigation, I could potentially
-try running a game with `taskset -c 0-7` or something similar. 
-
-> 
-
+--=20
+Thanks
+Yafang
