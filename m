@@ -2,207 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791A1446E60
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 15:46:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0BA446E6F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 15:58:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234423AbhKFOtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 10:49:32 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:43184 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233629AbhKFOtb (ORCPT
+        id S234428AbhKFPAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 11:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230216AbhKFPAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 10:49:31 -0400
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 1A6EkLhQ029762;
-        Sat, 6 Nov 2021 23:46:22 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 1A6EkLhQ029762
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1636209982;
-        bh=EFEnwvx3tsRer3leh74zzdTZB8FG8KrRilIkmekbhwQ=;
-        h=From:Date:Subject:To:Cc:From;
-        b=LxQNNa6R+d3qdYC8TfTIJLomlUVbifSxsqvhKJ75roOmQkCj4smY53NArFHupuhfT
-         qyibpD6oH0b7PvJXNp9IH2+CegHcLXrig5YXx6tfEo9p4+tA0293fNxC9+rLERpqV+
-         toD42HJaR8+L9sGrhx9bR6YYxAX7KmmLWTwrEvPQjqPJz7krTlfoLvm2FVLw18GNUY
-         lYsjYyTkxygvg/iAQLWMAzKE8LpMFW43yZCquSfn5DScBAo0LT6Ab+4vcmyxTebnhU
-         XEx6XRtNIL2IYGCHbaI+PKRhMptFxLjyr2O88pC4QKQ3CdrhJT9LQFu9iBXakaiYrG
-         iRuFTWj2E1ncA==
-X-Nifty-SrcIP: [209.85.214.171]
-Received: by mail-pl1-f171.google.com with SMTP id y1so12852612plk.10;
-        Sat, 06 Nov 2021 07:46:21 -0700 (PDT)
-X-Gm-Message-State: AOAM53224/Sa7gJ3Jmrg2NAkL7bbpbpIn95jidN20F1IhOsN85NUvlhc
-        f8Wixaf7w6a30CowmUJ5yR77ZVzp6/rCUuPcVIs=
-X-Google-Smtp-Source: ABdhPJySTlOtyCQ86nmxJl28BK11GUz021KLB4vL4oIsYLC0CO7sF0bebD8wbYnoQIGaiHxdQc6cTNScqvNNJHETthE=
-X-Received: by 2002:a17:90b:1d0f:: with SMTP id on15mr26679974pjb.144.1636209981014;
- Sat, 06 Nov 2021 07:46:21 -0700 (PDT)
+        Sat, 6 Nov 2021 11:00:47 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2C4C061714
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 07:58:06 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so5454849pjb.4
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Nov 2021 07:58:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MocImPNzBj/te/rH5DIhKsqDP9k0g3D8Pxj9skocwwQ=;
+        b=EIyULtb6dIuL82h9nB/PyTpo+Wrc4hNwD5mGr+oSH5pj9LH27gW2f0abd5pfoG3oi3
+         XuLOEVX2OVMhAZmLkledXYGCv37Y+0S50h4ZT/2cie5ZijVNUtiS8gxEQScFd7GqEfpV
+         sUAqwXC9k5QFMRSt/xFbfVbOzYnrMuuaNcUlVeJwcO2LOy9j/fovWGEy4/224kgGPBWW
+         v/WyrCuXlTG0LYtTg2mh6BSls7VzrClxcJk+ReSrT0fcC6yrHffqsVPlBjunL38ixk82
+         /LIvjAsz9uAvTezBsCpka0WjyopgL/20JmxdW7HvD4JEK7YrW+RZYquqkyD/4WkYsYxN
+         wCvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MocImPNzBj/te/rH5DIhKsqDP9k0g3D8Pxj9skocwwQ=;
+        b=Efy4nFfVxcvQK7LQlAl3H0m4O2s3EsC+XaJtN7+wsN0SsFVkAvibIMv5LUUXEOlq/1
+         9wvftrv5PFq8f0hsBUZwT65JMygc/a5POCiolaBFvwYpt0xd9OywG2sDMHByBTCvSGis
+         BykpP1Omptbqg/IUCfxm0SP4Dv8aZFWTakJwqdoYoo/TOjX4GZr2GoC8K4pWP4dFavjK
+         ioe1xkPiDr8eKdHt5oVBIQhSaRyU1OaGHvPGxnz0VCKDUx2PjK0mvu+3yUaKs+d9Bfg/
+         5k//NMKWe6PvmjFQvLvrlqVM3QcoMceMyIysP/8a4j/wLTcr8FrkC21S/uLHTs61o/qX
+         mLbQ==
+X-Gm-Message-State: AOAM5315fYiiIYZ+JpVmc5pkGNWHw0sEkFhT/toWTlc3VxsGeP9j9h61
+        xOHqwL20Astzel+n2MsEgdrnQg==
+X-Google-Smtp-Source: ABdhPJz1w0bwOM+yxx8ucawI2qT9jc8DwbGefq+5B2DnoMYxgpMKTkJ7dr5XQW5ZcNpVkO3jMWb5Aw==
+X-Received: by 2002:a17:90a:a78f:: with SMTP id f15mr37971634pjq.106.1636210685240;
+        Sat, 06 Nov 2021 07:58:05 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([134.195.101.46])
+        by smtp.gmail.com with ESMTPSA id x2sm7713602pfd.144.2021.11.06.07.58.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Nov 2021 07:58:04 -0700 (PDT)
+Date:   Sat, 6 Nov 2021 22:57:58 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     German Gomez <german.gomez@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 3/3] perf arm-spe: Support hardware-based PID tracing
+Message-ID: <20211106145758.GJ477387@leoy-ThinkPad-X240s>
+References: <20211102180739.18049-1-german.gomez@arm.com>
+ <20211102180739.18049-4-german.gomez@arm.com>
 MIME-Version: 1.0
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 6 Nov 2021 23:45:44 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARr1q9YfXRZy+uo9WRA6iNj2kkA9=ba0N1CtMc8NFtVvA@mail.gmail.com>
-Message-ID: <CAK7LNARr1q9YfXRZy+uo9WRA6iNj2kkA9=ba0N1CtMc8NFtVvA@mail.gmail.com>
-Subject: [GIT PULL] Kbuild updates for v5.16-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211102180739.18049-4-german.gomez@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi German,
 
-Please pull Kbuild updates.
-Thanks.
+On Tue, Nov 02, 2021 at 06:07:39PM +0000, German Gomez wrote:
+> If Arm SPE traces contain CONTEXT packets with PID info, use these
+> values for tracking pid of samples. Otherwise fall back to using context
+> switch events and display a message warning the user of possible timing
+> inaccuracies [1].
+> 
+> [1] https://lore.kernel.org/lkml/f877cfa6-9b25-6445-3806-ca44a4042eaf@arm.com/
 
+First of all, I'd like to clarify one thing:
 
+The pid/tid has been supported for 'per-thread' mode, the function
+arm_spe_process_timeless_queues() invokes arm_spe_set_pid_tid_cpu() to
+initialize 'speq->tid' and assign auxtrace_queue's tid to it.
 
+Thus, in this patch set we only need to consider support context packet
+for CPU wide tracing and system wide tracing.  The following comments
+are heavily based on this assumption.
 
-The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82=
-:
+> Signed-off-by: German Gomez <german.gomez@arm.com>
+> ---
+>  tools/perf/util/arm-spe.c | 123 ++++++++++++++++++++++++++++----------
+>  1 file changed, 92 insertions(+), 31 deletions(-)
+> 
+> diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
+> index 230bc7ab2..00a409469 100644
+> --- a/tools/perf/util/arm-spe.c
+> +++ b/tools/perf/util/arm-spe.c
+> @@ -71,6 +71,7 @@ struct arm_spe {
+>  	u64				kernel_start;
+>  
+>  	unsigned long			num_events;
+> +	u8				use_ctx_pkt_for_pid;
+>  };
+>  
+>  struct arm_spe_queue {
+> @@ -226,6 +227,44 @@ static inline u8 arm_spe_cpumode(struct arm_spe *spe, u64 ip)
+>  		PERF_RECORD_MISC_USER;
+>  }
+>  
+> +static void arm_spe_set_pid_tid_cpu(struct arm_spe *spe,
+> +				    struct auxtrace_queue *queue)
+> +{
+> +	struct arm_spe_queue *speq = queue->priv;
+> +	pid_t tid;
+> +
+> +	tid = machine__get_current_tid(spe->machine, speq->cpu);
+> +	if (tid != -1) {
+> +		speq->tid = tid;
+> +		thread__zput(speq->thread);
+> +	} else
+> +		speq->tid = queue->tid;
+> +
+> +	if ((!speq->thread) && (speq->tid != -1)) {
+> +		speq->thread = machine__find_thread(spe->machine, -1,
+> +						    speq->tid);
+> +	}
+> +
+> +	if (speq->thread) {
+> +		speq->pid = speq->thread->pid_;
+> +		if (queue->cpu == -1)
+> +			speq->cpu = speq->thread->cpu;
+> +	}
+> +}
+> +
+> +static int arm_spe_set_tid(struct arm_spe_queue *speq, pid_t tid)
+> +{
+> +	struct arm_spe *spe = speq->spe;
+> +	int err = machine__set_current_tid(spe->machine, speq->cpu, tid, tid);
+> +
+> +	if (err)
+> +		return err;
+> +
+> +	arm_spe_set_pid_tid_cpu(spe, &spe->queues.queue_array[speq->queue_nr]);
+> +
+> +	return 0;
+> +}
+> +
+>  static void arm_spe_prep_sample(struct arm_spe *spe,
+>  				struct arm_spe_queue *speq,
+>  				union perf_event *event,
+> @@ -460,6 +499,13 @@ static int arm_spe_run_decoder(struct arm_spe_queue *speq, u64 *timestamp)
+>  		 * can correlate samples between Arm SPE trace data and other
+>  		 * perf events with correct time ordering.
+>  		 */
+> +
+> +		if (spe->use_ctx_pkt_for_pid) {
+> +			ret = arm_spe_set_tid(speq, speq->decoder->record.context_id);
+> +			if (ret)
+> +				return ret;
+> +		}
+> +
 
-  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
+If trace contains context packet, we can give it the priority.  So at
+here we can always update tid based on the latest context_id from the
+context packet.
 
-are available in the Git repository at:
+And for 'per thread' mode, we should not set pid/tid for it.  The
+reason is arm_spe_set_tid() will return error for 'per thread' mode,
+because the 'speq->cpu' is -1, so it cannot set tid/pid for CPU '-1'.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-kbuild-v5.16
+And if we detect there have context packet is incoming, we should set
+the flag 'spe->use_ctx_pkt_for_pid' true.
 
-for you to fetch changes up to 8212f8986d311ccf6a72305e6bdbd814691701d6:
+How about below code:
 
-  kbuild: use more subdir- for visiting subdirectories while cleaning
-(2021-10-24 13:49:46 +0900)
+        /* Update pid/tid info */
+        record = &speq->decoder->record;
+        if (!spe->timeless_decoding && record->context_id != (u64)-1) {
+                ret = arm_spe_set_tid(speq, record->context_id);
+                if (ret)
+                        return ret;
 
-----------------------------------------------------------------
-Kbuild updates for v5.16
+                spe->use_ctx_pkt_for_pid = 1;
+        }
 
- - Remove the global -isystem compiler flag, which was made possible by
-   the introduction of <linux/stdarg.h>
+>  		ret = arm_spe_sample(speq);
+>  		if (ret)
+>  			return ret;
+> @@ -586,31 +632,6 @@ static bool arm_spe__is_timeless_decoding(struct arm_spe *spe)
+>  	return timeless_decoding;
+>  }
+>  
+> -static void arm_spe_set_pid_tid_cpu(struct arm_spe *spe,
+> -				    struct auxtrace_queue *queue)
+> -{
+> -	struct arm_spe_queue *speq = queue->priv;
+> -	pid_t tid;
+> -
+> -	tid = machine__get_current_tid(spe->machine, speq->cpu);
+> -	if (tid != -1) {
+> -		speq->tid = tid;
+> -		thread__zput(speq->thread);
+> -	} else
+> -		speq->tid = queue->tid;
+> -
+> -	if ((!speq->thread) && (speq->tid != -1)) {
+> -		speq->thread = machine__find_thread(spe->machine, -1,
+> -						    speq->tid);
+> -	}
+> -
+> -	if (speq->thread) {
+> -		speq->pid = speq->thread->pid_;
+> -		if (queue->cpu == -1)
+> -			speq->cpu = speq->thread->cpu;
+> -	}
+> -}
+> -
+>  static int arm_spe_process_queues(struct arm_spe *spe, u64 timestamp)
+>  {
+>  	unsigned int queue_nr;
+> @@ -641,7 +662,13 @@ static int arm_spe_process_queues(struct arm_spe *spe, u64 timestamp)
+>  			ts = timestamp;
+>  		}
+>  
+> -		arm_spe_set_pid_tid_cpu(spe, queue);
+> +		/*
+> +		 * Here we only consider PID tracking based on switch events.
+> +		 * For tracking based on CONTEXT packets, the pid is assigned in the function
+> +		 * arm_spe_run_decoder() in order to support timeless decoding.
+> +		 */
+> +		if (!spe->use_ctx_pkt_for_pid)
+> +			arm_spe_set_pid_tid_cpu(spe, queue);
 
- - Improve the Kconfig help to print the location in the top menu level
+Yeah, this is right; if without context packet, we need to update thread
+context at this point.
 
- - Fix "FORCE prerequisite is missing" build warning for sparc
+Could you refine the comment like something:
 
- - Add new build targets, tarzst-pkg and perf-tarzst-src-pkg, which generat=
-e
-   a zstd-compressed tarball
+"The switch events has set pid/tid in the machine's context, here we
+update the thread and pid/tid info for spe queue."
 
- - Prevent gen_init_cpio tool from generating a corrupted cpio when
-   KBUILD_BUILD_TIMESTAMP is set to 2106-02-07 or later
+>  		ret = arm_spe_run_decoder(speq, &ts);
+>  		if (ret < 0) {
+> @@ -740,8 +767,9 @@ static int arm_spe_process_event(struct perf_session *session,
+>  		if (err)
+>  			return err;
+>  
+> -		if (event->header.type == PERF_RECORD_SWITCH_CPU_WIDE ||
+> -		    event->header.type == PERF_RECORD_SWITCH)
+> +		if (!spe->use_ctx_pkt_for_pid &&
+> +		    (event->header.type == PERF_RECORD_SWITCH_CPU_WIDE ||
+> +		     event->header.type == PERF_RECORD_SWITCH))
+>
+>  			err = arm_spe_context_switch(spe, event, sample);
+>  	}
+>  
+> @@ -805,10 +833,16 @@ static int arm_spe_flush(struct perf_session *session __maybe_unused,
+>  		return ret;
+>  
+>  	if (spe->timeless_decoding)
+> -		return arm_spe_process_timeless_queues(spe, -1,
+> +		ret = arm_spe_process_timeless_queues(spe, -1,
+>  				MAX_TIMESTAMP - 1);
+> +	else
+> +		ret = arm_spe_process_queues(spe, MAX_TIMESTAMP);
+>  
+> -	return arm_spe_process_queues(spe, MAX_TIMESTAMP);
+> +	if (!spe->use_ctx_pkt_for_pid)
+> +		ui__warning("Arm SPE CONTEXT packets not found in the traces.\n\n"
+> +			    "Matching of TIDs to SPE events could be inaccurate.\n\n");
 
- - Misc cleanups
+I think we only need to report the warning for no timeless case and
+it's not necessary to change code for timeless decoding, thus the
+change could be:
 
-----------------------------------------------------------------
-Alexey Dobriyan (1):
-      isystem: delete global -isystem compile option
+        ret = arm_spe_process_queues(spe, MAX_TIMESTAMP);
+        if (!spe->use_ctx_pkt_for_pid)
+        ui__warning("Arm SPE CONTEXT packets not found in the traces.\n"
+                    "Matching of TIDs to SPE events could be inaccurate.\n");
 
-Ariel Marcovitch (1):
-      kconfig: Create links to main menu items in search
+> +
+> +	return ret;
+>  }
+>  
+>  static void arm_spe_free_queue(void *priv)
+> @@ -1056,6 +1090,22 @@ arm_spe_synth_events(struct arm_spe *spe, struct perf_session *session)
+>  	return 0;
+>  }
+>  
+> +static bool arm_spe_is_ctx_pkt_enabled(struct arm_spe *spe)
+> +{
+> +	struct auxtrace_queues *queues = &spe->queues;
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < queues->nr_queues; i++) {
+> +		struct auxtrace_queue *queue = &spe->queues.queue_array[i];
+> +		struct arm_spe_queue *speq = queue->priv;
+> +
+> +		if (speq)
+> +			return speq->decoder->record.context_id != (u64) -1;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+>  int arm_spe_process_auxtrace_info(union perf_event *event,
+>  				  struct perf_session *session)
+>  {
+> @@ -1131,9 +1181,20 @@ int arm_spe_process_auxtrace_info(union perf_event *event,
+>  	if (err)
+>  		goto err_free_queues;
+>  
+> -	if (spe->queues.populated)
+> +	if (spe->queues.populated) {
+>  		spe->data_queued = true;
+>  
+> +		/*
+> +		 * Ensure the first record of every queue can be read in the function
+> +		 * arm_spe_is_ctx_pkt_enabled()
+> +		 */
+> +		err = arm_spe__update_queues(spe);
+> +		if (err)
+> +			goto err_free_queues;
+> +
+> +		spe->use_ctx_pkt_for_pid = arm_spe_is_ctx_pkt_enabled(spe);
 
-Hui Su (1):
-      scripts: update the comments of kallsyms support
+I don't think this change is needed.
 
-Kees Cook (1):
-      sparc: Add missing "FORCE" target when using if_changed
+arm_spe__setup_queue() will start to decode and it returns back the
+first record; then function arm_spe_run_decoder() will check
+'record->context_id', if detect 'context_id' is not '-1' it will set
+'spe->use_ctx_pkt_for_pid' as true.
 
-Masahiro Yamada (22):
-      nios2: move the install rule to arch/nios2/Makefile
-      kbuild: move objtool_args back to scripts/Makefile.build
-      kbuild: rename __objtool_obj and reuse it for cmd_cc_lto_link_modules
-      kbuild: store the objtool command in *.cmd files
-      kbuild: factor out OBJECT_FILES_NON_STANDARD check into a macro
-      kbuild: detect objtool update without using .SECONDEXPANSION
-      kbuild: reuse $(cmd_objtool) for cmd_cc_lto_link_modules
-      kconfig: narrow the scope of variables in the lexer
-      kconfig: rename a variable in the lexer to a clearer name
-      kconfig: remove 'const' from the return type of sym_escape_string_val=
-ue()
-      kconfig: refactor conf_write_heading()
-      kconfig: refactor conf_write_symbol()
-      kconfig: refactor listnewconfig code
-      kconfig: move sym_escape_string_value() to confdata.c
-      kconfig: add conf_get_autoheader_name()
-      kconfig: refactor conf_write_autoconf()
-      kconfig: refactor conf_write_dep()
-      kconfig: refactor conf_touch_dep()
-      gen_init_cpio: add static const qualifiers
-      kbuild: split DEBUG_CFLAGS out to scripts/Makefile.debug
-      sh: remove meaningless archclean line
-      kbuild: use more subdir- for visiting subdirectories while cleaning
+So here we don't need to invoke arm_spe__update_queues().  And I have
+some concern that this might introduce other potential issue,
+especially the callback process_auxtrace_info() usually is only used
+for early initializatoin rather than trace data decoding.
 
-Nicolas Schier (1):
-      initramfs: Check timestamp to prevent broken cpio archive
+Thanks,
+Leo
 
-Pawe=C5=82 Jasiak (1):
-      kbuild: Add make tarzst-pkg build option
-
- Documentation/kbuild/makefiles.rst |  17 +-
- Makefile                           |  41 +---
- arch/alpha/Kbuild                  |   3 +
- arch/alpha/Makefile                |   3 -
- arch/arc/Kbuild                    |   3 +
- arch/arc/Makefile                  |   3 -
- arch/arm/Kbuild                    |   3 +
- arch/arm/Makefile                  |   4 -
- arch/arm64/Kbuild                  |   3 +
- arch/arm64/Makefile                |   7 -
- arch/arm64/kernel/Makefile         |   3 +
- arch/arm64/lib/Makefile            |   2 +
- arch/csky/Kbuild                   |   3 +
- arch/csky/Makefile                 |   3 -
- arch/h8300/Kbuild                  |   3 +
- arch/h8300/Makefile                |   3 -
- arch/ia64/Makefile                 |   2 -
- arch/m68k/Makefile                 |   4 +-
- arch/microblaze/Kbuild             |   3 +
- arch/microblaze/Makefile           |   3 -
- arch/mips/Kbuild                   |   3 +
- arch/mips/Makefile                 |   8 +-
- arch/mips/boot/Makefile            |   3 +
- arch/nds32/Kbuild                  |   3 +
- arch/nds32/Makefile                |   5 +-
- arch/nios2/Kbuild                  |   3 +
- arch/nios2/Makefile                |   9 +-
- arch/nios2/boot/Makefile           |   3 -
- arch/openrisc/Kbuild               |   3 +
- arch/openrisc/Makefile             |   7 +-
- arch/parisc/Kbuild                 |   3 +
- arch/parisc/Makefile               |   7 +-
- arch/powerpc/Kbuild                |   3 +
- arch/powerpc/Makefile              |   7 +-
- arch/powerpc/lib/Makefile          |   2 +
- arch/riscv/Kbuild                  |   3 +
- arch/riscv/Makefile                |   7 +-
- arch/s390/Kbuild                   |   3 +
- arch/s390/Makefile                 |   8 +-
- arch/sh/Kbuild                     |   3 +
- arch/sh/Makefile                   |   4 -
- arch/sparc/Kbuild                  |   3 +
- arch/sparc/Makefile                |   3 -
- arch/sparc/boot/Makefile           |   8 +-
- arch/x86/Kbuild                    |   3 +
- arch/x86/Makefile                  |   2 -
- arch/xtensa/Makefile               |   4 +-
- crypto/Makefile                    |   2 +
- lib/raid6/Makefile                 |   4 +
- scripts/Makefile.build             |  63 +++---
- scripts/Makefile.debug             |  33 +++
- scripts/Makefile.lib               |  11 -
- scripts/Makefile.package           |  10 +-
- scripts/kconfig/conf.c             |  15 +-
- scripts/kconfig/confdata.c         | 441 ++++++++++++++++++++-------------=
-----
- scripts/kconfig/lexer.l            |   9 +-
- scripts/kconfig/lkc_proto.h        |   2 +-
- scripts/kconfig/menu.c             |  33 +--
- scripts/kconfig/symbol.c           |  43 ----
- scripts/link-vmlinux.sh            |   6 +-
- scripts/package/buildtar           |   4 +
- usr/gen_init_cpio.c                |  20 +-
- 62 files changed, 453 insertions(+), 479 deletions(-)
- create mode 100644 scripts/Makefile.debug
-
-
---=20
-Best Regards
-Masahiro Yamada
+> +	}
+> +
+>  	return 0;
+>  
+>  err_free_queues:
+> -- 
+> 2.25.1
+> 
