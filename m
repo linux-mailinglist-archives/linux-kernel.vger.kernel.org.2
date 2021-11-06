@@ -2,99 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 266DB446B92
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 01:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48926446B93
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 01:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232269AbhKFA1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 20:27:13 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:43802 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230282AbhKFA1L (ORCPT
+        id S231879AbhKFA27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 20:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231706AbhKFA25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 20:27:11 -0400
-Received: by mail-ot1-f46.google.com with SMTP id i16-20020a9d68d0000000b0055c630be045so4792940oto.10;
-        Fri, 05 Nov 2021 17:24:30 -0700 (PDT)
+        Fri, 5 Nov 2021 20:28:57 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB73C061205
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 17:26:17 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id s24so12120701plp.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 17:26:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=Crt/PTh78XJKn/EXCj3NCFw7rVkrtpZ9Yjpzof6KWbE=;
+        b=ObsfDdz3bHeI/sIjLlvqIa5WqznwNTKGpXcm7eYsI4n5xFmpa+ZI3DXEfDvauoWuoM
+         5hzp3KaQOnTIui4A2IVn9C+Kq1p8eEk4cT2/2yJUmqcunscW1mX8X6u3nl7S4LIt1qfz
+         I6yVZxjbLgjJm6gW3f8ldUeyjzIvk1YBNsMNepUTMxs6S7yFM/g0Tud3Ou9E9qUuTZ7x
+         06i2LPIK4BDTF6nzBT6kSBzAGWLbMAOmOdXD4GW4AU8JyAW3Z/AS2Hm6PIe1ksHpjzHQ
+         FRgycbA0YaTnIFQAwgrXnRidHvl/oiPrH5VVc/h+zkiV3gWSObmZXoytVyqzUPguodXO
+         S+UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=PHkUHNRSgGKJJ5x9Czw+f8F7S8eqegCyS+KNmMqDioo=;
-        b=uVjHedOK5PqfV0i/5qKSVyxyHXSydvmGz1RfIQgpI5Alj5om76mC63mkPE2RI1Q+N4
-         ZIPVgjIEzmp8OnupG4UVsDk8khGEotjXZ5Vz+b/bqX3qn+Bi8P6ulCesljxjrBBCNLfb
-         y13hPfsXAKB6J5L0Y3nW8EyvgbotV3DO6LOWKtPHRk+VtY8HWkrWi/2dtuql8oUkboVk
-         /hQVYmtrAAAq2KuZcVhQkpRCudJxr65LJyHL71JiHvqAOXZdu7NEeuiIqkuBAbWorool
-         Z1sam3+UatuMVPYHDzb5zA2vXpy0hA1lqTitSGyNF6lWRNVOyJNeM5HGAU18BgUgLTzB
-         xC4Q==
-X-Gm-Message-State: AOAM533GgGJ2jnEQcscBs5uJzUMnDe+237X7yDtJEl40gqEkFmnd/13u
-        h6j9YcHcmPuEX3IWKckl6Q==
-X-Google-Smtp-Source: ABdhPJzEpM2oE758JPy/Vs1YwXoKf/P2GJ3dymT26SjQaUm9cxMcWji+fZiLc4GiOkNPvVWdzbIRag==
-X-Received: by 2002:a9d:850:: with SMTP id 74mr17617558oty.349.1636158270293;
-        Fri, 05 Nov 2021 17:24:30 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id p12sm1491083otp.79.2021.11.05.17.24.29
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=Crt/PTh78XJKn/EXCj3NCFw7rVkrtpZ9Yjpzof6KWbE=;
+        b=a3HlW4X1O/iBqcNfxOsJOx5x+tfpoCEIXfHprJHoJkHuq1lJBOQxWHxuhlEgHjvsOj
+         GrPCZgqX90Pf9Pe0qNjvjibZ18GWzd3xIEQaCnMJIxIXsLnFvLTRf4OMRsz3GidVg73d
+         NSHH6wCXUrBxFFJdlRtBoxJyGAARijkBuB0FS42JWuX6IoiOPe0G5P8/TZNt51nwhVDf
+         9ZgiegvRr0Hb8c6/KsdLfIEzz9Bd7p31wrOOlS1GlcQgkZKYLctAbVpdKxvZ6wBgDmvy
+         L8mNH3Ht79tdfLkOkrGXjfHToym1Qr/AbACpkY83aC1gbuRybKP7AlOHPHROIKIK4Gqi
+         xHOw==
+X-Gm-Message-State: AOAM531YKTJ/Mgq59H7+NiOTIKVa60BdKBA6O3u+CzgjgeJF4Y6KyLA5
+        b1ksM0xz5bZHweMKtTs4B/XvXRq+tzA=
+X-Google-Smtp-Source: ABdhPJwkhpM8LKvrt8iGHgNYeyDWcz3Y1KcLoYAzobd7RYEaz6KKNw5tdV87eozUTV6jHfRDrWqrsg==
+X-Received: by 2002:a17:903:230b:b0:141:e3ce:2738 with SMTP id d11-20020a170903230b00b00141e3ce2738mr36257421plh.57.1636158377013;
+        Fri, 05 Nov 2021 17:26:17 -0700 (PDT)
+Received: from localhost (60-241-46-56.tpgi.com.au. [60.241.46.56])
+        by smtp.gmail.com with ESMTPSA id o129sm829126pfg.44.2021.11.05.17.26.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 17:24:29 -0700 (PDT)
-Received: (nullmailer pid 2112791 invoked by uid 1000);
-        Sat, 06 Nov 2021 00:24:28 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Cosmin Tanislav <demonsingur@gmail.com>
-Cc:     devicetree@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        cosmin.tanislav@analog.com,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>, linux-iio@vger.kernel.org,
-        linux-gpio@vger.kernel.org
-In-Reply-To: <20211105143550.1783528-3-demonsingur@gmail.com>
-References: <20211105143550.1783528-1-demonsingur@gmail.com> <20211105143550.1783528-3-demonsingur@gmail.com>
-Subject: Re: [PATCH v3 2/3] dt-bindings: iio: add AD74413R
-Date:   Fri, 05 Nov 2021 19:24:28 -0500
-Message-Id: <1636158268.701301.2112790.nullmailer@robh.at.kernel.org>
+        Fri, 05 Nov 2021 17:26:16 -0700 (PDT)
+Date:   Sat, 06 Nov 2021 10:26:11 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: Removal of printk safe buffers delays NMI context printk
+To:     John Ogness <john.ogness@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>
+Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+References: <1636039236.y415994wfa.astroid@bobo.none>
+        <87ee7vki7f.fsf@jogness.linutronix.de>
+        <1636073838.qpmyp6q17i.astroid@bobo.none>
+        <87r1bv2aga.fsf@jogness.linutronix.de>
+        <1636111599.wwppq55w4t.astroid@bobo.none>
+        <87h7cqg0xk.fsf@jogness.linutronix.de> <YYVakNdzjrYuBmhf@alley>
+        <87lf22eem7.fsf@jogness.linutronix.de>
+In-Reply-To: <87lf22eem7.fsf@jogness.linutronix.de>
+MIME-Version: 1.0
+Message-Id: <1636158295.cxlln6r0kk.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 05 Nov 2021 16:35:49 +0200, Cosmin Tanislav wrote:
-> Add device tree bindings for AD74413R.
-> 
-> Signed-off-by: Cosmin Tanislav <cosmin.tanislav@analog.com>
-> ---
->  .../bindings/iio/addac/adi,ad74413r.yaml      | 153 ++++++++++++++++++
->  include/dt-bindings/iio/addac/adi,ad74413r.h  |  21 +++
->  2 files changed, 174 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/addac/adi,ad74413r.yaml
->  create mode 100644 include/dt-bindings/iio/addac/adi,ad74413r.h
-> 
+Excerpts from John Ogness's message of November 6, 2021 2:44 am:
+> On 2021-11-05, Petr Mladek <pmladek@suse.com> wrote:
+>> On Fri 2021-11-05 15:03:27, John Ogness wrote:
+>>> On 2021-11-05, Nicholas Piggin <npiggin@gmail.com> wrote:
+>>>> but we do need that printk flush capability back there and for
+>>>> nmi_backtrace.
+>>>=20
+>>> Agreed. I had not considered this necessary side-effect when I
+>>> removed the NMI safe buffers.
+>>
+>> Honestly, I do not understand why it stopped working or how
+>> it worked before.
+>=20
+> IIUC, Nick is presenting a problem where a lockup on the other CPUs is
+> detected. Those CPUs will dump their backtraces per NMI context. But in
+> their lockup state the irq_work for those CPUs is not functional. So
+> even though the messages are in the buffer, there is no one printing the
+> buffer.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Yep.
 
-yamllint warnings/errors:
+> printk_safe_flush() would dump the NMI safe buffers for all the CPUs
+> into the printk buffer, then trigger an irq_work on itself (the
+> non-locked-up CPU).
+>=20
+> That irq_work trigger was critical, because the other CPUs (which also
+> triggered irq_works for themselves) aren't able to process irq_works. I
+> did not consider this case. Which is why we still need to trigger
+> irq_work here. (Or, as the removed comment hinted at, add some printk()
+> call to either directly print or trigger the irq_work.)
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/addac/adi,ad74413r.yaml: properties:adi,rsense-resistance-ohms: '$ref' should not be valid under {'const': '$ref'}
-	hint: Standard unit suffix properties don't need a type $ref
-	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/addac/adi,ad74413r.yaml: ignoring, error in schema: properties: adi,rsense-resistance-ohms
-warning: no schema found in file: ./Documentation/devicetree/bindings/iio/addac/adi,ad74413r.yaml
-Error: Documentation/devicetree/bindings/iio/addac/adi,ad74413r.example.dts:23.32-33 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/iio/addac/adi,ad74413r.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1441: dt_binding_check] Error 2
+This patch seems to work, I can submit it if you'd like?
 
-doc reference errors (make refcheckdocs):
+Thanks,
+Nick
 
-See https://patchwork.ozlabs.org/patch/1551417
+---
+ arch/powerpc/kernel/watchdog.c | 6 ++++++
+ include/linux/printk.h         | 4 ++++
+ kernel/printk/printk.c         | 5 +++++
+ lib/nmi_backtrace.c            | 6 ++++++
+ 4 files changed, 21 insertions(+)
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+diff --git a/arch/powerpc/kernel/watchdog.c b/arch/powerpc/kernel/watchdog.=
+c
+index 5f69ba4de1f3..c8017bc23b00 100644
+--- a/arch/powerpc/kernel/watchdog.c
++++ b/arch/powerpc/kernel/watchdog.c
+@@ -227,6 +227,12 @@ static void watchdog_smp_panic(int cpu)
+ 		cpumask_clear(&wd_smp_cpus_ipi);
+ 	}
+=20
++	/*
++	 * Force flush any remote buffers that might be stuck in IRQ context
++	 * and therefore could not run their irq_work.
++	 */
++	printk_trigger_flush();
++
+ 	if (hardlockup_panic)
+ 		nmi_panic(NULL, "Hard LOCKUP");
+=20
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index 85b656f82d75..9497f6b98339 100644
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -198,6 +198,7 @@ void dump_stack_print_info(const char *log_lvl);
+ void show_regs_print_info(const char *log_lvl);
+ extern asmlinkage void dump_stack_lvl(const char *log_lvl) __cold;
+ extern asmlinkage void dump_stack(void) __cold;
++void printk_trigger_flush(void);
+ #else
+ static inline __printf(1, 0)
+ int vprintk(const char *s, va_list args)
+@@ -274,6 +275,9 @@ static inline void dump_stack_lvl(const char *log_lvl)
+ static inline void dump_stack(void)
+ {
+ }
++static inline void printk_trigger_flush(void)
++{
++}
+ #endif
+=20
+ #ifdef CONFIG_SMP
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index a8d0a58deebc..99221b016c68 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -3252,6 +3252,11 @@ void defer_console_output(void)
+ 	preempt_enable();
+ }
+=20
++void printk_trigger_flush(void)
++{
++	defer_console_output();
++}
++
+ int vprintk_deferred(const char *fmt, va_list args)
+ {
+ 	int r;
+diff --git a/lib/nmi_backtrace.c b/lib/nmi_backtrace.c
+index f9e89001b52e..199ab201d501 100644
+--- a/lib/nmi_backtrace.c
++++ b/lib/nmi_backtrace.c
+@@ -75,6 +75,12 @@ void nmi_trigger_cpumask_backtrace(const cpumask_t *mask=
+,
+ 		touch_softlockup_watchdog();
+ 	}
+=20
++	/*
++	 * Force flush any remote buffers that might be stuck in IRQ context
++	 * and therefore could not run their irq_work.
++	 */
++	printk_trigger_flush();
++
+ 	clear_bit_unlock(0, &backtrace_flag);
+ 	put_cpu();
+ }
+--=20
+2.23.0
 
