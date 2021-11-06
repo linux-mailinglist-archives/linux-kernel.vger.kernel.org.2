@@ -2,385 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B29446C57
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 05:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A864446C58
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 05:41:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232923AbhKFEix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 00:38:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbhKFEiw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 00:38:52 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D52C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 21:36:11 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id u1so16775679wru.13
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 21:36:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AVdavfE1kWGpBv6pJYAG4ZTxcxjcNiviA39BNnVP5yo=;
-        b=d1bg2YmoC1qAbjpwgBkTHM6z8LX9z7EP90fShGIDhwvk8P1puef3Pibc8hM/f7dA40
-         RCrB92jwIFTm/QwD2CpZJVAaM6xV/c4YR20vVMfcmbnTgFCkZzYsiQSC0j6BAs5DSfHT
-         fci/StBCLZ4AhlPGixjFGK9uY2wU5Dq0Lo9TPzfIXpw376twSYhngp4Sset5fr3aYS4E
-         u4+n/4nKqKpf8MmKQ/P2xw0uXmERR7kpKsbvTjfg3kqNAGjW/EDxVbfV21pIsGTbf7SL
-         nQj6DZ73/kEL7vxpA2XI2I+8d4gmaKkJKKQV18IhyFZoS1RqhySos64IM6j/XNWtc96y
-         gWYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AVdavfE1kWGpBv6pJYAG4ZTxcxjcNiviA39BNnVP5yo=;
-        b=YKNOsC/ZIYNGJhkYzV2u/7YDOGSiVPtP7p4EEtbv0TP7skCfZE5dYG4Zwiod7Jab1G
-         A//QF0H5gy1HtJVCMqa0ov46osRsGY65dAsYibSTHQxpG3sVT8T8D2u5xHPZl2TaUIP0
-         Z7J0qwKNNR5gGRKIK1ccBQ0f9/uf/2RgtsmMvuZCS9ixZRx4yT24SqLFZ7vlFUJGaNqb
-         JHQ+94s3MORg4pYgPrHuWHS46PGb8lb002MOhmCYh/lnEBVbiF8BdemB8sVTzMp7bfCb
-         AOHFx4j1y8+kyyt9lZV/HWvjnAzKlvd1K3lbiAS003UL57bL4yWp1FjqtP2vvAQ8fsNt
-         d1kA==
-X-Gm-Message-State: AOAM531xtlkGDmns1VpAiwLkAFNQMOkFUGkbvgx7T4FFH6Szx0xu7oXs
-        dK/+C0AzuF3prM6yteFJosOfn8SLMMAe5CMEIbMqGA==
-X-Google-Smtp-Source: ABdhPJwz50kNo7AIWEFFpOCiYSh9EmClEdRGTLfR9/r2j4URgbfFKKI5s94sihG93Kw5N4IrehA6+2jwEo6AOXfmFY4=
-X-Received: by 2002:a05:6000:1a45:: with SMTP id t5mr67295637wry.306.1636173369835;
- Fri, 05 Nov 2021 21:36:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211105235852.3011900-1-atish.patra@wdc.com> <20211105235852.3011900-2-atish.patra@wdc.com>
- <DF82A93F-50CD-4A68-A8A6-0056E6248172@gmx.de>
-In-Reply-To: <DF82A93F-50CD-4A68-A8A6-0056E6248172@gmx.de>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Sat, 6 Nov 2021 10:05:58 +0530
-Message-ID: <CAAhSdy3EjFb0aKBoHUacwAMVdiwhp0HRLusKo413sKe-ZL=NGg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/5] RISC-V: KVM: Mark the existing SBI implementation
- as v01
-To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Anup Patel <anup.patel@wdc.com>, kvm-riscv@lists.infradead.org,
-        KVM General <kvm@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
+        id S233369AbhKFEnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 00:43:45 -0400
+Received: from mout.gmx.net ([212.227.17.21]:38431 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229485AbhKFEno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Nov 2021 00:43:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1636173633;
+        bh=GsHnJYbMlop1D6SFyQfgaVcGQxyV8lVPgvWwISk6Zco=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=Ug/JtvJ7ozpWTSEqwD/GRnpQrvf5wtnk3jTktrKrfvm4yZR4ztNjgxDC7IphKbi+1
+         297S+4r6xJjdGlRkWWAaGCRt5IAn/3xU87iK3N4wkCPHDC1KO3FilQ7XHDfXxIIqDK
+         eA3kNrpvMVY8GNDlUCCusZkLd2ZDqvl1gX/ILQ4Y=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.219.101]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MWzjt-1nGcLQ1At7-00XHvc; Sat, 06
+ Nov 2021 05:40:33 +0100
+Message-ID: <ff53a94401f8d6abe0303ee381f86bfb475ad354.camel@gmx.de>
+Subject: Re: [PATCH] sched: Tweak default dynamic preempt mode selection
+From:   Mike Galbraith <efault@gmx.de>
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Date:   Sat, 06 Nov 2021 05:40:30 +0100
+In-Reply-To: <20211105104035.3112162-1-valentin.schneider@arm.com>
+References: <20211105104035.3112162-1-valentin.schneider@arm.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.0 
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:djYVkGpAEcGX1a+DfHSdvxLBhv31aBvsC60zkktbq6J9nX0nxzn
+ XbN2TFJtE949K3hpM7h3PoPDXbbggXvb+ELf7TVysrmBH45jRta67xCWSbtcdxhfMMkAbTO
+ bme7qoXKroFkr1uddC0RGFMMaRwgX7Jztir5V4fwLYpoNmGLmvRjcTMs+IQ2v8eD3vrStz4
+ 9DBzcnK/EE4zn2Ptq68LA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lW4PAGjNHgg=:2owPdIjrS6UaWOgQVvSDk7
+ 9a7G71Yw21CPdZQjsVhDiErzxjGo6lVeBFHqT0X3KrXLRC9ElooEDvBDo20ezIvn1sJ5z4IPi
+ PyYOg+zfmPaweP5hcQti8e5Im8wRMjj722deYY+MbwxlTi9KY2x9xBFsUcseXcHP6MmbuFtaZ
+ vj5jkVYDKAXuRtLPCDMAHrkM+PbqGFy7AUKGlC3pfT6a0hfjqCt0s2NFV9X9TXkHOuObB+/ek
+ qqymzRtoCYJBeru1gczyYbrmqj/REEFE6uXHdkC7rJJdOPaXVx/LUOQQSWkBGyNTN4rGdvjIF
+ HU6ll8sr8Ely+FM9oGh/w2Sbl3Dv+EAWcLP/r6cTe/W/+hyZqQ1Swu8yakov/6Xyz+hDcqDNP
+ JhhfzryckoQSgCiCxcnnkruaxpElev8oFGXtBBAcavnaN2rKXtWoxIDwWtpGMk8F6yIf6Qur5
+ 4k1kCCJX7y7ZVxVlkabbC+mVKm5rBZ1DA5fbV9RULQtOeq/nxIPOzBhnZ5T8AZO2ud67vOVlC
+ l7Z5JboGg/CifeAGL4crNH70aeMZA8pW06EIZZZOGLke2KeGi5Gtn3q968r5yfjTZIEfVvnPu
+ 2mrKkkK9p27AiALCaQJLJRHV01pHNS+xTA3zad2Nqqr51fu4/tD9ttvu4RmeBMoInIIsb25Gs
+ ESnTZnPrMVhzTVeZev06qRFqRb1IJebx+FDIVvUSJwK3z87g6fzukF30i9pQVnND74SipTh0N
+ Fl6QWRJ1dKouwvNVWQoeFL1zjzJhNoPrUgEpHDT2axndD2v4cCWFvXaZbvez9KG2UcsHOJnK9
+ gRZ9jVL7noRXlDgXL6diunkRE+RDXWB6v6liP9Nth4g+tqKQIPQDC7P6uyT9QlEI1l0xZPoAd
+ LHRkU5Kqa3NZvvSO+A4mYTs66h2yf0QOqzTh/g7XkpgnyqKpNZhr1eAQ0bXCPwptZz+9u+iSR
+ WPtFQ8XCsW0YhXNla0C46Ais/3xj8uUCLsPk94/zNkh+4FU9inOAKbYa89IOJA3ykyOEtLqSd
+ dEO+dCZoZG7IvV4D9J2VJpos2PmwLS41annBamJjUOdzhxVFj+8yHvZf8GdWXtq3lIN/z7GxZ
+ 7P95Ls82QFQmGI=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 6, 2021 at 9:58 AM Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
+On Fri, 2021-11-05 at 10:40 +0000, Valentin Schneider wrote:
+> Commit c597bfddc9e9 ("sched: Provide Kconfig support for default dynamic
+> preempt mode") changed the selectable config names for the preemption
+> model. This means a config file must now select
 >
-> Am 6. November 2021 00:58:48 MEZ schrieb Atish Patra <atish.patra@wdc.com>:
-> >The existing SBI specification impelementation follows v0.1
-> >specification. The latest specification known as v0.2 allows more
-> >scalability and performance improvements.
+> =C2=A0 CONFIG_PREEMPT_BEHAVIOUR=3Dy
 >
-> Isn't 0.3 the current SBI specification version?
+> rather than
+>
+> =C2=A0 CONFIG_PREEMPT=3Dy
+>
+> to get a preemptible kernel. This means all arch config files need to be
+> updated - right now arm64 defconfig selects CONFIG_PREEMPT=3Dy but ends =
+up
+> with CONFIG_PREEMPT_NONE_BEHAVIOUR=3Dy.
+>
+> Instead, have CONFIG_*PREEMPT be the selectable configs again, and make
+> them select their _BEHAVIOUR equivalent if CONFIG_PREEMPT_DYNAMIC is set=
+.
 
-Yes, 0.3 is the current/latest SBI version but RVI wants SBI spec
-to follow the non-ISA process so we are going through this process.
 
-Meanwhile, KVM SBI v0.2 series was already on the list for quite
-some time so we will have that included first and KVM SBI v0.3
-series will incrementally extend KVM SBI support.
+Is there any way to get to PREEMPT_RT in the first selection again as
+well?  I had created a behavior entry for RT (below) and inverted the
+dependency to make it appear in the initial selection again, but that's
+clearly not gonna fly.
 
->
-> Especially the system reset extension would be valuable for KVM.
+Starting with a 5.15 config, to select RT you currently must first
+select a model you don't want, then reject PREEMPT_DYNAMIC and you'll
+be offered the full menu of models immediately. With your patch added,
+that became worse.  After rejecting PREEMPT_DYNAMIC, I had to go
+through new 5.15+ options before finally being offered the full menu.
 
-Yes, both SRST and PMU extensions in SBI v0.3 are valuable
-for KVM so there will be separate patches for it. I am hoping that
-SBI v0.3 support in KVM will be possible for Linux-5.17.
+	-Mike
 
-Regards,
-Anup
+=2D-- a/kernel/Kconfig.preempt
++++ b/kernel/Kconfig.preempt
+@@ -56,10 +56,10 @@ config PREEMPT_BEHAVIOUR
+ 	  embedded system with latency requirements in the
+milliseconds
+ 	  range.
 
->
-> (This is not meant to stop merging this patch series.)
->
-> Best regards
->
-> Heinrich
->
->
-> >
-> >Rename the existing implementation as v01 and provide a way to allow
-> >future extensions.
-> >
-> >Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> >---
-> > arch/riscv/include/asm/kvm_vcpu_sbi.h |  29 +++++
-> > arch/riscv/kvm/vcpu_sbi.c             | 147 +++++++++++++++++++++-----
-> > 2 files changed, 147 insertions(+), 29 deletions(-)
-> > create mode 100644 arch/riscv/include/asm/kvm_vcpu_sbi.h
-> >
-> >diff --git a/arch/riscv/include/asm/kvm_vcpu_sbi.h b/arch/riscv/include/asm/kvm_vcpu_sbi.h
-> >new file mode 100644
-> >index 000000000000..1a4cb0db2d0b
-> >--- /dev/null
-> >+++ b/arch/riscv/include/asm/kvm_vcpu_sbi.h
-> >@@ -0,0 +1,29 @@
-> >+/* SPDX-License-Identifier: GPL-2.0-only */
-> >+/**
-> >+ * Copyright (c) 2021 Western Digital Corporation or its affiliates.
-> >+ *
-> >+ * Authors:
-> >+ *     Atish Patra <atish.patra@wdc.com>
-> >+ */
-> >+
-> >+#ifndef __RISCV_KVM_VCPU_SBI_H__
-> >+#define __RISCV_KVM_VCPU_SBI_H__
-> >+
-> >+#define KVM_SBI_VERSION_MAJOR 0
-> >+#define KVM_SBI_VERSION_MINOR 2
-> >+
-> >+struct kvm_vcpu_sbi_extension {
-> >+      unsigned long extid_start;
-> >+      unsigned long extid_end;
-> >+      /**
-> >+       * SBI extension handler. It can be defined for a given extension or group of
-> >+       * extension. But it should always return linux error codes rather than SBI
-> >+       * specific error codes.
-> >+       */
-> >+      int (*handler)(struct kvm_vcpu *vcpu, struct kvm_run *run,
-> >+                     unsigned long *out_val, struct kvm_cpu_trap *utrap,
-> >+                     bool *exit);
-> >+};
-> >+
-> >+const struct kvm_vcpu_sbi_extension *kvm_vcpu_sbi_find_ext(unsigned long extid);
-> >+#endif /* __RISCV_KVM_VCPU_SBI_H__ */
-> >diff --git a/arch/riscv/kvm/vcpu_sbi.c b/arch/riscv/kvm/vcpu_sbi.c
-> >index eb3c045edf11..05cab5f27eee 100644
-> >--- a/arch/riscv/kvm/vcpu_sbi.c
-> >+++ b/arch/riscv/kvm/vcpu_sbi.c
-> >@@ -12,9 +12,25 @@
-> > #include <asm/csr.h>
-> > #include <asm/sbi.h>
-> > #include <asm/kvm_vcpu_timer.h>
-> >+#include <asm/kvm_vcpu_sbi.h>
-> >
-> >-#define SBI_VERSION_MAJOR                     0
-> >-#define SBI_VERSION_MINOR                     1
-> >+static int kvm_linux_err_map_sbi(int err)
-> >+{
-> >+      switch (err) {
-> >+      case 0:
-> >+              return SBI_SUCCESS;
-> >+      case -EPERM:
-> >+              return SBI_ERR_DENIED;
-> >+      case -EINVAL:
-> >+              return SBI_ERR_INVALID_PARAM;
-> >+      case -EFAULT:
-> >+              return SBI_ERR_INVALID_ADDRESS;
-> >+      case -EOPNOTSUPP:
-> >+              return SBI_ERR_NOT_SUPPORTED;
-> >+      default:
-> >+              return SBI_ERR_FAILURE;
-> >+      };
-> >+}
-> >
-> > static void kvm_riscv_vcpu_sbi_forward(struct kvm_vcpu *vcpu,
-> >                                      struct kvm_run *run)
-> >@@ -72,16 +88,17 @@ static void kvm_sbi_system_shutdown(struct kvm_vcpu *vcpu,
-> >       run->exit_reason = KVM_EXIT_SYSTEM_EVENT;
-> > }
-> >
-> >-int kvm_riscv_vcpu_sbi_ecall(struct kvm_vcpu *vcpu, struct kvm_run *run)
-> >+static int kvm_sbi_ext_v01_handler(struct kvm_vcpu *vcpu, struct kvm_run *run,
-> >+                                    unsigned long *out_val,
-> >+                                    struct kvm_cpu_trap *utrap,
-> >+                                    bool *exit)
-> > {
-> >       ulong hmask;
-> >-      int i, ret = 1;
-> >+      int i, ret = 0;
-> >       u64 next_cycle;
-> >       struct kvm_vcpu *rvcpu;
-> >-      bool next_sepc = true;
-> >       struct cpumask cm, hm;
-> >       struct kvm *kvm = vcpu->kvm;
-> >-      struct kvm_cpu_trap utrap = { 0 };
-> >       struct kvm_cpu_context *cp = &vcpu->arch.guest_context;
-> >
-> >       if (!cp)
-> >@@ -95,8 +112,7 @@ int kvm_riscv_vcpu_sbi_ecall(struct kvm_vcpu *vcpu, struct kvm_run *run)
-> >                * handled in kernel so we forward these to user-space
-> >                */
-> >               kvm_riscv_vcpu_sbi_forward(vcpu, run);
-> >-              next_sepc = false;
-> >-              ret = 0;
-> >+              *exit = true;
-> >               break;
-> >       case SBI_EXT_0_1_SET_TIMER:
-> > #if __riscv_xlen == 32
-> >@@ -104,47 +120,42 @@ int kvm_riscv_vcpu_sbi_ecall(struct kvm_vcpu *vcpu, struct kvm_run *run)
-> > #else
-> >               next_cycle = (u64)cp->a0;
-> > #endif
-> >-              kvm_riscv_vcpu_timer_next_event(vcpu, next_cycle);
-> >+              ret = kvm_riscv_vcpu_timer_next_event(vcpu, next_cycle);
-> >               break;
-> >       case SBI_EXT_0_1_CLEAR_IPI:
-> >-              kvm_riscv_vcpu_unset_interrupt(vcpu, IRQ_VS_SOFT);
-> >+              ret = kvm_riscv_vcpu_unset_interrupt(vcpu, IRQ_VS_SOFT);
-> >               break;
-> >       case SBI_EXT_0_1_SEND_IPI:
-> >               if (cp->a0)
-> >                       hmask = kvm_riscv_vcpu_unpriv_read(vcpu, false, cp->a0,
-> >-                                                         &utrap);
-> >+                                                         utrap);
-> >               else
-> >                       hmask = (1UL << atomic_read(&kvm->online_vcpus)) - 1;
-> >-              if (utrap.scause) {
-> >-                      utrap.sepc = cp->sepc;
-> >-                      kvm_riscv_vcpu_trap_redirect(vcpu, &utrap);
-> >-                      next_sepc = false;
-> >+              if (utrap->scause)
-> >                       break;
-> >-              }
-> >+
-> >               for_each_set_bit(i, &hmask, BITS_PER_LONG) {
-> >                       rvcpu = kvm_get_vcpu_by_id(vcpu->kvm, i);
-> >-                      kvm_riscv_vcpu_set_interrupt(rvcpu, IRQ_VS_SOFT);
-> >+                      ret = kvm_riscv_vcpu_set_interrupt(rvcpu, IRQ_VS_SOFT);
-> >+                      if (ret < 0)
-> >+                              break;
-> >               }
-> >               break;
-> >       case SBI_EXT_0_1_SHUTDOWN:
-> >               kvm_sbi_system_shutdown(vcpu, run, KVM_SYSTEM_EVENT_SHUTDOWN);
-> >-              next_sepc = false;
-> >-              ret = 0;
-> >+              *exit = true;
-> >               break;
-> >       case SBI_EXT_0_1_REMOTE_FENCE_I:
-> >       case SBI_EXT_0_1_REMOTE_SFENCE_VMA:
-> >       case SBI_EXT_0_1_REMOTE_SFENCE_VMA_ASID:
-> >               if (cp->a0)
-> >                       hmask = kvm_riscv_vcpu_unpriv_read(vcpu, false, cp->a0,
-> >-                                                         &utrap);
-> >+                                                         utrap);
-> >               else
-> >                       hmask = (1UL << atomic_read(&kvm->online_vcpus)) - 1;
-> >-              if (utrap.scause) {
-> >-                      utrap.sepc = cp->sepc;
-> >-                      kvm_riscv_vcpu_trap_redirect(vcpu, &utrap);
-> >-                      next_sepc = false;
-> >+              if (utrap->scause)
-> >                       break;
-> >-              }
-> >+
-> >               cpumask_clear(&cm);
-> >               for_each_set_bit(i, &hmask, BITS_PER_LONG) {
-> >                       rvcpu = kvm_get_vcpu_by_id(vcpu->kvm, i);
-> >@@ -154,22 +165,100 @@ int kvm_riscv_vcpu_sbi_ecall(struct kvm_vcpu *vcpu, struct kvm_run *run)
-> >               }
-> >               riscv_cpuid_to_hartid_mask(&cm, &hm);
-> >               if (cp->a7 == SBI_EXT_0_1_REMOTE_FENCE_I)
-> >-                      sbi_remote_fence_i(cpumask_bits(&hm));
-> >+                      ret = sbi_remote_fence_i(cpumask_bits(&hm));
-> >               else if (cp->a7 == SBI_EXT_0_1_REMOTE_SFENCE_VMA)
-> >-                      sbi_remote_hfence_vvma(cpumask_bits(&hm),
-> >+                      ret = sbi_remote_hfence_vvma(cpumask_bits(&hm),
-> >                                               cp->a1, cp->a2);
-> >               else
-> >-                      sbi_remote_hfence_vvma_asid(cpumask_bits(&hm),
-> >+                      ret = sbi_remote_hfence_vvma_asid(cpumask_bits(&hm),
-> >                                               cp->a1, cp->a2, cp->a3);
-> >               break;
-> >       default:
-> >+              ret = -EINVAL;
-> >+              break;
-> >+      }
-> >+
-> >+      return ret;
-> >+}
-> >+
-> >+const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_v01 = {
-> >+      .extid_start = SBI_EXT_0_1_SET_TIMER,
-> >+      .extid_end = SBI_EXT_0_1_SHUTDOWN,
-> >+      .handler = kvm_sbi_ext_v01_handler,
-> >+};
-> >+
-> >+static const struct kvm_vcpu_sbi_extension *sbi_ext[] = {
-> >+      &vcpu_sbi_ext_v01,
-> >+};
-> >+
-> >+const struct kvm_vcpu_sbi_extension *kvm_vcpu_sbi_find_ext(unsigned long extid)
-> >+{
-> >+      int i = 0;
-> >+
-> >+      for (i = 0; i < ARRAY_SIZE(sbi_ext); i++) {
-> >+              if (sbi_ext[i]->extid_start <= extid &&
-> >+                  sbi_ext[i]->extid_end >= extid)
-> >+                      return sbi_ext[i];
-> >+      }
-> >+
-> >+      return NULL;
-> >+}
-> >+
-> >+int kvm_riscv_vcpu_sbi_ecall(struct kvm_vcpu *vcpu, struct kvm_run *run)
-> >+{
-> >+      int ret = 1;
-> >+      bool next_sepc = true;
-> >+      bool userspace_exit = false;
-> >+      struct kvm_cpu_context *cp = &vcpu->arch.guest_context;
-> >+      const struct kvm_vcpu_sbi_extension *sbi_ext;
-> >+      struct kvm_cpu_trap utrap = { 0 };
-> >+      unsigned long out_val = 0;
-> >+      bool ext_is_v01 = false;
-> >+
-> >+      if (!cp)
-> >+              return -EINVAL;
-> >+
-> >+      sbi_ext = kvm_vcpu_sbi_find_ext(cp->a7);
-> >+      if (sbi_ext && sbi_ext->handler) {
-> >+              if (cp->a7 >= SBI_EXT_0_1_SET_TIMER &&
-> >+                  cp->a7 <= SBI_EXT_0_1_SHUTDOWN)
-> >+                      ext_is_v01 = true;
-> >+              ret = sbi_ext->handler(vcpu, run, &out_val, &utrap, &userspace_exit);
-> >+      } else {
-> >               /* Return error for unsupported SBI calls */
-> >               cp->a0 = SBI_ERR_NOT_SUPPORTED;
-> >-              break;
-> >+              goto ecall_done;
-> >       }
-> >
-> >+      /* Handle special error cases i.e trap, exit or userspace forward */
-> >+      if (utrap.scause) {
-> >+              /* No need to increment sepc or exit ioctl loop */
-> >+              ret = 1;
-> >+              utrap.sepc = cp->sepc;
-> >+              kvm_riscv_vcpu_trap_redirect(vcpu, &utrap);
-> >+              next_sepc = false;
-> >+              goto ecall_done;
-> >+      }
-> >+
-> >+      /* Exit ioctl loop or Propagate the error code the guest */
-> >+      if (userspace_exit) {
-> >+              next_sepc = false;
-> >+              ret = 0;
-> >+      } else {
-> >+              /**
-> >+               * SBI extension handler always returns an Linux error code. Convert
-> >+               * it to the SBI specific error code that can be propagated the SBI
-> >+               * caller.
-> >+               */
-> >+              ret = kvm_linux_err_map_sbi(ret);
-> >+              cp->a0 = ret;
-> >+              ret = 1;
-> >+      }
-> >+ecall_done:
-> >       if (next_sepc)
-> >               cp->sepc += 4;
-> >+      if (!ext_is_v01)
-> >+              cp->a1 = out_val;
-> >
-> >       return ret;
-> > }
->
->
-> --
-> kvm-riscv mailing list
-> kvm-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/kvm-riscv
+-config PREEMPT_RT
++config PREEMPT_RT_BEHAVIOR
+ 	bool "Fully Preemptible Kernel (Real-Time)"
+-	depends on EXPERT && ARCH_SUPPORTS_RT && !PREEMPT_DYNAMIC
+-	select PREEMPTION
++	depends on EXPERT && ARCH_SUPPORTS_RT
++	select PREEMPT_RT
+ 	help
+ 	  This option turns the kernel into a real-time kernel by
+replacing
+ 	  various locking primitives (spinlocks, rwlocks, etc.) with
+@@ -86,6 +86,10 @@ config PREEMPT
+ 	select PREEMPTION
+ 	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
+
++config PREEMPT_RT
++	bool
++	select PREEMPTION
++
+ config PREEMPT_COUNT
+        bool
+
+@@ -101,7 +105,7 @@ config PREEMPT_LAZY
+
+ config PREEMPT_DYNAMIC
+ 	bool "Preemption behaviour defined on boot"
+-	depends on HAVE_PREEMPT_DYNAMIC
++	depends on HAVE_PREEMPT_DYNAMIC && !PREEMPT_RT
+ 	select PREEMPT
+ 	default y
+ 	help
+
+
+
