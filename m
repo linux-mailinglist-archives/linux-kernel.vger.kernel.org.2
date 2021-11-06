@@ -2,109 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADCF7446B97
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 01:29:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75700446B9B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 01:35:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232730AbhKFAbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Nov 2021 20:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48944 "EHLO
+        id S232948AbhKFAiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Nov 2021 20:38:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230384AbhKFAbu (ORCPT
+        with ESMTP id S229680AbhKFAiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Nov 2021 20:31:50 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB6AC061570;
-        Fri,  5 Nov 2021 17:29:10 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id p18so11989911plf.13;
-        Fri, 05 Nov 2021 17:29:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=2pEMnylrIE7gNsvb4IMoX0pmsnBxRxuHEgjfA5CA2Qk=;
-        b=kmVlZP/YUx2i9IL+1xzrMlxrE/X26Qq1hI7R6bTMKEbLBG5RDWweyzgvF6iHKrLvTK
-         oaYFRHZc7B+aCP8+pmXl/f8NOn0GyCaBwxEon5XHzmPmSPc3zj+eI4XImz26H1aqFhxa
-         tyUv75ium1uGEQa7iktM2u7oyRFOfyQTvNryUaj81KeD2o4FrhvYK0u1KZEzkHyMdAbb
-         Rq0H0XLVZQ5qW1mJJBrbrYnm8+dJjJoQ/XmKGaFIACxl4g+ZtSehhUSCxUCBGDqaSPIU
-         lRZhQX1aWRBbfDurtkWYbXjaRlZLC+MNCZlT/ZRqi/VS7tjOVSUQvw+93t7O2zYiDG73
-         ci6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=2pEMnylrIE7gNsvb4IMoX0pmsnBxRxuHEgjfA5CA2Qk=;
-        b=cOcpPU6j7mf0zdQh7X5aHZzeZ0WzqpBNOfIBfBfJXx27AW1S9DJML2Gb9wV/NJc/pg
-         147l6er1qNvzyKy0EyGPCqF8464IWklk07Ova/rDg9l56Wy7iXFp+fI4yEAw0Pf3DMZm
-         mYMQQCxy2IpPVIqhctSk1kcHUNh/0NyEPcvJD7xkd/ossxhu9S3lPNM8WUpYNbuKh//t
-         q1Pgffp8mBSJIfE+4cKAJ8dxSmHH+i4J22ZVjy1HSW1iymb1+k4fZ/rmH0y8Ng7fQ4jK
-         Gkwq7oy2hiUWSeJ9FCe4MoGYeNbEhIgGmou6ZTqDa13OvFORAL0968h0PAacCaRR75C0
-         AAPQ==
-X-Gm-Message-State: AOAM531RGDK85Y8bICmVdipNnV3VnlWeWopM4xb7HtPFAc8z8ckamRbY
-        5I5JH7T49E//uUkQEqaeBMx5B6zL0Ys=
-X-Google-Smtp-Source: ABdhPJwA6updV1MSgTQl/yWmOg5D1NhUbPB0hRlhpc2KPi/qpiE4SGS5XmOH+3xh3hiTPGlOXT65Xg==
-X-Received: by 2002:a17:902:ab0c:b0:142:343d:4548 with SMTP id ik12-20020a170902ab0c00b00142343d4548mr13345565plb.14.1636158549913;
-        Fri, 05 Nov 2021 17:29:09 -0700 (PDT)
-Received: from localhost (60-241-46-56.tpgi.com.au. [60.241.46.56])
-        by smtp.gmail.com with ESMTPSA id i2sm8171839pfa.34.2021.11.05.17.29.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 17:29:09 -0700 (PDT)
-Date:   Sat, 06 Nov 2021 10:29:04 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH] KVM: move struct kvm_vcpu * array to the bottom of struct
- kvm
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Juergen Gross <jgross@suse.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <20211105034949.1397997-1-npiggin@gmail.com>
-        <YYVElU6u22qxgQIz@google.com>
-In-Reply-To: <YYVElU6u22qxgQIz@google.com>
+        Fri, 5 Nov 2021 20:38:21 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0ABAC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 17:35:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9ulRg+0CDxeaK3pVQblVl0zHlWvAP/RaGBQT7+mtiSo=; b=ZTBwljMWMgFDCdTscD2Wzzzij3
+        LpZSyL2fw4LeVQLKg+EQFSqChmOGzuABlRUKQWHWR/M9HTyS1QS/qUUV7hOo1usZ8RSrW4ZMEmfCN
+        Qj9vnSvuUW27vKvjF+JboKorlUOGdfMlB3ghhUrc/VTYtGxmaPakhxEpZYRACZkdcHKRHZQZGeydo
+        hfWP2UQ/4dpPBF8UBnTSQGU4nk0/NtZQZJ7daPRiwzsj0HE5LOo0WEL95sc0OuAwt4uDC9d1jrd7s
+        OPmTqCn+ttuwCNdFH3ecnOcv3GdsAwdrTKzCJRJ6SWrUyqnbA3RV7QAuzCH0Cz81w/UBYIxyXvfcr
+        5GoKynUw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mj9en-006xR9-S8; Sat, 06 Nov 2021 00:34:24 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2F21630031A;
+        Sat,  6 Nov 2021 01:34:04 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 15ABB2C8F4FD0; Sat,  6 Nov 2021 01:34:04 +0100 (CET)
+Date:   Sat, 6 Nov 2021 01:34:04 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: Re: [peterz-queue:x86/wip.extable 1/22]
+ drivers/crypto/ccree/cc_driver.c:117:18: warning: result of comparison of
+ constant 18446744073709551615 with expression of type 'typeof
+ (_Generic((mask), char: (unsigned char)0, unsigned char: (unsigned char)0,
+ signed char: (unsigned char)0, unsigned shor...
+Message-ID: <YYXNfJFjdjT9x3+D@hirez.programming.kicks-ass.net>
+References: <202111051833.sOedoq8J-lkp@intel.com>
+ <YYUhzUEbK4t5/hOC@hirez.programming.kicks-ass.net>
+ <CAKwvOdnPWrBDasA73CRZQPwPt8Bd6H6B3qWTxqWt6UkdkAo=Uw@mail.gmail.com>
 MIME-Version: 1.0
-Message-Id: <1636158401.g3t5cp0jke.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdnPWrBDasA73CRZQPwPt8Bd6H6B3qWTxqWt6UkdkAo=Uw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Sean Christopherson's message of November 6, 2021 12:49 am:
-> +Juergen and Marc
->=20
-> On Fri, Nov 05, 2021, Nicholas Piggin wrote:
->> Increasing the max VCPUs on powerpc makes the kvm_arch member offset
->> great enough that some assembly breaks due to addressing constants
->> overflowing field widths.
->>=20
->> Moving the vcpus array to the end of struct kvm prevents this from
->> happening. It has the side benefit that moving the large array out
->> from the middle of the structure should help keep other commonly
->> accessed fields in the same or adjacent cache lines.
->>=20
->> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
->> ---
->>=20
->> It would next be possible to now make this a dynamically sized array,
->> and make the KVM_MAX_VCPUS more dynamic
->=20
-> Marc has a mostly-baked series to use an xarray[1][2] that AFAICT would b=
-e well
-> received.  That has my vote, assuming it can get into 5.16.  Marc or Juer=
-gen,
-> are either of you actively working on that?
->=20
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git=
-/log/?h=3Dkvm-arm64/vcpu-xarray
-> [2] https://lkml.kernel.org/r/871r65wwk7.wl-maz@kernel.org
+On Fri, Nov 05, 2021 at 02:06:22PM -0700, Nick Desaulniers wrote:
+> On Fri, Nov 5, 2021 at 5:21 AM Peter Zijlstra <peterz@infradead.org> wrote:
 
-Seems like a good idea if it can allow vcpu structs to be allocated to=20
-preferred nodes.
+> > I'm confused here.. the code reads:
+> >
+> >
+> > #define __scalar_type_to_unsigned_cases(type)                           \
+> >                 unsigned type:  (unsigned type)0,                       \
+> >                 signed type:    (unsigned type)0
+> >
+> > #define __unsigned_scalar_typeof(x) typeof(                             \
+> >                 _Generic((x),                                           \
+> >                         char:   (unsigned char)0,                       \
+> >                         __scalar_type_to_unsigned_cases(char),          \
+> >                         __scalar_type_to_unsigned_cases(short),         \
+> >                         __scalar_type_to_unsigned_cases(int),           \
+> >                         __scalar_type_to_unsigned_cases(long),          \
+> >                         __scalar_type_to_unsigned_cases(long long),     \
+> >                         default: (x)))
+> >
+> > #define __bf_cast_unsigned(type, x)     ((__unsigned_scalar_typeof(type))(x))
+> >
+> > #define __BF_FIELD_CHECK(_mask, _reg, _val, _pfx)                       \
+> >         ({                                                              \
+> >                 BUILD_BUG_ON_MSG(!__builtin_constant_p(_mask),          \
+> >                                  _pfx "mask is not constant");          \
+> >                 BUILD_BUG_ON_MSG((_mask) == 0, _pfx "mask is zero");    \
+> >                 BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?           \
+> >                                  ~((_mask) >> __bf_shf(_mask)) & (_val) : 0, \
+> >                                  _pfx "value too large for the field"); \
+> >                 BUILD_BUG_ON_MSG(__bf_cast_unsigned(_mask, _mask) >     \
+> >                                  __bf_cast_unsigned(_reg, ~0ull),       \
+> >                                  _pfx "type of reg too small for mask"); \
+> >                 __BUILD_BUG_ON_NOT_POWER_OF_2((_mask) +                 \
+> >                                               (1ULL << __bf_shf(_mask))); \
+> >         })
+> >
+> > #define FIELD_PREP(_mask, _val)                                         \
+> >         ({                                                              \
+> >                 __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");    \
+> >                 ((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask);   \
+> >         })
+> >
+> >
+> > static void init_cc_cache_params(struct cc_drvdata *drvdata)
+> > {
+> >         struct device *dev = drvdata_to_dev(drvdata);
+> >         u32 cache_params, ace_const, val, mask;
+> >
+> >         ...
+> >
+> >         mask = CC_GENMASK(CC_AXIM_CACHE_PARAMS_AWCACHE);        <-- *BOOM*
+> >         cache_params &= ~mask;
+> >         cache_params |= FIELD_PREP(mask, val);
+> >
+> >         ...
+> > }
+> >
+> > So we're having "(unsigned int)mask > (unsigned long long)~0ull" as
+> > a compile time constant input to the BUILD_BUG_ON_MSG(), and clang-14 is
+> > now complaining it's a constant ?!?
+> 
+> No, the error message (trimmed for clarity):
+> >> warning: result of comparison of constant 18446744073709551615  (ie ~0ull / ULLONG_MAX) with expression of type ... 'unsigned int') is always false [-Wtautological-constant-out-of-range-compare]
+> 
+> Is `val` an int, but should be a long long? We're comparing if an
+> unsigned int is greater than ULLONG_MAX, which is impossible (or
+> rather a tautology; something that's always either true or false, in
+> this case false).  Or maybe mask and reg are different widths?
 
->> however x86 kvm_svm uses its own scheme rather than kvm_arch for some re=
-ason.
->=20
-> What's the problem in kvm_svm?
-
-It embeds a struct kvm so it couldn't be variable sized.
-
-Thanks,
-Nick
+They are, for FIELD_PREP() as is the case here, _mask is u32 while _reg
+is typeof(0ULL). In my reading of the code this is on purpose to
+basically disable the test for this caller.
