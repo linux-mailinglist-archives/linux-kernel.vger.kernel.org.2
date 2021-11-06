@@ -2,377 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CDB0446D43
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 11:01:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28CA2446D47
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 11:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233951AbhKFJ7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 05:59:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48466 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231765AbhKFJ7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 05:59:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AF596103B;
-        Sat,  6 Nov 2021 09:56:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636192587;
-        bh=2RGksmbLqJt05OZ+nKuuF+ItF/ul71ljtRAyj5xCHXI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MkmzzW+dGmIjMzgSyV8+6dgaFegOEJlXRr7R8sFP+b2ffBd+hbYf1PQ1syh6QLNXC
-         nfXWZ++CEVZEKmU/5RNUc25ALFUn0Eu1rNtvweaRF12j3psgey3ev1+nCOLQV6IYZG
-         hQ/IvU3AH0szoghMEVn6DC7ezzkQv+JRiTT+LCG4HBSOGjZu4iGSehVs/hltBIMaWN
-         Zu/GrJzkMSa0MXpTk/nO6j9DbSpkDD8jL5vVKBVvQMvAGsVOm8mPRciTyzBcCCc1cx
-         haT5ESoa1a9Nt4WVnHp0x/1r0EedFdE6nJzDaQzYXESj53eZuPIARg0ww3rMCrrEH4
-         QbbZOYJjfvNQQ==
-Date:   Sat, 6 Nov 2021 09:56:19 +0000
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Yang Li <abaci-bugfix@linux.alibaba.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Alan <alan@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: atomisp current issues
-Message-ID: <20211106095619.573e8d54@sal.lan>
-In-Reply-To: <YYW6tzJG1u84zMDD@pendragon.ideasonboard.com>
-References: <20211103135418.496f75d5@sal.lan>
-        <YYOts0aoD/Quo5r6@pendragon.ideasonboard.com>
-        <20211104105051.4836fafb@sal.lan>
-        <YYPWUiPT80zQ7sKo@pendragon.ideasonboard.com>
-        <20211105185526.1b91d679@sal.lan>
-        <YYW6tzJG1u84zMDD@pendragon.ideasonboard.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S232450AbhKFKEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 06:04:09 -0400
+Received: from mail-eopbgr1320103.outbound.protection.outlook.com ([40.107.132.103]:15328
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229645AbhKFKEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Nov 2021 06:04:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fdoknI4c0byry3G3oiRx8Hj/PhatwD2e5YUy4ICRLiOdzbd04Hf0QtXjilPHzlbrmsToSBL2M7jkRwAp29832el5lFv2fMKydDtJjFTgLTHPFWQLyhoR7Le5e/3F7vDFZxodIxZxSludI2byjxV9uLkpwCQMhGdmME2JGTmSgecayFmg4mYui5nZwTH0GYJbBy7Lo9hilUg4u3wSh0KUQUWaotLkBiA6X0TrVYVcYC4wn53lR8dBpwtMrNiVkiDFXct7gY+LWGjcGlhflgUlED7kmQcT51Y0ryw3Mx5J/pI/u3HedahDZ687waWZguyFrf1hNMHR8bWYMvaeh7g66w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NNPXi/kelSEt6iiMVQhAO+u0I/JiQFC7CbPCLYaCr3Q=;
+ b=nT5pnDAdTPyi8tjVPcLmJ9qXUmL+o1n4hwUr7oZ2i+xkY/IBim3QeOiNkY/1WZkkAOAyIB7TNqyv6Ud9l3AUh6wrZdzXGDyY7Kwhln3PGB3f9UpCIOLusFUHovyFsSBIUxfQkKfcvC8abqI0UIamkW+9/GBz9Qwnmrmx1dEtz3fusQphn+iI0Krrqfs+KU31froqAFzibJ4hc+hxG/pEtE25JRpFC2YYheOh7YGprDBadciUd2OvG+uOiuqJrizRE+QxOCrbfX57mxWjUEn0b7/Ns2WWxCXMhei0Z9o9MCL9cTUn7G7jG2SK2JFdBvJlCBSTmvSBf7goM7IMXrHCRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NNPXi/kelSEt6iiMVQhAO+u0I/JiQFC7CbPCLYaCr3Q=;
+ b=pafACHs3jLfpSr+QqncxlXXpi8gmrc3Ro9q7Q1jqlb3MIcDlMQgyYqkg6UP67Ftm9MQtIVtB0HfxGNtgM3oxP1ssuAsS8ir9BhSVD006lse7kDPn2uTU68cuxQFaX8Y1pz27Tcm45omZSg04NaHout6bvMTJvLKgzP0jbciKdH1wplpdVrFoeiLupF0/ODyNZ9sh3zuImLCoAWnP5ICewvXxIwQghZxTGtVcdKIuZ9Orb7U6hPooEI2s+CaevCttS+tnEAq3GRjld3NcEkzvtLHYAHlmYxDUz39shdYsOKk27CJcYqCX5eZeEkmf4SAse8G9wS6VRUZ6QofCVvM4fA==
+Received: from HK0PR06MB2786.apcprd06.prod.outlook.com (2603:1096:203:5b::22)
+ by HK0PR06MB2257.apcprd06.prod.outlook.com (2603:1096:203:43::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.13; Sat, 6 Nov
+ 2021 10:01:23 +0000
+Received: from HK0PR06MB2786.apcprd06.prod.outlook.com
+ ([fe80::399b:41fb:d745:beb0]) by HK0PR06MB2786.apcprd06.prod.outlook.com
+ ([fe80::399b:41fb:d745:beb0%5]) with mapi id 15.20.4669.013; Sat, 6 Nov 2021
+ 10:01:23 +0000
+From:   Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+To:     Andrew Jeffery <andrew@aj.id.au>, Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
+CC:     BMC-SW <BMC-SW@aspeedtech.com>,
+        Steven Lee <steven_lee@aspeedtech.com>
+Subject: RE: [PATCH 02/10] sdhci: aspeed: Add SDR50 support
+Thread-Topic: [PATCH 02/10] sdhci: aspeed: Add SDR50 support
+Thread-Index: AQHXygDgYvIRiYrxv0eZsBMlnzAipqv2RD3A
+Date:   Sat, 6 Nov 2021 10:01:23 +0000
+Message-ID: <HK0PR06MB27868D14ED8DF7550246674CB28F9@HK0PR06MB2786.apcprd06.prod.outlook.com>
+References: <20210922103116.30652-1-chin-ting_kuo@aspeedtech.com>
+ <20210922103116.30652-3-chin-ting_kuo@aspeedtech.com>
+ <125453f3-55d5-4b2a-afe8-6e76b268ce01@www.fastmail.com>
+In-Reply-To: <125453f3-55d5-4b2a-afe8-6e76b268ce01@www.fastmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: aj.id.au; dkim=none (message not signed)
+ header.d=none;aj.id.au; dmarc=none action=none header.from=aspeedtech.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2d1cbf56-cf48-4668-f380-08d9a10c63eb
+x-ms-traffictypediagnostic: HK0PR06MB2257:
+x-microsoft-antispam-prvs: <HK0PR06MB225750B4BCC263D8A8574799B28F9@HK0PR06MB2257.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /q3MqqTpxX2vujLsuSg3YPMzL9dsZPXWYAQWIRBXMB6ZozDH+fewCSUZ2fvi4mTSpZl9p3QSqcIJzoj2O7uVHcSj+WYb+A+xXbNkqeqtzFoP9NDEAhaeSCkBcF3eQPQWL46duq8x6zTfgwXr5NxOXhBWuqS90tSFh7TlOQeH/792+VlxclvZPO8ZKl+uJ2tfZ14x4QJDNcNHzZkei6wL33F/gEOl6RfkkhCU0yeBNL6xc5aGhvD9Ctxs/foZndy48sHnFS90uXubS0F6wE2GyQwveyFqwZKpkh+xcVceVGkvWpxJ/yngkBloZBeX1dAZSHAYXJi+7eK7LnBL8ZTW9VfzJSNaEbQeJukYUQ0LBE0zImuBUFpJv7t5g72LlznxBzqvB8Ekx1oozGJWoadOaFnoJLj0hetd5FhuPXfEKt6adwC/k/gzDstjijE6VrpKW7WHI4xGksaznV4q+/a78A1Iyjk64rtZx72SDp+dEG6n67vC4JOTL/N1Y8L4pLmfOE0HtXwHvvhf864pK7x/aEhIyhiF0aMH1bnCuXl/QjQEtarpML1PhLcd8ch9uDG63jnA8LKfvV8nzvO26LIN6y5tttZ3KQixvYx4mRbKfZgIbUfovWZv5QLopIs/sCHy9fvMrWnfn0sP6DfqbYmYvVJbmL5RycHAEZACOQxYKUDjByHucfMhy32xI+eaYbrIJ9ilt6mtJFzPqvrRVK7X5m30mCmR//KWnHqcZVVBp1M=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB2786.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(136003)(39830400003)(346002)(396003)(66556008)(26005)(52536014)(66476007)(316002)(66446008)(54906003)(64756008)(5660300002)(110136005)(86362001)(6506007)(4326008)(53546011)(921005)(2906002)(76116006)(71200400001)(38100700002)(38070700005)(122000001)(186003)(33656002)(83380400001)(7416002)(55016002)(8936002)(66946007)(107886003)(8676002)(7696005)(9686003)(508600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?aT2DSeTaCUB8t2RUCcufWLeUXm5jX3qFgJC0LyehmaujEXHvo9oCnl89QltV?=
+ =?us-ascii?Q?5Bk6dC43kLPwptIwY6NB1yyFUFi0Wua5mED17PwUvKMjh+4M1oz4ZRlqh1Aa?=
+ =?us-ascii?Q?54lFV5XH/zuf4CrJHrvCoB3xo21kp17MzvsebDYKrUibTpi7m322OgFAC4yg?=
+ =?us-ascii?Q?E9MN71brLmdC0KM0GQI/KYsqgti1R4zvhaAFiaANKtfa4K1Z8wNfnxcmB7/7?=
+ =?us-ascii?Q?wOppgukP59+wQuw+qd0djd6gufuThMw8FY2U2Wbpq6e4O/tlYcoOGpiNa2z3?=
+ =?us-ascii?Q?p3vgbVlZdh5cgArxCd3ab1bFU+OqF3MMH+rCYLePiie1o5U2hMJZVpL8aTis?=
+ =?us-ascii?Q?dunRilJN3GAzRUEcwlkdKDTGWW++KjJIWB9naDB/o0JC3uPfciT7J7l3UN1V?=
+ =?us-ascii?Q?sa1Mo+GKp+1Io4Lj0lQqJxuSufKkVlKcQgYdvA4YjCwm3GbXiQE9JPSF1RV4?=
+ =?us-ascii?Q?lyjCF2lk6COBTFJuZ50zWsGiGVTBq7H+0y5T4p5ViTHKpFvSD71f3H/XxmoX?=
+ =?us-ascii?Q?ut0FX0X7Qf6PtkK9KpxET9zCLV23Z5iyr+huEdBEp2ap7aqAkXy/wom+tgci?=
+ =?us-ascii?Q?k+Q6U6TEsnW5sd0oscuEvK44nLI7z8kMIoq+RDQVe1Ljj7hUVEpW2JITzxIg?=
+ =?us-ascii?Q?X41TAvadPPnfiSxvOO/uGXVAsa5LM0yoypcyFq7rHCF5ZcB2sXTU275x+iHX?=
+ =?us-ascii?Q?rv3+/ybzRihF8svkA/FL6xDbbxRJQBPR6aW+t8CVXcjYeSWSf+Jrpo5jS7tI?=
+ =?us-ascii?Q?n1kjhZH+eCkR4VY/vChz8akEzHhXqMXKkI8k+ZJ5CQeHbkVGWAbP7HpUAhz0?=
+ =?us-ascii?Q?FHTjqYd5m7VasAeF+HqlYwQB/5tVt/YMtcCAkLehhmieXI344AIbbbbI7RCV?=
+ =?us-ascii?Q?uXck1n+yM8gWybrb5e8xDxO1JmB894xhgYKsZbbZqqchamKJ2rnTkxWxs4QZ?=
+ =?us-ascii?Q?8Dm6+oz+r+D6vSkq9Vfha5KAOFnjLBjAAC/rzJxs3rg37wphK6N6oo2eAi5+?=
+ =?us-ascii?Q?BIvpLZt5su4HSGIhEATr2minKGJzQm/xgks36nHFIkZ0jofyYK0gWacMXXID?=
+ =?us-ascii?Q?Bhx5nlbsgh2p3vcyuM5we6987c7fSd/fQwMoE3KmePPrcWePqKJwVyjGFNZg?=
+ =?us-ascii?Q?/QHGw0yCL8t+Tp9NM0BXfiyZ80vcHj63yVwiIpCpjUUzfFQ2gCOXkKC0YwlC?=
+ =?us-ascii?Q?3wIWOUI0awskkVMxoCTyieY6yroDQKYySJnWtldMrXzm//6ptZa1ef5a3QtJ?=
+ =?us-ascii?Q?dwtJk/1R1f5YDK8kl9eFT8payasGHzI9rHRM8dJoH9w7z3VCcgavqrQk8jqZ?=
+ =?us-ascii?Q?nHsi7z+pxfW8mcziYiyfYBwbolGtQQGcNwi5kUWvpxvWjW0zzW22ygazSFGe?=
+ =?us-ascii?Q?0O+2L1bo2AZH142Ltk/DJKdSkseSnVR80nKLaF/2Dy5FNWS3HMNMH/Xz7gVP?=
+ =?us-ascii?Q?CSRhuNm9Omk7GNvHwIpZIWzGWYEDU3botNJ9K9LNzIQXz8Xa+8hNGFi+qTwE?=
+ =?us-ascii?Q?Ha+q5UyAV8NEBnz0/LvGj4Wa6efWUjh9ZjvzxTT18yQj13i/WvrA11LZ+z/L?=
+ =?us-ascii?Q?0PZwVCGpb2+j6XA4vAbUJ5wiqrvJenOtr5lIjs30gyDd80WPTEuIvHpZ67Ed?=
+ =?us-ascii?Q?yeLL1MtP2jQmeIDmT7AUZ2WWp+ZLCytjHJC29D5R8dsKISp2nYwv5VVarFti?=
+ =?us-ascii?Q?8tPViw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB2786.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d1cbf56-cf48-4668-f380-08d9a10c63eb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Nov 2021 10:01:23.4364
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: v60szUVETU1ZPbdbllHajRGh66P7qQ9fegJRw8jRGFZPdcYLe4t8orPiHpXuPjqb2PR8f5jaE265ga5nufxFma7U9OZfAIwMYV0f3IaKViY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2257
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, 6 Nov 2021 01:13:59 +0200
-Laurent Pinchart <laurent.pinchart@ideasonboard.com> escreveu:
+Hi Andrew,
 
-> Hi Mauro,
-> 
-> On Fri, Nov 05, 2021 at 06:55:26PM +0000, Mauro Carvalho Chehab wrote:
-> > Em Thu, 4 Nov 2021 14:47:14 +0200 Laurent Pinchart escreveu:  
-> > > On Thu, Nov 04, 2021 at 10:50:51AM +0000, Mauro Carvalho Chehab wrote:  
-> > > > Em Thu, 4 Nov 2021 11:53:55 +0200 Laurent Pinchart escreveu:    
-> > > > > On Wed, Nov 03, 2021 at 01:54:18PM +0000, Mauro Carvalho Chehab wrote:    
-> > > > > > Hi,
-> > > > > > 
-> > > > > > From what I've seen so far, those are the main issues with regards to V4L2 API,
-> > > > > > in order to allow a generic V4L2 application to work with it.
-> > > > > > 
-> > > > > > MMAP support
-> > > > > > ============
-> > > > > > 
-> > > > > > Despite having some MMAP code on it, the current implementation is broken. 
-> > > > > > Fixing it is not trivial, as it would require fixing the HMM support on it, 
-> > > > > > which does several tricks.
-> > > > > > 
-> > > > > > The best would be to replace it by something simpler. If this is similar
-> > > > > > enough to IPU3, perhaps one idea would be to replace the HMM code on it by 
-> > > > > > videodev2 + IPU3 HMM code.
-> > > > > > 
-> > > > > > As this is not trivial, I'm postponing such task. If someone has enough
-> > > > > > time, it would be great to have this fixed.
-> > > > > > 
-> > > > > > From my side, I opted to add support for USERPTR on camorama:
-> > > > > > 
-> > > > > > 	https://github.com/alessio/camorama      
-> > > > > 
-> > > > > We should *really* phase out USERPTR support.     
-> > > > 
-> > > > I'm not a big fan of userptr, buy why do we phase it out?    
-> > > 
-> > > Because USERPTR is broken by design. It gives a false promise to
-> > > userspace that a user pointer can be DMA'ed to, and this isn't generally
-> > > true.   
-> > 
-> > Actually, the only promise USERPTR gives is that the driver should
-> > be able to store streaming data on it (usually done via DMA from
-> > the V4L2 card to the memory).  
-> 
-> Yes, and that promise is broken. It doesn't work universally (across
-> architectures, or across devices).
-> 
-> > It never promised - or was designed - to be used on embedded
-> > devices and allow DMA transfers to GPU. See, the original design
-> > is from 1999 and it was focused only on x86 archs ;-)  
-> 
-> Embedded isn't relevant in this context anymore. x86 hasn't been limited
-> to the desktop space for a long time, and neither is ARM embedded-only.
+Thanks for the review.
 
-I see your point. Back on the old days, VB1 had some VMA code that would 
-reallocate the physical memory associated with an userptr, in order to 
-warrant that it would fit the driver's requirement (basically aiming
-devices that won't support DMA scatter/gather).
+> -----Original Message-----
+> From: Andrew Jeffery <andrew@aj.id.au>
+> Sent: Tuesday, October 26, 2021 8:31 AM
+> Subject: Re: [PATCH 02/10] sdhci: aspeed: Add SDR50 support
+>=20
+> Hi Chin-Ting,
+>=20
+> Sorry for the delay in looking at your series.
+>=20
+> On Wed, 22 Sep 2021, at 20:01, Chin-Ting Kuo wrote:
+> > From the analog waveform analysis result, SD/SDIO controller of
+> > AST2600 cannot always work well with 200MHz. The upper bound stable
+> > frequency for SD/SDIO controller is 100MHz. Thus, SDR50 supported bit,
+> > instead of SDR104, in capability 2 register should be set in advance.
+> >
+> > Signed-off-by: Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+> > ---
+> >  drivers/mmc/host/sdhci-of-aspeed.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> >
+> > diff --git a/drivers/mmc/host/sdhci-of-aspeed.c
+> > b/drivers/mmc/host/sdhci-of-aspeed.c
+> > index 6e4e132903a6..c6eaeb02e3f9 100644
+> > --- a/drivers/mmc/host/sdhci-of-aspeed.c
+> > +++ b/drivers/mmc/host/sdhci-of-aspeed.c
+> > @@ -35,6 +35,8 @@
+> >  #define ASPEED_SDC_CAP1_1_8V           (0 * 32 + 26)
+> >  /* SDIO{14,24} */
+> >  #define ASPEED_SDC_CAP2_SDR104         (1 * 32 + 1)
+> > +/* SDIO{14,24} */
+>=20
+> I don't think we need to duplicate this comment.
 
-So, yeah, it was always harder for the Kernel to support USERPTR.
+Okay, it will be modified in the next patch version.
 
-> 
-> > The thing is that it was an alternative to FBUF before DMABUF
-> > was added.
-> > 
-> > But yeah, newer embedded device drivers should not enable it,
-> > using instead VB2 and DMABUF.
-> > 
-> > Perhaps we should document it better at:
-> > 	https://linuxtv.org/downloads/v4l-dvb-apis-new/userspace-api/v4l/userp.html#userp
-> > 
-> > warning developers to use DMABUF when the goal is to share DMA buffers
-> > with other drivers.
-> >   
-> > > Even if buffer are carefully allocated to be compatible with the
-> > > device requirements, there are corner cases that prevent making a
-> > > mechanism based on get_user_pages() a first class citizen.  
-> > 
-> > Drivers that can't warrant that should disable support for it ;-)  
-> 
-> With USERPTR implemented through videobuf2, I doubt most driver authors
-> are aware of the USERPTR corner cases and limitations.
+>=20
+> > +#define ASPEED_SDC_CAP2_SDR50          (1 * 32 + 0)
+>=20
+> Can we keep the defines in increasing bit order (i.e. put
+> ASPEED_SDC_CAP2_SDR50 above ASPEED_SDC_CAP2_SDR104)?
+>=20
 
-I guess the first step to deprecate this feature would be to write some
-text at the uAPI Documentation explaining the USERPTR corner
-cases/limitations and recommend userspace apps to not to rely on it.
+Okay.
 
-> > > In any case,
-> > > USERPTR makes life more difficult for the kernel.
-> > > 
-> > > There may be some use cases for which USERPTR could be an appropriate
-> > > solution, but now that we have DMABUF (and of course MMAP), I see no
-> > > reason to continue supporting USERPTR forever, and certainly not adding
-> > > new users.  
-> > 
-> > As we need to support this forever, IMO, it doesn't make sense to deny
-> > patches adding new users for it - yet it makes sense to recommend not to,
-> > specially on drivers whose usage would be on embedded systems.  
-> 
-> Why should we accept it for new drivers, what use cases does it enable
-> that can't be supported through MMAP and DMABUF ?
+> >
+> >  struct aspeed_sdc {
+> >  	struct clk *clk;
+> > @@ -410,11 +412,17 @@ static int aspeed_sdhci_probe(struct
+> > platform_device *pdev)
+> >  	sdhci_get_of_property(pdev);
+> >
+> >  	if (of_property_read_bool(np, "mmc-hs200-1_8v") ||
+> > +		of_property_read_bool(np, "sd-uhs-sdr50") ||
+>=20
+> Minor formatting issue, but can you make sure all the conditions are alig=
+ned
+> vertically from the left?
+>=20
 
-I can't think on any special reason, except for compatibility with some
-userspace app that might only work with USERPTR. I don't know any
-open source app that supports USERPTR but doesn't support MMAP those
-days, but I won't doubt they exist.
+It will also be updated in the next patch version.
 
-Anyway, if we're willing to do that, the first step would be to
-write a Documentation patch for driver API, documenting VB2
-I/O flags and recommending not to set VB2_USERPTR on new drivers,
-explaining why it is a bad idea to use it.
+> >  	    of_property_read_bool(np, "sd-uhs-sdr104")) {
+> >  		aspeed_sdc_set_slot_capability(host, dev->parent,
+> ASPEED_SDC_CAP1_1_8V,
+> >  					       true, slot);
+> >  	}
+> >
+> > +	if (of_property_read_bool(np, "sd-uhs-sdr50")) {
+> > +		aspeed_sdc_set_slot_capability(host, dev->parent,
+> ASPEED_SDC_CAP2_SDR50,
+> > +					       true, slot);
+> > +	}
+> > +
+> >  	if (of_property_read_bool(np, "sd-uhs-sdr104")) {
+> >  		aspeed_sdc_set_slot_capability(host, dev->parent,
+> ASPEED_SDC_CAP2_SDR104,
+> >  					       true, slot);
+> > --
+> > 2.17.1
 
-Feel free to write such patch.
-
-> 
-> > > > > Worst case you may support
-> > > > > DMABUF only if MMAP is problematic, but I don't really see why it could
-> > > > > be easy to map an imported buffer and difficult to map a buffer
-> > > > > allocated by the driver. videobuf2 should be used.    
-> > > > 
-> > > > Yeah, atomisp should be migrated to VB2, and such migration is listed at
-> > > > its TODO file. However, this is a complex task, as its memory management
-> > > > code is very complex.    
-> > > 
-> > > Have a look at GPU memory management, and you'll find the atomisp driver
-> > > very simple in comparison :-)  
-> > 
-> > Yeah, there are lots of complex thing at GPU mm. Yet, I don't see too much 
-> > levels of abstraction there... the biggest issue on atomisp is that there
-> > are usually two or three levels of abstraction between the actual 
-> > implementation and the callers. It also has some hacks in the middle of code
-> > that seems to be due to some special devices for Android.  
-> 
-> Isn't it just a matter of dropping the abstraction layers ?
-
-Easier said than done.
-
-> > > I'm also pretty sure that drivers/staging/media/atomisp/pci/hmm/ could
-> > > be rewritten to use more of the existing kernel frameworks.  
-> > 
-> > Yes, I guess so. Again, the problem is that the glue also require
-> > changes and cleanups. It also requires migration from VB1 to VB2.
-> >   
-> > > > Maybe we could try to use the ISP3 code on it,
-> > > > replacing the current HMM logic, but not sure if the implementation there 
-> > > > would be compatible.    
-> > > 
-> > > I'd be surprised if the IPU3 was compatible.  
-> > 
-> > If IPU3 started as an upgrade from ISP2, then maybe it is partially
-> > compatible.
-> > 
-> > Anyway, further studies and tests are required.
-> >   
-> > > > In any case, the current priority is to make the driver to work, fixing 
-> > > > the V4L2 API implementation, which has several issues.
-> > > > 
-> > > > ...
-> > > >     
-> > > > > > Video devices
-> > > > > > =============
-> > > > > > 
-> > > > > > Currently, 10 video? devices are created:
-> > > > > > 
-> > > > > > 	$ for i in $(ls /dev/video*|sort -k2 -to -n); do echo -n $i:; v4l2-ctl -D -d $i|grep Name; done
-> > > > > > 	/dev/video0:	Name             : ATOMISP ISP CAPTURE output
-> > > > > > 	/dev/video1:	Name             : ATOMISP ISP VIEWFINDER output
-> > > > > > 	/dev/video2:	Name             : ATOMISP ISP PREVIEW output
-> > > > > > 	/dev/video3:	Name             : ATOMISP ISP VIDEO output
-> > > > > > 	/dev/video4:	Name             : ATOMISP ISP ACC
-> > > > > > 	/dev/video5:	Name             : ATOMISP ISP MEMORY input
-> > > > > > 	/dev/video6:	Name             : ATOMISP ISP CAPTURE output
-> > > > > > 	/dev/video7:	Name             : ATOMISP ISP VIEWFINDER output
-> > > > > > 	/dev/video8:	Name             : ATOMISP ISP PREVIEW output
-> > > > > > 	/dev/video9:	Name             : ATOMISP ISP VIDEO output
-> > > > > > 	/dev/video10:	Name             : ATOMISP ISP ACC
-> > > > > > 
-> > > > > > That seems to be written to satisfy some Android-based app, but we don't
-> > > > > > really need all of those.
-> > > > > > 
-> > > > > > I'm thinking to comment out the part of the code which creates all of those,
-> > > > > > keeping just "ATOMISP ISP PREVIEW output", as I don't think we need all
-> > > > > > of those.      
-> > > > > 
-> > > > > Why is that ? Being able to capture multiple streams in different
-> > > > > resolutions is important for lots of applications, the viewfinder
-> > > > > resolution is often different than the video streaming and/or still
-> > > > > capture resolution. Scaling after capture is often expensive (and there
-> > > > > are memory bandwidth and power constraints to take into account too). A
-> > > > > single-stream device may be better than nothing, but it's time to move
-> > > > > to the 21st century.    
-> > > > 
-> > > > True, but having multiple videonodes at this moment is not helping,
-> > > > specially since only one of such modes (PREVIEW) is actually working at
-> > > > the moment.
-> > > > 
-> > > > So, this is more a strategy to help focusing on making this work
-> > > > properly, and not a statement that those modules would be dropped.
-> > > > 
-> > > > I'd say that the "final" version of atomisp - once it gets 
-> > > > fixed, cleaned up and started being MC-controlled - should support
-> > > > all such features, and have the pipelines setup via libcamera.    
-> > > 
-> > > I have no issue with phasing development (I have few issues with the
-> > > atomisp driver in general actually, as it's in staging), but the goal
-> > > should be kept in mind to make sure development goes in the right
-> > > direction.  
-> > 
-> > Yeah, surely it needs to progress at the right direction. We're
-> > just too far of having it ready to be ported to MC and libcamera...
-> > there are too many issues to be solved.  
-> 
-> I'm not even sure porting it to MC makes sense, the firmware seems to
-> expose a too high level of abstraction. I could be wrong though.
-
-I see your point. Yeah, ISP2 seems very different than other MC-based
-devices, as the firmware provides ~60 different programs (the driver refers
-to them as binaries) so, you can't just add/remove a processing block.
-You need to stick with whatever is there.
-
-So, for instance, this:
-
-	$ v4l2grab -f YUYV -x 1600 -y 1200 -d /dev/video2 -n 1 -u
-
-Makes the driver to use two binaries:
-
-	[  145.386407] atomisp-isp2 0000:00:03.0: Using binary isp_preview_var_isp2 (id 22), type 0, mode 1, continuous true
-	[  145.386616] atomisp-isp2 0000:00:03.0: Using binary isp_vf_pp_opt (id 3), type 0, mode 9, continuous true
-
-Internally, this binary combination will do, at least:
-
-	Bayer->YUV conversion
-	Scaler
-	Cropping
-
-The driver has a complex logic (with lots of layers) to try to select the
-right binaries. Based on the comments there, those are auto-generated together
-with the firmware file itself. So, when a "copy-mode" binary is added at the
-firmware file, the code generator also adds (via two or three abstraction layers)
-the code that would allow selecting and configuring such binary.
-
-It can still be mapped via MC, in the sense that you would have:
-
-	- source nodes - one for each sensor
-	- sink nodes
-	- several binary blocks that do a mix of things
-
-If it would make sense to use MC to setup such pipelines and/or moving the
-binary selection logic to libcamera is a separate matter.
-
-IMO, we should first cleanup and drop the abstraction layers, having a
-better understanding about the binary selection logic before start
-thinking about moving pipeline setup to userspace.
-
-Regards,
-Mauro
-
--
-
-As a reference, those are the binaries inside the
-candrpv_0415_20150521_0458 firmware file for ISP2401:
-
-[   19.289518] atomisp-isp2 0000:00:03.0: binary #0  type SP: sp
-[   19.289714] atomisp-isp2 0000:00:03.0: binary #1  type ISP (Normal), binary id is  0: isp_copy_var
-[   19.289726] atomisp-isp2 0000:00:03.0: binary #2  type ISP (Normal), binary id is  2: isp_vf_pp_full
-[   19.289733] atomisp-isp2 0000:00:03.0: binary #3  type ISP (Normal), binary id is  3: isp_vf_pp_opt
-[   19.289739] atomisp-isp2 0000:00:03.0: binary #4  type ISP (Normal), binary id is 60: isp_capture_pp_var_bli
-[   19.289749] atomisp-isp2 0000:00:03.0: binary #5  type ISP (Normal), binary id is 61: isp_capture_pp_ldc
-[   19.289755] atomisp-isp2 0000:00:03.0: binary #6  type ISP (Normal), binary id is  5: isp_capture_pp_var
-[   19.289762] atomisp-isp2 0000:00:03.0: binary #7  type ISP (Normal), binary id is  4: isp_yuv_scale_var
-[   19.289768] atomisp-isp2 0000:00:03.0: binary #8  type ISP (Normal), binary id is  6: isp_preisp_var
-[   19.289776] atomisp-isp2 0000:00:03.0: binary #9  type ISP (Normal), binary id is  7: isp_preisp_var_isp2
-[   19.289782] atomisp-isp2 0000:00:03.0: binary #10 type ISP (Normal), binary id is 58: isp_pre_de_var_isp2
-[   19.289789] atomisp-isp2 0000:00:03.0: binary #11 type ISP (Normal), binary id is  8: isp_gdc_var
-[   19.289795] atomisp-isp2 0000:00:03.0: binary #12 type ISP (Normal), binary id is 11: isp_anr_var
-[   19.289801] atomisp-isp2 0000:00:03.0: binary #13 type ISP (Normal), binary id is 12: isp_anr_var_isp2
-[   19.289807] atomisp-isp2 0000:00:03.0: binary #14 type ISP (Normal), binary id is  9: isp_postisp_var
-[   19.289813] atomisp-isp2 0000:00:03.0: binary #15 type ISP (Normal), binary id is 10: isp_postisp_var_isp2
-[   19.289819] atomisp-isp2 0000:00:03.0: binary #16 type ISP (Normal), binary id is 15: isp_preview_dec
-[   19.289825] atomisp-isp2 0000:00:03.0: binary #17 type ISP (Normal), binary id is 16: isp_preview_cont_bds125_isp2
-[   19.289831] atomisp-isp2 0000:00:03.0: binary #18 type ISP (Normal), binary id is 17: isp_preview_cont_dpc_bds150_isp2
-[   19.289847] atomisp-isp2 0000:00:03.0: binary #19 type ISP (Normal), binary id is 19: isp_preview_cont_dpc_bds200_isp2
-[   19.289854] atomisp-isp2 0000:00:03.0: binary #20 type ISP (Normal), binary id is 18: isp_preview_cont_bds150_isp2
-[   19.289860] atomisp-isp2 0000:00:03.0: binary #21 type ISP (Normal), binary id is 20: isp_preview_cont_bds200_isp2
-[   19.289867] atomisp-isp2 0000:00:03.0: binary #22 type ISP (Normal), binary id is 21: isp_preview_var
-[   19.289873] atomisp-isp2 0000:00:03.0: binary #23 type ISP (Normal), binary id is 22: isp_preview_var_isp2
-[   19.289879] atomisp-isp2 0000:00:03.0: binary #24 type ISP (Normal), binary id is 24: isp_primary_var
-[   19.289885] atomisp-isp2 0000:00:03.0: binary #25 type ISP (Normal), binary id is 25: isp_primary_var_isp2
-[   19.289891] atomisp-isp2 0000:00:03.0: binary #26 type ISP (Normal), binary id is 26: isp_primary_small
-[   19.289897] atomisp-isp2 0000:00:03.0: binary #27 type ISP (Normal), binary id is 27: isp_primary_striped
-[   19.289903] atomisp-isp2 0000:00:03.0: binary #28 type ISP (Normal), binary id is 28: isp_primary_striped_isp2
-[   19.289909] atomisp-isp2 0000:00:03.0: binary #29 type ISP (Normal), binary id is 29: isp_primary_8mp
-[   19.289915] atomisp-isp2 0000:00:03.0: binary #30 type ISP (Normal), binary id is 30: isp_primary_14mp
-[   19.289921] atomisp-isp2 0000:00:03.0: binary #31 type ISP (Normal), binary id is 31: isp_primary_16mp
-[   19.289926] atomisp-isp2 0000:00:03.0: binary #32 type ISP (Normal), binary id is 33: isp_primary_isp261_stage0
-[   19.289932] atomisp-isp2 0000:00:03.0: binary #33 type ISP (Normal), binary id is 34: isp_primary_isp261_stage1
-[   19.289938] atomisp-isp2 0000:00:03.0: binary #34 type ISP (Normal), binary id is 35: isp_primary_isp261_stage2
-[   19.289947] atomisp-isp2 0000:00:03.0: binary #35 type ISP (Normal), binary id is 36: isp_primary_isp261_stage3
-[   19.289954] atomisp-isp2 0000:00:03.0: binary #36 type ISP (Normal), binary id is 37: isp_primary_isp261_stage4
-[   19.289960] atomisp-isp2 0000:00:03.0: binary #37 type ISP (Normal), binary id is 38: isp_primary_isp261_stage5
-[   19.289966] atomisp-isp2 0000:00:03.0: binary #38 type ISP (Normal), binary id is 42: isp_video_dz
-[   19.289971] atomisp-isp2 0000:00:03.0: binary #39 type ISP (Normal), binary id is 44: isp_video_high
-[   19.289978] atomisp-isp2 0000:00:03.0: binary #40 type ISP (Normal), binary id is 45: isp_video_nodz
-[   19.289984] atomisp-isp2 0000:00:03.0: binary #41 type ISP (Normal), binary id is 46: isp_video_cont_multibds_isp2_min
-[   19.289990] atomisp-isp2 0000:00:03.0: binary #42 type ISP (Normal), binary id is 47: isp_video_cont_bds_300_600_isp2_min
-[   19.290029] atomisp-isp2 0000:00:03.0: binary #43 type ISP (Normal), binary id is 48: isp_video_cont_dpc_bds150_isp2_min
-[   19.290037] atomisp-isp2 0000:00:03.0: binary #44 type ISP (Normal), binary id is 50: isp_video_cont_dpc_bds200_isp2_min
-[   19.290044] atomisp-isp2 0000:00:03.0: binary #45 type ISP (Normal), binary id is 49: isp_video_cont_bds150_isp2_min
-[   19.290050] atomisp-isp2 0000:00:03.0: binary #46 type ISP (Normal), binary id is 51: isp_video_cont_bds200_isp2_min
-[   19.290057] atomisp-isp2 0000:00:03.0: binary #47 type ISP (Normal), binary id is 52: isp_video_cont_nobds_isp2_min
-[   19.290063] atomisp-isp2 0000:00:03.0: binary #48 type ISP (Normal), binary id is 53: isp_video_dz_isp2_min
-[   19.290070] atomisp-isp2 0000:00:03.0: binary #49 type ISP (Normal), binary id is 54: isp_video_dz_isp2
-[   19.290076] atomisp-isp2 0000:00:03.0: binary #50 type ISP (Normal), binary id is 55: isp_video_lp_isp2
-
+Chin-Ting
