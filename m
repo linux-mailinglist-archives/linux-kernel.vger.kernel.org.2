@@ -2,90 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85736446EEE
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 17:27:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81099446EF7
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 17:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234553AbhKFQ3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 12:29:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbhKFQ3q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 12:29:46 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E259BC061714
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 09:27:04 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id S234566AbhKFQez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 12:34:55 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:35294 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231658AbhKFQey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Nov 2021 12:34:54 -0400
+Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mjOWr-0005tR-Lh; Sat, 06 Nov 2021 17:26:53 +0100
-Received: from pengutronix.de (dialin-80-228-153-084.ewe-ip-backbone.de [80.228.153.84])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id D8A7F6A5DC6;
-        Sat,  6 Nov 2021 16:26:48 +0000 (UTC)
-Date:   Sat, 6 Nov 2021 17:26:47 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>
-Cc:     Robin van der Gracht <robin@protonic.nl>,
-        Oleksij Rempel <linux@rempel-privat.de>, kernel@pengutronix.de,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2 0/3] can: j1939: fix some standard conformance
- problems
-Message-ID: <20211106162647.qgejhws3osmxfjuq@pengutronix.de>
-References: <1635431907-15617-1-git-send-email-zhangchangzhong@huawei.com>
+        (envelope-from <heiko@sntech.de>)
+        id 1mjObq-0008E6-R1; Sat, 06 Nov 2021 17:32:02 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Jianqun Xu <jay.xu@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Andy Shevchenko <andy@kernel.org>
+Subject: Re: [PATCH v1 03/19] pinctrl/rockchip: Drop wrong kernel doc annotation
+Date:   Sat, 06 Nov 2021 17:32:01 +0100
+Message-ID: <1844978.gOY4SzdxhB@diego>
+In-Reply-To: <20211105124242.27288-3-andriy.shevchenko@linux.intel.com>
+References: <20211105124242.27288-1-andriy.shevchenko@linux.intel.com> <20211105124242.27288-3-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="q4cbyovnoxxgd3sj"
-Content-Disposition: inline
-In-Reply-To: <1635431907-15617-1-git-send-email-zhangchangzhong@huawei.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am Freitag, 5. November 2021, 13:42:26 CET schrieb Andy Shevchenko:
+> Kernel doc validator is not happy:
+> 
+>   .../pinctrl-rockchip.c:45: warning: This comment starts with '/**', but isn't a kernel-doc comment.
+> 
+> Drop it as it's indeed not a kernel doc comment.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
---q4cbyovnoxxgd3sj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
 
-On 28.10.2021 22:38:24, Zhang Changzhong wrote:
-> This patchset fixes 3 standard conformance problems in the j1939 stack.
+> ---
+>  drivers/pinctrl/pinctrl-rockchip.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pinctrl/pinctrl-rockchip.c b/drivers/pinctrl/pinctrl-rockchip.c
+> index 5ce260f152ce..6031d98d9849 100644
+> --- a/drivers/pinctrl/pinctrl-rockchip.c
+> +++ b/drivers/pinctrl/pinctrl-rockchip.c
+> @@ -39,7 +39,7 @@
+>  #include "pinconf.h"
+>  #include "pinctrl-rockchip.h"
+>  
+> -/**
+> +/*
+>   * Generate a bitmask for setting a value (v) with a write mask bit in hiword
+>   * register 31:16 area.
+>   */
+> 
 
-Applied to linux-can/testing added stable on Cc.
 
-thanks,
-Marc
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
---q4cbyovnoxxgd3sj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmGGrMQACgkQqclaivrt
-76kGVAgAqDNbF9848DnAPt5t+jSSaEB38fCyUZdbe/XPnNnB8vdIlUDQsJc9NrQD
-AEnqKIZr6eZ8ZzL5xV2zpa81hMVOakpvO0v3fhpDNnw4QkJ3EL89jURPyc1/HCfF
-RSBHTS7PLMuXokjfiWtqmSYw1F3LqwF1oMScV7j6D5i202s/R8H7oHwQoJ5Akugz
-cqVSphTe3XpgSs3Bt4rKPt8jhOmq61GoIILPXxKOq4aLb4iANQxdDTJT8rwfvLFO
-5650A0nXMvKFx4NN5GOuakQDxbzRkI3elekoEkgPoiyBJSwydTqQ6rJQpmNHPqAf
-GrdvOJe/kzwi+s2HNc5bMBf63CVZcw==
-=38/T
------END PGP SIGNATURE-----
-
---q4cbyovnoxxgd3sj--
