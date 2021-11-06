@@ -2,100 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4088A446D23
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 10:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B83D8446D35
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 10:21:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233941AbhKFJPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 05:15:49 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:15365 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231987AbhKFJPn (ORCPT
+        id S233963AbhKFJXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 05:23:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229961AbhKFJXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 05:15:43 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HmWqc0llKz90Jk;
-        Sat,  6 Nov 2021 17:12:44 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sat, 6 Nov 2021 17:12:55 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sat, 6 Nov 2021 17:12:54 +0800
-Subject: Re: [PATCH] blk-cgroup: fix missing put device in error path from
- blkg_conf_pref()
-To:     <tj@kernel.org>, <axboe@kernel.dk>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20211102020705.2321858-1-yukuai3@huawei.com>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <1677130b-ca7c-00ce-a47e-86adf90d8229@huawei.com>
-Date:   Sat, 6 Nov 2021 17:12:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Sat, 6 Nov 2021 05:23:40 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9AAC061570;
+        Sat,  6 Nov 2021 02:20:59 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id q17so483148plr.11;
+        Sat, 06 Nov 2021 02:20:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SjsiBBR4iQ9J6KRlh4zbj1SuSSwOxk/0qaq6CzZ2u1Q=;
+        b=UcGs2unyDElkJEfyMNWOyZf0PPJiDDvz1eMFIkcK3e/TCxcXtJYq62t1rdxbJwOibx
+         niJ4czW6AmA77yCNrAhHWqfAKvyQLl23RYYE2fSPd8J5WOG7NC3A01Gp2wqA5dNTzxeq
+         2vrXOVZ99pf8qhTgdBKdyWt3CAiulHo72QsKHd7cx0OGitbNXbT0A72yNubaPuH0wCD6
+         W9t2WMjigC9gtlmWs0D+c7Fkqx6frMQldXO90aN5n/ypJxsFUy1THD7Z/g8SqDNxvSI3
+         4uZDssIQntu2QCkJeoEv9unBk/W3QBRA4/8D8PPfo9lC29tMRzmP7v1JAuc51cGEq9zU
+         nqyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SjsiBBR4iQ9J6KRlh4zbj1SuSSwOxk/0qaq6CzZ2u1Q=;
+        b=uZ7aXf97Ikd9WMPtejFrlrDsnEJqDJvocCxAWcJY+qh+zC3J+QS/svcPJ8nQ5ssmjp
+         O46lSPRiQyq0LvdDSag2mhtEyBuXUeQ/yFPaiVqUf380UztepWOl5HmxvTJ1BaALzpBE
+         bsvaPlsHCRqKo9bYCck772cqnSsL5Rfc4y6IJY1GlS4BZMO+jRqIWj11Ga6sV4SXHl8v
+         gCQaVY+o9cFt9DBjkH+p1H6r4gDGJc6VL/Kh0q4MlXbKgJXf04p7cPhsuNNzJn9Zli5O
+         E9u+k7YU1HyOVQCCHqOeopt7VBlQg/15qei2WRFg5dY40JOda4MTNsjeyVC4q9SxeBJZ
+         8ogQ==
+X-Gm-Message-State: AOAM533YPuaugI5Gi9PIjXKwEeLk27sPVCAdXjsLXsMNi+6bvXqLWTa0
+        2GAeGV8651Y31+90G0snzAqhYkM3ohk=
+X-Google-Smtp-Source: ABdhPJzjauw8zXCQjetliVqjsgRLmaICA2Xy8uvLlLUG58orP8B2/Pmn8z/nsmBwYdaV0/k9/gykAA==
+X-Received: by 2002:a17:90b:1812:: with SMTP id lw18mr19547891pjb.196.1636190458899;
+        Sat, 06 Nov 2021 02:20:58 -0700 (PDT)
+Received: from host-x86-64.. ([122.161.244.211])
+        by smtp.gmail.com with ESMTPSA id m10sm8871380pfk.152.2021.11.06.02.20.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Nov 2021 02:20:58 -0700 (PDT)
+From:   Ajay Garg <ajaygargnsit@gmail.com>
+To:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ajay Garg <ajaygargnsit@gmail.com>
+Subject: [PATCH] tty: vt: keyboard: do not copy an extra-byte in copy_to_user
+Date:   Sat,  6 Nov 2021 14:50:40 +0530
+Message-Id: <20211106092041.43745-1-ajaygargnsit@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20211102020705.2321858-1-yukuai3@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/11/02 10:07, Yu Kuai wrote:
-friendly ping...
-> If blk_queue_enter() failed due to queue is dying, the
-> blkdev_put_no_open() is needed because blkcg_conf_open_bdev() succeeded.
-> 
-> Fixes: 0c9d338c8443 ("blk-cgroup: synchronize blkg creation against policy deactivation")
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->   block/blk-cgroup.c | 9 +++++----
->   1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-> index 88b1fce90520..663aabfeba18 100644
-> --- a/block/blk-cgroup.c
-> +++ b/block/blk-cgroup.c
-> @@ -640,7 +640,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
->   	 */
->   	ret = blk_queue_enter(q, 0);
->   	if (ret)
-> -		return ret;
-> +		goto fail;
->   
->   	rcu_read_lock();
->   	spin_lock_irq(&q->queue_lock);
-> @@ -676,13 +676,13 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
->   		new_blkg = blkg_alloc(pos, q, GFP_KERNEL);
->   		if (unlikely(!new_blkg)) {
->   			ret = -ENOMEM;
-> -			goto fail;
-> +			goto fail_exit_queue;
->   		}
->   
->   		if (radix_tree_preload(GFP_KERNEL)) {
->   			blkg_free(new_blkg);
->   			ret = -ENOMEM;
-> -			goto fail;
-> +			goto fail_exit_queue;
->   		}
->   
->   		rcu_read_lock();
-> @@ -722,9 +722,10 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
->   fail_unlock:
->   	spin_unlock_irq(&q->queue_lock);
->   	rcu_read_unlock();
-> +fail_exit_queue:
-> +	blk_queue_exit(q);
->   fail:
->   	blkdev_put_no_open(bdev);
-> -	blk_queue_exit(q);
->   	/*
->   	 * If queue was bypassing, we should retry.  Do so after a
->   	 * short msleep().  It isn't strictly necessary but queue
-> 
+Both (statically-allocated) "user_kdgkb->kb_string" and
+(dynamically-allocated) "kbs" are of length "len", so we must
+not copy more than "len" bytes.
+
+Signed-off-by: Ajay Garg <ajaygargnsit@gmail.com>
+---
+ drivers/tty/vt/keyboard.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index c7fbbcdcc346..dfef7de8a057 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -2070,7 +2070,7 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
+ 		len = strlcpy(kbs, func_table[kb_func] ? : "", len);
+ 		spin_unlock_irqrestore(&func_buf_lock, flags);
+ 
+-		ret = copy_to_user(user_kdgkb->kb_string, kbs, len + 1) ?
++		ret = copy_to_user(user_kdgkb->kb_string, kbs, len) ?
+ 			-EFAULT : 0;
+ 
+ 		break;
+-- 
+2.30.2
+
