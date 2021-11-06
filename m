@@ -2,91 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E67446F75
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 18:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 649AB446F77
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 18:53:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234696AbhKFRw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 13:52:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
+        id S234710AbhKFRz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 13:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231783AbhKFRwY (ORCPT
+        with ESMTP id S231783AbhKFRzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 13:52:24 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1673C061570;
-        Sat,  6 Nov 2021 10:49:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=p98X60FllSP44Lbfdicz/g7B4IYhfi07lOm/UAWCN1c=; b=umtFtwq0MW5enSXh0Pn/RIqbVN
-        oawwur3mMZgi/DqWLHGCdHV7oKPexxfJKKoIz0M3YsZRoiPcbQemcIFAGe+XfUb0FfZTPJRJsyMr1
-        WwnOK4J4Q/i+25JMIgEtY9H3fYW/ZKhNOV7Y3M1+xeGnftO5gtRrFgvgz/M2itOjpwMC8TlOucxW0
-        6kFDcHivssFjMSjqH/GHngXtNcYVkamgDXKpVLkuuEbAl6HgluivvUcIuOnRgfHrYja0G1yM/vLXX
-        LzTCC3kABD0HJVsbkZVHsRINzyPxI2UlWJdd2Yz/6Ob1rKkrub9f+sK7ntez15hbO2uCF5kKKQTNh
-        PCylU5yQ==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mjPov-008ZcK-TE; Sat, 06 Nov 2021 17:49:38 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Artur Rojek <contact@artur-rojek.eu>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-mips@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH] iio/adc: ingenic: fix (MIPS) ingenic-adc build errors
-Date:   Sat,  6 Nov 2021 10:49:32 -0700
-Message-Id: <20211106174932.15676-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Sat, 6 Nov 2021 13:55:55 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC9BC061570;
+        Sat,  6 Nov 2021 10:53:14 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id r4so43890395edi.5;
+        Sat, 06 Nov 2021 10:53:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Nmb1M9O/JIBM5JUrg6G0Ibis/I8TW93QGKNiMCUrFsM=;
+        b=dK/47sibv8Wr60JRe+vl0U19QFJj01MX3+jPN9YGCWYaqlFnJaqAaGb53IiagmbJeF
+         GUdExybXDFi+tRldLxTTCG49slMorjaffLMy+swIPeiS5vhV3Dv0m1HDF6/6+iVmPd7S
+         yLogCznIi1H2M9Jy25K2DvMUYXJ0x9NUvAE3qfwt/2utUH5YaLQojvrfiY1L0Lq93gSz
+         9GNXA3V3muCei7onjWM4Ipdm6erAklN9z+bfaaCNyALf8B5Dsq+71n6pVCgkR+XuyY6U
+         i9i2US6s8Bg9n/17iGogixFmCf7R0aDzmLvy9BuivzbY/RUBeMkdURwhCXX2HRD1IeI8
+         E+hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Nmb1M9O/JIBM5JUrg6G0Ibis/I8TW93QGKNiMCUrFsM=;
+        b=REp/nYeLURVsSyAXZ4QJG1uk36Jhq03MEMvRnSuwTHX0AO81M+cWaKHSWjBvDkR+V8
+         9aHcyrdO/rO/WrZYuXpLW5RB9wAj1ffsQcc1ZogbGB69UvCWeg4lHPR5ZIpNNxuLtn1z
+         J3Dson9/QCRuu9/3MLb7LoC6hP0aytbQ5goHe24qMM0Hjmr9Nl4QshY2olCH0s0qcIKX
+         P15rz9jd8zIIA7bxu9HvOP2qgkINKJVj/PZyEJZseyvrwr/+s+w/ebi8ARSnJZ/6l3ez
+         NceLaZQFHGw6s2HZlZ2qzL5vx79GUZwlkcZbDHHUj3lO737NUQk5anYSqzZrA/GzeJA0
+         6YJw==
+X-Gm-Message-State: AOAM533xQ6/1UGGmBsgQ2iGmEGfpkgDVBISV/b3uEk7YKEb4t/V056NO
+        XdUUQaUwh+3o9uazm3xB4J8=
+X-Google-Smtp-Source: ABdhPJzHv10N3qM40sMyShYmNiUwExago3aoXo6D+7aaLg67Y4T0vJ58gBWed3rf3VHs40Wn4Bd0/g==
+X-Received: by 2002:a05:6402:5204:: with SMTP id s4mr55795506edd.113.1636221192791;
+        Sat, 06 Nov 2021 10:53:12 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:ab88:109:9f0:f6a6:7fbe:807a:e1cc])
+        by smtp.googlemail.com with ESMTPSA id g10sm6364857edr.56.2021.11.06.10.53.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Nov 2021 10:53:12 -0700 (PDT)
+From:   "Saheed O. Bolarinwa" <refactormyself@gmail.com>
+To:     helgaas@kernel.org
+Cc:     "Bolarinwa O. Saheed" <refactormyself@gmail.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v4 0/4] PCI/ASPM: Remove struct aspm_latency
+Date:   Sat,  6 Nov 2021 18:53:01 +0100
+Message-Id: <20211106175305.25565-1-refactormyself@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MIPS does not always provide clk*() interfaces and there are no
-always-present stubs for them, so depending on "MIPS || COMPILE_TEST"
-is not strong enough to prevent build errors.
+From: "Bolarinwa O. Saheed" <refactormyself@gmail.com>
 
-Likewise MACH_INGENIC_SOC || COMPILE_TEST is not strong enough
-since if only COMPILE_TEST=y (with some other MIPS MACH_ or CPU or
-BOARD setting), there are still the same build errors.
+To validate and set link latency capability, `struct aspm_latency` and
+related members defined within `struct pcie_link_state` are used.
+However, since there are not many access to theses values, it is
+possible to directly access and compute these values.
 
-It looks like depending on MACH_INGENIC_SOC is the only thing that is
-sufficient here in order to prevent build errors.
+Doing this will also reduce the dependency on `struct pcie_link_state`.
 
-mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
-ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
-mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
-ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
+The series removes `struct aspm_latency` and related members within
+`struct pcie_link_state`. All latencies are now calculated when needed.
 
-Fixes: 1a78daea107d ("IIO: add Ingenic JZ47xx ADC driver.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Artur Rojek <contact@artur-rojek.eu>
-Cc: Paul Cercueil <paul@crapouillou.net>
-Cc: linux-mips@vger.kernel.org
-Cc: Jonathan Cameron <jic23@kernel.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: linux-iio@vger.kernel.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- drivers/iio/adc/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- linux-next-20211105.orig/drivers/iio/adc/Kconfig
-+++ linux-next-20211105/drivers/iio/adc/Kconfig
-@@ -501,7 +501,7 @@ config INA2XX_ADC
- 
- config INGENIC_ADC
- 	tristate "Ingenic JZ47xx SoCs ADC driver"
--	depends on MIPS || COMPILE_TEST
-+	depends on MACH_INGENIC_SOC
- 	select IIO_BUFFER
- 	help
- 	  Say yes here to build support for the Ingenic JZ47xx SoCs ADC unit.
+VERSION CHANGES:
+- v2:
+»       - directly access downstream by calling `pci_function_0()`
+»         instead of using the `struct pcie_link_state`
+
+- v3:
+»       - rebase on Linux 5.15-rc2
+
+- v4 (this version)
+	- Create a seprate path to move pci_function_0() upward
+
+MERGE NOTICE:
+These series are based on
+»       'commit e4e737bb5c17 ("Linux 5.15-rc2")'
+
+Saheed O. Bolarinwa (4):
+  PCI/ASPM: Move pci_function_0() upward
+  PCI/ASPM: Do not cache link latencies
+  PCI/ASPM: Remove struct pcie_link_state.acceptable
+  PCI/ASPM: Remove struct aspm_latency
+
+ drivers/pci/pcie/aspm.c | 88 +++++++++++++++++------------------------
+ 1 file changed, 37 insertions(+), 51 deletions(-)
+
+-- 
+2.20.1
+
