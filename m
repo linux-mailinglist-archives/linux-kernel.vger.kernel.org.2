@@ -2,231 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07FDB446C4D
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 05:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A925446C51
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 05:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbhKFEJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 00:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39614 "EHLO
+        id S230435AbhKFEWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 00:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229997AbhKFEJv (ORCPT
+        with ESMTP id S229608AbhKFEWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 00:09:51 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4571EC061714
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 21:07:10 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id y84-20020a1c7d57000000b00330cb84834fso10945016wmc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 21:07:10 -0700 (PDT)
+        Sat, 6 Nov 2021 00:22:04 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBADC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Nov 2021 21:19:23 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id o8so39729355edc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Nov 2021 21:19:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rzyrOrH95MGAa/Xb2wtK18TKgOiah8NZUk7288mGLbk=;
-        b=AjtsM3Dfda6lwb67+jWFgQj04f7+76UtqIxnYJUO8cY/vF3RuRn/W/5P/kABG3VHa7
-         aidAwrnPOZ4A2HUgBHiGPTXExCBlMsAJ8Ty2XSr02P1H2DcHdEEW+s8B0ByFrerGuLxQ
-         qkWgu7S9lAOd8+GirFVAvF+Avej32ES8mRFjs0oEbJYu49hLPR1U3n1/5OH0ovIOVl1n
-         Lyy2QPlLLOlGeTkUulhZ+P40oNbm+RYitd52a4lqdRBVgC88vyphyaJfZ7h8NnoQENxW
-         V81lVqVlHe5YuDE3+xgswef6Flm3ccI9OE0zVGP7GdGX5Q44YOa1Btob76FPQgl2Iddk
-         C08Q==
+        bh=D8vFlpUznbXMyx/59K4Fs8dfFLIaAOhDqtSTgtxLO4w=;
+        b=CLUgto1Uw5PhScFMNxlMg+mLFoH2oJyTUpx9ZKIOtsBEQGHFkf+nYNv55tY7RJwDXB
+         mWhd1dXidWDEysPTUk7lxitXbu76Xe9UJTqn61J71kT/RSZ7c0/2HdqBOzddZc0UoR+O
+         juAMJwNTaRwcCAvasleIVeXRiaX1hZb41E2UY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rzyrOrH95MGAa/Xb2wtK18TKgOiah8NZUk7288mGLbk=;
-        b=dbva8ldg72f18Dy1YMGSD8yjStr3uJXmbe/XSPC9VBbfg6GI5YxxpNXRTklIMM9FY7
-         beqCoHDhxzkVqkdlTR8SckqnKZzAY7U1WU0tvcYaM3eLcG9YKNYjdHjie5rhxZKVlSTn
-         9McIFReYvvhTTile8fjh9LKComByY20rQ13y3CrvsqbKSKGZPiN4RBzXLISWrJwQNgMe
-         SLxIc6JOSi7zN5H5XuYuS43SfMJJwiAjFqS+Y9EqFMJtiI6QPftdPNUkiIuKg5fdA56L
-         mKabcJKc8alHbxDiwW1vmJTMXNnbUNgdDnphtKFJERLqycKYTcnsp3rI7R0+6zkVRGmH
-         0KvA==
-X-Gm-Message-State: AOAM530SCzAYDrPrk5N5EsRq5S5zJ9fcLslYjKb9RcdYgBKpvyKIvpVA
-        M26C/0wT89eMN5kSMZZerJtWBXBljh/asquhPK9htg==
-X-Google-Smtp-Source: ABdhPJw1yoX+ysGxdnypwYPWF0gLy1GCWIJim895Q3U5HbRv6csvaSJSKdZoBfJQ1MudTiYpxP11IyUpxvrbKk3JQOA=
-X-Received: by 2002:a05:600c:4ed2:: with SMTP id g18mr24191580wmq.18.1636171628680;
- Fri, 05 Nov 2021 21:07:08 -0700 (PDT)
+        bh=D8vFlpUznbXMyx/59K4Fs8dfFLIaAOhDqtSTgtxLO4w=;
+        b=A+2n71AADPXuQ6XSlNF7/wxJze6uTqePJhlk/s2q0oUsjBEWuYXY9Eujtj3J1ZNHVg
+         UBS6zss/wHtDOz4a/nWkoFpgzdiAbBfVQjK3zF1SVlXXA5eFUtRE/noIDYYyNu94PUTt
+         cFGcievZNxtjsxQmIvuD9MD+ctH1tHZHpX7iUyF6wKzicHCeHBbh3k2Yd91Dq7T+96mK
+         VCwofg9bIeNbl2mRxGig2zeDLsPbVYzb9+S9BTVvUf+zFT7jrqoXmMx0U9nmrKLPi8GO
+         17E47VUwCs1CgiPwS4IX6pfCDNAqhqZP9Nqjzyv7SzSd3QpGmLsCzUClTQWX2ot+BbUS
+         3QZA==
+X-Gm-Message-State: AOAM531Nc5jwQ+QrA0QSsu3zRRVGPDRT+GazKsmh3YUj6ec1LsfpisE+
+        GKbJd8xHwUq722H6GffHUQuviYuuJ8/4FpSEPumR5Q==
+X-Google-Smtp-Source: ABdhPJw5rtGG36uqtmsMWu916/Zpgaf0BqWezUaq8zx1ZP9rpY6kRTHC8FlIXzRblPppyMa5gH12t3vu9qhjendEnxc=
+X-Received: by 2002:a17:907:94c6:: with SMTP id dn6mr9990929ejc.490.1636172361775;
+ Fri, 05 Nov 2021 21:19:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211106013058.2621799-1-dlatypov@google.com> <20211106013058.2621799-2-dlatypov@google.com>
-In-Reply-To: <20211106013058.2621799-2-dlatypov@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Sat, 6 Nov 2021 12:06:57 +0800
-Message-ID: <CABVgOSnQ9qGtu0nEKePH+Zb1oR2osmVh791zyQ9P61SNznryrw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kunit: tool: add --kconfig_add to allow easily
- tweaking kunitconfigs
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     brendanhiggins@google.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org
+References: <20211018134844.2627174-1-james.clark@arm.com> <20211018134844.2627174-4-james.clark@arm.com>
+In-Reply-To: <20211018134844.2627174-4-james.clark@arm.com>
+From:   Denis Nikitin <denik@chromium.org>
+Date:   Fri, 5 Nov 2021 21:19:10 -0700
+Message-ID: <CADDJ8CWoHb28JDjxq+ZtFVTUXQjhtFTszjeeXKx1WMue8zBp2A@mail.gmail.com>
+Subject: Re: [PATCH 3/3] perf inject: Add vmlinux and ignore-vmlinux arguments
+To:     James Clark <james.clark@arm.com>
+Cc:     acme@kernel.org, linux-perf-users@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 6, 2021 at 9:31 AM 'Daniel Latypov' via KUnit Development
-<kunit-dev@googlegroups.com> wrote:
+On Mon, Oct 18, 2021 at 6:49 AM James Clark <james.clark@arm.com> wrote:
 >
-> E.g. run tests but with KASAN
-> $ ./tools/testing/kunit/kunit.py run --arch=x86_64 --kconfig_add=CONFIG_KASAN=y
-
-This is very neat, thank you. I'm definitely going to use this quite a bit.
-
-My only real note is that we'll need to add some documentation (but
-since the KUnit documentation is being reworked at the moment, I'm
-okay with doing that later to avoid merge conflicts).
-
-> This also works with --kunitconfig
-> $ ./tools/testing/kunit/kunit.py run --arch=x86_64 --kunitconfig=fs/ext4 --kconfig_add=CONFIG_KASAN=y
-
-It's also worth noting that this can be appended multiple times to set
-multiple options, which is useful
-
-> This flag is inspired by TuxMake's --kconfig-add, see
-> https://gitlab.com/Linaro/tuxmake#examples.
+> Other perf tools allow specifying the path to vmlinux. Perf inject
+> didn't have this argument which made some auxtrace workflows difficult.
 >
-> Our version just uses "_" as the delimiter for consistency with
-> pre-existing flags like --build_dir, --make_options, --kernel_args, etc.
+> Also add ignore-vmlinux for consistency with other tools.
 >
-> Note: this does make it easier to run into a pre-existing edge case:
-> $ ./tools/testing/kunit/kunit.py run --arch=x86_64 --kconfig_add=CONFIG_KASAN=y
-> $ ./tools/testing/kunit/kunit.py run --arch=x86_64
-> This second invocation ^ still has KASAN enabled!
-
-This behaviour is quite useful, and actually means we can turn on
-individual items with
-$ ./tools/testing/kunit/kunit.py config --kconfig_add=<option>
-
-> kunit.py won't call olddefconfig if our current .config is already a
-> superset of the provided kunitconfig.
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-
-Looks good.
-
-Reviewed-by: David Gow <davidgow@google.com>
-
-
+> Suggested-by: Denis Nitikin <denik@chromium.org>
+> Signed-off-by: James Clark <james.clark@arm.com>
 > ---
->  tools/testing/kunit/kunit.py           |  8 ++++++++
->  tools/testing/kunit/kunit_kernel.py    |  5 +++++
->  tools/testing/kunit/kunit_tool_test.py | 18 ++++++++++++++++++
->  3 files changed, 31 insertions(+)
+>  tools/perf/builtin-inject.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 >
-> diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-> index 68e6f461c758..be58f4c93806 100755
-> --- a/tools/testing/kunit/kunit.py
-> +++ b/tools/testing/kunit/kunit.py
-> @@ -280,6 +280,10 @@ def add_common_opts(parser) -> None:
->                              ' If given a directory, (e.g. lib/kunit), "/.kunitconfig" '
->                              'will get  automatically appended.',
->                              metavar='kunitconfig')
-> +       parser.add_argument('--kconfig_add',
-> +                            help='Additional Kconfig options to append to the '
-> +                            '.kunitconfig, e.g. CONFIG_KASAN=y. Can be repeated.',
-> +                           action='append')
+> diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+> index 6ad191e731fc..4261ad89730f 100644
+> --- a/tools/perf/builtin-inject.c
+> +++ b/tools/perf/builtin-inject.c
+> @@ -938,6 +938,10 @@ int cmd_inject(int argc, const char **argv)
+>  #endif
+>                 OPT_INCR('v', "verbose", &verbose,
+>                          "be more verbose (show build ids, etc)"),
+> +               OPT_STRING('k', "vmlinux", &symbol_conf.vmlinux_name,
+> +                          "file", "vmlinux pathname"),
+> +               OPT_BOOLEAN(0, "ignore-vmlinux", &symbol_conf.ignore_vmlinux,
+> +                           "don't load vmlinux even if found"),
+
+I think we also need to update documentation at Documentation/perf-inject.txt
+
+>                 OPT_STRING(0, "kallsyms", &symbol_conf.kallsyms_name, "file",
+>                            "kallsyms pathname"),
+>                 OPT_BOOLEAN('f', "force", &data.force, "don't complain, do it"),
+> @@ -972,6 +976,9 @@ int cmd_inject(int argc, const char **argv)
+>                 return -1;
+>         }
 >
->         parser.add_argument('--arch',
->                             help=('Specifies the architecture to run tests under. '
-> @@ -398,6 +402,7 @@ def main(argv, linux=None):
->                 if not linux:
->                         linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir,
->                                         kunitconfig_path=cli_args.kunitconfig,
-> +                                       kconfig_add=cli_args.kconfig_add,
->                                         arch=cli_args.arch,
->                                         cross_compile=cli_args.cross_compile,
->                                         qemu_config_path=cli_args.qemu_config)
-> @@ -423,6 +428,7 @@ def main(argv, linux=None):
->                 if not linux:
->                         linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir,
->                                         kunitconfig_path=cli_args.kunitconfig,
-> +                                       kconfig_add=cli_args.kconfig_add,
->                                         arch=cli_args.arch,
->                                         cross_compile=cli_args.cross_compile,
->                                         qemu_config_path=cli_args.qemu_config)
-> @@ -439,6 +445,7 @@ def main(argv, linux=None):
->                 if not linux:
->                         linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir,
->                                         kunitconfig_path=cli_args.kunitconfig,
-> +                                       kconfig_add=cli_args.kconfig_add,
->                                         arch=cli_args.arch,
->                                         cross_compile=cli_args.cross_compile,
->                                         qemu_config_path=cli_args.qemu_config)
-> @@ -457,6 +464,7 @@ def main(argv, linux=None):
->                 if not linux:
->                         linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir,
->                                         kunitconfig_path=cli_args.kunitconfig,
-> +                                       kconfig_add=cli_args.kconfig_add,
->                                         arch=cli_args.arch,
->                                         cross_compile=cli_args.cross_compile,
->                                         qemu_config_path=cli_args.qemu_config)
-> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-> index 51ee6e5dae91..7d459d6d6ff2 100644
-> --- a/tools/testing/kunit/kunit_kernel.py
-> +++ b/tools/testing/kunit/kunit_kernel.py
-> @@ -224,6 +224,7 @@ class LinuxSourceTree(object):
->               build_dir: str,
->               load_config=True,
->               kunitconfig_path='',
-> +             kconfig_add: Optional[List[str]]=None,
->               arch=None,
->               cross_compile=None,
->               qemu_config_path=None) -> None:
-> @@ -249,6 +250,10 @@ class LinuxSourceTree(object):
->                                 shutil.copyfile(DEFAULT_KUNITCONFIG_PATH, kunitconfig_path)
->
->                 self._kconfig = kunit_config.parse_file(kunitconfig_path)
-> +               if kconfig_add:
-> +                       kconfig = kunit_config.parse_from_string('\n'.join(kconfig_add))
-> +                       self._kconfig.merge_in_entries(kconfig)
+> +       if (symbol__validate_sym_arguments())
+> +               return -1;
 > +
->
->         def clean(self) -> bool:
->                 try:
-> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> index 4ec70e41ec5a..7e42a7c27987 100755
-> --- a/tools/testing/kunit/kunit_tool_test.py
-> +++ b/tools/testing/kunit/kunit_tool_test.py
-> @@ -334,6 +334,10 @@ class LinuxSourceTreeTest(unittest.TestCase):
->                                 pass
->                         kunit_kernel.LinuxSourceTree('', kunitconfig_path=dir)
->
-> +       def test_kconfig_add(self):
-> +               tree = kunit_kernel.LinuxSourceTree('', kconfig_add=['CONFIG_NOT_REAL=y'])
-> +               self.assertIn(kunit_config.KconfigEntry('NOT_REAL', 'y'), tree._kconfig.entries())
-> +
->         def test_invalid_arch(self):
->                 with self.assertRaisesRegex(kunit_kernel.ConfigError, 'not a valid arch, options are.*x86_64'):
->                         kunit_kernel.LinuxSourceTree('', arch='invalid')
-> @@ -540,6 +544,7 @@ class KUnitMainTest(unittest.TestCase):
->                 # Just verify that we parsed and initialized it correctly here.
->                 mock_linux_init.assert_called_once_with('.kunit',
->                                                         kunitconfig_path='mykunitconfig',
-> +                                                       kconfig_add=None,
->                                                         arch='um',
->                                                         cross_compile=None,
->                                                         qemu_config_path=None)
-> @@ -551,6 +556,19 @@ class KUnitMainTest(unittest.TestCase):
->                 # Just verify that we parsed and initialized it correctly here.
->                 mock_linux_init.assert_called_once_with('.kunit',
->                                                         kunitconfig_path='mykunitconfig',
-> +                                                       kconfig_add=None,
-> +                                                       arch='um',
-> +                                                       cross_compile=None,
-> +                                                       qemu_config_path=None)
-> +
-> +       @mock.patch.object(kunit_kernel, 'LinuxSourceTree')
-> +       def test_run_kconfig_add(self, mock_linux_init):
-> +               mock_linux_init.return_value = self.linux_source_mock
-> +               kunit.main(['run', '--kconfig_add=CONFIG_KASAN=y', '--kconfig_add=CONFIG_KCSAN=y'])
-> +               # Just verify that we parsed and initialized it correctly here.
-> +               mock_linux_init.assert_called_once_with('.kunit',
-> +                                                       kunitconfig_path=None,
-> +                                                       kconfig_add=['CONFIG_KASAN=y', 'CONFIG_KCSAN=y'],
->                                                         arch='um',
->                                                         cross_compile=None,
->                                                         qemu_config_path=None)
+>         if (inject.in_place_update) {
+>                 if (!strcmp(inject.input_name, "-")) {
+>                         pr_err("Input file name required for in-place updating\n");
 > --
-> 2.34.0.rc0.344.g81b53c2807-goog
+> 2.28.0
 >
-> --
-> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20211106013058.2621799-2-dlatypov%40google.com.
+
+Tested-by: Denis Nikitin <denik@chromium.org>
