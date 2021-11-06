@@ -2,144 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D02446DF3
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 13:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1170446DFE
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 14:03:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233583AbhKFMsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 08:48:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38584 "EHLO
+        id S233652AbhKFNDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 09:03:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232900AbhKFMsj (ORCPT
+        with ESMTP id S230463AbhKFNDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 08:48:39 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064FEC061570;
-        Sat,  6 Nov 2021 05:45:58 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id f3so24428473lfu.12;
-        Sat, 06 Nov 2021 05:45:57 -0700 (PDT)
+        Sat, 6 Nov 2021 09:03:34 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8DE1C061570
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 06:00:52 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id t30so18070760wra.10
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Nov 2021 06:00:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Wij71fKA1HG2jiSYInwTXYj/LtZwp9diZJCmSGprZss=;
-        b=PrWVoE3BZTjFRpJsGE5x62Fu125ksbCKl0cApBawk3P3OuMDYy6DQwYfMbCTVKTp/k
-         PeTBOzjpBD8QEn+u5B7hdgX1uFPP3JMJeVmt8ECT8e22v2l8bGgAV2dpV0rHZq7QDQsN
-         bxlphXuk9shR2qBbfT/n8n5atjkdj0wnMrg7izZRMi/jlPQI5VSfdA8t9kxjVSyI4K0F
-         z3BDe0gSsrnxDWmGvsHU5BPFOLPgGs5uLXc9N45gdNqhiyct7t0ANieRS2Rv1/Gwx3Ff
-         ucDuZaq4GDgQLgzFY6fFIxVC7gwCmT77qLOQi8I3K2J2KCq6qgpfnRESpXNurxoAs4P8
-         hf3A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m8wHab6566qURbj642hZQhjoNEVpnY3BwaarHDvq0L0=;
+        b=XND+wSBUuPYLMgjewQQ+ZfunYmZNgCh8WWfsCXD0+PsOEDkfOKExouoH06ea4qyP2R
+         FB0MqJKNiVp76AcUeWDBaFrBCmucksujIKNWtlWQ5+zBIpYORG52udyGka7M2ZFGQ76q
+         V0TcnCJwJfirAXNGLwFVEV69RebWVhDKwLPb16UmV4cHYfZyD5rlCkOq6mgP84tWVzDS
+         X1LtVHIqZogdb3d9gwGkK3v1bmpVRt2HQaxrtf9Uqfp6EXssJtqwuhO+gWxqd0KOkYIb
+         YCVFhO33SLioM8xwNMnieu74NedU5n2fWXbBeTBYVWLTmxv/YQ6ZO8EBkmez93iCZFGO
+         03Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Wij71fKA1HG2jiSYInwTXYj/LtZwp9diZJCmSGprZss=;
-        b=7dV5LH8G2MhsbzONhr5R6cPJ5Tsz9/U5XoQrmG8bvQCzSn/lcxwFGhXB48ilI8mk4G
-         CWWzS5wWJZTkcfTgzyIbws73jKFovpKx1xt6rSzczhcula1GzSaH4tVvffbhtIDXs/oU
-         bBQDYJqyCz4hj4EXsuqpCLiKhezEkaH70al4z0bV29O93gO3hnn0y+KMkEy1iHwz3AQe
-         Cvenz8fpCLNGO73VgNNdB40j1KxPRIemXXic8QksKdjPp2GjvKuu1+EPyKJuicpAE0I1
-         ziJ6NuB7ank1EXZOZ6phcTn4AHRSWIONTYQs7X7Qb4ihq/Kjws8xL0Q6OURq0lfmLYSY
-         zJBg==
-X-Gm-Message-State: AOAM531NJoqWJFKO7UoI4s7wcruJqkCfl63/gDeNM/ZwEJX62nmdbyhF
-        QMNPyA7sWs1UuNcNCZT+vBNaftuu1Do=
-X-Google-Smtp-Source: ABdhPJx6tFzdxq+w7p7JRTF8uxwBxJTCnAQ8nZaXHWWqqHw92Bf7Zdbyq3AmV1cZq2qLLebrPGOEVw==
-X-Received: by 2002:a05:6512:31d1:: with SMTP id j17mr60960429lfe.11.1636202756239;
-        Sat, 06 Nov 2021 05:45:56 -0700 (PDT)
-Received: from [192.168.1.11] ([217.117.245.207])
-        by smtp.gmail.com with ESMTPSA id z1sm1151234lfu.222.2021.11.06.05.45.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Nov 2021 05:45:55 -0700 (PDT)
-Message-ID: <ae60b19d-aef8-7822-0837-b995f796c2da@gmail.com>
-Date:   Sat, 6 Nov 2021 15:45:55 +0300
+        bh=m8wHab6566qURbj642hZQhjoNEVpnY3BwaarHDvq0L0=;
+        b=v6/1I3qTOAheAmKgq9apaFHPJV3oLtdTwxhYFxG0t4pHrwPZeEIQTJIxDR83YXQZXw
+         VwN4OP0pG0XXuPREbG6R/igeU5YfDJyyLbZ3UnLh/JmWBbTCAKmynv7xg6tV/4L5u0+H
+         e+s3DmjwtUgLYuwgeqgJnOgGvo5XZ/VI+kMhA/s/z4ouM9IKBUdbxUAA3ArqXpsZNdIQ
+         LpWMW/aErAyEhTTTWGh6JM1IQhtNlL+oftgZNLdyVQwu4u8yE4+oS3p0Xd/wPOl75GgZ
+         J8mnBtbgBBS4sWTukLFi18Ff5J5OAwlxOf+1j8N9QBn0gy4pIiMR8JuHWXo2Ym1nYE6Q
+         6b3g==
+X-Gm-Message-State: AOAM532YHLCAgiO5HQD6Bke1sgLaXNOKenYgRXpcSxMZPbgn1qUIuAqa
+        HfTc3q3Uqck1eUz9m7Ob4A==
+X-Google-Smtp-Source: ABdhPJw/FzXBTpUJ4P9/xdnyrcrIhUJIRVvdOeNvjS5d8P59c56FmQdYXt8IzHbi1eD/sZhPdkltdg==
+X-Received: by 2002:adf:efc3:: with SMTP id i3mr59891089wrp.103.1636203651372;
+        Sat, 06 Nov 2021 06:00:51 -0700 (PDT)
+Received: from alex-ThinkPad-E480.. (ip5b435a69.dynamic.kabel-deutschland.de. [91.67.90.105])
+        by smtp.googlemail.com with ESMTPSA id h27sm15786674wmc.43.2021.11.06.06.00.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Nov 2021 06:00:51 -0700 (PDT)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Cc:     Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH] drm: bridge: dw-hdmi: Fix RGB to YUV color space conversion
+Date:   Sat,  6 Nov 2021 14:00:44 +0100
+Message-Id: <20211106130044.63483-1-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v2] tty: vt: keyboard: initialize "kbs" so that kfree(kbs)
- runs fine even if kbs is not kmalloced.
-Content-Language: en-US
-To:     Ajay Garg <ajaygargnsit@gmail.com>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211106104053.98761-1-ajaygargnsit@gmail.com>
- <dd7e35fc-d5b2-c41b-f03a-cbf467401205@gmail.com>
- <CAHP4M8XaWtagZcocGoeT2Rb6F6JeKqMFa2ZzTZ0ddCES0-T-jw@mail.gmail.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <CAHP4M8XaWtagZcocGoeT2Rb6F6JeKqMFa2ZzTZ0ddCES0-T-jw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/21 15:16, Ajay Garg wrote:
-> Hi Pavel,
-> 
-> Thanks for the review.
-> 
->>
->> Please, don't put change log into commit message. It should go under ---
->>
-> 
-> Ok, many thanks Pavel.
-> Will take care in all my future patches.
-> 
-> 
->>
->> These is only one caller of vt_do_kdgkb_ioctl, which simple does:
->>
->>
->>         case KDGKBSENT:
->>         case KDSKBSENT:
->>                 return vt_do_kdgkb_ioctl(cmd, up, perm);
->>
->> It means, that cmd can not be different from KDGKBSENT and KDSKBSENT.
->>
->> I guess, you found this "issue" via static analysis tool like smatch or
->> smth similar, but this bug is impossible right now.
->>
-> 
-> Yes, following was reported by smatch (amongst others) :
-> vt_do_kdgkb_ioctl() error: uninitialized symbol 'kbs'.
-> 
-> 
-> Regarding the current state, "vt_do_kdgkb_ioctl" should ideally behave
-> correctly independently, without bothering whether a cmd is a valid
-> one. From that perspective, it makes sense to ensure that kfree never
-> crashes.
-> 
-> However, I don't have any strong opinions on what is right or what is
-> wrong, as long as things work fine.
-> 
-> So, if there is a general consensus that the change should not be made
-> currently, I would be ok.
-> In case the change should be made, kindly let me know, I will post the
-> v3 patch (making change as per the review-comment of moving changelog
-> below ---).
-> 
-> 
+As per CEA-861 quantization range is always limited in case of YUV
+output - indepentently which CEA mode it is or if it is an DMT mode.
 
-I can't say if it needed or not, since I am not the maintainer. I've 
-just said my thoughts on this change. It looks like you missed all 
-maintainers emails in your CC list :)
+This is already correctly setup in HDMI AVI inforame, but we always do
+a RGB to YUV conversion which doesn't consider that RGB input can be
+full range as well.
+That leads to incorrect colors for all CEA modes except mode 1 for HDMI
+and always for DVI.
 
-└──$ ./scripts/get_maintainer.pl -f drivers/tty/vt/keyboard.c
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> (supporter:TTY 
-LAYER,commit_signer:10/10=100%,authored:2/10=20%,added_lines:31/66=47%,removed_lines:31/59=53%)
-Jiri Slaby <jirislaby@kernel.org> (supporter:TTY 
-LAYER,commit_signer:6/10=60%,authored:3/10=30%,added_lines:14/66=21%,removed_lines:4/59=7%)
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> 
-(commit_signer:4/10=40%,authored:4/10=40%,added_lines:18/66=27%,removed_lines:21/59=36%)
-Emil Renner Berthing <kernel@esmil.dk> 
-(commit_signer:1/10=10%,authored:1/10=10%,removed_lines:3/59=5%)
-linux-kernel@vger.kernel.org (open list)
+To fix this, provide additional csc coefficents for converting from RGB
+full range to EITU601/EITU709 limited range and rename the existing
+arrays to clarify their meaning.
 
+Signed-off-by: Alex Bee <knaerzche@gmail.com>
+---
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 24 +++++++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
 
-This is the list of people you need to send patches to. Please, use this 
-script next time to not miss people related to your change :)
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+index 62ae63565d3a..1cba08b70091 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+@@ -80,13 +80,25 @@ static const u16 csc_coeff_rgb_out_eitu709[3][4] = {
+ 	{ 0x2000, 0x0000, 0x3b61, 0x7e25 }
+ };
+ 
+-static const u16 csc_coeff_rgb_in_eitu601[3][4] = {
++static const u16 csc_coeff_rgb_full_in_eitu601[3][4] = {
++	{ 0x2044, 0x106f, 0x0644, 0x0040 },
++	{ 0xe677, 0x1c1c, 0xfd46, 0x0200 },
++	{ 0xed60, 0xf685, 0x1c1c, 0x0200 }
++};
++
++static const u16 csc_coeff_rgb_limited_in_eitu601[3][4] = {
+ 	{ 0x2591, 0x1322, 0x074b, 0x0000 },
+ 	{ 0x6535, 0x2000, 0x7acc, 0x0200 },
+ 	{ 0x6acd, 0x7534, 0x2000, 0x0200 }
+ };
+ 
+-static const u16 csc_coeff_rgb_in_eitu709[3][4] = {
++static const u16 csc_coeff_rgb_full_in_eitu709[3][4] = {
++	{ 0x2750, 0x0baf, 0x03f8, 0x0040 },
++	{ 0xe677, 0x1c1c, 0xfd6d, 0x0200 },
++	{ 0xea55, 0xf98f, 0x1c1c, 0x0200 }
++};
++
++static const u16 csc_coeff_rgb_limted_in_eitu709[3][4] = {
+ 	{ 0x2dc5, 0x0d9b, 0x049e, 0x0000 },
+ 	{ 0x62f0, 0x2000, 0x7d11, 0x0200 },
+ 	{ 0x6756, 0x78ab, 0x2000, 0x0200 }
+@@ -1023,9 +1035,13 @@ static void dw_hdmi_update_csc_coeffs(struct dw_hdmi *hdmi)
+ 			csc_coeff = &csc_coeff_rgb_out_eitu709;
+ 	} else if (is_input_rgb && !is_output_rgb) {
+ 		if (hdmi->hdmi_data.enc_out_encoding == V4L2_YCBCR_ENC_601)
+-			csc_coeff = &csc_coeff_rgb_in_eitu601;
++			csc_coeff = hdmi->hdmi_data.rgb_limited_range
++				? &csc_coeff_rgb_limited_in_eitu601
++				: &csc_coeff_rgb_full_in_eitu601;
+ 		else
+-			csc_coeff = &csc_coeff_rgb_in_eitu709;
++			csc_coeff = hdmi->hdmi_data.rgb_limited_range
++				? &csc_coeff_rgb_limted_in_eitu709
++				: &csc_coeff_rgb_full_in_eitu709;
+ 		csc_scale = 0;
+ 	} else if (is_input_rgb && is_output_rgb &&
+ 		   hdmi->hdmi_data.rgb_limited_range) {
 
+base-commit: 89636a06fa2ee7826a19c39c19a9bc99ab9340a9
+-- 
+2.30.2
 
-The same for your other patch.
-
-
-
-With regards,
-Pavel Skripkin
