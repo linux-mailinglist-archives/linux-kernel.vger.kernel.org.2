@@ -2,77 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7894B446FEF
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 19:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6326B446FF3
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 19:59:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234142AbhKFS6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 14:58:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34454 "EHLO
+        id S234826AbhKFTB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 15:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhKFS6k (ORCPT
+        with ESMTP id S234147AbhKFTBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 14:58:40 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27ACCC061570
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 11:55:55 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:91c6:551:e507:741f])
-        by andre.telenet-ops.be with bizsmtp
-        id F6vr2600C4BJ5g4016vrgE; Sat, 06 Nov 2021 19:55:54 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mjQr1-00AdOS-Fg; Sat, 06 Nov 2021 19:55:51 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mjQr0-006cdY-Si; Sat, 06 Nov 2021 19:55:50 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Jens Axboe <axboe@kernel.dk>, Luis Chamberlain <mcgrof@kernel.org>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        noreply@ellerman.id.au
-Subject: [PATCH -next] ataflop: Add missing semicolon to return statement
-Date:   Sat,  6 Nov 2021 19:55:49 +0100
-Message-Id: <20211106185549.1578444-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Sat, 6 Nov 2021 15:01:55 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246D2C061570;
+        Sat,  6 Nov 2021 11:59:14 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id s19-20020a056830125300b0055ad9673606so17179048otp.0;
+        Sat, 06 Nov 2021 11:59:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w/De7BpxXxHmTIkQQm3S5gIv0fyA+bSz7s084KVq+qk=;
+        b=ERp/KaRpAyloDuMsxxYmdvO51oNzew06YZxc7JwgzcXiErKvY0ThENJR16hxtRZPCg
+         IgsiruyCAyCUcfeCw6k6DM6KRSKDePpr5hUnSNTwXjTXU9ntOpZ9S9ZcIlnQrANJFjQL
+         5Gg0ygVx33VtNMwT7l4IyFLbZXfBKtbLv4AvfOqfrL4h8MPa19fYS+vXzL9F0N8MNv5a
+         rbs1JDe3ULkQHfJLwTxr2nu0oHCSia9ERpWPR92m+kwoQ4c6n4pPIa/FLFahDr+0Yv6T
+         +42lwk6SnWq/fBUmOG1aS+xt7Tqmj8wnJcD3nbLnq9b5Kr2M2o8jrJTY+rwtf/PIRsk1
+         1aVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w/De7BpxXxHmTIkQQm3S5gIv0fyA+bSz7s084KVq+qk=;
+        b=BayY93kJ8UxKbo1XbBYN5YFReUAJaLXarAuYN9jkXFKRWgdL1YslHECKSlMIeR+Xxz
+         eW7cdmv8BFxiY1HnYCKpvhKY3MCvD9+fVsM9gr9TgoQ0watG9rDfThWUoTXjSpj9J82J
+         E7E8eKPjKIpSgjjrE/G7k/5UUUVr/VbRrE8kJpMo6PC459QEcsPdeJ1tEJdCrPh/w3p6
+         EWzSs+14S1FZe3ZVeFIwUbaQNoHswna8IYkmrACXMYeAHUFG0HDieSvBmimxB8fLwNoY
+         bhHx9HLsnsGRZvKSg30sKDWI8WaruUSjcyeRHAZaYUsrX+7nXHet+5I+BXSfGPisqEVC
+         kjvQ==
+X-Gm-Message-State: AOAM533yctgtzOJslH8xcAvMEKaTInJxwP3RoHAxuQLKPHDt5DK7XxRi
+        sUPkIrJvyDu2hnQWfMvYzqMCtgoksBjDwtXZO6M=
+X-Google-Smtp-Source: ABdhPJx8IjEZ/STpiFs4brCB+WtH6ZG/2bsrAawNzpQrp6+wmclzRwBR5BAAKO0tkNm2b1wT6UaQbxCl40PUmbdrXhM=
+X-Received: by 2002:a9d:7617:: with SMTP id k23mr36426215otl.351.1636225153438;
+ Sat, 06 Nov 2021 11:59:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20211106104053.98761-1-ajaygargnsit@gmail.com> <CAHp75VdY8aoF+dCm0j7EA-53BFaWdepvYYv7h5MVz2kVWagOOA@mail.gmail.com>
+In-Reply-To: <CAHp75VdY8aoF+dCm0j7EA-53BFaWdepvYYv7h5MVz2kVWagOOA@mail.gmail.com>
+From:   Ajay Garg <ajaygargnsit@gmail.com>
+Date:   Sun, 7 Nov 2021 00:29:01 +0530
+Message-ID: <CAHP4M8Vdj4Eb8q773BeHvsW9n6t=3n1WznuXAR4fZCNi1J6rOg@mail.gmail.com>
+Subject: Re: [PATCH v2] tty: vt: keyboard: initialize "kbs" so that kfree(kbs)
+ runs fine even if kbs is not kmalloced.
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
+        kernel@esmil.dk
+Cc:     "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-    drivers/block/ataflop.c: In function ‘ataflop_probe’:
-    drivers/block/ataflop.c:2023:2: error: expected expression before ‘if’
-     2023 |  if (ataflop_alloc_disk(drive, type))
-	  |  ^~
-    drivers/block/ataflop.c:2023:2: error: ‘return’ with a value, in function returning void [-Werror=return-type]
-    drivers/block/ataflop.c:2011:13: note: declared here
-     2011 | static void ataflop_probe(dev_t dev)
-	  |             ^~~~~~~~~~~~~
+First of all, many thanks to Pavel for all the help and guidance,
+nature bless you.
+I will make it a point to keep all maintainers in loop, for all my
+future patches.
 
-Fixes: 46a7db492e7a2740 ("ataflop: address add_disk() error handling on probe")
-Reported-by: noreply@ellerman.id.au
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Feel free to fold into the commit that introduced the issue.
----
- drivers/block/ataflop.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> Everybody who is developing for kernel may check this easily, no need
+> to have this in the commit message.
+>
+> As I told you, NAK.
+> This is no value in this patch according to the commit message.
+>
+> If you have a compiler warning you need to provide the command line
+> for `make` that makes that warning appear.
 
-diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
-index de8c3785899a5de3..bf769e6e32fef92b 100644
---- a/drivers/block/ataflop.c
-+++ b/drivers/block/ataflop.c
-@@ -2019,7 +2019,7 @@ static void ataflop_probe(dev_t dev)
- 	if (drive >= FD_MAX_UNITS || type >= NUM_DISK_MINORS)
- 		return;
- 	if (unit[drive].disk[type])
--		return
-+		return;
- 	if (ataflop_alloc_disk(drive, type))
- 		return;
- 	if (add_disk(unit[drive].disk[type]))
--- 
-2.25.1
+"make" as such runs fine, without any blocker (on my x86_64 machine).
 
+The "kbs not initialized" is seen, when the smatch static-analyzer is run.
+Thereafter, the patch was floated, to make the method
+"vt_do_kdgkb_ioctl" crash-proof by handling kbs properly, without
+depending upon external factors on whether a switch-case is hit or
+not.
+
+> In that case the better
+> solution would be to add default case because some compilers can make
+> (wrong) assumptions based on the absence of the default case.
+>
+> Something like
+>
+> default:
+>    kbs = NULL;
+>    break;
+>
+> at the end of the switch.
+>
+> But again, your current commit message does not sell.
+
+Hmm, am not sure what to make of this.
+
+I guess, we could follow one of the following approaches :
+
+i)
+Leave things as it is, as there is no blocker in the make-compilation/runtime.
+
+ii)
+Put the "default: kbs = NULL; break;" case, as suggested, to ensure
+"vt_do_kdgkb_ioctl" does its work fine flawlessly, without depending
+upon external clients.
+
+
+Since there is no blocker in functionality, I am ok with whatever
+consensus is reached by the maintainers.
+If we wish to go with ii), please let me know, I will float next
+patch-version with the ii) change, along with a better commit-message.
+
+As of now, since Andy has voted for a NAK, I would not pursue this
+further as of now :)
+
+
+Thanks and Regards,
+Ajay
