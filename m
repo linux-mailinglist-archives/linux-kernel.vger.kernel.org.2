@@ -2,110 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5647446F34
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 18:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6287446F4E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 18:19:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234650AbhKFRLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 13:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
+        id S233997AbhKFRWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 13:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234651AbhKFRLS (ORCPT
+        with ESMTP id S229551AbhKFRWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 13:11:18 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C50C06120B
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 10:08:36 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id s24so20527067lji.12
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Nov 2021 10:08:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ra1BXH1mMvzlfwLf58YXxvKpl4xCKYL2+7bQMH4f4Ic=;
-        b=hWfhd4WqhxVia6qAP5I/BmZbVOUE4pK+zqJjZHKsaLaUfg5wRZf7VAOYoW/DeaPqAA
-         gc68u2rfPx+J1au61skDN471TEkBm39v0Sp01b1mrfY7jDE2u3eDqoc37e02iaf3qrVN
-         BIZjwVIDunb9dZnZ8y+JhLR+fGnd7J0o13cd7FT14GsIIwXWB38mzTaWSKtKJnc2Wjff
-         AqHvCsPwNEDWma0kf6/quSSzd5pCCVvBCBOzQsQZ3jE2r+H25jsXmbgPXeCArRwwh9RL
-         QcG2HfR0NqNDcCq7gz1iNCUqdiB1yoiiRAvYaihkFnPEU0W9g34okj6Znl+VtRoJ7r0t
-         fmLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ra1BXH1mMvzlfwLf58YXxvKpl4xCKYL2+7bQMH4f4Ic=;
-        b=bsXPPuABMxzWYyfNo/NbMEeHs0oVxhoBR231IublnaAaJ8k9FP9FB/fRWu2PdlgP+G
-         dF9n1vn/Lc4Ulpm/kxwglGqZmpbp2I0Zrs3fmVLZE0QZEj1oiH1AyjuY0BqU4kICH7kh
-         LjiE/abptBewCfLAjYe6xHiUl3gKJEslEIMejLIkJHxcVWahWLfvOrbbrJ8J8/abPN5I
-         BMqjkgRMGA48+QFWtnJ/VAtl7GeFPHUeYCYjHdlWr0el5/XRYkd61L0KHOiqJUrKHZHD
-         poiotwbsdS5lX5jgc8ACSQS4Xcf7nhToG5uvuafvtf6XRnp/fiXjDSMMyFBZAxP543XE
-         pmkQ==
-X-Gm-Message-State: AOAM533areXJG7rkCB8M2YlnJLVQveKmg3+UcLmH/ArWrRKisCWMoVhA
-        +svZMBVsxnxT2H4kZeWTS5Wf1MlF4Lwu4NUD
-X-Google-Smtp-Source: ABdhPJxFRw4c4lV8pU6p+Q3c3cW6wkyhE3Zgn4ouE51tUvxu3ICTcvN9+7ZPfxD0MjrJoWTxBpwxmg==
-X-Received: by 2002:a2e:91d4:: with SMTP id u20mr3210304ljg.92.1636218514622;
-        Sat, 06 Nov 2021 10:08:34 -0700 (PDT)
-Received: from [192.168.1.102] (62-248-207-242.elisa-laajakaista.fi. [62.248.207.242])
-        by smtp.gmail.com with ESMTPSA id u9sm1212394lfo.87.2021.11.06.10.08.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Nov 2021 10:08:34 -0700 (PDT)
-Subject: Re: [PATCH] pinctrl: qcom: sm8350: Correct UFS and SDC offsets
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211104170835.1993686-1-bjorn.andersson@linaro.org>
-From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-Message-ID: <51217da2-958d-124e-c84d-27b1432e0f37@linaro.org>
-Date:   Sat, 6 Nov 2021 19:08:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Sat, 6 Nov 2021 13:22:31 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72A5C061570;
+        Sat,  6 Nov 2021 10:19:49 -0700 (PDT)
+Date:   Sun, 7 Nov 2021 01:20:26 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1636219186;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XMmhs9HYhNcGgQ65VphvZRVIvAdwsAifoT5Xiz9YzPo=;
+        b=gcXkaPyby+FXI8KETJ5qGraTykKZH6YXSiFsHLqtJ3Xv528zpUisCBfyGFglMTVL6FWOPT
+        gUzrN+hHi/CBchqgxFh1QGzQ6ZiIfbkhhMPtbDz39EjUuS2KYELg2Rkv6mJVp32TYmW3uF
+        ubdvRSbonJ8tGxOrXP4Niobp7BWOolM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Tao Zhou <tao.zhou@linux.dev>
+To:     Peter Oskolkov <posk@posk.io>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>,
+        Tao Zhou <tao.zhou@linux.dev>
+Subject: Re: [PATCH v0.8 3/6] sched/umcg: implement UMCG syscalls
+Message-ID: <YYa5WjXTrhYKmoze@geo.homenetwork>
+References: <20211104195804.83240-1-posk@google.com>
+ <20211104195804.83240-4-posk@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20211104170835.1993686-1-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211104195804.83240-4-posk@google.com>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: tao.zhou@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/4/21 7:08 PM, Bjorn Andersson wrote:
-> The downstream TLMM binding covers a group of TLMM-related hardware
-> blocks, but the upstream binding only captures the particular block
-> related to controlling the TLMM pins from an OS. In the translation of
-> the driver from downstream, the offset of 0x100000 was lost for the UFS
-> and SDC pingroups.
-> 
-> Fixes: d5d348a3271f ("pinctrl: qcom: Add SM8350 pinctrl driver")
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->   drivers/pinctrl/qcom/pinctrl-sm8350.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-sm8350.c b/drivers/pinctrl/qcom/pinctrl-sm8350.c
-> index 4d8f8636c2b3..1c042d39380c 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-sm8350.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-sm8350.c
-> @@ -1597,10 +1597,10 @@ static const struct msm_pingroup sm8350_groups[] = {
->   	[200] = PINGROUP(200, qdss_gpio, _, _, _, _, _, _, _, _),
->   	[201] = PINGROUP(201, _, _, _, _, _, _, _, _, _),
->   	[202] = PINGROUP(202, _, _, _, _, _, _, _, _, _),
-> -	[203] = UFS_RESET(ufs_reset, 0x1d8000),
-> -	[204] = SDC_PINGROUP(sdc2_clk, 0x1cf000, 14, 6),
-> -	[205] = SDC_PINGROUP(sdc2_cmd, 0x1cf000, 11, 3),
-> -	[206] = SDC_PINGROUP(sdc2_data, 0x1cf000, 9, 0),
-> +	[203] = UFS_RESET(ufs_reset, 0xd8000),
-> +	[204] = SDC_PINGROUP(sdc2_clk, 0xcf000, 14, 6),
-> +	[205] = SDC_PINGROUP(sdc2_cmd, 0xcf000, 11, 3),
-> +	[206] = SDC_PINGROUP(sdc2_data, 0xcf000, 9, 0),
->   };
->   
->   static const struct msm_gpio_wakeirq_map sm8350_pdc_map[] = {
-> 
+Hi Peter,
 
-Reviewed-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+On Thu, Nov 04, 2021 at 12:58:01PM -0700, Peter Oskolkov wrote:
 
---
-Best wishes,
-Vladimir
+> +/**
+> + * umcg_update_state: atomically update umcg_task.state_ts, set new timestamp.
+> + * @state_ts   - points to the state_ts member of struct umcg_task to update;
+> + * @expected   - the expected value of state_ts, including the timestamp;
+> + * @desired    - the desired value of state_ts, state part only;
+> + * @may_fault  - whether to use normal or _nofault cmpxchg.
+> + *
+> + * The function is basically cmpxchg(state_ts, expected, desired), with extra
+> + * code to set the timestamp in @desired.
+> + */
+> +static int umcg_update_state(u64 __user *state_ts, u64 *expected, u64 desired,
+> +				bool may_fault)
+> +{
+> +	u64 curr_ts = (*expected) >> (64 - UMCG_STATE_TIMESTAMP_BITS);
+> +	u64 next_ts = ktime_get_ns() >> UMCG_STATE_TIMESTAMP_GRANULARITY;
+> +
+> +	/* Cut higher order bits. */
+> +	next_ts &= UMCG_TASK_STATE_MASK_FULL;
+
+next_ts &= (1 << UMCG_STATE_TIMESTAMP_BITS) - 1; or am I wrong.
+
+> +	if (next_ts == curr_ts)
+> +		++next_ts;
+> +
+> +	/* Remove an old timestamp, if any. */
+> +	desired &= UMCG_TASK_STATE_MASK_FULL;
+> +
+> +	/* Set the new timestamp. */
+> +	desired |= (next_ts << (64 - UMCG_STATE_TIMESTAMP_BITS));
+> +
+> +	if (may_fault)
+> +		return cmpxchg_user_64(state_ts, expected, desired);
+> +
+> +	return cmpxchg_user_64_nofault(state_ts, expected, desired);
+> +}
+> +
+> +/**
+> + * sys_umcg_ctl: (un)register the current task as a UMCG task.
+> + * @flags:       ORed values from enum umcg_ctl_flag; see below;
+> + * @self:        a pointer to struct umcg_task that describes this
+> + *               task and governs the behavior of sys_umcg_wait if
+> + *               registering; must be NULL if unregistering.
+> + *
+> + * @flags & UMCG_CTL_REGISTER: register a UMCG task:
+> + *         UMCG workers:
+> + *              - @flags & UMCG_CTL_WORKER
+> + *              - self->state must be UMCG_TASK_BLOCKED
+> + *         UMCG servers:
+> + *              - !(@flags & UMCG_CTL_WORKER)
+> + *              - self->state must be UMCG_TASK_RUNNING
+> + *
+> + *         All tasks:
+> + *              - self->next_tid must be zero
+> + *
+> + *         If the conditions above are met, sys_umcg_ctl() immediately returns
+> + *         if the registered task is a server; a worker will be added to
+> + *         idle_workers_ptr, and the worker put to sleep; an idle server
+> + *         from idle_server_tid_ptr will be woken, if present.
+> + *
+> + * @flags == UMCG_CTL_UNREGISTER: unregister a UMCG task. If the current task
+> + *           is a UMCG worker, the userspace is responsible for waking its
+> + *           server (before or after calling sys_umcg_ctl).
+> + *
+> + * Return:
+> + * 0                - success
+> + * -EFAULT          - failed to read @self
+> + * -EINVAL          - some other error occurred
+> + */
+> +SYSCALL_DEFINE2(umcg_ctl, u32, flags, struct umcg_task __user *, self)
+> +{
+> +	struct umcg_task ut;
+> +
+> +	if (flags == UMCG_CTL_UNREGISTER) {
+> +		if (self || !current->umcg_task)
+> +			return -EINVAL;
+> +
+> +		if (current->flags & PF_UMCG_WORKER)
+> +			umcg_handle_exiting_worker();
+> +		else
+> +			umcg_clear_task(current);
+> +
+> +		return 0;
+> +	}
+> +
+> +	if (!(flags & UMCG_CTL_REGISTER))
+> +		return -EINVAL;
+> +
+> +	flags &= ~UMCG_CTL_REGISTER;
+> +	if (flags && flags != UMCG_CTL_WORKER)
+> +		return -EINVAL;
+> +
+> +	if (current->umcg_task || !self)
+> +		return -EINVAL;
+> +
+> +	if (copy_from_user(&ut, self, sizeof(ut)))
+> +		return -EFAULT;
+> +
+> +	if (ut.next_tid)
+> +		return -EINVAL;
+> +
+> +	if (flags == UMCG_CTL_WORKER) {
+> +		if ((ut.state_ts & UMCG_TASK_STATE_MASK_FULL) != UMCG_TASK_BLOCKED)
+
+Or use UMCG_TASK_STATE_MASK that is enough.
+
+> +			return -EINVAL;
+> +
+> +		WRITE_ONCE(current->umcg_task, self);
+> +		current->flags |= PF_UMCG_WORKER;
+> +
+> +		/* Trigger umcg_handle_resuming_worker() */
+> +		set_tsk_thread_flag(current, TIF_NOTIFY_RESUME);
+> +	} else {
+> +		if ((ut.state_ts & UMCG_TASK_STATE_MASK_FULL) != UMCG_TASK_RUNNING)
+
+The same here.
+
+> +			return -EINVAL;
+> +
+> +		WRITE_ONCE(current->umcg_task, self);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+
+
+Thanks,
+Tao
