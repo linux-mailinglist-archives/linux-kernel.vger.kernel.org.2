@@ -2,127 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6085044700D
+	by mail.lfdr.de (Postfix) with ESMTP id F21C644700F
 	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 20:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232474AbhKFTWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 15:22:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40626 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229992AbhKFTWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 15:22:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 490D4610E9;
-        Sat,  6 Nov 2021 19:19:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636226369;
-        bh=1IbxCHwEU9IOFKyrsw6XV4EKp1VlAt7xuPlI6rfA3h0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RmDWcUkMt/X+eKb8oRfwhj4Xcion+8T5rMGgdFUxAQA2yzgjO+KVgW+bGEOqVddn/
-         uPmgrVxTBGw4kQwZDk9yb/u3dESrpdCN2lEJlKryO0ZPwBcEJlUtXQLlNFan8VEH3C
-         xateqGyayp9hxp47IkVa9FIgzjDlh9q8Sx+vtnb98x5vq8VLFeebBvSQ7ROnuv7pvF
-         E83a1VCTNbc3Fu6UlMAiNv/2jbkqEyCwAepsA+U8S+brkSbQsmuFp9JC48NQwFdETU
-         s5MLxYYZreydHq/J/OB4psF/35muavdxsnmTpQJ8+pbPJFh+p5Q2Gc+l40RdjS1byr
-         xDkv8CJknsr9g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 68494410A1; Sat,  6 Nov 2021 16:19:26 -0300 (-03)
-Date:   Sat, 6 Nov 2021 16:19:26 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>
-Subject: Re: [PATCH v4] perf evsel: Fix missing exclude_{host,guest} setting
-Message-ID: <YYbVPmrF0CD6KFLk@kernel.org>
-References: <20211105205847.120950-1-namhyung@kernel.org>
- <YYbS/UoQ9wHAc44j@kernel.org>
+        id S232521AbhKFTXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 15:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232498AbhKFTXL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Nov 2021 15:23:11 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D5CC061570;
+        Sat,  6 Nov 2021 12:20:30 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id v40-20020a056830092800b0055591caa9c6so18526994ott.4;
+        Sat, 06 Nov 2021 12:20:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8ibHe0bg8yrjy+eEkaeet+vUrHDpvSYjM5LvxS0CthM=;
+        b=Dn0m554hhGaLvJaP2djE45v57NJ5EfYuTqyzaBxB9JKUktHBmbJLkPz52DVtGIldC3
+         luBRCa5d5Cft/L1ilAx9uP4TqmJe35+n/YBBM68qa/BebVBVvHOn49eIMKp7+igpkocd
+         bgd/0LKTU63N7zEv76mnyC9bdEJ4Jjpvl72a+ia5fWh4ffqVwznazvBnVsBfC8LO6FTZ
+         qADYaEp20T9it9x6E+UTguK8P7GmbmTxpvJtIqsg7QvLws8+cxHbmqjfTPrYW+f0oOWr
+         W/lqnF+V4W/mNSCohQfcJVlkcIXkWURIiq7LexCAzYb/588aM4YdO8C9/OD4FoH7R/u1
+         6eyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8ibHe0bg8yrjy+eEkaeet+vUrHDpvSYjM5LvxS0CthM=;
+        b=UQNtDDcaemyYQmGzL2mhmouGLRXeLf8g/Wj4OIhvDjNmvcgeRJiMbxUeyU4XyKz8Il
+         nQmVnVYGbf73msTytmhiO/nGZ9xrLi/+Yc/CqpZV4f24e+uopPrsNxkSPQaY25JDVu7o
+         QJz8e+idOKHBS7DhULYi8UtbTwSMGsn2u8nXyrBnGwL7owa9gagUf6kUAEgNb6AcvMB5
+         Tphtl/DTr5lNbMyYcRusTlKzSjh+jXnyM6AJdvOu4WU9TIjRMfREDmPR+fkpKmdSGwkl
+         Kl7CTUtQ3WWCsvDclxjb7ll8wGpaNwAQ/rA1rCAK2a82g8hxiUHvFv+K45xxzroyJ+at
+         NToA==
+X-Gm-Message-State: AOAM532IMHf8rGQCk++m5ffpw8DgYNHRQQEHplc2z9TxSpIAYboqMGL1
+        4jPWN4zD0bdkXq+hOPS2arH1ZrdsyvyM9dsVf9U=
+X-Google-Smtp-Source: ABdhPJybSJ4nQFconpFtDlxaTBInuVnAjg5dmuCtJM5aIwH6eu0uM2NlsogsDxI7Hc4ROPBmmpnUyHhEX+ILZRwauA0=
+X-Received: by 2002:a9d:6f0e:: with SMTP id n14mr1486634otq.173.1636226429641;
+ Sat, 06 Nov 2021 12:20:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YYbS/UoQ9wHAc44j@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <20211106092041.43745-1-ajaygargnsit@gmail.com>
+ <9eafae1f-d9f0-298d-cf20-212865d0becc@gmail.com> <868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com>
+In-Reply-To: <868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com>
+From:   Ajay Garg <ajaygargnsit@gmail.com>
+Date:   Sun, 7 Nov 2021 00:50:17 +0530
+Message-ID: <CAHP4M8Ww0-VqCBKX=iLd=zy1AcDoNdzTOqJuaqRxCGZsMhoX9w@mail.gmail.com>
+Subject: Re: [PATCH] tty: vt: keyboard: do not copy an extra-byte in copy_to_user
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
+        kernel@esmil.dk, David Laight <David.Laight@aculab.com>
+Cc:     "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Nov 06, 2021 at 04:09:49PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Fri, Nov 05, 2021 at 01:58:47PM -0700, Namhyung Kim escreveu:
-> > The current logic for the perf missing feature has a bug that it can
-> > wrongly clear some modifiers like G or H.  Actually some PMUs don't
-> > support any filtering or exclusion while others do.  But we check it
-> > as a global feature.
-> > 
-> > For example, the cycles event can have 'G' modifier to enable it only
-> > in the guest mode on x86.  When you don't run any VMs it'll return 0.
-> > 
-> >   # perf stat -a -e cycles:G sleep 1
-> > 
-> >     Performance counter stats for 'system wide':
-> > 
-> >                     0      cycles:G
-> > 
-> >           1.000721670 seconds time elapsed
-> > 
-> > But when it's used with other pmu events that don't support G modifier,
-> > it'll be reset and return non-zero values.
-> > 
-> >   # perf stat -a -e cycles:G,msr/tsc/ sleep 1
-> > 
-> >     Performance counter stats for 'system wide':
-> > 
-> >           538,029,960      cycles:G
-> >        16,924,010,738      msr/tsc/
-> > 
-> >           1.001815327 seconds time elapsed
-> > 
-> > This is because of the missing feature detection logic being global.
-> > Add a hashmap to set pmu-specific exclude_host/guest features.
-> 
-> ⬢[acme@toolbox perf]$ perf test python
-> 19: 'import perf' in python                                         : FAILED!
-> ⬢[acme@toolbox perf]$ perf test -v python
-> Couldn't bump rlimit(MEMLOCK), failures may take place when creating BPF maps, etc
-> 19: 'import perf' in python                                         :
-> --- start ---
-> test child forked, pid 11602
-> python usage test: "echo "import sys ; sys.path.append('/tmp/build/perf/python'); import perf" | '/usr/bin/python3' "
-> Traceback (most recent call last):
->   File "<stdin>", line 1, in <module>
-> ImportError: /tmp/build/perf/python/perf.cpython-39-x86_64-linux-gnu.so: undefined symbol: evsel__find_pmu
-> test child finished with -1
-> ---- end ----
-> 'import perf' in python: FAILED!
-> ⬢[acme@toolbox perf]$
-> 
-> Trying to fix this now. please do a 'perf test' before submitting
-> patches.
+Thanks Pavel, Andy, David for the help.
 
-Added this bandaid, should be good for the time being.
+Andy,
 
-- Arnaldo
+There is no compilation/runtime blocker.
+There were warnings reported by smatch.
 
-diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
-index 8feef3a05af7b31d..563a9ba8954f31b3 100644
---- a/tools/perf/util/python.c
-+++ b/tools/perf/util/python.c
-@@ -69,6 +69,18 @@ void perf_stat__collect_metric_expr(struct evlist *evsel_list)
- {
- }
+My intention is to make the method "vt_do_kdgkb_ioctl" bullet-proof in
+itself, without depending upon external clients.
 
-+/*
-+ * This one is needed not to drag the PMU bandwagon, jevents generated
-+ * pmu_sys_event_tables, etc and evsel__find_pmu() is used so far just for
-+ * doing per PMU perf_event_attr.exclude_guest handling, not really needed, so
-+ * far, for the perf python binding known usecases, revisit if this become
-+ * necessary.
-+ */
-+struct perf_pmu *evsel__find_pmu(struct evsel *evsel __maybe_unused)
-+{
-+       return NULL;
-+}
-+
+Pavel has explained that currently things are fine, as per :
+https://lore.kernel.org/linux-serial/868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com/T/#m740fffb7c6ee52fdc98b9ef0b4e32a060b6a3be3
 
+but it seems that there is a big flaw - we are dependent on the length
+of "func_table[kb_func]" being ok. If func_table[kb_func] goes awry,
+the method will cause overflow.
+
+Since func_table[kb_func]" is not managed by the method, so the method
+must not depend on func_table[kb_func]" length-correctness. Instead,
+"vt_do_kdgkb_ioctl" must ensure no overflow, without depending how
+external entities (func_table[kb_func] behave.
+
+
+
+The issue with strlcpy, along with a potential "fix", has been explained in :
+https://lore.kernel.org/linux-serial/868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com/T/#m1c4aaa4347b02fd4c11ce611ff5029fcb71c37a1
+
+David has provided a simpler fix (usage of strscpy), as in :
+https://lore.kernel.org/linux-serial/868025b485b94480ad17d0ec971b3ee9@AcuMS.aculab.com/T/#m63dab1137e593f2030920a53272f71866b442f40
+
+
+So, we could go with one of the above changes (mine/David's), or
+nothing at all (since there is no blocker).
+
+I vote for David's strscpy "fix", as it is simple, and does away with
+the dependency on the length of "func_table[kb_func]".
+
+
+Would like to know what the maintainers think.
+If there is a consensus that the method "vt_do_kdgkb_ioctl" be made
+bullet-proof in itself, please let me know, I will float the next
+version of patch.
+
+
+Thanks again Pavel, David, Andy.
+
+
+Thanks and Regards,
+Ajay
