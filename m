@@ -2,143 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B841A446DDD
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 13:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B15AC446DEA
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Nov 2021 13:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234220AbhKFMPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 08:15:45 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14720 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234229AbhKFMPd (ORCPT
+        id S232798AbhKFMiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 08:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229669AbhKFMiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 08:15:33 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hmbmw6B3NzZclw;
-        Sat,  6 Nov 2021 20:10:40 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sat, 6 Nov 2021 20:12:49 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Sat, 6 Nov
- 2021 20:12:48 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
-        <mcoquelin.stm32@gmail.com>, <kirill.shutemov@linux.intel.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH v2 12/12] ubi: fastmap: Add all fastmap pebs into 'ai->fastmap' when fm->used_blocks>=2
-Date:   Sat, 6 Nov 2021 20:25:17 +0800
-Message-ID: <20211106122517.3304628-13-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211106122517.3304628-1-chengzhihao1@huawei.com>
-References: <20211106122517.3304628-1-chengzhihao1@huawei.com>
+        Sat, 6 Nov 2021 08:38:13 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E43BDC061570
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Nov 2021 05:35:32 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id q13so22250642uaq.2
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Nov 2021 05:35:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=keith-pro.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=65D/qGsKqTv1LUK5gsBP+4elDJxC4IgpXO2lx/Bp7JY=;
+        b=REfHWDOw8bTR2MGu+WKZXKDyiDHNmklzwhYulE5VirtIg0xS2KH+r+MYQI9Ro96PQp
+         ZneU8uZULBasXrYR1lYFfjwI1ciAomUrXALZeBVyVWETyBmiIKncHdAyLjkDWoPPCyMz
+         wA6KDd9g2WVuW7IWc+BCpOEpPOaIjj7Wd4Yu4XRjuX/YuAE14+yCn12prTqV3qm3O79R
+         hCXgwjacHxjfp7tV7JlyeBnOgLv9o+n/Zvyx8n359U0QK1dcG1u80e72Acuq2B0yv0vd
+         koTyyQTAyir8w1G7n57gZSCdLvPdrrW55/2uEDGceQMw4QcKKpmHAgDgVFn+JikzlrVN
+         ARYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=65D/qGsKqTv1LUK5gsBP+4elDJxC4IgpXO2lx/Bp7JY=;
+        b=jMcXttWMnXVbjfWYZ0J3J2HlP8fvz1ND0Xx7pTGN/8k5iqrb841XcWjg/Ntf3fL3mH
+         s3MpiiDafU6a4p2l9PyOza5NX99/3ivpEFwDa4bq2rgWK634/+zRVKjYQ5WPFQvrW6NC
+         u0iTP2SRwP7xI1BkjwrltcIX3GQ+fMiLUzDq6y093VLE+WYRLHQwultXJr6feXXhwnbT
+         /YlE4qvKrm1kKHH+gRGRmQExQUCUhnGt2lSszP0kK4kEQChz+5l0+T8PTELoWpDcd+Az
+         Au5d4SWaGkv1p2730mB8YA4Wcp6FSiOLvT3DogZlZ1Tf1aByRXN3gUhLn+OZhqmfD5OF
+         CQxw==
+X-Gm-Message-State: AOAM530ikqyFRFOtmwKifVEzfG7i7Rds9KPx3j8d1RYV6G67EL0GbXHz
+        kPA3uwfkdmmrU1XGU/fwu/i7MGek6qyeD+JrVJZj59uHDR/LNA==
+X-Google-Smtp-Source: ABdhPJxymEMAIKq62CYvSwDt0+B0o7zsmoKhtayjOPKVdaqm1KEFvANR+G13xXBNZkGxF+tgTQfrnZvuQcSbP5GzglI=
+X-Received: by 2002:a67:26c7:: with SMTP id m190mr80572681vsm.50.1636202131911;
+ Sat, 06 Nov 2021 05:35:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
+From:   Keith Cancel <admin@keith.pro>
+Date:   Sat, 6 Nov 2021 12:35:01 +0000
+Message-ID: <CALGQo4a6kO7R-EOcX0kad7jmMRVTgm8-p+7LCZ7TjAaOpweNUQ@mail.gmail.com>
+Subject: crypto/aegis128-neon-inner.c
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fastmap pebs(pnum >= UBI_FM_MAX_START) won't be added into 'ai->fastmap'
-while attaching ubi device if 'fm->used_blocks' is greater than 2, which
-may cause warning from 'ubi_assert(ubi->good_peb_count == found_pebs)':
+Hello,
 
-  UBI assert failed in ubi_wl_init at 1878 (pid 2409)
-  Call Trace:
-    ubi_wl_init.cold+0xae/0x2af [ubi]
-    ubi_attach+0x1b0/0x780 [ubi]
-    ubi_init+0x23a/0x3ad [ubi]
-    load_module+0x22d2/0x2430
+Is there a reason aegis128-neon-inner.c is not in the arch
+sub-directory? It's clearly architecturally specific. It also is using
+ifdef's to delineate between arm and arm64. It seems like it would
+have made more sense to have split this up as 2 assembly files in
+arch/arm/crypto and arch/arm64/crypto.
 
-Reproduce:
-  ID="0x20,0x33,0x00,0x00" # 16M 16KB PEB, 512 page
-  modprobe nandsim id_bytes=$ID
-  modprobe ubi mtd="0,0" fm_autoconvert  # Fastmap takes 2 pebs
-  rmmod ubi
-  modprobe ubi mtd="0,0" fm_autoconvert  # Attach by fastmap
-
-Add all fastmap pebs into list 'ai->fastmap' to make sure they can be
-counted into 'found_pebs'.
-
-Fixes: fdf10ed710c0aa ("ubi: Rework Fastmap attach base code")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- drivers/mtd/ubi/fastmap.c | 41 ++++++++++++++-------------------------
- 1 file changed, 15 insertions(+), 26 deletions(-)
-
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 6b5f1ffd961b..88fdf8f5709f 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -828,24 +828,6 @@ static int find_fm_anchor(struct ubi_attach_info *ai)
- 	return ret;
- }
- 
--static struct ubi_ainf_peb *clone_aeb(struct ubi_attach_info *ai,
--				      struct ubi_ainf_peb *old)
--{
--	struct ubi_ainf_peb *new;
--
--	new = ubi_alloc_aeb(ai, old->pnum, old->ec);
--	if (!new)
--		return NULL;
--
--	new->vol_id = old->vol_id;
--	new->sqnum = old->sqnum;
--	new->lnum = old->lnum;
--	new->scrub = old->scrub;
--	new->copy_flag = old->copy_flag;
--
--	return new;
--}
--
- /**
-  * ubi_scan_fastmap - scan the fastmap.
-  * @ubi: UBI device object
-@@ -875,15 +857,11 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 	if (fm_anchor < 0)
- 		return UBI_NO_FASTMAP;
- 
--	/* Copy all (possible) fastmap blocks into our new attach structure. */
-+	/* Add fastmap blocks(pnum < UBI_FM_MAX_START) into attach structure. */
- 	list_for_each_entry(aeb, &scan_ai->fastmap, u.list) {
--		struct ubi_ainf_peb *new;
--
--		new = clone_aeb(ai, aeb);
--		if (!new)
--			return -ENOMEM;
--
--		list_add(&new->u.list, &ai->fastmap);
-+		ret = add_aeb(ai, &ai->fastmap, aeb->pnum, aeb->ec, 0);
-+		if (ret)
-+			return ret;
- 	}
- 
- 	down_write(&ubi->fm_protect);
-@@ -1029,6 +1007,17 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 				"err: %i)", i, pnum, ret);
- 			goto free_hdr;
- 		}
-+
-+		/*
-+		 * Add left fastmap blocks (pnum >= UBI_FM_MAX_START) into
-+		 * attach structure.
-+		 */
-+		if (pnum >= UBI_FM_MAX_START) {
-+			ret = add_aeb(ai, &ai->fastmap, pnum,
-+				      be64_to_cpu(ech->ec), 0);
-+			if (ret)
-+				goto free_hdr;
-+		}
- 	}
- 
- 	kfree(fmsb);
--- 
-2.31.1
-
+Thanks,
+Keith Cancel
