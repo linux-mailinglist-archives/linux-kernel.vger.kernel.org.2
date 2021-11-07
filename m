@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAEDE447334
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 15:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F67447335
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 15:09:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235455AbhKGOMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 09:12:09 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:26294 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230308AbhKGOMI (ORCPT
+        id S235462AbhKGOML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 09:12:11 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:27182 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235448AbhKGOMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 09:12:08 -0500
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HnGFt69HRzQj7k;
-        Sun,  7 Nov 2021 22:04:34 +0800 (CST)
+        Sun, 7 Nov 2021 09:12:09 -0500
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HnGKd5bMRz8v8V;
+        Sun,  7 Nov 2021 22:07:49 +0800 (CST)
 Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sun, 7 Nov 2021 22:09:22 +0800
+ 15.1.2308.15; Sun, 7 Nov 2021 22:09:23 +0800
 Received: from DESKTOP-27KDQMV.china.huawei.com (10.174.148.223) by
  dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sun, 7 Nov 2021 22:09:21 +0800
+ 15.1.2308.15; Sun, 7 Nov 2021 22:09:22 +0800
 From:   "Longpeng(Mike)" <longpeng2@huawei.com>
 To:     <andraprs@amazon.com>, <lexnv@amazon.com>, <alcioa@amazon.com>
 CC:     <arei.gonglei@huawei.com>, <gregkh@linuxfoundation.org>,
@@ -30,10 +30,12 @@ CC:     <arei.gonglei@huawei.com>, <gregkh@linuxfoundation.org>,
         <sgarzare@redhat.com>, <stefanha@redhat.com>,
         <vkuznets@redhat.com>, <linux-kernel@vger.kernel.org>,
         <ne-devel-upstream@amazon.com>, Longpeng <longpeng2@huawei.com>
-Subject: [PATCH v5 0/4] Merge contiguous physical memory regions
-Date:   Sun, 7 Nov 2021 22:09:13 +0800
-Message-ID: <20211107140918.2106-1-longpeng2@huawei.com>
+Subject: [PATCH v5 1/4] nitro_enclaves: Merge contiguous physical memory regions
+Date:   Sun, 7 Nov 2021 22:09:14 +0800
+Message-ID: <20211107140918.2106-2-longpeng2@huawei.com>
 X-Mailer: git-send-email 2.25.0.windows.1
+In-Reply-To: <20211107140918.2106-1-longpeng2@huawei.com>
+References: <20211107140918.2106-1-longpeng2@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -47,86 +49,213 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Longpeng <longpeng2@huawei.com>
 
-Hi guys,
+There can be cases when there are more memory regions that need to be
+set for an enclave than the maximum supported number of memory regions
+per enclave. One example can be when the memory regions are backed by 2
+MiB hugepages (the minimum supported hugepage size).
 
-This patchset try to merge the contiguous physical memory regions when
-set user memory regions, you can see message in PATCH 1 for details.
-Please review when you free, thank!
+Let's merge the adjacent regions if they are physically contiguous. This
+way the final number of memory regions is less than before merging and
+could potentially avoid reaching maximum.
 
+Signed-off-by: Longpeng <longpeng2@huawei.com>
+---
 Changes v4 -> v5:
-  Patch 1:
-    - "Physical contiguous memory regions" -> "Contiguous physical memory 
-      regions."  [Andra]
-    - fix the warning of aligment that reported by the checkpath.pl  [Andra]
-  Patch 4:
-    - fix the warning of aligment that reported by the checkpath.pl  [Andra]
-    - remove unnecessary comparison of NULL.  [Andra]
-
+  - "Physical contiguous memory regions" -> "Contiguous physical memory 
+    regions."  [Andra]
+  - fix the warning of aligment that reported by the checkpath.pl  [Andra]
+  
 Changes v3 -> v4:
-  Patch 1:
-    - move "#include <linux/range.h>" according to the alphabetical order. [Andra]
-    - rename several variables, parameters, structures and functions.  [Andra]
-    - add missing "Context" in the comments.  [Andra]
-    - some other changes to makes the code much neater.  [Andra]
-  Patch 2:
-    - add missing "Context" in the comments.  [Andra]
-    - move the comment in ne_merge_phys_contig_memory_regions() before
-      the "if (...)". [Andra]
-  Patch 3:
-    - Nitro enclaves -> Nitro Enclaves   [Andra]
-    - check the return code of "ne_misc_dev_test_init()"  [Andra]
-    - GPL-2.0-or-later -> GPL-2.0  [Andra]
-  Patch 4:
-    - "int expect_num" -> "unsigned long  expect_num"  [Andra]
-    - rename several variables and structures  [Andra]
-    - invoke "kunit_kfree" to free the "regions"  [Andra]
+  - move "#include <linux/range.h>" according to the alphabetical order. [Andra]
+  - rename several variables, parameters, structures and functions.  [Andra]
+  - add missing "Context" in the comments.  [Andra]
+  - some other changes to makes the code much neater.  [Andra]
 
 Changes v2 -> v3:
-  Patch 1:
-    - update the commit title and commit message.  [Andra]
-    - use 'struct range' to instead of 'struct phys_mem_region'.  [Andra, Greg KH]
-    - add comments before the function definition.  [Andra]
-    - rename several variables, parameters and function.  [Andra]
-  Patch 2:
-    - update the commit title and commit message.  [Andra]
-    - add comments before the function definition.  [Andra]
-    - remove 'inline' attribute of ne_sanity_check_phys_mem_region. [Andra]
-    - leave a blank line before return.  [Andra]
-    - move sanity check in ne_merge_phys_contig_memory_regions to
-      the beginning of the function.  [Andra]
-    - double sanity checking after the merge of physical contiguous
-      memory regions has been completed.  [Andra]
-  Patch 3:
-    - update the commit title and commit message.  [Andra]
-    - use "misc_dev"/"misc device"/"MISC_DEV" to be more specific.  [Andra]
-  Patch 4:
-    - update the commit title and commit message.  [Andra]
-    - align the fileds in 'struct phys_regions_test'.  [Andra]
-    - rename 'phys_regions_testcases' to 'phys_regions_test_cases'.  [Andra]
-    - add comments before each test cases.  [Andra]
-    - initialize the variables in ne_misc_dev_test_merge_phys_contig_memory_regions.  [Andra]
+  - update the commit title and commit message.  [Andra]
+  - use 'struct range' to instead of 'struct phys_mem_region'.  [Andra, Greg KH]
+  - add comments before the function definition.  [Andra]
+  - rename several variables, parameters and function.  [Andra]
+---
+ drivers/virt/nitro_enclaves/ne_misc_dev.c | 84 ++++++++++++++++++++-----------
+ 1 file changed, 56 insertions(+), 28 deletions(-)
 
-Changes v1 -> v2:
-  - update the commit message as Andra's suggestion  [Andra]
-  - remove TODO completely in ne_set_user_memory_region_ioctl  [Andra]
-  - extract the physical memory regions setup into individual
-    function
-  - add kunit tests  [Andra]
-
-Longpeng (4):
-  nitro_enclaves: Merge contiguous physical memory regions
-  nitro_enclaves: Sanity check physical memory regions during merging
-  nitro_enclaves: Add KUnit tests setup for the misc device
-    functionality
-  nitro_enclaves: Add KUnit tests for contiguous physical memory regions
-    merging
-
- drivers/virt/nitro_enclaves/Kconfig            |   9 ++
- drivers/virt/nitro_enclaves/ne_misc_dev.c      | 174 ++++++++++++++++++-------
- drivers/virt/nitro_enclaves/ne_misc_dev_test.c | 157 ++++++++++++++++++++++
- 3 files changed, 296 insertions(+), 44 deletions(-)
- create mode 100644 drivers/virt/nitro_enclaves/ne_misc_dev_test.c
-
+diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c b/drivers/virt/nitro_enclaves/ne_misc_dev.c
+index 8939612..ced58de 100644
+--- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
++++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
+@@ -24,6 +24,7 @@
+ #include <linux/nitro_enclaves.h>
+ #include <linux/pci.h>
+ #include <linux/poll.h>
++#include <linux/range.h>
+ #include <linux/slab.h>
+ #include <linux/types.h>
+ #include <uapi/linux/vm_sockets.h>
+@@ -126,6 +127,16 @@ struct ne_cpu_pool {
+ static struct ne_cpu_pool ne_cpu_pool;
+ 
+ /**
++ * struct ne_phys_contig_mem_regions - Contiguous physical memory regions.
++ * @num:	The number of regions that currently has.
++ * @regions:	The array of physical memory regions.
++ */
++struct ne_phys_contig_mem_regions {
++	unsigned long num;
++	struct range  *regions;
++};
++
++/**
+  * ne_check_enclaves_created() - Verify if at least one enclave has been created.
+  * @void:	No parameters provided.
+  *
+@@ -825,6 +836,33 @@ static int ne_sanity_check_user_mem_region_page(struct ne_enclave *ne_enclave,
+ }
+ 
+ /**
++ * ne_merge_phys_contig_memory_regions() - Add a memory region and merge the adjacent
++ *                                         regions if they are physically contiguous.
++ * @phys_contig_regions : Private data associated with the contiguous physical memory regions.
++ * @page_paddr :          Physical start address of the region to be added.
++ * @page_size :           Length of the region to be added.
++ *
++ * Context: Process context. This function is called with the ne_enclave mutex held.
++ */
++static void
++ne_merge_phys_contig_memory_regions(struct ne_phys_contig_mem_regions *phys_contig_regions,
++				    u64 page_paddr, u64 page_size)
++{
++	unsigned long num = phys_contig_regions->num;
++
++	/* Physically contiguous, just merge */
++	if (num && (phys_contig_regions->regions[num - 1].end + 1) == page_paddr) {
++		phys_contig_regions->regions[num - 1].end += page_size;
++
++		return;
++	}
++
++	phys_contig_regions->regions[num].start = page_paddr;
++	phys_contig_regions->regions[num].end = page_paddr + page_size - 1;
++	phys_contig_regions->num++;
++}
++
++/**
+  * ne_set_user_memory_region_ioctl() - Add user space memory region to the slot
+  *				       associated with the current enclave.
+  * @ne_enclave :	Private data associated with the current enclave.
+@@ -843,9 +881,8 @@ static int ne_set_user_memory_region_ioctl(struct ne_enclave *ne_enclave,
+ 	unsigned long max_nr_pages = 0;
+ 	unsigned long memory_size = 0;
+ 	struct ne_mem_region *ne_mem_region = NULL;
+-	unsigned long nr_phys_contig_mem_regions = 0;
+ 	struct pci_dev *pdev = ne_devs.ne_pci_dev->pdev;
+-	struct page **phys_contig_mem_regions = NULL;
++	struct ne_phys_contig_mem_regions phys_contig_mem_regions = {};
+ 	int rc = -EINVAL;
+ 
+ 	rc = ne_sanity_check_user_mem_region(ne_enclave, mem_region);
+@@ -866,9 +903,10 @@ static int ne_set_user_memory_region_ioctl(struct ne_enclave *ne_enclave,
+ 		goto free_mem_region;
+ 	}
+ 
+-	phys_contig_mem_regions = kcalloc(max_nr_pages, sizeof(*phys_contig_mem_regions),
+-					  GFP_KERNEL);
+-	if (!phys_contig_mem_regions) {
++	phys_contig_mem_regions.regions = kcalloc(max_nr_pages,
++						  sizeof(*phys_contig_mem_regions.regions),
++						  GFP_KERNEL);
++	if (!phys_contig_mem_regions.regions) {
+ 		rc = -ENOMEM;
+ 
+ 		goto free_mem_region;
+@@ -901,26 +939,16 @@ static int ne_set_user_memory_region_ioctl(struct ne_enclave *ne_enclave,
+ 		if (rc < 0)
+ 			goto put_pages;
+ 
+-		/*
+-		 * TODO: Update once handled non-contiguous memory regions
+-		 * received from user space or contiguous physical memory regions
+-		 * larger than 2 MiB e.g. 8 MiB.
+-		 */
+-		phys_contig_mem_regions[i] = ne_mem_region->pages[i];
++		ne_merge_phys_contig_memory_regions(&phys_contig_mem_regions,
++						    page_to_phys(ne_mem_region->pages[i]),
++						    page_size(ne_mem_region->pages[i]));
+ 
+ 		memory_size += page_size(ne_mem_region->pages[i]);
+ 
+ 		ne_mem_region->nr_pages++;
+ 	} while (memory_size < mem_region.memory_size);
+ 
+-	/*
+-	 * TODO: Update once handled non-contiguous memory regions received
+-	 * from user space or contiguous physical memory regions larger than
+-	 * 2 MiB e.g. 8 MiB.
+-	 */
+-	nr_phys_contig_mem_regions = ne_mem_region->nr_pages;
+-
+-	if ((ne_enclave->nr_mem_regions + nr_phys_contig_mem_regions) >
++	if ((ne_enclave->nr_mem_regions + phys_contig_mem_regions.num) >
+ 	    ne_enclave->max_mem_regions) {
+ 		dev_err_ratelimited(ne_misc_dev.this_device,
+ 				    "Reached max memory regions %lld\n",
+@@ -931,9 +959,9 @@ static int ne_set_user_memory_region_ioctl(struct ne_enclave *ne_enclave,
+ 		goto put_pages;
+ 	}
+ 
+-	for (i = 0; i < nr_phys_contig_mem_regions; i++) {
+-		u64 phys_region_addr = page_to_phys(phys_contig_mem_regions[i]);
+-		u64 phys_region_size = page_size(phys_contig_mem_regions[i]);
++	for (i = 0; i < phys_contig_mem_regions.num; i++) {
++		u64 phys_region_addr = phys_contig_mem_regions.regions[i].start;
++		u64 phys_region_size = range_len(&phys_contig_mem_regions.regions[i]);
+ 
+ 		if (phys_region_size & (NE_MIN_MEM_REGION_SIZE - 1)) {
+ 			dev_err_ratelimited(ne_misc_dev.this_device,
+@@ -959,13 +987,13 @@ static int ne_set_user_memory_region_ioctl(struct ne_enclave *ne_enclave,
+ 
+ 	list_add(&ne_mem_region->mem_region_list_entry, &ne_enclave->mem_regions_list);
+ 
+-	for (i = 0; i < nr_phys_contig_mem_regions; i++) {
++	for (i = 0; i < phys_contig_mem_regions.num; i++) {
+ 		struct ne_pci_dev_cmd_reply cmd_reply = {};
+ 		struct slot_add_mem_req slot_add_mem_req = {};
+ 
+ 		slot_add_mem_req.slot_uid = ne_enclave->slot_uid;
+-		slot_add_mem_req.paddr = page_to_phys(phys_contig_mem_regions[i]);
+-		slot_add_mem_req.size = page_size(phys_contig_mem_regions[i]);
++		slot_add_mem_req.paddr = phys_contig_mem_regions.regions[i].start;
++		slot_add_mem_req.size = range_len(&phys_contig_mem_regions.regions[i]);
+ 
+ 		rc = ne_do_request(pdev, SLOT_ADD_MEM,
+ 				   &slot_add_mem_req, sizeof(slot_add_mem_req),
+@@ -974,7 +1002,7 @@ static int ne_set_user_memory_region_ioctl(struct ne_enclave *ne_enclave,
+ 			dev_err_ratelimited(ne_misc_dev.this_device,
+ 					    "Error in slot add mem [rc=%d]\n", rc);
+ 
+-			kfree(phys_contig_mem_regions);
++			kfree(phys_contig_mem_regions.regions);
+ 
+ 			/*
+ 			 * Exit here without put pages as memory regions may
+@@ -987,7 +1015,7 @@ static int ne_set_user_memory_region_ioctl(struct ne_enclave *ne_enclave,
+ 		ne_enclave->nr_mem_regions++;
+ 	}
+ 
+-	kfree(phys_contig_mem_regions);
++	kfree(phys_contig_mem_regions.regions);
+ 
+ 	return 0;
+ 
+@@ -995,7 +1023,7 @@ static int ne_set_user_memory_region_ioctl(struct ne_enclave *ne_enclave,
+ 	for (i = 0; i < ne_mem_region->nr_pages; i++)
+ 		put_page(ne_mem_region->pages[i]);
+ free_mem_region:
+-	kfree(phys_contig_mem_regions);
++	kfree(phys_contig_mem_regions.regions);
+ 	kfree(ne_mem_region->pages);
+ 	kfree(ne_mem_region);
+ 
 -- 
 1.8.3.1
 
