@@ -2,185 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A00B4472FB
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 14:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EFD54472FD
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 14:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235397AbhKGNK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 08:10:27 -0500
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:44832 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231136AbhKGNK0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 08:10:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1636290464; x=1667826464;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=hgNCoNPP5WacR4wSKPv4oGq9JTggygAv8bi1p5aZSpE=;
-  b=wEa5g8RKGjFhA6L/A6IpiF7l7Ha2HfB2kay6YKcniN33ejShSrM11Fir
-   N+U8szEQppfELTPGIfPsaew1oLQMFOFj1GcYqFGjO0DSMaFO+FSOGCaex
-   MWeqOEP+M6rCOAUnlEQ/smya7+oUkrMyVn6mD3R23Gl6eS9/Tkk//Juih
-   0=;
-X-IronPort-AV: E=Sophos;i="5.87,216,1631577600"; 
-   d="scan'208";a="154725222"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-d9fba5dd.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 07 Nov 2021 13:07:32 +0000
-Received: from EX13D16EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2c-d9fba5dd.us-west-2.amazon.com (Postfix) with ESMTPS id EF83841873;
-        Sun,  7 Nov 2021 13:07:31 +0000 (UTC)
-Received: from [192.168.0.248] (10.43.162.153) by EX13D16EUB003.ant.amazon.com
- (10.43.166.99) with Microsoft SMTP Server (TLS) id 15.0.1497.24; Sun, 7 Nov
- 2021 13:07:25 +0000
-Message-ID: <e8e8fec6-0553-f9fc-dcda-00c39839cb41@amazon.com>
-Date:   Sun, 7 Nov 2021 15:07:20 +0200
+        id S235405AbhKGNMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 08:12:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231136AbhKGNMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 08:12:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D547561465;
+        Sun,  7 Nov 2021 13:09:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636290589;
+        bh=KTTVrTd2ihbh9KwJ9n54z88VqLiq1cWDd/itc0fUwkk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HgozeBh6rpCvMRtgrEjwmZOdYtMdw3efdzXV7iQfL89J7mW3eajDkFlapmkE61671
+         9xKV9bDQ12adyUe1cwcZoZfk9tMCULRM6YlfMG+jgnSGuxJi4hhCjrAxHb1fcrYTN2
+         eZqbdJY+BE3TWELfEvMp5Z/FGtlIUrNYkFUjsVtCQSLSjbyISLiBNICZkZvHTaQLtI
+         ZIA9iOwM+/iYTbSAuaTzTpCqslKyy9WmwLSPhkTpkmXkFQ8ZZddP7vKFnvX+9VPyKj
+         ArNuyyW44uo7AxQZTL8cl+ExGU3acsIGXOhDwz02Wbuk+nAExX31UkdmG6pKre88fI
+         YF75MxMUnPqqg==
+Received: by mail-ua1-f45.google.com with SMTP id i6so26287153uae.6;
+        Sun, 07 Nov 2021 05:09:49 -0800 (PST)
+X-Gm-Message-State: AOAM531CrKtV92rAGOCEDbFyfmA8LrbwR/1yGcbu3rqkeq0ZgiJGgCVV
+        FdCN3i2dR1AG4XiduUp8+fUYa6oxNF9ConAZtQQ=
+X-Google-Smtp-Source: ABdhPJy6SHuBT9ZKBzGHzAGDfkrU4I/o9sw4qE3Sm+bDD3q17LwpNd6AfgdHtPrDO+s36w7HEzo9u4jnAZ9X0MyzPg0=
+X-Received: by 2002:a67:fa93:: with SMTP id f19mr92381967vsq.43.1636290588838;
+ Sun, 07 Nov 2021 05:09:48 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH v4 2/4] nitro_enclaves: Sanity check physical memory
- regions during merging
-Content-Language: en-US
-To:     "Longpeng(Mike)" <longpeng2@huawei.com>
-CC:     <arei.gonglei@huawei.com>, <gregkh@linuxfoundation.org>,
-        <kamal@canonical.com>, <pbonzini@redhat.com>,
-        <sgarzare@redhat.com>, <stefanha@redhat.com>,
-        <vkuznets@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <ne-devel-upstream@amazon.com>, <lexnv@amazon.com>,
-        <alcioa@amazon.com>
-References: <20211103140035.2001-1-longpeng2@huawei.com>
- <20211103140035.2001-3-longpeng2@huawei.com>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-In-Reply-To: <20211103140035.2001-3-longpeng2@huawei.com>
-X-Originating-IP: [10.43.162.153]
-X-ClientProxiedBy: EX13D01UWA001.ant.amazon.com (10.43.160.60) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+References: <20211105094748.3894453-1-guoren@kernel.org> <CAAhSdy1vyCQdv_gNaNSzU79PC4giCAig6hzgD9JXSXs6+gfFPA@mail.gmail.com>
+In-Reply-To: <CAAhSdy1vyCQdv_gNaNSzU79PC4giCAig6hzgD9JXSXs6+gfFPA@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sun, 7 Nov 2021 21:09:38 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTcx0GWQ6CY0VJtzAi8TqvOKK00py4f-d_1iHhi1XAXmw@mail.gmail.com>
+Message-ID: <CAJF2gTTcx0GWQ6CY0VJtzAi8TqvOKK00py4f-d_1iHhi1XAXmw@mail.gmail.com>
+Subject: Re: [PATCH V7] irqchip/sifive-plic: Fixup EOI failed when masked
+To:     Anup Patel <anup@brainfault.org>, Marc Zyngier <maz@kernel.org>
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Vincent Pelletier <plr.vincent@gmail.com>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAwMy8xMS8yMDIxIDE2OjAwLCBMb25ncGVuZyhNaWtlKSB3cm90ZToKPiAKPiBGcm9tOiBM
-b25ncGVuZyA8bG9uZ3BlbmcyQGh1YXdlaS5jb20+Cj4gCj4gU2FuaXR5IGNoZWNrIHRoZSBwaHlz
-aWNhbCBtZW1vcnkgcmVnaW9ucyBkdXJpbmcgdGhlIG1lcmdlIG9mIGNvbnRpZ3VvdXMKPiByZWdp
-b25zLiBUaHVzIHdlIGNhbiB0ZXN0IHRoZSBwaHlzaWNhbCBtZW1vcnkgcmVnaW9ucyBzZXR1cCBs
-b2dpYwo+IGluZGl2aWR1YWxseSwgaW5jbHVkaW5nIHRoZSBlcnJvciBjYXNlcyBjb21pbmcgZnJv
-bSB0aGUgc2FuaXR5IGNoZWNrcy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBMb25ncGVuZyA8bG9uZ3Bl
-bmcyQGh1YXdlaS5jb20+Cj4gLS0tCj4gQ2hhbmdlcyB2MyAtPiB2NDoKPiAgICAtIGFkZCBtaXNz
-aW5nICJDb250ZXh0IiBpbiB0aGUgY29tbWVudHMuICBbQW5kcmFdCj4gICAgLSBtb3ZlIHRoZSBj
-b21tZW50IGluIG5lX21lcmdlX3BoeXNfY29udGlnX21lbW9yeV9yZWdpb25zKCkgYmVmb3JlCj4g
-ICAgICB0aGUgImlmICguLi4pIi4gW0FuZHJhXQo+IAo+IENoYW5nZXMgdjIgLT4gdjM6Cj4gICAg
-LSB1cGRhdGUgdGhlIGNvbW1pdCB0aXRsZSBhbmQgY29tbWl0IG1lc3NhZ2UuICBbQW5kcmFdCj4g
-ICAgLSBhZGQgY29tbWVudHMgYmVmb3JlIHRoZSBmdW5jdGlvbiBkZWZpbml0aW9uLiAgW0FuZHJh
-XQo+ICAgIC0gcmVtb3ZlICdpbmxpbmUnIGF0dHJpYnV0ZSBvZiBuZV9zYW5pdHlfY2hlY2tfcGh5
-c19tZW1fcmVnaW9uLiBbQW5kcmFdCj4gICAgLSBsZWF2ZSBhIGJsYW5rIGxpbmUgYmVmb3JlIHJl
-dHVybi4gIFtBbmRyYV0KPiAgICAtIG1vdmUgc2FuaXR5IGNoZWNrIGluIG5lX21lcmdlX3BoeXNf
-Y29udGlnX21lbW9yeV9yZWdpb25zIHRvCj4gICAgICB0aGUgYmVnaW5uaW5nIG9mIHRoZSBmdW5j
-dGlvbi4gIFtBbmRyYV0KPiAgICAtIGRvdWJsZSBzYW5pdHkgY2hlY2tpbmcgYWZ0ZXIgdGhlIG1l
-cmdlIG9mIHBoeXNpY2FsIGNvbnRpZ3VvdXMKPiAgICAgIG1lbW9yeSByZWdpb25zIGhhcyBiZWVu
-IGNvbXBsZXRlZC4gIFtBbmRyYV0KPiAtLS0KPiAgIGRyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZl
-cy9uZV9taXNjX2Rldi5jIHwgNzcgKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLQo+ICAg
-MSBmaWxlIGNoYW5nZWQsIDUyIGluc2VydGlvbnMoKyksIDI1IGRlbGV0aW9ucygtKQoKUmV2aWV3
-ZWQtYnk6IEFuZHJhIFBhcmFzY2hpdiA8YW5kcmFwcnNAYW1hem9uLmNvbT4KCllvdSBjYW4gYWRk
-IGluIHRoZSB2NSBvZiB0aGUgcGF0Y2ggc2VyaWVzIHRoaXMgbGluZSBhZnRlciB0aGUgCiJTaWdu
-ZWQtb2ZmLWJ5IiBsaW5lLCB0byB0cmFjayB0aGUgYWxyZWFkeSByZXZpZXdlZCBwYXRjaGVzLgoK
-VGhhbmtzLApBbmRyYQoKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy92aXJ0L25pdHJvX2VuY2xh
-dmVzL25lX21pc2NfZGV2LmMgYi9kcml2ZXJzL3ZpcnQvbml0cm9fZW5jbGF2ZXMvbmVfbWlzY19k
-ZXYuYwo+IGluZGV4IGI3ZDIxMTYuLjM3NDFhZTcgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy92aXJ0
-L25pdHJvX2VuY2xhdmVzL25lX21pc2NfZGV2LmMKPiArKysgYi9kcml2ZXJzL3ZpcnQvbml0cm9f
-ZW5jbGF2ZXMvbmVfbWlzY19kZXYuYwo+IEBAIC04MzYsNiArODM2LDM3IEBAIHN0YXRpYyBpbnQg
-bmVfc2FuaXR5X2NoZWNrX3VzZXJfbWVtX3JlZ2lvbl9wYWdlKHN0cnVjdCBuZV9lbmNsYXZlICpu
-ZV9lbmNsYXZlLAo+ICAgfQo+IAo+ICAgLyoqCj4gKyAqIG5lX3Nhbml0eV9jaGVja19waHlzX21l
-bV9yZWdpb24oKSAtIFNhbml0eSBjaGVjayB0aGUgc3RhcnQgYWRkcmVzcyBhbmQgdGhlIHNpemUK
-PiArICogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgb2YgYSBwaHlzaWNhbCBt
-ZW1vcnkgcmVnaW9uLgo+ICsgKiBAcGh5c19tZW1fcmVnaW9uX3BhZGRyIDogUGh5c2ljYWwgc3Rh
-cnQgYWRkcmVzcyBvZiB0aGUgcmVnaW9uIHRvIGJlIHNhbml0eSBjaGVja2VkLgo+ICsgKiBAcGh5
-c19tZW1fcmVnaW9uX3NpemUgIDogTGVuZ3RoIG9mIHRoZSByZWdpb24gdG8gYmUgc2FuaXR5IGNo
-ZWNrZWQuCj4gKyAqCj4gKyAqIENvbnRleHQ6IFByb2Nlc3MgY29udGV4dC4gVGhpcyBmdW5jdGlv
-biBpcyBjYWxsZWQgd2l0aCB0aGUgbmVfZW5jbGF2ZSBtdXRleCBoZWxkLgo+ICsgKiBSZXR1cm46
-Cj4gKyAqICogMCBvbiBzdWNjZXNzLgo+ICsgKiAqIE5lZ2F0aXZlIHJldHVybiB2YWx1ZSBvbiBm
-YWlsdXJlLgo+ICsgKi8KPiArc3RhdGljIGludCBuZV9zYW5pdHlfY2hlY2tfcGh5c19tZW1fcmVn
-aW9uKHU2NCBwaHlzX21lbV9yZWdpb25fcGFkZHIsCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHU2NCBwaHlzX21lbV9yZWdpb25fc2l6ZSkKPiArewo+ICsgICAg
-ICAgaWYgKHBoeXNfbWVtX3JlZ2lvbl9zaXplICYgKE5FX01JTl9NRU1fUkVHSU9OX1NJWkUgLSAx
-KSkgewo+ICsgICAgICAgICAgICAgICBkZXZfZXJyX3JhdGVsaW1pdGVkKG5lX21pc2NfZGV2LnRo
-aXNfZGV2aWNlLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJQaHlzaWNh
-bCBtZW0gcmVnaW9uIHNpemUgaXMgbm90IG11bHRpcGxlIG9mIDIgTWlCXG4iKTsKPiArCj4gKyAg
-ICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOwo+ICsgICAgICAgfQo+ICsKPiArICAgICAgIGlm
-ICghSVNfQUxJR05FRChwaHlzX21lbV9yZWdpb25fcGFkZHIsIE5FX01JTl9NRU1fUkVHSU9OX1NJ
-WkUpKSB7Cj4gKyAgICAgICAgICAgICAgIGRldl9lcnJfcmF0ZWxpbWl0ZWQobmVfbWlzY19kZXYu
-dGhpc19kZXZpY2UsCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIlBoeXNp
-Y2FsIG1lbSByZWdpb24gYWRkcmVzcyBpcyBub3QgMiBNaUIgYWxpZ25lZFxuIik7Cj4gKwo+ICsg
-ICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsKPiArICAgICAgIH0KPiArCj4gKyAgICAgICBy
-ZXR1cm4gMDsKPiArfQo+ICsKPiArLyoqCj4gICAgKiBuZV9tZXJnZV9waHlzX2NvbnRpZ19tZW1v
-cnlfcmVnaW9ucygpIC0gQWRkIGEgbWVtb3J5IHJlZ2lvbiBhbmQgbWVyZ2UgdGhlIGFkamFjZW50
-Cj4gICAgKiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmVnaW9ucyBp
-ZiB0aGV5IGFyZSBwaHlzaWNhbGx5IGNvbnRpZ3VvdXMuCj4gICAgKiBAcGh5c19jb250aWdfcmVn
-aW9ucyA6IFByaXZhdGUgZGF0YSBhc3NvY2lhdGVkIHdpdGggdGhlIGNvbnRpZ3VvdXMgcGh5c2lj
-YWwgbWVtb3J5IHJlZ2lvbnMuCj4gQEAgLTg0MywyMyArODc0LDMxIEBAIHN0YXRpYyBpbnQgbmVf
-c2FuaXR5X2NoZWNrX3VzZXJfbWVtX3JlZ2lvbl9wYWdlKHN0cnVjdCBuZV9lbmNsYXZlICpuZV9l
-bmNsYXZlLAo+ICAgICogQHBhZ2Vfc2l6ZSA6ICAgICAgICAgICBMZW5ndGggb2YgdGhlIHJlZ2lv
-biB0byBiZSBhZGRlZC4KPiAgICAqCj4gICAgKiBDb250ZXh0OiBQcm9jZXNzIGNvbnRleHQuIFRo
-aXMgZnVuY3Rpb24gaXMgY2FsbGVkIHdpdGggdGhlIG5lX2VuY2xhdmUgbXV0ZXggaGVsZC4KPiAr
-ICogUmV0dXJuOgo+ICsgKiAqIDAgb24gc3VjY2Vzcy4KPiArICogKiBOZWdhdGl2ZSByZXR1cm4g
-dmFsdWUgb24gZmFpbHVyZS4KPiAgICAqLwo+IC1zdGF0aWMgdm9pZAo+ICtzdGF0aWMgaW50Cj4g
-ICBuZV9tZXJnZV9waHlzX2NvbnRpZ19tZW1vcnlfcmVnaW9ucyhzdHJ1Y3QgbmVfcGh5c19jb250
-aWdfbWVtX3JlZ2lvbnMgKnBoeXNfY29udGlnX3JlZ2lvbnMsCj4gICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHU2NCBwYWdlX3BhZGRyLCB1NjQgcGFnZV9zaXplKQo+ICAgewo+
-ICAgICAgICAgIHVuc2lnbmVkIGxvbmcgbnVtID0gcGh5c19jb250aWdfcmVnaW9ucy0+bnVtOwo+
-ICsgICAgICAgaW50IHJjID0gMDsKPiArCj4gKyAgICAgICByYyA9IG5lX3Nhbml0eV9jaGVja19w
-aHlzX21lbV9yZWdpb24ocGFnZV9wYWRkciwgcGFnZV9zaXplKTsKPiArICAgICAgIGlmIChyYyA8
-IDApCj4gKyAgICAgICAgICAgICAgIHJldHVybiByYzsKPiAKPiAgICAgICAgICAvKiBQaHlzaWNh
-bGx5IGNvbnRpZ3VvdXMsIGp1c3QgbWVyZ2UgKi8KPiAgICAgICAgICBpZiAobnVtICYmIChwaHlz
-X2NvbnRpZ19yZWdpb25zLT5yZWdpb25zW251bSAtIDFdLmVuZCArIDEpID09IHBhZ2VfcGFkZHIp
-IHsKPiAgICAgICAgICAgICAgICAgIHBoeXNfY29udGlnX3JlZ2lvbnMtPnJlZ2lvbnNbbnVtIC0g
-MV0uZW5kICs9IHBhZ2Vfc2l6ZTsKPiAtCj4gLSAgICAgICAgICAgICAgIHJldHVybjsKPiArICAg
-ICAgIH0gZWxzZSB7Cj4gKyAgICAgICAgICAgICAgIHBoeXNfY29udGlnX3JlZ2lvbnMtPnJlZ2lv
-bnNbbnVtXS5zdGFydCA9IHBhZ2VfcGFkZHI7Cj4gKyAgICAgICAgICAgICAgIHBoeXNfY29udGln
-X3JlZ2lvbnMtPnJlZ2lvbnNbbnVtXS5lbmQgPSBwYWdlX3BhZGRyICsgcGFnZV9zaXplIC0gMTsK
-PiArICAgICAgICAgICAgICAgcGh5c19jb250aWdfcmVnaW9ucy0+bnVtKys7Cj4gICAgICAgICAg
-fQo+IAo+IC0gICAgICAgcGh5c19jb250aWdfcmVnaW9ucy0+cmVnaW9uc1tudW1dLnN0YXJ0ID0g
-cGFnZV9wYWRkcjsKPiAtICAgICAgIHBoeXNfY29udGlnX3JlZ2lvbnMtPnJlZ2lvbnNbbnVtXS5l
-bmQgPSBwYWdlX3BhZGRyICsgcGFnZV9zaXplIC0gMTsKPiAtICAgICAgIHBoeXNfY29udGlnX3Jl
-Z2lvbnMtPm51bSsrOwo+ICsgICAgICAgcmV0dXJuIDA7Cj4gICB9Cj4gCj4gICAvKioKPiBAQCAt
-OTM4LDkgKzk3NywxMSBAQCBzdGF0aWMgaW50IG5lX3NldF91c2VyX21lbW9yeV9yZWdpb25faW9j
-dGwoc3RydWN0IG5lX2VuY2xhdmUgKm5lX2VuY2xhdmUsCj4gICAgICAgICAgICAgICAgICBpZiAo
-cmMgPCAwKQo+ICAgICAgICAgICAgICAgICAgICAgICAgICBnb3RvIHB1dF9wYWdlczsKPiAKPiAt
-ICAgICAgICAgICAgICAgbmVfbWVyZ2VfcGh5c19jb250aWdfbWVtb3J5X3JlZ2lvbnMoJnBoeXNf
-Y29udGlnX21lbV9yZWdpb25zLAo+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBwYWdlX3RvX3BoeXMobmVfbWVtX3JlZ2lvbi0+cGFnZXNbaV0pLAo+
-IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwYWdl
-X3NpemUobmVfbWVtX3JlZ2lvbi0+cGFnZXNbaV0pKTsKPiArICAgICAgICAgICAgICAgcmMgPSBu
-ZV9tZXJnZV9waHlzX2NvbnRpZ19tZW1vcnlfcmVnaW9ucygmcGh5c19jb250aWdfbWVtX3JlZ2lv
-bnMsCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgcGFnZV90b19waHlzKG5lX21lbV9yZWdpb24tPnBhZ2VzW2ldKSwKPiArICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwYWdlX3NpemUo
-bmVfbWVtX3JlZ2lvbi0+cGFnZXNbaV0pKTsKPiArICAgICAgICAgICAgICAgaWYgKHJjIDwgMCkK
-PiArICAgICAgICAgICAgICAgICAgICAgICBnb3RvIHB1dF9wYWdlczsKPiAKPiAgICAgICAgICAg
-ICAgICAgIG1lbW9yeV9zaXplICs9IHBhZ2Vfc2l6ZShuZV9tZW1fcmVnaW9uLT5wYWdlc1tpXSk7
-Cj4gCj4gQEAgLTk2MiwyMyArMTAwMyw5IEBAIHN0YXRpYyBpbnQgbmVfc2V0X3VzZXJfbWVtb3J5
-X3JlZ2lvbl9pb2N0bChzdHJ1Y3QgbmVfZW5jbGF2ZSAqbmVfZW5jbGF2ZSwKPiAgICAgICAgICAg
-ICAgICAgIHU2NCBwaHlzX3JlZ2lvbl9hZGRyID0gcGh5c19jb250aWdfbWVtX3JlZ2lvbnMucmVn
-aW9uc1tpXS5zdGFydDsKPiAgICAgICAgICAgICAgICAgIHU2NCBwaHlzX3JlZ2lvbl9zaXplID0g
-cmFuZ2VfbGVuKCZwaHlzX2NvbnRpZ19tZW1fcmVnaW9ucy5yZWdpb25zW2ldKTsKPiAKPiAtICAg
-ICAgICAgICAgICAgaWYgKHBoeXNfcmVnaW9uX3NpemUgJiAoTkVfTUlOX01FTV9SRUdJT05fU0la
-RSAtIDEpKSB7Cj4gLSAgICAgICAgICAgICAgICAgICAgICAgZGV2X2Vycl9yYXRlbGltaXRlZChu
-ZV9taXNjX2Rldi50aGlzX2RldmljZSwKPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICJQaHlzaWNhbCBtZW0gcmVnaW9uIHNpemUgaXMgbm90IG11bHRpcGxlIG9m
-IDIgTWlCXG4iKTsKPiAtCj4gLSAgICAgICAgICAgICAgICAgICAgICAgcmMgPSAtRUlOVkFMOwo+
-IC0KPiAtICAgICAgICAgICAgICAgICAgICAgICBnb3RvIHB1dF9wYWdlczsKPiAtICAgICAgICAg
-ICAgICAgfQo+IC0KPiAtICAgICAgICAgICAgICAgaWYgKCFJU19BTElHTkVEKHBoeXNfcmVnaW9u
-X2FkZHIsIE5FX01JTl9NRU1fUkVHSU9OX1NJWkUpKSB7Cj4gLSAgICAgICAgICAgICAgICAgICAg
-ICAgZGV2X2Vycl9yYXRlbGltaXRlZChuZV9taXNjX2Rldi50aGlzX2RldmljZSwKPiAtICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJQaHlzaWNhbCBtZW0gcmVnaW9u
-IGFkZHJlc3MgaXMgbm90IDIgTWlCIGFsaWduZWRcbiIpOwo+IC0KPiAtICAgICAgICAgICAgICAg
-ICAgICAgICByYyA9IC1FSU5WQUw7Cj4gLQo+ICsgICAgICAgICAgICAgICByYyA9IG5lX3Nhbml0
-eV9jaGVja19waHlzX21lbV9yZWdpb24ocGh5c19yZWdpb25fYWRkciwgcGh5c19yZWdpb25fc2l6
-ZSk7Cj4gKyAgICAgICAgICAgICAgIGlmIChyYyA8IDApCj4gICAgICAgICAgICAgICAgICAgICAg
-ICAgIGdvdG8gcHV0X3BhZ2VzOwo+IC0gICAgICAgICAgICAgICB9Cj4gICAgICAgICAgfQo+IAo+
-ICAgICAgICAgIG5lX21lbV9yZWdpb24tPm1lbW9yeV9zaXplID0gbWVtX3JlZ2lvbi5tZW1vcnlf
-c2l6ZTsKPiAtLQo+IDEuOC4zLjEKPiAKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciAoUm9t
-YW5pYSkgUy5SLkwuIHJlZ2lzdGVyZWQgb2ZmaWNlOiAyN0EgU2YuIExhemFyIFN0cmVldCwgVUJD
-NSwgZmxvb3IgMiwgSWFzaSwgSWFzaSBDb3VudHksIDcwMDA0NSwgUm9tYW5pYS4gUmVnaXN0ZXJl
-ZCBpbiBSb21hbmlhLiBSZWdpc3RyYXRpb24gbnVtYmVyIEoyMi8yNjIxLzIwMDUuCg==
+On Sat, Nov 6, 2021 at 9:45 PM Anup Patel <anup@brainfault.org> wrote:
+>
+> On Fri, Nov 5, 2021 at 3:18 PM <guoren@kernel.org> wrote:
+> >
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > When using "devm_request_threaded_irq(,,,,IRQF_ONESHOT,,)" in the driver,
+> > only the first interrupt could be handled, and continue irq is blocked by
+> > hw. Because the riscv plic couldn't complete masked irq source which has
+> > been disabled in enable register. The bug was firstly reported in [1].
+> >
+> > Here is the description of Interrupt Completion in PLIC spec [2]:
+> >
+> > The PLIC signals it has completed executing an interrupt handler by
+> > writing the interrupt ID it received from the claim to the claim/complete
+> > register. The PLIC does not check whether the completion ID is the same
+> > as the last claim ID for that target. If the completion ID does not match
+> > an interrupt source that is currently enabled for the target, the
+> >                          ^^ ^^^^^^^^^ ^^^^^^^
+> > completion is silently ignored.
+> >
+> > [1] http://lists.infradead.org/pipermail/linux-riscv/2021-July/007441.html
+> > [2] https://github.com/riscv/riscv-plic-spec/blob/8bc15a35d07c9edf7b5d23fec9728302595ffc4d/riscv-plic.adoc
+> >
+> > Fixes: bb0fed1c60cc ("irqchip/sifive-plic: Switch to fasteoi flow")
+> > Reported-by: Vincent Pelletier <plr.vincent@gmail.com>
+> > Tested-by: Nikita Shubin <nikita.shubin@maquefel.me>
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+>
+> Looks good to me.
+>
+> Reviewed-by: Anup Patel <anup@brainfault.org>
+Thx
 
+@Marc Zyngier
+Could you help to take the patch into your tree include "Anup's
+Reviewed-by"? Or Let me update a new version of the patch.
+
+>
+> Regards,
+> Anup
+>
+> > Cc: stable@vger.kernel.org
+> > Cc: Anup Patel <anup@brainfault.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> > Cc: Atish Patra <atish.patra@wdc.com>
+> > Cc: Nikita Shubin <nikita.shubin@maquefel.me>
+> > Cc: incent Pelletier <plr.vincent@gmail.com>
+> >
+> > ---
+> >
+> > Changes since V7:
+> >  - Add Fixes tag
+> >  - Add Tested-by
+> >  - Add Cc stable
+> >
+> > Changes since V6:
+> >  - Propagate to plic_irq_eoi for all riscv,plic by Nikita Shubin
+> >  - Remove thead related codes
+> >
+> > Changes since V5:
+> >  - Move back to mask/unmask
+> >  - Fixup the problem in eoi callback
+> >  - Remove allwinner,sun20i-d1 IRQCHIP_DECLARE
+> >  - Rewrite comment log
+> >
+> > Changes since V4:
+> >  - Update comment by Anup
+> >
+> > Changes since V3:
+> >  - Rename "c9xx" to "c900"
+> >  - Add sifive_plic_chip and thead_plic_chip for difference
+> >
+> > Changes since V2:
+> >  - Add a separate compatible string "thead,c9xx-plic"
+> >  - set irq_mask/unmask of "plic_chip" to NULL and point
+> >    irq_enable/disable of "plic_chip" to plic_irq_mask/unmask
+> >  - Add a detailed comment block in plic_init() about the
+> >    differences in Claim/Completion process of RISC-V PLIC and C9xx
+> >    PLIC.
+> > ---
+> >  drivers/irqchip/irq-sifive-plic.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+> > index cf74cfa82045..259065d271ef 100644
+> > --- a/drivers/irqchip/irq-sifive-plic.c
+> > +++ b/drivers/irqchip/irq-sifive-plic.c
+> > @@ -163,7 +163,13 @@ static void plic_irq_eoi(struct irq_data *d)
+> >  {
+> >         struct plic_handler *handler = this_cpu_ptr(&plic_handlers);
+> >
+> > -       writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
+> > +       if (irqd_irq_masked(d)) {
+> > +               plic_irq_unmask(d);
+> > +               writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
+> > +               plic_irq_mask(d);
+> > +       } else {
+> > +               writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
+> > +       }
+> >  }
+> >
+> >  static struct irq_chip plic_chip = {
+> > --
+> > 2.25.1
+> >
+
+
+
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
