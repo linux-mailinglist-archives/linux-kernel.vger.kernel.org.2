@@ -2,234 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9183F4473B4
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 383A24473B7
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235732AbhKGQU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 11:20:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234949AbhKGQUZ (ORCPT
+        id S235741AbhKGQW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 11:22:26 -0500
+Received: from conuserg-07.nifty.com ([210.131.2.74]:45385 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234949AbhKGQWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 11:20:25 -0500
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA182C061714
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 08:17:42 -0800 (PST)
-Received: by mail-ua1-x930.google.com with SMTP id o26so26942803uab.5
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 08:17:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t7xMZVtk+GkT0Ad4djTgQGpUumW4/C6aQ//HAOY+M7k=;
-        b=qrkjoAs/fBxtAbYnZ//tjZPnT865qxaXGGjpBa7hi1+l9eLVjSIWrRmjwdU/2DcuaB
-         q1YPZQ2oFH9noFXS+zwtLwvw2axnbvQX6qvnJZEKI9dyBnavLeCiHcjw8GoQaXDLZ6ko
-         9/wD3aeoF8dYn8I3uKK2ujmCWzan2rnu691QND6pGPy3D6sotevEesRcDz0nxubKRi9D
-         +7PHD5XDQtKCGyaWHzarny+eELcTJ30JcDhmVu/bLlDouLtMXa6tqhJ8M+cA5ejVqkqV
-         gp+S5w1xNbvpL771+OZJSI6uj2gzJ8wGvjZEOvyqUOj8Pk2AKGviDFGkDBo3KSt3EYR3
-         HluQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t7xMZVtk+GkT0Ad4djTgQGpUumW4/C6aQ//HAOY+M7k=;
-        b=OABxC/XhmFYZzYfmJ+1Ez12Lrwblyyrq+C8C5n6mfTSv062RFAHvglknguucseYL2y
-         3gssVEp27oCrc+KeTxd99xhfMHoO//5zoTcE9IISTOCIbyaoFja9fqjOegSXqhOMMe5x
-         +NCM0SzTguUgPOBxZzpCJK62s7PEoAUZJgWwPyWvjUbCuJjA1ZYqmVErdctzunBEKlTk
-         8vsPe4Not5h/glPSzzmIdEkhifYGx7idFofaX67njsJ1DA18v5UcnjfPC0eHR3HTEgeC
-         DLa6HZ8CWkuXfLQ5O8eQADMAsR2b2HbWi+PtvD0uRmskfJ23gMVTXyBGysSwCBxVSPnG
-         HFIw==
-X-Gm-Message-State: AOAM5319cNyvEmzYEqncexvhGj/R9+PIwXWXhR+XvWJ6c5b+Gtbi7r3s
-        UoPMp0F6rVbz7NbRFEiemGtDxX2rU4dkxt0rF4IMGQ==
-X-Google-Smtp-Source: ABdhPJx9na6KgzgTa2a6Fl9rs1m4BaQVX93gFlqN9bcazVXIDAqBdVq9aYvXAF1znhsfu3tBctfOm+DOY0FYNuYX+Us=
-X-Received: by 2002:a67:ab48:: with SMTP id k8mr93223469vsh.30.1636301861809;
- Sun, 07 Nov 2021 08:17:41 -0800 (PST)
+        Sun, 7 Nov 2021 11:22:25 -0500
+Received: from grover.. (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 1A7GIBqt010505;
+        Mon, 8 Nov 2021 01:18:11 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 1A7GIBqt010505
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1636301892;
+        bh=L7NVYUTKQRaSf3zmJ7tch8Fq/p/5g/YPanoKCU7mZ9s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=acS5ty7TejmKNVXuHe8WleVU0yc73HKZdR6FpjGOoILDOykqn7zm+zUtQmsO90Fvn
+         KM8qRESTJaE8UfbwrhecoCGZgwmFl/wdt1o1cmxK4SptZG6ZbzlGIGSWzkqjDAN83o
+         3SYUl9zD26dnbDgKb9m8XgtqdCo3uXaOfm/ZAaFYpvhW0oOgspDqERwgqHMcKw01fI
+         FkHz4syr2wdmp2dXMcjEWUL4y8NuVuJAv6VNW17TO2iC8Lctu3W6oaHWbw2z79DSy+
+         jIVlOYXhi4mAHBcVSnbcxv78Fd6HNW5fLue4d+gro9TZjTF3xD34yNH4t8Ks6+ZHeZ
+         9CbI45ArFpDLQ==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     clang-built-linux@googlegroups.com,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: vdso: remove -nostdlib compiler flag
+Date:   Mon,  8 Nov 2021 01:18:02 +0900
+Message-Id: <20211107161802.323125-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20211031122216.30212-1-semen.protsenko@linaro.org>
- <20211031122216.30212-13-semen.protsenko@linaro.org> <02e4cd1f-47bf-9bc7-b46c-b6c30943c0b7@canonical.com>
-In-Reply-To: <02e4cd1f-47bf-9bc7-b46c-b6c30943c0b7@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Sun, 7 Nov 2021 18:17:29 +0200
-Message-ID: <CAPLW+4=HZytu3Cxsea_HjrR2FzAVd0uEVZvqp9pT4xB=WqhKUQ@mail.gmail.com>
-Subject: Re: [PATCH v2 12/12] watchdog: s3c2410: Add Exynos850 support
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Nov 2021 at 12:27, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 31/10/2021 13:22, Sam Protsenko wrote:
-> > Exynos850 is a bit different from SoCs already supported in WDT driver:
-> >   - AUTOMATIC_WDT_RESET_DISABLE register is removed, so its value is
-> >     always 0; .disable_auto_reset callback is not set for that reason
-> >   - MASK_WDT_RESET_REQUEST register is replaced with
-> >     CLUSTERx_NONCPU_IN_EN register; instead of masking (disabling) WDT
-> >     reset interrupt it's now enabled with the same value; .mask_reset
-> >     callback is reused for that functionality though
-> >   - To make WDT functional, WDT counter needs to be enabled in
-> >     CLUSTERx_NONCPU_OUT register; it's done using .enable_counter
-> >     callback
-> >
-> > Also Exynos850 has two CPU clusters, each has its own dedicated WDT
-> > instance. Different PMU registers and bits are used for each cluster. So
-> > driver data is now modified in probe, adding needed info depending on
-> > cluster index passed from device tree.
-> >
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> > Changes in v2:
-> >   - Used single compatible for Exynos850, populating missing driver data in
-> >     probe
-> >   - Added "index" property to specify CPU cluster index
-> >
-> >  drivers/watchdog/s3c2410_wdt.c | 68 +++++++++++++++++++++++++++++++++-
-> >  1 file changed, 66 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-> > index 8fdda2ede1c3..457b725c30ac 100644
-> > --- a/drivers/watchdog/s3c2410_wdt.c
-> > +++ b/drivers/watchdog/s3c2410_wdt.c
-> > @@ -56,6 +56,14 @@
-> >  #define EXYNOS5_RST_STAT_REG_OFFSET          0x0404
-> >  #define EXYNOS5_WDT_DISABLE_REG_OFFSET               0x0408
-> >  #define EXYNOS5_WDT_MASK_RESET_REG_OFFSET    0x040c
-> > +#define EXYNOS850_CLUSTER0_NONCPU_OUT                0x1220
-> > +#define EXYNOS850_CLUSTER0_NONCPU_INT_EN     0x1244
-> > +#define EXYNOS850_CLUSTER1_NONCPU_OUT                0x1620
-> > +#define EXYNOS850_CLUSTER1_NONCPU_INT_EN     0x1644
-> > +
-> > +#define EXYNOS850_CLUSTER0_WDTRESET_BIT              24
-> > +#define EXYNOS850_CLUSTER1_WDTRESET_BIT              23
-> > +
-> >  #define QUIRK_HAS_WTCLRINT_REG                       (1 << 0)
-> >  #define QUIRK_HAS_PMU_MASK_RESET             (1 << 1)
-> >  #define QUIRK_HAS_PMU_RST_STAT                       (1 << 2)
-> > @@ -171,6 +179,21 @@ static const struct s3c2410_wdt_variant drv_data_exynos7 = {
-> >                 QUIRK_HAS_PMU_RST_STAT | QUIRK_HAS_PMU_AUTO_DISABLE,
-> >  };
-> >
-> > +static const struct s3c2410_wdt_variant drv_data_exynos850 = {
-> > +     /*
-> > +      * Next fields will be set in probe(), based on cluster index:
-> > +      *   - .mask_reset_reg
-> > +      *   - .rst_stat_bit
-> > +      *   - .cnt_en_reg
-> > +      */
-> > +     .mask_reset_inv = true,
-> > +     .mask_bit = 2,
-> > +     .rst_stat_reg = EXYNOS5_RST_STAT_REG_OFFSET,
-> > +     .cnt_en_bit = 7,
-> > +     .quirks = QUIRK_HAS_WTCLRINT_REG | QUIRK_HAS_PMU_MASK_RESET | \
-> > +               QUIRK_HAS_PMU_RST_STAT | QUIRK_HAS_PMU_CNT_EN,
-> > +};
-> > +
-> >  static const struct of_device_id s3c2410_wdt_match[] = {
-> >       { .compatible = "samsung,s3c2410-wdt",
-> >         .data = &drv_data_s3c2410 },
-> > @@ -182,6 +205,8 @@ static const struct of_device_id s3c2410_wdt_match[] = {
-> >         .data = &drv_data_exynos5420 },
-> >       { .compatible = "samsung,exynos7-wdt",
-> >         .data = &drv_data_exynos7 },
-> > +     { .compatible = "samsung,exynos850-wdt",
-> > +       .data = &drv_data_exynos850 },
-> >       {},
-> >  };
-> >  MODULE_DEVICE_TABLE(of, s3c2410_wdt_match);
-> > @@ -548,15 +573,51 @@ static inline const struct s3c2410_wdt_variant *
-> >  s3c2410_get_wdt_drv_data(struct platform_device *pdev)
-> >  {
-> >       const struct s3c2410_wdt_variant *variant;
-> > +     struct s3c2410_wdt_variant *data;
-> > +     struct device *dev = &pdev->dev;
-> >
-> > -     variant = of_device_get_match_data(&pdev->dev);
-> > +     variant = of_device_get_match_data(dev);
-> >       if (!variant) {
-> >               /* Device matched by platform_device_id */
-> >               variant = (struct s3c2410_wdt_variant *)
-> >                          platform_get_device_id(pdev)->driver_data;
-> >       }
-> >
-> > -     return variant;
-> > +     /* Have to copy driver data over to keep its const qualifier intact */
-> > +     data = devm_kmemdup(dev, variant, sizeof(*variant), GFP_KERNEL);
-> > +     if (!data)
-> > +             return NULL;
-> > +
-> > +     /* Populate missing fields for Exynos850 w.r.t. cluster index */
-> > +     if (variant == &drv_data_exynos850) {
-> > +             u32 index;
-> > +             int err;
->
-> Another approach is to:
-> 1. Define two variants for Exynos850 (s3c2410_wdt_variants), kind of
-> like before,
-> 2. if (variant == &drv_data_exynos850)
-> a. Read the index
-> b. If index is 0, return first variant,
-> c. If index is 1, return the second variant,
-> d. Else - NULL.
->
-> This way you won't need to copy the memory on the fly, just use
-> different const data. Benefits: less memory allocations, entire drvdata
-> set in one place (so nicely visible), drvdata populated safely via const.
->
+The -nostdlib option requests the compiler to not use the standard
+system startup files or libraries when linking. It is effective only
+when $(CC) is used as a linker driver.
 
-That's definitely better. Not sure how I missed that. Anyway, thanks
-for review. Will send v3 soon, addressing all your comments (except
-the one about src_clk in PATCH 10/12 -- need to discuss it further, I
-guess).
+Since commit 691efbedc60d ("arm64: vdso: use $(LD) instead of $(CC)
+to link VDSO"), $(LD) is directly used, hence -nostdlib is unneeded.
 
-> > +
-> > +             err = of_property_read_u32(dev->of_node, "samsung,index",
-> > +                                        &index);
-> > +             if (err) {
-> > +                     dev_err(dev, "failed to get cluster index\n");
-> > +                     return NULL;
-> > +             }
-> > +
-> > +             switch (index) {
-> > +             case 0:
-> > +                     data->mask_reset_reg = EXYNOS850_CLUSTER0_NONCPU_INT_EN;
-> > +                     data->rst_stat_bit = EXYNOS850_CLUSTER0_WDTRESET_BIT;
-> > +                     data->cnt_en_reg = EXYNOS850_CLUSTER0_NONCPU_OUT;
-> > +                     break;
-> > +             case 1:
-> > +                     data->mask_reset_reg = EXYNOS850_CLUSTER1_NONCPU_INT_EN;
-> > +                     data->rst_stat_bit = EXYNOS850_CLUSTER1_WDTRESET_BIT;
-> > +                     data->cnt_en_reg = EXYNOS850_CLUSTER1_NONCPU_OUT;
-> > +                     break;
-> > +             default:
-> > +                     dev_err(dev, "wrong cluster index: %u\n", index);
-> > +                     return NULL;
-> > +             }
-> > +     }
-> > +
-> > +     return data;
-> >  }
-> >
-> >  static int s3c2410wdt_probe(struct platform_device *pdev)
-> > @@ -576,6 +637,9 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
-> >       wdt->wdt_device = s3c2410_wdd;
-> >
-> >       wdt->drv_data = s3c2410_get_wdt_drv_data(pdev);
-> > +     if (!wdt->drv_data)
-> > +             return -EINVAL;
-> > +
-> >       if (wdt->drv_data->quirks & QUIRKS_HAVE_PMUREG) {
-> >               wdt->pmureg = syscon_regmap_lookup_by_phandle(dev->of_node,
-> >                                               "samsung,syscon-phandle");
-> >
->
->
-> Best regards,
-> Krzysztof
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ arch/arm64/kernel/vdso/Makefile   | 2 +-
+ arch/arm64/kernel/vdso32/Makefile | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
+index 945e6bb326e3..700767dfd221 100644
+--- a/arch/arm64/kernel/vdso/Makefile
++++ b/arch/arm64/kernel/vdso/Makefile
+@@ -23,7 +23,7 @@ btildflags-$(CONFIG_ARM64_BTI_KERNEL) += -z force-bti
+ # potential future proofing if we end up with internal calls to the exported
+ # routines, as x86 does (see 6f121e548f83 ("x86, vdso: Reimplement vdso.so
+ # preparation in build-time C")).
+-ldflags-y := -shared -nostdlib -soname=linux-vdso.so.1 --hash-style=sysv	\
++ldflags-y := -shared -soname=linux-vdso.so.1 --hash-style=sysv	\
+ 	     -Bsymbolic --build-id=sha1 -n $(btildflags-y) -T
+ 
+ ccflags-y := -fno-common -fno-builtin -fno-stack-protector -ffixed-x18
+diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+index c8fec493a450..6c01b63ff56d 100644
+--- a/arch/arm64/kernel/vdso32/Makefile
++++ b/arch/arm64/kernel/vdso32/Makefile
+@@ -102,7 +102,7 @@ VDSO_AFLAGS += -D__ASSEMBLY__
+ # From arm vDSO Makefile
+ VDSO_LDFLAGS += -Bsymbolic --no-undefined -soname=linux-vdso.so.1
+ VDSO_LDFLAGS += -z max-page-size=4096 -z common-page-size=4096
+-VDSO_LDFLAGS += -nostdlib -shared --hash-style=sysv --build-id=sha1
++VDSO_LDFLAGS += -shared --hash-style=sysv --build-id=sha1
+ 
+ 
+ # Borrow vdsomunge.c from the arm vDSO
+-- 
+2.30.2
+
