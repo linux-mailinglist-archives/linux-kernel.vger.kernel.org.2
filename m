@@ -2,65 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2DC74473F1
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B896447405
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:49:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235178AbhKGQup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 11:50:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230092AbhKGQun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 11:50:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71CD96108B;
-        Sun,  7 Nov 2021 16:48:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636303680;
-        bh=LuqyXW0s3iea0qghV4oS1d9eUNF23p9aYTCVd99xMvE=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=aDOMpvuDNeyasOPFzhX4nGLa6ZXwfxPX3U1Vjq77APWqRmSiUx3jLg3Xsrn/ugm9V
-         bmjVCUiM/BnRwBbnG9fsQjJ0sDkCDh9lcdYdB5NARICOOfOJgApq6POIdvNC6DnE1f
-         KodnVm1U7zSA23oa+866uTuZ22MbK0peyHxuPBXeU3HTtQs8F/9a2bzhkjqcdjgpCJ
-         V5WyZWVWFzdPgz4Ase+QKnLouHdt6SAVPsD8w8GBbabe4Q7hnfbHl7rM87HsWT+fZB
-         dfLgekhFOB1D4OJVcj6g2Jvw/nuVIRDfbVN4Z4Fdm7QIA5RbU/EKee+I28mM7QXYXH
-         BTSEzySLfOo3w==
-Message-ID: <2a0b84575733e4aaee13926387d997c35ac23130.camel@kernel.org>
-Subject: Re: [PATCH] x86/sgx: Fix free page accounting
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        dave.hansen@linux.intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, linux-sgx@vger.kernel.org, x86@kernel.org
-Cc:     seanjc@google.com, tony.luck@intel.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Date:   Sun, 07 Nov 2021 18:47:58 +0200
-In-Reply-To: <6e51fdacc2c1d834258f00ad8cc268b8d782eca7.camel@kernel.org>
-References: <373992d869cd356ce9e9afe43ef4934b70d604fd.1636049678.git.reinette.chatre@intel.com>
-         <6e51fdacc2c1d834258f00ad8cc268b8d782eca7.camel@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.40.4-1 
+        id S235864AbhKGQvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 11:51:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235847AbhKGQva (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 11:51:30 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1957C061220
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 08:48:47 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id gt5so6424136pjb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 08:48:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=3KhLtwCKP93j3EcWq+BGTsAWsp8Oi4eBuXX0Ov40ah8=;
+        b=TNg4tHoQw5kKoLZkiGTAZIxJzUBBq4ejYt4ncgOecgNOvSUwtqqwittPPI+7pJVjX+
+         GpTp2M0KfhRYRUpBRXEYVXnxqP/7lqMWjwkVgxSXQTHg4r801CGBH3Cxkr2xCA8iHpDQ
+         PkNioeCtNa8D4FxZOybE5F6kFZNCXIj5SS/5dluRY9kmgQGkqsgb/0EL9qYgh0jdJYEk
+         mgqrImAxVO9xLB3ph2REOdqPQUk3eSUgj070IZGlv2zYI0h97xHGiGSssFFZrlwEHWTd
+         7gJa3FlCIyQYHI4/knwR34TShiwqFLlPcy+ypePmUlRAZLKNrHzuj6T1hpUgZdGxUgLr
+         tNtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=3KhLtwCKP93j3EcWq+BGTsAWsp8Oi4eBuXX0Ov40ah8=;
+        b=osePMWOL4eN6/fy5P8f2N+wx+mdWCB/2d8n2NvxjDYIPTKy8DMvLzzbhuQOfw0CKK/
+         lg1qzUEiAudGl4ghHYrFjv/rCWxLdZnELYG31Mtq5jjfn8zHgyV+QIVV47V1bVt0SPoh
+         NWydGnrvOi4kqef3zoBVeBrl8lNj/5qioyjohYyvIkUIZXKBRmP6x1TufKfovCjDO9/0
+         6E5V/p5bzzaMAqz5rPwIzsx0sq312jQeFIQAB8//ELrb5O9WxvzQnG70OWhRkhHzBHsK
+         fnHTU5bLhe/D/tPa50iHC+bxBqW+mKOmQiaW8q5TEqP8Cbvy6RuSMws4eg9aqAmtZH73
+         9AYQ==
+X-Gm-Message-State: AOAM530GYa2y9NW17fmz7eKO2u/l+iBuWwdwo13cvBphICwNxNAm0m2w
+        5T+Ny++Tlip9D6nk4Lg8Udg+CZkpON6Er6DGSXM=
+X-Google-Smtp-Source: ABdhPJxAeCOxzzTO2bC1ebInPX7TK42gu5RWx2Xb9R/R8imfArbHNs+vmtD0xqJ/WYY5NVOuLREd2E+dZSLVoRt6leo=
+X-Received: by 2002:a17:902:a60b:b0:142:7621:be0b with SMTP id
+ u11-20020a170902a60b00b001427621be0bmr4070721plq.58.1636303726736; Sun, 07
+ Nov 2021 08:48:46 -0800 (PST)
 MIME-Version: 1.0
+Received: by 2002:a05:6a10:4a14:0:0:0:0 with HTTP; Sun, 7 Nov 2021 08:48:46
+ -0800 (PST)
+Reply-To: amabenchambers00@gmail.com
+From:   Amadou Benjamin <ousmanekarim54@gmail.com>
+Date:   Sun, 7 Nov 2021 08:48:46 -0800
+Message-ID: <CAJFAt4Zwu2DZNzEx2mhTp73fqWvHNwMrUMgOFZ==TBGW8S=HkA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-11-07 at 18:45 +0200, Jarkko Sakkinen wrote:
-> On Thu, 2021-11-04 at 11:28 -0700, Reinette Chatre wrote:
-> > The consequence of sgx_nr_free_pages not being protected is that
-> > its value may not accurately reflect the actual number of free
-> > pages on the system, impacting the availability of free pages in
-> > support of many flows. The problematic scenario is when the
-> > reclaimer never runs because it believes there to be sufficient
-> > free pages while any attempt to allocate a page fails because there
-> > are no free pages available. The worst scenario observed was a
-> > user space hang because of repeated page faults caused by
-> > no free pages ever made available.
->=20
-> Can you go in detail with the "concrete scenario" in the commit
-> message? It does not have to describe all the possible scenarios
-> but at least one sequence of events.
+-- 
+Hello good day.
 
-I.e. I don't have anything fundamentally against changing it to
-atomic but the commit message is completely lacking the stimulus
-of changing anything.
+I am Barrister Amadou Benjamin by name, with due respect, I am
+contacting you to help get the deposit 10.5 million Dollars, my late
+client Engineer Vasiliy left in his Bank before his sudden death on
+April 21, 2007, to avoid confiscation by Lloyds bank. Please write me
+back through this email (amabenchambers00@gmail.com)for more
+information about this transaction or send me your private email to
+Contact you myself.
 
-/Jarkko
+Sincerely,
+Barrister Amadou Benjamin Esq
