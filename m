@@ -2,212 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E684473D6
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1646E4473D8
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235833AbhKGQcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 11:32:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59256 "EHLO
+        id S235150AbhKGQgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 11:36:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234861AbhKGQcn (ORCPT
+        with ESMTP id S229966AbhKGQgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 11:32:43 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A74C061570;
-        Sun,  7 Nov 2021 08:30:00 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id x15so21541747edv.1;
-        Sun, 07 Nov 2021 08:30:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Mnh2Je31kXke/FQYVUvveakBauZ5U23X82U3Kp0Tx3M=;
-        b=pPJ8t2F2hYPuA0XqqwyPMokwhNggc2Zh2Gh9kergnf6M0TqiTK/EgVJJAvY5j8Ug7b
-         JXQgwKeJ8bBhZ7Ze+3q29Wz7J04pgoha83RG6IrxXA03UaP0lxA0jT71Cw9gJVwKCh7B
-         58b/vXkqK+E5iowZQYlPfJKgPq1Uec0MMXcj62XdXBLOX35CrjE1DJJCCRo15WgrsvC4
-         1g0UUmglXhmEyUlYk+5FmroOl+kbYXf4MFVQTg2cB0uHnEdtMDiAFXT1lC71MAYV66Hn
-         P4MbJObTNFq8ukRYIpPJfVhh9XKdR5WQh/ke6vN5an6VfD8juG7NhZMiQZOLQTh1H9sb
-         83FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Mnh2Je31kXke/FQYVUvveakBauZ5U23X82U3Kp0Tx3M=;
-        b=3f1bYllywKB7vuaR49RHTynokz9QJ4Nh9UVSIbSTHCNSZop+u0vInTWui6MjEbsoJC
-         wiY07aJXpZnWFO339Cnpb1iZGKOsVgZHBw5Cuq2cYEsHL0mZsQATxbSnlYzK/N10TpH2
-         5uuups3Dfu/Xgnwrec4+He9zLm3D8DPNqVkCpKXt03c64kKRkxNmMIm2Jn3VHGWOn0p+
-         wN2926Zi2QmIo8LJ7j36j6T3K0U+lJGpnMKoXBeBWrNME/p2lVkvvTxtG/sz4t0fZOtn
-         zHEXNQoZWpwVBQIrxnQpjqBTxDbI5CJC02sXKVmvQDNDEC1agUtr41/rDh6Ewmk8eBFV
-         Y/FQ==
-X-Gm-Message-State: AOAM532VC8hRGUkjCbsv+/bGod4edOT3aHxC/q5hEHYPXdNs9JNkapzg
-        lEQ/SJG8Ou5UWc1/9Jl1gWIcL7MIuZs=
-X-Google-Smtp-Source: ABdhPJz9tHCyYeaQqHalsAEWI0OM70CjMfJ0PGSoZyL3d9SlVSykW4/2hTfsKlOzK9sHwKYhcZXwyA==
-X-Received: by 2002:a17:906:7951:: with SMTP id l17mr17698654ejo.284.1636302599087;
-        Sun, 07 Nov 2021 08:29:59 -0800 (PST)
-Received: from localhost.localdomain ([2a02:ab88:109:9f0:f6a6:7fbe:807a:e1cc])
-        by smtp.googlemail.com with ESMTPSA id hq37sm7195270ejc.116.2021.11.07.08.29.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Nov 2021 08:29:58 -0800 (PST)
-From:   "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-To:     helgaas@kernel.org
-Cc:     "Bolarinwa O. Saheed" <refactormyself@gmail.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v4 5/5] PCI/ASPM: Remove unncessary linked list from aspm.c
-Date:   Sun,  7 Nov 2021 17:29:41 +0100
-Message-Id: <20211107162941.1196-6-refactormyself@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211107162941.1196-1-refactormyself@gmail.com>
-References: <20211107162941.1196-1-refactormyself@gmail.com>
+        Sun, 7 Nov 2021 11:36:04 -0500
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E43C061570;
+        Sun,  7 Nov 2021 08:33:21 -0800 (PST)
+Date:   Mon, 8 Nov 2021 00:34:00 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1636302799;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RS/Nz/UG56GlGiRm7O/muf8wz5uSzD19AWx+yQ3NlEo=;
+        b=G8+4iXdmP/uX9z5jnC2n5GBIzfBb+e/KpFD9HAleCwzk6ibUcXgsIj2a6HgqhU0YTDoi9U
+        BYRRYTKTJBzN6G+gZ/ZwHnDh1MHVb5cX144Hvoa/14Pv1Bog9CWmp8FdYGnQoduqeg1EgN
+        aW1XXWa/2iIafq4PyJ4LLPHtX1NKKG4=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Tao Zhou <tao.zhou@linux.dev>
+To:     Peter Oskolkov <posk@posk.io>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>,
+        Tao Zhou <tao.zhou@linux.dev>
+Subject: Re: [PATCH v0.8 4/6] sched/umcg, lib/umcg: implement libumcg
+Message-ID: <YYf/+LC77VUduuxD@geo.homenetwork>
+References: <20211104195804.83240-1-posk@google.com>
+ <20211104195804.83240-5-posk@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211104195804.83240-5-posk@google.com>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: tao.zhou@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Bolarinwa O. Saheed" <refactormyself@gmail.com>
+On Thu, Nov 04, 2021 at 12:58:02PM -0700, Peter Oskolkov wrote:
 
-aspm.c defines a linked list - `link_list` and stores each of
-its node in struct pcie_link_state.sibling. This linked list
-tracks devices for which the struct pcie_link_state object
-was successfully created. It is used to loop through the list
-for instance to set ASPM policy or update changes. However, it
-is possible to access these devices via existing lists defined
-inside pci.h
+> +/* Update the state variable, set new timestamp. */
+> +static bool umcg_update_state(uint64_t *state, uint64_t *prev, uint64_t next)
+> +{
+> +	uint64_t prev_ts = (*prev) >> (64 - UMCG_STATE_TIMESTAMP_BITS);
+> +	struct timespec now;
+> +	uint64_t next_ts;
+> +	int res;
+> +
+> +	/*
+> +	 * clock_gettime(CLOCK_MONOTONIC, ...) takes less than 20ns on a
+> +	 * typical Intel processor on average, even when run concurrently,
+> +	 * so the overhead is low enough for most applications.
+> +	 *
+> +	 * If this is still too high, `next_ts = prev_ts + 1` should work
+> +	 * as well. The only real requirement is that the "timestamps" are
+> +	 * uniqueue per thread within a reasonable time frame.
+> +	 */
+> +	res = clock_gettime(CLOCK_MONOTONIC, &now);
+> +	assert(!res);
+> +	next_ts = (now.tv_sec * NSEC_PER_SEC + now.tv_nsec) >>
+> +		UMCG_STATE_TIMESTAMP_GRANULARITY;
+> +
+> +	/* Cut higher order bits. */
+> +	next_ts &= ((1ULL << UMCG_STATE_TIMESTAMP_BITS) - 1);
 
-- removes link_list and struct pcie_link_state.sibling
-- accesses child devices via struct pci_dev.bust_list
-- create pcie_config_bus_devices() which walk across the device
-  heirarchies linked to the bus
-- accesses all PCI buses via pci_root_buses on struct pci_bus.node
+This is the right cut.. The same to the kernel side.
 
-Signed-off-by: Saheed O. Bolarinwa <refactormyself@gmail.com>
----
- drivers/pci/pcie/aspm.c | 54 ++++++++++++++++++++++++++---------------
- 1 file changed, 34 insertions(+), 20 deletions(-)
+> +
+> +	if (next_ts == prev_ts)
+> +		++next_ts;
+> +
+> +#ifndef NDEBUG
+> +	if (prev_ts > next_ts) {
+> +		fprintf(stderr, "%s: time goes back: prev_ts: %lu "
+> +				"next_ts: %lu diff: %lu\n", __func__,
+> +				prev_ts, next_ts, prev_ts - next_ts);
+> +	}
+> +#endif
+> +
+> +	/* Remove old timestamp, if any. */
+> +	next &= ((1ULL << (64 - UMCG_STATE_TIMESTAMP_BITS)) - 1);
+> +
+> +	/* Set the new timestamp. */
+> +	next |= (next_ts << (64 - UMCG_STATE_TIMESTAMP_BITS));
+> +
+> +	/*
+> +	 * TODO: review whether memory order below can be weakened to
+> +	 * memory_order_acq_rel for success and memory_order_acquire for
+> +	 * failure.
+> +	 */
+> +	return atomic_compare_exchange_strong_explicit(state, prev, next,
+> +			memory_order_seq_cst, memory_order_seq_cst);
+> +}
+> +
 
-diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-index 12623556f750..f9e52c785f91 100644
---- a/drivers/pci/pcie/aspm.c
-+++ b/drivers/pci/pcie/aspm.c
-@@ -48,7 +48,6 @@ struct aspm_latency {
- 
- struct pcie_link_state {
- 	struct pci_dev *pdev;		/* Upstream component of the Link */
--	struct list_head sibling;	/* node in link_list */
- 
- 	/* ASPM state */
- 	u32 aspm_support:7;		/* Supported ASPM state */
-@@ -76,7 +75,6 @@ struct pcie_link_state {
- static int aspm_disabled, aspm_force;
- static bool aspm_support_enabled = true;
- static DEFINE_MUTEX(aspm_lock);
--static LIST_HEAD(link_list);
- 
- #define POLICY_DEFAULT 0	/* BIOS default setting */
- #define POLICY_PERFORMANCE 1	/* high performance */
-@@ -880,10 +878,7 @@ static struct pcie_link_state *alloc_pcie_link_state(struct pci_dev *pdev)
- 	if (!link)
- 		return NULL;
- 
--	INIT_LIST_HEAD(&link->sibling);
- 	link->pdev = pdev;
--
--	list_add(&link->sibling, &link_list);
- 	pdev->link_state = link;
- 	return link;
- }
-@@ -968,26 +963,25 @@ void pcie_aspm_init_link_state(struct pci_dev *pdev)
- /* Recheck latencies and update aspm_capable for links under the root */
- static void pcie_update_aspm_capable(struct pcie_link_state *root)
- {
--	struct pcie_link_state *link;
- 	struct pci_dev *dev, *root_dev;
-+	struct pci_bus *rootbus = root->pdev->bus;
- 
- 	/* Ensure it is the root device */
- 	root_dev = pcie_get_root(root->pdev);
- 	root = root_dev ? root_dev->link_state : root;
- 
--	list_for_each_entry(link, &link_list, sibling) {
--		dev = pcie_get_root(link->pdev);
--		if (dev->link_state != root)
-+	list_for_each_entry(dev, &rootbus->devices, bus_list) {
-+		struct pcie_link_state *link = dev->link_state;
-+
-+		if (!link)
- 			continue;
- 
- 		link->aspm_capable = link->aspm_support;
- 	}
--	list_for_each_entry(link, &link_list, sibling) {
-+
-+	list_for_each_entry(dev, &rootbus->devices, bus_list) {
- 		struct pci_dev *child;
--		struct pci_bus *linkbus = link->pdev->subordinate;
--		dev = pcie_get_root(link->pdev);
--		if (dev->link_state != root)
--			continue;
-+		struct pci_bus *linkbus = dev->subordinate;
- 
- 		list_for_each_entry(child, &linkbus->devices, bus_list) {
- 			if ((pci_pcie_type(child) != PCI_EXP_TYPE_ENDPOINT) &&
-@@ -1022,7 +1016,6 @@ void pcie_aspm_exit_link_state(struct pci_dev *pdev)
- 
- 	/* All functions are removed, so just disable ASPM for the link */
- 	pcie_config_aspm_link(link, 0);
--	list_del(&link->sibling);
- 	/* Clock PM is for endpoint device */
- 	free_link_state(link);
- 
-@@ -1157,11 +1150,33 @@ int pci_disable_link_state(struct pci_dev *pdev, int state)
- }
- EXPORT_SYMBOL(pci_disable_link_state);
- 
-+static void pcie_config_bus_devices(struct pci_bus *bus)
-+{
-+	struct pci_dev *pdev;
-+	struct pcie_link_state *link;
-+
-+	list_for_each_entry(pdev, &bus->devices, bus_list) {
-+		if (!pci_is_pcie(pdev))
-+			break;
-+
-+		link = pdev->link_state;
-+		if (!link)
-+			continue;
-+
-+		pcie_config_aspm_link(link, policy_to_aspm_state(link));
-+		pcie_set_clkpm(link, policy_to_clkpm_state(link));
-+
-+		/* if this is a bridge, cross it */
-+		if (pdev->subordinate && pdev->subordinate != bus)
-+			pcie_config_bus_devices(pdev->subordinate);
-+	}
-+}
-+
- static int pcie_aspm_set_policy(const char *val,
- 				const struct kernel_param *kp)
- {
- 	int i;
--	struct pcie_link_state *link;
-+	struct pci_bus *bus;
- 
- 	if (aspm_disabled)
- 		return -EPERM;
-@@ -1174,10 +1189,9 @@ static int pcie_aspm_set_policy(const char *val,
- 	down_read(&pci_bus_sem);
- 	mutex_lock(&aspm_lock);
- 	aspm_policy = i;
--	list_for_each_entry(link, &link_list, sibling) {
--		pcie_config_aspm_link(link, policy_to_aspm_state(link));
--		pcie_set_clkpm(link, policy_to_clkpm_state(link));
--	}
-+	list_for_each_entry(bus, &pci_root_buses, node)
-+		pcie_config_bus_devices(bus);
-+
- 	mutex_unlock(&aspm_lock);
- 	up_read(&pci_bus_sem);
- 	return 0;
--- 
-2.20.1
+> +static void task_unlock(struct umcg_task_tls *task, uint64_t expected_state,
+> +		uint64_t new_state)
+> +{
+> +	bool ok;
+> +	uint64_t next;
+> +	uint64_t prev = atomic_load_explicit(&task->umcg_task.state_ts,
+> +					memory_order_acquire);
+> +
+> +	next = ((prev & ~UMCG_TASK_STATE_MASK_FULL) | new_state) & ~UMCG_TF_LOCKED;
 
+Use UMCG_TASK_STATE_MASK instead and the other state flag can be checked.
+
+All others places that use UMCG_TASK_STATE_MASK_FULL to mask to check
+the task state may seems reasonable if the state flag not allowed to
+be set when we check that task state, otherwise use UMCG_TASK_STATE_MASK
+will be enough.
+
+Not sure.
+
+
+Thanks,
+Tao
+> +	assert(next != prev);
+> +	assert((prev & UMCG_TASK_STATE_MASK_FULL & ~UMCG_TF_LOCKED) == expected_state);
+> +
+> +	ok = umcg_update_state(&task->umcg_task.state_ts, &prev, next);
+> +	assert(ok);
+> +}
