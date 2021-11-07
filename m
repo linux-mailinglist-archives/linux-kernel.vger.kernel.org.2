@@ -2,111 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98DAA44733F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 15:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA45447343
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 15:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234083AbhKGOQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 09:16:52 -0500
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:50088
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229503AbhKGOQv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 09:16:51 -0500
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 5082C3F1BD
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 14:14:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1636294444;
-        bh=O9pqCgMsXCaNEj0SpUPq8dlJCX+c7h9cDUUijvaulx0=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=mAdRykuFTYV4poZFUyWqpRB30FtJu9uB7stMGEqJ1HAX+rA/qbBY123phz6Ywf98Z
-         CKjJQ8EQqJiQBLJ6jN8ysuLAsanmjVzrF5y0xY1ZlQt1Y5OA1TlHdqDNcGO715YhnD
-         uGT0a0heigRODYhG2iqfKDAT9M6OhcJq01Nz5mfLfzBV+kczcgzshXn14eqpcF5ZGH
-         N4kn7ZNIgr5d0zMYh3Mq2NmqX77scUKCD2d+WXzkQd7ovOIfXteHt4r0IeKnR+vDUC
-         RepjA6hNJbYfhjsmzZ4B/SGv7wDsD88R4iAL0gav86Q/LIr/3LVVEkOrV9qWfYKoif
-         ix3wPKDxHyiLw==
-Received: by mail-lf1-f69.google.com with SMTP id c40-20020a05651223a800b004018e2f2512so4875211lfv.11
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 06:14:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O9pqCgMsXCaNEj0SpUPq8dlJCX+c7h9cDUUijvaulx0=;
-        b=FgrhJTLFI3KaGnRsi++OUf+XLNA8KOlPLF5Q9kLdqzmcNlvqWwFvbStd9P/Fz5/rxq
-         ImQYXLCvHmKYrIluhUt7TYQB83vnt/hqtYI60UiyEboo6ll7HbDaHPAyqQF4jqXBQqfE
-         PyQMGTC4Z99+BIwLamrdelKIg8KSiMaPF68XlKShjcjcfhxxklqmoRLYgCLf7kON5Q5Z
-         i/oSVslavxVRbMQF6nD3zgghDIXCJjt6FRrDxoltuodktSxSQv/OaEFm60yTwMd5oODm
-         yOrFyiUhnue4IqAdaZykX45y2a0xU88qJReLrVrdCadcWSM9vFHgnnK8w9SEC2/SDnff
-         5uBA==
-X-Gm-Message-State: AOAM531aW3cpbOBWQ15Xr1Q7L75UbasslIdfZwIWbEbLB7c6K8p5GHII
-        KAuwAGmTyO76Dz6mQ8vrNerrZdDh73QK1FkIC/48abayDr//GPB4EFz0hU4ohme79TljaOFH5aY
-        xgLMfyLmwDh4okkgr513uQF5omENvAfBSwMnRGd3cDg==
-X-Received: by 2002:a05:6512:388e:: with SMTP id n14mr19430179lft.72.1636294443537;
-        Sun, 07 Nov 2021 06:14:03 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzuH1fKHFHacU0lmRyB5Colku3qqo+9IOCcLj0U1LZ/I5Q+tnSl6nsY4lQLrZ5FxRoPfk/71A==
-X-Received: by 2002:a05:6512:388e:: with SMTP id n14mr19430164lft.72.1636294443378;
-        Sun, 07 Nov 2021 06:14:03 -0800 (PST)
-Received: from krzk-bin.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id d16sm285435ljj.87.2021.11.07.06.14.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Nov 2021 06:14:03 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] nfc: port100: lower verbosity of cancelled URB messages
-Date:   Sun,  7 Nov 2021 15:14:00 +0100
-Message-Id: <20211107141400.523651-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        id S230449AbhKGOUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 09:20:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52924 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229683AbhKGOUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 09:20:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE31360FC1;
+        Sun,  7 Nov 2021 14:17:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636294642;
+        bh=W2Tg+hxn/VjidjI8GDcgtvbMKx6gstBSJ7VCd5VEn5A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1IBonNdqA6GG62i80+9KsiWfmf+cyXcJCb85i3sc6Tnyvv2X1ZSe0u7osoQ6PsckS
+         11bIO0UBM9VC3BxG+YddngerTVi5Vu+mIpI2tuN3NanoG7pJzaNsPCEHd0SfmTwQ0W
+         tcJH9iOKRn9BNfOrOOUFmu1hAnmIJMBYJ/rgmXp4=
+Date:   Sun, 7 Nov 2021 15:17:19 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] staging: r8188eu: Use kzalloc() with GFP_ATOMIC in
+ atomic context
+Message-ID: <YYff78mUK+9F9pEN@kroah.com>
+References: <20211101191847.6749-1-fmdefrancesco@gmail.com>
+ <6109499.H5l3i5aCOD@localhost.localdomain>
+ <YYfUywXdy3eyssyf@kroah.com>
+ <2284999.BhpMBdGVLH@localhost.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2284999.BhpMBdGVLH@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is not an error to receive an URB with -ENOENT because it can come
-from regular user operations, e.g. pressing CTRL+C when running nfctool
-from neard.  Make it a debugging message, not an error.
+On Sun, Nov 07, 2021 at 03:03:18PM +0100, Fabio M. De Francesco wrote:
+> On Sunday, November 7, 2021 2:29:47 PM CET Greg Kroah-Hartman wrote:
+> > On Sun, Nov 07, 2021 at 02:15:59PM +0100, Fabio M. De Francesco wrote:
+> > > On Sunday, November 7, 2021 1:38:35 PM CET Greg Kroah-Hartman wrote:
+> > > > On Sun, Nov 07, 2021 at 12:43:51PM +0100, Fabio M. De Francesco wrote:
+> > > > > On Monday, November 1, 2021 8:18:47 PM CET Fabio M. De Francesco 
+> wrote:
+> > > > > > Use the GFP_ATOMIC flag of kzalloc() with two memory allocation in
+> > > > > > report_del_sta_event(). This function is called while holding 
+> > > spinlocks,
+> > > > > > therefore it is not allowed to sleep. With the GFP_ATOMIC type 
+> flag, 
+> > > the
+> > > > > > allocation is high priority and must not sleep.
+> > > > > > 
+> > > > > > This issue is detected by Smatch which emits the following warning:
+> > > > > > "drivers/staging/r8188eu/core/rtw_mlme_ext.c:6848 
+> > > report_del_sta_event()
+> > > > > > warn: sleeping in atomic context".
+> > > > > > 
+> > > > > > After the change, the post-commit hook output the following 
+> message:
+> > > > > > "CHECK: Prefer kzalloc(sizeof(*pcmd_obj)...) over
+> > > > > > kzalloc(sizeof(struct cmd_obj)...)".
+> > > > > > 
+> > > > > > According to the above "CHECK", use the preferred style in the 
+> first
+> > > > > > kzalloc().
+> > > > > > 
+> > > > > > Fixes: 79f712ea994d ("staging: r8188eu: Remove wrappers for 
+> kalloc() 
+> > > and 
+> > > > > kzalloc()")
+> > > > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > > > > ---
+> > > 
+> > > > > > [...]
+> > > 
+> > > > > Please let me know if there is something that prevents this patch to 
+> be 
+> > > > > applied. I have no problem in changing / adding whatever it is 
+> needed.
+> > > > 
+> > > > Nothing needs to be done, I am waiting for 5.16-rc1 to be released
+> > > > before I pick up this patch, and others that will be targeted for
+> > > > 5.16-final.  Only then will I queue them up, as the automated email you
+> > > > should have gotten when you submitted the patch said would happen.
+> > > > 
+> > > > Just relax, there is no rush here :)
+> > > > 
+> > > 
+> > > Oh, sorry Greg. There must be something that I haven't understand about 
+> the 
+> > > development process... :(
+> > > 
+> > > Obviously I agree that there is no rush here :)
+> > > 
+> > > As I said, this morning I read git log and saw patches that seemed more 
+> > > recent; thus I thought that was the case to ask. I just (wrongly) thought 
+> > > that the v3 of the patch got unnoticed or dropped  because of some 
+> requests  
+> > > that I had missed. 
+> > 
+> > Be sure to notice what branch commits are being applied to.  There are
+> > different branches for a reason :)
+> > 
+> This is what confuses me:
+> 
+> --- git-log output ---
+> 
+> commit 8a893759d0075ea9556abcf86a4826d9865ba4bf (origin/staging-testing)
+> Author: Phillip Potter <phil@philpotter.co.uk>
+> Date:   Sat Nov 6 23:16:36 2021 +0000
+> 
+>     staging: r8188eu: remove MSG_88E macro
+> 
+> --- end of git-log output ---
+> 
+> Aside from the "Date" field, I know that this patch has been sent to the list 
+> during the last night and that it goes to the same branch (staging-testing) 
+> to which my patch should go. I know I'm still missing something, but I cannot 
+> understand what it is... :(
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- drivers/nfc/port100.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+No, your change will go to the staging-linus branch, as it needs to go
+into 5.16-final and get sent to Linus much sooner than 5.17-rc1, which
+is where things are being queued up in the staging-testing branch at the
+moment.
 
-diff --git a/drivers/nfc/port100.c b/drivers/nfc/port100.c
-index 16ceb763594f..d7db1a0e6be1 100644
---- a/drivers/nfc/port100.c
-+++ b/drivers/nfc/port100.c
-@@ -624,7 +624,7 @@ static void port100_recv_response(struct urb *urb)
- 		break; /* success */
- 	case -ECONNRESET:
- 	case -ENOENT:
--		nfc_err(&dev->interface->dev,
-+		nfc_dbg(&dev->interface->dev,
- 			"The urb has been canceled (status %d)\n", urb->status);
- 		goto sched_wq;
- 	case -ESHUTDOWN:
-@@ -678,7 +678,7 @@ static void port100_recv_ack(struct urb *urb)
- 		break; /* success */
- 	case -ECONNRESET:
- 	case -ENOENT:
--		nfc_err(&dev->interface->dev,
-+		nfc_dbg(&dev->interface->dev,
- 			"The urb has been stopped (status %d)\n", urb->status);
- 		goto sched_wq;
- 	case -ESHUTDOWN:
-@@ -942,7 +942,7 @@ static void port100_send_complete(struct urb *urb)
- 		break; /* success */
- 	case -ECONNRESET:
- 	case -ENOENT:
--		nfc_err(&dev->interface->dev,
-+		nfc_dbg(&dev->interface->dev,
- 			"The urb has been stopped (status %d)\n", urb->status);
- 		break;
- 	case -ESHUTDOWN:
--- 
-2.32.0
+hope this helps,
 
+greg k-h
