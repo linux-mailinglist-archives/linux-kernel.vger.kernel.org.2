@@ -2,122 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA19B447150
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 04:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C8A447151
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 04:26:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234356AbhKGD2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Nov 2021 23:28:22 -0400
-Received: from mail-4319.protonmail.ch ([185.70.43.19]:16161 "EHLO
-        mail-4319.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhKGD2U (ORCPT
+        id S234436AbhKGD21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Nov 2021 23:28:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56370 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234381AbhKGD2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Nov 2021 23:28:20 -0400
-Date:   Sun, 07 Nov 2021 03:25:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1636255536;
-        bh=L/j4faggOCaUSS+dguQPjivP6TQjj639YqR+h2amJuI=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=f1fajxlzzB2UrvNW4zVFwyItm4qJq2A36sLrmOXh6Qc8xPHwFTC0A2AMwmVnKiwk5
-         bU8hl2uyy/y2m4ljWRZyX6vukr4wQSGqLY9FgGxVsWU95XlPpaG1Rt/fDNI9SlChtv
-         mwJTvf/lAktpmQ/KHV87lzVlLYsduWyA2CUnCw+k=
-To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-From:   Orlando Chamberlain <redecorating@protonmail.com>
-Cc:     Daniel Winkler <danielwinkler@google.com>,
-        Johan Hedberg <johan.hedberg@intel.com>,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        regressions@lists.linux.dev,
-        Sonny Sasaka <sonnysasaka@chromium.org>
-Reply-To: Orlando Chamberlain <redecorating@protonmail.com>
-Subject: Re: [PATCHv2] Bluetooth: quirk disabling LE Read Transmit Power
-Message-ID: <20211107032525.76a5f347@localhost>
-In-Reply-To: <CABBYNZLjSfcG_KqTEbL6NOSvHhA5-b1t_S=3FQP4=GwW21kuzg@mail.gmail.com>
-References: <4970a940-211b-25d6-edab-21a815313954@protonmail.com> <20210930063106.19881-1-redecorating@protonmail.com> <20210930141256.19943-1-redecorating@protonmail.com> <FA02CDD7-CFEC-4481-9940-BA95D81FD3F3@holtmann.org> <275acce4-9eab-9cba-7145-5a75a69ca530@protonmail.com> <20211001083412.3078-1-redecorating@protonmail.com> <CABBYNZLjSfcG_KqTEbL6NOSvHhA5-b1t_S=3FQP4=GwW21kuzg@mail.gmail.com>
+        Sat, 6 Nov 2021 23:28:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636255542;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BuPga3VlnwdEXzKHOAfmbH2n3UjZXJclALQ/G/FJiZk=;
+        b=DbNApelHG8NuFhkxntScpVZm2MTucbbLCGwAVdEr76hjK5OVMJhsWaGScBzXUcE7OKXxxp
+        y928GGLSGdjc+I/TlhCVPQ/9+8oeBCLJGQdCWD9gZ8wVxtYzgKKAkAg15S8kui0Vh4f7ci
+        KRqzllCE7/cKWw2fIQN/sdSuiCm72CU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-554-Bh5FkndKM-CcXdnnGPB0BQ-1; Sat, 06 Nov 2021 23:25:41 -0400
+X-MC-Unique: Bh5FkndKM-CcXdnnGPB0BQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4E4A0802C91;
+        Sun,  7 Nov 2021 03:25:40 +0000 (UTC)
+Received: from [10.22.32.9] (unknown [10.22.32.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9E79319730;
+        Sun,  7 Nov 2021 03:25:39 +0000 (UTC)
+Message-ID: <55bfbf1c-5906-9cc9-ee68-a1c69651bbc3@redhat.com>
+Date:   Sat, 6 Nov 2021 23:25:38 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [BUG]locking/rwsem: only clean RWSEM_FLAG_HANDOFF when already
+ set
+Content-Language: en-US
+To:     =?UTF-8?B?6ams5oyv5Y2O?= <mazhenhua@xiaomi.com>,
+        peterz <peterz@infradead.org>, mingo <mingo@redhat.com>,
+        will <will@kernel.org>, "boqun.feng" <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <4fafad133b074f279dbab1aa3642e23f@xiaomi.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <4fafad133b074f279dbab1aa3642e23f@xiaomi.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 06 Nov 2021 08:47:39 +1100
-"Luiz Augusto von Dentz" <luiz.dentz@gmail.com> wrote:
-> Nowadays it is possible to treat errors such like this on a per
-> command basis (assuming it is not essential for the init sequence):
->=20
-> diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-> index 979da5179ff4..f244f42cc609 100644
-> --- a/include/net/bluetooth/hci.h
-> +++ b/include/net/bluetooth/hci.h
-> @@ -551,6 +551,7 @@ enum {
->  #define HCI_LK_AUTH_COMBINATION_P256   0x08
->=20
->  /* ---- HCI Error Codes ---- */
-> +#define HCI_ERROR_UNKNOWN_CMD          0x01
->  #define HCI_ERROR_UNKNOWN_CONN_ID      0x02
->  #define HCI_ERROR_AUTH_FAILURE         0x05
->  #define HCI_ERROR_PIN_OR_KEY_MISSING   0x06
-> diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
-> index bb88d31d2212..9c697e058974 100644
-> --- a/net/bluetooth/hci_sync.c
-> +++ b/net/bluetooth/hci_sync.c
-> @@ -3325,11 +3325,18 @@ static int
-> hci_le_read_adv_tx_power_sync(struct hci_dev *hdev)
->  /* Read LE Min/Max Tx Power*/
->  static int hci_le_read_tx_power_sync(struct hci_dev *hdev)
->  {
-> +       int status;
-> +
->         if (!(hdev->commands[38] & 0x80))
->                 return 0;
->=20
-> -       return __hci_cmd_sync_status(hdev,
-> HCI_OP_LE_READ_TRANSMIT_POWER,
-> -                                    0, NULL, HCI_CMD_TIMEOUT);
-> +       status =3D __hci_cmd_sync_status(hdev,
-> HCI_OP_LE_READ_TRANSMIT_POWER,
-> +                                      0, NULL, HCI_CMD_TIMEOUT);
-> +       /* Ignore if command is not really supported */
-> +       if (status =3D=3D HCI_ERROR_UNKNOWN_CMD)
-> +               return 0;
-> +
-> +       return status;
->  }
->=20
->  /* Read LE Accept List Size */
+On 11/6/21 08:39, 马振华 wrote:
+> Dear longman,
+>
+> recently , i find a issue which rwsem count is negative value, it 
+> happened always when a task try to get the lock 
+> with __down_write_killable , then it is killed
+>
+> this issue happened like this
+>
+>             CPU2         CPU4
+>     task A[reader]     task B[writer]
+>     down_read_killable[locked]
+>     sem->count=0x100
+>             down_write_killable
+>             sem->count=0x102[wlist not empty]
+>     up_read
+>     count=0x2
+>             sig kill received
+>     down_read_killable
+>     sem->count=0x102[wlist not empty]
+>             goto branch out_nolock:
+> list_del(&waiter.list);
+> wait list is empty
+> sem->count-RWSEM_FLAG_HANDOFF
+> sem->count=0xFE
+>     list_empty(&sem->wait_list) is TRUE
+>      sem->count andnot RWSEM_FLAG_WAITERS
+>       sem->count=0xFC
+>     up_read
+>     sem->count -= 0x100
+>     sem->count=0xFFFFFFFFFFFFFFFC
+>     DEBUG_RWSEMS_WARN_ON(tmp < 0, sem);
+>
+> so sem->count will be negative after writer is killed
+> i think if flag RWSEM_FLAG_HANDOFF is not set, we shouldn't clean it
 
-I've tried this patch, and status seems to be -56, not 0x01, but if I
-change
-+=09if (status =3D=3D HCI_ERROR_UNKNOWN_CMD)
-to
-+=09if (status =3D=3D -56)
-It ignores the error and continues.
+Thanks for reporting this possible race condition.
 
-I seem to have an unrelated problem where although I can connect to my
-Logitech MX Anywhere 2S mouse (I haven't tried any other devices yet),
-it doesn't move the cursor or register clicks. I've also noticed that
-bluetoothctl pair isn't asking for a "yes" when I pair a device, which
-it was doing on 5.15 (with the patch I sent to get bluetooth working at
-all). I've put dmesg and btsnoop for both 5.15 and bluetooth-next into
-a gist here:
-https://gist.github.com/Redecorating/5620b758d8191418cf19879d09672cf4
-but I think this is a separate issue.
+However, I am still trying to figure how it is possible to set the 
+wstate to WRITER_HANDOFF without actually setting the handoff bit as 
+well. The statement sequence should be as follows:
 
->=20
-> Anyway, it would probably be worth pointing out to the vendor they
-> have a broken firmware if they do mark the command as supported but
-> return such error.
+wstate = WRITER_HANDOFF;
+raw_spin_lock_irq(&sem->wait_lock);
+if (rwsem_try_write_lock(sem, wstate))
+raw_spin_unlock_irq(&sem->wait_lock);
+   :
+if (signal_pending_state(state, current))
+     goto out_nolock
 
-Do you know if it'd be better to contact Broadcom or Apple for this?
+The rwsem_try_write_lock() function will make sure that we either 
+acquire the lock and clear handoff or set the handoff bit. This should 
+be done before we actually check for signal. I do think that it is 
+probably safer to use atomic_long_andnot to clear the handoff bit 
+instead of using atomic_long_add().
 
-> --
-> Luiz Augusto von Dentz
-
---=20
+Cheers,
+Longman
 
