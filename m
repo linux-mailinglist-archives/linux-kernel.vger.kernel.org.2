@@ -2,83 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C90F2447456
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 18:12:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B2B447462
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 18:16:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234642AbhKGROm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 12:14:42 -0500
-Received: from mga04.intel.com ([192.55.52.120]:41072 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229985AbhKGROl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 12:14:41 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="230834401"
-X-IronPort-AV: E=Sophos;i="5.87,216,1631602800"; 
-   d="scan'208";a="230834401"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 09:11:58 -0800
-X-IronPort-AV: E=Sophos;i="5.87,216,1631602800"; 
-   d="scan'208";a="502693291"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 09:11:57 -0800
-Date:   Sun, 7 Nov 2021 09:11:57 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     dan.j.williams@intel.com, vishal.l.verma@intel.com,
-        dave.jiang@intel.com, nvdimm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] nvdimm/pmem: Fix an error handling path in
- 'pmem_attach_disk()'
-Message-ID: <20211107171157.GC3538886@iweiny-DESK2.sc.intel.com>
-References: <f1933a01d9cefe24970ee93d741babb8fe9c1b32.1636219557.git.christophe.jaillet@wanadoo.fr>
+        id S235934AbhKGRSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 12:18:53 -0500
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:41051 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235923AbhKGRSw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 12:18:52 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id C4FEC5C00C8;
+        Sun,  7 Nov 2021 12:16:08 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Sun, 07 Nov 2021 12:16:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Liz9He
+        z2pQ3I/11xvMmZRFFwaYA7f2I/IxstpB3jmBo=; b=nyDBEMPKwtXB60WUGE1W4K
+        ubQ51UbRauaMLJstx3QvCnDyRuYeqf0557P8yrWJFhy8iwgCBlE28Py4aVah8o/V
+        /bsR4KBR35JMhnzVSsUeRX4/15DIUfMKfbDKnnTErtuD+D2KENwl92D1CHNb2Na+
+        lf4cX7FE20W+x/D/nMCVhOhuEXj+ZP0pPkOp5ZtSxheRlwaD3TJF2l3hbZKzHGlm
+        +oboLiz9Iv0PEkiFX6LC31qBHoSNbZhfJYhXZu+IFBJZaIzJvdZH3i4Hux1n52dD
+        Mt3gFvuqc5b0WbPdFwrdPTmZgsUFDS6iJSfvZ6b3SHT3rd8wxxrHT/1oKpH572pw
+        ==
+X-ME-Sender: <xms:2AmIYe8jLCzEO8_L99b59L1qosgvR2djbGcfcgxGRNlepAuNdMLyIw>
+    <xme:2AmIYesiXiEJaZu1Vg5Ur6NhwrewuGN9_1WCy1UTV8CXQ5p_acg7T5IdYs5-Pwh21
+    ArEQoMb6lzSKkc>
+X-ME-Received: <xmr:2AmIYUBYeLr0n3671zhUQNKfkMwAgA1GO4-1iVAv-oQJTGh6iOgqoZopEiWj>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddruddtgdeliecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcuufgt
+    hhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrthhtvg
+    hrnhepgfevgfevueduueffieffheeifffgjeelvedtteeuteeuffekvefggfdtudfgkeev
+    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
+X-ME-Proxy: <xmx:2AmIYWd_aqSYI2giy050rLReBYs-X2je6PsuMwe8UM9CpM5SOgwLog>
+    <xmx:2AmIYTONBrGW5PMYjdgwgQ6LUShmYNqRpyCk-EIafudLSL2wvDcWng>
+    <xmx:2AmIYQmNkCiMSljz1mDcypwbsShQKvpO7_T_Ww67EpOa10bP9F4Rgg>
+    <xmx:2AmIYfBiNiNZu8At2pNy-QvYJPWuVPiLXny1K9b2GRNX7AviXkbNEQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 7 Nov 2021 12:16:07 -0500 (EST)
+Date:   Sun, 7 Nov 2021 19:16:05 +0200
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Jiri Pirko <jiri@resnulli.us>, Leon Romanovsky <leon@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, edwin.peer@broadcom.com
+Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
+ reload
+Message-ID: <YYgJ1bnECwUWvNqD@shredder>
+References: <9716f9a13e217a0a163b745b6e92e02d40973d2c.1635701665.git.leonro@nvidia.com>
+ <YYABqfFy//g5Gdis@nanopsycho>
+ <YYBTg4nW2BIVadYE@shredder>
+ <20211101161122.37fbb99d@kicinski-fedora-PC1C0HJN>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f1933a01d9cefe24970ee93d741babb8fe9c1b32.1636219557.git.christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20211101161122.37fbb99d@kicinski-fedora-PC1C0HJN>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 06, 2021 at 06:27:11PM +0100, Christophe JAILLET wrote:
-> If 'devm_init_badblocks()' fails, a previous 'blk_alloc_disk()' call must
-> be undone.
+On Mon, Nov 01, 2021 at 04:11:22PM -0700, Jakub Kicinski wrote:
+> On Mon, 1 Nov 2021 22:52:19 +0200 Ido Schimmel wrote:
+> > > >Signed-off-by: Leon Romanovsky <leonro@nvidia.com>  
+> > > 
+> > > Looks fine to me.
+> > > 
+> > > Reviewed-by: Jiri Pirko <jiri@nvidia.com>  
+> > 
+> > Traces from mlxsw / netdevsim below:
+> 
+> Thanks a lot for the testing Ido!
+> 
+> Would you mind giving my RFC a spin as well on your syzbot machinery?
 
-I think this is a problem...
+Sorry for the delay. I didn't have a lot of time last week.
+
+I tried to apply your set [1] on top of net-next, but I'm getting a
+conflict with patch #5. Can you send me (here / privately) a link to a
+git tree that has the patches on top of net-next?
+
+TBH, if you ran the netdevsim selftests with a debug config and nothing
+exploded, then I don't expect syzkaller to find anything (major).
+
+[1] https://lore.kernel.org/netdev/20211030231254.2477599-1-kuba@kernel.org/
 
 > 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> This patch is speculative. Several fixes on error handling paths have been
-> done recently, but this one has been left as-is. There was maybe a good
-> reason that I have missed for that. So review with care!
+> Any input on the three discussion points there?
 > 
-> I've not been able to identify a Fixes tag that please me :(
-> ---
->  drivers/nvdimm/pmem.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>  (1) should we have a "locked" and "unlocked" API or use lock nesting?
+
+Judging by the netdevsim conversion, it seems that for the vast majority
+of APIs (if not all) we will only have an "unlocked" API. Drivers will
+hold the devlink instance lock on probe / remove and devlink itself will
+hold the lock when calling into drivers (e.g., on reload, port split).
+
 > 
-> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-> index fe7ece1534e1..c37a1e6750b3 100644
-> --- a/drivers/nvdimm/pmem.c
-> +++ b/drivers/nvdimm/pmem.c
-> @@ -490,8 +490,9 @@ static int pmem_attach_disk(struct device *dev,
->  	nvdimm_namespace_disk_name(ndns, disk->disk_name);
->  	set_capacity(disk, (pmem->size - pmem->pfn_pad - pmem->data_offset)
->  			/ 512);
-> -	if (devm_init_badblocks(dev, &pmem->bb))
-> -		return -ENOMEM;
-> +	rc = devm_init_badblocks(dev, &pmem->bb);
-> +	if (rc)
-> +		goto out;
+>  (2) should we expose devlink lock so that drivers can use devlink 
+>      as a framework for their locking needs?
 
-But I don't see this 'out' label in the function currently?  Was that part of
-your patch missing?
+It is better than dropping locks (e.g., DEVLINK_NL_FLAG_NO_LOCK, which I
+expect will go away after the conversion). With the asserts you put in
+place, misuses will be caught early.
 
-Ira
-
->  	nvdimm_badblocks_populate(nd_region, &pmem->bb, &bb_range);
->  	disk->bb = &pmem->bb;
->  
-> -- 
-> 2.30.2
 > 
+>  (3) should we let drivers take refs on the devlink instance?
+
+I think it's fine mainly because I don't expect it to be used by too
+many drivers other than netdevsim which is somewhat special. Looking at
+the call sites of devlink_get() in netdevsim, it is only called from
+places (debugfs and trap workqueue) that shouldn't be present in real
+drivers.
+
+The tl;dr is that your approach makes sense to me. I was initially
+worried that we will need to propagate a "reload" argument everywhere in
+drivers, but you wrote "The expectation is that driver will take the
+devlink instance lock on its probe and remove paths", which avoids that.
+
+Thanks for working on that
