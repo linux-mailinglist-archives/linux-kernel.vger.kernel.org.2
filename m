@@ -2,221 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89F3447382
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 16:24:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 249A1447387
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 16:30:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235631AbhKGP13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 10:27:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:53670 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234785AbhKGP12 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 10:27:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636298685;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5X/F3Q9OQWTedZdg5p9+xsGsujEfRxHSgnzYTtOxz1U=;
-        b=Xf+5dIq989gcUccPuFo2JVeddBfsvLmteW8xyO3jT+c9dlu6aga7f41ZrWRD3JngjeIa+/
-        7WdEDQGoNWQHRrrdjyQKUaQ+CYTmjFeBonmQtvnpVxzAH8AqTetkINKbHzQYHn/uLzBjdy
-        usOmhqS+VmJf/WhkQT46t1E/73nyHa4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-169-15sQjqSfNtGVCpO37Sh1rw-1; Sun, 07 Nov 2021 10:24:39 -0500
-X-MC-Unique: 15sQjqSfNtGVCpO37Sh1rw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 41EA310066F3;
-        Sun,  7 Nov 2021 15:24:38 +0000 (UTC)
-Received: from [10.22.16.43] (unknown [10.22.16.43])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1536467842;
-        Sun,  7 Nov 2021 15:24:31 +0000 (UTC)
-Message-ID: <13d683ed-793c-b502-44ff-f28114d9386b@redhat.com>
-Date:   Sun, 7 Nov 2021 10:24:31 -0500
+        id S235637AbhKGPcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 10:32:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234272AbhKGPcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 10:32:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D96C60FD7;
+        Sun,  7 Nov 2021 15:30:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636299011;
+        bh=i39reOvzohDnkfOFLebPqsEvmo91vFwHujAGFaThnho=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pHn4RomukhhrdD2sAsgXXyrjyHkqWDcnRo1iivQnEPM1V4fuvSqWbWuIhQw1CFjQe
+         RMJAaf2kIH1c72DoOHJ+l4kZFyKqgk8AcQ7plJR1mL3yuEeQ+Y1boIs6m5x9pn6CKA
+         76oa9qawFKaf+ABUSTXlVdGeL9ySKafHcn0QwvicWQe0ApP68lkXPHH5wSXH9CGNvQ
+         CGZwhMOTub8g7tXQfiOBmiUbt5uPQ9rbyGMiJPrXwW8P3R782EJJaDy2MhUFMQL7hr
+         gPbjIN7/tSo7tpjD4o2pZfsZSW37ZeSbc6CuRVXwNBTfX9f1J8h5JA+TYwNafyHFpi
+         eGn+psO1FeBbw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E2F04410A1; Sun,  7 Nov 2021 12:30:07 -0300 (-03)
+Date:   Sun, 7 Nov 2021 12:30:07 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] perf build: Install libbpf headers locally when
+ building
+Message-ID: <YYfw/y2KmjvjOax2@kernel.org>
+References: <813cc0db-51d0-65b3-70f4-f1a823b0d029@isovalent.com>
+ <20211107002445.4790-1-quentin@isovalent.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [BUG]locking/rwsem: only clean RWSEM_FLAG_HANDOFF when already
- set
-Content-Language: en-US
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     =?UTF-8?B?6ams5oyv5Y2O?= <mazhenhua@xiaomi.com>,
-        peterz <peterz@infradead.org>, mingo <mingo@redhat.com>,
-        will <will@kernel.org>, "boqun.feng" <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <4fafad133b074f279dbab1aa3642e23f@xiaomi.com>
- <20211107090131.1535-1-hdanton@sina.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20211107090131.1535-1-hdanton@sina.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211107002445.4790-1-quentin@isovalent.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/21 04:01, Hillf Danton wrote:
-> On Sat, 6 Nov 2021 23:25:38 -0400 Waiman Long wrote:
->> On 11/6/21 08:39, 马振华 wrote:
->>> Dear longman,
->>>
->>> recently , i find a issue which rwsem count is negative value, it
->>> happened always when a task try to get the lock
->>> with __down_write_killable , then it is killed
->>>
->>> this issue happened like this
->>>
->>>              CPU2         CPU4
->>>      task A[reader]     task B[writer]
->>>      down_read_killable[locked]
->>>      sem->count=0x100
->>>              down_write_killable
->>>              sem->count=0x102[wlist not empty]
->>>      up_read
->>>      count=0x2
->>>              sig kill received
->>>      down_read_killable
->>>      sem->count=0x102[wlist not empty]
->>>              goto branch out_nolock:
->>> list_del(&waiter.list);
->>> wait list is empty
->>> sem->count-RWSEM_FLAG_HANDOFF
->>> sem->count=0xFE
->>>      list_empty(&sem->wait_list) is TRUE
->>>       sem->count andnot RWSEM_FLAG_WAITERS
->>>        sem->count=0xFC
->>>      up_read
->>>      sem->count -= 0x100
->>>      sem->count=0xFFFFFFFFFFFFFFFC
->>>      DEBUG_RWSEMS_WARN_ON(tmp < 0, sem);
->>>
->>> so sem->count will be negative after writer is killed
->>> i think if flag RWSEM_FLAG_HANDOFF is not set, we shouldn't clean it
->> Thanks for reporting this possible race condition.
->>
->> However, I am still trying to figure how it is possible to set the
->> wstate to WRITER_HANDOFF without actually setting the handoff bit as
->> well. The statement sequence should be as follows:
->>
->> wstate = WRITER_HANDOFF;
->> raw_spin_lock_irq(&sem->wait_lock);
->> if (rwsem_try_write_lock(sem, wstate))
->> raw_spin_unlock_irq(&sem->wait_lock);
->>    :
->> if (signal_pending_state(state, current))
->>      goto out_nolock
->>
->> The rwsem_try_write_lock() function will make sure that we either
->> acquire the lock and clear handoff or set the handoff bit. This should
->> be done before we actually check for signal. I do think that it is
-> Given that WRITER_HANDOFF makes no sure that RWSEM_FLAG_HANDOFF is set in
-> wsem_try_write_lock(), the flag should be cleared only by the setter to
-> avoid count underflow.
->
-> Hillf
->
->> probably safer to use atomic_long_andnot to clear the handoff bit
->> instead of using atomic_long_add().
+Em Sun, Nov 07, 2021 at 12:24:45AM +0000, Quentin Monnet escreveu:
+> API headers from libbpf should not be accessed directly from the
+> library's source directory. Instead, they should be exported with "make
+> install_headers". Let's adjust perf's Makefile to install those headers
+> locally when building libbpf.
+> 
+> v2:
+> - Fix $(LIBBPF_OUTPUT) when $(OUTPUT) is null.
+> - Make sure the recipe for $(LIBBPF_OUTPUT) is not under a "ifdef".
 
-I did have a tentative patch to address this issue which is somewhat 
-similar to your approach. However, I would like to further investigate 
-the exact mechanics of the race condition to make sure that I won't miss 
-a latent bug somewhere else in the rwsem code.
+Thanks for the prompt reply, now the cases where it was failing are
+passing!
 
--Longman
+Best regards,
 
-diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-index c51387a43265..20be967620c0 100644
---- a/kernel/locking/rwsem.c
-+++ b/kernel/locking/rwsem.c
-@@ -347,7 +347,8 @@ enum rwsem_wake_type {
-  enum writer_wait_state {
-      WRITER_NOT_FIRST,    /* Writer is not first in wait list */
-      WRITER_FIRST,        /* Writer is first in wait list     */
--    WRITER_HANDOFF        /* Writer is first & handoff needed */
-+    WRITER_NEED_HANDOFF    /* Writer is first & handoff needed */
-+    WRITER_HANDOFF        /* Writer is first & handoff set */
-  };
+- Arnaldo
+ 
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> ---
+>  tools/perf/Makefile.perf | 32 +++++++++++++++++++-------------
+>  1 file changed, 19 insertions(+), 13 deletions(-)
+> 
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index b856afa6eb52..e01ada5c9876 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -241,7 +241,7 @@ else # force_fixdep
+>  
+>  LIB_DIR         = $(srctree)/tools/lib/api/
+>  TRACE_EVENT_DIR = $(srctree)/tools/lib/traceevent/
+> -BPF_DIR         = $(srctree)/tools/lib/bpf/
+> +LIBBPF_DIR      = $(srctree)/tools/lib/bpf/
+>  SUBCMD_DIR      = $(srctree)/tools/lib/subcmd/
+>  LIBPERF_DIR     = $(srctree)/tools/lib/perf/
+>  DOC_DIR         = $(srctree)/tools/perf/Documentation/
+> @@ -293,7 +293,6 @@ strip-libs = $(filter-out -l%,$(1))
+>  ifneq ($(OUTPUT),)
+>    TE_PATH=$(OUTPUT)
+>    PLUGINS_PATH=$(OUTPUT)
+> -  BPF_PATH=$(OUTPUT)
+>    SUBCMD_PATH=$(OUTPUT)
+>    LIBPERF_PATH=$(OUTPUT)
+>  ifneq ($(subdir),)
+> @@ -305,7 +304,6 @@ else
+>    TE_PATH=$(TRACE_EVENT_DIR)
+>    PLUGINS_PATH=$(TRACE_EVENT_DIR)plugins/
+>    API_PATH=$(LIB_DIR)
+> -  BPF_PATH=$(BPF_DIR)
+>    SUBCMD_PATH=$(SUBCMD_DIR)
+>    LIBPERF_PATH=$(LIBPERF_DIR)
+>  endif
+> @@ -324,7 +322,14 @@ LIBTRACEEVENT_DYNAMIC_LIST_LDFLAGS = $(if $(findstring -static,$(LDFLAGS)),,$(DY
+>  LIBAPI = $(API_PATH)libapi.a
+>  export LIBAPI
+>  
+> -LIBBPF = $(BPF_PATH)libbpf.a
+> +ifneq ($(OUTPUT),)
+> +  LIBBPF_OUTPUT = $(abspath $(OUTPUT))/libbpf
+> +else
+> +  LIBBPF_OUTPUT = $(CURDIR)/libbpf
+> +endif
+> +LIBBPF_DESTDIR = $(LIBBPF_OUTPUT)
+> +LIBBPF_INCLUDE = $(LIBBPF_DESTDIR)/include
+> +LIBBPF = $(LIBBPF_OUTPUT)/libbpf.a
+>  
+>  LIBSUBCMD = $(SUBCMD_PATH)libsubcmd.a
+>  
+> @@ -829,12 +834,14 @@ $(LIBAPI)-clean:
+>  	$(call QUIET_CLEAN, libapi)
+>  	$(Q)$(MAKE) -C $(LIB_DIR) O=$(OUTPUT) clean >/dev/null
+>  
+> -$(LIBBPF): FORCE
+> -	$(Q)$(MAKE) -C $(BPF_DIR) O=$(OUTPUT) $(OUTPUT)libbpf.a FEATURES_DUMP=$(FEATURE_DUMP_EXPORT)
+> +$(LIBBPF): FORCE | $(LIBBPF_OUTPUT)
+> +	$(Q)$(MAKE) -C $(LIBBPF_DIR) FEATURES_DUMP=$(FEATURE_DUMP_EXPORT) \
+> +		O= OUTPUT=$(LIBBPF_OUTPUT)/ DESTDIR=$(LIBBPF_DESTDIR) prefix= \
+> +		$@ install_headers
+>  
+>  $(LIBBPF)-clean:
+>  	$(call QUIET_CLEAN, libbpf)
+> -	$(Q)$(MAKE) -C $(BPF_DIR) O=$(OUTPUT) clean >/dev/null
+> +	$(Q)$(RM) -r -- $(LIBBPF_OUTPUT)
+>  
+>  $(LIBPERF): FORCE
+>  	$(Q)$(MAKE) -C $(LIBPERF_DIR) EXTRA_CFLAGS="$(LIBPERF_CFLAGS)" O=$(OUTPUT) $(OUTPUT)libperf.a
+> @@ -1034,16 +1041,15 @@ SKELETONS := $(SKEL_OUT)/bpf_prog_profiler.skel.h
+>  SKELETONS += $(SKEL_OUT)/bperf_leader.skel.h $(SKEL_OUT)/bperf_follower.skel.h
+>  SKELETONS += $(SKEL_OUT)/bperf_cgroup.skel.h
+>  
+> +$(SKEL_TMP_OUT) $(LIBBPF_OUTPUT):
+> +	$(Q)$(MKDIR) -p $@
+> +
+>  ifdef BUILD_BPF_SKEL
+>  BPFTOOL := $(SKEL_TMP_OUT)/bootstrap/bpftool
+> -LIBBPF_SRC := $(abspath ../lib/bpf)
+> -BPF_INCLUDE := -I$(SKEL_TMP_OUT)/.. -I$(BPF_PATH) -I$(LIBBPF_SRC)/..
+> -
+> -$(SKEL_TMP_OUT):
+> -	$(Q)$(MKDIR) -p $@
+> +BPF_INCLUDE := -I$(SKEL_TMP_OUT)/.. -I$(LIBBPF_INCLUDE)
+>  
+>  $(BPFTOOL): | $(SKEL_TMP_OUT)
+> -	CFLAGS= $(MAKE) -C ../bpf/bpftool \
+> +	$(Q)CFLAGS= $(MAKE) -C ../bpf/bpftool \
+>  		OUTPUT=$(SKEL_TMP_OUT)/ bootstrap
+>  
+>  VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)				\
+> -- 
+> 2.32.0
 
-  /*
-@@ -532,11 +533,11 @@ static void rwsem_mark_wake(struct rw_semaphore *sem,
-   * race conditions between checking the rwsem wait list and setting the
-   * sem->count accordingly.
-   *
-- * If wstate is WRITER_HANDOFF, it will make sure that either the handoff
-+ * If wstate is WRITER_NEED_HANDOFF, it will make sure that either the 
-handoff
-   * bit is set or the lock is acquired with handoff bit cleared.
-   */
-  static inline bool rwsem_try_write_lock(struct rw_semaphore *sem,
--                    enum writer_wait_state wstate)
-+                    enum writer_wait_state *wstate)
-  {
-      long count, new;
-
-@@ -546,13 +547,13 @@ static inline bool rwsem_try_write_lock(struct 
-rw_semaphore *sem,
-      do {
-          bool has_handoff = !!(count & RWSEM_FLAG_HANDOFF);
-
--        if (has_handoff && wstate == WRITER_NOT_FIRST)
-+        if (has_handoff && *wstate == WRITER_NOT_FIRST)
-              return false;
-
-          new = count;
-
-          if (count & RWSEM_LOCK_MASK) {
--            if (has_handoff || (wstate != WRITER_HANDOFF))
-+            if (has_handoff || (*wstate != WRITER_NEED_HANDOFF))
-                  return false;
-
-              new |= RWSEM_FLAG_HANDOFF;
-@@ -569,8 +570,10 @@ static inline bool rwsem_try_write_lock(struct 
-rw_semaphore *sem,
-       * We have either acquired the lock with handoff bit cleared or
-       * set the handoff bit.
-       */
--    if (new & RWSEM_FLAG_HANDOFF)
-+    if (new & RWSEM_FLAG_HANDOFF) {
-+        *wstate = WRITER_HANDOFF;
-          return false;
-+    }
-
-      rwsem_set_owner(sem);
-      return true;
-@@ -1083,7 +1086,7 @@ rwsem_down_write_slowpath(struct rw_semaphore 
-*sem, int state)
-      /* wait until we successfully acquire the lock */
-      set_current_state(state);
-      for (;;) {
--        if (rwsem_try_write_lock(sem, wstate)) {
-+        if (rwsem_try_write_lock(sem, &wstate)) {
-              /* rwsem_try_write_lock() implies ACQUIRE on success */
-              break;
-          }
-@@ -1138,7 +1141,7 @@ rwsem_down_write_slowpath(struct rw_semaphore 
-*sem, int state)
-               */
-              if ((wstate == WRITER_FIRST) && (rt_task(current) ||
-                  time_after(jiffies, waiter.timeout))) {
--                wstate = WRITER_HANDOFF;
-+                wstate = WRITER_NEED_HANDOFF;
-                  lockevent_inc(rwsem_wlock_handoff);
-                  break;
-              }
-@@ -1159,7 +1162,7 @@ rwsem_down_write_slowpath(struct rw_semaphore 
-*sem, int state)
-      list_del(&waiter.list);
-
-      if (unlikely(wstate == WRITER_HANDOFF))
--        atomic_long_add(-RWSEM_FLAG_HANDOFF, &sem->count);
-+        atomic_long_addnot(RWSEM_FLAG_HANDOFF, &sem->count);
-
-      if (list_empty(&sem->wait_list))
-          atomic_long_andnot(RWSEM_FLAG_WAITERS, &sem->count);
 -- 
 
-
+- Arnaldo
