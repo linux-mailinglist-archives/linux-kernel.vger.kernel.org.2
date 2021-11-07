@@ -2,252 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08FD447561
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4A3447564
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:51:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236347AbhKGTx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 14:53:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:34397 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235432AbhKGTx4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 14:53:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636314673;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ISQHp33JZv+veOlWG7UsO8OxcF62yPS/55R+u1kO5uM=;
-        b=ejZyfYQrdAo/wsJgpJvAQ3BoUsneutWYeFcPJLZ9FPSWFzlP/J2+aCBeQ9NLARDj4tJ61V
-        DIMSKWNSufr3I1X1kOAynpULMkeZrl2lWgE9W3eFDcod01j76RFpilJq62q8mk+qCbT+gP
-        PICoOQ/9ZkVp2WKv5ymidvXlxuTUNtY=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-7-aoxHEqnkPu21G3P5izRMyw-1; Sun, 07 Nov 2021 14:51:11 -0500
-X-MC-Unique: aoxHEqnkPu21G3P5izRMyw-1
-Received: by mail-ed1-f69.google.com with SMTP id w12-20020a056402268c00b003e2ab5a3370so13133471edd.0
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 11:51:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ISQHp33JZv+veOlWG7UsO8OxcF62yPS/55R+u1kO5uM=;
-        b=yV3OCLlQJR4Y6kqegcF8lEjkIYUrZDG7HfKWI39inG8SG74Ryd+PMNp4NA8a0cBda7
-         mBCVjqWOFXAoX1s/9ftF4OplOcisDGh0lZym9VEwJ/x8gAeNl4mjoPKJ0vXRfrTZYFxx
-         pMFE06NuKTLO3Sf9hHyI7za9MCH85ZTxfev5vgi68sR/kWYScw50BtxGF7M8PExFuem1
-         skkt32DV31w+2Ic5ixeNl2KXxRye/7Xne8J+6g7KrS2NtNTFDg96KQgkkgkYSXbbzj+9
-         7bsUWk6/IdFaM1f79ka1T9kttrCzcjR5gINHeqxB6OAuip7LxOMrH/D1FpoVg5PHzNA3
-         mSUg==
-X-Gm-Message-State: AOAM5320L5DDZx/ZkpZkW9nQY2/xUcUYkcMt3ldue4Tx11JyaYpPU5HB
-        Moqy7Jc7mGHHPE92IqtCMgpSmZwGERNt3eM20V3WjEZVlqzapNjNix35QwIWbCqQwDx4fC93U34
-        4gg9Ii8lYFtWfAHJXgfHeNnMA
-X-Received: by 2002:a17:907:7d94:: with SMTP id oz20mr69029186ejc.410.1636314670519;
-        Sun, 07 Nov 2021 11:51:10 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzbGXmReFcqBQ9rcnodepeBPANCjouWpspfpvWKViriCMVnVWFRpqHh0U+LEGeDsyxuYBatOQ==
-X-Received: by 2002:a17:907:7d94:: with SMTP id oz20mr69029153ejc.410.1636314670260;
-        Sun, 07 Nov 2021 11:51:10 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id o5sm8765113edc.25.2021.11.07.11.51.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Nov 2021 11:51:09 -0800 (PST)
-Message-ID: <8a5935b2-880e-eca0-265d-13b8538caefe@redhat.com>
-Date:   Sun, 7 Nov 2021 20:51:09 +0100
+        id S236357AbhKGTyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 14:54:25 -0500
+Received: from mga09.intel.com ([134.134.136.24]:38088 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236350AbhKGTyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 14:54:24 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="231969404"
+X-IronPort-AV: E=Sophos;i="5.87,217,1631602800"; 
+   d="scan'208";a="231969404"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 11:51:40 -0800
+X-IronPort-AV: E=Sophos;i="5.87,217,1631602800"; 
+   d="scan'208";a="451221004"
+Received: from akirasen-mobl.amr.corp.intel.com (HELO [10.209.44.100]) ([10.209.44.100])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 11:51:39 -0800
+Subject: Re: [PATCH] x86/sgx: Free backing memory after faulting the enclave
+ page
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Sean Christopherson <seanjc@google.com>,
+        reinette.chatre@intel.com, tony.luck@intel.com,
+        nathaniel@profian.com, stable@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211103232238.110557-1-jarkko@kernel.org>
+ <6831ed3c-c5b1-64f7-2ad7-f2d686224b7e@intel.com>
+ <e88d6d580354aadaa8eaa5ee6fa703f021786afb.camel@kernel.org>
+ <d2191571-30a5-c2aa-e8ed-0a380e9daeac@intel.com>
+ <55eb8f3649590289a0f2b1ebe7583b6da3ff70ee.camel@kernel.org>
+ <c6f5356b-a56a-e057-ef74-74e1169a844b@intel.com> <YYgsL7xSxnsjqIlu@iki.fi>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <7a5d6dab-4d06-40b3-d9c7-09c991b856cd@intel.com>
+Date:   Sun, 7 Nov 2021 11:51:37 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 11/13] i2c: cht-wc: Add support for devices using a
- bq25890 charger
+In-Reply-To: <YYgsL7xSxnsjqIlu@iki.fi>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Yauhen Kharuzhy <jekhor@gmail.com>
-Cc:     Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org
-References: <20211030182813.116672-1-hdegoede@redhat.com>
- <20211030182813.116672-12-hdegoede@redhat.com>
- <YYgj7zN6h+cqQzns@jeknote.loshitsa1.net>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <YYgj7zN6h+cqQzns@jeknote.loshitsa1.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 11/7/21 11:42 AM, Jarkko Sakkinen wrote:
+>>> It should be fairly effecient just to check the pages by using
+>>> encl->page_tree.
+>> That sounds more complicated and slower than what I suggested.  You
+>> could even just check the refcount on the page.  I _think_ page cache
+>> pages have a refcount of 2.  So, look for the refcount that means "no
+>> more PCMD in this page", and just free it if so.
+> Umh, so... there is total 32 PCMD's per one page.
 
-On 11/7/21 20:07, Yauhen Kharuzhy wrote:
-> On Sat, Oct 30, 2021 at 08:28:11PM +0200, Hans de Goede wrote:
->> The i2c-controller on the Cherry Trail - Whiskey Cove PMIC is special
->> in that it is always connected to the I2C charger IC of the board on
->> which the PMIC is used; and the charger IC is not described in ACPI,
->> so the i2c-cht-wc code needs to instantiate an i2c-client for it itself.
->>
->> So far there has been a rudimentary check to make sure the ACPI tables
->> are at least somewhat as expected by checking for the presence of an
->> INT33FE device and sofar the code has assumed that if this INT33FE
->> device is present that the used charger then is a bq24290i.
->>
->> But some boards with an INT33FE device in their ACPI tables use a
->> different charger IC and some boards don't have an INT33FE device at all.
->>
->> Since the information about the used charger + fuel-gauge + other chips is
->> necessary in other places too, the kernel now adds a "intel,cht-wc-setup"
->> string property to the Whiskey Cove PMIC i2c-client based on DMI matching,
->> which reliably describes the board's setup of the PMIC.
->>
->> Switch to using the "intel,cht-wc-setup" property and add support for
->> instantiating an i2c-client for either a bq24292i or a bq25890 charger.
->>
->> This has been tested on a GPD pocket (which uses the old bq24292i setup)
->> and on a Xiaomi Mi Pad 2 with a bq25890 charger.
->>
->> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->> ---
->>  drivers/i2c/busses/i2c-cht-wc.c | 77 +++++++++++++++++++++++++--------
->>  1 file changed, 59 insertions(+), 18 deletions(-)
->>
->> diff --git a/drivers/i2c/busses/i2c-cht-wc.c b/drivers/i2c/busses/i2c-cht-wc.c
->> index 1cf68f85b2e1..e7d62af6c39d 100644
->> --- a/drivers/i2c/busses/i2c-cht-wc.c
->> +++ b/drivers/i2c/busses/i2c-cht-wc.c
->> @@ -18,6 +18,7 @@
->>  #include <linux/module.h>
->>  #include <linux/platform_device.h>
->>  #include <linux/power/bq24190_charger.h>
->> +#include <linux/power/bq25890_charger.h>
->>  #include <linux/slab.h>
->>  
->>  #define CHT_WC_I2C_CTRL			0x5e24
->> @@ -304,18 +305,55 @@ static struct bq24190_platform_data bq24190_pdata = {
->>  	.regulator_init_data = &bq24190_vbus_init_data,
->>  };
->>  
->> +static struct i2c_board_info bq24190_board_info = {
->> +	.type = "bq24190",
->> +	.addr = 0x6b,
->> +	.dev_name = "bq24190",
->> +	.swnode = &bq24190_node,
->> +	.platform_data = &bq24190_pdata,
->> +};
->> +
->> +static struct regulator_consumer_supply bq25890_vbus_consumer = {
->> +	.supply = "vbus",
->> +	.dev_name = "cht_wcove_pwrsrc",
->> +};
->> +
->> +static const struct regulator_init_data bq25890_vbus_init_data = {
->> +	.constraints = {
->> +		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
->> +	},
->> +	.consumer_supplies = &bq25890_vbus_consumer,
->> +	.num_consumer_supplies = 1,
->> +};
->> +
->> +static struct bq25890_platform_data bq25890_pdata = {
->> +	.regulator_init_data = &bq25890_vbus_init_data,
->> +};
->> +
->> +static const struct property_entry bq25890_props[] = {
->> +	PROPERTY_ENTRY_BOOL("ti,skip-init"),
->> +	{ }
->> +};
-> 
-> The Lenovo Yoga Book firmware set the IINLIM field to 500 mA at
-> initialization, we need a way to pass maximum allowed current in the fast
-> charging mode to driver. I have added 'ti,input-max-current' in my port, for
-> example.
+When you place PCMD in a page, you do a get_page().  The refcount goes
+up by one.  So, a PCMD page with one PCMD will (I think) have a refcount
+of 3.  If you totally fill it up with 31 *more* PCMD entries, it will
+have a refcount of 34.  You do *not* do a put_page() on the PCMD page at
+the end of the allocation phase.
 
-500 mA is fine, we will run BC1.2 spec charger-type detection
-in the PMIC extcon code and then pass the result of that to
-the charger-IC. This is not present in this version of the
-patch-set because I did not have a yogabook yet when
-I wrote this, v2 will take care of this.
+When the backing storage is freed, you drop the refcount.  So, going
+from 32 PCMD entries to 31 entries in a page, you go from 34->33.
 
-I hope to post a v2 sometime the coming 2 weeks.
+When that refcount drops to 2, you know there is no more data in the
+page that's useful.  At that point you can truncate it out of the
+backing storage.
 
-Regards,
-
-Hans
-
-
-
-
-
-> 
->> +
->> +static const struct software_node bq25890_node = {
->> +	.properties = bq25890_props,
->> +};
->> +
->> +static struct i2c_board_info bq25890_board_info = {
->> +	.type = "bq25890",
->> +	.addr = 0x6a,
->> +	.dev_name = "bq25890",
->> +	.swnode = &bq25890_node,
->> +	.platform_data = &bq25890_pdata,
->> +};
->> +
->>  static int cht_wc_i2c_adap_i2c_probe(struct platform_device *pdev)
->>  {
->>  	struct intel_soc_pmic *pmic = dev_get_drvdata(pdev->dev.parent);
->> +	struct i2c_board_info *board_info = NULL;
->>  	struct cht_wc_i2c_adap *adap;
->> -	struct i2c_board_info board_info = {
->> -		.type = "bq24190",
->> -		.addr = 0x6b,
->> -		.dev_name = "bq24190",
->> -		.swnode = &bq24190_node,
->> -		.platform_data = &bq24190_pdata,
->> -	};
->>  	int ret, reg, irq;
->> +	const char *str;
->>  
->>  	irq = platform_get_irq(pdev, 0);
->>  	if (irq < 0)
->> @@ -379,17 +417,20 @@ static int cht_wc_i2c_adap_i2c_probe(struct platform_device *pdev)
->>  	if (ret)
->>  		goto remove_irq_domain;
->>  
->> -	/*
->> -	 * Normally the Whiskey Cove PMIC is paired with a TI bq24292i charger,
->> -	 * connected to this i2c bus, and a max17047 fuel-gauge and a fusb302
->> -	 * USB Type-C controller connected to another i2c bus. In this setup
->> -	 * the max17047 and fusb302 devices are enumerated through an INT33FE
->> -	 * ACPI device. If this device is present register an i2c-client for
->> -	 * the TI bq24292i charger.
->> -	 */
->> -	if (acpi_dev_present("INT33FE", NULL, -1)) {
->> -		board_info.irq = adap->client_irq;
->> -		adap->client = i2c_new_client_device(&adap->adapter, &board_info);
->> +	ret = device_property_read_string(pdev->dev.parent, "intel,cht-wc-setup", &str);
->> +	if (ret)
->> +		dev_warn(&pdev->dev, "intel,cht-wc-setup not set, not instantiating charger device\n");
->> +	else if (!strcmp(str, "bq24292i,max17047,fusb302,pi3usb30532"))
->> +		board_info = &bq24190_board_info;
->> +	else if (!strcmp(str, "bq25890,bq27520"))
->> +		board_info = &bq25890_board_info;
->> +	else
->> +		dev_warn(&pdev->dev, "Unknown intel,cht-wc-setup value: '%s', not instantiating charger device\n",
->> +			 str);
->> +
->> +	if (board_info) {
->> +		board_info->irq = adap->client_irq;
->> +		adap->client = i2c_new_client_device(&adap->adapter, board_info);
->>  		if (IS_ERR(adap->client)) {
->>  			ret = PTR_ERR(adap->client);
->>  			goto del_adapter;
->> -- 
->> 2.31.1
->>
-> 
-
+There's no reason to scan the page, or a boatload of other metadata.
+Just keep a refcount.  Just use the *existing* 'struct page' refcount.
