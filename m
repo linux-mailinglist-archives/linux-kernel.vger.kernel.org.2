@@ -2,243 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB8744748F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 18:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B987D447496
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 18:33:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235968AbhKGRf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 12:35:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232053AbhKGRfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 12:35:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85ABF6137D;
-        Sun,  7 Nov 2021 17:32:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636306363;
-        bh=Po74oSbm0to0RCIQLkBTO+PIie1+mOfMvXRPNR/hxWs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l7I7P+BvZ62AHyukveHXrRv54qbzOtYnFXUrWXotylis458T6iOUqaAMQUHjV161g
-         xjpZnV5GYbLvmRNTYK4PsreuTVGnKGRnvtrf/kqSYjSGH0KAZkNobB2skn9J4gSFV0
-         BDRAKw6VOkMMa8WFs1q/QaMYxveSz6fvE3xQPnUc9w6izjwsE5jmditF+R8SzxS19I
-         R1m3RO8STPaQvya5mFdH3nTps1HJVTGQZ33oRrlnNAa8Ow3jARHUolNupdCGNclbsC
-         72/7F2cjKa2MncjK/MM4Q97Q6zMYO4tzKgJUk8Iik356WMl9Pln4JPayvQXveMT+a3
-         w5P7SupR+SzxA==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
+        id S235986AbhKGRft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 12:35:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232053AbhKGRfr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 12:35:47 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C404CC061714;
+        Sun,  7 Nov 2021 09:33:04 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id bn12so24002952oib.2;
+        Sun, 07 Nov 2021 09:33:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tMVMvSELY54S0UdLfdOcY9hXGDCgRpBmnCTKjFa8UlE=;
+        b=QIfw+m72ItgaApqkAoLUYKEHkpy+eMpUCLymo2SVE2e06bxlhsvsGBIpx80FAFL6zX
+         lQmhx5vWsnqdO5AzfRwzYmC9JyeI+x703tpvfwQKurLg2VtZOzsNtJVqgO0A8u3N2B9I
+         BYJElUmFFKGlmNuNH1pVTHbG46IPWj2FGkpJks4IWHqhA3hkwgU7q4GC5oDjmilXskFD
+         oTKdooszpWu854bZrRMH7UW0QrvSFFnK9cGOfGPg2b3g5hqd+nvAec6GccpfULS1MyoN
+         kwidN5WRwT1FH2PsDPsfoM+Wt2eEwiLbpjLKm84c+sezJpyJvFv7kmoqDjei75CdMOoF
+         bVbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tMVMvSELY54S0UdLfdOcY9hXGDCgRpBmnCTKjFa8UlE=;
+        b=PVsjKrsk0DrjHtq0iKgOk4kVAF39tKkxeNranXk+LqzoshgHYd5B950rSi+oTn7rdz
+         BPPCuZYw6elpXPxkYxHX6mgWtxrz7+rh8IquvKykFW/CsGiXDUDb2Zb0HcsEWVOy2pYr
+         E2J0UX2t+1/5WKpBr1nBMwFxKCGyaTLwQcqMGy/HTq3eymL+ITj3lNjJUGFuqzlbmTFz
+         Gn79oasiRih/Gu54YCnWmWZQDPKlMt1tyyW3f3g/upe9vC5JRxDjzgD2l2ye9Ygbypvr
+         8hcUcC28LZHQ/Raj69zG3s2+b4Q/g0/5Luf4LbGSOXhFvZWI2DSKOZv5ENh0FdeyvU8j
+         usDg==
+X-Gm-Message-State: AOAM531XUXGWHgfZRBxE3rFXijFOeCkRO+qN7jTL7AZYWkZnjo78+xV5
+        qmSa7wd9wu4tRNwg+fG1SL32E/ODJ6o=
+X-Google-Smtp-Source: ABdhPJygB0wkAZr+IyDwhIXD/1Ky9Z1d16PhZAI/x4npp+2qcv9Jc+QXaxpUDgRoNUJ2QI01eNmjeA==
+X-Received: by 2002:aca:650d:: with SMTP id m13mr16262607oim.42.1636306383620;
+        Sun, 07 Nov 2021 09:33:03 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c18sm4840649otr.32.2021.11.07.09.32.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Nov 2021 09:33:03 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     reinette.chatre@intel.com, tony.luck@intel.com,
-        nathaniel@profian.com, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org
-Subject: [PATCH v12 2/2] x86/sgx: Add an attribute for the amount of SGX memory in a NUMA node
-Date:   Sun,  7 Nov 2021 19:32:33 +0200
-Message-Id: <20211107173233.417034-2-jarkko@kernel.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211107173233.417034-1-jarkko@kernel.org>
-References: <20211107173233.417034-1-jarkko@kernel.org>
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Chen-Yu Tsai <wens@csie.org>, Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20211027211715.12671-1-digetx@gmail.com>
+ <20211027211715.12671-28-digetx@gmail.com> <YYbqlmOM95q7Hbjo@latitude>
+ <be0c74c6-05a9-cad5-c285-6626d05f8860@gmail.com>
+ <9a22c22d-94b1-f519-27a2-ae0b8bbf6e99@roeck-us.net>
+ <658cf796-e3b1-f816-1e15-9e9e08b8ade0@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v2 27/45] mfd: ntxec: Use devm_register_power_handler()
+Message-ID: <5a17fee3-4214-c2b9-abc1-ab9d6071591b@roeck-us.net>
+Date:   Sun, 7 Nov 2021 09:32:56 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <658cf796-e3b1-f816-1e15-9e9e08b8ade0@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The amount of SGX memory on the system is determined by the BIOS and it
-varies wildly between systems.  It can be from dozens of MB's on desktops
-or VM's, up to many GB's on servers.  Just like for regular memory, it is
-sometimes useful to know the amount of usable SGX memory in the system.
+On 11/7/21 9:16 AM, Dmitry Osipenko wrote:
+> 07.11.2021 20:08, Guenter Roeck пишет:
+>> On 11/7/21 8:53 AM, Dmitry Osipenko wrote:
+>>> 06.11.2021 23:54, Jonathan Neuschäfer пишет:
+>>>> Hi,
+>>>>
+>>>> On Thu, Oct 28, 2021 at 12:16:57AM +0300, Dmitry Osipenko wrote:
+>>>>> Use devm_register_power_handler() that replaces global pm_power_off
+>>>>> variable and allows to register multiple power-off handlers. It also
+>>>>> provides restart-handler support, i.e. all in one API.
+>>>>>
+>>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>>> ---
+>>>>
+>>>> When I boot with (most of) this patchset applied, I get the warning at
+>>>> kernel/reboot.c:187:
+>>>>
+>>>>      /*
+>>>>       * Handler must have unique priority. Otherwise call order is
+>>>>       * determined by registration order, which is unreliable.
+>>>>       */
+>>>>      WARN_ON(!atomic_notifier_has_unique_priority(&restart_handler_list,
+>>>> nb));
+>>>>
+>>>> As the NTXEC driver doesn't specify a priority, I think this is an issue
+>>>> to be fixed elsewhere.
+>>>>
+>>>> Other than that, it works and looks good, as far as I can tell.
+>>>>
+>>>>
+>>>> For this patch:
+>>>>
+>>>> Reviewed-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+>>>> Tested-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+>>>
+>>> Thank you. You have conflicting restart handlers, apparently NTXEC
+>>> driver should have higher priority than the watchdog driver. It should
+>>> be a common problem for the watchdog drivers, I will lower watchdog's
+>>> default priority to fix it.
+>>>
+>>
+>> The watchdog subsystem already uses "0" as default priority, which was
+>> intended as priority of last resort for restart handlers. I do not see
+>> a reason to change that.
+> 
+> Right, I meant that watchdog drivers which use restart handler set the
+> level to the default 128 [1]. Although, maybe it's a problem only for
+> i.MX drivers in practice, I'll take a closer look at the other drivers.
+> 
 
-Introduce CONFIG_HAVE_ARCH_NODE_DEV_GROUP opt-in flag to expose an arch
-specific attribute group, and add an attribute for the amount of SGX
-memory in bytes to each NUMA node:
+They don't have to do that. The default is priority 0. It is the decision
+of the driver author to set the watchdog's restart priority. So it is wrong
+to claim that this would be "a common problem for the watchdog drivers",
+because it isn't. Presumably there was a reason for the driver author
+to select the default priority of 128. If there is a platform which has
+a better means to restart the system, it should select a priority of
+129 or higher instead of affecting _all_ platforms using the imx watchdog
+to reset the system.
 
-/sys/devices/system/node/nodeX/x86/sgx_total_bytes
+Sure, you can negotiate that with the driver author, but the default should
+really be to change the priority for less affected platforms.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
-v12:
-* Device ID is set to same as NUMA node ID. Use that to get the correct
-  NUMA node ID in sgx_total_bytes_show().
-
-v11:
-* Fix documentation and the commit message.
-
-v10:
-* Change DEVICE_ATTR_RO() to static (Greg K-H)
-* Change the attribute name as sgx_total_bytes, and attribute group
-  name as "x86" (Dave).
-* Add a new config flag HAVE_ARCH_NODE_DEV_GROUP to identify, whether
-  an arch exports arch specific attribute group for NUMA nodes.
-
-v9:
-* Fix racy initialization of sysfs attributes:
-  https://lore.kernel.org/linux-sgx/YXOsx8SvFJV5R7lU@kroah.com/
-
-v8:
-* Fix a bug in sgx_numa_init(): node->dev should be only set after
-  sysfe_create_group().  Otherwise, sysfs_remove_group() will issue a
-  warning in sgx_numa_exit(), when sgx_create_group() is unsuccessful,
-  because the group does not exist.
-
-v7:
-* Shorten memory_size to size. The prefix makes the name only longer
-  but does not clarify things more than "size" would.
-* Use device_attribute instead of kobj_attribute.
-* Use named attribute group instead of creating raw kobject just for
-  the "sgx" subdirectory.
-
-v6:
-* Initialize node->size to zero in sgx_setup_epc_section(), when the
-  node is first accessed.
-
-v5
-* A new patch based on the discussion on
-  https://lore.kernel.org/linux-sgx/3a7cab4115b4f902f3509ad8652e616b91703e1d.camel@kernel.org/T/#t
----
- Documentation/ABI/stable/sysfs-devices-node |  6 ++++++
- arch/Kconfig                                |  4 ++++
- arch/x86/Kconfig                            |  1 +
- arch/x86/kernel/cpu/sgx/main.c              | 20 ++++++++++++++++++++
- arch/x86/kernel/cpu/sgx/sgx.h               |  1 +
- drivers/base/node.c                         | 13 ++++++++++++-
- include/linux/numa.h                        |  4 ++++
- 7 files changed, 48 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/ABI/stable/sysfs-devices-node b/Documentation/ABI/stable/sysfs-devices-node
-index 484fc04bcc25..8db67aa472f1 100644
---- a/Documentation/ABI/stable/sysfs-devices-node
-+++ b/Documentation/ABI/stable/sysfs-devices-node
-@@ -176,3 +176,9 @@ Contact:	Keith Busch <keith.busch@intel.com>
- Description:
- 		The cache write policy: 0 for write-back, 1 for write-through,
- 		other or unknown.
-+
-+What:		/sys/devices/system/node/nodeX/x86/sgx_total_bytes
-+Date:		November 2021
-+Contact:	Jarkko Sakkinen <jarkko@kernel.org>
-+Description:
-+		The total amount of SGX physical memory in bytes.
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 98db63496bab..ca5d75b5a427 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -1285,6 +1285,10 @@ config ARCH_HAS_ELFCORE_COMPAT
- config ARCH_HAS_PARANOID_L1D_FLUSH
- 	bool
- 
-+# Select, if arch has a named attribute group bound to NUMA device nodes.
-+config HAVE_ARCH_NODE_DEV_GROUP
-+	bool
-+
- source "kernel/gcov/Kconfig"
- 
- source "scripts/gcc-plugins/Kconfig"
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 421fa9e38c60..8503c3bdf63f 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -266,6 +266,7 @@ config X86
- 	select HAVE_ARCH_KCSAN			if X86_64
- 	select X86_FEATURE_NAMES		if PROC_FS
- 	select PROC_PID_ARCH_STATUS		if PROC_FS
-+	select HAVE_ARCH_NODE_DEV_GROUP		if X86_SGX
- 	imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
- 
- config INSTRUCTION_DECODER
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index a6e313f1a82d..6aa62b6a68ca 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -714,9 +714,11 @@ static bool __init sgx_page_cache_init(void)
- 			spin_lock_init(&sgx_numa_nodes[nid].lock);
- 			INIT_LIST_HEAD(&sgx_numa_nodes[nid].free_page_list);
- 			node_set(nid, sgx_numa_mask);
-+			sgx_numa_nodes[nid].size = 0;
- 		}
- 
- 		sgx_epc_sections[i].node =  &sgx_numa_nodes[nid];
-+		sgx_numa_nodes[nid].size += size;
- 
- 		sgx_nr_epc_sections++;
- 	}
-@@ -790,6 +792,24 @@ int sgx_set_attribute(unsigned long *allowed_attributes,
- }
- EXPORT_SYMBOL_GPL(sgx_set_attribute);
- 
-+#ifdef CONFIG_NUMA
-+static ssize_t sgx_total_bytes_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	return sysfs_emit(buf, "%lu\n", sgx_numa_nodes[dev->id].size);
-+}
-+static DEVICE_ATTR_RO(sgx_total_bytes);
-+
-+static struct attribute *arch_node_dev_attrs[] = {
-+	&dev_attr_sgx_total_bytes.attr,
-+	NULL,
-+};
-+
-+const struct attribute_group arch_node_dev_group = {
-+	.name = "x86",
-+	.attrs = arch_node_dev_attrs,
-+};
-+#endif /* CONFIG_NUMA */
-+
- static int __init sgx_init(void)
- {
- 	int ret;
-diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index 4628acec0009..9250eca47c75 100644
---- a/arch/x86/kernel/cpu/sgx/sgx.h
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -39,6 +39,7 @@ struct sgx_epc_page {
-  */
- struct sgx_numa_node {
- 	struct list_head free_page_list;
-+	unsigned long size;
- 	spinlock_t lock;
- };
- 
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index 4a4ae868ad9f..8da977895b9a 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -565,7 +565,18 @@ static struct attribute *node_dev_attrs[] = {
- 	&dev_attr_vmstat.attr,
- 	NULL
- };
--ATTRIBUTE_GROUPS(node_dev);
-+
-+static const struct attribute_group node_dev_group = {
-+	.attrs = node_dev_attrs,
-+};
-+
-+static const struct attribute_group *node_dev_groups[] = {
-+	&node_dev_group,
-+#ifdef CONFIG_HAVE_ARCH_NODE_DEV_GROUP
-+	&arch_node_dev_group,
-+#endif
-+	NULL,
-+};
- 
- #ifdef CONFIG_HUGETLBFS
- /*
-diff --git a/include/linux/numa.h b/include/linux/numa.h
-index cb44cfe2b725..59df211d051f 100644
---- a/include/linux/numa.h
-+++ b/include/linux/numa.h
-@@ -58,4 +58,8 @@ static inline int phys_to_target_node(u64 start)
- }
- #endif
- 
-+#ifdef CONFIG_HAVE_ARCH_NODE_DEV_GROUP
-+extern const struct attribute_group arch_node_dev_group;
-+#endif
-+
- #endif /* _LINUX_NUMA_H */
--- 
-2.32.0
-
+Guenter
