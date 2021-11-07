@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D43BC4475ED
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 21:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F334475EE
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 21:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235714AbhKGUy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 15:54:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56266 "EHLO mail.kernel.org"
+        id S235753AbhKGUya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 15:54:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235705AbhKGUy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 15:54:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 477BB61458;
-        Sun,  7 Nov 2021 20:51:43 +0000 (UTC)
+        id S235724AbhKGUy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 15:54:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99783613D3;
+        Sun,  7 Nov 2021 20:51:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636318304;
-        bh=22k2KPrA1Ke65OXLDFLYegjQ2DFK4DNdMULXd8ov5Rs=;
+        s=k20201202; t=1636318305;
+        bh=uLfEDGAJFNv8NLMewB7vwMTcyL3pUuO6XSwk6mBU1wQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ISUIsQERVQq26uoI1RcO5cgSMq1Tr4YJcHIKiQXK4KlNVXjDvWzP7ThKRM1LcpJm1
-         k31STVSD3Be5vRb1qfzYeb3lQDIb3ORv5qVHiVNTD+FDfAf/NOObw0FxKrgNjVMojj
-         LwW3STKrVuYFeaYCM8dFRAGCL3COeaIVcb4Xt/pk/DbP+xFRrIYkj1H4JKtKuJrPnX
-         ldrOzmC6+Esrann9CgMCwzTnGSeuxO6Shj2Aj1qrABx8nPgs93+cneTI6zPovV/3Er
-         3snKgdMOuzZSwA0azqXoTZ8FeNQ00tN2K8sdvMGNm+OcPzyzU9F9Wguy5fKdvP+jmL
-         mVXGjdIsY65LA==
+        b=gktfqz+Ptyp6sIdT8PQ9tWPzny0xDQk7OQj1In44EMv7ehOkpmth5TRC0gIZPWH6i
+         oC/DRpi4ZseXQEnArqZbhNGXzK3Ge2g+CoXgx7jxccnMXSF3h0B6NRUCB3EPVcUPKd
+         wawlIk1UZynojVus2uAL/qAgImZRJnhpT55RqfyNkERzKSHzoifj1l3r1zf+Xes6wh
+         0nBWkEO2HEwcfiYykaE+dHzO9HU+zvtuw9xF473tQCDvKCBFszDNJzdoG3DrjkaW6Y
+         R+SCiOCV5aqBOHe2T5VFj9SbEJi2LTMtE/OSjJ2sx9n9Q2DTqzPiFweKxGe6PU6bek
+         V6O2H+xg9PzCQ==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Bharat Jauhari <bjauhari@habana.ai>
-Subject: [PATCH 02/10] habanalabs: handle abort scenario for user interrupt
-Date:   Sun,  7 Nov 2021 22:51:28 +0200
-Message-Id: <20211107205136.2329007-2-ogabbay@kernel.org>
+Cc:     Rajaravi Krishna Katta <rkatta@habana.ai>
+Subject: [PATCH 03/10] habanalabs: add dedicated message towards f/w to set power
+Date:   Sun,  7 Nov 2021 22:51:29 +0200
+Message-Id: <20211107205136.2329007-3-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211107205136.2329007-1-ogabbay@kernel.org>
 References: <20211107205136.2329007-1-ogabbay@kernel.org>
@@ -38,111 +38,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bharat Jauhari <bjauhari@habana.ai>
+From: Rajaravi Krishna Katta <rkatta@habana.ai>
 
-In case of device reset, the driver does a force trigger on all waiting
-users to release them from waiting. However, the driver does not handle
-error scenario while waiting.
+CPUCP_PACKET_POWER_GET packet type was used for both
+hl_get_power() and hl_set_power().
 
-hl_interrupt_wait_ioctl() now exits the wait in case of an error with
-abort status.
+To align with other sensor functions hl_set_power()
+should use CPUCP_PACKET_POWER_SET.
 
-Signed-off-by: Bharat Jauhari <bjauhari@habana.ai>
+This packet will only be used with newer ASICs, so need to add
+a compatibility flag to the asic properties to indicate whether to use
+this packet or the GET packet.
+
+Signed-off-by: Rajaravi Krishna Katta <rkatta@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- .../habanalabs/common/command_submission.c    | 34 +++++++++----------
- 1 file changed, 16 insertions(+), 18 deletions(-)
+ drivers/misc/habanalabs/common/habanalabs.h       | 3 +++
+ drivers/misc/habanalabs/common/hwmon.c            | 8 +++++++-
+ drivers/misc/habanalabs/gaudi/gaudi.c             | 2 ++
+ drivers/misc/habanalabs/goya/goya.c               | 2 ++
+ drivers/misc/habanalabs/include/common/cpucp_if.h | 4 ++++
+ 5 files changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
-index 4c8000fd246c..41b48929cd59 100644
---- a/drivers/misc/habanalabs/common/command_submission.c
-+++ b/drivers/misc/habanalabs/common/command_submission.c
-@@ -2768,7 +2768,7 @@ static int hl_cs_wait_ioctl(struct hl_fpriv *hpriv, void *data)
- static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
- 				u32 timeout_us, u64 user_address,
- 				u64 target_value, u16 interrupt_offset,
--				enum hl_cs_wait_status *status,
-+				u32 *status,
- 				u64 *timestamp)
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index 5fc9cfd892e8..dc61f7031c38 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -546,6 +546,8 @@ struct hl_hints_range {
+  * @dynamic_fw_load: is dynamic FW load is supported.
+  * @gic_interrupts_enable: true if FW is not blocking GIC controller,
+  *                         false otherwise.
++ * @use_get_power_for_reset_history: To support backward compatibility for Goya
++ *                                   and Gaudi
+  */
+ struct asic_fixed_properties {
+ 	struct hw_queue_properties	*hw_queues_props;
+@@ -626,6 +628,7 @@ struct asic_fixed_properties {
+ 	u8				iatu_done_by_fw;
+ 	u8				dynamic_fw_load;
+ 	u8				gic_interrupts_enable;
++	u8				use_get_power_for_reset_history;
+ };
+ 
+ /**
+diff --git a/drivers/misc/habanalabs/common/hwmon.c b/drivers/misc/habanalabs/common/hwmon.c
+index e33f65be8a00..70182b42940d 100644
+--- a/drivers/misc/habanalabs/common/hwmon.c
++++ b/drivers/misc/habanalabs/common/hwmon.c
+@@ -677,12 +677,18 @@ int hl_set_power(struct hl_device *hdev,
+ 			int sensor_index, u32 attr, long value)
  {
- 	struct hl_user_pending_interrupt *pend;
-@@ -2815,13 +2815,14 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
- 	}
- 
- 	if (completion_value >= target_value) {
--		*status = CS_WAIT_STATUS_COMPLETED;
-+		*status = HL_WAIT_CS_STATUS_COMPLETED;
- 		/* There was no interrupt, we assume the completion is now. */
- 		pend->fence.timestamp = ktime_get();
--	} else
--		*status = CS_WAIT_STATUS_BUSY;
-+	} else {
-+		*status = HL_WAIT_CS_STATUS_BUSY;
-+	}
- 
--	if (!timeout_us || (*status == CS_WAIT_STATUS_COMPLETED))
-+	if (!timeout_us || (*status == HL_WAIT_CS_STATUS_COMPLETED))
- 		goto remove_pending_user_interrupt;
- 
- wait_again:
-@@ -2850,7 +2851,13 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
- 		}
- 
- 		if (completion_value >= target_value) {
--			*status = CS_WAIT_STATUS_COMPLETED;
-+			*status = HL_WAIT_CS_STATUS_COMPLETED;
-+		} else if (pend->fence.error) {
-+			dev_err_ratelimited(hdev->dev,
-+				"interrupt based wait ioctl aborted(error:%d) due to a reset cycle initiated\n",
-+				pend->fence.error);
-+			/* set the command completion status as ABORTED */
-+			*status = HL_WAIT_CS_STATUS_ABORTED;
- 		} else {
- 			timeout = completion_rc;
- 			goto wait_again;
-@@ -2861,7 +2868,7 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
- 			interrupt->interrupt_id);
- 		rc = -EINTR;
- 	} else {
--		*status = CS_WAIT_STATUS_BUSY;
-+		*status = HL_WAIT_CS_STATUS_BUSY;
- 	}
- 
- remove_pending_user_interrupt:
-@@ -2883,7 +2890,7 @@ static int hl_interrupt_wait_ioctl(struct hl_fpriv *hpriv, void *data)
- 	struct hl_device *hdev = hpriv->hdev;
- 	struct asic_fixed_properties *prop;
- 	union hl_wait_cs_args *args = data;
--	enum hl_cs_wait_status status;
-+	u32 status = HL_WAIT_CS_STATUS_BUSY;
- 	u64 timestamp;
+ 	struct cpucp_packet pkt;
++	struct asic_fixed_properties *prop = &hdev->asic_prop;
  	int rc;
  
-@@ -2926,22 +2933,13 @@ static int hl_interrupt_wait_ioctl(struct hl_fpriv *hpriv, void *data)
- 	}
+ 	memset(&pkt, 0, sizeof(pkt));
  
- 	memset(args, 0, sizeof(*args));
-+	args->out.status = status;
+-	pkt.ctl = cpu_to_le32(CPUCP_PACKET_POWER_GET <<
++	if (prop->use_get_power_for_reset_history)
++		pkt.ctl = cpu_to_le32(CPUCP_PACKET_POWER_GET <<
+ 				CPUCP_PKT_CTL_OPCODE_SHIFT);
++	else
++		pkt.ctl = cpu_to_le32(CPUCP_PACKET_POWER_SET <<
++				CPUCP_PKT_CTL_OPCODE_SHIFT);
++
+ 	pkt.sensor_index = __cpu_to_le16(sensor_index);
+ 	pkt.type = __cpu_to_le16(attr);
+ 	pkt.value = __cpu_to_le64(value);
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index 1dcce1bc976f..738ad2498439 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -665,6 +665,8 @@ static int gaudi_set_fixed_properties(struct hl_device *hdev)
+ 	prop->clk_pll_index = HL_GAUDI_MME_PLL;
+ 	prop->max_freq_value = GAUDI_MAX_CLK_FREQ;
  
- 	if (timestamp) {
- 		args->out.timestamp_nsec = timestamp;
- 		args->out.flags |= HL_WAIT_CS_STATUS_FLAG_TIMESTAMP_VLD;
- 	}
- 
--	switch (status) {
--	case CS_WAIT_STATUS_COMPLETED:
--		args->out.status = HL_WAIT_CS_STATUS_COMPLETED;
--		break;
--	case CS_WAIT_STATUS_BUSY:
--	default:
--		args->out.status = HL_WAIT_CS_STATUS_BUSY;
--		break;
--	}
--
++	prop->use_get_power_for_reset_history = true;
++
  	return 0;
  }
  
+diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
+index ce06103292a0..959eb21dcc69 100644
+--- a/drivers/misc/habanalabs/goya/goya.c
++++ b/drivers/misc/habanalabs/goya/goya.c
+@@ -475,6 +475,8 @@ int goya_set_fixed_properties(struct hl_device *hdev)
+ 
+ 	prop->clk_pll_index = HL_GOYA_MME_PLL;
+ 
++	prop->use_get_power_for_reset_history = true;
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/misc/habanalabs/include/common/cpucp_if.h b/drivers/misc/habanalabs/include/common/cpucp_if.h
+index ae13231fda94..17927968e19a 100644
+--- a/drivers/misc/habanalabs/include/common/cpucp_if.h
++++ b/drivers/misc/habanalabs/include/common/cpucp_if.h
+@@ -376,6 +376,9 @@ enum pq_init_status {
+  *       and QMANs. The f/w will return a bitmask where each bit represents
+  *       a different engine or QMAN according to enum cpucp_idle_mask.
+  *       The bit will be 1 if the engine is NOT idle.
++ *
++ * CPUCP_PACKET_POWER_SET -
++ *       Resets power history of device to 0
+  */
+ 
+ enum cpucp_packet_id {
+@@ -421,6 +424,7 @@ enum cpucp_packet_id {
+ 	CPUCP_PACKET_NIC_STAT_REGS_CLR,		/* internal */
+ 	CPUCP_PACKET_NIC_STAT_REGS_ALL_GET,	/* internal */
+ 	CPUCP_PACKET_IS_IDLE_CHECK,		/* internal */
++	CPUCP_PACKET_POWER_SET,			/* internal */
+ };
+ 
+ #define CPUCP_PACKET_FENCE_VAL	0xFE8CE7A5
 -- 
 2.25.1
 
