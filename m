@@ -2,118 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1E744756F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 21:01:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A2F447571
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 21:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235512AbhKGUEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 15:04:02 -0500
-Received: from mga04.intel.com ([192.55.52.120]:28988 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231401AbhKGUEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 15:04:01 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="230844659"
-X-IronPort-AV: E=Sophos;i="5.87,217,1631602800"; 
-   d="scan'208";a="230844659"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 12:01:18 -0800
-X-IronPort-AV: E=Sophos;i="5.87,217,1631602800"; 
-   d="scan'208";a="451225129"
-Received: from akirasen-mobl.amr.corp.intel.com (HELO [10.209.44.100]) ([10.209.44.100])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 11:58:24 -0800
-Subject: Re: [PATCH] x86/sgx: Free backing memory after faulting the enclave
- page
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Sean Christopherson <seanjc@google.com>,
-        reinette.chatre@intel.com, tony.luck@intel.com,
-        nathaniel@profian.com, stable@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211103232238.110557-1-jarkko@kernel.org>
- <7c122a82-e418-0bce-8f67-cbaa15abc9b9@intel.com> <YYgVsi7y4TNuSRLc@iki.fi>
- <984bc7a4-1c7a-f2c0-5885-0dc7fad3d2b6@intel.com> <YYgs94O3eiKJwKgi@iki.fi>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <dd7c1402-eeb9-cea5-25c6-ab19e8031991@intel.com>
-Date:   Sun, 7 Nov 2021 11:58:21 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S236379AbhKGUFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 15:05:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhKGUFM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 15:05:12 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB569C061570
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 12:02:28 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id h14so12054452qtb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 12:02:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cs.unc.edu; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=jHTtxJLlQcfnjQLsOeFnXfsLO4QxGpcGfvUQt2BuQxs=;
+        b=Vpn+ZMUhe+OzC+TiaSbEzjLlxskWMOQqPAtdyHby0/wBv2iFtRhGkiCk6XKluEIH+3
+         SbjxwtTMb4gG40ZtnBIkRhiKUYcREihysIGv6a636VTt+/C8XVyRFuoSpzhkAkSEhSBt
+         ArA5PDdnBlGchLV5FuPetGmQ1GFlwp/eHbgAo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=jHTtxJLlQcfnjQLsOeFnXfsLO4QxGpcGfvUQt2BuQxs=;
+        b=I+UAoO0wD2QPacV9VC3ZA6YqsigxOZ9BGrq8QbueDCwuvWDSmkuWci7n2uZOwGOw7A
+         rHi05i2ExpjnFvWNudjHHmt7NWGnXPYHVJ39HQGhXNiDmasEOGS2ApOL8jMX4WXrUxDO
+         Gd26HKHXhmCtzbINuxNUNYpZIdppneYEH/wpf51XIGJLF1g1idYMQ8aThhLBiWdRx0wk
+         Fz/REGpboBsM5JKZcYWH+1ZYr4Dyh5zqezqnf21SNkNPPoTNfoKWXMzyLXCvaFa0R7xh
+         ARGTTdV+dPEh68awfEjfvM3aOF33wGNqcDbivDxg35sY3gCgKfF7xZdCNe4DgMQFxfra
+         h0YQ==
+X-Gm-Message-State: AOAM533lCr6h66wJfmA5aXgutQY2IxdLJ9pHRFWR0X4790yxZPu0eFA+
+        rQ3kJICxm9XMjcu0/NTWoSfZjw==
+X-Google-Smtp-Source: ABdhPJyR11I4O4bZuGRciYtXPvMXbm/K7DeDi4Cg2ixyPz0VaV7tCLJRCcHEg0smn8XnRv1XYPjg4g==
+X-Received: by 2002:ac8:7f44:: with SMTP id g4mr78744298qtk.130.1636315348073;
+        Sun, 07 Nov 2021 12:02:28 -0800 (PST)
+Received: from [152.23.88.220] (dhcp-152-23-88-220.wireless-1x.unc.edu. [152.23.88.220])
+        by smtp.gmail.com with ESMTPSA id u19sm9741710qtw.14.2021.11.07.12.02.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Nov 2021 12:02:27 -0800 (PST)
+Message-ID: <3a98b10e-6b78-b769-e22d-2496d7bcd69d@cs.unc.edu>
+Date:   Sun, 7 Nov 2021 15:02:27 -0500
 MIME-Version: 1.0
-In-Reply-To: <YYgs94O3eiKJwKgi@iki.fi>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] Input: elantench - Fix the firmware misreport coordinates
+ for trackpoint occasionally.
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        jingle.wu@emc.com.tw, josh.chen@emc.com.tw, dave.wang@emc.com.tw,
+        phoenix <phoenix@emc.com.tw>
+References: <20210729010940.5752-1-phoenix@emc.com.tw>
+ <000001d79d99$53762dd0$fa628970$@emc.com.tw> <YS0+TU21/nok6Ge9@google.com>
+From:   Yufei Du <yufeidu@cs.unc.edu>
+In-Reply-To: <YS0+TU21/nok6Ge9@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/21 11:45 AM, Jarkko Sakkinen wrote:
-> On Sun, Nov 07, 2021 at 11:06:01AM -0800, Dave Hansen wrote:
->> That's true, the page cache should all be torn down along with the
->> fput().  *But*, it would be a very nice property if the backing storage
->> was empty by this point.  It essentially ensures that no enclave-runtime
->> cases missed truncating the backing storage away.
-> 
-> What if an enclave is released a point when all of its pages
-> are swapped out? Or even simpler case would an enclave that is
-> larger than all of EPC.
+Hi Dmitry,
 
-In this loop:
+I am a user currently suffering from the firmware bug that causes my trackpoint 
+to be unusable on my Lenovo X13 Gen 1 AMD. I tested this patch in the latest 
+5.15 mainline kernel tree and can possibly answer your questions regarding the 
+patch.
 
-void sgx_encl_release(struct kref *ref)
-{
-	...
-        xa_for_each(&encl->page_array, index, entry) {
-		if (entry->epc_page == NULL)
-			// truncate backing storage
+ > I think this will reject X coordinates in range [0, 127]. Is this really
+ > what is needed?
 
-> What can be made sure is that for all pages, which are in EPC,
-> the backing page is truncated.
+As Phoenix explained in his reply, the patch will reject X and Y coordinates 
+larger than 127 or smaller than -127. This is because the most significant bit 
+of packet[1] (for X) and packet[2] (for Y) are inverse of the sign bit. Although 
+I do not have the formal design specification of the device, I tried pushing the 
+trackpoint as hard as I could, and the X and Y coordinates never go beyond 
++/-127 normally, so I believe that this patch would not cause any functionality 
+issue.
 
-Right, and that should be utterly trivial to do.
+ > What kind of patterns are you observing when firmware
+ > misreports coordinates?
+
+Here is a sample log I observed (with elantech.debug set to 2 for more debugging 
+messages):
+psmouse serio1: elantech: PS/2 packet [10 00 80 26 f9 0a]
+psmouse serio1: elantech: PS/2 packet [10 00 80 26 00 80]
+psmouse serio1: elantech: PS/2 packet [10 00 80 00 00 00]
+psmouse serio1: Touchpad at isa0060/serio1/input0 lost sync at byte 6
+psmouse serio1: elantech: PS/2 packet [10 00 80 26 f8 0b]
+psmouse serio1: Touchpad at isa0060/serio1/input0 - driver resynced.
+
+The first packet is a valid packet. The second packet is the incorrect packet 
+that this patch prevents. The third packet is a corrupted packet that psmouse 
+detects (as shown in the "lost sync" message), and the fourth packet is a valid 
+packet again. Without the patch, the second packet would cause the cursor to 
+jump to the edge of the screen.
+
+So far, all my logs of this issue show the same pattern of a jumpy incorrect 
+packet followed by a corrupted packet that causes psmouse to lose sync. There 
+are more logs and discussions in the BugZilla entry here: 
+https://bugzilla.kernel.org/show_bug.cgi?id=209167
+
+Hope my explanation helped a bit.
+
+Thanks!
+
+Best,
+Yufei Du
