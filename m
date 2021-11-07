@@ -2,134 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E89D4474D9
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 18:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C974474E0
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 19:06:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236162AbhKGSBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 13:01:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236069AbhKGSAq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 13:00:46 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B41C061570;
-        Sun,  7 Nov 2021 09:58:02 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id z21so7974842edb.5;
-        Sun, 07 Nov 2021 09:58:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=BkNZKWlktxVlCgFfDkbpw/BG6V3cG3yF0hJ0Q8+ra5w=;
-        b=VARy+XsEOaU09CQ+dUfJX0Nxvo8LYXkBBHABv+5OzCONOY8Tb6wuqjXsXsQxohRBq/
-         cDkoUtpm1WMQ341PXo2WHAP8tKoNpJQd8UT+6DNWka42/O2O58/NKEPGj6Y65Uqvt5Ge
-         5a5Z6q0iVozPLqTQ3RlU87F+52Kiy5yGLhiEJR9JXJ/uc8xmnASpiJkebMeKgEZx5qof
-         6nmcQJTUez/YGKrZST3wASRAX/CDfuHfZKsRIZAjSAK1WOHdIZdjIMY8KaHp37IPdGaT
-         YOyjNu957Fjq6sxqgYwa8iHhTpUVonCQ7nI/2QalBbDxN7kFxswBct7Bp3U9ziXI2ZuO
-         PaQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BkNZKWlktxVlCgFfDkbpw/BG6V3cG3yF0hJ0Q8+ra5w=;
-        b=pA95ZgbLS+Rfbkb8rlAO57auJb+CV9YSu4n/HYs1ll5OU7qX7TOSzkz5yy461Z8Yaj
-         whtUAAMNGQb2iy3tlsLI21I2d3JF8YKC8ewRu0gM5ow/Sg8NpNC7KdF15c0qJCmDjvFd
-         QeiryUWV5adkj3uqndB2v7XVEzaBVub8aUd4TeqhqvSn+u5uIE3JdtSh0GSZOqpPfnzE
-         XrgQmEnwO4iQU6wCxE/7N5zSnzTj4HcILt4E8HalagDBVPeobJv5GPvujiMXWq1gYoBr
-         Qp7B4fHzdcZbVvQye4MtyqpexTpuIpsXcAsbRgHd+0UrVIkDehz3tR7VP2+Kd2Zk7cGr
-         AMdA==
-X-Gm-Message-State: AOAM531m0GzsGVhCC2IS/oS9KUJyInn3mLyn2jV9J37Hz+c/tAfcbS7d
-        NUC7mFKHaCPZrG98CH7TfPE=
-X-Google-Smtp-Source: ABdhPJzfFkbNftsCho1RAVW8xYuJC5CB2ugYT+lyVBQMZssUtfoFgGfthMl3LTvXfpIIR7sDc++8DA==
-X-Received: by 2002:a17:907:ea5:: with SMTP id ho37mr67011769ejc.133.1636307881428;
-        Sun, 07 Nov 2021 09:58:01 -0800 (PST)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.googlemail.com with ESMTPSA id m11sm4251182edd.58.2021.11.07.09.58.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Nov 2021 09:58:01 -0800 (PST)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
-Subject: [RFC PATCH 6/6] dt-bindings: net: dsa: qca8k: add LEDs definition example
-Date:   Sun,  7 Nov 2021 18:57:18 +0100
-Message-Id: <20211107175718.9151-7-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211107175718.9151-1-ansuelsmth@gmail.com>
-References: <20211107175718.9151-1-ansuelsmth@gmail.com>
+        id S233294AbhKGSJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 13:09:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230234AbhKGSJ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 13:09:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4FF461074;
+        Sun,  7 Nov 2021 18:06:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636308405;
+        bh=aWDSKq24BEhQZHeIVmLKMzpNb1qnm7PcMMkOet0HbOs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YyoV6PFTEMjfGZnwHwoSrRHiYSp0T+aYNPNIX7ECRTHdnT3KDL6VPww9Dh3VcL22s
+         QJ2D/6jmHGkqK5pcxt3eMgqZoak3DqpXQb9BtTHik6X0WTRzC1a4feQOqynCj9E5qj
+         TKbGnOsgpDN4sVeUqqmuBUfhjZzTkB/LstTUEjsaH7SWztpqWRnUJt4gNkOybGomEu
+         yD/nzxBS9+a1S316dbdI0LfxExalcle1xBtuPC+P5Pn62y9+Wqx9QmoI9D9KUv6WsF
+         cSGJbgnfEa3uhApFubysKNXUQixdyaEZgU3b0CG3b/E2iL0ihqLMUdKJeltmicHCUC
+         QlSgcu0xbQYow==
+Date:   Sun, 7 Nov 2021 20:06:42 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Sean Christopherson <seanjc@google.com>,
+        reinette.chatre@intel.com, tony.luck@intel.com,
+        nathaniel@profian.com, stable@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: Free backing memory after faulting the enclave
+ page
+Message-ID: <YYgVsi7y4TNuSRLc@iki.fi>
+References: <20211103232238.110557-1-jarkko@kernel.org>
+ <7c122a82-e418-0bce-8f67-cbaa15abc9b9@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7c122a82-e418-0bce-8f67-cbaa15abc9b9@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add LEDs definition example for qca8k using the offload trigger as the
-default trigger and add all the supported offload triggers by the
-switch.
+On Thu, Nov 04, 2021 at 03:38:55PM -0700, Dave Hansen wrote:
+> On 11/3/21 4:22 PM, Jarkko Sakkinen wrote:
+> > --- a/arch/x86/kernel/cpu/sgx/encl.c
+> > +++ b/arch/x86/kernel/cpu/sgx/encl.c
+> > @@ -22,6 +22,7 @@ static int __sgx_encl_eldu(struct sgx_encl_page *encl_page,
+> >  {
+> >  	unsigned long va_offset = encl_page->desc & SGX_ENCL_PAGE_VA_OFFSET_MASK;
+> >  	struct sgx_encl *encl = encl_page->encl;
+> > +	struct inode *inode = file_inode(encl->backing);
+> >  	struct sgx_pageinfo pginfo;
+> >  	struct sgx_backing b;
+> >  	pgoff_t page_index;
+> > @@ -60,6 +61,9 @@ static int __sgx_encl_eldu(struct sgx_encl_page *encl_page,
+> >  
+> >  	sgx_encl_put_backing(&b, false);
+> >  
+> > +	/* Free the backing memory. */
+> > +	shmem_truncate_range(inode, PFN_PHYS(page_index), PFN_PHYS(page_index) + PAGE_SIZE - 1);
+> > +
+> >  	return ret;
+> >  }
+> 
+> This also misses tearing down the backing storage if it is in place at
+> sgx_encl_release().
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- .../devicetree/bindings/net/dsa/qca8k.yaml    | 30 +++++++++++++++++++
- 1 file changed, 30 insertions(+)
+Hmm... sgx_encl_release() does fput(). Isn't that enough to tear it down,
+or does it require explicit truncate, i.e. something like
 
-diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.yaml b/Documentation/devicetree/bindings/net/dsa/qca8k.yaml
-index 48de0ace265d..d8394f625d03 100644
---- a/Documentation/devicetree/bindings/net/dsa/qca8k.yaml
-+++ b/Documentation/devicetree/bindings/net/dsa/qca8k.yaml
-@@ -64,6 +64,8 @@ properties:
-                  internal mdio access is used.
-                  With the legacy mapping the reg corresponding to the internal
-                  mdio is the switch reg with an offset of -1.
-+                 Each phy have at least 3 LEDs connected and can be declared
-+                 using the standard LEDs structure.
- 
-     properties:
-       '#address-cells':
-@@ -340,6 +342,34 @@ examples:
- 
-                 internal_phy_port1: ethernet-phy@0 {
-                     reg = <0>;
-+
-+                    leds {
-+                        led@0 {
-+                            reg = <0>;
-+                            color = <LED_COLOR_ID_WHITE>;
-+                            function = LED_FUNCTION_LAN;
-+                            function-enumerator = <1>;
-+                            linux,default-trigger = "offload-phy-activity";
-+                            linux,supported-offload-triggers = "rx-blink", "tx-blink", "ollision-blink",
-+                                                        "link-10M", "link-100M", "link-1000M",
-+                                                        "half-duplex", "full-duplex", "linkup-over",
-+                                                        "power-on-reset", "blink-2hz", "blink-4hz",
-+                                                        "blink-8hz", "blink-auto";
-+                        };
-+
-+                        led@1 {
-+                            reg = <1>;
-+                            color = <LED_COLOR_ID_AMBER>;
-+                            function = LED_FUNCTION_LAN;
-+                            function-enumerator = <1>;
-+                            linux,default-trigger = "offload-phy-activity";
-+                            linux,supported-offload-triggers = "rx-blink", "tx-blink", "ollision-blink",
-+                                                        "link-10M", "link-100M", "link-1000M",
-+                                                        "half-duplex", "full-duplex", "linkup-over",
-+                                                        "power-on-reset", "blink-2hz", "blink-4hz",
-+                                                        "blink-8hz", "blink-auto";
-+                        };
-+                    };
-                 };
- 
-                 internal_phy_port2: ethernet-phy@1 {
--- 
-2.32.0
+        shmem_truncate_range(file_inode(encl->backing), encl->base, encl->size - 1);
 
+
+> Does a entry->epc_page==NULL page in there guarantee that it has backing
+> storage?
+
+Yes, it is an invariant. That what I was thinking to use for PCMD: iterate
+32 pages and check if they have a faulted page.
+
+/Jarkko
