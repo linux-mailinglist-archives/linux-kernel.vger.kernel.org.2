@@ -2,69 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C0D447629
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 23:00:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B2F44762D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 23:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235858AbhKGWCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 17:02:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235210AbhKGWCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 17:02:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2B1E761165;
-        Sun,  7 Nov 2021 22:00:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636322407;
-        bh=941HGfFQOQJ4fRvMa7Kb8ACJvmAK41E0GU4IMZsgbNc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=X2j+Zy9QkidqJWHiMCBUIzYqoT2X+X/WYcYf04JYcLB4q/PP6KlzK92DsDNJZW70o
-         4bq+2tSj2s0P8BPNiurx9h5mpGqwGwYF2JSvXLHgrsEY9tAmCTKLL7P5y5pgX1zQXQ
-         /c/oTH3ijk4HK9Dk8otWadftA4phkTcUWh+bG+Y8WecMBUONZ6LEkVHCGAuK7cQAVu
-         UN9Oq0WlR0Uv+EyAqSQ3LbiXy8TVgegpSizE/nEtFBxk5VLfQmRs9yaoz7uyXJn25a
-         P9RKCP39v4erV8R3/Q5/IJxADUrE/cC3Zs38KE30323CdAUkGB4s4vUr30dd8AgeXn
-         EwxLXx8HAsmuQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1DD6260966;
-        Sun,  7 Nov 2021 22:00:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S235863AbhKGWI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 17:08:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47689 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235687AbhKGWI0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 17:08:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636322742;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T/jAjhm6dpRyXZ0S52YEwMWBmjizDZSpCg5CbRaLOjg=;
+        b=S4yN5EgumcOsiqVWUWfVSmDx99Kn+DyrVXkx9AKL6u6nCmTKKeK79SLKujFDe89Q8M81Md
+        VX9k2n9FanimLcBBaJvINC/wx44E8ukJa0hjAWk2XYqfObyzBEHwWVpC6mI6EqstFC9p2+
+        b6L/pd3Oa68f1syw+1NW2k2jgKqeFGg=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-40-ayneeCWvMKmeBMebe3Tjpg-1; Sun, 07 Nov 2021 17:05:41 -0500
+X-MC-Unique: ayneeCWvMKmeBMebe3Tjpg-1
+Received: by mail-ed1-f71.google.com with SMTP id g3-20020a056402424300b003e2981e1edbso13303793edb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 14:05:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=T/jAjhm6dpRyXZ0S52YEwMWBmjizDZSpCg5CbRaLOjg=;
+        b=y888uZF88rb6jeSIvPTD/OTZ6D5tlWhgKeUtfvJHNEkY3BgvetZuA1SY8U1WTbk04w
+         Ii2xCyV9EU2o67KOCMcOXgea6e4jXZvRJL/VFGobHtWUptzZe5oHBOpuMOeJuKtQlL5S
+         JEpl3YrwftPT3phYckgsqXZQ8KsBp9ePlmRbyxlqKOf6Alm4Rrd7eVQeCFZgwxISGQcn
+         LIa10f+l1VPGSqhDnA9jdLPjS3KL2+2yJ14qpMB7Hof4rVZBGe5sZQ8cBHeOJTAh3zO3
+         gAWvjdgJycKi4PAODvqLEjwCk9K5ZJqctgpCP4/pFkfXw2XrPMqecOBuB8izyFyZB0YO
+         bSCg==
+X-Gm-Message-State: AOAM531BvfQk+dbxkQ8RO8u4NNOtYvPD1KZq7sLAiTWfmbNGRY58E/W3
+        m8RKY4I7uNj4PlmVbs12/zbQd3MsHWGafSCF5j2yhUPTGf3ugFw7hMS/BUo07LTLXgyGaXwKVH0
+        FpzwbcjeW9HCZn/fiz/SBtVZC
+X-Received: by 2002:a50:9993:: with SMTP id m19mr65716659edb.259.1636322739875;
+        Sun, 07 Nov 2021 14:05:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz2aPyUSnX+KxJaMNCVPgIJgNMz9VEfH4oLRkBU2vuvwlOFH1DrV32fpZ4sYms7ymbTwdGzOg==
+X-Received: by 2002:a50:9993:: with SMTP id m19mr65716624edb.259.1636322739637;
+        Sun, 07 Nov 2021 14:05:39 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id w1sm8913001edd.49.2021.11.07.14.05.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Nov 2021 14:05:39 -0800 (PST)
+Message-ID: <1905fbeb-66d5-d74b-92e7-eb3b181c55ec@redhat.com>
+Date:   Sun, 7 Nov 2021 23:05:38 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 2/4] bq25890: Add max input current limit property
+Content-Language: en-US
+To:     Yauhen Kharuzhy <jekhor@gmail.com>
+Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211107202001.54579-1-jekhor@gmail.com>
+ <20211107202001.54579-2-jekhor@gmail.com>
+ <85a4674a-9212-6f02-d351-72b2223cc4a9@redhat.com>
+ <YYhAUH2nvj1b0uCW@jeknote.loshitsa1.net>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <YYhAUH2nvj1b0uCW@jeknote.loshitsa1.net>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] litex_liteeth: Fix a double free in the remove function
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163632240711.15866.10191810758157275927.git-patchwork-notify@kernel.org>
-Date:   Sun, 07 Nov 2021 22:00:07 +0000
-References: <25b34e3bea4da381228953e484e5c699796dafe8.1636315896.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <25b34e3bea4da381228953e484e5c699796dafe8.1636315896.git.christophe.jaillet@wanadoo.fr>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     davem@davemloft.net, kuba@kernel.org, gsomlo@gmail.com,
-        joel@jms.id.au, caihuoqing@baidu.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi,
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Sun,  7 Nov 2021 21:13:07 +0100 you wrote:
-> 'netdev' is a managed resource allocated in the probe using
-> 'devm_alloc_etherdev()'.
-> It must not be freed explicitly in the remove function.
+On 11/7/21 22:08, Yauhen Kharuzhy wrote:
+> On Sun, Nov 07, 2021 at 09:41:55PM +0100, Hans de Goede wrote:
+>> Hi Yauhen,
+>>
+>> On 11/7/21 21:19, Yauhen Kharuzhy wrote:
+>>> Add property 'ti,input-max-current' to define input current limit if
+>>> needed. It will be applied if automatic charger type detection is
+>>> disabled and using of ILIM pin is disabled or such pin defines greater
+>>> limit than IINLIM field.
+>>
+>> Sorry, but this makes no sense, as the datasheet says the charger
+>> itself updates iinlim dynamically when it has done charger-type
+>> detection (for the bq25890 version) and for the bq25892 version
+>> which does not have the D+ + D- USB pins for BC1.2 detection,
+>> the iinlim should be updated based on the charger detection
+>> done elsewhere (by the Whiskey Cove PMIC in case of the Yoga Book).
 > 
-> Fixes: ee7da21ac4c3 ("net: Add driver for LiteX's LiteETH network interface")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> For Yoga Book, charger detection in the bq25892 is disabled and done in
+> the extcon driver.
 > 
-> [...]
+>> My plan for this is to have drivers/extcon/extcon-intel-cht-wc.c
+>> also register a power_supply device which models the detected
+>> charger / negotiated external charger/power-brick settings and
+>> which is the supplier of the bq25892 charger.
+>>
+>> Then an external_power_changed handler can be added to the
+>> bq25892_charger code using the
+>> power_supply_set_input_current_limit_from_supplier()
+>> helper to dynamically set iinlim based on the detected
+>> "power-brick"/external-charger.
+>>
+>> This is also how this is done for (X86) devices with an
+>> full-featured USB Type-C port where this needs to be handled
+>> by the kernel (rather then it being done in firmware) in
+>> this case the current-max property of the Type-C power-supply
+>> class device gets set either based on the Type-C pull-up
+>> resistor in the charger (setting 0.5A / 1.5A / 3A), with
+>> a fallback to BC1.2 for the 0.5A case, or based on the
+>> USB-PD negotiated max-current.
+> 
+> Agree, looks reasonable.
+> 
+>>
+>> Since we will need this mechanism to dynamically set
+>> iinlim based on the PMIC-s charger-detection it seems
+>> to me that setting it at boot is both unnecessary and a bad
+>> idea, since we don't know the correct value to set at boot.
+>>
+>> The extcon code will start a charger-detection cycle
+>> as soon as it loads (if there is Vbus present) and then
+>> trigger the external_power_changed handler .
+>>
+>> TL;DR: I don't really see a need for this ?
+> 
+> Hmm... I think you are rigth. The only case when such property can be
+> needed – if the device may be damaged by maximum current supported by
+> charging source. I use it to limit current by 2A when original Lenovo adapter
+> is connected because the linux kernel has default max current limit
+> 5A for DCP (drivers/usb/phy/phy.c) but adapter supports only 2A.
 
-Here is the summary with links:
-  - litex_liteeth: Fix a double free in the remove function
-    https://git.kernel.org/netdev/net/c/c45231a7668d
+Yeah 5A is bad, I find it a bit weird that drivers/usb/phy/phy.c
+uses that, but my plan for X86 devices with this charger is
+to not use the drivers/usb/phy/phy.c code, that is not really
+a good fit for X86 devices.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+For the axp288 code (found on many other X86 Cherry Trail
+devices) we use 2A when detecting a DCP.
 
+And the same for the full-featured Type-C case with a
+C to A cable identified with a Pull Up resistor indicating
+max 0.5, combined with BC1.2 DCP detection, then we too
+set the input-current-limit to 2A.
+
+Also I believe that the ILIM pin limits things to 2A
+on the yogabook, I've seen the firmware set IINLIM to
+3.25A and even with a 3A capable charger it only
+draws 2A.
+
+Regards,
+
+Hans
+
+
+
+>>>  drivers/power/supply/bq25890_charger.c | 4 ++++
+>>>  1 file changed, 4 insertions(+)
+>>>
+>>> diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/supply/bq25890_charger.c
+>>> index 34467bfb9537..1c43555d5bd8 100644
+>>> --- a/drivers/power/supply/bq25890_charger.c
+>>> +++ b/drivers/power/supply/bq25890_charger.c
+>>> @@ -85,6 +85,7 @@ struct bq25890_init_data {
+>>>  	u8 treg;	/* thermal regulation threshold */
+>>>  	u8 rbatcomp;	/* IBAT sense resistor value    */
+>>>  	u8 vclamp;	/* IBAT compensation voltage limit */
+>>> +	u8 iinlim_max;	/* maximum input current limit allowed */
+>>>  };
+>>>  
+>>>  struct bq25890_state {
+>>> @@ -657,6 +658,7 @@ static int bq25890_hw_init(struct bq25890_device *bq)
+>>>  		{F_TREG,	 bq->init_data.treg},
+>>>  		{F_BATCMP,	 bq->init_data.rbatcomp},
+>>>  		{F_VCLAMP,	 bq->init_data.vclamp},
+>>> +		{F_IINLIM,	 bq->init_data.iinlim_max},
+>>>  	};
+>>>  
+>>>  	ret = bq25890_chip_reset(bq);
+>>> @@ -870,11 +872,13 @@ static int bq25890_fw_read_u32_props(struct bq25890_device *bq)
+>>>  		{"ti,thermal-regulation-threshold", true, TBL_TREG, &init->treg},
+>>>  		{"ti,ibatcomp-micro-ohms", true, TBL_RBATCOMP, &init->rbatcomp},
+>>>  		{"ti,ibatcomp-clamp-microvolt", true, TBL_VBATCOMP, &init->vclamp},
+>>> +		{"ti,input-max-current", true, TBL_IINLIM, &init->iinlim_max},
+>>>  	};
+>>>  
+>>>  	/* initialize data for optional properties */
+>>>  	init->treg = 3; /* 120 degrees Celsius */
+>>>  	init->rbatcomp = init->vclamp = 0; /* IBAT compensation disabled */
+>>> +	init->iinlim_max = 0x3f;
+>>>  
+>>>  	for (i = 0; i < ARRAY_SIZE(props); i++) {
+>>>  		ret = device_property_read_u32(bq->dev, props[i].name,
+>>>
+>>
+> 
 
