@@ -2,94 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC76447644
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 23:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9001447646
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 23:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236548AbhKGWbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 17:31:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39874 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235737AbhKGWba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 17:31:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF92160FC1;
-        Sun,  7 Nov 2021 22:28:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636324127;
-        bh=krHjZde3Mzk8M9q+BC9UiS9WyWY8AUbQTr3wGFrGymQ=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=W4iMrHYYg+3xIc9+m7TKvPzrmWWx7cjsn+xzFs6CHOvC1CxuDyATh0Z2PLk5Wi66N
-         Iv2trrFaBNI7gdOfGcusurNtm1enXA+eJxJEeUYjedLHlh7bI3HPirRrlRSoDTGrCJ
-         n8OUcbwjyyYy6XfVs4cEkPLLrNW9QUnshqAzBuZ3FXsk7boODjhIENXNsIclk0mjXM
-         DMgz9lTSnEERiVFep+dSb+PKLzbAjD3lFaBkbOjHNRiNG2cY4tXpEx401TXe5fJSfR
-         ZSCebsWHw0LJ3ldpXB4AED4CyOBpCPoXJpzGFi4OCYvOyzT2TJwAiMWRCvtAwxsNKT
-         ncs1R1Fq78uqQ==
-Message-ID: <186120e4754fa0b583d5f4cb31aa49ccd5795d09.camel@kernel.org>
-Subject: Re: [PATCH] x86/sgx: Free backing memory after faulting the enclave
- page
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Sean Christopherson <seanjc@google.com>,
-        reinette.chatre@intel.com, tony.luck@intel.com,
-        nathaniel@profian.com, stable@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 08 Nov 2021 00:28:44 +0200
-In-Reply-To: <7a5d6dab-4d06-40b3-d9c7-09c991b856cd@intel.com>
-References: <20211103232238.110557-1-jarkko@kernel.org>
-         <6831ed3c-c5b1-64f7-2ad7-f2d686224b7e@intel.com>
-         <e88d6d580354aadaa8eaa5ee6fa703f021786afb.camel@kernel.org>
-         <d2191571-30a5-c2aa-e8ed-0a380e9daeac@intel.com>
-         <55eb8f3649590289a0f2b1ebe7583b6da3ff70ee.camel@kernel.org>
-         <c6f5356b-a56a-e057-ef74-74e1169a844b@intel.com> <YYgsL7xSxnsjqIlu@iki.fi>
-         <7a5d6dab-4d06-40b3-d9c7-09c991b856cd@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.40.4-1 
+        id S236585AbhKGWeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 17:34:07 -0500
+Received: from gandalf.ozlabs.org ([150.107.74.76]:58357 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235737AbhKGWeF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 17:34:05 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HnTVZ1jgRz4xd4;
+        Mon,  8 Nov 2021 09:31:17 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1636324281;
+        bh=9Z5GYdWA78hrsdCWSQ0i9WtTgQ98iIso88MZBedtccY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=f3MuNWNv9vKPg87fW5H/sVmBgXMepxqtJOBGuVdmAMEAWTwU6iKdidcKY9sbGXMfy
+         lUAIg0CM/CSahYfxUiI5gnc+uueJR0s0SPHUVx5VasIuvs4HWPIY5WubRSpbYpvJ2Z
+         DgNSSkA7EiGGdxmuRf5kpXMwJRyfAO3WBgv7WjGbp3WkRdW9TtWO27zbg/xI8HJ/Vx
+         G09fponfjEMjacfE7WzCW+M9fi2lt1Hjc+Ro5rzW42Djc6GxLP9yutSYz+afNi89bt
+         M+bo3odiRZbb7Teejfcc5mgBXfLBcpWs0TiD9OkSvnKZseXQpD/n0yBPfmakqRE31s
+         BVLvFcK08YL4Q==
+Date:   Mon, 8 Nov 2021 09:31:14 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the drm-misc tree with the origin tree
+Message-ID: <20211108093114.12dde19b@canb.auug.org.au>
 MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/xVuPQyygmteliXR405bmI+I";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-11-07 at 11:51 -0800, Dave Hansen wrote:
-> On 11/7/21 11:42 AM, Jarkko Sakkinen wrote:
-> > > > It should be fairly effecient just to check the pages by using
-> > > > encl->page_tree.
-> > > That sounds more complicated and slower than what I suggested.=C2=A0 =
-You
-> > > could even just check the refcount on the page.=C2=A0 I _think_ page =
-cache
-> > > pages have a refcount of 2.=C2=A0 So, look for the refcount that mean=
-s "no
-> > > more PCMD in this page", and just free it if so.
-> > Umh, so... there is total 32 PCMD's per one page.
->=20
-> When you place PCMD in a page, you do a get_page().=C2=A0 The refcount go=
-es
-> up by one.=C2=A0 So, a PCMD page with one PCMD will (I think) have a refc=
-ount
-> of 3.=C2=A0 If you totally fill it up with 31 *more* PCMD entries, it wil=
-l
-> have a refcount of 34.=C2=A0 You do *not* do a put_page() on the PCMD pag=
-e at
-> the end of the allocation phase.
->=20
-> When the backing storage is freed, you drop the refcount.=C2=A0 So, going
-> from 32 PCMD entries to 31 entries in a page, you go from 34->33.
->=20
-> When that refcount drops to 2, you know there is no more data in the
-> page that's useful.=C2=A0 At that point you can truncate it out of the
-> backing storage.
->=20
-> There's no reason to scan the page, or a boatload of other metadata.
-> Just keep a refcount.=C2=A0 Just use the *existing* 'struct page' refcoun=
-t.
+--Sig_/xVuPQyygmteliXR405bmI+I
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Right! Thank you, I'll use this approach, and check that the refcount
-actually behaves that way you described.
+Hi all,
 
-/Jarkko
+Today's linux-next merge of the drm-misc tree got a conflict in:
+
+  drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
+
+between commit:
+
+  9ae807f0ec6a ("drm/amdgpu: clean up inconsistent indenting")
+
+from the origin tree and commit:
+
+  0d979509539e ("drm/ttm: remove ttm_bo_vm_insert_huge()")
+
+from the drm-misc tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
+index a573424a6e0b,a1e63ba4c54a..000000000000
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
+@@@ -60,9 -60,10 +60,9 @@@ static vm_fault_t amdgpu_gem_fault(stru
+  			goto unlock;
+  		}
+ =20
+ -		 ret =3D ttm_bo_vm_fault_reserved(vmf, vmf->vma->vm_page_prot,
+ -						TTM_BO_VM_NUM_PREFAULT);
+ -
+ -		 drm_dev_exit(idx);
+ +		ret =3D ttm_bo_vm_fault_reserved(vmf, vmf->vma->vm_page_prot,
+- 					       TTM_BO_VM_NUM_PREFAULT, 1);
+++					       TTM_BO_VM_NUM_PREFAULT);
+ +		drm_dev_exit(idx);
+  	} else {
+  		ret =3D ttm_bo_vm_dummy_page(vmf, vmf->vma->vm_page_prot);
+  	}
+
+--Sig_/xVuPQyygmteliXR405bmI+I
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGIU7IACgkQAVBC80lX
+0GzmTAf9HYnSJ+9qZoiBiBmrkMU2I9mv4K1XRQmu/9ShHGdTV3/eb7ImO/q9HHOD
+YAafVU6JOjuvNTTfouoM1o1CEhPuetF0wyTRYJI0QzJchrUsQlBhpff/SHcaNbfl
+RzBbn+dAx+kRfqIBiYzBYuVI8xoov/5PhhsnxUnis0uz9XZP+40UDTBtrWkBFXu3
+Oii5r+BsbIg0VBvpuvYi+9vA7RozQn957fL0OfXk4GhWHImTm0rucIHPsD9fwb3E
+8zuAZfCIsXO86SQP8lV/R9qmYAT0KxJsmJdhAKdclSrpsTWqRxRyfhcQSVbKcfbs
+UsiUr5FtMnVs7TR9ghnDG5CM0eDwdw==
+=9aE7
+-----END PGP SIGNATURE-----
+
+--Sig_/xVuPQyygmteliXR405bmI+I--
