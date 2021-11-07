@@ -2,68 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5881444753C
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:20:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2BE44753F
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231934AbhKGTWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 14:22:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhKGTWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 14:22:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 48F6961165;
-        Sun,  7 Nov 2021 19:20:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636312807;
-        bh=ZLfLyLAruXENMI1XjQp2lGrXJbUqRZ0DF6vj1H/nkQU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=a7eE6QyXf2Dnthngcs85Op7fLPT0K0OgUp7gDbtAy8Vo/YJBEwhEkPTEyKPAQPnGB
-         YRZExfcWgxCAj6EBqvl/oX/F22wXGiFUoK3fDZuDzGPX8mm6lgpq40sOewWM23NWtj
-         HnFn2LLQYnmRCOoZ6ke1CXGZ9ovtXpHzL2XNhkA+2/p1otszCK6kNw9Lc5bEHbiZhQ
-         xP/l/RT9mE8iykF27ecuvlbUuDmz7sZp9amLladXGtXLagSkY64FR3vAQxKZ7rG3Wk
-         TWc5uPFql9lBv/ibICaVko0+WyfHlOPMhT9aHS2vbr8msZMGT9ZVk3f+xBuhqU/hMU
-         W+gRQFvrzgmng==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3CFDE60A6B;
-        Sun,  7 Nov 2021 19:20:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] nfc: port100: lower verbosity of cancelled URB messages
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163631280724.9669.10610221896311122848.git-patchwork-notify@kernel.org>
-Date:   Sun, 07 Nov 2021 19:20:07 +0000
-References: <20211107141400.523651-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211107141400.523651-1-krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S232627AbhKGTX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 14:23:26 -0500
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:34516 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233834AbhKGTXV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 14:23:21 -0500
+Received: by mail-oi1-f171.google.com with SMTP id bg25so23586130oib.1;
+        Sun, 07 Nov 2021 11:20:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=r1/wcCU/2X1I1Y5JLtP+b/0PYuwkoBpy63PD+ijntA4=;
+        b=sDfEXnMnRmWnvZ3LwFMNxyQkR4vvIMexEljFCodigxeHNxQ3njyk1G7NIh5mz+rQqy
+         NiHZezq3C2TWQtaxfB7xvZIQJ2Rkb1I1dSXtyWEYKaW9I2SjOZ2VPd8mDglyQDQHiSjw
+         /0sfmOwfrjLaBat55BKYMYR9N8Mu/bxWRfEQYNb4AqkNNhzdC+Z8mhoVFA7RlQw/FOUH
+         juebuetITryX8vrV1Ow7F+KV1O7/V107bbMExxyVGQdEwUXKp+igq/NMuCD3M67HrPjF
+         cngLy52X8zpijmpNcXHRh7S/jjL4xCh0D7Ri6hdtwg1uPo9r+z55czzKotNHG7JNWuVQ
+         gxHw==
+X-Gm-Message-State: AOAM531JDX1eSEATioN62oDb2rQsvJIejweu91ZtOdKGvUDFcwa4b/Wv
+        9TqeTxfGEiYCuXJCsT/p3A==
+X-Google-Smtp-Source: ABdhPJzEUvEsha8d49NX1P6EOkdOY8Nv3eLZZ3xuEKDjM4jFGhTBU1+upmwtuoWD0mh/bp/aKWrBJw==
+X-Received: by 2002:a05:6808:170e:: with SMTP id bc14mr34049600oib.86.1636312837939;
+        Sun, 07 Nov 2021 11:20:37 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id h1sm2628351oom.12.2021.11.07.11.20.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Nov 2021 11:20:37 -0800 (PST)
+Received: (nullmailer pid 1404562 invoked by uid 1000);
+        Sun, 07 Nov 2021 19:20:36 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Tony Huang <tonyhuang.sunplus@gmail.com>
+Cc:     wells.lu@sunplus.com, devicetree@vger.kernel.org,
+        linux-mmc@vger.kernel.org, robh+dt@kernel.org,
+        ulf.hansson@linaro.org, linux-kernel@vger.kernel.org,
+        p.zabel@pengutronix.de, Tony Huang <tony.huang@sunplus.com>
+In-Reply-To: <1636208598-18234-2-git-send-email-tony.huang@sunplus.com>
+References: <1636208598-18234-1-git-send-email-tony.huang@sunplus.com> <1636208598-18234-2-git-send-email-tony.huang@sunplus.com>
+Subject: Re: [PATCH 1/2] dt-binding: mmc: Add mmc yaml file for Sunplus SP7021
+Date:   Sun, 07 Nov 2021 13:20:36 -0600
+Message-Id: <1636312836.425525.1404561.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Sun,  7 Nov 2021 15:14:00 +0100 you wrote:
-> It is not an error to receive an URB with -ENOENT because it can come
-> from regular user operations, e.g. pressing CTRL+C when running nfctool
-> from neard.  Make it a debugging message, not an error.
+On Sat, 06 Nov 2021 22:23:17 +0800, Tony Huang wrote:
+> Add mmc yaml file for Sunplus SP7021
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Signed-off-by: Tony Huang <tony.huang@sunplus.com>
 > ---
->  drivers/nfc/port100.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  .../devicetree/bindings/mmc/sunplus-mmc.yaml       | 64 ++++++++++++++++++++++
+>  MAINTAINERS                                        |  5 ++
+>  2 files changed, 69 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mmc/sunplus-mmc.yaml
+> 
 
-Here is the summary with links:
-  - nfc: port100: lower verbosity of cancelled URB messages
-    https://git.kernel.org/netdev/net/c/08fcdfa6e3ae
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+yamllint warnings/errors:
 
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/mmc/sunplus-mmc.example.dts:21:18: fatal error: dt-bindings/clock/sp-sp7021.h: No such file or directory
+   21 |         #include <dt-bindings/clock/sp-sp7021.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/mmc/sunplus-mmc.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1441: dt_binding_check] Error 2
+
+doc reference errors (make refcheckdocs):
+MAINTAINERS: Documentation/devicetree/bindings/mmc/sunplu-mmc.yaml
+
+See https://patchwork.ozlabs.org/patch/1551671
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
