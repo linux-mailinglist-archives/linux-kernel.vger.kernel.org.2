@@ -2,162 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249A1447387
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 16:30:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E09E544738A
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 16:33:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235637AbhKGPcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 10:32:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37044 "EHLO mail.kernel.org"
+        id S235097AbhKGPfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 10:35:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234272AbhKGPcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 10:32:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D96C60FD7;
-        Sun,  7 Nov 2021 15:30:11 +0000 (UTC)
+        id S231681AbhKGPfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 10:35:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B477061055;
+        Sun,  7 Nov 2021 15:33:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636299011;
-        bh=i39reOvzohDnkfOFLebPqsEvmo91vFwHujAGFaThnho=;
+        s=k20201202; t=1636299189;
+        bh=oqV/Aft81XAWOlvE1ctJVTIUha35PN0j9579G8jxHmM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pHn4RomukhhrdD2sAsgXXyrjyHkqWDcnRo1iivQnEPM1V4fuvSqWbWuIhQw1CFjQe
-         RMJAaf2kIH1c72DoOHJ+l4kZFyKqgk8AcQ7plJR1mL3yuEeQ+Y1boIs6m5x9pn6CKA
-         76oa9qawFKaf+ABUSTXlVdGeL9ySKafHcn0QwvicWQe0ApP68lkXPHH5wSXH9CGNvQ
-         CGZwhMOTub8g7tXQfiOBmiUbt5uPQ9rbyGMiJPrXwW8P3R782EJJaDy2MhUFMQL7hr
-         gPbjIN7/tSo7tpjD4o2pZfsZSW37ZeSbc6CuRVXwNBTfX9f1J8h5JA+TYwNafyHFpi
-         eGn+psO1FeBbw==
+        b=MKU3ipHnAnVUfMFPhy2VpkXmEYMrxjvzunDibXWEhI1wOKra1fp9dNkD+eukdDZEP
+         8j2XdTZYG17SKrc+vZBHtFfMC8m0+O5lAT7iOdxB/m8RH1A2eHSaiNv+XO/MNKq36Y
+         faYoiHHAB5GNP4RAKgfM6ZXKulSng8jYA7LFLdFhub1/kU+sydMRaXnOWE6Vm7S+FJ
+         YtLf653me06r/Yw16/eU4sVfpCvMdC5pKVC0N9WX/ONpe/r+1S53w0BM6SZ8RWk2za
+         QWUHEXwsOA/gyPOmF2lRimzYALwnAn+WZCRHZEACIQnaQq5vlkOrvvcnkzeUyaNhWM
+         xBKatUYEZdnOA==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E2F04410A1; Sun,  7 Nov 2021 12:30:07 -0300 (-03)
-Date:   Sun, 7 Nov 2021 12:30:07 -0300
+        id 308F6410A1; Sun,  7 Nov 2021 12:33:07 -0300 (-03)
+Date:   Sun, 7 Nov 2021 12:33:07 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] perf build: Install libbpf headers locally when
- building
-Message-ID: <YYfw/y2KmjvjOax2@kernel.org>
-References: <813cc0db-51d0-65b3-70f4-f1a823b0d029@isovalent.com>
- <20211107002445.4790-1-quentin@isovalent.com>
+        John Garry <john.garry@huawei.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        eranian@google.com
+Subject: Re: [PATCH] perf stat: Fix memory leak on error path
+Message-ID: <YYfxsyAdpMXIchQw@kernel.org>
+References: <20211107085444.3781604-1-irogers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211107002445.4790-1-quentin@isovalent.com>
+In-Reply-To: <20211107085444.3781604-1-irogers@google.com>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Nov 07, 2021 at 12:24:45AM +0000, Quentin Monnet escreveu:
-> API headers from libbpf should not be accessed directly from the
-> library's source directory. Instead, they should be exported with "make
-> install_headers". Let's adjust perf's Makefile to install those headers
-> locally when building libbpf.
-> 
-> v2:
-> - Fix $(LIBBPF_OUTPUT) when $(OUTPUT) is null.
-> - Make sure the recipe for $(LIBBPF_OUTPUT) is not under a "ifdef".
+Em Sun, Nov 07, 2021 at 01:54:44AM -0700, Ian Rogers escreveu:
+> Strdup is used to deduplicate, ensure it isn't overwriting an already
 
-Thanks for the prompt reply, now the cases where it was failing are
-passing!
+s/overwriting/leaking/g
 
-Best regards,
+Right?
 
 - Arnaldo
- 
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> ---
->  tools/perf/Makefile.perf | 32 +++++++++++++++++++-------------
->  1 file changed, 19 insertions(+), 13 deletions(-)
+
+> created string by freeing first.
 > 
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index b856afa6eb52..e01ada5c9876 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -241,7 +241,7 @@ else # force_fixdep
->  
->  LIB_DIR         = $(srctree)/tools/lib/api/
->  TRACE_EVENT_DIR = $(srctree)/tools/lib/traceevent/
-> -BPF_DIR         = $(srctree)/tools/lib/bpf/
-> +LIBBPF_DIR      = $(srctree)/tools/lib/bpf/
->  SUBCMD_DIR      = $(srctree)/tools/lib/subcmd/
->  LIBPERF_DIR     = $(srctree)/tools/lib/perf/
->  DOC_DIR         = $(srctree)/tools/perf/Documentation/
-> @@ -293,7 +293,6 @@ strip-libs = $(filter-out -l%,$(1))
->  ifneq ($(OUTPUT),)
->    TE_PATH=$(OUTPUT)
->    PLUGINS_PATH=$(OUTPUT)
-> -  BPF_PATH=$(OUTPUT)
->    SUBCMD_PATH=$(OUTPUT)
->    LIBPERF_PATH=$(OUTPUT)
->  ifneq ($(subdir),)
-> @@ -305,7 +304,6 @@ else
->    TE_PATH=$(TRACE_EVENT_DIR)
->    PLUGINS_PATH=$(TRACE_EVENT_DIR)plugins/
->    API_PATH=$(LIB_DIR)
-> -  BPF_PATH=$(BPF_DIR)
->    SUBCMD_PATH=$(SUBCMD_DIR)
->    LIBPERF_PATH=$(LIBPERF_DIR)
->  endif
-> @@ -324,7 +322,14 @@ LIBTRACEEVENT_DYNAMIC_LIST_LDFLAGS = $(if $(findstring -static,$(LDFLAGS)),,$(DY
->  LIBAPI = $(API_PATH)libapi.a
->  export LIBAPI
->  
-> -LIBBPF = $(BPF_PATH)libbpf.a
-> +ifneq ($(OUTPUT),)
-> +  LIBBPF_OUTPUT = $(abspath $(OUTPUT))/libbpf
-> +else
-> +  LIBBPF_OUTPUT = $(CURDIR)/libbpf
-> +endif
-> +LIBBPF_DESTDIR = $(LIBBPF_OUTPUT)
-> +LIBBPF_INCLUDE = $(LIBBPF_DESTDIR)/include
-> +LIBBPF = $(LIBBPF_OUTPUT)/libbpf.a
->  
->  LIBSUBCMD = $(SUBCMD_PATH)libsubcmd.a
->  
-> @@ -829,12 +834,14 @@ $(LIBAPI)-clean:
->  	$(call QUIET_CLEAN, libapi)
->  	$(Q)$(MAKE) -C $(LIB_DIR) O=$(OUTPUT) clean >/dev/null
->  
-> -$(LIBBPF): FORCE
-> -	$(Q)$(MAKE) -C $(BPF_DIR) O=$(OUTPUT) $(OUTPUT)libbpf.a FEATURES_DUMP=$(FEATURE_DUMP_EXPORT)
-> +$(LIBBPF): FORCE | $(LIBBPF_OUTPUT)
-> +	$(Q)$(MAKE) -C $(LIBBPF_DIR) FEATURES_DUMP=$(FEATURE_DUMP_EXPORT) \
-> +		O= OUTPUT=$(LIBBPF_OUTPUT)/ DESTDIR=$(LIBBPF_DESTDIR) prefix= \
-> +		$@ install_headers
->  
->  $(LIBBPF)-clean:
->  	$(call QUIET_CLEAN, libbpf)
-> -	$(Q)$(MAKE) -C $(BPF_DIR) O=$(OUTPUT) clean >/dev/null
-> +	$(Q)$(RM) -r -- $(LIBBPF_OUTPUT)
->  
->  $(LIBPERF): FORCE
->  	$(Q)$(MAKE) -C $(LIBPERF_DIR) EXTRA_CFLAGS="$(LIBPERF_CFLAGS)" O=$(OUTPUT) $(OUTPUT)libperf.a
-> @@ -1034,16 +1041,15 @@ SKELETONS := $(SKEL_OUT)/bpf_prog_profiler.skel.h
->  SKELETONS += $(SKEL_OUT)/bperf_leader.skel.h $(SKEL_OUT)/bperf_follower.skel.h
->  SKELETONS += $(SKEL_OUT)/bperf_cgroup.skel.h
->  
-> +$(SKEL_TMP_OUT) $(LIBBPF_OUTPUT):
-> +	$(Q)$(MKDIR) -p $@
-> +
->  ifdef BUILD_BPF_SKEL
->  BPFTOOL := $(SKEL_TMP_OUT)/bootstrap/bpftool
-> -LIBBPF_SRC := $(abspath ../lib/bpf)
-> -BPF_INCLUDE := -I$(SKEL_TMP_OUT)/.. -I$(BPF_PATH) -I$(LIBBPF_SRC)/..
-> -
-> -$(SKEL_TMP_OUT):
-> -	$(Q)$(MKDIR) -p $@
-> +BPF_INCLUDE := -I$(SKEL_TMP_OUT)/.. -I$(LIBBPF_INCLUDE)
->  
->  $(BPFTOOL): | $(SKEL_TMP_OUT)
-> -	CFLAGS= $(MAKE) -C ../bpf/bpftool \
-> +	$(Q)CFLAGS= $(MAKE) -C ../bpf/bpftool \
->  		OUTPUT=$(SKEL_TMP_OUT)/ bootstrap
->  
->  VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)				\
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/stat-shadow.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
+> index 69f3cf3b4a44..e4fb02b05130 100644
+> --- a/tools/perf/util/stat-shadow.c
+> +++ b/tools/perf/util/stat-shadow.c
+> @@ -444,6 +444,7 @@ void perf_stat__collect_metric_expr(struct evlist *evsel_list)
+>  						"Add %s event to groups to get metric expression for %s\n",
+>  						metric_name,
+>  						counter->name);
+> +					free(printed);
+>  					printed = strdup(metric_name);
+>  				}
+>  				invalid = true;
 > -- 
-> 2.32.0
+> 2.34.0.rc0.344.g81b53c2807-goog
 
 -- 
 
