@@ -2,58 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85964447535
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3094E447536
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236285AbhKGTQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 14:16:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38156 "EHLO mail.kernel.org"
+        id S236293AbhKGTRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 14:17:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229846AbhKGTQz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 14:16:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3D35D60F70;
-        Sun,  7 Nov 2021 19:14:12 +0000 (UTC)
+        id S229846AbhKGTRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 14:17:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 28D8060F46;
+        Sun,  7 Nov 2021 19:14:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636312452;
-        bh=mMqmZqgC3XNLmdsXofP5f3+CFr2qBZElzsW2vaGjLDU=;
+        s=k20201202; t=1636312473;
+        bh=mq5xP7UyJruumTLOW1X/BBtTaN0hak8wu6C83XuG9L0=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=gjYkzBWENEw2k5BGu9uqnaucJ3pDyH8WGWqlxEYbcVWAbbU0ah+LSiDP/w3zSB69/
-         1mdD+ByQaOTETl8FeKCh5nwfDoUXblT8RhqgYPtouWrtqq8ZQsE/1WtJAkSFif0BWh
-         9/uTkTzS/Lw53nNFHN82BfzVqt2e+U2w90gSCdtmrxu7mezn9t61x8aiJWNConBaz5
-         qSCS5Lc9FY4snieS42Z9bxZaQzGsO+n2MImu3IlLa1W5fMKEWRvFekEq5+PRnW6+di
-         jOu1Glr0PozO2sgpiWp+seAbvUd/fx7EVzzKzeH1p7YND6jyhWNci0nrYfAMNM35vd
-         54WhNNmgcXC4w==
+        b=h1MFS4ykkb8PePlyLolU7yaOkADTK/awiInJR7bhrYMzsDwJk0bWEBUA2Mka4D126
+         NAITRNPD5egMivokicH1B5E5ipf/QMtWyXRFn9T2s11yI8kAIaHvprZ0qGxnextncd
+         oBp/jU2Cq8hYBaKSH63i0rX7D/XD+eQchmZ8b03JHvfvSyoWa8bHhOh/Hwl60I06oy
+         oXOrrVOXEv+VyxU5X0HVtPwqgVDk0CHZKQTcy8VyTx3R5aR+u+uHKucU1KOB65elI4
+         TvgUfviywKQnuoaeoYShoOffBRL+zyLJjIEn91A4WCIirvbR+LbxWqh2kakLm6tEYm
+         Lk+Joi+X/miCg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 27F2D60A2E;
-        Sun,  7 Nov 2021 19:14:12 +0000 (UTC)
-Subject: Re: [PULL REQUEST] i2c for v5.16
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1C2F860A2E;
+        Sun,  7 Nov 2021 19:14:33 +0000 (UTC)
+Subject: Re: [GIT PULL] Compiler Attributes for v5.16
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YYb0pFqpL113nWdX@kunai>
-References: <YYb0pFqpL113nWdX@kunai>
-X-PR-Tracked-List-Id: <linux-i2c.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YYb0pFqpL113nWdX@kunai>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
-X-PR-Tracked-Commit-Id: c80be257a4cd0f72c083e6056ff0ce2da871e9dc
+In-Reply-To: <20211106133345.GA15102@kernel.org>
+References: <20211106133345.GA15102@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211106133345.GA15102@kernel.org>
+X-PR-Tracked-Remote: https://github.com/ojeda/linux.git tags/compiler-attributes-for-linus-v5.16
+X-PR-Tracked-Commit-Id: 7c00621dcaeea206d7489b3e8b50b1864841ae69
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6b75d88fa81b122cce37ebf17428a849ccd3d0f1
-Message-Id: <163631245210.5338.5302737279761858730.pr-tracker-bot@kernel.org>
-Date:   Sun, 07 Nov 2021 19:14:12 +0000
-To:     Wolfram Sang <wsa@kernel.org>
+X-PR-Merge-Commit-Id: e54ffb96e6f41eb5ca2f89788f95224273ce09f1
+Message-Id: <163631247310.5338.6116226076671691808.pr-tracker-bot@kernel.org>
+Date:   Sun, 07 Nov 2021 19:14:33 +0000
+To:     Miguel Ojeda <ojeda@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 6 Nov 2021 22:33:24 +0100:
+The pull request you sent on Sat, 6 Nov 2021 14:35:23 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
+> https://github.com/ojeda/linux.git tags/compiler-attributes-for-linus-v5.16
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6b75d88fa81b122cce37ebf17428a849ccd3d0f1
+https://git.kernel.org/torvalds/c/e54ffb96e6f41eb5ca2f89788f95224273ce09f1
 
 Thank you!
 
