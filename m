@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E212E447338
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 15:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8EA447337
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 15:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235481AbhKGOMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 09:12:19 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:27117 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235466AbhKGOMQ (ORCPT
+        id S235484AbhKGOMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 09:12:15 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:14721 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235457AbhKGOMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 09:12:16 -0500
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HnGJy26y2z1DJ9M;
+        Sun, 7 Nov 2021 09:12:12 -0500
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HnGJy57MHzZcld;
         Sun,  7 Nov 2021 22:07:14 +0800 (CST)
 Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sun, 7 Nov 2021 22:09:24 +0800
+ 15.1.2308.15; Sun, 7 Nov 2021 22:09:25 +0800
 Received: from DESKTOP-27KDQMV.china.huawei.com (10.174.148.223) by
  dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sun, 7 Nov 2021 22:09:23 +0800
+ 15.1.2308.15; Sun, 7 Nov 2021 22:09:24 +0800
 From:   "Longpeng(Mike)" <longpeng2@huawei.com>
 To:     <andraprs@amazon.com>, <lexnv@amazon.com>, <alcioa@amazon.com>
 CC:     <arei.gonglei@huawei.com>, <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ CC:     <arei.gonglei@huawei.com>, <gregkh@linuxfoundation.org>,
         <sgarzare@redhat.com>, <stefanha@redhat.com>,
         <vkuznets@redhat.com>, <linux-kernel@vger.kernel.org>,
         <ne-devel-upstream@amazon.com>, Longpeng <longpeng2@huawei.com>
-Subject: [PATCH v5 3/4] nitro_enclaves: Add KUnit tests setup for the misc device functionality
-Date:   Sun, 7 Nov 2021 22:09:16 +0800
-Message-ID: <20211107140918.2106-4-longpeng2@huawei.com>
+Subject: [PATCH v5 4/4] nitro_enclaves: Add KUnit tests for contiguous physical memory regions merging
+Date:   Sun, 7 Nov 2021 22:09:17 +0800
+Message-ID: <20211107140918.2106-5-longpeng2@huawei.com>
 X-Mailer: git-send-email 2.25.0.windows.1
 In-Reply-To: <20211107140918.2106-1-longpeng2@huawei.com>
 References: <20211107140918.2106-1-longpeng2@huawei.com>
@@ -49,109 +49,198 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Longpeng <longpeng2@huawei.com>
 
-Add the initial setup for the KUnit tests that will target the Nitro
-Enclaves misc device functionality.
+Add KUnit tests for the contiguous physical memory regions merging
+functionality from the Nitro Enclaves misc device logic.
+
+We can build the test binary with the following configuration:
+  CONFIG_KUNIT=y
+  CONFIG_NITRO_ENCLAVES=m
+  CONFIG_NITRO_ENCLAVES_MISC_DEV_TEST=y
+and install the nitro_enclaves module to run the testcases.
+
+We'll see the following message using dmesg if everything goes well:
+
+[...]     # Subtest: ne_misc_dev_test
+[...]     1..1
+[...] (NULL device *): Physical mem region address is not 2 MiB aligned
+[...] (NULL device *): Physical mem region size is not multiple of 2 MiB
+[...] (NULL device *): Physical mem region address is not 2 MiB aligned
+[...]     ok 1 - ne_misc_dev_test_merge_phys_contig_memory_regions
+[...] ok 1 - ne_misc_dev_test
 
 Signed-off-by: Longpeng <longpeng2@huawei.com>
-Reviewed-by: Andra Paraschiv <andraprs@amazon.com>
 ---
- drivers/virt/nitro_enclaves/Kconfig            |  9 ++++++++
- drivers/virt/nitro_enclaves/ne_misc_dev.c      | 31 ++++++++++++++++++++++++++
- drivers/virt/nitro_enclaves/ne_misc_dev_test.c | 17 ++++++++++++++
- 3 files changed, 57 insertions(+)
- create mode 100644 drivers/virt/nitro_enclaves/ne_misc_dev_test.c
+Changes v4 -> v5:
+  - fix the warning of aligment that reported by the checkpath.pl  [Andra]
+  - remove unnecessary comparison of NULL.  [Andra]
 
-diff --git a/drivers/virt/nitro_enclaves/Kconfig b/drivers/virt/nitro_enclaves/Kconfig
-index f53740b..2d3d981 100644
---- a/drivers/virt/nitro_enclaves/Kconfig
-+++ b/drivers/virt/nitro_enclaves/Kconfig
-@@ -14,3 +14,12 @@ config NITRO_ENCLAVES
- 
- 	  To compile this driver as a module, choose M here.
- 	  The module will be called nitro_enclaves.
-+
-+config NITRO_ENCLAVES_MISC_DEV_TEST
-+	bool "Tests for the misc device functionality of the Nitro Enclaves"
-+	depends on NITRO_ENCLAVES && KUNIT=y
-+	help
-+	  Enable KUnit tests for the misc device functionality of the Nitro
-+	  Enclaves. Select this option only if you will boot the kernel for
-+	  the purpose of running unit tests (e.g. under UML or qemu). If
-+	  unsure, say N.
-diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-index 83ed9b5..51ba4ca 100644
---- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
-+++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-@@ -1756,8 +1756,37 @@ static long ne_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	return 0;
- }
- 
-+#if defined(CONFIG_NITRO_ENCLAVES_MISC_DEV_TEST)
-+#include "ne_misc_dev_test.c"
-+
-+static inline int ne_misc_dev_test_init(void)
-+{
-+	return __kunit_test_suites_init(ne_misc_dev_test_suites);
-+}
-+
-+static inline void ne_misc_dev_test_exit(void)
-+{
-+	__kunit_test_suites_exit(ne_misc_dev_test_suites);
-+}
-+#else
-+static inline int ne_misc_dev_test_init(void)
-+{
-+	return 0;
-+}
-+
-+static inline void ne_misc_dev_test_exit(void)
-+{
-+}
-+#endif
-+
- static int __init ne_init(void)
- {
-+	int rc = 0;
-+
-+	rc = ne_misc_dev_test_init();
-+	if (rc < 0)
-+		return rc;
-+
- 	mutex_init(&ne_cpu_pool.mutex);
- 
- 	return pci_register_driver(&ne_pci_driver);
-@@ -1768,6 +1797,8 @@ static void __exit ne_exit(void)
- 	pci_unregister_driver(&ne_pci_driver);
- 
- 	ne_teardown_cpu_pool();
-+
-+	ne_misc_dev_test_exit();
- }
- 
- module_init(ne_init);
+Changes v3 -> v4:
+  - "int expect_num" -> "unsigned long  expect_num"  [Andra]
+  - rename several variables and structures  [Andra]
+  - invoke "kunit_kfree" to free the "regions"  [Andra]
+
+Changes v2 -> v3:
+  - update the commit title and commit message.  [Andra]
+  - align the fileds in 'struct phys_regions_test'.  [Andra]
+  - rename 'phys_regions_testcases' to 'phys_regions_test_cases'.  [Andra]
+  - add comments before each test cases.  [Andra]
+  - initialize the variables in ne_misc_dev_test_merge_phys_contig_memory_regions.  [Andra]
+---
+ drivers/virt/nitro_enclaves/ne_misc_dev_test.c | 140 +++++++++++++++++++++++++
+ 1 file changed, 140 insertions(+)
+
 diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev_test.c b/drivers/virt/nitro_enclaves/ne_misc_dev_test.c
-new file mode 100644
-index 0000000..6862e99
---- /dev/null
+index 6862e99..265797b 100644
+--- a/drivers/virt/nitro_enclaves/ne_misc_dev_test.c
 +++ b/drivers/virt/nitro_enclaves/ne_misc_dev_test.c
-@@ -0,0 +1,17 @@
-+// SPDX-License-Identifier: GPL-2.0
+@@ -2,7 +2,147 @@
+ 
+ #include <kunit/test.h>
+ 
++#define MAX_PHYS_REGIONS	16
++#define INVALID_VALUE		(~0ull)
 +
-+#include <kunit/test.h>
++struct ne_phys_regions_test {
++	u64           paddr;
++	u64           size;
++	int           expect_rc;
++	unsigned long expect_num;
++	u64           expect_last_paddr;
++	u64           expect_last_size;
++} phys_regions_test_cases[] = {
++	/*
++	 * Add the region from 0x1000 to (0x1000 + 0x200000 - 1):
++	 *   Expected result:
++	 *       Failed, start address is not 2M-aligned
++	 *
++	 * Now the instance of struct ne_phys_contig_mem_regions is:
++	 *   num = 0
++	 *   regions = {}
++	 */
++	{0x1000, 0x200000, -EINVAL, 0, INVALID_VALUE, INVALID_VALUE},
 +
-+static struct kunit_case ne_misc_dev_test_cases[] = {
-+	{}
++	/*
++	 * Add the region from 0x200000 to (0x200000 + 0x1000 - 1):
++	 *   Expected result:
++	 *       Failed, size is not 2M-aligned
++	 *
++	 * Now the instance of struct ne_phys_contig_mem_regions is:
++	 *   num = 0
++	 *   regions = {}
++	 */
++	{0x200000, 0x1000, -EINVAL, 0, INVALID_VALUE, INVALID_VALUE},
++
++	/*
++	 * Add the region from 0x200000 to (0x200000 + 0x200000 - 1):
++	 *   Expected result:
++	 *       Successful
++	 *
++	 * Now the instance of struct ne_phys_contig_mem_regions is:
++	 *   num = 1
++	 *   regions = {
++	 *       {start=0x200000, end=0x3fffff}, // len=0x200000
++	 *   }
++	 */
++	{0x200000, 0x200000, 0, 1, 0x200000, 0x200000},
++
++	/*
++	 * Add the region from 0x0 to (0x0 + 0x200000 - 1):
++	 *   Expected result:
++	 *       Successful
++	 *
++	 * Now the instance of struct ne_phys_contig_mem_regions is:
++	 *   num = 2
++	 *   regions = {
++	 *       {start=0x200000, end=0x3fffff}, // len=0x200000
++	 *       {start=0x0,      end=0x1fffff}, // len=0x200000
++	 *   }
++	 */
++	{0x0, 0x200000, 0, 2, 0x0, 0x200000},
++
++	/*
++	 * Add the region from 0x600000 to (0x600000 + 0x400000 - 1):
++	 *   Expected result:
++	 *       Successful
++	 *
++	 * Now the instance of struct ne_phys_contig_mem_regions is:
++	 *   num = 3
++	 *   regions = {
++	 *       {start=0x200000, end=0x3fffff}, // len=0x200000
++	 *       {start=0x0,      end=0x1fffff}, // len=0x200000
++	 *       {start=0x600000, end=0x9fffff}, // len=0x400000
++	 *   }
++	 */
++	{0x600000, 0x400000, 0, 3, 0x600000, 0x400000},
++
++	/*
++	 * Add the region from 0xa00000 to (0xa00000 + 0x400000 - 1):
++	 *   Expected result:
++	 *       Successful, merging case!
++	 *
++	 * Now the instance of struct ne_phys_contig_mem_regions is:
++	 *   num = 3
++	 *   regions = {
++	 *       {start=0x200000, end=0x3fffff}, // len=0x200000
++	 *       {start=0x0,      end=0x1fffff}, // len=0x200000
++	 *       {start=0x600000, end=0xdfffff}, // len=0x800000
++	 *   }
++	 */
++	{0xa00000, 0x400000, 0, 3, 0x600000, 0x800000},
++
++	/*
++	 * Add the region from 0x1000 to (0x1000 + 0x200000 - 1):
++	 *   Expected result:
++	 *       Failed, start address is not 2M-aligned
++	 *
++	 * Now the instance of struct ne_phys_contig_mem_regions is:
++	 *   num = 3
++	 *   regions = {
++	 *       {start=0x200000, end=0x3fffff}, // len=0x200000
++	 *       {start=0x0,      end=0x1fffff}, // len=0x200000
++	 *       {start=0x600000, end=0xdfffff}, // len=0x800000
++	 *   }
++	 */
++	{0x1000, 0x200000, -EINVAL, 3, 0x600000, 0x800000},
 +};
 +
-+static struct kunit_suite ne_misc_dev_test_suite = {
-+	.name = "ne_misc_dev_test",
-+	.test_cases = ne_misc_dev_test_cases,
-+};
++static void ne_misc_dev_test_merge_phys_contig_memory_regions(struct kunit *test)
++{
++	struct ne_phys_contig_mem_regions phys_contig_mem_regions = {};
++	int rc = 0;
++	int i = 0;
 +
-+static struct kunit_suite *ne_misc_dev_test_suites[] = {
-+	&ne_misc_dev_test_suite,
-+	NULL
-+};
++	phys_contig_mem_regions.regions = kunit_kcalloc(test, MAX_PHYS_REGIONS,
++							sizeof(*phys_contig_mem_regions.regions),
++							GFP_KERNEL);
++	KUNIT_ASSERT_TRUE(test, phys_contig_mem_regions.regions);
++
++	for (i = 0; i < ARRAY_SIZE(phys_regions_test_cases); i++) {
++		struct ne_phys_regions_test *test_case = &phys_regions_test_cases[i];
++		unsigned long num = 0;
++
++		rc = ne_merge_phys_contig_memory_regions(&phys_contig_mem_regions,
++							 test_case->paddr, test_case->size);
++		KUNIT_EXPECT_EQ(test, rc, test_case->expect_rc);
++		KUNIT_EXPECT_EQ(test, phys_contig_mem_regions.num, test_case->expect_num);
++
++		if (test_case->expect_last_paddr == INVALID_VALUE)
++			continue;
++
++		num = phys_contig_mem_regions.num;
++		KUNIT_EXPECT_EQ(test, phys_contig_mem_regions.regions[num - 1].start,
++				test_case->expect_last_paddr);
++		KUNIT_EXPECT_EQ(test, range_len(&phys_contig_mem_regions.regions[num - 1]),
++				test_case->expect_last_size);
++	}
++
++	kunit_kfree(test, phys_contig_mem_regions.regions);
++}
++
+ static struct kunit_case ne_misc_dev_test_cases[] = {
++	KUNIT_CASE(ne_misc_dev_test_merge_phys_contig_memory_regions),
+ 	{}
+ };
+ 
 -- 
 1.8.3.1
 
