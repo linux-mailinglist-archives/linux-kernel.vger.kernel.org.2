@@ -2,70 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F561447552
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:40:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E742D447555
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235444AbhKGTm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 14:42:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42586 "EHLO mail.kernel.org"
+        id S235339AbhKGTp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 14:45:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233578AbhKGTmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 14:42:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 226B261265;
-        Sun,  7 Nov 2021 19:40:08 +0000 (UTC)
+        id S230364AbhKGTpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 14:45:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B5A260FE8;
+        Sun,  7 Nov 2021 19:42:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636314008;
-        bh=IRUCVWRed4jolBeSzyLEhMzJk8JPJsIBESOG/kEdXNQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JMhXoz59OVmWCM/svmqjgHKUG8HulaXNPzSWlk5HASFTi2c2+MZ29ps/vzfkEBABG
-         QJWcF6j3fr+aZr562Nsb/F6o2ob0rkQgtjOx1srGJAVZMAtnSfif61w3rEaNoNAZK5
-         DyGanFzPq8TFKFLvXJ+fzNrrm18tTIzNfJhOJ1TMkBy+1VucJnxVYAh8yEAxuKcHyT
-         ipeZuaySboZ859q2u5lBv/wQILWwgUzgPU3j4pEEjfgIo+yKXGOEFmNs3yWJjcJq+H
-         o2e5dZqP7kjs6R0ifUc3vpGg0dMiOmM+wroZCoGAzxdXzypKXOpwfdbeKavyhZF8X4
-         YRxrxmJ+6jdqg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0345A60AA2;
-        Sun,  7 Nov 2021 19:40:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1636314162;
+        bh=LuLjGJGRrEpXf/URA8wRsWotsM2/2iMdP4iGfBZKpxc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Np2qyfnBYepSgmfVFgvoL3sE9y9AvPz9VHDiJwhS+4+v42wq+DlTP0uzCL4TCovax
+         kl9u4EAoFTfmlpi0gRRsZc6VfifYj+MCYvyJrjwtIyHJigFhOwa2/g3OzTaivdFnIJ
+         I0IWCfksIousu482xkQcnWIMn8zW+S6cb7epqLxVIzw4b5rvLVgwnssK7/dnjL4QGQ
+         Spm+UlgBIcFMUt9w/OUTUSUm99nWrSpzHFqNRfjiQsnt2syrneUmLHJOYiq2RSrEVF
+         AKZIO1mhqVLTRVbPUHvEUhURZ3OXpdiQyHVBowW/v7JOpgn+I+Pnq9Q7vhRy6XG2Rp
+         IIS4GNJqhppHA==
+Date:   Sun, 7 Nov 2021 21:42:39 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Sean Christopherson <seanjc@google.com>,
+        reinette.chatre@intel.com, tony.luck@intel.com,
+        nathaniel@profian.com, stable@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: Free backing memory after faulting the enclave
+ page
+Message-ID: <YYgsL7xSxnsjqIlu@iki.fi>
+References: <20211103232238.110557-1-jarkko@kernel.org>
+ <6831ed3c-c5b1-64f7-2ad7-f2d686224b7e@intel.com>
+ <e88d6d580354aadaa8eaa5ee6fa703f021786afb.camel@kernel.org>
+ <d2191571-30a5-c2aa-e8ed-0a380e9daeac@intel.com>
+ <55eb8f3649590289a0f2b1ebe7583b6da3ff70ee.camel@kernel.org>
+ <c6f5356b-a56a-e057-ef74-74e1169a844b@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] selftests: net: tls: remove unused variable and code
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163631400800.18215.15713746586440850883.git-patchwork-notify@kernel.org>
-Date:   Sun, 07 Nov 2021 19:40:08 +0000
-References: <20211105164511.3360473-1-anders.roxell@linaro.org>
-In-Reply-To: <20211105164511.3360473-1-anders.roxell@linaro.org>
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
+In-Reply-To: <c6f5356b-a56a-e057-ef74-74e1169a844b@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Fri,  5 Nov 2021 17:45:11 +0100 you wrote:
-> When building selftests/net with clang, the compiler warn about the
-> function abs() see below:
+On Thu, Nov 04, 2021 at 08:29:49AM -0700, Dave Hansen wrote:
+> On 11/4/21 8:25 AM, Jarkko Sakkinen wrote:
+> > On Thu, 2021-11-04 at 08:13 -0700, Dave Hansen wrote:
+> >> On 11/4/21 8:04 AM, Jarkko Sakkinen wrote:
+> >>>> Do we also need to deal with truncating the PCMD?  (For those watching
+> >>>> along at home, there are two things SGX swaps to RAM: the actual page
+> >>>> data and also some metadata that ensures page integrity and helps
+> >>>> prevent things like rolling back to old versions of swapped pages)
+> >>> Yes.
+> >>>
+> >>> This can be achieved by iterating through all of the enclave pages,
+> >>> which share the same shmem page for storing their PCMD's, as the one
+> >>> being faulted back. If none of those pages is swapped, the PCMD page can
+> >>> safely truncated.
+> >> I was thinking we could just read the page.  If it's all 0's, truncate it.
+> > Hmm... did ELDU zero PCMD as a side-effect?
 > 
-> tls.c:657:15: warning: variable 'len_compared' set but not used [-Wunused-but-set-variable]
->         unsigned int len_compared = 0;
->                      ^
+> I don't think so, but there's nothing stopping us from doing it ourselves.
+
+Ok.
+
+> > It should be fairly effecient just to check the pages by using
+> > encl->page_tree.
 > 
-> [...]
+> That sounds more complicated and slower than what I suggested.  You
+> could even just check the refcount on the page.  I _think_ page cache
+> pages have a refcount of 2.  So, look for the refcount that means "no
+> more PCMD in this page", and just free it if so.
 
-Here is the summary with links:
-  - selftests: net: tls: remove unused variable and code
-    https://git.kernel.org/netdev/net/c/62b12ab5dff0
+Umh, so... there is total 32 PCMD's per one page.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+/Jarkko
