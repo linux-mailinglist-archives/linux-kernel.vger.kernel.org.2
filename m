@@ -2,133 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383CC447330
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 15:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAEDE447334
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 15:09:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235445AbhKGOIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 09:08:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230308AbhKGOIV (ORCPT
+        id S235455AbhKGOMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 09:12:09 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:26294 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230308AbhKGOMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 09:08:21 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 724DAC061570;
-        Sun,  7 Nov 2021 06:05:38 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id f5so12767760pgc.12;
-        Sun, 07 Nov 2021 06:05:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=S9Hzr0G+eW/ZzC3V59XnG0Uj0s7Oz1fOZsTjDtBfKfQ=;
-        b=biEaVbLhY7qe3w4ohrNzHoW6Whl2En11wjfRFI12H7AB6fwaN+pYmbHDyxXV21rqjd
-         rCLilmGcb5qNLBz9D2v9aJBU6ssz3GmdE1GQEcySx070mT+S3jtGyvVSikW3fJHVxext
-         6Dhj2B+tVmpfo3EkrAEvFTE3UxCy5M3goppt3/A0gRd9EGacwBMSqcYxhiQM/97U26mS
-         Qrc9v1mHIsJDNyHrmcZysY5pkq7YGNiZ0v9wveoYdvuYdxfrg8qI4S/unvrrZ0Q5ZItx
-         2PO2FLI1TaHGCJXgoKRNODb2fH3QlplNvn+K4QJbegYUXK6njIg7Vr5ok9MfzJVzzqid
-         8UCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=S9Hzr0G+eW/ZzC3V59XnG0Uj0s7Oz1fOZsTjDtBfKfQ=;
-        b=crBy+JwF4PydmPRR/gI0eUW4UOym/U6yTIcqmNmwMOAMXLiXxoFBXTdJFohRWrA2QZ
-         AMNHosOyECEyzwAgZRXfu1XjwJaOCTfsYgHd+5BcQ3Rb772qyVgG1UaRJcuPWO5eZDzt
-         v2RDHdNXOXWzLNzG1qmNaZDUaTr7ALiddM9jRMVsIFU/xlKBr+6UYQEYUrOmD6Z6oVgE
-         x9OrTiMR9EHtR8f6N8sP8Jy6qqN/X5ySNFJPpPcc61DaWlxNg3HChB3ucmeVvixdgWLF
-         Tm9Dr442QAEJpccaFbP7mBQ/Le92MQyaDx9Fs5NXBav2N1RS9yvDktxW3VEM8/bsMThz
-         bBxA==
-X-Gm-Message-State: AOAM533f6eYLpak00/CMo4aE59t5HrYGjkhOOuxreQvSVANOmmqTRz/v
-        2xi5FXcFzkDFD/sM1Ic9gceMXJ9Alzo=
-X-Google-Smtp-Source: ABdhPJww0EP6IbQfQ/2x5B0xYENNMY6nqsUEnsglQ3f6GlitCE+xFH9zozCcDm/23EhZ6TmTs/87Cw==
-X-Received: by 2002:a05:6a00:134a:b0:47f:2c6a:f37d with SMTP id k10-20020a056a00134a00b0047f2c6af37dmr65781184pfu.50.1636293938010;
-        Sun, 07 Nov 2021 06:05:38 -0800 (PST)
-Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id x135sm5280958pfd.78.2021.11.07.06.05.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Nov 2021 06:05:37 -0800 (PST)
-Date:   Sun, 7 Nov 2021 06:05:34 -0800
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Martin Kaistra <martin.kaistra@linutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 7/7] net: dsa: b53: Expose PTP timestamping ioctls to
- userspace
-Message-ID: <20211107140534.GB18693@hoboy.vegasvil.org>
-References: <20211104133204.19757-1-martin.kaistra@linutronix.de>
- <20211104133204.19757-8-martin.kaistra@linutronix.de>
- <20211104174251.GB32548@hoboy.vegasvil.org>
- <ba543ae4-3a71-13fe-fa82-600ac37eaf5a@linutronix.de>
- <20211105141319.GA16456@hoboy.vegasvil.org>
- <20211105142833.nv56zd5bqrkyjepd@skbuf>
- <20211106001804.GA24062@hoboy.vegasvil.org>
- <20211106003606.qvfkitgyzoutznlw@skbuf>
+        Sun, 7 Nov 2021 09:12:08 -0500
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HnGFt69HRzQj7k;
+        Sun,  7 Nov 2021 22:04:34 +0800 (CST)
+Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Sun, 7 Nov 2021 22:09:22 +0800
+Received: from DESKTOP-27KDQMV.china.huawei.com (10.174.148.223) by
+ dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Sun, 7 Nov 2021 22:09:21 +0800
+From:   "Longpeng(Mike)" <longpeng2@huawei.com>
+To:     <andraprs@amazon.com>, <lexnv@amazon.com>, <alcioa@amazon.com>
+CC:     <arei.gonglei@huawei.com>, <gregkh@linuxfoundation.org>,
+        <kamal@canonical.com>, <pbonzini@redhat.com>,
+        <sgarzare@redhat.com>, <stefanha@redhat.com>,
+        <vkuznets@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>, Longpeng <longpeng2@huawei.com>
+Subject: [PATCH v5 0/4] Merge contiguous physical memory regions
+Date:   Sun, 7 Nov 2021 22:09:13 +0800
+Message-ID: <20211107140918.2106-1-longpeng2@huawei.com>
+X-Mailer: git-send-email 2.25.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211106003606.qvfkitgyzoutznlw@skbuf>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.148.223]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml100016.china.huawei.com (7.185.36.216)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 06, 2021 at 02:36:06AM +0200, Vladimir Oltean wrote:
-> On Fri, Nov 05, 2021 at 05:18:04PM -0700, Richard Cochran wrote:
-> > On Fri, Nov 05, 2021 at 04:28:33PM +0200, Vladimir Oltean wrote:
-> > > What is the expected convention exactly? There are other drivers that
-> > > downgrade the user application's request to what they support, and at
-> > > least ptp4l does not error out, it just prints a warning.
-> > 
-> > Drivers may upgrade, but they may not downgrade.
-> > 
-> > Which drivers downgrade?  We need to fix those buggy drivers.
-> > 
-> > Thanks,
-> > Richard
-> 
-> Just a quick example
-> https://elixir.bootlin.com/linux/v5.15/source/drivers/net/ethernet/mscc/ocelot.c#L1178
+From: Longpeng <longpeng2@huawei.com>
 
-        switch (cfg.rx_filter) {
-        case HWTSTAMP_FILTER_NONE:
-                break;
-        case HWTSTAMP_FILTER_ALL:
-        case HWTSTAMP_FILTER_SOME:
-        case HWTSTAMP_FILTER_PTP_V1_L4_EVENT:
-        case HWTSTAMP_FILTER_PTP_V1_L4_SYNC:
-        case HWTSTAMP_FILTER_PTP_V1_L4_DELAY_REQ:
-        case HWTSTAMP_FILTER_NTP_ALL:
-        case HWTSTAMP_FILTER_PTP_V2_L4_EVENT:
-        case HWTSTAMP_FILTER_PTP_V2_L4_SYNC:
-        case HWTSTAMP_FILTER_PTP_V2_L4_DELAY_REQ:
-        case HWTSTAMP_FILTER_PTP_V2_L2_EVENT:
-        case HWTSTAMP_FILTER_PTP_V2_L2_SYNC:
-        case HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ:
-        case HWTSTAMP_FILTER_PTP_V2_EVENT:
-        case HWTSTAMP_FILTER_PTP_V2_SYNC:
-        case HWTSTAMP_FILTER_PTP_V2_DELAY_REQ:
-                cfg.rx_filter = HWTSTAMP_FILTER_PTP_V2_EVENT;
-                break;
-        default:
-                mutex_unlock(&ocelot->ptp_lock);
-                return -ERANGE;
-        }
+Hi guys,
 
-That is essentially an upgrade to HWTSTAMP_FILTER_PTP_V2_EVENT.  The
-change from ALL to HWTSTAMP_FILTER_PTP_V2_EVENT is probably a simple
-oversight, and the driver can be easily fixed.
+This patchset try to merge the contiguous physical memory regions when
+set user memory regions, you can see message in PATCH 1 for details.
+Please review when you free, thank!
 
-Thanks,
-Richard
+Changes v4 -> v5:
+  Patch 1:
+    - "Physical contiguous memory regions" -> "Contiguous physical memory 
+      regions."  [Andra]
+    - fix the warning of aligment that reported by the checkpath.pl  [Andra]
+  Patch 4:
+    - fix the warning of aligment that reported by the checkpath.pl  [Andra]
+    - remove unnecessary comparison of NULL.  [Andra]
+
+Changes v3 -> v4:
+  Patch 1:
+    - move "#include <linux/range.h>" according to the alphabetical order. [Andra]
+    - rename several variables, parameters, structures and functions.  [Andra]
+    - add missing "Context" in the comments.  [Andra]
+    - some other changes to makes the code much neater.  [Andra]
+  Patch 2:
+    - add missing "Context" in the comments.  [Andra]
+    - move the comment in ne_merge_phys_contig_memory_regions() before
+      the "if (...)". [Andra]
+  Patch 3:
+    - Nitro enclaves -> Nitro Enclaves   [Andra]
+    - check the return code of "ne_misc_dev_test_init()"  [Andra]
+    - GPL-2.0-or-later -> GPL-2.0  [Andra]
+  Patch 4:
+    - "int expect_num" -> "unsigned long  expect_num"  [Andra]
+    - rename several variables and structures  [Andra]
+    - invoke "kunit_kfree" to free the "regions"  [Andra]
+
+Changes v2 -> v3:
+  Patch 1:
+    - update the commit title and commit message.  [Andra]
+    - use 'struct range' to instead of 'struct phys_mem_region'.  [Andra, Greg KH]
+    - add comments before the function definition.  [Andra]
+    - rename several variables, parameters and function.  [Andra]
+  Patch 2:
+    - update the commit title and commit message.  [Andra]
+    - add comments before the function definition.  [Andra]
+    - remove 'inline' attribute of ne_sanity_check_phys_mem_region. [Andra]
+    - leave a blank line before return.  [Andra]
+    - move sanity check in ne_merge_phys_contig_memory_regions to
+      the beginning of the function.  [Andra]
+    - double sanity checking after the merge of physical contiguous
+      memory regions has been completed.  [Andra]
+  Patch 3:
+    - update the commit title and commit message.  [Andra]
+    - use "misc_dev"/"misc device"/"MISC_DEV" to be more specific.  [Andra]
+  Patch 4:
+    - update the commit title and commit message.  [Andra]
+    - align the fileds in 'struct phys_regions_test'.  [Andra]
+    - rename 'phys_regions_testcases' to 'phys_regions_test_cases'.  [Andra]
+    - add comments before each test cases.  [Andra]
+    - initialize the variables in ne_misc_dev_test_merge_phys_contig_memory_regions.  [Andra]
+
+Changes v1 -> v2:
+  - update the commit message as Andra's suggestion  [Andra]
+  - remove TODO completely in ne_set_user_memory_region_ioctl  [Andra]
+  - extract the physical memory regions setup into individual
+    function
+  - add kunit tests  [Andra]
+
+Longpeng (4):
+  nitro_enclaves: Merge contiguous physical memory regions
+  nitro_enclaves: Sanity check physical memory regions during merging
+  nitro_enclaves: Add KUnit tests setup for the misc device
+    functionality
+  nitro_enclaves: Add KUnit tests for contiguous physical memory regions
+    merging
+
+ drivers/virt/nitro_enclaves/Kconfig            |   9 ++
+ drivers/virt/nitro_enclaves/ne_misc_dev.c      | 174 ++++++++++++++++++-------
+ drivers/virt/nitro_enclaves/ne_misc_dev_test.c | 157 ++++++++++++++++++++++
+ 3 files changed, 296 insertions(+), 44 deletions(-)
+ create mode 100644 drivers/virt/nitro_enclaves/ne_misc_dev_test.c
+
+-- 
+1.8.3.1
+
