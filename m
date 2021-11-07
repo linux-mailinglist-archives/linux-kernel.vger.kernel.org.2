@@ -2,90 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B49D5447324
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 14:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE4E447326
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 14:51:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235435AbhKGNun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 08:50:43 -0500
-Received: from mo4-p03-ob.smtp.rzone.de ([81.169.146.175]:30696 "EHLO
-        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231580AbhKGNum (ORCPT
+        id S233713AbhKGNyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 08:54:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229589AbhKGNyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 08:50:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636292865;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=0iOoYrlW0W1dhedF3b0qomHYAYJFS+pAzW9ZnnfcvEM=;
-    b=PsCDzRfKVtGOtujmTnNxjNWxdh5si21K1/0L3pjFbeDOtzzbquY26IRSsHOlz+g33M
-    m+4jZNzQkrBVcyMt81/av2wJIa+xcb9Mxo5SQQBUf4aXT4fiS0d7eLEzEQdxvnw/H3kP
-    o+yXXw1rembp92Ue3DbQbSbvGNCjRVkmCs4rJtsuU6umJEtJL2GuffpiUwu5BbZctWDc
-    AEO2lok8oa3eI06aG0SsaY2lHi0A0iNB3lGMlgNfcR8TGTxi+Mw+pmuEDkmdQFEhz4sA
-    SBLsBH1dRqYramJpqMvQyFDNnXYiDnX5SSxFVTX3I+Xos20aOhM8GATKkWSBTLStXd4M
-    Brhw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3jcR+"
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
-    with ESMTPSA id 902c63xA7DliFoQ
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Sun, 7 Nov 2021 14:47:44 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH 0/3] mtd: Ingenic NAND fix for JZ4740
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20211009184952.24591-1-paul@crapouillou.net>
-Date:   Sun, 7 Nov 2021 14:47:43 +0100
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>, list@opendingux.net,
-        linux-mtd@lists.infradead.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        Riccardo Mottola <riccardo.mottola@libero.it>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, Paul Boddie <paul@boddie.org.uk>
-Content-Transfer-Encoding: 7bit
-Message-Id: <968356A9-2A88-48B1-B31F-55C22BCE620E@goldelico.com>
-References: <20211009184952.24591-1-paul@crapouillou.net>
-To:     Paul Cercueil <paul@crapouillou.net>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Sun, 7 Nov 2021 08:54:07 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0CDC061714
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 05:51:23 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id w29so10499802wra.12
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 05:51:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ubique-spb-ru.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3yVpPO0r/qITHteS4fsEzbLkYGCl0u5VUYb9MU6DMSw=;
+        b=VC9z4vemDTkn/EFs3v9RnK94bYTsxLtkywc6KyidgSu383GOqctuu/O/p1q8uHbHwS
+         grnowSTDXsaPjvX/VzHvqqeK9Ib3u0PWmH6wTFWJJtvIsySLHKZCP0+w8BU75/8i4YDD
+         S4lrk5i3r7A7OZYQHsqjHTQAmrB/nPXswnvPscRqJcTQ+8kNMDUak7E3vB/zJx5hGDym
+         ehv01ejyhMOExAmZhhiJXNkIqQDCItZ7+GjMDZbcXov3WSIOwIuTq7Tz/qPINyzPiX9m
+         50XfOCJ0qEPlo3bjUuzwyxC4tm1qaDORO6rDIwSd0WZq59HmFxfwcdBcALOUOMHJj1Kq
+         EGfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3yVpPO0r/qITHteS4fsEzbLkYGCl0u5VUYb9MU6DMSw=;
+        b=tjw4SoRqdVo7365mzNOElH7MiS1iBywylZWS0Y9bStFkVrvHI/E+xC8JDl8QLMokq/
+         kPl8+QqnfouSx80pdA2Q8QGeWyIrPpCMpXNrqR5BVpaKb9Qpqy/RuzJ6hEXEaT5nv+SV
+         N8LFWg7jVWU/ccqW2D1xxn8+M2/uuTGWu90ZoSFHYRIZ7JxXxYDaw6F3mGuUlrBfPVue
+         By74WCSykgphsoiup1/oz6PdZ83wW+OP4DCOHqI1WBhhkPPpCD8VadqTe5Gj+jPQzba4
+         II+cpbstoCZuhsxBV/b+/bi79HhEZYN3NhgHvbIMqvNEIe38QOpLwFnvFhLkZq/zyEW6
+         vGLA==
+X-Gm-Message-State: AOAM531lvv8QoSNYBIJVnK6MK2b6nLLn3Lgy5WFwCeU3NzIhMOucV5JQ
+        J6q2jAydJQcgJVpRoQbguf94rA==
+X-Google-Smtp-Source: ABdhPJy0q+kSfNRXUd/Fn8e3u1u8P+ecqf3noxN5M4Wy1mXiGGOw/3PK/eAzzIqgieiqmdSlX2/nUQ==
+X-Received: by 2002:adf:c183:: with SMTP id x3mr91597468wre.90.1636293082225;
+        Sun, 07 Nov 2021 05:51:22 -0800 (PST)
+Received: from localhost ([91.75.210.37])
+        by smtp.gmail.com with ESMTPSA id m3sm4171415wmi.19.2021.11.07.05.51.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Nov 2021 05:51:21 -0800 (PST)
+Date:   Sun, 7 Nov 2021 17:51:15 +0400
+From:   Dmitrii Banshchikov <me@ubique.spb.ru>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        syzbot <syzbot+43fd005b5a1b4d10781e@syzkaller.appspotmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>, sboyd@kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steven Rostedt <rosted@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [syzbot] possible deadlock in ktime_get_coarse_ts64
+Message-ID: <20211107135115.tqqx62sxsfeuzslb@amnesia>
+References: <00000000000013aebd05cff8e064@google.com>
+ <87lf224uki.ffs@tglx>
+ <CAADnVQLcuMAr3XMTD1Lys5S5ybME4h=NL3=adEwib2UT6b-E9w@mail.gmail.com>
+ <20211105170328.fjnzr6bnbca7mdfq@amnesia>
+ <875yt64isx.ffs@tglx>
+ <20211106200733.meank7oonwvsdjy4@amnesia>
+ <87zgqg2r4o.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87zgqg2r4o.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
-
-> Am 09.10.2021 um 20:49 schrieb Paul Cercueil <paul@crapouillou.net>:
+On Sun, Nov 07, 2021 at 11:32:07AM +0100, Thomas Gleixner wrote:
+> > 2) bpf_spin_lock/unlock have notrace attribute set.
 > 
-> Hi,
+> How is that supposed to help?
 > 
-> Looks like NAND support has been broken on the JZ4740 SoC for a while;
-
-Yes, I remember someone telling that something was fundamentally broken
-and impossible to be fixed a while ago.
-
-> it looks like it comes from the fact that the "hw_oob_first" mechanism
-> was dropped from the NAND core and moved to the Davinci driver.
+> You cannot take a spinlock from NMI context if that same lock can be
+> taken by other contexts as well.
 > 
-> It turns out the JZ4740 SoC needs it too; I didn't notice it when
-> writing the new ingenic-nand driver (to replace the old jz4740-nand
-> driver) most likely because my Device Tree had the "nand-ecc-mode" set
-> to "hw_oob_first".
+> Also notrace on the public function is not guaranteeing that the inlines
+> (as defined) are not traceable and it does not exclude it from being
+> kprobed.
 > 
-> I am not very sure about patch [1/3]; to me the original code does not
-> make sense, and it didn't work out-of-the-box on the JZ4740 without it.
-> By applying patch [1/3] the function nand_read_page_hwecc_oob_first()
-> can be reused for the JZ4740 SoC as well. But I did not test patch [1/3]
-> on Davinci.
+> > 3) bpf_timer_* helpers fail early if they are in NMI.
+> >
+> > Why they have to be excluded?
+> 
+> Because timers take locks and you can just end up in the very same
+> situation that you create invers lock dependencies or deadlocks when you
+> use that from a tracepoint.
+> 
+> hrtimer_start()
+>   lock_base();
+>   trace_hrtimer...()
+>     perf_event()
+>       bpf_run()
+>         bpf_timer_start()
+>           hrtimer_start()
+>             lock_base()         <- DEADLOCK
+> 
+> Tracepoints and perf events are very limited in what they can actually
+> do. Just because it's BPF these rules are not magically going away.
+> 
 
-would this also work for jz4780 NAND?
+Thanks for the clarification.
 
-BR,
-Nikolaus
 
+-- 
+
+Dmitrii Banshchikov
