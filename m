@@ -2,34 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1194473C4
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:25:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E77BA4473C9
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234664AbhKGQ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 11:28:39 -0500
-Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:65292 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234632AbhKGQ2h (ORCPT
+        id S235775AbhKGQbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 11:31:06 -0500
+Received: from conuserg-12.nifty.com ([210.131.2.79]:53259 "EHLO
+        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235254AbhKGQbD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 11:28:37 -0500
-Received: from pop-os.home ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id jkzNmTDaKf6fnjkzNmDULC; Sun, 07 Nov 2021 17:25:53 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Sun, 07 Nov 2021 17:25:53 +0100
-X-ME-IP: 86.243.171.122
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        michal.simek@xilinx.com, lee.jones@linaro.org,
-        jiapeng.chong@linux.alibaba.com, abaci-bugfix@linux.alibaba.com,
-        shubhrajyoti.datta@xilinx.com
-Cc:     linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] usb: gadget: udc-xilinx: Fix an error handling path in 'xudc_probe()'
-Date:   Sun,  7 Nov 2021 17:25:48 +0100
-Message-Id: <ec61a89b83ce34b53a3bdaacfd1413a9869cc608.1636302246.git.christophe.jaillet@wanadoo.fr>
+        Sun, 7 Nov 2021 11:31:03 -0500
+Received: from grover.. (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-12.nifty.com with ESMTP id 1A7GQh1D020834;
+        Mon, 8 Nov 2021 01:26:44 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 1A7GQh1D020834
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1636302404;
+        bh=gx9ybrrvRFYll7zA4wYrhSeUk/K5DRQcs+620maBVto=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oaI7cv1GfXD3xrckUTc8WsWhVfffizfI9fE8/98l1pJoE8bxOHIqLJwoh57lqJWby
+         4c/a3wf/ii7UPjmnKmRcpDFk71U0q4CGrcQNAqtK8cnno2u67a6ZpEzXa1O3vB/mjf
+         0aqvE+w/6fgSoSUCy4o5AmMdcxsbnNLHH4rViztPPiRoANZy7jL56LJjs/51/Ob3t6
+         sDHawCIfh8ikVbp66stHOzsOqy7Osbkf5u7X8ywVQesbFNE3TdumMP7dVbSUYvbK9y
+         WygAYj+nhaeiuij6RLpAP9nmbd+y/OathC8lcqlAcVcJoP/+/95Oic6pbkLs7Ob1xW
+         90z+xtbWbugBw==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc:     "H . Peter Anvin" <hpa@zytor.com>,
+        clang-built-linux@googlegroups.com,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] x86/vdso: remove -nostdlib compiler flag
+Date:   Mon,  8 Nov 2021 01:26:40 +0900
+Message-Id: <20211107162641.324688-1-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -37,39 +46,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A successful 'clk_prepare_enable()' call should be balanced by a
-corresponding 'clk_disable_unprepare()' call in the error handling path
-of the probe, as already done in the remove function.
+The -nostdlib option requests the compiler to not use the standard
+system startup files or libraries when linking. It is effective only
+when $(CC) is used as a linker driver.
 
-Fixes: 24749229211c ("usb: gadget: udc-xilinx: Add clock support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Since
+
+  379d98ddf413 ("x86: vdso: Use $LD instead of $CC to link")
+
+$(LD) is directly used, hence -nostdlib is unneeded.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- drivers/usb/gadget/udc/udc-xilinx.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/udc/udc-xilinx.c b/drivers/usb/gadget/udc/udc-xilinx.c
-index f5ca670776a3..857159dd5ae0 100644
---- a/drivers/usb/gadget/udc/udc-xilinx.c
-+++ b/drivers/usb/gadget/udc/udc-xilinx.c
-@@ -2136,7 +2136,7 @@ static int xudc_probe(struct platform_device *pdev)
- 
- 	ret = usb_add_gadget_udc(&pdev->dev, &udc->gadget);
- 	if (ret)
--		goto fail;
-+		goto err_disable_unprepare_clk;
- 
- 	udc->dev = &udc->gadget.dev;
- 
-@@ -2155,6 +2155,9 @@ static int xudc_probe(struct platform_device *pdev)
- 		 udc->dma_enabled ? "with DMA" : "without DMA");
- 
- 	return 0;
-+
-+err_disable_unprepare_clk:
-+	clk_disable_unprepare(udc->clk);
- fail:
- 	dev_err(&pdev->dev, "probe failed, %d\n", ret);
- 	return ret;
+ arch/x86/entry/vdso/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
+index a2dddcc189f6..693f8b9031fb 100644
+--- a/arch/x86/entry/vdso/Makefile
++++ b/arch/x86/entry/vdso/Makefile
+@@ -172,7 +172,7 @@ $(obj)/vdso32.so.dbg: $(obj)/vdso32/vdso32.lds $(vobjs32) FORCE
+ # The DSO images are built using a special linker script.
+ #
+ quiet_cmd_vdso = VDSO    $@
+-      cmd_vdso = $(LD) -nostdlib -o $@ \
++      cmd_vdso = $(LD) -o $@ \
+ 		       $(VDSO_LDFLAGS) $(VDSO_LDFLAGS_$(filter %.lds,$(^F))) \
+ 		       -T $(filter %.lds,$^) $(filter %.o,$^) && \
+ 		 sh $(srctree)/$(src)/checkundef.sh '$(NM)' '$@'
 -- 
 2.30.2
 
