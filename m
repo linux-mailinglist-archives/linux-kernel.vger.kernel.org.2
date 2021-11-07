@@ -2,77 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF264473C8
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8CC4473CD
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:29:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235769AbhKGQbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 11:31:04 -0500
-Received: from conuserg-12.nifty.com ([210.131.2.79]:53246 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234632AbhKGQbD (ORCPT
+        id S235782AbhKGQck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 11:32:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234850AbhKGQci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 11:31:03 -0500
-Received: from grover.. (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 1A7GQh1E020834;
-        Mon, 8 Nov 2021 01:26:45 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 1A7GQh1E020834
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1636302405;
-        bh=95y4b+YUJWNBzDqMVnCdZ8PrZpY1+cjKzj0CIJk+uXU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ttO9uhKoYmNgChd3CCaWg5CvFHR+/nyuB6Gw5rj/CdgSRzoqfQyKzFyU6cQ0EFWm2
-         nU8dTxeAUd2xyHq3caF4uHtYIEU4xIux9bSnyVlMQhiXAgfWT8bAyBoN/HDsQB/wqC
-         gXuFI5IXn78B2OLLXGPtAmsbGacG3HR5M5qELSwzJhYt7pQf8xN8pdHH5GthLdyQ0E
-         IxYS13Ka6G6LsvhYIN7wNZfhE8NpsvP4APnFafEfRoEH/Utm5dxvSf93LXw15Z92BD
-         KYKsPmUb6ClDAB6yqXOI2BdoihzpPFUF8K8S0HzjmZkggJdhhen705Y0+cah9fx4X2
-         sB5IVYwTKD1Sg==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     "H . Peter Anvin" <hpa@zytor.com>,
-        clang-built-linux@googlegroups.com,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] x86/purgatory: remove -nostdlib compiler flag
-Date:   Mon,  8 Nov 2021 01:26:41 +0900
-Message-Id: <20211107162641.324688-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211107162641.324688-1-masahiroy@kernel.org>
-References: <20211107162641.324688-1-masahiroy@kernel.org>
+        Sun, 7 Nov 2021 11:32:38 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2345EC061570;
+        Sun,  7 Nov 2021 08:29:55 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id b15so33452507edd.7;
+        Sun, 07 Nov 2021 08:29:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VdQHN8nbaGWGXbiZ7KQ1sI8LP21i7umOPWJHxTLsAdE=;
+        b=FqQ7YkHncoqGlJlvBE+aU2k++3K0YfcgGTeAiXIh1DFzWpm0b5ftj6LVZ6F8EdL88c
+         X6SZvOl6rW/HBJZSGydIOjFnWhoxmq+BHHIE8HIQFBAYn3wTo2Frk/Mdpt8wQ/sem7FB
+         BKItyj6DaqvwYLslxBQnVjx7SKDLrvx0A6xvqK/ekhD+E5arDpvvU5iVh+08f0JyvtXk
+         t36j7rGJ3SLytGGqakXpCbtZY94s+1xlUOT1XLaoL0hjSqZwepXXZMTew0XizRhR42Rg
+         vD36aagYq0RfZjv0j5ccSG3pw5/Ze8T+vDf6SSqOSU3R2qPnkcs/E8kuyjNs9R06KSwV
+         Wj+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VdQHN8nbaGWGXbiZ7KQ1sI8LP21i7umOPWJHxTLsAdE=;
+        b=52kCd38jBRSmkHlipZsX6jJ/BysOzVuLgeGLNEeoaxEHYWG3AFs7iDZPHAP8QW6kRV
+         iL6+gGXCc87aaQFZaqe7/HlkzKUUoqEGkq2TIZE5wxt5ZFCrrcB8L3Wqblw3BPXtW6li
+         cFbLMSNB5Varen1v2q2ipEu4LXUq+pyMEtqml0SpQOsaKY0q2pluxpNV3Fosg7gguNWi
+         Tp7YMGUZxTkcB7LCN+QWVNjrgPSRN9GcVZecUsNg4236XHRKLq/5nyNfpxQ93yghQsxI
+         rVvAvQhcJgTwnaEkKQalpculMFHCGmzYW/AuBmLDUbUkUbKZQbH2iSmO8TWENVZe8+pS
+         Zw5Q==
+X-Gm-Message-State: AOAM533C4svT4JVwoqvCaAty6kJTtUL2NSVzhXgddbP0ZkpGjmTegSMm
+        sHVPnQu0fDpEbIIL4QgsumM=
+X-Google-Smtp-Source: ABdhPJw8K3ON7+/hoX6qk/Za4IPaUHbJhwhY3ni0IcO1UgOtYFPXy2iP4eGGTD38T3JeIaF4huiDLQ==
+X-Received: by 2002:a05:6402:2920:: with SMTP id ee32mr74431789edb.136.1636302593735;
+        Sun, 07 Nov 2021 08:29:53 -0800 (PST)
+Received: from localhost.localdomain ([2a02:ab88:109:9f0:f6a6:7fbe:807a:e1cc])
+        by smtp.googlemail.com with ESMTPSA id hq37sm7195270ejc.116.2021.11.07.08.29.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Nov 2021 08:29:52 -0800 (PST)
+From:   "Saheed O. Bolarinwa" <refactormyself@gmail.com>
+To:     helgaas@kernel.org
+Cc:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v4 0/5] Remove unncessary linked list from aspm.c
+Date:   Sun,  7 Nov 2021 17:29:36 +0100
+Message-Id: <20211107162941.1196-1-refactormyself@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The -nostdlib option requests the compiler to not use the standard
-system startup files or libraries when linking. It is effective only
-when $(CC) is used as a linker driver.
+An extra linked list is created inside aspm.c to keep track of devices
+on which the link state was enabled. However, it is possible to access
+them via existing device lists.
 
-$(LD) is directly used for linking purgatory.{ro,chk} here, hence
--nostdlib is unneeded.
+This series remove the extra linked list and other related members of
+the struct pcie_link_state: `root`, `parent` and `downstream`. All
+these are now either calculated or obtained directly when needed.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+VERSION CHANGES:
+ -v4:
+	- Fix uninitialised variable.
 
- arch/x86/purgatory/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ -v3:
+»       - Rename pci_get_parent() to pcie_upstream_link() and improve
+»         the logic based previous review.
+»       - Improve the algorithm to iterate through the devices
 
-diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
-index 95ea17a9d20c..ae53d54d7959 100644
---- a/arch/x86/purgatory/Makefile
-+++ b/arch/x86/purgatory/Makefile
-@@ -16,7 +16,7 @@ CFLAGS_sha256.o := -D__DISABLE_EXPORTS
- 
- # When linking purgatory.ro with -r unresolved symbols are not checked,
- # also link a purgatory.chk binary without -r to check for unresolved symbols.
--PURGATORY_LDFLAGS := -e purgatory_start -nostdlib -z nodefaultlib
-+PURGATORY_LDFLAGS := -e purgatory_start -z nodefaultlib
- LDFLAGS_purgatory.ro := -r $(PURGATORY_LDFLAGS)
- LDFLAGS_purgatory.chk := $(PURGATORY_LDFLAGS)
- targets += purgatory.ro purgatory.chk
+ - v2:
+»       - Avoid using BUG_ON()
+»       - Create helper function pci_get_parent()
+»       - Fix a bug from the previous version
+
+Bolarinwa O. Saheed (4):
+  PCI/ASPM: Remove struct pcie_link_state.parent
+  PCI/ASPM: Remove struct pcie_link_state.root
+  PCI/ASPM: Remove struct pcie_link_state.downstream
+  PCI/ASPM: Remove unncessary linked list from aspm.c
+
+Saheed O. Bolarinwa (1):
+  PCI: Handle NULL value inside pci_upstream_bridge()
+
+ drivers/pci/pcie/aspm.c | 153 ++++++++++++++++++++++++----------------
+ include/linux/pci.h     |   3 +
+ 2 files changed, 95 insertions(+), 61 deletions(-)
+
 -- 
-2.30.2
+2.20.1
 
