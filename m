@@ -2,86 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541974473A8
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 907394473AA
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235706AbhKGQQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 11:16:00 -0500
-Received: from smtprelay0142.hostedemail.com ([216.40.44.142]:36896 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230371AbhKGQPz (ORCPT
+        id S235716AbhKGQRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 11:17:34 -0500
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:59810 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235708AbhKGQRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 11:15:55 -0500
-Received: from omf15.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 9A09418086DE6;
-        Sun,  7 Nov 2021 16:13:11 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id 14D32C4182;
-        Sun,  7 Nov 2021 16:13:09 +0000 (UTC)
-Message-ID: <b3961ecdf78e7f88a467650638e5935ea413bb8f.camel@perches.com>
-Subject: Re: [PATCH] scsi: snic: Replace snprintf in show functions with  
- sysfs_emit
-From:   Joe Perches <joe@perches.com>
-To:     cgel.zte@gmail.com, kartilak@cisco.com
-Cc:     sebaddel@cisco.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Yao <yao.jing2@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
-Date:   Sun, 07 Nov 2021 08:13:08 -0800
-In-Reply-To: <20211105081454.76950-1-yao.jing2@zte.com.cn>
-References: <20211105081454.76950-1-yao.jing2@zte.com.cn>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        Sun, 7 Nov 2021 11:17:33 -0500
+Received: from pop-os.home ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id jkohmT6oqf6fnjkoimDSlI; Sun, 07 Nov 2021 17:14:49 +0100
+X-ME-Helo: pop-os.home
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Sun, 07 Nov 2021 17:14:49 +0100
+X-ME-IP: 86.243.171.122
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     mst@redhat.com, jasowang@redhat.com, wuzongyong@linux.alibaba.com,
+        arnd@arndb.de
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 1/2] eni_vdpa: Fix an error handling path in 'eni_vdpa_probe()'
+Date:   Sun,  7 Nov 2021 17:14:46 +0100
+Message-Id: <f6b2d087ca3840604b4e711a208d35b5d6285cb4.1636301587.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: 84k33uc8wbwfjhna7tncc4ij7d8smiab
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 14D32C4182
-X-Spam-Status: No, score=-3.14
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+G+4FggANqAb7Rvf7hnQbb8ikH9nDPiSs=
-X-HE-Tag: 1636301589-940526
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-11-05 at 08:14 +0000, cgel.zte@gmail.com wrote:
-> From: Jing Yao <yao.jing2@zte.com.cn>
-> 
-> coccicheck complains about the use of snprintf() in sysfs show
-> functions:
-> WARNING use scnprintf or sprintf
-> 
-> Use sysfs_emit instead of scnprintf, snprintf or sprintf makes more
-> sense.
-[]
-> diff --git a/drivers/scsi/snic/snic_attrs.c b/drivers/scsi/snic/snic_attrs.c
-[]
-> @@ -37,7 +37,7 @@ snic_show_state(struct device *dev,
->  {
->  	struct snic *snic = shost_priv(class_to_shost(dev));
->  
-> -	return snprintf(buf, PAGE_SIZE, "%s\n",
-> +	return sysfs_emit(buf, "%s\n",
->  			snic_state_str[snic_get_state(snic)]);
->  }
+In the error handling path, a successful 'vp_legacy_probe()' should be
+balanced by a corresponding 'vp_legacy_remove()' call, as already done in
+the remove function.
 
-when you do these, please consider the ability to rewrap to 80 columns.
+Add the missing call and update gotos accordingly.
 
-	return sysfs_emit(buf, "%s\n", snic_state_str[snic_get_state(snic)]);
+Fixes: e85087beedca ("eni_vdpa: add vDPA driver for Alibaba ENI")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/vdpa/alibaba/eni_vdpa.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> @@ -59,7 +59,7 @@ snic_show_link_state(struct device *dev,
->  	if (snic->config.xpt_type == SNIC_DAS)
->  		snic->link_status = svnic_dev_link_status(snic->vdev);
->  
-> -	return snprintf(buf, PAGE_SIZE, "%s\n",
-> +	return sysfs_emit(buf, "%s\n",
->  			(snic->link_status) ? "Link Up" : "Link Down");
-
-And maintain parenthesis alignment
-
-	return sysfs_emit(buf, "%s\n",
- 			  snic->link_status ? "Link Up" : "Link Down");
-
-or maybe
-
-	return sysfs_emit(buf, "Link %s\n", snic->link_status ? "Up" : "Down");
+diff --git a/drivers/vdpa/alibaba/eni_vdpa.c b/drivers/vdpa/alibaba/eni_vdpa.c
+index 3f788794571a..12b3db6b4517 100644
+--- a/drivers/vdpa/alibaba/eni_vdpa.c
++++ b/drivers/vdpa/alibaba/eni_vdpa.c
+@@ -501,7 +501,7 @@ static int eni_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	if (!eni_vdpa->vring) {
+ 		ret = -ENOMEM;
+ 		ENI_ERR(pdev, "failed to allocate virtqueues\n");
+-		goto err;
++		goto err_remove_vp_legacy;
+ 	}
+ 
+ 	for (i = 0; i < eni_vdpa->queues; i++) {
+@@ -513,11 +513,13 @@ static int eni_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	ret = vdpa_register_device(&eni_vdpa->vdpa, eni_vdpa->queues);
+ 	if (ret) {
+ 		ENI_ERR(pdev, "failed to register to vdpa bus\n");
+-		goto err;
++		goto err_remove_vp_legacy;
+ 	}
+ 
+ 	return 0;
+ 
++err_remove_vp_legacy:
++	vp_legacy_remove(&eni_vdpa->ldev);
+ err:
+ 	put_device(&eni_vdpa->vdpa.dev);
+ 	return ret;
+-- 
+2.30.2
 
