@@ -2,104 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7155A447321
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 14:47:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B49D5447324
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 14:48:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235426AbhKGNty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 08:49:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231580AbhKGNtw (ORCPT
+        id S235435AbhKGNun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 08:50:43 -0500
+Received: from mo4-p03-ob.smtp.rzone.de ([81.169.146.175]:30696 "EHLO
+        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231580AbhKGNum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 08:49:52 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FBCFC061714
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 05:47:09 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id u11so30022554lfs.1
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 05:47:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lucidpixels.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RqyROr9ApPxu/JZ1Q/EKRmNX6vkXC18N6kT/PZWoRP8=;
-        b=jxeV21n7iYgsnnLYx9dw3wR8o9vrTEbgfxVrw766SWKApkbT2W+I7me0SFf22rIeA7
-         EXdLLcxN6he9/zILczfiHTb4z+8xucDH+0EJql0So2j95oOI+/iX9hL9TuQ2QZwvyLJS
-         Nk3SjeB4Z4xe378Im3Ruj0CuYpm7aZp9K0Qg0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RqyROr9ApPxu/JZ1Q/EKRmNX6vkXC18N6kT/PZWoRP8=;
-        b=s3EhhZ2pAgiF2SiW5CwPWfIsDtIDU0WBsUYX6ikz9VNIa6JGULJMro8WiBDK3huDOf
-         zKkssXkDwfI/T6lnuEnr2YW18Hawn1gO5iLyEHAUNcRWewLtUN83szbY+CkxhHM1hRLY
-         OdazCxl7FfxN8FfZ/EWMk6o+8OcHRx/MeifvbId1vHmgv9amsW7N/iDfyh8pzC8MbFli
-         QzpoiuiuKqQWtDSspHgDMpW8iN4D8A3BXZnNwVrIuNP4sy6x/hLRRFT2z3I34VAFfWKY
-         DfwPjDMMDzeZroi96e4t+7D/aFuUp8xLmsRj8nJmkMSyOJ5CLxmt7AbxBAu4cDRIQ121
-         svGQ==
-X-Gm-Message-State: AOAM532ebDZRlm0ORLoSFA3IvCDDJyl8NcjPGeOCugqLtTwCF+xJEln3
-        ed3+wQLMMj3eUTw7MsI73fx2AiVmmnwy/7EA557/VOIFxyO/Yg==
-X-Google-Smtp-Source: ABdhPJzw1EnLJGkuZP1Xf4IaMZXAjiUdUQ4xrFbTuGea9jXiieQ5PCN1QhNvJ1XmViTD1xALcSLRfVImhzb2UsoVIys=
-X-Received: by 2002:a05:6512:1323:: with SMTP id x35mr71202909lfu.613.1636292827818;
- Sun, 07 Nov 2021 05:47:07 -0800 (PST)
-MIME-Version: 1.0
-References: <006a01d7cead$b9262d70$2b728850$@lucidpixels.com>
- <a4a88807-8f52-ef9a-c58e-0ff454da5ade@acm.org> <CAO9zADxiobgwDE5dtvo98EL0djdgQyrGJA_w4Oxb+pZ9pvOEjQ@mail.gmail.com>
- <CAO9zADycForyq9cmh=epw9r-Wzz=xt32vL3mePuBAPehCgUTjw@mail.gmail.com>
- <50a16ee2-dfa4-d009-17c5-1984cf0a6161@linux.vnet.ibm.com> <CAO9zADwVnuKU-tfZxm4USjf76yJhTZqWfZw4yspv8sc93RuBbQ@mail.gmail.com>
- <e0c2935d-d961-11a0-1b4c-580b55dc6b59@acm.org> <002401d7d305$082971b0$187c5510$@lucidpixels.com>
-In-Reply-To: <002401d7d305$082971b0$187c5510$@lucidpixels.com>
-From:   Justin Piszcz <jpiszcz@lucidpixels.com>
-Date:   Sun, 7 Nov 2021 08:46:56 -0500
-Message-ID: <CAO9zADzWcpwZkfJ5VZGZZJT39KQEUr9yGqqCnP18mk7ZAZxbBw@mail.gmail.com>
-Subject: Re: kernel 5.15 does not boot with 3ware card (never had this issue
- <= 5.14) - scsi 0:0:0:0: WARNING: (0x06:0x002C) : Command (0x12) timed out,
- resetting card
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Douglas Miller <dougmill@linux.vnet.ibm.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-scsi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Sun, 7 Nov 2021 08:50:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636292865;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=0iOoYrlW0W1dhedF3b0qomHYAYJFS+pAzW9ZnnfcvEM=;
+    b=PsCDzRfKVtGOtujmTnNxjNWxdh5si21K1/0L3pjFbeDOtzzbquY26IRSsHOlz+g33M
+    m+4jZNzQkrBVcyMt81/av2wJIa+xcb9Mxo5SQQBUf4aXT4fiS0d7eLEzEQdxvnw/H3kP
+    o+yXXw1rembp92Ue3DbQbSbvGNCjRVkmCs4rJtsuU6umJEtJL2GuffpiUwu5BbZctWDc
+    AEO2lok8oa3eI06aG0SsaY2lHi0A0iNB3lGMlgNfcR8TGTxi+Mw+pmuEDkmdQFEhz4sA
+    SBLsBH1dRqYramJpqMvQyFDNnXYiDnX5SSxFVTX3I+Xos20aOhM8GATKkWSBTLStXd4M
+    Brhw==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3jcR+"
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
+    with ESMTPSA id 902c63xA7DliFoQ
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Sun, 7 Nov 2021 14:47:44 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH 0/3] mtd: Ingenic NAND fix for JZ4740
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20211009184952.24591-1-paul@crapouillou.net>
+Date:   Sun, 7 Nov 2021 14:47:43 +0100
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>, list@opendingux.net,
+        linux-mtd@lists.infradead.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        Riccardo Mottola <riccardo.mottola@libero.it>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, Paul Boddie <paul@boddie.org.uk>
+Content-Transfer-Encoding: 7bit
+Message-Id: <968356A9-2A88-48B1-B31F-55C22BCE620E@goldelico.com>
+References: <20211009184952.24591-1-paul@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 6, 2021 at 7:54 AM Justin Piszcz <jpiszcz@lucidpixels.com> wrote:
->
->
->
-> -----Original Message-----
-> From: Bart Van Assche <bvanassche@acm.org>
-> Sent: Wednesday, November 3, 2021 12:23 PM
-> To: Justin Piszcz <jpiszcz@lucidpixels.com>; Douglas Miller <dougmill@linux.vnet.ibm.com>
-> Cc: LKML <linux-kernel@vger.kernel.org>; linux-scsi@vger.kernel.org
-> Subject: Re: kernel 5.15 does not boot with 3ware card (never had this issue <= 5.14) - scsi 0:0:0:0: WARNING: (0x06:0x002C) : Command (0x12) timed out, resetting card
->
-> On 11/3/21 9:18 AM, Justin Piszcz wrote:
-> > Thanks!-- Has anyone else reading run into this issue and/or are there
-> > any suggestions how I can troubleshoot this further (as all -rc's have
-> > the same issue)?
->
-> How about bisecting this issue
-> (https://www.kernel.org/doc/html/latest/admin-guide/bug-bisect.html)?
->
-> [ .. ]
->
-> I was having some issues finding a list of changes with git bisect, so I started checking the kernel .config and boot parameters:
->
-> I found the option that was causing the system not to boot (tested with 5.15.0 and latest linux-git as of 6 NOV 2021)
-> append="3w-sas.use_msi=1"
->
-> 3w-sas.use_msi defaults to 0 (so now it is using IR-IO-APIC instead of MSI but now the machine boots using 5.15)
-> https://lwn.net/Articles/358679/
->
-> Something between 5.14 and 5.15 changed regarding x86_64's handling of Message Signaled Interrupts.
-> ... which causes the kernel to no longer boot when 3w-sas.use_msi=1 is specified starting with 5.15.
+Hi Paul,
 
-This only partially fixes the issues, trying to reboot also results in
-a hard lockup on cpu 1 (this is semi-reproducible)
-https://installkernel.tripod.com/5.15-reboot-lockup.jpg
+> Am 09.10.2021 um 20:49 schrieb Paul Cercueil <paul@crapouillou.net>:
+> 
+> Hi,
+> 
+> Looks like NAND support has been broken on the JZ4740 SoC for a while;
 
-Back to 5.14.x for now...
+Yes, I remember someone telling that something was fundamentally broken
+and impossible to be fixed a while ago.
 
+> it looks like it comes from the fact that the "hw_oob_first" mechanism
+> was dropped from the NAND core and moved to the Davinci driver.
+> 
+> It turns out the JZ4740 SoC needs it too; I didn't notice it when
+> writing the new ingenic-nand driver (to replace the old jz4740-nand
+> driver) most likely because my Device Tree had the "nand-ecc-mode" set
+> to "hw_oob_first".
+> 
+> I am not very sure about patch [1/3]; to me the original code does not
+> make sense, and it didn't work out-of-the-box on the JZ4740 without it.
+> By applying patch [1/3] the function nand_read_page_hwecc_oob_first()
+> can be reused for the JZ4740 SoC as well. But I did not test patch [1/3]
+> on Davinci.
 
+would this also work for jz4780 NAND?
 
-Justin.
+BR,
+Nikolaus
+
