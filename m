@@ -2,86 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3063F44751A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A00A044751E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236173AbhKGTIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 14:08:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhKGTIF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 14:08:05 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0B6C061570
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 11:05:22 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id bi35so31244875lfb.9
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 11:05:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r6K/HDk/5sXG3OR/4KUrGDRbz5Z2eOVXUmxNmMllvJI=;
-        b=Cuycn6/QB+0/MgeOmvlXt+4lNtjwed3pxDuArqf/HMcILwTWRYgLPyWfQ3W1ci4g/2
-         P8MNmFNdKEDeMSvfIG8aMHgiUo63eXC2m+IfbAtzLW5BJ9h9Qtm7mCJAsl/4o6nQvr/U
-         O8HxRDhUDtnOL2gIcrsrzpSvc87OkdPj/H6ZU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r6K/HDk/5sXG3OR/4KUrGDRbz5Z2eOVXUmxNmMllvJI=;
-        b=uHE/RGdH3wwJ6jW48QecDXUudqdK9l5z9Gy9Y+OSQ1YuVArcqB9ewWoAm9y/jM7Qq0
-         sl90CHogqFkB5XRyIWZRC3Ah7m5VSmTnZGv+DeBvU+yMQjU5lGGL6htc431iasMkmr6+
-         n03NxAkAcB+3VeTnAtv9OEFFVCWDrkm36k3LHaiqqhEfXfNn67mDnbg/9q2y5f3qkjsN
-         tsesBljOyu9alis5H2CXWJQeyPFT8Wv/JrEYyFxdP7Ym9cSyURNH9/2Y/1zBYObM7sgq
-         21YNVsec+/caPi/Bbir78RnkZWvNcZKtBgVK+LS8KBSHsVuOHNuWZo+cO0D4Pgdxkr3S
-         G26w==
-X-Gm-Message-State: AOAM531dpTuKTO18lnBlWYLrJ2WYK18Gns8M1qlu/2lBY7/G65gKibM4
-        BN6n+pcSTqLh8mnHfKqJydaxy81YXwSK8sgWNmU=
-X-Google-Smtp-Source: ABdhPJxefzgydau0q59eVGd6aUwzM4nd4BL+cmy/s4MzEOXHRVbcj8Sw72pRxYnqDPVNmumdJ8Ddfw==
-X-Received: by 2002:a19:3844:: with SMTP id d4mr18634765lfj.64.1636311920178;
-        Sun, 07 Nov 2021 11:05:20 -0800 (PST)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id i1sm1545666lfr.287.2021.11.07.11.05.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Nov 2021 11:05:19 -0800 (PST)
-Received: by mail-lj1-f179.google.com with SMTP id h11so25277885ljk.1
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 11:05:18 -0800 (PST)
-X-Received: by 2002:a2e:86d6:: with SMTP id n22mr2270552ljj.31.1636311918266;
- Sun, 07 Nov 2021 11:05:18 -0800 (PST)
+        id S236211AbhKGTIj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 7 Nov 2021 14:08:39 -0500
+Received: from aposti.net ([89.234.176.197]:54376 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229990AbhKGTIh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 14:08:37 -0500
+Date:   Sun, 07 Nov 2021 19:05:35 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v5 5/7] MIPS: DTS: jz4780: Account for Synopsys HDMI
+ driver and LCD controllers
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Paul Boddie <paul@boddie.org.uk>, Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
+        <devicetree@vger.kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, Jon as Karlman <jonas@kwiboo.se>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Message-Id: <BDU72R.SAKM4CQWCUKI2@crapouillou.net>
+In-Reply-To: <95D1DE70-DDF4-419B-8F0C-E9A6E0995D1F@goldelico.com>
+References: <cover.1633436959.git.hns@goldelico.com>
+        <c243176cb5e5a3ab5df1fe77f9246b6d5ec4f88e.1633436959.git.hns@goldelico.com>
+        <O7VI0R.CRIG8R7O0OOI3@crapouillou.net> <3514743.EH6qe8WxYI@jason>
+        <N3YI0R.7ZLKK5JTBXW63@crapouillou.net>
+        <95D1DE70-DDF4-419B-8F0C-E9A6E0995D1F@goldelico.com>
 MIME-Version: 1.0
-References: <20211107174555.2d1a5eec@xps13>
-In-Reply-To: <20211107174555.2d1a5eec@xps13>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 7 Nov 2021 11:05:02 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiFoXSsfQwa8x_Ne0HYJtnLcpku67QiRn+q5tXrqiyBiA@mail.gmail.com>
-Message-ID: <CAHk-=wiFoXSsfQwa8x_Ne0HYJtnLcpku67QiRn+q5tXrqiyBiA@mail.gmail.com>
-Subject: Re: [GIT PULL] mtd: Changes for 5.16
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     linux-mtd <linux-mtd@lists.infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 7, 2021 at 8:46 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
-> This is the MTD PR for 5.16.
+Hi,
 
-I want _explanations_ for what I'm pulling.
+Le dim., nov. 7 2021 at 14:45:37 +0100, H. Nikolaus Schaller 
+<hns@goldelico.com> a écrit :
+> Hi Paul,
+> 
+>>  Am 05.10.2021 um 23:52 schrieb Paul Cercueil <paul@crapouillou.net>:
+>> 
+>>  Hi Paul,
+>> 
+>>  Le mar., oct. 5 2021 at 23:44:12 +0200, Paul Boddie 
+>> <paul@boddie.org.uk> a écrit :
+>>>  On Tuesday, 5 October 2021 22:50:12 CEST Paul Cercueil wrote:
+>>>>  Hi Nikolaus & Paul,
+>>>>  Le mar., oct. 5 2021 at 14:29:17 +0200, H. Nikolaus Schaller
+>>>  <hns@goldelico.com> a écrit :
+>>>>  >
+>>>>  > diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi
+>>>>  > b/arch/mips/boot/dts/ingenic/jz4780.dtsi
+>>>>  > index 9e34f433b9b5..c3c18a59c377 100644
+>>>>  > --- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
+>>>>  > +++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
+>>>>  > @@ -424,6 +424,51 @@ i2c4: i2c@10054000 {
+>>>>  >
+>>>>  >  		status = "disabled";
+>>>>  >
+>>>>  >  	};
+>>>>  >
+>>>>  > +	hdmi: hdmi@10180000 {
+>>>>  > +		compatible = "ingenic,jz4780-dw-hdmi";
+>>>>  > +		reg = <0x10180000 0x8000>;
+>>>>  > +		reg-io-width = <4>;
+>>>>  > +
+>>>>  > +		clocks = <&cgu JZ4780_CLK_AHB0>, <&cgu JZ4780_CLK_HDMI>;
+>>>>  > +		clock-names = "iahb", "isfr";
+>>>>  > +
+>>>>  > +		assigned-clocks = <&cgu JZ4780_CLK_HDMI>;
+>>>>  > +		assigned-clock-rates = <27000000>;
+>>>>  Any reason why this is set to 27 MHz? Is it even required? 
+>>>> Because with
+>>>>  the current ci20.dts, it won't be clocked at anything but 48 MHz.
+>>>  EXCLK will be 48MHz, but the aim is to set the HDMI peripheral 
+>>> clock to 27MHz,
+>>>  which is supposedly required. I vaguely recall a conversation 
+>>> about whether we
+>>>  were doing this right, but I don't recall any conclusion.
+>> 
+>>  But right now your HDMI clock is 48 MHz and HDMI works.
+> 
+> Is it? How did you find out?
+> 
+> And have you tried to remove assigned-clocks from jz4780.dtsi?
+> 
+> 1. I read back:
+> 
+> root@letux:~# cat /sys/kernel/debug/clk/hdmi/clk_rate
+> 26909090
+> root@letux:~#
+> 
+> So for me it seems to be running at ~27 MHz.
+> 
+> 2. If I remove the assigned-clocks or assigned-clock-rates from DT
+> the boot process hangs shortly after initializing drm.
+> 
+> 3. If I set assigned-clock-rates = <48000000>, HDMI also works.
+> 
+> I get it read back from /sys/kernel/debug/clk/hdmi/clk_rate
+> of 46736842.
+> 
+> 4. Conclusions:
+> * assigned-clocks are required
+> * it does not matter if 27 or 48 MHz
+> * I have no idea which value is more correct
+> * so I'd stay on the safe side of 27 MHz
+> 
+> 5. But despite that found, please look into the programming
+> manual section 18.1.2.16. There is an
+> 
+> "Import Note: The clock must be between 18M and 27M, it occurs
+> fatal error if exceeding the range. "
 
-Yes, I can see it by looking at the diffs and shortlog, but I shouldn't need to.
+Ok, that's the important information that was missing.
 
-I want a short blurb about what the pull is getting me, and why I
-should pull it, not just a "here's a random pull".
+So 27 MHz is OK.
 
-I wrote my own explanation, and then decided that no, I'm not going to
-pull at all because the pull request was so bad and deficient.
+> 6. Therefore I think it *may* work overclocked with 48MHz
+> but is not guaranteed or reliable above 27 MHz.
+> 
+> So everything is ok here.
 
-             Linus
+One thing though - the "assigned-clocks" and "assigned-clock-rates", 
+while it works here, should be moved to the CGU node, to respect the 
+YAML schemas.
+
+Cheers,
+-Paul
+
+> 
+>> 
+>>>>  > +
+>>>>  > +		interrupt-parent = <&intc>;
+>>>>  > +		interrupts = <3>;
+>>>>  > +
+>>>>  > +		/* ddc-i2c-bus = <&i2c4>; */
+>>>>  > +
+>>>>  > +		status = "disabled";
+>>>>  > +	};
+>>>>  > +
+>>>>  > +	lcdc0: lcdc0@13050000 {
+>>>>  > +		compatible = "ingenic,jz4780-lcd";
+>>>>  > +		reg = <0x13050000 0x1800>;
+>>>>  > +
+>>>>  > +		clocks = <&cgu JZ4780_CLK_TVE>, <&cgu JZ4780_CLK_LCD0PIXCLK>;
+>>>>  > +		clock-names = "lcd", "lcd_pclk";
+>>>>  > +
+>>>>  > +		interrupt-parent = <&intc>;
+>>>>  > +		interrupts = <31>;
+>>>>  > +
+>>>>  > +		status = "disabled";
+>>>>  I think you can keep lcdc0 enabled by default (not lcdc1 though), 
+>>>> since
+>>>>  it is highly likely that you'd want that.
+>>>  As far as I know, the clock gating for the LCD controllers acts 
+>>> like a series
+>>>  circuit, meaning that they both need to be enabled. Some testing 
+>>> seemed to
+>>>  confirm this. Indeed, I seem to remember only enabling one clock 
+>>> and not
+>>>  getting any output until I figured this weird arrangement out.
+>> 
+>>  I'm not talking about clocks though, but about LCDC0 and LCDC1.
+> 
+> Ah, you mean status = "okay"; vs. status = "disabled";
+> 
+> Well, IMHO it is common practise to keep SoC subsystems disabled by
+> default (to save power and boot time) unless a board specific DTS 
+> explicitly
+> requests the SoC feature to be active. See for example mmc0, mmc1 or 
+> i2c0..i2c4.
+> 
+> All these are disabled in jz4780.dtsi and partially enabled in 
+> ci20.dts.
+> 
+> Why should lcdc0 be an exception in jz4780.dtsi?
+> 
+> BR and thanks,
+> Nikolaus
+> 
+
+
