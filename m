@@ -2,126 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01FD44763F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 23:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC76447644
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 23:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235961AbhKGWVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 17:21:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234236AbhKGWVs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 17:21:48 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3CF1C061714
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 14:19:00 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id o4so181246pfp.13
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 14:19:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=vvhHrDlviXEtiu42f9Ed4TiIZsHPlHHchTgbcPhjOC4=;
-        b=DKLtpSmbwJwijOvRDAEnE4ouv7I+PdkspcRptedwiQW+s7ock1jLZ//bfUU3KqVhBO
-         bBQUAl9KcJ1Q6mAns3nLRjQIQf8hjG69ijlsXDi7sqJ5OokTU1fTXsCKgltrRRuLpfRp
-         92fkj1s+7TZaU7a4cKiYGeze0dqq2qCOcVosc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=vvhHrDlviXEtiu42f9Ed4TiIZsHPlHHchTgbcPhjOC4=;
-        b=cQDZWhHVEWmw+IP4CyZF+3oEg483XiiVsRCIEQKJHK5mlt+82s6I8jPLrQ1IB9aeXb
-         ky/Ig6A8iHUbmwy9bpMAdtcKMl/jQfm4Md0RwnLjeXzW0SIFOFGciDkzoKCzFynHnulu
-         GNUqMTdgxrqfLbXbswpaAZyp0ROlofzSf0eMz6QK6eMM05nQJ7XmMX9vS4ia82n15kDO
-         mpfnUQA0Dq7Ay/WNFmMu7SkFsBedXcte8Rbr+ODaGrSilR1NPgFlE/Doma4jJKe2DvZ8
-         DXX+6ASRJt6SxY68eNuI0m5Abxql3EJfglWTXOJ7FaDZSlEAsz0CSaTkcHNr0zCS/A+I
-         soKA==
-X-Gm-Message-State: AOAM53117GiBmcObHzHsX8g+EeEbfMNxhRMBQxc0lFI2Byy97PoVF77g
-        MGZXt3UA54ZFWbTjk4+D0qFuaw==
-X-Google-Smtp-Source: ABdhPJxfFXdXIw4YX3AftpaKpLmcq1g8ANa0foPZPl3tIwJBZSTL0sL86tkEOb1z5QnEzVlr5Hl6Bw==
-X-Received: by 2002:a05:6a00:8c4:b0:44c:9827:16cc with SMTP id s4-20020a056a0008c400b0044c982716ccmr76290901pfu.7.1636323540309;
-        Sun, 07 Nov 2021 14:19:00 -0800 (PST)
-Received: from localhost ([2001:4479:e000:e400:9243:f22c:33ee:c8cf])
-        by smtp.gmail.com with ESMTPSA id d17sm13127106pfo.40.2021.11.07.14.18.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Nov 2021 14:18:59 -0800 (PST)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Cc:     keyrings@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        linux-s390@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org,
-        David Howells <dhowells@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Frank van der Linden <fllinden@amazon.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Subject: Re: [PATCH 0/3] KEXEC_SIG with appended signature
-In-Reply-To: <20211105131401.GL11195@kunlun.suse.cz>
-References: <cover.1635948742.git.msuchanek@suse.de>
- <87czneeurr.fsf@dja-thinkpad.axtens.net>
- <20211105131401.GL11195@kunlun.suse.cz>
-Date:   Mon, 08 Nov 2021 09:18:56 +1100
-Message-ID: <87a6ifehin.fsf@dja-thinkpad.axtens.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S236548AbhKGWbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 17:31:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235737AbhKGWba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 17:31:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF92160FC1;
+        Sun,  7 Nov 2021 22:28:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636324127;
+        bh=krHjZde3Mzk8M9q+BC9UiS9WyWY8AUbQTr3wGFrGymQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=W4iMrHYYg+3xIc9+m7TKvPzrmWWx7cjsn+xzFs6CHOvC1CxuDyATh0Z2PLk5Wi66N
+         Iv2trrFaBNI7gdOfGcusurNtm1enXA+eJxJEeUYjedLHlh7bI3HPirRrlRSoDTGrCJ
+         n8OUcbwjyyYy6XfVs4cEkPLLrNW9QUnshqAzBuZ3FXsk7boODjhIENXNsIclk0mjXM
+         DMgz9lTSnEERiVFep+dSb+PKLzbAjD3lFaBkbOjHNRiNG2cY4tXpEx401TXe5fJSfR
+         ZSCebsWHw0LJ3ldpXB4AED4CyOBpCPoXJpzGFi4OCYvOyzT2TJwAiMWRCvtAwxsNKT
+         ncs1R1Fq78uqQ==
+Message-ID: <186120e4754fa0b583d5f4cb31aa49ccd5795d09.camel@kernel.org>
+Subject: Re: [PATCH] x86/sgx: Free backing memory after faulting the enclave
+ page
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Sean Christopherson <seanjc@google.com>,
+        reinette.chatre@intel.com, tony.luck@intel.com,
+        nathaniel@profian.com, stable@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 08 Nov 2021 00:28:44 +0200
+In-Reply-To: <7a5d6dab-4d06-40b3-d9c7-09c991b856cd@intel.com>
+References: <20211103232238.110557-1-jarkko@kernel.org>
+         <6831ed3c-c5b1-64f7-2ad7-f2d686224b7e@intel.com>
+         <e88d6d580354aadaa8eaa5ee6fa703f021786afb.camel@kernel.org>
+         <d2191571-30a5-c2aa-e8ed-0a380e9daeac@intel.com>
+         <55eb8f3649590289a0f2b1ebe7583b6da3ff70ee.camel@kernel.org>
+         <c6f5356b-a56a-e057-ef74-74e1169a844b@intel.com> <YYgsL7xSxnsjqIlu@iki.fi>
+         <7a5d6dab-4d06-40b3-d9c7-09c991b856cd@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4-1 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michal Such=C3=A1nek <msuchanek@suse.de> writes:
+On Sun, 2021-11-07 at 11:51 -0800, Dave Hansen wrote:
+> On 11/7/21 11:42 AM, Jarkko Sakkinen wrote:
+> > > > It should be fairly effecient just to check the pages by using
+> > > > encl->page_tree.
+> > > That sounds more complicated and slower than what I suggested.=C2=A0 =
+You
+> > > could even just check the refcount on the page.=C2=A0 I _think_ page =
+cache
+> > > pages have a refcount of 2.=C2=A0 So, look for the refcount that mean=
+s "no
+> > > more PCMD in this page", and just free it if so.
+> > Umh, so... there is total 32 PCMD's per one page.
+>=20
+> When you place PCMD in a page, you do a get_page().=C2=A0 The refcount go=
+es
+> up by one.=C2=A0 So, a PCMD page with one PCMD will (I think) have a refc=
+ount
+> of 3.=C2=A0 If you totally fill it up with 31 *more* PCMD entries, it wil=
+l
+> have a refcount of 34.=C2=A0 You do *not* do a put_page() on the PCMD pag=
+e at
+> the end of the allocation phase.
+>=20
+> When the backing storage is freed, you drop the refcount.=C2=A0 So, going
+> from 32 PCMD entries to 31 entries in a page, you go from 34->33.
+>=20
+> When that refcount drops to 2, you know there is no more data in the
+> page that's useful.=C2=A0 At that point you can truncate it out of the
+> backing storage.
+>=20
+> There's no reason to scan the page, or a boatload of other metadata.
+> Just keep a refcount.=C2=A0 Just use the *existing* 'struct page' refcoun=
+t.
 
-> On Fri, Nov 05, 2021 at 09:55:52PM +1100, Daniel Axtens wrote:
->> Michal Suchanek <msuchanek@suse.de> writes:
->>=20
->> > S390 uses appended signature for kernel but implements the check
->> > separately from module loader.
->> >
->> > Support for secure boot on powerpc with appended signature is planned -
->> > grub patches submitted upstream but not yet merged.
->>=20
->> Power Non-Virtualised / OpenPower already supports secure boot via kexec
->> with signature verification via IMA. I think you have now sent a
->> follow-up series that merges some of the IMA implementation, I just
->> wanted to make sure it was clear that we actually already have support
->
-> So is IMA_KEXEC and KEXEC_SIG redundant?
->
-> I see some architectures have both. I also see there is a lot of overlap
-> between the IMA framework and the KEXEC_SIG and MODULE_SIg.
+Right! Thank you, I'll use this approach, and check that the refcount
+actually behaves that way you described.
 
-
-Mimi would be much better placed than me to answer this.
-
-The limits of my knowledge are basically that signature verification for
-modules and kexec kernels can be enforced by IMA policies.
-
-For example a secure booted powerpc kernel with module support will have
-the following IMA policy set at the arch level:
-
-"appraise func=3DKEXEC_KERNEL_CHECK appraise_flag=3Dcheck_blacklist apprais=
-e_type=3Dimasig|modsig",
-(in arch/powerpc/kernel/ima_arch.c)
-
-Module signature enforcement can be set with either IMA (policy like
-"appraise func=3DMODULE_CHECK appraise_flag=3Dcheck_blacklist appraise_type=
-=3Dimasig|modsig" )
-or with CONFIG_MODULE_SIG_FORCE/module.sig_enforce=3D1.
-
-Sometimes this leads to arguably unexpected interactions - for example
-commit fa4f3f56ccd2 ("powerpc/ima: Fix secure boot rules in ima arch
-policy"), so it might be interesting to see if we can make things easier
-to understand.  I suspect another amusing interaction is that if the IMA
-verification is used, the signature could be in an xattr rather than an
-appended signature.
-
-Kind regards,
-Daniel
-
+/Jarkko
