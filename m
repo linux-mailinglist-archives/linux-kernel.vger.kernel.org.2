@@ -2,87 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296A7447703
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 01:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF1C4476A3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 00:08:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236108AbhKHAsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 19:48:45 -0500
-Received: from prt-mail.chinatelecom.cn ([42.123.76.219]:59515 "EHLO
-        chinatelecom.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229807AbhKHAso (ORCPT
+        id S235972AbhKGXLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 18:11:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235374AbhKGXLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 19:48:44 -0500
-X-Greylist: delayed 412 seconds by postgrey-1.27 at vger.kernel.org; Sun, 07 Nov 2021 19:48:42 EST
-HMM_SOURCE_IP: 172.18.0.48:43760.616130149
-HMM_ATTACHE_NUM: 0000
-HMM_SOURCE_TYPE: SMTP
-Received: from clientip-110.80.1.45 (unknown [172.18.0.48])
-        by chinatelecom.cn (HERMES) with SMTP id 1090E2800AF;
-        Mon,  8 Nov 2021 08:38:21 +0800 (CST)
-X-189-SAVE-TO-SEND: +zhenggy@chinatelecom.cn
-Received: from  ([172.18.0.48])
-        by app0024 with ESMTP id a7c1a4c9887d45d59953a2e84212ca75 for lvs-devel@vger.kernel.org;
-        Mon, 08 Nov 2021 08:38:42 CST
-X-Transaction-ID: a7c1a4c9887d45d59953a2e84212ca75
-X-Real-From: zhenggy@chinatelecom.cn
-X-Receive-IP: 172.18.0.48
-X-MEDUSA-Status: 0
-Sender: zhenggy@chinatelecom.cn
-From:   GuoYong Zheng <zhenggy@chinatelecom.cn>
-To:     lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org
-Cc:     horms@verge.net.au, ja@ssi.bg, pablo@netfilter.org,
-        kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel@vger.kernel.org,
-        GuoYong Zheng <zhenggy@chinatelecom.cn>
-Subject: [PATCH] ipvs: remove unused variable for ip_vs_new_dest
-Date:   Fri,  5 Nov 2021 19:39:40 +0800
-Message-Id: <1636112380-11040-1-git-send-email-zhenggy@chinatelecom.cn>
-X-Mailer: git-send-email 1.8.3.1
+        Sun, 7 Nov 2021 18:11:12 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EB2C061570;
+        Sun,  7 Nov 2021 15:08:27 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id e11so6674020ljo.13;
+        Sun, 07 Nov 2021 15:08:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qGOrZCQywxePXMyyV3xpg2iW/dZ+roDb4z6xkvFvUoY=;
+        b=EiM+IbH8j98z1wguhWYYd5JqExuh5ON5QCwPhIaCpBDMipg6z3/DN7JGi6HZ2z63AG
+         +KkfdvQnTdnxf6VJKNmOWUvW416Ac/fbaY66RK6EYDFpRQCjZG7tBFqzFh2dTXYuutDn
+         cLO6EZsguyj2Wm4WNvGzFZZyJLaIfbPjjRAwgQiJo/aenoKE2MR2PzSMlYvMkxQfDGZ7
+         DgKR74EqhS2qf5RXElMXxlakWenQ/fhSZVIMKc5WvIkc3hvJoWhcciglOoJEO6LgiuAe
+         7Rw77SIJuoQf1ydHtdQYUUgxK5HU4CXjVbmWbc4jwhc8qOicAGOsiGJIWVTzGpI20K6X
+         VjtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qGOrZCQywxePXMyyV3xpg2iW/dZ+roDb4z6xkvFvUoY=;
+        b=gSDH3x/pIXYCRpRDpKpc26OU3iV4ia3hW95YrYMeczKhZPW47341tAaOL9VyuzM1wR
+         PgSY6wvaCtOxNrVWYACcGIQ9ahPv/5UMCoUPHTivXFyabwM97cKvNq6uSth8bUIo+1eL
+         ZdCcY0Cem4v2r32dbPufYF6alEKTFSWDrBdvRGaJAFCcveu0nkx2+ie9EPpLTAU/M0aQ
+         wI/9y66WzQiKgCIw2beyxCeCdAB2WgvAv45luJI0aKbpSnisL58J6dnHdtbi03+QTG62
+         vUOnV7Bh5k/6FuVbfAS9EXPLjtNfMurrxq8c7edU5Gl1KV5LzKSbRLwOl+pp17wSTR/b
+         JrUQ==
+X-Gm-Message-State: AOAM531aVKtu9rvAGPrttAXwaR3Id73eTdXxKuFjXlD2BIvqjYnWNrwO
+        +Yy3e/V5iDGehj3vOJr1XE0=
+X-Google-Smtp-Source: ABdhPJy4/Df640Vef4HLnif11/7zqgy/ojOfe0tndbPkjgXzZT7lqwhgDvrv4V3a8S1TzAhivylyHQ==
+X-Received: by 2002:a2e:b5b7:: with SMTP id f23mr51742411ljn.458.1636326505752;
+        Sun, 07 Nov 2021 15:08:25 -0800 (PST)
+Received: from localhost.localdomain (79-139-188-96.dynamic.spd-mgts.ru. [79.139.188.96])
+        by smtp.gmail.com with ESMTPSA id l13sm1785694lfh.270.2021.11.07.15.08.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Nov 2021 15:08:25 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Graichen <thomas.graichen@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 1/2] drm/dp: Add drm_dp_aux_register_ddc/chardev() helpers
+Date:   Mon,  8 Nov 2021 02:08:20 +0300
+Message-Id: <20211107230821.13511-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.33.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dest variable is not used after ip_vs_new_dest anymore in
-ip_vs_add_dest, do not need pass it to ip_vs_new_dest, remove it.
+Add drm_dp_aux_register_ddc/chardev() helpers that allow DP drivers
+to register I2C DDC adapter and character device separately.
 
-Signed-off-by: GuoYong Zheng <zhenggy@chinatelecom.cn>
+Cc: <stable@vger.kernel.org> # 5.13+
+Reported-by: Thomas Graichen <thomas.graichen@gmail.com> # T124 Nyan Big
+Tested-by: Thomas Graichen <thomas.graichen@gmail.com> # T124 Nyan Big
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- net/netfilter/ipvs/ip_vs_ctl.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/drm_dp_helper.c | 112 +++++++++++++++++++++++++++-----
+ include/drm/drm_dp_helper.h     |   4 ++
+ 2 files changed, 99 insertions(+), 17 deletions(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index e62b40b..494399d 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -959,8 +959,7 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
-  *	Create a destination for the given service
+diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
+index 4d0d1e8e51fa..56e3e57e6dc7 100644
+--- a/drivers/gpu/drm/drm_dp_helper.c
++++ b/drivers/gpu/drm/drm_dp_helper.c
+@@ -1775,7 +1775,7 @@ EXPORT_SYMBOL(drm_dp_remote_aux_init);
+  * drm_dp_aux_init() - minimally initialise an aux channel
+  * @aux: DisplayPort AUX channel
+  *
+- * If you need to use the drm_dp_aux's i2c adapter prior to registering it with
++ * If you need to use the drm_dp_aux handle prior to registering it with
+  * the outside world, call drm_dp_aux_init() first. For drivers which are
+  * grandparents to their AUX adapters (e.g. the AUX adapter is parented by a
+  * &drm_connector), you must still call drm_dp_aux_register() once the connector
+@@ -1790,6 +1790,9 @@ EXPORT_SYMBOL(drm_dp_remote_aux_init);
   */
- static int
--ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest,
--	       struct ip_vs_dest **dest_p)
-+ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
+ void drm_dp_aux_init(struct drm_dp_aux *aux)
  {
- 	struct ip_vs_dest *dest;
- 	unsigned int atype, i;
-@@ -1020,8 +1019,6 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
- 	spin_lock_init(&dest->stats.lock);
- 	__ip_vs_update_dest(svc, dest, udest, 1);
++	if (aux->ddc.algo)
++		return;
++
+ 	mutex_init(&aux->hw_mutex);
+ 	mutex_init(&aux->cec.lock);
+ 	INIT_WORK(&aux->crc_work, drm_dp_aux_crc_work);
+@@ -1827,31 +1830,23 @@ EXPORT_SYMBOL(drm_dp_aux_init);
+  * mentioned above need to call drm_dp_aux_init() in order to use the AUX
+  * channel before registration.
+  *
++ * Don't mix drm_dp_aux_register() with drm_dp_aux_register_chardev/ddc().
++ *
+  * Returns 0 on success or a negative error code on failure.
+  */
+ int drm_dp_aux_register(struct drm_dp_aux *aux)
+ {
+ 	int ret;
  
--	*dest_p = dest;
+-	WARN_ON_ONCE(!aux->drm_dev);
 -
- 	LeaveFunction(2);
- 	return 0;
+-	if (!aux->ddc.algo)
+-		drm_dp_aux_init(aux);
+-
+-	aux->ddc.class = I2C_CLASS_DDC;
+-	aux->ddc.owner = THIS_MODULE;
+-	aux->ddc.dev.parent = aux->dev;
++	drm_dp_aux_init(aux);
  
-@@ -1095,7 +1092,7 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
- 		/*
- 		 * Allocate and initialize the dest structure
- 		 */
--		ret = ip_vs_new_dest(svc, udest, &dest);
-+		ret = ip_vs_new_dest(svc, udest);
+-	strlcpy(aux->ddc.name, aux->name ? aux->name : dev_name(aux->dev),
+-		sizeof(aux->ddc.name));
+-
+-	ret = drm_dp_aux_register_devnode(aux);
++	ret = drm_dp_aux_register_ddc(aux);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = i2c_add_adapter(&aux->ddc);
++	ret = drm_dp_aux_register_chardev(aux);
+ 	if (ret) {
+-		drm_dp_aux_unregister_devnode(aux);
++		drm_dp_aux_unregister_ddc(aux);
+ 		return ret;
  	}
- 	LeaveFunction(2);
  
+@@ -1865,11 +1860,94 @@ EXPORT_SYMBOL(drm_dp_aux_register);
+  */
+ void drm_dp_aux_unregister(struct drm_dp_aux *aux)
+ {
+-	drm_dp_aux_unregister_devnode(aux);
+-	i2c_del_adapter(&aux->ddc);
++	drm_dp_aux_unregister_chardev(aux);
++	drm_dp_aux_unregister_ddc(aux);
+ }
+ EXPORT_SYMBOL(drm_dp_aux_unregister);
+ 
++/**
++ * drm_dp_aux_register_ddc() -  initialise and register I2C DDC part of AUX channel
++ * @aux: DisplayPort AUX channel
++ *
++ * Automatically calls drm_dp_aux_init() if this hasn't been done yet.
++ * If you need to use the drm_dp_aux's I2C adapter prior to registering it with
++ * the outside world, call drm_dp_aux_register_ddc() first. For drivers which
++ * are grandparents to their AUX adapters (e.g. the AUX adapter is parented by a
++ * &drm_connector), you must still call drm_dp_aux_register_chardev() once the
++ * connector has been registered to allow userspace access to the auxiliary DP
++ * channel.
++ *
++ * For devices which use a separate platform device for their AUX adapters, this
++ * may be called as early as required by the driver.
++ *
++ * Returns 0 on success or a negative error code on failure.
++ */
++int drm_dp_aux_register_ddc(struct drm_dp_aux *aux)
++{
++	drm_dp_aux_init(aux);
++
++	if (WARN_ON(aux->ddc.class == I2C_CLASS_DDC))
++		return -EBUSY;
++
++	aux->ddc.class = I2C_CLASS_DDC;
++	aux->ddc.owner = THIS_MODULE;
++	aux->ddc.dev.parent = aux->dev;
++
++	strlcpy(aux->ddc.name, aux->name ? aux->name : dev_name(aux->dev),
++		sizeof(aux->ddc.name));
++
++	return i2c_add_adapter(&aux->ddc);
++}
++EXPORT_SYMBOL(drm_dp_aux_register_ddc);
++
++/**
++ * drm_dp_aux_unregister_ddc() - unregister I2C DDC part of AUX channel
++ * @aux: DisplayPort AUX channel
++ */
++void drm_dp_aux_unregister_ddc(struct drm_dp_aux *aux)
++{
++	i2c_del_adapter(&aux->ddc);
++
++	aux->ddc.class = 0;
++}
++EXPORT_SYMBOL(drm_dp_aux_unregister_ddc);
++
++/**
++ * drm_dp_aux_register_chardev() - initialise and register userspace part of AUX channel
++ * @aux: DisplayPort AUX channel
++ *
++ * Automatically calls drm_dp_aux_init() if this hasn't been done yet. This
++ * should only be called once the parent of @aux, &drm_dp_aux.dev, is
++ * initialized. For devices which are grandparents of their AUX channels,
++ * &drm_dp_aux.dev will typically be the &drm_connector &device which
++ * corresponds to @aux. For these devices, it's advised to call
++ * drm_dp_aux_register_chardev() in &drm_connector_funcs.late_register, and
++ * likewise to call drm_dp_aux_unregister_chardev() in
++ * &drm_connector_funcs.early_unregister. Functions which don't follow this
++ * will likely Oops when %CONFIG_DRM_DP_AUX_CHARDEV is enabled.
++ *
++ * Returns 0 on success or a negative error code on failure.
++ */
++int drm_dp_aux_register_chardev(struct drm_dp_aux *aux)
++{
++	WARN_ON_ONCE(!aux->drm_dev);
++
++	drm_dp_aux_init(aux);
++
++	return drm_dp_aux_register_devnode(aux);
++}
++EXPORT_SYMBOL(drm_dp_aux_register_chardev);
++
++/**
++ * drm_dp_aux_unregister() - unregister userspace part of AUX channel
++ * @aux: DisplayPort AUX channel
++ */
++void drm_dp_aux_unregister_chardev(struct drm_dp_aux *aux)
++{
++	drm_dp_aux_unregister_devnode(aux);
++}
++EXPORT_SYMBOL(drm_dp_aux_unregister_chardev);
++
+ #define PSR_SETUP_TIME(x) [DP_PSR_SETUP_TIME_ ## x >> DP_PSR_SETUP_TIME_SHIFT] = (x)
+ 
+ /**
+diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
+index b52df4db3e8f..80130458188d 100644
+--- a/include/drm/drm_dp_helper.h
++++ b/include/drm/drm_dp_helper.h
+@@ -2130,6 +2130,10 @@ void drm_dp_remote_aux_init(struct drm_dp_aux *aux);
+ void drm_dp_aux_init(struct drm_dp_aux *aux);
+ int drm_dp_aux_register(struct drm_dp_aux *aux);
+ void drm_dp_aux_unregister(struct drm_dp_aux *aux);
++int drm_dp_aux_register_ddc(struct drm_dp_aux *aux);
++void drm_dp_aux_unregister_ddc(struct drm_dp_aux *aux);
++int drm_dp_aux_register_chardev(struct drm_dp_aux *aux);
++void drm_dp_aux_unregister_chardev(struct drm_dp_aux *aux);
+ 
+ int drm_dp_start_crc(struct drm_dp_aux *aux, struct drm_crtc *crtc);
+ int drm_dp_stop_crc(struct drm_dp_aux *aux);
 -- 
-1.8.3.1
+2.33.1
 
