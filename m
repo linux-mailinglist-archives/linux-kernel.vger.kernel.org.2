@@ -2,117 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9001447646
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 23:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1449844764D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 23:33:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236585AbhKGWeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 17:34:07 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:58357 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235737AbhKGWeF (ORCPT
+        id S236602AbhKGWfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 17:35:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234833AbhKGWfo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 17:34:05 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HnTVZ1jgRz4xd4;
-        Mon,  8 Nov 2021 09:31:17 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1636324281;
-        bh=9Z5GYdWA78hrsdCWSQ0i9WtTgQ98iIso88MZBedtccY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=f3MuNWNv9vKPg87fW5H/sVmBgXMepxqtJOBGuVdmAMEAWTwU6iKdidcKY9sbGXMfy
-         lUAIg0CM/CSahYfxUiI5gnc+uueJR0s0SPHUVx5VasIuvs4HWPIY5WubRSpbYpvJ2Z
-         DgNSSkA7EiGGdxmuRf5kpXMwJRyfAO3WBgv7WjGbp3WkRdW9TtWO27zbg/xI8HJ/Vx
-         G09fponfjEMjacfE7WzCW+M9fi2lt1Hjc+Ro5rzW42Djc6GxLP9yutSYz+afNi89bt
-         M+bo3odiRZbb7Teejfcc5mgBXfLBcpWs0TiD9OkSvnKZseXQpD/n0yBPfmakqRE31s
-         BVLvFcK08YL4Q==
-Date:   Mon, 8 Nov 2021 09:31:14 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the drm-misc tree with the origin tree
-Message-ID: <20211108093114.12dde19b@canb.auug.org.au>
+        Sun, 7 Nov 2021 17:35:44 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F29BC061570;
+        Sun,  7 Nov 2021 14:33:00 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id f4so54767241edx.12;
+        Sun, 07 Nov 2021 14:33:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=g1beptLkyGSdX+f8reR/EG4OD643gUZaFb6uQDEsh0o=;
+        b=GyCc1laX7hD02wLAfzwGd2dbH5IlpmvThwH6kks82GGJimXKYi30KfE3Q0tqxbP4GY
+         pfO/zqhMkCje7BzVZCIyuAc1e1mfoNu+lmc4/Z3kCALPEhK3mEC5c+CapU8liNe+Q2f/
+         1J0DzrXcPc7CMSoJTX4aYpHYVOh9j5Qk3k+EuUbyKYxlznMVyoqAavyNsTCoXPlEVZD8
+         ia74+tfuBSp8bVweWYp5apVpyZXT44m4tZu3RFkf4yjQqL90PbJ2fm9vEmwOBxcF5RPu
+         yoBozByAbZmKs/8IeCzh9RtfTh/sFqrg2mOdpxfRTQQq2Uri0UAbRLeVVaDYGwQX7gmm
+         O7lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=g1beptLkyGSdX+f8reR/EG4OD643gUZaFb6uQDEsh0o=;
+        b=nr+LXwJXxw0HjgwchnmO8UTFqRgXc7Nzig4FyoQ7nkqCeSwKfxXxxGFE2Z0K6zXL30
+         FNN8TWt10D2+9V7X4cg9uAsOM5+VuDlwLJ86xoYIVh3oHlHcjpzAlNtl0aR/dFfzEpEh
+         uZqPHJfU6ITg3A69BWNEvJdavHjYfxZMEygHJi1W1DwMgtiYKOS3pM58yoLL58+05MqV
+         mwnorfOz1MOa8gIue/NAMIQEwb9IbUqjw9fKyqm8FdDTSxXr6v98jTh4KGe5Vk0zqt6K
+         dLHF9v2Jx+E3vxbCAUZnos3MQqQ0LpoiHV/S6Zr3ydFvIBHCgjETuJTtRNWnAfe2R1r0
+         xvTw==
+X-Gm-Message-State: AOAM530u8A/gEQZpq7a3g2Y2O1wMTXmHM5Ux/ilm1FEt0CyAPhnP48fG
+        fADmVvX7S3V/5PiWIGu96qlQt1QbcW4=
+X-Google-Smtp-Source: ABdhPJxzEo4l4hj+faK6h7D7LvFXxUgKJWKZPBDFm8CJtQlLDrBvBEsiUQ4CGDXMuxhMZ/Pwky6hTw==
+X-Received: by 2002:a05:6402:455:: with SMTP id p21mr61159460edw.384.1636324379135;
+        Sun, 07 Nov 2021 14:32:59 -0800 (PST)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.gmail.com with ESMTPSA id s3sm7177102ejm.49.2021.11.07.14.32.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Nov 2021 14:32:58 -0800 (PST)
+Date:   Sun, 7 Nov 2021 23:32:56 +0100
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [RFC PATCH 2/6] leds: permit to declare supported offload
+ triggers
+Message-ID: <YYhUGNs1I0RWriln@Ansuel-xps.localdomain>
+References: <20211107175718.9151-1-ansuelsmth@gmail.com>
+ <20211107175718.9151-3-ansuelsmth@gmail.com>
+ <20211107230624.5251eccb@thinkpad>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/xVuPQyygmteliXR405bmI+I";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211107230624.5251eccb@thinkpad>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/xVuPQyygmteliXR405bmI+I
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Nov 07, 2021 at 11:06:24PM +0100, Marek Behún wrote:
+> On Sun,  7 Nov 2021 18:57:14 +0100
+> Ansuel Smith <ansuelsmth@gmail.com> wrote:
+> 
+> > With LEDs that can be offload driven, permit to declare supported triggers
+> > in the dts and add them to the cled struct to be used by the related
+> > offload trigger. This is particurally useful for phy that have support
+> > for HW blinking on tx/rx traffic or based on the speed link.
+> > 
+> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> 
+> NAK. The device-tree shouldn't define this, only the LED's function as
+> designated by the manufacturer of the device.
+> 
+> Marek
 
-Hi all,
+Sure I will add a way to ask the led driver if the trigger is supported
+and report it.
 
-Today's linux-next merge of the drm-misc tree got a conflict in:
-
-  drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-
-between commit:
-
-  9ae807f0ec6a ("drm/amdgpu: clean up inconsistent indenting")
-
-from the origin tree and commit:
-
-  0d979509539e ("drm/ttm: remove ttm_bo_vm_insert_huge()")
-
-from the drm-misc tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-index a573424a6e0b,a1e63ba4c54a..000000000000
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-@@@ -60,9 -60,10 +60,9 @@@ static vm_fault_t amdgpu_gem_fault(stru
-  			goto unlock;
-  		}
- =20
- -		 ret =3D ttm_bo_vm_fault_reserved(vmf, vmf->vma->vm_page_prot,
- -						TTM_BO_VM_NUM_PREFAULT);
- -
- -		 drm_dev_exit(idx);
- +		ret =3D ttm_bo_vm_fault_reserved(vmf, vmf->vma->vm_page_prot,
-- 					       TTM_BO_VM_NUM_PREFAULT, 1);
-++					       TTM_BO_VM_NUM_PREFAULT);
- +		drm_dev_exit(idx);
-  	} else {
-  		ret =3D ttm_bo_vm_dummy_page(vmf, vmf->vma->vm_page_prot);
-  	}
-
---Sig_/xVuPQyygmteliXR405bmI+I
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGIU7IACgkQAVBC80lX
-0GzmTAf9HYnSJ+9qZoiBiBmrkMU2I9mv4K1XRQmu/9ShHGdTV3/eb7ImO/q9HHOD
-YAafVU6JOjuvNTTfouoM1o1CEhPuetF0wyTRYJI0QzJchrUsQlBhpff/SHcaNbfl
-RzBbn+dAx+kRfqIBiYzBYuVI8xoov/5PhhsnxUnis0uz9XZP+40UDTBtrWkBFXu3
-Oii5r+BsbIg0VBvpuvYi+9vA7RozQn957fL0OfXk4GhWHImTm0rucIHPsD9fwb3E
-8zuAZfCIsXO86SQP8lV/R9qmYAT0KxJsmJdhAKdclSrpsTWqRxRyfhcQSVbKcfbs
-UsiUr5FtMnVs7TR9ghnDG5CM0eDwdw==
-=9aE7
------END PGP SIGNATURE-----
-
---Sig_/xVuPQyygmteliXR405bmI+I--
+-- 
+	Ansuel
