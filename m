@@ -2,229 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292D6447528
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:07:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07076447529
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:08:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236245AbhKGTKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 14:10:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37314 "EHLO
+        id S236248AbhKGTLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 14:11:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhKGTKO (ORCPT
+        with ESMTP id S229990AbhKGTLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 14:10:14 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC36C061570;
-        Sun,  7 Nov 2021 11:07:30 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id p16so31311558lfa.2;
-        Sun, 07 Nov 2021 11:07:30 -0800 (PST)
+        Sun, 7 Nov 2021 14:11:05 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03ABC061570
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 11:08:21 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id t11so25250037ljh.6
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 11:08:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eMHkjPc5rIa5X9zRJiGLsZ3MoAtpjiPyEbEU/3emZIY=;
-        b=jUhmHlGin5sEj5r9B3duWZRYeZfWXFTNWh3fjVMDJalE4cgJbKUOBCVy+HI8gCwirs
-         3XvxuZH5zrrIMShFl0fwn1DIUJPx1G+MhjL0TS/jL7T8SH1Qn8CyBZq+c1INVx9qxC6/
-         chCfa/fERQRXgAgzBM0eamEQGzO/tnPEFLzfJmcJzPJsMtZX3GjVHaPSMJSthYahkzvw
-         +0K/IAndgglgZqZDAVZEsLjOzaV+FmxOQ7p+zmmct6v7RRXkdU3bOfSZ+y+d+zBVf6MA
-         DCeY9cKiZpeNf5XniqAHn4Z8HJAxoTbjxIox7i+HDLfH2gHhP/fUW2qx/dsV3oKKooQt
-         eC3Q==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oEYuptCy/u7zd4SM33EXC2GTO9b/KGbJ6EnW1ChbNf8=;
+        b=gsc/XJ2/4Q6xX5CZAzPp01tuxW9d4wUcDBof9eCKPmkbCIm/nbGQy0jw3LGI6Aon0m
+         TDFaZ6iyWYETIN1qNEfgHJ82d3lKTDQmjblbzvd0gb8DJMYnWWp+mY3lHR4eFZh3gxeO
+         TvRyIJMqvXpgtu5iRVGz93QMOKNdWpwz/hBLs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eMHkjPc5rIa5X9zRJiGLsZ3MoAtpjiPyEbEU/3emZIY=;
-        b=z84M3HiLN0SKCcTzt8D/lcHKaNwKDrX7s5rDhyM7SoHITG3Ltct3yR/w74YfV8ioPO
-         4TkTGGXBGDrnVVGLy0WjNQqiLCi4nPePFtRUBcLEVpMdmSgJryPt5ggGkWHjJlQ66kAg
-         tyfY0ZJJtVwXTeUrsYJwGXfG3IbSr0FIro6NunXpzdBzqJRxwPMNja8Iketx+pHgoVbF
-         Ck3iiHfmn1YqFk+doEmZAYT8/y83KVsFfrTQCl9yoNSLwbi41lMWBBMaOmoNZKVMMvao
-         JqLtWx1j1YlreCO0Z+J/9e/YhIGApC/H+2gwhgc5cXnOv3ySMpKyjV0GTHqP3fJFquGC
-         1t5w==
-X-Gm-Message-State: AOAM531jHSqQP5zybn1RN4E302m772SO99t0C0IvaX+dg6eSb8L7CAeA
-        T3tgRLzNQsAf2icnRnnh11c=
-X-Google-Smtp-Source: ABdhPJzUJ5poKvvs/VhmuOpJ1CRdoOUCkyn+FOLd4UWOiP0k8z3t7BkeU2jY07xzV7LmfnKlKW81nQ==
-X-Received: by 2002:ac2:5df4:: with SMTP id z20mr57205513lfq.97.1636312048924;
-        Sun, 07 Nov 2021 11:07:28 -0800 (PST)
-Received: from localhost.localdomain ([37.45.143.17])
-        by smtp.gmail.com with ESMTPSA id b22sm251387lfv.20.2021.11.07.11.07.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Nov 2021 11:07:28 -0800 (PST)
-Received: from jek by localhost.localdomain with local (Exim 4.95)
-        (envelope-from <jekhor@gmail.com>)
-        id 1mjnVn-000Dnk-DT;
-        Sun, 07 Nov 2021 22:07:27 +0300
-Date:   Sun, 7 Nov 2021 22:07:27 +0300
-From:   Yauhen Kharuzhy <jekhor@gmail.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org
-Subject: Re: [PATCH 11/13] i2c: cht-wc: Add support for devices using a
- bq25890 charger
-Message-ID: <YYgj7zN6h+cqQzns@jeknote.loshitsa1.net>
-References: <20211030182813.116672-1-hdegoede@redhat.com>
- <20211030182813.116672-12-hdegoede@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oEYuptCy/u7zd4SM33EXC2GTO9b/KGbJ6EnW1ChbNf8=;
+        b=rnYwaXH/hbTrmbt5Y1hEzHuayh3MWmziyobpmy1wdzi/ZoydCiRqNnoa5j7I4YsLVD
+         3pqkJmw/RBM1+xbRWYS0Gc2xCpTowKsfV47Kq1qdz99U+nIWMhjzhqHwMiPToFxgmU4b
+         V1Gt7NODvAuC740qq3nKSPgslvTtm8e0RXCr6tjywp7bGpLUGsiclnopdRnnhN2J33qm
+         n5wr1U1MzZpM9LUKUcM1LSsmGFOCweZn92rpmObA7Qk+x1NKyy80fpGrgHRmjKoaio0U
+         l3+QK6wqNOMGq7CdNJ62T9wNti+3V+tn9XUtcVxebl3CfycOR1+n0F0hnrRqeLW6IPSW
+         bMWQ==
+X-Gm-Message-State: AOAM532ubm6YfDw18hwTI25ah1IEre+0uHAIO2+FOjIcBZo+Hed7uHhm
+        ZfwsMsua6AKtRs5ZCHOgqKE6Jj/tYwYI2r6LDVY=
+X-Google-Smtp-Source: ABdhPJwxAOs1yzp9pHEYNA270Rvf7TMA9N+waLsERHfX+0QULVZxnRMMrG85SQbGTejsF1luoovxKA==
+X-Received: by 2002:a2e:7c0c:: with SMTP id x12mr21807934ljc.210.1636312099775;
+        Sun, 07 Nov 2021 11:08:19 -0800 (PST)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id y1sm1547454lfd.204.2021.11.07.11.08.18
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Nov 2021 11:08:19 -0800 (PST)
+Received: by mail-lj1-f170.google.com with SMTP id v15so18127899ljc.0
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 11:08:18 -0800 (PST)
+X-Received: by 2002:a2e:a7d3:: with SMTP id x19mr49805043ljp.68.1636312098628;
+ Sun, 07 Nov 2021 11:08:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211030182813.116672-12-hdegoede@redhat.com>
+References: <YYWxSlB1CNhhjUTQ@bombadil.infradead.org>
+In-Reply-To: <YYWxSlB1CNhhjUTQ@bombadil.infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 7 Nov 2021 11:08:02 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjQyGhKCM+F8vRS6SSesXk1rZEP4QxdTjvr8DXmC-e1Lg@mail.gmail.com>
+Message-ID: <CAHk-=wjQyGhKCM+F8vRS6SSesXk1rZEP4QxdTjvr8DXmC-e1Lg@mail.gmail.com>
+Subject: Re: [GIT PULL] Modules updates for v5.16-rc1
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Jessica Yu <jeyu@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 30, 2021 at 08:28:11PM +0200, Hans de Goede wrote:
-> The i2c-controller on the Cherry Trail - Whiskey Cove PMIC is special
-> in that it is always connected to the I2C charger IC of the board on
-> which the PMIC is used; and the charger IC is not described in ACPI,
-> so the i2c-cht-wc code needs to instantiate an i2c-client for it itself.
-> 
-> So far there has been a rudimentary check to make sure the ACPI tables
-> are at least somewhat as expected by checking for the presence of an
-> INT33FE device and sofar the code has assumed that if this INT33FE
-> device is present that the used charger then is a bq24290i.
-> 
-> But some boards with an INT33FE device in their ACPI tables use a
-> different charger IC and some boards don't have an INT33FE device at all.
-> 
-> Since the information about the used charger + fuel-gauge + other chips is
-> necessary in other places too, the kernel now adds a "intel,cht-wc-setup"
-> string property to the Whiskey Cove PMIC i2c-client based on DMI matching,
-> which reliably describes the board's setup of the PMIC.
-> 
-> Switch to using the "intel,cht-wc-setup" property and add support for
-> instantiating an i2c-client for either a bq24292i or a bq25890 charger.
-> 
-> This has been tested on a GPD pocket (which uses the old bq24292i setup)
-> and on a Xiaomi Mi Pad 2 with a bq25890 charger.
-> 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->  drivers/i2c/busses/i2c-cht-wc.c | 77 +++++++++++++++++++++++++--------
->  1 file changed, 59 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-cht-wc.c b/drivers/i2c/busses/i2c-cht-wc.c
-> index 1cf68f85b2e1..e7d62af6c39d 100644
-> --- a/drivers/i2c/busses/i2c-cht-wc.c
-> +++ b/drivers/i2c/busses/i2c-cht-wc.c
-> @@ -18,6 +18,7 @@
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
->  #include <linux/power/bq24190_charger.h>
-> +#include <linux/power/bq25890_charger.h>
->  #include <linux/slab.h>
->  
->  #define CHT_WC_I2C_CTRL			0x5e24
-> @@ -304,18 +305,55 @@ static struct bq24190_platform_data bq24190_pdata = {
->  	.regulator_init_data = &bq24190_vbus_init_data,
->  };
->  
-> +static struct i2c_board_info bq24190_board_info = {
-> +	.type = "bq24190",
-> +	.addr = 0x6b,
-> +	.dev_name = "bq24190",
-> +	.swnode = &bq24190_node,
-> +	.platform_data = &bq24190_pdata,
-> +};
-> +
-> +static struct regulator_consumer_supply bq25890_vbus_consumer = {
-> +	.supply = "vbus",
-> +	.dev_name = "cht_wcove_pwrsrc",
-> +};
-> +
-> +static const struct regulator_init_data bq25890_vbus_init_data = {
-> +	.constraints = {
-> +		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
-> +	},
-> +	.consumer_supplies = &bq25890_vbus_consumer,
-> +	.num_consumer_supplies = 1,
-> +};
-> +
-> +static struct bq25890_platform_data bq25890_pdata = {
-> +	.regulator_init_data = &bq25890_vbus_init_data,
-> +};
-> +
-> +static const struct property_entry bq25890_props[] = {
-> +	PROPERTY_ENTRY_BOOL("ti,skip-init"),
-> +	{ }
-> +};
+On Fri, Nov 5, 2021 at 3:33 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+>
+> As requested by Jessica, I'm stepping in to help with modules
+> maintenance. This is my my first pull request, so if there are any
+> issues with it please let me know so I can fix things for the next
+> time around to make it even smoother for you.
 
-The Lenovo Yoga Book firmware set the IINLIM field to 500 mA at
-initialization, we need a way to pass maximum allowed current in the fast
-charging mode to driver. I have added 'ti,input-max-current' in my port, for
-example.
+Well, I want to see what I'm getting.
 
-> +
-> +static const struct software_node bq25890_node = {
-> +	.properties = bq25890_props,
-> +};
-> +
-> +static struct i2c_board_info bq25890_board_info = {
-> +	.type = "bq25890",
-> +	.addr = 0x6a,
-> +	.dev_name = "bq25890",
-> +	.swnode = &bq25890_node,
-> +	.platform_data = &bq25890_pdata,
-> +};
-> +
->  static int cht_wc_i2c_adap_i2c_probe(struct platform_device *pdev)
->  {
->  	struct intel_soc_pmic *pmic = dev_get_drvdata(pdev->dev.parent);
-> +	struct i2c_board_info *board_info = NULL;
->  	struct cht_wc_i2c_adap *adap;
-> -	struct i2c_board_info board_info = {
-> -		.type = "bq24190",
-> -		.addr = 0x6b,
-> -		.dev_name = "bq24190",
-> -		.swnode = &bq24190_node,
-> -		.platform_data = &bq24190_pdata,
-> -	};
->  	int ret, reg, irq;
-> +	const char *str;
->  
->  	irq = platform_get_irq(pdev, 0);
->  	if (irq < 0)
-> @@ -379,17 +417,20 @@ static int cht_wc_i2c_adap_i2c_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto remove_irq_domain;
->  
-> -	/*
-> -	 * Normally the Whiskey Cove PMIC is paired with a TI bq24292i charger,
-> -	 * connected to this i2c bus, and a max17047 fuel-gauge and a fusb302
-> -	 * USB Type-C controller connected to another i2c bus. In this setup
-> -	 * the max17047 and fusb302 devices are enumerated through an INT33FE
-> -	 * ACPI device. If this device is present register an i2c-client for
-> -	 * the TI bq24292i charger.
-> -	 */
-> -	if (acpi_dev_present("INT33FE", NULL, -1)) {
-> -		board_info.irq = adap->client_irq;
-> -		adap->client = i2c_new_client_device(&adap->adapter, &board_info);
-> +	ret = device_property_read_string(pdev->dev.parent, "intel,cht-wc-setup", &str);
-> +	if (ret)
-> +		dev_warn(&pdev->dev, "intel,cht-wc-setup not set, not instantiating charger device\n");
-> +	else if (!strcmp(str, "bq24292i,max17047,fusb302,pi3usb30532"))
-> +		board_info = &bq24190_board_info;
-> +	else if (!strcmp(str, "bq25890,bq27520"))
-> +		board_info = &bq25890_board_info;
-> +	else
-> +		dev_warn(&pdev->dev, "Unknown intel,cht-wc-setup value: '%s', not instantiating charger device\n",
-> +			 str);
-> +
-> +	if (board_info) {
-> +		board_info->irq = adap->client_irq;
-> +		adap->client = i2c_new_client_device(&adap->adapter, board_info);
->  		if (IS_ERR(adap->client)) {
->  			ret = PTR_ERR(adap->client);
->  			goto del_adapter;
-> -- 
-> 2.31.1
-> 
+That's what "git request-pull" is all about - it does most of the
+formatting particularly if you have a tag with the explanations
+already like you seem to have.
 
--- 
-Yauhen Kharuzhy
+That very much includes a diffstat and a shortlog, so that I see that
+"yes, what I got is actually what you intended for me to get" (and so
+that I can do a first quick scan of "this is what's coming" before I
+even do the pull - sometimes I use that to judge whether I should do
+the pull now,. or leave it for later when I have more time to go
+through something).
+
+                 Linus
