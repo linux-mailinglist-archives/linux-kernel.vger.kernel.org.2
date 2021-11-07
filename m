@@ -2,245 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8EA447337
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 15:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7836644733D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 15:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235484AbhKGOMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 09:12:15 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14721 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235457AbhKGOMM (ORCPT
+        id S234040AbhKGOPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 09:15:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232667AbhKGOPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 09:12:12 -0500
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HnGJy57MHzZcld;
-        Sun,  7 Nov 2021 22:07:14 +0800 (CST)
-Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sun, 7 Nov 2021 22:09:25 +0800
-Received: from DESKTOP-27KDQMV.china.huawei.com (10.174.148.223) by
- dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sun, 7 Nov 2021 22:09:24 +0800
-From:   "Longpeng(Mike)" <longpeng2@huawei.com>
-To:     <andraprs@amazon.com>, <lexnv@amazon.com>, <alcioa@amazon.com>
-CC:     <arei.gonglei@huawei.com>, <gregkh@linuxfoundation.org>,
-        <kamal@canonical.com>, <pbonzini@redhat.com>,
-        <sgarzare@redhat.com>, <stefanha@redhat.com>,
-        <vkuznets@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <ne-devel-upstream@amazon.com>, Longpeng <longpeng2@huawei.com>
-Subject: [PATCH v5 4/4] nitro_enclaves: Add KUnit tests for contiguous physical memory regions merging
-Date:   Sun, 7 Nov 2021 22:09:17 +0800
-Message-ID: <20211107140918.2106-5-longpeng2@huawei.com>
-X-Mailer: git-send-email 2.25.0.windows.1
-In-Reply-To: <20211107140918.2106-1-longpeng2@huawei.com>
-References: <20211107140918.2106-1-longpeng2@huawei.com>
+        Sun, 7 Nov 2021 09:15:52 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C63FC061764
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 06:13:09 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id m14so51117000edd.0
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 06:13:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y/8bLRVi7dxv/9MASDzNQG0suFX7w4MEKyGAhcaOmtQ=;
+        b=yi3zBMtPTUhA4YOSggoL1+XRKolOBDBTagP31xlRyE4I804LZUtIx7V2Vj9B4+Md4L
+         pRySWKh2i3CnoSO31LrzU9xpG5Vdd9QCpNUYKbxofcKTXf/KCCZzpPxRZJYfPvmrX1G3
+         8sMifZJM0aZ53HfYhuYZvcMsmO1iIIRfxbusTFPCt6GGQw+VprCEnllCVNwuoe9lZgto
+         jDVVp2ySWIS1wkymDhLxNzmtwFUmdDeXMVZvzHUZW6Xm2D2tpOl+VokFAguQIAr8Qaot
+         f4F/HGoeBmHxU74v8DUovBi/OKDIs65LvbiQo8PNCUFeoA/A1QQQZAQ4iAkW21sLRsXa
+         GJVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y/8bLRVi7dxv/9MASDzNQG0suFX7w4MEKyGAhcaOmtQ=;
+        b=ypl0mBV34hlvTTsEcS62Tfx7qboG7muSB5rCKQ4Xq953uyd0IfbQRJ0T9/KHeqb7VU
+         t9Ex6+DAeuma77IRHgE29ekma0VF1dVxHgjyWrHpwRHfmb0nCPyp1Ng6iDse2coKKfSM
+         vXbHyNUMt8nhju/5asnjPYLL4BlANkreu90clGwEh64LZfCJ98cdaSEmZDsmK88yD6zB
+         PzYWtaFVFvQn7iAdoYNJHyrXwVyYY/BPoUWz426/cj5B4Ql2qhakjZzXDojEndAiI3RN
+         okltJBo5eH9ZobsAs83dGVryExbIA2ktKMUFtoo4BIBf0+TJ+egjdSxMXeeT0TP9Hri0
+         +TGQ==
+X-Gm-Message-State: AOAM530Ox6IZT6LEDAJ7G34kueZRm9ve5l0hlWTLyqaITjlz0qo5t4DH
+        KWmJ66m73J0fDMtOOGhw65XgGUFLZP64moC41wep
+X-Google-Smtp-Source: ABdhPJxcjyzrhjw45p8G8n8WvvcwB4V30YZiOXbmjJus85QXuwma8cKK6NpWxAc70tFMV+J67qu2uzk/ur2A5n1w4Gs=
+X-Received: by 2002:a50:8dcb:: with SMTP id s11mr67368043edh.318.1636294387862;
+ Sun, 07 Nov 2021 06:13:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.148.223]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml100016.china.huawei.com (7.185.36.216)
-X-CFilter-Loop: Reflected
+References: <20211104195949.135374-1-omosnace@redhat.com>
+In-Reply-To: <20211104195949.135374-1-omosnace@redhat.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Sun, 7 Nov 2021 09:12:57 -0500
+Message-ID: <CAHC9VhQwpKWBF2S=vTutBVXeY9xSfTRuhK9nM9TariLVUSweMA@mail.gmail.com>
+Subject: Re: [PATCH net] selinux: fix SCTP client peeloff socket labeling
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        Xin Long <lucien.xin@gmail.com>,
+        Richard Haines <richard_c_haines@btinternet.com>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        linux-sctp@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Longpeng <longpeng2@huawei.com>
+On Thu, Nov 4, 2021 at 3:59 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+>
+> The commit referenced in the "Fixes" tag mistakenly attempted to
+> preserve the label of the peeloff socket that had been set in
+> selinux_socket_post_create() in the case of a client socket. However,
+> the peeloff socket should in fact just inherit the label from the parent
+> socket. In practice these labels are usually the same, but they may
+> differ when setsockcreatecon(3) or socket type transition rules are
+> involved.
+>
+> The fact that selinux_socket_[post_]create() are called on the peeloff
+> socket is actually not what should be happening (it is a side effect of
+> sctp_do_peeloff() using socket_create() to create the socket, which
+> calls the aforementioned LSM hooks). A patch to fix this is being worked
+> on.
+>
+> In the meanwhile, at least fix sctp_assoc_established() to set
+> asoc->secid to the socket's sid and selinux_sctp_sk_clone() to
+> unconditionally get the peeloff socket's sid from asoc->secid, which
+> will ensure that the peeloff socket gets the right label in case of both
+> client and server SCTP socket. The label set by
+> selinux_socket_post_create() will be simply overwritten in both cases,
+> as was the case before the commit this patch is fixing.
+>
+> Passed both the selinux-testsuite (with client peeloff tests added) and
+> the SCTP functional test suite from lksctp-tools.
+>
+> Fixes: e7310c94024c ("security: implement sctp_assoc_established hook in selinux")
+> Based-on-patch-by: Xin Long <lucien.xin@gmail.com>
+> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+> ---
+>
+> As agreed with Xin Long, I'm posting this fix up instead of him. I am
+> now fairly convinced that this is the right way to deal with the
+> immediate problem of client peeloff socket labeling. I'll work on
+> addressing the side problem regarding selinux_socket_post_create()
+> being called on the peeloff sockets separately.
+>
+> Please don't merge this patch without an ack from Paul, as it seems
+> we haven't reached an overall consensus yet.
+>
+>  security/selinux/hooks.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 
-Add KUnit tests for the contiguous physical memory regions merging
-functionality from the Nitro Enclaves misc device logic.
+When we change things as significantly as we are doing here, i.e.
+shifting some of the labeling away from the endpoint to the
+association, I much rather we do it as a chunk/patchset so that we can
+review it in a consistent manner.  Some of that has gone out the door
+here because of what I view as recklessness on the part of the netdev
+folks, but that doesn't mean we need to abandon all order.  Let's get
+all the fixes and repairs queued up in a single patchset so that we
+can fully see what the end result of these changes are going to look
+like.  Further, I think it would be good if at least one of the
+patches has a very clear explanation in the commit description (not
+the cover letter, I want to see this in the git log) of what happens
+with respect to labeling on the server side, the client side, during
+socket peeloffs on both ends, and how multiple associations are
+handled.  My hope is that this should give us all a more consistent
+view, which will be very important moving forward if netdev is going
+to act independent of the other subsystems.
 
-We can build the test binary with the following configuration:
-  CONFIG_KUNIT=y
-  CONFIG_NITRO_ENCLAVES=m
-  CONFIG_NITRO_ENCLAVES_MISC_DEV_TEST=y
-and install the nitro_enclaves module to run the testcases.
-
-We'll see the following message using dmesg if everything goes well:
-
-[...]     # Subtest: ne_misc_dev_test
-[...]     1..1
-[...] (NULL device *): Physical mem region address is not 2 MiB aligned
-[...] (NULL device *): Physical mem region size is not multiple of 2 MiB
-[...] (NULL device *): Physical mem region address is not 2 MiB aligned
-[...]     ok 1 - ne_misc_dev_test_merge_phys_contig_memory_regions
-[...] ok 1 - ne_misc_dev_test
-
-Signed-off-by: Longpeng <longpeng2@huawei.com>
----
-Changes v4 -> v5:
-  - fix the warning of aligment that reported by the checkpath.pl  [Andra]
-  - remove unnecessary comparison of NULL.  [Andra]
-
-Changes v3 -> v4:
-  - "int expect_num" -> "unsigned long  expect_num"  [Andra]
-  - rename several variables and structures  [Andra]
-  - invoke "kunit_kfree" to free the "regions"  [Andra]
-
-Changes v2 -> v3:
-  - update the commit title and commit message.  [Andra]
-  - align the fileds in 'struct phys_regions_test'.  [Andra]
-  - rename 'phys_regions_testcases' to 'phys_regions_test_cases'.  [Andra]
-  - add comments before each test cases.  [Andra]
-  - initialize the variables in ne_misc_dev_test_merge_phys_contig_memory_regions.  [Andra]
----
- drivers/virt/nitro_enclaves/ne_misc_dev_test.c | 140 +++++++++++++++++++++++++
- 1 file changed, 140 insertions(+)
-
-diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev_test.c b/drivers/virt/nitro_enclaves/ne_misc_dev_test.c
-index 6862e99..265797b 100644
---- a/drivers/virt/nitro_enclaves/ne_misc_dev_test.c
-+++ b/drivers/virt/nitro_enclaves/ne_misc_dev_test.c
-@@ -2,7 +2,147 @@
- 
- #include <kunit/test.h>
- 
-+#define MAX_PHYS_REGIONS	16
-+#define INVALID_VALUE		(~0ull)
-+
-+struct ne_phys_regions_test {
-+	u64           paddr;
-+	u64           size;
-+	int           expect_rc;
-+	unsigned long expect_num;
-+	u64           expect_last_paddr;
-+	u64           expect_last_size;
-+} phys_regions_test_cases[] = {
-+	/*
-+	 * Add the region from 0x1000 to (0x1000 + 0x200000 - 1):
-+	 *   Expected result:
-+	 *       Failed, start address is not 2M-aligned
-+	 *
-+	 * Now the instance of struct ne_phys_contig_mem_regions is:
-+	 *   num = 0
-+	 *   regions = {}
-+	 */
-+	{0x1000, 0x200000, -EINVAL, 0, INVALID_VALUE, INVALID_VALUE},
-+
-+	/*
-+	 * Add the region from 0x200000 to (0x200000 + 0x1000 - 1):
-+	 *   Expected result:
-+	 *       Failed, size is not 2M-aligned
-+	 *
-+	 * Now the instance of struct ne_phys_contig_mem_regions is:
-+	 *   num = 0
-+	 *   regions = {}
-+	 */
-+	{0x200000, 0x1000, -EINVAL, 0, INVALID_VALUE, INVALID_VALUE},
-+
-+	/*
-+	 * Add the region from 0x200000 to (0x200000 + 0x200000 - 1):
-+	 *   Expected result:
-+	 *       Successful
-+	 *
-+	 * Now the instance of struct ne_phys_contig_mem_regions is:
-+	 *   num = 1
-+	 *   regions = {
-+	 *       {start=0x200000, end=0x3fffff}, // len=0x200000
-+	 *   }
-+	 */
-+	{0x200000, 0x200000, 0, 1, 0x200000, 0x200000},
-+
-+	/*
-+	 * Add the region from 0x0 to (0x0 + 0x200000 - 1):
-+	 *   Expected result:
-+	 *       Successful
-+	 *
-+	 * Now the instance of struct ne_phys_contig_mem_regions is:
-+	 *   num = 2
-+	 *   regions = {
-+	 *       {start=0x200000, end=0x3fffff}, // len=0x200000
-+	 *       {start=0x0,      end=0x1fffff}, // len=0x200000
-+	 *   }
-+	 */
-+	{0x0, 0x200000, 0, 2, 0x0, 0x200000},
-+
-+	/*
-+	 * Add the region from 0x600000 to (0x600000 + 0x400000 - 1):
-+	 *   Expected result:
-+	 *       Successful
-+	 *
-+	 * Now the instance of struct ne_phys_contig_mem_regions is:
-+	 *   num = 3
-+	 *   regions = {
-+	 *       {start=0x200000, end=0x3fffff}, // len=0x200000
-+	 *       {start=0x0,      end=0x1fffff}, // len=0x200000
-+	 *       {start=0x600000, end=0x9fffff}, // len=0x400000
-+	 *   }
-+	 */
-+	{0x600000, 0x400000, 0, 3, 0x600000, 0x400000},
-+
-+	/*
-+	 * Add the region from 0xa00000 to (0xa00000 + 0x400000 - 1):
-+	 *   Expected result:
-+	 *       Successful, merging case!
-+	 *
-+	 * Now the instance of struct ne_phys_contig_mem_regions is:
-+	 *   num = 3
-+	 *   regions = {
-+	 *       {start=0x200000, end=0x3fffff}, // len=0x200000
-+	 *       {start=0x0,      end=0x1fffff}, // len=0x200000
-+	 *       {start=0x600000, end=0xdfffff}, // len=0x800000
-+	 *   }
-+	 */
-+	{0xa00000, 0x400000, 0, 3, 0x600000, 0x800000},
-+
-+	/*
-+	 * Add the region from 0x1000 to (0x1000 + 0x200000 - 1):
-+	 *   Expected result:
-+	 *       Failed, start address is not 2M-aligned
-+	 *
-+	 * Now the instance of struct ne_phys_contig_mem_regions is:
-+	 *   num = 3
-+	 *   regions = {
-+	 *       {start=0x200000, end=0x3fffff}, // len=0x200000
-+	 *       {start=0x0,      end=0x1fffff}, // len=0x200000
-+	 *       {start=0x600000, end=0xdfffff}, // len=0x800000
-+	 *   }
-+	 */
-+	{0x1000, 0x200000, -EINVAL, 3, 0x600000, 0x800000},
-+};
-+
-+static void ne_misc_dev_test_merge_phys_contig_memory_regions(struct kunit *test)
-+{
-+	struct ne_phys_contig_mem_regions phys_contig_mem_regions = {};
-+	int rc = 0;
-+	int i = 0;
-+
-+	phys_contig_mem_regions.regions = kunit_kcalloc(test, MAX_PHYS_REGIONS,
-+							sizeof(*phys_contig_mem_regions.regions),
-+							GFP_KERNEL);
-+	KUNIT_ASSERT_TRUE(test, phys_contig_mem_regions.regions);
-+
-+	for (i = 0; i < ARRAY_SIZE(phys_regions_test_cases); i++) {
-+		struct ne_phys_regions_test *test_case = &phys_regions_test_cases[i];
-+		unsigned long num = 0;
-+
-+		rc = ne_merge_phys_contig_memory_regions(&phys_contig_mem_regions,
-+							 test_case->paddr, test_case->size);
-+		KUNIT_EXPECT_EQ(test, rc, test_case->expect_rc);
-+		KUNIT_EXPECT_EQ(test, phys_contig_mem_regions.num, test_case->expect_num);
-+
-+		if (test_case->expect_last_paddr == INVALID_VALUE)
-+			continue;
-+
-+		num = phys_contig_mem_regions.num;
-+		KUNIT_EXPECT_EQ(test, phys_contig_mem_regions.regions[num - 1].start,
-+				test_case->expect_last_paddr);
-+		KUNIT_EXPECT_EQ(test, range_len(&phys_contig_mem_regions.regions[num - 1]),
-+				test_case->expect_last_size);
-+	}
-+
-+	kunit_kfree(test, phys_contig_mem_regions.regions);
-+}
-+
- static struct kunit_case ne_misc_dev_test_cases[] = {
-+	KUNIT_CASE(ne_misc_dev_test_merge_phys_contig_memory_regions),
- 	{}
- };
- 
 -- 
-1.8.3.1
-
+paul moore
+www.paul-moore.com
