@@ -2,198 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07AB447556
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:46:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 414AB447558
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:46:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235490AbhKGTsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 14:48:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54289 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230364AbhKGTsm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 14:48:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636314358;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=mGNAkDLI13BGQh+Oy4Tj03Q65OY8atd0NjbjtwXb63w=;
-        b=S181+HAChyOoeK8l4OAgy/cHQCXyfglnBwAKhZOS9knJxIUkNV0xwb72vfO0wBns2vTMwU
-        ftGq49uw4g8PxkUvWQ1P06qN/Kj/tTKnaJ2GJJT/sqkpjzpn1RRAJueJXX1r4WB1ahwiZp
-        W8pT0kzuQFMPsFa7f377I3dEqEhn79A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-503-wZoGfFhaMje3t6Q558zthQ-1; Sun, 07 Nov 2021 14:45:52 -0500
-X-MC-Unique: wZoGfFhaMje3t6Q558zthQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A534ACC621;
-        Sun,  7 Nov 2021 19:45:50 +0000 (UTC)
-Received: from llong.com (unknown [10.22.32.104])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1BF2379455;
-        Sun,  7 Nov 2021 19:45:28 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
-        mazhenhua <mazhenhua@xiaomi.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH] locking/rwsem: Handle handoff bit inheritance
-Date:   Sun,  7 Nov 2021 14:45:04 -0500
-Message-Id: <20211107194504.262998-1-longman@redhat.com>
+        id S236324AbhKGTsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 14:48:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44094 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230364AbhKGTsp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 14:48:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDF5461244;
+        Sun,  7 Nov 2021 19:46:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636314362;
+        bh=p9PTXUIwv2K7l8DSFkmLc/2KXRsnKtTpnM7ftuPGdPo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KGDkyWxwS0SuPHoBQKoQnM93WMntBtAqayiHdnaQL75CU3PzJlr4wRyFsvQXq7RQw
+         s07SWk81Gvb6CgPN/ZW+uRIZ9peodNHhE6nDMor4lRNtfEbiVrsdD628yxACftcgut
+         eRxxY2+WFEiPDSJ6HTwamiw9F8Zr+Qs2HfEnPxQHG58wm0NTsmf7YwfWQm9Td+4LbY
+         HIO1c2tnsU1yebQBX61lmc4Ev0K1W7kL4TWhIaMti8G7eNuWwZitLSkeO+jjxeWVzv
+         zlEjhchdhgk2hIdmdc8zXu9QJB17m5yKOLuAd+jEZ+T4sOvvZeGRY7xy7JRSRT7mck
+         tRgON3ATRZvVQ==
+Date:   Sun, 7 Nov 2021 21:45:59 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Sean Christopherson <seanjc@google.com>,
+        reinette.chatre@intel.com, tony.luck@intel.com,
+        nathaniel@profian.com, stable@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: Free backing memory after faulting the enclave
+ page
+Message-ID: <YYgs94O3eiKJwKgi@iki.fi>
+References: <20211103232238.110557-1-jarkko@kernel.org>
+ <7c122a82-e418-0bce-8f67-cbaa15abc9b9@intel.com>
+ <YYgVsi7y4TNuSRLc@iki.fi>
+ <984bc7a4-1c7a-f2c0-5885-0dc7fad3d2b6@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <984bc7a4-1c7a-f2c0-5885-0dc7fad3d2b6@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a queue head writer set the handoff bit, it will clear it when
-the writer is being killed on its way out without acquiring the lock.
-That is not the case for a queue head reader. The easy thing to do is
-to let the next waiter inherit the handoff bit especially if the next
-one is also a reader.
+On Sun, Nov 07, 2021 at 11:06:01AM -0800, Dave Hansen wrote:
+> On 11/7/21 10:06 AM, Jarkko Sakkinen wrote:
+> > On Thu, Nov 04, 2021 at 03:38:55PM -0700, Dave Hansen wrote:
+> >> On 11/3/21 4:22 PM, Jarkko Sakkinen wrote:
+> >>> --- a/arch/x86/kernel/cpu/sgx/encl.c
+> >>> +++ b/arch/x86/kernel/cpu/sgx/encl.c
+> >>> @@ -22,6 +22,7 @@ static int __sgx_encl_eldu(struct sgx_encl_page *encl_page,
+> >>>  {
+> >>>  	unsigned long va_offset = encl_page->desc & SGX_ENCL_PAGE_VA_OFFSET_MASK;
+> >>>  	struct sgx_encl *encl = encl_page->encl;
+> >>> +	struct inode *inode = file_inode(encl->backing);
+> >>>  	struct sgx_pageinfo pginfo;
+> >>>  	struct sgx_backing b;
+> >>>  	pgoff_t page_index;
+> >>> @@ -60,6 +61,9 @@ static int __sgx_encl_eldu(struct sgx_encl_page *encl_page,
+> >>>  
+> >>>  	sgx_encl_put_backing(&b, false);
+> >>>  
+> >>> +	/* Free the backing memory. */
+> >>> +	shmem_truncate_range(inode, PFN_PHYS(page_index), PFN_PHYS(page_index) + PAGE_SIZE - 1);
+> >>> +
+> >>>  	return ret;
+> >>>  }
+> >>
+> >> This also misses tearing down the backing storage if it is in place at
+> >> sgx_encl_release().
+> > 
+> > Hmm... sgx_encl_release() does fput(). Isn't that enough to tear it down,
+> > or does it require explicit truncate, i.e. something like
+> > 
+> >         shmem_truncate_range(file_inode(encl->backing), encl->base, encl->size - 1);
+> 
+> That's true, the page cache should all be torn down along with the
+> fput().  *But*, it would be a very nice property if the backing storage
+> was empty by this point.  It essentially ensures that no enclave-runtime
+> cases missed truncating the backing storage away.
 
-In the case of a writer inheriting the handoff bit, we need to make
-sure that writer sets its state correctly to avoid leaving the handoff
-bit dangling if it is killed or interrupted before getting the lock. We
-also need to make sure that the handoff bit is always cleared when the
-wait queue is empty to avoid having the handoff bit set with no waiter.
+What if an enclave is released a point when all of its pages
+are swapped out? Or even simpler case would an enclave that is
+larger than all of EPC.
 
-A new lock event is added to keep track of this writer handoff bit
-inheritance.
+What can be made sure is that for all pages, which are in EPC,
+the backing page is truncated.
 
-Fixes: 4f23dbc1e657 ("locking/rwsem: Implement lock handoff to prevent lock starvation")
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/locking/lock_events_list.h |  1 +
- kernel/locking/rwsem.c            | 50 +++++++++++++++++++++++--------
- 2 files changed, 38 insertions(+), 13 deletions(-)
+> >> Does a entry->epc_page==NULL page in there guarantee that it has backing
+> >> storage?
+> > 
+> > Yes, it is an invariant. That what I was thinking to use for PCMD: iterate
+> > 32 pages and check if they have a faulted page.
+> 
+> I think the rule should be that entry->epc_page==NULL enclave pages have
+> backing storage.  All entry->epc_page!=NULL do *not* have backing storage.
 
-diff --git a/kernel/locking/lock_events_list.h b/kernel/locking/lock_events_list.h
-index 97fb6f3f840a..0eddfb2e6e74 100644
---- a/kernel/locking/lock_events_list.h
-+++ b/kernel/locking/lock_events_list.h
-@@ -67,3 +67,4 @@ LOCK_EVENT(rwsem_rlock_handoff)	/* # of read lock handoffs		*/
- LOCK_EVENT(rwsem_wlock)		/* # of write locks acquired		*/
- LOCK_EVENT(rwsem_wlock_fail)	/* # of failed write lock acquisitions	*/
- LOCK_EVENT(rwsem_wlock_handoff)	/* # of write lock handoffs		*/
-+LOCK_EVENT(rwsem_inherit_handoff) /* # of handoff inheritance		*/
-diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-index c51387a43265..45373b9e09e3 100644
---- a/kernel/locking/rwsem.c
-+++ b/kernel/locking/rwsem.c
-@@ -536,7 +536,7 @@ static void rwsem_mark_wake(struct rw_semaphore *sem,
-  * bit is set or the lock is acquired with handoff bit cleared.
-  */
- static inline bool rwsem_try_write_lock(struct rw_semaphore *sem,
--					enum writer_wait_state wstate)
-+					enum writer_wait_state *wstate)
- {
- 	long count, new;
- 
-@@ -546,13 +546,21 @@ static inline bool rwsem_try_write_lock(struct rw_semaphore *sem,
- 	do {
- 		bool has_handoff = !!(count & RWSEM_FLAG_HANDOFF);
- 
--		if (has_handoff && wstate == WRITER_NOT_FIRST)
--			return false;
-+		if (has_handoff) {
-+			if (*wstate == WRITER_NOT_FIRST)
-+				return false;
-+
-+			/* Inherit a previously set handoff bit */
-+			if (*wstate != WRITER_HANDOFF) {
-+				*wstate = WRITER_HANDOFF;
-+				lockevent_inc(rwsem_inherit_handoff);
-+			}
-+		}
- 
- 		new = count;
- 
- 		if (count & RWSEM_LOCK_MASK) {
--			if (has_handoff || (wstate != WRITER_HANDOFF))
-+			if (has_handoff || (*wstate != WRITER_HANDOFF))
- 				return false;
- 
- 			new |= RWSEM_FLAG_HANDOFF;
-@@ -1007,6 +1015,10 @@ rwsem_down_read_slowpath(struct rw_semaphore *sem, long count, unsigned int stat
- 		atomic_long_andnot(RWSEM_FLAG_WAITERS|RWSEM_FLAG_HANDOFF,
- 				   &sem->count);
- 	}
-+	/*
-+	 * If this reader was first in the queue, handoff bit set and queue
-+	 * not empty, we will let the next waiter inherit the handoff bit.
-+	 */
- 	raw_spin_unlock_irq(&sem->wait_lock);
- 	__set_current_state(TASK_RUNNING);
- 	lockevent_inc(rwsem_rlock_fail);
-@@ -1019,7 +1031,7 @@ rwsem_down_read_slowpath(struct rw_semaphore *sem, long count, unsigned int stat
- static struct rw_semaphore *
- rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
- {
--	long count;
-+	long count, bits_clear;
- 	enum writer_wait_state wstate;
- 	struct rwsem_waiter waiter;
- 	struct rw_semaphore *ret = sem;
-@@ -1083,7 +1095,7 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
- 	/* wait until we successfully acquire the lock */
- 	set_current_state(state);
- 	for (;;) {
--		if (rwsem_try_write_lock(sem, wstate)) {
-+		if (rwsem_try_write_lock(sem, &wstate)) {
- 			/* rwsem_try_write_lock() implies ACQUIRE on success */
- 			break;
- 		}
-@@ -1132,12 +1144,21 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
- 			if (!(count & RWSEM_LOCK_MASK))
- 				break;
- 
-+			if (wstate != WRITER_FIRST)
-+				continue;
-+
-+			if (count & RWSEM_FLAG_HANDOFF) {
-+				/* Inherit previously set handoff bit */
-+				wstate = WRITER_HANDOFF;
-+				lockevent_inc(rwsem_inherit_handoff);
-+				continue;
-+			}
-+
- 			/*
- 			 * The setting of the handoff bit is deferred
- 			 * until rwsem_try_write_lock() is called.
- 			 */
--			if ((wstate == WRITER_FIRST) && (rt_task(current) ||
--			    time_after(jiffies, waiter.timeout))) {
-+			if (rt_task(current) || time_after(jiffies, waiter.timeout)) {
- 				wstate = WRITER_HANDOFF;
- 				lockevent_inc(rwsem_wlock_handoff);
- 				break;
-@@ -1157,13 +1178,16 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
- 	__set_current_state(TASK_RUNNING);
- 	raw_spin_lock_irq(&sem->wait_lock);
- 	list_del(&waiter.list);
-+	bits_clear = 0;
-+	if (list_empty(&sem->wait_list))
-+		bits_clear = RWSEM_FLAG_HANDOFF | RWSEM_FLAG_WAITERS;
-+	else if (wstate == WRITER_HANDOFF)
-+		bits_clear = RWSEM_FLAG_HANDOFF;
- 
--	if (unlikely(wstate == WRITER_HANDOFF))
--		atomic_long_add(-RWSEM_FLAG_HANDOFF,  &sem->count);
-+	if (bits_clear)
-+		atomic_long_andnot(bits_clear,  &sem->count);
- 
--	if (list_empty(&sem->wait_list))
--		atomic_long_andnot(RWSEM_FLAG_WAITERS, &sem->count);
--	else
-+	if (!list_empty(&sem->wait_list))
- 		rwsem_mark_wake(sem, RWSEM_WAKE_ANY, &wake_q);
- 	raw_spin_unlock_irq(&sem->wait_lock);
- 	wake_up_q(&wake_q);
--- 
-2.27.0
+Yes, that is the goal of this patch.
 
+/Jarkko
