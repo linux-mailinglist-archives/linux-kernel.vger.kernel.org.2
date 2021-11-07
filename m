@@ -2,162 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0754473DB
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:36:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7171F4473E1
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235220AbhKGQir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 11:38:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60624 "EHLO
+        id S235247AbhKGQqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 11:46:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233677AbhKGQiq (ORCPT
+        with ESMTP id S233677AbhKGQqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 11:38:46 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1713CC061714
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 08:36:03 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id z200so11149096wmc.1
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 08:36:02 -0800 (PST)
+        Sun, 7 Nov 2021 11:46:05 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A47C061570
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 08:43:22 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id q17so2154994plr.11
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 08:43:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=4hGkCLxhZnpNqcqLmATMrD9cvIKaW/chFtDdi+mbfSw=;
-        b=hv8NDkkf/BoZNySfSrye1dDjE3EbpF4GnWvmAFKWyHwMsTO7Sq1Y+10oQxm4RAgv9B
-         5nQ5gW/qXeGOdkEqhcWa649hD9AfBikGH0nULObfIuE2+4BhHCpU8Litwr0Xpm353gFk
-         5loZeEyiKwfr7JJ6k2TReEAPu8AmzkTqF2L6qV8j+CixhTr8EcAJ9dG/UIY0bnfPerOZ
-         X93THQNykU0JbErZr4kX8LkZYxrdzlSjweqkaUw0VvmrKNvVeNFa1Eivbf7wgX7BqmFt
-         LE3hy02ln6T/TaGLk0a/aXRD+NANID85TEt8tSC3rXhpll91iY7YW1mVFbWCYFGvAmCz
-         cqLw==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=mu53NIDDoFP2FNYr7iEB3rEkhW3EvAwGtudvbec6i1s=;
+        b=k2ZgHcuzmu3dJkqZh5WRCan3LLmt6CPEL9CG/WP+7azhJHgoaxi43uXwZCSg2ud6Q+
+         aR96OLZHJJDYjtqYuW/7ThVdSP2Glw6Ngfht3NcZ7JWDqWYq/f9lY1e8NYFF7GiCn26C
+         KVEik7/k65JnkCYylfQ9iQn6juwo2bidmZE7duo4B57FL5ABq3QW4MsRapr2BEbjyoMV
+         Vwrz/nFMauGaWSW7yyZoHkP+IJcwLOA2Iy4jZPLeSkCMyGDkE/IxryhHIhDRR0x6IDAH
+         3DSILQprrSSLWuGBTMP3mM2QZ7oGQs+iIaeJXAUhXR6h2JiGHLs19bGK06oDm5wRjUTx
+         Fpbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=4hGkCLxhZnpNqcqLmATMrD9cvIKaW/chFtDdi+mbfSw=;
-        b=E7XKNa2nWbXN88bvo3L5HotcCvILfxeDIXD74cRtqZIOfbNcWaad/cKkhesr/a3QOr
-         QQFTMZHCz3T4WLLSSA1OJFUz6rluENjFvjvByccPTLVbrRPtW0ypIysJI8Vf1xcJ1Oxq
-         T3mQVKzPqn4klyu/wbkCdQVy0tlobnVD3RTuK6TSVSMASUycMLEqhKrcl6hQ4taRXyVR
-         f8NS3BH7dr2eDryKoAYRRkB+QFnhWrcI6ZpENZB9pl5PpPOhzJwVl17wY+G5JyfvJz18
-         ibJwVWRX+vP2706yeMHpd99VhKbF0XTvUSIfIdPnW4rwHugy/2FWofzPlg+C5LUcayKP
-         tCJw==
-X-Gm-Message-State: AOAM531qD6IaeXrK0ioDKfjqv74yV+E2NpG4n8h4V8WweL4s4vaxkPhI
-        zpxY8mUCYll+9FKrWUpi7fz8OQ==
-X-Google-Smtp-Source: ABdhPJyye92fqnf6uoFZErPVsPnRnuPe12kbbNUM+TzpZQv1fjLeglt8aIYLErII3t4don1klOQE1g==
-X-Received: by 2002:a7b:c1cb:: with SMTP id a11mr47550829wmj.30.1636302961570;
-        Sun, 07 Nov 2021 08:36:01 -0800 (PST)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id g13sm12780500wmk.37.2021.11.07.08.36.00
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=mu53NIDDoFP2FNYr7iEB3rEkhW3EvAwGtudvbec6i1s=;
+        b=EQplo/GUWHy/pQI9gShbtmb2S2OCfaJV2DvPsLuf/2gXAjOUB4nZVuItD74QSZJsaA
+         SiWw8OqOQtmsCjc7cQKw7NXa5ZzQQt0o3tuzKpEpu8r+yEKLJlsTl0cR1fFbQVNYP5Lh
+         d/9Hd29xP0m1CDN5U465+EPzBXDegt7jQULDHPY9K2Bne/KVtCM0kBZa9mV4k5rt8TRU
+         Nx3gUkb/4FrzWo9v9jzeld4fOGjOzfLES8vmxbgpXZncY+dJQy8ulnf0izMOwCai0JUx
+         lABSt7k6SAMP016HFaAuoR7RG+vecgUffwcGKU4TxnAZWu2bZOAprSzSSwqGrcr6jfCZ
+         dWwg==
+X-Gm-Message-State: AOAM533WxZ1SZ7dTHOZnEn2mw60dEH+DUymhua3X6YbE2vlao5go5MB6
+        yIS6PaP9IX8A3uyRoNkb9Qg=
+X-Google-Smtp-Source: ABdhPJxt2xBtjHC0BLn+jNW2puOFCSuwWkIJIrxKT6vazgKxJFv7o72HGUqwIpywHOLxOxfKRAtsMw==
+X-Received: by 2002:a17:90b:4a50:: with SMTP id lb16mr23987566pjb.147.1636303402305;
+        Sun, 07 Nov 2021 08:43:22 -0800 (PST)
+Received: from Sauravs-MacBook-Air.local ([59.88.109.27])
+        by smtp.gmail.com with ESMTPSA id l17sm14003627pfc.94.2021.11.07.08.43.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Nov 2021 08:36:01 -0800 (PST)
-Date:   Sun, 7 Nov 2021 17:35:59 +0100
-From:   LABBE Corentin <clabbe@baylibre.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
-Subject: Re: [PATCH v3 00/14] staging: media: zoran: fusion in one module
-Message-ID: <YYgAb76mrMb1ERMW@Red>
-References: <20211026193416.1176797-1-clabbe@baylibre.com>
- <a85c93db-e118-274f-d86a-d127c7399926@xs4all.nl>
- <YYKxTrWI299pvqo7@Red>
- <2bbce7ef-acf8-3c0f-2705-09d34b2d92be@xs4all.nl>
+        Sun, 07 Nov 2021 08:43:21 -0800 (PST)
+Date:   Sun, 7 Nov 2021 22:13:10 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        saurav.girepunje@gmail.com, martin@kaiser.cx,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: r8188eu: os_dep: Change the return type of function
+Message-ID: <YYgCHkVXFQ4r9dVp@Sauravs-MacBook-Air.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2bbce7ef-acf8-3c0f-2705-09d34b2d92be@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Wed, Nov 03, 2021 at 05:29:46PM +0100, Hans Verkuil a écrit :
-> On 03/11/2021 16:57, LABBE Corentin wrote:
-> > Le Wed, Nov 03, 2021 at 04:21:02PM +0100, Hans Verkuil a écrit :
-> >> Hi Corentin,
-> >>
-> >> On 26/10/2021 21:34, Corentin Labbe wrote:
-> >>> Hello
-> >>>
-> >>> The main change of this serie is to fusion all zoran related modules in
-> >>> one.
-> >>> This fixes the load order problem when everything is built-in.
-> >>
-> >> I've been testing this series, and while the module load/unload is now working,
-> >> I'm running into a lot of other v4l2 compliance issues.
-> >>
-> >> I've fixed various issues in some follow-up patches available in my tree:
-> >>
-> >> https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=zoran
-> >>
-> >> At least some of the worst offenders are now resolved. Note that the patch
-> >> dropping read/write support relies on this patch:
-> >>
-> >> https://patchwork.linuxtv.org/project/linux-media/patch/4f89b139-13b7-eee6-9662-996626b778b0@xs4all.nl/
-> > 
-> > Hello
-> > 
-> > My test branch already included your "zoran: fix various V4L2 compliance errors"
-> > I have quickly checked other patch and I am ok with them.
-> > I will add and test with them.
-> > 
-> >>
-> >> But there is one really major bug that makes me hesitant to merge this:
-> >>
-> >> This works:
-> >>
-> >> v4l2-ctl -v pixelformat=MJPG,width=768,height=576
-> >> v4l2-ctl --stream-mmap
-> >>
-> >> This fails:
-> >>
-> >> v4l2-ctl -v pixelformat=MJPG,width=768,height=288
-> >> v4l2-ctl --stream-mmap
-> >>
-> >> It's an immediate lock up with nothing to indicate what is wrong.
-> >> As soon as the height is 288 or less, this happens.
-> >>
-> >> Both with my DC30 and DC30D.
-> > 
-> > Just for curiosity, what is the difference between thoses two ?
-> 
-> It's the DC30 variant without an adv7175.
-> 
-> > 
-> >>
-> >> Do you see the same? Any idea what is going on? I would feel much happier
-> >> if this is fixed.
-> >>
-> >> Note that the same problem is present without this patch series, so it's
-> >> been there for some time.
-> >>
-> > 
-> > I will start on digging this problem and add thoses commands to my CI.
-> > And I know there are a huge quantity of problem since origins.
-> > A simple example is that just setting MJPEG as default input format does not work.
-> > 
-> > But since it is not related to my serie, can you please merge it.
-> 
-> Before I do that, I would really like to know a bit more about this issue:
-> can you reproduce it? Is it DC30 specific or a general problem with zoran?
-> 
-> The problem with this hard hang is that it is hard to do regression testing
-> with v4l2-compliance, since it will hang as soon as MJPG pixelformat is
-> tested.
-> 
-> I would feel much happier if the hang can be avoided, even if it is just
-> with a temporary hack. It will make it much easier going forward.
-> 
+Change the return type of rtw_init_default_value function
+from u8 to void. This function always return success. This
+is called from rtw_init_drv_sw where the return value from
+this function is assign to local variable but the local variable
+value is never checked. After change the return type to void
+remove the local variable ret8 in rtw_init_drv_sw function.
 
-I found the bug
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
+ drivers/staging/r8188eu/os_dep/os_intfs.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-The null pointer deref was in zoran_reap_stat_com() due to 
-buf = zr->inuse[i];
-...
-buf->vbuf.vb2_buf.timestamp = ktime_get_ns();
-with buf = NULL;
+diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
+index ec96e837ab88..6b38b2d26d8b 100644
+--- a/drivers/staging/r8188eu/os_dep/os_intfs.c
++++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
+@@ -398,7 +398,7 @@ void rtw_stop_drv_threads(struct adapter *padapter)
+ 		_rtw_down_sema(&padapter->cmdpriv.terminate_cmdthread_sema);
+ }
 
-It is due to miscalculation of "i".
+-static u8 rtw_init_default_value(struct adapter *padapter)
++static void rtw_init_default_value(struct adapter *padapter)
+ {
+ 	struct registry_priv *pregistrypriv = &padapter->registrypriv;
+ 	struct xmit_priv	*pxmitpriv = &padapter->xmitpriv;
+@@ -443,7 +443,6 @@ static u8 rtw_init_default_value(struct adapter *padapter)
+ 	padapter->bRxRSSIDisplay = 0;
+ 	padapter->bNotifyChannelChange = 0;
+ 	padapter->bShowGetP2PState = 1;
+-	return _SUCCESS;
+ }
 
-I will resend my serie with the fix for that.
+ u8 rtw_reset_drv_sw(struct adapter *padapter)
+@@ -478,8 +477,6 @@ u8 rtw_reset_drv_sw(struct adapter *padapter)
 
-Regards
+ u8 rtw_init_drv_sw(struct adapter *padapter)
+ {
+-	u8	ret8 = _SUCCESS;
+-
+ 	if ((rtw_init_cmd_priv(&padapter->cmdpriv)) == _FAIL)
+ 		return _FAIL;
+
+@@ -519,7 +516,7 @@ u8 rtw_init_drv_sw(struct adapter *padapter)
+
+ 	rtw_init_pwrctrl_priv(padapter);
+
+-	ret8 = rtw_init_default_value(padapter);
++	rtw_init_default_value(padapter);
+
+ 	rtl8188e_init_dm_priv(padapter);
+ 	rtl8188eu_InitSwLeds(padapter);
+@@ -528,7 +525,7 @@ u8 rtw_init_drv_sw(struct adapter *padapter)
+
+ 	spin_lock_init(&padapter->br_ext_lock);
+
+-	return ret8;
++	return _SUCCESS;
+ }
+
+ void rtw_cancel_all_timer(struct adapter *padapter)
+--
+2.33.0
+
