@@ -2,162 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1664A447433
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:53:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 154B1447443
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 18:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235908AbhKGQzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 11:55:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235895AbhKGQzr (ORCPT
+        id S234434AbhKGRDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 12:03:54 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:33320 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230486AbhKGRDx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 11:55:47 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E4CC061714;
-        Sun,  7 Nov 2021 08:53:04 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id b40so1362609lfv.10;
-        Sun, 07 Nov 2021 08:53:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FuxjUSeidJvAMVHKU9E/d55P+zyTiwTeSCeqf/uVMDo=;
-        b=Lwzfxq5uEYmwUHQaauy1zdfEe4xJydQ9b9Od8uYrwBczi5NJMIekKLJg7wlYTXl+4h
-         aBwFrnzPjUuQZKv1Ia+S222jU8dJElyFhzTX7Y6Z3zgW5uo6fxyJ6Ub7QZuJOpIcD/5G
-         Z5zvDqw9CupdRxfoeBn7XfS8iSTjIzecdpz5R8YfLYHN44fPq2Sj3DZqQfYaE9SGw4KM
-         9QVgWsVoZpReO+np7PVvhGoeoi2Muq2En7xd12JC02FvD5KUvlS8dKa1pfLtqGdyB8C3
-         Q31AQZyOLu3Y3rBXma7EsV9dMapOWW+H7dfnyyasqa2gU34jVZGgiKgGYKDrTdyFanCB
-         8Grw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FuxjUSeidJvAMVHKU9E/d55P+zyTiwTeSCeqf/uVMDo=;
-        b=3h7BWS4vsfeNsf0u6cAzVWltrHbUiy5pkrxRqklJN0hnSS4vBDCXyZoPdBF3V+jmkP
-         10GGVGqmQEzL50PyvVbH5LIqrxSpwV1cC7tdI+BLQXkOXvu1q0bHtt+8JiQ9XxFdVKst
-         O4+ZbUJttBQl561kl3AWgu6v3bML18ZBxUTIJkG+rBluCHgD0b15oI38w25pvNkJTYaj
-         AFDAl+VF6qxbLisLHPeJgo5dLZ005XN8Fj3oJnSVXfm9SlLUeypKznA9odujmigv1OI3
-         UJqIUMXIVOqSaeBe5MtAqJ37C5HkvtamXB2r3VRO9u7bCyzQFDo7EP7hLOeE2i6ynoS6
-         p1kA==
-X-Gm-Message-State: AOAM532ULEzpzgxyCUvW6BRw4G2YZa2EdEM/UCtsVLRVG/FEx6+x+f8l
-        NaOLZBgPXHSUMzK3sJwjtOTTRckjT6o=
-X-Google-Smtp-Source: ABdhPJyYdIEr6ONtuDBexIQwg75AwiW2LoF8DEUBqYkEbum61pW0vPuGJTsEH8z54RKtLjaAI2MWow==
-X-Received: by 2002:a05:6512:1082:: with SMTP id j2mr64106958lfg.568.1636303982698;
-        Sun, 07 Nov 2021 08:53:02 -0800 (PST)
-Received: from [192.168.2.145] (79-139-182-132.dynamic.spd-mgts.ru. [79.139.182.132])
-        by smtp.googlemail.com with ESMTPSA id c3sm860233lfb.122.2021.11.07.08.53.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Nov 2021 08:53:02 -0800 (PST)
-Subject: Re: [PATCH v2 27/45] mfd: ntxec: Use devm_register_power_handler()
-To:     =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Chen-Yu Tsai <wens@csie.org>, Tony Lindgren <tony@atomide.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20211027211715.12671-1-digetx@gmail.com>
- <20211027211715.12671-28-digetx@gmail.com> <YYbqlmOM95q7Hbjo@latitude>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <be0c74c6-05a9-cad5-c285-6626d05f8860@gmail.com>
-Date:   Sun, 7 Nov 2021 19:53:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <YYbqlmOM95q7Hbjo@latitude>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Sun, 7 Nov 2021 12:03:53 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id A925B1FD3B;
+        Sun,  7 Nov 2021 17:01:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1636304469; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=o8oGrR1R7QTdSSChHKlBA8GQpqzCLAzy34s3p5HvB6U=;
+        b=dVNJQ3Eawl17hWaeFbI12wzE7bmlCPzScZZq2v9bV1hp99LG6tA+B8B8sgT28wiXAi9nXj
+        xaxqSCD1KqLC1ZaPoZkz4Uk3WUsuza2WM8upJ8L1zJyxdxeqghZ5FtcoQu7aLuDRScZawg
+        M3DzX6Ns1g8oYrdj25hMMXI7VRl0qAk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1636304469;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=o8oGrR1R7QTdSSChHKlBA8GQpqzCLAzy34s3p5HvB6U=;
+        b=96ifIA3v4rX/b8Nsa183QItPQPUNbvJdT4c/pVFwDM87eZzgGbLC5Q5+zFjjp28OhzQqqw
+        bzc9Nb7zxRm/m8Cg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 9ED09A3B81;
+        Sun,  7 Nov 2021 17:01:09 +0000 (UTC)
+Date:   Sun, 07 Nov 2021 18:01:09 +0100
+Message-ID: <s5hsfw7dhnu.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable-commits@vger.kernel.org
+Subject: Re: Patch "ALSA: pci: rme: Set up buffer type properly" has been added to the 5.14-stable tree
+In-Reply-To: <YYfp1McHg9s62scO@kroah.com>
+References: <163629655751249@kroah.com>
+        <YYfp1McHg9s62scO@kroah.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-06.11.2021 23:54, Jonathan Neuschäfer пишет:
-> Hi,
+On Sun, 07 Nov 2021 15:59:32 +0100,
+Greg KH wrote:
 > 
-> On Thu, Oct 28, 2021 at 12:16:57AM +0300, Dmitry Osipenko wrote:
->> Use devm_register_power_handler() that replaces global pm_power_off
->> variable and allows to register multiple power-off handlers. It also
->> provides restart-handler support, i.e. all in one API.
->>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
+> On Sun, Nov 07, 2021 at 03:49:17PM +0100, gregkh@linuxfoundation.org wrote:
+> > 
+> > This is a note to let you know that I've just added the patch titled
+> > 
+> >     ALSA: pci: rme: Set up buffer type properly
+> > 
+> > to the 5.14-stable tree which can be found at:
+> >     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+> > 
+> > The filename of the patch is:
+> >      alsa-pci-rme-set-up-buffer-type-properly.patch
+> > and it can be found in the queue-5.14 subdirectory.
+> > 
+> > If you, or anyone else, feels it should not be added to the stable tree,
+> > please let <stable@vger.kernel.org> know about it.
+> > 
+> > 
+> > >From 0899a7a23047f106c06888769d6cd6ff43d7395f Mon Sep 17 00:00:00 2001
+> > From: Takashi Iwai <tiwai@suse.de>
+> > Date: Mon, 9 Aug 2021 09:18:28 +0200
+> > Subject: ALSA: pci: rme: Set up buffer type properly
+> > 
+> > From: Takashi Iwai <tiwai@suse.de>
+> > 
+> > commit 0899a7a23047f106c06888769d6cd6ff43d7395f upstream.
+> > 
+> > Although the regression of the mmap was fixed in the recent commit
+> > dc0dc8a73e8e ("ALSA: pcm: Fix mmap breakage without explicit buffer
+> > setup"), RME9652 and HDSP drivers have still potential issues with
+> > their mmap handling.  Namely, they use the default mmap handler
+> > without the standard buffer preallocation, and PCM core wouldn't use
+> > the coherent DMA mapping.  It's practically OK on x86, but on some
+> > exotic architectures, it wouldn't work.
+> > 
+> > This patch addresses the potential breakage by replacing the buffer
+> > setup with the proper macro.  It also simplifies the source code,
+> > too.
+> > 
+> > Link: https://lore.kernel.org/r/20210809071829.22238-3-tiwai@suse.de
+> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >  sound/pci/rme9652/hdsp.c    |    6 ++----
+> >  sound/pci/rme9652/rme9652.c |    6 ++----
+> >  2 files changed, 4 insertions(+), 8 deletions(-)
+> > 
+> > --- a/sound/pci/rme9652/hdsp.c
+> > +++ b/sound/pci/rme9652/hdsp.c
+> > @@ -4518,8 +4518,7 @@ static int snd_hdsp_playback_open(struct
+> >  	snd_pcm_set_sync(substream);
+> >  
+> >          runtime->hw = snd_hdsp_playback_subinfo;
+> > -	runtime->dma_area = hdsp->playback_buffer;
+> > -	runtime->dma_bytes = HDSP_DMA_AREA_BYTES;
+> > +	snd_pcm_set_runtime_buffer(substream, hdsp->playback_dma_buf);
+> >  
+> >  	hdsp->playback_pid = current->pid;
+> >  	hdsp->playback_substream = substream;
+> > @@ -4595,8 +4594,7 @@ static int snd_hdsp_capture_open(struct
+> >  	snd_pcm_set_sync(substream);
+> >  
+> >  	runtime->hw = snd_hdsp_capture_subinfo;
+> > -	runtime->dma_area = hdsp->capture_buffer;
+> > -	runtime->dma_bytes = HDSP_DMA_AREA_BYTES;
+> > +	snd_pcm_set_runtime_buffer(substream, hdsp->capture_dma_buf);
+> >  
+> >  	hdsp->capture_pid = current->pid;
+> >  	hdsp->capture_substream = substream;
+> > --- a/sound/pci/rme9652/rme9652.c
+> > +++ b/sound/pci/rme9652/rme9652.c
+> > @@ -2279,8 +2279,7 @@ static int snd_rme9652_playback_open(str
+> >  	snd_pcm_set_sync(substream);
+> >  
+> >          runtime->hw = snd_rme9652_playback_subinfo;
+> > -	runtime->dma_area = rme9652->playback_buffer;
+> > -	runtime->dma_bytes = RME9652_DMA_AREA_BYTES;
+> > +	snd_pcm_set_runtime_buffer(substream, rme9652->playback_dma_buf);
+> >  
+> >  	if (rme9652->capture_substream == NULL) {
+> >  		rme9652_stop(rme9652);
+> > @@ -2339,8 +2338,7 @@ static int snd_rme9652_capture_open(stru
+> >  	snd_pcm_set_sync(substream);
+> >  
+> >  	runtime->hw = snd_rme9652_capture_subinfo;
+> > -	runtime->dma_area = rme9652->capture_buffer;
+> > -	runtime->dma_bytes = RME9652_DMA_AREA_BYTES;
+> > +	snd_pcm_set_runtime_buffer(substream, rme9652->capture_dma_buf);
+> >  
+> >  	if (rme9652->playback_substream == NULL) {
+> >  		rme9652_stop(rme9652);
+> > 
+> > 
+> > Patches currently in stable-queue which might be from tiwai@suse.de are
+> > 
+> > queue-5.14/alsa-pci-rme-set-up-buffer-type-properly.patch
+> > queue-5.14/alsa-pcm-check-mmap-capability-of-runtime-dma-buffer-at-first.patch
+> > queue-5.14/alsa-pci-cs46xx-fix-set-up-buffer-type-properly.patch
 > 
-> When I boot with (most of) this patchset applied, I get the warning at
-> kernel/reboot.c:187:
+> This patch breaks the build, so I will drop it.
 > 
-> 	/*
-> 	 * Handler must have unique priority. Otherwise call order is
-> 	 * determined by registration order, which is unreliable.
-> 	 */
-> 	WARN_ON(!atomic_notifier_has_unique_priority(&restart_handler_list, nb));
-> 
-> As the NTXEC driver doesn't specify a priority, I think this is an issue
-> to be fixed elsewhere.
-> 
-> Other than that, it works and looks good, as far as I can tell.
-> 
-> 
-> For this patch:
-> 
-> Reviewed-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
-> Tested-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> Can you provide a working backport?
 
-Thank you. You have conflicting restart handlers, apparently NTXEC
-driver should have higher priority than the watchdog driver. It should
-be a common problem for the watchdog drivers, I will lower watchdog's
-default priority to fix it.
+Sorry, I overlooked that it's after the recent code change with the
+devres support.
+
+Then rather drop this one, as I found another potential issue in this
+patch.  I cooked another different fix now that should cover the
+regression, instead.  It'll be included in the next pull request.
+
+The other two patches are fine for stable trees.
+
+
+thanks,
+
+Takashi
