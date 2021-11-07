@@ -2,178 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54CEF4473E4
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DC74473F1
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:48:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235333AbhKGQst convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 7 Nov 2021 11:48:49 -0500
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:45695 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234852AbhKGQso (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 11:48:44 -0500
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 96E921C0002;
-        Sun,  7 Nov 2021 16:45:56 +0000 (UTC)
-Date:   Sun, 7 Nov 2021 17:45:55 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] mtd: Changes for 5.16
-Message-ID: <20211107174555.2d1a5eec@xps13>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S235178AbhKGQup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 11:50:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47638 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230092AbhKGQun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 11:50:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71CD96108B;
+        Sun,  7 Nov 2021 16:48:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636303680;
+        bh=LuqyXW0s3iea0qghV4oS1d9eUNF23p9aYTCVd99xMvE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=aDOMpvuDNeyasOPFzhX4nGLa6ZXwfxPX3U1Vjq77APWqRmSiUx3jLg3Xsrn/ugm9V
+         bmjVCUiM/BnRwBbnG9fsQjJ0sDkCDh9lcdYdB5NARICOOfOJgApq6POIdvNC6DnE1f
+         KodnVm1U7zSA23oa+866uTuZ22MbK0peyHxuPBXeU3HTtQs8F/9a2bzhkjqcdjgpCJ
+         V5WyZWVWFzdPgz4Ase+QKnLouHdt6SAVPsD8w8GBbabe4Q7hnfbHl7rM87HsWT+fZB
+         dfLgekhFOB1D4OJVcj6g2Jvw/nuVIRDfbVN4Z4Fdm7QIA5RbU/EKee+I28mM7QXYXH
+         BTSEzySLfOo3w==
+Message-ID: <2a0b84575733e4aaee13926387d997c35ac23130.camel@kernel.org>
+Subject: Re: [PATCH] x86/sgx: Fix free page accounting
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Reinette Chatre <reinette.chatre@intel.com>,
+        dave.hansen@linux.intel.com, tglx@linutronix.de, bp@alien8.de,
+        mingo@redhat.com, linux-sgx@vger.kernel.org, x86@kernel.org
+Cc:     seanjc@google.com, tony.luck@intel.com, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Date:   Sun, 07 Nov 2021 18:47:58 +0200
+In-Reply-To: <6e51fdacc2c1d834258f00ad8cc268b8d782eca7.camel@kernel.org>
+References: <373992d869cd356ce9e9afe43ef4934b70d604fd.1636049678.git.reinette.chatre@intel.com>
+         <6e51fdacc2c1d834258f00ad8cc268b8d782eca7.camel@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On Sun, 2021-11-07 at 18:45 +0200, Jarkko Sakkinen wrote:
+> On Thu, 2021-11-04 at 11:28 -0700, Reinette Chatre wrote:
+> > The consequence of sgx_nr_free_pages not being protected is that
+> > its value may not accurately reflect the actual number of free
+> > pages on the system, impacting the availability of free pages in
+> > support of many flows. The problematic scenario is when the
+> > reclaimer never runs because it believes there to be sufficient
+> > free pages while any attempt to allocate a page fails because there
+> > are no free pages available. The worst scenario observed was a
+> > user space hang because of repeated page faults caused by
+> > no free pages ever made available.
+>=20
+> Can you go in detail with the "concrete scenario" in the commit
+> message? It does not have to describe all the possible scenarios
+> but at least one sequence of events.
 
-This is the MTD PR for 5.16.
+I.e. I don't have anything fundamentally against changing it to
+atomic but the commit message is completely lacking the stimulus
+of changing anything.
 
-Thanks,
-Miquèl
-
-The following changes since commit 9e1ff307c779ce1f0f810c7ecce3d95bbae40896:
-
-  Linux 5.15-rc4 (2021-10-03 14:08:47 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next
-
-for you to fetch changes up to e269d7caf9e0dbd95fac9991991298f74930c2c0:
-
-  Merge tag 'spi-nor/for-5.16' into mtd/next (2021-11-07 17:38:36 +0100)
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      mtd: fixup CFI on ixp4xx
-
-Cai Huoqing (19):
-      mtd: rawnand: atmel: Make use of the helper function devm_platform_ioremap_resource()
-      mtd: rawnand: bcm6368: Make use of the helper function devm_platform_ioremap_resource_byname()
-      mtd: rawnand: denali: Make use of the helper function devm_platform_ioremap_resource_byname()
-      mtd: rawnand: gpio: Make use of the helper function devm_platform_ioremap_resource()
-      mtd: rawnand: gpmi: Make use of the helper function devm_platform_ioremap_resource_byname()
-      mtd: rawnand: hisi504: Make use of the helper function devm_platform_ioremap_resource()
-      mtd: rawnand: mtk: Make use of the helper function devm_platform_ioremap_resource()
-      mtd: rawnand: mtk_ecc: Make use of the helper function devm_platform_ioremap_resource()
-      mtd: rawnand: omap_elm: Make use of the helper function devm_platform_ioremap_resource()
-      mtd: rawnand: oxnas: Make use of the helper function devm_platform_ioremap_resource()
-      mtd: rawnand: plat_nand: Make use of the helper function devm_platform_ioremap_resource()
-      mtd: rawnand: stm32_fmc2: Make use of the helper function devm_platform_ioremap_resource()
-      mtd: rawnand: tegra: Make use of the helper function devm_platform_ioremap_resource()
-      mtd: rawnand: txx9ndfm: Make use of the helper function devm_platform_ioremap_resource()
-      mtd: rawnand: vf610: Make use of the helper function devm_platform_ioremap_resource()
-      mtd: rawnand: xway: Make use of the helper function devm_platform_ioremap_resource()
-      mtd: spi-nor: hisi-sfc: Make use of the helper function devm_platform_ioremap_resource_byname()
-      mtd: spi-nor: nxp-spifi: Make use of the helper function devm_platform_ioremap_resource_byname()
-      MAINTAINERS: Update the devicetree documentation path of hyperbus
-
-Chris Morgan (1):
-      mtd: rawnand: hynix: Add support for H27UCG8T2ETR-BC MLC NAND
-
-Colin Ian King (1):
-      mtd: mtdswap: Remove redundant assignment of pointer eb
-
-Evgeny Novikov (2):
-      mtd: rawnand: intel: Fix potential buffer overflow in probe
-      mtd: spi-nor: hisi-sfc: Remove excessive clk_disable_unprepare()
-
-GONG, Ruiqi (1):
-      mtd: Remove obsolete macros only used by the old nand_ecclayout struct
-
-Joachim Wiberg (2):
-      mtd: block2mtd: minor refactor to avoid hard coded constant
-      mtd: block2mtd: add support for an optional custom MTD label
-
-Jonathan Lemon (1):
-      mtd: spi-nor: Enable locking for n25q128a13
-
-Krzysztof Kozlowski (1):
-      mtd: onenand: samsung: drop Exynos4 and describe driver in KConfig
-
-Manivannan Sadhasivam (1):
-      MAINTAINERS: Add entry for Qualcomm NAND controller driver
-
-Miquel Raynal (20):
-      mtd: rawnand: fsmc: Fix use of SM ORDER
-      mtd: rawnand: Let callers use the bare Hamming helpers
-      Revert "mtd: rawnand: txx9ndfmc: Fix external use of SW Hamming ECC helper"
-      Revert "mtd: rawnand: tmio: Fix external use of SW Hamming ECC helper"
-      Revert "mtd: rawnand: sharpsl: Fix external use of SW Hamming ECC helper"
-      Revert "mtd: rawnand: ndfc: Fix external use of SW Hamming ECC helper"
-      Revert "mtd: rawnand: lpc32xx_slc: Fix external use of SW Hamming ECC helper"
-      Revert "mtd: rawnand: cs553x: Fix external use of SW Hamming ECC helper"
-      mtd: rawnand: ams-delta: Keep the driver compatible with on-die ECC engines
-      mtd: rawnand: au1550nd: Keep the driver compatible with on-die ECC engines
-      mtd: rawnand: gpio: Keep the driver compatible with on-die ECC engines
-      mtd: rawnand: mpc5121: Keep the driver compatible with on-die ECC engines
-      mtd: rawnand: orion: Keep the driver compatible with on-die ECC engines
-      mtd: rawnand: pasemi: Keep the driver compatible with on-die ECC engines
-      mtd: rawnand: plat_nand: Keep the driver compatible with on-die ECC engines
-      mtd: rawnand: socrates: Keep the driver compatible with on-die ECC engines
-      mtd: rawnand: xway: Keep the driver compatible with on-die ECC engines
-      mtd: rawnand: arasan: Prevent an unsupported configuration
-      Merge tag 'nand/for-5.16' into mtd/next
-      Merge tag 'spi-nor/for-5.16' into mtd/next
-
-Pratyush Yadav (1):
-      MAINTAINERS: Add spi-nor device tree binding under SPI NOR maintainers
-
-Zev Weiss (1):
-      mtd: core: don't remove debugfs directory if device is in use
-
- MAINTAINERS                                   | 12 ++++++++++--
- drivers/mtd/chips/Kconfig                     |  2 ++
- drivers/mtd/devices/block2mtd.c               | 29 +++++++++++++++++++++--------
- drivers/mtd/maps/Kconfig                      |  2 +-
- drivers/mtd/mtdcore.c                         |  4 ++--
- drivers/mtd/mtdswap.c                         |  1 -
- drivers/mtd/nand/ecc-sw-hamming.c             |  7 ++++---
- drivers/mtd/nand/onenand/Kconfig              |  9 +++++----
- drivers/mtd/nand/raw/ams-delta.c              | 12 +++++++++---
- drivers/mtd/nand/raw/arasan-nand-controller.c | 15 +++++++++++++++
- drivers/mtd/nand/raw/atmel/pmecc.c            |  7 ++-----
- drivers/mtd/nand/raw/au1550nd.c               | 12 +++++++++---
- drivers/mtd/nand/raw/brcmnand/bcm6368_nand.c  |  5 +----
- drivers/mtd/nand/raw/cs553x_nand.c            | 12 +-----------
- drivers/mtd/nand/raw/denali_dt.c              |  7 ++-----
- drivers/mtd/nand/raw/fsmc_nand.c              |  4 +++-
- drivers/mtd/nand/raw/gpio.c                   | 15 ++++++++++-----
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c    |  4 +---
- drivers/mtd/nand/raw/hisi504_nand.c           |  7 ++-----
- drivers/mtd/nand/raw/intel-nand-controller.c  |  5 +++++
- drivers/mtd/nand/raw/lpc32xx_slc.c            | 15 +--------------
- drivers/mtd/nand/raw/mpc5121_nfc.c            | 12 +++++++++---
- drivers/mtd/nand/raw/mtk_ecc.c                |  4 +---
- drivers/mtd/nand/raw/mtk_nand.c               |  4 +---
- drivers/mtd/nand/raw/nand_hynix.c             | 14 ++++++++++++++
- drivers/mtd/nand/raw/nand_ids.c               |  4 ++++
- drivers/mtd/nand/raw/ndfc.c                   | 12 +-----------
- drivers/mtd/nand/raw/omap_elm.c               |  5 ++---
- drivers/mtd/nand/raw/orion_nand.c             | 12 +++++++++---
- drivers/mtd/nand/raw/oxnas_nand.c             |  4 +---
- drivers/mtd/nand/raw/pasemi_nand.c            | 12 +++++++++---
- drivers/mtd/nand/raw/plat_nand.c              | 16 ++++++++++------
- drivers/mtd/nand/raw/sharpsl.c                | 12 +-----------
- drivers/mtd/nand/raw/socrates_nand.c          | 12 +++++++++---
- drivers/mtd/nand/raw/stm32_fmc2_nand.c        |  8 ++------
- drivers/mtd/nand/raw/tegra_nand.c             |  4 +---
- drivers/mtd/nand/raw/tmio_nand.c              |  8 +++-----
- drivers/mtd/nand/raw/txx9ndfmc.c              |  9 +++------
- drivers/mtd/nand/raw/vf610_nfc.c              |  4 +---
- drivers/mtd/nand/raw/xway_nand.c              | 16 ++++++++++------
- drivers/mtd/spi-nor/controllers/hisi-sfc.c    |  8 ++------
- drivers/mtd/spi-nor/controllers/nxp-spifi.c   |  7 ++-----
- drivers/mtd/spi-nor/micron-st.c               |  4 +++-
- include/linux/mtd/mtd.h                       |  2 --
- 44 files changed, 204 insertions(+), 175 deletions(-)
+/Jarkko
