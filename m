@@ -2,136 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AA344726B
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 11:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DE044727E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 11:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbhKGKHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 05:07:35 -0500
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:61808 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230023AbhKGKHe (ORCPT
+        id S230347AbhKGKRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 05:17:07 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15370 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229713AbhKGKRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 05:07:34 -0500
-Received: from pop-os.home ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id jf2ami9tyTdRTjf2bm7YIn; Sun, 07 Nov 2021 11:04:50 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Sun, 07 Nov 2021 11:04:50 +0100
-X-ME-IP: 86.243.171.122
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
-        bhelgaas@google.com, michal.simek@xilinx.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] PCI: xilinx-nwl: Simplify code and fix a memory leak
-Date:   Sun,  7 Nov 2021 11:04:43 +0100
-Message-Id: <5483f10a44b06aad55728576d489adfa16c3be91.1636279388.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 7 Nov 2021 05:17:06 -0500
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hn97y33Dvz90HZ;
+        Sun,  7 Nov 2021 18:14:06 +0800 (CST)
+Received: from dggpeml500013.china.huawei.com (7.185.36.41) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Sun, 7 Nov 2021 18:14:18 +0800
+Received: from [10.174.187.161] (10.174.187.161) by
+ dggpeml500013.china.huawei.com (7.185.36.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.15; Sun, 7 Nov 2021 18:14:17 +0800
+Subject: Re: [PATCH V10 05/18] KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit
+ when vPMU is enabled
+To:     Zhu Lingshan <lingshan.zhu@intel.com>, <like.xu.linux@gmail.com>,
+        Like Xu <like.xu@linux.intel.com>, <like.xu.linux@gmail.com>
+References: <20210806133802.3528-1-lingshan.zhu@intel.com>
+ <20210806133802.3528-6-lingshan.zhu@intel.com>
+CC:     <seanjc@google.com>, <vkuznets@redhat.com>,
+        <wanpengli@tencent.com>, <jmattson@google.com>, <joro@8bytes.org>,
+        <kan.liang@linux.intel.com>, <ak@linux.intel.com>,
+        <wei.w.wang@intel.com>, <eranian@google.com>,
+        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        <kvm@vger.kernel.org>, <boris.ostrvsky@oracle.com>,
+        Yao Yuan <yuan.yao@intel.com>,
+        "Venkatesh Srinivas" <venkateshs@chromium.org>,
+        "Fangyi (Eric)" <eric.fangyi@huawei.com>,
+        Xiexiangyou <xiexiangyou@huawei.com>
+From:   Liuxiangdong <liuxiangdong5@huawei.com>
+Message-ID: <6187A6F9.5030401@huawei.com>
+Date:   Sun, 7 Nov 2021 18:14:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210806133802.3528-6-lingshan.zhu@intel.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.161]
+X-ClientProxiedBy: dggeme713-chm.china.huawei.com (10.1.199.109) To
+ dggpeml500013.china.huawei.com (7.185.36.41)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allocate space for 'bitmap' in 'struct nwl_msi' at build time instead of
-dynamically allocating the memory at runtime.
+Hi, like and lingshan.
 
-This simplifies code (especially error handling paths) and avoid some
-open-coded arithmetic in allocator arguments
+As said,  IA32_MISC_ENABLE[7] bit depends on the PMU is enabled for the 
+guest, so a software
+write openration to this bit will be ignored.
 
-This also fixes a potential memory leak. The bitmap was never freed. It is
-now part of a managed resource.
+But, in this patch, all the openration that writes msr_ia32_misc_enable 
+in guest could make this bit become 0.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/pci/controller/pcie-xilinx-nwl.c | 30 ++++++------------------
- 1 file changed, 7 insertions(+), 23 deletions(-)
+Suppose:
+When we start vm with "enable_pmu", vcpu->arch.ia32_misc_enable_msr may 
+be 0x80 first.
+And next, guest writes msr_ia32_misc_enable value 0x1.
+What we want could be 0x81, but unfortunately, it will be 0x1 because of
+"data &= ~MSR_IA32_MISC_ENABLE_EMON;"
+And even if guest writes msr_ia32_misc_enable value 0x81, it will be 0x1 
+also.
 
-diff --git a/drivers/pci/controller/pcie-xilinx-nwl.c b/drivers/pci/controller/pcie-xilinx-nwl.c
-index a72b4f9a2b00..40d070e54ad2 100644
---- a/drivers/pci/controller/pcie-xilinx-nwl.c
-+++ b/drivers/pci/controller/pcie-xilinx-nwl.c
-@@ -146,7 +146,7 @@
- 
- struct nwl_msi {			/* MSI information */
- 	struct irq_domain *msi_domain;
--	unsigned long *bitmap;
-+	DECLARE_BITMAP(bitmap, INT_PCI_MSI_NR);
- 	struct irq_domain *dev_domain;
- 	struct mutex lock;		/* protect bitmap variable */
- 	int irq_msi0;
-@@ -335,12 +335,10 @@ static void nwl_pcie_leg_handler(struct irq_desc *desc)
- 
- static void nwl_pcie_handle_msi_irq(struct nwl_pcie *pcie, u32 status_reg)
- {
--	struct nwl_msi *msi;
-+	struct nwl_msi *msi = &pcie->msi;
- 	unsigned long status;
- 	u32 bit;
- 
--	msi = &pcie->msi;
--
- 	while ((status = nwl_bridge_readl(pcie, status_reg)) != 0) {
- 		for_each_set_bit(bit, &status, 32) {
- 			nwl_bridge_writel(pcie, 1 << bit, status_reg);
-@@ -560,30 +558,21 @@ static int nwl_pcie_enable_msi(struct nwl_pcie *pcie)
- 	struct nwl_msi *msi = &pcie->msi;
- 	unsigned long base;
- 	int ret;
--	int size = BITS_TO_LONGS(INT_PCI_MSI_NR) * sizeof(long);
- 
- 	mutex_init(&msi->lock);
- 
--	msi->bitmap = kzalloc(size, GFP_KERNEL);
--	if (!msi->bitmap)
--		return -ENOMEM;
--
- 	/* Get msi_1 IRQ number */
- 	msi->irq_msi1 = platform_get_irq_byname(pdev, "msi1");
--	if (msi->irq_msi1 < 0) {
--		ret = -EINVAL;
--		goto err;
--	}
-+	if (msi->irq_msi1 < 0)
-+		return -EINVAL;
- 
- 	irq_set_chained_handler_and_data(msi->irq_msi1,
- 					 nwl_pcie_msi_handler_high, pcie);
- 
- 	/* Get msi_0 IRQ number */
- 	msi->irq_msi0 = platform_get_irq_byname(pdev, "msi0");
--	if (msi->irq_msi0 < 0) {
--		ret = -EINVAL;
--		goto err;
--	}
-+	if (msi->irq_msi0 < 0)
-+		return -EINVAL;
- 
- 	irq_set_chained_handler_and_data(msi->irq_msi0,
- 					 nwl_pcie_msi_handler_low, pcie);
-@@ -592,8 +581,7 @@ static int nwl_pcie_enable_msi(struct nwl_pcie *pcie)
- 	ret = nwl_bridge_readl(pcie, I_MSII_CAPABILITIES) & MSII_PRESENT;
- 	if (!ret) {
- 		dev_err(dev, "MSI not present\n");
--		ret = -EIO;
--		goto err;
-+		return -EIO;
- 	}
- 
- 	/* Enable MSII */
-@@ -632,10 +620,6 @@ static int nwl_pcie_enable_msi(struct nwl_pcie *pcie)
- 	nwl_bridge_writel(pcie, MSGF_MSI_SR_LO_MASK, MSGF_MSI_MASK_LO);
- 
- 	return 0;
--err:
--	kfree(msi->bitmap);
--	msi->bitmap = NULL;
--	return ret;
- }
- 
- static int nwl_pcie_bridge_init(struct nwl_pcie *pcie)
--- 
-2.30.2
+
+What we want is write operation will not change this bit. So, how about 
+this?
+
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3321,6 +3321,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, 
+struct msr_data *msr_info)
+          }
+          break;
+      case MSR_IA32_MISC_ENABLE:
++        data &= ~MSR_IA32_MISC_ENABLE_EMON;
++        data |= (vcpu->arch.ia32_misc_enable_msr & 
+MSR_IA32_MISC_ENABLE_EMON);
+          if (!kvm_check_has_quirk(vcpu->kvm, 
+KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT) &&
+              ((vcpu->arch.ia32_misc_enable_msr ^ data) & 
+MSR_IA32_MISC_ENABLE_MWAIT)) {
+              if (!guest_cpuid_has(vcpu, X86_FEATURE_XMM3))
+
+
+Or is there anything in your design intention I don't understand?
+
+Thanks!
+
+Xiangdong Liu
+
+
+On 2021/8/6 21:37, Zhu Lingshan wrote:
+> From: Like Xu <like.xu@linux.intel.com>
+>
+> On Intel platforms, the software can use the IA32_MISC_ENABLE[7] bit to
+> detect whether the processor supports performance monitoring facility.
+>
+> It depends on the PMU is enabled for the guest, and a software write
+> operation to this available bit will be ignored. The proposal to ignore
+> the toggle in KVM is the way to go and that behavior matches bare metal.
+>
+> Cc: Yao Yuan <yuan.yao@intel.com>
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> Reviewed-by: Venkatesh Srinivas <venkateshs@chromium.org>
+> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>   arch/x86/kvm/vmx/pmu_intel.c | 1 +
+>   arch/x86/kvm/x86.c           | 1 +
+>   2 files changed, 2 insertions(+)
+>
+> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> index 9efc1a6b8693..d9dbebe03cae 100644
+> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> @@ -488,6 +488,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
+>   	if (!pmu->version)
+>   		return;
+>   
+> +	vcpu->arch.ia32_misc_enable_msr |= MSR_IA32_MISC_ENABLE_EMON;
+>   	perf_get_x86_pmu_capability(&x86_pmu);
+>   
+>   	pmu->nr_arch_gp_counters = min_t(int, eax.split.num_counters,
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index efd11702465c..f6b6984e26ef 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -3321,6 +3321,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>   		}
+>   		break;
+>   	case MSR_IA32_MISC_ENABLE:
+> +		data &= ~MSR_IA32_MISC_ENABLE_EMON;
+>   		if (!kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT) &&
+>   		    ((vcpu->arch.ia32_misc_enable_msr ^ data) & MSR_IA32_MISC_ENABLE_MWAIT)) {
+>   			if (!guest_cpuid_has(vcpu, X86_FEATURE_XMM3))
 
