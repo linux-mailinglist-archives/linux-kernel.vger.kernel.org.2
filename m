@@ -2,108 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414AB447558
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:46:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9844344755D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:47:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236324AbhKGTsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 14:48:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230364AbhKGTsp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 14:48:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDF5461244;
-        Sun,  7 Nov 2021 19:46:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636314362;
-        bh=p9PTXUIwv2K7l8DSFkmLc/2KXRsnKtTpnM7ftuPGdPo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KGDkyWxwS0SuPHoBQKoQnM93WMntBtAqayiHdnaQL75CU3PzJlr4wRyFsvQXq7RQw
-         s07SWk81Gvb6CgPN/ZW+uRIZ9peodNHhE6nDMor4lRNtfEbiVrsdD628yxACftcgut
-         eRxxY2+WFEiPDSJ6HTwamiw9F8Zr+Qs2HfEnPxQHG58wm0NTsmf7YwfWQm9Td+4LbY
-         HIO1c2tnsU1yebQBX61lmc4Ev0K1W7kL4TWhIaMti8G7eNuWwZitLSkeO+jjxeWVzv
-         zlEjhchdhgk2hIdmdc8zXu9QJB17m5yKOLuAd+jEZ+T4sOvvZeGRY7xy7JRSRT7mck
-         tRgON3ATRZvVQ==
-Date:   Sun, 7 Nov 2021 21:45:59 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Sean Christopherson <seanjc@google.com>,
-        reinette.chatre@intel.com, tony.luck@intel.com,
-        nathaniel@profian.com, stable@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/sgx: Free backing memory after faulting the enclave
- page
-Message-ID: <YYgs94O3eiKJwKgi@iki.fi>
-References: <20211103232238.110557-1-jarkko@kernel.org>
- <7c122a82-e418-0bce-8f67-cbaa15abc9b9@intel.com>
- <YYgVsi7y4TNuSRLc@iki.fi>
- <984bc7a4-1c7a-f2c0-5885-0dc7fad3d2b6@intel.com>
+        id S236323AbhKGTu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 14:50:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24809 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230364AbhKGTu0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 14:50:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636314463;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fw9CdIc3/VRk9UdBCM9N1QjnoS+qQtswidra737/jxs=;
+        b=c5CewyPmVX0bsOgaIjUGT4GTxgH+YnHkTYOAkz4ghmFEBZtsShGdarZsRm7HpF4czKGXTZ
+        Z3RKXdDkc3ocv7N1E3RnZmvYDF4ejWluovuoDAvxxc8JJedGKIUkNwtPnVJkbLaiF7Qfaq
+        mKk6Zute4EODJoO+GgYBisaDjOU50Xw=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-595-R_i6rn4wOSeZ_0JvI02uBQ-1; Sun, 07 Nov 2021 14:47:42 -0500
+X-MC-Unique: R_i6rn4wOSeZ_0JvI02uBQ-1
+Received: by mail-ed1-f70.google.com with SMTP id v9-20020a50d849000000b003dcb31eabaaso13119712edj.13
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 11:47:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=fw9CdIc3/VRk9UdBCM9N1QjnoS+qQtswidra737/jxs=;
+        b=W/6JmG0a1dNb9HNkrJP4pY7DmxcvFmCcwdgnmB/dZUXt8eurXIOv26bg+/2+OtSpiw
+         Vr1lvQZu9NddTsCJUSC54X+t8yRYvhbU73RUSQvIvnloDfjx1ImKoRY4VkMEDKhtfNcm
+         ZBn8GQsC4sQ8XqcFAotAqn+8yhknVBkgZEH4yhhpi5OGsw3hOH3agXF+2sb5GK/MLvFQ
+         1uf+mRK9aLT7n14CSAg4o8MSRgbghh5ATQzRwHwW++KASEQlVcJwQMz2WiKeqq9OUDOt
+         7peCVEsTyLr2VdVGF7f3egkqolPbiEaAvhuRxXUTNvPhtCWoXoA+qgJHW+4eYKkW0jSo
+         JPsg==
+X-Gm-Message-State: AOAM531IqI3jNGCLaAy3/zKtTxYvYVDLYfeQQ7UgGjNCicA2KeWAdk8T
+        WXBqjeD8EuS0C4Kjhi21t23am6gh+KvB4fHIJgGFfaUuk/HefPw+bga/ebL1mlblb4jkiWzN1r9
+        +Q3Di0cOmU649Jrrr1RPAFAQ0
+X-Received: by 2002:a17:907:86a6:: with SMTP id qa38mr15296516ejc.286.1636314460993;
+        Sun, 07 Nov 2021 11:47:40 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwyVGhkmgcFGuqMzn8WOTkwmWDnsl+HZ/qxHl33o4RtOQFpGH7JcUHAZVAEJCsmkh7POvwFdg==
+X-Received: by 2002:a17:907:86a6:: with SMTP id qa38mr15296473ejc.286.1636314460694;
+        Sun, 07 Nov 2021 11:47:40 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id bx27sm8277661edb.7.2021.11.07.11.47.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Nov 2021 11:47:40 -0800 (PST)
+Message-ID: <df053343-cf20-791e-f745-d3956ace25a0@redhat.com>
+Date:   Sun, 7 Nov 2021 20:47:39 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <984bc7a4-1c7a-f2c0-5885-0dc7fad3d2b6@intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 09/13] power: supply: bq25890: Add bq25890_set_otg_cfg()
+ helper
+Content-Language: en-US
+To:     Yauhen Kharuzhy <jekhor@gmail.com>
+Cc:     Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org
+References: <20211030182813.116672-1-hdegoede@redhat.com>
+ <20211030182813.116672-10-hdegoede@redhat.com>
+ <YYgfpJCUDs+dU++a@jeknote.loshitsa1.net>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <YYgfpJCUDs+dU++a@jeknote.loshitsa1.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 07, 2021 at 11:06:01AM -0800, Dave Hansen wrote:
-> On 11/7/21 10:06 AM, Jarkko Sakkinen wrote:
-> > On Thu, Nov 04, 2021 at 03:38:55PM -0700, Dave Hansen wrote:
-> >> On 11/3/21 4:22 PM, Jarkko Sakkinen wrote:
-> >>> --- a/arch/x86/kernel/cpu/sgx/encl.c
-> >>> +++ b/arch/x86/kernel/cpu/sgx/encl.c
-> >>> @@ -22,6 +22,7 @@ static int __sgx_encl_eldu(struct sgx_encl_page *encl_page,
-> >>>  {
-> >>>  	unsigned long va_offset = encl_page->desc & SGX_ENCL_PAGE_VA_OFFSET_MASK;
-> >>>  	struct sgx_encl *encl = encl_page->encl;
-> >>> +	struct inode *inode = file_inode(encl->backing);
-> >>>  	struct sgx_pageinfo pginfo;
-> >>>  	struct sgx_backing b;
-> >>>  	pgoff_t page_index;
-> >>> @@ -60,6 +61,9 @@ static int __sgx_encl_eldu(struct sgx_encl_page *encl_page,
-> >>>  
-> >>>  	sgx_encl_put_backing(&b, false);
-> >>>  
-> >>> +	/* Free the backing memory. */
-> >>> +	shmem_truncate_range(inode, PFN_PHYS(page_index), PFN_PHYS(page_index) + PAGE_SIZE - 1);
-> >>> +
-> >>>  	return ret;
-> >>>  }
-> >>
-> >> This also misses tearing down the backing storage if it is in place at
-> >> sgx_encl_release().
-> > 
-> > Hmm... sgx_encl_release() does fput(). Isn't that enough to tear it down,
-> > or does it require explicit truncate, i.e. something like
-> > 
-> >         shmem_truncate_range(file_inode(encl->backing), encl->base, encl->size - 1);
+Hi,
+
+On 11/7/21 19:49, Yauhen Kharuzhy wrote:
+> On Sat, Oct 30, 2021 at 08:28:09PM +0200, Hans de Goede wrote:
+>> Add a bq25890_set_otg_cfg() helper function, this is a preparation
+>> patch for adding regulator support.
 > 
-> That's true, the page cache should all be torn down along with the
-> fput().  *But*, it would be a very nice property if the backing storage
-> was empty by this point.  It essentially ensures that no enclave-runtime
-> cases missed truncating the backing storage away.
-
-What if an enclave is released a point when all of its pages
-are swapped out? Or even simpler case would an enclave that is
-larger than all of EPC.
-
-What can be made sure is that for all pages, which are in EPC,
-the backing page is truncated.
-
-> >> Does a entry->epc_page==NULL page in there guarantee that it has backing
-> >> storage?
-> > 
-> > Yes, it is an invariant. That what I was thinking to use for PCMD: iterate
-> > 32 pages and check if they have a faulted page.
+> The same notice here: if we enabling the boost mode to supply USB OTG
+> device, we should disable charging and vice versa. I don't remember if
+> enabling of OTG with CHG enabled really caused issues but I avoided this
+> in my Yoga Book work.
 > 
-> I think the rule should be that entry->epc_page==NULL enclave pages have
-> backing storage.  All entry->epc_page!=NULL do *not* have backing storage.
+> I made quick check — seems that charging can be enabled during of boost
+> operation, there are no visible side effects in registers and no
+> limitation in the datasheet, so your approach may be good.
 
-Yes, that is the goal of this patch.
+Right, the charging bit can simply be always on, if the OTG boost
+converter is enabled then the charger it will automatically stop
+charging (AFAIK it is partly re-using the same hw even).
 
-/Jarkko
+I've no idea why the charging bit is being cleared by the BIOS, there
+really is no need for this, with the exception of either:
+
+1. Using an external Vbus boost converter, because that can e.g.
+deliver more current, then charging does need to be disabled.
+
+2. Disabling charging for battery health reasons
+
+1. is not the case here; and 2. is something which we could export
+as something userspace can request but that is optional.
+
+So for normal use there really is no reason to set the charging
+bit to 0 ever (and it is 1 on reset), so just setting it to 1
+makes the behavior the same as on many ARM devices where this
+charger is also used and the same as how similar chargers
+like the bq2419x and bq2429x are used on other X86 devices.
+
+Regards,
+
+Hans
+
+
+
+
+> 
+>>
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>> ---
+>>  drivers/power/supply/bq25890_charger.c | 28 ++++++++++++++------------
+>>  1 file changed, 15 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/supply/bq25890_charger.c
+>> index 163ca5d761aa..7504e30f1e4d 100644
+>> --- a/drivers/power/supply/bq25890_charger.c
+>> +++ b/drivers/power/supply/bq25890_charger.c
+>> @@ -773,6 +773,17 @@ static int bq25890_power_supply_init(struct bq25890_device *bq)
+>>  	return PTR_ERR_OR_ZERO(bq->charger);
+>>  }
+>>  
+>> +static int bq25890_set_otg_cfg(struct bq25890_device *bq, u8 val)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = bq25890_field_write(bq, F_OTG_CFG, val);
+>> +	if (ret < 0)
+>> +		dev_err(bq->dev, "Error switching to boost/charger mode: %d\n", ret);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>>  static void bq25890_usb_work(struct work_struct *data)
+>>  {
+>>  	int ret;
+>> @@ -782,25 +793,16 @@ static void bq25890_usb_work(struct work_struct *data)
+>>  	switch (bq->usb_event) {
+>>  	case USB_EVENT_ID:
+>>  		/* Enable boost mode */
+>> -		ret = bq25890_field_write(bq, F_OTG_CFG, 1);
+>> -		if (ret < 0)
+>> -			goto error;
+>> +		bq25890_set_otg_cfg(bq, 1);
+>>  		break;
+>>  
+>>  	case USB_EVENT_NONE:
+>>  		/* Disable boost mode */
+>> -		ret = bq25890_field_write(bq, F_OTG_CFG, 0);
+>> -		if (ret < 0)
+>> -			goto error;
+>> -
+>> -		power_supply_changed(bq->charger);
+>> +		ret = bq25890_set_otg_cfg(bq, 0);
+>> +		if (ret == 0)
+>> +			power_supply_changed(bq->charger);
+>>  		break;
+>>  	}
+>> -
+>> -	return;
+>> -
+>> -error:
+>> -	dev_err(bq->dev, "Error switching to boost/charger mode.\n");
+>>  }
+>>  
+>>  static int bq25890_usb_notifier(struct notifier_block *nb, unsigned long val,
+>> -- 
+>> 2.31.1
+>>
+> 
+
