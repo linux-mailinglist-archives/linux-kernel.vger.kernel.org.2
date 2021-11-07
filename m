@@ -2,91 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6726044753A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5881444753C
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:20:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhKGTWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 14:22:01 -0500
-Received: from vps.xff.cz ([195.181.215.36]:41354 "EHLO vps.xff.cz"
+        id S231934AbhKGTWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 14:22:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhKGTWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 14:22:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1636312756; bh=3A4Dli+gg8HWNov7I1Eit9gqhTCBR/mKSOT/BJaGxdU=;
-        h=Date:From:To:Subject:X-My-GPG-KeyId:References:From;
-        b=e8O1Ig5CN8RH38LZg6yzToDBqt2MJjikmDxd+Ccm7IJtzEKal1U0B+5XMoWB/bBpA
-         sYF2N6duAh51fLoLh3WT660E9NBTMru5ugi0lCwBMo8h7aC7GZmk7BDoZj+7tmvYC5
-         fHE/iZ6hFE0qFzzzR3PmORgDVENEWGeX+XKEX/II=
-Date:   Sun, 7 Nov 2021 20:19:16 +0100
-From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        kernel test robot <lkp@intel.com>,
-        Tobias Schramm <t.schramm@manjaro.org>,
-        "open list:GENERIC PHY FRAMEWORK" <linux-phy@lists.infradead.org>,
-        "moderated list:ARM/Rockchip SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC support" 
-        <linux-rockchip@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: phy: rockchip-inno-usb2: Don't print useless error
-Message-ID: <20211107191916.5bkgjqiptftr3b7i@core>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        kernel test robot <lkp@intel.com>,
-        Tobias Schramm <t.schramm@manjaro.org>,
-        "open list:GENERIC PHY FRAMEWORK" <linux-phy@lists.infradead.org>,
-        "moderated list:ARM/Rockchip SoC support" <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC support" <linux-rockchip@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <20211107185836.2540901-1-megous@megous.com>
+        id S229503AbhKGTWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 14:22:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 48F6961165;
+        Sun,  7 Nov 2021 19:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636312807;
+        bh=ZLfLyLAruXENMI1XjQp2lGrXJbUqRZ0DF6vj1H/nkQU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=a7eE6QyXf2Dnthngcs85Op7fLPT0K0OgUp7gDbtAy8Vo/YJBEwhEkPTEyKPAQPnGB
+         YRZExfcWgxCAj6EBqvl/oX/F22wXGiFUoK3fDZuDzGPX8mm6lgpq40sOewWM23NWtj
+         HnFn2LLQYnmRCOoZ6ke1CXGZ9ovtXpHzL2XNhkA+2/p1otszCK6kNw9Lc5bEHbiZhQ
+         xP/l/RT9mE8iykF27ecuvlbUuDmz7sZp9amLladXGtXLagSkY64FR3vAQxKZ7rG3Wk
+         TWc5uPFql9lBv/ibICaVko0+WyfHlOPMhT9aHS2vbr8msZMGT9ZVk3f+xBuhqU/hMU
+         W+gRQFvrzgmng==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3CFDE60A6B;
+        Sun,  7 Nov 2021 19:20:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211107185836.2540901-1-megous@megous.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] nfc: port100: lower verbosity of cancelled URB messages
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163631280724.9669.10610221896311122848.git-patchwork-notify@kernel.org>
+Date:   Sun, 07 Nov 2021 19:20:07 +0000
+References: <20211107141400.523651-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211107141400.523651-1-krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 07, 2021 at 07:58:35PM +0100, megous hlavni wrote:
-> The interrupt is optional, make the dmesg not complain about it
-> missing.
+Hello:
 
-Ooops. Sorry, this applies only on top of Peter Geis's 
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-"phy: phy-rockchip-inno-usb2: support muxed interrupts"
-
-which is not mainline yet. Please ignore.
-
-kind regards,
-	o.
-
-> Signed-off-by: Ondrej Jirman <megous@megous.com>
+On Sun,  7 Nov 2021 15:14:00 +0100 you wrote:
+> It is not an error to receive an URB with -ENOENT because it can come
+> from regular user operations, e.g. pressing CTRL+C when running nfctool
+> from neard.  Make it a debugging message, not an error.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 > ---
->  drivers/phy/rockchip/phy-rockchip-inno-usb2.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
-> index 428c2313a9cb2..27820bee04eae 100644
-> --- a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
-> +++ b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
-> @@ -1180,7 +1180,7 @@ static int rockchip_usb2phy_probe(struct platform_device *pdev)
->  	phy_cfgs = match->data;
->  	rphy->chg_state = USB_CHG_STATE_UNDEFINED;
->  	rphy->chg_type = POWER_SUPPLY_TYPE_UNKNOWN;
-> -	rphy->irq = platform_get_irq(pdev, 0);
-> +	rphy->irq = platform_get_irq_optional(pdev, 0);
->  	platform_set_drvdata(pdev, rphy);
->  
->  	ret = rockchip_usb2phy_extcon_register(rphy);
-> -- 
-> 2.33.1
-> 
+>  drivers/nfc/port100.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+
+Here is the summary with links:
+  - nfc: port100: lower verbosity of cancelled URB messages
+    https://git.kernel.org/netdev/net/c/08fcdfa6e3ae
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
