@@ -2,101 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61165447626
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 22:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C0D447629
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 23:00:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235847AbhKGWC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 17:02:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235100AbhKGWCY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 17:02:24 -0500
-Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [IPv6:2001:4b7a:2000:18::171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7245EC061570;
-        Sun,  7 Nov 2021 13:59:41 -0800 (PST)
-Received: from [192.168.1.222] (adsl-d210.84-47-0.t-com.sk [84.47.0.210])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 42BA53EC75;
-        Sun,  7 Nov 2021 22:59:34 +0100 (CET)
-Date:   Sun, 07 Nov 2021 22:59:28 +0100
-From:   Martin Botka <martin.botka@somainline.org>
-Subject: Re: [PATCH 6/7] arm64: dts: qcom: sdm660-xiaomi-lavender: Enable
- Simple Framebuffer
-To:     Dang Huynh <danct12@riseup.net>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, marijn.suijten@somainline.org,
-        paul.bouchara@somainline.org,
-        angelogioacchino.delregno@somainline.org
-Message-Id: <4F282R.RHJ19SO89IMI3@somainline.org>
-In-Reply-To: <20211107195511.3346734-7-danct12@riseup.net>
-References: <20211107195511.3346734-1-danct12@riseup.net>
-        <20211107195511.3346734-7-danct12@riseup.net>
-X-Mailer: geary/40.0
+        id S235858AbhKGWCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 17:02:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235210AbhKGWCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 17:02:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2B1E761165;
+        Sun,  7 Nov 2021 22:00:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636322407;
+        bh=941HGfFQOQJ4fRvMa7Kb8ACJvmAK41E0GU4IMZsgbNc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=X2j+Zy9QkidqJWHiMCBUIzYqoT2X+X/WYcYf04JYcLB4q/PP6KlzK92DsDNJZW70o
+         4bq+2tSj2s0P8BPNiurx9h5mpGqwGwYF2JSvXLHgrsEY9tAmCTKLL7P5y5pgX1zQXQ
+         /c/oTH3ijk4HK9Dk8otWadftA4phkTcUWh+bG+Y8WecMBUONZ6LEkVHCGAuK7cQAVu
+         UN9Oq0WlR0Uv+EyAqSQ3LbiXy8TVgegpSizE/nEtFBxk5VLfQmRs9yaoz7uyXJn25a
+         P9RKCP39v4erV8R3/Q5/IJxADUrE/cC3Zs38KE30323CdAUkGB4s4vUr30dd8AgeXn
+         EwxLXx8HAsmuQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1DD6260966;
+        Sun,  7 Nov 2021 22:00:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] litex_liteeth: Fix a double free in the remove function
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163632240711.15866.10191810758157275927.git-patchwork-notify@kernel.org>
+Date:   Sun, 07 Nov 2021 22:00:07 +0000
+References: <25b34e3bea4da381228953e484e5c699796dafe8.1636315896.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <25b34e3bea4da381228953e484e5c699796dafe8.1636315896.git.christophe.jaillet@wanadoo.fr>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     davem@davemloft.net, kuba@kernel.org, gsomlo@gmail.com,
+        joel@jms.id.au, caihuoqing@baidu.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Martin Botka <martin.botka@somainline.org>
+Hello:
 
-On Mon, Nov 8 2021 at 02:55:10 AM +0700, Dang Huynh 
-<danct12@riseup.net> wrote:
-> This lets the user sees the framebuffer console.
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
+
+On Sun,  7 Nov 2021 21:13:07 +0100 you wrote:
+> 'netdev' is a managed resource allocated in the probe using
+> 'devm_alloc_etherdev()'.
+> It must not be freed explicitly in the remove function.
 > 
-> Signed-off-by: Dang Huynh <danct12@riseup.net>
-> ---
->  .../boot/dts/qcom/sdm660-xiaomi-lavender.dts  | 19 
-> +++++++++++++++++++
->  1 file changed, 19 insertions(+)
+> Fixes: ee7da21ac4c3 ("net: Add driver for LiteX's LiteETH network interface")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts 
-> b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-> index 30e564927cd7..d6599881f1ac 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-> +++ b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-> @@ -23,7 +23,21 @@ aliases {
->  	};
-> 
->  	chosen {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
->  		stdout-path = "serial0:115200n8";
-> +
-> +		framebuffer0: framebuffer@9d400000 {
-> +			compatible = "simple-framebuffer";
-> +			reg = <0 0x9d400000 0 (1080 * 2340 * 4)>;
-> +			width = <1080>;
-> +			height = <2340>;
-> +			stride = <(1080 * 4)>;
-> +			format = "a8r8g8b8";
-> +			status= "okay";
-> +		};
->  	};
-> 
->  	vph_pwr: vph-pwr-regulator {
-> @@ -64,6 +78,11 @@ ramoops@a0000000 {
->  			ftrace-size = <0x0>;
->  			pmsg-size = <0x20000>;
->  		};
-> +
-> +		cont_splash_mem: cont-splash-region@9d400000 {
-> +			reg = <0x0 0x9d400000 0x0 0x23ff000>;
-> +			no-map;
-> +		};
->  	};
->  };
-> 
-> --
-> 2.33.1
-> 
+> [...]
+
+Here is the summary with links:
+  - litex_liteeth: Fix a double free in the remove function
+    https://git.kernel.org/netdev/net/c/c45231a7668d
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
