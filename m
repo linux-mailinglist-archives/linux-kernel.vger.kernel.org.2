@@ -2,69 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463E84471F0
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 07:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CC04471F4
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 07:53:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234809AbhKGGng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 01:43:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229878AbhKGGnf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 01:43:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C13861186;
-        Sun,  7 Nov 2021 06:40:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636267253;
-        bh=MvVLzHsUMEmKpRJPqQysiS74gj9z5ZqLJdElO+9uN7U=;
-        h=From:To:Cc:Subject:Date:From;
-        b=U/D/oF7vuiaG8gY1aPiX/Uut2z4C4HmnB2obWjBnPZFvaw3bOpI5CfwpPfgaKumjb
-         biO94gGphFW0nX/Sc5D6scHnWtbYO9/zIBNbnF/qX2nLBYnYPlYh3U+naSU/l6+RA0
-         +HREsKVSz3hjCFIUQEKm6GTuw1S9mu9RT0PCMsRFgh3g7L3sNsMqxsq4+/L9aBnf3s
-         nuDZZEMHXlpAawBWTDlMWcjnnmKXUC8NOCTw7yEfjb4Z98gVJQ1DD6W94uzNC2Tu/5
-         Q9+4ES987/BBl26dFyWht1QLQWC754UyIKAMZpw+cRM2u/cg7F4W4vJTji3GcSbKcS
-         I07aztQjHQFeg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-rc] RDMA/netlink: Annotate unused function that is needed for compilation check
-Date:   Sun,  7 Nov 2021 08:40:47 +0200
-Message-Id: <4a8101919b765e01d7fde6f27fd572c958deeb4a.1636267207.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.33.1
+        id S234825AbhKGGza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 01:55:30 -0500
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:64024 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhKGGz3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 01:55:29 -0500
+Received: from [192.168.1.18] ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id jc2mmiWjzUujjjc2nmXikG; Sun, 07 Nov 2021 07:52:46 +0100
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Sun, 07 Nov 2021 07:52:46 +0100
+X-ME-IP: 86.243.171.122
+Subject: Re: [PATCH] PCI: endpoint: Use 'bitmap_zalloc()' when applicable
+To:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>
+Cc:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <01eba3c86137eb348f8cce69f500222bd7c72c57.1635058203.git.christophe.jaillet@wanadoo.fr>
+ <YYb7NwlYcmsdw8AR@rocinante>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <8123c76f-3887-09ad-17ec-a160f63b9f86@wanadoo.fr>
+Date:   Sun, 7 Nov 2021 07:52:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <YYb7NwlYcmsdw8AR@rocinante>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+Le 06/11/2021 à 23:01, Krzysztof Wilczyński a écrit :
+> Hi Christophe,
+> 
+>> 'mem->bitmap' is a bitmap. So use 'bitmap_zalloc()' to simplify code,
+>> improve the semantic and avoid some open-coded arithmetic in allocator
+>> arguments.
+>>
+>> Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
+>> consistency.
+> 
+> Thank you!
+> 
+>> Finally, while at it, axe the useless 'bitmap' variable and use
+>> 'mem->bitmap' directly.
+> 
+> Personally, I would keep the bitmap variable - this might be what Bjorn
+> would also prefer, as I believe he prefers not to store what is a "failed"
+> state of sorts in a target variable directly, if memory serves me right.
 
->> drivers/infiniband/core/nldev.c:2543:1: warning: unused function '__chk_RDMA_NL_NLDEV'
-   MODULE_ALIAS_RDMA_NETLINK(RDMA_NL_NLDEV, 5);
-   ^
+Hi,
 
-Fixes: e3bf14bdc17a ("rdma: Autoload netlink client modules")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- include/rdma/rdma_netlink.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+mostly a mater of taste.
+On another similar patch I got the answer in [1] :).
 
-diff --git a/include/rdma/rdma_netlink.h b/include/rdma/rdma_netlink.h
-index 2758d9df71ee..c2a79aeee113 100644
---- a/include/rdma/rdma_netlink.h
-+++ b/include/rdma/rdma_netlink.h
-@@ -30,7 +30,7 @@ enum rdma_nl_flags {
-  * constant as well and the compiler checks they are the same.
-  */
- #define MODULE_ALIAS_RDMA_NETLINK(_index, _val)                                \
--	static inline void __chk_##_index(void)                                \
-+	static inline void __maybe_unused __chk_##_index(void)                 \
- 	{                                                                      \
- 		BUILD_BUG_ON(_index != _val);                                  \
- 	}                                                                      \
--- 
-2.33.1
+'mem' is kzalloc'ed, so in case of failure, here we are just replacing 
+NULL by NULL.
+
+Let me know the preferred style here and if I should send a V2.
+
+CJ
+
+[1]; https://lore.kernel.org/kernel-janitors/20211028164437.GA4045120@p14s/
+
+> 
+> [...]
+>> @@ -49,10 +49,8 @@ int pci_epc_multi_mem_init(struct pci_epc *epc,
+>>   			   unsigned int num_windows)
+>>   {
+>>   	struct pci_epc_mem *mem = NULL;
+>> -	unsigned long *bitmap = NULL;
+>>   	unsigned int page_shift;
+>>   	size_t page_size;
+>> -	int bitmap_size;
+>>   	int pages;
+>>   	int ret;
+>>   	int i;
+>> @@ -72,7 +70,6 @@ int pci_epc_multi_mem_init(struct pci_epc *epc,
+>>   			page_size = PAGE_SIZE;
+>>   		page_shift = ilog2(page_size);
+>>   		pages = windows[i].size >> page_shift;
+>> -		bitmap_size = BITS_TO_LONGS(pages) * sizeof(long);
+>>   
+>>   		mem = kzalloc(sizeof(*mem), GFP_KERNEL);
+>>   		if (!mem) {
+>> @@ -81,8 +78,8 @@ int pci_epc_multi_mem_init(struct pci_epc *epc,
+>>   			goto err_mem;
+>>   		}
+>>   
+>> -		bitmap = kzalloc(bitmap_size, GFP_KERNEL);
+>> -		if (!bitmap) {
+>> +		mem->bitmap = bitmap_zalloc(pages, GFP_KERNEL);
+>> +		if (!mem->bitmap) {
+>>   			ret = -ENOMEM;
+>>   			kfree(mem);
+>>   			i--;
+>> @@ -92,7 +89,6 @@ int pci_epc_multi_mem_init(struct pci_epc *epc,
+>>   		mem->window.phys_base = windows[i].phys_base;
+>>   		mem->window.size = windows[i].size;
+>>   		mem->window.page_size = page_size;
+>> -		mem->bitmap = bitmap;
+>>   		mem->pages = pages;
+>>   		mutex_init(&mem->lock);
+>>   		epc->windows[i] = mem;
+>> @@ -106,7 +102,7 @@ int pci_epc_multi_mem_init(struct pci_epc *epc,
+>>   err_mem:
+>>   	for (; i >= 0; i--) {
+>>   		mem = epc->windows[i];
+>> -		kfree(mem->bitmap);
+>> +		bitmap_free(mem->bitmap);
+>>   		kfree(mem);
+>>   	}
+>>   	kfree(epc->windows);
+>> @@ -145,7 +141,7 @@ void pci_epc_mem_exit(struct pci_epc *epc)
+>>   
+>>   	for (i = 0; i < epc->num_windows; i++) {
+>>   		mem = epc->windows[i];
+>> -		kfree(mem->bitmap);
+>> +		bitmap_free(mem->bitmap);
+>>   		kfree(mem);
+>>   	}
+>>   	kfree(epc->windows);
+> 
+> Thank you!
+> 
+> Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+> 
+> 	Krzysztof
+> 
 
