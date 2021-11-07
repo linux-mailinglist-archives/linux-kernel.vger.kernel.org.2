@@ -2,71 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6523C44739B
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 16:57:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 513C544739C
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 17:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235674AbhKGP7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 10:59:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234767AbhKGP7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 10:59:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8169A61354;
-        Sun,  7 Nov 2021 15:56:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636300579;
-        bh=OWzsuQwUkOBhz5onISXoQowhU6UKf4yGXzeVaQ7luik=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EwPwAnsYjCuQtoJulDN6KqjAl+FvYrvBQW/hNLq4cMwXuhoFTnxOMWvBpYg3CXjec
-         8kmdCCOL3zdO4WcItxIU9qDF9dGSDoxvcYHEEDIMe4tkGBZhj3Okgc2Z8RGub4C0GY
-         l9PnEwVHInVWlfwWTFI0X6KaQqlbvbXHdL4Z02cu9eeXh7XNijWKQf++lxepd8nr9a
-         VP3FPzI4XmpTZVHcLfyY7xSdMpkwYxrXrTgqQdP0Z7Gu+OuuCpOF22VuornwoXTHwL
-         BhoIdcyUAY8tthg8V1i+ZVBkSiiayY1CW8bcrIVz3spc/4ovDAq7GcKVZj7DKOPvTF
-         XxecoToLKPdSw==
-Date:   Sun, 7 Nov 2021 16:56:16 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Norbert <nbrtt01@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yunfeng Ye <yeyunfeng@huawei.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: Performance regression: thread wakeup time (latency) increased
- up to 3x
-Message-ID: <20211107155616.GA269390@lothringen>
-References: <035c23b4-118e-6a35-36d9-1b11e3d679f8@gmail.com>
- <YWlBUVDy9gOMiXls@hirez.programming.kicks-ass.net>
- <5fe0ffa5-f2db-ca79-5a10-305310066ff9@gmail.com>
- <20211015100401.45833169@gandalf.local.home>
- <8691a8ec-410d-afe8-f468-eefe698c6751@gmail.com>
- <YW1ZjroFfmKM9HJe@hirez.programming.kicks-ass.net>
- <fff246da-2a10-3463-614c-e54cd8cf78e7@gmail.com>
- <ae2debfb-c780-7164-09ee-ea295004d173@gmail.com>
-MIME-Version: 1.0
+        id S235679AbhKGQDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 11:03:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234767AbhKGQDX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 11:03:23 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2924C061570
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 08:00:40 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id f3so30450499lfu.12
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 08:00:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:from:mime-version:date:subject:message-id
+         :to;
+        bh=kkACn1btCavBEb51T7Ix13waIKrDUw9bUC6GnjGIDt4=;
+        b=lv6cSv3D9142llvgNRGCEUYO0GZGHd11lTWsk7KaIVKjeM9mR9X1ZRvyr/qrCnVGr4
+         /waFZ6R2pXgMIKQIyO5cO10zW/H1wapE7EaZS+OIizylz4WY//2fohL41XNIgW8Jg2qG
+         u8UH7+dDm6Hj2Vd6Pv8pSDzgjVO9ghWwsvjq/dTau6FTCyM2wK82LBe4Z3P8AXjQQBjU
+         MKhkhOYyyWelvCd7DGyX5XgFjeoYaja0uLAthv9lHAQzaRlAcl1sRKvAAVyH80j9OFtg
+         GhpiRYqH26r1zGrYCC+YpKW+3PUr2LEX3H4zAu+z8fA4DvsgdLbrvg9jCX3eQqaBrdc/
+         rgfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version:date
+         :subject:message-id:to;
+        bh=kkACn1btCavBEb51T7Ix13waIKrDUw9bUC6GnjGIDt4=;
+        b=N+Vk7445ZWAlqL1mEJbfrFl9CG4U6mlHQyOk3kdawadDyc1V9+v3Fvag2nSFtcFc1Y
+         9nDQ22jk4Cmatqt3GvX6UmtSpjSiDB7oIbLQgt82T7oLsuto3MiRbF7JNM1kYrk8NKNV
+         OL+GXRpHFM3KiBLNq06dEN/3CJqEGf1xXBvWT71SadxwNOyh5ujGRrPD3BCTBx85w3IQ
+         F4rOAwFEw+5odBtaOs0wN80VknYNqMxvqVSOqx9QyGN20kF/x2TRTqUSXJ9z+99/oD+c
+         iPjQS9chKQASYAyGKDlDqvVXs0RuJE2q3+CWHTLCYCvsZ/96qMcimYxuPU3o7yCBFMeu
+         YR2Q==
+X-Gm-Message-State: AOAM530mNSwaiNoj2jLF2KxaiE8D1zpz8pEqXmMy5F3l9GcsXWorJqQy
+        4WtDiH2VJYJr3kmKIYPX1qQLheyWX8dVpA==
+X-Google-Smtp-Source: ABdhPJzL+esdO/lgmo8syzU4hXs5um/cN/2JwTwM4aatfDXCVzJglkNkgOqktQ5NbohNelxIjb6FOw==
+X-Received: by 2002:a05:6512:1515:: with SMTP id bq21mr66023189lfb.71.1636300838605;
+        Sun, 07 Nov 2021 08:00:38 -0800 (PST)
+Received: from smtpclient.apple ([185.218.110.221])
+        by smtp.gmail.com with ESMTPSA id o16sm501669lfk.109.2021.11.07.08.00.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Nov 2021 08:00:38 -0800 (PST)
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ae2debfb-c780-7164-09ee-ea295004d173@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+From:   Lucius User <lucius.q.user@gmail.com>
+Mime-Version: 1.0 (1.0)
+Date:   Sun, 7 Nov 2021 19:00:36 +0300
+Subject: ITLB Multihit mitigation status report is confusing. 
+Message-Id: <6D53FB74-4B6C-48A0-97BB-300A9C81B55C@gmail.com>
+To:     linux-kernel@vger.kernel.org
+X-Mailer: iPhone Mail (19A348)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Norbert,
+Hi all.=20
 
-On Tue, Oct 19, 2021 at 12:01:32AM -0700, Norbert wrote:
-> 
-> On the thought that it might enter deeper idle/wait/sleep states:
-> 
-> The benchmark executes this test in a quite tight loop, except that so far
-> it waited 1000 ns (with a mix of pause and rdtsc) before calling futex-wake,
-> to make sure the other thread fully enters the futex-wait without taking any
-> shortcuts.
-> 
-> Except when this "prepare time" is reduced to less than even 350 ns or so,
-> the timings remain the same (they go up before they start going down).
-> Surely in this situation the thread is at least not supposed to enter deeper
-> states for such short waiting times.
+On a cpu that is vulnerable to iTLB multihit, with VMX enabled in bios and n=
+o vms running, the kernel reports the mitigation status as "KVM: Mitigation:=
+ VMX disabled". Once a vm starts running, the report changes to "KVM: Vulner=
+able". Shouldn't the VMX disabled status refer to a situation when VMX is co=
+mpletely disabled via bios, not merely not in use right now?
 
-Is it possible for you to share this benchmark so that I can try to reproduce?
-
-Thanks!
