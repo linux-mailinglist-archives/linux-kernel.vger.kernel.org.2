@@ -2,96 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A6744738F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 16:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4DA644739A
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 16:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235657AbhKGPoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 10:44:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234160AbhKGPoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 10:44:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5BB66112D;
-        Sun,  7 Nov 2021 15:41:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636299692;
-        bh=wOTsiBoWaScfUAUeWMCNR6j5cNeqSxwLSPxET5zhUKU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S5tlxBLSw6XC0KCVEgg6feY05O6roMo44wU5O9dw6B31qECgM/RHlqVhBlpcusCma
-         OczPbzQxKxti97/2KC1r9TbbpGSVD4fbmeQOHKC3O1U/4z081xl2TZTBVnGDvbwIJD
-         Pk04XGb9+WUttWQsVPVFH1fP4zy0vJinz+5HuynQ3w5xjIrtl6dmbe64W2WGjtjBPh
-         WuOhxpTKfEPSzBha1ENfWwgQoQLCD36sp5B8FZYFjd24YOiIMTWVa94jQ3aTSMSIwd
-         ozNNMpQM8/SX7LTGAjvx4Un8oCqedauozSZ9jopacqg6893u7Bf3nLJuXDIuKRBamO
-         4JBQoyDyfLpwQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DB377410A1; Sun,  7 Nov 2021 12:41:28 -0300 (-03)
-Date:   Sun, 7 Nov 2021 12:41:28 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com
-Subject: Re: [PATCH v2 3/3] perf metric: Fix memory leaks.
-Message-ID: <YYfzqLMiPpWlzVni@kernel.org>
-References: <20211107090002.3784612-1-irogers@google.com>
- <20211107090002.3784612-3-irogers@google.com>
+        id S235665AbhKGP6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 10:58:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234767AbhKGP6v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 10:58:51 -0500
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9BCC061714
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 07:56:08 -0800 (PST)
+Received: by mail-ua1-x92c.google.com with SMTP id l43so26877283uad.4
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 07:56:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/dUrUhWqyLP8WM0V+cyk5RPHoq6Vsv356iF7D4jd0LU=;
+        b=xNk/aFt0nlcqfGZxa8z1NMcoEYaLROEd+q1T/FZqP8iBh8+WMl8V3jM5fojORNqxhu
+         1pgnYN4goukUI4a/FSQjo7BeC9x2RWrbj1JB86Lb2QHVKBYLfF3K/YnkzDX8zJjtrVi0
+         CcUwiQ6E+cwI05POa6Qs3OFBoktCVX50dFqFjcmiJ52vilzQclJTC8+D4ipjkWDtLmIb
+         4k3G8v+O+3HidI58DG5Fh3DWeVimo/9fZeLg/er4lO0LL8VN+4H/mlTCXsYXbAb7PQJ4
+         bq/5tPTwc5ErPhCwK0kMMUunr2XNBZgVwJBUK7WoqbFEE8Tb2MFuS0Fn7/gSyqUseAKh
+         smpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/dUrUhWqyLP8WM0V+cyk5RPHoq6Vsv356iF7D4jd0LU=;
+        b=FWuYXcjvfFBi9bvz9nFGpuRzwmHJnLWm0nbYWomFVIvjZMpxSyklC/9T0Rqbv6+WoI
+         v1lDw5p0CNVW1kXjMCFb2XWwwXrFDQEi6Depk0ZkAyvY2nj4fw40Fuoo5ag7WulqDWxt
+         D7rKE0kbJgIQr5nQDqBV2gAfESJywwMOKB2Op/FFXm7Xy4t2KawyX2/qwVJnRotY/Wz+
+         abz/xxo1b/uNAfLw/VIi0d+17JK/goc9OLWI+DscbNlWgX0R9TZn8hPbgrCcMHFF/fiH
+         A0bQWyVJnO1LfgCHvV6H+B3tQwOy8AdYLjVsGO5AckIn3lQqdBzI3daVOxQVxUluiWpW
+         6KQQ==
+X-Gm-Message-State: AOAM5323DVuXwnOpBMg6ic9nqko4MFGjnS+O7vsKZn1MjToj8OF0q69v
+        IxEqhsiSUHtYx3Gh/0ly4fthuG2kt0AFYg6v6tfvag==
+X-Google-Smtp-Source: ABdhPJzo5QcHxd8IjUSEcK55pKPecD8oqKbgP6kh4igUzaB6PKwet/IuC8W9IKNKc8TprL33kRlD8HcGyWbv2oRRvos=
+X-Received: by 2002:a67:ab48:: with SMTP id k8mr93028958vsh.30.1636300567660;
+ Sun, 07 Nov 2021 07:56:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211107090002.3784612-3-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+References: <20211031122216.30212-1-semen.protsenko@linaro.org>
+ <20211031122216.30212-11-semen.protsenko@linaro.org> <a63f37a9-ea04-2606-e4f5-1170c4e59db2@canonical.com>
+In-Reply-To: <a63f37a9-ea04-2606-e4f5-1170c4e59db2@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Sun, 7 Nov 2021 17:55:55 +0200
+Message-ID: <CAPLW+4mhD+k03S1cR-AdNk4etPiK=wsCoR4+o39gDe==XdoY8w@mail.gmail.com>
+Subject: Re: [PATCH v2 10/12] watchdog: s3c2410: Support separate source clock
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Nov 07, 2021 at 01:00:02AM -0800, Ian Rogers escreveu:
-> Certain error paths may leak memory as caught by address sanitizer.
-> Ensure this is cleaned up to make sure address/leak sanitizer is happy.
+On Tue, 2 Nov 2021 at 12:15, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 31/10/2021 13:22, Sam Protsenko wrote:
+> > Right now all devices supported in the driver have the single clock: it
+> > acts simultaneously as a bus clock (providing register interface
+> > clocking) and source clock (driving watchdog counter). Some newer Exynos
+> > chips, like Exynos850, have two separate clocks for that. In that case
+> > two clocks will be passed to the driver from the resource provider, e.g.
+> > Device Tree. Provide necessary infrastructure to support that case:
+> >   - use source clock's rate for all timer related calculations
+> >   - use bus clock to gate/ungate the register interface
+> >
+> > All devices that use the single clock are kept intact: if only one clock
+> > is passed from Device Tree, it will be used for both purposes as before.
+> >
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > ---
+> > Changes in v2:
+> >   - Reworded commit message to be more formal
+> >   - Used separate "has_src_clk" trait to tell if source clock is present
+> >   - Renamed clock variables to match their purpose
+> >   - Removed caching source clock rate, obtaining it in place each time instead
+> >   - Renamed err labels for more consistency
+> >
+> >  drivers/watchdog/s3c2410_wdt.c | 52 +++++++++++++++++++++++++---------
+> >  1 file changed, 39 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
+> > index fdb1a1e9bd04..c733917c5470 100644
+> > --- a/drivers/watchdog/s3c2410_wdt.c
+> > +++ b/drivers/watchdog/s3c2410_wdt.c
+> > @@ -118,7 +118,9 @@ struct s3c2410_wdt_variant {
+> >
+> >  struct s3c2410_wdt {
+> >       struct device           *dev;
+> > -     struct clk              *clock;
+> > +     struct clk              *bus_clk; /* for register interface (PCLK) */
+> > +     struct clk              *src_clk; /* for WDT counter */
+> > +     bool                    has_src_clk;
+>
+> Why do you need the has_src_clk value? If clk_get() fails, just store
+> there NULL and clk API will handle it.
+>
 
-Thanks, applied.
+I've added that 'has_src_clk' field for somewhat different reason.
 
-- Arnaldo
+1. As we discussed earlier, in case when src_clk is not present, I do
+'src_clk = bus_clk' in v2. This way I don't have to check if src_clk
+is NULL every time and use bus_clk to get rate. If I set src_clk =
+NULL, I'll have to add selector code, which wouldn't be so elegant,
+and contradicts what we've discussed.
+2. On the other hand, I don't want to enable bus_clk twice in case
+when src_clk is not present, that just doesn't feel right (user would
+see incorrect refcount value in DebugFS, etc). And if "clk_src =
+bus_clk', and I haven't enabled it second time, then I shouldn't try
+to disable it second time, right?
 
- 
-> Fixes: 5ecd5a0c7d1c ("perf metrics: Modify setup and deduplication")
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/metricgroup.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index 1b43cbc1961d..fffe02aae3ed 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -228,6 +228,7 @@ static void metric__free(struct metric *m)
->  	free(m->metric_refs);
->  	expr__ctx_free(m->pctx);
->  	free((char *)m->modifier);
-> +	evlist__delete(m->evlist);
->  	free(m);
->  }
->  
-> @@ -1482,8 +1483,10 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
->  	}
->  
->  
-> -	if (combined_evlist)
-> +	if (combined_evlist) {
->  		evlist__splice_list_tail(perf_evlist, &combined_evlist->core.entries);
-> +		evlist__delete(combined_evlist);
-> +	}
->  
->  	list_for_each_entry(m, &metric_list, nd) {
->  		if (m->evlist)
-> -- 
-> 2.34.0.rc0.344.g81b53c2807-goog
+The only way I can see to accomplish (1) and (2) together, is to use
+that 'has_src_clk' flag. For me it still looks better than enabling
+bus_clk twice, or checking if clk_src is NULL every time we need to
+get clock rate. Please let me know if you still have a strong opinion
+on this one.
 
--- 
-
-- Arnaldo
+> Best regards,
+> Krzysztof
