@@ -2,121 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE91A44723A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 09:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F6F44723C
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 09:56:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235258AbhKGIyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 03:54:03 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:41485 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235249AbhKGIyC (ORCPT
+        id S235265AbhKGI5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 03:57:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235249AbhKGI5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 03:54:02 -0500
-Received: by mail-il1-f200.google.com with SMTP id j6-20020a056e02154600b0026dea698bbcso8775460ilu.8
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 01:51:19 -0700 (PDT)
+        Sun, 7 Nov 2021 03:57:36 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD069C061714
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 01:54:53 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id g190-20020a25dbc7000000b005c21574c704so20503860ybf.13
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 01:54:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=DajBIroFd0GsI1ullswibDzDkMFfTGKQsv9lOFR0ogk=;
+        b=pxklLbl4JwVW35jW2MV9d7u+SUEh2eCzUJ3afRfDnQRr/T+niKQaTj3XeeXRUhc17E
+         tdp4uKCZ/HZKrIOWNnl+qkZdD+5iU6n4tyGL/rGqtycRxsOwsOw0qBFb3kxrWupUoTmE
+         vgr7tI7NX7JsJ0EdYtZqK2TpMaKnghUwlRK+ZsCaxxwnUnCaWCBgyjzfvo2KhFsvP78R
+         BhU/esXS1zaaWUryxFxcP0O/LzwvcLylTUt5yVFjNFTJdBd6mFpFncaf+XXXHJtJ85xh
+         VzDGM5/bB5omhtLGBaoRkwq9WH61BVyT1d6cF6LS0WSBXn0puAu0+ra2WpcGGp3PSVpf
+         R9eQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=0snVIq2Bui/dySdfpi4a1QVUvDVLh4nBMkVbNdPRPao=;
-        b=UiRacdTD/7lbzjDqsnPPL5fieYQh1vOpBJw0mNdOSUR8L5Q0q8PSQJZx5+p2h7q/ht
-         LBSDlfUx22h9dUkUOQAocCfXgZ/u4EOS6zlRe/dWiho7dJnBpNoses5A8kIaA3DQy13x
-         Bqh4Y015Ri9FRptU5gAoWKnzmbha2OrujXwWdqfQ7vKXCboUkQZRpOl6qCcguiJoPXA6
-         V0hGJrTbo07Ev5IVi7IWdewTb0izGeIFXzoN5rX6tQNZobHNgV19aw+pgyVuqCPIjHBR
-         E8zHsH5qui+x556siTyf3r8rE14AB7yrkVf4x6G4MCRvdMxZ5ZFm3Vsek3+mop4Fl2Dc
-         frFA==
-X-Gm-Message-State: AOAM531dvOhnWzuaJRQek2syaiKC/wUXab4c+OF8nDZZtG08R869zJuQ
-        Yfbhgqsv3qgZj3LOfxegO3kGjCaTAEJ/mBZW1OjWyBIX9rgL
-X-Google-Smtp-Source: ABdhPJz82QBJIuHxfhU93K92SbySnNOqP/KWwQPZlEV33Vtpa3NIsbfwANaRVhpNxBwmLHW7Ej1jkpW9ZUjKewWowfTKTdVAcLzo
-MIME-Version: 1.0
-X-Received: by 2002:a6b:6812:: with SMTP id d18mr1508988ioc.47.1636275079645;
- Sun, 07 Nov 2021 01:51:19 -0700 (PDT)
-Date:   Sun, 07 Nov 2021 01:51:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e08e4a05d02efa66@google.com>
-Subject: [syzbot] WARNING: suspicious RCU usage in ieee80211_set_tx_power
-From:   syzbot <syzbot+79fbc232a705a30d93cd@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=DajBIroFd0GsI1ullswibDzDkMFfTGKQsv9lOFR0ogk=;
+        b=gaAW8PZkNDbv9D83K3NLgRMUpQheNVG/tVBg1pE5L0ePTUlYs3HYEdvhpDDhIEC9Qc
+         7sE/XAMT6UFU2Blnae9QeKmcW+yUBmQbcW6Wnsjs462NOC5tth6HTzbuzIR8hTzZnE3e
+         /NIVZBTy6qtQluhaeA1GEN3h3AQ1VR3KbzZFSsidBst6ajlI4tWRBPy6QxmRMKaz3S6N
+         SFdZ/+rzw6qjQNNA8GPtCr8h/RSnv4wbES+UFANUCpPjyGV65exBKWprobRqbHJk16vL
+         2xBCQCQxgjkqB6DhLCsQQteANevAe+DpmkIKa67lmZYjo2VMm0axSQVZV93NKAXb2cP/
+         ozIg==
+X-Gm-Message-State: AOAM531Pgv1Pgogyyrq31ev2BiFdx9wfgKAE1KgbM+riif0DzwFeK2ma
+        Q9OCSiItpTQ4nQhdVIipDqr1MBNBrDXL
+X-Google-Smtp-Source: ABdhPJx+2ONQ0CP6pqrI/JrEaktBIJRfxWudb0c33p+ZQC2Vuyx5Y6NYIFHuQMEAS5UUTCux5Mwpd6MIGaFO
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:421f:fd78:d785:693a])
+ (user=irogers job=sendgmr) by 2002:a25:bb52:: with SMTP id
+ b18mr80637696ybk.506.1636275291759; Sun, 07 Nov 2021 01:54:51 -0700 (PDT)
+Date:   Sun,  7 Nov 2021 01:54:44 -0700
+Message-Id: <20211107085444.3781604-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
+Subject: [PATCH] perf stat: Fix memory leak on error path
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Strdup is used to deduplicate, ensure it isn't overwriting an already
+created string by freeing first.
 
-syzbot found the following issue on:
-
-HEAD commit:    cc0356d6a02e Merge tag 'x86_core_for_v5.16_rc1' of git://g..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1414732eb00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a5d447cdc3ae81d9
-dashboard link: https://syzkaller.appspot.com/bug?extid=79fbc232a705a30d93cd
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+79fbc232a705a30d93cd@syzkaller.appspotmail.com
-
-netlink: 4 bytes leftover after parsing attributes in process `syz-executor.0'.
-=============================
-WARNING: suspicious RCU usage
-5.15.0-syzkaller #0 Not tainted
------------------------------
-net/mac80211/cfg.c:2710 suspicious rcu_dereference_protected() usage!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 1
-2 locks held by syz-executor.0/25174:
- #0: ffffffff8d183890 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:802
- #1: ffff88802ab60628 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: wiphy_lock include/net/cfg80211.h:5377 [inline]
- #1: ffff88802ab60628 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: nl80211_set_wiphy+0x1c6/0x2c20 net/wireless/nl80211.c:3287
-
-stack backtrace:
-CPU: 0 PID: 25174 Comm: syz-executor.0 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- ieee80211_set_tx_power+0x74c/0x860 net/mac80211/cfg.c:2710
- rdev_set_tx_power net/wireless/rdev-ops.h:580 [inline]
- nl80211_set_wiphy+0xd5b/0x2c20 net/wireless/nl80211.c:3384
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
- genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:792
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2491
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
- netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1345
- netlink_sendmsg+0x86d/0xda0 net/netlink/af_netlink.c:1916
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fbfe1b55ae9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fbfdf0cb188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fbfe1c68f60 RCX: 00007fbfe1b55ae9
-RDX: 0000000000000000 RSI: 0000000020000200 RDI: 0000000000000003
-RBP: 00007fbfe1baff25 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fff39e7553f R14: 00007fbfdf0cb300 R15: 0000000000022000
- </TASK>
-
-
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ tools/perf/util/stat-shadow.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
+index 69f3cf3b4a44..e4fb02b05130 100644
+--- a/tools/perf/util/stat-shadow.c
++++ b/tools/perf/util/stat-shadow.c
+@@ -444,6 +444,7 @@ void perf_stat__collect_metric_expr(struct evlist *evsel_list)
+ 						"Add %s event to groups to get metric expression for %s\n",
+ 						metric_name,
+ 						counter->name);
++					free(printed);
+ 					printed = strdup(metric_name);
+ 				}
+ 				invalid = true;
+-- 
+2.34.0.rc0.344.g81b53c2807-goog
+
