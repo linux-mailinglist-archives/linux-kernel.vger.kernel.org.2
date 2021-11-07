@@ -2,87 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7914144734F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 15:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18ACC44735A
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 15:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235447AbhKGOeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 09:34:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232667AbhKGOeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 09:34:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DB4561284;
-        Sun,  7 Nov 2021 14:31:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636295478;
-        bh=YvN6x+FYckLXqvws23F2HjZqFpEGKboXCYvZiNrhpSs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=P2uiPTIwNQI8ENAeWsJ/VEn9y15GvtL+NE0Ccu5I2BI3jzfeNyedsOE5RoKOdYAEG
-         lVcL37BEoDD78nChgr1N+SA1T0vBiaTg1XGIap5pUwKUyKVkov6WW4zj51EDnM5p3I
-         tVpkuRz+aK72UXxarHCfP97RQl+x3jjcVB584etlp9l/8yYIIf2dY9i4v6Ab/QPmU9
-         Gysg9hMTvb2WijFEz2KYDwzKoq6j65dD1UK8MDwAiwI4iiPMTPh9SwVeb4psMOexcM
-         ksGIblsdUPVepLiRXJYDT5VXruwIKHV9bdNbc3i9Jq+GRqqi1u9FUOpRREmhZ2jKAp
-         /duDq28Oe8H5w==
-Date:   Sun, 7 Nov 2021 23:31:15 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/10] user_events: Add minimal support for
- trace_event into ftrace
-Message-Id: <20211107233115.1f77e93c4bdf3ff649be99c1@kernel.org>
-In-Reply-To: <20211104170433.2206-3-beaub@linux.microsoft.com>
-References: <20211104170433.2206-1-beaub@linux.microsoft.com>
-        <20211104170433.2206-3-beaub@linux.microsoft.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233533AbhKGOoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 09:44:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229520AbhKGOod (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 09:44:33 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261D6C061570;
+        Sun,  7 Nov 2021 06:41:51 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id r5so14154773pls.1;
+        Sun, 07 Nov 2021 06:41:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UrbpIa2R21nt9CsUHSpqQAdzhw13K5VFRKU4lZDfbyE=;
+        b=oKZrRbI/SUBOu+OiClukmnFZpxRlDN5huFzwvEf0bjZHQXroydaB+/X+a5nqBSumpa
+         QjvWhZcmGRxSPzGPu0Ud/9dC/CsqWtAVzi20+5ll6JN6NXddd7lsiRE+QSY4PjbeECeC
+         fTAW6sBa/+2ToFws1NBC/2iNVYmFLQs7aS9+Y3eXcER4QXUqMkGcJfkT2/ndZ3Of6Fdf
+         NCkfSZ8vcslGJXvEeg5z8Gzr6EnQTJxleM3PbU8uBf+tPO4xxveSTgj7GBkKfSIgNOkz
+         cFkFNYMUSonssfnZ1sgVsNUTXEn5Q+9J/Ddl+CyMRD04yJ+Q2ujrbYIuoElPoP33jqxJ
+         NFLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UrbpIa2R21nt9CsUHSpqQAdzhw13K5VFRKU4lZDfbyE=;
+        b=g8lnzI4dt81tfKRhmJi19jNog1C8jeoH3RegCrcDTMPwenm07zHOe3PU/hL2HHgGBP
+         lyLv9cBRa1UtyymXakl+WQ1f/XtzoLP2xq0HqPfyTabZwRrIP1UiE1som0pRSSxlJhtW
+         MEgCUvrDsFmoNeGfyfg/UvDoBIiU2QrIW+pG5tA53WUZD0jLBP4dzYqQ5ruQE5vOPx09
+         15yWMl9Mrzod230cSpVAbNGYKauwSKNyDP3SBLPAuhe5mCYzgSu585LJlA+pDJJx3ueI
+         XIwrlEyCtsCnbkS3RnlDLq49jIaZD8QSkpunOpaLtQGzyh+/J/wkjCQGWtaklGIvTCfg
+         4lTQ==
+X-Gm-Message-State: AOAM530YdRV2RNXCJ6R+VSxy+9SXOTzH8weL+RiYaDDlx83mTg9gp7ma
+        3q73y0uSaAjWD25glIdNoJokfu2W6hiKd/LR
+X-Google-Smtp-Source: ABdhPJwABYLHqc1afqQP1rkSVQdMHlYkszHG+qtGeTZkZ5Q0jtHqy+7ZaUghWKrcUz5kv9MEl+UQEQ==
+X-Received: by 2002:a17:903:2445:b0:142:830:ea8e with SMTP id l5-20020a170903244500b001420830ea8emr37491574pls.54.1636296110594;
+        Sun, 07 Nov 2021 06:41:50 -0800 (PST)
+Received: from localhost.localdomain ([37.120.154.98])
+        by smtp.gmail.com with ESMTPSA id c6sm12669781pfd.114.2021.11.07.06.41.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Nov 2021 06:41:50 -0800 (PST)
+From:   Dillon Min <dillon.minfei@gmail.com>
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl
+Cc:     alexandre.torgue@foss.st.com, mcoquelin.stm32@gmail.com,
+        linux-media@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] media: stm32-dma2d: fix compile errors when W=1
+Date:   Sun,  7 Nov 2021 22:41:44 +0800
+Message-Id: <20211107144144.482969-1-dillon.minfei@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Beau,
+remove unused functions to avoid compile errors when W=1.
 
-At first, thanks for breaking down your patch into this series!
+>> drivers/media/platform/stm32/dma2d/dma2d-hw.c:29:20:
+	error: unused function 'reg_set' [-Werror,-Wunused-function]
+	static inline void reg_set(void __iomem *base, u32 reg, u32 mask)
 
-Now I found that a suspicious security design issue in this patch.
+>> drivers/media/platform/stm32/dma2d/dma2d-hw.c:34:20:
+	error: unused function 'reg_clear' [-Werror,-Wunused-function]
+	static inline void reg_clear(void __iomem *base, u32 reg, u32 mask)
 
-On Thu,  4 Nov 2021 10:04:25 -0700
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
+Fixes: bdbbd511ef0c ("media: stm32-dma2d: STM32 DMA2D driver")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+---
+ drivers/media/platform/stm32/dma2d/dma2d-hw.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-> +
-> +static enum print_line_t user_event_print_trace(struct trace_iterator *iter,
-> +						int flags,
-> +						struct trace_event *event)
-> +{
-> +	/* Unsafe to try to decode user provided print_fmt, use hex */
-> +	trace_print_hex_dump_seq(&iter->seq, "", DUMP_PREFIX_OFFSET, 16,
-> +				 1, iter->ent, iter->ent_size, true);
-
-You said this is "Unsafe to try to decode user provided" here, because
-this doesn't check the event data sanity, especially non-fixed size data.
-
-However, it is not enough that you don't decode it here. Because synthetic
-events (histograms) and event filters need to decode this recorded data entry
-using the event format information.
-
-This means this can cause a buffer overrun issue on the ring buffer, because
-__data_loc (and __rel_loc too) can be compromised by the user.
-
-If you want to just trace the user events with digit parameters, there is
-a way to close this issue - support only the fixed size types (IOW, drop
-__data_loc/rel_loc support) and always checks the 'length' of the written
-data size. This ensures that those filters/synthetic events can access
-those parameters as 'values'. Maybe eprobes still has to reject the user
-events but the other parts will work well.
-
-If you want to log some "string", it is hard. Maybe it needs a special
-check when writing the event (address, length, and null termination.),
-but it will increase the recording overhead.
-
-Thank you,
-
-
+diff --git a/drivers/media/platform/stm32/dma2d/dma2d-hw.c b/drivers/media/platform/stm32/dma2d/dma2d-hw.c
+index 8c1c664ab13b..ea4cc84d8a39 100644
+--- a/drivers/media/platform/stm32/dma2d/dma2d-hw.c
++++ b/drivers/media/platform/stm32/dma2d/dma2d-hw.c
+@@ -26,16 +26,6 @@ static inline void reg_write(void __iomem *base, u32 reg, u32 val)
+ 	writel_relaxed(val, base + reg);
+ }
+ 
+-static inline void reg_set(void __iomem *base, u32 reg, u32 mask)
+-{
+-	reg_write(base, reg, reg_read(base, reg) | mask);
+-}
+-
+-static inline void reg_clear(void __iomem *base, u32 reg, u32 mask)
+-{
+-	reg_write(base, reg, reg_read(base, reg) & ~mask);
+-}
+-
+ static inline void reg_update_bits(void __iomem *base, u32 reg, u32 mask,
+ 				   u32 val)
+ {
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.25.1
+
