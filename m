@@ -2,137 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3B9447520
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 292D6447528
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:07:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236220AbhKGTIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 14:08:49 -0500
-Received: from mga04.intel.com ([192.55.52.120]:37815 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229990AbhKGTIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 14:08:48 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="230840948"
-X-IronPort-AV: E=Sophos;i="5.87,216,1631602800"; 
-   d="scan'208";a="230840948"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 11:06:05 -0800
-X-IronPort-AV: E=Sophos;i="5.87,216,1631602800"; 
-   d="scan'208";a="451213164"
-Received: from akirasen-mobl.amr.corp.intel.com (HELO [10.209.44.100]) ([10.209.44.100])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 11:06:04 -0800
-Subject: Re: [PATCH] x86/sgx: Free backing memory after faulting the enclave
- page
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Sean Christopherson <seanjc@google.com>,
-        reinette.chatre@intel.com, tony.luck@intel.com,
-        nathaniel@profian.com, stable@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211103232238.110557-1-jarkko@kernel.org>
- <7c122a82-e418-0bce-8f67-cbaa15abc9b9@intel.com> <YYgVsi7y4TNuSRLc@iki.fi>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <984bc7a4-1c7a-f2c0-5885-0dc7fad3d2b6@intel.com>
-Date:   Sun, 7 Nov 2021 11:06:01 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S236245AbhKGTKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 14:10:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229990AbhKGTKO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 14:10:14 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC36C061570;
+        Sun,  7 Nov 2021 11:07:30 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id p16so31311558lfa.2;
+        Sun, 07 Nov 2021 11:07:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eMHkjPc5rIa5X9zRJiGLsZ3MoAtpjiPyEbEU/3emZIY=;
+        b=jUhmHlGin5sEj5r9B3duWZRYeZfWXFTNWh3fjVMDJalE4cgJbKUOBCVy+HI8gCwirs
+         3XvxuZH5zrrIMShFl0fwn1DIUJPx1G+MhjL0TS/jL7T8SH1Qn8CyBZq+c1INVx9qxC6/
+         chCfa/fERQRXgAgzBM0eamEQGzO/tnPEFLzfJmcJzPJsMtZX3GjVHaPSMJSthYahkzvw
+         +0K/IAndgglgZqZDAVZEsLjOzaV+FmxOQ7p+zmmct6v7RRXkdU3bOfSZ+y+d+zBVf6MA
+         DCeY9cKiZpeNf5XniqAHn4Z8HJAxoTbjxIox7i+HDLfH2gHhP/fUW2qx/dsV3oKKooQt
+         eC3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eMHkjPc5rIa5X9zRJiGLsZ3MoAtpjiPyEbEU/3emZIY=;
+        b=z84M3HiLN0SKCcTzt8D/lcHKaNwKDrX7s5rDhyM7SoHITG3Ltct3yR/w74YfV8ioPO
+         4TkTGGXBGDrnVVGLy0WjNQqiLCi4nPePFtRUBcLEVpMdmSgJryPt5ggGkWHjJlQ66kAg
+         tyfY0ZJJtVwXTeUrsYJwGXfG3IbSr0FIro6NunXpzdBzqJRxwPMNja8Iketx+pHgoVbF
+         Ck3iiHfmn1YqFk+doEmZAYT8/y83KVsFfrTQCl9yoNSLwbi41lMWBBMaOmoNZKVMMvao
+         JqLtWx1j1YlreCO0Z+J/9e/YhIGApC/H+2gwhgc5cXnOv3ySMpKyjV0GTHqP3fJFquGC
+         1t5w==
+X-Gm-Message-State: AOAM531jHSqQP5zybn1RN4E302m772SO99t0C0IvaX+dg6eSb8L7CAeA
+        T3tgRLzNQsAf2icnRnnh11c=
+X-Google-Smtp-Source: ABdhPJzUJ5poKvvs/VhmuOpJ1CRdoOUCkyn+FOLd4UWOiP0k8z3t7BkeU2jY07xzV7LmfnKlKW81nQ==
+X-Received: by 2002:ac2:5df4:: with SMTP id z20mr57205513lfq.97.1636312048924;
+        Sun, 07 Nov 2021 11:07:28 -0800 (PST)
+Received: from localhost.localdomain ([37.45.143.17])
+        by smtp.gmail.com with ESMTPSA id b22sm251387lfv.20.2021.11.07.11.07.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Nov 2021 11:07:28 -0800 (PST)
+Received: from jek by localhost.localdomain with local (Exim 4.95)
+        (envelope-from <jekhor@gmail.com>)
+        id 1mjnVn-000Dnk-DT;
+        Sun, 07 Nov 2021 22:07:27 +0300
+Date:   Sun, 7 Nov 2021 22:07:27 +0300
+From:   Yauhen Kharuzhy <jekhor@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org
+Subject: Re: [PATCH 11/13] i2c: cht-wc: Add support for devices using a
+ bq25890 charger
+Message-ID: <YYgj7zN6h+cqQzns@jeknote.loshitsa1.net>
+References: <20211030182813.116672-1-hdegoede@redhat.com>
+ <20211030182813.116672-12-hdegoede@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YYgVsi7y4TNuSRLc@iki.fi>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211030182813.116672-12-hdegoede@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/21 10:06 AM, Jarkko Sakkinen wrote:
-> On Thu, Nov 04, 2021 at 03:38:55PM -0700, Dave Hansen wrote:
->> On 11/3/21 4:22 PM, Jarkko Sakkinen wrote:
->>> --- a/arch/x86/kernel/cpu/sgx/encl.c
->>> +++ b/arch/x86/kernel/cpu/sgx/encl.c
->>> @@ -22,6 +22,7 @@ static int __sgx_encl_eldu(struct sgx_encl_page *encl_page,
->>>  {
->>>  	unsigned long va_offset = encl_page->desc & SGX_ENCL_PAGE_VA_OFFSET_MASK;
->>>  	struct sgx_encl *encl = encl_page->encl;
->>> +	struct inode *inode = file_inode(encl->backing);
->>>  	struct sgx_pageinfo pginfo;
->>>  	struct sgx_backing b;
->>>  	pgoff_t page_index;
->>> @@ -60,6 +61,9 @@ static int __sgx_encl_eldu(struct sgx_encl_page *encl_page,
->>>  
->>>  	sgx_encl_put_backing(&b, false);
->>>  
->>> +	/* Free the backing memory. */
->>> +	shmem_truncate_range(inode, PFN_PHYS(page_index), PFN_PHYS(page_index) + PAGE_SIZE - 1);
->>> +
->>>  	return ret;
->>>  }
->>
->> This also misses tearing down the backing storage if it is in place at
->> sgx_encl_release().
+On Sat, Oct 30, 2021 at 08:28:11PM +0200, Hans de Goede wrote:
+> The i2c-controller on the Cherry Trail - Whiskey Cove PMIC is special
+> in that it is always connected to the I2C charger IC of the board on
+> which the PMIC is used; and the charger IC is not described in ACPI,
+> so the i2c-cht-wc code needs to instantiate an i2c-client for it itself.
 > 
-> Hmm... sgx_encl_release() does fput(). Isn't that enough to tear it down,
-> or does it require explicit truncate, i.e. something like
+> So far there has been a rudimentary check to make sure the ACPI tables
+> are at least somewhat as expected by checking for the presence of an
+> INT33FE device and sofar the code has assumed that if this INT33FE
+> device is present that the used charger then is a bq24290i.
 > 
->         shmem_truncate_range(file_inode(encl->backing), encl->base, encl->size - 1);
-
-That's true, the page cache should all be torn down along with the
-fput().  *But*, it would be a very nice property if the backing storage
-was empty by this point.  It essentially ensures that no enclave-runtime
-cases missed truncating the backing storage away.
-
->> Does a entry->epc_page==NULL page in there guarantee that it has backing
->> storage?
+> But some boards with an INT33FE device in their ACPI tables use a
+> different charger IC and some boards don't have an INT33FE device at all.
 > 
-> Yes, it is an invariant. That what I was thinking to use for PCMD: iterate
-> 32 pages and check if they have a faulted page.
+> Since the information about the used charger + fuel-gauge + other chips is
+> necessary in other places too, the kernel now adds a "intel,cht-wc-setup"
+> string property to the Whiskey Cove PMIC i2c-client based on DMI matching,
+> which reliably describes the board's setup of the PMIC.
+> 
+> Switch to using the "intel,cht-wc-setup" property and add support for
+> instantiating an i2c-client for either a bq24292i or a bq25890 charger.
+> 
+> This has been tested on a GPD pocket (which uses the old bq24292i setup)
+> and on a Xiaomi Mi Pad 2 with a bq25890 charger.
+> 
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>  drivers/i2c/busses/i2c-cht-wc.c | 77 +++++++++++++++++++++++++--------
+>  1 file changed, 59 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-cht-wc.c b/drivers/i2c/busses/i2c-cht-wc.c
+> index 1cf68f85b2e1..e7d62af6c39d 100644
+> --- a/drivers/i2c/busses/i2c-cht-wc.c
+> +++ b/drivers/i2c/busses/i2c-cht-wc.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/power/bq24190_charger.h>
+> +#include <linux/power/bq25890_charger.h>
+>  #include <linux/slab.h>
+>  
+>  #define CHT_WC_I2C_CTRL			0x5e24
+> @@ -304,18 +305,55 @@ static struct bq24190_platform_data bq24190_pdata = {
+>  	.regulator_init_data = &bq24190_vbus_init_data,
+>  };
+>  
+> +static struct i2c_board_info bq24190_board_info = {
+> +	.type = "bq24190",
+> +	.addr = 0x6b,
+> +	.dev_name = "bq24190",
+> +	.swnode = &bq24190_node,
+> +	.platform_data = &bq24190_pdata,
+> +};
+> +
+> +static struct regulator_consumer_supply bq25890_vbus_consumer = {
+> +	.supply = "vbus",
+> +	.dev_name = "cht_wcove_pwrsrc",
+> +};
+> +
+> +static const struct regulator_init_data bq25890_vbus_init_data = {
+> +	.constraints = {
+> +		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
+> +	},
+> +	.consumer_supplies = &bq25890_vbus_consumer,
+> +	.num_consumer_supplies = 1,
+> +};
+> +
+> +static struct bq25890_platform_data bq25890_pdata = {
+> +	.regulator_init_data = &bq25890_vbus_init_data,
+> +};
+> +
+> +static const struct property_entry bq25890_props[] = {
+> +	PROPERTY_ENTRY_BOOL("ti,skip-init"),
+> +	{ }
+> +};
 
-I think the rule should be that entry->epc_page==NULL enclave pages have
-backing storage.  All entry->epc_page!=NULL do *not* have backing storage.
+The Lenovo Yoga Book firmware set the IINLIM field to 500 mA at
+initialization, we need a way to pass maximum allowed current in the fast
+charging mode to driver. I have added 'ti,input-max-current' in my port, for
+example.
+
+> +
+> +static const struct software_node bq25890_node = {
+> +	.properties = bq25890_props,
+> +};
+> +
+> +static struct i2c_board_info bq25890_board_info = {
+> +	.type = "bq25890",
+> +	.addr = 0x6a,
+> +	.dev_name = "bq25890",
+> +	.swnode = &bq25890_node,
+> +	.platform_data = &bq25890_pdata,
+> +};
+> +
+>  static int cht_wc_i2c_adap_i2c_probe(struct platform_device *pdev)
+>  {
+>  	struct intel_soc_pmic *pmic = dev_get_drvdata(pdev->dev.parent);
+> +	struct i2c_board_info *board_info = NULL;
+>  	struct cht_wc_i2c_adap *adap;
+> -	struct i2c_board_info board_info = {
+> -		.type = "bq24190",
+> -		.addr = 0x6b,
+> -		.dev_name = "bq24190",
+> -		.swnode = &bq24190_node,
+> -		.platform_data = &bq24190_pdata,
+> -	};
+>  	int ret, reg, irq;
+> +	const char *str;
+>  
+>  	irq = platform_get_irq(pdev, 0);
+>  	if (irq < 0)
+> @@ -379,17 +417,20 @@ static int cht_wc_i2c_adap_i2c_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto remove_irq_domain;
+>  
+> -	/*
+> -	 * Normally the Whiskey Cove PMIC is paired with a TI bq24292i charger,
+> -	 * connected to this i2c bus, and a max17047 fuel-gauge and a fusb302
+> -	 * USB Type-C controller connected to another i2c bus. In this setup
+> -	 * the max17047 and fusb302 devices are enumerated through an INT33FE
+> -	 * ACPI device. If this device is present register an i2c-client for
+> -	 * the TI bq24292i charger.
+> -	 */
+> -	if (acpi_dev_present("INT33FE", NULL, -1)) {
+> -		board_info.irq = adap->client_irq;
+> -		adap->client = i2c_new_client_device(&adap->adapter, &board_info);
+> +	ret = device_property_read_string(pdev->dev.parent, "intel,cht-wc-setup", &str);
+> +	if (ret)
+> +		dev_warn(&pdev->dev, "intel,cht-wc-setup not set, not instantiating charger device\n");
+> +	else if (!strcmp(str, "bq24292i,max17047,fusb302,pi3usb30532"))
+> +		board_info = &bq24190_board_info;
+> +	else if (!strcmp(str, "bq25890,bq27520"))
+> +		board_info = &bq25890_board_info;
+> +	else
+> +		dev_warn(&pdev->dev, "Unknown intel,cht-wc-setup value: '%s', not instantiating charger device\n",
+> +			 str);
+> +
+> +	if (board_info) {
+> +		board_info->irq = adap->client_irq;
+> +		adap->client = i2c_new_client_device(&adap->adapter, board_info);
+>  		if (IS_ERR(adap->client)) {
+>  			ret = PTR_ERR(adap->client);
+>  			goto del_adapter;
+> -- 
+> 2.31.1
+> 
+
+-- 
+Yauhen Kharuzhy
