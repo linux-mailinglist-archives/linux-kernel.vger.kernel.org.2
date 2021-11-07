@@ -2,189 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D55447664
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 23:45:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 460E8447669
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 23:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236665AbhKGWsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 17:48:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
+        id S236681AbhKGWsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 17:48:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235853AbhKGWr6 (ORCPT
+        with ESMTP id S236667AbhKGWsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 17:47:58 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E53CC061570;
-        Sun,  7 Nov 2021 14:45:15 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id l22so5248275lfg.7;
-        Sun, 07 Nov 2021 14:45:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nKLBpn7FGCZZeZkeg4yyWEeinAGCnOMxXV56UTFOBS4=;
-        b=Xq/JMX9Mm3gwhsTC4/pppefYLPxZ/81nUek6NZOo1sDQJgcHM2EFMoY3vUGw2g8UP7
-         aLf/hhmp+3oJKwbQVf3fhVsa/o0qA4x5OuCcpT4NJXkyfkAnGlXK1WQaQDBcLDO+ghCJ
-         VuufuRNkgM6g1onmcmNFzqnKd1On4APtGx+9fNu5NTPS8zeafTY443PSzEmfARD2AKE4
-         63XTUVP4kEKuv7qd9ZIWk0qiaAIJdMqvsh0dmlgp6LrThtTZyVFkUywrUTrh2j1udnJL
-         ckjfKj1iFIt+FJGKWLH/Rnc2yDGTQzuPBakXqfeEUevxXYSjU8deckGBGyljNznnKFhs
-         VcQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nKLBpn7FGCZZeZkeg4yyWEeinAGCnOMxXV56UTFOBS4=;
-        b=SNSEwGP4VuvTX+iouJt5+g+EFzaA8qCiCe2vFYGKj6S3Jwujwg5L/JoeWVzzhlSAJo
-         ny6C8NNE3Prywq1UyzgrXvKsxPRWS941HS+AjcP/I6qjaJ+U7yllh5/tqmCgHrGq+h0P
-         IhWFZgnPTghPMNv3Ze0zEvS8loaYgG6377ySxoYTNd103oPznHb9brYOubESsetFDnc2
-         IYOQxmBo+EOMaYDMyR3ie8A0s76hxI+Hw52iMNOTmKksWSLr0tI2+Nv0rjELXFJ5IIhv
-         OgC0pXWHrXA7MoYm0a2p30LQN+kgrDDckHiHdThqX160AftaQsXChsnvR0r+P8An26iW
-         gKhg==
-X-Gm-Message-State: AOAM532M9B2Y11tauAcaolvnglGg3jqO2We7xnamLz/KafY6YR1EgckT
-        XpljKGHY8+n/GRP4GUpa/+4=
-X-Google-Smtp-Source: ABdhPJw/QEZz8Nj+O4m7+v1Thm1A5ZYbZ6nMY7BKDsDZHxoWuG2sVof+JsydkMnIieSHa/WVrCiLVQ==
-X-Received: by 2002:a05:6512:1515:: with SMTP id bq21mr67688718lfb.71.1636325113581;
-        Sun, 07 Nov 2021 14:45:13 -0800 (PST)
-Received: from localhost.localdomain (79-139-188-96.dynamic.spd-mgts.ru. [79.139.188.96])
-        by smtp.gmail.com with ESMTPSA id z17sm1414244ljk.97.2021.11.07.14.45.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Nov 2021 14:45:13 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        JC Kuo <jckuo@nvidia.com>,
-        Thomas Graichen <thomas.graichen@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH v3] usb: xhci: tegra: Check padctrl interrupt presence in device tree
-Date:   Mon,  8 Nov 2021 01:44:55 +0300
-Message-Id: <20211107224455.10359-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        Sun, 7 Nov 2021 17:48:37 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B35DC061570;
+        Sun,  7 Nov 2021 14:45:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=M+g1TA0XL6sSz5D2gz4hPz0mw7n6pUz0QEyTQMdYjMc=; b=hSCndqGNvtsZEHw3Vioe+SpxPr
+        0oKqbAqW/k9mvgnRx0Us5Jc6H5z0ACSSGj1sbAaxICG24buZfjc3zD2Q+FUQHM1sXSvoDkPwJNocp
+        jNAGWmOzargYdaL46y4ZHG/mS2swvTZnavD10W8GzZvuGGl3lduZ47brPqupk+qQ7GTW6JN0+/+mu
+        aFQFcCKm+vsjB8wV/RYxbvDhEkjY1qVMrI7HdgbdeQD4P1scGZ89wekzQ1ARs5GJTK9kQg4FZZJxV
+        euWKkXN6apN1WZ7Vs97CxSHjzsA0tYlQY1xvTq3yhgUehsH8DhWIeuLmC03CbQWFko3hdI5l2FYxI
+        HtEM/HEA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by merlin.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mjqvA-008etL-EH; Sun, 07 Nov 2021 22:45:52 +0000
+Subject: Re: [RFC PATCH 3/6] leds: add function to configure offload leds
+To:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
+        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
+References: <20211107175718.9151-1-ansuelsmth@gmail.com>
+ <20211107175718.9151-4-ansuelsmth@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <01b92118-8447-56d5-92a0-5fbf4a9aec85@infradead.org>
+Date:   Sun, 7 Nov 2021 14:45:46 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211107175718.9151-4-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Older device-trees don't specify padctrl interrupt and xhci-tegra driver
-now fails to probe with -EINVAL using those device-trees. Check interrupt
-presence and keep runtime PM disabled if it's missing to fix the trouble.
+On 11/7/21 9:57 AM, Ansuel Smith wrote:
+> diff --git a/Documentation/leds/leds-class.rst b/Documentation/leds/leds-class.rst
+> index ab50b58d6a21..af84cce09068 100644
+> --- a/Documentation/leds/leds-class.rst
+> +++ b/Documentation/leds/leds-class.rst
+> @@ -191,6 +191,18 @@ If the second argument (enable) to the trigger_offload() method is false, any
+>   active HW offloading must be deactivated. In this case errors are not permitted
+>   in the trigger_offload() method.
+>   
+> +The offload trigger will use the function configure_offload() provided by the driver
+> +that will configure the offloaded mode for the LED.
+> +This function pass as the first argument (offload_flags) a u32 flag, it's in the LED
 
-Fixes: 971ee247060d ("usb: xhci: tegra: Enable ELPG for runtime/system PM")
-Cc: <stable@vger.kernel.org> # 5.14+
-Reported-by: Nicolas Chauvet <kwizart@gmail.com>
-Tested-by: Nicolas Chauvet <kwizart@gmail.com> # T124 TK1
-Tested-by: Thomas Graichen <thomas.graichen@gmail.com> # T124 Nyan Big
-Tested-by: Thierry Reding <treding@nvidia.com> # Tegra CI
-Acked-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
+                  passes                                           flag. It's
 
-Changelog:
+> +driver interest how to elaborate this flags and to declare support for a particular
 
-v3: - Renamed 'irq_arg' to 'args' and extended debug message, like was
-      suggested by Thierry Reding.
+                                          flag
+although that sentence is not very clear.
 
-    - Added t-b from Thomas Graichen and ack from Thierry Reding.
+> +offload trigger.
+> +The second argument (cmd) of the configure_offload() method can be used to do various
+> +operation for the specific trigger. We currently support ENABLE, DISABLE and READ to
 
-v2: - Use of_irq_parse_one() to check interrupt presence status in device-tree,
-      instead of checking interrupt properties directly.
+    operations
 
-    - USB wakeup and runtime PM are kept disabled if interrupt is missing,
-      instead of returning -EOPNOTSUPP from RPM-suspend callback.
+> +enable, disable and read the state of the offload trigger for the LED driver.
+> +If the driver return -ENOTSUPP on configure_offload, the trigger activation will
 
-    - Added debug message, telling about the missing interrupt.
+                  returns
 
- drivers/usb/host/xhci-tegra.c | 41 +++++++++++++++++++++++++----------
- 1 file changed, 29 insertions(+), 12 deletions(-)
+> +fail as the driver doesn't support that specific offload trigger or don't know
 
-diff --git a/drivers/usb/host/xhci-tegra.c b/drivers/usb/host/xhci-tegra.c
-index 1bf494b649bd..c8af2cd2216d 100644
---- a/drivers/usb/host/xhci-tegra.c
-+++ b/drivers/usb/host/xhci-tegra.c
-@@ -1400,6 +1400,7 @@ static void tegra_xusb_deinit_usb_phy(struct tegra_xusb *tegra)
- 
- static int tegra_xusb_probe(struct platform_device *pdev)
- {
-+	struct of_phandle_args args;
- 	struct tegra_xusb *tegra;
- 	struct device_node *np;
- 	struct resource *regs;
-@@ -1454,10 +1455,17 @@ static int tegra_xusb_probe(struct platform_device *pdev)
- 		goto put_padctl;
- 	}
- 
--	tegra->padctl_irq = of_irq_get(np, 0);
--	if (tegra->padctl_irq <= 0) {
--		err = (tegra->padctl_irq == 0) ? -ENODEV : tegra->padctl_irq;
--		goto put_padctl;
-+	/* Older device-trees don't have padctrl interrupt */
-+	err = of_irq_parse_one(np, 0, &args);
-+	if (!err) {
-+		tegra->padctl_irq = of_irq_get(np, 0);
-+		if (tegra->padctl_irq <= 0) {
-+			err = (tegra->padctl_irq == 0) ? -ENODEV : tegra->padctl_irq;
-+			goto put_padctl;
-+		}
-+	} else {
-+		dev_dbg(&pdev->dev,
-+			"%pOF is missing an interrupt, disabling PM support\n", np);
- 	}
- 
- 	tegra->host_clk = devm_clk_get(&pdev->dev, "xusb_host");
-@@ -1696,11 +1704,15 @@ static int tegra_xusb_probe(struct platform_device *pdev)
- 		goto remove_usb3;
- 	}
- 
--	err = devm_request_threaded_irq(&pdev->dev, tegra->padctl_irq, NULL, tegra_xusb_padctl_irq,
--					IRQF_ONESHOT, dev_name(&pdev->dev), tegra);
--	if (err < 0) {
--		dev_err(&pdev->dev, "failed to request padctl IRQ: %d\n", err);
--		goto remove_usb3;
-+	if (tegra->padctl_irq) {
-+		err = devm_request_threaded_irq(&pdev->dev, tegra->padctl_irq,
-+						NULL, tegra_xusb_padctl_irq,
-+						IRQF_ONESHOT, dev_name(&pdev->dev),
-+						tegra);
-+		if (err < 0) {
-+			dev_err(&pdev->dev, "failed to request padctl IRQ: %d\n", err);
-+			goto remove_usb3;
-+		}
- 	}
- 
- 	err = tegra_xusb_enable_firmware_messages(tegra);
-@@ -1718,13 +1730,16 @@ static int tegra_xusb_probe(struct platform_device *pdev)
- 	/* Enable wake for both USB 2.0 and USB 3.0 roothubs */
- 	device_init_wakeup(&tegra->hcd->self.root_hub->dev, true);
- 	device_init_wakeup(&xhci->shared_hcd->self.root_hub->dev, true);
--	device_init_wakeup(tegra->dev, true);
- 
- 	pm_runtime_use_autosuspend(tegra->dev);
- 	pm_runtime_set_autosuspend_delay(tegra->dev, 2000);
- 	pm_runtime_mark_last_busy(tegra->dev);
- 	pm_runtime_set_active(tegra->dev);
--	pm_runtime_enable(tegra->dev);
-+
-+	if (tegra->padctl_irq) {
-+		device_init_wakeup(tegra->dev, true);
-+		pm_runtime_enable(tegra->dev);
-+	}
- 
- 	return 0;
- 
-@@ -1772,7 +1787,9 @@ static int tegra_xusb_remove(struct platform_device *pdev)
- 	dma_free_coherent(&pdev->dev, tegra->fw.size, tegra->fw.virt,
- 			  tegra->fw.phys);
- 
--	pm_runtime_disable(&pdev->dev);
-+	if (tegra->padctl_irq)
-+		pm_runtime_disable(&pdev->dev);
-+
- 	pm_runtime_put(&pdev->dev);
- 
- 	tegra_xusb_powergate_partitions(tegra);
+                                                                        doesn't know
+
+> +how to handle the provided flags.
+
+
 -- 
-2.33.1
-
+~Randy
