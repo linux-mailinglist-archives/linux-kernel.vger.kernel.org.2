@@ -2,168 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A272D447660
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 23:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D55447664
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 23:45:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236659AbhKGWrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 17:47:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56532 "EHLO
+        id S236665AbhKGWsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 17:48:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236644AbhKGWrT (ORCPT
+        with ESMTP id S235853AbhKGWr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 17:47:19 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDC2C061570;
-        Sun,  7 Nov 2021 14:44:35 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id z21so9691530edb.5;
-        Sun, 07 Nov 2021 14:44:35 -0800 (PST)
+        Sun, 7 Nov 2021 17:47:58 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E53CC061570;
+        Sun,  7 Nov 2021 14:45:15 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id l22so5248275lfg.7;
+        Sun, 07 Nov 2021 14:45:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=+HZjTmLEtuVS6kd0CxojI9stZ8Z3WvyonVBEkSZ936I=;
-        b=lKd1Pb3FZ/NKDVGX4723aHS/Bm+1bMK8qyC6U8X5tLFBOCwNOs/Lsh7vWMUIzf834R
-         GSrQt6WAKD+8tkV5bcHvHGUGL/BZZCijnFHxhztsODmFVDBd0CZsUMpcgYEkCmgKxYN1
-         ikXp3E8izoFfKzisOSNZys39uO3jDGKRX/MdU5OmmHrQfuwmaUlhJAz/G7SnsGwpdb+U
-         9a/NzS3GCb7ntTIF+ROmjI338PBbpZOZzfyZDagxKmT1wW6MtKRvQFa0rmtJd0u6/ggH
-         bY+gbKo06GO2c+JDLdUdYHuW55jBsp8ax9TOY9ZIJpPr8XuRKl8H3zbb4R/fnwN/g3PK
-         jC1A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nKLBpn7FGCZZeZkeg4yyWEeinAGCnOMxXV56UTFOBS4=;
+        b=Xq/JMX9Mm3gwhsTC4/pppefYLPxZ/81nUek6NZOo1sDQJgcHM2EFMoY3vUGw2g8UP7
+         aLf/hhmp+3oJKwbQVf3fhVsa/o0qA4x5OuCcpT4NJXkyfkAnGlXK1WQaQDBcLDO+ghCJ
+         VuufuRNkgM6g1onmcmNFzqnKd1On4APtGx+9fNu5NTPS8zeafTY443PSzEmfARD2AKE4
+         63XTUVP4kEKuv7qd9ZIWk0qiaAIJdMqvsh0dmlgp6LrThtTZyVFkUywrUTrh2j1udnJL
+         ckjfKj1iFIt+FJGKWLH/Rnc2yDGTQzuPBakXqfeEUevxXYSjU8deckGBGyljNznnKFhs
+         VcQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=+HZjTmLEtuVS6kd0CxojI9stZ8Z3WvyonVBEkSZ936I=;
-        b=eLpaVDyNU83w/12WXHTRuPj+q2uFPmO067RTQos//JIPFa+/kRlEaE51lGXjE/Tcdz
-         DnsjSuvlsiGCPzJtQwKu8EXP5oRBkB0RC+8c6P6+ZTJwnF6A3TOXp8inUfu0nahXGTpd
-         Z/aylZtP2opVaSL22oabYYl+Zzu1VjtlYdWPtUcbfI2ZeXFmtgp336DHqr/E9Jm34eu3
-         mHu5mQ7nL+BruJDhwbZ6bjdlHxeWoue6oiXi1HxG6rjpad98Ieclc1vmNivJ1T61/kOj
-         i0VgCAedlVy3KQEzf9ilzG+8lZUpCVPjMa8LHyt8AsVZ/iWiZYXfDgW9mgZUg0kd90WT
-         D0ZA==
-X-Gm-Message-State: AOAM532Z3KZLOCpn28UW5hjX9Ww0gaRCl1bT9b4riLltCfHEmPnvuDwo
-        jNtmlWy2ZLyqT55yMmpr7w4=
-X-Google-Smtp-Source: ABdhPJxHdP/Lm14fwOeKhcryQJIOKbN4rKlzV/dFy3yB8kFV8mLsYwvkMpbFEMAZTM/J2BCYyBV8TQ==
-X-Received: by 2002:a17:907:97d4:: with SMTP id js20mr10335289ejc.416.1636325073879;
-        Sun, 07 Nov 2021 14:44:33 -0800 (PST)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.gmail.com with ESMTPSA id h10sm8559773edb.59.2021.11.07.14.44.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nKLBpn7FGCZZeZkeg4yyWEeinAGCnOMxXV56UTFOBS4=;
+        b=SNSEwGP4VuvTX+iouJt5+g+EFzaA8qCiCe2vFYGKj6S3Jwujwg5L/JoeWVzzhlSAJo
+         ny6C8NNE3Prywq1UyzgrXvKsxPRWS941HS+AjcP/I6qjaJ+U7yllh5/tqmCgHrGq+h0P
+         IhWFZgnPTghPMNv3Ze0zEvS8loaYgG6377ySxoYTNd103oPznHb9brYOubESsetFDnc2
+         IYOQxmBo+EOMaYDMyR3ie8A0s76hxI+Hw52iMNOTmKksWSLr0tI2+Nv0rjELXFJ5IIhv
+         OgC0pXWHrXA7MoYm0a2p30LQN+kgrDDckHiHdThqX160AftaQsXChsnvR0r+P8An26iW
+         gKhg==
+X-Gm-Message-State: AOAM532M9B2Y11tauAcaolvnglGg3jqO2We7xnamLz/KafY6YR1EgckT
+        XpljKGHY8+n/GRP4GUpa/+4=
+X-Google-Smtp-Source: ABdhPJw/QEZz8Nj+O4m7+v1Thm1A5ZYbZ6nMY7BKDsDZHxoWuG2sVof+JsydkMnIieSHa/WVrCiLVQ==
+X-Received: by 2002:a05:6512:1515:: with SMTP id bq21mr67688718lfb.71.1636325113581;
+        Sun, 07 Nov 2021 14:45:13 -0800 (PST)
+Received: from localhost.localdomain (79-139-188-96.dynamic.spd-mgts.ru. [79.139.188.96])
+        by smtp.gmail.com with ESMTPSA id z17sm1414244ljk.97.2021.11.07.14.45.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Nov 2021 14:44:33 -0800 (PST)
-Date:   Sun, 7 Nov 2021 23:43:37 +0100
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Pavel Machek <pavel@ucw.cz>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-leds@vger.kernel.org
-Subject: Re: [RFC PATCH 4/6] leds: trigger: add offload-phy-activity trigger
-Message-ID: <YYhWmUd5FdTYwPvn@Ansuel-xps.localdomain>
-References: <20211107175718.9151-1-ansuelsmth@gmail.com>
- <20211107175718.9151-5-ansuelsmth@gmail.com>
- <20211107231009.7674734b@thinkpad>
+        Sun, 07 Nov 2021 14:45:13 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        JC Kuo <jckuo@nvidia.com>,
+        Thomas Graichen <thomas.graichen@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH v3] usb: xhci: tegra: Check padctrl interrupt presence in device tree
+Date:   Mon,  8 Nov 2021 01:44:55 +0300
+Message-Id: <20211107224455.10359-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211107231009.7674734b@thinkpad>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 07, 2021 at 11:10:09PM +0100, Marek Behún wrote:
-> On Sun,  7 Nov 2021 18:57:16 +0100
-> Ansuel Smith <ansuelsmth@gmail.com> wrote:
-> 
-> > Add Offload Trigger for PHY Activity. This special trigger is used to
-> > configure and expose the different HW trigger that are provided by the
-> > PHY. Each offload trigger can be configured by sysfs and on trigger
-> > activation the offload mode is enabled.
-> > 
-> > This currently implement these hw triggers:
-> >   - blink_tx: Blink LED on tx packet receive
-> >   - blink_rx: Blink LED on rx packet receive
-> >   - blink_collision: Blink LED on collision detection
-> >   - link_10m: Keep LED on with 10m link speed
-> >   - link_100m: Keep LED on with 100m link speed
-> >   - link_1000m: Keep LED on with 1000m link speed
-> >   - half_duplex: Keep LED on with half duplex link
-> >   - full_duplex: Keep LED on with full duplex link
-> >   - linkup_over: Keep LED on with link speed and blink on rx/tx traffic
-> >   - power_on_reset: Keep LED on with switch reset
-> >   - blink_2hz: Set blink speed at 2hz for every blink event
-> >   - blink_4hz: Set blink speed at 4hz for every blink event
-> >   - blink_8hz: Set blink speed at 8hz for every blink event
-> >   - blink_auto: Set blink speed at 2hz for 10m link speed,
-> >       4hz for 100m and 8hz for 1000m
-> > 
-> > The trigger will read the supported offload trigger in the led cdev and
-> > will expose the offload triggers in sysfs and then activate the offload
-> > mode for the led in offload mode has it configured by default. A flag is
-> > passed to configure_offload with the related rule from this trigger to
-> > active or disable.
-> > It's in the led driver interest the detection and knowing how to
-> > elaborate the passed flags.
-> > 
-> > The different hw triggers are exposed in the led sysfs dir under the
-> > offload-phy-activity subdir.
-> 
-> NAK. The current plan is to use netdev trigger, and if it can
-> transparently offload the settings to HW, it will.
-> 
-> Yes, netdev trigger currently does not support all these settings.
-> But it supports indicating link and blinking on activity.
-> 
-> So the plan is to start with offloading the blinking on activity, i.e.
-> I the user does
->   $ cd /sys/class/leds/<LED>
->   $ echo netdev >trigger
->   $ echo 1 >rx
->   $ echo eth0 >device_name
-> 
-> this would, instead of doing blinking in software, do it in HW instead.
-> 
-> After this is implemented, we can start working on extending netdev
-> trigger to support more complicated features.
-> 
-> Marek
+Older device-trees don't specify padctrl interrupt and xhci-tegra driver
+now fails to probe with -EINVAL using those device-trees. Check interrupt
+presence and keep runtime PM disabled if it's missing to fix the trouble.
 
-Using the netdev trigger would cause some problem. Most of the switch
-can run in SW mode (with blink controlled by software of always on) or
-be put in HW mode and they will autonomously control blinking and how
-the LED will operate. So we just need to provide a way to trigger this
-mode and configure it. Why having something that gets triggered and then
-does nothing as it's offloaded?
+Fixes: 971ee247060d ("usb: xhci: tegra: Enable ELPG for runtime/system PM")
+Cc: <stable@vger.kernel.org> # 5.14+
+Reported-by: Nicolas Chauvet <kwizart@gmail.com>
+Tested-by: Nicolas Chauvet <kwizart@gmail.com> # T124 TK1
+Tested-by: Thomas Graichen <thomas.graichen@gmail.com> # T124 Nyan Big
+Tested-by: Thierry Reding <treding@nvidia.com> # Tegra CI
+Acked-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
 
-The current way to configure this is very similar... Set the offload
-trigger and use the deidcated subdir to set how the led will
-blink/behave based on the supported trigger reported by the driver.
+Changelog:
 
-There is no reason to set a device_name as that would be hardcoded to
-the phy (and it should not change... again in HW we can't control that
-part, we can just tell the switch to blink on packet tx on that port)
+v3: - Renamed 'irq_arg' to 'args' and extended debug message, like was
+      suggested by Thierry Reding.
 
-So really the command is:
-  $ cd /sys/class/leds/<LED>
-  $ echo netdev > offload-phy-activity
-  $ cd offload-phy-activity
-  $ echo 1 > tx-blink
+    - Added t-b from Thomas Graichen and ack from Thierry Reding.
 
-And the PHY will blink on tx packet.
+v2: - Use of_irq_parse_one() to check interrupt presence status in device-tree,
+      instead of checking interrupt properties directly.
 
-I understand this should be an extension of netdev as they would do
-similar task but honestly polluting the netdev trigger of if and else to
-disable part of it if an offload mode can be supported seems bad and
-confusionary. At this point introduce a dedicated trigger so an user can
-switch between them. That way we can keep the flexibility of netdev
-trigger that will always work but also permit to support the HW mode
-with no load on the system.
+    - USB wakeup and runtime PM are kept disabled if interrupt is missing,
+      instead of returning -EOPNOTSUPP from RPM-suspend callback.
 
+    - Added debug message, telling about the missing interrupt.
+
+ drivers/usb/host/xhci-tegra.c | 41 +++++++++++++++++++++++++----------
+ 1 file changed, 29 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/usb/host/xhci-tegra.c b/drivers/usb/host/xhci-tegra.c
+index 1bf494b649bd..c8af2cd2216d 100644
+--- a/drivers/usb/host/xhci-tegra.c
++++ b/drivers/usb/host/xhci-tegra.c
+@@ -1400,6 +1400,7 @@ static void tegra_xusb_deinit_usb_phy(struct tegra_xusb *tegra)
+ 
+ static int tegra_xusb_probe(struct platform_device *pdev)
+ {
++	struct of_phandle_args args;
+ 	struct tegra_xusb *tegra;
+ 	struct device_node *np;
+ 	struct resource *regs;
+@@ -1454,10 +1455,17 @@ static int tegra_xusb_probe(struct platform_device *pdev)
+ 		goto put_padctl;
+ 	}
+ 
+-	tegra->padctl_irq = of_irq_get(np, 0);
+-	if (tegra->padctl_irq <= 0) {
+-		err = (tegra->padctl_irq == 0) ? -ENODEV : tegra->padctl_irq;
+-		goto put_padctl;
++	/* Older device-trees don't have padctrl interrupt */
++	err = of_irq_parse_one(np, 0, &args);
++	if (!err) {
++		tegra->padctl_irq = of_irq_get(np, 0);
++		if (tegra->padctl_irq <= 0) {
++			err = (tegra->padctl_irq == 0) ? -ENODEV : tegra->padctl_irq;
++			goto put_padctl;
++		}
++	} else {
++		dev_dbg(&pdev->dev,
++			"%pOF is missing an interrupt, disabling PM support\n", np);
+ 	}
+ 
+ 	tegra->host_clk = devm_clk_get(&pdev->dev, "xusb_host");
+@@ -1696,11 +1704,15 @@ static int tegra_xusb_probe(struct platform_device *pdev)
+ 		goto remove_usb3;
+ 	}
+ 
+-	err = devm_request_threaded_irq(&pdev->dev, tegra->padctl_irq, NULL, tegra_xusb_padctl_irq,
+-					IRQF_ONESHOT, dev_name(&pdev->dev), tegra);
+-	if (err < 0) {
+-		dev_err(&pdev->dev, "failed to request padctl IRQ: %d\n", err);
+-		goto remove_usb3;
++	if (tegra->padctl_irq) {
++		err = devm_request_threaded_irq(&pdev->dev, tegra->padctl_irq,
++						NULL, tegra_xusb_padctl_irq,
++						IRQF_ONESHOT, dev_name(&pdev->dev),
++						tegra);
++		if (err < 0) {
++			dev_err(&pdev->dev, "failed to request padctl IRQ: %d\n", err);
++			goto remove_usb3;
++		}
+ 	}
+ 
+ 	err = tegra_xusb_enable_firmware_messages(tegra);
+@@ -1718,13 +1730,16 @@ static int tegra_xusb_probe(struct platform_device *pdev)
+ 	/* Enable wake for both USB 2.0 and USB 3.0 roothubs */
+ 	device_init_wakeup(&tegra->hcd->self.root_hub->dev, true);
+ 	device_init_wakeup(&xhci->shared_hcd->self.root_hub->dev, true);
+-	device_init_wakeup(tegra->dev, true);
+ 
+ 	pm_runtime_use_autosuspend(tegra->dev);
+ 	pm_runtime_set_autosuspend_delay(tegra->dev, 2000);
+ 	pm_runtime_mark_last_busy(tegra->dev);
+ 	pm_runtime_set_active(tegra->dev);
+-	pm_runtime_enable(tegra->dev);
++
++	if (tegra->padctl_irq) {
++		device_init_wakeup(tegra->dev, true);
++		pm_runtime_enable(tegra->dev);
++	}
+ 
+ 	return 0;
+ 
+@@ -1772,7 +1787,9 @@ static int tegra_xusb_remove(struct platform_device *pdev)
+ 	dma_free_coherent(&pdev->dev, tegra->fw.size, tegra->fw.virt,
+ 			  tegra->fw.phys);
+ 
+-	pm_runtime_disable(&pdev->dev);
++	if (tegra->padctl_irq)
++		pm_runtime_disable(&pdev->dev);
++
+ 	pm_runtime_put(&pdev->dev);
+ 
+ 	tegra_xusb_powergate_partitions(tegra);
 -- 
-	Ansuel
+2.33.1
+
