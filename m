@@ -2,133 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA45447343
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 15:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84DAA44734C
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 15:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230449AbhKGOUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 09:20:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52924 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229683AbhKGOUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 09:20:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE31360FC1;
-        Sun,  7 Nov 2021 14:17:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636294642;
-        bh=W2Tg+hxn/VjidjI8GDcgtvbMKx6gstBSJ7VCd5VEn5A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1IBonNdqA6GG62i80+9KsiWfmf+cyXcJCb85i3sc6Tnyvv2X1ZSe0u7osoQ6PsckS
-         11bIO0UBM9VC3BxG+YddngerTVi5Vu+mIpI2tuN3NanoG7pJzaNsPCEHd0SfmTwQ0W
-         tcJH9iOKRn9BNfOrOOUFmu1hAnmIJMBYJ/rgmXp4=
-Date:   Sun, 7 Nov 2021 15:17:19 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] staging: r8188eu: Use kzalloc() with GFP_ATOMIC in
- atomic context
-Message-ID: <YYff78mUK+9F9pEN@kroah.com>
-References: <20211101191847.6749-1-fmdefrancesco@gmail.com>
- <6109499.H5l3i5aCOD@localhost.localdomain>
- <YYfUywXdy3eyssyf@kroah.com>
- <2284999.BhpMBdGVLH@localhost.localdomain>
+        id S234522AbhKGO3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 09:29:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229889AbhKGO3t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 09:29:49 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F7FC061570;
+        Sun,  7 Nov 2021 06:27:06 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id g14so51373674edz.2;
+        Sun, 07 Nov 2021 06:27:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wgS4Z8PT2Ebyn4QJE2ToIaYAg8RjXYt58lFNTo+dvGE=;
+        b=c/tAG78sNGkBMwe6Dp4+rRg23U7Kd99wgdrtIKQo2oHungqMjEdWl3TaYq5h+IRN8Y
+         RiRG6EBapGqOgwXLhPU0oWu5mDSr+SQsrzIiN6soKcWkIuUN57/f9bEsJU6MPrcS/lXt
+         DM70AEGCMwQ7Fjd3Q4RLwJDzbps7RKckyL66/dS1+mXrihLATwHIIVzg4/n/kg6+8waw
+         zxQsylhvgmVSIqlNeQkQzrT8R6/rszVSI6vIfTYvftoIyahqAfT5e4iFeBf3P2jE16DK
+         yP1xn0NUxXlhCnMVA/d99FsS+HMDl2r3eLOm6dgz0eLuYSmtNiNhH25lB1gs+6rgDG41
+         dBlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wgS4Z8PT2Ebyn4QJE2ToIaYAg8RjXYt58lFNTo+dvGE=;
+        b=01kPrJx/lmgS6wCD4LQg/SCVQX/l7FpLrK+NsWMPqv0mYEASnzuz5nvfO4egxXXYSA
+         3qJaKiLcvmT8izae27rbkBDyAYr2IO1CL9yTjyQpgMCXnnpqLIucGi/ner2HdLOhgP4e
+         uHF8r54z7Wj1XyA6MRSBLetlq9oDSuqpDFY2IRN+kGi2Kg2W787hglba+cXcxdzbZdDM
+         LMjVbBiby+OiOE0Mfx2iyNIQFZW161vQR0/UJL1D8Rsr/mWJTXk8P12G3piX9KBpL9oQ
+         GR8nuqnNema7rX/+LRMT/xer/NlcUtPwb/zRyIpChykSjw07ZzvnfJT2GHmAlEVvaHwj
+         YFhg==
+X-Gm-Message-State: AOAM530J8apdsk9d5ci2Z9XyD4/jp9pPiHHvuCr84P5V8JYb5aboCMZc
+        TNO6BDKq7oiv0Jr9P5Kgm0F6UoPrIuo=
+X-Google-Smtp-Source: ABdhPJz46MFttV0U9Z5DN4OZTU4O5wy2VDdafE5rFyTGwW9wascNbAhWj5wRJ9qi20zFhtiwyultYQ==
+X-Received: by 2002:a50:becf:: with SMTP id e15mr99630830edk.114.1636295224727;
+        Sun, 07 Nov 2021 06:27:04 -0800 (PST)
+Received: from skbuf ([188.25.175.102])
+        by smtp.gmail.com with ESMTPSA id ho30sm6772385ejc.30.2021.11.07.06.27.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Nov 2021 06:27:04 -0800 (PST)
+Date:   Sun, 7 Nov 2021 16:27:03 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     Martin Kaistra <martin.kaistra@linutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 7/7] net: dsa: b53: Expose PTP timestamping ioctls to
+ userspace
+Message-ID: <20211107142703.tid4l4onr6y2gxic@skbuf>
+References: <20211104133204.19757-1-martin.kaistra@linutronix.de>
+ <20211104133204.19757-8-martin.kaistra@linutronix.de>
+ <20211104174251.GB32548@hoboy.vegasvil.org>
+ <ba543ae4-3a71-13fe-fa82-600ac37eaf5a@linutronix.de>
+ <20211105141319.GA16456@hoboy.vegasvil.org>
+ <20211105142833.nv56zd5bqrkyjepd@skbuf>
+ <20211106001804.GA24062@hoboy.vegasvil.org>
+ <20211106003606.qvfkitgyzoutznlw@skbuf>
+ <20211107140534.GB18693@hoboy.vegasvil.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2284999.BhpMBdGVLH@localhost.localdomain>
+In-Reply-To: <20211107140534.GB18693@hoboy.vegasvil.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 07, 2021 at 03:03:18PM +0100, Fabio M. De Francesco wrote:
-> On Sunday, November 7, 2021 2:29:47 PM CET Greg Kroah-Hartman wrote:
-> > On Sun, Nov 07, 2021 at 02:15:59PM +0100, Fabio M. De Francesco wrote:
-> > > On Sunday, November 7, 2021 1:38:35 PM CET Greg Kroah-Hartman wrote:
-> > > > On Sun, Nov 07, 2021 at 12:43:51PM +0100, Fabio M. De Francesco wrote:
-> > > > > On Monday, November 1, 2021 8:18:47 PM CET Fabio M. De Francesco 
-> wrote:
-> > > > > > Use the GFP_ATOMIC flag of kzalloc() with two memory allocation in
-> > > > > > report_del_sta_event(). This function is called while holding 
-> > > spinlocks,
-> > > > > > therefore it is not allowed to sleep. With the GFP_ATOMIC type 
-> flag, 
-> > > the
-> > > > > > allocation is high priority and must not sleep.
-> > > > > > 
-> > > > > > This issue is detected by Smatch which emits the following warning:
-> > > > > > "drivers/staging/r8188eu/core/rtw_mlme_ext.c:6848 
-> > > report_del_sta_event()
-> > > > > > warn: sleeping in atomic context".
-> > > > > > 
-> > > > > > After the change, the post-commit hook output the following 
-> message:
-> > > > > > "CHECK: Prefer kzalloc(sizeof(*pcmd_obj)...) over
-> > > > > > kzalloc(sizeof(struct cmd_obj)...)".
-> > > > > > 
-> > > > > > According to the above "CHECK", use the preferred style in the 
-> first
-> > > > > > kzalloc().
-> > > > > > 
-> > > > > > Fixes: 79f712ea994d ("staging: r8188eu: Remove wrappers for 
-> kalloc() 
-> > > and 
-> > > > > kzalloc()")
-> > > > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > > > > > ---
+On Sun, Nov 07, 2021 at 06:05:34AM -0800, Richard Cochran wrote:
+> On Sat, Nov 06, 2021 at 02:36:06AM +0200, Vladimir Oltean wrote:
+> > On Fri, Nov 05, 2021 at 05:18:04PM -0700, Richard Cochran wrote:
+> > > On Fri, Nov 05, 2021 at 04:28:33PM +0200, Vladimir Oltean wrote:
+> > > > What is the expected convention exactly? There are other drivers that
+> > > > downgrade the user application's request to what they support, and at
+> > > > least ptp4l does not error out, it just prints a warning.
 > > > 
-> > > > > > [...]
+> > > Drivers may upgrade, but they may not downgrade.
 > > > 
-> > > > > Please let me know if there is something that prevents this patch to 
-> be 
-> > > > > applied. I have no problem in changing / adding whatever it is 
-> needed.
-> > > > 
-> > > > Nothing needs to be done, I am waiting for 5.16-rc1 to be released
-> > > > before I pick up this patch, and others that will be targeted for
-> > > > 5.16-final.  Only then will I queue them up, as the automated email you
-> > > > should have gotten when you submitted the patch said would happen.
-> > > > 
-> > > > Just relax, there is no rush here :)
-> > > > 
+> > > Which drivers downgrade?  We need to fix those buggy drivers.
 > > > 
-> > > Oh, sorry Greg. There must be something that I haven't understand about 
-> the 
-> > > development process... :(
-> > > 
-> > > Obviously I agree that there is no rush here :)
-> > > 
-> > > As I said, this morning I read git log and saw patches that seemed more 
-> > > recent; thus I thought that was the case to ask. I just (wrongly) thought 
-> > > that the v3 of the patch got unnoticed or dropped  because of some 
-> requests  
-> > > that I had missed. 
+> > > Thanks,
+> > > Richard
 > > 
-> > Be sure to notice what branch commits are being applied to.  There are
-> > different branches for a reason :)
-> > 
-> This is what confuses me:
+> > Just a quick example
+> > https://elixir.bootlin.com/linux/v5.15/source/drivers/net/ethernet/mscc/ocelot.c#L1178
 > 
-> --- git-log output ---
+>         switch (cfg.rx_filter) {
+>         case HWTSTAMP_FILTER_NONE:
+>                 break;
+>         case HWTSTAMP_FILTER_ALL:
+>         case HWTSTAMP_FILTER_SOME:
+>         case HWTSTAMP_FILTER_PTP_V1_L4_EVENT:
+>         case HWTSTAMP_FILTER_PTP_V1_L4_SYNC:
+>         case HWTSTAMP_FILTER_PTP_V1_L4_DELAY_REQ:
+>         case HWTSTAMP_FILTER_NTP_ALL:
+>         case HWTSTAMP_FILTER_PTP_V2_L4_EVENT:
+>         case HWTSTAMP_FILTER_PTP_V2_L4_SYNC:
+>         case HWTSTAMP_FILTER_PTP_V2_L4_DELAY_REQ:
+>         case HWTSTAMP_FILTER_PTP_V2_L2_EVENT:
+>         case HWTSTAMP_FILTER_PTP_V2_L2_SYNC:
+>         case HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ:
+>         case HWTSTAMP_FILTER_PTP_V2_EVENT:
+>         case HWTSTAMP_FILTER_PTP_V2_SYNC:
+>         case HWTSTAMP_FILTER_PTP_V2_DELAY_REQ:
+>                 cfg.rx_filter = HWTSTAMP_FILTER_PTP_V2_EVENT;
+>                 break;
+>         default:
+>                 mutex_unlock(&ocelot->ptp_lock);
+>                 return -ERANGE;
+>         }
 > 
-> commit 8a893759d0075ea9556abcf86a4826d9865ba4bf (origin/staging-testing)
-> Author: Phillip Potter <phil@philpotter.co.uk>
-> Date:   Sat Nov 6 23:16:36 2021 +0000
+> That is essentially an upgrade to HWTSTAMP_FILTER_PTP_V2_EVENT.  The
+> change from ALL to HWTSTAMP_FILTER_PTP_V2_EVENT is probably a simple
+> oversight, and the driver can be easily fixed.
 > 
->     staging: r8188eu: remove MSG_88E macro
-> 
-> --- end of git-log output ---
-> 
-> Aside from the "Date" field, I know that this patch has been sent to the list 
-> during the last night and that it goes to the same branch (staging-testing) 
-> to which my patch should go. I know I'm still missing something, but I cannot 
-> understand what it is... :(
+> Thanks,
+> Richard
 
-No, your change will go to the staging-linus branch, as it needs to go
-into 5.16-final and get sent to Linus much sooner than 5.17-rc1, which
-is where things are being queued up in the staging-testing branch at the
-moment.
-
-hope this helps,
-
-greg k-h
+It's essentially the same pattern as what Martin is introducing for b53.
