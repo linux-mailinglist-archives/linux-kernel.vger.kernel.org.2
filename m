@@ -2,62 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5F6447537
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6726044753A
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 20:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236299AbhKGTRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 14:17:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38272 "EHLO mail.kernel.org"
+        id S230315AbhKGTWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 14:22:01 -0500
+Received: from vps.xff.cz ([195.181.215.36]:41354 "EHLO vps.xff.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236287AbhKGTRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 14:17:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4CC3160FD7;
-        Sun,  7 Nov 2021 19:14:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636312473;
-        bh=eOh3QHkZhlHVUSJaIZv3zU69USIvO94ecTtjnlpfXfM=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=TXkyUvKO7OvJXukxucdYUGlak6JvY/QCT5yf/TbjeSABcRq0WuIMEZOzndYwTyLkL
-         MfVxqt9AJWVUO7qtjcHsBp7EwYP/9ViuBsFyBoAvDJ9BoezF4HxIJTRxPMVfV/TxV9
-         CVF36h/HWaPPJ9t0qf2uAuV3RrEqmiHH+uXC0zox26+YT/13NuMOKhUXu0SaZPD/Z8
-         WTGqqZiOPp5De0ShjUBsHuxvlyctPLSAWOuWcjnD8KkrWSG7IDcpsXHvlHFbQG0Fv6
-         +asUfVvwocELIv2yN4tGDZA4dUUk5ACxxOl3WmMexGYeAdF4v3tzAnXPUY9V/Y0AXI
-         Hk2T7mJgBEaiA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 46C1260966;
-        Sun,  7 Nov 2021 19:14:33 +0000 (UTC)
-Subject: Re: [GIT PULL] auxdisplay for v5.16
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211106142747.GA19096@kernel.org>
-References: <20211106142747.GA19096@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211106142747.GA19096@kernel.org>
-X-PR-Tracked-Remote: https://github.com/ojeda/linux.git tags/auxdisplay-for-linus-v5.16
-X-PR-Tracked-Commit-Id: 97fbb29fc1ebde6ce362e3d0a9473d4c6dec7442
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e582e08ec059cc9a93d5d154a6429fc4779cf275
-Message-Id: <163631247328.5338.5350788410825660383.pr-tracker-bot@kernel.org>
-Date:   Sun, 07 Nov 2021 19:14:33 +0000
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mianhan Liu <liumh1@shanghaitech.edu.cn>,
-        Huiquan Deng <denghuiquan@cdjrlc.com>,
-        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org
+        id S229503AbhKGTWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 14:22:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
+        t=1636312756; bh=3A4Dli+gg8HWNov7I1Eit9gqhTCBR/mKSOT/BJaGxdU=;
+        h=Date:From:To:Subject:X-My-GPG-KeyId:References:From;
+        b=e8O1Ig5CN8RH38LZg6yzToDBqt2MJjikmDxd+Ccm7IJtzEKal1U0B+5XMoWB/bBpA
+         sYF2N6duAh51fLoLh3WT660E9NBTMru5ugi0lCwBMo8h7aC7GZmk7BDoZj+7tmvYC5
+         fHE/iZ6hFE0qFzzzR3PmORgDVENEWGeX+XKEX/II=
+Date:   Sun, 7 Nov 2021 20:19:16 +0100
+From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        kernel test robot <lkp@intel.com>,
+        Tobias Schramm <t.schramm@manjaro.org>,
+        "open list:GENERIC PHY FRAMEWORK" <linux-phy@lists.infradead.org>,
+        "moderated list:ARM/Rockchip SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC support" 
+        <linux-rockchip@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: phy: rockchip-inno-usb2: Don't print useless error
+Message-ID: <20211107191916.5bkgjqiptftr3b7i@core>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        kernel test robot <lkp@intel.com>,
+        Tobias Schramm <t.schramm@manjaro.org>,
+        "open list:GENERIC PHY FRAMEWORK" <linux-phy@lists.infradead.org>,
+        "moderated list:ARM/Rockchip SoC support" <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC support" <linux-rockchip@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <20211107185836.2540901-1-megous@megous.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211107185836.2540901-1-megous@megous.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 6 Nov 2021 15:27:47 +0100:
+On Sun, Nov 07, 2021 at 07:58:35PM +0100, megous hlavni wrote:
+> The interrupt is optional, make the dmesg not complain about it
+> missing.
 
-> https://github.com/ojeda/linux.git tags/auxdisplay-for-linus-v5.16
+Ooops. Sorry, this applies only on top of Peter Geis's 
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e582e08ec059cc9a93d5d154a6429fc4779cf275
+"phy: phy-rockchip-inno-usb2: support muxed interrupts"
 
-Thank you!
+which is not mainline yet. Please ignore.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+kind regards,
+	o.
+
+> Signed-off-by: Ondrej Jirman <megous@megous.com>
+> ---
+>  drivers/phy/rockchip/phy-rockchip-inno-usb2.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
+> index 428c2313a9cb2..27820bee04eae 100644
+> --- a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
+> +++ b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
+> @@ -1180,7 +1180,7 @@ static int rockchip_usb2phy_probe(struct platform_device *pdev)
+>  	phy_cfgs = match->data;
+>  	rphy->chg_state = USB_CHG_STATE_UNDEFINED;
+>  	rphy->chg_type = POWER_SUPPLY_TYPE_UNKNOWN;
+> -	rphy->irq = platform_get_irq(pdev, 0);
+> +	rphy->irq = platform_get_irq_optional(pdev, 0);
+>  	platform_set_drvdata(pdev, rphy);
+>  
+>  	ret = rockchip_usb2phy_extcon_register(rphy);
+> -- 
+> 2.33.1
+> 
