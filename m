@@ -2,128 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B2B447462
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 18:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46BAB447474
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 18:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235934AbhKGRSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 12:18:53 -0500
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:41051 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235923AbhKGRSw (ORCPT
+        id S235963AbhKGRTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 12:19:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235340AbhKGRTb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 12:18:52 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id C4FEC5C00C8;
-        Sun,  7 Nov 2021 12:16:08 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Sun, 07 Nov 2021 12:16:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Liz9He
-        z2pQ3I/11xvMmZRFFwaYA7f2I/IxstpB3jmBo=; b=nyDBEMPKwtXB60WUGE1W4K
-        ubQ51UbRauaMLJstx3QvCnDyRuYeqf0557P8yrWJFhy8iwgCBlE28Py4aVah8o/V
-        /bsR4KBR35JMhnzVSsUeRX4/15DIUfMKfbDKnnTErtuD+D2KENwl92D1CHNb2Na+
-        lf4cX7FE20W+x/D/nMCVhOhuEXj+ZP0pPkOp5ZtSxheRlwaD3TJF2l3hbZKzHGlm
-        +oboLiz9Iv0PEkiFX6LC31qBHoSNbZhfJYhXZu+IFBJZaIzJvdZH3i4Hux1n52dD
-        Mt3gFvuqc5b0WbPdFwrdPTmZgsUFDS6iJSfvZ6b3SHT3rd8wxxrHT/1oKpH572pw
-        ==
-X-ME-Sender: <xms:2AmIYe8jLCzEO8_L99b59L1qosgvR2djbGcfcgxGRNlepAuNdMLyIw>
-    <xme:2AmIYesiXiEJaZu1Vg5Ur6NhwrewuGN9_1WCy1UTV8CXQ5p_acg7T5IdYs5-Pwh21
-    ArEQoMb6lzSKkc>
-X-ME-Received: <xmr:2AmIYUBYeLr0n3671zhUQNKfkMwAgA1GO4-1iVAv-oQJTGh6iOgqoZopEiWj>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddruddtgdeliecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcuufgt
-    hhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrthhtvg
-    hrnhepgfevgfevueduueffieffheeifffgjeelvedtteeuteeuffekvefggfdtudfgkeev
-    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:2AmIYWd_aqSYI2giy050rLReBYs-X2je6PsuMwe8UM9CpM5SOgwLog>
-    <xmx:2AmIYTONBrGW5PMYjdgwgQ6LUShmYNqRpyCk-EIafudLSL2wvDcWng>
-    <xmx:2AmIYQmNkCiMSljz1mDcypwbsShQKvpO7_T_Ww67EpOa10bP9F4Rgg>
-    <xmx:2AmIYfBiNiNZu8At2pNy-QvYJPWuVPiLXny1K9b2GRNX7AviXkbNEQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 7 Nov 2021 12:16:07 -0500 (EST)
-Date:   Sun, 7 Nov 2021 19:16:05 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Jiri Pirko <jiri@resnulli.us>, Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, edwin.peer@broadcom.com
-Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
- reload
-Message-ID: <YYgJ1bnECwUWvNqD@shredder>
-References: <9716f9a13e217a0a163b745b6e92e02d40973d2c.1635701665.git.leonro@nvidia.com>
- <YYABqfFy//g5Gdis@nanopsycho>
- <YYBTg4nW2BIVadYE@shredder>
- <20211101161122.37fbb99d@kicinski-fedora-PC1C0HJN>
+        Sun, 7 Nov 2021 12:19:31 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F34C061714;
+        Sun,  7 Nov 2021 09:16:48 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id d11so3674339ljg.8;
+        Sun, 07 Nov 2021 09:16:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jV9RGgGqsoNpHnAdElYoxsETzdtFTgnoU+evNHPJvgw=;
+        b=XcS1vFi7jvcKKMU+Vh16iv2r+zEgY2qHFwfEvUkTbUqhYfGd/aHwUSSPvlkmYZnUDY
+         yKyQ/S1MODqE5UdkEERTRM+mtxI1gBtYC+YHMFR0Q7VUSP941Fv1rRNweTBgkgPsVjOi
+         /VhimMLC6erylFfqa93dW9OuY6rPJeGZgNEfAStOSIcxbKlGE8kYSWtur2agIS+KxZBT
+         uxw/ElMwoYX/SIJQ69spejui0ImHzrQg/eO3RQFc7ylvx2K4v5e4KD8cBjKF0cCi6jz/
+         kU0RJ2R+nsOSEtcz9pzFEbzI1pboWLlqc1bt4/UyILzUL1onLEjZ1y8wuTJEXkf/BE4p
+         Mk4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jV9RGgGqsoNpHnAdElYoxsETzdtFTgnoU+evNHPJvgw=;
+        b=Gz5RLul7BH1ZKABdxFuZNqCFkWhagPypgYVycwuP4mVYEK1zFl7TrbWsEL73GM59dp
+         W0CcpAKT+6ubm7F2GZvtm644vAoOFiKuvW9f8WnOCM1tqoZDfRHMa6hB+PxY8kdguaQj
+         4hv+0Kpvm0BYTj8VNMGqpcNTcAZIkcj2vA23XRoZmxhXDU8x+Cuz+vWTUJaxUgi53unU
+         +0WYJLJeiLU2h/6bj4dBTE4WB0zSod2NEyDn9w3jce7Al/doRdXwo5xopI5CjdSuHB9D
+         p7AI+i4ZlAUXaDAUPGSfyAV+WDgw7ETUfxmK5pZNLjtOBmudV4gxNBTSs7ieaQFo0EXw
+         4NOg==
+X-Gm-Message-State: AOAM531+/ZgOXkJRTXwgujXSUXyZJbaqIfXff2/oQodLr6OWDDrmape8
+        6/rcW7+u9U85xOHZBVUpFtLrBwl8MR8=
+X-Google-Smtp-Source: ABdhPJxvgxAU8oisB10upx88enZ2ZbX58EuDflf4IdQYDWaIcA3t9DPLAVkvy85p5EpHAL+e+Eae8Q==
+X-Received: by 2002:a2e:92c4:: with SMTP id k4mr61687714ljh.271.1636305406651;
+        Sun, 07 Nov 2021 09:16:46 -0800 (PST)
+Received: from [192.168.2.145] (79-139-182-132.dynamic.spd-mgts.ru. [79.139.182.132])
+        by smtp.googlemail.com with ESMTPSA id h14sm1531135lfv.83.2021.11.07.09.16.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Nov 2021 09:16:46 -0800 (PST)
+Subject: Re: [PATCH v2 27/45] mfd: ntxec: Use devm_register_power_handler()
+To:     Guenter Roeck <linux@roeck-us.net>,
+        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Chen-Yu Tsai <wens@csie.org>, Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20211027211715.12671-1-digetx@gmail.com>
+ <20211027211715.12671-28-digetx@gmail.com> <YYbqlmOM95q7Hbjo@latitude>
+ <be0c74c6-05a9-cad5-c285-6626d05f8860@gmail.com>
+ <9a22c22d-94b1-f519-27a2-ae0b8bbf6e99@roeck-us.net>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <658cf796-e3b1-f816-1e15-9e9e08b8ade0@gmail.com>
+Date:   Sun, 7 Nov 2021 20:16:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211101161122.37fbb99d@kicinski-fedora-PC1C0HJN>
+In-Reply-To: <9a22c22d-94b1-f519-27a2-ae0b8bbf6e99@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 01, 2021 at 04:11:22PM -0700, Jakub Kicinski wrote:
-> On Mon, 1 Nov 2021 22:52:19 +0200 Ido Schimmel wrote:
-> > > >Signed-off-by: Leon Romanovsky <leonro@nvidia.com>  
-> > > 
-> > > Looks fine to me.
-> > > 
-> > > Reviewed-by: Jiri Pirko <jiri@nvidia.com>  
-> > 
-> > Traces from mlxsw / netdevsim below:
+07.11.2021 20:08, Guenter Roeck пишет:
+> On 11/7/21 8:53 AM, Dmitry Osipenko wrote:
+>> 06.11.2021 23:54, Jonathan Neuschäfer пишет:
+>>> Hi,
+>>>
+>>> On Thu, Oct 28, 2021 at 12:16:57AM +0300, Dmitry Osipenko wrote:
+>>>> Use devm_register_power_handler() that replaces global pm_power_off
+>>>> variable and allows to register multiple power-off handlers. It also
+>>>> provides restart-handler support, i.e. all in one API.
+>>>>
+>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>> ---
+>>>
+>>> When I boot with (most of) this patchset applied, I get the warning at
+>>> kernel/reboot.c:187:
+>>>
+>>>     /*
+>>>      * Handler must have unique priority. Otherwise call order is
+>>>      * determined by registration order, which is unreliable.
+>>>      */
+>>>     WARN_ON(!atomic_notifier_has_unique_priority(&restart_handler_list,
+>>> nb));
+>>>
+>>> As the NTXEC driver doesn't specify a priority, I think this is an issue
+>>> to be fixed elsewhere.
+>>>
+>>> Other than that, it works and looks good, as far as I can tell.
+>>>
+>>>
+>>> For this patch:
+>>>
+>>> Reviewed-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+>>> Tested-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+>>
+>> Thank you. You have conflicting restart handlers, apparently NTXEC
+>> driver should have higher priority than the watchdog driver. It should
+>> be a common problem for the watchdog drivers, I will lower watchdog's
+>> default priority to fix it.
+>>
 > 
-> Thanks a lot for the testing Ido!
-> 
-> Would you mind giving my RFC a spin as well on your syzbot machinery?
+> The watchdog subsystem already uses "0" as default priority, which was
+> intended as priority of last resort for restart handlers. I do not see
+> a reason to change that.
 
-Sorry for the delay. I didn't have a lot of time last week.
+Right, I meant that watchdog drivers which use restart handler set the
+level to the default 128 [1]. Although, maybe it's a problem only for
+i.MX drivers in practice, I'll take a closer look at the other drivers.
 
-I tried to apply your set [1] on top of net-next, but I'm getting a
-conflict with patch #5. Can you send me (here / privately) a link to a
-git tree that has the patches on top of net-next?
-
-TBH, if you ran the netdevsim selftests with a debug config and nothing
-exploded, then I don't expect syzkaller to find anything (major).
-
-[1] https://lore.kernel.org/netdev/20211030231254.2477599-1-kuba@kernel.org/
-
-> 
-> Any input on the three discussion points there?
-> 
->  (1) should we have a "locked" and "unlocked" API or use lock nesting?
-
-Judging by the netdevsim conversion, it seems that for the vast majority
-of APIs (if not all) we will only have an "unlocked" API. Drivers will
-hold the devlink instance lock on probe / remove and devlink itself will
-hold the lock when calling into drivers (e.g., on reload, port split).
-
-> 
->  (2) should we expose devlink lock so that drivers can use devlink 
->      as a framework for their locking needs?
-
-It is better than dropping locks (e.g., DEVLINK_NL_FLAG_NO_LOCK, which I
-expect will go away after the conversion). With the asserts you put in
-place, misuses will be caught early.
-
-> 
->  (3) should we let drivers take refs on the devlink instance?
-
-I think it's fine mainly because I don't expect it to be used by too
-many drivers other than netdevsim which is somewhat special. Looking at
-the call sites of devlink_get() in netdevsim, it is only called from
-places (debugfs and trap workqueue) that shouldn't be present in real
-drivers.
-
-The tl;dr is that your approach makes sense to me. I was initially
-worried that we will need to propagate a "reload" argument everywhere in
-drivers, but you wrote "The expectation is that driver will take the
-devlink instance lock on its probe and remove paths", which avoids that.
-
-Thanks for working on that
+[1]
+https://elixir.bootlin.com/linux/latest/source/drivers/watchdog/imx2_wdt.c#L318
