@@ -2,273 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9776C4476BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 00:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3A24476BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 00:43:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234321AbhKGXm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 18:42:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38676 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230303AbhKGXm1 (ORCPT
+        id S236065AbhKGXpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 18:45:55 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:42425 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236047AbhKGXpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 18:42:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1636328383;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HGtcDgZn/ksQ+cqq+FxyLx4YU8RvAFG9NNnu9g6Qb04=;
-        b=bE7xpkZu9V2HWAdkNKgtYC+S4R3GbvuBmva6LGBfxVrJ6qjFQOKbwMvjYFbx2Oyjjfe7d8
-        7eXVqq7/7Y1gyVLJlN/8wougMvWdN/dL8ypIPRq/IUsY+xWenYehYPdlksjqDatKJ4Z4IM
-        zAelGkM59h4u1Y6+VzlcGJIFmMtGVp4=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-398-P0D673OcPcKk6gx1XF8X8A-1; Sun, 07 Nov 2021 18:39:41 -0500
-X-MC-Unique: P0D673OcPcKk6gx1XF8X8A-1
-Received: by mail-ed1-f69.google.com with SMTP id h13-20020a05640250cd00b003e35ea5357fso150081edb.2
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 15:39:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=HGtcDgZn/ksQ+cqq+FxyLx4YU8RvAFG9NNnu9g6Qb04=;
-        b=kB9iXJLtig01DvjXyIejDyZ/Iz8sv25fZz7GxrkcxW2iJS1TShUu5Gz5M0Gf3e6+XV
-         Sp5ew3ViuStTh4Js3g8gBTc6YM9SGHp2ROcIWLy6oKMUBOPl8DtQbNvBFRUGUMJeYfLR
-         4SngWL+iBCHoDeUgsOyKA74+hoSUIK+eM64ep95eiUJRbpvmIgB7j12Fu7lLJrB82ovW
-         IJb1T5abmsea/0fCc/pKEprK4CTfqSvPznJa86X++jLE0+hlqcQBBhWxb7jRsIjQGyYA
-         /2BTBdllguYdKUr+UGgHEvFcQ1YLlL+OUXWIxC7P+FVzDduTEPI0mARpm/2ka+mC2Tay
-         4eNA==
-X-Gm-Message-State: AOAM532+am/2ZfGsPvAYXENUiUYDbHIfI+95wsKK5etwKf03XFZz5uL+
-        x7S1cdA5EEXlSkvnC7/pT1mJoNUVB7u+vjQEWf345D6j/1TrFH9TydWBNmgAFBPmE6jjdaQq4qr
-        1+TmZgna+3MqnsGImVdRYfF3D
-X-Received: by 2002:a05:6402:221b:: with SMTP id cq27mr58861934edb.232.1636328380255;
-        Sun, 07 Nov 2021 15:39:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzSkXoAZKZEnVZ64ghrNk2A6q3nrbRhzLz6/659oRPRpervgYa5FKRDDJsvfdcZOvti59Ik0w==
-X-Received: by 2002:a05:6402:221b:: with SMTP id cq27mr58861889edb.232.1636328379965;
-        Sun, 07 Nov 2021 15:39:39 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id cw20sm7109065ejc.32.2021.11.07.15.39.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Nov 2021 15:39:39 -0800 (PST)
-Message-ID: <310ace44-93d5-99a3-bb4c-371b0a13462d@redhat.com>
-Date:   Mon, 8 Nov 2021 00:39:38 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [BUG 5/5] [BUG] media: atomisp: atomisp causes touchscreen to
- stop working on Microsoft Surface 3
-Content-Language: en-US
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20211017162337.44860-1-kitakar@gmail.com>
- <20211017162337.44860-6-kitakar@gmail.com>
- <103b5438-9f7c-7e89-28b9-29fe11eb818c@redhat.com>
- <cfad27a4bfdd94417305e1519e2f450a4422844d.camel@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <cfad27a4bfdd94417305e1519e2f450a4422844d.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Sun, 7 Nov 2021 18:45:53 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 8B2365807D9;
+        Sun,  7 Nov 2021 18:42:59 -0500 (EST)
+Received: from imap43 ([10.202.2.93])
+  by compute4.internal (MEProxy); Sun, 07 Nov 2021 18:42:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=hbglKme3vaas4sAGDC3hQO7l8i5Rd5g
+        igqzNWaFWDOk=; b=cg/olrAcD9tCJS1i8M23c2flw8WZk1wp4xkWGoML32//6N1
+        qpzOO+o7dMA8eWLFE6rAsFHsKng+Si7yzX4kDg4aQo7L4qrTvx5MClQ7yQM5fpg+
+        UOecU3cxTvQ14n90S68RZDuQT/clgf03ZdWu2qOCwhW243IOELSvWBwto2XrJXUL
+        8Va2qo9ggNRRA2TzvjUKPWPyJi3XXkmQBo9a+p9RQqY4PCKaT9D8mTP/DJarhvYY
+        Ap+Ry5N3Rik+IwlzLY4asm9rCLX3eDrxVLQK58sRR7hD/En0mSU4zUdKWkPZt8P4
+        gY+YKRZMdJQWlyPPsvNkHYdlk9Ro6vNptu8A47A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=hbglKm
+        e3vaas4sAGDC3hQO7l8i5Rd5gigqzNWaFWDOk=; b=clVyKuFzr3sg/qW8emnEu/
+        uSflp/Th4kX9QtyLi140V7rgiZSGXP4DNrqqUKTLsq6zHVgEjOztoS7ow26ULuHW
+        kooIkJ6cOXyFxd1cxdxoRGglACdZu4pU8dnH4vbEI3xgVupAQ6zQSl1mJ0/eYsa2
+        N3Xd8E/756QBt8wVuPf/U0jPmnb8QIplCzch5nl2cLM0zuHtJo6LwWhSe3YywUji
+        aCcBatQcHXMX8qn8jFVd+G70nnvrT6tOQ/ivmUhYxb+L4yCu3fV19GA8gYcB44+b
+        WOOQUw3v5E7SiCAwqAwcjKajlkP8yW1NdCA7T/n0yPa0ukWyRP+auHDVX53mkbxQ
+        ==
+X-ME-Sender: <xms:gmSIYVV48Zc_p8rEM4c1-RxjTzWWSB6DcAoRwdCYz34CWL7ZKYpBhg>
+    <xme:gmSIYVm2PpDK1898gZkl54CQOOTJWnWsgop22UlTPzJrjXM7004d7syE9whn8i0fS
+    ZFAG6tYksF0auBjCw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddruddugddtkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
+    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
+    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
+    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:gmSIYRby8wH-M10d5xd46mb2XA-KsRM9kSzjrKm3MZhAae3Y-bxwMg>
+    <xmx:gmSIYYVDiYUEwzGrBmKRvEmbtW2MUh3-fU7psPgkOfKNJGLcrPg22w>
+    <xmx:gmSIYfkB-_5-upg3pYFdtkozb-Spxbl7x_uXiindt5Hrxltdis-Ekg>
+    <xmx:g2SIYS_cH4wiws1VbSozUnvd8Oz25lZ88Z4y9K30-2oJZYetRAQLVQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 7E8C5AC0DD1; Sun,  7 Nov 2021 18:42:58 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1369-gd055fb5e7c-fm-20211018.002-gd055fb5e
+Mime-Version: 1.0
+Message-Id: <30748da1-0fdb-40c1-bf28-8682d3a89c73@www.fastmail.com>
+In-Reply-To: <HK0PR06MB2786C1ED2463764EAAEA7166B28F9@HK0PR06MB2786.apcprd06.prod.outlook.com>
+References: <20210922103116.30652-1-chin-ting_kuo@aspeedtech.com>
+ <20210922103116.30652-6-chin-ting_kuo@aspeedtech.com>
+ <95669b37-d512-4439-86cb-418ab085118f@www.fastmail.com>
+ <HK0PR06MB2786C1ED2463764EAAEA7166B28F9@HK0PR06MB2786.apcprd06.prod.outlook.com>
+Date:   Mon, 08 Nov 2021 10:12:38 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Chin-Ting Kuo" <chin-ting_kuo@aspeedtech.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "Michael Turquette" <mturquette@baylibre.com>,
+        "Stephen Boyd" <sboyd@kernel.org>,
+        "Adrian Hunter" <adrian.hunter@intel.com>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
+Cc:     BMC-SW <BMC-SW@aspeedtech.com>,
+        "Steven Lee" <steven_lee@aspeedtech.com>
+Subject: Re: [PATCH 05/10] mmc: aspeed: Adjust delay taps calculation method
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Chin-Ting,
 
-On 10/21/21 11:52, Tsuchiya Yuto wrote:
-> Thank you for your comment :-)
-> 
-> First, I need to correct what I said in the previous mail. I later found
-> that loading only "atomisp" (as well as its dependency,
-> atomisp_gmin_platform) does not cause this issue.
-> 
-> What causes this issue is rather, loading sensor drivers (as well as its
-> dependency, atomisp_gmin_platform).
-> 
-> These sensor drivers for surface3 are both not upstream, but I made them
-> as similar as possible to the upstreamed ones. So, I guess this issue
-> can still be reproducible on some other devices.
+I've had another think about this, see my comments below.
 
-I've run some test on my own surface3 and the problem is the writing
-of 0x62 (which becomes just 0x02) to the 0x57 register of the PMIC,
-writing 0x00 to that after loading the sensor driver makes things work
-again.
+On Sat, 6 Nov 2021, at 20:35, Chin-Ting Kuo wrote:
+> Hi Andrew,
+>> >  struct aspeed_sdhci_pdata {
+>> > @@ -158,43 +160,60 @@ aspeed_sdc_set_phase_taps(struct aspeed_sdc
+>> > *sdc,  }
+>> >
+>> >  #define PICOSECONDS_PER_SECOND		1000000000000ULL
+>> > -#define ASPEED_SDHCI_NR_TAPS		15
+>> > -/* Measured value with *handwave* environmentals and static loading */
+>> > -#define ASPEED_SDHCI_MAX_TAP_DELAY_PS	1253
+>> > +#define ASPEED_SDHCI_MAX_TAPS		15
+>> 
+>> Why are we renaming this? It looks to cause a bit of noise in the diff.
+>> 
+>
+> Okay, it can be changed back to the original one in the next patch version.
 
-I have not had time to investigate this further.
+Well, maybe it makes sense, but I think we have to take into account 
+how we describe the taps in the discussion below.
 
-I used media-staging + your sensor drivers from:
-https://github.com/kitakar5525/surface3-atomisp-cameras.git
+>> > -	if (phase_deg >= 180) {
+>> > -		inverted = ASPEED_SDHCI_TAP_PARAM_INVERT_CLK;
+>> > -		phase_deg -= 180;
+>> > -		dev_dbg(dev,
+>> > -			"Inverting clock to reduce phase correction from %d to %d
+>> degrees\n",
+>> > -			phase_deg + 180, phase_deg);
+>> > -	} else {
+>> > -		inverted = 0;
+>> > +	prop_delay_ps = sdc->max_tap_delay_ps / nr_taps;
+>> > +	clk_period_ps = div_u64(PICOSECONDS_PER_SECOND, (u64)rate_hz);
+>> > +
+>> > +	/*
+>> > +	 * For ast2600, if clock phase degree is negative, clock signal is
+>> > +	 * output from falling edge first by default. Namely, clock signal
+>> > +	 * is leading to data signal by 90 degrees at least.
+>> > +	 */
+>> 
+>> Have I missed something about a asymmetric clock timings? Otherwise the
+>> falling edge is 180 degrees away from the rising edge? I'm still not clear on
+>> why 90 degrees is used here.
+>> 
+>
+> Oh, you are right. It should be 180 degrees.
+>
+>> > +	if (invert) {
+>> > +		if (phase_deg >= 90)
+>> > +			phase_deg -= 90;
+>> > +		else
+>> > +			phase_deg = 0;
+>> 
+>> Why are we throwing away information?
+>> 
+>
+> With the above correction, it should be modified as below.
+> If the "invert" is needed, we expect that its value should be greater than 180
+> degrees. We clear "phase_deg" if its value is unexpected. Maybe, a warning
+> should be shown and -EINVAL can be returned.
+>
+> if (invert) {
+> 	if (phase_deg >= 180)
+> 		phase_deg -= 180;
+> 	else
+> 		phase_deg = 0;
 
-Which was enough to figure this out, but I've not actually gotten
-either of the cameras working :|  I get:
+Though we want this to return the EINVAL right?
 
-[user@fedora nvt]$ ./atomisp-test.sh 
-p0: OPEN video device `/dev/video2'
-p0: VIDIOC_S_INPUT <- 1
-p0: ATOMISP_IOC_S_EXPOSURE integration_time={30000,30000} gain={30000,30000}
-p0: ./v4l2n: ATOMISP_IOC_S_EXPOSURE failed on fd 3: Inappropriate ioctl for device (25)
-p0: CLOSED video device
+\>> > +		/*
+>> > +		 * There are 15 taps recorded in AST2600 datasheet.
+>> > +		 * But, actually, the time period of the first tap
+>> > +		 * is two times of others. Thus, 16 tap is used to
+>> > +		 * emulate this situation.
+>> > +		 */
+>> > +		.nr_taps = 16,
+>> 
+>> I think this is a very indirect way to communicate the problem. The only time
+>> we look at nr_taps is in a test that explicitly compensates for the non-uniform
+>> delay. I think we should just have a boolean struct member called
+>> 'non_uniform_delay' rather than 'nr_taps', as the number of taps isn't what's
+>> changing. But also see the discussion below about a potential
+>> aspeed,tap-delays property.
+>> 
+>
+> A new property may be the better choice.
 
-No matter which value I pass for VIDIOC_S_INPUT (tried 0 and 1) any ideas?
+I think I'm changing my mind on this sorry.
 
-Perhaps I need to load the modules in a certain order, e.g. load the
-sensor drivers before the main atomisp driver ?
+I'm think that aiming for fewer custom devicetree properties is better.
 
-Regards,
+Using SoC-specific and device-specific compatibles (i.e. to 
+differentiate between the eMMC and SD controllers in the 2600) we can 
+just encode this data straight in the driver using the OF match data.
 
-Hans
+Rob and/or Joel: Thoughts?
 
+>
+>> Something further to consider is whether we
+>> separate the compatibles or add e.g. an aspeed,tap-delays property that
+>> specifies the specific delay of each logic element. This might take the place of
+>> e.g. the max-tap-delay property?
+>> 
+>
+> Yes, an additional property may be better.
 
+Again, flip-flopping on this a bit, the aspeed,ast2600-emmc compatible 
+is probably fine, and we add the tap delays in the OF match data for 
+the compatible. This means we get rid of any aspeed-specific devictree 
+properties with respect to the delays.
 
-
-
-> 
-> I can't (easily) try touchscreen on mipad2 because it won't boot without
-> nomodeset and somehow GNOME won't start if it's using nomodeset (on Arch
-> Linux).
-> 
-> On Mon, 2021-10-18 at 10:30 +0200, Hans de Goede wrote:
->> Hi,
->>
->> On 10/17/21 18:23, Tsuchiya Yuto wrote:
->>> Touchscreen input works fine before loading atomisp driver on Surface 3.
->>>
->>> However, after loading atomisp driver, touchscreen works only when
->>> capturing images. This sounds like atomisp turns off something needed
->>> for touchscreen when atomisp is idle.
->>>
->>> There is no useful kernel log. Just the touchscreen stops working
->>> with no log.
->>>
->>> I'll update if I find something further. First of all, can someone
->>> reproduce this issue on the other devices?
->>
->> My first bet would be some regulator getting turned off.
->>
->> What you can do is:
->>
->> 1. ls -l /dev/bus/i2c/devices
->>
->> And then write down the number of the i2c-bus to which the
->> CRC PMIC is connected, lets say it is number "4". Then:
->>
->> 2. Before loading the atomisp drivers run:
->>    "sudo i2cdump -y -f 4 0x6e > crc-regs-good"
->>
->> 3. After loading the atomisp drivers run:
->>    "sudo i2cdump -y -f 4 0x6e > crc-regs-bad
->>
->> 4. "diff -u crc-regs-good crc-regs-bad"
->>
->> And see what changed.
-> 
-> Here is the diff. The "good" one is before loading sensor driver, the
-> "bad" one is from after loading sensor driver:
-> 
->         $ diff -u crc-regs-good crc-regs-bad
->         --- crc-regs-good	2021-10-21 18:04:57.853396866 +0900
->         +++ crc-regs-bad	2021-10-21 18:06:13.755738054 +0900
->         @@ -4,14 +4,14 @@
->          20: 00 00 01 c8 68 07 0a 10 10 01 1f 10 10 10 10 10    ..??h???????????
->          30: 10 10 00 20 21 20 20 20 20 20 00 2a 1c 1c 14 10    ??. !     .*????
->          40: 10 10 10 28 20 20 28 2e 2f 20 20 83 00 00 4c 00    ???(  (./  ?..L.
->         -50: 00 01 01 01 00 00 60 00 60 00 00 02 02 03 60 60    .???..`.`..???``
->         +50: 00 01 01 01 00 00 60 02 60 00 00 02 02 62 60 60    .???..`?`..??b``
->          60: 60 01 03 00 00 00 00 00 00 00 30 04 00 00 00 00    `??.......0?....
->         -70: 00 03 00 00 02 7b 02 6c 02 71 02 55 02 7c 02 9d    .?..?{?l?q?U?|??
->         +70: 00 03 00 00 02 7b 02 6d 02 73 02 58 02 7f 02 9e    .?..?{?m?s?X????
->          80: 00 00 00 00 00 00 00 00 00 00 00 02 08 00 0b 02    ...........??.??
->          90: 3f 07 00 00 00 00 4c 00 4e 00 00 4c 00 23 01 b4    ??....L.N..L.#??
->          a0: 4c 00 4e 00 00 3d ca 6a f0 00 00 3d ca 6a f0 00    L.N..=?j?..=?j?.
->          b0: 00 7e 2a ff 02 04 06 00 00 00 00 00 00 20 00 00    .~*.???...... ..
->          c0: 00 00 00 cd 08 00 00 4c 00 00 00 4c 00 00 00 3d    ...??..L...L...=
->         -d0: 97 00 00 3d 97 00 00 fe 17 00 ff 02 01 07 94 03    ?..=?..??..?????
->         -e0: 9a 00 27 00 00 00 00 00 00 00 00 00 00 00 00 00    ?.'.............
->         +d0: 97 00 00 3d 97 00 00 fe 17 00 ff 02 01 07 ec 03    ?..=?..??..?????
->         +e0: 96 00 21 00 00 00 00 00 00 00 00 00 00 00 00 00    ?.!.............
->          f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
-> 
-> Note that lines "70:" and "d0:"/"e0:" change over time. So, the actual
-> change caused by loading sensor driver is line "50:"
-> 
->         -50: 00 01 01 01 00 00 60 00 60 00 00 02 02 03 60 60    .???..`.`..???``
->         +50: 00 01 01 01 00 00 60 02 60 00 00 02 02 62 60 60    .???..`?`..??b``
-> 
-> and in atomisp_gmin_platform.c file,
-> 
->         /* CRYSTAL COVE PMIC register set */
->         #define CRYSTAL_1P8V_REG	0x57
->         #define CRYSTAL_2P8V_REG	0x5d
->         #define CRYSTAL_ON		0x63
->         #define CRYSTAL_OFF		0x62
-> 
-> indeed we're poking at 0x57 and 0x5d. So, maybe this issue is caused by
-> regulators? I tried what would happen if I kept sensor power on before
-> in sensor drivers, but there was no effect. But I feel I need to look
-> into it again further.
-> 
->> There are 2 possible root causes here:
->>
->> 1. Some regulator is shared between the cameras and
->> touchscreen
->>
->> 2. The crc code in atomisp which you are using is
->> poking registers assuming the Bay Trail version of
->> the Crystal Cove PMIC (aka CRC PMIC) but your
->> Surface 3 has the Cherry Trail version and we know
->> that the regulators are add different register
->> addresses there, see the comment in:
->> drivers/acpi/pmic/intel_pmic_chtcrc.c
->> so it is possible that the atomisp code is simply
->> poking the wrong register for one of the regulators
-> 
-> According to this Android kernel commit [1], the address for 1P8V and
-> 2P8V are updated to the CRC+ ones (the upstreamed atomisp already has
-> this change)
-> 
-> [1] https://github.com/MiCode/Xiaomi_Kernel_OpenSource/commit/2f8221ba9a3770aed1ecfad2d04db61b95f30394
->     ("update PMIC v1p8/v2p8 address")
-> 
->> I also wonder if this goes away if you do the
->>
->> 	hrv = 0x03;
->>
->> Hack inside drivers/mfd/intel_soc_pmic_core.c ?
->>
->> Without that we end up using the wrong PMIC
->> OpRegion driver which also uses the wrong
->> regulator addresses.
-> 
-> I'm now using cht one with your patch, but the situation is the same
-> as before.
-> 
-> Regards,
-> Tsuchiya Yuto
-> 
->> Regards,
->>
->> Hans
->>
->>
->> p.s.
->>
->> Here are the 2 different regulator drivers the
->> comment in drivers/acpi/pmic/intel_pmic_chtcrc.c
->> refers to:
->>
->> https://github.com/Zenfone2-Dev/android_kernel_asus_moorefield-1/blob/stock/drivers/regulator/pmic_crystal_cove.c
->> https://github.com/Zenfone2-Dev/android_kernel_asus_moorefield-1/blob/stock/drivers/regulator/pmic_crystal_cove_plus.c
->>
-> 
-> 
-
+Andrew
