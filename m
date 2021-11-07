@@ -2,109 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93EA8447228
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 09:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE5E44722D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 09:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235215AbhKGIXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 03:23:34 -0500
-Received: from mga05.intel.com ([192.55.52.43]:4100 "EHLO mga05.intel.com"
+        id S235222AbhKGIcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 03:32:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229966AbhKGIXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 03:23:32 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10160"; a="318291585"
-X-IronPort-AV: E=Sophos;i="5.87,216,1631602800"; 
-   d="scan'208";a="318291585"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 01:20:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,216,1631602800"; 
-   d="scan'208";a="668678123"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 07 Nov 2021 01:20:48 -0700
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mjdQ0-000ALA-2W; Sun, 07 Nov 2021 08:20:48 +0000
-Date:   Sun, 07 Nov 2021 16:20:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 9a6cf455a952725422f4fb10848839989f833579
-Message-ID: <61878c5a.z+vXp9zOH0v15l0D%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229966AbhKGIb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 03:31:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0538161101;
+        Sun,  7 Nov 2021 08:29:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1636273754;
+        bh=Cw4mcFHOW+d1qOkd6B9pcfhOqnJaP9Qk7Xmz88ff2X4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yo7Pf9aSKbpP2pID2VOZUUzdpnMGQziZIVWi0Cf3qigJ84gMiH4x/CMxdDofzdGpO
+         4d9/hbl3fiE7Fcxj8213FBNGG/lSiyZa/L3Ih81q03X5PIG2FLUotR/NaCINHAkXZ1
+         Th/HiPRamY9S93cVTs7Przu4LJAAu58EjjWrdEFQ=
+Date:   Sun, 7 Nov 2021 09:29:08 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org, jic23@kernel.org,
+        linux-iio@vger.kernel.org
+Subject: Re: [PATCH 0/1] device property: Adding fwnode_irq_get_by_name()
+Message-ID: <YYeOVJjiz6huHv4y@kroah.com>
+References: <20211106173909.34255-1-puranjay12@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20211106173909.34255-1-puranjay12@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 9a6cf455a952725422f4fb10848839989f833579  Merge branch 'x86/urgent'
+On Sat, Nov 06, 2021 at 11:09:08PM +0530, Puranjay Mohan wrote:
+> While working on an IIO driver I was told to use of_irq_get_byname() as
+> the generic version is not available in property.c.
+> I wish to work on this and have written a function that may work.
+> I am not sure about its correctness so I am posting this patch early for
+> review.
 
-elapsed time: 968m
+Please test your code, and also provide a user for it.  We can not take
+new functions that no one uses as that usually means they do not work.
 
-configs tested: 53
-configs skipped: 3
+thanks,
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-s390                                defconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+greg k-h
