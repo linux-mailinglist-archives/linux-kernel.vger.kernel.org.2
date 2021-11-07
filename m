@@ -2,115 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D45F4474B2
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 18:44:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 506D64474B6
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Nov 2021 18:55:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236018AbhKGRq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 12:46:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbhKGRqv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 12:46:51 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12175C061570
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Nov 2021 09:44:09 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id t21so14304461plr.6
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Nov 2021 09:44:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xjl9+CEP43AsYHfS7KL6O6N3m1KhqAGplZ+XQFg3jQo=;
-        b=YWgefyqzxxBD3rlgz3CG3XU0eq36CTeZVt//aHpCohfr2fHrU6xTlvDRaBnWh0bbPT
-         PxrI7M/8IWvYBznnoAIo8IKWUMVES0sQDjR5772kxkrTs03I+VEcttQh5UGSJKibWImf
-         /Ezx8ZN/hI72TV1W3NVEZfyc2bKX8wF1AJ8mPdtFXlgiSSzkfEdeQNjq7bQLYnTqz5km
-         wIqrKtgFVk0s5BwVw5K99KC8e0oag8BDBUfFq7n7ymT7UkPuOiD1xkfCM10F+DN4ILFY
-         pLBoVne4VcRixznWYrhdy+4zRDOTbkfVR647aWPF4dVzPIvN/cRTN2Ko/2XPNpr/i36K
-         US5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xjl9+CEP43AsYHfS7KL6O6N3m1KhqAGplZ+XQFg3jQo=;
-        b=XnGEoF6cMIxjjW2P43akCgqYSpBADHLUtLGHQE1K69U9xyFMCiESZmxkviXJjcvz1Z
-         U2oshspG2d//m9pOJvXjAvELFT86hE/v+7WadjyfKNcj5/Np3tR48joxnMjFJ+jN0p+R
-         sULUKKE4Aie0DuTlQyBdtVbc+otNAAeGbRMCKNSNAfHGTYt5yGs68QFAGH1b821y6wdH
-         xZb6aI8mnIcqfRUpPDA53tMB5aojWR5NowxKXhGtQ2H69xK7DFDzTC/4FAgRKaYhBsHv
-         fcAMy4I5Lwp4cKLGIwNysxpnij07AzIoRdu7SlGJWMO/wupE4NYBxljUq3WuIH61pyKD
-         zZiw==
-X-Gm-Message-State: AOAM531GJIg0Z7OnFHanYa6Wsp0nu8ARnUeDOdw22kZc/Q4NU0Vm5M0B
-        4tW90b8R+Np432dkPY/l4c5cUboGKP0FXb8aELUKCA==
-X-Google-Smtp-Source: ABdhPJxINONf55fxJqdllPtpzr8XTcFEY4Av/x9s8kcehhAWTNeEb7kHflA42J/sEDupZtwyCOKhgDCJakICmgVRxMo=
-X-Received: by 2002:a17:902:934c:b0:13d:c685:229b with SMTP id
- g12-20020a170902934c00b0013dc685229bmr64444159plp.25.1636307048598; Sun, 07
- Nov 2021 09:44:08 -0800 (PST)
+        id S236021AbhKGR5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 12:57:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229892AbhKGR5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 12:57:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03C8A60F46;
+        Sun,  7 Nov 2021 17:54:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636307664;
+        bh=i7Fa0iAZl1MqjtaLTFMXixa2ShnAxcvJBwDGQaBsMHM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=POUhSQjmU/lLR4ywtCcNw/NhTKvYrGMP/oiSi6j3iTkFwCil4BBy61IScg/mipnf5
+         tctjTykCt/HbGSm2z38fpHyy0MDx33AzybBI7+tphMhaU7n8BOwPNrtBQVYNybmmon
+         4rMsI+U/EetknZwn82M/sZruMc27GWStQjupj6n8SotFS0ROMfY0tyRI6E16Vko56r
+         GX6PxlU0oYUAHRi30/GRAdKQC0nK5vyosP3UEkAm/NgB4YluF131GJ7cV8IlZCxJMd
+         +aRNktmmX7jo2mInzztEUoczRbNkg3C2sIXfjQ+XLPwweiALWAGsizPYPAcYX4f7vM
+         NBI6d1ReGC5kA==
+Date:   Sun, 7 Nov 2021 19:54:20 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, edwin.peer@broadcom.com
+Subject: Re: [PATCH net-next] devlink: Require devlink lock during device
+ reload
+Message-ID: <YYgSzEHppKY3oYTb@unreal>
+References: <9716f9a13e217a0a163b745b6e92e02d40973d2c.1635701665.git.leonro@nvidia.com>
+ <YYABqfFy//g5Gdis@nanopsycho>
+ <YYBTg4nW2BIVadYE@shredder>
+ <20211101161122.37fbb99d@kicinski-fedora-PC1C0HJN>
+ <YYgJ1bnECwUWvNqD@shredder>
 MIME-Version: 1.0
-References: <20211107173543.7486-1-Larry.Finger@lwfinger.net>
-In-Reply-To: <20211107173543.7486-1-Larry.Finger@lwfinger.net>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Sun, 7 Nov 2021 17:43:57 +0000
-Message-ID: <CAA=Fs0mCkY4_5PJg++EWDcJaaTPjN6q3d6o2ZU_ZW4HBDPU4XA@mail.gmail.com>
-Subject: Re: [PATCH v2] staging: r8188eu: Fix breakage introduced when 5G code
- was removed
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Zameer Manji <zmanji@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YYgJ1bnECwUWvNqD@shredder>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 7 Nov 2021 at 17:35, Larry Finger <Larry.Finger@lwfinger.net> wrote:
->
-> In commit 221abd4d478a ("staging: r8188eu: Remove no more necessary definitions
-> and code"), two entries were removed from RTW_ChannelPlanMap[], but not replaced
-> with zeros. The position within this table is important, thus the patch broke
-> systems operating in regulatory domains osted later than entry 0x13 in the table.
-> Unfortunately, the FCC entry comes before that point and most testers did not see
-> this problem.
->
-> Reported-and-tested-by: Zameer Manji <zmanji@gmail.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: 221abd4d478a ("staging: r8188eu: Remove no more necessary definitions and code")
-> Cc: Stable <stable@vger.kernel.org> # v5.5+
-> Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
-> ---
->
-> v2 - fixed use of () rsther than {} - found by kernel test robot
-> ---
->  drivers/staging/r8188eu/core/rtw_mlme_ext.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-> index 55c3d4a6faeb..5b60e6df5f87 100644
-> --- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-> +++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-> @@ -107,6 +107,7 @@ static struct rt_channel_plan_map   RTW_ChannelPlanMap[RT_CHANNEL_DOMAIN_MAX] = {
->         {0x01}, /* 0x10, RT_CHANNEL_DOMAIN_JAPAN */
->         {0x02}, /* 0x11, RT_CHANNEL_DOMAIN_FCC_NO_DFS */
->         {0x01}, /* 0x12, RT_CHANNEL_DOMAIN_JAPAN_NO_DFS */
-> +       {0x00}, /* 0x13 */
->         {0x02}, /* 0x14, RT_CHANNEL_DOMAIN_TAIWAN_NO_DFS */
->         {0x00}, /* 0x15, RT_CHANNEL_DOMAIN_ETSI_NO_DFS */
->         {0x00}, /* 0x16, RT_CHANNEL_DOMAIN_KOREA_NO_DFS */
-> @@ -118,6 +119,7 @@ static struct rt_channel_plan_map   RTW_ChannelPlanMap[RT_CHANNEL_DOMAIN_MAX] = {
->         {0x00}, /* 0x1C, */
->         {0x00}, /* 0x1D, */
->         {0x00}, /* 0x1E, */
-> +       {0x00}, /* 0x1F, */
->         /*  0x20 ~ 0x7F , New Define ===== */
->         {0x00}, /* 0x20, RT_CHANNEL_DOMAIN_WORLD_NULL */
->         {0x01}, /* 0x21, RT_CHANNEL_DOMAIN_ETSI1_NULL */
-> --
-> 2.33.1
->
+On Sun, Nov 07, 2021 at 07:16:05PM +0200, Ido Schimmel wrote:
+> On Mon, Nov 01, 2021 at 04:11:22PM -0700, Jakub Kicinski wrote:
+> > On Mon, 1 Nov 2021 22:52:19 +0200 Ido Schimmel wrote:
+> > > > >Signed-off-by: Leon Romanovsky <leonro@nvidia.com>  
+> > > > 
+> > > > Looks fine to me.
+> > > > 
+> > > > Reviewed-by: Jiri Pirko <jiri@nvidia.com>  
+> > > 
+> > > Traces from mlxsw / netdevsim below:
+> > 
+> > Thanks a lot for the testing Ido!
+> > 
+> > Would you mind giving my RFC a spin as well on your syzbot machinery?
 
-Reviewed-by: Phillip Potter <phil@philpotter.co.uk>
+<...>
 
-Regards,
-Phil
+> > 
+> >  (3) should we let drivers take refs on the devlink instance?
+> 
+> I think it's fine mainly because I don't expect it to be used by too
+> many drivers other than netdevsim which is somewhat special. Looking at
+> the call sites of devlink_get() in netdevsim, it is only called from
+> places (debugfs and trap workqueue) that shouldn't be present in real
+> drivers.
+
+Sorry, I'm obligated to ask. In which universe is it ok to create new
+set of API that no real driver should use?
+
+Thanks
