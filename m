@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED28449BAA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:31:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D8D449BAE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:33:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235640AbhKHSd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 13:33:58 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:43904 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235611AbhKHSdx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 13:33:53 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 6F5861FD4E;
-        Mon,  8 Nov 2021 18:31:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1636396266; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XCt44ciTjHPqBO2xWONoM27y235Uqj1XS1pgFKfh1lY=;
-        b=oR4Rs8LrrE2wh0pjmmsoiEgZk4Uco+owPrA8z7rJMAyfH9HUrmu0/vaxkGJNBvrGAAEpUL
-        qAKkN5X6PkDnnWkRKCRblD+UodYxnQVbJMtjIbyB3cXBxzkOxKx7xpx6A4FOztkrilWaD2
-        qiyjPZSGEBbFG9romrvi61mp7Vjd2q0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1636396266;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XCt44ciTjHPqBO2xWONoM27y235Uqj1XS1pgFKfh1lY=;
-        b=5XKQZm3A0GQgccfJjWJc/L5fHp7SL2/HrLb6lUCIHOQg3+qixevztH+dmKeA/W8tlGx326
-        04jfgETojWoLCOCw==
-Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S235621AbhKHSgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 13:36:22 -0500
+Received: from ixit.cz ([94.230.151.217]:53196 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230053AbhKHSgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 13:36:20 -0500
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 42AC0A3B85;
-        Mon,  8 Nov 2021 18:31:05 +0000 (UTC)
-Date:   Mon, 8 Nov 2021 19:31:05 +0100 (CET)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
-cc:     jeyu@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, mcgrof@kernel.org
-Subject: Re: [PATCH] module: Fix implicit type conversion
-In-Reply-To: <1635473169-1848729-1-git-send-email-jiasheng@iscas.ac.cn>
-Message-ID: <alpine.LSU.2.21.2111081925580.1710@pobox.suse.cz>
-References: <1635473169-1848729-1-git-send-email-jiasheng@iscas.ac.cn>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        by ixit.cz (Postfix) with ESMTPSA id 69D5120064;
+        Mon,  8 Nov 2021 19:33:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1636396413;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=SYqiyfi+3LLQOhgIjPN+BSk4wD1o6OGfvuU5++WE4bY=;
+        b=VkDvwfZGh/xG+Amnk/ymrl1ZPYnxvkpz8BlSEx7ZDzLG56ck4luz9o6IPw5qWYHj1IIugJ
+        lpzWKJmGpSbeATPvaH68zgxFOQRFGtgs3N6Rwy/FUyTQIXNRmyJ/cZpxPnX/DG1QBxwyre
+        n8K/P7qbCfXIIYbPwLjdNChcFMvfmw8=
+From:   David Heidelberg <david@ixit.cz>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc:     ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: display: sync formats with simplefb.h
+Date:   Mon,  8 Nov 2021 19:33:22 +0100
+Message-Id: <20211108183322.68192-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[CCing Luis]
+Sync all formats from simplefb.h into documentation.
 
-Hi,
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+ .../bindings/display/simple-framebuffer.yaml         | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-On Fri, 29 Oct 2021, Jiasheng Jiang wrote:
-
-> The variable 'cpu' is defined as unsigned int.
-> However in the for_each_possible_cpu, its values is assigned to -1.
-> That doesn't make sense and in the cpumask_next() it is implicitly
-> type conversed to int.
-> It is universally accepted that the implicit type conversion is
-> terrible.
-> Also, having the good programming custom will set an example for
-> others.
-> Thus, it might be better to change the definition of 'cpu' from
-> unsigned int to int.
-
-Frankly, I don't see a benefit of changing this. It seems fine to me. 
-Moreover this is not, by far, the only place in the kernel with the same 
-pattern.
-
-Miroslav
-
-> Fixes: 10fad5e ("percpu, module: implement and use is_kernel/module_percpu_address()")
-> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
-> ---
->  kernel/module.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/module.c b/kernel/module.c
-> index 927d46c..f10d611 100644
-> --- a/kernel/module.c
-> +++ b/kernel/module.c
-> @@ -632,7 +632,7 @@ static void percpu_modcopy(struct module *mod,
->  bool __is_module_percpu_address(unsigned long addr, unsigned long *can_addr)
->  {
->  	struct module *mod;
-> -	unsigned int cpu;
-> +	int cpu;
->  
->  	preempt_disable();
->  
-> -- 
-> 2.7.4
-> 
+diff --git a/Documentation/devicetree/bindings/display/simple-framebuffer.yaml b/Documentation/devicetree/bindings/display/simple-framebuffer.yaml
+index c2499a7906f5..44a29d813f14 100644
+--- a/Documentation/devicetree/bindings/display/simple-framebuffer.yaml
++++ b/Documentation/devicetree/bindings/display/simple-framebuffer.yaml
+@@ -83,13 +83,25 @@ properties:
+   format:
+     description: >
+       Format of the framebuffer:
++        * `a1r5g5b5` - 16-bit pixels, d[15]=a, d[14:10]=r, d[9:5]=g, d[4:0]=b
++        * `a2r10g10b10` - 32-bit pixels, d[31:30]=a, d[29:20]=r, d[19:10]=g, d[9:0]=b
+         * `a8b8g8r8` - 32-bit pixels, d[31:24]=a, d[23:16]=b, d[15:8]=g, d[7:0]=r
++        * `a8r8g8b8` - 32-bit pixels, d[31:24]=a, d[23:16]=r, d[15:8]=g, d[7:0]=b
+         * `r5g6b5` - 16-bit pixels, d[15:11]=r, d[10:5]=g, d[4:0]=b
++        * `r5g5b5a1` - 16-bit pixels, d[15:11]=r, d[10:6]=g, d[5:1]=b d[1:0]=a
++        * `r8g8b8` - 24-bit pixels, d[23:16]=r, d[15:8]=g, d[7:0]=b
++        * `x1r5g5b5` - 16-bit pixels, d[14:10]=r, d[9:5]=g, d[4:0]=b
+         * `x2r10g10b10` - 32-bit pixels, d[29:20]=r, d[19:10]=g, d[9:0]=b
+         * `x8r8g8b8` - 32-bit pixels, d[23:16]=r, d[15:8]=g, d[7:0]=b
+     enum:
++      - a1r5g5b5
++      - a2r10g10b10
+       - a8b8g8r8
++      - a8r8g8b8
+       - r5g6b5
++      - r5g5b5a1
++      - r8g8b8
++      - x1r5g5b5
+       - x2r10g10b10
+       - x8r8g8b8
+ 
+-- 
+2.33.0
 
