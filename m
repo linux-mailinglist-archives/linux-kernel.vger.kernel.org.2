@@ -2,155 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB42449872
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:33:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1992844983B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:31:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240946AbhKHPgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 10:36:06 -0500
-Received: from mail-qt1-f172.google.com ([209.85.160.172]:43861 "EHLO
-        mail-qt1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240901AbhKHPgE (ORCPT
+        id S239181AbhKHP2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 10:28:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235860AbhKHP2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 10:36:04 -0500
-Received: by mail-qt1-f172.google.com with SMTP id 8so13954457qty.10;
-        Mon, 08 Nov 2021 07:33:18 -0800 (PST)
+        Mon, 8 Nov 2021 10:28:41 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 946FDC061570;
+        Mon,  8 Nov 2021 07:25:57 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id r80so5132196pgr.9;
+        Mon, 08 Nov 2021 07:25:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=vPyJr+4qmWXSKsoVulut/GUWobZxrCQk03WwnLZG85Q=;
+        b=TCem6/Qje9Aic+a5CzQoHwLA5+wgX8Yl6Rv8spN0zZXx6nxquLe8/6JlghITAaUV85
+         lULdtQhrq/9PGxZm8Mn+ocVv6PWConrf+Tsrr6NmKX+G715Ak1/ElkaAyNYgRs8/g61m
+         2VbOnFjydzm8AqngcKjWCsEc4zipRNoQ9rNzlckVnabZXmFe8aQWJOxs9bqkacNft/cb
+         Js4JEIpejkxXUfCiQsHpa2AXFrv4ek1e1vLhfMW2H6INrURc+g2+W6xW7e30YgXg7gzy
+         4nkXNyWWmXOoubygMz5/8XkqklSkK5W1sEauiGiE6QzcSwz/Z4LP44PD1oH6zSp1ets0
+         lPVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x4ykPITI22sSh/L6reU4seHVLFfVjdO/v+W3/SN8DUg=;
-        b=AK5+ymHpBJW394fq5QAJLtdTA/ZOqD4CMNR9HBtKgBlKaocEikykm9zWu2Qq3FsTDL
-         IBKgKBLjeGow4SxpkJ3x2oRGNnBBM0NSZ7leYaUE+sCbLlU8e+JdCCmHwGdf11yTS7jj
-         INUpSYd8YTGwyay9k1OcwzYpdYcV9EphK2OvOUVV9gSZxXZxi4QIiBYrsZTyoOgrppre
-         0wprgxHXRXz//JJtuaBp7hB+dbvc/y85rRMUeNSC0zaCdkGtvZcR3mZvLtetjRGhVxNU
-         Kq48BbcYt3WMF9YTaLnfqSufIaTCw2FbfsTbHiFPM419cNwj86653TvYIoMnsf+J4fK+
-         gBYw==
-X-Gm-Message-State: AOAM533eiMtrTJQK05ouqSS0wCB8B6mKp/DGcpb7z8dQ92ZCTvl80eY0
-        jARg/oG42UJJhg0c3f7dAUMoRa5LWBurk5lZ
-X-Google-Smtp-Source: ABdhPJykPOH3YWmh1bWslDbzGH3og2HDnOT28nOQQhf2wbjOhuI4A+4quz4f35G+kzZC3Oinm8VRnw==
-X-Received: by 2002:ac8:5a4b:: with SMTP id o11mr304870qta.321.1636385597559;
-        Mon, 08 Nov 2021 07:33:17 -0800 (PST)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id i14sm11098927qti.25.2021.11.08.07.33.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 07:33:17 -0800 (PST)
-Received: by mail-yb1-f174.google.com with SMTP id v7so44765592ybq.0;
-        Mon, 08 Nov 2021 07:33:17 -0800 (PST)
-X-Received: by 2002:a9f:2c98:: with SMTP id w24mr725068uaj.89.1636385158322;
- Mon, 08 Nov 2021 07:25:58 -0800 (PST)
-MIME-Version: 1.0
-References: <20211108101157.15189-1-bp@alien8.de> <20211108101157.15189-43-bp@alien8.de>
- <CAMuHMdWH+txiSP_d7Jc4f_bU8Lf9iWpT4E3o5o7BJr-YdA6-VA@mail.gmail.com> <YYkyUEqcsOwQMb1S@zn.tnic>
-In-Reply-To: <YYkyUEqcsOwQMb1S@zn.tnic>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 8 Nov 2021 16:25:47 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXiBEQyEXJagSfpH44hxVA2t0sDH7B7YubLGHrb2MJLLA@mail.gmail.com>
-Message-ID: <CAMuHMdXiBEQyEXJagSfpH44hxVA2t0sDH7B7YubLGHrb2MJLLA@mail.gmail.com>
-Subject: Re: [PATCH v0 42/42] notifier: Return an error when callback is
- already registered
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=vPyJr+4qmWXSKsoVulut/GUWobZxrCQk03WwnLZG85Q=;
+        b=1NqCq/xX437CD30Hd9tejB8a/Via0Ko9qxmcYBcWvoKaALPASKCsGKyTHdi6TxgpCf
+         UQpZTK0XZaSgFFnevFi2E/8aFoftaARjzwdieM4KdqO5+s/M43CrS5kGeIJRAtXY8Z/8
+         Ss3TjdUxIxcPvq/3tGPYiQuFwvkKtou2pZivkTI9am0ndW2yuF9E0o++SZxmE01fV4Fl
+         dniKFs8X+4pwzbEhq73dXq53W2hXckDLm/30MJbL+4wOqdVQST/uAQ25lzWYjr9VBoFg
+         Zz0cYrmuPHVrE/lUssK3uhluJjGG8RL8HsXKWDAkvf7vv3RCYMjlTviL8D0sPHI88u4U
+         QXOA==
+X-Gm-Message-State: AOAM5339+rRODdU0t7/gjv95MhJsfo+pKJtoGoozmCLyemjMasZ2Avdc
+        q4J4hVe+6IG+JSrLpEIF0rk=
+X-Google-Smtp-Source: ABdhPJzWSFewdvnFvrYlEolrd4fh2DtHFo6fRGA+sJCKTWOJ51qsmIfpwb5heta9Xboq/m704F/euA==
+X-Received: by 2002:aa7:9e9c:0:b0:49f:c7cf:ff5 with SMTP id p28-20020aa79e9c000000b0049fc7cf0ff5mr277917pfq.62.1636385157071;
+        Mon, 08 Nov 2021 07:25:57 -0800 (PST)
+Received: from ?IPv6:2400:4052:6980:3800:dba7:2b1f:3f26:a5ec? ([2400:4052:6980:3800:dba7:2b1f:3f26:a5ec])
+        by smtp.gmail.com with ESMTPSA id j6sm12763106pgq.0.2021.11.08.07.25.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 07:25:56 -0800 (PST)
+Message-ID: <efaf74b587e5e31403895cd5af88852402fe92ec.camel@gmail.com>
+Subject: Re: [PATCH 05/17] media: atomisp: pci: fix inverted error check for
+ ia_css_mipi_is_source_port_valid()
+From:   Tsuchiya Yuto <kitakar@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        intel-gvt-dev@lists.freedesktop.org,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-edac@vger.kernel.org,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        linux-hyperv@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-leds <linux-leds@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        scsi <linux-scsi@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>, netdev <netdev@vger.kernel.org>,
-        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
-        sparclinux <sparclinux@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        xen-devel@lists.xenproject.org
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Deepak R Varma <drv@mailo.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 09 Nov 2021 00:25:52 +0900
+In-Reply-To: <20211108151455.GI2001@kadam>
+References: <20211017161958.44351-1-kitakar@gmail.com>
+         <20211017161958.44351-6-kitakar@gmail.com> <20211102113332.GC2794@kadam>
+         <ed17420d96bd302479b528f7ae8694ff9cd2e72a.camel@gmail.com>
+         <20211108151455.GI2001@kadam>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Borislav,
+<removed Alan from Cc as the mail address not reachable>
 
-On Mon, Nov 8, 2021 at 3:21 PM Borislav Petkov <bp@alien8.de> wrote:
-> On Mon, Nov 08, 2021 at 03:07:03PM +0100, Geert Uytterhoeven wrote:
-> > I think the addition of __must_check is overkill, leading to the
-> > addition of useless error checks and message printing.
->
-> See the WARN in notifier_chain_register() - it will already do "message
-> printing".
+On Mon, 2021-11-08 at 18:14 +0300, Dan Carpenter wrote:
+> On Tue, Nov 09, 2021 at 12:00:29AM +0900, Tsuchiya Yuto wrote:
+> > On Tue, 2021-11-02 at 14:33 +0300, Dan Carpenter wrote:
+> > > On Mon, Oct 18, 2021 at 01:19:45AM +0900, Tsuchiya Yuto wrote:
+> > > > The function ia_css_mipi_is_source_port_valid() returns true if the port
+> > > > is valid. So, we can't use the existing err variable as is.
+> > > > 
+> > > > To fix this issue while reusing that variable, invert the return value
+> > > > when assigning it to the variable.
+> > > > 
+> > > > Fixes: 3c0538fbad9f ("media: atomisp: get rid of most checks for ISP2401 version")
+> > > > Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
+> > > > ---
+> > > >  .../staging/media/atomisp/pci/sh_css_mipi.c   | 24 ++++++++++++-------
+> > > >  1 file changed, 15 insertions(+), 9 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/staging/media/atomisp/pci/sh_css_mipi.c b/drivers/staging/media/atomisp/pci/sh_css_mipi.c
+> > > > index 65fc93c5d56b..c1f2f6151c5f 100644
+> > > > --- a/drivers/staging/media/atomisp/pci/sh_css_mipi.c
+> > > > +++ b/drivers/staging/media/atomisp/pci/sh_css_mipi.c
+> > > > @@ -423,10 +423,12 @@ allocate_mipi_frames(struct ia_css_pipe *pipe,
+> > > >  		return 0; /* AM TODO: Check  */
+> > > >  	}
+> > > >  
+> > > > -	if (!IS_ISP2401)
+> > > > +	if (!IS_ISP2401) {
+> > > >  		port = (unsigned int)pipe->stream->config.source.port.port;
+> > > > -	else
+> > > > -		err = ia_css_mipi_is_source_port_valid(pipe, &port);
+> > > > +	} else {
+> > > > +		/* Returns true if port is valid. So, invert it */
+> > > > +		err = !ia_css_mipi_is_source_port_valid(pipe, &port);
+> > > 
+> > > Don't invert it...  This isn't supposed to return 1 on failure it's
+> > > supposed to return negative error codes.
+> > 
+> > You mean I should instead modify the return value of
+> > ia_css_mipi_is_source_port_valid() ?
+> > 
+> 
+> No.  ia_css_mipi_is_source_port_valid() is fine.  It has a boolean name
+> so returning bool is fine.  What I'm saying is that allocate_mipi_frames()
+> should do:
+> 
+> 	if (!ia_css_mipi_is_source_port_valid(pipe, &port))
+> 		err = -EINVAL;
+> 
+> Otherwise it returns negative error codes and 1 on failure.
 
-I mean the addition of useless error checks and message printing _to
-the callers_.
+Ah, I see! Thank you. I feel I'm a stupid... I'll do so in v2.
 
-> > Many callers call this where it cannot fail, and where nothing can
-> > be done in the very unlikely event that the call would ever start to
-> > fail.
->
-> This is an attempt to remove this WARN() hack in
-> notifier_chain_register() and have the function return a proper error
-> value instead of this "Currently always returns zero." which is bad
-> design.
->
-> Some of the registration functions around the tree check that retval and
-> some don't. So if "it cannot fail" those registration either should not
-> return a value or callers should check that return value - what we have
-> now doesn't make a whole lot of sense.
+Regards,
+Tsuchiya Yuto
 
-With __must_check callers are required to check, even if they know
-it cannot fail.
-
-> Oh, and then fixing this should avoid stuff like:
->
-> +       if (notifier_registered == false) {
-> +               mce_register_decode_chain(&amdgpu_bad_page_nb);
-> +               notifier_registered = true;
-> +       }
->
-> from propagating in the code.
-
-That's unrelated to the addition of __must_check.
-
-I'm not against returning proper errors codes.  I'm against forcing
-callers to check things that cannot fail and to add individual error
-printing to each and every caller.
-
-Note that in other areas, we are moving in the other
-direction, to a centralized printing of error messages,
-cfr. e.g. commit 7723f4c5ecdb8d83 ("driver core: platform: Add an
-error message to platform_get_irq*()").
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
