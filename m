@@ -2,176 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F87449755
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:00:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 851DA449753
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240616AbhKHPD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 10:03:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48322 "EHLO
+        id S238539AbhKHPDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 10:03:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239374AbhKHPDY (ORCPT
+        with ESMTP id S234731AbhKHPDV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 10:03:24 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464F7C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 07:00:40 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id j10so11348974lfu.4
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 07:00:40 -0800 (PST)
+        Mon, 8 Nov 2021 10:03:21 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C293BC061570;
+        Mon,  8 Nov 2021 07:00:36 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so9015409pjl.2;
+        Mon, 08 Nov 2021 07:00:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NSTQzYJRWmUa8HDHRPnVFUMCKGtizSx9Zp/eRuhf0I4=;
-        b=KFog4aZDxepJW+x80u2oSQVis6MUievGTZprsC/FLW5RLc5MOd0W60MK1xlJCbHtIL
-         aSvdbgJvOzJhnb+PtwRUtsqFxCrx1V85R4YyppgN/qJopJ/66F/ofVVlz9IOobryEBJm
-         vi3r9gZRR8gpBmVyESbdchFFv9ap3apHIbfXasWZlQnHT2as1nP+WsK56OSC0obS/E4c
-         7ksFjh5xqzT+RtghecV0JeY9NHihqBVJXY0rfqk8OSBCMEG1POlXreVqFlooPEGeH1DK
-         scMbIScbPWCKWfGx5oqWz7vapdTSrzs2oM9AnG9Bq7zLIm53GrJnoqCaVCZMaAh3qLUn
-         Brqg==
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=Vg2mmXTQsiGOcnSfqtuBHGSM9AyDd9EFgvLrpDEekBk=;
+        b=UikCN7jQTO38Ta3H8Q3C4g79CHu0Orrj8KbcQRecYHKG2Ri4YtV4pAZIviAv+xhRZE
+         YtOV1w2d48IrEdUmFCO3PhkcA2DfMJDuTd0leFxkOlhjTm5upQNYt7kaQaaRcOx27Qt7
+         roeaH/LhNHCsx93NQIbtZ1AmIqF/KPU8BeOfLi6HTg5ccsyZLaQOYTeEXNlAputfQYGH
+         E07oUpMyeW7knVLALTMjAflL9pSDTTSY/8nsh7m6ODzxYskLU7f53C5eraRcQUj5Bxg/
+         38Ag3cw/wk5vkBRQAEz/bPm0VaRVkshwwaX+Y+BTpMSmR9rmlo+FRK9sjyjugy66e/lD
+         VWDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NSTQzYJRWmUa8HDHRPnVFUMCKGtizSx9Zp/eRuhf0I4=;
-        b=gcynkLBOISQj+nyaVZuF1tAsTgPF1f3W6OAgkdWVh7seijhzGOMUYn8TQokKTEdPiz
-         fFSYZKj8AS76c+KXIwIPKAurUNxKQ8w4KRgZFqrx9QHsUWiX5LkqJ2fnu7dOwtb8EpRN
-         QLhe3Q2Nw3PogMy9Mfy2o4DljuyVCmbciS4u7oBbd5Au0gwd4QPf3pWxy4HuslzwhMIe
-         0Y5E2H93vxntgEr+2bSKAJUvUaGnyy9PbF3fPHZ3Sk0eCdR3QbA0FJ7nZ7xGQ6Llj6pH
-         bvwJcKjE7W5cgjZTQf9ae5f/ljPvt3CuEVXgs8X8ytQ5ygEeFB1fBdtE3kZMmVga7KXq
-         Ni1Q==
-X-Gm-Message-State: AOAM53329DHzmCgKufCFsfX1S9Tjapk3PKIehVseoq5G+PQe7oGpZE3S
-        Ym1DAytzSw5AfOJEW6gnpoqG+ny5dB5z7LtyQwj6fQ==
-X-Google-Smtp-Source: ABdhPJwIkFTWhf65ohVl5zLi9xzGO3YL9vA7Sp8rqRwe+aOyuz1yYzAemJJVh4ab8ZlwS3nPfsFt7vdw0lCgtagWByU=
-X-Received: by 2002:a19:8c4d:: with SMTP id i13mr119053lfj.254.1636383638105;
- Mon, 08 Nov 2021 07:00:38 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1636103151.git.hns@goldelico.com> <e072de2b480103dbebd941f35be96197534642ee.1636103151.git.hns@goldelico.com>
- <4570288.hTGhjlNkSs@pc-42> <7121F069-56C7-402C-BA82-A922B1A36587@goldelico.com>
-In-Reply-To: <7121F069-56C7-402C-BA82-A922B1A36587@goldelico.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 8 Nov 2021 16:00:02 +0100
-Message-ID: <CAPDyKFo09xhaWbGgWuPa2=x0zXCfir0VMDhd4ZdSc8rh25nG9A@mail.gmail.com>
-Subject: Re: [RFC v4 2/6] mmc: core: allow to match the device tree to apply quirks
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <Jerome.Pouiller@silabs.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Bean Huo <beanhuo@micron.com>, notasas@gmail.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=Vg2mmXTQsiGOcnSfqtuBHGSM9AyDd9EFgvLrpDEekBk=;
+        b=rYDZ/DTUqcjpGu9l5z0Y2C71YjMIwxKjlZ6fmro8rzNbRtKNR0EpNyElrG23ysYYF3
+         +eXQoqwBIs2vftx7AMFcuIeIW6VE8389KnzE21pQfDl4KYdE3TV3oXHCpbbFoNdB8Ho7
+         tA6Ulw4CG8o0LAG0CE9gtn72y1GDskKi9YfLZXVQdOopzog1WspZR+kjQjzjHOtDoA+Q
+         D2DPVc+Nxql3cUb38gQLIRHsPhLVqpF2Wee+Oxvu+MtKamjYSCR9tDLDZvDbF4Bpk6FU
+         YiCOXkEvqi4VHkIzVe0I3OG8Z3JQ93GmT6ojrmPZMo9tBFtu6M3KlbVRZ/pvO/dhfVzD
+         tXRw==
+X-Gm-Message-State: AOAM531baT0oTLZDA/ausAGyZsVz1moQ+PjpKvr7xnazfJYMl7eCOdUE
+        ExxalF2osyZZ+0YJ/cMjuB8=
+X-Google-Smtp-Source: ABdhPJyfAhI/bR8dgj5NV7cUjbv6gjyRG7LxFyQcl4JxzcY1sih5Gje/D7RgbxaiXz2t6IoldIntaA==
+X-Received: by 2002:a17:90a:9a8e:: with SMTP id e14mr49652pjp.231.1636383634669;
+        Mon, 08 Nov 2021 07:00:34 -0800 (PST)
+Received: from ?IPv6:2400:4052:6980:3800:dba7:2b1f:3f26:a5ec? ([2400:4052:6980:3800:dba7:2b1f:3f26:a5ec])
+        by smtp.gmail.com with ESMTPSA id y130sm10496539pfg.202.2021.11.08.07.00.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 07:00:33 -0800 (PST)
+Message-ID: <ed17420d96bd302479b528f7ae8694ff9cd2e72a.camel@gmail.com>
+Subject: Re: [PATCH 05/17] media: atomisp: pci: fix inverted error check for
+ ia_css_mipi_is_source_port_valid()
+From:   Tsuchiya Yuto <kitakar@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Alan <alan@linux.intel.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Deepak R Varma <drv@mailo.com>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 09 Nov 2021 00:00:29 +0900
+In-Reply-To: <20211102113332.GC2794@kadam>
+References: <20211017161958.44351-1-kitakar@gmail.com>
+         <20211017161958.44351-6-kitakar@gmail.com> <20211102113332.GC2794@kadam>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 6 Nov 2021 at 15:31, H. Nikolaus Schaller <hns@goldelico.com> wrote=
-:
->
-> Hi J=C3=A9r=C3=B4me,
->
-> > Am 05.11.2021 um 15:27 schrieb J=C3=A9r=C3=B4me Pouiller <jerome.pouill=
-er@silabs.com>:
-> >
-> > On Friday 5 November 2021 10:05:47 CET H. Nikolaus Schaller wrote:
-> >> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
-> >>
-> >> MMC subsystem provides a way to apply quirks when a device match some
-> >> properties (VID, PID, etc...) Unfortunately, some SDIO devices does no=
-t
-> >> comply with the SDIO specification and does not provide reliable VID/P=
-ID
-> >> (eg. Silabs WF200).
-> >>
-> >> So, the drivers for these devices rely on device tree to identify the
-> >> device.
-> >>
-> >> This patch allows the MMC to also rely on the device tree to apply a
-> >> quirk.
-> >>
-> >> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
-> >
-> > Thank you for to have taken care of that (Maybe, you would like to add =
-a
-> > "Co-developed-by:" tag).
->
-> Well, I just have taken your and Ulf's proposal and done 90% copy&paste.
-> So there wasn't much development, just editing...
->
-> >
-> >
-> >> ---
-> >> drivers/mmc/core/card.h   |  3 +++
-> >> drivers/mmc/core/quirks.h | 17 +++++++++++++++++
-> >> 2 files changed, 20 insertions(+)
-> >>
-> >> +static inline bool mmc_fixup_of_compatible_match(struct mmc_card *car=
-d,
-> >> +                                                const char *const *co=
-mpat_list)
+On Tue, 2021-11-02 at 14:33 +0300, Dan Carpenter wrote:
+> On Mon, Oct 18, 2021 at 01:19:45AM +0900, Tsuchiya Yuto wrote:
+> > The function ia_css_mipi_is_source_port_valid() returns true if the port
+> > is valid. So, we can't use the existing err variable as is.
+> > 
+> > To fix this issue while reusing that variable, invert the return value
+> > when assigning it to the variable.
+> > 
+> > Fixes: 3c0538fbad9f ("media: atomisp: get rid of most checks for ISP2401 version")
+> > Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
+> > ---
+> >  .../staging/media/atomisp/pci/sh_css_mipi.c   | 24 ++++++++++++-------
+> >  1 file changed, 15 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/drivers/staging/media/atomisp/pci/sh_css_mipi.c b/drivers/staging/media/atomisp/pci/sh_css_mipi.c
+> > index 65fc93c5d56b..c1f2f6151c5f 100644
+> > --- a/drivers/staging/media/atomisp/pci/sh_css_mipi.c
+> > +++ b/drivers/staging/media/atomisp/pci/sh_css_mipi.c
+> > @@ -423,10 +423,12 @@ allocate_mipi_frames(struct ia_css_pipe *pipe,
+> >  		return 0; /* AM TODO: Check  */
+> >  	}
+> >  
+> > -	if (!IS_ISP2401)
+> > +	if (!IS_ISP2401) {
+> >  		port = (unsigned int)pipe->stream->config.source.port.port;
+> > -	else
+> > -		err = ia_css_mipi_is_source_port_valid(pipe, &port);
+> > +	} else {
+> > +		/* Returns true if port is valid. So, invert it */
+> > +		err = !ia_css_mipi_is_source_port_valid(pipe, &port);
+> 
+> Don't invert it...  This isn't supposed to return 1 on failure it's
+> supposed to return negative error codes.
 
-After a second thought, I am not sure we really need a list of
-compatibles here. The quirks we may want to apply should be specific
-per device and most likely not shared among a family of devices, don't
-you think?
+You mean I should instead modify the return value of
+ia_css_mipi_is_source_port_valid() ?
 
-> >> +{
-> >> +       struct device_node *np;
-> >> +
-> >> +       for_each_child_of_node(mmc_dev(card->host)->of_node, np) {
-> >> +               if (of_device_compatible_match(np, compat_list))
-> >> +                       return true;
-> >
-> > Intel robot complains about of_device_compatible_match():
-> >
-> >    ERROR: modpost: "of_device_compatible_match" [drivers/mmc/core/mmc_c=
-ore.ko] undefined!
-> >
-> > I think we have to add this line:
-> >
-> >    EXPORT_SYMBOL(of_device_compatible_match);
-> >
-> > in drivers/of/base.c
+Yeah, I also thought that the current true/false return value was a little
+bit confusing.
 
-If we change to use one compatible string, rather than a list - then
-we can use of_device_is_compatible() instead, which is already
-properly exported with EXPORT_SYMBOL().
+In another words, should the function return:
 
->
-> I had seen the krobot message as well but could not figure out
-> what it meant...
->
-> But with your hint it indeed looks like an omission in drivers/of/base.c
-> Having something exported in include/linux/of.h but code not
-> marked EXPORT_SYMBOL...
->
-> That needs a separate patch. I'll add one with a
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
->
-> and some Fixes: tag. Since it has a different audience I think
-> I should post it separately.
->
-> BTW: krobot noted the same issue for mmc_of_find_child_device()
-> in drivers/mmc/core/core.c (which we do not touch in this series).
-> But maybe it should be fixed as well.
+    - negative values (maybe -EINVAL for this case) for invalid case
+    - 0 for valid case
 
-If there is an existing problem, please send a separate fix/patch for that.
+instead? and if we go this way, we should also rename the function name
+like
 
->
-> So let's wait for more comments and then I may distribute a [PATCH v1].
-> Or should I do a [PATCH v5] to continue version counting?
+    - check_ia_css_mipi_source_port_validity
 
-I suggest moving from RFC into using PATCH v1, as this isn't really an
-RFC any more.
+or something. How does this sound?
 
->
-> BR,
-> Nikolaus
->
+Regards,
+Tsuchiya Yuto
 
-Kind regards
-Uffe
