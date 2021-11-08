@@ -2,167 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F1D449A5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:01:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B280449A66
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:05:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240400AbhKHRD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 12:03:59 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48768 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235453AbhKHRD6 (ORCPT
+        id S239334AbhKHRIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 12:08:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58306 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236155AbhKHRIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 12:03:58 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A8GWLA7017554;
-        Mon, 8 Nov 2021 17:01:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=qTgha4aiz9iITjfGZMEm4VpbubZUM3+NuX3efHPL2o0=;
- b=JVxVWMrWNK7+wSWWcn15sfRlQk07rHCf1mB/5bantLMY/0hpLjetJOc7wVQNyUDuh6xM
- KqAeZDznH/mesdAyokZ5KmFUCvluY/xU80+v6r7vXSLFCPO2nekWZJ4PLfRiYoUeRe58
- 4BCRLXQvNOwrXSm9n7wMuMTItQ3oMxxKhpHDiKsRUNhj88th9Bjc7lj8Xi4HjxxnE5bj
- QZlUwBoeqxiGG1yw05Wy2KqPEbajhy7y/piv+MIsK0bi/zkwW6gz9O7Ns7cOd/wW0VvU
- 2gcGtiTMW/AXg52cBUBJohD2aOEdQg7Dm+sz3Ms7kkOZqD1RGV8ToojCxN8K02sW1SIr Tg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3c69dn3cue-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Nov 2021 17:01:10 +0000
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1A8GXpG8025230;
-        Mon, 8 Nov 2021 17:01:10 GMT
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3c69dn3cth-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Nov 2021 17:01:10 +0000
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1A8Gm9t6016447;
-        Mon, 8 Nov 2021 17:01:08 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04fra.de.ibm.com with ESMTP id 3c5hb9q2bt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Nov 2021 17:01:08 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1A8H159423265568
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 8 Nov 2021 17:01:06 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D97674C040;
-        Mon,  8 Nov 2021 17:01:05 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8AA464C050;
-        Mon,  8 Nov 2021 17:01:04 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com.com (unknown [9.160.5.243])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  8 Nov 2021 17:01:04 +0000 (GMT)
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     linux-integrity@vger.kernel.org
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
-Subject: [RFC PATCH] ima: differentiate overlay, pivot_root, and other pathnames
-Date:   Mon,  8 Nov 2021 12:01:00 -0500
-Message-Id: <20211108170100.148066-1-zohar@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 8 Nov 2021 12:08:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636391136;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NPqsXHRTDDOKAO8W4fUMxrj4GjcH6LfmhyAuBTyX3XQ=;
+        b=OrdoNmJmMLuFUIoRVgvG5Elg45LGWOcwgCYs/pXs5mF8MxtfGA1C+hz4HlQDJIA22tAyja
+        ZlsFSR9shrrSxGMFuDdWCw8tJQCdwB5eOU3Ewjx2/t8pmLEvT2HgdspoaqHd8C98GkxBoX
+        PIZW0y1zvhyBqyZD0iNd9onDw3upWao=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-476-I5XETun-NX64R0WAYtJz0g-1; Mon, 08 Nov 2021 12:05:35 -0500
+X-MC-Unique: I5XETun-NX64R0WAYtJz0g-1
+Received: by mail-ed1-f70.google.com with SMTP id r25-20020a05640216d900b003dca3501ab4so15393994edx.15
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 09:05:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NPqsXHRTDDOKAO8W4fUMxrj4GjcH6LfmhyAuBTyX3XQ=;
+        b=TRFuILGcwr/bZyQnx5tDJoyIapZ7xObiylXsDECnB56h3boGj4BThxfJLaJbns2dRd
+         SuppV/lJLo34sqaAD/4NvP+J7m4S8PR/eSr4du1/x14VxJaLqjlE6KH8RasLOnJgYyuf
+         UdKLmHzXlYWR4pw5V+EQcQxJui+ea/unErjTMCe8+BGdO03/mBsIlabplqspQtvTszNf
+         fAYVtbn/Fpj4W4VqeunRkJ/DHclX7lnjcmNCV2DGyOf4H3K+Y9/UvO5/hTEZFAdrdSRE
+         k5tKRgtBKpklgWiPm6Q1oo0kbi+HWvdjzIyakyp6ELmTAaVzL/lD31cVAVzH2rKygLWO
+         dqsA==
+X-Gm-Message-State: AOAM531wcTPmhHryzuOstdEszCHpCfquochLsUqa0d6410LK0qQwNxkg
+        p9fxkhsVfpnBDoqRIWCtbdHRj0DW7IjdZByAeVKWTDkjDzIKeePTbEfAfT6szjLlMLCmy6xcJeK
+        GxaKhdUPth79s0VSRA5b/m54S
+X-Received: by 2002:aa7:c158:: with SMTP id r24mr773677edp.65.1636391133519;
+        Mon, 08 Nov 2021 09:05:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxdw4FnpJrfj9fDfoGHK7Ece1hu0YLzV6RUjD3WLZnwwX1Kp9CmaEpRsJ1TBVXOx89iy94Nng==
+X-Received: by 2002:aa7:c158:: with SMTP id r24mr773644edp.65.1636391133325;
+        Mon, 08 Nov 2021 09:05:33 -0800 (PST)
+Received: from steredhat (host-87-10-72-39.retail.telecomitalia.it. [87.10.72.39])
+        by smtp.gmail.com with ESMTPSA id h10sm9883575edk.41.2021.11.08.09.05.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 09:05:32 -0800 (PST)
+Date:   Mon, 8 Nov 2021 18:05:29 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        Parav Pandit <parav@nvidia.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] vdpa: add driver_override support
+Message-ID: <CAGxU2F4NQz74f8sw51Ownm-25Jd7K=B_gK_-nRDKmmYvPx=+=w@mail.gmail.com>
+References: <20211104161729.258294-1-sgarzare@redhat.com>
+ <CACGkMEsTxO0-pASV_4MohEs0dkP+7eahVuWiSZSOcffuG5ZV3A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ezzw92u2Y38_C0kO_2kbEnL3pYcIFrfD
-X-Proofpoint-ORIG-GUID: RptRndZ79OCqbGHtOyVZS2wU9ky8XPLf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-08_05,2021-11-08_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 clxscore=1011 adultscore=0 bulkscore=0 spamscore=0
- priorityscore=1501 impostorscore=0 suspectscore=0 lowpriorityscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111080103
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACGkMEsTxO0-pASV_4MohEs0dkP+7eahVuWiSZSOcffuG5ZV3A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Relative file pathnames are included in the IMA measurement list making
-it difficult to differentiate files.  Permit replacing the relative
-pathname with the (raw) full pathname in the measurement list.
+On Fri, Nov 5, 2021 at 4:01 AM Jason Wang <jasowang@redhat.com> wrote:
+>
+> On Fri, Nov 5, 2021 at 12:17 AM Stefano Garzarella <sgarzare@redhat.com> wrote:
+> >
+> > `driver_override` allows to control which of the vDPA bus drivers
+> > binds to a vDPA device.
+> >
+> > If `driver_override` is not set, the previous behaviour is followed:
+> > devices use the first vDPA bus driver loaded (unless auto binding
+> > is disabled).
+> >
+> > Tested on Fedora 34 with driverctl(8):
+> >   $ modprobe virtio-vdpa
+> >   $ modprobe vhost-vdpa
+> >   $ modprobe vdpa-sim-net
+> >
+> >   $ vdpa dev add mgmtdev vdpasim_net name dev1
+> >
+> >   # dev1 is attached to the first vDPA bus driver loaded
+> >   $ driverctl -b vdpa list-devices
+> >     dev1 virtio_vdpa
+> >
+> >   $ driverctl -b vdpa set-override dev1 vhost_vdpa
+> >
+> >   $ driverctl -b vdpa list-devices
+> >     dev1 vhost_vdpa [*]
+> >
+> >   Note: driverctl(8) integrates with udev so the binding is
+> >   preserved.
+> >
+> > Suggested-by: Jason Wang <jasowang@redhat.com>
+> > Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> > ---
+> >  include/linux/vdpa.h |  2 ++
+> >  drivers/vdpa/vdpa.c  | 74 ++++++++++++++++++++++++++++++++++++++++++++
+> >  2 files changed, 76 insertions(+)
+> >
+> > diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+> > index c3011ccda430..ae34015b37b7 100644
+> > --- a/include/linux/vdpa.h
+> > +++ b/include/linux/vdpa.h
+> > @@ -64,6 +64,7 @@ struct vdpa_mgmt_dev;
+> >   * struct vdpa_device - representation of a vDPA device
+> >   * @dev: underlying device
+> >   * @dma_dev: the actual device that is performing DMA
+> > + * @driver_override: driver name to force a match
+>
+> This seems useless?
+>
+> >   * @config: the configuration ops for this device.
+> >   * @cf_mutex: Protects get and set access to configuration layout.
+> >   * @index: device index
+> > @@ -76,6 +77,7 @@ struct vdpa_mgmt_dev;
+> >  struct vdpa_device {
+> >         struct device dev;
+> >         struct device *dma_dev;
+> > +       const char *driver_override;
+> >         const struct vdpa_config_ops *config;
+> >         struct mutex cf_mutex; /* Protects get/set config */
+> >         unsigned int index;
+> > diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
+> > index 7332a74a4b00..659231bbfee8 100644
+> > --- a/drivers/vdpa/vdpa.c
+> > +++ b/drivers/vdpa/vdpa.c
+> > @@ -52,8 +52,81 @@ static void vdpa_dev_remove(struct device *d)
+> >                 drv->remove(vdev);
+> >  }
+> >
+> > +static int vdpa_dev_match(struct device *dev, struct device_driver *drv)
+> > +{
+> > +       struct vdpa_device *vdev = dev_to_vdpa(dev);
+> > +
+> > +       /* Check override first, and if set, only use the named driver */
+> > +       if (vdev->driver_override)
+> > +               return strcmp(vdev->driver_override, drv->name) == 0;
+> > +
+> > +       /* Currently devices must be supported by all vDPA bus drivers */
+> > +       return 1;
+> > +}
+> > +
+> > +static ssize_t driver_override_store(struct device *dev,
+> > +                                    struct device_attribute *attr,
+> > +                                    const char *buf, size_t count)
+> > +{
+> > +       struct vdpa_device *vdev = dev_to_vdpa(dev);
+> > +       const char *driver_override, *old;
+> > +       char *cp;
+> > +
+> > +       /* We need to keep extra room for a newline */
+> > +       if (count >= (PAGE_SIZE - 1))
+> > +               return -EINVAL;
+> > +
+> > +       driver_override = kstrndup(buf, count, GFP_KERNEL);
+> > +       if (!driver_override)
+> > +               return -ENOMEM;
+> > +
+> > +       cp = strchr(driver_override, '\n');
+> > +       if (cp)
+> > +               *cp = '\0';
+> > +
+> > +       device_lock(dev);
+> > +       old = vdev->driver_override;
+> > +       if (strlen(driver_override)) {
+> > +               vdev->driver_override = driver_override;
+> > +       } else {
+> > +               kfree(driver_override);
+> > +               vdev->driver_override = NULL;
+> > +       }
+> > +       device_unlock(dev);
+> > +
+> > +       kfree(old);
+> > +
+> > +       return count;
+> > +}
+> > +
+> > +static ssize_t driver_override_show(struct device *dev,
+> > +                                   struct device_attribute *attr, char *buf)
+> > +{
+> > +       struct vdpa_device *vdev = dev_to_vdpa(dev);
+> > +       ssize_t len;
+> > +
+> > +       device_lock(dev);
+> > +       len = snprintf(buf, PAGE_SIZE, "%s\n", vdev->driver_override);
+> > +       device_unlock(dev);
+> > +
+> > +       return len;
+> > +}
+> > +static DEVICE_ATTR_RW(driver_override);
+> > +
+> > +static struct attribute *vdpa_dev_attrs[] = {
+> > +       &dev_attr_driver_override.attr,
+> > +       NULL,
+> > +};
+> > +
+> > +static const struct attribute_group vdpa_dev_group = {
+> > +       .attrs  = vdpa_dev_attrs,
+> > +};
+> > +__ATTRIBUTE_GROUPS(vdpa_dev);
+> > +
+> >  static struct bus_type vdpa_bus = {
+> >         .name  = "vdpa",
+> > +       .dev_groups = vdpa_dev_groups,
+>
+> This reminds me that we probably need to document the sysfs interface
+> in Documentation/ABI/testing/sysfs-bus-vdpa.
+>
+> But it's not the fault of this patch which look good.
 
-Define a new module param named "ima.rawpath".
+Michael, Jason, about Documentation/ABI/testing/sysfs-bus-vdpa, do you 
+think is better to send a follow up patch/series, maybe including also 
+others entries (e.g. bind, unbind) or a v2 including the documentation 
+of `driver_ovveride`?
 
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
----
-comment: this change does not address the simple "unshare -m" case
-without pivot_root.
-
- .../admin-guide/kernel-parameters.txt          |  7 +++++++
- security/integrity/ima/ima_api.c               | 18 +++++++++++++++++-
- 2 files changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 91ba391f9b32..d49a5edcd3c3 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1890,6 +1890,13 @@
- 			different crypto accelerators. This option can be used
- 			to achieve best performance for particular HW.
- 
-+	ima.rawpath=	[IMA]
-+			Format: <bool>
-+			Default: 0
-+			This parameter controls whether the IMA measurement
-+			list contains the relative or raw full file pathnames
-+			in the IMA measurement list.
-+
- 	init=		[KNL]
- 			Format: <full_path>
- 			Run specified binary instead of /sbin/init as init
-diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
-index a64fb0130b01..42c6ff7056e6 100644
---- a/security/integrity/ima/ima_api.c
-+++ b/security/integrity/ima/ima_api.c
-@@ -9,14 +9,19 @@
-  *	appraise_measurement, store_measurement and store_template.
-  */
- #include <linux/slab.h>
-+#include <linux/moduleparam.h>
- #include <linux/file.h>
- #include <linux/fs.h>
-+#include <linux/fs_struct.h>
- #include <linux/xattr.h>
- #include <linux/evm.h>
- #include <linux/iversion.h>
- 
- #include "ima.h"
- 
-+static bool rawpath_enabled;
-+module_param_named(rawpath, rawpath_enabled, bool, 0);
-+
- /*
-  * ima_free_template_entry - free an existing template entry
-  */
-@@ -390,11 +395,22 @@ void ima_audit_measurement(struct integrity_iint_cache *iint,
-  */
- const char *ima_d_path(const struct path *path, char **pathbuf, char *namebuf)
- {
-+	struct dentry *dentry = NULL;
- 	char *pathname = NULL;
- 
- 	*pathbuf = __getname();
- 	if (*pathbuf) {
--		pathname = d_absolute_path(path, *pathbuf, PATH_MAX);
-+		if (!rawpath_enabled) {
-+			pathname = d_absolute_path(path, *pathbuf, PATH_MAX);
-+		} else {
-+			/* Use union/overlay full pathname */
-+			if (unlikely(path->dentry->d_flags & DCACHE_OP_REAL))
-+				dentry = d_real(path->dentry, NULL);
-+			else
-+				dentry = path->dentry;
-+			pathname = dentry_path_raw(dentry, *pathbuf, PATH_MAX);
-+		}
-+
- 		if (IS_ERR(pathname)) {
- 			__putname(*pathbuf);
- 			*pathbuf = NULL;
--- 
-2.27.0
+Thanks,
+Stefano
 
