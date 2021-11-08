@@ -2,89 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44CA5447F4D
+	by mail.lfdr.de (Postfix) with ESMTP id C0C76447F4E
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:08:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239414AbhKHMLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 07:11:37 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:18555 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239397AbhKHML1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 07:11:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1636373324; x=1667909324;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=UgIeZhHhFCvWkz7a2C4s/pc1I+RA/IV4MdJK1v7cpyo=;
-  b=CC3BYbznMZVClTnKHFLBgHiWwl3wH2qwNmDQGIfba6Xhh6YW/W+pr0iB
-   3To/03IE4Dchce5F0+EL8YghSWe+AXaA015+jFzcOhUq6GTkURvN5dja/
-   2Vmi3BkMBAu1aKEtZpK0yKR4zEau2HkW9N0wXRosWoXrpNdR25/UB9h2S
-   voWu9kjUpXwc5Y8MNswcAOXk7MaTVOZdcoithHgrhloGimkcw94fqWdek
-   6Jn5KW6j/IiwAuyBBgLY3P9lbsHJIJzuUp4QrQ5E0yXyN0l8iuwhiM+gm
-   BovB44/2N0xhVKR5QSR6biRJj7K/h8MqHgP2TQJV4AXk/v/DkZsIjg2s/
-   g==;
-X-IronPort-AV: E=Sophos;i="5.87,218,1631548800"; 
-   d="scan'208";a="186004981"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 08 Nov 2021 20:08:44 +0800
-IronPort-SDR: OSnO3e4Di7GTuCxTFQs0R0ZF+aWXP8ZtQgr40N8UbkV+YbLgwPG+mVjfkPTKCkVLR8N2Wv8hBe
- FLzLrhV8eRLVgV/H74V54Df03wevdHe378DgI4hGrRN84ni+qFcCZFTIQwSMsUQe2lpghbIPre
- 7uMmuY2HJkFcXjLOAydPQYjgfEQNEH2qjkFxs0etkV8a3NW040NBaKY38Z9rCp8q6VHNk7dpjh
- mY5oZ9rR8ccrzNAaZ6FuSI7Yg7pfCNdaoiutZdcXjVMxqjhwVxrqCFXIWf6InEDUl68YfGJDPS
- K4aYvkfj+1lJt7Y8b+YK/TJY
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 03:43:57 -0800
-IronPort-SDR: FMwohQDm909k9GAVDcLncd0NHveJjNrD2kiB7t2wfqC5sYwwGfgQvZj/6o3Ge1jHZqWlguP/Bk
- y8IrVulXrUu6KN2dzTKtgeWYXyq/UpQsn1gRGO3yqLoCHxz+ffS63VR9/CHm5GNCP0SAnn05Wu
- LxtHkgvHY/ex9HpxFmkS0VMOdzqNe9UzGRw7ARyZdc7KiiQ4wJ6RZdZbxnAPHidT1OoJXelFF/
- PuwOT21YDE1MJQm53mvGQyG1YjNtTHNotN2RhDI9k5ODsfIG6NfYE4IzecoFrOZSi/kaAM025X
- Vu0=
-WDCIronportException: Internal
-Received: from c8jqy33.ad.shared (HELO BXYGM33.ad.shared) ([10.225.32.157])
-  by uls-op-cesaip01.wdc.com with ESMTP; 08 Nov 2021 04:08:40 -0800
-From:   Avri Altman <avri.altman@wdc.com>
-To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Avri Altman <avri.altman@wdc.com>
-Subject: [PATCH 2/2] scsi: ufs: Return a bsg request immediatley if eh-in-progress
-Date:   Mon,  8 Nov 2021 14:08:04 +0200
-Message-Id: <20211108120804.10405-3-avri.altman@wdc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211108120804.10405-1-avri.altman@wdc.com>
-References: <20211108120804.10405-1-avri.altman@wdc.com>
+        id S239421AbhKHMLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 07:11:38 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:58306 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239396AbhKHMLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 07:11:30 -0500
+Received: from zn.tnic (p200300ec2f331100bbe06604d19d6498.dip0.t-ipconnect.de [IPv6:2003:ec:2f33:1100:bbe0:6604:d19d:6498])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0C5F91EC036B;
+        Mon,  8 Nov 2021 13:08:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1636373323;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=IkJ+y15zqfXIITO4Nl7mRfhUkJXCopTzX4p21tGzC+o=;
+        b=HRd6Nzdf4oV0tEUheAEC837pzKtFei0cZ4Eq3eAviZxrnaJRpZqHG/CEAZzDQH/n6t9NE1
+        Cl8ns/oFAb+1GVimzwBjsGOVQQ2x9OFe9eZCN/MBHeGWvo9Y4RQPe0ZVvzvtrntxR3ZarW
+        cm+6bEEOz+RGxe5wuN9m4dasBBtlI9U=
+Date:   Mon, 8 Nov 2021 13:08:37 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH v0 08/42] Drivers: hv: vmbus: Check notifier registration
+ return value
+Message-ID: <YYkTRdv2AtRXoiUi@zn.tnic>
+References: <20211108101157.15189-1-bp@alien8.de>
+ <20211108101157.15189-9-bp@alien8.de>
+ <20211108111637.c3vsesezc7hwjbty@liuwe-devbox-debian-v2>
+ <YYkMYtYkvwiyzGNG@zn.tnic>
+ <20211108114549.q3lkgjwm5d7tkbcp@liuwe-devbox-debian-v2>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211108114549.q3lkgjwm5d7tkbcp@liuwe-devbox-debian-v2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ufs-bsg is attempting to access the device from user-space, and it is
-unaware of the internal driver flows, specifically if error handling is
-currently ongoing.
+On Mon, Nov 08, 2021 at 11:45:49AM +0000, Wei Liu wrote:
+> Yes please take them through tip. I should've been clearer on this.
+> Sorry.
 
-Fixes: 5e0a86eed846 (scsi: ufs: Add API to execute raw upiu commands)
+No worries - I'll do so.
 
-Signed-off-by: Avri Altman <avri.altman@wdc.com>
----
- drivers/scsi/ufs/ufshcd.c | 3 +++
- 1 file changed, 3 insertions(+)
+Thx.
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 3869bb57769b..828061c05909 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -6830,6 +6830,9 @@ int ufshcd_exec_raw_upiu_cmd(struct ufs_hba *hba,
- 	enum utp_ocs ocs_value;
- 	u8 tm_f = be32_to_cpu(req_upiu->header.dword_1) >> 16 & MASK_TM_FUNC;
- 
-+	if (!ufshcd_is_user_access_allowed(hba))
-+		return -EBUSY;
-+
- 	switch (msgcode) {
- 	case UPIU_TRANSACTION_NOP_OUT:
- 		cmd_type = DEV_CMD_TYPE_NOP;
 -- 
-2.17.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
