@@ -2,95 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB67449CAF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 20:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0CCB449CB2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 20:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237886AbhKHTxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 14:53:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237645AbhKHTxv (ORCPT
+        id S237940AbhKHTyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 14:54:33 -0500
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:53302 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237891AbhKHTyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 14:53:51 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A84C061570;
-        Mon,  8 Nov 2021 11:51:06 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id v23so6956210pjr.5;
-        Mon, 08 Nov 2021 11:51:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=IjhS3kxhetwXaiYgcJTnbbq17lp2O4y2bTsBt4Udz4Q=;
-        b=jGk+Vd/0P4mleeeUfxZYYpjag6EOgu5O79b4VSJg1G8hvCKC8kzYgtBwIBSL25zecM
-         BbVHlslQLYsZeraYj9Gol/D0D6I6vyHLZHx95o4pWVmfNQlwjOsa6+pLid4KQVRUnwvt
-         3PUBAktZF4H4Arm8zPwHX+Bo/vbAbh+VMfWryOrQPPfaUTngYmbBlyort7ZgrrjoZPyk
-         ghCacJRI1gNkckADwzimiuITMmIesDrft0SaO4FDF9XtO+hl55c8WcNFlxfwwZD9Nshe
-         OD21exr+Af3DYjHIM7Z6STmaO36C7MrmGkmFo1P/cZ6M0gH1f2Urf6dmiOLj14HLxrQj
-         PImA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=IjhS3kxhetwXaiYgcJTnbbq17lp2O4y2bTsBt4Udz4Q=;
-        b=ScM1wdkZOzMjb+NrAfab5KoT9wGNzkTo5Fo7Jt+kP3tj7zcZMe0wt/teJKPCLB99UJ
-         wQ+CoqQPxnUJthP5gtTIMLW3PLUfx4WZpCcmv9CxVsUXlAmGbsSMj+JEAg5XB7DTPg4p
-         GEuul5K9Pn4MgaJqyp8asyGC7+mzjJ2yCbIMzdL14yE4E+X8GyyMWxvxFUPvulJ/uOeZ
-         YGkTru5+lPI3JlrsHdj6zFbyWGQjgtnA67N9pL+hlUJqYbTg++veVMWaGMg53b4gOw8u
-         cZnhZeJjzcD/XLYEzwR/jXMScInh+DsXS++0mHaNCNIa0sYutYZ7tPudFuz6kLCcMcys
-         2fSQ==
-X-Gm-Message-State: AOAM531m+w0pgT4+hF3StXqyFgoPb4lC/usGnHzlovH4Y3j0uaZ+6Bwd
-        v+8JGywxh7j99EM4zO4BJzM=
-X-Google-Smtp-Source: ABdhPJzwspsRw+pFLcs7NL58X4vW0O0hqmVH+i6tzE9683Ol0eMaNNPBKqVy2Y3SFYOKl0KLl7AEIQ==
-X-Received: by 2002:a17:90b:4b04:: with SMTP id lx4mr914448pjb.11.1636401065754;
-        Mon, 08 Nov 2021 11:51:05 -0800 (PST)
-Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id m12sm170166pjr.14.2021.11.08.11.51.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Nov 2021 11:51:05 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: Using perf_event_open() to sample multiple events of a process
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <YYlBMmMg0PTV3pED@hirez.programming.kicks-ass.net>
-Date:   Mon, 8 Nov 2021 11:51:04 -0800
-Cc:     kan.liang@linux.intel.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <ED4D20D0-DD1C-48D1-B686-E519EB384429@gmail.com>
-References: <92645262-D319-4068-9C44-2409EF44888E@gmail.com>
- <YYXQRYbRO193U4re@hirez.programming.kicks-ass.net>
- <YYXS8yldO/dwwVD4@hirez.programming.kicks-ass.net>
- <YYlBMmMg0PTV3pED@hirez.programming.kicks-ass.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        Mon, 8 Nov 2021 14:54:31 -0500
+Received: from [192.168.1.18] ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id kAgBmHCd3OvR0kAgBmrd8n; Mon, 08 Nov 2021 20:51:45 +0100
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Mon, 08 Nov 2021 20:51:45 +0100
+X-ME-IP: 86.243.171.122
+Subject: Re: [PATCH] PCI: brcmstb: Declare a bitmap as a bitmap, not as a
+ plain 'unsigned long'
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>
+Cc:     nsaenz@kernel.org, jim2101024@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, lorenzo.pieralisi@arm.com,
+        robh@kernel.org, bhelgaas@google.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <e6d9da2112aab2939d1507b90962d07bfd735b4c.1636273671.git.christophe.jaillet@wanadoo.fr>
+ <YYh+ldT5wU2s0sWY@rocinante> <4d556ac3-b936-b99c-5a50-9add8607047d@gmail.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <4997ef3c-5867-7ce0-73a2-f4381cf0879b@wanadoo.fr>
+Date:   Mon, 8 Nov 2021 20:51:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <4d556ac3-b936-b99c-5a50-9add8607047d@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> On Nov 8, 2021, at 7:24 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+Le 08/11/2021 à 17:28, Florian Fainelli a écrit :
 > 
-> On Sat, Nov 06, 2021 at 01:57:23AM +0100, Peter Zijlstra wrote:
 > 
->> The problem seems to be that we call perf_event_set_output() before we
->> set event->ctx, which is a bit of a problem.
->> 
->> Now, afaict it's been broken since c3f00c70276d ("perf: Separate
->> find_get_context() from event initialization"), which is ages ago :/
->> 
->> It's waaay too late to try and fix it; I'll be likely to make an even
->> bigger mess if I tried. Perhaps tomorrow.
->> 
->> Clearly FD_OUTPUT isn't much used :-(
+> On 11/7/2021 5:34 PM, Krzysztof Wilczyński wrote:
+>> Hi Christophe!
+>>
+>> [...]
+>>> This bitmap can be BRCM_INT_PCI_MSI_LEGACY_NR or BRCM_INT_PCI_MSI_NR 
+>>> long.
+>>
+>> Ahh.  OK.  Given this an option would be to: do nothing (keep current
+>> status quo); allocate memory dynamically passing the "msi->nr" after it
+>> has been set accordingly; use BRCM_INT_PCI_MSI_NR and waste a little bit
+>> of space.
+>>
+>> Perhaps moving to using the DECLARE_BITMAP() would be fine in this case
+>> too, at least to match style of other drivers more closely.
+>>
+>> Jim, Florian and Lorenzo - is this something that would be OK with you,
+>> or you would rather keep things as they were?
 > 
-> The below seems to fix, it's a bit of a hack, but I couldn't really come
-> up with anything saner.
+> I would be tempted to leave the code as-is, but if we do we are probably 
+> bound to seeing patches like Christophe's in the future to address the 
 
-I originally considered doing a similar hack. I assume it should work,
-but I moved to using the ioctl workaround that you suggested.
+Even if I don't find this report in the Coverity database, it should 
+from around April 2018.
+So, if you have not already received several patches for that, I doubt 
+that you will receive many in the future.
 
-Clearly nobody is using this feature if it is broken for 11 years.
-There is always the option to deprecate it if there is an alternative.
+
+My own feeling is that using a long (and not a long *) as a bitmap, and 
+accessing it with &long may look spurious to a reader.
+That said, it works.
+
+So, I let you decide if the patch is of any use. Should I need to tweak 
+or resend it, let me know.
+
+
+CJ
+
+> problem, unless we place a coverity specific comment in the source tree, 
+> which is probably frowned upon.
+> 
+> The addition of the BUILD_BUG_ON() is a good addition though.
 
