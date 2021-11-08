@@ -2,65 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F77A447EB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:17:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B01447EBA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:17:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239126AbhKHLTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 06:19:44 -0500
-Received: from mail-wr1-f54.google.com ([209.85.221.54]:36635 "EHLO
-        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239101AbhKHLTm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:19:42 -0500
-Received: by mail-wr1-f54.google.com with SMTP id s13so26228579wrb.3;
-        Mon, 08 Nov 2021 03:16:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CAoGngeqLslgA/3kKKTba4TQ1kNXOLlebbDyGtlvKPE=;
-        b=CguE3NzdPw+6ZY7R6ZXviBZz1fY+5II3WLlu9qcgi3TxP2cO7Njmco6kStR+TZPZVY
-         GIaYb9rb2Fd4byH5mTwB2wVdXoAzsiuX2DMb8MBNHD3dnzoIvutmH5JW8ikF8fcsVNoQ
-         Wd8lOLIqW8EwF2ZxRVG6FH9BqrJgZcHFaqG0ddH8Ci34UwIwkR/LGTa7Y8BSg30SPx3h
-         kyc1xr/WM2ZnkvDkPItcJlDM/eyp84CETvNUIT6BLuCJQo+mfqtEvy5FZmD+BFohVJ3d
-         C9sA4rk+f/GKjVnec+8nhxQrU76cnrjvslX0FXV/FzsiyidpiHqtaE3B1Wos1Vcoe4rl
-         5plA==
-X-Gm-Message-State: AOAM5308Tcb+TIzZRNIoMKYCBRNr9zL9DNn3pYfJv5oA0uYeQz45gZU+
-        wqTWrJ8lUpZH+pQKACZkfbg=
-X-Google-Smtp-Source: ABdhPJz4uiwqSBaz4842KYQZS36h5axvx4+sGDY2PcgK5KM3jUlLOysnVpjzTFBULZ01gEclxBDz5g==
-X-Received: by 2002:adf:df0b:: with SMTP id y11mr73267802wrl.181.1636370217018;
-        Mon, 08 Nov 2021 03:16:57 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id v191sm15814053wme.36.2021.11.08.03.16.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 03:16:56 -0800 (PST)
-Date:   Mon, 8 Nov 2021 11:16:55 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-fbdev@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, Wei Liu <wei.liu@kernel.org>
-Subject: Re: [PATCH v0 17/42] drivers: video: Check notifier registration
- return value
-Message-ID: <20211108111655.52p5cdj2q7fbtkpy@liuwe-devbox-debian-v2>
-References: <20211108101157.15189-1-bp@alien8.de>
- <20211108101157.15189-18-bp@alien8.de>
+        id S237035AbhKHLUe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Nov 2021 06:20:34 -0500
+Received: from foss.arm.com ([217.140.110.172]:49188 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230269AbhKHLUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 06:20:30 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F05DF2B;
+        Mon,  8 Nov 2021 03:17:45 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.196.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2FCDD3F800;
+        Mon,  8 Nov 2021 03:17:45 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Mike Galbraith <efault@gmx.de>, linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH] sched: Tweak default dynamic preempt mode selection
+In-Reply-To: <ff53a94401f8d6abe0303ee381f86bfb475ad354.camel@gmx.de>
+References: <20211105104035.3112162-1-valentin.schneider@arm.com> <ff53a94401f8d6abe0303ee381f86bfb475ad354.camel@gmx.de>
+Date:   Mon, 08 Nov 2021 11:17:38 +0000
+Message-ID: <8735o6uca5.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211108101157.15189-18-bp@alien8.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 11:11:32AM +0100, Borislav Petkov wrote:
-> From: Borislav Petkov <bp@suse.de>
-> 
-> Avoid homegrown notifier registration checks.
-> 
-> No functional changes.
-> 
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> Cc: linux-fbdev@vger.kernel.org
-> Cc: linux-hyperv@vger.kernel.org
+On 06/11/21 05:40, Mike Galbraith wrote:
+> On Fri, 2021-11-05 at 10:40 +0000, Valentin Schneider wrote:
+>> Commit c597bfddc9e9 ("sched: Provide Kconfig support for default dynamic
+>> preempt mode") changed the selectable config names for the preemption
+>> model. This means a config file must now select
+>>
+>>   CONFIG_PREEMPT_BEHAVIOUR=y
+>>
+>> rather than
+>>
+>>   CONFIG_PREEMPT=y
+>>
+>> to get a preemptible kernel. This means all arch config files need to be
+>> updated - right now arm64 defconfig selects CONFIG_PREEMPT=y but ends up
+>> with CONFIG_PREEMPT_NONE_BEHAVIOUR=y.
+>>
+>> Instead, have CONFIG_*PREEMPT be the selectable configs again, and make
+>> them select their _BEHAVIOUR equivalent if CONFIG_PREEMPT_DYNAMIC is set.
+>
+>
+> Is there any way to get to PREEMPT_RT in the first selection again as
+> well?  I had created a behavior entry for RT (below) and inverted the
+> dependency to make it appear in the initial selection again, but that's
+> clearly not gonna fly.
+>
+> Starting with a 5.15 config, to select RT you currently must first
+> select a model you don't want, then reject PREEMPT_DYNAMIC and you'll
+> be offered the full menu of models immediately. With your patch added,
+> that became worse.  After rejecting PREEMPT_DYNAMIC, I had to go
+> through new 5.15+ options before finally being offered the full menu.
+>
 
-Acked-by: Wei Liu <wei.liu@kernel.org>
+Do you mean at the syncconfig step? I've only really played with upstream
+arm64 / x86 defconfigs and didn't have to fight with any prompts, though
+yes for x86 the default-y PREEMPT_DYNAMIC makes it a bit annoying to select
+PREEMPT_RT.
