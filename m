@@ -2,80 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8541447B9F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:12:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4586447BA5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:15:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237814AbhKHIOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 03:14:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235100AbhKHIOw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 03:14:52 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9498DC061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 00:12:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=U4mTTJb6i/blYyrscgM74QGvIFAfksSxGPBnkYKnOms=; b=mRBCZfR7D6wQOnUZkcNoH+YN5j
-        xHsk3ps0zpw8hF3V+QF3ZJj/N6h57I3Jv3SG8C6o23AieQyQBB5xmqmhFzSsDwD7Isk8dKNco60XX
-        wMNTMK/UJ4ObNI8AxEi4nZWlWKWteXWH6JfZ2LL+PSdmlG1yONF7olBAjbd75ML6O3m/HXXwclo9/
-        lhdYDgA33fI3NVCf9w+K9VsbK1+foQI8DYoZ4ImyleUp2w2e8dgNWWFy9NfutjcN4CPfNCQg/Tqgx
-        M8rlFVaY9UCVKc/Lwxh7zNLI3XfzrdZ3H3DtykZaRrwVF4n1v2XdvpH1FkrBpm8JPq/SOOgLc8RyS
-        X8QLB7QA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mjzl4-00Eqot-Ep; Mon, 08 Nov 2021 08:12:02 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2CD183000DD;
-        Mon,  8 Nov 2021 09:12:01 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0773F2CD0FE87; Mon,  8 Nov 2021 09:12:01 +0100 (CET)
-Date:   Mon, 8 Nov 2021 09:12:00 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Colin King (gmail)" <colin.i.king@googlemail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: DEAD callback error for CPU, WARNING: CPU: 3 PID: 1134 at
- kernel/cpu.c:1163 _cpu_down+0x20a/0x3a0
-Message-ID: <YYjb0OZxlDJpA6wr@hirez.programming.kicks-ass.net>
-References: <f6a0f4be-ad53-489c-0036-09dead99f368@gmail.com>
+        id S237834AbhKHIRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 03:17:55 -0500
+Received: from mga01.intel.com ([192.55.52.88]:5473 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234561AbhKHIRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 03:17:54 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="255853402"
+X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
+   d="scan'208";a="255853402"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 00:15:08 -0800
+X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
+   d="scan'208";a="502915910"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.101])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 00:15:04 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>, <akpm@linux-foundation.org>,
+        <dave.hansen@linux.intel.com>, <ziy@nvidia.com>,
+        <osalvador@suse.de>, <shy828301@gmail.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] mm: migrate: Add new node demotion strategy
+References: <c02bcbc04faa7a2c852534e9cd58a91c44494657.1636016609.git.baolin.wang@linux.alibaba.com>
+        <665cb882-6dbc-335f-1435-e52659d7ee58@intel.com>
+        <87tugrxqks.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <c0023ae8-0aff-0890-00fb-310d72130f8a@intel.com>
+        <240c5997-ab7e-8045-dacc-1afdb7c49a0d@linux.alibaba.com>
+        <b7062fa5-febf-24f6-b160-41359b92ff71@intel.com>
+        <9271f9d7-e251-9ed4-2126-8debb3395891@linux.alibaba.com>
+        <87fss7w3b7.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <a26234d8-4113-9f22-cb04-efe1956db8e7@linux.alibaba.com>
+Date:   Mon, 08 Nov 2021 16:12:10 +0800
+In-Reply-To: <a26234d8-4113-9f22-cb04-efe1956db8e7@linux.alibaba.com> (Baolin
+        Wang's message of "Mon, 8 Nov 2021 15:07:18 +0800")
+Message-ID: <87sfw7ukv9.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f6a0f4be-ad53-489c-0036-09dead99f368@gmail.com>
+Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 07, 2021 at 11:59:17AM +0000, Colin King (gmail) wrote:
-> On a SMP system in a VM, a deadlock callback error can be reproduced with
-> 5.15, tested from head at commit d4439a1189f93d0ac1eaf0197db8e6b3e197d5c7
-> 
-> Didn't see this issue on 5.13
-> 
-> How to reproduce:
-> 
-> git clone https://github.com/ColinIanKing/stress-ng
-> cd stress-ng
-> make -j $(nproc)
-> sudo ./stress-ng --cpu-online 0 -t 15 --pathological
-> 
-> Tested on a 8 thread virtual machine, 4MB of memory.
-> 
-> [ 2239.378724] smpboot: CPU 6 is now offline
-> [ 2239.379443] smpboot: Booting Node 0 Processor 6 APIC 0x6
-> [ 2239.380169] kvm-clock: cpu 6, msr 79201181, secondary cpu clock
-> [ 2239.401652] ------------[ cut here ]------------
-> [ 2239.401658] DEAD callback error for CPU6
-> [ 2239.401721] WARNING: CPU: 3 PID: 1134 at kernel/cpu.c:1163
-> _cpu_down+0x20a/0x3a0
+Baolin Wang <baolin.wang@linux.alibaba.com> writes:
 
-Can you do the same with whatever magic is required to get the
-pr_debug() output from cpuhp_down_callbacks() included?
+> On 2021/11/8 14:48, Huang, Ying writes:
+>> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
+>> 
+>>> On 2021/11/7 23:20, Dave Hansen wrote:
+>>>> On 11/7/21 1:33 AM, Baolin Wang wrote:
+>>>>> Thanks for your suggestion. After some thinking, can we change the
+>>>>> node_demotion[] structure like below? Which means one source node can be
+>>>>> demoted to mutiple target node, and we can set up the target node mask
+>>>>> according to the node distance. How do you think? Thanks.
+>>>>>
+>>>>> static nodemask_t node_demotion[MAX_NUMNODES] __read_mostly =
+>>>>>       {[0 ... MAX_NUMNODES - 1] = NODE_MASK_NONE};
+>>>> How large is that in the worst case?
+>>>
+>>> For the worst case (MAX_NUMNODES=1024), the size of the node_demotion
+>>> is 131072 bytes, while the size of original data structure is 4096
+>>> bytes. Maybe we can allocate the node_demotion dynamically?
+>> Per my understanding, in most cases, the number of demotion target
+>> nodes
+>> should be quite small.  So why not restrict the number of demotion
+>> target nodes to make it some kind of simple array?
+>
+> Yes, agree. Something like below is reasonable for you?
+>
+> #define DEMOTION_TARGET_NODES 16
+> typedef struct { DECLARE_BITMAP(bits, DEMOTION_TARGET_NODES); }
+> demotemask_t;
+>
+> static demotemask_t node_demotion[MAX_NUMNODES];
 
+I don't think we need a bitmap.  May be something as following,
+
+#define DEMOTION_TARGET_NODES 15
+struct demotion_nodes {
+  unsigned short nr;
+  unsigned short nodes[DEMOTION_TARGET_NODES];
+};
+
+Best Regards,
+Huang, Ying
