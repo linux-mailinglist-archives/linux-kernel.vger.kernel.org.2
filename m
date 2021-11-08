@@ -2,146 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E92DD447F40
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA770447F4F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 13:09:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239381AbhKHMHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 07:07:48 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:43850 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238161AbhKHMHq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 07:07:46 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 837AE1FDB8;
-        Mon,  8 Nov 2021 12:05:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1636373101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cmeZsq/SJ5yGsF0N57gsSWLarC8qyb6PAjYqlIQ0w/c=;
-        b=a8Nvyh7rPt8bvhLJtBc5yyuCb2zbJtrrQe8IsOB8xwbTq3CrRE+kOfmn7xnwXHJ6RurrPr
-        tpdovJObV8sJdmZlzW1pDdkRz2ddq/PSpkbzeG2VWxPSYGQapjmak43sJwWCiQaO1bMQSk
-        GxVxcCqkqqckWMuwNADLcG3VwLD1xe4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1636373101;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cmeZsq/SJ5yGsF0N57gsSWLarC8qyb6PAjYqlIQ0w/c=;
-        b=jz9EhfEebyc2kc97iQIfOFQEttdfYqQbKq2cbiWqt6zaSv6HvoGuVdRFIBhwl1I//8cm+b
-        1A/M8gmRX9VTFUAA==
-Received: from kunlun.suse.cz (unknown [10.100.128.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 39B6EA3B83;
-        Mon,  8 Nov 2021 12:05:01 +0000 (UTC)
-Date:   Mon, 8 Nov 2021 13:05:00 +0100
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Daniel Axtens <dja@axtens.net>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>, keyrings@vger.kernel.org,
-        Rob Herring <robh@kernel.org>, linux-s390@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org,
-        David Howells <dhowells@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Frank van der Linden <fllinden@amazon.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Subject: Re: [PATCH 0/3] KEXEC_SIG with appended signature
-Message-ID: <20211108120500.GO11195@kunlun.suse.cz>
-References: <cover.1635948742.git.msuchanek@suse.de>
- <87czneeurr.fsf@dja-thinkpad.axtens.net>
- <20211105131401.GL11195@kunlun.suse.cz>
- <87a6ifehin.fsf@dja-thinkpad.axtens.net>
+        id S239441AbhKHMLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 07:11:45 -0500
+Received: from mga05.intel.com ([192.55.52.43]:8780 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239399AbhKHMLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 07:11:34 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="318411634"
+X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
+   d="scan'208";a="318411634"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 04:08:48 -0800
+X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
+   d="scan'208";a="502992384"
+Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.186])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 04:08:44 -0800
+Date:   Mon, 8 Nov 2021 20:08:00 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     linux-acpi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 2/4] drivers/acpi: Introduce Platform Firmware Runtime
+ Update device driver
+Message-ID: <20211108120800.GA619906@chenyu-desktop>
+References: <cover.1635953446.git.yu.c.chen@intel.com>
+ <01f8f7d23926dcdb054e5ac170ddcbbdb0aed560.1635953446.git.yu.c.chen@intel.com>
+ <YYLHmcQMR/XFOuVX@smile.fi.intel.com>
+ <20211106151456.GA570347@chenyu-desktop>
+ <YYjr1jHnlE7sPb8i@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87a6ifehin.fsf@dja-thinkpad.axtens.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YYjr1jHnlE7sPb8i@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Mon, Nov 08, 2021 at 09:18:56AM +1100, Daniel Axtens wrote:
-> Michal Suchánek <msuchanek@suse.de> writes:
+On Mon, Nov 08, 2021 at 11:20:22AM +0200, Andy Shevchenko wrote:
+> On Sat, Nov 06, 2021 at 11:14:56PM +0800, Chen Yu wrote:
+> > On Wed, Nov 03, 2021 at 07:32:09PM +0200, Andy Shevchenko wrote:
+> > > On Wed, Nov 03, 2021 at 11:43:50PM +0800, Chen Yu wrote:
 > 
-> > On Fri, Nov 05, 2021 at 09:55:52PM +1100, Daniel Axtens wrote:
-> >> Michal Suchanek <msuchanek@suse.de> writes:
-> >> 
-> >> > S390 uses appended signature for kernel but implements the check
-> >> > separately from module loader.
-> >> >
-> >> > Support for secure boot on powerpc with appended signature is planned -
-> >> > grub patches submitted upstream but not yet merged.
-> >> 
-> >> Power Non-Virtualised / OpenPower already supports secure boot via kexec
-> >> with signature verification via IMA. I think you have now sent a
-> >> follow-up series that merges some of the IMA implementation, I just
-> >> wanted to make sure it was clear that we actually already have support
-> >
-> > So is IMA_KEXEC and KEXEC_SIG redundant?
-> >
-> > I see some architectures have both. I also see there is a lot of overlap
-> > between the IMA framework and the KEXEC_SIG and MODULE_SIg.
+> ...
 > 
+> > > > +enum cap_index {
+> > > > +	CAP_STATUS_IDX = 0,
+> > > > +	CAP_UPDATE_IDX = 1,
+> > > > +	CAP_CODE_TYPE_IDX = 2,
+> > > > +	CAP_FW_VER_IDX = 3,
+> > > > +	CAP_CODE_RT_VER_IDX = 4,
+> > > > +	CAP_DRV_TYPE_IDX = 5,
+> > > > +	CAP_DRV_RT_VER_IDX = 6,
+> > > > +	CAP_DRV_SVN_IDX = 7,
+> > > > +	CAP_PLAT_ID_IDX = 8,
+> > > > +	CAP_OEM_ID_IDX = 9,
+> > > > +	CAP_OEM_INFO_IDX = 10,
+> > > 
+> > > > +	CAP_NR_IDX = 11
+> > > 
+> > > Assignment here doesn't make any sense (it just adds unneeded churn and
+> > > burden). Same to the rest of similar cases below.
+> > >
+> > Greg mentioned that, we might need to "explicit about the numbers here, because it
+> > is uncerntain this is guaranteed by all C compilers or not."
+> > https://lore.kernel.org/lkml/YXj+QaMcCeV71XbI@kroah.com/
+> > My understanding is that, this applys to both uapi headers and the kernel internal
+> > headers.
 > 
-> Mimi would be much better placed than me to answer this.
+> I was talking only about the last item. This is guaranteed to be LAST+1 by the
+> C standard and any deviation from that is a compiler bug that must be fixed.
 > 
-> The limits of my knowledge are basically that signature verification for
-> modules and kexec kernels can be enforced by IMA policies.
-> 
-> For example a secure booted powerpc kernel with module support will have
-> the following IMA policy set at the arch level:
-> 
-> "appraise func=KEXEC_KERNEL_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig",
-> (in arch/powerpc/kernel/ima_arch.c)
-> 
-> Module signature enforcement can be set with either IMA (policy like
-> "appraise func=MODULE_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig" )
-> or with CONFIG_MODULE_SIG_FORCE/module.sig_enforce=1.
-> 
-> Sometimes this leads to arguably unexpected interactions - for example
-> commit fa4f3f56ccd2 ("powerpc/ima: Fix secure boot rules in ima arch
-> policy"), so it might be interesting to see if we can make things easier
-> to understand.
+> The first elements may be explicitly defined so we will be sure they are always
+> stay. Greg is right about it.
+>
+Ok, got it. Previously I've sent a v9 patch set that addressed the issues in v8, except
+for this enum issue. I'll wait for a day or two, if there is no further comments on
+v9, I'll send a refreshed v10 with this enum issue fixed.
 
-I suspect that is the root of the problem here. Until distributions pick
-up IMA and properly document step by step in detail how to implement,
-enable, and debug it the _SIG options are required for users to be able
-to make use of signatures.
-
-The other part is that distributions apply 'lockdown' patches that change
-the security policy depending on secure boot status which were rejected
-by upstream which only hook into the _SIG options, and not into the IMA_
-options. Of course, I expect this to change when the IMA options are
-universally available across architectures and the support picked up by
-distributions.
-
-Which brings the third point: IMA features vary across architectures,
-and KEXEC_SIG is more common than IMA_KEXEC.
-
-config/arm64/default:CONFIG_HAVE_IMA_KEXEC=y
-config/ppc64le/default:CONFIG_HAVE_IMA_KEXEC=y
-
-config/arm64/default:CONFIG_KEXEC_SIG=y
-config/s390x/default:CONFIG_KEXEC_SIG=y
-config/x86_64/default:CONFIG_KEXEC_SIG=y
-
-KEXEC_SIG makes it much easier to get uniform features across
-architectures.
-
-Thanks
-
-Michal
+thanks,
+Chenyu 
