@@ -2,67 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65793449C0C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:55:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C48449C11
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:57:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236336AbhKHS6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 13:58:22 -0500
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:34562 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229837AbhKHS6T (ORCPT
+        id S236383AbhKHTA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 14:00:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231641AbhKHTAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 13:58:19 -0500
-Received: by mail-oi1-f170.google.com with SMTP id bg25so28456298oib.1;
-        Mon, 08 Nov 2021 10:55:35 -0800 (PST)
+        Mon, 8 Nov 2021 14:00:24 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D95CC061570
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 10:57:40 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id k21so2836614ioh.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 10:57:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vGJOYis+gviqxoUcyJaqUmqXmeZAJwJoCXfZHdsHcpw=;
+        b=h+kLvfOxck6zzy3NuxkqHfXUzxSxjxiZC7U9HXX9AdtnPGUzj7CmA6hUJ7IE2PLgfC
+         XvntadmSbvkYojWNDfRQpr+ddOQOOTCTEODrHMfUKF1zWQ26q2nrdIk6K4QDudU3u2VQ
+         8l1oFowFiXJ5Z+GQMbSR7fII0xfnhSE2+2EX7fZPWnqtJxUb5aI4JB76VE27vXP6Wxcm
+         AIsRmJ9EUkf115WV2k21dnMt/8TYdI4O6jrkUnoSC3YvcxBGjM0lW2iD9rdNwWw4TCa2
+         /wpwhAVPhaskFqi8OPSVEHefX2tNGryk1VGDFQe635aJ89ldjeIgPQpzjZG022cyD4vl
+         nWQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2DWB0kKoYivJV1oeehdIpIIrx7+K+8Z44OtivzHAj5E=;
-        b=D3X/1n4b03idPnRX3bHay8UA24tSmDfDbg7LqfWIOz77pErgiLoNo4DkaSwWAEXMN2
-         3q882zqDP+GUTtFCSV9OzspHBZzClyZTlpkl/zdbxshhF6DWK5dO8DkcdbndiFs9FL31
-         QKUWrNtQ3BM3mfnnWqWEeHoVoWxztXRKSrSDMfKcqi4onJdCSCzAy31YVB2r3MZ+J0W9
-         mrJdHHb4Lr4OSnpEAmV8qfkYR9ZQT7x28Nr7zumD7VNNd/bUw9BbInTmj+cGZVR4VIze
-         jUuy+y4sswTU5huTCCpH0LSuzH4Inb/9Dvr0ac9naretlSALjqRXVLNZVRhSonYYAgMM
-         qZrg==
-X-Gm-Message-State: AOAM5306ffIFUybtSbifgnUf3PuMaBJGuZjoxu7XvbEwAWpqeupq3TjW
-        CQ06ZqTazncI1wqphIey4A==
-X-Google-Smtp-Source: ABdhPJxqNdVWRJ8PvfVAwRV2ZRqHbQKK2BKg35mESHevrhtZhoI8JZEi/wgeqZmv5eS0CfP63WfU2g==
-X-Received: by 2002:aca:3b89:: with SMTP id i131mr449070oia.102.1636397734731;
-        Mon, 08 Nov 2021 10:55:34 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id bh12sm2950638oib.25.2021.11.08.10.55.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 10:55:34 -0800 (PST)
-Received: (nullmailer pid 4020796 invoked by uid 1000);
-        Mon, 08 Nov 2021 18:55:33 -0000
-Date:   Mon, 8 Nov 2021 12:55:33 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: samsung: pmu: Document Exynos850
-Message-ID: <YYlypWEWpUn+e7JE@robh.at.kernel.org>
-References: <20211028144313.9444-1-semen.protsenko@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vGJOYis+gviqxoUcyJaqUmqXmeZAJwJoCXfZHdsHcpw=;
+        b=MjbQqfUTMm+YfILEG+xG26USFDcSXlr4QwpU+Uaxdk5Yu4hYjGjW/fttUSMzkiATIE
+         JyrTafXBaTkQJECP77KFYXfgoqqlf9G/B//V6UTxGXJfvVqsZKSZP25qcs6rK7RmcPsB
+         WRnI1H/5MTuWLc1DvySqQAkT71yuT1prbhA6bD3DKb1hD/hkJBRIyCTF3KlMfAOnkLDr
+         gcKffprYEvHd2HoP4BPUGTzXgJpJTbb71GYbHwEFX1WVNOcERNe/Knw4iuk75nojouqo
+         w6AdxHdzc08bmYS+8icy/VnB7I6J+6Flkyx9zMnNsWKiZGAtg+dJKAcTgKjs9RYx6rL2
+         2HQQ==
+X-Gm-Message-State: AOAM531jdfFy/sgzzCltNsHKP7zKK5qOi954Qca2U1VJswet4PXc5edo
+        JLO3ypry3MsBxyrwi6CGOD/NGBH/3g7kZfW1WxaZPQ==
+X-Google-Smtp-Source: ABdhPJy8SyUSNSSO0ev9lDHGHdIAxY1uNUr1pzWe9u/0WBlRq08HV8Laj2hnSIrsHvsO+Mv8dDRFLlo+JTLQ3eDoI8Q=
+X-Received: by 2002:a02:c559:: with SMTP id g25mr1014586jaj.123.1636397859461;
+ Mon, 08 Nov 2021 10:57:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211028144313.9444-1-semen.protsenko@linaro.org>
+References: <20211108044826.138781-1-sohaib.amhmd@gmail.com>
+In-Reply-To: <20211108044826.138781-1-sohaib.amhmd@gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 8 Nov 2021 10:57:25 -0800
+Message-ID: <CAP-5=fUc1uPti1MN3BZJ1JFus=ZYU66+gjh3bW30pUkE2sUxBQ@mail.gmail.com>
+Subject: Re: [PATCH] perf bench: Fix memory leaks.
+To:     Sohaib Mohamed <sohaib.amhmd@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Pierre Gondois <Pierre.Gondois@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Oct 2021 17:43:12 +0300, Sam Protsenko wrote:
-> Exynos850 SoC can reuse PMU driver functionality. Add corresponding
-> compatible string to PMU bindings documentation.
-> 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
->  Documentation/devicetree/bindings/arm/samsung/pmu.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+On Sun, Nov 7, 2021 at 8:49 PM Sohaib Mohamed <sohaib.amhmd@gmail.com> wrote:
+>
+> ASan reports memory leaks while running:
+>
+> $ perf bench sched all
+>
+> Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
 
-Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Ian Rogers <irogers@google.com>
+
+I think you can add:
+Fixes: e27454cc6352c ("perf bench: Add sched-messaging.c: Benchmark
+for scheduler and IPC mechanisms based on hackbench")
+
+This will then get the fix backported to older stable perf commands.
+
+Thanks,
+Ian
+
+> ---
+>  tools/perf/bench/sched-messaging.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/tools/perf/bench/sched-messaging.c b/tools/perf/bench/sched-messaging.c
+> index 488f6e6ba1a5..fa0ff4ce2b74 100644
+> --- a/tools/perf/bench/sched-messaging.c
+> +++ b/tools/perf/bench/sched-messaging.c
+> @@ -223,6 +223,8 @@ static unsigned int group(pthread_t *pth,
+>                 snd_ctx->out_fds[i] = fds[1];
+>                 if (!thread_mode)
+>                         close(fds[0]);
+> +
+> +               free(ctx);
+>         }
+>
+>         /* Now we have all the fds, fork the senders */
+> @@ -239,6 +241,8 @@ static unsigned int group(pthread_t *pth,
+>                 for (i = 0; i < num_fds; i++)
+>                         close(snd_ctx->out_fds[i]);
+>
+> +       free(snd_ctx);
+> +
+>         /* Return number of children to reap */
+>         return num_fds * 2;
+>  }
+> --
+> 2.25.1
+>
