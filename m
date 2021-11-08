@@ -2,166 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C132447EDE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:25:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFEE0447ED2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:24:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239252AbhKHL1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 06:27:50 -0500
-Received: from mout.gmx.net ([212.227.17.22]:41875 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239220AbhKHL1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:27:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1636370563;
-        bh=K79wqPStqcTfK5nLIvxLt2yDFN8raIwyDHqiPgY+PHc=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=Iil8zKbQDwR3Nlg+ymOUpymQS9X1Mc+jbLXtA+yVF4SDdcwftUD6iVyibZ6wTz7fb
-         Qc0Hcteal9dThlbJ/iNZLRdm5NTkZeKDClDySSPytppBB80v28nV6u18LsDpLiHQir
-         Ny1SVC50YGwrAIYi9pHquhjsrGZ1aixItLj5nI/g=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([5.146.194.160]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MBDj4-1msKD70Bvq-00CkHo; Mon, 08
- Nov 2021 12:22:43 +0100
-Date:   Mon, 8 Nov 2021 12:22:32 +0100
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Chen-Yu Tsai <wens@csie.org>, Tony Lindgren <tony@atomide.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v2 27/45] mfd: ntxec: Use devm_register_power_handler()
-Message-ID: <YYkIeBSCFka9yrqC@latitude>
-References: <20211027211715.12671-1-digetx@gmail.com>
- <20211027211715.12671-28-digetx@gmail.com>
- <YYbqlmOM95q7Hbjo@latitude>
- <be0c74c6-05a9-cad5-c285-6626d05f8860@gmail.com>
- <9a22c22d-94b1-f519-27a2-ae0b8bbf6e99@roeck-us.net>
- <658cf796-e3b1-f816-1e15-9e9e08b8ade0@gmail.com>
- <5a17fee3-4214-c2b9-abc1-ab9d6071591b@roeck-us.net>
- <c0b52994-51f5-806b-b07e-3e70d8217ffc@gmail.com>
+        id S239227AbhKHL1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 06:27:12 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:52140 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239202AbhKHL1K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 06:27:10 -0500
+Received: by mail-io1-f71.google.com with SMTP id b1-20020a05660214c100b005e241049240so797356iow.18
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 03:24:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=u4Nas3Zn38qiQ9agL4PyP89RCLjUpvxe2IODh2Piv74=;
+        b=V6ie/UPHAt7lAf0yQ3Tj02nxd4SdQUpbVUmTG/gu01XjAcomPtU9Sl3IkOjfQw9faV
+         D8W+PbMl/3QdYlwkjyKL2vRHVT3XUYgIr1QbLV+URkdpTXBR/B47dgHIN3OpgfvrRbTA
+         t4sm8D8D/cm2XsXb9ETFc8vl1XPQSR/z4B19tjkzyHJrX6IewwdFQHk+lAYCO+omrlv3
+         C/3L89k4twLBOb0K8B2K6vWCYHwzlvYjukY4o/C9qNrVoVTBkaaT4Mc1OkhMdZkpadlI
+         jXub1M1QYoqcOFuQPG3qCUtHxcJRZ66cwOSuMDOKeQP03lWYPR1zH9lyPZvOM9vENpYw
+         maAQ==
+X-Gm-Message-State: AOAM530kDcr+VvqnwGLD+Mx4Fk9PZuzaH7n+Yfh4MRzTFSsXNtWQCJwJ
+        Dh9l4KgkLg51Jbdc2HdO4uO8A5wm9x5UuwYO4VEZfH009Kc3
+X-Google-Smtp-Source: ABdhPJx/Z2etqw590MGVGK2j+aVhebSZQXAKzujs8LmCZabVmHOJ+SCRIzmKcH/0J8brmSwc9uEGQFJbdaqefrVNAbABom1ZNu9+
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SrzUzzmYivmDpJiW"
-Content-Disposition: inline
-In-Reply-To: <c0b52994-51f5-806b-b07e-3e70d8217ffc@gmail.com>
-X-Provags-ID: V03:K1:7qbQ+qoRzv7lpS+bZXlBkiHc8d3ndyzVjxZiUEx4fWU8LOwR4tV
- sJ6wX31cULMNt4suZs8Fc9nNWwTvT28rf28Ux8jItr0YArRnxNHgajX8j3pR27WJ8X4+rN1
- P6mwBUOnAtBBxh5xjfJsjiXu6SboLYbT6DrsS8jQkTim87V5oSocZwSYV15yBIZybWDcxi2
- yhhXSfTVo1fjkR9G3NiNg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yjkPkKMrbPg=:X1ZiIBM9wmN7jnP9s16Cfb
- sBqYerCPdYu35MyKm/gIqDt8Gw/FOK/47i1VNVZ2GZyzu2N+w6bq5umB4vcv2LdlVvVXasJFU
- hHItgn4p2+gcrIXW8dm47/l7t1HQaw7UgtUqyeXqDu69ghAqCYZXx0eX60EUrsUOpoEgYDyVn
- oP9a1XYVWqB1j9J0R0WURMEfCLIEiPQoq7Rbx4EPDsJbUZtdggotJ5Zu652F4YThXYIsp6IMf
- gllsRU1HwQ6JjxuK8cXPPYaD+LLKehorJRlrq+y8qXUM6ylWXrOoGKNZLGsZkAONax4WYMqIW
- d3FGkGXLV4f+esApgI7PsCMvrwTK22lrWu5ViPmU4x2nHZP+ZTPAZuJtgSimwyu20amazZwYK
- Z4vpwY5CSzJZCDfMI5DZ0Ptk/Ztz1Q6g/A3jF9otZwKjtdDGI+4EVCvameWf3xn488EZ8v6YU
- At13Fas5vppLSoa/xpMWgEaXqdhRWW3BWFKDkwwIzAy8iepAVZKdxWuiNZ5V838e4pssIjwOP
- b9I/WUoeoSIjaVUx2uwI4jdditk+sE4UWUM/0QolX7ispKs/G3XyXxRQRgZ6B7X3V60FM1FjB
- RAlEp0a5931lWVr5xqZfoR1dAUpRgm1O9Vjh40HLSfiunbwWOc0bQ0ONdbOPoSLykjVMQhxlP
- xtpeZidtvOHYL9oWOJQZIFjHLJGmJNbSfzBBXrzNQMUN8I0KHFPgGMy1RqdguPf3PUJKELugu
- Nk3jRxSbdt395Sseo31kU92jjNpYb9PTuVNaM1aWS4Q4yTc9cIXxk1+LRFP9bIgg/V6iwob0M
- 2xQWxNH/EiCfUWEHwJvuTGBqhgThj/glAo/CZxZAe/L3n3D6849ukZO9fYf8H8Nk2y5a5UHWh
- pvbdLd9gXcXQ6r/K+x80Dm4oeeZ7NvEbfgA19DwbuESar56ohW+JqsXIhz3AyR62ShQOe3+FE
- 5fRkZdNNItdvlDY7CkW9kJ0ItIF7cQw1aNvt9OvV6ho/I2LuKv3w1ibUywvt8uxjpQ795s++f
- LtodIi5u3n67HADZypUokVR2nausSwp0lMroUVKyNyJ3Q2D2RhV5rxgHndlU1/Jjw3Lcz380m
- nnoGWxFp59yGiw=
+X-Received: by 2002:a5e:da09:: with SMTP id x9mr1557155ioj.171.1636370666183;
+ Mon, 08 Nov 2021 03:24:26 -0800 (PST)
+Date:   Mon, 08 Nov 2021 03:24:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000047624505d0453c58@google.com>
+Subject: [syzbot] WARNING in kernfs_remove_by_name_ns (3)
+From:   syzbot <syzbot+93cbdd0ab421adc5275d@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---SrzUzzmYivmDpJiW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+syzbot found the following issue on:
 
-On Sun, Nov 07, 2021 at 08:42:33PM +0300, Dmitry Osipenko wrote:
-[...]
-> EC drivers tend to use higher priority in general. Jonathan, could you
-> please confirm that NTXEC driver is a more preferable restart method
-> than the watchdog?
+HEAD commit:    ce840177930f Merge tag 'defconfig-5.16' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1516eb12b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=647adc5a101c9bf3
+dashboard link: https://syzkaller.appspot.com/bug?extid=93cbdd0ab421adc5275d
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Yes. The original firmware uses the NTXEC to restart, and it works well,
-so I do think it's preferable.
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+93cbdd0ab421adc5275d@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+kernfs: can not remove 'nr_tags', no directory
+WARNING: CPU: 0 PID: 352 at fs/kernfs/dir.c:1535 kernfs_remove_by_name_ns+0x96/0xa0 fs/kernfs/dir.c:1535
+Modules linked in:
+CPU: 0 PID: 352 Comm: syz-executor.0 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:kernfs_remove_by_name_ns+0x96/0xa0 fs/kernfs/dir.c:1535
+Code: 83 ff 48 c7 c7 20 7a b5 8b 41 bc fe ff ff ff e8 f0 d9 67 ff eb d9 e8 49 f9 83 ff 4c 89 e6 48 c7 c7 a0 64 9d 89 e8 a1 35 01 07 <0f> 0b 41 bc fe ff ff ff eb bb 41 57 41 56 41 55 49 89 d5 41 54 49
+RSP: 0018:ffffc90004c8fa68 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffffffff8c206628 RCX: 0000000000000000
+RDX: ffff88806f28ba00 RSI: ffffffff815f39c8 RDI: fffff52000991f3f
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000037c24
+R10: ffffffff815ed7ae R11: 0000000000000000 R12: ffffffff89e2ae80
+R13: 0000000000000000 R14: ffffffff89e2ada0 R15: dffffc0000000000
+FS:  00007fe5eef0f700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7b90e723a4 CR3: 00000001e5ed8000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ kernfs_remove_by_name include/linux/kernfs.h:598 [inline]
+ remove_files+0x96/0x1c0 fs/sysfs/group.c:28
+ sysfs_remove_group+0x87/0x170 fs/sysfs/group.c:289
+ sysfs_remove_groups fs/sysfs/group.c:313 [inline]
+ sysfs_remove_groups+0x5c/0xa0 fs/sysfs/group.c:305
+ __kobject_del+0x89/0x200 lib/kobject.c:611
+ kobject_del lib/kobject.c:643 [inline]
+ kobject_del+0x3c/0x60 lib/kobject.c:635
+ blk_mq_unregister_hctx block/blk-mq-sysfs.c:183 [inline]
+ blk_mq_unregister_hctx block/blk-mq-sysfs.c:172 [inline]
+ blk_mq_sysfs_unregister+0x227/0x300 block/blk-mq-sysfs.c:302
+ __blk_mq_update_nr_hw_queues block/blk-mq.c:4102 [inline]
+ blk_mq_update_nr_hw_queues+0x48c/0xd30 block/blk-mq.c:4142
+ nbd_start_device+0x1f2/0xdd0 drivers/block/nbd.c:1357
+ nbd_start_device_ioctl drivers/block/nbd.c:1407 [inline]
+ __nbd_ioctl drivers/block/nbd.c:1481 [inline]
+ nbd_ioctl+0x5f3/0xb10 drivers/block/nbd.c:1521
+ blkdev_ioctl+0x37a/0x800 block/ioctl.c:597
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl fs/ioctl.c:860 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fe5f19baae9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe5eef0f188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fe5f1ace020 RCX: 00007fe5f19baae9
+RDX: 0000000000000000 RSI: 000000000000ab03 RDI: 0000000000000005
+RBP: 00007fe5f1a14f25 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffd3b00747f R14: 00007fe5eef0f300 R15: 0000000000022000
+ </TASK>
 
 
-Best regards,
-Jonathan
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
---SrzUzzmYivmDpJiW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmGJCE4ACgkQCDBEmo7z
-X9vVoBAAyZoJJUbTWWKI6c/HY4wq3sRDukultq5nSNIOH4RAFsTFD2FbiBB7LDaG
-v/9oOqoTUDuR3AkaHFnk5+h5gLRqeePoH1KU8fa7bc7NPatTUVt54SqhQSRfUfrF
-+0eRt3WHt2lZpZjaY8kj/vz5AkubzCmwVqSKoLUdCW/qi+UphZHp75E2XXypK/o3
-dt1dmPA1D0pXB1WdwLSZjtCn5lIOucdssKLl1UyXQzFmuKBPkjOcuuQqwm5Ietoz
-T4EEl/js2iIbui0e5ml9611nZoTLhVYMkxRcLi7gRHWTn9NmVzzJdubJH6Ajwp8E
-M9TOi2NtYbSk+pGvTwawfKaw+aROUuKqGOGc+9TFeu+V5pCMAIZ1wybNExZph5jp
-/o58QQUdszFwjMq7A4zdXSufKug8CpsYILhtcSx57wtGJ/OW7ZDtmX679x4jAvgX
-XeMWuW8x08UFauDBHsvw9aIIgKg7ZlJ+bQ5WdgtsiuXrZEEbTNbW1kjbKAvHS9dP
-o3MB/Lbi/rN/448ImnHtShmihh7ug6s+oUDbW6wFzCFvcfLbOs/Sfz35f5wNTHQW
-ReNPRgH+pTvzZvulDdrSA6GAnH8mfFE7IkC/3BP6BJE28ug1GvJrRtvylwp29ZW/
-Qu0z+FCaFjPu5yOr8rspC9YUdGolKnMg1msMwjgbe58vH9+EDDQ=
-=fkgc
------END PGP SIGNATURE-----
-
---SrzUzzmYivmDpJiW--
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
