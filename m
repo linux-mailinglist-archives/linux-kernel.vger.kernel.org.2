@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0CCB449CB2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 20:51:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FFC4449CB6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 20:58:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237940AbhKHTyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 14:54:33 -0500
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:53302 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237891AbhKHTyb (ORCPT
+        id S237975AbhKHTzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 14:55:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237891AbhKHTzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 14:54:31 -0500
-Received: from [192.168.1.18] ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id kAgBmHCd3OvR0kAgBmrd8n; Mon, 08 Nov 2021 20:51:45 +0100
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Mon, 08 Nov 2021 20:51:45 +0100
-X-ME-IP: 86.243.171.122
-Subject: Re: [PATCH] PCI: brcmstb: Declare a bitmap as a bitmap, not as a
- plain 'unsigned long'
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>
-Cc:     nsaenz@kernel.org, jim2101024@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, lorenzo.pieralisi@arm.com,
-        robh@kernel.org, bhelgaas@google.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <e6d9da2112aab2939d1507b90962d07bfd735b4c.1636273671.git.christophe.jaillet@wanadoo.fr>
- <YYh+ldT5wU2s0sWY@rocinante> <4d556ac3-b936-b99c-5a50-9add8607047d@gmail.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <4997ef3c-5867-7ce0-73a2-f4381cf0879b@wanadoo.fr>
-Date:   Mon, 8 Nov 2021 20:51:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 8 Nov 2021 14:55:10 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFB6C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 11:52:25 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id j9so16147922pgh.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 11:52:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WNcWIVn+Wy27pUdYO1jQPgIdx2E92vh2pwmX05EnzNE=;
+        b=jY2kujZ12wsKAFtiPmLXkOMgcjk0V+lZpDyp1TNMvbtWI+VynPsGxgcY6crCiITz1G
+         HJIS2bMxc0GhiAKiPKuj8xwxZAK1pu8RVZXu4x7ETHRkxs97m4sAztO8NLMCSZwaE0q/
+         199RO27X0LwDu89rtiCtzNrQpAxDaViRY4F5PiYkCa2sbdmHGcId9eQLRYTuHIXYCQ5k
+         guL4KI2LYQXcrJfIgGAL4oEEmQgPy4FJ0m8Tmpsi0ki+qwVkPuAE92s4Gb6cbpcLPMx/
+         dJpU4q2CwStfL9ZMOhnsdZ9rA6zQxj7VF0OeBpk07zfh3V02hb0ea21ne0PDl5Ojoc0U
+         bNzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WNcWIVn+Wy27pUdYO1jQPgIdx2E92vh2pwmX05EnzNE=;
+        b=Q8iu1KTLmYUQi0wwsWWM0Lkerbh9j7FaRYvf+0pCBOlKX1+EPz7/SxHfZZrqmKMlxx
+         1jx0C7npfvMMUoLc0m9K3mIcBWU+HT1GaHPiYbhKAtuggGljkCRMFYWJgQ00jrISLpM6
+         RL/iWoppw4gXcd+qBU5RbofQSiwb65SkJv0SzS9Ina2UxJJOaHpFVulNKZA4YqauPMxF
+         0VLWH5MemD6+xNPIb4ty5i+qGg3NwXgZsXrFnbpvk7uLqoFy3M3qGH2I4dSLnr6OISRQ
+         oa046tCmNuzIsQpwcnTD51GYkmbh/b5mf+rg6qmqiDjni7MQK+puntMBuxVuuj8Cr3GU
+         rBtA==
+X-Gm-Message-State: AOAM533L0AN4tzywOTRFvoie+IGeijW21nYqxQC5W2d+yPbo1PE0QhQF
+        vwmvAIecD3ax1Zh+wXkH4wnVXw==
+X-Google-Smtp-Source: ABdhPJy5wIrKHJe+eT8XAlzCxuq5th9yVuBQWA/n3sAvMYSiOpa0/XY8nBsSFRmM9d501h2QBP3eYQ==
+X-Received: by 2002:a63:7d0f:: with SMTP id y15mr1473407pgc.446.1636401145324;
+        Mon, 08 Nov 2021 11:52:25 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id t38sm4342031pfg.218.2021.11.08.11.52.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 11:52:24 -0800 (PST)
+Date:   Mon, 8 Nov 2021 19:52:21 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Chenyi Qiang <chenyi.qiang@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 5/7] KVM: MMU: Add support for PKS emulation
+Message-ID: <YYl/9fi/fYJ92O5k@google.com>
+References: <20210811101126.8973-1-chenyi.qiang@intel.com>
+ <20210811101126.8973-6-chenyi.qiang@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <4d556ac3-b936-b99c-5a50-9add8607047d@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811101126.8973-6-chenyi.qiang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 08/11/2021 à 17:28, Florian Fainelli a écrit :
-> 
-> 
-> On 11/7/2021 5:34 PM, Krzysztof Wilczyński wrote:
->> Hi Christophe!
->>
->> [...]
->>> This bitmap can be BRCM_INT_PCI_MSI_LEGACY_NR or BRCM_INT_PCI_MSI_NR 
->>> long.
->>
->> Ahh.  OK.  Given this an option would be to: do nothing (keep current
->> status quo); allocate memory dynamically passing the "msi->nr" after it
->> has been set accordingly; use BRCM_INT_PCI_MSI_NR and waste a little bit
->> of space.
->>
->> Perhaps moving to using the DECLARE_BITMAP() would be fine in this case
->> too, at least to match style of other drivers more closely.
->>
->> Jim, Florian and Lorenzo - is this something that would be OK with you,
->> or you would rather keep things as they were?
-> 
-> I would be tempted to leave the code as-is, but if we do we are probably 
-> bound to seeing patches like Christophe's in the future to address the 
+On Wed, Aug 11, 2021, Chenyi Qiang wrote:
+> @@ -202,14 +202,17 @@ static inline u8 permission_fault(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
+>  	WARN_ON(pfec & (PFERR_PK_MASK | PFERR_RSVD_MASK));
+>  	if (unlikely(mmu->pkr_mask)) {
+>  		u32 pkr_bits, offset;
+> +		u64 pkr;
 
-Even if I don't find this report in the Coverity database, it should 
-from around April 2018.
-So, if you have not already received several patches for that, I doubt 
-that you will receive many in the future.
+Heh, MSR_IA32_PKRS strikes again.  This should be a u32.
 
+>  
+>  		/*
+> -		* PKRU defines 32 bits, there are 16 domains and 2
+> -		* attribute bits per domain in pkru.  pte_pkey is the
+> -		* index of the protection domain, so pte_pkey * 2 is
+> -		* is the index of the first bit for the domain.
+> +		* PKRU and PKRS both define 32 bits. There are 16 domains
+> +		* and 2 attribute bits per domain in them. pte_key is the
+> +		* index of the protection domain, so pte_pkey * 2 is the
+> +		* index of the first bit for the domain. The choice of
+> +		* PKRU and PKRS is determined by the accessed pages.
 
-My own feeling is that using a long (and not a long *) as a bitmap, and 
-accessing it with &long may look spurious to a reader.
-That said, it works.
+Please replace "accessed pages" with something along the lines of
 
-So, I let you decide if the patch is of any use. Should I need to tweak 
-or resend it, let me know.
+  The use of PKRU versus PKRS is selected by the address type, as determined by
+  the U/S bit in the paging-structure entries.
 
-
-CJ
-
-> problem, unless we place a coverity specific comment in the source tree, 
-> which is probably frowned upon.
-> 
-> The addition of the BUILD_BUG_ON() is a good addition though.
-
+I.e. try to avoid "access" in favor of "address" to follow the SDM's wording.
