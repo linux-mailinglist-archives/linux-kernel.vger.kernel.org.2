@@ -2,133 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8187E447C3B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63137447C3D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:49:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238152AbhKHIvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 03:51:03 -0500
-Received: from mx1.tq-group.com ([93.104.207.81]:23202 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238146AbhKHIvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 03:51:02 -0500
+        id S238158AbhKHIwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 03:52:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231660AbhKHIwh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 03:52:37 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2336BC061570
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 00:49:53 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id o18so34382233lfu.13
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 00:49:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1636361298; x=1667897298;
-  h=from:to:cc:subject:date:message-id;
-  bh=dA0HAvdE9FeKiFecBhs2bqLE/d/A6Iscj2L+97uaEmQ=;
-  b=O2gAhSQEs673eFHISNhg/pGyPuysxsaMGnE2bCeutnWZc+yqupH/fMmu
-   8WKQ1RGXK6aiVazYuciIC5y0x1LWo3VEnhMMEARdORSASgKR0tmuE7Ml8
-   SYbHhTUh9+yvLR7iVIR69jzw+4xl73gljQK01EYzJ/AaJHJGypXoleYbi
-   AhqMc/Gt5aRygITXBYXHW2VQDKYKs9EyErniiI0oUHEFzZWF+vAX2E3zU
-   6Nua8TiD+uNaNPyaHfHIm2vp+6HwhWaswOyy9mdF2XKTBE4hZur4NL88V
-   QazAdxFCo9DL6vizNXoXs8PlOD1prdDzUD0Dz/OFBaiKfdgSKzeILvZw7
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.87,218,1631570400"; 
-   d="scan'208";a="20370682"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 08 Nov 2021 09:48:17 +0100
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Mon, 08 Nov 2021 09:48:17 +0100
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Mon, 08 Nov 2021 09:48:17 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1636361297; x=1667897297;
-  h=from:to:cc:subject:date:message-id;
-  bh=dA0HAvdE9FeKiFecBhs2bqLE/d/A6Iscj2L+97uaEmQ=;
-  b=JMinAEZ+JVQNGzwIMQ7rJShJUGTnx+uyVT5nc0c6fcE08lrjN/Qpa26I
-   7v2dxCTDpm+RdsDRGG6v8MpbyBpdykexEPYUT6sD3MwuoaGuwSMdhXnL+
-   /I6iQa0Oll0fe/q2aytQA8fQ4Kz00WdfuFAPXw7F9f+9xztBdpXjAtKyQ
-   PHbVm5BjLXdGpWxlUZah+QDVKcznub1E9ezUQW14cwSdBjELet1WJwFXO
-   aLoq9koNJHtn7L3y5nPx/JfEflij3FwEZqN2Wk3PhPp0ZrjCnvc/Yu3Cy
-   HyQQIk2i2w0jA+pL5+dIg85UdqBBSOUQKVJ/8sU10o/s/F5ZNnCo4VLVW
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.87,218,1631570400"; 
-   d="scan'208";a="20370680"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 08 Nov 2021 09:48:16 +0100
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id B2463280065;
-        Mon,  8 Nov 2021 09:48:16 +0100 (CET)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH] of: base: Skip CPU nodes with non-"okay"/"disabled" status
-Date:   Mon,  8 Nov 2021 09:48:04 +0100
-Message-Id: <20211108084804.13474-1-matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NC6D/WS8Gp+h4dIR9Catgw+sLa+kzIQU0LzOCWmVhrM=;
+        b=LujYT2JCFGjdzk+2fC32ggQUDjKXizNOHdnxDLypoRVtzT8GLM6W8KkS6bBtKiaJ3s
+         CZ8D7mKp2MBmyNj4YkpNemsaT57xYF1ax7w/8RZ3y6NmY259gAE3PMY66Lmpu94VBpry
+         m/pKTKHdZU/F9HF/1y8PFQzkNmrj2wIXSBqI3GmXgB7xhzSGeKw0PAGPeJUunedLQikp
+         7rT4teXIU1RNvZ3jaEi1bH8c1sV0z5TJTlISfXNli/w+p+PQXhY4sare/g1TaS+B3C4j
+         44Y6+koNk1hbKRG/tz3XkfcZTPuqeKHJx5eKC2rklzBZ2CjfsCUyhaGOvKf4VeAxy8/q
+         Lxig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NC6D/WS8Gp+h4dIR9Catgw+sLa+kzIQU0LzOCWmVhrM=;
+        b=5xlAYZx7wNQ9drrXO2sqvd1b3V4K/iOmErLVOBOFl1VvA3edCnN6HkXiuNxOh8QuWu
+         i95TpzNIiBB5uDu6YcufiMOmM+ZOdDpwBWgoYY/YD3LB5gJG/OSyu5hRUuuFm5TmBAaa
+         AiRms2ZYAW957G+ZmWLNb3/YmlPLG1kLzaC/l1aenzZNdKhxRC6Wr3mtTPIMbgya9zly
+         M2KCcnEBGdbwL4AzY+R/qUEflm8xHxFPo67K9gGQWE89odQ7QMrIBH686sUgl0B4zbu/
+         jiDYw1huSHlrJROi0ose6eBCsXnfnE+XmVtQ2nUaDhfiWNO2U+hOTHLDmLXw8rnTYfpo
+         Ya2A==
+X-Gm-Message-State: AOAM530TMHi2zu6aip6US5u7BnKx7SbNrrLxwE/t9REm8UYRnmqWTG4Y
+        zDaJtoMCx6nYXVnQfTKqPJ4sNlUP9m33DeAWam47wX1LrDM=
+X-Google-Smtp-Source: ABdhPJwF3MCEgKFj4vvWPPbdNitPH62GPP/UPjjYD5+dZE6phEdbsCi7+BY69kIc8vwarxzNSoJq4rm3fdNHb27Kou8=
+X-Received: by 2002:a05:6512:2346:: with SMTP id p6mr39368133lfu.503.1636361391539;
+ Mon, 08 Nov 2021 00:49:51 -0800 (PST)
+MIME-Version: 1.0
+References: <1634278612-17055-1-git-send-email-huangzhaoyang@gmail.com>
+ <YYGV1TxsZXzGXFmx@cmpxchg.org> <CAGWkznEaEEz=m5UmPXRECiizwht7+8Zw_xH9V7Wwyd__10eJDA@mail.gmail.com>
+ <CAGWkznFuX=6mSnj7J7=t7et5QO-GB2BKCMRiHoU37jcH9dPhLA@mail.gmail.com>
+ <78b3f72b-3fe7-f2e0-0e6b-32f28b8ce777@arm.com> <CAGWkznF_8iBp57BPoQKvG4VuNYep=g+ZxgO7D4e0wMDLipJ8uw@mail.gmail.com>
+ <85c81ab7-49ed-aba5-6221-ea6a8f37f8ad@arm.com>
+In-Reply-To: <85c81ab7-49ed-aba5-6221-ea6a8f37f8ad@arm.com>
+From:   Xuewen Yan <xuewen.yan94@gmail.com>
+Date:   Mon, 8 Nov 2021 16:49:39 +0800
+Message-ID: <CAB8ipk_0YxWnS-k+HLPnL7DRR1MM+WH-xQfna7jD_+TQ0vKi8Q@mail.gmail.com>
+Subject: Re: [Resend PATCH] psi : calc cfs task memstall time more precisely
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Zhaoyang Huang <huangzhaoyang@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        xuewen.yan@unisoc.com, Ke Wang <Ke.Wang@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow fully disabling CPU nodes using status = "fail". Having no status
-property at all is still interpreted as "okay" as usual.
+Hi Dietmar
 
-This allows a bootloader to change the number of available CPUs (for
-example when a common DTS is used for SoC variants with different numbers
-of cores) without deleting the nodes altogether, which could require
-additional fixups to avoid dangling phandle references.
+On Sat, Nov 6, 2021 at 1:20 AM Dietmar Eggemann
+<dietmar.eggemann@arm.com> wrote:
+>
+> On 05/11/2021 06:58, Zhaoyang Huang wrote:
+> >> I don't understand the EAS (probably asymmetric CPU capacity is meant
+> >> here) angle of the story. Pressure on CPU capacity which is usable for
+> >> CFS happens on SMP as well?
+> >  Mentioning EAS here mainly about RT tasks preempting small CFS tasks
+> > (big CFS tasks could be scheduled to big core), which would introduce
+> > more proportion of preempted time within PSI_MEM_STALL than SMP does.
+>
+> What's your CPU layout? Do you have the little before the big CPUs? Like
+> Hikey 960?
+>
+> root@linaro-developer:~# cat /sys/devices/system/cpu/cpu*/cpu_capacity
+> 462
+> 462
+> 462
+> 462
+> 1024
+> 1024
+> 1024
+> 1024
+>
+> And I guess rt class prefers lower CPU numbers hence you see this?
+>
+our CPU layout is:
+xuewen.yan:/ # cat /sys/devices/system/cpu/cpu*/cpu_capacity
+544
+544
+544
+544
+544
+544
+1024
+1024
 
-References:
-- https://www.lkml.org/lkml/2020/8/26/1237
-- https://www.spinics.net/lists/devicetree-spec/msg01007.html
-- https://github.com/devicetree-org/dt-schema/pull/61
+And in our platform, we use the kernel in mobile phones with Android.
+And we prefer power, so we prefer the RT class to run on little cores.
 
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
- drivers/of/base.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
 
-diff --git a/drivers/of/base.c b/drivers/of/base.c
-index 61de453b885c..4e9973627c8d 100644
---- a/drivers/of/base.c
-+++ b/drivers/of/base.c
-@@ -650,6 +650,32 @@ bool of_device_is_available(const struct device_node *device)
- }
- EXPORT_SYMBOL(of_device_is_available);
- 
-+/**
-+ *  __of_device_is_disabled - check if a device has status "disabled"
-+ *
-+ *  @device: Node to check status for, with locks already held
-+ *
-+ *  Return: True if the status property is set to "disabled",
-+ *  false otherwise
-+ *
-+ *  Most callers should use __of_device_is_available() instead, this function
-+ *  only exists due to the special interpretation of the "disabled" status for
-+ *  CPU nodes.
-+ */
-+static bool __of_device_is_disabled(const struct device_node *device)
-+{
-+	const char *status;
-+
-+	if (!device)
-+		return false;
-+
-+	status = __of_get_property(device, "status", NULL);
-+	if (status == NULL)
-+		return false;
-+
-+	return !strcmp(status, "disabled");
-+}
-+
- /**
-  *  of_device_is_big_endian - check if a device has BE registers
-  *
-@@ -817,6 +843,9 @@ struct device_node *of_get_next_cpu_node(struct device_node *prev)
- 		of_node_put(node);
- 	}
- 	for (; next; next = next->sibling) {
-+		if (!__of_device_is_available(next) &&
-+		    !__of_device_is_disabled(next))
-+			continue;
- 		if (!(of_node_name_eq(next, "cpu") ||
- 		      __of_node_is_type(next, "cpu")))
- 			continue;
--- 
-2.17.1
+> >>
+> >> This will let the idle task (swapper) pass. Is this indented? Or do you
+> >> want to only let CFS tasks (including SCHED_IDLE) pass?
+> > idle tasks will NOT call psi_memstall_xxx. We just want CFS tasks to
+> > scale the STALL time.
+>
+> Not sure I  get this.
+>
+> __schedule() -> psi_sched_switch() -> psi_task_change() ->
+> psi_group_change() -> record_times() -> psi_memtime_fixup()
+>
+> is something else than calling psi_memstall_enter() or _leave()?
+>
+> IMHO, at least record_times() can be called with current equal
+> swapper/X. Or is it that PSI_MEM_SOME is never set for the idle task in
+> this callstack? I don't know the PSI internals.
+>
+> >>
+> >> if (current->sched_class != &fair_sched_class)
+> >>     return growth_fixed;
+> >>
+> >>>>>> +
+> >>>>>> +     if (current->in_memstall)
+> >>>>>> +             growth_fixed = div64_ul((1024 - rq->avg_rt.util_avg - rq->avg_dl.util_avg
+> >>>>>> +                                     - rq->avg_irq.util_avg + 1) * growth, 1024);
+> >>>>>> +
+> >>
+> >> We do this slightly different in scale_rt_capacity() [fair.c]:
+> >>
+> >> max = arch_scale_cpu_capacity(cpu_of(rq) /* instead of 1024 to support
+> >>                                             asymmetric CPU capacity */
+> > Is it possible that the SUM of rqs' util_avg large than
+> > arch_scale_cpu_capacity because of task migration things?
+>
+> I assume you meant if the rq (cpu_rq(CPUx)) util_avg sum (CFS, RT, DL,
+> IRQ and thermal part) can be larger than arch_scale_cpu_capacity(CPUx)?
+>
+> Yes it can.
+>
+> Have a lock at
+>
+> effective_cpu_util(..., max, ...) {
+>
+>   if (foo >= max)
+>     return max;
+>
+> }
+>
+> Even the CFS part (cpu_rq(CPUx)->cfs.avg.util_avg) can be larger than
+> the original cpu capacity (rq->cpu_capacity_orig).
+>
+> Have a look at cpu_util(). capacity_orig_of(CPUx) and
+> arch_scale_cpu_capacity(CPUx) both returning rq->cpu_capacity_orig.
+>
 
+Well, your means is we should not use the 1024 and should use the
+original cpu capacity?
+And maybe use the "sched_cpu_util()" is a good choice just like this:
+
++       if (current->in_memstall)
++               growth_fixed = div64_ul(cpu_util_cfs(rq) * growth,
+sched_cpu_util(rq->cpu, capacity_orig_of(rq->cpu)));
+
+Thanks!
+
+BR
+xuewen
