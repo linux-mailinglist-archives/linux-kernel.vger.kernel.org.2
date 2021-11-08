@@ -2,69 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A124447CF7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA55447CFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 10:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236130AbhKHJmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 04:42:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230455AbhKHJmH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 04:42:07 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48EEBC061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 01:39:23 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id 207so10115063ljf.10
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 01:39:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=vILalfwFgh6DWqB6U3gvZByDdhQR+znyrjSP0coUOkA=;
-        b=p1UIzsKLWr3lYQH4sMS84aZiRpSgrnSRbzBC4kDt/uwqARtQ0lNAVunM6dppfP7iTY
-         Vjwe4T1fNk4SVQe9LPlNY0bCH/FdLYh34k1fqODcLy/fi1vjBAho6fX0llrnM3l8VVXA
-         KrNxpCu/kSP/AsNVG7Q7GaVSFa4Ss+FoXnw5lg5U6pwoSeBFh7lR+3Z2hQj2A5Obxg73
-         VRCsJGc8mItrXpq3CHtJozc9ztK4aGTtO3uRnvmYUUWwWiYXc4GtUcab2kHIDrKRzOiz
-         39ctkm+M4EtGt4t7QsUMBeuBsV4HL6pOQoIqIIr8EywY2/GNCgVUrieQs3TJfRVpDuwl
-         Ps1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=vILalfwFgh6DWqB6U3gvZByDdhQR+znyrjSP0coUOkA=;
-        b=7cUUe2mrKW7MpUue6e236iI23O4BpCOeSJRahI49fB47yZma/W/W4zIV1Z98lcGlwv
-         4DRiJU0E34grC47god7DMqnrYVVee4jOwUzuwHbuoeXJQUjU4rq5ElABEzZOQ2yFZ34A
-         5ZNaa7I7ugPx0NINU9f75WXd30Bbh8z3HBdB+/OzZ4FLOA7UxRFCip+ESGjnoZjIEief
-         FhZJx0p71+9+nPZm1Oa/NYRRmOLHsFVvE+aXx6tKRIgyKlg0ZwuUjmc6MJyCG0GzV5hW
-         XveZT7vSDvOpG5FPRsGVJtPjpU5yVDmU1n1isK1ZeSpLs5i3iKu+XNvnPbFNXAh1O5aR
-         Pgfw==
-X-Gm-Message-State: AOAM532V5yQ4TcQe3wptApFC5LyVAJwsi9dAxGwSi1O+4oW3pHCua3ah
-        +4HfNQxsbV8PkZesj19qxjiQJ/K0RhgLfUQxs0o=
-X-Google-Smtp-Source: ABdhPJyF0JWYs0JlcKAdS1/ksYi/JMdC79uZQ5XhNrncD9Dq/JcvHtDab+Fpc1i0CBE9uBd591VS/VUlPZHSs4wgcB8=
-X-Received: by 2002:a2e:a287:: with SMTP id k7mr77563567lja.295.1636364361608;
- Mon, 08 Nov 2021 01:39:21 -0800 (PST)
+        id S236806AbhKHJnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 04:43:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238473AbhKHJnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 04:43:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05DEF61242;
+        Mon,  8 Nov 2021 09:40:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636364430;
+        bh=3kdsbDiloldfUsyYCakxpoQVBFAHbfEI/J3qiZ1fOrg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=o8BTlm/F88B66GDeVFjWEcYDaB3Y7up4uV396tzow/YxPVLZLmQXMT0Vyrwo20qJn
+         YjDf/7Zs38d99UpOdZ4Ga2I0Mlz+p8nqi1wW9/Sz8SBqr1pNp3XbjjBBKpf0fwNRj4
+         1EbG3vqcIJoAuBu1zBVR1bMJXCWSF0KRwebOsbs5dOQGIMm6olykmD/qMQA7KwjlHC
+         jlHzmYKQXwxfc91F7Uvk2U39RPXAo9addLB+7fD+W5/l0kBd1xq2R6jLPJ/eqTNOqh
+         k9FxnCFXYjmbw6rQSPwxj78IWCpdV1M6bFinXUyKzXqIIgL3sQ+vlE1UjWyiDOC1/R
+         oCdNJyj20IyfA==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mk18c-00118a-Jw; Mon, 08 Nov 2021 09:40:26 +0000
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Alan <alan@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: [PATCH] media: atomisp: only initialize mode if pipe is not null
+Date:   Mon,  8 Nov 2021 09:40:25 +0000
+Message-Id: <6406265f2d5f3791d5c7cbd1364186217f19524c.1636364423.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Received: by 2002:a05:6512:45b:0:0:0:0 with HTTP; Mon, 8 Nov 2021 01:39:21
- -0800 (PST)
-Reply-To: lmutalib@yahoo.com
-From:   MR MUTALIB LAWALE <jhorgejames17@gmail.com>
-Date:   Mon, 8 Nov 2021 09:39:21 +0000
-Message-ID: <CAC8sQGNepzXBe9vJUBWDU0SMttNetVfww=+dXKH-us9q_Wc9PQ@mail.gmail.com>
-Subject: my greetings to you and your entire family,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+During atomisp register, udev tries to open all devices. For
+some, pipe is NULL, at least during register time, causing the
+driver to try to access a NULL pointer.
 
-I am contacting you on a business deal of $11.5 Million US Dollars/950
-KG of gold valued at $24.5 Million USD. ready for transfer into your
-account. if we make this claim, we will share it 60%/40%.,100% risk
-free and it will be legally backed up with government approved
-documents If you are interested reply for more details.
+So, add an extra check to avoid such condition.
 
-kindly reply to my alternative email(mutalib.lawale@yahoo.com).
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/staging/media/atomisp/pci/atomisp_fops.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best regards
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_fops.c b/drivers/staging/media/atomisp/pci/atomisp_fops.c
+index a57d480820bd..c7ac313a2edf 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_fops.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_fops.c
+@@ -901,7 +901,7 @@ static int atomisp_open(struct file *file)
+ 	rt_mutex_unlock(&isp->mutex);
+ 
+ 	/* Ensure that a mode is set */
+-	if (asd)
++	if (asd && pipe)
+ 		v4l2_ctrl_s_ctrl(asd->run_mode, pipe->default_run_mode);
+ 
+ 	return 0;
+-- 
+2.33.1
+
