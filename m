@@ -2,131 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02725449CFB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:16:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 823C6449D01
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 21:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238656AbhKHUSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 15:18:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35492 "EHLO
+        id S238720AbhKHUVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 15:21:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238799AbhKHUS3 (ORCPT
+        with ESMTP id S238385AbhKHUVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 15:18:29 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD37C061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 12:15:43 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id s14so18261371ilv.10
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 12:15:43 -0800 (PST)
+        Mon, 8 Nov 2021 15:21:04 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC00C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 12:18:19 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id p18so16548781plf.13
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 12:18:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lCTOidaZajv7DxRrGkK5E30Y+aKj9uf2F6iDIjFDoo0=;
-        b=IPRxyCY6FnjvRfUORiItGiJ4keTVi1pv2WDaoiPx/gK+OBR1SAVKKVStpo6uhsg+t8
-         zG+kmCC882BYG68WqLF0dCmVnvcxWo82KQuZDKGLb5cwx/FIyHkESmXAPJnuM4vkd6k1
-         Mqvnwc5LaIDtNj8kAV/qzoRmHGkhnOaCDWDksvUFeSQBVa+7chFeZlB06S+9b1V1r+gx
-         iQAziNWdh1b6vLaCJtQSn3GDDZBMlFPMZdKHUe2JG9VUg2FAzLX/IDXr5/0SoEfH64LP
-         K8rWi7XkgrRx7XhTq5T0L1C3gMfP6HuqWXuKPFIbWaxidaUXwCclfWk9nnEKeXJ9SDxd
-         DHZw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xCgR6XpMFGzRoI0Wnu3fKwXAyVZwxWNevueJr3lWUtw=;
+        b=JkyIF6H/P0UBvTblaseELgJ/mEfzoVsJi5EuVmqL9z/uPaCgzFdzlVn04aIIarLdMB
+         dT+p38sIfEGmuAHdtQXL0IhDiOgoM4C+uQZW0nX/q/ZLQfzDdJnemRdl8ZYjpnKTwvjs
+         X/6pBhZtACLkEIqVCaZJe3MzfoHnMfUAzNhn3WbsXopIWa/3eRRXBMjxJkznsE2KG47q
+         uUtjqNbXwMrZFPK23COHy+Hi/MjcsfHSwGMCJq1pLq2nCYsY3KJwHLIsIlsPVzJY82u+
+         7dpwnmrugYKfypXT5eQszwUimKHB9GWY/SpugXs8GaBCUMW31W5sHro4FpViAOPKFGRX
+         RPmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lCTOidaZajv7DxRrGkK5E30Y+aKj9uf2F6iDIjFDoo0=;
-        b=YmUb+TpfddhgX16Hr91ws1+JQlcEnr0IQa4vOZsJxBPjozOHfqLsAsKrFOCxPTfmMl
-         8eTkr2FNSEsQDKSFyaHbrhnhlkAAuPnxTQEWH30vvfEEnAwhxBLxRg14lSQMO1q9K0vv
-         MY9tpqGOSDJcw7hxy7Pg25iZI2GJ7EiO5j72jzhjaPF4zKa7Tuv+AQtLgRrpSZkDKuFp
-         ui/iB2RlXpw8T0xQUXCNRxsd+tU4mx/igRVG0H3Ti83mK1D3cV7GqXP6RrEF252iNdvP
-         esakdzY0T4kgqLIbKhBMrdjVRMRv0MlprKQUijO+vNEphQiNGlRSNmrWqFWb7FjqWN+D
-         Encw==
-X-Gm-Message-State: AOAM533uqKSGzjmPBJRUdNwstPPGg9W7i6IkF+sbLoPEHymq4LfZ4V60
-        LTpd5S5Mp7D4cznU8iduQ5yY5K6jeKA7HDFx87hNgA==
-X-Google-Smtp-Source: ABdhPJxm5ew/EklYukdHTfmEkmMrj87CAR5uYqp8lbP8/DfE75V4ejatD3BTFf5i4NgLR9gqVLt7Jl9xXi1ZHopbDso=
-X-Received: by 2002:a05:6e02:604:: with SMTP id t4mr1240795ils.129.1636402543150;
- Mon, 08 Nov 2021 12:15:43 -0800 (PST)
-MIME-Version: 1.0
-References: <20210913135745.13944-1-jgross@suse.com> <20210913135745.13944-2-jgross@suse.com>
- <CANgfPd-DjawJpZDAFzwS54yukPSsUAU+rWsais2_FCeLCZuY0A@mail.gmail.com>
-In-Reply-To: <CANgfPd-DjawJpZDAFzwS54yukPSsUAU+rWsais2_FCeLCZuY0A@mail.gmail.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Mon, 8 Nov 2021 12:15:32 -0800
-Message-ID: <CANgfPd-njeSYSiytAYEXLG8wwTmLBA6viV7YAHj5uVeukPde=g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] x86/kvm: revert commit 76b4f357d0e7d8f6f00
-To:     Juergen Gross <jgross@suse.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xCgR6XpMFGzRoI0Wnu3fKwXAyVZwxWNevueJr3lWUtw=;
+        b=CuDpaBWt3sivZTm6UhKbLRUV16ssDQ5UdVK1/hrwabZdIoQuLmgBoEY+IofeijZfKB
+         bbLaWayz4iJ8fwQUCPVOryz000NHanLWp+a5xE5BMHSpqEt8JIM1skiZXTKmnEewoMVP
+         gAnZJOX2mxmWyABhi3D3ycDo4d0PBxHwUFpZ8Grt6jan827IdZwhsMVfQDHGmDsci3DM
+         QmTqzxBKVZPXtjSurNKgwUXAEs1pTOfE4NXR0n85xcHoVq4jvWPorbTFXiemaZsOdRW7
+         6H2n2Bjjm0ojhi7y+7fnJpwchrHDvP86PlQHHG7HoFNiQJVeVS3vUIO0CkXds7JON6G/
+         TF2A==
+X-Gm-Message-State: AOAM530T+Hq0FNBPsK82mhWV2F2ulHgd1PnjyqsgFl4LM1MNn4bK6uCj
+        lnGipH2bFiRkMVX1ZhSSbGnmiw==
+X-Google-Smtp-Source: ABdhPJwS3sd0RzShnCkpRHeNSJ1M3JAoBaf96UrTrNhJsQ6fO/l5Ula8VYQ9uXZtkx/5pWkwHIdAWg==
+X-Received: by 2002:a17:90b:3e84:: with SMTP id rj4mr1021782pjb.199.1636402699095;
+        Mon, 08 Nov 2021 12:18:19 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id rm1sm194903pjb.3.2021.11.08.12.18.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 12:18:18 -0800 (PST)
+Date:   Mon, 8 Nov 2021 20:18:14 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Chenyi Qiang <chenyi.qiang@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         Wanpeng Li <wanpengli@tencent.com>,
         Jim Mattson <jmattson@google.com>,
         Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Eduardo Habkost <ehabkost@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 3/7] KVM: X86: Expose IA32_PKRS MSR
+Message-ID: <YYmGBhIbzgz+dyqp@google.com>
+References: <20210811101126.8973-1-chenyi.qiang@intel.com>
+ <20210811101126.8973-4-chenyi.qiang@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811101126.8973-4-chenyi.qiang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 12:14 PM Ben Gardon <bgardon@google.com> wrote:
->
-> On Mon, Sep 13, 2021 at 7:51 AM Juergen Gross <jgross@suse.com> wrote:
-> >
-> > Commit 76b4f357d0e7d8f6f00 ("x86/kvm: fix vcpu-id indexed array sizes")
-> > has wrong reasoning, as KVM_MAX_VCPU_ID is not defining the maximum
-> > allowed vcpu-id as its name suggests, but the number of vcpu-ids.
-> >
-> > So revert this patch again.
-> >
-> > Suggested-by: Eduardo Habkost <ehabkost@redhat.com>
-> > Signed-off-by: Juergen Gross <jgross@suse.com>
->
-> The original commit 76b4f357d0e7d8f6f00 CC'ed Stable but this revert
-> does not. Looking at the stable branches, I see the original has been
-> reverted but this hasn't. Should this be added to Stable as well?
+On Wed, Aug 11, 2021, Chenyi Qiang wrote:
+> @@ -7207,6 +7257,19 @@ static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>  
+>  	/* Refresh #PF interception to account for MAXPHYADDR changes. */
+>  	vmx_update_exception_bitmap(vcpu);
+> +
+> +	if (kvm_cpu_cap_has(X86_FEATURE_PKS) &&
+> +	    guest_cpuid_has(vcpu, X86_FEATURE_PKS)) {
 
-*the original has been incorporated into the stable branches but this hasn't.
+Ah, this confused me for a second.  It's not wrong to clear the entry/exit controls
+in the "else" path, but it's surprisingly hard to follow because it reads as if the
+entry/exit controls are paired with the MSR behavior.
 
->
-> > ---
-> >  arch/x86/kvm/ioapic.c | 2 +-
-> >  arch/x86/kvm/ioapic.h | 4 ++--
-> >  2 files changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/ioapic.c b/arch/x86/kvm/ioapic.c
-> > index ff005fe738a4..698969e18fe3 100644
-> > --- a/arch/x86/kvm/ioapic.c
-> > +++ b/arch/x86/kvm/ioapic.c
-> > @@ -96,7 +96,7 @@ static unsigned long ioapic_read_indirect(struct kvm_ioapic *ioapic,
-> >  static void rtc_irq_eoi_tracking_reset(struct kvm_ioapic *ioapic)
-> >  {
-> >         ioapic->rtc_status.pending_eoi = 0;
-> > -       bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID + 1);
-> > +       bitmap_zero(ioapic->rtc_status.dest_map.map, KVM_MAX_VCPU_ID);
-> >  }
-> >
-> >  static void kvm_rtc_eoi_tracking_restore_all(struct kvm_ioapic *ioapic);
-> > diff --git a/arch/x86/kvm/ioapic.h b/arch/x86/kvm/ioapic.h
-> > index bbd4a5d18b5d..27e61ff3ac3e 100644
-> > --- a/arch/x86/kvm/ioapic.h
-> > +++ b/arch/x86/kvm/ioapic.h
-> > @@ -39,13 +39,13 @@ struct kvm_vcpu;
-> >
-> >  struct dest_map {
-> >         /* vcpu bitmap where IRQ has been sent */
-> > -       DECLARE_BITMAP(map, KVM_MAX_VCPU_ID + 1);
-> > +       DECLARE_BITMAP(map, KVM_MAX_VCPU_ID);
-> >
-> >         /*
-> >          * Vector sent to a given vcpu, only valid when
-> >          * the vcpu's bit in map is set
-> >          */
-> > -       u8 vectors[KVM_MAX_VCPU_ID + 1];
-> > +       u8 vectors[KVM_MAX_VCPU_ID];
-> >  };
-> >
-> >
-> > --
-> > 2.26.2
-> >
+Oh, and more importantly, it's "hiding" a bug: the MSR bitmap needs to be _set_
+if userspace disables X86_FEATURE_PKS in guest CPUID, e.g. if for some reason
+userspace exposed PKS and then yanked it away.
+
+Oof, two bugs actually.  This will fail to re-enable the entry/exit bits if
+userspace hides PKS and then re-enables PKS.
+
+Heh, make that three bugs.  If userspace never sets CPUID, KVM will run with
+the entry/exit bits set.  That's arguably not a bug since functionally it's fine,
+but it's a bug in the sense that KVM loads an MSR when it doesn't inted to do so.
+
+So this should be:
+
+	if (kvm_vcpu_cap_has(X86_FEATURE_PKS) {
+		if (guest_cpuid_has(vcpu, X86_FEATURE_PKS)) {
+			vmx_disable_intercept_for_msr(vcpu, MSR_IA32_PKRS, MSR_TYPE_RW);
+
+			vm_entry_controls_setbit(vmx, VM_ENTRY_LOAD_IA32_PKRS);
+			vm_exit_controls_setbit(vmx, VM_EXIT_LOAD_IA32_PKRS)
+
+		} else {
+			vmx_enable_intercept_for_msr(vcpu, MSR_IA32_PKRS, MSR_TYPE_RW);
+
+			vm_entry_controls_clearbit(vmx, VM_ENTRY_LOAD_IA32_PKRS);
+			vm_exit_controls_clearbit(vmx, VM_EXIT_LOAD_IA32_PKRS)
+		}
+	}
+
+and then the bits need to be masked in vmx_vmexit_ctrl() and vmx_vmentry_ctrl(),
+a la EFER and PERF_GLOBAL_CTRL.
+
+> +		vmx_disable_intercept_for_msr(vcpu, MSR_IA32_PKRS, MSR_TYPE_RW);
+> +	} else {
+> +		/*
+> +		 * Remove VM control in case guest VM doesn't support PKS to mitigate
+> +		 * overhead during VM-{exit,entry}. They are present by default
+> +		 * if supported.
+> +		 */
+> +		vm_entry_controls_clearbit(vmx, VM_ENTRY_LOAD_IA32_PKRS);
+> +		vm_exit_controls_clearbit(vmx, VM_EXIT_LOAD_IA32_PKRS);
+> +	}
+>  }
