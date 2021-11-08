@@ -2,104 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A938447A97
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 07:42:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F9E447A9A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 07:48:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236926AbhKHGpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 01:45:13 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:6266 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237180AbhKHGpJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 01:45:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1636353746; x=1667889746;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=NY60+9RbJmuSbzCyMdFlgec8Bnna6jLnovIzVcr/yCs=;
-  b=l2CE3RS7sEqJJT+IZVmxWHpvtwr7rnRy2imEhOJR4twgxVwc3M5R7eBA
-   WNVV47n4Dy+oT8KDCOaF3n6PQh/YTDFHnBizvY0VrpLrLKzXlBqSdwa+v
-   xtEM7115ey8daci5/Zch1OZ1iqwlFd7V/zLM4zlPgrYEbZn4S16VPgH11
-   w=;
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 07 Nov 2021 22:42:26 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 22:42:25 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Sun, 7 Nov 2021 22:42:25 -0800
-Received: from c-sanm-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Sun, 7 Nov 2021 22:42:19 -0800
-From:   Sandeep Maheswaram <quic_c_sanm@quicinc.com>
-To:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        "Matthias Kaehlcke" <mka@chromium.org>,
-        Mathias Nyman <mathias.nyman@intel.com>
-CC:     <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        Sandeep Maheswaram <quic_c_sanm@quicinc.com>
-Subject: [PATCH v2 3/3] usb: dwc3: host: Set the property usb-skip-phy-init
-Date:   Mon, 8 Nov 2021 12:11:50 +0530
-Message-ID: <1636353710-25582-4-git-send-email-quic_c_sanm@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1636353710-25582-1-git-send-email-quic_c_sanm@quicinc.com>
-References: <1636353710-25582-1-git-send-email-quic_c_sanm@quicinc.com>
+        id S236195AbhKHGvc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Nov 2021 01:51:32 -0500
+Received: from mga17.intel.com ([192.55.52.151]:30664 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231720AbhKHGvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 01:51:31 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="212909325"
+X-IronPort-AV: E=Sophos;i="5.87,217,1631602800"; 
+   d="scan'208";a="212909325"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 22:48:34 -0800
+X-IronPort-AV: E=Sophos;i="5.87,217,1631602800"; 
+   d="scan'208";a="601311940"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.101])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 22:48:30 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>, <akpm@linux-foundation.org>,
+        <dave.hansen@linux.intel.com>, <ziy@nvidia.com>,
+        <osalvador@suse.de>, <shy828301@gmail.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] mm: migrate: Add new node demotion strategy
+References: <c02bcbc04faa7a2c852534e9cd58a91c44494657.1636016609.git.baolin.wang@linux.alibaba.com>
+        <665cb882-6dbc-335f-1435-e52659d7ee58@intel.com>
+        <87tugrxqks.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <c0023ae8-0aff-0890-00fb-310d72130f8a@intel.com>
+        <240c5997-ab7e-8045-dacc-1afdb7c49a0d@linux.alibaba.com>
+        <b7062fa5-febf-24f6-b160-41359b92ff71@intel.com>
+        <9271f9d7-e251-9ed4-2126-8debb3395891@linux.alibaba.com>
+Date:   Mon, 08 Nov 2021 14:48:28 +0800
+In-Reply-To: <9271f9d7-e251-9ed4-2126-8debb3395891@linux.alibaba.com> (Baolin
+        Wang's message of "Mon, 8 Nov 2021 14:38:36 +0800")
+Message-ID: <87fss7w3b7.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Runtime suspend of phy drivers was failing from DWC3 driver as
-runtime usage value is 2 because the phy is initialized from
-DWC3 core and HCD core.
-Some controllers like DWC3 and CDNS3 manage phy in their core drivers.
-This property can be set to avoid phy initialization in HCD core.
+Baolin Wang <baolin.wang@linux.alibaba.com> writes:
 
-Signed-off-by: Sandeep Maheswaram <quic_c_sanm@quicinc.com>
----
-v2:
-Changed subject prefix from dwc to dwc3.
-Increased props array size.
+> On 2021/11/7 23:20, Dave Hansen wrote:
+>> On 11/7/21 1:33 AM, Baolin Wang wrote:
+>>> Thanks for your suggestion. After some thinking, can we change the
+>>> node_demotion[] structure like below? Which means one source node can be
+>>> demoted to mutiple target node, and we can set up the target node mask
+>>> according to the node distance. How do you think? Thanks.
+>>>
+>>> static nodemask_t node_demotion[MAX_NUMNODES] __read_mostly =
+>>>          {[0 ...  MAX_NUMNODES - 1] = NODE_MASK_NONE};
+>> How large is that in the worst case?
+>
+> For the worst case (MAX_NUMNODES=1024), the size of the node_demotion
+> is 131072 bytes, while the size of original data structure is 4096
+> bytes. Maybe we can allocate the node_demotion dynamically?
 
- drivers/usb/dwc3/host.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Per my understanding, in most cases, the number of demotion target nodes
+should be quite small.  So why not restrict the number of demotion
+target nodes to make it some kind of simple array?
 
-diff --git a/drivers/usb/dwc3/host.c b/drivers/usb/dwc3/host.c
-index f29a264..ece7912 100644
---- a/drivers/usb/dwc3/host.c
-+++ b/drivers/usb/dwc3/host.c
-@@ -44,7 +44,7 @@ static int dwc3_host_get_irq(struct dwc3 *dwc)
- 
- int dwc3_host_init(struct dwc3 *dwc)
- {
--	struct property_entry	props[4];
-+	struct property_entry	props[5];
- 	struct platform_device	*xhci;
- 	int			ret, irq;
- 	struct resource		*res;
-@@ -107,6 +107,8 @@ int dwc3_host_init(struct dwc3 *dwc)
- 	if (DWC3_VER_IS_WITHIN(DWC3, ANY, 300A))
- 		props[prop_idx++] = PROPERTY_ENTRY_BOOL("quirk-broken-port-ped");
- 
-+	props[prop_idx++] = PROPERTY_ENTRY_BOOL("usb-skip-phy-init");
-+
- 	if (prop_idx) {
- 		ret = device_create_managed_software_node(&xhci->dev, props, NULL);
- 		if (ret) {
--- 
-2.7.4
-
+Best Regards,
+Huang, Ying
