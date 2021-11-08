@@ -2,63 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B9C44786C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 03:12:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CE244786E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 03:13:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236215AbhKHCO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 21:14:56 -0500
-Received: from mga01.intel.com ([192.55.52.88]:25033 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232513AbhKHCOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 21:14:55 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10161"; a="255812649"
-X-IronPort-AV: E=Sophos;i="5.87,217,1631602800"; 
-   d="scan'208";a="255812649"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 18:12:11 -0800
-X-IronPort-AV: E=Sophos;i="5.87,217,1631602800"; 
-   d="scan'208";a="502813869"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.101])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2021 18:12:09 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Baolin Wang <baolin.wang@linux.alibaba.com>,
-        <akpm@linux-foundation.org>, <dave.hansen@linux.intel.com>,
-        <ziy@nvidia.com>, <osalvador@suse.de>, <shy828301@gmail.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] mm: migrate: Add new node demotion strategy
-References: <c02bcbc04faa7a2c852534e9cd58a91c44494657.1636016609.git.baolin.wang@linux.alibaba.com>
-        <665cb882-6dbc-335f-1435-e52659d7ee58@intel.com>
-        <87tugrxqks.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <c0023ae8-0aff-0890-00fb-310d72130f8a@intel.com>
-Date:   Mon, 08 Nov 2021 10:12:06 +0800
-In-Reply-To: <c0023ae8-0aff-0890-00fb-310d72130f8a@intel.com> (Dave Hansen's
-        message of "Fri, 5 Nov 2021 08:47:23 -0700")
-Message-ID: <877ddjxuo9.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S236240AbhKHCQG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 7 Nov 2021 21:16:06 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:27185 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232513AbhKHCQF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Nov 2021 21:16:05 -0500
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HnZNx31zyz8vDs;
+        Mon,  8 Nov 2021 10:11:45 +0800 (CST)
+Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 8 Nov 2021 10:13:19 +0800
+Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 8 Nov 2021 10:13:19 +0800
+Received: from dggpeml500011.china.huawei.com ([7.185.36.84]) by
+ dggpeml500011.china.huawei.com ([7.185.36.84]) with mapi id 15.01.2308.015;
+ Mon, 8 Nov 2021 10:13:19 +0800
+From:   "zhudi (E)" <zhudi2@huawei.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "jakub@cloudflare.com" <jakub@cloudflare.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v5 1/2] bpf: support BPF_PROG_QUERY for progs
+ attached to sockmap
+Thread-Topic: [PATCH bpf-next v5 1/2] bpf: support BPF_PROG_QUERY for progs
+ attached to sockmap
+Thread-Index: AdfUP22Rs+dr/NosTwybTqKx42X04A==
+Date:   Mon, 8 Nov 2021 02:13:19 +0000
+Message-ID: <97595753e3b445df82ce5e3d604207b2@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.136.114.155]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dave Hansen <dave.hansen@intel.com> writes:
+> On Thu, Nov 04, 2021 at 09:07:44AM +0800, Di Zhu wrote:
+> > +int sock_map_bpf_prog_query(const union bpf_attr *attr,
+> > +			    union bpf_attr __user *uattr)
+> > +{
+> > +	__u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
+> > +	u32 prog_cnt = 0, flags = 0, ufd = attr->target_fd;
+> > +	struct bpf_prog **pprog;
+> > +	struct bpf_prog *prog;
+> > +	struct bpf_map *map;
+> > +	struct fd f;
+> > +	u32 id = 0;
+> > +	int ret;
+> > +
+> > +	if (attr->query.query_flags)
+> > +		return -EINVAL;
+> > +
+> > +	f = fdget(ufd);
+> > +	map = __bpf_map_get(f);
+> > +	if (IS_ERR(map))
+> > +		return PTR_ERR(map);
+> > +
+> > +	rcu_read_lock();
+> > +
+> > +	ret = sock_map_prog_lookup(map, &pprog, attr->query.attach_type);
+> > +	if (ret)
+> > +		goto end;
+> > +
+> > +	prog = *pprog;
+> > +	prog_cnt = (!prog) ? 0 : 1;
+> > +
+> > +	if (!attr->query.prog_cnt || !prog_ids || !prog_cnt)
+> > +		goto end;
+> 
 
-> On 11/4/21 7:51 PM, Huang, Ying wrote:
->>> Let's also try to do it with the existing node_demotion[] data
->>> structure before we go adding more.
->> To avoid cache ping-pong, I guess some kind of per-CPU data structure
->> may be more suitable for interleaving among multiple nodes.
->
-> It would probably be better to just find something that's more
-> read-heavy.  Like, instead of keeping a strict round-robin, just
-> randomly select one of the notes to which you can round-robin.
->
-> That will scale naturally without having to worry about caching or fancy
-> per-cpu data structures.
+> This sanity check (except prog_cnt) can be moved before RCU read lock?
 
-Yes.  That sounds good.  And per-CPU data structure is used inside
-random API too :-)
+I think we should call sock_map_prog_lookup() in any case. Because we can
+just return query results(such as -EOPNOTSUPP) which may not care about
+the prog_ids.
 
-Best Regards,
-Huang, Ying
+So this sanity check should right behind this call and must be in rcu critical zone.
+
+> > +
+> > +	id = prog->aux->id;
+> > +	if (id == 0)
+> > +		prog_cnt = 0;
+> 
+> The id seems generic, so why not handle it in bpf_prog_query() for all progs?
+
+The prog id is a generic, but different progs have different organizational forms, 
+so they can only be handled differently at present...
+
+> > +
+> > +end:
+> > +	rcu_read_unlock();
+> > +
+> > +	if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)) ||
+> 
+> 'flags' is always 0 here, right? So this is not needed as uattr has been already
+> cleared in __sys_bpf().
+
+ I recheck the code, it seems that __sys_bpf() does not do this clear things.
+
+ 
+> Thanks.
