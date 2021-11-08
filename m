@@ -2,100 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED854447E53
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1CD9447E55
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:56:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238841AbhKHK6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:58:41 -0500
-Received: from m43-7.mailgun.net ([69.72.43.7]:56820 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236942AbhKHK6h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:58:37 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1636368950; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=4M9uOTBXUH00cBBpv3ijxurnpayOaBUBlP63Y3jJYOc=; b=bTQBIz3pz92pCNEvG/be2OG82+FNE/cSDhd3Lcoa9UIlqHdGKFaPk4H02FKYp7twLKKESapc
- L57xWp8bjza2Rc7LwgvRQliQjaU/Pqbe6UXBq3t1cu+dvbzpThiadobWlTZQFR7AoeFua+2e
- Y+JPRLvMIkr60/4fqTpzDX5jxBM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 618902318037be2651bc03a6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Nov 2021 10:55:45
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 85223C43617; Mon,  8 Nov 2021 10:55:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 92915C4338F;
-        Mon,  8 Nov 2021 10:55:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 92915C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Seevalamuthu Mariappan <seevalam@codeaurora.org>,
-        llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Miles Hu <milehu@codeaurora.org>,
-        Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>,
-        Jouni Malinen <jouni@codeaurora.org>,
-        "ath11k\@lists.infradead.org" <ath11k@lists.infradead.org>
-Subject: Re: drivers/net/wireless/ath/ath11k/mac.c:5408:22: error: parameter 'changed_flags' set but not used
-References: <202111061154.1NPBOyXF-lkp@intel.com>
-Date:   Mon, 08 Nov 2021 12:55:39 +0200
-In-Reply-To: <202111061154.1NPBOyXF-lkp@intel.com> (kernel test robot's
-        message of "Sat, 6 Nov 2021 11:54:04 +0800")
-Message-ID: <87v912q5lg.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S238884AbhKHK6v convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Nov 2021 05:58:51 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:26557 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236942AbhKHK6m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 05:58:42 -0500
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-187-MTx5LVPGM4S4GiBqox-4vw-1; Mon, 08 Nov 2021 10:55:52 +0000
+X-MC-Unique: MTx5LVPGM4S4GiBqox-4vw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.24; Mon, 8 Nov 2021 10:55:48 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.024; Mon, 8 Nov 2021 10:55:48 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Larry Finger' <Larry.Finger@lwfinger.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "phil@philpotter.co.uk" <phil@philpotter.co.uk>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Zameer Manji <zmanji@gmail.com>,
+        kernel test robot <lkp@intel.com>,
+        Stable <stable@vger.kernel.org>
+Subject: RE: [PATCH v2] staging: r8188eu: Fix breakage introduced when 5G code
+ was removed
+Thread-Topic: [PATCH v2] staging: r8188eu: Fix breakage introduced when 5G
+ code was removed
+Thread-Index: AQHX0/3oe+k3iU2vCUKwt3hlkWjVnqv5dSlg
+Date:   Mon, 8 Nov 2021 10:55:48 +0000
+Message-ID: <8e4dd863ae894c8488a3d3d0f6a11f66@AcuMS.aculab.com>
+References: <20211107173543.7486-1-Larry.Finger@lwfinger.net>
+In-Reply-To: <20211107173543.7486-1-Larry.Finger@lwfinger.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ ath11k list
+From: Larry Finger
+> Sent: 07 November 2021 17:36
+> 
+> In commit 221abd4d478a ("staging: r8188eu: Remove no more necessary definitions
+> and code"), two entries were removed from RTW_ChannelPlanMap[], but not replaced
+> with zeros. The position within this table is important, thus the patch broke
+> systems operating in regulatory domains osted later than entry 0x13 in the table.
+> Unfortunately, the FCC entry comes before that point and most testers did not see
+> this problem.
+...
+>  drivers/staging/r8188eu/core/rtw_mlme_ext.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+> index 55c3d4a6faeb..5b60e6df5f87 100644
+> --- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+> +++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+> @@ -107,6 +107,7 @@ static struct rt_channel_plan_map	RTW_ChannelPlanMap[RT_CHANNEL_DOMAIN_MAX] = {
+>  	{0x01},	/* 0x10, RT_CHANNEL_DOMAIN_JAPAN */
+>  	{0x02},	/* 0x11, RT_CHANNEL_DOMAIN_FCC_NO_DFS */
+>  	{0x01},	/* 0x12, RT_CHANNEL_DOMAIN_JAPAN_NO_DFS */
+> +	{0x00}, /* 0x13 */
+>  	{0x02},	/* 0x14, RT_CHANNEL_DOMAIN_TAIWAN_NO_DFS */
+>  	{0x00},	/* 0x15, RT_CHANNEL_DOMAIN_ETSI_NO_DFS */
+>  	{0x00},	/* 0x16, RT_CHANNEL_DOMAIN_KOREA_NO_DFS */
+> @@ -118,6 +119,7 @@ static struct rt_channel_plan_map	RTW_ChannelPlanMap[RT_CHANNEL_DOMAIN_MAX] = {
+>  	{0x00},	/* 0x1C, */
+>  	{0x00},	/* 0x1D, */
+>  	{0x00},	/* 0x1E, */
+> +	{0x00},	/* 0x1F, */
+>  	/*  0x20 ~ 0x7F , New Define ===== */
+>  	{0x00},	/* 0x20, RT_CHANNEL_DOMAIN_WORLD_NULL */
+>  	{0x01},	/* 0x21, RT_CHANNEL_DOMAIN_ETSI1_NULL */
 
-kernel test robot <lkp@intel.com> writes:
+Is it worth changing that to use designated array initialisers?
+so:
+	[0x21] = {0x01} /* RT_CHANNEL_DOMAIN_ETS11_NULL */
 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   fe91c4725aeed35023ba4f7a1e1adfebb6878c23
-> commit: 689a5e6fff75229ac7c2af7a9c51dc2d3ca1882b ath11k: monitor mode clean up to use separate APIs
-> date:   6 weeks ago
-> config: hexagon-buildonly-randconfig-r006-20211013 (attached as .config)
-> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project b6a8c695542b2987eb9a203d5663a0740cb4725f)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=689a5e6fff75229ac7c2af7a9c51dc2d3ca1882b
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 689a5e6fff75229ac7c2af7a9c51dc2d3ca1882b
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=hexagon 
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->>> drivers/net/wireless/ath/ath11k/mac.c:5408:22: error: parameter 'changed_flags' set but not used [-Werror,-Wunused-but-set-parameter]
->                                               unsigned int changed_flags,
->                                                            ^
->    1 error generated.
+Then the {0x00} entries can be missed out (or just commented as not used).
 
-Looks like a valid warning to me, can someone submit a patch?
+	David
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
