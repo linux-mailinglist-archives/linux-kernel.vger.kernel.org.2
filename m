@@ -2,315 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81C8448110
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EADE8448119
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 15:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240235AbhKHOQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 09:16:19 -0500
-Received: from mail-eopbgr60050.outbound.protection.outlook.com ([40.107.6.50]:1957
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239031AbhKHOQS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 09:16:18 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G2ZOhlel3lrva3v73P12cTqUsCMKxJudSwJFrumsnhtb/d/duz4FQWjo7koQIgr/Bz4qi8lrhoWSff6Nm3zdMhXd62jwFhecgiZ5N/pAg8uDywVJxXMTjbJurjuDWOYnOR2/9gReeKXxfL5ajbK0E4DFzSCMjhLzvEOwE6hr3GogyyB2/7lHz8YJhdqMJqfCsJ2nFzmpZEfjfVG6hUoxjNhI3mg0+AM/OCbPrl0SRHivuuPWqzXSGfsjhe7GTiH94vhv8bC/Je1oE6H3et/q53t9xkzBUUF7x541Y8o03UYsP2vVbzf9H8HVsak//ayQjIxKtgvp1hFoK0xfS3h+Ig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QMdKBErpGg6SaEdEtEg7EYEC+aIVQtuQwsT/zLBaTSw=;
- b=I0xc5AcKiOw5MudmJ3ox6CotAg3fH+f14m3xv+wuB4eiCg1KYUUEN2yg0GKoSdEZ1hidcfzxlWuBNoJjnrMkhQT4GIxBADRupVOMVFw7FICntfWCrIv2rxuH4OwMRR8pYcGOpoKzQBgae8mAclkPx8QaS9jBSf9VaK2V1ueDkZXBel1r0bVplniXfIp8bAYALmMJogUoHcxGQotWQN7spSzZ0vrJ5EN5buTrl+/MpPae1X7fWGb0eVh8agH4eweXTmvKqVQdUwGLQlQcCfQE/OISAstlL2cI6+jC9toZ6O2wEJmt0FfFW4tZs/6OpYRiJRPOQekCd2pRn5QKVBA9Cw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QMdKBErpGg6SaEdEtEg7EYEC+aIVQtuQwsT/zLBaTSw=;
- b=TRbV8JaoDafzdresv8d8hVjXOpoGNMB1jQ1TEv9ze/MXgJnVpczDboHrD1XcOawODT2Kx9jIG3nYqwkCseNhHuPI/S+ykt7Gv8aetbVGIbPnKGoQXrXdA6p1s3Ag8RHrQ4eSkx/F1FF2hsJYu/k5Xa3LPD0tYCWk9aNpStahmKU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
- by VI1PR04MB7055.eurprd04.prod.outlook.com (2603:10a6:800:123::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11; Mon, 8 Nov
- 2021 14:13:32 +0000
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::85af:f8be:aa99:ba5f]) by VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::85af:f8be:aa99:ba5f%3]) with mapi id 15.20.4669.015; Mon, 8 Nov 2021
- 14:13:32 +0000
-Subject: Re: [PATCH] ASoC: SOF: build compression interface into snd_sof.ko
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Bud Liviu-Alexandru <budliviu@gmail.com>,
-        Paul Olaru <paul.olaru@oss.nxp.com>,
-        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-References: <20211108111132.3800548-1-arnd@kernel.org>
- <63c5b1fb-575e-f026-5a76-f08a366f7f38@linux.intel.com>
-From:   Daniel Baluta <daniel.baluta@nxp.com>
-Message-ID: <bae1a17c-af6e-d77a-19e7-f3f6408951fa@nxp.com>
-Date:   Mon, 8 Nov 2021 16:13:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <63c5b1fb-575e-f026-5a76-f08a366f7f38@linux.intel.com>
-Content-Type: multipart/mixed;
- boundary="------------791C240922A1805F6DA45D2B"
+        id S240285AbhKHOTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 09:19:22 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31696 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236213AbhKHOTV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 09:19:21 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A8CdjCt004463;
+        Mon, 8 Nov 2021 14:16:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=lbRT2x8gmpe/Umgyul24pIBJy6sapRjt+6I0ar72wMw=;
+ b=p+bpuEH94xOnyhZ0K4YrGPeLsQj+Tuvew0nbQqyTOh6JX8jcEjiToGoITQx6GO+HuOJK
+ mGqYkUcBDu85ALA16FBqjhfOwJNtcrcKpjQTIFBfvPIYGskgoHhBXyUqtXOPDi8/Q3Jy
+ oY8TxW7BtbwkY5wd/3yYl8cR7io+Q+rx4Sj1xRwnNErRMv+WnCtLCBsN6+z8zOAHCrOP
+ SsQsuH+39SPAo8M7Jh0Ejba0L/oyosUnK+HuX2Kt4TG7XWfw1/yUK4zCIGjuT2c9hgbm
+ pQKYxccxx5P10KLZyjIkTcDucuWHLM50IpkXlUkrVn/+on2673MPIrmOj5/x6jqDp9+e WQ== 
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3c66b00ejq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Nov 2021 14:16:32 +0000
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1A8E3hAb030048;
+        Mon, 8 Nov 2021 14:16:31 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma04dal.us.ibm.com with ESMTP id 3c5hbac4k7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Nov 2021 14:16:31 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1A8EGUQf34734346
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 8 Nov 2021 14:16:30 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BC836B2066;
+        Mon,  8 Nov 2021 14:16:30 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 65B32B2071;
+        Mon,  8 Nov 2021 14:16:30 +0000 (GMT)
+Received: from [9.65.231.116] (unknown [9.65.231.116])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon,  8 Nov 2021 14:16:30 +0000 (GMT)
+Message-ID: <3bca3296-d998-98a5-bf8f-53b0720869d3@linux.vnet.ibm.com>
+Date:   Mon, 8 Nov 2021 08:16:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: kernel 5.15 does not boot with 3ware card (never had this issue
+ <= 5.14) - scsi 0:0:0:0: WARNING: (0x06:0x002C) : Command (0x12) timed out,
+ resetting card
 Content-Language: en-US
-X-ClientProxiedBy: VI1PR0902CA0027.eurprd09.prod.outlook.com
- (2603:10a6:802:1::16) To VI1PR04MB5151.eurprd04.prod.outlook.com
- (2603:10a6:803:61::28)
+To:     Justin Piszcz <jpiszcz@lucidpixels.com>,
+        Bart Van Assche <bvanassche@acm.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-scsi@vger.kernel.org
+References: <006a01d7cead$b9262d70$2b728850$@lucidpixels.com>
+ <a4a88807-8f52-ef9a-c58e-0ff454da5ade@acm.org>
+ <CAO9zADxiobgwDE5dtvo98EL0djdgQyrGJA_w4Oxb+pZ9pvOEjQ@mail.gmail.com>
+ <CAO9zADycForyq9cmh=epw9r-Wzz=xt32vL3mePuBAPehCgUTjw@mail.gmail.com>
+ <50a16ee2-dfa4-d009-17c5-1984cf0a6161@linux.vnet.ibm.com>
+ <CAO9zADwVnuKU-tfZxm4USjf76yJhTZqWfZw4yspv8sc93RuBbQ@mail.gmail.com>
+ <e0c2935d-d961-11a0-1b4c-580b55dc6b59@acm.org>
+ <002401d7d305$082971b0$187c5510$@lucidpixels.com>
+ <CAO9zADzWcpwZkfJ5VZGZZJT39KQEUr9yGqqCnP18mk7ZAZxbBw@mail.gmail.com>
+From:   Douglas Miller <dougmill@linux.vnet.ibm.com>
+In-Reply-To: <CAO9zADzWcpwZkfJ5VZGZZJT39KQEUr9yGqqCnP18mk7ZAZxbBw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: wmt0OWq8KvYGzw82ozJAc39g0SZ2ORlW
+X-Proofpoint-GUID: wmt0OWq8KvYGzw82ozJAc39g0SZ2ORlW
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Received: from [IPv6:2a02:2f08:570c:ca00:c0fa:6a41:b933:e441] (2a02:2f08:570c:ca00:c0fa:6a41:b933:e441) by VI1PR0902CA0027.eurprd09.prod.outlook.com (2603:10a6:802:1::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10 via Frontend Transport; Mon, 8 Nov 2021 14:13:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: eb1cbde3-98f1-4b57-cd23-08d9a2c1f1be
-X-MS-TrafficTypeDiagnostic: VI1PR04MB7055:
-X-Microsoft-Antispam-PRVS: <VI1PR04MB7055EBC3A81BDA3327D1C491F9919@VI1PR04MB7055.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qlqHyLAk8F5HBOoIb7p3dQ4yBc/m08BCTodgjLg78ELvOWfMpaOBpW/E6jmL0WAoo0O2L7unBH5EryrJAZT+Bt2LThX6Az4X1aCOLX+kmjyubIsNftaqMk9OvsnI7ncytXU2yeT/u6Y0fXeAsWaR/uJ5qrX5Bd6olkcraMExNPR5iCJ9gE/ZSA0i+LQhza0OqVQM+7VKK9tOm588D1T6ET/JLk17hrzeY5Uk6JGcBOjkStTK1qyzsIGbJzqlPcWCQk+mzsxwTZdJ831Ax89V2BiW+LNnTBkyBOvkZeOswIMUGyTy9Zlu92n8rhQSlRSJoJkdEBPONz2NxQBJXNGNL8zRHBbf6f9ErP3YTbooRyeV9FNUJaKu+yyEV2jnE/Lgs9jaExRzSYOiMuRdB9eQHmHY+UEuNV+sY0KhpivuerrFI6ucQqESocOQK91gb+tsKhLnyIsLftrSm40fK3sNWdQCAZnT6GYzC4+PWIDTLuXrYff8zq65sIe6f3gR21Iz/qicJruVG4HchMdj4UMhy6ftNWKNrzNTtz4QK/n099XFj2eYljyBZQ380u8HOhUBeXn+PPogwhzkGm1OKHUCvA0Jpn9wUIac/PYgYzelCd/pKK4mj2iJTCGzrCzbTv6EJEQmDuHLahQa9wN+Fz1dDf9nov80rkTl7q6cLb3csMXH+4LyLMZPvwQkJ6tL+D1Wk/GtSKjAaNkNufZwHR6C54P6ppawESncOBT6znHYGhV5MpGRYqDecOKFlkxXe1wDSnT21COfzD1HbQP5ZV6AJi6lHA+ly8aRqk5U0lao3jQJ7PKMKf3JfD7xmFrQfW5jRqZUoKWY2PfdgC6EXxh7EDSjDtSoexGRPqZyS6UUmKQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5151.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(31686004)(8676002)(508600001)(235185007)(66946007)(66476007)(6486002)(54906003)(8936002)(5660300002)(45080400002)(36756003)(4326008)(2906002)(44832011)(66556008)(966005)(186003)(7416002)(86362001)(2616005)(83380400001)(38100700002)(33964004)(316002)(53546011)(31696002)(110136005)(52116002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y0p5U2cyZ0Z6N01oUUJZSEl3N1F0bWFGZ25HMGd3TVFCV3dYck92cXRLaGs2?=
- =?utf-8?B?NFJ4QUdDdkpLTW1naWkvbVBUekVxbGY4OC9abTU4ZkhQMGhETzh0c1diQW81?=
- =?utf-8?B?cVB0enQ3L3drTjFKUW9LRkwxbktFOEN1cDhjY25ETWgwbjN3VHlLbzRoeVlu?=
- =?utf-8?B?QmJkdzRrSzl4a011MjNNM1RLcHJMSm5yazlkeFduZXZGY3o5QkVHdmdsTDdn?=
- =?utf-8?B?S2d5WEV1QTBpM0xDM2plSFdqeXloemZLL2dreFRBanVQY1l2L3YvMk5RN2ND?=
- =?utf-8?B?UHJXWlBaR0xrOUN4RXVHa3IrRmhELzdzSzhvNk1QNnBwbWg4dHdCazI4Mzhz?=
- =?utf-8?B?L3JkMkhTL1ZnM2pVRkhHc1JwL3RIRWNOUzN1TXdYYnExM25WMlI3ZEFUWThH?=
- =?utf-8?B?ZDN3UjRGeldZWXU3YWFSSjFDQlNLZC92Y0txU0lmMStuKzVqaU5DbVZXVlBK?=
- =?utf-8?B?MWZEK0Y2eW1iZmlIeHRtR2x6c0VFcXU2Q2hTVmU1T1JONmUzdVRyVVkyZ00r?=
- =?utf-8?B?bWNBMElObFFCeWZ3VjdJRzAzRnltZzhEWkFpa2FQUkZVOHVOQ21QMHBnQXFO?=
- =?utf-8?B?dmFMc1pXczJ4NTNPYjlYMUJ3Zng3Z1J5Nm0vT29SWmpWUG83TUV5RkVIZWVh?=
- =?utf-8?B?TlZtMVZTL09VVDJ0ZHFDV2dLemJSVVU3dWVVMnFNK2VWbVJMYm01NXdwQzBO?=
- =?utf-8?B?ODBZNi9yWVlaQ2xFcW1reDdRRXliNWR6ejFrcEV0cWQyeUZnRVNIVm9zT1VW?=
- =?utf-8?B?SnRtRE5IQUZna2NQTWh5QVVIUXd3dU9KbzlHM1R2bHhCM0NiR0dlNVFlK0hn?=
- =?utf-8?B?ek03b0pyVVp0YVlnQkpUYWZwdDRmNk1acS9kTFpFd0tCUFhvWXVuNjNYdnVj?=
- =?utf-8?B?a2t1Q1gyb3NLRWZmMzhySXF5MXV6cTZDQm05b1lHdTM0RUkzbWVpTG55UWZ0?=
- =?utf-8?B?WkQ3Rk8yQXlZMEdWR2FVVXZhc3cyNis2Ry9mbndMVVdYY2JkUW1TV2tXNUpv?=
- =?utf-8?B?aEhtUUpWWDgwRDY3SFduaURTWUhBcGtGSU92ZVBXeVFGNkV6MzYwdVlXa2dE?=
- =?utf-8?B?STNlVlRDRGRNZzZDUjdhZHY5NkxhN0ozeFQvVDgzS3d2ZlRMSXUwR3pHenhX?=
- =?utf-8?B?UEJiRFd2OTZzaU1lVmVCT0xjNVJrdmJjUlptTU4zcjFOUXZnWUJlWjF0dVRF?=
- =?utf-8?B?RWRJQVNWSkpiSG56WW9mYWlncG9mRzNsM3VTckkwVUlHSlNPU2o2c3NqNDEy?=
- =?utf-8?B?a3lReTQvaWFJT241dE11V1dmZ21WZ3dhSTdkYk9UVVo2ZU5COHUvb013TnRB?=
- =?utf-8?B?bEYxRjBqaW5JcnE0Q1FqdTMzUjRIc3pOU05zN3JZOG1ONW1OVGJkektreGZK?=
- =?utf-8?B?STh6ZnJSVGozaHdlUW1xK1NnaTJkOWsxZW1aU2lDNnE2RGZ4K3c3cEdnVlly?=
- =?utf-8?B?bUtWU2FKWmlMVDBQY3h2VXhjSFZVcUJOQWgxazcxYlM1ZUpmV1owcFhHUFZN?=
- =?utf-8?B?S1pPR054K0tUczBtdDZ0OU5aSy9wcmFWbVRZbE4xYkFBZ3RySUIybXpCb2VI?=
- =?utf-8?B?Y0t2cXRWU25KQUZFcHdJbzdrLzlqZFJwYVV6VTlsYWQyakUzQTlsRTRCRVJn?=
- =?utf-8?B?cUE3NVpweSt5ZDJweFlRcmRuZTliTWZvTVVuaktBZlMydlFyTXUvdGo1dys4?=
- =?utf-8?B?dUw1emVKRnlLbWU1TVNVdWFlTUd1VG5BMXdZTmtseE9JZ1BsWFJlbXVEejNo?=
- =?utf-8?B?NlV1eGt1Ym9hSmtJTjhrTm9CVjAwYUZKLzFsbk85cTZkY3Yrb2U5Mm1kRTY1?=
- =?utf-8?B?MlkwV3dpSnJ4Wlh3YW1zYThTZlp1Slo5aUUvdG0reDhsRU9jU2F5MVNEZE1U?=
- =?utf-8?B?YjA1RHB1dzNheDRWdEVjeldQMnlWaTFOZWlFWkh3bzh3N3BQRjFDc0dNRGIz?=
- =?utf-8?B?ZVNrTmI2Sm41VjAxcG5XM1JHU2NxL3Q2WkdYalMzYVQ0ZVplT3BKQkVJa01B?=
- =?utf-8?B?UGFhVCtiOExIR09WN3JhUnZjeGhsOWFoSlVkVDFCVVQwWGdPZnVoSitXSGJJ?=
- =?utf-8?B?ZXlVQXZQOXMrcWR1MlFORUpTSXdwTWMyMWNBVlVwTGtacEdrL0plaXdIVFZt?=
- =?utf-8?B?aEgyY096Y2ltUUlzbEJ1bDZjZzJJVklaUXJMMUZzdVFEUXZWdkwvdUNCVE5u?=
- =?utf-8?B?VTIrai9hdTJiSXRQTXRlaTI4MUVURnhnWW9ITEh2SThoczBieHJKcFNVS0JE?=
- =?utf-8?Q?ShEUo6PSLp0tWSeCObfN4XMS3ogStk0zbDCtZJa38Q=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eb1cbde3-98f1-4b57-cd23-08d9a2c1f1be
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2021 14:13:31.9726
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QJnB4SzU2kmTHa6K1BOGJiuBtswsLlanldQzYqYShzYK/lkWhAZUVO4j74UFt26PjQst0tzBa75A5zcRQmjqDw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7055
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-08_05,2021-11-08_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ spamscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
+ phishscore=0 clxscore=1015 adultscore=0 priorityscore=1501 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111080087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---------------791C240922A1805F6DA45D2B
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+The commit I referenced earlier does point back to the commit that 
+caused the problem (that I saw). There was a series of commits related 
+to IRQ domains, this one seems to have actually caused the problem I saw:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a5f3d2c17b07
 
 
-On 11/8/21 3:39 PM, Pierre-Louis Bossart wrote:
+On 11/7/21 07:46, Justin Piszcz wrote:
+> On Sat, Nov 6, 2021 at 7:54 AM Justin Piszcz <jpiszcz@lucidpixels.com> wrote:
+>>
+>>
+>> -----Original Message-----
+>> From: Bart Van Assche <bvanassche@acm.org>
+>> Sent: Wednesday, November 3, 2021 12:23 PM
+>> To: Justin Piszcz <jpiszcz@lucidpixels.com>; Douglas Miller <dougmill@linux.vnet.ibm.com>
+>> Cc: LKML <linux-kernel@vger.kernel.org>; linux-scsi@vger.kernel.org
+>> Subject: Re: kernel 5.15 does not boot with 3ware card (never had this issue <= 5.14) - scsi 0:0:0:0: WARNING: (0x06:0x002C) : Command (0x12) timed out, resetting card
+>>
+>> On 11/3/21 9:18 AM, Justin Piszcz wrote:
+>>> Thanks!-- Has anyone else reading run into this issue and/or are there
+>>> any suggestions how I can troubleshoot this further (as all -rc's have
+>>> the same issue)?
+>> How about bisecting this issue
+>> (https://www.kernel.org/doc/html/latest/admin-guide/bug-bisect.html)?
+>>
+>> [ .. ]
+>>
+>> I was having some issues finding a list of changes with git bisect, so I started checking the kernel .config and boot parameters:
+>>
+>> I found the option that was causing the system not to boot (tested with 5.15.0 and latest linux-git as of 6 NOV 2021)
+>> append="3w-sas.use_msi=1"
+>>
+>> 3w-sas.use_msi defaults to 0 (so now it is using IR-IO-APIC instead of MSI but now the machine boots using 5.15)
+>> https://lwn.net/Articles/358679/
+>>
+>> Something between 5.14 and 5.15 changed regarding x86_64's handling of Message Signaled Interrupts.
+>> ... which causes the kernel to no longer boot when 3w-sas.use_msi=1 is specified starting with 5.15.
+> This only partially fixes the issues, trying to reboot also results in
+> a hard lockup on cpu 1 (this is semi-reproducible)
+> https://installkernel.tripod.com/5.15-reboot-lockup.jpg
 >
-> On 11/8/21 5:11 AM, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->>
->> With CONFIG_SND_SOC_SOF_COMPRESS=m, the compression code is
->> not built into a the main SOF driver when that is built-in:
->>
->> x86_64-linux-ld: sound/soc/sof/ipc.o: in function `ipc_stream_message':
->> ipc.c:(.text+0x5a2): undefined reference to `snd_sof_compr_fragment_elapsed'
->> x86_64-linux-ld: sound/soc/sof/topology.o: in function `sof_dai_load':
->> topology.c:(.text+0x32d1): undefined reference to `snd_sof_compr_init_elapsed_work'
->> x86_64-linux-ld: topology.c:(.text+0x32e1): undefined reference to `snd_sof_compr_init_elapsed_work'
->>
->> Make this a 'bool' symbol so it just decides whether the
->> code gets built at all.
->>
->> Fixes: 858f7a5c45ca ("ASoC: SOF: Introduce fragment elapsed notification API")
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> It's Monday morning and my memory is still foggy but I think we fixed
-> this problem with https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.com%2Fthesofproject%2Flinux%2Fpull%2F3180&amp;data=04%7C01%7Cdaniel.baluta%40nxp.com%7C25ac869cfd1040f1be1708d9a2bd3460%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637719755777370422%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=E4K2DPkpLX2SgVJ1K99Qs3uz7l7mS96gIzYlJw9akbg%3D&amp;reserved=0,
-> where we changed the Kconfigs for i.MX. We haven't sent this update
-> upstream for some reason.
+> Back to 5.14.x for now...
 >
-> Arnd, can you share the configuration that breaks with the existing
-> upstream code, I can check if the problem still exists.
-
-
-Maybe someone forgot :) to send 
-https://github.com/thesofproject/linux/pull/3180/commits/7122edc88d13db8ba835bdb20f7444ae535f9ffa 
-upstream.
-
-I think that's me.
-
-Arnd can you run your scripts with 
-https://github.com/thesofproject/linux/pull/3180/commits/7122edc88d13db8ba835bdb20f7444ae535f9ffa. 
-I also attached the patch
-
-if it's easier to apply.
-
-
-
---------------791C240922A1805F6DA45D2B
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-ASoC-SOF-i.MX-simplify-Kconfig.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0001-ASoC-SOF-i.MX-simplify-Kconfig.patch"
-
-From 8393b756c476a513fc69016d701f22899724fb73 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Mon, 27 Sep 2021 13:54:38 -0500
-Subject: [PATCH] ASoC: SOF: i.MX: simplify Kconfig
-
-Follow the Intel example and simplify the Kconfig
-a) start from the end-product for 'select' chains
-b) use 'depends on' to filter out configurations.
-c) use snd-sof-of as a common module without any 'select'
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
----
- sound/soc/sof/Kconfig     |  4 +++-
- sound/soc/sof/Makefile    |  2 +-
- sound/soc/sof/imx/Kconfig | 46 +++++++++++----------------------------
- 3 files changed, 17 insertions(+), 35 deletions(-)
-
-diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-index 6bb4db87af03..98ba48982736 100644
---- a/sound/soc/sof/Kconfig
-+++ b/sound/soc/sof/Kconfig
-@@ -40,12 +40,14 @@ config SND_SOC_SOF_ACPI_DEV
- config SND_SOC_SOF_OF
- 	tristate "SOF OF enumeration support"
- 	depends on OF || COMPILE_TEST
--	select SND_SOC_SOF
- 	help
- 	  This adds support for Device Tree enumeration. This option is
- 	  required to enable i.MX8 devices.
- 	  Say Y if you need this option. If unsure select "N".
- 
-+config SND_SOC_SOF_OF_DEV
-+	tristate
-+
- config SND_SOC_SOF_COMPRESS
- 	tristate
- 	select SND_SOC_COMPRESS
-diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
-index 06e5f49f7ee8..1dac5cb4dfd6 100644
---- a/sound/soc/sof/Makefile
-+++ b/sound/soc/sof/Makefile
-@@ -17,7 +17,7 @@ obj-$(CONFIG_SND_SOC_SOF_NOCODEC) += snd-sof-nocodec.o
- 
- 
- obj-$(CONFIG_SND_SOC_SOF_ACPI_DEV) += snd-sof-acpi.o
--obj-$(CONFIG_SND_SOC_SOF_OF) += snd-sof-of.o
-+obj-$(CONFIG_SND_SOC_SOF_OF_DEV) += snd-sof-of.o
- obj-$(CONFIG_SND_SOC_SOF_PCI_DEV) += snd-sof-pci.o
- 
- obj-$(CONFIG_SND_SOC_SOF_INTEL_TOPLEVEL) += intel/
-diff --git a/sound/soc/sof/imx/Kconfig b/sound/soc/sof/imx/Kconfig
-index 34cf228c188f..9b8d5bb1e449 100644
---- a/sound/soc/sof/imx/Kconfig
-+++ b/sound/soc/sof/imx/Kconfig
-@@ -11,53 +11,33 @@ config SND_SOC_SOF_IMX_TOPLEVEL
- 
- if SND_SOC_SOF_IMX_TOPLEVEL
- 
--config SND_SOC_SOF_IMX_OF
--	def_tristate SND_SOC_SOF_OF
--	select SND_SOC_SOF_IMX8 if SND_SOC_SOF_IMX8_SUPPORT
--	select SND_SOC_SOF_IMX8M if SND_SOC_SOF_IMX8M_SUPPORT
--	help
--	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level.
--
- config SND_SOC_SOF_IMX_COMMON
- 	tristate
-+	select SND_SOC_SOF_OF_DEV
-+	select SND_SOC_SOF
-+	select SND_SOC_SOF_XTENSA
-+	select SND_SOC_SOF_COMPRESS
- 	help
- 	  This option is not user-selectable but automagically handled by
- 	  'select' statements at a higher level.
- 
--config SND_SOC_SOF_IMX8_SUPPORT
--	bool "SOF support for i.MX8"
--	depends on IMX_SCU=y || IMX_SCU=SND_SOC_SOF_IMX_OF
--	depends on IMX_DSP=y || IMX_DSP=SND_SOC_SOF_IMX_OF
-+config SND_SOC_SOF_IMX8
-+	tristate "SOF support for i.MX8"
-+	depends on IMX_SCU
-+	depends on IMX_DSP
-+	select SND_SOC_SOF_IMX_COMMON
- 	help
- 	  This adds support for Sound Open Firmware for NXP i.MX8 platforms.
- 	  Say Y if you have such a device.
- 	  If unsure select "N".
- 
--config SND_SOC_SOF_IMX8
--	tristate
-+config SND_SOC_SOF_IMX8M
-+	tristate "SOF support for i.MX8M"
-+	depends on IMX_DSP
- 	select SND_SOC_SOF_IMX_COMMON
--	select SND_SOC_SOF_XTENSA
--	select SND_SOC_SOF_COMPRESS
--	help
--	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level.
--
--config SND_SOC_SOF_IMX8M_SUPPORT
--	bool "SOF support for i.MX8M"
--	depends on IMX_DSP=y || IMX_DSP=SND_SOC_SOF_OF
- 	help
- 	  This adds support for Sound Open Firmware for NXP i.MX8M platforms.
- 	  Say Y if you have such a device.
- 	  If unsure select "N".
- 
--config SND_SOC_SOF_IMX8M
--	tristate
--	select SND_SOC_SOF_IMX_COMMON
--	select SND_SOC_SOF_XTENSA
--	select SND_SOC_SOF_COMPRESS
--	help
--	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level.
--
--endif ## SND_SOC_SOF_IMX_IMX_TOPLEVEL
-+endif ## SND_SOC_SOF_IMX_TOPLEVEL
--- 
-2.27.0
-
-
---------------791C240922A1805F6DA45D2B--
+>
+>
+> Justin.
