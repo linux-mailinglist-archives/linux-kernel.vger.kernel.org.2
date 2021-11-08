@@ -2,71 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C48449E40
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:30:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4385449E44
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 22:31:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240365AbhKHVdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 16:33:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52498 "EHLO
+        id S240369AbhKHVec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 16:34:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239289AbhKHVdf (ORCPT
+        with ESMTP id S239289AbhKHVea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 16:33:35 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17DAC061570;
-        Mon,  8 Nov 2021 13:30:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=0iwskvT7/hdjJZTdU1Eyzgws/WDVQd1HAOKc57+uQjw=; b=pocPJMpyTmtM9PRMwz8gM4cb65
-        ARrDqhE6l7qEoqBDn++car9Pk7CDPei4UiXKcIDsH/a1HDLe6m2anTctYJ62lvbBmUynMSr0G0+yZ
-        b75PmapDuqR+2iZrpLdqTgkA0usuSwZ86/bjCEqWJrjVJUkmMfzUuON1gWib2CGIZ0BWuuOWKZ00d
-        RtKjM2s7wqMwC262T1JMmh65f+iu3S+hh1vAV4sRq5pZHW1YTr/6yBjjRAs4aDk6BeGRIn9InQwEq
-        GeZQBBjbwIrbskHtmOw1Og0DWU7kH2MMn5gKVxTOMB+ti/ODlT/TrdS9oCok+IWUIuKMXcpkQpT2N
-        jU+nRFxQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by merlin.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mkCE1-008jfC-Qe; Mon, 08 Nov 2021 21:30:46 +0000
-Subject: Re: [PATCH] rpmsg: Fix documentation return formatting
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-msm@vger.kernel.org
-References: <20211108140126.3530-1-arnaud.pouliquen@foss.st.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <67712270-d8b3-8475-f365-d24ed4cbb117@infradead.org>
-Date:   Mon, 8 Nov 2021 13:30:35 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 8 Nov 2021 16:34:30 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B47C061714
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 13:31:45 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id r28so16369349pga.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 13:31:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IoCUy0ckLTOFUid7Iy+BX/Hk13faaLcXTZhF2jkBuiI=;
+        b=sPc/XZpVz19bKX0gCpMfnJqHnHPZTZQoluFvw3APki3n2cKwA1Ge8GfHYO8w9Ke7WH
+         01LCzn86g4nTjJQTMYv/gCAAQtYP9X5hy8VmAqT9qqWY68Vgl+DFDXz97UchzAt/oKP0
+         JQYFADxNuPhY1brHfNwCNEsLwJIwJQVjRvCNmP8xruoW7x2kgL31W98KnHCu0g69PKQy
+         tvANGY/wEJwuJscViJg159D0+7LNRuxxOqyssLzWjNq0D8UvmKuZaM2vL3Fu0AMDaRIi
+         0GRTOQO2z7jh23YyjSAdfYxYyXDrS5ti4LA8wr0Tm1O0AB74VyDKUhPuK3z+g/nRJIg7
+         h/TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IoCUy0ckLTOFUid7Iy+BX/Hk13faaLcXTZhF2jkBuiI=;
+        b=S+378Ih+HSS+/QZuwrMSgTj2f5sN5f+awHMhfe0lWR1sHstqmvOocbl5JPDekf3/TG
+         bMHcgHLRtxrmhAureLVeBkxSKEWY8NYp9FAU2DHGH7UUYVldF9K1WeJOtGw26lwnEpYw
+         wUmRv6kIoCdzBMOlcjWc8Da7xHLihqVdiFRAQQCATn+wDzQLKtWeajLDtQF1z7a37evW
+         igerX3NMTOuZmdpzr2ywj5JS+Ros/aKKtfmC7kjRttrAPpTTf01pe47OBWIYYeJkewKs
+         QPK6OrDUUYbnLghsShbXLgvWE3UHu2A0htOIoLZUjONzi0QYMyd2I5t/tbkXREIZYfIT
+         0M0A==
+X-Gm-Message-State: AOAM532PohGik9MYViihhVRmrAQVodIOe9bUwbsJS6QJkJpVpmp0wibE
+        CCxRyrJZzV7IwJQzaYyuCdaD5w==
+X-Google-Smtp-Source: ABdhPJykBxJsO3lt/l2H3w3eMF0RzDf+q/D8UKOuN74GOHiY+muFWNxDtsMWZtXqU+QdDq9XNTq/dg==
+X-Received: by 2002:a05:6a00:70e:b0:480:be26:6240 with SMTP id 14-20020a056a00070e00b00480be266240mr2107586pfl.30.1636407104668;
+        Mon, 08 Nov 2021 13:31:44 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id v10sm4657125pfg.162.2021.11.08.13.31.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 13:31:43 -0800 (PST)
+Date:   Mon, 8 Nov 2021 21:31:39 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Chenyi Qiang <chenyi.qiang@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 6/7] KVM: VMX: Expose PKS to guest
+Message-ID: <YYmXO2WQpydWVro0@google.com>
+References: <20210811101126.8973-1-chenyi.qiang@intel.com>
+ <20210811101126.8973-7-chenyi.qiang@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20211108140126.3530-1-arnaud.pouliquen@foss.st.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811101126.8973-7-chenyi.qiang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/21 6:01 AM, Arnaud Pouliquen wrote:
-> kernel documentation specification:
-> "The return value, if any, should be described in a dedicated section
-> named Return."
-> 
-> Signed-off-by: Arnaud Pouliquen<arnaud.pouliquen@foss.st.com>
-> ---
->   drivers/rpmsg/qcom_glink_native.c |  2 +-
->   drivers/rpmsg/qcom_smd.c          |  2 +-
->   drivers/rpmsg/rpmsg_core.c        | 24 ++++++++++++------------
->   drivers/rpmsg/virtio_rpmsg_bus.c  |  2 +-
->   4 files changed, 15 insertions(+), 15 deletions(-)
+On Wed, Aug 11, 2021, Chenyi Qiang wrote:
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 739be5da3bca..dbee0d639db3 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -458,7 +458,7 @@ void kvm_set_cpu_caps(void)
+>  		F(AVX512_VPOPCNTDQ) | F(UMIP) | F(AVX512_VBMI2) | F(GFNI) |
+>  		F(VAES) | F(VPCLMULQDQ) | F(AVX512_VNNI) | F(AVX512_BITALG) |
+>  		F(CLDEMOTE) | F(MOVDIRI) | F(MOVDIR64B) | 0 /*WAITPKG*/ |
+> -		F(SGX_LC) | F(BUS_LOCK_DETECT)
+> +		F(SGX_LC) | F(BUS_LOCK_DETECT) | 0 /*PKS*/
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+...
 
-Thanks.
+>  	);
+>  	/* Set LA57 based on hardware capability. */
+>  	if (cpuid_ecx(7) & F(LA57))
 
--- 
-~Randy
+...
+
+> @@ -7311,6 +7312,14 @@ static __init void vmx_set_cpu_caps(void)
+>  
+>  	if (cpu_has_vmx_waitpkg())
+>  		kvm_cpu_cap_check_and_set(X86_FEATURE_WAITPKG);
+> +
+> +	/*
+> +	 * PKS is not yet implemented for shadow paging.
+> +	 * If not support VM_{ENTRY, EXIT}_LOAD_IA32_PKRS,
+> +	 * don't expose the PKS as well.
+> +	 */
+> +	if (enable_ept && cpu_has_load_ia32_pkrs())
+> +		kvm_cpu_cap_check_and_set(X86_FEATURE_PKS);
+
+I would rather handle the !TDP case in cpuid.c alongside the PKU.  The decision
+to not support Protection Keys with legacy shadow paging is an x86 decision, not
+a VMX decision.
+
+And VMX's extra restriction on the VMCS support should not bleed into common x86.
+
+Can you also opportunistically update the comment (see below) to explain _why_
+OSPKE needs to be enabled in order to advertise PKU?
+
+Thanks!
+
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 2d70edb0f323..c4ed6881857c 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -439,18 +439,23 @@ void kvm_set_cpu_caps(void)
+                F(AVX512_VPOPCNTDQ) | F(UMIP) | F(AVX512_VBMI2) | F(GFNI) |
+                F(VAES) | F(VPCLMULQDQ) | F(AVX512_VNNI) | F(AVX512_BITALG) |
+                F(CLDEMOTE) | F(MOVDIRI) | F(MOVDIR64B) | 0 /*WAITPKG*/ |
+-               F(SGX_LC) | F(BUS_LOCK_DETECT)
++               F(SGX_LC) | F(BUS_LOCK_DETECT) | F(PKS)
+        );
+        /* Set LA57 based on hardware capability. */
+        if (cpuid_ecx(7) & F(LA57))
+                kvm_cpu_cap_set(X86_FEATURE_LA57);
+
+        /*
+-        * PKU not yet implemented for shadow paging and requires OSPKE
+-        * to be set on the host. Clear it if that is not the case
++        * Protection Keys are not supported for shadow paging.  PKU further
++        * requires OSPKE to be set on the host in order to use {RD,WR}PKRU to
++        * save/restore the guests PKRU.
+         */
+-       if (!tdp_enabled || !boot_cpu_has(X86_FEATURE_OSPKE))
++       if (!tdp_enabled) {
+                kvm_cpu_cap_clear(X86_FEATURE_PKU);
++               kvm_cpu_cap_clear(X86_FEATURE_PKS);
++       } else if (!boot_cpu_has(X86_FEATURE_OSPKE)) {
++               kvm_cpu_cap_clear(X86_FEATURE_PKU);
++       }
+
+        kvm_cpu_cap_mask(CPUID_7_EDX,
+                F(AVX512_4VNNIW) | F(AVX512_4FMAPS) | F(SPEC_CTRL) |
+
+
+and then vmx.c only needs to handle clearing PKS when the VMCS controls aren't
+available.
