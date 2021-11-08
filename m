@@ -2,90 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E684498D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5BE4498D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241107AbhKHQAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 11:00:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239202AbhKHQAU (ORCPT
+        id S241120AbhKHQAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 11:00:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45407 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241111AbhKHQAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 11:00:20 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BF8C061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 07:57:36 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id o4so2388634pfp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 07:57:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=aAjH05HC+Yq1fpsWfaNYfykzHpOqzzS4xldmSGauAaM=;
-        b=U47JQ9Gbtp8jgoX0SWnGU0TaWD8J7Y54lErjWuV0xiAq+NpnBpzUzJzu2+BOHoCWfk
-         SThivXCjXqDs0VvAe64Sgd9iVUu7Uy9bXAcleMtJnQa/QEBXAK9hFhmGheCd2q/ptZ90
-         DDO81JVBaFhuYzkrbllw8Zyl0JzAmwKZEu+PqBeoufrHPlRRQX53BSyqQogRjlPZSoT7
-         SeVcu6UQPGlxONCiXDx83aFYBS6J53iY5yasKsJiR9MFDWrF3radP+TE96kXANonIG7u
-         op8Yrtlw1GVPb67r3oPSswMJ8EvRkHBa1wM9+WoC77JIFFHqzqlEW9cre2VA1nFUZY1w
-         xChw==
+        Mon, 8 Nov 2021 11:00:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636387067;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8KYz763bboOxbMn20cIS2HzETWIJmR4WwhBPXCqWbVg=;
+        b=AtmVuMh0zrIyoQYuerGxzyQJFJ4lBFfUkq2g6rhqHWfVzeMmu1H42avDVasQDMDnfUc5Q4
+        If8yJlm/1NZqGe1A9ZGm/oA6QYAc0Ue5sJaUD1wvAr2tDu7QAqkx5licJGsFRz02miFDwG
+        uRHqXJ4QaWF7bOQxtfG68keNY1PhxD8=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-454-7iUxjqqaOxaMyjpwb-s72A-1; Mon, 08 Nov 2021 10:57:46 -0500
+X-MC-Unique: 7iUxjqqaOxaMyjpwb-s72A-1
+Received: by mail-ed1-f70.google.com with SMTP id s6-20020a056402520600b003e2dea4f9b4so12241607edd.12
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 07:57:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=aAjH05HC+Yq1fpsWfaNYfykzHpOqzzS4xldmSGauAaM=;
-        b=gorNkaDDxbtOIIAMNKzPki+7BpQexq+cDM5ORi+2Hh//Hg97ykTE6SO/noCYb4gU7I
-         TheuXCYQmLxcMlAkWghJb/w0bwUP90FRk0cqpk9fTO3IS72qPzd0glS0eaq2/tLtEyRd
-         KxN8hZjHzSK/0KOsZRlB1NacA+/AiBQI9KPw4qHIdGRLycQ/rptikGrFNN2XhtwvszVp
-         vFkjFh4HTYdA8ILZBWadifBXcl75fE7F/6MrCpO+kzrOtEXRHFKzvEXs/x1DETu6ulSg
-         DMbXeqpM/8q2VKx+5nAk2G44aTHvTEK/LHcT96G52alkgYUvawO3v6qkokVP6rBQo35h
-         xIkg==
-X-Gm-Message-State: AOAM531FwT/OKnvM9H5mmKQcNYWbpBbtxL1T0wrwtPNRpCJqZ3Em7acX
-        8jotxYNUoMNPob+kiJaL2hsd8UfMYSeisw==
-X-Google-Smtp-Source: ABdhPJysuDsGhta8Eh9p88a5MKNlvAtiuKLqEkwJivaPV5LjcttH3PQSpuwr2xo0o+VYUXzJsmI9zQ==
-X-Received: by 2002:a05:6214:3004:: with SMTP id ke4mr368613qvb.48.1636387045135;
-        Mon, 08 Nov 2021 07:57:25 -0800 (PST)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id y6sm10409448qkp.116.2021.11.08.07.57.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 07:57:24 -0800 (PST)
-Date:   Mon, 8 Nov 2021 10:57:23 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: vfs-keep-inodes-with-page-cache-off-the-inode-shrinker-lru.patch
-Message-ID: <YYlI40bWhtbKMwrz@cmpxchg.org>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=8KYz763bboOxbMn20cIS2HzETWIJmR4WwhBPXCqWbVg=;
+        b=I6Xudj43xCQEUHov3KkZdVh055yLCWVB73RpUm/4/JGTq07NjnY4dfSWAEdUM8QZQT
+         vulMyt/3x1/WeJYzw8h027bMfnRzG+U2a0hKTh6efnWkhdVwWMdh1sPBc6D8+KFClRxD
+         lLSOGJBqQo/NygKhZVPU54rl9O9qPiAffvn52OjK61Uh3Rc3VrbuAiQbTHu3dyiGVKex
+         qM1KMLusMZ5v0birvma3gFdmRdJxtOCyaMeFVnuVjlrDj0qm9JAGujT1qeVvqKeRsgil
+         4H4ILvjWT6idMmK7WrFNPNjg37ECoed5hyswxW3kIkxw3cNnHMu3gBrH/B9oTj3v19W7
+         qEEw==
+X-Gm-Message-State: AOAM533YOGMxFdNrpWBGchzawsOXfuzmymnDdsLDpXs0JMXiZYdlS+ux
+        YLCImZSlMHYboN6LbEsxE0jU/fJ2+lPH/AK13LIycIhuGpGLkYsssVXKocEOfbbgCZzVyVI1xLN
+        CWn2FOm0tVmU4fXGs6fpSTw8H
+X-Received: by 2002:a17:907:8a12:: with SMTP id sc18mr430354ejc.274.1636387065486;
+        Mon, 08 Nov 2021 07:57:45 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxf0iOhJfjaTSwaGCcG/REySSi4fRJPc4StH7NfD4KKXRYX4Nljlyh8cUTGdYWEErdHWc5rDg==
+X-Received: by 2002:a17:907:8a12:: with SMTP id sc18mr430325ejc.274.1636387065338;
+        Mon, 08 Nov 2021 07:57:45 -0800 (PST)
+Received: from [10.40.1.223] ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id e20sm9389142edv.64.2021.11.08.07.57.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 07:57:44 -0800 (PST)
+Message-ID: <10c9d774-dcae-e80d-e6fa-235410658b84@redhat.com>
+Date:   Mon, 8 Nov 2021 16:57:44 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 06/13] power: supply: bq25890: Add support for skipping
+ initialization
+Content-Language: en-US
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>
+References: <20211030182813.116672-1-hdegoede@redhat.com>
+ <20211030182813.116672-7-hdegoede@redhat.com>
+ <CAHp75VeO60umiJTAbL+nR==4pP0KkKQQ71yFNdK2SAkJ0rRXug@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <CAHp75VeO60umiJTAbL+nR==4pP0KkKQQ71yFNdK2SAkJ0rRXug@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+Hi,
 
-I promised to give this patch some more testing exposure while it sits
-in -mm. We've been steadily rolling this version of the change to our
-fleet over the last months and it's currently on 20% of FB servers. We
-have not noticed crashes or performance regressions because of it.
-(The other 80% is running a previous version of the patch.)
+On 10/31/21 00:07, Andy Shevchenko wrote:
+> On Sat, Oct 30, 2021 at 9:28 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> On most X86/ACPI devices there is no devicetree to supply the necessary
+>> init-data. Instead the firmware already fully initializes the bq25890
+>> charger at boot.
+>>
+>> At support for a new "ti,skip-init" boolean property to support this.
+>> So far this new property is only used on X86/ACPI (non devicetree) devs,
+>> IOW it is not used in actual devicetree files. The devicetree-bindings
+>> maintainers have requested properties like these to not be added to the
+>> devicetree-bindings, so the new property is deliberately not added
+>> to the existing devicetree-bindings.
+> 
+> With 'ti,' prefix it can be a potential collision in name space, for
+> internal properties I would rather use 'linux,' one.
 
-The comment in 'series' says "extra cycle" but that was 5.15 :-) Do
-you think we can get it merged into 5.16?
+Good point, changed for v2.
 
-Just to reiterate, without the patch, there is very broad production
-breakage for FB beyond reduced cache effectiveness. Yes, we lose cache
-pages prematurely. But a bigger problem is that we lose nonresident
-info we store in the inodes. This defeats thrash detection, which in
-turn defeats psi and central reclaim deciscion making. The downstream
-effects of this are quite severe and widespread:
+> ...
+> 
+>> +       init->write_cfg = !device_property_read_bool(bq->dev, "ti,skip-init");
+>> +       if (!init->write_cfg)
+>> +               return 0;
+> 
+> Why to have double negation here?
+> I would rather expect that you will have direct value in the structure
+> and do a respective check in the functions.
 
-- memory prioity inversion between containers
-- failure to offload cold memory to swap with proactive reclaim
-- breakdown of container health monitoring and userspace OOM killing
+Because in all places except this one we want to know if we need to
+write the cfg to the device, removing the double negation here would
+mean adding negation to a init->skip_init check in many places, so this
+is cleaner.
 
-I'm not exaggerating when I say we can't reliably operate our fleet
-without this patch. We've had to carry variants of it for two years
-now. It'd be great to get this fixed upstream.
+Regards,
 
-Thanks,
-Johannes
+Hans
+
