@@ -2,130 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7768449ABA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:25:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE46449ABB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:26:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239899AbhKHR1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 12:27:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230348AbhKHR1n (ORCPT
+        id S240125AbhKHR3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 12:29:15 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:37350 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230348AbhKHR3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 12:27:43 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CBDCC061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 09:24:59 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id w33-20020a17090a6ba400b001a722a06212so294699pjj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 09:24:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4EbD7aqTQKxclsPLCjVFRazOOf7SVm4FlHdT4M8Q2OE=;
-        b=UJm8tlekg3RcDJN6+qUt+cpMTkF4V/Hj+tnGbZFokcB4SAQcj3P6+RI/2cLOYGqTC5
-         bCzuHg8QbDSjgI2zeVkvP9HVJWKs17hjbDs9+kt0rALTnmBPHce6tq8pHh7CDN2piT9n
-         9OwAqtKhOEBQvAw8eMCmPOqKEU9O2fvB7caD2N3d38GnhYlW+XChRzNd4HPEClxkA/QP
-         nk8aRKuAysvXR6jYDvC11oc2qJr3ATPSy/IO3dfxS0tPhk2CCWjL7HbpwRoVsycH2a+Z
-         9DOSeKbufz52wK6GOc5E7tNdBvICz0zV+AsyvDO045LarEbbiHRc/0guA0a45WahOxso
-         Eheg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4EbD7aqTQKxclsPLCjVFRazOOf7SVm4FlHdT4M8Q2OE=;
-        b=Sah0Dsvgieimx7AZB+/9RBjxO0ixHKsmTx0vtUbAQcDHvjjVRyAkcNbYQXiYohchjT
-         v/BiDVCGhMi1OGf5KldzLjc1gMiMm8zW9xreKtg11sB/JtscHyxchpSIagDKJzO7DZLs
-         yD0hEHJeuYy2g4DPDTMgyRYw86Ue5xbhbce0F9nOcjRPMSiUiVjp8JOeZ+RLoBMnbk1Z
-         NDoFIiANGSz4sOxgYMcGRLd/6hCMpXltLJgVLT67Wqp/K+akJuUpWJkbB9TrvClfPDiu
-         WAxwJwUuFASWadDGPDdAzEbi3cglqYgXmohG3zYVh6cCA+362soHg5l2JF8zFtX6nspM
-         Spqg==
-X-Gm-Message-State: AOAM532eVadAU9uheDtKMDOOdqeFt42O/7bJ/Yx1P2bdDeIca4e7oEu6
-        7eHWVdfWwnahtquNZPK+FRilQw==
-X-Google-Smtp-Source: ABdhPJzzJsPhO6l9Wzpus0ydSjqjfOxWycpAvNYAImmWhmgSVDVbcAmYrgi+e+A2wwKWC+cYPJFipg==
-X-Received: by 2002:a17:902:e547:b0:141:ddbc:a8d6 with SMTP id n7-20020a170902e54700b00141ddbca8d6mr812890plf.27.1636392298669;
-        Mon, 08 Nov 2021 09:24:58 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id v22sm16321575pff.93.2021.11.08.09.24.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 09:24:58 -0800 (PST)
-Date:   Mon, 8 Nov 2021 17:24:54 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v3 1/3] KVM: nVMX: Handle dynamic MSR intercept toggling
-Message-ID: <YYldZjBA0YOHjUdZ@google.com>
-References: <20210924204907.1111817-1-seanjc@google.com>
- <20210924204907.1111817-2-seanjc@google.com>
- <87k0hioasv.fsf@vitty.brq.redhat.com>
+        Mon, 8 Nov 2021 12:29:14 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id A05FA21B04;
+        Mon,  8 Nov 2021 17:26:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636392388; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3j4gSHC2KJtJjO4SCGPj3H1Unir8LsmQG4005nQwem8=;
+        b=f+Hr36Y+WmEUe4h6EWIRtnokvJKhGyOiYJaNGk27vlmoGymbfCO27w1taQIDGbuCWL2fy/
+        Kv5mEAgMs/8+VSHpO3LswcfIBcm8wJ626DiJfW9zRcDHL3RGtkLTvo3nniGVtteBZ5YF2T
+        kv3E7CavRQPjlcBK8sraR8u2LPIN8ro=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 7C48FA3B87;
+        Mon,  8 Nov 2021 17:26:28 +0000 (UTC)
+Date:   Mon, 8 Nov 2021 18:26:25 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>
+Subject: Re: [PATCH 2/2] kobject: wait until kobject is cleaned up before
+ freeing module
+Message-ID: <YYldwVcrEqShHyq8@alley>
+References: <20211105063710.4092936-1-ming.lei@redhat.com>
+ <20211105063710.4092936-3-ming.lei@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87k0hioasv.fsf@vitty.brq.redhat.com>
+In-Reply-To: <20211105063710.4092936-3-ming.lei@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 08, 2021, Vitaly Kuznetsov wrote:
-> Sean Christopherson <seanjc@google.com> writes:
-> > @@ -6749,7 +6686,9 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
-> >  	 * If the L02 MSR bitmap does not intercept the MSR, then we need to
-> >  	 * save it.
-> >  	 */
-> > -	if (unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
-> > +	if (unlikely(cpu_has_vmx_msr_bitmap() &&
-> > +		     vmx_test_msr_bitmap_write(vmx->loaded_vmcs->msr_bitmap,
-> > +					       MSR_IA32_SPEC_CTRL)))
-
-Ugh, I inverted the check, '1' == intercept.  IIRC, I open coded the intercept
-check because SPEC_CTRL is really the only case where should be reading _only_
-the current VMCS's MSR bitmap.
-
-I'll spin a new version of the series and test with SPEC_CTRL disabled in a VM,
-and maybe revist my reasoning for this.
-
-Thanks!
-
-> >  		vmx->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
+On Fri 2021-11-05 14:37:10, Ming Lei wrote:
+> kobject_put() may become asynchronously because of
+> CONFIG_DEBUG_KOBJECT_RELEASE, so once kobject_put() returns, the caller may
+> expect the kobject is released after the last refcnt is dropped, however
+> CONFIG_DEBUG_KOBJECT_RELEASE just schedules one delayed work function
+> for cleaning up the kobject. Inside the cleanup handler, kobj->ktype and
+> kobj->ktype->release are required.
 > 
-> I smoke-tested this patch by running (unrelated) selftests when I tried
-> to put in into my 'Enlightened MSR Bitmap v4' series and my dmesg got
-> flooded with:
+> It is supposed that no activity is on kobject itself any more since
+> module_exit() is started, so it is reasonable for the kobject user or
+> driver to expect that kobject can be really released in the last run of
+> kobject_put() in module_exit() code path. Otherwise, it can be thought as
+> one driver's bug since the module is going away.
+
+Honestly, this looks a bit fragile. What if there is still another
+reference from some reason. IMHO, it is easy to do it wrong.
+The kobject stuff is super-tricky.
+
+Yes, there is the argument that it is a drivers bug when it does not
+work. But I wonder if we could create API that might be used by
+drivers and report the actuall bug. Something like:
+
+
+First, update kobject_put() so that it returns 1 when the release
+method was called:
+
+/**
+ * __kobject_put - decrement kobject refcount
+ * @kobject: pointer to kobject
+ *
+ * Decrement the refcount, and if 0, call release().
+ * Return 1 if the object was removed, otherwise return 0.  Beware, if this
+ * function returns 0, you still can not count on the kref from remaining in
+ * memory.  Only use the return value if you want to see if the kref is now
+ * gone, not present.
+ */
+int __kobject_put(struct kobject *kobj)
+{
+	if (!kobj)
+		return 0;
+
+	if (!kobj->state_initialized) {
+		WARN(1, KERN_WARNING
+		     "kobject: '%s' (%p): is not initialized, yet kobject_put() is being called.\n",
+		     kobject_name(kobj), kobj);
+	}
+
+	return kref_put(&kobj->kref, kobject_release);
+}
+
+/**
+ * kobject_remove_sync - remove the kobject in two stages and wait
+ *      until it is removed.
+ * @kobject: pointer to kobject
+ *
+ * Return 0 on success, -EBUSY when someone else still owns a
+ *     reference on the kobject.
+ *
+ * IMPORTANT: The caller is reponsible that nobody else has explicit
+ *	reference on the kobject. The only expection are callbacks
+ *	used by the related sysfs interface. The two stage removal
+ *	makes sure that there is no pending operation when
+ *	the final put is called.
+ */
+int kobject_remove_sync(struct kobject *kobj)
+{
+#ifdef CONFIG_DEBUG_KOBJECT_RELEASE
+	DECLARE_COMPLETION(released);
+
+	if (kobj)
+		kobj->released = released;
+#endif
+
+	/* Remove sysfs */
+	kobject_del(kobj);
+
+	/* This should be the final put */
+	if (WARN(!__kobject_put(kobj), "Synchronous  kobject release failed. Someone still had a reference.\n")) 
+		return -EBUSY;
+
+#ifdef CONFIG_DEBUG_KOBJECT_RELEASE
+	wait_for_completion(&released);
+#endif
+	return 0;
+}
+
+, where the pointer struct completion *released will be added
+into struct kobject. And kobject_cleanup() will call complete()
+after the object is released.
+
+The completion must be defined in kobject_remove_sync() and passed
+via pointer. It is because struct kobject itself might be freed
+by release() callback.
+
+
+> When the ->ktype and ->ktype->release are allocated as module static
+> variable, it can cause trouble because the delayed cleanup handler may
+> be run after the module is unloaded.
 > 
-> [   87.210214] unchecked MSR access error: RDMSR from 0x48 at rIP: 0xffffffffc04e0284 (native_read_msr+0x4/0x30 [kvm_intel])
-> [   87.210325] Call Trace:
-> [   87.210355]  vmx_vcpu_run+0xcc7/0x12b0 [kvm_intel]
-> [   87.210405]  ? vmx_prepare_switch_to_guest+0x138/0x1f0 [kvm_intel]
-> [   87.210466]  vcpu_enter_guest+0x98c/0x1380 [kvm]
-> [   87.210631]  ? vmx_vcpu_put+0x2e/0x1f0 [kvm_intel]
-> [   87.210678]  ? vmx_vcpu_load+0x21/0x60 [kvm_intel]
-> [   87.210729]  kvm_arch_vcpu_ioctl_run+0xdf/0x580 [kvm]
-> [   87.210844]  kvm_vcpu_ioctl+0x274/0x660 [kvm]
-> [   87.210950]  __x64_sys_ioctl+0x83/0xb0
-> [   87.210996]  do_syscall_64+0x3b/0x90
-> [   87.211039]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [   87.211093] RIP: 0033:0x7f6ef7f9a307
-> [   87.211134] Code: 44 00 00 48 8b 05 69 1b 2d 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 39 1b 2d 00 f7 d8 64 89 01 48
-> [   87.211293] RSP: 002b:00007ffcacfb3b18 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> [   87.211367] RAX: ffffffffffffffda RBX: 0000000000a2f300 RCX: 00007f6ef7f9a307
-> [   87.211434] RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000007
-> [   87.211500] RBP: 0000000000000000 R08: 000000000040e769 R09: 0000000000000000
-> [   87.211559] R10: 0000000000a2f001 R11: 0000000000000246 R12: 0000000000a2d010
-> [   87.211622] R13: 0000000000a2d010 R14: 0000000000402a15 R15: 00000000ffff0ff0
-> [   87.212520] Call Trace:
-> [   87.212597]  vmx_vcpu_run+0xcc7/0x12b0 [kvm_intel]
-> [   87.212683]  ? vmx_prepare_switch_to_guest+0x138/0x1f0 [kvm_intel]
-> [   87.212789]  vcpu_enter_guest+0x98c/0x1380 [kvm]
-> [   87.213059]  ? vmx_vcpu_put+0x2e/0x1f0 [kvm_intel]
-> [   87.213141]  ? schedule+0x44/0xa0
-> [   87.213200]  kvm_arch_vcpu_ioctl_run+0xdf/0x580 [kvm]
-> [   87.213428]  kvm_vcpu_ioctl+0x274/0x660 [kvm]
-> [   87.213633]  __x64_sys_ioctl+0x83/0xb0
-> [   87.213705]  do_syscall_64+0x3b/0x90
-> [   87.213766]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> ...
+> Fixes the issue by flushing scheduled kobject cleanup work before
+> freeing module.
 > 
-> this was an old 'E5-2603 v3' CPU. Any idea what's wrong?
+> --- a/lib/kobject.c
+> +++ b/lib/kobject.c
+> @@ -716,11 +729,49 @@ static void kobject_cleanup(struct kobject *kobj)
+>  }
+>  
+>  #ifdef CONFIG_DEBUG_KOBJECT_RELEASE
+> +/*
+> + * Module notifier call back, flushing scheduled kobject cleanup work
+> + * before freeing module
+> + */
+> +static int kobj_module_callback(struct notifier_block *nb,
+> +				   unsigned long val, void *data)
+> +{
+> +	LIST_HEAD(pending);
+> +
+> +	if (val != MODULE_STATE_GOING)
+> +		return NOTIFY_DONE;
+> +
+> +	spin_lock_irq(&kobj_cleanup_lock);
+> +	list_splice_init(&kobj_cleanup_list, &pending);
+> +	spin_unlock_irq(&kobj_cleanup_lock);
+> +
+> +	while (!list_empty_careful(&pending))
+> +		msleep(jiffies_to_msecs(HZ / 10));
+
+I was curious why this is needed. I guess that it is because
+flush_sched_work() will not wait for delayed work items that
+are still waiting for the timer. Am I right, please?
+
+> +
+> +	flush_scheduled_work();
+
+I guess that this is needed because the kobj is removed from the list
+before it is released. Am I right, please?
+
+It would be worth to document it. IMHO, it is not obvious why
+it is that complicated.
+
+
+More thoughts:
+
+The advantage of the module going callback is that it is transparent.
+It should fix the problem for most existing users in most situations.
+
+But it will solve the problem only when someone puts the final
+reference before the module going callback is called. It does
+not guarantee that it really works.
+
+Note that CONFIG_DEBUG_KOBJECT_RELEASE and the workqueue is there
+only to make exactly this problem more visible. I mean that
+the final kobject_put() need not be final.
+
+It would be great to have somehing for users that want to know
+that they do the right thing. For example, it is a must-to-have
+for the livepatch code. IMHO, kobject_remove_sync() or something
+similar would make the kobject API more safe to use.
+
+> +	return NOTIFY_DONE;
+> +}
+> +
+
+Best Regards,
+Petr
