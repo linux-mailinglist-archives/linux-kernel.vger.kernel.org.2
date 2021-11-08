@@ -2,102 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20270447BE1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A8E447BE0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:34:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238038AbhKHIh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 03:37:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236118AbhKHIhZ (ORCPT
+        id S238030AbhKHIgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 03:36:54 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:57756 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236118AbhKHIgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 03:37:25 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CEF9C061570;
-        Mon,  8 Nov 2021 00:34:41 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id ee33so59475367edb.8;
-        Mon, 08 Nov 2021 00:34:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pHnkd35me93FuEtLXvwLwI6ioK1S2/Q5OTvTYZxAMTI=;
-        b=TVAjSTl6IurKWBgjfvUjG0wMA/lsQteX7/pKolPuBvk5yguPjvmoQAx7CUCBFV6f7J
-         9lHSWCFpMrH0mUzCowJ7k0e6cV6REhONzjXmuC51JA9d9gE/VNLcPHatb+chEiP8/bIY
-         sDkczqoUjRV/ACrlnya8+GLFDJlxWNk++yHhS1PGaVIUDYLNOIyOfiHfvMAfdHDmDTxA
-         /tpwjGUYzdGKuPUICtiE1hKZyqQym13NefF7+e2xlvC4nIuFM/TowLb1HZxG9bGb74M9
-         oHxr+CzpA5Qk6XUh0aDUSEvZaoRB/iyIyu9v1FWrAVq5YSOrpYUUQhP9mB2OdNi4UeGX
-         mnqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pHnkd35me93FuEtLXvwLwI6ioK1S2/Q5OTvTYZxAMTI=;
-        b=C8d8kWTs3MwhXYmABDwMDRPYkjtNa4mX3BAT8/znM+tfHqfx9X/Fx7ry/kFtFC7FfQ
-         nVGusNoRLoIGEMnzBad12jaIDzQ8dxtd1afdEZBT29PD96jDX4zH7QzcJDGjUxTIVpkx
-         KMWakiNwXSHso3Fin7/6O4isT219xIyzhL0U6J2jKAaZCpq7fJu3bVFd2ljS8FbNnZoN
-         Bkmw0gjxx8Ztd2tlYc6jVd9no3tOT4U349wPQwRn4CVvZf6AlztiDxoecDL0gm+ev90k
-         JLTMvDWnPjszA1QlUj18Nas+V6p8qNM+YxUCTMIKYh136BHBiSgkzSU/H2ZJ5cukpFVR
-         iUPA==
-X-Gm-Message-State: AOAM531T75PIIiWPI63bcemX0er1ryQneuX/PFg1l99vhJfS2IRpEMEN
-        DrPUZqhGlFd3zpx2TC7LjtL4fdrTgMge0ghb9FI=
-X-Google-Smtp-Source: ABdhPJwW/C+XMPPMxdkbARixwVvUYYY1A1r+GWqu+oAetdoJrkcN7iqry3e4+4itEtjqQ/FimnvBaTnzZFJ45i6HEuc=
-X-Received: by 2002:aa7:cb09:: with SMTP id s9mr107198741edt.359.1636360479858;
- Mon, 08 Nov 2021 00:34:39 -0800 (PST)
+        Mon, 8 Nov 2021 03:36:51 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 242211FD4B;
+        Mon,  8 Nov 2021 08:34:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636360447; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XYhcVxXFPLhTErqWW2gZT46JyGw/U45f/n1whUsMfKc=;
+        b=RCEIRJJFOGyCtJLH25HG/3w874B3PWrK4xEXUyP4zILGF42PUTN5iDtPlKyo1n38PCZAzA
+        JKrUdVoC3xaG/zQRhxwnFaYDJH/mI3NlZeQGfBpXphc+Rd0eYHTJbYIutlAfe5o2BjjKOd
+        1SX4MHSkiKqdtIlwULwNqz82lGmm1wg=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id F18FDA3B84;
+        Mon,  8 Nov 2021 08:34:06 +0000 (UTC)
+Date:   Mon, 8 Nov 2021 09:34:06 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] printk: restore flushing of NMI buffers on remote CPUs
+ after NMI backtraces
+Message-ID: <YYjg/s6oSzZ26Uv+@alley>
+References: <20211107045116.1754411-1-npiggin@gmail.com>
 MIME-Version: 1.0
-References: <CAHP4M8X1ABEhu8kGtRSJHeqQ_m627hNT_N3Q_GGdcr3W_Rfspw@mail.gmail.com>
- <CAHp75VcVZ6dDDm-k=Njo-jDq81bL4BTwrtkkAnm24b23qWKB_g@mail.gmail.com> <CAHP4M8UK6AYVORHCndpw2ZeRLDN+BMj3enJ-+2SWtbOPSqUe9A@mail.gmail.com>
-In-Reply-To: <CAHP4M8UK6AYVORHCndpw2ZeRLDN+BMj3enJ-+2SWtbOPSqUe9A@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 8 Nov 2021 10:33:54 +0200
-Message-ID: <CAHp75VeSxzDFVAgah=NXk4vzKCr0qPHHiyinKzS4vO_tvDrMsg@mail.gmail.com>
-Subject: Re: RFC for a new string-copy function, using mixtures of strlcpy and strscpy
-To:     Ajay Garg <ajaygargnsit@gmail.com>
-Cc:     "andy@kernel.org" <andy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "adobriyan@gmail.com" <adobriyan@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211107045116.1754411-1-npiggin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 9:42 AM Ajay Garg <ajaygargnsit@gmail.com> wrote:
+On Sun 2021-11-07 14:51:16, Nicholas Piggin wrote:
+> printk from NMI context relies on irq work being raised on the local CPU
+> to print to console. This can be a problem if the NMI was raised by a
+> lockup detector to print lockup stack and regs, because the CPU may not
+> enable irqs (because it is locked up).
+> 
+> Introduce printk_trigger_flush() that can be called another CPU to try
+> to get those messages to the console, call that where printk_safe_flush
+> was previously called.
+> 
+> Fixes: 93d102f094be ("printk: remove safe buffers")
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 
-...
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-> >> len = [-7]
-> >> a = [123456789]
-> >
-> > My gosh, this is error code that you must check. We do not need more string copy functions.
->
-> Hmm, having the additional function would make things a lot easier.
->
-> For example, in file fs/kernfs/dir.c, there are methods like
-> "kernfs_name_locked", "kernfs_path_from_node_locked" which simply
-> consume the return-value without any checks.
->
-> All the above functions have a simple motive : copy as much bytes as
-> possible in the destination buffer, and then consume/return the number
-> of bytes actually copied (minus the null-terminator byte of course).
+We should add also
 
-Nope. Read the comment WRT strscpy().
+     Cc: stable@vger.kernel.org # 5.15
 
-> If checks are to be put in-place, it would be too much code/churn,
-> adding if checks all over the place.
+No need to resent the patch. I could add it when pushing.
 
-Yep, that's why in some cases where we know that there can't be
-overflow the checks are not present. In some cases it's historically
-like this, in some cases checks might be useful and so on. But no, we
-do not need more chaos in the string functions.
+Plan: I am going to wait one or more days for a potential feedback
+and ack from John. Then I am going to push this into printk/linux.git.
+IMHO, it makes sense to get this into 5.16-rc1 or rc2.
 
-> If, instead we do a simple replace of "strlcpy" with "strlscpy" at
-> these places, we would be good to go (while *really* meeting the
-> requirements of these clients at the same time).
+Thank you both a lot for nailing this down and for the fix.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Best Regards,
+Petr
