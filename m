@@ -2,135 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 851DA449753
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A04449757
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:01:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238539AbhKHPDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 10:03:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48304 "EHLO
+        id S240682AbhKHPDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 10:03:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234731AbhKHPDV (ORCPT
+        with ESMTP id S240669AbhKHPDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 10:03:21 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C293BC061570;
-        Mon,  8 Nov 2021 07:00:36 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so9015409pjl.2;
-        Mon, 08 Nov 2021 07:00:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Vg2mmXTQsiGOcnSfqtuBHGSM9AyDd9EFgvLrpDEekBk=;
-        b=UikCN7jQTO38Ta3H8Q3C4g79CHu0Orrj8KbcQRecYHKG2Ri4YtV4pAZIviAv+xhRZE
-         YtOV1w2d48IrEdUmFCO3PhkcA2DfMJDuTd0leFxkOlhjTm5upQNYt7kaQaaRcOx27Qt7
-         roeaH/LhNHCsx93NQIbtZ1AmIqF/KPU8BeOfLi6HTg5ccsyZLaQOYTeEXNlAputfQYGH
-         E07oUpMyeW7knVLALTMjAflL9pSDTTSY/8nsh7m6ODzxYskLU7f53C5eraRcQUj5Bxg/
-         38Ag3cw/wk5vkBRQAEz/bPm0VaRVkshwwaX+Y+BTpMSmR9rmlo+FRK9sjyjugy66e/lD
-         VWDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Vg2mmXTQsiGOcnSfqtuBHGSM9AyDd9EFgvLrpDEekBk=;
-        b=rYDZ/DTUqcjpGu9l5z0Y2C71YjMIwxKjlZ6fmro8rzNbRtKNR0EpNyElrG23ysYYF3
-         +eXQoqwBIs2vftx7AMFcuIeIW6VE8389KnzE21pQfDl4KYdE3TV3oXHCpbbFoNdB8Ho7
-         tA6Ulw4CG8o0LAG0CE9gtn72y1GDskKi9YfLZXVQdOopzog1WspZR+kjQjzjHOtDoA+Q
-         D2DPVc+Nxql3cUb38gQLIRHsPhLVqpF2Wee+Oxvu+MtKamjYSCR9tDLDZvDbF4Bpk6FU
-         YiCOXkEvqi4VHkIzVe0I3OG8Z3JQ93GmT6ojrmPZMo9tBFtu6M3KlbVRZ/pvO/dhfVzD
-         tXRw==
-X-Gm-Message-State: AOAM531baT0oTLZDA/ausAGyZsVz1moQ+PjpKvr7xnazfJYMl7eCOdUE
-        ExxalF2osyZZ+0YJ/cMjuB8=
-X-Google-Smtp-Source: ABdhPJyfAhI/bR8dgj5NV7cUjbv6gjyRG7LxFyQcl4JxzcY1sih5Gje/D7RgbxaiXz2t6IoldIntaA==
-X-Received: by 2002:a17:90a:9a8e:: with SMTP id e14mr49652pjp.231.1636383634669;
-        Mon, 08 Nov 2021 07:00:34 -0800 (PST)
-Received: from ?IPv6:2400:4052:6980:3800:dba7:2b1f:3f26:a5ec? ([2400:4052:6980:3800:dba7:2b1f:3f26:a5ec])
-        by smtp.gmail.com with ESMTPSA id y130sm10496539pfg.202.2021.11.08.07.00.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 07:00:33 -0800 (PST)
-Message-ID: <ed17420d96bd302479b528f7ae8694ff9cd2e72a.camel@gmail.com>
-Subject: Re: [PATCH 05/17] media: atomisp: pci: fix inverted error check for
- ia_css_mipi_is_source_port_valid()
-From:   Tsuchiya Yuto <kitakar@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Alan <alan@linux.intel.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Deepak R Varma <drv@mailo.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 09 Nov 2021 00:00:29 +0900
-In-Reply-To: <20211102113332.GC2794@kadam>
-References: <20211017161958.44351-1-kitakar@gmail.com>
-         <20211017161958.44351-6-kitakar@gmail.com> <20211102113332.GC2794@kadam>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+        Mon, 8 Nov 2021 10:03:35 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E723BC061570;
+        Mon,  8 Nov 2021 07:00:50 -0800 (PST)
+Message-ID: <e021af48-52be-7288-0a71-503cb66bd25a@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1636383649;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ty680YT+bwvPMcSb1/D8WNDOqztuUzKMAze6te+xZcw=;
+        b=f4arNSUPz3G30tLlD48t6UEGlO7LPoyllLMakKc5h1dtDiLiMOaAg0v34O6u+prUczI251
+        Jz9YCL1V9a8ogYJaCsksxYDzvCtzjWyII8vweAD9hmtpeXfkp8E1cfAOGbPob7vAoh/e4y
+        JwDDss685aNIn/zxCpe8RnKADlQrIJDLXwXrhUMwqYz9I2MMU1YuaEkC75KMtSTwN1Fn6N
+        T5bUqCHf3M7GEWQ1v1g8u4NF8E3NHKhPF8DWXBg9QkZcPzZRsCrpGV+81KvLVPE2ailrD8
+        URg8LBcBMeoTZahYoWVgfZ//SGbA/mCM4L0xbpfbPT55hfbZcUN77CkL/3+NQQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1636383649;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ty680YT+bwvPMcSb1/D8WNDOqztuUzKMAze6te+xZcw=;
+        b=Zash6zz9hdqNFRof8pH25R85jrynmEkLir5nMHen6On7rJLYb23RRlgy69QAzgsJp4HeGm
+        CIGOCkcin346sgBQ==
+Date:   Mon, 8 Nov 2021 16:00:48 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 4/7] net: dsa: b53: Add PHC clock support
+Content-Language: de-DE
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Richard Cochran <richardcochran@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>
+References: <20211104133204.19757-1-martin.kaistra@linutronix.de>
+ <20211104133204.19757-5-martin.kaistra@linutronix.de>
+ <666b195b-e7d7-6f1f-e09d-bfe113c2f4fe@gmail.com>
+From:   Martin Kaistra <martin.kaistra@linutronix.de>
+In-Reply-To: <666b195b-e7d7-6f1f-e09d-bfe113c2f4fe@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-02 at 14:33 +0300, Dan Carpenter wrote:
-> On Mon, Oct 18, 2021 at 01:19:45AM +0900, Tsuchiya Yuto wrote:
-> > The function ia_css_mipi_is_source_port_valid() returns true if the port
-> > is valid. So, we can't use the existing err variable as is.
-> > 
-> > To fix this issue while reusing that variable, invert the return value
-> > when assigning it to the variable.
-> > 
-> > Fixes: 3c0538fbad9f ("media: atomisp: get rid of most checks for ISP2401 version")
-> > Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
-> > ---
-> >  .../staging/media/atomisp/pci/sh_css_mipi.c   | 24 ++++++++++++-------
-> >  1 file changed, 15 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/drivers/staging/media/atomisp/pci/sh_css_mipi.c b/drivers/staging/media/atomisp/pci/sh_css_mipi.c
-> > index 65fc93c5d56b..c1f2f6151c5f 100644
-> > --- a/drivers/staging/media/atomisp/pci/sh_css_mipi.c
-> > +++ b/drivers/staging/media/atomisp/pci/sh_css_mipi.c
-> > @@ -423,10 +423,12 @@ allocate_mipi_frames(struct ia_css_pipe *pipe,
-> >  		return 0; /* AM TODO: Check  */
-> >  	}
-> >  
-> > -	if (!IS_ISP2401)
-> > +	if (!IS_ISP2401) {
-> >  		port = (unsigned int)pipe->stream->config.source.port.port;
-> > -	else
-> > -		err = ia_css_mipi_is_source_port_valid(pipe, &port);
-> > +	} else {
-> > +		/* Returns true if port is valid. So, invert it */
-> > +		err = !ia_css_mipi_is_source_port_valid(pipe, &port);
+Am 06.11.21 um 03:32 schrieb Florian Fainelli:
 > 
-> Don't invert it...  This isn't supposed to return 1 on failure it's
-> supposed to return negative error codes.
+> 
+> On 11/4/2021 6:31 AM, Martin Kaistra wrote:
+>> The BCM53128 switch has an internal clock, which can be used for
+>> timestamping. Add support for it.
+>>
+>> The 32-bit free running clock counts nanoseconds. In order to account
+>> for the wrap-around at 999999999 (0x3B9AC9FF) while using the cycle
+>> counter infrastructure, we need to set a 30bit mask and use the
+>> overflow_point property.
+>>
+>> Enable the Broadsync HD timestamping feature in b53_ptp_init() for PTPv2
+>> Ethertype (0x88f7).
+>>
+>> Signed-off-by: Martin Kaistra <martin.kaistra@linutronix.de>
+>> ---
+> 
+> [snip]
+> 
+> 
+>> +int b53_ptp_init(struct b53_device *dev)
+>> +{
+>> +    mutex_init(&dev->ptp_mutex);
+>> +
+>> +    INIT_DELAYED_WORK(&dev->overflow_work, b53_ptp_overflow_check);
+>> +
+>> +    /* Enable BroadSync HD for all ports */
+>> +    b53_write16(dev, B53_BROADSYNC_PAGE, B53_BROADSYNC_EN_CTRL1, 
+>> 0x00ff);
+> 
+> Can you do this for all enabled user ports instead of each port, that 
+> way it is clera that this register is supposed to be a bitmask of ports 
+> for which you desire PTP timestamping to be enabled?
+> 
+>> +
+>> +    /* Enable BroadSync HD Time Stamping Reporting (Egress) */
+>> +    b53_write8(dev, B53_BROADSYNC_PAGE, B53_BROADSYNC_TS_REPORT_CTRL, 
+>> 0x01);
+> 
+> Can you add a define for this bit in b53_regs.h and name it:
+> 
+> #define TSRPT_PKT_EN    BIT(0)
+> 
+> which will enable timestamp reporting towards the IMP port.
+> 
+>> +
+>> +    /* Enable BroadSync HD Time Stamping for PTPv2 ingress */
+>> +
+>> +    /* MPORT_CTRL0 | MPORT0_TS_EN */
+>> +    b53_write16(dev, B53_ARLCTRL_PAGE, 0x0e, (1 << 15) | 0x01);
+> 
+> Please add a definition for 0x0e which is the multi-port control 
+> register and is 16-bit wide.
+> 
+> Bit 15 is MPORT0_TS_EN and it will ensure that packets matching 
+> multiport 0 (address or ethertype) will be timestamped.
+> 
+> and then add a macro or generic definitions that are applicable to all 
+> multiport control registers, something like:
+> 
+> #define MPORT_CTRL_DIS_FORWARD    0
+> #define MPORT_CTRL_CMP_ADDR    1
+> #define MPORT_CTRL_CMP_ETYPE    2
+> #define MPORT_CTRL_CMP_ADDR_ETYPE 3
+> 
+> #define MPORT_CTRL_SHIFT(x)    ((x) << 2)
+> #define MPORT_CTRL_MASK        0x3
+> 
+>> +    /* Forward to IMP port 8 */
+>> +    b53_write64(dev, B53_ARLCTRL_PAGE, 0x18, (1 << 8));
+> 
+> 0x18 is the multiport vector N register so we would want a macro to 
+> define the multiprot vector being used (up to 6 of them), and this is a 
+> 32-bit register, not a 64-bit register. The 8 here should be checked 
+> against the actual CPU port index number, it is 8 for you, it could be 5 
+> for someone else, or 7, even.
+> 
+>> +    /* PTPv2 Ether Type */
+>> +    b53_write64(dev, B53_ARLCTRL_PAGE, 0x10, (u64)0x88f7 << 48);
+> 
+> Use ETH_P_1588 here and 0x10 deserves a define which is the multiport 
+> address N register. Likewise, we need a base offset of 0x10 and then a 
+> macro to address the 6 multiports that exists.
+> 
+>> +
+>> +    /* Setup PTP clock */
+>> +    dev->ptp_clock_info.owner = THIS_MODULE;
+>> +    snprintf(dev->ptp_clock_info.name, sizeof(dev->ptp_clock_info.name),
+>> +         dev_name(dev->dev));
+>> +
+>> +    dev->ptp_clock_info.max_adj = 1000000000ULL;
+>> +    dev->ptp_clock_info.n_alarm = 0;
+>> +    dev->ptp_clock_info.n_pins = 0;
+>> +    dev->ptp_clock_info.n_ext_ts = 0;
+>> +    dev->ptp_clock_info.n_per_out = 0;
+>> +    dev->ptp_clock_info.pps = 0;
+> 
+> memset the structure ahead of time so you only need explicit 
+> initialization where needed?
+> 
+>> +    dev->ptp_clock_info.adjfine = b53_ptp_adjfine;
+>> +    dev->ptp_clock_info.adjtime = b53_ptp_adjtime;
+>> +    dev->ptp_clock_info.gettime64 = b53_ptp_gettime;
+>> +    dev->ptp_clock_info.settime64 = b53_ptp_settime;
+>> +    dev->ptp_clock_info.enable = b53_ptp_enable;
+>> +
+>> +    dev->ptp_clock = ptp_clock_register(&dev->ptp_clock_info, dev->dev);
+>> +    if (IS_ERR(dev->ptp_clock))
+>> +        return PTR_ERR(dev->ptp_clock);
+>> +
+>> +    /* The switch provides a 32 bit free running counter. Use the Linux
+>> +     * cycle counter infrastructure which is suited for such scenarios.
+>> +     */
+>> +    dev->cc.read = b53_ptp_read;
+>> +    dev->cc.mask = CYCLECOUNTER_MASK(30);
+>> +    dev->cc.overflow_point = 999999999;
+>> +    dev->cc.mult = (1 << 28);
+>> +    dev->cc.shift = 28;
+>> +
+>> +    b53_write32(dev, B53_BROADSYNC_PAGE, B53_BROADSYNC_TIMEBASE_ADJ1, 
+>> 40);
+> 
+> You are writing the default value of the register, is that of any use?
 
-You mean I should instead modify the return value of
-ia_css_mipi_is_source_port_valid() ?
+Appearently not, I just tested it without this line and it seems to work 
+fine.
 
-Yeah, I also thought that the current true/false return value was a little
-bit confusing.
+It just seemed strange to me, that while the datasheet mentions 40 as 
+the default value, when reading the register without writing this 
+initial value, I just get back 0.
 
-In another words, should the function return:
+I'll remove the line for v2.
 
-    - negative values (maybe -EINVAL for this case) for invalid case
-    - 0 for valid case
-
-instead? and if we go this way, we should also rename the function name
-like
-
-    - check_ia_css_mipi_source_port_validity
-
-or something. How does this sound?
-
-Regards,
-Tsuchiya Yuto
-
+Thanks,
+Martin
