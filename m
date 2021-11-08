@@ -2,118 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D23448040
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 14:24:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD2C448043
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 14:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239935AbhKHN1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 08:27:16 -0500
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:33350
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239924AbhKHN1P (ORCPT
+        id S239946AbhKHN1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 08:27:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239939AbhKHN1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 08:27:15 -0500
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E63653F1AD
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 13:24:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1636377869;
-        bh=/hm+frlIkfRbj18ggfJvfVA8HIIe4O3xDAkmIFBlwTA=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=hvj/p9QVRPgZgyraQkuJmkl3g81QfPNufnJx3+nZLSgxNCnagVrS9pk74wv9Ow7U3
-         Jm/DRwLsosyUIZtTyro6Pasm6uP0FAeRe8zFOHdd1NXyk/ntJyEK9aYwxIdStd8FT1
-         ZAPXZwuBJgDSBoqqdzVmUmGJbjLr9PzDy30Fl9bCgzYon8OpGoIa4JtvwpEP5mazi7
-         tDaYJMKo5CNk6lQ4j0D//jrtZR+TXuinsi+Vp1SxfZuSKsXZ0FAMZt3rVCfzbX926L
-         +eHhLDD4FzB+88/b9JPk0ko4HD2hCKOYUJ+m7xOI0q3XEvPEnq119P9yihpZsU4cRx
-         Y9zK7hNefPhhA==
-Received: by mail-lj1-f199.google.com with SMTP id w16-20020a05651c103000b00218c9d46faeso801890ljm.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 05:24:29 -0800 (PST)
+        Mon, 8 Nov 2021 08:27:45 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C267BC061746
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 05:25:00 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id o29so9192972wms.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 05:25:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lL2ZCAGuklL+cdNdCXmSU3JlVXVT4F4J0OffTPQBmg4=;
+        b=LJOcCXnmM6RnAZaHq9PoVI9tppbezjrJtjI6thmzXMbWrwLP3N4yW6w6uIMw5JtM7a
+         Jh2VKw4/v/VDjMB5RuGOh8obWK6Var6huI934Ql1HVYspwsgUx/NiTzSbfLsyI1KfGiM
+         4qULoqjs3RSTE07uwjOBxt6Gfb+X7MjTimehKj8eiWkst75146Dl9YDaPkWQvl5RsMMo
+         y8Sh9KnpvTWNppJBG5/qPpEb70wZouxOB1wjd+YiLAmijPY5QnX64342sJCq9rjspsgX
+         96W5STRbj8FvLHvo4noUNasHGnljF3lhIwxNpHrL7rqJErkp4AqyrdAloK80mesiLSoz
+         yr+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=/hm+frlIkfRbj18ggfJvfVA8HIIe4O3xDAkmIFBlwTA=;
-        b=eGe3itj+0HdkCpe1Ak/nqjH0NMMwZUX91iktANC73n3IDph+EcXG0D0w32mmBqOLbb
-         Tl7O2p0aEdN7+zkOfSIBcKDiPKI4Kz552uUV7Nmlw4vZKwtMdRvEEkPC2zviIMZ2IAQm
-         8r+IjEUktI4kVhZCHwXddJbUw9DnSBZN1bxbXpuhAwuZlc25B5FdF3i6dEgPA2w8h0eK
-         gpOVou72Vp6IseQj5CqFydjmM19dv+sVyzgj1L+XT+B/MFjuy9JJlKO2VyB0ziPGcBG0
-         tA9+IK6pnSNySf+OIrBaQDvrOf+MPJw1QtAeSsK4gEgvufW/g7G01nYFwVaG5hmX5Gc0
-         mwZw==
-X-Gm-Message-State: AOAM533lulWtJtryMff4/H2HfTdvGH6RcmPO9Aom/HQzT0tZr0TZBhnD
-        tjSTv+I85kT1cQhH8P6Bo7gsgGm064FmyWgz2L018/jU9JZNUD9NHUKuNMaTYuM//0d0x9A0/S3
-        oJDfeey6jds9Zl3MW1DM8LU+ehMkCR3hyOcmLvyLesw==
-X-Received: by 2002:a2e:3803:: with SMTP id f3mr10888425lja.460.1636377869441;
-        Mon, 08 Nov 2021 05:24:29 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyjqrwH68UZei4PQ8gNRPh9hkUMStu/9MMdUsMdfRFhdPTou/EX5PUQAI5rB4VsmqAfR/889Q==
-X-Received: by 2002:a2e:3803:: with SMTP id f3mr10888395lja.460.1636377869193;
-        Mon, 08 Nov 2021 05:24:29 -0800 (PST)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id l2sm1182683lfg.290.2021.11.08.05.24.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 05:24:28 -0800 (PST)
-Message-ID: <f1a28b8f-c27d-19ae-a993-3fbe614d17b3@canonical.com>
-Date:   Mon, 8 Nov 2021 14:24:28 +0100
+        bh=lL2ZCAGuklL+cdNdCXmSU3JlVXVT4F4J0OffTPQBmg4=;
+        b=E6x9Oy+J8Bs75kIeXr/FX49NANzXNWZw5BTcffr/oZXEJ1r3BQBBv6eaMReaIrQIg2
+         7NLteJw+74Rv3wm4HmM07NJ9MvUASYsfDy+tYPqZPv+ZRit5PBC48fSHuRksmj/N9RrA
+         Q/iirmHrWM1dkYT8WyU9id2ukp2TtPVkKaAEiYDiZB3uwbQulmxh9r2SiqSnslQ3AcCz
+         arGioIM0n74kG4zmOIUCx1pFEuYvNwEE52x4F1xVejSwe72on15jrfF9qcLm2rCMhBxH
+         ip6oovEqpEtRFyC5HU/0QKXE1H99lpUY6MtwcCLHPMMACQpQ2caFnWN5nJzi1kF09c5D
+         E2Vg==
+X-Gm-Message-State: AOAM532aVZZg0Q/BneR/cgkK4U9tvMx8dvh4HFOIhMseUXP5WKgDVYt8
+        VCgKXKupjyv2Hva0iplgHZu3gQ==
+X-Google-Smtp-Source: ABdhPJzOgWHuKIppcxJg3E9oZSkThnxStl5fVSJtApfi7bLUZZCbBKm+CFs751NPZCiv8SyCrVq/Qg==
+X-Received: by 2002:a7b:c841:: with SMTP id c1mr53237201wml.80.1636377899371;
+        Mon, 08 Nov 2021 05:24:59 -0800 (PST)
+Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
+        by smtp.gmail.com with ESMTPSA id k37sm16634319wms.21.2021.11.08.05.24.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 05:24:59 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [GIT PULL] gpio: updates for v5.16
+Date:   Mon,  8 Nov 2021 14:24:56 +0100
+Message-Id: <20211108132456.10033-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v3 10/12] watchdog: s3c2410: Support separate source clock
-Content-Language: en-US
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20211107202943.8859-1-semen.protsenko@linaro.org>
- <20211107202943.8859-11-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211107202943.8859-11-semen.protsenko@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/11/2021 21:29, Sam Protsenko wrote:
-> Right now all devices supported in the driver have the single clock: it
-> acts simultaneously as a bus clock (providing register interface
-> clocking) and source clock (driving watchdog counter). Some newer Exynos
-> chips, like Exynos850, have two separate clocks for that. In that case
-> two clocks will be passed to the driver from the resource provider, e.g.
-> Device Tree. Provide necessary infrastructure to support that case:
->   - use source clock's rate for all timer related calculations
->   - use bus clock to gate/ungate the register interface
-> 
-> All devices that use the single clock are kept intact: if only one clock
-> is passed from Device Tree, it will be used for both purposes as before.
-> 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
-> Changes in v3:
->   - Removed has_src_clk field: clk framework can handle NULL clk; added
->     s3c2410wdt_get_freq() function instead, to figure out which clock to
->     use for getting the rate
-> 
-> Changes in v2:
->   - Reworded commit message to be more formal
->   - Used separate "has_src_clk" trait to tell if source clock is present
->   - Renamed clock variables to match their purpose
->   - Removed caching source clock rate, obtaining it in place each time
->     instead
->   - Renamed err labels for more consistency
-> 
->  drivers/watchdog/s3c2410_wdt.c | 56 +++++++++++++++++++++++++---------
->  1 file changed, 41 insertions(+), 15 deletions(-)
-> 
+Linus,
 
+Here are this merge window's updates for the GPIO subsystem. We have a single
+new driver, new features in others and some cleanups all over the place.
+Nothing really stands out and the PR is relatively small.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+There's a single patch for the networking subsystem (Acked by David Miller)
+that depends on the GPIO changes and one other for the zynqmp firmware driver
+similarly acked by the architecture maintainer - Michal Simek.
 
+Details are in the signed tag.
+Please pull.
 
-Best regards,
-Krzysztof
+Best Regards,
+Bartosz Golaszewski
+
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-updates-for-v5.16
+
+for you to fetch changes up to 7d0003da6297eb128f3490e396e6fc6df71557cd:
+
+  virtio_gpio: drop packed attribute (2021-11-04 16:36:54 +0100)
+
+----------------------------------------------------------------
+gpio updates for v5.16
+
+- new driver: gpio-modepin (plus relevant change in zynqmp firmware)
+- add interrupt support to gpio-virtio
+- enable the 'gpio-line-names' property in the DT bindings for gpio-rockchip
+- use the subsystem helpers where applicable in gpio-uniphier instead of
+  accessing IRQ structures directly
+- code shrink in gpio-xilinx
+- add interrupt to gpio-mlxbf2 (and include the removal of custom interrupt
+  code from the mellanox ethernet driver)
+- support multiple interrupts per bank in gpio-tegra186 (and force one interrupt
+  per bank in older models)
+- fix GPIO line IRQ offset calculation in gpio-realtek-otto
+- drop unneeded MODULE_ALIAS expansions in multiple drivers
+- code cleanup in gpio-aggregator
+- minor improvements in gpio-max730x and gpio-mc33880
+- Kconfig cleanups
+
+----------------------------------------------------------------
+Asmaa Mnebhi (2):
+      gpio: mlxbf2: Introduce IRQ support
+      net: mellanox: mlxbf_gige: Replace non-standard interrupt handling
+
+Geert Uytterhoeven (1):
+      gpio: aggregator: Wrap access to gpiochip_fwd.tmp[]
+
+Johan Jonker (1):
+      dt-bindings: gpio: add gpio-line-names to rockchip,gpio-bank.yaml
+
+Krzysztof Kozlowski (2):
+      gpio: max77620: drop unneeded MODULE_ALIAS
+      gpio: tps65218: drop unneeded MODULE_ALIAS
+
+Kunihiko Hayashi (2):
+      gpio: uniphier: Use helper function to get IRQ hardware number
+      gpio: uniphier: Use helper functions to get private data from IRQ data
+
+Michael S. Tsirkin (1):
+      virtio_gpio: drop packed attribute
+
+Piyush Mehta (3):
+      firmware: zynqmp: Add MMIO read and write support for PS_MODE pin
+      dt-bindings: gpio: zynqmp: Add binding documentation for modepin
+      gpio: modepin: Add driver support for modepin GPIO controller
+
+Randy Dunlap (1):
+      gpio: clean up Kconfig file
+
+Sander Vanheule (1):
+      gpio: realtek-otto: fix GPIO line IRQ offset
+
+Thierry Reding (2):
+      gpio: tegra186: Force one interrupt per bank
+      gpio: tegra186: Support multiple interrupts per bank
+
+Uwe Kleine-König (2):
+      gpio: max730x: Make __max730x_remove() return void
+      gpio: mc33880: Drop if with an always false condition
+
+Viresh Kumar (1):
+      gpio: virtio: Add IRQ support
+
+Wolfram Sang (1):
+      gpio: xilinx: simplify getting .driver_data
+
+ .../bindings/gpio/rockchip,gpio-bank.yaml          |   2 +
+ .../bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml    |  43 +++
+ drivers/firmware/xilinx/zynqmp.c                   |  46 ++++
+ drivers/gpio/Kconfig                               | 123 +++++----
+ drivers/gpio/Makefile                              |   1 +
+ drivers/gpio/gpio-aggregator.c                     |  25 +-
+ drivers/gpio/gpio-max7300.c                        |   4 +-
+ drivers/gpio/gpio-max7301.c                        |   4 +-
+ drivers/gpio/gpio-max730x.c                        |   6 +-
+ drivers/gpio/gpio-max77620.c                       |   1 -
+ drivers/gpio/gpio-mc33880.c                        |   2 -
+ drivers/gpio/gpio-mlxbf2.c                         | 142 +++++++++-
+ drivers/gpio/gpio-realtek-otto.c                   |   2 +-
+ drivers/gpio/gpio-tegra186.c                       | 114 +++++++-
+ drivers/gpio/gpio-tps65218.c                       |   1 -
+ drivers/gpio/gpio-uniphier.c                       |  18 +-
+ drivers/gpio/gpio-virtio.c                         | 302 ++++++++++++++++++++-
+ drivers/gpio/gpio-xilinx.c                         |   6 +-
+ drivers/gpio/gpio-zynqmp-modepin.c                 | 162 +++++++++++
+ drivers/net/ethernet/mellanox/mlxbf_gige/Makefile  |   1 -
+ .../net/ethernet/mellanox/mlxbf_gige/mlxbf_gige.h  |  12 -
+ .../ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c | 212 ---------------
+ .../ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c |  22 +-
+ include/linux/firmware/xlnx-zynqmp.h               |  14 +
+ include/linux/spi/max7301.h                        |   2 +-
+ include/uapi/linux/virtio_gpio.h                   |  27 +-
+ 26 files changed, 943 insertions(+), 351 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
+ create mode 100644 drivers/gpio/gpio-zynqmp-modepin.c
+ delete mode 100644 drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c
