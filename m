@@ -2,111 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D940447E7A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:09:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8F4447E7E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 12:10:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237302AbhKHLLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 06:11:52 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:44065 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236276AbhKHLLw (ORCPT
+        id S237706AbhKHLN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 06:13:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229550AbhKHLN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:11:52 -0500
-Received: (Authenticated sender: gregory.clement@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 8348424000F;
-        Mon,  8 Nov 2021 11:09:05 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Jianqun Xu <jay.xu@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Cc:     Bamvor Jian Zhang <bamv2005@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Andy Shevchenko <andy@kernel.org>
-Subject: Re: [PATCH v1 12/19] pinctrl: armada-37xx: Switch to use
- devm_kasprintf_strarray()
-In-Reply-To: <20211105124242.27288-12-andriy.shevchenko@linux.intel.com>
-References: <20211105124242.27288-1-andriy.shevchenko@linux.intel.com>
- <20211105124242.27288-12-andriy.shevchenko@linux.intel.com>
-Date:   Mon, 08 Nov 2021 12:09:05 +0100
-Message-ID: <87tugmsy3y.fsf@BL-laptop>
+        Mon, 8 Nov 2021 06:13:28 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353DFC061570;
+        Mon,  8 Nov 2021 03:10:44 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id n23so14810081pgh.8;
+        Mon, 08 Nov 2021 03:10:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B5QkDkFRgrTh1wy7LZXHDc17CCRNeB4d5kKy2QGRT1w=;
+        b=NhlFF4VtrAyQWXADI5PZiYQahUhVOTXpzHtpvUPNLE1hfFZ+ehEFc3L4V/KB8ITQv9
+         /TgYirFNmJvZxyNBgUyjxqFUF7VxV+8NBVEXsNmoqxbZmZa9EzBIe6/42kefHeRYli+C
+         bL0skRq8DboJbvz0ICgE09rjvjNh2VdDPQ9yDXoOwtkKuWLlJ4bWypewQB3pTkSjo/dZ
+         7HUQBoYryl8H0zmpl0mMu1CfAMKjuIF7Blr0WolNWvxJ6lb982l8nx8g0PgXc6scdxXx
+         herA3jlpkr16DKbTbMBRgGVpL0k3ZP6y+8aJ1mar/jWl9/uxpEnhN0k/z0XOecRVBa1n
+         +UVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B5QkDkFRgrTh1wy7LZXHDc17CCRNeB4d5kKy2QGRT1w=;
+        b=xmkfxa3uE0yUu22hKbz/wFh9Ivu67q6IhriO7yaBegVQx/InIa7UBZ8og9OYkCLC0Z
+         xtQUWcWfT+lw63hh99Zz7TqoKayit8jOGsA6RyVGaoOQfcCaY55S7oPw8b1tdTpkYM/a
+         OJKuMudxbxfBnqIF3v4I79JNW1IAwJvePwnohylqlxmk6ktJTbVG+bQ4A9Oweru7DQ86
+         vm8IaPdiNsKjj7LQYPEM8pJxibB2VomNaeBdZS/2WzGcUaepQXBan+WruMlz6m5WNYax
+         dd+z2ilxckuHaOe0mVcsQbt7wJultDbSbZD0haqfgUoGl9ioh8KhnU5vk2pAkZkA1Rph
+         qlIw==
+X-Gm-Message-State: AOAM531kdo6fPBIhAOyt+Jb3vMtMjUvEzTBW2IURV4iKYy4njIn9fJvP
+        DSaKYAdp47Nr0vBUzpNTX+I=
+X-Google-Smtp-Source: ABdhPJwt28vkefm3grMrWk0+lAGHCnXb/BbW58YeTwDckZGOpO2MNd1a8zk3MHXt9nTE1e/Te+JsvQ==
+X-Received: by 2002:a63:555a:: with SMTP id f26mr58915161pgm.263.1636369843771;
+        Mon, 08 Nov 2021 03:10:43 -0800 (PST)
+Received: from localhost.localdomain ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id ne7sm16559483pjb.36.2021.11.08.03.10.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Nov 2021 03:10:42 -0800 (PST)
+From:   Like Xu <like.xu.linux@gmail.com>
+X-Google-Original-From: Like Xu <likexu@tencent.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/7] Use static_call for kvm_pmu_ops
+Date:   Mon,  8 Nov 2021 19:10:25 +0800
+Message-Id: <20211108111032.24457-1-likexu@tencent.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andy,
+Hi,
 
-> Since we have a generic helper, switch the module to use it.
->
-> As a side effect, add check for the memory allocation failures and
-> cleanup it either in error case or when driver is unloading.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+This is a successor to a previous patch set from Jason Baron. Let's convert
+kvm_pmu_ops to use static_call. Shows good performance gains for
+a typical perf use case [2] in the guest (results in patch 3/3).
 
-Reviewed-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+V1 -> V2 Changelog:
+- Export kvm_pmu_is_valid_msr() for nVMX [Sean]
+- Land memcpy() above kvm_ops_static_call_update() [Sean]
+- Move the pmu_ops to kvm_x86_init_ops and tagged as __initdata. [Sean]
+- Move the kvm_ops_static_call_update() to x86.c [Sean]
+- Drop kvm_pmu_ops_static_call_update() [Sean]
+- Fix WARNING that macros KVM_X86_OP should not use a trailing semicolon
+
+Previous:
+https://lore.kernel.org/kvm/20211103070310.43380-1-likexu@tencent.com/
+
+[1] https://lore.kernel.org/lkml/cover.1610680941.git.jbaron@akamai.com/
+[2] perf record -e branch-instructions -e branch-misses \
+-e cache-misses -e cache-references -e cpu-cycles \
+-e instructions ./workload
 
 Thanks,
 
-Gregory
+Like Xu (7):
+  KVM: x86: Export kvm_pmu_is_valid_msr() for nVMX
+  KVM: x86: Fix WARNING that macros should not use a trailing semicolon
+  KVM: x86: Move kvm_ops_static_call_update() to x86.c
+  KVM: x86: Copy kvm_pmu_ops by value to eliminate layer of indirection
+  KVM: x86: Move .pmu_ops to kvm_x86_init_ops and tagged as __initdata
+  KVM: x86: Introduce definitions to support static calls for
+    kvm_pmu_ops
+  KVM: x86: Use static calls to reduce kvm_pmu_ops overhead
 
-> ---
->  drivers/pinctrl/mvebu/pinctrl-armada-37xx.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/pinctrl/mvebu/pinctrl-armada-37xx.c b/drivers/pinctrl/mvebu/pinctrl-armada-37xx.c
-> index f48745c43419..08cad14042e2 100644
-> --- a/drivers/pinctrl/mvebu/pinctrl-armada-37xx.c
-> +++ b/drivers/pinctrl/mvebu/pinctrl-armada-37xx.c
-> @@ -23,6 +23,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/regmap.h>
->  #include <linux/slab.h>
-> +#include <linux/string_helpers.h>
->  
->  #include "../pinctrl-utils.h"
->  
-> @@ -951,6 +952,7 @@ static int armada_37xx_pinctrl_register(struct platform_device *pdev,
->  	struct pinctrl_desc *ctrldesc = &info->pctl;
->  	struct pinctrl_pin_desc *pindesc, *pdesc;
->  	struct device *dev = &pdev->dev;
-> +	char **pin_names;
->  	int pin, ret;
->  
->  	info->groups = pin_data->groups;
-> @@ -969,11 +971,14 @@ static int armada_37xx_pinctrl_register(struct platform_device *pdev,
->  	ctrldesc->pins = pindesc;
->  	ctrldesc->npins = pin_data->nr_pins;
->  
-> +	pin_names = devm_kasprintf_strarray(dev, pin_data->name, pin_data->nr_pins);
-> +	if (IS_ERR(pin_names))
-> +		return PTR_ERR(pin_names);
-> +
->  	pdesc = pindesc;
->  	for (pin = 0; pin < pin_data->nr_pins; pin++) {
->  		pdesc->number = pin;
-> -		pdesc->name = kasprintf(GFP_KERNEL, "%s-%d",
-> -					pin_data->name, pin);
-> +		pdesc->name = pin_names[pin];
->  		pdesc++;
->  	}
->  
-> -- 
-> 2.33.0
->
+ arch/x86/include/asm/kvm-x86-ops.h     | 218 ++++++++++++-------------
+ arch/x86/include/asm/kvm-x86-pmu-ops.h |  32 ++++
+ arch/x86/include/asm/kvm_host.h        |  14 +-
+ arch/x86/kvm/pmu.c                     |  46 +++---
+ arch/x86/kvm/pmu.h                     |   9 +-
+ arch/x86/kvm/svm/pmu.c                 |   2 +-
+ arch/x86/kvm/svm/svm.c                 |   2 +-
+ arch/x86/kvm/vmx/nested.c              |   2 +-
+ arch/x86/kvm/vmx/pmu_intel.c           |   2 +-
+ arch/x86/kvm/vmx/vmx.c                 |   2 +-
+ arch/x86/kvm/x86.c                     |  16 +-
+ 11 files changed, 199 insertions(+), 146 deletions(-)
+ create mode 100644 arch/x86/include/asm/kvm-x86-pmu-ops.h
 
 -- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+2.33.0
+
