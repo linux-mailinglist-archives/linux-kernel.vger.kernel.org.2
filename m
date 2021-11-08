@@ -2,145 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90671447855
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 02:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15EE8447858
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 02:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235896AbhKHBgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Nov 2021 20:36:47 -0500
-Received: from smtpbg703.qq.com ([203.205.195.89]:40655 "EHLO
-        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235013AbhKHBgq (ORCPT
+        id S235991AbhKHBhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Nov 2021 20:37:13 -0500
+Received: from mail-pf1-f169.google.com ([209.85.210.169]:33583 "EHLO
+        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235013AbhKHBhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Nov 2021 20:36:46 -0500
-X-QQ-GoodBg: 1
-X-QQ-SSF: B0400000000000F0
-X-QQ-FEAT: TskX/GkkryDKmtUHRnsTJ+6XQQAEOAR0LB4DR5RxEmAZkbXGGJvuCS+YBlFaZ
-        DUC+2xMK2AWzVX/eLdvOVb16BaEh8rF+CFNWxDgIdVNGE24cQ5Ews7E8Z5e3CKGmVXPkzbG
-        qQ4eBUB4O5ySoyEd7xUUIfIvXfltDzn/92nYCbRXjrv/GjjP/giH1ksmB40tDHKZ6Kccrxt
-        3ioOX/Ir8qjnzNbUzXy0OQJv/ufMM786xyPsSK5OGAgGisA4kfAKxycpWbzKpjV96lqV2PE
-        kSvcOVTuYYCb/uC+1pv6vzYJ+DYAG6d+loOUSVOsFhMSTepF4rD36NNG0g74SNc4Y26sDr+
-        vCUIPgAFfdLXsVOFT8RrpIu2b4eJg==
-X-QQ-BUSINESS-ORIGIN: 2
-X-Originating-IP: 113.57.13.187
-X-QQ-STYLE: 
-X-QQ-mid: logic531t1636335236t449668
-From:   "=?utf-8?B?bGlhbnpoaSBjaGFuZw==?=" <changlianzhi@uniontech.com>
-To:     "=?utf-8?B?ZG1pdHJ5LnRvcm9raG92?=" <dmitry.torokhov@gmail.com>
-Cc:     "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>,
-        "=?utf-8?B?R3JlZyBLSA==?=" <gregkh@linuxfoundation.org>,
-        "=?utf-8?B?amlyaXNsYWJ5?=" <jirislaby@kernel.org>,
-        "=?utf-8?B?QW5keSBTaGV2Y2hlbmtv?=" 
-        <andriy.shevchenko@linux.intel.com>,
-        "=?utf-8?B?MjgyODI3OTYx?=" <282827961@qq.com>
-Subject: Re: [PATCH v12] tty: Fix the keyboard led light display problem
-Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: base64
-Date:   Mon, 8 Nov 2021 09:33:56 +0800
-X-Priority: 3
-Message-ID: <tencent_59EDD3707E5AA7D80B04137C@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <20211105134816.13982-1-changlianzhi@uniontech.com>
-        <YYWyB1UmQxo0a2WU@google.com>
-In-Reply-To: <YYWyB1UmQxo0a2WU@google.com>
-X-QQ-ReplyHash: 3932108721
-X-QQ-SENDSIZE: 520
-Received: from qq.com (unknown [127.0.0.1])
-        by smtp.qq.com (ESMTP) with SMTP
-        id ; Mon, 08 Nov 2021 09:33:58 +0800 (CST)
-Feedback-ID: logic:uniontech.com:qybgforeign:qybgforeign5
-X-QQ-Bgrelay: 1
+        Sun, 7 Nov 2021 20:37:10 -0500
+Received: by mail-pf1-f169.google.com with SMTP id c126so6045648pfb.0;
+        Sun, 07 Nov 2021 17:34:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mWr9Mi5YMHTa3T07Gk34FemQhAzXo7wj/0HuBoS0oBY=;
+        b=Pt8Z4Lf10GJMEjgBmaRbSNZKR8/o8qH8TsW0Ah4iPRuFj77QPewiDIlMspj7Rk8Rh/
+         INHjTpDsNin1fj7L6iQbV9/3oOD03LCzbhJN3FXbGUxolGMPOeWpYWHrZn4UZhG+eWH5
+         P+NP4X7lqiqmigAcj+nBOfbBUqse7aqBg9Esvxbj2YEKade+FpIyQEzz5LDse3AUVtRs
+         S++jkvcVOP6G7h9eOOcR41YH+0E/0IsJR42PmfmrOL9hoUV9v/5Js9O4+ZVK0XQPvhQ8
+         wik9c7Qp4ZYnIja/N1p4QPR1I2mkAx43yqa9KKJr2EidGFiy0UIOkWjUe0aaPeHPE3NL
+         LYFw==
+X-Gm-Message-State: AOAM533OokXp+eXoH6d19XTR4DxjSNFkcCOqB4Emm6R0iLTC2olNbc8p
+        OPU9K4ZRaY0y2URRBjkP6z8=
+X-Google-Smtp-Source: ABdhPJyvrldzJctNqWP3qBig1k4nT4bAAzfVHptACo0tnM9HY/IvC+DM5RmBWCI0a12eDwKJDoZ1KQ==
+X-Received: by 2002:a62:7f4a:0:b0:44d:292f:cc24 with SMTP id a71-20020a627f4a000000b0044d292fcc24mr77899278pfd.58.1636335266915;
+        Sun, 07 Nov 2021 17:34:26 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id k20sm14217369pfc.83.2021.11.07.17.34.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Nov 2021 17:34:26 -0800 (PST)
+Date:   Mon, 8 Nov 2021 02:34:13 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     nsaenz@kernel.org, jim2101024@gmail.com, f.fainelli@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, lorenzo.pieralisi@arm.com,
+        robh@kernel.org, bhelgaas@google.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] PCI: brcmstb: Declare a bitmap as a bitmap, not as a
+ plain 'unsigned long'
+Message-ID: <YYh+ldT5wU2s0sWY@rocinante>
+References: <e6d9da2112aab2939d1507b90962d07bfd735b4c.1636273671.git.christophe.jaillet@wanadoo.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e6d9da2112aab2939d1507b90962d07bfd735b4c.1636273671.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgLERtaXRyeQ0KT24gRnJpLCBOb3YgMDUsIDIwMjEgYXQgMDk6NDg6MTZQTSArMDgwMCwg
-bGlhbnpoaSBjaGFuZyB3cm90ZToNCj4gPiBTd2l0Y2hpbmcgZnJvbSB0aGUgZGVza3RvcCBl
-bnZpcm9ubWVudCB0byB0aGUgdHR5IGVudmlyb25tZW50LA0KPiA+IHRoZSBzdGF0ZSBvZiB0
-aGUga2V5Ym9hcmQgbGVkIGxpZ2h0cyBhbmQgdGhlIHN0YXRlIG9mIHRoZSBrZXlib2FyZA0K
-PiA+IGxvY2sgYXJlIGluY29uc2lzdGVudC4gVGhpcyBpcyBiZWNhdXNlIHRoZSBhdHRyaWJ1
-dGUga2ItPmtiZG1vZGUNCj4gPiBvZiB0aGUgdHR5IGJvdW5kIGluIHRoZSBkZXNrdG9wIGVu
-dmlyb25tZW50IChYb3JnKSBpcyBzZXQgdG8NCj4gPiBWQ19PRkYsIHdoaWNoIGNhdXNlcyB0
-aGUgbGVkc3RhdGUgYW5kIGtiLT5sZWRmbGFnc3RhdGUNCj4gPiB2YWx1ZXMgb2YgdGhlIGJv
-dW5kIHR0eSB0byBhbHdheXMgYmUgMCwgd2hpY2ggY2F1c2VzIHRoZSBzd2l0Y2gNCj4gPiBm
-cm9tIHRoZSBkZXNrdG9wIFdoZW4gdG8gdGhlIHR0eSBlbnZpcm9ubWVudCwgdGhlIExFRCBs
-aWdodA0KPiA+IHN0YXR1cyBpcyBpbmNvbnNpc3RlbnQgd2l0aCB0aGUga2V5Ym9hcmQgbG9j
-ayBzdGF0dXMuDQo+ID4gSW4gb3JkZXIgdG8gZW5zdXJlIHRoYXQgdGhlIGtleWJvYXJkIExF
-RCBsaWdodHMgYXJlIGRpc3BsYXllZA0KPiA+IG5vcm1hbGx5IGR1cmluZyB0aGUgVlQgc3dp
-dGNoaW5nIHByb2Nlc3MsIHdoZW4gdGhlIFZUIGlzDQo+ID4gc3dpdGNoZWQsIHRoZSBjdXJy
-ZW50IFZUIExFRCBjb25maWd1cmF0aW9uIGlzIGZvcmNlZCB0byBiZSBpc3N1ZWQuDQo+ID4N
-Cj4gPiBTaWduZWQtb2ZmLWJ5OiBsaWFuemhpIGNoYW5nIDxjaGFuZ2xpYW56aGlAdW5pb250
-ZWNoLmNvbT4NCj4gPiBTdWdnZXN0ZWQtYnk6IEFuZHkgU2hldmNoZW5rbyA8YW5kcml5LnNo
-ZXZjaGVua29AbGludXguaW50ZWwuY29tPg0KPiA+IC0tLQ0KPiA+ICB2MTA6DQo+ID4gIFRo
-ZSBsZWQgc3RhdGUgb2YgdGhlIGlucHV0IGRldmljZSBpcyBubyBsb25nZXIgc3luY2hyb25p
-emVkIHRvDQo+ID4gIGxlZHN0YXRlLCBhbmQgdGhlIHJlbGF0ZWQgY29kZSBpcyBkZWxldGVk
-LiBUaGUgY3VycmVudCBwbGFuIGlzDQo+ID4gIGNoYW5nZWQgdG86IHdoZW4gdGhlIFZUIGlz
-IHN3aXRjaGVkLCB0aGUgTEVEIHN0YXRlIHNhdmVkIGJ5IHRoZQ0KPiA+ICBjdXJyZW50IFZU
-IGlzIGZvcmNlZCB0byBiZSBpc3N1ZWQuDQo+ID4gIHYxMToNCj4gPiAgU3VwcGxlbWVudCB0
-aGUgc2lnbmF0dXJlIG9mIHRoZSBjb2xsYWJvcmF0b3IuDQo+ID4gDQo+ID4gIGRyaXZlcnMv
-dHR5L3Z0L2tleWJvYXJkLmMgfCAxNyArKysrKysrKysrKysrKysrKw0KPiA+ICAxIGZpbGUg
-Y2hhbmdlZCwgMTcgaW5zZXJ0aW9ucygrKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvdHR5L3Z0L2tleWJvYXJkLmMgYi9kcml2ZXJzL3R0eS92dC9rZXlib2FyZC5jDQo+ID4g
-aW5kZXggYzdmYmJjZGNjMzQ2Li4yMDAxM2M0NWI5NzkgMTAwNjQ0DQo+ID4gLS0tIGEvZHJp
-dmVycy90dHkvdnQva2V5Ym9hcmQuYw0KPiA+ICsrKyBiL2RyaXZlcnMvdHR5L3Z0L2tleWJv
-YXJkLmMNCj4gPiBAQCAtMTUzLDYgKzE1Myw3IEBAIHN0YXRpYyBpbnQgc2hpZnRfc3RhdGUg
-PSAwOw0KPiA+IA0KPiA+ICBzdGF0aWMgdW5zaWduZWQgaW50IGxlZHN0YXRlID0gLTFVOyAv
-KiB1bmRlZmluZWQgKi8NCj4gPiAgc3RhdGljIHVuc2lnbmVkIGNoYXIgbGVkaW9jdGw7DQo+
-ID4gK3N0YXRpYyBib29sIHZ0X3N3aXRjaDsNCj4gPiANCj4gPiAgLyoNCj4gPiAgICogTm90
-aWZpZXIgbGlzdCBmb3IgY29uc29sZSBrZXlib2FyZCBldmVudHMNCj4gPiBAQCAtNDEyLDgg
-KzQxMywxMiBAQCBzdGF0aWMgdm9pZCBkb19jb21wdXRlX3NoaWZ0c3RhdGUodm9pZCkNCj4g
-PiAgLyogV2Ugc3RpbGwgaGF2ZSB0byBleHBvcnQgdGhpcyBtZXRob2QgdG8gdnQuYyAqLw0K
-PiA+ICB2b2lkIHZ0X3NldF9sZWRzX2NvbXB1dGVfc2hpZnRzdGF0ZSh2b2lkKQ0KPiA+ICB7
-DQo+ID4gKyBzdHJ1Y3Qga2JkX3N0cnVjdCAqa2I7DQo+ID4gIHVuc2lnbmVkIGxvbmcgZmxh
-Z3M7DQo+ID4gDQo+ID4gKyBrYiA9IGtiZF90YWJsZSArIGZnX2NvbnNvbGU7DQo+ID4gKyBp
-ZiAoa2ItPmtiZG1vZGUgIT0gVkNfT0ZGKQ0KPiA+ICsgdnRfc3dpdGNoID0gdHJ1ZTsNCg0K
-PiBDb3VsZCB5b3UgcGxlYXNlIGFkZCBleHBsYW5hdGlvbiBoZXJlIHdoeSBpdCBpcyBub3Qg
-cmFjeSAoSSBkbyBub3QgdGhpbmsNCj4gaXQgaXMgYXMgSSBiZWxpZXZlIGN1cnJlbnRseSBl
-eGVjdXRlZCB0YXNrbGV0cyBjYW4gYmUgc2NoZWR1bGVkKS4NCkFzc3VtaW5nIHRoYXQgWG9y
-ZyBpcyBib3VuZCB0byB0dHkxLCB0aGUga2ItPmtiZG1vZGUgb2YgdHR5MSBpcyBlcXVhbCB0
-byBWQ19PRkYsIGFuZCB0dHkxIA0Kd2lsbCBub3Qgc2V0IHRoZSBrZXlib2FyZCBsaWdodC4g
-SWYgdGhlcmUgaXMgbm8gcmVzdHJpY3Rpb24gaGVyZSwgd2hlbiB3ZSBzd2l0Y2ggZnJvbSBv
-dGhlciB0dHkgdG8NCnR0eTEsIHRoZSB2YWx1ZSBvZiB2dF9zd2l0Y2ggd2lsbCBhbHdheXMg
-YmUgdHJ1ZSwgd2hpY2ggaXMgbm90IGdvb2QuDQoNCj4gPiAgc2V0X2xlZHMoKTsNCj4gPiAN
-Cj4gPiAgc3Bpbl9sb2NrX2lycXNhdmUoJmtiZF9ldmVudF9sb2NrLCBmbGFncyk7DQo+ID4g
-QEAgLTEyNDcsMTQgKzEyNTIsMjQgQEAgdm9pZCB2dF9rYmRfY29uX3N0b3AodW5zaWduZWQg
-aW50IGNvbnNvbGUpDQo+ID4gICAqLw0KPiA+ICBzdGF0aWMgdm9pZCBrYmRfYmgoc3RydWN0
-IHRhc2tsZXRfc3RydWN0ICp1bnVzZWQpDQo+ID4gIHsNCj4gPiArIHN0cnVjdCBrYmRfc3Ry
-dWN0ICprYjsNCj4gPiAgdW5zaWduZWQgaW50IGxlZHM7DQo+ID4gIHVuc2lnbmVkIGxvbmcg
-ZmxhZ3M7DQo+ID4gDQo+ID4gKyBrYiA9IGtiZF90YWJsZSArIGZnX2NvbnNvbGU7DQo+ID4g
-KyBpZiAoa2ItPmtiZG1vZGUgPT0gVkNfT0ZGKQ0KPiA+ICsgcmV0dXJuOw0KDQo+IFdoeSBk
-byB3ZSBuZWVkIHRvIGRvIHRoaXM/IFdvbid0IHRoaXMgc3RvcCBzZXR0aW5nIGFyYml0cmFy
-eSBMRURzIHZpYQ0KPiBjb25zb2xlIGlvY3RsPw0KSW4gdGhlIGtiZF9rZXljb2RlIGZ1bmN0
-aW9uLCB0aGVyZSBpcyBhbHJlYWR5IHRoaXMgcmVzdHJpY3Rpb246DQoNCkF0IHRoaXMgdGlt
-ZSwgdGhlIHN0YXRlIG9mIHRoZSBrZXlib2FyZCBsaWdodCBjYW5ub3QgYmUgbW9kaWZpZWQg
-dGhyb3VnaCB0aGUgTnVtTG9jayBhbmQNCm90aGVyIGtleXMgb2YgdGhlIGtleWJvYXJkLiBF
-YXJsaWVyIGVtYWlscyBhbHNvIHNhaWQgdGhhdCBpdCBpcyBmb3IgdGhpcyByZWFzb24gdGhh
-dCBsZWRzdGF0ZSBhbmQNCmtiLT5sZWRmbGFnc3RhdGUgdW5kZXIgdHR5MSAoYXNzdW1pbmcg
-WG9yZyBpcyBib3VuZCB0byB0dHkxKSB3aWxsIG5vdCBiZSBtb2RpZmllZC4NCkhvd2V2ZXIs
-IHRoZSBsaW1pdGF0aW9uIGhlcmUgZG9lcyBub3QgYWZmZWN0IHRoZSBzY2VuZSBvZiBzd2l0
-Y2hpbmcgZnJvbSBvdGhlciB0dHkgKHR0eTLvvZ42KSANCnRvIHR0eTEuIEFzIGEgcmVzdWx0
-LCB3aGVuIHN3aXRjaGluZyBmcm9tIGFub3RoZXIgdHR5IHRvIHR0eTEsIHRoZSBrZXlib2Fy
-ZCBsaWdodCBzdGF0ZSBtYXkgYmUNCnNldCB0byB0aGUgdmFsdWUgb2Yga2JkLT5sZWRmbGFn
-c3RhdGUgb2YgdHR5MSAobGVkcyE9bGVkc3RhdGUpLiBUaGUgc2V0dGluZyBoZXJlIHdpbGwg
-aW50ZXJmZXJlIA0Kd2l0aCB0aGUgc2V0dGluZyBvZiBzeXN0ZW0gc29mdHdhcmUgc3VjaCBh
-cyBYb3JnLCB3aGljaCBpcyB1bnJlYXNvbmFibGUuDQpUaGVyZWZvcmUsIHRoZSByZXN0cmlj
-dGlvbiBhZGRlZCBieSBwYXRjaCBoZXJlIHNob3VsZCBiZSByZWFzb25hYmxlLg0KDQo+ID4g
-Kw0KPiA+ICBzcGluX2xvY2tfaXJxc2F2ZSgmbGVkX2xvY2ssIGZsYWdzKTsNCj4gPiAgbGVk
-cyA9IGdldGxlZHMoKTsNCj4gPiAgbGVkcyB8PSAodW5zaWduZWQgaW50KWtiZC0+bG9ja3N0
-YXRlIDw8IDg7DQo+ID4gIHNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmxlZF9sb2NrLCBmbGFn
-cyk7DQo+ID4gDQo+ID4gKyBpZiAodnRfc3dpdGNoKSB7DQo+ID4gKyBsZWRzdGF0ZSA9IH5s
-ZWRzOw0KPiA+ICsgdnRfc3dpdGNoID0gZmFsc2U7DQo+ID4gKyB9DQo+ID4gKw0KPiA+ICBp
-ZiAobGVkcyAhPSBsZWRzdGF0ZSkgew0KPiA+ICBrYmRfcHJvcGFnYXRlX2xlZF9zdGF0ZShs
-ZWRzdGF0ZSwgbGVkcyk7DQo+ID4gIGxlZHN0YXRlID0gbGVkczsNCj4gPiBAQCAtMTY0Myw2
-ICsxNjU4LDggQEAgaW50IF9faW5pdCBrYmRfaW5pdCh2b2lkKQ0KPiA+ICBpbnQgaTsNCj4g
-PiAgaW50IGVycm9yOw0KPiA+IA0KPiA+ICsgdnRfc3dpdGNoID0gZmFsc2U7DQoNCj4gTm8g
-bmVlZCB0byBleHBsaWNpdGx5IGluaXRpYWxpemUgaXQgaGVyZSwgYXMgYSBzdGF0aWMgdmFy
-aWFibGUgaXQgd2lsbA0KPiBiZSBhdXRvbWF0aWNhbGx5IGluaXRpYWxpemVkIHRvIDAgKGZh
-bHNlKS4NCk9rYXksIEkgd2lsbCByZXZpc2UgdGhpcy4NCg0KVGhhbmtzLg0KLS0NCmxpYW56
-aGkgY2hhbmc=
+Hi Christophe!
 
+[...]
+> This bitmap can be BRCM_INT_PCI_MSI_LEGACY_NR or BRCM_INT_PCI_MSI_NR long.
 
+Ahh.  OK.  Given this an option would be to: do nothing (keep current
+status quo); allocate memory dynamically passing the "msi->nr" after it
+has been set accordingly; use BRCM_INT_PCI_MSI_NR and waste a little bit
+of space.
 
+Perhaps moving to using the DECLARE_BITMAP() would be fine in this case
+too, at least to match style of other drivers more closely.
+
+Jim, Florian and Lorenzo - is this something that would be OK with you,
+or you would rather keep things as they were?
+
+> Addresses-Coverity: "Out-of-bounds access (ARRAY_VS_SINGLETON)"
+
+This tag would have to be written as:
+
+  Addresses-Coverity: ("Out-of-bounds access (ARRAY_VS_SINGLETON)")
+
+[...]
+> +	DECLARE_BITMAP		(used, BRCM_INT_PCI_MSI_NR);
+
+Probably not the most elegant solution, but I would keep it as:
+
+  DECLARE_BITMAP(used, BRCM_INT_PCI_MSI_NR);
+
+Otherwise aligning either before or after the open bracket will cause
+either an error or a warning issued by checkpatch.pl accordingly about
+the style.  Other users of this (a vast majoirty) macro don't do any
+specific alignment at large
+
+[...]
+> +	/*
+> +	 * Sanity check to make sure that the 'used' bitmap in struct brcm_msi
+> +	 * is large enough.
+> +	 */
+> +	BUILD_BUG_ON(BRCM_INT_PCI_MSI_LEGACY_NR > BRCM_INT_PCI_MSI_NR);
+
+A healthy paranoia, I see. :-)
+
+	Krzysztof
