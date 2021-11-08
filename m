@@ -2,85 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F766449B79
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D10D449B7B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 19:11:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235030AbhKHSN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 13:13:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41026 "EHLO mail.kernel.org"
+        id S235084AbhKHSOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 13:14:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234899AbhKHSN1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 13:13:27 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6462C6112D;
-        Mon,  8 Nov 2021 18:10:43 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mk96P-004DA2-51; Mon, 08 Nov 2021 18:10:41 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        James Morse <james.morse@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Quentin Perret <qperret@google.com>,
-        Fuad Tabba <tabba@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>
-Cc:     dbrazdil@google.com, kernel-team@android.com
-Subject: Re: [PATCH] KVM: arm64: Fix host stage-2 finalization
-Date:   Mon,  8 Nov 2021 18:10:21 +0000
-Message-Id: <163639501024.3332736.13628751369499525511.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211108154636.393384-1-qperret@google.com>
-References: <20211108154636.393384-1-qperret@google.com>
+        id S234899AbhKHSOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 13:14:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 268DE61994
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 18:11:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636395101;
+        bh=4miGct0x2e4uwPTJoDfwUndqCdd3VtKDYZ6yEFuB+us=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=C4PBHKng8edDElM6qpjJtSddGmKofTG8dBANUlp2PpEfJZ1vatNwZDRHtnkfgaVSP
+         QElhHm2JAwUS1PKz+KSV+JAt1s5t5g4x5UbqPJtg4Sk5JgT+FzSKe8WYicPu1G2MVm
+         J86bqx62xfns8vUnetFXqUmE9DsHycSEWBbkgwjlnYWqvU4tQa2vZR06CKUryh6SVm
+         2SIGrdA/A/vRqCoI3U+lN3hrobtuPBnBcJ+jaNEu9jrUa1Qdw15ufz9kzYrt64sUy2
+         zRqY9XXy3wF9HxW2giV8PrNcsuhNRBwbGteoKJFmB9NwjQ3l1xlaYc2LmNuFefAN1B
+         e/Gr7Z+JP+3bQ==
+Received: by mail-wr1-f45.google.com with SMTP id c4so28462392wrd.9
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 10:11:41 -0800 (PST)
+X-Gm-Message-State: AOAM532si6MkuTPZH+xHGLhlmfa9lX+7Uq5GbuUR93qf2+WWmDKKn/cS
+        g9nuyONBURWDqyScJ1FGYNFFdYAwUCXM9voP/hE=
+X-Google-Smtp-Source: ABdhPJxbJNi7n8tAL3Jwa5ALZJw0iWi5JGBlyxbxQOoaZZN9HIADFmux1v0zDwJxQJ9u9Rv9zlt85oGm/j/OR8DXfXU=
+X-Received: by 2002:a05:6000:18c7:: with SMTP id w7mr1242427wrq.411.1636395099591;
+ Mon, 08 Nov 2021 10:11:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: mark.rutland@arm.com, will@kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu, james.morse@arm.com, catalin.marinas@arm.com, suzuki.poulose@arm.com, linux-arm-kernel@lists.infradead.org, qperret@google.com, tabba@google.com, alexandru.elisei@arm.com, dbrazdil@google.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20211108111132.3800548-1-arnd@kernel.org> <63c5b1fb-575e-f026-5a76-f08a366f7f38@linux.intel.com>
+ <bae1a17c-af6e-d77a-19e7-f3f6408951fa@nxp.com> <CAK8P3a2-=-JM+p2b4v4F8O9O2ZhB-3Uhd_F+gcGAinAztSDH9A@mail.gmail.com>
+ <948c8add-2a31-a7aa-f16c-8629dab690cc@linux.intel.com>
+In-Reply-To: <948c8add-2a31-a7aa-f16c-8629dab690cc@linux.intel.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 8 Nov 2021 19:11:23 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2cmWe0G+Kyd=HZHdR0+eW=rktc6_i1PdRDBaBEYQOG4A@mail.gmail.com>
+Message-ID: <CAK8P3a2cmWe0G+Kyd=HZHdR0+eW=rktc6_i1PdRDBaBEYQOG4A@mail.gmail.com>
+Subject: Re: [Sound-open-firmware] [PATCH] ASoC: SOF: build compression
+ interface into snd_sof.ko
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Daniel Baluta <daniel.baluta@nxp.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Bud Liviu-Alexandru <budliviu@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Olaru <paul.olaru@oss.nxp.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        sound-open-firmware@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Nov 2021 15:46:32 +0000, Quentin Perret wrote:
-> We currently walk the hypervisor stage-1 page-table towards the end of
-> hyp init in nVHE protected mode and adjust the host page ownership
-> attributes in its stage-2 in order to get a consistent state from both
-> point of views. The walk is done on the entire hyp VA space, and expects
-> to only ever find page-level mappings. While this expectation is
-> reasonable in the half of hyp VA space that maps memory with a fixed
-> offset (see the loop in pkvm_create_mappings_locked()), it can be
-> incorrect in the other half where nothing prevents the usage of block
-> mappings. For instance, on systems where memory is physically aligned at
-> an address that happens to maps to a PMD aligned VA in the hyp_vmemmap,
-> kvm_pgtable_hyp_map() will install block mappings when backing the
-> hyp_vmemmap, which will later cause finalize_host_mappings() to fail.
-> Furthermore, it should be noted that all pages backing the hyp_vmemmap
-> are also mapped in the 'fixed offset range' of the hypervisor, which
-> implies that finalize_host_mappings() will walk both aliases and update
-> the host stage-2 attributes twice. The order in which this happens is
-> unpredictable, though, since the hyp VA layout is highly dependent on
-> the position of the idmap page, hence resulting in a fragile mess at
-> best.
-> 
-> [...]
+On Mon, Nov 8, 2021 at 6:18 PM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+> On 11/8/21 10:15 AM, Arnd Bergmann wrote:
+> > On Mon, Nov 8, 2021 at 3:13 PM Daniel Baluta <daniel.baluta@nxp.com> wrote:
+>
+> On a related note, with this randconfig we have a separate problem on an
+> AMD patch on the SOF tree
+>
+> ERROR: modpost: "snd_amd_acp_find_config"
+> [sound/soc/amd/snd-acp-config] is a static EXPORT_SYMBOL
+>
+> That wasn't detected earlier, any idea what Kconfig option I need to
+> enable to filter this out?
 
-Applied to next, thanks!
+I don't see that symbol on linux-next at all, so this must be a bug
+that is specific to the
+current SOF tree. The message tells you that snd_amd_acp_find_config should
+not be exported at all since it's static, or it should not be marked
+static because it
+is used by other modules. IOW having a symbol that is both static and exported
+means it's not usable from built-in drivers.
 
-[1/1] KVM: arm64: Fix host stage-2 finalization
-      commit: 50a8d3315960c74095c59e204db44abd937d4b5d
-
-Cheers,
-
-	M.
--- 
-Without deviation from the norm, progress is not possible.
-
-
+       Arnd
