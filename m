@@ -2,257 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED49447DCF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC84447DDE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 11:23:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236535AbhKHKWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 05:22:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239068AbhKHKWT (ORCPT
+        id S235830AbhKHK0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 05:26:22 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:38231 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235081AbhKHK0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:22:19 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2901C061208;
-        Mon,  8 Nov 2021 02:19:29 -0800 (PST)
-Received: from zn.tnic (p200300ec2f33110088892b77bd117736.dip0.t-ipconnect.de [IPv6:2003:ec:2f33:1100:8889:2b77:bd11:7736])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 295D81EC04E0;
-        Mon,  8 Nov 2021 11:19:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1636366768;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CDGB0dpLCqhyN2VLkOyFdq64uDUd6G/RUsDL3dC+Ipo=;
-        b=OmXDZQiNXAykW6msgQxQV2D3jyNeh8L8Ur0LKSqcBbS8Z5Dq+lMoh+uc1KE9lZoNFhTNi5
-        HSfl5kEDRsOkXKmO9qqEW67WUQUsv5GaQK9Erwx9IjY3o31Y8ehQnIfkizrSs0P3bzV/5j
-        Fq9nLmulJEIgHjmCW/c8QaecUsrUi0U=
-From:   Borislav Petkov <bp@alien8.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
-        intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-pm@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-remoteproc@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-tegra@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-usb@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
-        sparclinux@vger.kernel.org, x86@kernel.org,
-        xen-devel@lists.xenproject.org
-Subject: [PATCH v0 00/42] notifiers: Return an error when callback is already registered
-Date:   Mon,  8 Nov 2021 11:19:24 +0100
-Message-Id: <20211108101924.15759-1-bp@alien8.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20211108101157.15189-1-bp@alien8.de>
-References: <20211108101157.15189-1-bp@alien8.de>
+        Mon, 8 Nov 2021 05:26:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1636367013; x=1667903013;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ub9xr57vKaY6xpdzhQZflA5j+rF66tmX+JMBydz9q6U=;
+  b=qMxBVMiiDhmszB4TxCK7ZtHXdKfecZ3M3EQnaA8qNFlLVJqDCvrQDSOH
+   g+oDvFTrYnJILm4C4e1+yE0JoY0M84hVjn7sPOqhi62KYknuCSgxgLd9S
+   Tem043PyzjLwFCAfuCObLiU1I16yz4a6hkI6TV0k6vs22cVai7Yoz5GN3
+   8=;
+X-IronPort-AV: E=Sophos;i="5.87,218,1631577600"; 
+   d="scan'208";a="153426499"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2b-28a78e3f.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 08 Nov 2021 10:23:21 +0000
+Received: from EX13D16EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2b-28a78e3f.us-west-2.amazon.com (Postfix) with ESMTPS id B4540A2C0B;
+        Mon,  8 Nov 2021 10:23:20 +0000 (UTC)
+Received: from [192.168.16.189] (10.43.162.153) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.24; Mon, 8 Nov 2021 10:23:13 +0000
+Message-ID: <440f5a46-8704-18ee-06a9-483898ef0139@amazon.com>
+Date:   Mon, 8 Nov 2021 12:23:04 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.0
+Subject: Re: [PATCH v5 1/4] nitro_enclaves: Merge contiguous physical memory
+ regions
+Content-Language: en-US
+To:     "Longpeng(Mike)" <longpeng2@huawei.com>
+CC:     <arei.gonglei@huawei.com>, <gregkh@linuxfoundation.org>,
+        <kamal@canonical.com>, <pbonzini@redhat.com>,
+        <sgarzare@redhat.com>, <stefanha@redhat.com>,
+        <vkuznets@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>, <lexnv@amazon.com>,
+        <alcioa@amazon.com>
+References: <20211107140918.2106-1-longpeng2@huawei.com>
+ <20211107140918.2106-2-longpeng2@huawei.com>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+In-Reply-To: <20211107140918.2106-2-longpeng2@huawei.com>
+X-Originating-IP: [10.43.162.153]
+X-ClientProxiedBy: EX13D20UWA001.ant.amazon.com (10.43.160.34) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
-
-Hi all,
-
-this is a huge patchset for something which is really trivial - it
-changes the notifier registration routines to return an error value
-if a notifier callback is already present on the respective list of
-callbacks. For more details scroll to the last patch.
-
-Everything before it is converting the callers to check the return value
-of the registration routines and issue a warning, instead of the WARN()
-notifier_chain_register() does now.
-
-Before the last patch has been applied, though, that checking is a
-NOP which would make the application of those patches trivial - every
-maintainer can pick a patch at her/his discretion - only the last one
-enables the build warnings and that one will be queued only after the
-preceding patches have all been merged so that there are no build
-warnings.
-
-Due to the sheer volume of the patches, I have addressed the respective
-patch and the last one, which enables the warning, with addressees for
-each maintained area so as not to spam people unnecessarily.
-
-If people prefer I carry some through tip, instead, I'll gladly do so -
-your call.
-
-And, if you think the warning messages need to be more precise, feel
-free to adjust them before committing.
-
-Thanks!
-
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Ayush Sawal <ayush.sawal@chelsio.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Rohit Maheshwari <rohitm@chelsio.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Vinay Kumar Yadav <vinay.yadav@chelsio.com> 
-Cc: alsa-devel@alsa-project.org
-Cc: bcm-kernel-feedback-list@broadcom.com
-Cc: intel-gfx@lists.freedesktop.org
-Cc: intel-gvt-dev@lists.freedesktop.org
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-clk@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-edac@vger.kernel.org
-Cc: linux-fbdev@vger.kernel.org
-Cc: linux-hyperv@vger.kernel.org
-Cc: linux-iio@vger.kernel.org
-Cc: linux-leds@vger.kernel.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-pm@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-remoteproc@vger.kernel.org
-Cc: linux-renesas-soc@vger.kernel.org
-Cc: linux-s390@vger.kernel.org
-Cc: linux-scsi@vger.kernel.org
-Cc: linux-sh@vger.kernel.org
-Cc: linux-staging@lists.linux.dev
-Cc: linux-tegra@vger.kernel.org
-Cc: linux-um@lists.infradead.org
-Cc: linux-usb@vger.kernel.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: netdev@vger.kernel.org
-Cc: openipmi-developer@lists.sourceforge.net
-Cc: rcu@vger.kernel.org
-Cc: sparclinux@vger.kernel.org
-Cc: x86@kernel.org
-Cc: xen-devel@lists.xenproject.org
-
-Borislav Petkov (42):
-  x86: Check notifier registration return value
-  xen/x86: Check notifier registration return value
-  impi: Check notifier registration return value
-  clk: renesas: Check notifier registration return value
-  dca: Check notifier registration return value
-  firmware: Check notifier registration return value
-  drm/i915: Check notifier registration return value
-  Drivers: hv: vmbus: Check notifier registration return value
-  iio: proximity: cros_ec: Check notifier registration return value
-  leds: trigger: Check notifier registration return value
-  misc: Check notifier registration return value
-  ethernet: chelsio: Check notifier registration return value
-  power: reset: Check notifier registration return value
-  remoteproc: Check notifier registration return value
-  scsi: target: Check notifier registration return value
-  USB: Check notifier registration return value
-  drivers: video: Check notifier registration return value
-  drivers/xen: Check notifier registration return value
-  kernel/hung_task: Check notifier registration return value
-  rcu: Check notifier registration return value
-  tracing: Check notifier registration return value
-  net: fib_notifier: Check notifier registration return value
-  ASoC: soc-jack: Check notifier registration return value
-  staging: olpc_dcon: Check notifier registration return value
-  arch/um: Check notifier registration return value
-  alpha: Check notifier registration return value
-  bus: brcmstb_gisb: Check notifier registration return value
-  soc: bcm: brcmstb: pm: pm-arm: Check notifier registration return
-    value
-  arm64: Check notifier registration return value
-  soc/tegra: Check notifier registration return value
-  parisc: Check notifier registration return value
-  macintosh/adb: Check notifier registration return value
-  mips: Check notifier registration return value
-  powerpc: Check notifier registration return value
-  sh: Check notifier registration return value
-  s390: Check notifier registration return value
-  sparc: Check notifier registration return value
-  xtensa: Check notifier registration return value
-  crypto: ccree - check notifier registration return value
-  EDAC/altera: Check notifier registration return value
-  power: supply: ab8500: Check notifier registration return value
-  notifier: Return an error when callback is already registered
-
- arch/alpha/kernel/setup.c                     |  5 +--
- arch/arm64/kernel/setup.c                     |  6 ++--
- arch/mips/kernel/relocate.c                   |  6 ++--
- arch/mips/sgi-ip22/ip22-reset.c               |  4 ++-
- arch/mips/sgi-ip32/ip32-reset.c               |  4 ++-
- arch/parisc/kernel/pdc_chassis.c              |  5 +--
- arch/powerpc/kernel/setup-common.c            | 12 ++++---
- arch/s390/kernel/ipl.c                        |  4 ++-
- arch/s390/kvm/kvm-s390.c                      |  7 ++--
- arch/sh/kernel/cpu/sh4a/setup-sh7724.c        | 11 +++---
- arch/sparc/kernel/sstate.c                    |  6 ++--
- arch/um/drivers/mconsole_kern.c               |  6 ++--
- arch/um/kernel/um_arch.c                      |  5 +--
- arch/x86/kernel/cpu/mce/core.c                |  3 +-
- arch/x86/kernel/cpu/mce/dev-mcelog.c          |  3 +-
- arch/x86/kernel/setup.c                       |  7 ++--
- arch/x86/xen/enlighten.c                      |  4 ++-
- arch/xtensa/platforms/iss/setup.c             |  3 +-
- drivers/bus/brcmstb_gisb.c                    |  6 ++--
- drivers/char/ipmi/ipmi_msghandler.c           |  3 +-
- drivers/clk/renesas/clk-div6.c                |  4 ++-
- drivers/clk/renesas/rcar-cpg-lib.c            |  4 ++-
- drivers/crypto/ccree/cc_fips.c                |  4 ++-
- drivers/dca/dca-core.c                        |  3 +-
- drivers/edac/altera_edac.c                    |  6 ++--
- drivers/firmware/arm_scmi/notify.c            |  3 +-
- drivers/firmware/google/gsmi.c                |  6 ++--
- drivers/gpu/drm/i915/gvt/scheduler.c          |  6 ++--
- drivers/hv/vmbus_drv.c                        |  4 +--
- .../iio/proximity/cros_ec_mkbp_proximity.c    |  3 +-
- drivers/leds/trigger/ledtrig-activity.c       |  6 ++--
- drivers/leds/trigger/ledtrig-heartbeat.c      |  6 ++--
- drivers/leds/trigger/ledtrig-panic.c          |  4 +--
- drivers/macintosh/adbhid.c                    |  4 +--
- drivers/misc/ibmasm/heartbeat.c               |  3 +-
- drivers/misc/pvpanic/pvpanic.c                |  3 +-
- .../chelsio/inline_crypto/chtls/chtls_main.c  |  5 ++-
- drivers/parisc/power.c                        |  5 +--
- drivers/power/reset/ltc2952-poweroff.c        |  6 ++--
- drivers/power/supply/ab8500_charger.c         |  8 ++---
- drivers/remoteproc/qcom_common.c              |  3 +-
- drivers/remoteproc/qcom_sysmon.c              |  4 ++-
- drivers/remoteproc/remoteproc_core.c          |  4 ++-
- drivers/s390/char/con3215.c                   |  5 ++-
- drivers/s390/char/con3270.c                   |  5 ++-
- drivers/s390/char/sclp_con.c                  |  4 ++-
- drivers/s390/char/sclp_vt220.c                |  4 ++-
- drivers/s390/char/zcore.c                     |  4 ++-
- drivers/soc/bcm/brcmstb/pm/pm-arm.c           |  5 +--
- drivers/soc/tegra/ari-tegra186.c              |  7 ++--
- drivers/staging/olpc_dcon/olpc_dcon.c         |  4 ++-
- drivers/target/tcm_fc/tfc_conf.c              |  4 ++-
- drivers/usb/core/notify.c                     |  3 +-
- drivers/video/console/dummycon.c              |  3 +-
- drivers/video/fbdev/hyperv_fb.c               |  5 +--
- drivers/xen/manage.c                          |  3 +-
- drivers/xen/xenbus/xenbus_probe.c             |  8 +++--
- include/linux/notifier.h                      |  8 ++---
- kernel/hung_task.c                            |  3 +-
- kernel/notifier.c                             | 36 ++++++++++---------
- kernel/rcu/tree_stall.h                       |  4 ++-
- kernel/trace/trace.c                          |  4 +--
- net/core/fib_notifier.c                       |  4 ++-
- sound/soc/soc-jack.c                          |  3 +-
- 64 files changed, 222 insertions(+), 118 deletions(-)
-
--- 
-2.29.2
+CgpPbiAwNy8xMS8yMDIxIDE2OjA5LCBMb25ncGVuZyhNaWtlKSB3cm90ZToKPiAKPiBGcm9tOiBM
+b25ncGVuZyA8bG9uZ3BlbmcyQGh1YXdlaS5jb20+Cj4gCj4gVGhlcmUgY2FuIGJlIGNhc2VzIHdo
+ZW4gdGhlcmUgYXJlIG1vcmUgbWVtb3J5IHJlZ2lvbnMgdGhhdCBuZWVkIHRvIGJlCj4gc2V0IGZv
+ciBhbiBlbmNsYXZlIHRoYW4gdGhlIG1heGltdW0gc3VwcG9ydGVkIG51bWJlciBvZiBtZW1vcnkg
+cmVnaW9ucwo+IHBlciBlbmNsYXZlLiBPbmUgZXhhbXBsZSBjYW4gYmUgd2hlbiB0aGUgbWVtb3J5
+IHJlZ2lvbnMgYXJlIGJhY2tlZCBieSAyCj4gTWlCIGh1Z2VwYWdlcyAodGhlIG1pbmltdW0gc3Vw
+cG9ydGVkIGh1Z2VwYWdlIHNpemUpLgo+IAo+IExldCdzIG1lcmdlIHRoZSBhZGphY2VudCByZWdp
+b25zIGlmIHRoZXkgYXJlIHBoeXNpY2FsbHkgY29udGlndW91cy4gVGhpcwo+IHdheSB0aGUgZmlu
+YWwgbnVtYmVyIG9mIG1lbW9yeSByZWdpb25zIGlzIGxlc3MgdGhhbiBiZWZvcmUgbWVyZ2luZyBh
+bmQKPiBjb3VsZCBwb3RlbnRpYWxseSBhdm9pZCByZWFjaGluZyBtYXhpbXVtLgo+IAo+IFNpZ25l
+ZC1vZmYtYnk6IExvbmdwZW5nIDxsb25ncGVuZzJAaHVhd2VpLmNvbT4KPiAtLS0KPiBDaGFuZ2Vz
+IHY0IC0+IHY1Ogo+ICAgIC0gIlBoeXNpY2FsIGNvbnRpZ3VvdXMgbWVtb3J5IHJlZ2lvbnMiIC0+
+ICJDb250aWd1b3VzIHBoeXNpY2FsIG1lbW9yeQo+ICAgICAgcmVnaW9ucy4iICBbQW5kcmFdCj4g
+ICAgLSBmaXggdGhlIHdhcm5pbmcgb2YgYWxpZ21lbnQgdGhhdCByZXBvcnRlZCBieSB0aGUgY2hl
+Y2twYXRoLnBsICBbQW5kcmFdCj4gCj4gQ2hhbmdlcyB2MyAtPiB2NDoKPiAgICAtIG1vdmUgIiNp
+bmNsdWRlIDxsaW51eC9yYW5nZS5oPiIgYWNjb3JkaW5nIHRvIHRoZSBhbHBoYWJldGljYWwgb3Jk
+ZXIuIFtBbmRyYV0KPiAgICAtIHJlbmFtZSBzZXZlcmFsIHZhcmlhYmxlcywgcGFyYW1ldGVycywg
+c3RydWN0dXJlcyBhbmQgZnVuY3Rpb25zLiAgW0FuZHJhXQo+ICAgIC0gYWRkIG1pc3NpbmcgIkNv
+bnRleHQiIGluIHRoZSBjb21tZW50cy4gIFtBbmRyYV0KPiAgICAtIHNvbWUgb3RoZXIgY2hhbmdl
+cyB0byBtYWtlcyB0aGUgY29kZSBtdWNoIG5lYXRlci4gIFtBbmRyYV0KPiAKPiBDaGFuZ2VzIHYy
+IC0+IHYzOgo+ICAgIC0gdXBkYXRlIHRoZSBjb21taXQgdGl0bGUgYW5kIGNvbW1pdCBtZXNzYWdl
+LiAgW0FuZHJhXQo+ICAgIC0gdXNlICdzdHJ1Y3QgcmFuZ2UnIHRvIGluc3RlYWQgb2YgJ3N0cnVj
+dCBwaHlzX21lbV9yZWdpb24nLiAgW0FuZHJhLCBHcmVnIEtIXQo+ICAgIC0gYWRkIGNvbW1lbnRz
+IGJlZm9yZSB0aGUgZnVuY3Rpb24gZGVmaW5pdGlvbi4gIFtBbmRyYV0KPiAgICAtIHJlbmFtZSBz
+ZXZlcmFsIHZhcmlhYmxlcywgcGFyYW1ldGVycyBhbmQgZnVuY3Rpb24uICBbQW5kcmFdCj4gLS0t
+Cj4gICBkcml2ZXJzL3ZpcnQvbml0cm9fZW5jbGF2ZXMvbmVfbWlzY19kZXYuYyB8IDg0ICsrKysr
+KysrKysrKysrKysrKysrLS0tLS0tLS0tLS0KPiAgIDEgZmlsZSBjaGFuZ2VkLCA1NiBpbnNlcnRp
+b25zKCspLCAyOCBkZWxldGlvbnMoLSkKPiAKClJldmlld2VkLWJ5OiBBbmRyYSBQYXJhc2NoaXYg
+PGFuZHJhcHJzQGFtYXpvbi5jb20+CgpUaGFua3MsCkFuZHJhCgo+IGRpZmYgLS1naXQgYS9kcml2
+ZXJzL3ZpcnQvbml0cm9fZW5jbGF2ZXMvbmVfbWlzY19kZXYuYyBiL2RyaXZlcnMvdmlydC9uaXRy
+b19lbmNsYXZlcy9uZV9taXNjX2Rldi5jCj4gaW5kZXggODkzOTYxMi4uY2VkNThkZSAxMDA2NDQK
+PiAtLS0gYS9kcml2ZXJzL3ZpcnQvbml0cm9fZW5jbGF2ZXMvbmVfbWlzY19kZXYuYwo+ICsrKyBi
+L2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9uZV9taXNjX2Rldi5jCj4gQEAgLTI0LDYgKzI0
+LDcgQEAKPiAgICNpbmNsdWRlIDxsaW51eC9uaXRyb19lbmNsYXZlcy5oPgo+ICAgI2luY2x1ZGUg
+PGxpbnV4L3BjaS5oPgo+ICAgI2luY2x1ZGUgPGxpbnV4L3BvbGwuaD4KPiArI2luY2x1ZGUgPGxp
+bnV4L3JhbmdlLmg+Cj4gICAjaW5jbHVkZSA8bGludXgvc2xhYi5oPgo+ICAgI2luY2x1ZGUgPGxp
+bnV4L3R5cGVzLmg+Cj4gICAjaW5jbHVkZSA8dWFwaS9saW51eC92bV9zb2NrZXRzLmg+Cj4gQEAg
+LTEyNiw2ICsxMjcsMTYgQEAgc3RydWN0IG5lX2NwdV9wb29sIHsKPiAgIHN0YXRpYyBzdHJ1Y3Qg
+bmVfY3B1X3Bvb2wgbmVfY3B1X3Bvb2w7Cj4gCj4gICAvKioKPiArICogc3RydWN0IG5lX3BoeXNf
+Y29udGlnX21lbV9yZWdpb25zIC0gQ29udGlndW91cyBwaHlzaWNhbCBtZW1vcnkgcmVnaW9ucy4K
+PiArICogQG51bTogICAgICAgVGhlIG51bWJlciBvZiByZWdpb25zIHRoYXQgY3VycmVudGx5IGhh
+cy4KPiArICogQHJlZ2lvbnM6ICAgVGhlIGFycmF5IG9mIHBoeXNpY2FsIG1lbW9yeSByZWdpb25z
+Lgo+ICsgKi8KPiArc3RydWN0IG5lX3BoeXNfY29udGlnX21lbV9yZWdpb25zIHsKPiArICAgICAg
+IHVuc2lnbmVkIGxvbmcgbnVtOwo+ICsgICAgICAgc3RydWN0IHJhbmdlICAqcmVnaW9uczsKPiAr
+fTsKPiArCj4gKy8qKgo+ICAgICogbmVfY2hlY2tfZW5jbGF2ZXNfY3JlYXRlZCgpIC0gVmVyaWZ5
+IGlmIGF0IGxlYXN0IG9uZSBlbmNsYXZlIGhhcyBiZWVuIGNyZWF0ZWQuCj4gICAgKiBAdm9pZDog
+ICAgICBObyBwYXJhbWV0ZXJzIHByb3ZpZGVkLgo+ICAgICoKPiBAQCAtODI1LDYgKzgzNiwzMyBA
+QCBzdGF0aWMgaW50IG5lX3Nhbml0eV9jaGVja191c2VyX21lbV9yZWdpb25fcGFnZShzdHJ1Y3Qg
+bmVfZW5jbGF2ZSAqbmVfZW5jbGF2ZSwKPiAgIH0KPiAKPiAgIC8qKgo+ICsgKiBuZV9tZXJnZV9w
+aHlzX2NvbnRpZ19tZW1vcnlfcmVnaW9ucygpIC0gQWRkIGEgbWVtb3J5IHJlZ2lvbiBhbmQgbWVy
+Z2UgdGhlIGFkamFjZW50Cj4gKyAqICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICByZWdpb25zIGlmIHRoZXkgYXJlIHBoeXNpY2FsbHkgY29udGlndW91cy4KPiArICogQHBo
+eXNfY29udGlnX3JlZ2lvbnMgOiBQcml2YXRlIGRhdGEgYXNzb2NpYXRlZCB3aXRoIHRoZSBjb250
+aWd1b3VzIHBoeXNpY2FsIG1lbW9yeSByZWdpb25zLgo+ICsgKiBAcGFnZV9wYWRkciA6ICAgICAg
+ICAgIFBoeXNpY2FsIHN0YXJ0IGFkZHJlc3Mgb2YgdGhlIHJlZ2lvbiB0byBiZSBhZGRlZC4KPiAr
+ICogQHBhZ2Vfc2l6ZSA6ICAgICAgICAgICBMZW5ndGggb2YgdGhlIHJlZ2lvbiB0byBiZSBhZGRl
+ZC4KPiArICoKPiArICogQ29udGV4dDogUHJvY2VzcyBjb250ZXh0LiBUaGlzIGZ1bmN0aW9uIGlz
+IGNhbGxlZCB3aXRoIHRoZSBuZV9lbmNsYXZlIG11dGV4IGhlbGQuCj4gKyAqLwo+ICtzdGF0aWMg
+dm9pZAo+ICtuZV9tZXJnZV9waHlzX2NvbnRpZ19tZW1vcnlfcmVnaW9ucyhzdHJ1Y3QgbmVfcGh5
+c19jb250aWdfbWVtX3JlZ2lvbnMgKnBoeXNfY29udGlnX3JlZ2lvbnMsCj4gKyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgdTY0IHBhZ2VfcGFkZHIsIHU2NCBwYWdlX3NpemUpCj4g
+K3sKPiArICAgICAgIHVuc2lnbmVkIGxvbmcgbnVtID0gcGh5c19jb250aWdfcmVnaW9ucy0+bnVt
+Owo+ICsKPiArICAgICAgIC8qIFBoeXNpY2FsbHkgY29udGlndW91cywganVzdCBtZXJnZSAqLwo+
+ICsgICAgICAgaWYgKG51bSAmJiAocGh5c19jb250aWdfcmVnaW9ucy0+cmVnaW9uc1tudW0gLSAx
+XS5lbmQgKyAxKSA9PSBwYWdlX3BhZGRyKSB7Cj4gKyAgICAgICAgICAgICAgIHBoeXNfY29udGln
+X3JlZ2lvbnMtPnJlZ2lvbnNbbnVtIC0gMV0uZW5kICs9IHBhZ2Vfc2l6ZTsKPiArCj4gKyAgICAg
+ICAgICAgICAgIHJldHVybjsKPiArICAgICAgIH0KPiArCj4gKyAgICAgICBwaHlzX2NvbnRpZ19y
+ZWdpb25zLT5yZWdpb25zW251bV0uc3RhcnQgPSBwYWdlX3BhZGRyOwo+ICsgICAgICAgcGh5c19j
+b250aWdfcmVnaW9ucy0+cmVnaW9uc1tudW1dLmVuZCA9IHBhZ2VfcGFkZHIgKyBwYWdlX3NpemUg
+LSAxOwo+ICsgICAgICAgcGh5c19jb250aWdfcmVnaW9ucy0+bnVtKys7Cj4gK30KPiArCj4gKy8q
+Kgo+ICAgICogbmVfc2V0X3VzZXJfbWVtb3J5X3JlZ2lvbl9pb2N0bCgpIC0gQWRkIHVzZXIgc3Bh
+Y2UgbWVtb3J5IHJlZ2lvbiB0byB0aGUgc2xvdAo+ICAgICogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBhc3NvY2lhdGVkIHdpdGggdGhlIGN1cnJlbnQgZW5jbGF2ZS4KPiAgICAq
+IEBuZV9lbmNsYXZlIDogICAgICAgUHJpdmF0ZSBkYXRhIGFzc29jaWF0ZWQgd2l0aCB0aGUgY3Vy
+cmVudCBlbmNsYXZlLgo+IEBAIC04NDMsOSArODgxLDggQEAgc3RhdGljIGludCBuZV9zZXRfdXNl
+cl9tZW1vcnlfcmVnaW9uX2lvY3RsKHN0cnVjdCBuZV9lbmNsYXZlICpuZV9lbmNsYXZlLAo+ICAg
+ICAgICAgIHVuc2lnbmVkIGxvbmcgbWF4X25yX3BhZ2VzID0gMDsKPiAgICAgICAgICB1bnNpZ25l
+ZCBsb25nIG1lbW9yeV9zaXplID0gMDsKPiAgICAgICAgICBzdHJ1Y3QgbmVfbWVtX3JlZ2lvbiAq
+bmVfbWVtX3JlZ2lvbiA9IE5VTEw7Cj4gLSAgICAgICB1bnNpZ25lZCBsb25nIG5yX3BoeXNfY29u
+dGlnX21lbV9yZWdpb25zID0gMDsKPiAgICAgICAgICBzdHJ1Y3QgcGNpX2RldiAqcGRldiA9IG5l
+X2RldnMubmVfcGNpX2Rldi0+cGRldjsKPiAtICAgICAgIHN0cnVjdCBwYWdlICoqcGh5c19jb250
+aWdfbWVtX3JlZ2lvbnMgPSBOVUxMOwo+ICsgICAgICAgc3RydWN0IG5lX3BoeXNfY29udGlnX21l
+bV9yZWdpb25zIHBoeXNfY29udGlnX21lbV9yZWdpb25zID0ge307Cj4gICAgICAgICAgaW50IHJj
+ID0gLUVJTlZBTDsKPiAKPiAgICAgICAgICByYyA9IG5lX3Nhbml0eV9jaGVja191c2VyX21lbV9y
+ZWdpb24obmVfZW5jbGF2ZSwgbWVtX3JlZ2lvbik7Cj4gQEAgLTg2Niw5ICs5MDMsMTAgQEAgc3Rh
+dGljIGludCBuZV9zZXRfdXNlcl9tZW1vcnlfcmVnaW9uX2lvY3RsKHN0cnVjdCBuZV9lbmNsYXZl
+ICpuZV9lbmNsYXZlLAo+ICAgICAgICAgICAgICAgICAgZ290byBmcmVlX21lbV9yZWdpb247Cj4g
+ICAgICAgICAgfQo+IAo+IC0gICAgICAgcGh5c19jb250aWdfbWVtX3JlZ2lvbnMgPSBrY2FsbG9j
+KG1heF9ucl9wYWdlcywgc2l6ZW9mKCpwaHlzX2NvbnRpZ19tZW1fcmVnaW9ucyksCj4gLSAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgR0ZQX0tFUk5FTCk7Cj4gLSAgICAg
+ICBpZiAoIXBoeXNfY29udGlnX21lbV9yZWdpb25zKSB7Cj4gKyAgICAgICBwaHlzX2NvbnRpZ19t
+ZW1fcmVnaW9ucy5yZWdpb25zID0ga2NhbGxvYyhtYXhfbnJfcGFnZXMsCj4gKyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplb2YoKnBoeXNfY29udGln
+X21lbV9yZWdpb25zLnJlZ2lvbnMpLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgR0ZQX0tFUk5FTCk7Cj4gKyAgICAgICBpZiAoIXBoeXNfY29udGln
+X21lbV9yZWdpb25zLnJlZ2lvbnMpIHsKPiAgICAgICAgICAgICAgICAgIHJjID0gLUVOT01FTTsK
+PiAKPiAgICAgICAgICAgICAgICAgIGdvdG8gZnJlZV9tZW1fcmVnaW9uOwo+IEBAIC05MDEsMjYg
+KzkzOSwxNiBAQCBzdGF0aWMgaW50IG5lX3NldF91c2VyX21lbW9yeV9yZWdpb25faW9jdGwoc3Ry
+dWN0IG5lX2VuY2xhdmUgKm5lX2VuY2xhdmUsCj4gICAgICAgICAgICAgICAgICBpZiAocmMgPCAw
+KQo+ICAgICAgICAgICAgICAgICAgICAgICAgICBnb3RvIHB1dF9wYWdlczsKPiAKPiAtICAgICAg
+ICAgICAgICAgLyoKPiAtICAgICAgICAgICAgICAgICogVE9ETzogVXBkYXRlIG9uY2UgaGFuZGxl
+ZCBub24tY29udGlndW91cyBtZW1vcnkgcmVnaW9ucwo+IC0gICAgICAgICAgICAgICAgKiByZWNl
+aXZlZCBmcm9tIHVzZXIgc3BhY2Ugb3IgY29udGlndW91cyBwaHlzaWNhbCBtZW1vcnkgcmVnaW9u
+cwo+IC0gICAgICAgICAgICAgICAgKiBsYXJnZXIgdGhhbiAyIE1pQiBlLmcuIDggTWlCLgo+IC0g
+ICAgICAgICAgICAgICAgKi8KPiAtICAgICAgICAgICAgICAgcGh5c19jb250aWdfbWVtX3JlZ2lv
+bnNbaV0gPSBuZV9tZW1fcmVnaW9uLT5wYWdlc1tpXTsKPiArICAgICAgICAgICAgICAgbmVfbWVy
+Z2VfcGh5c19jb250aWdfbWVtb3J5X3JlZ2lvbnMoJnBoeXNfY29udGlnX21lbV9yZWdpb25zLAo+
+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwYWdl
+X3RvX3BoeXMobmVfbWVtX3JlZ2lvbi0+cGFnZXNbaV0pLAo+ICsgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwYWdlX3NpemUobmVfbWVtX3JlZ2lvbi0+
+cGFnZXNbaV0pKTsKPiAKPiAgICAgICAgICAgICAgICAgIG1lbW9yeV9zaXplICs9IHBhZ2Vfc2l6
+ZShuZV9tZW1fcmVnaW9uLT5wYWdlc1tpXSk7Cj4gCj4gICAgICAgICAgICAgICAgICBuZV9tZW1f
+cmVnaW9uLT5ucl9wYWdlcysrOwo+ICAgICAgICAgIH0gd2hpbGUgKG1lbW9yeV9zaXplIDwgbWVt
+X3JlZ2lvbi5tZW1vcnlfc2l6ZSk7Cj4gCj4gLSAgICAgICAvKgo+IC0gICAgICAgICogVE9ETzog
+VXBkYXRlIG9uY2UgaGFuZGxlZCBub24tY29udGlndW91cyBtZW1vcnkgcmVnaW9ucyByZWNlaXZl
+ZAo+IC0gICAgICAgICogZnJvbSB1c2VyIHNwYWNlIG9yIGNvbnRpZ3VvdXMgcGh5c2ljYWwgbWVt
+b3J5IHJlZ2lvbnMgbGFyZ2VyIHRoYW4KPiAtICAgICAgICAqIDIgTWlCIGUuZy4gOCBNaUIuCj4g
+LSAgICAgICAgKi8KPiAtICAgICAgIG5yX3BoeXNfY29udGlnX21lbV9yZWdpb25zID0gbmVfbWVt
+X3JlZ2lvbi0+bnJfcGFnZXM7Cj4gLQo+IC0gICAgICAgaWYgKChuZV9lbmNsYXZlLT5ucl9tZW1f
+cmVnaW9ucyArIG5yX3BoeXNfY29udGlnX21lbV9yZWdpb25zKSA+Cj4gKyAgICAgICBpZiAoKG5l
+X2VuY2xhdmUtPm5yX21lbV9yZWdpb25zICsgcGh5c19jb250aWdfbWVtX3JlZ2lvbnMubnVtKSA+
+Cj4gICAgICAgICAgICAgIG5lX2VuY2xhdmUtPm1heF9tZW1fcmVnaW9ucykgewo+ICAgICAgICAg
+ICAgICAgICAgZGV2X2Vycl9yYXRlbGltaXRlZChuZV9taXNjX2Rldi50aGlzX2RldmljZSwKPiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIlJlYWNoZWQgbWF4IG1lbW9yeSBy
+ZWdpb25zICVsbGRcbiIsCj4gQEAgLTkzMSw5ICs5NTksOSBAQCBzdGF0aWMgaW50IG5lX3NldF91
+c2VyX21lbW9yeV9yZWdpb25faW9jdGwoc3RydWN0IG5lX2VuY2xhdmUgKm5lX2VuY2xhdmUsCj4g
+ICAgICAgICAgICAgICAgICBnb3RvIHB1dF9wYWdlczsKPiAgICAgICAgICB9Cj4gCj4gLSAgICAg
+ICBmb3IgKGkgPSAwOyBpIDwgbnJfcGh5c19jb250aWdfbWVtX3JlZ2lvbnM7IGkrKykgewo+IC0g
+ICAgICAgICAgICAgICB1NjQgcGh5c19yZWdpb25fYWRkciA9IHBhZ2VfdG9fcGh5cyhwaHlzX2Nv
+bnRpZ19tZW1fcmVnaW9uc1tpXSk7Cj4gLSAgICAgICAgICAgICAgIHU2NCBwaHlzX3JlZ2lvbl9z
+aXplID0gcGFnZV9zaXplKHBoeXNfY29udGlnX21lbV9yZWdpb25zW2ldKTsKPiArICAgICAgIGZv
+ciAoaSA9IDA7IGkgPCBwaHlzX2NvbnRpZ19tZW1fcmVnaW9ucy5udW07IGkrKykgewo+ICsgICAg
+ICAgICAgICAgICB1NjQgcGh5c19yZWdpb25fYWRkciA9IHBoeXNfY29udGlnX21lbV9yZWdpb25z
+LnJlZ2lvbnNbaV0uc3RhcnQ7Cj4gKyAgICAgICAgICAgICAgIHU2NCBwaHlzX3JlZ2lvbl9zaXpl
+ID0gcmFuZ2VfbGVuKCZwaHlzX2NvbnRpZ19tZW1fcmVnaW9ucy5yZWdpb25zW2ldKTsKPiAKPiAg
+ICAgICAgICAgICAgICAgIGlmIChwaHlzX3JlZ2lvbl9zaXplICYgKE5FX01JTl9NRU1fUkVHSU9O
+X1NJWkUgLSAxKSkgewo+ICAgICAgICAgICAgICAgICAgICAgICAgICBkZXZfZXJyX3JhdGVsaW1p
+dGVkKG5lX21pc2NfZGV2LnRoaXNfZGV2aWNlLAo+IEBAIC05NTksMTMgKzk4NywxMyBAQCBzdGF0
+aWMgaW50IG5lX3NldF91c2VyX21lbW9yeV9yZWdpb25faW9jdGwoc3RydWN0IG5lX2VuY2xhdmUg
+Km5lX2VuY2xhdmUsCj4gCj4gICAgICAgICAgbGlzdF9hZGQoJm5lX21lbV9yZWdpb24tPm1lbV9y
+ZWdpb25fbGlzdF9lbnRyeSwgJm5lX2VuY2xhdmUtPm1lbV9yZWdpb25zX2xpc3QpOwo+IAo+IC0g
+ICAgICAgZm9yIChpID0gMDsgaSA8IG5yX3BoeXNfY29udGlnX21lbV9yZWdpb25zOyBpKyspIHsK
+PiArICAgICAgIGZvciAoaSA9IDA7IGkgPCBwaHlzX2NvbnRpZ19tZW1fcmVnaW9ucy5udW07IGkr
+Kykgewo+ICAgICAgICAgICAgICAgICAgc3RydWN0IG5lX3BjaV9kZXZfY21kX3JlcGx5IGNtZF9y
+ZXBseSA9IHt9Owo+ICAgICAgICAgICAgICAgICAgc3RydWN0IHNsb3RfYWRkX21lbV9yZXEgc2xv
+dF9hZGRfbWVtX3JlcSA9IHt9Owo+IAo+ICAgICAgICAgICAgICAgICAgc2xvdF9hZGRfbWVtX3Jl
+cS5zbG90X3VpZCA9IG5lX2VuY2xhdmUtPnNsb3RfdWlkOwo+IC0gICAgICAgICAgICAgICBzbG90
+X2FkZF9tZW1fcmVxLnBhZGRyID0gcGFnZV90b19waHlzKHBoeXNfY29udGlnX21lbV9yZWdpb25z
+W2ldKTsKPiAtICAgICAgICAgICAgICAgc2xvdF9hZGRfbWVtX3JlcS5zaXplID0gcGFnZV9zaXpl
+KHBoeXNfY29udGlnX21lbV9yZWdpb25zW2ldKTsKPiArICAgICAgICAgICAgICAgc2xvdF9hZGRf
+bWVtX3JlcS5wYWRkciA9IHBoeXNfY29udGlnX21lbV9yZWdpb25zLnJlZ2lvbnNbaV0uc3RhcnQ7
+Cj4gKyAgICAgICAgICAgICAgIHNsb3RfYWRkX21lbV9yZXEuc2l6ZSA9IHJhbmdlX2xlbigmcGh5
+c19jb250aWdfbWVtX3JlZ2lvbnMucmVnaW9uc1tpXSk7Cj4gCj4gICAgICAgICAgICAgICAgICBy
+YyA9IG5lX2RvX3JlcXVlc3QocGRldiwgU0xPVF9BRERfTUVNLAo+ICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICZzbG90X2FkZF9tZW1fcmVxLCBzaXplb2Yoc2xvdF9hZGRfbWVt
+X3JlcSksCj4gQEAgLTk3NCw3ICsxMDAyLDcgQEAgc3RhdGljIGludCBuZV9zZXRfdXNlcl9tZW1v
+cnlfcmVnaW9uX2lvY3RsKHN0cnVjdCBuZV9lbmNsYXZlICpuZV9lbmNsYXZlLAo+ICAgICAgICAg
+ICAgICAgICAgICAgICAgICBkZXZfZXJyX3JhdGVsaW1pdGVkKG5lX21pc2NfZGV2LnRoaXNfZGV2
+aWNlLAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJFcnJv
+ciBpbiBzbG90IGFkZCBtZW0gW3JjPSVkXVxuIiwgcmMpOwo+IAo+IC0gICAgICAgICAgICAgICAg
+ICAgICAgIGtmcmVlKHBoeXNfY29udGlnX21lbV9yZWdpb25zKTsKPiArICAgICAgICAgICAgICAg
+ICAgICAgICBrZnJlZShwaHlzX2NvbnRpZ19tZW1fcmVnaW9ucy5yZWdpb25zKTsKPiAKPiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgLyoKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICogRXhp
+dCBoZXJlIHdpdGhvdXQgcHV0IHBhZ2VzIGFzIG1lbW9yeSByZWdpb25zIG1heQo+IEBAIC05ODcs
+NyArMTAxNSw3IEBAIHN0YXRpYyBpbnQgbmVfc2V0X3VzZXJfbWVtb3J5X3JlZ2lvbl9pb2N0bChz
+dHJ1Y3QgbmVfZW5jbGF2ZSAqbmVfZW5jbGF2ZSwKPiAgICAgICAgICAgICAgICAgIG5lX2VuY2xh
+dmUtPm5yX21lbV9yZWdpb25zKys7Cj4gICAgICAgICAgfQo+IAo+IC0gICAgICAga2ZyZWUocGh5
+c19jb250aWdfbWVtX3JlZ2lvbnMpOwo+ICsgICAgICAga2ZyZWUocGh5c19jb250aWdfbWVtX3Jl
+Z2lvbnMucmVnaW9ucyk7Cj4gCj4gICAgICAgICAgcmV0dXJuIDA7Cj4gCj4gQEAgLTk5NSw3ICsx
+MDIzLDcgQEAgc3RhdGljIGludCBuZV9zZXRfdXNlcl9tZW1vcnlfcmVnaW9uX2lvY3RsKHN0cnVj
+dCBuZV9lbmNsYXZlICpuZV9lbmNsYXZlLAo+ICAgICAgICAgIGZvciAoaSA9IDA7IGkgPCBuZV9t
+ZW1fcmVnaW9uLT5ucl9wYWdlczsgaSsrKQo+ICAgICAgICAgICAgICAgICAgcHV0X3BhZ2UobmVf
+bWVtX3JlZ2lvbi0+cGFnZXNbaV0pOwo+ICAgZnJlZV9tZW1fcmVnaW9uOgo+IC0gICAgICAga2Zy
+ZWUocGh5c19jb250aWdfbWVtX3JlZ2lvbnMpOwo+ICsgICAgICAga2ZyZWUocGh5c19jb250aWdf
+bWVtX3JlZ2lvbnMucmVnaW9ucyk7Cj4gICAgICAgICAga2ZyZWUobmVfbWVtX3JlZ2lvbi0+cGFn
+ZXMpOwo+ICAgICAgICAgIGtmcmVlKG5lX21lbV9yZWdpb24pOwo+IAo+IC0tCj4gMS44LjMuMQo+
+IAoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIChSb21hbmlhKSBTLlIuTC4gcmVnaXN0ZXJl
+ZCBvZmZpY2U6IDI3QSBTZi4gTGF6YXIgU3RyZWV0LCBVQkM1LCBmbG9vciAyLCBJYXNpLCBJYXNp
+IENvdW50eSwgNzAwMDQ1LCBSb21hbmlhLiBSZWdpc3RlcmVkIGluIFJvbWFuaWEuIFJlZ2lzdHJh
+dGlvbiBudW1iZXIgSjIyLzI2MjEvMjAwNS4K
 
