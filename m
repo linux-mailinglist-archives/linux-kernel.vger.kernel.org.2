@@ -2,90 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29889449E8E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 23:02:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E33C1449E8F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 23:03:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239544AbhKHWEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 17:04:45 -0500
-Received: from mga14.intel.com ([192.55.52.115]:43925 "EHLO mga14.intel.com"
+        id S239844AbhKHWGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 17:06:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231330AbhKHWEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 17:04:42 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="232578316"
-X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
-   d="scan'208";a="232578316"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 14:00:54 -0800
-X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; 
-   d="scan'208";a="503217323"
-Received: from ramyapad-mobl.amr.corp.intel.com (HELO [10.212.138.81]) ([10.212.138.81])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2021 14:00:53 -0800
-Subject: Re: XSAVE / RDPKRU on Intel 11th Gen Core CPUs
-From:   Dave Hansen <dave.hansen@intel.com>
-To:     Brian Geffon <bgeffon@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Guenter Roeck <groeck@google.com>, Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>, stable@vger.kernel.org,
-        the arch/x86 maintainers <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <CADyq12yY25-LS8cV5LY-C=6_0HLPVZbSJCKtCDJm+wyHQSeVTg@mail.gmail.com>
- <cb682c8a-255e-28e5-d4e0-0981c2ab6ffd@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <85925a39-37c3-a79a-a084-51f2f291ca9c@intel.com>
-Date:   Mon, 8 Nov 2021 14:00:51 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231330AbhKHWGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 17:06:36 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C1E561054;
+        Mon,  8 Nov 2021 22:03:51 +0000 (UTC)
+Date:   Mon, 8 Nov 2021 17:03:49 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     mhiramat@kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 03/10] user_events: Add print_fmt generation support
+ for basic types
+Message-ID: <20211108170349.66db0f58@gandalf.local.home>
+In-Reply-To: <20211104170433.2206-4-beaub@linux.microsoft.com>
+References: <20211104170433.2206-1-beaub@linux.microsoft.com>
+        <20211104170433.2206-4-beaub@linux.microsoft.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <cb682c8a-255e-28e5-d4e0-0981c2ab6ffd@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One more thing...  Does the protection_keys kernel selftest hit any
-errors on this same setup?  It does a lot of PKRU sanity checking and
-I'm a bit surprised it hasn't caught something yet.
+On Thu,  4 Nov 2021 10:04:26 -0700
+Beau Belgrave <beaub@linux.microsoft.com> wrote:
+
+> Addes print_fmt format generation for basic types that are supported for
+> user processes. Only supports sizes that are the same on 32 and 64 bit.
+> 
+> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+> ---
+>  kernel/trace/trace_events_user.c | 108 ++++++++++++++++++++++++++++++-
+>  1 file changed, 106 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+> index a68017ad7fdd..479a9ced3281 100644
+> --- a/kernel/trace/trace_events_user.c
+> +++ b/kernel/trace/trace_events_user.c
+> @@ -329,6 +329,107 @@ static int user_event_parse_fields(struct user_event *user, char *args)
+>  	return ret;
+>  }
+>  
+> +static char *user_field_format(const char *type)
+
+Should be const char *
+
+> +{
+> +	if (strcmp(type, "s64") == 0)
+> +		return "%lld";
+> +	if (strcmp(type, "u64") == 0)
+> +		return "%llu";
+> +	if (strcmp(type, "s32") == 0)
+> +		return "%d";
+> +	if (strcmp(type, "u32") == 0)
+> +		return "%u";
+> +	if (strcmp(type, "int") == 0)
+> +		return "%d";
+> +	if (strcmp(type, "unsigned int") == 0)
+> +		return "%u";
+> +	if (strcmp(type, "s16") == 0)
+> +		return "%d";
+> +	if (strcmp(type, "u16") == 0)
+> +		return "%u";
+> +	if (strcmp(type, "short") == 0)
+> +		return "%d";
+> +	if (strcmp(type, "unsigned short") == 0)
+> +		return "%u";
+> +	if (strcmp(type, "s8") == 0)
+> +		return "%d";
+> +	if (strcmp(type, "u8") == 0)
+> +		return "%u";
+> +	if (strcmp(type, "char") == 0)
+> +		return "%d";
+> +	if (strcmp(type, "unsigned char") == 0)
+> +		return "%u";
+> +	if (strstr(type, "char[") != 0)
+> +		return "%s";
+> +
+> +	/* Unknown, likely struct, allowed treat as 64-bit */
+> +	return "%llu";
+> +}
+> +
+> +static bool user_field_is_dyn_string(const char *type)
+> +{
+> +	if (strstr(type, "__data_loc ") == type ||
+> +	    strstr(type, "__rel_loc ") == type) {
+
+Use str_has_prefix().
+
+-- Steve
+
+
+> +		if (strstr(type, "char[") != 0)
+> +			return true;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+> +#define LEN_OR_ZERO (len ? len - pos : 0)
+> +static int user_event_set_print_fmt(struct user_event *user, char *buf, int len)
+> +{
+> +	struct ftrace_event_field *field, *next;
+> +	struct list_head *head = &user->fields;
+> +	int pos = 0, depth = 0;
+> +
+> +	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
+> +
+> +	list_for_each_entry_safe_reverse(field, next, head, link) {
+> +		if (depth != 0)
+> +			pos += snprintf(buf + pos, LEN_OR_ZERO, " ");
+> +
+> +		pos += snprintf(buf + pos, LEN_OR_ZERO, "%s=%s",
+> +				field->name, user_field_format(field->type));
+> +
+> +		depth++;
+> +	}
+> +
+> +	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
+> +
+> +	list_for_each_entry_safe_reverse(field, next, head, link) {
+> +		if (user_field_is_dyn_string(field->type))
+> +			pos += snprintf(buf + pos, LEN_OR_ZERO,
+> +					", __get_str(%s)", field->name);
+> +		else
+> +			pos += snprintf(buf + pos, LEN_OR_ZERO,
+> +					", REC->%s", field->name);
+> +	}
+> +
+> +	return pos + 1;
+> +}
+> +#undef LEN_OR_ZERO
+> +
+> +static int user_event_create_print_fmt(struct user_event *user)
+> +{
+> +	char *print_fmt;
+> +	int len;
+> +
+> +	len = user_event_set_print_fmt(user, NULL, 0);
+> +
+> +	print_fmt = kmalloc(len, GFP_KERNEL);
+> +
+> +	if (!print_fmt)
+> +		return -ENOMEM;
+> +
+> +	user_event_set_print_fmt(user, print_fmt, len);
+> +
+> +	user->call.print_fmt = print_fmt;
+> +
+> +	return 0;
+> +}
+> +
+>  static struct trace_event_fields user_event_fields_array[] = {
+>  	{}
+>  };
+> @@ -366,6 +467,7 @@ static int destroy_user_event(struct user_event *user)
+>  	clear_bit(user->index, page_bitmap);
+>  	hash_del(&user->node);
+>  
+> +	kfree(user->call.print_fmt);
+>  	kfree(EVENT_NAME(user));
+>  	kfree(user);
+>  
+> @@ -637,8 +739,10 @@ static int user_event_parse(char *name, char *args, char *flags,
+>  	if (ret)
+>  		goto put_user;
+>  
+> -	/* Minimal print format */
+> -	user->call.print_fmt = "\"\"";
+> +	ret = user_event_create_print_fmt(user);
+> +
+> +	if (ret)
+> +		goto put_user;
+>  
+>  	user->call.data = user;
+>  	user->call.class = &user->class;
+
