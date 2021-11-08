@@ -2,102 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32901449886
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:35:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22DA7449889
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 16:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240977AbhKHPiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 10:38:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238707AbhKHPiA (ORCPT
+        id S240982AbhKHPi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 10:38:56 -0500
+Received: from mail-ua1-f49.google.com ([209.85.222.49]:33692 "EHLO
+        mail-ua1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236257AbhKHPiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 10:38:00 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E399C061714
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 07:35:16 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id 188so3103129pgb.7
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 07:35:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g+TozlKCVWdcHVzGWzpBk1sUQFToW4UpLiB6BmuVVDs=;
-        b=I2tfnJ6LdUvapJ4sB79+ELNSXj7rrt0P5HulOe9k+SF2LYtAn9mrYcSHgDdU37/dxj
-         Z2r7kXy+qb3sd0IZepoRvaGpF6bO0VAC0XwXClDM95sP4ZABB0lX9z+8sri0HCW/YPJO
-         Sto/iaS/GHDKX7j15sDA4uY1kttrFfC9ZBc4GTg/T2YXCcvAiOU/Wi26VfccSOqPHVcw
-         VM2l66O/4GXhR1rzsWaM6kFhRWfaExtCOKNn3YAoXc8kcYF+TLlQAbc9fOclmnhsJVZX
-         XyvW9XUNjPH02Keaydvd7XBTUf/NcBjKL+Ryie7PJaXvG8iOz4UTMtqJWebViItKzbme
-         Prtw==
+        Mon, 8 Nov 2021 10:38:54 -0500
+Received: by mail-ua1-f49.google.com with SMTP id b17so32355607uas.0;
+        Mon, 08 Nov 2021 07:36:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g+TozlKCVWdcHVzGWzpBk1sUQFToW4UpLiB6BmuVVDs=;
-        b=pWiv3fOqYd9kNurk+qfl2WrqRX+aBRAZOHAxr25uqi5K72jwjOeLRXL36rnjkPPWhi
-         x67JaXvFbgMujD7Axum2bXEQndXlX0RwytTrCIKuWt7oBwz01xMdIn+uk6SQ6Gj+YCpQ
-         2uFitAI0AABYWjr44XP0R3TRSvqt6iHOwv2rkHSXi3uqgRUObl9498pF/348Q63w/PDs
-         FHNlJIwlKZ24MRRi5mYa4KVSsGDfxiFG7WLdULPW043ZRKmja0De7yoX5zwLnpU9slgj
-         dqeNL2MDJhViMv8yia0yE0rccpHBBviOJ3Z+HCqWRM/G1X6aA8wdIUyIdi1wybQEVz7+
-         +EYg==
-X-Gm-Message-State: AOAM533CIStsWD6w32XgE+rGJWJTowaia6cCpRYX920HKY4F1GlNn+h5
-        PRxcKBuAnkjzE1K5unpr8Dp1Kw==
-X-Google-Smtp-Source: ABdhPJz/N2PKU0Wh+IpEZ/3JJyow3AdbpQWj07aBzUnRqbvMRZh153dSt+8IcFyWXGhPeZfTIBFr4g==
-X-Received: by 2002:a63:8448:: with SMTP id k69mr244166pgd.298.1636385715575;
-        Mon, 08 Nov 2021 07:35:15 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id b15sm16939315pfm.203.2021.11.08.07.35.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 07:35:14 -0800 (PST)
-Date:   Mon, 8 Nov 2021 15:35:11 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Juergen Gross <jgross@suse.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH] KVM: move struct kvm_vcpu * array to the bottom of
- struct kvm
-Message-ID: <YYlDr2HLI/eULoDy@google.com>
-References: <20211105034949.1397997-1-npiggin@gmail.com>
- <YYVElU6u22qxgQIz@google.com>
- <1636158401.g3t5cp0jke.astroid@bobo.none>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k4LeFueSc7hLKiDpRlmPKtWWYGiljXl+wMBq6RJeU0c=;
+        b=tmzvGeAwq+6gx0Eac/XWrOTd3yKwvI9T86qtVgAFiE1iuMKpcMKgfMqUTnZ85mb8qn
+         YbuV3cIPN3N/63eInR80NkNVTa3aNpCk/pSVbml6TM9j5MX3nRzbIuUBRSJGtvjZVFfF
+         6E6j4xiBCFXQnrqhcHokEpkFrSYvtvedKzJLmRVtwmx86vCUyjUFGGsMZ5hahZ9W7NqC
+         A2puvO4mv6YrKrG3wBZn+Y8NkhnYLnmuh+/d6P+5vt+AT0net4OfaWolBBFzN4TNyybE
+         BhNHWBYE5w7ANTts1ERX46ilbHzxD9A7PGInNzWh4Es07f5FrGz0auoNa0OhrBu0PkEn
+         lIzg==
+X-Gm-Message-State: AOAM533q+yzptSoSUCeKyQWT6Y9tFLWcOJXVxyrL1c76z1R8IQWCBM/1
+        a3fGbUkw6wfd2j07MJiladKpEdztk3f660ot
+X-Google-Smtp-Source: ABdhPJwjZe4LP3emz8bOQYdEOauW75VPvFIE2XCNaPDZu4Ev4NkmVlOvNKwhXNka7WusXpyFmacWiQ==
+X-Received: by 2002:a05:6102:ed3:: with SMTP id m19mr405335vst.5.1636385769345;
+        Mon, 08 Nov 2021 07:36:09 -0800 (PST)
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com. [209.85.222.46])
+        by smtp.gmail.com with ESMTPSA id t12sm2618968vkk.52.2021.11.08.07.36.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 07:36:09 -0800 (PST)
+Received: by mail-ua1-f46.google.com with SMTP id b3so32334505uam.1;
+        Mon, 08 Nov 2021 07:36:08 -0800 (PST)
+X-Received: by 2002:a05:6102:3a07:: with SMTP id b7mr75198533vsu.35.1636385768673;
+ Mon, 08 Nov 2021 07:36:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1636158401.g3t5cp0jke.astroid@bobo.none>
+References: <20211029124437.20721-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20211029124437.20721-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20211029124437.20721-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 8 Nov 2021 16:35:57 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdV+716v3SOLM4Sf6arK5jEPgtc0NSOU6nZXQGXUT+-+3Q@mail.gmail.com>
+Message-ID: <CAMuHMdV+716v3SOLM4Sf6arK5jEPgtc0NSOU6nZXQGXUT+-+3Q@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] pinctrl: renesas: pinctrl-rzg2l: Add support to
+ get/set pin config for GPIO port pins
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 06, 2021, Nicholas Piggin wrote:
-> Excerpts from Sean Christopherson's message of November 6, 2021 12:49 am:
-> >> It would next be possible to now make this a dynamically sized array,
-> >> and make the KVM_MAX_VCPUS more dynamic
-> > 
-> > Marc has a mostly-baked series to use an xarray[1][2] that AFAICT would be well
-> > received.  That has my vote, assuming it can get into 5.16.  Marc or Juergen,
-> > are either of you actively working on that?
-> > 
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=kvm-arm64/vcpu-xarray
-> > [2] https://lkml.kernel.org/r/871r65wwk7.wl-maz@kernel.org
-> 
-> Seems like a good idea if it can allow vcpu structs to be allocated to 
-> preferred nodes.
-> 
-> >> however x86 kvm_svm uses its own scheme rather than kvm_arch for some reason.
-> > 
-> > What's the problem in kvm_svm?
-> 
-> It embeds a struct kvm so it couldn't be variable sized.
+Hi Prabhakar,
 
-Oooh, when you said "dynamically sized" I thought you meant
+On Fri, Oct 29, 2021 at 2:44 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add support to get/set pin config for GPIO port pins.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-	struct kvm_vcpu *vcpus;
+Thanks for your patch!
 
-...
+> --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+> +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
 
-	kvm->vcpus = kcalloc(...);
+> @@ -495,6 +512,14 @@ static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
+>                 port = RZG2L_SINGLE_PIN_GET_PORT(*pin_data);
+>                 cfg = RZG2L_SINGLE_PIN_GET_CFGS(*pin_data);
+>                 bit = RZG2L_SINGLE_PIN_GET_BIT(*pin_data);
+> +       } else {
+> +               cfg = RZG2L_GPIO_PORT_GET_CFGS(*pin_data);
+> +               port = RZG2L_PIN_ID_TO_PORT(_pin);
+> +               bit = RZG2L_PIN_ID_TO_PIN(_pin);
+> +               port_pin = true;
 
-Anyways, SVM and VMX are quite different despited both being x86, to keep them
-separated without requiring an extra allocation, kvm_svm and kvm_vmx embed kvm.
-Ditto for vcpu_vmx and vmx_svm.  Obviously not a hard requirement, but there also
-hasn't been a reason not to do embed kvm/kvm_vcpu.
+Instead of setting this flag, perhaps port should be adjusted?
+Then rzg2l_r{ead,mw}_pin_config() don't have to care about that
+anymore.
+
+> +
+> +               if (rzg2l_validate_gpio_pin(pctrl, *pin_data, port, bit))
+> +                       return -EINVAL;
+>         }
+>
+>         switch (param) {
+> @@ -557,6 +582,14 @@ static int rzg2l_pinctrl_pinconf_set(struct pinctrl_dev *pctldev,
+>                 port = RZG2L_SINGLE_PIN_GET_PORT(*pin_data);
+>                 cfg = RZG2L_SINGLE_PIN_GET_CFGS(*pin_data);
+>                 bit = RZG2L_SINGLE_PIN_GET_BIT(*pin_data);
+> +       } else {
+> +               cfg = RZG2L_GPIO_PORT_GET_CFGS(*pin_data);
+> +               port = RZG2L_PIN_ID_TO_PORT(_pin);
+> +               bit = RZG2L_PIN_ID_TO_PIN(_pin);
+> +               port_pin = true;
+
+Likewise.
+
+> +
+> +               if (rzg2l_validate_gpio_pin(pctrl, *pin_data, port, bit))
+> +                       return -EINVAL;
+>         }
+>
+>         for (i = 0; i < num_configs; i++) {
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
