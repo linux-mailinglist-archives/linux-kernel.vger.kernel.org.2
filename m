@@ -2,107 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2002D449A81
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08829449A86
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 18:10:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240468AbhKHRLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 12:11:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239513AbhKHRLB (ORCPT
+        id S241440AbhKHRMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 12:12:52 -0500
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:43653 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232922AbhKHRMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 12:11:01 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16EA2C061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 09:08:17 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id s24so30811754lji.12
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 09:08:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=65miRtKjcQoB0mOWVzjrqpLODFU06mZAT89YUhPl7dc=;
-        b=ed48pfeHw1+WGINq6nUTEsag3oPDd5U2/MicY1R0n8GS6QX/iWA07jXDTNGrMNAbOK
-         jgnz+o+PfroommzHZFjC917EZZJS5ENzpEgU4eh4w+tnLYHF4oa4lAET4DwkA7/3//JS
-         +DGI9uVrF523b4nJeYnS2I8KBSjge9IK4X6Xw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=65miRtKjcQoB0mOWVzjrqpLODFU06mZAT89YUhPl7dc=;
-        b=DCWTbqh1VZAcCWbqwzm3R4Fk7NkTLplXN4I+LMNtLKidZfA/XU94Xcok4NilW6zJYv
-         Qft29TQRAC6+AlcOY68oDbVskFN0SW6lKL3ZXOuqQG88MdiR35DBLGUJMb0DXTeRZbgM
-         SfWjiFutCCRhyNfgf0ihexDVjRnjS2wa2OqGVDG5NziXhkpA6E6vW7lLetXnvzW7weP8
-         8BqVg+OgpNzllBSXfpOQGSeGqy6/P00hChxjkp47UEe0GgBPqF8lRNHa42bMEMESMpEc
-         ubeoThFTaLrPg+iZYJOuljyOrkM10QAg+GjF9+MjpUfUTUcell0w73y/b5Msec7pJpeE
-         CtDQ==
-X-Gm-Message-State: AOAM533Pj958iJ8yyyv+tVkYcNiVEYr2OaKjnkoj1A3RhmkgGr/p0c6T
-        fqIEZLeEdDbz/w4RRorKZZ/Lb7R1MCSG5VL6
-X-Google-Smtp-Source: ABdhPJzdAoizhp3CL3SO8G3yL73sPPb75ctsQ/NhgTDRPzxPXJORnXYtwwJzJGADh98ag9VXcN8S8g==
-X-Received: by 2002:a05:651c:50f:: with SMTP id o15mr539878ljp.506.1636391295258;
-        Mon, 08 Nov 2021 09:08:15 -0800 (PST)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id r3sm1875605lfc.114.2021.11.08.09.08.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 09:08:14 -0800 (PST)
-Received: by mail-lf1-f46.google.com with SMTP id l22so10972878lfg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 09:08:14 -0800 (PST)
-X-Received: by 2002:a05:6512:31a:: with SMTP id t26mr751511lfp.280.1636391294230;
- Mon, 08 Nov 2021 09:08:14 -0800 (PST)
+        Mon, 8 Nov 2021 12:12:51 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id CACBA5C01B0;
+        Mon,  8 Nov 2021 12:09:58 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 08 Nov 2021 12:09:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=Ac01M78HVVhymN796EnmiJqYFD
+        Y+9Lkga4k+OMsqtcI=; b=QQVqrjxJksTewDwfJheHFr7xtjwamMCBS0l65m8gsB
+        2lGzelknadwD0QORItBLsASN5QEeOThV7YPupyo5nZ5Q+AFL0jVwwpE7XkJKNu+w
+        fG5LvdZdg7SsgRhx3aadMMmvKfp8YmqD4s2IEmDb2VMXi9AeM4Mi0ML3SJJ7SkYX
+        QXVO3gmb4Zr5xWxZxRKITVKQbWYwgdLJzH3HNm5qrvPZynD+X5G1eqj1VGlAznEu
+        R7ypo2EGed15YoHtgUpT10r+hyqpcBZWiBBDJQGSb+9IChotof00tgCmhSEkP2zo
+        AowVQzQO7mcZ+JUCnDsN/ZV2YD4hhK4aoPDrCxsKpdlA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Ac01M78HVVhymN796
+        EnmiJqYFDY+9Lkga4k+OMsqtcI=; b=kSZa2Z/rrFyJenUy9r41JyLPg8DsnpP4J
+        P/+MLjt05xA76fAFLIjhp+wIPwFtywFGHioqvuKov5vYN6a32hN0TA/v5i/n5RmW
+        KCbJ8/b3nQDneJYmdzIEFFZHERgZzF7MKhUh4/PL2I/F+uq05GuQ6/ut/+H8fUFn
+        lJVxxRFr7DXouF10jOR64XyDfBGVYsAuZVvAfr/HiVDJ/iSJTicCC4rqqy+TK0G9
+        XWLICHx7OK9ITcmv+cS6rlLWFvXYRWUeaQuhJ7angc2JVschOO9gsEGgWUO3p3/4
+        +uQhyf1LY6pCYNM0IMjm8GNrxFm96rxNN3naPH8YJ2OBqEfXeAH/A==
+X-ME-Sender: <xms:5VmJYWlbogFi9hzr9Qho6IQUW12wDIwO49AGVRsz7hg4JMOVghveJA>
+    <xme:5VmJYd1dAyvIxX-QhmYXLaqvkeXksUrLn_5zRFWhzdkN30adDiYe8BgSgpSVhcBOw
+    JWfIb5mxUbxBgunrJQ>
+X-ME-Received: <xmr:5VmJYUrd33tj7zZ9OfGLjF9RhIo4U8OevfIvD1vHW1skN0kKqWswb6wCrxsFk5YcnnkPvPdAZ7O8OfTaHsMLee5o3GscFpM5zoQp9cOyxDeQzogAPAVVobWy23oX5Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddruddvgdeliecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhvvghnucfrvght
+    vghruceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrghtthgvrhhnpe
+    efjefgjeelveelledtiefhteetfeevudejledvieelvdejffeujeejtefgkedvudenucff
+    ohhmrghinhepuggvvhhitggvthhrvggvrdhorhhgpdhgihhthhhusgdrtghomhenucevlh
+    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsvhgvnhesshhv
+    vghnphgvthgvrhdruggvvh
+X-ME-Proxy: <xmx:5lmJYakgPVABaUlvC6EfD2UNd98YJR665TdAQOQwinNbHfWIz6Ub6Q>
+    <xmx:5lmJYU2CbvvyU_kVkPfxzZQJsY5Tsij64cLc_BuBUNrWoKC8xgySgQ>
+    <xmx:5lmJYRtFAb2Q2Wa-MrQRDZMCkhq6lIyZ2ij2bE6PQapFxT5pQaxrEg>
+    <xmx:5lmJYVKsyHCZMozgWgZ_URZbP_sV3RtcZSO9Tc1efVtWNukcLmGnKg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 8 Nov 2021 12:09:56 -0500 (EST)
+From:   Sven Peter <sven@svenpeter.dev>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Sven Peter <sven@svenpeter.dev>, Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hector Martin <marcan@marcan.st>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] dt-bindings: usb: Add Apple dwc3 bindings
+Date:   Mon,  8 Nov 2021 18:09:45 +0100
+Message-Id: <20211108170946.49689-1-sven@svenpeter.dev>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-References: <YYWxSlB1CNhhjUTQ@bombadil.infradead.org> <CAHk-=wjQyGhKCM+F8vRS6SSesXk1rZEP4QxdTjvr8DXmC-e1Lg@mail.gmail.com>
- <YYlK2QKpmb+ipalA@bombadil.infradead.org>
-In-Reply-To: <YYlK2QKpmb+ipalA@bombadil.infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 8 Nov 2021 09:07:58 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whvQ0JxYDB2BWx4r3Ym-MM1U5G_OY0E=31UVqbwz2_-Dw@mail.gmail.com>
-Message-ID: <CAHk-=whvQ0JxYDB2BWx4r3Ym-MM1U5G_OY0E=31UVqbwz2_-Dw@mail.gmail.com>
-Subject: Re: [GIT PULL] Modules updates for v5.16-rc1
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Jessica Yu <jeyu@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 8:05 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
->
-> Sadly, no diffstat or shortlog was provided in:
+Apple Silicon SoCs such as the M1 have multiple USB controllers based on
+the Synopsys DesignWare USB3 controller.
+References to the ATC PHY required for SuperSpeed are left out for now
+until support has been upstreamed as well.
 
-So I don';t know what your local names are, but I suspect that what is
-going on is:
+Signed-off-by: Sven Peter <sven@svenpeter.dev>
+---
+v1 -> v2:
+ - added apple,dwc3 bindings instead of a property for the reset quirk
+   as requested by robh
 
-> git request-pull modules-linus git://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/ modules-5.16-rc1
+I think I have to use GPL-2.0 for this binding since it's based
+on and references snps,dwc3.yaml which is also only GPL-2.0.
+Otherwise I'd be fine with the usual GPL/BSD dual license as well.
 
-That 'modules-linus' is supposed to be the upstream that your work was based on.
+ .../devicetree/bindings/usb/apple,dwc3.yaml   | 64 +++++++++++++++++++
+ MAINTAINERS                                   |  1 +
+ 2 files changed, 65 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/usb/apple,dwc3.yaml
 
-If the 'modules-linus' is your own branch, and has all your work in
-it, then the diff and the shortlog will be empty, because that
-'modules-5.16-rc1' thing doesn't have anything new wrt it.
+diff --git a/Documentation/devicetree/bindings/usb/apple,dwc3.yaml b/Documentation/devicetree/bindings/usb/apple,dwc3.yaml
+new file mode 100644
+index 000000000000..fb3b3489e6b2
+--- /dev/null
++++ b/Documentation/devicetree/bindings/usb/apple,dwc3.yaml
+@@ -0,0 +1,64 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/usb/apple,dwc3.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Apple Silicon DWC3 USB controller
++
++maintainers:
++  - Sven Peter <sven@svenpeter.dev>
++
++description:
++  On Apple Silicon SoCs such as the M1 each Type-C port has a corresponding
++  USB controller based on the Synopsys DesignWare USB3 controller.
++
++  The common content of this binding is defined in snps,dwc3.yaml.
++
++allOf:
++  - $ref: snps,dwc3.yaml#
++
++select:
++  properties:
++    compatible:
++      contains:
++        const: apple,dwc3
++  required:
++    - compatible
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - apple,t8103-dwc3
++          - apple,t6000-dwc3
++      - const: apple,dwc3
++      - const: snps,dwc3
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/apple-aic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    usb@82280000 {
++      compatible = "apple,t8103-dwc3", "apple,dwc3", "snps,dwc3";
++      reg = <0x82280000 0x10000>;
++      interrupts = <AIC_IRQ 777 IRQ_TYPE_LEVEL_HIGH>;
++
++      dr_mode = "otg";
++      usb-role-switch;
++      role-switch-default-mode = "host";
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 3b79fd441dde..03e7cc48877a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1724,6 +1724,7 @@ T:	git https://github.com/AsahiLinux/linux.git
+ F:	Documentation/devicetree/bindings/arm/apple.yaml
+ F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
+ F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
++F:	Documentation/devicetree/bindings/usb/apple,dwc3.yaml
+ F:	arch/arm64/boot/dts/apple/
+ F:	drivers/irqchip/irq-apple-aic.c
+ F:	include/dt-bindings/interrupt-controller/apple-aic.h
+-- 
+2.25.1
 
-So if your 'origin' remote branch is the one that tracks upstream, the
-command line should be something like
-
-   git request-pull origin/master git://git.kernel.org/....
-
-please give that a try (but don't update your origin tree before you
-do, since I've just pulled things, and then you'll get the same
-"nothing to pull").
-
-It should have given you something like
-
-Shuah Khan (2):
-      module: fix validate_section_offset() overflow bug on 64-bit
-      module: change to print useful messages from elf_validity_check()
-
- kernel/module.c | 79 ++++++++++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 58 insertions(+), 21 deletions(-)
-
-I'll pull this as-is, since the rest looks fine and it's small and I
-do see that it's just two commits from Shuah like you described
-verbally. But for anything bigger I really do want to see proper pull
-requests.
-
-                   Linus
