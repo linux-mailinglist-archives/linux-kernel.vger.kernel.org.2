@@ -2,81 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9774479DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 06:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A38534479AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 06:06:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236728AbhKHFPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 00:15:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232906AbhKHFPq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 00:15:46 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 723BEC061570;
-        Sun,  7 Nov 2021 21:13:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=nzuUy/RymcDXWey2K/SRNJ0dp8iKpgBkhbpM0hGxxL4=; b=MTukNndNFo7xpUENhAmjVatEPu
-        BDGXech/R4FW5SDL9ituYcQvpsJPBe4lv/MrJmn2MrD6lr0rgEP3JR13/MjnTR8dM6g5UlrbFxC8v
-        Yle2CRx7DA8Q3RVo6LbA6gCW2Eous6ohXI8s6sAqlPuQG5e+EICfAMuxDA2KQOWOt8cnHdN93q0jd
-        3SrXrsF8IYVmrWkbTRLfeNwI3jbp0AyfIWBQPvWkvgwoXyLYZA3t9rNVw6tMtM4pl7dGY7mHF31ZT
-        9xYYmsaAhseZYNlg5ZPrtol0LTpiGYVj1rTJTWqpW7o12mdLbc7IVQjf5+9wI9oz+XTlJU5h26U+f
-        XjOJi98g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mjwtX-008AzS-1k; Mon, 08 Nov 2021 05:09:06 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     "Darrick J . Wong " <djwong@kernel.org>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH v2 28/28] xfs: Support multi-page folios
-Date:   Mon,  8 Nov 2021 04:05:51 +0000
-Message-Id: <20211108040551.1942823-29-willy@infradead.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211108040551.1942823-1-willy@infradead.org>
-References: <20211108040551.1942823-1-willy@infradead.org>
+        id S231153AbhKHFIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 00:08:48 -0500
+Received: from mx1.riseup.net ([198.252.153.129]:60440 "EHLO mx1.riseup.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230391AbhKHFIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Nov 2021 00:08:47 -0500
+Received: from fews1.riseup.net (fews1-pn.riseup.net [10.0.1.83])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
+         client-signature RSA-PSS (2048 bits) client-digest SHA256)
+        (Client CN "mail.riseup.net", Issuer "R3" (not verified))
+        by mx1.riseup.net (Postfix) with ESMTPS id 4HnfG21TVxzDyXD;
+        Sun,  7 Nov 2021 21:06:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1636347962; bh=EtzwkXcORaEEhKlASVmtnfEQQJs0zEumIQ7UDuqh/Gc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sBaUgPRSyW2ddHbn6dzSwOXaWk0inwyat31mgaK4nS/TldVRIL49NRZwOBOyGdXfS
+         XAoUzB+K4HEb8wLUqgDLIKVkhbHhn4F7AuIOtkN3VW9jlIqNirwCYGGAXwFY2gfrZ+
+         vSVoJBirfiH8HLf6DFL4MiennrI1VNwwCUNae7Vc=
+X-Riseup-User-ID: 6D2394A1F81701C609B546602645AE87B9C8FE48D6E9E92E71D04AAA70979E0D
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by fews1.riseup.net (Postfix) with ESMTPSA id 4HnfFy4byYz5vj2;
+        Sun,  7 Nov 2021 21:05:58 -0800 (PST)
+From:   Dang Huynh <danct12@riseup.net>
+To:     Dang Huynh <danct12@riseup.net>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.botka@somainline.org,
+        marijn.suijten@somainline.org, paul.bouchara@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        Caleb Connolly <caleb@connolly.tech>
+Subject: [PATCH v2 0/7] Improve support for Xiaomi Redmi Note 7 
+Date:   Mon,  8 Nov 2021 12:03:29 +0700
+Message-Id: <20211108050336.3404559-1-danct12@riseup.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that iomap has been converted, XFS is multi-page folio safe.
-Indicate to the VFS that it can now create multi-page folios for XFS.
+This series expand the Redmi Note 7 device port to support:
+ + Regulators
+ + Volume keys
+ + eMMC and SD card slot
+ + Framebuffer display
+ + USB
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
----
- fs/xfs/xfs_icache.c | 2 ++
- 1 file changed, 2 insertions(+)
+Changes in v2:
+ - Dropped linux,input-type from volume up as 1 is set by default.
+ - Dropped gpio-key,wakeup as it's a legacy property name and is
+not relevant for a volume button.
+ - Rename label cont_splash_mem to framebuffer_mem and change node
+name to memory. 
 
-diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
-index e1472004170e..5380a3f001e9 100644
---- a/fs/xfs/xfs_icache.c
-+++ b/fs/xfs/xfs_icache.c
-@@ -87,6 +87,7 @@ xfs_inode_alloc(
- 	/* VFS doesn't initialise i_mode or i_state! */
- 	VFS_I(ip)->i_mode = 0;
- 	VFS_I(ip)->i_state = 0;
-+	mapping_set_large_folios(VFS_I(ip)->i_mapping);
- 
- 	XFS_STATS_INC(mp, vn_active);
- 	ASSERT(atomic_read(&ip->i_pincount) == 0);
-@@ -336,6 +337,7 @@ xfs_reinit_inode(
- 	inode->i_rdev = dev;
- 	inode->i_uid = uid;
- 	inode->i_gid = gid;
-+	mapping_set_large_folios(inode->i_mapping);
- 	return error;
- }
- 
+Dang Huynh (7):
+  arm64: dts: qcom: sdm630: Assign numbers to eMMC and SD
+  arm64: dts: qcom: sdm660-xiaomi-lavender: Add RPM and fixed regulators
+  arm64: dts: qcom: sdm660-xiaomi-lavender: Add volume down button
+  arm64: dts: qcom: sdm660-xiaomi-lavender: Add volume up button
+  arm64: dts: qcom: sdm660-xiaomi-lavender: Add eMMC and SD
+  arm64: dts: qcom: sdm660-xiaomi-lavender: Enable Simple Framebuffer
+  arm64: dts: qcom: sdm660-xiaomi-lavender: Add USB
+
+ arch/arm64/boot/dts/qcom/sdm630.dtsi          |   5 +
+ .../boot/dts/qcom/sdm660-xiaomi-lavender.dts  | 385 ++++++++++++++++++
+ 2 files changed, 390 insertions(+)
+
 -- 
-2.33.0
+2.33.1
 
