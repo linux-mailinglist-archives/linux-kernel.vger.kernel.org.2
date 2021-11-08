@@ -2,84 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD45447C2D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:43:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC5F447C2B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 09:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237517AbhKHIpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 03:45:41 -0500
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:42617 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237443AbhKHIpj (ORCPT
+        id S237434AbhKHIpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 03:45:38 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:44516 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229539AbhKHIph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 03:45:39 -0500
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id B71541C0009;
-        Mon,  8 Nov 2021 08:42:53 +0000 (UTC)
-Date:   Mon, 8 Nov 2021 09:42:53 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Dominique Martinet <dominique.martinet@atmark-techno.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
+        Mon, 8 Nov 2021 03:45:37 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R601e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UvXJVQ9_1636360970;
+Received: from 30.21.164.45(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UvXJVQ9_1636360970)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 08 Nov 2021 16:42:50 +0800
+Subject: Re: [RFC PATCH] mm: migrate: Add new node demotion strategy
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>, akpm@linux-foundation.org,
+        dave.hansen@linux.intel.com, ziy@nvidia.com, osalvador@suse.de,
+        shy828301@gmail.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] rtc-rv8803: fix writing back ctrl in flag register
-Message-ID: <YYjjDW6WhBJqUGJD@piout.net>
-References: <20211101013400.325855-1-dominique.martinet@atmark-techno.com>
- <YYiWq564QzQgTsqV@atmark-techno.com>
+References: <c02bcbc04faa7a2c852534e9cd58a91c44494657.1636016609.git.baolin.wang@linux.alibaba.com>
+ <665cb882-6dbc-335f-1435-e52659d7ee58@intel.com>
+ <87tugrxqks.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <c0023ae8-0aff-0890-00fb-310d72130f8a@intel.com>
+ <240c5997-ab7e-8045-dacc-1afdb7c49a0d@linux.alibaba.com>
+ <b7062fa5-febf-24f6-b160-41359b92ff71@intel.com>
+ <9271f9d7-e251-9ed4-2126-8debb3395891@linux.alibaba.com>
+ <87fss7w3b7.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <a26234d8-4113-9f22-cb04-efe1956db8e7@linux.alibaba.com>
+ <87sfw7ukv9.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+Message-ID: <cc5b88bd-ce42-89e3-4c49-f6a2cddee46f@linux.alibaba.com>
+Date:   Mon, 8 Nov 2021 16:43:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYiWq564QzQgTsqV@atmark-techno.com>
+In-Reply-To: <87sfw7ukv9.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/11/2021 12:16:59+0900, Dominique Martinet wrote:
-> Hi Alexandre, Alessandro,
-> 
-> the other patch was proved to be unneeded, but this one is still a valid
-> fix as far as I can understand the code (reusing RV8803_CTRL value to
-> write into RV8803_FLAG does not look correct)
-> 
-> (I'm also convinced either mostly work because the original values are
-> usually close enough, but that's not a reason to keep using the wrong
-> one)
-> 
-> 
-> Would you have time to take a look?
 
-I did check with the initial review and I'm going to apply it, I just
-didn't have the time to do that yet.
 
+On 2021/11/8 16:12, Huang, Ying writes:
+> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
 > 
+>> On 2021/11/8 14:48, Huang, Ying writes:
+>>> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
+>>>
+>>>> On 2021/11/7 23:20, Dave Hansen wrote:
+>>>>> On 11/7/21 1:33 AM, Baolin Wang wrote:
+>>>>>> Thanks for your suggestion. After some thinking, can we change the
+>>>>>> node_demotion[] structure like below? Which means one source node can be
+>>>>>> demoted to mutiple target node, and we can set up the target node mask
+>>>>>> according to the node distance. How do you think? Thanks.
+>>>>>>
+>>>>>> static nodemask_t node_demotion[MAX_NUMNODES] __read_mostly =
+>>>>>>        {[0 ... MAX_NUMNODES - 1] = NODE_MASK_NONE};
+>>>>> How large is that in the worst case?
+>>>>
+>>>> For the worst case (MAX_NUMNODES=1024), the size of the node_demotion
+>>>> is 131072 bytes, while the size of original data structure is 4096
+>>>> bytes. Maybe we can allocate the node_demotion dynamically?
+>>> Per my understanding, in most cases, the number of demotion target
+>>> nodes
+>>> should be quite small.  So why not restrict the number of demotion
+>>> target nodes to make it some kind of simple array?
+>>
+>> Yes, agree. Something like below is reasonable for you?
+>>
+>> #define DEMOTION_TARGET_NODES 16
+>> typedef struct { DECLARE_BITMAP(bits, DEMOTION_TARGET_NODES); }
+>> demotemask_t;
+>>
+>> static demotemask_t node_demotion[MAX_NUMNODES];
 > 
-> Thanks!
+> I don't think we need a bitmap.  May be something as following,
 > 
-> Dominique Martinet wrote on Mon, Nov 01, 2021 at 10:33:59AM +0900:
-> > ctrl is set from read_regs(..FLAG, 2, ctrl), so ctrl[0] is FLAG
-> > and ctrl[1] is the CTRL register.
-> > Use ctrl[0] to write back to the FLAG register as appropriate.
-> > 
-> > Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
-> > ---
-> >  drivers/rtc/rtc-rv8803.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/rtc/rtc-rv8803.c b/drivers/rtc/rtc-rv8803.c
-> > index 72adef5a5ebe..0d5ed38bf60c 100644
-> > --- a/drivers/rtc/rtc-rv8803.c
-> > +++ b/drivers/rtc/rtc-rv8803.c
-> > @@ -340,8 +340,8 @@ static int rv8803_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
-> >  		}
-> >  	}
-> >  
-> > -	ctrl[1] &= ~RV8803_FLAG_AF;
-> > -	err = rv8803_write_reg(rv8803->client, RV8803_FLAG, ctrl[1]);
-> > +	ctrl[0] &= ~RV8803_FLAG_AF;
-> > +	err = rv8803_write_reg(rv8803->client, RV8803_FLAG, ctrl[0]);
-> >  	mutex_unlock(&rv8803->flags_lock);
-> >  	if (err)
-> >  		return err;
+> #define DEMOTION_TARGET_NODES 15
+> struct demotion_nodes {
+>    unsigned short nr;
+>    unsigned short nodes[DEMOTION_TARGET_NODES];
+> };
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+OK. Let me try it in next version. Thanks.
