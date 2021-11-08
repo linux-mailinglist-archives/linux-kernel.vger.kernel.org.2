@@ -2,76 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B31444990E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:05:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE38449912
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Nov 2021 17:07:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239093AbhKHQId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Nov 2021 11:08:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231529AbhKHQIb (ORCPT
+        id S239387AbhKHQJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Nov 2021 11:09:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:28004 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239246AbhKHQJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Nov 2021 11:08:31 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 790CAC061570
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Nov 2021 08:05:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/HWgYNgcAyi53NUcet37YcktMzyD1RP2R5IycsZ1Svo=; b=bthRD5QObmLAL6qGx/FdUDefnz
-        +GP4vfdVocRUeHOfaRdq5vEAamdbhP7tuForNCPVjvwy3puANyvS4/CCSY0jaaDWIT0Yo26APvSJl
-        Z4PwVMD4bSjXNU7hifDp7hG7Z6yc01thPJEthp95Rkl0oBTDIAu/G0zZUucKRFjT8QR1jqRA7O6F9
-        EMHPBuEqXgu5n+zNwx/q1vSW4F7xxL54Fq9Vxcc9MZg5QPbUSVGunOXfydkekx63f2IECBTE6xNPF
-        VZDALgpCpKBt5m/xrUjOoetiHRBAg7ugOHXPmzeTd3QLpParQMI5qeFMrAnP5dyAkovlkahA6vCxl
-        hqut8nSA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mk79V-00GufO-Q1; Mon, 08 Nov 2021 16:05:45 +0000
-Date:   Mon, 8 Nov 2021 08:05:45 -0800
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jessica Yu <jeyu@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] Modules updates for v5.16-rc1
-Message-ID: <YYlK2QKpmb+ipalA@bombadil.infradead.org>
-References: <YYWxSlB1CNhhjUTQ@bombadil.infradead.org>
- <CAHk-=wjQyGhKCM+F8vRS6SSesXk1rZEP4QxdTjvr8DXmC-e1Lg@mail.gmail.com>
+        Mon, 8 Nov 2021 11:09:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1636387614;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y1FCpwnoXru8LCUd4AbjW/RHjevdkDPK2hMhE65LRpk=;
+        b=EYIAf2ZWNP7cYGOtHBFD+XOv6j8eSDzivSBqQuaHMvMIgEynjerB3lg1EE/zox2ERpotiK
+        eXRdhRhpilfG10ncU4btPIswAayW+l+bE08B7bp5xgU4Hep6KkMmQV0Ztx7OYdMH3Yuxxg
+        bPuOWITDt8iMvZOUpGDKniVQvdjkXZo=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-75-7aR7LczwNBy9kSYWvza02A-1; Mon, 08 Nov 2021 11:06:52 -0500
+X-MC-Unique: 7aR7LczwNBy9kSYWvza02A-1
+Received: by mail-ed1-f70.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso15217497edj.20
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Nov 2021 08:06:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=y1FCpwnoXru8LCUd4AbjW/RHjevdkDPK2hMhE65LRpk=;
+        b=C8qJA9dF0zVWQDOjuvJZeAuRpQyjm6G65lrOzpUrIsN09EWXEFowulv5cveJFsxIUB
+         ol4nUW2ZLlQ+DyPengN1fU31RwN2l2C+0QF5TN8tOf74ytmBe18JPUNTporByGRC3ay6
+         cnypmPCqyCw2hwZIVMip9+1XL68MVFhg1XcshTrl3K3SoI84HzxZRJGPVg/PCBlFqkb/
+         cWDsIXr+XVR3WHNg8lxsRSWvEpW0t606gZv3MUwuxGK1gd6sISm8Mpri8iyhzxzbhdvj
+         qm458IlJGNYzkBq5rstjLcWuEDUpvW9oBRphNlBGSxfSvzpI2pEBQQG/GWKWTAVSJG1U
+         irPw==
+X-Gm-Message-State: AOAM5333PBdHqatKyraD6cfcPKRlbe0ds/YdhWwj/yu6y5hdkIgZn3Ae
+        VipM9Vu46G7za/iddOo5KBs7aP2IndO2cZasnhZepVAp4VvMMeigvtP7w9RvIxIA8pX/fPWkWZw
+        kR36zAzjOWb/iz1IrhYzA222w
+X-Received: by 2002:a05:6402:42d3:: with SMTP id i19mr351693edc.82.1636387611543;
+        Mon, 08 Nov 2021 08:06:51 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyu9/pkrAjKIXIFB1SkeQQxKCuuMdfW8j3XbHSYc37jzZgl2Op4II0m3tdXn02+xuywOMqKXw==
+X-Received: by 2002:a05:6402:42d3:: with SMTP id i19mr351664edc.82.1636387611366;
+        Mon, 08 Nov 2021 08:06:51 -0800 (PST)
+Received: from [10.40.1.223] ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id q8sm3675287edd.26.2021.11.08.08.06.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Nov 2021 08:06:50 -0800 (PST)
+Message-ID: <6ffd2b8c-00f4-211e-de57-23d5159ae7d4@redhat.com>
+Date:   Mon, 8 Nov 2021 17:06:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjQyGhKCM+F8vRS6SSesXk1rZEP4QxdTjvr8DXmC-e1Lg@mail.gmail.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 10/13] power: supply: bq25890: Add support for registering
+ the Vbus boost converter as a regulator
+Content-Language: en-US
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>
+References: <20211030182813.116672-1-hdegoede@redhat.com>
+ <20211030182813.116672-11-hdegoede@redhat.com>
+ <CAHp75Vc=dZ1FPeDgaY8S+dSu8i=QUgbLN2NVOcsMz6h0uytNeg@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <CAHp75Vc=dZ1FPeDgaY8S+dSu8i=QUgbLN2NVOcsMz6h0uytNeg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 07, 2021 at 11:08:02AM -0800, Linus Torvalds wrote:
-> On Fri, Nov 5, 2021 at 3:33 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> >
-> > As requested by Jessica, I'm stepping in to help with modules
-> > maintenance. This is my my first pull request, so if there are any
-> > issues with it please let me know so I can fix things for the next
-> > time around to make it even smoother for you.
+Hi,
+
+On 10/31/21 00:13, Andy Shevchenko wrote:
+> On Sat, Oct 30, 2021 at 9:28 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> The bq25890_charger code supports enabling/disabling the boost converter
+>> based on usb-phy notifications. But the usb-phy framework is not used on
+>> all boards/platforms. At support for registering the Vbus boost converter
+>> as a standard regulator when there is no usb-phy on the board.
+>>
+>> Also add support for providing regulator_init_data through platform_data
+>> for use on boards where device-tree is not used and the platform code must
+>> thus provide the regulator_init_data.
 > 
-> Well, I want to see what I'm getting.
+> ...
 > 
-> That's what "git request-pull" is all about - it does most of the
-> formatting particularly if you have a tag with the explanations
-> already like you seem to have.
+>> @@ -1018,6 +1059,21 @@ static int bq25890_probe(struct i2c_client *client,
+>>                 INIT_WORK(&bq->usb_work, bq25890_usb_work);
+>>                 bq->usb_nb.notifier_call = bq25890_usb_notifier;
+>>                 usb_register_notifier(bq->usb_phy, &bq->usb_nb);
+>> +#ifdef CONFIG_REGULATOR
+>> +       } else {
+>> +               struct bq25890_platform_data *pdata = dev_get_platdata(dev);
+>> +               struct regulator_config cfg = { };
+>> +               struct regulator_dev *reg;
+>> +
+>> +               cfg.dev = dev;
+>> +               cfg.driver_data = bq;
+>> +               if (pdata)
+>> +                       cfg.init_data = pdata->regulator_init_data;
+>> +
+>> +               reg = devm_regulator_register(dev, &bq25890_vbus_desc, &cfg);
+>> +               if (IS_ERR(reg))
+>> +                       return dev_err_probe(dev, PTR_ERR(reg), "registering regulator");
+>> +#endif
+>>         }
 > 
-> That very much includes a diffstat and a shortlog, so that I see that
-> "yes, what I got is actually what you intended for me to get" (and so
-> that I can do a first quick scan of "this is what's coming" before I
-> even do the pull - sometimes I use that to judge whether I should do
-> the pull now,. or leave it for later when I have more time to go
-> through something).
+> }
+> #ifdef
+> else {
+>   ...
+> }
+> #endif
+> 
+> is a bit better to maintain (less error prone in case of new code).
+> 
+> ...
+> 
+>> +#ifndef _BQ25890_CHARGER_H_
+>> +#define _BQ25890_CHARGER_H_
+> 
+>> +#include <linux/regulator/machine.h>
+> 
+> struct regulator_init_data;
+> 
+> should be sufficient, no header is needed.
 
-Odd, so I used 'git request-pull' and this page for guidence:
+Thanks, I've fixed both for v2 of the patch-set.
 
-https://www.kernel.org/doc/html/latest/maintainer/pull-requests.html
+Regards,
 
-Sadly, no diffstat or shortlog was provided in:
+Hans
 
-git request-pull modules-linus git://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/ modules-5.16-rc1
 
-  Luis
+> 
+>> +struct bq25890_platform_data {
+>> +       const struct regulator_init_data *regulator_init_data;
+>> +};
+>> +
+>> +#endif
+> 
+
